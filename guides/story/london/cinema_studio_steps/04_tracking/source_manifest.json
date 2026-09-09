@@ -731,7 +731,7 @@
       ],
       "source_prompt_sha256": "76a53b46490f7087051a6b61360543112b874118c1dec4b28d592f08a5c3ed46",
       "file": "03_film/01/storyboard.txt",
-      "file_sha256": "dc8ac7da297cea030e7c51f26674b4d22619a7a30b2d739d3c2b017efff8d7b8",
+      "file_sha256": "2c88512ba0e39ed22ed8cfdc77a0c2980c50b613bf636a464760415bd9dcd242",
       "changes": "All nine beats retained; requested camera/architecture added; card and AI-screen contradictions corrected; SB06 memory dependencies repaired; explicit centrally maintained reference inputs Grid geometry uses the full selected image resolution instead of fixed pixel examples."
     },
     {
@@ -755,7 +755,7 @@
       ],
       "source_prompt_sha256": "d111e179fa9211ddb262d74468ee38305f1776d75138a0c33a3e229ff58dff3d",
       "file": "03_film/01/video.txt",
-      "file_sha256": "60241c1f6c6846079e6a41705da4a9dab87d3cca3b4b6e4ed277f9aedfa40fad",
+      "file_sha256": "c9b5691fa0616155e4ab5667c3476c7d840a6cc2cfa93ffe0d3383fd90bddc45",
       "changes": "Operator/retry prose and repeated rules removed; all nine story beats retained; camera/architecture updated; audio cues follow visuals; reveal and reference contradictions repaired; Verified C01/C02 Element IDs substituted for local aliases; explicit reference binding; original Hungarian folk-rooted score and synchronized material transformation foley; researched Dél-Alföld tekerő/clarinet arrangement, phrase-synchronized facade motion, explicit protagonist inner monologue"
     },
     {
@@ -1682,7 +1682,7 @@
   "pilot_files": [
     {
       "file": "01_pilot/test_extend_4s.txt",
-      "sha256": "49aa823d200509390bab05c4539b6d9472d742850aa20e4c3442bb37e9963b5a",
+      "sha256": "1b99c07cccff901c2c4f75f4c4486d528a5b3000787930a4b58b18b5ebff8267",
       "refs": [
         "C01",
         "C02",
@@ -1711,7 +1711,7 @@
     },
     {
       "file": "01_pilot/test_video_8s.txt",
-      "sha256": "fc20158c27056283a441488efe81838ac93ed93229653588a2de357d0f312378",
+      "sha256": "b5f44d67f5901a0243a6f2b97e2fde2c4c1974a84521b3824d097148260ffaf0",
       "reference_note": "Reference mentions are maintained centrally in reference_bindings. UNBOUND slots must be resolved before generation; verified Element mentions autoload in the creator's composer.",
       "refs": [
         "C01",
@@ -2040,8 +2040,9 @@
     },
     "W01": {
       "alias": "W01_MAIN_WORLD",
-      "mention": null,
-      "last_mention": "@UNBOUND_W01"
+      "mention": "@loc_mys_world-01-the-city-judges-first-soho-piccadilly-leicester_s1_v1",
+      "last_mention": "@loc_mys_world-01-the-city-judges-first-soho-piccadilly-leicester_s1_v1",
+      "evidence": "Complete ID copied by the creator in chat on 2026-09-09; Markdown underscore escapes removed. Matches the previously verified World 01 image and visible ID prefix."
     },
     "W02": {
       "alias": "W02_MAIN_WORLD",

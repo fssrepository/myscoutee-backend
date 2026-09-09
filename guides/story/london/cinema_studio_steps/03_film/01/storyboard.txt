@@ -1,8 +1,8 @@
-REFERENCE SETUP INCOMPLETE: C06, C07, C08, MW01, MWP01, W01
+REFERENCE SETUP INCOMPLETE: C06, C07, C08, MW01, MWP01
 Do not generate until these references are bound.
 
 REFERENCE INPUTS:
-@UNBOUND_W01 = LOCATION — W01 — WORLD 01 — THE CITY JUDGES FIRST — SOHO / PICCADILLY / LEICESTER; physical present city; preserve materials and allow the directed architectural transformation.
+@loc_mys_world-01-the-city-judges-first-soho-piccadilly-leicester_s1_v1 = LOCATION — W01 — WORLD 01 — THE CITY JUDGES FIRST — SOHO / PICCADILLY / LEICESTER; physical present city; preserve materials and allow the directed architectural transformation.
 @UNBOUND_MW01 = LOCATION — MW01 — MEMORY WORLD 01 — LONDON / SOCIAL / HOME / DATING; the assigned remembered scenes; preserve the source identities and setting.
 @UNBOUND_MWP01 = LOCATION — MWP01 — MEMORY PRESERVATION WORLD P01 — ROUTES / ROOMS / DOCUMENT THRESHOLDS; the assigned remembered scenes; preserve the source identities and setting.
 @char_mys_protagonist_s1_v1 = CHARACTER 01 — PROTAGONIST; exact person identity; use only where this person appears.

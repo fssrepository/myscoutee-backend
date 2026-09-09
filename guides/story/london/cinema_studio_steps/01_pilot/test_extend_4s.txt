@@ -1,9 +1,9 @@
-REFERENCE SETUP INCOMPLETE: T01_IMAGE, TA01, W01
+REFERENCE SETUP INCOMPLETE: T01_IMAGE, TA01
 Do not generate until these references are bound.
 
 Extend the supplied video FORWARD by 4 seconds, 16:9. Continue its exact visible ending: same man, stride, shoulder position, taxi, camera heading and forward velocity, transformed Pest facade, rain, light and continuous city sound. No establishing shot or visual/audio restart.
 
-Use @char_mys_protagonist_s1_v1 for the walking man's identity, @char_mys_soho-woman_s1_v1 for the remembered woman, @UNBOUND_W01 for city materials and @UNBOUND_T01_IMAGE for the same restaurant. @UNBOUND_TA01 is the protagonist's sole inner-monologue voiceover: preserve its supplied voice and exact words, once. These are the walking man's own thoughts, spoken intimately in his established English male voice. He does not address anyone, nobody answers, and his lips remain naturally at rest except for breathing. Keep the voice close and clear as the camera moves.
+Use @char_mys_protagonist_s1_v1 for the walking man's identity, @char_mys_soho-woman_s1_v1 for the remembered woman, @loc_mys_world-01-the-city-judges-first-soho-piccadilly-leicester_s1_v1 for city materials and @UNBOUND_T01_IMAGE for the same restaurant. @UNBOUND_TA01 is the protagonist's sole inner-monologue voiceover: preserve its supplied voice and exact words, once. These are the walking man's own thoughts, spoken intimately in his established English male voice. He does not address anyone, nobody answers, and his lips remain naturally at rest except for breathing. Keep the voice close and clear as the camera moves.
 
 0–1s: carry the forward tracking movement through the boundary without changing the man or returning the transformed facade to its former shape. Rain, footsteps and tyre hiss continue without a gap.
 1–3s: make one short lateral acceleration to the next taxi pane. The same remembered woman gives a tiny continuing head movement, with the restaurant room still inside the glass; then the moving rain reflection covers it. The actual man remains outdoors. Play the supplied short narration once, naturally, over the continuing subdued city sound.

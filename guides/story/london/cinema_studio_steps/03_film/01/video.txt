@@ -1,11 +1,11 @@
-REFERENCE SETUP INCOMPLETE: A01, C06, C07, C08, MW01, MWP01, SB01, W01
+REFERENCE SETUP INCOMPLETE: A01, C06, C07, C08, MW01, MWP01, SB01
 Do not generate until these references are bound.
 
 MYSCOUTEE — BLOCK 01 — 30 SECONDS
 One 16:9 photorealistic moving film sequence. Open in motion, already tracking the walking protagonist through wet Soho.
 
 REFERENCES
-@UNBOUND_W01 = physical city, route, materials and recognizable architecture; transformation allowed as directed.
+@loc_mys_world-01-the-city-judges-first-soho-piccadilly-leicester_s1_v1 = physical city, route, materials and recognizable architecture; transformation allowed as directed.
 @UNBOUND_MW01 = living remembered scene inside real glass; select only the assigned scene.
 @UNBOUND_MWP01 = living remembered scene inside real glass; select only the assigned scene.
 @char_mys_protagonist_s1_v1 = exact face, age, hair and body; memory wardrobe follows its source scene.
