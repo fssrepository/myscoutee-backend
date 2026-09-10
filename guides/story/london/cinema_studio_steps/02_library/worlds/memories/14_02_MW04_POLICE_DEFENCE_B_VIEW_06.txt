@@ -3,8 +3,9 @@ REFERENCE ID: MW04_B_02 — ORIGINAL VIEW 06 (never print IDs, headings or label
 OUTPUT ELEMENT ASSIGNMENT — OPERATOR METADATA ONLY, NEVER RENDER:
 Canonical key: MW04_B_02
 Target import name: MYS MW04_B_02 Memory View 06
-Live Element mention / UUID: pending import; not yet verified.
-Assign the finished image to this target after import. This output target is not an input reference.
+Live output Element name (operator lookup only): loc_MYS_mys-mw04-b-02-memory-view-06_s0_v1
+Live output Element UUID: 3bd5ae16-91a1-439f-a217-0aa52ea1e600
+Image attachment verified via MCP on 2026-09-10. This output target is not an input reference.
 
 REFERENCE INPUTS:
 @loc_MYS_mys-mw04-a-police-defence_s0_v1 = Use the accepted Page A for the shared ordinary material palette and established identities only. The assigned fingerprinting room is its own stated location; do not copy the apartment into it.

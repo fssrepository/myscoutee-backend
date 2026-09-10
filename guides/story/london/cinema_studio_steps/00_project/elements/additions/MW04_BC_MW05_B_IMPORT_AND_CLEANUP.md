@@ -1,6 +1,6 @@
 # Új Elementek importja — 2026-09-10
 
-A Higgsfield MCP teljes Element-listájában a 12 új cél még nem szerepelt. Csak ezt a fájlt importáld egyszer:
+FRISSÍTVE: mind a 12 cél importálva, a megfelelő generált kép hozzárendelve; MCP és REFERENCE ID alapján ellenőrizve 2026-09-10. Újraimport nem szükséges. Az eredeti importcsomag:
 [MW04_BC_MW05_B_MISSING_ONLY_IMPORT.md](MW04_BC_MW05_B_MISSING_ONLY_IMPORT.md).
 A három csoport külön importfájlját ugyanakkor már ne importáld újra.
 
@@ -18,7 +18,7 @@ Az MW04_A és MW05_A megmarad: ezek elfogadott referenciaoldalak.
 
 ## Kész kép → új cél-Element
 
-Az alábbi nevek az importdefiníciók nevei. Az import után kapott tényleges @nevet és UUID-t még le kell kérdezni; nincs kitalált élő azonosító. Mindegyik cél egy külön 2K, 16:9 képet kap.
+Az alábbi táblázat az importneveket párosítja a promptokkal. Az ellenőrzött élő nevek és UUID-k a promptok elején szerepelnek. Mindegyik cél egy külön 2K, 16:9 képet kap.
 
 | Promptfájl | Egyedi kulcs | Cél neve az importban |
 |---|---|---|

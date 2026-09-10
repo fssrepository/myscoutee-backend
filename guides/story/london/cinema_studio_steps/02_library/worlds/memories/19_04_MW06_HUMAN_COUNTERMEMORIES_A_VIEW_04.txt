@@ -4,7 +4,7 @@ REFERENCE SETUP INCOMPLETE: MW04_C_01
 Do not generate until these references are bound.
 
 REFERENCE INPUTS:
-@UNBOUND_MW04_C_01 = Use the accepted original-view-9 image for the same policewoman, procedure surface and ordinary human tone; reconstruct the assigned chair assistance.
+@loc_MYS_mys-mw04-c-01-memory-view-09_s0_v1 = Use the accepted original-view-9 image for the same policewoman, procedure surface and ordinary human tone; reconstruct the assigned chair assistance.
 @char_MYS_mys-c01-protagonist_s0_v1 = CHARACTER 01 — PROTAGONIST; exact person identity; use only where this person appears.
 @char_MYS_mys-c03-policewoman_s0_v1 = CHARACTER 03 — POLICEWOMAN; exact person identity; use only where this person appears.
 

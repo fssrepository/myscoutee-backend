@@ -3,8 +3,9 @@ REFERENCE ID: MW04_C_02 — ORIGINAL VIEW 01 (never print IDs, headings or label
 OUTPUT ELEMENT ASSIGNMENT — OPERATOR METADATA ONLY, NEVER RENDER:
 Canonical key: MW04_C_02
 Target import name: MYS MW04_C_02 Memory View 01
-Live Element mention / UUID: pending import; not yet verified.
-Assign the finished image to this target after import. This output target is not an input reference.
+Live output Element name (operator lookup only): loc_MYS_mys-mw04-c-02-memory-view-01_s0_v1
+Live output Element UUID: ce3402ac-568b-4b75-94d5-bdd363b7b9a8
+Image attachment verified via MCP on 2026-09-10. This output target is not an input reference.
 
 REFERENCE INPUTS:
 @loc_MYS_mys-mw04-a-police-defence_s0_v1 = Use the accepted apartment-search images for the same apartment, furniture, floor, entrance and ordinary procedural appearance.
