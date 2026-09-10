@@ -26,7 +26,7 @@ A “view” is a stable identity from the previous world plan, not the new page
 
 ## Existing images and actual references
 
-All 21 prompts are prepared; these new 4K pages have not been rendered by editing the files. Keep accepted existing world images until replacement pages are generated and reviewed in Higgsfield. Existing W01–W07 Element IDs still point to their actually associated media; an edited prompt does not change those images. In particular, the already-bound legacy W01 sheet remains a nine-cell image until the creator replaces its association. Its current video-reference instructions continue to describe that actual old input.
+All 21 prompts use 4K 2×2 pages. The creator restarted the image library and retained only C01, C02, MR001 and the bus identity image R002; old world media must not be assumed available. Bind the newly rendered pages to their actual new Elements before updating the video references. Editing a prompt does not render or bind its image.
 
 The separate [14-entry companion import](../../../00_project/elements/10_world_reference_pages.md) contains only the new B/C containers. Do not repeat any earlier import or reimport W01–W07. It has not been imported. Page A reuses the corresponding existing world container after the new image is accepted. For consistent later pages, attach the accepted Page A image in Higgsfield when rendering B/C; obtain and embed the actual reference mention before copying a dependent prompt. No new handle is guessed here.
 

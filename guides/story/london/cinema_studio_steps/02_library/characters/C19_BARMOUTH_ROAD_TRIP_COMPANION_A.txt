@@ -1,3 +1,5 @@
+OUTPUT LAYOUT AND RESOLUTION: One 16:9 identity sheet with exactly three equal vertical panels in one horizontal row (1x3: front, back, headshot). Use 2K for the standard identity render; 4K is also acceptable. Keep the same three-view arrangement at either resolution. These are three views of one unchanged identity, not a transformation sequence.
+
 Create ONE SINGLE photorealistic technical CHARACTER IDENTITY SHEET for ONE exact fictional person.
 
 EXACT LAYOUT:

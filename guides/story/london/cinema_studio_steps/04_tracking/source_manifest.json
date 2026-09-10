@@ -83,7 +83,7 @@
       ],
       "source_prompt_sha256": "1c7f054229ec7c5295ee6e424c9d169831af8221220b92deea92c9a83f564005",
       "file": "02_library/characters/C01_PROTAGONIST.txt",
-      "file_sha256": "1c7f054229ec7c5295ee6e424c9d169831af8221220b92deea92c9a83f564005",
+      "file_sha256": "296d71a6266effb06f0510bc19f21e268756c2f11927c0b9ede4c39b2e8ce8c4",
       "changes": "Verbatim fenced prompt"
     },
     {
@@ -95,7 +95,7 @@
       ],
       "source_prompt_sha256": "1c84a4aee0d00d764205f4d31ce7919c94264d76932fb45ddbe57b3e6b970581",
       "file": "02_library/characters/C02_SOHO_WOMAN.txt",
-      "file_sha256": "1c84a4aee0d00d764205f4d31ce7919c94264d76932fb45ddbe57b3e6b970581",
+      "file_sha256": "37fde1a6d5f5a5835f0c2565c0d739d0d3cfb15ad8119bd8cf01745334bacb51",
       "changes": "Verbatim fenced prompt"
     },
     {
@@ -107,7 +107,7 @@
       ],
       "source_prompt_sha256": "0cec9d04f9314393840ada226c7ca8e576f97e74b19eb9e5b473801db325befc",
       "file": "02_library/characters/C03_POLICEWOMAN.txt",
-      "file_sha256": "0cec9d04f9314393840ada226c7ca8e576f97e74b19eb9e5b473801db325befc",
+      "file_sha256": "8fe249124cdf7445b16bf8697263412ea5f72071dfd53a16531e17fdd5fca1c8",
       "changes": "Verbatim fenced prompt"
     },
     {
@@ -119,7 +119,7 @@
       ],
       "source_prompt_sha256": "5d09e227111b9df2ff0c6019138233806fcb4790776ceddadfab334f392c53aa",
       "file": "02_library/characters/C04_APPOINTED_LAWYER.txt",
-      "file_sha256": "5d09e227111b9df2ff0c6019138233806fcb4790776ceddadfab334f392c53aa",
+      "file_sha256": "f99e4e073e72cf4802e65d8052624c9bf616169334eac344d9a6bf827f92ae71",
       "changes": "Verbatim fenced prompt"
     },
     {
@@ -131,7 +131,7 @@
       ],
       "source_prompt_sha256": "db066590815046c07c45129a8145d1633cd1c18c0c3aea32cfdd7b7bf6e36650",
       "file": "02_library/characters/C05_FINAL_NURSE.txt",
-      "file_sha256": "db066590815046c07c45129a8145d1633cd1c18c0c3aea32cfdd7b7bf6e36650",
+      "file_sha256": "a0cc1f40ff54e5798b64c48b95071314ba615f6d08d916e33d463222273317a3",
       "changes": "Verbatim fenced prompt"
     },
     {
@@ -143,7 +143,7 @@
       ],
       "source_prompt_sha256": "0e736b3252fe3cbd8ca19c597663879f0e480bb6803e168de6902c32a3173d0c",
       "file": "02_library/characters/C06_SHARED_HOUSE_SUBSTITUTE_SNORING_HOUSEMATE.txt",
-      "file_sha256": "0e736b3252fe3cbd8ca19c597663879f0e480bb6803e168de6902c32a3173d0c",
+      "file_sha256": "3f8596341c7e6d2284791723bc65a7e7a95d28bc02901b0a78a206342f499915",
       "changes": "Verbatim fenced prompt"
     },
     {
@@ -155,7 +155,7 @@
       ],
       "source_prompt_sha256": "35f31171b6f526d520600915de5d7227a0bb7fadaef7748c0d8d978fc51cbd87",
       "file": "02_library/characters/C07_FX_MORTGAGE_HOUSEMATE.txt",
-      "file_sha256": "35f31171b6f526d520600915de5d7227a0bb7fadaef7748c0d8d978fc51cbd87",
+      "file_sha256": "c6f04fb4d98685b5eb3da7b8d681f8fb9ebf502e287f52b512a551f45fd825b6",
       "changes": "Verbatim fenced prompt"
     },
     {
@@ -167,7 +167,7 @@
       ],
       "source_prompt_sha256": "fd0d8ef7f58a40bac83ccdf0bd9e0701aa59f5177acecc8f2a2ae28025580208",
       "file": "02_library/characters/C08_FX_MORTGAGE_SPOUSE.txt",
-      "file_sha256": "fd0d8ef7f58a40bac83ccdf0bd9e0701aa59f5177acecc8f2a2ae28025580208",
+      "file_sha256": "6246e2760795cc99579f7b1c98e3849b1aff484a3c0957fc8be5de727fc7d0d6",
       "changes": "Verbatim fenced prompt"
     },
     {
@@ -179,7 +179,7 @@
       ],
       "source_prompt_sha256": "27a9a08fc7ed627c3682c4c3af3959d7fd0a60589df5325211a885cda92acdb3",
       "file": "02_library/characters/C09_FX_MORTGAGE_CHILD.txt",
-      "file_sha256": "27a9a08fc7ed627c3682c4c3af3959d7fd0a60589df5325211a885cda92acdb3",
+      "file_sha256": "84a615dd78bf6fe413ecd2fe12f974682b8bc33589ceb95d9fd85e605d687e35",
       "changes": "Verbatim fenced prompt"
     },
     {
@@ -191,7 +191,7 @@
       ],
       "source_prompt_sha256": "5e625999f68a36e46c2cdbe8f0c1dc0798b1a4bc650893d174b94c60eaf276f0",
       "file": "02_library/characters/C10_BEGINNER_DANCE_WOMAN.txt",
-      "file_sha256": "5e625999f68a36e46c2cdbe8f0c1dc0798b1a4bc650893d174b94c60eaf276f0",
+      "file_sha256": "b6e17d61f8154df5fb5b7b4af1feff4bce3715cd243c7b1a2355da4748ad19c2",
       "changes": "Verbatim fenced prompt"
     },
     {
@@ -203,7 +203,7 @@
       ],
       "source_prompt_sha256": "c89e0907e8d5955412e5e56b23efa3f600f4b088b6fa44683517aa90fee06828",
       "file": "02_library/characters/C11_RUSSIAN_TRANSIT_PASSENGER.txt",
-      "file_sha256": "c89e0907e8d5955412e5e56b23efa3f600f4b088b6fa44683517aa90fee06828",
+      "file_sha256": "c7055f9aea66a674e097ff8e6d006d918456ac9ecfb5b7633021f2c8202460ad",
       "changes": "Verbatim fenced prompt"
     },
     {
@@ -215,7 +215,7 @@
       ],
       "source_prompt_sha256": "0637e995e66788c7056925bf5c184e8f3db67839dd38b5d24a184426b4ef1300",
       "file": "02_library/characters/C12_AGRA_BUS_WOMAN.txt",
-      "file_sha256": "0637e995e66788c7056925bf5c184e8f3db67839dd38b5d24a184426b4ef1300",
+      "file_sha256": "563f3f12811217f3d1f4bcb6663457e8200ecae15b72f784d83948ac162964fc",
       "changes": "Verbatim fenced prompt"
     },
     {
@@ -227,7 +227,7 @@
       ],
       "source_prompt_sha256": "dd7cde7a051d4e7efa789d56f00bad57dd9bd3dbae401add10ea0405f3dd3680",
       "file": "02_library/characters/C13_SUDANESE_TRAVELER_MAN.txt",
-      "file_sha256": "dd7cde7a051d4e7efa789d56f00bad57dd9bd3dbae401add10ea0405f3dd3680",
+      "file_sha256": "7144c511879f9b0f247d7dbe9c4ac20b799e0ec6946644c2ecde6ce7c0836594",
       "changes": "Verbatim fenced prompt"
     },
     {
@@ -239,7 +239,7 @@
       ],
       "source_prompt_sha256": "9b54f9727e485a512c40c097a6cfdd96b4c2bbcf6d7f89dec10eaca3f46da85a",
       "file": "02_library/characters/C14_SUDANESE_TRAVELER_WOMAN.txt",
-      "file_sha256": "9b54f9727e485a512c40c097a6cfdd96b4c2bbcf6d7f89dec10eaca3f46da85a",
+      "file_sha256": "5a53c3689154c06a125c83f0bdf37d2ae14b18d9eba3ca48d21f2cf5647c4554",
       "changes": "Verbatim fenced prompt"
     },
     {
@@ -251,7 +251,7 @@
       ],
       "source_prompt_sha256": "bafc8b624584a7e92edd1cf23479a0edda633a8f32de85747772b6fc5d145c8a",
       "file": "02_library/characters/C15_CAIRO_TAXI_DRIVER.txt",
-      "file_sha256": "bafc8b624584a7e92edd1cf23479a0edda633a8f32de85747772b6fc5d145c8a",
+      "file_sha256": "ea7be5aba6e54bc27d06f81f3295e00a4ebc2a31ed6215c3d860c25f2038c6b6",
       "changes": "Verbatim fenced prompt"
     },
     {
@@ -263,7 +263,7 @@
       ],
       "source_prompt_sha256": "0b8f95ede83e5818a8408fd70ecef99fce85cc0c12b653ef7bd7c624032e9228",
       "file": "02_library/characters/C16_BALLOON_LOCAL_HELPER_MAN.txt",
-      "file_sha256": "0b8f95ede83e5818a8408fd70ecef99fce85cc0c12b653ef7bd7c624032e9228",
+      "file_sha256": "b0924f2e132e176792d3fe6ea3dd762f292126145e90d4a536334a8f5fb5ea3f",
       "changes": "Verbatim fenced prompt"
     },
     {
@@ -275,7 +275,7 @@
       ],
       "source_prompt_sha256": "1401cf11e115f3131028751d2e03931c9124eacccaa3ce274e2e97a263c01cea",
       "file": "02_library/characters/C17_BALLOON_LOCAL_HELPER_WOMAN.txt",
-      "file_sha256": "1401cf11e115f3131028751d2e03931c9124eacccaa3ce274e2e97a263c01cea",
+      "file_sha256": "509a49732525ef9e750ac75f40f2ddc43e3ea1f292fd0f67ebda4edaf15239e6",
       "changes": "Verbatim fenced prompt"
     },
     {
@@ -287,7 +287,7 @@
       ],
       "source_prompt_sha256": "9fe383e2200879b7ccd69a703e0547bdccc844248da93276d655f2a4a8d8ccd0",
       "file": "02_library/characters/C18_BARMOUTH_ROAD_TRIP_DRIVER_COMPANION.txt",
-      "file_sha256": "9fe383e2200879b7ccd69a703e0547bdccc844248da93276d655f2a4a8d8ccd0",
+      "file_sha256": "c12a46dd021e4a214ee28bcd4cb73835ea33c391a5ba4bc0b92393c3b3e44132",
       "changes": "Verbatim fenced prompt"
     },
     {
@@ -299,7 +299,7 @@
       ],
       "source_prompt_sha256": "d301056bdcf14c631e8c6309a5e72c9574ce2ca47efa0ce5e5f9525c87d6562d",
       "file": "02_library/characters/C19_BARMOUTH_ROAD_TRIP_COMPANION_A.txt",
-      "file_sha256": "d301056bdcf14c631e8c6309a5e72c9574ce2ca47efa0ce5e5f9525c87d6562d",
+      "file_sha256": "2fb642886207cdae25a6079b8f41291eeea8033c1f6141d52c417bfa9779fe62",
       "changes": "Verbatim fenced prompt"
     },
     {
@@ -311,7 +311,7 @@
       ],
       "source_prompt_sha256": "dbfae744902e96125296d850d700ddd9a3b88581db7ad6b4ae796e99ed90e8e3",
       "file": "02_library/characters/C20_BARMOUTH_ROAD_TRIP_COMPANION_B.txt",
-      "file_sha256": "dbfae744902e96125296d850d700ddd9a3b88581db7ad6b4ae796e99ed90e8e3",
+      "file_sha256": "6cd1f45452d223a2cae60916f188c361f3abf8a22bc0ae059475cc09af92a330",
       "changes": "Verbatim fenced prompt"
     },
     {
@@ -323,7 +323,7 @@
       ],
       "source_prompt_sha256": "d301056bdcf14c631e8c6309a5e72c9574ce2ca47efa0ce5e5f9525c87d6562d",
       "file": "02_library/characters/C21_BARMOUTH_ROAD_TRIP_COMPANION_C.txt",
-      "file_sha256": "d301056bdcf14c631e8c6309a5e72c9574ce2ca47efa0ce5e5f9525c87d6562d",
+      "file_sha256": "2fb642886207cdae25a6079b8f41291eeea8033c1f6141d52c417bfa9779fe62",
       "changes": "Verbatim fenced prompt"
     },
     {
@@ -335,7 +335,7 @@
       ],
       "source_prompt_sha256": "2dd89f6a917bf16ade5f432d3650934ad8e8b7275710b8f73b0b5bfd35a0b923",
       "file": "02_library/characters/C22_ACCOUNTANT.txt",
-      "file_sha256": "2dd89f6a917bf16ade5f432d3650934ad8e8b7275710b8f73b0b5bfd35a0b923",
+      "file_sha256": "7a472544c863c05b19e0a77c206b77812381140fe8edccd76f095c5a4bc7dadf",
       "changes": "Verbatim fenced prompt"
     },
     {
@@ -347,7 +347,7 @@
       ],
       "source_prompt_sha256": "cd3a8c255aba3556764d83315d95bafe0400dd967abe76bde806ebf4ed8030ad",
       "file": "02_library/characters/C23_ADMIN_COLLEAGUE_A.txt",
-      "file_sha256": "cd3a8c255aba3556764d83315d95bafe0400dd967abe76bde806ebf4ed8030ad",
+      "file_sha256": "e5590308cbaeca461c3536d277531b5619a96033cad3e0ef35bcd1816969da23",
       "changes": "Verbatim fenced prompt"
     },
     {
@@ -359,7 +359,7 @@
       ],
       "source_prompt_sha256": "21a8f008db7ef74b242a1e5e092e760b77f0b921e69bd2aec33f2a8073632a5f",
       "file": "02_library/characters/C24_ADMIN_COLLEAGUE_B.txt",
-      "file_sha256": "21a8f008db7ef74b242a1e5e092e760b77f0b921e69bd2aec33f2a8073632a5f",
+      "file_sha256": "c23cca55674d58e73614553c5cbe05bc625c181e085c7d3201397df17d7d9d13",
       "changes": "Verbatim fenced prompt"
     },
     {
@@ -371,7 +371,7 @@
       ],
       "source_prompt_sha256": "f483821bc97864c6c680e22a7a12f8ebc22ab7dbde55952c08bbfe79bea17c47",
       "file": "02_library/characters/C25_SEARCH_OFFICER_MALE.txt",
-      "file_sha256": "f483821bc97864c6c680e22a7a12f8ebc22ab7dbde55952c08bbfe79bea17c47",
+      "file_sha256": "71ddcf01774c36c57eb98bc535476bf0193e21a530791795c544a441d62cbbc7",
       "changes": "Verbatim fenced prompt"
     },
     {
@@ -383,7 +383,7 @@
       ],
       "source_prompt_sha256": "1f0d7b11e5ae7a974429d747a769b30186288e53f3d3be0cdb523a9544e81854",
       "file": "02_library/characters/C26_DEFENCE_OFFICE_SUBSTITUTE.txt",
-      "file_sha256": "1f0d7b11e5ae7a974429d747a769b30186288e53f3d3be0cdb523a9544e81854",
+      "file_sha256": "1c45f290cfe75093433e563e0509b6a883aa5aee5cea43711e05ceaf1fa0ee6e",
       "changes": "Verbatim fenced prompt"
     },
     {
@@ -395,7 +395,7 @@
       ],
       "source_prompt_sha256": "933b7e1083ca0a8d0a00c2f2cf6ee79b8f2c7bb189c9c7ccd1813ad99cb31a53",
       "file": "02_library/characters/C27_JUDGE.txt",
-      "file_sha256": "933b7e1083ca0a8d0a00c2f2cf6ee79b8f2c7bb189c9c7ccd1813ad99cb31a53",
+      "file_sha256": "f6edfcb9b203cb701011ed393add7b5cefa6d712545f97350885d57cdf4fb23f",
       "changes": "Verbatim fenced prompt"
     },
     {
@@ -407,7 +407,7 @@
       ],
       "source_prompt_sha256": "8ea1c2f09462e040525d4f7b0a174e433e51849d4187b2ca5f8b45caace89acd",
       "file": "02_library/characters/C28_FORENSIC_EXPERT_A.txt",
-      "file_sha256": "8ea1c2f09462e040525d4f7b0a174e433e51849d4187b2ca5f8b45caace89acd",
+      "file_sha256": "9cdd5f3dc24d3620c8786c33e3603a8c85ba8f44827b631d7c1d79c82698f961",
       "changes": "Verbatim fenced prompt"
     },
     {
@@ -419,7 +419,7 @@
       ],
       "source_prompt_sha256": "2a575da9d93e6c68fb8c32b6160b00e16804931a97796e8e73277f312e1b30c5",
       "file": "02_library/characters/C29_FORENSIC_EXPERT_B.txt",
-      "file_sha256": "2a575da9d93e6c68fb8c32b6160b00e16804931a97796e8e73277f312e1b30c5",
+      "file_sha256": "04e6fb1ec758e860e4809adbea68412ccbd4a137ae9ebac20973e3320b08a685",
       "changes": "Verbatim fenced prompt"
     },
     {
@@ -431,7 +431,7 @@
       ],
       "source_prompt_sha256": "60c8a27d366272250614c6103c2d64812940613e2bf365697be04e78b991e55a",
       "file": "02_library/characters/C30_COURT_CLERK.txt",
-      "file_sha256": "60c8a27d366272250614c6103c2d64812940613e2bf365697be04e78b991e55a",
+      "file_sha256": "45e54162d93bd4d67abfe2031ba5236a6c20c41d7ad5892d5c44056e998ee6c7",
       "changes": "Verbatim fenced prompt"
     },
     {
@@ -443,7 +443,7 @@
       ],
       "source_prompt_sha256": "5dc948b39e6864ba0f13158690ed2ec4ddfa0ccf0e5fabcc68705716f96dfb24",
       "file": "02_library/characters/C31_ANONYMOUS_FICTIONAL_POLITICAL_FIGURE.txt",
-      "file_sha256": "5dc948b39e6864ba0f13158690ed2ec4ddfa0ccf0e5fabcc68705716f96dfb24",
+      "file_sha256": "6e2b8ad169768dbd64f8632c0807edd60c99b1714b91dfc4c515d087c407b8ec",
       "changes": "Verbatim fenced prompt"
     },
     {
@@ -575,7 +575,7 @@
       ],
       "source_prompt_sha256": "d17c313b21fd8a06e590648b5efce4bcd2a5615ae3ee41517df9785b405ef18f",
       "file": "02_library/worlds/maps/MAP01_WALK_PLAN.txt",
-      "file_sha256": "f80a7dbb6c68399aec2bae77e891f5cfe03ca9542deec6e763c7d9d024b25e98",
+      "file_sha256": "ff49e0a9dc00f2422c589c0afb0266fe4d3d562585bd611db7608521ee1eafca",
       "changes": "Verbatim fenced prompt"
     },
     {
@@ -599,7 +599,7 @@
       ],
       "source_prompt_sha256": "f903008054943c65cb7c5bb33451ad12693382280969e3b093f12a772ade1bf5",
       "file": "02_library/worlds/maps/MAP02_WALK_PLAN.txt",
-      "file_sha256": "82f0d8af9255ebf61ffb40e749834b7e1bd1a7630c335139fc8b78bdfbc59195",
+      "file_sha256": "c859f24193cdee7deecf95cc675eb3994301b5877e772ec7aad28ae399ab468f",
       "changes": "Verbatim fenced prompt"
     },
     {
@@ -623,7 +623,7 @@
       ],
       "source_prompt_sha256": "ce815bef8231aa00e80297ebf08bf134f897dbc5630592cc97988f695ced7286",
       "file": "02_library/worlds/maps/MAP03_WALK_PLAN.txt",
-      "file_sha256": "b6347089bdfc5fc740897d22b82c12d724912ad7e978e4be44586952bf1a2488",
+      "file_sha256": "c4bf11ad57e70b86e66c4ae9f68a4df7b65e05bd6d97811a320d40352d2a3756",
       "changes": "Verbatim fenced prompt"
     },
     {
@@ -647,7 +647,7 @@
       ],
       "source_prompt_sha256": "8fafe1022b9a2dec2b08a1d80d78e0874725475a7b209f2f696ebc5c51ddbd54",
       "file": "02_library/worlds/maps/MAP04_WALK_PLAN.txt",
-      "file_sha256": "c9e1361eb887f9bdf7fe1aa162a705dd91042d00a74a29a5b1ea4f5be588c717",
+      "file_sha256": "7deb28826e6431d0061bb36b1c785cd82d584229b521e71110045e9334205223",
       "changes": "Verbatim fenced prompt"
     },
     {
@@ -671,7 +671,7 @@
       ],
       "source_prompt_sha256": "1bac54a7ebe1e68b27976d666df9fb3932ce6563c92abc7290171cd6f016fe14",
       "file": "02_library/worlds/maps/MAP05_WALK_PLAN.txt",
-      "file_sha256": "33db371e00d48612cada52c00441e3c25a68cbda18afb666ce72a119c98fb11a",
+      "file_sha256": "5dcdecf1cfa268d23995e16c0b17a86e456a0a21cf268be5d33e791555be61fc",
       "changes": "Verbatim fenced prompt"
     },
     {
@@ -695,7 +695,7 @@
       ],
       "source_prompt_sha256": "0498c830606974434a69d66ded596a964cec23c7e4dfc03f0b5d32089e153401",
       "file": "02_library/worlds/maps/MAP06_WALK_PLAN.txt",
-      "file_sha256": "8f62c564327f6361e9569189bbc779cc11610fe4330ba01a29d8510c55fc5997",
+      "file_sha256": "31a45b8d4ce8aa76c14d413396ed10b45a0450a8ae8efcd1c199f4dd135c1875",
       "changes": "Verbatim fenced prompt"
     },
     {
@@ -719,7 +719,7 @@
       ],
       "source_prompt_sha256": "206c692d99013e01a38d509633f51062e93bdc43ee7da30504317eece9e0a6d3",
       "file": "02_library/worlds/maps/MAP07_WALK_PLAN.txt",
-      "file_sha256": "3ebe9b700070ab84debab9584eca1143897e3f9ea13b598566e3a12295e930e4",
+      "file_sha256": "3e0e59a3d0a3b1b9c9ce7e31129b2ae981995775e4efa3d05ac7f6039e3f3d4f",
       "changes": "Verbatim fenced prompt"
     },
     {
@@ -1382,187 +1382,280 @@
       "key": "C01",
       "path": "02_library/characters/C01_PROTAGONIST.txt",
       "output": "C01_PROTAGONIST.png",
-      "refs": []
+      "refs": [],
+      "layout": "1x3 identity",
+      "intended_resolution": "2K default; 4K optional",
+      "prompt_sha256": "296d71a6266effb06f0510bc19f21e268756c2f11927c0b9ede4c39b2e8ce8c4"
     },
     "C02": {
       "key": "C02",
       "path": "02_library/characters/C02_SOHO_WOMAN.txt",
       "output": "C02_SOHO_WOMAN.png",
-      "refs": []
+      "refs": [],
+      "layout": "1x3 identity",
+      "intended_resolution": "2K default; 4K optional",
+      "prompt_sha256": "37fde1a6d5f5a5835f0c2565c0d739d0d3cfb15ad8119bd8cf01745334bacb51"
     },
     "C03": {
       "key": "C03",
       "path": "02_library/characters/C03_POLICEWOMAN.txt",
       "output": "C03_POLICEWOMAN.png",
-      "refs": []
+      "refs": [],
+      "layout": "1x3 identity",
+      "intended_resolution": "2K default; 4K optional",
+      "prompt_sha256": "8fe249124cdf7445b16bf8697263412ea5f72071dfd53a16531e17fdd5fca1c8"
     },
     "C04": {
       "key": "C04",
       "path": "02_library/characters/C04_APPOINTED_LAWYER.txt",
       "output": "C04_APPOINTED_LAWYER.png",
-      "refs": []
+      "refs": [],
+      "layout": "1x3 identity",
+      "intended_resolution": "2K default; 4K optional",
+      "prompt_sha256": "f99e4e073e72cf4802e65d8052624c9bf616169334eac344d9a6bf827f92ae71"
     },
     "C05": {
       "key": "C05",
       "path": "02_library/characters/C05_FINAL_NURSE.txt",
       "output": "C05_FINAL_NURSE.png",
-      "refs": []
+      "refs": [],
+      "layout": "1x3 identity",
+      "intended_resolution": "2K default; 4K optional",
+      "prompt_sha256": "a0cc1f40ff54e5798b64c48b95071314ba615f6d08d916e33d463222273317a3"
     },
     "C06": {
       "key": "C06",
       "path": "02_library/characters/C06_SHARED_HOUSE_SUBSTITUTE_SNORING_HOUSEMATE.txt",
       "output": "C06_SHARED_HOUSE_SUBSTITUTE_SNORING_HOUSEMATE.png",
-      "refs": []
+      "refs": [],
+      "layout": "1x3 identity",
+      "intended_resolution": "2K default; 4K optional",
+      "prompt_sha256": "3f8596341c7e6d2284791723bc65a7e7a95d28bc02901b0a78a206342f499915"
     },
     "C07": {
       "key": "C07",
       "path": "02_library/characters/C07_FX_MORTGAGE_HOUSEMATE.txt",
       "output": "C07_FX_MORTGAGE_HOUSEMATE.png",
-      "refs": []
+      "refs": [],
+      "layout": "1x3 identity",
+      "intended_resolution": "2K default; 4K optional",
+      "prompt_sha256": "c6f04fb4d98685b5eb3da7b8d681f8fb9ebf502e287f52b512a551f45fd825b6"
     },
     "C08": {
       "key": "C08",
       "path": "02_library/characters/C08_FX_MORTGAGE_SPOUSE.txt",
       "output": "C08_FX_MORTGAGE_SPOUSE.png",
-      "refs": []
+      "refs": [],
+      "layout": "1x3 identity",
+      "intended_resolution": "2K default; 4K optional",
+      "prompt_sha256": "6246e2760795cc99579f7b1c98e3849b1aff484a3c0957fc8be5de727fc7d0d6"
     },
     "C09": {
       "key": "C09",
       "path": "02_library/characters/C09_FX_MORTGAGE_CHILD.txt",
       "output": "C09_FX_MORTGAGE_CHILD.png",
-      "refs": []
+      "refs": [],
+      "layout": "1x3 identity",
+      "intended_resolution": "2K default; 4K optional",
+      "prompt_sha256": "84a615dd78bf6fe413ecd2fe12f974682b8bc33589ceb95d9fd85e605d687e35"
     },
     "C10": {
       "key": "C10",
       "path": "02_library/characters/C10_BEGINNER_DANCE_WOMAN.txt",
       "output": "C10_BEGINNER_DANCE_WOMAN.png",
-      "refs": []
+      "refs": [],
+      "layout": "1x3 identity",
+      "intended_resolution": "2K default; 4K optional",
+      "prompt_sha256": "b6e17d61f8154df5fb5b7b4af1feff4bce3715cd243c7b1a2355da4748ad19c2"
     },
     "C11": {
       "key": "C11",
       "path": "02_library/characters/C11_RUSSIAN_TRANSIT_PASSENGER.txt",
       "output": "C11_RUSSIAN_TRANSIT_PASSENGER.png",
-      "refs": []
+      "refs": [],
+      "layout": "1x3 identity",
+      "intended_resolution": "2K default; 4K optional",
+      "prompt_sha256": "c7055f9aea66a674e097ff8e6d006d918456ac9ecfb5b7633021f2c8202460ad"
     },
     "C12": {
       "key": "C12",
       "path": "02_library/characters/C12_AGRA_BUS_WOMAN.txt",
       "output": "C12_AGRA_BUS_WOMAN.png",
-      "refs": []
+      "refs": [],
+      "layout": "1x3 identity",
+      "intended_resolution": "2K default; 4K optional",
+      "prompt_sha256": "563f3f12811217f3d1f4bcb6663457e8200ecae15b72f784d83948ac162964fc"
     },
     "C13": {
       "key": "C13",
       "path": "02_library/characters/C13_SUDANESE_TRAVELER_MAN.txt",
       "output": "C13_SUDANESE_TRAVELER_MAN.png",
-      "refs": []
+      "refs": [],
+      "layout": "1x3 identity",
+      "intended_resolution": "2K default; 4K optional",
+      "prompt_sha256": "7144c511879f9b0f247d7dbe9c4ac20b799e0ec6946644c2ecde6ce7c0836594"
     },
     "C14": {
       "key": "C14",
       "path": "02_library/characters/C14_SUDANESE_TRAVELER_WOMAN.txt",
       "output": "C14_SUDANESE_TRAVELER_WOMAN.png",
-      "refs": []
+      "refs": [],
+      "layout": "1x3 identity",
+      "intended_resolution": "2K default; 4K optional",
+      "prompt_sha256": "5a53c3689154c06a125c83f0bdf37d2ae14b18d9eba3ca48d21f2cf5647c4554"
     },
     "C15": {
       "key": "C15",
       "path": "02_library/characters/C15_CAIRO_TAXI_DRIVER.txt",
       "output": "C15_CAIRO_TAXI_DRIVER.png",
-      "refs": []
+      "refs": [],
+      "layout": "1x3 identity",
+      "intended_resolution": "2K default; 4K optional",
+      "prompt_sha256": "ea7be5aba6e54bc27d06f81f3295e00a4ebc2a31ed6215c3d860c25f2038c6b6"
     },
     "C16": {
       "key": "C16",
       "path": "02_library/characters/C16_BALLOON_LOCAL_HELPER_MAN.txt",
       "output": "C16_BALLOON_LOCAL_HELPER_MAN.png",
-      "refs": []
+      "refs": [],
+      "layout": "1x3 identity",
+      "intended_resolution": "2K default; 4K optional",
+      "prompt_sha256": "b0924f2e132e176792d3fe6ea3dd762f292126145e90d4a536334a8f5fb5ea3f"
     },
     "C17": {
       "key": "C17",
       "path": "02_library/characters/C17_BALLOON_LOCAL_HELPER_WOMAN.txt",
       "output": "C17_BALLOON_LOCAL_HELPER_WOMAN.png",
-      "refs": []
+      "refs": [],
+      "layout": "1x3 identity",
+      "intended_resolution": "2K default; 4K optional",
+      "prompt_sha256": "509a49732525ef9e750ac75f40f2ddc43e3ea1f292fd0f67ebda4edaf15239e6"
     },
     "C18": {
       "key": "C18",
       "path": "02_library/characters/C18_BARMOUTH_ROAD_TRIP_DRIVER_COMPANION.txt",
       "output": "C18_BARMOUTH_ROAD_TRIP_DRIVER_COMPANION.png",
-      "refs": []
+      "refs": [],
+      "layout": "1x3 identity",
+      "intended_resolution": "2K default; 4K optional",
+      "prompt_sha256": "c12a46dd021e4a214ee28bcd4cb73835ea33c391a5ba4bc0b92393c3b3e44132"
     },
     "C19": {
       "key": "C19",
       "path": "02_library/characters/C19_BARMOUTH_ROAD_TRIP_COMPANION_A.txt",
       "output": "C19_BARMOUTH_ROAD_TRIP_COMPANION_A.png",
-      "refs": []
+      "refs": [],
+      "layout": "1x3 identity",
+      "intended_resolution": "2K default; 4K optional",
+      "prompt_sha256": "2fb642886207cdae25a6079b8f41291eeea8033c1f6141d52c417bfa9779fe62"
     },
     "C20": {
       "key": "C20",
       "path": "02_library/characters/C20_BARMOUTH_ROAD_TRIP_COMPANION_B.txt",
       "output": "C20_BARMOUTH_ROAD_TRIP_COMPANION_B.png",
-      "refs": []
+      "refs": [],
+      "layout": "1x3 identity",
+      "intended_resolution": "2K default; 4K optional",
+      "prompt_sha256": "6cd1f45452d223a2cae60916f188c361f3abf8a22bc0ae059475cc09af92a330"
     },
     "C21": {
       "key": "C21",
       "path": "02_library/characters/C21_BARMOUTH_ROAD_TRIP_COMPANION_C.txt",
       "output": "C21_BARMOUTH_ROAD_TRIP_COMPANION_C.png",
-      "refs": []
+      "refs": [],
+      "layout": "1x3 identity",
+      "intended_resolution": "2K default; 4K optional",
+      "prompt_sha256": "2fb642886207cdae25a6079b8f41291eeea8033c1f6141d52c417bfa9779fe62"
     },
     "C22": {
       "key": "C22",
       "path": "02_library/characters/C22_ACCOUNTANT.txt",
       "output": "C22_ACCOUNTANT.png",
-      "refs": []
+      "refs": [],
+      "layout": "1x3 identity",
+      "intended_resolution": "2K default; 4K optional",
+      "prompt_sha256": "7a472544c863c05b19e0a77c206b77812381140fe8edccd76f095c5a4bc7dadf"
     },
     "C23": {
       "key": "C23",
       "path": "02_library/characters/C23_ADMIN_COLLEAGUE_A.txt",
       "output": "C23_ADMIN_COLLEAGUE_A.png",
-      "refs": []
+      "refs": [],
+      "layout": "1x3 identity",
+      "intended_resolution": "2K default; 4K optional",
+      "prompt_sha256": "e5590308cbaeca461c3536d277531b5619a96033cad3e0ef35bcd1816969da23"
     },
     "C24": {
       "key": "C24",
       "path": "02_library/characters/C24_ADMIN_COLLEAGUE_B.txt",
       "output": "C24_ADMIN_COLLEAGUE_B.png",
-      "refs": []
+      "refs": [],
+      "layout": "1x3 identity",
+      "intended_resolution": "2K default; 4K optional",
+      "prompt_sha256": "c23cca55674d58e73614553c5cbe05bc625c181e085c7d3201397df17d7d9d13"
     },
     "C25": {
       "key": "C25",
       "path": "02_library/characters/C25_SEARCH_OFFICER_MALE.txt",
       "output": "C25_SEARCH_OFFICER_MALE.png",
-      "refs": []
+      "refs": [],
+      "layout": "1x3 identity",
+      "intended_resolution": "2K default; 4K optional",
+      "prompt_sha256": "71ddcf01774c36c57eb98bc535476bf0193e21a530791795c544a441d62cbbc7"
     },
     "C26": {
       "key": "C26",
       "path": "02_library/characters/C26_DEFENCE_OFFICE_SUBSTITUTE.txt",
       "output": "C26_DEFENCE_OFFICE_SUBSTITUTE.png",
-      "refs": []
+      "refs": [],
+      "layout": "1x3 identity",
+      "intended_resolution": "2K default; 4K optional",
+      "prompt_sha256": "1c45f290cfe75093433e563e0509b6a883aa5aee5cea43711e05ceaf1fa0ee6e"
     },
     "C27": {
       "key": "C27",
       "path": "02_library/characters/C27_JUDGE.txt",
       "output": "C27_JUDGE.png",
-      "refs": []
+      "refs": [],
+      "layout": "1x3 identity",
+      "intended_resolution": "2K default; 4K optional",
+      "prompt_sha256": "f6edfcb9b203cb701011ed393add7b5cefa6d712545f97350885d57cdf4fb23f"
     },
     "C28": {
       "key": "C28",
       "path": "02_library/characters/C28_FORENSIC_EXPERT_A.txt",
       "output": "C28_FORENSIC_EXPERT_A.png",
-      "refs": []
+      "refs": [],
+      "layout": "1x3 identity",
+      "intended_resolution": "2K default; 4K optional",
+      "prompt_sha256": "9cdd5f3dc24d3620c8786c33e3603a8c85ba8f44827b631d7c1d79c82698f961"
     },
     "C29": {
       "key": "C29",
       "path": "02_library/characters/C29_FORENSIC_EXPERT_B.txt",
       "output": "C29_FORENSIC_EXPERT_B.png",
-      "refs": []
+      "refs": [],
+      "layout": "1x3 identity",
+      "intended_resolution": "2K default; 4K optional",
+      "prompt_sha256": "04e6fb1ec758e860e4809adbea68412ccbd4a137ae9ebac20973e3320b08a685"
     },
     "C30": {
       "key": "C30",
       "path": "02_library/characters/C30_COURT_CLERK.txt",
       "output": "C30_COURT_CLERK.png",
-      "refs": []
+      "refs": [],
+      "layout": "1x3 identity",
+      "intended_resolution": "2K default; 4K optional",
+      "prompt_sha256": "45e54162d93bd4d67abfe2031ba5236a6c20c41d7ad5892d5c44056e998ee6c7"
     },
     "C31": {
       "key": "C31",
       "path": "02_library/characters/C31_ANONYMOUS_FICTIONAL_POLITICAL_FIGURE.txt",
       "output": "C31_ANONYMOUS_FICTIONAL_POLITICAL_FIGURE.png",
-      "refs": []
+      "refs": [],
+      "layout": "1x3 identity",
+      "intended_resolution": "2K default; 4K optional",
+      "prompt_sha256": "6e2b8ad169768dbd64f8632c0807edd60c99b1714b91dfc4c515d087c407b8ec"
     },
     "MW01": {
       "key": "MW01",
@@ -1582,7 +1675,8 @@
       "companion_pages": [
         "MW01_B",
         "MW01_C"
-      ]
+      ],
+      "prompt_sha256": "c79302d50a4e92be576a4f558a96df283b88a96781c164322846d30583e862b9"
     },
     "MW02": {
       "key": "MW02",
@@ -1606,7 +1700,8 @@
       "companion_pages": [
         "MW02_B",
         "MW02_C"
-      ]
+      ],
+      "prompt_sha256": "b9e26d81eff120e4bb2954b5482816d6b16702403b506403856596102d2865ad"
     },
     "MW03": {
       "key": "MW03",
@@ -1622,7 +1717,8 @@
       "companion_pages": [
         "MW03_B",
         "MW03_C"
-      ]
+      ],
+      "prompt_sha256": "5e49aac4bf1c1d6407f33ad01b778cedbf0db8679b5bef16e8a19a91260ea06e"
     },
     "MW04": {
       "key": "MW04",
@@ -1639,7 +1735,8 @@
       "companion_pages": [
         "MW04_B",
         "MW04_C"
-      ]
+      ],
+      "prompt_sha256": "98d7ccd28b9e7deca2d8cb0351686d97708a0a445b432d271155cc208afebe78"
     },
     "MW05": {
       "key": "MW05",
@@ -1658,7 +1755,8 @@
       "companion_pages": [
         "MW05_B",
         "MW05_C"
-      ]
+      ],
+      "prompt_sha256": "2addf345ff2299bcd0a806abf0306314e7e17a608f63b4b157c9468189a3186e"
     },
     "MW06": {
       "key": "MW06",
@@ -1681,7 +1779,8 @@
       "companion_pages": [
         "MW06_B",
         "MW06_C"
-      ]
+      ],
+      "prompt_sha256": "d641c977e58aa22a5e97e26892564bdb538ae4cd57d4997ef65f31bd9665f907"
     },
     "MWP01": {
       "key": "MWP01",
@@ -1694,7 +1793,8 @@
       "companion_pages": [
         "MWP01_B",
         "MWP01_C"
-      ]
+      ],
+      "prompt_sha256": "6b82ddf0a2f591b4610fb2f8d66f2d8e589dcd32cb1046d42bbcacd1069147e0"
     },
     "MWP02": {
       "key": "MWP02",
@@ -1707,7 +1807,8 @@
       "companion_pages": [
         "MWP02_B",
         "MWP02_C"
-      ]
+      ],
+      "prompt_sha256": "11e8c22cb7968f29f185f2ddfbeaf32735617873fa654db3a6076574af303ede"
     },
     "HRW07": {
       "key": "HRW07",
@@ -1721,91 +1822,120 @@
       "companion_pages": [
         "HRW07_B",
         "HRW07_C"
-      ]
+      ],
+      "prompt_sha256": "0c18b3b4043536431196eb55601a71cdec4f0bf73e7b8a93850be30db2ebc270"
     },
     "W01": {
       "key": "W01",
       "path": "02_library/worlds/real/W01_MAIN_WORLD_A.txt",
       "output": "W01_MAIN_WORLD.png",
-      "refs": []
+      "refs": [],
+      "prompt_sha256": "3c99b198d1a9c73018d0bf5f4b4bcfee3000e980fef2be816009cf2655be374e"
     },
     "MAP01": {
       "key": "MAP01",
       "path": "02_library/worlds/maps/MAP01_WALK_PLAN.txt",
       "output": "MAP01_WALK_PLAN.png",
-      "refs": []
+      "refs": [],
+      "layout": "4K 2x2 plan coverage",
+      "intended_resolution": "4K",
+      "prompt_sha256": "ff49e0a9dc00f2422c589c0afb0266fe4d3d562585bd611db7608521ee1eafca"
     },
     "W02": {
       "key": "W02",
       "path": "02_library/worlds/real/W02_MAIN_WORLD_A.txt",
       "output": "W02_MAIN_WORLD.png",
-      "refs": []
+      "refs": [],
+      "prompt_sha256": "3854bc39f80269fd90bf147f2946f7f6142ca85dab606cc6859bc81b35858249"
     },
     "MAP02": {
       "key": "MAP02",
       "path": "02_library/worlds/maps/MAP02_WALK_PLAN.txt",
       "output": "MAP02_WALK_PLAN.png",
-      "refs": []
+      "refs": [],
+      "layout": "4K 2x2 plan coverage",
+      "intended_resolution": "4K",
+      "prompt_sha256": "c859f24193cdee7deecf95cc675eb3994301b5877e772ec7aad28ae399ab468f"
     },
     "W03": {
       "key": "W03",
       "path": "02_library/worlds/real/W03_MAIN_WORLD_A.txt",
       "output": "W03_MAIN_WORLD.png",
-      "refs": []
+      "refs": [],
+      "prompt_sha256": "38c4142401b94c622d8a99ec521b617e75d6de520e0a2977f2e3434b4eb1111e"
     },
     "MAP03": {
       "key": "MAP03",
       "path": "02_library/worlds/maps/MAP03_WALK_PLAN.txt",
       "output": "MAP03_WALK_PLAN.png",
-      "refs": []
+      "refs": [],
+      "layout": "4K 2x2 plan coverage",
+      "intended_resolution": "4K",
+      "prompt_sha256": "c4bf11ad57e70b86e66c4ae9f68a4df7b65e05bd6d97811a320d40352d2a3756"
     },
     "W04": {
       "key": "W04",
       "path": "02_library/worlds/real/W04_MAIN_WORLD_A.txt",
       "output": "W04_MAIN_WORLD.png",
-      "refs": []
+      "refs": [],
+      "prompt_sha256": "b78050ab597bc8f747219a90581a4f832a5a1e5cfd9f7177049dd5a8fc2186a2"
     },
     "MAP04": {
       "key": "MAP04",
       "path": "02_library/worlds/maps/MAP04_WALK_PLAN.txt",
       "output": "MAP04_WALK_PLAN.png",
-      "refs": []
+      "refs": [],
+      "layout": "4K 2x2 plan coverage",
+      "intended_resolution": "4K",
+      "prompt_sha256": "7deb28826e6431d0061bb36b1c785cd82d584229b521e71110045e9334205223"
     },
     "W05": {
       "key": "W05",
       "path": "02_library/worlds/real/W05_MAIN_WORLD_A.txt",
       "output": "W05_MAIN_WORLD.png",
-      "refs": []
+      "refs": [],
+      "prompt_sha256": "68af1d56dd087c8b7881a78aab66524bc12745d8dd2b388833552af3b6d646c8"
     },
     "MAP05": {
       "key": "MAP05",
       "path": "02_library/worlds/maps/MAP05_WALK_PLAN.txt",
       "output": "MAP05_WALK_PLAN.png",
-      "refs": []
+      "refs": [],
+      "layout": "4K 2x2 plan coverage",
+      "intended_resolution": "4K",
+      "prompt_sha256": "5dcdecf1cfa268d23995e16c0b17a86e456a0a21cf268be5d33e791555be61fc"
     },
     "W06": {
       "key": "W06",
       "path": "02_library/worlds/real/W06_MAIN_WORLD_A.txt",
       "output": "W06_MAIN_WORLD.png",
-      "refs": []
+      "refs": [],
+      "prompt_sha256": "e4255842b292917e4a027af1af7da253fa0d96349cabfcf3e42a64efe5fb35d6"
     },
     "MAP06": {
       "key": "MAP06",
       "path": "02_library/worlds/maps/MAP06_WALK_PLAN.txt",
       "output": "MAP06_WALK_PLAN.png",
-      "refs": []
+      "refs": [],
+      "layout": "4K 2x2 plan coverage",
+      "intended_resolution": "4K",
+      "prompt_sha256": "31a45b8d4ce8aa76c14d413396ed10b45a0450a8ae8efcd1c199f4dd135c1875"
     },
     "W07": {
       "key": "W07",
       "path": "02_library/worlds/real/W07_MAIN_WORLD_A.txt",
       "output": "W07_MAIN_WORLD.png",
-      "refs": []
+      "refs": [],
+      "prompt_sha256": "3e7ad1028b7c2c992c4e87a70130c1e63135c588e2fe19f59c6e1a466eb052f5"
     },
     "MAP07": {
       "key": "MAP07",
       "path": "02_library/worlds/maps/MAP07_WALK_PLAN.txt",
       "output": "MAP07_WALK_PLAN.png",
-      "refs": []
+      "refs": [],
+      "layout": "4K 2x2 plan coverage",
+      "intended_resolution": "4K",
+      "prompt_sha256": "3e0e59a3d0a3b1b9c9ce7e31129b2ae981995775e4efa3d05ac7f6039e3f3d4f"
     },
     "SB01": {
       "key": "SB01",
@@ -1828,13 +1958,15 @@
         "MW01_C",
         "MWP01_B",
         "MWP01_C"
-      ]
+      ],
+      "prompt_sha256": "4e90629db632cb495411d3e3bca631d5c475bca9d6101a845ebb14b68a627796"
     },
     "A01": {
       "key": "A01",
       "path": "03_film/01/narration.txt",
       "output": "A01_NARRATION.wav",
-      "refs": []
+      "refs": [],
+      "prompt_sha256": "0a23bff68df30ef4f1011862f5508eddc76e26743cda0800c0f1d1e67c20090e"
     },
     "V01": {
       "key": "V01",
@@ -1859,7 +1991,8 @@
         "MW01_C",
         "MWP01_B",
         "MWP01_C"
-      ]
+      ],
+      "prompt_sha256": "e436d2dae86c6c20f124dbc807a1742b4afaaf0255e198c5a070922025396ba4"
     },
     "SB02": {
       "key": "SB02",
@@ -1891,13 +2024,15 @@
         "MW01_C",
         "MWP01_B",
         "MWP01_C"
-      ]
+      ],
+      "prompt_sha256": "dcc91fb78667a2e609a5ab0b0ab3d6709662f2b08f936e2a2a16dbd6008148fb"
     },
     "A02": {
       "key": "A02",
       "path": "03_film/02/narration.txt",
       "output": "A02_NARRATION.wav",
-      "refs": []
+      "refs": [],
+      "prompt_sha256": "7f851264f25e5344924b5a4bf32ac10bec8cda53e90f2102b5d6420aeefabf19"
     },
     "V02": {
       "key": "V02",
@@ -1932,7 +2067,8 @@
         "MW01_C",
         "MWP01_B",
         "MWP01_C"
-      ]
+      ],
+      "prompt_sha256": "2f95d71c2977aa2d27092ef3f3a9d86618be30f847c7a9fbc36226463bc7cd8d"
     },
     "SB03": {
       "key": "SB03",
@@ -1952,13 +2088,15 @@
         "MW03_C",
         "MWP01_B",
         "MWP01_C"
-      ]
+      ],
+      "prompt_sha256": "88b81a3b14ed1fa556b6cb2f885a2cf6ace929dc25e163e44eae00636d1e292f"
     },
     "A03": {
       "key": "A03",
       "path": "03_film/03/narration.txt",
       "output": "A03_NARRATION.wav",
-      "refs": []
+      "refs": [],
+      "prompt_sha256": "8dbf6f97a5bbdc57e7f7949beab851a0549b402fcb506f656eb303cdd0fe965e"
     },
     "V03": {
       "key": "V03",
@@ -1981,7 +2119,8 @@
         "MW03_C",
         "MWP01_B",
         "MWP01_C"
-      ]
+      ],
+      "prompt_sha256": "49cdea506c60a78071d5133e0f24e744656e0220715ec54cd75c5fd4e48a91b8"
     },
     "SB04": {
       "key": "SB04",
@@ -1999,13 +2138,15 @@
         "W04_C",
         "MW04_B",
         "MW04_C"
-      ]
+      ],
+      "prompt_sha256": "4f4d721883f8bfa52c34c59e16fbd52fe4446fee74c76bede3802d186cc476fc"
     },
     "A04": {
       "key": "A04",
       "path": "03_film/04/narration.txt",
       "output": "A04_NARRATION.wav",
-      "refs": []
+      "refs": [],
+      "prompt_sha256": "7c03c47fa2a236b4412aa2ad3eef14214fa16fd4f9fd15259a156769d90e7727"
     },
     "V04": {
       "key": "V04",
@@ -2026,7 +2167,8 @@
         "W04_C",
         "MW04_B",
         "MW04_C"
-      ]
+      ],
+      "prompt_sha256": "c53073f45da232f57539bccbf3eca0a5eeaf9f8ff354faf5e5b71558a75716f7"
     },
     "SB05": {
       "key": "SB05",
@@ -2049,13 +2191,15 @@
         "MW05_C",
         "MWP02_B",
         "MWP02_C"
-      ]
+      ],
+      "prompt_sha256": "c60372d496a3d5960e5500e64923afd0b07c4afccf4f5121d80b5b6ff065d06a"
     },
     "A05": {
       "key": "A05",
       "path": "03_film/05/narration.txt",
       "output": "A05_NARRATION.wav",
-      "refs": []
+      "refs": [],
+      "prompt_sha256": "f2431b1f66cf118227294e02d49b9a3057469166a35029af21b538ab25ec42ec"
     },
     "V05": {
       "key": "V05",
@@ -2081,7 +2225,8 @@
         "MW05_C",
         "MWP02_B",
         "MWP02_C"
-      ]
+      ],
+      "prompt_sha256": "7d95e455792ef1739907346edd40ddd93287792b2b7e51d52ef83da36c2e1fe0"
     },
     "SB06": {
       "key": "SB06",
@@ -2123,13 +2268,15 @@
         "MW04_C",
         "MW05_B",
         "MW05_C"
-      ]
+      ],
+      "prompt_sha256": "8119324a035e07993eccef8509db707aceafd82a71edd87054c4c58ae0c412ae"
     },
     "A06": {
       "key": "A06",
       "path": "03_film/06/narration.txt",
       "output": "A06_NARRATION.wav",
-      "refs": []
+      "refs": [],
+      "prompt_sha256": "8eea05414eb6ec2153d183414746f388f8b9f99186ee2e9abc9e57de4055f221"
     },
     "V06": {
       "key": "V06",
@@ -2174,7 +2321,8 @@
         "MW04_C",
         "MW05_B",
         "MW05_C"
-      ]
+      ],
+      "prompt_sha256": "cb78f67f972319928cf2eedf6b2e26b2aa19f95329950a660209468d58daa8df"
     },
     "SB07": {
       "key": "SB07",
@@ -2201,13 +2349,15 @@
         "MW01_C",
         "MW02_B",
         "MW02_C"
-      ]
+      ],
+      "prompt_sha256": "8d4d7f65ca8463da6d56de9c5e6cbdb5498d3b32913c9c5d4e50a6cd64703bc4"
     },
     "A07": {
       "key": "A07",
       "path": "03_film/07/narration.txt",
       "output": "A07_NARRATION.wav",
-      "refs": []
+      "refs": [],
+      "prompt_sha256": "7e52c85c6fc3805308ad2b2fe5f520db0813137d06960c8a826e992ecf20b792"
     },
     "V07": {
       "key": "V07",
@@ -2237,7 +2387,8 @@
         "MW01_C",
         "MW02_B",
         "MW02_C"
-      ]
+      ],
+      "prompt_sha256": "da28ab0975e38364bcb430dc6052b82bdd416e0f597a7a5fec0e1c450b09a5ab"
     },
     "MR001": {
       "key": "MR001",
@@ -2252,7 +2403,7 @@
         "03_film/01/video.txt"
       ],
       "note": "Standalone named-cathedral geometry study; no source images required. No image or video generated by this edit.",
-      "prompt_sha256": "a2aa70b501ed2e44fa09b7cf9bed32dd9ca7967a3d9faa19172bc5bb27ac0aed",
+      "prompt_sha256": "3941436902b02140193bb7e5e23ced1020fb9f5e406ddad4608bcb82f62f3358",
       "latest_image_review": {
         "file": "/home/raxim/Downloads/hf_20260910_040957_bb7741e2-e1b8-41af-87aa-4fac4592d5f6.png",
         "compared_previous_file": "/home/raxim/Downloads/hf_20260909_195819_8c30af4b-1501-4ee3-b8cb-36e5e94906ff.png",
@@ -2262,10 +2413,11 @@
         "render_prompt_provenance": "Image filenames inspected; exact submitted prompt/model/settings for these renders not independently verified."
       },
       "four_state_summary": "INTACT ST PAUL'S, COMPACT AND CLOSED: → EXPANSIVE BREAKUP: OPEN ROOF CAGE, SEPARATED TOWER BANDS, SPLAYED PORTICO: → INWARD REASSEMBLY: UNFINISHED GIANT ARCH, HELICAL TOWER, OFFSET DOME CLOSURE: → FULLY REASSEMBLED ST STEPHEN'S BASILICA:",
-      "prompt_review_status": "EXTREME_INTERMEDIATES_REVISED_NOT_RENDERED",
+      "prompt_review_status": "FOUR_STATE_AND_MATERIAL_RESPONSE_TEXT_REVIEWED_NOT_IMAGE_VERIFIED",
       "review_note": "Four different configurations with per-object breakup/reshaping/reassembly. Removed mandatory conventional structural support from unoccupied intermediates; retained real material substance, tracked source parts, final supports and occupied contact.",
       "input_mode": "TEXT_ONLY",
-      "input_reference_policy": "No input images or Element mentions required. The generated sheet is a later video reference."
+      "input_reference_policy": "No input images or Element mentions required. The generated sheet is a later video reference.",
+      "current_prompt_image_verified": false
     },
     "MR002": {
       "key": "MR002",
@@ -2277,12 +2429,13 @@
       "layout": "2x2 source/early/advanced/target",
       "intended_resolution": "4K",
       "note": "Prepared façade-detail morph study; no new Element imported, no image generated, no extra mandatory pilot job.",
-      "prompt_sha256": "0e75e1f25cc75d3312d234e5e2b8973efad2c44aa645a0c34e644a2223468d9f",
+      "prompt_sha256": "a66c07f74e78273d18dc37dcc4d0030762170d3f77693db9187a4bfd3b3cf416",
       "four_state_summary": "ATTACHED LONDON STONE RELIEF: → PROJECTING STONE BUST ON A SPLIT FAN OF MASS: → UNFURLED FIGURE WITH AN OPEN ARM LOOP AND HALF-DIVIDED LEGS: → FULL-DEPTH PEST-STYLE SCULPTED CORBEL:",
-      "prompt_review_status": "EXTREME_INTERMEDIATES_REVISED_NOT_RENDERED",
+      "prompt_review_status": "FOUR_STATE_AND_MATERIAL_RESPONSE_TEXT_REVIEWED_NOT_IMAGE_VERIFIED",
       "review_note": "Four different configurations with per-object breakup/reshaping/reassembly. Removed mandatory conventional structural support from unoccupied intermediates; retained real material substance, tracked source parts, final supports and occupied contact.",
       "input_mode": "TEXT_ONLY",
-      "input_reference_policy": "No input images or Element mentions required. The generated sheet is a later video reference."
+      "input_reference_policy": "No input images or Element mentions required. The generated sheet is a later video reference.",
+      "current_prompt_image_verified": false
     },
     "MR003": {
       "key": "MR003",
@@ -2294,110 +2447,125 @@
       "layout": "2x2 source/early/advanced/target",
       "intended_resolution": "4K",
       "note": "Prepared façade-detail morph study; no new Element imported, no image generated, no extra mandatory pilot job.",
-      "prompt_sha256": "8fb0b83b380e8019c417e4fe6b7b45f7301eef7f93881fe5d3fc4c0b0714943d",
+      "prompt_sha256": "72989aef78c68fcf1f624b2e1b6f9560bb11234e102bee007cfcce91e79d5427",
       "four_state_summary": "ORIGINAL LONDON WINDOW BAY: → SPLAYED RECTANGULAR FRAME AND SEPARATING STONE CROWNS: → ARCH CHAINS WITH A WIDE CROWN GAP AND OVERSIZED UNFINISHED VOLUTES: → RESOLVED PEST HISTORIC WINDOW BAY:",
-      "prompt_review_status": "EXTREME_INTERMEDIATES_REVISED_NOT_RENDERED",
+      "prompt_review_status": "FOUR_STATE_AND_MATERIAL_RESPONSE_TEXT_REVIEWED_NOT_IMAGE_VERIFIED",
       "review_note": "Four different configurations with per-object breakup/reshaping/reassembly. Removed mandatory conventional structural support from unoccupied intermediates; retained real material substance, tracked source parts, final supports and occupied contact.",
       "input_mode": "TEXT_ONLY",
-      "input_reference_policy": "No input images or Element mentions required. The generated sheet is a later video reference."
+      "input_reference_policy": "No input images or Element mentions required. The generated sheet is a later video reference.",
+      "current_prompt_image_verified": false
     },
     "W01_B": {
       "key": "W01_B",
       "path": "02_library/worlds/real/W01_MAIN_WORLD_B.txt",
       "output": "W01_MAIN_WORLD_B.png",
       "refs": [],
-      "status": "PREPARED_NOT_RENDERED"
+      "status": "PREPARED_NOT_RENDERED",
+      "prompt_sha256": "e31d5486dee45acc39be63b128344cd956f0448726114ad7b46c92541432b8bb"
     },
     "W01_C": {
       "key": "W01_C",
       "path": "02_library/worlds/real/W01_MAIN_WORLD_C.txt",
       "output": "W01_MAIN_WORLD_C.png",
       "refs": [],
-      "status": "PREPARED_NOT_RENDERED"
+      "status": "PREPARED_NOT_RENDERED",
+      "prompt_sha256": "35e63f0e9f119f21bccc04582705a78945ed3e5faf77696b64b4a4591a30d1a8"
     },
     "W02_B": {
       "key": "W02_B",
       "path": "02_library/worlds/real/W02_MAIN_WORLD_B.txt",
       "output": "W02_MAIN_WORLD_B.png",
       "refs": [],
-      "status": "PREPARED_NOT_RENDERED"
+      "status": "PREPARED_NOT_RENDERED",
+      "prompt_sha256": "044d477231479e33dbf7198dc8e4226709ded1dcfa99063edb126aa177aeeee1"
     },
     "W02_C": {
       "key": "W02_C",
       "path": "02_library/worlds/real/W02_MAIN_WORLD_C.txt",
       "output": "W02_MAIN_WORLD_C.png",
       "refs": [],
-      "status": "PREPARED_NOT_RENDERED"
+      "status": "PREPARED_NOT_RENDERED",
+      "prompt_sha256": "873502ff2e1678549a030f9239d371aa12cc6222d04b429be2b32f96e9548ecc"
     },
     "W03_B": {
       "key": "W03_B",
       "path": "02_library/worlds/real/W03_MAIN_WORLD_B.txt",
       "output": "W03_MAIN_WORLD_B.png",
       "refs": [],
-      "status": "PREPARED_NOT_RENDERED"
+      "status": "PREPARED_NOT_RENDERED",
+      "prompt_sha256": "ff54e6a402d9b3c533b238000b179415c7b5a621ec2ea3d70e1e77b4c83100a4"
     },
     "W03_C": {
       "key": "W03_C",
       "path": "02_library/worlds/real/W03_MAIN_WORLD_C.txt",
       "output": "W03_MAIN_WORLD_C.png",
       "refs": [],
-      "status": "PREPARED_NOT_RENDERED"
+      "status": "PREPARED_NOT_RENDERED",
+      "prompt_sha256": "b36be903dcab632f9d405a69628beeb1deade3f5d97c003e36d845a7b84efe84"
     },
     "W04_B": {
       "key": "W04_B",
       "path": "02_library/worlds/real/W04_MAIN_WORLD_B.txt",
       "output": "W04_MAIN_WORLD_B.png",
       "refs": [],
-      "status": "PREPARED_NOT_RENDERED"
+      "status": "PREPARED_NOT_RENDERED",
+      "prompt_sha256": "32c7ed4d4d318424c971d6e8d3193d0262a78d73d9cc30c2b18593772d29331c"
     },
     "W04_C": {
       "key": "W04_C",
       "path": "02_library/worlds/real/W04_MAIN_WORLD_C.txt",
       "output": "W04_MAIN_WORLD_C.png",
       "refs": [],
-      "status": "PREPARED_NOT_RENDERED"
+      "status": "PREPARED_NOT_RENDERED",
+      "prompt_sha256": "043a641340170e7f6551d832cfeeeafaf15e8fdecc605fc777ddd93109cd1b18"
     },
     "W05_B": {
       "key": "W05_B",
       "path": "02_library/worlds/real/W05_MAIN_WORLD_B.txt",
       "output": "W05_MAIN_WORLD_B.png",
       "refs": [],
-      "status": "PREPARED_NOT_RENDERED"
+      "status": "PREPARED_NOT_RENDERED",
+      "prompt_sha256": "14954eede3b6720d88e7586a1e263751d984400465147de2024fbb94973c75f5"
     },
     "W05_C": {
       "key": "W05_C",
       "path": "02_library/worlds/real/W05_MAIN_WORLD_C.txt",
       "output": "W05_MAIN_WORLD_C.png",
       "refs": [],
-      "status": "PREPARED_NOT_RENDERED"
+      "status": "PREPARED_NOT_RENDERED",
+      "prompt_sha256": "192e487b8baabe51322d7b13c586a440ba49c263bebe71d8a59611926404be51"
     },
     "W06_B": {
       "key": "W06_B",
       "path": "02_library/worlds/real/W06_MAIN_WORLD_B.txt",
       "output": "W06_MAIN_WORLD_B.png",
       "refs": [],
-      "status": "PREPARED_NOT_RENDERED"
+      "status": "PREPARED_NOT_RENDERED",
+      "prompt_sha256": "03fd893bd6c117707206c6cb9135bce4e608ed5334c3cc7beb7f29c693835afe"
     },
     "W06_C": {
       "key": "W06_C",
       "path": "02_library/worlds/real/W06_MAIN_WORLD_C.txt",
       "output": "W06_MAIN_WORLD_C.png",
       "refs": [],
-      "status": "PREPARED_NOT_RENDERED"
+      "status": "PREPARED_NOT_RENDERED",
+      "prompt_sha256": "372f54bf87ca05422c9ac7c1039234900ad76428ded447c17b83b21df73d7943"
     },
     "W07_B": {
       "key": "W07_B",
       "path": "02_library/worlds/real/W07_MAIN_WORLD_B.txt",
       "output": "W07_MAIN_WORLD_B.png",
       "refs": [],
-      "status": "PREPARED_NOT_RENDERED"
+      "status": "PREPARED_NOT_RENDERED",
+      "prompt_sha256": "e5c692b997083a0be927ee126019dd778f25f423eae8be120c584b815965f60c"
     },
     "W07_C": {
       "key": "W07_C",
       "path": "02_library/worlds/real/W07_MAIN_WORLD_C.txt",
       "output": "W07_MAIN_WORLD_C.png",
       "refs": [],
-      "status": "PREPARED_NOT_RENDERED"
+      "status": "PREPARED_NOT_RENDERED",
+      "prompt_sha256": "b28c854a591cd0c5fc7f9288a90ff780fa859f805a7c5d24e1da7c72a47a8b7b"
     },
     "MR004": {
       "key": "MR004",
@@ -2416,11 +2584,12 @@
       ],
       "four_state_summary": "SOURCE: → THREE-DIMENSIONAL GLASS SADDLE WITH SPLAYED CORNERS: → OPEN HELICAL SHADE BEFORE ITS RIMS JOIN: → RESOLVED DESTINATION:",
       "note": "Prepared only; no render, imported container, paid video job or mandatory pilot dependency assumed.",
-      "prompt_sha256": "01744333d2128e19d0ec121a623e3111c84da714724c20379b639bc9da878a34",
-      "prompt_review_status": "EXTREME_INTERMEDIATES_REVISED_NOT_RENDERED",
+      "prompt_sha256": "799eaaf73662d2ebcde9d9425830870780d4433b8aa1755963afa1887d931a2a",
+      "prompt_review_status": "FOUR_STATE_AND_MATERIAL_RESPONSE_TEXT_REVIEWED_NOT_IMAGE_VERIFIED",
       "review_note": "Four different configurations with per-object breakup/reshaping/reassembly. Removed mandatory conventional structural support from unoccupied intermediates; retained real material substance, tracked source parts, final supports and occupied contact.",
       "input_mode": "TEXT_ONLY",
-      "input_reference_policy": "No input images or Element mentions required. The generated sheet is a later video reference."
+      "input_reference_policy": "No input images or Element mentions required. The generated sheet is a later video reference.",
+      "current_prompt_image_verified": false
     },
     "MR005": {
       "key": "MR005",
@@ -2438,11 +2607,12 @@
       ],
       "four_state_summary": "SOURCE: → OUTWARD SPREADING BRICK COURSES AND DEEP STONE BLANKS: → TWO INWARD CURLING ARCH HALVES, UNJOINED AT THE TOP: → RESOLVED DESTINATION:",
       "note": "Prepared only; no render, imported container, paid video job or mandatory pilot dependency assumed.",
-      "prompt_sha256": "612a1c318806aa30883ecd51587bc1d97e426c894c8aa51f76ac213833841c62",
-      "prompt_review_status": "EXTREME_INTERMEDIATES_REVISED_NOT_RENDERED",
+      "prompt_sha256": "917c5f76edf97025645b093b5d2d6eaf7d06116038cfc27f1770db295fc70289",
+      "prompt_review_status": "FOUR_STATE_AND_MATERIAL_RESPONSE_TEXT_REVIEWED_NOT_IMAGE_VERIFIED",
       "review_note": "Four different configurations with per-object breakup/reshaping/reassembly. Removed mandatory conventional structural support from unoccupied intermediates; retained real material substance, tracked source parts, final supports and occupied contact.",
       "input_mode": "TEXT_ONLY",
-      "input_reference_policy": "No input images or Element mentions required. The generated sheet is a later video reference."
+      "input_reference_policy": "No input images or Element mentions required. The generated sheet is a later video reference.",
+      "current_prompt_image_verified": false
     },
     "MR006": {
       "key": "MR006",
@@ -2460,11 +2630,12 @@
       ],
       "four_state_summary": "SOURCE: → FANNED STONE-TO-WOOD RIBS ABOVE THE PAVING: → OPEN TIMBER DECK WITH RAISED UNSEATED BOARD ENDS: → RESOLVED DESTINATION:",
       "note": "Prepared only; no render, imported container, paid video job or mandatory pilot dependency assumed.",
-      "prompt_sha256": "988ef3829b738f1f74fcd5527425ab1346d02338254c9caa9df87856ed74046f",
-      "prompt_review_status": "EXTREME_INTERMEDIATES_REVISED_NOT_RENDERED",
+      "prompt_sha256": "d719b4535d2cd40516befdba2f42ecf7ce932f459fe3229080049e3a63cc9dce",
+      "prompt_review_status": "FOUR_STATE_AND_MATERIAL_RESPONSE_TEXT_REVIEWED_NOT_IMAGE_VERIFIED",
       "review_note": "Four different configurations with per-object breakup/reshaping/reassembly. Removed mandatory conventional structural support from unoccupied intermediates; retained real material substance, tracked source parts, final supports and occupied contact.",
       "input_mode": "TEXT_ONLY",
-      "input_reference_policy": "No input images or Element mentions required. The generated sheet is a later video reference."
+      "input_reference_policy": "No input images or Element mentions required. The generated sheet is a later video reference.",
+      "current_prompt_image_verified": false
     },
     "MR007": {
       "key": "MR007",
@@ -2482,11 +2653,12 @@
       ],
       "four_state_summary": "SOURCE: → BENCH SLATS EXPAND INTO A WIDE ASYMMETRIC FAN: → TALL OPEN SPIRAL GATHERING INTO A LOW FLOOR BORDER: → RESOLVED DESTINATION:",
       "note": "Prepared only; no render, imported container, paid video job or mandatory pilot dependency assumed.",
-      "prompt_sha256": "e752705adb37c24a938d952d33d76c5fc126847e840bfe2c43cc459ab9bd7c5d",
-      "prompt_review_status": "EXTREME_INTERMEDIATES_REVISED_NOT_RENDERED",
+      "prompt_sha256": "2539981aa9de1c831e196c7e356c3479b2f374eb672f2bdbd4ef051b80c46f30",
+      "prompt_review_status": "FOUR_STATE_AND_MATERIAL_RESPONSE_TEXT_REVIEWED_NOT_IMAGE_VERIFIED",
       "review_note": "Four different configurations with per-object breakup/reshaping/reassembly. Removed mandatory conventional structural support from unoccupied intermediates; retained real material substance, tracked source parts, final supports and occupied contact.",
       "input_mode": "TEXT_ONLY",
-      "input_reference_policy": "No input images or Element mentions required. The generated sheet is a later video reference."
+      "input_reference_policy": "No input images or Element mentions required. The generated sheet is a later video reference.",
+      "current_prompt_image_verified": false
     },
     "MR008": {
       "key": "MR008",
@@ -2504,11 +2676,12 @@
       ],
       "four_state_summary": "SOURCE: → FIXING EXPANDS INTO AN ANGULAR METAL FORK: → OVERSIZED OPEN COIL CONVERGING ON THE LAMP NECK: → RESOLVED DESTINATION:",
       "note": "Prepared only; no render, imported container, paid video job or mandatory pilot dependency assumed.",
-      "prompt_sha256": "ba02f03297eff46d3943cd7fb6381494f29bfaac51b4bfa6ef1474e054bd3f8d",
-      "prompt_review_status": "EXTREME_INTERMEDIATES_REVISED_NOT_RENDERED",
+      "prompt_sha256": "14ca60c47dea2ec6ecf0859c7a397981431407c5c62b2571507248fbe9a71fe3",
+      "prompt_review_status": "FOUR_STATE_AND_MATERIAL_RESPONSE_TEXT_REVIEWED_NOT_IMAGE_VERIFIED",
       "review_note": "Four different configurations with per-object breakup/reshaping/reassembly. Removed mandatory conventional structural support from unoccupied intermediates; retained real material substance, tracked source parts, final supports and occupied contact.",
       "input_mode": "TEXT_ONLY",
-      "input_reference_policy": "No input images or Element mentions required. The generated sheet is a later video reference."
+      "input_reference_policy": "No input images or Element mentions required. The generated sheet is a later video reference.",
+      "current_prompt_image_verified": false
     },
     "MR009": {
       "key": "MR009",
@@ -2526,11 +2699,12 @@
       ],
       "four_state_summary": "SOURCE: → BALCONY COIL UNWINDS INTO THICK RADIAL TREAD BLANKS: → DOUBLE-ZIGZAG STAIR WITH ROTATED TREADS AND AN UNJOINED RAIL: → RESOLVED DESTINATION:",
       "note": "Prepared only; no render, imported container, paid video job or mandatory pilot dependency assumed.",
-      "prompt_sha256": "897a780c9b2cf19790c94a7a22bb406077c9da7c9c9233e668bcbb4f2f098019",
-      "prompt_review_status": "EXTREME_INTERMEDIATES_REVISED_NOT_RENDERED",
+      "prompt_sha256": "41dda948e8f93fbc4345f9fa6e84bb688907ccd5da637dfeb55f29b7ba2f59cb",
+      "prompt_review_status": "FOUR_STATE_AND_MATERIAL_RESPONSE_TEXT_REVIEWED_NOT_IMAGE_VERIFIED",
       "review_note": "Four different configurations with per-object breakup/reshaping/reassembly. Removed mandatory conventional structural support from unoccupied intermediates; retained real material substance, tracked source parts, final supports and occupied contact.",
       "input_mode": "TEXT_ONLY",
-      "input_reference_policy": "No input images or Element mentions required. The generated sheet is a later video reference."
+      "input_reference_policy": "No input images or Element mentions required. The generated sheet is a later video reference.",
+      "current_prompt_image_verified": false
     },
     "MR010": {
       "key": "MR010",
@@ -2548,11 +2722,12 @@
       ],
       "four_state_summary": "SOURCE: → RAISED LETTER STROKES SPREAD INTO A THREE-DIMENSIONAL LATTICE: → FOUR OPEN TARGET GLYPH SKELETONS BEFORE CLOSURE: → RESOLVED DESTINATION:",
       "note": "Prepared only; no render, imported container, paid video job or mandatory pilot dependency assumed.",
-      "prompt_sha256": "71a7a76008c715090b187dcd4a93ae4199a8363ddc3127252efb02ddddf40087",
-      "prompt_review_status": "EXTREME_INTERMEDIATES_REVISED_NOT_RENDERED",
+      "prompt_sha256": "73901f3a006ff295f748ed1ef951dadcfc82519fe9a2b7084896c3f8c61d6edd",
+      "prompt_review_status": "FOUR_STATE_AND_MATERIAL_RESPONSE_TEXT_REVIEWED_NOT_IMAGE_VERIFIED",
       "review_note": "Four different configurations with per-object breakup/reshaping/reassembly. Removed mandatory conventional structural support from unoccupied intermediates; retained real material substance, tracked source parts, final supports and occupied contact.",
       "input_mode": "TEXT_ONLY",
-      "input_reference_policy": "No input images or Element mentions required. The generated sheet is a later video reference."
+      "input_reference_policy": "No input images or Element mentions required. The generated sheet is a later video reference.",
+      "current_prompt_image_verified": false
     },
     "MR011": {
       "key": "MR011",
@@ -2571,11 +2746,12 @@
       ],
       "four_state_summary": "SOURCE: → ROOF SECTORS OPEN INTO A WIDE UNEQUAL RIB CAGE: → CURVED GLASS ROOF WITH A LARGE OPEN CENTRAL SEAM: → RESOLVED DESTINATION:",
       "note": "Prepared only; no render, imported container, paid video job or mandatory pilot dependency assumed.",
-      "prompt_sha256": "b4ec15ab691cc63a8db26ad56ff6857a90be670ccd185d14ef07b9967efa8dd1",
-      "prompt_review_status": "EXTREME_INTERMEDIATES_REVISED_NOT_RENDERED",
+      "prompt_sha256": "0a8e4849dac1d380502f899144e63286e14478a38dc2597554103ed258f3dd6f",
+      "prompt_review_status": "FOUR_STATE_AND_MATERIAL_RESPONSE_TEXT_REVIEWED_NOT_IMAGE_VERIFIED",
       "review_note": "Four different configurations with per-object breakup/reshaping/reassembly. Removed mandatory conventional structural support from unoccupied intermediates; retained real material substance, tracked source parts, final supports and occupied contact.",
       "input_mode": "TEXT_ONLY",
-      "input_reference_policy": "No input images or Element mentions required. The generated sheet is a later video reference."
+      "input_reference_policy": "No input images or Element mentions required. The generated sheet is a later video reference.",
+      "current_prompt_image_verified": false
     },
     "MR012": {
       "key": "MR012",
@@ -2594,11 +2770,12 @@
       ],
       "four_state_summary": "SOURCE: → SEPARATED CHIMNEY BANDS IN AN EXPANDING HELIX: → CONVERGING SPIRAL UPRIGHTS WITH SPLAYED CROWN SEGMENTS: → RESOLVED DESTINATION:",
       "note": "Prepared only; no render, imported container, paid video job or mandatory pilot dependency assumed.",
-      "prompt_sha256": "992a7f6f0570c68c94787abf64ddd52eaa1c61e55cceb6bc5aa98706e66d1508",
-      "prompt_review_status": "EXTREME_INTERMEDIATES_REVISED_NOT_RENDERED",
+      "prompt_sha256": "3c06f6d5f8e40e8100955de8d274df21df26c4544ec56293834472c1f115e6e1",
+      "prompt_review_status": "FOUR_STATE_AND_MATERIAL_RESPONSE_TEXT_REVIEWED_NOT_IMAGE_VERIFIED",
       "review_note": "Four different configurations with per-object breakup/reshaping/reassembly. Removed mandatory conventional structural support from unoccupied intermediates; retained real material substance, tracked source parts, final supports and occupied contact.",
       "input_mode": "TEXT_ONLY",
-      "input_reference_policy": "No input images or Element mentions required. The generated sheet is a later video reference."
+      "input_reference_policy": "No input images or Element mentions required. The generated sheet is a later video reference.",
+      "current_prompt_image_verified": false
     },
     "MR013": {
       "key": "MR013",
@@ -2616,11 +2793,12 @@
       ],
       "four_state_summary": "SOURCE: → RAIL OPENS INTO A BROAD FORK AND SPLIT GATE SHELL: → UNFINISHED ROTATING GATE WITH AN OPEN HOUSING AND OVERSIZED LEAF: → RESOLVED DESTINATION:",
       "note": "Prepared only; no render, imported container, paid video job or mandatory pilot dependency assumed.",
-      "prompt_sha256": "b4971c17ffad636165423fe2b91ee8c73f7d8b53d7bc8cc1f3568cb4325c25b5",
-      "prompt_review_status": "EXTREME_INTERMEDIATES_REVISED_NOT_RENDERED",
+      "prompt_sha256": "05bc026fe3113246f34cf475bdf3770f0d8b85f111f25f40c4ac6b328c8d393c",
+      "prompt_review_status": "FOUR_STATE_AND_MATERIAL_RESPONSE_TEXT_REVIEWED_NOT_IMAGE_VERIFIED",
       "review_note": "Four different configurations with per-object breakup/reshaping/reassembly. Removed mandatory conventional structural support from unoccupied intermediates; retained real material substance, tracked source parts, final supports and occupied contact.",
       "input_mode": "TEXT_ONLY",
-      "input_reference_policy": "No input images or Element mentions required. The generated sheet is a later video reference."
+      "input_reference_policy": "No input images or Element mentions required. The generated sheet is a later video reference.",
+      "current_prompt_image_verified": false
     },
     "MR014": {
       "key": "MR014",
@@ -2638,11 +2816,12 @@
       ],
       "four_state_summary": "SOURCE: → BENCH AND POSTS SPLAY INTO SEAT AND WINDOW FRAME PARTS: → CONVERGING BUS ROOM WITH RAISED SEAT SHELLS AND OFFSET PILLARS: → RESOLVED DESTINATION:",
       "note": "Prepared only; no render, imported container, paid video job or mandatory pilot dependency assumed.",
-      "prompt_sha256": "d4b9fe9a2193cd2f5c87a76ddf1ce83ff85f9cab02de310a647585a3707e5c26",
-      "prompt_review_status": "EXTREME_INTERMEDIATES_REVISED_NOT_RENDERED",
+      "prompt_sha256": "11862f478d5ed827a60f027da13bbacb31c71266d4833a4efcde17412bf75cfe",
+      "prompt_review_status": "FOUR_STATE_AND_MATERIAL_RESPONSE_TEXT_REVIEWED_NOT_IMAGE_VERIFIED",
       "review_note": "Four different configurations with per-object breakup/reshaping/reassembly. Removed mandatory conventional structural support from unoccupied intermediates; retained real material substance, tracked source parts, final supports and occupied contact.",
       "input_mode": "TEXT_ONLY",
-      "input_reference_policy": "No input images or Element mentions required. The generated sheet is a later video reference."
+      "input_reference_policy": "No input images or Element mentions required. The generated sheet is a later video reference.",
+      "current_prompt_image_verified": false
     },
     "MR015": {
       "key": "MR015",
@@ -2660,11 +2839,12 @@
       ],
       "four_state_summary": "SOURCE: → CANOPY EXPANDS INTO AN ASYMMETRIC ENVELOPE CAGE: → OPEN LOBED BALLOON WITH UNJOINED FABRIC SECTORS: → RESOLVED DESTINATION:",
       "note": "Prepared only; no render, imported container, paid video job or mandatory pilot dependency assumed.",
-      "prompt_sha256": "26475480ab1248c54108127f8bcdfd53a07e61c9bdd738d3fcc42678845d2739",
-      "prompt_review_status": "EXTREME_INTERMEDIATES_REVISED_NOT_RENDERED",
+      "prompt_sha256": "367b814b0aab3130c5c1403033f31e4989624e954bcddb5bf017ed149a8e77c0",
+      "prompt_review_status": "FOUR_STATE_AND_MATERIAL_RESPONSE_TEXT_REVIEWED_NOT_IMAGE_VERIFIED",
       "review_note": "Four different configurations with per-object breakup/reshaping/reassembly. Removed mandatory conventional structural support from unoccupied intermediates; retained real material substance, tracked source parts, final supports and occupied contact.",
       "input_mode": "TEXT_ONLY",
-      "input_reference_policy": "No input images or Element mentions required. The generated sheet is a later video reference."
+      "input_reference_policy": "No input images or Element mentions required. The generated sheet is a later video reference.",
+      "current_prompt_image_verified": false
     },
     "MR016": {
       "key": "MR016",
@@ -2682,11 +2862,12 @@
       ],
       "four_state_summary": "SOURCE: → UPROOTED-SHAPED STALK ARCS OVER THE SAME SOIL STRIP: → RAISED TIMBER SLEEPER BLANKS WITH LARGE PLANT ENDS: → RESOLVED DESTINATION:",
       "note": "Prepared only; no render, imported container, paid video job or mandatory pilot dependency assumed.",
-      "prompt_sha256": "b6230b4436acbc4ec3d1fb075b5692c00cee8c098afe42e4d6988865c4be8b49",
-      "prompt_review_status": "EXTREME_INTERMEDIATES_REVISED_NOT_RENDERED",
+      "prompt_sha256": "bfbacb1d1a45f2b248c9f44ea0af5f2271ce3aa41f174f436d7e78e3c3aded77",
+      "prompt_review_status": "FOUR_STATE_AND_MATERIAL_RESPONSE_TEXT_REVIEWED_NOT_IMAGE_VERIFIED",
       "review_note": "Four different configurations with per-object breakup/reshaping/reassembly. Removed mandatory conventional structural support from unoccupied intermediates; retained real material substance, tracked source parts, final supports and occupied contact.",
       "input_mode": "TEXT_ONLY",
-      "input_reference_policy": "No input images or Element mentions required. The generated sheet is a later video reference."
+      "input_reference_policy": "No input images or Element mentions required. The generated sheet is a later video reference.",
+      "current_prompt_image_verified": false
     },
     "MR017": {
       "key": "MR017",
@@ -2704,11 +2885,12 @@
       ],
       "four_state_summary": "SOURCE: → CABINET EXPANDS INTO A SPLAYED FURNITURE SKELETON: → UNJOINED DESK AND CHAIR WITH A LARGE REMAINING PANEL WEB: → RESOLVED DESTINATION:",
       "note": "Prepared only; no render, imported container, paid video job or mandatory pilot dependency assumed.",
-      "prompt_sha256": "181546ead8956306ff119052a40b2a4aab1cb2d0732970ca209b2296693cdd5d",
-      "prompt_review_status": "EXTREME_INTERMEDIATES_REVISED_NOT_RENDERED",
+      "prompt_sha256": "537a9cd5b98cc5fbf6376220dd2827f31611a906bb198da758039f3a3def97c1",
+      "prompt_review_status": "FOUR_STATE_AND_MATERIAL_RESPONSE_TEXT_REVIEWED_NOT_IMAGE_VERIFIED",
       "review_note": "Four different configurations with per-object breakup/reshaping/reassembly. Removed mandatory conventional structural support from unoccupied intermediates; retained real material substance, tracked source parts, final supports and occupied contact.",
       "input_mode": "TEXT_ONLY",
-      "input_reference_policy": "No input images or Element mentions required. The generated sheet is a later video reference."
+      "input_reference_policy": "No input images or Element mentions required. The generated sheet is a later video reference.",
+      "current_prompt_image_verified": false
     },
     "MR018": {
       "key": "MR018",
@@ -2726,11 +2908,12 @@
       ],
       "four_state_summary": "SOURCE: → BENCH BOARDS SPLAY INTO A TALL BRANCHED TIMBER FRAME: → OPEN SHELVING WITH DIAGONAL DIVIDERS AND UNSEATED BOARDS: → RESOLVED DESTINATION:",
       "note": "Prepared only; no render, imported container, paid video job or mandatory pilot dependency assumed.",
-      "prompt_sha256": "c1c6fe241b8fcecc58ee5c8be8434d690430f10f7dc49593ccd74077eeee738f",
-      "prompt_review_status": "EXTREME_INTERMEDIATES_REVISED_NOT_RENDERED",
+      "prompt_sha256": "6a1824503844236829bc84971735a228f3e1cb41b844c63626bb99aa02b416af",
+      "prompt_review_status": "FOUR_STATE_AND_MATERIAL_RESPONSE_TEXT_REVIEWED_NOT_IMAGE_VERIFIED",
       "review_note": "Four different configurations with per-object breakup/reshaping/reassembly. Removed mandatory conventional structural support from unoccupied intermediates; retained real material substance, tracked source parts, final supports and occupied contact.",
       "input_mode": "TEXT_ONLY",
-      "input_reference_policy": "No input images or Element mentions required. The generated sheet is a later video reference."
+      "input_reference_policy": "No input images or Element mentions required. The generated sheet is a later video reference.",
+      "current_prompt_image_verified": false
     },
     "MR019": {
       "key": "MR019",
@@ -2750,11 +2933,12 @@
       ],
       "four_state_summary": "SOURCE: → PAVING COURSES SPREAD INTO A LARGE STEPPED STONE FAN: → BROAD TERRACE WITH UNSEATED RISERS AND OPEN ARCH CHAINS: → RESOLVED DESTINATION:",
       "note": "Prepared only; no render, imported container, paid video job or mandatory pilot dependency assumed.",
-      "prompt_sha256": "3e274872d33e60590a6ca098dff4b32fcfc00b4f0d4dcc0b5b26e35f7f8abfd8",
-      "prompt_review_status": "EXTREME_INTERMEDIATES_REVISED_NOT_RENDERED",
+      "prompt_sha256": "2263487565eae6fe935f6c94bfe249e03ec576e287f90809c514412c36e6f5ff",
+      "prompt_review_status": "FOUR_STATE_AND_MATERIAL_RESPONSE_TEXT_REVIEWED_NOT_IMAGE_VERIFIED",
       "review_note": "Four different configurations with per-object breakup/reshaping/reassembly. Removed mandatory conventional structural support from unoccupied intermediates; retained real material substance, tracked source parts, final supports and occupied contact.",
       "input_mode": "TEXT_ONLY",
-      "input_reference_policy": "No input images or Element mentions required. The generated sheet is a later video reference."
+      "input_reference_policy": "No input images or Element mentions required. The generated sheet is a later video reference.",
+      "current_prompt_image_verified": false
     },
     "MR020": {
       "key": "MR020",
@@ -2772,11 +2956,12 @@
       ],
       "four_state_summary": "SOURCE: → ROPE UNTWISTS INTO A WIDE OPEN FIBRE FAN: → LOOSE WOVEN LATTICE WITH A THICK UNFINISHED ROPE EDGE: → RESOLVED DESTINATION:",
       "note": "Prepared only; no render, imported container, paid video job or mandatory pilot dependency assumed.",
-      "prompt_sha256": "684fc15ca5ae3447984b02022c08f58272ec0c76dc5d697aaf42b33ec3b5bc4d",
-      "prompt_review_status": "EXTREME_INTERMEDIATES_REVISED_NOT_RENDERED",
+      "prompt_sha256": "f0462759cc369788860b7d7a6635a41f01ca8670d43b7d22bfc66a5827fa00f0",
+      "prompt_review_status": "FOUR_STATE_AND_MATERIAL_RESPONSE_TEXT_REVIEWED_NOT_IMAGE_VERIFIED",
       "review_note": "Four different configurations with per-object breakup/reshaping/reassembly. Removed mandatory conventional structural support from unoccupied intermediates; retained real material substance, tracked source parts, final supports and occupied contact.",
       "input_mode": "TEXT_ONLY",
-      "input_reference_policy": "No input images or Element mentions required. The generated sheet is a later video reference."
+      "input_reference_policy": "No input images or Element mentions required. The generated sheet is a later video reference.",
+      "current_prompt_image_verified": false
     },
     "R009_STUDY": {
       "key": "R009_STUDY",
@@ -2789,12 +2974,13 @@
         "03_film/01/video.txt"
       ],
       "layout": "2x2 source/unfinished/unfinished/target",
-      "prompt_sha256": "448d0454e8dbb937bf146adf939ec3dddea47b8f717d844a846cc5465c59d91b",
+      "prompt_sha256": "f1da984ea3101f2351d00ee2dcb34c34779bb1b8c13ea4e8d7acc87deea798e5",
       "four_state_summary": "SOURCE: → FANLIGHT SPLITS INTO A WIDELY SPLAYED RIB ARRAY: → CONVERGING OVERHEAD CANOPY WITH A LARGE OPEN ROOF SECTOR: → RESOLVED DESTINATION:",
-      "prompt_review_status": "EXTREME_INTERMEDIATES_REVISED_NOT_RENDERED",
+      "prompt_review_status": "FOUR_STATE_AND_MATERIAL_RESPONSE_TEXT_REVIEWED_NOT_IMAGE_VERIFIED",
       "review_note": "Four different configurations with per-object breakup/reshaping/reassembly. Removed mandatory conventional structural support from unoccupied intermediates; retained real material substance, tracked source parts, final supports and occupied contact.",
       "input_mode": "TEXT_ONLY",
-      "input_reference_policy": "No input images or Element mentions required. The generated sheet is a later video reference."
+      "input_reference_policy": "No input images or Element mentions required. The generated sheet is a later video reference.",
+      "current_prompt_image_verified": false
     },
     "R008_STUDY": {
       "key": "R008_STUDY",
@@ -2807,12 +2993,13 @@
         "01_pilot/test_video_8s.txt",
         "03_film/01/video.txt"
       ],
-      "prompt_sha256": "9db4e9d362e8a8898d5c79e37f824dbca30cdb7fee401702815f8b908d93e353",
+      "prompt_sha256": "a3e9eab63ff964cabcd1a0cb116bab6f6b72e12ebc4e0020f296168880d064f3",
       "four_state_summary": "ORIGINAL SOURCE: the intact ground-floor café window, thick brick returns, timber mullion, attached glass, stone sill and adjoining paving. Show mortar depth, the sill's underside and a distinctive chipped corner low on the same brick pier. The restaurant described above occupies the actual depth behind this window: its existing table, chair, woman and remembered man retain their source positions. They can be partly obscured by the original window structure, but do not invent a different empty interior. → WINDOW BURSTS INTO A DEEP MASONRY AND GLASS ARRAY: → ROOM EMERGES THROUGH AN UNJOINED ARCH AND OPEN GLASS HELICES: → RESOLVED DESTINATION: the same window opening has become the full-depth occupied restaurant projecting into the street, with the same table and chair on the supported wooden floor beyond the original jamb. All THREE source glass segments have now resolved into complete attached curved pendant shades with closed finished profiles; none retains a flat shard face or open intermediate seam. The floor reaches its full approximately one-metre projection, carrying the entire occupied chair and near table beyond the original facade plane. The source glass now forms attached curved pendant shades, the fasteners form stems, the mullion forms trim and the brick courses form substantial stone/plaster returns. Show all chair legs, table thickness, floor edge, pendant attachments and both rear restroom doors. Preserve the same woman and man's identities within this sheet and their original encounter. The chipped corner and surviving paving edge locate this as the same physical site as the first cell. No remaining source part disappears to reveal a finished replacement room.",
-      "prompt_review_status": "EXTREME_INTERMEDIATES_REVISED_NOT_RENDERED",
+      "prompt_review_status": "FOUR_STATE_AND_MATERIAL_RESPONSE_TEXT_REVIEWED_NOT_IMAGE_VERIFIED",
       "review_note": "Four different configurations with per-object breakup/reshaping/reassembly. Removed mandatory conventional structural support from unoccupied intermediates; retained real material substance, tracked source parts, final supports and occupied contact.",
       "input_mode": "TEXT_ONLY",
-      "input_reference_policy": "No input images or Element mentions required. The generated sheet is a later video reference."
+      "input_reference_policy": "No input images or Element mentions required. The generated sheet is a later video reference.",
+      "current_prompt_image_verified": false
     },
     "MW01_B": {
       "key": "MW01_B",
@@ -2837,7 +3024,8 @@
         6,
         7,
         8
-      ]
+      ],
+      "prompt_sha256": "da3810a790090c5f9b5cfb354dffd6157c49c84f0d7e2e59214108641b98a26d"
     },
     "MW01_C": {
       "key": "MW01_C",
@@ -2862,7 +3050,8 @@
         1,
         7,
         8
-      ]
+      ],
+      "prompt_sha256": "8257fe012b6f3958bda31ec87aa8d048f33b077971a290146f2e202028c81336"
     },
     "MW02_B": {
       "key": "MW02_B",
@@ -2891,7 +3080,8 @@
         6,
         7,
         8
-      ]
+      ],
+      "prompt_sha256": "7b588a8f287c59b5947565e5721cdc256347158dbd89a50683b89a3f8ba6a139"
     },
     "MW02_C": {
       "key": "MW02_C",
@@ -2920,7 +3110,8 @@
         1,
         7,
         8
-      ]
+      ],
+      "prompt_sha256": "d2426238cd0ad43b5260df2c5b3c303dfb12905ce9cae63def498187dd7cd9ae"
     },
     "MW03_B": {
       "key": "MW03_B",
@@ -2941,7 +3132,8 @@
         6,
         7,
         8
-      ]
+      ],
+      "prompt_sha256": "5c99f70532477815da6d992319a708407a19a1f623daf54df7e7d7b36b169f3d"
     },
     "MW03_C": {
       "key": "MW03_C",
@@ -2962,7 +3154,8 @@
         1,
         7,
         8
-      ]
+      ],
+      "prompt_sha256": "7847b715b010b2de548f112a1d5aa1aa8290bc318a62082f773f3e88be43cc4b"
     },
     "MW04_B": {
       "key": "MW04_B",
@@ -2984,7 +3177,8 @@
         6,
         7,
         8
-      ]
+      ],
+      "prompt_sha256": "239be76e8b12c6be68886ac9e1e50514de5fd6787d6b40f8922a88d91d495d5f"
     },
     "MW04_C": {
       "key": "MW04_C",
@@ -3006,7 +3200,8 @@
         1,
         7,
         8
-      ]
+      ],
+      "prompt_sha256": "edd7c84081c723a1394f73d00365264e02607f1522a19efa55fa2869f3ff8181"
     },
     "MW05_B": {
       "key": "MW05_B",
@@ -3030,7 +3225,8 @@
         6,
         7,
         8
-      ]
+      ],
+      "prompt_sha256": "7592cfe90c81cd92364ce6914d5e71a8d0b838c389c5a0b3d10cf8351f28859f"
     },
     "MW05_C": {
       "key": "MW05_C",
@@ -3054,7 +3250,8 @@
         1,
         7,
         8
-      ]
+      ],
+      "prompt_sha256": "8c243bc111376a0a93b861fa0604cf6fa8a8029fab0b998009629de71e50b85f"
     },
     "MW06_B": {
       "key": "MW06_B",
@@ -3082,7 +3279,8 @@
         6,
         7,
         8
-      ]
+      ],
+      "prompt_sha256": "41091c6f62fadcff5d696faff9986af2fd072ec1f5821fdabaf0b7f3aa5ba870"
     },
     "MW06_C": {
       "key": "MW06_C",
@@ -3110,7 +3308,8 @@
         1,
         7,
         8
-      ]
+      ],
+      "prompt_sha256": "e55b70b279f220fde8e61d244d0743493314e1a937a9f2aea64d481402fe055d"
     },
     "MWP01_B": {
       "key": "MWP01_B",
@@ -3128,7 +3327,8 @@
         6,
         7,
         8
-      ]
+      ],
+      "prompt_sha256": "3e2946c3b0e194e6afcf5fa9e5bc8c45050afce6974d1f65d7f1b56aab483d32"
     },
     "MWP01_C": {
       "key": "MWP01_C",
@@ -3146,7 +3346,8 @@
         1,
         7,
         8
-      ]
+      ],
+      "prompt_sha256": "37f359b2b78dc357f685c032faa67feef912b3411000ccdcf7b088bf37905ae7"
     },
     "MWP02_B": {
       "key": "MWP02_B",
@@ -3164,7 +3365,8 @@
         6,
         7,
         8
-      ]
+      ],
+      "prompt_sha256": "455e905e459384e589f98404a686a59bf59c47cff85b886207077d26683e4b68"
     },
     "MWP02_C": {
       "key": "MWP02_C",
@@ -3182,7 +3384,8 @@
         1,
         7,
         8
-      ]
+      ],
+      "prompt_sha256": "306436e025c5f50dce70cc96db720524df1d97a8251e42421523ae7be70ab38b"
     },
     "HRW07_B": {
       "key": "HRW07_B",
@@ -3201,7 +3404,8 @@
         6,
         7,
         8
-      ]
+      ],
+      "prompt_sha256": "c869b12e2e42857d41ae682f50b5dfc146f554c5972137f747dc8b1ab65110aa"
     },
     "HRW07_C": {
       "key": "HRW07_C",
@@ -3220,7 +3424,8 @@
         1,
         7,
         8
-      ]
+      ],
+      "prompt_sha256": "62512cc64067393a7c1533f64341c28e3f560e1f61d5a6f51090b4910cc7e590"
     },
     "T01_DETAILS": {
       "key": "T01_DETAILS",
@@ -3263,612 +3468,766 @@
     "R002": {
       "key": "R002",
       "path": "02_library/morphs/objects/R002_THE_SAME_RED_LONDON_BUS_FROM_USEFUL_ANGLES.txt",
-      "output": "R002_THE_SAME_RED_LONDON_BUS_FROM_USEFUL_ANGLES_1X3.png",
+      "output": "R002_THE_SAME_RED_LONDON_BUS_FROM_USEFUL_ANGLES_2X2.png",
       "refs": [],
       "status": "PREPARED_NOT_RENDERED",
       "layout": "4K 2x2 object material transformation",
-      "prompt_sha256": "08ef9f24d6a449c63a598ae1291ead7c8b1f3c9b4007a867464193cdc7bf564c",
+      "prompt_sha256": "305c599e16f60db08a4d0e548e4a0185b24dd47b079008c4d7759cadcaafa0a1",
       "current_prompt_image_verified": false,
       "input_mode": "TEXT_ONLY",
-      "prompt_review_status": "DETAILED_OBJECT_MORPH_REVISED_NOT_RENDERED",
-      "four_state_summary": "COMPLETE ORIGINAL: → EXPANSIVE MATERIAL RECONSTRUCTION: → DIFFERENT CONVERGING RECONSTRUCTION: → COMPLETE DESTINATION:"
+      "prompt_review_status": "FOUR_STATE_AND_MATERIAL_RESPONSE_TEXT_REVIEWED_NOT_IMAGE_VERIFIED",
+      "four_state_summary": "COMPLETE ORIGINAL: → EXPANSIVE MATERIAL RECONSTRUCTION: → DIFFERENT CONVERGING RECONSTRUCTION: → COMPLETE DESTINATION:",
+      "previous_identity_output_name": "R002_THE_SAME_RED_LONDON_BUS_FROM_USEFUL_ANGLES_1X3.png"
     },
     "R003": {
       "key": "R003",
       "path": "02_library/morphs/objects/R003_BLACK_LONDON_TAXI.txt",
-      "output": "R003_BLACK_LONDON_TAXI_1X3.png",
+      "output": "R003_BLACK_LONDON_TAXI_2X2.png",
       "refs": [],
       "status": "PREPARED_NOT_RENDERED",
       "layout": "4K 2x2 object material transformation",
-      "prompt_sha256": "2a43084a6a789298752bd4029d954120c9023c7a2061757c94669c6e7a12c005",
+      "prompt_sha256": "77ab6acee9895b7a2cb58de23e3fa3c84a7b8645fb74599bf54b4b3a2a95ddb2",
       "current_prompt_image_verified": false,
       "input_mode": "TEXT_ONLY",
-      "prompt_review_status": "DETAILED_OBJECT_MORPH_REVISED_NOT_RENDERED",
-      "four_state_summary": "COMPLETE ORIGINAL: → EXPANSIVE MATERIAL RECONSTRUCTION: → DIFFERENT CONVERGING RECONSTRUCTION: → COMPLETE DESTINATION:"
+      "prompt_review_status": "FOUR_STATE_AND_MATERIAL_RESPONSE_TEXT_REVIEWED_NOT_IMAGE_VERIFIED",
+      "four_state_summary": "COMPLETE ORIGINAL: → EXPANSIVE MATERIAL RECONSTRUCTION: → DIFFERENT CONVERGING RECONSTRUCTION: → COMPLETE DESTINATION:",
+      "previous_identity_output_name": "R003_BLACK_LONDON_TAXI_1X3.png"
     },
     "R004": {
       "key": "R004",
       "path": "02_library/morphs/objects/R004_YELLOW_BUDAPEST_TRAM.txt",
-      "output": "R004_YELLOW_BUDAPEST_TRAM_1X3.png",
+      "output": "R004_YELLOW_BUDAPEST_TRAM_2X2.png",
       "refs": [],
       "status": "PREPARED_NOT_RENDERED",
       "layout": "4K 2x2 object material transformation",
-      "prompt_sha256": "776acd2c7c005c87b532de8ee5e9efe0c44ae4be44d09d02f6384508bbf1672a",
+      "prompt_sha256": "757477f1c9b33bf7cad3520ff549aca4ba8f7540dd7c1c9f49c249b3a24147fc",
       "current_prompt_image_verified": false,
       "input_mode": "TEXT_ONLY",
-      "prompt_review_status": "DETAILED_OBJECT_MORPH_REVISED_NOT_RENDERED",
-      "four_state_summary": "COMPLETE ORIGINAL: → EXPANSIVE MATERIAL RECONSTRUCTION: → DIFFERENT CONVERGING RECONSTRUCTION: → COMPLETE DESTINATION:"
+      "prompt_review_status": "FOUR_STATE_AND_MATERIAL_RESPONSE_TEXT_REVIEWED_NOT_IMAGE_VERIFIED",
+      "four_state_summary": "COMPLETE ORIGINAL: → EXPANSIVE MATERIAL RECONSTRUCTION: → DIFFERENT CONVERGING RECONSTRUCTION: → COMPLETE DESTINATION:",
+      "previous_identity_output_name": "R004_YELLOW_BUDAPEST_TRAM_1X3.png"
     },
     "R005": {
       "key": "R005",
       "path": "02_library/morphs/buildings/R005_ST_PAULS_COMPLETE_SOURCE_BUILDING.txt",
-      "output": "R005_ST_PAULS_COMPLETE_SOURCE_BUILDING_1X3.png",
+      "output": "R005_ST_PAULS_COMPLETE_SOURCE_BUILDING_2X2.png",
       "refs": [],
       "status": "PREPARED_NOT_RENDERED",
       "layout": "4K 2x2 object material transformation",
-      "prompt_sha256": "cbd9c15b65d0eb30c1e627934ac65b77f1268210d653af5870ab040c63d34a5c",
+      "prompt_sha256": "2696ed88853eb96db9956abf0bee5f2fee5f7b567df0f1758193804e463e6ea0",
       "current_prompt_image_verified": false,
       "input_mode": "TEXT_ONLY",
-      "prompt_review_status": "DETAILED_OBJECT_MORPH_REVISED_NOT_RENDERED",
-      "four_state_summary": "COMPLETE ORIGINAL: → EXPANSIVE MATERIAL RECONSTRUCTION: → DIFFERENT CONVERGING RECONSTRUCTION: → COMPLETE DESTINATION:"
+      "prompt_review_status": "FOUR_STATE_AND_MATERIAL_RESPONSE_TEXT_REVIEWED_NOT_IMAGE_VERIFIED",
+      "four_state_summary": "COMPLETE ORIGINAL: → EXPANSIVE MATERIAL RECONSTRUCTION: → DIFFERENT CONVERGING RECONSTRUCTION: → COMPLETE DESTINATION:",
+      "previous_identity_output_name": "R005_ST_PAULS_COMPLETE_SOURCE_BUILDING_1X3.png"
     },
     "R006": {
       "key": "R006",
       "path": "02_library/morphs/buildings/R006_ST_STEPHENS_COMPLETE_DESTINATION_BUILDING.txt",
-      "output": "R006_ST_STEPHENS_COMPLETE_DESTINATION_BUILDING_1X3.png",
+      "output": "R006_ST_STEPHENS_COMPLETE_DESTINATION_BUILDING_2X2.png",
       "refs": [],
       "status": "PREPARED_NOT_RENDERED",
       "layout": "4K 2x2 object material transformation",
-      "prompt_sha256": "01cbcb9add1fb65d3c31f0548ad686f0091db1169a219630f507fa4486d6535c",
+      "prompt_sha256": "9486680ac7dd441903a58044323d16755fb8158d07123741bae5bfd974e8efa1",
       "current_prompt_image_verified": false,
       "input_mode": "TEXT_ONLY",
-      "prompt_review_status": "DETAILED_OBJECT_MORPH_REVISED_NOT_RENDERED",
-      "four_state_summary": "COMPLETE ORIGINAL: → EXPANSIVE MATERIAL RECONSTRUCTION: → DIFFERENT CONVERGING RECONSTRUCTION: → COMPLETE DESTINATION:"
+      "prompt_review_status": "FOUR_STATE_AND_MATERIAL_RESPONSE_TEXT_REVIEWED_NOT_IMAGE_VERIFIED",
+      "four_state_summary": "COMPLETE ORIGINAL: → EXPANSIVE MATERIAL RECONSTRUCTION: → DIFFERENT CONVERGING RECONSTRUCTION: → COMPLETE DESTINATION:",
+      "previous_identity_output_name": "R006_ST_STEPHENS_COMPLETE_DESTINATION_BUILDING_1X3.png"
     },
     "R010": {
       "key": "R010",
       "path": "02_library/morphs/objects/R010_WINGED_STATUE_PLINTH_AND_CONTACT_DETAIL.txt",
-      "output": "R010_WINGED_STATUE_PLINTH_AND_CONTACT_DETAIL_1X3.png",
+      "output": "R010_WINGED_STATUE_PLINTH_AND_CONTACT_DETAIL_2X2.png",
       "refs": [],
       "status": "PREPARED_NOT_RENDERED",
       "layout": "4K 2x2 object material transformation",
-      "prompt_sha256": "f53d7bac6d13ec23619cd027d1019ba821423956d66683197d80dc7f6ece33da",
+      "prompt_sha256": "b325e5706fff4baaa940986e22dfab7a1f33caa8155796b2e5818be650273e4c",
       "current_prompt_image_verified": false,
       "input_mode": "TEXT_ONLY",
-      "prompt_review_status": "DETAILED_OBJECT_MORPH_REVISED_NOT_RENDERED",
-      "four_state_summary": "COMPLETE ORIGINAL: → EXPANSIVE MATERIAL RECONSTRUCTION: → DIFFERENT CONVERGING RECONSTRUCTION: → COMPLETE DESTINATION:"
+      "prompt_review_status": "FOUR_STATE_AND_MATERIAL_RESPONSE_TEXT_REVIEWED_NOT_IMAGE_VERIFIED",
+      "four_state_summary": "COMPLETE ORIGINAL: → EXPANSIVE MATERIAL RECONSTRUCTION: → DIFFERENT CONVERGING RECONSTRUCTION: → COMPLETE DESTINATION:",
+      "previous_identity_output_name": "R010_WINGED_STATUE_PLINTH_AND_CONTACT_DETAIL_1X3.png"
     },
     "R013": {
       "key": "R013",
       "path": "02_library/morphs/objects/R013_RED_BUS_LOWER_DECK_PASSAGE_AND_OPEN_DOOR_GEOMETRY.txt",
-      "output": "R013_RED_BUS_LOWER_DECK_PASSAGE_AND_OPEN_DOOR_GEOMETRY_1X3.png",
+      "output": "R013_RED_BUS_LOWER_DECK_PASSAGE_AND_OPEN_DOOR_GEOMETRY_2X2.png",
       "refs": [],
       "status": "PREPARED_NOT_RENDERED",
       "layout": "4K 2x2 object material transformation",
-      "prompt_sha256": "1a967bae6e04cd666e33e0f482f8e7715e06d574e72e1c2728c7d2d8e6b2d4e5",
+      "prompt_sha256": "4e321ddca3630771d5c677af66215602e82047ec7190ac540625a7cf1a75f28c",
       "current_prompt_image_verified": false,
       "input_mode": "TEXT_ONLY",
-      "prompt_review_status": "DETAILED_OBJECT_MORPH_REVISED_NOT_RENDERED",
-      "four_state_summary": "COMPLETE ORIGINAL: → EXPANSIVE MATERIAL RECONSTRUCTION: → DIFFERENT CONVERGING RECONSTRUCTION: → COMPLETE DESTINATION:"
+      "prompt_review_status": "FOUR_STATE_AND_MATERIAL_RESPONSE_TEXT_REVIEWED_NOT_IMAGE_VERIFIED",
+      "four_state_summary": "COMPLETE ORIGINAL: → EXPANSIVE MATERIAL RECONSTRUCTION: → DIFFERENT CONVERGING RECONSTRUCTION: → COMPLETE DESTINATION:",
+      "previous_identity_output_name": "R013_RED_BUS_LOWER_DECK_PASSAGE_AND_OPEN_DOOR_GEOMETRY_1X3.png"
     },
     "R014": {
       "key": "R014",
       "path": "02_library/morphs/buildings/R014_ORIGINAL_LONDON_CAFE_WINDOW_BEFORE_FRACTURE.txt",
-      "output": "R014_ORIGINAL_LONDON_CAFE_WINDOW_BEFORE_FRACTURE_1X3.png",
+      "output": "R014_ORIGINAL_LONDON_CAFE_WINDOW_BEFORE_FRACTURE_2X2.png",
       "refs": [],
       "status": "PREPARED_NOT_RENDERED",
       "layout": "4K 2x2 object material transformation",
-      "prompt_sha256": "f5ed0b7c9d6f3a0c12163a9bba74177ed6450213c68edea2ed7032abc85a6ace",
+      "prompt_sha256": "7e7d15f6ceb5024f443a722d9873f56b58fbc1d8a9cea250943cbc6c41abb9b3",
       "current_prompt_image_verified": false,
       "input_mode": "TEXT_ONLY",
-      "prompt_review_status": "DETAILED_OBJECT_MORPH_REVISED_NOT_RENDERED",
-      "four_state_summary": "ORIGINAL SOURCE: the intact ground-floor café window, thick brick returns, timber mullion, attached glass, stone sill and adjoining paving. Show mortar depth, the sill's underside and a distinctive chipped corner low on the same brick pier. The restaurant described above occupies the actual depth behind this window: its existing table, chair, woman and remembered man retain their source positions. They can be partly obscured by the original window structure, but do not invent a different empty interior. → WINDOW BURSTS INTO A DEEP MASONRY AND GLASS ARRAY: → ROOM EMERGES THROUGH AN UNJOINED ARCH AND OPEN GLASS HELICES: → RESOLVED DESTINATION: the same window opening has become the full-depth occupied restaurant projecting into the street, with the same table and chair on the supported wooden floor beyond the original jamb. All THREE source glass segments have now resolved into complete attached curved pendant shades with closed finished profiles; none retains a flat shard face or open intermediate seam. The floor reaches its full approximately one-metre projection, carrying the entire occupied chair and near table beyond the original facade plane. The source glass now forms attached curved pendant shades, the fasteners form stems, the mullion forms trim and the brick courses form substantial stone/plaster returns. Show all chair legs, table thickness, floor edge, pendant attachments and both rear restroom doors. Preserve the same woman and man's identities within this sheet and their original encounter. The chipped corner and surviving paving edge locate this as the same physical site as the first cell. No remaining source part disappears to reveal a finished replacement room."
+      "prompt_review_status": "FOUR_STATE_AND_MATERIAL_RESPONSE_TEXT_REVIEWED_NOT_IMAGE_VERIFIED",
+      "four_state_summary": "ORIGINAL SOURCE: the intact ground-floor café window, thick brick returns, timber mullion, attached glass, stone sill and adjoining paving. Show mortar depth, the sill's underside and a distinctive chipped corner low on the same brick pier. The restaurant described above occupies the actual depth behind this window: its existing table, chair, woman and remembered man retain their source positions. They can be partly obscured by the original window structure, but do not invent a different empty interior. → WINDOW BURSTS INTO A DEEP MASONRY AND GLASS ARRAY: → ROOM EMERGES THROUGH AN UNJOINED ARCH AND OPEN GLASS HELICES: → RESOLVED DESTINATION: the same window opening has become the full-depth occupied restaurant projecting into the street, with the same table and chair on the supported wooden floor beyond the original jamb. All THREE source glass segments have now resolved into complete attached curved pendant shades with closed finished profiles; none retains a flat shard face or open intermediate seam. The floor reaches its full approximately one-metre projection, carrying the entire occupied chair and near table beyond the original facade plane. The source glass now forms attached curved pendant shades, the fasteners form stems, the mullion forms trim and the brick courses form substantial stone/plaster returns. Show all chair legs, table thickness, floor edge, pendant attachments and both rear restroom doors. Preserve the same woman and man's identities within this sheet and their original encounter. The chipped corner and surviving paving edge locate this as the same physical site as the first cell. No remaining source part disappears to reveal a finished replacement room.",
+      "previous_identity_output_name": "R014_ORIGINAL_LONDON_CAFE_WINDOW_BEFORE_FRACTURE_1X3.png"
     },
     "R015": {
       "key": "R015",
       "path": "02_library/morphs/objects/R015_GLASS_SOURCE_THICKNESS_AND_DESTINATION_PENDANT_SHADES.txt",
-      "output": "R015_GLASS_SOURCE_THICKNESS_AND_DESTINATION_PENDANT_SHADES_1X3.png",
+      "output": "R015_GLASS_SOURCE_THICKNESS_AND_DESTINATION_PENDANT_SHADES_2X2.png",
       "refs": [],
       "status": "PREPARED_NOT_RENDERED",
       "layout": "4K 2x2 object material transformation",
-      "prompt_sha256": "6d6812cf7e0fd089f94dcef0982fe0e0c04b8780feafdbbeeea6662138176f05",
+      "prompt_sha256": "8bd93a0279012f8d20efb44362d0c4f2bf3fd97ccf2fe675e0fb3a1ccd1b38b6",
       "current_prompt_image_verified": false,
       "input_mode": "TEXT_ONLY",
-      "prompt_review_status": "DETAILED_OBJECT_MORPH_REVISED_NOT_RENDERED",
-      "four_state_summary": "SOURCE: → THREE-DIMENSIONAL GLASS SADDLE WITH SPLAYED CORNERS: → OPEN HELICAL SHADE BEFORE ITS RIMS JOIN: → RESOLVED DESTINATION:"
+      "prompt_review_status": "FOUR_STATE_AND_MATERIAL_RESPONSE_TEXT_REVIEWED_NOT_IMAGE_VERIFIED",
+      "four_state_summary": "SOURCE: → THREE-DIMENSIONAL GLASS SADDLE WITH SPLAYED CORNERS: → OPEN HELICAL SHADE BEFORE ITS RIMS JOIN: → RESOLVED DESTINATION:",
+      "previous_identity_output_name": "R015_GLASS_SOURCE_THICKNESS_AND_DESTINATION_PENDANT_SHADES_1X3.png"
     },
     "R016": {
       "key": "R016",
       "path": "02_library/morphs/buildings/R016_SOLID_LONDON_BRICK_AND_PEST_CARVED_STONE_CORRESPONDENCE.txt",
-      "output": "R016_SOLID_LONDON_BRICK_AND_PEST_CARVED_STONE_CORRESPONDENCE_1X3.png",
+      "output": "R016_SOLID_LONDON_BRICK_AND_PEST_CARVED_STONE_CORRESPONDENCE_2X2.png",
       "refs": [],
       "status": "PREPARED_NOT_RENDERED",
       "layout": "4K 2x2 object material transformation",
-      "prompt_sha256": "32e9bafe98cef37c3b67df32bbdbb3a94b27b294b40f07a66b25bf5fe4c50c2e",
+      "prompt_sha256": "986041170836acccf0a7f29aa17712f1b456a641c83e8a4594a9b63b97c872e2",
       "current_prompt_image_verified": false,
       "input_mode": "TEXT_ONLY",
-      "prompt_review_status": "DETAILED_OBJECT_MORPH_REVISED_NOT_RENDERED",
-      "four_state_summary": "SOURCE: → OUTWARD SPREADING BRICK COURSES AND DEEP STONE BLANKS: → TWO INWARD CURLING ARCH HALVES, UNJOINED AT THE TOP: → RESOLVED DESTINATION:"
+      "prompt_review_status": "FOUR_STATE_AND_MATERIAL_RESPONSE_TEXT_REVIEWED_NOT_IMAGE_VERIFIED",
+      "four_state_summary": "SOURCE: → OUTWARD SPREADING BRICK COURSES AND DEEP STONE BLANKS: → TWO INWARD CURLING ARCH HALVES, UNJOINED AT THE TOP: → RESOLVED DESTINATION:",
+      "previous_identity_output_name": "R016_SOLID_LONDON_BRICK_AND_PEST_CARVED_STONE_CORRESPONDENCE_1X3.png"
     },
     "R017": {
       "key": "R017",
       "path": "02_library/morphs/buildings/R017_STONE_SILL_WET_PAVING_AND_SUPPORTED_TIMBER_THRESHOLD.txt",
-      "output": "R017_STONE_SILL_WET_PAVING_AND_SUPPORTED_TIMBER_THRESHOLD_1X3.png",
+      "output": "R017_STONE_SILL_WET_PAVING_AND_SUPPORTED_TIMBER_THRESHOLD_2X2.png",
       "refs": [],
       "status": "PREPARED_NOT_RENDERED",
       "layout": "4K 2x2 object material transformation",
-      "prompt_sha256": "a372f144af9cdb88d65c86b62b47b500b28f7353dfde1c9abc6ea5011f7f5db3",
+      "prompt_sha256": "6680a7b8dc849e6018732278b268a4eac0944fb448d219c36ae64f018d4dca90",
       "current_prompt_image_verified": false,
       "input_mode": "TEXT_ONLY",
-      "prompt_review_status": "DETAILED_OBJECT_MORPH_REVISED_NOT_RENDERED",
-      "four_state_summary": "SOURCE: → FANNED STONE-TO-WOOD RIBS ABOVE THE PAVING: → OPEN TIMBER DECK WITH RAISED UNSEATED BOARD ENDS: → RESOLVED DESTINATION:"
+      "prompt_review_status": "FOUR_STATE_AND_MATERIAL_RESPONSE_TEXT_REVIEWED_NOT_IMAGE_VERIFIED",
+      "four_state_summary": "SOURCE: → FANNED STONE-TO-WOOD RIBS ABOVE THE PAVING: → OPEN TIMBER DECK WITH RAISED UNSEATED BOARD ENDS: → RESOLVED DESTINATION:",
+      "previous_identity_output_name": "R017_STONE_SILL_WET_PAVING_AND_SUPPORTED_TIMBER_THRESHOLD_1X3.png"
     },
     "R018": {
       "key": "R018",
       "path": "02_library/morphs/objects/R018_LONDON_TIMBER_BENCH_AND_CURVED_FLOOR_BORDER.txt",
-      "output": "R018_LONDON_TIMBER_BENCH_AND_CURVED_FLOOR_BORDER_1X3.png",
+      "output": "R018_LONDON_TIMBER_BENCH_AND_CURVED_FLOOR_BORDER_2X2.png",
       "refs": [],
       "status": "PREPARED_NOT_RENDERED",
       "layout": "4K 2x2 object material transformation",
-      "prompt_sha256": "5baca038cb41625d086620d0871328b651fb2a65fb811c5f3eef04261ffe9110",
+      "prompt_sha256": "afba27172f336a265be07f42c4a065c9cb845a0b5c234aa466a775a21942887f",
       "current_prompt_image_verified": false,
       "input_mode": "TEXT_ONLY",
-      "prompt_review_status": "DETAILED_OBJECT_MORPH_REVISED_NOT_RENDERED",
-      "four_state_summary": "SOURCE: → BENCH SLATS EXPAND INTO A WIDE ASYMMETRIC FAN: → TALL OPEN SPIRAL GATHERING INTO A LOW FLOOR BORDER: → RESOLVED DESTINATION:"
+      "prompt_review_status": "FOUR_STATE_AND_MATERIAL_RESPONSE_TEXT_REVIEWED_NOT_IMAGE_VERIFIED",
+      "four_state_summary": "SOURCE: → BENCH SLATS EXPAND INTO A WIDE ASYMMETRIC FAN: → TALL OPEN SPIRAL GATHERING INTO A LOW FLOOR BORDER: → RESOLVED DESTINATION:",
+      "previous_identity_output_name": "R018_LONDON_TIMBER_BENCH_AND_CURVED_FLOOR_BORDER_1X3.png"
     },
     "R019": {
       "key": "R019",
       "path": "02_library/morphs/objects/R019_ACCEPTED_RESTAURANT_TABLE_AND_CHAIR_FROM_OUTSIDE.txt",
-      "output": "R019_ACCEPTED_RESTAURANT_TABLE_AND_CHAIR_FROM_OUTSIDE_1X3.png",
+      "output": "R019_ACCEPTED_RESTAURANT_TABLE_AND_CHAIR_FROM_OUTSIDE_2X2.png",
       "refs": [],
       "status": "PREPARED_NOT_RENDERED",
       "layout": "4K 2x2 object material transformation",
-      "prompt_sha256": "2d362e55b6b2e8d93f5c1aa08b7c8052de73d2000239e3c9d505601f9ab21e04",
+      "prompt_sha256": "546cea4b5699dc6ee3149c19f9cf22bcb66210496d009bfab349bba70fa65af4",
       "current_prompt_image_verified": false,
       "input_mode": "TEXT_ONLY",
-      "prompt_review_status": "DETAILED_OBJECT_MORPH_REVISED_NOT_RENDERED",
-      "four_state_summary": "COMPLETE ORIGINAL: → EXPANSIVE MATERIAL RECONSTRUCTION: → DIFFERENT CONVERGING RECONSTRUCTION: → COMPLETE DESTINATION:"
+      "prompt_review_status": "FOUR_STATE_AND_MATERIAL_RESPONSE_TEXT_REVIEWED_NOT_IMAGE_VERIFIED",
+      "four_state_summary": "COMPLETE ORIGINAL: → EXPANSIVE MATERIAL RECONSTRUCTION: → DIFFERENT CONVERGING RECONSTRUCTION: → COMPLETE DESTINATION:",
+      "previous_identity_output_name": "R019_ACCEPTED_RESTAURANT_TABLE_AND_CHAIR_FROM_OUTSIDE_1X3.png"
     },
     "R020": {
       "key": "R020",
       "path": "02_library/morphs/objects/R020_CUP_HAND_CONTACT_AND_TABLETOP_DEPTH.txt",
-      "output": "R020_CUP_HAND_CONTACT_AND_TABLETOP_DEPTH_1X3.png",
+      "output": "R020_CUP_HAND_CONTACT_AND_TABLETOP_DEPTH_2X2.png",
       "refs": [],
       "status": "PREPARED_NOT_RENDERED",
       "layout": "4K 2x2 object material transformation",
-      "prompt_sha256": "b8a59c6d943e2be755396647e208c4484fbfaf43b92e226568672f941d71e6f8",
+      "prompt_sha256": "0c9c38b87820212da869b7df1b1e5145db12a6bb2c91749a83655f108688201d",
       "current_prompt_image_verified": false,
       "input_mode": "TEXT_ONLY",
-      "prompt_review_status": "DETAILED_OBJECT_MORPH_REVISED_NOT_RENDERED",
-      "four_state_summary": "COMPLETE ORIGINAL: → EXPANSIVE MATERIAL RECONSTRUCTION: → DIFFERENT CONVERGING RECONSTRUCTION: → COMPLETE DESTINATION:"
+      "prompt_review_status": "FOUR_STATE_AND_MATERIAL_RESPONSE_TEXT_REVIEWED_NOT_IMAGE_VERIFIED",
+      "four_state_summary": "COMPLETE ORIGINAL: → EXPANSIVE MATERIAL RECONSTRUCTION: → DIFFERENT CONVERGING RECONSTRUCTION: → COMPLETE DESTINATION:",
+      "previous_identity_output_name": "R020_CUP_HAND_CONTACT_AND_TABLETOP_DEPTH_1X3.png"
     },
     "R021": {
       "key": "R021",
       "path": "02_library/morphs/buildings/R021_RESTAURANT_REAR_DOORS_AND_DEPTH_RELATIONSHIPS.txt",
-      "output": "R021_RESTAURANT_REAR_DOORS_AND_DEPTH_RELATIONSHIPS_1X3.png",
+      "output": "R021_RESTAURANT_REAR_DOORS_AND_DEPTH_RELATIONSHIPS_2X2.png",
       "refs": [],
       "status": "PREPARED_NOT_RENDERED",
       "layout": "4K 2x2 object material transformation",
-      "prompt_sha256": "e72a5f03587cabf588f1ec79591ceba674a207847f4bbed4c2444840e10bcbec",
+      "prompt_sha256": "35beb97c4de55afd03283408a97b3457e6d0a17e8fb0613bc6f92b7a7f9e05ac",
       "current_prompt_image_verified": false,
       "input_mode": "TEXT_ONLY",
-      "prompt_review_status": "DETAILED_OBJECT_MORPH_REVISED_NOT_RENDERED",
-      "four_state_summary": "COMPLETE ORIGINAL: → EXPANSIVE MATERIAL RECONSTRUCTION: → DIFFERENT CONVERGING RECONSTRUCTION: → COMPLETE DESTINATION:"
+      "prompt_review_status": "FOUR_STATE_AND_MATERIAL_RESPONSE_TEXT_REVIEWED_NOT_IMAGE_VERIFIED",
+      "four_state_summary": "COMPLETE ORIGINAL: → EXPANSIVE MATERIAL RECONSTRUCTION: → DIFFERENT CONVERGING RECONSTRUCTION: → COMPLETE DESTINATION:",
+      "previous_identity_output_name": "R021_RESTAURANT_REAR_DOORS_AND_DEPTH_RELATIONSHIPS_1X3.png"
     },
     "R022": {
       "key": "R022",
       "path": "02_library/morphs/objects/R022_STREET_LIGHT_FITTINGS_AND_RESTAURANT_PENDANT_CONNECTIONS.txt",
-      "output": "R022_STREET_LIGHT_FITTINGS_AND_RESTAURANT_PENDANT_CONNECTIONS_1X3.png",
+      "output": "R022_STREET_LIGHT_FITTINGS_AND_RESTAURANT_PENDANT_CONNECTIONS_2X2.png",
       "refs": [],
       "status": "PREPARED_NOT_RENDERED",
       "layout": "4K 2x2 object material transformation",
-      "prompt_sha256": "5a2899b5ee10d2fa97a8cf7d8d08d746a0dffd4b1dfa42ab463a373fa310f2b8",
+      "prompt_sha256": "4130634951cdfd32a4f52866ae2ac16744cf862829dbfae5ab8348bbb56cf8df",
       "current_prompt_image_verified": false,
       "input_mode": "TEXT_ONLY",
-      "prompt_review_status": "DETAILED_OBJECT_MORPH_REVISED_NOT_RENDERED",
-      "four_state_summary": "SOURCE: → FIXING EXPANDS INTO AN ANGULAR METAL FORK: → OVERSIZED OPEN COIL CONVERGING ON THE LAMP NECK: → RESOLVED DESTINATION:"
+      "prompt_review_status": "FOUR_STATE_AND_MATERIAL_RESPONSE_TEXT_REVIEWED_NOT_IMAGE_VERIFIED",
+      "four_state_summary": "SOURCE: → FIXING EXPANDS INTO AN ANGULAR METAL FORK: → OVERSIZED OPEN COIL CONVERGING ON THE LAMP NECK: → RESOLVED DESTINATION:",
+      "previous_identity_output_name": "R022_STREET_LIGHT_FITTINGS_AND_RESTAURANT_PENDANT_CONNECTIONS_1X3.png"
     },
     "R023": {
       "key": "R023",
       "path": "02_library/morphs/objects/R023_BALCONY_SCROLL_AND_SIDEWAYS_STAIR_STRUCTURAL_PARTS.txt",
-      "output": "R023_BALCONY_SCROLL_AND_SIDEWAYS_STAIR_STRUCTURAL_PARTS_1X3.png",
+      "output": "R023_BALCONY_SCROLL_AND_SIDEWAYS_STAIR_STRUCTURAL_PARTS_2X2.png",
       "refs": [],
       "status": "PREPARED_NOT_RENDERED",
       "layout": "4K 2x2 object material transformation",
-      "prompt_sha256": "ea0cc6d3f0641220758c2d4c6995c247a91ffc2e618207007a3a540d16bb4fe1",
+      "prompt_sha256": "f8570caf8b3d6d9e17dce720882238ad552f94d228d11bd750f21da185f88370",
       "current_prompt_image_verified": false,
       "input_mode": "TEXT_ONLY",
-      "prompt_review_status": "DETAILED_OBJECT_MORPH_REVISED_NOT_RENDERED",
-      "four_state_summary": "SOURCE: → BALCONY COIL UNWINDS INTO THICK RADIAL TREAD BLANKS: → DOUBLE-ZIGZAG STAIR WITH ROTATED TREADS AND AN UNJOINED RAIL: → RESOLVED DESTINATION:"
+      "prompt_review_status": "FOUR_STATE_AND_MATERIAL_RESPONSE_TEXT_REVIEWED_NOT_IMAGE_VERIFIED",
+      "four_state_summary": "SOURCE: → BALCONY COIL UNWINDS INTO THICK RADIAL TREAD BLANKS: → DOUBLE-ZIGZAG STAIR WITH ROTATED TREADS AND AN UNJOINED RAIL: → RESOLVED DESTINATION:",
+      "previous_identity_output_name": "R023_BALCONY_SCROLL_AND_SIDEWAYS_STAIR_STRUCTURAL_PARTS_1X3.png"
     },
     "R024": {
       "key": "R024",
       "path": "02_library/morphs/objects/R024_MOUNTED_ENGLISH_CAFE_SIGN_AND_HUNGARIAN_DESTINATION_SIGN.txt",
-      "output": "R024_MOUNTED_ENGLISH_CAFE_SIGN_AND_HUNGARIAN_DESTINATION_SIGN_1X3.png",
+      "output": "R024_MOUNTED_ENGLISH_CAFE_SIGN_AND_HUNGARIAN_DESTINATION_SIGN_2X2.png",
       "refs": [],
       "status": "PREPARED_NOT_RENDERED",
       "layout": "4K 2x2 object material transformation",
-      "prompt_sha256": "999837e224ac19f4b6a99af71c31bd8f450b033055367ff7dcbbad3ab4dead69",
+      "prompt_sha256": "e5fb4ad86b15a6105bbfe61d348c9542a01d49502ce5fec5d8bb939c8b51a5fa",
       "current_prompt_image_verified": false,
       "input_mode": "TEXT_ONLY",
-      "prompt_review_status": "DETAILED_OBJECT_MORPH_REVISED_NOT_RENDERED",
-      "four_state_summary": "SOURCE: → RAISED LETTER STROKES SPREAD INTO A THREE-DIMENSIONAL LATTICE: → FOUR OPEN TARGET GLYPH SKELETONS BEFORE CLOSURE: → RESOLVED DESTINATION:"
+      "prompt_review_status": "FOUR_STATE_AND_MATERIAL_RESPONSE_TEXT_REVIEWED_NOT_IMAGE_VERIFIED",
+      "four_state_summary": "SOURCE: → RAISED LETTER STROKES SPREAD INTO A THREE-DIMENSIONAL LATTICE: → FOUR OPEN TARGET GLYPH SKELETONS BEFORE CLOSURE: → RESOLVED DESTINATION:",
+      "previous_identity_output_name": "R024_MOUNTED_ENGLISH_CAFE_SIGN_AND_HUNGARIAN_DESTINATION_SIGN_1X3.png"
     },
     "R025": {
       "key": "R025",
       "path": "02_library/morphs/buildings/R025_ORIGINAL_LONDON_ROOF_AND_CHIMNEY_VOLUMES.txt",
-      "output": "R025_ORIGINAL_LONDON_ROOF_AND_CHIMNEY_VOLUMES_1X3.png",
+      "output": "R025_ORIGINAL_LONDON_ROOF_AND_CHIMNEY_VOLUMES_2X2.png",
       "refs": [],
       "status": "PREPARED_NOT_RENDERED",
       "layout": "4K 2x2 object material transformation",
-      "prompt_sha256": "435fe9e488794afa64090916fceedef9bf05aefaa97f6b5914275bd88853f91a",
+      "prompt_sha256": "10b7ecaa56e09b56c3e5f438fc0cf124f7b0035349d29fb93f927d825eb11678",
       "current_prompt_image_verified": false,
       "input_mode": "TEXT_ONLY",
-      "prompt_review_status": "DETAILED_OBJECT_MORPH_REVISED_NOT_RENDERED",
-      "four_state_summary": "SOURCE: → ROOF SECTORS OPEN INTO A WIDE UNEQUAL RIB CAGE: → CURVED GLASS ROOF WITH A LARGE OPEN CENTRAL SEAM: → RESOLVED DESTINATION:"
+      "prompt_review_status": "FOUR_STATE_AND_MATERIAL_RESPONSE_TEXT_REVIEWED_NOT_IMAGE_VERIFIED",
+      "four_state_summary": "SOURCE: → ROOF SECTORS OPEN INTO A WIDE UNEQUAL RIB CAGE: → CURVED GLASS ROOF WITH A LARGE OPEN CENTRAL SEAM: → RESOLVED DESTINATION:",
+      "previous_identity_output_name": "R025_ORIGINAL_LONDON_ROOF_AND_CHIMNEY_VOLUMES_1X3.png"
     },
     "R026": {
       "key": "R026",
       "path": "02_library/morphs/buildings/R026_TARGET_ROOF_GLAZING_STONE_CORBELS_AND_CHIMNEY_CROWNS.txt",
-      "output": "R026_TARGET_ROOF_GLAZING_STONE_CORBELS_AND_CHIMNEY_CROWNS_1X3.png",
+      "output": "R026_TARGET_ROOF_GLAZING_STONE_CORBELS_AND_CHIMNEY_CROWNS_2X2.png",
       "refs": [],
       "status": "PREPARED_NOT_RENDERED",
       "layout": "4K 2x2 object material transformation",
-      "prompt_sha256": "f7b5e353913cde66e70db9f8e20bc321e6f2bbd3ed66d0e3d5df49a48ed615a5",
+      "prompt_sha256": "5ec4a16547ef325ac01dd81eb24cfa6949ed6450eefbf7a4b7706d5e30721389",
       "current_prompt_image_verified": false,
       "input_mode": "TEXT_ONLY",
-      "prompt_review_status": "DETAILED_OBJECT_MORPH_REVISED_NOT_RENDERED",
-      "four_state_summary": "COMPLETE ORIGINAL: → EXPANSIVE MATERIAL RECONSTRUCTION: → DIFFERENT CONVERGING RECONSTRUCTION: → COMPLETE DESTINATION:"
+      "prompt_review_status": "FOUR_STATE_AND_MATERIAL_RESPONSE_TEXT_REVIEWED_NOT_IMAGE_VERIFIED",
+      "four_state_summary": "COMPLETE ORIGINAL: → EXPANSIVE MATERIAL RECONSTRUCTION: → DIFFERENT CONVERGING RECONSTRUCTION: → COMPLETE DESTINATION:",
+      "previous_identity_output_name": "R026_TARGET_ROOF_GLAZING_STONE_CORBELS_AND_CHIMNEY_CROWNS_1X3.png"
     },
     "R028": {
       "key": "R028",
       "path": "02_library/morphs/buildings/R028_ORIGINAL_ARCADE_ARCH_AND_FANLIGHT.txt",
-      "output": "R028_ORIGINAL_ARCADE_ARCH_AND_FANLIGHT_1X3.png",
+      "output": "R028_ORIGINAL_ARCADE_ARCH_AND_FANLIGHT_2X2.png",
       "refs": [],
       "status": "PREPARED_NOT_RENDERED",
       "layout": "4K 2x2 object material transformation",
-      "prompt_sha256": "27aff70f6af0983225328927923f26032d71e3b751b9bdfb7fa6b6ced96c8bcf",
+      "prompt_sha256": "2fad70e24bbfdb36b9cfaa87029cc3aa52b4235d40bc9086b74ab8cb7dbed9a6",
       "current_prompt_image_verified": false,
       "input_mode": "TEXT_ONLY",
-      "prompt_review_status": "DETAILED_OBJECT_MORPH_REVISED_NOT_RENDERED",
-      "four_state_summary": "SOURCE: → FANLIGHT SPLITS INTO A WIDELY SPLAYED RIB ARRAY: → CONVERGING OVERHEAD CANOPY WITH A LARGE OPEN ROOF SECTOR: → RESOLVED DESTINATION:"
+      "prompt_review_status": "FOUR_STATE_AND_MATERIAL_RESPONSE_TEXT_REVIEWED_NOT_IMAGE_VERIFIED",
+      "four_state_summary": "SOURCE: → FANLIGHT SPLITS INTO A WIDELY SPLAYED RIB ARRAY: → CONVERGING OVERHEAD CANOPY WITH A LARGE OPEN ROOF SECTOR: → RESOLVED DESTINATION:",
+      "previous_identity_output_name": "R028_ORIGINAL_ARCADE_ARCH_AND_FANLIGHT_1X3.png"
     },
     "R029": {
       "key": "R029",
       "path": "02_library/morphs/buildings/R029_FULL_SUPPORTED_CANOPY_DESTINATION.txt",
-      "output": "R029_FULL_SUPPORTED_CANOPY_DESTINATION_1X3.png",
+      "output": "R029_FULL_SUPPORTED_CANOPY_DESTINATION_2X2.png",
       "refs": [],
       "status": "PREPARED_NOT_RENDERED",
       "layout": "4K 2x2 object material transformation",
-      "prompt_sha256": "fd0b5d12fda16cf1d9029023269b160ce11b6dfec3aa1cfe44159170172334a2",
+      "prompt_sha256": "70bad20b59e3653d430ee8007d25b2d7f910984fbc69401dfbf21dbaef45a4d3",
       "current_prompt_image_verified": false,
       "input_mode": "TEXT_ONLY",
-      "prompt_review_status": "DETAILED_OBJECT_MORPH_REVISED_NOT_RENDERED",
-      "four_state_summary": "COMPLETE ORIGINAL: → EXPANSIVE MATERIAL RECONSTRUCTION: → DIFFERENT CONVERGING RECONSTRUCTION: → COMPLETE DESTINATION:"
+      "prompt_review_status": "FOUR_STATE_AND_MATERIAL_RESPONSE_TEXT_REVIEWED_NOT_IMAGE_VERIFIED",
+      "four_state_summary": "COMPLETE ORIGINAL: → EXPANSIVE MATERIAL RECONSTRUCTION: → DIFFERENT CONVERGING RECONSTRUCTION: → COMPLETE DESTINATION:",
+      "previous_identity_output_name": "R029_FULL_SUPPORTED_CANOPY_DESTINATION_1X3.png"
     },
     "R030": {
       "key": "R030",
       "path": "02_library/morphs/buildings/R030_DEEP_GALLERY_THROUGH_THE_UNCHANGED_THRESHOLD.txt",
-      "output": "R030_DEEP_GALLERY_THROUGH_THE_UNCHANGED_THRESHOLD_1X3.png",
+      "output": "R030_DEEP_GALLERY_THROUGH_THE_UNCHANGED_THRESHOLD_2X2.png",
       "refs": [],
       "status": "PREPARED_NOT_RENDERED",
       "layout": "4K 2x2 object material transformation",
-      "prompt_sha256": "9be1128535a689f5ccb21eee92ff6b191c3deda6179f1bf2bbfaeb09d1b4a269",
+      "prompt_sha256": "c8c1a83ea315f5b0ec06fbf9d040f57c70eebb6a991909f2acb5374d024c205d",
       "current_prompt_image_verified": false,
       "input_mode": "TEXT_ONLY",
-      "prompt_review_status": "DETAILED_OBJECT_MORPH_REVISED_NOT_RENDERED",
-      "four_state_summary": "COMPLETE ORIGINAL: → EXPANSIVE MATERIAL RECONSTRUCTION: → DIFFERENT CONVERGING RECONSTRUCTION: → COMPLETE DESTINATION:"
+      "prompt_review_status": "FOUR_STATE_AND_MATERIAL_RESPONSE_TEXT_REVIEWED_NOT_IMAGE_VERIFIED",
+      "four_state_summary": "COMPLETE ORIGINAL: → EXPANSIVE MATERIAL RECONSTRUCTION: → DIFFERENT CONVERGING RECONSTRUCTION: → COMPLETE DESTINATION:",
+      "previous_identity_output_name": "R030_DEEP_GALLERY_THROUGH_THE_UNCHANGED_THRESHOLD_1X3.png"
     },
     "R031": {
       "key": "R031",
       "path": "02_library/morphs/buildings/R031_LONDON_STATION_SOURCE_EXTERIOR_AND_IRON_STRUCTURE.txt",
-      "output": "R031_LONDON_STATION_SOURCE_EXTERIOR_AND_IRON_STRUCTURE_1X3.png",
+      "output": "R031_LONDON_STATION_SOURCE_EXTERIOR_AND_IRON_STRUCTURE_2X2.png",
       "refs": [],
       "status": "PREPARED_NOT_RENDERED",
       "layout": "4K 2x2 object material transformation",
-      "prompt_sha256": "ed8067dcc02d25275ba92015441ede8d2ea556cc8fe96543b6da9ea4a654b6ff",
+      "prompt_sha256": "09e01055b9197c2c7632073ec9e293844e6f2550e571f9223007fdb1347f3d32",
       "current_prompt_image_verified": false,
       "input_mode": "TEXT_ONLY",
-      "prompt_review_status": "DETAILED_OBJECT_MORPH_REVISED_NOT_RENDERED",
-      "four_state_summary": "COMPLETE ORIGINAL: → EXPANSIVE MATERIAL RECONSTRUCTION: → DIFFERENT CONVERGING RECONSTRUCTION: → COMPLETE DESTINATION:"
+      "prompt_review_status": "FOUR_STATE_AND_MATERIAL_RESPONSE_TEXT_REVIEWED_NOT_IMAGE_VERIFIED",
+      "four_state_summary": "COMPLETE ORIGINAL: → EXPANSIVE MATERIAL RECONSTRUCTION: → DIFFERENT CONVERGING RECONSTRUCTION: → COMPLETE DESTINATION:",
+      "previous_identity_output_name": "R031_LONDON_STATION_SOURCE_EXTERIOR_AND_IRON_STRUCTURE_1X3.png"
     },
     "R032": {
       "key": "R032",
       "path": "02_library/morphs/buildings/R032_NYUGATI_STATION_DESTINATION_AND_ROOF_JOINTS.txt",
-      "output": "R032_NYUGATI_STATION_DESTINATION_AND_ROOF_JOINTS_1X3.png",
+      "output": "R032_NYUGATI_STATION_DESTINATION_AND_ROOF_JOINTS_2X2.png",
       "refs": [],
       "status": "PREPARED_NOT_RENDERED",
       "layout": "4K 2x2 object material transformation",
-      "prompt_sha256": "26ee8bf923bda16dbe230c126bd149fa42ab6a2633f7dcf17db35598e3d42a9a",
+      "prompt_sha256": "89c5e667ab5dd292f6368ea0abfc08f86e074d14921e5d5215f4fa25eb9da30b",
       "current_prompt_image_verified": false,
       "input_mode": "TEXT_ONLY",
-      "prompt_review_status": "DETAILED_OBJECT_MORPH_REVISED_NOT_RENDERED",
-      "four_state_summary": "COMPLETE ORIGINAL: → EXPANSIVE MATERIAL RECONSTRUCTION: → DIFFERENT CONVERGING RECONSTRUCTION: → COMPLETE DESTINATION:"
+      "prompt_review_status": "FOUR_STATE_AND_MATERIAL_RESPONSE_TEXT_REVIEWED_NOT_IMAGE_VERIFIED",
+      "four_state_summary": "COMPLETE ORIGINAL: → EXPANSIVE MATERIAL RECONSTRUCTION: → DIFFERENT CONVERGING RECONSTRUCTION: → COMPLETE DESTINATION:",
+      "previous_identity_output_name": "R032_NYUGATI_STATION_DESTINATION_AND_ROOF_JOINTS_1X3.png"
     },
     "R033": {
       "key": "R033",
       "path": "02_library/morphs/buildings/R033_HUNGARIAN_STATE_OPERA_TARGET_FACADE_AND_ENTRY_DEPTH.txt",
-      "output": "R033_HUNGARIAN_STATE_OPERA_TARGET_FACADE_AND_ENTRY_DEPTH_1X3.png",
+      "output": "R033_HUNGARIAN_STATE_OPERA_TARGET_FACADE_AND_ENTRY_DEPTH_2X2.png",
       "refs": [],
       "status": "PREPARED_NOT_RENDERED",
       "layout": "4K 2x2 object material transformation",
-      "prompt_sha256": "34629519b1ff954ecebb8945e4fccdf9af5ca367595ab94005527a3cbcd3ec4a",
+      "prompt_sha256": "630cbabbb5ebfacd1f0479340cb97c4f937eda54a43f8919f508c3f4d5988cac",
       "current_prompt_image_verified": false,
       "input_mode": "TEXT_ONLY",
-      "prompt_review_status": "DETAILED_OBJECT_MORPH_REVISED_NOT_RENDERED",
-      "four_state_summary": "COMPLETE ORIGINAL: → EXPANSIVE MATERIAL RECONSTRUCTION: → DIFFERENT CONVERGING RECONSTRUCTION: → COMPLETE DESTINATION:"
+      "prompt_review_status": "FOUR_STATE_AND_MATERIAL_RESPONSE_TEXT_REVIEWED_NOT_IMAGE_VERIFIED",
+      "four_state_summary": "COMPLETE ORIGINAL: → EXPANSIVE MATERIAL RECONSTRUCTION: → DIFFERENT CONVERGING RECONSTRUCTION: → COMPLETE DESTINATION:",
+      "previous_identity_output_name": "R033_HUNGARIAN_STATE_OPERA_TARGET_FACADE_AND_ENTRY_DEPTH_1X3.png"
     },
     "R034": {
       "key": "R034",
       "path": "02_library/morphs/buildings/R034_TOWER_BRIDGE_SOURCE_STRUCTURE.txt",
-      "output": "R034_TOWER_BRIDGE_SOURCE_STRUCTURE_1X3.png",
+      "output": "R034_TOWER_BRIDGE_SOURCE_STRUCTURE_2X2.png",
       "refs": [],
       "status": "PREPARED_NOT_RENDERED",
       "layout": "4K 2x2 object material transformation",
-      "prompt_sha256": "293c1bd8a4f825ed965bb1c078e1812422252cbc10ded6b2a8a001fbb2b5ee29",
+      "prompt_sha256": "4718165d44988bc73434c0a0e1b1e259faae7100439c2746bb93109980d07324",
       "current_prompt_image_verified": false,
       "input_mode": "TEXT_ONLY",
-      "prompt_review_status": "DETAILED_OBJECT_MORPH_REVISED_NOT_RENDERED",
-      "four_state_summary": "COMPLETE ORIGINAL: → EXPANSIVE MATERIAL RECONSTRUCTION: → DIFFERENT CONVERGING RECONSTRUCTION: → COMPLETE DESTINATION:"
+      "prompt_review_status": "FOUR_STATE_AND_MATERIAL_RESPONSE_TEXT_REVIEWED_NOT_IMAGE_VERIFIED",
+      "four_state_summary": "COMPLETE ORIGINAL: → EXPANSIVE MATERIAL RECONSTRUCTION: → DIFFERENT CONVERGING RECONSTRUCTION: → COMPLETE DESTINATION:",
+      "previous_identity_output_name": "R034_TOWER_BRIDGE_SOURCE_STRUCTURE_1X3.png"
     },
     "R035": {
       "key": "R035",
       "path": "02_library/morphs/buildings/R035_SZECHENYI_CHAIN_BRIDGE_DESTINATION_STRUCTURE.txt",
-      "output": "R035_SZECHENYI_CHAIN_BRIDGE_DESTINATION_STRUCTURE_1X3.png",
+      "output": "R035_SZECHENYI_CHAIN_BRIDGE_DESTINATION_STRUCTURE_2X2.png",
       "refs": [],
       "status": "PREPARED_NOT_RENDERED",
       "layout": "4K 2x2 object material transformation",
-      "prompt_sha256": "55f388cb28c9fa609566dc1b9924656cfece9b4a70edf748d5b35b3c1f741357",
+      "prompt_sha256": "e11a727e487ae40a48810f461fee5feba17694b330952619acd43b02e754c821",
       "current_prompt_image_verified": false,
       "input_mode": "TEXT_ONLY",
-      "prompt_review_status": "DETAILED_OBJECT_MORPH_REVISED_NOT_RENDERED",
-      "four_state_summary": "COMPLETE ORIGINAL: → EXPANSIVE MATERIAL RECONSTRUCTION: → DIFFERENT CONVERGING RECONSTRUCTION: → COMPLETE DESTINATION:"
+      "prompt_review_status": "FOUR_STATE_AND_MATERIAL_RESPONSE_TEXT_REVIEWED_NOT_IMAGE_VERIFIED",
+      "four_state_summary": "COMPLETE ORIGINAL: → EXPANSIVE MATERIAL RECONSTRUCTION: → DIFFERENT CONVERGING RECONSTRUCTION: → COMPLETE DESTINATION:",
+      "previous_identity_output_name": "R035_SZECHENYI_CHAIN_BRIDGE_DESTINATION_STRUCTURE_1X3.png"
     },
     "R036": {
       "key": "R036",
       "path": "02_library/morphs/buildings/R036_LONDON_EYE_AND_CONNECTED_SOUTH_BANK_DEPTH.txt",
-      "output": "R036_LONDON_EYE_AND_CONNECTED_SOUTH_BANK_DEPTH_1X3.png",
+      "output": "R036_LONDON_EYE_AND_CONNECTED_SOUTH_BANK_DEPTH_2X2.png",
       "refs": [],
       "status": "PREPARED_NOT_RENDERED",
       "layout": "4K 2x2 object material transformation",
-      "prompt_sha256": "90373fab45f908c3d3ec90c7eae5d3b05a785e802da0d2cfec73052f0b4c5dcc",
+      "prompt_sha256": "ce078af4cbd4956132eb7e3df62d379d1bc02d770573de10f4e613c6de3f5e7b",
       "current_prompt_image_verified": false,
       "input_mode": "TEXT_ONLY",
-      "prompt_review_status": "DETAILED_OBJECT_MORPH_REVISED_NOT_RENDERED",
-      "four_state_summary": "COMPLETE ORIGINAL: → EXPANSIVE MATERIAL RECONSTRUCTION: → DIFFERENT CONVERGING RECONSTRUCTION: → COMPLETE DESTINATION:"
+      "prompt_review_status": "FOUR_STATE_AND_MATERIAL_RESPONSE_TEXT_REVIEWED_NOT_IMAGE_VERIFIED",
+      "four_state_summary": "COMPLETE ORIGINAL: → EXPANSIVE MATERIAL RECONSTRUCTION: → DIFFERENT CONVERGING RECONSTRUCTION: → COMPLETE DESTINATION:",
+      "previous_identity_output_name": "R036_LONDON_EYE_AND_CONNECTED_SOUTH_BANK_DEPTH_1X3.png"
     },
     "R037": {
       "key": "R037",
       "path": "02_library/morphs/buildings/R037_GREAT_MARKET_HALL_ROOF_AND_BRICK_SOURCE_VOLUME.txt",
-      "output": "R037_GREAT_MARKET_HALL_ROOF_AND_BRICK_SOURCE_VOLUME_1X3.png",
+      "output": "R037_GREAT_MARKET_HALL_ROOF_AND_BRICK_SOURCE_VOLUME_2X2.png",
       "refs": [],
       "status": "PREPARED_NOT_RENDERED",
       "layout": "4K 2x2 object material transformation",
-      "prompt_sha256": "1d96f145cd1fa94df3bb3b5d4afc4211b851e2e37421912c818e1e56bc50213d",
+      "prompt_sha256": "eaf3b902c42cf3f10bcbb4e008c3456556cbed05f8c8b5d247e0f4fb933166fb",
       "current_prompt_image_verified": false,
       "input_mode": "TEXT_ONLY",
-      "prompt_review_status": "DETAILED_OBJECT_MORPH_REVISED_NOT_RENDERED",
-      "four_state_summary": "COMPLETE ORIGINAL: → EXPANSIVE MATERIAL RECONSTRUCTION: → DIFFERENT CONVERGING RECONSTRUCTION: → COMPLETE DESTINATION:"
+      "prompt_review_status": "FOUR_STATE_AND_MATERIAL_RESPONSE_TEXT_REVIEWED_NOT_IMAGE_VERIFIED",
+      "four_state_summary": "COMPLETE ORIGINAL: → EXPANSIVE MATERIAL RECONSTRUCTION: → DIFFERENT CONVERGING RECONSTRUCTION: → COMPLETE DESTINATION:",
+      "previous_identity_output_name": "R037_GREAT_MARKET_HALL_ROOF_AND_BRICK_SOURCE_VOLUME_1X3.png"
     },
     "R038": {
       "key": "R038",
       "path": "02_library/morphs/buildings/R038_BALNA_CURVED_GLASS_TARGET_VOLUME.txt",
-      "output": "R038_BALNA_CURVED_GLASS_TARGET_VOLUME_1X3.png",
+      "output": "R038_BALNA_CURVED_GLASS_TARGET_VOLUME_2X2.png",
       "refs": [],
       "status": "PREPARED_NOT_RENDERED",
       "layout": "4K 2x2 object material transformation",
-      "prompt_sha256": "628b244ca9f3aa1f64a4acaf5ff664bbb18051b55055b0f9d453e87f9c131745",
+      "prompt_sha256": "e4296e814b16162d61dd13acc7c1ac92ecc0e85e07cdea6f2a197475795f8c4e",
       "current_prompt_image_verified": false,
       "input_mode": "TEXT_ONLY",
-      "prompt_review_status": "DETAILED_OBJECT_MORPH_REVISED_NOT_RENDERED",
-      "four_state_summary": "COMPLETE ORIGINAL: → EXPANSIVE MATERIAL RECONSTRUCTION: → DIFFERENT CONVERGING RECONSTRUCTION: → COMPLETE DESTINATION:"
+      "prompt_review_status": "FOUR_STATE_AND_MATERIAL_RESPONSE_TEXT_REVIEWED_NOT_IMAGE_VERIFIED",
+      "four_state_summary": "COMPLETE ORIGINAL: → EXPANSIVE MATERIAL RECONSTRUCTION: → DIFFERENT CONVERGING RECONSTRUCTION: → COMPLETE DESTINATION:",
+      "previous_identity_output_name": "R038_BALNA_CURVED_GLASS_TARGET_VOLUME_1X3.png"
     },
     "R039": {
       "key": "R039",
       "path": "02_library/morphs/buildings/R039_WESTMINSTER_AND_PARLIAMENT_SQUARE_LONDON_SOURCE.txt",
-      "output": "R039_WESTMINSTER_AND_PARLIAMENT_SQUARE_LONDON_SOURCE_1X3.png",
+      "output": "R039_WESTMINSTER_AND_PARLIAMENT_SQUARE_LONDON_SOURCE_2X2.png",
       "refs": [],
       "status": "PREPARED_NOT_RENDERED",
       "layout": "4K 2x2 object material transformation",
-      "prompt_sha256": "e54de2a263930af1457e257d87d4e4c05a2f7a6dac906fa78215bb2756ab3800",
+      "prompt_sha256": "f7fc381be613d9f0da2658ce8317393d879f158913de8e78af4e0d2b8422ff02",
       "current_prompt_image_verified": false,
       "input_mode": "TEXT_ONLY",
-      "prompt_review_status": "DETAILED_OBJECT_MORPH_REVISED_NOT_RENDERED",
-      "four_state_summary": "COMPLETE ORIGINAL: → EXPANSIVE MATERIAL RECONSTRUCTION: → DIFFERENT CONVERGING RECONSTRUCTION: → COMPLETE DESTINATION:"
+      "prompt_review_status": "FOUR_STATE_AND_MATERIAL_RESPONSE_TEXT_REVIEWED_NOT_IMAGE_VERIFIED",
+      "four_state_summary": "COMPLETE ORIGINAL: → EXPANSIVE MATERIAL RECONSTRUCTION: → DIFFERENT CONVERGING RECONSTRUCTION: → COMPLETE DESTINATION:",
+      "previous_identity_output_name": "R039_WESTMINSTER_AND_PARLIAMENT_SQUARE_LONDON_SOURCE_1X3.png"
     },
     "R040": {
       "key": "R040",
       "path": "02_library/morphs/buildings/R040_HUNGARIAN_PARLIAMENT_COMPLETE_DESTINATION_SILHOUETTE.txt",
-      "output": "R040_HUNGARIAN_PARLIAMENT_COMPLETE_DESTINATION_SILHOUETTE_1X3.png",
+      "output": "R040_HUNGARIAN_PARLIAMENT_COMPLETE_DESTINATION_SILHOUETTE_2X2.png",
       "refs": [],
       "status": "PREPARED_NOT_RENDERED",
       "layout": "4K 2x2 object material transformation",
-      "prompt_sha256": "3e337adddf3ef12e269fb15679290ccb3ed5e91e197f9ce8f9fd0f1172e5c597",
+      "prompt_sha256": "a3ae87d328e882344b9937c401cee432751692c29458ef303f5f3d1bd7bfe4e2",
       "current_prompt_image_verified": false,
       "input_mode": "TEXT_ONLY",
-      "prompt_review_status": "DETAILED_OBJECT_MORPH_REVISED_NOT_RENDERED",
-      "four_state_summary": "COMPLETE ORIGINAL: → EXPANSIVE MATERIAL RECONSTRUCTION: → DIFFERENT CONVERGING RECONSTRUCTION: → COMPLETE DESTINATION:"
+      "prompt_review_status": "FOUR_STATE_AND_MATERIAL_RESPONSE_TEXT_REVIEWED_NOT_IMAGE_VERIFIED",
+      "four_state_summary": "COMPLETE ORIGINAL: → EXPANSIVE MATERIAL RECONSTRUCTION: → DIFFERENT CONVERGING RECONSTRUCTION: → COMPLETE DESTINATION:",
+      "previous_identity_output_name": "R040_HUNGARIAN_PARLIAMENT_COMPLETE_DESTINATION_SILHOUETTE_1X3.png"
     },
     "R041": {
       "key": "R041",
       "path": "02_library/morphs/buildings/R041_GRESHAM_PALACE_FRONTAGE_AND_DEEP_STONE_DETAILS.txt",
-      "output": "R041_GRESHAM_PALACE_FRONTAGE_AND_DEEP_STONE_DETAILS_1X3.png",
+      "output": "R041_GRESHAM_PALACE_FRONTAGE_AND_DEEP_STONE_DETAILS_2X2.png",
       "refs": [],
       "status": "PREPARED_NOT_RENDERED",
       "layout": "4K 2x2 object material transformation",
-      "prompt_sha256": "a2f81657dd6891394d851d0e5e8f0f9a802d8cd1e527d09938fc3289dc104285",
+      "prompt_sha256": "0db637fa75cb9698eee03d9b7d46709884a1c680e507dae8a43e975abf0938a4",
       "current_prompt_image_verified": false,
       "input_mode": "TEXT_ONLY",
-      "prompt_review_status": "DETAILED_OBJECT_MORPH_REVISED_NOT_RENDERED",
-      "four_state_summary": "COMPLETE ORIGINAL: → EXPANSIVE MATERIAL RECONSTRUCTION: → DIFFERENT CONVERGING RECONSTRUCTION: → COMPLETE DESTINATION:"
+      "prompt_review_status": "FOUR_STATE_AND_MATERIAL_RESPONSE_TEXT_REVIEWED_NOT_IMAGE_VERIFIED",
+      "four_state_summary": "COMPLETE ORIGINAL: → EXPANSIVE MATERIAL RECONSTRUCTION: → DIFFERENT CONVERGING RECONSTRUCTION: → COMPLETE DESTINATION:",
+      "previous_identity_output_name": "R041_GRESHAM_PALACE_FRONTAGE_AND_DEEP_STONE_DETAILS_1X3.png"
     },
     "R042": {
       "key": "R042",
       "path": "02_library/morphs/buildings/R042_NEW_YORK_PALACE_HISTORIC_EXTERIOR_WITH_OCCUPIED_BAY_DEPTH.txt",
-      "output": "R042_NEW_YORK_PALACE_HISTORIC_EXTERIOR_WITH_OCCUPIED_BAY_DEPTH_1X3.png",
+      "output": "R042_NEW_YORK_PALACE_HISTORIC_EXTERIOR_WITH_OCCUPIED_BAY_DEPTH_2X2.png",
       "refs": [],
       "status": "PREPARED_NOT_RENDERED",
       "layout": "4K 2x2 object material transformation",
-      "prompt_sha256": "5c8009f7666fe7c84de066547bbc44862cbc55461a3651a0e10c4d2c6e8109da",
+      "prompt_sha256": "4f3657e0349a59bdd9df74e304d1bef727ea2bd7c9ab5211bc92959cf8dc442a",
       "current_prompt_image_verified": false,
       "input_mode": "TEXT_ONLY",
-      "prompt_review_status": "DETAILED_OBJECT_MORPH_REVISED_NOT_RENDERED",
-      "four_state_summary": "COMPLETE ORIGINAL: → EXPANSIVE MATERIAL RECONSTRUCTION: → DIFFERENT CONVERGING RECONSTRUCTION: → COMPLETE DESTINATION:"
+      "prompt_review_status": "FOUR_STATE_AND_MATERIAL_RESPONSE_TEXT_REVIEWED_NOT_IMAGE_VERIFIED",
+      "four_state_summary": "COMPLETE ORIGINAL: → EXPANSIVE MATERIAL RECONSTRUCTION: → DIFFERENT CONVERGING RECONSTRUCTION: → COMPLETE DESTINATION:",
+      "previous_identity_output_name": "R042_NEW_YORK_PALACE_HISTORIC_EXTERIOR_WITH_OCCUPIED_BAY_DEPTH_1X3.png"
     },
     "R043": {
       "key": "R043",
       "path": "02_library/morphs/objects/R043_LONDON_ENTRANCE_RAIL_AND_REMEMBERED_TRANSIT_GATE.txt",
-      "output": "R043_LONDON_ENTRANCE_RAIL_AND_REMEMBERED_TRANSIT_GATE_1X3.png",
+      "output": "R043_LONDON_ENTRANCE_RAIL_AND_REMEMBERED_TRANSIT_GATE_2X2.png",
       "refs": [],
       "status": "PREPARED_NOT_RENDERED",
       "layout": "4K 2x2 object material transformation",
-      "prompt_sha256": "6410d468ece35f159eea5bde1dc2de4a52807411dde18f1891056a81e77a827c",
+      "prompt_sha256": "77eb83ed92928a1dd69d0d9c576c404e81496b0a0a6ab4f68cb74f4ba8e21175",
       "current_prompt_image_verified": false,
       "input_mode": "TEXT_ONLY",
-      "prompt_review_status": "DETAILED_OBJECT_MORPH_REVISED_NOT_RENDERED",
-      "four_state_summary": "SOURCE: → RAIL OPENS INTO A BROAD FORK AND SPLIT GATE SHELL: → UNFINISHED ROTATING GATE WITH AN OPEN HOUSING AND OVERSIZED LEAF: → RESOLVED DESTINATION:"
+      "prompt_review_status": "FOUR_STATE_AND_MATERIAL_RESPONSE_TEXT_REVIEWED_NOT_IMAGE_VERIFIED",
+      "four_state_summary": "SOURCE: → RAIL OPENS INTO A BROAD FORK AND SPLIT GATE SHELL: → UNFINISHED ROTATING GATE WITH AN OPEN HOUSING AND OVERSIZED LEAF: → RESOLVED DESTINATION:",
+      "previous_identity_output_name": "R043_LONDON_ENTRANCE_RAIL_AND_REMEMBERED_TRANSIT_GATE_1X3.png"
     },
     "R044": {
       "key": "R044",
       "path": "02_library/morphs/objects/R044_REMEMBERED_BUS_SEATS_AISLE_AND_CANOPY_POST_CORRESPONDENCE.txt",
-      "output": "R044_REMEMBERED_BUS_SEATS_AISLE_AND_CANOPY_POST_CORRESPONDENCE_1X3.png",
+      "output": "R044_REMEMBERED_BUS_SEATS_AISLE_AND_CANOPY_POST_CORRESPONDENCE_2X2.png",
       "refs": [],
       "status": "PREPARED_NOT_RENDERED",
       "layout": "4K 2x2 object material transformation",
-      "prompt_sha256": "13b783fd0938d79dd1bdc66b66f0c1213718d92a96fbccf8a3bc8dacc185f72f",
+      "prompt_sha256": "58a212093a26c87b5b7e81e6d172015d7cb7142c4af396eef7269d928a55b132",
       "current_prompt_image_verified": false,
       "input_mode": "TEXT_ONLY",
-      "prompt_review_status": "DETAILED_OBJECT_MORPH_REVISED_NOT_RENDERED",
-      "four_state_summary": "SOURCE: → BENCH AND POSTS SPLAY INTO SEAT AND WINDOW FRAME PARTS: → CONVERGING BUS ROOM WITH RAISED SEAT SHELLS AND OFFSET PILLARS: → RESOLVED DESTINATION:"
+      "prompt_review_status": "FOUR_STATE_AND_MATERIAL_RESPONSE_TEXT_REVIEWED_NOT_IMAGE_VERIFIED",
+      "four_state_summary": "SOURCE: → BENCH AND POSTS SPLAY INTO SEAT AND WINDOW FRAME PARTS: → CONVERGING BUS ROOM WITH RAISED SEAT SHELLS AND OFFSET PILLARS: → RESOLVED DESTINATION:",
+      "previous_identity_output_name": "R044_REMEMBERED_BUS_SEATS_AISLE_AND_CANOPY_POST_CORRESPONDENCE_1X3.png"
     },
     "R045": {
       "key": "R045",
       "path": "02_library/morphs/objects/R045_CAIRO_TAXI_CABIN_REAR_BENCH_AND_LUGGAGE_CONTACT.txt",
-      "output": "R045_CAIRO_TAXI_CABIN_REAR_BENCH_AND_LUGGAGE_CONTACT_1X3.png",
+      "output": "R045_CAIRO_TAXI_CABIN_REAR_BENCH_AND_LUGGAGE_CONTACT_2X2.png",
       "refs": [],
       "status": "PREPARED_NOT_RENDERED",
       "layout": "4K 2x2 object material transformation",
-      "prompt_sha256": "b12538cb1e2753b721d01e24066efd912c70ca32160c877741c0135c2482f984",
+      "prompt_sha256": "cf0fa46ad9d8e5864ed7e314897a8e870c0b89cfe6b75c9aa1b30bd7b21d8c11",
       "current_prompt_image_verified": false,
       "input_mode": "TEXT_ONLY",
-      "prompt_review_status": "DETAILED_OBJECT_MORPH_REVISED_NOT_RENDERED",
-      "four_state_summary": "COMPLETE ORIGINAL: → EXPANSIVE MATERIAL RECONSTRUCTION: → DIFFERENT CONVERGING RECONSTRUCTION: → COMPLETE DESTINATION:"
+      "prompt_review_status": "FOUR_STATE_AND_MATERIAL_RESPONSE_TEXT_REVIEWED_NOT_IMAGE_VERIFIED",
+      "four_state_summary": "COMPLETE ORIGINAL: → EXPANSIVE MATERIAL RECONSTRUCTION: → DIFFERENT CONVERGING RECONSTRUCTION: → COMPLETE DESTINATION:",
+      "previous_identity_output_name": "R045_CAIRO_TAXI_CABIN_REAR_BENCH_AND_LUGGAGE_CONTACT_1X3.png"
     },
     "R046": {
       "key": "R046",
       "path": "02_library/morphs/objects/R046_CANOPY_AND_BALLOON_ENVELOPE_RIGGING_AND_BASKET_INTERFACES.txt",
-      "output": "R046_CANOPY_AND_BALLOON_ENVELOPE_RIGGING_AND_BASKET_INTERFACES_1X3.png",
+      "output": "R046_CANOPY_AND_BALLOON_ENVELOPE_RIGGING_AND_BASKET_INTERFACES_2X2.png",
       "refs": [],
       "status": "PREPARED_NOT_RENDERED",
       "layout": "4K 2x2 object material transformation",
-      "prompt_sha256": "54d2386ce771a9772e335ac9e6a4f2aa388e77a6b988c8f96135ef01974067da",
+      "prompt_sha256": "354714c4d4296d6ededcf26f0ac8290e66cf307548abfac3505042f8ea218c77",
       "current_prompt_image_verified": false,
       "input_mode": "TEXT_ONLY",
-      "prompt_review_status": "DETAILED_OBJECT_MORPH_REVISED_NOT_RENDERED",
-      "four_state_summary": "COMPLETE ORIGINAL: → EXPANSIVE MATERIAL RECONSTRUCTION: → DIFFERENT CONVERGING RECONSTRUCTION: → COMPLETE DESTINATION:"
+      "prompt_review_status": "FOUR_STATE_AND_MATERIAL_RESPONSE_TEXT_REVIEWED_NOT_IMAGE_VERIFIED",
+      "four_state_summary": "COMPLETE ORIGINAL: → EXPANSIVE MATERIAL RECONSTRUCTION: → DIFFERENT CONVERGING RECONSTRUCTION: → COMPLETE DESTINATION:",
+      "previous_identity_output_name": "R046_CANOPY_AND_BALLOON_ENVELOPE_RIGGING_AND_BASKET_INTERFACES_1X3.png"
     },
     "R047": {
       "key": "R047",
       "path": "02_library/morphs/objects/R047_PAVING_SOIL_PAPRIKA_CORN_ROOTS_AND_RAIL_SLEEPERS.txt",
-      "output": "R047_PAVING_SOIL_PAPRIKA_CORN_ROOTS_AND_RAIL_SLEEPERS_1X3.png",
+      "output": "R047_PAVING_SOIL_PAPRIKA_CORN_ROOTS_AND_RAIL_SLEEPERS_2X2.png",
       "refs": [],
       "status": "PREPARED_NOT_RENDERED",
       "layout": "4K 2x2 object material transformation",
-      "prompt_sha256": "42f2714fea233abd9c489e3a6c7a78e169a7b74b21cc919cc4b9e1de9742457a",
+      "prompt_sha256": "b314a425807f302264a24b74d6657bad776c1cf8f35c531b00455bdac35d3390",
       "current_prompt_image_verified": false,
       "input_mode": "TEXT_ONLY",
-      "prompt_review_status": "DETAILED_OBJECT_MORPH_REVISED_NOT_RENDERED",
-      "four_state_summary": "SOURCE: → UPROOTED-SHAPED STALK ARCS OVER THE SAME SOIL STRIP: → RAISED TIMBER SLEEPER BLANKS WITH LARGE PLANT ENDS: → RESOLVED DESTINATION:"
+      "prompt_review_status": "FOUR_STATE_AND_MATERIAL_RESPONSE_TEXT_REVIEWED_NOT_IMAGE_VERIFIED",
+      "four_state_summary": "SOURCE: → UPROOTED-SHAPED STALK ARCS OVER THE SAME SOIL STRIP: → RAISED TIMBER SLEEPER BLANKS WITH LARGE PLANT ENDS: → RESOLVED DESTINATION:",
+      "previous_identity_output_name": "R047_PAVING_SOIL_PAPRIKA_CORN_ROOTS_AND_RAIL_SLEEPERS_1X3.png"
     },
     "R048": {
       "key": "R048",
       "path": "02_library/morphs/objects/R048_ADMINISTRATIVE_DESK_ACTUAL_DOCUMENTS_AND_DEVICE_GEOMETRY.txt",
-      "output": "R048_ADMINISTRATIVE_DESK_ACTUAL_DOCUMENTS_AND_DEVICE_GEOMETRY_1X3.png",
+      "output": "R048_ADMINISTRATIVE_DESK_ACTUAL_DOCUMENTS_AND_DEVICE_GEOMETRY_2X2.png",
       "refs": [],
       "status": "PREPARED_NOT_RENDERED",
       "layout": "4K 2x2 object material transformation",
-      "prompt_sha256": "95f8a6d04893a38950984bb714de8371a1fdbd77a99add6b9719fc65c1a58987",
+      "prompt_sha256": "168b1fa8f7361dc744d17c80b3af05cddfc0f0348521fe0a85543eb40d9097de",
       "current_prompt_image_verified": false,
       "input_mode": "TEXT_ONLY",
-      "prompt_review_status": "DETAILED_OBJECT_MORPH_REVISED_NOT_RENDERED",
-      "four_state_summary": "COMPLETE ORIGINAL: → EXPANSIVE MATERIAL RECONSTRUCTION: → DIFFERENT CONVERGING RECONSTRUCTION: → COMPLETE DESTINATION:"
+      "prompt_review_status": "FOUR_STATE_AND_MATERIAL_RESPONSE_TEXT_REVIEWED_NOT_IMAGE_VERIFIED",
+      "four_state_summary": "COMPLETE ORIGINAL: → EXPANSIVE MATERIAL RECONSTRUCTION: → DIFFERENT CONVERGING RECONSTRUCTION: → COMPLETE DESTINATION:",
+      "previous_identity_output_name": "R048_ADMINISTRATIVE_DESK_ACTUAL_DOCUMENTS_AND_DEVICE_GEOMETRY_1X3.png"
     },
     "R049": {
       "key": "R049",
       "path": "02_library/morphs/objects/R049_CABINET_FINGERPRINT_DESK_AND_CHAIR_CONSTRUCTION.txt",
-      "output": "R049_CABINET_FINGERPRINT_DESK_AND_CHAIR_CONSTRUCTION_1X3.png",
+      "output": "R049_CABINET_FINGERPRINT_DESK_AND_CHAIR_CONSTRUCTION_2X2.png",
       "refs": [],
       "status": "PREPARED_NOT_RENDERED",
       "layout": "4K 2x2 object material transformation",
-      "prompt_sha256": "628ff7f367c158fe0642b2e5b7fb31d2ae430f1974f852f8e8c3d37c1ccff5f6",
+      "prompt_sha256": "16c719df6dfd3c0793b44bdd002a804cc9bce91c82bc9b0fbb50d018d6bbde20",
       "current_prompt_image_verified": false,
       "input_mode": "TEXT_ONLY",
-      "prompt_review_status": "DETAILED_OBJECT_MORPH_REVISED_NOT_RENDERED",
-      "four_state_summary": "SOURCE: → CABINET EXPANDS INTO A SPLAYED FURNITURE SKELETON: → UNJOINED DESK AND CHAIR WITH A LARGE REMAINING PANEL WEB: → RESOLVED DESTINATION:"
+      "prompt_review_status": "FOUR_STATE_AND_MATERIAL_RESPONSE_TEXT_REVIEWED_NOT_IMAGE_VERIFIED",
+      "four_state_summary": "SOURCE: → CABINET EXPANDS INTO A SPLAYED FURNITURE SKELETON: → UNJOINED DESK AND CHAIR WITH A LARGE REMAINING PANEL WEB: → RESOLVED DESTINATION:",
+      "previous_identity_output_name": "R049_CABINET_FINGERPRINT_DESK_AND_CHAIR_CONSTRUCTION_1X3.png"
     },
     "R050": {
       "key": "R050",
       "path": "02_library/morphs/objects/R050_COURT_FILE_COMPARTMENTS_AND_RETAINED_DEVICE_SUPPORTS.txt",
-      "output": "R050_COURT_FILE_COMPARTMENTS_AND_RETAINED_DEVICE_SUPPORTS_1X3.png",
+      "output": "R050_COURT_FILE_COMPARTMENTS_AND_RETAINED_DEVICE_SUPPORTS_2X2.png",
       "refs": [],
       "status": "PREPARED_NOT_RENDERED",
       "layout": "4K 2x2 object material transformation",
-      "prompt_sha256": "3a05563017c6ef11bb425ed54d31a36eac69338b3dd9e2235a7ab9c2e082fd7e",
+      "prompt_sha256": "383f82cbd188ca67fb41391b4cf7a4e39d5f74aedb7b059183de88a1f47e9e43",
       "current_prompt_image_verified": false,
       "input_mode": "TEXT_ONLY",
-      "prompt_review_status": "DETAILED_OBJECT_MORPH_REVISED_NOT_RENDERED",
-      "four_state_summary": "SOURCE: → BENCH BOARDS SPLAY INTO A TALL BRANCHED TIMBER FRAME: → OPEN SHELVING WITH DIAGONAL DIVIDERS AND UNSEATED BOARDS: → RESOLVED DESTINATION:"
+      "prompt_review_status": "FOUR_STATE_AND_MATERIAL_RESPONSE_TEXT_REVIEWED_NOT_IMAGE_VERIFIED",
+      "four_state_summary": "SOURCE: → BENCH BOARDS SPLAY INTO A TALL BRANCHED TIMBER FRAME: → OPEN SHELVING WITH DIAGONAL DIVIDERS AND UNSEATED BOARDS: → RESOLVED DESTINATION:",
+      "previous_identity_output_name": "R050_COURT_FILE_COMPARTMENTS_AND_RETAINED_DEVICE_SUPPORTS_1X3.png"
     },
     "R054": {
       "key": "R054",
       "path": "02_library/morphs/buildings/R054_BIG_BEN_ELIZABETH_TOWER_LONDON_SOURCE.txt",
-      "output": "R054_BIG_BEN_ELIZABETH_TOWER_LONDON_SOURCE_1X3.png",
+      "output": "R054_BIG_BEN_ELIZABETH_TOWER_LONDON_SOURCE_2X2.png",
       "refs": [],
       "status": "PREPARED_NOT_RENDERED",
       "layout": "4K 2x2 object material transformation",
-      "prompt_sha256": "fb66ce7592cdf6ff7389fdaeb3df44bec28c14167b23621819b2dbef16ff0565",
+      "prompt_sha256": "c26a8c50aa06c7deb3170eefb300bb8f3afa2dea711e93ab607ccf6bc2c2eccf",
       "current_prompt_image_verified": false,
       "input_mode": "TEXT_ONLY",
-      "prompt_review_status": "DETAILED_OBJECT_MORPH_REVISED_NOT_RENDERED",
-      "four_state_summary": "COMPLETE ORIGINAL: → EXPANSIVE MATERIAL RECONSTRUCTION: → DIFFERENT CONVERGING RECONSTRUCTION: → COMPLETE DESTINATION:"
+      "prompt_review_status": "FOUR_STATE_AND_MATERIAL_RESPONSE_TEXT_REVIEWED_NOT_IMAGE_VERIFIED",
+      "four_state_summary": "COMPLETE ORIGINAL: → EXPANSIVE MATERIAL RECONSTRUCTION: → DIFFERENT CONVERGING RECONSTRUCTION: → COMPLETE DESTINATION:",
+      "previous_identity_output_name": "R054_BIG_BEN_ELIZABETH_TOWER_LONDON_SOURCE_1X3.png"
     },
     "R055": {
       "key": "R055",
       "path": "02_library/morphs/buildings/R055_WESTMINSTER_ABBEY_LONDON_SOURCE.txt",
-      "output": "R055_WESTMINSTER_ABBEY_LONDON_SOURCE_1X3.png",
+      "output": "R055_WESTMINSTER_ABBEY_LONDON_SOURCE_2X2.png",
       "refs": [],
       "status": "PREPARED_NOT_RENDERED",
       "layout": "4K 2x2 object material transformation",
-      "prompt_sha256": "190b75d25f92221773d6e410f153271e74c559fef4ddf5d472b60f015b5e240d",
+      "prompt_sha256": "ed16350f563d1a016bc9c243e7fb39c76ef6bc20f243836a3045bd89adcd411b",
       "current_prompt_image_verified": false,
       "input_mode": "TEXT_ONLY",
-      "prompt_review_status": "DETAILED_OBJECT_MORPH_REVISED_NOT_RENDERED",
-      "four_state_summary": "COMPLETE ORIGINAL: → EXPANSIVE MATERIAL RECONSTRUCTION: → DIFFERENT CONVERGING RECONSTRUCTION: → COMPLETE DESTINATION:"
+      "prompt_review_status": "FOUR_STATE_AND_MATERIAL_RESPONSE_TEXT_REVIEWED_NOT_IMAGE_VERIFIED",
+      "four_state_summary": "COMPLETE ORIGINAL: → EXPANSIVE MATERIAL RECONSTRUCTION: → DIFFERENT CONVERGING RECONSTRUCTION: → COMPLETE DESTINATION:",
+      "previous_identity_output_name": "R055_WESTMINSTER_ABBEY_LONDON_SOURCE_1X3.png"
     },
     "R056": {
       "key": "R056",
       "path": "02_library/morphs/buildings/R056_FISHERMANS_BASTION_DESTINATION.txt",
-      "output": "R056_FISHERMANS_BASTION_DESTINATION_1X3.png",
+      "output": "R056_FISHERMANS_BASTION_DESTINATION_2X2.png",
       "refs": [],
       "status": "PREPARED_NOT_RENDERED",
       "layout": "4K 2x2 object material transformation",
-      "prompt_sha256": "b080bc118ccdc0843cc0b04159adf2488963897fcdb9d0e1185b7de872ddcea7",
+      "prompt_sha256": "085e9fd812259e73824279d3652b80c7c809ef8670ca043ab0f4bf010cf5f96c",
       "current_prompt_image_verified": false,
       "input_mode": "TEXT_ONLY",
-      "prompt_review_status": "DETAILED_OBJECT_MORPH_REVISED_NOT_RENDERED",
-      "four_state_summary": "COMPLETE ORIGINAL: → EXPANSIVE MATERIAL RECONSTRUCTION: → DIFFERENT CONVERGING RECONSTRUCTION: → COMPLETE DESTINATION:"
+      "prompt_review_status": "FOUR_STATE_AND_MATERIAL_RESPONSE_TEXT_REVIEWED_NOT_IMAGE_VERIFIED",
+      "four_state_summary": "COMPLETE ORIGINAL: → EXPANSIVE MATERIAL RECONSTRUCTION: → DIFFERENT CONVERGING RECONSTRUCTION: → COMPLETE DESTINATION:",
+      "previous_identity_output_name": "R056_FISHERMANS_BASTION_DESTINATION_1X3.png"
     },
     "CM001": {
       "key": "CM001",
-      "path": "02_library/morphs/characters/CM001_CHARACTER_TO_CHARACTER_2X2.txt",
-      "output": "CM001_CHARACTER_TO_CHARACTER_2X2.png",
+      "path": "02_library/morphs/characters/CM001_APPOINTED_LAWYER_TO_OFFICE_SUBSTITUTE_2X2.txt",
+      "output": "CM001_APPOINTED_LAWYER_TO_OFFICE_SUBSTITUTE_2X2.png",
       "refs": [
-        "CM001_SOURCE",
-        "CM001_TARGET"
+        "C04",
+        "C26"
       ],
-      "status": "TEMPLATE_ENDPOINT_SELECTION_PENDING",
-      "layout": "4K 2x2 character transformation",
-      "import_status": "NOT_IN_CURRENT_IMPORT_NO_PAIR_SELECTED"
+      "status": "CONCRETE_PAIR_PROMPT_PREPARED_NOT_RENDERED",
+      "layout": "4K 2x2 character material transformation",
+      "intended_resolution": "4K",
+      "input_mode": "CHARACTER_REFERENCE_PAIR",
+      "source_character": "C04",
+      "target_character": "C26",
+      "story_use": "Proposed surreal connection between distinct established memory roles; not yet inserted into a video prompt.",
+      "import_status": "CATEGORY_IMPORT_PREPARED_NOT_EXECUTED",
+      "prompt_review_status": "FOUR_STATE_AND_MATERIAL_RESPONSE_TEXT_REVIEWED_NOT_IMAGE_VERIFIED",
+      "current_prompt_image_verified": false,
+      "prompt_sha256": "18e05aa93161f65730b4b7e6b7dedd941e02aa81bd45b723cc012e79ae69327d"
+    },
+    "CM002": {
+      "key": "CM002",
+      "path": "02_library/morphs/characters/CM002_SOHO_WOMAN_TO_BEGINNER_DANCE_WOMAN_2X2.txt",
+      "output": "CM002_SOHO_WOMAN_TO_BEGINNER_DANCE_WOMAN_2X2.png",
+      "refs": [
+        "C02",
+        "C10"
+      ],
+      "status": "CONCRETE_PAIR_PROMPT_PREPARED_NOT_RENDERED",
+      "layout": "4K 2x2 character material transformation",
+      "intended_resolution": "4K",
+      "input_mode": "CHARACTER_REFERENCE_PAIR",
+      "source_character": "C02",
+      "target_character": "C10",
+      "story_use": "Proposed surreal connection between distinct established memory roles; not yet inserted into a video prompt.",
+      "import_status": "CATEGORY_IMPORT_PREPARED_NOT_EXECUTED",
+      "prompt_review_status": "FOUR_STATE_AND_MATERIAL_RESPONSE_TEXT_REVIEWED_NOT_IMAGE_VERIFIED",
+      "current_prompt_image_verified": false,
+      "prompt_sha256": "1bed71680d8aa8c24e4f3d89634cc91faada74088c7ac1bf258632a8df9a9688"
+    },
+    "CM003": {
+      "key": "CM003",
+      "path": "02_library/morphs/characters/CM003_SNORING_HOUSEMATE_TO_MORTGAGE_HOUSEMATE_2X2.txt",
+      "output": "CM003_SNORING_HOUSEMATE_TO_MORTGAGE_HOUSEMATE_2X2.png",
+      "refs": [
+        "C06",
+        "C07"
+      ],
+      "status": "CONCRETE_PAIR_PROMPT_PREPARED_NOT_RENDERED",
+      "layout": "4K 2x2 character material transformation",
+      "intended_resolution": "4K",
+      "input_mode": "CHARACTER_REFERENCE_PAIR",
+      "source_character": "C06",
+      "target_character": "C07",
+      "story_use": "Proposed surreal connection between distinct established memory roles; not yet inserted into a video prompt.",
+      "import_status": "CATEGORY_IMPORT_PREPARED_NOT_EXECUTED",
+      "prompt_review_status": "FOUR_STATE_AND_MATERIAL_RESPONSE_TEXT_REVIEWED_NOT_IMAGE_VERIFIED",
+      "current_prompt_image_verified": false,
+      "prompt_sha256": "a06682a6f5fefd833e4cf2ae621143b1e9c15d3021a532003c3faf0049819154"
+    },
+    "CM004": {
+      "key": "CM004",
+      "path": "02_library/morphs/characters/CM004_TRANSIT_HELPER_TO_CAIRO_TRAVELER_2X2.txt",
+      "output": "CM004_TRANSIT_HELPER_TO_CAIRO_TRAVELER_2X2.png",
+      "refs": [
+        "C11",
+        "C13"
+      ],
+      "status": "CONCRETE_PAIR_PROMPT_PREPARED_NOT_RENDERED",
+      "layout": "4K 2x2 character material transformation",
+      "intended_resolution": "4K",
+      "input_mode": "CHARACTER_REFERENCE_PAIR",
+      "source_character": "C11",
+      "target_character": "C13",
+      "story_use": "Proposed surreal connection between distinct established memory roles; not yet inserted into a video prompt.",
+      "import_status": "CATEGORY_IMPORT_PREPARED_NOT_EXECUTED",
+      "prompt_review_status": "FOUR_STATE_AND_MATERIAL_RESPONSE_TEXT_REVIEWED_NOT_IMAGE_VERIFIED",
+      "current_prompt_image_verified": false,
+      "prompt_sha256": "241e0747a9f004d396c6c1f31f79a7347f1d8f69b5c7cd26e14d1c313cf223f5"
+    },
+    "CM005": {
+      "key": "CM005",
+      "path": "02_library/morphs/characters/CM005_ADMIN_COLLEAGUE_A_TO_B_2X2.txt",
+      "output": "CM005_ADMIN_COLLEAGUE_A_TO_B_2X2.png",
+      "refs": [
+        "C23",
+        "C24"
+      ],
+      "status": "CONCRETE_PAIR_PROMPT_PREPARED_NOT_RENDERED",
+      "layout": "4K 2x2 character material transformation",
+      "intended_resolution": "4K",
+      "input_mode": "CHARACTER_REFERENCE_PAIR",
+      "source_character": "C23",
+      "target_character": "C24",
+      "story_use": "Proposed surreal connection between distinct established memory roles; not yet inserted into a video prompt.",
+      "import_status": "CATEGORY_IMPORT_PREPARED_NOT_EXECUTED",
+      "prompt_review_status": "FOUR_STATE_AND_MATERIAL_RESPONSE_TEXT_REVIEWED_NOT_IMAGE_VERIFIED",
+      "current_prompt_image_verified": false,
+      "prompt_sha256": "30c8d5870f545f5604191cabee232cf43cb45ed52d45c57150e33e6ec682c0c3"
+    },
+    "CM006": {
+      "key": "CM006",
+      "path": "02_library/morphs/characters/CM006_FORENSIC_EXPERT_A_TO_B_2X2.txt",
+      "output": "CM006_FORENSIC_EXPERT_A_TO_B_2X2.png",
+      "refs": [
+        "C28",
+        "C29"
+      ],
+      "status": "CONCRETE_PAIR_PROMPT_PREPARED_NOT_RENDERED",
+      "layout": "4K 2x2 character material transformation",
+      "intended_resolution": "4K",
+      "input_mode": "CHARACTER_REFERENCE_PAIR",
+      "source_character": "C28",
+      "target_character": "C29",
+      "story_use": "Proposed surreal connection between distinct established memory roles; not yet inserted into a video prompt.",
+      "import_status": "CATEGORY_IMPORT_PREPARED_NOT_EXECUTED",
+      "prompt_review_status": "FOUR_STATE_AND_MATERIAL_RESPONSE_TEXT_REVIEWED_NOT_IMAGE_VERIFIED",
+      "current_prompt_image_verified": false,
+      "prompt_sha256": "bc67f12a2292318083667a764b47efbdfc707f150d2317882173246c07d2f871"
     }
   },
   "operator_language": "English; Hungarian in-world signage and proper names are intentional story content.",
@@ -4607,17 +4966,41 @@
       "last_mention": "@UNBOUND_T01_DETAILS_C",
       "evidence": "Prepared restaurant coverage page C; not imported or rendered. Uses accepted original room and character inputs."
     },
-    "CM001_SOURCE": {
-      "alias": "CM001_SOURCE",
+    "CM001": {
+      "alias": "CM001_APPOINTED_LAWYER_TO_OFFICE_SUBSTITUTE_2X2",
       "mention": null,
-      "last_mention": "@UNBOUND_CM001_SOURCE",
-      "evidence": "Endpoint character must be selected by creator and linked to an existing character image; not a new Character import."
+      "last_mention": "@UNBOUND_CM001",
+      "evidence": "Output Element definition prepared; no generated image or platform import verified."
     },
-    "CM001_TARGET": {
-      "alias": "CM001_TARGET",
+    "CM002": {
+      "alias": "CM002_SOHO_WOMAN_TO_BEGINNER_DANCE_WOMAN_2X2",
       "mention": null,
-      "last_mention": "@UNBOUND_CM001_TARGET",
-      "evidence": "Endpoint character must be selected by creator and linked to an existing character image; not a new Character import."
+      "last_mention": "@UNBOUND_CM002",
+      "evidence": "Output Element definition prepared; no generated image or platform import verified."
+    },
+    "CM003": {
+      "alias": "CM003_SNORING_HOUSEMATE_TO_MORTGAGE_HOUSEMATE_2X2",
+      "mention": null,
+      "last_mention": "@UNBOUND_CM003",
+      "evidence": "Output Element definition prepared; no generated image or platform import verified."
+    },
+    "CM004": {
+      "alias": "CM004_TRANSIT_HELPER_TO_CAIRO_TRAVELER_2X2",
+      "mention": null,
+      "last_mention": "@UNBOUND_CM004",
+      "evidence": "Output Element definition prepared; no generated image or platform import verified."
+    },
+    "CM005": {
+      "alias": "CM005_ADMIN_COLLEAGUE_A_TO_B_2X2",
+      "mention": null,
+      "last_mention": "@UNBOUND_CM005",
+      "evidence": "Output Element definition prepared; no generated image or platform import verified."
+    },
+    "CM006": {
+      "alias": "CM006_FORENSIC_EXPERT_A_TO_B_2X2",
+      "mention": null,
+      "last_mention": "@UNBOUND_CM006",
+      "evidence": "Output Element definition prepared; no generated image or platform import verified."
     }
   },
   "reference_binding_note": "Only full verified Higgsfield mentions belong in mention. Null produces an explicit @UNBOUND_<key> slot and a do-not-generate notice. Run 04_tracking/sync_references.py --write once to propagate a binding across all prompts and guides. Previous videos remain in the actual Forward Extend source field. Raw-image, storyboard and audio autoload handles are unverified until observed; never guess an Element ID from a filename.",
@@ -4715,30 +5098,30 @@
         },
         "R002": {
           "file": "02_library/morphs/objects/R002_THE_SAME_RED_LONDON_BUS_FROM_USEFUL_ANGLES.txt",
-          "sha256": "08ef9f24d6a449c63a598ae1291ead7c8b1f3c9b4007a867464193cdc7bf564c",
+          "sha256": "305c599e16f60db08a4d0e548e4a0185b24dd47b079008c4d7759cadcaafa0a1",
           "status": "GENERATED_IMAGE_SEEN_ASSOCIATION_REPORTED_ID_UNVERIFIED",
           "evidence": "Four generated thumbnails visible in creator screenshot 2026-09-09 21-13-04. After Element-name mapping, creator reports elvileg megvan, menjunk tovabb. Full Element IDs and saved associations not independently inspected."
         },
         "R003": {
           "file": "02_library/morphs/objects/R003_BLACK_LONDON_TAXI.txt",
-          "sha256": "2a43084a6a789298752bd4029d954120c9023c7a2061757c94669c6e7a12c005",
+          "sha256": "77ab6acee9895b7a2cb58de23e3fa3c84a7b8645fb74599bf54b4b3a2a95ddb2",
           "status": "PREPARED_NOT_RENDERED"
         },
         "R004": {
           "file": "02_library/morphs/objects/R004_YELLOW_BUDAPEST_TRAM.txt",
-          "sha256": "776acd2c7c005c87b532de8ee5e9efe0c44ae4be44d09d02f6384508bbf1672a",
+          "sha256": "757477f1c9b33bf7cad3520ff549aca4ba8f7540dd7c1c9f49c249b3a24147fc",
           "status": "PREPARED_NOT_RENDERED"
         },
         "R005": {
           "file": "02_library/morphs/buildings/R005_ST_PAULS_COMPLETE_SOURCE_BUILDING.txt",
-          "sha256": "cbd9c15b65d0eb30c1e627934ac65b77f1268210d653af5870ab040c63d34a5c",
+          "sha256": "2696ed88853eb96db9956abf0bee5f2fee5f7b567df0f1758193804e463e6ea0",
           "status": "PREPARED_NOT_RENDERED",
           "current_prompt_image_verified": false,
           "prompt_note": "Revised geometry/reference wording; no new generated output reviewed."
         },
         "R006": {
           "file": "02_library/morphs/buildings/R006_ST_STEPHENS_COMPLETE_DESTINATION_BUILDING.txt",
-          "sha256": "01cbcb9add1fb65d3c31f0548ad686f0091db1169a219630f507fa4486d6535c",
+          "sha256": "9486680ac7dd441903a58044323d16755fb8158d07123741bae5bfd974e8efa1",
           "status": "ID_REPORTED_IMAGE_ASSOCIATION_REPORTED",
           "evidence": "Four generated thumbnails visible in creator screenshot 2026-09-09 21-13-04. After Element-name mapping, creator reports elvileg megvan, menjunk tovabb. Full Element IDs and saved associations not independently inspected.",
           "actual_mention": "@loc_MYS_mys-reference-06-st-stephens-complete-destination-building_s0_v1",
@@ -4754,7 +5137,7 @@
         },
         "R008": {
           "file": "02_library/morphs/buildings/R008_CAFE_OPENING_AND_FURNITURE_CONSTRUCTION_DETAILS.txt",
-          "sha256": "9db4e9d362e8a8898d5c79e37f824dbca30cdb7fee401702815f8b908d93e353",
+          "sha256": "a3e9eab63ff964cabcd1a0cb116bab6f6b72e12ebc4e0020f296168880d064f3",
           "status": "GENERATED_IMAGE_SEEN_ASSOCIATION_REPORTED_ID_UNVERIFIED",
           "evidence": "Four generated thumbnails visible in creator screenshot 2026-09-09 21-13-04. After Element-name mapping, creator reports elvileg megvan, menjunk tovabb. Full Element IDs and saved associations not independently inspected.",
           "current_prompt_image_verified": false,
@@ -4762,14 +5145,14 @@
         },
         "R009": {
           "file": "02_library/morphs/buildings/R009_FANLIGHT_TO_CANOPY_JOINT_STUDY_FOR_THE_EXTEND.txt",
-          "sha256": "448d0454e8dbb937bf146adf939ec3dddea47b8f717d844a846cc5465c59d91b",
+          "sha256": "f1da984ea3101f2351d00ee2dcb34c34779bb1b8c13ea4e8d7acc87deea798e5",
           "status": "PREPARED_NOT_RENDERED",
           "current_prompt_image_verified": false,
           "prompt_note": "Radical four-state geometry revision; no resulting image inspected yet."
         },
         "R010": {
           "file": "02_library/morphs/objects/R010_WINGED_STATUE_PLINTH_AND_CONTACT_DETAIL.txt",
-          "sha256": "f53d7bac6d13ec23619cd027d1019ba821423956d66683197d80dc7f6ece33da",
+          "sha256": "b325e5706fff4baaa940986e22dfab7a1f33caa8155796b2e5818be650273e4c",
           "status": "PREPARED_NOT_RENDERED"
         },
         "R011": {
@@ -4786,72 +5169,72 @@
         },
         "R013": {
           "file": "02_library/morphs/objects/R013_RED_BUS_LOWER_DECK_PASSAGE_AND_OPEN_DOOR_GEOMETRY.txt",
-          "sha256": "1a967bae6e04cd666e33e0f482f8e7715e06d574e72e1c2728c7d2d8e6b2d4e5",
+          "sha256": "4e321ddca3630771d5c677af66215602e82047ec7190ac540625a7cf1a75f28c",
           "status": "PREPARED_NOT_RENDERED"
         },
         "R014": {
           "file": "02_library/morphs/buildings/R014_ORIGINAL_LONDON_CAFE_WINDOW_BEFORE_FRACTURE.txt",
-          "sha256": "f5ed0b7c9d6f3a0c12163a9bba74177ed6450213c68edea2ed7032abc85a6ace",
+          "sha256": "7e7d15f6ceb5024f443a722d9873f56b58fbc1d8a9cea250943cbc6c41abb9b3",
           "status": "PREPARED_NOT_RENDERED"
         },
         "R015": {
           "file": "02_library/morphs/objects/R015_GLASS_SOURCE_THICKNESS_AND_DESTINATION_PENDANT_SHADES.txt",
-          "sha256": "6d6812cf7e0fd089f94dcef0982fe0e0c04b8780feafdbbeeea6662138176f05",
+          "sha256": "8bd93a0279012f8d20efb44362d0c4f2bf3fd97ccf2fe675e0fb3a1ccd1b38b6",
           "status": "PREPARED_NOT_RENDERED"
         },
         "R016": {
           "file": "02_library/morphs/buildings/R016_SOLID_LONDON_BRICK_AND_PEST_CARVED_STONE_CORRESPONDENCE.txt",
-          "sha256": "32e9bafe98cef37c3b67df32bbdbb3a94b27b294b40f07a66b25bf5fe4c50c2e",
+          "sha256": "986041170836acccf0a7f29aa17712f1b456a641c83e8a4594a9b63b97c872e2",
           "status": "PREPARED_NOT_RENDERED"
         },
         "R017": {
           "file": "02_library/morphs/buildings/R017_STONE_SILL_WET_PAVING_AND_SUPPORTED_TIMBER_THRESHOLD.txt",
-          "sha256": "a372f144af9cdb88d65c86b62b47b500b28f7353dfde1c9abc6ea5011f7f5db3",
+          "sha256": "6680a7b8dc849e6018732278b268a4eac0944fb448d219c36ae64f018d4dca90",
           "status": "PREPARED_NOT_RENDERED"
         },
         "R018": {
           "file": "02_library/morphs/objects/R018_LONDON_TIMBER_BENCH_AND_CURVED_FLOOR_BORDER.txt",
-          "sha256": "5baca038cb41625d086620d0871328b651fb2a65fb811c5f3eef04261ffe9110",
+          "sha256": "afba27172f336a265be07f42c4a065c9cb845a0b5c234aa466a775a21942887f",
           "status": "PREPARED_NOT_RENDERED"
         },
         "R019": {
           "file": "02_library/morphs/objects/R019_ACCEPTED_RESTAURANT_TABLE_AND_CHAIR_FROM_OUTSIDE.txt",
-          "sha256": "2d362e55b6b2e8d93f5c1aa08b7c8052de73d2000239e3c9d505601f9ab21e04",
+          "sha256": "546cea4b5699dc6ee3149c19f9cf22bcb66210496d009bfab349bba70fa65af4",
           "status": "PREPARED_NOT_RENDERED"
         },
         "R020": {
           "file": "02_library/morphs/objects/R020_CUP_HAND_CONTACT_AND_TABLETOP_DEPTH.txt",
-          "sha256": "b8a59c6d943e2be755396647e208c4484fbfaf43b92e226568672f941d71e6f8",
+          "sha256": "0c9c38b87820212da869b7df1b1e5145db12a6bb2c91749a83655f108688201d",
           "status": "PREPARED_NOT_RENDERED"
         },
         "R021": {
           "file": "02_library/morphs/buildings/R021_RESTAURANT_REAR_DOORS_AND_DEPTH_RELATIONSHIPS.txt",
-          "sha256": "e72a5f03587cabf588f1ec79591ceba674a207847f4bbed4c2444840e10bcbec",
+          "sha256": "35beb97c4de55afd03283408a97b3457e6d0a17e8fb0613bc6f92b7a7f9e05ac",
           "status": "PREPARED_NOT_RENDERED"
         },
         "R022": {
           "file": "02_library/morphs/objects/R022_STREET_LIGHT_FITTINGS_AND_RESTAURANT_PENDANT_CONNECTIONS.txt",
-          "sha256": "5a2899b5ee10d2fa97a8cf7d8d08d746a0dffd4b1dfa42ab463a373fa310f2b8",
+          "sha256": "4130634951cdfd32a4f52866ae2ac16744cf862829dbfae5ab8348bbb56cf8df",
           "status": "PREPARED_NOT_RENDERED"
         },
         "R023": {
           "file": "02_library/morphs/objects/R023_BALCONY_SCROLL_AND_SIDEWAYS_STAIR_STRUCTURAL_PARTS.txt",
-          "sha256": "ea0cc6d3f0641220758c2d4c6995c247a91ffc2e618207007a3a540d16bb4fe1",
+          "sha256": "f8570caf8b3d6d9e17dce720882238ad552f94d228d11bd750f21da185f88370",
           "status": "PREPARED_NOT_RENDERED"
         },
         "R024": {
           "file": "02_library/morphs/objects/R024_MOUNTED_ENGLISH_CAFE_SIGN_AND_HUNGARIAN_DESTINATION_SIGN.txt",
-          "sha256": "999837e224ac19f4b6a99af71c31bd8f450b033055367ff7dcbbad3ab4dead69",
+          "sha256": "e5fb4ad86b15a6105bbfe61d348c9542a01d49502ce5fec5d8bb939c8b51a5fa",
           "status": "PREPARED_NOT_RENDERED"
         },
         "R025": {
           "file": "02_library/morphs/buildings/R025_ORIGINAL_LONDON_ROOF_AND_CHIMNEY_VOLUMES.txt",
-          "sha256": "435fe9e488794afa64090916fceedef9bf05aefaa97f6b5914275bd88853f91a",
+          "sha256": "10b7ecaa56e09b56c3e5f438fc0cf124f7b0035349d29fb93f927d825eb11678",
           "status": "PREPARED_NOT_RENDERED"
         },
         "R026": {
           "file": "02_library/morphs/buildings/R026_TARGET_ROOF_GLAZING_STONE_CORBELS_AND_CHIMNEY_CROWNS.txt",
-          "sha256": "f7b5e353913cde66e70db9f8e20bc321e6f2bbd3ed66d0e3d5df49a48ed615a5",
+          "sha256": "5ec4a16547ef325ac01dd81eb24cfa6949ed6450eefbf7a4b7706d5e30721389",
           "status": "PREPARED_NOT_RENDERED"
         },
         "R027": {
@@ -4861,117 +5244,117 @@
         },
         "R028": {
           "file": "02_library/morphs/buildings/R028_ORIGINAL_ARCADE_ARCH_AND_FANLIGHT.txt",
-          "sha256": "27aff70f6af0983225328927923f26032d71e3b751b9bdfb7fa6b6ced96c8bcf",
+          "sha256": "2fad70e24bbfdb36b9cfaa87029cc3aa52b4235d40bc9086b74ab8cb7dbed9a6",
           "status": "PREPARED_NOT_RENDERED"
         },
         "R029": {
           "file": "02_library/morphs/buildings/R029_FULL_SUPPORTED_CANOPY_DESTINATION.txt",
-          "sha256": "fd0b5d12fda16cf1d9029023269b160ce11b6dfec3aa1cfe44159170172334a2",
+          "sha256": "70bad20b59e3653d430ee8007d25b2d7f910984fbc69401dfbf21dbaef45a4d3",
           "status": "PREPARED_NOT_RENDERED"
         },
         "R030": {
           "file": "02_library/morphs/buildings/R030_DEEP_GALLERY_THROUGH_THE_UNCHANGED_THRESHOLD.txt",
-          "sha256": "9be1128535a689f5ccb21eee92ff6b191c3deda6179f1bf2bbfaeb09d1b4a269",
+          "sha256": "c8c1a83ea315f5b0ec06fbf9d040f57c70eebb6a991909f2acb5374d024c205d",
           "status": "PREPARED_NOT_RENDERED"
         },
         "R031": {
           "file": "02_library/morphs/buildings/R031_LONDON_STATION_SOURCE_EXTERIOR_AND_IRON_STRUCTURE.txt",
-          "sha256": "ed8067dcc02d25275ba92015441ede8d2ea556cc8fe96543b6da9ea4a654b6ff",
+          "sha256": "09e01055b9197c2c7632073ec9e293844e6f2550e571f9223007fdb1347f3d32",
           "status": "PREPARED_NOT_RENDERED"
         },
         "R032": {
           "file": "02_library/morphs/buildings/R032_NYUGATI_STATION_DESTINATION_AND_ROOF_JOINTS.txt",
-          "sha256": "26ee8bf923bda16dbe230c126bd149fa42ab6a2633f7dcf17db35598e3d42a9a",
+          "sha256": "89c5e667ab5dd292f6368ea0abfc08f86e074d14921e5d5215f4fa25eb9da30b",
           "status": "PREPARED_NOT_RENDERED"
         },
         "R033": {
           "file": "02_library/morphs/buildings/R033_HUNGARIAN_STATE_OPERA_TARGET_FACADE_AND_ENTRY_DEPTH.txt",
-          "sha256": "34629519b1ff954ecebb8945e4fccdf9af5ca367595ab94005527a3cbcd3ec4a",
+          "sha256": "630cbabbb5ebfacd1f0479340cb97c4f937eda54a43f8919f508c3f4d5988cac",
           "status": "PREPARED_NOT_RENDERED"
         },
         "R034": {
           "file": "02_library/morphs/buildings/R034_TOWER_BRIDGE_SOURCE_STRUCTURE.txt",
-          "sha256": "293c1bd8a4f825ed965bb1c078e1812422252cbc10ded6b2a8a001fbb2b5ee29",
+          "sha256": "4718165d44988bc73434c0a0e1b1e259faae7100439c2746bb93109980d07324",
           "status": "PREPARED_NOT_RENDERED"
         },
         "R035": {
           "file": "02_library/morphs/buildings/R035_SZECHENYI_CHAIN_BRIDGE_DESTINATION_STRUCTURE.txt",
-          "sha256": "55f388cb28c9fa609566dc1b9924656cfece9b4a70edf748d5b35b3c1f741357",
+          "sha256": "e11a727e487ae40a48810f461fee5feba17694b330952619acd43b02e754c821",
           "status": "PREPARED_NOT_RENDERED"
         },
         "R036": {
           "file": "02_library/morphs/buildings/R036_LONDON_EYE_AND_CONNECTED_SOUTH_BANK_DEPTH.txt",
-          "sha256": "90373fab45f908c3d3ec90c7eae5d3b05a785e802da0d2cfec73052f0b4c5dcc",
+          "sha256": "ce078af4cbd4956132eb7e3df62d379d1bc02d770573de10f4e613c6de3f5e7b",
           "status": "PREPARED_NOT_RENDERED"
         },
         "R037": {
           "file": "02_library/morphs/buildings/R037_GREAT_MARKET_HALL_ROOF_AND_BRICK_SOURCE_VOLUME.txt",
-          "sha256": "1d96f145cd1fa94df3bb3b5d4afc4211b851e2e37421912c818e1e56bc50213d",
+          "sha256": "eaf3b902c42cf3f10bcbb4e008c3456556cbed05f8c8b5d247e0f4fb933166fb",
           "status": "PREPARED_NOT_RENDERED"
         },
         "R038": {
           "file": "02_library/morphs/buildings/R038_BALNA_CURVED_GLASS_TARGET_VOLUME.txt",
-          "sha256": "628b244ca9f3aa1f64a4acaf5ff664bbb18051b55055b0f9d453e87f9c131745",
+          "sha256": "e4296e814b16162d61dd13acc7c1ac92ecc0e85e07cdea6f2a197475795f8c4e",
           "status": "PREPARED_NOT_RENDERED"
         },
         "R039": {
           "file": "02_library/morphs/buildings/R039_WESTMINSTER_AND_PARLIAMENT_SQUARE_LONDON_SOURCE.txt",
-          "sha256": "e54de2a263930af1457e257d87d4e4c05a2f7a6dac906fa78215bb2756ab3800",
+          "sha256": "f7fc381be613d9f0da2658ce8317393d879f158913de8e78af4e0d2b8422ff02",
           "status": "PREPARED_NOT_RENDERED"
         },
         "R040": {
           "file": "02_library/morphs/buildings/R040_HUNGARIAN_PARLIAMENT_COMPLETE_DESTINATION_SILHOUETTE.txt",
-          "sha256": "3e337adddf3ef12e269fb15679290ccb3ed5e91e197f9ce8f9fd0f1172e5c597",
+          "sha256": "a3ae87d328e882344b9937c401cee432751692c29458ef303f5f3d1bd7bfe4e2",
           "status": "PREPARED_NOT_RENDERED"
         },
         "R041": {
           "file": "02_library/morphs/buildings/R041_GRESHAM_PALACE_FRONTAGE_AND_DEEP_STONE_DETAILS.txt",
-          "sha256": "a2f81657dd6891394d851d0e5e8f0f9a802d8cd1e527d09938fc3289dc104285",
+          "sha256": "0db637fa75cb9698eee03d9b7d46709884a1c680e507dae8a43e975abf0938a4",
           "status": "PREPARED_NOT_RENDERED"
         },
         "R042": {
           "file": "02_library/morphs/buildings/R042_NEW_YORK_PALACE_HISTORIC_EXTERIOR_WITH_OCCUPIED_BAY_DEPTH.txt",
-          "sha256": "5c8009f7666fe7c84de066547bbc44862cbc55461a3651a0e10c4d2c6e8109da",
+          "sha256": "4f3657e0349a59bdd9df74e304d1bef727ea2bd7c9ab5211bc92959cf8dc442a",
           "status": "PREPARED_NOT_RENDERED"
         },
         "R043": {
           "file": "02_library/morphs/objects/R043_LONDON_ENTRANCE_RAIL_AND_REMEMBERED_TRANSIT_GATE.txt",
-          "sha256": "6410d468ece35f159eea5bde1dc2de4a52807411dde18f1891056a81e77a827c",
+          "sha256": "77eb83ed92928a1dd69d0d9c576c404e81496b0a0a6ab4f68cb74f4ba8e21175",
           "status": "PREPARED_NOT_RENDERED"
         },
         "R044": {
           "file": "02_library/morphs/objects/R044_REMEMBERED_BUS_SEATS_AISLE_AND_CANOPY_POST_CORRESPONDENCE.txt",
-          "sha256": "13b783fd0938d79dd1bdc66b66f0c1213718d92a96fbccf8a3bc8dacc185f72f",
+          "sha256": "58a212093a26c87b5b7e81e6d172015d7cb7142c4af396eef7269d928a55b132",
           "status": "PREPARED_NOT_RENDERED"
         },
         "R045": {
           "file": "02_library/morphs/objects/R045_CAIRO_TAXI_CABIN_REAR_BENCH_AND_LUGGAGE_CONTACT.txt",
-          "sha256": "b12538cb1e2753b721d01e24066efd912c70ca32160c877741c0135c2482f984",
+          "sha256": "cf0fa46ad9d8e5864ed7e314897a8e870c0b89cfe6b75c9aa1b30bd7b21d8c11",
           "status": "PREPARED_NOT_RENDERED"
         },
         "R046": {
           "file": "02_library/morphs/objects/R046_CANOPY_AND_BALLOON_ENVELOPE_RIGGING_AND_BASKET_INTERFACES.txt",
-          "sha256": "54d2386ce771a9772e335ac9e6a4f2aa388e77a6b988c8f96135ef01974067da",
+          "sha256": "354714c4d4296d6ededcf26f0ac8290e66cf307548abfac3505042f8ea218c77",
           "status": "PREPARED_NOT_RENDERED"
         },
         "R047": {
           "file": "02_library/morphs/objects/R047_PAVING_SOIL_PAPRIKA_CORN_ROOTS_AND_RAIL_SLEEPERS.txt",
-          "sha256": "42f2714fea233abd9c489e3a6c7a78e169a7b74b21cc919cc4b9e1de9742457a",
+          "sha256": "b314a425807f302264a24b74d6657bad776c1cf8f35c531b00455bdac35d3390",
           "status": "PREPARED_NOT_RENDERED"
         },
         "R048": {
           "file": "02_library/morphs/objects/R048_ADMINISTRATIVE_DESK_ACTUAL_DOCUMENTS_AND_DEVICE_GEOMETRY.txt",
-          "sha256": "95f8a6d04893a38950984bb714de8371a1fdbd77a99add6b9719fc65c1a58987",
+          "sha256": "168b1fa8f7361dc744d17c80b3af05cddfc0f0348521fe0a85543eb40d9097de",
           "status": "PREPARED_NOT_RENDERED"
         },
         "R049": {
           "file": "02_library/morphs/objects/R049_CABINET_FINGERPRINT_DESK_AND_CHAIR_CONSTRUCTION.txt",
-          "sha256": "628ff7f367c158fe0642b2e5b7fb31d2ae430f1974f852f8e8c3d37c1ccff5f6",
+          "sha256": "16c719df6dfd3c0793b44bdd002a804cc9bce91c82bc9b0fbb50d018d6bbde20",
           "status": "PREPARED_NOT_RENDERED"
         },
         "R050": {
           "file": "02_library/morphs/objects/R050_COURT_FILE_COMPARTMENTS_AND_RETAINED_DEVICE_SUPPORTS.txt",
-          "sha256": "3a05563017c6ef11bb425ed54d31a36eac69338b3dd9e2235a7ab9c2e082fd7e",
+          "sha256": "383f82cbd188ca67fb41391b4cf7a4e39d5f74aedb7b059183de88a1f47e9e43",
           "status": "PREPARED_NOT_RENDERED"
         },
         "R051": {
@@ -5007,7 +5390,7 @@
       "image_prompt_files": {
         "R054": {
           "file": "02_library/morphs/buildings/R054_BIG_BEN_ELIZABETH_TOWER_LONDON_SOURCE.txt",
-          "sha256": "fb66ce7592cdf6ff7389fdaeb3df44bec28c14167b23621819b2dbef16ff0565",
+          "sha256": "c26a8c50aa06c7deb3170eefb300bb8f3afa2dea711e93ab607ccf6bc2c2eccf",
           "status": "PREPARED_NOT_RENDERED",
           "production_consumers": [
             "03_film/07/video.txt",
@@ -5017,7 +5400,7 @@
         },
         "R055": {
           "file": "02_library/morphs/buildings/R055_WESTMINSTER_ABBEY_LONDON_SOURCE.txt",
-          "sha256": "190b75d25f92221773d6e410f153271e74c559fef4ddf5d472b60f015b5e240d",
+          "sha256": "ed16350f563d1a016bc9c243e7fb39c76ef6bc20f243836a3045bd89adcd411b",
           "status": "PREPARED_NOT_RENDERED",
           "production_consumers": [
             "03_film/07/video.txt",
@@ -5027,7 +5410,7 @@
         },
         "R056": {
           "file": "02_library/morphs/buildings/R056_FISHERMANS_BASTION_DESTINATION.txt",
-          "sha256": "b080bc118ccdc0843cc0b04159adf2488963897fcdb9d0e1185b7de872ddcea7",
+          "sha256": "085e9fd812259e73824279d3652b80c7c809ef8670ca043ab0f4bf010cf5f96c",
           "status": "PREPARED_NOT_RENDERED",
           "production_consumers": [],
           "note": "Creator-requested future architectural destination option. No pilot or specific production beat added automatically."
@@ -7586,24 +7969,39 @@
     "baseline_import": "00_project/elements/FULL_PROJECT_IMPORT.md",
     "baseline_status": "IMPORT_REPORTED_BY_CREATOR",
     "baseline_count": 105,
-    "next_import": "00_project/elements/13_ADDITIONAL_OBJECT_REFERENCES.md",
-    "next_import_count": 45,
-    "combined_count": 150,
+    "next_import": [
+      "00_project/elements/CHARACTERS_IMPORT.md",
+      "00_project/elements/WORLDS_IMPORT.md",
+      "00_project/elements/MORPHS_IMPORT.md"
+    ],
+    "next_import_count": 156,
+    "combined_count": 156,
     "reference_roles": {
       "object_identity": "Superseded: all 46 active object references now use 2x2 material transformations, including R002 bus.",
       "object_morph": "2x2: complete source, two individually specified radically different unfinished configurations, complete target. Text-only image prompt.",
-      "world_memory": "2x2 coverage"
+      "world_memory": "2x2 coverage",
+      "character_identity": "1x3 front/back/headshot; 2K default, 4K optional",
+      "character_morph": "4K 2x2, six concrete Cxx pairs, elastic skin/hair/cloth material transition; source image bindings required"
     },
     "existing_platform_types": "Existing imported names/types are retained; no automatic reclassification or duplicate Elements. Reference role/layout is recorded separately.",
     "object_morph_count": 46,
-    "all_morph_prompt_count": 68
+    "all_morph_prompt_count": 74,
+    "active_import_workflow": "category_element_imports",
+    "character_morph_count": 6
   },
   "character_morph_preparation": {
     "directory": "02_library/morphs/characters",
-    "template": "CM001",
-    "status": "SOURCE_AND_TARGET_CHARACTERS_NOT_SELECTED",
+    "status": "SIX_CONCRETE_PAIRS_PREPARED_NOT_RENDERED",
+    "keys": [
+      "CM001",
+      "CM002",
+      "CM003",
+      "CM004",
+      "CM005",
+      "CM006"
+    ],
     "new_character_definitions": 0,
-    "note": "Use selected existing characters as endpoints. No arbitrary pairing, role replacement or new import performed."
+    "note": "Six specific existing-cast morph studies; source/target refs use the existing Cxx bindings. No generic endpoint slots. Historical bound IDs must be reconfirmed after the category reimport; missing IDs remain explicit blockers. Not inserted into the film automatically."
   },
   "library_structure": {
     "morph_buildings": "02_library/morphs/buildings",
@@ -7614,5 +8012,216 @@
     "world_maps": "02_library/worlds/maps",
     "character_identity": "02_library/characters",
     "retired_prompt_archive": "04_tracking/archive/legacy_image_prompts"
+  },
+  "category_element_imports": {
+    "date": "2026-09-10",
+    "status": "PREPARED_REIMPORT_REQUESTED_NOT_EXECUTED",
+    "supersedes_next_import": "13_ADDITIONAL_OBJECT_REFERENCES.md",
+    "total_unique_elements": 156,
+    "files": [
+      {
+        "file": "00_project/elements/CHARACTERS_IMPORT.md",
+        "canonical_keys": [
+          "C01",
+          "C02",
+          "C03",
+          "C04",
+          "C05",
+          "C06",
+          "C07",
+          "C08",
+          "C09",
+          "C10",
+          "C11",
+          "C12",
+          "C13",
+          "C14",
+          "C15",
+          "C16",
+          "C17",
+          "C18",
+          "C19",
+          "C20",
+          "C21",
+          "C22",
+          "C23",
+          "C24",
+          "C25",
+          "C26",
+          "C27",
+          "C28",
+          "C29",
+          "C30",
+          "C31"
+        ],
+        "count": 31,
+        "file_sha256": "a048d9196dba2176fb3f5ccde7e4885d6a3983a46e3b8a74607b2ffb119c496d"
+      },
+      {
+        "file": "00_project/elements/WORLDS_IMPORT.md",
+        "canonical_keys": [
+          "W01",
+          "W01_B",
+          "W01_C",
+          "W02",
+          "W02_B",
+          "W02_C",
+          "W03",
+          "W03_B",
+          "W03_C",
+          "W04",
+          "W04_B",
+          "W04_C",
+          "W05",
+          "W05_B",
+          "W05_C",
+          "W06",
+          "W06_B",
+          "W06_C",
+          "W07",
+          "W07_B",
+          "W07_C",
+          "MW01",
+          "MW01_B",
+          "MW01_C",
+          "MW02",
+          "MW02_B",
+          "MW02_C",
+          "MW03",
+          "MW03_B",
+          "MW03_C",
+          "MW04",
+          "MW04_B",
+          "MW04_C",
+          "MW05",
+          "MW05_B",
+          "MW05_C",
+          "MW06",
+          "MW06_B",
+          "MW06_C",
+          "MWP01",
+          "MWP01_B",
+          "MWP01_C",
+          "MWP02",
+          "MWP02_B",
+          "MWP02_C",
+          "HRW07",
+          "HRW07_B",
+          "HRW07_C",
+          "T01_DETAILS",
+          "T01_DETAILS_B",
+          "T01_DETAILS_C"
+        ],
+        "count": 51,
+        "file_sha256": "da94029d2955f880b8b8ed3469a4bd8599fc7665c78d9d49a84ad0f7fbdf8e2b"
+      },
+      {
+        "file": "00_project/elements/MORPHS_IMPORT.md",
+        "canonical_keys": [
+          "MR001",
+          "MR002",
+          "MR003",
+          "MR004",
+          "MR005",
+          "MR006",
+          "MR007",
+          "MR008",
+          "MR009",
+          "MR010",
+          "MR011",
+          "MR012",
+          "MR013",
+          "MR014",
+          "MR015",
+          "MR016",
+          "MR017",
+          "MR018",
+          "MR019",
+          "MR020",
+          "R008",
+          "R009",
+          "R002",
+          "R003",
+          "R004",
+          "R005",
+          "R006",
+          "R010",
+          "R013",
+          "R014",
+          "R015",
+          "R016",
+          "R017",
+          "R018",
+          "R019",
+          "R020",
+          "R021",
+          "R022",
+          "R023",
+          "R024",
+          "R025",
+          "R026",
+          "R028",
+          "R029",
+          "R030",
+          "R031",
+          "R032",
+          "R033",
+          "R034",
+          "R035",
+          "R036",
+          "R037",
+          "R038",
+          "R039",
+          "R040",
+          "R041",
+          "R042",
+          "R043",
+          "R044",
+          "R045",
+          "R046",
+          "R047",
+          "R048",
+          "R049",
+          "R050",
+          "R054",
+          "R055",
+          "R056",
+          "CM001",
+          "CM002",
+          "CM003",
+          "CM004",
+          "CM005",
+          "CM006"
+        ],
+        "count": 74,
+        "file_sha256": "292c4e3b529ee5691d4f7a10abc42c8ac9d2ca37cd12ce93b2733cc91f9f791f"
+      }
+    ],
+    "maps": "Optional planning images, not reference Elements",
+    "character_morphs": "CM001–CM006 are concrete existing-cast transitions in MORPHS_IMPORT.md, with Character output type; no new C-character definitions."
+  },
+  "morph_material_audit": {
+    "date": "2026-09-10",
+    "scope": "74_PROMPTS_TEXT_ONLY_NOT_GENERATED_IMAGES",
+    "report": "04_tracking/MORPH_FOUR_STATE_REVIEW.md",
+    "records": "04_tracking/MORPH_FOUR_STATE_REVIEW.json",
+    "reviewed_prompt_count": 74,
+    "material_profiles": "Stone, timber, metal, roof sheet, glass, ceramic, cloth, fibre, plant, vehicle assemblies, elastic human tissue and rooted hair have differentiated responses.",
+    "validation": {
+      "morphs_with_four_ordered_cells_and_4k_dimensions": 74,
+      "world_memory_map_prompts_with_4k_cell_dimensions": 58,
+      "character_identity_prompts_with_1x3_2k_or_4k": 31,
+      "unique_category_import_keys": 156,
+      "missing_active_prompt_paths": 0,
+      "broken_active_index_links": 0,
+      "generic_character_endpoint_slots": 0,
+      "image_generation_performed": false
+    }
+  },
+  "image_layout_policy": {
+    "character_identity": "1x3; 2K default, 4K optional",
+    "other_reference_images": "4K 3840x2160 2x2; four 1920x1080 cells; no gutters",
+    "maps": "Optional 4K 2x2 plan coverage; not imported as Elements",
+    "three_by_three_active_prompts": 0
   }
 }

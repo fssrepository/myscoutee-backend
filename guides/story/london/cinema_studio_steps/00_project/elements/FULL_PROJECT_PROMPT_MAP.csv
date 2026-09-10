@@ -1,151 +1,157 @@
 canonical_key,element_name,element_type,reference_role,layout,prompt_file,import_batch
-C01,MYS C01 Protagonist,Character,characters,character identity sheet,02_library/characters/C01_PROTAGONIST.txt,FULL_PROJECT_IMPORT.md
-C02,MYS C02 Soho Woman,Character,characters,character identity sheet,02_library/characters/C02_SOHO_WOMAN.txt,FULL_PROJECT_IMPORT.md
-C03,MYS C03 Policewoman,Character,characters,character identity sheet,02_library/characters/C03_POLICEWOMAN.txt,FULL_PROJECT_IMPORT.md
-C04,MYS C04 Appointed Lawyer,Character,characters,character identity sheet,02_library/characters/C04_APPOINTED_LAWYER.txt,FULL_PROJECT_IMPORT.md
-C05,MYS C05 Final Nurse,Character,characters,character identity sheet,02_library/characters/C05_FINAL_NURSE.txt,FULL_PROJECT_IMPORT.md
-C06,MYS C06 Shared-House Substitute / Snoring Housemate,Character,characters,character identity sheet,02_library/characters/C06_SHARED_HOUSE_SUBSTITUTE_SNORING_HOUSEMATE.txt,FULL_PROJECT_IMPORT.md
-C07,MYS C07 Fx-Mortgage Housemate,Character,characters,character identity sheet,02_library/characters/C07_FX_MORTGAGE_HOUSEMATE.txt,FULL_PROJECT_IMPORT.md
-C08,MYS C08 Fx-Mortgage Spouse,Character,characters,character identity sheet,02_library/characters/C08_FX_MORTGAGE_SPOUSE.txt,FULL_PROJECT_IMPORT.md
-C09,MYS C09 Fx-Mortgage Child,Character,characters,character identity sheet,02_library/characters/C09_FX_MORTGAGE_CHILD.txt,FULL_PROJECT_IMPORT.md
-C10,MYS C10 Beginner-Dance Woman,Character,characters,character identity sheet,02_library/characters/C10_BEGINNER_DANCE_WOMAN.txt,FULL_PROJECT_IMPORT.md
-C11,MYS C11 Russian Transit Passenger,Character,characters,character identity sheet,02_library/characters/C11_RUSSIAN_TRANSIT_PASSENGER.txt,FULL_PROJECT_IMPORT.md
-C12,MYS C12 Agra Bus Woman,Character,characters,character identity sheet,02_library/characters/C12_AGRA_BUS_WOMAN.txt,FULL_PROJECT_IMPORT.md
-C13,MYS C13 Sudanese Traveler — Man,Character,characters,character identity sheet,02_library/characters/C13_SUDANESE_TRAVELER_MAN.txt,FULL_PROJECT_IMPORT.md
-C14,MYS C14 Sudanese Traveler — Woman,Character,characters,character identity sheet,02_library/characters/C14_SUDANESE_TRAVELER_WOMAN.txt,FULL_PROJECT_IMPORT.md
-C15,MYS C15 Cairo Taxi Driver,Character,characters,character identity sheet,02_library/characters/C15_CAIRO_TAXI_DRIVER.txt,FULL_PROJECT_IMPORT.md
-C16,MYS C16 Balloon Local Helper — Man,Character,characters,character identity sheet,02_library/characters/C16_BALLOON_LOCAL_HELPER_MAN.txt,FULL_PROJECT_IMPORT.md
-C17,MYS C17 Balloon Local Helper — Woman,Character,characters,character identity sheet,02_library/characters/C17_BALLOON_LOCAL_HELPER_WOMAN.txt,FULL_PROJECT_IMPORT.md
-C18,MYS C18 Barmouth Road-Trip Driver / Companion,Character,characters,character identity sheet,02_library/characters/C18_BARMOUTH_ROAD_TRIP_DRIVER_COMPANION.txt,FULL_PROJECT_IMPORT.md
-C19,MYS C19 Barmouth Road-Trip Companion A,Character,characters,character identity sheet,02_library/characters/C19_BARMOUTH_ROAD_TRIP_COMPANION_A.txt,FULL_PROJECT_IMPORT.md
-C20,MYS C20 Barmouth Road-Trip Companion B,Character,characters,character identity sheet,02_library/characters/C20_BARMOUTH_ROAD_TRIP_COMPANION_B.txt,FULL_PROJECT_IMPORT.md
-C21,MYS C21 Barmouth Road-Trip Companion C,Character,characters,character identity sheet,02_library/characters/C21_BARMOUTH_ROAD_TRIP_COMPANION_C.txt,FULL_PROJECT_IMPORT.md
-C22,MYS C22 Accountant,Character,characters,character identity sheet,02_library/characters/C22_ACCOUNTANT.txt,FULL_PROJECT_IMPORT.md
-C23,MYS C23 Admin Colleague A,Character,characters,character identity sheet,02_library/characters/C23_ADMIN_COLLEAGUE_A.txt,FULL_PROJECT_IMPORT.md
-C24,MYS C24 Admin Colleague B,Character,characters,character identity sheet,02_library/characters/C24_ADMIN_COLLEAGUE_B.txt,FULL_PROJECT_IMPORT.md
-C25,MYS C25 Search Officer — Male,Character,characters,character identity sheet,02_library/characters/C25_SEARCH_OFFICER_MALE.txt,FULL_PROJECT_IMPORT.md
-C26,MYS C26 Defence-Office Substitute,Character,characters,character identity sheet,02_library/characters/C26_DEFENCE_OFFICE_SUBSTITUTE.txt,FULL_PROJECT_IMPORT.md
-C27,MYS C27 Judge,Character,characters,character identity sheet,02_library/characters/C27_JUDGE.txt,FULL_PROJECT_IMPORT.md
-C28,MYS C28 Forensic Expert A,Character,characters,character identity sheet,02_library/characters/C28_FORENSIC_EXPERT_A.txt,FULL_PROJECT_IMPORT.md
-C29,MYS C29 Forensic Expert B,Character,characters,character identity sheet,02_library/characters/C29_FORENSIC_EXPERT_B.txt,FULL_PROJECT_IMPORT.md
-C30,MYS C30 Court Clerk,Character,characters,character identity sheet,02_library/characters/C30_COURT_CLERK.txt,FULL_PROJECT_IMPORT.md
-C31,MYS C31 Anonymous Fictional Cardboard Public Figure,Character,characters,character identity sheet,02_library/characters/C31_ANONYMOUS_FICTIONAL_POLITICAL_FIGURE.txt,FULL_PROJECT_IMPORT.md
-W01,MYS W01_A World Reference,Location,worlds,2x2 environment coverage,02_library/worlds/real/W01_MAIN_WORLD_A.txt,FULL_PROJECT_IMPORT.md
-W01_B,MYS W01_B World Reference,Location,worlds,2x2 environment coverage,02_library/worlds/real/W01_MAIN_WORLD_B.txt,FULL_PROJECT_IMPORT.md
-W01_C,MYS W01_C World Reference,Location,worlds,2x2 environment coverage,02_library/worlds/real/W01_MAIN_WORLD_C.txt,FULL_PROJECT_IMPORT.md
-W02,MYS W02_A World Reference,Location,worlds,2x2 environment coverage,02_library/worlds/real/W02_MAIN_WORLD_A.txt,FULL_PROJECT_IMPORT.md
-W02_B,MYS W02_B World Reference,Location,worlds,2x2 environment coverage,02_library/worlds/real/W02_MAIN_WORLD_B.txt,FULL_PROJECT_IMPORT.md
-W02_C,MYS W02_C World Reference,Location,worlds,2x2 environment coverage,02_library/worlds/real/W02_MAIN_WORLD_C.txt,FULL_PROJECT_IMPORT.md
-W03,MYS W03_A World Reference,Location,worlds,2x2 environment coverage,02_library/worlds/real/W03_MAIN_WORLD_A.txt,FULL_PROJECT_IMPORT.md
-W03_B,MYS W03_B World Reference,Location,worlds,2x2 environment coverage,02_library/worlds/real/W03_MAIN_WORLD_B.txt,FULL_PROJECT_IMPORT.md
-W03_C,MYS W03_C World Reference,Location,worlds,2x2 environment coverage,02_library/worlds/real/W03_MAIN_WORLD_C.txt,FULL_PROJECT_IMPORT.md
-W04,MYS W04_A World Reference,Location,worlds,2x2 environment coverage,02_library/worlds/real/W04_MAIN_WORLD_A.txt,FULL_PROJECT_IMPORT.md
-W04_B,MYS W04_B World Reference,Location,worlds,2x2 environment coverage,02_library/worlds/real/W04_MAIN_WORLD_B.txt,FULL_PROJECT_IMPORT.md
-W04_C,MYS W04_C World Reference,Location,worlds,2x2 environment coverage,02_library/worlds/real/W04_MAIN_WORLD_C.txt,FULL_PROJECT_IMPORT.md
-W05,MYS W05_A World Reference,Location,worlds,2x2 environment coverage,02_library/worlds/real/W05_MAIN_WORLD_A.txt,FULL_PROJECT_IMPORT.md
-W05_B,MYS W05_B World Reference,Location,worlds,2x2 environment coverage,02_library/worlds/real/W05_MAIN_WORLD_B.txt,FULL_PROJECT_IMPORT.md
-W05_C,MYS W05_C World Reference,Location,worlds,2x2 environment coverage,02_library/worlds/real/W05_MAIN_WORLD_C.txt,FULL_PROJECT_IMPORT.md
-W06,MYS W06_A World Reference,Location,worlds,2x2 environment coverage,02_library/worlds/real/W06_MAIN_WORLD_A.txt,FULL_PROJECT_IMPORT.md
-W06_B,MYS W06_B World Reference,Location,worlds,2x2 environment coverage,02_library/worlds/real/W06_MAIN_WORLD_B.txt,FULL_PROJECT_IMPORT.md
-W06_C,MYS W06_C World Reference,Location,worlds,2x2 environment coverage,02_library/worlds/real/W06_MAIN_WORLD_C.txt,FULL_PROJECT_IMPORT.md
-W07,MYS W07_A World Reference,Location,worlds,2x2 environment coverage,02_library/worlds/real/W07_MAIN_WORLD_A.txt,FULL_PROJECT_IMPORT.md
-W07_B,MYS W07_B World Reference,Location,worlds,2x2 environment coverage,02_library/worlds/real/W07_MAIN_WORLD_B.txt,FULL_PROJECT_IMPORT.md
-W07_C,MYS W07_C World Reference,Location,worlds,2x2 environment coverage,02_library/worlds/real/W07_MAIN_WORLD_C.txt,FULL_PROJECT_IMPORT.md
-MW01,MYS MW01_A London Social,Location,memories,2x2 environment coverage,02_library/worlds/memories/MW01_LONDON_SOCIAL_A.txt,FULL_PROJECT_IMPORT.md
-MW01_B,MYS MW01_B London Social,Location,memories,2x2 environment coverage,02_library/worlds/memories/MW01_LONDON_SOCIAL_B.txt,FULL_PROJECT_IMPORT.md
-MW01_C,MYS MW01_C London Social,Location,memories,2x2 environment coverage,02_library/worlds/memories/MW01_LONDON_SOCIAL_C.txt,FULL_PROJECT_IMPORT.md
-MW02,MYS MW02_A Global Routes,Location,memories,2x2 environment coverage,02_library/worlds/memories/MW02_GLOBAL_ROUTES_A.txt,FULL_PROJECT_IMPORT.md
-MW02_B,MYS MW02_B Global Routes,Location,memories,2x2 environment coverage,02_library/worlds/memories/MW02_GLOBAL_ROUTES_B.txt,FULL_PROJECT_IMPORT.md
-MW02_C,MYS MW02_C Global Routes,Location,memories,2x2 environment coverage,02_library/worlds/memories/MW02_GLOBAL_ROUTES_C.txt,FULL_PROJECT_IMPORT.md
-MW03,MYS MW03_A Work Rule Change Admin,Location,memories,2x2 environment coverage,02_library/worlds/memories/MW03_WORK_RULE_CHANGE_ADMIN_A.txt,FULL_PROJECT_IMPORT.md
-MW03_B,MYS MW03_B Work Rule Change Admin,Location,memories,2x2 environment coverage,02_library/worlds/memories/MW03_WORK_RULE_CHANGE_ADMIN_B.txt,FULL_PROJECT_IMPORT.md
-MW03_C,MYS MW03_C Work Rule Change Admin,Location,memories,2x2 environment coverage,02_library/worlds/memories/MW03_WORK_RULE_CHANGE_ADMIN_C.txt,FULL_PROJECT_IMPORT.md
-MW04,MYS MW04_A Police Defence,Location,memories,2x2 environment coverage,02_library/worlds/memories/MW04_POLICE_DEFENCE_A.txt,FULL_PROJECT_IMPORT.md
-MW04_B,MYS MW04_B Police Defence,Location,memories,2x2 environment coverage,02_library/worlds/memories/MW04_POLICE_DEFENCE_B.txt,FULL_PROJECT_IMPORT.md
-MW04_C,MYS MW04_C Police Defence,Location,memories,2x2 environment coverage,02_library/worlds/memories/MW04_POLICE_DEFENCE_C.txt,FULL_PROJECT_IMPORT.md
-MW05,MYS MW05_A Court File,Location,memories,2x2 environment coverage,02_library/worlds/memories/MW05_COURT_FILE_A.txt,FULL_PROJECT_IMPORT.md
-MW05_B,MYS MW05_B Court File,Location,memories,2x2 environment coverage,02_library/worlds/memories/MW05_COURT_FILE_B.txt,FULL_PROJECT_IMPORT.md
-MW05_C,MYS MW05_C Court File,Location,memories,2x2 environment coverage,02_library/worlds/memories/MW05_COURT_FILE_C.txt,FULL_PROJECT_IMPORT.md
-MW06,MYS MW06_A Human Countermemories,Location,memories,2x2 environment coverage,02_library/worlds/memories/MW06_HUMAN_COUNTERMEMORIES_A.txt,FULL_PROJECT_IMPORT.md
-MW06_B,MYS MW06_B Human Countermemories,Location,memories,2x2 environment coverage,02_library/worlds/memories/MW06_HUMAN_COUNTERMEMORIES_B.txt,FULL_PROJECT_IMPORT.md
-MW06_C,MYS MW06_C Human Countermemories,Location,memories,2x2 environment coverage,02_library/worlds/memories/MW06_HUMAN_COUNTERMEMORIES_C.txt,FULL_PROJECT_IMPORT.md
-MWP01,MYS MWP01_A Routes Rooms Documents,Location,memories,2x2 environment coverage,02_library/worlds/memories/MWP01_ROUTES_ROOMS_DOCUMENTS_A.txt,FULL_PROJECT_IMPORT.md
-MWP01_B,MYS MWP01_B Routes Rooms Documents,Location,memories,2x2 environment coverage,02_library/worlds/memories/MWP01_ROUTES_ROOMS_DOCUMENTS_B.txt,FULL_PROJECT_IMPORT.md
-MWP01_C,MYS MWP01_C Routes Rooms Documents,Location,memories,2x2 environment coverage,02_library/worlds/memories/MWP01_ROUTES_ROOMS_DOCUMENTS_C.txt,FULL_PROJECT_IMPORT.md
-MWP02,MYS MWP02_A System Time Reversals,Location,memories,2x2 environment coverage,02_library/worlds/memories/MWP02_SYSTEM_TIME_REVERSALS_A.txt,FULL_PROJECT_IMPORT.md
-MWP02_B,MYS MWP02_B System Time Reversals,Location,memories,2x2 environment coverage,02_library/worlds/memories/MWP02_SYSTEM_TIME_REVERSALS_B.txt,FULL_PROJECT_IMPORT.md
-MWP02_C,MYS MWP02_C System Time Reversals,Location,memories,2x2 environment coverage,02_library/worlds/memories/MWP02_SYSTEM_TIME_REVERSALS_C.txt,FULL_PROJECT_IMPORT.md
-HRW07,MYS HRW07_A Clinical Reality,Location,memories,2x2 environment coverage,02_library/worlds/memories/HRW07_CLINICAL_REALITY_A.txt,FULL_PROJECT_IMPORT.md
-HRW07_B,MYS HRW07_B Clinical Reality,Location,memories,2x2 environment coverage,02_library/worlds/memories/HRW07_CLINICAL_REALITY_B.txt,FULL_PROJECT_IMPORT.md
-HRW07_C,MYS HRW07_C Clinical Reality,Location,memories,2x2 environment coverage,02_library/worlds/memories/HRW07_CLINICAL_REALITY_C.txt,FULL_PROJECT_IMPORT.md
-T01_DETAILS,MYS T01_A Soho Restaurant,Location,memories,2x2 environment coverage,02_library/worlds/memories/T01_SOHO_RESTAURANT_SOURCE_A.txt,FULL_PROJECT_IMPORT.md
-T01_DETAILS_B,MYS T01_B Soho Restaurant,Location,memories,2x2 environment coverage,02_library/worlds/memories/T01_SOHO_RESTAURANT_SOURCE_B.txt,FULL_PROJECT_IMPORT.md
-T01_DETAILS_C,MYS T01_C Soho Restaurant,Location,memories,2x2 environment coverage,02_library/worlds/memories/T01_SOHO_RESTAURANT_SOURCE_C.txt,FULL_PROJECT_IMPORT.md
-MR001,MYS MR001 St Pauls To St Stephens,Location,morphs,2x2 material transformation,02_library/morphs/buildings/MR001_ST_PAULS_TO_ST_STEPHENS_2X2.txt,FULL_PROJECT_IMPORT.md
-MR002,MYS MR002 Facade Relief To Sculpted Support,Location,morphs,2x2 material transformation,02_library/morphs/buildings/MR002_FACADE_RELIEF_TO_SCULPTED_SUPPORT_2X2.txt,FULL_PROJECT_IMPORT.md
-MR003,MYS MR003 Facade Window Capital And Cornice,Location,morphs,2x2 material transformation,02_library/morphs/buildings/MR003_FACADE_WINDOW_CAPITAL_AND_CORNICE_2X2.txt,FULL_PROJECT_IMPORT.md
-MR004,MYS MR004 Window Glass To Pendant Shade,Location,morphs,2x2 material transformation,02_library/morphs/objects/MR004_WINDOW_GLASS_TO_PENDANT_SHADE_2X2.txt,FULL_PROJECT_IMPORT.md
-MR005,MYS MR005 Brick Courses To Carved Arch,Location,morphs,2x2 material transformation,02_library/morphs/buildings/MR005_BRICK_COURSES_TO_CARVED_ARCH_2X2.txt,FULL_PROJECT_IMPORT.md
-MR006,MYS MR006 Stone Threshold To Supported Timber Floor,Location,morphs,2x2 material transformation,02_library/morphs/buildings/MR006_STONE_THRESHOLD_TO_SUPPORTED_TIMBER_FLOOR_2X2.txt,FULL_PROJECT_IMPORT.md
-MR007,MYS MR007 Bench To Curved Floor Border,Location,morphs,2x2 material transformation,02_library/morphs/objects/MR007_BENCH_TO_CURVED_FLOOR_BORDER_2X2.txt,FULL_PROJECT_IMPORT.md
-MR008,MYS MR008 Window Fittings To Pendant Stem,Location,morphs,2x2 material transformation,02_library/morphs/objects/MR008_WINDOW_FITTINGS_TO_PENDANT_STEM_2X2.txt,FULL_PROJECT_IMPORT.md
-MR009,MYS MR009 Balcony Scroll To Sideways Stair,Location,morphs,2x2 material transformation,02_library/morphs/buildings/MR009_BALCONY_SCROLL_TO_SIDEWAYS_STAIR_2X2.txt,FULL_PROJECT_IMPORT.md
-MR010,MYS MR010 English Sign To Kave Lettering,Location,morphs,2x2 material transformation,02_library/morphs/objects/MR010_ENGLISH_SIGN_TO_KAVE_LETTERING_2X2.txt,FULL_PROJECT_IMPORT.md
-MR011,MYS MR011 Slate Roof To Curved Glazing,Location,morphs,2x2 material transformation,02_library/morphs/buildings/MR011_SLATE_ROOF_TO_CURVED_GLAZING_2X2.txt,FULL_PROJECT_IMPORT.md
-MR012,MYS MR012 Chimney Shafts To Spiral Crowns,Location,morphs,2x2 material transformation,02_library/morphs/buildings/MR012_CHIMNEY_SHAFTS_TO_SPIRAL_CROWNS_2X2.txt,FULL_PROJECT_IMPORT.md
-MR013,MYS MR013 Entrance Rail To Transit Gate,Location,morphs,2x2 material transformation,02_library/morphs/objects/MR013_ENTRANCE_RAIL_TO_TRANSIT_GATE_2X2.txt,FULL_PROJECT_IMPORT.md
-MR014,MYS MR014 Bench And Canopy To Bus Seating,Location,morphs,2x2 material transformation,02_library/morphs/objects/MR014_BENCH_AND_CANOPY_TO_BUS_SEATING_2X2.txt,FULL_PROJECT_IMPORT.md
-MR015,MYS MR015 Canopy To Balloon Envelope,Location,morphs,2x2 material transformation,02_library/morphs/objects/MR015_CANOPY_TO_BALLOON_ENVELOPE_2X2.txt,FULL_PROJECT_IMPORT.md
-MR016,MYS MR016 Crop Stalks To Rail Sleepers,Location,morphs,2x2 material transformation,02_library/morphs/objects/MR016_CROP_STALKS_TO_RAIL_SLEEPERS_2X2.txt,FULL_PROJECT_IMPORT.md
-MR017,MYS MR017 Cabinet To Desk And Chair,Location,morphs,2x2 material transformation,02_library/morphs/objects/MR017_CABINET_TO_DESK_AND_CHAIR_2X2.txt,FULL_PROJECT_IMPORT.md
-MR018,MYS MR018 Hearing Bench To Document Shelving,Location,morphs,2x2 material transformation,02_library/morphs/objects/MR018_HEARING_BENCH_TO_DOCUMENT_SHELVING_2X2.txt,FULL_PROJECT_IMPORT.md
-MR019,MYS MR019 Paving And Gutter To Street Terrace,Location,morphs,2x2 material transformation,02_library/morphs/buildings/MR019_PAVING_AND_GUTTER_TO_STREET_TERRACE_2X2.txt,FULL_PROJECT_IMPORT.md
-MR020,MYS MR020 Rope Fibres To Sheet Hem,Location,morphs,2x2 material transformation,02_library/morphs/objects/MR020_ROPE_FIBRES_TO_SHEET_HEM_2X2.txt,FULL_PROJECT_IMPORT.md
-R008,MYS R008 Cafe To Occupied Restaurant,Location,morphs,2x2 material transformation,02_library/morphs/buildings/R008_CAFE_OPENING_AND_FURNITURE_CONSTRUCTION_DETAILS.txt,FULL_PROJECT_IMPORT.md
-R009,MYS R009 Fanlight To Canopy,Location,morphs,2x2 material transformation,02_library/morphs/buildings/R009_FANLIGHT_TO_CANOPY_JOINT_STUDY_FOR_THE_EXTEND.txt,FULL_PROJECT_IMPORT.md
-R002,MYS R002 Red London Bus,Prop,object morph,2x2 material transformation,02_library/morphs/objects/R002_THE_SAME_RED_LONDON_BUS_FROM_USEFUL_ANGLES.txt,FULL_PROJECT_IMPORT.md
-R003,MYS Reference 03 Black London taxi,Prop,object morph,2x2 material transformation,02_library/morphs/objects/R003_BLACK_LONDON_TAXI.txt,13_ADDITIONAL_OBJECT_REFERENCES.md
-R004,MYS Reference 04 Yellow Budapest tram,Prop,object morph,2x2 material transformation,02_library/morphs/objects/R004_YELLOW_BUDAPEST_TRAM.txt,13_ADDITIONAL_OBJECT_REFERENCES.md
-R005,MYS Reference 05 St Paul’s: complete source building,Location,object morph,2x2 material transformation,02_library/morphs/buildings/R005_ST_PAULS_COMPLETE_SOURCE_BUILDING.txt,13_ADDITIONAL_OBJECT_REFERENCES.md
-R006,MYS Reference 06 St Stephen’s: complete destination building,Location,object morph,2x2 material transformation,02_library/morphs/buildings/R006_ST_STEPHENS_COMPLETE_DESTINATION_BUILDING.txt,13_ADDITIONAL_OBJECT_REFERENCES.md
-R010,"MYS Reference 10 Winged statue, plinth and contact detail",Prop,object morph,2x2 material transformation,02_library/morphs/objects/R010_WINGED_STATUE_PLINTH_AND_CONTACT_DETAIL.txt,13_ADDITIONAL_OBJECT_REFERENCES.md
-R013,MYS Reference 13 Red bus lower-deck passage and open-door geometry,Location,object morph,2x2 material transformation,02_library/morphs/objects/R013_RED_BUS_LOWER_DECK_PASSAGE_AND_OPEN_DOOR_GEOMETRY.txt,13_ADDITIONAL_OBJECT_REFERENCES.md
-R014,MYS Reference 14 Original London café window before fracture,Location,object morph,2x2 material transformation,02_library/morphs/buildings/R014_ORIGINAL_LONDON_CAFE_WINDOW_BEFORE_FRACTURE.txt,13_ADDITIONAL_OBJECT_REFERENCES.md
-R015,MYS Reference 15 Glass source thickness and destination pendant shades,Prop,object morph,2x2 material transformation,02_library/morphs/objects/R015_GLASS_SOURCE_THICKNESS_AND_DESTINATION_PENDANT_SHADES.txt,13_ADDITIONAL_OBJECT_REFERENCES.md
-R016,MYS Reference 16 Solid London brick and Pest carved-stone correspondence,Location,object morph,2x2 material transformation,02_library/morphs/buildings/R016_SOLID_LONDON_BRICK_AND_PEST_CARVED_STONE_CORRESPONDENCE.txt,13_ADDITIONAL_OBJECT_REFERENCES.md
-R017,"MYS Reference 17 Stone sill, wet paving and supported timber threshold",Location,object morph,2x2 material transformation,02_library/morphs/buildings/R017_STONE_SILL_WET_PAVING_AND_SUPPORTED_TIMBER_THRESHOLD.txt,13_ADDITIONAL_OBJECT_REFERENCES.md
-R018,MYS Reference 18 London timber bench and curved floor border,Prop,object morph,2x2 material transformation,02_library/morphs/objects/R018_LONDON_TIMBER_BENCH_AND_CURVED_FLOOR_BORDER.txt,13_ADDITIONAL_OBJECT_REFERENCES.md
-R019,MYS Reference 19 Accepted restaurant table and chair from outside,Prop,object morph,2x2 material transformation,02_library/morphs/objects/R019_ACCEPTED_RESTAURANT_TABLE_AND_CHAIR_FROM_OUTSIDE.txt,13_ADDITIONAL_OBJECT_REFERENCES.md
-R020,"MYS Reference 20 Cup, hand contact and tabletop depth",Prop,object morph,2x2 material transformation,02_library/morphs/objects/R020_CUP_HAND_CONTACT_AND_TABLETOP_DEPTH.txt,13_ADDITIONAL_OBJECT_REFERENCES.md
-R021,MYS Reference 21 Restaurant rear doors and depth relationships,Prop,object morph,2x2 material transformation,02_library/morphs/buildings/R021_RESTAURANT_REAR_DOORS_AND_DEPTH_RELATIONSHIPS.txt,13_ADDITIONAL_OBJECT_REFERENCES.md
-R022,MYS Reference 22 Street-light fittings and restaurant pendant connections,Prop,object morph,2x2 material transformation,02_library/morphs/objects/R022_STREET_LIGHT_FITTINGS_AND_RESTAURANT_PENDANT_CONNECTIONS.txt,13_ADDITIONAL_OBJECT_REFERENCES.md
-R023,MYS Reference 23 Balcony scroll and sideways stair structural parts,Prop,object morph,2x2 material transformation,02_library/morphs/objects/R023_BALCONY_SCROLL_AND_SIDEWAYS_STAIR_STRUCTURAL_PARTS.txt,13_ADDITIONAL_OBJECT_REFERENCES.md
-R024,MYS Reference 24 Mounted English café sign and Hungarian destination sign,Prop,object morph,2x2 material transformation,02_library/morphs/objects/R024_MOUNTED_ENGLISH_CAFE_SIGN_AND_HUNGARIAN_DESTINATION_SIGN.txt,13_ADDITIONAL_OBJECT_REFERENCES.md
-R025,MYS Reference 25 Original London roof and chimney volumes,Location,object morph,2x2 material transformation,02_library/morphs/buildings/R025_ORIGINAL_LONDON_ROOF_AND_CHIMNEY_VOLUMES.txt,13_ADDITIONAL_OBJECT_REFERENCES.md
-R026,"MYS Reference 26 Target roof glazing, stone corbels and chimney crowns",Location,object morph,2x2 material transformation,02_library/morphs/buildings/R026_TARGET_ROOF_GLAZING_STONE_CORBELS_AND_CHIMNEY_CROWNS.txt,13_ADDITIONAL_OBJECT_REFERENCES.md
-R028,MYS Reference 28 Original arcade arch and fanlight,Location,object morph,2x2 material transformation,02_library/morphs/buildings/R028_ORIGINAL_ARCADE_ARCH_AND_FANLIGHT.txt,13_ADDITIONAL_OBJECT_REFERENCES.md
-R029,MYS Reference 29 Full supported canopy destination,Location,object morph,2x2 material transformation,02_library/morphs/buildings/R029_FULL_SUPPORTED_CANOPY_DESTINATION.txt,13_ADDITIONAL_OBJECT_REFERENCES.md
-R030,MYS Reference 30 Deep gallery through the unchanged threshold,Location,object morph,2x2 material transformation,02_library/morphs/buildings/R030_DEEP_GALLERY_THROUGH_THE_UNCHANGED_THRESHOLD.txt,13_ADDITIONAL_OBJECT_REFERENCES.md
-R031,MYS Reference 31 London station source exterior and iron structure,Location,object morph,2x2 material transformation,02_library/morphs/buildings/R031_LONDON_STATION_SOURCE_EXTERIOR_AND_IRON_STRUCTURE.txt,13_ADDITIONAL_OBJECT_REFERENCES.md
-R032,MYS Reference 32 Nyugati station destination and roof joints,Location,object morph,2x2 material transformation,02_library/morphs/buildings/R032_NYUGATI_STATION_DESTINATION_AND_ROOF_JOINTS.txt,13_ADDITIONAL_OBJECT_REFERENCES.md
-R033,MYS Reference 33 Hungarian State Opera target facade and entry depth,Location,object morph,2x2 material transformation,02_library/morphs/buildings/R033_HUNGARIAN_STATE_OPERA_TARGET_FACADE_AND_ENTRY_DEPTH.txt,13_ADDITIONAL_OBJECT_REFERENCES.md
-R034,MYS Reference 34 Tower Bridge source structure,Location,object morph,2x2 material transformation,02_library/morphs/buildings/R034_TOWER_BRIDGE_SOURCE_STRUCTURE.txt,13_ADDITIONAL_OBJECT_REFERENCES.md
-R035,MYS Reference 35 Széchenyi Chain Bridge destination structure,Location,object morph,2x2 material transformation,02_library/morphs/buildings/R035_SZECHENYI_CHAIN_BRIDGE_DESTINATION_STRUCTURE.txt,13_ADDITIONAL_OBJECT_REFERENCES.md
-R036,MYS Reference 36 London Eye and connected South Bank depth,Location,object morph,2x2 material transformation,02_library/morphs/buildings/R036_LONDON_EYE_AND_CONNECTED_SOUTH_BANK_DEPTH.txt,13_ADDITIONAL_OBJECT_REFERENCES.md
-R037,MYS Reference 37 Great Market Hall roof and brick source volume,Location,object morph,2x2 material transformation,02_library/morphs/buildings/R037_GREAT_MARKET_HALL_ROOF_AND_BRICK_SOURCE_VOLUME.txt,13_ADDITIONAL_OBJECT_REFERENCES.md
-R038,MYS Reference 38 Bálna curved-glass target volume,Location,object morph,2x2 material transformation,02_library/morphs/buildings/R038_BALNA_CURVED_GLASS_TARGET_VOLUME.txt,13_ADDITIONAL_OBJECT_REFERENCES.md
-R039,MYS Reference 39 Westminster and Parliament Square London source,Location,object morph,2x2 material transformation,02_library/morphs/buildings/R039_WESTMINSTER_AND_PARLIAMENT_SQUARE_LONDON_SOURCE.txt,13_ADDITIONAL_OBJECT_REFERENCES.md
-R040,MYS Reference 40 Hungarian Parliament complete destination silhouette,Location,object morph,2x2 material transformation,02_library/morphs/buildings/R040_HUNGARIAN_PARLIAMENT_COMPLETE_DESTINATION_SILHOUETTE.txt,13_ADDITIONAL_OBJECT_REFERENCES.md
-R041,MYS Reference 41 Gresham Palace frontage and deep stone details,Location,object morph,2x2 material transformation,02_library/morphs/buildings/R041_GRESHAM_PALACE_FRONTAGE_AND_DEEP_STONE_DETAILS.txt,13_ADDITIONAL_OBJECT_REFERENCES.md
-R042,MYS Reference 42 New York Palace historic exterior with occupied-bay depth,Location,object morph,2x2 material transformation,02_library/morphs/buildings/R042_NEW_YORK_PALACE_HISTORIC_EXTERIOR_WITH_OCCUPIED_BAY_DEPTH.txt,13_ADDITIONAL_OBJECT_REFERENCES.md
-R043,MYS Reference 43 London entrance rail and remembered transit gate,Prop,object morph,2x2 material transformation,02_library/morphs/objects/R043_LONDON_ENTRANCE_RAIL_AND_REMEMBERED_TRANSIT_GATE.txt,13_ADDITIONAL_OBJECT_REFERENCES.md
-R044,"MYS Reference 44 Remembered bus seats, aisle and canopy-post correspondence",Prop,object morph,2x2 material transformation,02_library/morphs/objects/R044_REMEMBERED_BUS_SEATS_AISLE_AND_CANOPY_POST_CORRESPONDENCE.txt,13_ADDITIONAL_OBJECT_REFERENCES.md
-R045,"MYS Reference 45 Cairo taxi cabin, rear bench and luggage contact",Prop,object morph,2x2 material transformation,02_library/morphs/objects/R045_CAIRO_TAXI_CABIN_REAR_BENCH_AND_LUGGAGE_CONTACT.txt,13_ADDITIONAL_OBJECT_REFERENCES.md
-R046,"MYS Reference 46 Canopy and balloon envelope, rigging and basket interfaces",Prop,object morph,2x2 material transformation,02_library/morphs/objects/R046_CANOPY_AND_BALLOON_ENVELOPE_RIGGING_AND_BASKET_INTERFACES.txt,13_ADDITIONAL_OBJECT_REFERENCES.md
-R047,"MYS Reference 47 Paving, soil, paprika/corn roots and rail sleepers",Location,object morph,2x2 material transformation,02_library/morphs/objects/R047_PAVING_SOIL_PAPRIKA_CORN_ROOTS_AND_RAIL_SLEEPERS.txt,13_ADDITIONAL_OBJECT_REFERENCES.md
-R048,"MYS Reference 48 Administrative desk, actual documents and device geometry",Prop,object morph,2x2 material transformation,02_library/morphs/objects/R048_ADMINISTRATIVE_DESK_ACTUAL_DOCUMENTS_AND_DEVICE_GEOMETRY.txt,13_ADDITIONAL_OBJECT_REFERENCES.md
-R049,"MYS Reference 49 Cabinet, fingerprint desk and chair construction",Prop,object morph,2x2 material transformation,02_library/morphs/objects/R049_CABINET_FINGERPRINT_DESK_AND_CHAIR_CONSTRUCTION.txt,13_ADDITIONAL_OBJECT_REFERENCES.md
-R050,"MYS Reference 50 Court, file compartments and retained-device supports",Prop,object morph,2x2 material transformation,02_library/morphs/objects/R050_COURT_FILE_COMPARTMENTS_AND_RETAINED_DEVICE_SUPPORTS.txt,13_ADDITIONAL_OBJECT_REFERENCES.md
-R054,MYS Reference 54 Big Ben Elizabeth Tower London source,Location,object morph,2x2 material transformation,02_library/morphs/buildings/R054_BIG_BEN_ELIZABETH_TOWER_LONDON_SOURCE.txt,13_ADDITIONAL_OBJECT_REFERENCES.md
-R055,MYS Reference 55 Westminster Abbey London source,Location,object morph,2x2 material transformation,02_library/morphs/buildings/R055_WESTMINSTER_ABBEY_LONDON_SOURCE.txt,13_ADDITIONAL_OBJECT_REFERENCES.md
-R056,MYS Reference 56 Fishermans Bastion destination,Location,object morph,2x2 material transformation,02_library/morphs/buildings/R056_FISHERMANS_BASTION_DESTINATION.txt,13_ADDITIONAL_OBJECT_REFERENCES.md
+C01,MYS C01 Protagonist,Character,C01_PROTAGONIST.txt,"1x3 identity; 2K default, 4K optional",02_library/characters/C01_PROTAGONIST.txt,CHARACTERS_IMPORT.md
+C02,MYS C02 Soho Woman,Character,C02_SOHO_WOMAN.txt,"1x3 identity; 2K default, 4K optional",02_library/characters/C02_SOHO_WOMAN.txt,CHARACTERS_IMPORT.md
+C03,MYS C03 Policewoman,Character,C03_POLICEWOMAN.txt,"1x3 identity; 2K default, 4K optional",02_library/characters/C03_POLICEWOMAN.txt,CHARACTERS_IMPORT.md
+C04,MYS C04 Appointed Lawyer,Character,C04_APPOINTED_LAWYER.txt,"1x3 identity; 2K default, 4K optional",02_library/characters/C04_APPOINTED_LAWYER.txt,CHARACTERS_IMPORT.md
+C05,MYS C05 Final Nurse,Character,C05_FINAL_NURSE.txt,"1x3 identity; 2K default, 4K optional",02_library/characters/C05_FINAL_NURSE.txt,CHARACTERS_IMPORT.md
+C06,MYS C06 Shared-House Substitute / Snoring Housemate,Character,C06_SHARED_HOUSE_SUBSTITUTE_SNORING_HOUSEMATE.txt,"1x3 identity; 2K default, 4K optional",02_library/characters/C06_SHARED_HOUSE_SUBSTITUTE_SNORING_HOUSEMATE.txt,CHARACTERS_IMPORT.md
+C07,MYS C07 Fx-Mortgage Housemate,Character,C07_FX_MORTGAGE_HOUSEMATE.txt,"1x3 identity; 2K default, 4K optional",02_library/characters/C07_FX_MORTGAGE_HOUSEMATE.txt,CHARACTERS_IMPORT.md
+C08,MYS C08 Fx-Mortgage Spouse,Character,C08_FX_MORTGAGE_SPOUSE.txt,"1x3 identity; 2K default, 4K optional",02_library/characters/C08_FX_MORTGAGE_SPOUSE.txt,CHARACTERS_IMPORT.md
+C09,MYS C09 Fx-Mortgage Child,Character,C09_FX_MORTGAGE_CHILD.txt,"1x3 identity; 2K default, 4K optional",02_library/characters/C09_FX_MORTGAGE_CHILD.txt,CHARACTERS_IMPORT.md
+C10,MYS C10 Beginner-Dance Woman,Character,C10_BEGINNER_DANCE_WOMAN.txt,"1x3 identity; 2K default, 4K optional",02_library/characters/C10_BEGINNER_DANCE_WOMAN.txt,CHARACTERS_IMPORT.md
+C11,MYS C11 Russian Transit Passenger,Character,C11_RUSSIAN_TRANSIT_PASSENGER.txt,"1x3 identity; 2K default, 4K optional",02_library/characters/C11_RUSSIAN_TRANSIT_PASSENGER.txt,CHARACTERS_IMPORT.md
+C12,MYS C12 Agra Bus Woman,Character,C12_AGRA_BUS_WOMAN.txt,"1x3 identity; 2K default, 4K optional",02_library/characters/C12_AGRA_BUS_WOMAN.txt,CHARACTERS_IMPORT.md
+C13,MYS C13 Sudanese Traveler — Man,Character,C13_SUDANESE_TRAVELER_MAN.txt,"1x3 identity; 2K default, 4K optional",02_library/characters/C13_SUDANESE_TRAVELER_MAN.txt,CHARACTERS_IMPORT.md
+C14,MYS C14 Sudanese Traveler — Woman,Character,C14_SUDANESE_TRAVELER_WOMAN.txt,"1x3 identity; 2K default, 4K optional",02_library/characters/C14_SUDANESE_TRAVELER_WOMAN.txt,CHARACTERS_IMPORT.md
+C15,MYS C15 Cairo Taxi Driver,Character,C15_CAIRO_TAXI_DRIVER.txt,"1x3 identity; 2K default, 4K optional",02_library/characters/C15_CAIRO_TAXI_DRIVER.txt,CHARACTERS_IMPORT.md
+C16,MYS C16 Balloon Local Helper — Man,Character,C16_BALLOON_LOCAL_HELPER_MAN.txt,"1x3 identity; 2K default, 4K optional",02_library/characters/C16_BALLOON_LOCAL_HELPER_MAN.txt,CHARACTERS_IMPORT.md
+C17,MYS C17 Balloon Local Helper — Woman,Character,C17_BALLOON_LOCAL_HELPER_WOMAN.txt,"1x3 identity; 2K default, 4K optional",02_library/characters/C17_BALLOON_LOCAL_HELPER_WOMAN.txt,CHARACTERS_IMPORT.md
+C18,MYS C18 Barmouth Road-Trip Driver / Companion,Character,C18_BARMOUTH_ROAD_TRIP_DRIVER_COMPANION.txt,"1x3 identity; 2K default, 4K optional",02_library/characters/C18_BARMOUTH_ROAD_TRIP_DRIVER_COMPANION.txt,CHARACTERS_IMPORT.md
+C19,MYS C19 Barmouth Road-Trip Companion A,Character,C19_BARMOUTH_ROAD_TRIP_COMPANION_A.txt,"1x3 identity; 2K default, 4K optional",02_library/characters/C19_BARMOUTH_ROAD_TRIP_COMPANION_A.txt,CHARACTERS_IMPORT.md
+C20,MYS C20 Barmouth Road-Trip Companion B,Character,C20_BARMOUTH_ROAD_TRIP_COMPANION_B.txt,"1x3 identity; 2K default, 4K optional",02_library/characters/C20_BARMOUTH_ROAD_TRIP_COMPANION_B.txt,CHARACTERS_IMPORT.md
+C21,MYS C21 Barmouth Road-Trip Companion C,Character,C21_BARMOUTH_ROAD_TRIP_COMPANION_C.txt,"1x3 identity; 2K default, 4K optional",02_library/characters/C21_BARMOUTH_ROAD_TRIP_COMPANION_C.txt,CHARACTERS_IMPORT.md
+C22,MYS C22 Accountant,Character,C22_ACCOUNTANT.txt,"1x3 identity; 2K default, 4K optional",02_library/characters/C22_ACCOUNTANT.txt,CHARACTERS_IMPORT.md
+C23,MYS C23 Admin Colleague A,Character,C23_ADMIN_COLLEAGUE_A.txt,"1x3 identity; 2K default, 4K optional",02_library/characters/C23_ADMIN_COLLEAGUE_A.txt,CHARACTERS_IMPORT.md
+C24,MYS C24 Admin Colleague B,Character,C24_ADMIN_COLLEAGUE_B.txt,"1x3 identity; 2K default, 4K optional",02_library/characters/C24_ADMIN_COLLEAGUE_B.txt,CHARACTERS_IMPORT.md
+C25,MYS C25 Search Officer — Male,Character,C25_SEARCH_OFFICER_MALE.txt,"1x3 identity; 2K default, 4K optional",02_library/characters/C25_SEARCH_OFFICER_MALE.txt,CHARACTERS_IMPORT.md
+C26,MYS C26 Defence-Office Substitute,Character,C26_DEFENCE_OFFICE_SUBSTITUTE.txt,"1x3 identity; 2K default, 4K optional",02_library/characters/C26_DEFENCE_OFFICE_SUBSTITUTE.txt,CHARACTERS_IMPORT.md
+C27,MYS C27 Judge,Character,C27_JUDGE.txt,"1x3 identity; 2K default, 4K optional",02_library/characters/C27_JUDGE.txt,CHARACTERS_IMPORT.md
+C28,MYS C28 Forensic Expert A,Character,C28_FORENSIC_EXPERT_A.txt,"1x3 identity; 2K default, 4K optional",02_library/characters/C28_FORENSIC_EXPERT_A.txt,CHARACTERS_IMPORT.md
+C29,MYS C29 Forensic Expert B,Character,C29_FORENSIC_EXPERT_B.txt,"1x3 identity; 2K default, 4K optional",02_library/characters/C29_FORENSIC_EXPERT_B.txt,CHARACTERS_IMPORT.md
+C30,MYS C30 Court Clerk,Character,C30_COURT_CLERK.txt,"1x3 identity; 2K default, 4K optional",02_library/characters/C30_COURT_CLERK.txt,CHARACTERS_IMPORT.md
+C31,MYS C31 Anonymous Fictional Cardboard Public Figure,Character,C31_ANONYMOUS_FICTIONAL_POLITICAL_FIGURE.txt,"1x3 identity; 2K default, 4K optional",02_library/characters/C31_ANONYMOUS_FICTIONAL_POLITICAL_FIGURE.txt,CHARACTERS_IMPORT.md
+W01,MYS W01_A World Reference,Location,real,2x2 environment coverage,02_library/worlds/real/W01_MAIN_WORLD_A.txt,WORLDS_IMPORT.md
+W01_B,MYS W01_B World Reference,Location,real,2x2 environment coverage,02_library/worlds/real/W01_MAIN_WORLD_B.txt,WORLDS_IMPORT.md
+W01_C,MYS W01_C World Reference,Location,real,2x2 environment coverage,02_library/worlds/real/W01_MAIN_WORLD_C.txt,WORLDS_IMPORT.md
+W02,MYS W02_A World Reference,Location,real,2x2 environment coverage,02_library/worlds/real/W02_MAIN_WORLD_A.txt,WORLDS_IMPORT.md
+W02_B,MYS W02_B World Reference,Location,real,2x2 environment coverage,02_library/worlds/real/W02_MAIN_WORLD_B.txt,WORLDS_IMPORT.md
+W02_C,MYS W02_C World Reference,Location,real,2x2 environment coverage,02_library/worlds/real/W02_MAIN_WORLD_C.txt,WORLDS_IMPORT.md
+W03,MYS W03_A World Reference,Location,real,2x2 environment coverage,02_library/worlds/real/W03_MAIN_WORLD_A.txt,WORLDS_IMPORT.md
+W03_B,MYS W03_B World Reference,Location,real,2x2 environment coverage,02_library/worlds/real/W03_MAIN_WORLD_B.txt,WORLDS_IMPORT.md
+W03_C,MYS W03_C World Reference,Location,real,2x2 environment coverage,02_library/worlds/real/W03_MAIN_WORLD_C.txt,WORLDS_IMPORT.md
+W04,MYS W04_A World Reference,Location,real,2x2 environment coverage,02_library/worlds/real/W04_MAIN_WORLD_A.txt,WORLDS_IMPORT.md
+W04_B,MYS W04_B World Reference,Location,real,2x2 environment coverage,02_library/worlds/real/W04_MAIN_WORLD_B.txt,WORLDS_IMPORT.md
+W04_C,MYS W04_C World Reference,Location,real,2x2 environment coverage,02_library/worlds/real/W04_MAIN_WORLD_C.txt,WORLDS_IMPORT.md
+W05,MYS W05_A World Reference,Location,real,2x2 environment coverage,02_library/worlds/real/W05_MAIN_WORLD_A.txt,WORLDS_IMPORT.md
+W05_B,MYS W05_B World Reference,Location,real,2x2 environment coverage,02_library/worlds/real/W05_MAIN_WORLD_B.txt,WORLDS_IMPORT.md
+W05_C,MYS W05_C World Reference,Location,real,2x2 environment coverage,02_library/worlds/real/W05_MAIN_WORLD_C.txt,WORLDS_IMPORT.md
+W06,MYS W06_A World Reference,Location,real,2x2 environment coverage,02_library/worlds/real/W06_MAIN_WORLD_A.txt,WORLDS_IMPORT.md
+W06_B,MYS W06_B World Reference,Location,real,2x2 environment coverage,02_library/worlds/real/W06_MAIN_WORLD_B.txt,WORLDS_IMPORT.md
+W06_C,MYS W06_C World Reference,Location,real,2x2 environment coverage,02_library/worlds/real/W06_MAIN_WORLD_C.txt,WORLDS_IMPORT.md
+W07,MYS W07_A World Reference,Location,real,2x2 environment coverage,02_library/worlds/real/W07_MAIN_WORLD_A.txt,WORLDS_IMPORT.md
+W07_B,MYS W07_B World Reference,Location,real,2x2 environment coverage,02_library/worlds/real/W07_MAIN_WORLD_B.txt,WORLDS_IMPORT.md
+W07_C,MYS W07_C World Reference,Location,real,2x2 environment coverage,02_library/worlds/real/W07_MAIN_WORLD_C.txt,WORLDS_IMPORT.md
+MW01,MYS MW01_A London Social,Location,memories,2x2 environment coverage,02_library/worlds/memories/MW01_LONDON_SOCIAL_A.txt,WORLDS_IMPORT.md
+MW01_B,MYS MW01_B London Social,Location,memories,2x2 environment coverage,02_library/worlds/memories/MW01_LONDON_SOCIAL_B.txt,WORLDS_IMPORT.md
+MW01_C,MYS MW01_C London Social,Location,memories,2x2 environment coverage,02_library/worlds/memories/MW01_LONDON_SOCIAL_C.txt,WORLDS_IMPORT.md
+MW02,MYS MW02_A Global Routes,Location,memories,2x2 environment coverage,02_library/worlds/memories/MW02_GLOBAL_ROUTES_A.txt,WORLDS_IMPORT.md
+MW02_B,MYS MW02_B Global Routes,Location,memories,2x2 environment coverage,02_library/worlds/memories/MW02_GLOBAL_ROUTES_B.txt,WORLDS_IMPORT.md
+MW02_C,MYS MW02_C Global Routes,Location,memories,2x2 environment coverage,02_library/worlds/memories/MW02_GLOBAL_ROUTES_C.txt,WORLDS_IMPORT.md
+MW03,MYS MW03_A Work Rule Change Admin,Location,memories,2x2 environment coverage,02_library/worlds/memories/MW03_WORK_RULE_CHANGE_ADMIN_A.txt,WORLDS_IMPORT.md
+MW03_B,MYS MW03_B Work Rule Change Admin,Location,memories,2x2 environment coverage,02_library/worlds/memories/MW03_WORK_RULE_CHANGE_ADMIN_B.txt,WORLDS_IMPORT.md
+MW03_C,MYS MW03_C Work Rule Change Admin,Location,memories,2x2 environment coverage,02_library/worlds/memories/MW03_WORK_RULE_CHANGE_ADMIN_C.txt,WORLDS_IMPORT.md
+MW04,MYS MW04_A Police Defence,Location,memories,2x2 environment coverage,02_library/worlds/memories/MW04_POLICE_DEFENCE_A.txt,WORLDS_IMPORT.md
+MW04_B,MYS MW04_B Police Defence,Location,memories,2x2 environment coverage,02_library/worlds/memories/MW04_POLICE_DEFENCE_B.txt,WORLDS_IMPORT.md
+MW04_C,MYS MW04_C Police Defence,Location,memories,2x2 environment coverage,02_library/worlds/memories/MW04_POLICE_DEFENCE_C.txt,WORLDS_IMPORT.md
+MW05,MYS MW05_A Court File,Location,memories,2x2 environment coverage,02_library/worlds/memories/MW05_COURT_FILE_A.txt,WORLDS_IMPORT.md
+MW05_B,MYS MW05_B Court File,Location,memories,2x2 environment coverage,02_library/worlds/memories/MW05_COURT_FILE_B.txt,WORLDS_IMPORT.md
+MW05_C,MYS MW05_C Court File,Location,memories,2x2 environment coverage,02_library/worlds/memories/MW05_COURT_FILE_C.txt,WORLDS_IMPORT.md
+MW06,MYS MW06_A Human Countermemories,Location,memories,2x2 environment coverage,02_library/worlds/memories/MW06_HUMAN_COUNTERMEMORIES_A.txt,WORLDS_IMPORT.md
+MW06_B,MYS MW06_B Human Countermemories,Location,memories,2x2 environment coverage,02_library/worlds/memories/MW06_HUMAN_COUNTERMEMORIES_B.txt,WORLDS_IMPORT.md
+MW06_C,MYS MW06_C Human Countermemories,Location,memories,2x2 environment coverage,02_library/worlds/memories/MW06_HUMAN_COUNTERMEMORIES_C.txt,WORLDS_IMPORT.md
+MWP01,MYS MWP01_A Routes Rooms Documents,Location,memories,2x2 environment coverage,02_library/worlds/memories/MWP01_ROUTES_ROOMS_DOCUMENTS_A.txt,WORLDS_IMPORT.md
+MWP01_B,MYS MWP01_B Routes Rooms Documents,Location,memories,2x2 environment coverage,02_library/worlds/memories/MWP01_ROUTES_ROOMS_DOCUMENTS_B.txt,WORLDS_IMPORT.md
+MWP01_C,MYS MWP01_C Routes Rooms Documents,Location,memories,2x2 environment coverage,02_library/worlds/memories/MWP01_ROUTES_ROOMS_DOCUMENTS_C.txt,WORLDS_IMPORT.md
+MWP02,MYS MWP02_A System Time Reversals,Location,memories,2x2 environment coverage,02_library/worlds/memories/MWP02_SYSTEM_TIME_REVERSALS_A.txt,WORLDS_IMPORT.md
+MWP02_B,MYS MWP02_B System Time Reversals,Location,memories,2x2 environment coverage,02_library/worlds/memories/MWP02_SYSTEM_TIME_REVERSALS_B.txt,WORLDS_IMPORT.md
+MWP02_C,MYS MWP02_C System Time Reversals,Location,memories,2x2 environment coverage,02_library/worlds/memories/MWP02_SYSTEM_TIME_REVERSALS_C.txt,WORLDS_IMPORT.md
+HRW07,MYS HRW07_A Clinical Reality,Location,memories,2x2 environment coverage,02_library/worlds/memories/HRW07_CLINICAL_REALITY_A.txt,WORLDS_IMPORT.md
+HRW07_B,MYS HRW07_B Clinical Reality,Location,memories,2x2 environment coverage,02_library/worlds/memories/HRW07_CLINICAL_REALITY_B.txt,WORLDS_IMPORT.md
+HRW07_C,MYS HRW07_C Clinical Reality,Location,memories,2x2 environment coverage,02_library/worlds/memories/HRW07_CLINICAL_REALITY_C.txt,WORLDS_IMPORT.md
+T01_DETAILS,MYS T01_A Soho Restaurant,Location,memories,2x2 environment coverage,02_library/worlds/memories/T01_SOHO_RESTAURANT_SOURCE_A.txt,WORLDS_IMPORT.md
+T01_DETAILS_B,MYS T01_B Soho Restaurant,Location,memories,2x2 environment coverage,02_library/worlds/memories/T01_SOHO_RESTAURANT_SOURCE_B.txt,WORLDS_IMPORT.md
+T01_DETAILS_C,MYS T01_C Soho Restaurant,Location,memories,2x2 environment coverage,02_library/worlds/memories/T01_SOHO_RESTAURANT_SOURCE_C.txt,WORLDS_IMPORT.md
+MR001,MYS MR001 St Pauls To St Stephens,Location,buildings,2x2 material transformation,02_library/morphs/buildings/MR001_ST_PAULS_TO_ST_STEPHENS_2X2.txt,MORPHS_IMPORT.md
+MR002,MYS MR002 Facade Relief To Sculpted Support,Location,buildings,2x2 material transformation,02_library/morphs/buildings/MR002_FACADE_RELIEF_TO_SCULPTED_SUPPORT_2X2.txt,MORPHS_IMPORT.md
+MR003,MYS MR003 Facade Window Capital And Cornice,Location,buildings,2x2 material transformation,02_library/morphs/buildings/MR003_FACADE_WINDOW_CAPITAL_AND_CORNICE_2X2.txt,MORPHS_IMPORT.md
+MR004,MYS MR004 Window Glass To Pendant Shade,Prop,objects,2x2 material transformation,02_library/morphs/objects/MR004_WINDOW_GLASS_TO_PENDANT_SHADE_2X2.txt,MORPHS_IMPORT.md
+MR005,MYS MR005 Brick Courses To Carved Arch,Location,buildings,2x2 material transformation,02_library/morphs/buildings/MR005_BRICK_COURSES_TO_CARVED_ARCH_2X2.txt,MORPHS_IMPORT.md
+MR006,MYS MR006 Stone Threshold To Supported Timber Floor,Location,buildings,2x2 material transformation,02_library/morphs/buildings/MR006_STONE_THRESHOLD_TO_SUPPORTED_TIMBER_FLOOR_2X2.txt,MORPHS_IMPORT.md
+MR007,MYS MR007 Bench To Curved Floor Border,Prop,objects,2x2 material transformation,02_library/morphs/objects/MR007_BENCH_TO_CURVED_FLOOR_BORDER_2X2.txt,MORPHS_IMPORT.md
+MR008,MYS MR008 Window Fittings To Pendant Stem,Prop,objects,2x2 material transformation,02_library/morphs/objects/MR008_WINDOW_FITTINGS_TO_PENDANT_STEM_2X2.txt,MORPHS_IMPORT.md
+MR009,MYS MR009 Balcony Scroll To Sideways Stair,Location,buildings,2x2 material transformation,02_library/morphs/buildings/MR009_BALCONY_SCROLL_TO_SIDEWAYS_STAIR_2X2.txt,MORPHS_IMPORT.md
+MR010,MYS MR010 English Sign To Kave Lettering,Prop,objects,2x2 material transformation,02_library/morphs/objects/MR010_ENGLISH_SIGN_TO_KAVE_LETTERING_2X2.txt,MORPHS_IMPORT.md
+MR011,MYS MR011 Slate Roof To Curved Glazing,Location,buildings,2x2 material transformation,02_library/morphs/buildings/MR011_SLATE_ROOF_TO_CURVED_GLAZING_2X2.txt,MORPHS_IMPORT.md
+MR012,MYS MR012 Chimney Shafts To Spiral Crowns,Location,buildings,2x2 material transformation,02_library/morphs/buildings/MR012_CHIMNEY_SHAFTS_TO_SPIRAL_CROWNS_2X2.txt,MORPHS_IMPORT.md
+MR013,MYS MR013 Entrance Rail To Transit Gate,Prop,objects,2x2 material transformation,02_library/morphs/objects/MR013_ENTRANCE_RAIL_TO_TRANSIT_GATE_2X2.txt,MORPHS_IMPORT.md
+MR014,MYS MR014 Bench And Canopy To Bus Seating,Prop,objects,2x2 material transformation,02_library/morphs/objects/MR014_BENCH_AND_CANOPY_TO_BUS_SEATING_2X2.txt,MORPHS_IMPORT.md
+MR015,MYS MR015 Canopy To Balloon Envelope,Prop,objects,2x2 material transformation,02_library/morphs/objects/MR015_CANOPY_TO_BALLOON_ENVELOPE_2X2.txt,MORPHS_IMPORT.md
+MR016,MYS MR016 Crop Stalks To Rail Sleepers,Prop,objects,2x2 material transformation,02_library/morphs/objects/MR016_CROP_STALKS_TO_RAIL_SLEEPERS_2X2.txt,MORPHS_IMPORT.md
+MR017,MYS MR017 Cabinet To Desk And Chair,Prop,objects,2x2 material transformation,02_library/morphs/objects/MR017_CABINET_TO_DESK_AND_CHAIR_2X2.txt,MORPHS_IMPORT.md
+MR018,MYS MR018 Hearing Bench To Document Shelving,Prop,objects,2x2 material transformation,02_library/morphs/objects/MR018_HEARING_BENCH_TO_DOCUMENT_SHELVING_2X2.txt,MORPHS_IMPORT.md
+MR019,MYS MR019 Paving And Gutter To Street Terrace,Location,buildings,2x2 material transformation,02_library/morphs/buildings/MR019_PAVING_AND_GUTTER_TO_STREET_TERRACE_2X2.txt,MORPHS_IMPORT.md
+MR020,MYS MR020 Rope Fibres To Sheet Hem,Prop,objects,2x2 material transformation,02_library/morphs/objects/MR020_ROPE_FIBRES_TO_SHEET_HEM_2X2.txt,MORPHS_IMPORT.md
+R008,MYS R008 Cafe To Occupied Restaurant,Location,buildings,2x2 material transformation,02_library/morphs/buildings/R008_CAFE_OPENING_AND_FURNITURE_CONSTRUCTION_DETAILS.txt,MORPHS_IMPORT.md
+R009,MYS R009 Fanlight To Canopy,Location,buildings,2x2 material transformation,02_library/morphs/buildings/R009_FANLIGHT_TO_CANOPY_JOINT_STUDY_FOR_THE_EXTEND.txt,MORPHS_IMPORT.md
+R002,MYS R002 Red London Bus,Prop,objects,2x2 material transformation,02_library/morphs/objects/R002_THE_SAME_RED_LONDON_BUS_FROM_USEFUL_ANGLES.txt,MORPHS_IMPORT.md
+R003,MYS Reference 03 Black London taxi,Prop,objects,2x2 material transformation,02_library/morphs/objects/R003_BLACK_LONDON_TAXI.txt,MORPHS_IMPORT.md
+R004,MYS Reference 04 Yellow Budapest tram,Prop,objects,2x2 material transformation,02_library/morphs/objects/R004_YELLOW_BUDAPEST_TRAM.txt,MORPHS_IMPORT.md
+R005,MYS Reference 05 St Paul’s: complete source building,Location,buildings,2x2 material transformation,02_library/morphs/buildings/R005_ST_PAULS_COMPLETE_SOURCE_BUILDING.txt,MORPHS_IMPORT.md
+R006,MYS Reference 06 St Stephen’s: complete destination building,Location,buildings,2x2 material transformation,02_library/morphs/buildings/R006_ST_STEPHENS_COMPLETE_DESTINATION_BUILDING.txt,MORPHS_IMPORT.md
+R010,"MYS Reference 10 Winged statue, plinth and contact detail",Prop,objects,2x2 material transformation,02_library/morphs/objects/R010_WINGED_STATUE_PLINTH_AND_CONTACT_DETAIL.txt,MORPHS_IMPORT.md
+R013,MYS Reference 13 Red bus lower-deck passage and open-door geometry,Prop,objects,2x2 material transformation,02_library/morphs/objects/R013_RED_BUS_LOWER_DECK_PASSAGE_AND_OPEN_DOOR_GEOMETRY.txt,MORPHS_IMPORT.md
+R014,MYS Reference 14 Original London café window before fracture,Location,buildings,2x2 material transformation,02_library/morphs/buildings/R014_ORIGINAL_LONDON_CAFE_WINDOW_BEFORE_FRACTURE.txt,MORPHS_IMPORT.md
+R015,MYS Reference 15 Glass source thickness and destination pendant shades,Prop,objects,2x2 material transformation,02_library/morphs/objects/R015_GLASS_SOURCE_THICKNESS_AND_DESTINATION_PENDANT_SHADES.txt,MORPHS_IMPORT.md
+R016,MYS Reference 16 Solid London brick and Pest carved-stone correspondence,Location,buildings,2x2 material transformation,02_library/morphs/buildings/R016_SOLID_LONDON_BRICK_AND_PEST_CARVED_STONE_CORRESPONDENCE.txt,MORPHS_IMPORT.md
+R017,"MYS Reference 17 Stone sill, wet paving and supported timber threshold",Location,buildings,2x2 material transformation,02_library/morphs/buildings/R017_STONE_SILL_WET_PAVING_AND_SUPPORTED_TIMBER_THRESHOLD.txt,MORPHS_IMPORT.md
+R018,MYS Reference 18 London timber bench and curved floor border,Prop,objects,2x2 material transformation,02_library/morphs/objects/R018_LONDON_TIMBER_BENCH_AND_CURVED_FLOOR_BORDER.txt,MORPHS_IMPORT.md
+R019,MYS Reference 19 Accepted restaurant table and chair from outside,Prop,objects,2x2 material transformation,02_library/morphs/objects/R019_ACCEPTED_RESTAURANT_TABLE_AND_CHAIR_FROM_OUTSIDE.txt,MORPHS_IMPORT.md
+R020,"MYS Reference 20 Cup, hand contact and tabletop depth",Prop,objects,2x2 material transformation,02_library/morphs/objects/R020_CUP_HAND_CONTACT_AND_TABLETOP_DEPTH.txt,MORPHS_IMPORT.md
+R021,MYS Reference 21 Restaurant rear doors and depth relationships,Location,buildings,2x2 material transformation,02_library/morphs/buildings/R021_RESTAURANT_REAR_DOORS_AND_DEPTH_RELATIONSHIPS.txt,MORPHS_IMPORT.md
+R022,MYS Reference 22 Street-light fittings and restaurant pendant connections,Prop,objects,2x2 material transformation,02_library/morphs/objects/R022_STREET_LIGHT_FITTINGS_AND_RESTAURANT_PENDANT_CONNECTIONS.txt,MORPHS_IMPORT.md
+R023,MYS Reference 23 Balcony scroll and sideways stair structural parts,Prop,objects,2x2 material transformation,02_library/morphs/objects/R023_BALCONY_SCROLL_AND_SIDEWAYS_STAIR_STRUCTURAL_PARTS.txt,MORPHS_IMPORT.md
+R024,MYS Reference 24 Mounted English café sign and Hungarian destination sign,Prop,objects,2x2 material transformation,02_library/morphs/objects/R024_MOUNTED_ENGLISH_CAFE_SIGN_AND_HUNGARIAN_DESTINATION_SIGN.txt,MORPHS_IMPORT.md
+R025,MYS Reference 25 Original London roof and chimney volumes,Location,buildings,2x2 material transformation,02_library/morphs/buildings/R025_ORIGINAL_LONDON_ROOF_AND_CHIMNEY_VOLUMES.txt,MORPHS_IMPORT.md
+R026,"MYS Reference 26 Target roof glazing, stone corbels and chimney crowns",Location,buildings,2x2 material transformation,02_library/morphs/buildings/R026_TARGET_ROOF_GLAZING_STONE_CORBELS_AND_CHIMNEY_CROWNS.txt,MORPHS_IMPORT.md
+R028,MYS Reference 28 Original arcade arch and fanlight,Location,buildings,2x2 material transformation,02_library/morphs/buildings/R028_ORIGINAL_ARCADE_ARCH_AND_FANLIGHT.txt,MORPHS_IMPORT.md
+R029,MYS Reference 29 Full supported canopy destination,Location,buildings,2x2 material transformation,02_library/morphs/buildings/R029_FULL_SUPPORTED_CANOPY_DESTINATION.txt,MORPHS_IMPORT.md
+R030,MYS Reference 30 Deep gallery through the unchanged threshold,Location,buildings,2x2 material transformation,02_library/morphs/buildings/R030_DEEP_GALLERY_THROUGH_THE_UNCHANGED_THRESHOLD.txt,MORPHS_IMPORT.md
+R031,MYS Reference 31 London station source exterior and iron structure,Location,buildings,2x2 material transformation,02_library/morphs/buildings/R031_LONDON_STATION_SOURCE_EXTERIOR_AND_IRON_STRUCTURE.txt,MORPHS_IMPORT.md
+R032,MYS Reference 32 Nyugati station destination and roof joints,Location,buildings,2x2 material transformation,02_library/morphs/buildings/R032_NYUGATI_STATION_DESTINATION_AND_ROOF_JOINTS.txt,MORPHS_IMPORT.md
+R033,MYS Reference 33 Hungarian State Opera target facade and entry depth,Location,buildings,2x2 material transformation,02_library/morphs/buildings/R033_HUNGARIAN_STATE_OPERA_TARGET_FACADE_AND_ENTRY_DEPTH.txt,MORPHS_IMPORT.md
+R034,MYS Reference 34 Tower Bridge source structure,Location,buildings,2x2 material transformation,02_library/morphs/buildings/R034_TOWER_BRIDGE_SOURCE_STRUCTURE.txt,MORPHS_IMPORT.md
+R035,MYS Reference 35 Széchenyi Chain Bridge destination structure,Location,buildings,2x2 material transformation,02_library/morphs/buildings/R035_SZECHENYI_CHAIN_BRIDGE_DESTINATION_STRUCTURE.txt,MORPHS_IMPORT.md
+R036,MYS Reference 36 London Eye and connected South Bank depth,Location,buildings,2x2 material transformation,02_library/morphs/buildings/R036_LONDON_EYE_AND_CONNECTED_SOUTH_BANK_DEPTH.txt,MORPHS_IMPORT.md
+R037,MYS Reference 37 Great Market Hall roof and brick source volume,Location,buildings,2x2 material transformation,02_library/morphs/buildings/R037_GREAT_MARKET_HALL_ROOF_AND_BRICK_SOURCE_VOLUME.txt,MORPHS_IMPORT.md
+R038,MYS Reference 38 Bálna curved-glass target volume,Location,buildings,2x2 material transformation,02_library/morphs/buildings/R038_BALNA_CURVED_GLASS_TARGET_VOLUME.txt,MORPHS_IMPORT.md
+R039,MYS Reference 39 Westminster and Parliament Square London source,Location,buildings,2x2 material transformation,02_library/morphs/buildings/R039_WESTMINSTER_AND_PARLIAMENT_SQUARE_LONDON_SOURCE.txt,MORPHS_IMPORT.md
+R040,MYS Reference 40 Hungarian Parliament complete destination silhouette,Location,buildings,2x2 material transformation,02_library/morphs/buildings/R040_HUNGARIAN_PARLIAMENT_COMPLETE_DESTINATION_SILHOUETTE.txt,MORPHS_IMPORT.md
+R041,MYS Reference 41 Gresham Palace frontage and deep stone details,Location,buildings,2x2 material transformation,02_library/morphs/buildings/R041_GRESHAM_PALACE_FRONTAGE_AND_DEEP_STONE_DETAILS.txt,MORPHS_IMPORT.md
+R042,MYS Reference 42 New York Palace historic exterior with occupied-bay depth,Location,buildings,2x2 material transformation,02_library/morphs/buildings/R042_NEW_YORK_PALACE_HISTORIC_EXTERIOR_WITH_OCCUPIED_BAY_DEPTH.txt,MORPHS_IMPORT.md
+R043,MYS Reference 43 London entrance rail and remembered transit gate,Prop,objects,2x2 material transformation,02_library/morphs/objects/R043_LONDON_ENTRANCE_RAIL_AND_REMEMBERED_TRANSIT_GATE.txt,MORPHS_IMPORT.md
+R044,"MYS Reference 44 Remembered bus seats, aisle and canopy-post correspondence",Prop,objects,2x2 material transformation,02_library/morphs/objects/R044_REMEMBERED_BUS_SEATS_AISLE_AND_CANOPY_POST_CORRESPONDENCE.txt,MORPHS_IMPORT.md
+R045,"MYS Reference 45 Cairo taxi cabin, rear bench and luggage contact",Prop,objects,2x2 material transformation,02_library/morphs/objects/R045_CAIRO_TAXI_CABIN_REAR_BENCH_AND_LUGGAGE_CONTACT.txt,MORPHS_IMPORT.md
+R046,"MYS Reference 46 Canopy and balloon envelope, rigging and basket interfaces",Prop,objects,2x2 material transformation,02_library/morphs/objects/R046_CANOPY_AND_BALLOON_ENVELOPE_RIGGING_AND_BASKET_INTERFACES.txt,MORPHS_IMPORT.md
+R047,"MYS Reference 47 Paving, soil, paprika/corn roots and rail sleepers",Prop,objects,2x2 material transformation,02_library/morphs/objects/R047_PAVING_SOIL_PAPRIKA_CORN_ROOTS_AND_RAIL_SLEEPERS.txt,MORPHS_IMPORT.md
+R048,"MYS Reference 48 Administrative desk, actual documents and device geometry",Prop,objects,2x2 material transformation,02_library/morphs/objects/R048_ADMINISTRATIVE_DESK_ACTUAL_DOCUMENTS_AND_DEVICE_GEOMETRY.txt,MORPHS_IMPORT.md
+R049,"MYS Reference 49 Cabinet, fingerprint desk and chair construction",Prop,objects,2x2 material transformation,02_library/morphs/objects/R049_CABINET_FINGERPRINT_DESK_AND_CHAIR_CONSTRUCTION.txt,MORPHS_IMPORT.md
+R050,"MYS Reference 50 Court, file compartments and retained-device supports",Prop,objects,2x2 material transformation,02_library/morphs/objects/R050_COURT_FILE_COMPARTMENTS_AND_RETAINED_DEVICE_SUPPORTS.txt,MORPHS_IMPORT.md
+R054,MYS Reference 54 Big Ben Elizabeth Tower London source,Location,buildings,2x2 material transformation,02_library/morphs/buildings/R054_BIG_BEN_ELIZABETH_TOWER_LONDON_SOURCE.txt,MORPHS_IMPORT.md
+R055,MYS Reference 55 Westminster Abbey London source,Location,buildings,2x2 material transformation,02_library/morphs/buildings/R055_WESTMINSTER_ABBEY_LONDON_SOURCE.txt,MORPHS_IMPORT.md
+R056,MYS Reference 56 Fishermans Bastion destination,Location,buildings,2x2 material transformation,02_library/morphs/buildings/R056_FISHERMANS_BASTION_DESTINATION.txt,MORPHS_IMPORT.md
+CM001,MYS CM001 Appointed Lawyer To Office Substitute,Character,C04 to C26: remembered human material transformation,4K 2x2,02_library/morphs/characters/CM001_APPOINTED_LAWYER_TO_OFFICE_SUBSTITUTE_2X2.txt,MORPHS_IMPORT.md
+CM002,MYS CM002 Soho Woman To Beginner Dance Woman,Character,C02 to C10: remembered human material transformation,4K 2x2,02_library/morphs/characters/CM002_SOHO_WOMAN_TO_BEGINNER_DANCE_WOMAN_2X2.txt,MORPHS_IMPORT.md
+CM003,MYS CM003 Snoring Housemate To Mortgage Housemate,Character,C06 to C07: remembered human material transformation,4K 2x2,02_library/morphs/characters/CM003_SNORING_HOUSEMATE_TO_MORTGAGE_HOUSEMATE_2X2.txt,MORPHS_IMPORT.md
+CM004,MYS CM004 Transit Helper To Cairo Traveler,Character,C11 to C13: remembered human material transformation,4K 2x2,02_library/morphs/characters/CM004_TRANSIT_HELPER_TO_CAIRO_TRAVELER_2X2.txt,MORPHS_IMPORT.md
+CM005,MYS CM005 Admin Colleague A To B,Character,C23 to C24: remembered human material transformation,4K 2x2,02_library/morphs/characters/CM005_ADMIN_COLLEAGUE_A_TO_B_2X2.txt,MORPHS_IMPORT.md
+CM006,MYS CM006 Forensic Expert A To B,Character,C28 to C29: remembered human material transformation,4K 2x2,02_library/morphs/characters/CM006_FORENSIC_EXPERT_A_TO_B_2X2.txt,MORPHS_IMPORT.md

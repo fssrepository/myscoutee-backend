@@ -1,4 +1,4 @@
-Create ONE SINGLE simplified FILM-PRODUCTION LOCATION PLAN.
+Create ONE SINGLE 4K FILM-PRODUCTION LOCATION PLAN SHEET with exactly four related plan views in a 2x2 grid.
 
 Use the SAME locked graphic language for every location plan in this project:
 - simple slightly oblique architectural block model, approximately 70–75 degrees downward,
@@ -20,12 +20,19 @@ Use the SAME locked graphic language for every location plan in this project:
 - no large title band.
 
 CANVAS:
-The plan itself fills the complete final canvas edge-to-edge.
+Use a 3840×2160 canvas with four equal edge-to-edge 1920×1080 cells and no gutters. Each plan view fills its own cell; keep all four inside the single 16:9 image.
 Outer margin: 0 pixels.
 No surrounding grey/white/black presentation border.
 
+FOUR PLAN CELLS — ONE CONNECTED ROUTE:
+TOP-LEFT: overview of the complete compressed route described below, showing its London source masses, start/end dots and all principal junctions. The London source is the actual opening geography; Hungarian associations are assigned to the later views.
+TOP-RIGHT: closer oblique plan of the route's entry section, with individual pavement edges, first street crossing and the source frontage of the first transformation. Preserve its position and orientation relative to the overview; show the path entering and leaving the cell naturally.
+BOTTOM-LEFT: closer oblique plan of the principal transformation zone, with the specified Hungarian target mass occupying its London source site. Show the same surrounding junction, approach path, building bases and exit passage. This locates a possible later physical state; it does not make the target present at the video's opening.
+BOTTOM-RIGHT: closer oblique plan of the exit connection toward the next section, with the shared kerb, intervening open space and the continuation of the same path. Repeat one junction corner visible in the overview so the connection can be followed.
+These four coverage views have different planning purposes, not four snapshots of a material morph. Keep the same block-model graphic style and compass orientation; scale can change for the closer plan views. No panel label, caption or alternate route. The video traverses the intervening space continuously; four plan cells do not request four shots.
+
 WALK:
-Show ONE uninterrupted pedestrian path.
+Show ONE uninterrupted pedestrian path through the shared plan. The other cells inspect sections of that same path; they do not add separate itineraries.
 The path always stays on exterior public pavement, public crossings, open pedestrian passages, bridges, plazas or river walks.
 It never enters a building footprint, office, house, station platform, police room, courtroom or clinical space.
 Use a small start dot and small end dot only; no arrowheads and no written start/end labels.
@@ -50,7 +57,7 @@ It never crosses the threshold.
 Transport geometry gradually reduces near the endpoint.
 
 FINAL CHECK:
-Exactly one simple block-model location plan.
+Exactly one 3840×2160 sheet of four simple block-model views in a 2x2 grid; each cell is 1920×1080.
 0 px outer margin.
 One continuous exterior walking line.
 No legend, captions, camera graphics or Google-Maps-style detail.

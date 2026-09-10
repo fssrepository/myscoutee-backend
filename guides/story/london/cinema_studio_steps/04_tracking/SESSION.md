@@ -1,3 +1,17 @@
+## Current category import request — 2026-09-10
+
+## 2026-09-10 — Konkrét karaktermorphok és teljes anyag/forma-ellenőrzés
+
+- A generikus CM001 sablon helyett CM001–CM006 konkrét párok: C04→C26, C02→C10, C06→C07, C11→C13, C23→C24, C28→C29. A külön szereplőazonosságok megmaradnak; ezek vizuális emlékkapcsolat-javaslatok, nem automatikus videóátírások.
+- Mind a 74 aktív morph szövege ellenőrizve. Részletek: [tételes audit](MORPH_FOUR_STATE_REVIEW.md). A kő, fém, üveg, fa, kerámia, szövet, rost, növényi anyag és rugalmas emberi felület külön deformációs leírást kapott. Nincs új képes vagy videós minősítés.
+- A három aktuális kategóriaimport 156 egyedi elem: 31 Character-azonosító, 51 World-oldal, 74 Morph. A 6 CM-kimenet a Morphs importban Character típusú. A régi teljes/inkrementális importok történeti fájlok.
+- Karakterazonosító: 1×3, 2K alap / 4K választható. Minden más referencia, a hét opcionális tervlap is: 4K 2×2, 1920×1080-as cellák. A tervek nem importelemek.
+- A C04/C26, C06/C07 és C11 tényleges @ID-k még hiányoznak; a korábban ismert többi karakter-ID az új kategóriaimport után visszaellenőrizendő. Hat új CM-kimenethez nincs még generált kép. A generálások kizárólag a felhasználó Higgsfield felületén történnek.
+- Következő: a felhasználó által importált aktuális párok valódi azonosítóinak kötése, majd a kész kép négy cellájának ellenőrzése; fizetős videó előtt a kiválasztott új anyagmechanizmusok és a videóprompt régi fix-alkatrész előírásainak összehangolása. Kép- vagy videógenerálás, távoli import nem történt.
+
+
+Latest user asks to reimport by Characters / Worlds / Morphs categories. Created three metadata-only, mutually disjoint complete lists: 31 characters, 51 worlds, 68 morphs = 150. This supersedes the immediate 45-only import instruction; neither old full nor supplemental batches should be imported alongside the new category lists. User controls remote reset/import. No such remote action performed here. Maps stay optional planning assets; character-morph template is not imported without selected endpoints.
+
 ## Current structured library — 2026-09-10
 
 Moved active material studies into morphs/buildings and morphs/objects; created morphs/characters with a detailed two-endpoint character transformation template, pending source/target selection. Worlds now use worlds/real, worlds/memories and worlds/maps. All tracked file paths and relative documentation links migrated. Legacy superseded image prompts moved to 04_tracking/archive/legacy_image_prompts. Existing 105 import and separate 45-entry supplement unchanged; no new platform operation. Added approximately one-second close slow-orbit attention guidance to the 68 active building/object morphs, with fast approach/departure and continuous geometry. Character morphs require chosen existing identities; none guessed or imported.
