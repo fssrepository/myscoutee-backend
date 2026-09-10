@@ -227,3 +227,7 @@ Creator screenshot at 09:08:13 shows Cinema Studio 4.0, 30 seconds, 1080p, 16:9,
 ### Block 07 price confirmation
 
 The creator confirms that the 20-second Block 07 costs 180 credits. It is now a creator-reported quote rather than a proportional estimate. The final film remains 1800 credits and the complete working allocation 3084, including 600 in unquoted pilot/narration/finishing allowances. The gap against 2860 is 224; the maximum 500-credit top-up would leave 276. No charge was recorded.
+
+## 2026-09-10 — Five budget lines; unsupported finishing allowance removed
+
+Current plan: all 171 Nano Banana Pro 4K images 684; final-film footage 1800; provisional final narration/integration 200; separately adjustable pilot 100; separate assembly/export 0 allocated. The previous 300-credit finishing allowance had no established paid operation behind it and is removed. A cumulative Extend result, if delivered with the intended soundtrack, needs no separately budgeted assembly render; download is the delivery step. This is not a verified zero-cost tariff or a completed workflow test. Total 2784 leaves 76 from the creator-reported 2860; optional maximum top-up 500 would leave 576. No regeneration, purchase or new debit recorded.

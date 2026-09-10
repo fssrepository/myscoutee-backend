@@ -12,7 +12,7 @@ The joined 8+8-second pilot receives its short narration afterward, following th
 
 Use Higgsfield Audio / Seed Audio 1.0 if available for the project. Select one English-speaking adult male voice: approximately forty, low-to-mid register, intelligent, intimate, slightly tired and restrained; at most a light Central-European accent. Record the actual voice ID or preset in the [asset registry](../04_tracking/assets.csv) and retain it. Do not browse new voices per block.
 
-Request clean speech only in these audio jobs: no music, rain, transformation effects or added room ambience. Those layers belong to the audio-ON video generation. The current working allocation is 200 credits for first-pass A01–A07 narration. TA01 and pilot mixing belong to the separate 100-credit combined pilot allowance. These are planning caps, not verified provider quotes. The creator reports 2860 credits available and forbids regeneration; price each first-pass operation before generation. See [BUDGET.md](BUDGET.md).
+Request clean speech only in these audio jobs: no music, rain, transformation effects or added room ambience. Those layers belong to the audio-ON video generation. The current working allocation is 200 credits for first-pass A01–A07 narration and any separately charged integration of that final narration. TA01 and pilot mixing belong to the separate 100-credit combined pilot allowance. These are planning caps, not verified provider quotes. The creator reports 2860 credits available and forbids regeneration; price each first-pass operation before generation. See [BUDGET.md](BUDGET.md).
 
 ## Seven recordings, one continuing speaker
 

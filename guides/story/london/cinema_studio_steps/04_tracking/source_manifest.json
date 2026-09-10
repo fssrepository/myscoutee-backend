@@ -4764,7 +4764,7 @@
     "pilot_joined_seconds": 16,
     "reserve_additional_30s_attempts": 0,
     "additional_30s_attempt_quote_credits": null,
-    "budget_note": "Current creator-reported balance 2860; optional top-up capped at 500, unpurchased. All images stay 4K; no regeneration. Observed Cinema Studio 4.0 30s/1080p/audio-On quote is 270 instead of 480, with empty prompt and 0/50 references. Six 30s blocks plus the creator-confirmed 180-credit 20s ending total 1800. Complete working allocation 3084 requires 224 beyond current balance and leaves 276 if the maximum top-up is purchased. Pilot/audio/finishing remain unquoted allowances. No mandatory upscale is assumed; full-input and continuation configurations remain unverified.",
+    "budget_note": "Creator-reported balance 2860; optional further purchase capped at 500, unpurchased. Five budget lines: all 171 Nano Banana Pro 4K images 684; final footage 1800; provisional final narration/integration 200; separately adjustable pilot 100; separate assembly/export 0 allocated. Removed unsupported 300-credit finishing allowance. Total 2784 leaves 76, or 576 if the maximum top-up is actually purchased. Complete-input/Extend quotes and cumulative delivery remain unverified; no regeneration or new debit.",
     "remaining_credits_creator_reported": 2860,
     "balance_source": "CREATOR_REPORT_2026_09_10_NOT_TOOL_VERIFIED",
     "maximum_additional_purchase_credits": 500,
@@ -4777,13 +4777,13 @@
       "final_video_first_pass": 1800,
       "pilot_including_test_audio_and_finishing": 100,
       "final_narration": 200,
-      "total": 3084,
-      "remaining_current_balance": -224,
-      "remaining_if_maximum_top_up_purchased": 276,
+      "total": 2784,
+      "remaining_current_balance": 76,
+      "remaining_if_maximum_top_up_purchased": 576,
       "retries": 0,
       "ledger": "04_tracking/PRODUCTION_BUDGET_ESTIMATE.csv",
-      "additional_credits_needed": 224,
-      "final_finishing": 300,
+      "additional_credits_needed": 0,
+      "final_finishing": 0,
       "summary_rows": [
         {
           "category": "REFERENCE_IMAGES_4K",
@@ -4794,17 +4794,24 @@
           "credits": 1800
         },
         {
-          "category": "FINAL_FILM_NARRATION_AND_FINISHING",
-          "credits": 500
+          "category": "FINAL_FILM_NARRATION",
+          "credits": 200
         },
         {
           "category": "PILOT_TEST_WORKFLOW",
           "credits": 100
+        },
+        {
+          "category": "SEPARATE_ASSEMBLY_EXPORT",
+          "credits": 0
         }
       ],
-      "final_production_excluding_tests": 2984,
+      "final_production_excluding_tests": 2684,
       "test_allowance_separately_adjustable": true,
-      "shortfall_excluding_tests": 124
+      "shortfall_excluding_tests": 0,
+      "remaining_current_balance_excluding_tests": 176,
+      "narration_scope": "Provisional combined allowance for final speech and any separately charged narration integration; no pilot double count.",
+      "finishing_scope": "Zero allocated because no separate paid operation is established; not a verified zero-cost tariff. Use cumulative Extend output and download if available."
     },
     "published_video_price_basis": {
       "source": "https://higgsfield.ai/blog/seedance-2-5-pricing-2026",

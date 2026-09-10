@@ -7,6 +7,6 @@ FILM_04,1,block,30,270,270,OBSERVED_30S_1080P_UI_RATE_APPLIED_TO_PLANNING,0,Cine
 FILM_05,1,block,30,270,270,OBSERVED_30S_1080P_UI_RATE_APPLIED_TO_PLANNING,0,Cinema Studio 4.0; 1080p; audio On; observed quote had empty prompt and 0/50 refs. Actual complete-input/Extend quote pending.
 FILM_06,1,block,30,270,270,OBSERVED_30S_1080P_UI_RATE_APPLIED_TO_PLANNING,0,Cinema Studio 4.0; 1080p; audio On; observed quote had empty prompt and 0/50 refs. Actual complete-input/Extend quote pending.
 FILM_07,1,block,20,180,180,CREATOR_CONFIRMED_20S_UI_PRICE,0,Creator confirms Block 07: 20s costs 180 credits. Final complete-input/continuation configuration still to be checked.
-PILOT_WORKFLOW,1,combined allocation,,100,100,UNQUOTED_PLANNING_ALLOWANCE,0,One first-pass 8s video plus 8s Extend; pilot speech and hosted joining/mix/output included
-FINAL_NARRATION,1,combined allocation,,200,200,UNQUOTED_PLANNING_ALLOWANCE,0,A01-A07 first-pass speech only; no pilot double count
-FINAL_FINISHING,1,combined allocation,,300,300,UNQUOTED_PLANNING_ALLOWANCE,0,Hosted final assembly/mix/export; unquoted. Selected generation is already 1080p; no mandatory upscale assumed.
+PILOT_WORKFLOW,1,combined allocation,,100,100,UNQUOTED_PLANNING_ALLOWANCE,0,First-pass 8s clip plus 8s Extend and test narration/integration; separately adjustable combined allowance; actual quotes pending.
+FINAL_NARRATION,1,combined allocation,,200,200,UNQUOTED_PLANNING_ALLOWANCE,0,A01-A07 first-pass speech plus any separately charged final-narration integration; provisional combined allowance; no pilot double count.
+FINAL_FINISHING,1,combined allocation,,0,0,NO_SEPARATE_PAID_OPERATION_ESTABLISHED,0,No standalone assembly/export/upscale charge budgeted. Use cumulative Extend output and download if available; actual delivery path unverified. Narration integration belongs only to FINAL_NARRATION.

@@ -58,16 +58,17 @@ The current film is **200 seconds (3:20)**: six 30-second blocks and one 20-seco
 
 | Work | Planning allocation | Evidence and scope |
 |---|---:|---|
-| Reference images, all 171 at 4K | **684** | 171 × 4; includes seven optional maps and references reused by the pilot and final film; counted once |
+| Reference images, all 171 at 4K | **684** | Nano Banana Pro; 171 × 4; includes seven optional maps and shared pilot/final-film references, counted once |
 | Final film video generation | **1800** | Six 30-second blocks at 270 plus the creator-confirmed 20-second ending at 180; complete-input/Extend quotes pending |
-| Final film narration and finishing | **500** | 200 for A01–A07 speech plus 300 for hosted final assembly, audio mixing and export; unquoted planning allowances |
-| Pilot/test workflow, separately adjustable | **100** | Planned first 8-second clip, 8-second continuation, test speech and hosted test joining/mixing/output; unquoted planning allowance |
+| Final film narration | **200** | Provisional combined allowance for A01–A07 speech and any separately charged integration of that narration; actual operation and price unverified |
+| Pilot/test workflow, separately adjustable | **100** | Combined first-pass allowance for the planned 8-second clip, 8-second continuation and test narration/integration; actual prices pending |
+| Separate assembly/export | **0 allocated** | No verified separate fee. If Extend returns the cumulative film with the intended soundtrack, use that result and download it; no additional render is budgeted |
 
-**Final production including reference images, excluding tests: 2984 credits. Total with the current 100-credit test allowance: 3084 credits.** Against the current 2860 balance, the gaps are 124 without tests and 224 with the full test allowance. With the maximum 500-credit top-up purchased, 276 credits would remain under the current plan.
+**Final production including images, excluding tests: 2684 credits. Total with the current 100-credit test allowance: 2784 credits.** The current 2860-credit balance leaves **76 credits**, or **176 without tests**. No top-up is required by this working estimate. If the optional maximum 500-credit top-up were purchased, 576 would remain; it has not been purchased.
 
-Keep test spending separate from final-film speech, mixing and export. Each credit saved from the test allowance reduces the total and the funding gap by one credit; the full film and shared reference-image content remain intact. The test allowance remains 100 until its scope or actual prices are revised. Even removing that entire allowance would leave a 124-credit gap under the current final-production estimates. No additional test-only image batch, purchase or regeneration is added.
+The former 300-credit finishing allowance is removed because no separately required paid assembly/export operation or fee has been established. Zero allocated is not a verified provider tariff or proof that Extend returns the cumulative master. If the actual workflow requires a separate paid operation, record its real quote and revise the budget before using it. Any separately charged final-narration integration belongs to the narration line and must not also be charged as general finishing.
 
-These totals include unquoted allowances, not a verified invoice. A 224-credit gap does not establish that a 224-credit purchase pack exists. No top-up is recorded as purchased.
+The narration allowance is an estimate, not an established 200-credit charge. The pilot allowance is also provisional and can be reduced independently. Keep their costs separate. Images plus final footage total 2484, leaving 376 for narration and tests within the current balance; with tests held at 100, narration can cost at most 276 before a top-up is needed. No generation retries, additional test-only image batch or automatic purchase are added.
 
 ### Basis of the video estimate: observed 1080p festival quote
 
@@ -88,22 +89,20 @@ Use 270 per 30 seconds as the current planning basis. The creator subsequently c
 | 07 | 20 seconds | 180 | Creator-confirmed 20-second price; final complete-input/continuation configuration still to be checked |
 | **Total** | **200 seconds** | **1800** | First-pass estimate; no retries |
 
-The selected video resolution is already **1080p**, matching the delivery target. Keep the 300-credit hosted finishing allowance for assembly, mixing and export; do not invent a mandatory upscale charge. Images remain 4K. Price continuation against the actual operation and NEW output duration rather than cumulative master length. Native music and material SFX remain part of the intended audio-on video workflow; no separate music/SFX campaign is added. Charge any bundled components only once.
+The selected video resolution is already **1080p**, matching the delivery target. No separate paid assembly, export or upscale is assumed. If Extend already returns the cumulative finished result, download it. The actual cumulative output and narration path remain to be verified. Images remain 4K. Price continuation against the actual operation and NEW output duration rather than cumulative master length. Native music and material SFX remain part of the intended audio-on video workflow; no separate music/SFX campaign is added. Charge any bundled components only once.
 
 ### Break-even limits
 
-Images, pilot, narration and finishing together are allocated **1284 credits**. Holding those lines fixed leaves **1576 credits for the final film** without a purchase, or **2076** after the maximum top-up. These imply average final-video ceilings of **7.88** or **10.38 credits/second** across the 200-second film. Compare the sum of real block quotes with these ceilings; individual durations need not share a flat rate.
+Images, the current pilot allowance and provisional narration together total **984 credits**. Separate assembly/export has **zero allocated**, because no separate paid requirement is established. Holding those allocations fixed leaves **1876 credits for final-film video** without a purchase, or **2376** after the maximum top-up. Across 200 seconds these are average ceilings of **9.38** and **11.88 credits/second**. Compare the actual complete-input and continuation quotes against the total rather than assuming every operation uses one uniform rate.
 
-| Illustrative average final-video rate | 200-second film | Total including the other 1284 credits | Additional credits needed beyond 2860 |
+| Illustrative final-video rate | 200-second film | Total including the other 984 credits | Balance from 2860 |
 |---|---:|---:|---:|
-| 6.5 credits/second | 1300 | 2584 | 0; 276 remain |
-| 7 credits/second | 1400 | 2684 | 0; 176 remain |
-| 8 credits/second | 1600 | 2884 | 24 |
-| **9 credits/second: confirmed duration-rate basis** | **1800** | **3084** | **224** |
-| 10 credits/second | 2000 | 3284 | 424 |
-| 10.5 credits/second | 2100 | 3384 | 524; exceeds the 500-credit top-up limit |
+| **9 credits/second: current duration-rate basis** | **1800** | **2784** | **76 remaining** |
+| 10 credits/second | 2000 | 2984 | 124 shortfall |
+| 11 credits/second | 2200 | 3184 | 324 shortfall |
+| 12 credits/second | 2400 | 3384 | 524 shortfall; exceeds the 500-credit top-up cap |
 
-These rows are sensitivity calculations, not additional provider tariffs. If pilot, narration or finishing quotes exceed their allocations, the available final-video ceiling falls by the same amount. The full production fits the current balance only if the actual combined first-pass charges fit; the maximum permitted additional purchase remains 500.
+These are sensitivity calculations, not additional provider tariffs. Any change to the narration/test allowances or an actual separately required delivery quote changes the remaining video ceiling by the same amount. The no-regeneration instruction and maximum further purchase of 500 credits remain in force.
 
 ## Image model assumption
 
