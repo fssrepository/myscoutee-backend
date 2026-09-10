@@ -25,7 +25,7 @@ DO NOT show the London–Budapest present city.
 DO NOT place the memory inside a taxi window, bus window, tram window, shopfront, puddle or mirror.
 DO NOT add rain/reflection layers from the present city.
 DO NOT add score cards.
-Later STORYBOARD / VIDEO reconstructs these people and places as full-size inhabited spaces growing from London paving, furniture and architecture. This source sheet remains a sharp direct view of the memory; its cells are not cuts or flat images to display in the video.
+ This source sheet remains a sharp direct view of the memory; its cells are not cuts or flat images to display in the video.
 
 VISUAL LANGUAGE:
 Photorealistic live-action European feature-film realism.
@@ -50,7 +50,7 @@ PAGE A OF MW02: This page contains original views 1, 2, 3, 4. Original-view numb
 
 REFERENCE COVERAGE FOR THE MOVING FILM:
 This page supplies the four assigned literal views, not four cuts, morph stages or interchangeable world designs. Make each view useful for its assigned purpose: room layout shows supports and an entry/exit; a gesture view retains its hand, furniture edge and background anchor; an object detail shows side/underside and contact. Different views of the SAME room preserve its floor plan, furniture, identities, clothes and light sources even when the viewpoint changes. Distinct memories remain distinct places; do not fuse them into one room to match the grid. Repeated anchor views on another page must preserve the same state and layout.
-A video can use several world and memory pages within the same 30-second block. Its own camera travels continuously through connected reconstructed space and uses explicit material morph sheets where needed; the source grid never appears as a slideshow. Additional detail pages may cover the same place without creating another memory, another story event or another paid video test. Keep full body/furniture support legible wherever the assigned view permits. Never substitute four nearly identical wide shots for the four assigned subjects.
+Additional detail pages of the same place retain that memory and its established event. Keep full body/furniture support legible wherever the assigned view permits. Never substitute four nearly identical wide shots for the four assigned subjects.
 
 FOUR ASSIGNED CELLS:
 CELL 1 — TOP-LEFT — ORIGINAL VIEW 01:
@@ -84,7 +84,7 @@ SPATIAL INFORMATION FOR LATER EMBODIED MEMORY:
 The later film grows this exact remembered encounter from London materials. Supply enough geometry to reconstruct a solid place: a near seat or table corner with two readable sides, full supporting legs where furniture matters, visible floor contact, and a rear door, wall or landscape plane at a different distance. Use the existing widest relevant cell for the whole arrangement and the existing human-detail cell for the gesture; use the companion page when that required contextual view is assigned there. Keep principal faces, hands and interactions in useful focus. Show natural occlusion and contact shadows. Avoid hiding the relationship between a person, their chair, the floor and the rear doorway in shallow focus or tight crops. A detail cell may be close, but its contextual cell must retain the full arrangement. Preserve the assigned encounter and identity. These literal source shapes give the later film recognisable people and materials to carry through the impossible transformation.
 
 SOURCE CONTINUITY FOR THE MOVING FILM:
-Render each cell as a single clear, solid view of the specified people and their actual room or place. Show a usable doorway edge, furniture corner or support beside the central gesture, with full bodily depth, clear hands and contact shadows. That landmark lets the video first glimpse this SAME person through a developing opening and then expose the full encounter continuously. Never supply ghosted people, translucent rooms, double exposures or blended before/after scenes. The source image does not perform a transition or replace the street as a flat composition; the video reconstructs its arrangement through the explicitly described material movement. Preserve the assigned identities and events across alternative views. Keep the source free of present-city overlays and rating cards.
+Render each cell as a single clear, solid view of the specified people and their actual room or place. Show a usable doorway edge, furniture corner or support beside the central gesture, with full bodily depth, clear hands and contact shadows. Never supply ghosted people, translucent rooms, double exposures or blended before/after scenes. The source image is a direct view of the remembered place, with no transition overlay. Preserve the assigned identities and events across alternative views. Keep the source free of present-city overlays and rating cards.
 
 Keep the assigned room and human event specific and intact. Its source doorway, furniture corner or open side can support either a matched material development or continuous camera entry/exit. No forced mutation of the people, furniture or room is needed when the next setting lacks corresponding structure; let the film travel onward through a visible connected opening.
 
