@@ -1,5 +1,23 @@
 ## Current category import request — 2026-09-10
 
+## 2026-09-10 — A teljes import is elkészült a részfájlok mellett
+
+A felhasználó kérésére a FULL_PROJECT_IMPORT.md ismét valódi importfájl, a jelenlegi 156 elemmel. Pontosan a Characters (31), Worlds (51), Morphs (74) fájlok egyesítése. Az előző bejegyzésben említett útmutató-helyettesítés már nem aktuális. Teljes újrakezdéshez most ez az egy fájl a következő import; a három kategóriafájl alternatíva, nem további importfeladat. A 105-ös történeti archív másolat megmaradt. Távoli import még nincs visszaigazolva.
+
+
+## 2026-09-10 — Egységes 4K az összes referenciához
+
+A felhasználó az 1×3 karakterazonosító lapokat is 4K-ra kérte. Mind a 31 prompt és az aktív felbontási útmutató frissült: 3840×2160, három 1280×2160-as panel. A világok és morphok 4K 2×2-esek maradnak, cellánként 1920×1080. A 156 elem definíciója és a három importfájl tartalma ettől nem változik; renderparaméter továbbra sincs az importokban. Ez a legfrissebb felbontási szabály, felülírja a korábbi 2K-alapot.
+
+
+## 2026-09-10 — Aktuális kategóriaimportok átadásra készen
+
+- A felhasználó az újraimport megkezdését jelezte; a három kategóriafájl újra összeellenőrizve a 156 soros prompttérképpel és a tényleges TXT-kkel.
+- Characters 31, Worlds 51, Morphs 74. A morph-leírások az aktuális konkrét forrás/cél kapcsolatot nevezik meg, generálási paraméterek nélkül. Kulcsok és Element-nevek változatlanok.
+- A régi 105-ös FULL_PROJECT_IMPORT.md pontos másolata: `04_tracking/archive/element_imports/FULL_PROJECT_IMPORT_105_LEGACY.md`. Korábbi helyén a három aktuális importhoz vezető útmutató van.
+- Státusz: READY_FOR_CREATOR_REIMPORT_NOT_YET_CONFIRMED. Nem történt távoli import/törlés vagy generálás. Az új platformazonosítók az import után köthetők be; a régi megemlítések nem bizonyítják az új Element létét.
+
+
 ## 2026-09-10 — Konkrét karaktermorphok és teljes anyag/forma-ellenőrzés
 
 - A generikus CM001 sablon helyett CM001–CM006 konkrét párok: C04→C26, C02→C10, C06→C07, C11→C13, C23→C24, C28→C29. A külön szereplőazonosságok megmaradnak; ezek vizuális emlékkapcsolat-javaslatok, nem automatikus videóátírások.

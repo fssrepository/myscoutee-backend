@@ -218,4 +218,3 @@ Canonical key: C31
 Name: MYS C31 Anonymous Fictional Cardboard Public Figure
 Version: v1
 Description: Fictional anonymous adult male cardboard public figure, apparent age about 45–65, ordinary suit-wearing build and generic non-identifiable face. This character exists only as an absurd self-made cardboard memory source.
-

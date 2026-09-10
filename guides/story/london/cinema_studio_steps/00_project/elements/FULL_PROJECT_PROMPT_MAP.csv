@@ -1,35 +1,35 @@
 canonical_key,element_name,element_type,reference_role,layout,prompt_file,import_batch
-C01,MYS C01 Protagonist,Character,C01_PROTAGONIST.txt,"1x3 identity; 2K default, 4K optional",02_library/characters/C01_PROTAGONIST.txt,CHARACTERS_IMPORT.md
-C02,MYS C02 Soho Woman,Character,C02_SOHO_WOMAN.txt,"1x3 identity; 2K default, 4K optional",02_library/characters/C02_SOHO_WOMAN.txt,CHARACTERS_IMPORT.md
-C03,MYS C03 Policewoman,Character,C03_POLICEWOMAN.txt,"1x3 identity; 2K default, 4K optional",02_library/characters/C03_POLICEWOMAN.txt,CHARACTERS_IMPORT.md
-C04,MYS C04 Appointed Lawyer,Character,C04_APPOINTED_LAWYER.txt,"1x3 identity; 2K default, 4K optional",02_library/characters/C04_APPOINTED_LAWYER.txt,CHARACTERS_IMPORT.md
-C05,MYS C05 Final Nurse,Character,C05_FINAL_NURSE.txt,"1x3 identity; 2K default, 4K optional",02_library/characters/C05_FINAL_NURSE.txt,CHARACTERS_IMPORT.md
-C06,MYS C06 Shared-House Substitute / Snoring Housemate,Character,C06_SHARED_HOUSE_SUBSTITUTE_SNORING_HOUSEMATE.txt,"1x3 identity; 2K default, 4K optional",02_library/characters/C06_SHARED_HOUSE_SUBSTITUTE_SNORING_HOUSEMATE.txt,CHARACTERS_IMPORT.md
-C07,MYS C07 Fx-Mortgage Housemate,Character,C07_FX_MORTGAGE_HOUSEMATE.txt,"1x3 identity; 2K default, 4K optional",02_library/characters/C07_FX_MORTGAGE_HOUSEMATE.txt,CHARACTERS_IMPORT.md
-C08,MYS C08 Fx-Mortgage Spouse,Character,C08_FX_MORTGAGE_SPOUSE.txt,"1x3 identity; 2K default, 4K optional",02_library/characters/C08_FX_MORTGAGE_SPOUSE.txt,CHARACTERS_IMPORT.md
-C09,MYS C09 Fx-Mortgage Child,Character,C09_FX_MORTGAGE_CHILD.txt,"1x3 identity; 2K default, 4K optional",02_library/characters/C09_FX_MORTGAGE_CHILD.txt,CHARACTERS_IMPORT.md
-C10,MYS C10 Beginner-Dance Woman,Character,C10_BEGINNER_DANCE_WOMAN.txt,"1x3 identity; 2K default, 4K optional",02_library/characters/C10_BEGINNER_DANCE_WOMAN.txt,CHARACTERS_IMPORT.md
-C11,MYS C11 Russian Transit Passenger,Character,C11_RUSSIAN_TRANSIT_PASSENGER.txt,"1x3 identity; 2K default, 4K optional",02_library/characters/C11_RUSSIAN_TRANSIT_PASSENGER.txt,CHARACTERS_IMPORT.md
-C12,MYS C12 Agra Bus Woman,Character,C12_AGRA_BUS_WOMAN.txt,"1x3 identity; 2K default, 4K optional",02_library/characters/C12_AGRA_BUS_WOMAN.txt,CHARACTERS_IMPORT.md
-C13,MYS C13 Sudanese Traveler — Man,Character,C13_SUDANESE_TRAVELER_MAN.txt,"1x3 identity; 2K default, 4K optional",02_library/characters/C13_SUDANESE_TRAVELER_MAN.txt,CHARACTERS_IMPORT.md
-C14,MYS C14 Sudanese Traveler — Woman,Character,C14_SUDANESE_TRAVELER_WOMAN.txt,"1x3 identity; 2K default, 4K optional",02_library/characters/C14_SUDANESE_TRAVELER_WOMAN.txt,CHARACTERS_IMPORT.md
-C15,MYS C15 Cairo Taxi Driver,Character,C15_CAIRO_TAXI_DRIVER.txt,"1x3 identity; 2K default, 4K optional",02_library/characters/C15_CAIRO_TAXI_DRIVER.txt,CHARACTERS_IMPORT.md
-C16,MYS C16 Balloon Local Helper — Man,Character,C16_BALLOON_LOCAL_HELPER_MAN.txt,"1x3 identity; 2K default, 4K optional",02_library/characters/C16_BALLOON_LOCAL_HELPER_MAN.txt,CHARACTERS_IMPORT.md
-C17,MYS C17 Balloon Local Helper — Woman,Character,C17_BALLOON_LOCAL_HELPER_WOMAN.txt,"1x3 identity; 2K default, 4K optional",02_library/characters/C17_BALLOON_LOCAL_HELPER_WOMAN.txt,CHARACTERS_IMPORT.md
-C18,MYS C18 Barmouth Road-Trip Driver / Companion,Character,C18_BARMOUTH_ROAD_TRIP_DRIVER_COMPANION.txt,"1x3 identity; 2K default, 4K optional",02_library/characters/C18_BARMOUTH_ROAD_TRIP_DRIVER_COMPANION.txt,CHARACTERS_IMPORT.md
-C19,MYS C19 Barmouth Road-Trip Companion A,Character,C19_BARMOUTH_ROAD_TRIP_COMPANION_A.txt,"1x3 identity; 2K default, 4K optional",02_library/characters/C19_BARMOUTH_ROAD_TRIP_COMPANION_A.txt,CHARACTERS_IMPORT.md
-C20,MYS C20 Barmouth Road-Trip Companion B,Character,C20_BARMOUTH_ROAD_TRIP_COMPANION_B.txt,"1x3 identity; 2K default, 4K optional",02_library/characters/C20_BARMOUTH_ROAD_TRIP_COMPANION_B.txt,CHARACTERS_IMPORT.md
-C21,MYS C21 Barmouth Road-Trip Companion C,Character,C21_BARMOUTH_ROAD_TRIP_COMPANION_C.txt,"1x3 identity; 2K default, 4K optional",02_library/characters/C21_BARMOUTH_ROAD_TRIP_COMPANION_C.txt,CHARACTERS_IMPORT.md
-C22,MYS C22 Accountant,Character,C22_ACCOUNTANT.txt,"1x3 identity; 2K default, 4K optional",02_library/characters/C22_ACCOUNTANT.txt,CHARACTERS_IMPORT.md
-C23,MYS C23 Admin Colleague A,Character,C23_ADMIN_COLLEAGUE_A.txt,"1x3 identity; 2K default, 4K optional",02_library/characters/C23_ADMIN_COLLEAGUE_A.txt,CHARACTERS_IMPORT.md
-C24,MYS C24 Admin Colleague B,Character,C24_ADMIN_COLLEAGUE_B.txt,"1x3 identity; 2K default, 4K optional",02_library/characters/C24_ADMIN_COLLEAGUE_B.txt,CHARACTERS_IMPORT.md
-C25,MYS C25 Search Officer — Male,Character,C25_SEARCH_OFFICER_MALE.txt,"1x3 identity; 2K default, 4K optional",02_library/characters/C25_SEARCH_OFFICER_MALE.txt,CHARACTERS_IMPORT.md
-C26,MYS C26 Defence-Office Substitute,Character,C26_DEFENCE_OFFICE_SUBSTITUTE.txt,"1x3 identity; 2K default, 4K optional",02_library/characters/C26_DEFENCE_OFFICE_SUBSTITUTE.txt,CHARACTERS_IMPORT.md
-C27,MYS C27 Judge,Character,C27_JUDGE.txt,"1x3 identity; 2K default, 4K optional",02_library/characters/C27_JUDGE.txt,CHARACTERS_IMPORT.md
-C28,MYS C28 Forensic Expert A,Character,C28_FORENSIC_EXPERT_A.txt,"1x3 identity; 2K default, 4K optional",02_library/characters/C28_FORENSIC_EXPERT_A.txt,CHARACTERS_IMPORT.md
-C29,MYS C29 Forensic Expert B,Character,C29_FORENSIC_EXPERT_B.txt,"1x3 identity; 2K default, 4K optional",02_library/characters/C29_FORENSIC_EXPERT_B.txt,CHARACTERS_IMPORT.md
-C30,MYS C30 Court Clerk,Character,C30_COURT_CLERK.txt,"1x3 identity; 2K default, 4K optional",02_library/characters/C30_COURT_CLERK.txt,CHARACTERS_IMPORT.md
-C31,MYS C31 Anonymous Fictional Cardboard Public Figure,Character,C31_ANONYMOUS_FICTIONAL_POLITICAL_FIGURE.txt,"1x3 identity; 2K default, 4K optional",02_library/characters/C31_ANONYMOUS_FICTIONAL_POLITICAL_FIGURE.txt,CHARACTERS_IMPORT.md
+C01,MYS C01 Protagonist,Character,C01_PROTAGONIST.txt,"1x3 identity; 4K 3840x2160; panels 1280x2160",02_library/characters/C01_PROTAGONIST.txt,CHARACTERS_IMPORT.md
+C02,MYS C02 Soho Woman,Character,C02_SOHO_WOMAN.txt,"1x3 identity; 4K 3840x2160; panels 1280x2160",02_library/characters/C02_SOHO_WOMAN.txt,CHARACTERS_IMPORT.md
+C03,MYS C03 Policewoman,Character,C03_POLICEWOMAN.txt,"1x3 identity; 4K 3840x2160; panels 1280x2160",02_library/characters/C03_POLICEWOMAN.txt,CHARACTERS_IMPORT.md
+C04,MYS C04 Appointed Lawyer,Character,C04_APPOINTED_LAWYER.txt,"1x3 identity; 4K 3840x2160; panels 1280x2160",02_library/characters/C04_APPOINTED_LAWYER.txt,CHARACTERS_IMPORT.md
+C05,MYS C05 Final Nurse,Character,C05_FINAL_NURSE.txt,"1x3 identity; 4K 3840x2160; panels 1280x2160",02_library/characters/C05_FINAL_NURSE.txt,CHARACTERS_IMPORT.md
+C06,MYS C06 Shared-House Substitute / Snoring Housemate,Character,C06_SHARED_HOUSE_SUBSTITUTE_SNORING_HOUSEMATE.txt,"1x3 identity; 4K 3840x2160; panels 1280x2160",02_library/characters/C06_SHARED_HOUSE_SUBSTITUTE_SNORING_HOUSEMATE.txt,CHARACTERS_IMPORT.md
+C07,MYS C07 Fx-Mortgage Housemate,Character,C07_FX_MORTGAGE_HOUSEMATE.txt,"1x3 identity; 4K 3840x2160; panels 1280x2160",02_library/characters/C07_FX_MORTGAGE_HOUSEMATE.txt,CHARACTERS_IMPORT.md
+C08,MYS C08 Fx-Mortgage Spouse,Character,C08_FX_MORTGAGE_SPOUSE.txt,"1x3 identity; 4K 3840x2160; panels 1280x2160",02_library/characters/C08_FX_MORTGAGE_SPOUSE.txt,CHARACTERS_IMPORT.md
+C09,MYS C09 Fx-Mortgage Child,Character,C09_FX_MORTGAGE_CHILD.txt,"1x3 identity; 4K 3840x2160; panels 1280x2160",02_library/characters/C09_FX_MORTGAGE_CHILD.txt,CHARACTERS_IMPORT.md
+C10,MYS C10 Beginner-Dance Woman,Character,C10_BEGINNER_DANCE_WOMAN.txt,"1x3 identity; 4K 3840x2160; panels 1280x2160",02_library/characters/C10_BEGINNER_DANCE_WOMAN.txt,CHARACTERS_IMPORT.md
+C11,MYS C11 Russian Transit Passenger,Character,C11_RUSSIAN_TRANSIT_PASSENGER.txt,"1x3 identity; 4K 3840x2160; panels 1280x2160",02_library/characters/C11_RUSSIAN_TRANSIT_PASSENGER.txt,CHARACTERS_IMPORT.md
+C12,MYS C12 Agra Bus Woman,Character,C12_AGRA_BUS_WOMAN.txt,"1x3 identity; 4K 3840x2160; panels 1280x2160",02_library/characters/C12_AGRA_BUS_WOMAN.txt,CHARACTERS_IMPORT.md
+C13,MYS C13 Sudanese Traveler — Man,Character,C13_SUDANESE_TRAVELER_MAN.txt,"1x3 identity; 4K 3840x2160; panels 1280x2160",02_library/characters/C13_SUDANESE_TRAVELER_MAN.txt,CHARACTERS_IMPORT.md
+C14,MYS C14 Sudanese Traveler — Woman,Character,C14_SUDANESE_TRAVELER_WOMAN.txt,"1x3 identity; 4K 3840x2160; panels 1280x2160",02_library/characters/C14_SUDANESE_TRAVELER_WOMAN.txt,CHARACTERS_IMPORT.md
+C15,MYS C15 Cairo Taxi Driver,Character,C15_CAIRO_TAXI_DRIVER.txt,"1x3 identity; 4K 3840x2160; panels 1280x2160",02_library/characters/C15_CAIRO_TAXI_DRIVER.txt,CHARACTERS_IMPORT.md
+C16,MYS C16 Balloon Local Helper — Man,Character,C16_BALLOON_LOCAL_HELPER_MAN.txt,"1x3 identity; 4K 3840x2160; panels 1280x2160",02_library/characters/C16_BALLOON_LOCAL_HELPER_MAN.txt,CHARACTERS_IMPORT.md
+C17,MYS C17 Balloon Local Helper — Woman,Character,C17_BALLOON_LOCAL_HELPER_WOMAN.txt,"1x3 identity; 4K 3840x2160; panels 1280x2160",02_library/characters/C17_BALLOON_LOCAL_HELPER_WOMAN.txt,CHARACTERS_IMPORT.md
+C18,MYS C18 Barmouth Road-Trip Driver / Companion,Character,C18_BARMOUTH_ROAD_TRIP_DRIVER_COMPANION.txt,"1x3 identity; 4K 3840x2160; panels 1280x2160",02_library/characters/C18_BARMOUTH_ROAD_TRIP_DRIVER_COMPANION.txt,CHARACTERS_IMPORT.md
+C19,MYS C19 Barmouth Road-Trip Companion A,Character,C19_BARMOUTH_ROAD_TRIP_COMPANION_A.txt,"1x3 identity; 4K 3840x2160; panels 1280x2160",02_library/characters/C19_BARMOUTH_ROAD_TRIP_COMPANION_A.txt,CHARACTERS_IMPORT.md
+C20,MYS C20 Barmouth Road-Trip Companion B,Character,C20_BARMOUTH_ROAD_TRIP_COMPANION_B.txt,"1x3 identity; 4K 3840x2160; panels 1280x2160",02_library/characters/C20_BARMOUTH_ROAD_TRIP_COMPANION_B.txt,CHARACTERS_IMPORT.md
+C21,MYS C21 Barmouth Road-Trip Companion C,Character,C21_BARMOUTH_ROAD_TRIP_COMPANION_C.txt,"1x3 identity; 4K 3840x2160; panels 1280x2160",02_library/characters/C21_BARMOUTH_ROAD_TRIP_COMPANION_C.txt,CHARACTERS_IMPORT.md
+C22,MYS C22 Accountant,Character,C22_ACCOUNTANT.txt,"1x3 identity; 4K 3840x2160; panels 1280x2160",02_library/characters/C22_ACCOUNTANT.txt,CHARACTERS_IMPORT.md
+C23,MYS C23 Admin Colleague A,Character,C23_ADMIN_COLLEAGUE_A.txt,"1x3 identity; 4K 3840x2160; panels 1280x2160",02_library/characters/C23_ADMIN_COLLEAGUE_A.txt,CHARACTERS_IMPORT.md
+C24,MYS C24 Admin Colleague B,Character,C24_ADMIN_COLLEAGUE_B.txt,"1x3 identity; 4K 3840x2160; panels 1280x2160",02_library/characters/C24_ADMIN_COLLEAGUE_B.txt,CHARACTERS_IMPORT.md
+C25,MYS C25 Search Officer — Male,Character,C25_SEARCH_OFFICER_MALE.txt,"1x3 identity; 4K 3840x2160; panels 1280x2160",02_library/characters/C25_SEARCH_OFFICER_MALE.txt,CHARACTERS_IMPORT.md
+C26,MYS C26 Defence-Office Substitute,Character,C26_DEFENCE_OFFICE_SUBSTITUTE.txt,"1x3 identity; 4K 3840x2160; panels 1280x2160",02_library/characters/C26_DEFENCE_OFFICE_SUBSTITUTE.txt,CHARACTERS_IMPORT.md
+C27,MYS C27 Judge,Character,C27_JUDGE.txt,"1x3 identity; 4K 3840x2160; panels 1280x2160",02_library/characters/C27_JUDGE.txt,CHARACTERS_IMPORT.md
+C28,MYS C28 Forensic Expert A,Character,C28_FORENSIC_EXPERT_A.txt,"1x3 identity; 4K 3840x2160; panels 1280x2160",02_library/characters/C28_FORENSIC_EXPERT_A.txt,CHARACTERS_IMPORT.md
+C29,MYS C29 Forensic Expert B,Character,C29_FORENSIC_EXPERT_B.txt,"1x3 identity; 4K 3840x2160; panels 1280x2160",02_library/characters/C29_FORENSIC_EXPERT_B.txt,CHARACTERS_IMPORT.md
+C30,MYS C30 Court Clerk,Character,C30_COURT_CLERK.txt,"1x3 identity; 4K 3840x2160; panels 1280x2160",02_library/characters/C30_COURT_CLERK.txt,CHARACTERS_IMPORT.md
+C31,MYS C31 Anonymous Fictional Cardboard Public Figure,Character,C31_ANONYMOUS_FICTIONAL_POLITICAL_FIGURE.txt,"1x3 identity; 4K 3840x2160; panels 1280x2160",02_library/characters/C31_ANONYMOUS_FICTIONAL_POLITICAL_FIGURE.txt,CHARACTERS_IMPORT.md
 W01,MYS W01_A World Reference,Location,real,2x2 environment coverage,02_library/worlds/real/W01_MAIN_WORLD_A.txt,WORLDS_IMPORT.md
 W01_B,MYS W01_B World Reference,Location,real,2x2 environment coverage,02_library/worlds/real/W01_MAIN_WORLD_B.txt,WORLDS_IMPORT.md
 W01_C,MYS W01_C World Reference,Location,real,2x2 environment coverage,02_library/worlds/real/W01_MAIN_WORLD_C.txt,WORLDS_IMPORT.md

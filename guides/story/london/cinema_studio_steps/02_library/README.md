@@ -16,7 +16,7 @@ A [teljes prompttérkép](../00_project/elements/FULL_PROJECT_PROMPT_MAP.csv) az
 
 | Könyvtár | Elrendezés | Teljes képfelbontás |
 | --- | --- | --- |
-| characters | 1×3: elöl, hátul, arc | 2K alapból; 4K is használható |
+| characters | 1×3: elöl, hátul, arc | 3840×2160 (4K), panelenként 1280×2160 |
 | morphs/buildings, objects, characters | 2×2: négy különböző anyagállapot | 3840×2160 (4K) |
 | worlds/real, memories | 2×2: négy részletes környezeti nézet | 3840×2160 (4K) |
 | worlds/maps | 2×2: áttekintés, bevezetés, átalakulási hely, kijárat | 3840×2160 (4K) |

@@ -1,6 +1,8 @@
-# Elements — kategóriánkénti teljes import
+# Elements — teljes vagy kategóriánkénti import
 
-A felhasználó legújabb kérése szerint újra, kategóriánként importáljuk a teljes aktuális könyvtárat. Ezek a fájlok egymást kiegészítő teljes listák, nem a már bent lévő lista hiányzó elemeinek automatikus merge-jei.
+A teljes újrakezdéshez a [FULL_PROJECT_IMPORT.md](FULL_PROJECT_IMPORT.md) egy fájlban tartalmazza mind a **156 elemet**. Importáld ezt az egy fájlt.
+
+Alternatívaként ugyanez a készlet az alábbi három, egymást kiegészítő kategóriafájlból is importálható. A teljes fájlt és a részfájlokat ne importáld együtt: ugyanazokat az elemeket tartalmazzák.
 
 | Importfájl | Tartalom | Elemek |
 | --- | --- | ---: |
@@ -11,10 +13,12 @@ A felhasználó legújabb kérése szerint újra, kategóriánként importáljuk
 
 A fájlok csak Type, Canonical key, Name, Version és rövid Description mezőket tartalmaznak. Renderbeállítás, kamerautasítás és bemeneti @hivatkozás nincs bennük. A külön TXT-khez a [prompttérkép](FULL_PROJECT_PROMPT_MAP.csv) vezet.
 
-Ezt a három fájlt használd a felhasználó által újra felépített Element-listához. A korábbi FULL_PROJECT_IMPORT.md, 13_ADDITIONAL_OBJECT_REFERENCES.md és 00–12 részlistákat ne importáld melléjük: ugyanazokat a kulcsokat ismételnék. Nem történt távoli törlés, újraimport vagy képgenerálás.
+A FULL_PROJECT_IMPORT.md pontosan a három aktuális kategóriafájl egyesítése. A régi 105-ös lista archívba került. A 00–13 korábbi részlisták nem részei az aktuális újraimportnak. Nem történt távoli törlés, újraimport vagy képgenerálás.
 
 A négy megmaradt kép társítása: C01 főszereplő, C02 Soho nő, MR001 katedrális, R002 londoni busz. A busz meglévő nézetlapja alapreferencia; az új R002-prompt már 2×2 morph. Az új import után a tényleges teljes @azonosítókat kell majd továbbvezetni.
 
 A worlds/maps hét opcionális 4K 2×2 útvonaltervet tartalmaz; ezek nem külön importelemek. A hat konkrét CM-karaktermorph kimeneti definíciója a Morphs listában van, Character típussal; bemeneteik a már meglévő C-karakterek. A [karaktermorph-jegyzék](../../02_library/morphs/characters/README.md) tartalmazza a párokat és a valódi referenciaazonosítók állapotára vonatkozó tudnivalókat.
 
-Felbontási szabály a külön képgeneráló TXT-kben: karakterazonosító 1×3, 2K alap / 4K választható; világ, emlék, morph és opcionális terv 4K 2×2, pontosan 3840×2160-as vászonnal és 1920×1080-as cellákkal. Az importlistákban továbbra sincs generálási utasítás.
+Felbontási szabály a külön képgeneráló TXT-kben: karakterazonosító 1×3, 4K, panelenként 1280×2160; világ, emlék, morph és opcionális terv 4K 2×2, pontosan 3840×2160-as vászonnal és 1920×1080-as cellákkal. Az importlistákban továbbra sincs generálási utasítás.
+
+Az újraimport előtti ellenőrzés kész: 156 egyedi kulcs, minden kulcshoz létező TXT, a mappával egyező Character / Location / Prop típus. A Morphs listában az aktuális forrás → cél kapcsolat szerepel. A listák elkészítése nem jelenti a platformimport megtörténtét.

@@ -358,4 +358,3 @@ Canonical key: T01_DETAILS_C
 Name: MYS T01_C Soho Restaurant
 Version: v1
 Description: Soho restaurant memory, page C: four views covering room construction, fixtures and passage space. Same seated woman and man beside two restroom doors; no cards.
-

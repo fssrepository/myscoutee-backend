@@ -1384,8 +1384,16 @@
       "output": "C01_PROTAGONIST.png",
       "refs": [],
       "layout": "1x3 identity",
-      "intended_resolution": "2K default; 4K optional",
-      "prompt_sha256": "296d71a6266effb06f0510bc19f21e268756c2f11927c0b9ede4c39b2e8ce8c4"
+      "intended_resolution": "4K",
+      "prompt_sha256": "60c63718c3cd378af85611dfa1ad0b3b76c9a7a12214d80feb28a7c76fab7056",
+      "canvas_pixels": [
+        3840,
+        2160
+      ],
+      "panel_pixels": [
+        1280,
+        2160
+      ]
     },
     "C02": {
       "key": "C02",
@@ -1393,8 +1401,16 @@
       "output": "C02_SOHO_WOMAN.png",
       "refs": [],
       "layout": "1x3 identity",
-      "intended_resolution": "2K default; 4K optional",
-      "prompt_sha256": "37fde1a6d5f5a5835f0c2565c0d739d0d3cfb15ad8119bd8cf01745334bacb51"
+      "intended_resolution": "4K",
+      "prompt_sha256": "a93ddf67e87c50db420afbd3d5809aaa4a668cc780e3d207f5c6d30e6a372702",
+      "canvas_pixels": [
+        3840,
+        2160
+      ],
+      "panel_pixels": [
+        1280,
+        2160
+      ]
     },
     "C03": {
       "key": "C03",
@@ -1402,8 +1418,16 @@
       "output": "C03_POLICEWOMAN.png",
       "refs": [],
       "layout": "1x3 identity",
-      "intended_resolution": "2K default; 4K optional",
-      "prompt_sha256": "8fe249124cdf7445b16bf8697263412ea5f72071dfd53a16531e17fdd5fca1c8"
+      "intended_resolution": "4K",
+      "prompt_sha256": "35c980b37f14ebedd9494e55dfc1d46312d1501bc0f8372137dfa98b70037312",
+      "canvas_pixels": [
+        3840,
+        2160
+      ],
+      "panel_pixels": [
+        1280,
+        2160
+      ]
     },
     "C04": {
       "key": "C04",
@@ -1411,8 +1435,16 @@
       "output": "C04_APPOINTED_LAWYER.png",
       "refs": [],
       "layout": "1x3 identity",
-      "intended_resolution": "2K default; 4K optional",
-      "prompt_sha256": "f99e4e073e72cf4802e65d8052624c9bf616169334eac344d9a6bf827f92ae71"
+      "intended_resolution": "4K",
+      "prompt_sha256": "116d0e4fd501506b67b00240e9874ff92d7194e84b5838c633926c57d0cf01e6",
+      "canvas_pixels": [
+        3840,
+        2160
+      ],
+      "panel_pixels": [
+        1280,
+        2160
+      ]
     },
     "C05": {
       "key": "C05",
@@ -1420,8 +1452,16 @@
       "output": "C05_FINAL_NURSE.png",
       "refs": [],
       "layout": "1x3 identity",
-      "intended_resolution": "2K default; 4K optional",
-      "prompt_sha256": "a0cc1f40ff54e5798b64c48b95071314ba615f6d08d916e33d463222273317a3"
+      "intended_resolution": "4K",
+      "prompt_sha256": "f55cd727f4a880c7c034aafae9d9a225dd05a084c61e24397d371628778e3315",
+      "canvas_pixels": [
+        3840,
+        2160
+      ],
+      "panel_pixels": [
+        1280,
+        2160
+      ]
     },
     "C06": {
       "key": "C06",
@@ -1429,8 +1469,16 @@
       "output": "C06_SHARED_HOUSE_SUBSTITUTE_SNORING_HOUSEMATE.png",
       "refs": [],
       "layout": "1x3 identity",
-      "intended_resolution": "2K default; 4K optional",
-      "prompt_sha256": "3f8596341c7e6d2284791723bc65a7e7a95d28bc02901b0a78a206342f499915"
+      "intended_resolution": "4K",
+      "prompt_sha256": "dad2b86b557d110fa533994c67c34c2b981731a9bab0d8388b6b8be7f3ecde05",
+      "canvas_pixels": [
+        3840,
+        2160
+      ],
+      "panel_pixels": [
+        1280,
+        2160
+      ]
     },
     "C07": {
       "key": "C07",
@@ -1438,8 +1486,16 @@
       "output": "C07_FX_MORTGAGE_HOUSEMATE.png",
       "refs": [],
       "layout": "1x3 identity",
-      "intended_resolution": "2K default; 4K optional",
-      "prompt_sha256": "c6f04fb4d98685b5eb3da7b8d681f8fb9ebf502e287f52b512a551f45fd825b6"
+      "intended_resolution": "4K",
+      "prompt_sha256": "7b79bd1bcc8ffd6e04ded20c61295b45d3957c6d800236e5ee9719baa2f0c19e",
+      "canvas_pixels": [
+        3840,
+        2160
+      ],
+      "panel_pixels": [
+        1280,
+        2160
+      ]
     },
     "C08": {
       "key": "C08",
@@ -1447,8 +1503,16 @@
       "output": "C08_FX_MORTGAGE_SPOUSE.png",
       "refs": [],
       "layout": "1x3 identity",
-      "intended_resolution": "2K default; 4K optional",
-      "prompt_sha256": "6246e2760795cc99579f7b1c98e3849b1aff484a3c0957fc8be5de727fc7d0d6"
+      "intended_resolution": "4K",
+      "prompt_sha256": "7a14cbc9cee07ef70fcd930e88487bcd195bdfa91908c3c5fcdcb57710b00565",
+      "canvas_pixels": [
+        3840,
+        2160
+      ],
+      "panel_pixels": [
+        1280,
+        2160
+      ]
     },
     "C09": {
       "key": "C09",
@@ -1456,8 +1520,16 @@
       "output": "C09_FX_MORTGAGE_CHILD.png",
       "refs": [],
       "layout": "1x3 identity",
-      "intended_resolution": "2K default; 4K optional",
-      "prompt_sha256": "84a615dd78bf6fe413ecd2fe12f974682b8bc33589ceb95d9fd85e605d687e35"
+      "intended_resolution": "4K",
+      "prompt_sha256": "f5d7c0c39d9a3d8ecaf240036b9728b39fe73a6e28775014a837a70b2fa4aa31",
+      "canvas_pixels": [
+        3840,
+        2160
+      ],
+      "panel_pixels": [
+        1280,
+        2160
+      ]
     },
     "C10": {
       "key": "C10",
@@ -1465,8 +1537,16 @@
       "output": "C10_BEGINNER_DANCE_WOMAN.png",
       "refs": [],
       "layout": "1x3 identity",
-      "intended_resolution": "2K default; 4K optional",
-      "prompt_sha256": "b6e17d61f8154df5fb5b7b4af1feff4bce3715cd243c7b1a2355da4748ad19c2"
+      "intended_resolution": "4K",
+      "prompt_sha256": "f716f620a196d2f16fe4b79c9829c0d14b154d80df1e4ba1638023eb414b8493",
+      "canvas_pixels": [
+        3840,
+        2160
+      ],
+      "panel_pixels": [
+        1280,
+        2160
+      ]
     },
     "C11": {
       "key": "C11",
@@ -1474,8 +1554,16 @@
       "output": "C11_RUSSIAN_TRANSIT_PASSENGER.png",
       "refs": [],
       "layout": "1x3 identity",
-      "intended_resolution": "2K default; 4K optional",
-      "prompt_sha256": "c7055f9aea66a674e097ff8e6d006d918456ac9ecfb5b7633021f2c8202460ad"
+      "intended_resolution": "4K",
+      "prompt_sha256": "2418a820354090825bd75b3c51f3fb7558f0f29b9101819291af681a0f644b37",
+      "canvas_pixels": [
+        3840,
+        2160
+      ],
+      "panel_pixels": [
+        1280,
+        2160
+      ]
     },
     "C12": {
       "key": "C12",
@@ -1483,8 +1571,16 @@
       "output": "C12_AGRA_BUS_WOMAN.png",
       "refs": [],
       "layout": "1x3 identity",
-      "intended_resolution": "2K default; 4K optional",
-      "prompt_sha256": "563f3f12811217f3d1f4bcb6663457e8200ecae15b72f784d83948ac162964fc"
+      "intended_resolution": "4K",
+      "prompt_sha256": "9f36570bc55d0d47287e87dd83f1bfaff06ad755c2a6170329975b100d56c4db",
+      "canvas_pixels": [
+        3840,
+        2160
+      ],
+      "panel_pixels": [
+        1280,
+        2160
+      ]
     },
     "C13": {
       "key": "C13",
@@ -1492,8 +1588,16 @@
       "output": "C13_SUDANESE_TRAVELER_MAN.png",
       "refs": [],
       "layout": "1x3 identity",
-      "intended_resolution": "2K default; 4K optional",
-      "prompt_sha256": "7144c511879f9b0f247d7dbe9c4ac20b799e0ec6946644c2ecde6ce7c0836594"
+      "intended_resolution": "4K",
+      "prompt_sha256": "7983309a70b3732cd2c1129a30e36ed23f831cb639a281c3720e79b74503e183",
+      "canvas_pixels": [
+        3840,
+        2160
+      ],
+      "panel_pixels": [
+        1280,
+        2160
+      ]
     },
     "C14": {
       "key": "C14",
@@ -1501,8 +1605,16 @@
       "output": "C14_SUDANESE_TRAVELER_WOMAN.png",
       "refs": [],
       "layout": "1x3 identity",
-      "intended_resolution": "2K default; 4K optional",
-      "prompt_sha256": "5a53c3689154c06a125c83f0bdf37d2ae14b18d9eba3ca48d21f2cf5647c4554"
+      "intended_resolution": "4K",
+      "prompt_sha256": "41b11a33f78ffda3b323b63c87b3ab9c7283fb0d949608f5bfd14f68c45b63c9",
+      "canvas_pixels": [
+        3840,
+        2160
+      ],
+      "panel_pixels": [
+        1280,
+        2160
+      ]
     },
     "C15": {
       "key": "C15",
@@ -1510,8 +1622,16 @@
       "output": "C15_CAIRO_TAXI_DRIVER.png",
       "refs": [],
       "layout": "1x3 identity",
-      "intended_resolution": "2K default; 4K optional",
-      "prompt_sha256": "ea7be5aba6e54bc27d06f81f3295e00a4ebc2a31ed6215c3d860c25f2038c6b6"
+      "intended_resolution": "4K",
+      "prompt_sha256": "2c982f4f2515a6cfbb9f7c9bd6a1d14bbd4968c50d71f7fec554a6ef5f2cb2e4",
+      "canvas_pixels": [
+        3840,
+        2160
+      ],
+      "panel_pixels": [
+        1280,
+        2160
+      ]
     },
     "C16": {
       "key": "C16",
@@ -1519,8 +1639,16 @@
       "output": "C16_BALLOON_LOCAL_HELPER_MAN.png",
       "refs": [],
       "layout": "1x3 identity",
-      "intended_resolution": "2K default; 4K optional",
-      "prompt_sha256": "b0924f2e132e176792d3fe6ea3dd762f292126145e90d4a536334a8f5fb5ea3f"
+      "intended_resolution": "4K",
+      "prompt_sha256": "8dffd674dd46e37b8e3d92a8ab71d969d0737b63db01519e38c732dd69f4732b",
+      "canvas_pixels": [
+        3840,
+        2160
+      ],
+      "panel_pixels": [
+        1280,
+        2160
+      ]
     },
     "C17": {
       "key": "C17",
@@ -1528,8 +1656,16 @@
       "output": "C17_BALLOON_LOCAL_HELPER_WOMAN.png",
       "refs": [],
       "layout": "1x3 identity",
-      "intended_resolution": "2K default; 4K optional",
-      "prompt_sha256": "509a49732525ef9e750ac75f40f2ddc43e3ea1f292fd0f67ebda4edaf15239e6"
+      "intended_resolution": "4K",
+      "prompt_sha256": "6cbd5ed02939d82efc86ebea470d09dd7b6e0e7699abdb915f5fec468b39760f",
+      "canvas_pixels": [
+        3840,
+        2160
+      ],
+      "panel_pixels": [
+        1280,
+        2160
+      ]
     },
     "C18": {
       "key": "C18",
@@ -1537,8 +1673,16 @@
       "output": "C18_BARMOUTH_ROAD_TRIP_DRIVER_COMPANION.png",
       "refs": [],
       "layout": "1x3 identity",
-      "intended_resolution": "2K default; 4K optional",
-      "prompt_sha256": "c12a46dd021e4a214ee28bcd4cb73835ea33c391a5ba4bc0b92393c3b3e44132"
+      "intended_resolution": "4K",
+      "prompt_sha256": "78db6ece18789df3a8330a5929a3defec35460feef6f0ede6cd384d1fcc75665",
+      "canvas_pixels": [
+        3840,
+        2160
+      ],
+      "panel_pixels": [
+        1280,
+        2160
+      ]
     },
     "C19": {
       "key": "C19",
@@ -1546,8 +1690,16 @@
       "output": "C19_BARMOUTH_ROAD_TRIP_COMPANION_A.png",
       "refs": [],
       "layout": "1x3 identity",
-      "intended_resolution": "2K default; 4K optional",
-      "prompt_sha256": "2fb642886207cdae25a6079b8f41291eeea8033c1f6141d52c417bfa9779fe62"
+      "intended_resolution": "4K",
+      "prompt_sha256": "cad8383b642fa2cb25010fba2c450437a3ed5d5d922de6cb27b93026c69cbdcc",
+      "canvas_pixels": [
+        3840,
+        2160
+      ],
+      "panel_pixels": [
+        1280,
+        2160
+      ]
     },
     "C20": {
       "key": "C20",
@@ -1555,8 +1707,16 @@
       "output": "C20_BARMOUTH_ROAD_TRIP_COMPANION_B.png",
       "refs": [],
       "layout": "1x3 identity",
-      "intended_resolution": "2K default; 4K optional",
-      "prompt_sha256": "6cd1f45452d223a2cae60916f188c361f3abf8a22bc0ae059475cc09af92a330"
+      "intended_resolution": "4K",
+      "prompt_sha256": "dedb666a67cd96f6077529a33ba096023240f852c91a06a27ceedc063ae0695a",
+      "canvas_pixels": [
+        3840,
+        2160
+      ],
+      "panel_pixels": [
+        1280,
+        2160
+      ]
     },
     "C21": {
       "key": "C21",
@@ -1564,8 +1724,16 @@
       "output": "C21_BARMOUTH_ROAD_TRIP_COMPANION_C.png",
       "refs": [],
       "layout": "1x3 identity",
-      "intended_resolution": "2K default; 4K optional",
-      "prompt_sha256": "2fb642886207cdae25a6079b8f41291eeea8033c1f6141d52c417bfa9779fe62"
+      "intended_resolution": "4K",
+      "prompt_sha256": "cad8383b642fa2cb25010fba2c450437a3ed5d5d922de6cb27b93026c69cbdcc",
+      "canvas_pixels": [
+        3840,
+        2160
+      ],
+      "panel_pixels": [
+        1280,
+        2160
+      ]
     },
     "C22": {
       "key": "C22",
@@ -1573,8 +1741,16 @@
       "output": "C22_ACCOUNTANT.png",
       "refs": [],
       "layout": "1x3 identity",
-      "intended_resolution": "2K default; 4K optional",
-      "prompt_sha256": "7a472544c863c05b19e0a77c206b77812381140fe8edccd76f095c5a4bc7dadf"
+      "intended_resolution": "4K",
+      "prompt_sha256": "fac7fbb1ee3c7fe59e0a779f01e9f68410e5ecca59d8a5155dd428c97b94e181",
+      "canvas_pixels": [
+        3840,
+        2160
+      ],
+      "panel_pixels": [
+        1280,
+        2160
+      ]
     },
     "C23": {
       "key": "C23",
@@ -1582,8 +1758,16 @@
       "output": "C23_ADMIN_COLLEAGUE_A.png",
       "refs": [],
       "layout": "1x3 identity",
-      "intended_resolution": "2K default; 4K optional",
-      "prompt_sha256": "e5590308cbaeca461c3536d277531b5619a96033cad3e0ef35bcd1816969da23"
+      "intended_resolution": "4K",
+      "prompt_sha256": "ee2b2e02bb2ab5feb6df8796c1db6f9ec33f75a6c983de6defc226f93b372702",
+      "canvas_pixels": [
+        3840,
+        2160
+      ],
+      "panel_pixels": [
+        1280,
+        2160
+      ]
     },
     "C24": {
       "key": "C24",
@@ -1591,8 +1775,16 @@
       "output": "C24_ADMIN_COLLEAGUE_B.png",
       "refs": [],
       "layout": "1x3 identity",
-      "intended_resolution": "2K default; 4K optional",
-      "prompt_sha256": "c23cca55674d58e73614553c5cbe05bc625c181e085c7d3201397df17d7d9d13"
+      "intended_resolution": "4K",
+      "prompt_sha256": "71f4de811886b15ef6dba2742a49f5b8fdc93b4b2bbcc4704d736582dad54583",
+      "canvas_pixels": [
+        3840,
+        2160
+      ],
+      "panel_pixels": [
+        1280,
+        2160
+      ]
     },
     "C25": {
       "key": "C25",
@@ -1600,8 +1792,16 @@
       "output": "C25_SEARCH_OFFICER_MALE.png",
       "refs": [],
       "layout": "1x3 identity",
-      "intended_resolution": "2K default; 4K optional",
-      "prompt_sha256": "71ddcf01774c36c57eb98bc535476bf0193e21a530791795c544a441d62cbbc7"
+      "intended_resolution": "4K",
+      "prompt_sha256": "68d129932b6cdfc53506b2f68dd577dcd342d70c36feb8fd0fa26fd82575fd4a",
+      "canvas_pixels": [
+        3840,
+        2160
+      ],
+      "panel_pixels": [
+        1280,
+        2160
+      ]
     },
     "C26": {
       "key": "C26",
@@ -1609,8 +1809,16 @@
       "output": "C26_DEFENCE_OFFICE_SUBSTITUTE.png",
       "refs": [],
       "layout": "1x3 identity",
-      "intended_resolution": "2K default; 4K optional",
-      "prompt_sha256": "1c45f290cfe75093433e563e0509b6a883aa5aee5cea43711e05ceaf1fa0ee6e"
+      "intended_resolution": "4K",
+      "prompt_sha256": "05088e9c434100250c71f2185a22fe8fb7c71f28c0de85f7da76e0a22584653b",
+      "canvas_pixels": [
+        3840,
+        2160
+      ],
+      "panel_pixels": [
+        1280,
+        2160
+      ]
     },
     "C27": {
       "key": "C27",
@@ -1618,8 +1826,16 @@
       "output": "C27_JUDGE.png",
       "refs": [],
       "layout": "1x3 identity",
-      "intended_resolution": "2K default; 4K optional",
-      "prompt_sha256": "f6edfcb9b203cb701011ed393add7b5cefa6d712545f97350885d57cdf4fb23f"
+      "intended_resolution": "4K",
+      "prompt_sha256": "612e7979ced44b248d2c3b93957529af2a41e8b5e02a247fb57bfce51b242810",
+      "canvas_pixels": [
+        3840,
+        2160
+      ],
+      "panel_pixels": [
+        1280,
+        2160
+      ]
     },
     "C28": {
       "key": "C28",
@@ -1627,8 +1843,16 @@
       "output": "C28_FORENSIC_EXPERT_A.png",
       "refs": [],
       "layout": "1x3 identity",
-      "intended_resolution": "2K default; 4K optional",
-      "prompt_sha256": "9cdd5f3dc24d3620c8786c33e3603a8c85ba8f44827b631d7c1d79c82698f961"
+      "intended_resolution": "4K",
+      "prompt_sha256": "2c6082bb409290e96bdc7592edd217bf6ecf4b77a6c64ac444f9ff39f2e96bef",
+      "canvas_pixels": [
+        3840,
+        2160
+      ],
+      "panel_pixels": [
+        1280,
+        2160
+      ]
     },
     "C29": {
       "key": "C29",
@@ -1636,8 +1860,16 @@
       "output": "C29_FORENSIC_EXPERT_B.png",
       "refs": [],
       "layout": "1x3 identity",
-      "intended_resolution": "2K default; 4K optional",
-      "prompt_sha256": "04e6fb1ec758e860e4809adbea68412ccbd4a137ae9ebac20973e3320b08a685"
+      "intended_resolution": "4K",
+      "prompt_sha256": "b3885f0fa30d4db423615cd4d2ddcb3badcc9c2340738110aa3a6d80fe1dece0",
+      "canvas_pixels": [
+        3840,
+        2160
+      ],
+      "panel_pixels": [
+        1280,
+        2160
+      ]
     },
     "C30": {
       "key": "C30",
@@ -1645,8 +1877,16 @@
       "output": "C30_COURT_CLERK.png",
       "refs": [],
       "layout": "1x3 identity",
-      "intended_resolution": "2K default; 4K optional",
-      "prompt_sha256": "45e54162d93bd4d67abfe2031ba5236a6c20c41d7ad5892d5c44056e998ee6c7"
+      "intended_resolution": "4K",
+      "prompt_sha256": "84e2b5a6ae567cc205703de004ee7c49a47dc83f1e10af1efb7b18d5ff6cb772",
+      "canvas_pixels": [
+        3840,
+        2160
+      ],
+      "panel_pixels": [
+        1280,
+        2160
+      ]
     },
     "C31": {
       "key": "C31",
@@ -1654,8 +1894,16 @@
       "output": "C31_ANONYMOUS_FICTIONAL_POLITICAL_FIGURE.png",
       "refs": [],
       "layout": "1x3 identity",
-      "intended_resolution": "2K default; 4K optional",
-      "prompt_sha256": "6e2b8ad169768dbd64f8632c0807edd60c99b1714b91dfc4c515d087c407b8ec"
+      "intended_resolution": "4K",
+      "prompt_sha256": "771e3a3198a69fe8a07dd514bbf75e4957e4879c3e17f2bd2243b368d480dd0d",
+      "canvas_pixels": [
+        3840,
+        2160
+      ],
+      "panel_pixels": [
+        1280,
+        2160
+      ]
     },
     "MW01": {
       "key": "MW01",
@@ -6882,7 +7130,7 @@
     "date": "2026-09-10",
     "status": "IMPORT_REPORTED_BY_CREATOR",
     "supersedes_incremental_import_workflow": true,
-    "file": "00_project/elements/FULL_PROJECT_IMPORT.md",
+    "file": "04_tracking/archive/element_imports/FULL_PROJECT_IMPORT_105_LEGACY.md",
     "file_sha256": "0b5a545686c252e04c98e8cfbb703b59b3286848b0f71ca0aaa5ccb769aeb551",
     "prompt_map": "00_project/elements/FULL_PROJECT_PROMPT_MAP.csv",
     "guide": "00_project/elements/FULL_PROJECT_GUIDE.md",
@@ -7966,13 +8214,11 @@
     "object_policy": "Existing 105-entry import remains valid. 45 newly restored object/architectural entries are in a separate non-overlapping supplement; no bus or existing morph duplicate."
   },
   "current_element_library": {
-    "baseline_import": "00_project/elements/FULL_PROJECT_IMPORT.md",
+    "baseline_import": "04_tracking/archive/element_imports/FULL_PROJECT_IMPORT_105_LEGACY.md",
     "baseline_status": "IMPORT_REPORTED_BY_CREATOR",
     "baseline_count": 105,
     "next_import": [
-      "00_project/elements/CHARACTERS_IMPORT.md",
-      "00_project/elements/WORLDS_IMPORT.md",
-      "00_project/elements/MORPHS_IMPORT.md"
+      "00_project/elements/FULL_PROJECT_IMPORT.md"
     ],
     "next_import_count": 156,
     "combined_count": 156,
@@ -7980,14 +8226,20 @@
       "object_identity": "Superseded: all 46 active object references now use 2x2 material transformations, including R002 bus.",
       "object_morph": "2x2: complete source, two individually specified radically different unfinished configurations, complete target. Text-only image prompt.",
       "world_memory": "2x2 coverage",
-      "character_identity": "1x3 front/back/headshot; 2K default, 4K optional",
+      "character_identity": "1x3 front/back/headshot; 4K 3840x2160, 1280x2160 per panel",
       "character_morph": "4K 2x2, six concrete Cxx pairs, elastic skin/hair/cloth material transition; source image bindings required"
     },
     "existing_platform_types": "Existing imported names/types are retained; no automatic reclassification or duplicate Elements. Reference role/layout is recorded separately.",
     "object_morph_count": 46,
     "all_morph_prompt_count": 74,
-    "active_import_workflow": "category_element_imports",
-    "character_morph_count": 6
+    "active_import_workflow": "full_project_current_import",
+    "character_morph_count": 6,
+    "next_import_status": "READY_FOR_CREATOR_REIMPORT_NOT_YET_CONFIRMED",
+    "alternative_category_imports": [
+      "00_project/elements/CHARACTERS_IMPORT.md",
+      "00_project/elements/WORLDS_IMPORT.md",
+      "00_project/elements/MORPHS_IMPORT.md"
+    ]
   },
   "character_morph_preparation": {
     "directory": "02_library/morphs/characters",
@@ -8015,7 +8267,7 @@
   },
   "category_element_imports": {
     "date": "2026-09-10",
-    "status": "PREPARED_REIMPORT_REQUESTED_NOT_EXECUTED",
+    "status": "READY_FOR_CREATOR_REIMPORT_NOT_YET_CONFIRMED",
     "supersedes_next_import": "13_ADDITIONAL_OBJECT_REFERENCES.md",
     "total_unique_elements": 156,
     "files": [
@@ -8055,7 +8307,7 @@
           "C31"
         ],
         "count": 31,
-        "file_sha256": "a048d9196dba2176fb3f5ccde7e4885d6a3983a46e3b8a74607b2ffb119c496d"
+        "file_sha256": "a3c14b5e7b5cbafc948dc33e81ef8e2007a4905299127102310beed6e428468f"
       },
       {
         "file": "00_project/elements/WORLDS_IMPORT.md",
@@ -8113,7 +8365,7 @@
           "T01_DETAILS_C"
         ],
         "count": 51,
-        "file_sha256": "da94029d2955f880b8b8ed3469a4bd8599fc7665c78d9d49a84ad0f7fbdf8e2b"
+        "file_sha256": "52dc63e3cf9625380a479a312ff2865f78e1f06d580b7836322435bf059657a6"
       },
       {
         "file": "00_project/elements/MORPHS_IMPORT.md",
@@ -8194,11 +8446,22 @@
           "CM006"
         ],
         "count": 74,
-        "file_sha256": "292c4e3b529ee5691d4f7a10abc42c8ac9d2ca37cd12ce93b2733cc91f9f791f"
+        "file_sha256": "12e9eab18374fd484d8805f75d4e2b0315ae7fa8795786a6ff677fda07d3321e"
       }
     ],
     "maps": "Optional planning images, not reference Elements",
-    "character_morphs": "CM001–CM006 are concrete existing-cast transitions in MORPHS_IMPORT.md, with Character output type; no new C-character definitions."
+    "character_morphs": "CM001–CM006 are concrete existing-cast transitions in MORPHS_IMPORT.md, with Character output type; no new C-character definitions.",
+    "validation": {
+      "unique_keys": 156,
+      "characters": 31,
+      "worlds": 51,
+      "morphs": 74,
+      "all_mapped_prompt_files_exist": true,
+      "folder_types_match": true,
+      "render_instructions_in_import_files": false,
+      "legacy_combined_import_archived": "04_tracking/archive/element_imports/FULL_PROJECT_IMPORT_105_LEGACY.md"
+    },
+    "combined_alternative": "00_project/elements/FULL_PROJECT_IMPORT.md"
   },
   "morph_material_audit": {
     "date": "2026-09-10",
@@ -8210,18 +8473,189 @@
     "validation": {
       "morphs_with_four_ordered_cells_and_4k_dimensions": 74,
       "world_memory_map_prompts_with_4k_cell_dimensions": 58,
-      "character_identity_prompts_with_1x3_2k_or_4k": 31,
       "unique_category_import_keys": 156,
       "missing_active_prompt_paths": 0,
       "broken_active_index_links": 0,
       "generic_character_endpoint_slots": 0,
-      "image_generation_performed": false
+      "image_generation_performed": false,
+      "character_identity_prompts_with_1x3_4k": 31
     }
   },
   "image_layout_policy": {
-    "character_identity": "1x3; 2K default, 4K optional",
+    "character_identity": "4K 3840x2160 1x3; three 1280x2160 panels; no gutters",
     "other_reference_images": "4K 3840x2160 2x2; four 1920x1080 cells; no gutters",
     "maps": "Optional 4K 2x2 plan coverage; not imported as Elements",
     "three_by_three_active_prompts": 0
+  },
+  "full_project_current_import": {
+    "date": "2026-09-10",
+    "file": "00_project/elements/FULL_PROJECT_IMPORT.md",
+    "file_sha256": "94de1df42f4c60f1b8d171dd1063487afc4697acd51217a058d40941b3c29de5",
+    "count": 156,
+    "canonical_keys": [
+      "C01",
+      "C02",
+      "C03",
+      "C04",
+      "C05",
+      "C06",
+      "C07",
+      "C08",
+      "C09",
+      "C10",
+      "C11",
+      "C12",
+      "C13",
+      "C14",
+      "C15",
+      "C16",
+      "C17",
+      "C18",
+      "C19",
+      "C20",
+      "C21",
+      "C22",
+      "C23",
+      "C24",
+      "C25",
+      "C26",
+      "C27",
+      "C28",
+      "C29",
+      "C30",
+      "C31",
+      "W01",
+      "W01_B",
+      "W01_C",
+      "W02",
+      "W02_B",
+      "W02_C",
+      "W03",
+      "W03_B",
+      "W03_C",
+      "W04",
+      "W04_B",
+      "W04_C",
+      "W05",
+      "W05_B",
+      "W05_C",
+      "W06",
+      "W06_B",
+      "W06_C",
+      "W07",
+      "W07_B",
+      "W07_C",
+      "MW01",
+      "MW01_B",
+      "MW01_C",
+      "MW02",
+      "MW02_B",
+      "MW02_C",
+      "MW03",
+      "MW03_B",
+      "MW03_C",
+      "MW04",
+      "MW04_B",
+      "MW04_C",
+      "MW05",
+      "MW05_B",
+      "MW05_C",
+      "MW06",
+      "MW06_B",
+      "MW06_C",
+      "MWP01",
+      "MWP01_B",
+      "MWP01_C",
+      "MWP02",
+      "MWP02_B",
+      "MWP02_C",
+      "HRW07",
+      "HRW07_B",
+      "HRW07_C",
+      "T01_DETAILS",
+      "T01_DETAILS_B",
+      "T01_DETAILS_C",
+      "MR001",
+      "MR002",
+      "MR003",
+      "MR004",
+      "MR005",
+      "MR006",
+      "MR007",
+      "MR008",
+      "MR009",
+      "MR010",
+      "MR011",
+      "MR012",
+      "MR013",
+      "MR014",
+      "MR015",
+      "MR016",
+      "MR017",
+      "MR018",
+      "MR019",
+      "MR020",
+      "R008",
+      "R009",
+      "R002",
+      "R003",
+      "R004",
+      "R005",
+      "R006",
+      "R010",
+      "R013",
+      "R014",
+      "R015",
+      "R016",
+      "R017",
+      "R018",
+      "R019",
+      "R020",
+      "R021",
+      "R022",
+      "R023",
+      "R024",
+      "R025",
+      "R026",
+      "R028",
+      "R029",
+      "R030",
+      "R031",
+      "R032",
+      "R033",
+      "R034",
+      "R035",
+      "R036",
+      "R037",
+      "R038",
+      "R039",
+      "R040",
+      "R041",
+      "R042",
+      "R043",
+      "R044",
+      "R045",
+      "R046",
+      "R047",
+      "R048",
+      "R049",
+      "R050",
+      "R054",
+      "R055",
+      "R056",
+      "CM001",
+      "CM002",
+      "CM003",
+      "CM004",
+      "CM005",
+      "CM006"
+    ],
+    "status": "READY_FOR_CREATOR_REIMPORT_NOT_YET_CONFIRMED",
+    "equivalent_category_files": [
+      "00_project/elements/CHARACTERS_IMPORT.md",
+      "00_project/elements/WORLDS_IMPORT.md",
+      "00_project/elements/MORPHS_IMPORT.md"
+    ],
+    "mode": "Full combined file OR the three category files; never both."
   }
 }
