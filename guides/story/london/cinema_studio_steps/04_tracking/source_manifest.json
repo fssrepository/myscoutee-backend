@@ -587,7 +587,7 @@
       ],
       "source_prompt_sha256": "d53e141d60aa5359c28d8695bb7cb84134a480bf043551062606e199558cda02",
       "file": "02_library/worlds/memories/19_04_MW06_HUMAN_COUNTERMEMORIES_A_VIEW_04.txt",
-      "file_sha256": "644f307281647075ca175e40eab636e55b57d91885e7b8fd450a0373b0f002c0",
+      "file_sha256": "b7b2eaa1fe90f70a84311bc9b4a06008a4c6dc66f35627e18dcd3cb9ee657a34",
       "changes": "Single 2K assigned view extracted verbatim from archived page; view-specific input references and full-frame instructions."
     },
     {
@@ -1079,7 +1079,7 @@
       ],
       "source_prompt_sha256": "5459cc1d93853c47aacf113a3e593f61ee6cb49aa0fe81079b89706e0588086a",
       "file": "03_film/04/storyboard.txt",
-      "file_sha256": "7bd42d0a2662f0f3743f7dd71cd7e1e12ef97888649db0c4366733278b375566",
+      "file_sha256": "2a306523e67467d1e66c8440a71945b3530234b465476dd5b6d63a027f779d3d",
       "changes": "All nine beats retained; requested camera/architecture added; card and AI-screen contradictions corrected; SB06 memory dependencies repaired; explicit centrally maintained reference inputs Grid geometry uses the full selected image resolution instead of fixed pixel examples."
     },
     {
@@ -1103,7 +1103,7 @@
       ],
       "source_prompt_sha256": "dcfdef2b9227d2f0528bbca68b9dad63fc71b2087b289dbfbb25c8dfb8ff6370",
       "file": "03_film/04/video.txt",
-      "file_sha256": "2fc3e817b79a1b7c39f49ee8d5df88e85a1f229e0521671827f4e65923316c4d",
+      "file_sha256": "87690f37441a71ec0e1edfd467c4f98c7ac5f8a49051e854f833bffbb9ec2343",
       "changes": "Operator/retry prose and repeated rules removed; all nine story beats retained; camera/architecture updated; audio cues follow visuals; reveal and reference contradictions repaired; Verified C01/C02 Element IDs substituted for local aliases; explicit reference binding; original Hungarian folk-rooted score and synchronized material transformation foley; researched Dél-Alföld tekerő/clarinet arrangement, phrase-synchronized facade motion, explicit protagonist inner monologue Continuation preserves narrator timbre and a natural breath over an uninterrupted sound bed."
     },
     {
@@ -1115,7 +1115,7 @@
       ],
       "source_prompt_sha256": "e80c1062f8699884509043c0dc23d9205573f2eae58119513f6f3bdb1d3cf9b1",
       "file": "03_film/05/storyboard.txt",
-      "file_sha256": "18a692651215321ba85a49950f5192d85c95529b89c3b563fdf89e1106a2d6d3",
+      "file_sha256": "dd3ce10d9eb26618f953cb7ef6d2734c19273e3b6973d329a791e4a1d16ab19c",
       "changes": "All nine beats retained; requested camera/architecture added; card and AI-screen contradictions corrected; SB06 memory dependencies repaired; explicit centrally maintained reference inputs Grid geometry uses the full selected image resolution instead of fixed pixel examples."
     },
     {
@@ -1139,7 +1139,7 @@
       ],
       "source_prompt_sha256": "2c24d5a0b90307baa614606b633838697ec3355e0dbb1df515d095dee403fdd6",
       "file": "03_film/05/video.txt",
-      "file_sha256": "17b77a3fae398f776e83b41dbea911303cfd5460b2df955002f0d146aa66027c",
+      "file_sha256": "af0bc6eec6c04bcb16ed217168759079c81db499daf9ba9e7751cf27a5dad740",
       "changes": "Operator/retry prose and repeated rules removed; all nine story beats retained; camera/architecture updated; audio cues follow visuals; reveal and reference contradictions repaired; Verified C01/C02 Element IDs substituted for local aliases; explicit reference binding; original Hungarian folk-rooted score and synchronized material transformation foley; researched Dél-Alföld tekerő/clarinet arrangement, phrase-synchronized facade motion, explicit protagonist inner monologue Continuation preserves narrator timbre and a natural breath over an uninterrupted sound bed."
     },
     {
@@ -1151,7 +1151,7 @@
       ],
       "source_prompt_sha256": "6e57e8c9f69656463159011cd13b16d6b88d02db6738131013a82f4f5f778aec",
       "file": "03_film/06/storyboard.txt",
-      "file_sha256": "efe7f017d0fb9e8cc4454607cd1a7ee4eb442a128b036ad7f385a51d9d488ac3",
+      "file_sha256": "64bb14d0b0d3dd4cf8464464478a667af07d1c5beae0cd19c7fda6a65a2b0be8",
       "changes": "All nine beats retained; requested camera/architecture added; card and AI-screen contradictions corrected; SB06 memory dependencies repaired; explicit centrally maintained reference inputs Grid geometry uses the full selected image resolution instead of fixed pixel examples."
     },
     {
@@ -1175,7 +1175,7 @@
       ],
       "source_prompt_sha256": "52008590a700611bd6959ec7ae9cb86efeb01101257fce007de3b9eaa75417e6",
       "file": "03_film/06/video.txt",
-      "file_sha256": "41fe935134b7a2d519a874185134bee8b2e41a3bdeb6472fdaa8e1d8c8df3b7b",
+      "file_sha256": "ca48b4579b21d2134d18abe2fa437e52cd1568097925b4a816650bfdcd50ee84",
       "changes": "Operator/retry prose and repeated rules removed; all nine story beats retained; camera/architecture updated; audio cues follow visuals; reveal and reference contradictions repaired; Verified C01/C02 Element IDs substituted for local aliases; explicit reference binding; original Hungarian folk-rooted score and synchronized material transformation foley; researched Dél-Alföld tekerő/clarinet arrangement, phrase-synchronized facade motion, explicit protagonist inner monologue Continuation preserves narrator timbre and a natural breath over an uninterrupted sound bed."
     },
     {
@@ -2064,7 +2064,7 @@
       ],
       "source_prompt_sha256": "374ea4b6d0ac33d692653a08a02e706d01e0f45e4279451b364aba2f7263928d",
       "file": "02_library/worlds/memories/11_MW03_WORK_RULE_CHANGE_ADMIN_B.txt",
-      "file_sha256": "09c7ad783034cbbd8ce061ceee928af210d77a60cde9e9c9e67aa0d84d82d550",
+      "file_sha256": "eb78079e5f8d2329b4240b990dc0b55bf8c4609d842b374ca53b3bbe59bddb31",
       "changes": "Verbatim fenced prompt; explicit centrally maintained reference inputs Grid geometry uses the full selected image resolution instead of fixed pixel examples.",
       "note": "Companion page B preserving original memory views."
     },
@@ -2077,7 +2077,7 @@
       ],
       "source_prompt_sha256": "374ea4b6d0ac33d692653a08a02e706d01e0f45e4279451b364aba2f7263928d",
       "file": "02_library/worlds/memories/12_MW03_WORK_RULE_CHANGE_ADMIN_C.txt",
-      "file_sha256": "cc70bd6be89d9d07eae124ee6f615d268f767b1b28129091889945733e2fff6f",
+      "file_sha256": "79c83208adf64efb4a7ae84d9b89673a3d0e3161443b64ddff27885ab9b5c2a4",
       "changes": "Verbatim fenced prompt; explicit centrally maintained reference inputs Grid geometry uses the full selected image resolution instead of fixed pixel examples.",
       "note": "Companion page C preserving original memory views."
     },
@@ -2089,8 +2089,8 @@
         2678
       ],
       "source_prompt_sha256": "7eacf040519edefdb7aa215ca4fb1e1c6524f4ed06dc69d6ef758048002745f9",
-      "file": "02_library/worlds/memories/14_MW04_POLICE_DEFENCE_B.txt",
-      "file_sha256": "e1a201cd2de127e052ea263e72e7773a6be725426ac4da5b41f1b2b43a56853b",
+      "file": "04_tracking/archive/memory_grids_before_single_views/14_MW04_POLICE_DEFENCE_B.md",
+      "file_sha256": "82b1434cebba3addbf741bb86ec183d8a1b0bbf3fbc7dfe14885eb73cb7ca91d",
       "changes": "Verbatim fenced prompt; explicit centrally maintained reference inputs Grid geometry uses the full selected image resolution instead of fixed pixel examples.",
       "note": "Companion page B preserving original memory views."
     },
@@ -2102,8 +2102,8 @@
         2678
       ],
       "source_prompt_sha256": "7eacf040519edefdb7aa215ca4fb1e1c6524f4ed06dc69d6ef758048002745f9",
-      "file": "02_library/worlds/memories/15_MW04_POLICE_DEFENCE_C.txt",
-      "file_sha256": "8dc40f0716ecf554d3e17bdec9a47971385110e0d74a4d43ebe1b03c31c79b3c",
+      "file": "04_tracking/archive/memory_grids_before_single_views/15_MW04_POLICE_DEFENCE_C.md",
+      "file_sha256": "74f3dad5634c8803f9a9d85f3cb37e772045fffb34ac5325f46fde6b3e88e308",
       "changes": "Verbatim fenced prompt; explicit centrally maintained reference inputs Grid geometry uses the full selected image resolution instead of fixed pixel examples.",
       "note": "Companion page C preserving original memory views."
     },
@@ -2115,8 +2115,8 @@
         2753
       ],
       "source_prompt_sha256": "cac300bae4bd6f33e50ec5936c56622c5858e341d0494d281a87e70ed4ee9a04",
-      "file": "02_library/worlds/memories/17_MW05_COURT_FILE_B.txt",
-      "file_sha256": "e3f8c98bff5c80bb037f01e0237bf7b8ee34181442b0b7211b98d95bee317851",
+      "file": "04_tracking/archive/memory_grids_before_single_views/17_MW05_COURT_FILE_B.md",
+      "file_sha256": "2379f25304ad227f0e311b9556becf13faf3860f8bca6744e00c3939e097d3be",
       "changes": "Verbatim fenced prompt; explicit centrally maintained reference inputs Grid geometry uses the full selected image resolution instead of fixed pixel examples.",
       "note": "Companion page B preserving original memory views."
     },
@@ -2129,7 +2129,7 @@
       ],
       "source_prompt_sha256": "cac300bae4bd6f33e50ec5936c56622c5858e341d0494d281a87e70ed4ee9a04",
       "file": "02_library/worlds/memories/18_MW05_COURT_FILE_C.txt",
-      "file_sha256": "01e8b9b848896cd40df26c4df8dc128981e93ac2038905652a562d13087690a3",
+      "file_sha256": "5c52bb57c0ee3e81ac6604ca88232bf73353e98ee5da4cb28b1caada02c3f84e",
       "changes": "Verbatim fenced prompt; explicit centrally maintained reference inputs Grid geometry uses the full selected image resolution instead of fixed pixel examples.",
       "note": "Companion page C preserving original memory views."
     },
@@ -2155,7 +2155,7 @@
       ],
       "source_prompt_sha256": "d53e141d60aa5359c28d8695bb7cb84134a480bf043551062606e199558cda02",
       "file": "02_library/worlds/memories/20_02_MW06_HUMAN_COUNTERMEMORIES_B_VIEW_06.txt",
-      "file_sha256": "a4576bbb4d4848259f94b9ac47bcd74359a8ab3d321eea3530ab900f225764ea",
+      "file_sha256": "7c5e837401ca13e4e5f86cff0aeaacc2226167cbf7a7514ff2e526f006d10def",
       "changes": "Single 2K assigned view extracted verbatim from archived page; view-specific input references and full-frame instructions.",
       "note": "Companion page B preserving original memory views."
     },
@@ -2314,6 +2314,90 @@
       "file_sha256": "cec5003e3f36ae4e392e385507e3978ce4ebdf57556e4bb68127bcef8c9ef589",
       "changes": "Verbatim fenced prompt; explicit centrally maintained reference inputs Grid geometry uses the full selected image resolution instead of fixed pixel examples.",
       "note": "Companion page C preserving original memory views."
+    },
+    {
+      "asset": "MW04_B_01",
+      "file": "02_library/worlds/memories/14_01_MW04_POLICE_DEFENCE_B_VIEW_05.txt",
+      "file_sha256": "d88d011344ddc041aa559ceec772829e8af3b62974575c97e61a65be24fada0e",
+      "source_prompt_sha256": "e1a201cd2de127e052ea263e72e7773a6be725426ac4da5b41f1b2b43a56853b",
+      "note": "MW04_B original view 5; scene body preserved, split to full-frame 2K with scoped characters and Page A location input."
+    },
+    {
+      "asset": "MW04_B_02",
+      "file": "02_library/worlds/memories/14_02_MW04_POLICE_DEFENCE_B_VIEW_06.txt",
+      "file_sha256": "bc2a085896e378546e7755fe2d26112322938295a92fcea81ce19d3204f8ac9b",
+      "source_prompt_sha256": "e1a201cd2de127e052ea263e72e7773a6be725426ac4da5b41f1b2b43a56853b",
+      "note": "MW04_B original view 6; scene body preserved, split to full-frame 2K with scoped characters and Page A location input."
+    },
+    {
+      "asset": "MW04_B_03",
+      "file": "02_library/worlds/memories/14_03_MW04_POLICE_DEFENCE_B_VIEW_07.txt",
+      "file_sha256": "e326ef013072736668a5da3c3ed4c8afc3147123db62111123014209c67dd8a4",
+      "source_prompt_sha256": "e1a201cd2de127e052ea263e72e7773a6be725426ac4da5b41f1b2b43a56853b",
+      "note": "MW04_B original view 7; scene body preserved, split to full-frame 2K with scoped characters and Page A location input."
+    },
+    {
+      "asset": "MW04_B_04",
+      "file": "02_library/worlds/memories/14_04_MW04_POLICE_DEFENCE_B_VIEW_08.txt",
+      "file_sha256": "84d524e71833b383f8a3c9db60f477ca6b7c0fc9380d5934057353b0639a51b8",
+      "source_prompt_sha256": "e1a201cd2de127e052ea263e72e7773a6be725426ac4da5b41f1b2b43a56853b",
+      "note": "MW04_B original view 8; scene body preserved, split to full-frame 2K with scoped characters and Page A location input."
+    },
+    {
+      "asset": "MW04_C_01",
+      "file": "02_library/worlds/memories/15_01_MW04_POLICE_DEFENCE_C_VIEW_09.txt",
+      "file_sha256": "0fcee2ef692b03858f4ec02b26ca36e1e47b6509c651d8da87ff7e7befef0095",
+      "source_prompt_sha256": "14817ae9117a7109d0b9ec4297c60531fed8c678ef2742eaba6b87db5b2db99f",
+      "note": "MW04_C original view 9; scene body preserved, split to full-frame 2K with scoped characters and Page A location input."
+    },
+    {
+      "asset": "MW04_C_02",
+      "file": "02_library/worlds/memories/15_02_MW04_POLICE_DEFENCE_C_VIEW_01.txt",
+      "file_sha256": "9196daba13938d704860df9f72752c093bbc143812ae9ac78fbdfa9e779c2cdd",
+      "source_prompt_sha256": "14817ae9117a7109d0b9ec4297c60531fed8c678ef2742eaba6b87db5b2db99f",
+      "note": "MW04_C original view 1; scene body preserved, split to full-frame 2K with scoped characters and Page A location input."
+    },
+    {
+      "asset": "MW04_C_03",
+      "file": "02_library/worlds/memories/15_03_MW04_POLICE_DEFENCE_C_VIEW_07.txt",
+      "file_sha256": "4d9a603cfe28926f954206640d91d6fe136047690c355ee97eea1f1edc240fdb",
+      "source_prompt_sha256": "14817ae9117a7109d0b9ec4297c60531fed8c678ef2742eaba6b87db5b2db99f",
+      "note": "MW04_C original view 7; scene body preserved, split to full-frame 2K with scoped characters and Page A location input."
+    },
+    {
+      "asset": "MW04_C_04",
+      "file": "02_library/worlds/memories/15_04_MW04_POLICE_DEFENCE_C_VIEW_08.txt",
+      "file_sha256": "ee87674a8132320ecce2a452c2dc6f89872f08447f1d1ff82f244ec297ae6d78",
+      "source_prompt_sha256": "14817ae9117a7109d0b9ec4297c60531fed8c678ef2742eaba6b87db5b2db99f",
+      "note": "MW04_C original view 8; scene body preserved, split to full-frame 2K with scoped characters and Page A location input."
+    },
+    {
+      "asset": "MW05_B_01",
+      "file": "02_library/worlds/memories/17_01_MW05_COURT_FILE_B_VIEW_05.txt",
+      "file_sha256": "4995ea069fff0e46b5c40b6b1d81068f4b0e8f540ba4ff6f9ebef3aef0e255dc",
+      "source_prompt_sha256": "e3f8c98bff5c80bb037f01e0237bf7b8ee34181442b0b7211b98d95bee317851",
+      "note": "MW05_B original view 5; scene body preserved, split to full-frame 2K with scoped character inputs."
+    },
+    {
+      "asset": "MW05_B_02",
+      "file": "02_library/worlds/memories/17_02_MW05_COURT_FILE_B_VIEW_06.txt",
+      "file_sha256": "7c63c1eb80c0a6ce97d54cfa6d1ec1ec8b3c0a9bcd4278b7ec97ec0548639644",
+      "source_prompt_sha256": "e3f8c98bff5c80bb037f01e0237bf7b8ee34181442b0b7211b98d95bee317851",
+      "note": "MW05_B original view 6; scene body preserved, split to full-frame 2K with scoped character inputs."
+    },
+    {
+      "asset": "MW05_B_03",
+      "file": "02_library/worlds/memories/17_03_MW05_COURT_FILE_B_VIEW_07.txt",
+      "file_sha256": "4ba5c8c614dfd0896794563e29a783da223386aed4ab29478da46bad9cfa17f7",
+      "source_prompt_sha256": "e3f8c98bff5c80bb037f01e0237bf7b8ee34181442b0b7211b98d95bee317851",
+      "note": "MW05_B original view 7; scene body preserved, split to full-frame 2K with scoped character inputs."
+    },
+    {
+      "asset": "MW05_B_04",
+      "file": "02_library/worlds/memories/17_04_MW05_COURT_FILE_B_VIEW_08.txt",
+      "file_sha256": "5d19ff242dcb9648f3ef516e9e89478655e2960bab57b2aa0e180628659e3b3f",
+      "source_prompt_sha256": "e3f8c98bff5c80bb037f01e0237bf7b8ee34181442b0b7211b98d95bee317851",
+      "note": "MW05_B original view 8; scene body preserved, split to full-frame 2K with scoped character inputs."
     }
   ],
   "assets": {
@@ -3378,10 +3462,16 @@
         "W04_C_02",
         "W04_C_03",
         "W04_C_04",
-        "MW04_B",
-        "MW04_C"
+        "MW04_B_01",
+        "MW04_B_02",
+        "MW04_B_03",
+        "MW04_B_04",
+        "MW04_C_01",
+        "MW04_C_02",
+        "MW04_C_03",
+        "MW04_C_04"
       ],
-      "prompt_sha256": "7bd42d0a2662f0f3743f7dd71cd7e1e12ef97888649db0c4366733278b375566"
+      "prompt_sha256": "2a306523e67467d1e66c8440a71945b3530234b465476dd5b6d63a027f779d3d"
     },
     "A04": {
       "key": "A04",
@@ -3416,10 +3506,16 @@
         "W04_C_02",
         "W04_C_03",
         "W04_C_04",
-        "MW04_B",
-        "MW04_C"
+        "MW04_B_01",
+        "MW04_B_02",
+        "MW04_B_03",
+        "MW04_B_04",
+        "MW04_C_01",
+        "MW04_C_02",
+        "MW04_C_03",
+        "MW04_C_04"
       ],
-      "prompt_sha256": "2fc3e817b79a1b7c39f49ee8d5df88e85a1f229e0521671827f4e65923316c4d"
+      "prompt_sha256": "87690f37441a71ec0e1edfd467c4f98c7ac5f8a49051e854f833bffbb9ec2343"
     },
     "SB05": {
       "key": "SB05",
@@ -3447,12 +3543,15 @@
         "W05_C_02",
         "W05_C_03",
         "W05_C_04",
-        "MW05_B",
+        "MW05_B_01",
+        "MW05_B_02",
+        "MW05_B_03",
+        "MW05_B_04",
         "MW05_C",
         "MWP02_B",
         "MWP02_C"
       ],
-      "prompt_sha256": "18a692651215321ba85a49950f5192d85c95529b89c3b563fdf89e1106a2d6d3"
+      "prompt_sha256": "dd3ce10d9eb26618f953cb7ef6d2734c19273e3b6973d329a791e4a1d16ab19c"
     },
     "A05": {
       "key": "A05",
@@ -3490,12 +3589,15 @@
         "W05_C_02",
         "W05_C_03",
         "W05_C_04",
-        "MW05_B",
+        "MW05_B_01",
+        "MW05_B_02",
+        "MW05_B_03",
+        "MW05_B_04",
         "MW05_C",
         "MWP02_B",
         "MWP02_C"
       ],
-      "prompt_sha256": "17b77a3fae398f776e83b41dbea911303cfd5460b2df955002f0d146aa66027c"
+      "prompt_sha256": "af0bc6eec6c04bcb16ed217168759079c81db499daf9ba9e7751cf27a5dad740"
     },
     "SB06": {
       "key": "SB06",
@@ -3563,12 +3665,21 @@
         "MW02_C_04",
         "MW03_B",
         "MW03_C",
-        "MW04_B",
-        "MW04_C",
-        "MW05_B",
+        "MW04_B_01",
+        "MW04_B_02",
+        "MW04_B_03",
+        "MW04_B_04",
+        "MW04_C_01",
+        "MW04_C_02",
+        "MW04_C_03",
+        "MW04_C_04",
+        "MW05_B_01",
+        "MW05_B_02",
+        "MW05_B_03",
+        "MW05_B_04",
         "MW05_C"
       ],
-      "prompt_sha256": "efe7f017d0fb9e8cc4454607cd1a7ee4eb442a128b036ad7f385a51d9d488ac3"
+      "prompt_sha256": "64bb14d0b0d3dd4cf8464464478a667af07d1c5beae0cd19c7fda6a65a2b0be8"
     },
     "A06": {
       "key": "A06",
@@ -3646,12 +3757,21 @@
         "MW02_C_04",
         "MW03_B",
         "MW03_C",
-        "MW04_B",
-        "MW04_C",
-        "MW05_B",
+        "MW04_B_01",
+        "MW04_B_02",
+        "MW04_B_03",
+        "MW04_B_04",
+        "MW04_C_01",
+        "MW04_C_02",
+        "MW04_C_03",
+        "MW04_C_04",
+        "MW05_B_01",
+        "MW05_B_02",
+        "MW05_B_03",
+        "MW05_B_04",
         "MW05_C"
       ],
-      "prompt_sha256": "41fe935134b7a2d519a874185134bee8b2e41a3bdeb6472fdaa8e1d8c8df3b7b"
+      "prompt_sha256": "ca48b4579b21d2134d18abe2fa437e52cd1568097925b4a816650bfdcd50ee84"
     },
     "SB07": {
       "key": "SB07",
@@ -4420,7 +4540,7 @@
         7,
         8
       ],
-      "prompt_sha256": "09c7ad783034cbbd8ce061ceee928af210d77a60cde9e9c9e67aa0d84d82d550"
+      "prompt_sha256": "eb78079e5f8d2329b4240b990dc0b55bf8c4609d842b374ca53b3bbe59bddb31"
     },
     "MW03_C": {
       "key": "MW03_C",
@@ -4442,7 +4562,7 @@
         7,
         8
       ],
-      "prompt_sha256": "cc70bd6be89d9d07eae124ee6f615d268f767b1b28129091889945733e2fff6f",
+      "prompt_sha256": "79c83208adf64efb4a7ae84d9b89673a3d0e3161443b64ddff27885ab9b5c2a4",
       "composition_revision_note": "2026-09-10: distinct physical subjects/actions replace repeated content; companion sources preserve the original story beats. No camera-only variation.",
       "current_prompt_image_verified": false,
       "content_assignments": {
@@ -4453,7 +4573,7 @@
     },
     "MW04_B": {
       "key": "MW04_B",
-      "path": "02_library/worlds/memories/14_MW04_POLICE_DEFENCE_B.txt",
+      "path": "04_tracking/archive/memory_grids_before_single_views/14_MW04_POLICE_DEFENCE_B.md",
       "output": "MW04_POLICE_DEFENCE_B.png",
       "refs": [
         "C01",
@@ -4463,7 +4583,7 @@
         "MW04"
       ],
       "layout": "4K 2x2 page B",
-      "status": "PREPARED_NOT_RENDERED",
+      "status": "SUPERSEDED_BY_SINGLE_VIEWS",
       "source_memory": "MW04",
       "original_views": [
         5,
@@ -4471,12 +4591,18 @@
         7,
         8
       ],
-      "prompt_sha256": "e1a201cd2de127e052ea263e72e7773a6be725426ac4da5b41f1b2b43a56853b",
-      "reference_scope_note": "Inputs scoped to the four assigned views; unrelated companion-page subjects removed. Literal scene descriptions unchanged."
+      "prompt_sha256": "82b1434cebba3addbf741bb86ec183d8a1b0bbf3fbc7dfe14885eb73cb7ca91d",
+      "reference_scope_note": "Inputs scoped to the four assigned views; unrelated companion-page subjects removed. Literal scene descriptions unchanged.",
+      "replacement_keys": [
+        "MW04_B_01",
+        "MW04_B_02",
+        "MW04_B_03",
+        "MW04_B_04"
+      ]
     },
     "MW04_C": {
       "key": "MW04_C",
-      "path": "02_library/worlds/memories/15_MW04_POLICE_DEFENCE_C.txt",
+      "path": "04_tracking/archive/memory_grids_before_single_views/15_MW04_POLICE_DEFENCE_C.md",
       "output": "MW04_POLICE_DEFENCE_C.png",
       "refs": [
         "C01",
@@ -4486,7 +4612,7 @@
         "MW04"
       ],
       "layout": "4K 2x2 page C",
-      "status": "PREPARED_NOT_RENDERED",
+      "status": "SUPERSEDED_BY_SINGLE_VIEWS",
       "source_memory": "MW04",
       "original_views": [
         9,
@@ -4494,7 +4620,7 @@
         7,
         8
       ],
-      "prompt_sha256": "8dc40f0716ecf554d3e17bdec9a47971385110e0d74a4d43ebe1b03c31c79b3c",
+      "prompt_sha256": "74f3dad5634c8803f9a9d85f3cb37e772045fffb34ac5325f46fde6b3e88e308",
       "reference_scope_note": "Inputs scoped to the four assigned views; unrelated companion-page subjects removed. Literal scene descriptions unchanged.",
       "composition_revision_note": "2026-09-10: distinct physical subjects/actions replace repeated content; companion sources preserve the original story beats. No camera-only variation.",
       "current_prompt_image_verified": false,
@@ -4502,11 +4628,17 @@
         "2": "DOMESTIC BELONGINGS DURING THE SEARCH",
         "3": "UNFINISHED DEFENCE-FILE HANDOFF",
         "4": "WAITING BENCH BETWEEN CONTACT ATTEMPTS"
-      }
+      },
+      "replacement_keys": [
+        "MW04_C_01",
+        "MW04_C_02",
+        "MW04_C_03",
+        "MW04_C_04"
+      ]
     },
     "MW05_B": {
       "key": "MW05_B",
-      "path": "02_library/worlds/memories/17_MW05_COURT_FILE_B.txt",
+      "path": "04_tracking/archive/memory_grids_before_single_views/17_MW05_COURT_FILE_B.md",
       "output": "MW05_COURT_FILE_B.png",
       "refs": [
         "C01",
@@ -4516,7 +4648,7 @@
         "C31"
       ],
       "layout": "4K 2x2 page B",
-      "status": "PREPARED_NOT_RENDERED",
+      "status": "SUPERSEDED_BY_SINGLE_VIEWS",
       "source_memory": "MW05",
       "original_views": [
         5,
@@ -4524,14 +4656,20 @@
         7,
         8
       ],
-      "prompt_sha256": "e3f8c98bff5c80bb037f01e0237bf7b8ee34181442b0b7211b98d95bee317851",
+      "prompt_sha256": "2379f25304ad227f0e311b9556becf13faf3860f8bca6744e00c3939e097d3be",
       "reference_scope_note": "Five character inputs only (C01, C28, C29, C30, C31). Optional MW05 Page A location input removed at user request; all scene assignments and output geometry preserved.",
       "composition_revision_note": "2026-09-10: distinct physical subjects/actions replace repeated content; companion sources preserve the original story beats. No camera-only variation.",
       "current_prompt_image_verified": false,
       "content_assignments": {
         "3": "SELF-MADE WANTED-PAGE JOKE",
         "4": "FICTIONAL CARDBOARD FIGURE WITH ITS RIDICULOUS HAT"
-      }
+      },
+      "replacement_keys": [
+        "MW05_B_01",
+        "MW05_B_02",
+        "MW05_B_03",
+        "MW05_B_04"
+      ]
     },
     "MW05_C": {
       "key": "MW05_C",
@@ -4553,7 +4691,7 @@
         7,
         8
       ],
-      "prompt_sha256": "01e8b9b848896cd40df26c4df8dc128981e93ac2038905652a562d13087690a3",
+      "prompt_sha256": "5c52bb57c0ee3e81ac6604ca88232bf73353e98ee5da4cb28b1caada02c3f84e",
       "reference_scope_note": "Inputs scoped to the four assigned views; unrelated companion-page subjects removed. Literal scene descriptions unchanged.",
       "composition_revision_note": "2026-09-10: distinct physical subjects/actions replace repeated content; companion sources preserve the original story beats. No camera-only variation.",
       "current_prompt_image_verified": false,
@@ -7511,7 +7649,7 @@
       "path": "02_library/worlds/memories/19_04_MW06_HUMAN_COUNTERMEMORIES_A_VIEW_04.txt",
       "output": "MW06_HUMAN_COUNTERMEMORIES_A_VIEW_04.png",
       "refs": [
-        "MW04_C",
+        "MW04_C_01",
         "C01",
         "C03"
       ],
@@ -7521,7 +7659,7 @@
       "original_view": 4,
       "generation_position": 4,
       "element_name": "MYS MW06_A_04 Memory View 04",
-      "prompt_sha256": "644f307281647075ca175e40eab636e55b57d91885e7b8fd450a0373b0f002c0",
+      "prompt_sha256": "b7b2eaa1fe90f70a84311bc9b4a06008a4c6dc66f35627e18dcd3cb9ee657a34",
       "composition_revision_note": "2026-09-10: distinct physical subjects/actions replace repeated content; companion sources preserve the original story beats. No camera-only variation.",
       "current_prompt_image_verified": false,
       "content_assignments": {
@@ -7559,7 +7697,7 @@
       "original_view": 6,
       "generation_position": 2,
       "element_name": "MYS MW06_B_02 Memory View 06",
-      "prompt_sha256": "a4576bbb4d4848259f94b9ac47bcd74359a8ab3d321eea3530ab900f225764ea",
+      "prompt_sha256": "7c5e837401ca13e4e5f86cff0aeaacc2226167cbf7a7514ff2e526f006d10def",
       "composition_revision_note": "2026-09-10: distinct physical subjects/actions replace repeated content; companion sources preserve the original story beats. No camera-only variation.",
       "current_prompt_image_verified": false,
       "content_assignments": {
@@ -7755,6 +7893,203 @@
       "element_name": "MYS MW01_B_04 Memory View 08",
       "prompt_sha256": "c297b5a543882db5facfdb7217e3e6d9073024de979a9b6523f2fdc4a5256f6a",
       "mcp_element_uuid": "a1222301-8c37-4d55-b6fc-b9ad3666a5b5"
+    },
+    "MW04_B_01": {
+      "key": "MW04_B_01",
+      "path": "02_library/worlds/memories/14_01_MW04_POLICE_DEFENCE_B_VIEW_05.txt",
+      "output": "MW04_POLICE_DEFENCE_B_VIEW_05.png",
+      "refs": [
+        "MW04",
+        "C01",
+        "C25"
+      ],
+      "layout": "2K 16:9 single full-frame memory image",
+      "status": "PREPARED_NOT_RENDERED",
+      "source_page": "MW04_B",
+      "original_view": 5,
+      "generation_position": 1,
+      "element_name": "MYS MW04_B_01 Memory View 05",
+      "prompt_sha256": "d88d011344ddc041aa559ceec772829e8af3b62974575c97e61a65be24fada0e"
+    },
+    "MW04_B_02": {
+      "key": "MW04_B_02",
+      "path": "02_library/worlds/memories/14_02_MW04_POLICE_DEFENCE_B_VIEW_06.txt",
+      "output": "MW04_POLICE_DEFENCE_B_VIEW_06.png",
+      "refs": [
+        "MW04",
+        "C01",
+        "C03"
+      ],
+      "layout": "2K 16:9 single full-frame memory image",
+      "status": "PREPARED_NOT_RENDERED",
+      "source_page": "MW04_B",
+      "original_view": 6,
+      "generation_position": 2,
+      "element_name": "MYS MW04_B_02 Memory View 06",
+      "prompt_sha256": "bc2a085896e378546e7755fe2d26112322938295a92fcea81ce19d3204f8ac9b"
+    },
+    "MW04_B_03": {
+      "key": "MW04_B_03",
+      "path": "02_library/worlds/memories/14_03_MW04_POLICE_DEFENCE_B_VIEW_07.txt",
+      "output": "MW04_POLICE_DEFENCE_B_VIEW_07.png",
+      "refs": [
+        "MW04",
+        "C01",
+        "C26"
+      ],
+      "layout": "2K 16:9 single full-frame memory image",
+      "status": "PREPARED_NOT_RENDERED",
+      "source_page": "MW04_B",
+      "original_view": 7,
+      "generation_position": 3,
+      "element_name": "MYS MW04_B_03 Memory View 07",
+      "prompt_sha256": "e326ef013072736668a5da3c3ed4c8afc3147123db62111123014209c67dd8a4"
+    },
+    "MW04_B_04": {
+      "key": "MW04_B_04",
+      "path": "02_library/worlds/memories/14_04_MW04_POLICE_DEFENCE_B_VIEW_08.txt",
+      "output": "MW04_POLICE_DEFENCE_B_VIEW_08.png",
+      "refs": [
+        "MW04",
+        "C01"
+      ],
+      "layout": "2K 16:9 single full-frame memory image",
+      "status": "PREPARED_NOT_RENDERED",
+      "source_page": "MW04_B",
+      "original_view": 8,
+      "generation_position": 4,
+      "element_name": "MYS MW04_B_04 Memory View 08",
+      "prompt_sha256": "84d524e71833b383f8a3c9db60f477ca6b7c0fc9380d5934057353b0639a51b8"
+    },
+    "MW04_C_01": {
+      "key": "MW04_C_01",
+      "path": "02_library/worlds/memories/15_01_MW04_POLICE_DEFENCE_C_VIEW_09.txt",
+      "output": "MW04_POLICE_DEFENCE_C_VIEW_09.png",
+      "refs": [
+        "MW04",
+        "C01",
+        "C03"
+      ],
+      "layout": "2K 16:9 single full-frame memory image",
+      "status": "PREPARED_NOT_RENDERED",
+      "source_page": "MW04_C",
+      "original_view": 9,
+      "generation_position": 1,
+      "element_name": "MYS MW04_C_01 Memory View 09",
+      "prompt_sha256": "0fcee2ef692b03858f4ec02b26ca36e1e47b6509c651d8da87ff7e7befef0095"
+    },
+    "MW04_C_02": {
+      "key": "MW04_C_02",
+      "path": "02_library/worlds/memories/15_02_MW04_POLICE_DEFENCE_C_VIEW_01.txt",
+      "output": "MW04_POLICE_DEFENCE_C_VIEW_01.png",
+      "refs": [
+        "MW04",
+        "C01",
+        "C25"
+      ],
+      "layout": "2K 16:9 single full-frame memory image",
+      "status": "PREPARED_NOT_RENDERED",
+      "source_page": "MW04_C",
+      "original_view": 1,
+      "generation_position": 2,
+      "element_name": "MYS MW04_C_02 Memory View 01",
+      "prompt_sha256": "9196daba13938d704860df9f72752c093bbc143812ae9ac78fbdfa9e779c2cdd"
+    },
+    "MW04_C_03": {
+      "key": "MW04_C_03",
+      "path": "02_library/worlds/memories/15_03_MW04_POLICE_DEFENCE_C_VIEW_07.txt",
+      "output": "MW04_POLICE_DEFENCE_C_VIEW_07.png",
+      "refs": [
+        "MW04",
+        "C01",
+        "C26"
+      ],
+      "layout": "2K 16:9 single full-frame memory image",
+      "status": "PREPARED_NOT_RENDERED",
+      "source_page": "MW04_C",
+      "original_view": 7,
+      "generation_position": 3,
+      "element_name": "MYS MW04_C_03 Memory View 07",
+      "prompt_sha256": "4d9a603cfe28926f954206640d91d6fe136047690c355ee97eea1f1edc240fdb"
+    },
+    "MW04_C_04": {
+      "key": "MW04_C_04",
+      "path": "02_library/worlds/memories/15_04_MW04_POLICE_DEFENCE_C_VIEW_08.txt",
+      "output": "MW04_POLICE_DEFENCE_C_VIEW_08.png",
+      "refs": [
+        "MW04",
+        "C01"
+      ],
+      "layout": "2K 16:9 single full-frame memory image",
+      "status": "PREPARED_NOT_RENDERED",
+      "source_page": "MW04_C",
+      "original_view": 8,
+      "generation_position": 4,
+      "element_name": "MYS MW04_C_04 Memory View 08",
+      "prompt_sha256": "ee87674a8132320ecce2a452c2dc6f89872f08447f1d1ff82f244ec297ae6d78"
+    },
+    "MW05_B_01": {
+      "key": "MW05_B_01",
+      "path": "02_library/worlds/memories/17_01_MW05_COURT_FILE_B_VIEW_05.txt",
+      "output": "MW05_COURT_FILE_B_VIEW_05.png",
+      "refs": [
+        "C01",
+        "C28",
+        "C29"
+      ],
+      "layout": "2K 16:9 single full-frame memory image",
+      "status": "PREPARED_NOT_RENDERED",
+      "source_page": "MW05_B",
+      "original_view": 5,
+      "generation_position": 1,
+      "element_name": "MYS MW05_B_01 Memory View 05",
+      "prompt_sha256": "4995ea069fff0e46b5c40b6b1d81068f4b0e8f540ba4ff6f9ebef3aef0e255dc"
+    },
+    "MW05_B_02": {
+      "key": "MW05_B_02",
+      "path": "02_library/worlds/memories/17_02_MW05_COURT_FILE_B_VIEW_06.txt",
+      "output": "MW05_COURT_FILE_B_VIEW_06.png",
+      "refs": [
+        "C01",
+        "C30"
+      ],
+      "layout": "2K 16:9 single full-frame memory image",
+      "status": "PREPARED_NOT_RENDERED",
+      "source_page": "MW05_B",
+      "original_view": 6,
+      "generation_position": 2,
+      "element_name": "MYS MW05_B_02 Memory View 06",
+      "prompt_sha256": "7c63c1eb80c0a6ce97d54cfa6d1ec1ec8b3c0a9bcd4278b7ec97ec0548639644"
+    },
+    "MW05_B_03": {
+      "key": "MW05_B_03",
+      "path": "02_library/worlds/memories/17_03_MW05_COURT_FILE_B_VIEW_07.txt",
+      "output": "MW05_COURT_FILE_B_VIEW_07.png",
+      "refs": [
+        "C01"
+      ],
+      "layout": "2K 16:9 single full-frame memory image",
+      "status": "PREPARED_NOT_RENDERED",
+      "source_page": "MW05_B",
+      "original_view": 7,
+      "generation_position": 3,
+      "element_name": "MYS MW05_B_03 Memory View 07",
+      "prompt_sha256": "4ba5c8c614dfd0896794563e29a783da223386aed4ab29478da46bad9cfa17f7"
+    },
+    "MW05_B_04": {
+      "key": "MW05_B_04",
+      "path": "02_library/worlds/memories/17_04_MW05_COURT_FILE_B_VIEW_08.txt",
+      "output": "MW05_COURT_FILE_B_VIEW_08.png",
+      "refs": [
+        "C31"
+      ],
+      "layout": "2K 16:9 single full-frame memory image",
+      "status": "PREPARED_NOT_RENDERED",
+      "source_page": "MW05_B",
+      "original_view": 8,
+      "generation_position": 4,
+      "element_name": "MYS MW05_B_04 Memory View 08",
+      "prompt_sha256": "5d19ff242dcb9648f3ef516e9e89478655e2960bab57b2aa0e180628659e3b3f"
     }
   },
   "operator_language": "English; Hungarian in-world signage and proper names are intentional story content.",
@@ -8426,8 +8761,8 @@
     },
     "MW03": {
       "alias": "MW03_WORK_RULE_CHANGE_ADMIN",
-      "mention": null,
-      "last_mention": "@UNBOUND_MW03"
+      "mention": "@loc_MYS_mys-mw03-a-work-rule-change-admin_s0_v1",
+      "last_mention": "@loc_MYS_mys-mw03-a-work-rule-change-admin_s0_v1"
     },
     "MW04": {
       "alias": "MW04_POLICE_DEFENCE",
@@ -10805,6 +11140,66 @@
         "e968c3f1-1699-4689-a0f2-90653473873d"
       ],
       "mcp_observation": "2026-09-10: completed Element with attached image observed via MCP. Image quality and generation-project provenance not reviewed."
+    },
+    "MW04_B_01": {
+      "alias": "MW04_B_01",
+      "mention": null,
+      "last_mention": "@UNBOUND_MW04_B_01"
+    },
+    "MW04_B_02": {
+      "alias": "MW04_B_02",
+      "mention": null,
+      "last_mention": "@UNBOUND_MW04_B_02"
+    },
+    "MW04_B_03": {
+      "alias": "MW04_B_03",
+      "mention": null,
+      "last_mention": "@UNBOUND_MW04_B_03"
+    },
+    "MW04_B_04": {
+      "alias": "MW04_B_04",
+      "mention": null,
+      "last_mention": "@UNBOUND_MW04_B_04"
+    },
+    "MW04_C_01": {
+      "alias": "MW04_C_01",
+      "mention": null,
+      "last_mention": "@UNBOUND_MW04_C_01"
+    },
+    "MW04_C_02": {
+      "alias": "MW04_C_02",
+      "mention": null,
+      "last_mention": "@UNBOUND_MW04_C_02"
+    },
+    "MW04_C_03": {
+      "alias": "MW04_C_03",
+      "mention": null,
+      "last_mention": "@UNBOUND_MW04_C_03"
+    },
+    "MW04_C_04": {
+      "alias": "MW04_C_04",
+      "mention": null,
+      "last_mention": "@UNBOUND_MW04_C_04"
+    },
+    "MW05_B_01": {
+      "alias": "MW05_B_01",
+      "mention": null,
+      "last_mention": "@UNBOUND_MW05_B_01"
+    },
+    "MW05_B_02": {
+      "alias": "MW05_B_02",
+      "mention": null,
+      "last_mention": "@UNBOUND_MW05_B_02"
+    },
+    "MW05_B_03": {
+      "alias": "MW05_B_03",
+      "mention": null,
+      "last_mention": "@UNBOUND_MW05_B_03"
+    },
+    "MW05_B_04": {
+      "alias": "MW05_B_04",
+      "mention": null,
+      "last_mention": "@UNBOUND_MW05_B_04"
     }
   },
   "reference_binding_note": "Only full verified Higgsfield mentions belong in mention. Null produces an explicit @UNBOUND_<key> slot and a do-not-generate notice. Run 04_tracking/sync_references.py --write once to propagate a binding across all prompts and guides. Previous videos remain in the actual Forward Extend source field. Raw-image, storyboard and audio autoload handles are unverified until observed; never guess an Element ID from a filename.",
@@ -12894,7 +13289,7 @@
               8
             ],
             "status": "PREPARED_NOT_RENDERED",
-            "sha256": "09c7ad783034cbbd8ce061ceee928af210d77a60cde9e9c9e67aa0d84d82d550"
+            "sha256": "eb78079e5f8d2329b4240b990dc0b55bf8c4609d842b374ca53b3bbe59bddb31"
           },
           "C": {
             "key": "MW03_C",
@@ -12906,7 +13301,7 @@
               8
             ],
             "status": "PREPARED_NOT_RENDERED",
-            "sha256": "cc70bd6be89d9d07eae124ee6f615d268f767b1b28129091889945733e2fff6f"
+            "sha256": "79c83208adf64efb4a7ae84d9b89673a3d0e3161443b64ddff27885ab9b5c2a4"
           }
         },
         "original_views": 9,
@@ -12949,7 +13344,7 @@
               8
             ],
             "status": "PREPARED_NOT_RENDERED",
-            "sha256": "8dc40f0716ecf554d3e17bdec9a47971385110e0d74a4d43ebe1b03c31c79b3c"
+            "sha256": "14817ae9117a7109d0b9ec4297c60531fed8c678ef2742eaba6b87db5b2db99f"
           }
         },
         "original_views": 9,
@@ -12992,7 +13387,7 @@
               8
             ],
             "status": "PREPARED_NOT_RENDERED",
-            "sha256": "01e8b9b848896cd40df26c4df8dc128981e93ac2038905652a562d13087690a3"
+            "sha256": "5c52bb57c0ee3e81ac6604ca88232bf73353e98ee5da4cb28b1caada02c3f84e"
           }
         },
         "original_views": 9,
@@ -13032,7 +13427,7 @@
                 "key": "MW06_A_04",
                 "file": "02_library/worlds/memories/19_04_MW06_HUMAN_COUNTERMEMORIES_A_VIEW_04.txt",
                 "original_view": 4,
-                "sha256": "644f307281647075ca175e40eab636e55b57d91885e7b8fd450a0373b0f002c0"
+                "sha256": "b7b2eaa1fe90f70a84311bc9b4a06008a4c6dc66f35627e18dcd3cb9ee657a34"
               }
             ]
           },
@@ -13055,7 +13450,7 @@
                 "key": "MW06_B_02",
                 "file": "02_library/worlds/memories/20_02_MW06_HUMAN_COUNTERMEMORIES_B_VIEW_06.txt",
                 "original_view": 6,
-                "sha256": "a4576bbb4d4848259f94b9ac47bcd74359a8ab3d321eea3530ab900f225764ea"
+                "sha256": "7c5e837401ca13e4e5f86cff0aeaacc2226167cbf7a7514ff2e526f006d10def"
               },
               {
                 "key": "MW06_B_03",
@@ -14454,7 +14849,7 @@
     "date": "2026-09-10",
     "status": "READY_FOR_CREATOR_REIMPORT_NOT_YET_CONFIRMED",
     "supersedes_next_import": "13_ADDITIONAL_OBJECT_REFERENCES.md",
-    "total_unique_elements": 248,
+    "total_unique_elements": 257,
     "files": [
       {
         "file": "00_project/elements/categories/CHARACTERS_IMPORT.md",
@@ -14603,10 +14998,19 @@
           "MW03_B",
           "MW03_C",
           "MW04",
-          "MW04_B",
-          "MW04_C",
+          "MW04_B_01",
+          "MW04_B_02",
+          "MW04_B_03",
+          "MW04_B_04",
+          "MW04_C_01",
+          "MW04_C_02",
+          "MW04_C_03",
+          "MW04_C_04",
           "MW05",
-          "MW05_B",
+          "MW05_B_01",
+          "MW05_B_02",
+          "MW05_B_03",
+          "MW05_B_04",
           "MW05_C",
           "MW06_A_01",
           "MW06_A_02",
@@ -14633,8 +15037,8 @@
           "T01_DETAILS_B",
           "T01_DETAILS_C"
         ],
-        "count": 135,
-        "file_sha256": "5d32c3fb47cd39f5dc273c5dbf188a49ad93690d0f98b4f826bb1e9478deacd6"
+        "count": 144,
+        "file_sha256": "f5e4436a2dcea603eb2f39f977a5723a4ba0f544f5d8f18f120ac821602b448b"
       },
       {
         "file": "00_project/elements/categories/MORPHS_IMPORT.md",
@@ -14736,9 +15140,9 @@
     "maps": "Optional planning images, not reference Elements",
     "character_morphs": "CM001–CM006 are concrete existing-cast transitions in MORPHS_IMPORT.md, with Character output type; no new C-character definitions.",
     "validation": {
-      "unique_keys": 248,
+      "unique_keys": 257,
       "characters": 31,
-      "worlds": 135,
+      "worlds": 181,
       "morphs": 75,
       "typography": 7,
       "all_mapped_prompt_files_exist": true
@@ -14747,7 +15151,7 @@
   },
   "image_layout_policy": {
     "character_identity": "4K 3840x2160 1x3; three 1280x2160 panels; no gutters",
-    "other_reference_images": "23 retained memory/clinical/restaurant pages and morph sheets remain 4K 2x2; 28 new memory views use 2K full-frame. Typography retains TY001 3x3 exception.",
+    "other_reference_images": "20 retained memory/clinical/restaurant pages and morph sheets remain 4K 2x2; 40 memory views use 2K full-frame. Typography retains TY001 3x3 exception.",
     "three_by_three_active_prompts": 1,
     "typography": "TY001: 4K 3x3, nine 1280x720 cells; TY002-TY007: 4K 2x2, four 1920x1080 cells",
     "present_world": "84 single full-frame 16:9 2K images; 21 former pages replaced"
@@ -14755,8 +15159,8 @@
   "full_project_current_import": {
     "date": "2026-09-10",
     "file": "00_project/elements/full/FULL_PROJECT_IMPORT.md",
-    "file_sha256": "7259b484a06d1619dd323b3bb664efa43c839b9951c26e4296188350121a9452",
-    "count": 248,
+    "file_sha256": "cf920af54e48a50121a75ba37c3a1c4dfbdff9d89c47e5ad2c7ac7966f9b82eb",
+    "count": 257,
     "canonical_keys": [
       "C01",
       "C02",
@@ -14895,10 +15299,19 @@
       "MW03_B",
       "MW03_C",
       "MW04",
-      "MW04_B",
-      "MW04_C",
+      "MW04_B_01",
+      "MW04_B_02",
+      "MW04_B_03",
+      "MW04_B_04",
+      "MW04_C_01",
+      "MW04_C_02",
+      "MW04_C_03",
+      "MW04_C_04",
       "MW05",
-      "MW05_B",
+      "MW05_B_01",
+      "MW05_B_02",
+      "MW05_B_03",
+      "MW05_B_04",
       "MW05_C",
       "MW06_A_01",
       "MW06_A_02",
@@ -15050,13 +15463,13 @@
     "unit_credits": null,
     "price_source": "CREATOR_CONFIRMED_4K_AND_PAID_2K_UI_QUOTES",
     "unit": "ONE_OUTPUT_IMAGE",
-    "resolution": "84 world single-view 2K + 28 memory single-view 2K + 136 retained-layout 4K",
-    "imported_library_images": 248,
-    "imported_library_first_pass_credits": 768,
+    "resolution": "84 world single-view 2K + 40 memory single-view 2K + 133 retained-layout 4K",
+    "imported_library_images": 257,
+    "imported_library_first_pass_credits": 780,
     "optional_map_images": 0,
     "optional_map_credits": 0,
-    "all_image_prompts": 248,
-    "all_first_pass_credits": 768,
+    "all_image_prompts": 257,
+    "all_first_pass_credits": 780,
     "typography_images": 7,
     "typography_first_pass_credits": 28,
     "prior_balance_estimate": 700,
@@ -15067,8 +15480,8 @@
     "prior_unlimited_assumption_superseded_for_selected_4k_operation": true,
     "model": "Nano Banana Pro",
     "two_k_split_option": {
-      "status": "ADOPTED_FOR_PRESENT_WORLDS_AND_SEVEN_MEMORY_PAGES",
-      "outputs": 112,
+      "status": "ADOPTED_FOR_PRESENT_WORLDS_AND_TEN_MEMORY_PAGES",
+      "outputs": 124,
       "layout": "one full-frame 16:9 view per image",
       "condition": "Paid 2K generation with Unlimited disabled; creator-confirmed 2 credits per image.",
       "morphs": "Unchanged 4K 2x2 sheets"
@@ -15082,15 +15495,15 @@
       "condition": "Zero-credit 2K outputs require eligible Unlimited generation within the creator-confirmed active seven-day window. Maps, retries and video costs excluded. Actual output dimensions must be checked."
     },
     "current_decision": {
-      "status": "PRESENT_WORLDS_AND_SEVEN_MEMORY_PAGES_SPLIT_2K",
-      "active_image_prompts": 248,
+      "status": "PRESENT_WORLDS_AND_TEN_MEMORY_PAGES_SPLIT_2K",
+      "active_image_prompts": 257,
       "single_world_2k_images": 84,
-      "retained_4k_images": 136,
+      "retained_4k_images": 133,
       "superseded_world_pages": 21,
       "image_generation_or_debit": false,
       "world_generation_mode": "PAID_2K_UNLIMITED_DISABLED",
-      "single_memory_2k_images": 28,
-      "superseded_memory_pages": 7
+      "single_memory_2k_images": 40,
+      "superseded_memory_pages": 10
     },
     "superseded_allowance_scenarios": {
       "status": "SUPERSEDED_BY_CREATOR_NO_REGENERATION_AND_500_TOP_UP_CAP",
@@ -15142,7 +15555,7 @@
     "regeneration_allowed": false,
     "additional_attempts_allowed": 0,
     "excluded_map_prompts": 7,
-    "production_image_prompts": 248,
+    "production_image_prompts": 257,
     "paid_2k_unit_credits": 2,
     "paid_4k_unit_credits": 4
   },

@@ -1,6 +1,6 @@
 # MYSCOUTEE — ALL LOCATION ELEMENTS
 
-172 Elements. One definition per canonical key.
+181 Elements. One definition per canonical key.
 
 ## MYS W01_A_01 World View 01
 Type: Location
@@ -744,19 +744,64 @@ Name: MYS MW04_A Police Defence
 Version: v1
 Description: Police Defence, page A: four assigned literal location and encounter views. Remembered people have no score cards.
 
-## MYS MW04_B Police Defence
+## MYS MW04_B_01 Memory View 05
 Type: Location
-Canonical key: MW04_B
-Name: MYS MW04_B Police Defence
+Canonical key: MW04_B_01
+Name: MYS MW04_B_01 Memory View 05
 Version: v1
-Description: Police Defence, page B: four assigned literal location and encounter views. Remembered people have no score cards.
+Description: MW04_B, original view 05. Continuation in the apartment: an officer accidentally steps on the protagonist's recently operated foot. Sudden physical pain and vulnerability, no gore, no medical reveal, no exaggerated violence. One 2K full-frame memory image; no rating cards.
 
-## MYS MW04_C Police Defence
+## MYS MW04_B_02 Memory View 06
 Type: Location
-Canonical key: MW04_C
-Name: MYS MW04_C Police Defence
+Canonical key: MW04_B_02
+Name: MYS MW04_B_02 Memory View 06
 Version: v1
-Description: Police Defence, page C: four assigned literal location and encounter views. Remembered people have no score cards.
+Description: MW04_B, original view 06. Fingerprinting / formal processing with the recurring POLICEWOMAN. The procedure is ordinary. Include the awkward contradiction of attraction / embarrassed human expression without romantic staging. One 2K full-frame memory image; no rating cards.
+
+## MYS MW04_B_03 Memory View 07
+Type: Location
+Canonical key: MW04_B_03
+Name: MYS MW04_B_03 Memory View 07
+Version: v1
+Description: MW04_B, original view 07. Appointed-defence discontinuity: a substitute/person from the defence office appears instead of the expected lawyer, or a handoff between defence contacts is visibly unclear. Show discontinuity, not villainy. One 2K full-frame memory image; no rating cards.
+
+## MYS MW04_B_04 Memory View 08
+Type: Location
+Canonical key: MW04_B_04
+Name: MYS MW04_B_04 Memory View 08
+Version: v1
+Description: MW04_B, original view 08. Attempts to reach police/prosecution/court/defence routes by phone and in corridors/offices. Different ordinary people redirect the protagonist; no one appears sinister. One 2K full-frame memory image; no rating cards.
+
+## MYS MW04_C_01 Memory View 09
+Type: Location
+Canonical key: MW04_C_01
+Name: MYS MW04_C_01 Memory View 09
+Version: v1
+Description: MW04_C, original view 09. Human break-through inside procedure: the POLICEWOMAN or another officer struggles not to laugh / gives a small embarrassed smile during a formal moment. Nothing procedural changes; the role and the person briefly coexist. One 2K full-frame memory image; no rating cards.
+
+## MYS MW04_C_02 Memory View 01
+Type: Location
+Canonical key: MW04_C_02
+Name: MYS MW04_C_02 Memory View 01
+Version: v1
+Description: MW04_C, original view 01. DOMESTIC BELONGINGS DURING THE SEARCH:
+The established search officer holds an ordinary open household bag on a domestic table while the protagonist indicates which belongings fit inside it. Clothing, loose charging leads and mundane papers remain ordinary possessions, supported by the bag or table. Show the bag's lining, zip track, fabric handles and the officer's separated working hands. One 2K full-frame memory image; no rating cards.
+
+## MYS MW04_C_03 Memory View 07
+Type: Location
+Canonical key: MW04_C_03
+Name: MYS MW04_C_03 Memory View 07
+Version: v1
+Description: MW04_C, original view 07. UNFINISHED DEFENCE-FILE HANDOFF:
+At the defence-office consultation area, the protagonist stands with his open folder balanced on the desk edge while C26, the established office substitute, holds a second closed file against their body. One loose page remains in the protagonist's hand between them; neither person has taken ownership of the whole set. Their different files and the incomplete handover are the subject. One 2K full-frame memory image; no rating cards.
+
+## MYS MW04_C_04 Memory View 08
+Type: Location
+Canonical key: MW04_C_04
+Name: MYS MW04_C_04 Memory View 08
+Version: v1
+Description: MW04_C, original view 08. WAITING BENCH BETWEEN CONTACT ATTEMPTS:
+The protagonist sits on an ordinary corridor waiting bench with his folder upright against his knees, a phone resting silently in one hand and his coat gathered beside him. The main physical arrangement is a waiting person, bench, coat and the closed doors along the corridor. One anonymous staff member continues an ordinary task at the office counter without directing or confronting him. One 2K full-frame memory image; no rating cards.
 
 ## MYS MW05_A Court File
 Type: Location
@@ -765,12 +810,35 @@ Name: MYS MW05_A Court File
 Version: v1
 Description: Court File, page A: four assigned literal location and encounter views. Remembered people have no score cards.
 
-## MYS MW05_B Court File
+## MYS MW05_B_01 Memory View 05
 Type: Location
-Canonical key: MW05_B
-Name: MYS MW05_B Court File
+Canonical key: MW05_B_01
+Name: MYS MW05_B_01 Memory View 05
 Version: v1
-Description: Court File, page B: four assigned literal location and encounter views. Remembered people have no score cards.
+Description: MW05_B, original view 05. Forensic-examination memory with two expert chairs / two experts. The protagonist is calm and cooperative; the experts' reactions differ. Do not imply a single unified expert voice. One 2K full-frame memory image; no rating cards.
+
+## MYS MW05_B_02 Memory View 06
+Type: Location
+Canonical key: MW05_B_02
+Name: MYS MW05_B_02 Memory View 06
+Version: v1
+Description: MW05_B, original view 06. Clerk / recording / evidence-request memory: phone, hearing paperwork, request for official recording or witnesses/evidence, and the practical response that the route is costly or deferred. Keep written text mostly unreadable. One 2K full-frame memory image; no rating cards.
+
+## MYS MW05_B_03 Memory View 07
+Type: Location
+Canonical key: MW05_B_03
+Name: MYS MW05_B_03 Memory View 07
+Version: v1
+Description: MW05_B, original view 07. SELF-MADE WANTED-PAGE JOKE:
+The protagonist assembles one small self-made "THE SYSTEM'S MOST WANTED" satirical page on his ordinary desk. A cut paper portrait, glue stick, scissors lying closed and uneven paper edges make the personal construction evident. His hands press one corner flat while the rest of the page lies supported on the table. One 2K full-frame memory image; no rating cards.
+
+## MYS MW05_B_04 Memory View 08
+Type: Location
+Canonical key: MW05_B_04
+Name: MYS MW05_B_04 Memory View 08
+Version: v1
+Description: MW05_B, original view 08. FICTIONAL CARDBOARD FIGURE WITH ITS RIDICULOUS HAT:
+One anonymous fictional cardboard public figure stands on its simple support with the deliberately ridiculous hat resting on its flat printed head. The physical board, silly hat and empty place in front of the cutout are the subjects of this source. Resolve cardboard thickness, rear brace, hat material and actual base contact with desk or floor. One 2K full-frame memory image; no rating cards.
 
 ## MYS MW05_C Court File
 Type: Location

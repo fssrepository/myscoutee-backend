@@ -29,10 +29,19 @@ Image attachment is confirmed by MCP; visual quality is not reviewed. Refresh th
 | [11_MW03_WORK_RULE_CHANGE_ADMIN_B.txt](11_MW03_WORK_RULE_CHANGE_ADMIN_B.txt) | No attached image observed | 4K | `@UNBOUND_MW03` |
 | [12_MW03_WORK_RULE_CHANGE_ADMIN_C.txt](12_MW03_WORK_RULE_CHANGE_ADMIN_C.txt) | No attached image observed | 4K | `@UNBOUND_MW03` |
 | [13_MW04_POLICE_DEFENCE_A.txt](13_MW04_POLICE_DEFENCE_A.txt) | No attached image observed | 4K | **Ready** |
-| [14_MW04_POLICE_DEFENCE_B.txt](14_MW04_POLICE_DEFENCE_B.txt) | No attached image observed | 4K | `@UNBOUND_MW04` |
-| [15_MW04_POLICE_DEFENCE_C.txt](15_MW04_POLICE_DEFENCE_C.txt) | No attached image observed | 4K | `@UNBOUND_MW04` |
+| [14_01_MW04_POLICE_DEFENCE_B_VIEW_05.txt](14_01_MW04_POLICE_DEFENCE_B_VIEW_05.txt) | Not generated; new Element import pending | 2K | **Ready** |
+| [14_02_MW04_POLICE_DEFENCE_B_VIEW_06.txt](14_02_MW04_POLICE_DEFENCE_B_VIEW_06.txt) | Not generated; new Element import pending | 2K | **Ready** |
+| [14_03_MW04_POLICE_DEFENCE_B_VIEW_07.txt](14_03_MW04_POLICE_DEFENCE_B_VIEW_07.txt) | Not generated; new Element import pending | 2K | **Ready** |
+| [14_04_MW04_POLICE_DEFENCE_B_VIEW_08.txt](14_04_MW04_POLICE_DEFENCE_B_VIEW_08.txt) | Not generated; new Element import pending | 2K | **Ready** |
+| [15_01_MW04_POLICE_DEFENCE_C_VIEW_09.txt](15_01_MW04_POLICE_DEFENCE_C_VIEW_09.txt) | Not generated; new Element import pending | 2K | **Ready** |
+| [15_02_MW04_POLICE_DEFENCE_C_VIEW_01.txt](15_02_MW04_POLICE_DEFENCE_C_VIEW_01.txt) | Not generated; new Element import pending | 2K | **Ready** |
+| [15_03_MW04_POLICE_DEFENCE_C_VIEW_07.txt](15_03_MW04_POLICE_DEFENCE_C_VIEW_07.txt) | Not generated; new Element import pending | 2K | **Ready** |
+| [15_04_MW04_POLICE_DEFENCE_C_VIEW_08.txt](15_04_MW04_POLICE_DEFENCE_C_VIEW_08.txt) | Not generated; new Element import pending | 2K | **Ready** |
 | [16_MW05_COURT_FILE_A.txt](16_MW05_COURT_FILE_A.txt) | No attached image observed | 4K | **Ready** |
-| [17_MW05_COURT_FILE_B.txt](17_MW05_COURT_FILE_B.txt) | No attached image observed | 4K | `@UNBOUND_MW05` |
+| [17_01_MW05_COURT_FILE_B_VIEW_05.txt](17_01_MW05_COURT_FILE_B_VIEW_05.txt) | Not generated; new Element import pending | 2K | **Ready** |
+| [17_02_MW05_COURT_FILE_B_VIEW_06.txt](17_02_MW05_COURT_FILE_B_VIEW_06.txt) | Not generated; new Element import pending | 2K | **Ready** |
+| [17_03_MW05_COURT_FILE_B_VIEW_07.txt](17_03_MW05_COURT_FILE_B_VIEW_07.txt) | Not generated; new Element import pending | 2K | **Ready** |
+| [17_04_MW05_COURT_FILE_B_VIEW_08.txt](17_04_MW05_COURT_FILE_B_VIEW_08.txt) | Not generated; new Element import pending | 2K | **Ready** |
 | [18_MW05_COURT_FILE_C.txt](18_MW05_COURT_FILE_C.txt) | No attached image observed | 4K | `@UNBOUND_MW05` |
 | [19_01_MW06_HUMAN_COUNTERMEMORIES_A_VIEW_01.txt](19_01_MW06_HUMAN_COUNTERMEMORIES_A_VIEW_01.txt) | No attached image observed | 2K | **Ready** |
 | [19_02_MW06_HUMAN_COUNTERMEMORIES_A_VIEW_02.txt](19_02_MW06_HUMAN_COUNTERMEMORIES_A_VIEW_02.txt) | No attached image observed | 2K | **Ready** |

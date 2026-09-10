@@ -1,10 +1,10 @@
 REFERENCE ID: MW06_A_04 — ORIGINAL VIEW 04 (never print IDs, headings or labels).
 
-REFERENCE SETUP INCOMPLETE: MW04_C
+REFERENCE SETUP INCOMPLETE: MW04_C_01
 Do not generate until these references are bound.
 
 REFERENCE INPUTS:
-@UNBOUND_MW04_C = Use original view 9 of the accepted MW04_C page for the same policewoman, procedure surface and ordinary human tone; reconstruct the assigned chair assistance.
+@UNBOUND_MW04_C_01 = Use the accepted original-view-9 image for the same policewoman, procedure surface and ordinary human tone; reconstruct the assigned chair assistance.
 @char_MYS_mys-c01-protagonist_s0_v1 = CHARACTER 01 — PROTAGONIST; exact person identity; use only where this person appears.
 @char_MYS_mys-c03-policewoman_s0_v1 = CHARACTER 03 — POLICEWOMAN; exact person identity; use only where this person appears.
 
@@ -42,7 +42,7 @@ ASSIGNED COMPOSITION — ORIGINAL VIEW 04, ONE IMAGE:
 POLICEWOMAN MAKES ROOM TO FINISH THE PROCEDURE:
 At the same formal processing surface, the policewoman moves an ordinary chair into a usable position for the protagonist while keeping the fingerprint paperwork or device safely on the desk. He begins to sit, carefully placing his feet and keeping his processed hand away from the papers. The chair movement, his supported descent and her practical assistance occupy the image.
 
-Keep her actual uniform, identity and small embarrassed human smile; the procedure and its status do not change. Show chair legs on the floor, her hand on the chair back, clear space for his knees and the unchanged desk equipment. Do not add a medical treatment, injury close-up, release or special favour. MW04_C retains the expression during formal work; this image gives that humanity a distinct physical action.
+Keep her actual uniform, identity and small embarrassed human smile; the procedure and its status do not change. Show chair legs on the floor, her hand on the chair back, clear space for his knees and the unchanged desk equipment. Do not add a medical treatment, injury close-up, release or special favour. MW04_C_01 retains the expression during formal work; this image gives that humanity a distinct physical action.
 
 FINAL CHECK:
 One full-frame 16:9 image at selected 2K. Direct memory scene, no score cards, no present-city overlay, no printed instruction labels.

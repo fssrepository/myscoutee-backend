@@ -1,8 +1,8 @@
-REFERENCE SETUP INCOMPLETE: MW05, MW05_B, MW05_C, MWP02, MWP02_B, MWP02_C
+REFERENCE SETUP INCOMPLETE: MW05, MW05_B_01, MW05_B_02, MW05_B_03, MW05_B_04, MW05_C, MWP02, MWP02_B, MWP02_C
 Do not generate until these references are bound.
 
 MEMORY REFERENCE PAGES — DIRECT SOURCES, NOT EDITS:
-@UNBOUND_MW05 supplies MW05 Page A (original views 1–4); @UNBOUND_MW05_B supplies Page B (5–8); @UNBOUND_MW05_C supplies Page C (9, 1, 7, 8). Use the original-view assignment to select the actual place/event, not the sheet layout.
+@UNBOUND_MW05 supplies MW05 Page A (original views 1–4); @UNBOUND_MW05_B_01 supplies original view 5; @UNBOUND_MW05_B_02 supplies original view 6; @UNBOUND_MW05_B_03 supplies original view 7; @UNBOUND_MW05_B_04 supplies original view 8; @UNBOUND_MW05_C supplies Page C (9, 1, 7, 8). Use the original-view assignment to select the actual place/event, not the sheet layout.
 @UNBOUND_MWP02 supplies MWP02 Page A (original views 1–4); @UNBOUND_MWP02_B supplies Page B (5–8); @UNBOUND_MWP02_C supplies Page C (9, 1, 7, 8). Use the original-view assignment to select the actual place/event, not the sheet layout.
 Several pages may support the same block or remembered place. Reconstruct the people, objects, supports and entry/exit geometry at life size while following this video’s existing continuous route. Never switch scenes because a cell or page changes. Current-city cards remain on current people; remembered people have none. HRW07 pages remain exclusive to Block 07 and its scripted tiny fragments/final hard cut.
 

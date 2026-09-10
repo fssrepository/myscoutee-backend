@@ -1,11 +1,17 @@
-REFERENCE ID: MW05_COURT_FILE_B (never print IDs, headings or panel labels).
+# MW04_B — superseded 4K sheet
+
+Replaced by MW04_B_01–MW04_B_04 at user request. Existing Higgsfield media is retained.
+
+```text
+REFERENCE ID: MW04_POLICE_DEFENCE_B (never print IDs, headings or panel labels).
+
+PAGE CONTINUITY INPUT: @loc_MYS_mys-mw04-a-police-defence_s0_v1 supplies the accepted Page A identities, shared material palette and any recurring room geometry. New places explicitly assigned to this page retain their own stated setting; do not copy Page A into every cell.
 
 REFERENCE INPUTS:
 @char_MYS_mys-c01-protagonist_s0_v1 = CHARACTER 01 — PROTAGONIST; exact person identity; use only where this person appears.
-@char_MYS_mys-c28-forensic-expert-a_s0_v1 = CHARACTER 28 — FORENSIC EXPERT A; exact person identity; use only where this person appears.
-@char_MYS_mys-c29-forensic-expert-b_s0_v1 = CHARACTER 29 — FORENSIC EXPERT B; exact person identity; use only where this person appears.
-@char_MYS_mys-c30-court-clerk_s0_v1 = CHARACTER 30 — COURT CLERK; exact person identity; use only where this person appears.
-@char_MYS_mys-c31-anonymous-fictional-cardboard-public-figure_s0_v1 = CHARACTER 31 — ANONYMOUS FICTIONAL CARDBOARD PUBLIC FIGURE; exact person identity; use only where this person appears.
+@char_MYS_mys-c03-policewoman_s0_v1 = CHARACTER 03 — POLICEWOMAN; exact person identity; use only where this person appears.
+@char_MYS_mys-c25-search-officer-male_s0_v1 = CHARACTER 25 — SEARCH OFFICER — MALE; exact person identity; use only where this person appears.
+@char_MYS_mys-c26-defence-office-substitute_s0_v1 = CHARACTER 26 — DEFENCE-OFFICE SUBSTITUTE; exact person identity; use only where this person appears.
 
 OUTPUT GEOMETRY — ONE 4K 2×2 REFERENCE PAGE:
 Generate ONE photographic 3840×2160 widescreen 16:9 image. Exactly FOUR equal edge-to-edge 1920×1080 cells in a 2×2 grid, without gutters, margins, letterboxing, labels, headings or captions. Select 4K for the entire output. Cell order is top-left, top-right, bottom-left, bottom-right. This is one image output, not four separate jobs.
@@ -28,46 +34,45 @@ Each cell must be a usable literal location/event reference, not an illustration
 
 IDENTITY ANCHORS — REQUIRED:
 Use CHARACTER 01 — PROTAGONIST wherever the protagonist appears.
-Use CHARACTER 28 — FORENSIC EXPERT A and CHARACTER 29 — FORENSIC EXPERT B together in the two-expert examination memory.
-Use CHARACTER 30 — COURT CLERK in the recording/evidence-request memory.
-Use CHARACTER 31 — ANONYMOUS FICTIONAL CARDBOARD PUBLIC FIGURE for the cardboard absurdity memory; it must remain non-identifiable and must not resemble a real politician, party leader or identifiable public figure.
+Use CHARACTER 03 — POLICEWOMAN for the recurring policewoman, especially original view 6 and 9.
+Use CHARACTER 25 — SEARCH OFFICER — MALE in the apartment-search sequence, especially the accidental-foot-step memory.
+Use CHARACTER 26 — DEFENCE-OFFICE SUBSTITUTE for the discontinuous appointed-defence handoff in original view 7.
+Other background officers may remain anonymous, but do not replace or merge the fixed identities above.
 
 PURPOSE:
-Build the literal court/file/classification memory source bank: hearing, assets, retained belongings, forensic examination, documents replacing biography, complaint routes and black humour used as a human response to an absurd process.
+Build the literal police/procedure memory source bank. The tone is ordinary institutional reality containing moments of vulnerability, confusion and humanity — not an action thriller and not a conspiracy tableau.
 
-PAGE B OF MW05: This page contains original views 5, 6, 7, 8. Original-view numbers below are provenance identifiers, not cell positions. Render ONLY the four cell assignments on this page. Global identity rules apply only when their person actually occurs in an assigned view.
+PAGE B OF MW04: This page contains original views 5, 6, 7, 8. Original-view numbers below are provenance identifiers, not cell positions. Render ONLY the four cell assignments on this page. Global identity rules apply only when their person actually occurs in an assigned view.
 
 REFERENCE COVERAGE FOR THE MOVING FILM:
-This page supplies the four assigned literal views, not four cuts, morph stages or interchangeable world designs. Make each view useful for its assigned purpose: room layout shows supports and an entry/exit; a gesture view retains its hand, furniture edge and background anchor; an object detail shows side/underside and contact. Different views of the SAME room preserve its floor plan, furniture, identities, clothes and light sources even when the viewpoint changes. Distinct memories remain distinct places; do not fuse them into one room to match the grid. Recurring places retain their established layout; each cell uses its explicitly assigned action and object state.
+This page supplies the four assigned literal views, not four cuts, morph stages or interchangeable world designs. Make each view useful for its assigned purpose: room layout shows supports and an entry/exit; a gesture view retains its hand, furniture edge and background anchor; an object detail shows side/underside and contact. Different views of the SAME room preserve its floor plan, furniture, identities, clothes and light sources even when the viewpoint changes. Distinct memories remain distinct places; do not fuse them into one room to match the grid. Repeated anchor views on another page must preserve the same state and layout.
 Additional detail pages of the same place retain that memory and its established event. Keep full body/furniture support legible wherever the assigned view permits. Never substitute four nearly identical wide shots for the four assigned subjects.
 
 FOUR IMAGE ASSIGNMENTS — INSTRUCTIONS ONLY, NO PRINTED TEXT:
 For the top left image (source view 05; instruction only, never printed):
-Forensic-examination memory with two expert chairs / two experts. The protagonist is calm and cooperative; the experts' reactions differ. Do not imply a single unified expert voice.
+Continuation in the apartment: an officer accidentally steps on the protagonist's recently operated foot. Sudden physical pain and vulnerability, no gore, no medical reveal, no exaggerated violence.
 
-Give Expert A and Expert B separate chairs, faces, note positions and eyelines toward the protagonist. One may look directly while the other checks a page; keep both reactions ordinary and distinct. Show the table edge and the gap between their chairs. Never merge them into one person or duplicate the same face to imply agreement.
+Use a low-to-medium angle showing the officer shoe, the protagonist foot and both bodies enough to explain the accidental contact. His posture recoils slightly while the foot remains grounded; keep the interaction non-graphic. Furniture and the floor retain the apartment layout. Do not introduce a kick, deliberate assault or a new visible surgical injury.
 
 For the top right image (source view 06; instruction only, never printed):
-Clerk / recording / evidence-request memory: phone, hearing paperwork, request for official recording or witnesses/evidence, and the practical response that the route is costly or deferred. Keep written text mostly unreadable.
+Fingerprinting / formal processing with the recurring POLICEWOMAN. The procedure is ordinary. Include the awkward contradiction of attraction / embarrassed human expression without romantic staging.
 
-Place the clerk behind a practical desk with phone and hearing documents, the protagonist opposite or beside the counter. The clerk indicates a paper or record area while listening. Show the handset support, document stack and actual desk depth. The cost or deferral belongs to the story; avoid invented readable fees, formal quotations or a visible final decision.
+Show the policewoman guiding the protagonist hand at the existing fingerprinting surface, with each finger, the support pad or device and desk edge distinct. Both people stand or sit in physically reachable positions. Their small embarrassed expressions remain visible above the working hands. Keep uniform, equipment and room ordinary without romantic lighting.
 
 For the bottom left image (source view 07; instruction only, never printed):
-SELF-MADE WANTED-PAGE JOKE:
-The protagonist assembles one small self-made "THE SYSTEM'S MOST WANTED" satirical page on his ordinary desk. A cut paper portrait, glue stick, scissors lying closed and uneven paper edges make the personal construction evident. His hands press one corner flat while the rest of the page lies supported on the table.
+Appointed-defence discontinuity: a substitute/person from the defence office appears instead of the expected lawyer, or a handoff between defence contacts is visibly unclear. Show discontinuity, not villainy.
 
-Keep the phrase modest in size and the surrounding papers mundane. This is homemade absurdism, never a police notice, database, real allegation or official wanted poster. Preserve his actual unchanged face in any printed portrait. The separate impossible police-career CV/application joke belongs to MW05_C, so this cell contains only the handmade wanted-page object, without a second miniature composition.
+Place the office substitute opposite the protagonist at a plain consultation desk, with a folder and a spare chair visible. The person has their own established identity, not the appointed lawyer face. The scene records a discontinuity in contact; no ghost portrait of the missing lawyer, villain pose or unexplained morph is inserted into this literal memory cell.
 
 For the bottom right image (source view 08; instruction only, never printed):
-FICTIONAL CARDBOARD FIGURE WITH ITS RIDICULOUS HAT:
-One anonymous fictional cardboard public figure stands on its simple support with the deliberately ridiculous hat resting on its flat printed head. The physical board, silly hat and empty place in front of the cutout are the subjects of this source. Resolve cardboard thickness, rear brace, hat material and actual base contact with desk or floor.
+Attempts to reach police/prosecution/court/defence routes by phone and in corridors/offices. Different ordinary people redirect the protagonist; no one appears sinister.
 
-Use the established C31 fictional design, never a real politician or living official. Retain the asylum-request black-humour context without adding party branding, a campaign slogan, recognizable office, policy statement or official response. The protagonist addressing this prop with his request papers is assigned separately to MW05_C; here the prop remains an intact ordinary constructed object in the same room.
+Choose one grounded contact moment: the protagonist with a phone beside a corridor doorway or office counter, another person indicating the next physical direction. Keep the phone, hand and doorway connected in one space. Do not combine police, prosecution, court and defence into four miniature rooms inside this cell; other moments belong to companion views or the video.
 
 FINAL CHECK:
 Exactly one 16:9 image.
 Exactly four 1920×1080 photographic cells on this 3840×2160 2×2 page.
-Direct literal court/file/black-humour memories only.
+Direct literal police/defence memories only.
 No present-city reflection composite.
 No score cards.
 
@@ -84,3 +89,4 @@ These are remembered or clinical people, not current-city pedestrians. Keep ever
 
 NO UMBRELLAS — EVERY CELL:
 No umbrellas anywhere in this image: none open, folded, carried, tucked into a bag, leaning against a wall, mounted over a table or held above a head. Do not copy an umbrella from an input reference. Outdoor present-city people have uncovered heads, hoods down and exposed hair; leave open air above every crown. Keep the specified weather for this scene. This restriction applies to the foreground, background, reflections and all cells of the sheet.
+```

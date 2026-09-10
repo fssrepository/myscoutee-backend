@@ -1,6 +1,6 @@
 # Memory single views — generation order
 
-Seven former 4K grids are now 28 separate full-frame 16:9 images. Select **2K** and generate one image per prompt. Other memory prompts keep their specified 4K grid format. The 28 scene assignment bodies were copied verbatim; only layout instructions, per-view references and the permitted optional cast selection changed.
+Ten former 4K grids are now 40 separate full-frame 16:9 images. Select **2K** and generate one image per prompt. Other memory prompts keep their specified 4K grid format. Split scenes preserve their source details; later content revisions are documented in CONTENT_REVISIONS.md. MW04_B and MW04_C keep their scene bodies with cell/image wording adapted.
 
 Use the filename order. A missing Element ID is an actual dependency: wait for the earlier output and bind its ID before pasting that prompt. Do not paste an `@UNBOUND_...` placeholder into generation. Readiness below reflects the currently saved bindings.
 
@@ -85,3 +85,42 @@ Original text: [archived MW06_B](../../../04_tracking/archive/memory_grids_befor
 
 Original text: [archived MW06_C](../../../04_tracking/archive/memory_grids_before_single_views/21_MW06_HUMAN_COUNTERMEMORIES_C.md).
 
+
+## MW04_B
+
+The failed 14_MW04 grid is replaced by these four 2K full-frame prompts. Page A reference is retained in every prompt. Scene bodies are preserved, with only cell/image wording adapted. Import [four new Location Elements](../../../00_project/elements/additions/MW04_B_SINGLE_VIEWS_IMPORT.md) once.
+
+| Prompt | Subject | References | Input readiness |
+| --- | --- | ---: | --- |
+| [14_01_MW04_POLICE_DEFENCE_B_VIEW_05.txt](14_01_MW04_POLICE_DEFENCE_B_VIEW_05.txt) | Original view 05 | 3 | Ready |
+| [14_02_MW04_POLICE_DEFENCE_B_VIEW_06.txt](14_02_MW04_POLICE_DEFENCE_B_VIEW_06.txt) | Original view 06 | 3 | Ready |
+| [14_03_MW04_POLICE_DEFENCE_B_VIEW_07.txt](14_03_MW04_POLICE_DEFENCE_B_VIEW_07.txt) | Original view 07 | 3 | Ready |
+| [14_04_MW04_POLICE_DEFENCE_B_VIEW_08.txt](14_04_MW04_POLICE_DEFENCE_B_VIEW_08.txt) | Original view 08 | 2 | Ready |
+
+Original full text: [archived MW04_B](../../../04_tracking/archive/memory_grids_before_single_views/14_MW04_POLICE_DEFENCE_B.md). New output IDs stay unbound until images exist.
+
+## MW04_C
+
+The failed 14_MW04 grid is replaced by these four 2K full-frame prompts. Page A reference is retained in every prompt. Scene bodies are preserved, with only cell/image wording adapted. Import [four new Location Elements](../../../00_project/elements/additions/MW04_C_SINGLE_VIEWS_IMPORT.md) once.
+
+| Prompt | Subject | References | Input readiness |
+| --- | --- | ---: | --- |
+| [15_01_MW04_POLICE_DEFENCE_C_VIEW_09.txt](15_01_MW04_POLICE_DEFENCE_C_VIEW_09.txt) | Original view 09 | 3 | Ready |
+| [15_02_MW04_POLICE_DEFENCE_C_VIEW_01.txt](15_02_MW04_POLICE_DEFENCE_C_VIEW_01.txt) | Original view 01 | 3 | Ready |
+| [15_03_MW04_POLICE_DEFENCE_C_VIEW_07.txt](15_03_MW04_POLICE_DEFENCE_C_VIEW_07.txt) | Original view 07 | 3 | Ready |
+| [15_04_MW04_POLICE_DEFENCE_C_VIEW_08.txt](15_04_MW04_POLICE_DEFENCE_C_VIEW_08.txt) | Original view 08 | 2 | Ready |
+
+Original full text: [archived MW04_C](../../../04_tracking/archive/memory_grids_before_single_views/15_MW04_POLICE_DEFENCE_C.md). New output IDs stay unbound until images exist.
+
+## MW05_B
+
+The failed 14_MW05 grid is replaced by these four 2K full-frame prompts. Each prompt retains only its assigned character references; the previously removed Page A input remains omitted. Scene bodies are preserved, with only cell/image wording adapted. Import [four new Location Elements](../../../00_project/elements/additions/MW05_B_SINGLE_VIEWS_IMPORT.md) once.
+
+| Prompt | Subject | References | Input readiness |
+| --- | --- | ---: | --- |
+| [17_01_MW05_COURT_FILE_B_VIEW_05.txt](17_01_MW05_COURT_FILE_B_VIEW_05.txt) | Original view 05 | 3 | Ready |
+| [17_02_MW05_COURT_FILE_B_VIEW_06.txt](17_02_MW05_COURT_FILE_B_VIEW_06.txt) | Original view 06 | 2 | Ready |
+| [17_03_MW05_COURT_FILE_B_VIEW_07.txt](17_03_MW05_COURT_FILE_B_VIEW_07.txt) | Original view 07 | 1 | Ready |
+| [17_04_MW05_COURT_FILE_B_VIEW_08.txt](17_04_MW05_COURT_FILE_B_VIEW_08.txt) | Original view 08 | 1 | Ready |
+
+Original full text: [archived MW05_B](../../../04_tracking/archive/memory_grids_before_single_views/17_MW05_COURT_FILE_B.md). New output IDs stay unbound until images exist.

@@ -54,7 +54,7 @@ Megőrzött forrás: 08, jobb alsó — esős buszablak, valódi táj és termé
 
 Megőrzött forrás: 10 — nemzetközi munka, hosszú munkanap, könyvelés, három külön információforrás; 11 — szabályváltozás, portál, telefonos javítás, kommunikációs végpontok; 12 bal felső — javított és korábbi nyomtatvány.
 
-### [15_MW04_POLICE_DEFENCE_C.txt](15_MW04_POLICE_DEFENCE_C.txt)
+### [SINGLE_VIEWS.md#mw04-c](SINGLE_VIEWS.md#mw04-c)
 
 - 2: DOMESTIC BELONGINGS DURING THE SEARCH.
 - 3: UNFINISHED DEFENCE-FILE HANDOFF.
@@ -62,7 +62,7 @@ Megőrzött forrás: 10 — nemzetközi munka, hosszú munkanap, könyvelés, h�
 
 Megőrzött forrás: 13 — postás-bejelentkezés, belépés, házkutatás és a kokainkeresésről szóló megszólalás; 14 — operált lábra lépés, ujjlenyomat, helyettes és továbbirányítás; 15 bal felső — rendőrnő elfojtott mosolya.
 
-### [17_MW05_COURT_FILE_B.txt](17_MW05_COURT_FILE_B.txt)
+### [SINGLE_VIEWS.md#mw05-b](SINGLE_VIEWS.md#mw05-b)
 
 - 3: SELF-MADE WANTED-PAGE JOKE.
 - 4: FICTIONAL CARDBOARD FIGURE WITH ITS RIDICULOUS HAT.

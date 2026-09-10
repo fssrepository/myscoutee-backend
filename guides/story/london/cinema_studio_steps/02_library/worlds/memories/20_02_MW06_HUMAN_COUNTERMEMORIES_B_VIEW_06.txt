@@ -1,10 +1,7 @@
 REFERENCE ID: MW06_B_02 — ORIGINAL VIEW 06 (never print IDs, headings or labels).
 
-REFERENCE SETUP INCOMPLETE: MW05
-Do not generate until these references are bound.
-
 REFERENCE INPUTS:
-@UNBOUND_MW05 = Use original view 1 of the accepted MW05_A page for the same judge and hearing-room work surface.
+@loc_MYS_mys-mw05-a-court-file_s0_v1 = Use original view 1 of the accepted MW05_A page for the same judge and hearing-room work surface.
 @char_MYS_mys-c01-protagonist_s0_v1 = CHARACTER 01 — PROTAGONIST; exact person identity; use only where this person appears.
 @char_MYS_mys-c27-judge_s0_v1 = CHARACTER 27 — JUDGE; exact person identity; use only where this person appears.
 

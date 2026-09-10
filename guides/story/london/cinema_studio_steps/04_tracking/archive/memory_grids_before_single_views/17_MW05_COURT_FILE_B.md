@@ -1,12 +1,16 @@
-REFERENCE ID: MW04_POLICE_DEFENCE_C (never print IDs, headings or panel labels).
+# MW05_B — superseded 4K sheet
 
-PAGE CONTINUITY INPUT: @loc_MYS_mys-mw04-a-police-defence_s0_v1 supplies the accepted Page A identities, shared material palette and any recurring room geometry. New places explicitly assigned to this page retain their own stated setting; do not copy Page A into every cell.
+Replaced by MW05_B_01–MW05_B_04 at user request. Existing Higgsfield media is retained.
+
+```text
+REFERENCE ID: MW05_COURT_FILE_B (never print IDs, headings or panel labels).
 
 REFERENCE INPUTS:
 @char_MYS_mys-c01-protagonist_s0_v1 = CHARACTER 01 — PROTAGONIST; exact person identity; use only where this person appears.
-@char_MYS_mys-c03-policewoman_s0_v1 = CHARACTER 03 — POLICEWOMAN; exact person identity; use only where this person appears.
-@char_MYS_mys-c25-search-officer-male_s0_v1 = CHARACTER 25 — SEARCH OFFICER — MALE; exact person identity; use only where this person appears.
-@char_MYS_mys-c26-defence-office-substitute_s0_v1 = CHARACTER 26 — DEFENCE-OFFICE SUBSTITUTE; exact person identity; use only where this person appears.
+@char_MYS_mys-c28-forensic-expert-a_s0_v1 = CHARACTER 28 — FORENSIC EXPERT A; exact person identity; use only where this person appears.
+@char_MYS_mys-c29-forensic-expert-b_s0_v1 = CHARACTER 29 — FORENSIC EXPERT B; exact person identity; use only where this person appears.
+@char_MYS_mys-c30-court-clerk_s0_v1 = CHARACTER 30 — COURT CLERK; exact person identity; use only where this person appears.
+@char_MYS_mys-c31-anonymous-fictional-cardboard-public-figure_s0_v1 = CHARACTER 31 — ANONYMOUS FICTIONAL CARDBOARD PUBLIC FIGURE; exact person identity; use only where this person appears.
 
 OUTPUT GEOMETRY — ONE 4K 2×2 REFERENCE PAGE:
 Generate ONE photographic 3840×2160 widescreen 16:9 image. Exactly FOUR equal edge-to-edge 1920×1080 cells in a 2×2 grid, without gutters, margins, letterboxing, labels, headings or captions. Select 4K for the entire output. Cell order is top-left, top-right, bottom-left, bottom-right. This is one image output, not four separate jobs.
@@ -29,48 +33,46 @@ Each cell must be a usable literal location/event reference, not an illustration
 
 IDENTITY ANCHORS — REQUIRED:
 Use CHARACTER 01 — PROTAGONIST wherever the protagonist appears.
-Use CHARACTER 03 — POLICEWOMAN for the recurring policewoman, especially original view 6 and 9.
-Use CHARACTER 25 — SEARCH OFFICER — MALE in the apartment-search sequence, especially the accidental-foot-step memory.
-Use CHARACTER 26 — DEFENCE-OFFICE SUBSTITUTE for the discontinuous appointed-defence handoff in original view 7.
-Other background officers may remain anonymous, but do not replace or merge the fixed identities above.
+Use CHARACTER 28 — FORENSIC EXPERT A and CHARACTER 29 — FORENSIC EXPERT B together in the two-expert examination memory.
+Use CHARACTER 30 — COURT CLERK in the recording/evidence-request memory.
+Use CHARACTER 31 — ANONYMOUS FICTIONAL CARDBOARD PUBLIC FIGURE for the cardboard absurdity memory; it must remain non-identifiable and must not resemble a real politician, party leader or identifiable public figure.
 
 PURPOSE:
-Build the literal police/procedure memory source bank. The tone is ordinary institutional reality containing moments of vulnerability, confusion and humanity — not an action thriller and not a conspiracy tableau.
+Build the literal court/file/classification memory source bank: hearing, assets, retained belongings, forensic examination, documents replacing biography, complaint routes and black humour used as a human response to an absurd process.
 
-PAGE C OF MW04: The four slots retain provenance numbers 9, 1, 7, 8. The repeated slots now supply the distinct supplementary content specified below; these numbers do not instruct a repeat of an earlier image. Render ONLY the four cell assignments on this page. Global identity rules apply only when their person actually occurs in an assigned view.
+PAGE B OF MW05: This page contains original views 5, 6, 7, 8. Original-view numbers below are provenance identifiers, not cell positions. Render ONLY the four cell assignments on this page. Global identity rules apply only when their person actually occurs in an assigned view.
 
 REFERENCE COVERAGE FOR THE MOVING FILM:
 This page supplies the four assigned literal views, not four cuts, morph stages or interchangeable world designs. Make each view useful for its assigned purpose: room layout shows supports and an entry/exit; a gesture view retains its hand, furniture edge and background anchor; an object detail shows side/underside and contact. Different views of the SAME room preserve its floor plan, furniture, identities, clothes and light sources even when the viewpoint changes. Distinct memories remain distinct places; do not fuse them into one room to match the grid. Recurring places retain their established layout; each cell uses its explicitly assigned action and object state.
 Additional detail pages of the same place retain that memory and its established event. Keep full body/furniture support legible wherever the assigned view permits. Never substitute four nearly identical wide shots for the four assigned subjects.
 
 FOUR IMAGE ASSIGNMENTS — INSTRUCTIONS ONLY, NO PRINTED TEXT:
-For the top left image (source view 09; instruction only, never printed):
-Human break-through inside procedure: the POLICEWOMAN or another officer struggles not to laugh / gives a small embarrassed smile during a formal moment. Nothing procedural changes; the role and the person briefly coexist.
+For the top left image (source view 05; instruction only, never printed):
+Forensic-examination memory with two expert chairs / two experts. The protagonist is calm and cooperative; the experts' reactions differ. Do not imply a single unified expert voice.
 
-Retain the same formal desk and people from the processing context. The policewoman mouth corners lift slightly and her eyes briefly soften while her hands remain near the unchanged paperwork or fingerprint task. Include the protagonist response at a different depth. The human expression changes without transforming the room or implying a procedural resolution.
+Give Expert A and Expert B separate chairs, faces, note positions and eyelines toward the protagonist. One may look directly while the other checks a page; keep both reactions ordinary and distinct. Show the table edge and the gap between their chairs. Never merge them into one person or duplicate the same face to imply agreement.
 
-For the top right image (source view 01; instruction only, never printed):
-DOMESTIC BELONGINGS DURING THE SEARCH:
-The established search officer holds an ordinary open household bag on a domestic table while the protagonist indicates which belongings fit inside it. Clothing, loose charging leads and mundane papers remain ordinary possessions, supported by the bag or table. Show the bag's lining, zip track, fabric handles and the officer's separated working hands.
+For the top right image (source view 06; instruction only, never printed):
+Clerk / recording / evidence-request memory: phone, hearing paperwork, request for official recording or witnesses/evidence, and the practical response that the route is costly or deferred. Keep written text mostly unreadable.
 
-Retain the apartment cabinet, the already opened drawer or shelf, and the real entrance with its intercom and threshold behind. This belongs to the same restrained search; no discovered contraband, incriminating label, evidence marker or deliberate damage is invented. The door-opening announcement and entry remain in MW04_A; this cell adds the actual container and household belongings being inspected.
+Place the clerk behind a practical desk with phone and hearing documents, the protagonist opposite or beside the counter. The clerk indicates a paper or record area while listening. Show the handset support, document stack and actual desk depth. The cost or deferral belongs to the story; avoid invented readable fees, formal quotations or a visible final decision.
 
 For the bottom left image (source view 07; instruction only, never printed):
-UNFINISHED DEFENCE-FILE HANDOFF:
-At the defence-office consultation area, the protagonist stands with his open folder balanced on the desk edge while C26, the established office substitute, holds a second closed file against their body. One loose page remains in the protagonist's hand between them; neither person has taken ownership of the whole set. Their different files and the incomplete handover are the subject.
+SELF-MADE WANTED-PAGE JOKE:
+The protagonist assembles one small self-made "THE SYSTEM'S MOST WANTED" satirical page on his ordinary desk. A cut paper portrait, glue stick, scissors lying closed and uneven paper edges make the personal construction evident. His hands press one corner flat while the rest of the page lies supported on the table.
 
-Keep the modest consultation desk, spare chair, doorway and C26's exact face and conservative clothing. The expected appointed lawyer does not appear, even as a portrait or ghost. The substitute listens with ordinary uncertainty, without villainy, refusal text or an invented legal outcome. The seated introduction is already in MW04_B; this is the practical paperwork discontinuity within that contact.
+Keep the phrase modest in size and the surrounding papers mundane. This is homemade absurdism, never a police notice, database, real allegation or official wanted poster. Preserve his actual unchanged face in any printed portrait. The separate impossible police-career CV/application joke belongs to MW05_C, so this cell contains only the handmade wanted-page object, without a second miniature composition.
 
 For the bottom right image (source view 08; instruction only, never printed):
-WAITING BENCH BETWEEN CONTACT ATTEMPTS:
-The protagonist sits on an ordinary corridor waiting bench with his folder upright against his knees, a phone resting silently in one hand and his coat gathered beside him. The main physical arrangement is a waiting person, bench, coat and the closed doors along the corridor. One anonymous staff member continues an ordinary task at the office counter without directing or confronting him.
+FICTIONAL CARDBOARD FIGURE WITH ITS RIDICULOUS HAT:
+One anonymous fictional cardboard public figure stands on its simple support with the deliberately ridiculous hat resting on its flat printed head. The physical board, silly hat and empty place in front of the cutout are the subjects of this source. Resolve cardboard thickness, rear brace, hat material and actual base contact with desk or floor.
 
-Retain the corridor's real floor, door jambs, counter and practical light. The phone screen carries no fabricated missed-call total, named institution or decision. His fingers hold the device naturally while the folder has visible thickness and floor/leg support. This supplies the waiting interval between the phone and redirection attempts preserved in MW04_B, with no new refusal or dramatic abandonment.
+Use the established C31 fictional design, never a real politician or living official. Retain the asylum-request black-humour context without adding party branding, a campaign slogan, recognizable office, policy statement or official response. The protagonist addressing this prop with his request papers is assigned separately to MW05_C; here the prop remains an intact ordinary constructed object in the same room.
 
 FINAL CHECK:
 Exactly one 16:9 image.
 Exactly four 1920×1080 photographic cells on this 3840×2160 2×2 page.
-Direct literal police/defence memories only.
+Direct literal court/file/black-humour memories only.
 No present-city reflection composite.
 No score cards.
 
@@ -87,3 +89,4 @@ These are remembered or clinical people, not current-city pedestrians. Keep ever
 
 NO UMBRELLAS — EVERY CELL:
 No umbrellas anywhere in this image: none open, folded, carried, tucked into a bag, leaning against a wall, mounted over a table or held above a head. Do not copy an umbrella from an input reference. Outdoor present-city people have uncovered heads, hoods down and exposed hair; leave open air above every crown. Keep the specified weather for this scene. This restriction applies to the foreground, background, reflections and all cells of the sheet.
+```

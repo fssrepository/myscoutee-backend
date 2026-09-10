@@ -166,9 +166,18 @@ MW02_C_03,02_library/worlds/memories/09_03_MW02_GLOBAL_ROUTES_C_VIEW_07.txt,worl
 MW02_C_04,02_library/worlds/memories/09_04_MW02_GLOBAL_ROUTES_C_VIEW_08.txt,worlds/memories,yes,2K,single full-frame 16:9,2,1,0,2,PLANNED_NOT_CHARGED
 MW03_B,02_library/worlds/memories/11_MW03_WORK_RULE_CHANGE_ADMIN_B.txt,worlds/memories,yes,4K,4K 2x2 page B,4,1,0,4,PLANNED_NOT_CHARGED
 MW03_C,02_library/worlds/memories/12_MW03_WORK_RULE_CHANGE_ADMIN_C.txt,worlds/memories,yes,4K,4K 2x2 page C,4,1,0,4,PLANNED_NOT_CHARGED
-MW04_B,02_library/worlds/memories/14_MW04_POLICE_DEFENCE_B.txt,worlds/memories,yes,4K,4K 2x2 page B,4,1,0,4,PLANNED_NOT_CHARGED
-MW04_C,02_library/worlds/memories/15_MW04_POLICE_DEFENCE_C.txt,worlds/memories,yes,4K,4K 2x2 page C,4,1,0,4,PLANNED_NOT_CHARGED
-MW05_B,02_library/worlds/memories/17_MW05_COURT_FILE_B.txt,worlds/memories,yes,4K,4K 2x2 page B,4,1,0,4,PLANNED_NOT_CHARGED
+MW04_B_01,02_library/worlds/memories/14_01_MW04_POLICE_DEFENCE_B_VIEW_05.txt,worlds/memories,yes,2K,single full-frame 16:9,2,1,0,2,PLANNED_NOT_CHARGED
+MW04_B_02,02_library/worlds/memories/14_02_MW04_POLICE_DEFENCE_B_VIEW_06.txt,worlds/memories,yes,2K,single full-frame 16:9,2,1,0,2,PLANNED_NOT_CHARGED
+MW04_B_03,02_library/worlds/memories/14_03_MW04_POLICE_DEFENCE_B_VIEW_07.txt,worlds/memories,yes,2K,single full-frame 16:9,2,1,0,2,PLANNED_NOT_CHARGED
+MW04_B_04,02_library/worlds/memories/14_04_MW04_POLICE_DEFENCE_B_VIEW_08.txt,worlds/memories,yes,2K,single full-frame 16:9,2,1,0,2,PLANNED_NOT_CHARGED
+MW04_C_01,02_library/worlds/memories/15_01_MW04_POLICE_DEFENCE_C_VIEW_09.txt,worlds/memories,yes,2K,single full-frame 16:9,2,1,0,2,PLANNED_NOT_CHARGED
+MW04_C_02,02_library/worlds/memories/15_02_MW04_POLICE_DEFENCE_C_VIEW_01.txt,worlds/memories,yes,2K,single full-frame 16:9,2,1,0,2,PLANNED_NOT_CHARGED
+MW04_C_03,02_library/worlds/memories/15_03_MW04_POLICE_DEFENCE_C_VIEW_07.txt,worlds/memories,yes,2K,single full-frame 16:9,2,1,0,2,PLANNED_NOT_CHARGED
+MW04_C_04,02_library/worlds/memories/15_04_MW04_POLICE_DEFENCE_C_VIEW_08.txt,worlds/memories,yes,2K,single full-frame 16:9,2,1,0,2,PLANNED_NOT_CHARGED
+MW05_B_01,02_library/worlds/memories/17_01_MW05_COURT_FILE_B_VIEW_05.txt,worlds/memories,yes,2K,single full-frame 16:9,2,1,0,2,PLANNED_NOT_CHARGED
+MW05_B_02,02_library/worlds/memories/17_02_MW05_COURT_FILE_B_VIEW_06.txt,worlds/memories,yes,2K,single full-frame 16:9,2,1,0,2,PLANNED_NOT_CHARGED
+MW05_B_03,02_library/worlds/memories/17_03_MW05_COURT_FILE_B_VIEW_07.txt,worlds/memories,yes,2K,single full-frame 16:9,2,1,0,2,PLANNED_NOT_CHARGED
+MW05_B_04,02_library/worlds/memories/17_04_MW05_COURT_FILE_B_VIEW_08.txt,worlds/memories,yes,2K,single full-frame 16:9,2,1,0,2,PLANNED_NOT_CHARGED
 MW05_C,02_library/worlds/memories/18_MW05_COURT_FILE_C.txt,worlds/memories,yes,4K,4K 2x2 page C,4,1,0,4,PLANNED_NOT_CHARGED
 MW06_B_01,02_library/worlds/memories/20_01_MW06_HUMAN_COUNTERMEMORIES_B_VIEW_05.txt,worlds/memories,yes,2K,single full-frame 16:9,2,1,0,2,PLANNED_NOT_CHARGED
 MW06_B_02,02_library/worlds/memories/20_02_MW06_HUMAN_COUNTERMEMORIES_B_VIEW_06.txt,worlds/memories,yes,2K,single full-frame 16:9,2,1,0,2,PLANNED_NOT_CHARGED
