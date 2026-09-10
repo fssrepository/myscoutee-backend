@@ -1,6 +1,6 @@
 # Reference mentions for the whole pack
 
-Prepared expansion: [22 four-state morph sheets](../02_library/morphs/README.md) and [28 memory/clinical coverage pages](../02_library/memories/README.md), alongside the existing 21 normal-world pages. The indexes distinguish source inputs, output containers, verified mentions and unrendered prompts. Multiple pages can support one film block; no source-image page is an edit instruction.
+Prepared expansion: [22 four-state morph sheets](../02_library/morphs/README.md) and [28 memory/clinical coverage pages](../02_library/memories/README.md), alongside the existing 21 normal-world pages. Morph-image prompts are standalone text-only jobs with no required image inputs or Element mentions. The resulting sheets can later be attached to video. The indexes distinguish output containers, verified video mentions and unrendered prompts. Multiple pages can support one film block; no source-image page is an edit instruction.
 
 The creator has verified that pasting a real Element mention automatically loads its image. The assistant maintains the mapping once in `reference_bindings` in [source_manifest.json](../04_tracking/source_manifest.json), then updates every affected prompt and guide. The creator does not rewrite references file by file.
 

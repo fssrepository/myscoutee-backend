@@ -1,3 +1,7 @@
+## Current morph input policy — 2026-09-10
+
+The creator removed input-reference requirements from morph image generation. All 22 four-state prompts (MR001–MR020, R008 and R009 studies) are now self-contained text-only jobs: no @ mentions, missing-input gates or source-image prerequisites. Four distinct cells remain: source, first intermediate, second intermediate, destination. The detailed radical geometry is retained. Generated sheets can later serve as video inputs; output binding is a separate step. The café sheet describes occupancy and construction but does not claim exact cast identity from text alone. No generation occurred. This supersedes the older image-input requirements in the history below.
+
 # Guided production session
 
 ## Current all-morph revision — 2026-09-10

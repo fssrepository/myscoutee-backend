@@ -50,7 +50,7 @@ Architectural identity checked against the official [UK Parliament tower descrip
 
 ## Parallel preparation of the five pilot images
 
-First wave: R011, R006, R002 and R008 can be submitted independently using the existing accepted inputs specified below. Render one 16:9 image per Element in the creator's covered Higgsfield web workflow. If the interface admits fewer concurrent jobs, leave the remainder for its available queue; no parallel capacity is assumed or verified here. R002 and R008 each request several views within that one output image.
+First wave: R011, R006, R002 and R008 can be submitted independently with the setup specified below; the R008 morph sheet is text-only. Render one 16:9 image per Element in the creator's covered Higgsfield web workflow. If the interface admits fewer concurrent jobs, leave the remainder for its available queue; no parallel capacity is assumed or verified here. R002 and R008 each request several views within that one output image.
 
 Second wave: once R011 is rendered and accepted as the London source, use it for R001's inhabited rating-card image. This is the only dependency between the five new images. Inspect all five before using them in the next paid video test. No job has been submitted by preparing this order.
 
@@ -106,13 +106,13 @@ Attach the accepted complete source and destination cathedral images. Prepare th
 
 [R008_CAFE_OPENING_AND_FURNITURE_CONSTRUCTION_DETAILS.txt](../morphs/R008_CAFE_OPENING_AND_FURNITURE_CONSTRUCTION_DETAILS.txt)
 
-Attach the accepted restaurant still and existing London world image. Use only the world image’s London café/brick details for the source structure, not its Budapest skyline. Preserve the woman, remembered man and exact furniture identities whenever they are visible. The new R011 image is not a prerequisite.
+Standalone text-only 4K 2×2 material study. Paste the complete prompt without image inputs or Element mentions. Its room and scale figures are described in the prompt; final film identities remain supplied by the video’s character references.
 
 ### R009 — Fanlight-to-canopy joint study for the Extend
 
 [R009_FANLIGHT_TO_CANOPY_JOINT_STUDY_FOR_THE_EXTEND.txt](R009_FANLIGHT_TO_CANOPY_JOINT_STUDY_FOR_THE_EXTEND.txt)
 
-Use the accepted source video endpoint or its next visible arch to define the arch, stone and glazing before adding detail.
+Standalone text-only 4K 2×2 material study. The prompt describes the stone arch, fanlight, two different intermediate structures and complete canopy; no source image or video endpoint is required to generate this sheet.
 
 ### R010 — Winged statue, plinth and contact detail
 
