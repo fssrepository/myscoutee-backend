@@ -455,7 +455,7 @@
       ],
       "source_prompt_sha256": "717f8a13a997263b4988a3087369787649a75542e70f60f5bc32565a4a5fc759",
       "file": "02_library/worlds/memories/MW01_LONDON_SOCIAL_A.txt",
-      "file_sha256": "05255640c282507e63e4415e333186473de4613f1f97ac7b14369026688cb17e",
+      "file_sha256": "e1de75be3f132963a76ab61ec831506655adf7d30ab265eae3add0c17209b4a7",
       "changes": "Verbatim fenced prompt; explicit centrally maintained reference inputs Grid geometry uses the full selected image resolution instead of fixed pixel examples."
     },
     {
@@ -467,7 +467,7 @@
       ],
       "source_prompt_sha256": "6e25c11571314fb9f353911cdd369b867c1b90a45dcc5228ce69c24e48b7ba9c",
       "file": "02_library/worlds/memories/MW02_GLOBAL_ROUTES_A.txt",
-      "file_sha256": "fad2e4867946d0f478cea30927c18644af1e81f22e53cf4ce7ac5f243e971a3f",
+      "file_sha256": "753ee87a61531b7bf2c77bdbb664beb86bc7e0730e07d26d3e35452f772d3054",
       "changes": "Verbatim fenced prompt; explicit centrally maintained reference inputs; rural memory grounded in creator's Orosháza paprika/corn-field childhood Grid geometry uses the full selected image resolution instead of fixed pixel examples."
     },
     {
@@ -479,7 +479,7 @@
       ],
       "source_prompt_sha256": "374ea4b6d0ac33d692653a08a02e706d01e0f45e4279451b364aba2f7263928d",
       "file": "02_library/worlds/memories/MW03_WORK_RULE_CHANGE_ADMIN_A.txt",
-      "file_sha256": "44fb66f104a7ae085aaaca62210fd3e30aea7b41d638232cc9edfd2ff03bde15",
+      "file_sha256": "28ef82464749baae3fb58696e1d4e1fb0f6523e84e76afa1fb73ea68b2abaf43",
       "changes": "Verbatim fenced prompt; explicit centrally maintained reference inputs Grid geometry uses the full selected image resolution instead of fixed pixel examples."
     },
     {
@@ -491,7 +491,7 @@
       ],
       "source_prompt_sha256": "7eacf040519edefdb7aa215ca4fb1e1c6524f4ed06dc69d6ef758048002745f9",
       "file": "02_library/worlds/memories/MW04_POLICE_DEFENCE_A.txt",
-      "file_sha256": "52da4a3d2a5f422432bd45f06aa815c0af63349ab96216b80915f49bc5b344b4",
+      "file_sha256": "67af459fccb5473c5ef74593f690580443c02a2392335c034185ad30e9dfb583",
       "changes": "Verbatim fenced prompt; explicit centrally maintained reference inputs Grid geometry uses the full selected image resolution instead of fixed pixel examples."
     },
     {
@@ -503,7 +503,7 @@
       ],
       "source_prompt_sha256": "cac300bae4bd6f33e50ec5936c56622c5858e341d0494d281a87e70ed4ee9a04",
       "file": "02_library/worlds/memories/MW05_COURT_FILE_A.txt",
-      "file_sha256": "3338f1409eaa51b97b03bddebe892c855667dbe4e77e7f78bb64a07d7c3d2e26",
+      "file_sha256": "01805730406c80061c3e80b945f0383ecfa3f23edc9826b92a0460951582cc42",
       "changes": "Verbatim fenced prompt; explicit centrally maintained reference inputs Grid geometry uses the full selected image resolution instead of fixed pixel examples."
     },
     {
@@ -515,7 +515,7 @@
       ],
       "source_prompt_sha256": "d53e141d60aa5359c28d8695bb7cb84134a480bf043551062606e199558cda02",
       "file": "02_library/worlds/memories/MW06_HUMAN_COUNTERMEMORIES_A.txt",
-      "file_sha256": "b07e12310ae79577503d7155a4b3f89e48fa19a54a22c4cafab866e2019a6489",
+      "file_sha256": "5355eeed7dfc92d48609aa0c06de28d5469b52d96a50626c7cd05707179a3821",
       "changes": "Verbatim fenced prompt; explicit centrally maintained reference inputs Grid geometry uses the full selected image resolution instead of fixed pixel examples."
     },
     {
@@ -527,7 +527,7 @@
       ],
       "source_prompt_sha256": "16bf4be44836d9fb010f7825cc24770d0ce78cbd05373fc417d2155eba6ae1e1",
       "file": "02_library/worlds/memories/MWP01_ROUTES_ROOMS_DOCUMENTS_A.txt",
-      "file_sha256": "d5a6ed23ca4b4d9cc22018c07970da32d503c9a030714b7279f9a6b5fe46b8ef",
+      "file_sha256": "849137b32d1a6ed056306d52b23ebfef44c9206d8eb4e14b96856914f80b8c4b",
       "changes": "Verbatim fenced prompt; explicit centrally maintained reference inputs; rural memory grounded in creator's Orosháza paprika/corn-field childhood Grid geometry uses the full selected image resolution instead of fixed pixel examples."
     },
     {
@@ -539,7 +539,7 @@
       ],
       "source_prompt_sha256": "557e0016d71cfd83bfd2c240538a5a77f6b6d8785ceb0f79bb97e387e1ccbd6f",
       "file": "02_library/worlds/memories/MWP02_SYSTEM_TIME_REVERSALS_A.txt",
-      "file_sha256": "52ddbebc660e5281aabd890c6996fa23041d44301c02d9e5a9106740c517afb0",
+      "file_sha256": "eca084c19c6c7b2bba92709b2a589ec47c19ba7a958760f5e0f7ee68f2d58121",
       "changes": "AI-specific screen becomes ordinary document cursor; citizen/review beat retained; explicit centrally maintained reference inputs Grid geometry uses the full selected image resolution instead of fixed pixel examples."
     },
     {
@@ -551,7 +551,7 @@
       ],
       "source_prompt_sha256": "521c52dc6be7a4c8e015a67fab11b219bc387a315f00463f84acb191c81fc773",
       "file": "02_library/worlds/memories/HRW07_CLINICAL_REALITY_A.txt",
-      "file_sha256": "25bdf2bf95ee4e7cdc7921deb72d7ec37c247325f49c10afcaf10ea9c52337fc",
+      "file_sha256": "55e2881a68cb0d5cd4a8f39fcf514cbda51ba338621a4d47479f08e90b6a38bf",
       "changes": "Verbatim fenced prompt; explicit centrally maintained reference inputs Grid geometry uses the full selected image resolution instead of fixed pixel examples."
     },
     {
@@ -899,7 +899,7 @@
       ],
       "source_prompt_sha256": "76a53b46490f7087051a6b61360543112b874118c1dec4b28d592f08a5c3ed46",
       "file": "03_film/01/storyboard.txt",
-      "file_sha256": "09706ec8473764c3dc477b772859bb8cb6299537e0cd668657404733dc170166",
+      "file_sha256": "5faa13331c50b743584af0e0fa2522e9ad06e9118f41079456f0fddb5a7eedac",
       "changes": "All nine beats retained; requested camera/architecture added; card and AI-screen contradictions corrected; SB06 memory dependencies repaired; explicit centrally maintained reference inputs Grid geometry uses the full selected image resolution instead of fixed pixel examples."
     },
     {
@@ -923,7 +923,7 @@
       ],
       "source_prompt_sha256": "d111e179fa9211ddb262d74468ee38305f1776d75138a0c33a3e229ff58dff3d",
       "file": "03_film/01/video.txt",
-      "file_sha256": "ed676b1a5bbb0d341590c9287a22696d93f569ef13ec0e0c431657246eeff205",
+      "file_sha256": "7f68344b53fcda625d06c78a01e66dcbbb2a7ebb6841b6e9eca7c0d3c423e9d9",
       "changes": "Operator/retry prose and repeated rules removed; all nine story beats retained; camera/architecture updated; audio cues follow visuals; reveal and reference contradictions repaired; Verified C01/C02 Element IDs substituted for local aliases; explicit reference binding; original Hungarian folk-rooted score and synchronized material transformation foley; researched Dél-Alföld tekerő/clarinet arrangement, phrase-synchronized facade motion, explicit protagonist inner monologue"
     },
     {
@@ -935,7 +935,7 @@
       ],
       "source_prompt_sha256": "28ff9c6f1fdfeb4618c4696283c1e38722a62ee2792af219b5b9f14cc9bcfc29",
       "file": "03_film/02/storyboard.txt",
-      "file_sha256": "6386c2ef3e3f7c30775aabf93b752698e6dc53913fc92078360774069364c6c0",
+      "file_sha256": "996ad07df02c37fffd7f6cf23244233f2c3e78c63f6b6167a2f2ae5ecba24925",
       "changes": "All nine beats retained; requested camera/architecture added; card and AI-screen contradictions corrected; SB06 memory dependencies repaired; explicit centrally maintained reference inputs; rural memory grounded in creator's Orosháza paprika/corn-field childhood Grid geometry uses the full selected image resolution instead of fixed pixel examples."
     },
     {
@@ -959,7 +959,7 @@
       ],
       "source_prompt_sha256": "1ee3bb2feea06f9cb11dac2f33cac0b6c8a0735bc0a73938e537a716ad9146ba",
       "file": "03_film/02/video.txt",
-      "file_sha256": "6afc59364be2db47d1d8ca793b6b53b8c8874478c08189fd06b661fed3b9ef4b",
+      "file_sha256": "71817f5f987c5aeec396b690a6b96ef5d73f5d8596bcdb248109fc0a2a2d4164",
       "changes": "Operator/retry prose and repeated rules removed; all nine story beats retained; camera/architecture updated; audio cues follow visuals; reveal and reference contradictions repaired; Verified C01/C02 Element IDs substituted for local aliases; explicit reference binding; original Hungarian folk-rooted score and synchronized material transformation foley; researched Dél-Alföld tekerő/clarinet arrangement, phrase-synchronized facade motion, explicit protagonist inner monologue; rural memory grounded in creator's Orosháza paprika/corn-field childhood Continuation preserves narrator timbre and a natural breath over an uninterrupted sound bed."
     },
     {
@@ -971,7 +971,7 @@
       ],
       "source_prompt_sha256": "533e440baa4117a4d2f7733e327dfca304ea8a54d066010cc8ab8722cadb259c",
       "file": "03_film/03/storyboard.txt",
-      "file_sha256": "9e7b2ef282b2fef22e7ad5e48d74730b78792a3dc42b89104d5bf6696e2a8085",
+      "file_sha256": "4c8a20423856f21b53d004d3901cce8bceb25f580bd9053ca6162128fa504320",
       "changes": "All nine beats retained; requested camera/architecture added; card and AI-screen contradictions corrected; SB06 memory dependencies repaired; explicit centrally maintained reference inputs Grid geometry uses the full selected image resolution instead of fixed pixel examples."
     },
     {
@@ -995,7 +995,7 @@
       ],
       "source_prompt_sha256": "4970f288124db4473bf4af10c0fb6a9d66f5bae619718ed4d3907489e0c8cc95",
       "file": "03_film/03/video.txt",
-      "file_sha256": "31a679345aa235d9bd29a7c3224fbcb0b35f986846f725ed22932fe76731b55e",
+      "file_sha256": "fedc87894b9cbe5f22b78dea5a006b0d63f0b52465e9bc9a43388e590e65f59f",
       "changes": "Operator/retry prose and repeated rules removed; all nine story beats retained; camera/architecture updated; audio cues follow visuals; reveal and reference contradictions repaired; Verified C01/C02 Element IDs substituted for local aliases; explicit reference binding; original Hungarian folk-rooted score and synchronized material transformation foley; researched Dél-Alföld tekerő/clarinet arrangement, phrase-synchronized facade motion, explicit protagonist inner monologue Continuation preserves narrator timbre and a natural breath over an uninterrupted sound bed."
     },
     {
@@ -1007,7 +1007,7 @@
       ],
       "source_prompt_sha256": "5459cc1d93853c47aacf113a3e593f61ee6cb49aa0fe81079b89706e0588086a",
       "file": "03_film/04/storyboard.txt",
-      "file_sha256": "fca512191674ba15ed6ef03ff1b948b9e4873c4fbbc2cb0822aeb81f92078013",
+      "file_sha256": "12db6b2553fe3d2948b1ac2e31fb268f17ee613a3d7af9c1c7fd591658f320bb",
       "changes": "All nine beats retained; requested camera/architecture added; card and AI-screen contradictions corrected; SB06 memory dependencies repaired; explicit centrally maintained reference inputs Grid geometry uses the full selected image resolution instead of fixed pixel examples."
     },
     {
@@ -1031,7 +1031,7 @@
       ],
       "source_prompt_sha256": "dcfdef2b9227d2f0528bbca68b9dad63fc71b2087b289dbfbb25c8dfb8ff6370",
       "file": "03_film/04/video.txt",
-      "file_sha256": "ae022f0871e46d7b10f45b470e38593b7fce2bd9270e74fdc3583a94f97a001f",
+      "file_sha256": "774a26154a0b4ff607eaadb8b61d022dffb57d02daa32e9bd20d131caf07d4d2",
       "changes": "Operator/retry prose and repeated rules removed; all nine story beats retained; camera/architecture updated; audio cues follow visuals; reveal and reference contradictions repaired; Verified C01/C02 Element IDs substituted for local aliases; explicit reference binding; original Hungarian folk-rooted score and synchronized material transformation foley; researched Dél-Alföld tekerő/clarinet arrangement, phrase-synchronized facade motion, explicit protagonist inner monologue Continuation preserves narrator timbre and a natural breath over an uninterrupted sound bed."
     },
     {
@@ -1043,7 +1043,7 @@
       ],
       "source_prompt_sha256": "e80c1062f8699884509043c0dc23d9205573f2eae58119513f6f3bdb1d3cf9b1",
       "file": "03_film/05/storyboard.txt",
-      "file_sha256": "9d185140f56cd07669528675bf5fc7892d90e94defa78af58ddc4836a455b77b",
+      "file_sha256": "a924c56de7727105af680c338caffc5e833983ad8ba23fd321014b0dd78eaadd",
       "changes": "All nine beats retained; requested camera/architecture added; card and AI-screen contradictions corrected; SB06 memory dependencies repaired; explicit centrally maintained reference inputs Grid geometry uses the full selected image resolution instead of fixed pixel examples."
     },
     {
@@ -1067,7 +1067,7 @@
       ],
       "source_prompt_sha256": "2c24d5a0b90307baa614606b633838697ec3355e0dbb1df515d095dee403fdd6",
       "file": "03_film/05/video.txt",
-      "file_sha256": "f754cc0ebc4a9f348630d5aa57bcb2f6635243cffe9606d7630cceacb8106dd0",
+      "file_sha256": "37be644462a000422e96895e2a52dfbd02d845898acc2a0b8a6739a25c0ac3d5",
       "changes": "Operator/retry prose and repeated rules removed; all nine story beats retained; camera/architecture updated; audio cues follow visuals; reveal and reference contradictions repaired; Verified C01/C02 Element IDs substituted for local aliases; explicit reference binding; original Hungarian folk-rooted score and synchronized material transformation foley; researched Dél-Alföld tekerő/clarinet arrangement, phrase-synchronized facade motion, explicit protagonist inner monologue Continuation preserves narrator timbre and a natural breath over an uninterrupted sound bed."
     },
     {
@@ -1079,7 +1079,7 @@
       ],
       "source_prompt_sha256": "6e57e8c9f69656463159011cd13b16d6b88d02db6738131013a82f4f5f778aec",
       "file": "03_film/06/storyboard.txt",
-      "file_sha256": "a821a00a1c84c216383659ac163af57af43d75e637d7205530e74114388591cb",
+      "file_sha256": "0f651fbe881bed1ba58a61d033bd1c8ae138afb3b491bb8b1e5c7bfe95f06335",
       "changes": "All nine beats retained; requested camera/architecture added; card and AI-screen contradictions corrected; SB06 memory dependencies repaired; explicit centrally maintained reference inputs Grid geometry uses the full selected image resolution instead of fixed pixel examples."
     },
     {
@@ -1103,7 +1103,7 @@
       ],
       "source_prompt_sha256": "52008590a700611bd6959ec7ae9cb86efeb01101257fce007de3b9eaa75417e6",
       "file": "03_film/06/video.txt",
-      "file_sha256": "ed54894701d8d4ae22f498b2bc9893d55a4c782b85f868d24948fbf107e5ac76",
+      "file_sha256": "02e7a77c47101f264680ae5bc0b7deb8d31adcccfa98a94e2fe8dc4b144427fd",
       "changes": "Operator/retry prose and repeated rules removed; all nine story beats retained; camera/architecture updated; audio cues follow visuals; reveal and reference contradictions repaired; Verified C01/C02 Element IDs substituted for local aliases; explicit reference binding; original Hungarian folk-rooted score and synchronized material transformation foley; researched Dél-Alföld tekerő/clarinet arrangement, phrase-synchronized facade motion, explicit protagonist inner monologue Continuation preserves narrator timbre and a natural breath over an uninterrupted sound bed."
     },
     {
@@ -1115,7 +1115,7 @@
       ],
       "source_prompt_sha256": "2b7b76d2d3593fcff5854695f2ee366e9486822241fe7b80f3f09df0035291d4",
       "file": "03_film/07/storyboard.txt",
-      "file_sha256": "521ed06400db1e887460fbdf69bdee5873cd8d30fb142cb2b95c7e048a9d7595",
+      "file_sha256": "b180dd333f64824485b417e18d9918bab3d9092848b251daddd2ddc2a6b279f1",
       "changes": "All nine beats retained; requested camera/architecture added; card and AI-screen contradictions corrected; SB06 memory dependencies repaired; explicit centrally maintained reference inputs Grid geometry uses the full selected image resolution instead of fixed pixel examples."
     },
     {
@@ -1139,7 +1139,7 @@
       ],
       "source_prompt_sha256": "ac40bf3eee9daac90310ed6ff05a2b72832c27347255c481694023e8db6f759b",
       "file": "03_film/07/video.txt",
-      "file_sha256": "9d4e9105cd786b8fd8a6c098a8fe6ce07e5d375f7ef6bbc7300720de48cb1a76",
+      "file_sha256": "6cfa10f230ec3c557f0a5192518e1f092270b415980f9ca6c7514d2ca22c4b6e",
       "changes": "Operator/retry prose and repeated rules removed; all nine story beats retained; camera/architecture updated; audio cues follow visuals; reveal and reference contradictions repaired; Verified C01/C02 Element IDs substituted for local aliases; explicit reference binding; original Hungarian folk-rooted score and synchronized material transformation foley; researched Dél-Alföld tekerő/clarinet arrangement, phrase-synchronized facade motion, explicit protagonist inner monologue Continuation preserves narrator timbre and a natural breath over an uninterrupted sound bed."
     },
     {
@@ -1823,7 +1823,7 @@
       ],
       "source_prompt_sha256": "717f8a13a997263b4988a3087369787649a75542e70f60f5bc32565a4a5fc759",
       "file": "02_library/worlds/memories/MW01_LONDON_SOCIAL_B.txt",
-      "file_sha256": "f91c624bd53569cf8ef149e474257574b42115958b2956c23c6305bbec7125d7",
+      "file_sha256": "b6b19faa50e9f102dd61d9dc880e74c634def07f4a7a8d14e51ddfa80dbff1cb",
       "changes": "Verbatim fenced prompt; explicit centrally maintained reference inputs Grid geometry uses the full selected image resolution instead of fixed pixel examples.",
       "note": "Companion page B preserving original memory views."
     },
@@ -1836,7 +1836,7 @@
       ],
       "source_prompt_sha256": "717f8a13a997263b4988a3087369787649a75542e70f60f5bc32565a4a5fc759",
       "file": "02_library/worlds/memories/MW01_LONDON_SOCIAL_C.txt",
-      "file_sha256": "f35f7b5c753b6733579ca84f8218c4eb62002f329b4b9ef865fe40211f7396bb",
+      "file_sha256": "13602eee20c22a81e0fdaca399b2169e6e46ed48d701101a50055b98172c7043",
       "changes": "Verbatim fenced prompt; explicit centrally maintained reference inputs Grid geometry uses the full selected image resolution instead of fixed pixel examples.",
       "note": "Companion page C preserving original memory views."
     },
@@ -1849,7 +1849,7 @@
       ],
       "source_prompt_sha256": "6e25c11571314fb9f353911cdd369b867c1b90a45dcc5228ce69c24e48b7ba9c",
       "file": "02_library/worlds/memories/MW02_GLOBAL_ROUTES_B.txt",
-      "file_sha256": "873079837863544bcbe56f09ee6c5582b1b15db16ec6d13792435deea5949677",
+      "file_sha256": "f4b8d3cfd922187f19d4bfbf5246de294c297ea58c300aaff31f05e78158cec0",
       "changes": "Verbatim fenced prompt; explicit centrally maintained reference inputs; rural memory grounded in creator's Orosháza paprika/corn-field childhood Grid geometry uses the full selected image resolution instead of fixed pixel examples.",
       "note": "Companion page B preserving original memory views."
     },
@@ -1862,7 +1862,7 @@
       ],
       "source_prompt_sha256": "6e25c11571314fb9f353911cdd369b867c1b90a45dcc5228ce69c24e48b7ba9c",
       "file": "02_library/worlds/memories/MW02_GLOBAL_ROUTES_C.txt",
-      "file_sha256": "5518bbc635a95444185240631b7bf95fa7b671637d161858bd68d82d8539bf3c",
+      "file_sha256": "b083b7d3aabf48bad605b80dc9ae1321dd57a05ad24f9c1679dd0bb7cb562715",
       "changes": "Verbatim fenced prompt; explicit centrally maintained reference inputs; rural memory grounded in creator's Orosháza paprika/corn-field childhood Grid geometry uses the full selected image resolution instead of fixed pixel examples.",
       "note": "Companion page C preserving original memory views."
     },
@@ -1875,7 +1875,7 @@
       ],
       "source_prompt_sha256": "374ea4b6d0ac33d692653a08a02e706d01e0f45e4279451b364aba2f7263928d",
       "file": "02_library/worlds/memories/MW03_WORK_RULE_CHANGE_ADMIN_B.txt",
-      "file_sha256": "4b9f688c79f97b933a6319c2c30ff5ff4358b784dea5be4b32d0c5ed7be580ca",
+      "file_sha256": "6d92a71661fd1a759cc66aedba93cb89e89c778d1efb6d333a62f8fcb07c57f7",
       "changes": "Verbatim fenced prompt; explicit centrally maintained reference inputs Grid geometry uses the full selected image resolution instead of fixed pixel examples.",
       "note": "Companion page B preserving original memory views."
     },
@@ -1888,7 +1888,7 @@
       ],
       "source_prompt_sha256": "374ea4b6d0ac33d692653a08a02e706d01e0f45e4279451b364aba2f7263928d",
       "file": "02_library/worlds/memories/MW03_WORK_RULE_CHANGE_ADMIN_C.txt",
-      "file_sha256": "1d07815d6b088f05f51e10cfe233a6f0e653d56a019001e4ff93f8673f10a1ae",
+      "file_sha256": "91964d97b3ee88d048aa9b9be1aee0ef0b1cd585d06b3e32cf338f12fcaf0dea",
       "changes": "Verbatim fenced prompt; explicit centrally maintained reference inputs Grid geometry uses the full selected image resolution instead of fixed pixel examples.",
       "note": "Companion page C preserving original memory views."
     },
@@ -1901,7 +1901,7 @@
       ],
       "source_prompt_sha256": "7eacf040519edefdb7aa215ca4fb1e1c6524f4ed06dc69d6ef758048002745f9",
       "file": "02_library/worlds/memories/MW04_POLICE_DEFENCE_B.txt",
-      "file_sha256": "3365bfe9c455ee331827baf9e145339ba2963aaee6c4fd6b4d503abc9d0c1da3",
+      "file_sha256": "7cc982cfe072a7c281fc2be5989040ae1892c93adbb4945dd34af8175705d9dd",
       "changes": "Verbatim fenced prompt; explicit centrally maintained reference inputs Grid geometry uses the full selected image resolution instead of fixed pixel examples.",
       "note": "Companion page B preserving original memory views."
     },
@@ -1914,7 +1914,7 @@
       ],
       "source_prompt_sha256": "7eacf040519edefdb7aa215ca4fb1e1c6524f4ed06dc69d6ef758048002745f9",
       "file": "02_library/worlds/memories/MW04_POLICE_DEFENCE_C.txt",
-      "file_sha256": "1af62a9e76ce2fe88f84b409f06f95379d289ea73c0615e18b4ba150c10e9fdb",
+      "file_sha256": "da08ff0703f31322c6c5776ef1b787ccb7f210e5229de0bebd6677548fb66041",
       "changes": "Verbatim fenced prompt; explicit centrally maintained reference inputs Grid geometry uses the full selected image resolution instead of fixed pixel examples.",
       "note": "Companion page C preserving original memory views."
     },
@@ -1927,7 +1927,7 @@
       ],
       "source_prompt_sha256": "cac300bae4bd6f33e50ec5936c56622c5858e341d0494d281a87e70ed4ee9a04",
       "file": "02_library/worlds/memories/MW05_COURT_FILE_B.txt",
-      "file_sha256": "776014e7eb3d108b70aa07fa55f49677d424c94a5a61054b22a707bd10d71d29",
+      "file_sha256": "7f17e9bab064ed528004de27d7e1450a0f95d690848407bbef52a06945b0dbbb",
       "changes": "Verbatim fenced prompt; explicit centrally maintained reference inputs Grid geometry uses the full selected image resolution instead of fixed pixel examples.",
       "note": "Companion page B preserving original memory views."
     },
@@ -1940,7 +1940,7 @@
       ],
       "source_prompt_sha256": "cac300bae4bd6f33e50ec5936c56622c5858e341d0494d281a87e70ed4ee9a04",
       "file": "02_library/worlds/memories/MW05_COURT_FILE_C.txt",
-      "file_sha256": "36948de3f51cfa3ed2c4ac0d202fd8a1e25fa8d6385e222626821d57d864b143",
+      "file_sha256": "0b7dfdb499cda2eee0d2e0c74561e40e4dec295ec9998da56c0e836325d29164",
       "changes": "Verbatim fenced prompt; explicit centrally maintained reference inputs Grid geometry uses the full selected image resolution instead of fixed pixel examples.",
       "note": "Companion page C preserving original memory views."
     },
@@ -1953,7 +1953,7 @@
       ],
       "source_prompt_sha256": "d53e141d60aa5359c28d8695bb7cb84134a480bf043551062606e199558cda02",
       "file": "02_library/worlds/memories/MW06_HUMAN_COUNTERMEMORIES_B.txt",
-      "file_sha256": "42555095d8877a45e974d0504c37c3e7f38b4b72cc127592abfcba6087e15d26",
+      "file_sha256": "d6f1994d1868cf3efe6124a4281111cdfaf6e63c630494ffd6156fea9441e5fc",
       "changes": "Verbatim fenced prompt; explicit centrally maintained reference inputs Grid geometry uses the full selected image resolution instead of fixed pixel examples.",
       "note": "Companion page B preserving original memory views."
     },
@@ -1966,7 +1966,7 @@
       ],
       "source_prompt_sha256": "d53e141d60aa5359c28d8695bb7cb84134a480bf043551062606e199558cda02",
       "file": "02_library/worlds/memories/MW06_HUMAN_COUNTERMEMORIES_C.txt",
-      "file_sha256": "8fbbcd56e8abf1b9418c1edb2de8d5a0537a0f4b6f4196efa34337ffe11dec78",
+      "file_sha256": "f2a13edbbc25b7eef92ae03b102501040d125730a5a4864cd2726c8bf7eb23c6",
       "changes": "Verbatim fenced prompt; explicit centrally maintained reference inputs Grid geometry uses the full selected image resolution instead of fixed pixel examples.",
       "note": "Companion page C preserving original memory views."
     },
@@ -1979,7 +1979,7 @@
       ],
       "source_prompt_sha256": "16bf4be44836d9fb010f7825cc24770d0ce78cbd05373fc417d2155eba6ae1e1",
       "file": "02_library/worlds/memories/MWP01_ROUTES_ROOMS_DOCUMENTS_B.txt",
-      "file_sha256": "b9b0bc92e517f7454941477043adace8e63cea636c7f23e31d4f7d3192967436",
+      "file_sha256": "184820b0e4fc70850ff888292f709901f3b49bace1fa5e8d369a008f1daca78d",
       "changes": "Verbatim fenced prompt; explicit centrally maintained reference inputs; rural memory grounded in creator's Orosháza paprika/corn-field childhood Grid geometry uses the full selected image resolution instead of fixed pixel examples.",
       "note": "Companion page B preserving original memory views."
     },
@@ -1992,7 +1992,7 @@
       ],
       "source_prompt_sha256": "16bf4be44836d9fb010f7825cc24770d0ce78cbd05373fc417d2155eba6ae1e1",
       "file": "02_library/worlds/memories/MWP01_ROUTES_ROOMS_DOCUMENTS_C.txt",
-      "file_sha256": "6b98d956184177e8836687a2df25faf038aeb94f3e4f7e31ffffa829364392cc",
+      "file_sha256": "c6c476d9a27dd8fc90a000c64df593b55c8c495f91e7281762f3411d10b9964a",
       "changes": "Verbatim fenced prompt; explicit centrally maintained reference inputs; rural memory grounded in creator's Orosháza paprika/corn-field childhood Grid geometry uses the full selected image resolution instead of fixed pixel examples.",
       "note": "Companion page C preserving original memory views."
     },
@@ -2005,7 +2005,7 @@
       ],
       "source_prompt_sha256": "557e0016d71cfd83bfd2c240538a5a77f6b6d8785ceb0f79bb97e387e1ccbd6f",
       "file": "02_library/worlds/memories/MWP02_SYSTEM_TIME_REVERSALS_B.txt",
-      "file_sha256": "1809164a0e35d36bc486f616f311b053a18354a17d6ba952fb60ae0f089a79bc",
+      "file_sha256": "9fd8a406fffe977ff0df44346795aa8ca21c12c8de25138aa7bbf5867478fa1b",
       "changes": "AI-specific screen becomes ordinary document cursor; citizen/review beat retained; explicit centrally maintained reference inputs Grid geometry uses the full selected image resolution instead of fixed pixel examples.",
       "note": "Companion page B preserving original memory views."
     },
@@ -2018,7 +2018,7 @@
       ],
       "source_prompt_sha256": "557e0016d71cfd83bfd2c240538a5a77f6b6d8785ceb0f79bb97e387e1ccbd6f",
       "file": "02_library/worlds/memories/MWP02_SYSTEM_TIME_REVERSALS_C.txt",
-      "file_sha256": "3a8c8db2e87c22bb97495f597e69efa01c9e2cad72fd68a04eaeedd7309c6cd8",
+      "file_sha256": "fb4cbaaa485511e9a95bd84efac808c36eca47e0948bae675e18028ce2a4e581",
       "changes": "AI-specific screen becomes ordinary document cursor; citizen/review beat retained; explicit centrally maintained reference inputs Grid geometry uses the full selected image resolution instead of fixed pixel examples.",
       "note": "Companion page C preserving original memory views."
     },
@@ -2031,7 +2031,7 @@
       ],
       "source_prompt_sha256": "521c52dc6be7a4c8e015a67fab11b219bc387a315f00463f84acb191c81fc773",
       "file": "02_library/worlds/memories/HRW07_CLINICAL_REALITY_B.txt",
-      "file_sha256": "775e4ff1f911b512d009fa79bbd28a51e27a3fa871cdcd5eb98cd8adc0fde6cd",
+      "file_sha256": "913015fe95355c6b0960e069e834dbb171c78fc30f774309f82057c565d28264",
       "changes": "Verbatim fenced prompt; explicit centrally maintained reference inputs Grid geometry uses the full selected image resolution instead of fixed pixel examples.",
       "note": "Companion page B preserving original memory views."
     },
@@ -2044,7 +2044,7 @@
       ],
       "source_prompt_sha256": "521c52dc6be7a4c8e015a67fab11b219bc387a315f00463f84acb191c81fc773",
       "file": "02_library/worlds/memories/HRW07_CLINICAL_REALITY_C.txt",
-      "file_sha256": "faa9d3dea6f47848fbcc2a30ffee61b32c79b0401f725a7da05bdd4e4ba17742",
+      "file_sha256": "77cdd02e809b1a830fe3edd01277bae1d8126591d21331a7bc062dd0f50a41cd",
       "changes": "Verbatim fenced prompt; explicit centrally maintained reference inputs Grid geometry uses the full selected image resolution instead of fixed pixel examples.",
       "note": "Companion page C preserving original memory views."
     }
@@ -2596,7 +2596,7 @@
         "MW01_B",
         "MW01_C"
       ],
-      "prompt_sha256": "05255640c282507e63e4415e333186473de4613f1f97ac7b14369026688cb17e"
+      "prompt_sha256": "e1de75be3f132963a76ab61ec831506655adf7d30ab265eae3add0c17209b4a7"
     },
     "MW02": {
       "key": "MW02",
@@ -2621,7 +2621,7 @@
         "MW02_B",
         "MW02_C"
       ],
-      "prompt_sha256": "fad2e4867946d0f478cea30927c18644af1e81f22e53cf4ce7ac5f243e971a3f"
+      "prompt_sha256": "753ee87a61531b7bf2c77bdbb664beb86bc7e0730e07d26d3e35452f772d3054"
     },
     "MW03": {
       "key": "MW03",
@@ -2638,7 +2638,7 @@
         "MW03_B",
         "MW03_C"
       ],
-      "prompt_sha256": "44fb66f104a7ae085aaaca62210fd3e30aea7b41d638232cc9edfd2ff03bde15"
+      "prompt_sha256": "28ef82464749baae3fb58696e1d4e1fb0f6523e84e76afa1fb73ea68b2abaf43"
     },
     "MW04": {
       "key": "MW04",
@@ -2656,7 +2656,7 @@
         "MW04_B",
         "MW04_C"
       ],
-      "prompt_sha256": "52da4a3d2a5f422432bd45f06aa815c0af63349ab96216b80915f49bc5b344b4"
+      "prompt_sha256": "67af459fccb5473c5ef74593f690580443c02a2392335c034185ad30e9dfb583"
     },
     "MW05": {
       "key": "MW05",
@@ -2676,7 +2676,7 @@
         "MW05_B",
         "MW05_C"
       ],
-      "prompt_sha256": "3338f1409eaa51b97b03bddebe892c855667dbe4e77e7f78bb64a07d7c3d2e26"
+      "prompt_sha256": "01805730406c80061c3e80b945f0383ecfa3f23edc9826b92a0460951582cc42"
     },
     "MW06": {
       "key": "MW06",
@@ -2700,7 +2700,7 @@
         "MW06_B",
         "MW06_C"
       ],
-      "prompt_sha256": "b07e12310ae79577503d7155a4b3f89e48fa19a54a22c4cafab866e2019a6489"
+      "prompt_sha256": "5355eeed7dfc92d48609aa0c06de28d5469b52d96a50626c7cd05707179a3821"
     },
     "MWP01": {
       "key": "MWP01",
@@ -2714,7 +2714,7 @@
         "MWP01_B",
         "MWP01_C"
       ],
-      "prompt_sha256": "d5a6ed23ca4b4d9cc22018c07970da32d503c9a030714b7279f9a6b5fe46b8ef"
+      "prompt_sha256": "849137b32d1a6ed056306d52b23ebfef44c9206d8eb4e14b96856914f80b8c4b"
     },
     "MWP02": {
       "key": "MWP02",
@@ -2728,7 +2728,7 @@
         "MWP02_B",
         "MWP02_C"
       ],
-      "prompt_sha256": "52ddbebc660e5281aabd890c6996fa23041d44301c02d9e5a9106740c517afb0"
+      "prompt_sha256": "eca084c19c6c7b2bba92709b2a589ec47c19ba7a958760f5e0f7ee68f2d58121"
     },
     "HRW07": {
       "key": "HRW07",
@@ -2743,7 +2743,7 @@
         "HRW07_B",
         "HRW07_C"
       ],
-      "prompt_sha256": "25bdf2bf95ee4e7cdc7921deb72d7ec37c247325f49c10afcaf10ea9c52337fc"
+      "prompt_sha256": "55e2881a68cb0d5cd4a8f39fcf514cbda51ba338621a4d47479f08e90b6a38bf"
     },
     "SB01": {
       "key": "SB01",
@@ -2776,7 +2776,7 @@
         "MWP01_B",
         "MWP01_C"
       ],
-      "prompt_sha256": "09706ec8473764c3dc477b772859bb8cb6299537e0cd668657404733dc170166"
+      "prompt_sha256": "5faa13331c50b743584af0e0fa2522e9ad06e9118f41079456f0fddb5a7eedac"
     },
     "A01": {
       "key": "A01",
@@ -2818,7 +2818,7 @@
         "MWP01_B",
         "MWP01_C"
       ],
-      "prompt_sha256": "ed676b1a5bbb0d341590c9287a22696d93f569ef13ec0e0c431657246eeff205"
+      "prompt_sha256": "7f68344b53fcda625d06c78a01e66dcbbb2a7ebb6841b6e9eca7c0d3c423e9d9"
     },
     "SB02": {
       "key": "SB02",
@@ -2860,7 +2860,7 @@
         "MWP01_B",
         "MWP01_C"
       ],
-      "prompt_sha256": "6386c2ef3e3f7c30775aabf93b752698e6dc53913fc92078360774069364c6c0"
+      "prompt_sha256": "996ad07df02c37fffd7f6cf23244233f2c3e78c63f6b6167a2f2ae5ecba24925"
     },
     "A02": {
       "key": "A02",
@@ -2912,7 +2912,7 @@
         "MWP01_B",
         "MWP01_C"
       ],
-      "prompt_sha256": "6afc59364be2db47d1d8ca793b6b53b8c8874478c08189fd06b661fed3b9ef4b"
+      "prompt_sha256": "71817f5f987c5aeec396b690a6b96ef5d73f5d8596bcdb248109fc0a2a2d4164"
     },
     "SB03": {
       "key": "SB03",
@@ -2942,7 +2942,7 @@
         "MWP01_B",
         "MWP01_C"
       ],
-      "prompt_sha256": "9e7b2ef282b2fef22e7ad5e48d74730b78792a3dc42b89104d5bf6696e2a8085"
+      "prompt_sha256": "4c8a20423856f21b53d004d3901cce8bceb25f580bd9053ca6162128fa504320"
     },
     "A03": {
       "key": "A03",
@@ -2982,7 +2982,7 @@
         "MWP01_B",
         "MWP01_C"
       ],
-      "prompt_sha256": "31a679345aa235d9bd29a7c3224fbcb0b35f986846f725ed22932fe76731b55e"
+      "prompt_sha256": "fedc87894b9cbe5f22b78dea5a006b0d63f0b52465e9bc9a43388e590e65f59f"
     },
     "SB04": {
       "key": "SB04",
@@ -3010,7 +3010,7 @@
         "MW04_B",
         "MW04_C"
       ],
-      "prompt_sha256": "fca512191674ba15ed6ef03ff1b948b9e4873c4fbbc2cb0822aeb81f92078013"
+      "prompt_sha256": "12db6b2553fe3d2948b1ac2e31fb268f17ee613a3d7af9c1c7fd591658f320bb"
     },
     "A04": {
       "key": "A04",
@@ -3048,7 +3048,7 @@
         "MW04_B",
         "MW04_C"
       ],
-      "prompt_sha256": "ae022f0871e46d7b10f45b470e38593b7fce2bd9270e74fdc3583a94f97a001f"
+      "prompt_sha256": "774a26154a0b4ff607eaadb8b61d022dffb57d02daa32e9bd20d131caf07d4d2"
     },
     "SB05": {
       "key": "SB05",
@@ -3081,7 +3081,7 @@
         "MWP02_B",
         "MWP02_C"
       ],
-      "prompt_sha256": "9d185140f56cd07669528675bf5fc7892d90e94defa78af58ddc4836a455b77b"
+      "prompt_sha256": "a924c56de7727105af680c338caffc5e833983ad8ba23fd321014b0dd78eaadd"
     },
     "A05": {
       "key": "A05",
@@ -3124,7 +3124,7 @@
         "MWP02_B",
         "MWP02_C"
       ],
-      "prompt_sha256": "f754cc0ebc4a9f348630d5aa57bcb2f6635243cffe9606d7630cceacb8106dd0"
+      "prompt_sha256": "37be644462a000422e96895e2a52dfbd02d845898acc2a0b8a6739a25c0ac3d5"
     },
     "SB06": {
       "key": "SB06",
@@ -3176,7 +3176,7 @@
         "MW05_B",
         "MW05_C"
       ],
-      "prompt_sha256": "a821a00a1c84c216383659ac163af57af43d75e637d7205530e74114388591cb"
+      "prompt_sha256": "0f651fbe881bed1ba58a61d033bd1c8ae138afb3b491bb8b1e5c7bfe95f06335"
     },
     "A06": {
       "key": "A06",
@@ -3238,7 +3238,7 @@
         "MW05_B",
         "MW05_C"
       ],
-      "prompt_sha256": "ed54894701d8d4ae22f498b2bc9893d55a4c782b85f868d24948fbf107e5ac76"
+      "prompt_sha256": "02e7a77c47101f264680ae5bc0b7deb8d31adcccfa98a94e2fe8dc4b144427fd"
     },
     "SB07": {
       "key": "SB07",
@@ -3275,7 +3275,7 @@
         "MW02_B",
         "MW02_C"
       ],
-      "prompt_sha256": "521ed06400db1e887460fbdf69bdee5873cd8d30fb142cb2b95c7e048a9d7595"
+      "prompt_sha256": "b180dd333f64824485b417e18d9918bab3d9092848b251daddd2ddc2a6b279f1"
     },
     "A07": {
       "key": "A07",
@@ -3322,7 +3322,7 @@
         "MW02_B",
         "MW02_C"
       ],
-      "prompt_sha256": "9d4e9105cd786b8fd8a6c098a8fe6ce07e5d375f7ef6bbc7300720de48cb1a76"
+      "prompt_sha256": "6cfa10f230ec3c557f0a5192518e1f092270b415980f9ca6c7514d2ca22c4b6e"
     },
     "MR001": {
       "key": "MR001",
@@ -3847,7 +3847,7 @@
         7,
         8
       ],
-      "prompt_sha256": "f91c624bd53569cf8ef149e474257574b42115958b2956c23c6305bbec7125d7"
+      "prompt_sha256": "b6b19faa50e9f102dd61d9dc880e74c634def07f4a7a8d14e51ddfa80dbff1cb"
     },
     "MW01_C": {
       "key": "MW01_C",
@@ -3873,7 +3873,7 @@
         7,
         8
       ],
-      "prompt_sha256": "f35f7b5c753b6733579ca84f8218c4eb62002f329b4b9ef865fe40211f7396bb"
+      "prompt_sha256": "13602eee20c22a81e0fdaca399b2169e6e46ed48d701101a50055b98172c7043"
     },
     "MW02_B": {
       "key": "MW02_B",
@@ -3903,7 +3903,7 @@
         7,
         8
       ],
-      "prompt_sha256": "873079837863544bcbe56f09ee6c5582b1b15db16ec6d13792435deea5949677"
+      "prompt_sha256": "f4b8d3cfd922187f19d4bfbf5246de294c297ea58c300aaff31f05e78158cec0"
     },
     "MW02_C": {
       "key": "MW02_C",
@@ -3933,7 +3933,7 @@
         7,
         8
       ],
-      "prompt_sha256": "5518bbc635a95444185240631b7bf95fa7b671637d161858bd68d82d8539bf3c"
+      "prompt_sha256": "b083b7d3aabf48bad605b80dc9ae1321dd57a05ad24f9c1679dd0bb7cb562715"
     },
     "MW03_B": {
       "key": "MW03_B",
@@ -3955,7 +3955,7 @@
         7,
         8
       ],
-      "prompt_sha256": "4b9f688c79f97b933a6319c2c30ff5ff4358b784dea5be4b32d0c5ed7be580ca"
+      "prompt_sha256": "6d92a71661fd1a759cc66aedba93cb89e89c778d1efb6d333a62f8fcb07c57f7"
     },
     "MW03_C": {
       "key": "MW03_C",
@@ -3977,7 +3977,7 @@
         7,
         8
       ],
-      "prompt_sha256": "1d07815d6b088f05f51e10cfe233a6f0e653d56a019001e4ff93f8673f10a1ae"
+      "prompt_sha256": "91964d97b3ee88d048aa9b9be1aee0ef0b1cd585d06b3e32cf338f12fcaf0dea"
     },
     "MW04_B": {
       "key": "MW04_B",
@@ -4000,7 +4000,7 @@
         7,
         8
       ],
-      "prompt_sha256": "3365bfe9c455ee331827baf9e145339ba2963aaee6c4fd6b4d503abc9d0c1da3"
+      "prompt_sha256": "7cc982cfe072a7c281fc2be5989040ae1892c93adbb4945dd34af8175705d9dd"
     },
     "MW04_C": {
       "key": "MW04_C",
@@ -4023,7 +4023,7 @@
         7,
         8
       ],
-      "prompt_sha256": "1af62a9e76ce2fe88f84b409f06f95379d289ea73c0615e18b4ba150c10e9fdb"
+      "prompt_sha256": "da08ff0703f31322c6c5776ef1b787ccb7f210e5229de0bebd6677548fb66041"
     },
     "MW05_B": {
       "key": "MW05_B",
@@ -4048,7 +4048,7 @@
         7,
         8
       ],
-      "prompt_sha256": "776014e7eb3d108b70aa07fa55f49677d424c94a5a61054b22a707bd10d71d29"
+      "prompt_sha256": "7f17e9bab064ed528004de27d7e1450a0f95d690848407bbef52a06945b0dbbb"
     },
     "MW05_C": {
       "key": "MW05_C",
@@ -4073,7 +4073,7 @@
         7,
         8
       ],
-      "prompt_sha256": "36948de3f51cfa3ed2c4ac0d202fd8a1e25fa8d6385e222626821d57d864b143"
+      "prompt_sha256": "0b7dfdb499cda2eee0d2e0c74561e40e4dec295ec9998da56c0e836325d29164"
     },
     "MW06_B": {
       "key": "MW06_B",
@@ -4102,7 +4102,7 @@
         7,
         8
       ],
-      "prompt_sha256": "42555095d8877a45e974d0504c37c3e7f38b4b72cc127592abfcba6087e15d26"
+      "prompt_sha256": "d6f1994d1868cf3efe6124a4281111cdfaf6e63c630494ffd6156fea9441e5fc"
     },
     "MW06_C": {
       "key": "MW06_C",
@@ -4131,7 +4131,7 @@
         7,
         8
       ],
-      "prompt_sha256": "8fbbcd56e8abf1b9418c1edb2de8d5a0537a0f4b6f4196efa34337ffe11dec78"
+      "prompt_sha256": "f2a13edbbc25b7eef92ae03b102501040d125730a5a4864cd2726c8bf7eb23c6"
     },
     "MWP01_B": {
       "key": "MWP01_B",
@@ -4150,7 +4150,7 @@
         7,
         8
       ],
-      "prompt_sha256": "b9b0bc92e517f7454941477043adace8e63cea636c7f23e31d4f7d3192967436"
+      "prompt_sha256": "184820b0e4fc70850ff888292f709901f3b49bace1fa5e8d369a008f1daca78d"
     },
     "MWP01_C": {
       "key": "MWP01_C",
@@ -4169,7 +4169,7 @@
         7,
         8
       ],
-      "prompt_sha256": "6b98d956184177e8836687a2df25faf038aeb94f3e4f7e31ffffa829364392cc"
+      "prompt_sha256": "c6c476d9a27dd8fc90a000c64df593b55c8c495f91e7281762f3411d10b9964a"
     },
     "MWP02_B": {
       "key": "MWP02_B",
@@ -4188,7 +4188,7 @@
         7,
         8
       ],
-      "prompt_sha256": "1809164a0e35d36bc486f616f311b053a18354a17d6ba952fb60ae0f089a79bc"
+      "prompt_sha256": "9fd8a406fffe977ff0df44346795aa8ca21c12c8de25138aa7bbf5867478fa1b"
     },
     "MWP02_C": {
       "key": "MWP02_C",
@@ -4207,7 +4207,7 @@
         7,
         8
       ],
-      "prompt_sha256": "3a8c8db2e87c22bb97495f597e69efa01c9e2cad72fd68a04eaeedd7309c6cd8"
+      "prompt_sha256": "fb4cbaaa485511e9a95bd84efac808c36eca47e0948bae675e18028ce2a4e581"
     },
     "HRW07_B": {
       "key": "HRW07_B",
@@ -4227,7 +4227,7 @@
         7,
         8
       ],
-      "prompt_sha256": "775e4ff1f911b512d009fa79bbd28a51e27a3fa871cdcd5eb98cd8adc0fde6cd"
+      "prompt_sha256": "913015fe95355c6b0960e069e834dbb171c78fc30f774309f82057c565d28264"
     },
     "HRW07_C": {
       "key": "HRW07_C",
@@ -4247,7 +4247,7 @@
         7,
         8
       ],
-      "prompt_sha256": "faa9d3dea6f47848fbcc2a30ffee61b32c79b0401f725a7da05bdd4e4ba17742"
+      "prompt_sha256": "77cdd02e809b1a830fe3edd01277bae1d8126591d21331a7bc062dd0f50a41cd"
     },
     "T01_DETAILS": {
       "key": "T01_DETAILS",
@@ -4259,7 +4259,7 @@
       ],
       "status": "PREPARED_NOT_RENDERED",
       "layout": "4K 2x2 restaurant coverage page A",
-      "prompt_sha256": "cf467b8db3cfb04c450458ceae0edd8687a5ecf1cbb301cca7f81d48c1141f6b"
+      "prompt_sha256": "55e656996105c9cb81bad33e22b7e75d8bd73dfb7d5f13b25be2ae3da7a15957"
     },
     "T01_DETAILS_B": {
       "key": "T01_DETAILS_B",
@@ -4272,7 +4272,7 @@
       ],
       "status": "PREPARED_NOT_RENDERED",
       "layout": "4K 2x2 restaurant coverage page B",
-      "prompt_sha256": "e1baa5cb4bee93fb6760f0328f1d9705ec3c7c19408abdfbd4e71da2321a540d"
+      "prompt_sha256": "06f12d22450846078f960568e2c6f34120379c3c7485515d376f91dd94312c58"
     },
     "T01_DETAILS_C": {
       "key": "T01_DETAILS_C",
@@ -4285,7 +4285,7 @@
       ],
       "status": "PREPARED_NOT_RENDERED",
       "layout": "4K 2x2 restaurant coverage page C",
-      "prompt_sha256": "4f3b0ca03bb7baf8714ed46f7f92703bbfaed6b2c35d9796feaf1b4ce78cc8a8"
+      "prompt_sha256": "91e7a1343f7a8cadb9a661d6001d7ed94737ff760ad48ea8b69ee94e6fa97b45"
     },
     "R002": {
       "key": "R002",
@@ -4949,7 +4949,7 @@
       "import_status": "CATEGORY_IMPORT_PREPARED_NOT_EXECUTED",
       "prompt_review_status": "FOUR_STATE_AND_MATERIAL_RESPONSE_TEXT_REVIEWED_NOT_IMAGE_VERIFIED",
       "current_prompt_image_verified": false,
-      "prompt_sha256": "f544f9a9133cf15fea7c523e13255290adf04f73f7385d45c3016bf9aa022c10"
+      "prompt_sha256": "493cd36c5c5a230eac54a152f5090700e8882b72d28c567a0082f460cc69b089"
     },
     "CM002": {
       "key": "CM002",
@@ -4969,7 +4969,7 @@
       "import_status": "CATEGORY_IMPORT_PREPARED_NOT_EXECUTED",
       "prompt_review_status": "FOUR_STATE_AND_MATERIAL_RESPONSE_TEXT_REVIEWED_NOT_IMAGE_VERIFIED",
       "current_prompt_image_verified": false,
-      "prompt_sha256": "9eeb5e08c8478323837cd61081bc9393b8ac243a7bace2007f74271fc88efc64"
+      "prompt_sha256": "520d9ab86378eee861149398f12e236df870284974fd9658047f4bf3e5855912"
     },
     "CM003": {
       "key": "CM003",
@@ -4989,7 +4989,7 @@
       "import_status": "CATEGORY_IMPORT_PREPARED_NOT_EXECUTED",
       "prompt_review_status": "FOUR_STATE_AND_MATERIAL_RESPONSE_TEXT_REVIEWED_NOT_IMAGE_VERIFIED",
       "current_prompt_image_verified": false,
-      "prompt_sha256": "2ec1add8aed86177d0f1e54352a9f71fa6490f8176856e8747e07998a771a268"
+      "prompt_sha256": "b7a07ca2eef765d420789ba03a134d541023c95e73f3ba4ab4a255b6f1ecb8e4"
     },
     "CM004": {
       "key": "CM004",
@@ -5009,7 +5009,7 @@
       "import_status": "CATEGORY_IMPORT_PREPARED_NOT_EXECUTED",
       "prompt_review_status": "FOUR_STATE_AND_MATERIAL_RESPONSE_TEXT_REVIEWED_NOT_IMAGE_VERIFIED",
       "current_prompt_image_verified": false,
-      "prompt_sha256": "6060ee10fdf5b8118a8e4dc8cb401cb5d0ae13ad4993dea960eb8cc2f2bec170"
+      "prompt_sha256": "9a7531283418cb2feccf57e4c9b902350c5bc5af7f14d2c9d6961e945e2f945f"
     },
     "CM005": {
       "key": "CM005",
@@ -5029,7 +5029,7 @@
       "import_status": "CATEGORY_IMPORT_PREPARED_NOT_EXECUTED",
       "prompt_review_status": "FOUR_STATE_AND_MATERIAL_RESPONSE_TEXT_REVIEWED_NOT_IMAGE_VERIFIED",
       "current_prompt_image_verified": false,
-      "prompt_sha256": "3b9accd408c827a287040398d31ad889e68a7cc84714696793c854367573283a"
+      "prompt_sha256": "b1104362877e37bd1b1eae7175aa23ac14580076c36b1ab58b5cc9e665992a31"
     },
     "CM006": {
       "key": "CM006",
@@ -5049,7 +5049,7 @@
       "import_status": "CATEGORY_IMPORT_PREPARED_NOT_EXECUTED",
       "prompt_review_status": "FOUR_STATE_AND_MATERIAL_RESPONSE_TEXT_REVIEWED_NOT_IMAGE_VERIFIED",
       "current_prompt_image_verified": false,
-      "prompt_sha256": "16b62d5166db5d4690e0d7a81d876d6de5fbf62815a62bfc8f63d639cfc328a4"
+      "prompt_sha256": "131d864728c997c7674d38461b784ae91b7fa9c0ce781031cf1032856d0d8dbe"
     },
     "MR021": {
       "key": "MR021",
@@ -6527,7 +6527,7 @@
   "pilot_files": [
     {
       "file": "01_pilot/test_extend_8s.txt",
-      "sha256": "8dce20c42c0ce7ad9a354e34bfdace06f240626a7d2b813db5514f1836baf0e9",
+      "sha256": "e5e546bf7dab8552b9df2043d0a7f99b29c93024a382e2904d4b44f0218f80f1",
       "refs": [
         "W01_A_01",
         "W01_A_02",
@@ -6548,10 +6548,10 @@
     },
     {
       "file": "02_library/worlds/memories/T01_SOHO_RESTAURANT_SOURCE_A.txt",
-      "sha256": "cf467b8db3cfb04c450458ceae0edd8687a5ecf1cbb301cca7f81d48c1141f6b",
+      "sha256": "55e656996105c9cb81bad33e22b7e75d8bd73dfb7d5f13b25be2ae3da7a15957",
       "reference_elements": {
-        "C01": "char_mys_protagonist_s1_v1",
-        "C02": "char_mys_soho-woman_s1_v1"
+        "C01": "char_MYS_mys-c01-protagonist_s0_v1",
+        "C02": "char_MYS_mys-c02-soho-woman_s0_v1"
       },
       "reference_note": "Reference mentions are maintained centrally in reference_bindings. UNBOUND slots must be resolved before generation; verified Element mentions autoload in the creator's composer.",
       "refs": [
@@ -6561,7 +6561,7 @@
     },
     {
       "file": "01_pilot/test_video_8s.txt",
-      "sha256": "442c6289cf76ff8a1a97fa47a4a64f3f792322c9da4d53cabbb895aad02875ca",
+      "sha256": "27ee18b228dcccad6ff3c910bc94235f8fc1c030b8a57b2ebfa53a39f5fe2eee",
       "reference_note": "Reference mentions are maintained centrally in reference_bindings. UNBOUND slots must be resolved before generation; verified Element mentions autoload in the creator's composer.",
       "refs": [
         "W01_A_01",
@@ -6809,171 +6809,202 @@
     },
     "C01": {
       "alias": "C01_PROTAGONIST",
-      "mention": "@char_mys_protagonist_s1_v1",
-      "last_mention": "@char_mys_protagonist_s1_v1"
+      "mention": "@char_MYS_mys-c01-protagonist_s0_v1",
+      "last_mention": "@char_MYS_mys-c01-protagonist_s0_v1",
+      "mention_source": "CREATOR_SUPPLIED_EXACT_ELEMENT_ID_2026_09_10"
     },
     "C02": {
       "alias": "C02_SOHO_WOMAN",
-      "mention": "@char_mys_soho-woman_s1_v1",
-      "last_mention": "@char_mys_soho-woman_s1_v1"
+      "mention": "@char_MYS_mys-c02-soho-woman_s0_v1",
+      "last_mention": "@char_MYS_mys-c02-soho-woman_s0_v1",
+      "mention_source": "CREATOR_SUPPLIED_EXACT_ELEMENT_ID_2026_09_10"
     },
     "C03": {
       "alias": "C03_POLICEWOMAN",
-      "mention": null,
-      "last_mention": "@UNBOUND_C03"
+      "mention": "@char_MYS_mys-c03-policewoman_s0_v1",
+      "last_mention": "@char_MYS_mys-c03-policewoman_s0_v1",
+      "mention_source": "CREATOR_SUPPLIED_EXACT_ELEMENT_ID_2026_09_10"
     },
     "C04": {
       "alias": "C04_APPOINTED_LAWYER",
-      "mention": null,
-      "last_mention": "@UNBOUND_C04"
+      "mention": "@char_MYS_mys-c04-appointed-lawyer_s0_v1",
+      "last_mention": "@char_MYS_mys-c04-appointed-lawyer_s0_v1",
+      "mention_source": "CREATOR_SUPPLIED_EXACT_ELEMENT_ID_2026_09_10"
     },
     "C05": {
       "alias": "C05_FINAL_NURSE",
-      "mention": "@char_mys_final-nurse_s7_v1",
-      "last_mention": "@char_mys_final-nurse_s7_v1",
-      "evidence": "Full ID visible in user-supplied My elements screenshots, 2026-09-09 15:31:04/08; image slot empty. Later 15:31:49/56 views do not establish clipped suffixes."
+      "mention": "@char_MYS_mys-c05-final-nurse_s0_v1",
+      "last_mention": "@char_MYS_mys-c05-final-nurse_s0_v1",
+      "evidence": "Full ID visible in user-supplied My elements screenshots, 2026-09-09 15:31:04/08; image slot empty. Later 15:31:49/56 views do not establish clipped suffixes.",
+      "mention_source": "CREATOR_SUPPLIED_EXACT_ELEMENT_ID_2026_09_10"
     },
     "C06": {
       "alias": "C06_SHARED_HOUSE_SUBSTITUTE_SNORING_HOUSEMATE",
-      "mention": null,
-      "last_mention": "@UNBOUND_C06"
+      "mention": "@char_MYS_mys-c06-shared-house-substitute-snoring-housemate_s0_v1",
+      "last_mention": "@char_MYS_mys-c06-shared-house-substitute-snoring-housemate_s0_v1",
+      "mention_source": "CREATOR_SUPPLIED_EXACT_ELEMENT_ID_2026_09_10"
     },
     "C07": {
       "alias": "C07_FX_MORTGAGE_HOUSEMATE",
-      "mention": null,
-      "last_mention": "@UNBOUND_C07"
+      "mention": "@char_MYS_mys-c07-fx-mortgage-housemate_s0_v1",
+      "last_mention": "@char_MYS_mys-c07-fx-mortgage-housemate_s0_v1",
+      "mention_source": "CREATOR_SUPPLIED_EXACT_ELEMENT_ID_2026_09_10"
     },
     "C08": {
       "alias": "C08_FX_MORTGAGE_SPOUSE",
-      "mention": null,
-      "last_mention": "@UNBOUND_C08"
+      "mention": "@char_MYS_mys-c08-fx-mortgage-spouse_s0_v1",
+      "last_mention": "@char_MYS_mys-c08-fx-mortgage-spouse_s0_v1",
+      "mention_source": "CREATOR_SUPPLIED_EXACT_ELEMENT_ID_2026_09_10"
     },
     "C09": {
       "alias": "C09_FX_MORTGAGE_CHILD",
-      "mention": "@char_mys_fx-mortgage-child_s1_v1",
-      "last_mention": "@char_mys_fx-mortgage-child_s1_v1",
-      "evidence": "Full ID visible in user-supplied My elements screenshots, 2026-09-09 15:31:04/08; image slot empty. Later 15:31:49/56 views do not establish clipped suffixes."
+      "mention": "@char_MYS_mys-c09-fx-mortgage-child_s0_v1",
+      "last_mention": "@char_MYS_mys-c09-fx-mortgage-child_s0_v1",
+      "evidence": "Full ID visible in user-supplied My elements screenshots, 2026-09-09 15:31:04/08; image slot empty. Later 15:31:49/56 views do not establish clipped suffixes.",
+      "mention_source": "CREATOR_SUPPLIED_EXACT_ELEMENT_ID_2026_09_10"
     },
     "C10": {
       "alias": "C10_BEGINNER_DANCE_WOMAN",
-      "mention": "@char_mys_beginner-dance-woman_s1_v1",
-      "last_mention": "@char_mys_beginner-dance-woman_s1_v1",
-      "evidence": "Full ID visible in user-supplied My elements screenshots, 2026-09-09 15:31:04/08; image slot empty. Later 15:31:49/56 views do not establish clipped suffixes."
+      "mention": "@char_MYS_mys-c10-beginner-dance-woman_s0_v1",
+      "last_mention": "@char_MYS_mys-c10-beginner-dance-woman_s0_v1",
+      "evidence": "Full ID visible in user-supplied My elements screenshots, 2026-09-09 15:31:04/08; image slot empty. Later 15:31:49/56 views do not establish clipped suffixes.",
+      "mention_source": "CREATOR_SUPPLIED_EXACT_ELEMENT_ID_2026_09_10"
     },
     "C11": {
       "alias": "C11_RUSSIAN_TRANSIT_PASSENGER",
-      "mention": null,
-      "last_mention": "@UNBOUND_C11"
+      "mention": "@char_MYS_mys-c11-russian-transit-passenger_s0_v1",
+      "last_mention": "@char_MYS_mys-c11-russian-transit-passenger_s0_v1",
+      "mention_source": "CREATOR_SUPPLIED_EXACT_ELEMENT_ID_2026_09_10"
     },
     "C12": {
       "alias": "C12_AGRA_BUS_WOMAN",
-      "mention": "@char_mys_agra-bus-woman_s2_v1",
-      "last_mention": "@char_mys_agra-bus-woman_s2_v1",
-      "evidence": "Full ID visible in user-supplied My elements screenshots, 2026-09-09 15:31:04/08; image slot empty. Later 15:31:49/56 views do not establish clipped suffixes."
+      "mention": "@char_MYS_mys-c12-agra-bus-woman_s0_v1",
+      "last_mention": "@char_MYS_mys-c12-agra-bus-woman_s0_v1",
+      "evidence": "Full ID visible in user-supplied My elements screenshots, 2026-09-09 15:31:04/08; image slot empty. Later 15:31:49/56 views do not establish clipped suffixes.",
+      "mention_source": "CREATOR_SUPPLIED_EXACT_ELEMENT_ID_2026_09_10"
     },
     "C13": {
       "alias": "C13_SUDANESE_TRAVELER_MAN",
-      "mention": "@char_mys_sudanese-traveler-man_s2_v1",
-      "last_mention": "@char_mys_sudanese-traveler-man_s2_v1",
-      "evidence": "Full ID visible in user-supplied My elements screenshots, 2026-09-09 15:31:04/08; image slot empty. Later 15:31:49/56 views do not establish clipped suffixes."
+      "mention": "@char_MYS_mys-c13-sudanese-traveler-man_s0_v1",
+      "last_mention": "@char_MYS_mys-c13-sudanese-traveler-man_s0_v1",
+      "evidence": "Full ID visible in user-supplied My elements screenshots, 2026-09-09 15:31:04/08; image slot empty. Later 15:31:49/56 views do not establish clipped suffixes.",
+      "mention_source": "CREATOR_SUPPLIED_EXACT_ELEMENT_ID_2026_09_10"
     },
     "C14": {
       "alias": "C14_SUDANESE_TRAVELER_WOMAN",
-      "mention": "@char_mys_sudanese-traveler-woman_s2_v1",
-      "last_mention": "@char_mys_sudanese-traveler-woman_s2_v1",
-      "evidence": "Full ID visible in user-supplied My elements screenshots, 2026-09-09 15:31:04/08; image slot empty. Later 15:31:49/56 views do not establish clipped suffixes."
+      "mention": "@char_MYS_mys-c14-sudanese-traveler-woman_s0_v1",
+      "last_mention": "@char_MYS_mys-c14-sudanese-traveler-woman_s0_v1",
+      "evidence": "Full ID visible in user-supplied My elements screenshots, 2026-09-09 15:31:04/08; image slot empty. Later 15:31:49/56 views do not establish clipped suffixes.",
+      "mention_source": "CREATOR_SUPPLIED_EXACT_ELEMENT_ID_2026_09_10"
     },
     "C15": {
       "alias": "C15_CAIRO_TAXI_DRIVER",
-      "mention": "@char_mys_cairo-taxi-driver_s2_v1",
-      "last_mention": "@char_mys_cairo-taxi-driver_s2_v1",
-      "evidence": "Full ID visible in user-supplied My elements screenshots, 2026-09-09 15:31:04/08; image slot empty. Later 15:31:49/56 views do not establish clipped suffixes."
+      "mention": "@char_MYS_mys-c15-cairo-taxi-driver_s0_v1",
+      "last_mention": "@char_MYS_mys-c15-cairo-taxi-driver_s0_v1",
+      "evidence": "Full ID visible in user-supplied My elements screenshots, 2026-09-09 15:31:04/08; image slot empty. Later 15:31:49/56 views do not establish clipped suffixes.",
+      "mention_source": "CREATOR_SUPPLIED_EXACT_ELEMENT_ID_2026_09_10"
     },
     "C16": {
       "alias": "C16_BALLOON_LOCAL_HELPER_MAN",
-      "mention": null,
-      "last_mention": "@UNBOUND_C16"
+      "mention": "@char_MYS_mys-c16-balloon-local-helper-man_s0_v1",
+      "last_mention": "@char_MYS_mys-c16-balloon-local-helper-man_s0_v1",
+      "mention_source": "CREATOR_SUPPLIED_EXACT_ELEMENT_ID_2026_09_10"
     },
     "C17": {
       "alias": "C17_BALLOON_LOCAL_HELPER_WOMAN",
-      "mention": null,
-      "last_mention": "@UNBOUND_C17"
+      "mention": "@char_MYS_mys-c17-balloon-local-helper-woman_s0_v1",
+      "last_mention": "@char_MYS_mys-c17-balloon-local-helper-woman_s0_v1",
+      "mention_source": "CREATOR_SUPPLIED_EXACT_ELEMENT_ID_2026_09_10"
     },
     "C18": {
       "alias": "C18_BARMOUTH_ROAD_TRIP_DRIVER_COMPANION",
-      "mention": null,
-      "last_mention": "@UNBOUND_C18"
+      "mention": "@char_MYS_mys-c18-barmouth-road-trip-driver-companion_s0_v1",
+      "last_mention": "@char_MYS_mys-c18-barmouth-road-trip-driver-companion_s0_v1",
+      "mention_source": "CREATOR_SUPPLIED_EXACT_ELEMENT_ID_2026_09_10"
     },
     "C19": {
       "alias": "C19_BARMOUTH_ROAD_TRIP_COMPANION_A",
-      "mention": null,
-      "last_mention": "@UNBOUND_C19"
+      "mention": "@char_MYS_mys-c19-barmouth-road-trip-companion-a_s0_v1",
+      "last_mention": "@char_MYS_mys-c19-barmouth-road-trip-companion-a_s0_v1",
+      "mention_source": "CREATOR_SUPPLIED_EXACT_ELEMENT_ID_2026_09_10"
     },
     "C20": {
       "alias": "C20_BARMOUTH_ROAD_TRIP_COMPANION_B",
-      "mention": null,
-      "last_mention": "@UNBOUND_C20"
+      "mention": "@char_MYS_mys-c20-barmouth-road-trip-companion-b_s0_v1",
+      "last_mention": "@char_MYS_mys-c20-barmouth-road-trip-companion-b_s0_v1",
+      "mention_source": "CREATOR_SUPPLIED_EXACT_ELEMENT_ID_2026_09_10"
     },
     "C21": {
       "alias": "C21_BARMOUTH_ROAD_TRIP_COMPANION_C",
-      "mention": null,
-      "last_mention": "@UNBOUND_C21"
+      "mention": "@char_MYS_mys-c21-barmouth-road-trip-companion-c_s0_v1",
+      "last_mention": "@char_MYS_mys-c21-barmouth-road-trip-companion-c_s0_v1",
+      "mention_source": "CREATOR_SUPPLIED_EXACT_ELEMENT_ID_2026_09_10"
     },
     "C22": {
       "alias": "C22_ACCOUNTANT",
-      "mention": null,
-      "last_mention": "@UNBOUND_C22"
+      "mention": "@char_MYS_mys-c22-accountant_s0_v1",
+      "last_mention": "@char_MYS_mys-c22-accountant_s0_v1",
+      "mention_source": "CREATOR_SUPPLIED_EXACT_ELEMENT_ID_2026_09_10"
     },
     "C23": {
       "alias": "C23_ADMIN_COLLEAGUE_A",
-      "mention": "@char_mys_admin-colleague-a_s3_v1",
-      "last_mention": "@char_mys_admin-colleague-a_s3_v1",
-      "evidence": "Full ID visible in user-supplied My elements screenshots, 2026-09-09 15:31:04/08; image slot empty. Later 15:31:49/56 views do not establish clipped suffixes."
+      "mention": "@char_MYS_mys-c23-admin-colleague-a_s0_v1",
+      "last_mention": "@char_MYS_mys-c23-admin-colleague-a_s0_v1",
+      "evidence": "Full ID visible in user-supplied My elements screenshots, 2026-09-09 15:31:04/08; image slot empty. Later 15:31:49/56 views do not establish clipped suffixes.",
+      "mention_source": "CREATOR_SUPPLIED_EXACT_ELEMENT_ID_2026_09_10"
     },
     "C24": {
       "alias": "C24_ADMIN_COLLEAGUE_B",
-      "mention": "@char_mys_admin-colleague-b_s3_v1",
-      "last_mention": "@char_mys_admin-colleague-b_s3_v1",
-      "evidence": "Full ID visible in user-supplied My elements screenshots, 2026-09-09 15:31:04/08; image slot empty. Later 15:31:49/56 views do not establish clipped suffixes."
+      "mention": "@char_MYS_mys-c24-admin-colleague-b_s0_v1",
+      "last_mention": "@char_MYS_mys-c24-admin-colleague-b_s0_v1",
+      "evidence": "Full ID visible in user-supplied My elements screenshots, 2026-09-09 15:31:04/08; image slot empty. Later 15:31:49/56 views do not establish clipped suffixes.",
+      "mention_source": "CREATOR_SUPPLIED_EXACT_ELEMENT_ID_2026_09_10"
     },
     "C25": {
       "alias": "C25_SEARCH_OFFICER_MALE",
-      "mention": "@char_mys_search-officer-male_s4_v1",
-      "last_mention": "@char_mys_search-officer-male_s4_v1",
-      "evidence": "Full ID visible in user-supplied My elements screenshots, 2026-09-09 15:31:04/08; image slot empty. Later 15:31:49/56 views do not establish clipped suffixes."
+      "mention": "@char_MYS_mys-c25-search-officer-male_s0_v1",
+      "last_mention": "@char_MYS_mys-c25-search-officer-male_s0_v1",
+      "evidence": "Full ID visible in user-supplied My elements screenshots, 2026-09-09 15:31:04/08; image slot empty. Later 15:31:49/56 views do not establish clipped suffixes.",
+      "mention_source": "CREATOR_SUPPLIED_EXACT_ELEMENT_ID_2026_09_10"
     },
     "C26": {
       "alias": "C26_DEFENCE_OFFICE_SUBSTITUTE",
-      "mention": null,
-      "last_mention": "@UNBOUND_C26"
+      "mention": "@char_MYS_mys-c26-defence-office-substitute_s0_v1",
+      "last_mention": "@char_MYS_mys-c26-defence-office-substitute_s0_v1",
+      "mention_source": "CREATOR_SUPPLIED_EXACT_ELEMENT_ID_2026_09_10"
     },
     "C27": {
       "alias": "C27_JUDGE",
-      "mention": null,
-      "last_mention": "@UNBOUND_C27"
+      "mention": "@char_MYS_mys-c27-judge_s0_v1",
+      "last_mention": "@char_MYS_mys-c27-judge_s0_v1",
+      "mention_source": "CREATOR_SUPPLIED_EXACT_ELEMENT_ID_2026_09_10"
     },
     "C28": {
       "alias": "C28_FORENSIC_EXPERT_A",
-      "mention": "@char_mys_forensic-expert-a_s5_v1",
-      "last_mention": "@char_mys_forensic-expert-a_s5_v1",
-      "evidence": "Full ID visible in user-supplied My elements screenshots, 2026-09-09 15:31:04/08; image slot empty. Later 15:31:49/56 views do not establish clipped suffixes."
+      "mention": "@char_MYS_mys-c28-forensic-expert-a_s0_v1",
+      "last_mention": "@char_MYS_mys-c28-forensic-expert-a_s0_v1",
+      "evidence": "Full ID visible in user-supplied My elements screenshots, 2026-09-09 15:31:04/08; image slot empty. Later 15:31:49/56 views do not establish clipped suffixes.",
+      "mention_source": "CREATOR_SUPPLIED_EXACT_ELEMENT_ID_2026_09_10"
     },
     "C29": {
       "alias": "C29_FORENSIC_EXPERT_B",
-      "mention": "@char_mys_forensic-expert-b_s5_v1",
-      "last_mention": "@char_mys_forensic-expert-b_s5_v1",
-      "evidence": "Full ID visible in user-supplied My elements screenshots, 2026-09-09 15:31:04/08; image slot empty. Later 15:31:49/56 views do not establish clipped suffixes."
+      "mention": "@char_MYS_mys-c29-forensic-expert-b_s0_v1",
+      "last_mention": "@char_MYS_mys-c29-forensic-expert-b_s0_v1",
+      "evidence": "Full ID visible in user-supplied My elements screenshots, 2026-09-09 15:31:04/08; image slot empty. Later 15:31:49/56 views do not establish clipped suffixes.",
+      "mention_source": "CREATOR_SUPPLIED_EXACT_ELEMENT_ID_2026_09_10"
     },
     "C30": {
       "alias": "C30_COURT_CLERK",
-      "mention": "@char_mys_court-clerk_s5_v1",
-      "last_mention": "@char_mys_court-clerk_s5_v1",
-      "evidence": "Full ID visible in user-supplied My elements screenshots, 2026-09-09 15:31:04/08; image slot empty. Later 15:31:49/56 views do not establish clipped suffixes."
+      "mention": "@char_MYS_mys-c30-court-clerk_s0_v1",
+      "last_mention": "@char_MYS_mys-c30-court-clerk_s0_v1",
+      "evidence": "Full ID visible in user-supplied My elements screenshots, 2026-09-09 15:31:04/08; image slot empty. Later 15:31:49/56 views do not establish clipped suffixes.",
+      "mention_source": "CREATOR_SUPPLIED_EXACT_ELEMENT_ID_2026_09_10"
     },
     "C31": {
       "alias": "C31_ANONYMOUS_FICTIONAL_POLITICAL_FIGURE",
-      "mention": null,
-      "last_mention": "@UNBOUND_C31"
+      "mention": "@char_MYS_mys-c31-anonymous-fictional-cardboard-public-figure_s0_v1",
+      "last_mention": "@char_MYS_mys-c31-anonymous-fictional-cardboard-public-figure_s0_v1",
+      "mention_source": "CREATOR_SUPPLIED_EXACT_ELEMENT_ID_2026_09_10"
     },
     "HRW07": {
       "alias": "HRW07_CLINICAL_REALITY",
@@ -9726,7 +9757,7 @@
               4
             ],
             "status": "PREPARED_NOT_RENDERED",
-            "sha256": "05255640c282507e63e4415e333186473de4613f1f97ac7b14369026688cb17e"
+            "sha256": "e1de75be3f132963a76ab61ec831506655adf7d30ab265eae3add0c17209b4a7"
           },
           "B": {
             "key": "MW01_B",
@@ -9738,7 +9769,7 @@
               8
             ],
             "status": "PREPARED_NOT_RENDERED",
-            "sha256": "f91c624bd53569cf8ef149e474257574b42115958b2956c23c6305bbec7125d7"
+            "sha256": "b6b19faa50e9f102dd61d9dc880e74c634def07f4a7a8d14e51ddfa80dbff1cb"
           },
           "C": {
             "key": "MW01_C",
@@ -9750,7 +9781,7 @@
               8
             ],
             "status": "PREPARED_NOT_RENDERED",
-            "sha256": "f35f7b5c753b6733579ca84f8218c4eb62002f329b4b9ef865fe40211f7396bb"
+            "sha256": "13602eee20c22a81e0fdaca399b2169e6e46ed48d701101a50055b98172c7043"
           }
         },
         "original_views": 9,
@@ -9769,7 +9800,7 @@
               4
             ],
             "status": "PREPARED_NOT_RENDERED",
-            "sha256": "fad2e4867946d0f478cea30927c18644af1e81f22e53cf4ce7ac5f243e971a3f"
+            "sha256": "753ee87a61531b7bf2c77bdbb664beb86bc7e0730e07d26d3e35452f772d3054"
           },
           "B": {
             "key": "MW02_B",
@@ -9781,7 +9812,7 @@
               8
             ],
             "status": "PREPARED_NOT_RENDERED",
-            "sha256": "873079837863544bcbe56f09ee6c5582b1b15db16ec6d13792435deea5949677"
+            "sha256": "f4b8d3cfd922187f19d4bfbf5246de294c297ea58c300aaff31f05e78158cec0"
           },
           "C": {
             "key": "MW02_C",
@@ -9793,7 +9824,7 @@
               8
             ],
             "status": "PREPARED_NOT_RENDERED",
-            "sha256": "5518bbc635a95444185240631b7bf95fa7b671637d161858bd68d82d8539bf3c"
+            "sha256": "b083b7d3aabf48bad605b80dc9ae1321dd57a05ad24f9c1679dd0bb7cb562715"
           }
         },
         "original_views": 9,
@@ -9812,7 +9843,7 @@
               4
             ],
             "status": "PREPARED_NOT_RENDERED",
-            "sha256": "44fb66f104a7ae085aaaca62210fd3e30aea7b41d638232cc9edfd2ff03bde15"
+            "sha256": "28ef82464749baae3fb58696e1d4e1fb0f6523e84e76afa1fb73ea68b2abaf43"
           },
           "B": {
             "key": "MW03_B",
@@ -9824,7 +9855,7 @@
               8
             ],
             "status": "PREPARED_NOT_RENDERED",
-            "sha256": "4b9f688c79f97b933a6319c2c30ff5ff4358b784dea5be4b32d0c5ed7be580ca"
+            "sha256": "6d92a71661fd1a759cc66aedba93cb89e89c778d1efb6d333a62f8fcb07c57f7"
           },
           "C": {
             "key": "MW03_C",
@@ -9836,7 +9867,7 @@
               8
             ],
             "status": "PREPARED_NOT_RENDERED",
-            "sha256": "1d07815d6b088f05f51e10cfe233a6f0e653d56a019001e4ff93f8673f10a1ae"
+            "sha256": "91964d97b3ee88d048aa9b9be1aee0ef0b1cd585d06b3e32cf338f12fcaf0dea"
           }
         },
         "original_views": 9,
@@ -9855,7 +9886,7 @@
               4
             ],
             "status": "PREPARED_NOT_RENDERED",
-            "sha256": "52da4a3d2a5f422432bd45f06aa815c0af63349ab96216b80915f49bc5b344b4"
+            "sha256": "67af459fccb5473c5ef74593f690580443c02a2392335c034185ad30e9dfb583"
           },
           "B": {
             "key": "MW04_B",
@@ -9867,7 +9898,7 @@
               8
             ],
             "status": "PREPARED_NOT_RENDERED",
-            "sha256": "3365bfe9c455ee331827baf9e145339ba2963aaee6c4fd6b4d503abc9d0c1da3"
+            "sha256": "7cc982cfe072a7c281fc2be5989040ae1892c93adbb4945dd34af8175705d9dd"
           },
           "C": {
             "key": "MW04_C",
@@ -9879,7 +9910,7 @@
               8
             ],
             "status": "PREPARED_NOT_RENDERED",
-            "sha256": "1af62a9e76ce2fe88f84b409f06f95379d289ea73c0615e18b4ba150c10e9fdb"
+            "sha256": "da08ff0703f31322c6c5776ef1b787ccb7f210e5229de0bebd6677548fb66041"
           }
         },
         "original_views": 9,
@@ -9898,7 +9929,7 @@
               4
             ],
             "status": "PREPARED_NOT_RENDERED",
-            "sha256": "3338f1409eaa51b97b03bddebe892c855667dbe4e77e7f78bb64a07d7c3d2e26"
+            "sha256": "01805730406c80061c3e80b945f0383ecfa3f23edc9826b92a0460951582cc42"
           },
           "B": {
             "key": "MW05_B",
@@ -9910,7 +9941,7 @@
               8
             ],
             "status": "PREPARED_NOT_RENDERED",
-            "sha256": "776014e7eb3d108b70aa07fa55f49677d424c94a5a61054b22a707bd10d71d29"
+            "sha256": "7f17e9bab064ed528004de27d7e1450a0f95d690848407bbef52a06945b0dbbb"
           },
           "C": {
             "key": "MW05_C",
@@ -9922,7 +9953,7 @@
               8
             ],
             "status": "PREPARED_NOT_RENDERED",
-            "sha256": "36948de3f51cfa3ed2c4ac0d202fd8a1e25fa8d6385e222626821d57d864b143"
+            "sha256": "0b7dfdb499cda2eee0d2e0c74561e40e4dec295ec9998da56c0e836325d29164"
           }
         },
         "original_views": 9,
@@ -9941,7 +9972,7 @@
               4
             ],
             "status": "PREPARED_NOT_RENDERED",
-            "sha256": "b07e12310ae79577503d7155a4b3f89e48fa19a54a22c4cafab866e2019a6489"
+            "sha256": "5355eeed7dfc92d48609aa0c06de28d5469b52d96a50626c7cd05707179a3821"
           },
           "B": {
             "key": "MW06_B",
@@ -9953,7 +9984,7 @@
               8
             ],
             "status": "PREPARED_NOT_RENDERED",
-            "sha256": "42555095d8877a45e974d0504c37c3e7f38b4b72cc127592abfcba6087e15d26"
+            "sha256": "d6f1994d1868cf3efe6124a4281111cdfaf6e63c630494ffd6156fea9441e5fc"
           },
           "C": {
             "key": "MW06_C",
@@ -9965,7 +9996,7 @@
               8
             ],
             "status": "PREPARED_NOT_RENDERED",
-            "sha256": "8fbbcd56e8abf1b9418c1edb2de8d5a0537a0f4b6f4196efa34337ffe11dec78"
+            "sha256": "f2a13edbbc25b7eef92ae03b102501040d125730a5a4864cd2726c8bf7eb23c6"
           }
         },
         "original_views": 9,
@@ -9984,7 +10015,7 @@
               4
             ],
             "status": "PREPARED_NOT_RENDERED",
-            "sha256": "d5a6ed23ca4b4d9cc22018c07970da32d503c9a030714b7279f9a6b5fe46b8ef"
+            "sha256": "849137b32d1a6ed056306d52b23ebfef44c9206d8eb4e14b96856914f80b8c4b"
           },
           "B": {
             "key": "MWP01_B",
@@ -9996,7 +10027,7 @@
               8
             ],
             "status": "PREPARED_NOT_RENDERED",
-            "sha256": "b9b0bc92e517f7454941477043adace8e63cea636c7f23e31d4f7d3192967436"
+            "sha256": "184820b0e4fc70850ff888292f709901f3b49bace1fa5e8d369a008f1daca78d"
           },
           "C": {
             "key": "MWP01_C",
@@ -10008,7 +10039,7 @@
               8
             ],
             "status": "PREPARED_NOT_RENDERED",
-            "sha256": "6b98d956184177e8836687a2df25faf038aeb94f3e4f7e31ffffa829364392cc"
+            "sha256": "c6c476d9a27dd8fc90a000c64df593b55c8c495f91e7281762f3411d10b9964a"
           }
         },
         "original_views": 9,
@@ -10027,7 +10058,7 @@
               4
             ],
             "status": "PREPARED_NOT_RENDERED",
-            "sha256": "52ddbebc660e5281aabd890c6996fa23041d44301c02d9e5a9106740c517afb0"
+            "sha256": "eca084c19c6c7b2bba92709b2a589ec47c19ba7a958760f5e0f7ee68f2d58121"
           },
           "B": {
             "key": "MWP02_B",
@@ -10039,7 +10070,7 @@
               8
             ],
             "status": "PREPARED_NOT_RENDERED",
-            "sha256": "1809164a0e35d36bc486f616f311b053a18354a17d6ba952fb60ae0f089a79bc"
+            "sha256": "9fd8a406fffe977ff0df44346795aa8ca21c12c8de25138aa7bbf5867478fa1b"
           },
           "C": {
             "key": "MWP02_C",
@@ -10051,7 +10082,7 @@
               8
             ],
             "status": "PREPARED_NOT_RENDERED",
-            "sha256": "3a8c8db2e87c22bb97495f597e69efa01c9e2cad72fd68a04eaeedd7309c6cd8"
+            "sha256": "fb4cbaaa485511e9a95bd84efac808c36eca47e0948bae675e18028ce2a4e581"
           }
         },
         "original_views": 9,
@@ -10070,7 +10101,7 @@
               4
             ],
             "status": "PREPARED_NOT_RENDERED",
-            "sha256": "25bdf2bf95ee4e7cdc7921deb72d7ec37c247325f49c10afcaf10ea9c52337fc"
+            "sha256": "55e2881a68cb0d5cd4a8f39fcf514cbda51ba338621a4d47479f08e90b6a38bf"
           },
           "B": {
             "key": "HRW07_B",
@@ -10082,7 +10113,7 @@
               8
             ],
             "status": "PREPARED_NOT_RENDERED",
-            "sha256": "775e4ff1f911b512d009fa79bbd28a51e27a3fa871cdcd5eb98cd8adc0fde6cd"
+            "sha256": "913015fe95355c6b0960e069e834dbb171c78fc30f774309f82057c565d28264"
           },
           "C": {
             "key": "HRW07_C",
@@ -10094,7 +10125,7 @@
               8
             ],
             "status": "PREPARED_NOT_RENDERED",
-            "sha256": "faa9d3dea6f47848fbcc2a30ffee61b32c79b0401f725a7da05bdd4e4ba17742"
+            "sha256": "77cdd02e809b1a830fe3edd01277bae1d8126591d21331a7bc062dd0f50a41cd"
           }
         },
         "original_views": 9,
@@ -10113,7 +10144,7 @@
               4
             ],
             "status": "PREPARED_NOT_RENDERED",
-            "sha256": "cf467b8db3cfb04c450458ceae0edd8687a5ecf1cbb301cca7f81d48c1141f6b"
+            "sha256": "55e656996105c9cb81bad33e22b7e75d8bd73dfb7d5f13b25be2ae3da7a15957"
           },
           "B": {
             "key": "T01_DETAILS_B",
@@ -10125,7 +10156,7 @@
               8
             ],
             "status": "PREPARED_NOT_RENDERED",
-            "sha256": "e1baa5cb4bee93fb6760f0328f1d9705ec3c7c19408abdfbd4e71da2321a540d"
+            "sha256": "06f12d22450846078f960568e2c6f34120379c3c7485515d376f91dd94312c58"
           },
           "C": {
             "key": "T01_DETAILS_C",
@@ -10137,7 +10168,7 @@
               12
             ],
             "status": "PREPARED_NOT_RENDERED",
-            "sha256": "4f3b0ca03bb7baf8714ed46f7f92703bbfaed6b2c35d9796feaf1b4ce78cc8a8"
+            "sha256": "91e7a1343f7a8cadb9a661d6001d7ed94737ff760ad48ea8b69ee94e6fa97b45"
           }
         },
         "coverage_views": 12,

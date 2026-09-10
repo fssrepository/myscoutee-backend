@@ -1,4 +1,4 @@
-REFERENCE SETUP INCOMPLETE: C03, C04, C26, MW04, MW04_B, MW04_C, W04_A_01, W04_A_02, W04_A_03, W04_A_04, W04_B_01, W04_B_02, W04_B_03, W04_B_04, W04_C_01, W04_C_02, W04_C_03, W04_C_04
+REFERENCE SETUP INCOMPLETE: MW04, MW04_B, MW04_C, W04_A_01, W04_A_02, W04_A_03, W04_A_04, W04_B_01, W04_B_02, W04_B_03, W04_B_04, W04_C_01, W04_C_02, W04_C_03, W04_C_04
 Do not generate until these references are bound.
 
 MEMORY REFERENCE PAGES — DIRECT SOURCES, NOT EDITS:
@@ -35,11 +35,11 @@ Heavy overcast London sky with cool diffuse evening light. The air is clear and 
 REFERENCE INPUTS:
 @UNBOUND_W04_A_01 @UNBOUND_W04_A_02 @UNBOUND_W04_A_03 @UNBOUND_W04_A_04 = LOCATION — W04 — WORLD 04 — FORMAL CITY — FLEET STREET / TEMPLE / CIVIC FACADES / BLACKFRIARS APPROACH; physical present city; preserve materials and allow the directed architectural transformation.
 @UNBOUND_MW04 = LOCATION — MW04 — MEMORY WORLD 04 — POLICE / SEARCH / DEFENCE; the assigned remembered scenes; preserve the source identities and setting.
-@char_mys_protagonist_s1_v1 = CHARACTER 01 — PROTAGONIST; exact person identity; use only where this person appears.
-@UNBOUND_C03 = CHARACTER 03 — POLICEWOMAN; exact person identity; use only where this person appears.
-@UNBOUND_C04 = CHARACTER 04 — APPOINTED LAWYER; exact person identity; use only where this person appears.
-@char_mys_search-officer-male_s4_v1 = CHARACTER 25 — SEARCH OFFICER — MALE; exact person identity; use only where this person appears.
-@UNBOUND_C26 = CHARACTER 26 — DEFENCE-OFFICE SUBSTITUTE; exact person identity; use only where this person appears.
+@char_MYS_mys-c01-protagonist_s0_v1 = CHARACTER 01 — PROTAGONIST; exact person identity; use only where this person appears.
+@char_MYS_mys-c03-policewoman_s0_v1 = CHARACTER 03 — POLICEWOMAN; exact person identity; use only where this person appears.
+@char_MYS_mys-c04-appointed-lawyer_s0_v1 = CHARACTER 04 — APPOINTED LAWYER; exact person identity; use only where this person appears.
+@char_MYS_mys-c25-search-officer-male_s0_v1 = CHARACTER 25 — SEARCH OFFICER — MALE; exact person identity; use only where this person appears.
+@char_MYS_mys-c26-defence-office-substitute_s0_v1 = CHARACTER 26 — DEFENCE-OFFICE SUBSTITUTE; exact person identity; use only where this person appears.
 
 OUTPUT GEOMETRY — NON-NEGOTIABLE:
 Generate a WIDESCREEN LANDSCAPE image with a TRUE 16:9 FINAL CANVAS at the full output resolution selected in the generation controls.

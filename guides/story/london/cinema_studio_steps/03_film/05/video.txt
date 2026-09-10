@@ -1,4 +1,4 @@
-REFERENCE SETUP INCOMPLETE: A05, C04, C27, C31, MW05, MW05_B, MW05_C, MWP02, MWP02_B, MWP02_C, SB05, W05_A_01, W05_A_02, W05_A_03, W05_A_04, W05_B_01, W05_B_02, W05_B_03, W05_B_04, W05_C_01, W05_C_02, W05_C_03, W05_C_04
+REFERENCE SETUP INCOMPLETE: A05, MW05, MW05_B, MW05_C, MWP02, MWP02_B, MWP02_C, SB05, W05_A_01, W05_A_02, W05_A_03, W05_A_04, W05_B_01, W05_B_02, W05_B_03, W05_B_04, W05_C_01, W05_C_02, W05_C_03, W05_C_04
 Do not generate until these references are bound.
 
 MEMORY REFERENCE PAGES — DIRECT SOURCES, NOT EDITS:
@@ -41,13 +41,13 @@ REFERENCES
 @UNBOUND_W05_A_01 @UNBOUND_W05_A_02 @UNBOUND_W05_A_03 @UNBOUND_W05_A_04 = physical city, route, materials and recognizable architecture; transformation allowed as directed.
 @UNBOUND_MW05 = literal memory source; reconstruct its people and place in the changing street according to the named beat.
 @UNBOUND_MWP02 = literal memory source; reconstruct its people and place in the changing street according to the named beat.
-@char_mys_protagonist_s1_v1 = exact face, age, hair and body; memory wardrobe follows its source scene.
-@UNBOUND_C04 = exact face, age, hair and body; memory wardrobe follows its source scene.
-@UNBOUND_C27 = exact face, age, hair and body; memory wardrobe follows its source scene.
-@char_mys_forensic-expert-a_s5_v1 = exact face, age, hair and body; memory wardrobe follows its source scene.
-@char_mys_forensic-expert-b_s5_v1 = exact face, age, hair and body; memory wardrobe follows its source scene.
-@char_mys_court-clerk_s5_v1 = exact face, age, hair and body; memory wardrobe follows its source scene.
-@UNBOUND_C31 = exact face, age, hair and body; memory wardrobe follows its source scene.
+@char_MYS_mys-c01-protagonist_s0_v1 = exact face, age, hair and body; memory wardrobe follows its source scene.
+@char_MYS_mys-c04-appointed-lawyer_s0_v1 = exact face, age, hair and body; memory wardrobe follows its source scene.
+@char_MYS_mys-c27-judge_s0_v1 = exact face, age, hair and body; memory wardrobe follows its source scene.
+@char_MYS_mys-c28-forensic-expert-a_s0_v1 = exact face, age, hair and body; memory wardrobe follows its source scene.
+@char_MYS_mys-c29-forensic-expert-b_s0_v1 = exact face, age, hair and body; memory wardrobe follows its source scene.
+@char_MYS_mys-c30-court-clerk_s0_v1 = exact face, age, hair and body; memory wardrobe follows its source scene.
+@char_MYS_mys-c31-anonymous-fictional-cardboard-public-figure_s0_v1 = exact face, age, hair and body; memory wardrobe follows its source scene.
 @UNBOUND_SB05 = ordered key moments in one continuous shot; do not render its grid, labels or cuts between cells.
 @UNBOUND_A05 = the protagonist's exact supplied inner-monologue voiceover; preserve words, voice and pacing.
 

@@ -51,12 +51,12 @@ Generate only missing media. Reuse accepted dependencies from prior blocks. Each
 | W01 | `W01_MAIN_WORLD.png` | `@loc_mys_world-01-the-city-judges-first-soho-piccadilly-leicester_s1_v1` |
 | MW01 | `MW01_LONDON_SOCIAL.png` | `@UNBOUND_MW01` |
 | MWP01 | `MWP01_ROUTES_ROOMS_DOCUMENTS.png` | `@UNBOUND_MWP01` |
-| C01 | `C01_PROTAGONIST.png` | `@char_mys_protagonist_s1_v1` |
-| C02 | `C02_SOHO_WOMAN.png` | `@char_mys_soho-woman_s1_v1` |
-| C06 | `C06_SHARED_HOUSE_SUBSTITUTE_SNORING_HOUSEMATE.png` | `@UNBOUND_C06` |
-| C07 | `C07_FX_MORTGAGE_HOUSEMATE.png` | `@UNBOUND_C07` |
-| C08 | `C08_FX_MORTGAGE_SPOUSE.png` | `@UNBOUND_C08` |
-| C09 | `C09_FX_MORTGAGE_CHILD.png` | `@char_mys_fx-mortgage-child_s1_v1` |
+| C01 | `C01_PROTAGONIST.png` | `@char_MYS_mys-c01-protagonist_s0_v1` |
+| C02 | `C02_SOHO_WOMAN.png` | `@char_MYS_mys-c02-soho-woman_s0_v1` |
+| C06 | `C06_SHARED_HOUSE_SUBSTITUTE_SNORING_HOUSEMATE.png` | `@char_MYS_mys-c06-shared-house-substitute-snoring-housemate_s0_v1` |
+| C07 | `C07_FX_MORTGAGE_HOUSEMATE.png` | `@char_MYS_mys-c07-fx-mortgage-housemate_s0_v1` |
+| C08 | `C08_FX_MORTGAGE_SPOUSE.png` | `@char_MYS_mys-c08-fx-mortgage-spouse_s0_v1` |
+| C09 | `C09_FX_MORTGAGE_CHILD.png` | `@char_MYS_mys-c09-fx-mortgage-child_s0_v1` |
 | SB01 | `SB01_STORYBOARD.png` | `@UNBOUND_SB01` |
 | A01 | `A01_NARRATION.wav` | `@UNBOUND_A01` |
 

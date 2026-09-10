@@ -1,4 +1,4 @@
-REFERENCE SETUP INCOMPLETE: C06, C16, C17, HRW07, HRW07_B, HRW07_C, MW01, MW01_B, MW01_C, MW02, MW02_B, MW02_C, MWP01, MWP01_B, MWP01_C, W07_A_01, W07_A_02, W07_A_03, W07_A_04, W07_B_01, W07_B_02, W07_B_03, W07_B_04, W07_C_01, W07_C_02, W07_C_03, W07_C_04
+REFERENCE SETUP INCOMPLETE: HRW07, HRW07_B, HRW07_C, MW01, MW01_B, MW01_C, MW02, MW02_B, MW02_C, MWP01, MWP01_B, MWP01_C, W07_A_01, W07_A_02, W07_A_03, W07_A_04, W07_B_01, W07_B_02, W07_B_03, W07_B_04, W07_C_01, W07_C_02, W07_C_03, W07_C_04
 Do not generate until these references are bound.
 
 MEMORY REFERENCE PAGES — DIRECT SOURCES, NOT EDITS:
@@ -41,11 +41,11 @@ REFERENCE INPUTS:
 @UNBOUND_MWP01 = LOCATION — MWP01 — MEMORY PRESERVATION WORLD P01 — ROUTES / ROOMS / DOCUMENT THRESHOLDS; the assigned remembered scenes; preserve the source identities and setting.
 @UNBOUND_MW01 = LOCATION — MW01 — MEMORY WORLD 01 — LONDON / SOCIAL / HOME / DATING; the assigned remembered scenes; preserve the source identities and setting.
 @UNBOUND_MW02 = LOCATION — MW02 — MEMORY WORLD 02 — GLOBAL ROUTES / HUMAN ENCOUNTERS; the assigned remembered scenes; preserve the source identities and setting.
-@char_mys_protagonist_s1_v1 = CHARACTER 01 — PROTAGONIST; exact person identity; use only where this person appears.
-@char_mys_final-nurse_s7_v1 = CHARACTER 05 — FINAL NURSE; exact person identity; use only where this person appears.
-@UNBOUND_C06 = CHARACTER 06 — SHARED-HOUSE SUBSTITUTE / SNORING HOUSEMATE; exact person identity; use only where this person appears.
-@UNBOUND_C16 = CHARACTER 16 — BALLOON LOCAL HELPER — MAN; exact person identity; use only where this person appears.
-@UNBOUND_C17 = CHARACTER 17 — BALLOON LOCAL HELPER — WOMAN; exact person identity; use only where this person appears.
+@char_MYS_mys-c01-protagonist_s0_v1 = CHARACTER 01 — PROTAGONIST; exact person identity; use only where this person appears.
+@char_MYS_mys-c05-final-nurse_s0_v1 = CHARACTER 05 — FINAL NURSE; exact person identity; use only where this person appears.
+@char_MYS_mys-c06-shared-house-substitute-snoring-housemate_s0_v1 = CHARACTER 06 — SHARED-HOUSE SUBSTITUTE / SNORING HOUSEMATE; exact person identity; use only where this person appears.
+@char_MYS_mys-c16-balloon-local-helper-man_s0_v1 = CHARACTER 16 — BALLOON LOCAL HELPER — MAN; exact person identity; use only where this person appears.
+@char_MYS_mys-c17-balloon-local-helper-woman_s0_v1 = CHARACTER 17 — BALLOON LOCAL HELPER — WOMAN; exact person identity; use only where this person appears.
 
 OUTPUT GEOMETRY — NON-NEGOTIABLE:
 Generate a WIDESCREEN LANDSCAPE image with a TRUE 16:9 FINAL CANVAS at the full output resolution selected in the generation controls.

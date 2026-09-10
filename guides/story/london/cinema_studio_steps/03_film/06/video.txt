@@ -1,4 +1,4 @@
-REFERENCE SETUP INCOMPLETE: A06, C03, C04, C11, C16, C17, C27, MW01, MW01_B, MW01_C, MW02, MW02_B, MW02_C, MW03, MW03_B, MW03_C, MW04, MW04_B, MW04_C, MW05, MW05_B, MW05_C, MW06, MW06_B, MW06_C, MWP02, MWP02_B, MWP02_C, SB06, W06_A_01, W06_A_02, W06_A_03, W06_A_04, W06_B_01, W06_B_02, W06_B_03, W06_B_04, W06_C_01, W06_C_02, W06_C_03, W06_C_04
+REFERENCE SETUP INCOMPLETE: A06, MW01, MW01_B, MW01_C, MW02, MW02_B, MW02_C, MW03, MW03_B, MW03_C, MW04, MW04_B, MW04_C, MW05, MW05_B, MW05_C, MW06, MW06_B, MW06_C, MWP02, MWP02_B, MWP02_C, SB06, W06_A_01, W06_A_02, W06_A_03, W06_A_04, W06_B_01, W06_B_02, W06_B_03, W06_B_04, W06_C_01, W06_C_02, W06_C_03, W06_C_04
 Do not generate until these references are bound.
 
 MEMORY REFERENCE PAGES — DIRECT SOURCES, NOT EDITS:
@@ -51,17 +51,17 @@ REFERENCES
 @UNBOUND_MW03 = literal memory source; reconstruct its people and place in the changing street according to the named beat.
 @UNBOUND_MW04 = literal memory source; reconstruct its people and place in the changing street according to the named beat.
 @UNBOUND_MW05 = literal memory source; reconstruct its people and place in the changing street according to the named beat.
-@char_mys_protagonist_s1_v1 = exact face, age, hair and body; memory wardrobe follows its source scene.
-@char_mys_soho-woman_s1_v1 = exact face, age, hair and body; memory wardrobe follows its source scene.
-@UNBOUND_C03 = exact face, age, hair and body; memory wardrobe follows its source scene.
-@UNBOUND_C04 = exact face, age, hair and body; memory wardrobe follows its source scene.
-@char_mys_beginner-dance-woman_s1_v1 = exact face, age, hair and body; memory wardrobe follows its source scene.
-@UNBOUND_C11 = exact face, age, hair and body; memory wardrobe follows its source scene.
-@UNBOUND_C16 = exact face, age, hair and body; memory wardrobe follows its source scene.
-@UNBOUND_C17 = exact face, age, hair and body; memory wardrobe follows its source scene.
-@UNBOUND_C27 = exact face, age, hair and body; memory wardrobe follows its source scene.
-@char_mys_forensic-expert-a_s5_v1 = exact face, age, hair and body; memory wardrobe follows its source scene.
-@char_mys_forensic-expert-b_s5_v1 = exact face, age, hair and body; memory wardrobe follows its source scene.
+@char_MYS_mys-c01-protagonist_s0_v1 = exact face, age, hair and body; memory wardrobe follows its source scene.
+@char_MYS_mys-c02-soho-woman_s0_v1 = exact face, age, hair and body; memory wardrobe follows its source scene.
+@char_MYS_mys-c03-policewoman_s0_v1 = exact face, age, hair and body; memory wardrobe follows its source scene.
+@char_MYS_mys-c04-appointed-lawyer_s0_v1 = exact face, age, hair and body; memory wardrobe follows its source scene.
+@char_MYS_mys-c10-beginner-dance-woman_s0_v1 = exact face, age, hair and body; memory wardrobe follows its source scene.
+@char_MYS_mys-c11-russian-transit-passenger_s0_v1 = exact face, age, hair and body; memory wardrobe follows its source scene.
+@char_MYS_mys-c16-balloon-local-helper-man_s0_v1 = exact face, age, hair and body; memory wardrobe follows its source scene.
+@char_MYS_mys-c17-balloon-local-helper-woman_s0_v1 = exact face, age, hair and body; memory wardrobe follows its source scene.
+@char_MYS_mys-c27-judge_s0_v1 = exact face, age, hair and body; memory wardrobe follows its source scene.
+@char_MYS_mys-c28-forensic-expert-a_s0_v1 = exact face, age, hair and body; memory wardrobe follows its source scene.
+@char_MYS_mys-c29-forensic-expert-b_s0_v1 = exact face, age, hair and body; memory wardrobe follows its source scene.
 @UNBOUND_SB06 = ordered key moments in one continuous shot; do not render its grid, labels or cuts between cells.
 @UNBOUND_A06 = the protagonist's exact supplied inner-monologue voiceover; preserve words, voice and pacing.
 

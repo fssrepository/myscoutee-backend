@@ -1,4 +1,4 @@
-REFERENCE SETUP INCOMPLETE: A07, C06, C16, C17, HRW07, HRW07_B, HRW07_C, MW01, MW01_B, MW01_C, MW02, MW02_B, MW02_C, MWP01, MWP01_B, MWP01_C, SB07, W07_A_01, W07_A_02, W07_A_03, W07_A_04, W07_B_01, W07_B_02, W07_B_03, W07_B_04, W07_C_01, W07_C_02, W07_C_03, W07_C_04
+REFERENCE SETUP INCOMPLETE: A07, HRW07, HRW07_B, HRW07_C, MW01, MW01_B, MW01_C, MW02, MW02_B, MW02_C, MWP01, MWP01_B, MWP01_C, SB07, W07_A_01, W07_A_02, W07_A_03, W07_A_04, W07_B_01, W07_B_02, W07_B_03, W07_B_04, W07_C_01, W07_C_02, W07_C_03, W07_C_04
 Do not generate until these references are bound.
 
 MEMORY REFERENCE PAGES — DIRECT SOURCES, NOT EDITS:
@@ -45,11 +45,11 @@ REFERENCES
 @UNBOUND_MWP01 = literal memory source; reconstruct its people and place in the changing street according to the named beat.
 @UNBOUND_MW01 = literal memory source; reconstruct its people and place in the changing street according to the named beat.
 @UNBOUND_MW02 = literal memory source; reconstruct its people and place in the changing street according to the named beat.
-@char_mys_protagonist_s1_v1 = exact face, age, hair and body; memory wardrobe follows its source scene.
-@char_mys_final-nurse_s7_v1 = exact face, age, hair and body; memory wardrobe follows its source scene.
-@UNBOUND_C06 = exact face, age, hair and body; memory wardrobe follows its source scene.
-@UNBOUND_C16 = exact face, age, hair and body; memory wardrobe follows its source scene.
-@UNBOUND_C17 = exact face, age, hair and body; memory wardrobe follows its source scene.
+@char_MYS_mys-c01-protagonist_s0_v1 = exact face, age, hair and body; memory wardrobe follows its source scene.
+@char_MYS_mys-c05-final-nurse_s0_v1 = exact face, age, hair and body; memory wardrobe follows its source scene.
+@char_MYS_mys-c06-shared-house-substitute-snoring-housemate_s0_v1 = exact face, age, hair and body; memory wardrobe follows its source scene.
+@char_MYS_mys-c16-balloon-local-helper-man_s0_v1 = exact face, age, hair and body; memory wardrobe follows its source scene.
+@char_MYS_mys-c17-balloon-local-helper-woman_s0_v1 = exact face, age, hair and body; memory wardrobe follows its source scene.
 @UNBOUND_SB07 = ordered key moments in one continuous shot; do not render its grid, labels or cuts between cells.
 @UNBOUND_A07 = the protagonist's exact supplied inner-monologue voiceover; preserve words, voice and pacing.
 

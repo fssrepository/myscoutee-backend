@@ -46,11 +46,11 @@ Generate only missing media. Reuse accepted dependencies from prior blocks. Each
 | MWP01 | `MWP01_ROUTES_ROOMS_DOCUMENTS.png` | `@UNBOUND_MWP01` |
 | MW01 | `MW01_LONDON_SOCIAL.png` | `@UNBOUND_MW01` |
 | MW02 | `MW02_GLOBAL_ROUTES.png` | `@UNBOUND_MW02` |
-| C01 | `C01_PROTAGONIST.png` | `@char_mys_protagonist_s1_v1` |
-| C05 | `C05_FINAL_NURSE.png` | `@char_mys_final-nurse_s7_v1` |
-| C06 | `C06_SHARED_HOUSE_SUBSTITUTE_SNORING_HOUSEMATE.png` | `@UNBOUND_C06` |
-| C16 | `C16_BALLOON_LOCAL_HELPER_MAN.png` | `@UNBOUND_C16` |
-| C17 | `C17_BALLOON_LOCAL_HELPER_WOMAN.png` | `@UNBOUND_C17` |
+| C01 | `C01_PROTAGONIST.png` | `@char_MYS_mys-c01-protagonist_s0_v1` |
+| C05 | `C05_FINAL_NURSE.png` | `@char_MYS_mys-c05-final-nurse_s0_v1` |
+| C06 | `C06_SHARED_HOUSE_SUBSTITUTE_SNORING_HOUSEMATE.png` | `@char_MYS_mys-c06-shared-house-substitute-snoring-housemate_s0_v1` |
+| C16 | `C16_BALLOON_LOCAL_HELPER_MAN.png` | `@char_MYS_mys-c16-balloon-local-helper-man_s0_v1` |
+| C17 | `C17_BALLOON_LOCAL_HELPER_WOMAN.png` | `@char_MYS_mys-c17-balloon-local-helper-woman_s0_v1` |
 | SB07 | `SB07_STORYBOARD.png` | `@UNBOUND_SB07` |
 | A07 | `A07_NARRATION.wav` | `@UNBOUND_A07` |
 

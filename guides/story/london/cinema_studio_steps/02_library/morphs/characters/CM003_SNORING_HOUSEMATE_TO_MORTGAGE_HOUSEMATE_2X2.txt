@@ -1,11 +1,8 @@
 REFERENCE ID: CM003_SNORING_HOUSEMATE_TO_MORTGAGE_HOUSEMATE_2X2 (do not render this identifier).
 
-REFERENCE SETUP INCOMPLETE: C06, C07
-Do not generate until these references are bound.
-
 REFERENCE INPUTS — C06 TO C07:
-@UNBOUND_C06 supplies the exact C06 source identity, hair, body and wardrobe.
-@UNBOUND_C07 supplies the exact C07 destination identity, hair, body and wardrobe.
+@char_MYS_mys-c06-shared-house-substitute-snoring-housemate_s0_v1 supplies the exact C06 source identity, hair, body and wardrobe.
+@char_MYS_mys-c07-fx-mortgage-housemate_s0_v1 supplies the exact C07 destination identity, hair, body and wardrobe.
 Use only the people from these inputs, not their grey studio backgrounds or multi-view layouts.
 
 SUBJECT AND STORY CONNECTION:

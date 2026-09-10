@@ -1,8 +1,8 @@
 REFERENCE ID: CM002_SOHO_WOMAN_TO_BEGINNER_DANCE_WOMAN_2X2 (do not render this identifier).
 
 REFERENCE INPUTS — C02 TO C10:
-@char_mys_soho-woman_s1_v1 supplies the exact C02 source identity, hair, body and wardrobe.
-@char_mys_beginner-dance-woman_s1_v1 supplies the exact C10 destination identity, hair, body and wardrobe.
+@char_MYS_mys-c02-soho-woman_s0_v1 supplies the exact C02 source identity, hair, body and wardrobe.
+@char_MYS_mys-c10-beginner-dance-woman_s0_v1 supplies the exact C10 destination identity, hair, body and wardrobe.
 Use only the people from these inputs, not their grey studio backgrounds or multi-view layouts.
 
 SUBJECT AND STORY CONNECTION:

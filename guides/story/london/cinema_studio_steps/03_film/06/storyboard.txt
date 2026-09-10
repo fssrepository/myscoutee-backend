@@ -1,4 +1,4 @@
-REFERENCE SETUP INCOMPLETE: C03, C04, C11, C16, C17, C27, MW01, MW01_B, MW01_C, MW02, MW02_B, MW02_C, MW03, MW03_B, MW03_C, MW04, MW04_B, MW04_C, MW05, MW05_B, MW05_C, MW06, MW06_B, MW06_C, MWP02, MWP02_B, MWP02_C, W06_A_01, W06_A_02, W06_A_03, W06_A_04, W06_B_01, W06_B_02, W06_B_03, W06_B_04, W06_C_01, W06_C_02, W06_C_03, W06_C_04
+REFERENCE SETUP INCOMPLETE: MW01, MW01_B, MW01_C, MW02, MW02_B, MW02_C, MW03, MW03_B, MW03_C, MW04, MW04_B, MW04_C, MW05, MW05_B, MW05_C, MW06, MW06_B, MW06_C, MWP02, MWP02_B, MWP02_C, W06_A_01, W06_A_02, W06_A_03, W06_A_04, W06_B_01, W06_B_02, W06_B_03, W06_B_04, W06_C_01, W06_C_02, W06_C_03, W06_C_04
 Do not generate until these references are bound.
 
 MEMORY REFERENCE PAGES — DIRECT SOURCES, NOT EDITS:
@@ -47,17 +47,17 @@ REFERENCE INPUTS:
 @UNBOUND_MW03 = LOCATION — MW03 — MEMORY WORLD 03 — WORK / ACCOUNTING / RULE CHANGE / ADMIN; the assigned remembered scenes; preserve the source identities and setting.
 @UNBOUND_MW04 = LOCATION — MW04 — MEMORY WORLD 04 — POLICE / SEARCH / DEFENCE; the assigned remembered scenes; preserve the source identities and setting.
 @UNBOUND_MW05 = LOCATION — MW05 — MEMORY WORLD 05 — COURT / FILE / ASSETS / BLACK HUMOUR; the assigned remembered scenes; preserve the source identities and setting.
-@char_mys_protagonist_s1_v1 = CHARACTER 01 — PROTAGONIST; exact person identity; use only where this person appears.
-@char_mys_soho-woman_s1_v1 = CHARACTER 02 — SOHO WOMAN; exact person identity; use only where this person appears.
-@UNBOUND_C03 = CHARACTER 03 — POLICEWOMAN; exact person identity; use only where this person appears.
-@UNBOUND_C04 = CHARACTER 04 — APPOINTED LAWYER; exact person identity; use only where this person appears.
-@char_mys_beginner-dance-woman_s1_v1 = CHARACTER 10 — BEGINNER-DANCE WOMAN; exact person identity; use only where this person appears.
-@UNBOUND_C11 = CHARACTER 11 — RUSSIAN TRANSIT PASSENGER; exact person identity; use only where this person appears.
-@UNBOUND_C16 = CHARACTER 16 — BALLOON LOCAL HELPER — MAN; exact person identity; use only where this person appears.
-@UNBOUND_C17 = CHARACTER 17 — BALLOON LOCAL HELPER — WOMAN; exact person identity; use only where this person appears.
-@UNBOUND_C27 = CHARACTER 27 — JUDGE; exact person identity; use only where this person appears.
-@char_mys_forensic-expert-a_s5_v1 = CHARACTER 28 — FORENSIC EXPERT A; exact person identity; use only where this person appears.
-@char_mys_forensic-expert-b_s5_v1 = CHARACTER 29 — FORENSIC EXPERT B; exact person identity; use only where this person appears.
+@char_MYS_mys-c01-protagonist_s0_v1 = CHARACTER 01 — PROTAGONIST; exact person identity; use only where this person appears.
+@char_MYS_mys-c02-soho-woman_s0_v1 = CHARACTER 02 — SOHO WOMAN; exact person identity; use only where this person appears.
+@char_MYS_mys-c03-policewoman_s0_v1 = CHARACTER 03 — POLICEWOMAN; exact person identity; use only where this person appears.
+@char_MYS_mys-c04-appointed-lawyer_s0_v1 = CHARACTER 04 — APPOINTED LAWYER; exact person identity; use only where this person appears.
+@char_MYS_mys-c10-beginner-dance-woman_s0_v1 = CHARACTER 10 — BEGINNER-DANCE WOMAN; exact person identity; use only where this person appears.
+@char_MYS_mys-c11-russian-transit-passenger_s0_v1 = CHARACTER 11 — RUSSIAN TRANSIT PASSENGER; exact person identity; use only where this person appears.
+@char_MYS_mys-c16-balloon-local-helper-man_s0_v1 = CHARACTER 16 — BALLOON LOCAL HELPER — MAN; exact person identity; use only where this person appears.
+@char_MYS_mys-c17-balloon-local-helper-woman_s0_v1 = CHARACTER 17 — BALLOON LOCAL HELPER — WOMAN; exact person identity; use only where this person appears.
+@char_MYS_mys-c27-judge_s0_v1 = CHARACTER 27 — JUDGE; exact person identity; use only where this person appears.
+@char_MYS_mys-c28-forensic-expert-a_s0_v1 = CHARACTER 28 — FORENSIC EXPERT A; exact person identity; use only where this person appears.
+@char_MYS_mys-c29-forensic-expert-b_s0_v1 = CHARACTER 29 — FORENSIC EXPERT B; exact person identity; use only where this person appears.
 
 OUTPUT GEOMETRY — NON-NEGOTIABLE:
 Generate a WIDESCREEN LANDSCAPE image with a TRUE 16:9 FINAL CANVAS at the full output resolution selected in the generation controls.

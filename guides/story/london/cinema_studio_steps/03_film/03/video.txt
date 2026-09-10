@@ -1,4 +1,4 @@
-REFERENCE SETUP INCOMPLETE: A03, C22, MW03, MW03_B, MW03_C, MWP01, MWP01_B, MWP01_C, SB03, W03_A_01, W03_A_02, W03_A_03, W03_A_04, W03_B_01, W03_B_02, W03_B_03, W03_B_04, W03_C_01, W03_C_02, W03_C_03, W03_C_04
+REFERENCE SETUP INCOMPLETE: A03, MW03, MW03_B, MW03_C, MWP01, MWP01_B, MWP01_C, SB03, W03_A_01, W03_A_02, W03_A_03, W03_A_04, W03_B_01, W03_B_02, W03_B_03, W03_B_04, W03_C_01, W03_C_02, W03_C_03, W03_C_04
 Do not generate until these references are bound.
 
 MEMORY REFERENCE PAGES — DIRECT SOURCES, NOT EDITS:
@@ -41,10 +41,10 @@ REFERENCES
 @UNBOUND_W03_A_01 @UNBOUND_W03_A_02 @UNBOUND_W03_A_03 @UNBOUND_W03_A_04 = physical city, route, materials and recognizable architecture; transformation allowed as directed.
 @UNBOUND_MW03 = literal memory source; reconstruct its people and place in the changing street according to the named beat.
 @UNBOUND_MWP01 = literal memory source; reconstruct its people and place in the changing street according to the named beat.
-@char_mys_protagonist_s1_v1 = exact face, age, hair and body; memory wardrobe follows its source scene.
-@UNBOUND_C22 = exact face, age, hair and body; memory wardrobe follows its source scene.
-@char_mys_admin-colleague-a_s3_v1 = exact face, age, hair and body; memory wardrobe follows its source scene.
-@char_mys_admin-colleague-b_s3_v1 = exact face, age, hair and body; memory wardrobe follows its source scene.
+@char_MYS_mys-c01-protagonist_s0_v1 = exact face, age, hair and body; memory wardrobe follows its source scene.
+@char_MYS_mys-c22-accountant_s0_v1 = exact face, age, hair and body; memory wardrobe follows its source scene.
+@char_MYS_mys-c23-admin-colleague-a_s0_v1 = exact face, age, hair and body; memory wardrobe follows its source scene.
+@char_MYS_mys-c24-admin-colleague-b_s0_v1 = exact face, age, hair and body; memory wardrobe follows its source scene.
 @UNBOUND_SB03 = ordered key moments in one continuous shot; do not render its grid, labels or cuts between cells.
 @UNBOUND_A03 = the protagonist's exact supplied inner-monologue voiceover; preserve words, voice and pacing.
 

@@ -1,11 +1,8 @@
 REFERENCE ID: CM004_TRANSIT_HELPER_TO_CAIRO_TRAVELER_2X2 (do not render this identifier).
 
-REFERENCE SETUP INCOMPLETE: C11
-Do not generate until these references are bound.
-
 REFERENCE INPUTS — C11 TO C13:
-@UNBOUND_C11 supplies the exact C11 source identity, hair, body and wardrobe.
-@char_mys_sudanese-traveler-man_s2_v1 supplies the exact C13 destination identity, hair, body and wardrobe.
+@char_MYS_mys-c11-russian-transit-passenger_s0_v1 supplies the exact C11 source identity, hair, body and wardrobe.
+@char_MYS_mys-c13-sudanese-traveler-man_s0_v1 supplies the exact C13 destination identity, hair, body and wardrobe.
 Use only the people from these inputs, not their grey studio backgrounds or multi-view layouts.
 
 SUBJECT AND STORY CONNECTION:

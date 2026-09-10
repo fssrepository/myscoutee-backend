@@ -46,11 +46,11 @@ Generate only missing media. Reuse accepted dependencies from prior blocks. Each
 | --- | --- | --- |
 | W04 | `W04_MAIN_WORLD.png` | `@UNBOUND_W04` |
 | MW04 | `MW04_POLICE_DEFENCE.png` | `@UNBOUND_MW04` |
-| C01 | `C01_PROTAGONIST.png` | `@char_mys_protagonist_s1_v1` |
-| C03 | `C03_POLICEWOMAN.png` | `@UNBOUND_C03` |
-| C04 | `C04_APPOINTED_LAWYER.png` | `@UNBOUND_C04` |
-| C25 | `C25_SEARCH_OFFICER_MALE.png` | `@char_mys_search-officer-male_s4_v1` |
-| C26 | `C26_DEFENCE_OFFICE_SUBSTITUTE.png` | `@UNBOUND_C26` |
+| C01 | `C01_PROTAGONIST.png` | `@char_MYS_mys-c01-protagonist_s0_v1` |
+| C03 | `C03_POLICEWOMAN.png` | `@char_MYS_mys-c03-policewoman_s0_v1` |
+| C04 | `C04_APPOINTED_LAWYER.png` | `@char_MYS_mys-c04-appointed-lawyer_s0_v1` |
+| C25 | `C25_SEARCH_OFFICER_MALE.png` | `@char_MYS_mys-c25-search-officer-male_s0_v1` |
+| C26 | `C26_DEFENCE_OFFICE_SUBSTITUTE.png` | `@char_MYS_mys-c26-defence-office-substitute_s0_v1` |
 | SB04 | `SB04_STORYBOARD.png` | `@UNBOUND_SB04` |
 | A04 | `A04_NARRATION.wav` | `@UNBOUND_A04` |
 

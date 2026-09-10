@@ -1,21 +1,18 @@
 REFERENCE ID: MW02_GLOBAL_ROUTES_A (do not render this identifier).
 
-REFERENCE SETUP INCOMPLETE: C11, C16, C17, C18, C19, C20, C21
-Do not generate until these references are bound.
-
 REFERENCE INPUTS:
-@char_mys_protagonist_s1_v1 = CHARACTER 01 — PROTAGONIST; exact person identity; use only where this person appears.
-@UNBOUND_C11 = CHARACTER 11 — RUSSIAN TRANSIT PASSENGER; exact person identity; use only where this person appears.
-@char_mys_agra-bus-woman_s2_v1 = CHARACTER 12 — AGRA BUS WOMAN; exact person identity; use only where this person appears.
-@char_mys_sudanese-traveler-man_s2_v1 = CHARACTER 13 — SUDANESE TRAVELER — MAN; exact person identity; use only where this person appears.
-@char_mys_sudanese-traveler-woman_s2_v1 = CHARACTER 14 — SUDANESE TRAVELER — WOMAN; exact person identity; use only where this person appears.
-@char_mys_cairo-taxi-driver_s2_v1 = CHARACTER 15 — CAIRO TAXI DRIVER; exact person identity; use only where this person appears.
-@UNBOUND_C16 = CHARACTER 16 — BALLOON LOCAL HELPER — MAN; exact person identity; use only where this person appears.
-@UNBOUND_C17 = CHARACTER 17 — BALLOON LOCAL HELPER — WOMAN; exact person identity; use only where this person appears.
-@UNBOUND_C18 = CHARACTER 18 — BARMOUTH ROAD-TRIP DRIVER / COMPANION; exact person identity; use only where this person appears.
-@UNBOUND_C19 = CHARACTER 19 — BARMOUTH ROAD-TRIP COMPANION A; exact person identity; use only where this person appears.
-@UNBOUND_C20 = CHARACTER 20 — BARMOUTH ROAD-TRIP COMPANION B; exact person identity; use only where this person appears.
-@UNBOUND_C21 = CHARACTER 21 — BARMOUTH ROAD-TRIP COMPANION C; exact person identity; use only where this person appears.
+@char_MYS_mys-c01-protagonist_s0_v1 = CHARACTER 01 — PROTAGONIST; exact person identity; use only where this person appears.
+@char_MYS_mys-c11-russian-transit-passenger_s0_v1 = CHARACTER 11 — RUSSIAN TRANSIT PASSENGER; exact person identity; use only where this person appears.
+@char_MYS_mys-c12-agra-bus-woman_s0_v1 = CHARACTER 12 — AGRA BUS WOMAN; exact person identity; use only where this person appears.
+@char_MYS_mys-c13-sudanese-traveler-man_s0_v1 = CHARACTER 13 — SUDANESE TRAVELER — MAN; exact person identity; use only where this person appears.
+@char_MYS_mys-c14-sudanese-traveler-woman_s0_v1 = CHARACTER 14 — SUDANESE TRAVELER — WOMAN; exact person identity; use only where this person appears.
+@char_MYS_mys-c15-cairo-taxi-driver_s0_v1 = CHARACTER 15 — CAIRO TAXI DRIVER; exact person identity; use only where this person appears.
+@char_MYS_mys-c16-balloon-local-helper-man_s0_v1 = CHARACTER 16 — BALLOON LOCAL HELPER — MAN; exact person identity; use only where this person appears.
+@char_MYS_mys-c17-balloon-local-helper-woman_s0_v1 = CHARACTER 17 — BALLOON LOCAL HELPER — WOMAN; exact person identity; use only where this person appears.
+@char_MYS_mys-c18-barmouth-road-trip-driver-companion_s0_v1 = CHARACTER 18 — BARMOUTH ROAD-TRIP DRIVER / COMPANION; exact person identity; use only where this person appears.
+@char_MYS_mys-c19-barmouth-road-trip-companion-a_s0_v1 = CHARACTER 19 — BARMOUTH ROAD-TRIP COMPANION A; exact person identity; use only where this person appears.
+@char_MYS_mys-c20-barmouth-road-trip-companion-b_s0_v1 = CHARACTER 20 — BARMOUTH ROAD-TRIP COMPANION B; exact person identity; use only where this person appears.
+@char_MYS_mys-c21-barmouth-road-trip-companion-c_s0_v1 = CHARACTER 21 — BARMOUTH ROAD-TRIP COMPANION C; exact person identity; use only where this person appears.
 
 OUTPUT GEOMETRY — ONE 4K 2×2 REFERENCE PAGE:
 Generate ONE photographic 3840×2160 widescreen 16:9 image. Exactly FOUR equal edge-to-edge 1920×1080 cells in a 2×2 grid, without gutters, margins, letterboxing, labels, headings or captions. Select 4K for the entire output. Cell order is top-left, top-right, bottom-left, bottom-right. This is one image output, not four separate jobs.

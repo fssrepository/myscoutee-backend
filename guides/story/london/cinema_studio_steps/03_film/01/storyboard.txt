@@ -1,4 +1,4 @@
-REFERENCE SETUP INCOMPLETE: C06, C07, C08, MW01, MW01_B, MW01_C, MWP01, MWP01_B, MWP01_C, W01_A_01, W01_A_02, W01_A_03, W01_A_04, W01_B_01, W01_B_02, W01_B_03, W01_B_04, W01_C_01, W01_C_02, W01_C_03, W01_C_04
+REFERENCE SETUP INCOMPLETE: MW01, MW01_B, MW01_C, MWP01, MWP01_B, MWP01_C, W01_A_01, W01_A_02, W01_A_03, W01_A_04, W01_B_01, W01_B_02, W01_B_03, W01_B_04, W01_C_01, W01_C_02, W01_C_03, W01_C_04
 Do not generate until these references are bound.
 
 MEMORY REFERENCE PAGES — DIRECT SOURCES, NOT EDITS:
@@ -42,12 +42,12 @@ REFERENCE INPUTS:
 @UNBOUND_MW01 = the London social/home memory collection for the other assigned beats. For the Soho restaurant, wrong restroom door and woman’s smile in FRAME 3, the accepted single restaurant source below governs room layout, furniture, lighting and remembered positions.
 @loc_MYS_pilot-soho-restaurant-memory_s1_v1 = the SAME accepted Soho restaurant image used by the pilot, reused directly for FRAME 3. Preserve its modest wooden table, seated woman, two restroom doors and remembered man beside them. Reconstruct this exact place as a life-size inhabited volume growing from the street, with solid people, complete chair legs and camera parallax. The current walker remains separate. Use this source for restaurant detail even if the broader MW01 sheet differs; never display the still as a flat image or reflection. Reuse the existing Element and image; no replacement restaurant image is requested.
 @UNBOUND_MWP01 = LOCATION — MWP01 — MEMORY PRESERVATION WORLD P01 — ROUTES / ROOMS / DOCUMENT THRESHOLDS; the assigned remembered scenes; preserve the source identities and setting.
-@char_mys_protagonist_s1_v1 = CHARACTER 01 — PROTAGONIST; exact person identity; use only where this person appears.
-@char_mys_soho-woman_s1_v1 = CHARACTER 02 — SOHO WOMAN; exact person identity; use only where this person appears.
-@UNBOUND_C06 = CHARACTER 06 — SHARED-HOUSE SUBSTITUTE / SNORING HOUSEMATE; exact person identity; use only where this person appears.
-@UNBOUND_C07 = CHARACTER 07 — FX-MORTGAGE HOUSEMATE; exact person identity; use only where this person appears.
-@UNBOUND_C08 = CHARACTER 08 — FX-MORTGAGE SPOUSE; exact person identity; use only where this person appears.
-@char_mys_fx-mortgage-child_s1_v1 = CHARACTER 09 — FX-MORTGAGE CHILD; exact person identity; use only where this person appears.
+@char_MYS_mys-c01-protagonist_s0_v1 = CHARACTER 01 — PROTAGONIST; exact person identity; use only where this person appears.
+@char_MYS_mys-c02-soho-woman_s0_v1 = CHARACTER 02 — SOHO WOMAN; exact person identity; use only where this person appears.
+@char_MYS_mys-c06-shared-house-substitute-snoring-housemate_s0_v1 = CHARACTER 06 — SHARED-HOUSE SUBSTITUTE / SNORING HOUSEMATE; exact person identity; use only where this person appears.
+@char_MYS_mys-c07-fx-mortgage-housemate_s0_v1 = CHARACTER 07 — FX-MORTGAGE HOUSEMATE; exact person identity; use only where this person appears.
+@char_MYS_mys-c08-fx-mortgage-spouse_s0_v1 = CHARACTER 08 — FX-MORTGAGE SPOUSE; exact person identity; use only where this person appears.
+@char_MYS_mys-c09-fx-mortgage-child_s0_v1 = CHARACTER 09 — FX-MORTGAGE CHILD; exact person identity; use only where this person appears.
 
 OUTPUT GEOMETRY — NON-NEGOTIABLE:
 Generate a WIDESCREEN LANDSCAPE image with a TRUE 16:9 FINAL CANVAS at the full output resolution selected in the generation controls.

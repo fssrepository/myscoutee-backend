@@ -1,8 +1,8 @@
 REFERENCE ID: T01_SOHO_RESTAURANT_SOURCE_A (do not render this identifier).
 
 REFERENCE INPUTS:
-@char_mys_protagonist_s1_v1 supplies the remembered man's exact face, hair, body and dark jacket. There is one occurrence of him inside this memory.
-@char_mys_soho-woman_s1_v1 supplies the seated woman's exact identity. Use her dark everyday clothing and hair from her character image; keep her seated at the near right-hand table.
+@char_MYS_mys-c01-protagonist_s0_v1 supplies the remembered man's exact face, hair, body and dark jacket. There is one occurrence of him inside this memory.
+@char_MYS_mys-c02-soho-woman_s0_v1 supplies the seated woman's exact identity. Use her dark everyday clothing and hair from her character image; keep her seated at the near right-hand table.
 
 OUTPUT GEOMETRY — ONE 4K 2×2 MEMORY PAGE:
 Generate ONE photographic 3840×2160 widescreen 16:9 image containing exactly FOUR equal edge-to-edge 1920×1080 cells, two columns and two rows. Select 4K for the whole output. Zero gutters, margins, borders, labels, arrows or captions. Every cell is a complete composition of its assigned subject, not a panoramic image quartered after rendering. This prompt produces one page only.

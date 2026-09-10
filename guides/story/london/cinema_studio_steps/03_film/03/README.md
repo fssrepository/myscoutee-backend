@@ -46,10 +46,10 @@ Generate only missing media. Reuse accepted dependencies from prior blocks. Each
 | W03 | `W03_MAIN_WORLD.png` | `@UNBOUND_W03` |
 | MW03 | `MW03_WORK_RULE_CHANGE_ADMIN.png` | `@UNBOUND_MW03` |
 | MWP01 | `MWP01_ROUTES_ROOMS_DOCUMENTS.png` | `@UNBOUND_MWP01` |
-| C01 | `C01_PROTAGONIST.png` | `@char_mys_protagonist_s1_v1` |
-| C22 | `C22_ACCOUNTANT.png` | `@UNBOUND_C22` |
-| C23 | `C23_ADMIN_COLLEAGUE_A.png` | `@char_mys_admin-colleague-a_s3_v1` |
-| C24 | `C24_ADMIN_COLLEAGUE_B.png` | `@char_mys_admin-colleague-b_s3_v1` |
+| C01 | `C01_PROTAGONIST.png` | `@char_MYS_mys-c01-protagonist_s0_v1` |
+| C22 | `C22_ACCOUNTANT.png` | `@char_MYS_mys-c22-accountant_s0_v1` |
+| C23 | `C23_ADMIN_COLLEAGUE_A.png` | `@char_MYS_mys-c23-admin-colleague-a_s0_v1` |
+| C24 | `C24_ADMIN_COLLEAGUE_B.png` | `@char_MYS_mys-c24-admin-colleague-b_s0_v1` |
 | SB03 | `SB03_STORYBOARD.png` | `@UNBOUND_SB03` |
 | A03 | `A03_NARRATION.wav` | `@UNBOUND_A03` |
 

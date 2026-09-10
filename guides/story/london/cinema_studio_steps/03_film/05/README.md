@@ -49,13 +49,13 @@ Generate only missing media. Reuse accepted dependencies from prior blocks. Each
 | W05 | `W05_MAIN_WORLD.png` | `@UNBOUND_W05` |
 | MW05 | `MW05_COURT_FILE.png` | `@UNBOUND_MW05` |
 | MWP02 | `MWP02_SYSTEM_TIME_REVERSALS.png` | `@UNBOUND_MWP02` |
-| C01 | `C01_PROTAGONIST.png` | `@char_mys_protagonist_s1_v1` |
-| C04 | `C04_APPOINTED_LAWYER.png` | `@UNBOUND_C04` |
-| C27 | `C27_JUDGE.png` | `@UNBOUND_C27` |
-| C28 | `C28_FORENSIC_EXPERT_A.png` | `@char_mys_forensic-expert-a_s5_v1` |
-| C29 | `C29_FORENSIC_EXPERT_B.png` | `@char_mys_forensic-expert-b_s5_v1` |
-| C30 | `C30_COURT_CLERK.png` | `@char_mys_court-clerk_s5_v1` |
-| C31 | `C31_ANONYMOUS_FICTIONAL_POLITICAL_FIGURE.png` | `@UNBOUND_C31` |
+| C01 | `C01_PROTAGONIST.png` | `@char_MYS_mys-c01-protagonist_s0_v1` |
+| C04 | `C04_APPOINTED_LAWYER.png` | `@char_MYS_mys-c04-appointed-lawyer_s0_v1` |
+| C27 | `C27_JUDGE.png` | `@char_MYS_mys-c27-judge_s0_v1` |
+| C28 | `C28_FORENSIC_EXPERT_A.png` | `@char_MYS_mys-c28-forensic-expert-a_s0_v1` |
+| C29 | `C29_FORENSIC_EXPERT_B.png` | `@char_MYS_mys-c29-forensic-expert-b_s0_v1` |
+| C30 | `C30_COURT_CLERK.png` | `@char_MYS_mys-c30-court-clerk_s0_v1` |
+| C31 | `C31_ANONYMOUS_FICTIONAL_POLITICAL_FIGURE.png` | `@char_MYS_mys-c31-anonymous-fictional-cardboard-public-figure_s0_v1` |
 | SB05 | `SB05_STORYBOARD.png` | `@UNBOUND_SB05` |
 | A05 | `A05_NARRATION.wav` | `@UNBOUND_A05` |
 

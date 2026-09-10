@@ -1,4 +1,4 @@
-REFERENCE SETUP INCOMPLETE: A02, C11, C16, C17, C18, C19, C20, C21, MW01, MW01_B, MW01_C, MW02, MW02_B, MW02_C, MWP01, MWP01_B, MWP01_C, SB02, W02_A_01, W02_A_02, W02_A_03, W02_A_04, W02_B_01, W02_B_02, W02_B_03, W02_B_04, W02_C_01, W02_C_02, W02_C_03, W02_C_04
+REFERENCE SETUP INCOMPLETE: A02, MW01, MW01_B, MW01_C, MW02, MW02_B, MW02_C, MWP01, MWP01_B, MWP01_C, SB02, W02_A_01, W02_A_02, W02_A_03, W02_A_04, W02_B_01, W02_B_02, W02_B_03, W02_B_04, W02_C_01, W02_C_02, W02_C_03, W02_C_04
 Do not generate until these references are bound.
 
 MEMORY REFERENCE PAGES — DIRECT SOURCES, NOT EDITS:
@@ -43,19 +43,19 @@ REFERENCES
 @UNBOUND_MW02 = literal memory source; reconstruct its people and place in the changing street according to the named beat.
 @UNBOUND_MW01 = literal memory source; reconstruct its people and place in the changing street according to the named beat.
 @UNBOUND_MWP01 = literal memory source; reconstruct its people and place in the changing street according to the named beat.
-@char_mys_protagonist_s1_v1 = exact face, age, hair and body; memory wardrobe follows its source scene.
-@char_mys_beginner-dance-woman_s1_v1 = exact face, age, hair and body; memory wardrobe follows its source scene.
-@UNBOUND_C11 = exact face, age, hair and body; memory wardrobe follows its source scene.
-@char_mys_agra-bus-woman_s2_v1 = exact face, age, hair and body; memory wardrobe follows its source scene.
-@char_mys_sudanese-traveler-man_s2_v1 = exact face, age, hair and body; memory wardrobe follows its source scene.
-@char_mys_sudanese-traveler-woman_s2_v1 = exact face, age, hair and body; memory wardrobe follows its source scene.
-@char_mys_cairo-taxi-driver_s2_v1 = exact face, age, hair and body; memory wardrobe follows its source scene.
-@UNBOUND_C16 = exact face, age, hair and body; memory wardrobe follows its source scene.
-@UNBOUND_C17 = exact face, age, hair and body; memory wardrobe follows its source scene.
-@UNBOUND_C18 = exact face, age, hair and body; memory wardrobe follows its source scene.
-@UNBOUND_C19 = exact face, age, hair and body; memory wardrobe follows its source scene.
-@UNBOUND_C20 = exact face, age, hair and body; memory wardrobe follows its source scene.
-@UNBOUND_C21 = exact face, age, hair and body; memory wardrobe follows its source scene.
+@char_MYS_mys-c01-protagonist_s0_v1 = exact face, age, hair and body; memory wardrobe follows its source scene.
+@char_MYS_mys-c10-beginner-dance-woman_s0_v1 = exact face, age, hair and body; memory wardrobe follows its source scene.
+@char_MYS_mys-c11-russian-transit-passenger_s0_v1 = exact face, age, hair and body; memory wardrobe follows its source scene.
+@char_MYS_mys-c12-agra-bus-woman_s0_v1 = exact face, age, hair and body; memory wardrobe follows its source scene.
+@char_MYS_mys-c13-sudanese-traveler-man_s0_v1 = exact face, age, hair and body; memory wardrobe follows its source scene.
+@char_MYS_mys-c14-sudanese-traveler-woman_s0_v1 = exact face, age, hair and body; memory wardrobe follows its source scene.
+@char_MYS_mys-c15-cairo-taxi-driver_s0_v1 = exact face, age, hair and body; memory wardrobe follows its source scene.
+@char_MYS_mys-c16-balloon-local-helper-man_s0_v1 = exact face, age, hair and body; memory wardrobe follows its source scene.
+@char_MYS_mys-c17-balloon-local-helper-woman_s0_v1 = exact face, age, hair and body; memory wardrobe follows its source scene.
+@char_MYS_mys-c18-barmouth-road-trip-driver-companion_s0_v1 = exact face, age, hair and body; memory wardrobe follows its source scene.
+@char_MYS_mys-c19-barmouth-road-trip-companion-a_s0_v1 = exact face, age, hair and body; memory wardrobe follows its source scene.
+@char_MYS_mys-c20-barmouth-road-trip-companion-b_s0_v1 = exact face, age, hair and body; memory wardrobe follows its source scene.
+@char_MYS_mys-c21-barmouth-road-trip-companion-c_s0_v1 = exact face, age, hair and body; memory wardrobe follows its source scene.
 @UNBOUND_SB02 = ordered key moments in one continuous shot; do not render its grid, labels or cuts between cells.
 @UNBOUND_A02 = the protagonist's exact supplied inner-monologue voiceover; preserve words, voice and pacing.
 

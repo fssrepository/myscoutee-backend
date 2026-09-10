@@ -1,18 +1,18 @@
 REFERENCE ID: MW05_COURT_FILE_C (do not render this identifier).
 
-REFERENCE SETUP INCOMPLETE: C04, C27, C31, MW05
+REFERENCE SETUP INCOMPLETE: MW05
 Do not generate until these references are bound.
 
 PAGE CONTINUITY INPUT: @UNBOUND_MW05 supplies the accepted Page A identities, shared material palette and any recurring room geometry. New places explicitly assigned to this page retain their own stated setting; do not copy Page A into every cell.
 
 REFERENCE INPUTS:
-@char_mys_protagonist_s1_v1 = CHARACTER 01 — PROTAGONIST; exact person identity; use only where this person appears.
-@UNBOUND_C04 = CHARACTER 04 — APPOINTED LAWYER; exact person identity; use only where this person appears.
-@UNBOUND_C27 = CHARACTER 27 — JUDGE; exact person identity; use only where this person appears.
-@char_mys_forensic-expert-a_s5_v1 = CHARACTER 28 — FORENSIC EXPERT A; exact person identity; use only where this person appears.
-@char_mys_forensic-expert-b_s5_v1 = CHARACTER 29 — FORENSIC EXPERT B; exact person identity; use only where this person appears.
-@char_mys_court-clerk_s5_v1 = CHARACTER 30 — COURT CLERK; exact person identity; use only where this person appears.
-@UNBOUND_C31 = CHARACTER 31 — ANONYMOUS FICTIONAL CARDBOARD PUBLIC FIGURE; exact person identity; use only where this person appears.
+@char_MYS_mys-c01-protagonist_s0_v1 = CHARACTER 01 — PROTAGONIST; exact person identity; use only where this person appears.
+@char_MYS_mys-c04-appointed-lawyer_s0_v1 = CHARACTER 04 — APPOINTED LAWYER; exact person identity; use only where this person appears.
+@char_MYS_mys-c27-judge_s0_v1 = CHARACTER 27 — JUDGE; exact person identity; use only where this person appears.
+@char_MYS_mys-c28-forensic-expert-a_s0_v1 = CHARACTER 28 — FORENSIC EXPERT A; exact person identity; use only where this person appears.
+@char_MYS_mys-c29-forensic-expert-b_s0_v1 = CHARACTER 29 — FORENSIC EXPERT B; exact person identity; use only where this person appears.
+@char_MYS_mys-c30-court-clerk_s0_v1 = CHARACTER 30 — COURT CLERK; exact person identity; use only where this person appears.
+@char_MYS_mys-c31-anonymous-fictional-cardboard-public-figure_s0_v1 = CHARACTER 31 — ANONYMOUS FICTIONAL CARDBOARD PUBLIC FIGURE; exact person identity; use only where this person appears.
 
 OUTPUT GEOMETRY — ONE 4K 2×2 REFERENCE PAGE:
 Generate ONE photographic 3840×2160 widescreen 16:9 image. Exactly FOUR equal edge-to-edge 1920×1080 cells in a 2×2 grid, without gutters, margins, letterboxing, labels, headings or captions. Select 4K for the entire output. Cell order is top-left, top-right, bottom-left, bottom-right. This is one image output, not four separate jobs.

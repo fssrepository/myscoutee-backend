@@ -1,8 +1,8 @@
 REFERENCE ID: CM005_ADMIN_COLLEAGUE_A_TO_B_2X2 (do not render this identifier).
 
 REFERENCE INPUTS — C23 TO C24:
-@char_mys_admin-colleague-a_s3_v1 supplies the exact C23 source identity, hair, body and wardrobe.
-@char_mys_admin-colleague-b_s3_v1 supplies the exact C24 destination identity, hair, body and wardrobe.
+@char_MYS_mys-c23-admin-colleague-a_s0_v1 supplies the exact C23 source identity, hair, body and wardrobe.
+@char_MYS_mys-c24-admin-colleague-b_s0_v1 supplies the exact C24 destination identity, hair, body and wardrobe.
 Use only the people from these inputs, not their grey studio backgrounds or multi-view layouts.
 
 SUBJECT AND STORY CONNECTION:

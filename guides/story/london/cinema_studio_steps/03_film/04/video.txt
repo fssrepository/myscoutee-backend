@@ -1,4 +1,4 @@
-REFERENCE SETUP INCOMPLETE: A04, C03, C04, C26, MW04, MW04_B, MW04_C, SB04, W04_A_01, W04_A_02, W04_A_03, W04_A_04, W04_B_01, W04_B_02, W04_B_03, W04_B_04, W04_C_01, W04_C_02, W04_C_03, W04_C_04
+REFERENCE SETUP INCOMPLETE: A04, MW04, MW04_B, MW04_C, SB04, W04_A_01, W04_A_02, W04_A_03, W04_A_04, W04_B_01, W04_B_02, W04_B_03, W04_B_04, W04_C_01, W04_C_02, W04_C_03, W04_C_04
 Do not generate until these references are bound.
 
 MEMORY REFERENCE PAGES — DIRECT SOURCES, NOT EDITS:
@@ -39,11 +39,11 @@ Keep the narrator's established timbre, accent, pitch, loudness and dry recordin
 REFERENCES
 @UNBOUND_W04_A_01 @UNBOUND_W04_A_02 @UNBOUND_W04_A_03 @UNBOUND_W04_A_04 = physical city, route, materials and recognizable architecture; transformation allowed as directed.
 @UNBOUND_MW04 = literal memory source; reconstruct its people and place in the changing street according to the named beat.
-@char_mys_protagonist_s1_v1 = exact face, age, hair and body; memory wardrobe follows its source scene.
-@UNBOUND_C03 = exact face, age, hair and body; memory wardrobe follows its source scene.
-@UNBOUND_C04 = exact face, age, hair and body; memory wardrobe follows its source scene.
-@char_mys_search-officer-male_s4_v1 = exact face, age, hair and body; memory wardrobe follows its source scene.
-@UNBOUND_C26 = exact face, age, hair and body; memory wardrobe follows its source scene.
+@char_MYS_mys-c01-protagonist_s0_v1 = exact face, age, hair and body; memory wardrobe follows its source scene.
+@char_MYS_mys-c03-policewoman_s0_v1 = exact face, age, hair and body; memory wardrobe follows its source scene.
+@char_MYS_mys-c04-appointed-lawyer_s0_v1 = exact face, age, hair and body; memory wardrobe follows its source scene.
+@char_MYS_mys-c25-search-officer-male_s0_v1 = exact face, age, hair and body; memory wardrobe follows its source scene.
+@char_MYS_mys-c26-defence-office-substitute_s0_v1 = exact face, age, hair and body; memory wardrobe follows its source scene.
 @UNBOUND_SB04 = ordered key moments in one continuous shot; do not render its grid, labels or cuts between cells.
 @UNBOUND_A04 = the protagonist's exact supplied inner-monologue voiceover; preserve words, voice and pacing.
 

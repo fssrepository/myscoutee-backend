@@ -1,11 +1,8 @@
 REFERENCE ID: CM001_APPOINTED_LAWYER_TO_OFFICE_SUBSTITUTE_2X2 (do not render this identifier).
 
-REFERENCE SETUP INCOMPLETE: C04, C26
-Do not generate until these references are bound.
-
 REFERENCE INPUTS — C04 TO C26:
-@UNBOUND_C04 supplies the exact C04 source identity, hair, body and wardrobe.
-@UNBOUND_C26 supplies the exact C26 destination identity, hair, body and wardrobe.
+@char_MYS_mys-c04-appointed-lawyer_s0_v1 supplies the exact C04 source identity, hair, body and wardrobe.
+@char_MYS_mys-c26-defence-office-substitute_s0_v1 supplies the exact C26 destination identity, hair, body and wardrobe.
 Use only the people from these inputs, not their grey studio backgrounds or multi-view layouts.
 
 SUBJECT AND STORY CONNECTION:
