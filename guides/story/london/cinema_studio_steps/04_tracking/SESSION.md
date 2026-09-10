@@ -1,6 +1,6 @@
-## Opening logo segment — pending identification
+## Opening logo segment — identified and prompted
 
-The creator requests a logo segment before the finished film. Its identity/source asset and exact duration remain unconfirmed; the creator mentioned approximately 4 seconds or possibly less. No logo asset or explicit opening-logo timing was found in the London project documents searched. Keep this as an assembly requirement ahead of Block 01; do not retime the seven story blocks or the 4+4-second technical test, and do not generate a logo clip until the intended source is identified. This note does not establish a festival requirement or a fixed duration.
+The creator clarified the full-screen MyScoutee presents ident, using the existing repository/profile M-logo (creator-reported GPT Image 2 provenance). The old 4-second title-card video is not an input. [00/video.txt](../03_film/00/video.txt) describes a new restrained 4-second ident with only the logo image as reference. The latest instruction is prompt preparation; no upload or generation was performed. Model and price remain unselected. No Higgsfield/festival branding is requested inside the ident. The seven story blocks and the 4+4-second test are unchanged.
 
 # Current override — small continuity test, 2026-09-10
 
