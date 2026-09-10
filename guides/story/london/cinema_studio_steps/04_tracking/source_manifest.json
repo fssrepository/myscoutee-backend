@@ -731,7 +731,7 @@
       ],
       "source_prompt_sha256": "76a53b46490f7087051a6b61360543112b874118c1dec4b28d592f08a5c3ed46",
       "file": "03_film/01/storyboard.txt",
-      "file_sha256": "e1d09296a50354650dbc39ca76ae3fcac3cab894c5b251097dee70067324c5ef",
+      "file_sha256": "b3e8291b9038e3b1bd3f03c71c10169aac5a6a8305d110574a67799c38de3e41",
       "changes": "All nine beats retained; requested camera/architecture added; card and AI-screen contradictions corrected; SB06 memory dependencies repaired; explicit centrally maintained reference inputs Grid geometry uses the full selected image resolution instead of fixed pixel examples."
     },
     {
@@ -755,7 +755,7 @@
       ],
       "source_prompt_sha256": "d111e179fa9211ddb262d74468ee38305f1776d75138a0c33a3e229ff58dff3d",
       "file": "03_film/01/video.txt",
-      "file_sha256": "b630dcf1ed01e194880de7d7da725362a9306b6fa12d86d035800087de6c846d",
+      "file_sha256": "5f904a21bda6094ef8dc15c9e7dcfbdf317609694719977cd73e30ce98013db0",
       "changes": "Operator/retry prose and repeated rules removed; all nine story beats retained; camera/architecture updated; audio cues follow visuals; reveal and reference contradictions repaired; Verified C01/C02 Element IDs substituted for local aliases; explicit reference binding; original Hungarian folk-rooted score and synchronized material transformation foley; researched Dél-Alföld tekerő/clarinet arrangement, phrase-synchronized facade motion, explicit protagonist inner monologue"
     },
     {
@@ -767,7 +767,7 @@
       ],
       "source_prompt_sha256": "28ff9c6f1fdfeb4618c4696283c1e38722a62ee2792af219b5b9f14cc9bcfc29",
       "file": "03_film/02/storyboard.txt",
-      "file_sha256": "c95a3e6c998d1d64572f30c56fe2e6e4b8d3fdfe1857328909932715db0bea46",
+      "file_sha256": "8fe7633c9eea6f9825552f87af7cd5a519c0c4de612149a403039d656a00ebc6",
       "changes": "All nine beats retained; requested camera/architecture added; card and AI-screen contradictions corrected; SB06 memory dependencies repaired; explicit centrally maintained reference inputs; rural memory grounded in creator's Orosháza paprika/corn-field childhood Grid geometry uses the full selected image resolution instead of fixed pixel examples."
     },
     {
@@ -791,7 +791,7 @@
       ],
       "source_prompt_sha256": "1ee3bb2feea06f9cb11dac2f33cac0b6c8a0735bc0a73938e537a716ad9146ba",
       "file": "03_film/02/video.txt",
-      "file_sha256": "4d5a1b3d65660918d19c8a8fc824030a4972b368e79f257fe64b5c63ac7bedf7",
+      "file_sha256": "d496e0606c6b5dfa301a398669c93fa855e128f83d57da3434f5d6564c35ab88",
       "changes": "Operator/retry prose and repeated rules removed; all nine story beats retained; camera/architecture updated; audio cues follow visuals; reveal and reference contradictions repaired; Verified C01/C02 Element IDs substituted for local aliases; explicit reference binding; original Hungarian folk-rooted score and synchronized material transformation foley; researched Dél-Alföld tekerő/clarinet arrangement, phrase-synchronized facade motion, explicit protagonist inner monologue; rural memory grounded in creator's Orosháza paprika/corn-field childhood Continuation preserves narrator timbre and a natural breath over an uninterrupted sound bed."
     },
     {
@@ -803,7 +803,7 @@
       ],
       "source_prompt_sha256": "533e440baa4117a4d2f7733e327dfca304ea8a54d066010cc8ab8722cadb259c",
       "file": "03_film/03/storyboard.txt",
-      "file_sha256": "5741279b4ea09a08cffc652016b760207cef9b01ff21179ab3e60845d98926fc",
+      "file_sha256": "17bd1bab5cf45fcdd9261f6a5b99dd52c4c9226e4e813ad5462cc34c7368ab93",
       "changes": "All nine beats retained; requested camera/architecture added; card and AI-screen contradictions corrected; SB06 memory dependencies repaired; explicit centrally maintained reference inputs Grid geometry uses the full selected image resolution instead of fixed pixel examples."
     },
     {
@@ -827,7 +827,7 @@
       ],
       "source_prompt_sha256": "4970f288124db4473bf4af10c0fb6a9d66f5bae619718ed4d3907489e0c8cc95",
       "file": "03_film/03/video.txt",
-      "file_sha256": "99bc72b634af90485b849be8f7d43db9f59b7eef25636dee27a9524052ea38ef",
+      "file_sha256": "4b7429e60070879c977936a41d578a0113e80bc248ed16a1d48bfa2bcf4ac6a0",
       "changes": "Operator/retry prose and repeated rules removed; all nine story beats retained; camera/architecture updated; audio cues follow visuals; reveal and reference contradictions repaired; Verified C01/C02 Element IDs substituted for local aliases; explicit reference binding; original Hungarian folk-rooted score and synchronized material transformation foley; researched Dél-Alföld tekerő/clarinet arrangement, phrase-synchronized facade motion, explicit protagonist inner monologue Continuation preserves narrator timbre and a natural breath over an uninterrupted sound bed."
     },
     {
@@ -839,7 +839,7 @@
       ],
       "source_prompt_sha256": "5459cc1d93853c47aacf113a3e593f61ee6cb49aa0fe81079b89706e0588086a",
       "file": "03_film/04/storyboard.txt",
-      "file_sha256": "8aa5f59c457e6e8d8671c951782a7d1ff5ed93b3f5369d98592027bb71155678",
+      "file_sha256": "07e7e892c9250d5fac1854431efb3b165bc7162b1a1ee30ce6dda42f4b424598",
       "changes": "All nine beats retained; requested camera/architecture added; card and AI-screen contradictions corrected; SB06 memory dependencies repaired; explicit centrally maintained reference inputs Grid geometry uses the full selected image resolution instead of fixed pixel examples."
     },
     {
@@ -863,7 +863,7 @@
       ],
       "source_prompt_sha256": "dcfdef2b9227d2f0528bbca68b9dad63fc71b2087b289dbfbb25c8dfb8ff6370",
       "file": "03_film/04/video.txt",
-      "file_sha256": "cb87fbdc99734a6732bc259a0a647e2e23c6dc187e5da4fee2f4c14641061927",
+      "file_sha256": "021fcd256effefbec2b36106e9078360093d0b8d730746a1bfd0d792c0bc5d66",
       "changes": "Operator/retry prose and repeated rules removed; all nine story beats retained; camera/architecture updated; audio cues follow visuals; reveal and reference contradictions repaired; Verified C01/C02 Element IDs substituted for local aliases; explicit reference binding; original Hungarian folk-rooted score and synchronized material transformation foley; researched Dél-Alföld tekerő/clarinet arrangement, phrase-synchronized facade motion, explicit protagonist inner monologue Continuation preserves narrator timbre and a natural breath over an uninterrupted sound bed."
     },
     {
@@ -875,7 +875,7 @@
       ],
       "source_prompt_sha256": "e80c1062f8699884509043c0dc23d9205573f2eae58119513f6f3bdb1d3cf9b1",
       "file": "03_film/05/storyboard.txt",
-      "file_sha256": "635fc7ab158724599d4ff73cdf6963b02ba9604cd02b125fddc0516a1949e798",
+      "file_sha256": "6b5f9bf842fdeeb676023dca16dc745846def9eda49c1bb627b24aacc4a9ce66",
       "changes": "All nine beats retained; requested camera/architecture added; card and AI-screen contradictions corrected; SB06 memory dependencies repaired; explicit centrally maintained reference inputs Grid geometry uses the full selected image resolution instead of fixed pixel examples."
     },
     {
@@ -899,7 +899,7 @@
       ],
       "source_prompt_sha256": "2c24d5a0b90307baa614606b633838697ec3355e0dbb1df515d095dee403fdd6",
       "file": "03_film/05/video.txt",
-      "file_sha256": "eb95e07235344eaa0c6c586ae0033037ad2744eea2914185a959971b9883af63",
+      "file_sha256": "6913da794ea0b1725edd07b287288c2773d78d5888c78459d793da9b71094ab6",
       "changes": "Operator/retry prose and repeated rules removed; all nine story beats retained; camera/architecture updated; audio cues follow visuals; reveal and reference contradictions repaired; Verified C01/C02 Element IDs substituted for local aliases; explicit reference binding; original Hungarian folk-rooted score and synchronized material transformation foley; researched Dél-Alföld tekerő/clarinet arrangement, phrase-synchronized facade motion, explicit protagonist inner monologue Continuation preserves narrator timbre and a natural breath over an uninterrupted sound bed."
     },
     {
@@ -911,7 +911,7 @@
       ],
       "source_prompt_sha256": "6e57e8c9f69656463159011cd13b16d6b88d02db6738131013a82f4f5f778aec",
       "file": "03_film/06/storyboard.txt",
-      "file_sha256": "ce5ed62a7ad9511b4c0d4afe20f39dfef089f3aea59b22c7e4fb36a540f41342",
+      "file_sha256": "b80e89855810b314cefb36850c4401ca9a1c4aaf34a626c06e92993b28123973",
       "changes": "All nine beats retained; requested camera/architecture added; card and AI-screen contradictions corrected; SB06 memory dependencies repaired; explicit centrally maintained reference inputs Grid geometry uses the full selected image resolution instead of fixed pixel examples."
     },
     {
@@ -935,7 +935,7 @@
       ],
       "source_prompt_sha256": "52008590a700611bd6959ec7ae9cb86efeb01101257fce007de3b9eaa75417e6",
       "file": "03_film/06/video.txt",
-      "file_sha256": "6c4596b0551760d918d99b6bdefe3ca3157080f87be7c7c842fc68b7b2dbfabd",
+      "file_sha256": "ce29821cfda013fef4fe4320dfd3f127945045f4c7bee7c2133d6c8589e7b408",
       "changes": "Operator/retry prose and repeated rules removed; all nine story beats retained; camera/architecture updated; audio cues follow visuals; reveal and reference contradictions repaired; Verified C01/C02 Element IDs substituted for local aliases; explicit reference binding; original Hungarian folk-rooted score and synchronized material transformation foley; researched Dél-Alföld tekerő/clarinet arrangement, phrase-synchronized facade motion, explicit protagonist inner monologue Continuation preserves narrator timbre and a natural breath over an uninterrupted sound bed."
     },
     {
@@ -947,7 +947,7 @@
       ],
       "source_prompt_sha256": "2b7b76d2d3593fcff5854695f2ee366e9486822241fe7b80f3f09df0035291d4",
       "file": "03_film/07/storyboard.txt",
-      "file_sha256": "1c2e1b7d3ea32e88f88ec3be6fd10e0606cf321d539cef815a2ff34d674890cc",
+      "file_sha256": "c05c1f1038942ea676a29068496941b50b20358672c0476cbe1ca9cc27dcc4a5",
       "changes": "All nine beats retained; requested camera/architecture added; card and AI-screen contradictions corrected; SB06 memory dependencies repaired; explicit centrally maintained reference inputs Grid geometry uses the full selected image resolution instead of fixed pixel examples."
     },
     {
@@ -971,7 +971,7 @@
       ],
       "source_prompt_sha256": "ac40bf3eee9daac90310ed6ff05a2b72832c27347255c481694023e8db6f759b",
       "file": "03_film/07/video.txt",
-      "file_sha256": "c9bf22c6c62ad6b81550aa46277f08c40bd5d522175a87f773755e2f7b804201",
+      "file_sha256": "e6d6e4480db9b2d59e2629d4ca1a46291963cbfabcd00af1ebe3e455d251a9ba",
       "changes": "Operator/retry prose and repeated rules removed; all nine story beats retained; camera/architecture updated; audio cues follow visuals; reveal and reference contradictions repaired; Verified C01/C02 Element IDs substituted for local aliases; explicit reference binding; original Hungarian folk-rooted score and synchronized material transformation foley; researched Dél-Alföld tekerő/clarinet arrangement, phrase-synchronized facade motion, explicit protagonist inner monologue Continuation preserves narrator timbre and a natural breath over an uninterrupted sound bed."
     },
     {
@@ -2087,7 +2087,9 @@
       "refs": [],
       "layout": "4K 2x2 plan coverage",
       "intended_resolution": "4K",
-      "prompt_sha256": "b78bfb632523eb35a341f294c2fb7e344d1e7e3671e3763d64bdb62f5560a434"
+      "prompt_sha256": "b78bfb632523eb35a341f294c2fb7e344d1e7e3671e3763d64bdb62f5560a434",
+      "production_status": "EXCLUDED_NOT_A_VIDEO_REFERENCE",
+      "planned_new_images": 0
     },
     "W02": {
       "key": "W02",
@@ -2103,7 +2105,9 @@
       "refs": [],
       "layout": "4K 2x2 plan coverage",
       "intended_resolution": "4K",
-      "prompt_sha256": "45c4dbe96db8fdcd58c38cc3b774353879b8ad0dee0548ed5bea3e3b1bc5b193"
+      "prompt_sha256": "45c4dbe96db8fdcd58c38cc3b774353879b8ad0dee0548ed5bea3e3b1bc5b193",
+      "production_status": "EXCLUDED_NOT_A_VIDEO_REFERENCE",
+      "planned_new_images": 0
     },
     "W03": {
       "key": "W03",
@@ -2119,7 +2123,9 @@
       "refs": [],
       "layout": "4K 2x2 plan coverage",
       "intended_resolution": "4K",
-      "prompt_sha256": "21e8a4ff0ab2e809ddea3f5b89f711885921f9c8bb1e27d897ef993ab5538348"
+      "prompt_sha256": "21e8a4ff0ab2e809ddea3f5b89f711885921f9c8bb1e27d897ef993ab5538348",
+      "production_status": "EXCLUDED_NOT_A_VIDEO_REFERENCE",
+      "planned_new_images": 0
     },
     "W04": {
       "key": "W04",
@@ -2135,7 +2141,9 @@
       "refs": [],
       "layout": "4K 2x2 plan coverage",
       "intended_resolution": "4K",
-      "prompt_sha256": "2c15c76c908211eb08f7021191e480e80078c9fbdfca89594c6d3f203239a341"
+      "prompt_sha256": "2c15c76c908211eb08f7021191e480e80078c9fbdfca89594c6d3f203239a341",
+      "production_status": "EXCLUDED_NOT_A_VIDEO_REFERENCE",
+      "planned_new_images": 0
     },
     "W05": {
       "key": "W05",
@@ -2151,7 +2159,9 @@
       "refs": [],
       "layout": "4K 2x2 plan coverage",
       "intended_resolution": "4K",
-      "prompt_sha256": "a6d5e38088d3168f469502844d3902bf863ae9294522ed953e5153c0d0f59b05"
+      "prompt_sha256": "a6d5e38088d3168f469502844d3902bf863ae9294522ed953e5153c0d0f59b05",
+      "production_status": "EXCLUDED_NOT_A_VIDEO_REFERENCE",
+      "planned_new_images": 0
     },
     "W06": {
       "key": "W06",
@@ -2167,7 +2177,9 @@
       "refs": [],
       "layout": "4K 2x2 plan coverage",
       "intended_resolution": "4K",
-      "prompt_sha256": "624b9572b3d38424316fb35851eb32082e9a00540da86a7c521318a215281104"
+      "prompt_sha256": "624b9572b3d38424316fb35851eb32082e9a00540da86a7c521318a215281104",
+      "production_status": "EXCLUDED_NOT_A_VIDEO_REFERENCE",
+      "planned_new_images": 0
     },
     "W07": {
       "key": "W07",
@@ -2183,7 +2195,9 @@
       "refs": [],
       "layout": "4K 2x2 plan coverage",
       "intended_resolution": "4K",
-      "prompt_sha256": "fae80c420425f810559c5e530ca9889a97bbdfca90f64105b8f8015267526356"
+      "prompt_sha256": "fae80c420425f810559c5e530ca9889a97bbdfca90f64105b8f8015267526356",
+      "production_status": "EXCLUDED_NOT_A_VIDEO_REFERENCE",
+      "planned_new_images": 0
     },
     "SB01": {
       "key": "SB01",
@@ -2207,7 +2221,7 @@
         "MWP01_B",
         "MWP01_C"
       ],
-      "prompt_sha256": "e1d09296a50354650dbc39ca76ae3fcac3cab894c5b251097dee70067324c5ef"
+      "prompt_sha256": "b3e8291b9038e3b1bd3f03c71c10169aac5a6a8305d110574a67799c38de3e41"
     },
     "A01": {
       "key": "A01",
@@ -2240,7 +2254,7 @@
         "MWP01_B",
         "MWP01_C"
       ],
-      "prompt_sha256": "b630dcf1ed01e194880de7d7da725362a9306b6fa12d86d035800087de6c846d"
+      "prompt_sha256": "5f904a21bda6094ef8dc15c9e7dcfbdf317609694719977cd73e30ce98013db0"
     },
     "SB02": {
       "key": "SB02",
@@ -2273,7 +2287,7 @@
         "MWP01_B",
         "MWP01_C"
       ],
-      "prompt_sha256": "c95a3e6c998d1d64572f30c56fe2e6e4b8d3fdfe1857328909932715db0bea46"
+      "prompt_sha256": "8fe7633c9eea6f9825552f87af7cd5a519c0c4de612149a403039d656a00ebc6"
     },
     "A02": {
       "key": "A02",
@@ -2316,7 +2330,7 @@
         "MWP01_B",
         "MWP01_C"
       ],
-      "prompt_sha256": "4d5a1b3d65660918d19c8a8fc824030a4972b368e79f257fe64b5c63ac7bedf7"
+      "prompt_sha256": "d496e0606c6b5dfa301a398669c93fa855e128f83d57da3434f5d6564c35ab88"
     },
     "SB03": {
       "key": "SB03",
@@ -2337,7 +2351,7 @@
         "MWP01_B",
         "MWP01_C"
       ],
-      "prompt_sha256": "5741279b4ea09a08cffc652016b760207cef9b01ff21179ab3e60845d98926fc"
+      "prompt_sha256": "17bd1bab5cf45fcdd9261f6a5b99dd52c4c9226e4e813ad5462cc34c7368ab93"
     },
     "A03": {
       "key": "A03",
@@ -2368,7 +2382,7 @@
         "MWP01_B",
         "MWP01_C"
       ],
-      "prompt_sha256": "99bc72b634af90485b849be8f7d43db9f59b7eef25636dee27a9524052ea38ef"
+      "prompt_sha256": "4b7429e60070879c977936a41d578a0113e80bc248ed16a1d48bfa2bcf4ac6a0"
     },
     "SB04": {
       "key": "SB04",
@@ -2387,7 +2401,7 @@
         "MW04_B",
         "MW04_C"
       ],
-      "prompt_sha256": "8aa5f59c457e6e8d8671c951782a7d1ff5ed93b3f5369d98592027bb71155678"
+      "prompt_sha256": "07e7e892c9250d5fac1854431efb3b165bc7162b1a1ee30ce6dda42f4b424598"
     },
     "A04": {
       "key": "A04",
@@ -2416,7 +2430,7 @@
         "MW04_B",
         "MW04_C"
       ],
-      "prompt_sha256": "cb87fbdc99734a6732bc259a0a647e2e23c6dc187e5da4fee2f4c14641061927"
+      "prompt_sha256": "021fcd256effefbec2b36106e9078360093d0b8d730746a1bfd0d792c0bc5d66"
     },
     "SB05": {
       "key": "SB05",
@@ -2440,7 +2454,7 @@
         "MWP02_B",
         "MWP02_C"
       ],
-      "prompt_sha256": "635fc7ab158724599d4ff73cdf6963b02ba9604cd02b125fddc0516a1949e798"
+      "prompt_sha256": "6b5f9bf842fdeeb676023dca16dc745846def9eda49c1bb627b24aacc4a9ce66"
     },
     "A05": {
       "key": "A05",
@@ -2474,7 +2488,7 @@
         "MWP02_B",
         "MWP02_C"
       ],
-      "prompt_sha256": "eb95e07235344eaa0c6c586ae0033037ad2744eea2914185a959971b9883af63"
+      "prompt_sha256": "6913da794ea0b1725edd07b287288c2773d78d5888c78459d793da9b71094ab6"
     },
     "SB06": {
       "key": "SB06",
@@ -2517,7 +2531,7 @@
         "MW05_B",
         "MW05_C"
       ],
-      "prompt_sha256": "ce5ed62a7ad9511b4c0d4afe20f39dfef089f3aea59b22c7e4fb36a540f41342"
+      "prompt_sha256": "b80e89855810b314cefb36850c4401ca9a1c4aaf34a626c06e92993b28123973"
     },
     "A06": {
       "key": "A06",
@@ -2570,7 +2584,7 @@
         "MW05_B",
         "MW05_C"
       ],
-      "prompt_sha256": "6c4596b0551760d918d99b6bdefe3ca3157080f87be7c7c842fc68b7b2dbfabd"
+      "prompt_sha256": "ce29821cfda013fef4fe4320dfd3f127945045f4c7bee7c2133d6c8589e7b408"
     },
     "SB07": {
       "key": "SB07",
@@ -2598,7 +2612,7 @@
         "MW02_B",
         "MW02_C"
       ],
-      "prompt_sha256": "1c2e1b7d3ea32e88f88ec3be6fd10e0606cf321d539cef815a2ff34d674890cc"
+      "prompt_sha256": "c05c1f1038942ea676a29068496941b50b20358672c0476cbe1ca9cc27dcc4a5"
     },
     "A07": {
       "key": "A07",
@@ -2636,7 +2650,7 @@
         "MW02_B",
         "MW02_C"
       ],
-      "prompt_sha256": "c9bf22c6c62ad6b81550aa46277f08c40bd5d522175a87f773755e2f7b804201"
+      "prompt_sha256": "e6d6e4480db9b2d59e2629d4ca1a46291963cbfabcd00af1ebe3e455d251a9ba"
     },
     "MR001": {
       "key": "MR001",
@@ -4764,7 +4778,7 @@
     "pilot_joined_seconds": 16,
     "reserve_additional_30s_attempts": 0,
     "additional_30s_attempt_quote_credits": null,
-    "budget_note": "Creator balance 2860; optional purchase max 500, unpurchased. All images remain 4K: 684; final footage 1800; A01 quote-scaled speech estimate 14; adjustable pilot 100; separate assembly/export 0 allocated. Total 2598 leaves 262. MiniMax-only rounded speech estimate 7 leaves 269. Actual continuation and integration/delivery quotes pending. No generation or debit.",
+    "budget_note": "164 production images at 4K cost 656; MAP01-MAP07 are excluded because no video reference role is assigned. Final footage 1800; speech estimate 14; adjustable pilot 100; separate assembly/export 0 allocated. Total 2570 leaves 290 from 2860. MiniMax speech alternative leaves 297. Optional top-up max 500 unpurchased. No generation or debit.",
     "remaining_credits_creator_reported": 2860,
     "balance_source": "CREATOR_REPORT_2026_09_10_NOT_TOOL_VERIFIED",
     "maximum_additional_purchase_credits": 500,
@@ -4773,13 +4787,13 @@
     "regeneration_allowed": false,
     "current_allocation": {
       "status": "PLANNING_ALLOWANCES_NOT_COMPLETE_UI_QUOTES",
-      "all_4k_images": 684,
+      "all_4k_images": 656,
       "final_video_first_pass": 1800,
       "pilot_including_test_audio_and_finishing": 100,
       "final_narration": 14,
-      "total": 2598,
-      "remaining_current_balance": 262,
-      "remaining_if_maximum_top_up_purchased": 762,
+      "total": 2570,
+      "remaining_current_balance": 290,
+      "remaining_if_maximum_top_up_purchased": 790,
       "retries": 0,
       "ledger": "04_tracking/PRODUCTION_BUDGET_ESTIMATE.csv",
       "additional_credits_needed": 0,
@@ -4787,7 +4801,7 @@
       "summary_rows": [
         {
           "category": "REFERENCE_IMAGES_4K",
-          "credits": 684
+          "credits": 656
         },
         {
           "category": "FINAL_FILM_VIDEO",
@@ -4806,10 +4820,10 @@
           "credits": 0
         }
       ],
-      "final_production_excluding_tests": 2498,
+      "final_production_excluding_tests": 2470,
       "test_allowance_separately_adjustable": true,
       "shortfall_excluding_tests": 0,
-      "remaining_current_balance_excluding_tests": 362,
+      "remaining_current_balance_excluding_tests": 390,
       "narration_scope": "A01-A07 first-pass speech only; higher observed A01 model quote scaled by script lengths and total rounded to 14. MiniMax alternative 7. Separate integration fee unestablished and excluded; no pilot double count.",
       "finishing_scope": "Zero allocated because no separate paid operation is established; not a verified zero-cost tariff. Use cumulative Extend output and download if available."
     },
@@ -8907,7 +8921,7 @@
   "image_layout_policy": {
     "character_identity": "4K 3840x2160 1x3; three 1280x2160 panels; no gutters",
     "other_reference_images": "4K 3840x2160 2x2; four 1920x1080 cells; typography has the explicit TY001 3x3 exception",
-    "maps": "Optional 4K 2x2 plan coverage; not imported as Elements",
+    "maps": "Inactive planning material; excluded from production generation and Element imports",
     "three_by_three_active_prompts": 1,
     "typography": "TY001: 4K 3x3, nine 1280x720 cells; TY002-TY007: 4K 2x2, four 1920x1080 cells"
   },
@@ -9164,10 +9178,10 @@
     "resolution": "4K",
     "imported_library_images": 164,
     "imported_library_first_pass_credits": 656,
-    "optional_map_images": 7,
-    "optional_map_credits": 28,
+    "optional_map_images": 0,
+    "optional_map_credits": 0,
     "all_image_prompts": 171,
-    "all_first_pass_credits": 684,
+    "all_first_pass_credits": 656,
     "typography_images": 7,
     "typography_first_pass_credits": 28,
     "prior_balance_estimate": 700,
@@ -9206,12 +9220,13 @@
     },
     "current_decision": {
       "date": "2026-09-10",
-      "status": "CREATOR_CONFIRMED_ALL_IMAGES_REMAIN_4K",
-      "active_image_prompts": 171,
+      "status": "ALL_PRODUCTION_IMAGES_4K_MAPS_EXCLUDED",
+      "active_image_prompts": 164,
       "prompt_resolution_changes": 0,
       "split_sheets_created": 0,
       "retain_existing_detailed_content": true,
-      "retain_existing_grid_layouts": true
+      "retain_existing_grid_layouts": true,
+      "excluded_map_prompts": 7
     },
     "superseded_allowance_scenarios": {
       "status": "SUPERSEDED_BY_CREATOR_NO_REGENERATION_AND_500_TOP_UP_CAP",
@@ -9253,14 +9268,33 @@
     "additional_purchase_confirmed": false,
     "maximum_total_if_top_up_purchased": 3360,
     "after_first_pass_current_balance": {
-      "library_only": 2204,
-      "including_maps": 2176
+      "production_images": 2204
     },
     "after_first_pass_with_maximum_top_up": {
-      "library_only": 2704,
-      "including_maps": 2676
+      "production_images": 2704
     },
     "regeneration_allowed": false,
-    "additional_attempts_allowed": 0
+    "additional_attempts_allowed": 0,
+    "excluded_map_prompts": 7,
+    "production_image_prompts": 164
+  },
+  "map_production_decision": {
+    "status": "EXCLUDED_FROM_PRODUCTION",
+    "date": "2026-09-10",
+    "keys": [
+      "MAP01",
+      "MAP02",
+      "MAP03",
+      "MAP04",
+      "MAP05",
+      "MAP06",
+      "MAP07"
+    ],
+    "reason": "No assigned MAP input in any film or pilot video. World/morph references and camera directions provide the required scene layout.",
+    "generated_images": 0,
+    "planned_credits": 0,
+    "saved_credits": 28,
+    "authored_prompts_retained": true,
+    "production_prompt_list": "00_project/elements/index/FULL_PROJECT_PROMPT_MAP.csv"
   }
 }

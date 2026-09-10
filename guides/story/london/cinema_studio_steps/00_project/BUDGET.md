@@ -2,7 +2,7 @@
 
 ## Current decision: all images remain 4K
 
-2026-09-10: the creator explicitly confirmed that **every image remains at 4K**. All 171 active image prompts retain their existing detailed content and grid layouts. No prompt was converted to 2K or split into two sheets for budget reasons.
+2026-09-10: the creator explicitly confirmed that **every image remains at 4K**. All 164 production image prompts retain their existing detailed content and grid layouts. MAP01–MAP07 are excluded from generation; their seven authored prompts are retained as inactive planning material. No prompt was converted to 2K or split into two sheets for budget reasons.
 
 Keep all four morph states together on ONE 2×2 sheet: intact source, first substantial material reconstruction, a distinctly different advanced reconstruction, and resolved destination. Character identity sheets retain 1×3; TY001 retains its specific 3×3 typography layout. All these sheets remain 4K.
 
@@ -27,15 +27,14 @@ The conditional zero-credit 2K estimate applies only to eligible generations mad
 | Object and material morphs | 32 | 4 | 128 |
 | Character morphs | 6 | 4 | 24 |
 | Typography sheets | 7 | 4 | 28 |
-| Optional maps | 7 | 4 | 28 |
-| **Imported library, excluding maps** | **164** | **4** | **656** |
-| **All image prompts, including maps** | **171** | **4** | **684** |
+| Maps — excluded from production | 0 | 4 | 0 |
+| **Production image total** | **164** | **4** | **656** |
 
-The typography supplement is **7 images / 28 credits**, already included in both totals. The earlier 157-asset library without typography would have cost 628 credits for one complete 4K pass.
+The typography supplement is **7 images / 28 credits**, already included in the production total. The earlier 157-asset library without typography would have cost 628 credits for one complete 4K pass.
 
 Current prompts request a 3840×2160 canvas. Character identity sheets use 1×3 cells; worlds, memories and morphs use 2×2. TY001 uses 3×3 short rating samples; the other typography sheets use 2×2. At that exact canvas size, the cells are 1280×2160, 1920×1080 and 1280×720 respectively. These are requested dimensions, not verified generated-file measurements.
 
-This is a gross first-pass estimate: one new image per listed prompt. Existing usable outputs must be reused rather than regenerated. Do not automatically subtract the four retained C01, C02, MR001 and R002 images. Subtract only images actually reused for the current role and quality requirement. The older R002 bus angle sheet is not the new bus morph. Each reused image removes 4 credits from the planned 4K first pass.
+This is a gross first-pass estimate: one new image per production prompt. The seven map files are not generation tasks. No video has a MAP01–MAP07 input assigned; world and morph references supply the scene geometry. The earlier 171-image / 684-credit estimate is superseded by 164 images / 656 credits, saving 28 credits. Existing usable outputs must be reused rather than regenerated. Do not automatically subtract the four retained C01, C02, MR001 and R002 images. Subtract only images actually reused for the current role and quality requirement. The older R002 bus angle sheet is not the new bus morph. Each reused image removes 4 credits from the planned 4K first pass.
 
 ## Current balance and hard spending limits
 
@@ -45,30 +44,30 @@ This is a gross first-pass estimate: one new image per listed prompt. Existing u
 
 All images remain 4K with their current complete grid compositions and detailed prompts.
 
-| Funding scenario | Total credits | After 164 imported-asset images (656 credits) | After all 171 images including maps (684 credits) |
-|---|---:|---:|---:|
-| Current creator-reported balance | 2860 | 2204 | **2176** |
-| With the maximum further 500-credit purchase, if made | 3360 | 2704 | **2676** |
+| Funding scenario | Total credits | After 164 production images (656 credits) |
+|---|---:|---:|
+| Current creator-reported balance | 2860 | **2204** |
+| With the maximum further 500-credit purchase, if made | 3360 | **2704** |
 
 The remainder must cover the first planned test-video generations, final footage, audio, assembly and export. These are remaining spending ceilings, not a quote for those operations or confirmation that the entire film will fit. The optional 500 credits must not be treated as already available. No larger top-up is part of this plan.
 
 ## Complete working allocation
 
-The current film is **200 seconds (3:20)**: six 30-second blocks and one 20-second ending. Keep that duration and all detailed image/video content. This allocation uses the creator-reported 2860-credit balance, all 171 images at 4K, and no regeneration.
+The current film is **200 seconds (3:20)**: six 30-second blocks and one 20-second ending. Keep that duration and all detailed image/video content. This allocation uses the creator-reported 2860-credit balance, all 164 production images at 4K, and no regeneration.
 
 | Work | Planning allocation | Evidence and scope |
 |---|---:|---|
-| Reference images, all 171 at 4K | **684** | Nano Banana Pro; 171 × 4; includes seven optional maps and shared pilot/final-film references, counted once |
+| Reference images, all 164 at 4K | **656** | Nano Banana Pro; 164 × 4; shared pilot/final-film references counted once; maps excluded |
 | Final film video generation | **1800** | Six 30-second blocks at 270 plus the creator-confirmed 20-second ending at 180; complete-input/Extend quotes pending |
 | Final film narration | **14** | A01–A07 speech estimate using the higher observed Seed Audio rate and relative script lengths; MiniMax alternative approximately 7; integration has no established separate fee |
 | Pilot/test workflow, separately adjustable | **100** | Combined first-pass allowance for the planned 8-second clip, 8-second continuation and test narration/integration; actual prices pending |
 | Separate assembly/export | **0 allocated** | No verified separate fee. If Extend returns the cumulative film with the intended soundtrack, use that result and download it; no additional render is budgeted |
 
-**Final production including images, excluding tests: 2498 credits. Total with the current 100-credit test allowance: 2598 credits.** The current 2860-credit balance leaves **262 credits**, or **362 without tests**. No top-up is required by this working estimate. If the optional maximum 500-credit top-up were purchased, 762 would remain; it has not been purchased.
+**Final production including images, excluding tests: 2470 credits. Total with the current 100-credit test allowance: 2570 credits.** The current 2860-credit balance leaves **290 credits**, or **390 without tests**. No top-up is required by this working estimate. If the optional maximum 500-credit top-up were purchased, 790 would remain; it has not been purchased.
 
-The previous 200-credit narration allowance is replaced with a **14-credit first-pass speech estimate**, freeing 186 credits. The separate **100-credit pilot allowance stays adjustable**; refine it later using actual test quotes. This change does not select an audio model or authorize extra tests or retries. Using MiniMax for all seven passages would give a rounded speech estimate of 7 credits, a total of 2591 and a remaining balance of 269.
+The previous 200-credit narration allowance is replaced with a **14-credit first-pass speech estimate**, freeing 186 credits. The separate **100-credit pilot allowance stays adjustable**; refine it later using actual test quotes. This change does not select an audio model or authorize extra tests or retries. Using MiniMax for all seven passages would give a rounded speech estimate of 7 credits, a total of 2563 and a remaining balance of 297.
 
-No separately required paid narration-integration, assembly or export operation has been established, so no invented fee is added. This is not proof that those operations are free or that cumulative export is available. Any real additional integration/delivery quote must be included once before use; the 262-credit unallocated balance is not automatic spending authorization. Images plus final footage remain 2484 credits, leaving 376 for narration and tests before those two lines are counted.
+No separately required paid narration-integration, assembly or export operation has been established, so no invented fee is added. This is not proof that those operations are free or that cumulative export is available. Any real additional integration/delivery quote must be included once before use; the 290-credit unallocated balance is not automatic spending authorization. Images plus final footage remain 2456 credits, leaving 404 for narration and tests before those two lines are counted.
 
 ### Observed narration quotes and length-based estimate
 
@@ -115,14 +114,14 @@ The selected video resolution is already **1080p**, matching the delivery target
 
 ### Break-even limits
 
-Images, the current pilot allowance and estimated narration total **798 credits** (684 + 100 + 14). Holding these fixed leaves **2062 credits for final-film video** without a purchase, or **2562** after the maximum top-up. Across 200 seconds these are average ceilings of **10.31** and **12.81 credits/second**. Any additional integration/delivery charge reduces these ceilings by the same amount.
+Images, the current pilot allowance and estimated narration total **770 credits** (656 + 100 + 14). Holding these fixed leaves **2090 credits for final-film video** without a purchase, or **2590** after the maximum top-up. Across 200 seconds these are average ceilings of **10.45** and **12.95 credits/second**. Any additional integration/delivery charge reduces these ceilings by the same amount.
 
-| Illustrative final-video rate | 200-second film | Total including the other 798 credits | Balance from 2860 |
+| Illustrative final-video rate | 200-second film | Total including the other 770 credits | Balance from 2860 |
 |---|---:|---:|---:|
-| **9 credits/second: current duration-rate basis** | **1800** | **2598** | **262 remaining** |
-| 10 credits/second | 2000 | 2798 | 62 remaining |
-| 11 credits/second | 2200 | 2998 | 138 shortfall |
-| 12 credits/second | 2400 | 3198 | 338 shortfall |
+| **9 credits/second: current duration-rate basis** | **1800** | **2570** | **290 remaining** |
+| 10 credits/second | 2000 | 2770 | 90 remaining |
+| 11 credits/second | 2200 | 2970 | 110 shortfall |
+| 12 credits/second | 2400 | 3170 | 310 shortfall |
 
 These are sensitivity calculations, not additional provider tariffs. The test allowance can be refined independently. The no-regeneration instruction and maximum further purchase of 500 credits remain in force.
 

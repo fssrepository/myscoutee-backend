@@ -40,19 +40,19 @@ MWP01,02_library/worlds/memories/MWP01_ROUTES_ROOMS_DOCUMENTS_A.txt,worlds/memor
 MWP02,02_library/worlds/memories/MWP02_SYSTEM_TIME_REVERSALS_A.txt,worlds/memories,yes,4K,4K 2x2 page A; original views 1–4,4,1,0,4,PLANNED_NOT_CHARGED
 HRW07,02_library/worlds/memories/HRW07_CLINICAL_REALITY_A.txt,worlds/memories,yes,4K,4K 2x2 page A; original views 1–4,4,1,0,4,PLANNED_NOT_CHARGED
 W01,02_library/worlds/real/W01_MAIN_WORLD_A.txt,worlds/real,yes,4K,,4,1,0,4,PLANNED_NOT_CHARGED
-MAP01,02_library/worlds/maps/MAP01_WALK_PLAN.txt,worlds/maps,no_optional_map,4K,4K 2x2 plan coverage,4,1,0,4,PLANNED_NOT_CHARGED
+MAP01,02_library/worlds/maps/MAP01_WALK_PLAN.txt,worlds/maps,no_optional_map,4K,4K 2x2 plan coverage,4,0,0,0,EXCLUDED_FROM_PRODUCTION_NOT_A_VIDEO_REFERENCE
 W02,02_library/worlds/real/W02_MAIN_WORLD_A.txt,worlds/real,yes,4K,,4,1,0,4,PLANNED_NOT_CHARGED
-MAP02,02_library/worlds/maps/MAP02_WALK_PLAN.txt,worlds/maps,no_optional_map,4K,4K 2x2 plan coverage,4,1,0,4,PLANNED_NOT_CHARGED
+MAP02,02_library/worlds/maps/MAP02_WALK_PLAN.txt,worlds/maps,no_optional_map,4K,4K 2x2 plan coverage,4,0,0,0,EXCLUDED_FROM_PRODUCTION_NOT_A_VIDEO_REFERENCE
 W03,02_library/worlds/real/W03_MAIN_WORLD_A.txt,worlds/real,yes,4K,,4,1,0,4,PLANNED_NOT_CHARGED
-MAP03,02_library/worlds/maps/MAP03_WALK_PLAN.txt,worlds/maps,no_optional_map,4K,4K 2x2 plan coverage,4,1,0,4,PLANNED_NOT_CHARGED
+MAP03,02_library/worlds/maps/MAP03_WALK_PLAN.txt,worlds/maps,no_optional_map,4K,4K 2x2 plan coverage,4,0,0,0,EXCLUDED_FROM_PRODUCTION_NOT_A_VIDEO_REFERENCE
 W04,02_library/worlds/real/W04_MAIN_WORLD_A.txt,worlds/real,yes,4K,,4,1,0,4,PLANNED_NOT_CHARGED
-MAP04,02_library/worlds/maps/MAP04_WALK_PLAN.txt,worlds/maps,no_optional_map,4K,4K 2x2 plan coverage,4,1,0,4,PLANNED_NOT_CHARGED
+MAP04,02_library/worlds/maps/MAP04_WALK_PLAN.txt,worlds/maps,no_optional_map,4K,4K 2x2 plan coverage,4,0,0,0,EXCLUDED_FROM_PRODUCTION_NOT_A_VIDEO_REFERENCE
 W05,02_library/worlds/real/W05_MAIN_WORLD_A.txt,worlds/real,yes,4K,,4,1,0,4,PLANNED_NOT_CHARGED
-MAP05,02_library/worlds/maps/MAP05_WALK_PLAN.txt,worlds/maps,no_optional_map,4K,4K 2x2 plan coverage,4,1,0,4,PLANNED_NOT_CHARGED
+MAP05,02_library/worlds/maps/MAP05_WALK_PLAN.txt,worlds/maps,no_optional_map,4K,4K 2x2 plan coverage,4,0,0,0,EXCLUDED_FROM_PRODUCTION_NOT_A_VIDEO_REFERENCE
 W06,02_library/worlds/real/W06_MAIN_WORLD_A.txt,worlds/real,yes,4K,,4,1,0,4,PLANNED_NOT_CHARGED
-MAP06,02_library/worlds/maps/MAP06_WALK_PLAN.txt,worlds/maps,no_optional_map,4K,4K 2x2 plan coverage,4,1,0,4,PLANNED_NOT_CHARGED
+MAP06,02_library/worlds/maps/MAP06_WALK_PLAN.txt,worlds/maps,no_optional_map,4K,4K 2x2 plan coverage,4,0,0,0,EXCLUDED_FROM_PRODUCTION_NOT_A_VIDEO_REFERENCE
 W07,02_library/worlds/real/W07_MAIN_WORLD_A.txt,worlds/real,yes,4K,,4,1,0,4,PLANNED_NOT_CHARGED
-MAP07,02_library/worlds/maps/MAP07_WALK_PLAN.txt,worlds/maps,no_optional_map,4K,4K 2x2 plan coverage,4,1,0,4,PLANNED_NOT_CHARGED
+MAP07,02_library/worlds/maps/MAP07_WALK_PLAN.txt,worlds/maps,no_optional_map,4K,4K 2x2 plan coverage,4,0,0,0,EXCLUDED_FROM_PRODUCTION_NOT_A_VIDEO_REFERENCE
 MR001,02_library/morphs/buildings/MR001_ST_PAULS_TO_ST_STEPHENS_2X2.txt,morphs/buildings,yes,4K,2x2 source/early/advanced/target,4,1,0,4,PLANNED_NOT_CHARGED
 MR002,02_library/morphs/buildings/MR002_FACADE_RELIEF_TO_SCULPTED_SUPPORT_2X2.txt,morphs/buildings,yes,4K,2x2 source/early/advanced/target,4,1,0,4,PLANNED_NOT_CHARGED
 MR003,02_library/morphs/buildings/MR003_FACADE_WINDOW_CAPITAL_AND_CORNICE_2X2.txt,morphs/buildings,yes,4K,2x2 source/early/advanced/target,4,1,0,4,PLANNED_NOT_CHARGED

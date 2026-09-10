@@ -1,5 +1,5 @@
 item,quantity,unit,duration_s,unit_allocation_credits,allocated_credits,cost_basis,retry_outputs,scope
-REFERENCE_IMAGES_4K,171,image,,4,684,CREATOR_CONFIRMED_UNIT_PRICE,0,All library prompts including seven optional maps
+REFERENCE_IMAGES_4K,164,image,,4,656,CREATOR_CONFIRMED_UNIT_PRICE,0,All 164 imported library references. MAP01-MAP07 excluded from production; no map generation.
 FILM_01,1,block,30,270,270,OBSERVED_30S_1080P_UI_RATE_APPLIED_TO_PLANNING,0,Cinema Studio 4.0; 1080p; audio On; observed quote had empty prompt and 0/50 refs. Actual complete-input/Extend quote pending.
 FILM_02,1,block,30,270,270,OBSERVED_30S_1080P_UI_RATE_APPLIED_TO_PLANNING,0,Cinema Studio 4.0; 1080p; audio On; observed quote had empty prompt and 0/50 refs. Actual complete-input/Extend quote pending.
 FILM_03,1,block,30,270,270,OBSERVED_30S_1080P_UI_RATE_APPLIED_TO_PLANNING,0,Cinema Studio 4.0; 1080p; audio On; observed quote had empty prompt and 0/50 refs. Actual complete-input/Extend quote pending.

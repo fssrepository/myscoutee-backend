@@ -1,15 +1,19 @@
-# Aktuális importútmutató
+# Current import and image-generation guide
 
-**A már importált 157 elemhez most a [TYPOGRAPHY_IMPORT.md](../categories/TYPOGRAPHY_IMPORT.md) hét új elemét add hozzá.** A teljes könyvtár ezzel 164 elem.
+**Add the seven elements in [TYPOGRAPHY_IMPORT.md](../categories/TYPOGRAPHY_IMPORT.md) to the already imported 157-element set.** This gives 164 Elements. Do not reimport the existing set.
 
-Új, üres projekt esetén a [FULL_PROJECT_IMPORT.md](../full/FULL_PROJECT_IMPORT.md) tartalmaz mindent. Alternatívája a négy külön [kategóriaimport](../categories/README.md): 31 karakterazonosság, 51 világ-/emlékoldal, 75 morph és 7 tipográfiai elem. A teljes fájl és a részek definíciói megegyeznek; ugyanazt a készletet egyszer importáld.
+For an empty project, [FULL_PROJECT_IMPORT.md](../full/FULL_PROJECT_IMPORT.md) contains all 164 definitions. Alternatively use the four [category imports](../categories/README.md): 31 character identities, 51 world/memory pages, 75 morphs and seven typography elements. Import either the full file or the category files once.
 
-A rövid Type, Canonical key, Name, Version és Description mezők az Element létrehozásához valók. A részletes generálási leírás a [prompttérképben](FULL_PROJECT_PROMPT_MAP.csv) hivatkozott TXT fájl. Az import nem helyettesíti a képgenerálási promptot. A CSV `prompt_file` és `import_batch` útvonala a cinema_studio_steps projektgyökeréhez viszonyított.
+Import definitions contain only short identity metadata: Type, Canonical key, Name, Version and Description. The detailed image-generation text is in the TXT files linked by [FULL_PROJECT_PROMPT_MAP.csv](FULL_PROJECT_PROMPT_MAP.csv). Its paths are relative to the cinema_studio_steps project root.
 
-Minden új kép 4K 3840×2160. Az azonosító karakterlap 1×3 (1280×2160/panel), a világ/emlék/morph 2×2 (1920×1080/cella). A tipográfia TY001 rövid számjegylapja 3×3 (1280×720/cella); a többi tipográfia 2×2. Ezek a renderparaméterek nem kerülnek az importdefiníciókba.
+## Fixed production scope
 
-A négy korábban megmaradt kép kulcsa C01, C02, MR001, R002. A busz korábbi nézetlapja alapreferencia, nem már legenerált buszmorph. A felhasználó végzi a Higgsfield importot, generálást és képtársítást. A tényleges új @azonosítókat a képgeneráló- és videópromptokhoz kell kötni; a régi nevek érvényességét egy új import után nem feltételezzük.
+Generate the **164 references listed in the CSV**, all at 4K. MAP01–MAP07 are excluded from this production pass, not optional pending jobs. Their retained planning studies and the content-based rationale are described in [maps/README.md](../../../02_library/worlds/maps/README.md). They do not require an import or image generation. The previous 171-image count included those seven studies; the current image cost is 656 credits.
 
-A korábbi pilot/film/batch listák az [archive](../archive/README.md) könyvtárban vannak. Az [MR021 egyszeri kiegészítő](../additions/MR021_RATING_CARD_ONLY_IMPORT.md) csak a régi, MR021 nélküli állapothoz kell, nem az aktuális Full vagy Morphs lista mellé.
+Character identity sheets use 1×3 panels on a requested 3840×2160 canvas. World, memory and morph sheets use 2×2 cells. TY001 alone uses 3×3 short numerical samples; the other typography sheets use 2×2. Actual downloaded dimensions must be checked. These render instructions stay outside the import definitions.
 
-Az eredeti 164 képprompt részletellenőrzése a [jegyzőkönyvben](../../../04_tracking/IMAGE_PROMPT_DETAIL_REVIEW.md) található. Ehhez most hét új tipográfiai lap társult, tehát 171 aktív képprompt van a hét opcionális térképpel együtt. A [tipográfiai jegyzék](../../../02_library/typography/README.md) megadja a feliratokat és használati helyüket. Az új képek csak a Higgsfield felületén készülnek.
+The four previously retained image keys are C01, C02, MR001 and R002. Reuse any accepted output that meets its current role; the old bus angle sheet is not evidence that the bus morph has been generated. The creator performs imports, generation and image attachment in Higgsfield. Resolve real Element handles before generating prompts marked `REFERENCE SETUP INCOMPLETE` or `@UNBOUND_…`; handles from an older import are not automatically verified.
+
+Earlier pilot/film/batch lists are in [archive](../archive/README.md). The [MR021-only supplement](../additions/MR021_RATING_CARD_ONLY_IMPORT.md) is for an older set missing MR021; it is already included in the current 157-element base and the full/morph imports.
+
+The [image detail review](../../../04_tracking/IMAGE_PROMPT_DETAIL_REVIEW.md) records the authored-prompt audit, including the now-excluded map studies. The [typography guide](../../../02_library/typography/README.md) identifies the exact words and roles. Prompt review does not constitute acceptance of generated media. All active image generation remains in Higgsfield.
