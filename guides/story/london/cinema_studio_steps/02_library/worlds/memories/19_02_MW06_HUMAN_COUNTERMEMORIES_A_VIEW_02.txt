@@ -4,7 +4,7 @@ OUTPUT ELEMENT ASSIGNMENT — OPERATOR METADATA ONLY, NEVER RENDER:
 Target import name: MYS MW06_A_02 Memory View 02
 Live output Element name (operator lookup only): loc_MYS_mys-mw06-a-02-memory-view-02_s0_v1
 Live output Element UUID: b05cfd51-c418-49f8-99fa-a098b52ed3bc
-Assign the finished image to this existing empty target. This output target is not an input reference.
+Image attachment verified via MCP on 2026-09-10. This output target is not an input reference.
 
 REFERENCE INPUTS:
 @loc_MYS_mys-mw02-a-01-memory-view-01_s0_v1 = Use the accepted metro-gate image for the same helper, monthly pass and station; reconstruct the assigned action after the tap.

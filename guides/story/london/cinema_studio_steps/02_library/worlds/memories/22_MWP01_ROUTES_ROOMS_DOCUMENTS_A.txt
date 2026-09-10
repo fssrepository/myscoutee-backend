@@ -1,5 +1,10 @@
 REFERENCE ID: MWP01_ROUTES_ROOMS_DOCUMENTS_A (never print IDs, headings or panel labels).
 
+OUTPUT ELEMENT ASSIGNMENT — OPERATOR METADATA ONLY, NEVER RENDER:
+Live output Element name (operator lookup only): loc_MYS_mys-mwp01-a-routes-rooms-documents_s0_v1
+Live output Element UUID: 221e40ec-450c-438e-bdee-5f0aca3df485
+Assign the finished image to this existing empty target. This output target is not an input reference.
+
 REFERENCE INPUTS:
 @char_MYS_mys-c01-protagonist_s0_v1 = CHARACTER 01 — PROTAGONIST; exact person identity; use only where this person appears.
 

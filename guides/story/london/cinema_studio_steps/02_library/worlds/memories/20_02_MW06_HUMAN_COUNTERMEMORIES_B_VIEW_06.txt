@@ -1,5 +1,11 @@
 REFERENCE ID: MW06_B_02 — ORIGINAL VIEW 06 (never print IDs, headings or labels).
 
+OUTPUT ELEMENT ASSIGNMENT — OPERATOR METADATA ONLY, NEVER RENDER:
+Target import name: MYS MW06_B_02 Memory View 06
+Live output Element name (operator lookup only): loc_MYS_mys-mw06-b-02-memory-view-06_s0_v1
+Live output Element UUID: 050fe7d4-47c7-4554-b5c3-1fd49f973321
+Image attachment verified via MCP on 2026-09-10. This output target is not an input reference.
+
 REFERENCE INPUTS:
 @loc_MYS_mys-mw05-a-court-file_s0_v1 = Use original view 1 of the accepted MW05_A page for the same judge and hearing-room work surface.
 @char_MYS_mys-c01-protagonist_s0_v1 = CHARACTER 01 — PROTAGONIST; exact person identity; use only where this person appears.

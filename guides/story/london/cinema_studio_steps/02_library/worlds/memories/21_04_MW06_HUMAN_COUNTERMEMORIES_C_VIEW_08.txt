@@ -1,10 +1,12 @@
 REFERENCE ID: MW06_C_04 — ORIGINAL VIEW 08 (never print IDs, headings or labels).
 
-REFERENCE SETUP INCOMPLETE: MW06_B_04
-Do not generate until these references are bound.
+OUTPUT ELEMENT ASSIGNMENT — OPERATOR METADATA ONLY, NEVER RENDER:
+Live output Element name (operator lookup only): loc_MYS_mys-mw06-c-04-memory-view-08_s0_v1
+Live output Element UUID: 4f706a30-b0f9-448f-97b5-f2542de6d962
+Assign the finished image to this existing empty target. This output target is not an input reference.
 
 REFERENCE INPUTS:
-@UNBOUND_MW06_B_04 = Use the accepted six-person table image to preserve all six identities, clothes, furniture and room; their positions change for the assigned clearing-up tasks.
+@loc_MYS_mys-mw06-b-04-memory-view-08_s0_v1 = Use the accepted six-person table image to preserve all six identities, clothes, furniture and room; their positions change for the assigned clearing-up tasks.
 @char_MYS_mys-c01-protagonist_s0_v1 = CHARACTER 01 — PROTAGONIST; exact person identity; use only where this person appears.
 
 OUTPUT GEOMETRY — ONE 2K FULL-FRAME IMAGE:

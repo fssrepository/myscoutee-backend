@@ -1,5 +1,11 @@
 REFERENCE ID: MW06_B_04 — ORIGINAL VIEW 08 (never print IDs, headings or labels).
 
+OUTPUT ELEMENT ASSIGNMENT — OPERATOR METADATA ONLY, NEVER RENDER:
+Target import name: MYS MW06_B_04 Memory View 08
+Live output Element name (operator lookup only): loc_MYS_mys-mw06-b-04-memory-view-08_s0_v1
+Live output Element UUID: 4abc9dc8-519d-468b-a3e1-a87718db010a
+Image attachment verified via MCP on 2026-09-10. This output target is not an input reference.
+
 REFERENCE INPUTS:
 @char_MYS_mys-c01-protagonist_s0_v1 = CHARACTER 01 — PROTAGONIST; exact person identity; use only where this person appears.
 

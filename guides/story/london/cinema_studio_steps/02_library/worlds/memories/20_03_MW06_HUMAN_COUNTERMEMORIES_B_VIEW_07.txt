@@ -1,5 +1,11 @@
 REFERENCE ID: MW06_B_03 — ORIGINAL VIEW 07 (never print IDs, headings or labels).
 
+OUTPUT ELEMENT ASSIGNMENT — OPERATOR METADATA ONLY, NEVER RENDER:
+Target import name: MYS MW06_B_03 Memory View 07
+Live output Element name (operator lookup only): loc_MYS_mys-mw06-b-03-memory-view-07_s0_v1
+Live output Element UUID: 7ae5de20-2527-4bc2-b9a4-d4f1f3af1158
+Image attachment verified via MCP on 2026-09-10. This output target is not an input reference.
+
 REFERENCE INPUTS:
 @loc_MYS_mys-mw01-c-01-memory-view-09_s0_v1 = Use the accepted beginner-dance image for the same pair, clothing and room.
 @char_MYS_mys-c01-protagonist_s0_v1 = CHARACTER 01 — PROTAGONIST; exact person identity; use only where this person appears.

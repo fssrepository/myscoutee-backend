@@ -1,10 +1,12 @@
 REFERENCE ID: MW06_C_02 — ORIGINAL VIEW 01 (never print IDs, headings or labels).
 
-REFERENCE SETUP INCOMPLETE: MW06_A_01
-Do not generate until these references are bound.
+OUTPUT ELEMENT ASSIGNMENT — OPERATOR METADATA ONLY, NEVER RENDER:
+Live output Element name (operator lookup only): loc_MYS_mys-mw06-c-02-memory-view-01_s0_v1
+Live output Element UUID: 11dd1c0e-0c9e-412a-b05e-95d5ce08aadf
+Assign the finished image to this existing empty target. This output target is not an input reference.
 
 REFERENCE INPUTS:
-@UNBOUND_MW06_A_01 = Use the accepted Soho-smile image for this same woman, table and encounter.
+@loc_MYS_mys-mw06-a-01-memory-view-01_s0_v1 = Use the accepted Soho-smile image for this same woman, table and encounter.
 @char_MYS_mys-c01-protagonist_s0_v1 = CHARACTER 01 — PROTAGONIST; exact person identity; use only where this person appears.
 @char_MYS_mys-c02-soho-woman_s0_v1 = CHARACTER 02 — SOHO WOMAN; exact person identity; use only where this person appears.
 
