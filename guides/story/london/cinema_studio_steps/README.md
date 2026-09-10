@@ -37,7 +37,7 @@ The production list includes the outstanding reference binding, clean narration,
 | Character, world, memory and `storyboard.txt` | Image prompt field; one file per request |
 | `03_film/NN/narration.txt` | Full-film TTS text field; spoken words only |
 | `00_project/elements/archive/pilot/00_pilot_test_assets.md` | Existing restaurant Element metadata; no generation |
-| `video.txt`, `test_video_8s.txt`, `test_extend_8s.txt` | Video prompt, once its reference setup notice has cleared |
+| `video.txt`, `test_video_4s.txt`, `test_extend_4s.txt` | Video prompt, once its reference setup notice has cleared |
 | README, other guides, CSV, JSON | Operator documentation; never paste into a generation field |
 
 Copy the entire `.txt` file once its reference setup notice has cleared. Verified `@` Element mentions autoload in the creator's composer. The assistant binds each ID once and propagates it throughout the pack; no per-file manual substitution. `@UNBOUND_…` marks a missing identifier, not a working Higgsfield handle. See [reference binding](00_project/REFERENCES.md).

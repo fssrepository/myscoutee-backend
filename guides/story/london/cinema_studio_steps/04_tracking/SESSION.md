@@ -1,3 +1,7 @@
+# Current override — small continuity test, 2026-09-10
+
+Latest user scope supersedes earlier eight-second pilot decisions: [4-second first clip](../01_pilot/test_video_4s.txt) + [4-second native Extend](../01_pilot/test_extend_4s.txt), approximately 8 seconds joined, simple restaurant with three existing references. Narration crosses the seam as one later track. Balance: user-reported 2036. Native picture/background continuity is reviewed before adding narration. See [current instructions](../01_pilot/README.md) and [unresolved Higgsfield audio-overlay route](../01_pilot/NARRATION_ROUTE.md). No generation executed. Earlier session entries below remain historical.
+
 A felhasználó külön megerősítette: a hétnapos Unlimited felirat valóban 2K képekre vonatkozik. A 2K-bontási költségváltozat ennek aktív időablakára számol 0 képkreditet. Az egész könyvtár átállítása továbbra sincs elrendelve; a 4K promptok megmaradtak.
 
 ## 2026-09-10 — Képmodell és felvetett 2K alternatíva

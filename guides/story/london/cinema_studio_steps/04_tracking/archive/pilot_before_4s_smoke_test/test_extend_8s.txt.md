@@ -1,3 +1,6 @@
+Historical version, superseded by the 4+4-second continuity test.
+
+```text
 WORLD REFERENCES — ORDERED SINGLE VIEWS:
 @loc_MYS_mys-w01-a-01-world-view-01_s0_v1 supplies W01 group A, position 01, original view 01.
 @loc_MYS_mys-w01-a-02-world-view-02_s0_v1 supplies W01 group A, position 02, original view 02.
@@ -135,3 +138,5 @@ Read a supplied morph sheet in top-left, top-right, bottom-left, bottom-right or
 
 LETTERING DURING THE SCRIPTED MOVING PASS:
 Use each supplied typography view only on its assigned sign, card or device in the existing scene. Keep letters, diacritics, decimal points, spacing and attachment stable through changing perspective. At the featured readable pass, give the relevant text sufficient frame area, focus and a clear sightline before accelerating onward. Detail cells are construction evidence for the same object, not extra signs, new events, grid flashes or cuts. Do not make deliberately unreadable private records legible merely because another typography reference is sharp.
+
+```

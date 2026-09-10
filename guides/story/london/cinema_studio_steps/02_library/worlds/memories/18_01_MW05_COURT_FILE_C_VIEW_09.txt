@@ -3,8 +3,9 @@ REFERENCE ID: MW05_C_01 — ORIGINAL VIEW 09 (never print IDs, headings or label
 OUTPUT ELEMENT ASSIGNMENT — OPERATOR METADATA ONLY, NEVER RENDER:
 Canonical key: MW05_C_01
 Target import name: MYS MW05_C_01 Memory View 09
-Live output Element name / UUID: pending import; not yet verified.
-Assign the finished image to this target after importing the twelve Location definitions in MW03_BC_MW05_C_SINGLE_VIEWS_IMPORT.md. This output target is not an input reference.
+Live output Element name (operator lookup only): loc_MYS_mys-mw05-c-01-memory-view-09_s0_v1
+Live output Element UUID: baf59585-be6a-4721-9d2e-cbef75076349
+This target already has an attached image verified on 2026-09-10. Use this same Element for any explicitly requested replacement. This output target is not an input reference.
 
 REFERENCE INPUTS:
 @loc_MYS_mys-mw05-a-court-file_s0_v1 = Use the accepted Page A for its established case-paper materials and ordinary palette only. Keep the assigned personal paperwork desk as its own setting; do not copy a courtroom or property-storage scene into this image.

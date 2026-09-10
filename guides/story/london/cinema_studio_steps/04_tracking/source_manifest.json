@@ -1043,7 +1043,7 @@
       ],
       "source_prompt_sha256": "533e440baa4117a4d2f7733e327dfca304ea8a54d066010cc8ab8722cadb259c",
       "file": "03_film/03/storyboard.txt",
-      "file_sha256": "fa49483536fce506266dfc6d9bd5dc4077ace18a8997d916a698d89b77286db7",
+      "file_sha256": "1dee2ec2098947e1a9c8a36dd03fcae6ea3c4039a4a4d86a887703ed94db62bd",
       "changes": "All nine beats retained; requested camera/architecture added; card and AI-screen contradictions corrected; SB06 memory dependencies repaired; explicit centrally maintained reference inputs Grid geometry uses the full selected image resolution instead of fixed pixel examples."
     },
     {
@@ -1067,7 +1067,7 @@
       ],
       "source_prompt_sha256": "4970f288124db4473bf4af10c0fb6a9d66f5bae619718ed4d3907489e0c8cc95",
       "file": "03_film/03/video.txt",
-      "file_sha256": "d4950e190f78db55d8e3d4afb20ffb735fe19408040da2c3d0b70d8b03423ceb",
+      "file_sha256": "055c9f9549043cdbb8e2ca43991b3c5e41513f2030638021da7b958b7bd5d623",
       "changes": "Operator/retry prose and repeated rules removed; all nine story beats retained; camera/architecture updated; audio cues follow visuals; reveal and reference contradictions repaired; Verified C01/C02 Element IDs substituted for local aliases; explicit reference binding; original Hungarian folk-rooted score and synchronized material transformation foley; researched Dél-Alföld tekerő/clarinet arrangement, phrase-synchronized facade motion, explicit protagonist inner monologue Continuation preserves narrator timbre and a natural breath over an uninterrupted sound bed."
     },
     {
@@ -1115,7 +1115,7 @@
       ],
       "source_prompt_sha256": "e80c1062f8699884509043c0dc23d9205573f2eae58119513f6f3bdb1d3cf9b1",
       "file": "03_film/05/storyboard.txt",
-      "file_sha256": "5c57880bb1e6bb58189f11a35d5b0f9e5e2aa9147f299c6df1f1fe903afb4b27",
+      "file_sha256": "bd7b4eb128119213f0c2abf554a95345db5b385f3e94587c55e997f1218a710e",
       "changes": "All nine beats retained; requested camera/architecture added; card and AI-screen contradictions corrected; SB06 memory dependencies repaired; explicit centrally maintained reference inputs Grid geometry uses the full selected image resolution instead of fixed pixel examples."
     },
     {
@@ -1139,7 +1139,7 @@
       ],
       "source_prompt_sha256": "2c24d5a0b90307baa614606b633838697ec3355e0dbb1df515d095dee403fdd6",
       "file": "03_film/05/video.txt",
-      "file_sha256": "6152f6e55f9225926866dee2a594effabd87a11ff04d73dad704488a3f86e206",
+      "file_sha256": "97f0170b9a1bdad7a06402b7c2cfe4f9d9d0f4dc92a74b9b19f3869bc96855de",
       "changes": "Operator/retry prose and repeated rules removed; all nine story beats retained; camera/architecture updated; audio cues follow visuals; reveal and reference contradictions repaired; Verified C01/C02 Element IDs substituted for local aliases; explicit reference binding; original Hungarian folk-rooted score and synchronized material transformation foley; researched Dél-Alföld tekerő/clarinet arrangement, phrase-synchronized facade motion, explicit protagonist inner monologue Continuation preserves narrator timbre and a natural breath over an uninterrupted sound bed."
     },
     {
@@ -1151,7 +1151,7 @@
       ],
       "source_prompt_sha256": "6e57e8c9f69656463159011cd13b16d6b88d02db6738131013a82f4f5f778aec",
       "file": "03_film/06/storyboard.txt",
-      "file_sha256": "c37eb2396308f10397edc20fb5afff010765be894cb2dd457d636a2cf0df04e9",
+      "file_sha256": "216184469a98fe11138642db1b99be4acc94aed5b0944e886317e85c07163371",
       "changes": "All nine beats retained; requested camera/architecture added; card and AI-screen contradictions corrected; SB06 memory dependencies repaired; explicit centrally maintained reference inputs Grid geometry uses the full selected image resolution instead of fixed pixel examples."
     },
     {
@@ -1175,7 +1175,7 @@
       ],
       "source_prompt_sha256": "52008590a700611bd6959ec7ae9cb86efeb01101257fce007de3b9eaa75417e6",
       "file": "03_film/06/video.txt",
-      "file_sha256": "a71d67bc460ceb5f65ac890b88bc5dc8ee8020c6038dd665310d0ce278c89a1b",
+      "file_sha256": "c73b71c6050b5b94c768f72b03a7e693ec183d1e7938b392f6030ec1030082e3",
       "changes": "Operator/retry prose and repeated rules removed; all nine story beats retained; camera/architecture updated; audio cues follow visuals; reveal and reference contradictions repaired; Verified C01/C02 Element IDs substituted for local aliases; explicit reference binding; original Hungarian folk-rooted score and synchronized material transformation foley; researched Dél-Alföld tekerő/clarinet arrangement, phrase-synchronized facade motion, explicit protagonist inner monologue Continuation preserves narrator timbre and a natural breath over an uninterrupted sound bed."
     },
     {
@@ -2402,84 +2402,84 @@
     {
       "asset": "MW03_B_01",
       "file": "02_library/worlds/memories/11_01_MW03_WORK_RULE_CHANGE_ADMIN_B_VIEW_05.txt",
-      "file_sha256": "5cc3d83175eb223ed101b55bcec3c9410a08e1410533ade95d37df8e0ba3216d",
+      "file_sha256": "645cf3fdc5e054a0b39a035cbdc94f042e6f51d733b1b643cdd5a1eeb9fcaf9c",
       "source_prompt_sha256": "129df3287d2803667b692786ac2b1e05c4c71b1cfa31455e7f70c998ae469d3c",
       "note": "Full original scene preserved; only grid/image wording, scoped identities, output geometry and old-group cross-reference adapted."
     },
     {
       "asset": "MW03_B_02",
       "file": "02_library/worlds/memories/11_02_MW03_WORK_RULE_CHANGE_ADMIN_B_VIEW_06.txt",
-      "file_sha256": "0acfea601372cd266d1163a7f613a7820c3ec6cda3f8289049e3c4e69c050ef8",
+      "file_sha256": "f683b23559d7e3d7f2c395b064d254537824955a0e6254a1104c3cdece29da70",
       "source_prompt_sha256": "129df3287d2803667b692786ac2b1e05c4c71b1cfa31455e7f70c998ae469d3c",
       "note": "Full original scene preserved; only grid/image wording, scoped identities, output geometry and old-group cross-reference adapted."
     },
     {
       "asset": "MW03_B_03",
       "file": "02_library/worlds/memories/11_03_MW03_WORK_RULE_CHANGE_ADMIN_B_VIEW_07.txt",
-      "file_sha256": "86af8c13f6f33ba58b35fc5dcfa4027aa0d9816da4c000713d7d1dd64ea0f399",
+      "file_sha256": "0168af2e0649b98e58f9f3109a8cc4924af02cde5b66228377806b9a3f83b1b8",
       "source_prompt_sha256": "129df3287d2803667b692786ac2b1e05c4c71b1cfa31455e7f70c998ae469d3c",
       "note": "Full original scene preserved; only grid/image wording, scoped identities, output geometry and old-group cross-reference adapted."
     },
     {
       "asset": "MW03_B_04",
       "file": "02_library/worlds/memories/11_04_MW03_WORK_RULE_CHANGE_ADMIN_B_VIEW_08.txt",
-      "file_sha256": "17fa0681fc056a3a5a801aebc2c63deed1ee846344f36d2ef89f54c7124e9856",
+      "file_sha256": "178a026dd9a53ca5e00edeba76cd8829483bee467c1791b259fd4715ae9c5917",
       "source_prompt_sha256": "129df3287d2803667b692786ac2b1e05c4c71b1cfa31455e7f70c998ae469d3c",
       "note": "Full original scene preserved; only grid/image wording, scoped identities, output geometry and old-group cross-reference adapted."
     },
     {
       "asset": "MW03_C_01",
       "file": "02_library/worlds/memories/12_01_MW03_WORK_RULE_CHANGE_ADMIN_C_VIEW_09.txt",
-      "file_sha256": "cf301bdb898df680a1a375e6cd3e6285ead8b03f78076478e0fd510890dbff4e",
+      "file_sha256": "11504406de4b29d9d941882665cbb76898a3a79174ea447b9da15294096aa0a3",
       "source_prompt_sha256": "90b077a2df3a448c86bea9581b81d7eb7fefad33395f9d8e002821adccd88332",
       "note": "Full original scene preserved; only grid/image wording, scoped identities, output geometry and old-group cross-reference adapted."
     },
     {
       "asset": "MW03_C_02",
       "file": "02_library/worlds/memories/12_02_MW03_WORK_RULE_CHANGE_ADMIN_C_VIEW_01.txt",
-      "file_sha256": "f9567be24f5d22884aaf09b29dbe7e253bbcfa419504e69109e8311c11487855",
+      "file_sha256": "969c1206cfbe5f33e091c2d649108b7d922d51d54de0866035e6c6340201e3e5",
       "source_prompt_sha256": "90b077a2df3a448c86bea9581b81d7eb7fefad33395f9d8e002821adccd88332",
       "note": "Full original scene preserved; only grid/image wording, scoped identities, output geometry and old-group cross-reference adapted."
     },
     {
       "asset": "MW03_C_03",
       "file": "02_library/worlds/memories/12_03_MW03_WORK_RULE_CHANGE_ADMIN_C_VIEW_07.txt",
-      "file_sha256": "b82228284b7e1440ac5d32d49a6b3c7e9c6ae5a1867779ed655ba9f36bd8b127",
+      "file_sha256": "ce037648c8b6c0161c79be662b05a3c56bcc5e3ae66239891a16531f6eb3e10c",
       "source_prompt_sha256": "90b077a2df3a448c86bea9581b81d7eb7fefad33395f9d8e002821adccd88332",
       "note": "Full original scene preserved; only grid/image wording, scoped identities, output geometry and old-group cross-reference adapted."
     },
     {
       "asset": "MW03_C_04",
       "file": "02_library/worlds/memories/12_04_MW03_WORK_RULE_CHANGE_ADMIN_C_VIEW_08.txt",
-      "file_sha256": "7749214843f9cfcf5060d53c4f5556969eb55755570abf2dae6e25e7cab2cc0a",
+      "file_sha256": "7c5ecf984a0106cb81e939c29bb913c512aec41f85fc75bb79d15f851e9cb5da",
       "source_prompt_sha256": "90b077a2df3a448c86bea9581b81d7eb7fefad33395f9d8e002821adccd88332",
       "note": "Full original scene preserved; only grid/image wording, scoped identities, output geometry and old-group cross-reference adapted."
     },
     {
       "asset": "MW05_C_01",
       "file": "02_library/worlds/memories/18_01_MW05_COURT_FILE_C_VIEW_09.txt",
-      "file_sha256": "60466ae35f36f385f6cefb050df65a1dec27019b979df621f7c970fca11c73dc",
+      "file_sha256": "116286da3b45b4118380ebc7e745d954c8f0032e6b1bddd6eb984608dd31d50b",
       "source_prompt_sha256": "82e079a142342dcb0c6b9433504790ea7f8acdf6fad03443dd40ce365308c09a",
       "note": "Full original scene retained; cell/image language, scoped references and output geometry adapted."
     },
     {
       "asset": "MW05_C_02",
       "file": "02_library/worlds/memories/18_02_MW05_COURT_FILE_C_VIEW_01.txt",
-      "file_sha256": "b5ee4364cf04443cc67bc18182a321ee639cb492dccc802370cf696e7b3563c7",
+      "file_sha256": "e624ffc6ec0d78b54eda97b66ca2712f1ef55b5716d5e391e04e728a7a1c510f",
       "source_prompt_sha256": "82e079a142342dcb0c6b9433504790ea7f8acdf6fad03443dd40ce365308c09a",
       "note": "Full original scene retained; cell/image language, scoped references and output geometry adapted."
     },
     {
       "asset": "MW05_C_03",
       "file": "02_library/worlds/memories/18_03_MW05_COURT_FILE_C_VIEW_07.txt",
-      "file_sha256": "1b6385154b9e8ccc913a247c48298887eeb8f05b27a1ccea60477c4004feba51",
+      "file_sha256": "d4e256f368e2b2afc2afddec4859da4c9fb8ba178b340a0ddc9405e0ce618bd7",
       "source_prompt_sha256": "82e079a142342dcb0c6b9433504790ea7f8acdf6fad03443dd40ce365308c09a",
       "note": "Full original scene retained; cell/image language, scoped references and output geometry adapted."
     },
     {
       "asset": "MW05_C_04",
       "file": "02_library/worlds/memories/18_04_MW05_COURT_FILE_C_VIEW_08.txt",
-      "file_sha256": "13c3e4395df5fe3a81e8ec296baf03ee7347eae1ac25c375943a46db6adc4b34",
+      "file_sha256": "e1c3505aa42aef39980210b99fa5ba975d134a7d6e73aec3413b11690422b717",
       "source_prompt_sha256": "82e079a142342dcb0c6b9433504790ea7f8acdf6fad03443dd40ce365308c09a",
       "note": "Full original scene retained; cell/image language, scoped references and output geometry adapted."
     }
@@ -3497,7 +3497,7 @@
         "MWP01_B",
         "MWP01_C"
       ],
-      "prompt_sha256": "fa49483536fce506266dfc6d9bd5dc4077ace18a8997d916a698d89b77286db7"
+      "prompt_sha256": "1dee2ec2098947e1a9c8a36dd03fcae6ea3c4039a4a4d86a887703ed94db62bd"
     },
     "A03": {
       "key": "A03",
@@ -3543,7 +3543,7 @@
         "MWP01_B",
         "MWP01_C"
       ],
-      "prompt_sha256": "d4950e190f78db55d8e3d4afb20ffb735fe19408040da2c3d0b70d8b03423ceb"
+      "prompt_sha256": "055c9f9549043cdbb8e2ca43991b3c5e41513f2030638021da7b958b7bd5d623"
     },
     "SB04": {
       "key": "SB04",
@@ -3660,7 +3660,7 @@
         "MWP02_B",
         "MWP02_C"
       ],
-      "prompt_sha256": "5c57880bb1e6bb58189f11a35d5b0f9e5e2aa9147f299c6df1f1fe903afb4b27"
+      "prompt_sha256": "bd7b4eb128119213f0c2abf554a95345db5b385f3e94587c55e997f1218a710e"
     },
     "A05": {
       "key": "A05",
@@ -3709,7 +3709,7 @@
         "MWP02_B",
         "MWP02_C"
       ],
-      "prompt_sha256": "6152f6e55f9225926866dee2a594effabd87a11ff04d73dad704488a3f86e206"
+      "prompt_sha256": "97f0170b9a1bdad7a06402b7c2cfe4f9d9d0f4dc92a74b9b19f3869bc96855de"
     },
     "SB06": {
       "key": "SB06",
@@ -3800,7 +3800,7 @@
         "MW05_C_03",
         "MW05_C_04"
       ],
-      "prompt_sha256": "c37eb2396308f10397edc20fb5afff010765be894cb2dd457d636a2cf0df04e9"
+      "prompt_sha256": "216184469a98fe11138642db1b99be4acc94aed5b0944e886317e85c07163371"
     },
     "A06": {
       "key": "A06",
@@ -3901,7 +3901,7 @@
         "MW05_C_03",
         "MW05_C_04"
       ],
-      "prompt_sha256": "a71d67bc460ceb5f65ac890b88bc5dc8ee8020c6038dd665310d0ce278c89a1b"
+      "prompt_sha256": "c73b71c6050b5b94c768f72b03a7e693ec183d1e7938b392f6030ec1030082e3"
     },
     "SB07": {
       "key": "SB07",
@@ -4499,7 +4499,6 @@
       "refs": [],
       "status": "MCP_IMAGE_ATTACHMENT_CONFIRMED",
       "production_reuse": [
-        "01_pilot/test_extend_8s.txt",
         "03_film/01/video.txt"
       ],
       "layout": "2x2 source/unfinished/unfinished/target",
@@ -4520,7 +4519,6 @@
       "status": "MCP_IMAGE_ATTACHMENT_CONFIRMED",
       "layout": "2x2 source/unfinished/unfinished/target",
       "production_reuse": [
-        "01_pilot/test_video_8s.txt",
         "03_film/01/video.txt"
       ],
       "prompt_sha256": "ae3a1684d5caf0a4b6ca18e559de4f8359f533542c55c47d3ba3560a7b3c7fad",
@@ -8377,13 +8375,17 @@
         "C01"
       ],
       "layout": "2K 16:9 single full-frame memory image",
-      "status": "PREPARED_NOT_RENDERED",
+      "status": "MCP_IMAGE_ATTACHMENT_CONFIRMED",
       "source_page": "MW03_B",
       "original_view": 5,
       "generation_position": 1,
       "element_name": "MYS MW03_B_01 Memory View 05",
-      "prompt_sha256": "5cc3d83175eb223ed101b55bcec3c9410a08e1410533ade95d37df8e0ba3216d",
-      "subject_hu": "Szabályváltozás: értesítés, naptár és javítandó nyomtatvány"
+      "prompt_sha256": "645cf3fdc5e054a0b39a035cbdc94f042e6f51d733b1b643cdd5a1eeb9fcaf9c",
+      "subject_hu": "Szabályváltozás: értesítés, naptár és javítandó nyomtatvány",
+      "mcp_element_uuid": "bba82dbb-98b2-4295-a1f3-659b11c77001",
+      "matched_generation_id": "b043534f-c886-49d9-bf8e-f6b75f52b835",
+      "generation_match_evidence": "Exact attached image job UUID and generation prompt REFERENCE ID matched on 2026-09-10.",
+      "current_prompt_image_verified": false
     },
     "MW03_B_02": {
       "key": "MW03_B_02",
@@ -8395,13 +8397,17 @@
         "C22"
       ],
       "layout": "2K 16:9 single full-frame memory image",
-      "status": "PREPARED_NOT_RENDERED",
+      "status": "MCP_IMAGE_ATTACHMENT_CONFIRMED",
       "source_page": "MW03_B",
       "original_view": 6,
       "generation_position": 2,
       "element_name": "MYS MW03_B_02 Memory View 06",
-      "prompt_sha256": "0acfea601372cd266d1163a7f613a7820c3ec6cda3f8289049e3c4e69c050ef8",
-      "subject_hu": "Könyvelői portál és átadott ügyintézés"
+      "prompt_sha256": "f683b23559d7e3d7f2c395b064d254537824955a0e6254a1104c3cdece29da70",
+      "subject_hu": "Könyvelői portál és átadott ügyintézés",
+      "mcp_element_uuid": "027e9ae2-ffff-4219-9143-d9bf58666126",
+      "matched_generation_id": "1702fd93-5445-4ff3-8e08-df30dfb46cf2",
+      "generation_match_evidence": "Exact attached image job UUID and generation prompt REFERENCE ID matched on 2026-09-10.",
+      "current_prompt_image_verified": false
     },
     "MW03_B_03": {
       "key": "MW03_B_03",
@@ -8413,13 +8419,17 @@
         "C22"
       ],
       "layout": "2K 16:9 single full-frame memory image",
-      "status": "PREPARED_NOT_RENDERED",
+      "status": "MCP_IMAGE_ATTACHMENT_CONFIRMED",
       "source_page": "MW03_B",
       "original_view": 7,
       "generation_position": 3,
       "element_name": "MYS MW03_B_03 Memory View 07",
-      "prompt_sha256": "86af8c13f6f33ba58b35fc5dcfa4027aa0d9816da4c000713d7d1dd64ea0f399",
-      "subject_hu": "Telefonos egyeztetés, külön nyilvántartás ellenőrzése"
+      "prompt_sha256": "0168af2e0649b98e58f9f3109a8cc4924af02cde5b66228377806b9a3f83b1b8",
+      "subject_hu": "Telefonos egyeztetés, külön nyilvántartás ellenőrzése",
+      "mcp_element_uuid": "17538b46-71b7-4d95-8623-becd35ec5275",
+      "matched_generation_id": "26996b17-a0f6-442e-8080-a62d011d0a0e",
+      "generation_match_evidence": "Exact attached image job UUID and generation prompt REFERENCE ID matched on 2026-09-10.",
+      "current_prompt_image_verified": false
     },
     "MW03_B_04": {
       "key": "MW03_B_04",
@@ -8432,13 +8442,17 @@
         "C24"
       ],
       "layout": "2K 16:9 single full-frame memory image",
-      "status": "PREPARED_NOT_RENDERED",
+      "status": "MCP_IMAGE_ATTACHMENT_CONFIRMED",
       "source_page": "MW03_B",
       "original_view": 8,
       "generation_position": 4,
       "element_name": "MYS MW03_B_04 Memory View 08",
-      "prompt_sha256": "17fa0681fc056a3a5a801aebc2c63deed1ee846344f36d2ef89f54c7124e9856",
-      "subject_hu": "Három ember külön kommunikációs és munkaállomásai"
+      "prompt_sha256": "178a026dd9a53ca5e00edeba76cd8829483bee467c1791b259fd4715ae9c5917",
+      "subject_hu": "Három ember külön kommunikációs és munkaállomásai",
+      "mcp_element_uuid": "fbaf7644-ee1f-45ab-a6d8-34776f135248",
+      "matched_generation_id": "960bd199-5019-4d01-a9bf-7b109ed589db",
+      "generation_match_evidence": "Exact attached image job UUID and generation prompt REFERENCE ID matched on 2026-09-10.",
+      "current_prompt_image_verified": false
     },
     "MW03_C_01": {
       "key": "MW03_C_01",
@@ -8449,13 +8463,17 @@
         "C01"
       ],
       "layout": "2K 16:9 single full-frame memory image",
-      "status": "PREPARED_NOT_RENDERED",
+      "status": "MCP_IMAGE_ATTACHMENT_CONFIRMED",
       "source_page": "MW03_C",
       "original_view": 9,
       "generation_position": 1,
       "element_name": "MYS MW03_C_01 Memory View 09",
-      "prompt_sha256": "cf301bdb898df680a1a375e6cd3e6285ead8b03f78076478e0fd510890dbff4e",
-      "subject_hu": "Javított és korábbi nyomtatvány összevetése"
+      "prompt_sha256": "11504406de4b29d9d941882665cbb76898a3a79174ea447b9da15294096aa0a3",
+      "subject_hu": "Javított és korábbi nyomtatvány összevetése",
+      "mcp_element_uuid": "afd0a2b6-65d9-4c98-b746-512c710f381b",
+      "matched_generation_id": "764b0ba2-1ed5-41df-8f77-cd4385ab8f8b",
+      "generation_match_evidence": "Exact attached image job UUID and generation prompt REFERENCE ID matched on 2026-09-10.",
+      "current_prompt_image_verified": false
     },
     "MW03_C_02": {
       "key": "MW03_C_02",
@@ -8467,13 +8485,17 @@
         "C22"
       ],
       "layout": "2K 16:9 single full-frame memory image",
-      "status": "PREPARED_NOT_RENDERED",
+      "status": "MCP_IMAGE_ATTACHMENT_CONFIRMED",
       "source_page": "MW03_C",
       "original_view": 1,
       "generation_position": 2,
       "element_name": "MYS MW03_C_02 Memory View 01",
-      "prompt_sha256": "f9567be24f5d22884aaf09b29dbe7e253bbcfa419504e69109e8311c11487855",
-      "subject_hu": "Nyomtató papírkazettájának feltöltése munka közben"
+      "prompt_sha256": "969c1206cfbe5f33e091c2d649108b7d922d51d54de0866035e6c6340201e3e5",
+      "subject_hu": "Nyomtató papírkazettájának feltöltése munka közben",
+      "mcp_element_uuid": "c3b6377f-2f65-4d19-9588-f820426b7ff2",
+      "matched_generation_id": "28275f56-2f4c-49e7-88e0-56c91963df48",
+      "generation_match_evidence": "Exact attached image job UUID and generation prompt REFERENCE ID matched on 2026-09-10.",
+      "current_prompt_image_verified": false
     },
     "MW03_C_03": {
       "key": "MW03_C_03",
@@ -8486,13 +8508,17 @@
         "C24"
       ],
       "layout": "2K 16:9 single full-frame memory image",
-      "status": "PREPARED_NOT_RENDERED",
+      "status": "MCP_IMAGE_ATTACHMENT_CONFIRMED",
       "source_page": "MW03_C",
       "original_view": 7,
       "generation_position": 3,
       "element_name": "MYS MW03_C_03 Memory View 07",
-      "prompt_sha256": "b82228284b7e1440ac5d32d49a6b3c7e9c6ae5a1867779ed655ba9f36bd8b127",
-      "subject_hu": "Külön iratok keresése a nyitott iratszekrényben"
+      "prompt_sha256": "ce037648c8b6c0161c79be662b05a3c56bcc5e3ae66239891a16531f6eb3e10c",
+      "subject_hu": "Külön iratok keresése a nyitott iratszekrényben",
+      "mcp_element_uuid": "0da3fbe0-51f4-4cdf-8a06-8496134397f9",
+      "matched_generation_id": "c3a940c3-30b2-4c56-a67c-6257f2e70b10",
+      "generation_match_evidence": "Exact attached image job UUID and generation prompt REFERENCE ID matched on 2026-09-10.",
+      "current_prompt_image_verified": false
     },
     "MW03_C_04": {
       "key": "MW03_C_04",
@@ -8505,13 +8531,17 @@
         "C24"
       ],
       "layout": "2K 16:9 single full-frame memory image",
-      "status": "PREPARED_NOT_RENDERED",
+      "status": "MCP_IMAGE_ATTACHMENT_CONFIRMED",
       "source_page": "MW03_C",
       "original_view": 8,
       "generation_position": 4,
       "element_name": "MYS MW03_C_04 Memory View 08",
-      "prompt_sha256": "7749214843f9cfcf5060d53c4f5556969eb55755570abf2dae6e25e7cab2cc0a",
-      "subject_hu": "Irattálca átadása a külön munkaállomások között"
+      "prompt_sha256": "7c5ecf984a0106cb81e939c29bb913c512aec41f85fc75bb79d15f851e9cb5da",
+      "subject_hu": "Irattálca átadása a külön munkaállomások között",
+      "mcp_element_uuid": "6d72803a-1fea-4a0f-a265-9eb9322fd672",
+      "matched_generation_id": "85a05e6e-8a87-45f0-ada1-756f2a92b8c7",
+      "generation_match_evidence": "Exact attached image job UUID and generation prompt REFERENCE ID matched on 2026-09-10.",
+      "current_prompt_image_verified": false
     },
     "MW05_C_01": {
       "key": "MW05_C_01",
@@ -8522,13 +8552,17 @@
         "C01"
       ],
       "layout": "2K 16:9 single full-frame memory image",
-      "status": "PREPARED_NOT_RENDERED",
+      "status": "MCP_IMAGE_ATTACHMENT_CONFIRMED",
       "source_page": "MW05_C",
       "original_view": 9,
       "generation_position": 1,
       "element_name": "MYS MW05_C_01 Memory View 09",
-      "prompt_sha256": "60466ae35f36f385f6cefb050df65a1dec27019b979df621f7c970fca11c73dc",
-      "subject_hu": "Határozat és fellebbezési iratok"
+      "prompt_sha256": "116286da3b45b4118380ebc7e745d954c8f0032e6b1bddd6eb984608dd31d50b",
+      "subject_hu": "Határozat és fellebbezési iratok",
+      "mcp_element_uuid": "baf59585-be6a-4721-9d2e-cbef75076349",
+      "matched_generation_id": "34e8787d-1b2c-4029-a75e-185c0ec7cc46",
+      "generation_match_evidence": "Exact attached image job UUID and generation prompt REFERENCE ID matched on 2026-09-10.",
+      "current_prompt_image_verified": false
     },
     "MW05_C_02": {
       "key": "MW05_C_02",
@@ -8540,13 +8574,17 @@
         "C04"
       ],
       "layout": "2K 16:9 single full-frame memory image",
-      "status": "PREPARED_NOT_RENDERED",
+      "status": "MCP_IMAGE_ATTACHMENT_CONFIRMED",
       "source_page": "MW05_C",
       "original_view": 1,
       "generation_position": 2,
       "element_name": "MYS MW05_C_02 Memory View 01",
-      "prompt_sha256": "b5ee4364cf04443cc67bc18182a321ee639cb492dccc802370cf696e7b3563c7",
-      "subject_hu": "Tárgyalási iratok elpakolása az ügyvéddel"
+      "prompt_sha256": "e624ffc6ec0d78b54eda97b66ca2712f1ef55b5716d5e391e04e728a7a1c510f",
+      "subject_hu": "Tárgyalási iratok elpakolása az ügyvéddel",
+      "mcp_element_uuid": "32acf9ce-32c1-4330-b5f3-7fc956f09f2f",
+      "matched_generation_id": "e155a942-09c3-43d1-b3ee-66a34665be97",
+      "generation_match_evidence": "Exact attached image job UUID and generation prompt REFERENCE ID matched on 2026-09-10.",
+      "current_prompt_image_verified": false
     },
     "MW05_C_03": {
       "key": "MW05_C_03",
@@ -8556,13 +8594,17 @@
         "C01"
       ],
       "layout": "2K 16:9 single full-frame memory image",
-      "status": "PREPARED_NOT_RENDERED",
+      "status": "MCP_IMAGE_ATTACHMENT_CONFIRMED",
       "source_page": "MW05_C",
       "original_view": 7,
       "generation_position": 3,
       "element_name": "MYS MW05_C_03 Memory View 07",
-      "prompt_sha256": "1b6385154b9e8ccc913a247c48298887eeb8f05b27a1ccea60477c4004feba51",
-      "subject_hu": "Abszurd rendőri álláspályázat készítése"
+      "prompt_sha256": "d4e256f368e2b2afc2afddec4859da4c9fb8ba178b340a0ddc9405e0ce618bd7",
+      "subject_hu": "Abszurd rendőri álláspályázat készítése",
+      "mcp_element_uuid": "5978a913-a5f8-45c0-8ca1-1709c0ad418b",
+      "matched_generation_id": "6dc7c5fb-09e7-478c-bc2a-8848ad74a2aa",
+      "generation_match_evidence": "Exact attached image job UUID and generation prompt REFERENCE ID matched on 2026-09-10.",
+      "current_prompt_image_verified": false
     },
     "MW05_C_04": {
       "key": "MW05_C_04",
@@ -8574,43 +8616,40 @@
         "C31"
       ],
       "layout": "2K 16:9 single full-frame memory image",
-      "status": "PROMPT_REVISED_REGENERATION_REQUIRED",
+      "status": "MCP_IMAGE_ATTACHMENT_CONFIRMED",
       "source_page": "MW05_C",
       "original_view": 8,
       "generation_position": 4,
       "element_name": "MYS MW05_C_04 Memory View 08",
-      "prompt_sha256": "13c3e4395df5fe3a81e8ec296baf03ee7347eae1ac25c375943a46db6adc4b34",
+      "prompt_sha256": "e1c3505aa42aef39980210b99fa5ba975d134a7d6e73aec3413b11690422b717",
       "subject_hu": "Menedékkérelem megírása a mozdulatlan kartonfigurának",
-      "replacement_image_required": true,
+      "replacement_image_required": false,
       "replacement_reason": "User reported MW05_C_04 duplicates MW05_B_04 and authorized a new render of C_04 only. Revised action: seated protagonist writes and assembles his asylum request across the table from the inert cardboard recipient.",
       "current_prompt_image_verified": false,
       "content_assignments": {
         "1": "WRITING THE ASYLUM REQUEST TO THE INERT CARDBOARD RECIPIENT"
       },
-      "superseded_prompt_sha256": "c4f1ffb7df2d975f13c499c884507fd11934007d90b3032fef6ee888f01252d3"
+      "superseded_prompt_sha256": "c4f1ffb7df2d975f13c499c884507fd11934007d90b3032fef6ee888f01252d3",
+      "mcp_element_uuid": "fbea8081-00be-4e21-8c3a-4ea3cb7f45e4",
+      "matched_generation_id": "d8f297bc-21c5-48ff-9f42-df35e07d2933",
+      "generation_match_evidence": "Exact attached image job UUID and generation prompt REFERENCE ID matched on 2026-09-10.",
+      "replacement_generation_prompt_verified": true
     }
   },
   "operator_language": "English; Hungarian in-world signage and proper names are intentional story content.",
   "pilot_files": [
     {
-      "file": "01_pilot/test_extend_8s.txt",
-      "sha256": "83e156a15f539f8ec8ac50494caf4ed41d07585491fa4bdacf1e6cc72c7c3203",
-      "refs": [
-        "W01_A_01",
-        "W01_A_02",
-        "W01_A_03",
-        "W01_A_04",
-        "W01_B_01",
-        "W01_B_02",
-        "W01_B_03",
-        "W01_B_04",
-        "W01_C_01",
-        "W01_C_02",
-        "W01_C_03",
-        "W01_C_04",
+      "file": "01_pilot/test_extend_4s.txt",
+      "sha256": "8abeec8942b14409ae2168128efd8b1804a965166e327669c1bdbb7d4f109d3d",
+      "refs": [],
+      "previous_file": "01_pilot/test_extend_8s.txt",
+      "duration_seconds": 4,
+      "status": "PREPARED_NOT_RENDERED",
+      "input_mode": "NATIVE_EXTEND_OF_SELECTED_FIRST_VIDEO",
+      "inherited_reference_keys": [
         "C01",
         "C02",
-        "T01_IMAGE"
+        "MW01"
       ]
     },
     {
@@ -8627,30 +8666,21 @@
       ]
     },
     {
-      "file": "01_pilot/test_video_8s.txt",
-      "sha256": "c864248d0e9e3b2d5d5087d0d08bd4b4a608374e66259e2e477d23f5ca91891d",
+      "file": "01_pilot/test_video_4s.txt",
+      "sha256": "c4e1c6f8a1a1091f7234070c4b9f1041e01c35b6577e407e88db12cdd19bc1ef",
       "reference_note": "Reference mentions are maintained centrally in reference_bindings. UNBOUND slots must be resolved before generation; verified Element mentions autoload in the creator's composer.",
       "refs": [
-        "W01_A_01",
-        "W01_A_02",
-        "W01_A_03",
-        "W01_A_04",
-        "W01_B_01",
-        "W01_B_02",
-        "W01_B_03",
-        "W01_B_04",
-        "W01_C_01",
-        "W01_C_02",
-        "W01_C_03",
-        "W01_C_04",
         "C01",
         "C02",
-        "T01_IMAGE"
-      ]
+        "MW01"
+      ],
+      "previous_file": "01_pilot/test_video_8s.txt",
+      "duration_seconds": 4,
+      "status": "PREPARED_NOT_RENDERED"
     },
     {
       "file": "01_pilot/test_narrated_video.txt",
-      "sha256": "3ea457f1be07c142dd1967b03cc31d87715ffe15ac6ae0997da3e616ca798cc9",
+      "sha256": "c1ec126537699c520d075fc4e99287aadd64af1fd6c8a82257078a54870b1bff",
       "refs": [],
       "reference_note": "Separate narrated-output test using the existing joined video and optional prepared speech in the actual media fields. Hosted operation and price unverified; this file is not an executed test."
     }
@@ -11701,63 +11731,135 @@
     },
     "MW03_B_01": {
       "alias": "MW03_B_01",
-      "mention": null,
-      "last_mention": "@UNBOUND_MW03_B_01"
+      "mention": "@loc_MYS_mys-mw03-b-01-memory-view-05_s0_v1",
+      "last_mention": "@loc_MYS_mys-mw03-b-01-memory-view-05_s0_v1",
+      "mcp_element_uuid": "bba82dbb-98b2-4295-a1f3-659b11c77001",
+      "mcp_media_ids": [
+        "b043534f-c886-49d9-bf8e-f6b75f52b835"
+      ],
+      "mention_source": "MCP_ELEMENT_WITH_ATTACHED_IMAGE_2026_09_10",
+      "mcp_observation": "Image attached; exact generation REFERENCE ID matches canonical key. Visual quality not reviewed."
     },
     "MW03_B_02": {
       "alias": "MW03_B_02",
-      "mention": null,
-      "last_mention": "@UNBOUND_MW03_B_02"
+      "mention": "@loc_MYS_mys-mw03-b-02-memory-view-06_s0_v1",
+      "last_mention": "@loc_MYS_mys-mw03-b-02-memory-view-06_s0_v1",
+      "mcp_element_uuid": "027e9ae2-ffff-4219-9143-d9bf58666126",
+      "mcp_media_ids": [
+        "1702fd93-5445-4ff3-8e08-df30dfb46cf2"
+      ],
+      "mention_source": "MCP_ELEMENT_WITH_ATTACHED_IMAGE_2026_09_10",
+      "mcp_observation": "Image attached; exact generation REFERENCE ID matches canonical key. Visual quality not reviewed."
     },
     "MW03_B_03": {
       "alias": "MW03_B_03",
-      "mention": null,
-      "last_mention": "@UNBOUND_MW03_B_03"
+      "mention": "@loc_MYS_mys-mw03-b-03-memory-view-07_s0_v1",
+      "last_mention": "@loc_MYS_mys-mw03-b-03-memory-view-07_s0_v1",
+      "mcp_element_uuid": "17538b46-71b7-4d95-8623-becd35ec5275",
+      "mcp_media_ids": [
+        "26996b17-a0f6-442e-8080-a62d011d0a0e"
+      ],
+      "mention_source": "MCP_ELEMENT_WITH_ATTACHED_IMAGE_2026_09_10",
+      "mcp_observation": "Image attached; exact generation REFERENCE ID matches canonical key. Visual quality not reviewed."
     },
     "MW03_B_04": {
       "alias": "MW03_B_04",
-      "mention": null,
-      "last_mention": "@UNBOUND_MW03_B_04"
+      "mention": "@loc_MYS_mys-mw03-b-04-memory-view-08_s0_v1",
+      "last_mention": "@loc_MYS_mys-mw03-b-04-memory-view-08_s0_v1",
+      "mcp_element_uuid": "fbaf7644-ee1f-45ab-a6d8-34776f135248",
+      "mcp_media_ids": [
+        "960bd199-5019-4d01-a9bf-7b109ed589db"
+      ],
+      "mention_source": "MCP_ELEMENT_WITH_ATTACHED_IMAGE_2026_09_10",
+      "mcp_observation": "Image attached; exact generation REFERENCE ID matches canonical key. Visual quality not reviewed."
     },
     "MW03_C_01": {
       "alias": "MW03_C_01",
-      "mention": null,
-      "last_mention": "@UNBOUND_MW03_C_01"
+      "mention": "@loc_MYS_mys-mw03-c-01-memory-view-09_s0_v1",
+      "last_mention": "@loc_MYS_mys-mw03-c-01-memory-view-09_s0_v1",
+      "mcp_element_uuid": "afd0a2b6-65d9-4c98-b746-512c710f381b",
+      "mcp_media_ids": [
+        "764b0ba2-1ed5-41df-8f77-cd4385ab8f8b"
+      ],
+      "mention_source": "MCP_ELEMENT_WITH_ATTACHED_IMAGE_2026_09_10",
+      "mcp_observation": "Image attached; exact generation REFERENCE ID matches canonical key. Visual quality not reviewed."
     },
     "MW03_C_02": {
       "alias": "MW03_C_02",
-      "mention": null,
-      "last_mention": "@UNBOUND_MW03_C_02"
+      "mention": "@loc_MYS_mys-mw03-c-02-memory-view-01_s0_v1",
+      "last_mention": "@loc_MYS_mys-mw03-c-02-memory-view-01_s0_v1",
+      "mcp_element_uuid": "c3b6377f-2f65-4d19-9588-f820426b7ff2",
+      "mcp_media_ids": [
+        "28275f56-2f4c-49e7-88e0-56c91963df48"
+      ],
+      "mention_source": "MCP_ELEMENT_WITH_ATTACHED_IMAGE_2026_09_10",
+      "mcp_observation": "Image attached; exact generation REFERENCE ID matches canonical key. Visual quality not reviewed."
     },
     "MW03_C_03": {
       "alias": "MW03_C_03",
-      "mention": null,
-      "last_mention": "@UNBOUND_MW03_C_03"
+      "mention": "@loc_MYS_mys-mw03-c-03-memory-view-07_s0_v1",
+      "last_mention": "@loc_MYS_mys-mw03-c-03-memory-view-07_s0_v1",
+      "mcp_element_uuid": "0da3fbe0-51f4-4cdf-8a06-8496134397f9",
+      "mcp_media_ids": [
+        "c3a940c3-30b2-4c56-a67c-6257f2e70b10"
+      ],
+      "mention_source": "MCP_ELEMENT_WITH_ATTACHED_IMAGE_2026_09_10",
+      "mcp_observation": "Image attached; exact generation REFERENCE ID matches canonical key. Visual quality not reviewed."
     },
     "MW03_C_04": {
       "alias": "MW03_C_04",
-      "mention": null,
-      "last_mention": "@UNBOUND_MW03_C_04"
+      "mention": "@loc_MYS_mys-mw03-c-04-memory-view-08_s0_v1",
+      "last_mention": "@loc_MYS_mys-mw03-c-04-memory-view-08_s0_v1",
+      "mcp_element_uuid": "6d72803a-1fea-4a0f-a265-9eb9322fd672",
+      "mcp_media_ids": [
+        "85a05e6e-8a87-45f0-ada1-756f2a92b8c7"
+      ],
+      "mention_source": "MCP_ELEMENT_WITH_ATTACHED_IMAGE_2026_09_10",
+      "mcp_observation": "Image attached; exact generation REFERENCE ID matches canonical key. Visual quality not reviewed."
     },
     "MW05_C_01": {
       "alias": "MW05_C_01",
-      "mention": null,
-      "last_mention": "@UNBOUND_MW05_C_01"
+      "mention": "@loc_MYS_mys-mw05-c-01-memory-view-09_s0_v1",
+      "last_mention": "@loc_MYS_mys-mw05-c-01-memory-view-09_s0_v1",
+      "mcp_element_uuid": "baf59585-be6a-4721-9d2e-cbef75076349",
+      "mcp_media_ids": [
+        "34e8787d-1b2c-4029-a75e-185c0ec7cc46"
+      ],
+      "mention_source": "MCP_ELEMENT_WITH_ATTACHED_IMAGE_2026_09_10",
+      "mcp_observation": "Image attached; exact generation REFERENCE ID matches canonical key. Visual quality not reviewed."
     },
     "MW05_C_02": {
       "alias": "MW05_C_02",
-      "mention": null,
-      "last_mention": "@UNBOUND_MW05_C_02"
+      "mention": "@loc_MYS_mys-mw05-c-02-memory-view-01_s0_v1",
+      "last_mention": "@loc_MYS_mys-mw05-c-02-memory-view-01_s0_v1",
+      "mcp_element_uuid": "32acf9ce-32c1-4330-b5f3-7fc956f09f2f",
+      "mcp_media_ids": [
+        "e155a942-09c3-43d1-b3ee-66a34665be97"
+      ],
+      "mention_source": "MCP_ELEMENT_WITH_ATTACHED_IMAGE_2026_09_10",
+      "mcp_observation": "Image attached; exact generation REFERENCE ID matches canonical key. Visual quality not reviewed."
     },
     "MW05_C_03": {
       "alias": "MW05_C_03",
-      "mention": null,
-      "last_mention": "@UNBOUND_MW05_C_03"
+      "mention": "@loc_MYS_mys-mw05-c-03-memory-view-07_s0_v1",
+      "last_mention": "@loc_MYS_mys-mw05-c-03-memory-view-07_s0_v1",
+      "mcp_element_uuid": "5978a913-a5f8-45c0-8ca1-1709c0ad418b",
+      "mcp_media_ids": [
+        "6dc7c5fb-09e7-478c-bc2a-8848ad74a2aa"
+      ],
+      "mention_source": "MCP_ELEMENT_WITH_ATTACHED_IMAGE_2026_09_10",
+      "mcp_observation": "Image attached; exact generation REFERENCE ID matches canonical key. Visual quality not reviewed."
     },
     "MW05_C_04": {
       "alias": "MW05_C_04",
-      "mention": null,
-      "last_mention": "@UNBOUND_MW05_C_04"
+      "mention": "@loc_MYS_mys-mw05-c-04-memory-view-08_s0_v1",
+      "last_mention": "@loc_MYS_mys-mw05-c-04-memory-view-08_s0_v1",
+      "mcp_element_uuid": "fbea8081-00be-4e21-8c3a-4ea3cb7f45e4",
+      "mcp_media_ids": [
+        "d8f297bc-21c5-48ff-9f42-df35e07d2933"
+      ],
+      "mention_source": "MCP_ELEMENT_WITH_ATTACHED_IMAGE_2026_09_10",
+      "mcp_observation": "Image attached; exact generation REFERENCE ID matches canonical key. Visual quality not reviewed."
     }
   },
   "reference_binding_note": "Only full verified Higgsfield mentions belong in mention. Null produces an explicit @UNBOUND_<key> slot and a do-not-generate notice. Run 04_tracking/sync_references.py --write once to propagate a binding across all prompts and guides. Previous videos remain in the actual Forward Extend source field. Raw-image, storyboard and audio autoload handles are unverified until observed; never guess an Element ID from a filename.",
@@ -16418,5 +16520,18 @@
     "retained_memory_4k_pages": 17,
     "scene_body_validation": "Four complete scene bodies retained, with cell/image terminology only.",
     "external_deletions_performed": false
+  },
+  "current_pilot_scope": {
+    "first_seconds": 4,
+    "extend_added_seconds": 4,
+    "expected_total_seconds": 8,
+    "references": [
+      "C01",
+      "C02",
+      "MW01"
+    ],
+    "creator_reported_balance": 2036,
+    "narration_overlay_route": "UNVERIFIED_IN_HIGGSFIELD_WEB",
+    "status": "PREPARED_NOT_GENERATED"
   }
 }

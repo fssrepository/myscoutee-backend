@@ -1,3 +1,7 @@
+# Latest balance and small-test override — 2026-09-10
+
+The creator now reports **2036 credits remaining**. The current pilot is **4 s + native Extend 4 s**, then a short narration mix. Its actual charges are unquoted. Earlier 2860-credit balances and gross allocations below are historical planning and must not be deducted from 2036 again. See [current pilot](../01_pilot/README.md). No generation, purchase or debit was made in this update.
+
 # Current production budget
 
 ## Current image plan: separate 2K worlds, other sheets remain 4K

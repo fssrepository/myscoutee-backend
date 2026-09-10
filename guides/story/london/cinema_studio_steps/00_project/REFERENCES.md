@@ -42,7 +42,7 @@ This updates local `.txt`/guide mentions, incomplete-reference notices and manif
 Check the current pilot without writing:
 
 ```sh
-python3 guides/story/london/cinema_studio_steps/04_tracking/sync_references.py --check 01_pilot/test_video_8s.txt
+python3 guides/story/london/cinema_studio_steps/04_tracking/sync_references.py --check 01_pilot/test_video_4s.txt
 ```
 
 Exit code 2 means missing bindings or unsynchronized local content. Supply available full IDs in a batch when possible; the assistant collects and propagates them centrally. No repeated per-file replacement is needed.

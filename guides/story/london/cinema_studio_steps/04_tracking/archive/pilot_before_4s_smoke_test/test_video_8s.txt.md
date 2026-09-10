@@ -1,3 +1,6 @@
+Historical version, superseded by the 4+4-second continuity test.
+
+```text
 WORLD REFERENCES — ORDERED SINGLE VIEWS:
 @loc_MYS_mys-w01-a-01-world-view-01_s0_v1 supplies W01 group A, position 01, original view 01.
 @loc_MYS_mys-w01-a-02-world-view-02_s0_v1 supplies W01 group A, position 02, original view 02.
@@ -226,3 +229,5 @@ Expose the complete source and destination words during the existing moving pass
 
 CATHEDRAL MATERIAL SOUND:
 Follow the already scripted St Paul's-to-St Stephen's separation, strain and settling with sound synchronized to the visible stone and roof-metal travel. Preserve the existing music, dialogue and street ambience; sound follows material events rather than four reference-cell transitions.
+
+```

@@ -1,12 +1,14 @@
 # Standalone narration audio test — saved for later
 
+Current 4+4-second test: use the shorter sentence in [test_narrated_video.txt](test_narrated_video.txt). This full A01 audition stays deferred.
+
 Status: prepared only. No audio has been generated or accepted. Resume this test when the creator returns to narration; no generation or model comparison is scheduled automatically.
 
 This file collects the copyable script, voice direction, visible settings and observed quotes for a standalone voice audition in Higgsfield **Audio → Text to Speech**. It sits beside the video tests but does not generate or modify video.
 
 ## Script — paste only this into the Script field
 
-The exact text comes from [film Block 01](../03_film/01/narration.txt). It is the full A01 passage, not the shorter excerpt used by the joined 16-second video test.
+The exact text comes from [film Block 01](../03_film/01/narration.txt). It is the full A01 passage, not the shorter excerpt used by the joined 8-second video test.
 
 ```text
 I don't remember my life as a straight line. A street becomes a room, a window becomes another country, a glance becomes a verdict before anyone has time to speak. Memory edits without asking permission. Sometimes the only thing that survives the cut is a smile.
@@ -50,8 +52,8 @@ If accepted for its final A01 role and timing, reuse that recording rather than 
 
 ## Relation to the video tests
 
-- [test_video_8s.txt](test_video_8s.txt): first visual test with native music and effects.
-- [test_extend_8s.txt](test_extend_8s.txt): native continuation of the accepted visual result.
+- [test_video_4s.txt](test_video_4s.txt): first visual test with native music and effects.
+- [test_extend_4s.txt](test_extend_4s.txt): native continuation of the accepted visual result.
 - [test_narrated_video.txt](test_narrated_video.txt): the separate short narration excerpt and intended mix on the joined visual test.
 
 The full passage in this audio audition must not be squeezed into that shorter joined-video excerpt. This audition does not verify a hosted operation for adding voice to existing footage or preserving its music. Keep the detailed shared voice contract in [VOICE.md](../00_project/VOICE.md).
