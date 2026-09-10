@@ -9035,6 +9035,25 @@
     "ledger": "04_tracking/IMAGE_GENERATION_ESTIMATE.csv",
     "actual_generation_or_debit_recorded": false,
     "video_costs_excluded": true,
-    "prior_unlimited_assumption_superseded_for_selected_4k_operation": true
+    "prior_unlimited_assumption_superseded_for_selected_4k_operation": true,
+    "model": "Nano Banana Pro",
+    "two_k_split_option": {
+      "status": "DISCUSSED_NOT_APPLIED",
+      "canvas_example": [
+        2048,
+        2048
+      ],
+      "cells_per_page": 2,
+      "cell_pixels": [
+        2048,
+        1024
+      ],
+      "cell_aspect_ratio": "2:1",
+      "world_and_morph_original_pages": 126,
+      "world_and_morph_split_outputs": 252,
+      "remaining_4k_character_and_typography_outputs": 38,
+      "conditional_first_pass_credits": 152,
+      "condition": "Selected 2K UI operation must actually be covered by Unlimited at 0 credits; actual downloaded pixel geometry must be checked."
+    }
   }
 }

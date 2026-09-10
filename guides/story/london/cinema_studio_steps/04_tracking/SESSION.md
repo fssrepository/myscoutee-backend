@@ -1,3 +1,7 @@
+## 2026-09-10 — Képmodell és felvetett 2K alternatíva
+
+A felhasználó pontosította: Nano Banana Pro, 4 kredit / 4K kép. Felvetette a 2K-s kétcellás bontást, de még nem rendelte el az átállítást; az aktív 171 képprompt továbbra is 4K. A BUDGET.md-ben összehasonlítás szerepel: 2048×2048 négyzeten két egymás alatti 2048×1024 cella, két lap az eredeti négy nézethez/állapothoz. 126 világ/emlék/morph lap bontása 252 2K kimenet lenne, 31 karakter + 7 tipográfia 4K mellett feltételesen 152 kredit, ha a 2K valóban 0 kredites Unlimited. Nem történt újrabontás, újraimport vagy render. A 4K/UHD kért pixelgeometria és a modell tényleges kimeneti mérete nem azonosnak tekintendő mérés nélkül.
+
 ## 2026-09-10 — Tipográfia, rendezett importmappák, 4K képköltség
 
 - Hét új TY001–TY007 Prop: rating-számjegyek/színek, COFFEE→KÁVÉ betűanyag, kulturális/munkahelyi/közlekedési feliratok, 37→33 profilmező és a pontos zárócím. [Promptok](../02_library/typography/README.md). TY001 3×3, a többi 2×2; minden lap 4K. A zárócím továbbra is a forgatókönyvi hard cut után jelenik meg, nem új cím-animáció.

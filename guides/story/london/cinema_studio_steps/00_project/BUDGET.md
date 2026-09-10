@@ -2,7 +2,7 @@
 
 ## 4K képek — a felhasználó által megerősített ár
 
-2026-09-10: **egy elkészült 4K képlap 4 kredit** a felhasználó által választott Higgsfield-műveletnél. Ezt használjuk az összes tervezett 4K lap becsléséhez. A teljes lap egy kép: az 1×3, 2×2 vagy 3×3 celláit nem számoljuk külön generálásnak. Egy promptból több kimeneti változat és minden fizetős újragenerálás külön képnek számít.
+2026-09-10: **egy elkészült 4K képlap 4 kredit** a felhasználó által választott **Nano Banana Pro** Higgsfield-műveletnél. Ezt használjuk az összes tervezett 4K lap becsléséhez. A teljes lap egy kép: az 1×3, 2×2 vagy 3×3 celláit nem számoljuk külön generálásnak. Egy promptból több kimeneti változat és minden fizetős újragenerálás külön képnek számít.
 
 A korábbi hétnapos Unlimited-képkeret nem teszi ezeket a kiválasztott 4K generálásokat ingyenessé. A 4 kredites ár forrása a felhasználó mostani felületi visszajelzése, nem általános ár minden modellre. A [Higgsfield kreditútmutatója](https://higgsfield.ai/creator-hub/help-center/credits/how-credits-work) külön kezeli a kredites és jogosult Unlimited-műveleteket. A becslés a ténylegesen kijelzett 4 kredites műveletre vonatkozik.
 
@@ -69,3 +69,20 @@ hátralévő új 4K képlapok × 4
 A tételes képbecslés: [IMAGE_GENERATION_ESTIMATE.csv](../04_tracking/IMAGE_GENERATION_ESTIMATE.csv). Képlet fájlonként: `(planned_new_images + additional_attempts) × credits_per_image`. Az ottani első kör tervezés, nem rendelés vagy terhelés. A [credit_ledger.csv](../04_tracking/credit_ledger.csv) tényleges költési sorai nem változtak; a korábban rögzített 80 kredites tesztköltést nem vonjuk le újra. Képgenerálás nem indult ebben a munkamenetben.
 
 A régi becslés [archív példánya](../04_tracking/archive/budgets/BUDGET_BEFORE_4K_IMAGE_QUOTE_2026_09_10.md) megőrzi a korábbi Unlimited-feltételezést és teszttervet; előretekintő számolásra ez a friss dokumentum szolgál.
+
+## Felvetett alternatíva: 2K kétcellás lapok
+
+A felhasználó felvetette a 2K-s bontást, de még nem döntött a teljes könyvtár átállításáról. **Az aktív promptok továbbra is 4K-sak.** A részletes leírásból és a négy állapotból a bontás sem hagyhat el semmit.
+
+Egy lehetséges geometria: **2K, 1:1 vászon, egy oszlopban két egymás alatti cella**. Ha a letöltött kimenet 2048×2048, akkor egy cella **2048×1024**, 2:1 képaránnyal. Két ilyen lap viszi tovább az eredeti négy nézetet/állapotot: első lap 1–2, második lap 3–4. Ez cellánként közel az eredetileg megcélzott 1920×1080 képpontszám, de más képarány; a kompozíciót újra kell írni a teljes tárgy és a legnagyobb köztes forma befogadására. Az első lap nem lehet két forráskép, és a második két kész célkép: a morph mind a négy eltérő állapota megmarad.
+
+A 2K/4K elnevezés önmagában nem garantál 2560×1440/3840×2160 fájlt. A [Google képfelbontási táblázata](https://ai.google.dev/gemini-api/docs/image-generation#aspect-ratios-and-image-size) a képarányhoz eltérő pixelméreteket rendel; a 2K-s négyzetes sor 2048×2048. A Higgsfield tényleges letöltött kimeneti méretét az első mintán ellenőrizni kell. A jelenlegi promptokban szereplő 3840×2160 a kért vászongeometria, nem egy már megmért generált fájl adata.
+
+Példaszámítás, kizárólag ha a felhasználó 2K művelete ténylegesen 0 kredites Unlimited:
+
+| Változat | Új képkimenetek | Első kör kredit |
+|---|---:|---:|
+| Minden importelem a mostani 4K lapon | 164 | 656 |
+| 51 világ/emlék + 75 morph két-két 2K lapon; 31 karakter + 7 tipográfia a jelenlegi 4K formában | 252 darab 2K + 38 darab 4K = 290 | **152**, ha a 252 darab 2K valóban 0 kredit |
+
+Ez 504 kreditnyi lehetséges megtakarítás több generálási feladatért, több csatolandó referencialapért és két lap között ellenőrizendő folytonosságért. A térképek és az újragenerálások nincsenek ebben az alternatív sorban. A 2K jogosultságot nem következtetjük a 4K árból. A karakter- és tipográfialapok későbbi bontása külön formátumtervezést igényel; ebben az összevetésben a jelenlegi részletezettségükkel szerepelnek.

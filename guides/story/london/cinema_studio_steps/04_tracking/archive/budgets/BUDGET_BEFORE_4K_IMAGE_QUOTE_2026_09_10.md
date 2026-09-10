@@ -8,15 +8,15 @@ Additional reference preparation now includes 22 morph-sheet prompts and 28 memo
 
 On 2026-09-09 the creator confirmed seven-day Unlimited image generation in their Higgsfield web workflow: covered reference-image creation and revision cost time, not additional credits. Use that window to resolve objects, numerical cards, source/target building forms and material connections before another paid video attempt. The window's actual expiration time has not been supplied. Keep image preparation separate from the paid video budget; do not charge the covered images against the approximately 700-credit planning baseline. This confirmation covers the creator's web image workflow, not automated generation or unverified audio/export operations.
 
-Use [the consolidated reference-image prompts](../02_library/morphs/objects/README.md). These are reusable production assets, not additional video tests. No paid generation is triggered by writing or revising them.
+Use [the consolidated reference-image prompts](../../../02_library/morphs/objects/README.md). These are reusable production assets, not additional video tests. No paid generation is triggered by writing or revising them.
 
 ## Visible pilot cost tracker — three tests
 
 | Test | Prompt | Next execution quote | New actual charge recorded |
 | --- | --- | --- | --- |
-| 1. Detailed first scene, 8 s / 480p | [test_video_8s.txt](../01_pilot/test_video_8s.txt) | Earlier standalone UI quote **20**; current complete-input quote unverified | Not reported |
-| 2. Native continuation, 8 added seconds / 480p | [test_extend_8s.txt](../01_pilot/test_extend_8s.txt) | **Unknown**; use the actual Extend price | Not reported |
-| 3. Narrated version of the joined test | [test_narrated_video.txt](../01_pilot/test_narrated_video.txt) | **Unknown**; include short speech, mixing/output and any separately charged joining | Not reported |
+| 1. Detailed first scene, 8 s / 480p | [test_video_8s.txt](../../../01_pilot/test_video_8s.txt) | Earlier standalone UI quote **20**; current complete-input quote unverified | Not reported |
+| 2. Native continuation, 8 added seconds / 480p | [test_extend_8s.txt](../../../01_pilot/test_extend_8s.txt) | **Unknown**; use the actual Extend price | Not reported |
+| 3. Narrated version of the joined test | [test_narrated_video.txt](../../../01_pilot/test_narrated_video.txt) | **Unknown**; include short speech, mixing/output and any separately charged joining | Not reported |
 
 The continuation now adds eight seconds at the creator’s request: 1.5 s for seam/original form, 3 s for canopy growth, 2 s for gallery/reversal, and 1.5 s for a moving view of the result. This replaces the four-second test; it adds no fourth task. Obtain a new eight-second Extend quote rather than extrapolating a four-second price.
 
@@ -51,7 +51,7 @@ all further test costs
 
 The creator cannot repair or assemble the film locally. Confirm the hosted route and actual prices before committing to the expensive stages. Preserve accepted references and picture; do not regenerate them merely to add speech or concatenate files. Covered Unlimited image work consumes no credits only when the actual operation confirms coverage.
 
-After each reported actual debit, subtract it once from this planning baseline and record it in [credit_ledger.csv](../04_tracking/credit_ledger.csv). The historical aggregate 80 is not deducted again. Update the three-test table with current quotes and actual charges; no automatic 4–5-try loop follows a failed individual detail.
+After each reported actual debit, subtract it once from this planning baseline and record it in [credit_ledger.csv](../../credit_ledger.csv). The historical aggregate 80 is not deducted again. Update the three-test table with current quotes and actual charges; no automatic 4–5-try loop follows a failed individual detail.
 
 ## World-reference pages — image preparation, not extra videos
 
