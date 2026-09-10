@@ -219,3 +219,11 @@ All W01–W07 world prompts now use 4K 2×2 pages A/B/C; all 63 original view de
 ## 2026-09-10 — Confirmed balance and no-regeneration constraint
 
 The creator reports 2860 credits currently available and a maximum further purchase of 500 credits. No top-up is recorded as purchased. All 171 image prompts remain 4K with their existing detailed content and grid layouts. At 4 credits per image, the full first pass costs 684 credits and leaves 2176; the conditional remainder after the maximum top-up would be 2676. Images and videos must not be regenerated under the current instruction. Previous percentage retry allowances and additional video-attempt reserves are superseded. The remaining video/audio/finishing costs are not yet verified. BUDGET.md and source_manifest.json carry these current limits; the actual spending ledger is unchanged.
+
+## 2026-09-10 — Observed festival 1080p quote
+
+Creator screenshot at 09:08:13 shows Cinema Studio 4.0, 30 seconds, 1080p, 16:9, audio On, empty prompt, 0/50 references and output control 1/4. Generate displays 270 credits with 480 struck through. This is a quote only, recorded without a charge. It supersedes the earlier 720p-based working video allowance. Six 30-second blocks at 270 plus a proportional 180-credit 20-second ending estimate yield 1800 for the final film; total planned production becomes 3084. Against 2860 this needs 224 extra, within the 500-credit top-up limit; a full 500 top-up would leave 276. Complete-input/Extend/20s quotes and ancillary costs remain unverified. All images stay 4K and no regeneration is allowed.
+
+### Block 07 price confirmation
+
+The creator confirms that the 20-second Block 07 costs 180 credits. It is now a creator-reported quote rather than a proportional estimate. The final film remains 1800 credits and the complete working allocation 3084, including 600 in unquoted pilot/narration/finishing allowances. The gap against 2860 is 224; the maximum 500-credit top-up would leave 276. No charge was recorded.

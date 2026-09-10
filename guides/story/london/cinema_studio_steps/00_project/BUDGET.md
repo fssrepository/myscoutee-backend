@@ -58,35 +58,37 @@ The current film is **200 seconds (3:20)**: six 30-second blocks and one 20-seco
 
 | Work | Planning allocation | Evidence and scope |
 |---|---:|---|
-| All 171 reference images at 4K | **684** | 171 × 4; creator-confirmed image price; includes all seven optional maps |
-| Full film, first generation of each block | **1400** | Working allowance of 210 per 30-second block and 140 for the 20-second ending; derived estimate, not a UI quote |
-| Remaining pilot workflow | **100** | Combined cap for the planned first 8-second clip, 8-second continuation, test narration and hosted joining/mixing/output; unquoted |
-| Final narration A01–A07 | **200** | Combined planning allowance for seven first-pass speech recordings; test narration belongs to the pilot line; unquoted |
-| Final hosted finishing and delivery | **300** | Combined allowance for any required 1080p upscale, final assembly, audio mixing and export; unquoted |
-| **Total allocated** | **2684** | Includes allowances, not a verified invoice |
-| **Unallocated balance from 2860** | **176** | Not a regeneration allowance |
-| **Unallocated balance if the maximum 500-credit top-up is purchased** | **676** | Top-up remains optional and unpurchased |
+| Reference images, all 171 at 4K | **684** | 171 × 4; includes seven optional maps and references reused by the pilot and final film; counted once |
+| Final film video generation | **1800** | Six 30-second blocks at 270 plus the creator-confirmed 20-second ending at 180; complete-input/Extend quotes pending |
+| Final film narration and finishing | **500** | 200 for A01–A07 speech plus 300 for hosted final assembly, audio mixing and export; unquoted planning allowances |
+| Pilot/test workflow, separately adjustable | **100** | Planned first 8-second clip, 8-second continuation, test speech and hosted test joining/mixing/output; unquoted planning allowance |
 
-The 176-credit balance can absorb differences between estimates and actual first-pass quotes. It does not authorize retries. The additional 500 credits are not required by this working allocation, but there is no guarantee that the unquoted operations fit their allowances. No automatic purchase is authorized.
+**Final production including reference images, excluding tests: 2984 credits. Total with the current 100-credit test allowance: 3084 credits.** Against the current 2860 balance, the gaps are 124 without tests and 224 with the full test allowance. With the maximum 500-credit top-up purchased, 276 credits would remain under the current plan.
 
-### Basis of the video estimate
+Keep test spending separate from final-film speech, mixing and export. Each credit saved from the test allowance reduces the total and the funding gap by one credit; the full film and shared reference-image content remain intact. The test allowance remains 100 until its scope or actual prices are revised. Even removing that entire allowance would leave a 124-credit gap under the current final-production estimates. No additional test-only image batch, purchase or regeneration is added.
 
-Higgsfield's [Seedance 2.5 pricing article](https://higgsfield.ai/blog/seedance-2-5-pricing-2026), checked 2026-09-10, lists 52 credits for an 8-second 720p clip and 24 for 480p. The former implies 6.5 credits/second. Linear extrapolation gives 195 credits per 30 seconds, 130 per 20 seconds, and **1300 for 200 seconds**. This is an inference from the published example, not a verified quote for our long clips, reference inputs, audio settings or Extend operations. The 1400-credit allocation allows 100 above that estimate for first-pass pricing differences, not for extra generations.
+These totals include unquoted allowances, not a verified invoice. A 224-credit gap does not establish that a 224-credit purchase pack exists. No top-up is recorded as purchased.
 
-The final delivery target remains **1080p**. The published 720p example does not establish a native 1080p rate. A required hosted upscale belongs in the 300-credit finishing allowance; its availability, quote and suitability for the complete film remain unverified. No video prompt or output target has been downgraded. All reference images remain 4K.
+### Basis of the video estimate: observed 1080p festival quote
 
-| Block | New footage | Linear 720p estimate | Working allocation |
-|---|---:|---:|---:|
-| 01 | 30 seconds | 195 | 210 |
-| 02 | 30 seconds | 195 | 210 |
-| 03 | 30 seconds | 195 | 210 |
-| 04 | 30 seconds | 195 | 210 |
-| 05 | 30 seconds | 195 | 210 |
-| 06 | 30 seconds | 195 | 210 |
-| 07 | 20 seconds | 130 | 140 |
-| **Total** | **200 seconds** | **1300** | **1400** |
+Creator screenshot **Screenshot from 2026-09-10 09-08-13.png** shows Cinema Studio 4.0, Video mode, **1080p, 16:9, 30 seconds, audio On**, output control **1/4**, and a **270-credit Generate quote with 480 struck through**. The reduction is 210 credits, or **43.75%**. Record the displayed model as Cinema Studio 4.0; the screenshot does not independently expose its underlying selected engine.
 
-Price each actual operation against its NEW output duration. A continuation may charge differently from a standalone clip; do not extrapolate from cumulative master length or assume the price above applies to Extend. Native music and material SFX remain part of the intended audio-on video workflow; no separate music/SFX generation campaign is added. Charge each actual operation once if the platform bundles components.
+The prompt is empty and **0/50 references** are attached. This is an observed UI quote, not a submitted job, a debit, a verified final reference configuration or an Extend quote. Do not multiply the displayed quote by four merely because the output control reads 1/4. Recheck the actual configured operation before generation. The discount's expiry and continued applicability are not shown.
+
+Use 270 per 30 seconds as the current planning basis. The creator subsequently confirmed **180 credits for Block 07 at 20 seconds**. This replaces the earlier proportional estimate with a creator-reported UI price. Six 30-second blocks plus that ending give **1800 credits for the 200-second film**. The prior 720p article-based 1400-credit allowance is superseded; it was a different-resolution planning estimate and cannot be compared to the discount as though it were the same tariff.
+
+| Block | New footage | Planned credits | Basis |
+|---|---:|---:|---|
+| 01 | 30 seconds | 270 | Observed empty-composer 30-second rate applied to planning |
+| 02 | 30 seconds | 270 | Same planning rate; actual continuation quote pending |
+| 03 | 30 seconds | 270 | Same planning rate; actual continuation quote pending |
+| 04 | 30 seconds | 270 | Same planning rate; actual continuation quote pending |
+| 05 | 30 seconds | 270 | Same planning rate; actual continuation quote pending |
+| 06 | 30 seconds | 270 | Same planning rate; actual continuation quote pending |
+| 07 | 20 seconds | 180 | Creator-confirmed 20-second price; final complete-input/continuation configuration still to be checked |
+| **Total** | **200 seconds** | **1800** | First-pass estimate; no retries |
+
+The selected video resolution is already **1080p**, matching the delivery target. Keep the 300-credit hosted finishing allowance for assembly, mixing and export; do not invent a mandatory upscale charge. Images remain 4K. Price continuation against the actual operation and NEW output duration rather than cumulative master length. Native music and material SFX remain part of the intended audio-on video workflow; no separate music/SFX campaign is added. Charge any bundled components only once.
 
 ### Break-even limits
 
@@ -97,6 +99,7 @@ Images, pilot, narration and finishing together are allocated **1284 credits**. 
 | 6.5 credits/second | 1300 | 2584 | 0; 276 remain |
 | 7 credits/second | 1400 | 2684 | 0; 176 remain |
 | 8 credits/second | 1600 | 2884 | 24 |
+| **9 credits/second: confirmed duration-rate basis** | **1800** | **3084** | **224** |
 | 10 credits/second | 2000 | 3284 | 424 |
 | 10.5 credits/second | 2100 | 3384 | 524; exceeds the 500-credit top-up limit |
 

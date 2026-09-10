@@ -4764,7 +4764,7 @@
     "pilot_joined_seconds": 16,
     "reserve_additional_30s_attempts": 0,
     "additional_30s_attempt_quote_credits": null,
-    "budget_note": "Creator-reported balance 2860; additional purchase capped at 500 and not made. All images stay 4K; no regeneration. Working allocation 2684 leaves 176. Image price is creator-confirmed; video amount is inferred from a published 720p example with additional first-pass pricing headroom. Pilot/audio/finishing amounts are unquoted planning allocations. Exact final operation quotes and hosted 1080p delivery route remain unverified.",
+    "budget_note": "Current creator-reported balance 2860; optional top-up capped at 500, unpurchased. All images stay 4K; no regeneration. Observed Cinema Studio 4.0 30s/1080p/audio-On quote is 270 instead of 480, with empty prompt and 0/50 references. Six 30s blocks plus the creator-confirmed 180-credit 20s ending total 1800. Complete working allocation 3084 requires 224 beyond current balance and leaves 276 if the maximum top-up is purchased. Pilot/audio/finishing remain unquoted allowances. No mandatory upscale is assumed; full-input and continuation configurations remain unverified.",
     "remaining_credits_creator_reported": 2860,
     "balance_source": "CREATOR_REPORT_2026_09_10_NOT_TOOL_VERIFIED",
     "maximum_additional_purchase_credits": 500,
@@ -4772,6 +4772,52 @@
     "maximum_total_if_top_up_purchased": 3360,
     "regeneration_allowed": false,
     "current_allocation": {
+      "status": "PLANNING_ALLOWANCES_NOT_COMPLETE_UI_QUOTES",
+      "all_4k_images": 684,
+      "final_video_first_pass": 1800,
+      "pilot_including_test_audio_and_finishing": 100,
+      "final_narration": 200,
+      "total": 3084,
+      "remaining_current_balance": -224,
+      "remaining_if_maximum_top_up_purchased": 276,
+      "retries": 0,
+      "ledger": "04_tracking/PRODUCTION_BUDGET_ESTIMATE.csv",
+      "additional_credits_needed": 224,
+      "final_finishing": 300,
+      "summary_rows": [
+        {
+          "category": "REFERENCE_IMAGES_4K",
+          "credits": 684
+        },
+        {
+          "category": "FINAL_FILM_VIDEO",
+          "credits": 1800
+        },
+        {
+          "category": "FINAL_FILM_NARRATION_AND_FINISHING",
+          "credits": 500
+        },
+        {
+          "category": "PILOT_TEST_WORKFLOW",
+          "credits": 100
+        }
+      ],
+      "final_production_excluding_tests": 2984,
+      "test_allowance_separately_adjustable": true,
+      "shortfall_excluding_tests": 124
+    },
+    "published_video_price_basis": {
+      "source": "https://higgsfield.ai/blog/seedance-2-5-pricing-2026",
+      "checked_date": "2026-09-10",
+      "duration_s": 8,
+      "resolution": "720p",
+      "credits": 52,
+      "linear_200s_estimate": 1300,
+      "current_complete_input_quote_verified": false,
+      "native_1080p_quote_verified": false,
+      "status": "SUPERSEDED_AS_ACTIVE_BASIS_BY_CREATOR_1080P_UI_SCREENSHOT"
+    },
+    "superseded_720p_allocation": {
       "status": "PLANNING_ALLOWANCES_NOT_COMPLETE_UI_QUOTES",
       "all_4k_images": 684,
       "final_video_first_pass": 1400,
@@ -4784,15 +4830,31 @@
       "retries": 0,
       "ledger": "04_tracking/PRODUCTION_BUDGET_ESTIMATE.csv"
     },
-    "published_video_price_basis": {
-      "source": "https://higgsfield.ai/blog/seedance-2-5-pricing-2026",
-      "checked_date": "2026-09-10",
-      "duration_s": 8,
-      "resolution": "720p",
-      "credits": 52,
-      "linear_200s_estimate": 1300,
-      "current_complete_input_quote_verified": false,
-      "native_1080p_quote_verified": false
+    "current_video_price_basis": {
+      "source": "Creator screenshot Screenshot from 2026-09-10 09-08-13.png",
+      "observed_interface_model": "Cinema Studio 4.0",
+      "underlying_engine_independently_verified": false,
+      "resolution": "1080p",
+      "aspect_ratio": "16:9",
+      "audio": "On",
+      "duration_s": 30,
+      "output_control": "1/4",
+      "quoted_credits": 270,
+      "struck_through_credits": 480,
+      "discount_percent": 43.75,
+      "attached_references": 0,
+      "reference_capacity_displayed": 50,
+      "prompt_empty": true,
+      "generation_submitted": false,
+      "charge_recorded": false,
+      "complete_input_quote_verified": false,
+      "extend_quote_verified": false,
+      "twenty_second_quote_verified": true,
+      "full_200_second_estimate": 1800,
+      "discount_expiry_verified": false,
+      "twenty_second_quote_source": "CREATOR_REPORT_2026_09_10",
+      "twenty_second_quoted_credits": 180,
+      "twenty_second_complete_input_quote_verified": false
     }
   },
   "reference_bindings": {
