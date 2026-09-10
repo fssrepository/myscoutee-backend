@@ -503,7 +503,7 @@
       ],
       "source_prompt_sha256": "6e25c11571314fb9f353911cdd369b867c1b90a45dcc5228ce69c24e48b7ba9c",
       "file": "02_library/worlds/memories/07_04_MW02_GLOBAL_ROUTES_A_VIEW_04.txt",
-      "file_sha256": "e75093f8213dd24becfb37ac67fb6572a69ddd63060360878178263cfc9d6095",
+      "file_sha256": "9351e55ea5bcffd534081f336611eaadf8bc122987e1272c601aa646894b9518",
       "changes": "Single 2K assigned view extracted verbatim from archived page; view-specific input references and full-frame instructions."
     },
     {
@@ -2090,7 +2090,7 @@
       ],
       "source_prompt_sha256": "7eacf040519edefdb7aa215ca4fb1e1c6524f4ed06dc69d6ef758048002745f9",
       "file": "02_library/worlds/memories/14_MW04_POLICE_DEFENCE_B.txt",
-      "file_sha256": "8aba2f3483c723de05ccab2d0c38313f43eef12bb1949b1f3d00f0748a9d8c3c",
+      "file_sha256": "e1a201cd2de127e052ea263e72e7773a6be725426ac4da5b41f1b2b43a56853b",
       "changes": "Verbatim fenced prompt; explicit centrally maintained reference inputs Grid geometry uses the full selected image resolution instead of fixed pixel examples.",
       "note": "Companion page B preserving original memory views."
     },
@@ -4471,7 +4471,7 @@
         7,
         8
       ],
-      "prompt_sha256": "8aba2f3483c723de05ccab2d0c38313f43eef12bb1949b1f3d00f0748a9d8c3c",
+      "prompt_sha256": "e1a201cd2de127e052ea263e72e7773a6be725426ac4da5b41f1b2b43a56853b",
       "reference_scope_note": "Inputs scoped to the four assigned views; unrelated companion-page subjects removed. Literal scene descriptions unchanged."
     },
     "MW04_C": {
@@ -7354,7 +7354,7 @@
       "original_view": 4,
       "generation_position": 4,
       "element_name": "MYS MW02_A_04 Memory View 04",
-      "prompt_sha256": "e75093f8213dd24becfb37ac67fb6572a69ddd63060360878178263cfc9d6095"
+      "prompt_sha256": "9351e55ea5bcffd534081f336611eaadf8bc122987e1272c601aa646894b9518"
     },
     "MW02_C_01": {
       "key": "MW02_C_01",
@@ -8426,8 +8426,8 @@
     },
     "MW04": {
       "alias": "MW04_POLICE_DEFENCE",
-      "mention": null,
-      "last_mention": "@UNBOUND_MW04"
+      "mention": "@loc_MYS_mys-mw04-a-police-defence_s0_v1",
+      "last_mention": "@loc_MYS_mys-mw04-a-police-defence_s0_v1"
     },
     "MW05": {
       "alias": "MW05_COURT_FILE",
@@ -10117,8 +10117,8 @@
     },
     "MW02_A_03": {
       "alias": "MW02_A_03",
-      "mention": null,
-      "last_mention": "@UNBOUND_MW02_A_03"
+      "mention": "@loc_MYS_mys-mw02-a-03-memory-view-03_s0_v1",
+      "last_mention": "@loc_MYS_mys-mw02-a-03-memory-view-03_s0_v1"
     },
     "MW02_A_04": {
       "alias": "MW02_A_04",
@@ -12809,7 +12809,7 @@
                 "key": "MW02_A_04",
                 "file": "02_library/worlds/memories/07_04_MW02_GLOBAL_ROUTES_A_VIEW_04.txt",
                 "original_view": 4,
-                "sha256": "e75093f8213dd24becfb37ac67fb6572a69ddd63060360878178263cfc9d6095"
+                "sha256": "9351e55ea5bcffd534081f336611eaadf8bc122987e1272c601aa646894b9518"
               }
             ]
           },
@@ -12932,7 +12932,7 @@
               8
             ],
             "status": "PREPARED_NOT_RENDERED",
-            "sha256": "8aba2f3483c723de05ccab2d0c38313f43eef12bb1949b1f3d00f0748a9d8c3c"
+            "sha256": "e1a201cd2de127e052ea263e72e7773a6be725426ac4da5b41f1b2b43a56853b"
           },
           "C": {
             "key": "MW04_C",
