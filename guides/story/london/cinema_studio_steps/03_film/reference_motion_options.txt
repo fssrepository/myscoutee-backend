@@ -2,12 +2,12 @@ OPTIONAL REFERENCE MOTION — VIDEO PROMPT INSERTS
 These instructions were moved out of the image-generation prompts. They are not a generation job, an Element import or additional film events. Use a section only after selecting its exact reference and transition for an existing video beat; paste it into that video prompt with the actual source and destination references. No current film block or pilot automatically acquires these optional transitions.
 
 CONCRETE CHARACTER PAIRS:
-CM001_APPOINTED_LAWYER_TO_OFFICE_SUBSTITUTE_2X2
-CM002_SOHO_WOMAN_TO_BEGINNER_DANCE_WOMAN_2X2
-CM003_SNORING_HOUSEMATE_TO_MORTGAGE_HOUSEMATE_2X2
-CM004_TRANSIT_HELPER_TO_CAIRO_TRAVELER_2X2
-CM005_ADMIN_COLLEAGUE_A_TO_B_2X2
-CM006_FORENSIC_EXPERT_A_TO_B_2X2
+@char_MYS_mys-cm001-appointed-lawyer-to-office-substitute_s0_v1 supplies CM001_APPOINTED_LAWYER_TO_OFFICE_SUBSTITUTE_2X2.
+@char_MYS_mys-cm002-soho-woman-to-beginner-dance-woman_s0_v1 supplies CM002_SOHO_WOMAN_TO_BEGINNER_DANCE_WOMAN_2X2.
+@char_MYS_mys-cm003-snoring-housemate-to-mortgage-housemate_s0_v1 supplies CM003_SNORING_HOUSEMATE_TO_MORTGAGE_HOUSEMATE_2X2.
+@char_MYS_mys-cm004-transit-helper-to-cairo-traveler_s0_v1 supplies CM004_TRANSIT_HELPER_TO_CAIRO_TRAVELER_2X2.
+@char_MYS_mys-cm005-admin-colleague-a-to-b_s0_v1 supplies CM005_ADMIN_COLLEAGUE_A_TO_B_2X2.
+@char_MYS_mys-cm006-forensic-expert-a-to-b_s0_v1 supplies CM006_FORENSIC_EXPERT_A_TO_B_2X2.
 
 For the selected pair, preserve its two distinct fictional identities and its existing memory setting. A surreal connection does not assert that they are literally one person. Follow the supplied material states in top-left, top-right, bottom-left, bottom-right order.
 
