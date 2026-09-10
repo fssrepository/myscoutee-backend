@@ -10,4 +10,4 @@ Az épület- és tárgymorphok önálló szöveges képpromptok. A karakter-morp
 
 A legújabb kérés szerint [kategóriánkénti teljes import](../../00_project/elements/README.md) készült: Characters, Worlds, Morphs. A régi 105-ös fájl és 45-ös kiegészítő nem importálandó ezek mellé. A [prompttérkép](../../00_project/elements/index/FULL_PROJECT_PROMPT_MAP.csv) az új fájlhelyeket és kategóriafájlokat tartalmazza.
 
-A [75 prompt tételes szöveges ellenőrzése](../../04_tracking/MORPH_FOUR_STATE_REVIEW.md) mindegyik lap négy formaállapotát felsorolja. A képek még nem ennek az ellenőrzésnek a részei. Kő, fa, fém, üveg, kerámia, textil, növényi rost és emberi szövet eltérő merevséggel, alakíthatósággal és késleltetéssel változik.
+Each of the 75 morph prompts specifies four distinct physical states. Stone, wood, metal, glass, ceramic, fabric, plant fibre and human tissue retain their different material behaviour. Generated images still require visual review.

@@ -8,7 +8,7 @@ Import definitions contain only short identity metadata: Type, Canonical key, Na
 
 ## Fixed production scope
 
-Generate the **164 references listed in the CSV**, all at 4K. MAP01–MAP07 are excluded from this production pass, not optional pending jobs. Their retained planning studies and the content-based rationale are described in [maps/README.md](../../../02_library/worlds/maps/README.md). They do not require an import or image generation. The previous 171-image count included those seven studies; the current image cost is 656 credits.
+Generate the **164 references listed in the CSV**, all at 4K. MAP01–MAP07 are excluded from this production pass, not optional pending jobs. Their retired source files and archive copies have been deleted. They do not require an import or image generation. The previous 171-image count included those seven studies; the current image cost is 656 credits.
 
 Character identity sheets use 1×3 panels on a requested 3840×2160 canvas. World, memory and morph sheets use 2×2 cells. TY001 alone uses 3×3 short numerical samples; the other typography sheets use 2×2. Actual downloaded dimensions must be checked. These render instructions stay outside the import definitions.
 
@@ -16,4 +16,4 @@ The four previously retained image keys are C01, C02, MR001 and R002. Reuse any 
 
 Earlier pilot/film/batch lists are in [archive](../archive/README.md). The [MR021-only supplement](../additions/MR021_RATING_CARD_ONLY_IMPORT.md) is for an older set missing MR021; it is already included in the current 157-element base and the full/morph imports.
 
-The [image detail review](../../../04_tracking/IMAGE_PROMPT_DETAIL_REVIEW.md) records the authored-prompt audit, including the now-excluded map studies. The [typography guide](../../../02_library/typography/README.md) identifies the exact words and roles. Prompt review does not constitute acceptance of generated media. All active image generation remains in Higgsfield.
+The [typography guide](../../../02_library/typography/README.md) identifies the exact words and roles. Prompt review does not constitute acceptance of generated media. All active image generation remains in Higgsfield.

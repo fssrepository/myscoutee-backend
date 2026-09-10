@@ -2,7 +2,7 @@
 
 ## Current decision: all images remain 4K
 
-2026-09-10: the creator explicitly confirmed that **every image remains at 4K**. All 164 production image prompts retain their existing detailed content and grid layouts. MAP01–MAP07 are excluded from generation; their seven authored prompts are retained as inactive planning material. No prompt was converted to 2K or split into two sheets for budget reasons.
+2026-09-10: the creator explicitly confirmed that **every image remains at 4K**. All 164 production image prompts retain their existing detailed content and grid layouts. MAP01–MAP07 are excluded from generation; their seven authored prompts and archived copies have been removed, along with their asset/generation entries. No prompt was converted to 2K or split into two sheets for budget reasons.
 
 Keep all four morph states together on ONE 2×2 sheet: intact source, first substantial material reconstruction, a distinctly different advanced reconstruction, and resolved destination. Character identity sheets retain 1×3; TY001 retains its specific 3×3 typography layout. All these sheets remain 4K.
 
@@ -136,5 +136,3 @@ For this film, assess distinct physical states, correct endpoint identity, mater
 The itemized image baseline is [IMAGE_GENERATION_ESTIMATE.csv](../04_tracking/IMAGE_GENERATION_ESTIMATE.csv). The full allocation is [PRODUCTION_BUDGET_ESTIMATE.csv](../04_tracking/PRODUCTION_BUDGET_ESTIMATE.csv). Both record plans, not orders or debits. Image `additional_attempts` and all production retries remain zero. Reuse usable existing outputs; adjust a planned image count only when its current role is actually covered.
 
 The actual historical charges in [credit_ledger.csv](../04_tracking/credit_ledger.csv) are unchanged. The earlier 80-credit test spend is already historical and must not be subtracted again from the newly reported 2860-credit balance. No generation or purchase was started here. Review exact complete-input UI quotes before committing the first operations; the planning allowances do not prove those operations are available at those prices.
-
-The [archived earlier budget](../04_tracking/archive/budgets/BUDGET_BEFORE_4K_IMAGE_QUOTE_2026_09_10.md) preserves the previous Unlimited assumption and test plan. Use this current document for forward estimates.

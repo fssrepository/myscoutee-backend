@@ -567,18 +567,6 @@
       "changes": "4K 2×2 Page A; original views 1–4 retained verbatim except cross-view labels. Other original views preserved on companion B/C pages."
     },
     {
-      "asset": "MAP01",
-      "source_heading": "MAP 01 —",
-      "source_lines": [
-        3719,
-        3772
-      ],
-      "source_prompt_sha256": "d17c313b21fd8a06e590648b5efce4bcd2a5615ae3ee41517df9785b405ef18f",
-      "file": "02_library/worlds/maps/MAP01_WALK_PLAN.txt",
-      "file_sha256": "b78bfb632523eb35a341f294c2fb7e344d1e7e3671e3763d64bdb62f5560a434",
-      "changes": "Verbatim fenced prompt"
-    },
-    {
       "asset": "W02",
       "source_heading": "WORLD 02 —",
       "source_lines": [
@@ -589,18 +577,6 @@
       "file": "02_library/worlds/real/W02_MAIN_WORLD_A.txt",
       "file_sha256": "dab4a73133f8ec633463974cc334c98ac7002a48fc77326b920fe53c5dd68e05",
       "changes": "4K 2×2 Page A; original views 1–4 retained verbatim except cross-view labels. Other original views preserved on companion B/C pages."
-    },
-    {
-      "asset": "MAP02",
-      "source_heading": "MAP 02 —",
-      "source_lines": [
-        3779,
-        3832
-      ],
-      "source_prompt_sha256": "f903008054943c65cb7c5bb33451ad12693382280969e3b093f12a772ade1bf5",
-      "file": "02_library/worlds/maps/MAP02_WALK_PLAN.txt",
-      "file_sha256": "45c4dbe96db8fdcd58c38cc3b774353879b8ad0dee0548ed5bea3e3b1bc5b193",
-      "changes": "Verbatim fenced prompt"
     },
     {
       "asset": "W03",
@@ -615,18 +591,6 @@
       "changes": "4K 2×2 Page A; original views 1–4 retained verbatim except cross-view labels. Other original views preserved on companion B/C pages."
     },
     {
-      "asset": "MAP03",
-      "source_heading": "MAP 03 —",
-      "source_lines": [
-        3839,
-        3893
-      ],
-      "source_prompt_sha256": "ce815bef8231aa00e80297ebf08bf134f897dbc5630592cc97988f695ced7286",
-      "file": "02_library/worlds/maps/MAP03_WALK_PLAN.txt",
-      "file_sha256": "21e8a4ff0ab2e809ddea3f5b89f711885921f9c8bb1e27d897ef993ab5538348",
-      "changes": "Verbatim fenced prompt"
-    },
-    {
       "asset": "W04",
       "source_heading": "WORLD 04 —",
       "source_lines": [
@@ -637,18 +601,6 @@
       "file": "02_library/worlds/real/W04_MAIN_WORLD_A.txt",
       "file_sha256": "9e030ac3a4b9639f67174f1e994b3462b6332bf6db7ec92ade557994b354972e",
       "changes": "4K 2×2 Page A; original views 1–4 retained verbatim except cross-view labels. Other original views preserved on companion B/C pages."
-    },
-    {
-      "asset": "MAP04",
-      "source_heading": "MAP 04 —",
-      "source_lines": [
-        3900,
-        3953
-      ],
-      "source_prompt_sha256": "8fafe1022b9a2dec2b08a1d80d78e0874725475a7b209f2f696ebc5c51ddbd54",
-      "file": "02_library/worlds/maps/MAP04_WALK_PLAN.txt",
-      "file_sha256": "2c15c76c908211eb08f7021191e480e80078c9fbdfca89594c6d3f203239a341",
-      "changes": "Verbatim fenced prompt"
     },
     {
       "asset": "W05",
@@ -663,18 +615,6 @@
       "changes": "4K 2×2 Page A; original views 1–4 retained verbatim except cross-view labels. Other original views preserved on companion B/C pages."
     },
     {
-      "asset": "MAP05",
-      "source_heading": "MAP 05 —",
-      "source_lines": [
-        3960,
-        4014
-      ],
-      "source_prompt_sha256": "1bac54a7ebe1e68b27976d666df9fb3932ce6563c92abc7290171cd6f016fe14",
-      "file": "02_library/worlds/maps/MAP05_WALK_PLAN.txt",
-      "file_sha256": "a6d5e38088d3168f469502844d3902bf863ae9294522ed953e5153c0d0f59b05",
-      "changes": "Verbatim fenced prompt"
-    },
-    {
       "asset": "W06",
       "source_heading": "WORLD 06 —",
       "source_lines": [
@@ -687,18 +627,6 @@
       "changes": "4K 2×2 Page A; original views 1–4 retained verbatim except cross-view labels. Other original views preserved on companion B/C pages."
     },
     {
-      "asset": "MAP06",
-      "source_heading": "MAP 06 —",
-      "source_lines": [
-        4021,
-        4076
-      ],
-      "source_prompt_sha256": "0498c830606974434a69d66ded596a964cec23c7e4dfc03f0b5d32089e153401",
-      "file": "02_library/worlds/maps/MAP06_WALK_PLAN.txt",
-      "file_sha256": "624b9572b3d38424316fb35851eb32082e9a00540da86a7c521318a215281104",
-      "changes": "Verbatim fenced prompt"
-    },
-    {
       "asset": "W07",
       "source_heading": "WORLD 07 —",
       "source_lines": [
@@ -709,18 +637,6 @@
       "file": "02_library/worlds/real/W07_MAIN_WORLD_A.txt",
       "file_sha256": "cd88b43b34f9da6532de003a9eac26cda55dac5619e6905455cf08ed5ab6651f",
       "changes": "4K 2×2 Page A; original views 1–4 retained verbatim except cross-view labels. Other original views preserved on companion B/C pages."
-    },
-    {
-      "asset": "MAP07",
-      "source_heading": "MAP 07 —",
-      "source_lines": [
-        4083,
-        4138
-      ],
-      "source_prompt_sha256": "206c692d99013e01a38d509633f51062e93bdc43ee7da30504317eece9e0a6d3",
-      "file": "02_library/worlds/maps/MAP07_WALK_PLAN.txt",
-      "file_sha256": "fae80c420425f810559c5e530ca9889a97bbdfca90f64105b8f8015267526356",
-      "changes": "Verbatim fenced prompt"
     },
     {
       "asset": "SB01",
@@ -2080,34 +1996,12 @@
       "refs": [],
       "prompt_sha256": "3717c2801f04cb5341bcad6059e9ff89859b0a08c8e5ba1683aeda4d46cdf814"
     },
-    "MAP01": {
-      "key": "MAP01",
-      "path": "02_library/worlds/maps/MAP01_WALK_PLAN.txt",
-      "output": "MAP01_WALK_PLAN.png",
-      "refs": [],
-      "layout": "4K 2x2 plan coverage",
-      "intended_resolution": "4K",
-      "prompt_sha256": "b78bfb632523eb35a341f294c2fb7e344d1e7e3671e3763d64bdb62f5560a434",
-      "production_status": "EXCLUDED_NOT_A_VIDEO_REFERENCE",
-      "planned_new_images": 0
-    },
     "W02": {
       "key": "W02",
       "path": "02_library/worlds/real/W02_MAIN_WORLD_A.txt",
       "output": "W02_MAIN_WORLD.png",
       "refs": [],
       "prompt_sha256": "dab4a73133f8ec633463974cc334c98ac7002a48fc77326b920fe53c5dd68e05"
-    },
-    "MAP02": {
-      "key": "MAP02",
-      "path": "02_library/worlds/maps/MAP02_WALK_PLAN.txt",
-      "output": "MAP02_WALK_PLAN.png",
-      "refs": [],
-      "layout": "4K 2x2 plan coverage",
-      "intended_resolution": "4K",
-      "prompt_sha256": "45c4dbe96db8fdcd58c38cc3b774353879b8ad0dee0548ed5bea3e3b1bc5b193",
-      "production_status": "EXCLUDED_NOT_A_VIDEO_REFERENCE",
-      "planned_new_images": 0
     },
     "W03": {
       "key": "W03",
@@ -2116,34 +2010,12 @@
       "refs": [],
       "prompt_sha256": "c875ddc6f916b565c24e6a2917f190b6bf596a8f68d44549ece807ff113868a2"
     },
-    "MAP03": {
-      "key": "MAP03",
-      "path": "02_library/worlds/maps/MAP03_WALK_PLAN.txt",
-      "output": "MAP03_WALK_PLAN.png",
-      "refs": [],
-      "layout": "4K 2x2 plan coverage",
-      "intended_resolution": "4K",
-      "prompt_sha256": "21e8a4ff0ab2e809ddea3f5b89f711885921f9c8bb1e27d897ef993ab5538348",
-      "production_status": "EXCLUDED_NOT_A_VIDEO_REFERENCE",
-      "planned_new_images": 0
-    },
     "W04": {
       "key": "W04",
       "path": "02_library/worlds/real/W04_MAIN_WORLD_A.txt",
       "output": "W04_MAIN_WORLD.png",
       "refs": [],
       "prompt_sha256": "9e030ac3a4b9639f67174f1e994b3462b6332bf6db7ec92ade557994b354972e"
-    },
-    "MAP04": {
-      "key": "MAP04",
-      "path": "02_library/worlds/maps/MAP04_WALK_PLAN.txt",
-      "output": "MAP04_WALK_PLAN.png",
-      "refs": [],
-      "layout": "4K 2x2 plan coverage",
-      "intended_resolution": "4K",
-      "prompt_sha256": "2c15c76c908211eb08f7021191e480e80078c9fbdfca89594c6d3f203239a341",
-      "production_status": "EXCLUDED_NOT_A_VIDEO_REFERENCE",
-      "planned_new_images": 0
     },
     "W05": {
       "key": "W05",
@@ -2152,17 +2024,6 @@
       "refs": [],
       "prompt_sha256": "d7e0965904c1104b0c2ecbd0109e4a3086615647f08a77cd3c8be28fc0cfdc57"
     },
-    "MAP05": {
-      "key": "MAP05",
-      "path": "02_library/worlds/maps/MAP05_WALK_PLAN.txt",
-      "output": "MAP05_WALK_PLAN.png",
-      "refs": [],
-      "layout": "4K 2x2 plan coverage",
-      "intended_resolution": "4K",
-      "prompt_sha256": "a6d5e38088d3168f469502844d3902bf863ae9294522ed953e5153c0d0f59b05",
-      "production_status": "EXCLUDED_NOT_A_VIDEO_REFERENCE",
-      "planned_new_images": 0
-    },
     "W06": {
       "key": "W06",
       "path": "02_library/worlds/real/W06_MAIN_WORLD_A.txt",
@@ -2170,34 +2031,12 @@
       "refs": [],
       "prompt_sha256": "d9f6c90b68673fbd45fe64a208048b0ff5d5486da7c4e4ce326a31210bc90cae"
     },
-    "MAP06": {
-      "key": "MAP06",
-      "path": "02_library/worlds/maps/MAP06_WALK_PLAN.txt",
-      "output": "MAP06_WALK_PLAN.png",
-      "refs": [],
-      "layout": "4K 2x2 plan coverage",
-      "intended_resolution": "4K",
-      "prompt_sha256": "624b9572b3d38424316fb35851eb32082e9a00540da86a7c521318a215281104",
-      "production_status": "EXCLUDED_NOT_A_VIDEO_REFERENCE",
-      "planned_new_images": 0
-    },
     "W07": {
       "key": "W07",
       "path": "02_library/worlds/real/W07_MAIN_WORLD_A.txt",
       "output": "W07_MAIN_WORLD.png",
       "refs": [],
       "prompt_sha256": "cd88b43b34f9da6532de003a9eac26cda55dac5619e6905455cf08ed5ab6651f"
-    },
-    "MAP07": {
-      "key": "MAP07",
-      "path": "02_library/worlds/maps/MAP07_WALK_PLAN.txt",
-      "output": "MAP07_WALK_PLAN.png",
-      "refs": [],
-      "layout": "4K 2x2 plan coverage",
-      "intended_resolution": "4K",
-      "prompt_sha256": "fae80c420425f810559c5e530ca9889a97bbdfca90f64105b8f8015267526356",
-      "production_status": "EXCLUDED_NOT_A_VIDEO_REFERENCE",
-      "planned_new_images": 0
     },
     "SB01": {
       "key": "SB01",
@@ -5756,7 +5595,6 @@
       "note": "New-only first-import batch R001–R053 with short identity descriptions. Detailed image prompts are separate R-numbered .txt files, indexed in generation_source and image_prompt_files. No merge, import or render is performed locally.",
       "image_prompt_files": {
         "R001": {
-          "file": "04_tracking/archive/legacy_image_prompts/R001_RATING_CARDS_IN_THE_INHABITED_STREET.txt",
           "sha256": "940315901ed6371a54d6c259a1e5fc0dea735c805316fa24b6bed2c0cf3598d2",
           "status": "PREPARED_NOT_RENDERED",
           "refs": [
@@ -5796,7 +5634,6 @@
           "prompt_note": "Revised geometry/reference wording; no new generated output reviewed."
         },
         "R007": {
-          "file": "04_tracking/archive/legacy_image_prompts/R007_OPTIONAL_SOLID_INTERMEDIATE_ILLUSTRATION_NOT_A_MOTION_TEST.txt",
           "sha256": "bbdcacd9a4ae8d289720a32ee712ba1c19415263b296065c846110792c5de311",
           "status": "PREPARED_NOT_RENDERED",
           "current_prompt_image_verified": false,
@@ -5823,14 +5660,12 @@
           "status": "PREPARED_NOT_RENDERED"
         },
         "R011": {
-          "file": "04_tracking/archive/legacy_image_prompts/R011_CLEAN_LONDON_OPENING_REFERENCE_PRIORITY_SOURCE_IMAGE.txt",
           "sha256": "fe6f14ef356ec0a8653ea378e0f3c1ac89a4f0218923a684a5d49fcc95bd7935",
           "status": "ID_REPORTED_IMAGE_ASSOCIATION_REPORTED",
           "evidence": "Four generated thumbnails visible in creator screenshot 2026-09-09 21-13-04. After Element-name mapping, creator reports elvileg megvan, menjunk tovabb. Full Element IDs and saved associations not independently inspected.",
           "actual_mention": "@loc_MYS_mys-reference-11-clean-london-opening-reference-priority-source-image_s0_v1"
         },
         "R012": {
-          "file": "04_tracking/archive/legacy_image_prompts/R012_THE_SAME_CURRENT_PEDESTRIANS_IN_LONDON_AND_PEST_ASSOCIATED_STATES.txt",
           "sha256": "24c94a6d0a602ab9dc001921203e05342f038594654ace93fb6ece80e72c5cd3",
           "status": "PREPARED_NOT_RENDERED"
         },
@@ -5905,7 +5740,6 @@
           "status": "PREPARED_NOT_RENDERED"
         },
         "R027": {
-          "file": "04_tracking/archive/legacy_image_prompts/R027_SAME_LONDON_JUNCTION_FROM_THE_RETURNING_AERIAL_ANGLE.txt",
           "sha256": "2091375b65affac1a8ae276682e322651278945d6e90d92dc5ae7f6ea42d2ea8",
           "status": "PREPARED_NOT_RENDERED"
         },
@@ -6025,17 +5859,14 @@
           "status": "PREPARED_NOT_RENDERED"
         },
         "R051": {
-          "file": "04_tracking/archive/legacy_image_prompts/R051_ORIGINAL_LONDON_STREET_CROSS_SECTION_AND_CONNECTED_BUILDING_BASES.txt",
           "sha256": "bf0b028d6235458302c620e00162badd7317e940299587a05bc4f4f183a0b90b",
           "status": "PREPARED_NOT_RENDERED"
         },
         "R052": {
-          "file": "04_tracking/archive/legacy_image_prompts/R052_OPENED_STREET_VOLUME_WITH_SIMULTANEOUSLY_CHANGED_HISTORIC_BUILDINGS.txt",
           "sha256": "fb92add59c487030a00ca6fcb242dc84b9b5066d2e643ebd98331cb0e063e69e",
           "status": "PREPARED_NOT_RENDERED"
         },
         "R053": {
-          "file": "04_tracking/archive/legacy_image_prompts/R053_OPTIONAL_INTERMEDIATE_STREET_DEPTH_WITH_CONCURRENT_MASONRY_MORPH.txt",
           "sha256": "7e8cb96cf7e090dedbc49769d02e9cc2e395cc4c153279d15359acdb3be32521",
           "status": "PREPARED_NOT_RENDERED"
         }
@@ -7549,7 +7380,6 @@
     "date": "2026-09-10",
     "status": "IMPORT_REPORTED_BY_CREATOR",
     "supersedes_incremental_import_workflow": true,
-    "file": "04_tracking/archive/element_imports/FULL_PROJECT_IMPORT_105_LEGACY.md",
     "file_sha256": "0b5a545686c252e04c98e8cfbb703b59b3286848b0f71ca0aaa5ccb769aeb551",
     "prompt_map": "00_project/elements/index/FULL_PROJECT_PROMPT_MAP.csv",
     "guide": "00_project/elements/index/FULL_PROJECT_GUIDE.md",
@@ -8633,7 +8463,6 @@
     "object_policy": "Existing 105-entry import remains valid. 45 newly restored object/architectural entries are in a separate non-overlapping supplement; no bus or existing morph duplicate."
   },
   "current_element_library": {
-    "baseline_import": "04_tracking/archive/element_imports/FULL_PROJECT_IMPORT_105_LEGACY.md",
     "baseline_status": "IMPORT_REPORTED_BY_CREATOR",
     "baseline_count": 105,
     "next_import": [
@@ -8683,9 +8512,7 @@
     "morph_characters": "02_library/morphs/characters",
     "world_real": "02_library/worlds/real",
     "world_memories": "02_library/worlds/memories",
-    "world_maps": "02_library/worlds/maps",
-    "character_identity": "02_library/characters",
-    "retired_prompt_archive": "04_tracking/archive/legacy_image_prompts"
+    "character_identity": "02_library/characters"
   },
   "category_element_imports": {
     "date": "2026-09-10",
@@ -8895,33 +8722,13 @@
       "morphs": 75,
       "all_mapped_prompt_files_exist": true,
       "folder_types_match": true,
-      "render_instructions_in_import_files": false,
-      "legacy_combined_import_archived": "04_tracking/archive/element_imports/FULL_PROJECT_IMPORT_105_LEGACY.md"
+      "render_instructions_in_import_files": false
     },
     "combined_alternative": "00_project/elements/full/FULL_PROJECT_IMPORT.md"
-  },
-  "morph_material_audit": {
-    "date": "2026-09-10",
-    "scope": "75_PROMPTS_TEXT_ONLY_NOT_GENERATED_IMAGES",
-    "report": "04_tracking/MORPH_FOUR_STATE_REVIEW.md",
-    "records": "04_tracking/MORPH_FOUR_STATE_REVIEW.json",
-    "reviewed_prompt_count": 75,
-    "material_profiles": "Stone, timber, metal, roof sheet, glass, ceramic, cloth, fibre, plant, vehicle assemblies, elastic human tissue and rooted hair have differentiated responses.",
-    "validation": {
-      "morphs_with_four_ordered_cells_and_4k_dimensions": 75,
-      "world_memory_map_prompts_with_4k_cell_dimensions": 58,
-      "unique_category_import_keys": 157,
-      "missing_active_prompt_paths": 0,
-      "broken_active_index_links": 0,
-      "generic_character_endpoint_slots": 0,
-      "image_generation_performed": false,
-      "character_identity_prompts_with_1x3_4k": 31
-    }
   },
   "image_layout_policy": {
     "character_identity": "4K 3840x2160 1x3; three 1280x2160 panels; no gutters",
     "other_reference_images": "4K 3840x2160 2x2; four 1920x1080 cells; typography has the explicit TY001 3x3 exception",
-    "maps": "Inactive planning material; excluded from production generation and Element imports",
     "three_by_three_active_prompts": 1,
     "typography": "TY001: 4K 3x3, nine 1280x720 cells; TY002-TY007: 4K 2x2, four 1920x1080 cells"
   },
@@ -9105,42 +8912,6 @@
     ],
     "mode": "Full combined file OR the four category files. If the prior 157-element library is already imported, import only TYPOGRAPHY_IMPORT.md for the seven new elements."
   },
-  "rating_card_preflight": {
-    "date": "2026-09-10",
-    "status": "PROMPT_AUDIT_COMPLETED_IMAGES_NOT_GENERATED",
-    "report": "04_tracking/RATING_CARD_IMAGE_REVIEW.json",
-    "image_prompts": 164,
-    "no_umbrellas": "Explicit all-cells instruction in every active image prompt",
-    "decimal_format": "one digit, decimal point, one fractional digit",
-    "colour": "pale red through amber to pale green, interpolated by actual decimal value",
-    "role_policy": "Current city has cards; studio identities, remembered and clinical people do not. Protagonist value/colour hidden until Block 06.",
-    "new_prop": "MR021",
-    "optional_delta": "00_project/elements/additions/MR021_RATING_CARD_ONLY_IMPORT.md",
-    "validation": {
-      "image_prompts_with_explicit_umbrella_ban": 164,
-      "current_city_world_pages_with_rendered_decimal_cards": 21,
-      "existing_building_object_morphs_with_conditional_current_people_cards": 68,
-      "new_explicit_card_change_study": 1,
-      "identity_role_exceptions": 31,
-      "memory_clinical_and_character_morph_exceptions": 36,
-      "graphic_maps_without_people": 7,
-      "old_deferred_card_instructions_remaining": 0,
-      "generated_images_reviewed": 0
-    }
-  },
-  "image_prompt_detail_review": {
-    "date": "2026-09-10",
-    "scope": "ALL_ACTIVE_IMAGE_PROMPT_TEXT_NOT_GENERATED_IMAGES",
-    "report": "04_tracking/IMAGE_PROMPT_DETAIL_REVIEW.md",
-    "records": "04_tracking/IMAGE_PROMPT_DETAIL_REVIEW.json",
-    "reviewed": 171,
-    "expanded_or_corrected": 80,
-    "rendering_performed": false,
-    "import_definition_count": 164,
-    "ui_import_count_investigation": "IGNORED_AT_USER_REQUEST_INCOMPLETE_PRIOR_DELETION_REPORTED",
-    "new_typography_prompts": 7,
-    "original_review_count": 164
-  },
   "typography_library": {
     "date": "2026-09-10",
     "prompt_directory": "02_library/typography",
@@ -9180,7 +8951,7 @@
     "imported_library_first_pass_credits": 656,
     "optional_map_images": 0,
     "optional_map_credits": 0,
-    "all_image_prompts": 171,
+    "all_image_prompts": 164,
     "all_first_pass_credits": 656,
     "typography_images": 7,
     "typography_first_pass_credits": 28,
@@ -9279,7 +9050,7 @@
     "production_image_prompts": 164
   },
   "map_production_decision": {
-    "status": "EXCLUDED_FROM_PRODUCTION",
+    "status": "REMOVED_FROM_PROJECT",
     "date": "2026-09-10",
     "keys": [
       "MAP01",
@@ -9294,7 +9065,7 @@
     "generated_images": 0,
     "planned_credits": 0,
     "saved_credits": 28,
-    "authored_prompts_retained": true,
+    "authored_prompts_retained": false,
     "production_prompt_list": "00_project/elements/index/FULL_PROJECT_PROMPT_MAP.csv"
   }
 }

@@ -13,7 +13,7 @@ A felhasználó pontosította: Nano Banana Pro, 4 kredit / 4K kép. Felvetette a
 
 ## 2026-09-10 — Teljes képprompt-részletellenőrzés, lineáris képelőkészítés
 
-164 aktív képprompt ellenőrizve; 80 bővítve/javítva, 84 meglévő részletes prompt megtartva. A világok 63 és a kilenc rövidebb emlékcsalád 81 eredeti nézete konkrét térbeli/anyag-/szereplő-részletekkel bővült; 31 karakter saját ruha- és arcrészleteket kapott. A morphok négy eltérő anyagállapota megmaradt. [Fájlonkénti ellenőrzés](IMAGE_PROMPT_DETAIL_REVIEW.md).
+164 aktív képprompt ellenőrizve; 80 bővítve/javítva, 84 meglévő részletes prompt megtartva. A világok 63 és a kilenc rövidebb emlékcsalád 81 eredeti nézete konkrét térbeli/anyag-/szereplő-részletekkel bővült; 31 karakter saját ruha- és arcrészleteket kapott. A morphok négy eltérő anyagállapota megmaradt. Fájlonkénti ellenőrzés.
 
 A FULL_PROJECT_IMPORT.md valóban 157 egyedi elemet tartalmaz. A felhasználó az 54-es UI-importot a korábbi elemek nem teljes törlésével magyarázta, és kérte az importált névsor figyelmen kívül hagyását. Emiatt nincs új pótlóimport és nincs távoli importálás. A részletjavítás nem változtatott Element-nevet vagy kulcsot. Következő lépés a felhasználó Higgsfield-képgenerálása, az új tényleges @hivatkozások kötésével ahol szükséges; csak ezt követik a tesztvideók. A képek pixeleit és az animáció folytonosságát ez a szöveges ellenőrzés nem igazolja.
 
@@ -29,7 +29,7 @@ Az MR021 Prop definíció a MORPHS_IMPORT.md-ben és a FULL_PROJECT_IMPORT.md-be
 - 164 aktív képprompt explicit esernyőtilalommal. A 21 jelen-világ lapon és a 68 korábbi épület/tárgymorphban a jelen-városi emberek kártyája már az állóképen szerepel; a későbbi videóra halasztó ellentmondó mondat javítva. Stúdióazonosító, emlék és klinikai kép kártya nélkül, az eddigi szereposztás szerint.
 - Tizedes értékek (6.2, 7.4, 9.2), olvasható sötét számok, a tört pontszámot követő világos vörös/borostyán/zöld szín. A rejtett főszereplőpont színben sem szivárog ki; puszta rátekintés nem változtat értéket.
 - MR021: külön 4K 2×2 kártyamorph 6.2→9.2, Prop típus, morphs/objects. Teljes import 157, Morphs 75; egyetlen MR021-kiegészítő is készült, kizárólag ha a korábbi 156 már importálva lett. Nincs távoli import-visszaigazolás.
-- [Kártyaellenőrzés](RATING_CARD_IMAGE_REVIEW.md), [morph-állapotok](MORPH_FOUR_STATE_REVIEW.md). Szöveges ellenőrzés történt, új kép/hang/videó generálása nem. A képek tényleges olvashatóságát a generált eredményen kell majd ellenőrizni.
+- Kártyaellenőrzés, morph-állapotok. Szöveges ellenőrzés történt, új kép/hang/videó generálása nem. A képek tényleges olvashatóságát a generált eredményen kell majd ellenőrizni.
 
 
 ## 2026-09-10 — Fejlődő zenei téma, eseményekkel épülő feszültség
@@ -53,14 +53,14 @@ A felhasználó az 1×3 karakterazonosító lapokat is 4K-ra kérte. Mind a 31 p
 
 - A felhasználó az újraimport megkezdését jelezte; a három kategóriafájl újra összeellenőrizve a 156 soros prompttérképpel és a tényleges TXT-kkel.
 - Characters 31, Worlds 51, Morphs 74. A morph-leírások az aktuális konkrét forrás/cél kapcsolatot nevezik meg, generálási paraméterek nélkül. Kulcsok és Element-nevek változatlanok.
-- A régi 105-ös FULL_PROJECT_IMPORT.md pontos másolata: `04_tracking/archive/element_imports/FULL_PROJECT_IMPORT_105_LEGACY.md`. Korábbi helyén a három aktuális importhoz vezető útmutató van.
+- A régi 105-ös FULL_PROJECT_IMPORT.md pontos másolata: (historical file removed). Korábbi helyén a három aktuális importhoz vezető útmutató van.
 - Státusz: READY_FOR_CREATOR_REIMPORT_NOT_YET_CONFIRMED. Nem történt távoli import/törlés vagy generálás. Az új platformazonosítók az import után köthetők be; a régi megemlítések nem bizonyítják az új Element létét.
 
 
 ## 2026-09-10 — Konkrét karaktermorphok és teljes anyag/forma-ellenőrzés
 
 - A generikus CM001 sablon helyett CM001–CM006 konkrét párok: C04→C26, C02→C10, C06→C07, C11→C13, C23→C24, C28→C29. A külön szereplőazonosságok megmaradnak; ezek vizuális emlékkapcsolat-javaslatok, nem automatikus videóátírások.
-- Mind a 74 aktív morph szövege ellenőrizve. Részletek: [tételes audit](MORPH_FOUR_STATE_REVIEW.md). A kő, fém, üveg, fa, kerámia, szövet, rost, növényi anyag és rugalmas emberi felület külön deformációs leírást kapott. Nincs új képes vagy videós minősítés.
+- Mind a 74 aktív morph szövege ellenőrizve. Részletek: tételes audit. A kő, fém, üveg, fa, kerámia, szövet, rost, növényi anyag és rugalmas emberi felület külön deformációs leírást kapott. Nincs új képes vagy videós minősítés.
 - A három aktuális kategóriaimport 156 egyedi elem: 31 Character-azonosító, 51 World-oldal, 74 Morph. A 6 CM-kimenet a Morphs importban Character típusú. A régi teljes/inkrementális importok történeti fájlok.
 - Karakterazonosító: 1×3, 2K alap / 4K választható. Minden más referencia, a hét opcionális tervlap is: 4K 2×2, 1920×1080-as cellák. A tervek nem importelemek.
 - A C04/C26, C06/C07 és C11 tényleges @ID-k még hiányoznak; a korábban ismert többi karakter-ID az új kategóriaimport után visszaellenőrizendő. Hat új CM-kimenethez nincs még generált kép. A generálások kizárólag a felhasználó Higgsfield felületén történnek.
@@ -71,7 +71,7 @@ Latest user asks to reimport by Characters / Worlds / Morphs categories. Created
 
 ## Current structured library — 2026-09-10
 
-Moved active material studies into morphs/buildings and morphs/objects; created morphs/characters with a detailed two-endpoint character transformation template, pending source/target selection. Worlds now use worlds/real, worlds/memories and worlds/maps. All tracked file paths and relative documentation links migrated. Legacy superseded image prompts moved to 04_tracking/archive/legacy_image_prompts. Existing 105 import and separate 45-entry supplement unchanged; no new platform operation. Added approximately one-second close slow-orbit attention guidance to the 68 active building/object morphs, with fast approach/departure and continuous geometry. Character morphs require chosen existing identities; none guessed or imported.
+Moved active material studies into morphs/buildings and morphs/objects; created morphs/characters with a detailed two-endpoint character transformation template, pending source/target selection. Worlds now use worlds/real, worlds/memories and worlds/maps. All tracked file paths and relative documentation links migrated. Legacy superseded image prompts moved to a historical archive subsequently removed. Existing 105 import and separate 45-entry supplement unchanged; no new platform operation. Added approximately one-second close slow-orbit attention guidance to the 68 active building/object morphs, with fast approach/departure and continuous geometry. Character morphs require chosen existing identities; none guessed or imported.
 
 ## All active objects now morph — 2026-09-10
 
