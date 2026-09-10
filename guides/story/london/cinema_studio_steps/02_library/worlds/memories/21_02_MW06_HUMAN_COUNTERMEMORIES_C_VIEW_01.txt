@@ -3,7 +3,7 @@ REFERENCE ID: MW06_C_02 — ORIGINAL VIEW 01 (never print IDs, headings or label
 OUTPUT ELEMENT ASSIGNMENT — OPERATOR METADATA ONLY, NEVER RENDER:
 Live output Element name (operator lookup only): loc_MYS_mys-mw06-c-02-memory-view-01_s0_v1
 Live output Element UUID: 11dd1c0e-0c9e-412a-b05e-95d5ce08aadf
-Assign the finished image to this existing empty target. This output target is not an input reference.
+Image attachment verified via MCP on 2026-09-10. This output target is not an input reference.
 
 REFERENCE INPUTS:
 @loc_MYS_mys-mw06-a-01-memory-view-01_s0_v1 = Use the accepted Soho-smile image for this same woman, table and encounter.
