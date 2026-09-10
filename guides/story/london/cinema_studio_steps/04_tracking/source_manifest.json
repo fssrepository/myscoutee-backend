@@ -467,7 +467,7 @@
       ],
       "source_prompt_sha256": "6e25c11571314fb9f353911cdd369b867c1b90a45dcc5228ce69c24e48b7ba9c",
       "file": "02_library/worlds/memories/MW02_GLOBAL_ROUTES_A.txt",
-      "file_sha256": "42eaf485f61ac51e9803254611baccb950ab859e806744842d6a0bd01d5d8f3e",
+      "file_sha256": "81e5a03697a83d93b7f96f33044b460798bf22248e0386ffda30d086872c4877",
       "changes": "Verbatim fenced prompt; explicit centrally maintained reference inputs; rural memory grounded in creator's Orosháza paprika/corn-field childhood Grid geometry uses the full selected image resolution instead of fixed pixel examples."
     },
     {
@@ -1849,7 +1849,7 @@
       ],
       "source_prompt_sha256": "6e25c11571314fb9f353911cdd369b867c1b90a45dcc5228ce69c24e48b7ba9c",
       "file": "02_library/worlds/memories/MW02_GLOBAL_ROUTES_B.txt",
-      "file_sha256": "6d925557221be5a97d3cec1d867fc80a4d290a90f6286cf9b9efb052cc3d52ff",
+      "file_sha256": "d94b15875cb1170d0703082ff951f9407728ea1a8c05b1d094c6b04045368533",
       "changes": "Verbatim fenced prompt; explicit centrally maintained reference inputs; rural memory grounded in creator's Orosháza paprika/corn-field childhood Grid geometry uses the full selected image resolution instead of fixed pixel examples.",
       "note": "Companion page B preserving original memory views."
     },
@@ -1862,7 +1862,7 @@
       ],
       "source_prompt_sha256": "6e25c11571314fb9f353911cdd369b867c1b90a45dcc5228ce69c24e48b7ba9c",
       "file": "02_library/worlds/memories/MW02_GLOBAL_ROUTES_C.txt",
-      "file_sha256": "60523ca7c5a73da148dd6271fbb67404d51273d3ee87e4e067678629d50968f5",
+      "file_sha256": "750bfcf48d39e8cfc41c3f7814b2b4939dd619e1abdfa77a7e529576e1df7751",
       "changes": "Verbatim fenced prompt; explicit centrally maintained reference inputs; rural memory grounded in creator's Orosháza paprika/corn-field childhood Grid geometry uses the full selected image resolution instead of fixed pixel examples.",
       "note": "Companion page C preserving original memory views."
     },
@@ -2622,7 +2622,7 @@
         "MW02_B",
         "MW02_C"
       ],
-      "prompt_sha256": "42eaf485f61ac51e9803254611baccb950ab859e806744842d6a0bd01d5d8f3e"
+      "prompt_sha256": "81e5a03697a83d93b7f96f33044b460798bf22248e0386ffda30d086872c4877"
     },
     "MW03": {
       "key": "MW03",
@@ -3906,7 +3906,7 @@
         7,
         8
       ],
-      "prompt_sha256": "6d925557221be5a97d3cec1d867fc80a4d290a90f6286cf9b9efb052cc3d52ff"
+      "prompt_sha256": "d94b15875cb1170d0703082ff951f9407728ea1a8c05b1d094c6b04045368533"
     },
     "MW02_C": {
       "key": "MW02_C",
@@ -3936,7 +3936,7 @@
         7,
         8
       ],
-      "prompt_sha256": "60523ca7c5a73da148dd6271fbb67404d51273d3ee87e4e067678629d50968f5"
+      "prompt_sha256": "750bfcf48d39e8cfc41c3f7814b2b4939dd619e1abdfa77a7e529576e1df7751"
     },
     "MW03_B": {
       "key": "MW03_B",
@@ -9984,7 +9984,7 @@
               4
             ],
             "status": "PREPARED_NOT_RENDERED",
-            "sha256": "42eaf485f61ac51e9803254611baccb950ab859e806744842d6a0bd01d5d8f3e"
+            "sha256": "81e5a03697a83d93b7f96f33044b460798bf22248e0386ffda30d086872c4877"
           },
           "B": {
             "key": "MW02_B",
@@ -9996,7 +9996,7 @@
               8
             ],
             "status": "PREPARED_NOT_RENDERED",
-            "sha256": "6d925557221be5a97d3cec1d867fc80a4d290a90f6286cf9b9efb052cc3d52ff"
+            "sha256": "d94b15875cb1170d0703082ff951f9407728ea1a8c05b1d094c6b04045368533"
           },
           "C": {
             "key": "MW02_C",
@@ -10008,7 +10008,7 @@
               8
             ],
             "status": "PREPARED_NOT_RENDERED",
-            "sha256": "60523ca7c5a73da148dd6271fbb67404d51273d3ee87e4e067678629d50968f5"
+            "sha256": "750bfcf48d39e8cfc41c3f7814b2b4939dd619e1abdfa77a7e529576e1df7751"
           }
         },
         "original_views": 9,
