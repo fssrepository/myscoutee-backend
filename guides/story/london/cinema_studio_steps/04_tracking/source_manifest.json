@@ -2255,7 +2255,7 @@
         "03_film/01/video.txt"
       ],
       "note": "Geometry sheet for existing cathedral subject. Standalone R006 destination remains an input; no additional Element or video job assumed.",
-      "prompt_sha256": "0bac00d5132906c4498d9afe7752d8e70df4afe3f786938ad59aaf3b59a8401b",
+      "prompt_sha256": "4115506896d83153fb257d5d808284640c14df26f9bfffa51f274e03cb8ea43a",
       "latest_image_review": {
         "file": "/home/raxim/Downloads/hf_20260910_040957_bb7741e2-e1b8-41af-87aa-4fac4592d5f6.png",
         "compared_previous_file": "/home/raxim/Downloads/hf_20260909_195819_8c30af4b-1501-4ee3-b8cb-36e5e94906ff.png",
@@ -2263,7 +2263,10 @@
         "reason": "Newest download loses the earlier London street depth for a nearly empty paved setting, includes a detached cropped dome fragment in the first cell, and has nearly identical lower cells. The creator prefers the earlier cathedral result.",
         "revision": "Restore the inhabited London surroundings and strong three-quarter architectural composition; restrict R006 to target building geometry; require a broad unresolved arch/tower/roof configuration in the third cell. Preserve the earlier spectacle without treating the earlier sheet as proof of a complete morph.",
         "render_prompt_provenance": "Image filenames inspected; exact submitted prompt/model/settings for these renders not independently verified."
-      }
+      },
+      "four_state_summary": "INTACT ST PAUL'S, COMPACT AND CLOSED: → EXPANSIVE BREAKUP: OPEN ROOF CAGE, SEPARATED TOWER BANDS, SPLAYED PORTICO: → INWARD REASSEMBLY: UNFINISHED GIANT ARCH, HELICAL TOWER, OFFSET DOME CLOSURE: → FULLY REASSEMBLED ST STEPHEN'S BASILICA:",
+      "prompt_review_status": "EXTREME_INTERMEDIATES_REVISED_NOT_RENDERED",
+      "review_note": "Four different configurations with per-object breakup/reshaping/reassembly. Removed mandatory conventional structural support from unoccupied intermediates; retained real material substance, tracked source parts, final supports and occupied contact."
     },
     "MR002": {
       "key": "MR002",
@@ -2278,7 +2281,10 @@
       "layout": "2x2 source/early/advanced/target",
       "intended_resolution": "4K",
       "note": "Prepared façade-detail morph study; no new Element imported, no image generated, no extra mandatory pilot job.",
-      "prompt_sha256": "1f733827f8cc8c88633e44d421a5ceb8b8e9c36bc0dac2575d6b7dc2e6a8d0d7"
+      "prompt_sha256": "00b8f9e3f92d72b12bf2f9199abc838e794f622908c0b2c99e6ed8f2e5d76e7c",
+      "four_state_summary": "ATTACHED LONDON STONE RELIEF: → PROJECTING STONE BUST ON A SPLIT FAN OF MASS: → UNFURLED FIGURE WITH AN OPEN ARM LOOP AND HALF-DIVIDED LEGS: → FULL-DEPTH PEST-STYLE SCULPTED CORBEL:",
+      "prompt_review_status": "EXTREME_INTERMEDIATES_REVISED_NOT_RENDERED",
+      "review_note": "Four different configurations with per-object breakup/reshaping/reassembly. Removed mandatory conventional structural support from unoccupied intermediates; retained real material substance, tracked source parts, final supports and occupied contact."
     },
     "MR003": {
       "key": "MR003",
@@ -2293,7 +2299,10 @@
       "layout": "2x2 source/early/advanced/target",
       "intended_resolution": "4K",
       "note": "Prepared façade-detail morph study; no new Element imported, no image generated, no extra mandatory pilot job.",
-      "prompt_sha256": "35e087f1c332ae983f80a43ce813c4a7bdd77f4f3d6931f5bd1ccbcaa270635b"
+      "prompt_sha256": "9123cf721173e1c4459872ed2dc163649397a352ce74f24acdef2198d9bc2284",
+      "four_state_summary": "ORIGINAL LONDON WINDOW BAY: → SPLAYED RECTANGULAR FRAME AND SEPARATING STONE CROWNS: → ARCH CHAINS WITH A WIDE CROWN GAP AND OVERSIZED UNFINISHED VOLUTES: → RESOLVED PEST HISTORIC WINDOW BAY:",
+      "prompt_review_status": "EXTREME_INTERMEDIATES_REVISED_NOT_RENDERED",
+      "review_note": "Four different configurations with per-object breakup/reshaping/reassembly. Removed mandatory conventional structural support from unoccupied intermediates; retained real material substance, tracked source parts, final supports and occupied contact."
     },
     "W01_B": {
       "key": "W01_B",
@@ -2411,9 +2420,11 @@
         "R015",
         "R022"
       ],
-      "four_state_summary": "Flat notched glass → concave shard → open-seam shade → complete shade",
+      "four_state_summary": "SOURCE: → THREE-DIMENSIONAL GLASS SADDLE WITH SPLAYED CORNERS: → OPEN HELICAL SHADE BEFORE ITS RIMS JOIN: → RESOLVED DESTINATION:",
       "note": "Prepared only; no render, imported container, paid video job or mandatory pilot dependency assumed.",
-      "prompt_sha256": "35557a5eb07fe1ee670f1ec8be09510052975169e8f4ffaf2bc032325774895b"
+      "prompt_sha256": "90ec18da4cc17776363232662e33739d3fe3e4c7955373d095c443e48ecf8007",
+      "prompt_review_status": "EXTREME_INTERMEDIATES_REVISED_NOT_RENDERED",
+      "review_note": "Four different configurations with per-object breakup/reshaping/reassembly. Removed mandatory conventional structural support from unoccupied intermediates; retained real material substance, tracked source parts, final supports and occupied contact."
     },
     "MR005": {
       "key": "MR005",
@@ -2431,9 +2442,11 @@
       "source_object_keys": [
         "R016"
       ],
-      "four_state_summary": "Rectangular brick head → stepped wedge head → unfinished arch → carved stone arch",
+      "four_state_summary": "SOURCE: → OUTWARD SPREADING BRICK COURSES AND DEEP STONE BLANKS: → TWO INWARD CURLING ARCH HALVES, UNJOINED AT THE TOP: → RESOLVED DESTINATION:",
       "note": "Prepared only; no render, imported container, paid video job or mandatory pilot dependency assumed.",
-      "prompt_sha256": "c61b7617cafd0165c2f2bc3545f94acbeddedabf0b1fb6408240868054ca61b6"
+      "prompt_sha256": "853945e79569adec8b24c4f63ccc601370866c103cb070e8836e0dd505f229c9",
+      "prompt_review_status": "EXTREME_INTERMEDIATES_REVISED_NOT_RENDERED",
+      "review_note": "Four different configurations with per-object breakup/reshaping/reassembly. Removed mandatory conventional structural support from unoccupied intermediates; retained real material substance, tracked source parts, final supports and occupied contact."
     },
     "MR006": {
       "key": "MR006",
@@ -2451,9 +2464,11 @@
       "source_object_keys": [
         "R017"
       ],
-      "four_state_summary": "Stone threshold → divided mineral/wood ribs → half-length boarded floor → full supported floor",
+      "four_state_summary": "SOURCE: → FANNED STONE-TO-WOOD RIBS ABOVE THE PAVING: → OPEN TIMBER DECK WITH RAISED UNSEATED BOARD ENDS: → RESOLVED DESTINATION:",
       "note": "Prepared only; no render, imported container, paid video job or mandatory pilot dependency assumed.",
-      "prompt_sha256": "712ab3605678d14e8ab67749cc92b410db1abe646443a60e8eb95cbf7cb38b84"
+      "prompt_sha256": "fa2be49359f5013f6288b748b76107e384569781cacf5dfa9648956fefc9cc7b",
+      "prompt_review_status": "EXTREME_INTERMEDIATES_REVISED_NOT_RENDERED",
+      "review_note": "Four different configurations with per-object breakup/reshaping/reassembly. Removed mandatory conventional structural support from unoccupied intermediates; retained real material substance, tracked source parts, final supports and occupied contact."
     },
     "MR007": {
       "key": "MR007",
@@ -2471,9 +2486,11 @@
       "source_object_keys": [
         "R018"
       ],
-      "four_state_summary": "Bench → splayed supported slats → open angular border → curved timber border",
+      "four_state_summary": "SOURCE: → BENCH SLATS EXPAND INTO A WIDE ASYMMETRIC FAN: → TALL OPEN SPIRAL GATHERING INTO A LOW FLOOR BORDER: → RESOLVED DESTINATION:",
       "note": "Prepared only; no render, imported container, paid video job or mandatory pilot dependency assumed.",
-      "prompt_sha256": "aab1f73348734402fa9b09d7b68f4bdd4c1ad49e2e0851a993e7b79573886dc9"
+      "prompt_sha256": "57e2b5082409a25454d1a0dc28860034f81558f1afc4b0e772e8bd24248822e2",
+      "prompt_review_status": "EXTREME_INTERMEDIATES_REVISED_NOT_RENDERED",
+      "review_note": "Four different configurations with per-object breakup/reshaping/reassembly. Removed mandatory conventional structural support from unoccupied intermediates; retained real material substance, tracked source parts, final supports and occupied contact."
     },
     "MR008": {
       "key": "MR008",
@@ -2491,9 +2508,11 @@
       "source_object_keys": [
         "R022"
       ],
-      "four_state_summary": "Short fixing → stepped elongated shank → bent unfinished socket → attached lamp stem",
+      "four_state_summary": "SOURCE: → FIXING EXPANDS INTO AN ANGULAR METAL FORK: → OVERSIZED OPEN COIL CONVERGING ON THE LAMP NECK: → RESOLVED DESTINATION:",
       "note": "Prepared only; no render, imported container, paid video job or mandatory pilot dependency assumed.",
-      "prompt_sha256": "8b3b36727d8f53df5cd9ee59d3cb43ab3f0e693a88abe09f9043e3aa0f80d8b9"
+      "prompt_sha256": "a4fedfe67db1f9f2a43f0eeafefb33a8a47dc59c0c039019492b0c46dd1eb7a8",
+      "prompt_review_status": "EXTREME_INTERMEDIATES_REVISED_NOT_RENDERED",
+      "review_note": "Four different configurations with per-object breakup/reshaping/reassembly. Removed mandatory conventional structural support from unoccupied intermediates; retained real material substance, tracked source parts, final supports and occupied contact."
     },
     "MR009": {
       "key": "MR009",
@@ -2511,9 +2530,11 @@
       "source_object_keys": [
         "R023"
       ],
-      "four_state_summary": "Coiled rail → spreading thick plate segments → uneven half-stair → supported sideways stair",
+      "four_state_summary": "SOURCE: → BALCONY COIL UNWINDS INTO THICK RADIAL TREAD BLANKS: → DOUBLE-ZIGZAG STAIR WITH ROTATED TREADS AND AN UNJOINED RAIL: → RESOLVED DESTINATION:",
       "note": "Prepared only; no render, imported container, paid video job or mandatory pilot dependency assumed.",
-      "prompt_sha256": "c39bf5790da32b95ec6be40468029592a07132905d780ad1efd9f3a6d9f679e3"
+      "prompt_sha256": "caea5d8b6b17499b294c3c2bbdfc3899d8553f73a8f024069c20fee6a3a68ef7",
+      "prompt_review_status": "EXTREME_INTERMEDIATES_REVISED_NOT_RENDERED",
+      "review_note": "Four different configurations with per-object breakup/reshaping/reassembly. Removed mandatory conventional structural support from unoccupied intermediates; retained real material substance, tracked source parts, final supports and occupied contact."
     },
     "MR010": {
       "key": "MR010",
@@ -2531,9 +2552,11 @@
       "source_object_keys": [
         "R024"
       ],
-      "four_state_summary": "Mounted source letters → split raised strokes → partly formed target glyphs → KÁVÉ",
+      "four_state_summary": "SOURCE: → RAISED LETTER STROKES SPREAD INTO A THREE-DIMENSIONAL LATTICE: → FOUR OPEN TARGET GLYPH SKELETONS BEFORE CLOSURE: → RESOLVED DESTINATION:",
       "note": "Prepared only; no render, imported container, paid video job or mandatory pilot dependency assumed.",
-      "prompt_sha256": "1cc50dd7c5641e4a57571e8c8da819b2f2d956aa43d3db74cab30bd75dd3de5f"
+      "prompt_sha256": "7a71b49c95bf9aa4ba1ee7140e363238010bf87a4ca550079ad2afb4ebbec3a9",
+      "prompt_review_status": "EXTREME_INTERMEDIATES_REVISED_NOT_RENDERED",
+      "review_note": "Four different configurations with per-object breakup/reshaping/reassembly. Removed mandatory conventional structural support from unoccupied intermediates; retained real material substance, tracked source parts, final supports and occupied contact."
     },
     "MR011": {
       "key": "MR011",
@@ -2553,9 +2576,11 @@
         "R025",
         "R026"
       ],
-      "four_state_summary": "Pitched slate roof → unequal bent ribs → half-glazed curved roof → complete glazing",
+      "four_state_summary": "SOURCE: → ROOF SECTORS OPEN INTO A WIDE UNEQUAL RIB CAGE: → CURVED GLASS ROOF WITH A LARGE OPEN CENTRAL SEAM: → RESOLVED DESTINATION:",
       "note": "Prepared only; no render, imported container, paid video job or mandatory pilot dependency assumed.",
-      "prompt_sha256": "9bd5b4431649b5953139b3d6322d6307f5470e76fd31cf0c862903a792b13c33"
+      "prompt_sha256": "9e39bd319e71f1dcbc9131b20955941ee7659d96d4d74686ad01a581a269796c",
+      "prompt_review_status": "EXTREME_INTERMEDIATES_REVISED_NOT_RENDERED",
+      "review_note": "Four different configurations with per-object breakup/reshaping/reassembly. Removed mandatory conventional structural support from unoccupied intermediates; retained real material substance, tracked source parts, final supports and occupied contact."
     },
     "MR012": {
       "key": "MR012",
@@ -2575,9 +2600,11 @@
         "R025",
         "R026"
       ],
-      "four_state_summary": "Square chimney pair → offset helical courses → open unfinished crowns → spiral stone uprights",
+      "four_state_summary": "SOURCE: → SEPARATED CHIMNEY BANDS IN AN EXPANDING HELIX: → CONVERGING SPIRAL UPRIGHTS WITH SPLAYED CROWN SEGMENTS: → RESOLVED DESTINATION:",
       "note": "Prepared only; no render, imported container, paid video job or mandatory pilot dependency assumed.",
-      "prompt_sha256": "62462b63ce792e7c545fd798b212a84838158b398fc395ab416b28f96c06fcbc"
+      "prompt_sha256": "35cd13f3de11465d3a1b8212ed0b15b41f16588dcfc7f179e5462d5decb7807b",
+      "prompt_review_status": "EXTREME_INTERMEDIATES_REVISED_NOT_RENDERED",
+      "review_note": "Four different configurations with per-object breakup/reshaping/reassembly. Removed mandatory conventional structural support from unoccupied intermediates; retained real material substance, tracked source parts, final supports and occupied contact."
     },
     "MR013": {
       "key": "MR013",
@@ -2595,9 +2622,11 @@
       "source_object_keys": [
         "R043"
       ],
-      "four_state_summary": "Railing → thickened post and split elbow → unfinished gate housing → complete transit gate",
+      "four_state_summary": "SOURCE: → RAIL OPENS INTO A BROAD FORK AND SPLIT GATE SHELL: → UNFINISHED ROTATING GATE WITH AN OPEN HOUSING AND OVERSIZED LEAF: → RESOLVED DESTINATION:",
       "note": "Prepared only; no render, imported container, paid video job or mandatory pilot dependency assumed.",
-      "prompt_sha256": "0f59cd7c8c0cf3628033baaa21964345d3b073ba553b9fba162da1f2cea59352"
+      "prompt_sha256": "30454253c97e8c94c66ceab47115907150c2335573ccbdc17058ddb80bca4b28",
+      "prompt_review_status": "EXTREME_INTERMEDIATES_REVISED_NOT_RENDERED",
+      "review_note": "Four different configurations with per-object breakup/reshaping/reassembly. Removed mandatory conventional structural support from unoccupied intermediates; retained real material substance, tracked source parts, final supports and occupied contact."
     },
     "MR014": {
       "key": "MR014",
@@ -2615,9 +2644,11 @@
       "source_object_keys": [
         "R044"
       ],
-      "four_state_summary": "Bench and posts → divided seat shells → unfinished seat row/window pillars → remembered bus geometry",
+      "four_state_summary": "SOURCE: → BENCH AND POSTS SPLAY INTO SEAT AND WINDOW FRAME PARTS: → CONVERGING BUS ROOM WITH RAISED SEAT SHELLS AND OFFSET PILLARS: → RESOLVED DESTINATION:",
       "note": "Prepared only; no render, imported container, paid video job or mandatory pilot dependency assumed.",
-      "prompt_sha256": "be34342e2e46d40468539cc557044bbb6932d1a5214e5c19d533504c8f69f7d6"
+      "prompt_sha256": "9971b95c1c8bc98ab08de00f252765cd3c66067a0531c673b51564d16151644a",
+      "prompt_review_status": "EXTREME_INTERMEDIATES_REVISED_NOT_RENDERED",
+      "review_note": "Four different configurations with per-object breakup/reshaping/reassembly. Removed mandatory conventional structural support from unoccupied intermediates; retained real material substance, tracked source parts, final supports and occupied contact."
     },
     "MR015": {
       "key": "MR015",
@@ -2635,9 +2666,11 @@
       "source_object_keys": [
         "R046"
       ],
-      "four_state_summary": "Canopy → asymmetric rising ribs → partly rounded envelope → balloon with supported basket",
+      "four_state_summary": "SOURCE: → CANOPY EXPANDS INTO AN ASYMMETRIC ENVELOPE CAGE: → OPEN LOBED BALLOON WITH UNJOINED FABRIC SECTORS: → RESOLVED DESTINATION:",
       "note": "Prepared only; no render, imported container, paid video job or mandatory pilot dependency assumed.",
-      "prompt_sha256": "51e66005e931db5eb2c107c38afbf83277d362747bf9b355287a450cba1a0a72"
+      "prompt_sha256": "ba3d686c33619bf9fbab17675e67d9fadd814e596531b05fcb1ddb62011ccb93",
+      "prompt_review_status": "EXTREME_INTERMEDIATES_REVISED_NOT_RENDERED",
+      "review_note": "Four different configurations with per-object breakup/reshaping/reassembly. Removed mandatory conventional structural support from unoccupied intermediates; retained real material substance, tracked source parts, final supports and occupied contact."
     },
     "MR016": {
       "key": "MR016",
@@ -2655,9 +2688,11 @@
       "source_object_keys": [
         "R047"
       ],
-      "four_state_summary": "Rooted plants → thick bent stalk bundles → unfinished timber sleepers → supported rail bed",
+      "four_state_summary": "SOURCE: → UPROOTED-SHAPED STALK ARCS OVER THE SAME SOIL STRIP: → RAISED TIMBER SLEEPER BLANKS WITH LARGE PLANT ENDS: → RESOLVED DESTINATION:",
       "note": "Prepared only; no render, imported container, paid video job or mandatory pilot dependency assumed.",
-      "prompt_sha256": "d3e00f7bbaee2401172856af0c4a9dad7c81fda2fe234972aca69f497c3122b3"
+      "prompt_sha256": "07f4f3b2580d4f61ad73d71025f8c2b9824e4b5840caa87ee42206e270ad53f2",
+      "prompt_review_status": "EXTREME_INTERMEDIATES_REVISED_NOT_RENDERED",
+      "review_note": "Four different configurations with per-object breakup/reshaping/reassembly. Removed mandatory conventional structural support from unoccupied intermediates; retained real material substance, tracked source parts, final supports and occupied contact."
     },
     "MR017": {
       "key": "MR017",
@@ -2675,9 +2710,11 @@
       "source_object_keys": [
         "R049"
       ],
-      "four_state_summary": "Cabinet → extended top and divided panels → unfinished desk/chair → complete procedure furniture",
+      "four_state_summary": "SOURCE: → CABINET EXPANDS INTO A SPLAYED FURNITURE SKELETON: → UNJOINED DESK AND CHAIR WITH A LARGE REMAINING PANEL WEB: → RESOLVED DESTINATION:",
       "note": "Prepared only; no render, imported container, paid video job or mandatory pilot dependency assumed.",
-      "prompt_sha256": "c1495b3a9c26d82ab76501d21bc8d1b890024c97fe271084252f32b0b2a6d8a1"
+      "prompt_sha256": "c08212c2d663ad516ff35ac8ccce088e24dd912d3c86416b467812b8a65638e0",
+      "prompt_review_status": "EXTREME_INTERMEDIATES_REVISED_NOT_RENDERED",
+      "review_note": "Four different configurations with per-object breakup/reshaping/reassembly. Removed mandatory conventional structural support from unoccupied intermediates; retained real material substance, tracked source parts, final supports and occupied contact."
     },
     "MR018": {
       "key": "MR018",
@@ -2695,9 +2732,11 @@
       "source_object_keys": [
         "R050"
       ],
-      "four_state_summary": "Hearing bench → split timber supports → half-shelf/half-compartment → complete file shelving",
+      "four_state_summary": "SOURCE: → BENCH BOARDS SPLAY INTO A TALL BRANCHED TIMBER FRAME: → OPEN SHELVING WITH DIAGONAL DIVIDERS AND UNSEATED BOARDS: → RESOLVED DESTINATION:",
       "note": "Prepared only; no render, imported container, paid video job or mandatory pilot dependency assumed.",
-      "prompt_sha256": "ffd1b46c3436ef6eda71e7d3c059c3b354d506a58db499b7fffa96bf49ffd9f5"
+      "prompt_sha256": "a70054d48aa725dd6f3b07e674a63e9b3a0d3bdca03ecac3e30dfa87547ebd56",
+      "prompt_review_status": "EXTREME_INTERMEDIATES_REVISED_NOT_RENDERED",
+      "review_note": "Four different configurations with per-object breakup/reshaping/reassembly. Removed mandatory conventional structural support from unoccupied intermediates; retained real material substance, tracked source parts, final supports and occupied contact."
     },
     "MR019": {
       "key": "MR019",
@@ -2719,9 +2758,11 @@
         "R052",
         "R053"
       ],
-      "four_state_summary": "Ordinary street → staggered extending courses → half-built terrace → open supported street pocket",
+      "four_state_summary": "SOURCE: → PAVING COURSES SPREAD INTO A LARGE STEPPED STONE FAN: → BROAD TERRACE WITH UNSEATED RISERS AND OPEN ARCH CHAINS: → RESOLVED DESTINATION:",
       "note": "Prepared only; no render, imported container, paid video job or mandatory pilot dependency assumed.",
-      "prompt_sha256": "c89a819a0bc5c225a4629dd5e67ef1b18d1f222cc7cb447a8128eaa4c35920d1"
+      "prompt_sha256": "373e77c536c1733343d19e482dbe22899a807869137d5c004162c66182ee1c4c",
+      "prompt_review_status": "EXTREME_INTERMEDIATES_REVISED_NOT_RENDERED",
+      "review_note": "Four different configurations with per-object breakup/reshaping/reassembly. Removed mandatory conventional structural support from unoccupied intermediates; retained real material substance, tracked source parts, final supports and occupied contact."
     },
     "MR020": {
       "key": "MR020",
@@ -2739,9 +2780,11 @@
       "source_object_keys": [
         "HRW07"
       ],
-      "four_state_summary": "Rope → spreading fibre web → unfinished fabric hem → white sheet edge",
+      "four_state_summary": "SOURCE: → ROPE UNTWISTS INTO A WIDE OPEN FIBRE FAN: → LOOSE WOVEN LATTICE WITH A THICK UNFINISHED ROPE EDGE: → RESOLVED DESTINATION:",
       "note": "Prepared only; no render, imported container, paid video job or mandatory pilot dependency assumed.",
-      "prompt_sha256": "2c5a8c847ee970d3db252e00ecd93b7b6e449995a2f679c3c4cda2ac2b272969"
+      "prompt_sha256": "bdf5148e0bc7748197c7703e52e69d5d60979618e6439afb54ae28bfc3e55a74",
+      "prompt_review_status": "EXTREME_INTERMEDIATES_REVISED_NOT_RENDERED",
+      "review_note": "Four different configurations with per-object breakup/reshaping/reassembly. Removed mandatory conventional structural support from unoccupied intermediates; retained real material substance, tracked source parts, final supports and occupied contact."
     },
     "R009_STUDY": {
       "key": "R009_STUDY",
@@ -2757,7 +2800,10 @@
         "03_film/01/video.txt"
       ],
       "layout": "2x2 source/unfinished/unfinished/target",
-      "prompt_sha256": "7298654a9a05adc021525a411f29ea4cb95553246d4e116c0a4b50930241af3b"
+      "prompt_sha256": "5450218adb1a3640a2f023ae60821efceb2cbd8baef5ee850877d479773a1cb3",
+      "four_state_summary": "SOURCE: → FANLIGHT SPLITS INTO A WIDELY SPLAYED RIB ARRAY: → CONVERGING OVERHEAD CANOPY WITH A LARGE OPEN ROOF SECTOR: → RESOLVED DESTINATION:",
+      "prompt_review_status": "EXTREME_INTERMEDIATES_REVISED_NOT_RENDERED",
+      "review_note": "Four different configurations with per-object breakup/reshaping/reassembly. Removed mandatory conventional structural support from unoccupied intermediates; retained real material substance, tracked source parts, final supports and occupied contact."
     },
     "R008_STUDY": {
       "key": "R008_STUDY",
@@ -2773,7 +2819,10 @@
         "01_pilot/test_video_8s.txt",
         "03_film/01/video.txt"
       ],
-      "prompt_sha256": "e79e834e22da8dde516c6ca3b51b851ea307030decc247b68a6368c40525b1f1"
+      "prompt_sha256": "c48fb3f006f7700e00ff22a26b3bd74a898a2e310d81053d12dd208a2f6df059",
+      "four_state_summary": "ORIGINAL SOURCE: the intact ground-floor café window, thick brick returns, timber mullion, attached glass, stone sill and adjoining paving. Show mortar depth, the sill's underside and a distinctive chipped corner low on the same brick pier. The accepted restaurant occupies the actual depth behind this window: its existing table, chair, woman and remembered man retain their source positions. They can be partly obscured by the original window structure, but do not invent a different empty interior. → WINDOW BURSTS INTO A DEEP MASONRY AND GLASS ARRAY: → ROOM EMERGES THROUGH AN UNJOINED ARCH AND OPEN GLASS HELICES: → RESOLVED DESTINATION: the same window opening has become the full-depth occupied restaurant projecting into the street, with the accepted table and chair on the supported wooden floor beyond the original jamb. All THREE source glass segments have now resolved into complete attached curved pendant shades with closed finished profiles; none retains a flat shard face or open intermediate seam. The floor reaches its full approximately one-metre projection, carrying the entire occupied chair and near table beyond the original facade plane. The source glass now forms attached curved pendant shades, the fasteners form stems, the mullion forms trim and the brick courses form substantial stone/plaster returns. Show all chair legs, table thickness, floor edge, pendant attachments and both rear restroom doors. Preserve the accepted woman and remembered man's identities and their original encounter. The chipped corner and surviving paving edge locate this as the same physical site as the first cell. No remaining source part disappears to reveal a finished replacement room.",
+      "prompt_review_status": "EXTREME_INTERMEDIATES_REVISED_NOT_RENDERED",
+      "review_note": "Four different configurations with per-object breakup/reshaping/reassembly. Removed mandatory conventional structural support from unoccupied intermediates; retained real material substance, tracked source parts, final supports and occupied contact."
     },
     "MW01_B": {
       "key": "MW01_B",
@@ -4056,18 +4105,18 @@
         },
         "R008": {
           "file": "02_library/morphs/R008_CAFE_OPENING_AND_FURNITURE_CONSTRUCTION_DETAILS.txt",
-          "sha256": "e79e834e22da8dde516c6ca3b51b851ea307030decc247b68a6368c40525b1f1",
+          "sha256": "c48fb3f006f7700e00ff22a26b3bd74a898a2e310d81053d12dd208a2f6df059",
           "status": "GENERATED_IMAGE_SEEN_ASSOCIATION_REPORTED_ID_UNVERIFIED",
           "evidence": "Four generated thumbnails visible in creator screenshot 2026-09-09 21-13-04. After Element-name mapping, creator reports elvileg megvan, menjunk tovabb. Full Element IDs and saved associations not independently inspected.",
           "current_prompt_image_verified": false,
-          "prompt_note": "Revised geometry/reference wording; no new generated output reviewed."
+          "prompt_note": "Radical four-state geometry revision; no resulting image inspected yet."
         },
         "R009": {
           "file": "02_library/objects/R009_FANLIGHT_TO_CANOPY_JOINT_STUDY_FOR_THE_EXTEND.txt",
-          "sha256": "7298654a9a05adc021525a411f29ea4cb95553246d4e116c0a4b50930241af3b",
+          "sha256": "5450218adb1a3640a2f023ae60821efceb2cbd8baef5ee850877d479773a1cb3",
           "status": "PREPARED_NOT_RENDERED",
           "current_prompt_image_verified": false,
-          "prompt_note": "Revised geometry/reference wording; no new generated output reviewed."
+          "prompt_note": "Radical four-state geometry revision; no resulting image inspected yet."
         },
         "R010": {
           "file": "02_library/objects/R010_WINGED_STATUE_PLINTH_AND_CONTACT_DETAIL.txt",
@@ -4820,7 +4869,8 @@
       ],
       "import_file": "00_project/elements/11_morph_reference_sheets.md",
       "import_status": "PREPARED_NOT_IMPORTED",
-      "required_pilot_subjects_unchanged": true
+      "required_pilot_subjects_unchanged": true,
+      "creative_revision": "2026-09-10: all 22 prompts now use per-object extreme intermediate configurations; no interpolation percentages, no required conventional engineering support for the unoccupied morph. Solidity and part trajectories remain explicit."
     }
   },
   "memory_reference_pages": {

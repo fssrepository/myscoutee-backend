@@ -1,5 +1,11 @@
 # Guided production session
 
+## Current all-morph revision — 2026-09-10
+
+The creator rejects mild variations and repeated near-finished targets and prioritizes detailed, ambitious material motion. All 22 four-state image prompts have now been revised with individually specified large intermediate configurations. MR001 explicitly expands into separated dome sectors, tower bands and splayed portico sections, then converges into an open arch, helical tower stack and unclosed roof before resolving the Basilica. The other 21 studies now have similarly distinct object-specific intermediate geometry. Removed conventional-engineering limits on unoccupied moving components; preserve material substance, part destinations and occupied floor/furniture contact. No new image/video was generated and the revision has no visual acceptance yet.
+
+Before another paid pilot, align any selected and accepted morph path with its video beat; older attached-only cathedral instructions must not override the new path. No reduced ambition or extra per-effect video test is assumed. References preserve a selected accepted design; named buildings can also be generated from text, and reference images do not supply missing motion instructions.
+
 ## Latest cathedral comparison — 2026-09-10
 
 The creator prefers the previous cathedral result. Compared the latest downloads `hf_20260910_040957_bb7741e2-e1b8-41af-87aa-4fac4592d5f6.png` and `hf_20260909_195819_8c30af4b-1501-4ee3-b8cb-36e5e94906ff.png`. The earlier view has substantially stronger London street context; the newer view isolates the building, includes a stray dome fragment and repeats almost-finished lower states. MR001 now explicitly retains London surroundings in all four cells, limits R006 to target-building geometry and strengthens the broad unfinished third state. Exact submitted prompt/model provenance is unverified. No further render launched, no credit charge inferred, and no complete morph image accepted yet.

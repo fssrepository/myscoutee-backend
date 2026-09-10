@@ -1,31 +1,31 @@
 # Morph sheets — 22 distinct four-state studies
 
-Every linked TXT is one complete Higgsfield image prompt: 4K 3840×2160, 16:9, four edge-to-edge 1920×1080 cells, one image output. Each sheet contains the source, two visibly unfinished material states and the destination. The same comparison camera exposes actual shape changes. These are prepared prompts; revised/new outputs have not been accepted.
+Every linked TXT is one complete Higgsfield image prompt: 4K 3840×2160, 16:9, four edge-to-edge 1920×1080 cells, one image output. Each sheet contains the source, two radically different rearrangements and the destination. Intermediate forms can expand, split, rotate and reconverge far outside a proportional source/target blend. The same comparison camera exposes actual shape changes. These are prepared prompts; revised/new outputs have not been accepted.
 
 | Key / prompt | Four-state geometry / use | Production block |
 | --- | --- | --- |
-| [MR001](MR001_ST_PAULS_TO_ST_STEPHENS_2X2.txt) | St Paul’s → interrupted portico/arch reconstruction → unfinished Basilica massing → exact Basilica | 01 |
-| [MR002](MR002_FACADE_RELIEF_TO_SCULPTED_SUPPORT_2X2.txt) | Shallow relief → projecting bust on block → half-released limbs with stone webs → full supporting sculpture | 01 |
-| [MR003](MR003_FACADE_WINDOW_CAPITAL_AND_CORNICE_2X2.txt) | Rectangular bay → half-stepped arch → full arch with unfinished capitals → complete carved bay | 01 |
-| [MR004](MR004_WINDOW_GLASS_TO_PENDANT_SHADE_2X2.txt) | Flat notched glass → concave shard → open-seam shade → complete shade | 01 |
-| [MR005](MR005_BRICK_COURSES_TO_CARVED_ARCH_2X2.txt) | Rectangular brick head → stepped wedge head → unfinished arch → carved stone arch | 01 |
-| [MR006](MR006_STONE_THRESHOLD_TO_SUPPORTED_TIMBER_FLOOR_2X2.txt) | Stone threshold → divided mineral/wood ribs → half-length boarded floor → full supported floor | 01 |
-| [MR007](MR007_BENCH_TO_CURVED_FLOOR_BORDER_2X2.txt) | Bench → splayed supported slats → open angular border → curved timber border | 01 |
-| [MR008](MR008_WINDOW_FITTINGS_TO_PENDANT_STEM_2X2.txt) | Short fixing → stepped elongated shank → bent unfinished socket → attached lamp stem | 01 |
-| [MR009](MR009_BALCONY_SCROLL_TO_SIDEWAYS_STAIR_2X2.txt) | Coiled rail → spreading thick plate segments → uneven half-stair → supported sideways stair | 01 |
-| [MR010](MR010_ENGLISH_SIGN_TO_KAVE_LETTERING_2X2.txt) | Mounted source letters → split raised strokes → partly formed target glyphs → KÁVÉ | 01 |
-| [MR011](MR011_SLATE_ROOF_TO_CURVED_GLAZING_2X2.txt) | Pitched slate roof → unequal bent ribs → half-glazed curved roof → complete glazing | 01 |
-| [MR012](MR012_CHIMNEY_SHAFTS_TO_SPIRAL_CROWNS_2X2.txt) | Square chimney pair → offset helical courses → open unfinished crowns → spiral stone uprights | 01 |
-| [MR013](MR013_ENTRANCE_RAIL_TO_TRANSIT_GATE_2X2.txt) | Railing → thickened post and split elbow → unfinished gate housing → complete transit gate | 02 |
-| [MR014](MR014_BENCH_AND_CANOPY_TO_BUS_SEATING_2X2.txt) | Bench and posts → divided seat shells → unfinished seat row/window pillars → remembered bus geometry | 02 |
-| [MR015](MR015_CANOPY_TO_BALLOON_ENVELOPE_2X2.txt) | Canopy → asymmetric rising ribs → partly rounded envelope → balloon with supported basket | 02 |
-| [MR016](MR016_CROP_STALKS_TO_RAIL_SLEEPERS_2X2.txt) | Rooted plants → thick bent stalk bundles → unfinished timber sleepers → supported rail bed | 02 |
-| [MR017](MR017_CABINET_TO_DESK_AND_CHAIR_2X2.txt) | Cabinet → extended top and divided panels → unfinished desk/chair → complete procedure furniture | 04 |
-| [MR018](MR018_HEARING_BENCH_TO_DOCUMENT_SHELVING_2X2.txt) | Hearing bench → split timber supports → half-shelf/half-compartment → complete file shelving | 05 |
-| [MR019](MR019_PAVING_AND_GUTTER_TO_STREET_TERRACE_2X2.txt) | Ordinary street → staggered extending courses → half-built terrace → open supported street pocket | 01 |
-| [MR020](MR020_ROPE_FIBRES_TO_SHEET_HEM_2X2.txt) | Rope → spreading fibre web → unfinished fabric hem → white sheet edge | 07 |
-| [R009](../objects/R009_FANLIGHT_TO_CANOPY_JOINT_STUDY_FOR_THE_EXTEND.txt) | Upright fanlight → uneven rib fan → partial projecting canopy → complete supported roof | 01 |
-| [R008](R008_CAFE_OPENING_AND_FURNITURE_CONSTRUCTION_DETAILS.txt) | Intact window → fractured pane/partial arch → half-emerged floor and unfinished shades → occupied restaurant | 01 |
+| [MR001](MR001_ST_PAULS_TO_ST_STEPHENS_2X2.txt) | INTACT ST PAUL'S, COMPACT AND CLOSED: → EXPANSIVE BREAKUP: OPEN ROOF CAGE, SEPARATED TOWER BANDS, SPLAYED PORTICO: → INWARD REASSEMBLY: UNFINISHED GIANT ARCH, HELICAL TOWER, OFFSET DOME CLOSURE: → FULLY REASSEMBLED ST STEPHEN'S BASILICA: | 01 |
+| [MR002](MR002_FACADE_RELIEF_TO_SCULPTED_SUPPORT_2X2.txt) | ATTACHED LONDON STONE RELIEF: → PROJECTING STONE BUST ON A SPLIT FAN OF MASS: → UNFURLED FIGURE WITH AN OPEN ARM LOOP AND HALF-DIVIDED LEGS: → FULL-DEPTH PEST-STYLE SCULPTED CORBEL: | 01 |
+| [MR003](MR003_FACADE_WINDOW_CAPITAL_AND_CORNICE_2X2.txt) | ORIGINAL LONDON WINDOW BAY: → SPLAYED RECTANGULAR FRAME AND SEPARATING STONE CROWNS: → ARCH CHAINS WITH A WIDE CROWN GAP AND OVERSIZED UNFINISHED VOLUTES: → RESOLVED PEST HISTORIC WINDOW BAY: | 01 |
+| [MR004](MR004_WINDOW_GLASS_TO_PENDANT_SHADE_2X2.txt) | SOURCE: → THREE-DIMENSIONAL GLASS SADDLE WITH SPLAYED CORNERS: → OPEN HELICAL SHADE BEFORE ITS RIMS JOIN: → RESOLVED DESTINATION: | 01 |
+| [MR005](MR005_BRICK_COURSES_TO_CARVED_ARCH_2X2.txt) | SOURCE: → OUTWARD SPREADING BRICK COURSES AND DEEP STONE BLANKS: → TWO INWARD CURLING ARCH HALVES, UNJOINED AT THE TOP: → RESOLVED DESTINATION: | 01 |
+| [MR006](MR006_STONE_THRESHOLD_TO_SUPPORTED_TIMBER_FLOOR_2X2.txt) | SOURCE: → FANNED STONE-TO-WOOD RIBS ABOVE THE PAVING: → OPEN TIMBER DECK WITH RAISED UNSEATED BOARD ENDS: → RESOLVED DESTINATION: | 01 |
+| [MR007](MR007_BENCH_TO_CURVED_FLOOR_BORDER_2X2.txt) | SOURCE: → BENCH SLATS EXPAND INTO A WIDE ASYMMETRIC FAN: → TALL OPEN SPIRAL GATHERING INTO A LOW FLOOR BORDER: → RESOLVED DESTINATION: | 01 |
+| [MR008](MR008_WINDOW_FITTINGS_TO_PENDANT_STEM_2X2.txt) | SOURCE: → FIXING EXPANDS INTO AN ANGULAR METAL FORK: → OVERSIZED OPEN COIL CONVERGING ON THE LAMP NECK: → RESOLVED DESTINATION: | 01 |
+| [MR009](MR009_BALCONY_SCROLL_TO_SIDEWAYS_STAIR_2X2.txt) | SOURCE: → BALCONY COIL UNWINDS INTO THICK RADIAL TREAD BLANKS: → DOUBLE-ZIGZAG STAIR WITH ROTATED TREADS AND AN UNJOINED RAIL: → RESOLVED DESTINATION: | 01 |
+| [MR010](MR010_ENGLISH_SIGN_TO_KAVE_LETTERING_2X2.txt) | SOURCE: → RAISED LETTER STROKES SPREAD INTO A THREE-DIMENSIONAL LATTICE: → FOUR OPEN TARGET GLYPH SKELETONS BEFORE CLOSURE: → RESOLVED DESTINATION: | 01 |
+| [MR011](MR011_SLATE_ROOF_TO_CURVED_GLAZING_2X2.txt) | SOURCE: → ROOF SECTORS OPEN INTO A WIDE UNEQUAL RIB CAGE: → CURVED GLASS ROOF WITH A LARGE OPEN CENTRAL SEAM: → RESOLVED DESTINATION: | 01 |
+| [MR012](MR012_CHIMNEY_SHAFTS_TO_SPIRAL_CROWNS_2X2.txt) | SOURCE: → SEPARATED CHIMNEY BANDS IN AN EXPANDING HELIX: → CONVERGING SPIRAL UPRIGHTS WITH SPLAYED CROWN SEGMENTS: → RESOLVED DESTINATION: | 01 |
+| [MR013](MR013_ENTRANCE_RAIL_TO_TRANSIT_GATE_2X2.txt) | SOURCE: → RAIL OPENS INTO A BROAD FORK AND SPLIT GATE SHELL: → UNFINISHED ROTATING GATE WITH AN OPEN HOUSING AND OVERSIZED LEAF: → RESOLVED DESTINATION: | 02 |
+| [MR014](MR014_BENCH_AND_CANOPY_TO_BUS_SEATING_2X2.txt) | SOURCE: → BENCH AND POSTS SPLAY INTO SEAT AND WINDOW FRAME PARTS: → CONVERGING BUS ROOM WITH RAISED SEAT SHELLS AND OFFSET PILLARS: → RESOLVED DESTINATION: | 02 |
+| [MR015](MR015_CANOPY_TO_BALLOON_ENVELOPE_2X2.txt) | SOURCE: → CANOPY EXPANDS INTO AN ASYMMETRIC ENVELOPE CAGE: → OPEN LOBED BALLOON WITH UNJOINED FABRIC SECTORS: → RESOLVED DESTINATION: | 02 |
+| [MR016](MR016_CROP_STALKS_TO_RAIL_SLEEPERS_2X2.txt) | SOURCE: → UPROOTED-SHAPED STALK ARCS OVER THE SAME SOIL STRIP: → RAISED TIMBER SLEEPER BLANKS WITH LARGE PLANT ENDS: → RESOLVED DESTINATION: | 02 |
+| [MR017](MR017_CABINET_TO_DESK_AND_CHAIR_2X2.txt) | SOURCE: → CABINET EXPANDS INTO A SPLAYED FURNITURE SKELETON: → UNJOINED DESK AND CHAIR WITH A LARGE REMAINING PANEL WEB: → RESOLVED DESTINATION: | 04 |
+| [MR018](MR018_HEARING_BENCH_TO_DOCUMENT_SHELVING_2X2.txt) | SOURCE: → BENCH BOARDS SPLAY INTO A TALL BRANCHED TIMBER FRAME: → OPEN SHELVING WITH DIAGONAL DIVIDERS AND UNSEATED BOARDS: → RESOLVED DESTINATION: | 05 |
+| [MR019](MR019_PAVING_AND_GUTTER_TO_STREET_TERRACE_2X2.txt) | SOURCE: → PAVING COURSES SPREAD INTO A LARGE STEPPED STONE FAN: → BROAD TERRACE WITH UNSEATED RISERS AND OPEN ARCH CHAINS: → RESOLVED DESTINATION: | 01 |
+| [MR020](MR020_ROPE_FIBRES_TO_SHEET_HEM_2X2.txt) | SOURCE: → ROPE UNTWISTS INTO A WIDE OPEN FIBRE FAN: → LOOSE WOVEN LATTICE WITH A THICK UNFINISHED ROPE EDGE: → RESOLVED DESTINATION: | 07 |
+| [R009](../objects/R009_FANLIGHT_TO_CANOPY_JOINT_STUDY_FOR_THE_EXTEND.txt) | SOURCE: → FANLIGHT SPLITS INTO A WIDELY SPLAYED RIB ARRAY: → CONVERGING OVERHEAD CANOPY WITH A LARGE OPEN ROOF SECTOR: → RESOLVED DESTINATION: | 01 |
+| [R008](R008_CAFE_OPENING_AND_FURNITURE_CONSTRUCTION_DETAILS.txt) | ORIGINAL SOURCE: the intact ground-floor café window, thick brick returns, timber mullion, attached glass, stone sill and adjoining paving. Show mortar depth, the sill's underside and a distinctive chipped corner low on the same brick pier. The accepted restaurant occupies the actual depth behind this window: its existing table, chair, woman and remembered man retain their source positions. They can be partly obscured by the original window structure, but do not invent a different empty interior. → WINDOW BURSTS INTO A DEEP MASONRY AND GLASS ARRAY: → ROOM EMERGES THROUGH AN UNJOINED ARCH AND OPEN GLASS HELICES: → RESOLVED DESTINATION: the same window opening has become the full-depth occupied restaurant projecting into the street, with the accepted table and chair on the supported wooden floor beyond the original jamb. All THREE source glass segments have now resolved into complete attached curved pendant shades with closed finished profiles; none retains a flat shard face or open intermediate seam. The floor reaches its full approximately one-metre projection, carrying the entire occupied chair and near table beyond the original facade plane. The source glass now forms attached curved pendant shades, the fasteners form stems, the mullion forms trim and the brick courses form substantial stone/plaster returns. Show all chair legs, table thickness, floor edge, pendant attachments and both rear restroom doors. Preserve the accepted woman and remembered man's identities and their original encounter. The chipped corner and surviving paving edge locate this as the same physical site as the first cell. No remaining source part disappears to reveal a finished replacement room. | 01 |
 
 ## Render and input state
 
@@ -36,8 +36,14 @@ Every linked TXT is one complete Higgsfield image prompt: 4K 3840×2160, 16:9, f
 
 ## Acceptance before using a sheet in video
 
-At whole-sheet viewing size, all four silhouettes/openings/projections must be distinguishable. The first middle cell must visibly retain substantial source geometry and substantial reconstruction. The second must show a different large unfinished region, not the polished target again. Inspect one tracked joint/material patch, thick side faces, support and changing contact shadows across the states. Reject four similar finished objects, a texture recolour, a new camera angle presented as a morph, disappearing source mass, missing room inhabitants or an incorrect endpoint.
+At whole-sheet viewing size, all four silhouettes/openings/projections must be distinguishable. The first middle cell must show the specified large outward/splayed/split configuration; the second must show the different converging/open/partly joined configuration. Compare their whole silhouettes, open gaps and material cross-sections. Neither middle state is a finished endpoint with a few defects. Inspect one tracked joint/material patch, thick side faces, tracked component destinations and changing shadows across the states. Unoccupied components can temporarily detach or suspend; do not use conventional engineering constraints to force an unchanged object. Occupied furniture/floor contact and completed target supports remain explicit. Reject four similar finished objects, a texture recolour, a new camera angle presented as a morph, disappearing source mass, missing room inhabitants or an incorrect endpoint.
 
 The sheet must not enter the video as four cuts. The video retains its own duration, camera trajectory, current people’s numerical cards and human memory. A slow partial orbit can expose the changing material depth, followed by acceleration through connected space. Still images guide geometry; only the video result can establish continuous movement.
 
 All actual image creation remains inside the creator’s Higgsfield workflow. A selected 4K setting does not guarantee correct intermediate shapes or actual downloaded dimensions.
+
+## Why references are used
+
+A recognisable named building can be generated from text alone. Input images are a choice for preserving a particular previously accepted design, room, character or material treatment; they are not what defines the four morph states. The current files declare the inputs selected for that matching workflow, so their readiness checks validate those declared inputs. Text-only variants must be made explicitly self-contained before removing those dependencies; no `@UNBOUND_…` marker is a real reference. Reference geometry must not freeze the shape during the intermediate action or import an isolated object backdrop into the London scene.
+
+The 2026-09-10 revision changes the material path, not the number of images or video jobs. Selected morphs must be checked against the relevant video beat before paid generation, so an older attached-only movement instruction does not contradict the newly accepted disassembly/reassembly geometry. The comparison image does not by itself establish how quickly the video can traverse that path.
