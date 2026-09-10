@@ -1,19 +1,16 @@
-REFERENCE SETUP INCOMPLETE: W01_A_01, W01_A_02, W01_A_03, W01_A_04, W01_B_01, W01_B_02, W01_B_03, W01_B_04, W01_C_01, W01_C_02, W01_C_03, W01_C_04
-Do not generate until these references are bound.
-
 WORLD REFERENCES — ORDERED SINGLE VIEWS:
-@UNBOUND_W01_A_01 supplies W01 group A, position 01, original view 01.
-@UNBOUND_W01_A_02 supplies W01 group A, position 02, original view 02.
-@UNBOUND_W01_A_03 supplies W01 group A, position 03, original view 03.
-@UNBOUND_W01_A_04 supplies W01 group A, position 04, original view 04.
-@UNBOUND_W01_B_01 supplies W01 group B, position 01, original view 05.
-@UNBOUND_W01_B_02 supplies W01 group B, position 02, original view 06.
-@UNBOUND_W01_B_03 supplies W01 group B, position 03, original view 07.
-@UNBOUND_W01_B_04 supplies W01 group B, position 04, original view 08.
-@UNBOUND_W01_C_01 supplies W01 group C, position 01, original view 09.
-@UNBOUND_W01_C_02 supplies W01 group C, position 02, original view 01.
-@UNBOUND_W01_C_03 supplies W01 group C, position 03, original view 07.
-@UNBOUND_W01_C_04 supplies W01 group C, position 04, original view 08.
+@loc_MYS_mys-w01-a-01-world-view-01_s0_v1 supplies W01 group A, position 01, original view 01.
+@loc_MYS_mys-w01-a-02-world-view-02_s0_v1 supplies W01 group A, position 02, original view 02.
+@loc_MYS_mys-w01-a-03-world-view-03_s0_v1 supplies W01 group A, position 03, original view 03.
+@loc_MYS_mys-w01-a-04-world-view-04_s0_v1 supplies W01 group A, position 04, original view 04.
+@loc_MYS_mys-w01-b-01-world-view-05_s0_v1 supplies W01 group B, position 01, original view 05.
+@loc_MYS_mys-w01-b-02-world-view-06_s0_v1 supplies W01 group B, position 02, original view 06.
+@loc_MYS_mys-w01-b-03-world-view-07_s0_v1 supplies W01 group B, position 03, original view 07.
+@loc_MYS_mys-w01-b-04-world-view-08_s0_v1 supplies W01 group B, position 04, original view 08.
+@loc_MYS_mys-w01-c-01-world-view-09_s0_v1 supplies W01 group C, position 01, original view 09.
+@loc_MYS_mys-w01-c-02-world-view-01_s0_v1 supplies W01 group C, position 02, original view 01.
+@loc_MYS_mys-w01-c-03-world-view-07_s0_v1 supplies W01 group C, position 03, original view 07.
+@loc_MYS_mys-w01-c-04-world-view-08_s0_v1 supplies W01 group C, position 04, original view 08.
 
 These twelve full-frame 16:9 world images replace the former three comparison pages. Attach A01–A04, B01–B04, C01–C04 in the listed order and bind each actual Element to its named slot. Original-view order is A: 01–04; B: 05–08; C: 09, 01, 07, 08. Repeated views retain their source or destination identity. Use each as spatial and material evidence for its assigned part of the existing continuous route, not twelve cuts or sequential morph stages. Do not transfer a destination into the London opening. Preserve the existing cast, camera, sound, duration and ending. Dedicated morph sheets retain their own top-left, top-right, bottom-left, bottom-right material-state order.
 
@@ -36,7 +33,7 @@ Heavy overcast London sky with cool diffuse evening light. The air is clear and 
 REFERENCE ROLES:
 @char_MYS_mys-c01-protagonist_s0_v1 defines the current walker's face, hair, body and dark jacket. His remembered self is a separate occurrence beside the restaurant's restroom doors; preserve the same identity without replacing the current walker.
 @char_MYS_mys-c02-soho-woman_s0_v1 defines the woman in the restaurant memory. Keep her seated at the same table, with room to turn her head and move her hand.
-@UNBOUND_W01_A_01 @UNBOUND_W01_A_02 @UNBOUND_W01_A_03 @UNBOUND_W01_A_04 supplies London street proportions, wet materials and transport; its Pest stonework and St Stephen's Basilica define the target forms of the transformation. Use its top-left cell to establish the street axis. The other cells supply materials, not later shots. Use only the London street geometry from the top-left cell at the opening; withhold its Basilica silhouette until the transformation. Start with the specific St Paul's Cathedral in that position: its great ribbed dome on a drum, classical body and paired west towers. Use the existing Basilica image only for the destination building’s shape and detail. Its camera position, crop, foreground, square layout and people are not a requested opening or final shot; the transformed Basilica must occupy the inherited St Paul’s site as seen by the continuously moving camera. Hungarian architecture arrives through visible movement within the shot. This reference supplies a starting world; the moving architecture and emerging memory deliberately exceed its static geometry. Render the numerical cards specified here even if an older supplied world image omits them; missing scores in a reference are not an instruction to omit them in the video. Any rain or umbrellas in the source sheet are reference-image details to omit: render the post-rain weather and uncovered heads specified here.
+@loc_MYS_mys-w01-a-01-world-view-01_s0_v1 @loc_MYS_mys-w01-a-02-world-view-02_s0_v1 @loc_MYS_mys-w01-a-03-world-view-03_s0_v1 @loc_MYS_mys-w01-a-04-world-view-04_s0_v1 supplies London street proportions, wet materials and transport; its Pest stonework and St Stephen's Basilica define the target forms of the transformation. Use its top-left cell to establish the street axis. The other cells supply materials, not later shots. Use only the London street geometry from the top-left cell at the opening; withhold its Basilica silhouette until the transformation. Start with the specific St Paul's Cathedral in that position: its great ribbed dome on a drum, classical body and paired west towers. Use the existing Basilica image only for the destination building’s shape and detail. Its camera position, crop, foreground, square layout and people are not a requested opening or final shot; the transformed Basilica must occupy the inherited St Paul’s site as seen by the continuously moving camera. Hungarian architecture arrives through visible movement within the shot. This reference supplies a starting world; the moving architecture and emerging memory deliberately exceed its static geometry. Render the numerical cards specified here even if an older supplied world image omits them; missing scores in a reference are not an instruction to omit them in the video. Any rain or umbrellas in the source sheet are reference-image details to omit: render the post-rain weather and uncovered heads specified here.
 @loc_MYS_pilot-soho-restaurant-memory_s1_v1 supplies the exact warm sushi restaurant: modest wooden tables, the seated woman, and the remembered man beside two restroom doors. Reconstruct that room and both remembered people as a complete life-size three-dimensional space, using the image for identity, layout, furniture and lighting. The still defines a place to reconstruct from the changing street itself. No reflection, projected image, glass display or portal is used to introduce the memory. Preserve its distinctive room and characters rather than substituting a generic café interior.
 
 SUPPLEMENTARY IMAGE ROLES FOR THIS TEST:

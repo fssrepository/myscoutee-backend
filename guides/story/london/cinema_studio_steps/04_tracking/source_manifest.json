@@ -899,7 +899,7 @@
       ],
       "source_prompt_sha256": "76a53b46490f7087051a6b61360543112b874118c1dec4b28d592f08a5c3ed46",
       "file": "03_film/01/storyboard.txt",
-      "file_sha256": "5faa13331c50b743584af0e0fa2522e9ad06e9118f41079456f0fddb5a7eedac",
+      "file_sha256": "5e6969b1e8a960066ff3852e47ee1b35ef2fc3efba5d4c866db070263f55c137",
       "changes": "All nine beats retained; requested camera/architecture added; card and AI-screen contradictions corrected; SB06 memory dependencies repaired; explicit centrally maintained reference inputs Grid geometry uses the full selected image resolution instead of fixed pixel examples."
     },
     {
@@ -923,7 +923,7 @@
       ],
       "source_prompt_sha256": "d111e179fa9211ddb262d74468ee38305f1776d75138a0c33a3e229ff58dff3d",
       "file": "03_film/01/video.txt",
-      "file_sha256": "7f68344b53fcda625d06c78a01e66dcbbb2a7ebb6841b6e9eca7c0d3c423e9d9",
+      "file_sha256": "4f5e213c09c9be28b6340d10443b1636bf6b98627bd9a56294a523b7378b227c",
       "changes": "Operator/retry prose and repeated rules removed; all nine story beats retained; camera/architecture updated; audio cues follow visuals; reveal and reference contradictions repaired; Verified C01/C02 Element IDs substituted for local aliases; explicit reference binding; original Hungarian folk-rooted score and synchronized material transformation foley; researched Dél-Alföld tekerő/clarinet arrangement, phrase-synchronized facade motion, explicit protagonist inner monologue"
     },
     {
@@ -935,7 +935,7 @@
       ],
       "source_prompt_sha256": "28ff9c6f1fdfeb4618c4696283c1e38722a62ee2792af219b5b9f14cc9bcfc29",
       "file": "03_film/02/storyboard.txt",
-      "file_sha256": "996ad07df02c37fffd7f6cf23244233f2c3e78c63f6b6167a2f2ae5ecba24925",
+      "file_sha256": "442262e5a96b4ea76afdfd6d007c3d52dc1c9e0f6131deb5ef14e15a3d0ef180",
       "changes": "All nine beats retained; requested camera/architecture added; card and AI-screen contradictions corrected; SB06 memory dependencies repaired; explicit centrally maintained reference inputs; rural memory grounded in creator's Orosháza paprika/corn-field childhood Grid geometry uses the full selected image resolution instead of fixed pixel examples."
     },
     {
@@ -959,7 +959,7 @@
       ],
       "source_prompt_sha256": "1ee3bb2feea06f9cb11dac2f33cac0b6c8a0735bc0a73938e537a716ad9146ba",
       "file": "03_film/02/video.txt",
-      "file_sha256": "71817f5f987c5aeec396b690a6b96ef5d73f5d8596bcdb248109fc0a2a2d4164",
+      "file_sha256": "4e34ca03625110c941488be9d0168c788bb2a69e075b7809eba7d6f33c645438",
       "changes": "Operator/retry prose and repeated rules removed; all nine story beats retained; camera/architecture updated; audio cues follow visuals; reveal and reference contradictions repaired; Verified C01/C02 Element IDs substituted for local aliases; explicit reference binding; original Hungarian folk-rooted score and synchronized material transformation foley; researched Dél-Alföld tekerő/clarinet arrangement, phrase-synchronized facade motion, explicit protagonist inner monologue; rural memory grounded in creator's Orosháza paprika/corn-field childhood Continuation preserves narrator timbre and a natural breath over an uninterrupted sound bed."
     },
     {
@@ -971,7 +971,7 @@
       ],
       "source_prompt_sha256": "533e440baa4117a4d2f7733e327dfca304ea8a54d066010cc8ab8722cadb259c",
       "file": "03_film/03/storyboard.txt",
-      "file_sha256": "4c8a20423856f21b53d004d3901cce8bceb25f580bd9053ca6162128fa504320",
+      "file_sha256": "9d0c0f5541f56b4b63ed5b1375aca7da0982708efadb2f8dc123365573329ee2",
       "changes": "All nine beats retained; requested camera/architecture added; card and AI-screen contradictions corrected; SB06 memory dependencies repaired; explicit centrally maintained reference inputs Grid geometry uses the full selected image resolution instead of fixed pixel examples."
     },
     {
@@ -995,7 +995,7 @@
       ],
       "source_prompt_sha256": "4970f288124db4473bf4af10c0fb6a9d66f5bae619718ed4d3907489e0c8cc95",
       "file": "03_film/03/video.txt",
-      "file_sha256": "fedc87894b9cbe5f22b78dea5a006b0d63f0b52465e9bc9a43388e590e65f59f",
+      "file_sha256": "cc3f8e223606ee13c965d17be75de2f9ab63526857244017952d366e6c184ef2",
       "changes": "Operator/retry prose and repeated rules removed; all nine story beats retained; camera/architecture updated; audio cues follow visuals; reveal and reference contradictions repaired; Verified C01/C02 Element IDs substituted for local aliases; explicit reference binding; original Hungarian folk-rooted score and synchronized material transformation foley; researched Dél-Alföld tekerő/clarinet arrangement, phrase-synchronized facade motion, explicit protagonist inner monologue Continuation preserves narrator timbre and a natural breath over an uninterrupted sound bed."
     },
     {
@@ -1007,7 +1007,7 @@
       ],
       "source_prompt_sha256": "5459cc1d93853c47aacf113a3e593f61ee6cb49aa0fe81079b89706e0588086a",
       "file": "03_film/04/storyboard.txt",
-      "file_sha256": "12db6b2553fe3d2948b1ac2e31fb268f17ee613a3d7af9c1c7fd591658f320bb",
+      "file_sha256": "7bd42d0a2662f0f3743f7dd71cd7e1e12ef97888649db0c4366733278b375566",
       "changes": "All nine beats retained; requested camera/architecture added; card and AI-screen contradictions corrected; SB06 memory dependencies repaired; explicit centrally maintained reference inputs Grid geometry uses the full selected image resolution instead of fixed pixel examples."
     },
     {
@@ -1031,7 +1031,7 @@
       ],
       "source_prompt_sha256": "dcfdef2b9227d2f0528bbca68b9dad63fc71b2087b289dbfbb25c8dfb8ff6370",
       "file": "03_film/04/video.txt",
-      "file_sha256": "774a26154a0b4ff607eaadb8b61d022dffb57d02daa32e9bd20d131caf07d4d2",
+      "file_sha256": "2fc3e817b79a1b7c39f49ee8d5df88e85a1f229e0521671827f4e65923316c4d",
       "changes": "Operator/retry prose and repeated rules removed; all nine story beats retained; camera/architecture updated; audio cues follow visuals; reveal and reference contradictions repaired; Verified C01/C02 Element IDs substituted for local aliases; explicit reference binding; original Hungarian folk-rooted score and synchronized material transformation foley; researched Dél-Alföld tekerő/clarinet arrangement, phrase-synchronized facade motion, explicit protagonist inner monologue Continuation preserves narrator timbre and a natural breath over an uninterrupted sound bed."
     },
     {
@@ -2776,7 +2776,7 @@
         "MWP01_B",
         "MWP01_C"
       ],
-      "prompt_sha256": "5faa13331c50b743584af0e0fa2522e9ad06e9118f41079456f0fddb5a7eedac"
+      "prompt_sha256": "5e6969b1e8a960066ff3852e47ee1b35ef2fc3efba5d4c866db070263f55c137"
     },
     "A01": {
       "key": "A01",
@@ -2818,7 +2818,7 @@
         "MWP01_B",
         "MWP01_C"
       ],
-      "prompt_sha256": "7f68344b53fcda625d06c78a01e66dcbbb2a7ebb6841b6e9eca7c0d3c423e9d9"
+      "prompt_sha256": "4f5e213c09c9be28b6340d10443b1636bf6b98627bd9a56294a523b7378b227c"
     },
     "SB02": {
       "key": "SB02",
@@ -2860,7 +2860,7 @@
         "MWP01_B",
         "MWP01_C"
       ],
-      "prompt_sha256": "996ad07df02c37fffd7f6cf23244233f2c3e78c63f6b6167a2f2ae5ecba24925"
+      "prompt_sha256": "442262e5a96b4ea76afdfd6d007c3d52dc1c9e0f6131deb5ef14e15a3d0ef180"
     },
     "A02": {
       "key": "A02",
@@ -2912,7 +2912,7 @@
         "MWP01_B",
         "MWP01_C"
       ],
-      "prompt_sha256": "71817f5f987c5aeec396b690a6b96ef5d73f5d8596bcdb248109fc0a2a2d4164"
+      "prompt_sha256": "4e34ca03625110c941488be9d0168c788bb2a69e075b7809eba7d6f33c645438"
     },
     "SB03": {
       "key": "SB03",
@@ -2942,7 +2942,7 @@
         "MWP01_B",
         "MWP01_C"
       ],
-      "prompt_sha256": "4c8a20423856f21b53d004d3901cce8bceb25f580bd9053ca6162128fa504320"
+      "prompt_sha256": "9d0c0f5541f56b4b63ed5b1375aca7da0982708efadb2f8dc123365573329ee2"
     },
     "A03": {
       "key": "A03",
@@ -2982,7 +2982,7 @@
         "MWP01_B",
         "MWP01_C"
       ],
-      "prompt_sha256": "fedc87894b9cbe5f22b78dea5a006b0d63f0b52465e9bc9a43388e590e65f59f"
+      "prompt_sha256": "cc3f8e223606ee13c965d17be75de2f9ab63526857244017952d366e6c184ef2"
     },
     "SB04": {
       "key": "SB04",
@@ -3010,7 +3010,7 @@
         "MW04_B",
         "MW04_C"
       ],
-      "prompt_sha256": "12db6b2553fe3d2948b1ac2e31fb268f17ee613a3d7af9c1c7fd591658f320bb"
+      "prompt_sha256": "7bd42d0a2662f0f3743f7dd71cd7e1e12ef97888649db0c4366733278b375566"
     },
     "A04": {
       "key": "A04",
@@ -3048,7 +3048,7 @@
         "MW04_B",
         "MW04_C"
       ],
-      "prompt_sha256": "774a26154a0b4ff607eaadb8b61d022dffb57d02daa32e9bd20d131caf07d4d2"
+      "prompt_sha256": "2fc3e817b79a1b7c39f49ee8d5df88e85a1f229e0521671827f4e65923316c4d"
     },
     "SB05": {
       "key": "SB05",
@@ -5270,7 +5270,7 @@
       "layout": "single full-frame 16:9",
       "intended_resolution": "2K",
       "prompt_sha256": "f7ab960e74370d7e1a00b3f6f4acbea822e430e2f742d229f20a9b2ef78f377e",
-      "status": "PREPARED_NOT_GENERATED",
+      "status": "CREATOR_SUPPLIED_OUTPUT_ELEMENT_ID_MEDIA_NOT_REVIEWED",
       "world": "W01",
       "group": "A",
       "group_position": 1,
@@ -5285,7 +5285,7 @@
       "layout": "single full-frame 16:9",
       "intended_resolution": "2K",
       "prompt_sha256": "74597d6d47ead885f92b0e9a7dd6eb71efe5418a7c7f67c53814655a24929a33",
-      "status": "PREPARED_NOT_GENERATED",
+      "status": "CREATOR_SUPPLIED_OUTPUT_ELEMENT_ID_MEDIA_NOT_REVIEWED",
       "world": "W01",
       "group": "A",
       "group_position": 2,
@@ -5300,7 +5300,7 @@
       "layout": "single full-frame 16:9",
       "intended_resolution": "2K",
       "prompt_sha256": "9857936f77558fdfe3731a43d758e967002b1307323b056eed59e098eceff70b",
-      "status": "PREPARED_NOT_GENERATED",
+      "status": "CREATOR_SUPPLIED_OUTPUT_ELEMENT_ID_MEDIA_NOT_REVIEWED",
       "world": "W01",
       "group": "A",
       "group_position": 3,
@@ -5315,7 +5315,7 @@
       "layout": "single full-frame 16:9",
       "intended_resolution": "2K",
       "prompt_sha256": "eeaa2f0091021c704d173478694d3d88744308cfafee596fcadc91ada8f31e2f",
-      "status": "PREPARED_NOT_GENERATED",
+      "status": "CREATOR_SUPPLIED_OUTPUT_ELEMENT_ID_MEDIA_NOT_REVIEWED",
       "world": "W01",
       "group": "A",
       "group_position": 4,
@@ -5330,7 +5330,7 @@
       "layout": "single full-frame 16:9",
       "intended_resolution": "2K",
       "prompt_sha256": "fb9059eac59a0a216ade1d2865a1f6b3e3dd4891a16b6c5b72d2ad595300c432",
-      "status": "PREPARED_NOT_GENERATED",
+      "status": "CREATOR_SUPPLIED_OUTPUT_ELEMENT_ID_MEDIA_NOT_REVIEWED",
       "world": "W01",
       "group": "B",
       "group_position": 1,
@@ -5345,7 +5345,7 @@
       "layout": "single full-frame 16:9",
       "intended_resolution": "2K",
       "prompt_sha256": "261a8624e94e9eed7f6ca611de942e964b0e95c41a460f6ced187b61acb0297f",
-      "status": "PREPARED_NOT_GENERATED",
+      "status": "CREATOR_SUPPLIED_OUTPUT_ELEMENT_ID_MEDIA_NOT_REVIEWED",
       "world": "W01",
       "group": "B",
       "group_position": 2,
@@ -5360,7 +5360,7 @@
       "layout": "single full-frame 16:9",
       "intended_resolution": "2K",
       "prompt_sha256": "d29a15316e8662d047ecc58773e49e12882d3002e03ea99cc31da73ba64b6c3e",
-      "status": "PREPARED_NOT_GENERATED",
+      "status": "CREATOR_SUPPLIED_OUTPUT_ELEMENT_ID_MEDIA_NOT_REVIEWED",
       "world": "W01",
       "group": "B",
       "group_position": 3,
@@ -5375,7 +5375,7 @@
       "layout": "single full-frame 16:9",
       "intended_resolution": "2K",
       "prompt_sha256": "e4149f349c1c17d896c88ffc66f0a99a269d41db94bf14d7cb2ab82e426bf938",
-      "status": "PREPARED_NOT_GENERATED",
+      "status": "CREATOR_SUPPLIED_OUTPUT_ELEMENT_ID_MEDIA_NOT_REVIEWED",
       "world": "W01",
       "group": "B",
       "group_position": 4,
@@ -5390,7 +5390,7 @@
       "layout": "single full-frame 16:9",
       "intended_resolution": "2K",
       "prompt_sha256": "51cf2d1d23be5f2c76ef8325a4f9e281e98ea679c0f8e72cf11d8a0bc557a2ed",
-      "status": "PREPARED_NOT_GENERATED",
+      "status": "CREATOR_SUPPLIED_OUTPUT_ELEMENT_ID_MEDIA_NOT_REVIEWED",
       "world": "W01",
       "group": "C",
       "group_position": 1,
@@ -5405,7 +5405,7 @@
       "layout": "single full-frame 16:9",
       "intended_resolution": "2K",
       "prompt_sha256": "d933d7d3973fe4d5daf25da0abac1319956ba8af1a18d6376275b0553adf1928",
-      "status": "PREPARED_NOT_GENERATED",
+      "status": "CREATOR_SUPPLIED_OUTPUT_ELEMENT_ID_MEDIA_NOT_REVIEWED",
       "world": "W01",
       "group": "C",
       "group_position": 2,
@@ -5420,7 +5420,7 @@
       "layout": "single full-frame 16:9",
       "intended_resolution": "2K",
       "prompt_sha256": "3e2821a6759850447a846ab50bd8d92eafc1122331942ba8dc5358094e7406d7",
-      "status": "PREPARED_NOT_GENERATED",
+      "status": "CREATOR_SUPPLIED_OUTPUT_ELEMENT_ID_MEDIA_NOT_REVIEWED",
       "world": "W01",
       "group": "C",
       "group_position": 3,
@@ -5435,7 +5435,7 @@
       "layout": "single full-frame 16:9",
       "intended_resolution": "2K",
       "prompt_sha256": "46cd53af9ab1246355c630705510c84936e8538af602136d7707874852fd5f00",
-      "status": "PREPARED_NOT_GENERATED",
+      "status": "CREATOR_SUPPLIED_OUTPUT_ELEMENT_ID_MEDIA_NOT_REVIEWED",
       "world": "W01",
       "group": "C",
       "group_position": 4,
@@ -5450,7 +5450,7 @@
       "layout": "single full-frame 16:9",
       "intended_resolution": "2K",
       "prompt_sha256": "bbff8de61a257d9334cef3ab46808f45789f522f7deaaf946000904f8ef59b0e",
-      "status": "PREPARED_NOT_GENERATED",
+      "status": "CREATOR_SUPPLIED_OUTPUT_ELEMENT_ID_MEDIA_NOT_REVIEWED",
       "world": "W02",
       "group": "A",
       "group_position": 1,
@@ -5465,7 +5465,7 @@
       "layout": "single full-frame 16:9",
       "intended_resolution": "2K",
       "prompt_sha256": "360cdfbb772bdcde62f84d970cf9649f04e27503c5919f85fb1e26984f6d571c",
-      "status": "PREPARED_NOT_GENERATED",
+      "status": "CREATOR_SUPPLIED_OUTPUT_ELEMENT_ID_MEDIA_NOT_REVIEWED",
       "world": "W02",
       "group": "A",
       "group_position": 2,
@@ -5480,7 +5480,7 @@
       "layout": "single full-frame 16:9",
       "intended_resolution": "2K",
       "prompt_sha256": "4389212e8200e88133e5f6cf8f9024d637d13573b6f23e8be1ff5be947026036",
-      "status": "PREPARED_NOT_GENERATED",
+      "status": "CREATOR_SUPPLIED_OUTPUT_ELEMENT_ID_MEDIA_NOT_REVIEWED",
       "world": "W02",
       "group": "A",
       "group_position": 3,
@@ -5495,7 +5495,7 @@
       "layout": "single full-frame 16:9",
       "intended_resolution": "2K",
       "prompt_sha256": "715f82c94ba3af9883328d04250b4856fe4843a9041277b8d07d36a395e82dbc",
-      "status": "PREPARED_NOT_GENERATED",
+      "status": "CREATOR_SUPPLIED_OUTPUT_ELEMENT_ID_MEDIA_NOT_REVIEWED",
       "world": "W02",
       "group": "A",
       "group_position": 4,
@@ -5510,7 +5510,7 @@
       "layout": "single full-frame 16:9",
       "intended_resolution": "2K",
       "prompt_sha256": "738b456463050ab37a06bf0644ec1091252f49af1e86f0f40440e9dbdf2008c5",
-      "status": "PREPARED_NOT_GENERATED",
+      "status": "CREATOR_SUPPLIED_OUTPUT_ELEMENT_ID_MEDIA_NOT_REVIEWED",
       "world": "W02",
       "group": "B",
       "group_position": 1,
@@ -5525,7 +5525,7 @@
       "layout": "single full-frame 16:9",
       "intended_resolution": "2K",
       "prompt_sha256": "0966e804e6e66b2f0c7d68fd3dec3dfde2ed1f1717ead8116dbd06b173f1e000",
-      "status": "PREPARED_NOT_GENERATED",
+      "status": "CREATOR_SUPPLIED_OUTPUT_ELEMENT_ID_MEDIA_NOT_REVIEWED",
       "world": "W02",
       "group": "B",
       "group_position": 2,
@@ -5540,7 +5540,7 @@
       "layout": "single full-frame 16:9",
       "intended_resolution": "2K",
       "prompt_sha256": "09ea106d83fa3849af53976a00e289b786c742c7abe54bb3c061d4a6c7ff972b",
-      "status": "PREPARED_NOT_GENERATED",
+      "status": "CREATOR_SUPPLIED_OUTPUT_ELEMENT_ID_MEDIA_NOT_REVIEWED",
       "world": "W02",
       "group": "B",
       "group_position": 3,
@@ -5555,7 +5555,7 @@
       "layout": "single full-frame 16:9",
       "intended_resolution": "2K",
       "prompt_sha256": "528c89535679cefb7e0d1b4e110dfa4e3370ec2f7d85c8572b5339084e220dea",
-      "status": "PREPARED_NOT_GENERATED",
+      "status": "CREATOR_SUPPLIED_OUTPUT_ELEMENT_ID_MEDIA_NOT_REVIEWED",
       "world": "W02",
       "group": "B",
       "group_position": 4,
@@ -5570,7 +5570,7 @@
       "layout": "single full-frame 16:9",
       "intended_resolution": "2K",
       "prompt_sha256": "e8dadb4aae68ed83b633daceabf138458340b20da229cc349936821bee34262a",
-      "status": "PREPARED_NOT_GENERATED",
+      "status": "CREATOR_SUPPLIED_OUTPUT_ELEMENT_ID_MEDIA_NOT_REVIEWED",
       "world": "W02",
       "group": "C",
       "group_position": 1,
@@ -5585,7 +5585,7 @@
       "layout": "single full-frame 16:9",
       "intended_resolution": "2K",
       "prompt_sha256": "69ee0dd3280d4de0a49ab20ebd20b49b5b3e6ba07649ba7b91f9b1fe34bd6b57",
-      "status": "PREPARED_NOT_GENERATED",
+      "status": "CREATOR_SUPPLIED_OUTPUT_ELEMENT_ID_MEDIA_NOT_REVIEWED",
       "world": "W02",
       "group": "C",
       "group_position": 2,
@@ -5600,7 +5600,7 @@
       "layout": "single full-frame 16:9",
       "intended_resolution": "2K",
       "prompt_sha256": "9a791a8a2785fd8f0ea45ce7c180e412d90f6e973e1cc5109c2af30958d51510",
-      "status": "PREPARED_NOT_GENERATED",
+      "status": "CREATOR_SUPPLIED_OUTPUT_ELEMENT_ID_MEDIA_NOT_REVIEWED",
       "world": "W02",
       "group": "C",
       "group_position": 3,
@@ -5615,7 +5615,7 @@
       "layout": "single full-frame 16:9",
       "intended_resolution": "2K",
       "prompt_sha256": "23a3d688ebcb50b38f1c464f63f84718eba7577dcd98aa0722ab1f478a1214b0",
-      "status": "PREPARED_NOT_GENERATED",
+      "status": "CREATOR_SUPPLIED_OUTPUT_ELEMENT_ID_MEDIA_NOT_REVIEWED",
       "world": "W02",
       "group": "C",
       "group_position": 4,
@@ -5630,7 +5630,7 @@
       "layout": "single full-frame 16:9",
       "intended_resolution": "2K",
       "prompt_sha256": "3b9fea9e86f4d2c729e5b3a25628388866c83a66f08886790042c733c9957f99",
-      "status": "PREPARED_NOT_GENERATED",
+      "status": "CREATOR_SUPPLIED_OUTPUT_ELEMENT_ID_MEDIA_NOT_REVIEWED",
       "world": "W03",
       "group": "A",
       "group_position": 1,
@@ -5645,7 +5645,7 @@
       "layout": "single full-frame 16:9",
       "intended_resolution": "2K",
       "prompt_sha256": "cec87e6cb7d09c1e4087c1d93f9239e6a4d5093d5e07dd6b9874d2a5333bd494",
-      "status": "PREPARED_NOT_GENERATED",
+      "status": "CREATOR_SUPPLIED_OUTPUT_ELEMENT_ID_MEDIA_NOT_REVIEWED",
       "world": "W03",
       "group": "A",
       "group_position": 2,
@@ -5660,7 +5660,7 @@
       "layout": "single full-frame 16:9",
       "intended_resolution": "2K",
       "prompt_sha256": "19fd3148df0e9997506520f2cc830367aeb58fc8547e60c6e04f4dcc6af21cf5",
-      "status": "PREPARED_NOT_GENERATED",
+      "status": "CREATOR_SUPPLIED_OUTPUT_ELEMENT_ID_MEDIA_NOT_REVIEWED",
       "world": "W03",
       "group": "A",
       "group_position": 3,
@@ -5675,7 +5675,7 @@
       "layout": "single full-frame 16:9",
       "intended_resolution": "2K",
       "prompt_sha256": "b730cb592977177345bb3e7c6f421664fd890b8553510ce71ac440f03b4a939e",
-      "status": "PREPARED_NOT_GENERATED",
+      "status": "CREATOR_SUPPLIED_OUTPUT_ELEMENT_ID_MEDIA_NOT_REVIEWED",
       "world": "W03",
       "group": "A",
       "group_position": 4,
@@ -5690,7 +5690,7 @@
       "layout": "single full-frame 16:9",
       "intended_resolution": "2K",
       "prompt_sha256": "9e8c7855d61656edc54203e1e1049e1ce2b10022d6c5e0eb2e7135dad0e3da90",
-      "status": "PREPARED_NOT_GENERATED",
+      "status": "CREATOR_SUPPLIED_OUTPUT_ELEMENT_ID_MEDIA_NOT_REVIEWED",
       "world": "W03",
       "group": "B",
       "group_position": 1,
@@ -5705,7 +5705,7 @@
       "layout": "single full-frame 16:9",
       "intended_resolution": "2K",
       "prompt_sha256": "a8b9942cac035fabda1bfbf9802436fec1dac2029ea9a7bb93342928bb5aca8a",
-      "status": "PREPARED_NOT_GENERATED",
+      "status": "CREATOR_SUPPLIED_OUTPUT_ELEMENT_ID_MEDIA_NOT_REVIEWED",
       "world": "W03",
       "group": "B",
       "group_position": 2,
@@ -5720,7 +5720,7 @@
       "layout": "single full-frame 16:9",
       "intended_resolution": "2K",
       "prompt_sha256": "7a01ea914d58428cd2fb481ea174222d91648f4c40a1c5f0f61462274bd87752",
-      "status": "PREPARED_NOT_GENERATED",
+      "status": "CREATOR_SUPPLIED_OUTPUT_ELEMENT_ID_MEDIA_NOT_REVIEWED",
       "world": "W03",
       "group": "B",
       "group_position": 3,
@@ -5735,7 +5735,7 @@
       "layout": "single full-frame 16:9",
       "intended_resolution": "2K",
       "prompt_sha256": "9a2d636261282d8bf981631a5f9cda87799468d2e334adc8599b015c2e2fdf86",
-      "status": "PREPARED_NOT_GENERATED",
+      "status": "CREATOR_SUPPLIED_OUTPUT_ELEMENT_ID_MEDIA_NOT_REVIEWED",
       "world": "W03",
       "group": "B",
       "group_position": 4,
@@ -5750,7 +5750,7 @@
       "layout": "single full-frame 16:9",
       "intended_resolution": "2K",
       "prompt_sha256": "898bb66bcdc9381f255b2fed1b3e4202657030d7990a0417158bdfc96c4efcf5",
-      "status": "PREPARED_NOT_GENERATED",
+      "status": "CREATOR_SUPPLIED_OUTPUT_ELEMENT_ID_MEDIA_NOT_REVIEWED",
       "world": "W03",
       "group": "C",
       "group_position": 1,
@@ -5765,7 +5765,7 @@
       "layout": "single full-frame 16:9",
       "intended_resolution": "2K",
       "prompt_sha256": "539175d6ea72c016858c5c78759cad08e4bbf2f4230f7a36c578104bafef9fe6",
-      "status": "PREPARED_NOT_GENERATED",
+      "status": "CREATOR_SUPPLIED_OUTPUT_ELEMENT_ID_MEDIA_NOT_REVIEWED",
       "world": "W03",
       "group": "C",
       "group_position": 2,
@@ -5780,7 +5780,7 @@
       "layout": "single full-frame 16:9",
       "intended_resolution": "2K",
       "prompt_sha256": "134b49af77231986eb0e4193751a120ab960a755f7a1a92d42d77ec85656dd36",
-      "status": "PREPARED_NOT_GENERATED",
+      "status": "CREATOR_SUPPLIED_OUTPUT_ELEMENT_ID_MEDIA_NOT_REVIEWED",
       "world": "W03",
       "group": "C",
       "group_position": 3,
@@ -5795,7 +5795,7 @@
       "layout": "single full-frame 16:9",
       "intended_resolution": "2K",
       "prompt_sha256": "3443d6e67bfaf6f40e462855f1afc48315b88c63eb9ddb311d17e63d1faf69e8",
-      "status": "PREPARED_NOT_GENERATED",
+      "status": "CREATOR_SUPPLIED_OUTPUT_ELEMENT_ID_MEDIA_NOT_REVIEWED",
       "world": "W03",
       "group": "C",
       "group_position": 4,
@@ -5810,7 +5810,7 @@
       "layout": "single full-frame 16:9",
       "intended_resolution": "2K",
       "prompt_sha256": "a3f76f0197ada62854b1ce2c0adbcac6931e61a70d3c49417e76eb2537d17718",
-      "status": "PREPARED_NOT_GENERATED",
+      "status": "CREATOR_SUPPLIED_OUTPUT_ELEMENT_ID_MEDIA_NOT_REVIEWED",
       "world": "W04",
       "group": "A",
       "group_position": 1,
@@ -5825,7 +5825,7 @@
       "layout": "single full-frame 16:9",
       "intended_resolution": "2K",
       "prompt_sha256": "126ab276fbfd84ede28e392dc324fc591cb226ac705a226bb37359e9b42688da",
-      "status": "PREPARED_NOT_GENERATED",
+      "status": "CREATOR_SUPPLIED_OUTPUT_ELEMENT_ID_MEDIA_NOT_REVIEWED",
       "world": "W04",
       "group": "A",
       "group_position": 2,
@@ -5840,7 +5840,7 @@
       "layout": "single full-frame 16:9",
       "intended_resolution": "2K",
       "prompt_sha256": "8f8836e7e83315a63956a7b99587ea141c1dd26ae1a260aa4e9e86585089babc",
-      "status": "PREPARED_NOT_GENERATED",
+      "status": "CREATOR_SUPPLIED_OUTPUT_ELEMENT_ID_MEDIA_NOT_REVIEWED",
       "world": "W04",
       "group": "A",
       "group_position": 3,
@@ -5855,7 +5855,7 @@
       "layout": "single full-frame 16:9",
       "intended_resolution": "2K",
       "prompt_sha256": "6509097bdcf6847d00c155491665dd62247e54ff56eca5b262159a1595837937",
-      "status": "PREPARED_NOT_GENERATED",
+      "status": "CREATOR_SUPPLIED_OUTPUT_ELEMENT_ID_MEDIA_NOT_REVIEWED",
       "world": "W04",
       "group": "A",
       "group_position": 4,
@@ -5870,7 +5870,7 @@
       "layout": "single full-frame 16:9",
       "intended_resolution": "2K",
       "prompt_sha256": "c995de390ecf95a28611c2f92fd09f49a1fc68329e20ed979e6124af9e0ed9a0",
-      "status": "PREPARED_NOT_GENERATED",
+      "status": "CREATOR_SUPPLIED_OUTPUT_ELEMENT_ID_MEDIA_NOT_REVIEWED",
       "world": "W04",
       "group": "B",
       "group_position": 1,
@@ -5885,7 +5885,7 @@
       "layout": "single full-frame 16:9",
       "intended_resolution": "2K",
       "prompt_sha256": "ccabfe46ab8e22afb96e5ee9ae401d353cc338890ac373137fd1c220134ec101",
-      "status": "PREPARED_NOT_GENERATED",
+      "status": "CREATOR_SUPPLIED_OUTPUT_ELEMENT_ID_MEDIA_NOT_REVIEWED",
       "world": "W04",
       "group": "B",
       "group_position": 2,
@@ -5900,7 +5900,7 @@
       "layout": "single full-frame 16:9",
       "intended_resolution": "2K",
       "prompt_sha256": "8d4336b16bdf4a5f720dcdb04c9ec118f7bb010c0815d69698b8b58ab63889b4",
-      "status": "PREPARED_NOT_GENERATED",
+      "status": "CREATOR_SUPPLIED_OUTPUT_ELEMENT_ID_MEDIA_NOT_REVIEWED",
       "world": "W04",
       "group": "B",
       "group_position": 3,
@@ -5915,7 +5915,7 @@
       "layout": "single full-frame 16:9",
       "intended_resolution": "2K",
       "prompt_sha256": "45d90905dfa36825430d087f16c0f797f6f9716848ae080d879eb4c7489dc6ac",
-      "status": "PREPARED_NOT_GENERATED",
+      "status": "CREATOR_SUPPLIED_OUTPUT_ELEMENT_ID_MEDIA_NOT_REVIEWED",
       "world": "W04",
       "group": "B",
       "group_position": 4,
@@ -5930,7 +5930,7 @@
       "layout": "single full-frame 16:9",
       "intended_resolution": "2K",
       "prompt_sha256": "b16a7d9c1dd93ac22a8cee68486e6d3a15fc07d0048dc618aa5effdb00b465b9",
-      "status": "PREPARED_NOT_GENERATED",
+      "status": "CREATOR_SUPPLIED_OUTPUT_ELEMENT_ID_MEDIA_NOT_REVIEWED",
       "world": "W04",
       "group": "C",
       "group_position": 1,
@@ -5945,7 +5945,7 @@
       "layout": "single full-frame 16:9",
       "intended_resolution": "2K",
       "prompt_sha256": "9442b9a3b3492b9eaacc9e6fa12d6d82e702165718ba3fcb107bbba4abc227da",
-      "status": "PREPARED_NOT_GENERATED",
+      "status": "CREATOR_SUPPLIED_OUTPUT_ELEMENT_ID_MEDIA_NOT_REVIEWED",
       "world": "W04",
       "group": "C",
       "group_position": 2,
@@ -5960,7 +5960,7 @@
       "layout": "single full-frame 16:9",
       "intended_resolution": "2K",
       "prompt_sha256": "9e2286611205368a6538e71fea8df449fa5df6c95398d1ab2c9b0df94ba7eb1b",
-      "status": "PREPARED_NOT_GENERATED",
+      "status": "CREATOR_SUPPLIED_OUTPUT_ELEMENT_ID_MEDIA_NOT_REVIEWED",
       "world": "W04",
       "group": "C",
       "group_position": 3,
@@ -5975,7 +5975,7 @@
       "layout": "single full-frame 16:9",
       "intended_resolution": "2K",
       "prompt_sha256": "bbd2dbacf2f67c5f57a1bcde14ebb237d30edbf4912e327e2237cecfe102dab4",
-      "status": "PREPARED_NOT_GENERATED",
+      "status": "CREATOR_SUPPLIED_OUTPUT_ELEMENT_ID_MEDIA_NOT_REVIEWED",
       "world": "W04",
       "group": "C",
       "group_position": 4,
@@ -6527,7 +6527,7 @@
   "pilot_files": [
     {
       "file": "01_pilot/test_extend_8s.txt",
-      "sha256": "e5e546bf7dab8552b9df2043d0a7f99b29c93024a382e2904d4b44f0218f80f1",
+      "sha256": "83e156a15f539f8ec8ac50494caf4ed41d07585491fa4bdacf1e6cc72c7c3203",
       "refs": [
         "W01_A_01",
         "W01_A_02",
@@ -6561,7 +6561,7 @@
     },
     {
       "file": "01_pilot/test_video_8s.txt",
-      "sha256": "27ee18b228dcccad6ff3c910bc94235f8fc1c030b8a57b2ebfa53a39f5fe2eee",
+      "sha256": "c864248d0e9e3b2d5d5087d0d08bd4b4a608374e66259e2e477d23f5ca91891d",
       "reference_note": "Reference mentions are maintained centrally in reference_bindings. UNBOUND slots must be resolved before generation; verified Element mentions autoload in the creator's composer.",
       "refs": [
         "W01_A_01",
@@ -7447,243 +7447,339 @@
     },
     "W01_A_01": {
       "alias": "W01_A_01_MAIN_WORLD_VIEW_01",
-      "mention": null,
-      "last_mention": "@UNBOUND_W01_A_01"
+      "mention": "@loc_MYS_mys-w01-a-01-world-view-01_s0_v1",
+      "last_mention": "@loc_MYS_mys-w01-a-01-world-view-01_s0_v1",
+      "mention_source": "CREATOR_SUPPLIED_EXACT_ELEMENT_ID_2026_09_10",
+      "evidence": "Creator supplied exact output Element ID. IDs checked for unique keys, complete W01-W03 coverage and correct original-view mapping. Full media attachment and output quality not independently verified."
     },
     "W01_A_02": {
       "alias": "W01_A_02_MAIN_WORLD_VIEW_02",
-      "mention": null,
-      "last_mention": "@UNBOUND_W01_A_02"
+      "mention": "@loc_MYS_mys-w01-a-02-world-view-02_s0_v1",
+      "last_mention": "@loc_MYS_mys-w01-a-02-world-view-02_s0_v1",
+      "mention_source": "CREATOR_SUPPLIED_EXACT_ELEMENT_ID_2026_09_10",
+      "evidence": "Creator supplied exact output Element ID. IDs checked for unique keys, complete W01-W03 coverage and correct original-view mapping. Full media attachment and output quality not independently verified."
     },
     "W01_A_03": {
       "alias": "W01_A_03_MAIN_WORLD_VIEW_03",
-      "mention": null,
-      "last_mention": "@UNBOUND_W01_A_03"
+      "mention": "@loc_MYS_mys-w01-a-03-world-view-03_s0_v1",
+      "last_mention": "@loc_MYS_mys-w01-a-03-world-view-03_s0_v1",
+      "mention_source": "CREATOR_SUPPLIED_EXACT_ELEMENT_ID_2026_09_10",
+      "evidence": "Creator supplied exact output Element ID. IDs checked for unique keys, complete W01-W03 coverage and correct original-view mapping. Full media attachment and output quality not independently verified."
     },
     "W01_A_04": {
       "alias": "W01_A_04_MAIN_WORLD_VIEW_04",
-      "mention": null,
-      "last_mention": "@UNBOUND_W01_A_04"
+      "mention": "@loc_MYS_mys-w01-a-04-world-view-04_s0_v1",
+      "last_mention": "@loc_MYS_mys-w01-a-04-world-view-04_s0_v1",
+      "mention_source": "CREATOR_SUPPLIED_EXACT_ELEMENT_ID_2026_09_10",
+      "evidence": "Creator supplied exact output Element ID. IDs checked for unique keys, complete W01-W03 coverage and correct original-view mapping. Full media attachment and output quality not independently verified."
     },
     "W01_B_01": {
       "alias": "W01_B_01_MAIN_WORLD_VIEW_05",
-      "mention": null,
-      "last_mention": "@UNBOUND_W01_B_01"
+      "mention": "@loc_MYS_mys-w01-b-01-world-view-05_s0_v1",
+      "last_mention": "@loc_MYS_mys-w01-b-01-world-view-05_s0_v1",
+      "mention_source": "CREATOR_SUPPLIED_EXACT_ELEMENT_ID_2026_09_10",
+      "evidence": "Creator supplied exact output Element ID. IDs checked for unique keys, complete W01-W03 coverage and correct original-view mapping. Full media attachment and output quality not independently verified."
     },
     "W01_B_02": {
       "alias": "W01_B_02_MAIN_WORLD_VIEW_06",
-      "mention": null,
-      "last_mention": "@UNBOUND_W01_B_02"
+      "mention": "@loc_MYS_mys-w01-b-02-world-view-06_s0_v1",
+      "last_mention": "@loc_MYS_mys-w01-b-02-world-view-06_s0_v1",
+      "mention_source": "CREATOR_SUPPLIED_EXACT_ELEMENT_ID_2026_09_10",
+      "evidence": "Creator supplied exact output Element ID. IDs checked for unique keys, complete W01-W03 coverage and correct original-view mapping. Full media attachment and output quality not independently verified."
     },
     "W01_B_03": {
       "alias": "W01_B_03_MAIN_WORLD_VIEW_07",
-      "mention": null,
-      "last_mention": "@UNBOUND_W01_B_03"
+      "mention": "@loc_MYS_mys-w01-b-03-world-view-07_s0_v1",
+      "last_mention": "@loc_MYS_mys-w01-b-03-world-view-07_s0_v1",
+      "mention_source": "CREATOR_SUPPLIED_EXACT_ELEMENT_ID_2026_09_10",
+      "evidence": "Creator supplied exact output Element ID. IDs checked for unique keys, complete W01-W03 coverage and correct original-view mapping. Full media attachment and output quality not independently verified."
     },
     "W01_B_04": {
       "alias": "W01_B_04_MAIN_WORLD_VIEW_08",
-      "mention": null,
-      "last_mention": "@UNBOUND_W01_B_04"
+      "mention": "@loc_MYS_mys-w01-b-04-world-view-08_s0_v1",
+      "last_mention": "@loc_MYS_mys-w01-b-04-world-view-08_s0_v1",
+      "mention_source": "CREATOR_SUPPLIED_EXACT_ELEMENT_ID_2026_09_10",
+      "evidence": "Creator supplied exact output Element ID. IDs checked for unique keys, complete W01-W03 coverage and correct original-view mapping. Full media attachment and output quality not independently verified."
     },
     "W01_C_01": {
       "alias": "W01_C_01_MAIN_WORLD_VIEW_09",
-      "mention": null,
-      "last_mention": "@UNBOUND_W01_C_01"
+      "mention": "@loc_MYS_mys-w01-c-01-world-view-09_s0_v1",
+      "last_mention": "@loc_MYS_mys-w01-c-01-world-view-09_s0_v1",
+      "mention_source": "CREATOR_SUPPLIED_EXACT_ELEMENT_ID_2026_09_10",
+      "evidence": "Creator supplied exact output Element ID. IDs checked for unique keys, complete W01-W03 coverage and correct original-view mapping. Full media attachment and output quality not independently verified."
     },
     "W01_C_02": {
       "alias": "W01_C_02_MAIN_WORLD_VIEW_01",
-      "mention": null,
-      "last_mention": "@UNBOUND_W01_C_02"
+      "mention": "@loc_MYS_mys-w01-c-02-world-view-01_s0_v1",
+      "last_mention": "@loc_MYS_mys-w01-c-02-world-view-01_s0_v1",
+      "mention_source": "CREATOR_SUPPLIED_EXACT_ELEMENT_ID_2026_09_10",
+      "evidence": "Creator supplied exact output Element ID. IDs checked for unique keys, complete W01-W03 coverage and correct original-view mapping. Full media attachment and output quality not independently verified."
     },
     "W01_C_03": {
       "alias": "W01_C_03_MAIN_WORLD_VIEW_07",
-      "mention": null,
-      "last_mention": "@UNBOUND_W01_C_03"
+      "mention": "@loc_MYS_mys-w01-c-03-world-view-07_s0_v1",
+      "last_mention": "@loc_MYS_mys-w01-c-03-world-view-07_s0_v1",
+      "mention_source": "CREATOR_SUPPLIED_EXACT_ELEMENT_ID_2026_09_10",
+      "evidence": "Creator supplied exact output Element ID. IDs checked for unique keys, complete W01-W03 coverage and correct original-view mapping. Full media attachment and output quality not independently verified."
     },
     "W01_C_04": {
       "alias": "W01_C_04_MAIN_WORLD_VIEW_08",
-      "mention": null,
-      "last_mention": "@UNBOUND_W01_C_04"
+      "mention": "@loc_MYS_mys-w01-c-04-world-view-08_s0_v1",
+      "last_mention": "@loc_MYS_mys-w01-c-04-world-view-08_s0_v1",
+      "mention_source": "CREATOR_SUPPLIED_EXACT_ELEMENT_ID_2026_09_10",
+      "evidence": "Creator supplied exact output Element ID. IDs checked for unique keys, complete W01-W03 coverage and correct original-view mapping. Full media attachment and output quality not independently verified."
     },
     "W02_A_01": {
       "alias": "W02_A_01_MAIN_WORLD_VIEW_01",
-      "mention": null,
-      "last_mention": "@UNBOUND_W02_A_01"
+      "mention": "@loc_MYS_mys-w02-a-01-world-view-01_s0_v1",
+      "last_mention": "@loc_MYS_mys-w02-a-01-world-view-01_s0_v1",
+      "mention_source": "CREATOR_SUPPLIED_EXACT_ELEMENT_ID_2026_09_10",
+      "evidence": "Creator supplied exact output Element ID. IDs checked for unique keys, complete W01-W03 coverage and correct original-view mapping. Full media attachment and output quality not independently verified."
     },
     "W02_A_02": {
       "alias": "W02_A_02_MAIN_WORLD_VIEW_02",
-      "mention": null,
-      "last_mention": "@UNBOUND_W02_A_02"
+      "mention": "@loc_MYS_mys-w02-a-02-world-view-02_s0_v1",
+      "last_mention": "@loc_MYS_mys-w02-a-02-world-view-02_s0_v1",
+      "mention_source": "CREATOR_SUPPLIED_EXACT_ELEMENT_ID_2026_09_10",
+      "evidence": "Creator supplied exact output Element ID. IDs checked for unique keys, complete W01-W03 coverage and correct original-view mapping. Full media attachment and output quality not independently verified."
     },
     "W02_A_03": {
       "alias": "W02_A_03_MAIN_WORLD_VIEW_03",
-      "mention": null,
-      "last_mention": "@UNBOUND_W02_A_03"
+      "mention": "@loc_MYS_mys-w02-a-03-world-view-03_s0_v1",
+      "last_mention": "@loc_MYS_mys-w02-a-03-world-view-03_s0_v1",
+      "mention_source": "CREATOR_SUPPLIED_EXACT_ELEMENT_ID_2026_09_10",
+      "evidence": "Creator supplied exact output Element ID. IDs checked for unique keys, complete W01-W03 coverage and correct original-view mapping. Full media attachment and output quality not independently verified."
     },
     "W02_A_04": {
       "alias": "W02_A_04_MAIN_WORLD_VIEW_04",
-      "mention": null,
-      "last_mention": "@UNBOUND_W02_A_04"
+      "mention": "@loc_MYS_mys-w02-a-04-world-view-04_s0_v1",
+      "last_mention": "@loc_MYS_mys-w02-a-04-world-view-04_s0_v1",
+      "mention_source": "CREATOR_SUPPLIED_EXACT_ELEMENT_ID_2026_09_10",
+      "evidence": "Creator supplied exact output Element ID. IDs checked for unique keys, complete W01-W03 coverage and correct original-view mapping. Full media attachment and output quality not independently verified."
     },
     "W02_B_01": {
       "alias": "W02_B_01_MAIN_WORLD_VIEW_05",
-      "mention": null,
-      "last_mention": "@UNBOUND_W02_B_01"
+      "mention": "@loc_MYS_mys-w02-b-01-world-view-05_s0_v1",
+      "last_mention": "@loc_MYS_mys-w02-b-01-world-view-05_s0_v1",
+      "mention_source": "CREATOR_SUPPLIED_EXACT_ELEMENT_ID_2026_09_10",
+      "evidence": "Creator supplied exact output Element ID. IDs checked for unique keys, complete W01-W03 coverage and correct original-view mapping. Full media attachment and output quality not independently verified."
     },
     "W02_B_02": {
       "alias": "W02_B_02_MAIN_WORLD_VIEW_06",
-      "mention": null,
-      "last_mention": "@UNBOUND_W02_B_02"
+      "mention": "@loc_MYS_mys-w02-b-02-world-view-06_s0_v1",
+      "last_mention": "@loc_MYS_mys-w02-b-02-world-view-06_s0_v1",
+      "mention_source": "CREATOR_SUPPLIED_EXACT_ELEMENT_ID_2026_09_10",
+      "evidence": "Creator supplied exact output Element ID. IDs checked for unique keys, complete W01-W03 coverage and correct original-view mapping. Full media attachment and output quality not independently verified."
     },
     "W02_B_03": {
       "alias": "W02_B_03_MAIN_WORLD_VIEW_07",
-      "mention": null,
-      "last_mention": "@UNBOUND_W02_B_03"
+      "mention": "@loc_MYS_mys-w02-b-03-world-view-07_s0_v1",
+      "last_mention": "@loc_MYS_mys-w02-b-03-world-view-07_s0_v1",
+      "mention_source": "CREATOR_SUPPLIED_EXACT_ELEMENT_ID_2026_09_10",
+      "evidence": "Creator supplied exact output Element ID. IDs checked for unique keys, complete W01-W03 coverage and correct original-view mapping. Full media attachment and output quality not independently verified."
     },
     "W02_B_04": {
       "alias": "W02_B_04_MAIN_WORLD_VIEW_08",
-      "mention": null,
-      "last_mention": "@UNBOUND_W02_B_04"
+      "mention": "@loc_MYS_mys-w02-b-04-world-view-08_s0_v1",
+      "last_mention": "@loc_MYS_mys-w02-b-04-world-view-08_s0_v1",
+      "mention_source": "CREATOR_SUPPLIED_EXACT_ELEMENT_ID_2026_09_10",
+      "evidence": "Creator supplied exact output Element ID. IDs checked for unique keys, complete W01-W03 coverage and correct original-view mapping. Full media attachment and output quality not independently verified."
     },
     "W02_C_01": {
       "alias": "W02_C_01_MAIN_WORLD_VIEW_09",
-      "mention": null,
-      "last_mention": "@UNBOUND_W02_C_01"
+      "mention": "@loc_MYS_mys-w02-c-01-world-view-09_s0_v1",
+      "last_mention": "@loc_MYS_mys-w02-c-01-world-view-09_s0_v1",
+      "mention_source": "CREATOR_SUPPLIED_EXACT_ELEMENT_ID_2026_09_10",
+      "evidence": "Creator supplied exact output Element ID. IDs checked for unique keys, complete W01-W03 coverage and correct original-view mapping. Full media attachment and output quality not independently verified."
     },
     "W02_C_02": {
       "alias": "W02_C_02_MAIN_WORLD_VIEW_01",
-      "mention": null,
-      "last_mention": "@UNBOUND_W02_C_02"
+      "mention": "@loc_MYS_mys-w02-c-02-world-view-01_s0_v1",
+      "last_mention": "@loc_MYS_mys-w02-c-02-world-view-01_s0_v1",
+      "mention_source": "CREATOR_SUPPLIED_EXACT_ELEMENT_ID_2026_09_10",
+      "evidence": "Creator supplied exact output Element ID. IDs checked for unique keys, complete W01-W03 coverage and correct original-view mapping. Full media attachment and output quality not independently verified."
     },
     "W02_C_03": {
       "alias": "W02_C_03_MAIN_WORLD_VIEW_07",
-      "mention": null,
-      "last_mention": "@UNBOUND_W02_C_03"
+      "mention": "@loc_MYS_mys-w02-c-03-world-view-07_s0_v1",
+      "last_mention": "@loc_MYS_mys-w02-c-03-world-view-07_s0_v1",
+      "mention_source": "CREATOR_SUPPLIED_EXACT_ELEMENT_ID_2026_09_10",
+      "evidence": "Creator supplied exact output Element ID. IDs checked for unique keys, complete W01-W03 coverage and correct original-view mapping. Full media attachment and output quality not independently verified."
     },
     "W02_C_04": {
       "alias": "W02_C_04_MAIN_WORLD_VIEW_08",
-      "mention": null,
-      "last_mention": "@UNBOUND_W02_C_04"
+      "mention": "@loc_MYS_mys-w02-c-04-world-view-08_s0_v1",
+      "last_mention": "@loc_MYS_mys-w02-c-04-world-view-08_s0_v1",
+      "mention_source": "CREATOR_SUPPLIED_EXACT_ELEMENT_ID_2026_09_10",
+      "evidence": "Creator supplied exact output Element ID. IDs checked for unique keys, complete W01-W03 coverage and correct original-view mapping. Full media attachment and output quality not independently verified."
     },
     "W03_A_01": {
       "alias": "W03_A_01_MAIN_WORLD_VIEW_01",
-      "mention": null,
-      "last_mention": "@UNBOUND_W03_A_01"
+      "mention": "@loc_MYS_mys-w03-a-01-world-view-01_s0_v1",
+      "last_mention": "@loc_MYS_mys-w03-a-01-world-view-01_s0_v1",
+      "mention_source": "CREATOR_SUPPLIED_EXACT_ELEMENT_ID_2026_09_10",
+      "evidence": "Creator supplied exact output Element ID. IDs checked for unique keys, complete W01-W03 coverage and correct original-view mapping. Full media attachment and output quality not independently verified."
     },
     "W03_A_02": {
       "alias": "W03_A_02_MAIN_WORLD_VIEW_02",
-      "mention": null,
-      "last_mention": "@UNBOUND_W03_A_02"
+      "mention": "@loc_MYS_mys-w03-a-02-world-view-02_s0_v1",
+      "last_mention": "@loc_MYS_mys-w03-a-02-world-view-02_s0_v1",
+      "mention_source": "CREATOR_SUPPLIED_EXACT_ELEMENT_ID_2026_09_10",
+      "evidence": "Creator supplied exact output Element ID. IDs checked for unique keys, complete W01-W03 coverage and correct original-view mapping. Full media attachment and output quality not independently verified."
     },
     "W03_A_03": {
       "alias": "W03_A_03_MAIN_WORLD_VIEW_03",
-      "mention": null,
-      "last_mention": "@UNBOUND_W03_A_03"
+      "mention": "@loc_MYS_mys-w03-a-03-world-view-03_s0_v1",
+      "last_mention": "@loc_MYS_mys-w03-a-03-world-view-03_s0_v1",
+      "mention_source": "CREATOR_SUPPLIED_EXACT_ELEMENT_ID_2026_09_10",
+      "evidence": "Creator supplied exact output Element ID. IDs checked for unique keys, complete W01-W03 coverage and correct original-view mapping. Full media attachment and output quality not independently verified."
     },
     "W03_A_04": {
       "alias": "W03_A_04_MAIN_WORLD_VIEW_04",
-      "mention": null,
-      "last_mention": "@UNBOUND_W03_A_04"
+      "mention": "@loc_MYS_mys-w03-a-04-world-view-04_s0_v1",
+      "last_mention": "@loc_MYS_mys-w03-a-04-world-view-04_s0_v1",
+      "mention_source": "CREATOR_SUPPLIED_EXACT_ELEMENT_ID_2026_09_10",
+      "evidence": "Creator supplied exact output Element ID. IDs checked for unique keys, complete W01-W03 coverage and correct original-view mapping. Full media attachment and output quality not independently verified."
     },
     "W03_B_01": {
       "alias": "W03_B_01_MAIN_WORLD_VIEW_05",
-      "mention": null,
-      "last_mention": "@UNBOUND_W03_B_01"
+      "mention": "@loc_MYS_mys-w03-b-01-world-view-05_s0_v1",
+      "last_mention": "@loc_MYS_mys-w03-b-01-world-view-05_s0_v1",
+      "mention_source": "CREATOR_SUPPLIED_EXACT_ELEMENT_ID_2026_09_10",
+      "evidence": "Creator supplied exact output Element ID. IDs checked for unique keys, complete W01-W03 coverage and correct original-view mapping. Full media attachment and output quality not independently verified."
     },
     "W03_B_02": {
       "alias": "W03_B_02_MAIN_WORLD_VIEW_06",
-      "mention": null,
-      "last_mention": "@UNBOUND_W03_B_02"
+      "mention": "@loc_MYS_mys-w03-b-02-world-view-06_s0_v1",
+      "last_mention": "@loc_MYS_mys-w03-b-02-world-view-06_s0_v1",
+      "mention_source": "CREATOR_SUPPLIED_EXACT_ELEMENT_ID_2026_09_10",
+      "evidence": "Creator supplied exact output Element ID. IDs checked for unique keys, complete W01-W03 coverage and correct original-view mapping. Full media attachment and output quality not independently verified."
     },
     "W03_B_03": {
       "alias": "W03_B_03_MAIN_WORLD_VIEW_07",
-      "mention": null,
-      "last_mention": "@UNBOUND_W03_B_03"
+      "mention": "@loc_MYS_mys-w03-b-03-world-view-07_s0_v1",
+      "last_mention": "@loc_MYS_mys-w03-b-03-world-view-07_s0_v1",
+      "mention_source": "CREATOR_SUPPLIED_EXACT_ELEMENT_ID_2026_09_10",
+      "evidence": "Creator supplied exact output Element ID. IDs checked for unique keys, complete W01-W03 coverage and correct original-view mapping. Full media attachment and output quality not independently verified."
     },
     "W03_B_04": {
       "alias": "W03_B_04_MAIN_WORLD_VIEW_08",
-      "mention": null,
-      "last_mention": "@UNBOUND_W03_B_04"
+      "mention": "@loc_MYS_mys-w03-b-04-world-view-08_s0_v1",
+      "last_mention": "@loc_MYS_mys-w03-b-04-world-view-08_s0_v1",
+      "mention_source": "CREATOR_SUPPLIED_EXACT_ELEMENT_ID_2026_09_10",
+      "evidence": "Creator supplied exact output Element ID. IDs checked for unique keys, complete W01-W03 coverage and correct original-view mapping. Full media attachment and output quality not independently verified."
     },
     "W03_C_01": {
       "alias": "W03_C_01_MAIN_WORLD_VIEW_09",
-      "mention": null,
-      "last_mention": "@UNBOUND_W03_C_01"
+      "mention": "@loc_MYS_mys-w03-c-01-world-view-09_s0_v1",
+      "last_mention": "@loc_MYS_mys-w03-c-01-world-view-09_s0_v1",
+      "mention_source": "CREATOR_SUPPLIED_EXACT_ELEMENT_ID_2026_09_10",
+      "evidence": "Creator supplied exact output Element ID. IDs checked for unique keys, complete W01-W03 coverage and correct original-view mapping. Full media attachment and output quality not independently verified."
     },
     "W03_C_02": {
       "alias": "W03_C_02_MAIN_WORLD_VIEW_01",
-      "mention": null,
-      "last_mention": "@UNBOUND_W03_C_02"
+      "mention": "@loc_MYS_mys-w03-c-02-world-view-01_s0_v1",
+      "last_mention": "@loc_MYS_mys-w03-c-02-world-view-01_s0_v1",
+      "mention_source": "CREATOR_SUPPLIED_EXACT_ELEMENT_ID_2026_09_10",
+      "evidence": "Creator supplied exact output Element ID. IDs checked for unique keys, complete W01-W03 coverage and correct original-view mapping. Full media attachment and output quality not independently verified."
     },
     "W03_C_03": {
       "alias": "W03_C_03_MAIN_WORLD_VIEW_07",
-      "mention": null,
-      "last_mention": "@UNBOUND_W03_C_03"
+      "mention": "@loc_MYS_mys-w03-c-03-world-view-07_s0_v1",
+      "last_mention": "@loc_MYS_mys-w03-c-03-world-view-07_s0_v1",
+      "mention_source": "CREATOR_SUPPLIED_EXACT_ELEMENT_ID_2026_09_10",
+      "evidence": "Creator supplied exact output Element ID. IDs checked for unique keys, complete W01-W03 coverage and correct original-view mapping. Full media attachment and output quality not independently verified."
     },
     "W03_C_04": {
       "alias": "W03_C_04_MAIN_WORLD_VIEW_08",
-      "mention": null,
-      "last_mention": "@UNBOUND_W03_C_04"
+      "mention": "@loc_MYS_mys-w03-c-04-world-view-08_s0_v1",
+      "last_mention": "@loc_MYS_mys-w03-c-04-world-view-08_s0_v1",
+      "mention_source": "CREATOR_SUPPLIED_EXACT_ELEMENT_ID_2026_09_10",
+      "evidence": "Creator supplied exact output Element ID. IDs checked for unique keys, complete W01-W03 coverage and correct original-view mapping. Full media attachment and output quality not independently verified."
     },
     "W04_A_01": {
       "alias": "W04_A_01_MAIN_WORLD_VIEW_01",
-      "mention": null,
-      "last_mention": "@UNBOUND_W04_A_01"
+      "mention": "@loc_MYS_mys-w04-a-01-world-view-01_s0_v1",
+      "last_mention": "@loc_MYS_mys-w04-a-01-world-view-01_s0_v1",
+      "mention_source": "CREATOR_SUPPLIED_EXACT_ELEMENT_ID_2026_09_10",
+      "evidence": "Creator supplied exact output Element ID. Unique keys, complete W04 coverage and original-view mapping checked. Full media attachment and output quality not independently verified."
     },
     "W04_A_02": {
       "alias": "W04_A_02_MAIN_WORLD_VIEW_02",
-      "mention": null,
-      "last_mention": "@UNBOUND_W04_A_02"
+      "mention": "@loc_MYS_mys-w04-a-02-world-view-02_s0_v1",
+      "last_mention": "@loc_MYS_mys-w04-a-02-world-view-02_s0_v1",
+      "mention_source": "CREATOR_SUPPLIED_EXACT_ELEMENT_ID_2026_09_10",
+      "evidence": "Creator supplied exact output Element ID. Unique keys, complete W04 coverage and original-view mapping checked. Full media attachment and output quality not independently verified."
     },
     "W04_A_03": {
       "alias": "W04_A_03_MAIN_WORLD_VIEW_03",
-      "mention": null,
-      "last_mention": "@UNBOUND_W04_A_03"
+      "mention": "@loc_MYS_mys-w04-a-03-world-view-03_s0_v1",
+      "last_mention": "@loc_MYS_mys-w04-a-03-world-view-03_s0_v1",
+      "mention_source": "CREATOR_SUPPLIED_EXACT_ELEMENT_ID_2026_09_10",
+      "evidence": "Creator supplied exact output Element ID. Unique keys, complete W04 coverage and original-view mapping checked. Full media attachment and output quality not independently verified."
     },
     "W04_A_04": {
       "alias": "W04_A_04_MAIN_WORLD_VIEW_04",
-      "mention": null,
-      "last_mention": "@UNBOUND_W04_A_04"
+      "mention": "@loc_MYS_mys-w04-a-04-world-view-04_s0_v1",
+      "last_mention": "@loc_MYS_mys-w04-a-04-world-view-04_s0_v1",
+      "mention_source": "CREATOR_SUPPLIED_EXACT_ELEMENT_ID_2026_09_10",
+      "evidence": "Creator supplied exact output Element ID. Unique keys, complete W04 coverage and original-view mapping checked. Full media attachment and output quality not independently verified."
     },
     "W04_B_01": {
       "alias": "W04_B_01_MAIN_WORLD_VIEW_05",
-      "mention": null,
-      "last_mention": "@UNBOUND_W04_B_01"
+      "mention": "@loc_MYS_mys-w04-b-01-world-view-05_s0_v1",
+      "last_mention": "@loc_MYS_mys-w04-b-01-world-view-05_s0_v1",
+      "mention_source": "CREATOR_SUPPLIED_EXACT_ELEMENT_ID_2026_09_10",
+      "evidence": "Creator supplied exact output Element ID. Unique keys, complete W04 coverage and original-view mapping checked. Full media attachment and output quality not independently verified."
     },
     "W04_B_02": {
       "alias": "W04_B_02_MAIN_WORLD_VIEW_06",
-      "mention": null,
-      "last_mention": "@UNBOUND_W04_B_02"
+      "mention": "@loc_MYS_mys-w04-b-02-world-view-06_s0_v1",
+      "last_mention": "@loc_MYS_mys-w04-b-02-world-view-06_s0_v1",
+      "mention_source": "CREATOR_SUPPLIED_EXACT_ELEMENT_ID_2026_09_10",
+      "evidence": "Creator supplied exact output Element ID. Unique keys, complete W04 coverage and original-view mapping checked. Full media attachment and output quality not independently verified."
     },
     "W04_B_03": {
       "alias": "W04_B_03_MAIN_WORLD_VIEW_07",
-      "mention": null,
-      "last_mention": "@UNBOUND_W04_B_03"
+      "mention": "@loc_MYS_mys-w04-b-03-world-view-07_s0_v1",
+      "last_mention": "@loc_MYS_mys-w04-b-03-world-view-07_s0_v1",
+      "mention_source": "CREATOR_SUPPLIED_EXACT_ELEMENT_ID_2026_09_10",
+      "evidence": "Creator supplied exact output Element ID. Unique keys, complete W04 coverage and original-view mapping checked. Full media attachment and output quality not independently verified."
     },
     "W04_B_04": {
       "alias": "W04_B_04_MAIN_WORLD_VIEW_08",
-      "mention": null,
-      "last_mention": "@UNBOUND_W04_B_04"
+      "mention": "@loc_MYS_mys-w04-b-04-world-view-08_s0_v1",
+      "last_mention": "@loc_MYS_mys-w04-b-04-world-view-08_s0_v1",
+      "mention_source": "CREATOR_SUPPLIED_EXACT_ELEMENT_ID_2026_09_10",
+      "evidence": "Creator supplied exact output Element ID. Unique keys, complete W04 coverage and original-view mapping checked. Full media attachment and output quality not independently verified."
     },
     "W04_C_01": {
       "alias": "W04_C_01_MAIN_WORLD_VIEW_09",
-      "mention": null,
-      "last_mention": "@UNBOUND_W04_C_01"
+      "mention": "@loc_MYS_mys-w04-c-01-world-view-09_s0_v1",
+      "last_mention": "@loc_MYS_mys-w04-c-01-world-view-09_s0_v1",
+      "mention_source": "CREATOR_SUPPLIED_EXACT_ELEMENT_ID_2026_09_10",
+      "evidence": "Creator supplied exact output Element ID. Unique keys, complete W04 coverage and original-view mapping checked. Full media attachment and output quality not independently verified."
     },
     "W04_C_02": {
       "alias": "W04_C_02_MAIN_WORLD_VIEW_01",
-      "mention": null,
-      "last_mention": "@UNBOUND_W04_C_02"
+      "mention": "@loc_MYS_mys-w04-c-02-world-view-01_s0_v1",
+      "last_mention": "@loc_MYS_mys-w04-c-02-world-view-01_s0_v1",
+      "mention_source": "CREATOR_SUPPLIED_EXACT_ELEMENT_ID_2026_09_10",
+      "evidence": "Creator supplied exact output Element ID. Unique keys, complete W04 coverage and original-view mapping checked. Full media attachment and output quality not independently verified."
     },
     "W04_C_03": {
       "alias": "W04_C_03_MAIN_WORLD_VIEW_07",
-      "mention": null,
-      "last_mention": "@UNBOUND_W04_C_03"
+      "mention": "@loc_MYS_mys-w04-c-03-world-view-07_s0_v1",
+      "last_mention": "@loc_MYS_mys-w04-c-03-world-view-07_s0_v1",
+      "mention_source": "CREATOR_SUPPLIED_EXACT_ELEMENT_ID_2026_09_10",
+      "evidence": "Creator supplied exact output Element ID. Unique keys, complete W04 coverage and original-view mapping checked. Full media attachment and output quality not independently verified."
     },
     "W04_C_04": {
       "alias": "W04_C_04_MAIN_WORLD_VIEW_08",
-      "mention": null,
-      "last_mention": "@UNBOUND_W04_C_04"
+      "mention": "@loc_MYS_mys-w04-c-04-world-view-08_s0_v1",
+      "last_mention": "@loc_MYS_mys-w04-c-04-world-view-08_s0_v1",
+      "mention_source": "CREATOR_SUPPLIED_EXACT_ELEMENT_ID_2026_09_10",
+      "evidence": "Creator supplied exact output Element ID. Unique keys, complete W04 coverage and original-view mapping checked. Full media attachment and output quality not independently verified."
     },
     "W05_A_01": {
       "alias": "W05_A_01_MAIN_WORLD_VIEW_01",
@@ -8947,7 +9043,7 @@
           "file": "02_library/worlds/real/W01_A_01_MAIN_WORLD_VIEW_01.txt",
           "original_view": 1,
           "sha256": "f7ab960e74370d7e1a00b3f6f4acbea822e430e2f742d229f20a9b2ef78f377e",
-          "status": "PREPARED_NOT_GENERATED"
+          "status": "CREATOR_SUPPLIED_OUTPUT_ELEMENT_ID_MEDIA_NOT_REVIEWED"
         },
         {
           "group": "A",
@@ -8956,7 +9052,7 @@
           "file": "02_library/worlds/real/W01_A_02_MAIN_WORLD_VIEW_02.txt",
           "original_view": 2,
           "sha256": "74597d6d47ead885f92b0e9a7dd6eb71efe5418a7c7f67c53814655a24929a33",
-          "status": "PREPARED_NOT_GENERATED"
+          "status": "CREATOR_SUPPLIED_OUTPUT_ELEMENT_ID_MEDIA_NOT_REVIEWED"
         },
         {
           "group": "A",
@@ -8965,7 +9061,7 @@
           "file": "02_library/worlds/real/W01_A_03_MAIN_WORLD_VIEW_03.txt",
           "original_view": 3,
           "sha256": "9857936f77558fdfe3731a43d758e967002b1307323b056eed59e098eceff70b",
-          "status": "PREPARED_NOT_GENERATED"
+          "status": "CREATOR_SUPPLIED_OUTPUT_ELEMENT_ID_MEDIA_NOT_REVIEWED"
         },
         {
           "group": "A",
@@ -8974,7 +9070,7 @@
           "file": "02_library/worlds/real/W01_A_04_MAIN_WORLD_VIEW_04.txt",
           "original_view": 4,
           "sha256": "eeaa2f0091021c704d173478694d3d88744308cfafee596fcadc91ada8f31e2f",
-          "status": "PREPARED_NOT_GENERATED"
+          "status": "CREATOR_SUPPLIED_OUTPUT_ELEMENT_ID_MEDIA_NOT_REVIEWED"
         },
         {
           "group": "B",
@@ -8983,7 +9079,7 @@
           "file": "02_library/worlds/real/W01_B_01_MAIN_WORLD_VIEW_05.txt",
           "original_view": 5,
           "sha256": "fb9059eac59a0a216ade1d2865a1f6b3e3dd4891a16b6c5b72d2ad595300c432",
-          "status": "PREPARED_NOT_GENERATED"
+          "status": "CREATOR_SUPPLIED_OUTPUT_ELEMENT_ID_MEDIA_NOT_REVIEWED"
         },
         {
           "group": "B",
@@ -8992,7 +9088,7 @@
           "file": "02_library/worlds/real/W01_B_02_MAIN_WORLD_VIEW_06.txt",
           "original_view": 6,
           "sha256": "261a8624e94e9eed7f6ca611de942e964b0e95c41a460f6ced187b61acb0297f",
-          "status": "PREPARED_NOT_GENERATED"
+          "status": "CREATOR_SUPPLIED_OUTPUT_ELEMENT_ID_MEDIA_NOT_REVIEWED"
         },
         {
           "group": "B",
@@ -9001,7 +9097,7 @@
           "file": "02_library/worlds/real/W01_B_03_MAIN_WORLD_VIEW_07.txt",
           "original_view": 7,
           "sha256": "d29a15316e8662d047ecc58773e49e12882d3002e03ea99cc31da73ba64b6c3e",
-          "status": "PREPARED_NOT_GENERATED"
+          "status": "CREATOR_SUPPLIED_OUTPUT_ELEMENT_ID_MEDIA_NOT_REVIEWED"
         },
         {
           "group": "B",
@@ -9010,7 +9106,7 @@
           "file": "02_library/worlds/real/W01_B_04_MAIN_WORLD_VIEW_08.txt",
           "original_view": 8,
           "sha256": "e4149f349c1c17d896c88ffc66f0a99a269d41db94bf14d7cb2ab82e426bf938",
-          "status": "PREPARED_NOT_GENERATED"
+          "status": "CREATOR_SUPPLIED_OUTPUT_ELEMENT_ID_MEDIA_NOT_REVIEWED"
         },
         {
           "group": "C",
@@ -9019,7 +9115,7 @@
           "file": "02_library/worlds/real/W01_C_01_MAIN_WORLD_VIEW_09.txt",
           "original_view": 9,
           "sha256": "51cf2d1d23be5f2c76ef8325a4f9e281e98ea679c0f8e72cf11d8a0bc557a2ed",
-          "status": "PREPARED_NOT_GENERATED"
+          "status": "CREATOR_SUPPLIED_OUTPUT_ELEMENT_ID_MEDIA_NOT_REVIEWED"
         },
         {
           "group": "C",
@@ -9028,7 +9124,7 @@
           "file": "02_library/worlds/real/W01_C_02_MAIN_WORLD_VIEW_01.txt",
           "original_view": 1,
           "sha256": "d933d7d3973fe4d5daf25da0abac1319956ba8af1a18d6376275b0553adf1928",
-          "status": "PREPARED_NOT_GENERATED"
+          "status": "CREATOR_SUPPLIED_OUTPUT_ELEMENT_ID_MEDIA_NOT_REVIEWED"
         },
         {
           "group": "C",
@@ -9037,7 +9133,7 @@
           "file": "02_library/worlds/real/W01_C_03_MAIN_WORLD_VIEW_07.txt",
           "original_view": 7,
           "sha256": "3e2821a6759850447a846ab50bd8d92eafc1122331942ba8dc5358094e7406d7",
-          "status": "PREPARED_NOT_GENERATED"
+          "status": "CREATOR_SUPPLIED_OUTPUT_ELEMENT_ID_MEDIA_NOT_REVIEWED"
         },
         {
           "group": "C",
@@ -9046,7 +9142,7 @@
           "file": "02_library/worlds/real/W01_C_04_MAIN_WORLD_VIEW_08.txt",
           "original_view": 8,
           "sha256": "46cd53af9ab1246355c630705510c84936e8538af602136d7707874852fd5f00",
-          "status": "PREPARED_NOT_GENERATED"
+          "status": "CREATOR_SUPPLIED_OUTPUT_ELEMENT_ID_MEDIA_NOT_REVIEWED"
         }
       ],
       "W02": [
@@ -9057,7 +9153,7 @@
           "file": "02_library/worlds/real/W02_A_01_MAIN_WORLD_VIEW_01.txt",
           "original_view": 1,
           "sha256": "bbff8de61a257d9334cef3ab46808f45789f522f7deaaf946000904f8ef59b0e",
-          "status": "PREPARED_NOT_GENERATED"
+          "status": "CREATOR_SUPPLIED_OUTPUT_ELEMENT_ID_MEDIA_NOT_REVIEWED"
         },
         {
           "group": "A",
@@ -9066,7 +9162,7 @@
           "file": "02_library/worlds/real/W02_A_02_MAIN_WORLD_VIEW_02.txt",
           "original_view": 2,
           "sha256": "360cdfbb772bdcde62f84d970cf9649f04e27503c5919f85fb1e26984f6d571c",
-          "status": "PREPARED_NOT_GENERATED"
+          "status": "CREATOR_SUPPLIED_OUTPUT_ELEMENT_ID_MEDIA_NOT_REVIEWED"
         },
         {
           "group": "A",
@@ -9075,7 +9171,7 @@
           "file": "02_library/worlds/real/W02_A_03_MAIN_WORLD_VIEW_03.txt",
           "original_view": 3,
           "sha256": "4389212e8200e88133e5f6cf8f9024d637d13573b6f23e8be1ff5be947026036",
-          "status": "PREPARED_NOT_GENERATED"
+          "status": "CREATOR_SUPPLIED_OUTPUT_ELEMENT_ID_MEDIA_NOT_REVIEWED"
         },
         {
           "group": "A",
@@ -9084,7 +9180,7 @@
           "file": "02_library/worlds/real/W02_A_04_MAIN_WORLD_VIEW_04.txt",
           "original_view": 4,
           "sha256": "715f82c94ba3af9883328d04250b4856fe4843a9041277b8d07d36a395e82dbc",
-          "status": "PREPARED_NOT_GENERATED"
+          "status": "CREATOR_SUPPLIED_OUTPUT_ELEMENT_ID_MEDIA_NOT_REVIEWED"
         },
         {
           "group": "B",
@@ -9093,7 +9189,7 @@
           "file": "02_library/worlds/real/W02_B_01_MAIN_WORLD_VIEW_05.txt",
           "original_view": 5,
           "sha256": "738b456463050ab37a06bf0644ec1091252f49af1e86f0f40440e9dbdf2008c5",
-          "status": "PREPARED_NOT_GENERATED"
+          "status": "CREATOR_SUPPLIED_OUTPUT_ELEMENT_ID_MEDIA_NOT_REVIEWED"
         },
         {
           "group": "B",
@@ -9102,7 +9198,7 @@
           "file": "02_library/worlds/real/W02_B_02_MAIN_WORLD_VIEW_06.txt",
           "original_view": 6,
           "sha256": "0966e804e6e66b2f0c7d68fd3dec3dfde2ed1f1717ead8116dbd06b173f1e000",
-          "status": "PREPARED_NOT_GENERATED"
+          "status": "CREATOR_SUPPLIED_OUTPUT_ELEMENT_ID_MEDIA_NOT_REVIEWED"
         },
         {
           "group": "B",
@@ -9111,7 +9207,7 @@
           "file": "02_library/worlds/real/W02_B_03_MAIN_WORLD_VIEW_07.txt",
           "original_view": 7,
           "sha256": "09ea106d83fa3849af53976a00e289b786c742c7abe54bb3c061d4a6c7ff972b",
-          "status": "PREPARED_NOT_GENERATED"
+          "status": "CREATOR_SUPPLIED_OUTPUT_ELEMENT_ID_MEDIA_NOT_REVIEWED"
         },
         {
           "group": "B",
@@ -9120,7 +9216,7 @@
           "file": "02_library/worlds/real/W02_B_04_MAIN_WORLD_VIEW_08.txt",
           "original_view": 8,
           "sha256": "528c89535679cefb7e0d1b4e110dfa4e3370ec2f7d85c8572b5339084e220dea",
-          "status": "PREPARED_NOT_GENERATED"
+          "status": "CREATOR_SUPPLIED_OUTPUT_ELEMENT_ID_MEDIA_NOT_REVIEWED"
         },
         {
           "group": "C",
@@ -9129,7 +9225,7 @@
           "file": "02_library/worlds/real/W02_C_01_MAIN_WORLD_VIEW_09.txt",
           "original_view": 9,
           "sha256": "e8dadb4aae68ed83b633daceabf138458340b20da229cc349936821bee34262a",
-          "status": "PREPARED_NOT_GENERATED"
+          "status": "CREATOR_SUPPLIED_OUTPUT_ELEMENT_ID_MEDIA_NOT_REVIEWED"
         },
         {
           "group": "C",
@@ -9138,7 +9234,7 @@
           "file": "02_library/worlds/real/W02_C_02_MAIN_WORLD_VIEW_01.txt",
           "original_view": 1,
           "sha256": "69ee0dd3280d4de0a49ab20ebd20b49b5b3e6ba07649ba7b91f9b1fe34bd6b57",
-          "status": "PREPARED_NOT_GENERATED"
+          "status": "CREATOR_SUPPLIED_OUTPUT_ELEMENT_ID_MEDIA_NOT_REVIEWED"
         },
         {
           "group": "C",
@@ -9147,7 +9243,7 @@
           "file": "02_library/worlds/real/W02_C_03_MAIN_WORLD_VIEW_07.txt",
           "original_view": 7,
           "sha256": "9a791a8a2785fd8f0ea45ce7c180e412d90f6e973e1cc5109c2af30958d51510",
-          "status": "PREPARED_NOT_GENERATED"
+          "status": "CREATOR_SUPPLIED_OUTPUT_ELEMENT_ID_MEDIA_NOT_REVIEWED"
         },
         {
           "group": "C",
@@ -9156,7 +9252,7 @@
           "file": "02_library/worlds/real/W02_C_04_MAIN_WORLD_VIEW_08.txt",
           "original_view": 8,
           "sha256": "23a3d688ebcb50b38f1c464f63f84718eba7577dcd98aa0722ab1f478a1214b0",
-          "status": "PREPARED_NOT_GENERATED"
+          "status": "CREATOR_SUPPLIED_OUTPUT_ELEMENT_ID_MEDIA_NOT_REVIEWED"
         }
       ],
       "W03": [
@@ -9167,7 +9263,7 @@
           "file": "02_library/worlds/real/W03_A_01_MAIN_WORLD_VIEW_01.txt",
           "original_view": 1,
           "sha256": "3b9fea9e86f4d2c729e5b3a25628388866c83a66f08886790042c733c9957f99",
-          "status": "PREPARED_NOT_GENERATED"
+          "status": "CREATOR_SUPPLIED_OUTPUT_ELEMENT_ID_MEDIA_NOT_REVIEWED"
         },
         {
           "group": "A",
@@ -9176,7 +9272,7 @@
           "file": "02_library/worlds/real/W03_A_02_MAIN_WORLD_VIEW_02.txt",
           "original_view": 2,
           "sha256": "cec87e6cb7d09c1e4087c1d93f9239e6a4d5093d5e07dd6b9874d2a5333bd494",
-          "status": "PREPARED_NOT_GENERATED"
+          "status": "CREATOR_SUPPLIED_OUTPUT_ELEMENT_ID_MEDIA_NOT_REVIEWED"
         },
         {
           "group": "A",
@@ -9185,7 +9281,7 @@
           "file": "02_library/worlds/real/W03_A_03_MAIN_WORLD_VIEW_03.txt",
           "original_view": 3,
           "sha256": "19fd3148df0e9997506520f2cc830367aeb58fc8547e60c6e04f4dcc6af21cf5",
-          "status": "PREPARED_NOT_GENERATED"
+          "status": "CREATOR_SUPPLIED_OUTPUT_ELEMENT_ID_MEDIA_NOT_REVIEWED"
         },
         {
           "group": "A",
@@ -9194,7 +9290,7 @@
           "file": "02_library/worlds/real/W03_A_04_MAIN_WORLD_VIEW_04.txt",
           "original_view": 4,
           "sha256": "b730cb592977177345bb3e7c6f421664fd890b8553510ce71ac440f03b4a939e",
-          "status": "PREPARED_NOT_GENERATED"
+          "status": "CREATOR_SUPPLIED_OUTPUT_ELEMENT_ID_MEDIA_NOT_REVIEWED"
         },
         {
           "group": "B",
@@ -9203,7 +9299,7 @@
           "file": "02_library/worlds/real/W03_B_01_MAIN_WORLD_VIEW_05.txt",
           "original_view": 5,
           "sha256": "9e8c7855d61656edc54203e1e1049e1ce2b10022d6c5e0eb2e7135dad0e3da90",
-          "status": "PREPARED_NOT_GENERATED"
+          "status": "CREATOR_SUPPLIED_OUTPUT_ELEMENT_ID_MEDIA_NOT_REVIEWED"
         },
         {
           "group": "B",
@@ -9212,7 +9308,7 @@
           "file": "02_library/worlds/real/W03_B_02_MAIN_WORLD_VIEW_06.txt",
           "original_view": 6,
           "sha256": "a8b9942cac035fabda1bfbf9802436fec1dac2029ea9a7bb93342928bb5aca8a",
-          "status": "PREPARED_NOT_GENERATED"
+          "status": "CREATOR_SUPPLIED_OUTPUT_ELEMENT_ID_MEDIA_NOT_REVIEWED"
         },
         {
           "group": "B",
@@ -9221,7 +9317,7 @@
           "file": "02_library/worlds/real/W03_B_03_MAIN_WORLD_VIEW_07.txt",
           "original_view": 7,
           "sha256": "7a01ea914d58428cd2fb481ea174222d91648f4c40a1c5f0f61462274bd87752",
-          "status": "PREPARED_NOT_GENERATED"
+          "status": "CREATOR_SUPPLIED_OUTPUT_ELEMENT_ID_MEDIA_NOT_REVIEWED"
         },
         {
           "group": "B",
@@ -9230,7 +9326,7 @@
           "file": "02_library/worlds/real/W03_B_04_MAIN_WORLD_VIEW_08.txt",
           "original_view": 8,
           "sha256": "9a2d636261282d8bf981631a5f9cda87799468d2e334adc8599b015c2e2fdf86",
-          "status": "PREPARED_NOT_GENERATED"
+          "status": "CREATOR_SUPPLIED_OUTPUT_ELEMENT_ID_MEDIA_NOT_REVIEWED"
         },
         {
           "group": "C",
@@ -9239,7 +9335,7 @@
           "file": "02_library/worlds/real/W03_C_01_MAIN_WORLD_VIEW_09.txt",
           "original_view": 9,
           "sha256": "898bb66bcdc9381f255b2fed1b3e4202657030d7990a0417158bdfc96c4efcf5",
-          "status": "PREPARED_NOT_GENERATED"
+          "status": "CREATOR_SUPPLIED_OUTPUT_ELEMENT_ID_MEDIA_NOT_REVIEWED"
         },
         {
           "group": "C",
@@ -9248,7 +9344,7 @@
           "file": "02_library/worlds/real/W03_C_02_MAIN_WORLD_VIEW_01.txt",
           "original_view": 1,
           "sha256": "539175d6ea72c016858c5c78759cad08e4bbf2f4230f7a36c578104bafef9fe6",
-          "status": "PREPARED_NOT_GENERATED"
+          "status": "CREATOR_SUPPLIED_OUTPUT_ELEMENT_ID_MEDIA_NOT_REVIEWED"
         },
         {
           "group": "C",
@@ -9257,7 +9353,7 @@
           "file": "02_library/worlds/real/W03_C_03_MAIN_WORLD_VIEW_07.txt",
           "original_view": 7,
           "sha256": "134b49af77231986eb0e4193751a120ab960a755f7a1a92d42d77ec85656dd36",
-          "status": "PREPARED_NOT_GENERATED"
+          "status": "CREATOR_SUPPLIED_OUTPUT_ELEMENT_ID_MEDIA_NOT_REVIEWED"
         },
         {
           "group": "C",
@@ -9266,7 +9362,7 @@
           "file": "02_library/worlds/real/W03_C_04_MAIN_WORLD_VIEW_08.txt",
           "original_view": 8,
           "sha256": "3443d6e67bfaf6f40e462855f1afc48315b88c63eb9ddb311d17e63d1faf69e8",
-          "status": "PREPARED_NOT_GENERATED"
+          "status": "CREATOR_SUPPLIED_OUTPUT_ELEMENT_ID_MEDIA_NOT_REVIEWED"
         }
       ],
       "W04": [
@@ -9277,7 +9373,7 @@
           "file": "02_library/worlds/real/W04_A_01_MAIN_WORLD_VIEW_01.txt",
           "original_view": 1,
           "sha256": "a3f76f0197ada62854b1ce2c0adbcac6931e61a70d3c49417e76eb2537d17718",
-          "status": "PREPARED_NOT_GENERATED"
+          "status": "CREATOR_SUPPLIED_OUTPUT_ELEMENT_ID_MEDIA_NOT_REVIEWED"
         },
         {
           "group": "A",
@@ -9286,7 +9382,7 @@
           "file": "02_library/worlds/real/W04_A_02_MAIN_WORLD_VIEW_02.txt",
           "original_view": 2,
           "sha256": "126ab276fbfd84ede28e392dc324fc591cb226ac705a226bb37359e9b42688da",
-          "status": "PREPARED_NOT_GENERATED"
+          "status": "CREATOR_SUPPLIED_OUTPUT_ELEMENT_ID_MEDIA_NOT_REVIEWED"
         },
         {
           "group": "A",
@@ -9295,7 +9391,7 @@
           "file": "02_library/worlds/real/W04_A_03_MAIN_WORLD_VIEW_03.txt",
           "original_view": 3,
           "sha256": "8f8836e7e83315a63956a7b99587ea141c1dd26ae1a260aa4e9e86585089babc",
-          "status": "PREPARED_NOT_GENERATED"
+          "status": "CREATOR_SUPPLIED_OUTPUT_ELEMENT_ID_MEDIA_NOT_REVIEWED"
         },
         {
           "group": "A",
@@ -9304,7 +9400,7 @@
           "file": "02_library/worlds/real/W04_A_04_MAIN_WORLD_VIEW_04.txt",
           "original_view": 4,
           "sha256": "6509097bdcf6847d00c155491665dd62247e54ff56eca5b262159a1595837937",
-          "status": "PREPARED_NOT_GENERATED"
+          "status": "CREATOR_SUPPLIED_OUTPUT_ELEMENT_ID_MEDIA_NOT_REVIEWED"
         },
         {
           "group": "B",
@@ -9313,7 +9409,7 @@
           "file": "02_library/worlds/real/W04_B_01_MAIN_WORLD_VIEW_05.txt",
           "original_view": 5,
           "sha256": "c995de390ecf95a28611c2f92fd09f49a1fc68329e20ed979e6124af9e0ed9a0",
-          "status": "PREPARED_NOT_GENERATED"
+          "status": "CREATOR_SUPPLIED_OUTPUT_ELEMENT_ID_MEDIA_NOT_REVIEWED"
         },
         {
           "group": "B",
@@ -9322,7 +9418,7 @@
           "file": "02_library/worlds/real/W04_B_02_MAIN_WORLD_VIEW_06.txt",
           "original_view": 6,
           "sha256": "ccabfe46ab8e22afb96e5ee9ae401d353cc338890ac373137fd1c220134ec101",
-          "status": "PREPARED_NOT_GENERATED"
+          "status": "CREATOR_SUPPLIED_OUTPUT_ELEMENT_ID_MEDIA_NOT_REVIEWED"
         },
         {
           "group": "B",
@@ -9331,7 +9427,7 @@
           "file": "02_library/worlds/real/W04_B_03_MAIN_WORLD_VIEW_07.txt",
           "original_view": 7,
           "sha256": "8d4336b16bdf4a5f720dcdb04c9ec118f7bb010c0815d69698b8b58ab63889b4",
-          "status": "PREPARED_NOT_GENERATED"
+          "status": "CREATOR_SUPPLIED_OUTPUT_ELEMENT_ID_MEDIA_NOT_REVIEWED"
         },
         {
           "group": "B",
@@ -9340,7 +9436,7 @@
           "file": "02_library/worlds/real/W04_B_04_MAIN_WORLD_VIEW_08.txt",
           "original_view": 8,
           "sha256": "45d90905dfa36825430d087f16c0f797f6f9716848ae080d879eb4c7489dc6ac",
-          "status": "PREPARED_NOT_GENERATED"
+          "status": "CREATOR_SUPPLIED_OUTPUT_ELEMENT_ID_MEDIA_NOT_REVIEWED"
         },
         {
           "group": "C",
@@ -9349,7 +9445,7 @@
           "file": "02_library/worlds/real/W04_C_01_MAIN_WORLD_VIEW_09.txt",
           "original_view": 9,
           "sha256": "b16a7d9c1dd93ac22a8cee68486e6d3a15fc07d0048dc618aa5effdb00b465b9",
-          "status": "PREPARED_NOT_GENERATED"
+          "status": "CREATOR_SUPPLIED_OUTPUT_ELEMENT_ID_MEDIA_NOT_REVIEWED"
         },
         {
           "group": "C",
@@ -9358,7 +9454,7 @@
           "file": "02_library/worlds/real/W04_C_02_MAIN_WORLD_VIEW_01.txt",
           "original_view": 1,
           "sha256": "9442b9a3b3492b9eaacc9e6fa12d6d82e702165718ba3fcb107bbba4abc227da",
-          "status": "PREPARED_NOT_GENERATED"
+          "status": "CREATOR_SUPPLIED_OUTPUT_ELEMENT_ID_MEDIA_NOT_REVIEWED"
         },
         {
           "group": "C",
@@ -9367,7 +9463,7 @@
           "file": "02_library/worlds/real/W04_C_03_MAIN_WORLD_VIEW_07.txt",
           "original_view": 7,
           "sha256": "9e2286611205368a6538e71fea8df449fa5df6c95398d1ab2c9b0df94ba7eb1b",
-          "status": "PREPARED_NOT_GENERATED"
+          "status": "CREATOR_SUPPLIED_OUTPUT_ELEMENT_ID_MEDIA_NOT_REVIEWED"
         },
         {
           "group": "C",
@@ -9376,7 +9472,7 @@
           "file": "02_library/worlds/real/W04_C_04_MAIN_WORLD_VIEW_08.txt",
           "original_view": 8,
           "sha256": "bbd2dbacf2f67c5f57a1bcde14ebb237d30edbf4912e327e2237cecfe102dab4",
-          "status": "PREPARED_NOT_GENERATED"
+          "status": "CREATOR_SUPPLIED_OUTPUT_ELEMENT_ID_MEDIA_NOT_REVIEWED"
         }
       ],
       "W05": [

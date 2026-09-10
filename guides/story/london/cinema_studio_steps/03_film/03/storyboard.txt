@@ -1,4 +1,4 @@
-REFERENCE SETUP INCOMPLETE: MW03, MW03_B, MW03_C, MWP01, MWP01_B, MWP01_C, W03_A_01, W03_A_02, W03_A_03, W03_A_04, W03_B_01, W03_B_02, W03_B_03, W03_B_04, W03_C_01, W03_C_02, W03_C_03, W03_C_04
+REFERENCE SETUP INCOMPLETE: MW03, MW03_B, MW03_C, MWP01, MWP01_B, MWP01_C
 Do not generate until these references are bound.
 
 MEMORY REFERENCE PAGES — DIRECT SOURCES, NOT EDITS:
@@ -7,18 +7,18 @@ MEMORY REFERENCE PAGES — DIRECT SOURCES, NOT EDITS:
 Several pages may support the same block or remembered place. Reconstruct the people, objects, supports and entry/exit geometry at life size while following this video’s existing continuous route. Never switch scenes because a cell or page changes. Current-city cards remain on current people; remembered people have none. HRW07 pages remain exclusive to Block 07 and its scripted tiny fragments/final hard cut.
 
 WORLD REFERENCES — ORDERED SINGLE VIEWS:
-@UNBOUND_W03_A_01 supplies W03 group A, position 01, original view 01.
-@UNBOUND_W03_A_02 supplies W03 group A, position 02, original view 02.
-@UNBOUND_W03_A_03 supplies W03 group A, position 03, original view 03.
-@UNBOUND_W03_A_04 supplies W03 group A, position 04, original view 04.
-@UNBOUND_W03_B_01 supplies W03 group B, position 01, original view 05.
-@UNBOUND_W03_B_02 supplies W03 group B, position 02, original view 06.
-@UNBOUND_W03_B_03 supplies W03 group B, position 03, original view 07.
-@UNBOUND_W03_B_04 supplies W03 group B, position 04, original view 08.
-@UNBOUND_W03_C_01 supplies W03 group C, position 01, original view 09.
-@UNBOUND_W03_C_02 supplies W03 group C, position 02, original view 01.
-@UNBOUND_W03_C_03 supplies W03 group C, position 03, original view 07.
-@UNBOUND_W03_C_04 supplies W03 group C, position 04, original view 08.
+@loc_MYS_mys-w03-a-01-world-view-01_s0_v1 supplies W03 group A, position 01, original view 01.
+@loc_MYS_mys-w03-a-02-world-view-02_s0_v1 supplies W03 group A, position 02, original view 02.
+@loc_MYS_mys-w03-a-03-world-view-03_s0_v1 supplies W03 group A, position 03, original view 03.
+@loc_MYS_mys-w03-a-04-world-view-04_s0_v1 supplies W03 group A, position 04, original view 04.
+@loc_MYS_mys-w03-b-01-world-view-05_s0_v1 supplies W03 group B, position 01, original view 05.
+@loc_MYS_mys-w03-b-02-world-view-06_s0_v1 supplies W03 group B, position 02, original view 06.
+@loc_MYS_mys-w03-b-03-world-view-07_s0_v1 supplies W03 group B, position 03, original view 07.
+@loc_MYS_mys-w03-b-04-world-view-08_s0_v1 supplies W03 group B, position 04, original view 08.
+@loc_MYS_mys-w03-c-01-world-view-09_s0_v1 supplies W03 group C, position 01, original view 09.
+@loc_MYS_mys-w03-c-02-world-view-01_s0_v1 supplies W03 group C, position 02, original view 01.
+@loc_MYS_mys-w03-c-03-world-view-07_s0_v1 supplies W03 group C, position 03, original view 07.
+@loc_MYS_mys-w03-c-04-world-view-08_s0_v1 supplies W03 group C, position 04, original view 08.
 
 These twelve full-frame 16:9 world images replace the former three comparison pages. Attach A01–A04, B01–B04, C01–C04 in the listed order and bind each actual Element to its named slot. Original-view order is A: 01–04; B: 05–08; C: 09, 01, 07, 08. Repeated views retain their source or destination identity. Use each as spatial and material evidence for its assigned part of the existing continuous route, not twelve cuts or sequential morph stages. Do not transfer a destination into the London opening. Preserve the existing cast, camera, sound, duration and ending. Dedicated morph sheets retain their own top-left, top-right, bottom-left, bottom-right material-state order.
 
@@ -34,7 +34,7 @@ WEATHER AND UNCOVERED HEADS:
 Heavy overcast London sky with cool diffuse evening light. The air is clear and dry; the paving, puddles, coats and stone can remain damp from earlier weather. No falling rain, drizzle, rain streaks or rainfall sound. Every current pedestrian is bareheaded, with hoods down, hair and face exposed and hands lowered naturally. No umbrellas anywhere: none open, folded, carried, held above a head or attached to street furniture. Use uncovered heads and damp clothing even when a supplied reference suggests wet weather. Preserve empty air above each crown for its readable numerical rating card. Wet tyre hiss, footsteps and distant traffic provide the continuous street ambience.
 
 REFERENCE INPUTS:
-@UNBOUND_W03_A_01 @UNBOUND_W03_A_02 @UNBOUND_W03_A_03 @UNBOUND_W03_A_04 = LOCATION — W03 — WORLD 03 — WORK CITY — ALDWYCH / KINGSWAY / HOLBORN / PROFESSIONAL FACADES; physical present city; preserve materials and allow the directed architectural transformation.
+@loc_MYS_mys-w03-a-01-world-view-01_s0_v1 @loc_MYS_mys-w03-a-02-world-view-02_s0_v1 @loc_MYS_mys-w03-a-03-world-view-03_s0_v1 @loc_MYS_mys-w03-a-04-world-view-04_s0_v1 = LOCATION — W03 — WORLD 03 — WORK CITY — ALDWYCH / KINGSWAY / HOLBORN / PROFESSIONAL FACADES; physical present city; preserve materials and allow the directed architectural transformation.
 @UNBOUND_MW03 = LOCATION — MW03 — MEMORY WORLD 03 — WORK / ACCOUNTING / RULE CHANGE / ADMIN; the assigned remembered scenes; preserve the source identities and setting.
 @UNBOUND_MWP01 = LOCATION — MWP01 — MEMORY PRESERVATION WORLD P01 — ROUTES / ROOMS / DOCUMENT THRESHOLDS; the assigned remembered scenes; preserve the source identities and setting.
 @char_MYS_mys-c01-protagonist_s0_v1 = CHARACTER 01 — PROTAGONIST; exact person identity; use only where this person appears.
