@@ -43,7 +43,7 @@ Generate only missing media. Reuse accepted dependencies from prior blocks. Each
 | W06 | `W06_MAIN_WORLD.png` | `@UNBOUND_W06` |
 | MW06 | `MW06_HUMAN_COUNTERMEMORIES.png` | `@UNBOUND_MW06` |
 | MWP02 | `MWP02_SYSTEM_TIME_REVERSALS.png` | `@UNBOUND_MWP02` |
-| MW01 | `MW01_LONDON_SOCIAL.png` | `@UNBOUND_MW01` |
+| MW01 | `MW01_LONDON_SOCIAL.png` | `@loc_MYS_mys-mw01-a-london-social_s0_v1` |
 | MW02 | `MW02_GLOBAL_ROUTES.png` | `@UNBOUND_MW02` |
 | MW03 | `MW03_WORK_RULE_CHANGE_ADMIN.png` | `@UNBOUND_MW03` |
 | MW04 | `MW04_POLICE_DEFENCE.png` | `@UNBOUND_MW04` |

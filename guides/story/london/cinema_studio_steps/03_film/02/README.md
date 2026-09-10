@@ -53,7 +53,7 @@ Generate only missing media. Reuse accepted dependencies from prior blocks. Each
 | --- | --- | --- |
 | W02 | `W02_MAIN_WORLD.png` | `@UNBOUND_W02` |
 | MW02 | `MW02_GLOBAL_ROUTES.png` | `@UNBOUND_MW02` |
-| MW01 | `MW01_LONDON_SOCIAL.png` | `@UNBOUND_MW01` |
+| MW01 | `MW01_LONDON_SOCIAL.png` | `@loc_MYS_mys-mw01-a-london-social_s0_v1` |
 | MWP01 | `MWP01_ROUTES_ROOMS_DOCUMENTS.png` | `@UNBOUND_MWP01` |
 | C01 | `C01_PROTAGONIST.png` | `@char_MYS_mys-c01-protagonist_s0_v1` |
 | C10 | `C10_BEGINNER_DANCE_WOMAN.png` | `@char_MYS_mys-c10-beginner-dance-woman_s0_v1` |

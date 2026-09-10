@@ -44,7 +44,7 @@ Generate only missing media. Reuse accepted dependencies from prior blocks. Each
 | W07 | `W07_MAIN_WORLD.png` | `@UNBOUND_W07` |
 | HRW07 | `HRW07_CLINICAL_REALITY.png` | `@UNBOUND_HRW07` |
 | MWP01 | `MWP01_ROUTES_ROOMS_DOCUMENTS.png` | `@UNBOUND_MWP01` |
-| MW01 | `MW01_LONDON_SOCIAL.png` | `@UNBOUND_MW01` |
+| MW01 | `MW01_LONDON_SOCIAL.png` | `@loc_MYS_mys-mw01-a-london-social_s0_v1` |
 | MW02 | `MW02_GLOBAL_ROUTES.png` | `@UNBOUND_MW02` |
 | C01 | `C01_PROTAGONIST.png` | `@char_MYS_mys-c01-protagonist_s0_v1` |
 | C05 | `C05_FINAL_NURSE.png` | `@char_MYS_mys-c05-final-nurse_s0_v1` |

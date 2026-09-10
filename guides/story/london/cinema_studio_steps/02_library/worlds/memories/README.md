@@ -1,6 +1,6 @@
 # Memory reference pages — 4K 2×2
 
-The `01_`–`30_` filename prefixes define generation order: T01, MW01–MW06, MWP01, MWP02, then HRW07; each group stays A, B, C. Every memory-image dependency precedes its dependent prompt. After generating a required source page, bind its actual Element ID before continuing to dependent pages. Already generated pages need no repeat generation. Prefixes change filenames only; prompt text, canonical keys and Element IDs are unchanged.
+The `01_`–`30_` filename prefixes define generation order: T01, MW01–MW06, MWP01, MWP02, then HRW07; each group stays A, B, C. Every memory-image dependency precedes its dependent prompt. After generating a required source page, bind its actual Element ID before continuing to dependent pages. A/B/C naming alone does not create a dependency; the scoped input list in each prompt is authoritative. Already generated pages need no repeat generation. Prefixes change filenames only; prompt text, canonical keys and Element IDs are unchanged.
 
 Each file is one copy-ready image prompt for a 3840×2160 canvas divided into four 1920×1080 cells without gutters. Each original nine-view bank now has three pages, preserving all 81 original views across the nine banks. Every page filename ends in _A.txt, _B.txt or _C.txt so the pages sort together. The canonical Element keys identify these pages; binding an output ID does not by itself verify its attached image.
 
@@ -32,9 +32,9 @@ The [present worlds](../real/README.md) use 84 separate 2K full-frame images. Me
 
 ## Inputs, imports and reality boundary
 
-Generate and accept each bank's Page A before its B/C companions. The 20 B/C prompts currently have explicit unbound Page A inputs. Supply the actual Higgsfield Element ID and attach the accepted image before using them. Existing C01–C31 identity mentions are bound.
+Use only the input references listed for each page. Pages 05 (MW01_B), 08 (MW02_B), 20 (MW06_B) and 23 (MWP01_B) depict different subjects from their banks' Page A and no longer require that unrelated page. Other retained Page A references preserve recurring places or objects. Supply the actual Element ID and attach the accepted image wherever a required input is still unbound. Existing C01–C31 identity mentions are bound.
 
-MW01 also uses the current T01_A restaurant source (`T01_DETAILS`), replacing the legacy pilot restaurant mention. Generate T01_A from C01/C02 first, bind its actual output ID, then generate MW01_A and the relevant companion pages. A missing mention is marked `@UNBOUND_...`; it is not a usable Higgsfield reference.
+MW01 also uses the current T01_A restaurant source (`T01_DETAILS`), replacing the legacy pilot restaurant mention. Generate T01_A from C01/C02 first, bind its actual output ID, then generate MW01_A and the relevant companion pages. MW01_B has no Soho restaurant scene and uses neither T01_A nor MW01_A. A missing mention is marked `@UNBOUND_...`; it is not a usable Higgsfield reference.
 
 HRW07_A uses only the bound C01 patient and C05 nurse identities. It can establish the clinical room first; HRW07_B/C subsequently use that accepted room. Its patient gesture is one deep inhalation on returning from anaesthesia, with a wrist cuff and short chain attached to the bed and only the foot supported beneath the heel/ankle.
 

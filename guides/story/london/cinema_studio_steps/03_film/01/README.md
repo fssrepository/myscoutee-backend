@@ -49,7 +49,7 @@ Generate only missing media. Reuse accepted dependencies from prior blocks. Each
 | ID | Required media | Reference mention (UNBOUND means missing ID) |
 | --- | --- | --- |
 | W01 | `W01_MAIN_WORLD.png` | `@loc_mys_world-01-the-city-judges-first-soho-piccadilly-leicester_s1_v1` |
-| MW01 | `MW01_LONDON_SOCIAL.png` | `@UNBOUND_MW01` |
+| MW01 | `MW01_LONDON_SOCIAL.png` | `@loc_MYS_mys-mw01-a-london-social_s0_v1` |
 | MWP01 | `MWP01_ROUTES_ROOMS_DOCUMENTS.png` | `@UNBOUND_MWP01` |
 | C01 | `C01_PROTAGONIST.png` | `@char_MYS_mys-c01-protagonist_s0_v1` |
 | C02 | `C02_SOHO_WOMAN.png` | `@char_MYS_mys-c02-soho-woman_s0_v1` |
