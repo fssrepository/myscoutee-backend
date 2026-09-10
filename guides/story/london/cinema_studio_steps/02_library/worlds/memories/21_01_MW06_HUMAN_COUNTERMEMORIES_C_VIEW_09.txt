@@ -4,7 +4,7 @@ OUTPUT ELEMENT ASSIGNMENT — OPERATOR METADATA ONLY, NEVER RENDER:
 Target import name: MYS MW06_C_01 Memory View 09
 Live output Element name (operator lookup only): loc_MYS_mys-mw06-c-01-memory-view-09_s0_v1
 Live output Element UUID: 92c4944c-dfbf-4061-9736-9bdd6be86660
-Assign the finished image to this existing empty target. This output target is not an input reference.
+Image attachment verified via MCP on 2026-09-10. This output target is not an input reference.
 
 REFERENCE INPUTS:
 @char_MYS_mys-c01-protagonist_s0_v1 = CHARACTER 01 — PROTAGONIST; exact person identity; use only where this person appears.

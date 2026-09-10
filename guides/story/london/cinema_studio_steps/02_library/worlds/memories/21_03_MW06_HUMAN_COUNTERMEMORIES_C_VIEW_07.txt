@@ -3,7 +3,7 @@ REFERENCE ID: MW06_C_03 — ORIGINAL VIEW 07 (never print IDs, headings or label
 OUTPUT ELEMENT ASSIGNMENT — OPERATOR METADATA ONLY, NEVER RENDER:
 Live output Element name (operator lookup only): loc_MYS_mys-mw06-c-03-memory-view-07_s0_v1
 Live output Element UUID: 4671d717-e674-4ca7-ab6e-749d4a2adff0
-Assign the finished image to this existing empty target. This output target is not an input reference.
+Image attachment verified via MCP on 2026-09-10. This output target is not an input reference.
 
 REFERENCE INPUTS:
 @loc_MYS_mys-mw06-b-03-memory-view-07_s0_v1 = Use the accepted dance image for this same pair, clothing and room; reconstruct the assigned practical break, not the source pose.

@@ -4,7 +4,7 @@ OUTPUT ELEMENT ASSIGNMENT — OPERATOR METADATA ONLY, NEVER RENDER:
 Target import name: MYS MW06_A_03 Memory View 03
 Live output Element name (operator lookup only): loc_MYS_mys-mw06-a-03-memory-view-03_s0_v1
 Live output Element UUID: 26fb74ad-420b-4d78-be6c-6372c2f6a9ea
-Assign the finished image to this existing empty target. This output target is not an input reference.
+Image attachment verified via MCP on 2026-09-10. This output target is not an input reference.
 
 REFERENCE INPUTS:
 @loc_MYS_mys-mw02-b-global-routes_s0_v1 = Use original view 5 of the accepted MW02_B page for the same balloon basket, landing site and helpers.
