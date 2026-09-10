@@ -44,4 +44,4 @@ Bind each actual imported Element handle to its matching key; names alone do not
 
 The repeated original views in group C remain explicit companion references with their original detailed compositions. An already accepted identical view can supply a matching slot if it satisfies that prompt; this guide does not request an automatic regeneration of an accepted image.
 
-See the [84-prompt world index](../../../02_library/worlds/real/README.md) for the individual files. Only the three still-oversized morph prompts require further length work; they were not changed in this split.
+See the [84-prompt world index](../../../02_library/worlds/real/README.md) for the individual files. The separately revised MR001, R008 and R014 morph prompts also fit below 15,000 characters; their four-state layouts remain unchanged.

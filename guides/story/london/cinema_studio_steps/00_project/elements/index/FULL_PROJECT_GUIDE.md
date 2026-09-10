@@ -14,7 +14,7 @@ The [CSV prompt map](FULL_PROJECT_PROMPT_MAP.csv) lists all 227 references with 
 
 - Present worlds: **84 separate full-frame 16:9 images at 2K**, four replacements for each of the 21 former pages. All are below 15,000 characters. Names retain world, A/B/C group and 01–04 position; original view identities are explicit.
 - The other **143 references remain 4K**: 31 character identity sheets (1×3), 30 memory/clinical/restaurant pages (2×2), 75 morph sheets (2×2) and seven typography sheets (TY001 3×3, others 2×2).
-- The three oversized morph prompts MR001, R008 and R014 still require length work. They were not edited in the world split. Do not assume all 227 prompts fit the image UI limit.
+- All 227 image prompts now fit below 15,000 characters. MR001, R008 and R014 were shortened by consolidating repeated general rules while preserving their four material states.
 - Maps remain excluded. No image/video generation, platform import or debit has been performed by these file edits.
 
 Reuse accepted images when they satisfy their current roles. Resolve each real imported Element handle before generating a dependent prompt; an `@UNBOUND_...` token is not a bound reference. Attach world references in the order in the video setup; spatial view order does not create cuts or override the video choreography. Camera position, lens and image composition remain in the image prompts; camera travel, timing and sound are in the video prompts.

@@ -2,7 +2,7 @@
 
 Use the [present-world replacement import and deletion guide](../00_project/elements/additions/WORLD_SINGLE_VIEWS_REPLACEMENT_GUIDE.md). The queue uses 23 existing library slots: two character identities, twelve W01 world views, three restaurant pages and six morph/typography references. Reuse accepted images that meet the current role; this is not an instruction to regenerate them.
 
-Generate present-world views at 2K / full-frame 16:9 / one output, with eligible Unlimited enabled and the displayed price checked. The other eleven references retain their existing 4K layouts. MR001 and R008 are still above the 15,000-character image limit and need their pending length revision before submission; the world split did not change them.
+Generate present-world views at 2K / full-frame 16:9 / one output, with eligible Unlimited enabled and the displayed price checked. The other eleven references retain their existing 4K layouts. MR001 and R008 now fit below the 15,000-character image limit after consolidating repeated general rules; their four material states and 4K layouts remain intact.
 
 | Order | Element | Prompt | Setting |
 |---|---|---|---|
