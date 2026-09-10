@@ -67,3 +67,9 @@ Recognition targets: The Royal Courts of Justice read through their Gothic point
 CONTINUOUS-SPACE PLANNING: Associate each transformation with one existing local structure and a connected camera route. Link the first narrow sightline to the remembered person and the later full encounter through that SAME opening, pier, floor edge or rail. The next location is reached through intervening space; no arrow or alternate map view authorizes a cut, crossfade, dissolve or replacement skyline. Impossible geography is allowed, but the moving film must trace its material connections.
 
 For each connection, choose either a source/destination structure with visibly corresponding parts or a camera route through an existing opening. Prioritize recognisable historic buildings for whole-building transformations; connect structurally dissimilar locations by the continuous route. Do not imply every map association requires an object morph.
+
+MAP CONTENT:
+This is a graphic block-model plan without individual human figures or portrait cards. Actual photographic world references and videos render current-city people with their numerical ratings.
+
+NO UMBRELLAS — EVERY CELL:
+No umbrellas anywhere in this image: none open, folded, carried, tucked into a bag, leaning against a wall, mounted over a table or held above a head. Do not copy an umbrella from an input reference. Outdoor present-city people have uncovered heads, hoods down and exposed hair; leave open air above every crown. Keep the specified weather for this scene. This restriction applies to the foreground, background, reflections and all cells of the sheet.

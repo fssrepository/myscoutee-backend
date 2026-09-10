@@ -44,3 +44,9 @@ Three panels only: front full-body / back full-body / frontal headshot.
 Same exact identity and wardrobe.
 Mid-grey background reaches the canvas edges.
 No title or outer frame.
+
+IDENTITY SHEET AND SCENE RATINGS:
+These three neutral studio views define the same person, not the rated city. Keep this identity sheet without floating rating cards, so the face and hair remain clear. In a current-city scene the scene prompt supplies the owner-linked numerical card; remembered/clinical appearances have none. Leave useful space around the head in the identity views. Do not infer a visible score or score colour for the protagonist from this sheet.
+
+NO UMBRELLAS — EVERY CELL:
+No umbrellas anywhere in this image: none open, folded, carried, tucked into a bag, leaning against a wall, mounted over a table or held above a head. Do not copy an umbrella from an input reference. Outdoor present-city people have uncovered heads, hoods down and exposed hair; leave open air above every crown. Keep the specified weather for this scene. This restriction applies to the foreground, background, reflections and all cells of the sheet.
