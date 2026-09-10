@@ -1,12 +1,12 @@
 REFERENCE ID: MW01_LONDON_SOCIAL_C (do not render this identifier).
 
-REFERENCE SETUP INCOMPLETE: MW01
+REFERENCE SETUP INCOMPLETE: MW01, T01_DETAILS
 Do not generate until these references are bound.
 
 PAGE CONTINUITY INPUT: @UNBOUND_MW01 supplies the accepted Page A identities, shared material palette and any recurring room geometry. New places explicitly assigned to this page retain their own stated setting; do not copy Page A into every cell.
 
 REFERENCE INPUTS:
-@loc_MYS_pilot-soho-restaurant-memory_s1_v1 = accepted Soho restaurant source, reused for original view 1–3. Preserve this exact room, warm lighting, modest wooden table, two restroom doors and the seated woman / remembered man arrangement when framing those details. These cells are different views of the accepted place, not a newly designed restaurant. Character references retain their identity roles.
+@UNBOUND_T01_DETAILS = accepted T01_A Soho restaurant source, reused for original view 1–3. Preserve this exact room, warm lighting, modest wooden table, two restroom doors and the seated woman / remembered man arrangement when framing those details. These cells are different views of the accepted place, not a newly designed restaurant. Character references retain their identity roles.
 @char_MYS_mys-c01-protagonist_s0_v1 = CHARACTER 01 — PROTAGONIST; exact person identity; use only where this person appears.
 @char_MYS_mys-c02-soho-woman_s0_v1 = CHARACTER 02 — SOHO WOMAN; exact person identity; use only where this person appears.
 @char_MYS_mys-c06-shared-house-substitute-snoring-housemate_s0_v1 = CHARACTER 06 — SHARED-HOUSE SUBSTITUTE / SNORING HOUSEMATE; exact person identity; use only where this person appears.
@@ -17,6 +17,7 @@ REFERENCE INPUTS:
 
 OUTPUT GEOMETRY — ONE 4K 2×2 REFERENCE PAGE:
 Generate ONE photographic 3840×2160 widescreen 16:9 image. Exactly FOUR equal edge-to-edge 1920×1080 cells in a 2×2 grid, without gutters, margins, letterboxing, labels, headings or captions. Select 4K for the entire output. Cell order is top-left, top-right, bottom-left, bottom-right. This is one image output, not four separate jobs.
+Use character references for identity and wardrobe only, and accepted location pages for their assigned spatial content. Reconstruct each assigned cell as one scene; never copy a reference sheet inside it. No front/back/headshot identity layout, nested grid or extra panels.
 
 MEMORY-WORLD FUNCTION:
 This is a CLEAN VISUAL SOURCE REFERENCE for a remembered place/event.

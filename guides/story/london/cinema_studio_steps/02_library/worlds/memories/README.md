@@ -1,8 +1,6 @@
-CURRENT WORKFLOW — 2026-09-10: the creator requested a full clean Element reimport, including characters. Use the [complete restart guide](../../../00_project/elements/index/FULL_PROJECT_GUIDE.md) and its 105-entry list. Earlier incremental-import and retained-image instructions below are historical where they conflict. Four images are reported retained; previous @ bindings are not verified for the new import.
-
 # Memory reference pages — 4K 2×2
 
-Each file is one copy-ready image prompt for a 3840×2160 canvas divided into four 1920×1080 cells without gutters. Each original nine-view bank now has three pages, preserving all 81 original views across the nine banks. Every page filename ends in _A.txt, _B.txt or _C.txt so the pages sort together. Original Element keys remain unchanged. Existing generated media and imported original Elements are unchanged.
+Each file is one copy-ready image prompt for a 3840×2160 canvas divided into four 1920×1080 cells without gutters. Each original nine-view bank now has three pages, preserving all 81 original views across the nine banks. Every page filename ends in _A.txt, _B.txt or _C.txt so the pages sort together. The canonical Element keys identify these pages; binding an output ID does not by itself verify its attached image.
 
 | Bank | Page A: original 1–4 | Page B: original 5–8 | Page C: original 9, 1, 7, 8 |
 | --- | --- | --- | --- |
@@ -28,12 +26,18 @@ In the clean restart, T01_A establishes the restaurant from its detailed text an
 
 Memory pages show literal places, people, gestures and spatial relationships. Their four cells are not necessarily successive material states: that is the role of the [morph sheets](../../morphs/README.md). Do not force different memories into one room, or render four similar wide views when different details are assigned. Multiple pages of the same room retain its identity, layout and wardrobe; different memories preserve their own settings. Additional coverage can be prepared for one place without creating a new story event.
 
-The existing [normal worlds](../real/README.md) already have 21 pages: three 4K 2×2 pages per world. Production video/storyboard prompts now map both normal and memory companion pages back to their original view assignments. Page changes never trigger video cuts. Reference roles do not guarantee temporal continuity; inspect that in the pilot.
+The [present worlds](../real/README.md) use 84 separate 2K full-frame images. Memory sources retain the 30 four-cell 4K pages listed here. Production video/storyboard prompts map these references back to their assigned views. Page changes never trigger video cuts. Reference roles do not guarantee temporal continuity; inspect that in the pilot.
 
 ## Inputs, imports and reality boundary
 
-The [new-only memory import](../../../00_project/elements/archive/batches/12_memory_reference_pages.md) contains 18 B/C companions plus the three T01 coverage pages, not the original memory Elements. It is prepared, not imported. Page B/C prompts use their source bank’s accepted Page A image for recurring geometry and identities, plus the existing character inputs. Missing actual mentions are marked explicitly; collect and bind them before rendering the affected page. No fictional @ identifier is usable in Higgsfield.
+Generate and accept each bank's Page A before its B/C companions. The 20 B/C prompts currently have explicit unbound Page A inputs. Supply the actual Higgsfield Element ID and attach the accepted image before using them. Existing C01–C31 identity mentions are bound.
+
+MW01 also uses the current T01_A restaurant source (`T01_DETAILS`), replacing the legacy pilot restaurant mention. Generate T01_A from C01/C02 first, bind its actual output ID, then generate MW01_A and the relevant companion pages. A missing mention is marked `@UNBOUND_...`; it is not a usable Higgsfield reference.
+
+HRW07_A uses only the bound C01 patient and C05 nurse identities. It can establish the clinical room first; HRW07_B/C subsequently use that accepted room. Its patient gesture is one deep inhalation on returning from anaesthesia, with a wrist cuff and short chain attached to the bed and only the foot supported beneath the heel/ankle.
+
+The repeated original views 1, 7 and 8 on Page C are intentional coverage, not duplicate Element IDs. When a recurring room or object was established on Page B, also retain that accepted B image for visual comparison; Page A alone does not show those subjects.
 
 Clinical HRW07 remains ordinary reality, no cards or morph effects. All three HRW07 pages are restricted to Block 07, its scripted tiny fragments and final explicit hard cut. No nurse, restraint or room reveal is added to Blocks 01–06. Remembered people remain card-free; these files do not remove current-city ratings.
 
-All 30 prompts here are preparation choices for reusable sources. They are not 28 required pilot renders, extra paid video jobs, or claims that images have already been generated. The current pilot retains its accepted people/room and selected five reference subjects.
+All 30 prompts are below 15,000 characters including spaces and newlines. Each requests one 4K 16:9 output containing four equal 2×2 cells; source identity sheets must not introduce front/back/headshot panels or nested grids. The four detailed cell assignments remain intact. Use the [current pilot queue](../../../01_pilot/PILOT_IMAGE_QUEUE.md) for the pilot subset; this library is not a requirement to generate every memory before the first test.

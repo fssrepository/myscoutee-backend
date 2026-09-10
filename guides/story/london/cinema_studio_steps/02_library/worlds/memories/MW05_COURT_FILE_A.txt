@@ -11,6 +11,7 @@ REFERENCE INPUTS:
 
 OUTPUT GEOMETRY — ONE 4K 2×2 REFERENCE PAGE:
 Generate ONE photographic 3840×2160 widescreen 16:9 image. Exactly FOUR equal edge-to-edge 1920×1080 cells in a 2×2 grid, without gutters, margins, letterboxing, labels, headings or captions. Select 4K for the entire output. Cell order is top-left, top-right, bottom-left, bottom-right. This is one image output, not four separate jobs.
+Use character references for identity and wardrobe only, and accepted location pages for their assigned spatial content. Reconstruct each assigned cell as one scene; never copy a reference sheet inside it. No front/back/headshot identity layout, nested grid or extra panels.
 
 MEMORY-WORLD FUNCTION:
 This is a CLEAN VISUAL SOURCE REFERENCE for a remembered place/event.
