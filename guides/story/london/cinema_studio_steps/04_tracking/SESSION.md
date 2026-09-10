@@ -1,3 +1,7 @@
+## Opening logo segment — pending identification
+
+The creator requests a logo segment before the finished film. Its identity/source asset and exact duration remain unconfirmed; the creator mentioned approximately 4 seconds or possibly less. No logo asset or explicit opening-logo timing was found in the London project documents searched. Keep this as an assembly requirement ahead of Block 01; do not retime the seven story blocks or the 4+4-second technical test, and do not generate a logo clip until the intended source is identified. This note does not establish a festival requirement or a fixed duration.
+
 # Current override — small continuity test, 2026-09-10
 
 Latest user scope supersedes earlier eight-second pilot decisions: [4-second first clip](../01_pilot/test_video_4s.txt) + [4-second native Extend](../01_pilot/test_extend_4s.txt), approximately 8 seconds joined, simple restaurant with three existing references. Narration crosses the seam as one later track. Balance: user-reported 2036. Native picture/background continuity is reviewed before adding narration. See [current instructions](../01_pilot/README.md) and [unresolved Higgsfield audio-overlay route](../01_pilot/NARRATION_ROUTE.md). No generation executed. Earlier session entries below remain historical.
