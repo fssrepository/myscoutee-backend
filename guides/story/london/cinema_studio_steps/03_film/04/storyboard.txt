@@ -1,8 +1,5 @@
-REFERENCE SETUP INCOMPLETE: MW04, MW04_B_01, MW04_B_02, MW04_B_03, MW04_B_04, MW04_C_01, MW04_C_02, MW04_C_03, MW04_C_04
-Do not generate until these references are bound.
-
 MEMORY REFERENCE PAGES — DIRECT SOURCES, NOT EDITS:
-@UNBOUND_MW04 supplies MW04 Page A (original views 1–4); @loc_MYS_mys-mw04-b-01-memory-view-05_s0_v1 supplies original view 5; @loc_MYS_mys-mw04-b-02-memory-view-06_s0_v1 supplies original view 6; @loc_MYS_mys-mw04-b-03-memory-view-07_s0_v1 supplies original view 7; @loc_MYS_mys-mw04-b-04-memory-view-08_s0_v1 supplies original view 8; @loc_MYS_mys-mw04-c-01-memory-view-09_s0_v1 supplies the policewoman human-expression moment; @loc_MYS_mys-mw04-c-02-memory-view-01_s0_v1 supplies domestic-bag inspection; @loc_MYS_mys-mw04-c-03-memory-view-07_s0_v1 supplies the unfinished defence-file handoff; @loc_MYS_mys-mw04-c-04-memory-view-08_s0_v1 supplies corridor waiting. Use the original-view assignment to select the actual place/event, not the sheet layout.
+@loc_MYS_mys-mw04-a-police-defence_s0_v1 supplies MW04 Page A (original views 1–4); @loc_MYS_mys-mw04-b-01-memory-view-05_s0_v1 supplies original view 5; @loc_MYS_mys-mw04-b-02-memory-view-06_s0_v1 supplies original view 6; @loc_MYS_mys-mw04-b-03-memory-view-07_s0_v1 supplies original view 7; @loc_MYS_mys-mw04-b-04-memory-view-08_s0_v1 supplies original view 8; @loc_MYS_mys-mw04-c-01-memory-view-09_s0_v1 supplies the policewoman human-expression moment; @loc_MYS_mys-mw04-c-02-memory-view-01_s0_v1 supplies domestic-bag inspection; @loc_MYS_mys-mw04-c-03-memory-view-07_s0_v1 supplies the unfinished defence-file handoff; @loc_MYS_mys-mw04-c-04-memory-view-08_s0_v1 supplies corridor waiting. Use the original-view assignment to select the actual place/event, not the sheet layout.
 Several pages may support the same block or remembered place. Reconstruct the people, objects, supports and entry/exit geometry at life size while following this video’s existing continuous route. Never switch scenes because a cell or page changes. Current-city cards remain on current people; remembered people have none. HRW07 pages remain exclusive to Block 07 and its scripted tiny fragments/final hard cut.
 
 WORLD REFERENCES — ORDERED SINGLE VIEWS:
@@ -34,7 +31,7 @@ Heavy overcast London sky with cool diffuse evening light. The air is clear and 
 
 REFERENCE INPUTS:
 @loc_MYS_mys-w04-a-01-world-view-01_s0_v1 @loc_MYS_mys-w04-a-02-world-view-02_s0_v1 @loc_MYS_mys-w04-a-03-world-view-03_s0_v1 @loc_MYS_mys-w04-a-04-world-view-04_s0_v1 = LOCATION — W04 — WORLD 04 — FORMAL CITY — FLEET STREET / TEMPLE / CIVIC FACADES / BLACKFRIARS APPROACH; physical present city; preserve materials and allow the directed architectural transformation.
-@UNBOUND_MW04 = LOCATION — MW04 — MEMORY WORLD 04 — POLICE / SEARCH / DEFENCE; the assigned remembered scenes; preserve the source identities and setting.
+@loc_MYS_mys-mw04-a-police-defence_s0_v1 = LOCATION — MW04 — MEMORY WORLD 04 — POLICE / SEARCH / DEFENCE; the assigned remembered scenes; preserve the source identities and setting.
 @char_MYS_mys-c01-protagonist_s0_v1 = CHARACTER 01 — PROTAGONIST; exact person identity; use only where this person appears.
 @char_MYS_mys-c03-policewoman_s0_v1 = CHARACTER 03 — POLICEWOMAN; exact person identity; use only where this person appears.
 @char_MYS_mys-c04-appointed-lawyer_s0_v1 = CHARACTER 04 — APPOINTED LAWYER; exact person identity; use only where this person appears.

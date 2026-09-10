@@ -1,4 +1,4 @@
-REFERENCE SETUP INCOMPLETE: A01, MWP01, MWP01_B, MWP01_C, SB01
+REFERENCE SETUP INCOMPLETE: A01, SB01
 Do not generate until these references are bound.
 
 MEMORY REFERENCE PAGES — DIRECT SOURCES, NOT EDITS:
@@ -43,7 +43,7 @@ One 16:9 photorealistic moving film sequence. Open in motion, already tracking t
 REFERENCES
 @loc_MYS_mys-w01-a-01-world-view-01_s0_v1 @loc_MYS_mys-w01-a-02-world-view-02_s0_v1 @loc_MYS_mys-w01-a-03-world-view-03_s0_v1 @loc_MYS_mys-w01-a-04-world-view-04_s0_v1 = physical city, route, materials and recognizable architecture; transformation allowed as directed.
 @loc_MYS_mys-mw01-a-london-social_s0_v1 = the London social/home memory collection for the other assigned beats. For the Soho restaurant, wrong restroom door and woman’s smile in FRAME 3, the accepted single restaurant source below governs room layout, furniture, lighting and remembered positions.
-@loc_MYS_pilot-soho-restaurant-memory_s1_v1 = the SAME accepted Soho restaurant image used by the pilot, reused directly for FRAME 3. Preserve its modest wooden table, seated woman, two restroom doors and remembered man beside them. Reconstruct this exact place as a life-size inhabited volume growing from the street, with solid people, complete chair legs and camera parallax. The current walker remains separate. Use this source for restaurant detail even if the broader MW01 sheet differs; never display the still as a flat image or reflection. Reuse the existing Element and image; no replacement restaurant image is requested.
+@loc_MYS_mys-t01-a-soho-restaurant_s0_v1 = the SAME accepted Soho restaurant image used by the pilot, reused directly for FRAME 3. Preserve its modest wooden table, seated woman, two restroom doors and remembered man beside them. Reconstruct this exact place as a life-size inhabited volume growing from the street, with solid people, complete chair legs and camera parallax. The current walker remains separate. Use this source for restaurant detail even if the broader MW01 sheet differs; never display the still as a flat image or reflection. Reuse the existing Element and image; no replacement restaurant image is requested.
 @loc_MYS_mys-mwp01-a-routes-rooms-documents_s0_v1 = literal memory source; reconstruct its people and place in the changing street according to the named beat.
 @char_MYS_mys-c01-protagonist_s0_v1 = exact face, age, hair and body; memory wardrobe follows its source scene.
 @char_MYS_mys-c02-soho-woman_s0_v1 = exact face, age, hair and body; memory wardrobe follows its source scene.
