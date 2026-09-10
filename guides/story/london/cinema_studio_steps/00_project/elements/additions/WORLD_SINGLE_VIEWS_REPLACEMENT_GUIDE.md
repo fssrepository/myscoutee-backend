@@ -1,5 +1,11 @@
 # Replace the present-world page Elements
 
+## Alternative: replace the entire Higgsfield Locations tab
+
+The platform **Locations** type includes both the 114 current world/memory Elements and 37 building/space morph Elements. The left-side `worlds` asset folder is not the same thing as this type filter. If you clear the entire Locations tab, import [ALL_LOCATIONS_REIMPORT.md](ALL_LOCATIONS_REIMPORT.md): **151 Location definitions**. `WORLDS_IMPORT.md` alone would omit the 37 building/space morphs. Use this complete Location batch alone for that route; do not also import the 84-view supplement or the 114-world category. Preserve any usable downloaded images and reattach them to the matching recreated Elements. Character and Prop Elements are outside this batch. No platform deletion or import has been performed here.
+
+## Alternative: replace only the 21 old world pages
+
 Import [WORLD_SINGLE_VIEWS_IMPORT.md](WORLD_SINGLE_VIEWS_IMPORT.md) once: **84 new Location Elements**. This is the incremental replacement batch; do not also import the full or category list into the same existing library. The full list now contains 227 Elements; the worlds category contains 114 (84 present-world views plus 30 unchanged memory/clinical/restaurant pages).
 
 Each former page becomes four separate full-frame 16:9 images. Choose Nano Banana Pro / 2K / one output. Zero-credit planning applies only with the eligible Unlimited mode enabled during the active offer; check the displayed price. Keep the other assets and their existing resolutions.
