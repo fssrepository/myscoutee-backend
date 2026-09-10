@@ -1,3 +1,10 @@
+## 2026-09-10 — Tipográfia, rendezett importmappák, 4K képköltség
+
+- Hét új TY001–TY007 Prop: rating-számjegyek/színek, COFFEE→KÁVÉ betűanyag, kulturális/munkahelyi/közlekedési feliratok, 37→33 profilmező és a pontos zárócím. [Promptok](../02_library/typography/README.md). TY001 3×3, a többi 2×2; minden lap 4K. A zárócím továbbra is a forgatókönyvi hard cut után jelenik meg, nem új cím-animáció.
+- Most külön importálandó: [TYPOGRAPHY_IMPORT.md](../00_project/elements/categories/TYPOGRAPHY_IMPORT.md), csak hét új elem. A [Full](../00_project/elements/full/FULL_PROJECT_IMPORT.md) 164 elemet tartalmaz, a négy kategóriafájl pontos egyesítése. Az Elements gyökérben csak README és full/categories/additions/index/archive mappák maradtak. A korábbi listák megőrzöttek az archive alatt; a hivatkozások átvezetve.
+- Összesen 171 aktív képprompt van a 7 opcionális térképpel együtt. Az eredeti 164 prompt ellenőrzése történeti pillanatkép a tipográfia hozzáadása előtt. Az új tipográfiai lapok szövegei külön ellenőrizve; képgenerálás nem történt.
+- A felhasználó megerősítette: **4 kredit egy 4K kép**. Első kör: 164 importelem × 4 = **656**; 171 kép térképekkel = **684**; a tipográfia hét lapja ebből **28**. +20% pluszképpel 788 / 824. A korábbi ~700-as egyenleg nincs újra ellenőrizve; ha érvényes, az első kör után csak 44 / 16 maradna videók előtt. [Költségterv](../00_project/BUDGET.md), [tételes tervezés](IMAGE_GENERATION_ESTIMATE.csv). Nincs bejegyzett új tényleges terhelés.
+
 ## 2026-09-10 — Teljes képprompt-részletellenőrzés, lineáris képelőkészítés
 
 164 aktív képprompt ellenőrizve; 80 bővítve/javítva, 84 meglévő részletes prompt megtartva. A világok 63 és a kilenc rövidebb emlékcsalád 81 eredeti nézete konkrét térbeli/anyag-/szereplő-részletekkel bővült; 31 karakter saját ruha- és arcrészleteket kapott. A morphok négy eltérő anyagállapota megmaradt. [Fájlonkénti ellenőrzés](IMAGE_PROMPT_DETAIL_REVIEW.md).

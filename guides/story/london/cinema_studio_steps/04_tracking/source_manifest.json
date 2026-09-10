@@ -9007,5 +9007,34 @@
     "archive": "00_project/elements/archive",
     "current_addition": "00_project/elements/categories/TYPOGRAPHY_IMPORT.md",
     "active_element_count": 164
+  },
+  "image_generation_cost_estimate": {
+    "date": "2026-09-10",
+    "unit_credits": 4,
+    "price_source": "CREATOR_CONFIRMED_SELECTED_4K_IMAGE_UI_QUOTE",
+    "unit": "ONE_OUTPUT_SHEET_NOT_ONE_CELL",
+    "resolution": "4K",
+    "imported_library_images": 164,
+    "imported_library_first_pass_credits": 656,
+    "optional_map_images": 7,
+    "optional_map_credits": 28,
+    "all_image_prompts": 171,
+    "all_first_pass_credits": 684,
+    "typography_images": 7,
+    "typography_first_pass_credits": 28,
+    "prior_balance_estimate": 700,
+    "prior_balance_not_reverified": true,
+    "with_10_percent_additional_images": {
+      "library_only": 724,
+      "including_maps": 756
+    },
+    "with_20_percent_additional_images": {
+      "library_only": 788,
+      "including_maps": 824
+    },
+    "ledger": "04_tracking/IMAGE_GENERATION_ESTIMATE.csv",
+    "actual_generation_or_debit_recorded": false,
+    "video_costs_excluded": true,
+    "prior_unlimited_assumption_superseded_for_selected_4k_operation": true
   }
 }

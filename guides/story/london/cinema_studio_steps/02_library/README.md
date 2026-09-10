@@ -7,6 +7,7 @@
 - [worlds/real](worlds/real/): a jelen városának A–B–C környezeti lapjai.
 - [worlds/memories](worlds/memories/): emlékek, T01 étterem és a végső klinikai valóság A–B–C lapjai.
 - [worlds/maps](worlds/maps/): opcionális tér- és útvonaltervek.
+- [typography](typography/): olvasható ratingek, utcai feliratok, helyi betűváltozások és a zárócím.
 
 A real elnevezés a jelen városi rétegét jelöli; ez továbbra is a történet lehetetlenül változó Londonja. A HRW07 klinikai lapok a forgatókönyvi szerepük miatt a memories ágon maradnak, kizárólag a végső blokkhoz.
 
@@ -20,7 +21,10 @@ A [teljes prompttérkép](../00_project/elements/index/FULL_PROJECT_PROMPT_MAP.c
 | morphs/buildings, objects, characters | 2×2: négy különböző anyagállapot | 3840×2160 (4K) |
 | worlds/real, memories | 2×2: négy részletes környezeti nézet | 3840×2160 (4K) |
 | worlds/maps | 2×2: áttekintés, bevezetés, átalakulási hely, kijárat | 3840×2160 (4K) |
+| typography | TY001: 3×3 rövid ratingminták; TY002–TY007: 2×2 felirat/részlet | 3840×2160 (4K) |
 
-A 4K 2×2 lapon nulla margóval és köztes hézag nélkül egy cella 1920×1080 pixel. A felület felbontásválasztóját is ennek megfelelően kell beállítani. A világ külön nézetei nem morph-fázisok; a morph-lap négy cellája ugyanannak az anyagfolyamatnak négy különböző térbeli állapota. Az aktív képpromptok nem kérnek 3×3-as képet.
+A 4K 2×2 lapon nulla margóval és köztes hézag nélkül egy cella 1920×1080 pixel. A felület felbontásválasztóját is ennek megfelelően kell beállítani. A világ külön nézetei nem morph-fázisok; a morph-lap négy cellája ugyanannak az anyagfolyamatnak négy különböző térbeli állapota. A tipográfia TY001 lapja az egyetlen 3×3-as kivétel: cellánként 1280×720 pixel. Minden teljes kép továbbra is 4K.
 
 A [ratingkártya- és esernyőellenőrzés](../04_tracking/RATING_CARD_IMAGE_REVIEW.md) rögzíti, mely jelenréteg kap kártyát. A kártyák száma tizedesjegyű, színük a pontszámhoz kötött. Az esernyő minden aktív képpromptban tiltott.
+
+A felhasználó által megerősített ár **4 kredit / 4K képlap**. A 164 importelem első képköre 656 kredit, a hét opcionális térképpel együtt 684. Részletek és újragenerálási tartalék: [BUDGET.md](../00_project/BUDGET.md).

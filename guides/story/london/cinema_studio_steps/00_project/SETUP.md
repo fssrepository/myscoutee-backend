@@ -1,3 +1,9 @@
+# Aktuális képbeállítás — 2026-09-10
+
+Minden új képlap 4K / 3840×2160 / 16:9. A felhasználó most **4 kredit/kép** árat jelzett; a régebbi, 2K-s Unlimited-felületi megfigyelések alább történeti információk, és nem teszik az aktuális 4K képkört ingyenessé. Egy rácslap egy kimeneti kép. [Aktuális költségterv](BUDGET.md).
+
+A már előkészített könyvtárhoz csak a [7 új tipográfiai elemet](elements/categories/TYPOGRAPHY_IMPORT.md) kell külön importálni. [Teljes rendezett importkönyvtár](elements/README.md).
+
 # Setup and checks before generation
 
 **Completion constraint:** the creator cannot perform local video editing, audio mixing or rendering. Each generated clip must arrive with its intended soundtrack, and the complete film must have a verified hosted assembly/export route within the existing budget. Do not assume a later desktop-editor repair. This clarifies the existing production requirement and adds no generation task.
