@@ -2318,84 +2318,84 @@
     {
       "asset": "MW04_B_01",
       "file": "02_library/worlds/memories/14_01_MW04_POLICE_DEFENCE_B_VIEW_05.txt",
-      "file_sha256": "d88d011344ddc041aa559ceec772829e8af3b62974575c97e61a65be24fada0e",
+      "file_sha256": "90f742f41e9d57045988dde8982f0b565e767e06986a18fa5addf9f455c45eb8",
       "source_prompt_sha256": "e1a201cd2de127e052ea263e72e7773a6be725426ac4da5b41f1b2b43a56853b",
       "note": "MW04_B original view 5; scene body preserved, split to full-frame 2K with scoped characters and Page A location input."
     },
     {
       "asset": "MW04_B_02",
       "file": "02_library/worlds/memories/14_02_MW04_POLICE_DEFENCE_B_VIEW_06.txt",
-      "file_sha256": "bc2a085896e378546e7755fe2d26112322938295a92fcea81ce19d3204f8ac9b",
+      "file_sha256": "f9afc57bf4b2122e68760cbf958cddad4e965b2cdbf6a68abb052204b59d87be",
       "source_prompt_sha256": "e1a201cd2de127e052ea263e72e7773a6be725426ac4da5b41f1b2b43a56853b",
       "note": "MW04_B original view 6; scene body preserved, split to full-frame 2K with scoped characters and Page A location input."
     },
     {
       "asset": "MW04_B_03",
       "file": "02_library/worlds/memories/14_03_MW04_POLICE_DEFENCE_B_VIEW_07.txt",
-      "file_sha256": "e326ef013072736668a5da3c3ed4c8afc3147123db62111123014209c67dd8a4",
+      "file_sha256": "5da9c7d5da30be18c788aca9c3242d42c2c685145a6d3a6231ea26212c1c649c",
       "source_prompt_sha256": "e1a201cd2de127e052ea263e72e7773a6be725426ac4da5b41f1b2b43a56853b",
       "note": "MW04_B original view 7; scene body preserved, split to full-frame 2K with scoped characters and Page A location input."
     },
     {
       "asset": "MW04_B_04",
       "file": "02_library/worlds/memories/14_04_MW04_POLICE_DEFENCE_B_VIEW_08.txt",
-      "file_sha256": "84d524e71833b383f8a3c9db60f477ca6b7c0fc9380d5934057353b0639a51b8",
+      "file_sha256": "72852f9c3a453ab4b595bc2707953c763e40de3a129cde7180dbc9f701422134",
       "source_prompt_sha256": "e1a201cd2de127e052ea263e72e7773a6be725426ac4da5b41f1b2b43a56853b",
       "note": "MW04_B original view 8; scene body preserved, split to full-frame 2K with scoped characters and Page A location input."
     },
     {
       "asset": "MW04_C_01",
       "file": "02_library/worlds/memories/15_01_MW04_POLICE_DEFENCE_C_VIEW_09.txt",
-      "file_sha256": "0fcee2ef692b03858f4ec02b26ca36e1e47b6509c651d8da87ff7e7befef0095",
+      "file_sha256": "f20489486b48bed027734a22d838dcdf36e320ca3fba4afc4466b81eac96c37d",
       "source_prompt_sha256": "14817ae9117a7109d0b9ec4297c60531fed8c678ef2742eaba6b87db5b2db99f",
       "note": "MW04_C original view 9; scene body preserved, split to full-frame 2K with scoped characters and Page A location input."
     },
     {
       "asset": "MW04_C_02",
       "file": "02_library/worlds/memories/15_02_MW04_POLICE_DEFENCE_C_VIEW_01.txt",
-      "file_sha256": "9196daba13938d704860df9f72752c093bbc143812ae9ac78fbdfa9e779c2cdd",
+      "file_sha256": "6f7a7339eaba4af969a7a649fad55b89c120115671265bf2c6509add6fa9f046",
       "source_prompt_sha256": "14817ae9117a7109d0b9ec4297c60531fed8c678ef2742eaba6b87db5b2db99f",
       "note": "MW04_C original view 1; scene body preserved, split to full-frame 2K with scoped characters and Page A location input."
     },
     {
       "asset": "MW04_C_03",
       "file": "02_library/worlds/memories/15_03_MW04_POLICE_DEFENCE_C_VIEW_07.txt",
-      "file_sha256": "4d9a603cfe28926f954206640d91d6fe136047690c355ee97eea1f1edc240fdb",
+      "file_sha256": "042b6602828079f95b671a5b104088dd9868027020445a42fd9beedfcb0442dd",
       "source_prompt_sha256": "14817ae9117a7109d0b9ec4297c60531fed8c678ef2742eaba6b87db5b2db99f",
       "note": "MW04_C original view 7; scene body preserved, split to full-frame 2K with scoped characters and Page A location input."
     },
     {
       "asset": "MW04_C_04",
       "file": "02_library/worlds/memories/15_04_MW04_POLICE_DEFENCE_C_VIEW_08.txt",
-      "file_sha256": "ee87674a8132320ecce2a452c2dc6f89872f08447f1d1ff82f244ec297ae6d78",
+      "file_sha256": "5389f0866105a5cdad655ed9201f1dfab1a1d854afe595cc825f613568d591c1",
       "source_prompt_sha256": "14817ae9117a7109d0b9ec4297c60531fed8c678ef2742eaba6b87db5b2db99f",
       "note": "MW04_C original view 8; scene body preserved, split to full-frame 2K with scoped characters and Page A location input."
     },
     {
       "asset": "MW05_B_01",
       "file": "02_library/worlds/memories/17_01_MW05_COURT_FILE_B_VIEW_05.txt",
-      "file_sha256": "4995ea069fff0e46b5c40b6b1d81068f4b0e8f540ba4ff6f9ebef3aef0e255dc",
+      "file_sha256": "018219511cf9ea790e54134dceedb7a972829c2ca51d679a9c7256bf9070a907",
       "source_prompt_sha256": "e3f8c98bff5c80bb037f01e0237bf7b8ee34181442b0b7211b98d95bee317851",
       "note": "MW05_B original view 5; scene body preserved, split to full-frame 2K with scoped character inputs."
     },
     {
       "asset": "MW05_B_02",
       "file": "02_library/worlds/memories/17_02_MW05_COURT_FILE_B_VIEW_06.txt",
-      "file_sha256": "7c63c1eb80c0a6ce97d54cfa6d1ec1ec8b3c0a9bcd4278b7ec97ec0548639644",
+      "file_sha256": "a48ec6e8af7b8101938d6cecd133fb03730db33936c56e618b32218f409aa4b3",
       "source_prompt_sha256": "e3f8c98bff5c80bb037f01e0237bf7b8ee34181442b0b7211b98d95bee317851",
       "note": "MW05_B original view 6; scene body preserved, split to full-frame 2K with scoped character inputs."
     },
     {
       "asset": "MW05_B_03",
       "file": "02_library/worlds/memories/17_03_MW05_COURT_FILE_B_VIEW_07.txt",
-      "file_sha256": "4ba5c8c614dfd0896794563e29a783da223386aed4ab29478da46bad9cfa17f7",
+      "file_sha256": "b2927c3b41f11a7bb020e5f89441ef1274f4787432d88e6f044d75a9f7c11a21",
       "source_prompt_sha256": "e3f8c98bff5c80bb037f01e0237bf7b8ee34181442b0b7211b98d95bee317851",
       "note": "MW05_B original view 7; scene body preserved, split to full-frame 2K with scoped character inputs."
     },
     {
       "asset": "MW05_B_04",
       "file": "02_library/worlds/memories/17_04_MW05_COURT_FILE_B_VIEW_08.txt",
-      "file_sha256": "5d19ff242dcb9648f3ef516e9e89478655e2960bab57b2aa0e180628659e3b3f",
+      "file_sha256": "5573c32434197a747646d9a1133daf5e9f4b78ff4e21613f02ac70e4f8b07f0f",
       "source_prompt_sha256": "e3f8c98bff5c80bb037f01e0237bf7b8ee34181442b0b7211b98d95bee317851",
       "note": "MW05_B original view 8; scene body preserved, split to full-frame 2K with scoped character inputs."
     }
@@ -7909,7 +7909,7 @@
       "original_view": 5,
       "generation_position": 1,
       "element_name": "MYS MW04_B_01 Memory View 05",
-      "prompt_sha256": "d88d011344ddc041aa559ceec772829e8af3b62974575c97e61a65be24fada0e"
+      "prompt_sha256": "90f742f41e9d57045988dde8982f0b565e767e06986a18fa5addf9f455c45eb8"
     },
     "MW04_B_02": {
       "key": "MW04_B_02",
@@ -7926,7 +7926,7 @@
       "original_view": 6,
       "generation_position": 2,
       "element_name": "MYS MW04_B_02 Memory View 06",
-      "prompt_sha256": "bc2a085896e378546e7755fe2d26112322938295a92fcea81ce19d3204f8ac9b"
+      "prompt_sha256": "f9afc57bf4b2122e68760cbf958cddad4e965b2cdbf6a68abb052204b59d87be"
     },
     "MW04_B_03": {
       "key": "MW04_B_03",
@@ -7943,7 +7943,7 @@
       "original_view": 7,
       "generation_position": 3,
       "element_name": "MYS MW04_B_03 Memory View 07",
-      "prompt_sha256": "e326ef013072736668a5da3c3ed4c8afc3147123db62111123014209c67dd8a4"
+      "prompt_sha256": "5da9c7d5da30be18c788aca9c3242d42c2c685145a6d3a6231ea26212c1c649c"
     },
     "MW04_B_04": {
       "key": "MW04_B_04",
@@ -7959,7 +7959,7 @@
       "original_view": 8,
       "generation_position": 4,
       "element_name": "MYS MW04_B_04 Memory View 08",
-      "prompt_sha256": "84d524e71833b383f8a3c9db60f477ca6b7c0fc9380d5934057353b0639a51b8"
+      "prompt_sha256": "72852f9c3a453ab4b595bc2707953c763e40de3a129cde7180dbc9f701422134"
     },
     "MW04_C_01": {
       "key": "MW04_C_01",
@@ -7976,7 +7976,7 @@
       "original_view": 9,
       "generation_position": 1,
       "element_name": "MYS MW04_C_01 Memory View 09",
-      "prompt_sha256": "0fcee2ef692b03858f4ec02b26ca36e1e47b6509c651d8da87ff7e7befef0095"
+      "prompt_sha256": "f20489486b48bed027734a22d838dcdf36e320ca3fba4afc4466b81eac96c37d"
     },
     "MW04_C_02": {
       "key": "MW04_C_02",
@@ -7993,7 +7993,7 @@
       "original_view": 1,
       "generation_position": 2,
       "element_name": "MYS MW04_C_02 Memory View 01",
-      "prompt_sha256": "9196daba13938d704860df9f72752c093bbc143812ae9ac78fbdfa9e779c2cdd"
+      "prompt_sha256": "6f7a7339eaba4af969a7a649fad55b89c120115671265bf2c6509add6fa9f046"
     },
     "MW04_C_03": {
       "key": "MW04_C_03",
@@ -8010,7 +8010,7 @@
       "original_view": 7,
       "generation_position": 3,
       "element_name": "MYS MW04_C_03 Memory View 07",
-      "prompt_sha256": "4d9a603cfe28926f954206640d91d6fe136047690c355ee97eea1f1edc240fdb"
+      "prompt_sha256": "042b6602828079f95b671a5b104088dd9868027020445a42fd9beedfcb0442dd"
     },
     "MW04_C_04": {
       "key": "MW04_C_04",
@@ -8026,7 +8026,7 @@
       "original_view": 8,
       "generation_position": 4,
       "element_name": "MYS MW04_C_04 Memory View 08",
-      "prompt_sha256": "ee87674a8132320ecce2a452c2dc6f89872f08447f1d1ff82f244ec297ae6d78"
+      "prompt_sha256": "5389f0866105a5cdad655ed9201f1dfab1a1d854afe595cc825f613568d591c1"
     },
     "MW05_B_01": {
       "key": "MW05_B_01",
@@ -8043,7 +8043,7 @@
       "original_view": 5,
       "generation_position": 1,
       "element_name": "MYS MW05_B_01 Memory View 05",
-      "prompt_sha256": "4995ea069fff0e46b5c40b6b1d81068f4b0e8f540ba4ff6f9ebef3aef0e255dc"
+      "prompt_sha256": "018219511cf9ea790e54134dceedb7a972829c2ca51d679a9c7256bf9070a907"
     },
     "MW05_B_02": {
       "key": "MW05_B_02",
@@ -8059,7 +8059,7 @@
       "original_view": 6,
       "generation_position": 2,
       "element_name": "MYS MW05_B_02 Memory View 06",
-      "prompt_sha256": "7c63c1eb80c0a6ce97d54cfa6d1ec1ec8b3c0a9bcd4278b7ec97ec0548639644"
+      "prompt_sha256": "a48ec6e8af7b8101938d6cecd133fb03730db33936c56e618b32218f409aa4b3"
     },
     "MW05_B_03": {
       "key": "MW05_B_03",
@@ -8074,7 +8074,7 @@
       "original_view": 7,
       "generation_position": 3,
       "element_name": "MYS MW05_B_03 Memory View 07",
-      "prompt_sha256": "4ba5c8c614dfd0896794563e29a783da223386aed4ab29478da46bad9cfa17f7"
+      "prompt_sha256": "b2927c3b41f11a7bb020e5f89441ef1274f4787432d88e6f044d75a9f7c11a21"
     },
     "MW05_B_04": {
       "key": "MW05_B_04",
@@ -8089,7 +8089,7 @@
       "original_view": 8,
       "generation_position": 4,
       "element_name": "MYS MW05_B_04 Memory View 08",
-      "prompt_sha256": "5d19ff242dcb9648f3ef516e9e89478655e2960bab57b2aa0e180628659e3b3f"
+      "prompt_sha256": "5573c32434197a747646d9a1133daf5e9f4b78ff4e21613f02ac70e4f8b07f0f"
     }
   },
   "operator_language": "English; Hungarian in-world signage and proper names are intentional story content.",

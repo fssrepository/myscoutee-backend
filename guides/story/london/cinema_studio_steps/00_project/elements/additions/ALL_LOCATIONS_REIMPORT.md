@@ -1,5 +1,7 @@
 # MYSCOUTEE — ALL LOCATION ELEMENTS
 
+> Teljes katalógus, nem inkrementális import. A meglévő Higgsfield-projekt mostani 12 új Elementjéhez használd a [hiányzó elemek importját](MW04_BC_MW05_B_MISSING_ONLY_IMPORT.md) és a [pontos törlési / hozzárendelési listát](MW04_BC_MW05_B_IMPORT_AND_CLEANUP.md).
+
 181 Elements. One definition per canonical key.
 
 ## MYS W01_A_01 World View 01

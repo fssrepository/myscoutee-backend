@@ -1,5 +1,11 @@
 REFERENCE ID: MW05_B_03 — ORIGINAL VIEW 07 (never print IDs, headings or labels).
 
+OUTPUT ELEMENT ASSIGNMENT — OPERATOR METADATA ONLY, NEVER RENDER:
+Canonical key: MW05_B_03
+Target import name: MYS MW05_B_03 Memory View 07
+Live Element mention / UUID: pending import; not yet verified.
+Assign the finished image to this target after import. This output target is not an input reference.
+
 REFERENCE INPUTS:
 @char_MYS_mys-c01-protagonist_s0_v1 = CHARACTER 01 — PROTAGONIST; exact person identity; use only where this person appears.
 
