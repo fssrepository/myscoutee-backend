@@ -563,7 +563,7 @@
       ],
       "source_prompt_sha256": "5cdfb4fae9342940c46fc1581ed8ca6f6481867cdcc4013aa4537451325d4f48",
       "file": "02_library/worlds/real/W01_A_01_MAIN_WORLD_VIEW_01.txt",
-      "file_sha256": "fa86b9cd23b52879ae41b2e775ad8a237595a5b9a077598381b7a794f0b70e81",
+      "file_sha256": "56185ee08e3f948d85eb58c9a46b95aa40896055044f9bb75903f8cd6183bca5",
       "changes": "Single assigned world view with retained composition details and consolidated standalone world context; 2K."
     },
     {
@@ -575,7 +575,7 @@
       ],
       "source_prompt_sha256": "5cdfb4fae9342940c46fc1581ed8ca6f6481867cdcc4013aa4537451325d4f48",
       "file": "02_library/worlds/real/W01_A_02_MAIN_WORLD_VIEW_02.txt",
-      "file_sha256": "9aacb175ab5064dd31083a88e424f943e1df6c1310ab41f7f6d92fd67349f773",
+      "file_sha256": "fdef11a8dab1d8c8c4fda543a9b3fd8d7d4eb78abaaa70523c09faca886f7fe4",
       "changes": "Single assigned world view with retained composition details and consolidated standalone world context; 2K."
     },
     {
@@ -587,7 +587,7 @@
       ],
       "source_prompt_sha256": "5cdfb4fae9342940c46fc1581ed8ca6f6481867cdcc4013aa4537451325d4f48",
       "file": "02_library/worlds/real/W01_A_03_MAIN_WORLD_VIEW_03.txt",
-      "file_sha256": "b2a2b84f4cda391b40cfc6851814fed07047814f3a73e4b565c6eb0c419cbf1c",
+      "file_sha256": "e5ccc221ebdc209870dae0f9725b481ce5acab0c1d7b4d68eb46387209841b8c",
       "changes": "Single assigned world view with retained composition details and consolidated standalone world context; 2K."
     },
     {
@@ -599,7 +599,7 @@
       ],
       "source_prompt_sha256": "5cdfb4fae9342940c46fc1581ed8ca6f6481867cdcc4013aa4537451325d4f48",
       "file": "02_library/worlds/real/W01_A_04_MAIN_WORLD_VIEW_04.txt",
-      "file_sha256": "97c71efb70947e9e97f6cda5b91184eaca4057359cfcd83668ba9cc4e97d7752",
+      "file_sha256": "bae20bcbaef08950c0b0462873157fde20fcbbab3dc76c72b776d7c4a425308b",
       "changes": "Single assigned world view with retained composition details and consolidated standalone world context; 2K."
     },
     {
@@ -611,7 +611,7 @@
       ],
       "source_prompt_sha256": "0e42331ed1ef827f8b328b1bbf1ea9e9deb06c2d06683d277006b4cbda428369",
       "file": "02_library/worlds/real/W02_A_01_MAIN_WORLD_VIEW_01.txt",
-      "file_sha256": "6420eb484745ef4d6e620b9855848afbee5b47707c9c4cbd0ca5bb4c7c411ab6",
+      "file_sha256": "7e5039caa003a510b816be6ff35387235c7cd45c7dd451c12cbaa413975a7792",
       "changes": "Single assigned world view with retained composition details and consolidated standalone world context; 2K."
     },
     {
@@ -623,7 +623,7 @@
       ],
       "source_prompt_sha256": "0e42331ed1ef827f8b328b1bbf1ea9e9deb06c2d06683d277006b4cbda428369",
       "file": "02_library/worlds/real/W02_A_02_MAIN_WORLD_VIEW_02.txt",
-      "file_sha256": "819fdd1d3dbe986a4e21e899e9ad231729f4c0247b14053e7576d00a50f5b2d0",
+      "file_sha256": "828c123a4016c7ea3c3ad69e42fee1e66a2140d9c441b0a6070e2527176e6f52",
       "changes": "Single assigned world view with retained composition details and consolidated standalone world context; 2K."
     },
     {
@@ -635,7 +635,7 @@
       ],
       "source_prompt_sha256": "0e42331ed1ef827f8b328b1bbf1ea9e9deb06c2d06683d277006b4cbda428369",
       "file": "02_library/worlds/real/W02_A_03_MAIN_WORLD_VIEW_03.txt",
-      "file_sha256": "62494bb471793987a7265fa40a4422d42352323f9d1b6aba09d03753b989bef6",
+      "file_sha256": "861f06787033b16c32238edf0b3d35b36b48e10388a40c50e8eb7f32c364386c",
       "changes": "Single assigned world view with retained composition details and consolidated standalone world context; 2K."
     },
     {
@@ -647,7 +647,7 @@
       ],
       "source_prompt_sha256": "0e42331ed1ef827f8b328b1bbf1ea9e9deb06c2d06683d277006b4cbda428369",
       "file": "02_library/worlds/real/W02_A_04_MAIN_WORLD_VIEW_04.txt",
-      "file_sha256": "ceaaa72d76f38828da8bcb31a5950c4b0805a659a7ea2f5f2e92b63e0ef4f4b0",
+      "file_sha256": "7b3bb80eaa12fa58538f5dd3fe334edf7b9e7cb17f1b46b60e63efde2d26394b",
       "changes": "Single assigned world view with retained composition details and consolidated standalone world context; 2K."
     },
     {
@@ -659,7 +659,7 @@
       ],
       "source_prompt_sha256": "619d7b50151da12db8c1f5c28ea43f590c0317767ad6b6c81dcaeb65bab4754d",
       "file": "02_library/worlds/real/W03_A_01_MAIN_WORLD_VIEW_01.txt",
-      "file_sha256": "fee4fdee412c623098d5d19835443767ae7aa47410db7fcd100bd5012205a84d",
+      "file_sha256": "96ce5290efff7c585cbf3f5bc80f45070a37487ab71d09c315b010468932c095",
       "changes": "Single assigned world view with retained composition details and consolidated standalone world context; 2K."
     },
     {
@@ -671,7 +671,7 @@
       ],
       "source_prompt_sha256": "619d7b50151da12db8c1f5c28ea43f590c0317767ad6b6c81dcaeb65bab4754d",
       "file": "02_library/worlds/real/W03_A_02_MAIN_WORLD_VIEW_02.txt",
-      "file_sha256": "dff6d70fbf7efeba46508a4e2cb4ad43148d6357917cfbdfc2630a3e6051126a",
+      "file_sha256": "02ba220b5783c9a74ddda53d245fe0586f034d0a5125437a295453eebc8a649b",
       "changes": "Single assigned world view with retained composition details and consolidated standalone world context; 2K."
     },
     {
@@ -683,7 +683,7 @@
       ],
       "source_prompt_sha256": "619d7b50151da12db8c1f5c28ea43f590c0317767ad6b6c81dcaeb65bab4754d",
       "file": "02_library/worlds/real/W03_A_03_MAIN_WORLD_VIEW_03.txt",
-      "file_sha256": "405da4629b619778bbb5b7f1e2975b3450666d1fc8ea0200d97916d234edabd4",
+      "file_sha256": "39f1c20aae58a8918792160c8b8a17caea9edb27cda24b653d8dd69b3781f417",
       "changes": "Single assigned world view with retained composition details and consolidated standalone world context; 2K."
     },
     {
@@ -695,7 +695,7 @@
       ],
       "source_prompt_sha256": "619d7b50151da12db8c1f5c28ea43f590c0317767ad6b6c81dcaeb65bab4754d",
       "file": "02_library/worlds/real/W03_A_04_MAIN_WORLD_VIEW_04.txt",
-      "file_sha256": "c03cc10328ffe0c530944e8587dee7ce15e098d3477891b88f1821b90f3d0758",
+      "file_sha256": "5fa9e9945002a2b2d9ef8d147da9307eb8b359104ee03b1856e5204d4e6003ec",
       "changes": "Single assigned world view with retained composition details and consolidated standalone world context; 2K."
     },
     {
@@ -707,7 +707,7 @@
       ],
       "source_prompt_sha256": "d0ad91dc25cf2e4e702dbe0d94d5ad6149a30b804b5bbd4eebb66e1de5790756",
       "file": "02_library/worlds/real/W04_A_01_MAIN_WORLD_VIEW_01.txt",
-      "file_sha256": "17b52a6626b340e8e5b4b6237c0431cbfe2bce236e362c04af948607c8ae160b",
+      "file_sha256": "a0858012342df289710be2b87fbddf4ac23ab849d84efaec81a8d3280618fba3",
       "changes": "Single assigned world view with retained composition details and consolidated standalone world context; 2K."
     },
     {
@@ -719,7 +719,7 @@
       ],
       "source_prompt_sha256": "d0ad91dc25cf2e4e702dbe0d94d5ad6149a30b804b5bbd4eebb66e1de5790756",
       "file": "02_library/worlds/real/W04_A_02_MAIN_WORLD_VIEW_02.txt",
-      "file_sha256": "ac999e4310fbb6c6aad3bb11474b08a031a0030a765ba66f2e0eb56a1a6d19d4",
+      "file_sha256": "12813c2f15b8f47da1f02d148d26eee952ce40ab4e4c1ba53747efe935e0f8ee",
       "changes": "Single assigned world view with retained composition details and consolidated standalone world context; 2K."
     },
     {
@@ -731,7 +731,7 @@
       ],
       "source_prompt_sha256": "d0ad91dc25cf2e4e702dbe0d94d5ad6149a30b804b5bbd4eebb66e1de5790756",
       "file": "02_library/worlds/real/W04_A_03_MAIN_WORLD_VIEW_03.txt",
-      "file_sha256": "0b37838163d07bbf91381561e53c65de05a6e7bddeb5e94acd233c2e8e63d159",
+      "file_sha256": "ac4c241f1fc248afad773e6cbbee95357bea4983393ba447ada3e581389aa524",
       "changes": "Single assigned world view with retained composition details and consolidated standalone world context; 2K."
     },
     {
@@ -743,7 +743,7 @@
       ],
       "source_prompt_sha256": "d0ad91dc25cf2e4e702dbe0d94d5ad6149a30b804b5bbd4eebb66e1de5790756",
       "file": "02_library/worlds/real/W04_A_04_MAIN_WORLD_VIEW_04.txt",
-      "file_sha256": "8860768937c1e5bc565a76f1f6bb85b09374f4d060a9988ca156da5cdb82b61b",
+      "file_sha256": "9f264d42ca3f8eda95b8ef907e8b090327e392cb8676d43903f8901c5a532a50",
       "changes": "Single assigned world view with retained composition details and consolidated standalone world context; 2K."
     },
     {
@@ -755,7 +755,7 @@
       ],
       "source_prompt_sha256": "77d7e2df07c49c63c7caa5fe39d6f1cdea60e2c321eb458971a8750d5225f09e",
       "file": "02_library/worlds/real/W05_A_01_MAIN_WORLD_VIEW_01.txt",
-      "file_sha256": "2069a8b4245852096b957f58c9744b3bc775d3acbb235485e5d6833291d3c0c1",
+      "file_sha256": "6c80dd3ca863be1310b926572abec39f4bc3d76befb72439a7b6d13787a63a68",
       "changes": "Single assigned world view with retained composition details and consolidated standalone world context; 2K."
     },
     {
@@ -767,7 +767,7 @@
       ],
       "source_prompt_sha256": "77d7e2df07c49c63c7caa5fe39d6f1cdea60e2c321eb458971a8750d5225f09e",
       "file": "02_library/worlds/real/W05_A_02_MAIN_WORLD_VIEW_02.txt",
-      "file_sha256": "718300bbf4a551a6c01c703d3f204fab16e007e6e08c54d40ac7d756bc71a34d",
+      "file_sha256": "86d5e7dee5ef6c70fb5de2083c309ee36355b6cd52d305325cfb2961fe90ccf3",
       "changes": "Single assigned world view with retained composition details and consolidated standalone world context; 2K."
     },
     {
@@ -779,7 +779,7 @@
       ],
       "source_prompt_sha256": "77d7e2df07c49c63c7caa5fe39d6f1cdea60e2c321eb458971a8750d5225f09e",
       "file": "02_library/worlds/real/W05_A_03_MAIN_WORLD_VIEW_03.txt",
-      "file_sha256": "fce0e9ddadcc48637935c7f0d84ae50e211b12eb623e6e277f1f16aea974b545",
+      "file_sha256": "0833f38193bd22fb495ca6b2f23f0a682d1fea781f1f78a3e4888124c3823574",
       "changes": "Single assigned world view with retained composition details and consolidated standalone world context; 2K."
     },
     {
@@ -791,7 +791,7 @@
       ],
       "source_prompt_sha256": "77d7e2df07c49c63c7caa5fe39d6f1cdea60e2c321eb458971a8750d5225f09e",
       "file": "02_library/worlds/real/W05_A_04_MAIN_WORLD_VIEW_04.txt",
-      "file_sha256": "3da0f8a5fda703694cf2d45aa321d52855b55bd57f65eb53b30acc26a7313d2a",
+      "file_sha256": "8c5f1120911aca70690871bacd12eb8b84f0e696b06f214935928ce3ec354c44",
       "changes": "Single assigned world view with retained composition details and consolidated standalone world context; 2K."
     },
     {
@@ -803,7 +803,7 @@
       ],
       "source_prompt_sha256": "19a64b93172e7531c5e50f91108f40d61f72300aee7c7a444208cc28a7fd2c2d",
       "file": "02_library/worlds/real/W06_A_01_MAIN_WORLD_VIEW_01.txt",
-      "file_sha256": "abec6582b995c6104a116e2cb2e9c508757be7af8260f18c36d045c9e5865332",
+      "file_sha256": "ad7e2932b62634dbc461668802e1e4a95b2d57dc2f40f04235773484aa06a436",
       "changes": "Single assigned world view with retained composition details and consolidated standalone world context; 2K."
     },
     {
@@ -815,7 +815,7 @@
       ],
       "source_prompt_sha256": "19a64b93172e7531c5e50f91108f40d61f72300aee7c7a444208cc28a7fd2c2d",
       "file": "02_library/worlds/real/W06_A_02_MAIN_WORLD_VIEW_02.txt",
-      "file_sha256": "46a6bb54b81945993e627637f462e99284eac3efa3cf44f5fe9989a71ed82b37",
+      "file_sha256": "852b5018e4910d4c614d1a91b3b88533690ba3934b32a66a0dbad413f35e7cfc",
       "changes": "Single assigned world view with retained composition details and consolidated standalone world context; 2K."
     },
     {
@@ -827,7 +827,7 @@
       ],
       "source_prompt_sha256": "19a64b93172e7531c5e50f91108f40d61f72300aee7c7a444208cc28a7fd2c2d",
       "file": "02_library/worlds/real/W06_A_03_MAIN_WORLD_VIEW_03.txt",
-      "file_sha256": "e6c362b10c8cd7db9f13399272fa486a1c81f4b61b8cc0619e92e4f16fe6580b",
+      "file_sha256": "48e29d88d274ca8309b73fdf4ab1a66f30ae4123896c0e4cadcfd7891eaf666c",
       "changes": "Single assigned world view with retained composition details and consolidated standalone world context; 2K."
     },
     {
@@ -839,7 +839,7 @@
       ],
       "source_prompt_sha256": "19a64b93172e7531c5e50f91108f40d61f72300aee7c7a444208cc28a7fd2c2d",
       "file": "02_library/worlds/real/W06_A_04_MAIN_WORLD_VIEW_04.txt",
-      "file_sha256": "04e503dd62a10964e454b86981dc70c6e374d21e1159b6b09707da7bcdfed56d",
+      "file_sha256": "7f981ab36e1a7d39176c78d3ec03d88f1c2c98ef0eccd9f5111662c949be980d",
       "changes": "Single assigned world view with retained composition details and consolidated standalone world context; 2K."
     },
     {
@@ -851,7 +851,7 @@
       ],
       "source_prompt_sha256": "a82a51ff228ecd6bd99c6018e59cd64495bc98fe46e349b64bbe805e0b18319f",
       "file": "02_library/worlds/real/W07_A_01_MAIN_WORLD_VIEW_01.txt",
-      "file_sha256": "ec994c26d3571b12f5e23dd09338755883195e8ebfb1482ecc9c267e6ecd8e37",
+      "file_sha256": "116c021199514b6e3e4e68e91b4d4b3a18b204f88ed422dfd8123719784f673e",
       "changes": "Single assigned world view with retained composition details and consolidated standalone world context; 2K."
     },
     {
@@ -863,7 +863,7 @@
       ],
       "source_prompt_sha256": "a82a51ff228ecd6bd99c6018e59cd64495bc98fe46e349b64bbe805e0b18319f",
       "file": "02_library/worlds/real/W07_A_02_MAIN_WORLD_VIEW_02.txt",
-      "file_sha256": "a82c99d0c3f17d8505c1b4f783e9d4fc21c102056a4301629ea41a018463ac50",
+      "file_sha256": "09865728025eb78507c126e89b205b11ca8742ee1e5d80753d2d9a4cc8128908",
       "changes": "Single assigned world view with retained composition details and consolidated standalone world context; 2K."
     },
     {
@@ -875,7 +875,7 @@
       ],
       "source_prompt_sha256": "a82a51ff228ecd6bd99c6018e59cd64495bc98fe46e349b64bbe805e0b18319f",
       "file": "02_library/worlds/real/W07_A_03_MAIN_WORLD_VIEW_03.txt",
-      "file_sha256": "714575aa486d8b9b03ed0303b777cbdb8b7833617d3461edd52fa62b0afbfa5f",
+      "file_sha256": "d1a2d933e3342b1f982bba14b0ec5352efa2c52b4ce0d4455180c7d2cc8fb45b",
       "changes": "Single assigned world view with retained composition details and consolidated standalone world context; 2K."
     },
     {
@@ -887,7 +887,7 @@
       ],
       "source_prompt_sha256": "a82a51ff228ecd6bd99c6018e59cd64495bc98fe46e349b64bbe805e0b18319f",
       "file": "02_library/worlds/real/W07_A_04_MAIN_WORLD_VIEW_04.txt",
-      "file_sha256": "425c24b660c06867c7603b65920cc7fde3d44038315700671fc387af50a28c58",
+      "file_sha256": "f88db7a9237c49bf39ffc35d6d11584ce184c2bafab427bbc36c218a276abb6b",
       "changes": "Single assigned world view with retained composition details and consolidated standalone world context; 2K."
     },
     {
@@ -899,7 +899,7 @@
       ],
       "source_prompt_sha256": "76a53b46490f7087051a6b61360543112b874118c1dec4b28d592f08a5c3ed46",
       "file": "03_film/01/storyboard.txt",
-      "file_sha256": "b79779958a7a2782d40b284bc397c4887852935dfcbb7c88e1a6107a4bc58aee",
+      "file_sha256": "09706ec8473764c3dc477b772859bb8cb6299537e0cd668657404733dc170166",
       "changes": "All nine beats retained; requested camera/architecture added; card and AI-screen contradictions corrected; SB06 memory dependencies repaired; explicit centrally maintained reference inputs Grid geometry uses the full selected image resolution instead of fixed pixel examples."
     },
     {
@@ -923,7 +923,7 @@
       ],
       "source_prompt_sha256": "d111e179fa9211ddb262d74468ee38305f1776d75138a0c33a3e229ff58dff3d",
       "file": "03_film/01/video.txt",
-      "file_sha256": "9acc17cd2b174ead5e6e64e0a4fac53355c2a3b53bc85dda473ca3c31e1e59de",
+      "file_sha256": "ed676b1a5bbb0d341590c9287a22696d93f569ef13ec0e0c431657246eeff205",
       "changes": "Operator/retry prose and repeated rules removed; all nine story beats retained; camera/architecture updated; audio cues follow visuals; reveal and reference contradictions repaired; Verified C01/C02 Element IDs substituted for local aliases; explicit reference binding; original Hungarian folk-rooted score and synchronized material transformation foley; researched Dél-Alföld tekerő/clarinet arrangement, phrase-synchronized facade motion, explicit protagonist inner monologue"
     },
     {
@@ -935,7 +935,7 @@
       ],
       "source_prompt_sha256": "28ff9c6f1fdfeb4618c4696283c1e38722a62ee2792af219b5b9f14cc9bcfc29",
       "file": "03_film/02/storyboard.txt",
-      "file_sha256": "e454c15856f5191aeec3817c9afa312e7a66d83d0c61d732a149c4c89bcee09e",
+      "file_sha256": "6386c2ef3e3f7c30775aabf93b752698e6dc53913fc92078360774069364c6c0",
       "changes": "All nine beats retained; requested camera/architecture added; card and AI-screen contradictions corrected; SB06 memory dependencies repaired; explicit centrally maintained reference inputs; rural memory grounded in creator's Orosháza paprika/corn-field childhood Grid geometry uses the full selected image resolution instead of fixed pixel examples."
     },
     {
@@ -959,7 +959,7 @@
       ],
       "source_prompt_sha256": "1ee3bb2feea06f9cb11dac2f33cac0b6c8a0735bc0a73938e537a716ad9146ba",
       "file": "03_film/02/video.txt",
-      "file_sha256": "3dbc9cc3bb9f31ce9e4ab89daf85d8cdc7d347b729e7a3dadea65ee62d7ae348",
+      "file_sha256": "6afc59364be2db47d1d8ca793b6b53b8c8874478c08189fd06b661fed3b9ef4b",
       "changes": "Operator/retry prose and repeated rules removed; all nine story beats retained; camera/architecture updated; audio cues follow visuals; reveal and reference contradictions repaired; Verified C01/C02 Element IDs substituted for local aliases; explicit reference binding; original Hungarian folk-rooted score and synchronized material transformation foley; researched Dél-Alföld tekerő/clarinet arrangement, phrase-synchronized facade motion, explicit protagonist inner monologue; rural memory grounded in creator's Orosháza paprika/corn-field childhood Continuation preserves narrator timbre and a natural breath over an uninterrupted sound bed."
     },
     {
@@ -971,7 +971,7 @@
       ],
       "source_prompt_sha256": "533e440baa4117a4d2f7733e327dfca304ea8a54d066010cc8ab8722cadb259c",
       "file": "03_film/03/storyboard.txt",
-      "file_sha256": "e47f1152f1a8bee9b1424647bee25cb7be89f6aa18ff8648412c792a5551d283",
+      "file_sha256": "9e7b2ef282b2fef22e7ad5e48d74730b78792a3dc42b89104d5bf6696e2a8085",
       "changes": "All nine beats retained; requested camera/architecture added; card and AI-screen contradictions corrected; SB06 memory dependencies repaired; explicit centrally maintained reference inputs Grid geometry uses the full selected image resolution instead of fixed pixel examples."
     },
     {
@@ -995,7 +995,7 @@
       ],
       "source_prompt_sha256": "4970f288124db4473bf4af10c0fb6a9d66f5bae619718ed4d3907489e0c8cc95",
       "file": "03_film/03/video.txt",
-      "file_sha256": "3074163d0027fc26adf9168c52ea2c27275a6a7361306bc9a33b033d2acc1841",
+      "file_sha256": "31a679345aa235d9bd29a7c3224fbcb0b35f986846f725ed22932fe76731b55e",
       "changes": "Operator/retry prose and repeated rules removed; all nine story beats retained; camera/architecture updated; audio cues follow visuals; reveal and reference contradictions repaired; Verified C01/C02 Element IDs substituted for local aliases; explicit reference binding; original Hungarian folk-rooted score and synchronized material transformation foley; researched Dél-Alföld tekerő/clarinet arrangement, phrase-synchronized facade motion, explicit protagonist inner monologue Continuation preserves narrator timbre and a natural breath over an uninterrupted sound bed."
     },
     {
@@ -1007,7 +1007,7 @@
       ],
       "source_prompt_sha256": "5459cc1d93853c47aacf113a3e593f61ee6cb49aa0fe81079b89706e0588086a",
       "file": "03_film/04/storyboard.txt",
-      "file_sha256": "ab710a34409467ec193518d4f116e1e2845120b5c08e7f33eb0a258f16afd71e",
+      "file_sha256": "fca512191674ba15ed6ef03ff1b948b9e4873c4fbbc2cb0822aeb81f92078013",
       "changes": "All nine beats retained; requested camera/architecture added; card and AI-screen contradictions corrected; SB06 memory dependencies repaired; explicit centrally maintained reference inputs Grid geometry uses the full selected image resolution instead of fixed pixel examples."
     },
     {
@@ -1031,7 +1031,7 @@
       ],
       "source_prompt_sha256": "dcfdef2b9227d2f0528bbca68b9dad63fc71b2087b289dbfbb25c8dfb8ff6370",
       "file": "03_film/04/video.txt",
-      "file_sha256": "7c2e03d44139b020d25045346576ba323993b47291eeede8f1eaec8a412af127",
+      "file_sha256": "ae022f0871e46d7b10f45b470e38593b7fce2bd9270e74fdc3583a94f97a001f",
       "changes": "Operator/retry prose and repeated rules removed; all nine story beats retained; camera/architecture updated; audio cues follow visuals; reveal and reference contradictions repaired; Verified C01/C02 Element IDs substituted for local aliases; explicit reference binding; original Hungarian folk-rooted score and synchronized material transformation foley; researched Dél-Alföld tekerő/clarinet arrangement, phrase-synchronized facade motion, explicit protagonist inner monologue Continuation preserves narrator timbre and a natural breath over an uninterrupted sound bed."
     },
     {
@@ -1043,7 +1043,7 @@
       ],
       "source_prompt_sha256": "e80c1062f8699884509043c0dc23d9205573f2eae58119513f6f3bdb1d3cf9b1",
       "file": "03_film/05/storyboard.txt",
-      "file_sha256": "762671b382d3de20416a8779a7dea045637e090fa11b0333a27a6e8dd8178556",
+      "file_sha256": "9d185140f56cd07669528675bf5fc7892d90e94defa78af58ddc4836a455b77b",
       "changes": "All nine beats retained; requested camera/architecture added; card and AI-screen contradictions corrected; SB06 memory dependencies repaired; explicit centrally maintained reference inputs Grid geometry uses the full selected image resolution instead of fixed pixel examples."
     },
     {
@@ -1067,7 +1067,7 @@
       ],
       "source_prompt_sha256": "2c24d5a0b90307baa614606b633838697ec3355e0dbb1df515d095dee403fdd6",
       "file": "03_film/05/video.txt",
-      "file_sha256": "9074f4071c3e780ee02dc3817368456dfa0040b6b101c040ee404344a4533a5e",
+      "file_sha256": "f754cc0ebc4a9f348630d5aa57bcb2f6635243cffe9606d7630cceacb8106dd0",
       "changes": "Operator/retry prose and repeated rules removed; all nine story beats retained; camera/architecture updated; audio cues follow visuals; reveal and reference contradictions repaired; Verified C01/C02 Element IDs substituted for local aliases; explicit reference binding; original Hungarian folk-rooted score and synchronized material transformation foley; researched Dél-Alföld tekerő/clarinet arrangement, phrase-synchronized facade motion, explicit protagonist inner monologue Continuation preserves narrator timbre and a natural breath over an uninterrupted sound bed."
     },
     {
@@ -1079,7 +1079,7 @@
       ],
       "source_prompt_sha256": "6e57e8c9f69656463159011cd13b16d6b88d02db6738131013a82f4f5f778aec",
       "file": "03_film/06/storyboard.txt",
-      "file_sha256": "4214864fe7bfe858345a807910dde75092dfff71e9b89510d89eac88864e8fed",
+      "file_sha256": "a821a00a1c84c216383659ac163af57af43d75e637d7205530e74114388591cb",
       "changes": "All nine beats retained; requested camera/architecture added; card and AI-screen contradictions corrected; SB06 memory dependencies repaired; explicit centrally maintained reference inputs Grid geometry uses the full selected image resolution instead of fixed pixel examples."
     },
     {
@@ -1103,7 +1103,7 @@
       ],
       "source_prompt_sha256": "52008590a700611bd6959ec7ae9cb86efeb01101257fce007de3b9eaa75417e6",
       "file": "03_film/06/video.txt",
-      "file_sha256": "c837892d4fb1d65239266c7cca2850bcbc998ee9611312f1e3722d27edbbb595",
+      "file_sha256": "ed54894701d8d4ae22f498b2bc9893d55a4c782b85f868d24948fbf107e5ac76",
       "changes": "Operator/retry prose and repeated rules removed; all nine story beats retained; camera/architecture updated; audio cues follow visuals; reveal and reference contradictions repaired; Verified C01/C02 Element IDs substituted for local aliases; explicit reference binding; original Hungarian folk-rooted score and synchronized material transformation foley; researched Dél-Alföld tekerő/clarinet arrangement, phrase-synchronized facade motion, explicit protagonist inner monologue Continuation preserves narrator timbre and a natural breath over an uninterrupted sound bed."
     },
     {
@@ -1115,7 +1115,7 @@
       ],
       "source_prompt_sha256": "2b7b76d2d3593fcff5854695f2ee366e9486822241fe7b80f3f09df0035291d4",
       "file": "03_film/07/storyboard.txt",
-      "file_sha256": "32646ef5b0e72e1e00c6bcb0a3e907c9c009bdba65d6eb5709c8928a676cb86b",
+      "file_sha256": "521ed06400db1e887460fbdf69bdee5873cd8d30fb142cb2b95c7e048a9d7595",
       "changes": "All nine beats retained; requested camera/architecture added; card and AI-screen contradictions corrected; SB06 memory dependencies repaired; explicit centrally maintained reference inputs Grid geometry uses the full selected image resolution instead of fixed pixel examples."
     },
     {
@@ -1139,7 +1139,7 @@
       ],
       "source_prompt_sha256": "ac40bf3eee9daac90310ed6ff05a2b72832c27347255c481694023e8db6f759b",
       "file": "03_film/07/video.txt",
-      "file_sha256": "a315c8e2f6b3d1ee41957200f0eb17e9a4f60e72d9d8ec4872608d46c534d6c1",
+      "file_sha256": "9d4e9105cd786b8fd8a6c098a8fe6ce07e5d375f7ef6bbc7300720de48cb1a76",
       "changes": "Operator/retry prose and repeated rules removed; all nine story beats retained; camera/architecture updated; audio cues follow visuals; reveal and reference contradictions repaired; Verified C01/C02 Element IDs substituted for local aliases; explicit reference binding; original Hungarian folk-rooted score and synchronized material transformation foley; researched Dél-Alföld tekerő/clarinet arrangement, phrase-synchronized facade motion, explicit protagonist inner monologue Continuation preserves narrator timbre and a natural breath over an uninterrupted sound bed."
     },
     {
@@ -1151,7 +1151,7 @@
       ],
       "source_prompt_sha256": "5cdfb4fae9342940c46fc1581ed8ca6f6481867cdcc4013aa4537451325d4f48",
       "file": "02_library/worlds/real/W01_B_01_MAIN_WORLD_VIEW_05.txt",
-      "file_sha256": "441350a993e0dc89cd01d28dac1e7ef1c7d4c45438a1dfbda1ca7a54aa6fd556",
+      "file_sha256": "44b92f897a7d2a8b9f7230a650807d6c5208c17b83d7cc80bd51a1972007aa83",
       "changes": "Single assigned world view with retained composition details and consolidated standalone world context; 2K."
     },
     {
@@ -1163,7 +1163,7 @@
       ],
       "source_prompt_sha256": "5cdfb4fae9342940c46fc1581ed8ca6f6481867cdcc4013aa4537451325d4f48",
       "file": "02_library/worlds/real/W01_B_02_MAIN_WORLD_VIEW_06.txt",
-      "file_sha256": "34ffb5daffeac3cadecfb7673077c2ee653b015b8fba201cd11d1bc591695f19",
+      "file_sha256": "f6e7cbb3753bd72a008685af129b11bf4ecb170e8f21123a9bdab5309bad4bb1",
       "changes": "Single assigned world view with retained composition details and consolidated standalone world context; 2K."
     },
     {
@@ -1175,7 +1175,7 @@
       ],
       "source_prompt_sha256": "5cdfb4fae9342940c46fc1581ed8ca6f6481867cdcc4013aa4537451325d4f48",
       "file": "02_library/worlds/real/W01_B_03_MAIN_WORLD_VIEW_07.txt",
-      "file_sha256": "92444b233223be21690493abb1d63f4b0a228dd8d2924289ee0863712f8ca93d",
+      "file_sha256": "def22d7c279b25410d2df5c6858b7bb5f3271acb9574dea4e94c7b568f2c4c0d",
       "changes": "Single assigned world view with retained composition details and consolidated standalone world context; 2K."
     },
     {
@@ -1187,7 +1187,7 @@
       ],
       "source_prompt_sha256": "5cdfb4fae9342940c46fc1581ed8ca6f6481867cdcc4013aa4537451325d4f48",
       "file": "02_library/worlds/real/W01_B_04_MAIN_WORLD_VIEW_08.txt",
-      "file_sha256": "ed22bbcd3b75b44af5a57ae5b30eac2126585aa522f0de0496ab96738cd8a07c",
+      "file_sha256": "709087d9e452252ce5bafbab0ede8a057e263247eecf9b512d9713887b0669c4",
       "changes": "Single assigned world view with retained composition details and consolidated standalone world context; 2K."
     },
     {
@@ -1199,7 +1199,7 @@
       ],
       "source_prompt_sha256": "5cdfb4fae9342940c46fc1581ed8ca6f6481867cdcc4013aa4537451325d4f48",
       "file": "02_library/worlds/real/W01_C_01_MAIN_WORLD_VIEW_09.txt",
-      "file_sha256": "9422acea57685058e9040fce6972bfd4e6afa4baf5cd052596e8ddc4495382a3",
+      "file_sha256": "89d10b49494e0ef395a81a1f9897db83c0f7dbba5f0824f2883d6c40ec760e7f",
       "changes": "Single assigned world view with retained composition details and consolidated standalone world context; 2K."
     },
     {
@@ -1211,7 +1211,7 @@
       ],
       "source_prompt_sha256": "5cdfb4fae9342940c46fc1581ed8ca6f6481867cdcc4013aa4537451325d4f48",
       "file": "02_library/worlds/real/W01_C_02_MAIN_WORLD_VIEW_01.txt",
-      "file_sha256": "8028a9d751175f3b43113508daff4a6d2d1d3f3c1e083432cb2c48c084950071",
+      "file_sha256": "e0abd9104cb17b7f6d9e40cb76a410b64e75b3b4adfa83a50ceb904fe65804c8",
       "changes": "Single assigned world view with retained composition details and consolidated standalone world context; 2K."
     },
     {
@@ -1223,7 +1223,7 @@
       ],
       "source_prompt_sha256": "5cdfb4fae9342940c46fc1581ed8ca6f6481867cdcc4013aa4537451325d4f48",
       "file": "02_library/worlds/real/W01_C_03_MAIN_WORLD_VIEW_07.txt",
-      "file_sha256": "6227527a86554047438a8ef80f3d52951cd6bba4e7ab9c4c3907d7bb5855692f",
+      "file_sha256": "c024270cb2234db2dfa12cede9fccc32fe838d4b9e16f0ff8cea2cb968c77e6e",
       "changes": "Single assigned world view with retained composition details and consolidated standalone world context; 2K."
     },
     {
@@ -1235,7 +1235,7 @@
       ],
       "source_prompt_sha256": "5cdfb4fae9342940c46fc1581ed8ca6f6481867cdcc4013aa4537451325d4f48",
       "file": "02_library/worlds/real/W01_C_04_MAIN_WORLD_VIEW_08.txt",
-      "file_sha256": "6a5f59beb2a80d761aab8973ebef0a11d945901f184d8ef60474514fb33f37f6",
+      "file_sha256": "83531927155fb09d6c943a25596fa38e16268110bd123c98871ee6efbd51e87d",
       "changes": "Single assigned world view with retained composition details and consolidated standalone world context; 2K."
     },
     {
@@ -1247,7 +1247,7 @@
       ],
       "source_prompt_sha256": "0e42331ed1ef827f8b328b1bbf1ea9e9deb06c2d06683d277006b4cbda428369",
       "file": "02_library/worlds/real/W02_B_01_MAIN_WORLD_VIEW_05.txt",
-      "file_sha256": "cafdcf5f5f65ef6104af2c1c4b79ead34cc736cbce9fa1287ab1588921afcf75",
+      "file_sha256": "6dfa15525d20952cf187a15a29aa535c9665798c6f5df4f7a7417bc6957afaf6",
       "changes": "Single assigned world view with retained composition details and consolidated standalone world context; 2K."
     },
     {
@@ -1259,7 +1259,7 @@
       ],
       "source_prompt_sha256": "0e42331ed1ef827f8b328b1bbf1ea9e9deb06c2d06683d277006b4cbda428369",
       "file": "02_library/worlds/real/W02_B_02_MAIN_WORLD_VIEW_06.txt",
-      "file_sha256": "9a045e589f57c0157e1a0e0b2cae412af4afdb9c6c05826acedc3faf7f52a43d",
+      "file_sha256": "75ab5396a7c37587eb59e76bf361186c6790680b4b3a03cf27bb9d3c3f807a67",
       "changes": "Single assigned world view with retained composition details and consolidated standalone world context; 2K."
     },
     {
@@ -1271,7 +1271,7 @@
       ],
       "source_prompt_sha256": "0e42331ed1ef827f8b328b1bbf1ea9e9deb06c2d06683d277006b4cbda428369",
       "file": "02_library/worlds/real/W02_B_03_MAIN_WORLD_VIEW_07.txt",
-      "file_sha256": "e6ffd7053dbc14689e7b49267df781275cf4fad7d36b1296b9b6b2b012093577",
+      "file_sha256": "401199ca896f25144911602fae79f507ca381212967fd5445d0b8b3d4ad9c0f3",
       "changes": "Single assigned world view with retained composition details and consolidated standalone world context; 2K."
     },
     {
@@ -1283,7 +1283,7 @@
       ],
       "source_prompt_sha256": "0e42331ed1ef827f8b328b1bbf1ea9e9deb06c2d06683d277006b4cbda428369",
       "file": "02_library/worlds/real/W02_B_04_MAIN_WORLD_VIEW_08.txt",
-      "file_sha256": "3f581fa8049df29e511305a972784985002b1a94e6fb029ae10d0e60d3a1054c",
+      "file_sha256": "7932fe832d5165cdeb866cb6f9caf8879efd9ff8d4117e5c3df3222cab3bcc78",
       "changes": "Single assigned world view with retained composition details and consolidated standalone world context; 2K."
     },
     {
@@ -1295,7 +1295,7 @@
       ],
       "source_prompt_sha256": "0e42331ed1ef827f8b328b1bbf1ea9e9deb06c2d06683d277006b4cbda428369",
       "file": "02_library/worlds/real/W02_C_01_MAIN_WORLD_VIEW_09.txt",
-      "file_sha256": "16acf24e551f76f583ff300c2f69c8a48425ca8b8114f5b646672eafb3286110",
+      "file_sha256": "98f9c896a6cc645ad7b536114b5707e576e1bd1f900752cc08feb379a158f62d",
       "changes": "Single assigned world view with retained composition details and consolidated standalone world context; 2K."
     },
     {
@@ -1307,7 +1307,7 @@
       ],
       "source_prompt_sha256": "0e42331ed1ef827f8b328b1bbf1ea9e9deb06c2d06683d277006b4cbda428369",
       "file": "02_library/worlds/real/W02_C_02_MAIN_WORLD_VIEW_01.txt",
-      "file_sha256": "b1f44e6da323afa7768c1aef44b4626922ad96c3ef009418712fe1ce4c25195b",
+      "file_sha256": "e93a0cc66b15fcfc78b8f2f0222c5abe99d85b9df2de8d8f6fd04e525896e3a4",
       "changes": "Single assigned world view with retained composition details and consolidated standalone world context; 2K."
     },
     {
@@ -1319,7 +1319,7 @@
       ],
       "source_prompt_sha256": "0e42331ed1ef827f8b328b1bbf1ea9e9deb06c2d06683d277006b4cbda428369",
       "file": "02_library/worlds/real/W02_C_03_MAIN_WORLD_VIEW_07.txt",
-      "file_sha256": "89fb7e616ff48035c5aa933a022f5cdfc5a2f76382f30ea2e0e67540df5fe098",
+      "file_sha256": "db051c2c6a65a0dd4f00f0b8b4ffc96e47111055cc3de8b833dd777f4af81761",
       "changes": "Single assigned world view with retained composition details and consolidated standalone world context; 2K."
     },
     {
@@ -1331,7 +1331,7 @@
       ],
       "source_prompt_sha256": "0e42331ed1ef827f8b328b1bbf1ea9e9deb06c2d06683d277006b4cbda428369",
       "file": "02_library/worlds/real/W02_C_04_MAIN_WORLD_VIEW_08.txt",
-      "file_sha256": "3a21e3c37646b680139b293ef4c17a8b2c3ec13ddec5582449389a3ed50e4c07",
+      "file_sha256": "f855a862d541b3b380d7fd30ab6da0fb8b3360f5ac4664718e8547a8e1c28907",
       "changes": "Single assigned world view with retained composition details and consolidated standalone world context; 2K."
     },
     {
@@ -1343,7 +1343,7 @@
       ],
       "source_prompt_sha256": "619d7b50151da12db8c1f5c28ea43f590c0317767ad6b6c81dcaeb65bab4754d",
       "file": "02_library/worlds/real/W03_B_01_MAIN_WORLD_VIEW_05.txt",
-      "file_sha256": "26b025580e53e1b49929e151d24572fef83f70618b320cd5f3195fd85b1206fe",
+      "file_sha256": "e63cedc9c59da0ce3a2b777edba24f5c4dfedddad10230db3d57a3b4aac6def1",
       "changes": "Single assigned world view with retained composition details and consolidated standalone world context; 2K."
     },
     {
@@ -1355,7 +1355,7 @@
       ],
       "source_prompt_sha256": "619d7b50151da12db8c1f5c28ea43f590c0317767ad6b6c81dcaeb65bab4754d",
       "file": "02_library/worlds/real/W03_B_02_MAIN_WORLD_VIEW_06.txt",
-      "file_sha256": "55ec7cf7949eadff94c4e479cc26f2925515d3f515bdb8a105e36ec9a38dc055",
+      "file_sha256": "76b68438c2a0470ea2e6a012b38a19dc701633d78d13dd28d5c4bef0cd593106",
       "changes": "Single assigned world view with retained composition details and consolidated standalone world context; 2K."
     },
     {
@@ -1367,7 +1367,7 @@
       ],
       "source_prompt_sha256": "619d7b50151da12db8c1f5c28ea43f590c0317767ad6b6c81dcaeb65bab4754d",
       "file": "02_library/worlds/real/W03_B_03_MAIN_WORLD_VIEW_07.txt",
-      "file_sha256": "46f71c581ec60d82dbe441c0a6d2cedeac886f798733609b6b62537d066c679f",
+      "file_sha256": "b6f2120cf8168b2b281f77b1996a3207e6bbd2f613e22f8c54f8616bb0037598",
       "changes": "Single assigned world view with retained composition details and consolidated standalone world context; 2K."
     },
     {
@@ -1379,7 +1379,7 @@
       ],
       "source_prompt_sha256": "619d7b50151da12db8c1f5c28ea43f590c0317767ad6b6c81dcaeb65bab4754d",
       "file": "02_library/worlds/real/W03_B_04_MAIN_WORLD_VIEW_08.txt",
-      "file_sha256": "811cffa4ee4cdcfd8e09ce1d8a1bbe69b6a02ab2d1591a63e4101bbff7ac2e87",
+      "file_sha256": "85bc49e442cf955a8de30caa603bd70f7ded8c1017cd8594ce9408b3cd9b8066",
       "changes": "Single assigned world view with retained composition details and consolidated standalone world context; 2K."
     },
     {
@@ -1391,7 +1391,7 @@
       ],
       "source_prompt_sha256": "619d7b50151da12db8c1f5c28ea43f590c0317767ad6b6c81dcaeb65bab4754d",
       "file": "02_library/worlds/real/W03_C_01_MAIN_WORLD_VIEW_09.txt",
-      "file_sha256": "bde638aea7239edb50f3570e481a3b67662670b298834b92d9a80520d4cdcadf",
+      "file_sha256": "567a608a0ac3e3b68ab06ae4d466d75363625ae450f79335a93c71e5c59dd478",
       "changes": "Single assigned world view with retained composition details and consolidated standalone world context; 2K."
     },
     {
@@ -1403,7 +1403,7 @@
       ],
       "source_prompt_sha256": "619d7b50151da12db8c1f5c28ea43f590c0317767ad6b6c81dcaeb65bab4754d",
       "file": "02_library/worlds/real/W03_C_02_MAIN_WORLD_VIEW_01.txt",
-      "file_sha256": "c3477ff2eccc3fe69441cba3b62d0a859e1fc2befe04fc264462e8dbcfe9ff7b",
+      "file_sha256": "65973d8517b2f69e56ff4a4e8760d6f06f4b73fb6d324b83c3bf3be1df3e7362",
       "changes": "Single assigned world view with retained composition details and consolidated standalone world context; 2K."
     },
     {
@@ -1415,7 +1415,7 @@
       ],
       "source_prompt_sha256": "619d7b50151da12db8c1f5c28ea43f590c0317767ad6b6c81dcaeb65bab4754d",
       "file": "02_library/worlds/real/W03_C_03_MAIN_WORLD_VIEW_07.txt",
-      "file_sha256": "b99fbf2827e50a8019e0dc8ba74dff111957a9bffed99ac9402ec369afac05d1",
+      "file_sha256": "628ea8ad3d083d8fa286403e9f5da805e12da8839e7a2e3f64166c35d51b3d90",
       "changes": "Single assigned world view with retained composition details and consolidated standalone world context; 2K."
     },
     {
@@ -1427,7 +1427,7 @@
       ],
       "source_prompt_sha256": "619d7b50151da12db8c1f5c28ea43f590c0317767ad6b6c81dcaeb65bab4754d",
       "file": "02_library/worlds/real/W03_C_04_MAIN_WORLD_VIEW_08.txt",
-      "file_sha256": "a63c852c78538726872ae63b17c9d478e0a3ef644161999081db3d5550a2d994",
+      "file_sha256": "1c1bd4ab02b12d7b15a49ce25e4fcdb1e01a033f6d749ca1ea7e5439abb5b035",
       "changes": "Single assigned world view with retained composition details and consolidated standalone world context; 2K."
     },
     {
@@ -1439,7 +1439,7 @@
       ],
       "source_prompt_sha256": "d0ad91dc25cf2e4e702dbe0d94d5ad6149a30b804b5bbd4eebb66e1de5790756",
       "file": "02_library/worlds/real/W04_B_01_MAIN_WORLD_VIEW_05.txt",
-      "file_sha256": "5060e335a41a0a630b0e025de498a3ef6052eb43b44404ac6a235fe214fe0809",
+      "file_sha256": "0421f9560d3bad906660a2289f00b13f8a1848ac414c45d3f2f591a3709a257d",
       "changes": "Single assigned world view with retained composition details and consolidated standalone world context; 2K."
     },
     {
@@ -1451,7 +1451,7 @@
       ],
       "source_prompt_sha256": "d0ad91dc25cf2e4e702dbe0d94d5ad6149a30b804b5bbd4eebb66e1de5790756",
       "file": "02_library/worlds/real/W04_B_02_MAIN_WORLD_VIEW_06.txt",
-      "file_sha256": "4a9aaf72ff681bd823204c9ddaeaa50be40e766865c0476024a106df30ecdaef",
+      "file_sha256": "096a224359005b72048899f334c361e98e1470cbb7d8efa8209d7527f2e1964a",
       "changes": "Single assigned world view with retained composition details and consolidated standalone world context; 2K."
     },
     {
@@ -1463,7 +1463,7 @@
       ],
       "source_prompt_sha256": "d0ad91dc25cf2e4e702dbe0d94d5ad6149a30b804b5bbd4eebb66e1de5790756",
       "file": "02_library/worlds/real/W04_B_03_MAIN_WORLD_VIEW_07.txt",
-      "file_sha256": "7358a0138318713522c39707b6f240905192ef2f41eb24b1f3ae33b35ccc58e1",
+      "file_sha256": "3045581ad1e0906b35268bcc757b829c57c12fa4ce1d0821ec4cb442d6e144cb",
       "changes": "Single assigned world view with retained composition details and consolidated standalone world context; 2K."
     },
     {
@@ -1475,7 +1475,7 @@
       ],
       "source_prompt_sha256": "d0ad91dc25cf2e4e702dbe0d94d5ad6149a30b804b5bbd4eebb66e1de5790756",
       "file": "02_library/worlds/real/W04_B_04_MAIN_WORLD_VIEW_08.txt",
-      "file_sha256": "6443cbb94884eaad588478f473b6d3f723a3d5969c338fc6b8fd46cb8e2c0625",
+      "file_sha256": "42969a946a6973d322747ffb930119ecc2e164c134aa7d6c5dd81000ab754187",
       "changes": "Single assigned world view with retained composition details and consolidated standalone world context; 2K."
     },
     {
@@ -1487,7 +1487,7 @@
       ],
       "source_prompt_sha256": "d0ad91dc25cf2e4e702dbe0d94d5ad6149a30b804b5bbd4eebb66e1de5790756",
       "file": "02_library/worlds/real/W04_C_01_MAIN_WORLD_VIEW_09.txt",
-      "file_sha256": "d881cc9c74f03487c0609c2e4e32fd074a14fe5cd7edb4dee663250069ee244b",
+      "file_sha256": "7d685443594d2ac8db916ffb325186874f74a0953047f7393a9fc33184fcf065",
       "changes": "Single assigned world view with retained composition details and consolidated standalone world context; 2K."
     },
     {
@@ -1499,7 +1499,7 @@
       ],
       "source_prompt_sha256": "d0ad91dc25cf2e4e702dbe0d94d5ad6149a30b804b5bbd4eebb66e1de5790756",
       "file": "02_library/worlds/real/W04_C_02_MAIN_WORLD_VIEW_01.txt",
-      "file_sha256": "087eb4685c8dd4082bb75d7504245f2b80a5689835664bb0b05dadfde0db6966",
+      "file_sha256": "e6068ac81a7483a75885636c3c2b12a9aedbd03c99fa5ef446ada1288f37b424",
       "changes": "Single assigned world view with retained composition details and consolidated standalone world context; 2K."
     },
     {
@@ -1511,7 +1511,7 @@
       ],
       "source_prompt_sha256": "d0ad91dc25cf2e4e702dbe0d94d5ad6149a30b804b5bbd4eebb66e1de5790756",
       "file": "02_library/worlds/real/W04_C_03_MAIN_WORLD_VIEW_07.txt",
-      "file_sha256": "19030a11ede9877666021036207809327df5fd10b569ed380a11771a72c03c0e",
+      "file_sha256": "ba452283f538c4ea650776606de423be323b004d2d5ccf740d830c8d7911fbf6",
       "changes": "Single assigned world view with retained composition details and consolidated standalone world context; 2K."
     },
     {
@@ -1523,7 +1523,7 @@
       ],
       "source_prompt_sha256": "d0ad91dc25cf2e4e702dbe0d94d5ad6149a30b804b5bbd4eebb66e1de5790756",
       "file": "02_library/worlds/real/W04_C_04_MAIN_WORLD_VIEW_08.txt",
-      "file_sha256": "6366158c8da58e2cedc952451baac089ff2154646db257598fd17bc8910dca62",
+      "file_sha256": "af240f927563b3c4bd51e2ddd562519ee3c0566ec7f0f5f12b15684b7731d1f4",
       "changes": "Single assigned world view with retained composition details and consolidated standalone world context; 2K."
     },
     {
@@ -1535,7 +1535,7 @@
       ],
       "source_prompt_sha256": "77d7e2df07c49c63c7caa5fe39d6f1cdea60e2c321eb458971a8750d5225f09e",
       "file": "02_library/worlds/real/W05_B_01_MAIN_WORLD_VIEW_05.txt",
-      "file_sha256": "5868bc13214c85ea7e84305a91ece20110f0898331b98a60ae0f8710606b04ba",
+      "file_sha256": "8f175729b22a429b6d4863f223a47c9cb6f59068249366c81c799710cd149618",
       "changes": "Single assigned world view with retained composition details and consolidated standalone world context; 2K."
     },
     {
@@ -1547,7 +1547,7 @@
       ],
       "source_prompt_sha256": "77d7e2df07c49c63c7caa5fe39d6f1cdea60e2c321eb458971a8750d5225f09e",
       "file": "02_library/worlds/real/W05_B_02_MAIN_WORLD_VIEW_06.txt",
-      "file_sha256": "2733508f36af624e736752a8e1bb1c61fe2b81125c02d2e3afeb1c989f9dafb9",
+      "file_sha256": "ce9ff06925258b8609f9b88ba89d59965eb07f66a9bcc3128c8e1482ff190ca3",
       "changes": "Single assigned world view with retained composition details and consolidated standalone world context; 2K."
     },
     {
@@ -1559,7 +1559,7 @@
       ],
       "source_prompt_sha256": "77d7e2df07c49c63c7caa5fe39d6f1cdea60e2c321eb458971a8750d5225f09e",
       "file": "02_library/worlds/real/W05_B_03_MAIN_WORLD_VIEW_07.txt",
-      "file_sha256": "b73bf7338212abf9b02f1ab95aee29d14db377903da0676b3935479a5fda225f",
+      "file_sha256": "b1f7ba05ee285ed846ba9035839eb75775120715cefda3bd83691626475e3403",
       "changes": "Single assigned world view with retained composition details and consolidated standalone world context; 2K."
     },
     {
@@ -1571,7 +1571,7 @@
       ],
       "source_prompt_sha256": "77d7e2df07c49c63c7caa5fe39d6f1cdea60e2c321eb458971a8750d5225f09e",
       "file": "02_library/worlds/real/W05_B_04_MAIN_WORLD_VIEW_08.txt",
-      "file_sha256": "164fba60a0e730f52dab13ee21810e632f49b33df86883372f778baf4cad91b9",
+      "file_sha256": "282d45fc54c7dc647e64ea7285e0abb4dbffa14b1fff504be7d8a927c5fe66c5",
       "changes": "Single assigned world view with retained composition details and consolidated standalone world context; 2K."
     },
     {
@@ -1583,7 +1583,7 @@
       ],
       "source_prompt_sha256": "77d7e2df07c49c63c7caa5fe39d6f1cdea60e2c321eb458971a8750d5225f09e",
       "file": "02_library/worlds/real/W05_C_01_MAIN_WORLD_VIEW_09.txt",
-      "file_sha256": "eb6a4850910b03abaeed451f4e0d7f2d7c49b0bb685d2d50ed9ab88e5160325a",
+      "file_sha256": "88923ba4f53e88b2381c9e733f82cb6d560d34bd40c05a37f494e437942fb86b",
       "changes": "Single assigned world view with retained composition details and consolidated standalone world context; 2K."
     },
     {
@@ -1595,7 +1595,7 @@
       ],
       "source_prompt_sha256": "77d7e2df07c49c63c7caa5fe39d6f1cdea60e2c321eb458971a8750d5225f09e",
       "file": "02_library/worlds/real/W05_C_02_MAIN_WORLD_VIEW_01.txt",
-      "file_sha256": "9723d4fd5c4cad487f276b0d8822b60f58d882336ca3fd6cb2f85348a6f18d87",
+      "file_sha256": "c90425bbf40e02d9f8b7afcc589b4651e4058c7cdbb3c314aed1462b0c14fe3f",
       "changes": "Single assigned world view with retained composition details and consolidated standalone world context; 2K."
     },
     {
@@ -1607,7 +1607,7 @@
       ],
       "source_prompt_sha256": "77d7e2df07c49c63c7caa5fe39d6f1cdea60e2c321eb458971a8750d5225f09e",
       "file": "02_library/worlds/real/W05_C_03_MAIN_WORLD_VIEW_07.txt",
-      "file_sha256": "8e467cdaf72dfb4da3dbbe6740d013fc523100d534b8022c2c5bb1cc6e946264",
+      "file_sha256": "079d0f12d08b71b3f63102bec498c15ac14aa0ddf4c1f44feaf58badd65c3c4e",
       "changes": "Single assigned world view with retained composition details and consolidated standalone world context; 2K."
     },
     {
@@ -1619,7 +1619,7 @@
       ],
       "source_prompt_sha256": "77d7e2df07c49c63c7caa5fe39d6f1cdea60e2c321eb458971a8750d5225f09e",
       "file": "02_library/worlds/real/W05_C_04_MAIN_WORLD_VIEW_08.txt",
-      "file_sha256": "2feb39f618229f163366719520abd26cbee9d7f2b8580fd21c71bacff898ddbb",
+      "file_sha256": "832492a44d1b944a9fd1e79be9b1a4988db176185aa79b18081c11cdaa6eedf6",
       "changes": "Single assigned world view with retained composition details and consolidated standalone world context; 2K."
     },
     {
@@ -1631,7 +1631,7 @@
       ],
       "source_prompt_sha256": "19a64b93172e7531c5e50f91108f40d61f72300aee7c7a444208cc28a7fd2c2d",
       "file": "02_library/worlds/real/W06_B_01_MAIN_WORLD_VIEW_05.txt",
-      "file_sha256": "f31caadc4ac5522e24d9465b8101874c2992d061fac95a89e0d1699776fadd0d",
+      "file_sha256": "7f84c15bf9ccabfa1385fa8b494a5883dd20bcf879a7c5de55af4dba518056a6",
       "changes": "Single assigned world view with retained composition details and consolidated standalone world context; 2K."
     },
     {
@@ -1643,7 +1643,7 @@
       ],
       "source_prompt_sha256": "19a64b93172e7531c5e50f91108f40d61f72300aee7c7a444208cc28a7fd2c2d",
       "file": "02_library/worlds/real/W06_B_02_MAIN_WORLD_VIEW_06.txt",
-      "file_sha256": "dd56568125e42f7e5d99a97342de47fb8a465b43780306c95e6f663e989c57c0",
+      "file_sha256": "1bd2a8c287cd7ea91a5340958abae22136d78c433a3275666b4c4046aa2b8ce2",
       "changes": "Single assigned world view with retained composition details and consolidated standalone world context; 2K."
     },
     {
@@ -1655,7 +1655,7 @@
       ],
       "source_prompt_sha256": "19a64b93172e7531c5e50f91108f40d61f72300aee7c7a444208cc28a7fd2c2d",
       "file": "02_library/worlds/real/W06_B_03_MAIN_WORLD_VIEW_07.txt",
-      "file_sha256": "29803188708b39460c77f6105180c27d3a0a0d5183e8c8fb788f1e2cb50db35f",
+      "file_sha256": "4584899eea10a44d16921abf24cb03781bbad9c4ed8ac9c7c292ae05fcb090b2",
       "changes": "Single assigned world view with retained composition details and consolidated standalone world context; 2K."
     },
     {
@@ -1667,7 +1667,7 @@
       ],
       "source_prompt_sha256": "19a64b93172e7531c5e50f91108f40d61f72300aee7c7a444208cc28a7fd2c2d",
       "file": "02_library/worlds/real/W06_B_04_MAIN_WORLD_VIEW_08.txt",
-      "file_sha256": "1591f0ea3ff53b1a305dfe02237f7c6702545b757c7f4991792fea425273031b",
+      "file_sha256": "e32994df42dcd25446cdbd78e8f0ab4601b9d11121bbde8dd78f84209ba230c6",
       "changes": "Single assigned world view with retained composition details and consolidated standalone world context; 2K."
     },
     {
@@ -1679,7 +1679,7 @@
       ],
       "source_prompt_sha256": "19a64b93172e7531c5e50f91108f40d61f72300aee7c7a444208cc28a7fd2c2d",
       "file": "02_library/worlds/real/W06_C_01_MAIN_WORLD_VIEW_09.txt",
-      "file_sha256": "d57010c8768518f61b3823d7e8f0da2153b86c20f97c6fd098774256bc289433",
+      "file_sha256": "249043f9c7d08a97569514f0f7121777f575b766fa71f0ca9124b97fca453323",
       "changes": "Single assigned world view with retained composition details and consolidated standalone world context; 2K."
     },
     {
@@ -1691,7 +1691,7 @@
       ],
       "source_prompt_sha256": "19a64b93172e7531c5e50f91108f40d61f72300aee7c7a444208cc28a7fd2c2d",
       "file": "02_library/worlds/real/W06_C_02_MAIN_WORLD_VIEW_01.txt",
-      "file_sha256": "667aec565fa968baef799677698e11e3ce8a053e3465c6ff7a0bcebbcfdc0f2b",
+      "file_sha256": "c4c0225fa7a510abe0fc673c60960e5d618e02c1633a61d6cf050a5e65e8cd48",
       "changes": "Single assigned world view with retained composition details and consolidated standalone world context; 2K."
     },
     {
@@ -1703,7 +1703,7 @@
       ],
       "source_prompt_sha256": "19a64b93172e7531c5e50f91108f40d61f72300aee7c7a444208cc28a7fd2c2d",
       "file": "02_library/worlds/real/W06_C_03_MAIN_WORLD_VIEW_07.txt",
-      "file_sha256": "ffbfdc414ccba52698ab6a2be76f3bc7f83480ad34043ada3fbf56af84dac7b1",
+      "file_sha256": "d317368cca2263725942204434cb57ecea8946cb30783c1811f4dfddc2b96112",
       "changes": "Single assigned world view with retained composition details and consolidated standalone world context; 2K."
     },
     {
@@ -1715,7 +1715,7 @@
       ],
       "source_prompt_sha256": "19a64b93172e7531c5e50f91108f40d61f72300aee7c7a444208cc28a7fd2c2d",
       "file": "02_library/worlds/real/W06_C_04_MAIN_WORLD_VIEW_08.txt",
-      "file_sha256": "edb93f6793bb2aaf004e5555a0919477cce0228cf00a160138e5a6e3c4f7b517",
+      "file_sha256": "6c36bd32ec06a310d1ad9bf6336707f2500284670d2579a048ae9fde7ae86759",
       "changes": "Single assigned world view with retained composition details and consolidated standalone world context; 2K."
     },
     {
@@ -1727,7 +1727,7 @@
       ],
       "source_prompt_sha256": "a82a51ff228ecd6bd99c6018e59cd64495bc98fe46e349b64bbe805e0b18319f",
       "file": "02_library/worlds/real/W07_B_01_MAIN_WORLD_VIEW_05.txt",
-      "file_sha256": "a67beaf12cd5639bde862e5683a230f315f275f6fc55993d23ed25052a22506e",
+      "file_sha256": "8f5d94fca03f8ad5f876528effb5cf12efeb85168c78f82965df489d01307138",
       "changes": "Single assigned world view with retained composition details and consolidated standalone world context; 2K."
     },
     {
@@ -1739,7 +1739,7 @@
       ],
       "source_prompt_sha256": "a82a51ff228ecd6bd99c6018e59cd64495bc98fe46e349b64bbe805e0b18319f",
       "file": "02_library/worlds/real/W07_B_02_MAIN_WORLD_VIEW_06.txt",
-      "file_sha256": "bda7a37a142192935eb3c9999ab52d97379b6fbf8fe160c7556b73721ddd5bc0",
+      "file_sha256": "9cba27727483505199333589859dd456beb1fb5e1da13d6a44c8920ccac116c7",
       "changes": "Single assigned world view with retained composition details and consolidated standalone world context; 2K."
     },
     {
@@ -1751,7 +1751,7 @@
       ],
       "source_prompt_sha256": "a82a51ff228ecd6bd99c6018e59cd64495bc98fe46e349b64bbe805e0b18319f",
       "file": "02_library/worlds/real/W07_B_03_MAIN_WORLD_VIEW_07.txt",
-      "file_sha256": "c72aa9bb5e298c165fd9c19aff2be4c8821b13c2b9da4499683b8a0b8b27b4aa",
+      "file_sha256": "93e4a95f764a8c0909af23e199bb6c8dff4139d325b9fe8c0d7d420a1631055c",
       "changes": "Single assigned world view with retained composition details and consolidated standalone world context; 2K."
     },
     {
@@ -1763,7 +1763,7 @@
       ],
       "source_prompt_sha256": "a82a51ff228ecd6bd99c6018e59cd64495bc98fe46e349b64bbe805e0b18319f",
       "file": "02_library/worlds/real/W07_B_04_MAIN_WORLD_VIEW_08.txt",
-      "file_sha256": "d7fb2af2486a165fa62c3b0ee6a989c967b6e98243bb62ace81c5eaf2c8cdc0d",
+      "file_sha256": "163039dd8d1727020e2e7e52de7eb91b20e017b8b9c7048d334f88a79f834c71",
       "changes": "Single assigned world view with retained composition details and consolidated standalone world context; 2K."
     },
     {
@@ -1775,7 +1775,7 @@
       ],
       "source_prompt_sha256": "a82a51ff228ecd6bd99c6018e59cd64495bc98fe46e349b64bbe805e0b18319f",
       "file": "02_library/worlds/real/W07_C_01_MAIN_WORLD_VIEW_09.txt",
-      "file_sha256": "4e37f8ab43a8af1511f31fa23f65eca5ba9fb756683b0387620ef5d0ffd1f24e",
+      "file_sha256": "b14e7b98c1013b4d3f6075401bb7fed6f42b53dbbd51b789923fc926e12734d6",
       "changes": "Single assigned world view with retained composition details and consolidated standalone world context; 2K."
     },
     {
@@ -1787,7 +1787,7 @@
       ],
       "source_prompt_sha256": "a82a51ff228ecd6bd99c6018e59cd64495bc98fe46e349b64bbe805e0b18319f",
       "file": "02_library/worlds/real/W07_C_02_MAIN_WORLD_VIEW_01.txt",
-      "file_sha256": "1dbc68ab9840516f6d85cd0621a52567a44fbc54962396777904fd4d69b40d0d",
+      "file_sha256": "943c4b684bae796d4ba9d47c368a2c749c06db02806635d440f594e9f9b6126d",
       "changes": "Single assigned world view with retained composition details and consolidated standalone world context; 2K."
     },
     {
@@ -1799,7 +1799,7 @@
       ],
       "source_prompt_sha256": "a82a51ff228ecd6bd99c6018e59cd64495bc98fe46e349b64bbe805e0b18319f",
       "file": "02_library/worlds/real/W07_C_03_MAIN_WORLD_VIEW_07.txt",
-      "file_sha256": "96e091812b1ea59dd194d94cdb63ec70247729e96ee760a75cea828e877f38b2",
+      "file_sha256": "a94301dfd83ceaaa281cef917a77567c347ea6aad66d96b033a561b29dfe0d85",
       "changes": "Single assigned world view with retained composition details and consolidated standalone world context; 2K."
     },
     {
@@ -1811,7 +1811,7 @@
       ],
       "source_prompt_sha256": "a82a51ff228ecd6bd99c6018e59cd64495bc98fe46e349b64bbe805e0b18319f",
       "file": "02_library/worlds/real/W07_C_04_MAIN_WORLD_VIEW_08.txt",
-      "file_sha256": "b1940baf870c62632010acd647f6add6b535e92066eddec459e3a11e84e7ae16",
+      "file_sha256": "2586857d137bd5eb32202cf73c4012a67feb35adb43ec177ddcc035874f37a02",
       "changes": "Single assigned world view with retained composition details and consolidated standalone world context; 2K."
     },
     {
@@ -2776,7 +2776,7 @@
         "MWP01_B",
         "MWP01_C"
       ],
-      "prompt_sha256": "b79779958a7a2782d40b284bc397c4887852935dfcbb7c88e1a6107a4bc58aee"
+      "prompt_sha256": "09706ec8473764c3dc477b772859bb8cb6299537e0cd668657404733dc170166"
     },
     "A01": {
       "key": "A01",
@@ -2818,7 +2818,7 @@
         "MWP01_B",
         "MWP01_C"
       ],
-      "prompt_sha256": "9acc17cd2b174ead5e6e64e0a4fac53355c2a3b53bc85dda473ca3c31e1e59de"
+      "prompt_sha256": "ed676b1a5bbb0d341590c9287a22696d93f569ef13ec0e0c431657246eeff205"
     },
     "SB02": {
       "key": "SB02",
@@ -2860,7 +2860,7 @@
         "MWP01_B",
         "MWP01_C"
       ],
-      "prompt_sha256": "e454c15856f5191aeec3817c9afa312e7a66d83d0c61d732a149c4c89bcee09e"
+      "prompt_sha256": "6386c2ef3e3f7c30775aabf93b752698e6dc53913fc92078360774069364c6c0"
     },
     "A02": {
       "key": "A02",
@@ -2912,7 +2912,7 @@
         "MWP01_B",
         "MWP01_C"
       ],
-      "prompt_sha256": "3dbc9cc3bb9f31ce9e4ab89daf85d8cdc7d347b729e7a3dadea65ee62d7ae348"
+      "prompt_sha256": "6afc59364be2db47d1d8ca793b6b53b8c8874478c08189fd06b661fed3b9ef4b"
     },
     "SB03": {
       "key": "SB03",
@@ -2942,7 +2942,7 @@
         "MWP01_B",
         "MWP01_C"
       ],
-      "prompt_sha256": "e47f1152f1a8bee9b1424647bee25cb7be89f6aa18ff8648412c792a5551d283"
+      "prompt_sha256": "9e7b2ef282b2fef22e7ad5e48d74730b78792a3dc42b89104d5bf6696e2a8085"
     },
     "A03": {
       "key": "A03",
@@ -2982,7 +2982,7 @@
         "MWP01_B",
         "MWP01_C"
       ],
-      "prompt_sha256": "3074163d0027fc26adf9168c52ea2c27275a6a7361306bc9a33b033d2acc1841"
+      "prompt_sha256": "31a679345aa235d9bd29a7c3224fbcb0b35f986846f725ed22932fe76731b55e"
     },
     "SB04": {
       "key": "SB04",
@@ -3010,7 +3010,7 @@
         "MW04_B",
         "MW04_C"
       ],
-      "prompt_sha256": "ab710a34409467ec193518d4f116e1e2845120b5c08e7f33eb0a258f16afd71e"
+      "prompt_sha256": "fca512191674ba15ed6ef03ff1b948b9e4873c4fbbc2cb0822aeb81f92078013"
     },
     "A04": {
       "key": "A04",
@@ -3048,7 +3048,7 @@
         "MW04_B",
         "MW04_C"
       ],
-      "prompt_sha256": "7c2e03d44139b020d25045346576ba323993b47291eeede8f1eaec8a412af127"
+      "prompt_sha256": "ae022f0871e46d7b10f45b470e38593b7fce2bd9270e74fdc3583a94f97a001f"
     },
     "SB05": {
       "key": "SB05",
@@ -3081,7 +3081,7 @@
         "MWP02_B",
         "MWP02_C"
       ],
-      "prompt_sha256": "762671b382d3de20416a8779a7dea045637e090fa11b0333a27a6e8dd8178556"
+      "prompt_sha256": "9d185140f56cd07669528675bf5fc7892d90e94defa78af58ddc4836a455b77b"
     },
     "A05": {
       "key": "A05",
@@ -3124,7 +3124,7 @@
         "MWP02_B",
         "MWP02_C"
       ],
-      "prompt_sha256": "9074f4071c3e780ee02dc3817368456dfa0040b6b101c040ee404344a4533a5e"
+      "prompt_sha256": "f754cc0ebc4a9f348630d5aa57bcb2f6635243cffe9606d7630cceacb8106dd0"
     },
     "SB06": {
       "key": "SB06",
@@ -3176,7 +3176,7 @@
         "MW05_B",
         "MW05_C"
       ],
-      "prompt_sha256": "4214864fe7bfe858345a807910dde75092dfff71e9b89510d89eac88864e8fed"
+      "prompt_sha256": "a821a00a1c84c216383659ac163af57af43d75e637d7205530e74114388591cb"
     },
     "A06": {
       "key": "A06",
@@ -3238,7 +3238,7 @@
         "MW05_B",
         "MW05_C"
       ],
-      "prompt_sha256": "c837892d4fb1d65239266c7cca2850bcbc998ee9611312f1e3722d27edbbb595"
+      "prompt_sha256": "ed54894701d8d4ae22f498b2bc9893d55a4c782b85f868d24948fbf107e5ac76"
     },
     "SB07": {
       "key": "SB07",
@@ -3275,7 +3275,7 @@
         "MW02_B",
         "MW02_C"
       ],
-      "prompt_sha256": "32646ef5b0e72e1e00c6bcb0a3e907c9c009bdba65d6eb5709c8928a676cb86b"
+      "prompt_sha256": "521ed06400db1e887460fbdf69bdee5873cd8d30fb142cb2b95c7e048a9d7595"
     },
     "A07": {
       "key": "A07",
@@ -3322,7 +3322,7 @@
         "MW02_B",
         "MW02_C"
       ],
-      "prompt_sha256": "a315c8e2f6b3d1ee41957200f0eb17e9a4f60e72d9d8ec4872608d46c534d6c1"
+      "prompt_sha256": "9d4e9105cd786b8fd8a6c098a8fe6ce07e5d375f7ef6bbc7300720de48cb1a76"
     },
     "MR001": {
       "key": "MR001",
@@ -5269,7 +5269,7 @@
       "refs": [],
       "layout": "single full-frame 16:9",
       "intended_resolution": "2K",
-      "prompt_sha256": "fa86b9cd23b52879ae41b2e775ad8a237595a5b9a077598381b7a794f0b70e81",
+      "prompt_sha256": "56185ee08e3f948d85eb58c9a46b95aa40896055044f9bb75903f8cd6183bca5",
       "status": "PREPARED_NOT_GENERATED",
       "world": "W01",
       "group": "A",
@@ -5284,7 +5284,7 @@
       "refs": [],
       "layout": "single full-frame 16:9",
       "intended_resolution": "2K",
-      "prompt_sha256": "9aacb175ab5064dd31083a88e424f943e1df6c1310ab41f7f6d92fd67349f773",
+      "prompt_sha256": "fdef11a8dab1d8c8c4fda543a9b3fd8d7d4eb78abaaa70523c09faca886f7fe4",
       "status": "PREPARED_NOT_GENERATED",
       "world": "W01",
       "group": "A",
@@ -5299,7 +5299,7 @@
       "refs": [],
       "layout": "single full-frame 16:9",
       "intended_resolution": "2K",
-      "prompt_sha256": "b2a2b84f4cda391b40cfc6851814fed07047814f3a73e4b565c6eb0c419cbf1c",
+      "prompt_sha256": "e5ccc221ebdc209870dae0f9725b481ce5acab0c1d7b4d68eb46387209841b8c",
       "status": "PREPARED_NOT_GENERATED",
       "world": "W01",
       "group": "A",
@@ -5314,7 +5314,7 @@
       "refs": [],
       "layout": "single full-frame 16:9",
       "intended_resolution": "2K",
-      "prompt_sha256": "97c71efb70947e9e97f6cda5b91184eaca4057359cfcd83668ba9cc4e97d7752",
+      "prompt_sha256": "bae20bcbaef08950c0b0462873157fde20fcbbab3dc76c72b776d7c4a425308b",
       "status": "PREPARED_NOT_GENERATED",
       "world": "W01",
       "group": "A",
@@ -5329,7 +5329,7 @@
       "refs": [],
       "layout": "single full-frame 16:9",
       "intended_resolution": "2K",
-      "prompt_sha256": "441350a993e0dc89cd01d28dac1e7ef1c7d4c45438a1dfbda1ca7a54aa6fd556",
+      "prompt_sha256": "44b92f897a7d2a8b9f7230a650807d6c5208c17b83d7cc80bd51a1972007aa83",
       "status": "PREPARED_NOT_GENERATED",
       "world": "W01",
       "group": "B",
@@ -5344,7 +5344,7 @@
       "refs": [],
       "layout": "single full-frame 16:9",
       "intended_resolution": "2K",
-      "prompt_sha256": "34ffb5daffeac3cadecfb7673077c2ee653b015b8fba201cd11d1bc591695f19",
+      "prompt_sha256": "f6e7cbb3753bd72a008685af129b11bf4ecb170e8f21123a9bdab5309bad4bb1",
       "status": "PREPARED_NOT_GENERATED",
       "world": "W01",
       "group": "B",
@@ -5359,7 +5359,7 @@
       "refs": [],
       "layout": "single full-frame 16:9",
       "intended_resolution": "2K",
-      "prompt_sha256": "92444b233223be21690493abb1d63f4b0a228dd8d2924289ee0863712f8ca93d",
+      "prompt_sha256": "def22d7c279b25410d2df5c6858b7bb5f3271acb9574dea4e94c7b568f2c4c0d",
       "status": "PREPARED_NOT_GENERATED",
       "world": "W01",
       "group": "B",
@@ -5374,7 +5374,7 @@
       "refs": [],
       "layout": "single full-frame 16:9",
       "intended_resolution": "2K",
-      "prompt_sha256": "ed22bbcd3b75b44af5a57ae5b30eac2126585aa522f0de0496ab96738cd8a07c",
+      "prompt_sha256": "709087d9e452252ce5bafbab0ede8a057e263247eecf9b512d9713887b0669c4",
       "status": "PREPARED_NOT_GENERATED",
       "world": "W01",
       "group": "B",
@@ -5389,7 +5389,7 @@
       "refs": [],
       "layout": "single full-frame 16:9",
       "intended_resolution": "2K",
-      "prompt_sha256": "9422acea57685058e9040fce6972bfd4e6afa4baf5cd052596e8ddc4495382a3",
+      "prompt_sha256": "89d10b49494e0ef395a81a1f9897db83c0f7dbba5f0824f2883d6c40ec760e7f",
       "status": "PREPARED_NOT_GENERATED",
       "world": "W01",
       "group": "C",
@@ -5404,7 +5404,7 @@
       "refs": [],
       "layout": "single full-frame 16:9",
       "intended_resolution": "2K",
-      "prompt_sha256": "8028a9d751175f3b43113508daff4a6d2d1d3f3c1e083432cb2c48c084950071",
+      "prompt_sha256": "e0abd9104cb17b7f6d9e40cb76a410b64e75b3b4adfa83a50ceb904fe65804c8",
       "status": "PREPARED_NOT_GENERATED",
       "world": "W01",
       "group": "C",
@@ -5419,7 +5419,7 @@
       "refs": [],
       "layout": "single full-frame 16:9",
       "intended_resolution": "2K",
-      "prompt_sha256": "6227527a86554047438a8ef80f3d52951cd6bba4e7ab9c4c3907d7bb5855692f",
+      "prompt_sha256": "c024270cb2234db2dfa12cede9fccc32fe838d4b9e16f0ff8cea2cb968c77e6e",
       "status": "PREPARED_NOT_GENERATED",
       "world": "W01",
       "group": "C",
@@ -5434,7 +5434,7 @@
       "refs": [],
       "layout": "single full-frame 16:9",
       "intended_resolution": "2K",
-      "prompt_sha256": "6a5f59beb2a80d761aab8973ebef0a11d945901f184d8ef60474514fb33f37f6",
+      "prompt_sha256": "83531927155fb09d6c943a25596fa38e16268110bd123c98871ee6efbd51e87d",
       "status": "PREPARED_NOT_GENERATED",
       "world": "W01",
       "group": "C",
@@ -5449,7 +5449,7 @@
       "refs": [],
       "layout": "single full-frame 16:9",
       "intended_resolution": "2K",
-      "prompt_sha256": "6420eb484745ef4d6e620b9855848afbee5b47707c9c4cbd0ca5bb4c7c411ab6",
+      "prompt_sha256": "7e5039caa003a510b816be6ff35387235c7cd45c7dd451c12cbaa413975a7792",
       "status": "PREPARED_NOT_GENERATED",
       "world": "W02",
       "group": "A",
@@ -5464,7 +5464,7 @@
       "refs": [],
       "layout": "single full-frame 16:9",
       "intended_resolution": "2K",
-      "prompt_sha256": "819fdd1d3dbe986a4e21e899e9ad231729f4c0247b14053e7576d00a50f5b2d0",
+      "prompt_sha256": "828c123a4016c7ea3c3ad69e42fee1e66a2140d9c441b0a6070e2527176e6f52",
       "status": "PREPARED_NOT_GENERATED",
       "world": "W02",
       "group": "A",
@@ -5479,7 +5479,7 @@
       "refs": [],
       "layout": "single full-frame 16:9",
       "intended_resolution": "2K",
-      "prompt_sha256": "62494bb471793987a7265fa40a4422d42352323f9d1b6aba09d03753b989bef6",
+      "prompt_sha256": "861f06787033b16c32238edf0b3d35b36b48e10388a40c50e8eb7f32c364386c",
       "status": "PREPARED_NOT_GENERATED",
       "world": "W02",
       "group": "A",
@@ -5494,7 +5494,7 @@
       "refs": [],
       "layout": "single full-frame 16:9",
       "intended_resolution": "2K",
-      "prompt_sha256": "ceaaa72d76f38828da8bcb31a5950c4b0805a659a7ea2f5f2e92b63e0ef4f4b0",
+      "prompt_sha256": "7b3bb80eaa12fa58538f5dd3fe334edf7b9e7cb17f1b46b60e63efde2d26394b",
       "status": "PREPARED_NOT_GENERATED",
       "world": "W02",
       "group": "A",
@@ -5509,7 +5509,7 @@
       "refs": [],
       "layout": "single full-frame 16:9",
       "intended_resolution": "2K",
-      "prompt_sha256": "cafdcf5f5f65ef6104af2c1c4b79ead34cc736cbce9fa1287ab1588921afcf75",
+      "prompt_sha256": "6dfa15525d20952cf187a15a29aa535c9665798c6f5df4f7a7417bc6957afaf6",
       "status": "PREPARED_NOT_GENERATED",
       "world": "W02",
       "group": "B",
@@ -5524,7 +5524,7 @@
       "refs": [],
       "layout": "single full-frame 16:9",
       "intended_resolution": "2K",
-      "prompt_sha256": "9a045e589f57c0157e1a0e0b2cae412af4afdb9c6c05826acedc3faf7f52a43d",
+      "prompt_sha256": "75ab5396a7c37587eb59e76bf361186c6790680b4b3a03cf27bb9d3c3f807a67",
       "status": "PREPARED_NOT_GENERATED",
       "world": "W02",
       "group": "B",
@@ -5539,7 +5539,7 @@
       "refs": [],
       "layout": "single full-frame 16:9",
       "intended_resolution": "2K",
-      "prompt_sha256": "e6ffd7053dbc14689e7b49267df781275cf4fad7d36b1296b9b6b2b012093577",
+      "prompt_sha256": "401199ca896f25144911602fae79f507ca381212967fd5445d0b8b3d4ad9c0f3",
       "status": "PREPARED_NOT_GENERATED",
       "world": "W02",
       "group": "B",
@@ -5554,7 +5554,7 @@
       "refs": [],
       "layout": "single full-frame 16:9",
       "intended_resolution": "2K",
-      "prompt_sha256": "3f581fa8049df29e511305a972784985002b1a94e6fb029ae10d0e60d3a1054c",
+      "prompt_sha256": "7932fe832d5165cdeb866cb6f9caf8879efd9ff8d4117e5c3df3222cab3bcc78",
       "status": "PREPARED_NOT_GENERATED",
       "world": "W02",
       "group": "B",
@@ -5569,7 +5569,7 @@
       "refs": [],
       "layout": "single full-frame 16:9",
       "intended_resolution": "2K",
-      "prompt_sha256": "16acf24e551f76f583ff300c2f69c8a48425ca8b8114f5b646672eafb3286110",
+      "prompt_sha256": "98f9c896a6cc645ad7b536114b5707e576e1bd1f900752cc08feb379a158f62d",
       "status": "PREPARED_NOT_GENERATED",
       "world": "W02",
       "group": "C",
@@ -5584,7 +5584,7 @@
       "refs": [],
       "layout": "single full-frame 16:9",
       "intended_resolution": "2K",
-      "prompt_sha256": "b1f44e6da323afa7768c1aef44b4626922ad96c3ef009418712fe1ce4c25195b",
+      "prompt_sha256": "e93a0cc66b15fcfc78b8f2f0222c5abe99d85b9df2de8d8f6fd04e525896e3a4",
       "status": "PREPARED_NOT_GENERATED",
       "world": "W02",
       "group": "C",
@@ -5599,7 +5599,7 @@
       "refs": [],
       "layout": "single full-frame 16:9",
       "intended_resolution": "2K",
-      "prompt_sha256": "89fb7e616ff48035c5aa933a022f5cdfc5a2f76382f30ea2e0e67540df5fe098",
+      "prompt_sha256": "db051c2c6a65a0dd4f00f0b8b4ffc96e47111055cc3de8b833dd777f4af81761",
       "status": "PREPARED_NOT_GENERATED",
       "world": "W02",
       "group": "C",
@@ -5614,7 +5614,7 @@
       "refs": [],
       "layout": "single full-frame 16:9",
       "intended_resolution": "2K",
-      "prompt_sha256": "3a21e3c37646b680139b293ef4c17a8b2c3ec13ddec5582449389a3ed50e4c07",
+      "prompt_sha256": "f855a862d541b3b380d7fd30ab6da0fb8b3360f5ac4664718e8547a8e1c28907",
       "status": "PREPARED_NOT_GENERATED",
       "world": "W02",
       "group": "C",
@@ -5629,7 +5629,7 @@
       "refs": [],
       "layout": "single full-frame 16:9",
       "intended_resolution": "2K",
-      "prompt_sha256": "fee4fdee412c623098d5d19835443767ae7aa47410db7fcd100bd5012205a84d",
+      "prompt_sha256": "96ce5290efff7c585cbf3f5bc80f45070a37487ab71d09c315b010468932c095",
       "status": "PREPARED_NOT_GENERATED",
       "world": "W03",
       "group": "A",
@@ -5644,7 +5644,7 @@
       "refs": [],
       "layout": "single full-frame 16:9",
       "intended_resolution": "2K",
-      "prompt_sha256": "dff6d70fbf7efeba46508a4e2cb4ad43148d6357917cfbdfc2630a3e6051126a",
+      "prompt_sha256": "02ba220b5783c9a74ddda53d245fe0586f034d0a5125437a295453eebc8a649b",
       "status": "PREPARED_NOT_GENERATED",
       "world": "W03",
       "group": "A",
@@ -5659,7 +5659,7 @@
       "refs": [],
       "layout": "single full-frame 16:9",
       "intended_resolution": "2K",
-      "prompt_sha256": "405da4629b619778bbb5b7f1e2975b3450666d1fc8ea0200d97916d234edabd4",
+      "prompt_sha256": "39f1c20aae58a8918792160c8b8a17caea9edb27cda24b653d8dd69b3781f417",
       "status": "PREPARED_NOT_GENERATED",
       "world": "W03",
       "group": "A",
@@ -5674,7 +5674,7 @@
       "refs": [],
       "layout": "single full-frame 16:9",
       "intended_resolution": "2K",
-      "prompt_sha256": "c03cc10328ffe0c530944e8587dee7ce15e098d3477891b88f1821b90f3d0758",
+      "prompt_sha256": "5fa9e9945002a2b2d9ef8d147da9307eb8b359104ee03b1856e5204d4e6003ec",
       "status": "PREPARED_NOT_GENERATED",
       "world": "W03",
       "group": "A",
@@ -5689,7 +5689,7 @@
       "refs": [],
       "layout": "single full-frame 16:9",
       "intended_resolution": "2K",
-      "prompt_sha256": "26b025580e53e1b49929e151d24572fef83f70618b320cd5f3195fd85b1206fe",
+      "prompt_sha256": "e63cedc9c59da0ce3a2b777edba24f5c4dfedddad10230db3d57a3b4aac6def1",
       "status": "PREPARED_NOT_GENERATED",
       "world": "W03",
       "group": "B",
@@ -5704,7 +5704,7 @@
       "refs": [],
       "layout": "single full-frame 16:9",
       "intended_resolution": "2K",
-      "prompt_sha256": "55ec7cf7949eadff94c4e479cc26f2925515d3f515bdb8a105e36ec9a38dc055",
+      "prompt_sha256": "76b68438c2a0470ea2e6a012b38a19dc701633d78d13dd28d5c4bef0cd593106",
       "status": "PREPARED_NOT_GENERATED",
       "world": "W03",
       "group": "B",
@@ -5719,7 +5719,7 @@
       "refs": [],
       "layout": "single full-frame 16:9",
       "intended_resolution": "2K",
-      "prompt_sha256": "46f71c581ec60d82dbe441c0a6d2cedeac886f798733609b6b62537d066c679f",
+      "prompt_sha256": "b6f2120cf8168b2b281f77b1996a3207e6bbd2f613e22f8c54f8616bb0037598",
       "status": "PREPARED_NOT_GENERATED",
       "world": "W03",
       "group": "B",
@@ -5734,7 +5734,7 @@
       "refs": [],
       "layout": "single full-frame 16:9",
       "intended_resolution": "2K",
-      "prompt_sha256": "811cffa4ee4cdcfd8e09ce1d8a1bbe69b6a02ab2d1591a63e4101bbff7ac2e87",
+      "prompt_sha256": "85bc49e442cf955a8de30caa603bd70f7ded8c1017cd8594ce9408b3cd9b8066",
       "status": "PREPARED_NOT_GENERATED",
       "world": "W03",
       "group": "B",
@@ -5749,7 +5749,7 @@
       "refs": [],
       "layout": "single full-frame 16:9",
       "intended_resolution": "2K",
-      "prompt_sha256": "bde638aea7239edb50f3570e481a3b67662670b298834b92d9a80520d4cdcadf",
+      "prompt_sha256": "567a608a0ac3e3b68ab06ae4d466d75363625ae450f79335a93c71e5c59dd478",
       "status": "PREPARED_NOT_GENERATED",
       "world": "W03",
       "group": "C",
@@ -5764,7 +5764,7 @@
       "refs": [],
       "layout": "single full-frame 16:9",
       "intended_resolution": "2K",
-      "prompt_sha256": "c3477ff2eccc3fe69441cba3b62d0a859e1fc2befe04fc264462e8dbcfe9ff7b",
+      "prompt_sha256": "65973d8517b2f69e56ff4a4e8760d6f06f4b73fb6d324b83c3bf3be1df3e7362",
       "status": "PREPARED_NOT_GENERATED",
       "world": "W03",
       "group": "C",
@@ -5779,7 +5779,7 @@
       "refs": [],
       "layout": "single full-frame 16:9",
       "intended_resolution": "2K",
-      "prompt_sha256": "b99fbf2827e50a8019e0dc8ba74dff111957a9bffed99ac9402ec369afac05d1",
+      "prompt_sha256": "628ea8ad3d083d8fa286403e9f5da805e12da8839e7a2e3f64166c35d51b3d90",
       "status": "PREPARED_NOT_GENERATED",
       "world": "W03",
       "group": "C",
@@ -5794,7 +5794,7 @@
       "refs": [],
       "layout": "single full-frame 16:9",
       "intended_resolution": "2K",
-      "prompt_sha256": "a63c852c78538726872ae63b17c9d478e0a3ef644161999081db3d5550a2d994",
+      "prompt_sha256": "1c1bd4ab02b12d7b15a49ce25e4fcdb1e01a033f6d749ca1ea7e5439abb5b035",
       "status": "PREPARED_NOT_GENERATED",
       "world": "W03",
       "group": "C",
@@ -5809,7 +5809,7 @@
       "refs": [],
       "layout": "single full-frame 16:9",
       "intended_resolution": "2K",
-      "prompt_sha256": "17b52a6626b340e8e5b4b6237c0431cbfe2bce236e362c04af948607c8ae160b",
+      "prompt_sha256": "a0858012342df289710be2b87fbddf4ac23ab849d84efaec81a8d3280618fba3",
       "status": "PREPARED_NOT_GENERATED",
       "world": "W04",
       "group": "A",
@@ -5824,7 +5824,7 @@
       "refs": [],
       "layout": "single full-frame 16:9",
       "intended_resolution": "2K",
-      "prompt_sha256": "ac999e4310fbb6c6aad3bb11474b08a031a0030a765ba66f2e0eb56a1a6d19d4",
+      "prompt_sha256": "12813c2f15b8f47da1f02d148d26eee952ce40ab4e4c1ba53747efe935e0f8ee",
       "status": "PREPARED_NOT_GENERATED",
       "world": "W04",
       "group": "A",
@@ -5839,7 +5839,7 @@
       "refs": [],
       "layout": "single full-frame 16:9",
       "intended_resolution": "2K",
-      "prompt_sha256": "0b37838163d07bbf91381561e53c65de05a6e7bddeb5e94acd233c2e8e63d159",
+      "prompt_sha256": "ac4c241f1fc248afad773e6cbbee95357bea4983393ba447ada3e581389aa524",
       "status": "PREPARED_NOT_GENERATED",
       "world": "W04",
       "group": "A",
@@ -5854,7 +5854,7 @@
       "refs": [],
       "layout": "single full-frame 16:9",
       "intended_resolution": "2K",
-      "prompt_sha256": "8860768937c1e5bc565a76f1f6bb85b09374f4d060a9988ca156da5cdb82b61b",
+      "prompt_sha256": "9f264d42ca3f8eda95b8ef907e8b090327e392cb8676d43903f8901c5a532a50",
       "status": "PREPARED_NOT_GENERATED",
       "world": "W04",
       "group": "A",
@@ -5869,7 +5869,7 @@
       "refs": [],
       "layout": "single full-frame 16:9",
       "intended_resolution": "2K",
-      "prompt_sha256": "5060e335a41a0a630b0e025de498a3ef6052eb43b44404ac6a235fe214fe0809",
+      "prompt_sha256": "0421f9560d3bad906660a2289f00b13f8a1848ac414c45d3f2f591a3709a257d",
       "status": "PREPARED_NOT_GENERATED",
       "world": "W04",
       "group": "B",
@@ -5884,7 +5884,7 @@
       "refs": [],
       "layout": "single full-frame 16:9",
       "intended_resolution": "2K",
-      "prompt_sha256": "4a9aaf72ff681bd823204c9ddaeaa50be40e766865c0476024a106df30ecdaef",
+      "prompt_sha256": "096a224359005b72048899f334c361e98e1470cbb7d8efa8209d7527f2e1964a",
       "status": "PREPARED_NOT_GENERATED",
       "world": "W04",
       "group": "B",
@@ -5899,7 +5899,7 @@
       "refs": [],
       "layout": "single full-frame 16:9",
       "intended_resolution": "2K",
-      "prompt_sha256": "7358a0138318713522c39707b6f240905192ef2f41eb24b1f3ae33b35ccc58e1",
+      "prompt_sha256": "3045581ad1e0906b35268bcc757b829c57c12fa4ce1d0821ec4cb442d6e144cb",
       "status": "PREPARED_NOT_GENERATED",
       "world": "W04",
       "group": "B",
@@ -5914,7 +5914,7 @@
       "refs": [],
       "layout": "single full-frame 16:9",
       "intended_resolution": "2K",
-      "prompt_sha256": "6443cbb94884eaad588478f473b6d3f723a3d5969c338fc6b8fd46cb8e2c0625",
+      "prompt_sha256": "42969a946a6973d322747ffb930119ecc2e164c134aa7d6c5dd81000ab754187",
       "status": "PREPARED_NOT_GENERATED",
       "world": "W04",
       "group": "B",
@@ -5929,7 +5929,7 @@
       "refs": [],
       "layout": "single full-frame 16:9",
       "intended_resolution": "2K",
-      "prompt_sha256": "d881cc9c74f03487c0609c2e4e32fd074a14fe5cd7edb4dee663250069ee244b",
+      "prompt_sha256": "7d685443594d2ac8db916ffb325186874f74a0953047f7393a9fc33184fcf065",
       "status": "PREPARED_NOT_GENERATED",
       "world": "W04",
       "group": "C",
@@ -5944,7 +5944,7 @@
       "refs": [],
       "layout": "single full-frame 16:9",
       "intended_resolution": "2K",
-      "prompt_sha256": "087eb4685c8dd4082bb75d7504245f2b80a5689835664bb0b05dadfde0db6966",
+      "prompt_sha256": "e6068ac81a7483a75885636c3c2b12a9aedbd03c99fa5ef446ada1288f37b424",
       "status": "PREPARED_NOT_GENERATED",
       "world": "W04",
       "group": "C",
@@ -5959,7 +5959,7 @@
       "refs": [],
       "layout": "single full-frame 16:9",
       "intended_resolution": "2K",
-      "prompt_sha256": "19030a11ede9877666021036207809327df5fd10b569ed380a11771a72c03c0e",
+      "prompt_sha256": "ba452283f538c4ea650776606de423be323b004d2d5ccf740d830c8d7911fbf6",
       "status": "PREPARED_NOT_GENERATED",
       "world": "W04",
       "group": "C",
@@ -5974,7 +5974,7 @@
       "refs": [],
       "layout": "single full-frame 16:9",
       "intended_resolution": "2K",
-      "prompt_sha256": "6366158c8da58e2cedc952451baac089ff2154646db257598fd17bc8910dca62",
+      "prompt_sha256": "af240f927563b3c4bd51e2ddd562519ee3c0566ec7f0f5f12b15684b7731d1f4",
       "status": "PREPARED_NOT_GENERATED",
       "world": "W04",
       "group": "C",
@@ -5989,7 +5989,7 @@
       "refs": [],
       "layout": "single full-frame 16:9",
       "intended_resolution": "2K",
-      "prompt_sha256": "2069a8b4245852096b957f58c9744b3bc775d3acbb235485e5d6833291d3c0c1",
+      "prompt_sha256": "6c80dd3ca863be1310b926572abec39f4bc3d76befb72439a7b6d13787a63a68",
       "status": "PREPARED_NOT_GENERATED",
       "world": "W05",
       "group": "A",
@@ -6004,7 +6004,7 @@
       "refs": [],
       "layout": "single full-frame 16:9",
       "intended_resolution": "2K",
-      "prompt_sha256": "718300bbf4a551a6c01c703d3f204fab16e007e6e08c54d40ac7d756bc71a34d",
+      "prompt_sha256": "86d5e7dee5ef6c70fb5de2083c309ee36355b6cd52d305325cfb2961fe90ccf3",
       "status": "PREPARED_NOT_GENERATED",
       "world": "W05",
       "group": "A",
@@ -6019,7 +6019,7 @@
       "refs": [],
       "layout": "single full-frame 16:9",
       "intended_resolution": "2K",
-      "prompt_sha256": "fce0e9ddadcc48637935c7f0d84ae50e211b12eb623e6e277f1f16aea974b545",
+      "prompt_sha256": "0833f38193bd22fb495ca6b2f23f0a682d1fea781f1f78a3e4888124c3823574",
       "status": "PREPARED_NOT_GENERATED",
       "world": "W05",
       "group": "A",
@@ -6034,7 +6034,7 @@
       "refs": [],
       "layout": "single full-frame 16:9",
       "intended_resolution": "2K",
-      "prompt_sha256": "3da0f8a5fda703694cf2d45aa321d52855b55bd57f65eb53b30acc26a7313d2a",
+      "prompt_sha256": "8c5f1120911aca70690871bacd12eb8b84f0e696b06f214935928ce3ec354c44",
       "status": "PREPARED_NOT_GENERATED",
       "world": "W05",
       "group": "A",
@@ -6049,7 +6049,7 @@
       "refs": [],
       "layout": "single full-frame 16:9",
       "intended_resolution": "2K",
-      "prompt_sha256": "5868bc13214c85ea7e84305a91ece20110f0898331b98a60ae0f8710606b04ba",
+      "prompt_sha256": "8f175729b22a429b6d4863f223a47c9cb6f59068249366c81c799710cd149618",
       "status": "PREPARED_NOT_GENERATED",
       "world": "W05",
       "group": "B",
@@ -6064,7 +6064,7 @@
       "refs": [],
       "layout": "single full-frame 16:9",
       "intended_resolution": "2K",
-      "prompt_sha256": "2733508f36af624e736752a8e1bb1c61fe2b81125c02d2e3afeb1c989f9dafb9",
+      "prompt_sha256": "ce9ff06925258b8609f9b88ba89d59965eb07f66a9bcc3128c8e1482ff190ca3",
       "status": "PREPARED_NOT_GENERATED",
       "world": "W05",
       "group": "B",
@@ -6079,7 +6079,7 @@
       "refs": [],
       "layout": "single full-frame 16:9",
       "intended_resolution": "2K",
-      "prompt_sha256": "b73bf7338212abf9b02f1ab95aee29d14db377903da0676b3935479a5fda225f",
+      "prompt_sha256": "b1f7ba05ee285ed846ba9035839eb75775120715cefda3bd83691626475e3403",
       "status": "PREPARED_NOT_GENERATED",
       "world": "W05",
       "group": "B",
@@ -6094,7 +6094,7 @@
       "refs": [],
       "layout": "single full-frame 16:9",
       "intended_resolution": "2K",
-      "prompt_sha256": "164fba60a0e730f52dab13ee21810e632f49b33df86883372f778baf4cad91b9",
+      "prompt_sha256": "282d45fc54c7dc647e64ea7285e0abb4dbffa14b1fff504be7d8a927c5fe66c5",
       "status": "PREPARED_NOT_GENERATED",
       "world": "W05",
       "group": "B",
@@ -6109,7 +6109,7 @@
       "refs": [],
       "layout": "single full-frame 16:9",
       "intended_resolution": "2K",
-      "prompt_sha256": "eb6a4850910b03abaeed451f4e0d7f2d7c49b0bb685d2d50ed9ab88e5160325a",
+      "prompt_sha256": "88923ba4f53e88b2381c9e733f82cb6d560d34bd40c05a37f494e437942fb86b",
       "status": "PREPARED_NOT_GENERATED",
       "world": "W05",
       "group": "C",
@@ -6124,7 +6124,7 @@
       "refs": [],
       "layout": "single full-frame 16:9",
       "intended_resolution": "2K",
-      "prompt_sha256": "9723d4fd5c4cad487f276b0d8822b60f58d882336ca3fd6cb2f85348a6f18d87",
+      "prompt_sha256": "c90425bbf40e02d9f8b7afcc589b4651e4058c7cdbb3c314aed1462b0c14fe3f",
       "status": "PREPARED_NOT_GENERATED",
       "world": "W05",
       "group": "C",
@@ -6139,7 +6139,7 @@
       "refs": [],
       "layout": "single full-frame 16:9",
       "intended_resolution": "2K",
-      "prompt_sha256": "8e467cdaf72dfb4da3dbbe6740d013fc523100d534b8022c2c5bb1cc6e946264",
+      "prompt_sha256": "079d0f12d08b71b3f63102bec498c15ac14aa0ddf4c1f44feaf58badd65c3c4e",
       "status": "PREPARED_NOT_GENERATED",
       "world": "W05",
       "group": "C",
@@ -6154,7 +6154,7 @@
       "refs": [],
       "layout": "single full-frame 16:9",
       "intended_resolution": "2K",
-      "prompt_sha256": "2feb39f618229f163366719520abd26cbee9d7f2b8580fd21c71bacff898ddbb",
+      "prompt_sha256": "832492a44d1b944a9fd1e79be9b1a4988db176185aa79b18081c11cdaa6eedf6",
       "status": "PREPARED_NOT_GENERATED",
       "world": "W05",
       "group": "C",
@@ -6169,7 +6169,7 @@
       "refs": [],
       "layout": "single full-frame 16:9",
       "intended_resolution": "2K",
-      "prompt_sha256": "abec6582b995c6104a116e2cb2e9c508757be7af8260f18c36d045c9e5865332",
+      "prompt_sha256": "ad7e2932b62634dbc461668802e1e4a95b2d57dc2f40f04235773484aa06a436",
       "status": "PREPARED_NOT_GENERATED",
       "world": "W06",
       "group": "A",
@@ -6184,7 +6184,7 @@
       "refs": [],
       "layout": "single full-frame 16:9",
       "intended_resolution": "2K",
-      "prompt_sha256": "46a6bb54b81945993e627637f462e99284eac3efa3cf44f5fe9989a71ed82b37",
+      "prompt_sha256": "852b5018e4910d4c614d1a91b3b88533690ba3934b32a66a0dbad413f35e7cfc",
       "status": "PREPARED_NOT_GENERATED",
       "world": "W06",
       "group": "A",
@@ -6199,7 +6199,7 @@
       "refs": [],
       "layout": "single full-frame 16:9",
       "intended_resolution": "2K",
-      "prompt_sha256": "e6c362b10c8cd7db9f13399272fa486a1c81f4b61b8cc0619e92e4f16fe6580b",
+      "prompt_sha256": "48e29d88d274ca8309b73fdf4ab1a66f30ae4123896c0e4cadcfd7891eaf666c",
       "status": "PREPARED_NOT_GENERATED",
       "world": "W06",
       "group": "A",
@@ -6214,7 +6214,7 @@
       "refs": [],
       "layout": "single full-frame 16:9",
       "intended_resolution": "2K",
-      "prompt_sha256": "04e503dd62a10964e454b86981dc70c6e374d21e1159b6b09707da7bcdfed56d",
+      "prompt_sha256": "7f981ab36e1a7d39176c78d3ec03d88f1c2c98ef0eccd9f5111662c949be980d",
       "status": "PREPARED_NOT_GENERATED",
       "world": "W06",
       "group": "A",
@@ -6229,7 +6229,7 @@
       "refs": [],
       "layout": "single full-frame 16:9",
       "intended_resolution": "2K",
-      "prompt_sha256": "f31caadc4ac5522e24d9465b8101874c2992d061fac95a89e0d1699776fadd0d",
+      "prompt_sha256": "7f84c15bf9ccabfa1385fa8b494a5883dd20bcf879a7c5de55af4dba518056a6",
       "status": "PREPARED_NOT_GENERATED",
       "world": "W06",
       "group": "B",
@@ -6244,7 +6244,7 @@
       "refs": [],
       "layout": "single full-frame 16:9",
       "intended_resolution": "2K",
-      "prompt_sha256": "dd56568125e42f7e5d99a97342de47fb8a465b43780306c95e6f663e989c57c0",
+      "prompt_sha256": "1bd2a8c287cd7ea91a5340958abae22136d78c433a3275666b4c4046aa2b8ce2",
       "status": "PREPARED_NOT_GENERATED",
       "world": "W06",
       "group": "B",
@@ -6259,7 +6259,7 @@
       "refs": [],
       "layout": "single full-frame 16:9",
       "intended_resolution": "2K",
-      "prompt_sha256": "29803188708b39460c77f6105180c27d3a0a0d5183e8c8fb788f1e2cb50db35f",
+      "prompt_sha256": "4584899eea10a44d16921abf24cb03781bbad9c4ed8ac9c7c292ae05fcb090b2",
       "status": "PREPARED_NOT_GENERATED",
       "world": "W06",
       "group": "B",
@@ -6274,7 +6274,7 @@
       "refs": [],
       "layout": "single full-frame 16:9",
       "intended_resolution": "2K",
-      "prompt_sha256": "1591f0ea3ff53b1a305dfe02237f7c6702545b757c7f4991792fea425273031b",
+      "prompt_sha256": "e32994df42dcd25446cdbd78e8f0ab4601b9d11121bbde8dd78f84209ba230c6",
       "status": "PREPARED_NOT_GENERATED",
       "world": "W06",
       "group": "B",
@@ -6289,7 +6289,7 @@
       "refs": [],
       "layout": "single full-frame 16:9",
       "intended_resolution": "2K",
-      "prompt_sha256": "d57010c8768518f61b3823d7e8f0da2153b86c20f97c6fd098774256bc289433",
+      "prompt_sha256": "249043f9c7d08a97569514f0f7121777f575b766fa71f0ca9124b97fca453323",
       "status": "PREPARED_NOT_GENERATED",
       "world": "W06",
       "group": "C",
@@ -6304,7 +6304,7 @@
       "refs": [],
       "layout": "single full-frame 16:9",
       "intended_resolution": "2K",
-      "prompt_sha256": "667aec565fa968baef799677698e11e3ce8a053e3465c6ff7a0bcebbcfdc0f2b",
+      "prompt_sha256": "c4c0225fa7a510abe0fc673c60960e5d618e02c1633a61d6cf050a5e65e8cd48",
       "status": "PREPARED_NOT_GENERATED",
       "world": "W06",
       "group": "C",
@@ -6319,7 +6319,7 @@
       "refs": [],
       "layout": "single full-frame 16:9",
       "intended_resolution": "2K",
-      "prompt_sha256": "ffbfdc414ccba52698ab6a2be76f3bc7f83480ad34043ada3fbf56af84dac7b1",
+      "prompt_sha256": "d317368cca2263725942204434cb57ecea8946cb30783c1811f4dfddc2b96112",
       "status": "PREPARED_NOT_GENERATED",
       "world": "W06",
       "group": "C",
@@ -6334,7 +6334,7 @@
       "refs": [],
       "layout": "single full-frame 16:9",
       "intended_resolution": "2K",
-      "prompt_sha256": "edb93f6793bb2aaf004e5555a0919477cce0228cf00a160138e5a6e3c4f7b517",
+      "prompt_sha256": "6c36bd32ec06a310d1ad9bf6336707f2500284670d2579a048ae9fde7ae86759",
       "status": "PREPARED_NOT_GENERATED",
       "world": "W06",
       "group": "C",
@@ -6349,7 +6349,7 @@
       "refs": [],
       "layout": "single full-frame 16:9",
       "intended_resolution": "2K",
-      "prompt_sha256": "ec994c26d3571b12f5e23dd09338755883195e8ebfb1482ecc9c267e6ecd8e37",
+      "prompt_sha256": "116c021199514b6e3e4e68e91b4d4b3a18b204f88ed422dfd8123719784f673e",
       "status": "PREPARED_NOT_GENERATED",
       "world": "W07",
       "group": "A",
@@ -6364,7 +6364,7 @@
       "refs": [],
       "layout": "single full-frame 16:9",
       "intended_resolution": "2K",
-      "prompt_sha256": "a82c99d0c3f17d8505c1b4f783e9d4fc21c102056a4301629ea41a018463ac50",
+      "prompt_sha256": "09865728025eb78507c126e89b205b11ca8742ee1e5d80753d2d9a4cc8128908",
       "status": "PREPARED_NOT_GENERATED",
       "world": "W07",
       "group": "A",
@@ -6379,7 +6379,7 @@
       "refs": [],
       "layout": "single full-frame 16:9",
       "intended_resolution": "2K",
-      "prompt_sha256": "714575aa486d8b9b03ed0303b777cbdb8b7833617d3461edd52fa62b0afbfa5f",
+      "prompt_sha256": "d1a2d933e3342b1f982bba14b0ec5352efa2c52b4ce0d4455180c7d2cc8fb45b",
       "status": "PREPARED_NOT_GENERATED",
       "world": "W07",
       "group": "A",
@@ -6394,7 +6394,7 @@
       "refs": [],
       "layout": "single full-frame 16:9",
       "intended_resolution": "2K",
-      "prompt_sha256": "425c24b660c06867c7603b65920cc7fde3d44038315700671fc387af50a28c58",
+      "prompt_sha256": "f88db7a9237c49bf39ffc35d6d11584ce184c2bafab427bbc36c218a276abb6b",
       "status": "PREPARED_NOT_GENERATED",
       "world": "W07",
       "group": "A",
@@ -6409,7 +6409,7 @@
       "refs": [],
       "layout": "single full-frame 16:9",
       "intended_resolution": "2K",
-      "prompt_sha256": "a67beaf12cd5639bde862e5683a230f315f275f6fc55993d23ed25052a22506e",
+      "prompt_sha256": "8f5d94fca03f8ad5f876528effb5cf12efeb85168c78f82965df489d01307138",
       "status": "PREPARED_NOT_GENERATED",
       "world": "W07",
       "group": "B",
@@ -6424,7 +6424,7 @@
       "refs": [],
       "layout": "single full-frame 16:9",
       "intended_resolution": "2K",
-      "prompt_sha256": "bda7a37a142192935eb3c9999ab52d97379b6fbf8fe160c7556b73721ddd5bc0",
+      "prompt_sha256": "9cba27727483505199333589859dd456beb1fb5e1da13d6a44c8920ccac116c7",
       "status": "PREPARED_NOT_GENERATED",
       "world": "W07",
       "group": "B",
@@ -6439,7 +6439,7 @@
       "refs": [],
       "layout": "single full-frame 16:9",
       "intended_resolution": "2K",
-      "prompt_sha256": "c72aa9bb5e298c165fd9c19aff2be4c8821b13c2b9da4499683b8a0b8b27b4aa",
+      "prompt_sha256": "93e4a95f764a8c0909af23e199bb6c8dff4139d325b9fe8c0d7d420a1631055c",
       "status": "PREPARED_NOT_GENERATED",
       "world": "W07",
       "group": "B",
@@ -6454,7 +6454,7 @@
       "refs": [],
       "layout": "single full-frame 16:9",
       "intended_resolution": "2K",
-      "prompt_sha256": "d7fb2af2486a165fa62c3b0ee6a989c967b6e98243bb62ace81c5eaf2c8cdc0d",
+      "prompt_sha256": "163039dd8d1727020e2e7e52de7eb91b20e017b8b9c7048d334f88a79f834c71",
       "status": "PREPARED_NOT_GENERATED",
       "world": "W07",
       "group": "B",
@@ -6469,7 +6469,7 @@
       "refs": [],
       "layout": "single full-frame 16:9",
       "intended_resolution": "2K",
-      "prompt_sha256": "4e37f8ab43a8af1511f31fa23f65eca5ba9fb756683b0387620ef5d0ffd1f24e",
+      "prompt_sha256": "b14e7b98c1013b4d3f6075401bb7fed6f42b53dbbd51b789923fc926e12734d6",
       "status": "PREPARED_NOT_GENERATED",
       "world": "W07",
       "group": "C",
@@ -6484,7 +6484,7 @@
       "refs": [],
       "layout": "single full-frame 16:9",
       "intended_resolution": "2K",
-      "prompt_sha256": "1dbc68ab9840516f6d85cd0621a52567a44fbc54962396777904fd4d69b40d0d",
+      "prompt_sha256": "943c4b684bae796d4ba9d47c368a2c749c06db02806635d440f594e9f9b6126d",
       "status": "PREPARED_NOT_GENERATED",
       "world": "W07",
       "group": "C",
@@ -6499,7 +6499,7 @@
       "refs": [],
       "layout": "single full-frame 16:9",
       "intended_resolution": "2K",
-      "prompt_sha256": "96e091812b1ea59dd194d94cdb63ec70247729e96ee760a75cea828e877f38b2",
+      "prompt_sha256": "a94301dfd83ceaaa281cef917a77567c347ea6aad66d96b033a561b29dfe0d85",
       "status": "PREPARED_NOT_GENERATED",
       "world": "W07",
       "group": "C",
@@ -6514,7 +6514,7 @@
       "refs": [],
       "layout": "single full-frame 16:9",
       "intended_resolution": "2K",
-      "prompt_sha256": "b1940baf870c62632010acd647f6add6b535e92066eddec459e3a11e84e7ae16",
+      "prompt_sha256": "2586857d137bd5eb32202cf73c4012a67feb35adb43ec177ddcc035874f37a02",
       "status": "PREPARED_NOT_GENERATED",
       "world": "W07",
       "group": "C",
@@ -6527,7 +6527,7 @@
   "pilot_files": [
     {
       "file": "01_pilot/test_extend_8s.txt",
-      "sha256": "0230e1d3e413c28ca4c0cb6ad7012b140c972e7b54f2f312922ae6c54e250976",
+      "sha256": "8dce20c42c0ce7ad9a354e34bfdace06f240626a7d2b813db5514f1836baf0e9",
       "refs": [
         "W01_A_01",
         "W01_A_02",
@@ -6561,7 +6561,7 @@
     },
     {
       "file": "01_pilot/test_video_8s.txt",
-      "sha256": "1f8db58fad31766b881818cf12808a36988e7ac75ab5385065d394d1c7616fe1",
+      "sha256": "442c6289cf76ff8a1a97fa47a4a64f3f792322c9da4d53cabbb895aad02875ca",
       "reference_note": "Reference mentions are maintained centrally in reference_bindings. UNBOUND slots must be resolved before generation; verified Element mentions autoload in the creator's composer.",
       "refs": [
         "W01_A_01",
@@ -8908,7 +8908,7 @@
           "asset": "W01_A_01",
           "file": "02_library/worlds/real/W01_A_01_MAIN_WORLD_VIEW_01.txt",
           "original_view": 1,
-          "sha256": "fa86b9cd23b52879ae41b2e775ad8a237595a5b9a077598381b7a794f0b70e81",
+          "sha256": "56185ee08e3f948d85eb58c9a46b95aa40896055044f9bb75903f8cd6183bca5",
           "status": "PREPARED_NOT_GENERATED"
         },
         {
@@ -8917,7 +8917,7 @@
           "asset": "W01_A_02",
           "file": "02_library/worlds/real/W01_A_02_MAIN_WORLD_VIEW_02.txt",
           "original_view": 2,
-          "sha256": "9aacb175ab5064dd31083a88e424f943e1df6c1310ab41f7f6d92fd67349f773",
+          "sha256": "fdef11a8dab1d8c8c4fda543a9b3fd8d7d4eb78abaaa70523c09faca886f7fe4",
           "status": "PREPARED_NOT_GENERATED"
         },
         {
@@ -8926,7 +8926,7 @@
           "asset": "W01_A_03",
           "file": "02_library/worlds/real/W01_A_03_MAIN_WORLD_VIEW_03.txt",
           "original_view": 3,
-          "sha256": "b2a2b84f4cda391b40cfc6851814fed07047814f3a73e4b565c6eb0c419cbf1c",
+          "sha256": "e5ccc221ebdc209870dae0f9725b481ce5acab0c1d7b4d68eb46387209841b8c",
           "status": "PREPARED_NOT_GENERATED"
         },
         {
@@ -8935,7 +8935,7 @@
           "asset": "W01_A_04",
           "file": "02_library/worlds/real/W01_A_04_MAIN_WORLD_VIEW_04.txt",
           "original_view": 4,
-          "sha256": "97c71efb70947e9e97f6cda5b91184eaca4057359cfcd83668ba9cc4e97d7752",
+          "sha256": "bae20bcbaef08950c0b0462873157fde20fcbbab3dc76c72b776d7c4a425308b",
           "status": "PREPARED_NOT_GENERATED"
         },
         {
@@ -8944,7 +8944,7 @@
           "asset": "W01_B_01",
           "file": "02_library/worlds/real/W01_B_01_MAIN_WORLD_VIEW_05.txt",
           "original_view": 5,
-          "sha256": "441350a993e0dc89cd01d28dac1e7ef1c7d4c45438a1dfbda1ca7a54aa6fd556",
+          "sha256": "44b92f897a7d2a8b9f7230a650807d6c5208c17b83d7cc80bd51a1972007aa83",
           "status": "PREPARED_NOT_GENERATED"
         },
         {
@@ -8953,7 +8953,7 @@
           "asset": "W01_B_02",
           "file": "02_library/worlds/real/W01_B_02_MAIN_WORLD_VIEW_06.txt",
           "original_view": 6,
-          "sha256": "34ffb5daffeac3cadecfb7673077c2ee653b015b8fba201cd11d1bc591695f19",
+          "sha256": "f6e7cbb3753bd72a008685af129b11bf4ecb170e8f21123a9bdab5309bad4bb1",
           "status": "PREPARED_NOT_GENERATED"
         },
         {
@@ -8962,7 +8962,7 @@
           "asset": "W01_B_03",
           "file": "02_library/worlds/real/W01_B_03_MAIN_WORLD_VIEW_07.txt",
           "original_view": 7,
-          "sha256": "92444b233223be21690493abb1d63f4b0a228dd8d2924289ee0863712f8ca93d",
+          "sha256": "def22d7c279b25410d2df5c6858b7bb5f3271acb9574dea4e94c7b568f2c4c0d",
           "status": "PREPARED_NOT_GENERATED"
         },
         {
@@ -8971,7 +8971,7 @@
           "asset": "W01_B_04",
           "file": "02_library/worlds/real/W01_B_04_MAIN_WORLD_VIEW_08.txt",
           "original_view": 8,
-          "sha256": "ed22bbcd3b75b44af5a57ae5b30eac2126585aa522f0de0496ab96738cd8a07c",
+          "sha256": "709087d9e452252ce5bafbab0ede8a057e263247eecf9b512d9713887b0669c4",
           "status": "PREPARED_NOT_GENERATED"
         },
         {
@@ -8980,7 +8980,7 @@
           "asset": "W01_C_01",
           "file": "02_library/worlds/real/W01_C_01_MAIN_WORLD_VIEW_09.txt",
           "original_view": 9,
-          "sha256": "9422acea57685058e9040fce6972bfd4e6afa4baf5cd052596e8ddc4495382a3",
+          "sha256": "89d10b49494e0ef395a81a1f9897db83c0f7dbba5f0824f2883d6c40ec760e7f",
           "status": "PREPARED_NOT_GENERATED"
         },
         {
@@ -8989,7 +8989,7 @@
           "asset": "W01_C_02",
           "file": "02_library/worlds/real/W01_C_02_MAIN_WORLD_VIEW_01.txt",
           "original_view": 1,
-          "sha256": "8028a9d751175f3b43113508daff4a6d2d1d3f3c1e083432cb2c48c084950071",
+          "sha256": "e0abd9104cb17b7f6d9e40cb76a410b64e75b3b4adfa83a50ceb904fe65804c8",
           "status": "PREPARED_NOT_GENERATED"
         },
         {
@@ -8998,7 +8998,7 @@
           "asset": "W01_C_03",
           "file": "02_library/worlds/real/W01_C_03_MAIN_WORLD_VIEW_07.txt",
           "original_view": 7,
-          "sha256": "6227527a86554047438a8ef80f3d52951cd6bba4e7ab9c4c3907d7bb5855692f",
+          "sha256": "c024270cb2234db2dfa12cede9fccc32fe838d4b9e16f0ff8cea2cb968c77e6e",
           "status": "PREPARED_NOT_GENERATED"
         },
         {
@@ -9007,7 +9007,7 @@
           "asset": "W01_C_04",
           "file": "02_library/worlds/real/W01_C_04_MAIN_WORLD_VIEW_08.txt",
           "original_view": 8,
-          "sha256": "6a5f59beb2a80d761aab8973ebef0a11d945901f184d8ef60474514fb33f37f6",
+          "sha256": "83531927155fb09d6c943a25596fa38e16268110bd123c98871ee6efbd51e87d",
           "status": "PREPARED_NOT_GENERATED"
         }
       ],
@@ -9018,7 +9018,7 @@
           "asset": "W02_A_01",
           "file": "02_library/worlds/real/W02_A_01_MAIN_WORLD_VIEW_01.txt",
           "original_view": 1,
-          "sha256": "6420eb484745ef4d6e620b9855848afbee5b47707c9c4cbd0ca5bb4c7c411ab6",
+          "sha256": "7e5039caa003a510b816be6ff35387235c7cd45c7dd451c12cbaa413975a7792",
           "status": "PREPARED_NOT_GENERATED"
         },
         {
@@ -9027,7 +9027,7 @@
           "asset": "W02_A_02",
           "file": "02_library/worlds/real/W02_A_02_MAIN_WORLD_VIEW_02.txt",
           "original_view": 2,
-          "sha256": "819fdd1d3dbe986a4e21e899e9ad231729f4c0247b14053e7576d00a50f5b2d0",
+          "sha256": "828c123a4016c7ea3c3ad69e42fee1e66a2140d9c441b0a6070e2527176e6f52",
           "status": "PREPARED_NOT_GENERATED"
         },
         {
@@ -9036,7 +9036,7 @@
           "asset": "W02_A_03",
           "file": "02_library/worlds/real/W02_A_03_MAIN_WORLD_VIEW_03.txt",
           "original_view": 3,
-          "sha256": "62494bb471793987a7265fa40a4422d42352323f9d1b6aba09d03753b989bef6",
+          "sha256": "861f06787033b16c32238edf0b3d35b36b48e10388a40c50e8eb7f32c364386c",
           "status": "PREPARED_NOT_GENERATED"
         },
         {
@@ -9045,7 +9045,7 @@
           "asset": "W02_A_04",
           "file": "02_library/worlds/real/W02_A_04_MAIN_WORLD_VIEW_04.txt",
           "original_view": 4,
-          "sha256": "ceaaa72d76f38828da8bcb31a5950c4b0805a659a7ea2f5f2e92b63e0ef4f4b0",
+          "sha256": "7b3bb80eaa12fa58538f5dd3fe334edf7b9e7cb17f1b46b60e63efde2d26394b",
           "status": "PREPARED_NOT_GENERATED"
         },
         {
@@ -9054,7 +9054,7 @@
           "asset": "W02_B_01",
           "file": "02_library/worlds/real/W02_B_01_MAIN_WORLD_VIEW_05.txt",
           "original_view": 5,
-          "sha256": "cafdcf5f5f65ef6104af2c1c4b79ead34cc736cbce9fa1287ab1588921afcf75",
+          "sha256": "6dfa15525d20952cf187a15a29aa535c9665798c6f5df4f7a7417bc6957afaf6",
           "status": "PREPARED_NOT_GENERATED"
         },
         {
@@ -9063,7 +9063,7 @@
           "asset": "W02_B_02",
           "file": "02_library/worlds/real/W02_B_02_MAIN_WORLD_VIEW_06.txt",
           "original_view": 6,
-          "sha256": "9a045e589f57c0157e1a0e0b2cae412af4afdb9c6c05826acedc3faf7f52a43d",
+          "sha256": "75ab5396a7c37587eb59e76bf361186c6790680b4b3a03cf27bb9d3c3f807a67",
           "status": "PREPARED_NOT_GENERATED"
         },
         {
@@ -9072,7 +9072,7 @@
           "asset": "W02_B_03",
           "file": "02_library/worlds/real/W02_B_03_MAIN_WORLD_VIEW_07.txt",
           "original_view": 7,
-          "sha256": "e6ffd7053dbc14689e7b49267df781275cf4fad7d36b1296b9b6b2b012093577",
+          "sha256": "401199ca896f25144911602fae79f507ca381212967fd5445d0b8b3d4ad9c0f3",
           "status": "PREPARED_NOT_GENERATED"
         },
         {
@@ -9081,7 +9081,7 @@
           "asset": "W02_B_04",
           "file": "02_library/worlds/real/W02_B_04_MAIN_WORLD_VIEW_08.txt",
           "original_view": 8,
-          "sha256": "3f581fa8049df29e511305a972784985002b1a94e6fb029ae10d0e60d3a1054c",
+          "sha256": "7932fe832d5165cdeb866cb6f9caf8879efd9ff8d4117e5c3df3222cab3bcc78",
           "status": "PREPARED_NOT_GENERATED"
         },
         {
@@ -9090,7 +9090,7 @@
           "asset": "W02_C_01",
           "file": "02_library/worlds/real/W02_C_01_MAIN_WORLD_VIEW_09.txt",
           "original_view": 9,
-          "sha256": "16acf24e551f76f583ff300c2f69c8a48425ca8b8114f5b646672eafb3286110",
+          "sha256": "98f9c896a6cc645ad7b536114b5707e576e1bd1f900752cc08feb379a158f62d",
           "status": "PREPARED_NOT_GENERATED"
         },
         {
@@ -9099,7 +9099,7 @@
           "asset": "W02_C_02",
           "file": "02_library/worlds/real/W02_C_02_MAIN_WORLD_VIEW_01.txt",
           "original_view": 1,
-          "sha256": "b1f44e6da323afa7768c1aef44b4626922ad96c3ef009418712fe1ce4c25195b",
+          "sha256": "e93a0cc66b15fcfc78b8f2f0222c5abe99d85b9df2de8d8f6fd04e525896e3a4",
           "status": "PREPARED_NOT_GENERATED"
         },
         {
@@ -9108,7 +9108,7 @@
           "asset": "W02_C_03",
           "file": "02_library/worlds/real/W02_C_03_MAIN_WORLD_VIEW_07.txt",
           "original_view": 7,
-          "sha256": "89fb7e616ff48035c5aa933a022f5cdfc5a2f76382f30ea2e0e67540df5fe098",
+          "sha256": "db051c2c6a65a0dd4f00f0b8b4ffc96e47111055cc3de8b833dd777f4af81761",
           "status": "PREPARED_NOT_GENERATED"
         },
         {
@@ -9117,7 +9117,7 @@
           "asset": "W02_C_04",
           "file": "02_library/worlds/real/W02_C_04_MAIN_WORLD_VIEW_08.txt",
           "original_view": 8,
-          "sha256": "3a21e3c37646b680139b293ef4c17a8b2c3ec13ddec5582449389a3ed50e4c07",
+          "sha256": "f855a862d541b3b380d7fd30ab6da0fb8b3360f5ac4664718e8547a8e1c28907",
           "status": "PREPARED_NOT_GENERATED"
         }
       ],
@@ -9128,7 +9128,7 @@
           "asset": "W03_A_01",
           "file": "02_library/worlds/real/W03_A_01_MAIN_WORLD_VIEW_01.txt",
           "original_view": 1,
-          "sha256": "fee4fdee412c623098d5d19835443767ae7aa47410db7fcd100bd5012205a84d",
+          "sha256": "96ce5290efff7c585cbf3f5bc80f45070a37487ab71d09c315b010468932c095",
           "status": "PREPARED_NOT_GENERATED"
         },
         {
@@ -9137,7 +9137,7 @@
           "asset": "W03_A_02",
           "file": "02_library/worlds/real/W03_A_02_MAIN_WORLD_VIEW_02.txt",
           "original_view": 2,
-          "sha256": "dff6d70fbf7efeba46508a4e2cb4ad43148d6357917cfbdfc2630a3e6051126a",
+          "sha256": "02ba220b5783c9a74ddda53d245fe0586f034d0a5125437a295453eebc8a649b",
           "status": "PREPARED_NOT_GENERATED"
         },
         {
@@ -9146,7 +9146,7 @@
           "asset": "W03_A_03",
           "file": "02_library/worlds/real/W03_A_03_MAIN_WORLD_VIEW_03.txt",
           "original_view": 3,
-          "sha256": "405da4629b619778bbb5b7f1e2975b3450666d1fc8ea0200d97916d234edabd4",
+          "sha256": "39f1c20aae58a8918792160c8b8a17caea9edb27cda24b653d8dd69b3781f417",
           "status": "PREPARED_NOT_GENERATED"
         },
         {
@@ -9155,7 +9155,7 @@
           "asset": "W03_A_04",
           "file": "02_library/worlds/real/W03_A_04_MAIN_WORLD_VIEW_04.txt",
           "original_view": 4,
-          "sha256": "c03cc10328ffe0c530944e8587dee7ce15e098d3477891b88f1821b90f3d0758",
+          "sha256": "5fa9e9945002a2b2d9ef8d147da9307eb8b359104ee03b1856e5204d4e6003ec",
           "status": "PREPARED_NOT_GENERATED"
         },
         {
@@ -9164,7 +9164,7 @@
           "asset": "W03_B_01",
           "file": "02_library/worlds/real/W03_B_01_MAIN_WORLD_VIEW_05.txt",
           "original_view": 5,
-          "sha256": "26b025580e53e1b49929e151d24572fef83f70618b320cd5f3195fd85b1206fe",
+          "sha256": "e63cedc9c59da0ce3a2b777edba24f5c4dfedddad10230db3d57a3b4aac6def1",
           "status": "PREPARED_NOT_GENERATED"
         },
         {
@@ -9173,7 +9173,7 @@
           "asset": "W03_B_02",
           "file": "02_library/worlds/real/W03_B_02_MAIN_WORLD_VIEW_06.txt",
           "original_view": 6,
-          "sha256": "55ec7cf7949eadff94c4e479cc26f2925515d3f515bdb8a105e36ec9a38dc055",
+          "sha256": "76b68438c2a0470ea2e6a012b38a19dc701633d78d13dd28d5c4bef0cd593106",
           "status": "PREPARED_NOT_GENERATED"
         },
         {
@@ -9182,7 +9182,7 @@
           "asset": "W03_B_03",
           "file": "02_library/worlds/real/W03_B_03_MAIN_WORLD_VIEW_07.txt",
           "original_view": 7,
-          "sha256": "46f71c581ec60d82dbe441c0a6d2cedeac886f798733609b6b62537d066c679f",
+          "sha256": "b6f2120cf8168b2b281f77b1996a3207e6bbd2f613e22f8c54f8616bb0037598",
           "status": "PREPARED_NOT_GENERATED"
         },
         {
@@ -9191,7 +9191,7 @@
           "asset": "W03_B_04",
           "file": "02_library/worlds/real/W03_B_04_MAIN_WORLD_VIEW_08.txt",
           "original_view": 8,
-          "sha256": "811cffa4ee4cdcfd8e09ce1d8a1bbe69b6a02ab2d1591a63e4101bbff7ac2e87",
+          "sha256": "85bc49e442cf955a8de30caa603bd70f7ded8c1017cd8594ce9408b3cd9b8066",
           "status": "PREPARED_NOT_GENERATED"
         },
         {
@@ -9200,7 +9200,7 @@
           "asset": "W03_C_01",
           "file": "02_library/worlds/real/W03_C_01_MAIN_WORLD_VIEW_09.txt",
           "original_view": 9,
-          "sha256": "bde638aea7239edb50f3570e481a3b67662670b298834b92d9a80520d4cdcadf",
+          "sha256": "567a608a0ac3e3b68ab06ae4d466d75363625ae450f79335a93c71e5c59dd478",
           "status": "PREPARED_NOT_GENERATED"
         },
         {
@@ -9209,7 +9209,7 @@
           "asset": "W03_C_02",
           "file": "02_library/worlds/real/W03_C_02_MAIN_WORLD_VIEW_01.txt",
           "original_view": 1,
-          "sha256": "c3477ff2eccc3fe69441cba3b62d0a859e1fc2befe04fc264462e8dbcfe9ff7b",
+          "sha256": "65973d8517b2f69e56ff4a4e8760d6f06f4b73fb6d324b83c3bf3be1df3e7362",
           "status": "PREPARED_NOT_GENERATED"
         },
         {
@@ -9218,7 +9218,7 @@
           "asset": "W03_C_03",
           "file": "02_library/worlds/real/W03_C_03_MAIN_WORLD_VIEW_07.txt",
           "original_view": 7,
-          "sha256": "b99fbf2827e50a8019e0dc8ba74dff111957a9bffed99ac9402ec369afac05d1",
+          "sha256": "628ea8ad3d083d8fa286403e9f5da805e12da8839e7a2e3f64166c35d51b3d90",
           "status": "PREPARED_NOT_GENERATED"
         },
         {
@@ -9227,7 +9227,7 @@
           "asset": "W03_C_04",
           "file": "02_library/worlds/real/W03_C_04_MAIN_WORLD_VIEW_08.txt",
           "original_view": 8,
-          "sha256": "a63c852c78538726872ae63b17c9d478e0a3ef644161999081db3d5550a2d994",
+          "sha256": "1c1bd4ab02b12d7b15a49ce25e4fcdb1e01a033f6d749ca1ea7e5439abb5b035",
           "status": "PREPARED_NOT_GENERATED"
         }
       ],
@@ -9238,7 +9238,7 @@
           "asset": "W04_A_01",
           "file": "02_library/worlds/real/W04_A_01_MAIN_WORLD_VIEW_01.txt",
           "original_view": 1,
-          "sha256": "17b52a6626b340e8e5b4b6237c0431cbfe2bce236e362c04af948607c8ae160b",
+          "sha256": "a0858012342df289710be2b87fbddf4ac23ab849d84efaec81a8d3280618fba3",
           "status": "PREPARED_NOT_GENERATED"
         },
         {
@@ -9247,7 +9247,7 @@
           "asset": "W04_A_02",
           "file": "02_library/worlds/real/W04_A_02_MAIN_WORLD_VIEW_02.txt",
           "original_view": 2,
-          "sha256": "ac999e4310fbb6c6aad3bb11474b08a031a0030a765ba66f2e0eb56a1a6d19d4",
+          "sha256": "12813c2f15b8f47da1f02d148d26eee952ce40ab4e4c1ba53747efe935e0f8ee",
           "status": "PREPARED_NOT_GENERATED"
         },
         {
@@ -9256,7 +9256,7 @@
           "asset": "W04_A_03",
           "file": "02_library/worlds/real/W04_A_03_MAIN_WORLD_VIEW_03.txt",
           "original_view": 3,
-          "sha256": "0b37838163d07bbf91381561e53c65de05a6e7bddeb5e94acd233c2e8e63d159",
+          "sha256": "ac4c241f1fc248afad773e6cbbee95357bea4983393ba447ada3e581389aa524",
           "status": "PREPARED_NOT_GENERATED"
         },
         {
@@ -9265,7 +9265,7 @@
           "asset": "W04_A_04",
           "file": "02_library/worlds/real/W04_A_04_MAIN_WORLD_VIEW_04.txt",
           "original_view": 4,
-          "sha256": "8860768937c1e5bc565a76f1f6bb85b09374f4d060a9988ca156da5cdb82b61b",
+          "sha256": "9f264d42ca3f8eda95b8ef907e8b090327e392cb8676d43903f8901c5a532a50",
           "status": "PREPARED_NOT_GENERATED"
         },
         {
@@ -9274,7 +9274,7 @@
           "asset": "W04_B_01",
           "file": "02_library/worlds/real/W04_B_01_MAIN_WORLD_VIEW_05.txt",
           "original_view": 5,
-          "sha256": "5060e335a41a0a630b0e025de498a3ef6052eb43b44404ac6a235fe214fe0809",
+          "sha256": "0421f9560d3bad906660a2289f00b13f8a1848ac414c45d3f2f591a3709a257d",
           "status": "PREPARED_NOT_GENERATED"
         },
         {
@@ -9283,7 +9283,7 @@
           "asset": "W04_B_02",
           "file": "02_library/worlds/real/W04_B_02_MAIN_WORLD_VIEW_06.txt",
           "original_view": 6,
-          "sha256": "4a9aaf72ff681bd823204c9ddaeaa50be40e766865c0476024a106df30ecdaef",
+          "sha256": "096a224359005b72048899f334c361e98e1470cbb7d8efa8209d7527f2e1964a",
           "status": "PREPARED_NOT_GENERATED"
         },
         {
@@ -9292,7 +9292,7 @@
           "asset": "W04_B_03",
           "file": "02_library/worlds/real/W04_B_03_MAIN_WORLD_VIEW_07.txt",
           "original_view": 7,
-          "sha256": "7358a0138318713522c39707b6f240905192ef2f41eb24b1f3ae33b35ccc58e1",
+          "sha256": "3045581ad1e0906b35268bcc757b829c57c12fa4ce1d0821ec4cb442d6e144cb",
           "status": "PREPARED_NOT_GENERATED"
         },
         {
@@ -9301,7 +9301,7 @@
           "asset": "W04_B_04",
           "file": "02_library/worlds/real/W04_B_04_MAIN_WORLD_VIEW_08.txt",
           "original_view": 8,
-          "sha256": "6443cbb94884eaad588478f473b6d3f723a3d5969c338fc6b8fd46cb8e2c0625",
+          "sha256": "42969a946a6973d322747ffb930119ecc2e164c134aa7d6c5dd81000ab754187",
           "status": "PREPARED_NOT_GENERATED"
         },
         {
@@ -9310,7 +9310,7 @@
           "asset": "W04_C_01",
           "file": "02_library/worlds/real/W04_C_01_MAIN_WORLD_VIEW_09.txt",
           "original_view": 9,
-          "sha256": "d881cc9c74f03487c0609c2e4e32fd074a14fe5cd7edb4dee663250069ee244b",
+          "sha256": "7d685443594d2ac8db916ffb325186874f74a0953047f7393a9fc33184fcf065",
           "status": "PREPARED_NOT_GENERATED"
         },
         {
@@ -9319,7 +9319,7 @@
           "asset": "W04_C_02",
           "file": "02_library/worlds/real/W04_C_02_MAIN_WORLD_VIEW_01.txt",
           "original_view": 1,
-          "sha256": "087eb4685c8dd4082bb75d7504245f2b80a5689835664bb0b05dadfde0db6966",
+          "sha256": "e6068ac81a7483a75885636c3c2b12a9aedbd03c99fa5ef446ada1288f37b424",
           "status": "PREPARED_NOT_GENERATED"
         },
         {
@@ -9328,7 +9328,7 @@
           "asset": "W04_C_03",
           "file": "02_library/worlds/real/W04_C_03_MAIN_WORLD_VIEW_07.txt",
           "original_view": 7,
-          "sha256": "19030a11ede9877666021036207809327df5fd10b569ed380a11771a72c03c0e",
+          "sha256": "ba452283f538c4ea650776606de423be323b004d2d5ccf740d830c8d7911fbf6",
           "status": "PREPARED_NOT_GENERATED"
         },
         {
@@ -9337,7 +9337,7 @@
           "asset": "W04_C_04",
           "file": "02_library/worlds/real/W04_C_04_MAIN_WORLD_VIEW_08.txt",
           "original_view": 8,
-          "sha256": "6366158c8da58e2cedc952451baac089ff2154646db257598fd17bc8910dca62",
+          "sha256": "af240f927563b3c4bd51e2ddd562519ee3c0566ec7f0f5f12b15684b7731d1f4",
           "status": "PREPARED_NOT_GENERATED"
         }
       ],
@@ -9348,7 +9348,7 @@
           "asset": "W05_A_01",
           "file": "02_library/worlds/real/W05_A_01_MAIN_WORLD_VIEW_01.txt",
           "original_view": 1,
-          "sha256": "2069a8b4245852096b957f58c9744b3bc775d3acbb235485e5d6833291d3c0c1",
+          "sha256": "6c80dd3ca863be1310b926572abec39f4bc3d76befb72439a7b6d13787a63a68",
           "status": "PREPARED_NOT_GENERATED"
         },
         {
@@ -9357,7 +9357,7 @@
           "asset": "W05_A_02",
           "file": "02_library/worlds/real/W05_A_02_MAIN_WORLD_VIEW_02.txt",
           "original_view": 2,
-          "sha256": "718300bbf4a551a6c01c703d3f204fab16e007e6e08c54d40ac7d756bc71a34d",
+          "sha256": "86d5e7dee5ef6c70fb5de2083c309ee36355b6cd52d305325cfb2961fe90ccf3",
           "status": "PREPARED_NOT_GENERATED"
         },
         {
@@ -9366,7 +9366,7 @@
           "asset": "W05_A_03",
           "file": "02_library/worlds/real/W05_A_03_MAIN_WORLD_VIEW_03.txt",
           "original_view": 3,
-          "sha256": "fce0e9ddadcc48637935c7f0d84ae50e211b12eb623e6e277f1f16aea974b545",
+          "sha256": "0833f38193bd22fb495ca6b2f23f0a682d1fea781f1f78a3e4888124c3823574",
           "status": "PREPARED_NOT_GENERATED"
         },
         {
@@ -9375,7 +9375,7 @@
           "asset": "W05_A_04",
           "file": "02_library/worlds/real/W05_A_04_MAIN_WORLD_VIEW_04.txt",
           "original_view": 4,
-          "sha256": "3da0f8a5fda703694cf2d45aa321d52855b55bd57f65eb53b30acc26a7313d2a",
+          "sha256": "8c5f1120911aca70690871bacd12eb8b84f0e696b06f214935928ce3ec354c44",
           "status": "PREPARED_NOT_GENERATED"
         },
         {
@@ -9384,7 +9384,7 @@
           "asset": "W05_B_01",
           "file": "02_library/worlds/real/W05_B_01_MAIN_WORLD_VIEW_05.txt",
           "original_view": 5,
-          "sha256": "5868bc13214c85ea7e84305a91ece20110f0898331b98a60ae0f8710606b04ba",
+          "sha256": "8f175729b22a429b6d4863f223a47c9cb6f59068249366c81c799710cd149618",
           "status": "PREPARED_NOT_GENERATED"
         },
         {
@@ -9393,7 +9393,7 @@
           "asset": "W05_B_02",
           "file": "02_library/worlds/real/W05_B_02_MAIN_WORLD_VIEW_06.txt",
           "original_view": 6,
-          "sha256": "2733508f36af624e736752a8e1bb1c61fe2b81125c02d2e3afeb1c989f9dafb9",
+          "sha256": "ce9ff06925258b8609f9b88ba89d59965eb07f66a9bcc3128c8e1482ff190ca3",
           "status": "PREPARED_NOT_GENERATED"
         },
         {
@@ -9402,7 +9402,7 @@
           "asset": "W05_B_03",
           "file": "02_library/worlds/real/W05_B_03_MAIN_WORLD_VIEW_07.txt",
           "original_view": 7,
-          "sha256": "b73bf7338212abf9b02f1ab95aee29d14db377903da0676b3935479a5fda225f",
+          "sha256": "b1f7ba05ee285ed846ba9035839eb75775120715cefda3bd83691626475e3403",
           "status": "PREPARED_NOT_GENERATED"
         },
         {
@@ -9411,7 +9411,7 @@
           "asset": "W05_B_04",
           "file": "02_library/worlds/real/W05_B_04_MAIN_WORLD_VIEW_08.txt",
           "original_view": 8,
-          "sha256": "164fba60a0e730f52dab13ee21810e632f49b33df86883372f778baf4cad91b9",
+          "sha256": "282d45fc54c7dc647e64ea7285e0abb4dbffa14b1fff504be7d8a927c5fe66c5",
           "status": "PREPARED_NOT_GENERATED"
         },
         {
@@ -9420,7 +9420,7 @@
           "asset": "W05_C_01",
           "file": "02_library/worlds/real/W05_C_01_MAIN_WORLD_VIEW_09.txt",
           "original_view": 9,
-          "sha256": "eb6a4850910b03abaeed451f4e0d7f2d7c49b0bb685d2d50ed9ab88e5160325a",
+          "sha256": "88923ba4f53e88b2381c9e733f82cb6d560d34bd40c05a37f494e437942fb86b",
           "status": "PREPARED_NOT_GENERATED"
         },
         {
@@ -9429,7 +9429,7 @@
           "asset": "W05_C_02",
           "file": "02_library/worlds/real/W05_C_02_MAIN_WORLD_VIEW_01.txt",
           "original_view": 1,
-          "sha256": "9723d4fd5c4cad487f276b0d8822b60f58d882336ca3fd6cb2f85348a6f18d87",
+          "sha256": "c90425bbf40e02d9f8b7afcc589b4651e4058c7cdbb3c314aed1462b0c14fe3f",
           "status": "PREPARED_NOT_GENERATED"
         },
         {
@@ -9438,7 +9438,7 @@
           "asset": "W05_C_03",
           "file": "02_library/worlds/real/W05_C_03_MAIN_WORLD_VIEW_07.txt",
           "original_view": 7,
-          "sha256": "8e467cdaf72dfb4da3dbbe6740d013fc523100d534b8022c2c5bb1cc6e946264",
+          "sha256": "079d0f12d08b71b3f63102bec498c15ac14aa0ddf4c1f44feaf58badd65c3c4e",
           "status": "PREPARED_NOT_GENERATED"
         },
         {
@@ -9447,7 +9447,7 @@
           "asset": "W05_C_04",
           "file": "02_library/worlds/real/W05_C_04_MAIN_WORLD_VIEW_08.txt",
           "original_view": 8,
-          "sha256": "2feb39f618229f163366719520abd26cbee9d7f2b8580fd21c71bacff898ddbb",
+          "sha256": "832492a44d1b944a9fd1e79be9b1a4988db176185aa79b18081c11cdaa6eedf6",
           "status": "PREPARED_NOT_GENERATED"
         }
       ],
@@ -9458,7 +9458,7 @@
           "asset": "W06_A_01",
           "file": "02_library/worlds/real/W06_A_01_MAIN_WORLD_VIEW_01.txt",
           "original_view": 1,
-          "sha256": "abec6582b995c6104a116e2cb2e9c508757be7af8260f18c36d045c9e5865332",
+          "sha256": "ad7e2932b62634dbc461668802e1e4a95b2d57dc2f40f04235773484aa06a436",
           "status": "PREPARED_NOT_GENERATED"
         },
         {
@@ -9467,7 +9467,7 @@
           "asset": "W06_A_02",
           "file": "02_library/worlds/real/W06_A_02_MAIN_WORLD_VIEW_02.txt",
           "original_view": 2,
-          "sha256": "46a6bb54b81945993e627637f462e99284eac3efa3cf44f5fe9989a71ed82b37",
+          "sha256": "852b5018e4910d4c614d1a91b3b88533690ba3934b32a66a0dbad413f35e7cfc",
           "status": "PREPARED_NOT_GENERATED"
         },
         {
@@ -9476,7 +9476,7 @@
           "asset": "W06_A_03",
           "file": "02_library/worlds/real/W06_A_03_MAIN_WORLD_VIEW_03.txt",
           "original_view": 3,
-          "sha256": "e6c362b10c8cd7db9f13399272fa486a1c81f4b61b8cc0619e92e4f16fe6580b",
+          "sha256": "48e29d88d274ca8309b73fdf4ab1a66f30ae4123896c0e4cadcfd7891eaf666c",
           "status": "PREPARED_NOT_GENERATED"
         },
         {
@@ -9485,7 +9485,7 @@
           "asset": "W06_A_04",
           "file": "02_library/worlds/real/W06_A_04_MAIN_WORLD_VIEW_04.txt",
           "original_view": 4,
-          "sha256": "04e503dd62a10964e454b86981dc70c6e374d21e1159b6b09707da7bcdfed56d",
+          "sha256": "7f981ab36e1a7d39176c78d3ec03d88f1c2c98ef0eccd9f5111662c949be980d",
           "status": "PREPARED_NOT_GENERATED"
         },
         {
@@ -9494,7 +9494,7 @@
           "asset": "W06_B_01",
           "file": "02_library/worlds/real/W06_B_01_MAIN_WORLD_VIEW_05.txt",
           "original_view": 5,
-          "sha256": "f31caadc4ac5522e24d9465b8101874c2992d061fac95a89e0d1699776fadd0d",
+          "sha256": "7f84c15bf9ccabfa1385fa8b494a5883dd20bcf879a7c5de55af4dba518056a6",
           "status": "PREPARED_NOT_GENERATED"
         },
         {
@@ -9503,7 +9503,7 @@
           "asset": "W06_B_02",
           "file": "02_library/worlds/real/W06_B_02_MAIN_WORLD_VIEW_06.txt",
           "original_view": 6,
-          "sha256": "dd56568125e42f7e5d99a97342de47fb8a465b43780306c95e6f663e989c57c0",
+          "sha256": "1bd2a8c287cd7ea91a5340958abae22136d78c433a3275666b4c4046aa2b8ce2",
           "status": "PREPARED_NOT_GENERATED"
         },
         {
@@ -9512,7 +9512,7 @@
           "asset": "W06_B_03",
           "file": "02_library/worlds/real/W06_B_03_MAIN_WORLD_VIEW_07.txt",
           "original_view": 7,
-          "sha256": "29803188708b39460c77f6105180c27d3a0a0d5183e8c8fb788f1e2cb50db35f",
+          "sha256": "4584899eea10a44d16921abf24cb03781bbad9c4ed8ac9c7c292ae05fcb090b2",
           "status": "PREPARED_NOT_GENERATED"
         },
         {
@@ -9521,7 +9521,7 @@
           "asset": "W06_B_04",
           "file": "02_library/worlds/real/W06_B_04_MAIN_WORLD_VIEW_08.txt",
           "original_view": 8,
-          "sha256": "1591f0ea3ff53b1a305dfe02237f7c6702545b757c7f4991792fea425273031b",
+          "sha256": "e32994df42dcd25446cdbd78e8f0ab4601b9d11121bbde8dd78f84209ba230c6",
           "status": "PREPARED_NOT_GENERATED"
         },
         {
@@ -9530,7 +9530,7 @@
           "asset": "W06_C_01",
           "file": "02_library/worlds/real/W06_C_01_MAIN_WORLD_VIEW_09.txt",
           "original_view": 9,
-          "sha256": "d57010c8768518f61b3823d7e8f0da2153b86c20f97c6fd098774256bc289433",
+          "sha256": "249043f9c7d08a97569514f0f7121777f575b766fa71f0ca9124b97fca453323",
           "status": "PREPARED_NOT_GENERATED"
         },
         {
@@ -9539,7 +9539,7 @@
           "asset": "W06_C_02",
           "file": "02_library/worlds/real/W06_C_02_MAIN_WORLD_VIEW_01.txt",
           "original_view": 1,
-          "sha256": "667aec565fa968baef799677698e11e3ce8a053e3465c6ff7a0bcebbcfdc0f2b",
+          "sha256": "c4c0225fa7a510abe0fc673c60960e5d618e02c1633a61d6cf050a5e65e8cd48",
           "status": "PREPARED_NOT_GENERATED"
         },
         {
@@ -9548,7 +9548,7 @@
           "asset": "W06_C_03",
           "file": "02_library/worlds/real/W06_C_03_MAIN_WORLD_VIEW_07.txt",
           "original_view": 7,
-          "sha256": "ffbfdc414ccba52698ab6a2be76f3bc7f83480ad34043ada3fbf56af84dac7b1",
+          "sha256": "d317368cca2263725942204434cb57ecea8946cb30783c1811f4dfddc2b96112",
           "status": "PREPARED_NOT_GENERATED"
         },
         {
@@ -9557,7 +9557,7 @@
           "asset": "W06_C_04",
           "file": "02_library/worlds/real/W06_C_04_MAIN_WORLD_VIEW_08.txt",
           "original_view": 8,
-          "sha256": "edb93f6793bb2aaf004e5555a0919477cce0228cf00a160138e5a6e3c4f7b517",
+          "sha256": "6c36bd32ec06a310d1ad9bf6336707f2500284670d2579a048ae9fde7ae86759",
           "status": "PREPARED_NOT_GENERATED"
         }
       ],
@@ -9568,7 +9568,7 @@
           "asset": "W07_A_01",
           "file": "02_library/worlds/real/W07_A_01_MAIN_WORLD_VIEW_01.txt",
           "original_view": 1,
-          "sha256": "ec994c26d3571b12f5e23dd09338755883195e8ebfb1482ecc9c267e6ecd8e37",
+          "sha256": "116c021199514b6e3e4e68e91b4d4b3a18b204f88ed422dfd8123719784f673e",
           "status": "PREPARED_NOT_GENERATED"
         },
         {
@@ -9577,7 +9577,7 @@
           "asset": "W07_A_02",
           "file": "02_library/worlds/real/W07_A_02_MAIN_WORLD_VIEW_02.txt",
           "original_view": 2,
-          "sha256": "a82c99d0c3f17d8505c1b4f783e9d4fc21c102056a4301629ea41a018463ac50",
+          "sha256": "09865728025eb78507c126e89b205b11ca8742ee1e5d80753d2d9a4cc8128908",
           "status": "PREPARED_NOT_GENERATED"
         },
         {
@@ -9586,7 +9586,7 @@
           "asset": "W07_A_03",
           "file": "02_library/worlds/real/W07_A_03_MAIN_WORLD_VIEW_03.txt",
           "original_view": 3,
-          "sha256": "714575aa486d8b9b03ed0303b777cbdb8b7833617d3461edd52fa62b0afbfa5f",
+          "sha256": "d1a2d933e3342b1f982bba14b0ec5352efa2c52b4ce0d4455180c7d2cc8fb45b",
           "status": "PREPARED_NOT_GENERATED"
         },
         {
@@ -9595,7 +9595,7 @@
           "asset": "W07_A_04",
           "file": "02_library/worlds/real/W07_A_04_MAIN_WORLD_VIEW_04.txt",
           "original_view": 4,
-          "sha256": "425c24b660c06867c7603b65920cc7fde3d44038315700671fc387af50a28c58",
+          "sha256": "f88db7a9237c49bf39ffc35d6d11584ce184c2bafab427bbc36c218a276abb6b",
           "status": "PREPARED_NOT_GENERATED"
         },
         {
@@ -9604,7 +9604,7 @@
           "asset": "W07_B_01",
           "file": "02_library/worlds/real/W07_B_01_MAIN_WORLD_VIEW_05.txt",
           "original_view": 5,
-          "sha256": "a67beaf12cd5639bde862e5683a230f315f275f6fc55993d23ed25052a22506e",
+          "sha256": "8f5d94fca03f8ad5f876528effb5cf12efeb85168c78f82965df489d01307138",
           "status": "PREPARED_NOT_GENERATED"
         },
         {
@@ -9613,7 +9613,7 @@
           "asset": "W07_B_02",
           "file": "02_library/worlds/real/W07_B_02_MAIN_WORLD_VIEW_06.txt",
           "original_view": 6,
-          "sha256": "bda7a37a142192935eb3c9999ab52d97379b6fbf8fe160c7556b73721ddd5bc0",
+          "sha256": "9cba27727483505199333589859dd456beb1fb5e1da13d6a44c8920ccac116c7",
           "status": "PREPARED_NOT_GENERATED"
         },
         {
@@ -9622,7 +9622,7 @@
           "asset": "W07_B_03",
           "file": "02_library/worlds/real/W07_B_03_MAIN_WORLD_VIEW_07.txt",
           "original_view": 7,
-          "sha256": "c72aa9bb5e298c165fd9c19aff2be4c8821b13c2b9da4499683b8a0b8b27b4aa",
+          "sha256": "93e4a95f764a8c0909af23e199bb6c8dff4139d325b9fe8c0d7d420a1631055c",
           "status": "PREPARED_NOT_GENERATED"
         },
         {
@@ -9631,7 +9631,7 @@
           "asset": "W07_B_04",
           "file": "02_library/worlds/real/W07_B_04_MAIN_WORLD_VIEW_08.txt",
           "original_view": 8,
-          "sha256": "d7fb2af2486a165fa62c3b0ee6a989c967b6e98243bb62ace81c5eaf2c8cdc0d",
+          "sha256": "163039dd8d1727020e2e7e52de7eb91b20e017b8b9c7048d334f88a79f834c71",
           "status": "PREPARED_NOT_GENERATED"
         },
         {
@@ -9640,7 +9640,7 @@
           "asset": "W07_C_01",
           "file": "02_library/worlds/real/W07_C_01_MAIN_WORLD_VIEW_09.txt",
           "original_view": 9,
-          "sha256": "4e37f8ab43a8af1511f31fa23f65eca5ba9fb756683b0387620ef5d0ffd1f24e",
+          "sha256": "b14e7b98c1013b4d3f6075401bb7fed6f42b53dbbd51b789923fc926e12734d6",
           "status": "PREPARED_NOT_GENERATED"
         },
         {
@@ -9649,7 +9649,7 @@
           "asset": "W07_C_02",
           "file": "02_library/worlds/real/W07_C_02_MAIN_WORLD_VIEW_01.txt",
           "original_view": 1,
-          "sha256": "1dbc68ab9840516f6d85cd0621a52567a44fbc54962396777904fd4d69b40d0d",
+          "sha256": "943c4b684bae796d4ba9d47c368a2c749c06db02806635d440f594e9f9b6126d",
           "status": "PREPARED_NOT_GENERATED"
         },
         {
@@ -9658,7 +9658,7 @@
           "asset": "W07_C_03",
           "file": "02_library/worlds/real/W07_C_03_MAIN_WORLD_VIEW_07.txt",
           "original_view": 7,
-          "sha256": "96e091812b1ea59dd194d94cdb63ec70247729e96ee760a75cea828e877f38b2",
+          "sha256": "a94301dfd83ceaaa281cef917a77567c347ea6aad66d96b033a561b29dfe0d85",
           "status": "PREPARED_NOT_GENERATED"
         },
         {
@@ -9667,7 +9667,7 @@
           "asset": "W07_C_04",
           "file": "02_library/worlds/real/W07_C_04_MAIN_WORLD_VIEW_08.txt",
           "original_view": 8,
-          "sha256": "b1940baf870c62632010acd647f6add6b535e92066eddec459e3a11e84e7ae16",
+          "sha256": "2586857d137bd5eb32202cf73c4012a67feb35adb43ec177ddcc035874f37a02",
           "status": "PREPARED_NOT_GENERATED"
         }
       ]
