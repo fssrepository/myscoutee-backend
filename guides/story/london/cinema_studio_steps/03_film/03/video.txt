@@ -1,8 +1,8 @@
-REFERENCE SETUP INCOMPLETE: A03, MW03, MW03_B, MW03_C, MWP01, MWP01_B, MWP01_C, SB03
+REFERENCE SETUP INCOMPLETE: A03, MW03, MW03_B_01, MW03_B_02, MW03_B_03, MW03_B_04, MW03_C_01, MW03_C_02, MW03_C_03, MW03_C_04, MWP01, MWP01_B, MWP01_C, SB03
 Do not generate until these references are bound.
 
 MEMORY REFERENCE PAGES — DIRECT SOURCES, NOT EDITS:
-@UNBOUND_MW03 supplies MW03 Page A (original views 1–4); @UNBOUND_MW03_B supplies Page B (5–8); @UNBOUND_MW03_C supplies Page C (9, 1, 7, 8). Use the original-view assignment to select the actual place/event, not the sheet layout.
+@UNBOUND_MW03 supplies MW03 Page A (original views 1–4); @UNBOUND_MW03_B_01 supplies original view 05; @UNBOUND_MW03_B_02 supplies original view 06; @UNBOUND_MW03_B_03 supplies original view 07; @UNBOUND_MW03_B_04 supplies original view 08; @UNBOUND_MW03_C_01 supplies original view 09; @UNBOUND_MW03_C_02 supplies original view 01; @UNBOUND_MW03_C_03 supplies original view 07; @UNBOUND_MW03_C_04 supplies original view 08. Use the original-view assignment to select the actual place/event, not the sheet layout.
 @loc_MYS_mys-mwp01-a-routes-rooms-documents_s0_v1 supplies MWP01 Page A (original views 1–4); @loc_MYS_mys-mwp01-b-routes-rooms-documents_s0_v1 supplies Page B (5–8); @loc_MYS_mys-mwp01-c-routes-rooms-documents_s0_v1 supplies Page C (9, 1, 7, 8). Use the original-view assignment to select the actual place/event, not the sheet layout.
 Several pages may support the same block or remembered place. Reconstruct the people, objects, supports and entry/exit geometry at life size while following this video’s existing continuous route. Never switch scenes because a cell or page changes. Current-city cards remain on current people; remembered people have none. HRW07 pages remain exclusive to Block 07 and its scripted tiny fragments/final hard cut.
 

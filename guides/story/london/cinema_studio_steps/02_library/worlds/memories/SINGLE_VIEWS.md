@@ -1,6 +1,6 @@
 # Memory single views — generation order
 
-Ten former 4K grids are now 40 separate full-frame 16:9 images. Select **2K** and generate one image per prompt. Other memory prompts keep their specified 4K grid format. Split scenes preserve their source details; later content revisions are documented in CONTENT_REVISIONS.md. MW04_B and MW04_C keep their scene bodies with cell/image wording adapted.
+Thirteen former 4K grids are now 52 separate full-frame 16:9 images. Select **2K** and generate one image per prompt. Other memory prompts keep their specified 4K grid format. Split scenes preserve their source details; later content revisions are documented in CONTENT_REVISIONS.md. MW04_B and MW04_C keep their scene bodies with cell/image wording adapted.
 
 Use the filename order. A missing Element ID is an actual dependency: wait for the earlier output and bind its ID before pasting that prompt. Do not paste an `@UNBOUND_...` placeholder into generation. Readiness below reflects the currently saved bindings.
 
@@ -124,3 +124,42 @@ The failed 14_MW05 grid is replaced by these four 2K full-frame prompts. Each pr
 | [17_04_MW05_COURT_FILE_B_VIEW_08.txt](17_04_MW05_COURT_FILE_B_VIEW_08.txt) | Original view 08 | 1 | Ready |
 
 Original full text: [archived MW05_B](../../../04_tracking/archive/memory_grids_before_single_views/17_MW05_COURT_FILE_B.md). New output IDs stay unbound until images exist.
+
+## MW03_B
+
+Four full-frame 2K images replace the failed MW03_B grid. All use the accepted MW03_A source and their assigned cast. Import only [the twelve pending definitions](../../../00_project/elements/additions/MW03_BC_MW05_C_SINGLE_VIEWS_IMPORT.md); [assignment and cleanup guide](../../../00_project/elements/additions/MW03_BC_IMPORT_AND_CLEANUP.md).
+
+| Prompt | Subject | Inputs |
+|---|---|---:|
+| [11_01_MW03_WORK_RULE_CHANGE_ADMIN_B_VIEW_05.txt](11_01_MW03_WORK_RULE_CHANGE_ADMIN_B_VIEW_05.txt) | Szabályváltozás: értesítés, naptár és javítandó nyomtatvány | 2 |
+| [11_02_MW03_WORK_RULE_CHANGE_ADMIN_B_VIEW_06.txt](11_02_MW03_WORK_RULE_CHANGE_ADMIN_B_VIEW_06.txt) | Könyvelői portál és átadott ügyintézés | 3 |
+| [11_03_MW03_WORK_RULE_CHANGE_ADMIN_B_VIEW_07.txt](11_03_MW03_WORK_RULE_CHANGE_ADMIN_B_VIEW_07.txt) | Telefonos egyeztetés, külön nyilvántartás ellenőrzése | 3 |
+| [11_04_MW03_WORK_RULE_CHANGE_ADMIN_B_VIEW_08.txt](11_04_MW03_WORK_RULE_CHANGE_ADMIN_B_VIEW_08.txt) | Három ember külön kommunikációs és munkaállomásai | 4 |
+
+Complete original: [archived MW03_B](../../../04_tracking/archive/memory_grids_before_single_views/11_MW03_WORK_RULE_CHANGE_ADMIN_B.md).
+
+## MW03_C
+
+Four full-frame 2K images replace the failed MW03_C grid. All use the accepted MW03_A source and their assigned cast. Import only [the twelve pending definitions](../../../00_project/elements/additions/MW03_BC_MW05_C_SINGLE_VIEWS_IMPORT.md); [assignment and cleanup guide](../../../00_project/elements/additions/MW03_BC_IMPORT_AND_CLEANUP.md).
+
+| Prompt | Subject | Inputs |
+|---|---|---:|
+| [12_01_MW03_WORK_RULE_CHANGE_ADMIN_C_VIEW_09.txt](12_01_MW03_WORK_RULE_CHANGE_ADMIN_C_VIEW_09.txt) | Javított és korábbi nyomtatvány összevetése | 2 |
+| [12_02_MW03_WORK_RULE_CHANGE_ADMIN_C_VIEW_01.txt](12_02_MW03_WORK_RULE_CHANGE_ADMIN_C_VIEW_01.txt) | Nyomtató papírkazettájának feltöltése munka közben | 3 |
+| [12_03_MW03_WORK_RULE_CHANGE_ADMIN_C_VIEW_07.txt](12_03_MW03_WORK_RULE_CHANGE_ADMIN_C_VIEW_07.txt) | Külön iratok keresése a nyitott iratszekrényben | 4 |
+| [12_04_MW03_WORK_RULE_CHANGE_ADMIN_C_VIEW_08.txt](12_04_MW03_WORK_RULE_CHANGE_ADMIN_C_VIEW_08.txt) | Irattálca átadása a külön munkaállomások között | 4 |
+
+Complete original: [archived MW03_C](../../../04_tracking/archive/memory_grids_before_single_views/12_MW03_WORK_RULE_CHANGE_ADMIN_C.md).
+
+## MW05_C
+
+Four complete 2K images replace the failed court-file C grid. Import [the twelve pending definitions](../../../00_project/elements/additions/MW03_BC_MW05_C_SINGLE_VIEWS_IMPORT.md).
+
+| Prompt | Subject | Inputs |
+|---|---|---:|
+| [18_01_MW05_COURT_FILE_C_VIEW_09.txt](18_01_MW05_COURT_FILE_C_VIEW_09.txt) | Határozat és fellebbezési iratok | 2 |
+| [18_02_MW05_COURT_FILE_C_VIEW_01.txt](18_02_MW05_COURT_FILE_C_VIEW_01.txt) | Tárgyalási iratok elpakolása az ügyvéddel | 3 |
+| [18_03_MW05_COURT_FILE_C_VIEW_07.txt](18_03_MW05_COURT_FILE_C_VIEW_07.txt) | Abszurd rendőri álláspályázat készítése | 1 |
+| [18_04_MW05_COURT_FILE_C_VIEW_08.txt](18_04_MW05_COURT_FILE_C_VIEW_08.txt) | Menedékkérelem a kartonfigurához | 3 |
+
+Original complete text: [archived MW05_C](../../../04_tracking/archive/memory_grids_before_single_views/18_MW05_COURT_FILE_C.md).

@@ -1,3 +1,8 @@
+# MW03_B — superseded 4K sheet
+
+Replaced by four 2K full-frame images at user request. Original complete text retained below; no Higgsfield media was deleted.
+
+```text
 REFERENCE ID: MW03_WORK_RULE_CHANGE_ADMIN_B (never print IDs, headings or panel labels).
 
 OUTPUT ELEMENT ASSIGNMENT — OPERATOR METADATA ONLY, NEVER RENDER:
@@ -88,3 +93,4 @@ These are remembered or clinical people, not current-city pedestrians. Keep ever
 
 NO UMBRELLAS — EVERY CELL:
 No umbrellas anywhere in this image: none open, folded, carried, tucked into a bag, leaning against a wall, mounted over a table or held above a head. Do not copy an umbrella from an input reference. Outdoor present-city people have uncovered heads, hoods down and exposed hair; leave open air above every crown. Keep the specified weather for this scene. This restriction applies to the foreground, background, reflections and all cells of the sheet.
+```

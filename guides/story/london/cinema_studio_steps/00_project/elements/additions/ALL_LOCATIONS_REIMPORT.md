@@ -1,8 +1,10 @@
 # MYSCOUTEE — ALL LOCATION ELEMENTS
 
+> For the latest MW03 B/C split, import only [the twelve new definitions](MW03_BC_MW05_C_SINGLE_VIEWS_IMPORT.md).
+
 > Teljes katalógus, nem inkrementális import. A meglévő Higgsfield-projekt mostani 12 új Elementjéhez használd a [hiányzó elemek importját](MW04_BC_MW05_B_MISSING_ONLY_IMPORT.md) és a [pontos törlési / hozzárendelési listát](MW04_BC_MW05_B_IMPORT_AND_CLEANUP.md).
 
-181 Elements. One definition per canonical key.
+190 Elements. One definition per canonical key.
 
 ## MYS W01_A_01 World View 01
 Type: Location
@@ -725,19 +727,61 @@ Name: MYS MW03_A Work Rule Change Admin
 Version: v1
 Description: Work Rule Change Admin, page A: four assigned literal location and encounter views. Remembered people have no score cards.
 
-## MYS MW03_B Work Rule Change Admin
+## MYS MW03_B_01 Memory View 05
 Type: Location
-Canonical key: MW03_B
-Name: MYS MW03_B Work Rule Change Admin
+Canonical key: MW03_B_01
+Name: MYS MW03_B_01 Memory View 05
 Version: v1
-Description: Work Rule Change Admin, page B: four assigned literal location and encounter views. Remembered people have no score cards.
+Description: Single full-frame 2K memory reference image slot for MW03_B_01.
 
-## MYS MW03_C Work Rule Change Admin
+## MYS MW03_B_02 Memory View 06
 Type: Location
-Canonical key: MW03_C
-Name: MYS MW03_C Work Rule Change Admin
+Canonical key: MW03_B_02
+Name: MYS MW03_B_02 Memory View 06
 Version: v1
-Description: Work Rule Change Admin, page C: four assigned literal location and encounter views. Remembered people have no score cards.
+Description: Single full-frame 2K memory reference image slot for MW03_B_02.
+
+## MYS MW03_B_03 Memory View 07
+Type: Location
+Canonical key: MW03_B_03
+Name: MYS MW03_B_03 Memory View 07
+Version: v1
+Description: Single full-frame 2K memory reference image slot for MW03_B_03.
+
+## MYS MW03_B_04 Memory View 08
+Type: Location
+Canonical key: MW03_B_04
+Name: MYS MW03_B_04 Memory View 08
+Version: v1
+Description: Single full-frame 2K memory reference image slot for MW03_B_04.
+
+## MYS MW03_C_01 Memory View 09
+Type: Location
+Canonical key: MW03_C_01
+Name: MYS MW03_C_01 Memory View 09
+Version: v1
+Description: Single full-frame 2K memory reference image slot for MW03_C_01.
+
+## MYS MW03_C_02 Memory View 01
+Type: Location
+Canonical key: MW03_C_02
+Name: MYS MW03_C_02 Memory View 01
+Version: v1
+Description: Single full-frame 2K memory reference image slot for MW03_C_02.
+
+## MYS MW03_C_03 Memory View 07
+Type: Location
+Canonical key: MW03_C_03
+Name: MYS MW03_C_03 Memory View 07
+Version: v1
+Description: Single full-frame 2K memory reference image slot for MW03_C_03.
+
+## MYS MW03_C_04 Memory View 08
+Type: Location
+Canonical key: MW03_C_04
+Name: MYS MW03_C_04 Memory View 08
+Version: v1
+Description: Single full-frame 2K memory reference image slot for MW03_C_04.
 
 ## MYS MW04_A Police Defence
 Type: Location
@@ -842,12 +886,33 @@ Version: v1
 Description: MW05_B, original view 08. FICTIONAL CARDBOARD FIGURE WITH ITS RIDICULOUS HAT:
 One anonymous fictional cardboard public figure stands on its simple support with the deliberately ridiculous hat resting on its flat printed head. The physical board, silly hat and empty place in front of the cutout are the subjects of this source. Resolve cardboard thickness, rear brace, hat material and actual base contact with desk or floor. One 2K full-frame memory image; no rating cards.
 
-## MYS MW05_C Court File
+## MYS MW05_C_01 Memory View 09
 Type: Location
-Canonical key: MW05_C
-Name: MYS MW05_C Court File
+Canonical key: MW05_C_01
+Name: MYS MW05_C_01 Memory View 09
 Version: v1
-Description: Court File, page C: four assigned literal location and encounter views. Remembered people have no score cards.
+Description: Single full-frame 2K memory reference image slot for MW05_C_01.
+
+## MYS MW05_C_02 Memory View 01
+Type: Location
+Canonical key: MW05_C_02
+Name: MYS MW05_C_02 Memory View 01
+Version: v1
+Description: Single full-frame 2K memory reference image slot for MW05_C_02.
+
+## MYS MW05_C_03 Memory View 07
+Type: Location
+Canonical key: MW05_C_03
+Name: MYS MW05_C_03 Memory View 07
+Version: v1
+Description: Single full-frame 2K memory reference image slot for MW05_C_03.
+
+## MYS MW05_C_04 Memory View 08
+Type: Location
+Canonical key: MW05_C_04
+Name: MYS MW05_C_04 Memory View 08
+Version: v1
+Description: Single full-frame 2K memory reference image slot for MW05_C_04.
 
 ## MYS MW06_A_01 Memory View 01
 Type: Location

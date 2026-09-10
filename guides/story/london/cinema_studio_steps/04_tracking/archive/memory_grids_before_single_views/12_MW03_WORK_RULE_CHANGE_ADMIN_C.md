@@ -1,17 +1,22 @@
-REFERENCE ID: MW05_COURT_FILE_C (never print IDs, headings or panel labels).
+# MW03_C — superseded 4K sheet
+
+Replaced by four 2K full-frame images at user request. Original complete text retained below; no Higgsfield media was deleted.
+
+```text
+REFERENCE ID: MW03_WORK_RULE_CHANGE_ADMIN_C (never print IDs, headings or panel labels).
 
 OUTPUT ELEMENT ASSIGNMENT — OPERATOR METADATA ONLY, NEVER RENDER:
-Live output Element name (operator lookup only): loc_MYS_mys-mw05-c-court-file_s0_v1
-Live output Element UUID: 4172ffc4-184a-4954-80f4-03ea03ad6418
+Live output Element name (operator lookup only): loc_MYS_mys-mw03-c-work-rule-change-admin_s0_v1
+Live output Element UUID: 57a942a9-c35f-4a4e-b545-132be45b91e9
 Assign the finished image to this existing empty target. This output target is not an input reference.
 
-PAGE CONTINUITY INPUT: @loc_MYS_mys-mw05-a-court-file_s0_v1 supplies the accepted Page A identities, shared material palette and any recurring room geometry. New places explicitly assigned to this page retain their own stated setting; do not copy Page A into every cell.
+PAGE CONTINUITY INPUT: @loc_MYS_mys-mw03-a-work-rule-change-admin_s0_v1 supplies the accepted Page A identities, shared material palette and any recurring room geometry. New places explicitly assigned to this page retain their own stated setting; do not copy Page A into every cell.
 
 REFERENCE INPUTS:
 @char_MYS_mys-c01-protagonist_s0_v1 = CHARACTER 01 — PROTAGONIST; exact person identity; use only where this person appears.
-@char_MYS_mys-c04-appointed-lawyer_s0_v1 = CHARACTER 04 — APPOINTED LAWYER; exact person identity; use only where this person appears.
-@char_MYS_mys-c27-judge_s0_v1 = CHARACTER 27 — JUDGE; exact person identity; use only where this person appears.
-@char_MYS_mys-c31-anonymous-fictional-cardboard-public-figure_s0_v1 = CHARACTER 31 — ANONYMOUS FICTIONAL CARDBOARD PUBLIC FIGURE; exact person identity; use only where this person appears.
+@char_MYS_mys-c22-accountant_s0_v1 = CHARACTER 22 — ACCOUNTANT; exact person identity; use only where this person appears.
+@char_MYS_mys-c23-admin-colleague-a_s0_v1 = CHARACTER 23 — ADMIN COLLEAGUE A; exact person identity; use only where this person appears.
+@char_MYS_mys-c24-admin-colleague-b_s0_v1 = CHARACTER 24 — ADMIN COLLEAGUE B; exact person identity; use only where this person appears.
 
 OUTPUT GEOMETRY — ONE 4K 2×2 REFERENCE PAGE:
 Generate ONE photographic 3840×2160 widescreen 16:9 image. Exactly FOUR equal edge-to-edge 1920×1080 cells in a 2×2 grid, without gutters, margins, letterboxing, labels, headings or captions. Select 4K for the entire output. Cell order is top-left, top-right, bottom-left, bottom-right. This is one image output, not four separate jobs.
@@ -34,14 +39,14 @@ Each cell must be a usable literal location/event reference, not an illustration
 
 IDENTITY ANCHORS — REQUIRED:
 Use CHARACTER 01 — PROTAGONIST wherever the protagonist appears.
-Use CHARACTER 04 — APPOINTED LAWYER where relevant.
-Use CHARACTER 27 — JUDGE in the court-hearing memory.
-Use CHARACTER 31 — ANONYMOUS FICTIONAL CARDBOARD PUBLIC FIGURE for the cardboard absurdity memory; it must remain non-identifiable and must not resemble a real politician, party leader or identifiable public figure.
+Use CHARACTER 22 — ACCOUNTANT in accounting/delegation/repair scenes.
+Use CHARACTER 23 — ADMIN COLLEAGUE A and CHARACTER 24 — ADMIN COLLEAGUE B together with the protagonist in the three-people / no-shared-screen triangle.
+Do not redesign or substitute these people between cells. Other background office workers may remain anonymous. Nobody is visually coded as a villain.
 
 PURPOSE:
-Build the literal court/file/classification memory source bank: hearing, assets, retained belongings, forensic examination, documents replacing biography, complaint routes and black humour used as a human response to an absurd process.
+Build the literal work/system memory source bank: cross-border remote work, long days, accounting delegation, forms, portal responsibility, inconsistent records and the low-trust triangle of three people without one shared screen.
 
-PAGE C OF MW05: The four slots retain provenance numbers 9, 1, 7, 8. The repeated slots now supply the distinct supplementary content specified below; these numbers do not instruct a repeat of an earlier image. Render ONLY the four cell assignments on this page. Global identity rules apply only when their person actually occurs in an assigned view.
+PAGE C OF MW03: The four slots retain provenance numbers 9, 1, 7, 8. The repeated slots now supply the distinct supplementary content specified below; these numbers do not instruct a repeat of an earlier image. Render ONLY the four cell assignments on this page. Global identity rules apply only when their person actually occurs in an assigned view.
 
 REFERENCE COVERAGE FOR THE MOVING FILM:
 This page supplies the four assigned literal views, not four cuts, morph stages or interchangeable world designs. Make each view useful for its assigned purpose: room layout shows supports and an entry/exit; a gesture view retains its hand, furniture edge and background anchor; an object detail shows side/underside and contact. Different views of the SAME room preserve its floor plan, furniture, identities, clothes and light sources even when the viewpoint changes. Distinct memories remain distinct places; do not fuse them into one room to match the grid. Recurring places retain their established layout; each cell uses its explicitly assigned action and object state.
@@ -49,32 +54,32 @@ Additional detail pages of the same place retain that memory and its established
 
 FOUR IMAGE ASSIGNMENTS — INSTRUCTIONS ONLY, NO PRINTED TEXT:
 For the top left image (source view 09; instruction only, never printed):
-Decision/appeal-route memory: ordinary posted ruling/letter, phone, folders and the sense of a future complaint/appeal/Strasbourg route replacing immediate correction. Focus on process and human scale, not readable legal exposition.
+Correction-chain memory: a previously inconsistent return/form, marked correction, resubmission or updated record, with the protagonist still trying to keep work and administration aligned. Grounded and procedural.
 
-Show the opened envelope, ruling papers and a separate folder arranged beside a phone on the same desk. The protagonist checks the next paper with a restrained posture. Paper edges, folds and contact shadows distinguish each item. The future route is suggested by an unfinished practical task, without fabricated legal outcomes, maps, arrows or a celebratory ending.
+Inspect the corrected form beside its earlier version as two real paper sheets, with one modest mark or field difference visible. The protagonist remains at the desk, holding or checking the current page. Show paper curl, clip thickness and a computer at a different depth. Do not claim the correction succeeded through celebratory symbols or a fabricated approval message.
 
 For the top right image (source view 01; instruction only, never printed):
-HEARING PAPERS GATHERED WITH THE APPOINTED LAWYER:
-Beside the hearing-room furniture, the protagonist holds an open case bag while the appointed lawyer C04 gathers a small set of loose hearing papers and slides them into its document compartment. The bag opening, retained loose sheets, the two people's working hands and their restrained tired interaction are the main subjects.
+PRINTER PAPER SUPPLY WHILE CONTRACT WORK CONTINUES:
+The accountant crouches at the ordinary office printer's open paper cassette and seats a fresh paper stack between its side guides. Resolve the tray walls, feed rollers where visible, stacked sheet edges and the accountant's separate hands. The printer remains on a stable cabinet with a real cable route.
 
-Keep the hearing room, table supports, paper edges and doorway from MW05_A. The legal-classification discussion and the judge's prison-question expression are already preserved there. No judge delivers another line in this image. This supporting paperwork moment gives no verdict, promise, release, charge or appeal outcome; the bag contains only the protagonist's available papers, never the retained phone or laptop from the property boxes.
+The protagonist continues the international-contract task at the established desk behind, with the laptop hinge, keyboard, power lead, note stack and supported forearms retained. The active work screen stays generic and unreadable. This cell's action is the practical printer task that keeps administration moving alongside paid work. Do not show a successful submission or add a printer fault, confidential document or invented amount.
 
 For the bottom left image (source view 07; instruction only, never printed):
-IMPOSSIBLE POLICE-CAREER APPLICATION JOKE:
-At the protagonist's ordinary laptop, an unfinished self-made CV/application document has the familiar visual structure of a small portrait box and plain work-history lines. He has placed a printed draft beside the keyboard and is marking a deliberately absurd application idea with a pencil. His personal drafting materials and the gap between an ordinary worker's CV and an impossible police-career joke are the subject.
+FINDING THE SEPARATE RECORD IN OFFICE STORAGE:
+Admin Colleague A pulls one slim record folder from an open filing-cabinet drawer while Admin Colleague B holds a different folder beside it. Their shelves, hanging-file tabs, drawer runners, hands and separate records occupy the scene. The folders stay distinct; no shared master record has appeared.
 
-Keep all text small and mostly unreadable, with no fabricated qualifications, official badge, appointment, employment offer or real agency branding. The draft is recognizably his own, with modest handwritten edits and actual paper edges. This is the application half of the existing black-humour beat; the handmade wanted-page object is separately preserved in MW05_B_03 and is not repeated in this cell.
+The protagonist's ongoing clarification call remains at the established work position, with phone, papers and lamp. He listens while the colleagues physically search the other record source. Preserve the actual office and ordinary restrained frustration. Labels are small unreadable text, with no invented legal dates, missing-evidence claim or resolution. The open storage construction and retrieval task distinguish this cell from the phone conversation in MW03_B.
 
 For the bottom right image (source view 08; instruction only, never printed):
-ASYLUM REQUEST ADDRESSED TO A CARDBOARD FIGURE:
-The protagonist stands in front of the same fictional ridiculous-hat cardboard figure holding his own thin request folder out toward it with restrained, knowingly absurd seriousness. The cutout cannot receive the papers: its flat printed face, board edge, rear brace and supported base remain plainly material. His held-out folder and the inert prop form the encounter.
+CARRYING PAPER BETWEEN THE SEPARATE WORK POSITIONS:
+Admin Colleague B stands between two occupied work positions holding a rigid document tray containing a printed form; Admin Colleague A extends one hand to receive that tray while the protagonist remains occupied with his own mobile and computer at another position. Show the tray's supported bottom, loose paper corners, separate hands and a clear floor route around the chairs.
 
-Preserve the established hat, C31's wholly fictional likeness and the modest room. The joke is specifically an asylum request addressed to an absurd cardboard public figure; do not substitute a generic escape joke. No real politician, country emblem, party brand, campaign slogan, readable official request, acceptance or rejection is added. MW05_B_04 supplies the solitary prop; this cell supplies the person attempting the absurd address.
+Keep the desk phone, mobile, monitor and printed form as distinct physical endpoints at their established desks. No new central screen unifies them. The carried paper is the material link between people who still hold separate parts of the process. Retain the ordinary unreadable portal/email content, practical cables and room geometry. Do not stage a unanimous decision, a completed correction or a diagram of communication arrows.
 
 FINAL CHECK:
 Exactly one 16:9 image.
 Exactly four 1920×1080 photographic cells on this 3840×2160 2×2 page.
-Direct literal court/file/black-humour memories only.
+Direct work/admin memories only.
 No present-city reflection composite.
 No score cards.
 
@@ -91,3 +96,4 @@ These are remembered or clinical people, not current-city pedestrians. Keep ever
 
 NO UMBRELLAS — EVERY CELL:
 No umbrellas anywhere in this image: none open, folded, carried, tucked into a bag, leaning against a wall, mounted over a table or held above a head. Do not copy an umbrella from an input reference. Outdoor present-city people have uncovered heads, hoods down and exposed hair; leave open air above every crown. Keep the specified weather for this scene. This restriction applies to the foreground, background, reflections and all cells of the sheet.
+```

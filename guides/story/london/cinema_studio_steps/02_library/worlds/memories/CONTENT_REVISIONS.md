@@ -46,7 +46,7 @@ Megőrzött forrás: 08, bal alsó — budapesti sínek, felsővezetékek és ho
 
 Megőrzött forrás: 08, jobb alsó — esős buszablak, valódi táj és természetes tükröződés.
 
-### [12_MW03_WORK_RULE_CHANGE_ADMIN_C.txt](12_MW03_WORK_RULE_CHANGE_ADMIN_C.txt)
+### [SINGLE_VIEWS.md#mw03-c](SINGLE_VIEWS.md#mw03-c)
 
 - 2: PRINTER PAPER SUPPLY WHILE CONTRACT WORK CONTINUES.
 - 3: FINDING THE SEPARATE RECORD IN OFFICE STORAGE.
@@ -69,7 +69,7 @@ Megőrzött forrás: 13 — postás-bejelentkezés, belépés, házkutatás és 
 
 Megőrzött forrás: 17 első két cellája változatlan: két külön szakértő; jegyző és felvétel/bizonyíték kérése. A két külön feketehumor-ötlet a 17 és 18 között oszlik meg.
 
-### [18_MW05_COURT_FILE_C.txt](18_MW05_COURT_FILE_C.txt)
+### [SINGLE_VIEWS.md#mw05-c](SINGLE_VIEWS.md#mw05-c)
 
 - 2: HEARING PAPERS GATHERED WITH THE APPOINTED LAWYER.
 - 3: IMPOSSIBLE POLICE-CAREER APPLICATION JOKE.
