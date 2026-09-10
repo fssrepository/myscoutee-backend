@@ -1,13 +1,16 @@
+REFERENCE SETUP INCOMPLETE: T01_DETAILS
+Do not generate until these references are bound.
+
 REFERENCE INPUTS:
-@loc_MYS_pilot-soho-restaurant-memory_s1_v1 supplies the accepted warm Soho sushi restaurant: its narrow room, wooden tables, seated woman, remembered man beside the two rear restroom doors, lighting and existing diners. Preserve this particular room and its furnishings in every view. Infer unseen sides consistently from its visible construction; do not redesign the restaurant.
+@UNBOUND_T01_DETAILS supplies the accepted T01_A restaurant layout, furniture, lights, poses and object placement. Reconstruct the same room from the views below.
 @char_mys_protagonist_s1_v1 supplies the remembered man's exact face, hair, body and dark jacket. There is one occurrence of him inside this memory.
-@char_mys_soho-woman_s1_v1 supplies the seated woman's exact identity. Preserve her clothing, hair and seated placement from the accepted restaurant image.
+@char_mys_soho-woman_s1_v1 supplies the seated woman's exact identity. Preserve her clothing, hair and seated placement from the accepted Page A restaurant.
 
 OUTPUT GEOMETRY — ONE 4K 2×2 MEMORY PAGE:
 Generate ONE photographic 3840×2160 widescreen 16:9 image containing exactly FOUR equal edge-to-edge 1920×1080 cells, two columns and two rows. Select 4K for the whole output. Zero gutters, margins, borders, labels, arrows or captions. Every cell is a complete composition of its assigned subject, not a panoramic image quartered after rendering. This prompt produces one page only.
 
 ONE ESTABLISHED ROOM AND ENCOUNTER:
-Show the remembered restaurant directly from inside its physical space. Retain the narrow floor plan, warm cream/tan walls, modest wooden furniture, wall fixtures and practical ceiling lamps visible in the accepted image. The woman sits at the same near table on the right side of the entrance-facing view; the man stands farther back beside the SAME two restroom doors. The table's dishes and cup remain in the positions established by that image. Keep any existing background diners at their established tables, subordinate to the encounter. Do not invent an additional counter, corridor, restroom door, furniture set or customer group to fill a new angle.
+Show the remembered restaurant directly from inside its physical space. Retain the narrow floor plan, warm cream/tan walls, modest wooden furniture, wall fixtures and practical ceiling lamps visible in the accepted Page A image. The woman sits at the same near table on the right side of the entrance-facing view; the man stands farther back beside the SAME two restroom doors. The dishes and cup retain their positions from Page A. Keep any existing background diners at their established tables, subordinate to the encounter. Do not invent an additional counter, corridor, restroom door, furniture set or customer group to fill a new angle.
 The man has turned away from the wrong restroom door toward the woman; she turns slightly and gives him a small spontaneous smile. Use this same quiet instant across the coverage, with natural posture and room for their eyeline. No new dialogue, embrace, standing-up action or extra story beat. These are different spatial views of one encounter, not successive phases of a material morph. The separate R008 sheet describes the street-to-restaurant transformation.
 Map the same physical relationships through every viewpoint: table corner to chair; woman's hand to cup; chair legs to floor; man's shoes to the rear threshold; two doors to the adjacent wall. New angles may hide objects through ordinary occlusion, but cannot relocate them or mirror the floor plan. Keep occupied furniture solid, full-size and supported. Where a close view cannot show every anchor, retain at least one adjacent furniture edge or recognizable background feature.
 
@@ -16,15 +19,15 @@ Photorealistic live-action interior photography, warm practical lighting with so
 This is the literal memory interior: no current London street, Budapest skyline, numerical score cards, umbrellas, projected room, reflection overlay or morphing furniture. Door labels and existing wall notices remain ordinary incidental details; do not add explanatory text. Keep remembered people card-free.
 
 PAGE B — HUMAN CONTACT, RESTROOM DOORS AND NEAR OBJECTS:
-Render only the four assigned views below. Pages A, B and C together provide twelve complementary views of this same room. Use the accepted original room image directly for every page; generating another page first is not a prerequisite.
+Render only the four assigned views below. Pages A, B and C together provide twelve complementary views of this same room. Use the accepted Page A image to preserve the same room from these additional viewpoints.
 
 FOUR ASSIGNED CELLS:
 
 CELL 1 — TOP-LEFT — VIEW 05 — REMEMBERED MAN AND BOTH RESTROOM DOORS:
-A medium-full oblique view centres the man beside the same two rear doors. Include both frames, their separation, handles, reveals, threshold and his shoe-to-floor contacts. His torso and head turn toward the seated woman, whose table corner or seated shoulder can remain at a near frame edge to establish the eyeline. Preserve his dark jacket, hair and facial identity. Keep doors in the open/closed positions visible in the accepted source; do not stage a new door-opening event or a second occurrence of the man.
+A medium-full oblique view centres the man beside the same two rear doors. Include both frames, their separation, handles, reveals, threshold and his shoe-to-floor contacts. His torso and head turn toward the seated woman, whose table corner or seated shoulder can remain at a near frame edge to establish the eyeline. Preserve his dark jacket, hair and facial identity. Keep doors in the open/closed positions established in the source view; do not stage a new door-opening event or a second occurrence of the man.
 
 CELL 2 — TOP-RIGHT — VIEW 06 — HAND, CUP AND TABLETOP DEPTH:
-A close diagonal tabletop view resolves the woman’s same hand beside the cup, with natural finger articulation, the cup’s rim and base, and the small space between hand and ceramic. Include the nearest dish and utensil placement from the accepted image without adding a new meal. Show the hand’s shadow crossing the wood grain, the tabletop’s solid edge and a fragment of her sleeve. This is a surface-contact study at the same moment as Page A, not a new reach or cup-lifting action.
+A close diagonal tabletop view resolves the woman’s same hand beside the cup, with natural finger articulation, the cup’s rim and base, and the small space between hand and ceramic. Include the nearest dish and utensil placement from the accepted Page A image without adding a new meal. Show the hand’s shadow crossing the wood grain, the tabletop’s solid edge and a fragment of her sleeve. This is a surface-contact study at the same moment as Page A, not a new reach or cup-lifting action.
 
 CELL 3 — BOTTOM-LEFT — VIEW 07 — CHAIR BACK, SHOULDER AND TURNING SPACE:
 From a rear-side angle beside the woman, show the chair back and its uprights, seat-to-back joint, her seated shoulder and the natural curve of her turned neck. Retain part of her facial profile and the view toward the man beyond the table. The chair remains squarely supported and does not rotate under her to accommodate the angle. Show the physical clearance between chair, adjacent wall or aisle and table; preserve the source layout even where the space is narrow.

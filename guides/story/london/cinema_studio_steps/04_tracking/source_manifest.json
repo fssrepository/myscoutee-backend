@@ -3227,39 +3227,38 @@
       "path": "02_library/memories/T01_SOHO_RESTAURANT_SOURCE_A.txt",
       "output": "T01_SOHO_RESTAURANT_DETAILS_A_2X2.png",
       "refs": [
-        "T01_IMAGE",
         "C01",
         "C02"
       ],
       "status": "PREPARED_NOT_RENDERED",
       "layout": "4K 2x2 restaurant coverage page A",
-      "prompt_sha256": "528e7d113ab9e7be275512aa4338527b1c446de3b9562ac15d90e5de4b301da3"
+      "prompt_sha256": "e78203c8353e3b555024be41ceb8e28645567b4ec77c98cc2863dc9b6b1a19bb"
     },
     "T01_DETAILS_B": {
       "key": "T01_DETAILS_B",
       "path": "02_library/memories/T01_SOHO_RESTAURANT_SOURCE_B.txt",
       "output": "T01_SOHO_RESTAURANT_DETAILS_B_2X2.png",
       "refs": [
-        "T01_IMAGE",
         "C01",
-        "C02"
+        "C02",
+        "T01_DETAILS"
       ],
       "status": "PREPARED_NOT_RENDERED",
       "layout": "4K 2x2 restaurant coverage page B",
-      "prompt_sha256": "3bb460c92897635a1f83d4ee95c8dbec5998266b582855c7e4342324755a80a0"
+      "prompt_sha256": "a274229ee09652dda409551ba7f89fec190c55fa5dad9c7d5e3e511b9bf959fd"
     },
     "T01_DETAILS_C": {
       "key": "T01_DETAILS_C",
       "path": "02_library/memories/T01_SOHO_RESTAURANT_SOURCE_C.txt",
       "output": "T01_SOHO_RESTAURANT_DETAILS_C_2X2.png",
       "refs": [
-        "T01_IMAGE",
         "C01",
-        "C02"
+        "C02",
+        "T01_DETAILS"
       ],
       "status": "PREPARED_NOT_RENDERED",
       "layout": "4K 2x2 restaurant coverage page C",
-      "prompt_sha256": "e707763e11d253ee2a3df2f628a3e083281b4a0ba35eb9c898db45b4a131b2a7"
+      "prompt_sha256": "e5f1d7807379a20c613f470e4f4d0227caa71727a4fffd818e4163fe9484a4aa"
     }
   },
   "operator_language": "English; Hungarian in-world signage and proper names are intentional story content.",
@@ -3276,14 +3275,13 @@
     },
     {
       "file": "02_library/memories/T01_SOHO_RESTAURANT_SOURCE_A.txt",
-      "sha256": "528e7d113ab9e7be275512aa4338527b1c446de3b9562ac15d90e5de4b301da3",
+      "sha256": "e78203c8353e3b555024be41ceb8e28645567b4ec77c98cc2863dc9b6b1a19bb",
       "reference_elements": {
         "C01": "char_mys_protagonist_s1_v1",
         "C02": "char_mys_soho-woman_s1_v1"
       },
       "reference_note": "Reference mentions are maintained centrally in reference_bindings. UNBOUND slots must be resolved before generation; verified Element mentions autoload in the creator's composer.",
       "refs": [
-        "T01_IMAGE",
         "C01",
         "C02"
       ]
@@ -5307,7 +5305,7 @@
               4
             ],
             "status": "PREPARED_NOT_RENDERED",
-            "sha256": "528e7d113ab9e7be275512aa4338527b1c446de3b9562ac15d90e5de4b301da3"
+            "sha256": "e78203c8353e3b555024be41ceb8e28645567b4ec77c98cc2863dc9b6b1a19bb"
           },
           "B": {
             "key": "T01_DETAILS_B",
@@ -5319,7 +5317,7 @@
               8
             ],
             "status": "PREPARED_NOT_RENDERED",
-            "sha256": "3bb460c92897635a1f83d4ee95c8dbec5998266b582855c7e4342324755a80a0"
+            "sha256": "a274229ee09652dda409551ba7f89fec190c55fa5dad9c7d5e3e511b9bf959fd"
           },
           "C": {
             "key": "T01_DETAILS_C",
@@ -5331,7 +5329,7 @@
               12
             ],
             "status": "PREPARED_NOT_RENDERED",
-            "sha256": "e707763e11d253ee2a3df2f628a3e083281b4a0ba35eb9c898db45b4a131b2a7"
+            "sha256": "e5f1d7807379a20c613f470e4f4d0227caa71727a4fffd818e4163fe9484a4aa"
           }
         },
         "coverage_views": 12,
@@ -5366,5 +5364,1093 @@
     "four_cell_pages": 28,
     "legacy_generated_images_unchanged": true,
     "note": "27 memory/clinical pages plus T01 detail page; image preparation only, no video generation or added story events."
+  },
+  "full_project_restart": {
+    "date": "2026-09-10",
+    "status": "PREPARED_NOT_IMPORTED",
+    "supersedes_incremental_import_workflow": true,
+    "file": "00_project/elements/FULL_PROJECT_IMPORT.md",
+    "file_sha256": "0b5a545686c252e04c98e8cfbb703b59b3286848b0f71ca0aaa5ccb769aeb551",
+    "prompt_map": "00_project/elements/FULL_PROJECT_PROMPT_MAP.csv",
+    "guide": "00_project/elements/FULL_PROJECT_GUIDE.md",
+    "expected_elements": 105,
+    "counts": {
+      "characters": 31,
+      "worlds": 21,
+      "memories": 30,
+      "morphs": 22,
+      "objects": 1
+    },
+    "canonical_keys": [
+      "C01",
+      "C02",
+      "C03",
+      "C04",
+      "C05",
+      "C06",
+      "C07",
+      "C08",
+      "C09",
+      "C10",
+      "C11",
+      "C12",
+      "C13",
+      "C14",
+      "C15",
+      "C16",
+      "C17",
+      "C18",
+      "C19",
+      "C20",
+      "C21",
+      "C22",
+      "C23",
+      "C24",
+      "C25",
+      "C26",
+      "C27",
+      "C28",
+      "C29",
+      "C30",
+      "C31",
+      "W01",
+      "W01_B",
+      "W01_C",
+      "W02",
+      "W02_B",
+      "W02_C",
+      "W03",
+      "W03_B",
+      "W03_C",
+      "W04",
+      "W04_B",
+      "W04_C",
+      "W05",
+      "W05_B",
+      "W05_C",
+      "W06",
+      "W06_B",
+      "W06_C",
+      "W07",
+      "W07_B",
+      "W07_C",
+      "MW01",
+      "MW01_B",
+      "MW01_C",
+      "MW02",
+      "MW02_B",
+      "MW02_C",
+      "MW03",
+      "MW03_B",
+      "MW03_C",
+      "MW04",
+      "MW04_B",
+      "MW04_C",
+      "MW05",
+      "MW05_B",
+      "MW05_C",
+      "MW06",
+      "MW06_B",
+      "MW06_C",
+      "MWP01",
+      "MWP01_B",
+      "MWP01_C",
+      "MWP02",
+      "MWP02_B",
+      "MWP02_C",
+      "HRW07",
+      "HRW07_B",
+      "HRW07_C",
+      "T01_DETAILS",
+      "T01_DETAILS_B",
+      "T01_DETAILS_C",
+      "MR001",
+      "MR002",
+      "MR003",
+      "MR004",
+      "MR005",
+      "MR006",
+      "MR007",
+      "MR008",
+      "MR009",
+      "MR010",
+      "MR011",
+      "MR012",
+      "MR013",
+      "MR014",
+      "MR015",
+      "MR016",
+      "MR017",
+      "MR018",
+      "MR019",
+      "MR020",
+      "R008",
+      "R009",
+      "R002"
+    ],
+    "entries": [
+      {
+        "key": "C01",
+        "asset_key": "C01",
+        "name": "MYS C01 Protagonist",
+        "type": "Character",
+        "description": "Hungarian / Central-European man, apparent age about 38–42, average height, lean-to-average build, physically ordinary. Intelligent restrained face, observant brown/hazel eyes, slight natural fatigue, short medium-to-dark brown hair, natural hairline, very light stubble, fair/light Central-European complexion.",
+        "group": "characters",
+        "prompt": "02_library/characters/C01_PROTAGONIST.txt"
+      },
+      {
+        "key": "C02",
+        "asset_key": "C02",
+        "name": "MYS C02 Soho Woman",
+        "type": "Character",
+        "description": "Fictional European woman, apparent age about 32–38, average-to-slim natural build, warm intelligent eyes, distinctive but ordinary believable face, natural medium-brown or dark-blonde shoulder-length hair, light natural makeup, realistic skin texture. Capable of a small spontaneous human smile that matters emotionally without looking theatrical.",
+        "group": "characters",
+        "prompt": "02_library/characters/C02_SOHO_WOMAN.txt"
+      },
+      {
+        "key": "C03",
+        "asset_key": "C03",
+        "name": "MYS C03 Policewoman",
+        "type": "Character",
+        "description": "Fictional British/European woman, apparent age about 35–45, average height, fit but ordinary professional build, serious practical face, intelligent eyes, natural brown/dark-blonde hair secured simply, minimal makeup, realistic skin. She must look like an ordinary working police officer, calm and procedural rather than aggressive; never an action-film or villain archetype.",
+        "group": "characters",
+        "prompt": "02_library/characters/C03_POLICEWOMAN.txt"
+      },
+      {
+        "key": "C04",
+        "asset_key": "C04",
+        "name": "MYS C04 Appointed Lawyer",
+        "type": "Character",
+        "description": "Fictional British/European man, apparent age about 45–55, average height and ordinary professional build, intelligent slightly tired face, short dark or greying brown hair, natural age lines, calm restrained professional presence. Not a television-lawyer archetype, not sinister, not glamorous.",
+        "group": "characters",
+        "prompt": "02_library/characters/C04_APPOINTED_LAWYER.txt"
+      },
+      {
+        "key": "C05",
+        "asset_key": "C05",
+        "name": "MYS C05 Final Nurse",
+        "type": "Character",
+        "description": "Fictional European woman, apparent age about 38–48, average height and ordinary natural build, kind competent grounded face, calm eyes, medium-brown or dark-blonde hair secured simply, minimal makeup, realistic skin. She must look completely normal, friendly and non-sinister.",
+        "group": "characters",
+        "prompt": "02_library/characters/C05_FINAL_NURSE.txt"
+      },
+      {
+        "key": "C06",
+        "asset_key": "C06",
+        "name": "MYS C06 Shared-House Substitute / Snoring Housemate",
+        "type": "Character",
+        "description": "Fictional Hungarian / Central-European man, apparent age about 28–38, average height and ordinary build, practical slightly worn appearance, short brown hair, natural face, no glamour. He represents the replacement housemate whose arrival is first registered by a different snore; he must look like an ordinary migrant worker / young professional rather than a comic character.",
+        "group": "characters",
+        "prompt": "02_library/characters/C06_SHARED_HOUSE_SUBSTITUTE_SNORING_HOUSEMATE.txt"
+      },
+      {
+        "key": "C07",
+        "asset_key": "C07",
+        "name": "MYS C07 Fx-Mortgage Housemate",
+        "type": "Character",
+        "description": "Fictional Hungarian / Central-European man, apparent age about 32–42, average build, grounded responsible face with visible everyday pressure rather than misery. He is the London housemate whose spouse, child and foreign-currency mortgage obligations remain connected to Hungary.",
+        "group": "characters",
+        "prompt": "02_library/characters/C07_FX_MORTGAGE_HOUSEMATE.txt"
+      },
+      {
+        "key": "C08",
+        "asset_key": "C08",
+        "name": "MYS C08 Fx-Mortgage Spouse",
+        "type": "Character",
+        "description": "Fictional Hungarian / Central-European woman, apparent age about 30–40, ordinary natural build, calm intelligent face, practical everyday appearance. She represents the spouse remaining in Hungary within the foreign-currency-mortgage family memory.",
+        "group": "characters",
+        "prompt": "02_library/characters/C08_FX_MORTGAGE_SPOUSE.txt"
+      },
+      {
+        "key": "C09",
+        "asset_key": "C09",
+        "name": "MYS C09 Fx-Mortgage Child",
+        "type": "Character",
+        "description": "Fictional Hungarian child, apparent age about 6–9, ordinary healthy build, natural face and age-appropriate proportions. This is a fictionalized visual identity for the family-memory child and must not resemble any real participant.",
+        "group": "characters",
+        "prompt": "02_library/characters/C09_FX_MORTGAGE_CHILD.txt"
+      },
+      {
+        "key": "C10",
+        "asset_key": "C10",
+        "name": "MYS C10 Beginner-Dance Woman",
+        "type": "Character",
+        "description": "Fictional European woman, apparent age about 30–40, average natural build, approachable ordinary face, expressive eyes, practical hairstyle. She is a recurring visual anchor for the beginner dance-floor memory and must feel like a real participant in a social class rather than a professional dancer or romantic fantasy.",
+        "group": "characters",
+        "prompt": "02_library/characters/C10_BEGINNER_DANCE_WOMAN.txt"
+      },
+      {
+        "key": "C11",
+        "asset_key": "C11",
+        "name": "MYS C11 Russian Transit Passenger",
+        "type": "Character",
+        "description": "Fictional local Russian adult man, apparent age about 35–55, ordinary commuter build and believable everyday face. He is the passenger who calmly uses his monthly transit pass to help the protagonist through a gate.",
+        "group": "characters",
+        "prompt": "02_library/characters/C11_RUSSIAN_TRANSIT_PASSENGER.txt"
+      },
+      {
+        "key": "C12",
+        "asset_key": "C12",
+        "name": "MYS C12 Agra Bus Woman",
+        "type": "Character",
+        "description": "Fictional Indian woman, apparent age about 28–45, ordinary natural build, grounded intelligent face and practical everyday appearance. She is the woman whose voice/conversation is remembered from behind or across a bus seat in the Agra travel memory.",
+        "group": "characters",
+        "prompt": "02_library/characters/C12_AGRA_BUS_WOMAN.txt"
+      },
+      {
+        "key": "C13",
+        "asset_key": "C13",
+        "name": "MYS C13 Sudanese Traveler — Man",
+        "type": "Character",
+        "description": "Fictional Sudanese adult man, apparent age about 30–45, average natural build, grounded ordinary face, calm attentive presence. He is one half of the Sudanese couple sharing the Cairo taxi memory.",
+        "group": "characters",
+        "prompt": "02_library/characters/C13_SUDANESE_TRAVELER_MAN.txt"
+      },
+      {
+        "key": "C14",
+        "asset_key": "C14",
+        "name": "MYS C14 Sudanese Traveler — Woman",
+        "type": "Character",
+        "description": "Fictional Sudanese adult woman, apparent age about 28–42, average natural build, grounded ordinary face, calm observant presence. She is the other half of the Sudanese couple sharing the Cairo taxi memory.",
+        "group": "characters",
+        "prompt": "02_library/characters/C14_SUDANESE_TRAVELER_WOMAN.txt"
+      },
+      {
+        "key": "C15",
+        "asset_key": "C15",
+        "name": "MYS C15 Cairo Taxi Driver",
+        "type": "Character",
+        "description": "Fictional Egyptian man, apparent age about 35–55, ordinary working-driver build, weathered but natural face, alert eyes, grounded practical presence. He is the taxi driver within the Cairo travel memory and must feel like a real working person, not a comic or threatening archetype.",
+        "group": "characters",
+        "prompt": "02_library/characters/C15_CAIRO_TAXI_DRIVER.txt"
+      },
+      {
+        "key": "C16",
+        "asset_key": "C16",
+        "name": "MYS C16 Balloon Local Helper — Man",
+        "type": "Character",
+        "description": "Fictional local adult man, apparent age about 30–55, ordinary rural/edge-of-town build, natural weathered face and practical demeanor. He is one of the people who helps after the hot-air-balloon lands in a vegetable plot.",
+        "group": "characters",
+        "prompt": "02_library/characters/C16_BALLOON_LOCAL_HELPER_MAN.txt"
+      },
+      {
+        "key": "C17",
+        "asset_key": "C17",
+        "name": "MYS C17 Balloon Local Helper — Woman",
+        "type": "Character",
+        "description": "Fictional local adult woman, apparent age about 30–55, ordinary natural build, grounded practical face and calm strength. She is another recurring helper in the vegetable-plot balloon landing memory.",
+        "group": "characters",
+        "prompt": "02_library/characters/C17_BALLOON_LOCAL_HELPER_WOMAN.txt"
+      },
+      {
+        "key": "C18",
+        "asset_key": "C18",
+        "name": "MYS C18 Barmouth Road-Trip Driver / Companion",
+        "type": "Character",
+        "description": "Fictional European adult man, apparent age about 30–45, ordinary build, practical approachable face. He is the acquaintance traveling as part of the five-person road trip who drives the rented car; he is a companion, not a hired driver.",
+        "group": "characters",
+        "prompt": "02_library/characters/C18_BARMOUTH_ROAD_TRIP_DRIVER_COMPANION.txt"
+      },
+      {
+        "key": "C19",
+        "asset_key": "C19",
+        "name": "MYS C19 Barmouth Road-Trip Companion A",
+        "type": "Character",
+        "description": "Fictional European adult woman, apparent age about 28–42, ordinary natural build and believable everyday face. She is one of the four non-protagonist companions on the five-person British road circuit.",
+        "group": "characters",
+        "prompt": "02_library/characters/C19_BARMOUTH_ROAD_TRIP_COMPANION_A.txt"
+      },
+      {
+        "key": "C20",
+        "asset_key": "C20",
+        "name": "MYS C20 Barmouth Road-Trip Companion B",
+        "type": "Character",
+        "description": "Fictional European adult man, apparent age about 28–45, ordinary build and believable everyday face. He is one of the four non-protagonist companions on the five-person British road circuit.",
+        "group": "characters",
+        "prompt": "02_library/characters/C20_BARMOUTH_ROAD_TRIP_COMPANION_B.txt"
+      },
+      {
+        "key": "C21",
+        "asset_key": "C21",
+        "name": "MYS C21 Barmouth Road-Trip Companion C",
+        "type": "Character",
+        "description": "Fictional European adult woman, apparent age about 28–42, ordinary natural build and believable everyday face. She is one of the four non-protagonist companions on the five-person British road circuit.",
+        "group": "characters",
+        "prompt": "02_library/characters/C21_BARMOUTH_ROAD_TRIP_COMPANION_C.txt"
+      },
+      {
+        "key": "C22",
+        "asset_key": "C22",
+        "name": "MYS C22 Accountant",
+        "type": "Character",
+        "description": "Fictional Hungarian / Central-European accountant, apparent age about 35–50, ordinary professional build, intelligent practical face, slightly tired from routine workload. This person anchors the accounting / delegated-administration memory and must never look villainous or incompetent by appearance.",
+        "group": "characters",
+        "prompt": "02_library/characters/C22_ACCOUNTANT.txt"
+      },
+      {
+        "key": "C23",
+        "asset_key": "C23",
+        "name": "MYS C23 Admin Colleague A",
+        "type": "Character",
+        "description": "Fictional European office professional, apparent age about 30–50, ordinary natural build and believable workplace face. This person anchors one side of the three-people / no-shared-screen triangle.",
+        "group": "characters",
+        "prompt": "02_library/characters/C23_ADMIN_COLLEAGUE_A.txt"
+      },
+      {
+        "key": "C24",
+        "asset_key": "C24",
+        "name": "MYS C24 Admin Colleague B",
+        "type": "Character",
+        "description": "Fictional European office professional, apparent age about 30–50, ordinary natural build and believable workplace face, visually distinct from ADMIN COLLEAGUE A. This person anchors the third side of the three-people / no-shared-screen triangle.",
+        "group": "characters",
+        "prompt": "02_library/characters/C24_ADMIN_COLLEAGUE_B.txt"
+      },
+      {
+        "key": "C25",
+        "asset_key": "C25",
+        "name": "MYS C25 Search Officer — Male",
+        "type": "Character",
+        "description": "Fictional European male police officer, apparent age about 35–50, ordinary professional build and practical face. He is a recurring search officer in the apartment memory, including the accidental step on the protagonist's recently operated foot.",
+        "group": "characters",
+        "prompt": "02_library/characters/C25_SEARCH_OFFICER_MALE.txt"
+      },
+      {
+        "key": "C26",
+        "asset_key": "C26",
+        "name": "MYS C26 Defence-Office Substitute",
+        "type": "Character",
+        "description": "Fictional European legal-office professional, apparent age about 35–55, ordinary professional build and slightly rushed practical face. This person anchors the memory of someone from the appointed-defence office appearing instead of the expected named lawyer.",
+        "group": "characters",
+        "prompt": "02_library/characters/C26_DEFENCE_OFFICE_SUBSTITUTE.txt"
+      },
+      {
+        "key": "C27",
+        "asset_key": "C27",
+        "name": "MYS C27 Judge",
+        "type": "Character",
+        "description": "Fictional European judge / court official, apparent age about 45–60, ordinary professional build, intelligent controlled face, natural age lines, grounded institutional presence. This is a fictionalized non-identifiable character for the hearing memory and must not resemble any real judge.",
+        "group": "characters",
+        "prompt": "02_library/characters/C27_JUDGE.txt"
+      },
+      {
+        "key": "C28",
+        "asset_key": "C28",
+        "name": "MYS C28 Forensic Expert A",
+        "type": "Character",
+        "description": "Fictional European forensic expert, apparent age about 50–65, ordinary professional build, analytical face, natural age lines, restrained institutional demeanor. This expert must be visually distinct from FORENSIC EXPERT B and must not resemble any real person.",
+        "group": "characters",
+        "prompt": "02_library/characters/C28_FORENSIC_EXPERT_A.txt"
+      },
+      {
+        "key": "C29",
+        "asset_key": "C29",
+        "name": "MYS C29 Forensic Expert B",
+        "type": "Character",
+        "description": "Fictional European forensic expert, apparent age about 40–60, ordinary professional build, visibly different face/hair/age from FORENSIC EXPERT A, calm analytical demeanor. This expert represents the different reaction within the two-expert examination and must not resemble any real person.",
+        "group": "characters",
+        "prompt": "02_library/characters/C29_FORENSIC_EXPERT_B.txt"
+      },
+      {
+        "key": "C30",
+        "asset_key": "C30",
+        "name": "MYS C30 Court Clerk",
+        "type": "Character",
+        "description": "Fictional European court clerk / administrative employee, apparent age about 30–55, ordinary professional build and believable everyday face. This person anchors the recording/evidence-request/telephone memory.",
+        "group": "characters",
+        "prompt": "02_library/characters/C30_COURT_CLERK.txt"
+      },
+      {
+        "key": "C31",
+        "asset_key": "C31",
+        "name": "MYS C31 Anonymous Fictional Cardboard Public Figure",
+        "type": "Character",
+        "description": "Fictional anonymous adult male cardboard public figure, apparent age about 45–65, ordinary suit-wearing build and generic non-identifiable face. This character exists only as an absurd self-made cardboard memory source.",
+        "group": "characters",
+        "prompt": "02_library/characters/C31_ANONYMOUS_FICTIONAL_POLITICAL_FIGURE.txt"
+      },
+      {
+        "key": "W01",
+        "asset_key": "W01",
+        "name": "MYS W01_A World Reference",
+        "type": "Location",
+        "description": "World 01, page A: four assigned views of the connected present city, with numerical cards above current pedestrians.",
+        "group": "worlds",
+        "prompt": "02_library/worlds/W01_MAIN_WORLD_A.txt"
+      },
+      {
+        "key": "W01_B",
+        "asset_key": "W01_B",
+        "name": "MYS W01_B World Reference",
+        "type": "Location",
+        "description": "World 01, page B: four assigned views of the connected present city, with numerical cards above current pedestrians.",
+        "group": "worlds",
+        "prompt": "02_library/worlds/W01_MAIN_WORLD_B.txt"
+      },
+      {
+        "key": "W01_C",
+        "asset_key": "W01_C",
+        "name": "MYS W01_C World Reference",
+        "type": "Location",
+        "description": "World 01, page C: four assigned views of the connected present city, with numerical cards above current pedestrians.",
+        "group": "worlds",
+        "prompt": "02_library/worlds/W01_MAIN_WORLD_C.txt"
+      },
+      {
+        "key": "W02",
+        "asset_key": "W02",
+        "name": "MYS W02_A World Reference",
+        "type": "Location",
+        "description": "World 02, page A: four assigned views of the connected present city, with numerical cards above current pedestrians.",
+        "group": "worlds",
+        "prompt": "02_library/worlds/W02_MAIN_WORLD_A.txt"
+      },
+      {
+        "key": "W02_B",
+        "asset_key": "W02_B",
+        "name": "MYS W02_B World Reference",
+        "type": "Location",
+        "description": "World 02, page B: four assigned views of the connected present city, with numerical cards above current pedestrians.",
+        "group": "worlds",
+        "prompt": "02_library/worlds/W02_MAIN_WORLD_B.txt"
+      },
+      {
+        "key": "W02_C",
+        "asset_key": "W02_C",
+        "name": "MYS W02_C World Reference",
+        "type": "Location",
+        "description": "World 02, page C: four assigned views of the connected present city, with numerical cards above current pedestrians.",
+        "group": "worlds",
+        "prompt": "02_library/worlds/W02_MAIN_WORLD_C.txt"
+      },
+      {
+        "key": "W03",
+        "asset_key": "W03",
+        "name": "MYS W03_A World Reference",
+        "type": "Location",
+        "description": "World 03, page A: four assigned views of the connected present city, with numerical cards above current pedestrians.",
+        "group": "worlds",
+        "prompt": "02_library/worlds/W03_MAIN_WORLD_A.txt"
+      },
+      {
+        "key": "W03_B",
+        "asset_key": "W03_B",
+        "name": "MYS W03_B World Reference",
+        "type": "Location",
+        "description": "World 03, page B: four assigned views of the connected present city, with numerical cards above current pedestrians.",
+        "group": "worlds",
+        "prompt": "02_library/worlds/W03_MAIN_WORLD_B.txt"
+      },
+      {
+        "key": "W03_C",
+        "asset_key": "W03_C",
+        "name": "MYS W03_C World Reference",
+        "type": "Location",
+        "description": "World 03, page C: four assigned views of the connected present city, with numerical cards above current pedestrians.",
+        "group": "worlds",
+        "prompt": "02_library/worlds/W03_MAIN_WORLD_C.txt"
+      },
+      {
+        "key": "W04",
+        "asset_key": "W04",
+        "name": "MYS W04_A World Reference",
+        "type": "Location",
+        "description": "World 04, page A: four assigned views of the connected present city, with numerical cards above current pedestrians.",
+        "group": "worlds",
+        "prompt": "02_library/worlds/W04_MAIN_WORLD_A.txt"
+      },
+      {
+        "key": "W04_B",
+        "asset_key": "W04_B",
+        "name": "MYS W04_B World Reference",
+        "type": "Location",
+        "description": "World 04, page B: four assigned views of the connected present city, with numerical cards above current pedestrians.",
+        "group": "worlds",
+        "prompt": "02_library/worlds/W04_MAIN_WORLD_B.txt"
+      },
+      {
+        "key": "W04_C",
+        "asset_key": "W04_C",
+        "name": "MYS W04_C World Reference",
+        "type": "Location",
+        "description": "World 04, page C: four assigned views of the connected present city, with numerical cards above current pedestrians.",
+        "group": "worlds",
+        "prompt": "02_library/worlds/W04_MAIN_WORLD_C.txt"
+      },
+      {
+        "key": "W05",
+        "asset_key": "W05",
+        "name": "MYS W05_A World Reference",
+        "type": "Location",
+        "description": "World 05, page A: four assigned views of the connected present city, with numerical cards above current pedestrians.",
+        "group": "worlds",
+        "prompt": "02_library/worlds/W05_MAIN_WORLD_A.txt"
+      },
+      {
+        "key": "W05_B",
+        "asset_key": "W05_B",
+        "name": "MYS W05_B World Reference",
+        "type": "Location",
+        "description": "World 05, page B: four assigned views of the connected present city, with numerical cards above current pedestrians.",
+        "group": "worlds",
+        "prompt": "02_library/worlds/W05_MAIN_WORLD_B.txt"
+      },
+      {
+        "key": "W05_C",
+        "asset_key": "W05_C",
+        "name": "MYS W05_C World Reference",
+        "type": "Location",
+        "description": "World 05, page C: four assigned views of the connected present city, with numerical cards above current pedestrians.",
+        "group": "worlds",
+        "prompt": "02_library/worlds/W05_MAIN_WORLD_C.txt"
+      },
+      {
+        "key": "W06",
+        "asset_key": "W06",
+        "name": "MYS W06_A World Reference",
+        "type": "Location",
+        "description": "World 06, page A: four assigned views of the connected present city, with numerical cards above current pedestrians.",
+        "group": "worlds",
+        "prompt": "02_library/worlds/W06_MAIN_WORLD_A.txt"
+      },
+      {
+        "key": "W06_B",
+        "asset_key": "W06_B",
+        "name": "MYS W06_B World Reference",
+        "type": "Location",
+        "description": "World 06, page B: four assigned views of the connected present city, with numerical cards above current pedestrians.",
+        "group": "worlds",
+        "prompt": "02_library/worlds/W06_MAIN_WORLD_B.txt"
+      },
+      {
+        "key": "W06_C",
+        "asset_key": "W06_C",
+        "name": "MYS W06_C World Reference",
+        "type": "Location",
+        "description": "World 06, page C: four assigned views of the connected present city, with numerical cards above current pedestrians.",
+        "group": "worlds",
+        "prompt": "02_library/worlds/W06_MAIN_WORLD_C.txt"
+      },
+      {
+        "key": "W07",
+        "asset_key": "W07",
+        "name": "MYS W07_A World Reference",
+        "type": "Location",
+        "description": "World 07, page A: four assigned views of the connected present city, with numerical cards above current pedestrians.",
+        "group": "worlds",
+        "prompt": "02_library/worlds/W07_MAIN_WORLD_A.txt"
+      },
+      {
+        "key": "W07_B",
+        "asset_key": "W07_B",
+        "name": "MYS W07_B World Reference",
+        "type": "Location",
+        "description": "World 07, page B: four assigned views of the connected present city, with numerical cards above current pedestrians.",
+        "group": "worlds",
+        "prompt": "02_library/worlds/W07_MAIN_WORLD_B.txt"
+      },
+      {
+        "key": "W07_C",
+        "asset_key": "W07_C",
+        "name": "MYS W07_C World Reference",
+        "type": "Location",
+        "description": "World 07, page C: four assigned views of the connected present city, with numerical cards above current pedestrians.",
+        "group": "worlds",
+        "prompt": "02_library/worlds/W07_MAIN_WORLD_C.txt"
+      },
+      {
+        "key": "MW01",
+        "asset_key": "MW01",
+        "name": "MYS MW01_A London Social",
+        "type": "Location",
+        "description": "London Social, page A: four assigned literal location and encounter views. Remembered people have no score cards.",
+        "group": "memories",
+        "prompt": "02_library/memories/MW01_LONDON_SOCIAL_A.txt"
+      },
+      {
+        "key": "MW01_B",
+        "asset_key": "MW01_B",
+        "name": "MYS MW01_B London Social",
+        "type": "Location",
+        "description": "London Social, page B: four assigned literal location and encounter views. Remembered people have no score cards.",
+        "group": "memories",
+        "prompt": "02_library/memories/MW01_LONDON_SOCIAL_B.txt"
+      },
+      {
+        "key": "MW01_C",
+        "asset_key": "MW01_C",
+        "name": "MYS MW01_C London Social",
+        "type": "Location",
+        "description": "London Social, page C: four assigned literal location and encounter views. Remembered people have no score cards.",
+        "group": "memories",
+        "prompt": "02_library/memories/MW01_LONDON_SOCIAL_C.txt"
+      },
+      {
+        "key": "MW02",
+        "asset_key": "MW02",
+        "name": "MYS MW02_A Global Routes",
+        "type": "Location",
+        "description": "Global Routes, page A: four assigned literal location and encounter views. Remembered people have no score cards.",
+        "group": "memories",
+        "prompt": "02_library/memories/MW02_GLOBAL_ROUTES_A.txt"
+      },
+      {
+        "key": "MW02_B",
+        "asset_key": "MW02_B",
+        "name": "MYS MW02_B Global Routes",
+        "type": "Location",
+        "description": "Global Routes, page B: four assigned literal location and encounter views. Remembered people have no score cards.",
+        "group": "memories",
+        "prompt": "02_library/memories/MW02_GLOBAL_ROUTES_B.txt"
+      },
+      {
+        "key": "MW02_C",
+        "asset_key": "MW02_C",
+        "name": "MYS MW02_C Global Routes",
+        "type": "Location",
+        "description": "Global Routes, page C: four assigned literal location and encounter views. Remembered people have no score cards.",
+        "group": "memories",
+        "prompt": "02_library/memories/MW02_GLOBAL_ROUTES_C.txt"
+      },
+      {
+        "key": "MW03",
+        "asset_key": "MW03",
+        "name": "MYS MW03_A Work Rule Change Admin",
+        "type": "Location",
+        "description": "Work Rule Change Admin, page A: four assigned literal location and encounter views. Remembered people have no score cards.",
+        "group": "memories",
+        "prompt": "02_library/memories/MW03_WORK_RULE_CHANGE_ADMIN_A.txt"
+      },
+      {
+        "key": "MW03_B",
+        "asset_key": "MW03_B",
+        "name": "MYS MW03_B Work Rule Change Admin",
+        "type": "Location",
+        "description": "Work Rule Change Admin, page B: four assigned literal location and encounter views. Remembered people have no score cards.",
+        "group": "memories",
+        "prompt": "02_library/memories/MW03_WORK_RULE_CHANGE_ADMIN_B.txt"
+      },
+      {
+        "key": "MW03_C",
+        "asset_key": "MW03_C",
+        "name": "MYS MW03_C Work Rule Change Admin",
+        "type": "Location",
+        "description": "Work Rule Change Admin, page C: four assigned literal location and encounter views. Remembered people have no score cards.",
+        "group": "memories",
+        "prompt": "02_library/memories/MW03_WORK_RULE_CHANGE_ADMIN_C.txt"
+      },
+      {
+        "key": "MW04",
+        "asset_key": "MW04",
+        "name": "MYS MW04_A Police Defence",
+        "type": "Location",
+        "description": "Police Defence, page A: four assigned literal location and encounter views. Remembered people have no score cards.",
+        "group": "memories",
+        "prompt": "02_library/memories/MW04_POLICE_DEFENCE_A.txt"
+      },
+      {
+        "key": "MW04_B",
+        "asset_key": "MW04_B",
+        "name": "MYS MW04_B Police Defence",
+        "type": "Location",
+        "description": "Police Defence, page B: four assigned literal location and encounter views. Remembered people have no score cards.",
+        "group": "memories",
+        "prompt": "02_library/memories/MW04_POLICE_DEFENCE_B.txt"
+      },
+      {
+        "key": "MW04_C",
+        "asset_key": "MW04_C",
+        "name": "MYS MW04_C Police Defence",
+        "type": "Location",
+        "description": "Police Defence, page C: four assigned literal location and encounter views. Remembered people have no score cards.",
+        "group": "memories",
+        "prompt": "02_library/memories/MW04_POLICE_DEFENCE_C.txt"
+      },
+      {
+        "key": "MW05",
+        "asset_key": "MW05",
+        "name": "MYS MW05_A Court File",
+        "type": "Location",
+        "description": "Court File, page A: four assigned literal location and encounter views. Remembered people have no score cards.",
+        "group": "memories",
+        "prompt": "02_library/memories/MW05_COURT_FILE_A.txt"
+      },
+      {
+        "key": "MW05_B",
+        "asset_key": "MW05_B",
+        "name": "MYS MW05_B Court File",
+        "type": "Location",
+        "description": "Court File, page B: four assigned literal location and encounter views. Remembered people have no score cards.",
+        "group": "memories",
+        "prompt": "02_library/memories/MW05_COURT_FILE_B.txt"
+      },
+      {
+        "key": "MW05_C",
+        "asset_key": "MW05_C",
+        "name": "MYS MW05_C Court File",
+        "type": "Location",
+        "description": "Court File, page C: four assigned literal location and encounter views. Remembered people have no score cards.",
+        "group": "memories",
+        "prompt": "02_library/memories/MW05_COURT_FILE_C.txt"
+      },
+      {
+        "key": "MW06",
+        "asset_key": "MW06",
+        "name": "MYS MW06_A Human Countermemories",
+        "type": "Location",
+        "description": "Human Countermemories, page A: four assigned literal location and encounter views. Remembered people have no score cards.",
+        "group": "memories",
+        "prompt": "02_library/memories/MW06_HUMAN_COUNTERMEMORIES_A.txt"
+      },
+      {
+        "key": "MW06_B",
+        "asset_key": "MW06_B",
+        "name": "MYS MW06_B Human Countermemories",
+        "type": "Location",
+        "description": "Human Countermemories, page B: four assigned literal location and encounter views. Remembered people have no score cards.",
+        "group": "memories",
+        "prompt": "02_library/memories/MW06_HUMAN_COUNTERMEMORIES_B.txt"
+      },
+      {
+        "key": "MW06_C",
+        "asset_key": "MW06_C",
+        "name": "MYS MW06_C Human Countermemories",
+        "type": "Location",
+        "description": "Human Countermemories, page C: four assigned literal location and encounter views. Remembered people have no score cards.",
+        "group": "memories",
+        "prompt": "02_library/memories/MW06_HUMAN_COUNTERMEMORIES_C.txt"
+      },
+      {
+        "key": "MWP01",
+        "asset_key": "MWP01",
+        "name": "MYS MWP01_A Routes Rooms Documents",
+        "type": "Location",
+        "description": "Routes Rooms Documents, page A: four assigned literal location and encounter views. Remembered people have no score cards.",
+        "group": "memories",
+        "prompt": "02_library/memories/MWP01_ROUTES_ROOMS_DOCUMENTS_A.txt"
+      },
+      {
+        "key": "MWP01_B",
+        "asset_key": "MWP01_B",
+        "name": "MYS MWP01_B Routes Rooms Documents",
+        "type": "Location",
+        "description": "Routes Rooms Documents, page B: four assigned literal location and encounter views. Remembered people have no score cards.",
+        "group": "memories",
+        "prompt": "02_library/memories/MWP01_ROUTES_ROOMS_DOCUMENTS_B.txt"
+      },
+      {
+        "key": "MWP01_C",
+        "asset_key": "MWP01_C",
+        "name": "MYS MWP01_C Routes Rooms Documents",
+        "type": "Location",
+        "description": "Routes Rooms Documents, page C: four assigned literal location and encounter views. Remembered people have no score cards.",
+        "group": "memories",
+        "prompt": "02_library/memories/MWP01_ROUTES_ROOMS_DOCUMENTS_C.txt"
+      },
+      {
+        "key": "MWP02",
+        "asset_key": "MWP02",
+        "name": "MYS MWP02_A System Time Reversals",
+        "type": "Location",
+        "description": "System Time Reversals, page A: four assigned literal location and encounter views. Remembered people have no score cards.",
+        "group": "memories",
+        "prompt": "02_library/memories/MWP02_SYSTEM_TIME_REVERSALS_A.txt"
+      },
+      {
+        "key": "MWP02_B",
+        "asset_key": "MWP02_B",
+        "name": "MYS MWP02_B System Time Reversals",
+        "type": "Location",
+        "description": "System Time Reversals, page B: four assigned literal location and encounter views. Remembered people have no score cards.",
+        "group": "memories",
+        "prompt": "02_library/memories/MWP02_SYSTEM_TIME_REVERSALS_B.txt"
+      },
+      {
+        "key": "MWP02_C",
+        "asset_key": "MWP02_C",
+        "name": "MYS MWP02_C System Time Reversals",
+        "type": "Location",
+        "description": "System Time Reversals, page C: four assigned literal location and encounter views. Remembered people have no score cards.",
+        "group": "memories",
+        "prompt": "02_library/memories/MWP02_SYSTEM_TIME_REVERSALS_C.txt"
+      },
+      {
+        "key": "HRW07",
+        "asset_key": "HRW07",
+        "name": "MYS HRW07_A Clinical Reality",
+        "type": "Location",
+        "description": "Clinical reality, page A: four ordinary room and patient detail views for Block 07 only; no score cards.",
+        "group": "memories",
+        "prompt": "02_library/memories/HRW07_CLINICAL_REALITY_A.txt"
+      },
+      {
+        "key": "HRW07_B",
+        "asset_key": "HRW07_B",
+        "name": "MYS HRW07_B Clinical Reality",
+        "type": "Location",
+        "description": "Clinical reality, page B: four ordinary room and patient detail views for Block 07 only; no score cards.",
+        "group": "memories",
+        "prompt": "02_library/memories/HRW07_CLINICAL_REALITY_B.txt"
+      },
+      {
+        "key": "HRW07_C",
+        "asset_key": "HRW07_C",
+        "name": "MYS HRW07_C Clinical Reality",
+        "type": "Location",
+        "description": "Clinical reality, page C: four ordinary room and patient detail views for Block 07 only; no score cards.",
+        "group": "memories",
+        "prompt": "02_library/memories/HRW07_CLINICAL_REALITY_C.txt"
+      },
+      {
+        "key": "T01_DETAILS",
+        "asset_key": "T01_DETAILS",
+        "name": "MYS T01_A Soho Restaurant",
+        "type": "Location",
+        "description": "Soho restaurant memory, page A: four views covering room layout and encounter. Same seated woman and man beside two restroom doors; no cards.",
+        "group": "memories",
+        "prompt": "02_library/memories/T01_SOHO_RESTAURANT_SOURCE_A.txt"
+      },
+      {
+        "key": "T01_DETAILS_B",
+        "asset_key": "T01_DETAILS_B",
+        "name": "MYS T01_B Soho Restaurant",
+        "type": "Location",
+        "description": "Soho restaurant memory, page B: four views covering people, contact details and restroom doors. Same seated woman and man beside two restroom doors; no cards.",
+        "group": "memories",
+        "prompt": "02_library/memories/T01_SOHO_RESTAURANT_SOURCE_B.txt"
+      },
+      {
+        "key": "T01_DETAILS_C",
+        "asset_key": "T01_DETAILS_C",
+        "name": "MYS T01_C Soho Restaurant",
+        "type": "Location",
+        "description": "Soho restaurant memory, page C: four views covering room construction, lighting and camera clearance. Same seated woman and man beside two restroom doors; no cards.",
+        "group": "memories",
+        "prompt": "02_library/memories/T01_SOHO_RESTAURANT_SOURCE_C.txt"
+      },
+      {
+        "key": "MR001",
+        "asset_key": "MR001",
+        "name": "MYS MR001 St Pauls To St Stephens",
+        "type": "Location",
+        "description": "Four distinct physical states of the same st pauls to st stephens transformation, for reconstruction in continuous video.",
+        "group": "morphs",
+        "prompt": "02_library/morphs/MR001_ST_PAULS_TO_ST_STEPHENS_2X2.txt"
+      },
+      {
+        "key": "MR002",
+        "asset_key": "MR002",
+        "name": "MYS MR002 Facade Relief To Sculpted Support",
+        "type": "Location",
+        "description": "Four distinct physical states of the same facade relief to sculpted support transformation, for reconstruction in continuous video.",
+        "group": "morphs",
+        "prompt": "02_library/morphs/MR002_FACADE_RELIEF_TO_SCULPTED_SUPPORT_2X2.txt"
+      },
+      {
+        "key": "MR003",
+        "asset_key": "MR003",
+        "name": "MYS MR003 Facade Window Capital And Cornice",
+        "type": "Location",
+        "description": "Four distinct physical states of the same facade window capital and cornice transformation, for reconstruction in continuous video.",
+        "group": "morphs",
+        "prompt": "02_library/morphs/MR003_FACADE_WINDOW_CAPITAL_AND_CORNICE_2X2.txt"
+      },
+      {
+        "key": "MR004",
+        "asset_key": "MR004",
+        "name": "MYS MR004 Window Glass To Pendant Shade",
+        "type": "Location",
+        "description": "Four distinct physical states of the same window glass to pendant shade transformation, for reconstruction in continuous video.",
+        "group": "morphs",
+        "prompt": "02_library/morphs/MR004_WINDOW_GLASS_TO_PENDANT_SHADE_2X2.txt"
+      },
+      {
+        "key": "MR005",
+        "asset_key": "MR005",
+        "name": "MYS MR005 Brick Courses To Carved Arch",
+        "type": "Location",
+        "description": "Four distinct physical states of the same brick courses to carved arch transformation, for reconstruction in continuous video.",
+        "group": "morphs",
+        "prompt": "02_library/morphs/MR005_BRICK_COURSES_TO_CARVED_ARCH_2X2.txt"
+      },
+      {
+        "key": "MR006",
+        "asset_key": "MR006",
+        "name": "MYS MR006 Stone Threshold To Supported Timber Floor",
+        "type": "Location",
+        "description": "Four distinct physical states of the same stone threshold to supported timber floor transformation, for reconstruction in continuous video.",
+        "group": "morphs",
+        "prompt": "02_library/morphs/MR006_STONE_THRESHOLD_TO_SUPPORTED_TIMBER_FLOOR_2X2.txt"
+      },
+      {
+        "key": "MR007",
+        "asset_key": "MR007",
+        "name": "MYS MR007 Bench To Curved Floor Border",
+        "type": "Location",
+        "description": "Four distinct physical states of the same bench to curved floor border transformation, for reconstruction in continuous video.",
+        "group": "morphs",
+        "prompt": "02_library/morphs/MR007_BENCH_TO_CURVED_FLOOR_BORDER_2X2.txt"
+      },
+      {
+        "key": "MR008",
+        "asset_key": "MR008",
+        "name": "MYS MR008 Window Fittings To Pendant Stem",
+        "type": "Location",
+        "description": "Four distinct physical states of the same window fittings to pendant stem transformation, for reconstruction in continuous video.",
+        "group": "morphs",
+        "prompt": "02_library/morphs/MR008_WINDOW_FITTINGS_TO_PENDANT_STEM_2X2.txt"
+      },
+      {
+        "key": "MR009",
+        "asset_key": "MR009",
+        "name": "MYS MR009 Balcony Scroll To Sideways Stair",
+        "type": "Location",
+        "description": "Four distinct physical states of the same balcony scroll to sideways stair transformation, for reconstruction in continuous video.",
+        "group": "morphs",
+        "prompt": "02_library/morphs/MR009_BALCONY_SCROLL_TO_SIDEWAYS_STAIR_2X2.txt"
+      },
+      {
+        "key": "MR010",
+        "asset_key": "MR010",
+        "name": "MYS MR010 English Sign To Kave Lettering",
+        "type": "Location",
+        "description": "Four distinct physical states of the same english sign to kave lettering transformation, for reconstruction in continuous video.",
+        "group": "morphs",
+        "prompt": "02_library/morphs/MR010_ENGLISH_SIGN_TO_KAVE_LETTERING_2X2.txt"
+      },
+      {
+        "key": "MR011",
+        "asset_key": "MR011",
+        "name": "MYS MR011 Slate Roof To Curved Glazing",
+        "type": "Location",
+        "description": "Four distinct physical states of the same slate roof to curved glazing transformation, for reconstruction in continuous video.",
+        "group": "morphs",
+        "prompt": "02_library/morphs/MR011_SLATE_ROOF_TO_CURVED_GLAZING_2X2.txt"
+      },
+      {
+        "key": "MR012",
+        "asset_key": "MR012",
+        "name": "MYS MR012 Chimney Shafts To Spiral Crowns",
+        "type": "Location",
+        "description": "Four distinct physical states of the same chimney shafts to spiral crowns transformation, for reconstruction in continuous video.",
+        "group": "morphs",
+        "prompt": "02_library/morphs/MR012_CHIMNEY_SHAFTS_TO_SPIRAL_CROWNS_2X2.txt"
+      },
+      {
+        "key": "MR013",
+        "asset_key": "MR013",
+        "name": "MYS MR013 Entrance Rail To Transit Gate",
+        "type": "Location",
+        "description": "Four distinct physical states of the same entrance rail to transit gate transformation, for reconstruction in continuous video.",
+        "group": "morphs",
+        "prompt": "02_library/morphs/MR013_ENTRANCE_RAIL_TO_TRANSIT_GATE_2X2.txt"
+      },
+      {
+        "key": "MR014",
+        "asset_key": "MR014",
+        "name": "MYS MR014 Bench And Canopy To Bus Seating",
+        "type": "Location",
+        "description": "Four distinct physical states of the same bench and canopy to bus seating transformation, for reconstruction in continuous video.",
+        "group": "morphs",
+        "prompt": "02_library/morphs/MR014_BENCH_AND_CANOPY_TO_BUS_SEATING_2X2.txt"
+      },
+      {
+        "key": "MR015",
+        "asset_key": "MR015",
+        "name": "MYS MR015 Canopy To Balloon Envelope",
+        "type": "Location",
+        "description": "Four distinct physical states of the same canopy to balloon envelope transformation, for reconstruction in continuous video.",
+        "group": "morphs",
+        "prompt": "02_library/morphs/MR015_CANOPY_TO_BALLOON_ENVELOPE_2X2.txt"
+      },
+      {
+        "key": "MR016",
+        "asset_key": "MR016",
+        "name": "MYS MR016 Crop Stalks To Rail Sleepers",
+        "type": "Location",
+        "description": "Four distinct physical states of the same crop stalks to rail sleepers transformation, for reconstruction in continuous video.",
+        "group": "morphs",
+        "prompt": "02_library/morphs/MR016_CROP_STALKS_TO_RAIL_SLEEPERS_2X2.txt"
+      },
+      {
+        "key": "MR017",
+        "asset_key": "MR017",
+        "name": "MYS MR017 Cabinet To Desk And Chair",
+        "type": "Location",
+        "description": "Four distinct physical states of the same cabinet to desk and chair transformation, for reconstruction in continuous video.",
+        "group": "morphs",
+        "prompt": "02_library/morphs/MR017_CABINET_TO_DESK_AND_CHAIR_2X2.txt"
+      },
+      {
+        "key": "MR018",
+        "asset_key": "MR018",
+        "name": "MYS MR018 Hearing Bench To Document Shelving",
+        "type": "Location",
+        "description": "Four distinct physical states of the same hearing bench to document shelving transformation, for reconstruction in continuous video.",
+        "group": "morphs",
+        "prompt": "02_library/morphs/MR018_HEARING_BENCH_TO_DOCUMENT_SHELVING_2X2.txt"
+      },
+      {
+        "key": "MR019",
+        "asset_key": "MR019",
+        "name": "MYS MR019 Paving And Gutter To Street Terrace",
+        "type": "Location",
+        "description": "Four distinct physical states of the same paving and gutter to street terrace transformation, for reconstruction in continuous video.",
+        "group": "morphs",
+        "prompt": "02_library/morphs/MR019_PAVING_AND_GUTTER_TO_STREET_TERRACE_2X2.txt"
+      },
+      {
+        "key": "MR020",
+        "asset_key": "MR020",
+        "name": "MYS MR020 Rope Fibres To Sheet Hem",
+        "type": "Location",
+        "description": "Four distinct physical states of the same rope fibres to sheet hem transformation, for reconstruction in continuous video.",
+        "group": "morphs",
+        "prompt": "02_library/morphs/MR020_ROPE_FIBRES_TO_SHEET_HEM_2X2.txt"
+      },
+      {
+        "key": "R008",
+        "asset_key": "R008_STUDY",
+        "name": "MYS R008 Cafe To Occupied Restaurant",
+        "type": "Location",
+        "description": "Four distinct physical states of a London café opening becoming a solid occupied restaurant.",
+        "group": "morphs",
+        "prompt": "02_library/morphs/R008_CAFE_OPENING_AND_FURNITURE_CONSTRUCTION_DETAILS.txt"
+      },
+      {
+        "key": "R009",
+        "asset_key": "R009_STUDY",
+        "name": "MYS R009 Fanlight To Canopy",
+        "type": "Location",
+        "description": "Four distinct physical states of an arcade fanlight becoming a glass-and-iron canopy.",
+        "group": "morphs",
+        "prompt": "02_library/objects/R009_FANLIGHT_TO_CANOPY_JOINT_STUDY_FOR_THE_EXTEND.txt"
+      },
+      {
+        "key": "R002",
+        "asset_key": "R002",
+        "name": "MYS R002 Red London Bus",
+        "type": "Prop",
+        "description": "The same red London double-decker shown from useful exterior angles.",
+        "group": "objects",
+        "prompt": "02_library/objects/R002_THE_SAME_RED_LONDON_BUS_FROM_USEFUL_ANGLES.txt"
+      }
+    ],
+    "retained_image_keys_inferred_from_conversation": [
+      "C01",
+      "C02",
+      "MR001",
+      "R002"
+    ],
+    "retained_image_count_reported": 4,
+    "remote_deletion_or_import_performed": false,
+    "new_platform_mentions": "PENDING_IMPORT_AND_ACTUAL_ID_CAPTURE",
+    "legacy_binding_policy": "Historical IDs retained until actual new IDs are supplied; not verified for the restart.",
+    "excluded_legacy_inputs": {
+      "R001": "Rating cards contained in current-city world grids",
+      "R011": "London opening supplied by world W01_A",
+      "R005": "St Pauls supplied by world/MR001 source cells",
+      "R006": "Basilica supplied by world/MR001 target cells",
+      "T01_IMAGE": "Restaurant replaced by T01_A/B/C coverage"
+    }
   }
 }

@@ -1,3 +1,5 @@
+CURRENT WORKFLOW — 2026-09-10: the creator requested a full clean Element reimport, including characters. Use the [complete restart guide](../00_project/elements/FULL_PROJECT_GUIDE.md) and its 105-entry list. Earlier incremental-import and retained-image instructions below are historical where they conflict. Four images are reported retained; previous @ bindings are not verified for the new import.
+
 # Pilot — establish the reference at 480p before final production
 
 The creator’s sequence is: **detailed first video → native visual continuation → one joined test → narration on that joined test → review picture and sound together**. The accepted result becomes the practical reference for the full film. Preserve the complete first-scene prompt; do not shorten it to combine tests. Do not generate a separate video for each effect, card, camera or sound criterion.

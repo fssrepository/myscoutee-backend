@@ -1,13 +1,16 @@
+REFERENCE SETUP INCOMPLETE: T01_DETAILS
+Do not generate until these references are bound.
+
 REFERENCE INPUTS:
-@loc_MYS_pilot-soho-restaurant-memory_s1_v1 supplies the accepted warm Soho sushi restaurant: its narrow room, wooden tables, seated woman, remembered man beside the two rear restroom doors, lighting and existing diners. Preserve this particular room and its furnishings in every view. Infer unseen sides consistently from its visible construction; do not redesign the restaurant.
+@UNBOUND_T01_DETAILS supplies the accepted T01_A restaurant layout, furniture, lights, poses and object placement. Reconstruct the same room from the views below.
 @char_mys_protagonist_s1_v1 supplies the remembered man's exact face, hair, body and dark jacket. There is one occurrence of him inside this memory.
-@char_mys_soho-woman_s1_v1 supplies the seated woman's exact identity. Preserve her clothing, hair and seated placement from the accepted restaurant image.
+@char_mys_soho-woman_s1_v1 supplies the seated woman's exact identity. Preserve her clothing, hair and seated placement from the accepted Page A restaurant.
 
 OUTPUT GEOMETRY — ONE 4K 2×2 MEMORY PAGE:
 Generate ONE photographic 3840×2160 widescreen 16:9 image containing exactly FOUR equal edge-to-edge 1920×1080 cells, two columns and two rows. Select 4K for the whole output. Zero gutters, margins, borders, labels, arrows or captions. Every cell is a complete composition of its assigned subject, not a panoramic image quartered after rendering. This prompt produces one page only.
 
 ONE ESTABLISHED ROOM AND ENCOUNTER:
-Show the remembered restaurant directly from inside its physical space. Retain the narrow floor plan, warm cream/tan walls, modest wooden furniture, wall fixtures and practical ceiling lamps visible in the accepted image. The woman sits at the same near table on the right side of the entrance-facing view; the man stands farther back beside the SAME two restroom doors. The table's dishes and cup remain in the positions established by that image. Keep any existing background diners at their established tables, subordinate to the encounter. Do not invent an additional counter, corridor, restroom door, furniture set or customer group to fill a new angle.
+Show the remembered restaurant directly from inside its physical space. Retain the narrow floor plan, warm cream/tan walls, modest wooden furniture, wall fixtures and practical ceiling lamps visible in the accepted Page A image. The woman sits at the same near table on the right side of the entrance-facing view; the man stands farther back beside the SAME two restroom doors. The dishes and cup retain their positions from Page A. Keep any existing background diners at their established tables, subordinate to the encounter. Do not invent an additional counter, corridor, restroom door, furniture set or customer group to fill a new angle.
 The man has turned away from the wrong restroom door toward the woman; she turns slightly and gives him a small spontaneous smile. Use this same quiet instant across the coverage, with natural posture and room for their eyeline. No new dialogue, embrace, standing-up action or extra story beat. These are different spatial views of one encounter, not successive phases of a material morph. The separate R008 sheet describes the street-to-restaurant transformation.
 Map the same physical relationships through every viewpoint: table corner to chair; woman's hand to cup; chair legs to floor; man's shoes to the rear threshold; two doors to the adjacent wall. New angles may hide objects through ordinary occlusion, but cannot relocate them or mirror the floor plan. Keep occupied furniture solid, full-size and supported. Where a close view cannot show every anchor, retain at least one adjacent furniture edge or recognizable background feature.
 
@@ -16,7 +19,7 @@ Photorealistic live-action interior photography, warm practical lighting with so
 This is the literal memory interior: no current London street, Budapest skyline, numerical score cards, umbrellas, projected room, reflection overlay or morphing furniture. Door labels and existing wall notices remain ordinary incidental details; do not add explanatory text. Keep remembered people card-free.
 
 PAGE C — ROOM CONSTRUCTION, LIGHT AND CAMERA CLEARANCE:
-Render only the four assigned views below. Pages A, B and C together provide twelve complementary views of this same room. Use the accepted original room image directly for every page; generating another page first is not a prerequisite.
+Render only the four assigned views below. Pages A, B and C together provide twelve complementary views of this same room. Use the accepted Page A image to preserve the same room from these additional viewpoints.
 
 FOUR ASSIGNED CELLS:
 
@@ -24,7 +27,7 @@ CELL 1 — TOP-LEFT — VIEW 09 — AISLE AT TABLE-EDGE HEIGHT:
 Place the view near table-edge height along the existing aisle, looking past the projecting corner of the woman’s table toward the rear doors. Show the table’s front and side faces, chair legs, the clear floor gap beside them and the farther threshold. Near edges are large and the rear doorway smaller through real perspective. Keep the seated body and man partially visible wherever that angle naturally permits. This frame supplies the space a later moving camera could traverse; no drone, route arrow or invented extra-wide aisle appears.
 
 CELL 2 — TOP-RIGHT — VIEW 10 — PRACTICAL LAMPS AND UPPER ROOM CONNECTIONS:
-Tilt a natural oblique interior view upward enough to inspect the existing hanging fixtures, their stems or cables, ceiling attachments and relation to the side walls. Preserve the actual number, shapes and positions shown in the accepted restaurant instead of substituting a decorative lighting scheme. Retain the upper edge of the rear door pair and part of the occupied room below for orientation. Show shade thickness, emitted light, reflected highlights and the shadows cast by the fixtures; lamps remain ordinary intact objects.
+Tilt a natural oblique interior view upward enough to inspect the existing hanging fixtures, their stems or cables, ceiling attachments and relation to the side walls. Preserve the actual number, shapes and positions shown in the accepted Page A restaurant instead of substituting a decorative lighting scheme. Retain the upper edge of the rear door pair and part of the occupied room below for orientation. Show shade thickness, emitted light, reflected highlights and the shadows cast by the fixtures; lamps remain ordinary intact objects.
 
 CELL 3 — BOTTOM-LEFT — VIEW 11 — REAR THRESHOLD, WALL AND FLOOR JUNCTION:
 Use a low close oblique angle beside the existing rear doors. Resolve the two door frames’ thickness, threshold edges, skirting or wall-to-floor junction, and the man’s shoes standing on the same floor. Keep a table-leg or chair silhouette at greater distance to preserve room depth. Wood and paint wear remain modest and plausible. No invented opening reveals another room; door leaves retain their source positions. The continuous floor and solid jambs supply construction information for the video.

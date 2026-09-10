@@ -1,3 +1,5 @@
+CURRENT WORKFLOW — 2026-09-10: the creator requested a full clean Element reimport, including characters. Use the [complete restart guide](../../00_project/elements/FULL_PROJECT_GUIDE.md) and its 105-entry list. Earlier incremental-import and retained-image instructions below are historical where they conflict. Four images are reported retained; previous @ bindings are not verified for the new import.
+
 # World references — 4K, 2×2 pages
 
 Each linked `.txt` file is a complete prompt to copy into Higgsfield. Render **one 3840×2160 image per prompt**, 16:9 / 4K. Four equal borderless cells give 1920×1080 per cell. No outer margins or internal gutters.

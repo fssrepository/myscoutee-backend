@@ -1,3 +1,5 @@
+CURRENT WORKFLOW — 2026-09-10: the creator requested a full clean Element reimport, including characters. Use the [complete restart guide](../../00_project/elements/FULL_PROJECT_GUIDE.md) and its 105-entry list. Earlier incremental-import and retained-image instructions below are historical where they conflict. Four images are reported retained; previous @ bindings are not verified for the new import.
+
 # Memory reference pages — 4K 2×2
 
 Each file is one copy-ready image prompt for a 3840×2160 canvas divided into four 1920×1080 cells without gutters. Each original nine-view bank now has three pages, preserving all 81 original views across the nine banks. Every page filename ends in _A.txt, _B.txt or _C.txt so the pages sort together. Original Element keys remain unchanged. Existing generated media and imported original Elements are unchanged.
@@ -20,7 +22,7 @@ T01 now follows the same A–B–C organization, with twelve detailed views of t
 | --- | --- | --- | --- |
 | T01 | [Room and encounter](T01_SOHO_RESTAURANT_SOURCE_A.txt) | [People and contact details](T01_SOHO_RESTAURANT_SOURCE_B.txt) | [Construction and camera clearance](T01_SOHO_RESTAURANT_SOURCE_C.txt) |
 
-Each page uses the accepted original T01 image and the two verified character inputs directly. They can be generated independently; B/C do not wait for a newly generated A. Output keys are T01_DETAILS (A), T01_DETAILS_B and T01_DETAILS_C. The accepted single image remains T01_IMAGE.
+In the clean restart, T01_A establishes the restaurant from its detailed text and C01/C02 character images. T01_B/C reuse accepted T01_A for consistent layout and furnishings. Output keys are T01_DETAILS (A), T01_DETAILS_B and T01_DETAILS_C. The deleted single-image T01_IMAGE is not recreated as an Element.
 
 ## Use several pages per video
 

@@ -1,3 +1,7 @@
+## Current full Element restart — 2026-09-10
+
+User explicitly requests the entire Element list including characters be reimported to remove accumulated clutter; only four images remain. Created FULL_PROJECT_IMPORT.md with 105 unique entries: 31 characters, 21 world pages, 30 memory pages, 22 morph sheets, one red bus. All older incremental imports are superseded for this restart. Four retained images inferred as C01/C02/MR001/R002 from the screenshot discussion; exact remaining UI media not inspected. Full import and prompt map prepared; no remote mutation. Old platform IDs are historical until new actual handles are supplied. T01_A now bootstraps the described restaurant from character refs; T01_B/C use the new A and no longer require deleted T01_IMAGE. Consumers of legacy world/restaurant/detail images still require migration to accepted new grids when new bindings arrive; do not treat old video prompts as render-ready for this restarted library.
+
 ## T01 restaurant coverage — 2026-09-10
 
 Expanded T01 into detailed A/B/C 4K 2×2 pages, twelve assigned views. Existing four coverage subjects remain in A; B adds human/contact details and C construction/camera-clearance views. All pages use the accepted original room and bound C01/C02 inputs directly. T01_DETAILS remains Page A output key; B/C output keys are new and unbound. Prepared memory import 12 now contains 21 new containers; no import or render performed. Accepted T01_IMAGE and video references remain unchanged.

@@ -1,3 +1,5 @@
+CURRENT WORKFLOW — 2026-09-10: the creator requested a full clean Element reimport, including characters. Use the [complete restart guide](../../00_project/elements/FULL_PROJECT_GUIDE.md) and its 105-entry list. Earlier incremental-import and retained-image instructions below are historical where they conflict. Four images are reported retained; previous @ bindings are not verified for the new import.
+
 # Morph sheets — 22 distinct four-state studies
 
 Every linked TXT is one complete Higgsfield image prompt: 4K 3840×2160, 16:9, four edge-to-edge 1920×1080 cells, one image output. Each sheet contains the source, two radically different rearrangements and the destination. Intermediate forms can expand, split, rotate and reconverge far outside a proportional source/target blend. The same comparison camera exposes actual shape changes. These are prepared prompts; revised/new outputs have not been accepted.
