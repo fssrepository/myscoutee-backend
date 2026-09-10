@@ -3,7 +3,7 @@ REFERENCE ID: MWP01_ROUTES_ROOMS_DOCUMENTS_C (never print IDs, headings or panel
 OUTPUT ELEMENT ASSIGNMENT — OPERATOR METADATA ONLY, NEVER RENDER:
 Live output Element name (operator lookup only): loc_MYS_mys-mwp01-c-routes-rooms-documents_s0_v1
 Live output Element UUID: 956de5c1-41b0-49a5-9dc7-0e6ffb3f61e8
-Assign the finished image to this existing empty target. This output target is not an input reference.
+Image attachment verified via MCP on 2026-09-10. This output target is not an input reference.
 
 PAGE CONTINUITY INPUT: @loc_MYS_mys-mwp01-a-routes-rooms-documents_s0_v1 supplies the accepted Page A identities, shared material palette and any recurring room geometry. New places explicitly assigned to this page retain their own stated setting; do not copy Page A into every cell.
 

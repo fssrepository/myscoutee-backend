@@ -3,7 +3,7 @@ REFERENCE ID: MWP02_SYSTEM_TIME_REVERSALS_B (never print IDs, headings or panel 
 OUTPUT ELEMENT ASSIGNMENT — OPERATOR METADATA ONLY, NEVER RENDER:
 Live output Element name (operator lookup only): loc_MYS_mys-mwp02-b-system-time-reversals_s0_v1
 Live output Element UUID: 6a867b37-16f5-4ecb-85ed-c8b92aa40311
-Assign the finished image to this existing empty target. This output target is not an input reference.
+Image attachment verified via MCP on 2026-09-10. This output target is not an input reference.
 
 PAGE CONTINUITY INPUT: @loc_MYS_mys-mwp02-a-system-time-reversals_s0_v1 supplies the accepted Page A identities, shared material palette and any recurring room geometry. New places explicitly assigned to this page retain their own stated setting; do not copy Page A into every cell.
 
