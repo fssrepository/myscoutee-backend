@@ -1,4 +1,4 @@
-REFERENCE ID: R013_RED_BUS_LOWER_DECK_PASSAGE_AND_OPEN_DOOR_GEOMETRY (do not render this identifier).
+REFERENCE ID: R013_RED_BUS_LOWER_DECK_PASSAGE_AND_OPEN_DOOR_GEOMETRY (never print IDs, headings or panel labels).
 
 SUBJECT — LONDON BUS LOWER DECK TO DEEP ARCADED PASSAGE:
 Track a scratched grab rail into an arch rib, a seat-cushion seam into a bench edge and the doorway’s step corner into the new threshold. Keep the depth between near frame, seats and far exit evident throughout.
@@ -21,16 +21,16 @@ MINERAL RESPONSE: Dense stone and brick resist bending. Their fast initial motio
 TIMBER RESPONSE: Wood first bends along grain and separates at joinery; transverse loads open a split along visible fibres. Long fibres bridge the changing region while bundles spread, lengthen and pack into the new board or support. End grain rotates with the actual cut face. A temporarily compliant forming region permits strong curvature; the finished board regains stiffness. Long unsupported ends lag and rebound slightly, while heavy joints seat later. The grain path and rigid completed sections distinguish timber from flowing liquid.
 The four stills expose these different material responses through strain, sag, folded thickness, changing joints and contact shadows. In the moving film, thin flexible pieces can respond first while heavier or more viscous regions lag; phases overlap rather than all parts advancing on the same uniform clock.
 
-TOP-LEFT — COMPLETE ORIGINAL:
+At top left: COMPLETE ORIGINAL:
 Interior view through an actual open passenger doorway of the red double-decker, showing the lower-deck aisle, window pillars, handrails, seat bases, floor texture and the front exit. Show the same London road through the existing openings.
 
-TOP-RIGHT — EXPANSIVE MATERIAL RECONSTRUCTION:
+At top right: EXPANSIVE MATERIAL RECONSTRUCTION:
 The window pillars split and flare outward into thick branching ribs while paired seat shells separate above their frames. Floor strips spread laterally and ceiling panels rise in staggered sections, exposing their undersides. Door jambs remain a traceable near anchor while the formerly narrow cabin becomes a wide irregular open skeleton.
 
-BOTTOM-LEFT — DIFFERENT CONVERGING RECONSTRUCTION:
+At bottom left: DIFFERENT CONVERGING RECONSTRUCTION:
 Window pillars and rails gather into two rows of substantial arch supports. Seat shells broaden into continuous side benches; one remains lifted and unjoined above its new base. Ceiling ribs curve into a vaulted passage with a broad open crown seam. Floor strips lengthen toward the same already-visible exit, leaving deep temporary slots outside the clear walking strip.
 
-BOTTOM-RIGHT — COMPLETE DESTINATION:
+At bottom right: COMPLETE DESTINATION:
 A deep open-sided arcade with solid benches, joined vaulted supports and a continuous floor occupies the bus cabin’s transformed volume. The original doorway material makes the near entrance arch and the far exit still leads to the same London street. No separate corridor image is placed behind the bus door.
 
 TRACEABLE PART CORRESPONDENCE:

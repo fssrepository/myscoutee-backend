@@ -1,4 +1,4 @@
-REFERENCE ID: TY003_CAFE_AND_CULTURE_SIGN_LETTERING_2X2 (do not render this identifier).
+REFERENCE ID: TY003_CAFE_AND_CULTURE_SIGN_LETTERING_2X2 (never print IDs, headings or panel labels).
 
 ONE 4K TYPOGRAPHY SHEET — 2×2:
 Create ONE 3840×2160 image with exactly FOUR equal edge-to-edge 1920×1080 cells in two columns and two rows. Select 4K for the whole output. No margins, gutters, separators or letterboxing. Each cell is a separately composed full 16:9 image. The specified words are large and sharply resolved, with complete glyphs and space for their accents. The four assigned cells have different inspection purposes or material states; do not produce four near-identical decorative signs.
@@ -6,16 +6,16 @@ Create ONE 3840×2160 image with exactly FOUR equal edge-to-edge 1920×1080 cell
 SUBJECT — FOUR EXISTING HUNGARIAN STREET WORDS:
 This sheet fixes exact typography for four different mounted signs already requested in the world prompts. Each cell contains ONE word on ONE physical sign at an inspectable close scale. These are four sign identities, not four stages of a morph or four alternate city layouts. Use substantial letterforms with open counters and enough spacing for accents. Show the sign face, its solid edge and one mounting connection, with only a small neutral facade return behind. No people, destination landmark, shop interior or extra advertisement is required.
 
-TOP-LEFT — "KÁVÉ", CAFE SIGN:
+At top left: "KÁVÉ", CAFE SIGN:
 Render KÁVÉ as four raised painted letters on a dark timber face. The K branches, A crossbar and counter, V vertex and E three arms are clearly separate. Show the acute accent above Á and a second acute above É; each tilts upward to the right with enough air above the main cap line. The sign face has fine wood grain and modest edge wear. Match the completed lettering family used by TY002 rather than introducing a second incompatible cafe logo.
 
-TOP-RIGHT — "SZÍNHÁZ", THEATRE SIGN:
+At top right: "SZÍNHÁZ", THEATRE SIGN:
 Render SZÍNHÁZ as seven uppercase letters with a restrained cultural-sign serif or architectural lettering character. Keep the initial S and Z individually readable, then Í, N, H, Á and final Z in that exact order. The acute above Í is separate from its vertical stem, and the acute above Á sits above the full A with a clear counter. Use a long shallow solid signband or attached raised metal letters with visible stand-offs, not a text banner floating in air. Fit the full long word without condensing it into unreadable narrow strokes.
 
-BOTTOM-LEFT — "MOZI", CINEMA SIGN:
+At bottom left: "MOZI", CINEMA SIGN:
 Render MOZI as four clean bold uppercase letters on a modest enamel or painted metal fascia segment. Show the M inner diagonals, round O counter, Z diagonal and straight I without fake accents. The metal panel has a folded edge and one small fixing. A practical lamp highlight can fall along its upper edge while the letter faces remain matte enough to read. Keep the word complete with ordinary sign proportions rather than adding film-reel icons or a cinema poster.
 
-BOTTOM-RIGHT — "KÖNYV", BOOKSHOP SIGN:
+At bottom right: "KÖNYV", BOOKSHOP SIGN:
 Render KÖNYV as five uppercase letters on a plain painted wooden board. The Ö has TWO distinct round dots above its O body, with equal spacing and no merging into an umlaut bar or acute. N and Y retain different branch structure; the final V has a clear lower vertex. Show a shallow board bevel, grain at the exposed edge and the shadow from its wall bracket. No book title, author, extra shop name or decorative handwriting is printed.
 
 PHOTOGRAPHY AND WORD LOCK:

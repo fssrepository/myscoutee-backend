@@ -1,4 +1,4 @@
-REFERENCE ID: MW03_WORK_RULE_CHANGE_ADMIN_A (do not render this identifier).
+REFERENCE ID: MW03_WORK_RULE_CHANGE_ADMIN_A (never print IDs, headings or panel labels).
 
 REFERENCE INPUTS:
 @char_MYS_mys-c01-protagonist_s0_v1 = CHARACTER 01 — PROTAGONIST; exact person identity; use only where this person appears.
@@ -40,23 +40,23 @@ REFERENCE COVERAGE FOR THE MOVING FILM:
 This page supplies the four assigned literal views, not four cuts, morph stages or interchangeable world designs. Make each view useful for its assigned purpose: room layout shows supports and an entry/exit; a gesture view retains its hand, furniture edge and background anchor; an object detail shows side/underside and contact. Different views of the SAME room preserve its floor plan, furniture, identities, clothes and light sources even when the viewpoint changes. Distinct memories remain distinct places; do not fuse them into one room to match the grid. Repeated anchor views on another page must preserve the same state and layout.
 Additional detail pages of the same place retain that memory and its established event. Keep full body/furniture support legible wherever the assigned view permits. Never substitute four nearly identical wide shots for the four assigned subjects.
 
-FOUR ASSIGNED CELLS:
-CELL 1 — TOP-LEFT — ORIGINAL VIEW 01:
+FOUR IMAGE ASSIGNMENTS — INSTRUCTIONS ONLY, NO PRINTED TEXT:
+For the top left image (source view 01; instruction only, never printed):
 Ordinary cross-border remote-work setup: protagonist on a professional call / computer task connected to an international contract. Real desk, laptop/monitor, notes, restrained workday atmosphere, no heroic tech montage.
 
 Place the laptop on a real desk with its hinge, keyboard, power lead and one adjoining note stack visible. The protagonist sits in a chair with forearms supported at desk height; a room doorway or wall corner establishes depth behind. The screen displays an ordinary task interface without invented contract amounts or readable confidential text. Keep this desk layout reusable in the later workday cell.
 
-CELL 2 — TOP-RIGHT — ORIGINAL VIEW 02:
+For the top right image (source view 02; instruction only, never printed):
 Late long-workday memory suggesting 13–15-hour pressure: same ordinary workspace later in the day, tired posture, practical desk light, unfinished task, calendar and clock cues without melodrama.
 
 Reuse the same desk, computer position, chair and note stack from the earlier work view. The practical lamp now makes a local pool across the unfinished task while the room beyond is darker. Show fatigue through lowered shoulders and a small pause of the hands. The time cues stay physical; do not print a large 13–15-hour caption or invent multiple clocks.
 
-CELL 3 — BOTTOM-LEFT — ORIGINAL VIEW 03:
+For the bottom left image (source view 03; instruction only, never printed):
 Accounting/admin desk with invoice, calendar, printer, forms and ordinary paperwork while live work continues nearby. The need for professional delegation should be visible through context, not explanatory graphics.
 
 Give the accountant a separate seated position with the printer, invoice stack and calendar on reachable surfaces. Show paper edges, feed tray and the actual gap between administrative and active work areas. The protagonist remains occupied nearby at another screen. Each device has a clear support and cable route; the clutter cannot become an undifferentiated texture.
 
-CELL 4 — BOTTOM-RIGHT — ORIGINAL VIEW 04:
+For the bottom right image (source view 04; instruction only, never printed):
 The core 'three people / no shared screen' memory. Three people physically near one administrative problem, each looking at a different screen/document version. Clear triangular or three-way composition, no one malicious.
 
 Place the protagonist, Admin Colleague A and Admin Colleague B around three distinct work surfaces or positions. Each person has a different visible screen or paper version turned toward them. Preserve an open triangular gap between their bodies and show all three eyelines separately. No central shared display, merged screen or additional accountant replaces this specific three-person arrangement.

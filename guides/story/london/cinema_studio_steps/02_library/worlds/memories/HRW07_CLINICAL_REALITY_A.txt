@@ -1,4 +1,4 @@
-REFERENCE ID: HRW07_CLINICAL_REALITY_A (do not render this identifier).
+REFERENCE ID: HRW07_CLINICAL_REALITY_A (never print IDs, headings or panel labels).
 
 REFERENCE INPUTS:
 @char_MYS_mys-c01-protagonist_s0_v1 = CHARACTER 01 — PROTAGONIST; exact person identity; use only where this person appears.
@@ -48,23 +48,23 @@ REFERENCE COVERAGE FOR THE MOVING FILM:
 This page supplies the four assigned literal views, not four cuts, morph stages or interchangeable world designs. Make each view useful for its assigned purpose: room layout shows supports and an entry/exit; a gesture view retains its hand, furniture edge and background anchor; an object detail shows side/underside and contact. Different views of the SAME room preserve its floor plan, furniture, identities, clothes and light sources even when the viewpoint changes. Distinct memories remain distinct places; do not fuse them into one room to match the grid. Repeated anchor views on another page must preserve the same state and layout.
 Additional detail pages of the same place retain that memory and its established event. Keep full body/furniture support legible wherever the assigned view permits. Never substitute four nearly identical wide shots for the four assigned subjects.
 
-FOUR ASSIGNED CELLS:
-CELL 1 — TOP-LEFT — ORIGINAL VIEW 01:
+FOUR IMAGE ASSIGNMENTS — INSTRUCTIONS ONLY, NO PRINTED TEXT:
+For the top left image (source view 01; instruction only, never printed):
 Wide establishing view of the entire ordinary clinical room, showing bed, practical furniture, cold-neutral light and enough spatial layout for later shot continuity.
 
 Place the bed lengthwise with its head against the rear wall, an accessible side for the nurse and a small practical bedside surface on the other side. Show the mattress thickness, bed frame, floor contact and the path from the room doorway. Keep the propped-up foot and cuffed wrist on consistent sides in every companion view; retain any already accepted arrangement instead of mirroring it.
 
-CELL 2 — TOP-RIGHT — ORIGINAL VIEW 02:
+For the top right image (source view 02; instruction only, never printed):
 Medium-wide side view of the protagonist returning from anaesthesia in bed, captured at the fullness of one deep rebirth-like inhalation: mouth open, chest expanded, eyes opening toward the room, with one foot propped up and one wrist cuffed to the bed.
 
 Include the head, expanded chest, cuffed wrist, mattress edge and propped-up foot in one side composition. His head remains against the pillow as his jaw opens for the deep breath; the rest of his body stays supported by the mattress. Show the padded support under the heel/ankle and the sheet draping around it. The wrist and short cuff chain remain connected to the same bed frame. Capture one sharp pose with full chest expansion and a face registering returning awareness, without motion trails or an invented injury.
 
-CELL 3 — BOTTOM-LEFT — ORIGINAL VIEW 03:
+For the bottom left image (source view 03; instruction only, never printed):
 Close physical reference of the propped-up foot, heel/ankle and padded support, non-graphic and clinically ordinary.
 
 Frame the same foot and heel/ankle on the padded support, with the mattress edge below and a short lower-leg section showing how the rest of the limb rests on the bed. Preserve the foot contour and actual contact with the padding; do not raise the entire leg or invent a full-leg cast or overhead suspension. Skin or covering remains intact and non-graphic. Distinguish padding, sheet folds and foot contours through clear contact shadows.
 
-CELL 4 — BOTTOM-RIGHT — ORIGINAL VIEW 04:
+For the bottom right image (source view 04; instruction only, never printed):
 Close physical reference of the cuffed wrist, short metal chain and its bed-frame attachment beside the white-sheet edge; one sharp instant of the brief cuff shake, non-graphic.
 
 Keep the same arm at the established bed side. The wrist is lifted slightly from its resting position and the hand is tense, with the cuff chain taut toward its fixed bed-frame attachment. Show the wrist contour, cuff thickness, separate chain links, attachment point and white sheet at distinct depths. Fingers remain anatomically clear. This is one solid captured posture for the short shake, with no duplicated hand or motion blur; the cuff remains fastened and the bed attachment holds.

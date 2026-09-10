@@ -1,4 +1,4 @@
-REFERENCE ID: R028_ORIGINAL_ARCADE_ARCH_AND_FANLIGHT (do not render this identifier).
+REFERENCE ID: R028_ORIGINAL_ARCADE_ARCH_AND_FANLIGHT (never print IDs, headings or panel labels).
 
 OBJECT MORPH STUDY — R028 ORIGINAL ARCADE ARCH AND FANLIGHT
 SUBJECT AND MATERIALS:
@@ -21,16 +21,16 @@ METAL RESPONSE: Metal yields through bending, torsion and local plastic flow. Pl
 GLASS RESPONSE: Glass begins hard, with crisp fractured or framed edges. In its active forming region it becomes a thick highly viscous transparent material: a rounded neck stretches slowly, a heavy lobe sags behind the motion, and the former sharp corner thickens into a curved rim. The glass remains cohesive; its green edge, notch and bent transmitted background trace the moving thickness. Regions outside that forming zone stay rigid. The target profile sets back to hard glass, with stable refraction and a crisp final rim. Use no flame or full-scene transparency fade to explain this magical material change.
 The four stills expose these different material responses through strain, sag, folded thickness, changing joints and contact shadows. In the moving film, thin flexible pieces can respond first while heavier or more viscous regions lag; phases overlap rather than all parts advancing on the same uniform clock.
 
-TOP-LEFT — SOURCE:
+At top left: SOURCE:
 The original narrow fanlight lies upright within a thick stone arch between two rooted piers. Show a chipped crown seam, iron intersection and attached glass corners. Leave ample open street space in the same fixed oblique view for the future projecting canopy.
 
-TOP-RIGHT — FANLIGHT SPLITS INTO A WIDELY SPLAYED RIB ARRAY:
+At top right: FANLIGHT SPLITS INTO A WIDELY SPLAYED RIB ARRAY:
 The narrow upright fanlight and its stone head expand into a widely splayed three-dimensional framework. Near stone sectors swing outward and upward with thick iron ribs, while far sectors remain steeply upright. Glazing bars lengthen into unequal branches, carrying thick panes that reshape into large curved trapezoids; selected joints may separate temporarily as the sections move toward their new positions. Broad sky gaps reveal the road and original doorway below. The crown seam and chipped edge remain identifiable in the moving sectors. The two piers retain their bases but the upper assembly need not be a usable canopy yet.
 
-BOTTOM-LEFT — CONVERGING OVERHEAD CANOPY WITH A LARGE OPEN ROOF SECTOR:
+At bottom left: CONVERGING OVERHEAD CANOPY WITH A LARGE OPEN ROOF SECTOR:
 The splayed array has gathered into a long curved canopy over the street, but one broad near roof sector remains raised and offset, exposing the actual rib depth through a large longitudinal opening. The far sector still stands steeply above its pier with panes at visibly unequal angles. Several iron intersections have thick unfinished cross-sections before narrowing into their target joints. The final cell seats the raised sector, brings the far section overhead and joins the ribs/panes into the complete supported canopy. The same street is visible below at every stage; no already-finished roof is uncovered by the motion.
 
-BOTTOM-RIGHT — RESOLVED DESTINATION:
+At bottom right: RESOLVED DESTINATION:
 The raised near roof sector and steep far sector have seated in the complete overhead structure, closing the broad intermediate opening. The full glass-and-iron canopy projects over the connected street, with all ribs resolved into their supported curves and all panes seated in the network. The original chipped crown material is part of a near outer rib. Both original piers support the canopy. The road and doorway continue beneath it; no replacement roof or new exterior is revealed.
 
 CURRENT-CITY CARDS — PRESENT IN EACH RELEVANT CELL:

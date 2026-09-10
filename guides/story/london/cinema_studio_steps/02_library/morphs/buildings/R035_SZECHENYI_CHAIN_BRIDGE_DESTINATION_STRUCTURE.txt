@@ -1,4 +1,4 @@
-REFERENCE ID: R035_SZECHENYI_CHAIN_BRIDGE_DESTINATION_STRUCTURE (do not render this identifier).
+REFERENCE ID: R035_SZECHENYI_CHAIN_BRIDGE_DESTINATION_STRUCTURE (never print IDs, headings or panel labels).
 
 SUBJECT — LONDON BRIDGE TOWER AND WALKWAY JOINT TO CHAIN BRIDGE PIER:
 Track one carved tower block into the portal cornice, a truss rivet group into the anchorage and a chain link’s wear mark into its new bearing face. This exposes bridge material changes at close scale.
@@ -20,16 +20,16 @@ MINERAL RESPONSE: Dense stone and brick resist bending. Their fast initial motio
 METAL RESPONSE: Metal yields through bending, torsion and local plastic flow. Plates form stiff curved folds with visible thickness, flanges and moving specular highlights; bars neck down or thicken near their changing joints. Bolts and collars remain hard while adjoining metal reforms. Long slender members flex sooner than massive sockets and can overshoot slightly before seating. Large shape change comes from altered cross-section as well as rotation; no metallic colour painted over a soft generic blob.
 The four stills expose these different material responses through strain, sag, folded thickness, changing joints and contact shadows. In the moving film, thin flexible pieces can respond first while heavier or more viscous regions lag; phases overlap rather than all parts advancing on the same uniform clock.
 
-TOP-LEFT — COMPLETE ORIGINAL:
+At top left: COMPLETE ORIGINAL:
 Close structural view of a Tower Bridge tower opening, upper walkway connection, deck edge and neighbouring suspension attachment. Show the stone surround, riveted iron and side faces at a useful inspection scale.
 
-TOP-RIGHT — EXPANSIVE MATERIAL RECONSTRUCTION:
+At top right: EXPANSIVE MATERIAL RECONSTRUCTION:
 Tower-opening stones spread into a broad stepped fan while the walkway joint pulls apart into thick triangular truss pieces. Suspension links bow outward into deep loops and the opening’s upper stone courses rotate away from the tower core. The original connected junction becomes visibly open.
 
-BOTTOM-LEFT — DIFFERENT CONVERGING RECONSTRUCTION:
+At bottom left: DIFFERENT CONVERGING RECONSTRUCTION:
 The stone fan gathers into a tall rectangular Chain Bridge portal with its crown still broken into two misaligned sections. Riveted truss pieces stretch and interlock into chain anchor plates; one thick loop remains turned side-on before seating. Former tower carvings develop the portal’s projecting masonry ledges.
 
-BOTTOM-RIGHT — COMPLETE DESTINATION:
+At bottom right: COMPLETE DESTINATION:
 A complete Chain Bridge portal-pier and chain-anchorage assembly sits on the same bridge support site. Joined stone crown, deep opening, iron chain saddles and deck connection are all readable together.
 
 TRACEABLE PART CORRESPONDENCE:

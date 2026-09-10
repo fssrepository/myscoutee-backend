@@ -1,4 +1,4 @@
-REFERENCE ID: R004_YELLOW_BUDAPEST_TRAM (do not render this identifier).
+REFERENCE ID: R004_YELLOW_BUDAPEST_TRAM (never print IDs, headings or panel labels).
 
 SUBJECT — YELLOW TRAM BODY TO IRON-AND-GLASS STREET ARCADE:
 Track a yellow door jamb into a roof edge, one wheel hub into a post foot and one window notch into a canopy pane. Vehicle-to-architecture scale growth is allowed, with thick intermediates and shadows making that growth legible.
@@ -20,16 +20,16 @@ VEHICLE MATERIAL RESPONSE: Chassis beams and hubs remain the stiffest masses and
 GLASS RESPONSE: Glass begins hard, with crisp fractured or framed edges. In its active forming region it becomes a thick highly viscous transparent material: a rounded neck stretches slowly, a heavy lobe sags behind the motion, and the former sharp corner thickens into a curved rim. The glass remains cohesive; its green edge, notch and bent transmitted background trace the moving thickness. Regions outside that forming zone stay rigid. The target profile sets back to hard glass, with stable refraction and a crisp final rim. Use no flame or full-scene transparency fade to explain this magical material change.
 The four stills expose these different material responses through strain, sag, folded thickness, changing joints and contact shadows. In the moving film, thin flexible pieces can respond first while heavier or more viscous regions lag; phases overlap rather than all parts advancing on the same uniform clock.
 
-TOP-LEFT — COMPLETE ORIGINAL:
+At top left: COMPLETE ORIGINAL:
 A complete yellow tram body stands on rails within a London junction. Its windows, metal pillars, roof, doors, bogies and floor are all visible. The kerb and rails establish the unchanged site.
 
-TOP-RIGHT — EXPANSIVE MATERIAL RECONSTRUCTION:
+At top right: EXPANSIVE MATERIAL RECONSTRUCTION:
 The side-body bays fan outward from the floor line into a wide rib array, each keeping glass, yellow metal edges and its lower threshold. The roof splits lengthwise into heavy arched sectors raised at different angles. Wheel assemblies separate into dark metal rings and paired support cores beneath the opening body. Expose the same interior through the broad gaps.
 
-BOTTOM-LEFT — DIFFERENT CONVERGING RECONSTRUCTION:
+At bottom left: DIFFERENT CONVERGING RECONSTRUCTION:
 The side pillars have gathered into two parallel rows of tall iron posts. Roof sectors converge into an overhead glass vault with a broad centre gap; one former window bay still hangs diagonally between a post and the roof. Bogie rings thicken into post-foot collars on the ground while the vehicle floor widens into a walkable arcade strip. Yellow body bands become curved metal roof trim through visible sectional reshaping.
 
-BOTTOM-RIGHT — COMPLETE DESTINATION:
+At bottom right: COMPLETE DESTINATION:
 A full-depth iron-and-glass pedestrian arcade occupies the same footprint, with paired posts, curved glazed roof, joined foot collars and continuous floor. Original rails remain as embedded lines beneath it. There is no intact tram hidden behind the arcade; vehicle material has become its columns, ribs, glass and supporting floor.
 
 TRACEABLE PART CORRESPONDENCE:

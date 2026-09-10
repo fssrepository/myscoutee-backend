@@ -1,4 +1,4 @@
-REFERENCE ID: TY004_OFFICE_AND_ACCOUNTING_SIGN_LETTERING_2X2 (do not render this identifier).
+REFERENCE ID: TY004_OFFICE_AND_ACCOUNTING_SIGN_LETTERING_2X2 (never print IDs, headings or panel labels).
 
 ONE 4K TYPOGRAPHY SHEET — 2×2:
 Create ONE 3840×2160 image with exactly FOUR equal edge-to-edge 1920×1080 cells in two columns and two rows. Select 4K for the whole output. No margins, gutters, separators or letterboxing. Each cell is a separately composed full 16:9 image. The specified words are large and sharply resolved, with complete glyphs and space for their accents. The four assigned cells have different inspection purposes or material states; do not produce four near-identical decorative signs.
@@ -6,16 +6,16 @@ Create ONE 3840×2160 image with exactly FOUR equal edge-to-edge 1920×1080 cell
 SUBJECT — WORK-DISTRICT ENGLISH AND HUNGARIAN SIGNAGE:
 Show four different exact words from the professional-street prompts, one complete mounted sign per cell. This is a lettering and mounting identity sheet, not a requirement to transform all four signs or replace all London signage at once. Keep restrained ordinary professional typography: clear uppercase strokes, open counters, consistent spacing, no corporate brand or elaborate logo. The two English signs define source lettering; the two Hungarian signs define the corresponding vocabulary after local city changes.
 
-TOP-LEFT — "OFFICE":
+At top left: "OFFICE":
 Print OFFICE in a clean medium-bold sans-serif on a modest rectangular brushed-metal or painted office plaque. Show the O counter, two separate F letters, straight I, open C and E arms. The plaque is mounted beside a fragment of an actual recessed doorway with screw heads or stand-offs at its corners. The word occupies the main readable area, with no company name, phone number, opening hours or address.
 
-TOP-RIGHT — "ACCOUNTING":
+At top right: "ACCOUNTING":
 Render ACCOUNTING as ten separate uppercase letters on a wider ordinary shop or office sign. Keep the double C and the sequence O-U-N-T-I-N-G exact; do not shorten the word or fuse adjacent strokes to fit the width. Use sufficient letter spacing and a broad cell composition with the full board visible. Show the sign side thickness and a fixing against a plain facade return. No spreadsheet or invented service claim is added.
 
-BOTTOM-LEFT — "IRODA":
+At bottom left: "IRODA":
 Render IRODA as five uppercase letters in a compatible restrained professional sign family. Resolve the I stem, R bowl and diagonal leg, O counter, D vertical and curved side, and A crossbar. The lettering sits on a solid shallow plaque with a visible metal edge and local contact shadow. Keep the surrounding wall neutral so the word cannot be confused with a location title printed over a building photograph.
 
-BOTTOM-RIGHT — "KÖNYVELÉS":
+At bottom right: "KÖNYVELÉS":
 Render KÖNYVELÉS as nine uppercase letters, in order K, Ö, N, Y, V, E, L, É, S. The second letter has TWO distinct dots; the penultimate É has one upward-right acute accent. Preserve the difference between plain E and accented É within the same word. Use a wide sign face, generous side padding and clean spacing rather than squeezing the word to fit a small plaque. Show the near edge and support without letting them cover any glyph.
 
 MATERIAL AND CONTEXT:

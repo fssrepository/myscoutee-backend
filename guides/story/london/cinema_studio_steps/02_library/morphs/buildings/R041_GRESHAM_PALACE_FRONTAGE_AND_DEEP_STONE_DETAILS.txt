@@ -1,4 +1,4 @@
-REFERENCE ID: R041_GRESHAM_PALACE_FRONTAGE_AND_DEEP_STONE_DETAILS (do not render this identifier).
+REFERENCE ID: R041_GRESHAM_PALACE_FRONTAGE_AND_DEEP_STONE_DETAILS (never print IDs, headings or panel labels).
 
 SUBJECT — LONDON STONE RIVERFRONT BLOCK TO GRESHAM PALACE:
 Track a sill chip into a carved arch, an iron window junction into destination metalwork and a roof seam into the new curved profile. Broad facade volumes and deep ornament change together.
@@ -21,16 +21,16 @@ ROOF RESPONSE: Structural ribs carry the large roof-sector motion; thin attached
 GLASS RESPONSE: Glass begins hard, with crisp fractured or framed edges. In its active forming region it becomes a thick highly viscous transparent material: a rounded neck stretches slowly, a heavy lobe sags behind the motion, and the former sharp corner thickens into a curved rim. The glass remains cohesive; its green edge, notch and bent transmitted background trace the moving thickness. Regions outside that forming zone stay rigid. The target profile sets back to hard glass, with stable refraction and a crisp final rim. Use no flame or full-scene transparency fade to explain this magical material change.
 The four stills expose these different material responses through strain, sag, folded thickness, changing joints and contact shadows. In the moving film, thin flexible pieces can respond first while heavier or more viscous regions lag; phases overlap rather than all parts advancing on the same uniform clock.
 
-TOP-LEFT — COMPLETE ORIGINAL:
+At top left: COMPLETE ORIGINAL:
 A specific coherent London historic riverfront block has pale stone bays, a restrained cornice, rectangular windows, a central entrance and a visible receding side. Establish its complete initial footprint, stone courses and London pavement.
 
-TOP-RIGHT — EXPANSIVE MATERIAL RECONSTRUCTION:
+At top right: EXPANSIVE MATERIAL RECONSTRUCTION:
 The facade bays split into deep offset stone stacks while roof edges spread into unequal curved ribs. Window jambs broaden into thick branching carvings and the central entrance columns splay outward. The silhouette becomes wide and irregular, with large gaps exposing the original interior depth.
 
-BOTTOM-LEFT — DIFFERENT CONVERGING RECONSTRUCTION:
+At bottom left: DIFFERENT CONVERGING RECONSTRUCTION:
 The moving bays gather into Gresham Palace’s recognisable frontage and roof profile. Curved ornamental stone masses are largely formed but one corner remains an open lattice of thick volutes; the main entrance arch has a wide unjoined crown. Roof ribs converge with two sectors still displaced forward.
 
-BOTTOM-RIGHT — COMPLETE DESTINATION:
+At bottom right: COMPLETE DESTINATION:
 The specific Gresham Palace frontage resolves with its curved roofline, central entrance, substantial carved-stone and metal/glass interfaces and visible side return. The same London pavement and neighbouring block corner remain beneath it.
 
 TRACEABLE PART CORRESPONDENCE:

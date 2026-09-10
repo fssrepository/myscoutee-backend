@@ -1,4 +1,4 @@
-REFERENCE ID: R024_MOUNTED_ENGLISH_CAFE_SIGN_AND_HUNGARIAN_DESTINATION_SIGN (do not render this identifier).
+REFERENCE ID: R024_MOUNTED_ENGLISH_CAFE_SIGN_AND_HUNGARIAN_DESTINATION_SIGN (never print IDs, headings or panel labels).
 
 OBJECT MORPH STUDY — R024 MOUNTED ENGLISH CAFE SIGN AND HUNGARIAN DESTINATION SIGN
 SUBJECT AND MATERIALS:
@@ -20,16 +20,16 @@ TIMBER RESPONSE: Wood first bends along grain and separates at joinery; transver
 METAL RESPONSE: Metal yields through bending, torsion and local plastic flow. Plates form stiff curved folds with visible thickness, flanges and moving specular highlights; bars neck down or thicken near their changing joints. Bolts and collars remain hard while adjoining metal reforms. Long slender members flex sooner than massive sockets and can overshoot slightly before seating. Large shape change comes from altered cross-section as well as rotation; no metallic colour painted over a soft generic blob.
 The four stills expose these different material responses through strain, sag, folded thickness, changing joints and contact shadows. In the moving film, thin flexible pieces can respond first while heavier or more viscous regions lag; phases overlap rather than all parts advancing on the same uniform clock.
 
-TOP-LEFT — SOURCE:
+At top left: SOURCE:
 The existing English wording appears as raised physical strokes on the source slatted sign, in its original frame and wall mount. Use the initial COFFEE lettering specified above. The sign is an object, not an overlay.
 
-TOP-RIGHT — RAISED LETTER STROKES SPREAD INTO A THREE-DIMENSIONAL LATTICE:
+At top right: RAISED LETTER STROKES SPREAD INTO A THREE-DIMENSIONAL LATTICE:
 Source sign slats turn to markedly different angles. Raised letter strokes pull outward into thick branched metal or painted timber segments, creating a broad open lattice in front of the same frame. Curves from the English source glyphs straighten and split; straight strokes bend toward the four target positions. Keep recognisable fragments of source lettering on the same strokes. The sign changes real depth and geometry, not just the printed word.
 
-BOTTOM-LEFT — FOUR OPEN TARGET GLYPH SKELETONS BEFORE CLOSURE:
+At bottom left: FOUR OPEN TARGET GLYPH SKELETONS BEFORE CLOSURE:
 The lattice has gathered into the four positions of KÁVÉ, but its strokes are still large incomplete three-dimensional shapes: one diagonal of K remains swung outward, the Á crossbar is an open bridge, V has unequal arms and É's upper stroke is still a curled source segment. The accent strokes are visibly attached to the material that is moving into place, not floating graphic text. Slats now approach a common plane while the projecting incomplete glyphs remain unmistakable. The final cell seats and joins the strokes into the complete physical lettering.
 
-BOTTOM-RIGHT — RESOLVED DESTINATION:
+At bottom right: RESOLVED DESTINATION:
 The slats settle face-on with complete raised KÁVÉ lettering and both accents. The temporary bridges have become glyph strokes; the same frame, mounting plate and wall persist. No dissolve between complete words and no on-screen captions.
 
 CURRENT-CITY CARDS — PRESENT IN EACH RELEVANT CELL:

@@ -1,4 +1,4 @@
-REFERENCE ID: R042_NEW_YORK_PALACE_HISTORIC_EXTERIOR_WITH_OCCUPIED_BAY_DEPTH (do not render this identifier).
+REFERENCE ID: R042_NEW_YORK_PALACE_HISTORIC_EXTERIOR_WITH_OCCUPIED_BAY_DEPTH (never print IDs, headings or panel labels).
 
 SUBJECT — ALDWYCH HISTORIC CORNER TO NEW YORK PALACE:
 Track a source corner chip, a window-sill seam and an iron roof fastener. The developing sculpture and projecting masonry must come from the moving source bays rather than being pasted over a generic office box.
@@ -20,16 +20,16 @@ MINERAL RESPONSE: Dense stone and brick resist bending. Their fast initial motio
 ROOF RESPONSE: Structural ribs carry the large roof-sector motion; thin attached roof sheets buckle and slide over seams before the heavier rib finishes turning. Keep the sheet gauge visibly thinner than the rib. Fold crests, overlap shadows and rivet/seam lines travel on the same metal. The final seam closes by seating those edges, with a smaller delayed settling motion than the masonry below. A lifted sector reveals its own underside and the same interior.
 The four stills expose these different material responses through strain, sag, folded thickness, changing joints and contact shadows. In the moving film, thin flexible pieces can respond first while heavier or more viscous regions lag; phases overlap rather than all parts advancing on the same uniform clock.
 
-TOP-LEFT — COMPLETE ORIGINAL:
+At top left: COMPLETE ORIGINAL:
 A coherent London Aldwych/Kingsway historic corner block shows stone-and-brick bays, a projecting corner, roof cornice, ground-floor shop openings and a substantial receding side. No Budapest palace silhouette is present yet.
 
-TOP-RIGHT — EXPANSIVE MATERIAL RECONSTRUCTION:
+At top right: EXPANSIVE MATERIAL RECONSTRUCTION:
 The corner bays separate into large staggered masonry masses. Roof and cornice sections rotate upward at unequal angles, exposing their heavy undersides. Existing window jambs split into deep carved branches; a whole upper bay turns outward while remaining recognisably part of the source corner.
 
-BOTTOM-LEFT — DIFFERENT CONVERGING RECONSTRUCTION:
+At bottom left: DIFFERENT CONVERGING RECONSTRUCTION:
 The masses gather into New York Palace’s ornate corner form, with its roof crown still composed of offset sectors. One facade level is a row of partly joined arch supports; sculpted cornice pieces overlap before seating. The original shop opening deepens as its threshold stays traceable below.
 
-BOTTOM-RIGHT — COMPLETE DESTINATION:
+At bottom right: COMPLETE DESTINATION:
 The specific Budapest New York Palace’s corner mass, roof silhouette, carved facade and deep window bays resolve at the original London corner. The full building remains substantial; individual room floors and openings have real depth for later memories.
 
 TRACEABLE PART CORRESPONDENCE:

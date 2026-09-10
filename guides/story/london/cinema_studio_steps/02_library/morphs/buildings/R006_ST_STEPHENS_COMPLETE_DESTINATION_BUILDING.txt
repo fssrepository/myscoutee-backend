@@ -1,4 +1,4 @@
-REFERENCE ID: R006_ST_STEPHENS_COMPLETE_DESTINATION_BUILDING (do not render this identifier).
+REFERENCE ID: R006_ST_STEPHENS_COMPLETE_DESTINATION_BUILDING (never print IDs, headings or panel labels).
 
 SUBJECT — BASILICA TOWERS AND DOME REFORM INTO ST PAULS:
 Track a chipped arch voussoir into the upper portico entablature, one tower-crown weathering streak into the London bell opening and one roof seam across the changing dome. This is a complete physical reversal, not restoration of an earlier photograph.
@@ -20,16 +20,16 @@ MINERAL RESPONSE: Dense stone and brick resist bending. Their fast initial motio
 ROOF RESPONSE: Structural ribs carry the large roof-sector motion; thin attached roof sheets buckle and slide over seams before the heavier rib finishes turning. Keep the sheet gauge visibly thinner than the rib. Fold crests, overlap shadows and rivet/seam lines travel on the same metal. The final seam closes by seating those edges, with a smaller delayed settling motion than the masonry below. A lifted sector reveals its own underside and the same interior.
 The four stills expose these different material responses through strain, sag, folded thickness, changing joints and contact shadows. In the moving film, thin flexible pieces can respond first while heavier or more viscous regions lag; phases overlap rather than all parts advancing on the same uniform clock.
 
-TOP-LEFT — COMPLETE ORIGINAL:
+At top left: COMPLETE ORIGINAL:
 The complete recognisable St Stephen’s Basilica stands within London street surroundings as an already established memory intrusion. Show its dome, drum, paired bell towers, deep central arched entrance and sculpted pediment. This reversal starts from the intruded building; it does not define the film’s London opening.
 
-TOP-RIGHT — EXPANSIVE MATERIAL RECONSTRUCTION:
+At top right: EXPANSIVE MATERIAL RECONSTRUCTION:
 The bell-tower shafts divide into broad rotating masonry rings while the dome sectors lift and spread above an open drum. The central arch breaks into two large curved chains that pull apart laterally, exposing the building’s real interior. The front silhouette becomes wide and hollow, with thick stone and roof undersides visible.
 
-BOTTOM-LEFT — DIFFERENT CONVERGING RECONSTRUCTION:
+At bottom left: DIFFERENT CONVERGING RECONSTRUCTION:
 The separated tower rings gather into St Paul’s taller west-tower profiles but remain helically offset. The single great entrance arch redistributes into two stacked columned platforms: upper column drums are still suspended above deep entablature blocks. Dome ribs converge toward the source London curvature, leaving a wide open roof sector. Side-body bays lengthen at visible masonry seams.
 
-BOTTOM-RIGHT — COMPLETE DESTINATION:
+At bottom right: COMPLETE DESTINATION:
 St Paul’s Cathedral is fully recognisable again: original London dome/drum proportions, paired west towers, long side body and two superposed columned portico levels beneath its sculpted pediment. Every displaced band and roof sector has joined into this restored architectural form at the same site.
 
 TRACEABLE PART CORRESPONDENCE:

@@ -1,4 +1,4 @@
-REFERENCE ID: R002_THE_SAME_RED_LONDON_BUS_FROM_USEFUL_ANGLES (do not render this identifier).
+REFERENCE ID: R002_THE_SAME_RED_LONDON_BUS_FROM_USEFUL_ANGLES (never print IDs, headings or panel labels).
 
 SUBJECT — RED LONDON DOUBLE-DECKER TO YELLOW BUDAPEST TRAM:
 Track a scratched red panel corner into a yellow door surround, one upper window pillar into the rear tram section and the front wheel hub into the near bogie. Expose actual changes in chassis width, floor height, body length and wheel cross-section. The result is a vehicle reconstruction, not a red bus repainted yellow.
@@ -19,16 +19,16 @@ MATERIAL-SPECIFIC DEFORMATION:
 VEHICLE MATERIAL RESPONSE: Chassis beams and hubs remain the stiffest masses and rotate or reform at deep joints; thinner body panels yield into plastic folds with flanged edges. Rubber tyres first stretch elastically, then their thick bands convert locally into rigid wheel or support material, with a visible partly resilient/partly mineral-or-metal cross-section where required. Window panes stay stiff on their frames except at a specified viscous glass-forming edge. Upholstery foam compresses and lags behind its hard seat shell; fabric wrinkles with tension. Different delays and stiffness reveal construction, rather than moving the whole vehicle as one rubber toy.
 The four stills expose these different material responses through strain, sag, folded thickness, changing joints and contact shadows. In the moving film, thin flexible pieces can respond first while heavier or more viscous regions lag; phases overlap rather than all parts advancing on the same uniform clock.
 
-TOP-LEFT — COMPLETE ORIGINAL:
+At top left: COMPLETE ORIGINAL:
 One complete red London double-decker, front three-quarter, with two window decks, passenger doors, rubber tyres, black window pillars and continuous chassis. Set it beside rails on a London road with the front axle and near kerb bend visible. Keep the source recognisably a bus; no tram cab or pantograph is present yet.
 
-TOP-RIGHT — EXPANSIVE MATERIAL RECONSTRUCTION:
+At top right: EXPANSIVE MATERIAL RECONSTRUCTION:
 The upper-deck body has separated along its floor beam into three deep red window-and-frame sections. These sections spread upward and sideways at different angles; the exposed floor beams and seat backs remain solid. The lower body opens at two vertical panel joints, exposing the chassis. Wheel hubs extend outward while their tyre bands split into thick arcs. The bus is now an irregular open multi-level frame, with wide air gaps where the upper deck used to be; no intact second bus remains underneath.
 
-BOTTOM-LEFT — DIFFERENT CONVERGING RECONSTRUCTION:
+At bottom left: DIFFERENT CONVERGING RECONSTRUCTION:
 The former upper-deck sections have descended and gathered lengthwise behind the front cab, creating the low, elongated tram body. Two sections remain skewed with a broad unjoined articulation gap. Former bus floor beams are halfway into rail-bogie crossmembers; one tyre arc still wraps an unfinished flanged steel wheel. Red panel edges broaden into yellow metal panels through a visible boundary in the same solid sheet. Window pillars change spacing and profile. Roof brackets form an open diamond-like overhead collector whose upper contact strip is not yet seated.
 
-BOTTOM-RIGHT — COMPLETE DESTINATION:
+At bottom right: COMPLETE DESTINATION:
 One complete yellow Budapest-style tram occupies the same roadway and rails, with a low long body, consistent window rhythm, passenger doors, flanged wheels and roof power equipment. Upper-deck material now forms the extended tram body and roof; no extra storey survives. The bogies sit on the rails, all body joins close, and the overhead collector connects to the existing wire. London street surroundings persist.
 
 TRACEABLE PART CORRESPONDENCE:

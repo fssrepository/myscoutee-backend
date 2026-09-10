@@ -1,4 +1,4 @@
-REFERENCE ID: R039_WESTMINSTER_AND_PARLIAMENT_SQUARE_LONDON_SOURCE (do not render this identifier).
+REFERENCE ID: R039_WESTMINSTER_AND_PARLIAMENT_SQUARE_LONDON_SOURCE (never print IDs, headings or panel labels).
 
 SUBJECT — PALACE OF WESTMINSTER TO HUNGARIAN PARLIAMENT:
 Track a Westminster pinnacle stone into a destination turret, a tower weathering streak into a dome support and a window arch into a facade bay. Whole-building form and symmetry change through moving stone, not by inserting a finished dome into an otherwise unchanged palace.
@@ -20,16 +20,16 @@ MINERAL RESPONSE: Dense stone and brick resist bending. Their fast initial motio
 ROOF RESPONSE: Structural ribs carry the large roof-sector motion; thin attached roof sheets buckle and slide over seams before the heavier rib finishes turning. Keep the sheet gauge visibly thinner than the rib. Fold crests, overlap shadows and rivet/seam lines travel on the same metal. The final seam closes by seating those edges, with a smaller delayed settling motion than the masonry below. A lifted sector reveals its own underside and the same interior.
 The four stills expose these different material responses through strain, sag, folded thickness, changing joints and contact shadows. In the moving film, thin flexible pieces can respond first while heavier or more viscous regions lag; phases overlap rather than all parts advancing on the same uniform clock.
 
-TOP-LEFT — COMPLETE ORIGINAL:
+At top left: COMPLETE ORIGINAL:
 The complete Palace of Westminster stands as the London source, with its long Gothic mass, roof pinnacles and distinct Elizabeth and Victoria tower forms. Keep Parliament Square or riverbank ground anchors and the whole front-to-side depth.
 
-TOP-RIGHT — EXPANSIVE MATERIAL RECONSTRUCTION:
+At top right: EXPANSIVE MATERIAL RECONSTRUCTION:
 The long facade divides into deep projecting bay groups, each rotated differently around its lower masonry. Roof pinnacles and tower upper bands rise into a broad irregular crown. The central roof opens into several large ribbed sectors while flanking tower material begins moving inward. The source palace no longer remains intact behind the fragments.
 
-BOTTOM-LEFT — DIFFERENT CONVERGING RECONSTRUCTION:
+At bottom left: DIFFERENT CONVERGING RECONSTRUCTION:
 Facade groups gather into the Hungarian Parliament’s symmetrical riverside massing, with the central dome still an open cage of converging roof ribs. Two flanking roof ranges remain at staggered heights. Stone from the source towers broadens into new central supports and side towers, with one portal arch still open at its crown.
 
-BOTTOM-RIGHT — COMPLETE DESTINATION:
+At bottom right: COMPLETE DESTINATION:
 The recognisable Hungarian Parliament resolves with its complete central dome, symmetrical flanking ranges, towers, roof rhythm and full-depth facade at the same inherited London site. Source roof and tower material has become the new central and lateral masses.
 
 TRACEABLE PART CORRESPONDENCE:

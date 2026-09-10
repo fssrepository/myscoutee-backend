@@ -1,4 +1,4 @@
-REFERENCE ID: R040_HUNGARIAN_PARLIAMENT_COMPLETE_DESTINATION_SILHOUETTE (do not render this identifier).
+REFERENCE ID: R040_HUNGARIAN_PARLIAMENT_COMPLETE_DESTINATION_SILHOUETTE (never print IDs, headings or panel labels).
 
 SUBJECT — WESTMINSTER CENTRAL ROOF TO PARLIAMENT DOME:
 Track a pointed gable block into the drum rim, one iron roof node into a dome rib and an original window jamb into a drum opening. This close construction sheet complements the full palace morph.
@@ -20,16 +20,16 @@ MINERAL RESPONSE: Dense stone and brick resist bending. Their fast initial motio
 ROOF RESPONSE: Structural ribs carry the large roof-sector motion; thin attached roof sheets buckle and slide over seams before the heavier rib finishes turning. Keep the sheet gauge visibly thinner than the rib. Fold crests, overlap shadows and rivet/seam lines travel on the same metal. The final seam closes by seating those edges, with a smaller delayed settling motion than the masonry below. A lifted sector reveals its own underside and the same interior.
 The four stills expose these different material responses through strain, sag, folded thickness, changing joints and contact shadows. In the moving film, thin flexible pieces can respond first while heavier or more viscous regions lag; phases overlap rather than all parts advancing on the same uniform clock.
 
-TOP-LEFT — COMPLETE ORIGINAL:
+At top left: COMPLETE ORIGINAL:
 Frame a substantial central Gothic roof-and-facade assembly of the Palace of Westminster, with pointed roof details, deep window bays, trusses and stone supports. The original London structure has no Hungarian central dome.
 
-TOP-RIGHT — EXPANSIVE MATERIAL RECONSTRUCTION:
+At top right: EXPANSIVE MATERIAL RECONSTRUCTION:
 Roof ridges separate into tall outward-curving rib groups while pointed stone bays step outward in broad bands. Spires divide at their actual masonry joints and climb around the open centre. The former solid roof becomes a large open cage with deep underside structure visible.
 
-BOTTOM-LEFT — DIFFERENT CONVERGING RECONSTRUCTION:
+At bottom left: DIFFERENT CONVERGING RECONSTRUCTION:
 The ribs gather into the Hungarian Parliament dome’s curvature above a thick developing drum. Two roof sectors remain open, and the drum’s ring is a staggered chain of incomplete window surrounds. Source spire material broadens into the new supporting piers and small surrounding turrets.
 
-BOTTOM-RIGHT — COMPLETE DESTINATION:
+At bottom right: COMPLETE DESTINATION:
 The Parliament’s recognisable central dome/drum and adjoining roof bays resolve as one complete architectural assembly. Dome surface, ribs, openings and supports all have physical depth and connect to the inherited lower facade.
 
 TRACEABLE PART CORRESPONDENCE:

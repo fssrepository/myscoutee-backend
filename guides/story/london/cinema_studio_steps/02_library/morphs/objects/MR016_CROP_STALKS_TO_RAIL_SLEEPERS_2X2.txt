@@ -1,4 +1,4 @@
-REFERENCE ID: MR016_CROP_STALKS_TO_RAIL_SLEEPERS_2X2 (do not render this identifier).
+REFERENCE ID: MR016_CROP_STALKS_TO_RAIL_SLEEPERS_2X2 (never print IDs, headings or panel labels).
 
 SUBJECT AND MATERIALS:
 Study a rooted strip of paprika and corn plants beside a London pavement becoming thick timber railway sleepers on a compacted bed. Establish two metal rails beside the plants from the first cell so the changing stalks can become their sleepers without substituting the street. Show roots, fibres, leaf ribs, dark soil ridges, timber end grain and metal fastenings in cool diffuse daylight.
@@ -19,16 +19,16 @@ PLANT RESPONSE: Leaf membranes flex quickly, stalks bend with stronger spring re
 TIMBER RESPONSE: Wood first bends along grain and separates at joinery; transverse loads open a split along visible fibres. Long fibres bridge the changing region while bundles spread, lengthen and pack into the new board or support. End grain rotates with the actual cut face. A temporarily compliant forming region permits strong curvature; the finished board regains stiffness. Long unsupported ends lag and rebound slightly, while heavy joints seat later. The grain path and rigid completed sections distinguish timber from flowing liquid.
 The four stills expose these different material responses through strain, sag, folded thickness, changing joints and contact shadows. In the moving film, thin flexible pieces can respond first while heavier or more viscous regions lag; phases overlap rather than all parts advancing on the same uniform clock.
 
-TOP-LEFT — SOURCE:
+At top left: SOURCE:
 The established planting strip has rooted paprika/corn stems, leaf texture and soil ridges beside the unchanged paving edge. Use a low oblique fixed view; leave the adjoining walking strip intact.
 
-TOP-RIGHT — UPROOTED-SHAPED STALK ARCS OVER THE SAME SOIL STRIP:
+At top right: UPROOTED-SHAPED STALK ARCS OVER THE SAME SOIL STRIP:
 Rooted stalk bundles bend outward and down into several large unequal arches over the soil. Their lower sections broaden into thick woody ribs while upper leaves remain conspicuous. Some bundles are still upright vegetation; others are nearly horizontal timber blanks. Roots stay physically continuous with the same planting strip. The material route is fantastical accelerated reshaping, with green tissue visibly becoming grain and fibrous bedding, not a colour wipe over the ground.
 
-BOTTOM-LEFT — RAISED TIMBER SLEEPER BLANKS WITH LARGE PLANT ENDS:
+At bottom left: RAISED TIMBER SLEEPER BLANKS WITH LARGE PLANT ENDS:
 Most bundles have become broad timber sleeper shapes, but alternate blanks remain tilted upward and end in large uncompressed stalk-and-leaf forks. The soil beneath compacts into their bedding while one strip still carries living roots. Existing rail material stays visible along its established route, with each new timber support forming beneath it; no rail is introduced by a frame replacement. The final cell lowers the same timber blanks and compacts their remaining plant ends into grain and bedding, producing the completed supported sleeper arrangement beside the same paving.
 
-BOTTOM-RIGHT — RESOLVED DESTINATION:
+At bottom right: RESOLVED DESTINATION:
 The final thick timber sleepers sit on a supported compacted bed beside the same paving edge, with the specified rails and fastenings where established in the source sequence. Remaining plant tissue has become grain and bedding; no vegetation fades into a flat railway photograph.
 
 CURRENT-CITY CARDS — PRESENT IN EACH RELEVANT CELL:

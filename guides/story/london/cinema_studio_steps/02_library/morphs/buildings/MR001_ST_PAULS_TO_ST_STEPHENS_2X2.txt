@@ -1,4 +1,4 @@
-REFERENCE ID: MR001_ST_PAULS_TO_ST_STEPHENS_2X2 (do not render this identifier).
+REFERENCE ID: MR001_ST_PAULS_TO_ST_STEPHENS_2X2 (never print IDs, headings or panel labels).
 
 SUBJECT AND MATERIALS:
 Generate London St Paul's Cathedral becoming Budapest's Szent István-bazilika (St Stephen's Basilica), matching the complete endpoint architecture specified below. Only the cathedral transforms; retain the surrounding London brick shopfronts, historic stone neighbours, English road markings, kerb, lamp posts and small pedestrians with above-head numerical cards in every cell.
@@ -20,10 +20,10 @@ MINERAL RESPONSE: Dense stone and brick resist bending. Their fast initial motio
 ROOF RESPONSE: Structural ribs carry the large roof-sector motion; thin attached roof sheets buckle and slide over seams before the heavier rib finishes turning. Keep the sheet gauge visibly thinner than the rib. Fold crests, overlap shadows and rivet/seam lines travel on the same metal. The final seam closes by seating those edges, with a smaller delayed settling motion than the masonry below. A lifted sector reveals its own underside and the same interior.
 The four stills expose these different material responses through strain, sag, folded thickness, changing joints and contact shadows. In the moving film, thin flexible pieces can respond first while heavier or more viscous regions lag; phases overlap rather than all parts advancing on the same uniform clock.
 
-TOP-LEFT — INTACT ST PAUL'S, COMPACT AND CLOSED:
+At top left: INTACT ST PAUL'S, COMPACT AND CLOSED:
 Show the specific London cathedral with its complete original dome and drum, two west towers, long attached side body, TWO superposed columned portico levels and existing sculpted triangular pediment. The roof is closed, the towers complete and the portico ordered. Establish three material signatures that remain identifiable after their parts move: a chipped near capital, a dark weathering streak on one dome rib and one carved figure on the pediment. Show real column depth, roof thickness and the near tower's side. No Basilica or displaced second building is present.
 
-TOP-RIGHT — EXPANSIVE BREAKUP: OPEN ROOF CAGE, SEPARATED TOWER BANDS, SPLAYED PORTICO:
+At top right: EXPANSIVE BREAKUP: OPEN ROOF CAGE, SEPARATED TOWER BANDS, SPLAYED PORTICO:
 The single source cathedral has opened into a MUCH WIDER, irregular three-dimensional configuration. Its complete source silhouette is broken into large traceable masses, with broad sky gaps between them. At whole-sheet size this must be unmistakably different from the intact first cell.
 
 DOME: divide the existing dome along its real rib and roof-sheet seams into several broad curved roof sectors. Alternate sectors have rotated outward and upward at different angles, exposing the deep ribs, inner supporting structure and undersides of attached metal plates. Their lower ends have separated by readable gaps above the changing drum. The streaked rib remains part of one of these sectors. The original closed dome no longer remains intact underneath; the roof cage is visibly open. Metal plates retain their actual material thickness and stiff curved profiles; no paper petals, fabric roof or duplicate dome.
@@ -34,7 +34,7 @@ ENTRANCE: the two-storey portico has spread outward into two unequal three-dimen
 
 SIDE BODY: several attached side bays are shortening and turning at their corners into deep wedge-like masses. Show front, side and underside of the same cornice and roof sections as their material moves toward the developing central volume. This side participates in the transformation instead of remaining an untouched finished St Paul's behind the spectacle. Keep the London street below continuous and the people outside the transforming volume.
 
-BOTTOM-LEFT — INWARD REASSEMBLY: UNFINISHED GIANT ARCH, HELICAL TOWER, OFFSET DOME CLOSURE:
+At bottom left: INWARD REASSEMBLY: UNFINISHED GIANT ARCH, HELICAL TOWER, OFFSET DOME CLOSURE:
 The broad outward arrangement has gathered inward and upward into a DIFFERENT, more vertical configuration. The destination's central arched entrance is beginning to dominate, but large gaps, unequal levels and visibly reshaping components keep this far from the finished Basilica. Do not render a complete Basilica with a few chipped blocks. The second cell's outward-splayed masses and this cell's converging arch/tower/roof structure must read as different actions.
 
 ENTRANCE: the source portico's column drums and entablature blocks now form two massive inward-curving chains of thick wedge stones. Their lower portions have joined into the Basilica's tall flanking supports; their upper ends approach one another around a broad OPEN GAP at the arch crown. One former column shaft is still partly cylindrical at the lower end and visibly broadening into arch masonry at the upper end. The chipped capital is being absorbed into a projecting carved springing block, with its chipped face still identifiable. The old horizontal division between the two portico levels has been redistributed into this deep arch and its sides. No intact two-storey portico remains behind it.
@@ -45,7 +45,7 @@ NEAR TOWER: the three previously separated bands are now gathered at the destina
 
 DOME AND DRUM: the outward roof sectors have curved and gathered into the target dome proportions above the reshaped drum, but two adjacent near sectors are still raised and displaced outward. A broad longitudinal opening exposes their thick rib profiles and the same interior roof structure. The streaked rib is visible beside that opening, now curved toward its final shape. The formerly long side bays have compacted into the target side-body arrangement, with one large roof-to-wall corner still visibly stepped and partly unjoined. These substantial unresolved regions must remain legible beside the open arch crown and helical tower, rather than disappearing into tiny surface defects.
 
-BOTTOM-RIGHT — FULLY REASSEMBLED ST STEPHEN'S BASILICA:
+At bottom right: FULLY REASSEMBLED ST STEPHEN'S BASILICA:
 Resolve the specific Budapest St Stephen’s Basilica as ONE whole building in the same London street. Match the target dome curvature, drum, lantern, both bell towers and crowns, tower spacing, monumental central entrance arch, its tall flanking supports, sculpted triangular pediment and visible side-body mass. The near roof sectors have seated into the dome; the broad longitudinal opening is closed. The tower bands have rotated and joined into complete aligned shafts. The two arch chains have met and formed the continuous deep entrance vault. The remaining relief-bearing stones now form the target pediment and sculptural details. The third cell's large open gaps and displaced masses are absent because their same material has joined into the finished architecture.
 The endpoint is the specific Basilica, not St Paul's body wearing different towers. The source's material signatures remain small traceable features on corresponding destination parts without distorting its identity. No leftover roof piece, detached duplicate dome or discarded tower sits beside the building. Preserve the surrounding London frontages, road, kerb, lights and small rated pedestrians.
 

@@ -1,4 +1,4 @@
-REFERENCE ID: MR020_ROPE_FIBRES_TO_SHEET_HEM_2X2 (do not render this identifier).
+REFERENCE ID: MR020_ROPE_FIBRES_TO_SHEET_HEM_2X2 (never print IDs, headings or panel labels).
 
 SUBJECT AND MATERIALS:
 Study a small close-view section of thick balloon rope becoming the stitched hem of an ordinary white cotton bedsheet. Show twisted fibre bundles and one knot in the source; in the destination show woven cotton threads, folded hem thickness and a stitched edge. Use soft neutral light against an unobtrusive background. This is only a small material fragment for the final film block; keep the clinical room and people outside the image.
@@ -18,16 +18,16 @@ MATERIAL-SPECIFIC DEFORMATION:
 FIBRE RESPONSE: A rope carries tension through twisted bundles and resists lateral spreading until the lay opens. Individual strands then splay, lag and interlace; slack ends curl while taut runs straighten between contacts. During conversion to a woven surface, the same strands flatten and lock into crossing rows. A thick knot deforms more slowly than a loose fibre and becomes a compact final junction. The final textile stays flexible, unlike a rigid slab painted with weave.
 The four stills expose these different material responses through strain, sag, folded thickness, changing joints and contact shadows. In the moving film, thin flexible pieces can respond first while heavier or more viscous regions lag; phases overlap rather than all parts advancing on the same uniform clock.
 
-TOP-LEFT — SOURCE:
+At top left: SOURCE:
 Close view of the scripted balloon rope at its existing hand-contact area. Show its twist, individual fibre bundles and a distinctive knot. Keep the clinical room outside the frame; the destination is ordinary white woven cotton with a folded stitched hem.
 
-TOP-RIGHT — ROPE UNTWISTS INTO A WIDE OPEN FIBRE FAN:
+At top right: ROPE UNTWISTS INTO A WIDE OPEN FIBRE FAN:
 The round rope separates into several thick twisting bundles that spread into a broad fan beside the same hand-contact region. Between them, individual strands cross into the first sparse transverse threads, with large open spaces still visible. The knot expands into a thick irregular junction at the fan's root. Keep the framing a small material detail, without revealing a clinical room. The change is actual fibre redistribution, not a white sheet fading over the rope.
 
-BOTTOM-LEFT — LOOSE WOVEN LATTICE WITH A THICK UNFINISHED ROPE EDGE:
+At bottom left: LOOSE WOVEN LATTICE WITH A THICK UNFINISHED ROPE EDGE:
 The fan has gathered into a broad fabric lattice, but large open weave cells still show through its central section and one whole edge remains a row of thick twisted rope bundles. The opposite side is already dense white cloth. The original knot is halfway into the thick hem junction. In the final cell the same threads flatten, interlace and tighten to close the lattice into the ordinary white sheet and stitched hem. The original hand contact remains intact. Keep this study confined to the assigned rope and sheet detail.
 
-BOTTOM-RIGHT — RESOLVED DESTINATION:
+At bottom right: RESOLVED DESTINATION:
 The strands resolve into the ordinary sheet hem and its thick stitched edge, matching the scripted small clinical fragment. No full room, procedure, new equipment or horror implication. The four cells describe the same material correspondence in the assigned order.
 
 CURRENT-CITY CARDS — PRESENT IN EACH RELEVANT CELL:

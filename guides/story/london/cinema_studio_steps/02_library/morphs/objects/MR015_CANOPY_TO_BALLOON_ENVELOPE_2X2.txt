@@ -1,4 +1,4 @@
-REFERENCE ID: MR015_CANOPY_TO_BALLOON_ENVELOPE_2X2 (do not render this identifier).
+REFERENCE ID: MR015_CANOPY_TO_BALLOON_ENVELOPE_2X2 (never print IDs, headings or panel labels).
 
 SUBJECT AND MATERIALS:
 Study a ribbed street canopy with roof covering and hanging ties becoming a full rounded hot-air-balloon envelope above a woven basket. The destination has vertical stitched fabric gores, a tapered lower throat, suspension ropes, visible knots and a substantial grounded wicker basket with a floor. Use a restrained warm ochre fabric and dark rope palette consistently across cells; broad seams and fabric thickness remain visible in diffuse daylight.
@@ -20,16 +20,16 @@ CLOTH RESPONSE: Cloth has little bending stiffness and follows tension between s
 FIBRE RESPONSE: A rope carries tension through twisted bundles and resists lateral spreading until the lay opens. Individual strands then splay, lag and interlace; slack ends curl while taut runs straighten between contacts. During conversion to a woven surface, the same strands flatten and lock into crossing rows. A thick knot deforms more slowly than a loose fibre and becomes a compact final junction. The final textile stays flexible, unlike a rigid slab painted with weave.
 The four stills expose these different material responses through strain, sag, folded thickness, changing joints and contact shadows. In the moving film, thin flexible pieces can respond first while heavier or more viscous regions lag; phases overlap rather than all parts advancing on the same uniform clock.
 
-TOP-LEFT — SOURCE:
+At top left: SOURCE:
 The source canopy has visible ribs, roof covering and hanging ties above its established basket and support area. Use the rounded envelope, stitched gores and rope rigging described above. Include the complete final envelope region from the outset.
 
-TOP-RIGHT — CANOPY EXPANDS INTO AN ASYMMETRIC ENVELOPE CAGE:
+At top right: CANOPY EXPANDS INTO AN ASYMMETRIC ENVELOPE CAGE:
 The low canopy rises into a tall irregular framework: near ribs sweep high while far ribs spread sideways and one source roof edge remains low. Between them, covering becomes broad stitched fabric gores, some stretched and others hanging in deep folds. Thick rib material subdivides into bundles that follow the emerging seam and rigging paths. Hanging ties lengthen toward the same basket/contact region. The source roof is physically absent where its material has moved; no intact canopy survives beneath a separately added balloon.
 
-BOTTOM-LEFT — OPEN LOBED BALLOON WITH UNJOINED FABRIC SECTORS:
+At bottom left: OPEN LOBED BALLOON WITH UNJOINED FABRIC SECTORS:
 The cage has converged into a large lobed envelope, but one broad vertical sector remains open and a lower side is still flattened and canopy-like. Through the opening show the same inner panel faces and two ribs midway through becoming fabric reinforcement and rope bundles. Large loose panel edges approach their future seam while their attached ties already lead to the woven basket described above. The final cell joins and tensions these same sectors into the complete balloon envelope and rigging. Actual cloth can fold; the surrounding architecture remains solid masonry. Do not make the basket, ropes or people appear in a new landscape.
 
-BOTTOM-RIGHT — RESOLVED DESTINATION:
+At bottom right: RESOLVED DESTINATION:
 The broad envelope opening has joined along its seam and the remaining flattened roof sector has become tensioned fabric. The complete balloon envelope described above has tensioned stitched panels, suspension ropes and a grounded basket with actual knots, weave and floor. No rigid roof is hidden inside an unrelated balloon. Inflation and lift are video actions; the four stills specify changing geometry without relocating the scene.
 
 CURRENT-CITY CARDS — PRESENT IN EACH RELEVANT CELL:

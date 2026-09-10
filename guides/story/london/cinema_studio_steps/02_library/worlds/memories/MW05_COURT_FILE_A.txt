@@ -1,4 +1,4 @@
-REFERENCE ID: MW05_COURT_FILE_A (do not render this identifier).
+REFERENCE ID: MW05_COURT_FILE_A (never print IDs, headings or panel labels).
 
 REFERENCE INPUTS:
 @char_MYS_mys-c01-protagonist_s0_v1 = CHARACTER 01 — PROTAGONIST; exact person identity; use only where this person appears.
@@ -45,23 +45,23 @@ REFERENCE COVERAGE FOR THE MOVING FILM:
 This page supplies the four assigned literal views, not four cuts, morph stages or interchangeable world designs. Make each view useful for its assigned purpose: room layout shows supports and an entry/exit; a gesture view retains its hand, furniture edge and background anchor; an object detail shows side/underside and contact. Different views of the SAME room preserve its floor plan, furniture, identities, clothes and light sources even when the viewpoint changes. Distinct memories remain distinct places; do not fuse them into one room to match the grid. Repeated anchor views on another page must preserve the same state and layout.
 Additional detail pages of the same place retain that memory and its established event. Keep full body/furniture support legible wherever the assigned view permits. Never substitute four nearly identical wide shots for the four assigned subjects.
 
-FOUR ASSIGNED CELLS:
-CELL 1 — TOP-LEFT — ORIGINAL VIEW 01:
+FOUR IMAGE ASSIGNMENTS — INSTRUCTIONS ONLY, NO PRINTED TEXT:
+For the top left image (source view 01; instruction only, never printed):
 Court-hearing memory with an anonymous judge addressing the protagonist during a debate over legal classification. The remembered prison-question moment is carried by facial/body language; do not render subtitles or dialogue text.
 
 Compose the judge, protagonist and ordinary hearing table at distinct depths with clear eyelines. Documents lie on the table with visible paper edges and no oversized legal text. The speaking expression is restrained and the protagonist remains seated or standing in the assigned hearing position. Keep the room doorway and furniture supports visible; no theatre-like spotlight or invented verdict appears.
 
-CELL 2 — TOP-RIGHT — ORIGINAL VIEW 02:
+For the top right image (source view 02; instruction only, never printed):
 Questions about the Budapest apartment, belongings, savings and what else the protagonist owns. Show an ordinary hearing/desk context with home/property shown only in physical photographs or documents on the desk, not detached picture inserts or a crime montage.
 
 Show the discussed belongings through physical photographs or papers on the hearing desk, with a hand indicating one item. Keep the protagonist and official at their established positions. The property images remain inside their actual print or device boundaries; no apartment interior floats behind the judge or becomes a cutaway inset. Avoid invented amounts or claims of ownership beyond the source story.
 
-CELL 3 — BOTTOM-LEFT — ORIGINAL VIEW 03:
+For the bottom left image (source view 03; instruction only, never printed):
 Retained devices/belongings: phone, laptop, storage media or personal property handled in ordinary evidence/property boxes or administrative packaging. No thriller evidence wall.
 
 Place the retained phone, laptop and storage item in separate supported positions inside ordinary packaging or a property box. Show hinge thickness, cables or ports where visible, cardboard walls and lid folds. A hand can handle one item without covering the whole arrangement. No serial numbers, forensic spectacle or unrequested damage is introduced.
 
-CELL 4 — BOTTOM-RIGHT — ORIGINAL VIEW 04:
+For the bottom right image (source view 04; instruction only, never printed):
 'Person becomes file' reference: photograph, fingerprint sheet, signature, forms and closed folder arranged on a desk while the protagonist is physically present but visually less dominant.
 
 Frame the folder in the near field with photograph, fingerprint sheet and signature area as separate physical papers on the same desk. The protagonist remains a full solid person farther behind it, with face and posture still recognizable. Depth and scale make the file dominant; the body does not literally turn into paper in this memory source cell.

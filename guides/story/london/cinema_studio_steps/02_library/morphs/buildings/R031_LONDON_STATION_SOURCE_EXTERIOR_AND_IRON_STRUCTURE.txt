@@ -1,4 +1,4 @@
-REFERENCE ID: R031_LONDON_STATION_SOURCE_EXTERIOR_AND_IRON_STRUCTURE (do not render this identifier).
+REFERENCE ID: R031_LONDON_STATION_SOURCE_EXTERIOR_AND_IRON_STRUCTURE (never print IDs, headings or panel labels).
 
 SUBJECT — CHARING CROSS STATION FRONTAGE TO NYUGATI HALL:
 Track an entrance-pier chip into a wing corner, a roof-truss bolt into the front frame and a pane notch into the new glazing. Frame the whole growing hall envelope and keep the iron/masonry correspondence visible.
@@ -21,16 +21,16 @@ METAL RESPONSE: Metal yields through bending, torsion and local plastic flow. Pl
 GLASS RESPONSE: Glass begins hard, with crisp fractured or framed edges. In its active forming region it becomes a thick highly viscous transparent material: a rounded neck stretches slowly, a heavy lobe sags behind the motion, and the former sharp corner thickens into a curved rim. The glass remains cohesive; its green edge, notch and bent transmitted background trace the moving thickness. Regions outside that forming zone stay rigid. The target profile sets back to hard glass, with stable refraction and a crisp final rim. Use no flame or full-scene transparency fade to explain this magical material change.
 The four stills expose these different material responses through strain, sag, folded thickness, changing joints and contact shadows. In the moving film, thin flexible pieces can respond first while heavier or more viscous regions lag; phases overlap rather than all parts advancing on the same uniform clock.
 
-TOP-LEFT — COMPLETE ORIGINAL:
+At top left: COMPLETE ORIGINAL:
 A recognisable London Charing Cross station approach establishes the London source: historic stone entrance frontage, attached station body, street kerb and iron/glass roof structure behind. Show the whole relevant entrance volume before any Hungarian form appears.
 
-TOP-RIGHT — EXPANSIVE MATERIAL RECONSTRUCTION:
+At top right: EXPANSIVE MATERIAL RECONSTRUCTION:
 The London entrance bays separate into broad stepped masonry masses while roof trusses spread upward into a tall open rib cage. Existing glazed sections lift with their iron frames at unequal angles. The front wall opens into deep pier groups, exposing the same hall interior and roof undersides.
 
-BOTTOM-LEFT — DIFFERENT CONVERGING RECONSTRUCTION:
+At bottom left: DIFFERENT CONVERGING RECONSTRUCTION:
 The iron ribs converge toward Nyugati’s broad glazed hall end, but its central frame remains split at the upper join. Side masonry groups gather into destination wings with several courses still offset. Stone entrance lintels redistribute into the low supporting walls and iron footings; old glazing strips broaden into larger framed panes.
 
-BOTTOM-RIGHT — COMPLETE DESTINATION:
+At bottom right: COMPLETE DESTINATION:
 Budapest Nyugati station’s recognisable iron-and-glass principal hall and attached masonry wings stand at the inherited London site. The broad glazed end, roof span and side returns form one complete station. London roadway and neighbouring street remain in place.
 
 TRACEABLE PART CORRESPONDENCE:

@@ -1,4 +1,4 @@
-REFERENCE ID: C27_JUDGE (do not render this identifier).
+REFERENCE ID: C27_JUDGE (never print IDs, headings or panel labels).
 
 OUTPUT LAYOUT AND RESOLUTION: One 16:9 identity sheet with exactly three equal vertical panels in one horizontal row (1x3: front, back, headshot). Generate at 3840×2160 pixels and select 4K in the output controls. The three equal edge-to-edge panels are each 1280×2160 pixels, with zero gutters and margins. These are three views of one unchanged identity, not a transformation sequence.
 
@@ -6,9 +6,9 @@ Create ONE SINGLE photorealistic technical CHARACTER IDENTITY SHEET for ONE exac
 
 EXACT LAYOUT:
 Three vertical photographic panels filling the complete canvas:
-LEFT = full-body FRONT view.
-CENTER = full-body BACK view.
-RIGHT = frontal CLOSE-UP HEADSHOT.
+In the left panel, show the full-body front view.
+In the centre panel, show the full-body back view.
+In the right panel, show the frontal close-up headshot.
 
 The same exact person appears in all three panels.
 The studio background reaches all four physical canvas edges.

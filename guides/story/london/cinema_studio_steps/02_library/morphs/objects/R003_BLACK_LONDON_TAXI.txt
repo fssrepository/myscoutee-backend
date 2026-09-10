@@ -1,4 +1,4 @@
-REFERENCE ID: R003_BLACK_LONDON_TAXI (do not render this identifier).
+REFERENCE ID: R003_BLACK_LONDON_TAXI (never print IDs, headings or panel labels).
 
 SUBJECT — BLACK LONDON TAXI TO REMEMBERED CAIRO TAXI:
 Track the front hub, scratched door handle plate and roof-light mount. The body changes height, length and cross-section, the cabin acquires depth and the original metal forms the new roof, boot and supports.
@@ -19,16 +19,16 @@ MATERIAL-SPECIFIC DEFORMATION:
 VEHICLE MATERIAL RESPONSE: Chassis beams and hubs remain the stiffest masses and rotate or reform at deep joints; thinner body panels yield into plastic folds with flanged edges. Rubber tyres first stretch elastically, then their thick bands convert locally into rigid wheel or support material, with a visible partly resilient/partly mineral-or-metal cross-section where required. Window panes stay stiff on their frames except at a specified viscous glass-forming edge. Upholstery foam compresses and lags behind its hard seat shell; fabric wrinkles with tension. Different delays and stiffness reveal construction, rather than moving the whole vehicle as one rubber toy.
 The four stills expose these different material responses through strain, sag, folded thickness, changing joints and contact shadows. In the moving film, thin flexible pieces can respond first while heavier or more viscous regions lag; phases overlap rather than all parts advancing on the same uniform clock.
 
-TOP-LEFT — COMPLETE ORIGINAL:
+At top left: COMPLETE ORIGINAL:
 A complete tall black London cab with roof light, high passenger compartment, characteristic upright windows, rounded wings and rubber wheels. Show the near front door, wheel hub, roof seam and supported underside on the same road patch.
 
-TOP-RIGHT — EXPANSIVE MATERIAL RECONSTRUCTION:
+At top right: EXPANSIVE MATERIAL RECONSTRUCTION:
 The cab’s roof and upper door frames spread into a wide open crown: the roof panel rises on a skewed central rib while paired door-frame sections tilt away. Front and rear wing sections separate at their seams and turn outward, exposing deep wheel housings. The tall passenger shell no longer stays intact beneath these parts. Keep the glossy black metal thick enough to show flanged edges and the same cabin floor below.
 
-BOTTOM-LEFT — DIFFERENT CONVERGING RECONSTRUCTION:
+At bottom left: DIFFERENT CONVERGING RECONSTRUCTION:
 The raised roof has lowered into a longer, flatter sedan profile while the rear body has lengthened into a distinct boot. One rear quarter remains a projecting folded steel volume with a wide joining gap; its surfaces are solid metal, not paper. Upright source pillars now rake toward the new windscreen angles. Black body panels acquire a worn cream paint finish along visible seams. The old roof-light housing is becoming an interior mirror support, not evaporating.
 
-BOTTOM-RIGHT — COMPLETE DESTINATION:
+At bottom right: COMPLETE DESTINATION:
 A modest older cream-coloured sedan taxi associated with the Cairo memory, with a low roof, separate boot, worn upholstery visible through clear windows and a plain unbranded dashboard. The same wheels, chassis and panels have become this vehicle. Preserve its grounded scale and omit invented plate text or logos.
 
 TRACEABLE PART CORRESPONDENCE:

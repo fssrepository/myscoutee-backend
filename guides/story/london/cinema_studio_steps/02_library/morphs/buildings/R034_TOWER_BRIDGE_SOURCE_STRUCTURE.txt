@@ -1,4 +1,4 @@
-REFERENCE ID: R034_TOWER_BRIDGE_SOURCE_STRUCTURE (do not render this identifier).
+REFERENCE ID: R034_TOWER_BRIDGE_SOURCE_STRUCTURE (never print IDs, headings or panel labels).
 
 SUBJECT — TOWER BRIDGE TO SZECHENYI CHAIN BRIDGE:
 Track a tower stone chip, one walkway truss node and the deck’s near edge into portal masonry, chain connection and deck fascia. Keep river and bank anchors; temporary suspended mass is allowed in the supernatural intermediates.
@@ -20,16 +20,16 @@ MINERAL RESPONSE: Dense stone and brick resist bending. Their fast initial motio
 METAL RESPONSE: Metal yields through bending, torsion and local plastic flow. Plates form stiff curved folds with visible thickness, flanges and moving specular highlights; bars neck down or thicken near their changing joints. Bolts and collars remain hard while adjoining metal reforms. Long slender members flex sooner than massive sockets and can overshoot slightly before seating. Large shape change comes from altered cross-section as well as rotation; no metallic colour painted over a soft generic blob.
 The four stills expose these different material responses through strain, sag, folded thickness, changing joints and contact shadows. In the moving film, thin flexible pieces can respond first while heavier or more viscous regions lag; phases overlap rather than all parts advancing on the same uniform clock.
 
-TOP-LEFT — COMPLETE ORIGINAL:
+At top left: COMPLETE ORIGINAL:
 London Tower Bridge is whole and recognisable: paired towers, high connecting walkways, road deck, suspension members and river piers. Show enough riverbank to anchor the same site, with the bridge unobstructed.
 
-TOP-RIGHT — EXPANSIVE MATERIAL RECONSTRUCTION:
+At top right: EXPANSIVE MATERIAL RECONSTRUCTION:
 The upper tower masses separate into broad rotating stone bands. High walkway trusses split and arc downward in heavy iron sections while road-side suspension members uncoil into wide hanging loops. Tower crowns spread above open shafts, and the same deck remains traceable below the changing superstructure.
 
-BOTTOM-LEFT — DIFFERENT CONVERGING RECONSTRUCTION:
+At bottom left: DIFFERENT CONVERGING RECONSTRUCTION:
 The tower bands gather into Chain Bridge’s lower monumental portal piers, still stepped and open at their crowns. Former walkway iron joins the developing chain runs with a large unsupported-looking but solid loop still raised above one span. Deck edge beams straighten and redistribute at visible joints; stone ornament moves toward the portal bases.
 
-BOTTOM-RIGHT — COMPLETE DESTINATION:
+At bottom right: COMPLETE DESTINATION:
 The specific Széchenyi Chain Bridge resolves with its massive portal piers, joined chain runs, suspended deck and stone approach details over the same water. Tower Bridge’s high walkways and pointed tower tops have become these destination structures rather than disappearing.
 
 TRACEABLE PART CORRESPONDENCE:

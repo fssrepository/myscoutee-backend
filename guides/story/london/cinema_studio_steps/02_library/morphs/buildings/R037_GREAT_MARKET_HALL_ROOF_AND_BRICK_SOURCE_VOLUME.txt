@@ -1,4 +1,4 @@
-REFERENCE ID: R037_GREAT_MARKET_HALL_ROOF_AND_BRICK_SOURCE_VOLUME (do not render this identifier).
+REFERENCE ID: R037_GREAT_MARKET_HALL_ROOF_AND_BRICK_SOURCE_VOLUME (never print IDs, headings or panel labels).
 
 SUBJECT — GREAT MARKET HALL TO BALNA CURVED GLASS VOLUME:
 Track one patterned tile corner into a pane edge, a brick chip into a lower plinth and a roof-truss bolt into a curved rib node. This later intrusion-to-intrusion study does not define the film’s original London opening.
@@ -21,16 +21,16 @@ ROOF RESPONSE: Structural ribs carry the large roof-sector motion; thin attached
 GLASS RESPONSE: Glass begins hard, with crisp fractured or framed edges. In its active forming region it becomes a thick highly viscous transparent material: a rounded neck stretches slowly, a heavy lobe sags behind the motion, and the former sharp corner thickens into a curved rim. The glass remains cohesive; its green edge, notch and bent transmitted background trace the moving thickness. Regions outside that forming zone stay rigid. The target profile sets back to hard glass, with stable refraction and a crisp final rim. Use no flame or full-scene transparency fade to explain this magical material change.
 The four stills expose these different material responses through strain, sag, folded thickness, changing joints and contact shadows. In the moving film, thin flexible pieces can respond first while heavier or more viscous regions lag; phases overlap rather than all parts advancing on the same uniform clock.
 
-TOP-LEFT — COMPLETE ORIGINAL:
+At top left: COMPLETE ORIGINAL:
 Budapest’s Great Market Hall is present as an already established remembered structure within the London street: complete brick frontage, patterned roof planes and attached hall volume. Show its solid wall depth and roof joints.
 
-TOP-RIGHT — EXPANSIVE MATERIAL RECONSTRUCTION:
+At top right: EXPANSIVE MATERIAL RECONSTRUCTION:
 The roof planes split into thick truss-and-tile sectors that splay upward like an irregular structural crown. Brick upper bays separate into deep curved bands. Tile groups remain visible while their material begins thinning into glass along each joined frame, with broad open gaps exposing the hall.
 
-BOTTOM-LEFT — DIFFERENT CONVERGING RECONSTRUCTION:
+At bottom left: DIFFERENT CONVERGING RECONSTRUCTION:
 Roof ribs gather into Bálna’s flowing curved glazed envelope, leaving one large raised sector and an open longitudinal seam. Source brick bands compact into the lower supporting masses; former tile sections become curved panes while their edges remain stepped and partly opaque. The two phases coexist on the same growing rib network.
 
-BOTTOM-RIGHT — COMPLETE DESTINATION:
+At bottom right: COMPLETE DESTINATION:
 Bálna’s recognisable curved glass-and-metal volume with its attached lower masonry resolves at the same site. The roof seam closes, glazing seats in the rib network and the former brick/tile masses become actual supports and envelope parts.
 
 TRACEABLE PART CORRESPONDENCE:

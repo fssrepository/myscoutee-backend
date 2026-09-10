@@ -1,4 +1,4 @@
-REFERENCE ID: TY006_PROFILE_AGE_37_TO_33_GLYPH_CHANGE_2X2 (do not render this identifier).
+REFERENCE ID: TY006_PROFILE_AGE_37_TO_33_GLYPH_CHANGE_2X2 (never print IDs, headings or panel labels).
 
 ONE 4K TYPOGRAPHY SHEET — 2×2:
 Create ONE 3840×2160 image with exactly FOUR equal edge-to-edge 1920×1080 cells in two columns and two rows. Select 4K for the whole output. No margins, gutters, separators or letterboxing. Each cell is a separately composed full 16:9 image. The specified words are large and sharply resolved, with complete glyphs and space for their accents. The four assigned cells have different inspection purposes or material states; do not produce four near-identical decorative signs.
@@ -9,16 +9,16 @@ Create a close typography study of the existing phone profile age field changing
 DISPLAY AND GLYPHS:
 Use the same ordinary screen typography, dark charcoal numeral strokes on a pale neutral field. Both digits share a baseline and font size. The first 3 is unchanged in all four cells; only the second digit reshapes. Retain the screen's real glass, faint reflection, edge depth and consistent viewing angle. The changing strokes remain within the active field and on the screen plane. They do not become raised metal, detach into the room or melt the phone. Show a controlled elastic deformation of the displayed glyph contour at full opacity, with continuously connected stroke material rather than two transparent finished numerals overlaid.
 
-TOP-LEFT — EXACT "37":
+At top left: EXACT "37":
 Show an intact 3 followed by a clear 7. The 3 has two open rounded lobes on its right-facing outline with a narrow inward waist. The 7 has a firm top bar and a diagonal descending stroke in the selected consistent font. Keep enough spacing between the two digits for their outlines to remain separate. The age field has one value only; no 33 is printed elsewhere.
 
-TOP-RIGHT — WIDE BOWED SECOND GLYPH:
+At top right: WIDE BOWED SECOND GLYPH:
 The unchanged first 3 remains at its original position. The 7 top bar has stretched into a broad outward upper hook while its diagonal bows to the right and its lower end swings outward, making an open angular loop substantially wider than either finished digit. The glyph remains one cohesive dark shape on the display plane, with clearly exposed pale negative space inside the bent outline. It is a visibly unfinished construction, not a random replacement 8, 9 or a second overlapping 7.
 
-BOTTOM-LEFT — TALL DOUBLE-LOBE OUTLINE WITH UNSETTLED WAIST:
+At bottom left: TALL DOUBLE-LOBE OUTLINE WITH UNSETTLED WAIST:
 The second glyph is now much narrower and taller than the previous wide loop. Its upper and lower portions curl into the two future 3 lobes, but the lower lobe extends below the final baseline and the waist remains an exaggerated inward notch. A remnant of the source diagonal is still visible as a connected thick diagonal region between the forming lobes. Keep the first 3 completely unchanged. This tall unfinished shape must differ clearly from both the early wide loop and the final normally proportioned digit.
 
-BOTTOM-RIGHT — EXACT "33":
+At bottom right: EXACT "33":
 The second glyph has settled into a normal 3 with the same font construction, cap height, baseline, stroke weight and open lobes as the first 3. The old 7 diagonal has become material in its two curved lobes and connecting waist, with no extra stroke remaining beside it. Show exactly 33, with one ordinary field border and the unchanged screen/bezel arrangement. The full profile image remains outside this detail crop and unchanged in the later film.
 
 GLYPH STUDY SCOPE:

@@ -1,4 +1,4 @@
-REFERENCE ID: MW01_LONDON_SOCIAL_A (do not render this identifier).
+REFERENCE ID: MW01_LONDON_SOCIAL_A (never print IDs, headings or panel labels).
 
 REFERENCE SETUP INCOMPLETE: T01_DETAILS
 Do not generate until these references are bound.
@@ -49,23 +49,23 @@ REFERENCE COVERAGE FOR THE MOVING FILM:
 This page supplies the four assigned literal views, not four cuts, morph stages or interchangeable world designs. Make each view useful for its assigned purpose: room layout shows supports and an entry/exit; a gesture view retains its hand, furniture edge and background anchor; an object detail shows side/underside and contact. Different views of the SAME room preserve its floor plan, furniture, identities, clothes and light sources even when the viewpoint changes. Distinct memories remain distinct places; do not fuse them into one room to match the grid. Repeated anchor views on another page must preserve the same state and layout.
 Additional detail pages of the same place retain that memory and its established event. Keep full body/furniture support legible wherever the assigned view permits. Never substitute four nearly identical wide shots for the four assigned subjects.
 
-FOUR ASSIGNED CELLS:
-CELL 1 — TOP-LEFT — ORIGINAL VIEW 01:
+FOUR IMAGE ASSIGNMENTS — INSTRUCTIONS ONLY, NO PRINTED TEXT:
+For the top left image (source view 01; instruction only, never printed):
 Small realistic Soho sushi/restaurant interior during an ordinary evening. Compact London layout, warm practical light, tables close together, no glamour. The protagonist is present naturally.
 
 Keep the entrance, close-set wooden tables, narrow aisle and rear restroom-door pair connected on one visible floor. Seat the woman at her established table and place the remembered man by the rear doors when this encounter is shown. Lamps illuminate actual tabletops and faces locally. Resolve chair legs and the gap under the near table; this room must retain the accepted Soho restaurant identity.
 
-CELL 2 — TOP-RIGHT — ORIGINAL VIEW 02:
+For the top right image (source view 02; instruction only, never printed):
 The same restaurant / corridor zone around the wrong-lavatory memory. A believable restaurant passage with two ordinary restroom doors and the protagonist realizing he has gone toward the wrong one. Keep the moment human and mildly awkward, not comic slapstick.
 
 Look along the existing aisle toward both restroom doors, showing their frames, handles, separation and common threshold. The protagonist has paused beside them with a slight checking turn of his head or shoulders. Keep a table corner and seated diner at nearer depth to locate the passage in the restaurant. Do not introduce a third door or a new interior behind it.
 
-CELL 3 — BOTTOM-LEFT — ORIGINAL VIEW 03:
+For the bottom left image (source view 03; instruction only, never printed):
 The SOHO WOMAN in the same Soho context giving a small genuine human smile toward the protagonist. Natural eye line, ordinary restaurant/street-adjacent environment, no romantic glamour.
 
 Use a seated three-quarter angle with the woman at the same table, her hand beside the cup and her eyes directed toward the remembered man. Show the chair back, tabletop edge and rear doorway in different depth planes. Her smile stays small and spontaneous; it does not relocate her, replace her face or add a new romantic gesture.
 
-CELL 4 — BOTTOM-RIGHT — ORIGINAL VIEW 04:
+For the bottom right image (source view 04; instruction only, never printed):
 Soho lunch memory with colleagues at a table eating while the protagonist sits with them and quietly pretends not to be hungry. Observational, restrained, no melodrama.
 
 Compose the lunch table at a diagonal so each colleague has a separate seated place and actual dish space. Show the protagonist participating in the group with a restrained expression and hands near his own setting. The food remains ordinary and the table fully supported. Do not illustrate hunger with a hollow body, theatrical distress or explanatory text.

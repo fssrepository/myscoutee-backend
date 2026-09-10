@@ -1,4 +1,4 @@
-REFERENCE ID: T01_SOHO_RESTAURANT_SOURCE_C (do not render this identifier).
+REFERENCE ID: T01_SOHO_RESTAURANT_SOURCE_C (never print IDs, headings or panel labels).
 
 REFERENCE SETUP INCOMPLETE: T01_DETAILS
 Do not generate until these references are bound.
@@ -24,18 +24,18 @@ This is the literal memory interior: no current London street, Budapest skyline,
 PAGE C — ROOM CONSTRUCTION, LIGHT AND CAMERA CLEARANCE:
 Render only the four assigned views below. Pages A, B and C together provide twelve complementary views of this same room. Use the accepted Page A image to preserve the same room from these additional viewpoints.
 
-FOUR ASSIGNED CELLS:
+FOUR IMAGE ASSIGNMENTS — INSTRUCTIONS ONLY, NO PRINTED TEXT:
 
-CELL 1 — TOP-LEFT — VIEW 09 — AISLE AT TABLE-EDGE HEIGHT:
+For the top left image (source view 09; instruction only, never printed) — AISLE AT TABLE-EDGE HEIGHT:
 Place the view near table-edge height along the existing aisle, looking past the projecting corner of the woman’s table toward the rear doors. Show the table’s front and side faces, chair legs, the clear floor gap beside them and the farther threshold. Near edges are large and the rear doorway smaller through real perspective. Keep the seated body and man partially visible wherever that angle naturally permits. This frame supplies the space a later moving camera could traverse; no drone, route arrow or invented extra-wide aisle appears.
 
-CELL 2 — TOP-RIGHT — VIEW 10 — PRACTICAL LAMPS AND UPPER ROOM CONNECTIONS:
+For the top right image (source view 10; instruction only, never printed) — PRACTICAL LAMPS AND UPPER ROOM CONNECTIONS:
 Tilt a natural oblique interior view upward enough to inspect the existing hanging fixtures, their stems or cables, ceiling attachments and relation to the side walls. Preserve the actual number, shapes and positions shown in the accepted Page A restaurant instead of substituting a decorative lighting scheme. Retain the upper edge of the rear door pair and part of the occupied room below for orientation. Show shade thickness, emitted light, reflected highlights and the shadows cast by the fixtures; lamps remain ordinary intact objects.
 
-CELL 3 — BOTTOM-LEFT — VIEW 11 — REAR THRESHOLD, WALL AND FLOOR JUNCTION:
+For the bottom left image (source view 11; instruction only, never printed) — REAR THRESHOLD, WALL AND FLOOR JUNCTION:
 Use a low close oblique angle beside the existing rear doors. Resolve the two door frames’ thickness, threshold edges, skirting or wall-to-floor junction, and the man’s shoes standing on the same floor. Keep a table-leg or chair silhouette at greater distance to preserve room depth. Wood and paint wear remain modest and plausible. No invented opening reveals another room; door leaves retain their source positions. The continuous floor and solid jambs supply construction information for the video.
 
-CELL 4 — BOTTOM-RIGHT — VIEW 12 — ROOM DEPTH FROM THE OPPOSITE AISLE DIAGONAL:
+For the bottom right image (source view 12; instruction only, never printed) — ROOM DEPTH FROM THE OPPOSITE AISLE DIAGONAL:
 Use a wider view from a different physically available position along the aisle, sufficiently distinct from Page A’s entrance and reverse views. Frame the woman’s table on a strong near diagonal with its underside visible, the two rear doors and man beyond, and the opposite wall’s fixtures receding in perspective. A slightly higher human standing viewpoint can reveal tabletop arrangement and the floor route together; do not use a ceiling cutaway or remove a wall. Keep background diners, lamps, dishes and furniture consistent. This is a final cross-check of the same lived-in room’s connected depth, not a redesigned panoramic interior.
 
 FINAL CHECK:

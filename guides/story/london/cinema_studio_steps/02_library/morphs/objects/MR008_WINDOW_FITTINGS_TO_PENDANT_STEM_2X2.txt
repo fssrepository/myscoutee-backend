@@ -1,4 +1,4 @@
-REFERENCE ID: MR008_WINDOW_FITTINGS_TO_PENDANT_STEM_2X2 (do not render this identifier).
+REFERENCE ID: MR008_WINDOW_FITTINGS_TO_PENDANT_STEM_2X2 (never print IDs, headings or panel labels).
 
 SUBJECT AND MATERIALS:
 Study a short dark metal window fixing with screw plate and glass-receiving shank becoming a long curved pendant stem and neck socket. The finished narrow stem carries a clear rounded glass shade with an open lower rim; retain the original screw plate as its wall attachment. Warm restaurant light reveals metal curvature against cool London masonry.
@@ -18,16 +18,16 @@ MATERIAL-SPECIFIC DEFORMATION:
 METAL RESPONSE: Metal yields through bending, torsion and local plastic flow. Plates form stiff curved folds with visible thickness, flanges and moving specular highlights; bars neck down or thicken near their changing joints. Bolts and collars remain hard while adjoining metal reforms. Long slender members flex sooner than massive sockets and can overshoot slightly before seating. Large shape change comes from altered cross-section as well as rotation; no metallic colour painted over a soft generic blob.
 The four stills expose these different material responses through strain, sag, folded thickness, changing joints and contact shadows. In the moving film, thin flexible pieces can respond first while heavier or more viscous regions lag; phases overlap rather than all parts advancing on the same uniform clock.
 
-TOP-LEFT — SOURCE:
+At top left: SOURCE:
 A short solid window fixing with screw heads, mounting plate and a thick metal shank anchored to masonry or timber. Include its existing glass receiving edge, with a receiving socket for the rounded glass shade described above.
 
-TOP-RIGHT — FIXING EXPANDS INTO AN ANGULAR METAL FORK:
+At top right: FIXING EXPANDS INTO AN ANGULAR METAL FORK:
 The small shank has lengthened into a large branching metal fork: one limb bends outward from the mounting plate, one hangs steeply downward, and the original fixing eye has opened into a wide thick U. The lower sections are visibly narrowing from blocky metal into the pendant stem's cross-section. Show the screw and base plate as the stable source anchor, with open air between the fork's limbs. The glass receiver remains an unfinished cradle, not a completed socket shifted downward.
 
-BOTTOM-LEFT — OVERSIZED OPEN COIL CONVERGING ON THE LAMP NECK:
+At bottom left: OVERSIZED OPEN COIL CONVERGING ON THE LAMP NECK:
 The fork has gathered into a long stem ending in a broad open coil around the developing glass connection. One thick metal limb still projects diagonally away as a blocky shoulder; another is partly wrapped into the cylindrical neck. Their open seam and temporary oversized loop create a very different silhouette from the first fork and final slender pendant. In the final cell these same sections lengthen, narrow, close and seat into the exact stem and receiving socket. Preserve metal thickness, mounting screws and contact where the finished assembly attaches.
 
-BOTTOM-RIGHT — RESOLVED DESTINATION:
+At bottom right: RESOLVED DESTINATION:
 The oversized open metal coil has narrowed and closed into the neck; the fork has become the complete slender stem. The angular shoulder has resolved into the stem curve and the receiving neck has a complete thick socket around the shade. The original mounting plate still carries the assembly. Metal highlights follow changed curvature; no simple downward translation of an unchanged bracket.
 
 CURRENT-CITY CARDS — PRESENT IN EACH RELEVANT CELL:

@@ -1,4 +1,4 @@
-REFERENCE ID: R021_RESTAURANT_REAR_DOORS_AND_DEPTH_RELATIONSHIPS (do not render this identifier).
+REFERENCE ID: R021_RESTAURANT_REAR_DOORS_AND_DEPTH_RELATIONSHIPS (never print IDs, headings or panel labels).
 
 SUBJECT — PAIRED RESTROOM DOOR FRAMES TO TWIN STONE ARCADES:
 Track a hinge plate into a lamp bracket and a chipped jamb into the near arch springing. The two openings stay distinct; the morph must not erase the centre pier or swap the wall for a finished gallery.
@@ -21,16 +21,16 @@ MINERAL RESPONSE: Dense stone and brick resist bending. Their fast initial motio
 METAL RESPONSE: Metal yields through bending, torsion and local plastic flow. Plates form stiff curved folds with visible thickness, flanges and moving specular highlights; bars neck down or thicken near their changing joints. Bolts and collars remain hard while adjoining metal reforms. Long slender members flex sooner than massive sockets and can overshoot slightly before seating. Large shape change comes from altered cross-section as well as rotation; no metallic colour painted over a soft generic blob.
 The four stills expose these different material responses through strain, sag, folded thickness, changing joints and contact shadows. In the moving film, thin flexible pieces can respond first while heavier or more viscous regions lag; phases overlap rather than all parts advancing on the same uniform clock.
 
-TOP-LEFT — COMPLETE ORIGINAL:
+At top left: COMPLETE ORIGINAL:
 Two ordinary separate timber restroom doors stand in thick adjacent frames on a warm restaurant wall. Show handles, hinges, jamb depth, a narrow wall pier between them and the shared floor edge. Omit people from this construction study.
 
-TOP-RIGHT — EXPANSIVE MATERIAL RECONSTRUCTION:
+At top right: EXPANSIVE MATERIAL RECONSTRUCTION:
 The door leaves separate into thick timber panel strips that fan away from their hinges. The central pier rises in staggered mineral blocks and the two rectangular lintels split into deep angled segments. Broad gaps expose the true wall thickness and the same space behind, with no replacement room image.
 
-BOTTOM-LEFT — DIFFERENT CONVERGING RECONSTRUCTION:
+At bottom left: DIFFERENT CONVERGING RECONSTRUCTION:
 Two arch chains curl inward from the former jambs, still open at their crowns. Timber panel strips broaden and acquire pale mineral depth as they join the inner reveals; a few remain wood at one end and carved stone at the other. Handles bend into small metal lamp brackets on the shared central support. The two passage floors extend with separate seams.
 
-BOTTOM-RIGHT — COMPLETE DESTINATION:
+At bottom right: COMPLETE DESTINATION:
 Two complete thick carved-stone arcade openings occupy the same paired-door site, separated by one substantial central pier. Joined arch crowns, deep reveals and attached lamps resolve from the original panels, handles and frames. Keep the same floor edge and continuous rear space.
 
 TRACEABLE PART CORRESPONDENCE:

@@ -1,4 +1,4 @@
-REFERENCE ID: MWP02_SYSTEM_TIME_REVERSALS_B (do not render this identifier).
+REFERENCE ID: MWP02_SYSTEM_TIME_REVERSALS_B (never print IDs, headings or panel labels).
 
 REFERENCE SETUP INCOMPLETE: MWP02
 Do not generate until these references are bound.
@@ -37,23 +37,23 @@ REFERENCE COVERAGE FOR THE MOVING FILM:
 This page supplies the four assigned literal views, not four cuts, morph stages or interchangeable world designs. Make each view useful for its assigned purpose: room layout shows supports and an entry/exit; a gesture view retains its hand, furniture edge and background anchor; an object detail shows side/underside and contact. Different views of the SAME room preserve its floor plan, furniture, identities, clothes and light sources even when the viewpoint changes. Distinct memories remain distinct places; do not fuse them into one room to match the grid. Repeated anchor views on another page must preserve the same state and layout.
 Additional detail pages of the same place retain that memory and its established event. Keep full body/furniture support legible wherever the assigned view permits. Never substitute four nearly identical wide shots for the four assigned subjects.
 
-FOUR ASSIGNED CELLS:
-CELL 1 — TOP-LEFT — ORIGINAL VIEW 05:
+FOUR IMAGE ASSIGNMENTS — INSTRUCTIONS ONLY, NO PRINTED TEXT:
+For the top left image (source view 05; instruction only, never printed):
 The two distinct submissions made visually comparable without claiming causation: one ordinary citizen-side document/laptop source and one anonymous senior-institution source reach the SAME unreadable external review destination. Keep them clearly separate, equal in destination but radically different in scale and authority. No arrows, no cause/effect graphic, no named body.
 
 Use one neutral receiving surface holding two distinct physical submission folders, one plain citizen-side packet and one more formal packet, still separated by an open strip of desk. Each keeps its own paper edge and envelope. This is a visual association of a shared destination only; do not merge their contents, add causal arrows or fabricate a claim that one triggered the other.
 
-CELL 2 — TOP-RIGHT — ORIGINAL VIEW 06:
+For the top right image (source view 06; instruction only, never printed):
 REVIEW CHAMBER WITHOUT A QUORUM: a formal high-review room in which enough participants have stepped aside that the body cannot assemble to hear the question. Do not use an exact real-world seat count, robes, flags, court names, emblems or identifiable judges. The image is simply an unanswered room.
 
 Show a formal room with empty chairs and unoccupied working places around the table, with a doorway or rear wall establishing depth. A few papers can remain at individual seats, but no exact quorum count or identifiable institution is encoded. The absence is carried by empty furniture and stillness. Do not depict a verdict or a celebratory walkout.
 
-CELL 3 — BOTTOM-LEFT — ORIGINAL VIEW 07:
+For the bottom left image (source view 07; instruction only, never printed):
 ONE CITIZEN / LAPTOP / REVIEW ROUTE FROM BELOW: the protagonist alone at an ordinary desk with a laptop, an ordinary document cursor and review papers, while the route stops before substantive consideration. Keep the ordinary document interface small; the human and the unanswered door are the point.
 
 Return to the protagonist ordinary desk with his laptop and review papers unchanged in scale. The cursor or unfinished document area stays small on the screen; his hands pause beside it. An ordinary closed room door remains a distant physical plane, not a magical institution portal. The image does not invent a specific rejection reason or decision.
 
-CELL 4 — BOTTOM-RIGHT — ORIGINAL VIEW 08:
+For the bottom right image (source view 08; instruction only, never printed):
 BLACK-HUMOUR TIMING ECHO: an earlier self-made note on the protagonist's desk carries the absurd tone of declaring an institution "fired"; nearby, later anonymous office-turnover traces appear — a removed nameplate, cleared desk or changed seating plan. Do not show news, campaign material, identifiable people or imply prediction, authority or causation. The irony is timing only.
 
 Keep the self-made earlier note on the protagonist desk as the main physical object. If the later office-turnover echo is included, use a small ordinary print or paper record lying beside it, with the cleared-desk detail inside that print boundary. Do not place a remote institutional desk in his room. The juxtaposition remains an ironic association without claiming prediction or causation.

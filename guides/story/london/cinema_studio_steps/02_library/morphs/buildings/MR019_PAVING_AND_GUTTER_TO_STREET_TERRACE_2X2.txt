@@ -1,4 +1,4 @@
-REFERENCE ID: MR019_PAVING_AND_GUTTER_TO_STREET_TERRACE_2X2 (do not render this identifier).
+REFERENCE ID: MR019_PAVING_AND_GUTTER_TO_STREET_TERRACE_2X2 (never print IDs, headings or panel labels).
 
 SUBJECT AND MATERIALS:
 Study a London pavement section with slab joints, gutter, kerb bend and two stone arcade footings becoming a broad shallow terrace with longer stone courses, stepped risers and locally reformed arches. Keep adjoining historic façades in depth and a continuous occupied walking strip. Any current pedestrians have uncovered heads and persistent light rating-tinted decimal cards. Cool overcast light, damp paving and clear dry air persist.
@@ -19,16 +19,16 @@ MINERAL RESPONSE: Dense stone and brick resist bending. Their fast initial motio
 METAL RESPONSE: Metal yields through bending, torsion and local plastic flow. Plates form stiff curved folds with visible thickness, flanges and moving specular highlights; bars neck down or thicken near their changing joints. Bolts and collars remain hard while adjoining metal reforms. Long slender members flex sooner than massive sockets and can overshoot slightly before seating. Large shape change comes from altered cross-section as well as rotation; no metallic colour painted over a soft generic blob.
 The four stills expose these different material responses through strain, sag, folded thickness, changing joints and contact shadows. In the moving film, thin flexible pieces can respond first while heavier or more viscous regions lag; phases overlap rather than all parts advancing on the same uniform clock.
 
-TOP-LEFT — SOURCE:
+At top left: SOURCE:
 The same London street section shows ordinary slab joints, gutter, kerb and two arcade footings. The near kerb corner is the anchor; full building bases and a supported walking strip remain visible.
 
-TOP-RIGHT — PAVING COURSES SPREAD INTO A LARGE STEPPED STONE FAN:
+At top right: PAVING COURSES SPREAD INTO A LARGE STEPPED STONE FAN:
 Beyond the intact near walking strip, thick paving courses separate into long staggered slabs at markedly different heights. Some project outward on exposed bedding while others rotate into steep riser blanks, creating a large opening fan of real stone depth. Gutter blocks elongate and divide into terrace edges. Above them, the existing window head splays into deep arch segments and the balcony rail opens into tread blanks. The street widens through its own moving parts; buildings retain visible substantial bases rather than vanishing to clear a square. Keep people on the continuous original strip.
 
-BOTTOM-LEFT — BROAD TERRACE WITH UNSEATED RISERS AND OPEN ARCH CHAINS:
+At bottom left: BROAD TERRACE WITH UNSEATED RISERS AND OPEN ARCH CHAINS:
 The fan has settled toward a broad traversable pocket, but one large section remains a zigzag of raised slab ends and incomplete interlocking risers over visible solid bedding. In the adjoining frontage, two deep arch chains converge around a broad crown gap, while the new stair has several treads still turned upward. The final cell seats those same slabs and treads and joins the arch, leaving the opened street and individually changed buildings in their complete target forms. The near kerb and occupied walking strip persist through the large rearrangement.
 
-BOTTOM-RIGHT — RESOLVED DESTINATION:
+At bottom right: RESOLVED DESTINATION:
 The complete shallow terrace and longer paving courses form the target traversable pocket. Historic buildings remain with deep local stone surrounds and supported sideways stairs. Preserve any people established in the first cell and their cards; no swapped crowd, new square or disappearing building makes the space.
 
 CURRENT-CITY CARDS — PRESENT IN EACH RELEVANT CELL:

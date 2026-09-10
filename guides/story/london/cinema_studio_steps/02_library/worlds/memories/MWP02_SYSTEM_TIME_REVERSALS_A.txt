@@ -1,4 +1,4 @@
-REFERENCE ID: MWP02_SYSTEM_TIME_REVERSALS_A (do not render this identifier).
+REFERENCE ID: MWP02_SYSTEM_TIME_REVERSALS_A (never print IDs, headings or panel labels).
 
 REFERENCE INPUTS:
 @char_MYS_mys-c01-protagonist_s0_v1 = CHARACTER 01 — PROTAGONIST; exact person identity; use only where this person appears.
@@ -32,23 +32,23 @@ REFERENCE COVERAGE FOR THE MOVING FILM:
 This page supplies the four assigned literal views, not four cuts, morph stages or interchangeable world designs. Make each view useful for its assigned purpose: room layout shows supports and an entry/exit; a gesture view retains its hand, furniture edge and background anchor; an object detail shows side/underside and contact. Different views of the SAME room preserve its floor plan, furniture, identities, clothes and light sources even when the viewpoint changes. Distinct memories remain distinct places; do not fuse them into one room to match the grid. Repeated anchor views on another page must preserve the same state and layout.
 Additional detail pages of the same place retain that memory and its established event. Keep full body/furniture support legible wherever the assigned view permits. Never substitute four nearly identical wide shots for the four assigned subjects.
 
-FOUR ASSIGNED CELLS:
-CELL 1 — TOP-LEFT — ORIGINAL VIEW 01:
+FOUR IMAGE ASSIGNMENTS — INSTRUCTIONS ONLY, NO PRINTED TEXT:
+For the top left image (source view 01; instruction only, never printed):
 Ordinary protagonist desk / home-paperwork memory after a REQUEST FOR RELIEF IS REFUSED. A restrained generic refusal letter and envelope sit among the protagonist's existing case papers. The protagonist is present at human scale. No named office, no portrait, no triumph or rage, and no invented reason for the refusal.
 
 Use the protagonist existing desk with the refusal letter opened beside its envelope and older case papers. His hand rests near the page while his face is farther back at ordinary seated height. Render generic text texture without inventing the reason for refusal. The unchanged laptop and room corner keep the moment part of his ongoing work.
 
-CELL 2 — TOP-RIGHT — ORIGINAL VIEW 02:
+For the top right image (source view 02; instruction only, never printed):
 Revised relief papers prepared later and deliberately set aside for a LATER INSTITUTIONAL OPENING. Show an ordinary dated document stack, envelope and neutral routing note indicating "hold / submit later" without naming an officeholder, ministry, government or real institution.
 
 Place the revised stack neatly beside the earlier papers, partly inside or under an unsealed envelope. A small routing slip is visibly set apart as a practical reminder; keep its text modest and generic. The protagonist hand is withdrawing after setting it aside. No official seal, political portrait or approving hand from outside the scene appears.
 
-CELL 3 — BOTTOM-LEFT — ORIGINAL VIEW 03:
+For the bottom left image (source view 03; instruction only, never printed):
 TWO LETTERS TO ONE DISTANT DOOR, FROM BELOW: the protagonist at an ordinary laptop/desk sending his own submission to an unnamed external review body. A small clock/time cue may suggest an ordinary afternoon send. This is the from-below image: one citizen, ordinary room, laptop, documents, no heroic staging.
 
 Keep the laptop, keyboard hand and review papers on the ordinary desk. The protagonist is visible in profile or three-quarter view, with a wall clock or daylight cue small in the background. A normal document or mail interface occupies the screen, without readable addresses. No beams, delivery arrows or image of the destination institution are superimposed.
 
-CELL 4 — BOTTOM-RIGHT — ORIGINAL VIEW 04:
+For the bottom right image (source view 04; instruction only, never printed):
 TWO LETTERS TO ONE DISTANT DOOR, FROM ABOVE: an anonymous senior-institution desk where a different formal question is being prepared or sent to the SAME unnamed external review body. No identifiable officeholder is visible; use only hands, restrained stationery and generic institutional architecture.
 
 Compose an anonymous formal desk with a different document and only the relevant hands visible. The paper and laptop or stationery sit at a more formal working position, with restrained room depth behind. Maintain the submission as separate from the protagonist papers. No recognisable officeholder, national emblem or invented authority to decide his case is shown.

@@ -1,4 +1,4 @@
-REFERENCE ID: MR013_ENTRANCE_RAIL_TO_TRANSIT_GATE_2X2 (do not render this identifier).
+REFERENCE ID: MR013_ENTRANCE_RAIL_TO_TRANSIT_GATE_2X2 (never print IDs, headings or panel labels).
 
 SUBJECT AND MATERIALS:
 Study a dark metal London entrance rail with footplate, vertical bar and horizontal elbow becoming a compact pedestrian ticket gate. The target has a solid upright housing, a small unbranded rectangular reader support and one rotating metal gate leaf on a visible pivot above the same floor. Neutral practical light joins cool light from the street entrance; no logos or readable interface are needed.
@@ -18,16 +18,16 @@ MATERIAL-SPECIFIC DEFORMATION:
 METAL RESPONSE: Metal yields through bending, torsion and local plastic flow. Plates form stiff curved folds with visible thickness, flanges and moving specular highlights; bars neck down or thicken near their changing joints. Bolts and collars remain hard while adjoining metal reforms. Long slender members flex sooner than massive sockets and can overshoot slightly before seating. Large shape change comes from altered cross-section as well as rotation; no metallic colour painted over a soft generic blob.
 The four stills expose these different material responses through strain, sag, folded thickness, changing joints and contact shadows. In the moving film, thin flexible pieces can respond first while heavier or more viscous regions lag; phases overlap rather than all parts advancing on the same uniform clock.
 
-TOP-LEFT — SOURCE:
+At top left: SOURCE:
 The street entrance rail described above stands on its footplate, with vertical bar and horizontal elbow. Frame space for the full target gate at the same three-quarter angle. No people need to be invented for this object study.
 
-TOP-RIGHT — RAIL OPENS INTO A BROAD FORK AND SPLIT GATE SHELL:
+At top right: RAIL OPENS INTO A BROAD FORK AND SPLIT GATE SHELL:
 The vertical bar widens into two separated thick curved housing shells around an exposed inner volume. The elbow has become a broad fork: one limb extends sideways toward the future gate leaf, the other rises into a blocky reader cradle. One source round-bar section still runs through the partly formed assembly. The footplate remains on the ground, but the upper shell portions can separate during reshaping. The silhouette is a wide irregular mechanism rather than a nearly finished gate post.
 
-BOTTOM-LEFT — UNFINISHED ROTATING GATE WITH AN OPEN HOUSING AND OVERSIZED LEAF:
+At bottom left: UNFINISHED ROTATING GATE WITH AN OPEN HOUSING AND OVERSIZED LEAF:
 The two shells have converged around the target mechanism but leave a large vertical seam. The gate leaf is now a wide solid plate rotated upward out of its operating position; its outer edge still changes from round rail into flat plate. The reader cradle is almost formed but its bracket remains an open loop before closing. The final cell closes the housing, narrows the loop and seats the leaf on its working pivot, retaining the gate design described above and floor contact. No new device or reader appears independently.
 
-BOTTOM-RIGHT — RESOLVED DESTINATION:
+At bottom right: RESOLVED DESTINATION:
 The source material forms the complete post, reader support and rotating gate leaf described above with its proper floor contact. Use the upright housing, pivot and rectangular reader support described above; no invented transit logo, flashing interface or change of remembered location.
 
 CURRENT-CITY CARDS — PRESENT IN EACH RELEVANT CELL:

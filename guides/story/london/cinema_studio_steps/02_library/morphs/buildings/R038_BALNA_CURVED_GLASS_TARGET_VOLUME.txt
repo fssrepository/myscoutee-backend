@@ -1,4 +1,4 @@
-REFERENCE ID: R038_BALNA_CURVED_GLASS_TARGET_VOLUME (do not render this identifier).
+REFERENCE ID: R038_BALNA_CURVED_GLASS_TARGET_VOLUME (never print IDs, headings or panel labels).
 
 SUBJECT — MARKET ROOF BAY TO BALNA GLASS RIB AND STONE BASE:
 Track the tile pattern fragment into a faint pane-edge inclusion, the gutter corner into the curved trim and the brick chip into the supporting base. Large geometric gaps resolve through joining, not fading.
@@ -21,16 +21,16 @@ ROOF RESPONSE: Structural ribs carry the large roof-sector motion; thin attached
 GLASS RESPONSE: Glass begins hard, with crisp fractured or framed edges. In its active forming region it becomes a thick highly viscous transparent material: a rounded neck stretches slowly, a heavy lobe sags behind the motion, and the former sharp corner thickens into a curved rim. The glass remains cohesive; its green edge, notch and bent transmitted background trace the moving thickness. Regions outside that forming zone stay rigid. The target profile sets back to hard glass, with stable refraction and a crisp final rim. Use no flame or full-scene transparency fade to explain this magical material change.
 The four stills expose these different material responses through strain, sag, folded thickness, changing joints and contact shadows. In the moving film, thin flexible pieces can respond first while heavier or more viscous regions lag; phases overlap rather than all parts advancing on the same uniform clock.
 
-TOP-LEFT — COMPLETE ORIGINAL:
+At top left: COMPLETE ORIGINAL:
 Close three-quarter construction view of a Great Market Hall roof bay: patterned tiles on deep roof framing above substantial brick walls. Include one gutter corner, a truss node and a masonry return.
 
-TOP-RIGHT — EXPANSIVE MATERIAL RECONSTRUCTION:
+At top right: EXPANSIVE MATERIAL RECONSTRUCTION:
 Tile-and-frame sections peel apart as thick independent roof volumes, not paper layers. The truss node divides into splayed branches while the gutter unfurls into a broad curved metal band. Upper brick courses rotate outward, exposing their narrow end faces and the same inner support.
 
-BOTTOM-LEFT — DIFFERENT CONVERGING RECONSTRUCTION:
+At bottom left: DIFFERENT CONVERGING RECONSTRUCTION:
 The roof bay has become a wide curved glass sector approaching the Bálna profile, with two pane groups still raised above their frames. One rib branch is partly straight lattice and partly smooth curving support. Brick courses gather into a deep stone base with a large unseated block at its corner.
 
-BOTTOM-RIGHT — COMPLETE DESTINATION:
+At bottom right: COMPLETE DESTINATION:
 A finished Bálna-like glazed roof bay joins its curved metal rib to substantial lower masonry. Pane edges, seals, bolts and base contact remain legible. The same gutter band forms the finished envelope edge.
 
 TRACEABLE PART CORRESPONDENCE:

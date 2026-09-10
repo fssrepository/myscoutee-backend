@@ -1,4 +1,4 @@
-REFERENCE ID: R048_ADMINISTRATIVE_DESK_ACTUAL_DOCUMENTS_AND_DEVICE_GEOMETRY (do not render this identifier).
+REFERENCE ID: R048_ADMINISTRATIVE_DESK_ACTUAL_DOCUMENTS_AND_DEVICE_GEOMETRY (never print IDs, headings or panel labels).
 
 SUBJECT — WORK DESK TO DEEP ADMINISTRATIVE STORAGE CONSOLE:
 Track the table-corner grain into a shelf edge, a drawer screw line into a compartment rail and one leg joint into the tall side frame. The surrounding wood can change dramatically without swapping documents or inventing narrative claims.
@@ -20,16 +20,16 @@ TIMBER RESPONSE: Wood first bends along grain and separates at joinery; transver
 METAL RESPONSE: Metal yields through bending, torsion and local plastic flow. Plates form stiff curved folds with visible thickness, flanges and moving specular highlights; bars neck down or thicken near their changing joints. Bolts and collars remain hard while adjoining metal reforms. Long slender members flex sooner than massive sockets and can overshoot slightly before seating. Large shape change comes from altered cross-section as well as rotation; no metallic colour painted over a soft generic blob.
 The four stills expose these different material responses through strain, sag, folded thickness, changing joints and contact shadows. In the moving film, thin flexible pieces can respond first while heavier or more viscous regions lag; phases overlap rather than all parts advancing on the same uniform clock.
 
-TOP-LEFT — COMPLETE ORIGINAL:
+At top left: COMPLETE ORIGINAL:
 A plain wooden work desk has a thick tabletop, legs, drawer rails, small printer, phone and a stack of ordinary papers. Show their actual supports, device bases and the table’s edge grain. Omit readable legal text and personal data.
 
-TOP-RIGHT — EXPANSIVE MATERIAL RECONSTRUCTION:
+At top right: EXPANSIVE MATERIAL RECONSTRUCTION:
 The unoccupied tabletop edges divide into thick board fans that rise around a stable central platform supporting the devices and papers. Legs branch into tall side frames and drawer rails spread into offset horizontal members. There is no paper-made building; timber supplies the changing structure.
 
-BOTTOM-LEFT — DIFFERENT CONVERGING RECONSTRUCTION:
+At bottom left: DIFFERENT CONVERGING RECONSTRUCTION:
 The raised boards gather into a deep console with several partly formed compartments around the same supported work surface. One shelf stands diagonally before seating, and a large wooden web is halfway into two dividers. Printer and phone retain their positions on the continuous central platform; papers remain ordinary unchanged paper.
 
-BOTTOM-RIGHT — COMPLETE DESTINATION:
+At bottom right: COMPLETE DESTINATION:
 A solid administrative storage console resolves with joined shelves, drawers, deep document compartments and the same worktop carrying the original printer, phone and paper stack. Full supports connect the heavier assembly to the same floor.
 
 TRACEABLE PART CORRESPONDENCE:

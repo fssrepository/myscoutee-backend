@@ -1,4 +1,4 @@
-REFERENCE ID: CM004_TRANSIT_HELPER_TO_CAIRO_TRAVELER_2X2 (do not render this identifier).
+REFERENCE ID: CM004_TRANSIT_HELPER_TO_CAIRO_TRAVELER_2X2 (never print IDs, headings or panel labels).
 
 REFERENCE INPUTS — C11 TO C13:
 @char_MYS_mys-c11-russian-transit-passenger_s0_v1 supplies the exact C11 source identity, hair, body and wardrobe.
@@ -18,18 +18,18 @@ ELASTIC FACE AND DIFFERENT MATERIAL RESPONSE:
 The face is a cohesive viscoelastic three-dimensional volume. A reshaping force travels through it: a cheek stretches and drags its pores and wrinkle branches, the brow lags, the jawline rounds under the load and then rebounds toward the target. Soft cheek and lip volumes deform readily; the nose bridge and jaw contour offer more resistance and settle later. A local stretched region becomes thinner and more tensioned while adjacent compressed skin develops real folds. This is the same visible skin surface changing shape, not a mask sliding over another face. Use the large intermediate head contours already specified, with local strain clearly visible around eyelids, nostrils, mouth corners and ear roots. Their openings retain actual depth as the surrounding surfaces stretch.
 Hair has low mass and bends as rooted strands: loose ends lag behind scalp motion, longer groups sweep through arcs, and compressed roots regroup into the destination hair pattern. Cloth responds differently again: seams carry tension, broad panels buckle into deep folds, and free hems flutter after a heavier torso region has already moved. The body, skin, hair and garments therefore reach each intermediate at different local stages. Cohesive tissue retains a closed skin surface; no watery drips, loose fragments or opacity crossfade. These snapshots show the stretched and compressed volumes sharply; they are not four interchangeable finished portraits.
 
-TOP-LEFT — COMPLETE C11 SOURCE:
+At top left: COMPLETE C11 SOURCE:
 Present the actual C11 transit helper from hair to below the knees at a fixed oblique angle. His dark commuter outerwear gives a heavy closed vertical silhouette. Establish the cheek-to-ear profile, one eyebrow end, the visible hair boundary, coat shoulder seam, sleeve cuff and the lower corner of the near front panel. Both hands are lowered and visible. The head remains comfortably large in its cell, with eyelids, nose projection and beard/stubble if present in the reference individually readable. Clothes have lining, dense weave and weighted folds; the person is grounded beside the same wall recess.
 
-TOP-RIGHT — FIRST EXTREME HUMAN RECONSTRUCTION:
+At top right: FIRST EXTREME HUMAN RECONSTRUCTION:
 The outer coat's front and side panels expand into two broad curved wings around the torso while remaining attached at their real shoulder and side seams. Their heavy hems climb to different heights. The body's chest deepens and the neck lengthens as the shoulders draw inward, creating a narrow upper-body core inside a very wide coat envelope. The head is temporarily tall and narrow, with the brow and upper nose acquiring C13's actual shape while C11's jaw remains unusually elongated. The same ears, mouth and two eyes occupy the changing head; no second portrait is nested inside it.
 On the near cheek, skin texture and pigmentation develop together with actual curvature: the plane rolls outward into a larger cheek volume, carrying its pores and fine hair. At the jaw, the unfinished source contour remains visibly raised. Hair strands alter their growth direction and length on the same scalp. Coat fibres fan along the enlarged curved panels; at their inner edges dense lining is becoming thinner shirt fabric. The near cuff has expanded into an open cloth coil around the changing forearm. Facial structure and garment silhouette both change conspicuously.
 
-BOTTOM-LEFT — SECOND DISTINCT HUMAN RECONSTRUCTION:
+At bottom left: SECOND DISTINCT HUMAN RECONSTRUCTION:
 The broad outer panels now converge into a narrower travel outfit, but a thick spiral of remaining coat fabric stands around the waist and crosses one side of the chest. It is visibly smaller and lower than the earlier wings. The shoulders have broadened toward C13's actual build and the chest has shortened, reversing the second cell's narrow long core. His target jaw and mouth are recognizable, while the forehead remains too broad and one continuous cheek surface still projects as an unfinished rounded volume before settling to the reference. This is a new facial shape, not a second skin-tone stage.
 The coat's near hem corner has reached the developing shirt's lower side seam. The source lining becomes the shirt's woven facing along the spiral's visible thickness. One sleeve is the completed light target sleeve, the other is still an oversized rolled cuff on a continuous arm. The last dark outerwear section becomes the target lower garment and shirt reinforcement through the same cloth volume. Maintain readable fingers, wrist shape and collar depth. The final cell must remove this spiral by integrating its actual fabric into the outfit.
 
-BOTTOM-RIGHT — COMPLETE C13 DESTINATION:
+At bottom right: COMPLETE C13 DESTINATION:
 The exact C13 Cairo traveler is fully resolved with the face, skin, hair, body and practical travel clothes of his supplied image. The head has normal target proportions and the shirt/layer sits naturally on his shoulders, with both sleeves and waist seam completed. No coat wing or waist spiral remains; their material has become the lighter outfit and lower garment. The same floor and wall recess remain. His calm attentive presence does not depend on a flag, exotic costume or a new background. The continuity is one transforming remembered human body.
 
 RATING ROLE IN THIS SHEET:

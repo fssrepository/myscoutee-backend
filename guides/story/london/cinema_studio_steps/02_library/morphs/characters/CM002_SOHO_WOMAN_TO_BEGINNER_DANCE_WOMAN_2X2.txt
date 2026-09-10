@@ -1,4 +1,4 @@
-REFERENCE ID: CM002_SOHO_WOMAN_TO_BEGINNER_DANCE_WOMAN_2X2 (do not render this identifier).
+REFERENCE ID: CM002_SOHO_WOMAN_TO_BEGINNER_DANCE_WOMAN_2X2 (never print IDs, headings or panel labels).
 
 REFERENCE INPUTS — C02 TO C10:
 @char_MYS_mys-c02-soho-woman_s0_v1 supplies the exact C02 source identity, hair, body and wardrobe.
@@ -18,18 +18,18 @@ ELASTIC FACE AND DIFFERENT MATERIAL RESPONSE:
 The face is a cohesive viscoelastic three-dimensional volume. A reshaping force travels through it: a cheek stretches and drags its pores and wrinkle branches, the brow lags, the jawline rounds under the load and then rebounds toward the target. Soft cheek and lip volumes deform readily; the nose bridge and jaw contour offer more resistance and settle later. A local stretched region becomes thinner and more tensioned while adjacent compressed skin develops real folds. This is the same visible skin surface changing shape, not a mask sliding over another face. Use the large intermediate head contours already specified, with local strain clearly visible around eyelids, nostrils, mouth corners and ear roots. Their openings retain actual depth as the surrounding surfaces stretch.
 Hair has low mass and bends as rooted strands: loose ends lag behind scalp motion, longer groups sweep through arcs, and compressed roots regroup into the destination hair pattern. Cloth responds differently again: seams carry tension, broad panels buckle into deep folds, and free hems flutter after a heavier torso region has already moved. The body, skin, hair and garments therefore reach each intermediate at different local stages. Cohesive tissue retains a closed skin surface; no watery drips, loose fragments or opacity crossfade. These snapshots show the stretched and compressed volumes sharply; they are not four interchangeable finished portraits.
 
-TOP-LEFT — COMPLETE C02 SOURCE:
+At top left: COMPLETE C02 SOURCE:
 Use a fixed three-quarter head-to-below-knee view that includes the entire source coat hem. C02's recognisable face, relaxed mouth, hair parting and shoulder-length strands are crisp. Her dark coat makes a narrow, predominantly vertical outline; front panels hang close to the thighs and the sleeves sit naturally around the arms. The hands rest slightly clear of the sides so changing cuffs can be seen. Establish a curved lock beside the near cheek, a seam running from shoulder to cuff, one coat fastening and the bottom hem corner. Keep the coat's collar and blouse separately readable. The source is the supplied person with real cloth thickness.
 
-TOP-RIGHT — FIRST EXTREME HUMAN RECONSTRUCTION:
+At top right: FIRST EXTREME HUMAN RECONSTRUCTION:
 C02's hair gathers upward into a large loose arc above and beside the crown while individual strands remain rooted in the scalp. The same locks lengthen, bend and regroup; this is an unfinished hair volume significantly larger than either endpoint hairstyle. The near temple takes on C10's contour, while the lower face elongates into a visibly longer jaw-to-chin shape than either finished face. The cheek and nose retain continuous skin with changing side depth.
 Both coat fronts have spread into broad spiral pleats around the hips, producing a wide bell-like outline, with the original hem corner raised beside one thigh. The torso is temporarily elongated and narrower at the waist; shoulder seams slide downward over the changing upper arms. Cloth at the upper chest is developing the target blouse/knit weave while the lower sections still have the dense dark coat fabric. One sleeve remains a thick source sleeve and the other has gathered into a deep cuff ring. The face stays in the open centre above the outward garment volume. Broad hair and coat shapes distinguish this state at thumbnail scale.
 
-BOTTOM-LEFT — SECOND DISTINCT HUMAN RECONSTRUCTION:
+At bottom left: SECOND DISTINCT HUMAN RECONSTRUCTION:
 The expansive hip pleats now gather upward into a short, layered shell around the upper torso. This is a tall-then-wide reversal: the shoulders and chest are temporarily broader, the torso shorter, and the hip outline much narrower than in the second cell. The body stays one continuous person with naturally joined arms. The source coat hem has migrated up the body as folded fabric and is visibly becoming the target waist hem; its marked corner lies in one unfinished thick side fold rather than disappearing below frame.
 The single head has acquired C10's chin and lower-face outline, but one broad cheek plane and forehead curvature remain oversized and unfinished. The previous high hair arc has shortened and converged toward C10's practical hairstyle; one conspicuous loop beside the near ear is still feeding its rooted strands into the final volume. The target upper garment is recognizable at the centre while the near side still carries an open, thick S-fold of source coat material. Show the transition of coat lining into garment facing along that same fold. A different body envelope, head contour and cloth structure must separate this cell from the previous one.
 
-BOTTOM-RIGHT — COMPLETE C10 DESTINATION:
+At bottom right: COMPLETE C10 DESTINATION:
 C10 is complete and unmistakable as the accepted beginner dance woman. Her reference hairstyle has its finished volume, her face and body proportions are ordinary and exact, and the social-evening blouse/knit and lower garment match her sheet. All source coat fabric now forms this outfit's panels, facings and lower garment; there is no abandoned coat behind her. Hands remain visible in the same relaxed presentation. Her approachable expression can be warmer, but expression is secondary to the completed change of identity and clothes. Floor, doorway and warm light remain identical.
 
 RATING ROLE IN THIS SHEET:

@@ -1,4 +1,4 @@
-REFERENCE ID: MWP01_ROUTES_ROOMS_DOCUMENTS_C (do not render this identifier).
+REFERENCE ID: MWP01_ROUTES_ROOMS_DOCUMENTS_C (never print IDs, headings or panel labels).
 
 REFERENCE SETUP INCOMPLETE: MWP01
 Do not generate until these references are bound.
@@ -39,23 +39,23 @@ REFERENCE COVERAGE FOR THE MOVING FILM:
 This page supplies the four assigned literal views, not four cuts, morph stages or interchangeable world designs. Make each view useful for its assigned purpose: room layout shows supports and an entry/exit; a gesture view retains its hand, furniture edge and background anchor; an object detail shows side/underside and contact. Different views of the SAME room preserve its floor plan, furniture, identities, clothes and light sources even when the viewpoint changes. Distinct memories remain distinct places; do not fuse them into one room to match the grid. Repeated anchor views on another page must preserve the same state and layout.
 Additional detail pages of the same place retain that memory and its established event. Keep full body/furniture support legible wherever the assigned view permits. Never substitute four nearly identical wide shots for the four assigned subjects.
 
-FOUR ASSIGNED CELLS:
-CELL 1 — TOP-LEFT — ORIGINAL VIEW 09:
+FOUR IMAGE ASSIGNMENTS — INSTRUCTIONS ONLY, NO PRINTED TEXT:
+For the top left image (source view 09; instruction only, never printed):
 Education / belonging / record threshold: an ordinary diploma/certificate and supporting paperwork where a required language-exam stamp/credential is visibly absent, with the edge of later Brexit/work-coverage paperwork in the same physical document stack. No infographic, no accusatory montage.
 
 Show the certificate and supporting papers as a physical overlapping stack on a desk. The missing credential area remains visibly blank while the edge of the later work-coverage paperwork is a separate sheet beneath. Keep text small and non-identifying. The paper layers have real thickness and shadows; no floating stamps or cause-and-effect arrows are added.
 
-CELL 2 — TOP-RIGHT — ORIGINAL VIEW 01:
+For the top right image (source view 01; instruction only, never printed):
 Budapest workers' hostel corridor at night, ordinary institutional fluorescent light, a closed room door and the protagonist forced to remain in the corridor after returning too late. Quiet, practical, lonely, not melodramatic.
 
 Look down the hostel corridor past the closed door with the protagonist sitting or standing beside his belongings. Door frame thickness, skirting and repeating ceiling fixtures establish depth. A bag rests on the floor near him, leaving the corridor route visible. The ordinary fluorescent light remains local and practical; no locked-cell bars or invented punishment scene appear.
 
-CELL 3 — BOTTOM-LEFT — ORIGINAL VIEW 07:
+For the bottom left image (source view 07; instruction only, never printed):
 Nile / Aswan hotel-room memory: a modest room prepared for two people but occupied by only the protagonist, with two sleeping places and a real window toward the river. The empty half of the room matters more than tourism spectacle.
 
 Establish two distinct sleeping places with sheets and pillows, one occupied or visibly used by the protagonist and the other empty. Keep the river beyond an actual framed window at the room far side. Show the aisle between beds and modest furniture on the floor. The empty place remains ordinary, without a ghost companion or romantic visual symbolism.
 
-CELL 4 — BOTTOM-RIGHT — ORIGINAL VIEW 08:
+For the bottom right image (source view 08; instruction only, never printed):
 Ordinary health-insurance / administrative form with one clearly empty field while the protagonist handles the paperwork. Keep most text unreadable; the missing field and human hand are the visual fact.
 
 Frame the form on a desk with one deliberately empty rectangular field in useful focus. The protagonist hand holds the page edge without covering that field. Surrounding lines remain mostly unreadable; a pen and paper stack lie on the same surface. Do not invent a policy name, denied claim, diagnosis or completed signature to fill the visual gap.

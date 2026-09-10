@@ -1,5 +1,5 @@
 SINGLE WORLD IMAGE — W01_C_03, ORIGINAL VIEW 07:
-Generate one full-frame photographic 16:9 composition; select 2K. No grid, contact sheet, before/after overlay, border, captions, labels, arrows, letterboxing or unused area. In-world signs and rating cards remain visible.
+Generate one full-frame photographic 16:9 composition; select 2K. No grid, contact sheet, before/after overlay, border, prompt headings, captions, labels, arrows, letterboxing or unused area. In-world signs and rating cards remain visible.
 World W01, group C, position 03 of 04; do not print these identifiers. The assigned composition determines the visible source, intermediate or destination state. Related images share street geometry, landmark identity, people and material appearance; they do not impose their camera angle or transformation state on this view. If accepted companion references are supplied, reconstruct that spatial identity without copying their grid or crop.
 
 WORLD IDENTITY — CONTEXT FOR THE ASSIGNED VIEW, NOT EXTRA SUBJECTS:

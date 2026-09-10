@@ -1,4 +1,4 @@
-REFERENCE ID: R055_WESTMINSTER_ABBEY_LONDON_SOURCE (do not render this identifier).
+REFERENCE ID: R055_WESTMINSTER_ABBEY_LONDON_SOURCE (never print IDs, headings or panel labels).
 
 SUBJECT — WESTMINSTER ABBEY TO MATTHIAS CHURCH:
 Track an Abbey tracery joint into a new window, a tower-crown block into the tall spire and one source roof seam into the patterned destination roof. This is a library transformation option, not an automatic change to the final clinical sequence.
@@ -20,16 +20,16 @@ MINERAL RESPONSE: Dense stone and brick resist bending. Their fast initial motio
 ROOF RESPONSE: Structural ribs carry the large roof-sector motion; thin attached roof sheets buckle and slide over seams before the heavier rib finishes turning. Keep the sheet gauge visibly thinner than the rib. Fold crests, overlap shadows and rivet/seam lines travel on the same metal. The final seam closes by seating those edges, with a smaller delayed settling motion than the masonry below. A lifted sector reveals its own underside and the same interior.
 The four stills expose these different material responses through strain, sag, folded thickness, changing joints and contact shadows. In the moving film, thin flexible pieces can respond first while heavier or more viscous regions lag; phases overlap rather than all parts advancing on the same uniform clock.
 
-TOP-LEFT — COMPLETE ORIGINAL:
+At top left: COMPLETE ORIGINAL:
 Westminster Abbey’s full recognisable west front and adjoining side stand in London, with paired west towers, deep Gothic entrance, stone tracery and roof mass. Keep the source identity distinct from the Palace of Westminster.
 
-TOP-RIGHT — EXPANSIVE MATERIAL RECONSTRUCTION:
+At top right: EXPANSIVE MATERIAL RECONSTRUCTION:
 The paired tower upper masses split into thick rotating stone stages while roof planes lift in unequal sections. Window tracery branches spread outward and entrance arch stones fan into deep ribs. The whole upper silhouette becomes asymmetrical and open, with the original London church no longer intact behind it.
 
-BOTTOM-LEFT — DIFFERENT CONVERGING RECONSTRUCTION:
+At bottom left: DIFFERENT CONVERGING RECONSTRUCTION:
 The tower material gathers toward the strongly asymmetrical tower arrangement of Budapest’s Matthias Church. One developing tall spire remains an open stack of stone ribs while the lower opposite roof masses settle. Roof sectors acquire the destination’s patterned tile geometry at their solid edges; the entrance and tracery are still partly unjoined.
 
-BOTTOM-RIGHT — COMPLETE DESTINATION:
+At bottom right: COMPLETE DESTINATION:
 The recognisable Matthias Church resolves with its specific tall ornate tower, asymmetrical roof mass, patterned tiled roofs and complete Gothic facade, at the same inherited London church site. Both source tower masses have visible roles in its new tower, roof and supporting stonework.
 
 TRACEABLE PART CORRESPONDENCE:

@@ -1,4 +1,4 @@
-REFERENCE ID: MW04_POLICE_DEFENCE_B (do not render this identifier).
+REFERENCE ID: MW04_POLICE_DEFENCE_B (never print IDs, headings or panel labels).
 
 REFERENCE SETUP INCOMPLETE: MW04
 Do not generate until these references are bound.
@@ -48,23 +48,23 @@ REFERENCE COVERAGE FOR THE MOVING FILM:
 This page supplies the four assigned literal views, not four cuts, morph stages or interchangeable world designs. Make each view useful for its assigned purpose: room layout shows supports and an entry/exit; a gesture view retains its hand, furniture edge and background anchor; an object detail shows side/underside and contact. Different views of the SAME room preserve its floor plan, furniture, identities, clothes and light sources even when the viewpoint changes. Distinct memories remain distinct places; do not fuse them into one room to match the grid. Repeated anchor views on another page must preserve the same state and layout.
 Additional detail pages of the same place retain that memory and its established event. Keep full body/furniture support legible wherever the assigned view permits. Never substitute four nearly identical wide shots for the four assigned subjects.
 
-FOUR ASSIGNED CELLS:
-CELL 1 — TOP-LEFT — ORIGINAL VIEW 05:
+FOUR IMAGE ASSIGNMENTS — INSTRUCTIONS ONLY, NO PRINTED TEXT:
+For the top left image (source view 05; instruction only, never printed):
 Continuation in the apartment: an officer accidentally steps on the protagonist's recently operated foot. Sudden physical pain and vulnerability, no gore, no medical reveal, no exaggerated violence.
 
 Use a low-to-medium angle showing the officer shoe, the protagonist foot and both bodies enough to explain the accidental contact. His posture recoils slightly while the foot remains grounded; keep the interaction non-graphic. Furniture and the floor retain the apartment layout. Do not introduce a kick, deliberate assault or a new visible surgical injury.
 
-CELL 2 — TOP-RIGHT — ORIGINAL VIEW 06:
+For the top right image (source view 06; instruction only, never printed):
 Fingerprinting / formal processing with the recurring POLICEWOMAN. The procedure is ordinary. Include the awkward contradiction of attraction / embarrassed human expression without romantic staging.
 
 Show the policewoman guiding the protagonist hand at the existing fingerprinting surface, with each finger, the support pad or device and desk edge distinct. Both people stand or sit in physically reachable positions. Their small embarrassed expressions remain visible above the working hands. Keep uniform, equipment and room ordinary without romantic lighting.
 
-CELL 3 — BOTTOM-LEFT — ORIGINAL VIEW 07:
+For the bottom left image (source view 07; instruction only, never printed):
 Appointed-defence discontinuity: a substitute/person from the defence office appears instead of the expected lawyer, or a handoff between defence contacts is visibly unclear. Show discontinuity, not villainy.
 
 Place the office substitute opposite the protagonist at a plain consultation desk, with a folder and a spare chair visible. The person has their own established identity, not the appointed lawyer face. The scene records a discontinuity in contact; no ghost portrait of the missing lawyer, villain pose or unexplained morph is inserted into this literal memory cell.
 
-CELL 4 — BOTTOM-RIGHT — ORIGINAL VIEW 08:
+For the bottom right image (source view 08; instruction only, never printed):
 Attempts to reach police/prosecution/court/defence routes by phone and in corridors/offices. Different ordinary people redirect the protagonist; no one appears sinister.
 
 Choose one grounded contact moment: the protagonist with a phone beside a corridor doorway or office counter, another person indicating the next physical direction. Keep the phone, hand and doorway connected in one space. Do not combine police, prosecution, court and defence into four miniature rooms inside this cell; other moments belong to companion views or the video.

@@ -1,4 +1,4 @@
-REFERENCE ID: MW01_LONDON_SOCIAL_B (do not render this identifier).
+REFERENCE ID: MW01_LONDON_SOCIAL_B (never print IDs, headings or panel labels).
 
 REFERENCE SETUP INCOMPLETE: MW01, T01_DETAILS
 Do not generate until these references are bound.
@@ -51,23 +51,23 @@ REFERENCE COVERAGE FOR THE MOVING FILM:
 This page supplies the four assigned literal views, not four cuts, morph stages or interchangeable world designs. Make each view useful for its assigned purpose: room layout shows supports and an entry/exit; a gesture view retains its hand, furniture edge and background anchor; an object detail shows side/underside and contact. Different views of the SAME room preserve its floor plan, furniture, identities, clothes and light sources even when the viewpoint changes. Distinct memories remain distinct places; do not fuse them into one room to match the grid. Repeated anchor views on another page must preserve the same state and layout.
 Additional detail pages of the same place retain that memory and its established event. Keep full body/furniture support legible wherever the assigned view permits. Never substitute four nearly identical wide shots for the four assigned subjects.
 
-FOUR ASSIGNED CELLS:
-CELL 1 — TOP-LEFT — ORIGINAL VIEW 05:
+FOUR IMAGE ASSIGNMENTS — INSTRUCTIONS ONLY, NO PRINTED TEXT:
+For the top left image (source view 05; instruction only, never printed):
 Crowded low-cost London shared-house communal interior with many Hungarian adult housemates, compressed furniture, coats, shoes, bags and ordinary domestic clutter. It must feel inhabited, not dirty caricature.
 
 Use a doorway-side wide view of the shared communal room. Several coats and bags hang from actual hooks, shoes rest beside furniture and seats leave a narrow but traceable walking space. Every person has an individual floor or seat contact. Show lived-in fabric wear, table edges and household storage without turning the room into a heap of anonymous bodies or dirt.
 
-CELL 2 — TOP-RIGHT — ORIGINAL VIEW 06:
+For the top right image (source view 06; instruction only, never printed):
 Cramped shared bedroom from the same house at night: beds close together, limited personal space, one current housemate occupying the recurring sleeping place, providing the room geometry for the different-snore memory. No joke staging.
 
 Show the shared bedroom as one nighttime state with adjacent bed frames, mattresses, bedding and a narrow floor gap. The currently assigned sleeping housemate occupies one physical bed; do not overlap two sleeping bodies to indicate replacement. The room layout supplies the recurring sleeping place, while a separate character morph or later video carries the change of occupant.
 
-CELL 3 — BOTTOM-LEFT — ORIGINAL VIEW 07:
+For the bottom left image (source view 07; instruction only, never printed):
 Ordinary memory of a Hungarian housemate living in London while spouse/child/home obligations remain in Hungary. Show a modest shared-room context with a family photograph / call / small domestic cue, not explanatory text and not a melodramatic separation scene.
 
 Place the mortgage housemate in the same modest room beside one small family photograph showing the established spouse and child. Keep the photograph a physical print or actual device image with frame thickness or screen edge, not a floating memory window. Show his ordinary belongings and posture in the room; the family remains elsewhere rather than appearing life-size beside him.
 
-CELL 4 — BOTTOM-RIGHT — ORIGINAL VIEW 08:
+For the bottom right image (source view 08; instruction only, never printed):
 Dating-profile memory after the age-field edit from 37 to 33: the SAME unchanged photograph appears with the current age field clearly displaying 33. Keep the device/profile interface small and realistic; the face itself must not change. This still captures only the edited state.
 
 Use a close oblique device view in one solid state: the unchanged profile photograph above an active age field displaying 33, with the cursor or selected field indicating an edit. Retain the device bezel, supporting hand and room surface. Do not double-print 37 and 33 or morph the face to force time into one still.

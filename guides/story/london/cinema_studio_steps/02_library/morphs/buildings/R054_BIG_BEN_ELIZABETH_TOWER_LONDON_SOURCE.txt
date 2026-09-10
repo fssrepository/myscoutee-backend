@@ -1,4 +1,4 @@
-REFERENCE ID: R054_BIG_BEN_ELIZABETH_TOWER_LONDON_SOURCE (do not render this identifier).
+REFERENCE ID: R054_BIG_BEN_ELIZABETH_TOWER_LONDON_SOURCE (never print IDs, headings or panel labels).
 
 SUBJECT — ELIZABETH TOWER TO ORNATE STONE CLOCK GATE:
 Track a clock-rim joint, a Gothic leaf carving and a stone weathering streak into the new clock housing, crown and jamb. Tower-to-gate changes massing and negative space; the clock is never a pasted screen.
@@ -20,16 +20,16 @@ MINERAL RESPONSE: Dense stone and brick resist bending. Their fast initial motio
 METAL RESPONSE: Metal yields through bending, torsion and local plastic flow. Plates form stiff curved folds with visible thickness, flanges and moving specular highlights; bars neck down or thicken near their changing joints. Bolts and collars remain hard while adjoining metal reforms. Long slender members flex sooner than massive sockets and can overshoot slightly before seating. Large shape change comes from altered cross-section as well as rotation; no metallic colour painted over a soft generic blob.
 The four stills expose these different material responses through strain, sag, folded thickness, changing joints and contact shadows. In the moving film, thin flexible pieces can respond first while heavier or more viscous regions lag; phases overlap rather than all parts advancing on the same uniform clock.
 
-TOP-LEFT — COMPLETE ORIGINAL:
+At top left: COMPLETE ORIGINAL:
 London’s Elizabeth Tower is recognisable with its complete square shaft, clock faces, Gothic detail and pointed crown, attached to the Palace of Westminster. Frame the whole source and adjoining stone base, with London paving retained.
 
-TOP-RIGHT — EXPANSIVE MATERIAL RECONSTRUCTION:
+At top right: EXPANSIVE MATERIAL RECONSTRUCTION:
 The clock-bearing upper shaft separates into three thick stone bands at different heights and rotations. Clock-face rims remain solid on their moving panels. The crown spreads into deep branching spire sections while lower masonry courses bow outward into two growing support masses.
 
-BOTTOM-LEFT — DIFFERENT CONVERGING RECONSTRUCTION:
+At bottom left: DIFFERENT CONVERGING RECONSTRUCTION:
 The upper bands gather into a broad central clock housing above an unfinished great stone arch. One clock face remains turned sideways before seating; two spire sections curl into deeply carved flanking crowns. The lower support masses form jambs, but a broad crown gap remains in the new gateway and displaced stone still bridges part of its opening.
 
-BOTTOM-RIGHT — COMPLETE DESTINATION:
+At bottom right: COMPLETE DESTINATION:
 A monumental carved clock gate resolves at the same London base, with a complete deep arch, central readable clock housing and flanking ornate crowns. This is a fictional architectural destination made from the tower’s same stone and metal, not a claim to depict another real named monument.
 
 TRACEABLE PART CORRESPONDENCE:

@@ -1,4 +1,4 @@
-REFERENCE ID: R046_CANOPY_AND_BALLOON_ENVELOPE_RIGGING_AND_BASKET_INTERFACES (do not render this identifier).
+REFERENCE ID: R046_CANOPY_AND_BALLOON_ENVELOPE_RIGGING_AND_BASKET_INTERFACES (never print IDs, headings or panel labels).
 
 SUBJECT — CANOPY TIES AND FRAME TO BALLOON RIGGING AND BASKET:
 Track a knot, a timber grain stripe and a metal scratch into rope junction, basket rim and rigging collar. This is the close physical companion to the whole canopy-to-balloon morph.
@@ -21,16 +21,16 @@ FIBRE RESPONSE: A rope carries tension through twisted bundles and resists later
 METAL RESPONSE: Metal yields through bending, torsion and local plastic flow. Plates form stiff curved folds with visible thickness, flanges and moving specular highlights; bars neck down or thicken near their changing joints. Bolts and collars remain hard while adjoining metal reforms. Long slender members flex sooner than massive sockets and can overshoot slightly before seating. Large shape change comes from altered cross-section as well as rotation; no metallic colour painted over a soft generic blob.
 The four stills expose these different material responses through strain, sag, folded thickness, changing joints and contact shadows. In the moving film, thin flexible pieces can respond first while heavier or more viscous regions lag; phases overlap rather than all parts advancing on the same uniform clock.
 
-TOP-LEFT — COMPLETE ORIGINAL:
+At top left: COMPLETE ORIGINAL:
 A close but complete structural group shows a canopy’s hanging ties, supporting frame, thick wooden edge members and the floor support below. Include woven cord, knots, iron joints and timber grain.
 
-TOP-RIGHT — EXPANSIVE MATERIAL RECONSTRUCTION:
+At top right: EXPANSIVE MATERIAL RECONSTRUCTION:
 The ties untwist into broad fans of thick rope fibres while wood edge members split into curved ribs that spread downward and outward. Frame joints separate into offset metal collars. Each rope fan stays traceable to its original knot; timber slats have real ends and cross-sections.
 
-BOTTOM-LEFT — DIFFERENT CONVERGING RECONSTRUCTION:
+At bottom left: DIFFERENT CONVERGING RECONSTRUCTION:
 The rope fibres gather into long braided suspension runs above an unfinished wicker basket. Timber ribs form its base and rim, but one broad side sector remains open with loose weaving strips splayed out. Metal collars converge into rigging connections, with one still unseated beside a thick knot.
 
-BOTTOM-RIGHT — COMPLETE DESTINATION:
+At bottom right: COMPLETE DESTINATION:
 A complete balloon basket and suspension-rigging assembly resolves: joined wooden floor, thick woven sides, solid rim, braided ropes and clearly seated connection points. The canopy’s ties, frame pieces and timber now form these parts.
 
 TRACEABLE PART CORRESPONDENCE:

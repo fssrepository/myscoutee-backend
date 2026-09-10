@@ -1,4 +1,4 @@
-REFERENCE ID: R019_ACCEPTED_RESTAURANT_TABLE_AND_CHAIR_FROM_OUTSIDE (do not render this identifier).
+REFERENCE ID: R019_ACCEPTED_RESTAURANT_TABLE_AND_CHAIR_FROM_OUTSIDE (never print IDs, headings or panel labels).
 
 SUBJECT — RESTAURANT TABLE AND CHAIR TO CURVED TIMBER SEATING:
 Track the table-corner grain, one chair-back screw and a leg tenon. Preserve visible timber thickness through bending and merging; this is furniture changing function, not merely being folded and hidden.
@@ -19,16 +19,16 @@ MATERIAL-SPECIFIC DEFORMATION:
 TIMBER RESPONSE: Wood first bends along grain and separates at joinery; transverse loads open a split along visible fibres. Long fibres bridge the changing region while bundles spread, lengthen and pack into the new board or support. End grain rotates with the actual cut face. A temporarily compliant forming region permits strong curvature; the finished board regains stiffness. Long unsupported ends lag and rebound slightly, while heavy joints seat later. The grain path and rigid completed sections distinguish timber from flowing liquid.
 The four stills expose these different material responses through strain, sag, folded thickness, changing joints and contact shadows. In the moving film, thin flexible pieces can respond first while heavier or more viscous regions lag; phases overlap rather than all parts advancing on the same uniform clock.
 
-TOP-LEFT — COMPLETE ORIGINAL:
+At top left: COMPLETE ORIGINAL:
 An empty modest wooden restaurant table and matching four-legged chair stand beside one another, with tabletop thickness, apron, chair back, seat joints and floor contacts visible. Keep the dark grain stripe on the near table corner as a signature.
 
-TOP-RIGHT — EXPANSIVE MATERIAL RECONSTRUCTION:
+At top right: EXPANSIVE MATERIAL RECONSTRUCTION:
 The table top separates into three thick curved board groups spreading upward and sideways. Chair-back slats flare into a wide fan, exposing their end grain and joints; table legs pivot outward into branching supports. There is no intact duplicate furniture underneath the opening wood. No person occupies these moving surfaces in this material study.
 
-BOTTOM-LEFT — DIFFERENT CONVERGING RECONSTRUCTION:
+At bottom left: DIFFERENT CONVERGING RECONSTRUCTION:
 The broad boards gather into a crescent-shaped seat and raised back, with a large unjoined gap at one end. One former tabletop section still stands vertically before becoming the last seat segment. Chair and table legs redistribute into short paired feet, one pair still skewed. The grain stripe follows the same turning board into the curve.
 
-BOTTOM-RIGHT — COMPLETE DESTINATION:
+At bottom right: COMPLETE DESTINATION:
 A complete curved timber café bench with deep seat, continuous back and short structural feet occupies the original floor patch. All source table and chair material has become its boards, back and supports; no discarded leg or extra table remains.
 
 TRACEABLE PART CORRESPONDENCE:

@@ -1,4 +1,4 @@
-REFERENCE ID: MR011_SLATE_ROOF_TO_CURVED_GLAZING_2X2 (do not render this identifier).
+REFERENCE ID: MR011_SLATE_ROOF_TO_CURVED_GLAZING_2X2 (never print IDs, headings or panel labels).
 
 SUBJECT AND MATERIALS:
 Study a London pitched slate roof with straight ridge, substantial supporting ribs and stone eaves becoming a curved glass roof carried by arched ribs and deep carved stone corbels. Establish the two supporting walls and adjacent road from an elevated oblique view. Show overlapping slate edges initially and transparent curved glazing with thick joined edges at the destination.
@@ -20,16 +20,16 @@ ROOF RESPONSE: Structural ribs carry the large roof-sector motion; thin attached
 GLASS RESPONSE: Glass begins hard, with crisp fractured or framed edges. In its active forming region it becomes a thick highly viscous transparent material: a rounded neck stretches slowly, a heavy lobe sags behind the motion, and the former sharp corner thickens into a curved rim. The glass remains cohesive; its green edge, notch and bent transmitted background trace the moving thickness. Regions outside that forming zone stay rigid. The target profile sets back to hard glass, with stable refraction and a crisp final rim. Use no flame or full-scene transparency fade to explain this magical material change.
 The four stills expose these different material responses through strain, sag, folded thickness, changing joints and contact shadows. In the moving film, thin flexible pieces can respond first while heavier or more viscous regions lag; phases overlap rather than all parts advancing on the same uniform clock.
 
-TOP-LEFT — SOURCE:
+At top left: SOURCE:
 The pitched London roof described above retains its pitched slate planes, straight ridge, supporting ribs and eave blocks. Use a fixed elevated oblique angle showing roof thickness and both supporting walls.
 
-TOP-RIGHT — ROOF SECTORS OPEN INTO A WIDE UNEQUAL RIB CAGE:
+At top right: ROOF SECTORS OPEN INTO A WIDE UNEQUAL RIB CAGE:
 The closed pitched roof splits along its structural bays. Alternate thick rib assemblies rotate outward and upward, carrying their slate courses into a broad open cage above the original walls. Source slate plates separate into thick curved panels with opaque mineral cores and newly translucent edges. Wide openings reveal the same interior volume, not a finished replacement roof. The marked ridge material remains on one raised assembly; the eave blocks are beginning to project into large stone lobes.
 
-BOTTOM-LEFT — CURVED GLASS ROOF WITH A LARGE OPEN CENTRAL SEAM:
+At bottom left: CURVED GLASS ROOF WITH A LARGE OPEN CENTRAL SEAM:
 The outward cage has gathered inward into the target curved roof, but two broad near assemblies remain raised and offset, leaving a large longitudinal opening through the roof. One is mostly glazed; the other has substantial opaque slate portions still becoming glass along their thick edges. Several eave lobes curl into deep half-carved corbels while one remains an oversized mineral blank. The final cell seats the raised assemblies, closes the seam with the same panels and finishes the corbels on the original walls. No entire intact roof lies beneath the change.
 
-BOTTOM-RIGHT — RESOLVED DESTINATION:
+At bottom right: RESOLVED DESTINATION:
 The large open roof seam has closed as the raised rib assemblies and their glass panels seat into the canopy. All roof plates form supported curved glazing with thick fixed edges; all eaves have deep complete stone corbels. The original walls and road remain. Transparent glass permits the same interior depth to be seen; it does not expose a substitute scene or erase the structure.
 
 CURRENT-CITY CARDS — PRESENT IN EACH RELEVANT CELL:

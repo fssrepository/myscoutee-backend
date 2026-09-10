@@ -1,4 +1,4 @@
-REFERENCE ID: R017_STONE_SILL_WET_PAVING_AND_SUPPORTED_TIMBER_THRESHOLD (do not render this identifier).
+REFERENCE ID: R017_STONE_SILL_WET_PAVING_AND_SUPPORTED_TIMBER_THRESHOLD (never print IDs, headings or panel labels).
 
 OBJECT MORPH STUDY — R017 STONE SILL WET PAVING AND SUPPORTED TIMBER THRESHOLD
 SUBJECT AND MATERIALS:
@@ -20,16 +20,16 @@ MINERAL RESPONSE: Dense stone and brick resist bending. Their fast initial motio
 TIMBER RESPONSE: Wood first bends along grain and separates at joinery; transverse loads open a split along visible fibres. Long fibres bridge the changing region while bundles spread, lengthen and pack into the new board or support. End grain rotates with the actual cut face. A temporarily compliant forming region permits strong curvature; the finished board regains stiffness. Long unsupported ends lag and rebound slightly, while heavy joints seat later. The grain path and rigid completed sections distinguish timber from flowing liquid.
 The four stills expose these different material responses through strain, sag, folded thickness, changing joints and contact shadows. In the moving film, thin flexible pieces can respond first while heavier or more viscous regions lag; phases overlap rather than all parts advancing on the same uniform clock.
 
-TOP-LEFT — SOURCE:
+At top left: SOURCE:
 Low oblique view of a thick stone sill and adjoining paving slabs beside an unchanged kerb corner. Show the stone underside, bedding and original jamb.
 
-TOP-RIGHT — FANNED STONE-TO-WOOD RIBS ABOVE THE PAVING:
+At top right: FANNED STONE-TO-WOOD RIBS ABOVE THE PAVING:
 The sill divides into a fan of thick projecting ribs at markedly different heights: near ribs sweep upward into stiff timber-grained arcs, far ribs remain squared stone at their roots. Deep empty slots separate them. Their undersides reveal mineral cross-sections changing into solid joist sections; the original stone slab no longer remains whole underneath. Keep this fan outside the occupied floor and retain the intact adjacent walking strip. The kerb corner fixes the site while the ribs extend well beyond the source silhouette.
 
-BOTTOM-LEFT — OPEN TIMBER DECK WITH RAISED UNSEATED BOARD ENDS:
+At bottom left: OPEN TIMBER DECK WITH RAISED UNSEATED BOARD ENDS:
 The fan has lowered into a broad floor framework, but its middle has several large open board-width slots and the near ends of three thick boards still rise steeply from their joists. Those ends remain partly stone and are visibly broadening into flat timber boards. The far section is already joined and supported; furniture, if present, stays on that continuous section. The final cell seats the raised boards and closes the slots with this same material to form the full supported floor. It is a different configuration from both the upright fan and the completed flat deck.
 
-BOTTOM-RIGHT — RESOLVED DESTINATION:
+At bottom right: RESOLVED DESTINATION:
 The raised boards have lowered onto their joists and all intermediate board-width slots have closed into the complete floor. Full-length wooden boards form the complete floor and threshold, with separate seams, thick exposed ends and full joist support. The original sill corner is traceable at the new edge. Adjacent paving stays solid; no plank texture pasted onto an unchanged slab.
 
 CURRENT-CITY CARDS — PRESENT IN EACH RELEVANT CELL:

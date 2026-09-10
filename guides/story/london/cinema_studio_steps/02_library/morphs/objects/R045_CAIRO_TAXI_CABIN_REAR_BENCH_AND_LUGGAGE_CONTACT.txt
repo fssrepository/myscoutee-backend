@@ -1,4 +1,4 @@
-REFERENCE ID: R045_CAIRO_TAXI_CABIN_REAR_BENCH_AND_LUGGAGE_CONTACT (do not render this identifier).
+REFERENCE ID: R045_CAIRO_TAXI_CABIN_REAR_BENCH_AND_LUGGAGE_CONTACT (never print IDs, headings or panel labels).
 
 SUBJECT — LONDON TAXI REAR CABIN TO CAIRO MEMORY CABIN:
 Track the door-latch plate into the new sill, an upholstery seam into the lower bench and a floor rib into the extended footwell. The bag provides a consistent scale/contact anchor.
@@ -20,16 +20,16 @@ VEHICLE MATERIAL RESPONSE: Chassis beams and hubs remain the stiffest masses and
 CLOTH RESPONSE: Cloth has little bending stiffness and follows tension between seams. Free edges lag and form deep folds; stitch lines constrain the stretch. At a material conversion, yarn bundles reweave along the turning edge and preserve real front/back fabric faces. Upholstery is different from a loose hem: dense foam compresses slowly and rebounds underneath a skin of tensioned fabric, while its frame stays hard. Do not make cloth, foam and support metal deform at one identical speed.
 The four stills expose these different material responses through strain, sag, folded thickness, changing joints and contact shadows. In the moving film, thin flexible pieces can respond first while heavier or more viscous regions lag; phases overlap rather than all parts advancing on the same uniform clock.
 
-TOP-LEFT — COMPLETE ORIGINAL:
+At top left: COMPLETE ORIGINAL:
 A passenger-free black London cab’s rear passenger compartment is seen obliquely through its open side door. Show the tall roof, rear bench, floorwell, door ledge, pillar and a plain bag resting on its supported seat edge.
 
-TOP-RIGHT — EXPANSIVE MATERIAL RECONSTRUCTION:
+At top right: EXPANSIVE MATERIAL RECONSTRUCTION:
 The rear bench shell separates into two deep upholstered sections at strongly different heights: the empty near section climbs upright above the old seat-back line, while the bag-bearing far section remains low on its intact cushion support. Roof and door pillars spread into a broad open crown well wider than the source cabin, exposing the ceiling underside and thick pillar feet. Floorwell panels lengthen along visible seams. The bag stays on one intact supported cushion patch; the surrounding metal and upholstery change around it, with no passenger replacement.
 
-BOTTOM-LEFT — DIFFERENT CONVERGING RECONSTRUCTION:
+At bottom left: DIFFERENT CONVERGING RECONSTRUCTION:
 The tall cabin gathers into a lower, longer older sedan rear interior. One roof pillar remains diagonally offset from the new sill, the empty seat back rises into an oversized open upholstered coil before broadening into the final low cushion; its foam cross-section and hard shell are separately visible, and the door ledge still has an open metal seam. Worn cream body paint and muted upholstery form through the same changing surfaces.
 
-BOTTOM-RIGHT — COMPLETE DESTINATION:
+At bottom right: COMPLETE DESTINATION:
 A modest Cairo-memory taxi rear cabin resolves with joined low roof, full bench, deep footwell, door ledge and stable bag support. The bag remains the same object and the same floor patch lies beneath the car. No London cab interior survives as a hidden second room.
 
 TRACEABLE PART CORRESPONDENCE:

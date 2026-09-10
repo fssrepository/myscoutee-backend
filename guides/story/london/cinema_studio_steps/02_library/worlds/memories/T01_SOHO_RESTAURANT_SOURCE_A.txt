@@ -1,4 +1,4 @@
-REFERENCE ID: T01_SOHO_RESTAURANT_SOURCE_A (do not render this identifier).
+REFERENCE ID: T01_SOHO_RESTAURANT_SOURCE_A (never print IDs, headings or panel labels).
 
 REFERENCE INPUTS:
 @char_MYS_mys-c01-protagonist_s0_v1 supplies the remembered man's exact face, hair, body and dark jacket. There is one occurrence of him inside this memory.
@@ -20,18 +20,18 @@ This is the literal memory interior: no current London street, Budapest skyline,
 PAGE A — ROOM, ENCOUNTER AND BASIC SPATIAL ANCHORS:
 Render only the four assigned views below. Pages A, B and C together provide twelve complementary views of this same room. Establish this room from the character inputs and the detailed layout below.
 
-FOUR ASSIGNED CELLS:
+FOUR IMAGE ASSIGNMENTS — INSTRUCTIONS ONLY, NO PRINTED TEXT:
 
-CELL 1 — TOP-LEFT — VIEW 01 — COMPLETE ROOM FROM THE ENTRANCE:
+For the top left image (source view 01; instruction only, never printed) — COMPLETE ROOM FROM THE ENTRANCE:
 A wide oblique interior view establishes the described room from its entrance side. Include the seated woman and near table, the clear aisle, background tables and the remembered man beside both restroom doors. Show the table and occupied chair down to their actual floor contacts, with sufficient headroom for the ceiling fixtures. Keep the woman’s near-table position and the man’s more distant scale consistent with the room established on this page. The room has a definite front, back and width; retain side-wall depth rather than turning the background into a flat backdrop.
 
-CELL 2 — TOP-RIGHT — VIEW 02 — WOMAN, CUP AND RETURNED GLANCE:
+For the top right image (source view 02; instruction only, never printed) — WOMAN, CUP AND RETURNED GLANCE:
 A closer three-quarter view from beside the aisle centres the woman’s face, small smile and hand beside the cup. Include her shoulders, near table edge and enough chair back to explain her seated posture. The man and one recognizable edge of the restroom-door pair remain at greater depth in the direction she looks. Keep her head turn modest and her hand on or just above the same tabletop position. The cup rim, fingers and hand shadow are separately visible; dishes do not move to improve the framing.
 
-CELL 3 — BOTTOM-LEFT — VIEW 03 — OCCUPIED FURNITURE AND FLOOR SUPPORT:
+For the bottom left image (source view 03; instruction only, never printed) — OCCUPIED FURNITURE AND FLOOR SUPPORT:
 Use a low oblique view of the same table corner and occupied chair. Show all four chair legs, the seat’s thickness, leg-to-seat joints, the woman’s natural seated lower body, the table apron and visible supporting legs. Resolve wood end grain, screws or joints where actually plausible, wear along the corner and contact shadows on the floor. Keep a rear door jamb at background depth to connect the detail to the room. No new wooden platform, exposed street paving or unsupported furniture is introduced.
 
-CELL 4 — BOTTOM-RIGHT — VIEW 04 — REVERSE VIEW TOWARD THE ENTRANCE:
+For the bottom right image (source view 04; instruction only, never printed) — REVERSE VIEW TOWARD THE ENTRANCE:
 From an open position farther inside the room, look obliquely past the other face of the same occupied table toward the existing entrance and aisle. Keep the man beside the rear restroom doors at the appropriate frame edge when visible; he does not move to remain centred. Show a real empty-air route beside the table and chair, with the entrance growing out of the established floor plan. The table’s near and far corners exchange projected positions because the viewpoint changes; wall fixtures and furniture remain on their actual sides. Do not mirror the original room or manufacture an extra exit.
 
 FINAL CHECK:

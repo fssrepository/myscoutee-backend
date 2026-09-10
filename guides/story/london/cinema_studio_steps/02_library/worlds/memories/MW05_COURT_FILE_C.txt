@@ -1,4 +1,4 @@
-REFERENCE ID: MW05_COURT_FILE_C (do not render this identifier).
+REFERENCE ID: MW05_COURT_FILE_C (never print IDs, headings or panel labels).
 
 REFERENCE SETUP INCOMPLETE: MW05
 Do not generate until these references are bound.
@@ -50,23 +50,23 @@ REFERENCE COVERAGE FOR THE MOVING FILM:
 This page supplies the four assigned literal views, not four cuts, morph stages or interchangeable world designs. Make each view useful for its assigned purpose: room layout shows supports and an entry/exit; a gesture view retains its hand, furniture edge and background anchor; an object detail shows side/underside and contact. Different views of the SAME room preserve its floor plan, furniture, identities, clothes and light sources even when the viewpoint changes. Distinct memories remain distinct places; do not fuse them into one room to match the grid. Repeated anchor views on another page must preserve the same state and layout.
 Additional detail pages of the same place retain that memory and its established event. Keep full body/furniture support legible wherever the assigned view permits. Never substitute four nearly identical wide shots for the four assigned subjects.
 
-FOUR ASSIGNED CELLS:
-CELL 1 — TOP-LEFT — ORIGINAL VIEW 09:
+FOUR IMAGE ASSIGNMENTS — INSTRUCTIONS ONLY, NO PRINTED TEXT:
+For the top left image (source view 09; instruction only, never printed):
 Decision/appeal-route memory: ordinary posted ruling/letter, phone, folders and the sense of a future complaint/appeal/Strasbourg route replacing immediate correction. Focus on process and human scale, not readable legal exposition.
 
 Show the opened envelope, ruling papers and a separate folder arranged beside a phone on the same desk. The protagonist checks the next paper with a restrained posture. Paper edges, folds and contact shadows distinguish each item. The future route is suggested by an unfinished practical task, without fabricated legal outcomes, maps, arrows or a celebratory ending.
 
-CELL 2 — TOP-RIGHT — ORIGINAL VIEW 01:
+For the top right image (source view 01; instruction only, never printed):
 Court-hearing memory with an anonymous judge addressing the protagonist during a debate over legal classification. The remembered prison-question moment is carried by facial/body language; do not render subtitles or dialogue text.
 
 Compose the judge, protagonist and ordinary hearing table at distinct depths with clear eyelines. Documents lie on the table with visible paper edges and no oversized legal text. The speaking expression is restrained and the protagonist remains seated or standing in the assigned hearing position. Keep the room doorway and furniture supports visible; no theatre-like spotlight or invented verdict appears.
 
-CELL 3 — BOTTOM-LEFT — ORIGINAL VIEW 07:
+For the bottom left image (source view 07; instruction only, never printed):
 Black-humour memory source: a small self-made "THE SYSTEM'S MOST WANTED" satirical visual and/or impossible police-career CV/application joke on a desk or screen. Keep it clearly self-made absurdism, never an official notice, and avoid large readable text.
 
 Show one clearly handmade satirical page or ordinary screen document on the protagonist desk, with uneven cut edges or everyday editing cues. Keep surrounding papers mundane so the joke remains personal and small. The page is not a real wanted poster, police database or official notice. No extra graphic inset or large headline dominates the reference cell.
 
-CELL 4 — BOTTOM-RIGHT — ORIGINAL VIEW 08:
+For the bottom right image (source view 08; instruction only, never printed):
 Public-role absurdity memory source: an anonymous fictional cardboard public figure with a deliberately ridiculous hat and the tone of an asylum-request joke. Keep the joke recognizably absurd, but attach no real name, real politician likeness, party branding, campaign slogan or identifiable contemporary office. No advocacy and no policy statement.
 
 The anonymous cardboard public figure is a physical cutout with visible board thickness, a simple rear support and the deliberately silly hat resting on it. Show its base on a desk or floor and a real room behind. The printed face remains flat on the board, without becoming a living official. Keep every insignia and likeness fictional.

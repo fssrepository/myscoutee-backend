@@ -1,4 +1,4 @@
-REFERENCE ID: TY007_FINAL_TITLE_LOCKUP_AND_LETTER_DETAILS_2X2 (do not render this identifier).
+REFERENCE ID: TY007_FINAL_TITLE_LOCKUP_AND_LETTER_DETAILS_2X2 (never print IDs, headings or panel labels).
 
 ONE 4K TYPOGRAPHY SHEET — 2×2:
 Create ONE 3840×2160 image with exactly FOUR equal edge-to-edge 1920×1080 cells in two columns and two rows. Select 4K for the whole output. No margins, gutters, separators or letterboxing. Each cell is a separately composed full 16:9 image. The specified words are large and sharply resolved, with complete glyphs and space for their accents. The four assigned cells have different inspection purposes or material states; do not produce four near-identical decorative signs.
@@ -12,16 +12,16 @@ The quotes and the phrases First line/Second line are instructions, not printed 
 ONE RESTRAINED DESIGN:
 Use a clean medium-weight uppercase sans-serif with precise straight stems and open counters. The wordmark is larger than the tagline; keep a modest increase in tracking rather than stretching glyph shapes. Use neutral off-white lettering on pure black, with crisp edges and no bevel, texture, glow, shadow, extrusion or neon. The visual weight is quiet and cinematic, not a giant trailer-logo treatment. Keep the family, weight, glyph shapes and relative tracking identical in all four cells. The typography is a flat end-title graphic; the physical material-morph treatment of city signage does not apply here.
 
-TOP-LEFT — COMPLETE FINAL 16:9 TITLE FRAME:
+At top left: COMPLETE FINAL 16:9 TITLE FRAME:
 This cell is the finished complete frame to reconstruct for the final hold. Center the two-line lockup horizontally and around the vertical middle, with ample black space around it. Use a first-line cap height near one-twelfth of this cell's height and a second-line cap height around half that, with a clear interline gap near the tagline cap height. Both full lines fit comfortably within the central three-fifths of the frame width. Adjust spacing proportionately so the complete phrase stays on its single second line. No cropping or third line.
 
-TOP-RIGHT — WORDMARK LETTER CONSTRUCTION:
+At top right: WORDMARK LETTER CONSTRUCTION:
 Show only "MYSCOUTEE" at a much larger inspection size on black, using the exact same design as the first cell. Keep the whole word in frame with complete top and bottom edges. Resolve M diagonals, the Y junction, S curves, C opening, O counter, U bottom curve, T crossbar and the two separately spaced E letters. Do not redesign the wordmark at the larger scale. This is a close detail, not an additional screen title to play after the complete frame.
 
-BOTTOM-LEFT — TAGLINE LETTER CONSTRUCTION:
+At bottom left: TAGLINE LETTER CONSTRUCTION:
 Show only "THE PATH BETWEEN PEOPLE" at a larger useful inspection size, still on a single line and with exactly one normal word space between each word. Preserve the same letter family and spacing proportions as the complete frame. Resolve the repeated E letters, the P counters, W inner diagonals and the final E clearly. Do not replace BETWEEN with BEYOND, omit THE, join words or break the tagline into multiple rows to fit.
 
-BOTTOM-RIGHT — ENLARGED TWO-LINE SPACING DETAIL:
+At bottom right: ENLARGED TWO-LINE SPACING DETAIL:
 Show the complete two-line lockup at a closer crop around its actual black field, large enough to inspect the vertical separation and relative sizes. Both lines remain intact and centered on the same axis, with identical relative proportions to the top-left frame. This crop emphasizes the larger wordmark, smaller tagline and open black gap between them. It is not the final frame crop, a bolder font option or a third version of the text.
 
 FINAL TITLE REFERENCE:

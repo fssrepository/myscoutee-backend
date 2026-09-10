@@ -1,4 +1,4 @@
-REFERENCE ID: R018_LONDON_TIMBER_BENCH_AND_CURVED_FLOOR_BORDER (do not render this identifier).
+REFERENCE ID: R018_LONDON_TIMBER_BENCH_AND_CURVED_FLOOR_BORDER (never print IDs, headings or panel labels).
 
 OBJECT MORPH STUDY — R018 LONDON TIMBER BENCH AND CURVED FLOOR BORDER
 SUBJECT AND MATERIALS:
@@ -20,16 +20,16 @@ TIMBER RESPONSE: Wood first bends along grain and separates at joinery; transver
 METAL RESPONSE: Metal yields through bending, torsion and local plastic flow. Plates form stiff curved folds with visible thickness, flanges and moving specular highlights; bars neck down or thicken near their changing joints. Bolts and collars remain hard while adjoining metal reforms. Long slender members flex sooner than massive sockets and can overshoot slightly before seating. Large shape change comes from altered cross-section as well as rotation; no metallic colour painted over a soft generic blob.
 The four stills expose these different material responses through strain, sag, folded thickness, changing joints and contact shadows. In the moving film, thin flexible pieces can respond first while heavier or more viscous regions lag; phases overlap rather than all parts advancing on the same uniform clock.
 
-TOP-LEFT — SOURCE:
+At top left: SOURCE:
 The empty source street bench has a complete horizontal slatted seat, rigid supports and attached footplates. Show one dark grain stripe and screw line. The occupied restaurant furniture is outside this object study and is not replaced.
 
-TOP-RIGHT — BENCH SLATS EXPAND INTO A WIDE ASYMMETRIC FAN:
+At top right: BENCH SLATS EXPAND INTO A WIDE ASYMMETRIC FAN:
 The seat has separated into a broad fan of thick timber members. Two outer slats arc sideways and downward toward opposite sides of the floor patch; central slats still stand diagonally near the original seat height. Their solid cross-sections widen while brackets divide into short support feet. Open gaps between the slats expose their undersides and dark grain stripe. The source bench no longer has one intact seat beneath the movement; all its material remains in this changing assembly.
 
-BOTTOM-LEFT — TALL OPEN SPIRAL GATHERING INTO A LOW FLOOR BORDER:
+At bottom left: TALL OPEN SPIRAL GATHERING INTO A LOW FLOOR BORDER:
 The fan has wrapped into a large open U around the floor, but one end rises into a tall inward-turning timber spiral while the other has already settled low on its feet. The upper spiral includes the tracked grain stripe; its broad members are changing cross-section into the border's finished profile. Leave a conspicuous open gap where the two ends will meet. The final cell lowers the spiral and joins the gap into the complete low curved boundary, without replacing the woman's occupied chair or table.
 
-BOTTOM-RIGHT — RESOLVED DESTINATION:
+At bottom right: RESOLVED DESTINATION:
 The tall open timber spiral has lowered into the low border and its broad gap has joined. The same timber forms a resolved low curved floor boundary with short supporting feet and a clear open interior. The grain stripe follows one curved segment. All former bench supports and slats have a visible structural role; no duplicate bench remains.
 
 CURRENT-CITY CARDS — PRESENT IN EACH RELEVANT CELL:

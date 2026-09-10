@@ -1,4 +1,4 @@
-REFERENCE ID: HRW07_CLINICAL_REALITY_B (do not render this identifier).
+REFERENCE ID: HRW07_CLINICAL_REALITY_B (never print IDs, headings or panel labels).
 
 REFERENCE SETUP INCOMPLETE: HRW07
 Do not generate until these references are bound.
@@ -53,23 +53,23 @@ REFERENCE COVERAGE FOR THE MOVING FILM:
 This page supplies the four assigned literal views, not four cuts, morph stages or interchangeable world designs. Make each view useful for its assigned purpose: room layout shows supports and an entry/exit; a gesture view retains its hand, furniture edge and background anchor; an object detail shows side/underside and contact. Different views of the SAME room preserve its floor plan, furniture, identities, clothes and light sources even when the viewpoint changes. Distinct memories remain distinct places; do not fuse them into one room to match the grid. Repeated anchor views on another page must preserve the same state and layout.
 Additional detail pages of the same place retain that memory and its established event. Keep full body/furniture support legible wherever the assigned view permits. Never substitute four nearly identical wide shots for the four assigned subjects.
 
-FOUR ASSIGNED CELLS:
-CELL 1 — TOP-LEFT — ORIGINAL VIEW 05:
+FOUR IMAGE ASSIGNMENTS — INSTRUCTIONS ONLY, NO PRINTED TEXT:
+For the top left image (source view 05; instruction only, never printed):
 FINAL NURSE in the room preparing routine non-graphic clinical equipment for an enema/endoscopy-related procedure. Competent, ordinary, no menace.
 
 The nurse occupies the accessible bed side established in the wide view. Show a modest preparation surface with the non-graphic equipment already specified by the scene, her hands and a clear work area. Keep the patient covered and the activity at preparation stage. Do not add a second procedure, invasive close-up, dramatic instrument array or invented clinical apparatus.
 
-CELL 2 — TOP-RIGHT — ORIGINAL VIEW 06:
+For the top right image (source view 06; instruction only, never printed):
 Nurse close/medium reference with the small everyday human smile that can echo earlier institutional smiles.
 
 Frame her face and upper torso with part of her working hand and the bed edge below. The small smile affects the mouth corners, cheeks and eyes together while her posture remains practical. Keep the protagonist at his established eyeline, optionally visible at a foreground edge. Her clothing, secured hair and light direction match the wider preparation view.
 
-CELL 3 — BOTTOM-LEFT — ORIGINAL VIEW 07:
+For the bottom left image (source view 07; instruction only, never printed):
 Clinical white-coat / cold-light fragment composition designed so only a tiny crop could plausibly appear in a brief embodied pre-reveal intrusion without exposing the full room.
 
 Compose a physically possible close crop of the same light clinical garment beside the bed under the same cold-neutral light. Resolve fabric weave, seam thickness and a small sleeve fold, with only an indistinct portion of the room behind. This is a detail of existing clothing, not an extra white-coated doctor or a different location.
 
-CELL 4 — BOTTOM-RIGHT — ORIGINAL VIEW 08:
+For the bottom right image (source view 08; instruction only, never printed):
 Fragment composition combining a small portion of the propped-up foot, white sheet and wrist cuff/chain, cropped from this same real room, with the three materials visibly distinct.
 
 Choose an angle from beside the same bed that naturally includes a small foot-support portion, sheet fold and the existing wrist cuff/chain at different depths. Do not pull those parts together or change which limb is restrained to force the composition. Retain one bed-frame edge as an orientation anchor; this cell supplies a possible crop, not a new clinical event.

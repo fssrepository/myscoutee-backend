@@ -1,4 +1,4 @@
-REFERENCE ID: T01_SOHO_RESTAURANT_SOURCE_B (do not render this identifier).
+REFERENCE ID: T01_SOHO_RESTAURANT_SOURCE_B (never print IDs, headings or panel labels).
 
 REFERENCE SETUP INCOMPLETE: T01_DETAILS
 Do not generate until these references are bound.
@@ -24,18 +24,18 @@ This is the literal memory interior: no current London street, Budapest skyline,
 PAGE B — HUMAN CONTACT, RESTROOM DOORS AND NEAR OBJECTS:
 Render only the four assigned views below. Pages A, B and C together provide twelve complementary views of this same room. Use the accepted Page A image to preserve the same room from these additional viewpoints.
 
-FOUR ASSIGNED CELLS:
+FOUR IMAGE ASSIGNMENTS — INSTRUCTIONS ONLY, NO PRINTED TEXT:
 
-CELL 1 — TOP-LEFT — VIEW 05 — REMEMBERED MAN AND BOTH RESTROOM DOORS:
+For the top left image (source view 05; instruction only, never printed) — REMEMBERED MAN AND BOTH RESTROOM DOORS:
 A medium-full oblique view centres the man beside the same two rear doors. Include both frames, their separation, handles, reveals, threshold and his shoe-to-floor contacts. His torso and head turn toward the seated woman, whose table corner or seated shoulder can remain at a near frame edge to establish the eyeline. Preserve his dark jacket, hair and facial identity. Keep doors in the open/closed positions established in the source view; do not stage a new door-opening event or a second occurrence of the man.
 
-CELL 2 — TOP-RIGHT — VIEW 06 — HAND, CUP AND TABLETOP DEPTH:
+For the top right image (source view 06; instruction only, never printed) — HAND, CUP AND TABLETOP DEPTH:
 A close diagonal tabletop view resolves the woman’s same hand beside the cup, with natural finger articulation, the cup’s rim and base, and the small space between hand and ceramic. Include the nearest dish and utensil placement from the accepted Page A image without adding a new meal. Show the hand’s shadow crossing the wood grain, the tabletop’s solid edge and a fragment of her sleeve. This is a surface-contact study at the same moment as Page A, not a new reach or cup-lifting action.
 
-CELL 3 — BOTTOM-LEFT — VIEW 07 — CHAIR BACK, SHOULDER AND TURNING SPACE:
+For the bottom left image (source view 07; instruction only, never printed) — CHAIR BACK, SHOULDER AND TURNING SPACE:
 From a rear-side angle beside the woman, show the chair back and its uprights, seat-to-back joint, her seated shoulder and the natural curve of her turned neck. Retain part of her facial profile and the view toward the man beyond the table. The chair remains squarely supported and does not rotate under her to accommodate the angle. Show the physical clearance between chair, adjacent wall or aisle and table; preserve the source layout even where the space is narrow.
 
-CELL 4 — BOTTOM-RIGHT — VIEW 08 — SHARED EYELINE ACROSS THE ROOM:
+For the bottom right image (source view 08; instruction only, never printed) — SHARED EYELINE ACROSS THE ROOM:
 Compose a medium-wide side angle from the existing aisle with both remembered people visible in depth: the woman near her table and the man beside the two rear doors. Show their reciprocal glance without a pose change, exaggerated smile or romantic glamour. Include a continuous strip of floor between their positions, the table’s side face and one wall fixture. Use enough focus to recognize both identities while maintaining their actual size difference. The restaurant’s spatial distance, rather than a split-screen portrait, connects them.
 
 FINAL CHECK:

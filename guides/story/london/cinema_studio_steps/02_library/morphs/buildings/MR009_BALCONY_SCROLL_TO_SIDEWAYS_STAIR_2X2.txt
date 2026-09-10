@@ -1,4 +1,4 @@
-REFERENCE ID: MR009_BALCONY_SCROLL_TO_SIDEWAYS_STAIR_2X2 (do not render this identifier).
+REFERENCE ID: MR009_BALCONY_SCROLL_TO_SIDEWAYS_STAIR_2X2 (never print IDs, headings or panel labels).
 
 SUBJECT AND MATERIALS:
 Study a dark iron balcony scroll and railing becoming a short sideways staircase along the same historic wall. The final form has thick tread plates, twin stringers, visible brackets and a continuous handrail. Show the iron cross-sections and wall footplates from an oblique exterior view.
@@ -18,16 +18,16 @@ MATERIAL-SPECIFIC DEFORMATION:
 METAL RESPONSE: Metal yields through bending, torsion and local plastic flow. Plates form stiff curved folds with visible thickness, flanges and moving specular highlights; bars neck down or thicken near their changing joints. Bolts and collars remain hard while adjoining metal reforms. Long slender members flex sooner than massive sockets and can overshoot slightly before seating. Large shape change comes from altered cross-section as well as rotation; no metallic colour painted over a soft generic blob.
 The four stills expose these different material responses through strain, sag, folded thickness, changing joints and contact shadows. In the moving film, thin flexible pieces can respond first while heavier or more viscous regions lag; phases overlap rather than all parts advancing on the same uniform clock.
 
-TOP-LEFT — SOURCE:
+At top left: SOURCE:
 A complete coiled balcony scroll and railing section beside the slab edge, with rooted wall fixings. Show the round or rectangular bar cross-section and footplate.
 
-TOP-RIGHT — BALCONY COIL UNWINDS INTO THICK RADIAL TREAD BLANKS:
+At top right: BALCONY COIL UNWINDS INTO THICK RADIAL TREAD BLANKS:
 The compact scroll opens outward into a large irregular radial arrangement. Several bar sections widen into heavy paddle-shaped metal plates at different angles; one points upward, another outward and a third downward. The upper rail splits away from these plates along its original joints and curves into a long loose handrail arc. Clear gaps expose plate undersides. The original footplate and wall fixing retain the route back to the facade, but the unfinished parts need not form a usable stair yet.
 
-BOTTOM-LEFT — DOUBLE-ZIGZAG STAIR WITH ROTATED TREADS AND AN UNJOINED RAIL:
+At bottom left: DOUBLE-ZIGZAG STAIR WITH ROTATED TREADS AND AN UNJOINED RAIL:
 The radial plates have gathered along a rising diagonal beside the wall. Alternate treads are already broad and level while the others remain turned steeply upward on thick unfinished brackets, producing a pronounced zigzag silhouette. The handrail is a separate open arc converging toward the new posts, with a clear gap at its near end. The last source coil is visibly changing cross-section into a stringer. The final cell levels the tread plates, joins the rail and resolves the brackets into the short supported sideways stair. No person stands on the unfinished steps.
 
-BOTTOM-RIGHT — RESOLVED DESTINATION:
+At bottom right: RESOLVED DESTINATION:
 The steep intermediate tread plates now sit level and the separated handrail has joined its posts. A full short sideways stair runs along the wall with complete tread undersides, brackets and a continuous handrail. Source bars now form plates, stringers and rail; no floating new staircase or lifted facade hides the transformation.
 
 CURRENT-CITY CARDS — PRESENT IN EACH RELEVANT CELL:

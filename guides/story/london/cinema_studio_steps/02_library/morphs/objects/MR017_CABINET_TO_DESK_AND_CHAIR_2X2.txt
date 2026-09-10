@@ -1,4 +1,4 @@
-REFERENCE ID: MR017_CABINET_TO_DESK_AND_CHAIR_2X2 (do not render this identifier).
+REFERENCE ID: MR017_CABINET_TO_DESK_AND_CHAIR_2X2 (never print IDs, headings or panel labels).
 
 SUBJECT AND MATERIALS:
 Study a modest brown wooden apartment cabinet with drawers, handles and thick side panels becoming a plain administrative desk and chair used in the fingerprinting memory. The final desk has a substantial rectangular worktop and simple legs; the chair has a solid seat, back and four supports. Use visible grain and joint lines, plain flooring and neutral indoor practical light. Keep this a furniture-only study with an empty worktop and no people, procedure devices or documents.
@@ -19,16 +19,16 @@ TIMBER RESPONSE: Wood first bends along grain and separates at joinery; transver
 METAL RESPONSE: Metal yields through bending, torsion and local plastic flow. Plates form stiff curved folds with visible thickness, flanges and moving specular highlights; bars neck down or thicken near their changing joints. Bolts and collars remain hard while adjoining metal reforms. Long slender members flex sooner than massive sockets and can overshoot slightly before seating. Large shape change comes from altered cross-section as well as rotation; no metallic colour painted over a soft generic blob.
 The four stills expose these different material responses through strain, sag, folded thickness, changing joints and contact shadows. In the moving film, thin flexible pieces can respond first while heavier or more viscous regions lag; phases overlap rather than all parts advancing on the same uniform clock.
 
-TOP-LEFT — SOURCE:
+At top left: SOURCE:
 The apartment cabinet described above has its full top, thick side boards, drawer base, handles and source grain. Frame enough floor for the final desk and chair. Show its front, side and underside from one fixed angle.
 
-TOP-RIGHT — CABINET EXPANDS INTO A SPLAYED FURNITURE SKELETON:
+At top right: CABINET EXPANDS INTO A SPLAYED FURNITURE SKELETON:
 The cabinet separates at its actual board joints: its thick top projects far sideways, both side panels swing into wide diagonal leg blanks and the drawer base travels forward on lengthening rails. The old box-shaped carcass is now an open, widely splayed arrangement with clear air between massive boards. Each panel narrows, thickens or changes its profile toward the intended furniture part. Keep one grain line and the original handle visible on their moving pieces; the arrangement need not already stand as a finished usable desk.
 
-BOTTOM-LEFT — UNJOINED DESK AND CHAIR WITH A LARGE REMAINING PANEL WEB:
+At bottom left: UNJOINED DESK AND CHAIR WITH A LARGE REMAINING PANEL WEB:
 The skeleton has gathered into a desk-and-chair arrangement. The desktop is almost level, but one corner is raised above an unfinished leg joint. One former side panel remains a broad diagonal web between that leg and the old cabinet base, visibly narrowing into the final support. The drawer base is now a chair pan with two large support pieces still spread outward and an unfinished back segment turned sideways. No person is seated here during construction. The final cell closes those joints and resolves the same panels and rails into the complete desk and chair described above; no devices are present in this furniture-only study.
 
-BOTTOM-RIGHT — RESOLVED DESTINATION:
+At bottom right: RESOLVED DESTINATION:
 The raised desktop corner has seated on its leg, the diagonal panel web has become the final support, and the splayed chair components are joined. The plain desk and chair described above are complete, with thick tops, legs, seat base and floor contact. Keep the worktop empty and omit procedure devices, documents and people from this furniture study. The same boards and rails now perform their new furniture roles.
 
 CURRENT-CITY CARDS — PRESENT IN EACH RELEVANT CELL:

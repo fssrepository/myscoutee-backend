@@ -1,4 +1,4 @@
-REFERENCE ID: R033_HUNGARIAN_STATE_OPERA_TARGET_FACADE_AND_ENTRY_DEPTH (do not render this identifier).
+REFERENCE ID: R033_HUNGARIAN_STATE_OPERA_TARGET_FACADE_AND_ENTRY_DEPTH (never print IDs, headings or panel labels).
 
 SUBJECT — NATIONAL GALLERY FRONTAGE TO HUNGARIAN STATE OPERA:
 Track a column capital, a source facade sculpture and a roof seam. Deep arcade openings, floor levels and stone projections must change at full architectural scale, not through a pasted ornamental texture.
@@ -20,16 +20,16 @@ MINERAL RESPONSE: Dense stone and brick resist bending. Their fast initial motio
 ROOF RESPONSE: Structural ribs carry the large roof-sector motion; thin attached roof sheets buckle and slide over seams before the heavier rib finishes turning. Keep the sheet gauge visibly thinner than the rib. Fold crests, overlap shadows and rivet/seam lines travel on the same metal. The final seam closes by seating those edges, with a smaller delayed settling motion than the masonry below. A lifted sector reveals its own underside and the same interior.
 The four stills expose these different material responses through strain, sag, folded thickness, changing joints and contact shadows. In the moving film, thin flexible pieces can respond first while heavier or more viscous regions lag; phases overlap rather than all parts advancing on the same uniform clock.
 
-TOP-LEFT — COMPLETE ORIGINAL:
+At top left: COMPLETE ORIGINAL:
 The recognisable National Gallery frontage in London shows its central classical entrance, columned portico, dome and flanking stone ranges. Use a frontal three-quarter view with full side depth and a London paving anchor.
 
-TOP-RIGHT — EXPANSIVE MATERIAL RECONSTRUCTION:
+At top right: EXPANSIVE MATERIAL RECONSTRUCTION:
 The central portico columns splay into two unequal groups while the flanking facade ranges separate into thick bay sections. Roof masses rise in staggered pieces and the existing dome shell opens along its ribs, exposing substantial undersides. Sculpture-bearing stones remain attached to their moving facade blocks.
 
-BOTTOM-LEFT — DIFFERENT CONVERGING RECONSTRUCTION:
+At bottom left: DIFFERENT CONVERGING RECONSTRUCTION:
 The separated bays gather into the Opera’s taller, rhythmically arcaded front. Former portico columns broaden or shorten into paired supports; one upper arcade remains a chain of open arch segments. Dome-shell stone and roof metal redistribute into the Opera roof and projecting cornices, with one broad roof gap still visible.
 
-BOTTOM-RIGHT — COMPLETE DESTINATION:
+At bottom right: COMPLETE DESTINATION:
 The Hungarian State Opera’s specific complete main facade, entrance arcades, roof silhouette and projecting sculptural ornament resolve in the same London street. No residual London dome remains behind it; its material is accounted for in the new roof and cornice volumes.
 
 TRACEABLE PART CORRESPONDENCE:

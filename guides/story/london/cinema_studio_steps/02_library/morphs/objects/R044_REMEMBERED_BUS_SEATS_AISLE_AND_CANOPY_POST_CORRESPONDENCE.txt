@@ -1,4 +1,4 @@
-REFERENCE ID: R044_REMEMBERED_BUS_SEATS_AISLE_AND_CANOPY_POST_CORRESPONDENCE (do not render this identifier).
+REFERENCE ID: R044_REMEMBERED_BUS_SEATS_AISLE_AND_CANOPY_POST_CORRESPONDENCE (never print IDs, headings or panel labels).
 
 OBJECT MORPH STUDY — R044 REMEMBERED BUS SEATS AISLE AND CANOPY POST CORRESPONDENCE
 SUBJECT AND MATERIALS:
@@ -21,16 +21,16 @@ METAL RESPONSE: Metal yields through bending, torsion and local plastic flow. Pl
 CLOTH RESPONSE: Cloth has little bending stiffness and follows tension between seams. Free edges lag and form deep folds; stitch lines constrain the stretch. At a material conversion, yarn bundles reweave along the turning edge and preserve real front/back fabric faces. Upholstery is different from a loose hem: dense foam compresses slowly and rebounds underneath a skin of tensioned fabric, while its frame stays hard. Do not make cloth, foam and support metal deform at one identical speed.
 The four stills expose these different material responses through strain, sag, folded thickness, changing joints and contact shadows. In the moving film, thin flexible pieces can respond first while heavier or more viscous regions lag; phases overlap rather than all parts advancing on the same uniform clock.
 
-TOP-LEFT — SOURCE:
+At top left: SOURCE:
 The scripted street bench sits beneath existing canopy posts, with a continuous floor strip and one marked bench support. Use the paired seats and narrow aisle described above; the street’s red double-decker remains a separate object.
 
-TOP-RIGHT — BENCH AND POSTS SPLAY INTO SEAT AND WINDOW FRAME PARTS:
+At top right: BENCH AND POSTS SPLAY INTO SEAT AND WINDOW FRAME PARTS:
 The empty source bench splits into paired thick seat-pan blanks, with long slats rising at different angles into unfinished backs. Canopy posts separate into deep window-pillar profiles, some leaning outward from their original bases. The original aisle strip broadens between them. Show a large open skeleton of furniture and framing, with source grain and metal seams traceable, rather than a finished coach visible behind the bench. This study has no passengers on changing seat supports.
 
-BOTTOM-LEFT — CONVERGING BUS ROOM WITH RAISED SEAT SHELLS AND OFFSET PILLARS:
+At bottom left: CONVERGING BUS ROOM WITH RAISED SEAT SHELLS AND OFFSET PILLARS:
 The broad skeleton has gathered around the remembered aisle. One pair of seats is complete, while another has thick back shells still turned outward, open support joints and partly timber/partly upholstered pans. Two window pillars remain substantially offset from the sill where their new cross-sections are forming. Broad gaps between them show the same surrounding scene. The final cell seats the backs and pillars and completes the remembered seating-bay geometry described above. This does not mutate the pilot's red London bus or invent another vehicle design.
 
-BOTTOM-RIGHT — RESOLVED DESTINATION:
+At bottom right: RESOLVED DESTINATION:
 The remembered bus seat frames described above, upholstery, aisle and window pillars are fully present at real depth. The marked bench support persists in a seat frame. This object-only study omits cast rather than inventing passengers; the final video retains its established memory cast.
 
 CURRENT-CITY CARDS — PRESENT IN EACH RELEVANT CELL:

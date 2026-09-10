@@ -1,4 +1,4 @@
-REFERENCE ID: R020_CUP_HAND_CONTACT_AND_TABLETOP_DEPTH (do not render this identifier).
+REFERENCE ID: R020_CUP_HAND_CONTACT_AND_TABLETOP_DEPTH (never print IDs, headings or panel labels).
 
 SUBJECT — CERAMIC CUP TO SCULPTED FLOWER-SHAPED TABLE VESSEL:
 Track rim chip, handle root and glaze crack across the changing ceramic. Keep the tabletop fixed and show moving contact shadows beneath every raised lobe. This gives the close camera a small-scale transformation with real surface detail.
@@ -19,16 +19,16 @@ MATERIAL-SPECIFIC DEFORMATION:
 CERAMIC RESPONSE: The glazed cup starts rigid. At the transformation front its mineral core becomes cohesive and clay-like, with high resistance to rapid flow; thick lobes deform slowly while a thinner lip curls sooner. Glaze crazing stretches and reorganises on the same curved surface, retaining glossy hard islands around the more compliant joining zones. The original chip remains a real notch. As petals join, the core firms into hard fired ceramic and the final rim holds its shape. It never behaves as a living flower, a metal spring or a runny liquid.
 The four stills expose these different material responses through strain, sag, folded thickness, changing joints and contact shadows. In the moving film, thin flexible pieces can respond first while heavier or more viscous regions lag; phases overlap rather than all parts advancing on the same uniform clock.
 
-TOP-LEFT — COMPLETE ORIGINAL:
+At top left: COMPLETE ORIGINAL:
 A substantial ceramic cup rests on the restaurant tabletop. Show its thick rounded rim, curved handle, foot ring, glaze crazing and one tiny rim chip. The table’s grain and a neighbouring ordinary dish locate the material study.
 
-TOP-RIGHT — EXPANSIVE MATERIAL RECONSTRUCTION:
+At top right: EXPANSIVE MATERIAL RECONSTRUCTION:
 The cup wall opens into six thick uneven ceramic lobes splayed around a still-solid base. The handle stretches outward into an open branching curve while one rim segment remains recognisably cup-shaped. Expose glazed outer faces, unglazed-looking mineral cross-sections and the inside of the vessel through broad gaps; no ceramic dissolves into sparkles.
 
-BOTTOM-LEFT — DIFFERENT CONVERGING RECONSTRUCTION:
+At bottom left: DIFFERENT CONVERGING RECONSTRUCTION:
 The low radial lobes gather into a tall asymmetric ceramic cage, about twice the final bowl height. Three petal bodies rise steeply while the other three curl inward lower down, so its uneven vertical silhouette differs sharply from the previous flat fan and the final broad low bowl. Two petals are still separated by a wide side gap, and the old handle remains half-loop, half-leaf curling along the base. The chipped rim segment forms one raised petal tip. The footprint broadens through visible growth of the same foot ring.
 
-BOTTOM-RIGHT — COMPLETE DESTINATION:
+At bottom right: COMPLETE DESTINATION:
 A thick ceramic flower-shaped bowl stands on the same table, with fully joined overlapping petals, a leaf-like side handle and a stable expanded base. It remains glazed ceramic throughout, not a living plant. The chip persists as a small irregular petal edge.
 
 TRACEABLE PART CORRESPONDENCE:
