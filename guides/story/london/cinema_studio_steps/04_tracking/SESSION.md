@@ -1,5 +1,9 @@
 # Guided production session
 
+## Latest cathedral comparison — 2026-09-10
+
+The creator prefers the previous cathedral result. Compared the latest downloads `hf_20260910_040957_bb7741e2-e1b8-41af-87aa-4fac4592d5f6.png` and `hf_20260909_195819_8c30af4b-1501-4ee3-b8cb-36e5e94906ff.png`. The earlier view has substantially stronger London street context; the newer view isolates the building, includes a stray dome fragment and repeats almost-finished lower states. MR001 now explicitly retains London surroundings in all four cells, limits R006 to target-building geometry and strengthens the broad unfinished third state. Exact submitted prompt/model provenance is unverified. No further render launched, no credit charge inferred, and no complete morph image accepted yet.
+
 ## Current reference expansion
 
 Prepared 22 four-state morph studies (MR001–MR020 plus R008/R009), including 17 new object-focused sheets. Intermediate states now require large unfinished supported volumes that differ at whole-sheet scale. Existing generated images remain unchanged; new/revised outputs require visual review. The prior MR001 output remains rejected.

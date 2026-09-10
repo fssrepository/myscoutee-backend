@@ -2255,13 +2255,14 @@
         "03_film/01/video.txt"
       ],
       "note": "Geometry sheet for existing cathedral subject. Standalone R006 destination remains an input; no additional Element or video job assumed.",
-      "prompt_sha256": "cee1cbd14c062fd59ba873526c96adba78cd263a7247c3cdb4974151ae84faa8",
+      "prompt_sha256": "0bac00d5132906c4498d9afe7752d8e70df4afe3f786938ad59aaf3b59a8401b",
       "latest_image_review": {
-        "file": "/home/raxim/Downloads/hf_20260909_194343_c663f27c-24ac-4db1-b610-1de68b585d30.png",
+        "file": "/home/raxim/Downloads/hf_20260910_040957_bb7741e2-e1b8-41af-87aa-4fac4592d5f6.png",
+        "compared_previous_file": "/home/raxim/Downloads/hf_20260909_195819_8c30af4b-1501-4ee3-b8cb-36e5e94906ff.png",
         "accepted": false,
-        "reason": "First three cells nearly repeat St Pauls; final cell retains source massing and produces a hybrid. No substantial visible intermediate material geometry.",
-        "revision": "Allow target massing and support positions to change on the same site; specify conspicuous unfinished thick masonry, facade relief and roof intermediates.",
-        "architecture_check": "Compared real frontal photographs: both have a dome, twin towers and an existing triangular pediment. Corrected the key facade correspondence from St Pauls two-level columned portico to the Basilicas monumental central arched entrance. External photographs used for inspection only, not generation inputs."
+        "reason": "Newest download loses the earlier London street depth for a nearly empty paved setting, includes a detached cropped dome fragment in the first cell, and has nearly identical lower cells. The creator prefers the earlier cathedral result.",
+        "revision": "Restore the inhabited London surroundings and strong three-quarter architectural composition; restrict R006 to target building geometry; require a broad unresolved arch/tower/roof configuration in the third cell. Preserve the earlier spectacle without treating the earlier sheet as proof of a complete morph.",
+        "render_prompt_provenance": "Image filenames inspected; exact submitted prompt/model/settings for these renders not independently verified."
       }
     },
     "MR002": {
