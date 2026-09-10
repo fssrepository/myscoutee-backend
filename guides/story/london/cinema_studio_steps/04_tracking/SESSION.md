@@ -1,5 +1,12 @@
 ## Current category import request — 2026-09-10
 
+## 2026-09-10 — Fejlődő zenei téma, eseményekkel épülő feszültség
+
+- A felhasználó a jelenlegi zene karakterét jónak tartja; változatosságot és fokozódó feszültséget kért. A VOICE.md, mind a hét video.txt és a pilot két vizuális promptja konkrét dallam-, ritmus-, regiszter- és hangszerelési fejlődést kapott.
+- Az ismételt teljes bevezetés helyett blokkon átnyúló zenei mondatok; emberi pillanatoknál ritkítás és részleges feloldás, intézményi szakaszokban késleltetett lezárás, 06-ban dinamikus csúcs, 07-ben leépülés és változatlan klinikai hard cut.
+- A narrációs TXT-k, a narrált pilot forráshang-megőrzése, a kép/időzítés és az importfájlok nem változtak. Nincs új hanggenerálás vagy meghallgatással igazolt eredmény.
+
+
 ## 2026-09-10 — A teljes import is elkészült a részfájlok mellett
 
 A felhasználó kérésére a FULL_PROJECT_IMPORT.md ismét valódi importfájl, a jelenlegi 156 elemmel. Pontosan a Characters (31), Worlds (51), Morphs (74) fájlok egyesítése. Az előző bejegyzésben említett útmutató-helyettesítés már nem aktuális. Teljes újrakezdéshez most ez az egy fájl a következő import; a három kategóriafájl alternatíva, nem további importfeladat. A 105-ös történeti archív másolat megmaradt. Távoli import még nincs visszaigazolva.

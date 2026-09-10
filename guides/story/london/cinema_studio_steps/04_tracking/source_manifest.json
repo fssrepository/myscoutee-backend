@@ -83,7 +83,7 @@
       ],
       "source_prompt_sha256": "1c7f054229ec7c5295ee6e424c9d169831af8221220b92deea92c9a83f564005",
       "file": "02_library/characters/C01_PROTAGONIST.txt",
-      "file_sha256": "296d71a6266effb06f0510bc19f21e268756c2f11927c0b9ede4c39b2e8ce8c4",
+      "file_sha256": "60c63718c3cd378af85611dfa1ad0b3b76c9a7a12214d80feb28a7c76fab7056",
       "changes": "Verbatim fenced prompt"
     },
     {
@@ -95,7 +95,7 @@
       ],
       "source_prompt_sha256": "1c84a4aee0d00d764205f4d31ce7919c94264d76932fb45ddbe57b3e6b970581",
       "file": "02_library/characters/C02_SOHO_WOMAN.txt",
-      "file_sha256": "37fde1a6d5f5a5835f0c2565c0d739d0d3cfb15ad8119bd8cf01745334bacb51",
+      "file_sha256": "a93ddf67e87c50db420afbd3d5809aaa4a668cc780e3d207f5c6d30e6a372702",
       "changes": "Verbatim fenced prompt"
     },
     {
@@ -107,7 +107,7 @@
       ],
       "source_prompt_sha256": "0cec9d04f9314393840ada226c7ca8e576f97e74b19eb9e5b473801db325befc",
       "file": "02_library/characters/C03_POLICEWOMAN.txt",
-      "file_sha256": "8fe249124cdf7445b16bf8697263412ea5f72071dfd53a16531e17fdd5fca1c8",
+      "file_sha256": "35c980b37f14ebedd9494e55dfc1d46312d1501bc0f8372137dfa98b70037312",
       "changes": "Verbatim fenced prompt"
     },
     {
@@ -119,7 +119,7 @@
       ],
       "source_prompt_sha256": "5d09e227111b9df2ff0c6019138233806fcb4790776ceddadfab334f392c53aa",
       "file": "02_library/characters/C04_APPOINTED_LAWYER.txt",
-      "file_sha256": "f99e4e073e72cf4802e65d8052624c9bf616169334eac344d9a6bf827f92ae71",
+      "file_sha256": "116d0e4fd501506b67b00240e9874ff92d7194e84b5838c633926c57d0cf01e6",
       "changes": "Verbatim fenced prompt"
     },
     {
@@ -131,7 +131,7 @@
       ],
       "source_prompt_sha256": "db066590815046c07c45129a8145d1633cd1c18c0c3aea32cfdd7b7bf6e36650",
       "file": "02_library/characters/C05_FINAL_NURSE.txt",
-      "file_sha256": "a0cc1f40ff54e5798b64c48b95071314ba615f6d08d916e33d463222273317a3",
+      "file_sha256": "f55cd727f4a880c7c034aafae9d9a225dd05a084c61e24397d371628778e3315",
       "changes": "Verbatim fenced prompt"
     },
     {
@@ -143,7 +143,7 @@
       ],
       "source_prompt_sha256": "0e736b3252fe3cbd8ca19c597663879f0e480bb6803e168de6902c32a3173d0c",
       "file": "02_library/characters/C06_SHARED_HOUSE_SUBSTITUTE_SNORING_HOUSEMATE.txt",
-      "file_sha256": "3f8596341c7e6d2284791723bc65a7e7a95d28bc02901b0a78a206342f499915",
+      "file_sha256": "dad2b86b557d110fa533994c67c34c2b981731a9bab0d8388b6b8be7f3ecde05",
       "changes": "Verbatim fenced prompt"
     },
     {
@@ -155,7 +155,7 @@
       ],
       "source_prompt_sha256": "35f31171b6f526d520600915de5d7227a0bb7fadaef7748c0d8d978fc51cbd87",
       "file": "02_library/characters/C07_FX_MORTGAGE_HOUSEMATE.txt",
-      "file_sha256": "c6f04fb4d98685b5eb3da7b8d681f8fb9ebf502e287f52b512a551f45fd825b6",
+      "file_sha256": "7b79bd1bcc8ffd6e04ded20c61295b45d3957c6d800236e5ee9719baa2f0c19e",
       "changes": "Verbatim fenced prompt"
     },
     {
@@ -167,7 +167,7 @@
       ],
       "source_prompt_sha256": "fd0d8ef7f58a40bac83ccdf0bd9e0701aa59f5177acecc8f2a2ae28025580208",
       "file": "02_library/characters/C08_FX_MORTGAGE_SPOUSE.txt",
-      "file_sha256": "6246e2760795cc99579f7b1c98e3849b1aff484a3c0957fc8be5de727fc7d0d6",
+      "file_sha256": "7a14cbc9cee07ef70fcd930e88487bcd195bdfa91908c3c5fcdcb57710b00565",
       "changes": "Verbatim fenced prompt"
     },
     {
@@ -179,7 +179,7 @@
       ],
       "source_prompt_sha256": "27a9a08fc7ed627c3682c4c3af3959d7fd0a60589df5325211a885cda92acdb3",
       "file": "02_library/characters/C09_FX_MORTGAGE_CHILD.txt",
-      "file_sha256": "84a615dd78bf6fe413ecd2fe12f974682b8bc33589ceb95d9fd85e605d687e35",
+      "file_sha256": "f5d7c0c39d9a3d8ecaf240036b9728b39fe73a6e28775014a837a70b2fa4aa31",
       "changes": "Verbatim fenced prompt"
     },
     {
@@ -191,7 +191,7 @@
       ],
       "source_prompt_sha256": "5e625999f68a36e46c2cdbe8f0c1dc0798b1a4bc650893d174b94c60eaf276f0",
       "file": "02_library/characters/C10_BEGINNER_DANCE_WOMAN.txt",
-      "file_sha256": "b6e17d61f8154df5fb5b7b4af1feff4bce3715cd243c7b1a2355da4748ad19c2",
+      "file_sha256": "f716f620a196d2f16fe4b79c9829c0d14b154d80df1e4ba1638023eb414b8493",
       "changes": "Verbatim fenced prompt"
     },
     {
@@ -203,7 +203,7 @@
       ],
       "source_prompt_sha256": "c89e0907e8d5955412e5e56b23efa3f600f4b088b6fa44683517aa90fee06828",
       "file": "02_library/characters/C11_RUSSIAN_TRANSIT_PASSENGER.txt",
-      "file_sha256": "c7055f9aea66a674e097ff8e6d006d918456ac9ecfb5b7633021f2c8202460ad",
+      "file_sha256": "2418a820354090825bd75b3c51f3fb7558f0f29b9101819291af681a0f644b37",
       "changes": "Verbatim fenced prompt"
     },
     {
@@ -215,7 +215,7 @@
       ],
       "source_prompt_sha256": "0637e995e66788c7056925bf5c184e8f3db67839dd38b5d24a184426b4ef1300",
       "file": "02_library/characters/C12_AGRA_BUS_WOMAN.txt",
-      "file_sha256": "563f3f12811217f3d1f4bcb6663457e8200ecae15b72f784d83948ac162964fc",
+      "file_sha256": "9f36570bc55d0d47287e87dd83f1bfaff06ad755c2a6170329975b100d56c4db",
       "changes": "Verbatim fenced prompt"
     },
     {
@@ -227,7 +227,7 @@
       ],
       "source_prompt_sha256": "dd7cde7a051d4e7efa789d56f00bad57dd9bd3dbae401add10ea0405f3dd3680",
       "file": "02_library/characters/C13_SUDANESE_TRAVELER_MAN.txt",
-      "file_sha256": "7144c511879f9b0f247d7dbe9c4ac20b799e0ec6946644c2ecde6ce7c0836594",
+      "file_sha256": "7983309a70b3732cd2c1129a30e36ed23f831cb639a281c3720e79b74503e183",
       "changes": "Verbatim fenced prompt"
     },
     {
@@ -239,7 +239,7 @@
       ],
       "source_prompt_sha256": "9b54f9727e485a512c40c097a6cfdd96b4c2bbcf6d7f89dec10eaca3f46da85a",
       "file": "02_library/characters/C14_SUDANESE_TRAVELER_WOMAN.txt",
-      "file_sha256": "5a53c3689154c06a125c83f0bdf37d2ae14b18d9eba3ca48d21f2cf5647c4554",
+      "file_sha256": "41b11a33f78ffda3b323b63c87b3ab9c7283fb0d949608f5bfd14f68c45b63c9",
       "changes": "Verbatim fenced prompt"
     },
     {
@@ -251,7 +251,7 @@
       ],
       "source_prompt_sha256": "bafc8b624584a7e92edd1cf23479a0edda633a8f32de85747772b6fc5d145c8a",
       "file": "02_library/characters/C15_CAIRO_TAXI_DRIVER.txt",
-      "file_sha256": "ea7be5aba6e54bc27d06f81f3295e00a4ebc2a31ed6215c3d860c25f2038c6b6",
+      "file_sha256": "2c982f4f2515a6cfbb9f7c9bd6a1d14bbd4968c50d71f7fec554a6ef5f2cb2e4",
       "changes": "Verbatim fenced prompt"
     },
     {
@@ -263,7 +263,7 @@
       ],
       "source_prompt_sha256": "0b8f95ede83e5818a8408fd70ecef99fce85cc0c12b653ef7bd7c624032e9228",
       "file": "02_library/characters/C16_BALLOON_LOCAL_HELPER_MAN.txt",
-      "file_sha256": "b0924f2e132e176792d3fe6ea3dd762f292126145e90d4a536334a8f5fb5ea3f",
+      "file_sha256": "8dffd674dd46e37b8e3d92a8ab71d969d0737b63db01519e38c732dd69f4732b",
       "changes": "Verbatim fenced prompt"
     },
     {
@@ -275,7 +275,7 @@
       ],
       "source_prompt_sha256": "1401cf11e115f3131028751d2e03931c9124eacccaa3ce274e2e97a263c01cea",
       "file": "02_library/characters/C17_BALLOON_LOCAL_HELPER_WOMAN.txt",
-      "file_sha256": "509a49732525ef9e750ac75f40f2ddc43e3ea1f292fd0f67ebda4edaf15239e6",
+      "file_sha256": "6cbd5ed02939d82efc86ebea470d09dd7b6e0e7699abdb915f5fec468b39760f",
       "changes": "Verbatim fenced prompt"
     },
     {
@@ -287,7 +287,7 @@
       ],
       "source_prompt_sha256": "9fe383e2200879b7ccd69a703e0547bdccc844248da93276d655f2a4a8d8ccd0",
       "file": "02_library/characters/C18_BARMOUTH_ROAD_TRIP_DRIVER_COMPANION.txt",
-      "file_sha256": "c12a46dd021e4a214ee28bcd4cb73835ea33c391a5ba4bc0b92393c3b3e44132",
+      "file_sha256": "78db6ece18789df3a8330a5929a3defec35460feef6f0ede6cd384d1fcc75665",
       "changes": "Verbatim fenced prompt"
     },
     {
@@ -299,7 +299,7 @@
       ],
       "source_prompt_sha256": "d301056bdcf14c631e8c6309a5e72c9574ce2ca47efa0ce5e5f9525c87d6562d",
       "file": "02_library/characters/C19_BARMOUTH_ROAD_TRIP_COMPANION_A.txt",
-      "file_sha256": "2fb642886207cdae25a6079b8f41291eeea8033c1f6141d52c417bfa9779fe62",
+      "file_sha256": "cad8383b642fa2cb25010fba2c450437a3ed5d5d922de6cb27b93026c69cbdcc",
       "changes": "Verbatim fenced prompt"
     },
     {
@@ -311,7 +311,7 @@
       ],
       "source_prompt_sha256": "dbfae744902e96125296d850d700ddd9a3b88581db7ad6b4ae796e99ed90e8e3",
       "file": "02_library/characters/C20_BARMOUTH_ROAD_TRIP_COMPANION_B.txt",
-      "file_sha256": "6cd1f45452d223a2cae60916f188c361f3abf8a22bc0ae059475cc09af92a330",
+      "file_sha256": "dedb666a67cd96f6077529a33ba096023240f852c91a06a27ceedc063ae0695a",
       "changes": "Verbatim fenced prompt"
     },
     {
@@ -323,7 +323,7 @@
       ],
       "source_prompt_sha256": "d301056bdcf14c631e8c6309a5e72c9574ce2ca47efa0ce5e5f9525c87d6562d",
       "file": "02_library/characters/C21_BARMOUTH_ROAD_TRIP_COMPANION_C.txt",
-      "file_sha256": "2fb642886207cdae25a6079b8f41291eeea8033c1f6141d52c417bfa9779fe62",
+      "file_sha256": "cad8383b642fa2cb25010fba2c450437a3ed5d5d922de6cb27b93026c69cbdcc",
       "changes": "Verbatim fenced prompt"
     },
     {
@@ -335,7 +335,7 @@
       ],
       "source_prompt_sha256": "2dd89f6a917bf16ade5f432d3650934ad8e8b7275710b8f73b0b5bfd35a0b923",
       "file": "02_library/characters/C22_ACCOUNTANT.txt",
-      "file_sha256": "7a472544c863c05b19e0a77c206b77812381140fe8edccd76f095c5a4bc7dadf",
+      "file_sha256": "fac7fbb1ee3c7fe59e0a779f01e9f68410e5ecca59d8a5155dd428c97b94e181",
       "changes": "Verbatim fenced prompt"
     },
     {
@@ -347,7 +347,7 @@
       ],
       "source_prompt_sha256": "cd3a8c255aba3556764d83315d95bafe0400dd967abe76bde806ebf4ed8030ad",
       "file": "02_library/characters/C23_ADMIN_COLLEAGUE_A.txt",
-      "file_sha256": "e5590308cbaeca461c3536d277531b5619a96033cad3e0ef35bcd1816969da23",
+      "file_sha256": "ee2b2e02bb2ab5feb6df8796c1db6f9ec33f75a6c983de6defc226f93b372702",
       "changes": "Verbatim fenced prompt"
     },
     {
@@ -359,7 +359,7 @@
       ],
       "source_prompt_sha256": "21a8f008db7ef74b242a1e5e092e760b77f0b921e69bd2aec33f2a8073632a5f",
       "file": "02_library/characters/C24_ADMIN_COLLEAGUE_B.txt",
-      "file_sha256": "c23cca55674d58e73614553c5cbe05bc625c181e085c7d3201397df17d7d9d13",
+      "file_sha256": "71f4de811886b15ef6dba2742a49f5b8fdc93b4b2bbcc4704d736582dad54583",
       "changes": "Verbatim fenced prompt"
     },
     {
@@ -371,7 +371,7 @@
       ],
       "source_prompt_sha256": "f483821bc97864c6c680e22a7a12f8ebc22ab7dbde55952c08bbfe79bea17c47",
       "file": "02_library/characters/C25_SEARCH_OFFICER_MALE.txt",
-      "file_sha256": "71ddcf01774c36c57eb98bc535476bf0193e21a530791795c544a441d62cbbc7",
+      "file_sha256": "68d129932b6cdfc53506b2f68dd577dcd342d70c36feb8fd0fa26fd82575fd4a",
       "changes": "Verbatim fenced prompt"
     },
     {
@@ -383,7 +383,7 @@
       ],
       "source_prompt_sha256": "1f0d7b11e5ae7a974429d747a769b30186288e53f3d3be0cdb523a9544e81854",
       "file": "02_library/characters/C26_DEFENCE_OFFICE_SUBSTITUTE.txt",
-      "file_sha256": "1c45f290cfe75093433e563e0509b6a883aa5aee5cea43711e05ceaf1fa0ee6e",
+      "file_sha256": "05088e9c434100250c71f2185a22fe8fb7c71f28c0de85f7da76e0a22584653b",
       "changes": "Verbatim fenced prompt"
     },
     {
@@ -395,7 +395,7 @@
       ],
       "source_prompt_sha256": "933b7e1083ca0a8d0a00c2f2cf6ee79b8f2c7bb189c9c7ccd1813ad99cb31a53",
       "file": "02_library/characters/C27_JUDGE.txt",
-      "file_sha256": "f6edfcb9b203cb701011ed393add7b5cefa6d712545f97350885d57cdf4fb23f",
+      "file_sha256": "612e7979ced44b248d2c3b93957529af2a41e8b5e02a247fb57bfce51b242810",
       "changes": "Verbatim fenced prompt"
     },
     {
@@ -407,7 +407,7 @@
       ],
       "source_prompt_sha256": "8ea1c2f09462e040525d4f7b0a174e433e51849d4187b2ca5f8b45caace89acd",
       "file": "02_library/characters/C28_FORENSIC_EXPERT_A.txt",
-      "file_sha256": "9cdd5f3dc24d3620c8786c33e3603a8c85ba8f44827b631d7c1d79c82698f961",
+      "file_sha256": "2c6082bb409290e96bdc7592edd217bf6ecf4b77a6c64ac444f9ff39f2e96bef",
       "changes": "Verbatim fenced prompt"
     },
     {
@@ -419,7 +419,7 @@
       ],
       "source_prompt_sha256": "2a575da9d93e6c68fb8c32b6160b00e16804931a97796e8e73277f312e1b30c5",
       "file": "02_library/characters/C29_FORENSIC_EXPERT_B.txt",
-      "file_sha256": "04e6fb1ec758e860e4809adbea68412ccbd4a137ae9ebac20973e3320b08a685",
+      "file_sha256": "b3885f0fa30d4db423615cd4d2ddcb3badcc9c2340738110aa3a6d80fe1dece0",
       "changes": "Verbatim fenced prompt"
     },
     {
@@ -431,7 +431,7 @@
       ],
       "source_prompt_sha256": "60c8a27d366272250614c6103c2d64812940613e2bf365697be04e78b991e55a",
       "file": "02_library/characters/C30_COURT_CLERK.txt",
-      "file_sha256": "45e54162d93bd4d67abfe2031ba5236a6c20c41d7ad5892d5c44056e998ee6c7",
+      "file_sha256": "84e2b5a6ae567cc205703de004ee7c49a47dc83f1e10af1efb7b18d5ff6cb772",
       "changes": "Verbatim fenced prompt"
     },
     {
@@ -443,7 +443,7 @@
       ],
       "source_prompt_sha256": "5dc948b39e6864ba0f13158690ed2ec4ddfa0ccf0e5fabcc68705716f96dfb24",
       "file": "02_library/characters/C31_ANONYMOUS_FICTIONAL_POLITICAL_FIGURE.txt",
-      "file_sha256": "6e2b8ad169768dbd64f8632c0807edd60c99b1714b91dfc4c515d087c407b8ec",
+      "file_sha256": "771e3a3198a69fe8a07dd514bbf75e4957e4879c3e17f2bd2243b368d480dd0d",
       "changes": "Verbatim fenced prompt"
     },
     {
@@ -755,7 +755,7 @@
       ],
       "source_prompt_sha256": "d111e179fa9211ddb262d74468ee38305f1776d75138a0c33a3e229ff58dff3d",
       "file": "03_film/01/video.txt",
-      "file_sha256": "e436d2dae86c6c20f124dbc807a1742b4afaaf0255e198c5a070922025396ba4",
+      "file_sha256": "0ca27d2980e6e188c0c9b94076c11ebbdecd19fc8078a235b242ebe2f6bbc895",
       "changes": "Operator/retry prose and repeated rules removed; all nine story beats retained; camera/architecture updated; audio cues follow visuals; reveal and reference contradictions repaired; Verified C01/C02 Element IDs substituted for local aliases; explicit reference binding; original Hungarian folk-rooted score and synchronized material transformation foley; researched Dél-Alföld tekerő/clarinet arrangement, phrase-synchronized facade motion, explicit protagonist inner monologue"
     },
     {
@@ -791,7 +791,7 @@
       ],
       "source_prompt_sha256": "1ee3bb2feea06f9cb11dac2f33cac0b6c8a0735bc0a73938e537a716ad9146ba",
       "file": "03_film/02/video.txt",
-      "file_sha256": "2f95d71c2977aa2d27092ef3f3a9d86618be30f847c7a9fbc36226463bc7cd8d",
+      "file_sha256": "1431e16d1b4b0ba100f6f3e53256634107d69d89c2f05264d35b544a8b39f2c4",
       "changes": "Operator/retry prose and repeated rules removed; all nine story beats retained; camera/architecture updated; audio cues follow visuals; reveal and reference contradictions repaired; Verified C01/C02 Element IDs substituted for local aliases; explicit reference binding; original Hungarian folk-rooted score and synchronized material transformation foley; researched Dél-Alföld tekerő/clarinet arrangement, phrase-synchronized facade motion, explicit protagonist inner monologue; rural memory grounded in creator's Orosháza paprika/corn-field childhood Continuation preserves narrator timbre and a natural breath over an uninterrupted sound bed."
     },
     {
@@ -827,7 +827,7 @@
       ],
       "source_prompt_sha256": "4970f288124db4473bf4af10c0fb6a9d66f5bae619718ed4d3907489e0c8cc95",
       "file": "03_film/03/video.txt",
-      "file_sha256": "49cdea506c60a78071d5133e0f24e744656e0220715ec54cd75c5fd4e48a91b8",
+      "file_sha256": "1ba19467f29cb58bd6d8ce64dfba368f5431d3ac7168b22801ff0093f58538e2",
       "changes": "Operator/retry prose and repeated rules removed; all nine story beats retained; camera/architecture updated; audio cues follow visuals; reveal and reference contradictions repaired; Verified C01/C02 Element IDs substituted for local aliases; explicit reference binding; original Hungarian folk-rooted score and synchronized material transformation foley; researched Dél-Alföld tekerő/clarinet arrangement, phrase-synchronized facade motion, explicit protagonist inner monologue Continuation preserves narrator timbre and a natural breath over an uninterrupted sound bed."
     },
     {
@@ -863,7 +863,7 @@
       ],
       "source_prompt_sha256": "dcfdef2b9227d2f0528bbca68b9dad63fc71b2087b289dbfbb25c8dfb8ff6370",
       "file": "03_film/04/video.txt",
-      "file_sha256": "c53073f45da232f57539bccbf3eca0a5eeaf9f8ff354faf5e5b71558a75716f7",
+      "file_sha256": "80117d9e14b7939181752b24f1244122124dc8d8c9c76210dab74df77ecf9fd2",
       "changes": "Operator/retry prose and repeated rules removed; all nine story beats retained; camera/architecture updated; audio cues follow visuals; reveal and reference contradictions repaired; Verified C01/C02 Element IDs substituted for local aliases; explicit reference binding; original Hungarian folk-rooted score and synchronized material transformation foley; researched Dél-Alföld tekerő/clarinet arrangement, phrase-synchronized facade motion, explicit protagonist inner monologue Continuation preserves narrator timbre and a natural breath over an uninterrupted sound bed."
     },
     {
@@ -899,7 +899,7 @@
       ],
       "source_prompt_sha256": "2c24d5a0b90307baa614606b633838697ec3355e0dbb1df515d095dee403fdd6",
       "file": "03_film/05/video.txt",
-      "file_sha256": "7d95e455792ef1739907346edd40ddd93287792b2b7e51d52ef83da36c2e1fe0",
+      "file_sha256": "b8e4bf61598acbb65f96262126e55573d3fb5f84589c0ae419c4e8aed5d95635",
       "changes": "Operator/retry prose and repeated rules removed; all nine story beats retained; camera/architecture updated; audio cues follow visuals; reveal and reference contradictions repaired; Verified C01/C02 Element IDs substituted for local aliases; explicit reference binding; original Hungarian folk-rooted score and synchronized material transformation foley; researched Dél-Alföld tekerő/clarinet arrangement, phrase-synchronized facade motion, explicit protagonist inner monologue Continuation preserves narrator timbre and a natural breath over an uninterrupted sound bed."
     },
     {
@@ -935,7 +935,7 @@
       ],
       "source_prompt_sha256": "52008590a700611bd6959ec7ae9cb86efeb01101257fce007de3b9eaa75417e6",
       "file": "03_film/06/video.txt",
-      "file_sha256": "cb78f67f972319928cf2eedf6b2e26b2aa19f95329950a660209468d58daa8df",
+      "file_sha256": "62af9ba9b4f5fb85e212221be085e642ca6e2a372ba9eeac928e46c773636d7a",
       "changes": "Operator/retry prose and repeated rules removed; all nine story beats retained; camera/architecture updated; audio cues follow visuals; reveal and reference contradictions repaired; Verified C01/C02 Element IDs substituted for local aliases; explicit reference binding; original Hungarian folk-rooted score and synchronized material transformation foley; researched Dél-Alföld tekerő/clarinet arrangement, phrase-synchronized facade motion, explicit protagonist inner monologue Continuation preserves narrator timbre and a natural breath over an uninterrupted sound bed."
     },
     {
@@ -971,7 +971,7 @@
       ],
       "source_prompt_sha256": "ac40bf3eee9daac90310ed6ff05a2b72832c27347255c481694023e8db6f759b",
       "file": "03_film/07/video.txt",
-      "file_sha256": "da28ab0975e38364bcb430dc6052b82bdd416e0f597a7a5fec0e1c450b09a5ab",
+      "file_sha256": "1e487d79f1e0cddb9630654e91d11c7d9c0435849b287fa4aa037ebc3d8b9689",
       "changes": "Operator/retry prose and repeated rules removed; all nine story beats retained; camera/architecture updated; audio cues follow visuals; reveal and reference contradictions repaired; Verified C01/C02 Element IDs substituted for local aliases; explicit reference binding; original Hungarian folk-rooted score and synchronized material transformation foley; researched Dél-Alföld tekerő/clarinet arrangement, phrase-synchronized facade motion, explicit protagonist inner monologue Continuation preserves narrator timbre and a natural breath over an uninterrupted sound bed."
     },
     {
@@ -4482,7 +4482,7 @@
   "pilot_files": [
     {
       "file": "01_pilot/test_extend_8s.txt",
-      "sha256": "5f9a4d77302316fb0498ee343e25bfc8fd5c4e487a358bd3258904b8d2a7b658",
+      "sha256": "bd525df5dea75dc26f0f1c1f8c5870536ad79d09a9a354bc39f37588561a2876",
       "refs": [
         "C01",
         "C02",
@@ -4505,7 +4505,7 @@
     },
     {
       "file": "01_pilot/test_video_8s.txt",
-      "sha256": "28a562e57b2309374b5ffcec4036a07962f958069020728d8efc303250846ff5",
+      "sha256": "cb8119ec2f2913c976097f85f0cdbc195d7f4e7ed3cd66d6a596e4025c6c9766",
       "reference_note": "Reference mentions are maintained centrally in reference_bindings. UNBOUND slots must be resolved before generation; verified Element mentions autoload in the creator's composer.",
       "refs": [
         "C01",
