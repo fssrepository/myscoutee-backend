@@ -1188,6 +1188,22 @@
         "cloth"
       ],
       "status": "CONCRETE_PAIR_TEXT_REVIEWED_IMAGE_NOT_ASSESSED"
+    },
+    {
+      "key": "MR021",
+      "prompt": "02_library/morphs/objects/MR021_RATING_CARD_6_2_TO_9_2_MATERIAL_MORPH_2X2.txt",
+      "four_states": [
+        "Flat pale yellow-green 6.2 plaque",
+        "Wide open rim arcs with bowed 6.2 face",
+        "Tall twisted frame, readable 9.2 and unfinished side tongue",
+        "Joined shallow mint 9.2 card"
+      ],
+      "material_profiles": [
+        "stiff rim",
+        "viscoelastic face",
+        "viscous numeral relief"
+      ],
+      "status": "TEXT_REVIEWED_NOT_IMAGE_VERIFIED"
     }
   ]
 }

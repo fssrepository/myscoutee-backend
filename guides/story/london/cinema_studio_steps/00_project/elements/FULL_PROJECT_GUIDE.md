@@ -1,6 +1,6 @@
 # Aktuális importútmutató
 
-A teljes újrakezdéshez importáld a [FULL_PROJECT_IMPORT.md](FULL_PROJECT_IMPORT.md) fájlt: **156 elem** — 31 karakterazonosság, 51 világ-/emlékoldal és 74 morph.
+A teljes újrakezdéshez importáld a [FULL_PROJECT_IMPORT.md](FULL_PROJECT_IMPORT.md) fájlt: **157 elem** — 31 karakterazonosság, 51 világ-/emlékoldal és 75 morph.
 
 Ugyanezek külön is elérhetők: [Characters](CHARACTERS_IMPORT.md), [Worlds](WORLDS_IMPORT.md), [Morphs](MORPHS_IMPORT.md). Vagy a teljes fájlt, vagy ezt a három kategóriafájlt használd; együtt duplikálnák az elemeket. A teljes fájl és a részek definíciói megegyeznek.
 

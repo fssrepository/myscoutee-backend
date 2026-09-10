@@ -1,5 +1,13 @@
 ## Current category import request — 2026-09-10
 
+## 2026-09-10 — Teljes képelőkészítés: ratingkártyák, esernyőtilalom, MR021
+
+- 164 aktív képprompt explicit esernyőtilalommal. A 21 jelen-világ lapon és a 68 korábbi épület/tárgymorphban a jelen-városi emberek kártyája már az állóképen szerepel; a későbbi videóra halasztó ellentmondó mondat javítva. Stúdióazonosító, emlék és klinikai kép kártya nélkül, az eddigi szereposztás szerint.
+- Tizedes értékek (6.2, 7.4, 9.2), olvasható sötét számok, a tört pontszámot követő világos vörös/borostyán/zöld szín. A rejtett főszereplőpont színben sem szivárog ki; puszta rátekintés nem változtat értéket.
+- MR021: külön 4K 2×2 kártyamorph 6.2→9.2, Prop típus, morphs/objects. Teljes import 157, Morphs 75; egyetlen MR021-kiegészítő is készült, kizárólag ha a korábbi 156 már importálva lett. Nincs távoli import-visszaigazolás.
+- [Kártyaellenőrzés](RATING_CARD_IMAGE_REVIEW.md), [morph-állapotok](MORPH_FOUR_STATE_REVIEW.md). Szöveges ellenőrzés történt, új kép/hang/videó generálása nem. A képek tényleges olvashatóságát a generált eredményen kell majd ellenőrizni.
+
+
 ## 2026-09-10 — Fejlődő zenei téma, eseményekkel épülő feszültség
 
 - A felhasználó a jelenlegi zene karakterét jónak tartja; változatosságot és fokozódó feszültséget kért. A VOICE.md, mind a hét video.txt és a pilot két vizuális promptja konkrét dallam-, ritmus-, regiszter- és hangszerelési fejlődést kapott.

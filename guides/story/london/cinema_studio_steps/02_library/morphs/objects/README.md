@@ -35,3 +35,5 @@ Minden aktív TXT egy képet kér négy eltérő anyagállapottal: eredeti, két
 - [R050_COURT_FILE_COMPARTMENTS_AND_RETAINED_DEVICE_SUPPORTS](R050_COURT_FILE_COMPARTMENTS_AND_RETAINED_DEVICE_SUPPORTS.txt)
 
 Az Element neve/kulcsa a mappaváltás miatt nem változik. Az import metaadat, a generálási leírás az egyes TXT-kben található.
+
+- [MR021 — ratingkártya 6.2 → 9.2](MR021_RATING_CARD_6_2_TO_9_2_MATERIAL_MORPH_2X2.txt): a számjegy, keret és színezett laptest négy térbeli állapota. Prop típusú tárgymorph, nem Character elem. Csak kifejezetten előírt pontszámváltozáskor használjuk; a rátekintés önmagában nem emeli a pontot.

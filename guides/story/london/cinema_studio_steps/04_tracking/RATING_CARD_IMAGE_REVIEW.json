@@ -816,6 +816,11 @@
       "prompt": "02_library/worlds/real/W07_MAIN_WORLD_C.txt",
       "rating_policy": "CURRENT_CITY_CARDS_WHEN_PEOPLE_VISIBLE",
       "umbrella_policy": "EXPLICIT_ALL_CELLS"
+    },
+    {
+      "prompt": "02_library/morphs/objects/MR021_RATING_CARD_6_2_TO_9_2_MATERIAL_MORPH_2X2.txt",
+      "rating_policy": "EXPLICIT_6_2_TO_9_2_CHANGE_ON_SAME_CURRENT_CITY_OWNER",
+      "umbrella_policy": "EXPLICIT_ALL_CELLS"
     }
   ]
 }

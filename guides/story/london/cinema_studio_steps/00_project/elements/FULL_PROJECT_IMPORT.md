@@ -1,6 +1,6 @@
 # MYSCOUTEE — COMPLETE ELEMENT LIBRARY
 
-156 Elements. One definition per canonical key.
+157 Elements. One definition per canonical key.
 
 ## MYS C01 Protagonist
 Type: Character
@@ -1093,3 +1093,10 @@ Canonical key: CM006
 Name: MYS CM006 Forensic Expert A To B
 Version: v1
 Description: Remembered human material transformation from MYS C28 Forensic Expert A to MYS C29 Forensic Expert B.
+
+## MYS MR021 Rating Card 6.2 To 9.2 Material Morph
+Type: Prop
+Canonical key: MR021
+Name: MYS MR021 Rating Card 6.2 To 9.2 Material Morph
+Version: v1
+Description: One current-city pedestrian’s rating card physically changes from 6.2 to 9.2, including its numeral, frame, face and score-linked colour.

@@ -1,6 +1,6 @@
 # Morph-lapok: a négy állapot szöveges ellenőrzése
 
-2026-09-10. **74 aktív prompt: 37 épület/tér, 31 tárgy/anyag és 6 konkrét karaktermorph.** Ez a promptok felülvizsgálata, nem 74 legenerált kép jóváhagyása.
+2026-09-10. **75 aktív prompt: 37 épület/tér, 32 tárgy/anyag és 6 konkrét karaktermorph.** Ez a promptok felülvizsgálata, nem 75 legenerált kép jóváhagyása.
 
 Mindegyik lapon ellenőrzött: konkrét forrás és cél; két egymástól is eltérő nagy köztes térbeli forma; látható anyagvastagság és megváltozó keresztmetszet; a korábbi darabok szerepe a célban; a harmadik cella nagy befejezetlen térfogata; a negyedikben ténylegesen összeálló cél. A bőr rugalmas, viszkoelasztikus térfogat; nem a kőre vagy járműlemezre írt törési szabályokat kapja.
 
@@ -84,6 +84,7 @@ A teljes lap kicsinyített nézetén is meg kell különböztetni a négy állap
 | [CM004](../02_library/morphs/characters/CM004_TRANSIT_HELPER_TO_CAIRO_TRAVELER_2X2.txt) | C11 zárt sötét ingázókabátja | nagy kabátszárnyak, keskeny hosszú törzs/fej és kitágult mandzsetta | rövidülő széles vállú törzs, szélesebb homlok és vastag derékspirál | C13 saját arca és könnyű utazóruhája | viscoelastic human tissue, rooted hair, cloth |
 | [CM005](../02_library/morphs/characters/CM005_ADMIN_COLLEAGUE_A_TO_B_2X2.txt) | C23 saját normál irodai alakja | széles aszimmetrikus mellkas/arc, átlós ruhagerinc és vastag ujjgyűrűk | keskeny hosszú törzs/nyak, megnyúlt fejtető és magas oldalsó redő | C24 különálló arca és kész irodai ruhája | viscoelastic human tissue, rooted hair, cloth |
 | [CM006](../02_library/morphs/characters/CM006_FORENSIC_EXPERT_A_TO_B_2X2.txt) | C28 normál feje, válla és gallérja | magas keskeny fej/nyak, keskeny váll és két nagy gallértölcsér | széles halánték/váll, rövid nyak és egy nagy átlós vállredő | C29 saját arca és kész szakértői öltözete | viscoelastic human tissue, rooted hair, cloth |
+| [MR021](../02_library/morphs/objects/MR021_RATING_CARD_6_2_TO_9_2_MATERIAL_MORPH_2X2.txt) | Lapos 6.2 kártya | Széles nyitott keret, meghajló számlap | Magas csavart keret, 9.2 és befejezetlen lapnyelv | Összeállt zöld 9.2 kártya | Merev perem, rugalmas laptest, sűrűn formálódó számjegy |
 
 ## Azonos mechanizmust lefedő lapok
 

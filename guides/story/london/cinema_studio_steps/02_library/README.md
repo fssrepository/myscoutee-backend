@@ -22,3 +22,5 @@ A [teljes prompttérkép](../00_project/elements/FULL_PROJECT_PROMPT_MAP.csv) az
 | worlds/maps | 2×2: áttekintés, bevezetés, átalakulási hely, kijárat | 3840×2160 (4K) |
 
 A 4K 2×2 lapon nulla margóval és köztes hézag nélkül egy cella 1920×1080 pixel. A felület felbontásválasztóját is ennek megfelelően kell beállítani. A világ külön nézetei nem morph-fázisok; a morph-lap négy cellája ugyanannak az anyagfolyamatnak négy különböző térbeli állapota. Az aktív képpromptok nem kérnek 3×3-as képet.
+
+A [ratingkártya- és esernyőellenőrzés](../04_tracking/RATING_CARD_IMAGE_REVIEW.md) rögzíti, mely jelenréteg kap kártyát. A kártyák száma tizedesjegyű, színük a pontszámhoz kötött. Az esernyő minden aktív képpromptban tiltott.
