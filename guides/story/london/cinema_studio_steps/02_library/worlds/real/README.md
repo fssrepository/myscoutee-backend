@@ -1,4 +1,4 @@
-CURRENT WORKFLOW — 2026-09-10: the creator requested a full clean Element reimport, including characters. Use the [complete restart guide](../../../00_project/elements/FULL_PROJECT_GUIDE.md) and its 105-entry list. Earlier incremental-import and retained-image instructions below are historical where they conflict. Four images are reported retained; previous @ bindings are not verified for the new import.
+CURRENT WORKFLOW — 2026-09-10: the creator requested a full clean Element reimport, including characters. Use the [complete restart guide](../../../00_project/elements/index/FULL_PROJECT_GUIDE.md) and its 105-entry list. Earlier incremental-import and retained-image instructions below are historical where they conflict. Four images are reported retained; previous @ bindings are not verified for the new import.
 
 # World references — 4K, 2×2 pages
 
@@ -28,7 +28,7 @@ A “view” is a stable identity from the previous world plan, not the new page
 
 All 21 prompts use 4K 2×2 pages. The creator restarted the image library and retained only C01, C02, MR001 and the bus identity image R002; old world media must not be assumed available. Bind the newly rendered pages to their actual new Elements before updating the video references. Editing a prompt does not render or bind its image.
 
-The separate [14-entry companion import](../../../00_project/elements/10_world_reference_pages.md) contains only the new B/C containers. Do not repeat any earlier import or reimport W01–W07. It has not been imported. Page A reuses the corresponding existing world container after the new image is accepted. For consistent later pages, attach the accepted Page A image in Higgsfield when rendering B/C; obtain and embed the actual reference mention before copying a dependent prompt. No new handle is guessed here.
+The separate [14-entry companion import](../../../00_project/elements/archive/batches/10_world_reference_pages.md) contains only the new B/C containers. Do not repeat any earlier import or reimport W01–W07. It has not been imported. Page A reuses the corresponding existing world container after the new image is accepted. For consistent later pages, attach the accepted Page A image in Higgsfield when rendering B/C; obtain and embed the actual reference mention before copying a dependent prompt. No new handle is guessed here.
 
 Before binding new pages into a video, copy their actual full @ mentions and confirm the selected images. A reference to old original view 9 now means Page C/top-left; old view 7 is Page B/bottom-left or Page C/bottom-left. Old view 1 remains Page A/top-left and also Page C/top-right. Never tell a four-cell page to supply its “cell 9”. Match the original-view mapping above to the actual attached page, then update that video's reference roles. Do not silently reinterpret the still-attached legacy world image as a new page.
 

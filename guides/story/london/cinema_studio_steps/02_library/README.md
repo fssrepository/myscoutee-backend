@@ -10,7 +10,7 @@
 
 A real elnevezés a jelen városi rétegét jelöli; ez továbbra is a történet lehetetlenül változó Londonja. A HRW07 klinikai lapok a forgatókönyvi szerepük miatt a memories ágon maradnak, kizárólag a végső blokkhoz.
 
-A [teljes prompttérkép](../00_project/elements/FULL_PROJECT_PROMPT_MAP.csv) az aktuális importelemeket a pontos TXT fájlokhoz rendeli. Mappaváltás miatt nem kell Elementet újraimportálni. A legújabb kérés szerinti kategóriaimportokat az elements/README ismerteti; mappaváltás önmagában nem hoz létre új elemet.
+A [teljes prompttérkép](../00_project/elements/index/FULL_PROJECT_PROMPT_MAP.csv) az aktuális importelemeket a pontos TXT fájlokhoz rendeli. Mappaváltás miatt nem kell Elementet újraimportálni. A legújabb kérés szerinti kategóriaimportokat az elements/README ismerteti; mappaváltás önmagában nem hoz létre új elemet.
 
 ## Képlapok formátuma
 

@@ -1,4 +1,4 @@
-CURRENT WORKFLOW — 2026-09-10: the creator requested a full clean Element reimport, including characters. Use the [complete restart guide](../../../00_project/elements/FULL_PROJECT_GUIDE.md) and its 105-entry list. Earlier incremental-import and retained-image instructions below are historical where they conflict. Four images are reported retained; previous @ bindings are not verified for the new import.
+CURRENT WORKFLOW — 2026-09-10: the creator requested a full clean Element reimport, including characters. Use the [complete restart guide](../../../00_project/elements/index/FULL_PROJECT_GUIDE.md) and its 105-entry list. Earlier incremental-import and retained-image instructions below are historical where they conflict. Four images are reported retained; previous @ bindings are not verified for the new import.
 
 # Memory reference pages — 4K 2×2
 
@@ -32,7 +32,7 @@ The existing [normal worlds](../real/README.md) already have 21 pages: three 4K 
 
 ## Inputs, imports and reality boundary
 
-The [new-only memory import](../../../00_project/elements/12_memory_reference_pages.md) contains 18 B/C companions plus the three T01 coverage pages, not the original memory Elements. It is prepared, not imported. Page B/C prompts use their source bank’s accepted Page A image for recurring geometry and identities, plus the existing character inputs. Missing actual mentions are marked explicitly; collect and bind them before rendering the affected page. No fictional @ identifier is usable in Higgsfield.
+The [new-only memory import](../../../00_project/elements/archive/batches/12_memory_reference_pages.md) contains 18 B/C companions plus the three T01 coverage pages, not the original memory Elements. It is prepared, not imported. Page B/C prompts use their source bank’s accepted Page A image for recurring geometry and identities, plus the existing character inputs. Missing actual mentions are marked explicitly; collect and bind them before rendering the affected page. No fictional @ identifier is usable in Higgsfield.
 
 Clinical HRW07 remains ordinary reality, no cards or morph effects. All three HRW07 pages are restricted to Block 07, its scripted tiny fragments and final explicit hard cut. No nurse, restraint or room reveal is added to Blocks 01–06. Remembered people remain card-free; these files do not remove current-city ratings.
 

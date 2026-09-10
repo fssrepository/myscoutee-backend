@@ -563,7 +563,7 @@
       ],
       "source_prompt_sha256": "5cdfb4fae9342940c46fc1581ed8ca6f6481867cdcc4013aa4537451325d4f48",
       "file": "02_library/worlds/real/W01_MAIN_WORLD_A.txt",
-      "file_sha256": "2dd165070d51f8d6df12d688f0f5a9b6fa4e5cd6506c7c19b32124d01495bc5a",
+      "file_sha256": "3717c2801f04cb5341bcad6059e9ff89859b0a08c8e5ba1683aeda4d46cdf814",
       "changes": "4K 2×2 Page A; original views 1–4 retained verbatim except cross-view labels. Other original views preserved on companion B/C pages."
     },
     {
@@ -587,7 +587,7 @@
       ],
       "source_prompt_sha256": "0e42331ed1ef827f8b328b1bbf1ea9e9deb06c2d06683d277006b4cbda428369",
       "file": "02_library/worlds/real/W02_MAIN_WORLD_A.txt",
-      "file_sha256": "9ff6eaa57d55ca0b1e5286bb0420b4ba3796f1e7c071996d8dad2b5944cee898",
+      "file_sha256": "dab4a73133f8ec633463974cc334c98ac7002a48fc77326b920fe53c5dd68e05",
       "changes": "4K 2×2 Page A; original views 1–4 retained verbatim except cross-view labels. Other original views preserved on companion B/C pages."
     },
     {
@@ -611,7 +611,7 @@
       ],
       "source_prompt_sha256": "619d7b50151da12db8c1f5c28ea43f590c0317767ad6b6c81dcaeb65bab4754d",
       "file": "02_library/worlds/real/W03_MAIN_WORLD_A.txt",
-      "file_sha256": "604484bb3c996bb331db0d0f6e0a1ad0a71050463d7b168537954bff606d4177",
+      "file_sha256": "c875ddc6f916b565c24e6a2917f190b6bf596a8f68d44549ece807ff113868a2",
       "changes": "4K 2×2 Page A; original views 1–4 retained verbatim except cross-view labels. Other original views preserved on companion B/C pages."
     },
     {
@@ -635,7 +635,7 @@
       ],
       "source_prompt_sha256": "d0ad91dc25cf2e4e702dbe0d94d5ad6149a30b804b5bbd4eebb66e1de5790756",
       "file": "02_library/worlds/real/W04_MAIN_WORLD_A.txt",
-      "file_sha256": "4d144d090636ac400ecf19ef0242fc4172c285156d0eda923be46a368ac29b5e",
+      "file_sha256": "9e030ac3a4b9639f67174f1e994b3462b6332bf6db7ec92ade557994b354972e",
       "changes": "4K 2×2 Page A; original views 1–4 retained verbatim except cross-view labels. Other original views preserved on companion B/C pages."
     },
     {
@@ -659,7 +659,7 @@
       ],
       "source_prompt_sha256": "77d7e2df07c49c63c7caa5fe39d6f1cdea60e2c321eb458971a8750d5225f09e",
       "file": "02_library/worlds/real/W05_MAIN_WORLD_A.txt",
-      "file_sha256": "995a5ba1a6a558a92b863c1d6f056405226a7cd00e1e8243b3c5341fb73d435a",
+      "file_sha256": "d7e0965904c1104b0c2ecbd0109e4a3086615647f08a77cd3c8be28fc0cfdc57",
       "changes": "4K 2×2 Page A; original views 1–4 retained verbatim except cross-view labels. Other original views preserved on companion B/C pages."
     },
     {
@@ -683,7 +683,7 @@
       ],
       "source_prompt_sha256": "19a64b93172e7531c5e50f91108f40d61f72300aee7c7a444208cc28a7fd2c2d",
       "file": "02_library/worlds/real/W06_MAIN_WORLD_A.txt",
-      "file_sha256": "139ef6d32ea86bff1c4332dc16482645fca8fec6299cad50b13a13f499db2c55",
+      "file_sha256": "d9f6c90b68673fbd45fe64a208048b0ff5d5486da7c4e4ce326a31210bc90cae",
       "changes": "4K 2×2 Page A; original views 1–4 retained verbatim except cross-view labels. Other original views preserved on companion B/C pages."
     },
     {
@@ -707,7 +707,7 @@
       ],
       "source_prompt_sha256": "a82a51ff228ecd6bd99c6018e59cd64495bc98fe46e349b64bbe805e0b18319f",
       "file": "02_library/worlds/real/W07_MAIN_WORLD_A.txt",
-      "file_sha256": "36cc645637c617ca71f6fb0876b80ab7682d9287eca24e387ccc437c7164b772",
+      "file_sha256": "cd88b43b34f9da6532de003a9eac26cda55dac5619e6905455cf08ed5ab6651f",
       "changes": "4K 2×2 Page A; original views 1–4 retained verbatim except cross-view labels. Other original views preserved on companion B/C pages."
     },
     {
@@ -983,7 +983,7 @@
       ],
       "source_prompt_sha256": "5cdfb4fae9342940c46fc1581ed8ca6f6481867cdcc4013aa4537451325d4f48",
       "file": "02_library/worlds/real/W01_MAIN_WORLD_B.txt",
-      "file_sha256": "7a0f49aed66c866f24fe2ef6a01050e8998f71069a917cf27604e9af0479a3a4",
+      "file_sha256": "36a48723bf54ec174c24753782cfb678c2bb6643382fae95dbf130ff7bf07981",
       "changes": "Derived 4K 2×2 Page B; original views [5, 6, 7, 8]; source provenance belongs to the original complete world prompt."
     },
     {
@@ -995,7 +995,7 @@
       ],
       "source_prompt_sha256": "5cdfb4fae9342940c46fc1581ed8ca6f6481867cdcc4013aa4537451325d4f48",
       "file": "02_library/worlds/real/W01_MAIN_WORLD_C.txt",
-      "file_sha256": "9c7f546aae398a85b9cf38d4342faf418b495bedf73b8f176d871a82d5baa8b3",
+      "file_sha256": "e0fb6cba4a0a21c9337c7c93f44ed1ddbe4f8c28c825f1a5e89cdfbd7c3c6b7c",
       "changes": "Derived 4K 2×2 Page C; original views [9, 1, 7, 8]; source provenance belongs to the original complete world prompt."
     },
     {
@@ -1007,7 +1007,7 @@
       ],
       "source_prompt_sha256": "0e42331ed1ef827f8b328b1bbf1ea9e9deb06c2d06683d277006b4cbda428369",
       "file": "02_library/worlds/real/W02_MAIN_WORLD_B.txt",
-      "file_sha256": "0a1107a60e060d9a1d0758758f72925ddd749298365d5c09dbede6f40c52836a",
+      "file_sha256": "deafc0bec329e081e07ac3bc9e263b7b6e8e6e01cd28bfea4f7749a2fae14e24",
       "changes": "Derived 4K 2×2 Page B; original views [5, 6, 7, 8]; source provenance belongs to the original complete world prompt."
     },
     {
@@ -1019,7 +1019,7 @@
       ],
       "source_prompt_sha256": "0e42331ed1ef827f8b328b1bbf1ea9e9deb06c2d06683d277006b4cbda428369",
       "file": "02_library/worlds/real/W02_MAIN_WORLD_C.txt",
-      "file_sha256": "53fa2bacbf606189609f29bd1ce7c66c5c24bfdc7c5492f2f30c1034e2fbe265",
+      "file_sha256": "9a02babc5220f4822b87e9057f420e87e468d4f853eebecaf83bac491ddddd51",
       "changes": "Derived 4K 2×2 Page C; original views [9, 1, 7, 8]; source provenance belongs to the original complete world prompt."
     },
     {
@@ -1031,7 +1031,7 @@
       ],
       "source_prompt_sha256": "619d7b50151da12db8c1f5c28ea43f590c0317767ad6b6c81dcaeb65bab4754d",
       "file": "02_library/worlds/real/W03_MAIN_WORLD_B.txt",
-      "file_sha256": "f05753cd8998257c6b61ffec3c80fbd3540b82f8a35b39e9d537199c0c3d76d9",
+      "file_sha256": "0e56e29e6994cafb10d5e4f97c42ad63febdf21789234bff84efb5215dffc59f",
       "changes": "Derived 4K 2×2 Page B; original views [5, 6, 7, 8]; source provenance belongs to the original complete world prompt."
     },
     {
@@ -1043,7 +1043,7 @@
       ],
       "source_prompt_sha256": "619d7b50151da12db8c1f5c28ea43f590c0317767ad6b6c81dcaeb65bab4754d",
       "file": "02_library/worlds/real/W03_MAIN_WORLD_C.txt",
-      "file_sha256": "a94f1e54bbc10fb8f2b43281cea267231c40d3ae3d0ffb1d4870c1915e29b651",
+      "file_sha256": "21a5b9f941cee350c570d43379311a950510ddbcda5973ce3e9a1ea04b6c9182",
       "changes": "Derived 4K 2×2 Page C; original views [9, 1, 7, 8]; source provenance belongs to the original complete world prompt."
     },
     {
@@ -1055,7 +1055,7 @@
       ],
       "source_prompt_sha256": "d0ad91dc25cf2e4e702dbe0d94d5ad6149a30b804b5bbd4eebb66e1de5790756",
       "file": "02_library/worlds/real/W04_MAIN_WORLD_B.txt",
-      "file_sha256": "2fe1cbdf51d784b51fc95577c3ef9735b5c32cb38004008dc4e2dedb84751d8c",
+      "file_sha256": "832c0583f401971faae7584d173f86360622d702b9be9b288b4ad680a147e755",
       "changes": "Derived 4K 2×2 Page B; original views [5, 6, 7, 8]; source provenance belongs to the original complete world prompt."
     },
     {
@@ -1067,7 +1067,7 @@
       ],
       "source_prompt_sha256": "d0ad91dc25cf2e4e702dbe0d94d5ad6149a30b804b5bbd4eebb66e1de5790756",
       "file": "02_library/worlds/real/W04_MAIN_WORLD_C.txt",
-      "file_sha256": "6180d331bc48eccdb8289e9cd964087f7166661df4c6c00cca2fac791692bc21",
+      "file_sha256": "5abcd18ad8375007429f0293ea964cb3c2e86d2c0a86bbb2c25d17676749fc5d",
       "changes": "Derived 4K 2×2 Page C; original views [9, 1, 7, 8]; source provenance belongs to the original complete world prompt."
     },
     {
@@ -1079,7 +1079,7 @@
       ],
       "source_prompt_sha256": "77d7e2df07c49c63c7caa5fe39d6f1cdea60e2c321eb458971a8750d5225f09e",
       "file": "02_library/worlds/real/W05_MAIN_WORLD_B.txt",
-      "file_sha256": "ed3ffa2301dabf2723da433fad90c74e3384f06bbe245e715af8bd22d727a03e",
+      "file_sha256": "411a8bc119a8f29e301e925e567b767229662b4d1cf462830a15bcc1deee792d",
       "changes": "Derived 4K 2×2 Page B; original views [5, 6, 7, 8]; source provenance belongs to the original complete world prompt."
     },
     {
@@ -1091,7 +1091,7 @@
       ],
       "source_prompt_sha256": "77d7e2df07c49c63c7caa5fe39d6f1cdea60e2c321eb458971a8750d5225f09e",
       "file": "02_library/worlds/real/W05_MAIN_WORLD_C.txt",
-      "file_sha256": "e3db207b3adc6673773b9b57b3170f2ab041bbee340be2efb82ffc9804d426f2",
+      "file_sha256": "8afa67423ac908dee06420cc26155e135ce82a20224c322300477bdd6893f573",
       "changes": "Derived 4K 2×2 Page C; original views [9, 1, 7, 8]; source provenance belongs to the original complete world prompt."
     },
     {
@@ -1103,7 +1103,7 @@
       ],
       "source_prompt_sha256": "19a64b93172e7531c5e50f91108f40d61f72300aee7c7a444208cc28a7fd2c2d",
       "file": "02_library/worlds/real/W06_MAIN_WORLD_B.txt",
-      "file_sha256": "1faa2a7b9da8637d8dfdd274f807f6ecdd176fa7dee021beb973144fe94ed786",
+      "file_sha256": "1bb4fcd1035cad466837cd6d49c0a387648e26f58c41b5f30d28dfc4be947f1d",
       "changes": "Derived 4K 2×2 Page B; original views [5, 6, 7, 8]; source provenance belongs to the original complete world prompt."
     },
     {
@@ -1115,7 +1115,7 @@
       ],
       "source_prompt_sha256": "19a64b93172e7531c5e50f91108f40d61f72300aee7c7a444208cc28a7fd2c2d",
       "file": "02_library/worlds/real/W06_MAIN_WORLD_C.txt",
-      "file_sha256": "fffcdbeace13daf7e69e1015c26ec65ff51b0a4e2f730f9926b5b0fd1765085c",
+      "file_sha256": "9085f6c7477b0b95b45e237df3c8608779fdaea7a3d08409c35bf7cae720071e",
       "changes": "Derived 4K 2×2 Page C; original views [9, 1, 7, 8]; source provenance belongs to the original complete world prompt."
     },
     {
@@ -1127,7 +1127,7 @@
       ],
       "source_prompt_sha256": "a82a51ff228ecd6bd99c6018e59cd64495bc98fe46e349b64bbe805e0b18319f",
       "file": "02_library/worlds/real/W07_MAIN_WORLD_B.txt",
-      "file_sha256": "878a9e9ec2e7eeef47a7003a2d771298c04de8d05367daaa34d20392f30f797c",
+      "file_sha256": "fa513c526f3472b88fd88becadd276430a3aa6c11099a0a24f2b52d61cf3ddff",
       "changes": "Derived 4K 2×2 Page B; original views [5, 6, 7, 8]; source provenance belongs to the original complete world prompt."
     },
     {
@@ -1139,7 +1139,7 @@
       ],
       "source_prompt_sha256": "a82a51ff228ecd6bd99c6018e59cd64495bc98fe46e349b64bbe805e0b18319f",
       "file": "02_library/worlds/real/W07_MAIN_WORLD_C.txt",
-      "file_sha256": "ac5b3cb80caf258f031c982fad31be42e58df370e1354ec173879310fb2904fe",
+      "file_sha256": "ee54334fc3d48a842390a7d744fae056de2f10cd45e1246d9655ff081b476b0c",
       "changes": "Derived 4K 2×2 Page C; original views [9, 1, 7, 8]; source provenance belongs to the original complete world prompt."
     },
     {
@@ -5520,7 +5520,7 @@
   },
   "supplemental_element_imports": [
     {
-      "file": "00_project/elements/00_pilot_test_assets.md",
+      "file": "00_project/elements/archive/pilot/00_pilot_test_assets.md",
       "canonical_keys": [
         "T01_IMAGE"
       ],
@@ -5532,7 +5532,7 @@
       "actual_mention": "@loc_MYS_pilot-soho-restaurant-memory_s1_v1"
     },
     {
-      "file": "00_project/elements/08_reference_assets.md",
+      "file": "00_project/elements/archive/batches/08_reference_assets.md",
       "canonical_keys": [
         "R001",
         "R002",
@@ -5883,7 +5883,7 @@
       "import_evidence": "Creator reports: ez importalva lett. No actual new IDs or rendered images verified."
     },
     {
-      "file": "00_project/elements/09_london_landmarks.md",
+      "file": "00_project/elements/archive/batches/09_london_landmarks.md",
       "canonical_keys": [
         "R054",
         "R055",
@@ -5925,7 +5925,7 @@
       }
     },
     {
-      "file": "00_project/elements/10_world_reference_pages.md",
+      "file": "00_project/elements/archive/batches/10_world_reference_pages.md",
       "canonical_keys": [
         "W01_B",
         "W01_C",
@@ -5949,7 +5949,7 @@
       "note": "Companion B/C containers only. Existing W01–W07 remain their own Elements; accepted old images are not replaced by this local edit."
     },
     {
-      "file": "00_project/elements/11_morph_reference_sheets.md",
+      "file": "00_project/elements/archive/batches/11_morph_reference_sheets.md",
       "canonical_keys": [
         "MR001",
         "MR002",
@@ -5979,7 +5979,7 @@
       "note": "New containers only; render prompts separate; no existing Element reimport or merge."
     },
     {
-      "file": "00_project/elements/12_memory_reference_pages.md",
+      "file": "00_project/elements/archive/batches/12_memory_reference_pages.md",
       "canonical_keys": [
         "MW01_B",
         "MW01_C",
@@ -6010,7 +6010,7 @@
       "note": "New containers only; render prompts separate; no existing Element reimport or merge."
     },
     {
-      "file": "00_project/elements/13_ADDITIONAL_OBJECT_REFERENCES.md",
+      "file": "00_project/elements/archive/batches/13_ADDITIONAL_OBJECT_REFERENCES.md",
       "canonical_keys": [
         "R003",
         "R004",
@@ -6603,7 +6603,7 @@
             3,
             4
           ],
-          "sha256": "f9b9a3c716b3ffd09ac670fbc1a78ee9a423522cd69167c66c990b2e7d9488ec",
+          "sha256": "3717c2801f04cb5341bcad6059e9ff89859b0a08c8e5ba1683aeda4d46cdf814",
           "status": "PREPARED_4K_2X2_NOT_RENDERED"
         },
         {
@@ -6616,7 +6616,7 @@
             7,
             8
           ],
-          "sha256": "2303676c234d28ddf4e7a5baa90c7cfc203470b6523465363d2c1ddd7e533cb5",
+          "sha256": "36a48723bf54ec174c24753782cfb678c2bb6643382fae95dbf130ff7bf07981",
           "status": "PREPARED_4K_2X2_NOT_RENDERED"
         },
         {
@@ -6629,7 +6629,7 @@
             7,
             8
           ],
-          "sha256": "788b515c6fc57f6157d1b35a2ed108a37b17c2b13a2ec5377f3b9c131cf8c0ab",
+          "sha256": "e0fb6cba4a0a21c9337c7c93f44ed1ddbe4f8c28c825f1a5e89cdfbd7c3c6b7c",
           "status": "PREPARED_4K_2X2_NOT_RENDERED"
         }
       ],
@@ -6644,7 +6644,7 @@
             3,
             4
           ],
-          "sha256": "8213d65e0e5c281e077b064e0a800c87a5070f8592cf593a175ead2af6bcd012",
+          "sha256": "dab4a73133f8ec633463974cc334c98ac7002a48fc77326b920fe53c5dd68e05",
           "status": "PREPARED_4K_2X2_NOT_RENDERED"
         },
         {
@@ -6657,7 +6657,7 @@
             7,
             8
           ],
-          "sha256": "248bd9d4c147a01dbd285a5cc7d233e9cb98ff8f7da89a4c202c91e91dfd7f27",
+          "sha256": "deafc0bec329e081e07ac3bc9e263b7b6e8e6e01cd28bfea4f7749a2fae14e24",
           "status": "PREPARED_4K_2X2_NOT_RENDERED"
         },
         {
@@ -6670,7 +6670,7 @@
             7,
             8
           ],
-          "sha256": "edc9ccb835583d937ec8bfd70f72235328cc334425c736a4987d85bfdbb97b77",
+          "sha256": "9a02babc5220f4822b87e9057f420e87e468d4f853eebecaf83bac491ddddd51",
           "status": "PREPARED_4K_2X2_NOT_RENDERED"
         }
       ],
@@ -6685,7 +6685,7 @@
             3,
             4
           ],
-          "sha256": "4a6e34ac408c1b3aabe397c5a0d74ef45bf2412f73d9a188d0a8756684afa90c",
+          "sha256": "c875ddc6f916b565c24e6a2917f190b6bf596a8f68d44549ece807ff113868a2",
           "status": "PREPARED_4K_2X2_NOT_RENDERED"
         },
         {
@@ -6698,7 +6698,7 @@
             7,
             8
           ],
-          "sha256": "80046d0aa06851c6b72eee714fa2e2851e1e8f05130882b3a837b4687c32f34d",
+          "sha256": "0e56e29e6994cafb10d5e4f97c42ad63febdf21789234bff84efb5215dffc59f",
           "status": "PREPARED_4K_2X2_NOT_RENDERED"
         },
         {
@@ -6711,7 +6711,7 @@
             7,
             8
           ],
-          "sha256": "63cc5c5d4cfdc226cdd5e9f0aee0f76a88e743a11f0f8d26446a9554aaa519b1",
+          "sha256": "21a5b9f941cee350c570d43379311a950510ddbcda5973ce3e9a1ea04b6c9182",
           "status": "PREPARED_4K_2X2_NOT_RENDERED"
         }
       ],
@@ -6726,7 +6726,7 @@
             3,
             4
           ],
-          "sha256": "2d6a8173127144ab57358e172a205e576cd80fc99bc2314fde6e3fdaf643b694",
+          "sha256": "9e030ac3a4b9639f67174f1e994b3462b6332bf6db7ec92ade557994b354972e",
           "status": "PREPARED_4K_2X2_NOT_RENDERED"
         },
         {
@@ -6739,7 +6739,7 @@
             7,
             8
           ],
-          "sha256": "2820b6ded3a83d411a62ade0819e057b9c1d06cc784a90fb3961adbf50e00ecd",
+          "sha256": "832c0583f401971faae7584d173f86360622d702b9be9b288b4ad680a147e755",
           "status": "PREPARED_4K_2X2_NOT_RENDERED"
         },
         {
@@ -6752,7 +6752,7 @@
             7,
             8
           ],
-          "sha256": "936328e9670748ddf7f30331f37edcc4003fa7e0c44caa380e7a35eed7505663",
+          "sha256": "5abcd18ad8375007429f0293ea964cb3c2e86d2c0a86bbb2c25d17676749fc5d",
           "status": "PREPARED_4K_2X2_NOT_RENDERED"
         }
       ],
@@ -6767,7 +6767,7 @@
             3,
             4
           ],
-          "sha256": "65dd1013b932dca7703b605976eba56a54a39f3953870fd2724de1ac7c6fc3f1",
+          "sha256": "d7e0965904c1104b0c2ecbd0109e4a3086615647f08a77cd3c8be28fc0cfdc57",
           "status": "PREPARED_4K_2X2_NOT_RENDERED"
         },
         {
@@ -6780,7 +6780,7 @@
             7,
             8
           ],
-          "sha256": "e94aefda73c9501461f4c27435d178cfb3cae22b806e881a0b0f1c25208e3dbd",
+          "sha256": "411a8bc119a8f29e301e925e567b767229662b4d1cf462830a15bcc1deee792d",
           "status": "PREPARED_4K_2X2_NOT_RENDERED"
         },
         {
@@ -6793,7 +6793,7 @@
             7,
             8
           ],
-          "sha256": "28918f7f4ab17e2ff865140a73e52834ad839ac06c1e3727a430228aaadbd3f5",
+          "sha256": "8afa67423ac908dee06420cc26155e135ce82a20224c322300477bdd6893f573",
           "status": "PREPARED_4K_2X2_NOT_RENDERED"
         }
       ],
@@ -6808,7 +6808,7 @@
             3,
             4
           ],
-          "sha256": "e6bef723d090eb7e052c2ca7c649aa0ed15ecdf2e8359a564f35a665089b171b",
+          "sha256": "d9f6c90b68673fbd45fe64a208048b0ff5d5486da7c4e4ce326a31210bc90cae",
           "status": "PREPARED_4K_2X2_NOT_RENDERED"
         },
         {
@@ -6821,7 +6821,7 @@
             7,
             8
           ],
-          "sha256": "b2975154ac4d401b1e5c92e28b435c56d13c849aecbe5b7404cfdcf97239e314",
+          "sha256": "1bb4fcd1035cad466837cd6d49c0a387648e26f58c41b5f30d28dfc4be947f1d",
           "status": "PREPARED_4K_2X2_NOT_RENDERED"
         },
         {
@@ -6834,7 +6834,7 @@
             7,
             8
           ],
-          "sha256": "18d0367fae2e0b0f57eb13fd20a189bc7c7bfb59e435a3c3b55327090ad67d3c",
+          "sha256": "9085f6c7477b0b95b45e237df3c8608779fdaea7a3d08409c35bf7cae720071e",
           "status": "PREPARED_4K_2X2_NOT_RENDERED"
         }
       ],
@@ -6849,7 +6849,7 @@
             3,
             4
           ],
-          "sha256": "21e4e2a0ea8009474d542857e24d6f8c33cfc68a1a72c06d0667f31164f7c43e",
+          "sha256": "cd88b43b34f9da6532de003a9eac26cda55dac5619e6905455cf08ed5ab6651f",
           "status": "PREPARED_4K_2X2_NOT_RENDERED"
         },
         {
@@ -6862,7 +6862,7 @@
             7,
             8
           ],
-          "sha256": "61c2b865fe8f592d6bc53d0cc16716a00e12c7cb147ef02a0736e391fdbe0fb5",
+          "sha256": "fa513c526f3472b88fd88becadd276430a3aa6c11099a0a24f2b52d61cf3ddff",
           "status": "PREPARED_4K_2X2_NOT_RENDERED"
         },
         {
@@ -6875,7 +6875,7 @@
             7,
             8
           ],
-          "sha256": "18fe5981b8e64c8f7d09bafcdb8f6d25b302c439cff77fea9cf6fb3219419800",
+          "sha256": "ee54334fc3d48a842390a7d744fae056de2f10cd45e1246d9655ff081b476b0c",
           "status": "PREPARED_4K_2X2_NOT_RENDERED"
         }
       ]
@@ -6916,7 +6916,7 @@
         "R008",
         "R009"
       ],
-      "import_file": "00_project/elements/11_morph_reference_sheets.md",
+      "import_file": "00_project/elements/archive/batches/11_morph_reference_sheets.md",
       "import_status": "PREPARED_NOT_IMPORTED",
       "required_pilot_subjects_unchanged": true,
       "creative_revision": "2026-09-10: all 22 prompts now use per-object extreme intermediate configurations; no interpolation percentages, no required conventional engineering support for the unoccupied morph. Solidity and part trajectories remain explicit.",
@@ -6938,7 +6938,7 @@
               4
             ],
             "status": "PREPARED_NOT_RENDERED",
-            "sha256": "ff9c4266d72e0f02b9ebfff91cd6bada9c556238c48b51a23a7a72eae3d0a899"
+            "sha256": "bc0bb85ff0cfb2cd9dd1459eee5872e9ea82031f7d3299ee4df229f291f6aff8"
           },
           "B": {
             "key": "MW01_B",
@@ -6950,7 +6950,7 @@
               8
             ],
             "status": "PREPARED_NOT_RENDERED",
-            "sha256": "ac921680f587b296cbe4ea6c0e27f6a1f2962aee1e9e47d1b5cc15c69597dd11"
+            "sha256": "c9ab9610e24e80e74893feee1987fc34ba1eda5a6286bc73be9a103d49679234"
           },
           "C": {
             "key": "MW01_C",
@@ -6962,7 +6962,7 @@
               8
             ],
             "status": "PREPARED_NOT_RENDERED",
-            "sha256": "9573cd3b83d6d0d3d1a8427bc82a11bfe5264b9481c49432b21d85c238ad0cb2"
+            "sha256": "0b1afac9dbcbdb33057d1d4bd1ebc359d50e0f0178d755aa91181daf554d9e39"
           }
         },
         "original_views": 9,
@@ -6981,7 +6981,7 @@
               4
             ],
             "status": "PREPARED_NOT_RENDERED",
-            "sha256": "c8677f038f52925fd275504741d48933f11b381474f3dc01fc0224da412277a3"
+            "sha256": "f15417b557b7f2bc2cf33d25254ea82fbf378eb3d67030ac9da453aec7ffeac0"
           },
           "B": {
             "key": "MW02_B",
@@ -6993,7 +6993,7 @@
               8
             ],
             "status": "PREPARED_NOT_RENDERED",
-            "sha256": "705a68148daa21ccf0c2e2ed88e954a124f62df218987c813a6b506a0dd59226"
+            "sha256": "5db35368e90aa987e711d863fbace5cdae48f93dd686af712ab6ef1668d4b1b7"
           },
           "C": {
             "key": "MW02_C",
@@ -7005,7 +7005,7 @@
               8
             ],
             "status": "PREPARED_NOT_RENDERED",
-            "sha256": "202e63c5fdef4c5f8741744e1eb216e6ed9ce9d19ca3c61749096419a13961c0"
+            "sha256": "503459fba8d502c3de27322f1e9ad1995638a946a0e808167c49d344ae6e2bed"
           }
         },
         "original_views": 9,
@@ -7024,7 +7024,7 @@
               4
             ],
             "status": "PREPARED_NOT_RENDERED",
-            "sha256": "c42ac703b43ea7988c49acb8b508fa21668240138ed2774bd4a78218f4df7afa"
+            "sha256": "e0bbe6027fd2658a6a8822a528f86a52d0279dbe632051ebf79ab6baf32c4af8"
           },
           "B": {
             "key": "MW03_B",
@@ -7036,7 +7036,7 @@
               8
             ],
             "status": "PREPARED_NOT_RENDERED",
-            "sha256": "b2bb2485aa92a491fecf2a7ee139af52e340f6a1533013127fba16f6fdeadba8"
+            "sha256": "ee24d1394d6cd4c58d5a2dbcfe95cdcc35dbcc6ff2ea6cff19a3b8e430eee28e"
           },
           "C": {
             "key": "MW03_C",
@@ -7048,7 +7048,7 @@
               8
             ],
             "status": "PREPARED_NOT_RENDERED",
-            "sha256": "a11efd2345f7f5cacd9898d2dd85417bf5fd84d45a9490d757875e41eda43f37"
+            "sha256": "0305de99c72b479190eddb1a2fac4a1f9df8b35a00449a6ebc5c8172b7817b71"
           }
         },
         "original_views": 9,
@@ -7067,7 +7067,7 @@
               4
             ],
             "status": "PREPARED_NOT_RENDERED",
-            "sha256": "ae7ee5402b527fdb9fa79256b3b5b27b2a39a6464be49cc162fcdf7b37659c2e"
+            "sha256": "bd7fb1c7487705361d31bce325692a1e6e521278650e5f8acac7e5980a9c8425"
           },
           "B": {
             "key": "MW04_B",
@@ -7079,7 +7079,7 @@
               8
             ],
             "status": "PREPARED_NOT_RENDERED",
-            "sha256": "e24da36ba05f0a22688e38018fd7f7fba08ff3da6675e390adb45344954597b3"
+            "sha256": "c7c55eeed97158b18710218d91df7c37fd8da06754d3761a0aaaf3722228a688"
           },
           "C": {
             "key": "MW04_C",
@@ -7091,7 +7091,7 @@
               8
             ],
             "status": "PREPARED_NOT_RENDERED",
-            "sha256": "a3d999ae75d16c7222bcf3e00e43e8b76074f99fa194001920111c891ee7523a"
+            "sha256": "71c2ca2e9eaa5e53da4c17a34f7ebaacb0d58d944aec40ccc076e63a295447d1"
           }
         },
         "original_views": 9,
@@ -7110,7 +7110,7 @@
               4
             ],
             "status": "PREPARED_NOT_RENDERED",
-            "sha256": "3aa2ef563a441650d08ad507b1703ca6a1507ebb2001c7d3ec6bec2e4ba5f001"
+            "sha256": "483f39d52f5297b23a35924758c2cf9ccd5befda33c5259438306f8a36e221c5"
           },
           "B": {
             "key": "MW05_B",
@@ -7122,7 +7122,7 @@
               8
             ],
             "status": "PREPARED_NOT_RENDERED",
-            "sha256": "e3cbd56a66b8134b86c1b7112d1cf7760bb3f69e06087baa4c6d0ef883164039"
+            "sha256": "0dc6d879ff73e1fe3fe0febf3ac81d67d530b0b4fdba01e1b57bfa19a784b144"
           },
           "C": {
             "key": "MW05_C",
@@ -7134,7 +7134,7 @@
               8
             ],
             "status": "PREPARED_NOT_RENDERED",
-            "sha256": "00690ef0ace3078714cc35cb77dec464268f13b4f9f1b2f7f9202a9da32ad74a"
+            "sha256": "7252271d379e7b37a9003f40ac7a3935fe92988b5b5cab5afe835dc26b057571"
           }
         },
         "original_views": 9,
@@ -7153,7 +7153,7 @@
               4
             ],
             "status": "PREPARED_NOT_RENDERED",
-            "sha256": "39f3757fd3d88ea67e73de99a875cbaf812e5fce953692d0bc9941d2556fcfdf"
+            "sha256": "0efd04008af928c0ce313bd8c1f72785878148c017c9c14e148191d090391fb9"
           },
           "B": {
             "key": "MW06_B",
@@ -7165,7 +7165,7 @@
               8
             ],
             "status": "PREPARED_NOT_RENDERED",
-            "sha256": "10068076aee57193beadf9301b847810a0cf7b343eb9a5fb66c8d7ef1fb6a8e8"
+            "sha256": "6c6eea89d1d51071e09d48f22d746338384ae893f5c5344179903b5f9086647b"
           },
           "C": {
             "key": "MW06_C",
@@ -7177,7 +7177,7 @@
               8
             ],
             "status": "PREPARED_NOT_RENDERED",
-            "sha256": "d2acf81dd680a131bb83c0684eb88f1e6fea73d47d5e2d11a2613c7514788bc0"
+            "sha256": "3e36f2991662725c580ddc40c06fb886e3610ed03521b263be22ccee5edd5ac5"
           }
         },
         "original_views": 9,
@@ -7196,7 +7196,7 @@
               4
             ],
             "status": "PREPARED_NOT_RENDERED",
-            "sha256": "07dd5cc4a2f290c030770d19d830c9b0a8747bbf9577fbcdaa0f80d1b76d7d3b"
+            "sha256": "560095b5daa1378bbbe9a1486a377c428df8182d297d23b1f2fcd9455c1239e9"
           },
           "B": {
             "key": "MWP01_B",
@@ -7208,7 +7208,7 @@
               8
             ],
             "status": "PREPARED_NOT_RENDERED",
-            "sha256": "6d5f0d089935854ebe4ff44b4d246278829d4bb683183f2413379ad32f46a677"
+            "sha256": "40feebe5e1f17ec0bde52d236c146f005e9b0d59e4db97d948d617d72110f032"
           },
           "C": {
             "key": "MWP01_C",
@@ -7220,7 +7220,7 @@
               8
             ],
             "status": "PREPARED_NOT_RENDERED",
-            "sha256": "be6b7c7a6e595cc60c53a861cd93d8d0639eadf3008731f9ebed1d79cc397953"
+            "sha256": "1772dc5dfb073118f1e51c49ae45f7d52228db0bf947d9a35f92ee3218781cd3"
           }
         },
         "original_views": 9,
@@ -7239,7 +7239,7 @@
               4
             ],
             "status": "PREPARED_NOT_RENDERED",
-            "sha256": "9dea081d15c9e28d7fea490e818e68bfe01782332b67a8df7584474b77619ede"
+            "sha256": "32447c614afcabfc24629e916e983ef5e17560ea0afc9099b6644f424f6df674"
           },
           "B": {
             "key": "MWP02_B",
@@ -7251,7 +7251,7 @@
               8
             ],
             "status": "PREPARED_NOT_RENDERED",
-            "sha256": "a1f5e9b132db24fcdc9cc32407922e0e5846799da1e2ba624d579975bce4251f"
+            "sha256": "c445acb1d8b17f9de11d89518facda02c13887ad4d59fd8be4be8dba737229f5"
           },
           "C": {
             "key": "MWP02_C",
@@ -7263,7 +7263,7 @@
               8
             ],
             "status": "PREPARED_NOT_RENDERED",
-            "sha256": "461137b2675c1346a4a1bc2559ff526b0d63bd148323aba9e50b9484c46afcba"
+            "sha256": "d59685b96e220d615ab637534da60d8d7c5abe065e395a4269737884eb4f68de"
           }
         },
         "original_views": 9,
@@ -7282,7 +7282,7 @@
               4
             ],
             "status": "PREPARED_NOT_RENDERED",
-            "sha256": "239c98354600142dfb15f74dfd36b9e70a5691b8906b8df443adaef9751efe68"
+            "sha256": "f320b8e61f43790f6ed7ca842aa8c62c774d30943abe87281b48aa00fd077200"
           },
           "B": {
             "key": "HRW07_B",
@@ -7294,7 +7294,7 @@
               8
             ],
             "status": "PREPARED_NOT_RENDERED",
-            "sha256": "75c69432278b21f119777873fe4eaa1b2957b4fa3dee6fab96c168da19967883"
+            "sha256": "c897f157921794e23675e15426025b81d6bb4d0d0e08801c87e076ec378572b5"
           },
           "C": {
             "key": "HRW07_C",
@@ -7306,7 +7306,7 @@
               8
             ],
             "status": "PREPARED_NOT_RENDERED",
-            "sha256": "febdd4234092e740063c57bb8346eaf9aed822445c9d6f3abb8f00f25a6afe2b"
+            "sha256": "579cf661c473eb13e6cb16f2999c7c55e9af35fa3974cbf03634e1f17636c8e6"
           }
         },
         "original_views": 9,
@@ -7357,7 +7357,7 @@
         "legacy_image_unchanged": true
       }
     },
-    "new_only_import": "00_project/elements/12_memory_reference_pages.md",
+    "new_only_import": "00_project/elements/archive/batches/12_memory_reference_pages.md",
     "import_status": "PREPARED_NOT_IMPORTED",
     "new_keys": [
       "MW01_B",
@@ -7391,8 +7391,8 @@
     "supersedes_incremental_import_workflow": true,
     "file": "04_tracking/archive/element_imports/FULL_PROJECT_IMPORT_105_LEGACY.md",
     "file_sha256": "0b5a545686c252e04c98e8cfbb703b59b3286848b0f71ca0aaa5ccb769aeb551",
-    "prompt_map": "00_project/elements/FULL_PROJECT_PROMPT_MAP.csv",
-    "guide": "00_project/elements/FULL_PROJECT_GUIDE.md",
+    "prompt_map": "00_project/elements/index/FULL_PROJECT_PROMPT_MAP.csv",
+    "guide": "00_project/elements/index/FULL_PROJECT_GUIDE.md",
     "expected_elements": 105,
     "counts": {
       "characters": 31,
@@ -8477,7 +8477,7 @@
     "baseline_status": "IMPORT_REPORTED_BY_CREATOR",
     "baseline_count": 105,
     "next_import": [
-      "00_project/elements/TYPOGRAPHY_IMPORT.md"
+      "00_project/elements/categories/TYPOGRAPHY_IMPORT.md"
     ],
     "next_import_count": 7,
     "combined_count": 164,
@@ -8496,10 +8496,10 @@
     "character_morph_count": 6,
     "next_import_status": "TYPOGRAPHY_ONLY_ADDITION_PREPARED_UI_IMPORT_NOT_CONFIRMED",
     "alternative_category_imports": [
-      "00_project/elements/CHARACTERS_IMPORT.md",
-      "00_project/elements/WORLDS_IMPORT.md",
-      "00_project/elements/MORPHS_IMPORT.md",
-      "00_project/elements/TYPOGRAPHY_IMPORT.md"
+      "00_project/elements/categories/CHARACTERS_IMPORT.md",
+      "00_project/elements/categories/WORLDS_IMPORT.md",
+      "00_project/elements/categories/MORPHS_IMPORT.md",
+      "00_project/elements/categories/TYPOGRAPHY_IMPORT.md"
     ],
     "typography_count": 7
   },
@@ -8534,7 +8534,7 @@
     "total_unique_elements": 164,
     "files": [
       {
-        "file": "00_project/elements/CHARACTERS_IMPORT.md",
+        "file": "00_project/elements/categories/CHARACTERS_IMPORT.md",
         "canonical_keys": [
           "C01",
           "C02",
@@ -8572,7 +8572,7 @@
         "file_sha256": "a3c14b5e7b5cbafc948dc33e81ef8e2007a4905299127102310beed6e428468f"
       },
       {
-        "file": "00_project/elements/WORLDS_IMPORT.md",
+        "file": "00_project/elements/categories/WORLDS_IMPORT.md",
         "canonical_keys": [
           "W01",
           "W01_B",
@@ -8630,7 +8630,7 @@
         "file_sha256": "52dc63e3cf9625380a479a312ff2865f78e1f06d580b7836322435bf059657a6"
       },
       {
-        "file": "00_project/elements/MORPHS_IMPORT.md",
+        "file": "00_project/elements/categories/MORPHS_IMPORT.md",
         "canonical_keys": [
           "MR001",
           "MR002",
@@ -8712,7 +8712,7 @@
         "file_sha256": "cb87c59e00d7916ab64adc5b4c90e263719b89e08ba62b30e7c9febdf6d06b3d"
       },
       {
-        "file": "00_project/elements/TYPOGRAPHY_IMPORT.md",
+        "file": "00_project/elements/categories/TYPOGRAPHY_IMPORT.md",
         "canonical_keys": [
           "TY001",
           "TY002",
@@ -8738,7 +8738,7 @@
       "render_instructions_in_import_files": false,
       "legacy_combined_import_archived": "04_tracking/archive/element_imports/FULL_PROJECT_IMPORT_105_LEGACY.md"
     },
-    "combined_alternative": "00_project/elements/FULL_PROJECT_IMPORT.md"
+    "combined_alternative": "00_project/elements/full/FULL_PROJECT_IMPORT.md"
   },
   "morph_material_audit": {
     "date": "2026-09-10",
@@ -8767,7 +8767,7 @@
   },
   "full_project_current_import": {
     "date": "2026-09-10",
-    "file": "00_project/elements/FULL_PROJECT_IMPORT.md",
+    "file": "00_project/elements/full/FULL_PROJECT_IMPORT.md",
     "file_sha256": "2f58e827e448e7d898de47b615dd37d23d0c0524fc24fe8dfcf5f388fe21abdd",
     "count": 164,
     "canonical_keys": [
@@ -8938,10 +8938,10 @@
     ],
     "status": "READY_FOR_CREATOR_REIMPORT_NOT_YET_CONFIRMED",
     "equivalent_category_files": [
-      "00_project/elements/CHARACTERS_IMPORT.md",
-      "00_project/elements/WORLDS_IMPORT.md",
-      "00_project/elements/MORPHS_IMPORT.md",
-      "00_project/elements/TYPOGRAPHY_IMPORT.md"
+      "00_project/elements/categories/CHARACTERS_IMPORT.md",
+      "00_project/elements/categories/WORLDS_IMPORT.md",
+      "00_project/elements/categories/MORPHS_IMPORT.md",
+      "00_project/elements/categories/TYPOGRAPHY_IMPORT.md"
     ],
     "mode": "Full combined file OR the four category files. If the prior 157-element library is already imported, import only TYPOGRAPHY_IMPORT.md for the seven new elements."
   },
@@ -8955,7 +8955,7 @@
     "colour": "pale red through amber to pale green, interpolated by actual decimal value",
     "role_policy": "Current city has cards; studio identities, remembered and clinical people do not. Protagonist value/colour hidden until Block 06.",
     "new_prop": "MR021",
-    "optional_delta": "00_project/elements/MR021_RATING_CARD_ONLY_IMPORT.md",
+    "optional_delta": "00_project/elements/additions/MR021_RATING_CARD_ONLY_IMPORT.md",
     "validation": {
       "image_prompts_with_explicit_umbrella_ban": 164,
       "current_city_world_pages_with_rendered_decimal_cards": 21,
@@ -8983,7 +8983,7 @@
     "date": "2026-09-10",
     "prompt_directory": "02_library/typography",
     "count": 7,
-    "import_file": "00_project/elements/TYPOGRAPHY_IMPORT.md",
+    "import_file": "00_project/elements/categories/TYPOGRAPHY_IMPORT.md",
     "combined_import_count": 164,
     "canonical_keys": [
       "TY001",
@@ -8998,5 +8998,14 @@
     "generation_performed": false,
     "automatic_video_binding": false,
     "note": "Character/world/morph references keep their existing roles. Typography is attached only to matching visible text; no new video scenes or title animation."
+  },
+  "element_directory_layout": {
+    "full": "00_project/elements/full",
+    "categories": "00_project/elements/categories",
+    "additions": "00_project/elements/additions",
+    "index": "00_project/elements/index",
+    "archive": "00_project/elements/archive",
+    "current_addition": "00_project/elements/categories/TYPOGRAPHY_IMPORT.md",
+    "active_element_count": 164
   }
 }

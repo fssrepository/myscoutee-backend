@@ -36,7 +36,7 @@ The production list includes the outstanding reference binding, clean narration,
 | `00_project/elements/*.md`, excluding README | **Import Elements** only, and only for missing definitions |
 | Character, world, memory and `storyboard.txt` | Image prompt field; one file per request |
 | `03_film/NN/narration.txt` | Full-film TTS text field; spoken words only |
-| `00_project/elements/00_pilot_test_assets.md` | Existing restaurant Element metadata; no generation |
+| `00_project/elements/archive/pilot/00_pilot_test_assets.md` | Existing restaurant Element metadata; no generation |
 | `video.txt`, `test_video_8s.txt`, `test_extend_8s.txt` | Video prompt, once its reference setup notice has cleared |
 | README, other guides, CSV, JSON | Operator documentation; never paste into a generation field |
 

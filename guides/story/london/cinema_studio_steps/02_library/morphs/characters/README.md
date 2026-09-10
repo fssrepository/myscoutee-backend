@@ -15,4 +15,4 @@ A párosítások konkrét vizuális emlékkapcsolatok a filmhez; külön szerepl
 
 A bemeneti karakterlapok továbbra is **1×3-as azonosítólapok**, a kész karaktermorphok **2×2-esek**. A karakterképeket Higgsfieldben kell a promptban megnevezett két C-kulcshoz társítani. Az `UNBOUND_Cxx` hiányzó valódi Element-azonosítót jelez; az érintett promptot csak annak bekötése után lehet beadni. Régi @azonosító az új import után újra ellenőrzendő.
 
-A hat morph saját kimeneti definíciója a [MORPHS_IMPORT.md](../../../00_project/elements/MORPHS_IMPORT.md) része. Nincs új, duplikált C-karakterdefiníció. A promptok elkészültek; képgenerálás nem történt.
+A hat morph saját kimeneti definíciója a [MORPHS_IMPORT.md](../../../00_project/elements/categories/MORPHS_IMPORT.md) része. Nincs új, duplikált C-karakterdefiníció. A promptok elkészültek; képgenerálás nem történt.

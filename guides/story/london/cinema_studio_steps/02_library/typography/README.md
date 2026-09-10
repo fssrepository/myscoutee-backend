@@ -2,7 +2,7 @@
 
 Külön, közvetlenül másolható Higgsfield-képprompt minden elemhez. Bemeneti @referencia nem kell hozzájuk. A generált lapot a megfelelő TY Elementhez társítsd; a tényleges kimeneti @neveket utána kötjük a megfelelő videóhoz.
 
-Import: [TYPOGRAPHY_IMPORT.md](../../00_project/elements/TYPOGRAPHY_IMPORT.md) — **csak a 7 új elem**. A teljes import is tartalmazza őket. A már importált 157 mellé csak a tipográfia-kiegészítő szükséges.
+Import: [TYPOGRAPHY_IMPORT.md](../../00_project/elements/categories/TYPOGRAPHY_IMPORT.md) — **csak a 7 új elem**. A teljes import is tartalmazza őket. A már importált 157 mellé csak a tipográfia-kiegészítő szükséges.
 
 | Elem | Prompt | Tartalom | Formátum |
 |---|---|---|
