@@ -1,9 +1,6 @@
 REFERENCE ID: HRW07_CLINICAL_REALITY_C (never print IDs, headings or panel labels).
 
-REFERENCE SETUP INCOMPLETE: HRW07
-Do not generate until these references are bound.
-
-PAGE CONTINUITY INPUT: @UNBOUND_HRW07 supplies the accepted Page A identities, shared material palette and any recurring room geometry. New places explicitly assigned to this page retain their own stated setting; do not copy Page A into every cell.
+PAGE CONTINUITY INPUT: @loc_MYS_mys-hrw07-a-clinical-reality_s0_v1 supplies the accepted Page A identities, shared material palette and any recurring room geometry. New places explicitly assigned to this page retain their own stated setting; do not copy Page A into every cell.
 
 REFERENCE INPUTS:
 @char_MYS_mys-c01-protagonist_s0_v1 = CHARACTER 01 — PROTAGONIST; exact person identity; use only where this person appears.

@@ -1,10 +1,7 @@
 REFERENCE ID: MW01_B_02 — ORIGINAL VIEW 06 (never print IDs, headings or labels).
 
-REFERENCE SETUP INCOMPLETE: MW01_B_01
-Do not generate until these references are bound.
-
 REFERENCE INPUTS:
-@UNBOUND_MW01_B_01 = Use the accepted communal-room image for the material identity of the same shared house. This assigned bedroom is a distinct room; preserve its specified beds and nighttime setting rather than copying the communal-room layout.
+@loc_MYS_mys-mw01-b-01-memory-view-05_s0_v1 = Use the accepted communal-room image for the material identity of the same shared house. This assigned bedroom is a distinct room; preserve its specified beds and nighttime setting rather than copying the communal-room layout.
 @char_MYS_mys-c06-shared-house-substitute-snoring-housemate_s0_v1 = CHARACTER 06 — SHARED-HOUSE SUBSTITUTE / SNORING HOUSEMATE; exact person identity; use only where this person appears.
 
 OUTPUT GEOMETRY — ONE 2K FULL-FRAME IMAGE:

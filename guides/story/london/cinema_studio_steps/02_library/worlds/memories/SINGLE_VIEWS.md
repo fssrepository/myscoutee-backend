@@ -13,8 +13,8 @@ At the creator-reported rates, these 28 images cost 56 credits for one attempt e
 | Prompt | Original view | Character inputs | Missing Element IDs |
 | --- | ---: | ---: | --- |
 | [05_01_MW01_LONDON_SOCIAL_B_VIEW_05.txt](05_01_MW01_LONDON_SOCIAL_B_VIEW_05.txt) | 05 | 0 | **Ready** |
-| [05_02_MW01_LONDON_SOCIAL_B_VIEW_06.txt](05_02_MW01_LONDON_SOCIAL_B_VIEW_06.txt) | 06 | 1 | MW01_B_01 |
-| [05_03_MW01_LONDON_SOCIAL_B_VIEW_07.txt](05_03_MW01_LONDON_SOCIAL_B_VIEW_07.txt) | 07 | 3 | MW01_B_02 |
+| [05_02_MW01_LONDON_SOCIAL_B_VIEW_06.txt](05_02_MW01_LONDON_SOCIAL_B_VIEW_06.txt) | 06 | 1 | **Ready** |
+| [05_03_MW01_LONDON_SOCIAL_B_VIEW_07.txt](05_03_MW01_LONDON_SOCIAL_B_VIEW_07.txt) | 07 | 3 | **Ready** |
 | [05_04_MW01_LONDON_SOCIAL_B_VIEW_08.txt](05_04_MW01_LONDON_SOCIAL_B_VIEW_08.txt) | 08 | 1 | **Ready** |
 
 Original text: [archived MW01_B](../../../04_tracking/archive/memory_grids_before_single_views/05_MW01_LONDON_SOCIAL_B.md).
