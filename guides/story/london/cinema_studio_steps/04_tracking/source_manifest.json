@@ -2116,7 +2116,7 @@
       ],
       "source_prompt_sha256": "cac300bae4bd6f33e50ec5936c56622c5858e341d0494d281a87e70ed4ee9a04",
       "file": "02_library/worlds/memories/17_MW05_COURT_FILE_B.txt",
-      "file_sha256": "42d824a852d1d07939b89ec0ef73493faa5a530010d712ed52f74d36f58b2f05",
+      "file_sha256": "e3f8c98bff5c80bb037f01e0237bf7b8ee34181442b0b7211b98d95bee317851",
       "changes": "Verbatim fenced prompt; explicit centrally maintained reference inputs Grid geometry uses the full selected image resolution instead of fixed pixel examples.",
       "note": "Companion page B preserving original memory views."
     },
@@ -4513,8 +4513,7 @@
         "C28",
         "C29",
         "C30",
-        "C31",
-        "MW05"
+        "C31"
       ],
       "layout": "4K 2x2 page B",
       "status": "PREPARED_NOT_RENDERED",
@@ -4525,8 +4524,8 @@
         7,
         8
       ],
-      "prompt_sha256": "42d824a852d1d07939b89ec0ef73493faa5a530010d712ed52f74d36f58b2f05",
-      "reference_scope_note": "Inputs scoped to the four assigned views; unrelated companion-page subjects removed. Literal scene descriptions unchanged.",
+      "prompt_sha256": "e3f8c98bff5c80bb037f01e0237bf7b8ee34181442b0b7211b98d95bee317851",
+      "reference_scope_note": "Five character inputs only (C01, C28, C29, C30, C31). Optional MW05 Page A location input removed at user request; all scene assignments and output geometry preserved.",
       "composition_revision_note": "2026-09-10: distinct physical subjects/actions replace repeated content; companion sources preserve the original story beats. No camera-only variation.",
       "current_prompt_image_verified": false,
       "content_assignments": {
@@ -12981,7 +12980,7 @@
               8
             ],
             "status": "PREPARED_NOT_RENDERED",
-            "sha256": "42d824a852d1d07939b89ec0ef73493faa5a530010d712ed52f74d36f58b2f05"
+            "sha256": "e3f8c98bff5c80bb037f01e0237bf7b8ee34181442b0b7211b98d95bee317851"
           },
           "C": {
             "key": "MW05_C",
