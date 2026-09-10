@@ -39,10 +39,10 @@ Use CHARACTER 31 — ANONYMOUS FICTIONAL CARDBOARD PUBLIC FIGURE for the cardboa
 PURPOSE:
 Build the literal court/file/classification memory source bank: hearing, assets, retained belongings, forensic examination, documents replacing biography, complaint routes and black humour used as a human response to an absurd process.
 
-PAGE C OF MW05: This page contains original views 9, 1, 7, 8. Original-view numbers below are provenance identifiers, not cell positions. Render ONLY the four cell assignments on this page. Global identity rules apply only when their person actually occurs in an assigned view.
+PAGE C OF MW05: The four slots retain provenance numbers 9, 1, 7, 8. The repeated slots now supply the distinct supplementary content specified below; these numbers do not instruct a repeat of an earlier image. Render ONLY the four cell assignments on this page. Global identity rules apply only when their person actually occurs in an assigned view.
 
 REFERENCE COVERAGE FOR THE MOVING FILM:
-This page supplies the four assigned literal views, not four cuts, morph stages or interchangeable world designs. Make each view useful for its assigned purpose: room layout shows supports and an entry/exit; a gesture view retains its hand, furniture edge and background anchor; an object detail shows side/underside and contact. Different views of the SAME room preserve its floor plan, furniture, identities, clothes and light sources even when the viewpoint changes. Distinct memories remain distinct places; do not fuse them into one room to match the grid. Repeated anchor views on another page must preserve the same state and layout.
+This page supplies the four assigned literal views, not four cuts, morph stages or interchangeable world designs. Make each view useful for its assigned purpose: room layout shows supports and an entry/exit; a gesture view retains its hand, furniture edge and background anchor; an object detail shows side/underside and contact. Different views of the SAME room preserve its floor plan, furniture, identities, clothes and light sources even when the viewpoint changes. Distinct memories remain distinct places; do not fuse them into one room to match the grid. Recurring places retain their established layout; each cell uses its explicitly assigned action and object state.
 Additional detail pages of the same place retain that memory and its established event. Keep full body/furniture support legible wherever the assigned view permits. Never substitute four nearly identical wide shots for the four assigned subjects.
 
 FOUR IMAGE ASSIGNMENTS — INSTRUCTIONS ONLY, NO PRINTED TEXT:
@@ -52,19 +52,22 @@ Decision/appeal-route memory: ordinary posted ruling/letter, phone, folders and 
 Show the opened envelope, ruling papers and a separate folder arranged beside a phone on the same desk. The protagonist checks the next paper with a restrained posture. Paper edges, folds and contact shadows distinguish each item. The future route is suggested by an unfinished practical task, without fabricated legal outcomes, maps, arrows or a celebratory ending.
 
 For the top right image (source view 01; instruction only, never printed):
-Court-hearing memory with an anonymous judge addressing the protagonist during a debate over legal classification. The remembered prison-question moment is carried by facial/body language; do not render subtitles or dialogue text.
+HEARING PAPERS GATHERED WITH THE APPOINTED LAWYER:
+Beside the hearing-room furniture, the protagonist holds an open case bag while the appointed lawyer C04 gathers a small set of loose hearing papers and slides them into its document compartment. The bag opening, retained loose sheets, the two people's working hands and their restrained tired interaction are the main subjects.
 
-Compose the judge, protagonist and ordinary hearing table at distinct depths with clear eyelines. Documents lie on the table with visible paper edges and no oversized legal text. The speaking expression is restrained and the protagonist remains seated or standing in the assigned hearing position. Keep the room doorway and furniture supports visible; no theatre-like spotlight or invented verdict appears.
+Keep the hearing room, table supports, paper edges and doorway from MW05_A. The legal-classification discussion and the judge's prison-question expression are already preserved there. No judge delivers another line in this image. This supporting paperwork moment gives no verdict, promise, release, charge or appeal outcome; the bag contains only the protagonist's available papers, never the retained phone or laptop from the property boxes.
 
 For the bottom left image (source view 07; instruction only, never printed):
-Black-humour memory source: a small self-made "THE SYSTEM'S MOST WANTED" satirical visual and/or impossible police-career CV/application joke on a desk or screen. Keep it clearly self-made absurdism, never an official notice, and avoid large readable text.
+IMPOSSIBLE POLICE-CAREER APPLICATION JOKE:
+At the protagonist's ordinary laptop, an unfinished self-made CV/application document has the familiar visual structure of a small portrait box and plain work-history lines. He has placed a printed draft beside the keyboard and is marking a deliberately absurd application idea with a pencil. His personal drafting materials and the gap between an ordinary worker's CV and an impossible police-career joke are the subject.
 
-Show one clearly handmade satirical page or ordinary screen document on the protagonist desk, with uneven cut edges or everyday editing cues. Keep surrounding papers mundane so the joke remains personal and small. The page is not a real wanted poster, police database or official notice. No extra graphic inset or large headline dominates the reference cell.
+Keep all text small and mostly unreadable, with no fabricated qualifications, official badge, appointment, employment offer or real agency branding. The draft is recognizably his own, with modest handwritten edits and actual paper edges. This is the application half of the existing black-humour beat; the handmade wanted-page object is separately preserved in MW05_B and is not repeated in this cell.
 
 For the bottom right image (source view 08; instruction only, never printed):
-Public-role absurdity memory source: an anonymous fictional cardboard public figure with a deliberately ridiculous hat and the tone of an asylum-request joke. Keep the joke recognizably absurd, but attach no real name, real politician likeness, party branding, campaign slogan or identifiable contemporary office. No advocacy and no policy statement.
+ASYLUM REQUEST ADDRESSED TO A CARDBOARD FIGURE:
+The protagonist stands in front of the same fictional ridiculous-hat cardboard figure holding his own thin request folder out toward it with restrained, knowingly absurd seriousness. The cutout cannot receive the papers: its flat printed face, board edge, rear brace and supported base remain plainly material. His held-out folder and the inert prop form the encounter.
 
-The anonymous cardboard public figure is a physical cutout with visible board thickness, a simple rear support and the deliberately silly hat resting on it. Show its base on a desk or floor and a real room behind. The printed face remains flat on the board, without becoming a living official. Keep every insignia and likeness fictional.
+Preserve the established hat, C31's wholly fictional likeness and the modest room. The joke is specifically an asylum request addressed to an absurd cardboard public figure; do not substitute a generic escape joke. No real politician, country emblem, party brand, campaign slogan, readable official request, acceptance or rejection is added. MW05_B supplies the solitary prop; this cell supplies the person attempting the absurd address.
 
 FINAL CHECK:
 Exactly one 16:9 image.

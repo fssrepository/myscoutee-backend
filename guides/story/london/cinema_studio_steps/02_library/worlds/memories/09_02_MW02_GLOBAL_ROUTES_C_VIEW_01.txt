@@ -31,13 +31,14 @@ PURPOSE:
 Build the reusable literal travel-memory source bank around the principle: Global route. Local encounter. The important subject is ordinary human contact inside movement, not postcard tourism.
 
 REFERENCE COVERAGE FOR THE MOVING FILM:
-This image supplies the one assigned literal view. It is not a cut or a morph stage. Make this view useful for its assigned purpose: room layout shows supports and an entry/exit; a gesture view retains its hand, furniture edge and background anchor; an object detail shows side/underside and contact. Different views of the SAME room preserve its floor plan, furniture, identities, clothes and light sources even when the viewpoint changes. Distinct memories remain distinct places; do not fuse them into one room. Repeated anchor views in another image must preserve the same state and layout.
+This image supplies the one assigned literal view. It is not a cut or a morph stage. Make this view useful for its assigned purpose: room layout shows supports and an entry/exit; a gesture view retains its hand, furniture edge and background anchor; an object detail shows side/underside and contact. Different views of the SAME room preserve its floor plan, furniture, identities, clothes and light sources even when the viewpoint changes. Distinct memories remain distinct places; do not fuse them into one room. Recurring places retain their established layout; use the distinct action and object state assigned in this image.
 Additional detail images of the same place retain that memory and its established event. Keep full body/furniture support legible wherever the assigned view permits. Keep the assigned subject and framing; do not substitute a generic wide shot for a detail.
 
 ASSIGNED COMPOSITION — ORIGINAL VIEW 01, ONE IMAGE:
-Moscow / Saint Petersburg metro or transit-gate memory. A local passenger calmly uses a monthly travel card/pass to help the protagonist through a gate. Ordinary station, realistic crowd, no heroic gesture.
+CONTINUING INTO THE STATION AFTER THE HELP:
+The protagonist is now beyond the transit gate, walking into the station passage with the local helper. The helper indicates the actual onward corridor with an open hand while the protagonist turns toward him with a small acknowledgement. Their walking bodies and the ordinary movement of commuters are the subject. The monthly pass has been put away; nobody is tapping the reader in this image.
 
-The helper stands beside the gate reader with the monthly pass held close to its actual surface; the protagonist is at the adjacent passage ready to move through. Show reader housing, barrier edge and tiled floor together. Other passengers remain behind their own lane boundaries. Their hands do not merge into the reader or each other, and no score cards appear.
+Retain the accepted tiled station, gate lanes and the same two identities and clothes. Keep the gate hardware behind them as the point they have just passed, with a continuous walkable floor into the corridor. Each pedestrian remains in their own space, with distinct hands and grounded feet. Any direction signage stays incidental and unreadable; do not invent a named destination, platform number or new journey. The actual pass-reader assistance is preserved in MW02_A_01.
 
 FINAL CHECK:
 One full-frame 16:9 image at selected 2K. Direct memory scene, no score cards, no present-city overlay, no printed instruction labels.

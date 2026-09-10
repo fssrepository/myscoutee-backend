@@ -563,7 +563,7 @@
       ],
       "source_prompt_sha256": "d53e141d60aa5359c28d8695bb7cb84134a480bf043551062606e199558cda02",
       "file": "02_library/worlds/memories/19_02_MW06_HUMAN_COUNTERMEMORIES_A_VIEW_02.txt",
-      "file_sha256": "e31b18330e87cfbc5e71344f874e199df43ba292d3dbaff6848cbfa1b922dae0",
+      "file_sha256": "a15a11a998bfbd29d99f1d59f28e666fd372b94929c619d9510c911e2a799b0c",
       "changes": "Single 2K assigned view extracted verbatim from archived page; view-specific input references and full-frame instructions."
     },
     {
@@ -575,7 +575,7 @@
       ],
       "source_prompt_sha256": "d53e141d60aa5359c28d8695bb7cb84134a480bf043551062606e199558cda02",
       "file": "02_library/worlds/memories/19_03_MW06_HUMAN_COUNTERMEMORIES_A_VIEW_03.txt",
-      "file_sha256": "8214abd7a8af7b2dbb80bef9f0f6c4487948efbf620a313e11dbec24d1083537",
+      "file_sha256": "bea1e02df3d53cd8d2d66465a577e99efeb6622f8e09f56270b480931961e3c1",
       "changes": "Single 2K assigned view extracted verbatim from archived page; view-specific input references and full-frame instructions."
     },
     {
@@ -587,7 +587,7 @@
       ],
       "source_prompt_sha256": "d53e141d60aa5359c28d8695bb7cb84134a480bf043551062606e199558cda02",
       "file": "02_library/worlds/memories/19_04_MW06_HUMAN_COUNTERMEMORIES_A_VIEW_04.txt",
-      "file_sha256": "538fc280650c97c6bb543dae9358f2b05a2dcf83391da603d280e8aa1a3b8705",
+      "file_sha256": "644f307281647075ca175e40eab636e55b57d91885e7b8fd450a0373b0f002c0",
       "changes": "Single 2K assigned view extracted verbatim from archived page; view-specific input references and full-frame instructions."
     },
     {
@@ -599,7 +599,7 @@
       ],
       "source_prompt_sha256": "16bf4be44836d9fb010f7825cc24770d0ce78cbd05373fc417d2155eba6ae1e1",
       "file": "02_library/worlds/memories/22_MWP01_ROUTES_ROOMS_DOCUMENTS_A.txt",
-      "file_sha256": "8308eec6bdbca6ded3784fe9b2e998d240eb26061956ad958a0b385d3c2b62da",
+      "file_sha256": "991ed86b7ffbd0f40855e6a72227f2d89da86cbbcb8e7c4cac2b30ce216d8e5a",
       "changes": "Verbatim fenced prompt; explicit centrally maintained reference inputs; rural memory grounded in creator's Orosháza paprika/corn-field childhood Grid geometry uses the full selected image resolution instead of fixed pixel examples."
     },
     {
@@ -1973,7 +1973,7 @@
       ],
       "source_prompt_sha256": "717f8a13a997263b4988a3087369787649a75542e70f60f5bc32565a4a5fc759",
       "file": "02_library/worlds/memories/06_03_MW01_LONDON_SOCIAL_C_VIEW_07.txt",
-      "file_sha256": "518699c819a7b6dddf668af37cf38893fcff183aa8f48f1cd6d91c525a951199",
+      "file_sha256": "3a148047aa619f2f8d5f4267b2a137e27aa40de2c24585bd0209d6d866f161e2",
       "changes": "Single 2K assigned view extracted verbatim from archived page; view-specific input references and full-frame instructions.",
       "note": "Companion page C preserving original memory views."
     },
@@ -1986,7 +1986,7 @@
       ],
       "source_prompt_sha256": "717f8a13a997263b4988a3087369787649a75542e70f60f5bc32565a4a5fc759",
       "file": "02_library/worlds/memories/06_04_MW01_LONDON_SOCIAL_C_VIEW_08.txt",
-      "file_sha256": "99eee758968de5de5de37ee349afb825a4b07a95169a82bb268e8b1ba069017d",
+      "file_sha256": "84c05b3f5741785848ecf386da5a5552f9a020cf2b9e685eecfa14c1191d4689",
       "changes": "Single 2K assigned view extracted verbatim from archived page; view-specific input references and full-frame instructions.",
       "note": "Companion page C preserving original memory views."
     },
@@ -2025,7 +2025,7 @@
       ],
       "source_prompt_sha256": "6e25c11571314fb9f353911cdd369b867c1b90a45dcc5228ce69c24e48b7ba9c",
       "file": "02_library/worlds/memories/09_02_MW02_GLOBAL_ROUTES_C_VIEW_01.txt",
-      "file_sha256": "de354fe0067deea2aac56d57c8b65331b4ed4150460ae014f505a07f8bedc50d",
+      "file_sha256": "e4e28d0cec90139c3f721f94d29d38385ad14f4b63e910cbd446582080f022d6",
       "changes": "Single 2K assigned view extracted verbatim from archived page; view-specific input references and full-frame instructions.",
       "note": "Companion page C preserving original memory views."
     },
@@ -2038,7 +2038,7 @@
       ],
       "source_prompt_sha256": "6e25c11571314fb9f353911cdd369b867c1b90a45dcc5228ce69c24e48b7ba9c",
       "file": "02_library/worlds/memories/09_03_MW02_GLOBAL_ROUTES_C_VIEW_07.txt",
-      "file_sha256": "90aa152769c4e2609ed020f00f57d88ea8e9a0551c82f2fd8d7239d9e0fe32e2",
+      "file_sha256": "41a3b7b186803f17b6b46dae10d549179d18a46f139c390244ae9e501f1eace9",
       "changes": "Single 2K assigned view extracted verbatim from archived page; view-specific input references and full-frame instructions.",
       "note": "Companion page C preserving original memory views."
     },
@@ -2051,7 +2051,7 @@
       ],
       "source_prompt_sha256": "6e25c11571314fb9f353911cdd369b867c1b90a45dcc5228ce69c24e48b7ba9c",
       "file": "02_library/worlds/memories/09_04_MW02_GLOBAL_ROUTES_C_VIEW_08.txt",
-      "file_sha256": "a1ab381c4fc827e1c00b13304e34aa416f5ad5ee7f726831852ea0277d88edfc",
+      "file_sha256": "b1fc12f7ad362d4f053b2b6327bc0c023550ebc80b6f538b896eb0e1c2f23a57",
       "changes": "Single 2K assigned view extracted verbatim from archived page; view-specific input references and full-frame instructions.",
       "note": "Companion page C preserving original memory views."
     },
@@ -2077,7 +2077,7 @@
       ],
       "source_prompt_sha256": "374ea4b6d0ac33d692653a08a02e706d01e0f45e4279451b364aba2f7263928d",
       "file": "02_library/worlds/memories/12_MW03_WORK_RULE_CHANGE_ADMIN_C.txt",
-      "file_sha256": "cfafa5ce8549e67507f589714d907d76bf672638dbe8c118199ae3d6f4c33696",
+      "file_sha256": "cc70bd6be89d9d07eae124ee6f615d268f767b1b28129091889945733e2fff6f",
       "changes": "Verbatim fenced prompt; explicit centrally maintained reference inputs Grid geometry uses the full selected image resolution instead of fixed pixel examples.",
       "note": "Companion page C preserving original memory views."
     },
@@ -2103,7 +2103,7 @@
       ],
       "source_prompt_sha256": "7eacf040519edefdb7aa215ca4fb1e1c6524f4ed06dc69d6ef758048002745f9",
       "file": "02_library/worlds/memories/15_MW04_POLICE_DEFENCE_C.txt",
-      "file_sha256": "f71fa6f5f4c50f464f686d19db35ba96876281d34547cf30e4baa17f1e1ec099",
+      "file_sha256": "2d1fc1e3758b4fbf653675cc396a6762315d0bbc953133b819809f6dc0ded786",
       "changes": "Verbatim fenced prompt; explicit centrally maintained reference inputs Grid geometry uses the full selected image resolution instead of fixed pixel examples.",
       "note": "Companion page C preserving original memory views."
     },
@@ -2116,7 +2116,7 @@
       ],
       "source_prompt_sha256": "cac300bae4bd6f33e50ec5936c56622c5858e341d0494d281a87e70ed4ee9a04",
       "file": "02_library/worlds/memories/17_MW05_COURT_FILE_B.txt",
-      "file_sha256": "6c70797c5603850de27b239d1c9070d60bd8bc8075695b8318fcde499998c6b5",
+      "file_sha256": "e56497e5044daecd040d1f1419312d18bacb2019657af4e68cd7175d66b0e8fd",
       "changes": "Verbatim fenced prompt; explicit centrally maintained reference inputs Grid geometry uses the full selected image resolution instead of fixed pixel examples.",
       "note": "Companion page B preserving original memory views."
     },
@@ -2129,7 +2129,7 @@
       ],
       "source_prompt_sha256": "cac300bae4bd6f33e50ec5936c56622c5858e341d0494d281a87e70ed4ee9a04",
       "file": "02_library/worlds/memories/18_MW05_COURT_FILE_C.txt",
-      "file_sha256": "76d38c90fcf53d4c16f2d2d3648940657cf87b870331ef078d0637df4470940e",
+      "file_sha256": "3af63491c997126c754d024ca2260998934f5b33f4ba3da5f2529fdc05a97223",
       "changes": "Verbatim fenced prompt; explicit centrally maintained reference inputs Grid geometry uses the full selected image resolution instead of fixed pixel examples.",
       "note": "Companion page C preserving original memory views."
     },
@@ -2155,7 +2155,7 @@
       ],
       "source_prompt_sha256": "d53e141d60aa5359c28d8695bb7cb84134a480bf043551062606e199558cda02",
       "file": "02_library/worlds/memories/20_02_MW06_HUMAN_COUNTERMEMORIES_B_VIEW_06.txt",
-      "file_sha256": "7bc12a5d8277a5a11fe5cd45ccbaa0e9ef1e3efe49d09b7f2c3ef8ae83cfc838",
+      "file_sha256": "a4576bbb4d4848259f94b9ac47bcd74359a8ab3d321eea3530ab900f225764ea",
       "changes": "Single 2K assigned view extracted verbatim from archived page; view-specific input references and full-frame instructions.",
       "note": "Companion page B preserving original memory views."
     },
@@ -2168,7 +2168,7 @@
       ],
       "source_prompt_sha256": "d53e141d60aa5359c28d8695bb7cb84134a480bf043551062606e199558cda02",
       "file": "02_library/worlds/memories/20_03_MW06_HUMAN_COUNTERMEMORIES_B_VIEW_07.txt",
-      "file_sha256": "e22aaf37a640b83f1ff784ec7f3e0e5b20c8f3d3a508a7ebf312ff4cf4deabc0",
+      "file_sha256": "95f1b929854e24fd0f342a8e5029079ae7c16834530257c8043209ec35a0e877",
       "changes": "Single 2K assigned view extracted verbatim from archived page; view-specific input references and full-frame instructions.",
       "note": "Companion page B preserving original memory views."
     },
@@ -2194,7 +2194,7 @@
       ],
       "source_prompt_sha256": "d53e141d60aa5359c28d8695bb7cb84134a480bf043551062606e199558cda02",
       "file": "02_library/worlds/memories/21_01_MW06_HUMAN_COUNTERMEMORIES_C_VIEW_09.txt",
-      "file_sha256": "1a1e8ba3d3b58313e24016285d49993f9299cc64fcba42095a99a320dc4b3e74",
+      "file_sha256": "ade1987caa1f0a073554204769106f064d0d2a18fb74bf1595c77904d91ef06f",
       "changes": "Single 2K assigned view extracted verbatim from archived page; view-specific input references and full-frame instructions.",
       "note": "Companion page C preserving original memory views."
     },
@@ -2207,7 +2207,7 @@
       ],
       "source_prompt_sha256": "d53e141d60aa5359c28d8695bb7cb84134a480bf043551062606e199558cda02",
       "file": "02_library/worlds/memories/21_02_MW06_HUMAN_COUNTERMEMORIES_C_VIEW_01.txt",
-      "file_sha256": "c11bf8f0ec3e4e1859a16db5f39f6170733653b07ebd0d16c3febe05c67618a0",
+      "file_sha256": "c82007026b1ac39ffcbaa7788069fd4199e7def51d6c2fc1c0236b1e4d7104c6",
       "changes": "Single 2K assigned view extracted verbatim from archived page; view-specific input references and full-frame instructions.",
       "note": "Companion page C preserving original memory views."
     },
@@ -2220,7 +2220,7 @@
       ],
       "source_prompt_sha256": "d53e141d60aa5359c28d8695bb7cb84134a480bf043551062606e199558cda02",
       "file": "02_library/worlds/memories/21_03_MW06_HUMAN_COUNTERMEMORIES_C_VIEW_07.txt",
-      "file_sha256": "dba6b9f7bcb06fb1f8d2ebb055232fb91b840f0f274b5959c0cdebcb3b090367",
+      "file_sha256": "e1c7b90989b957455d65af0746f5e3b3f826f4eff4801af7322297d1f9077619",
       "changes": "Single 2K assigned view extracted verbatim from archived page; view-specific input references and full-frame instructions.",
       "note": "Companion page C preserving original memory views."
     },
@@ -2233,7 +2233,7 @@
       ],
       "source_prompt_sha256": "d53e141d60aa5359c28d8695bb7cb84134a480bf043551062606e199558cda02",
       "file": "02_library/worlds/memories/21_04_MW06_HUMAN_COUNTERMEMORIES_C_VIEW_08.txt",
-      "file_sha256": "20cb40fb1371d3c4767b246fd71556f83687fd1ea697c6e95c11b4e39731d4ea",
+      "file_sha256": "b914d2232192b9887860f75ec6432d0170dc638fb423f8c5caff896ddbbc9e86",
       "changes": "Single 2K assigned view extracted verbatim from archived page; view-specific input references and full-frame instructions.",
       "note": "Companion page C preserving original memory views."
     },
@@ -2259,7 +2259,7 @@
       ],
       "source_prompt_sha256": "16bf4be44836d9fb010f7825cc24770d0ce78cbd05373fc417d2155eba6ae1e1",
       "file": "02_library/worlds/memories/24_MWP01_ROUTES_ROOMS_DOCUMENTS_C.txt",
-      "file_sha256": "103670cc9b3a5358207ca2a0359726186eb5633a978afd8591f2637a63b1002c",
+      "file_sha256": "408099d38a2bb32ccfa31d8844179067663059927c3230fea378e4121d05cc00",
       "changes": "Verbatim fenced prompt; explicit centrally maintained reference inputs; rural memory grounded in creator's Orosháza paprika/corn-field childhood Grid geometry uses the full selected image resolution instead of fixed pixel examples.",
       "note": "Companion page C preserving original memory views."
     },
@@ -2272,7 +2272,7 @@
       ],
       "source_prompt_sha256": "557e0016d71cfd83bfd2c240538a5a77f6b6d8785ceb0f79bb97e387e1ccbd6f",
       "file": "02_library/worlds/memories/26_MWP02_SYSTEM_TIME_REVERSALS_B.txt",
-      "file_sha256": "3fc75e6fad253d1f3f93df4260215b9e220ae2969a471e2a46f16ba23e267c3b",
+      "file_sha256": "7dd8abfd4a5f26d3cc3b119f448cdab078194f5e0a2db693c24b1f084dd77c4c",
       "changes": "AI-specific screen becomes ordinary document cursor; citizen/review beat retained; explicit centrally maintained reference inputs Grid geometry uses the full selected image resolution instead of fixed pixel examples.",
       "note": "Companion page B preserving original memory views."
     },
@@ -2285,7 +2285,7 @@
       ],
       "source_prompt_sha256": "557e0016d71cfd83bfd2c240538a5a77f6b6d8785ceb0f79bb97e387e1ccbd6f",
       "file": "02_library/worlds/memories/27_MWP02_SYSTEM_TIME_REVERSALS_C.txt",
-      "file_sha256": "b20e9ab8af41ce2e08e10a7dc2c083056f4228856d4d42db1ed027801bb8aebd",
+      "file_sha256": "bd5f5868d9bb4eb12f3c4c157b9b2c9650d4f2c63f833acebc01aa70c1185301",
       "changes": "AI-specific screen becomes ordinary document cursor; citizen/review beat retained; explicit centrally maintained reference inputs Grid geometry uses the full selected image resolution instead of fixed pixel examples.",
       "note": "Companion page C preserving original memory views."
     },
@@ -3042,7 +3042,12 @@
         "MWP01_B",
         "MWP01_C"
       ],
-      "prompt_sha256": "8308eec6bdbca6ded3784fe9b2e998d240eb26061956ad958a0b385d3c2b62da"
+      "prompt_sha256": "991ed86b7ffbd0f40855e6a72227f2d89da86cbbcb8e7c4cac2b30ce216d8e5a",
+      "composition_revision_note": "2026-09-10: distinct physical subjects/actions replace repeated content; companion sources preserve the original story beats. No camera-only variation.",
+      "current_prompt_image_verified": false,
+      "content_assignments": {
+        "3": "PAPRIKA HARVEST AT THE EDGE OF THE CORN ROWS"
+      }
     },
     "MWP02": {
       "key": "MWP02",
@@ -4437,7 +4442,14 @@
         7,
         8
       ],
-      "prompt_sha256": "cfafa5ce8549e67507f589714d907d76bf672638dbe8c118199ae3d6f4c33696"
+      "prompt_sha256": "cc70bd6be89d9d07eae124ee6f615d268f767b1b28129091889945733e2fff6f",
+      "composition_revision_note": "2026-09-10: distinct physical subjects/actions replace repeated content; companion sources preserve the original story beats. No camera-only variation.",
+      "current_prompt_image_verified": false,
+      "content_assignments": {
+        "2": "PRINTER PAPER SUPPLY WHILE CONTRACT WORK CONTINUES",
+        "3": "FINDING THE SEPARATE RECORD IN OFFICE STORAGE",
+        "4": "CARRYING PAPER BETWEEN THE SEPARATE WORK POSITIONS"
+      }
     },
     "MW04_B": {
       "key": "MW04_B",
@@ -4482,8 +4494,15 @@
         7,
         8
       ],
-      "prompt_sha256": "f71fa6f5f4c50f464f686d19db35ba96876281d34547cf30e4baa17f1e1ec099",
-      "reference_scope_note": "Inputs scoped to the four assigned views; unrelated companion-page subjects removed. Literal scene descriptions unchanged."
+      "prompt_sha256": "2d1fc1e3758b4fbf653675cc396a6762315d0bbc953133b819809f6dc0ded786",
+      "reference_scope_note": "Inputs scoped to the four assigned views; unrelated companion-page subjects removed. Literal scene descriptions unchanged.",
+      "composition_revision_note": "2026-09-10: distinct physical subjects/actions replace repeated content; companion sources preserve the original story beats. No camera-only variation.",
+      "current_prompt_image_verified": false,
+      "content_assignments": {
+        "2": "DOMESTIC BELONGINGS DURING THE SEARCH",
+        "3": "UNFINISHED DEFENCE-FILE HANDOFF",
+        "4": "WAITING BENCH BETWEEN CONTACT ATTEMPTS"
+      }
     },
     "MW05_B": {
       "key": "MW05_B",
@@ -4506,8 +4525,14 @@
         7,
         8
       ],
-      "prompt_sha256": "6c70797c5603850de27b239d1c9070d60bd8bc8075695b8318fcde499998c6b5",
-      "reference_scope_note": "Inputs scoped to the four assigned views; unrelated companion-page subjects removed. Literal scene descriptions unchanged."
+      "prompt_sha256": "e56497e5044daecd040d1f1419312d18bacb2019657af4e68cd7175d66b0e8fd",
+      "reference_scope_note": "Inputs scoped to the four assigned views; unrelated companion-page subjects removed. Literal scene descriptions unchanged.",
+      "composition_revision_note": "2026-09-10: distinct physical subjects/actions replace repeated content; companion sources preserve the original story beats. No camera-only variation.",
+      "current_prompt_image_verified": false,
+      "content_assignments": {
+        "3": "SELF-MADE WANTED-PAGE JOKE",
+        "4": "FICTIONAL CARDBOARD FIGURE WITH ITS RIDICULOUS HAT"
+      }
     },
     "MW05_C": {
       "key": "MW05_C",
@@ -4529,8 +4554,15 @@
         7,
         8
       ],
-      "prompt_sha256": "76d38c90fcf53d4c16f2d2d3648940657cf87b870331ef078d0637df4470940e",
-      "reference_scope_note": "Inputs scoped to the four assigned views; unrelated companion-page subjects removed. Literal scene descriptions unchanged."
+      "prompt_sha256": "3af63491c997126c754d024ca2260998934f5b33f4ba3da5f2529fdc05a97223",
+      "reference_scope_note": "Inputs scoped to the four assigned views; unrelated companion-page subjects removed. Literal scene descriptions unchanged.",
+      "composition_revision_note": "2026-09-10: distinct physical subjects/actions replace repeated content; companion sources preserve the original story beats. No camera-only variation.",
+      "current_prompt_image_verified": false,
+      "content_assignments": {
+        "2": "HEARING PAPERS GATHERED WITH THE APPOINTED LAWYER",
+        "3": "IMPOSSIBLE POLICE-CAREER APPLICATION JOKE",
+        "4": "ASYLUM REQUEST ADDRESSED TO A CARDBOARD FIGURE"
+      }
     },
     "MW06_B": {
       "key": "MW06_B",
@@ -4633,7 +4665,14 @@
         7,
         8
       ],
-      "prompt_sha256": "103670cc9b3a5358207ca2a0359726186eb5633a978afd8591f2637a63b1002c"
+      "prompt_sha256": "408099d38a2bb32ccfa31d8844179067663059927c3230fea378e4121d05cc00",
+      "composition_revision_note": "2026-09-10: distinct physical subjects/actions replace repeated content; companion sources preserve the original story beats. No camera-only variation.",
+      "current_prompt_image_verified": false,
+      "content_assignments": {
+        "2": "MAKING A RESTING PLACE OUTSIDE THE CLOSED HOSTEL ROOM",
+        "3": "ONE TRAVELLER UNPACKS IN A ROOM PREPARED FOR TWO",
+        "4": "SEARCHING THE DOCUMENT WALLET FOR THE MISSING FIELD"
+      }
     },
     "MWP02_B": {
       "key": "MWP02_B",
@@ -4652,7 +4691,12 @@
         7,
         8
       ],
-      "prompt_sha256": "3fc75e6fad253d1f3f93df4260215b9e220ae2969a471e2a46f16ba23e267c3b"
+      "prompt_sha256": "7dd8abfd4a5f26d3cc3b119f448cdab078194f5e0a2db693c24b1f084dd77c4c",
+      "composition_revision_note": "2026-09-10: distinct physical subjects/actions replace repeated content; companion sources preserve the original story beats. No camera-only variation.",
+      "current_prompt_image_verified": false,
+      "content_assignments": {
+        "3": "THE REVIEW TASK STOPS AND ORDINARY WAITING REMAINS"
+      }
     },
     "MWP02_C": {
       "key": "MWP02_C",
@@ -4671,7 +4715,14 @@
         7,
         8
       ],
-      "prompt_sha256": "b20e9ab8af41ce2e08e10a7dc2c083056f4228856d4d42db1ed027801bb8aebd"
+      "prompt_sha256": "bd5f5868d9bb4eb12f3c4c157b9b2c9650d4f2c63f833acebc01aa70c1185301",
+      "composition_revision_note": "2026-09-10: distinct physical subjects/actions replace repeated content; companion sources preserve the original story beats. No camera-only variation.",
+      "current_prompt_image_verified": false,
+      "content_assignments": {
+        "2": "PUTTING THE REFUSAL AMONG THE STORED CASE PAPERS",
+        "3": "AN UNFINISHED EVERYDAY TASK WHILE THE REVIEW WAITS",
+        "4": "ANONYMOUS OFFICE-TURNOVER OBJECTS BEING PACKED"
+      }
     },
     "HRW07_B": {
       "key": "HRW07_B",
@@ -7193,10 +7244,17 @@
       "original_view": 7,
       "generation_position": 3,
       "element_name": "MYS MW01_C_03 Memory View 07",
-      "prompt_sha256": "518699c819a7b6dddf668af37cf38893fcff183aa8f48f1cd6d91c525a951199",
+      "prompt_sha256": "3a148047aa619f2f8d5f4267b2a137e27aa40de2c24585bd0209d6d866f161e2",
       "matched_generation_id": "2148c24e-53c1-4e55-80c7-6cffba56e8ce",
       "matched_generation_url": "https://d8j0ntlcm91z4.cloudfront.net/user_3H41eMU9sabBt5P7iAzJiu4FcG5/hf_20260910_153349_2148c24e-53c1-4e55-80c7-6cffba56e8ce.png",
-      "generation_match_evidence": "Exact REFERENCE ID matched to current prompt; completed job, but no image attached to existing Element in MCP snapshot."
+      "generation_match_evidence": "Exact REFERENCE ID matched to current prompt; completed job, but no image attached to existing Element in MCP snapshot.",
+      "composition_revision_note": "2026-09-10: distinct physical subjects/actions replace repeated content; companion sources preserve the original story beats. No camera-only variation.",
+      "current_prompt_image_verified": false,
+      "content_assignments": {
+        "1": "FAMILY CONTACT WHILE PUTTING AWAY WORK CLOTHES"
+      },
+      "replacement_image_required": true,
+      "replacement_reason": "User approved a new 2K image for this completed duplicate. Existing attached image is retained until its replacement is accepted."
     },
     "MW01_C_04": {
       "key": "MW01_C_04",
@@ -7212,10 +7270,17 @@
       "original_view": 8,
       "generation_position": 4,
       "element_name": "MYS MW01_C_04 Memory View 08",
-      "prompt_sha256": "99eee758968de5de5de37ee349afb825a4b07a95169a82bb268e8b1ba069017d",
+      "prompt_sha256": "84c05b3f5741785848ecf386da5a5552f9a020cf2b9e685eecfa14c1191d4689",
       "matched_generation_id": "a42d3540-8e06-4a6b-875e-df0026b18850",
       "matched_generation_url": "https://d8j0ntlcm91z4.cloudfront.net/user_3H41eMU9sabBt5P7iAzJiu4FcG5/hf_20260910_153405_a42d3540-8e06-4a6b-875e-df0026b18850.png",
-      "generation_match_evidence": "Exact REFERENCE ID matched to current prompt; completed job, but no image attached to existing Element in MCP snapshot."
+      "generation_match_evidence": "Exact REFERENCE ID matched to current prompt; completed job, but no image attached to existing Element in MCP snapshot.",
+      "composition_revision_note": "2026-09-10: distinct physical subjects/actions replace repeated content; companion sources preserve the original story beats. No camera-only variation.",
+      "current_prompt_image_verified": false,
+      "content_assignments": {
+        "1": "THE UNCHANGED PERSON PUTS THE PROFILE ASIDE"
+      },
+      "replacement_image_required": true,
+      "replacement_reason": "User approved a new 2K image for this completed duplicate. Existing attached image is retained until its replacement is accepted."
     },
     "MW02_A_01": {
       "key": "MW02_A_01",
@@ -7325,7 +7390,14 @@
       "original_view": 1,
       "generation_position": 2,
       "element_name": "MYS MW02_C_02 Memory View 01",
-      "prompt_sha256": "de354fe0067deea2aac56d57c8b65331b4ed4150460ae014f505a07f8bedc50d"
+      "prompt_sha256": "e4e28d0cec90139c3f721f94d29d38385ad14f4b63e910cbd446582080f022d6",
+      "composition_revision_note": "2026-09-10: distinct physical subjects/actions replace repeated content; companion sources preserve the original story beats. No camera-only variation.",
+      "current_prompt_image_verified": false,
+      "content_assignments": {
+        "1": "CONTINUING INTO THE STATION AFTER THE HELP"
+      },
+      "replacement_image_required": true,
+      "replacement_reason": "User approved a new 2K image for this completed duplicate. Existing attached image is retained until its replacement is accepted."
     },
     "MW02_C_03": {
       "key": "MW02_C_03",
@@ -7340,7 +7412,12 @@
       "original_view": 7,
       "generation_position": 3,
       "element_name": "MYS MW02_C_03 Memory View 07",
-      "prompt_sha256": "90aa152769c4e2609ed020f00f57d88ea8e9a0551c82f2fd8d7239d9e0fe32e2"
+      "prompt_sha256": "41a3b7b186803f17b6b46dae10d549179d18a46f139c390244ae9e501f1eace9",
+      "composition_revision_note": "2026-09-10: distinct physical subjects/actions replace repeated content; companion sources preserve the original story beats. No camera-only variation.",
+      "current_prompt_image_verified": false,
+      "content_assignments": {
+        "1": "BUDAPEST TRAM BOARDING THRESHOLD"
+      }
     },
     "MW02_C_04": {
       "key": "MW02_C_04",
@@ -7355,7 +7432,12 @@
       "original_view": 8,
       "generation_position": 4,
       "element_name": "MYS MW02_C_04 Memory View 08",
-      "prompt_sha256": "a1ab381c4fc827e1c00b13304e34aa416f5ad5ee7f726831852ea0277d88edfc"
+      "prompt_sha256": "b1fc12f7ad362d4f053b2b6327bc0c023550ebc80b6f538b896eb0e1c2f23a57",
+      "composition_revision_note": "2026-09-10: distinct physical subjects/actions replace repeated content; companion sources preserve the original story beats. No camera-only variation.",
+      "current_prompt_image_verified": false,
+      "content_assignments": {
+        "1": "LUGGAGE AND OCCUPIED SEATS DURING THE COACH JOURNEY"
+      }
     },
     "MW06_A_01": {
       "key": "MW06_A_01",
@@ -7389,7 +7471,12 @@
       "original_view": 2,
       "generation_position": 2,
       "element_name": "MYS MW06_A_02 Memory View 02",
-      "prompt_sha256": "e31b18330e87cfbc5e71344f874e199df43ba292d3dbaff6848cbfa1b922dae0"
+      "prompt_sha256": "a15a11a998bfbd29d99f1d59f28e666fd372b94929c619d9510c911e2a799b0c",
+      "composition_revision_note": "2026-09-10: distinct physical subjects/actions replace repeated content; companion sources preserve the original story beats. No camera-only variation.",
+      "current_prompt_image_verified": false,
+      "content_assignments": {
+        "1": "MONTHLY PASS PUT AWAY, PASSAGE KEPT CLEAR"
+      }
     },
     "MW06_A_03": {
       "key": "MW06_A_03",
@@ -7407,7 +7494,12 @@
       "original_view": 3,
       "generation_position": 3,
       "element_name": "MYS MW06_A_03 Memory View 03",
-      "prompt_sha256": "8214abd7a8af7b2dbb80bef9f0f6c4487948efbf620a313e11dbec24d1083537"
+      "prompt_sha256": "bea1e02df3d53cd8d2d66465a577e99efeb6622f8e09f56270b480931961e3c1",
+      "composition_revision_note": "2026-09-10: distinct physical subjects/actions replace repeated content; companion sources preserve the original story beats. No camera-only variation.",
+      "current_prompt_image_verified": false,
+      "content_assignments": {
+        "1": "FREEING A BALLOON ROPE FROM THE VEGETABLE ROW"
+      }
     },
     "MW06_A_04": {
       "key": "MW06_A_04",
@@ -7424,7 +7516,12 @@
       "original_view": 4,
       "generation_position": 4,
       "element_name": "MYS MW06_A_04 Memory View 04",
-      "prompt_sha256": "538fc280650c97c6bb543dae9358f2b05a2dcf83391da603d280e8aa1a3b8705"
+      "prompt_sha256": "644f307281647075ca175e40eab636e55b57d91885e7b8fd450a0373b0f002c0",
+      "composition_revision_note": "2026-09-10: distinct physical subjects/actions replace repeated content; companion sources preserve the original story beats. No camera-only variation.",
+      "current_prompt_image_verified": false,
+      "content_assignments": {
+        "1": "POLICEWOMAN MAKES ROOM TO FINISH THE PROCEDURE"
+      }
     },
     "MW06_B_01": {
       "key": "MW06_B_01",
@@ -7457,7 +7554,12 @@
       "original_view": 6,
       "generation_position": 2,
       "element_name": "MYS MW06_B_02 Memory View 06",
-      "prompt_sha256": "7bc12a5d8277a5a11fe5cd45ccbaa0e9ef1e3efe49d09b7f2c3ef8ae83cfc838"
+      "prompt_sha256": "a4576bbb4d4848259f94b9ac47bcd74359a8ab3d321eea3530ab900f225764ea",
+      "composition_revision_note": "2026-09-10: distinct physical subjects/actions replace repeated content; companion sources preserve the original story beats. No camera-only variation.",
+      "current_prompt_image_verified": false,
+      "content_assignments": {
+        "1": "A GLASS OF WATER DURING THE FORMAL PAUSE"
+      }
     },
     "MW06_B_03": {
       "key": "MW06_B_03",
@@ -7474,7 +7576,12 @@
       "original_view": 7,
       "generation_position": 3,
       "element_name": "MYS MW06_B_03 Memory View 07",
-      "prompt_sha256": "e22aaf37a640b83f1ff784ec7f3e0e5b20c8f3d3a508a7ebf312ff4cf4deabc0"
+      "prompt_sha256": "95f1b929854e24fd0f342a8e5029079ae7c16834530257c8043209ec35a0e877",
+      "composition_revision_note": "2026-09-10: distinct physical subjects/actions replace repeated content; companion sources preserve the original story beats. No camera-only variation.",
+      "current_prompt_image_verified": false,
+      "content_assignments": {
+        "1": "BEGINNERS WORK OUT THE STEP TOGETHER"
+      }
     },
     "MW06_B_04": {
       "key": "MW06_B_04",
@@ -7506,7 +7613,12 @@
       "original_view": 9,
       "generation_position": 1,
       "element_name": "MYS MW06_C_01 Memory View 09",
-      "prompt_sha256": "1a1e8ba3d3b58313e24016285d49993f9299cc64fcba42095a99a320dc4b3e74"
+      "prompt_sha256": "ade1987caa1f0a073554204769106f064d0d2a18fb74bf1595c77904d91ef06f",
+      "composition_revision_note": "2026-09-10: distinct physical subjects/actions replace repeated content; companion sources preserve the original story beats. No camera-only variation.",
+      "current_prompt_image_verified": false,
+      "content_assignments": {
+        "1": "COATS AND ORDINARY LEAVING-ROOM COURTESY"
+      }
     },
     "MW06_C_02": {
       "key": "MW06_C_02",
@@ -7523,7 +7635,12 @@
       "original_view": 1,
       "generation_position": 2,
       "element_name": "MYS MW06_C_02 Memory View 01",
-      "prompt_sha256": "c11bf8f0ec3e4e1859a16db5f39f6170733653b07ebd0d16c3febe05c67618a0"
+      "prompt_sha256": "c82007026b1ac39ffcbaa7788069fd4199e7def51d6c2fc1c0236b1e4d7104c6",
+      "composition_revision_note": "2026-09-10: distinct physical subjects/actions replace repeated content; companion sources preserve the original story beats. No camera-only variation.",
+      "current_prompt_image_verified": false,
+      "content_assignments": {
+        "1": "THE WOMAN CLEARS THE NARROW RESTAURANT AISLE"
+      }
     },
     "MW06_C_03": {
       "key": "MW06_C_03",
@@ -7540,7 +7657,12 @@
       "original_view": 7,
       "generation_position": 3,
       "element_name": "MYS MW06_C_03 Memory View 07",
-      "prompt_sha256": "dba6b9f7bcb06fb1f8d2ebb055232fb91b840f0f274b5959c0cdebcb3b090367"
+      "prompt_sha256": "e1c7b90989b957455d65af0746f5e3b3f826f4eff4801af7322297d1f9077619",
+      "composition_revision_note": "2026-09-10: distinct physical subjects/actions replace repeated content; companion sources preserve the original story beats. No camera-only variation.",
+      "current_prompt_image_verified": false,
+      "content_assignments": {
+        "1": "SHOE STRAP DURING A DANCE BREAK"
+      }
     },
     "MW06_C_04": {
       "key": "MW06_C_04",
@@ -7556,7 +7678,12 @@
       "original_view": 8,
       "generation_position": 4,
       "element_name": "MYS MW06_C_04 Memory View 08",
-      "prompt_sha256": "20cb40fb1371d3c4767b246fd71556f83687fd1ea697c6e95c11b4e39731d4ea"
+      "prompt_sha256": "b914d2232192b9887860f75ec6432d0170dc638fb423f8c5caff896ddbbc9e86",
+      "composition_revision_note": "2026-09-10: distinct physical subjects/actions replace repeated content; companion sources preserve the original story beats. No camera-only variation.",
+      "current_prompt_image_verified": false,
+      "content_assignments": {
+        "1": "SIX PEOPLE CLEAR THEIR SHARED TABLE"
+      }
     },
     "MW01_B_01": {
       "key": "MW01_B_01",
@@ -12634,13 +12761,13 @@
                 "key": "MW01_C_03",
                 "file": "02_library/worlds/memories/06_03_MW01_LONDON_SOCIAL_C_VIEW_07.txt",
                 "original_view": 7,
-                "sha256": "518699c819a7b6dddf668af37cf38893fcff183aa8f48f1cd6d91c525a951199"
+                "sha256": "3a148047aa619f2f8d5f4267b2a137e27aa40de2c24585bd0209d6d866f161e2"
               },
               {
                 "key": "MW01_C_04",
                 "file": "02_library/worlds/memories/06_04_MW01_LONDON_SOCIAL_C_VIEW_08.txt",
                 "original_view": 8,
-                "sha256": "99eee758968de5de5de37ee349afb825a4b07a95169a82bb268e8b1ba069017d"
+                "sha256": "84c05b3f5741785848ecf386da5a5552f9a020cf2b9e685eecfa14c1191d4689"
               }
             ]
           }
@@ -12717,19 +12844,19 @@
                 "key": "MW02_C_02",
                 "file": "02_library/worlds/memories/09_02_MW02_GLOBAL_ROUTES_C_VIEW_01.txt",
                 "original_view": 1,
-                "sha256": "de354fe0067deea2aac56d57c8b65331b4ed4150460ae014f505a07f8bedc50d"
+                "sha256": "e4e28d0cec90139c3f721f94d29d38385ad14f4b63e910cbd446582080f022d6"
               },
               {
                 "key": "MW02_C_03",
                 "file": "02_library/worlds/memories/09_03_MW02_GLOBAL_ROUTES_C_VIEW_07.txt",
                 "original_view": 7,
-                "sha256": "90aa152769c4e2609ed020f00f57d88ea8e9a0551c82f2fd8d7239d9e0fe32e2"
+                "sha256": "41a3b7b186803f17b6b46dae10d549179d18a46f139c390244ae9e501f1eace9"
               },
               {
                 "key": "MW02_C_04",
                 "file": "02_library/worlds/memories/09_04_MW02_GLOBAL_ROUTES_C_VIEW_08.txt",
                 "original_view": 8,
-                "sha256": "a1ab381c4fc827e1c00b13304e34aa416f5ad5ee7f726831852ea0277d88edfc"
+                "sha256": "b1fc12f7ad362d4f053b2b6327bc0c023550ebc80b6f538b896eb0e1c2f23a57"
               }
             ]
           }
@@ -12774,7 +12901,7 @@
               8
             ],
             "status": "PREPARED_NOT_RENDERED",
-            "sha256": "cfafa5ce8549e67507f589714d907d76bf672638dbe8c118199ae3d6f4c33696"
+            "sha256": "cc70bd6be89d9d07eae124ee6f615d268f767b1b28129091889945733e2fff6f"
           }
         },
         "original_views": 9,
@@ -12817,7 +12944,7 @@
               8
             ],
             "status": "PREPARED_NOT_RENDERED",
-            "sha256": "f71fa6f5f4c50f464f686d19db35ba96876281d34547cf30e4baa17f1e1ec099"
+            "sha256": "2d1fc1e3758b4fbf653675cc396a6762315d0bbc953133b819809f6dc0ded786"
           }
         },
         "original_views": 9,
@@ -12848,7 +12975,7 @@
               8
             ],
             "status": "PREPARED_NOT_RENDERED",
-            "sha256": "6c70797c5603850de27b239d1c9070d60bd8bc8075695b8318fcde499998c6b5"
+            "sha256": "e56497e5044daecd040d1f1419312d18bacb2019657af4e68cd7175d66b0e8fd"
           },
           "C": {
             "key": "MW05_C",
@@ -12860,7 +12987,7 @@
               8
             ],
             "status": "PREPARED_NOT_RENDERED",
-            "sha256": "76d38c90fcf53d4c16f2d2d3648940657cf87b870331ef078d0637df4470940e"
+            "sha256": "3af63491c997126c754d024ca2260998934f5b33f4ba3da5f2529fdc05a97223"
           }
         },
         "original_views": 9,
@@ -12888,19 +13015,19 @@
                 "key": "MW06_A_02",
                 "file": "02_library/worlds/memories/19_02_MW06_HUMAN_COUNTERMEMORIES_A_VIEW_02.txt",
                 "original_view": 2,
-                "sha256": "e31b18330e87cfbc5e71344f874e199df43ba292d3dbaff6848cbfa1b922dae0"
+                "sha256": "a15a11a998bfbd29d99f1d59f28e666fd372b94929c619d9510c911e2a799b0c"
               },
               {
                 "key": "MW06_A_03",
                 "file": "02_library/worlds/memories/19_03_MW06_HUMAN_COUNTERMEMORIES_A_VIEW_03.txt",
                 "original_view": 3,
-                "sha256": "8214abd7a8af7b2dbb80bef9f0f6c4487948efbf620a313e11dbec24d1083537"
+                "sha256": "bea1e02df3d53cd8d2d66465a577e99efeb6622f8e09f56270b480931961e3c1"
               },
               {
                 "key": "MW06_A_04",
                 "file": "02_library/worlds/memories/19_04_MW06_HUMAN_COUNTERMEMORIES_A_VIEW_04.txt",
                 "original_view": 4,
-                "sha256": "538fc280650c97c6bb543dae9358f2b05a2dcf83391da603d280e8aa1a3b8705"
+                "sha256": "644f307281647075ca175e40eab636e55b57d91885e7b8fd450a0373b0f002c0"
               }
             ]
           },
@@ -12923,13 +13050,13 @@
                 "key": "MW06_B_02",
                 "file": "02_library/worlds/memories/20_02_MW06_HUMAN_COUNTERMEMORIES_B_VIEW_06.txt",
                 "original_view": 6,
-                "sha256": "7bc12a5d8277a5a11fe5cd45ccbaa0e9ef1e3efe49d09b7f2c3ef8ae83cfc838"
+                "sha256": "a4576bbb4d4848259f94b9ac47bcd74359a8ab3d321eea3530ab900f225764ea"
               },
               {
                 "key": "MW06_B_03",
                 "file": "02_library/worlds/memories/20_03_MW06_HUMAN_COUNTERMEMORIES_B_VIEW_07.txt",
                 "original_view": 7,
-                "sha256": "e22aaf37a640b83f1ff784ec7f3e0e5b20c8f3d3a508a7ebf312ff4cf4deabc0"
+                "sha256": "95f1b929854e24fd0f342a8e5029079ae7c16834530257c8043209ec35a0e877"
               },
               {
                 "key": "MW06_B_04",
@@ -12952,25 +13079,25 @@
                 "key": "MW06_C_01",
                 "file": "02_library/worlds/memories/21_01_MW06_HUMAN_COUNTERMEMORIES_C_VIEW_09.txt",
                 "original_view": 9,
-                "sha256": "1a1e8ba3d3b58313e24016285d49993f9299cc64fcba42095a99a320dc4b3e74"
+                "sha256": "ade1987caa1f0a073554204769106f064d0d2a18fb74bf1595c77904d91ef06f"
               },
               {
                 "key": "MW06_C_02",
                 "file": "02_library/worlds/memories/21_02_MW06_HUMAN_COUNTERMEMORIES_C_VIEW_01.txt",
                 "original_view": 1,
-                "sha256": "c11bf8f0ec3e4e1859a16db5f39f6170733653b07ebd0d16c3febe05c67618a0"
+                "sha256": "c82007026b1ac39ffcbaa7788069fd4199e7def51d6c2fc1c0236b1e4d7104c6"
               },
               {
                 "key": "MW06_C_03",
                 "file": "02_library/worlds/memories/21_03_MW06_HUMAN_COUNTERMEMORIES_C_VIEW_07.txt",
                 "original_view": 7,
-                "sha256": "dba6b9f7bcb06fb1f8d2ebb055232fb91b840f0f274b5959c0cdebcb3b090367"
+                "sha256": "e1c7b90989b957455d65af0746f5e3b3f826f4eff4801af7322297d1f9077619"
               },
               {
                 "key": "MW06_C_04",
                 "file": "02_library/worlds/memories/21_04_MW06_HUMAN_COUNTERMEMORIES_C_VIEW_08.txt",
                 "original_view": 8,
-                "sha256": "20cb40fb1371d3c4767b246fd71556f83687fd1ea697c6e95c11b4e39731d4ea"
+                "sha256": "b914d2232192b9887860f75ec6432d0170dc638fb423f8c5caff896ddbbc9e86"
               }
             ]
           }
@@ -12991,7 +13118,7 @@
               4
             ],
             "status": "PREPARED_NOT_RENDERED",
-            "sha256": "8308eec6bdbca6ded3784fe9b2e998d240eb26061956ad958a0b385d3c2b62da"
+            "sha256": "991ed86b7ffbd0f40855e6a72227f2d89da86cbbcb8e7c4cac2b30ce216d8e5a"
           },
           "B": {
             "key": "MWP01_B",
@@ -13015,7 +13142,7 @@
               8
             ],
             "status": "PREPARED_NOT_RENDERED",
-            "sha256": "103670cc9b3a5358207ca2a0359726186eb5633a978afd8591f2637a63b1002c"
+            "sha256": "408099d38a2bb32ccfa31d8844179067663059927c3230fea378e4121d05cc00"
           }
         },
         "original_views": 9,
@@ -13046,7 +13173,7 @@
               8
             ],
             "status": "PREPARED_NOT_RENDERED",
-            "sha256": "3fc75e6fad253d1f3f93df4260215b9e220ae2969a471e2a46f16ba23e267c3b"
+            "sha256": "7dd8abfd4a5f26d3cc3b119f448cdab078194f5e0a2db693c24b1f084dd77c4c"
           },
           "C": {
             "key": "MWP02_C",
@@ -13058,7 +13185,7 @@
               8
             ],
             "status": "PREPARED_NOT_RENDERED",
-            "sha256": "b20e9ab8af41ce2e08e10a7dc2c083056f4228856d4d42db1ed027801bb8aebd"
+            "sha256": "bd5f5868d9bb4eb12f3c4c157b9b2c9650d4f2c63f833acebc01aa70c1185301"
           }
         },
         "original_views": 9,

@@ -31,7 +31,7 @@ Human scale, practical light, believable wear and imperfection.
 PAGE A OF MWP01: This page contains original views 1, 2, 3, 4. Original-view numbers below are provenance identifiers, not cell positions. Render ONLY the four cell assignments on this page. Global identity rules apply only when their person actually occurs in an assigned view.
 
 REFERENCE COVERAGE FOR THE MOVING FILM:
-This page supplies the four assigned literal views, not four cuts, morph stages or interchangeable world designs. Make each view useful for its assigned purpose: room layout shows supports and an entry/exit; a gesture view retains its hand, furniture edge and background anchor; an object detail shows side/underside and contact. Different views of the SAME room preserve its floor plan, furniture, identities, clothes and light sources even when the viewpoint changes. Distinct memories remain distinct places; do not fuse them into one room to match the grid. Repeated anchor views on another page must preserve the same state and layout.
+This page supplies the four assigned literal views, not four cuts, morph stages or interchangeable world designs. Make each view useful for its assigned purpose: room layout shows supports and an entry/exit; a gesture view retains its hand, furniture edge and background anchor; an object detail shows side/underside and contact. Different views of the SAME room preserve its floor plan, furniture, identities, clothes and light sources even when the viewpoint changes. Distinct memories remain distinct places; do not fuse them into one room to match the grid. Recurring places retain their established layout; each cell uses its explicitly assigned action and object state.
 Additional detail pages of the same place retain that memory and its established event. Keep full body/furniture support legible wherever the assigned view permits. Never substitute four nearly identical wide shots for the four assigned subjects.
 
 FOUR IMAGE ASSIGNMENTS — INSTRUCTIONS ONLY, NO PRINTED TEXT:
@@ -46,9 +46,10 @@ Exterior of the low-rise shared London home beside canal / Lee Valley-like water
 Frame the shared-house entrance from the path, showing the threshold, several shoe pairs and the wall corner. The canal water and reeds sit beyond the building at a separate depth. Keep the house modest and low-rise with actual doors and windows. The entrance clutter is supported on the step or floor and does not fill the landscape as a symbolic collage.
 
 For the bottom left image (source view 03; instruction only, never printed):
-Childhood near Orosháza in the Viharsarok: paprika rows and tall corn rows below a flat Great Plain horizon. View the agricultural rows from a child's low eye level, with no visible child, as a lived memory at the beginning of a route. Natural soil, leaves and daylight; no postcard framing.
+PAPRIKA HARVEST AT THE EDGE OF THE CORN ROWS:
+An ordinary shallow wooden harvest crate rests on the soil between paprika plants and the tall corn rows near Orosháza. Picked peppers, leaf stems, loose earth on their skins, crate slats and a few dry corn husks are the principal physical subjects. Standing plants continue behind the crate toward the flat Viharsarok horizon.
 
-At child-eye height, let near leaves and stalks overlap the middle rows while the field remains open to the flat horizon. Show leaf ribs, stem thickness, soil clods and gaps between rows. No visible child or adult is required. The same ground plane continues behind the plants; railway or route associations do not replace the agricultural scene.
+Keep this an unpeopled literal childhood landscape detail: no visible child, adult, souvenir stall or idealized farm advertisement. Retain leaf ribs, stems, soil clods and the gaps between real rows; the crate has weight and ground contact. MW02_B already supplies the broad field-to-railway connection. This cell adds the local agricultural objects and harvested crop rather than another field panorama differentiated only by eye height.
 
 For the bottom right image (source view 04; instruction only, never printed):
 Trivandrum / Thiruvananthapuram airport or arrival-zone clock and ordinary travel threshold, luggage and fluorescent public architecture. This is the next literal route fragment after the field, not a graphic morph.

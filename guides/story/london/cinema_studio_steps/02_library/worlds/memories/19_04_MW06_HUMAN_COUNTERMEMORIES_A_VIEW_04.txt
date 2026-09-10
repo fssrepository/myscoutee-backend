@@ -4,7 +4,7 @@ REFERENCE SETUP INCOMPLETE: MW04_C
 Do not generate until these references are bound.
 
 REFERENCE INPUTS:
-@UNBOUND_MW04_C = Use original view 9 of the accepted MW04_C page for the same policewoman, procedure surface and restrained smile.
+@UNBOUND_MW04_C = Use original view 9 of the accepted MW04_C page for the same policewoman, procedure surface and ordinary human tone; reconstruct the assigned chair assistance.
 @char_MYS_mys-c01-protagonist_s0_v1 = CHARACTER 01 — PROTAGONIST; exact person identity; use only where this person appears.
 @char_MYS_mys-c03-policewoman_s0_v1 = CHARACTER 03 — POLICEWOMAN; exact person identity; use only where this person appears.
 
@@ -31,17 +31,18 @@ IDENTITY ANCHORS — REQUIRED:
 Preserve the exact identities, age, hair, body proportions and context-appropriate wardrobe supplied for this scene. Apply a character reference only where that person appears; incidental people do not become additional named cast.
 
 PURPOSE:
-Create one compact reusable source bank for the late-film memory crescendo, so STORYBOARD 06 / video generation can use ONE memory reference instead of attaching many different memory-world sheets at once.
-These are not new events. They are clean re-stagings of already established literal memories in which ordinary humanity briefly breaks through a role, route or system.
+Create a reusable source bank for the late-film memory crescendo. This single image supplies its own assigned human action; it does not contain the other memory sources.
+These are distinct ordinary actions within the established encounters, or the expressly assigned composite source staging. Preserve the existing story and its outcomes while giving each source a different physical task or subject.
 
 REFERENCE COVERAGE FOR THE MOVING FILM:
-This image supplies the one assigned literal view. It is not a cut or a morph stage. Make this view useful for its assigned purpose: room layout shows supports and an entry/exit; a gesture view retains its hand, furniture edge and background anchor; an object detail shows side/underside and contact. Different views of the SAME room preserve its floor plan, furniture, identities, clothes and light sources even when the viewpoint changes. Distinct memories remain distinct places; do not fuse them into one room. Repeated anchor views in another image must preserve the same state and layout.
+This image supplies the one assigned literal view. It is not a cut or a morph stage. Make this view useful for its assigned purpose: room layout shows supports and an entry/exit; a gesture view retains its hand, furniture edge and background anchor; an object detail shows side/underside and contact. Different views of the SAME room preserve its floor plan, furniture, identities, clothes and light sources even when the viewpoint changes. Distinct memories remain distinct places; do not fuse them into one room. Recurring places retain their established layout; use the distinct action and object state assigned in this image.
 Additional detail images of the same place retain that memory and its established event. Keep full body/furniture support legible wherever the assigned view permits. Keep the assigned subject and framing; do not substitute a generic wide shot for a detail.
 
 ASSIGNED COMPOSITION — ORIGINAL VIEW 04, ONE IMAGE:
-POLICEWOMAN or another officer giving an embarrassed small human smile / struggling not to laugh during an otherwise formal procedure.
+POLICEWOMAN MAKES ROOM TO FINISH THE PROCEDURE:
+At the same formal processing surface, the policewoman moves an ordinary chair into a usable position for the protagonist while keeping the fingerprint paperwork or device safely on the desk. He begins to sit, carefully placing his feet and keeping his processed hand away from the papers. The chair movement, his supported descent and her practical assistance occupy the image.
 
-Keep the policewoman in her established formal work position with the same desk or procedure surface below. A brief restrained smile or suppressed laugh changes the face while the hands continue the ordinary task. The other participant remains visible enough to receive the expression. No uniform or institutional setting transforms in this source moment.
+Keep her actual uniform, identity and small embarrassed human smile; the procedure and its status do not change. Show chair legs on the floor, her hand on the chair back, clear space for his knees and the unchanged desk equipment. Do not add a medical treatment, injury close-up, release or special favour. MW04_C retains the expression during formal work; this image gives that humanity a distinct physical action.
 
 FINAL CHECK:
 One full-frame 16:9 image at selected 2K. Direct memory scene, no score cards, no present-city overlay, no printed instruction labels.

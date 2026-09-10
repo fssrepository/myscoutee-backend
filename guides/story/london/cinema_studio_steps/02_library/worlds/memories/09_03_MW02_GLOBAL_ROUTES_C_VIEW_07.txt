@@ -32,13 +32,14 @@ PURPOSE:
 Build the reusable literal travel-memory source bank around the principle: Global route. Local encounter. The important subject is ordinary human contact inside movement, not postcard tourism.
 
 REFERENCE COVERAGE FOR THE MOVING FILM:
-This image supplies the one assigned literal view. It is not a cut or a morph stage. Make this view useful for its assigned purpose: room layout shows supports and an entry/exit; a gesture view retains its hand, furniture edge and background anchor; an object detail shows side/underside and contact. Different views of the SAME room preserve its floor plan, furniture, identities, clothes and light sources even when the viewpoint changes. Distinct memories remain distinct places; do not fuse them into one room. Repeated anchor views in another image must preserve the same state and layout.
+This image supplies the one assigned literal view. It is not a cut or a morph stage. Make this view useful for its assigned purpose: room layout shows supports and an entry/exit; a gesture view retains its hand, furniture edge and background anchor; an object detail shows side/underside and contact. Different views of the SAME room preserve its floor plan, furniture, identities, clothes and light sources even when the viewpoint changes. Distinct memories remain distinct places; do not fuse them into one room. Recurring places retain their established layout; use the distinct action and object state assigned in this image.
 Additional detail images of the same place retain that memory and its established event. Keep full body/furniture support legible wherever the assigned view permits. Keep the assigned subject and framing; do not substitute a generic wide shot for a detail.
 
 ASSIGNED COMPOSITION — ORIGINAL VIEW 07, ONE IMAGE:
-Budapest tram-wire / rail-memory fragment viewed from an ordinary street perspective, emphasizing physical route lines and infrastructure rather than landmark tourism.
+BUDAPEST TRAM BOARDING THRESHOLD:
+An ordinary Budapest tram has stopped at the remembered street stop with its passenger door open. Anonymous adults wait their turn while one passenger steps from the platform into the carriage using the fixed grab pole. The tram doorway, metal step, rubber edge, worn interior floor and moving queue are the main physical subjects.
 
-Look along a real street rail toward its curve while the overhead wire network recedes above it. Resolve the rail groove, paving boundary, wire intersections and facade brackets. Keep a normal door or tram-stop fixture for scale. These are physical route details in a remembered Budapest street, without present-city rating graphics or a tourist-landmark collage.
+Keep the street's established rails, rail groove, paving boundary, overhead wires, facade brackets and stop fixture consistent with MW02_B. The tram occupies its track and its open door meets the actual boarding side. Resolve shoe contact on the step, pole grip, door-leaf thickness and the clear gap beside the vehicle. No landmark panorama, transport morph, new named cast or rating cards. MW02_B retains the unobstructed wire-and-rail landscape; this source adds the inhabited vehicle and boarding action.
 
 FINAL CHECK:
 One full-frame 16:9 image at selected 2K. Direct memory scene, no score cards, no present-city overlay, no printed instruction labels.

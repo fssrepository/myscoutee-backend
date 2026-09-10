@@ -43,7 +43,7 @@ Build the literal court/file/classification memory source bank: hearing, assets,
 PAGE B OF MW05: This page contains original views 5, 6, 7, 8. Original-view numbers below are provenance identifiers, not cell positions. Render ONLY the four cell assignments on this page. Global identity rules apply only when their person actually occurs in an assigned view.
 
 REFERENCE COVERAGE FOR THE MOVING FILM:
-This page supplies the four assigned literal views, not four cuts, morph stages or interchangeable world designs. Make each view useful for its assigned purpose: room layout shows supports and an entry/exit; a gesture view retains its hand, furniture edge and background anchor; an object detail shows side/underside and contact. Different views of the SAME room preserve its floor plan, furniture, identities, clothes and light sources even when the viewpoint changes. Distinct memories remain distinct places; do not fuse them into one room to match the grid. Repeated anchor views on another page must preserve the same state and layout.
+This page supplies the four assigned literal views, not four cuts, morph stages or interchangeable world designs. Make each view useful for its assigned purpose: room layout shows supports and an entry/exit; a gesture view retains its hand, furniture edge and background anchor; an object detail shows side/underside and contact. Different views of the SAME room preserve its floor plan, furniture, identities, clothes and light sources even when the viewpoint changes. Distinct memories remain distinct places; do not fuse them into one room to match the grid. Recurring places retain their established layout; each cell uses its explicitly assigned action and object state.
 Additional detail pages of the same place retain that memory and its established event. Keep full body/furniture support legible wherever the assigned view permits. Never substitute four nearly identical wide shots for the four assigned subjects.
 
 FOUR IMAGE ASSIGNMENTS — INSTRUCTIONS ONLY, NO PRINTED TEXT:
@@ -58,14 +58,16 @@ Clerk / recording / evidence-request memory: phone, hearing paperwork, request f
 Place the clerk behind a practical desk with phone and hearing documents, the protagonist opposite or beside the counter. The clerk indicates a paper or record area while listening. Show the handset support, document stack and actual desk depth. The cost or deferral belongs to the story; avoid invented readable fees, formal quotations or a visible final decision.
 
 For the bottom left image (source view 07; instruction only, never printed):
-Black-humour memory source: a small self-made "THE SYSTEM'S MOST WANTED" satirical visual and/or impossible police-career CV/application joke on a desk or screen. Keep it clearly self-made absurdism, never an official notice, and avoid large readable text.
+SELF-MADE WANTED-PAGE JOKE:
+The protagonist assembles one small self-made "THE SYSTEM'S MOST WANTED" satirical page on his ordinary desk. A cut paper portrait, glue stick, scissors lying closed and uneven paper edges make the personal construction evident. His hands press one corner flat while the rest of the page lies supported on the table.
 
-Show one clearly handmade satirical page or ordinary screen document on the protagonist desk, with uneven cut edges or everyday editing cues. Keep surrounding papers mundane so the joke remains personal and small. The page is not a real wanted poster, police database or official notice. No extra graphic inset or large headline dominates the reference cell.
+Keep the phrase modest in size and the surrounding papers mundane. This is homemade absurdism, never a police notice, database, real allegation or official wanted poster. Preserve his actual unchanged face in any printed portrait. The separate impossible police-career CV/application joke belongs to MW05_C, so this cell contains only the handmade wanted-page object, without a second miniature composition.
 
 For the bottom right image (source view 08; instruction only, never printed):
-Public-role absurdity memory source: an anonymous fictional cardboard public figure with a deliberately ridiculous hat and the tone of an asylum-request joke. Keep the joke recognizably absurd, but attach no real name, real politician likeness, party branding, campaign slogan or identifiable contemporary office. No advocacy and no policy statement.
+FICTIONAL CARDBOARD FIGURE WITH ITS RIDICULOUS HAT:
+One anonymous fictional cardboard public figure stands on its simple support with the deliberately ridiculous hat resting on its flat printed head. The physical board, silly hat and empty place in front of the cutout are the subjects of this source. Resolve cardboard thickness, rear brace, hat material and actual base contact with desk or floor.
 
-The anonymous cardboard public figure is a physical cutout with visible board thickness, a simple rear support and the deliberately silly hat resting on it. Show its base on a desk or floor and a real room behind. The printed face remains flat on the board, without becoming a living official. Keep every insignia and likeness fictional.
+Use the established C31 fictional design, never a real politician or living official. Retain the asylum-request black-humour context without adding party branding, a campaign slogan, recognizable office, policy statement or official response. The protagonist addressing this prop with his request papers is assigned separately to MW05_C; here the prop remains an intact ordinary constructed object in the same room.
 
 FINAL CHECK:
 Exactly one 16:9 image.

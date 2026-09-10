@@ -4,7 +4,7 @@ REFERENCE SETUP INCOMPLETE: MW06_B_04
 Do not generate until these references are bound.
 
 REFERENCE INPUTS:
-@UNBOUND_MW06_B_04 = Use the accepted six-person table image to preserve all six people, their places, clothes and the shared activity setting.
+@UNBOUND_MW06_B_04 = Use the accepted six-person table image to preserve all six identities, clothes, furniture and room; their positions change for the assigned clearing-up tasks.
 @char_MYS_mys-c01-protagonist_s0_v1 = CHARACTER 01 — PROTAGONIST; exact person identity; use only where this person appears.
 
 OUTPUT GEOMETRY — ONE 2K FULL-FRAME IMAGE:
@@ -30,17 +30,18 @@ IDENTITY ANCHORS — REQUIRED:
 Preserve the exact identities, age, hair, body proportions and context-appropriate wardrobe supplied for this scene. Apply a character reference only where that person appears; incidental people do not become additional named cast.
 
 PURPOSE:
-Create one compact reusable source bank for the late-film memory crescendo, so STORYBOARD 06 / video generation can use ONE memory reference instead of attaching many different memory-world sheets at once.
-These are not new events. They are clean re-stagings of already established literal memories in which ordinary humanity briefly breaks through a role, route or system.
+Create a reusable source bank for the late-film memory crescendo. This single image supplies its own assigned human action; it does not contain the other memory sources.
+These are distinct ordinary actions within the established encounters, or the expressly assigned composite source staging. Preserve the existing story and its outcomes while giving each source a different physical task or subject.
 
 REFERENCE COVERAGE FOR THE MOVING FILM:
-This image supplies the one assigned literal view. It is not a cut or a morph stage. Make this view useful for its assigned purpose: room layout shows supports and an entry/exit; a gesture view retains its hand, furniture edge and background anchor; an object detail shows side/underside and contact. Different views of the SAME room preserve its floor plan, furniture, identities, clothes and light sources even when the viewpoint changes. Distinct memories remain distinct places; do not fuse them into one room. Repeated anchor views in another image must preserve the same state and layout.
+This image supplies the one assigned literal view. It is not a cut or a morph stage. Make this view useful for its assigned purpose: room layout shows supports and an entry/exit; a gesture view retains its hand, furniture edge and background anchor; an object detail shows side/underside and contact. Different views of the SAME room preserve its floor plan, furniture, identities, clothes and light sources even when the viewpoint changes. Distinct memories remain distinct places; do not fuse them into one room. Recurring places retain their established layout; use the distinct action and object state assigned in this image.
 Additional detail images of the same place retain that memory and its established event. Keep full body/furniture support legible wherever the assigned view permits. Keep the assigned subject and framing; do not substitute a generic wide shot for a detail.
 
 ASSIGNED COMPOSITION — ORIGINAL VIEW 08, ONE IMAGE:
-Six ordinary people around a real table / shared activity setting, faces and voices finally larger than profile cards. Natural conversation, no product-ad feeling.
+SIX PEOPLE CLEAR THEIR SHARED TABLE:
+The same six ordinary people clear up after their shared table activity. Two remain seated collecting loose items, two stand gathering cups and dishes into a stable tray, one wipes a small clear part of the table, and the protagonist holds a chair aside to make room. Give every person one separate, physically reachable task. Cups stay upright and nothing floats between hands.
 
-Show all six people at distinct places around one real table, with six separate head-and-shoulder outlines and reachable tabletop space. Use alternating body angles and ordinary conversational hand positions, not a row of frontal portraits. Table legs and chair supports remain visible where not naturally occluded. No rating cards, logos or product-demo props enter the memory.
+Preserve the six identities, clothing, table and room from MW06_B_04. Their positions change because they are doing these tasks; show six distinct faces and bodies with supported furniture, dish edges, cloth contact and a clear walking gap. Keep any added cleanup objects mundane and unbranded. No seventh person, product demonstration, rating card or posed celebratory group. The conversation is already supplied by MW06_B_04; this is shared effort after it.
 
 FINAL CHECK:
 One full-frame 16:9 image at selected 2K. Direct memory scene, no score cards, no present-city overlay, no printed instruction labels.
