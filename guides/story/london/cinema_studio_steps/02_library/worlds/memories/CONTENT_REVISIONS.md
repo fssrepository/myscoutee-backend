@@ -159,3 +159,7 @@ Megőrzött forrás: 25 — elutasított kérelem, későbbre félretett új cso
 
 Megőrzött forrás: 25 — elutasító levél és új kérelem; 26 — elakadt felülvizsgálat és a korábbi önkészítésű tréfa; 27 bal felső — üres vezetői szék. Az irodai pakolás nem eredmény a főhős ügyében.
 
+
+### MW05_C_04 — user-requested duplicate replacement
+
+[18_04_MW05_COURT_FILE_C_VIEW_08.txt](18_04_MW05_COURT_FILE_C_VIEW_08.txt): replace the duplicate solitary-cutout result with an occupied writing-table scene. The protagonist writes his asylum request in an open folder, with a separate envelope; the same inert cardboard figure is the intended recipient across the table. Preserve the absurd asylum-request meaning and no-outcome constraint. This is a new physical action, not a camera variation. Only C_04 is approved for regeneration; MW05_B_04 / 17_04 and its accepted media remain unchanged. The original split preserved the source body; this later revision intentionally changes C_04's assigned action at the user's request.

@@ -2479,7 +2479,7 @@
     {
       "asset": "MW05_C_04",
       "file": "02_library/worlds/memories/18_04_MW05_COURT_FILE_C_VIEW_08.txt",
-      "file_sha256": "c4f1ffb7df2d975f13c499c884507fd11934007d90b3032fef6ee888f01252d3",
+      "file_sha256": "13c3e4395df5fe3a81e8ec296baf03ee7347eae1ac25c375943a46db6adc4b34",
       "source_prompt_sha256": "82e079a142342dcb0c6b9433504790ea7f8acdf6fad03443dd40ce365308c09a",
       "note": "Full original scene retained; cell/image language, scoped references and output geometry adapted."
     }
@@ -8574,13 +8574,20 @@
         "C31"
       ],
       "layout": "2K 16:9 single full-frame memory image",
-      "status": "PREPARED_NOT_RENDERED",
+      "status": "PROMPT_REVISED_REGENERATION_REQUIRED",
       "source_page": "MW05_C",
       "original_view": 8,
       "generation_position": 4,
       "element_name": "MYS MW05_C_04 Memory View 08",
-      "prompt_sha256": "c4f1ffb7df2d975f13c499c884507fd11934007d90b3032fef6ee888f01252d3",
-      "subject_hu": "Menedékkérelem a kartonfigurához"
+      "prompt_sha256": "13c3e4395df5fe3a81e8ec296baf03ee7347eae1ac25c375943a46db6adc4b34",
+      "subject_hu": "Menedékkérelem megírása a mozdulatlan kartonfigurának",
+      "replacement_image_required": true,
+      "replacement_reason": "User reported MW05_C_04 duplicates MW05_B_04 and authorized a new render of C_04 only. Revised action: seated protagonist writes and assembles his asylum request across the table from the inert cardboard recipient.",
+      "current_prompt_image_verified": false,
+      "content_assignments": {
+        "1": "WRITING THE ASYLUM REQUEST TO THE INERT CARDBOARD RECIPIENT"
+      },
+      "superseded_prompt_sha256": "c4f1ffb7df2d975f13c499c884507fd11934007d90b3032fef6ee888f01252d3"
     }
   },
   "operator_language": "English; Hungarian in-world signage and proper names are intentional story content.",
