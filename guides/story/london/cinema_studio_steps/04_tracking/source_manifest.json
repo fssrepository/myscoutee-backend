@@ -83,7 +83,7 @@
       ],
       "source_prompt_sha256": "1c7f054229ec7c5295ee6e424c9d169831af8221220b92deea92c9a83f564005",
       "file": "02_library/characters/C01_PROTAGONIST.txt",
-      "file_sha256": "6805d4f8fd171360d852bb3c335ad7fe5a972d76828bf1e0e929a643283b91be",
+      "file_sha256": "3c828b0141c2c7a691eaf0619928e4fe4ee8d26984af6ac6e96269b3e5b1420d",
       "changes": "Verbatim fenced prompt"
     },
     {
@@ -95,7 +95,7 @@
       ],
       "source_prompt_sha256": "1c84a4aee0d00d764205f4d31ce7919c94264d76932fb45ddbe57b3e6b970581",
       "file": "02_library/characters/C02_SOHO_WOMAN.txt",
-      "file_sha256": "50f22cd269a2d3d7c7b0ae8af734741c0064ca9ec3d17bd1ac7d2a4b5e3881ca",
+      "file_sha256": "c3b9438be5dc0d54dd2767a4c933339d07d19b548af9b7c7d22798f3325c6974",
       "changes": "Verbatim fenced prompt"
     },
     {
@@ -107,7 +107,7 @@
       ],
       "source_prompt_sha256": "0cec9d04f9314393840ada226c7ca8e576f97e74b19eb9e5b473801db325befc",
       "file": "02_library/characters/C03_POLICEWOMAN.txt",
-      "file_sha256": "468783b58a35f5114a54dec7d75a1ba45450dd0ce0b958e250c5b6489121ea33",
+      "file_sha256": "f5c7109b3ee7211ccf867ed2ad21cf00131494e56bd76429f7198747804b4fd7",
       "changes": "Verbatim fenced prompt"
     },
     {
@@ -119,7 +119,7 @@
       ],
       "source_prompt_sha256": "5d09e227111b9df2ff0c6019138233806fcb4790776ceddadfab334f392c53aa",
       "file": "02_library/characters/C04_APPOINTED_LAWYER.txt",
-      "file_sha256": "be0554eebf3feaa13282753e30335d24e1b0fa409699380a2f5b176e8ef915ad",
+      "file_sha256": "7006ba20df546bba841ddc643ba7808f27ec7f3d49d1722bd799eb9f87a8b6bd",
       "changes": "Verbatim fenced prompt"
     },
     {
@@ -131,7 +131,7 @@
       ],
       "source_prompt_sha256": "db066590815046c07c45129a8145d1633cd1c18c0c3aea32cfdd7b7bf6e36650",
       "file": "02_library/characters/C05_FINAL_NURSE.txt",
-      "file_sha256": "6adf8736f25388140e6a8fc6c70528e022c46f0ecc4d3595e2942b90c30b002c",
+      "file_sha256": "bc009c26da3d71aeb153e0336f6bcef9a71c41b8dfd592bcb3bac85921fd15fc",
       "changes": "Verbatim fenced prompt"
     },
     {
@@ -143,7 +143,7 @@
       ],
       "source_prompt_sha256": "0e736b3252fe3cbd8ca19c597663879f0e480bb6803e168de6902c32a3173d0c",
       "file": "02_library/characters/C06_SHARED_HOUSE_SUBSTITUTE_SNORING_HOUSEMATE.txt",
-      "file_sha256": "529d387cbbee08816265353bdac76464577b9bc3c038e42dbe4e062401edef0b",
+      "file_sha256": "c070c61cd614f04cc1c0589e99767d01320173c9bbc8e08c8ae3103fceb7443a",
       "changes": "Verbatim fenced prompt"
     },
     {
@@ -155,7 +155,7 @@
       ],
       "source_prompt_sha256": "35f31171b6f526d520600915de5d7227a0bb7fadaef7748c0d8d978fc51cbd87",
       "file": "02_library/characters/C07_FX_MORTGAGE_HOUSEMATE.txt",
-      "file_sha256": "e7d56702a2985e61b1943876516e5c5e11334f8372c7a2b855857a20c55b9dfe",
+      "file_sha256": "1dc9a7a3a10e81e4c7f63b70f9a9dba2be55c104327de552bcc00496b022ddea",
       "changes": "Verbatim fenced prompt"
     },
     {
@@ -167,7 +167,7 @@
       ],
       "source_prompt_sha256": "fd0d8ef7f58a40bac83ccdf0bd9e0701aa59f5177acecc8f2a2ae28025580208",
       "file": "02_library/characters/C08_FX_MORTGAGE_SPOUSE.txt",
-      "file_sha256": "2f688974bab66c142d4a8f85315f93bc639df2300f7cf601cb5c5eeb734de0d7",
+      "file_sha256": "bdbdbbf4728550cbe2977850f5b662773c4c93f9864c63a2ca7d057fb158ec58",
       "changes": "Verbatim fenced prompt"
     },
     {
@@ -179,7 +179,7 @@
       ],
       "source_prompt_sha256": "27a9a08fc7ed627c3682c4c3af3959d7fd0a60589df5325211a885cda92acdb3",
       "file": "02_library/characters/C09_FX_MORTGAGE_CHILD.txt",
-      "file_sha256": "28e8429388c366e29e31fae4799bf79bd332caa104747e56f895c5d429e76910",
+      "file_sha256": "e4664db2e15bde42d4e12dd7f198b6eb462bbec2f95ce0cc61ab7394330fd9f8",
       "changes": "Verbatim fenced prompt"
     },
     {
@@ -191,7 +191,7 @@
       ],
       "source_prompt_sha256": "5e625999f68a36e46c2cdbe8f0c1dc0798b1a4bc650893d174b94c60eaf276f0",
       "file": "02_library/characters/C10_BEGINNER_DANCE_WOMAN.txt",
-      "file_sha256": "a3f31124821c2e90db35174cf8d8911310098577d3625ee447a0fb06b0afe353",
+      "file_sha256": "e436a6c2d33b869185fb33d6eb0e7d6889224ff6bbd087bbc3eb562e9b71e14b",
       "changes": "Verbatim fenced prompt"
     },
     {
@@ -203,7 +203,7 @@
       ],
       "source_prompt_sha256": "c89e0907e8d5955412e5e56b23efa3f600f4b088b6fa44683517aa90fee06828",
       "file": "02_library/characters/C11_RUSSIAN_TRANSIT_PASSENGER.txt",
-      "file_sha256": "2e608d64cbda0fd0fa7c661ee7d4247a3281149f6bc1a82791780bbeb43d1aa8",
+      "file_sha256": "02039e198936b88e8c2fb61cf56c51ae7c923e500090e88e13c7360cf4ea2db9",
       "changes": "Verbatim fenced prompt"
     },
     {
@@ -215,7 +215,7 @@
       ],
       "source_prompt_sha256": "0637e995e66788c7056925bf5c184e8f3db67839dd38b5d24a184426b4ef1300",
       "file": "02_library/characters/C12_AGRA_BUS_WOMAN.txt",
-      "file_sha256": "859b0a12588cf2ea56d56f16d3cd1fecafeca686e02f838b86e39ce558233dfd",
+      "file_sha256": "874cccb4d313732703e4060c1384c56bc717fae044e5090d791bafb0a05c196d",
       "changes": "Verbatim fenced prompt"
     },
     {
@@ -227,7 +227,7 @@
       ],
       "source_prompt_sha256": "dd7cde7a051d4e7efa789d56f00bad57dd9bd3dbae401add10ea0405f3dd3680",
       "file": "02_library/characters/C13_SUDANESE_TRAVELER_MAN.txt",
-      "file_sha256": "c4474f475f7266efe5ca68b0a6d271f9d995fb916eb069d906dbeb7b187eb38c",
+      "file_sha256": "6fb8f06908ae6dd7ab603f7aa7c75fc2f151682e0ff44d30431181784af7ead7",
       "changes": "Verbatim fenced prompt"
     },
     {
@@ -239,7 +239,7 @@
       ],
       "source_prompt_sha256": "9b54f9727e485a512c40c097a6cfdd96b4c2bbcf6d7f89dec10eaca3f46da85a",
       "file": "02_library/characters/C14_SUDANESE_TRAVELER_WOMAN.txt",
-      "file_sha256": "82a492eb6dd9bf9f8071e34bce6d993c08ad6270632778b428c8dbf6d39d64d2",
+      "file_sha256": "af09e22c58e975293aca31fcbca2159f3fa7736245f8a1479437d8df52db1119",
       "changes": "Verbatim fenced prompt"
     },
     {
@@ -251,7 +251,7 @@
       ],
       "source_prompt_sha256": "bafc8b624584a7e92edd1cf23479a0edda633a8f32de85747772b6fc5d145c8a",
       "file": "02_library/characters/C15_CAIRO_TAXI_DRIVER.txt",
-      "file_sha256": "913b042f73a51e91cc9f1dbc7622a9364d6017411362e806c6f19ad042358a81",
+      "file_sha256": "98e52d78025ceca8a74d67015e7c423e3600834c932ca60cf129de36dc1cdf7b",
       "changes": "Verbatim fenced prompt"
     },
     {
@@ -263,7 +263,7 @@
       ],
       "source_prompt_sha256": "0b8f95ede83e5818a8408fd70ecef99fce85cc0c12b653ef7bd7c624032e9228",
       "file": "02_library/characters/C16_BALLOON_LOCAL_HELPER_MAN.txt",
-      "file_sha256": "6dda2cc93a6f12f4a0d2ef6feab6198326f1b7fe164922da6ba6756cf430faad",
+      "file_sha256": "253290ca4bc98f435a77a1d24cf21c137a1cf344e8d8e69ecb8c8a3a53a3c8b0",
       "changes": "Verbatim fenced prompt"
     },
     {
@@ -275,7 +275,7 @@
       ],
       "source_prompt_sha256": "1401cf11e115f3131028751d2e03931c9124eacccaa3ce274e2e97a263c01cea",
       "file": "02_library/characters/C17_BALLOON_LOCAL_HELPER_WOMAN.txt",
-      "file_sha256": "e7f921f891f2c47055e5cbb9b86f33a06a5636b6c74fd00a516e00e3b55ec84f",
+      "file_sha256": "32ca3ce93cf9b7db9fdc9d1fbea514a9582e91b902a49f15e48f91944e1f39e8",
       "changes": "Verbatim fenced prompt"
     },
     {
@@ -287,7 +287,7 @@
       ],
       "source_prompt_sha256": "9fe383e2200879b7ccd69a703e0547bdccc844248da93276d655f2a4a8d8ccd0",
       "file": "02_library/characters/C18_BARMOUTH_ROAD_TRIP_DRIVER_COMPANION.txt",
-      "file_sha256": "0738b4bc6165011ecf30352200a8617a6379cabff2e4ea1cd525f85fab7331ad",
+      "file_sha256": "75283dc361c10e634e231e2f1a8362a0287244f8324cff82b1a4c9548443861b",
       "changes": "Verbatim fenced prompt"
     },
     {
@@ -299,7 +299,7 @@
       ],
       "source_prompt_sha256": "d301056bdcf14c631e8c6309a5e72c9574ce2ca47efa0ce5e5f9525c87d6562d",
       "file": "02_library/characters/C19_BARMOUTH_ROAD_TRIP_COMPANION_A.txt",
-      "file_sha256": "2f341c64043c9efc1073c55e399985b9f26a8848a9a2652dbbd8763d30c6b7dc",
+      "file_sha256": "548a80f8b0dc0cbbd655aec81099794a474720f26175bb906ba2d786c9542910",
       "changes": "Verbatim fenced prompt"
     },
     {
@@ -311,7 +311,7 @@
       ],
       "source_prompt_sha256": "dbfae744902e96125296d850d700ddd9a3b88581db7ad6b4ae796e99ed90e8e3",
       "file": "02_library/characters/C20_BARMOUTH_ROAD_TRIP_COMPANION_B.txt",
-      "file_sha256": "c1fc7539115030bee508a835798eb2bb9e902215f286c83961276a29be63212a",
+      "file_sha256": "dba5c623b8e1d08dd401b09628d9a3c4bb0abff098a6e5b40da0f369b3f73ce3",
       "changes": "Verbatim fenced prompt"
     },
     {
@@ -323,7 +323,7 @@
       ],
       "source_prompt_sha256": "d301056bdcf14c631e8c6309a5e72c9574ce2ca47efa0ce5e5f9525c87d6562d",
       "file": "02_library/characters/C21_BARMOUTH_ROAD_TRIP_COMPANION_C.txt",
-      "file_sha256": "2f341c64043c9efc1073c55e399985b9f26a8848a9a2652dbbd8763d30c6b7dc",
+      "file_sha256": "9ec1985404797d96b99f15b0a0fd51f340a5992043ed34bd33e693a63e1e8a8f",
       "changes": "Verbatim fenced prompt"
     },
     {
@@ -335,7 +335,7 @@
       ],
       "source_prompt_sha256": "2dd89f6a917bf16ade5f432d3650934ad8e8b7275710b8f73b0b5bfd35a0b923",
       "file": "02_library/characters/C22_ACCOUNTANT.txt",
-      "file_sha256": "e284549b56220ebc8d2928c8db8c131b034866bf7c5fa0ec45d62589e3b55a2e",
+      "file_sha256": "62ac52d407efcff19c3e2407f4c076aa105cff69ac3c3503dbc128c6ef24e5f1",
       "changes": "Verbatim fenced prompt"
     },
     {
@@ -347,7 +347,7 @@
       ],
       "source_prompt_sha256": "cd3a8c255aba3556764d83315d95bafe0400dd967abe76bde806ebf4ed8030ad",
       "file": "02_library/characters/C23_ADMIN_COLLEAGUE_A.txt",
-      "file_sha256": "7579645a94afc08e98b736a9486e973e0036954d38d910de7a9ec2a9ac26ad83",
+      "file_sha256": "3c144061110dad864e659ed254f6824887181004065f4e1ede67475de092494c",
       "changes": "Verbatim fenced prompt"
     },
     {
@@ -359,7 +359,7 @@
       ],
       "source_prompt_sha256": "21a8f008db7ef74b242a1e5e092e760b77f0b921e69bd2aec33f2a8073632a5f",
       "file": "02_library/characters/C24_ADMIN_COLLEAGUE_B.txt",
-      "file_sha256": "1f5a6b17f912f5d64d2abf12e73efeea11f5d3d7aaf0ccd062f4e40a907b638f",
+      "file_sha256": "a545dbb485a0d62d1bc1a1fd13d5ffec5ee96d7e1dd234fa6f630d70d2c9eb73",
       "changes": "Verbatim fenced prompt"
     },
     {
@@ -371,7 +371,7 @@
       ],
       "source_prompt_sha256": "f483821bc97864c6c680e22a7a12f8ebc22ab7dbde55952c08bbfe79bea17c47",
       "file": "02_library/characters/C25_SEARCH_OFFICER_MALE.txt",
-      "file_sha256": "f59ffc259c715110853242f02194ad57f4d07f35dfdcbca5da7a53894ea3e4c8",
+      "file_sha256": "9bc5cc79eff4c41f2e4af305b89aef9521966c8fbdf77a092629c23b9171b5c7",
       "changes": "Verbatim fenced prompt"
     },
     {
@@ -383,7 +383,7 @@
       ],
       "source_prompt_sha256": "1f0d7b11e5ae7a974429d747a769b30186288e53f3d3be0cdb523a9544e81854",
       "file": "02_library/characters/C26_DEFENCE_OFFICE_SUBSTITUTE.txt",
-      "file_sha256": "34517fcd8c1f46f0c408b137d69faaa82beb49b7b699e22c4034e395f78a47e6",
+      "file_sha256": "703db07855ad28dacdc1325399190e0a543d554e699ecf1e963ee551bc5d4e01",
       "changes": "Verbatim fenced prompt"
     },
     {
@@ -395,7 +395,7 @@
       ],
       "source_prompt_sha256": "933b7e1083ca0a8d0a00c2f2cf6ee79b8f2c7bb189c9c7ccd1813ad99cb31a53",
       "file": "02_library/characters/C27_JUDGE.txt",
-      "file_sha256": "d25fe71db0af27d4c417df6703dc0d650328487f9cdc2d4b188581966e39ff2d",
+      "file_sha256": "1c6f7cddd8a4801f67dd8870a19d945f2848b8b710b89214e3d48ccf919cb8d8",
       "changes": "Verbatim fenced prompt"
     },
     {
@@ -407,7 +407,7 @@
       ],
       "source_prompt_sha256": "8ea1c2f09462e040525d4f7b0a174e433e51849d4187b2ca5f8b45caace89acd",
       "file": "02_library/characters/C28_FORENSIC_EXPERT_A.txt",
-      "file_sha256": "90dfd51d1c08e630bff8ec9722400cf55e945e34ee430f02ce8bf9aa2acef191",
+      "file_sha256": "25a54e16ce84fbbfaa51eb2b7addedef84c2e7bd05221c4ba825460fec65add3",
       "changes": "Verbatim fenced prompt"
     },
     {
@@ -419,7 +419,7 @@
       ],
       "source_prompt_sha256": "2a575da9d93e6c68fb8c32b6160b00e16804931a97796e8e73277f312e1b30c5",
       "file": "02_library/characters/C29_FORENSIC_EXPERT_B.txt",
-      "file_sha256": "e9fe7a9608f3940f99d4286a49834f5a7f2cfcfc4b807a8a8bb2c4e4fd989b92",
+      "file_sha256": "95a662560e18212357d1ec70fefb0c9bac97729e1c24d10e9f94a09a9c187ee0",
       "changes": "Verbatim fenced prompt"
     },
     {
@@ -431,7 +431,7 @@
       ],
       "source_prompt_sha256": "60c8a27d366272250614c6103c2d64812940613e2bf365697be04e78b991e55a",
       "file": "02_library/characters/C30_COURT_CLERK.txt",
-      "file_sha256": "7c567a5f9df9d82328f025e2a7d3c86828d1ecfd36db618887e0172e7518697a",
+      "file_sha256": "d2eeecc1dcd51abc8d2075261228b91ca1c48b6f54ca6511fcaa59c1cc9c9628",
       "changes": "Verbatim fenced prompt"
     },
     {
@@ -443,7 +443,7 @@
       ],
       "source_prompt_sha256": "5dc948b39e6864ba0f13158690ed2ec4ddfa0ccf0e5fabcc68705716f96dfb24",
       "file": "02_library/characters/C31_ANONYMOUS_FICTIONAL_POLITICAL_FIGURE.txt",
-      "file_sha256": "0faa58d6f9133b7cbb7064fca757d8b14e8720d6177d7849892ed3ec91e037f9",
+      "file_sha256": "a5ec343f17e6251046a35e2de362f58406566d70610da77c7052bf0b46145fac",
       "changes": "Verbatim fenced prompt"
     },
     {
@@ -455,7 +455,7 @@
       ],
       "source_prompt_sha256": "717f8a13a997263b4988a3087369787649a75542e70f60f5bc32565a4a5fc759",
       "file": "02_library/worlds/memories/MW01_LONDON_SOCIAL_A.txt",
-      "file_sha256": "ff9c4266d72e0f02b9ebfff91cd6bada9c556238c48b51a23a7a72eae3d0a899",
+      "file_sha256": "bc0bb85ff0cfb2cd9dd1459eee5872e9ea82031f7d3299ee4df229f291f6aff8",
       "changes": "Verbatim fenced prompt; explicit centrally maintained reference inputs Grid geometry uses the full selected image resolution instead of fixed pixel examples."
     },
     {
@@ -467,7 +467,7 @@
       ],
       "source_prompt_sha256": "6e25c11571314fb9f353911cdd369b867c1b90a45dcc5228ce69c24e48b7ba9c",
       "file": "02_library/worlds/memories/MW02_GLOBAL_ROUTES_A.txt",
-      "file_sha256": "c8677f038f52925fd275504741d48933f11b381474f3dc01fc0224da412277a3",
+      "file_sha256": "f15417b557b7f2bc2cf33d25254ea82fbf378eb3d67030ac9da453aec7ffeac0",
       "changes": "Verbatim fenced prompt; explicit centrally maintained reference inputs; rural memory grounded in creator's Orosháza paprika/corn-field childhood Grid geometry uses the full selected image resolution instead of fixed pixel examples."
     },
     {
@@ -479,7 +479,7 @@
       ],
       "source_prompt_sha256": "374ea4b6d0ac33d692653a08a02e706d01e0f45e4279451b364aba2f7263928d",
       "file": "02_library/worlds/memories/MW03_WORK_RULE_CHANGE_ADMIN_A.txt",
-      "file_sha256": "c42ac703b43ea7988c49acb8b508fa21668240138ed2774bd4a78218f4df7afa",
+      "file_sha256": "e0bbe6027fd2658a6a8822a528f86a52d0279dbe632051ebf79ab6baf32c4af8",
       "changes": "Verbatim fenced prompt; explicit centrally maintained reference inputs Grid geometry uses the full selected image resolution instead of fixed pixel examples."
     },
     {
@@ -491,7 +491,7 @@
       ],
       "source_prompt_sha256": "7eacf040519edefdb7aa215ca4fb1e1c6524f4ed06dc69d6ef758048002745f9",
       "file": "02_library/worlds/memories/MW04_POLICE_DEFENCE_A.txt",
-      "file_sha256": "ae7ee5402b527fdb9fa79256b3b5b27b2a39a6464be49cc162fcdf7b37659c2e",
+      "file_sha256": "bd7fb1c7487705361d31bce325692a1e6e521278650e5f8acac7e5980a9c8425",
       "changes": "Verbatim fenced prompt; explicit centrally maintained reference inputs Grid geometry uses the full selected image resolution instead of fixed pixel examples."
     },
     {
@@ -503,7 +503,7 @@
       ],
       "source_prompt_sha256": "cac300bae4bd6f33e50ec5936c56622c5858e341d0494d281a87e70ed4ee9a04",
       "file": "02_library/worlds/memories/MW05_COURT_FILE_A.txt",
-      "file_sha256": "3aa2ef563a441650d08ad507b1703ca6a1507ebb2001c7d3ec6bec2e4ba5f001",
+      "file_sha256": "483f39d52f5297b23a35924758c2cf9ccd5befda33c5259438306f8a36e221c5",
       "changes": "Verbatim fenced prompt; explicit centrally maintained reference inputs Grid geometry uses the full selected image resolution instead of fixed pixel examples."
     },
     {
@@ -515,7 +515,7 @@
       ],
       "source_prompt_sha256": "d53e141d60aa5359c28d8695bb7cb84134a480bf043551062606e199558cda02",
       "file": "02_library/worlds/memories/MW06_HUMAN_COUNTERMEMORIES_A.txt",
-      "file_sha256": "39f3757fd3d88ea67e73de99a875cbaf812e5fce953692d0bc9941d2556fcfdf",
+      "file_sha256": "0efd04008af928c0ce313bd8c1f72785878148c017c9c14e148191d090391fb9",
       "changes": "Verbatim fenced prompt; explicit centrally maintained reference inputs Grid geometry uses the full selected image resolution instead of fixed pixel examples."
     },
     {
@@ -527,7 +527,7 @@
       ],
       "source_prompt_sha256": "16bf4be44836d9fb010f7825cc24770d0ce78cbd05373fc417d2155eba6ae1e1",
       "file": "02_library/worlds/memories/MWP01_ROUTES_ROOMS_DOCUMENTS_A.txt",
-      "file_sha256": "07dd5cc4a2f290c030770d19d830c9b0a8747bbf9577fbcdaa0f80d1b76d7d3b",
+      "file_sha256": "560095b5daa1378bbbe9a1486a377c428df8182d297d23b1f2fcd9455c1239e9",
       "changes": "Verbatim fenced prompt; explicit centrally maintained reference inputs; rural memory grounded in creator's Orosháza paprika/corn-field childhood Grid geometry uses the full selected image resolution instead of fixed pixel examples."
     },
     {
@@ -539,7 +539,7 @@
       ],
       "source_prompt_sha256": "557e0016d71cfd83bfd2c240538a5a77f6b6d8785ceb0f79bb97e387e1ccbd6f",
       "file": "02_library/worlds/memories/MWP02_SYSTEM_TIME_REVERSALS_A.txt",
-      "file_sha256": "9dea081d15c9e28d7fea490e818e68bfe01782332b67a8df7584474b77619ede",
+      "file_sha256": "32447c614afcabfc24629e916e983ef5e17560ea0afc9099b6644f424f6df674",
       "changes": "AI-specific screen becomes ordinary document cursor; citizen/review beat retained; explicit centrally maintained reference inputs Grid geometry uses the full selected image resolution instead of fixed pixel examples."
     },
     {
@@ -551,7 +551,7 @@
       ],
       "source_prompt_sha256": "521c52dc6be7a4c8e015a67fab11b219bc387a315f00463f84acb191c81fc773",
       "file": "02_library/worlds/memories/HRW07_CLINICAL_REALITY_A.txt",
-      "file_sha256": "239c98354600142dfb15f74dfd36b9e70a5691b8906b8df443adaef9751efe68",
+      "file_sha256": "f320b8e61f43790f6ed7ca842aa8c62c774d30943abe87281b48aa00fd077200",
       "changes": "Verbatim fenced prompt; explicit centrally maintained reference inputs Grid geometry uses the full selected image resolution instead of fixed pixel examples."
     },
     {
@@ -563,7 +563,7 @@
       ],
       "source_prompt_sha256": "5cdfb4fae9342940c46fc1581ed8ca6f6481867cdcc4013aa4537451325d4f48",
       "file": "02_library/worlds/real/W01_MAIN_WORLD_A.txt",
-      "file_sha256": "f9b9a3c716b3ffd09ac670fbc1a78ee9a423522cd69167c66c990b2e7d9488ec",
+      "file_sha256": "2dd165070d51f8d6df12d688f0f5a9b6fa4e5cd6506c7c19b32124d01495bc5a",
       "changes": "4K 2×2 Page A; original views 1–4 retained verbatim except cross-view labels. Other original views preserved on companion B/C pages."
     },
     {
@@ -587,7 +587,7 @@
       ],
       "source_prompt_sha256": "0e42331ed1ef827f8b328b1bbf1ea9e9deb06c2d06683d277006b4cbda428369",
       "file": "02_library/worlds/real/W02_MAIN_WORLD_A.txt",
-      "file_sha256": "8213d65e0e5c281e077b064e0a800c87a5070f8592cf593a175ead2af6bcd012",
+      "file_sha256": "9ff6eaa57d55ca0b1e5286bb0420b4ba3796f1e7c071996d8dad2b5944cee898",
       "changes": "4K 2×2 Page A; original views 1–4 retained verbatim except cross-view labels. Other original views preserved on companion B/C pages."
     },
     {
@@ -611,7 +611,7 @@
       ],
       "source_prompt_sha256": "619d7b50151da12db8c1f5c28ea43f590c0317767ad6b6c81dcaeb65bab4754d",
       "file": "02_library/worlds/real/W03_MAIN_WORLD_A.txt",
-      "file_sha256": "4a6e34ac408c1b3aabe397c5a0d74ef45bf2412f73d9a188d0a8756684afa90c",
+      "file_sha256": "604484bb3c996bb331db0d0f6e0a1ad0a71050463d7b168537954bff606d4177",
       "changes": "4K 2×2 Page A; original views 1–4 retained verbatim except cross-view labels. Other original views preserved on companion B/C pages."
     },
     {
@@ -635,7 +635,7 @@
       ],
       "source_prompt_sha256": "d0ad91dc25cf2e4e702dbe0d94d5ad6149a30b804b5bbd4eebb66e1de5790756",
       "file": "02_library/worlds/real/W04_MAIN_WORLD_A.txt",
-      "file_sha256": "2d6a8173127144ab57358e172a205e576cd80fc99bc2314fde6e3fdaf643b694",
+      "file_sha256": "4d144d090636ac400ecf19ef0242fc4172c285156d0eda923be46a368ac29b5e",
       "changes": "4K 2×2 Page A; original views 1–4 retained verbatim except cross-view labels. Other original views preserved on companion B/C pages."
     },
     {
@@ -659,7 +659,7 @@
       ],
       "source_prompt_sha256": "77d7e2df07c49c63c7caa5fe39d6f1cdea60e2c321eb458971a8750d5225f09e",
       "file": "02_library/worlds/real/W05_MAIN_WORLD_A.txt",
-      "file_sha256": "65dd1013b932dca7703b605976eba56a54a39f3953870fd2724de1ac7c6fc3f1",
+      "file_sha256": "995a5ba1a6a558a92b863c1d6f056405226a7cd00e1e8243b3c5341fb73d435a",
       "changes": "4K 2×2 Page A; original views 1–4 retained verbatim except cross-view labels. Other original views preserved on companion B/C pages."
     },
     {
@@ -683,7 +683,7 @@
       ],
       "source_prompt_sha256": "19a64b93172e7531c5e50f91108f40d61f72300aee7c7a444208cc28a7fd2c2d",
       "file": "02_library/worlds/real/W06_MAIN_WORLD_A.txt",
-      "file_sha256": "e6bef723d090eb7e052c2ca7c649aa0ed15ecdf2e8359a564f35a665089b171b",
+      "file_sha256": "139ef6d32ea86bff1c4332dc16482645fca8fec6299cad50b13a13f499db2c55",
       "changes": "4K 2×2 Page A; original views 1–4 retained verbatim except cross-view labels. Other original views preserved on companion B/C pages."
     },
     {
@@ -707,7 +707,7 @@
       ],
       "source_prompt_sha256": "a82a51ff228ecd6bd99c6018e59cd64495bc98fe46e349b64bbe805e0b18319f",
       "file": "02_library/worlds/real/W07_MAIN_WORLD_A.txt",
-      "file_sha256": "21e4e2a0ea8009474d542857e24d6f8c33cfc68a1a72c06d0667f31164f7c43e",
+      "file_sha256": "36cc645637c617ca71f6fb0876b80ab7682d9287eca24e387ccc437c7164b772",
       "changes": "4K 2×2 Page A; original views 1–4 retained verbatim except cross-view labels. Other original views preserved on companion B/C pages."
     },
     {
@@ -983,7 +983,7 @@
       ],
       "source_prompt_sha256": "5cdfb4fae9342940c46fc1581ed8ca6f6481867cdcc4013aa4537451325d4f48",
       "file": "02_library/worlds/real/W01_MAIN_WORLD_B.txt",
-      "file_sha256": "2303676c234d28ddf4e7a5baa90c7cfc203470b6523465363d2c1ddd7e533cb5",
+      "file_sha256": "7a0f49aed66c866f24fe2ef6a01050e8998f71069a917cf27604e9af0479a3a4",
       "changes": "Derived 4K 2×2 Page B; original views [5, 6, 7, 8]; source provenance belongs to the original complete world prompt."
     },
     {
@@ -995,7 +995,7 @@
       ],
       "source_prompt_sha256": "5cdfb4fae9342940c46fc1581ed8ca6f6481867cdcc4013aa4537451325d4f48",
       "file": "02_library/worlds/real/W01_MAIN_WORLD_C.txt",
-      "file_sha256": "788b515c6fc57f6157d1b35a2ed108a37b17c2b13a2ec5377f3b9c131cf8c0ab",
+      "file_sha256": "9c7f546aae398a85b9cf38d4342faf418b495bedf73b8f176d871a82d5baa8b3",
       "changes": "Derived 4K 2×2 Page C; original views [9, 1, 7, 8]; source provenance belongs to the original complete world prompt."
     },
     {
@@ -1007,7 +1007,7 @@
       ],
       "source_prompt_sha256": "0e42331ed1ef827f8b328b1bbf1ea9e9deb06c2d06683d277006b4cbda428369",
       "file": "02_library/worlds/real/W02_MAIN_WORLD_B.txt",
-      "file_sha256": "248bd9d4c147a01dbd285a5cc7d233e9cb98ff8f7da89a4c202c91e91dfd7f27",
+      "file_sha256": "0a1107a60e060d9a1d0758758f72925ddd749298365d5c09dbede6f40c52836a",
       "changes": "Derived 4K 2×2 Page B; original views [5, 6, 7, 8]; source provenance belongs to the original complete world prompt."
     },
     {
@@ -1019,7 +1019,7 @@
       ],
       "source_prompt_sha256": "0e42331ed1ef827f8b328b1bbf1ea9e9deb06c2d06683d277006b4cbda428369",
       "file": "02_library/worlds/real/W02_MAIN_WORLD_C.txt",
-      "file_sha256": "edc9ccb835583d937ec8bfd70f72235328cc334425c736a4987d85bfdbb97b77",
+      "file_sha256": "53fa2bacbf606189609f29bd1ce7c66c5c24bfdc7c5492f2f30c1034e2fbe265",
       "changes": "Derived 4K 2×2 Page C; original views [9, 1, 7, 8]; source provenance belongs to the original complete world prompt."
     },
     {
@@ -1031,7 +1031,7 @@
       ],
       "source_prompt_sha256": "619d7b50151da12db8c1f5c28ea43f590c0317767ad6b6c81dcaeb65bab4754d",
       "file": "02_library/worlds/real/W03_MAIN_WORLD_B.txt",
-      "file_sha256": "80046d0aa06851c6b72eee714fa2e2851e1e8f05130882b3a837b4687c32f34d",
+      "file_sha256": "f05753cd8998257c6b61ffec3c80fbd3540b82f8a35b39e9d537199c0c3d76d9",
       "changes": "Derived 4K 2×2 Page B; original views [5, 6, 7, 8]; source provenance belongs to the original complete world prompt."
     },
     {
@@ -1043,7 +1043,7 @@
       ],
       "source_prompt_sha256": "619d7b50151da12db8c1f5c28ea43f590c0317767ad6b6c81dcaeb65bab4754d",
       "file": "02_library/worlds/real/W03_MAIN_WORLD_C.txt",
-      "file_sha256": "63cc5c5d4cfdc226cdd5e9f0aee0f76a88e743a11f0f8d26446a9554aaa519b1",
+      "file_sha256": "a94f1e54bbc10fb8f2b43281cea267231c40d3ae3d0ffb1d4870c1915e29b651",
       "changes": "Derived 4K 2×2 Page C; original views [9, 1, 7, 8]; source provenance belongs to the original complete world prompt."
     },
     {
@@ -1055,7 +1055,7 @@
       ],
       "source_prompt_sha256": "d0ad91dc25cf2e4e702dbe0d94d5ad6149a30b804b5bbd4eebb66e1de5790756",
       "file": "02_library/worlds/real/W04_MAIN_WORLD_B.txt",
-      "file_sha256": "2820b6ded3a83d411a62ade0819e057b9c1d06cc784a90fb3961adbf50e00ecd",
+      "file_sha256": "2fe1cbdf51d784b51fc95577c3ef9735b5c32cb38004008dc4e2dedb84751d8c",
       "changes": "Derived 4K 2×2 Page B; original views [5, 6, 7, 8]; source provenance belongs to the original complete world prompt."
     },
     {
@@ -1067,7 +1067,7 @@
       ],
       "source_prompt_sha256": "d0ad91dc25cf2e4e702dbe0d94d5ad6149a30b804b5bbd4eebb66e1de5790756",
       "file": "02_library/worlds/real/W04_MAIN_WORLD_C.txt",
-      "file_sha256": "936328e9670748ddf7f30331f37edcc4003fa7e0c44caa380e7a35eed7505663",
+      "file_sha256": "6180d331bc48eccdb8289e9cd964087f7166661df4c6c00cca2fac791692bc21",
       "changes": "Derived 4K 2×2 Page C; original views [9, 1, 7, 8]; source provenance belongs to the original complete world prompt."
     },
     {
@@ -1079,7 +1079,7 @@
       ],
       "source_prompt_sha256": "77d7e2df07c49c63c7caa5fe39d6f1cdea60e2c321eb458971a8750d5225f09e",
       "file": "02_library/worlds/real/W05_MAIN_WORLD_B.txt",
-      "file_sha256": "e94aefda73c9501461f4c27435d178cfb3cae22b806e881a0b0f1c25208e3dbd",
+      "file_sha256": "ed3ffa2301dabf2723da433fad90c74e3384f06bbe245e715af8bd22d727a03e",
       "changes": "Derived 4K 2×2 Page B; original views [5, 6, 7, 8]; source provenance belongs to the original complete world prompt."
     },
     {
@@ -1091,7 +1091,7 @@
       ],
       "source_prompt_sha256": "77d7e2df07c49c63c7caa5fe39d6f1cdea60e2c321eb458971a8750d5225f09e",
       "file": "02_library/worlds/real/W05_MAIN_WORLD_C.txt",
-      "file_sha256": "28918f7f4ab17e2ff865140a73e52834ad839ac06c1e3727a430228aaadbd3f5",
+      "file_sha256": "e3db207b3adc6673773b9b57b3170f2ab041bbee340be2efb82ffc9804d426f2",
       "changes": "Derived 4K 2×2 Page C; original views [9, 1, 7, 8]; source provenance belongs to the original complete world prompt."
     },
     {
@@ -1103,7 +1103,7 @@
       ],
       "source_prompt_sha256": "19a64b93172e7531c5e50f91108f40d61f72300aee7c7a444208cc28a7fd2c2d",
       "file": "02_library/worlds/real/W06_MAIN_WORLD_B.txt",
-      "file_sha256": "b2975154ac4d401b1e5c92e28b435c56d13c849aecbe5b7404cfdcf97239e314",
+      "file_sha256": "1faa2a7b9da8637d8dfdd274f807f6ecdd176fa7dee021beb973144fe94ed786",
       "changes": "Derived 4K 2×2 Page B; original views [5, 6, 7, 8]; source provenance belongs to the original complete world prompt."
     },
     {
@@ -1115,7 +1115,7 @@
       ],
       "source_prompt_sha256": "19a64b93172e7531c5e50f91108f40d61f72300aee7c7a444208cc28a7fd2c2d",
       "file": "02_library/worlds/real/W06_MAIN_WORLD_C.txt",
-      "file_sha256": "18d0367fae2e0b0f57eb13fd20a189bc7c7bfb59e435a3c3b55327090ad67d3c",
+      "file_sha256": "fffcdbeace13daf7e69e1015c26ec65ff51b0a4e2f730f9926b5b0fd1765085c",
       "changes": "Derived 4K 2×2 Page C; original views [9, 1, 7, 8]; source provenance belongs to the original complete world prompt."
     },
     {
@@ -1127,7 +1127,7 @@
       ],
       "source_prompt_sha256": "a82a51ff228ecd6bd99c6018e59cd64495bc98fe46e349b64bbe805e0b18319f",
       "file": "02_library/worlds/real/W07_MAIN_WORLD_B.txt",
-      "file_sha256": "61c2b865fe8f592d6bc53d0cc16716a00e12c7cb147ef02a0736e391fdbe0fb5",
+      "file_sha256": "878a9e9ec2e7eeef47a7003a2d771298c04de8d05367daaa34d20392f30f797c",
       "changes": "Derived 4K 2×2 Page B; original views [5, 6, 7, 8]; source provenance belongs to the original complete world prompt."
     },
     {
@@ -1139,7 +1139,7 @@
       ],
       "source_prompt_sha256": "a82a51ff228ecd6bd99c6018e59cd64495bc98fe46e349b64bbe805e0b18319f",
       "file": "02_library/worlds/real/W07_MAIN_WORLD_C.txt",
-      "file_sha256": "18fe5981b8e64c8f7d09bafcdb8f6d25b302c439cff77fea9cf6fb3219419800",
+      "file_sha256": "ac5b3cb80caf258f031c982fad31be42e58df370e1354ec173879310fb2904fe",
       "changes": "Derived 4K 2×2 Page C; original views [9, 1, 7, 8]; source provenance belongs to the original complete world prompt."
     },
     {
@@ -1151,7 +1151,7 @@
       ],
       "source_prompt_sha256": "717f8a13a997263b4988a3087369787649a75542e70f60f5bc32565a4a5fc759",
       "file": "02_library/worlds/memories/MW01_LONDON_SOCIAL_B.txt",
-      "file_sha256": "ac921680f587b296cbe4ea6c0e27f6a1f2962aee1e9e47d1b5cc15c69597dd11",
+      "file_sha256": "c9ab9610e24e80e74893feee1987fc34ba1eda5a6286bc73be9a103d49679234",
       "changes": "Verbatim fenced prompt; explicit centrally maintained reference inputs Grid geometry uses the full selected image resolution instead of fixed pixel examples.",
       "note": "Companion page B preserving original memory views."
     },
@@ -1164,7 +1164,7 @@
       ],
       "source_prompt_sha256": "717f8a13a997263b4988a3087369787649a75542e70f60f5bc32565a4a5fc759",
       "file": "02_library/worlds/memories/MW01_LONDON_SOCIAL_C.txt",
-      "file_sha256": "9573cd3b83d6d0d3d1a8427bc82a11bfe5264b9481c49432b21d85c238ad0cb2",
+      "file_sha256": "0b1afac9dbcbdb33057d1d4bd1ebc359d50e0f0178d755aa91181daf554d9e39",
       "changes": "Verbatim fenced prompt; explicit centrally maintained reference inputs Grid geometry uses the full selected image resolution instead of fixed pixel examples.",
       "note": "Companion page C preserving original memory views."
     },
@@ -1177,7 +1177,7 @@
       ],
       "source_prompt_sha256": "6e25c11571314fb9f353911cdd369b867c1b90a45dcc5228ce69c24e48b7ba9c",
       "file": "02_library/worlds/memories/MW02_GLOBAL_ROUTES_B.txt",
-      "file_sha256": "705a68148daa21ccf0c2e2ed88e954a124f62df218987c813a6b506a0dd59226",
+      "file_sha256": "5db35368e90aa987e711d863fbace5cdae48f93dd686af712ab6ef1668d4b1b7",
       "changes": "Verbatim fenced prompt; explicit centrally maintained reference inputs; rural memory grounded in creator's Orosháza paprika/corn-field childhood Grid geometry uses the full selected image resolution instead of fixed pixel examples.",
       "note": "Companion page B preserving original memory views."
     },
@@ -1190,7 +1190,7 @@
       ],
       "source_prompt_sha256": "6e25c11571314fb9f353911cdd369b867c1b90a45dcc5228ce69c24e48b7ba9c",
       "file": "02_library/worlds/memories/MW02_GLOBAL_ROUTES_C.txt",
-      "file_sha256": "202e63c5fdef4c5f8741744e1eb216e6ed9ce9d19ca3c61749096419a13961c0",
+      "file_sha256": "503459fba8d502c3de27322f1e9ad1995638a946a0e808167c49d344ae6e2bed",
       "changes": "Verbatim fenced prompt; explicit centrally maintained reference inputs; rural memory grounded in creator's Orosháza paprika/corn-field childhood Grid geometry uses the full selected image resolution instead of fixed pixel examples.",
       "note": "Companion page C preserving original memory views."
     },
@@ -1203,7 +1203,7 @@
       ],
       "source_prompt_sha256": "374ea4b6d0ac33d692653a08a02e706d01e0f45e4279451b364aba2f7263928d",
       "file": "02_library/worlds/memories/MW03_WORK_RULE_CHANGE_ADMIN_B.txt",
-      "file_sha256": "b2bb2485aa92a491fecf2a7ee139af52e340f6a1533013127fba16f6fdeadba8",
+      "file_sha256": "ee24d1394d6cd4c58d5a2dbcfe95cdcc35dbcc6ff2ea6cff19a3b8e430eee28e",
       "changes": "Verbatim fenced prompt; explicit centrally maintained reference inputs Grid geometry uses the full selected image resolution instead of fixed pixel examples.",
       "note": "Companion page B preserving original memory views."
     },
@@ -1216,7 +1216,7 @@
       ],
       "source_prompt_sha256": "374ea4b6d0ac33d692653a08a02e706d01e0f45e4279451b364aba2f7263928d",
       "file": "02_library/worlds/memories/MW03_WORK_RULE_CHANGE_ADMIN_C.txt",
-      "file_sha256": "a11efd2345f7f5cacd9898d2dd85417bf5fd84d45a9490d757875e41eda43f37",
+      "file_sha256": "0305de99c72b479190eddb1a2fac4a1f9df8b35a00449a6ebc5c8172b7817b71",
       "changes": "Verbatim fenced prompt; explicit centrally maintained reference inputs Grid geometry uses the full selected image resolution instead of fixed pixel examples.",
       "note": "Companion page C preserving original memory views."
     },
@@ -1229,7 +1229,7 @@
       ],
       "source_prompt_sha256": "7eacf040519edefdb7aa215ca4fb1e1c6524f4ed06dc69d6ef758048002745f9",
       "file": "02_library/worlds/memories/MW04_POLICE_DEFENCE_B.txt",
-      "file_sha256": "e24da36ba05f0a22688e38018fd7f7fba08ff3da6675e390adb45344954597b3",
+      "file_sha256": "c7c55eeed97158b18710218d91df7c37fd8da06754d3761a0aaaf3722228a688",
       "changes": "Verbatim fenced prompt; explicit centrally maintained reference inputs Grid geometry uses the full selected image resolution instead of fixed pixel examples.",
       "note": "Companion page B preserving original memory views."
     },
@@ -1242,7 +1242,7 @@
       ],
       "source_prompt_sha256": "7eacf040519edefdb7aa215ca4fb1e1c6524f4ed06dc69d6ef758048002745f9",
       "file": "02_library/worlds/memories/MW04_POLICE_DEFENCE_C.txt",
-      "file_sha256": "a3d999ae75d16c7222bcf3e00e43e8b76074f99fa194001920111c891ee7523a",
+      "file_sha256": "71c2ca2e9eaa5e53da4c17a34f7ebaacb0d58d944aec40ccc076e63a295447d1",
       "changes": "Verbatim fenced prompt; explicit centrally maintained reference inputs Grid geometry uses the full selected image resolution instead of fixed pixel examples.",
       "note": "Companion page C preserving original memory views."
     },
@@ -1255,7 +1255,7 @@
       ],
       "source_prompt_sha256": "cac300bae4bd6f33e50ec5936c56622c5858e341d0494d281a87e70ed4ee9a04",
       "file": "02_library/worlds/memories/MW05_COURT_FILE_B.txt",
-      "file_sha256": "e3cbd56a66b8134b86c1b7112d1cf7760bb3f69e06087baa4c6d0ef883164039",
+      "file_sha256": "0dc6d879ff73e1fe3fe0febf3ac81d67d530b0b4fdba01e1b57bfa19a784b144",
       "changes": "Verbatim fenced prompt; explicit centrally maintained reference inputs Grid geometry uses the full selected image resolution instead of fixed pixel examples.",
       "note": "Companion page B preserving original memory views."
     },
@@ -1268,7 +1268,7 @@
       ],
       "source_prompt_sha256": "cac300bae4bd6f33e50ec5936c56622c5858e341d0494d281a87e70ed4ee9a04",
       "file": "02_library/worlds/memories/MW05_COURT_FILE_C.txt",
-      "file_sha256": "00690ef0ace3078714cc35cb77dec464268f13b4f9f1b2f7f9202a9da32ad74a",
+      "file_sha256": "7252271d379e7b37a9003f40ac7a3935fe92988b5b5cab5afe835dc26b057571",
       "changes": "Verbatim fenced prompt; explicit centrally maintained reference inputs Grid geometry uses the full selected image resolution instead of fixed pixel examples.",
       "note": "Companion page C preserving original memory views."
     },
@@ -1281,7 +1281,7 @@
       ],
       "source_prompt_sha256": "d53e141d60aa5359c28d8695bb7cb84134a480bf043551062606e199558cda02",
       "file": "02_library/worlds/memories/MW06_HUMAN_COUNTERMEMORIES_B.txt",
-      "file_sha256": "10068076aee57193beadf9301b847810a0cf7b343eb9a5fb66c8d7ef1fb6a8e8",
+      "file_sha256": "6c6eea89d1d51071e09d48f22d746338384ae893f5c5344179903b5f9086647b",
       "changes": "Verbatim fenced prompt; explicit centrally maintained reference inputs Grid geometry uses the full selected image resolution instead of fixed pixel examples.",
       "note": "Companion page B preserving original memory views."
     },
@@ -1294,7 +1294,7 @@
       ],
       "source_prompt_sha256": "d53e141d60aa5359c28d8695bb7cb84134a480bf043551062606e199558cda02",
       "file": "02_library/worlds/memories/MW06_HUMAN_COUNTERMEMORIES_C.txt",
-      "file_sha256": "d2acf81dd680a131bb83c0684eb88f1e6fea73d47d5e2d11a2613c7514788bc0",
+      "file_sha256": "3e36f2991662725c580ddc40c06fb886e3610ed03521b263be22ccee5edd5ac5",
       "changes": "Verbatim fenced prompt; explicit centrally maintained reference inputs Grid geometry uses the full selected image resolution instead of fixed pixel examples.",
       "note": "Companion page C preserving original memory views."
     },
@@ -1307,7 +1307,7 @@
       ],
       "source_prompt_sha256": "16bf4be44836d9fb010f7825cc24770d0ce78cbd05373fc417d2155eba6ae1e1",
       "file": "02_library/worlds/memories/MWP01_ROUTES_ROOMS_DOCUMENTS_B.txt",
-      "file_sha256": "6d5f0d089935854ebe4ff44b4d246278829d4bb683183f2413379ad32f46a677",
+      "file_sha256": "40feebe5e1f17ec0bde52d236c146f005e9b0d59e4db97d948d617d72110f032",
       "changes": "Verbatim fenced prompt; explicit centrally maintained reference inputs; rural memory grounded in creator's Orosháza paprika/corn-field childhood Grid geometry uses the full selected image resolution instead of fixed pixel examples.",
       "note": "Companion page B preserving original memory views."
     },
@@ -1320,7 +1320,7 @@
       ],
       "source_prompt_sha256": "16bf4be44836d9fb010f7825cc24770d0ce78cbd05373fc417d2155eba6ae1e1",
       "file": "02_library/worlds/memories/MWP01_ROUTES_ROOMS_DOCUMENTS_C.txt",
-      "file_sha256": "be6b7c7a6e595cc60c53a861cd93d8d0639eadf3008731f9ebed1d79cc397953",
+      "file_sha256": "1772dc5dfb073118f1e51c49ae45f7d52228db0bf947d9a35f92ee3218781cd3",
       "changes": "Verbatim fenced prompt; explicit centrally maintained reference inputs; rural memory grounded in creator's Orosháza paprika/corn-field childhood Grid geometry uses the full selected image resolution instead of fixed pixel examples.",
       "note": "Companion page C preserving original memory views."
     },
@@ -1333,7 +1333,7 @@
       ],
       "source_prompt_sha256": "557e0016d71cfd83bfd2c240538a5a77f6b6d8785ceb0f79bb97e387e1ccbd6f",
       "file": "02_library/worlds/memories/MWP02_SYSTEM_TIME_REVERSALS_B.txt",
-      "file_sha256": "a1f5e9b132db24fcdc9cc32407922e0e5846799da1e2ba624d579975bce4251f",
+      "file_sha256": "c445acb1d8b17f9de11d89518facda02c13887ad4d59fd8be4be8dba737229f5",
       "changes": "AI-specific screen becomes ordinary document cursor; citizen/review beat retained; explicit centrally maintained reference inputs Grid geometry uses the full selected image resolution instead of fixed pixel examples.",
       "note": "Companion page B preserving original memory views."
     },
@@ -1346,7 +1346,7 @@
       ],
       "source_prompt_sha256": "557e0016d71cfd83bfd2c240538a5a77f6b6d8785ceb0f79bb97e387e1ccbd6f",
       "file": "02_library/worlds/memories/MWP02_SYSTEM_TIME_REVERSALS_C.txt",
-      "file_sha256": "461137b2675c1346a4a1bc2559ff526b0d63bd148323aba9e50b9484c46afcba",
+      "file_sha256": "d59685b96e220d615ab637534da60d8d7c5abe065e395a4269737884eb4f68de",
       "changes": "AI-specific screen becomes ordinary document cursor; citizen/review beat retained; explicit centrally maintained reference inputs Grid geometry uses the full selected image resolution instead of fixed pixel examples.",
       "note": "Companion page C preserving original memory views."
     },
@@ -1359,7 +1359,7 @@
       ],
       "source_prompt_sha256": "521c52dc6be7a4c8e015a67fab11b219bc387a315f00463f84acb191c81fc773",
       "file": "02_library/worlds/memories/HRW07_CLINICAL_REALITY_B.txt",
-      "file_sha256": "75c69432278b21f119777873fe4eaa1b2957b4fa3dee6fab96c168da19967883",
+      "file_sha256": "c897f157921794e23675e15426025b81d6bb4d0d0e08801c87e076ec378572b5",
       "changes": "Verbatim fenced prompt; explicit centrally maintained reference inputs Grid geometry uses the full selected image resolution instead of fixed pixel examples.",
       "note": "Companion page B preserving original memory views."
     },
@@ -1372,7 +1372,7 @@
       ],
       "source_prompt_sha256": "521c52dc6be7a4c8e015a67fab11b219bc387a315f00463f84acb191c81fc773",
       "file": "02_library/worlds/memories/HRW07_CLINICAL_REALITY_C.txt",
-      "file_sha256": "febdd4234092e740063c57bb8346eaf9aed822445c9d6f3abb8f00f25a6afe2b",
+      "file_sha256": "579cf661c473eb13e6cb16f2999c7c55e9af35fa3974cbf03634e1f17636c8e6",
       "changes": "Verbatim fenced prompt; explicit centrally maintained reference inputs Grid geometry uses the full selected image resolution instead of fixed pixel examples.",
       "note": "Companion page C preserving original memory views."
     }
@@ -1385,7 +1385,7 @@
       "refs": [],
       "layout": "1x3 identity",
       "intended_resolution": "4K",
-      "prompt_sha256": "6805d4f8fd171360d852bb3c335ad7fe5a972d76828bf1e0e929a643283b91be",
+      "prompt_sha256": "3c828b0141c2c7a691eaf0619928e4fe4ee8d26984af6ac6e96269b3e5b1420d",
       "canvas_pixels": [
         3840,
         2160
@@ -1402,7 +1402,7 @@
       "refs": [],
       "layout": "1x3 identity",
       "intended_resolution": "4K",
-      "prompt_sha256": "50f22cd269a2d3d7c7b0ae8af734741c0064ca9ec3d17bd1ac7d2a4b5e3881ca",
+      "prompt_sha256": "c3b9438be5dc0d54dd2767a4c933339d07d19b548af9b7c7d22798f3325c6974",
       "canvas_pixels": [
         3840,
         2160
@@ -1419,7 +1419,7 @@
       "refs": [],
       "layout": "1x3 identity",
       "intended_resolution": "4K",
-      "prompt_sha256": "468783b58a35f5114a54dec7d75a1ba45450dd0ce0b958e250c5b6489121ea33",
+      "prompt_sha256": "f5c7109b3ee7211ccf867ed2ad21cf00131494e56bd76429f7198747804b4fd7",
       "canvas_pixels": [
         3840,
         2160
@@ -1436,7 +1436,7 @@
       "refs": [],
       "layout": "1x3 identity",
       "intended_resolution": "4K",
-      "prompt_sha256": "be0554eebf3feaa13282753e30335d24e1b0fa409699380a2f5b176e8ef915ad",
+      "prompt_sha256": "7006ba20df546bba841ddc643ba7808f27ec7f3d49d1722bd799eb9f87a8b6bd",
       "canvas_pixels": [
         3840,
         2160
@@ -1453,7 +1453,7 @@
       "refs": [],
       "layout": "1x3 identity",
       "intended_resolution": "4K",
-      "prompt_sha256": "6adf8736f25388140e6a8fc6c70528e022c46f0ecc4d3595e2942b90c30b002c",
+      "prompt_sha256": "bc009c26da3d71aeb153e0336f6bcef9a71c41b8dfd592bcb3bac85921fd15fc",
       "canvas_pixels": [
         3840,
         2160
@@ -1470,7 +1470,7 @@
       "refs": [],
       "layout": "1x3 identity",
       "intended_resolution": "4K",
-      "prompt_sha256": "529d387cbbee08816265353bdac76464577b9bc3c038e42dbe4e062401edef0b",
+      "prompt_sha256": "c070c61cd614f04cc1c0589e99767d01320173c9bbc8e08c8ae3103fceb7443a",
       "canvas_pixels": [
         3840,
         2160
@@ -1487,7 +1487,7 @@
       "refs": [],
       "layout": "1x3 identity",
       "intended_resolution": "4K",
-      "prompt_sha256": "e7d56702a2985e61b1943876516e5c5e11334f8372c7a2b855857a20c55b9dfe",
+      "prompt_sha256": "1dc9a7a3a10e81e4c7f63b70f9a9dba2be55c104327de552bcc00496b022ddea",
       "canvas_pixels": [
         3840,
         2160
@@ -1504,7 +1504,7 @@
       "refs": [],
       "layout": "1x3 identity",
       "intended_resolution": "4K",
-      "prompt_sha256": "2f688974bab66c142d4a8f85315f93bc639df2300f7cf601cb5c5eeb734de0d7",
+      "prompt_sha256": "bdbdbbf4728550cbe2977850f5b662773c4c93f9864c63a2ca7d057fb158ec58",
       "canvas_pixels": [
         3840,
         2160
@@ -1521,7 +1521,7 @@
       "refs": [],
       "layout": "1x3 identity",
       "intended_resolution": "4K",
-      "prompt_sha256": "28e8429388c366e29e31fae4799bf79bd332caa104747e56f895c5d429e76910",
+      "prompt_sha256": "e4664db2e15bde42d4e12dd7f198b6eb462bbec2f95ce0cc61ab7394330fd9f8",
       "canvas_pixels": [
         3840,
         2160
@@ -1538,7 +1538,7 @@
       "refs": [],
       "layout": "1x3 identity",
       "intended_resolution": "4K",
-      "prompt_sha256": "a3f31124821c2e90db35174cf8d8911310098577d3625ee447a0fb06b0afe353",
+      "prompt_sha256": "e436a6c2d33b869185fb33d6eb0e7d6889224ff6bbd087bbc3eb562e9b71e14b",
       "canvas_pixels": [
         3840,
         2160
@@ -1555,7 +1555,7 @@
       "refs": [],
       "layout": "1x3 identity",
       "intended_resolution": "4K",
-      "prompt_sha256": "2e608d64cbda0fd0fa7c661ee7d4247a3281149f6bc1a82791780bbeb43d1aa8",
+      "prompt_sha256": "02039e198936b88e8c2fb61cf56c51ae7c923e500090e88e13c7360cf4ea2db9",
       "canvas_pixels": [
         3840,
         2160
@@ -1572,7 +1572,7 @@
       "refs": [],
       "layout": "1x3 identity",
       "intended_resolution": "4K",
-      "prompt_sha256": "859b0a12588cf2ea56d56f16d3cd1fecafeca686e02f838b86e39ce558233dfd",
+      "prompt_sha256": "874cccb4d313732703e4060c1384c56bc717fae044e5090d791bafb0a05c196d",
       "canvas_pixels": [
         3840,
         2160
@@ -1589,7 +1589,7 @@
       "refs": [],
       "layout": "1x3 identity",
       "intended_resolution": "4K",
-      "prompt_sha256": "c4474f475f7266efe5ca68b0a6d271f9d995fb916eb069d906dbeb7b187eb38c",
+      "prompt_sha256": "6fb8f06908ae6dd7ab603f7aa7c75fc2f151682e0ff44d30431181784af7ead7",
       "canvas_pixels": [
         3840,
         2160
@@ -1606,7 +1606,7 @@
       "refs": [],
       "layout": "1x3 identity",
       "intended_resolution": "4K",
-      "prompt_sha256": "82a492eb6dd9bf9f8071e34bce6d993c08ad6270632778b428c8dbf6d39d64d2",
+      "prompt_sha256": "af09e22c58e975293aca31fcbca2159f3fa7736245f8a1479437d8df52db1119",
       "canvas_pixels": [
         3840,
         2160
@@ -1623,7 +1623,7 @@
       "refs": [],
       "layout": "1x3 identity",
       "intended_resolution": "4K",
-      "prompt_sha256": "913b042f73a51e91cc9f1dbc7622a9364d6017411362e806c6f19ad042358a81",
+      "prompt_sha256": "98e52d78025ceca8a74d67015e7c423e3600834c932ca60cf129de36dc1cdf7b",
       "canvas_pixels": [
         3840,
         2160
@@ -1640,7 +1640,7 @@
       "refs": [],
       "layout": "1x3 identity",
       "intended_resolution": "4K",
-      "prompt_sha256": "6dda2cc93a6f12f4a0d2ef6feab6198326f1b7fe164922da6ba6756cf430faad",
+      "prompt_sha256": "253290ca4bc98f435a77a1d24cf21c137a1cf344e8d8e69ecb8c8a3a53a3c8b0",
       "canvas_pixels": [
         3840,
         2160
@@ -1657,7 +1657,7 @@
       "refs": [],
       "layout": "1x3 identity",
       "intended_resolution": "4K",
-      "prompt_sha256": "e7f921f891f2c47055e5cbb9b86f33a06a5636b6c74fd00a516e00e3b55ec84f",
+      "prompt_sha256": "32ca3ce93cf9b7db9fdc9d1fbea514a9582e91b902a49f15e48f91944e1f39e8",
       "canvas_pixels": [
         3840,
         2160
@@ -1674,7 +1674,7 @@
       "refs": [],
       "layout": "1x3 identity",
       "intended_resolution": "4K",
-      "prompt_sha256": "0738b4bc6165011ecf30352200a8617a6379cabff2e4ea1cd525f85fab7331ad",
+      "prompt_sha256": "75283dc361c10e634e231e2f1a8362a0287244f8324cff82b1a4c9548443861b",
       "canvas_pixels": [
         3840,
         2160
@@ -1691,7 +1691,7 @@
       "refs": [],
       "layout": "1x3 identity",
       "intended_resolution": "4K",
-      "prompt_sha256": "2f341c64043c9efc1073c55e399985b9f26a8848a9a2652dbbd8763d30c6b7dc",
+      "prompt_sha256": "548a80f8b0dc0cbbd655aec81099794a474720f26175bb906ba2d786c9542910",
       "canvas_pixels": [
         3840,
         2160
@@ -1708,7 +1708,7 @@
       "refs": [],
       "layout": "1x3 identity",
       "intended_resolution": "4K",
-      "prompt_sha256": "c1fc7539115030bee508a835798eb2bb9e902215f286c83961276a29be63212a",
+      "prompt_sha256": "dba5c623b8e1d08dd401b09628d9a3c4bb0abff098a6e5b40da0f369b3f73ce3",
       "canvas_pixels": [
         3840,
         2160
@@ -1725,7 +1725,7 @@
       "refs": [],
       "layout": "1x3 identity",
       "intended_resolution": "4K",
-      "prompt_sha256": "2f341c64043c9efc1073c55e399985b9f26a8848a9a2652dbbd8763d30c6b7dc",
+      "prompt_sha256": "9ec1985404797d96b99f15b0a0fd51f340a5992043ed34bd33e693a63e1e8a8f",
       "canvas_pixels": [
         3840,
         2160
@@ -1742,7 +1742,7 @@
       "refs": [],
       "layout": "1x3 identity",
       "intended_resolution": "4K",
-      "prompt_sha256": "e284549b56220ebc8d2928c8db8c131b034866bf7c5fa0ec45d62589e3b55a2e",
+      "prompt_sha256": "62ac52d407efcff19c3e2407f4c076aa105cff69ac3c3503dbc128c6ef24e5f1",
       "canvas_pixels": [
         3840,
         2160
@@ -1759,7 +1759,7 @@
       "refs": [],
       "layout": "1x3 identity",
       "intended_resolution": "4K",
-      "prompt_sha256": "7579645a94afc08e98b736a9486e973e0036954d38d910de7a9ec2a9ac26ad83",
+      "prompt_sha256": "3c144061110dad864e659ed254f6824887181004065f4e1ede67475de092494c",
       "canvas_pixels": [
         3840,
         2160
@@ -1776,7 +1776,7 @@
       "refs": [],
       "layout": "1x3 identity",
       "intended_resolution": "4K",
-      "prompt_sha256": "1f5a6b17f912f5d64d2abf12e73efeea11f5d3d7aaf0ccd062f4e40a907b638f",
+      "prompt_sha256": "a545dbb485a0d62d1bc1a1fd13d5ffec5ee96d7e1dd234fa6f630d70d2c9eb73",
       "canvas_pixels": [
         3840,
         2160
@@ -1793,7 +1793,7 @@
       "refs": [],
       "layout": "1x3 identity",
       "intended_resolution": "4K",
-      "prompt_sha256": "f59ffc259c715110853242f02194ad57f4d07f35dfdcbca5da7a53894ea3e4c8",
+      "prompt_sha256": "9bc5cc79eff4c41f2e4af305b89aef9521966c8fbdf77a092629c23b9171b5c7",
       "canvas_pixels": [
         3840,
         2160
@@ -1810,7 +1810,7 @@
       "refs": [],
       "layout": "1x3 identity",
       "intended_resolution": "4K",
-      "prompt_sha256": "34517fcd8c1f46f0c408b137d69faaa82beb49b7b699e22c4034e395f78a47e6",
+      "prompt_sha256": "703db07855ad28dacdc1325399190e0a543d554e699ecf1e963ee551bc5d4e01",
       "canvas_pixels": [
         3840,
         2160
@@ -1827,7 +1827,7 @@
       "refs": [],
       "layout": "1x3 identity",
       "intended_resolution": "4K",
-      "prompt_sha256": "d25fe71db0af27d4c417df6703dc0d650328487f9cdc2d4b188581966e39ff2d",
+      "prompt_sha256": "1c6f7cddd8a4801f67dd8870a19d945f2848b8b710b89214e3d48ccf919cb8d8",
       "canvas_pixels": [
         3840,
         2160
@@ -1844,7 +1844,7 @@
       "refs": [],
       "layout": "1x3 identity",
       "intended_resolution": "4K",
-      "prompt_sha256": "90dfd51d1c08e630bff8ec9722400cf55e945e34ee430f02ce8bf9aa2acef191",
+      "prompt_sha256": "25a54e16ce84fbbfaa51eb2b7addedef84c2e7bd05221c4ba825460fec65add3",
       "canvas_pixels": [
         3840,
         2160
@@ -1861,7 +1861,7 @@
       "refs": [],
       "layout": "1x3 identity",
       "intended_resolution": "4K",
-      "prompt_sha256": "e9fe7a9608f3940f99d4286a49834f5a7f2cfcfc4b807a8a8bb2c4e4fd989b92",
+      "prompt_sha256": "95a662560e18212357d1ec70fefb0c9bac97729e1c24d10e9f94a09a9c187ee0",
       "canvas_pixels": [
         3840,
         2160
@@ -1878,7 +1878,7 @@
       "refs": [],
       "layout": "1x3 identity",
       "intended_resolution": "4K",
-      "prompt_sha256": "7c567a5f9df9d82328f025e2a7d3c86828d1ecfd36db618887e0172e7518697a",
+      "prompt_sha256": "d2eeecc1dcd51abc8d2075261228b91ca1c48b6f54ca6511fcaa59c1cc9c9628",
       "canvas_pixels": [
         3840,
         2160
@@ -1895,7 +1895,7 @@
       "refs": [],
       "layout": "1x3 identity",
       "intended_resolution": "4K",
-      "prompt_sha256": "0faa58d6f9133b7cbb7064fca757d8b14e8720d6177d7849892ed3ec91e037f9",
+      "prompt_sha256": "a5ec343f17e6251046a35e2de362f58406566d70610da77c7052bf0b46145fac",
       "canvas_pixels": [
         3840,
         2160
@@ -1924,7 +1924,7 @@
         "MW01_B",
         "MW01_C"
       ],
-      "prompt_sha256": "ff9c4266d72e0f02b9ebfff91cd6bada9c556238c48b51a23a7a72eae3d0a899"
+      "prompt_sha256": "bc0bb85ff0cfb2cd9dd1459eee5872e9ea82031f7d3299ee4df229f291f6aff8"
     },
     "MW02": {
       "key": "MW02",
@@ -1949,7 +1949,7 @@
         "MW02_B",
         "MW02_C"
       ],
-      "prompt_sha256": "c8677f038f52925fd275504741d48933f11b381474f3dc01fc0224da412277a3"
+      "prompt_sha256": "f15417b557b7f2bc2cf33d25254ea82fbf378eb3d67030ac9da453aec7ffeac0"
     },
     "MW03": {
       "key": "MW03",
@@ -1966,7 +1966,7 @@
         "MW03_B",
         "MW03_C"
       ],
-      "prompt_sha256": "c42ac703b43ea7988c49acb8b508fa21668240138ed2774bd4a78218f4df7afa"
+      "prompt_sha256": "e0bbe6027fd2658a6a8822a528f86a52d0279dbe632051ebf79ab6baf32c4af8"
     },
     "MW04": {
       "key": "MW04",
@@ -1984,7 +1984,7 @@
         "MW04_B",
         "MW04_C"
       ],
-      "prompt_sha256": "ae7ee5402b527fdb9fa79256b3b5b27b2a39a6464be49cc162fcdf7b37659c2e"
+      "prompt_sha256": "bd7fb1c7487705361d31bce325692a1e6e521278650e5f8acac7e5980a9c8425"
     },
     "MW05": {
       "key": "MW05",
@@ -2004,7 +2004,7 @@
         "MW05_B",
         "MW05_C"
       ],
-      "prompt_sha256": "3aa2ef563a441650d08ad507b1703ca6a1507ebb2001c7d3ec6bec2e4ba5f001"
+      "prompt_sha256": "483f39d52f5297b23a35924758c2cf9ccd5befda33c5259438306f8a36e221c5"
     },
     "MW06": {
       "key": "MW06",
@@ -2028,7 +2028,7 @@
         "MW06_B",
         "MW06_C"
       ],
-      "prompt_sha256": "39f3757fd3d88ea67e73de99a875cbaf812e5fce953692d0bc9941d2556fcfdf"
+      "prompt_sha256": "0efd04008af928c0ce313bd8c1f72785878148c017c9c14e148191d090391fb9"
     },
     "MWP01": {
       "key": "MWP01",
@@ -2042,7 +2042,7 @@
         "MWP01_B",
         "MWP01_C"
       ],
-      "prompt_sha256": "07dd5cc4a2f290c030770d19d830c9b0a8747bbf9577fbcdaa0f80d1b76d7d3b"
+      "prompt_sha256": "560095b5daa1378bbbe9a1486a377c428df8182d297d23b1f2fcd9455c1239e9"
     },
     "MWP02": {
       "key": "MWP02",
@@ -2056,7 +2056,7 @@
         "MWP02_B",
         "MWP02_C"
       ],
-      "prompt_sha256": "9dea081d15c9e28d7fea490e818e68bfe01782332b67a8df7584474b77619ede"
+      "prompt_sha256": "32447c614afcabfc24629e916e983ef5e17560ea0afc9099b6644f424f6df674"
     },
     "HRW07": {
       "key": "HRW07",
@@ -2071,14 +2071,14 @@
         "HRW07_B",
         "HRW07_C"
       ],
-      "prompt_sha256": "239c98354600142dfb15f74dfd36b9e70a5691b8906b8df443adaef9751efe68"
+      "prompt_sha256": "f320b8e61f43790f6ed7ca842aa8c62c774d30943abe87281b48aa00fd077200"
     },
     "W01": {
       "key": "W01",
       "path": "02_library/worlds/real/W01_MAIN_WORLD_A.txt",
       "output": "W01_MAIN_WORLD.png",
       "refs": [],
-      "prompt_sha256": "f9b9a3c716b3ffd09ac670fbc1a78ee9a423522cd69167c66c990b2e7d9488ec"
+      "prompt_sha256": "3717c2801f04cb5341bcad6059e9ff89859b0a08c8e5ba1683aeda4d46cdf814"
     },
     "MAP01": {
       "key": "MAP01",
@@ -2094,7 +2094,7 @@
       "path": "02_library/worlds/real/W02_MAIN_WORLD_A.txt",
       "output": "W02_MAIN_WORLD.png",
       "refs": [],
-      "prompt_sha256": "8213d65e0e5c281e077b064e0a800c87a5070f8592cf593a175ead2af6bcd012"
+      "prompt_sha256": "dab4a73133f8ec633463974cc334c98ac7002a48fc77326b920fe53c5dd68e05"
     },
     "MAP02": {
       "key": "MAP02",
@@ -2110,7 +2110,7 @@
       "path": "02_library/worlds/real/W03_MAIN_WORLD_A.txt",
       "output": "W03_MAIN_WORLD.png",
       "refs": [],
-      "prompt_sha256": "4a6e34ac408c1b3aabe397c5a0d74ef45bf2412f73d9a188d0a8756684afa90c"
+      "prompt_sha256": "c875ddc6f916b565c24e6a2917f190b6bf596a8f68d44549ece807ff113868a2"
     },
     "MAP03": {
       "key": "MAP03",
@@ -2126,7 +2126,7 @@
       "path": "02_library/worlds/real/W04_MAIN_WORLD_A.txt",
       "output": "W04_MAIN_WORLD.png",
       "refs": [],
-      "prompt_sha256": "2d6a8173127144ab57358e172a205e576cd80fc99bc2314fde6e3fdaf643b694"
+      "prompt_sha256": "9e030ac3a4b9639f67174f1e994b3462b6332bf6db7ec92ade557994b354972e"
     },
     "MAP04": {
       "key": "MAP04",
@@ -2142,7 +2142,7 @@
       "path": "02_library/worlds/real/W05_MAIN_WORLD_A.txt",
       "output": "W05_MAIN_WORLD.png",
       "refs": [],
-      "prompt_sha256": "65dd1013b932dca7703b605976eba56a54a39f3953870fd2724de1ac7c6fc3f1"
+      "prompt_sha256": "d7e0965904c1104b0c2ecbd0109e4a3086615647f08a77cd3c8be28fc0cfdc57"
     },
     "MAP05": {
       "key": "MAP05",
@@ -2158,7 +2158,7 @@
       "path": "02_library/worlds/real/W06_MAIN_WORLD_A.txt",
       "output": "W06_MAIN_WORLD.png",
       "refs": [],
-      "prompt_sha256": "e6bef723d090eb7e052c2ca7c649aa0ed15ecdf2e8359a564f35a665089b171b"
+      "prompt_sha256": "d9f6c90b68673fbd45fe64a208048b0ff5d5486da7c4e4ce326a31210bc90cae"
     },
     "MAP06": {
       "key": "MAP06",
@@ -2174,7 +2174,7 @@
       "path": "02_library/worlds/real/W07_MAIN_WORLD_A.txt",
       "output": "W07_MAIN_WORLD.png",
       "refs": [],
-      "prompt_sha256": "21e4e2a0ea8009474d542857e24d6f8c33cfc68a1a72c06d0667f31164f7c43e"
+      "prompt_sha256": "cd88b43b34f9da6532de003a9eac26cda55dac5619e6905455cf08ed5ab6651f"
     },
     "MAP07": {
       "key": "MAP07",
@@ -2709,7 +2709,7 @@
       "output": "W01_MAIN_WORLD_B.png",
       "refs": [],
       "status": "PREPARED_NOT_RENDERED",
-      "prompt_sha256": "2303676c234d28ddf4e7a5baa90c7cfc203470b6523465363d2c1ddd7e533cb5"
+      "prompt_sha256": "36a48723bf54ec174c24753782cfb678c2bb6643382fae95dbf130ff7bf07981"
     },
     "W01_C": {
       "key": "W01_C",
@@ -2717,7 +2717,7 @@
       "output": "W01_MAIN_WORLD_C.png",
       "refs": [],
       "status": "PREPARED_NOT_RENDERED",
-      "prompt_sha256": "788b515c6fc57f6157d1b35a2ed108a37b17c2b13a2ec5377f3b9c131cf8c0ab"
+      "prompt_sha256": "e0fb6cba4a0a21c9337c7c93f44ed1ddbe4f8c28c825f1a5e89cdfbd7c3c6b7c"
     },
     "W02_B": {
       "key": "W02_B",
@@ -2725,7 +2725,7 @@
       "output": "W02_MAIN_WORLD_B.png",
       "refs": [],
       "status": "PREPARED_NOT_RENDERED",
-      "prompt_sha256": "248bd9d4c147a01dbd285a5cc7d233e9cb98ff8f7da89a4c202c91e91dfd7f27"
+      "prompt_sha256": "deafc0bec329e081e07ac3bc9e263b7b6e8e6e01cd28bfea4f7749a2fae14e24"
     },
     "W02_C": {
       "key": "W02_C",
@@ -2733,7 +2733,7 @@
       "output": "W02_MAIN_WORLD_C.png",
       "refs": [],
       "status": "PREPARED_NOT_RENDERED",
-      "prompt_sha256": "edc9ccb835583d937ec8bfd70f72235328cc334425c736a4987d85bfdbb97b77"
+      "prompt_sha256": "9a02babc5220f4822b87e9057f420e87e468d4f853eebecaf83bac491ddddd51"
     },
     "W03_B": {
       "key": "W03_B",
@@ -2741,7 +2741,7 @@
       "output": "W03_MAIN_WORLD_B.png",
       "refs": [],
       "status": "PREPARED_NOT_RENDERED",
-      "prompt_sha256": "80046d0aa06851c6b72eee714fa2e2851e1e8f05130882b3a837b4687c32f34d"
+      "prompt_sha256": "0e56e29e6994cafb10d5e4f97c42ad63febdf21789234bff84efb5215dffc59f"
     },
     "W03_C": {
       "key": "W03_C",
@@ -2749,7 +2749,7 @@
       "output": "W03_MAIN_WORLD_C.png",
       "refs": [],
       "status": "PREPARED_NOT_RENDERED",
-      "prompt_sha256": "63cc5c5d4cfdc226cdd5e9f0aee0f76a88e743a11f0f8d26446a9554aaa519b1"
+      "prompt_sha256": "21a5b9f941cee350c570d43379311a950510ddbcda5973ce3e9a1ea04b6c9182"
     },
     "W04_B": {
       "key": "W04_B",
@@ -2757,7 +2757,7 @@
       "output": "W04_MAIN_WORLD_B.png",
       "refs": [],
       "status": "PREPARED_NOT_RENDERED",
-      "prompt_sha256": "2820b6ded3a83d411a62ade0819e057b9c1d06cc784a90fb3961adbf50e00ecd"
+      "prompt_sha256": "832c0583f401971faae7584d173f86360622d702b9be9b288b4ad680a147e755"
     },
     "W04_C": {
       "key": "W04_C",
@@ -2765,7 +2765,7 @@
       "output": "W04_MAIN_WORLD_C.png",
       "refs": [],
       "status": "PREPARED_NOT_RENDERED",
-      "prompt_sha256": "936328e9670748ddf7f30331f37edcc4003fa7e0c44caa380e7a35eed7505663"
+      "prompt_sha256": "5abcd18ad8375007429f0293ea964cb3c2e86d2c0a86bbb2c25d17676749fc5d"
     },
     "W05_B": {
       "key": "W05_B",
@@ -2773,7 +2773,7 @@
       "output": "W05_MAIN_WORLD_B.png",
       "refs": [],
       "status": "PREPARED_NOT_RENDERED",
-      "prompt_sha256": "e94aefda73c9501461f4c27435d178cfb3cae22b806e881a0b0f1c25208e3dbd"
+      "prompt_sha256": "411a8bc119a8f29e301e925e567b767229662b4d1cf462830a15bcc1deee792d"
     },
     "W05_C": {
       "key": "W05_C",
@@ -2781,7 +2781,7 @@
       "output": "W05_MAIN_WORLD_C.png",
       "refs": [],
       "status": "PREPARED_NOT_RENDERED",
-      "prompt_sha256": "28918f7f4ab17e2ff865140a73e52834ad839ac06c1e3727a430228aaadbd3f5"
+      "prompt_sha256": "8afa67423ac908dee06420cc26155e135ce82a20224c322300477bdd6893f573"
     },
     "W06_B": {
       "key": "W06_B",
@@ -2789,7 +2789,7 @@
       "output": "W06_MAIN_WORLD_B.png",
       "refs": [],
       "status": "PREPARED_NOT_RENDERED",
-      "prompt_sha256": "b2975154ac4d401b1e5c92e28b435c56d13c849aecbe5b7404cfdcf97239e314"
+      "prompt_sha256": "1bb4fcd1035cad466837cd6d49c0a387648e26f58c41b5f30d28dfc4be947f1d"
     },
     "W06_C": {
       "key": "W06_C",
@@ -2797,7 +2797,7 @@
       "output": "W06_MAIN_WORLD_C.png",
       "refs": [],
       "status": "PREPARED_NOT_RENDERED",
-      "prompt_sha256": "18d0367fae2e0b0f57eb13fd20a189bc7c7bfb59e435a3c3b55327090ad67d3c"
+      "prompt_sha256": "9085f6c7477b0b95b45e237df3c8608779fdaea7a3d08409c35bf7cae720071e"
     },
     "W07_B": {
       "key": "W07_B",
@@ -2805,7 +2805,7 @@
       "output": "W07_MAIN_WORLD_B.png",
       "refs": [],
       "status": "PREPARED_NOT_RENDERED",
-      "prompt_sha256": "61c2b865fe8f592d6bc53d0cc16716a00e12c7cb147ef02a0736e391fdbe0fb5"
+      "prompt_sha256": "fa513c526f3472b88fd88becadd276430a3aa6c11099a0a24f2b52d61cf3ddff"
     },
     "W07_C": {
       "key": "W07_C",
@@ -2813,7 +2813,7 @@
       "output": "W07_MAIN_WORLD_C.png",
       "refs": [],
       "status": "PREPARED_NOT_RENDERED",
-      "prompt_sha256": "18fe5981b8e64c8f7d09bafcdb8f6d25b302c439cff77fea9cf6fb3219419800"
+      "prompt_sha256": "ee54334fc3d48a842390a7d744fae056de2f10cd45e1246d9655ff081b476b0c"
     },
     "MR004": {
       "key": "MR004",
@@ -3273,7 +3273,7 @@
         7,
         8
       ],
-      "prompt_sha256": "ac921680f587b296cbe4ea6c0e27f6a1f2962aee1e9e47d1b5cc15c69597dd11"
+      "prompt_sha256": "c9ab9610e24e80e74893feee1987fc34ba1eda5a6286bc73be9a103d49679234"
     },
     "MW01_C": {
       "key": "MW01_C",
@@ -3299,7 +3299,7 @@
         7,
         8
       ],
-      "prompt_sha256": "9573cd3b83d6d0d3d1a8427bc82a11bfe5264b9481c49432b21d85c238ad0cb2"
+      "prompt_sha256": "0b1afac9dbcbdb33057d1d4bd1ebc359d50e0f0178d755aa91181daf554d9e39"
     },
     "MW02_B": {
       "key": "MW02_B",
@@ -3329,7 +3329,7 @@
         7,
         8
       ],
-      "prompt_sha256": "705a68148daa21ccf0c2e2ed88e954a124f62df218987c813a6b506a0dd59226"
+      "prompt_sha256": "5db35368e90aa987e711d863fbace5cdae48f93dd686af712ab6ef1668d4b1b7"
     },
     "MW02_C": {
       "key": "MW02_C",
@@ -3359,7 +3359,7 @@
         7,
         8
       ],
-      "prompt_sha256": "202e63c5fdef4c5f8741744e1eb216e6ed9ce9d19ca3c61749096419a13961c0"
+      "prompt_sha256": "503459fba8d502c3de27322f1e9ad1995638a946a0e808167c49d344ae6e2bed"
     },
     "MW03_B": {
       "key": "MW03_B",
@@ -3381,7 +3381,7 @@
         7,
         8
       ],
-      "prompt_sha256": "b2bb2485aa92a491fecf2a7ee139af52e340f6a1533013127fba16f6fdeadba8"
+      "prompt_sha256": "ee24d1394d6cd4c58d5a2dbcfe95cdcc35dbcc6ff2ea6cff19a3b8e430eee28e"
     },
     "MW03_C": {
       "key": "MW03_C",
@@ -3403,7 +3403,7 @@
         7,
         8
       ],
-      "prompt_sha256": "a11efd2345f7f5cacd9898d2dd85417bf5fd84d45a9490d757875e41eda43f37"
+      "prompt_sha256": "0305de99c72b479190eddb1a2fac4a1f9df8b35a00449a6ebc5c8172b7817b71"
     },
     "MW04_B": {
       "key": "MW04_B",
@@ -3426,7 +3426,7 @@
         7,
         8
       ],
-      "prompt_sha256": "e24da36ba05f0a22688e38018fd7f7fba08ff3da6675e390adb45344954597b3"
+      "prompt_sha256": "c7c55eeed97158b18710218d91df7c37fd8da06754d3761a0aaaf3722228a688"
     },
     "MW04_C": {
       "key": "MW04_C",
@@ -3449,7 +3449,7 @@
         7,
         8
       ],
-      "prompt_sha256": "a3d999ae75d16c7222bcf3e00e43e8b76074f99fa194001920111c891ee7523a"
+      "prompt_sha256": "71c2ca2e9eaa5e53da4c17a34f7ebaacb0d58d944aec40ccc076e63a295447d1"
     },
     "MW05_B": {
       "key": "MW05_B",
@@ -3474,7 +3474,7 @@
         7,
         8
       ],
-      "prompt_sha256": "e3cbd56a66b8134b86c1b7112d1cf7760bb3f69e06087baa4c6d0ef883164039"
+      "prompt_sha256": "0dc6d879ff73e1fe3fe0febf3ac81d67d530b0b4fdba01e1b57bfa19a784b144"
     },
     "MW05_C": {
       "key": "MW05_C",
@@ -3499,7 +3499,7 @@
         7,
         8
       ],
-      "prompt_sha256": "00690ef0ace3078714cc35cb77dec464268f13b4f9f1b2f7f9202a9da32ad74a"
+      "prompt_sha256": "7252271d379e7b37a9003f40ac7a3935fe92988b5b5cab5afe835dc26b057571"
     },
     "MW06_B": {
       "key": "MW06_B",
@@ -3528,7 +3528,7 @@
         7,
         8
       ],
-      "prompt_sha256": "10068076aee57193beadf9301b847810a0cf7b343eb9a5fb66c8d7ef1fb6a8e8"
+      "prompt_sha256": "6c6eea89d1d51071e09d48f22d746338384ae893f5c5344179903b5f9086647b"
     },
     "MW06_C": {
       "key": "MW06_C",
@@ -3557,7 +3557,7 @@
         7,
         8
       ],
-      "prompt_sha256": "d2acf81dd680a131bb83c0684eb88f1e6fea73d47d5e2d11a2613c7514788bc0"
+      "prompt_sha256": "3e36f2991662725c580ddc40c06fb886e3610ed03521b263be22ccee5edd5ac5"
     },
     "MWP01_B": {
       "key": "MWP01_B",
@@ -3576,7 +3576,7 @@
         7,
         8
       ],
-      "prompt_sha256": "6d5f0d089935854ebe4ff44b4d246278829d4bb683183f2413379ad32f46a677"
+      "prompt_sha256": "40feebe5e1f17ec0bde52d236c146f005e9b0d59e4db97d948d617d72110f032"
     },
     "MWP01_C": {
       "key": "MWP01_C",
@@ -3595,7 +3595,7 @@
         7,
         8
       ],
-      "prompt_sha256": "be6b7c7a6e595cc60c53a861cd93d8d0639eadf3008731f9ebed1d79cc397953"
+      "prompt_sha256": "1772dc5dfb073118f1e51c49ae45f7d52228db0bf947d9a35f92ee3218781cd3"
     },
     "MWP02_B": {
       "key": "MWP02_B",
@@ -3614,7 +3614,7 @@
         7,
         8
       ],
-      "prompt_sha256": "a1f5e9b132db24fcdc9cc32407922e0e5846799da1e2ba624d579975bce4251f"
+      "prompt_sha256": "c445acb1d8b17f9de11d89518facda02c13887ad4d59fd8be4be8dba737229f5"
     },
     "MWP02_C": {
       "key": "MWP02_C",
@@ -3633,7 +3633,7 @@
         7,
         8
       ],
-      "prompt_sha256": "461137b2675c1346a4a1bc2559ff526b0d63bd148323aba9e50b9484c46afcba"
+      "prompt_sha256": "d59685b96e220d615ab637534da60d8d7c5abe065e395a4269737884eb4f68de"
     },
     "HRW07_B": {
       "key": "HRW07_B",
@@ -3653,7 +3653,7 @@
         7,
         8
       ],
-      "prompt_sha256": "75c69432278b21f119777873fe4eaa1b2957b4fa3dee6fab96c168da19967883"
+      "prompt_sha256": "c897f157921794e23675e15426025b81d6bb4d0d0e08801c87e076ec378572b5"
     },
     "HRW07_C": {
       "key": "HRW07_C",
@@ -3673,7 +3673,7 @@
         7,
         8
       ],
-      "prompt_sha256": "febdd4234092e740063c57bb8346eaf9aed822445c9d6f3abb8f00f25a6afe2b"
+      "prompt_sha256": "579cf661c473eb13e6cb16f2999c7c55e9af35fa3974cbf03634e1f17636c8e6"
     },
     "T01_DETAILS": {
       "key": "T01_DETAILS",
@@ -4375,7 +4375,7 @@
       "import_status": "CATEGORY_IMPORT_PREPARED_NOT_EXECUTED",
       "prompt_review_status": "FOUR_STATE_AND_MATERIAL_RESPONSE_TEXT_REVIEWED_NOT_IMAGE_VERIFIED",
       "current_prompt_image_verified": false,
-      "prompt_sha256": "048d4845ef3481cec9b3b5ca19e51db6219a0ef2dbb8c666f684b3c8d87f170e"
+      "prompt_sha256": "fd0ff760d19efac8e8c3a814fd6c3355764416be501c5a360197363c9abbc0dc"
     },
     "CM002": {
       "key": "CM002",
@@ -4492,6 +4492,201 @@
       "target_score": "9.2",
       "story_use": "Explicit score-change study only; ordinary gaze changes illumination, not value.",
       "prompt_review_status": "FOUR_STATES_TEXT_REVIEWED_NOT_IMAGE_VERIFIED"
+    },
+    "TY001": {
+      "key": "TY001",
+      "path": "02_library/typography/TY001_DECIMAL_RATING_GLYPHS_AND_TINTS_3X3.txt",
+      "output": "TY001_DECIMAL_RATING_GLYPHS_AND_TINTS_3X3.png",
+      "refs": [],
+      "status": "PREPARED_NOT_RENDERED",
+      "layout": "3x3 typography",
+      "intended_resolution": "4K",
+      "canvas_pixels": [
+        3840,
+        2160
+      ],
+      "panel_pixels": [
+        1280,
+        720
+      ],
+      "input_mode": "TEXT_ONLY",
+      "prompt_sha256": "05bdca2dd7405bc6a37e606cddc1a669f94a532d0bcb1a81b3e6b2170615a61e",
+      "element_type": "Prop",
+      "visible_text": [
+        "1.0",
+        "2.3",
+        "3.0",
+        "4.6",
+        "5.0",
+        "6.2",
+        "7.4",
+        "8.6",
+        "9.2"
+      ],
+      "story_use": "rating numeral and tint identity",
+      "prompt_review_status": "EXACT_TEXT_AND_CELL_ASSIGNMENTS_REVIEWED_NOT_RENDERED"
+    },
+    "TY002": {
+      "key": "TY002",
+      "path": "02_library/typography/TY002_COFFEE_TO_KAVE_LETTER_MATERIAL_2X2.txt",
+      "output": "TY002_COFFEE_TO_KAVE_LETTER_MATERIAL_2X2.png",
+      "refs": [],
+      "status": "PREPARED_NOT_RENDERED",
+      "layout": "2x2 typography",
+      "intended_resolution": "4K",
+      "canvas_pixels": [
+        3840,
+        2160
+      ],
+      "panel_pixels": [
+        1920,
+        1080
+      ],
+      "input_mode": "TEXT_ONLY",
+      "prompt_sha256": "3c96cc65195b3755d69c354f1c94df46c020338a598da5661c8f505f4ad7b670",
+      "element_type": "Prop",
+      "visible_text": [
+        "COFFEE",
+        "KÁVÉ"
+      ],
+      "story_use": "raised-letter material morph detail",
+      "prompt_review_status": "EXACT_TEXT_AND_CELL_ASSIGNMENTS_REVIEWED_NOT_RENDERED"
+    },
+    "TY003": {
+      "key": "TY003",
+      "path": "02_library/typography/TY003_CAFE_AND_CULTURE_SIGN_LETTERING_2X2.txt",
+      "output": "TY003_CAFE_AND_CULTURE_SIGN_LETTERING_2X2.png",
+      "refs": [],
+      "status": "PREPARED_NOT_RENDERED",
+      "layout": "2x2 typography",
+      "intended_resolution": "4K",
+      "canvas_pixels": [
+        3840,
+        2160
+      ],
+      "panel_pixels": [
+        1920,
+        1080
+      ],
+      "input_mode": "TEXT_ONLY",
+      "prompt_sha256": "5d02552e9db3daaedd69589923f6590c6951a6614239bb7cc730de24aee07fe2",
+      "element_type": "Prop",
+      "visible_text": [
+        "KÁVÉ",
+        "SZÍNHÁZ",
+        "MOZI",
+        "KÖNYV"
+      ],
+      "story_use": "culture and cafe sign identities",
+      "prompt_review_status": "EXACT_TEXT_AND_CELL_ASSIGNMENTS_REVIEWED_NOT_RENDERED"
+    },
+    "TY004": {
+      "key": "TY004",
+      "path": "02_library/typography/TY004_OFFICE_AND_ACCOUNTING_SIGN_LETTERING_2X2.txt",
+      "output": "TY004_OFFICE_AND_ACCOUNTING_SIGN_LETTERING_2X2.png",
+      "refs": [],
+      "status": "PREPARED_NOT_RENDERED",
+      "layout": "2x2 typography",
+      "intended_resolution": "4K",
+      "canvas_pixels": [
+        3840,
+        2160
+      ],
+      "panel_pixels": [
+        1920,
+        1080
+      ],
+      "input_mode": "TEXT_ONLY",
+      "prompt_sha256": "34d6481c852284881fc8995c759bb017c9db0a51e246fcc713b526aacac88ac2",
+      "element_type": "Prop",
+      "visible_text": [
+        "OFFICE",
+        "ACCOUNTING",
+        "IRODA",
+        "KÖNYVELÉS"
+      ],
+      "story_use": "work district sign identities",
+      "prompt_review_status": "EXACT_TEXT_AND_CELL_ASSIGNMENTS_REVIEWED_NOT_RENDERED"
+    },
+    "TY005": {
+      "key": "TY005",
+      "path": "02_library/typography/TY005_TRANSIT_AND_ENTRANCE_SIGN_LETTERING_2X2.txt",
+      "output": "TY005_TRANSIT_AND_ENTRANCE_SIGN_LETTERING_2X2.png",
+      "refs": [],
+      "status": "PREPARED_NOT_RENDERED",
+      "layout": "2x2 typography",
+      "intended_resolution": "4K",
+      "canvas_pixels": [
+        3840,
+        2160
+      ],
+      "panel_pixels": [
+        1920,
+        1080
+      ],
+      "input_mode": "TEXT_ONLY",
+      "prompt_sha256": "b78734d62a4a3fa8180e74227acc923c7a77fcef6ac10fbf44d4a6ee27cd1ce2",
+      "element_type": "Prop",
+      "visible_text": [
+        "METRÓ",
+        "KIJÁRAT",
+        "BEJÁRAT",
+        "VILLAMOS"
+      ],
+      "story_use": "transit and public entrance sign identities",
+      "prompt_review_status": "EXACT_TEXT_AND_CELL_ASSIGNMENTS_REVIEWED_NOT_RENDERED"
+    },
+    "TY006": {
+      "key": "TY006",
+      "path": "02_library/typography/TY006_PROFILE_AGE_37_TO_33_GLYPH_CHANGE_2X2.txt",
+      "output": "TY006_PROFILE_AGE_37_TO_33_GLYPH_CHANGE_2X2.png",
+      "refs": [],
+      "status": "PREPARED_NOT_RENDERED",
+      "layout": "2x2 typography",
+      "intended_resolution": "4K",
+      "canvas_pixels": [
+        3840,
+        2160
+      ],
+      "panel_pixels": [
+        1920,
+        1080
+      ],
+      "input_mode": "TEXT_ONLY",
+      "prompt_sha256": "2129b3ebdba44a39b0386be9e1e0c9437d7c5ed6070a17042db1f151f8b19527",
+      "element_type": "Prop",
+      "visible_text": [
+        "37",
+        "33"
+      ],
+      "story_use": "local screen-glyph transition detail",
+      "prompt_review_status": "EXACT_TEXT_AND_CELL_ASSIGNMENTS_REVIEWED_NOT_RENDERED"
+    },
+    "TY007": {
+      "key": "TY007",
+      "path": "02_library/typography/TY007_FINAL_TITLE_LOCKUP_AND_LETTER_DETAILS_2X2.txt",
+      "output": "TY007_FINAL_TITLE_LOCKUP_AND_LETTER_DETAILS_2X2.png",
+      "refs": [],
+      "status": "PREPARED_NOT_RENDERED",
+      "layout": "2x2 typography",
+      "intended_resolution": "4K",
+      "canvas_pixels": [
+        3840,
+        2160
+      ],
+      "panel_pixels": [
+        1920,
+        1080
+      ],
+      "input_mode": "TEXT_ONLY",
+      "prompt_sha256": "c6f1d19eb0f94a23a5ae1a196b57516502ab4b9070624530e2c7b44d32aedf47",
+      "element_type": "Prop",
+      "visible_text": [
+        "MYSCOUTEE",
+        "THE PATH BETWEEN PEOPLE"
+      ],
+      "story_use": "final title composition and type detail",
+      "prompt_review_status": "EXACT_TEXT_AND_CELL_ASSIGNMENTS_REVIEWED_NOT_RENDERED"
     }
   },
   "operator_language": "English; Hungarian in-world signage and proper names are intentional story content.",
@@ -5271,6 +5466,48 @@
       "mention": null,
       "last_mention": "@UNBOUND_MR021",
       "evidence": "New Prop definition prepared; platform import and image generation not verified."
+    },
+    "TY001": {
+      "alias": "TY001_DECIMAL_RATING_GLYPHS_AND_TINTS_3X3",
+      "mention": null,
+      "last_mention": "@UNBOUND_TY001",
+      "evidence": "New typography Prop definition prepared; actual UI import and generated image not verified."
+    },
+    "TY002": {
+      "alias": "TY002_COFFEE_TO_KAVE_LETTER_MATERIAL_2X2",
+      "mention": null,
+      "last_mention": "@UNBOUND_TY002",
+      "evidence": "New typography Prop definition prepared; actual UI import and generated image not verified."
+    },
+    "TY003": {
+      "alias": "TY003_CAFE_AND_CULTURE_SIGN_LETTERING_2X2",
+      "mention": null,
+      "last_mention": "@UNBOUND_TY003",
+      "evidence": "New typography Prop definition prepared; actual UI import and generated image not verified."
+    },
+    "TY004": {
+      "alias": "TY004_OFFICE_AND_ACCOUNTING_SIGN_LETTERING_2X2",
+      "mention": null,
+      "last_mention": "@UNBOUND_TY004",
+      "evidence": "New typography Prop definition prepared; actual UI import and generated image not verified."
+    },
+    "TY005": {
+      "alias": "TY005_TRANSIT_AND_ENTRANCE_SIGN_LETTERING_2X2",
+      "mention": null,
+      "last_mention": "@UNBOUND_TY005",
+      "evidence": "New typography Prop definition prepared; actual UI import and generated image not verified."
+    },
+    "TY006": {
+      "alias": "TY006_PROFILE_AGE_37_TO_33_GLYPH_CHANGE_2X2",
+      "mention": null,
+      "last_mention": "@UNBOUND_TY006",
+      "evidence": "New typography Prop definition prepared; actual UI import and generated image not verified."
+    },
+    "TY007": {
+      "alias": "TY007_FINAL_TITLE_LOCKUP_AND_LETTER_DETAILS_2X2",
+      "mention": null,
+      "last_mention": "@UNBOUND_TY007",
+      "evidence": "New typography Prop definition prepared; actual UI import and generated image not verified."
     }
   },
   "reference_binding_note": "Only full verified Higgsfield mentions belong in mention. Null produces an explicit @UNBOUND_<key> slot and a do-not-generate notice. Run 04_tracking/sync_references.py --write once to propagate a binding across all prompts and guides. Previous videos remain in the actual Forward Extend source field. Raw-image, storyboard and audio autoload handles are unverified until observed; never guess an Element ID from a filename.",
@@ -8240,28 +8477,31 @@
     "baseline_status": "IMPORT_REPORTED_BY_CREATOR",
     "baseline_count": 105,
     "next_import": [
-      "00_project/elements/FULL_PROJECT_IMPORT.md"
+      "00_project/elements/TYPOGRAPHY_IMPORT.md"
     ],
-    "next_import_count": 157,
-    "combined_count": 157,
+    "next_import_count": 7,
+    "combined_count": 164,
     "reference_roles": {
       "object_identity": "Superseded: all 46 active object references now use 2x2 material transformations, including R002 bus.",
       "object_morph": "2x2: complete source, two individually specified radically different unfinished configurations, complete target. Text-only image prompt.",
       "world_memory": "2x2 coverage",
       "character_identity": "1x3 front/back/headshot; 4K 3840x2160, 1280x2160 per panel",
-      "character_morph": "4K 2x2, six concrete Cxx pairs, elastic skin/hair/cloth material transition; source image bindings required"
+      "character_morph": "4K 2x2, six concrete Cxx pairs, elastic skin/hair/cloth material transition; source image bindings required",
+      "typography": "Exact glyph, accent, word and final-title references; TY001 4K 3x3 short numerals, remaining six 4K 2x2. No added captions or readable case-document text."
     },
     "existing_platform_types": "Existing imported names/types are retained; no automatic reclassification or duplicate Elements. Reference role/layout is recorded separately.",
     "object_morph_count": 46,
     "all_morph_prompt_count": 75,
     "active_import_workflow": "full_project_current_import",
     "character_morph_count": 6,
-    "next_import_status": "READY_FOR_CREATOR_REIMPORT_NOT_YET_CONFIRMED",
+    "next_import_status": "TYPOGRAPHY_ONLY_ADDITION_PREPARED_UI_IMPORT_NOT_CONFIRMED",
     "alternative_category_imports": [
       "00_project/elements/CHARACTERS_IMPORT.md",
       "00_project/elements/WORLDS_IMPORT.md",
-      "00_project/elements/MORPHS_IMPORT.md"
-    ]
+      "00_project/elements/MORPHS_IMPORT.md",
+      "00_project/elements/TYPOGRAPHY_IMPORT.md"
+    ],
+    "typography_count": 7
   },
   "character_morph_preparation": {
     "directory": "02_library/morphs/characters",
@@ -8291,7 +8531,7 @@
     "date": "2026-09-10",
     "status": "READY_FOR_CREATOR_REIMPORT_NOT_YET_CONFIRMED",
     "supersedes_next_import": "13_ADDITIONAL_OBJECT_REFERENCES.md",
-    "total_unique_elements": 157,
+    "total_unique_elements": 164,
     "files": [
       {
         "file": "00_project/elements/CHARACTERS_IMPORT.md",
@@ -8470,6 +8710,20 @@
         ],
         "count": 75,
         "file_sha256": "cb87c59e00d7916ab64adc5b4c90e263719b89e08ba62b30e7c9febdf6d06b3d"
+      },
+      {
+        "file": "00_project/elements/TYPOGRAPHY_IMPORT.md",
+        "canonical_keys": [
+          "TY001",
+          "TY002",
+          "TY003",
+          "TY004",
+          "TY005",
+          "TY006",
+          "TY007"
+        ],
+        "count": 7,
+        "file_sha256": "44797601e2fbd3e47a57fd0d7b4b809cfd841d952580cd03f8348265ea63c8ed"
       }
     ],
     "maps": "Optional planning images, not reference Elements",
@@ -8506,15 +8760,16 @@
   },
   "image_layout_policy": {
     "character_identity": "4K 3840x2160 1x3; three 1280x2160 panels; no gutters",
-    "other_reference_images": "4K 3840x2160 2x2; four 1920x1080 cells; no gutters",
+    "other_reference_images": "4K 3840x2160 2x2; four 1920x1080 cells; typography has the explicit TY001 3x3 exception",
     "maps": "Optional 4K 2x2 plan coverage; not imported as Elements",
-    "three_by_three_active_prompts": 0
+    "three_by_three_active_prompts": 1,
+    "typography": "TY001: 4K 3x3, nine 1280x720 cells; TY002-TY007: 4K 2x2, four 1920x1080 cells"
   },
   "full_project_current_import": {
     "date": "2026-09-10",
     "file": "00_project/elements/FULL_PROJECT_IMPORT.md",
-    "file_sha256": "eef27f53ff88cac0979c24ab338f48f8579ac99dc1432c9c3d5c6156b4d52c24",
-    "count": 157,
+    "file_sha256": "2f58e827e448e7d898de47b615dd37d23d0c0524fc24fe8dfcf5f388fe21abdd",
+    "count": 164,
     "canonical_keys": [
       "C01",
       "C02",
@@ -8672,15 +8927,23 @@
       "CM003",
       "CM004",
       "CM005",
-      "CM006"
+      "CM006",
+      "TY001",
+      "TY002",
+      "TY003",
+      "TY004",
+      "TY005",
+      "TY006",
+      "TY007"
     ],
     "status": "READY_FOR_CREATOR_REIMPORT_NOT_YET_CONFIRMED",
     "equivalent_category_files": [
       "00_project/elements/CHARACTERS_IMPORT.md",
       "00_project/elements/WORLDS_IMPORT.md",
-      "00_project/elements/MORPHS_IMPORT.md"
+      "00_project/elements/MORPHS_IMPORT.md",
+      "00_project/elements/TYPOGRAPHY_IMPORT.md"
     ],
-    "mode": "Full combined file OR the three category files; never both."
+    "mode": "Full combined file OR the four category files. If the prior 157-element library is already imported, import only TYPOGRAPHY_IMPORT.md for the seven new elements."
   },
   "rating_card_preflight": {
     "date": "2026-09-10",
@@ -8704,5 +8967,36 @@
       "old_deferred_card_instructions_remaining": 0,
       "generated_images_reviewed": 0
     }
+  },
+  "image_prompt_detail_review": {
+    "date": "2026-09-10",
+    "scope": "ALL_ACTIVE_IMAGE_PROMPT_TEXT_NOT_GENERATED_IMAGES",
+    "report": "04_tracking/IMAGE_PROMPT_DETAIL_REVIEW.md",
+    "records": "04_tracking/IMAGE_PROMPT_DETAIL_REVIEW.json",
+    "reviewed": 164,
+    "expanded_or_corrected": 80,
+    "rendering_performed": false,
+    "import_definition_count": 157,
+    "ui_import_count_investigation": "IGNORED_AT_USER_REQUEST_INCOMPLETE_PRIOR_DELETION_REPORTED"
+  },
+  "typography_library": {
+    "date": "2026-09-10",
+    "prompt_directory": "02_library/typography",
+    "count": 7,
+    "import_file": "00_project/elements/TYPOGRAPHY_IMPORT.md",
+    "combined_import_count": 164,
+    "canonical_keys": [
+      "TY001",
+      "TY002",
+      "TY003",
+      "TY004",
+      "TY005",
+      "TY006",
+      "TY007"
+    ],
+    "generation": "CREATOR_HIGGSFIELD_UI_ONLY",
+    "generation_performed": false,
+    "automatic_video_binding": false,
+    "note": "Character/world/morph references keep their existing roles. Typography is attached only to matching visible text; no new video scenes or title animation."
   }
 }

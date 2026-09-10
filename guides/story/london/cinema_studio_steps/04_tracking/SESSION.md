@@ -1,3 +1,9 @@
+## 2026-09-10 — Teljes képprompt-részletellenőrzés, lineáris képelőkészítés
+
+164 aktív képprompt ellenőrizve; 80 bővítve/javítva, 84 meglévő részletes prompt megtartva. A világok 63 és a kilenc rövidebb emlékcsalád 81 eredeti nézete konkrét térbeli/anyag-/szereplő-részletekkel bővült; 31 karakter saját ruha- és arcrészleteket kapott. A morphok négy eltérő anyagállapota megmaradt. [Fájlonkénti ellenőrzés](IMAGE_PROMPT_DETAIL_REVIEW.md).
+
+A FULL_PROJECT_IMPORT.md valóban 157 egyedi elemet tartalmaz. A felhasználó az 54-es UI-importot a korábbi elemek nem teljes törlésével magyarázta, és kérte az importált névsor figyelmen kívül hagyását. Emiatt nincs új pótlóimport és nincs távoli importálás. A részletjavítás nem változtatott Element-nevet vagy kulcsot. Következő lépés a felhasználó Higgsfield-képgenerálása, az új tényleges @hivatkozások kötésével ahol szükséges; csak ezt követik a tesztvideók. A képek pixeleit és az animáció folytonosságát ez a szöveges ellenőrzés nem igazolja.
+
 ## Current category import request — 2026-09-10
 
 ## 2026-09-10 — MR021 a rendes importok sorrendjében

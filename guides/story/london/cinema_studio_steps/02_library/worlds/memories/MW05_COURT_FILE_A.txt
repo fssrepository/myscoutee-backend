@@ -49,14 +49,22 @@ FOUR ASSIGNED CELLS:
 CELL 1 — TOP-LEFT — ORIGINAL VIEW 01:
 Court-hearing memory with an anonymous judge addressing the protagonist during a debate over legal classification. The remembered prison-question moment is carried by facial/body language; do not render subtitles or dialogue text.
 
+Compose the judge, protagonist and ordinary hearing table at distinct depths with clear eyelines. Documents lie on the table with visible paper edges and no oversized legal text. The speaking expression is restrained and the protagonist remains seated or standing in the assigned hearing position. Keep the room doorway and furniture supports visible; no theatre-like spotlight or invented verdict appears.
+
 CELL 2 — TOP-RIGHT — ORIGINAL VIEW 02:
-Questions about the Budapest apartment, belongings, savings and what else the protagonist owns. Show an ordinary hearing/desk context with small visual inserts of home/property only as literal items being discussed, not a crime montage.
+Questions about the Budapest apartment, belongings, savings and what else the protagonist owns. Show an ordinary hearing/desk context with home/property shown only in physical photographs or documents on the desk, not detached picture inserts or a crime montage.
+
+Show the discussed belongings through physical photographs or papers on the hearing desk, with a hand indicating one item. Keep the protagonist and official at their established positions. The property images remain inside their actual print or device boundaries; no apartment interior floats behind the judge or becomes a cutaway inset. Avoid invented amounts or claims of ownership beyond the source story.
 
 CELL 3 — BOTTOM-LEFT — ORIGINAL VIEW 03:
 Retained devices/belongings: phone, laptop, storage media or personal property handled in ordinary evidence/property boxes or administrative packaging. No thriller evidence wall.
 
+Place the retained phone, laptop and storage item in separate supported positions inside ordinary packaging or a property box. Show hinge thickness, cables or ports where visible, cardboard walls and lid folds. A hand can handle one item without covering the whole arrangement. No serial numbers, forensic spectacle or unrequested damage is introduced.
+
 CELL 4 — BOTTOM-RIGHT — ORIGINAL VIEW 04:
 'Person becomes file' reference: photograph, fingerprint sheet, signature, forms and closed folder arranged on a desk while the protagonist is physically present but visually less dominant.
+
+Frame the folder in the near field with photograph, fingerprint sheet and signature area as separate physical papers on the same desk. The protagonist remains a full solid person farther behind it, with face and posture still recognizable. Depth and scale make the file dominant; the body does not literally turn into paper in this memory source cell.
 
 FINAL CHECK:
 Exactly one 16:9 image.

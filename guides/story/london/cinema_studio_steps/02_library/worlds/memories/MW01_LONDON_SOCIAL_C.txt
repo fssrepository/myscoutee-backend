@@ -52,14 +52,22 @@ FOUR ASSIGNED CELLS:
 CELL 1 — TOP-LEFT — ORIGINAL VIEW 09:
 Beginner dance-floor / social-room memory: ordinary adults learning or dancing imperfectly, the protagonist participating without glamour or performance-show staging. Warm human context, natural awkwardness, possibility of connection without guaranteed romance.
 
+Keep the protagonist and established dance woman at a comfortable beginner distance on a real floor. Show their feet, weight distribution and the hand position relevant to the simple step, with other learners farther behind. A chair or wall edge anchors the room. Their slightly uncertain timing comes from natural posture, not distorted limbs or a stage-performance pose.
+
 CELL 2 — TOP-RIGHT — ORIGINAL VIEW 01:
 Small realistic Soho sushi/restaurant interior during an ordinary evening. Compact London layout, warm practical light, tables close together, no glamour. The protagonist is present naturally.
+
+Keep the entrance, close-set wooden tables, narrow aisle and rear restroom-door pair connected on one visible floor. Seat the woman at her established table and place the remembered man by the rear doors when this encounter is shown. Lamps illuminate actual tabletops and faces locally. Resolve chair legs and the gap under the near table; this room must retain the accepted Soho restaurant identity.
 
 CELL 3 — BOTTOM-LEFT — ORIGINAL VIEW 07:
 Ordinary memory of a Hungarian housemate living in London while spouse/child/home obligations remain in Hungary. Show a modest shared-room context with a family photograph / call / small domestic cue, not explanatory text and not a melodramatic separation scene.
 
+Place the mortgage housemate in the same modest room beside one small family photograph showing the established spouse and child. Keep the photograph a physical print or actual device image with frame thickness or screen edge, not a floating memory window. Show his ordinary belongings and posture in the room; the family remains elsewhere rather than appearing life-size beside him.
+
 CELL 4 — BOTTOM-RIGHT — ORIGINAL VIEW 08:
-Dating-profile memory: the SAME unchanged photograph appears while only the age field changes visibly from 37 to 33. Keep the device/profile interface small and realistic; the face itself must not change. This is the one cell where the numerals 37 and 33 may be clearly readable.
+Dating-profile memory after the age-field edit from 37 to 33: the SAME unchanged photograph appears with the current age field clearly displaying 33. Keep the device/profile interface small and realistic; the face itself must not change. This still captures the edited state; the video can show the earlier 37 becoming 33 on that same interface.
+
+Use a close oblique device view in one solid state: the unchanged profile photograph above an active age field displaying 33, with the cursor or selected field indicating an edit. Retain the device bezel, supporting hand and room surface. The earlier value 37 belongs to the described before-state for the video; do not double-print 37 and 33 or morph the face to force time into one still.
 
 FINAL CHECK:
 Exactly one 16:9 image.

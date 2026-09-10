@@ -11,12 +11,12 @@ RIGHT = frontal CLOSE-UP HEADSHOT.
 The same exact person appears in all three panels.
 The studio background reaches all four physical canvas edges.
 No outer frame, no title, no header, no footer, no caption bands, no labels, no extra panels.
-Only hairline internal separators between the three panels.
+The three photographs meet directly edge-to-edge, without drawn separator lines or gutters.
 
 BACKGROUND / LIGHT:
 Seamless neutral MID-GREY professional casting/VFX studio background.
 Soft even neutral light, minimal soft floor shadow, neutral white balance.
-No city, no furniture, no story props, no cinematic environment.
+No city, scene furniture or cinematic environment. Retain only the wardrobe and worn accessories explicitly specified for this identity.
 
 CONSISTENCY:
 Preserve identical age, face shape, eyes, nose, mouth, ears, hairline, hair colour, skin tone, body build, clothing and footwear across views.
@@ -39,8 +39,15 @@ Front view: neutral upright posture, arms relaxed, calm reserved expression with
 Back view: exact same clothing, hairstyle and proportions.
 Headshot: direct eye contact, same exact face, calm reserved expression with ordinary human warmth.
 
+VIEW-SPECIFIC INSPECTION DETAIL:
+In the front full-body panel, keep a narrow air gap between each relaxed hand and the torso so fingers, sleeve ends and garment sides remain separable. Show both shoes completely with a small floor margin and natural contact shadows. The back panel shows the same person turned around: preserve actual left/right accessory placement and garment fastening, rather than mirroring the front photograph. Show rear shoulder seams, hair at the nape, waistband or outer hem and shoe heels where visible.
+In the headshot, include the complete crown and hair silhouette, both visible ear contours and the base of the neck above the shoulders. Resolve eyelid thickness, iris detail, eyebrow hairs, nostril rims, lip edges and natural skin texture at the portrait's actual scale. Keep subtle asymmetry; avoid waxy smoothing, sharpening halos or identical repeated pores. Use even focus across the face and hair so detail is not lost to shallow depth of field. Do not enlarge the eyes or alter the nose, jaw or age to improve the portrait.
+
+CHARACTER-SPECIFIC CONSTRUCTION DETAIL:
+Resolve the lightweight shirt or outer layer collar, placket, cuffs and seam joins. Show how the lighter fabric rests against his shoulders and falls over the trousers, with a distinct shoe sole at floor level. If a compact travel bag is present, its strap is attached and stays on the same side. The headshot retains his own skin texture, hairline and facial proportions, without exoticized styling.
+
 FINAL CHECK:
-One person only.
+One identity, appearing once in each of the three assigned views.
 Three panels only: front full-body / back full-body / frontal headshot.
 Same exact identity and wardrobe.
 Mid-grey background reaches the canvas edges.

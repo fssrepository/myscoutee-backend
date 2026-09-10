@@ -51,14 +51,22 @@ FOUR ASSIGNED CELLS:
 CELL 1 — TOP-LEFT — ORIGINAL VIEW 05:
 Forensic-examination memory with two expert chairs / two experts. The protagonist is calm and cooperative; the experts' reactions differ. Do not imply a single unified expert voice.
 
+Give Expert A and Expert B separate chairs, faces, note positions and eyelines toward the protagonist. One may look directly while the other checks a page; keep both reactions ordinary and distinct. Show the table edge and the gap between their chairs. Never merge them into one person or duplicate the same face to imply agreement.
+
 CELL 2 — TOP-RIGHT — ORIGINAL VIEW 06:
 Clerk / recording / evidence-request memory: phone, hearing paperwork, request for official recording or witnesses/evidence, and the practical response that the route is costly or deferred. Keep written text mostly unreadable.
+
+Place the clerk behind a practical desk with phone and hearing documents, the protagonist opposite or beside the counter. The clerk indicates a paper or record area while listening. Show the handset support, document stack and actual desk depth. The cost or deferral belongs to the story; avoid invented readable fees, formal quotations or a visible final decision.
 
 CELL 3 — BOTTOM-LEFT — ORIGINAL VIEW 07:
 Black-humour memory source: a small self-made "THE SYSTEM'S MOST WANTED" satirical visual and/or impossible police-career CV/application joke on a desk or screen. Keep it clearly self-made absurdism, never an official notice, and avoid large readable text.
 
+Show one clearly handmade satirical page or ordinary screen document on the protagonist desk, with uneven cut edges or everyday editing cues. Keep surrounding papers mundane so the joke remains personal and small. The page is not a real wanted poster, police database or official notice. No extra graphic inset or large headline dominates the reference cell.
+
 CELL 4 — BOTTOM-RIGHT — ORIGINAL VIEW 08:
 Public-role absurdity memory source: an anonymous fictional cardboard public figure with a deliberately ridiculous hat and the tone of an asylum-request joke. Keep the joke recognizably absurd, but attach no real name, real politician likeness, party branding, campaign slogan or identifiable contemporary office. No advocacy and no policy statement.
+
+The anonymous cardboard public figure is a physical cutout with visible board thickness, a simple rear support and the deliberately silly hat resting on it. Show its base on a desk or floor and a real room behind. The printed face remains flat on the board, without becoming a living official. Keep every insignia and likeness fictional.
 
 FINAL CHECK:
 Exactly one 16:9 image.

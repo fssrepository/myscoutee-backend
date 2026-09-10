@@ -11,12 +11,12 @@ RIGHT = frontal CLOSE-UP HEADSHOT.
 The same exact person appears in all three panels.
 The studio background reaches all four physical canvas edges.
 No outer frame, no title, no header, no footer, no caption bands, no labels, no extra panels.
-Only hairline internal separators between the three panels.
+The three photographs meet directly edge-to-edge, without drawn separator lines or gutters.
 
 BACKGROUND / LIGHT:
 Seamless neutral MID-GREY professional casting/VFX studio background.
 Soft even neutral light, minimal soft floor shadow, neutral white balance.
-No city, no furniture, no story props, no cinematic environment.
+No city, scene furniture or cinematic environment. Retain only the wardrobe and worn accessories explicitly specified for this identity.
 
 CONSISTENCY:
 Preserve identical age, face shape, eyes, nose, mouth, ears, hairline, hair colour, skin tone, body build, clothing and footwear across views.
@@ -31,7 +31,7 @@ Headshot approximately 85mm, upper shoulders upward.
 Technical identity asset, not a film scene.
 
 CHARACTER:
-Fictional anonymous adult male cardboard public figure, apparent age about 45–65, ordinary suit-wearing build and generic non-identifiable face. This character exists only as an absurd self-made cardboard memory source. It MUST NOT resemble any real politician, party leader, officeholder or identifiable public figure. No real name, party branding, campaign slogan or recognizable contemporary-office symbolism.
+Fictional anonymous adult male likeness for a cardboard public-figure prop, apparent age about 45–65, ordinary suit-wearing build and generic non-identifiable face. This character exists only as an absurd self-made cardboard memory source. It MUST NOT resemble any real politician, party leader, officeholder or identifiable public figure. No real name, party branding, campaign slogan or recognizable contemporary-office symbolism.
 
 Wardrobe: conservative dark suit, pale shirt, restrained tie; for the absurd memory a separate ridiculous colorful party-style hat may be added in the scene, but the core identity sheet itself should show the same suit without campaign branding.
 
@@ -39,8 +39,15 @@ Front view: neutral upright posture, arms relaxed, neutral public-facing express
 Back view: exact same clothing, hairstyle and proportions.
 Headshot: direct eye contact, same exact face, neutral public-facing expression, deliberately generic and non-identifiable.
 
+VIEW-SPECIFIC INSPECTION DETAIL:
+In the front full-body panel, keep a narrow air gap between each relaxed hand and the torso so fingers, sleeve ends and garment sides remain separable. Show both shoes completely with a small floor margin and natural contact shadows. The back panel shows the same person turned around: preserve actual left/right accessory placement and garment fastening, rather than mirroring the front photograph. Show rear shoulder seams, hair at the nape, waistband or outer hem and shoe heels where visible.
+In the headshot, include the complete crown and hair silhouette, both visible ear contours and the base of the neck above the shoulders. Resolve eyelid thickness, iris detail, eyebrow hairs, nostril rims, lip edges and natural skin texture at the portrait's actual scale. Keep subtle asymmetry; avoid waxy smoothing, sharpening halos or identical repeated pores. Use even focus across the face and hair so detail is not lost to shallow depth of field. Do not enlarge the eyes or alter the nose, jaw or age to improve the portrait.
+
+CHARACTER-SPECIFIC CONSTRUCTION DETAIL:
+This sheet casts the single fictional human likeness that will later be printed onto the cardboard cutout. Render the three human identity views here; the later prop scene supplies board thickness, cut edge, support and the absurd hat. Resolve suit lapels, shirt collar, tie knot and natural face texture while keeping the likeness non-identifying. Do not mix a flat cardboard back with a living front in this identity sheet.
+
 FINAL CHECK:
-One person only.
+One identity, appearing once in each of the three assigned views.
 Three panels only: front full-body / back full-body / frontal headshot.
 Same exact identity and wardrobe.
 Mid-grey background reaches the canvas edges.

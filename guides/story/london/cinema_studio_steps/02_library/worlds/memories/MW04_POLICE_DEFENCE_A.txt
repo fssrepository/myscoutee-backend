@@ -47,14 +47,22 @@ FOUR ASSIGNED CELLS:
 CELL 1 — TOP-LEFT — ORIGINAL VIEW 01:
 Apartment-entry memory before the search: ordinary residential door/intercom context, someone outside announces themselves as a postman and the door is opened. Do not render the spoken word as a caption.
 
+Use an interior oblique view of the apartment entrance with the intercom, handle, door leaf thickness and threshold visible. The protagonist is beside the handle; the exterior landing is glimpsed through the opening. Capture one door position at this instant. The remembered announcement is not written on the door, and no postal costume is invented solely to explain the spoken pretext.
+
 CELL 2 — TOP-RIGHT — ORIGINAL VIEW 02:
 Immediate continuation: ordinary police officers enter the apartment after the door opens. Calm procedural movement, no tactical-raid spectacle, no weapons emphasis.
+
+Reuse the same apartment door, hinges and threshold. Officers enter through the actual opening one behind another, with the nearest foot meeting the same floor. Keep the protagonist beside the route and visible domestic furniture deeper inside. Distinct bodies, natural equipment placement and unobstructed hands carry the procedural entry.
 
 CELL 3 — BOTTOM-LEFT — ORIGINAL VIEW 03:
 Apartment search in progress. Officers inspect ordinary rooms and belongings while the protagonist is present. Real domestic space, restrained procedure, no evidence-wall aesthetic.
 
+Show one officer inspecting an ordinary open drawer or shelf, with its contents still supported and the cabinet attached to the room. Another person and the protagonist occupy separate clear floor positions. Keep the entrance or hall corner visible behind to connect this room to the entry. Do not invent discovered contraband, evidence markers or a destructive raid.
+
 CELL 4 — BOTTOM-RIGHT — ORIGINAL VIEW 04:
 Search moment in which one officer is visibly speaking the remembered line about looking for cocaine. Do not place dialogue text on screen; the scene remains ordinary and procedural, with no drug glamorization.
+
+Frame the speaking officer and the protagonist across a real piece of domestic furniture. The officer has a naturally parted mouth and a small conversational gesture while the other person listens. The open drawer or belongings stay at their prior location. No drug object is added to make the remembered spoken line visually literal.
 
 FINAL CHECK:
 Exactly one 16:9 image.

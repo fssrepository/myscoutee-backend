@@ -1,0 +1,2624 @@
+{
+  "date": "2026-09-10",
+  "scope": "ALL_ACTIVE_IMAGE_PROMPT_TEXT_NOT_GENERATED_IMAGES",
+  "counts": {
+    "characters": 31,
+    "morphs/buildings": 37,
+    "morphs/characters": 6,
+    "morphs/objects": 32,
+    "worlds/maps": 7,
+    "worlds/memories": 30,
+    "worlds/real": 21
+  },
+  "reviewed": 164,
+  "expanded_or_corrected": 80,
+  "existing_detail_retained": 84,
+  "unique_import_elements": 157,
+  "imported_ui_list": "IGNORED_AT_USER_REQUEST_INCOMPLETE_PRIOR_DELETION_REPORTED",
+  "rendering_performed": false,
+  "records": [
+    {
+      "prompt": "02_library/characters/C01_PROTAGONIST.txt",
+      "group": "characters",
+      "status": "TEXT_EXPANDED_OR_CORRECTED",
+      "review": "Front/back/headshot coverage, specific wardrobe construction, preserved face, 4K 1x3; studio has no cards.",
+      "words": 807,
+      "sha256": "3c828b0141c2c7a691eaf0619928e4fe4ee8d26984af6ac6e96269b3e5b1420d",
+      "rating_policy": "STUDIO_IDENTITY_NO_CITY_OVERLAY",
+      "unbound_reference_slots": [],
+      "change": "Added subject-specific wardrobe/face construction and front/back/headshot inspection detail; removed zero-gutter and one-occurrence ambiguities."
+    },
+    {
+      "prompt": "02_library/characters/C02_SOHO_WOMAN.txt",
+      "group": "characters",
+      "status": "TEXT_EXPANDED_OR_CORRECTED",
+      "review": "Front/back/headshot coverage, specific wardrobe construction, preserved face, 4K 1x3; studio has no cards.",
+      "words": 787,
+      "sha256": "c3b9438be5dc0d54dd2767a4c933339d07d19b548af9b7c7d22798f3325c6974",
+      "rating_policy": "STUDIO_IDENTITY_NO_CITY_OVERLAY",
+      "unbound_reference_slots": [],
+      "change": "Added subject-specific wardrobe/face construction and front/back/headshot inspection detail; removed zero-gutter and one-occurrence ambiguities."
+    },
+    {
+      "prompt": "02_library/characters/C03_POLICEWOMAN.txt",
+      "group": "characters",
+      "status": "TEXT_EXPANDED_OR_CORRECTED",
+      "review": "Front/back/headshot coverage, specific wardrobe construction, preserved face, 4K 1x3; studio has no cards.",
+      "words": 781,
+      "sha256": "f5c7109b3ee7211ccf867ed2ad21cf00131494e56bd76429f7198747804b4fd7",
+      "rating_policy": "STUDIO_IDENTITY_NO_CITY_OVERLAY",
+      "unbound_reference_slots": [],
+      "change": "Added subject-specific wardrobe/face construction and front/back/headshot inspection detail; removed zero-gutter and one-occurrence ambiguities."
+    },
+    {
+      "prompt": "02_library/characters/C04_APPOINTED_LAWYER.txt",
+      "group": "characters",
+      "status": "TEXT_EXPANDED_OR_CORRECTED",
+      "review": "Front/back/headshot coverage, specific wardrobe construction, preserved face, 4K 1x3; studio has no cards.",
+      "words": 764,
+      "sha256": "7006ba20df546bba841ddc643ba7808f27ec7f3d49d1722bd799eb9f87a8b6bd",
+      "rating_policy": "STUDIO_IDENTITY_NO_CITY_OVERLAY",
+      "unbound_reference_slots": [],
+      "change": "Added subject-specific wardrobe/face construction and front/back/headshot inspection detail; removed zero-gutter and one-occurrence ambiguities."
+    },
+    {
+      "prompt": "02_library/characters/C05_FINAL_NURSE.txt",
+      "group": "characters",
+      "status": "TEXT_EXPANDED_OR_CORRECTED",
+      "review": "Front/back/headshot coverage, specific wardrobe construction, preserved face, 4K 1x3; studio has no cards.",
+      "words": 791,
+      "sha256": "bc009c26da3d71aeb153e0336f6bcef9a71c41b8dfd592bcb3bac85921fd15fc",
+      "rating_policy": "STUDIO_IDENTITY_NO_CITY_OVERLAY",
+      "unbound_reference_slots": [],
+      "change": "Added subject-specific wardrobe/face construction and front/back/headshot inspection detail; removed zero-gutter and one-occurrence ambiguities."
+    },
+    {
+      "prompt": "02_library/characters/C06_SHARED_HOUSE_SUBSTITUTE_SNORING_HOUSEMATE.txt",
+      "group": "characters",
+      "status": "TEXT_EXPANDED_OR_CORRECTED",
+      "review": "Front/back/headshot coverage, specific wardrobe construction, preserved face, 4K 1x3; studio has no cards.",
+      "words": 818,
+      "sha256": "c070c61cd614f04cc1c0589e99767d01320173c9bbc8e08c8ae3103fceb7443a",
+      "rating_policy": "STUDIO_IDENTITY_NO_CITY_OVERLAY",
+      "unbound_reference_slots": [],
+      "change": "Added subject-specific wardrobe/face construction and front/back/headshot inspection detail; removed zero-gutter and one-occurrence ambiguities."
+    },
+    {
+      "prompt": "02_library/characters/C07_FX_MORTGAGE_HOUSEMATE.txt",
+      "group": "characters",
+      "status": "TEXT_EXPANDED_OR_CORRECTED",
+      "review": "Front/back/headshot coverage, specific wardrobe construction, preserved face, 4K 1x3; studio has no cards.",
+      "words": 805,
+      "sha256": "1dc9a7a3a10e81e4c7f63b70f9a9dba2be55c104327de552bcc00496b022ddea",
+      "rating_policy": "STUDIO_IDENTITY_NO_CITY_OVERLAY",
+      "unbound_reference_slots": [],
+      "change": "Added subject-specific wardrobe/face construction and front/back/headshot inspection detail; removed zero-gutter and one-occurrence ambiguities."
+    },
+    {
+      "prompt": "02_library/characters/C08_FX_MORTGAGE_SPOUSE.txt",
+      "group": "characters",
+      "status": "TEXT_EXPANDED_OR_CORRECTED",
+      "review": "Front/back/headshot coverage, specific wardrobe construction, preserved face, 4K 1x3; studio has no cards.",
+      "words": 795,
+      "sha256": "bdbdbbf4728550cbe2977850f5b662773c4c93f9864c63a2ca7d057fb158ec58",
+      "rating_policy": "STUDIO_IDENTITY_NO_CITY_OVERLAY",
+      "unbound_reference_slots": [],
+      "change": "Added subject-specific wardrobe/face construction and front/back/headshot inspection detail; removed zero-gutter and one-occurrence ambiguities."
+    },
+    {
+      "prompt": "02_library/characters/C09_FX_MORTGAGE_CHILD.txt",
+      "group": "characters",
+      "status": "TEXT_EXPANDED_OR_CORRECTED",
+      "review": "Front/back/headshot coverage, specific wardrobe construction, preserved face, 4K 1x3; studio has no cards.",
+      "words": 785,
+      "sha256": "e4664db2e15bde42d4e12dd7f198b6eb462bbec2f95ce0cc61ab7394330fd9f8",
+      "rating_policy": "STUDIO_IDENTITY_NO_CITY_OVERLAY",
+      "unbound_reference_slots": [],
+      "change": "Added subject-specific wardrobe/face construction and front/back/headshot inspection detail; removed zero-gutter and one-occurrence ambiguities."
+    },
+    {
+      "prompt": "02_library/characters/C10_BEGINNER_DANCE_WOMAN.txt",
+      "group": "characters",
+      "status": "TEXT_EXPANDED_OR_CORRECTED",
+      "review": "Front/back/headshot coverage, specific wardrobe construction, preserved face, 4K 1x3; studio has no cards.",
+      "words": 808,
+      "sha256": "e436a6c2d33b869185fb33d6eb0e7d6889224ff6bbd087bbc3eb562e9b71e14b",
+      "rating_policy": "STUDIO_IDENTITY_NO_CITY_OVERLAY",
+      "unbound_reference_slots": [],
+      "change": "Added subject-specific wardrobe/face construction and front/back/headshot inspection detail; removed zero-gutter and one-occurrence ambiguities."
+    },
+    {
+      "prompt": "02_library/characters/C11_RUSSIAN_TRANSIT_PASSENGER.txt",
+      "group": "characters",
+      "status": "TEXT_EXPANDED_OR_CORRECTED",
+      "review": "Front/back/headshot coverage, specific wardrobe construction, preserved face, 4K 1x3; studio has no cards.",
+      "words": 799,
+      "sha256": "02039e198936b88e8c2fb61cf56c51ae7c923e500090e88e13c7360cf4ea2db9",
+      "rating_policy": "STUDIO_IDENTITY_NO_CITY_OVERLAY",
+      "unbound_reference_slots": [],
+      "change": "Added subject-specific wardrobe/face construction and front/back/headshot inspection detail; removed zero-gutter and one-occurrence ambiguities."
+    },
+    {
+      "prompt": "02_library/characters/C12_AGRA_BUS_WOMAN.txt",
+      "group": "characters",
+      "status": "TEXT_EXPANDED_OR_CORRECTED",
+      "review": "Front/back/headshot coverage, specific wardrobe construction, preserved face, 4K 1x3; studio has no cards.",
+      "words": 803,
+      "sha256": "874cccb4d313732703e4060c1384c56bc717fae044e5090d791bafb0a05c196d",
+      "rating_policy": "STUDIO_IDENTITY_NO_CITY_OVERLAY",
+      "unbound_reference_slots": [],
+      "change": "Added subject-specific wardrobe/face construction and front/back/headshot inspection detail; removed zero-gutter and one-occurrence ambiguities."
+    },
+    {
+      "prompt": "02_library/characters/C13_SUDANESE_TRAVELER_MAN.txt",
+      "group": "characters",
+      "status": "TEXT_EXPANDED_OR_CORRECTED",
+      "review": "Front/back/headshot coverage, specific wardrobe construction, preserved face, 4K 1x3; studio has no cards.",
+      "words": 806,
+      "sha256": "6fb8f06908ae6dd7ab603f7aa7c75fc2f151682e0ff44d30431181784af7ead7",
+      "rating_policy": "STUDIO_IDENTITY_NO_CITY_OVERLAY",
+      "unbound_reference_slots": [],
+      "change": "Added subject-specific wardrobe/face construction and front/back/headshot inspection detail; removed zero-gutter and one-occurrence ambiguities."
+    },
+    {
+      "prompt": "02_library/characters/C14_SUDANESE_TRAVELER_WOMAN.txt",
+      "group": "characters",
+      "status": "TEXT_EXPANDED_OR_CORRECTED",
+      "review": "Front/back/headshot coverage, specific wardrobe construction, preserved face, 4K 1x3; studio has no cards.",
+      "words": 794,
+      "sha256": "af09e22c58e975293aca31fcbca2159f3fa7736245f8a1479437d8df52db1119",
+      "rating_policy": "STUDIO_IDENTITY_NO_CITY_OVERLAY",
+      "unbound_reference_slots": [],
+      "change": "Added subject-specific wardrobe/face construction and front/back/headshot inspection detail; removed zero-gutter and one-occurrence ambiguities."
+    },
+    {
+      "prompt": "02_library/characters/C15_CAIRO_TAXI_DRIVER.txt",
+      "group": "characters",
+      "status": "TEXT_EXPANDED_OR_CORRECTED",
+      "review": "Front/back/headshot coverage, specific wardrobe construction, preserved face, 4K 1x3; studio has no cards.",
+      "words": 799,
+      "sha256": "98e52d78025ceca8a74d67015e7c423e3600834c932ca60cf129de36dc1cdf7b",
+      "rating_policy": "STUDIO_IDENTITY_NO_CITY_OVERLAY",
+      "unbound_reference_slots": [],
+      "change": "Added subject-specific wardrobe/face construction and front/back/headshot inspection detail; removed zero-gutter and one-occurrence ambiguities."
+    },
+    {
+      "prompt": "02_library/characters/C16_BALLOON_LOCAL_HELPER_MAN.txt",
+      "group": "characters",
+      "status": "TEXT_EXPANDED_OR_CORRECTED",
+      "review": "Front/back/headshot coverage, specific wardrobe construction, preserved face, 4K 1x3; studio has no cards.",
+      "words": 789,
+      "sha256": "253290ca4bc98f435a77a1d24cf21c137a1cf344e8d8e69ecb8c8a3a53a3c8b0",
+      "rating_policy": "STUDIO_IDENTITY_NO_CITY_OVERLAY",
+      "unbound_reference_slots": [],
+      "change": "Added subject-specific wardrobe/face construction and front/back/headshot inspection detail; removed zero-gutter and one-occurrence ambiguities."
+    },
+    {
+      "prompt": "02_library/characters/C17_BALLOON_LOCAL_HELPER_WOMAN.txt",
+      "group": "characters",
+      "status": "TEXT_EXPANDED_OR_CORRECTED",
+      "review": "Front/back/headshot coverage, specific wardrobe construction, preserved face, 4K 1x3; studio has no cards.",
+      "words": 794,
+      "sha256": "32ca3ce93cf9b7db9fdc9d1fbea514a9582e91b902a49f15e48f91944e1f39e8",
+      "rating_policy": "STUDIO_IDENTITY_NO_CITY_OVERLAY",
+      "unbound_reference_slots": [],
+      "change": "Added subject-specific wardrobe/face construction and front/back/headshot inspection detail; removed zero-gutter and one-occurrence ambiguities."
+    },
+    {
+      "prompt": "02_library/characters/C18_BARMOUTH_ROAD_TRIP_DRIVER_COMPANION.txt",
+      "group": "characters",
+      "status": "TEXT_EXPANDED_OR_CORRECTED",
+      "review": "Front/back/headshot coverage, specific wardrobe construction, preserved face, 4K 1x3; studio has no cards.",
+      "words": 779,
+      "sha256": "75283dc361c10e634e231e2f1a8362a0287244f8324cff82b1a4c9548443861b",
+      "rating_policy": "STUDIO_IDENTITY_NO_CITY_OVERLAY",
+      "unbound_reference_slots": [],
+      "change": "Added subject-specific wardrobe/face construction and front/back/headshot inspection detail; removed zero-gutter and one-occurrence ambiguities."
+    },
+    {
+      "prompt": "02_library/characters/C19_BARMOUTH_ROAD_TRIP_COMPANION_A.txt",
+      "group": "characters",
+      "status": "TEXT_EXPANDED_OR_CORRECTED",
+      "review": "Front/back/headshot coverage, specific wardrobe construction, preserved face, 4K 1x3; studio has no cards.",
+      "words": 772,
+      "sha256": "548a80f8b0dc0cbbd655aec81099794a474720f26175bb906ba2d786c9542910",
+      "rating_policy": "STUDIO_IDENTITY_NO_CITY_OVERLAY",
+      "unbound_reference_slots": [],
+      "change": "Added subject-specific wardrobe/face construction and front/back/headshot inspection detail; removed zero-gutter and one-occurrence ambiguities."
+    },
+    {
+      "prompt": "02_library/characters/C20_BARMOUTH_ROAD_TRIP_COMPANION_B.txt",
+      "group": "characters",
+      "status": "TEXT_EXPANDED_OR_CORRECTED",
+      "review": "Front/back/headshot coverage, specific wardrobe construction, preserved face, 4K 1x3; studio has no cards.",
+      "words": 771,
+      "sha256": "dba5c623b8e1d08dd401b09628d9a3c4bb0abff098a6e5b40da0f369b3f73ce3",
+      "rating_policy": "STUDIO_IDENTITY_NO_CITY_OVERLAY",
+      "unbound_reference_slots": [],
+      "change": "Added subject-specific wardrobe/face construction and front/back/headshot inspection detail; removed zero-gutter and one-occurrence ambiguities."
+    },
+    {
+      "prompt": "02_library/characters/C21_BARMOUTH_ROAD_TRIP_COMPANION_C.txt",
+      "group": "characters",
+      "status": "TEXT_EXPANDED_OR_CORRECTED",
+      "review": "Front/back/headshot coverage, specific wardrobe construction, preserved face, 4K 1x3; studio has no cards.",
+      "words": 769,
+      "sha256": "9ec1985404797d96b99f15b0a0fd51f340a5992043ed34bd33e693a63e1e8a8f",
+      "rating_policy": "STUDIO_IDENTITY_NO_CITY_OVERLAY",
+      "unbound_reference_slots": [],
+      "change": "Added subject-specific wardrobe/face construction and front/back/headshot inspection detail; removed zero-gutter and one-occurrence ambiguities."
+    },
+    {
+      "prompt": "02_library/characters/C22_ACCOUNTANT.txt",
+      "group": "characters",
+      "status": "TEXT_EXPANDED_OR_CORRECTED",
+      "review": "Front/back/headshot coverage, specific wardrobe construction, preserved face, 4K 1x3; studio has no cards.",
+      "words": 791,
+      "sha256": "62ac52d407efcff19c3e2407f4c076aa105cff69ac3c3503dbc128c6ef24e5f1",
+      "rating_policy": "STUDIO_IDENTITY_NO_CITY_OVERLAY",
+      "unbound_reference_slots": [],
+      "change": "Added subject-specific wardrobe/face construction and front/back/headshot inspection detail; removed zero-gutter and one-occurrence ambiguities."
+    },
+    {
+      "prompt": "02_library/characters/C23_ADMIN_COLLEAGUE_A.txt",
+      "group": "characters",
+      "status": "TEXT_EXPANDED_OR_CORRECTED",
+      "review": "Front/back/headshot coverage, specific wardrobe construction, preserved face, 4K 1x3; studio has no cards.",
+      "words": 767,
+      "sha256": "3c144061110dad864e659ed254f6824887181004065f4e1ede67475de092494c",
+      "rating_policy": "STUDIO_IDENTITY_NO_CITY_OVERLAY",
+      "unbound_reference_slots": [],
+      "change": "Added subject-specific wardrobe/face construction and front/back/headshot inspection detail; removed zero-gutter and one-occurrence ambiguities."
+    },
+    {
+      "prompt": "02_library/characters/C24_ADMIN_COLLEAGUE_B.txt",
+      "group": "characters",
+      "status": "TEXT_EXPANDED_OR_CORRECTED",
+      "review": "Front/back/headshot coverage, specific wardrobe construction, preserved face, 4K 1x3; studio has no cards.",
+      "words": 775,
+      "sha256": "a545dbb485a0d62d1bc1a1fd13d5ffec5ee96d7e1dd234fa6f630d70d2c9eb73",
+      "rating_policy": "STUDIO_IDENTITY_NO_CITY_OVERLAY",
+      "unbound_reference_slots": [],
+      "change": "Added subject-specific wardrobe/face construction and front/back/headshot inspection detail; removed zero-gutter and one-occurrence ambiguities."
+    },
+    {
+      "prompt": "02_library/characters/C25_SEARCH_OFFICER_MALE.txt",
+      "group": "characters",
+      "status": "TEXT_EXPANDED_OR_CORRECTED",
+      "review": "Front/back/headshot coverage, specific wardrobe construction, preserved face, 4K 1x3; studio has no cards.",
+      "words": 793,
+      "sha256": "9bc5cc79eff4c41f2e4af305b89aef9521966c8fbdf77a092629c23b9171b5c7",
+      "rating_policy": "STUDIO_IDENTITY_NO_CITY_OVERLAY",
+      "unbound_reference_slots": [],
+      "change": "Added subject-specific wardrobe/face construction and front/back/headshot inspection detail; removed zero-gutter and one-occurrence ambiguities."
+    },
+    {
+      "prompt": "02_library/characters/C26_DEFENCE_OFFICE_SUBSTITUTE.txt",
+      "group": "characters",
+      "status": "TEXT_EXPANDED_OR_CORRECTED",
+      "review": "Front/back/headshot coverage, specific wardrobe construction, preserved face, 4K 1x3; studio has no cards.",
+      "words": 798,
+      "sha256": "703db07855ad28dacdc1325399190e0a543d554e699ecf1e963ee551bc5d4e01",
+      "rating_policy": "STUDIO_IDENTITY_NO_CITY_OVERLAY",
+      "unbound_reference_slots": [],
+      "change": "Added subject-specific wardrobe/face construction and front/back/headshot inspection detail; removed zero-gutter and one-occurrence ambiguities."
+    },
+    {
+      "prompt": "02_library/characters/C27_JUDGE.txt",
+      "group": "characters",
+      "status": "TEXT_EXPANDED_OR_CORRECTED",
+      "review": "Front/back/headshot coverage, specific wardrobe construction, preserved face, 4K 1x3; studio has no cards.",
+      "words": 808,
+      "sha256": "1c6f7cddd8a4801f67dd8870a19d945f2848b8b710b89214e3d48ccf919cb8d8",
+      "rating_policy": "STUDIO_IDENTITY_NO_CITY_OVERLAY",
+      "unbound_reference_slots": [],
+      "change": "Added subject-specific wardrobe/face construction and front/back/headshot inspection detail; removed zero-gutter and one-occurrence ambiguities."
+    },
+    {
+      "prompt": "02_library/characters/C28_FORENSIC_EXPERT_A.txt",
+      "group": "characters",
+      "status": "TEXT_EXPANDED_OR_CORRECTED",
+      "review": "Front/back/headshot coverage, specific wardrobe construction, preserved face, 4K 1x3; studio has no cards.",
+      "words": 780,
+      "sha256": "25a54e16ce84fbbfaa51eb2b7addedef84c2e7bd05221c4ba825460fec65add3",
+      "rating_policy": "STUDIO_IDENTITY_NO_CITY_OVERLAY",
+      "unbound_reference_slots": [],
+      "change": "Added subject-specific wardrobe/face construction and front/back/headshot inspection detail; removed zero-gutter and one-occurrence ambiguities."
+    },
+    {
+      "prompt": "02_library/characters/C29_FORENSIC_EXPERT_B.txt",
+      "group": "characters",
+      "status": "TEXT_EXPANDED_OR_CORRECTED",
+      "review": "Front/back/headshot coverage, specific wardrobe construction, preserved face, 4K 1x3; studio has no cards.",
+      "words": 793,
+      "sha256": "95a662560e18212357d1ec70fefb0c9bac97729e1c24d10e9f94a09a9c187ee0",
+      "rating_policy": "STUDIO_IDENTITY_NO_CITY_OVERLAY",
+      "unbound_reference_slots": [],
+      "change": "Added subject-specific wardrobe/face construction and front/back/headshot inspection detail; removed zero-gutter and one-occurrence ambiguities."
+    },
+    {
+      "prompt": "02_library/characters/C30_COURT_CLERK.txt",
+      "group": "characters",
+      "status": "TEXT_EXPANDED_OR_CORRECTED",
+      "review": "Front/back/headshot coverage, specific wardrobe construction, preserved face, 4K 1x3; studio has no cards.",
+      "words": 781,
+      "sha256": "d2eeecc1dcd51abc8d2075261228b91ca1c48b6f54ca6511fcaa59c1cc9c9628",
+      "rating_policy": "STUDIO_IDENTITY_NO_CITY_OVERLAY",
+      "unbound_reference_slots": [],
+      "change": "Added subject-specific wardrobe/face construction and front/back/headshot inspection detail; removed zero-gutter and one-occurrence ambiguities."
+    },
+    {
+      "prompt": "02_library/characters/C31_ANONYMOUS_FICTIONAL_POLITICAL_FIGURE.txt",
+      "group": "characters",
+      "status": "TEXT_EXPANDED_OR_CORRECTED",
+      "review": "Front/back/headshot coverage, specific wardrobe construction, preserved face, 4K 1x3; studio has no cards.",
+      "words": 835,
+      "sha256": "a5ec343f17e6251046a35e2de362f58406566d70610da77c7052bf0b46145fac",
+      "rating_policy": "STUDIO_IDENTITY_NO_CITY_OVERLAY",
+      "unbound_reference_slots": [],
+      "change": "Added subject-specific wardrobe/face construction and front/back/headshot inspection detail; removed zero-gutter and one-occurrence ambiguities."
+    },
+    {
+      "prompt": "02_library/morphs/buildings/MR001_ST_PAULS_TO_ST_STEPHENS_2X2.txt",
+      "group": "morphs/buildings",
+      "status": "TEXT_REVIEWED_EXISTING_DETAIL_RETAINED",
+      "review": "Four ordered material states cross-checked against the per-subject four-state audit; distinct early/late volumes, material response, same-site identity and moving-video use retained.",
+      "words": 2885,
+      "sha256": "7ac07ab419d555cb9a9f0265db9a92fa57ec5507973081ed91bdc5753c3ce648",
+      "rating_policy": "CURRENT_CITY_CARDS_WHEN_PEOPLE_VISIBLE",
+      "unbound_reference_slots": [],
+      "four_states": [
+        "closed dome and ordered two-level portico",
+        "wide broken roof cage, splayed portico and three separated near-tower bands",
+        "vertical open giant arch, helical near tower and longitudinal roof opening",
+        "joined Basilica with one monumental entrance arch and its distinct complete massing"
+      ],
+      "material_profiles": [
+        "mineral",
+        "roof"
+      ]
+    },
+    {
+      "prompt": "02_library/morphs/buildings/MR002_FACADE_RELIEF_TO_SCULPTED_SUPPORT_2X2.txt",
+      "group": "morphs/buildings",
+      "status": "TEXT_REVIEWED_EXISTING_DETAIL_RETAINED",
+      "review": "Four ordered material states cross-checked against the per-subject four-state audit; distinct early/late volumes, material response, same-site identity and moving-video use retained.",
+      "words": 2146,
+      "sha256": "c58eb284b893585b65d7aa2d5f575cc255dde81ed6aafcf77f9212e2485d9383",
+      "rating_policy": "CURRENT_CITY_CARDS_WHEN_PEOPLE_VISIBLE",
+      "unbound_reference_slots": [],
+      "four_states": [
+        "shallow face on a compact deep corbel",
+        "low three-lobed mineral fan carrying a projecting bust",
+        "tall asymmetric body with a broad arm loop and one leg still a wedge",
+        "fully modelled two-legged stone figure bearing the cornice"
+      ],
+      "material_profiles": [
+        "mineral"
+      ]
+    },
+    {
+      "prompt": "02_library/morphs/buildings/MR003_FACADE_WINDOW_CAPITAL_AND_CORNICE_2X2.txt",
+      "group": "morphs/buildings",
+      "status": "TEXT_REVIEWED_EXISTING_DETAIL_RETAINED",
+      "review": "Four ordered material states cross-checked against the per-subject four-state audit; distinct early/late volumes, material response, same-site identity and moving-video use retained.",
+      "words": 2254,
+      "sha256": "86f7394ce07ebea3159885ae3b12d50861f8fb10d13022b04fc3c9b376445b66",
+      "rating_policy": "CURRENT_CITY_CARDS_WHEN_PEOPLE_VISIBLE",
+      "unbound_reference_slots": [],
+      "four_states": [
+        "rectangular sash bay and plain short supports",
+        "stepped lintel and angular fork with large stone lobes",
+        "tall unclosed arch with an oversized spiral capital web",
+        "joined carved arch, deep leafy capitals and seated curved sash"
+      ],
+      "material_profiles": [
+        "mineral",
+        "wood",
+        "glass"
+      ]
+    },
+    {
+      "prompt": "02_library/morphs/buildings/MR005_BRICK_COURSES_TO_CARVED_ARCH_2X2.txt",
+      "group": "morphs/buildings",
+      "status": "TEXT_REVIEWED_EXISTING_DETAIL_RETAINED",
+      "review": "Four ordered material states cross-checked against the per-subject four-state audit; distinct early/late volumes, material response, same-site identity and moving-video use retained.",
+      "words": 1832,
+      "sha256": "e03c81369f93630b55c5f9c444245d3bea5633817e00e580439876838d31c986",
+      "rating_policy": "CURRENT_CITY_CARDS_WHEN_PEOPLE_VISIBLE",
+      "unbound_reference_slots": [],
+      "four_states": [
+        "rectangular brick opening with straight lintel",
+        "broad staggered shelves and climbing wedge blanks",
+        "two tall inward-curving stone chains with a wide sky gap at the crown",
+        "complete deep carved arch with aligned voussoirs"
+      ],
+      "material_profiles": [
+        "mineral"
+      ]
+    },
+    {
+      "prompt": "02_library/morphs/buildings/MR006_STONE_THRESHOLD_TO_SUPPORTED_TIMBER_FLOOR_2X2.txt",
+      "group": "morphs/buildings",
+      "status": "TEXT_REVIEWED_EXISTING_DETAIL_RETAINED",
+      "review": "Four ordered material states cross-checked against the per-subject four-state audit; distinct early/late volumes, material response, same-site identity and moving-video use retained.",
+      "words": 1923,
+      "sha256": "04e82fd02065fe4ae5c7f177026eb4ab44cb9be34f33ea031f6e7c9559e0fe0c",
+      "rating_policy": "CURRENT_CITY_CARDS_WHEN_PEOPLE_VISIBLE",
+      "unbound_reference_slots": [],
+      "four_states": [
+        "low compact stone sill and paving",
+        "high unequal stone-to-timber rib fan",
+        "broad low deck skeleton with conspicuous raised board ends and open slots",
+        "level complete timber floor on full joists"
+      ],
+      "material_profiles": [
+        "mineral",
+        "wood"
+      ]
+    },
+    {
+      "prompt": "02_library/morphs/buildings/MR009_BALCONY_SCROLL_TO_SIDEWAYS_STAIR_2X2.txt",
+      "group": "morphs/buildings",
+      "status": "TEXT_REVIEWED_EXISTING_DETAIL_RETAINED",
+      "review": "Four ordered material states cross-checked against the per-subject four-state audit; distinct early/late volumes, material response, same-site identity and moving-video use retained.",
+      "words": 1800,
+      "sha256": "42d404a414ef5b21e5d1639c5ab2029e2f0cecb13437859d502d9cfadb3ed3ab",
+      "rating_policy": "CURRENT_CITY_CARDS_WHEN_PEOPLE_VISIBLE",
+      "unbound_reference_slots": [],
+      "four_states": [
+        "compact balcony scroll and straight rail",
+        "radial paddle-shaped metal tread blanks",
+        "rising double zigzag of level and steep treads beside an unjoined handrail",
+        "finished supported sideways stair with level steps"
+      ],
+      "material_profiles": [
+        "metal"
+      ]
+    },
+    {
+      "prompt": "02_library/morphs/buildings/MR011_SLATE_ROOF_TO_CURVED_GLAZING_2X2.txt",
+      "group": "morphs/buildings",
+      "status": "TEXT_REVIEWED_EXISTING_DETAIL_RETAINED",
+      "review": "Four ordered material states cross-checked against the per-subject four-state audit; distinct early/late volumes, material response, same-site identity and moving-video use retained.",
+      "words": 2020,
+      "sha256": "a5ef77dcb675c647cf2713056ecd09758ac94653ca2160a99fd20986095c9858",
+      "rating_policy": "CURRENT_CITY_CARDS_WHEN_PEOPLE_VISIBLE",
+      "unbound_reference_slots": [],
+      "four_states": [
+        "closed pitched slate roof",
+        "wide asymmetrical raised rib cage with slate-bearing sectors",
+        "curved roof with large longitudinal opening, raised sectors and half-carved corbels",
+        "fully joined curved glazed roof on completed stone corbels"
+      ],
+      "material_profiles": [
+        "mineral",
+        "roof",
+        "glass"
+      ]
+    },
+    {
+      "prompt": "02_library/morphs/buildings/MR012_CHIMNEY_SHAFTS_TO_SPIRAL_CROWNS_2X2.txt",
+      "group": "morphs/buildings",
+      "status": "TEXT_REVIEWED_EXISTING_DETAIL_RETAINED",
+      "review": "Four ordered material states cross-checked against the per-subject four-state audit; distinct early/late volumes, material response, same-site identity and moving-video use retained.",
+      "words": 1803,
+      "sha256": "9133c28bbe3a56c199a0f7d036c897d0ba3872a3f0a9882e427bcc1b37a2673a",
+      "rating_policy": "CURRENT_CITY_CARDS_WHEN_PEOPLE_VISIBLE",
+      "unbound_reference_slots": [],
+      "four_states": [
+        "two square brick chimney shafts",
+        "wide rising helix of separated square-to-stone masonry bands",
+        "narrow spiral shafts with large splayed crown jaws and unequal upper gaps",
+        "joined spiral stone uprights with finished open bell-like crowns"
+      ],
+      "material_profiles": [
+        "mineral"
+      ]
+    },
+    {
+      "prompt": "02_library/morphs/buildings/MR019_PAVING_AND_GUTTER_TO_STREET_TERRACE_2X2.txt",
+      "group": "morphs/buildings",
+      "status": "TEXT_REVIEWED_EXISTING_DETAIL_RETAINED",
+      "review": "Four ordered material states cross-checked against the per-subject four-state audit; distinct early/late volumes, material response, same-site identity and moving-video use retained.",
+      "words": 1931,
+      "sha256": "34fe622315b6f2d1c3ec00c321628f60cc2a0d29035db7f4f4d87c9d134d37cb",
+      "rating_policy": "CURRENT_CITY_CARDS_WHEN_PEOPLE_VISIBLE",
+      "unbound_reference_slots": [],
+      "four_states": [
+        "flat slab pavement and gutter",
+        "large stepped slab fan beside the intact walking strip",
+        "broad terrace with a zigzag of raised risers and unclosed frontage arches",
+        "joined traversable terrace beside fully transformed individual bays"
+      ],
+      "material_profiles": [
+        "mineral",
+        "metal"
+      ]
+    },
+    {
+      "prompt": "02_library/morphs/buildings/R005_ST_PAULS_COMPLETE_SOURCE_BUILDING.txt",
+      "group": "morphs/buildings",
+      "status": "TEXT_REVIEWED_EXISTING_DETAIL_RETAINED",
+      "review": "Four ordered material states cross-checked against the per-subject four-state audit; distinct early/late volumes, material response, same-site identity and moving-video use retained.",
+      "words": 1964,
+      "sha256": "089760d751d61d925536e1d823fdf68386f72ed956ad768d2e6d333998b1ee92",
+      "rating_policy": "CURRENT_CITY_CARDS_WHEN_PEOPLE_VISIBLE",
+      "unbound_reference_slots": [],
+      "four_states": [
+        "two stacked columned portico levels",
+        "outward groups of column drums and five staggered entablature blocks",
+        "two deep inward arch chains beneath stepped pediment pieces",
+        "single monumental Basilica arch with tall flanking supports"
+      ],
+      "material_profiles": [
+        "mineral"
+      ]
+    },
+    {
+      "prompt": "02_library/morphs/buildings/R006_ST_STEPHENS_COMPLETE_DESTINATION_BUILDING.txt",
+      "group": "morphs/buildings",
+      "status": "TEXT_REVIEWED_EXISTING_DETAIL_RETAINED",
+      "review": "Four ordered material states cross-checked against the per-subject four-state audit; distinct early/late volumes, material response, same-site identity and moving-video use retained.",
+      "words": 2037,
+      "sha256": "83b6a80170b6156a3fe60ef3314f4a9cebbd8f35cbd00ae98741314a43a6104a",
+      "rating_policy": "CURRENT_CITY_CARDS_WHEN_PEOPLE_VISIBLE",
+      "unbound_reference_slots": [],
+      "four_states": [
+        "complete Basilica with single deep entrance arch",
+        "wide hollow arch chains and separated tower rings beneath splayed roof sectors",
+        "two unfinished stacked portico platforms, helical London towers and open roof sector",
+        "complete St Pauls with long body, its own dome and two-level portico"
+      ],
+      "material_profiles": [
+        "mineral",
+        "roof"
+      ]
+    },
+    {
+      "prompt": "02_library/morphs/buildings/R008_CAFE_OPENING_AND_FURNITURE_CONSTRUCTION_DETAILS.txt",
+      "group": "morphs/buildings",
+      "status": "TEXT_REVIEWED_EXISTING_DETAIL_RETAINED",
+      "review": "Four ordered material states cross-checked against the per-subject four-state audit; distinct early/late volumes, material response, same-site identity and moving-video use retained.",
+      "words": 2680,
+      "sha256": "8de5da19bfb25126cb99b1ccb3cf567dd59723861f49bda882c5e2ea44f905e2",
+      "rating_policy": "CURRENT_CITY_CARDS_WHEN_PEOPLE_VISIBLE",
+      "unbound_reference_slots": [],
+      "four_states": [
+        "intact window enclosing the occupied restaurant",
+        "wide masonry array, three differently curved glass pieces and forked mullion",
+        "unclosed arch, three unequal shade states and raised outer floorboards around the projected occupied floor",
+        "joined deep restaurant opening, three complete shades and full supported floor projection"
+      ],
+      "material_profiles": [
+        "mineral",
+        "glass",
+        "wood",
+        "metal"
+      ]
+    },
+    {
+      "prompt": "02_library/morphs/buildings/R009_FANLIGHT_TO_CANOPY_JOINT_STUDY_FOR_THE_EXTEND.txt",
+      "group": "morphs/buildings",
+      "status": "TEXT_REVIEWED_EXISTING_DETAIL_RETAINED",
+      "review": "Four ordered material states cross-checked against the per-subject four-state audit; distinct early/late volumes, material response, same-site identity and moving-video use retained.",
+      "words": 2025,
+      "sha256": "b1dd52b294675955fdafb69bee191312eb8c3e6d6d182a939fbb0f12c8fb1984",
+      "rating_policy": "CURRENT_CITY_CARDS_WHEN_PEOPLE_VISIBLE",
+      "unbound_reference_slots": [],
+      "four_states": [
+        "upright shallow fanlight between two piers",
+        "wide irregular spatial array of stone, iron and glass",
+        "long overhead canopy with one large raised roof sector and a still-steep far assembly",
+        "fully joined supported overhead canopy over the continuous street"
+      ],
+      "material_profiles": [
+        "mineral",
+        "metal",
+        "glass"
+      ]
+    },
+    {
+      "prompt": "02_library/morphs/buildings/R014_ORIGINAL_LONDON_CAFE_WINDOW_BEFORE_FRACTURE.txt",
+      "group": "morphs/buildings",
+      "status": "TEXT_REVIEWED_EXISTING_DETAIL_RETAINED",
+      "review": "Four ordered material states cross-checked against the per-subject four-state audit; distinct early/late volumes, material response, same-site identity and moving-video use retained.",
+      "words": 2893,
+      "sha256": "131b22128c270f62472c6a9685a0ec3ec7da2322dda7690f14387e1f39b38f5f",
+      "rating_policy": "CURRENT_CITY_CARDS_WHEN_PEOPLE_VISIBLE",
+      "unbound_reference_slots": [],
+      "four_states": [
+        "intact window enclosing the occupied restaurant",
+        "wide masonry array, three differently curved glass pieces and forked mullion",
+        "unclosed arch, three unequal shade states and raised outer floorboards around the projected occupied floor",
+        "joined deep restaurant opening, three complete shades and full supported floor projection"
+      ],
+      "material_profiles": [
+        "mineral",
+        "glass",
+        "wood",
+        "metal"
+      ]
+    },
+    {
+      "prompt": "02_library/morphs/buildings/R016_SOLID_LONDON_BRICK_AND_PEST_CARVED_STONE_CORRESPONDENCE.txt",
+      "group": "morphs/buildings",
+      "status": "TEXT_REVIEWED_EXISTING_DETAIL_RETAINED",
+      "review": "Four ordered material states cross-checked against the per-subject four-state audit; distinct early/late volumes, material response, same-site identity and moving-video use retained.",
+      "words": 2047,
+      "sha256": "122ad9ff5e3339e31f42f1f15efd40736f28b75c9f19eeab65a6dfbf09fa7481",
+      "rating_policy": "CURRENT_CITY_CARDS_WHEN_PEOPLE_VISIBLE",
+      "unbound_reference_slots": [],
+      "four_states": [
+        "rectangular brick opening with straight lintel",
+        "broad staggered shelves and climbing wedge blanks",
+        "two tall inward-curving stone chains with a wide sky gap at the crown",
+        "complete deep carved arch with aligned voussoirs"
+      ],
+      "material_profiles": [
+        "mineral"
+      ]
+    },
+    {
+      "prompt": "02_library/morphs/buildings/R017_STONE_SILL_WET_PAVING_AND_SUPPORTED_TIMBER_THRESHOLD.txt",
+      "group": "morphs/buildings",
+      "status": "TEXT_REVIEWED_EXISTING_DETAIL_RETAINED",
+      "review": "Four ordered material states cross-checked against the per-subject four-state audit; distinct early/late volumes, material response, same-site identity and moving-video use retained.",
+      "words": 2138,
+      "sha256": "bc84c1163c7fbc6dcbc8250243da116de3f60ff2d756163e7bc8b017902bcaf7",
+      "rating_policy": "CURRENT_CITY_CARDS_WHEN_PEOPLE_VISIBLE",
+      "unbound_reference_slots": [],
+      "four_states": [
+        "low compact stone sill and paving",
+        "high unequal stone-to-timber rib fan",
+        "broad low deck skeleton with conspicuous raised board ends and open slots",
+        "level complete timber floor on full joists"
+      ],
+      "material_profiles": [
+        "mineral",
+        "wood"
+      ]
+    },
+    {
+      "prompt": "02_library/morphs/buildings/R021_RESTAURANT_REAR_DOORS_AND_DEPTH_RELATIONSHIPS.txt",
+      "group": "morphs/buildings",
+      "status": "TEXT_REVIEWED_EXISTING_DETAIL_RETAINED",
+      "review": "Four ordered material states cross-checked against the per-subject four-state audit; distinct early/late volumes, material response, same-site identity and moving-video use retained.",
+      "words": 2108,
+      "sha256": "4f52fae3a9645df76bed36b69ead28bc61adfdeeb2bb27cdb61475cc2dadf539",
+      "rating_policy": "CURRENT_CITY_CARDS_WHEN_PEOPLE_VISIBLE",
+      "unbound_reference_slots": [],
+      "four_states": [
+        "two shut rectangular wooden doors divided by a narrow pier",
+        "two outward panel fans beneath climbing lintel fragments",
+        "two unjoined mineral arch chains with partly wooden deep reveals",
+        "two fully open deep stone arcades and a joined central pier"
+      ],
+      "material_profiles": [
+        "wood",
+        "mineral",
+        "metal"
+      ]
+    },
+    {
+      "prompt": "02_library/morphs/buildings/R025_ORIGINAL_LONDON_ROOF_AND_CHIMNEY_VOLUMES.txt",
+      "group": "morphs/buildings",
+      "status": "TEXT_REVIEWED_EXISTING_DETAIL_RETAINED",
+      "review": "Four ordered material states cross-checked against the per-subject four-state audit; distinct early/late volumes, material response, same-site identity and moving-video use retained.",
+      "words": 2233,
+      "sha256": "76397622e51f2890f349d651e6da6beeea5dc0dd42fdff8bb2967d89dd294c21",
+      "rating_policy": "CURRENT_CITY_CARDS_WHEN_PEOPLE_VISIBLE",
+      "unbound_reference_slots": [],
+      "four_states": [
+        "closed pitched slate roof",
+        "wide asymmetrical raised rib cage with slate-bearing sectors",
+        "curved roof with large longitudinal opening, raised sectors and half-carved corbels",
+        "fully joined curved glazed roof on completed stone corbels"
+      ],
+      "material_profiles": [
+        "mineral",
+        "roof",
+        "glass"
+      ]
+    },
+    {
+      "prompt": "02_library/morphs/buildings/R026_TARGET_ROOF_GLAZING_STONE_CORBELS_AND_CHIMNEY_CROWNS.txt",
+      "group": "morphs/buildings",
+      "status": "TEXT_REVIEWED_EXISTING_DETAIL_RETAINED",
+      "review": "Four ordered material states cross-checked against the per-subject four-state audit; distinct early/late volumes, material response, same-site identity and moving-video use retained.",
+      "words": 2085,
+      "sha256": "3499468d80b3392056f3b1ad27655e8137784ec69380b56d97236e2d0fb22b57",
+      "rating_policy": "CURRENT_CITY_CARDS_WHEN_PEOPLE_VISIBLE",
+      "unbound_reference_slots": [],
+      "four_states": [
+        "low curved roof on short corbels between walls",
+        "broad high glass crown above displaced corbel blocks",
+        "two tall incomplete column rows and a raised open arcaded upper level",
+        "complete tall open loggia with columns, upper bays and joined glazing"
+      ],
+      "material_profiles": [
+        "glass",
+        "metal",
+        "mineral"
+      ]
+    },
+    {
+      "prompt": "02_library/morphs/buildings/R028_ORIGINAL_ARCADE_ARCH_AND_FANLIGHT.txt",
+      "group": "morphs/buildings",
+      "status": "TEXT_REVIEWED_EXISTING_DETAIL_RETAINED",
+      "review": "Four ordered material states cross-checked against the per-subject four-state audit; distinct early/late volumes, material response, same-site identity and moving-video use retained.",
+      "words": 2237,
+      "sha256": "d0315b67b1fa7133ca725b6a798ed7733807bb264bf4d627fb4762698017e790",
+      "rating_policy": "CURRENT_CITY_CARDS_WHEN_PEOPLE_VISIBLE",
+      "unbound_reference_slots": [],
+      "four_states": [
+        "upright shallow fanlight between two piers",
+        "wide irregular spatial array of stone, iron and glass",
+        "long overhead canopy with one large raised roof sector and a still-steep far assembly",
+        "fully joined supported overhead canopy over the continuous street"
+      ],
+      "material_profiles": [
+        "mineral",
+        "metal",
+        "glass"
+      ]
+    },
+    {
+      "prompt": "02_library/morphs/buildings/R029_FULL_SUPPORTED_CANOPY_DESTINATION.txt",
+      "group": "morphs/buildings",
+      "status": "TEXT_REVIEWED_EXISTING_DETAIL_RETAINED",
+      "review": "Four ordered material states cross-checked against the per-subject four-state audit; distinct early/late volumes, material response, same-site identity and moving-video use retained.",
+      "words": 2095,
+      "sha256": "bddf29a9c550b8025cc68ddb5364985f7e47f5271e361e5bedc117db27e499ee",
+      "rating_policy": "CURRENT_CITY_CARDS_WHEN_PEOPLE_VISIBLE",
+      "unbound_reference_slots": [],
+      "four_states": [
+        "low narrow rectangular flat canopy",
+        "broad ascending iron fan carrying unequal curved panes",
+        "high barrel vault with two raised roof sectors and a stepped stone springing",
+        "fully joined giant curved canopy on finished massive springings"
+      ],
+      "material_profiles": [
+        "metal",
+        "glass",
+        "mineral"
+      ]
+    },
+    {
+      "prompt": "02_library/morphs/buildings/R030_DEEP_GALLERY_THROUGH_THE_UNCHANGED_THRESHOLD.txt",
+      "group": "morphs/buildings",
+      "status": "TEXT_REVIEWED_EXISTING_DETAIL_RETAINED",
+      "review": "Four ordered material states cross-checked against the per-subject four-state audit; distinct early/late volumes, material response, same-site identity and moving-video use retained.",
+      "words": 1943,
+      "sha256": "5a833ebe201ee4e47590b4ef4f87644b05d6dc325cb65f6c382df27eba667c5e",
+      "rating_policy": "CURRENT_CITY_CARDS_WHEN_PEOPLE_VISIBLE",
+      "unbound_reference_slots": [],
+      "four_states": [
+        "shallow doorway recess with one visible back wall",
+        "unequally spaced deep wall bands, branching supports and long open floor slots",
+        "long perspective of incomplete arch bays and staggered floor sections",
+        "joined deep gallery and continuous walkway through the original threshold"
+      ],
+      "material_profiles": [
+        "mineral"
+      ]
+    },
+    {
+      "prompt": "02_library/morphs/buildings/R031_LONDON_STATION_SOURCE_EXTERIOR_AND_IRON_STRUCTURE.txt",
+      "group": "morphs/buildings",
+      "status": "TEXT_REVIEWED_EXISTING_DETAIL_RETAINED",
+      "review": "Four ordered material states cross-checked against the per-subject four-state audit; distinct early/late volumes, material response, same-site identity and moving-video use retained.",
+      "words": 2101,
+      "sha256": "2225baf814fd486b2801ab571889948e9ab0ca222d99f21137d45f9df15495eb",
+      "rating_policy": "CURRENT_CITY_CARDS_WHEN_PEOPLE_VISIBLE",
+      "unbound_reference_slots": [],
+      "four_states": [
+        "whole London stone-fronted station and its roof",
+        "broad separated entrance masses under a tall open truss cage",
+        "wide glazed hall frame unjoined at its peak between partly gathered masonry wings",
+        "complete Nyugati hall end and side wings on the London site"
+      ],
+      "material_profiles": [
+        "mineral",
+        "metal",
+        "glass"
+      ]
+    },
+    {
+      "prompt": "02_library/morphs/buildings/R032_NYUGATI_STATION_DESTINATION_AND_ROOF_JOINTS.txt",
+      "group": "morphs/buildings",
+      "status": "TEXT_REVIEWED_EXISTING_DETAIL_RETAINED",
+      "review": "Four ordered material states cross-checked against the per-subject four-state audit; distinct early/late volumes, material response, same-site identity and moving-video use retained.",
+      "words": 2074,
+      "sha256": "fe3740db9193fbcd5255d0aea53e9cd52297c60660fae7dd31ff22e8c0f88448",
+      "rating_policy": "CURRENT_CITY_CARDS_WHEN_PEOPLE_VISIBLE",
+      "unbound_reference_slots": [],
+      "four_states": [
+        "straight London roof grid on stone piers",
+        "three trusses splayed into a broad high fan",
+        "deep curved Nyugati end-frame branches with a conspicuous unjoined peak",
+        "complete joined iron-and-glass hall end with its receding roof"
+      ],
+      "material_profiles": [
+        "metal",
+        "glass",
+        "mineral"
+      ]
+    },
+    {
+      "prompt": "02_library/morphs/buildings/R033_HUNGARIAN_STATE_OPERA_TARGET_FACADE_AND_ENTRY_DEPTH.txt",
+      "group": "morphs/buildings",
+      "status": "TEXT_REVIEWED_EXISTING_DETAIL_RETAINED",
+      "review": "Four ordered material states cross-checked against the per-subject four-state audit; distinct early/late volumes, material response, same-site identity and moving-video use retained.",
+      "words": 1994,
+      "sha256": "56d08843b852324179ebda565b06551e1a59082ed59e88f67e13cc94e16d3ac0",
+      "rating_policy": "CURRENT_CITY_CARDS_WHEN_PEOPLE_VISIBLE",
+      "unbound_reference_slots": [],
+      "four_states": [
+        "National Gallery dome, classical central portico and lateral ranges",
+        "spread columns and separated facade bays beneath raised dome-shell sections",
+        "tall incomplete Opera arcade and roof with a large unresolved upper opening",
+        "complete Opera frontage with its own sculptural roof silhouette and no residual dome"
+      ],
+      "material_profiles": [
+        "mineral",
+        "roof"
+      ]
+    },
+    {
+      "prompt": "02_library/morphs/buildings/R034_TOWER_BRIDGE_SOURCE_STRUCTURE.txt",
+      "group": "morphs/buildings",
+      "status": "TEXT_REVIEWED_EXISTING_DETAIL_RETAINED",
+      "review": "Four ordered material states cross-checked against the per-subject four-state audit; distinct early/late volumes, material response, same-site identity and moving-video use retained.",
+      "words": 2001,
+      "sha256": "f49e2c8a2660dffbafaa8551d727cbfb3b0f2fe8f33ba2c41c914569019e359a",
+      "rating_policy": "CURRENT_CITY_CARDS_WHEN_PEOPLE_VISIBLE",
+      "unbound_reference_slots": [],
+      "four_states": [
+        "Tower Bridge towers joined by high walkways",
+        "separated tower bands over falling truss arcs and wide iron loops",
+        "low unfinished portal piers and nearly joined chain runs with one large raised loop",
+        "complete Chain Bridge portals, seated chains and suspended deck"
+      ],
+      "material_profiles": [
+        "mineral",
+        "metal"
+      ]
+    },
+    {
+      "prompt": "02_library/morphs/buildings/R035_SZECHENYI_CHAIN_BRIDGE_DESTINATION_STRUCTURE.txt",
+      "group": "morphs/buildings",
+      "status": "TEXT_REVIEWED_EXISTING_DETAIL_RETAINED",
+      "review": "Four ordered material states cross-checked against the per-subject four-state audit; distinct early/late volumes, material response, same-site identity and moving-video use retained.",
+      "words": 1983,
+      "sha256": "e80d11ce4e67d6fa3d83f6fbb593f57473edebdb2cc41293a1f86d72bffc6ba6",
+      "rating_policy": "CURRENT_CITY_CARDS_WHEN_PEOPLE_VISIBLE",
+      "unbound_reference_slots": [],
+      "four_states": [
+        "Tower Bridge tower-opening and high walkway joint",
+        "wide stepped stone fan and triangular separated truss pieces",
+        "tall Chain Bridge portal with two offset crown masses and a side-on chain loop",
+        "joined rectangular portal and fully seated chain saddles"
+      ],
+      "material_profiles": [
+        "mineral",
+        "metal"
+      ]
+    },
+    {
+      "prompt": "02_library/morphs/buildings/R036_LONDON_EYE_AND_CONNECTED_SOUTH_BANK_DEPTH.txt",
+      "group": "morphs/buildings",
+      "status": "TEXT_REVIEWED_EXISTING_DETAIL_RETAINED",
+      "review": "Four ordered material states cross-checked against the per-subject four-state audit; distinct early/late volumes, material response, same-site identity and moving-video use retained.",
+      "words": 2096,
+      "sha256": "db8de0f8563961cc79a7b36d4cc65d5ac3cef09360c6469e3287c2c30249558f",
+      "rating_policy": "CURRENT_CITY_CARDS_WHEN_PEOPLE_VISIBLE",
+      "unbound_reference_slots": [],
+      "four_states": [
+        "vertical circular observation wheel",
+        "wide spatial array of tilted rim sectors and opened capsule frames",
+        "horizontal broken cornice ring on partly formed columns and upright arched bays",
+        "joined low circular open colonnade with grounded supports"
+      ],
+      "material_profiles": [
+        "metal",
+        "glass",
+        "mineral"
+      ]
+    },
+    {
+      "prompt": "02_library/morphs/buildings/R037_GREAT_MARKET_HALL_ROOF_AND_BRICK_SOURCE_VOLUME.txt",
+      "group": "morphs/buildings",
+      "status": "TEXT_REVIEWED_EXISTING_DETAIL_RETAINED",
+      "review": "Four ordered material states cross-checked against the per-subject four-state audit; distinct early/late volumes, material response, same-site identity and moving-video use retained.",
+      "words": 2097,
+      "sha256": "e9980c29d0cc5dadf1fc41be30f78d7119bfc967d9d75d7c5a00597278a31663",
+      "rating_policy": "CURRENT_CITY_CARDS_WHEN_PEOPLE_VISIBLE",
+      "unbound_reference_slots": [],
+      "four_states": [
+        "pitched tiled Market Hall above its brick walls",
+        "high structural crown of thick truss-tile sectors and deep brick bands",
+        "long curved glazed envelope with one large raised sector and open longitudinal seam",
+        "joined Balna envelope with completed lower supporting masonry"
+      ],
+      "material_profiles": [
+        "mineral",
+        "roof",
+        "glass"
+      ]
+    },
+    {
+      "prompt": "02_library/morphs/buildings/R038_BALNA_CURVED_GLASS_TARGET_VOLUME.txt",
+      "group": "morphs/buildings",
+      "status": "TEXT_REVIEWED_EXISTING_DETAIL_RETAINED",
+      "review": "Four ordered material states cross-checked against the per-subject four-state audit; distinct early/late volumes, material response, same-site identity and moving-video use retained.",
+      "words": 2084,
+      "sha256": "7a77de21838fe0ed2181b11232649eac9932146f4efac83d2c4c5d7a77daf7fd",
+      "rating_policy": "CURRENT_CITY_CARDS_WHEN_PEOPLE_VISIBLE",
+      "unbound_reference_slots": [],
+      "four_states": [
+        "pitched tiled roof bay and rectangular truss node",
+        "splayed truss branches carrying separated thick tile sectors",
+        "broad curved glass sector with two raised pane groups and a blocky unseated base corner",
+        "seated curved glazed bay with joined rib and mineral base"
+      ],
+      "material_profiles": [
+        "mineral",
+        "roof",
+        "glass"
+      ]
+    },
+    {
+      "prompt": "02_library/morphs/buildings/R039_WESTMINSTER_AND_PARLIAMENT_SQUARE_LONDON_SOURCE.txt",
+      "group": "morphs/buildings",
+      "status": "TEXT_REVIEWED_EXISTING_DETAIL_RETAINED",
+      "review": "Four ordered material states cross-checked against the per-subject four-state audit; distinct early/late volumes, material response, same-site identity and moving-video use retained.",
+      "words": 2022,
+      "sha256": "13a745fd968bc8d98a7dd9e18cb5ff68f26fafd7db57dd87afe08e45dc6638d6",
+      "rating_policy": "CURRENT_CITY_CARDS_WHEN_PEOPLE_VISIBLE",
+      "unbound_reference_slots": [],
+      "four_states": [
+        "long asymmetric Westminster skyline with two unlike major towers",
+        "irregular wide field of rotated facade groups and raised pinnacles",
+        "symmetrical developing Parliament wings under an open central dome cage",
+        "complete Hungarian Parliament with central dome and joined flanking ranges"
+      ],
+      "material_profiles": [
+        "mineral",
+        "roof"
+      ]
+    },
+    {
+      "prompt": "02_library/morphs/buildings/R040_HUNGARIAN_PARLIAMENT_COMPLETE_DESTINATION_SILHOUETTE.txt",
+      "group": "morphs/buildings",
+      "status": "TEXT_REVIEWED_EXISTING_DETAIL_RETAINED",
+      "review": "Four ordered material states cross-checked against the per-subject four-state audit; distinct early/late volumes, material response, same-site identity and moving-video use retained.",
+      "words": 1977,
+      "sha256": "ff71eb6dcc8273b925d8ca8e63fb3bae60997af67822e3be6f47b2d86003c65c",
+      "rating_policy": "CURRENT_CITY_CARDS_WHEN_PEOPLE_VISIBLE",
+      "unbound_reference_slots": [],
+      "four_states": [
+        "pointed Gothic roof ridges without a central dome",
+        "outward tall rib groups above projecting bands of window bays",
+        "rounded dome cage on a staggered drum with two large open roof sectors",
+        "closed identifiable Parliament dome and fully joined surrounding bays"
+      ],
+      "material_profiles": [
+        "mineral",
+        "roof"
+      ]
+    },
+    {
+      "prompt": "02_library/morphs/buildings/R041_GRESHAM_PALACE_FRONTAGE_AND_DEEP_STONE_DETAILS.txt",
+      "group": "morphs/buildings",
+      "status": "TEXT_REVIEWED_EXISTING_DETAIL_RETAINED",
+      "review": "Four ordered material states cross-checked against the per-subject four-state audit; distinct early/late volumes, material response, same-site identity and moving-video use retained.",
+      "words": 2078,
+      "sha256": "5f479d66a99968134630528c831d4f94c951a4736bc576e4b8139f05d72862d4",
+      "rating_policy": "CURRENT_CITY_CARDS_WHEN_PEOPLE_VISIBLE",
+      "unbound_reference_slots": [],
+      "four_states": [
+        "restrained rectangular stone bays and plain central entry",
+        "widely offset bay stacks and branching jambs beneath unequal roof ribs",
+        "Gresham massing with a large open volute lattice and separated roof sectors",
+        "joined Gresham facade with distinctive roof contours and deep carved entrance"
+      ],
+      "material_profiles": [
+        "mineral",
+        "roof",
+        "glass"
+      ]
+    },
+    {
+      "prompt": "02_library/morphs/buildings/R042_NEW_YORK_PALACE_HISTORIC_EXTERIOR_WITH_OCCUPIED_BAY_DEPTH.txt",
+      "group": "morphs/buildings",
+      "status": "TEXT_REVIEWED_EXISTING_DETAIL_RETAINED",
+      "review": "Four ordered material states cross-checked against the per-subject four-state audit; distinct early/late volumes, material response, same-site identity and moving-video use retained.",
+      "words": 1983,
+      "sha256": "23cf15ed83efa61bfd1a31aa91ad67f45637a172ed514dfc126def69d6e625ba",
+      "rating_policy": "CURRENT_CITY_CARDS_WHEN_PEOPLE_VISIBLE",
+      "unbound_reference_slots": [],
+      "four_states": [
+        "London corner block with regular stone-brick bays",
+        "staggered deep corner masses and upward-rotated cornices",
+        "tall New York Palace corner with offset crown sectors and an incomplete arcade level",
+        "joined ornate palace corner with its own complete roof crown"
+      ],
+      "material_profiles": [
+        "mineral",
+        "roof"
+      ]
+    },
+    {
+      "prompt": "02_library/morphs/buildings/R054_BIG_BEN_ELIZABETH_TOWER_LONDON_SOURCE.txt",
+      "group": "morphs/buildings",
+      "status": "TEXT_REVIEWED_EXISTING_DETAIL_RETAINED",
+      "review": "Four ordered material states cross-checked against the per-subject four-state audit; distinct early/late volumes, material response, same-site identity and moving-video use retained.",
+      "words": 2009,
+      "sha256": "b341a6e0cabeb8c5cf561007cc91fb21abaaa92f4afd3f2743e566dd35999df0",
+      "rating_policy": "CURRENT_CITY_CARDS_WHEN_PEOPLE_VISIBLE",
+      "unbound_reference_slots": [],
+      "four_states": [
+        "tall narrow square clock tower and pointed crown",
+        "three separated rotating clock bands over two swelling lower supports",
+        "wide low gateway with unclosed arch and a side-turned clock housing",
+        "joined monumental clock gate with deep open arch and complete flanking crowns"
+      ],
+      "material_profiles": [
+        "mineral",
+        "metal"
+      ]
+    },
+    {
+      "prompt": "02_library/morphs/buildings/R055_WESTMINSTER_ABBEY_LONDON_SOURCE.txt",
+      "group": "morphs/buildings",
+      "status": "TEXT_REVIEWED_EXISTING_DETAIL_RETAINED",
+      "review": "Four ordered material states cross-checked against the per-subject four-state audit; distinct early/late volumes, material response, same-site identity and moving-video use retained.",
+      "words": 2010,
+      "sha256": "3fc8995e1b20d2f7b2fa77f9ff3419185ba1cdd23ba5a6eb6a207bbe5c900bc2",
+      "rating_policy": "CURRENT_CITY_CARDS_WHEN_PEOPLE_VISIBLE",
+      "unbound_reference_slots": [],
+      "four_states": [
+        "Abbey paired west towers and closed church roof",
+        "unequal rotating tower stages and splayed tracery ribs",
+        "strongly asymmetric Matthias tower configuration with one tall open spire cage",
+        "joined Matthias Church with its distinct asymmetric patterned-roof silhouette"
+      ],
+      "material_profiles": [
+        "mineral",
+        "roof"
+      ]
+    },
+    {
+      "prompt": "02_library/morphs/buildings/R056_FISHERMANS_BASTION_DESTINATION.txt",
+      "group": "morphs/buildings",
+      "status": "TEXT_REVIEWED_EXISTING_DETAIL_RETAINED",
+      "review": "Four ordered material states cross-checked against the per-subject four-state audit; distinct early/late volumes, material response, same-site identity and moving-video use retained.",
+      "words": 1916,
+      "sha256": "6c99787e52bff5282ae8377b8f62f41757d1cc59a8cefb64fa9c0f0f590f8604",
+      "rating_policy": "CURRENT_CITY_CARDS_WHEN_PEOPLE_VISIBLE",
+      "unbound_reference_slots": [],
+      "four_states": [
+        "square pier, straight parapet and compact stair",
+        "broad spiral stone bands, radial pier wedges and fanned treads",
+        "round lookout body with unclosed conical crown and incomplete terrace arches",
+        "joined Bastion tower, open arcaded terrace and broad sweeping stair"
+      ],
+      "material_profiles": [
+        "mineral"
+      ]
+    },
+    {
+      "prompt": "02_library/morphs/characters/CM001_APPOINTED_LAWYER_TO_OFFICE_SUBSTITUTE_2X2.txt",
+      "group": "morphs/characters",
+      "status": "TEXT_EXPANDED_OR_CORRECTED",
+      "review": "Four ordered material states cross-checked against the per-subject four-state audit; distinct early/late volumes, material response, same-site identity and moving-video use retained.",
+      "words": 1680,
+      "sha256": "fd0ff760d19efac8e8c3a814fd6c3355764416be501c5a360197363c9abbc0dc",
+      "rating_policy": "MEMORY_OR_CLINICAL_NO_CARDS",
+      "unbound_reference_slots": [
+        "@UNBOUND_C04",
+        "@UNBOUND_C26"
+      ],
+      "change": "Replaced an out-of-frame shoe/floor anchor with visible shelf and doorway anchors in the specified knee-up composition.",
+      "four_states": [
+        "C04 normál öltönyös alak",
+        "széles vállháromszög, hosszú fej/nyak, két kiálló ruhatekercs",
+        "keskenyebb váll, mélyebb törzs, szélesebb fej, egy nagy átlós ruharedő",
+        "C26 saját arca és kész irodai öltözete"
+      ],
+      "material_profiles": [
+        "viscoelastic human tissue",
+        "rooted hair",
+        "cloth"
+      ]
+    },
+    {
+      "prompt": "02_library/morphs/characters/CM002_SOHO_WOMAN_TO_BEGINNER_DANCE_WOMAN_2X2.txt",
+      "group": "morphs/characters",
+      "status": "TEXT_REVIEWED_EXISTING_DETAIL_RETAINED",
+      "review": "Four ordered material states cross-checked against the per-subject four-state audit; distinct early/late volumes, material response, same-site identity and moving-video use retained.",
+      "words": 1577,
+      "sha256": "e0e96e17047ec1954fdd1e570af0eea41d878cee6a3b7cb0f569f46153f7eb42",
+      "rating_policy": "MEMORY_OR_CLINICAL_NO_CARDS",
+      "unbound_reference_slots": [],
+      "four_states": [
+        "C02 keskeny hosszú kabátos sziluett",
+        "nagy gyökeres hajív, hosszú törzs és széles csípő körüli spirálredők",
+        "rövid széles felsőtest, magasra gyűlt kabátanyag és oldalsó S-redő",
+        "C10 saját arca, frizurája és táncöltözete"
+      ],
+      "material_profiles": [
+        "viscoelastic human tissue",
+        "rooted hair",
+        "cloth"
+      ]
+    },
+    {
+      "prompt": "02_library/morphs/characters/CM003_SNORING_HOUSEMATE_TO_MORTGAGE_HOUSEMATE_2X2.txt",
+      "group": "morphs/characters",
+      "status": "TEXT_REVIEWED_EXISTING_DETAIL_RETAINED",
+      "review": "Four ordered material states cross-checked against the per-subject four-state audit; distinct early/late volumes, material response, same-site identity and moving-video use retained.",
+      "words": 1543,
+      "sha256": "834fd430df451afb35a5a054647002fb83b638fd80aea4a4df60b4728c245180",
+      "rating_policy": "MEMORY_OR_CLINICAL_NO_CARDS",
+      "unbound_reference_slots": [
+        "@UNBOUND_C06",
+        "@UNBOUND_C07"
+      ],
+      "four_states": [
+        "C06 tömör pulóveres alak",
+        "széles hordós törzs, hosszú fej és harmonikaszerű kötött anyag",
+        "magas szögletes váll, keskeny hosszú törzs és kiálló gallérredő",
+        "C07 saját arca és kész munkanapi ruhája"
+      ],
+      "material_profiles": [
+        "viscoelastic human tissue",
+        "rooted hair",
+        "cloth"
+      ]
+    },
+    {
+      "prompt": "02_library/morphs/characters/CM004_TRANSIT_HELPER_TO_CAIRO_TRAVELER_2X2.txt",
+      "group": "morphs/characters",
+      "status": "TEXT_REVIEWED_EXISTING_DETAIL_RETAINED",
+      "review": "Four ordered material states cross-checked against the per-subject four-state audit; distinct early/late volumes, material response, same-site identity and moving-video use retained.",
+      "words": 1589,
+      "sha256": "a6e4ead6b9d4ca090a5b33541545b3e0394f5723619dcda48d0430ca09098557",
+      "rating_policy": "MEMORY_OR_CLINICAL_NO_CARDS",
+      "unbound_reference_slots": [
+        "@UNBOUND_C11"
+      ],
+      "four_states": [
+        "C11 zárt sötét ingázókabátja",
+        "nagy kabátszárnyak, keskeny hosszú törzs/fej és kitágult mandzsetta",
+        "rövidülő széles vállú törzs, szélesebb homlok és vastag derékspirál",
+        "C13 saját arca és könnyű utazóruhája"
+      ],
+      "material_profiles": [
+        "viscoelastic human tissue",
+        "rooted hair",
+        "cloth"
+      ]
+    },
+    {
+      "prompt": "02_library/morphs/characters/CM005_ADMIN_COLLEAGUE_A_TO_B_2X2.txt",
+      "group": "morphs/characters",
+      "status": "TEXT_REVIEWED_EXISTING_DETAIL_RETAINED",
+      "review": "Four ordered material states cross-checked against the per-subject four-state audit; distinct early/late volumes, material response, same-site identity and moving-video use retained.",
+      "words": 1584,
+      "sha256": "9d97c756d5e4722f0a2e3270c5ad59ab2314ab125cb4cf34b78a71cd7abe1093",
+      "rating_policy": "MEMORY_OR_CLINICAL_NO_CARDS",
+      "unbound_reference_slots": [],
+      "four_states": [
+        "C23 saját normál irodai alakja",
+        "széles aszimmetrikus mellkas/arc, átlós ruhagerinc és vastag ujjgyűrűk",
+        "keskeny hosszú törzs/nyak, megnyúlt fejtető és magas oldalsó redő",
+        "C24 különálló arca és kész irodai ruhája"
+      ],
+      "material_profiles": [
+        "viscoelastic human tissue",
+        "rooted hair",
+        "cloth"
+      ]
+    },
+    {
+      "prompt": "02_library/morphs/characters/CM006_FORENSIC_EXPERT_A_TO_B_2X2.txt",
+      "group": "morphs/characters",
+      "status": "TEXT_REVIEWED_EXISTING_DETAIL_RETAINED",
+      "review": "Four ordered material states cross-checked against the per-subject four-state audit; distinct early/late volumes, material response, same-site identity and moving-video use retained.",
+      "words": 1523,
+      "sha256": "525472d200c69e9882d56f438fa5aaaef2ba799dcdde97ee203793795880fd5b",
+      "rating_policy": "MEMORY_OR_CLINICAL_NO_CARDS",
+      "unbound_reference_slots": [],
+      "four_states": [
+        "C28 normál feje, válla és gallérja",
+        "magas keskeny fej/nyak, keskeny váll és két nagy gallértölcsér",
+        "széles halánték/váll, rövid nyak és egy nagy átlós vállredő",
+        "C29 saját arca és kész szakértői öltözete"
+      ],
+      "material_profiles": [
+        "viscoelastic human tissue",
+        "rooted hair",
+        "cloth"
+      ]
+    },
+    {
+      "prompt": "02_library/morphs/objects/MR004_WINDOW_GLASS_TO_PENDANT_SHADE_2X2.txt",
+      "group": "morphs/objects",
+      "status": "TEXT_REVIEWED_EXISTING_DETAIL_RETAINED",
+      "review": "Four ordered material states cross-checked against the per-subject four-state audit; distinct early/late volumes, material response, same-site identity and moving-video use retained.",
+      "words": 1971,
+      "sha256": "e92b07495e8e63174fd0da85b8560bd35aa2345239d037f183cf7f1d4f48242d",
+      "rating_policy": "CURRENT_CITY_CARDS_WHEN_PEOPLE_VISIBLE",
+      "unbound_reference_slots": [],
+      "four_states": [
+        "flat glass segment with a sharp notched edge",
+        "low wide saddle with opposite raised corners",
+        "tall open helix and projecting flat tongue",
+        "compact rounded glass shade with a continuous rim and neck"
+      ],
+      "material_profiles": [
+        "glass",
+        "metal"
+      ]
+    },
+    {
+      "prompt": "02_library/morphs/objects/MR007_BENCH_TO_CURVED_FLOOR_BORDER_2X2.txt",
+      "group": "morphs/objects",
+      "status": "TEXT_REVIEWED_EXISTING_DETAIL_RETAINED",
+      "review": "Four ordered material states cross-checked against the per-subject four-state audit; distinct early/late volumes, material response, same-site identity and moving-video use retained.",
+      "words": 1897,
+      "sha256": "d350e6a4d5a7c3e51adcdbca04648e2816473f73162e9ec633e04effa7ae71cf",
+      "rating_policy": "CURRENT_CITY_CARDS_WHEN_PEOPLE_VISIBLE",
+      "unbound_reference_slots": [],
+      "four_states": [
+        "horizontal slatted bench on rigid legs",
+        "wide radial timber fan with source seat-height members",
+        "low U-border with one tall inward spiral and a wide end gap",
+        "joined low curved timber boundary with short feet"
+      ],
+      "material_profiles": [
+        "wood",
+        "metal"
+      ]
+    },
+    {
+      "prompt": "02_library/morphs/objects/MR008_WINDOW_FITTINGS_TO_PENDANT_STEM_2X2.txt",
+      "group": "morphs/objects",
+      "status": "TEXT_REVIEWED_EXISTING_DETAIL_RETAINED",
+      "review": "Four ordered material states cross-checked against the per-subject four-state audit; distinct early/late volumes, material response, same-site identity and moving-video use retained.",
+      "words": 1829,
+      "sha256": "025fa57b68eb4345315081c06c86522b37ce91979fd0cb2083b9014d1e4591c7",
+      "rating_policy": "CURRENT_CITY_CARDS_WHEN_PEOPLE_VISIBLE",
+      "unbound_reference_slots": [],
+      "four_states": [
+        "short blocky metal window fixing",
+        "broad three-branch angular fork and open fixing eye",
+        "long stem terminating in an oversized open coil and projecting shoulder",
+        "slender finished pendant stem and compact receiving socket"
+      ],
+      "material_profiles": [
+        "metal"
+      ]
+    },
+    {
+      "prompt": "02_library/morphs/objects/MR010_ENGLISH_SIGN_TO_KAVE_LETTERING_2X2.txt",
+      "group": "morphs/objects",
+      "status": "TEXT_REVIEWED_EXISTING_DETAIL_RETAINED",
+      "review": "Four ordered material states cross-checked against the per-subject four-state audit; distinct early/late volumes, material response, same-site identity and moving-video use retained.",
+      "words": 1872,
+      "sha256": "bd7e92e6be6a1eea6abec61de17c01fdc0fa27f47772606f8bce992fb73ce720",
+      "rating_policy": "CURRENT_CITY_CARDS_WHEN_PEOPLE_VISIBLE",
+      "unbound_reference_slots": [],
+      "four_states": [
+        "flat slatted COFFEE sign with raised strokes",
+        "deep scattered lattice of projecting glyph branches",
+        "four large unfinished KÁVÉ skeletons with outward arms and open bridges",
+        "four complete raised KÁVÉ letters seated on the slats"
+      ],
+      "material_profiles": [
+        "wood",
+        "metal"
+      ]
+    },
+    {
+      "prompt": "02_library/morphs/objects/MR013_ENTRANCE_RAIL_TO_TRANSIT_GATE_2X2.txt",
+      "group": "morphs/objects",
+      "status": "TEXT_REVIEWED_EXISTING_DETAIL_RETAINED",
+      "review": "Four ordered material states cross-checked against the per-subject four-state audit; distinct early/late volumes, material response, same-site identity and moving-video use retained.",
+      "words": 1828,
+      "sha256": "a2e1787e3e3106e3950ccc489f0a7c9fed84ad3d01dfa19fc980b5536fc226dd",
+      "rating_policy": "CURRENT_CITY_CARDS_WHEN_PEOPLE_VISIBLE",
+      "unbound_reference_slots": [],
+      "four_states": [
+        "narrow rail post and horizontal elbow",
+        "broad fork flanked by two deep separated housing shells",
+        "mostly gathered housing with an oversized steep gate leaf and open reader loop",
+        "compact transit mechanism with a properly seated working leaf"
+      ],
+      "material_profiles": [
+        "metal"
+      ]
+    },
+    {
+      "prompt": "02_library/morphs/objects/MR014_BENCH_AND_CANOPY_TO_BUS_SEATING_2X2.txt",
+      "group": "morphs/objects",
+      "status": "TEXT_REVIEWED_EXISTING_DETAIL_RETAINED",
+      "review": "Four ordered material states cross-checked against the per-subject four-state audit; distinct early/late volumes, material response, same-site identity and moving-video use retained.",
+      "words": 1992,
+      "sha256": "e5f596d9f0f2f481fb73c923a1864a02f68ec80d64b39e1fc56401a33d684e73",
+      "rating_policy": "CURRENT_CITY_CARDS_WHEN_PEOPLE_VISIBLE",
+      "unbound_reference_slots": [],
+      "four_states": [
+        "low bench beneath sparse canopy posts",
+        "wide open furniture skeleton of rising slats and leaning pillars",
+        "narrower cabin rhythm with raised seat shells and offset window posts",
+        "complete upholstered seat pairs, aisle and window bays"
+      ],
+      "material_profiles": [
+        "wood",
+        "metal",
+        "cloth"
+      ]
+    },
+    {
+      "prompt": "02_library/morphs/objects/MR015_CANOPY_TO_BALLOON_ENVELOPE_2X2.txt",
+      "group": "morphs/objects",
+      "status": "TEXT_REVIEWED_EXISTING_DETAIL_RETAINED",
+      "review": "Four ordered material states cross-checked against the per-subject four-state audit; distinct early/late volumes, material response, same-site identity and moving-video use retained.",
+      "words": 2019,
+      "sha256": "51acc0e61f4039b9c91709555a20189ea493681b66588befe5bb25af41e9a5cb",
+      "rating_policy": "CURRENT_CITY_CARDS_WHEN_PEOPLE_VISIBLE",
+      "unbound_reference_slots": [],
+      "four_states": [
+        "low broad canopy and hanging ties",
+        "tall unequal rib cage carrying deep loose fabric gores",
+        "large lobed balloon with a broad open sector and one flattened source edge",
+        "complete rounded tensioned envelope with joined rigging"
+      ],
+      "material_profiles": [
+        "metal",
+        "cloth",
+        "fibre"
+      ]
+    },
+    {
+      "prompt": "02_library/morphs/objects/MR016_CROP_STALKS_TO_RAIL_SLEEPERS_2X2.txt",
+      "group": "morphs/objects",
+      "status": "TEXT_REVIEWED_EXISTING_DETAIL_RETAINED",
+      "review": "Four ordered material states cross-checked against the per-subject four-state audit; distinct early/late volumes, material response, same-site identity and moving-video use retained.",
+      "words": 1875,
+      "sha256": "8ee27e480a5eeaaa8c90c92661a3621e73f428a475f0bd0271a4c536a559b8e9",
+      "rating_policy": "CURRENT_CITY_CARDS_WHEN_PEOPLE_VISIBLE",
+      "unbound_reference_slots": [],
+      "four_states": [
+        "upright leafy rooted crop strip",
+        "unequal high plant-to-wood arches",
+        "horizontal sleeper bodies with alternate raised leafy forks",
+        "low solid sleepers seated beneath the rails"
+      ],
+      "material_profiles": [
+        "plant",
+        "wood"
+      ]
+    },
+    {
+      "prompt": "02_library/morphs/objects/MR017_CABINET_TO_DESK_AND_CHAIR_2X2.txt",
+      "group": "morphs/objects",
+      "status": "TEXT_REVIEWED_EXISTING_DETAIL_RETAINED",
+      "review": "Four ordered material states cross-checked against the per-subject four-state audit; distinct early/late volumes, material response, same-site identity and moving-video use retained.",
+      "words": 1959,
+      "sha256": "a2fd6221fcdeeda752000a8f63e63d2b37d100dc64391679805b6a2875cd25bd",
+      "rating_policy": "CURRENT_CITY_CARDS_WHEN_PEOPLE_VISIBLE",
+      "unbound_reference_slots": [],
+      "four_states": [
+        "compact closed cabinet",
+        "wide board skeleton with diagonal legs and projecting top",
+        "desk-and-chair arrangement with raised desktop corner and a broad residual panel web",
+        "two fully joined functional furniture volumes"
+      ],
+      "material_profiles": [
+        "wood",
+        "metal"
+      ]
+    },
+    {
+      "prompt": "02_library/morphs/objects/MR018_HEARING_BENCH_TO_DOCUMENT_SHELVING_2X2.txt",
+      "group": "morphs/objects",
+      "status": "TEXT_REVIEWED_EXISTING_DETAIL_RETAINED",
+      "review": "Four ordered material states cross-checked against the per-subject four-state audit; distinct early/late volumes, material response, same-site identity and moving-video use retained.",
+      "words": 1808,
+      "sha256": "ce603d8febbac220ca037c6682b71570cb377f30f40e13f41f48f1417729755b",
+      "rating_policy": "CURRENT_CITY_CARDS_WHEN_PEOPLE_VISIBLE",
+      "unbound_reference_slots": [],
+      "four_states": [
+        "low complete hearing bench",
+        "tall broad branched timber frame",
+        "upright shelving crossed by large diagonal shelf blanks and divider webs",
+        "joined deep document shelving with open usable compartments"
+      ],
+      "material_profiles": [
+        "wood"
+      ]
+    },
+    {
+      "prompt": "02_library/morphs/objects/MR020_ROPE_FIBRES_TO_SHEET_HEM_2X2.txt",
+      "group": "morphs/objects",
+      "status": "TEXT_REVIEWED_EXISTING_DETAIL_RETAINED",
+      "review": "Four ordered material states cross-checked against the per-subject four-state audit; distinct early/late volumes, material response, same-site identity and moving-video use retained.",
+      "words": 1840,
+      "sha256": "8d2fc1ca93f717427580887571773a3b4fb1a5a193927c5ff8bb76aca6be0209",
+      "rating_policy": "CURRENT_CITY_CARDS_WHEN_PEOPLE_VISIBLE",
+      "unbound_reference_slots": [],
+      "four_states": [
+        "round tightly twisted rope",
+        "wide open fan of separate twisted bundles",
+        "broad loose woven lattice with a thick unresolved rope edge",
+        "dense flat white cloth and a finished folded hem"
+      ],
+      "material_profiles": [
+        "fibre"
+      ]
+    },
+    {
+      "prompt": "02_library/morphs/objects/MR021_RATING_CARD_6_2_TO_9_2_MATERIAL_MORPH_2X2.txt",
+      "group": "morphs/objects",
+      "status": "TEXT_REVIEWED_EXISTING_DETAIL_RETAINED",
+      "review": "Four ordered material states cross-checked against the per-subject four-state audit; distinct early/late volumes, material response, same-site identity and moving-video use retained.",
+      "words": 1713,
+      "sha256": "3800dd5acc2740251d380650cc7faaaf9d386c5e7609cd8f5cd792621c3bbdc1",
+      "rating_policy": "EXPLICIT_6_2_TO_9_2_CHANGE_ON_SAME_CURRENT_CITY_OWNER",
+      "unbound_reference_slots": [],
+      "four_states": [
+        "Flat pale yellow-green 6.2 plaque",
+        "Wide open rim arcs with bowed 6.2 face",
+        "Tall twisted frame, readable 9.2 and unfinished side tongue",
+        "Joined shallow mint 9.2 card"
+      ],
+      "material_profiles": [
+        "stiff rim",
+        "viscoelastic face",
+        "viscous numeral relief"
+      ]
+    },
+    {
+      "prompt": "02_library/morphs/objects/R002_THE_SAME_RED_LONDON_BUS_FROM_USEFUL_ANGLES.txt",
+      "group": "morphs/objects",
+      "status": "TEXT_REVIEWED_EXISTING_DETAIL_RETAINED",
+      "review": "Four ordered material states cross-checked against the per-subject four-state audit; distinct early/late volumes, material response, same-site identity and moving-video use retained.",
+      "words": 2081,
+      "sha256": "4d2e15599707bba90b474cdbec98251a9eec75159724e283fed1e742ebe1da14",
+      "rating_policy": "CURRENT_CITY_CARDS_WHEN_PEOPLE_VISIBLE",
+      "unbound_reference_slots": [],
+      "four_states": [
+        "tall red bus with two intact window decks",
+        "three raised upper-deck sections around an open multi-level chassis",
+        "long low tram body with skewed sections, open articulation and half-formed bogies",
+        "one long yellow rail vehicle with joined body and complete flanged wheels"
+      ],
+      "material_profiles": [
+        "vehicle"
+      ]
+    },
+    {
+      "prompt": "02_library/morphs/objects/R003_BLACK_LONDON_TAXI.txt",
+      "group": "morphs/objects",
+      "status": "TEXT_REVIEWED_EXISTING_DETAIL_RETAINED",
+      "review": "Four ordered material states cross-checked against the per-subject four-state audit; distinct early/late volumes, material response, same-site identity and moving-video use retained.",
+      "words": 1984,
+      "sha256": "7f03c7ec27ef9d401f7354d08ea053a15ad2a06f75bf5e5cd886ad743c65c8d5",
+      "rating_policy": "CURRENT_CITY_CARDS_WHEN_PEOPLE_VISIBLE",
+      "unbound_reference_slots": [],
+      "four_states": [
+        "tall compact upright black London cab",
+        "open raised roof crown and splayed wings",
+        "long low sedan shell with one large projecting rear quarter and open roof joint",
+        "complete low cream sedan with separate boot and joined passenger shell"
+      ],
+      "material_profiles": [
+        "vehicle"
+      ]
+    },
+    {
+      "prompt": "02_library/morphs/objects/R004_YELLOW_BUDAPEST_TRAM.txt",
+      "group": "morphs/objects",
+      "status": "TEXT_REVIEWED_EXISTING_DETAIL_RETAINED",
+      "review": "Four ordered material states cross-checked against the per-subject four-state audit; distinct early/late volumes, material response, same-site identity and moving-video use retained.",
+      "words": 2067,
+      "sha256": "3257bb3df4ff5e8fa0c5f88eedb2d4006aa79068c4907d93c23bf3a42a8ff5db",
+      "rating_policy": "CURRENT_CITY_CARDS_WHEN_PEOPLE_VISIBLE",
+      "unbound_reference_slots": [],
+      "four_states": [
+        "long low enclosed yellow tram",
+        "wide fan of side bays and raised roof sectors",
+        "two tall post rows under an unclosed glass vault with a hanging window bay",
+        "complete traversable iron-and-glass arcade on the original floor route"
+      ],
+      "material_profiles": [
+        "vehicle",
+        "glass"
+      ]
+    },
+    {
+      "prompt": "02_library/morphs/objects/R010_WINGED_STATUE_PLINTH_AND_CONTACT_DETAIL.txt",
+      "group": "morphs/objects",
+      "status": "TEXT_REVIEWED_EXISTING_DETAIL_RETAINED",
+      "review": "Four ordered material states cross-checked against the per-subject four-state audit; distinct early/late volumes, material response, same-site identity and moving-video use retained.",
+      "words": 2066,
+      "sha256": "4949e175e5b8e9e71f306e17426f51d6739631a516dd1e38626109667616a1e3",
+      "rating_policy": "CURRENT_CITY_CARDS_WHEN_PEOPLE_VISIBLE",
+      "unbound_reference_slots": [],
+      "four_states": [
+        "winged metal statue balanced above its plinth",
+        "wide feather fans and a tall bow-derived band around the lifted body",
+        "grounded stone torso with one large open arm loop under an unfinished cornice arch",
+        "complete stone supporting figure whose former wings form carved brackets"
+      ],
+      "material_profiles": [
+        "metal",
+        "mineral"
+      ]
+    },
+    {
+      "prompt": "02_library/morphs/objects/R013_RED_BUS_LOWER_DECK_PASSAGE_AND_OPEN_DOOR_GEOMETRY.txt",
+      "group": "morphs/objects",
+      "status": "TEXT_REVIEWED_EXISTING_DETAIL_RETAINED",
+      "review": "Four ordered material states cross-checked against the per-subject four-state audit; distinct early/late volumes, material response, same-site identity and moving-video use retained.",
+      "words": 2130,
+      "sha256": "66ed00ad9abcd5edf243362769a82580a37251dac5c0f51cbc8b983e0369038a",
+      "rating_policy": "CURRENT_CITY_CARDS_WHEN_PEOPLE_VISIBLE",
+      "unbound_reference_slots": [],
+      "four_states": [
+        "narrow low-ceilinged lower-deck cabin",
+        "wide open skeleton of flared pillars, separated seat shells and stepped ceiling",
+        "tall vault with open crown seam, one raised bench shell and unfinished floor slots",
+        "joined open-sided vaulted arcade with complete side benches"
+      ],
+      "material_profiles": [
+        "vehicle",
+        "mineral",
+        "wood"
+      ]
+    },
+    {
+      "prompt": "02_library/morphs/objects/R015_GLASS_SOURCE_THICKNESS_AND_DESTINATION_PENDANT_SHADES.txt",
+      "group": "morphs/objects",
+      "status": "TEXT_REVIEWED_EXISTING_DETAIL_RETAINED",
+      "review": "Four ordered material states cross-checked against the per-subject four-state audit; distinct early/late volumes, material response, same-site identity and moving-video use retained.",
+      "words": 2185,
+      "sha256": "aa424ad923384b7ff5fd6f736ef67a8133834f644651d4f9409463f8f175a0a7",
+      "rating_policy": "CURRENT_CITY_CARDS_WHEN_PEOPLE_VISIBLE",
+      "unbound_reference_slots": [],
+      "four_states": [
+        "flat glass segment with a sharp notched edge",
+        "low wide saddle with opposite raised corners",
+        "tall open helix and projecting flat tongue",
+        "compact rounded glass shade with a continuous rim and neck"
+      ],
+      "material_profiles": [
+        "glass",
+        "metal"
+      ]
+    },
+    {
+      "prompt": "02_library/morphs/objects/R018_LONDON_TIMBER_BENCH_AND_CURVED_FLOOR_BORDER.txt",
+      "group": "morphs/objects",
+      "status": "TEXT_REVIEWED_EXISTING_DETAIL_RETAINED",
+      "review": "Four ordered material states cross-checked against the per-subject four-state audit; distinct early/late volumes, material response, same-site identity and moving-video use retained.",
+      "words": 2111,
+      "sha256": "100f620006896cd2be2cc75a13401c77552dd7744cdcf7181b80f3dbcfd06023",
+      "rating_policy": "CURRENT_CITY_CARDS_WHEN_PEOPLE_VISIBLE",
+      "unbound_reference_slots": [],
+      "four_states": [
+        "horizontal slatted bench on rigid legs",
+        "wide radial timber fan with source seat-height members",
+        "low U-border with one tall inward spiral and a wide end gap",
+        "joined low curved timber boundary with short feet"
+      ],
+      "material_profiles": [
+        "wood",
+        "metal"
+      ]
+    },
+    {
+      "prompt": "02_library/morphs/objects/R019_ACCEPTED_RESTAURANT_TABLE_AND_CHAIR_FROM_OUTSIDE.txt",
+      "group": "morphs/objects",
+      "status": "TEXT_REVIEWED_EXISTING_DETAIL_RETAINED",
+      "review": "Four ordered material states cross-checked against the per-subject four-state audit; distinct early/late volumes, material response, same-site identity and moving-video use retained.",
+      "words": 1917,
+      "sha256": "cf3c0fb2f99c1b83cf3faf24378db44b90b327d1cf0544f05a5e0af58d1f1774",
+      "rating_policy": "CURRENT_CITY_CARDS_WHEN_PEOPLE_VISIBLE",
+      "unbound_reference_slots": [],
+      "four_states": [
+        "two separate rectangular furniture volumes, table and chair",
+        "wide rising three-part tabletop and flared chair-back fan",
+        "one crescent bench with a large upright board and an open end gap",
+        "joined low continuous curved bench on short feet"
+      ],
+      "material_profiles": [
+        "wood"
+      ]
+    },
+    {
+      "prompt": "02_library/morphs/objects/R020_CUP_HAND_CONTACT_AND_TABLETOP_DEPTH.txt",
+      "group": "morphs/objects",
+      "status": "TEXT_REVIEWED_EXISTING_DETAIL_RETAINED",
+      "review": "Four ordered material states cross-checked against the per-subject four-state audit; distinct early/late volumes, material response, same-site identity and moving-video use retained.",
+      "words": 1970,
+      "sha256": "55ceba277f2285b12e0250bc4a6ef967cee25affaf80ff4031e269f23862f806",
+      "rating_policy": "CURRENT_CITY_CARDS_WHEN_PEOPLE_VISIBLE",
+      "unbound_reference_slots": [],
+      "four_states": [
+        "compact upright cup with one loop handle",
+        "wide low six-lobed mineral fan and branching handle",
+        "tall asymmetrical petal cage with two separated lobes and an unfinished loop-leaf",
+        "low broad joined flower bowl with complete leaf handle"
+      ],
+      "material_profiles": [
+        "ceramic"
+      ]
+    },
+    {
+      "prompt": "02_library/morphs/objects/R022_STREET_LIGHT_FITTINGS_AND_RESTAURANT_PENDANT_CONNECTIONS.txt",
+      "group": "morphs/objects",
+      "status": "TEXT_REVIEWED_EXISTING_DETAIL_RETAINED",
+      "review": "Four ordered material states cross-checked against the per-subject four-state audit; distinct early/late volumes, material response, same-site identity and moving-video use retained.",
+      "words": 2043,
+      "sha256": "c502a0ca36dcfe3e6638a281d765ab96075ffa250f705cd32c30d45bd3c8ca40",
+      "rating_policy": "CURRENT_CITY_CARDS_WHEN_PEOPLE_VISIBLE",
+      "unbound_reference_slots": [],
+      "four_states": [
+        "short blocky metal window fixing",
+        "broad three-branch angular fork and open fixing eye",
+        "long stem terminating in an oversized open coil and projecting shoulder",
+        "slender finished pendant stem and compact receiving socket"
+      ],
+      "material_profiles": [
+        "metal"
+      ]
+    },
+    {
+      "prompt": "02_library/morphs/objects/R023_BALCONY_SCROLL_AND_SIDEWAYS_STAIR_STRUCTURAL_PARTS.txt",
+      "group": "morphs/objects",
+      "status": "TEXT_REVIEWED_EXISTING_DETAIL_RETAINED",
+      "review": "Four ordered material states cross-checked against the per-subject four-state audit; distinct early/late volumes, material response, same-site identity and moving-video use retained.",
+      "words": 2014,
+      "sha256": "68c91111cecfe1f6d0463bd0e18343e54665e6c68b2a05e5ad3febf1c72009b0",
+      "rating_policy": "CURRENT_CITY_CARDS_WHEN_PEOPLE_VISIBLE",
+      "unbound_reference_slots": [],
+      "four_states": [
+        "compact balcony scroll and straight rail",
+        "radial paddle-shaped metal tread blanks",
+        "rising double zigzag of level and steep treads beside an unjoined handrail",
+        "finished supported sideways stair with level steps"
+      ],
+      "material_profiles": [
+        "metal"
+      ]
+    },
+    {
+      "prompt": "02_library/morphs/objects/R024_MOUNTED_ENGLISH_CAFE_SIGN_AND_HUNGARIAN_DESTINATION_SIGN.txt",
+      "group": "morphs/objects",
+      "status": "TEXT_REVIEWED_EXISTING_DETAIL_RETAINED",
+      "review": "Four ordered material states cross-checked against the per-subject four-state audit; distinct early/late volumes, material response, same-site identity and moving-video use retained.",
+      "words": 2087,
+      "sha256": "7239c15d1594b6177debf42ffe59fa9c9bfda297d9fe2d1fda98a4ee644fffc2",
+      "rating_policy": "CURRENT_CITY_CARDS_WHEN_PEOPLE_VISIBLE",
+      "unbound_reference_slots": [],
+      "four_states": [
+        "flat slatted COFFEE sign with raised strokes",
+        "deep scattered lattice of projecting glyph branches",
+        "four large unfinished KÁVÉ skeletons with outward arms and open bridges",
+        "four complete raised KÁVÉ letters seated on the slats"
+      ],
+      "material_profiles": [
+        "wood",
+        "metal"
+      ]
+    },
+    {
+      "prompt": "02_library/morphs/objects/R043_LONDON_ENTRANCE_RAIL_AND_REMEMBERED_TRANSIT_GATE.txt",
+      "group": "morphs/objects",
+      "status": "TEXT_REVIEWED_EXISTING_DETAIL_RETAINED",
+      "review": "Four ordered material states cross-checked against the per-subject four-state audit; distinct early/late volumes, material response, same-site identity and moving-video use retained.",
+      "words": 2042,
+      "sha256": "689644328b2677fe4c145138bd96d420e334d6017b7e305ace7de57e5c39e97d",
+      "rating_policy": "CURRENT_CITY_CARDS_WHEN_PEOPLE_VISIBLE",
+      "unbound_reference_slots": [],
+      "four_states": [
+        "narrow rail post and horizontal elbow",
+        "broad fork flanked by two deep separated housing shells",
+        "mostly gathered housing with an oversized steep gate leaf and open reader loop",
+        "compact transit mechanism with a properly seated working leaf"
+      ],
+      "material_profiles": [
+        "metal"
+      ]
+    },
+    {
+      "prompt": "02_library/morphs/objects/R044_REMEMBERED_BUS_SEATS_AISLE_AND_CANOPY_POST_CORRESPONDENCE.txt",
+      "group": "morphs/objects",
+      "status": "TEXT_REVIEWED_EXISTING_DETAIL_RETAINED",
+      "review": "Four ordered material states cross-checked against the per-subject four-state audit; distinct early/late volumes, material response, same-site identity and moving-video use retained.",
+      "words": 2207,
+      "sha256": "d611645cdcc37aaf3b08c7b70e0e1bf399850542ae9f3ec32b43dc14c5388c1d",
+      "rating_policy": "CURRENT_CITY_CARDS_WHEN_PEOPLE_VISIBLE",
+      "unbound_reference_slots": [],
+      "four_states": [
+        "low bench beneath sparse canopy posts",
+        "wide open furniture skeleton of rising slats and leaning pillars",
+        "narrower cabin rhythm with raised seat shells and offset window posts",
+        "complete upholstered seat pairs, aisle and window bays"
+      ],
+      "material_profiles": [
+        "wood",
+        "metal",
+        "cloth"
+      ]
+    },
+    {
+      "prompt": "02_library/morphs/objects/R045_CAIRO_TAXI_CABIN_REAR_BENCH_AND_LUGGAGE_CONTACT.txt",
+      "group": "morphs/objects",
+      "status": "TEXT_REVIEWED_EXISTING_DETAIL_RETAINED",
+      "review": "Four ordered material states cross-checked against the per-subject four-state audit; distinct early/late volumes, material response, same-site identity and moving-video use retained.",
+      "words": 2066,
+      "sha256": "9960fb3886397dfa23759cf322574600300c3e9e0c57c71e99650d3cc58c503d",
+      "rating_policy": "CURRENT_CITY_CARDS_WHEN_PEOPLE_VISIBLE",
+      "unbound_reference_slots": [],
+      "four_states": [
+        "high closed cab cabin around an intact bench",
+        "wide open overhead crown and two vertically separated upholstery shells",
+        "low elongated sedan space with an oversized upright seat-back coil and unjoined sill",
+        "complete low sedan cabin and continuous rear bench"
+      ],
+      "material_profiles": [
+        "vehicle",
+        "cloth"
+      ]
+    },
+    {
+      "prompt": "02_library/morphs/objects/R046_CANOPY_AND_BALLOON_ENVELOPE_RIGGING_AND_BASKET_INTERFACES.txt",
+      "group": "morphs/objects",
+      "status": "TEXT_REVIEWED_EXISTING_DETAIL_RETAINED",
+      "review": "Four ordered material states cross-checked against the per-subject four-state audit; distinct early/late volumes, material response, same-site identity and moving-video use retained.",
+      "words": 2043,
+      "sha256": "27f88005bdfdb6f07fd5f54be414fb026c6c93f8c7796aabe029a30fc634febf",
+      "rating_policy": "CURRENT_CITY_CARDS_WHEN_PEOPLE_VISIBLE",
+      "unbound_reference_slots": [],
+      "four_states": [
+        "compact canopy edge frame with short hanging ties",
+        "wide rope fans and outward/downward timber rib array",
+        "deep open basket body with a large unfinished woven side and unseated collar",
+        "fully woven basket with joined floor, rim and complete braided rigging"
+      ],
+      "material_profiles": [
+        "wood",
+        "fibre",
+        "metal"
+      ]
+    },
+    {
+      "prompt": "02_library/morphs/objects/R047_PAVING_SOIL_PAPRIKA_CORN_ROOTS_AND_RAIL_SLEEPERS.txt",
+      "group": "morphs/objects",
+      "status": "TEXT_REVIEWED_EXISTING_DETAIL_RETAINED",
+      "review": "Four ordered material states cross-checked against the per-subject four-state audit; distinct early/late volumes, material response, same-site identity and moving-video use retained.",
+      "words": 2090,
+      "sha256": "f939eec193ba2165f976cca1cab798d0cd2bec3de0c8be3eabc39384d9d812ad",
+      "rating_policy": "CURRENT_CITY_CARDS_WHEN_PEOPLE_VISIBLE",
+      "unbound_reference_slots": [],
+      "four_states": [
+        "upright leafy rooted crop strip",
+        "unequal high plant-to-wood arches",
+        "horizontal sleeper bodies with alternate raised leafy forks",
+        "low solid sleepers seated beneath the rails"
+      ],
+      "material_profiles": [
+        "plant",
+        "wood"
+      ]
+    },
+    {
+      "prompt": "02_library/morphs/objects/R048_ADMINISTRATIVE_DESK_ACTUAL_DOCUMENTS_AND_DEVICE_GEOMETRY.txt",
+      "group": "morphs/objects",
+      "status": "TEXT_REVIEWED_EXISTING_DETAIL_RETAINED",
+      "review": "Four ordered material states cross-checked against the per-subject four-state audit; distinct early/late volumes, material response, same-site identity and moving-video use retained.",
+      "words": 1988,
+      "sha256": "c2c7dfeff77b5b5ebc67de3f0da5649ab4ef49594b1d5a1bb4eb62112699af63",
+      "rating_policy": "CURRENT_CITY_CARDS_WHEN_PEOPLE_VISIBLE",
+      "unbound_reference_slots": [],
+      "four_states": [
+        "plain low desk with supported devices",
+        "tall broad board fans around the unchanged central worktop",
+        "deep console frame crossed by a large diagonal shelf and divider web",
+        "joined storage console around the same devices and papers"
+      ],
+      "material_profiles": [
+        "wood",
+        "metal"
+      ]
+    },
+    {
+      "prompt": "02_library/morphs/objects/R049_CABINET_FINGERPRINT_DESK_AND_CHAIR_CONSTRUCTION.txt",
+      "group": "morphs/objects",
+      "status": "TEXT_REVIEWED_EXISTING_DETAIL_RETAINED",
+      "review": "Four ordered material states cross-checked against the per-subject four-state audit; distinct early/late volumes, material response, same-site identity and moving-video use retained.",
+      "words": 2172,
+      "sha256": "bfe9841feeecee897a38c40c6b80fec3152a192a108be86de0a3b40d0fa9af2e",
+      "rating_policy": "CURRENT_CITY_CARDS_WHEN_PEOPLE_VISIBLE",
+      "unbound_reference_slots": [],
+      "four_states": [
+        "compact closed cabinet",
+        "wide board skeleton with diagonal legs and projecting top",
+        "desk-and-chair arrangement with raised desktop corner and a broad residual panel web",
+        "two fully joined functional furniture volumes"
+      ],
+      "material_profiles": [
+        "wood",
+        "metal"
+      ]
+    },
+    {
+      "prompt": "02_library/morphs/objects/R050_COURT_FILE_COMPARTMENTS_AND_RETAINED_DEVICE_SUPPORTS.txt",
+      "group": "morphs/objects",
+      "status": "TEXT_REVIEWED_EXISTING_DETAIL_RETAINED",
+      "review": "Four ordered material states cross-checked against the per-subject four-state audit; distinct early/late volumes, material response, same-site identity and moving-video use retained.",
+      "words": 2022,
+      "sha256": "b841cd28d05bedf1777533b1b17251cb50f30c3c945710af81fbae921391b554",
+      "rating_policy": "CURRENT_CITY_CARDS_WHEN_PEOPLE_VISIBLE",
+      "unbound_reference_slots": [],
+      "four_states": [
+        "low complete hearing bench",
+        "tall broad branched timber frame",
+        "upright shelving crossed by large diagonal shelf blanks and divider webs",
+        "joined deep document shelving with open usable compartments"
+      ],
+      "material_profiles": [
+        "wood"
+      ]
+    },
+    {
+      "prompt": "02_library/worlds/maps/MAP01_WALK_PLAN.txt",
+      "group": "worlds/maps",
+      "status": "TEXT_REVIEWED_EXISTING_DETAIL_RETAINED",
+      "review": "Four distinct optional route-plan purposes, coherent route/orientation, 4K 2x2; intentionally diagrammatic block geometry, no human figures or rating cards.",
+      "words": 1091,
+      "sha256": "b78bfb632523eb35a341f294c2fb7e344d1e7e3671e3763d64bdb62f5560a434",
+      "rating_policy": "GRAPHIC_MAP_NO_PEOPLE",
+      "unbound_reference_slots": []
+    },
+    {
+      "prompt": "02_library/worlds/maps/MAP02_WALK_PLAN.txt",
+      "group": "worlds/maps",
+      "status": "TEXT_REVIEWED_EXISTING_DETAIL_RETAINED",
+      "review": "Four distinct optional route-plan purposes, coherent route/orientation, 4K 2x2; intentionally diagrammatic block geometry, no human figures or rating cards.",
+      "words": 1071,
+      "sha256": "45c4dbe96db8fdcd58c38cc3b774353879b8ad0dee0548ed5bea3e3b1bc5b193",
+      "rating_policy": "GRAPHIC_MAP_NO_PEOPLE",
+      "unbound_reference_slots": []
+    },
+    {
+      "prompt": "02_library/worlds/maps/MAP03_WALK_PLAN.txt",
+      "group": "worlds/maps",
+      "status": "TEXT_REVIEWED_EXISTING_DETAIL_RETAINED",
+      "review": "Four distinct optional route-plan purposes, coherent route/orientation, 4K 2x2; intentionally diagrammatic block geometry, no human figures or rating cards.",
+      "words": 1033,
+      "sha256": "21e8a4ff0ab2e809ddea3f5b89f711885921f9c8bb1e27d897ef993ab5538348",
+      "rating_policy": "GRAPHIC_MAP_NO_PEOPLE",
+      "unbound_reference_slots": []
+    },
+    {
+      "prompt": "02_library/worlds/maps/MAP04_WALK_PLAN.txt",
+      "group": "worlds/maps",
+      "status": "TEXT_REVIEWED_EXISTING_DETAIL_RETAINED",
+      "review": "Four distinct optional route-plan purposes, coherent route/orientation, 4K 2x2; intentionally diagrammatic block geometry, no human figures or rating cards.",
+      "words": 1041,
+      "sha256": "2c15c76c908211eb08f7021191e480e80078c9fbdfca89594c6d3f203239a341",
+      "rating_policy": "GRAPHIC_MAP_NO_PEOPLE",
+      "unbound_reference_slots": []
+    },
+    {
+      "prompt": "02_library/worlds/maps/MAP05_WALK_PLAN.txt",
+      "group": "worlds/maps",
+      "status": "TEXT_REVIEWED_EXISTING_DETAIL_RETAINED",
+      "review": "Four distinct optional route-plan purposes, coherent route/orientation, 4K 2x2; intentionally diagrammatic block geometry, no human figures or rating cards.",
+      "words": 1058,
+      "sha256": "a6d5e38088d3168f469502844d3902bf863ae9294522ed953e5153c0d0f59b05",
+      "rating_policy": "GRAPHIC_MAP_NO_PEOPLE",
+      "unbound_reference_slots": []
+    },
+    {
+      "prompt": "02_library/worlds/maps/MAP06_WALK_PLAN.txt",
+      "group": "worlds/maps",
+      "status": "TEXT_REVIEWED_EXISTING_DETAIL_RETAINED",
+      "review": "Four distinct optional route-plan purposes, coherent route/orientation, 4K 2x2; intentionally diagrammatic block geometry, no human figures or rating cards.",
+      "words": 1062,
+      "sha256": "624b9572b3d38424316fb35851eb32082e9a00540da86a7c521318a215281104",
+      "rating_policy": "GRAPHIC_MAP_NO_PEOPLE",
+      "unbound_reference_slots": []
+    },
+    {
+      "prompt": "02_library/worlds/maps/MAP07_WALK_PLAN.txt",
+      "group": "worlds/maps",
+      "status": "TEXT_REVIEWED_EXISTING_DETAIL_RETAINED",
+      "review": "Four distinct optional route-plan purposes, coherent route/orientation, 4K 2x2; intentionally diagrammatic block geometry, no human figures or rating cards.",
+      "words": 1075,
+      "sha256": "fae80c420425f810559c5e530ca9889a97bbdfca90f64105b8f8015267526356",
+      "rating_policy": "GRAPHIC_MAP_NO_PEOPLE",
+      "unbound_reference_slots": []
+    },
+    {
+      "prompt": "02_library/worlds/memories/HRW07_CLINICAL_REALITY_A.txt",
+      "group": "worlds/memories",
+      "status": "TEXT_EXPANDED_OR_CORRECTED",
+      "review": "Four assigned coverage views checked for viewpoint, supported furniture/people, material detail and spatial continuity. Repeated original views share the same complete text.",
+      "words": 1118,
+      "sha256": "f320b8e61f43790f6ed7ca842aa8c62c774d30943abe87281b48aa00fd077200",
+      "rating_policy": "MEMORY_OR_CLINICAL_NO_CARDS",
+      "unbound_reference_slots": [],
+      "change": "Expanded every assigned memory view with concrete placement, body/object contact and continuity; resolved attempts to show multiple times or disconnected inset scenes inside one still where present."
+    },
+    {
+      "prompt": "02_library/worlds/memories/HRW07_CLINICAL_REALITY_B.txt",
+      "group": "worlds/memories",
+      "status": "TEXT_EXPANDED_OR_CORRECTED",
+      "review": "Four assigned coverage views checked for viewpoint, supported furniture/people, material detail and spatial continuity. Repeated original views share the same complete text.",
+      "words": 1175,
+      "sha256": "c897f157921794e23675e15426025b81d6bb4d0d0e08801c87e076ec378572b5",
+      "rating_policy": "MEMORY_OR_CLINICAL_NO_CARDS",
+      "unbound_reference_slots": [
+        "@UNBOUND_HRW07"
+      ],
+      "change": "Expanded every assigned memory view with concrete placement, body/object contact and continuity; resolved attempts to show multiple times or disconnected inset scenes inside one still where present."
+    },
+    {
+      "prompt": "02_library/worlds/memories/HRW07_CLINICAL_REALITY_C.txt",
+      "group": "worlds/memories",
+      "status": "TEXT_EXPANDED_OR_CORRECTED",
+      "review": "Four assigned coverage views checked for viewpoint, supported furniture/people, material detail and spatial continuity. Repeated original views share the same complete text.",
+      "words": 1202,
+      "sha256": "579cf661c473eb13e6cb16f2999c7c55e9af35fa3974cbf03634e1f17636c8e6",
+      "rating_policy": "MEMORY_OR_CLINICAL_NO_CARDS",
+      "unbound_reference_slots": [
+        "@UNBOUND_HRW07"
+      ],
+      "change": "Expanded every assigned memory view with concrete placement, body/object contact and continuity; resolved attempts to show multiple times or disconnected inset scenes inside one still where present."
+    },
+    {
+      "prompt": "02_library/worlds/memories/MW01_LONDON_SOCIAL_A.txt",
+      "group": "worlds/memories",
+      "status": "TEXT_EXPANDED_OR_CORRECTED",
+      "review": "Four assigned coverage views checked for viewpoint, supported furniture/people, material detail and spatial continuity. Repeated original views share the same complete text.",
+      "words": 1657,
+      "sha256": "bc0bb85ff0cfb2cd9dd1459eee5872e9ea82031f7d3299ee4df229f291f6aff8",
+      "rating_policy": "MEMORY_OR_CLINICAL_NO_CARDS",
+      "unbound_reference_slots": [
+        "@UNBOUND_C06",
+        "@UNBOUND_C07",
+        "@UNBOUND_C08"
+      ],
+      "change": "Expanded every assigned memory view with concrete placement, body/object contact and continuity; resolved attempts to show multiple times or disconnected inset scenes inside one still where present."
+    },
+    {
+      "prompt": "02_library/worlds/memories/MW01_LONDON_SOCIAL_B.txt",
+      "group": "worlds/memories",
+      "status": "TEXT_EXPANDED_OR_CORRECTED",
+      "review": "Four assigned coverage views checked for viewpoint, supported furniture/people, material detail and spatial continuity. Repeated original views share the same complete text.",
+      "words": 1738,
+      "sha256": "c9ab9610e24e80e74893feee1987fc34ba1eda5a6286bc73be9a103d49679234",
+      "rating_policy": "MEMORY_OR_CLINICAL_NO_CARDS",
+      "unbound_reference_slots": [
+        "@UNBOUND_C06",
+        "@UNBOUND_C07",
+        "@UNBOUND_C08",
+        "@UNBOUND_MW01"
+      ],
+      "change": "Expanded every assigned memory view with concrete placement, body/object contact and continuity; resolved attempts to show multiple times or disconnected inset scenes inside one still where present."
+    },
+    {
+      "prompt": "02_library/worlds/memories/MW01_LONDON_SOCIAL_C.txt",
+      "group": "worlds/memories",
+      "status": "TEXT_EXPANDED_OR_CORRECTED",
+      "review": "Four assigned coverage views checked for viewpoint, supported furniture/people, material detail and spatial continuity. Repeated original views share the same complete text.",
+      "words": 1735,
+      "sha256": "0b1afac9dbcbdb33057d1d4bd1ebc359d50e0f0178d755aa91181daf554d9e39",
+      "rating_policy": "MEMORY_OR_CLINICAL_NO_CARDS",
+      "unbound_reference_slots": [
+        "@UNBOUND_C06",
+        "@UNBOUND_C07",
+        "@UNBOUND_C08",
+        "@UNBOUND_MW01"
+      ],
+      "change": "Expanded every assigned memory view with concrete placement, body/object contact and continuity; resolved attempts to show multiple times or disconnected inset scenes inside one still where present."
+    },
+    {
+      "prompt": "02_library/worlds/memories/MW02_GLOBAL_ROUTES_A.txt",
+      "group": "worlds/memories",
+      "status": "TEXT_EXPANDED_OR_CORRECTED",
+      "review": "Four assigned coverage views checked for viewpoint, supported furniture/people, material detail and spatial continuity. Repeated original views share the same complete text.",
+      "words": 1746,
+      "sha256": "f15417b557b7f2bc2cf33d25254ea82fbf378eb3d67030ac9da453aec7ffeac0",
+      "rating_policy": "MEMORY_OR_CLINICAL_NO_CARDS",
+      "unbound_reference_slots": [
+        "@UNBOUND_C11",
+        "@UNBOUND_C16",
+        "@UNBOUND_C17",
+        "@UNBOUND_C18",
+        "@UNBOUND_C19",
+        "@UNBOUND_C20",
+        "@UNBOUND_C21"
+      ],
+      "change": "Expanded every assigned memory view with concrete placement, body/object contact and continuity; resolved attempts to show multiple times or disconnected inset scenes inside one still where present."
+    },
+    {
+      "prompt": "02_library/worlds/memories/MW02_GLOBAL_ROUTES_B.txt",
+      "group": "worlds/memories",
+      "status": "TEXT_EXPANDED_OR_CORRECTED",
+      "review": "Four assigned coverage views checked for viewpoint, supported furniture/people, material detail and spatial continuity. Repeated original views share the same complete text.",
+      "words": 1784,
+      "sha256": "5db35368e90aa987e711d863fbace5cdae48f93dd686af712ab6ef1668d4b1b7",
+      "rating_policy": "MEMORY_OR_CLINICAL_NO_CARDS",
+      "unbound_reference_slots": [
+        "@UNBOUND_C11",
+        "@UNBOUND_C16",
+        "@UNBOUND_C17",
+        "@UNBOUND_C18",
+        "@UNBOUND_C19",
+        "@UNBOUND_C20",
+        "@UNBOUND_C21",
+        "@UNBOUND_MW02"
+      ],
+      "change": "Expanded every assigned memory view with concrete placement, body/object contact and continuity; resolved attempts to show multiple times or disconnected inset scenes inside one still where present."
+    },
+    {
+      "prompt": "02_library/worlds/memories/MW02_GLOBAL_ROUTES_C.txt",
+      "group": "worlds/memories",
+      "status": "TEXT_EXPANDED_OR_CORRECTED",
+      "review": "Four assigned coverage views checked for viewpoint, supported furniture/people, material detail and spatial continuity. Repeated original views share the same complete text.",
+      "words": 1771,
+      "sha256": "503459fba8d502c3de27322f1e9ad1995638a946a0e808167c49d344ae6e2bed",
+      "rating_policy": "MEMORY_OR_CLINICAL_NO_CARDS",
+      "unbound_reference_slots": [
+        "@UNBOUND_C11",
+        "@UNBOUND_C16",
+        "@UNBOUND_C17",
+        "@UNBOUND_C18",
+        "@UNBOUND_C19",
+        "@UNBOUND_C20",
+        "@UNBOUND_C21",
+        "@UNBOUND_MW02"
+      ],
+      "change": "Expanded every assigned memory view with concrete placement, body/object contact and continuity; resolved attempts to show multiple times or disconnected inset scenes inside one still where present."
+    },
+    {
+      "prompt": "02_library/worlds/memories/MW03_WORK_RULE_CHANGE_ADMIN_A.txt",
+      "group": "worlds/memories",
+      "status": "TEXT_EXPANDED_OR_CORRECTED",
+      "review": "Four assigned coverage views checked for viewpoint, supported furniture/people, material detail and spatial continuity. Repeated original views share the same complete text.",
+      "words": 1518,
+      "sha256": "e0bbe6027fd2658a6a8822a528f86a52d0279dbe632051ebf79ab6baf32c4af8",
+      "rating_policy": "MEMORY_OR_CLINICAL_NO_CARDS",
+      "unbound_reference_slots": [
+        "@UNBOUND_C22"
+      ],
+      "change": "Expanded every assigned memory view with concrete placement, body/object contact and continuity; resolved attempts to show multiple times or disconnected inset scenes inside one still where present."
+    },
+    {
+      "prompt": "02_library/worlds/memories/MW03_WORK_RULE_CHANGE_ADMIN_B.txt",
+      "group": "worlds/memories",
+      "status": "TEXT_EXPANDED_OR_CORRECTED",
+      "review": "Four assigned coverage views checked for viewpoint, supported furniture/people, material detail and spatial continuity. Repeated original views share the same complete text.",
+      "words": 1540,
+      "sha256": "ee24d1394d6cd4c58d5a2dbcfe95cdcc35dbcc6ff2ea6cff19a3b8e430eee28e",
+      "rating_policy": "MEMORY_OR_CLINICAL_NO_CARDS",
+      "unbound_reference_slots": [
+        "@UNBOUND_C22",
+        "@UNBOUND_MW03"
+      ],
+      "change": "Expanded every assigned memory view with concrete placement, body/object contact and continuity; resolved attempts to show multiple times or disconnected inset scenes inside one still where present."
+    },
+    {
+      "prompt": "02_library/worlds/memories/MW03_WORK_RULE_CHANGE_ADMIN_C.txt",
+      "group": "worlds/memories",
+      "status": "TEXT_EXPANDED_OR_CORRECTED",
+      "review": "Four assigned coverage views checked for viewpoint, supported furniture/people, material detail and spatial continuity. Repeated original views share the same complete text.",
+      "words": 1540,
+      "sha256": "0305de99c72b479190eddb1a2fac4a1f9df8b35a00449a6ebc5c8172b7817b71",
+      "rating_policy": "MEMORY_OR_CLINICAL_NO_CARDS",
+      "unbound_reference_slots": [
+        "@UNBOUND_C22",
+        "@UNBOUND_MW03"
+      ],
+      "change": "Expanded every assigned memory view with concrete placement, body/object contact and continuity; resolved attempts to show multiple times or disconnected inset scenes inside one still where present."
+    },
+    {
+      "prompt": "02_library/worlds/memories/MW04_POLICE_DEFENCE_A.txt",
+      "group": "worlds/memories",
+      "status": "TEXT_EXPANDED_OR_CORRECTED",
+      "review": "Four assigned coverage views checked for viewpoint, supported furniture/people, material detail and spatial continuity. Repeated original views share the same complete text.",
+      "words": 1533,
+      "sha256": "bd7fb1c7487705361d31bce325692a1e6e521278650e5f8acac7e5980a9c8425",
+      "rating_policy": "MEMORY_OR_CLINICAL_NO_CARDS",
+      "unbound_reference_slots": [
+        "@UNBOUND_C03",
+        "@UNBOUND_C04",
+        "@UNBOUND_C26"
+      ],
+      "change": "Expanded every assigned memory view with concrete placement, body/object contact and continuity; resolved attempts to show multiple times or disconnected inset scenes inside one still where present."
+    },
+    {
+      "prompt": "02_library/worlds/memories/MW04_POLICE_DEFENCE_B.txt",
+      "group": "worlds/memories",
+      "status": "TEXT_EXPANDED_OR_CORRECTED",
+      "review": "Four assigned coverage views checked for viewpoint, supported furniture/people, material detail and spatial continuity. Repeated original views share the same complete text.",
+      "words": 1564,
+      "sha256": "c7c55eeed97158b18710218d91df7c37fd8da06754d3761a0aaaf3722228a688",
+      "rating_policy": "MEMORY_OR_CLINICAL_NO_CARDS",
+      "unbound_reference_slots": [
+        "@UNBOUND_C03",
+        "@UNBOUND_C04",
+        "@UNBOUND_C26",
+        "@UNBOUND_MW04"
+      ],
+      "change": "Expanded every assigned memory view with concrete placement, body/object contact and continuity; resolved attempts to show multiple times or disconnected inset scenes inside one still where present."
+    },
+    {
+      "prompt": "02_library/worlds/memories/MW04_POLICE_DEFENCE_C.txt",
+      "group": "worlds/memories",
+      "status": "TEXT_EXPANDED_OR_CORRECTED",
+      "review": "Four assigned coverage views checked for viewpoint, supported furniture/people, material detail and spatial continuity. Repeated original views share the same complete text.",
+      "words": 1584,
+      "sha256": "71c2ca2e9eaa5e53da4c17a34f7ebaacb0d58d944aec40ccc076e63a295447d1",
+      "rating_policy": "MEMORY_OR_CLINICAL_NO_CARDS",
+      "unbound_reference_slots": [
+        "@UNBOUND_C03",
+        "@UNBOUND_C04",
+        "@UNBOUND_C26",
+        "@UNBOUND_MW04"
+      ],
+      "change": "Expanded every assigned memory view with concrete placement, body/object contact and continuity; resolved attempts to show multiple times or disconnected inset scenes inside one still where present."
+    },
+    {
+      "prompt": "02_library/worlds/memories/MW05_COURT_FILE_A.txt",
+      "group": "worlds/memories",
+      "status": "TEXT_EXPANDED_OR_CORRECTED",
+      "review": "Four assigned coverage views checked for viewpoint, supported furniture/people, material detail and spatial continuity. Repeated original views share the same complete text.",
+      "words": 1591,
+      "sha256": "483f39d52f5297b23a35924758c2cf9ccd5befda33c5259438306f8a36e221c5",
+      "rating_policy": "MEMORY_OR_CLINICAL_NO_CARDS",
+      "unbound_reference_slots": [
+        "@UNBOUND_C04",
+        "@UNBOUND_C27",
+        "@UNBOUND_C31"
+      ],
+      "change": "Expanded every assigned memory view with concrete placement, body/object contact and continuity; resolved attempts to show multiple times or disconnected inset scenes inside one still where present."
+    },
+    {
+      "prompt": "02_library/worlds/memories/MW05_COURT_FILE_B.txt",
+      "group": "worlds/memories",
+      "status": "TEXT_EXPANDED_OR_CORRECTED",
+      "review": "Four assigned coverage views checked for viewpoint, supported furniture/people, material detail and spatial continuity. Repeated original views share the same complete text.",
+      "words": 1652,
+      "sha256": "0dc6d879ff73e1fe3fe0febf3ac81d67d530b0b4fdba01e1b57bfa19a784b144",
+      "rating_policy": "MEMORY_OR_CLINICAL_NO_CARDS",
+      "unbound_reference_slots": [
+        "@UNBOUND_C04",
+        "@UNBOUND_C27",
+        "@UNBOUND_C31",
+        "@UNBOUND_MW05"
+      ],
+      "change": "Expanded every assigned memory view with concrete placement, body/object contact and continuity; resolved attempts to show multiple times or disconnected inset scenes inside one still where present."
+    },
+    {
+      "prompt": "02_library/worlds/memories/MW05_COURT_FILE_C.txt",
+      "group": "worlds/memories",
+      "status": "TEXT_EXPANDED_OR_CORRECTED",
+      "review": "Four assigned coverage views checked for viewpoint, supported furniture/people, material detail and spatial continuity. Repeated original views share the same complete text.",
+      "words": 1656,
+      "sha256": "7252271d379e7b37a9003f40ac7a3935fe92988b5b5cab5afe835dc26b057571",
+      "rating_policy": "MEMORY_OR_CLINICAL_NO_CARDS",
+      "unbound_reference_slots": [
+        "@UNBOUND_C04",
+        "@UNBOUND_C27",
+        "@UNBOUND_C31",
+        "@UNBOUND_MW05"
+      ],
+      "change": "Expanded every assigned memory view with concrete placement, body/object contact and continuity; resolved attempts to show multiple times or disconnected inset scenes inside one still where present."
+    },
+    {
+      "prompt": "02_library/worlds/memories/MW06_HUMAN_COUNTERMEMORIES_A.txt",
+      "group": "worlds/memories",
+      "status": "TEXT_EXPANDED_OR_CORRECTED",
+      "review": "Four assigned coverage views checked for viewpoint, supported furniture/people, material detail and spatial continuity. Repeated original views share the same complete text.",
+      "words": 1644,
+      "sha256": "0efd04008af928c0ce313bd8c1f72785878148c017c9c14e148191d090391fb9",
+      "rating_policy": "MEMORY_OR_CLINICAL_NO_CARDS",
+      "unbound_reference_slots": [
+        "@UNBOUND_C03",
+        "@UNBOUND_C04",
+        "@UNBOUND_C11",
+        "@UNBOUND_C16",
+        "@UNBOUND_C17",
+        "@UNBOUND_C27"
+      ],
+      "change": "Expanded every assigned memory view with concrete placement, body/object contact and continuity; resolved attempts to show multiple times or disconnected inset scenes inside one still where present."
+    },
+    {
+      "prompt": "02_library/worlds/memories/MW06_HUMAN_COUNTERMEMORIES_B.txt",
+      "group": "worlds/memories",
+      "status": "TEXT_EXPANDED_OR_CORRECTED",
+      "review": "Four assigned coverage views checked for viewpoint, supported furniture/people, material detail and spatial continuity. Repeated original views share the same complete text.",
+      "words": 1711,
+      "sha256": "6c6eea89d1d51071e09d48f22d746338384ae893f5c5344179903b5f9086647b",
+      "rating_policy": "MEMORY_OR_CLINICAL_NO_CARDS",
+      "unbound_reference_slots": [
+        "@UNBOUND_C03",
+        "@UNBOUND_C04",
+        "@UNBOUND_C11",
+        "@UNBOUND_C16",
+        "@UNBOUND_C17",
+        "@UNBOUND_C27",
+        "@UNBOUND_MW06"
+      ],
+      "change": "Expanded every assigned memory view with concrete placement, body/object contact and continuity; resolved attempts to show multiple times or disconnected inset scenes inside one still where present."
+    },
+    {
+      "prompt": "02_library/worlds/memories/MW06_HUMAN_COUNTERMEMORIES_C.txt",
+      "group": "worlds/memories",
+      "status": "TEXT_EXPANDED_OR_CORRECTED",
+      "review": "Four assigned coverage views checked for viewpoint, supported furniture/people, material detail and spatial continuity. Repeated original views share the same complete text.",
+      "words": 1721,
+      "sha256": "3e36f2991662725c580ddc40c06fb886e3610ed03521b263be22ccee5edd5ac5",
+      "rating_policy": "MEMORY_OR_CLINICAL_NO_CARDS",
+      "unbound_reference_slots": [
+        "@UNBOUND_C03",
+        "@UNBOUND_C04",
+        "@UNBOUND_C11",
+        "@UNBOUND_C16",
+        "@UNBOUND_C17",
+        "@UNBOUND_C27",
+        "@UNBOUND_MW06"
+      ],
+      "change": "Expanded every assigned memory view with concrete placement, body/object contact and continuity; resolved attempts to show multiple times or disconnected inset scenes inside one still where present."
+    },
+    {
+      "prompt": "02_library/worlds/memories/MWP01_ROUTES_ROOMS_DOCUMENTS_A.txt",
+      "group": "worlds/memories",
+      "status": "TEXT_EXPANDED_OR_CORRECTED",
+      "review": "Four assigned coverage views checked for viewpoint, supported furniture/people, material detail and spatial continuity. Repeated original views share the same complete text.",
+      "words": 1389,
+      "sha256": "560095b5daa1378bbbe9a1486a377c428df8182d297d23b1f2fcd9455c1239e9",
+      "rating_policy": "MEMORY_OR_CLINICAL_NO_CARDS",
+      "unbound_reference_slots": [],
+      "change": "Expanded every assigned memory view with concrete placement, body/object contact and continuity; resolved attempts to show multiple times or disconnected inset scenes inside one still where present."
+    },
+    {
+      "prompt": "02_library/worlds/memories/MWP01_ROUTES_ROOMS_DOCUMENTS_B.txt",
+      "group": "worlds/memories",
+      "status": "TEXT_EXPANDED_OR_CORRECTED",
+      "review": "Four assigned coverage views checked for viewpoint, supported furniture/people, material detail and spatial continuity. Repeated original views share the same complete text.",
+      "words": 1420,
+      "sha256": "40feebe5e1f17ec0bde52d236c146f005e9b0d59e4db97d948d617d72110f032",
+      "rating_policy": "MEMORY_OR_CLINICAL_NO_CARDS",
+      "unbound_reference_slots": [
+        "@UNBOUND_MWP01"
+      ],
+      "change": "Expanded every assigned memory view with concrete placement, body/object contact and continuity; resolved attempts to show multiple times or disconnected inset scenes inside one still where present."
+    },
+    {
+      "prompt": "02_library/worlds/memories/MWP01_ROUTES_ROOMS_DOCUMENTS_C.txt",
+      "group": "worlds/memories",
+      "status": "TEXT_EXPANDED_OR_CORRECTED",
+      "review": "Four assigned coverage views checked for viewpoint, supported furniture/people, material detail and spatial continuity. Repeated original views share the same complete text.",
+      "words": 1430,
+      "sha256": "1772dc5dfb073118f1e51c49ae45f7d52228db0bf947d9a35f92ee3218781cd3",
+      "rating_policy": "MEMORY_OR_CLINICAL_NO_CARDS",
+      "unbound_reference_slots": [
+        "@UNBOUND_MWP01"
+      ],
+      "change": "Expanded every assigned memory view with concrete placement, body/object contact and continuity; resolved attempts to show multiple times or disconnected inset scenes inside one still where present."
+    },
+    {
+      "prompt": "02_library/worlds/memories/MWP02_SYSTEM_TIME_REVERSALS_A.txt",
+      "group": "worlds/memories",
+      "status": "TEXT_EXPANDED_OR_CORRECTED",
+      "review": "Four assigned coverage views checked for viewpoint, supported furniture/people, material detail and spatial continuity. Repeated original views share the same complete text.",
+      "words": 1470,
+      "sha256": "32447c614afcabfc24629e916e983ef5e17560ea0afc9099b6644f424f6df674",
+      "rating_policy": "MEMORY_OR_CLINICAL_NO_CARDS",
+      "unbound_reference_slots": [],
+      "change": "Expanded every assigned memory view with concrete placement, body/object contact and continuity; resolved attempts to show multiple times or disconnected inset scenes inside one still where present."
+    },
+    {
+      "prompt": "02_library/worlds/memories/MWP02_SYSTEM_TIME_REVERSALS_B.txt",
+      "group": "worlds/memories",
+      "status": "TEXT_EXPANDED_OR_CORRECTED",
+      "review": "Four assigned coverage views checked for viewpoint, supported furniture/people, material detail and spatial continuity. Repeated original views share the same complete text.",
+      "words": 1554,
+      "sha256": "c445acb1d8b17f9de11d89518facda02c13887ad4d59fd8be4be8dba737229f5",
+      "rating_policy": "MEMORY_OR_CLINICAL_NO_CARDS",
+      "unbound_reference_slots": [
+        "@UNBOUND_MWP02"
+      ],
+      "change": "Expanded every assigned memory view with concrete placement, body/object contact and continuity; resolved attempts to show multiple times or disconnected inset scenes inside one still where present."
+    },
+    {
+      "prompt": "02_library/worlds/memories/MWP02_SYSTEM_TIME_REVERSALS_C.txt",
+      "group": "worlds/memories",
+      "status": "TEXT_EXPANDED_OR_CORRECTED",
+      "review": "Four assigned coverage views checked for viewpoint, supported furniture/people, material detail and spatial continuity. Repeated original views share the same complete text.",
+      "words": 1564,
+      "sha256": "d59685b96e220d615ab637534da60d8d7c5abe065e395a4269737884eb4f68de",
+      "rating_policy": "MEMORY_OR_CLINICAL_NO_CARDS",
+      "unbound_reference_slots": [
+        "@UNBOUND_MWP02"
+      ],
+      "change": "Expanded every assigned memory view with concrete placement, body/object contact and continuity; resolved attempts to show multiple times or disconnected inset scenes inside one still where present."
+    },
+    {
+      "prompt": "02_library/worlds/memories/T01_SOHO_RESTAURANT_SOURCE_A.txt",
+      "group": "worlds/memories",
+      "status": "TEXT_REVIEWED_EXISTING_DETAIL_RETAINED",
+      "review": "Four assigned coverage views checked for viewpoint, supported furniture/people, material detail and spatial continuity. Repeated original views share the same complete text.",
+      "words": 1215,
+      "sha256": "a48157af670716972e802c1ef34f68fcc3259c972dadb9418564d8ad5154d679",
+      "rating_policy": "MEMORY_OR_CLINICAL_NO_CARDS",
+      "unbound_reference_slots": []
+    },
+    {
+      "prompt": "02_library/worlds/memories/T01_SOHO_RESTAURANT_SOURCE_B.txt",
+      "group": "worlds/memories",
+      "status": "TEXT_REVIEWED_EXISTING_DETAIL_RETAINED",
+      "review": "Four assigned coverage views checked for viewpoint, supported furniture/people, material detail and spatial continuity. Repeated original views share the same complete text.",
+      "words": 1166,
+      "sha256": "a819db641f53b6fbdc796788a50aaafa47c2503efd3a2a00d9ceeeac652aa3b4",
+      "rating_policy": "MEMORY_OR_CLINICAL_NO_CARDS",
+      "unbound_reference_slots": [
+        "@UNBOUND_T01_DETAILS"
+      ]
+    },
+    {
+      "prompt": "02_library/worlds/memories/T01_SOHO_RESTAURANT_SOURCE_C.txt",
+      "group": "worlds/memories",
+      "status": "TEXT_REVIEWED_EXISTING_DETAIL_RETAINED",
+      "review": "Four assigned coverage views checked for viewpoint, supported furniture/people, material detail and spatial continuity. Repeated original views share the same complete text.",
+      "words": 1183,
+      "sha256": "e618c8635b574a9c0153d6a5bf39bbf5dcca1c43d18bb9b0cc69c571840c649b",
+      "rating_policy": "MEMORY_OR_CLINICAL_NO_CARDS",
+      "unbound_reference_slots": [
+        "@UNBOUND_T01_DETAILS"
+      ]
+    },
+    {
+      "prompt": "02_library/worlds/real/W01_MAIN_WORLD_A.txt",
+      "group": "worlds/real",
+      "status": "TEXT_EXPANDED_OR_CORRECTED",
+      "review": "Four assigned coverage views checked for viewpoint, supported furniture/people, material detail and spatial continuity. Repeated original views share the same complete text.",
+      "words": 4697,
+      "sha256": "3717c2801f04cb5341bcad6059e9ff89859b0a08c8e5ba1683aeda4d46cdf814",
+      "rating_policy": "CURRENT_CITY_CARDS_WHEN_PEOPLE_VISIBLE",
+      "unbound_reference_slots": [],
+      "change": "Expanded each assigned world view with its own spatial and material construction details; clarified source/destination scope."
+    },
+    {
+      "prompt": "02_library/worlds/real/W01_MAIN_WORLD_B.txt",
+      "group": "worlds/real",
+      "status": "TEXT_EXPANDED_OR_CORRECTED",
+      "review": "Four assigned coverage views checked for viewpoint, supported furniture/people, material detail and spatial continuity. Repeated original views share the same complete text.",
+      "words": 4370,
+      "sha256": "36a48723bf54ec174c24753782cfb678c2bb6643382fae95dbf130ff7bf07981",
+      "rating_policy": "CURRENT_CITY_CARDS_WHEN_PEOPLE_VISIBLE",
+      "unbound_reference_slots": [],
+      "change": "Expanded each assigned world view with its own spatial and material construction details; clarified source/destination scope."
+    },
+    {
+      "prompt": "02_library/worlds/real/W01_MAIN_WORLD_C.txt",
+      "group": "worlds/real",
+      "status": "TEXT_EXPANDED_OR_CORRECTED",
+      "review": "Four assigned coverage views checked for viewpoint, supported furniture/people, material detail and spatial continuity. Repeated original views share the same complete text.",
+      "words": 4467,
+      "sha256": "e0fb6cba4a0a21c9337c7c93f44ed1ddbe4f8c28c825f1a5e89cdfbd7c3c6b7c",
+      "rating_policy": "CURRENT_CITY_CARDS_WHEN_PEOPLE_VISIBLE",
+      "unbound_reference_slots": [],
+      "change": "Expanded each assigned world view with its own spatial and material construction details; clarified source/destination scope."
+    },
+    {
+      "prompt": "02_library/worlds/real/W02_MAIN_WORLD_A.txt",
+      "group": "worlds/real",
+      "status": "TEXT_EXPANDED_OR_CORRECTED",
+      "review": "Four assigned coverage views checked for viewpoint, supported furniture/people, material detail and spatial continuity. Repeated original views share the same complete text.",
+      "words": 4123,
+      "sha256": "dab4a73133f8ec633463974cc334c98ac7002a48fc77326b920fe53c5dd68e05",
+      "rating_policy": "CURRENT_CITY_CARDS_WHEN_PEOPLE_VISIBLE",
+      "unbound_reference_slots": [],
+      "change": "Expanded each assigned world view with its own spatial and material construction details; clarified source/destination scope."
+    },
+    {
+      "prompt": "02_library/worlds/real/W02_MAIN_WORLD_B.txt",
+      "group": "worlds/real",
+      "status": "TEXT_EXPANDED_OR_CORRECTED",
+      "review": "Four assigned coverage views checked for viewpoint, supported furniture/people, material detail and spatial continuity. Repeated original views share the same complete text.",
+      "words": 4115,
+      "sha256": "deafc0bec329e081e07ac3bc9e263b7b6e8e6e01cd28bfea4f7749a2fae14e24",
+      "rating_policy": "CURRENT_CITY_CARDS_WHEN_PEOPLE_VISIBLE",
+      "unbound_reference_slots": [],
+      "change": "Expanded each assigned world view with its own spatial and material construction details; clarified source/destination scope."
+    },
+    {
+      "prompt": "02_library/worlds/real/W02_MAIN_WORLD_C.txt",
+      "group": "worlds/real",
+      "status": "TEXT_EXPANDED_OR_CORRECTED",
+      "review": "Four assigned coverage views checked for viewpoint, supported furniture/people, material detail and spatial continuity. Repeated original views share the same complete text.",
+      "words": 4125,
+      "sha256": "9a02babc5220f4822b87e9057f420e87e468d4f853eebecaf83bac491ddddd51",
+      "rating_policy": "CURRENT_CITY_CARDS_WHEN_PEOPLE_VISIBLE",
+      "unbound_reference_slots": [],
+      "change": "Expanded each assigned world view with its own spatial and material construction details; clarified source/destination scope."
+    },
+    {
+      "prompt": "02_library/worlds/real/W03_MAIN_WORLD_A.txt",
+      "group": "worlds/real",
+      "status": "TEXT_EXPANDED_OR_CORRECTED",
+      "review": "Four assigned coverage views checked for viewpoint, supported furniture/people, material detail and spatial continuity. Repeated original views share the same complete text.",
+      "words": 4094,
+      "sha256": "c875ddc6f916b565c24e6a2917f190b6bf596a8f68d44549ece807ff113868a2",
+      "rating_policy": "CURRENT_CITY_CARDS_WHEN_PEOPLE_VISIBLE",
+      "unbound_reference_slots": [],
+      "change": "Expanded each assigned world view with its own spatial and material construction details; clarified source/destination scope."
+    },
+    {
+      "prompt": "02_library/worlds/real/W03_MAIN_WORLD_B.txt",
+      "group": "worlds/real",
+      "status": "TEXT_EXPANDED_OR_CORRECTED",
+      "review": "Four assigned coverage views checked for viewpoint, supported furniture/people, material detail and spatial continuity. Repeated original views share the same complete text.",
+      "words": 4117,
+      "sha256": "0e56e29e6994cafb10d5e4f97c42ad63febdf21789234bff84efb5215dffc59f",
+      "rating_policy": "CURRENT_CITY_CARDS_WHEN_PEOPLE_VISIBLE",
+      "unbound_reference_slots": [],
+      "change": "Expanded each assigned world view with its own spatial and material construction details; clarified source/destination scope."
+    },
+    {
+      "prompt": "02_library/worlds/real/W03_MAIN_WORLD_C.txt",
+      "group": "worlds/real",
+      "status": "TEXT_EXPANDED_OR_CORRECTED",
+      "review": "Four assigned coverage views checked for viewpoint, supported furniture/people, material detail and spatial continuity. Repeated original views share the same complete text.",
+      "words": 4136,
+      "sha256": "21a5b9f941cee350c570d43379311a950510ddbcda5973ce3e9a1ea04b6c9182",
+      "rating_policy": "CURRENT_CITY_CARDS_WHEN_PEOPLE_VISIBLE",
+      "unbound_reference_slots": [],
+      "change": "Expanded each assigned world view with its own spatial and material construction details; clarified source/destination scope."
+    },
+    {
+      "prompt": "02_library/worlds/real/W04_MAIN_WORLD_A.txt",
+      "group": "worlds/real",
+      "status": "TEXT_EXPANDED_OR_CORRECTED",
+      "review": "Four assigned coverage views checked for viewpoint, supported furniture/people, material detail and spatial continuity. Repeated original views share the same complete text.",
+      "words": 4091,
+      "sha256": "9e030ac3a4b9639f67174f1e994b3462b6332bf6db7ec92ade557994b354972e",
+      "rating_policy": "CURRENT_CITY_CARDS_WHEN_PEOPLE_VISIBLE",
+      "unbound_reference_slots": [],
+      "change": "Expanded each assigned world view with its own spatial and material construction details; clarified source/destination scope."
+    },
+    {
+      "prompt": "02_library/worlds/real/W04_MAIN_WORLD_B.txt",
+      "group": "worlds/real",
+      "status": "TEXT_EXPANDED_OR_CORRECTED",
+      "review": "Four assigned coverage views checked for viewpoint, supported furniture/people, material detail and spatial continuity. Repeated original views share the same complete text.",
+      "words": 4073,
+      "sha256": "832c0583f401971faae7584d173f86360622d702b9be9b288b4ad680a147e755",
+      "rating_policy": "CURRENT_CITY_CARDS_WHEN_PEOPLE_VISIBLE",
+      "unbound_reference_slots": [],
+      "change": "Expanded each assigned world view with its own spatial and material construction details; clarified source/destination scope."
+    },
+    {
+      "prompt": "02_library/worlds/real/W04_MAIN_WORLD_C.txt",
+      "group": "worlds/real",
+      "status": "TEXT_EXPANDED_OR_CORRECTED",
+      "review": "Four assigned coverage views checked for viewpoint, supported furniture/people, material detail and spatial continuity. Repeated original views share the same complete text.",
+      "words": 4099,
+      "sha256": "5abcd18ad8375007429f0293ea964cb3c2e86d2c0a86bbb2c25d17676749fc5d",
+      "rating_policy": "CURRENT_CITY_CARDS_WHEN_PEOPLE_VISIBLE",
+      "unbound_reference_slots": [],
+      "change": "Expanded each assigned world view with its own spatial and material construction details; clarified source/destination scope."
+    },
+    {
+      "prompt": "02_library/worlds/real/W05_MAIN_WORLD_A.txt",
+      "group": "worlds/real",
+      "status": "TEXT_EXPANDED_OR_CORRECTED",
+      "review": "Four assigned coverage views checked for viewpoint, supported furniture/people, material detail and spatial continuity. Repeated original views share the same complete text.",
+      "words": 4104,
+      "sha256": "d7e0965904c1104b0c2ecbd0109e4a3086615647f08a77cd3c8be28fc0cfdc57",
+      "rating_policy": "CURRENT_CITY_CARDS_WHEN_PEOPLE_VISIBLE",
+      "unbound_reference_slots": [],
+      "change": "Expanded each assigned world view with its own spatial and material construction details; clarified source/destination scope."
+    },
+    {
+      "prompt": "02_library/worlds/real/W05_MAIN_WORLD_B.txt",
+      "group": "worlds/real",
+      "status": "TEXT_EXPANDED_OR_CORRECTED",
+      "review": "Four assigned coverage views checked for viewpoint, supported furniture/people, material detail and spatial continuity. Repeated original views share the same complete text.",
+      "words": 4080,
+      "sha256": "411a8bc119a8f29e301e925e567b767229662b4d1cf462830a15bcc1deee792d",
+      "rating_policy": "CURRENT_CITY_CARDS_WHEN_PEOPLE_VISIBLE",
+      "unbound_reference_slots": [],
+      "change": "Expanded each assigned world view with its own spatial and material construction details; clarified source/destination scope."
+    },
+    {
+      "prompt": "02_library/worlds/real/W05_MAIN_WORLD_C.txt",
+      "group": "worlds/real",
+      "status": "TEXT_EXPANDED_OR_CORRECTED",
+      "review": "Four assigned coverage views checked for viewpoint, supported furniture/people, material detail and spatial continuity. Repeated original views share the same complete text.",
+      "words": 4086,
+      "sha256": "8afa67423ac908dee06420cc26155e135ce82a20224c322300477bdd6893f573",
+      "rating_policy": "CURRENT_CITY_CARDS_WHEN_PEOPLE_VISIBLE",
+      "unbound_reference_slots": [],
+      "change": "Expanded each assigned world view with its own spatial and material construction details; clarified source/destination scope."
+    },
+    {
+      "prompt": "02_library/worlds/real/W06_MAIN_WORLD_A.txt",
+      "group": "worlds/real",
+      "status": "TEXT_EXPANDED_OR_CORRECTED",
+      "review": "Four assigned coverage views checked for viewpoint, supported furniture/people, material detail and spatial continuity. Repeated original views share the same complete text.",
+      "words": 4088,
+      "sha256": "d9f6c90b68673fbd45fe64a208048b0ff5d5486da7c4e4ce326a31210bc90cae",
+      "rating_policy": "CURRENT_CITY_CARDS_WHEN_PEOPLE_VISIBLE",
+      "unbound_reference_slots": [],
+      "change": "Expanded each assigned world view with its own spatial and material construction details; clarified source/destination scope."
+    },
+    {
+      "prompt": "02_library/worlds/real/W06_MAIN_WORLD_B.txt",
+      "group": "worlds/real",
+      "status": "TEXT_EXPANDED_OR_CORRECTED",
+      "review": "Four assigned coverage views checked for viewpoint, supported furniture/people, material detail and spatial continuity. Repeated original views share the same complete text.",
+      "words": 4100,
+      "sha256": "1bb4fcd1035cad466837cd6d49c0a387648e26f58c41b5f30d28dfc4be947f1d",
+      "rating_policy": "CURRENT_CITY_CARDS_WHEN_PEOPLE_VISIBLE",
+      "unbound_reference_slots": [],
+      "change": "Expanded each assigned world view with its own spatial and material construction details; clarified source/destination scope."
+    },
+    {
+      "prompt": "02_library/worlds/real/W06_MAIN_WORLD_C.txt",
+      "group": "worlds/real",
+      "status": "TEXT_EXPANDED_OR_CORRECTED",
+      "review": "Four assigned coverage views checked for viewpoint, supported furniture/people, material detail and spatial continuity. Repeated original views share the same complete text.",
+      "words": 4118,
+      "sha256": "9085f6c7477b0b95b45e237df3c8608779fdaea7a3d08409c35bf7cae720071e",
+      "rating_policy": "CURRENT_CITY_CARDS_WHEN_PEOPLE_VISIBLE",
+      "unbound_reference_slots": [],
+      "change": "Expanded each assigned world view with its own spatial and material construction details; clarified source/destination scope."
+    },
+    {
+      "prompt": "02_library/worlds/real/W07_MAIN_WORLD_A.txt",
+      "group": "worlds/real",
+      "status": "TEXT_EXPANDED_OR_CORRECTED",
+      "review": "Four assigned coverage views checked for viewpoint, supported furniture/people, material detail and spatial continuity. Repeated original views share the same complete text.",
+      "words": 3811,
+      "sha256": "cd88b43b34f9da6532de003a9eac26cda55dac5619e6905455cf08ed5ab6651f",
+      "rating_policy": "CURRENT_CITY_CARDS_WHEN_PEOPLE_VISIBLE",
+      "unbound_reference_slots": [],
+      "change": "Expanded each assigned world view with its own spatial and material construction details; clarified source/destination scope."
+    },
+    {
+      "prompt": "02_library/worlds/real/W07_MAIN_WORLD_B.txt",
+      "group": "worlds/real",
+      "status": "TEXT_EXPANDED_OR_CORRECTED",
+      "review": "Four assigned coverage views checked for viewpoint, supported furniture/people, material detail and spatial continuity. Repeated original views share the same complete text.",
+      "words": 3787,
+      "sha256": "fa513c526f3472b88fd88becadd276430a3aa6c11099a0a24f2b52d61cf3ddff",
+      "rating_policy": "CURRENT_CITY_CARDS_WHEN_PEOPLE_VISIBLE",
+      "unbound_reference_slots": [],
+      "change": "Expanded each assigned world view with its own spatial and material construction details; clarified source/destination scope."
+    },
+    {
+      "prompt": "02_library/worlds/real/W07_MAIN_WORLD_C.txt",
+      "group": "worlds/real",
+      "status": "TEXT_EXPANDED_OR_CORRECTED",
+      "review": "Four assigned coverage views checked for viewpoint, supported furniture/people, material detail and spatial continuity. Repeated original views share the same complete text.",
+      "words": 3803,
+      "sha256": "ee54334fc3d48a842390a7d744fae056de2f10cd45e1246d9655ff081b476b0c",
+      "rating_policy": "CURRENT_CITY_CARDS_WHEN_PEOPLE_VISIBLE",
+      "unbound_reference_slots": [],
+      "change": "Expanded each assigned world view with its own spatial and material construction details; clarified source/destination scope."
+    }
+  ]
+}

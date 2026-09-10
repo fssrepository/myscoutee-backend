@@ -58,14 +58,22 @@ FOUR ASSIGNED CELLS:
 CELL 1 — TOP-LEFT — ORIGINAL VIEW 09:
 Barmouth / North-Wales low-tide memory: broad exposed shore, town held against the slope, ordinary travelers at human scale. No postcard saturation, no tourism-ad composition.
 
+Show wet exposed sand, shallow channels and the town against the slope at separate distances. The established travel companions stand or walk on the shore with visible shoe contact and ordinary clothing. Retain the low-tide waterline as a far spatial boundary. Natural grey-blue coastal light keeps the ground texture readable without oversaturated postcard treatment.
+
 CELL 2 — TOP-RIGHT — ORIGINAL VIEW 01:
 Moscow / Saint Petersburg metro or transit-gate memory. A local passenger calmly uses a monthly travel card/pass to help the protagonist through a gate. Ordinary station, realistic crowd, no heroic gesture.
+
+The helper stands beside the gate reader with the monthly pass held close to its actual surface; the protagonist is at the adjacent passage ready to move through. Show reader housing, barrier edge and tiled floor together. Other passengers remain behind their own lane boundaries. Their hands do not merge into the reader or each other, and no score cards appear.
 
 CELL 3 — BOTTOM-LEFT — ORIGINAL VIEW 07:
 Budapest tram-wire / rail-memory fragment viewed from an ordinary street perspective, emphasizing physical route lines and infrastructure rather than landmark tourism.
 
+Look along a real street rail toward its curve while the overhead wire network recedes above it. Resolve the rail groove, paving boundary, wire intersections and facade brackets. Keep a normal door or tram-stop fixture for scale. These are physical route details in a remembered Budapest street, without present-city rating graphics or a tourist-landmark collage.
+
 CELL 4 — BOTTOM-RIGHT — ORIGINAL VIEW 08:
 Wet bus/coach window on a mountain or long-distance route, with real landscape beyond and a passenger reflection only if naturally produced by that remembered vehicle itself. This is still the remembered world, not the present London–Budapest city.
+
+Frame the coach window with its seal, pillar and a seat-back edge inside. Droplets sit on the real pane; the landscape lies beyond it with a distinct horizon and changing depth. Any passenger reflection remains weaker and correctly aligned to the glass. Do not paste a separate portrait or the present London street over the remembered view.
 
 FINAL CHECK:
 Exactly one 16:9 image.

@@ -52,14 +52,22 @@ FOUR ASSIGNED CELLS:
 CELL 1 — TOP-LEFT — ORIGINAL VIEW 05:
 Crowded low-cost London shared-house communal interior with many Hungarian adult housemates, compressed furniture, coats, shoes, bags and ordinary domestic clutter. It must feel inhabited, not dirty caricature.
 
+Use a doorway-side wide view of the shared communal room. Several coats and bags hang from actual hooks, shoes rest beside furniture and seats leave a narrow but traceable walking space. Every person has an individual floor or seat contact. Show lived-in fabric wear, table edges and household storage without turning the room into a heap of anonymous bodies or dirt.
+
 CELL 2 — TOP-RIGHT — ORIGINAL VIEW 06:
-Cramped shared bedroom from the same house at night: beds close together, limited personal space, one sleeping arrangement replaced by another adult silhouette in the same area, visually supporting the different-snore memory. No joke staging.
+Cramped shared bedroom from the same house at night: beds close together, limited personal space, one current housemate occupying the recurring sleeping place, providing the room geometry for the different-snore memory. No joke staging.
+
+Show the shared bedroom as one nighttime state with adjacent bed frames, mattresses, bedding and a narrow floor gap. The currently assigned sleeping housemate occupies one physical bed; do not overlap two sleeping bodies to indicate replacement. The room layout supplies the recurring sleeping place, while a separate character morph or later video carries the change of occupant.
 
 CELL 3 — BOTTOM-LEFT — ORIGINAL VIEW 07:
 Ordinary memory of a Hungarian housemate living in London while spouse/child/home obligations remain in Hungary. Show a modest shared-room context with a family photograph / call / small domestic cue, not explanatory text and not a melodramatic separation scene.
 
+Place the mortgage housemate in the same modest room beside one small family photograph showing the established spouse and child. Keep the photograph a physical print or actual device image with frame thickness or screen edge, not a floating memory window. Show his ordinary belongings and posture in the room; the family remains elsewhere rather than appearing life-size beside him.
+
 CELL 4 — BOTTOM-RIGHT — ORIGINAL VIEW 08:
-Dating-profile memory: the SAME unchanged photograph appears while only the age field changes visibly from 37 to 33. Keep the device/profile interface small and realistic; the face itself must not change. This is the one cell where the numerals 37 and 33 may be clearly readable.
+Dating-profile memory after the age-field edit from 37 to 33: the SAME unchanged photograph appears with the current age field clearly displaying 33. Keep the device/profile interface small and realistic; the face itself must not change. This still captures the edited state; the video can show the earlier 37 becoming 33 on that same interface.
+
+Use a close oblique device view in one solid state: the unchanged profile photograph above an active age field displaying 33, with the cursor or selected field indicating an edit. Retain the device bezel, supporting hand and room surface. The earlier value 37 belongs to the described before-state for the video; do not double-print 37 and 33 or morph the face to force time into one still.
 
 FINAL CHECK:
 Exactly one 16:9 image.
