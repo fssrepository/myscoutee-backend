@@ -4,13 +4,13 @@
 
 ## Három engedélyezett újrarenderelés
 
-A régi képek és Higgsfield-bekötések egyelőre megmaradnak. Az új promptot még egyik régi kép sem igazolja. Mindhárom feladat 2K, egyetlen 16:9 kép.
+Mindhárom új 2K, 16:9 kép elkészült és a megfelelő Elementhez van kapcsolva. Az új generálási azonosítókat MCP-vel ellenőriztem; vizuális minőségellenőrzés itt nem történt.
 
 - [06_03_MW01_LONDON_SOCIAL_C_VIEW_07.txt](06_03_MW01_LONDON_SOCIAL_C_VIEW_07.txt): FAMILY CONTACT WHILE PUTTING AWAY WORK CLOTHES.
 - [06_04_MW01_LONDON_SOCIAL_C_VIEW_08.txt](06_04_MW01_LONDON_SOCIAL_C_VIEW_08.txt): THE UNCHANGED PERSON PUTS THE PROFILE ASIDE.
 - [09_02_MW02_GLOBAL_ROUTES_C_VIEW_01.txt](09_02_MW02_GLOBAL_ROUTES_C_VIEW_01.txt): CONTINUING INTO THE STATION AFTER THE HELP.
 
-A többi 20 elkészült memories-prompt változatlan. A még el nem készült 28-ból 19 kapott tartalmi módosítást; 9 eleve külön feladatot tartalmazott. A sorban így 28 első generálás és 3 csere marad, nem 31 első generálás.
+A többi 20 elkészült memories-prompt változatlan. A még el nem készült 28-ból 19 kapott tartalmi módosítást; 9 eleve külön feladatot tartalmazott. A három csere elkészült és be van kötve; a legutóbbi MCP-lekérdezés szerint 28 első generálás marad.
 
 ## Módosítások és megőrzött részletek
 

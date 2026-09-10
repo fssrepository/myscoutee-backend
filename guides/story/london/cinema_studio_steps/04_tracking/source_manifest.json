@@ -971,7 +971,7 @@
       ],
       "source_prompt_sha256": "76a53b46490f7087051a6b61360543112b874118c1dec4b28d592f08a5c3ed46",
       "file": "03_film/01/storyboard.txt",
-      "file_sha256": "1d41da30d6b9eca8ba7317dea607e61fe154f6bb0d7f80ff7dc674137b2afe71",
+      "file_sha256": "8211fbb97f98a15f64c190bb40799446d9cc08215584f741e6a80bedbfd19f94",
       "changes": "All nine beats retained; requested camera/architecture added; card and AI-screen contradictions corrected; SB06 memory dependencies repaired; explicit centrally maintained reference inputs Grid geometry uses the full selected image resolution instead of fixed pixel examples."
     },
     {
@@ -995,7 +995,7 @@
       ],
       "source_prompt_sha256": "d111e179fa9211ddb262d74468ee38305f1776d75138a0c33a3e229ff58dff3d",
       "file": "03_film/01/video.txt",
-      "file_sha256": "c647908ab734b0430f2b29049e8e439fdd512a3a026d268fad6db4a7dbab8564",
+      "file_sha256": "9b0736f6179a47947e11499869fe340667e4b25987ab17d2b9c99c808dd1c79d",
       "changes": "Operator/retry prose and repeated rules removed; all nine story beats retained; camera/architecture updated; audio cues follow visuals; reveal and reference contradictions repaired; Verified C01/C02 Element IDs substituted for local aliases; explicit reference binding; original Hungarian folk-rooted score and synchronized material transformation foley; researched Dél-Alföld tekerő/clarinet arrangement, phrase-synchronized facade motion, explicit protagonist inner monologue"
     },
     {
@@ -1007,7 +1007,7 @@
       ],
       "source_prompt_sha256": "28ff9c6f1fdfeb4618c4696283c1e38722a62ee2792af219b5b9f14cc9bcfc29",
       "file": "03_film/02/storyboard.txt",
-      "file_sha256": "db17dee5c5c00d721ca42d74e80bb8242ac5c23d692346dce9fcd26a027c361c",
+      "file_sha256": "570b86698de823b0febe3d59f0a3bc28caa4c161586f67fba0b587f5297f32ec",
       "changes": "All nine beats retained; requested camera/architecture added; card and AI-screen contradictions corrected; SB06 memory dependencies repaired; explicit centrally maintained reference inputs; rural memory grounded in creator's Orosháza paprika/corn-field childhood Grid geometry uses the full selected image resolution instead of fixed pixel examples."
     },
     {
@@ -1031,7 +1031,7 @@
       ],
       "source_prompt_sha256": "1ee3bb2feea06f9cb11dac2f33cac0b6c8a0735bc0a73938e537a716ad9146ba",
       "file": "03_film/02/video.txt",
-      "file_sha256": "d2f9f2c3b89c84da8121273615f2b410a6f46c8e72d6b2ae7467612fa9bbd1cd",
+      "file_sha256": "9da907fd854061e13fa2c81024c8fa03dabaea8279d407e0e16e44c19134a0dd",
       "changes": "Operator/retry prose and repeated rules removed; all nine story beats retained; camera/architecture updated; audio cues follow visuals; reveal and reference contradictions repaired; Verified C01/C02 Element IDs substituted for local aliases; explicit reference binding; original Hungarian folk-rooted score and synchronized material transformation foley; researched Dél-Alföld tekerő/clarinet arrangement, phrase-synchronized facade motion, explicit protagonist inner monologue; rural memory grounded in creator's Orosháza paprika/corn-field childhood Continuation preserves narrator timbre and a natural breath over an uninterrupted sound bed."
     },
     {
@@ -1151,7 +1151,7 @@
       ],
       "source_prompt_sha256": "6e57e8c9f69656463159011cd13b16d6b88d02db6738131013a82f4f5f778aec",
       "file": "03_film/06/storyboard.txt",
-      "file_sha256": "688935d43930773ab53d670300d9cf927ce17da0f1af8ea06a59d3b2fc1622ea",
+      "file_sha256": "efe7f017d0fb9e8cc4454607cd1a7ee4eb442a128b036ad7f385a51d9d488ac3",
       "changes": "All nine beats retained; requested camera/architecture added; card and AI-screen contradictions corrected; SB06 memory dependencies repaired; explicit centrally maintained reference inputs Grid geometry uses the full selected image resolution instead of fixed pixel examples."
     },
     {
@@ -1175,7 +1175,7 @@
       ],
       "source_prompt_sha256": "52008590a700611bd6959ec7ae9cb86efeb01101257fce007de3b9eaa75417e6",
       "file": "03_film/06/video.txt",
-      "file_sha256": "7be088212042154eb93523ebc77fa18b2193746607783702f6d1ec7309e546c1",
+      "file_sha256": "41fe935134b7a2d519a874185134bee8b2e41a3bdeb6472fdaa8e1d8c8df3b7b",
       "changes": "Operator/retry prose and repeated rules removed; all nine story beats retained; camera/architecture updated; audio cues follow visuals; reveal and reference contradictions repaired; Verified C01/C02 Element IDs substituted for local aliases; explicit reference binding; original Hungarian folk-rooted score and synchronized material transformation foley; researched Dél-Alföld tekerő/clarinet arrangement, phrase-synchronized facade motion, explicit protagonist inner monologue Continuation preserves narrator timbre and a natural breath over an uninterrupted sound bed."
     },
     {
@@ -1187,7 +1187,7 @@
       ],
       "source_prompt_sha256": "2b7b76d2d3593fcff5854695f2ee366e9486822241fe7b80f3f09df0035291d4",
       "file": "03_film/07/storyboard.txt",
-      "file_sha256": "ec78dd758a44f01641a601da6f79d6b95e669ff349cc72745d0049dcd925e064",
+      "file_sha256": "f29b4b8e0905cfb4ee9c6a4be9ca01238865dd8f87b74593c564be7645c9d494",
       "changes": "All nine beats retained; requested camera/architecture added; card and AI-screen contradictions corrected; SB06 memory dependencies repaired; explicit centrally maintained reference inputs Grid geometry uses the full selected image resolution instead of fixed pixel examples."
     },
     {
@@ -1211,7 +1211,7 @@
       ],
       "source_prompt_sha256": "ac40bf3eee9daac90310ed6ff05a2b72832c27347255c481694023e8db6f759b",
       "file": "03_film/07/video.txt",
-      "file_sha256": "21ca90f1f6ff38cd33e02f7120bd149e567af5033bdb57024184737010c50029",
+      "file_sha256": "7df0abde18ba65e9a6af06967125b12ce6843c524af79d87d3c3b686a03d8360",
       "changes": "Operator/retry prose and repeated rules removed; all nine story beats retained; camera/architecture updated; audio cues follow visuals; reveal and reference contradictions repaired; Verified C01/C02 Element IDs substituted for local aliases; explicit reference binding; original Hungarian folk-rooted score and synchronized material transformation foley; researched Dél-Alföld tekerő/clarinet arrangement, phrase-synchronized facade motion, explicit protagonist inner monologue Continuation preserves narrator timbre and a natural breath over an uninterrupted sound bed."
     },
     {
@@ -3117,7 +3117,7 @@
         "MWP01_B",
         "MWP01_C"
       ],
-      "prompt_sha256": "1d41da30d6b9eca8ba7317dea607e61fe154f6bb0d7f80ff7dc674137b2afe71"
+      "prompt_sha256": "8211fbb97f98a15f64c190bb40799446d9cc08215584f741e6a80bedbfd19f94"
     },
     "A01": {
       "key": "A01",
@@ -3165,7 +3165,7 @@
         "MWP01_B",
         "MWP01_C"
       ],
-      "prompt_sha256": "c647908ab734b0430f2b29049e8e439fdd512a3a026d268fad6db4a7dbab8564"
+      "prompt_sha256": "9b0736f6179a47947e11499869fe340667e4b25987ab17d2b9c99c808dd1c79d"
     },
     "SB02": {
       "key": "SB02",
@@ -3219,7 +3219,7 @@
         "MWP01_B",
         "MWP01_C"
       ],
-      "prompt_sha256": "db17dee5c5c00d721ca42d74e80bb8242ac5c23d692346dce9fcd26a027c361c"
+      "prompt_sha256": "570b86698de823b0febe3d59f0a3bc28caa4c161586f67fba0b587f5297f32ec"
     },
     "A02": {
       "key": "A02",
@@ -3283,7 +3283,7 @@
         "MWP01_B",
         "MWP01_C"
       ],
-      "prompt_sha256": "d2f9f2c3b89c84da8121273615f2b410a6f46c8e72d6b2ae7467612fa9bbd1cd"
+      "prompt_sha256": "9da907fd854061e13fa2c81024c8fa03dabaea8279d407e0e16e44c19134a0dd"
     },
     "SB03": {
       "key": "SB03",
@@ -3568,7 +3568,7 @@
         "MW05_B",
         "MW05_C"
       ],
-      "prompt_sha256": "688935d43930773ab53d670300d9cf927ce17da0f1af8ea06a59d3b2fc1622ea"
+      "prompt_sha256": "efe7f017d0fb9e8cc4454607cd1a7ee4eb442a128b036ad7f385a51d9d488ac3"
     },
     "A06": {
       "key": "A06",
@@ -3651,7 +3651,7 @@
         "MW05_B",
         "MW05_C"
       ],
-      "prompt_sha256": "7be088212042154eb93523ebc77fa18b2193746607783702f6d1ec7309e546c1"
+      "prompt_sha256": "41fe935134b7a2d519a874185134bee8b2e41a3bdeb6472fdaa8e1d8c8df3b7b"
     },
     "SB07": {
       "key": "SB07",
@@ -3700,7 +3700,7 @@
         "MW02_C_03",
         "MW02_C_04"
       ],
-      "prompt_sha256": "ec78dd758a44f01641a601da6f79d6b95e669ff349cc72745d0049dcd925e064"
+      "prompt_sha256": "f29b4b8e0905cfb4ee9c6a4be9ca01238865dd8f87b74593c564be7645c9d494"
     },
     "A07": {
       "key": "A07",
@@ -3759,7 +3759,7 @@
         "MW02_C_03",
         "MW02_C_04"
       ],
-      "prompt_sha256": "21ca90f1f6ff38cd33e02f7120bd149e567af5033bdb57024184737010c50029"
+      "prompt_sha256": "7df0abde18ba65e9a6af06967125b12ce6843c524af79d87d3c3b686a03d8360"
     },
     "MR001": {
       "key": "MR001",
@@ -7239,22 +7239,23 @@
         "C09"
       ],
       "layout": "2K 16:9 single full-frame memory image",
-      "status": "GENERATED_AWAITING_ELEMENT_ATTACHMENT",
+      "status": "MCP_IMAGE_ATTACHMENT_CONFIRMED",
       "source_page": "MW01_C",
       "original_view": 7,
       "generation_position": 3,
       "element_name": "MYS MW01_C_03 Memory View 07",
       "prompt_sha256": "3a148047aa619f2f8d5f4267b2a137e27aa40de2c24585bd0209d6d866f161e2",
-      "matched_generation_id": "2148c24e-53c1-4e55-80c7-6cffba56e8ce",
-      "matched_generation_url": "https://d8j0ntlcm91z4.cloudfront.net/user_3H41eMU9sabBt5P7iAzJiu4FcG5/hf_20260910_153349_2148c24e-53c1-4e55-80c7-6cffba56e8ce.png",
-      "generation_match_evidence": "Exact REFERENCE ID matched to current prompt; completed job, but no image attached to existing Element in MCP snapshot.",
+      "matched_generation_id": "a31432e2-7cc1-406a-8d46-9047ac880b8e",
+      "matched_generation_url": "https://d8j0ntlcm91z4.cloudfront.net/user_3H41eMU9sabBt5P7iAzJiu4FcG5/hf_20260910_161459_a31432e2-7cc1-406a-8d46-9047ac880b8e.png",
+      "generation_match_evidence": "Completed revised prompt: exact REFERENCE ID and assigned content heading; the same generation UUID is attached to the existing Element.",
       "composition_revision_note": "2026-09-10: distinct physical subjects/actions replace repeated content; companion sources preserve the original story beats. No camera-only variation.",
       "current_prompt_image_verified": false,
       "content_assignments": {
         "1": "FAMILY CONTACT WHILE PUTTING AWAY WORK CLOTHES"
       },
-      "replacement_image_required": true,
-      "replacement_reason": "User approved a new 2K image for this completed duplicate. Existing attached image is retained until its replacement is accepted."
+      "replacement_image_required": false,
+      "replacement_reason": "Replacement generated and attached by the user; exact attachment confirmed via MCP on 2026-09-10.",
+      "mcp_element_uuid": "62d04035-4aa6-4a76-a6cf-1358c2ff34f0"
     },
     "MW01_C_04": {
       "key": "MW01_C_04",
@@ -7265,22 +7266,23 @@
         "C01"
       ],
       "layout": "2K 16:9 single full-frame memory image",
-      "status": "GENERATED_AWAITING_ELEMENT_ATTACHMENT",
+      "status": "MCP_IMAGE_ATTACHMENT_CONFIRMED",
       "source_page": "MW01_C",
       "original_view": 8,
       "generation_position": 4,
       "element_name": "MYS MW01_C_04 Memory View 08",
       "prompt_sha256": "84c05b3f5741785848ecf386da5a5552f9a020cf2b9e685eecfa14c1191d4689",
-      "matched_generation_id": "a42d3540-8e06-4a6b-875e-df0026b18850",
-      "matched_generation_url": "https://d8j0ntlcm91z4.cloudfront.net/user_3H41eMU9sabBt5P7iAzJiu4FcG5/hf_20260910_153405_a42d3540-8e06-4a6b-875e-df0026b18850.png",
-      "generation_match_evidence": "Exact REFERENCE ID matched to current prompt; completed job, but no image attached to existing Element in MCP snapshot.",
+      "matched_generation_id": "8d1a8d2b-d225-4e70-a501-d823dcaab241",
+      "matched_generation_url": "https://d8j0ntlcm91z4.cloudfront.net/user_3H41eMU9sabBt5P7iAzJiu4FcG5/hf_20260910_161753_8d1a8d2b-d225-4e70-a501-d823dcaab241.png",
+      "generation_match_evidence": "Completed revised prompt: exact REFERENCE ID and assigned content heading; the same generation UUID is attached to the existing Element.",
       "composition_revision_note": "2026-09-10: distinct physical subjects/actions replace repeated content; companion sources preserve the original story beats. No camera-only variation.",
       "current_prompt_image_verified": false,
       "content_assignments": {
         "1": "THE UNCHANGED PERSON PUTS THE PROFILE ASIDE"
       },
-      "replacement_image_required": true,
-      "replacement_reason": "User approved a new 2K image for this completed duplicate. Existing attached image is retained until its replacement is accepted."
+      "replacement_image_required": false,
+      "replacement_reason": "Replacement generated and attached by the user; exact attachment confirmed via MCP on 2026-09-10.",
+      "mcp_element_uuid": "560a9880-116f-4865-8ac6-1b852d82dab9"
     },
     "MW02_A_01": {
       "key": "MW02_A_01",
@@ -7385,7 +7387,7 @@
         "C11"
       ],
       "layout": "2K 16:9 single full-frame memory image",
-      "status": "PREPARED_NOT_RENDERED",
+      "status": "MCP_IMAGE_ATTACHMENT_CONFIRMED",
       "source_page": "MW02_C",
       "original_view": 1,
       "generation_position": 2,
@@ -7396,8 +7398,12 @@
       "content_assignments": {
         "1": "CONTINUING INTO THE STATION AFTER THE HELP"
       },
-      "replacement_image_required": true,
-      "replacement_reason": "User approved a new 2K image for this completed duplicate. Existing attached image is retained until its replacement is accepted."
+      "replacement_image_required": false,
+      "replacement_reason": "Replacement generated and attached by the user; exact attachment confirmed via MCP on 2026-09-10.",
+      "matched_generation_id": "12f28b60-1b96-45e7-b9ba-70b01e0baee1",
+      "matched_generation_url": "https://d8j0ntlcm91z4.cloudfront.net/user_3H41eMU9sabBt5P7iAzJiu4FcG5/hf_20260910_161825_12f28b60-1b96-45e7-b9ba-70b01e0baee1.png",
+      "mcp_element_uuid": "20dd77d6-592c-4b53-aa77-614c417e3232",
+      "generation_match_evidence": "Completed revised prompt: exact REFERENCE ID and assigned content heading; the same generation UUID is attached to the existing Element."
     },
     "MW02_C_03": {
       "key": "MW02_C_03",
@@ -10091,13 +10097,13 @@
     },
     "MW01_C_03": {
       "alias": "MW01_C_03",
-      "mention": null,
-      "last_mention": "@UNBOUND_MW01_C_03"
+      "mention": "@loc_MYS_mys-mw01-c-03-memory-view-07_s0_v1",
+      "last_mention": "@loc_MYS_mys-mw01-c-03-memory-view-07_s0_v1"
     },
     "MW01_C_04": {
       "alias": "MW01_C_04",
-      "mention": null,
-      "last_mention": "@UNBOUND_MW01_C_04"
+      "mention": "@loc_MYS_mys-mw01-c-04-memory-view-08_s0_v1",
+      "last_mention": "@loc_MYS_mys-mw01-c-04-memory-view-08_s0_v1"
     },
     "MW02_A_01": {
       "alias": "MW02_A_01",
@@ -10132,8 +10138,8 @@
     },
     "MW02_C_02": {
       "alias": "MW02_C_02",
-      "mention": null,
-      "last_mention": "@UNBOUND_MW02_C_02"
+      "mention": "@loc_MYS_mys-mw02-c-02-memory-view-01_s0_v1",
+      "last_mention": "@loc_MYS_mys-mw02-c-02-memory-view-01_s0_v1"
     },
     "MW02_C_03": {
       "alias": "MW02_C_03",
