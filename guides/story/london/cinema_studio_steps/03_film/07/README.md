@@ -26,7 +26,7 @@ Generate only missing media. Reuse accepted dependencies from prior blocks. Each
 | [W07_C_03](../../02_library/worlds/real/W07_C_03_MAIN_WORLD_VIEW_07.txt) | None; compatible accepted companion view if available | `W07_C_03_MAIN_WORLD_VIEW_07.png` |
 | [W07_C_04](../../02_library/worlds/real/W07_C_04_MAIN_WORLD_VIEW_08.txt) | None; compatible accepted companion view if available | `W07_C_04_MAIN_WORLD_VIEW_08.png` |
 | [C05](../../02_library/characters/C05_FINAL_NURSE.txt) | None | `C05_FINAL_NURSE.png` |
-| [HRW07](../../02_library/worlds/memories/HRW07_CLINICAL_REALITY_A.txt) | C01, C05 | `HRW07_CLINICAL_REALITY.png` |
+| [HRW07](../../02_library/worlds/memories/28_HRW07_CLINICAL_REALITY_A.txt) | C01, C05 | `HRW07_CLINICAL_REALITY.png` |
 | [SB07](storyboard.txt) | W07, HRW07, MWP01, MW01, MW02, C01, C05, C06, C16, C17 | `SB07_STORYBOARD.png` |
 | [A07](narration.txt) | None | `A07_NARRATION.wav` |
 | [V07](video.txt) | W07, HRW07, MWP01, MW01, MW02, C01, C05, C06, C16, C17, SB07, A07, V06 | `V07_MASTER_0320.mp4` |

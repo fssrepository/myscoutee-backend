@@ -20,9 +20,9 @@ Generate present-world views at 2K / full-frame 16:9 / one output, with eligible
 | 12 | MYS W01_C_02 World View 01 | [W01_C_02](../02_library/worlds/real/W01_C_02_MAIN_WORLD_VIEW_01.txt) | 2K single view |
 | 13 | MYS W01_C_03 World View 07 | [W01_C_03](../02_library/worlds/real/W01_C_03_MAIN_WORLD_VIEW_07.txt) | 2K single view |
 | 14 | MYS W01_C_04 World View 08 | [W01_C_04](../02_library/worlds/real/W01_C_04_MAIN_WORLD_VIEW_08.txt) | 2K single view |
-| 15 | MYS T01_A Soho Restaurant | [T01_DETAILS](../02_library/worlds/memories/T01_SOHO_RESTAURANT_SOURCE_A.txt) | 4K existing sheet |
-| 16 | MYS T01_B Soho Restaurant | [T01_DETAILS_B](../02_library/worlds/memories/T01_SOHO_RESTAURANT_SOURCE_B.txt) | 4K existing sheet |
-| 17 | MYS T01_C Soho Restaurant | [T01_DETAILS_C](../02_library/worlds/memories/T01_SOHO_RESTAURANT_SOURCE_C.txt) | 4K existing sheet |
+| 15 | MYS T01_A Soho Restaurant | [T01_DETAILS](../02_library/worlds/memories/01_T01_SOHO_RESTAURANT_SOURCE_A.txt) | 4K existing sheet |
+| 16 | MYS T01_B Soho Restaurant | [T01_DETAILS_B](../02_library/worlds/memories/02_T01_SOHO_RESTAURANT_SOURCE_B.txt) | 4K existing sheet |
+| 17 | MYS T01_C Soho Restaurant | [T01_DETAILS_C](../02_library/worlds/memories/03_T01_SOHO_RESTAURANT_SOURCE_C.txt) | 4K existing sheet |
 | 18 | MYS MR001 St Pauls To St Stephens | [MR001](../02_library/morphs/buildings/MR001_ST_PAULS_TO_ST_STEPHENS_2X2.txt) | 4K existing sheet |
 | 19 | MYS R008 Cafe To Occupied Restaurant | [R008](../02_library/morphs/buildings/R008_CAFE_OPENING_AND_FURNITURE_CONSTRUCTION_DETAILS.txt) | 4K existing sheet |
 | 20 | MYS MR004 Window Glass To Pendant Shade | [MR004](../02_library/morphs/objects/MR004_WINDOW_GLASS_TO_PENDANT_SHADE_2X2.txt) | 4K existing sheet |

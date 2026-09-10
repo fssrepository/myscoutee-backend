@@ -114,36 +114,36 @@ W07_C_01,MYS W07_C_01 World View 09,Location,W07 group C position 01; original v
 W07_C_02,MYS W07_C_02 World View 01,Location,W07 group C position 02; original view 01,single full-frame 16:9; 2K,02_library/worlds/real/W07_C_02_MAIN_WORLD_VIEW_01.txt,00_project/elements/categories/WORLDS_IMPORT.md
 W07_C_03,MYS W07_C_03 World View 07,Location,W07 group C position 03; original view 07,single full-frame 16:9; 2K,02_library/worlds/real/W07_C_03_MAIN_WORLD_VIEW_07.txt,00_project/elements/categories/WORLDS_IMPORT.md
 W07_C_04,MYS W07_C_04 World View 08,Location,W07 group C position 04; original view 08,single full-frame 16:9; 2K,02_library/worlds/real/W07_C_04_MAIN_WORLD_VIEW_08.txt,00_project/elements/categories/WORLDS_IMPORT.md
-MW01,MYS MW01_A London Social,Location,memories,2x2 environment coverage,02_library/worlds/memories/MW01_LONDON_SOCIAL_A.txt,00_project/elements/categories/WORLDS_IMPORT.md
-MW01_B,MYS MW01_B London Social,Location,memories,2x2 environment coverage,02_library/worlds/memories/MW01_LONDON_SOCIAL_B.txt,00_project/elements/categories/WORLDS_IMPORT.md
-MW01_C,MYS MW01_C London Social,Location,memories,2x2 environment coverage,02_library/worlds/memories/MW01_LONDON_SOCIAL_C.txt,00_project/elements/categories/WORLDS_IMPORT.md
-MW02,MYS MW02_A Global Routes,Location,memories,2x2 environment coverage,02_library/worlds/memories/MW02_GLOBAL_ROUTES_A.txt,00_project/elements/categories/WORLDS_IMPORT.md
-MW02_B,MYS MW02_B Global Routes,Location,memories,2x2 environment coverage,02_library/worlds/memories/MW02_GLOBAL_ROUTES_B.txt,00_project/elements/categories/WORLDS_IMPORT.md
-MW02_C,MYS MW02_C Global Routes,Location,memories,2x2 environment coverage,02_library/worlds/memories/MW02_GLOBAL_ROUTES_C.txt,00_project/elements/categories/WORLDS_IMPORT.md
-MW03,MYS MW03_A Work Rule Change Admin,Location,memories,2x2 environment coverage,02_library/worlds/memories/MW03_WORK_RULE_CHANGE_ADMIN_A.txt,00_project/elements/categories/WORLDS_IMPORT.md
-MW03_B,MYS MW03_B Work Rule Change Admin,Location,memories,2x2 environment coverage,02_library/worlds/memories/MW03_WORK_RULE_CHANGE_ADMIN_B.txt,00_project/elements/categories/WORLDS_IMPORT.md
-MW03_C,MYS MW03_C Work Rule Change Admin,Location,memories,2x2 environment coverage,02_library/worlds/memories/MW03_WORK_RULE_CHANGE_ADMIN_C.txt,00_project/elements/categories/WORLDS_IMPORT.md
-MW04,MYS MW04_A Police Defence,Location,memories,2x2 environment coverage,02_library/worlds/memories/MW04_POLICE_DEFENCE_A.txt,00_project/elements/categories/WORLDS_IMPORT.md
-MW04_B,MYS MW04_B Police Defence,Location,memories,2x2 environment coverage,02_library/worlds/memories/MW04_POLICE_DEFENCE_B.txt,00_project/elements/categories/WORLDS_IMPORT.md
-MW04_C,MYS MW04_C Police Defence,Location,memories,2x2 environment coverage,02_library/worlds/memories/MW04_POLICE_DEFENCE_C.txt,00_project/elements/categories/WORLDS_IMPORT.md
-MW05,MYS MW05_A Court File,Location,memories,2x2 environment coverage,02_library/worlds/memories/MW05_COURT_FILE_A.txt,00_project/elements/categories/WORLDS_IMPORT.md
-MW05_B,MYS MW05_B Court File,Location,memories,2x2 environment coverage,02_library/worlds/memories/MW05_COURT_FILE_B.txt,00_project/elements/categories/WORLDS_IMPORT.md
-MW05_C,MYS MW05_C Court File,Location,memories,2x2 environment coverage,02_library/worlds/memories/MW05_COURT_FILE_C.txt,00_project/elements/categories/WORLDS_IMPORT.md
-MW06,MYS MW06_A Human Countermemories,Location,memories,2x2 environment coverage,02_library/worlds/memories/MW06_HUMAN_COUNTERMEMORIES_A.txt,00_project/elements/categories/WORLDS_IMPORT.md
-MW06_B,MYS MW06_B Human Countermemories,Location,memories,2x2 environment coverage,02_library/worlds/memories/MW06_HUMAN_COUNTERMEMORIES_B.txt,00_project/elements/categories/WORLDS_IMPORT.md
-MW06_C,MYS MW06_C Human Countermemories,Location,memories,2x2 environment coverage,02_library/worlds/memories/MW06_HUMAN_COUNTERMEMORIES_C.txt,00_project/elements/categories/WORLDS_IMPORT.md
-MWP01,MYS MWP01_A Routes Rooms Documents,Location,memories,2x2 environment coverage,02_library/worlds/memories/MWP01_ROUTES_ROOMS_DOCUMENTS_A.txt,00_project/elements/categories/WORLDS_IMPORT.md
-MWP01_B,MYS MWP01_B Routes Rooms Documents,Location,memories,2x2 environment coverage,02_library/worlds/memories/MWP01_ROUTES_ROOMS_DOCUMENTS_B.txt,00_project/elements/categories/WORLDS_IMPORT.md
-MWP01_C,MYS MWP01_C Routes Rooms Documents,Location,memories,2x2 environment coverage,02_library/worlds/memories/MWP01_ROUTES_ROOMS_DOCUMENTS_C.txt,00_project/elements/categories/WORLDS_IMPORT.md
-MWP02,MYS MWP02_A System Time Reversals,Location,memories,2x2 environment coverage,02_library/worlds/memories/MWP02_SYSTEM_TIME_REVERSALS_A.txt,00_project/elements/categories/WORLDS_IMPORT.md
-MWP02_B,MYS MWP02_B System Time Reversals,Location,memories,2x2 environment coverage,02_library/worlds/memories/MWP02_SYSTEM_TIME_REVERSALS_B.txt,00_project/elements/categories/WORLDS_IMPORT.md
-MWP02_C,MYS MWP02_C System Time Reversals,Location,memories,2x2 environment coverage,02_library/worlds/memories/MWP02_SYSTEM_TIME_REVERSALS_C.txt,00_project/elements/categories/WORLDS_IMPORT.md
-HRW07,MYS HRW07_A Clinical Reality,Location,memories,2x2 environment coverage,02_library/worlds/memories/HRW07_CLINICAL_REALITY_A.txt,00_project/elements/categories/WORLDS_IMPORT.md
-HRW07_B,MYS HRW07_B Clinical Reality,Location,memories,2x2 environment coverage,02_library/worlds/memories/HRW07_CLINICAL_REALITY_B.txt,00_project/elements/categories/WORLDS_IMPORT.md
-HRW07_C,MYS HRW07_C Clinical Reality,Location,memories,2x2 environment coverage,02_library/worlds/memories/HRW07_CLINICAL_REALITY_C.txt,00_project/elements/categories/WORLDS_IMPORT.md
-T01_DETAILS,MYS T01_A Soho Restaurant,Location,memories,2x2 environment coverage,02_library/worlds/memories/T01_SOHO_RESTAURANT_SOURCE_A.txt,00_project/elements/categories/WORLDS_IMPORT.md
-T01_DETAILS_B,MYS T01_B Soho Restaurant,Location,memories,2x2 environment coverage,02_library/worlds/memories/T01_SOHO_RESTAURANT_SOURCE_B.txt,00_project/elements/categories/WORLDS_IMPORT.md
-T01_DETAILS_C,MYS T01_C Soho Restaurant,Location,memories,2x2 environment coverage,02_library/worlds/memories/T01_SOHO_RESTAURANT_SOURCE_C.txt,00_project/elements/categories/WORLDS_IMPORT.md
+MW01,MYS MW01_A London Social,Location,memories,2x2 environment coverage,02_library/worlds/memories/04_MW01_LONDON_SOCIAL_A.txt,00_project/elements/categories/WORLDS_IMPORT.md
+MW01_B,MYS MW01_B London Social,Location,memories,2x2 environment coverage,02_library/worlds/memories/05_MW01_LONDON_SOCIAL_B.txt,00_project/elements/categories/WORLDS_IMPORT.md
+MW01_C,MYS MW01_C London Social,Location,memories,2x2 environment coverage,02_library/worlds/memories/06_MW01_LONDON_SOCIAL_C.txt,00_project/elements/categories/WORLDS_IMPORT.md
+MW02,MYS MW02_A Global Routes,Location,memories,2x2 environment coverage,02_library/worlds/memories/07_MW02_GLOBAL_ROUTES_A.txt,00_project/elements/categories/WORLDS_IMPORT.md
+MW02_B,MYS MW02_B Global Routes,Location,memories,2x2 environment coverage,02_library/worlds/memories/08_MW02_GLOBAL_ROUTES_B.txt,00_project/elements/categories/WORLDS_IMPORT.md
+MW02_C,MYS MW02_C Global Routes,Location,memories,2x2 environment coverage,02_library/worlds/memories/09_MW02_GLOBAL_ROUTES_C.txt,00_project/elements/categories/WORLDS_IMPORT.md
+MW03,MYS MW03_A Work Rule Change Admin,Location,memories,2x2 environment coverage,02_library/worlds/memories/10_MW03_WORK_RULE_CHANGE_ADMIN_A.txt,00_project/elements/categories/WORLDS_IMPORT.md
+MW03_B,MYS MW03_B Work Rule Change Admin,Location,memories,2x2 environment coverage,02_library/worlds/memories/11_MW03_WORK_RULE_CHANGE_ADMIN_B.txt,00_project/elements/categories/WORLDS_IMPORT.md
+MW03_C,MYS MW03_C Work Rule Change Admin,Location,memories,2x2 environment coverage,02_library/worlds/memories/12_MW03_WORK_RULE_CHANGE_ADMIN_C.txt,00_project/elements/categories/WORLDS_IMPORT.md
+MW04,MYS MW04_A Police Defence,Location,memories,2x2 environment coverage,02_library/worlds/memories/13_MW04_POLICE_DEFENCE_A.txt,00_project/elements/categories/WORLDS_IMPORT.md
+MW04_B,MYS MW04_B Police Defence,Location,memories,2x2 environment coverage,02_library/worlds/memories/14_MW04_POLICE_DEFENCE_B.txt,00_project/elements/categories/WORLDS_IMPORT.md
+MW04_C,MYS MW04_C Police Defence,Location,memories,2x2 environment coverage,02_library/worlds/memories/15_MW04_POLICE_DEFENCE_C.txt,00_project/elements/categories/WORLDS_IMPORT.md
+MW05,MYS MW05_A Court File,Location,memories,2x2 environment coverage,02_library/worlds/memories/16_MW05_COURT_FILE_A.txt,00_project/elements/categories/WORLDS_IMPORT.md
+MW05_B,MYS MW05_B Court File,Location,memories,2x2 environment coverage,02_library/worlds/memories/17_MW05_COURT_FILE_B.txt,00_project/elements/categories/WORLDS_IMPORT.md
+MW05_C,MYS MW05_C Court File,Location,memories,2x2 environment coverage,02_library/worlds/memories/18_MW05_COURT_FILE_C.txt,00_project/elements/categories/WORLDS_IMPORT.md
+MW06,MYS MW06_A Human Countermemories,Location,memories,2x2 environment coverage,02_library/worlds/memories/19_MW06_HUMAN_COUNTERMEMORIES_A.txt,00_project/elements/categories/WORLDS_IMPORT.md
+MW06_B,MYS MW06_B Human Countermemories,Location,memories,2x2 environment coverage,02_library/worlds/memories/20_MW06_HUMAN_COUNTERMEMORIES_B.txt,00_project/elements/categories/WORLDS_IMPORT.md
+MW06_C,MYS MW06_C Human Countermemories,Location,memories,2x2 environment coverage,02_library/worlds/memories/21_MW06_HUMAN_COUNTERMEMORIES_C.txt,00_project/elements/categories/WORLDS_IMPORT.md
+MWP01,MYS MWP01_A Routes Rooms Documents,Location,memories,2x2 environment coverage,02_library/worlds/memories/22_MWP01_ROUTES_ROOMS_DOCUMENTS_A.txt,00_project/elements/categories/WORLDS_IMPORT.md
+MWP01_B,MYS MWP01_B Routes Rooms Documents,Location,memories,2x2 environment coverage,02_library/worlds/memories/23_MWP01_ROUTES_ROOMS_DOCUMENTS_B.txt,00_project/elements/categories/WORLDS_IMPORT.md
+MWP01_C,MYS MWP01_C Routes Rooms Documents,Location,memories,2x2 environment coverage,02_library/worlds/memories/24_MWP01_ROUTES_ROOMS_DOCUMENTS_C.txt,00_project/elements/categories/WORLDS_IMPORT.md
+MWP02,MYS MWP02_A System Time Reversals,Location,memories,2x2 environment coverage,02_library/worlds/memories/25_MWP02_SYSTEM_TIME_REVERSALS_A.txt,00_project/elements/categories/WORLDS_IMPORT.md
+MWP02_B,MYS MWP02_B System Time Reversals,Location,memories,2x2 environment coverage,02_library/worlds/memories/26_MWP02_SYSTEM_TIME_REVERSALS_B.txt,00_project/elements/categories/WORLDS_IMPORT.md
+MWP02_C,MYS MWP02_C System Time Reversals,Location,memories,2x2 environment coverage,02_library/worlds/memories/27_MWP02_SYSTEM_TIME_REVERSALS_C.txt,00_project/elements/categories/WORLDS_IMPORT.md
+HRW07,MYS HRW07_A Clinical Reality,Location,memories,2x2 environment coverage,02_library/worlds/memories/28_HRW07_CLINICAL_REALITY_A.txt,00_project/elements/categories/WORLDS_IMPORT.md
+HRW07_B,MYS HRW07_B Clinical Reality,Location,memories,2x2 environment coverage,02_library/worlds/memories/29_HRW07_CLINICAL_REALITY_B.txt,00_project/elements/categories/WORLDS_IMPORT.md
+HRW07_C,MYS HRW07_C Clinical Reality,Location,memories,2x2 environment coverage,02_library/worlds/memories/30_HRW07_CLINICAL_REALITY_C.txt,00_project/elements/categories/WORLDS_IMPORT.md
+T01_DETAILS,MYS T01_A Soho Restaurant,Location,memories,2x2 environment coverage,02_library/worlds/memories/01_T01_SOHO_RESTAURANT_SOURCE_A.txt,00_project/elements/categories/WORLDS_IMPORT.md
+T01_DETAILS_B,MYS T01_B Soho Restaurant,Location,memories,2x2 environment coverage,02_library/worlds/memories/02_T01_SOHO_RESTAURANT_SOURCE_B.txt,00_project/elements/categories/WORLDS_IMPORT.md
+T01_DETAILS_C,MYS T01_C Soho Restaurant,Location,memories,2x2 environment coverage,02_library/worlds/memories/03_T01_SOHO_RESTAURANT_SOURCE_C.txt,00_project/elements/categories/WORLDS_IMPORT.md
 MR001,MYS MR001 St Pauls To St Stephens,Location,buildings,2x2 material transformation,02_library/morphs/buildings/MR001_ST_PAULS_TO_ST_STEPHENS_2X2.txt,00_project/elements/categories/MORPHS_IMPORT.md
 MR002,MYS MR002 Facade Relief To Sculpted Support,Location,buildings,2x2 material transformation,02_library/morphs/buildings/MR002_FACADE_RELIEF_TO_SCULPTED_SUPPORT_2X2.txt,00_project/elements/categories/MORPHS_IMPORT.md
 MR003,MYS MR003 Facade Window Capital And Cornice,Location,buildings,2x2 material transformation,02_library/morphs/buildings/MR003_FACADE_WINDOW_CAPITAL_AND_CORNICE_2X2.txt,00_project/elements/categories/MORPHS_IMPORT.md

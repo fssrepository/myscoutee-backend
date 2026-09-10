@@ -25,7 +25,7 @@ Generate only missing media. Reuse accepted dependencies from prior blocks. Each
 | [W06_C_02](../../02_library/worlds/real/W06_C_02_MAIN_WORLD_VIEW_01.txt) | None; compatible accepted companion view if available | `W06_C_02_MAIN_WORLD_VIEW_01.png` |
 | [W06_C_03](../../02_library/worlds/real/W06_C_03_MAIN_WORLD_VIEW_07.txt) | None; compatible accepted companion view if available | `W06_C_03_MAIN_WORLD_VIEW_07.png` |
 | [W06_C_04](../../02_library/worlds/real/W06_C_04_MAIN_WORLD_VIEW_08.txt) | None; compatible accepted companion view if available | `W06_C_04_MAIN_WORLD_VIEW_08.png` |
-| [MW06](../../02_library/worlds/memories/MW06_HUMAN_COUNTERMEMORIES_A.txt) | C01, C02, C03, C04, C10, C11, C16, C17, C27, C28, C29 | `MW06_HUMAN_COUNTERMEMORIES.png` |
+| [MW06](../../02_library/worlds/memories/19_MW06_HUMAN_COUNTERMEMORIES_A.txt) | C01, C02, C03, C04, C10, C11, C16, C17, C27, C28, C29 | `MW06_HUMAN_COUNTERMEMORIES.png` |
 | [SB06](storyboard.txt) | W06, MW06, MWP02, MW01, MW02, MW03, MW04, MW05, C01, C02, C03, C04, C10, C11, C16, C17, C27, C28, C29 | `SB06_STORYBOARD.png` |
 | [A06](narration.txt) | None | `A06_NARRATION.wav` |
 | [V06](video.txt) | W06, MW06, MWP02, MW01, MW02, MW03, MW04, MW05, C01, C02, C03, C04, C10, C11, C16, C17, C27, C28, C29, SB06, A06, V05 | `V06_CHAIN_TO_0300.mp4` |

@@ -30,15 +30,15 @@ C28,02_library/characters/C28_FORENSIC_EXPERT_A.txt,characters,yes,4K,1x3 identi
 C29,02_library/characters/C29_FORENSIC_EXPERT_B.txt,characters,yes,4K,1x3 identity,4,1,0,4,PLANNED_NOT_CHARGED
 C30,02_library/characters/C30_COURT_CLERK.txt,characters,yes,4K,1x3 identity,4,1,0,4,PLANNED_NOT_CHARGED
 C31,02_library/characters/C31_ANONYMOUS_FICTIONAL_POLITICAL_FIGURE.txt,characters,yes,4K,1x3 identity,4,1,0,4,PLANNED_NOT_CHARGED
-MW01,02_library/worlds/memories/MW01_LONDON_SOCIAL_A.txt,worlds/memories,yes,4K,4K 2x2 page A; original views 1–4,4,1,0,4,PLANNED_NOT_CHARGED
-MW02,02_library/worlds/memories/MW02_GLOBAL_ROUTES_A.txt,worlds/memories,yes,4K,4K 2x2 page A; original views 1–4,4,1,0,4,PLANNED_NOT_CHARGED
-MW03,02_library/worlds/memories/MW03_WORK_RULE_CHANGE_ADMIN_A.txt,worlds/memories,yes,4K,4K 2x2 page A; original views 1–4,4,1,0,4,PLANNED_NOT_CHARGED
-MW04,02_library/worlds/memories/MW04_POLICE_DEFENCE_A.txt,worlds/memories,yes,4K,4K 2x2 page A; original views 1–4,4,1,0,4,PLANNED_NOT_CHARGED
-MW05,02_library/worlds/memories/MW05_COURT_FILE_A.txt,worlds/memories,yes,4K,4K 2x2 page A; original views 1–4,4,1,0,4,PLANNED_NOT_CHARGED
-MW06,02_library/worlds/memories/MW06_HUMAN_COUNTERMEMORIES_A.txt,worlds/memories,yes,4K,4K 2x2 page A; original views 1–4,4,1,0,4,PLANNED_NOT_CHARGED
-MWP01,02_library/worlds/memories/MWP01_ROUTES_ROOMS_DOCUMENTS_A.txt,worlds/memories,yes,4K,4K 2x2 page A; original views 1–4,4,1,0,4,PLANNED_NOT_CHARGED
-MWP02,02_library/worlds/memories/MWP02_SYSTEM_TIME_REVERSALS_A.txt,worlds/memories,yes,4K,4K 2x2 page A; original views 1–4,4,1,0,4,PLANNED_NOT_CHARGED
-HRW07,02_library/worlds/memories/HRW07_CLINICAL_REALITY_A.txt,worlds/memories,yes,4K,4K 2x2 page A; original views 1–4,4,1,0,4,PLANNED_NOT_CHARGED
+MW01,02_library/worlds/memories/04_MW01_LONDON_SOCIAL_A.txt,worlds/memories,yes,4K,4K 2x2 page A; original views 1–4,4,1,0,4,PLANNED_NOT_CHARGED
+MW02,02_library/worlds/memories/07_MW02_GLOBAL_ROUTES_A.txt,worlds/memories,yes,4K,4K 2x2 page A; original views 1–4,4,1,0,4,PLANNED_NOT_CHARGED
+MW03,02_library/worlds/memories/10_MW03_WORK_RULE_CHANGE_ADMIN_A.txt,worlds/memories,yes,4K,4K 2x2 page A; original views 1–4,4,1,0,4,PLANNED_NOT_CHARGED
+MW04,02_library/worlds/memories/13_MW04_POLICE_DEFENCE_A.txt,worlds/memories,yes,4K,4K 2x2 page A; original views 1–4,4,1,0,4,PLANNED_NOT_CHARGED
+MW05,02_library/worlds/memories/16_MW05_COURT_FILE_A.txt,worlds/memories,yes,4K,4K 2x2 page A; original views 1–4,4,1,0,4,PLANNED_NOT_CHARGED
+MW06,02_library/worlds/memories/19_MW06_HUMAN_COUNTERMEMORIES_A.txt,worlds/memories,yes,4K,4K 2x2 page A; original views 1–4,4,1,0,4,PLANNED_NOT_CHARGED
+MWP01,02_library/worlds/memories/22_MWP01_ROUTES_ROOMS_DOCUMENTS_A.txt,worlds/memories,yes,4K,4K 2x2 page A; original views 1–4,4,1,0,4,PLANNED_NOT_CHARGED
+MWP02,02_library/worlds/memories/25_MWP02_SYSTEM_TIME_REVERSALS_A.txt,worlds/memories,yes,4K,4K 2x2 page A; original views 1–4,4,1,0,4,PLANNED_NOT_CHARGED
+HRW07,02_library/worlds/memories/28_HRW07_CLINICAL_REALITY_A.txt,worlds/memories,yes,4K,4K 2x2 page A; original views 1–4,4,1,0,4,PLANNED_NOT_CHARGED
 W01_A_01,02_library/worlds/real/W01_A_01_MAIN_WORLD_VIEW_01.txt,worlds/real,yes,2K,single full-frame 16:9,2,1,0,2,CREATOR_CONFIRMED_PAID_2K_PLANNED_NOT_CHARGED
 W01_A_02,02_library/worlds/real/W01_A_02_MAIN_WORLD_VIEW_02.txt,worlds/real,yes,2K,single full-frame 16:9,2,1,0,2,CREATOR_CONFIRMED_PAID_2K_PLANNED_NOT_CHARGED
 W01_A_03,02_library/worlds/real/W01_A_03_MAIN_WORLD_VIEW_03.txt,worlds/real,yes,2K,single full-frame 16:9,2,1,0,2,CREATOR_CONFIRMED_PAID_2K_PLANNED_NOT_CHARGED
@@ -145,27 +145,27 @@ MR019,02_library/morphs/buildings/MR019_PAVING_AND_GUTTER_TO_STREET_TERRACE_2X2.
 MR020,02_library/morphs/objects/MR020_ROPE_FIBRES_TO_SHEET_HEM_2X2.txt,morphs/objects,yes,4K,2x2 source/unfinished/unfinished/target,4,1,0,4,PLANNED_NOT_CHARGED
 R009,02_library/morphs/buildings/R009_FANLIGHT_TO_CANOPY_JOINT_STUDY_FOR_THE_EXTEND.txt,morphs/buildings,yes,4K,2x2 source/unfinished/unfinished/target,4,1,0,4,PLANNED_NOT_CHARGED
 R008,02_library/morphs/buildings/R008_CAFE_OPENING_AND_FURNITURE_CONSTRUCTION_DETAILS.txt,morphs/buildings,yes,4K,2x2 source/unfinished/unfinished/target,4,1,0,4,PLANNED_NOT_CHARGED
-MW01_B,02_library/worlds/memories/MW01_LONDON_SOCIAL_B.txt,worlds/memories,yes,4K,4K 2x2 page B,4,1,0,4,PLANNED_NOT_CHARGED
-MW01_C,02_library/worlds/memories/MW01_LONDON_SOCIAL_C.txt,worlds/memories,yes,4K,4K 2x2 page C,4,1,0,4,PLANNED_NOT_CHARGED
-MW02_B,02_library/worlds/memories/MW02_GLOBAL_ROUTES_B.txt,worlds/memories,yes,4K,4K 2x2 page B,4,1,0,4,PLANNED_NOT_CHARGED
-MW02_C,02_library/worlds/memories/MW02_GLOBAL_ROUTES_C.txt,worlds/memories,yes,4K,4K 2x2 page C,4,1,0,4,PLANNED_NOT_CHARGED
-MW03_B,02_library/worlds/memories/MW03_WORK_RULE_CHANGE_ADMIN_B.txt,worlds/memories,yes,4K,4K 2x2 page B,4,1,0,4,PLANNED_NOT_CHARGED
-MW03_C,02_library/worlds/memories/MW03_WORK_RULE_CHANGE_ADMIN_C.txt,worlds/memories,yes,4K,4K 2x2 page C,4,1,0,4,PLANNED_NOT_CHARGED
-MW04_B,02_library/worlds/memories/MW04_POLICE_DEFENCE_B.txt,worlds/memories,yes,4K,4K 2x2 page B,4,1,0,4,PLANNED_NOT_CHARGED
-MW04_C,02_library/worlds/memories/MW04_POLICE_DEFENCE_C.txt,worlds/memories,yes,4K,4K 2x2 page C,4,1,0,4,PLANNED_NOT_CHARGED
-MW05_B,02_library/worlds/memories/MW05_COURT_FILE_B.txt,worlds/memories,yes,4K,4K 2x2 page B,4,1,0,4,PLANNED_NOT_CHARGED
-MW05_C,02_library/worlds/memories/MW05_COURT_FILE_C.txt,worlds/memories,yes,4K,4K 2x2 page C,4,1,0,4,PLANNED_NOT_CHARGED
-MW06_B,02_library/worlds/memories/MW06_HUMAN_COUNTERMEMORIES_B.txt,worlds/memories,yes,4K,4K 2x2 page B,4,1,0,4,PLANNED_NOT_CHARGED
-MW06_C,02_library/worlds/memories/MW06_HUMAN_COUNTERMEMORIES_C.txt,worlds/memories,yes,4K,4K 2x2 page C,4,1,0,4,PLANNED_NOT_CHARGED
-MWP01_B,02_library/worlds/memories/MWP01_ROUTES_ROOMS_DOCUMENTS_B.txt,worlds/memories,yes,4K,4K 2x2 page B,4,1,0,4,PLANNED_NOT_CHARGED
-MWP01_C,02_library/worlds/memories/MWP01_ROUTES_ROOMS_DOCUMENTS_C.txt,worlds/memories,yes,4K,4K 2x2 page C,4,1,0,4,PLANNED_NOT_CHARGED
-MWP02_B,02_library/worlds/memories/MWP02_SYSTEM_TIME_REVERSALS_B.txt,worlds/memories,yes,4K,4K 2x2 page B,4,1,0,4,PLANNED_NOT_CHARGED
-MWP02_C,02_library/worlds/memories/MWP02_SYSTEM_TIME_REVERSALS_C.txt,worlds/memories,yes,4K,4K 2x2 page C,4,1,0,4,PLANNED_NOT_CHARGED
-HRW07_B,02_library/worlds/memories/HRW07_CLINICAL_REALITY_B.txt,worlds/memories,yes,4K,4K 2x2 page B,4,1,0,4,PLANNED_NOT_CHARGED
-HRW07_C,02_library/worlds/memories/HRW07_CLINICAL_REALITY_C.txt,worlds/memories,yes,4K,4K 2x2 page C,4,1,0,4,PLANNED_NOT_CHARGED
-T01_DETAILS,02_library/worlds/memories/T01_SOHO_RESTAURANT_SOURCE_A.txt,worlds/memories,yes,4K,4K 2x2 restaurant coverage page A,4,1,0,4,PLANNED_NOT_CHARGED
-T01_DETAILS_B,02_library/worlds/memories/T01_SOHO_RESTAURANT_SOURCE_B.txt,worlds/memories,yes,4K,4K 2x2 restaurant coverage page B,4,1,0,4,PLANNED_NOT_CHARGED
-T01_DETAILS_C,02_library/worlds/memories/T01_SOHO_RESTAURANT_SOURCE_C.txt,worlds/memories,yes,4K,4K 2x2 restaurant coverage page C,4,1,0,4,PLANNED_NOT_CHARGED
+MW01_B,02_library/worlds/memories/05_MW01_LONDON_SOCIAL_B.txt,worlds/memories,yes,4K,4K 2x2 page B,4,1,0,4,PLANNED_NOT_CHARGED
+MW01_C,02_library/worlds/memories/06_MW01_LONDON_SOCIAL_C.txt,worlds/memories,yes,4K,4K 2x2 page C,4,1,0,4,PLANNED_NOT_CHARGED
+MW02_B,02_library/worlds/memories/08_MW02_GLOBAL_ROUTES_B.txt,worlds/memories,yes,4K,4K 2x2 page B,4,1,0,4,PLANNED_NOT_CHARGED
+MW02_C,02_library/worlds/memories/09_MW02_GLOBAL_ROUTES_C.txt,worlds/memories,yes,4K,4K 2x2 page C,4,1,0,4,PLANNED_NOT_CHARGED
+MW03_B,02_library/worlds/memories/11_MW03_WORK_RULE_CHANGE_ADMIN_B.txt,worlds/memories,yes,4K,4K 2x2 page B,4,1,0,4,PLANNED_NOT_CHARGED
+MW03_C,02_library/worlds/memories/12_MW03_WORK_RULE_CHANGE_ADMIN_C.txt,worlds/memories,yes,4K,4K 2x2 page C,4,1,0,4,PLANNED_NOT_CHARGED
+MW04_B,02_library/worlds/memories/14_MW04_POLICE_DEFENCE_B.txt,worlds/memories,yes,4K,4K 2x2 page B,4,1,0,4,PLANNED_NOT_CHARGED
+MW04_C,02_library/worlds/memories/15_MW04_POLICE_DEFENCE_C.txt,worlds/memories,yes,4K,4K 2x2 page C,4,1,0,4,PLANNED_NOT_CHARGED
+MW05_B,02_library/worlds/memories/17_MW05_COURT_FILE_B.txt,worlds/memories,yes,4K,4K 2x2 page B,4,1,0,4,PLANNED_NOT_CHARGED
+MW05_C,02_library/worlds/memories/18_MW05_COURT_FILE_C.txt,worlds/memories,yes,4K,4K 2x2 page C,4,1,0,4,PLANNED_NOT_CHARGED
+MW06_B,02_library/worlds/memories/20_MW06_HUMAN_COUNTERMEMORIES_B.txt,worlds/memories,yes,4K,4K 2x2 page B,4,1,0,4,PLANNED_NOT_CHARGED
+MW06_C,02_library/worlds/memories/21_MW06_HUMAN_COUNTERMEMORIES_C.txt,worlds/memories,yes,4K,4K 2x2 page C,4,1,0,4,PLANNED_NOT_CHARGED
+MWP01_B,02_library/worlds/memories/23_MWP01_ROUTES_ROOMS_DOCUMENTS_B.txt,worlds/memories,yes,4K,4K 2x2 page B,4,1,0,4,PLANNED_NOT_CHARGED
+MWP01_C,02_library/worlds/memories/24_MWP01_ROUTES_ROOMS_DOCUMENTS_C.txt,worlds/memories,yes,4K,4K 2x2 page C,4,1,0,4,PLANNED_NOT_CHARGED
+MWP02_B,02_library/worlds/memories/26_MWP02_SYSTEM_TIME_REVERSALS_B.txt,worlds/memories,yes,4K,4K 2x2 page B,4,1,0,4,PLANNED_NOT_CHARGED
+MWP02_C,02_library/worlds/memories/27_MWP02_SYSTEM_TIME_REVERSALS_C.txt,worlds/memories,yes,4K,4K 2x2 page C,4,1,0,4,PLANNED_NOT_CHARGED
+HRW07_B,02_library/worlds/memories/29_HRW07_CLINICAL_REALITY_B.txt,worlds/memories,yes,4K,4K 2x2 page B,4,1,0,4,PLANNED_NOT_CHARGED
+HRW07_C,02_library/worlds/memories/30_HRW07_CLINICAL_REALITY_C.txt,worlds/memories,yes,4K,4K 2x2 page C,4,1,0,4,PLANNED_NOT_CHARGED
+T01_DETAILS,02_library/worlds/memories/01_T01_SOHO_RESTAURANT_SOURCE_A.txt,worlds/memories,yes,4K,4K 2x2 restaurant coverage page A,4,1,0,4,PLANNED_NOT_CHARGED
+T01_DETAILS_B,02_library/worlds/memories/02_T01_SOHO_RESTAURANT_SOURCE_B.txt,worlds/memories,yes,4K,4K 2x2 restaurant coverage page B,4,1,0,4,PLANNED_NOT_CHARGED
+T01_DETAILS_C,02_library/worlds/memories/03_T01_SOHO_RESTAURANT_SOURCE_C.txt,worlds/memories,yes,4K,4K 2x2 restaurant coverage page C,4,1,0,4,PLANNED_NOT_CHARGED
 R002,02_library/morphs/objects/R002_THE_SAME_RED_LONDON_BUS_FROM_USEFUL_ANGLES.txt,morphs/objects,yes,4K,4K 2x2 object material transformation,4,1,0,4,PLANNED_NOT_CHARGED
 R003,02_library/morphs/objects/R003_BLACK_LONDON_TAXI.txt,morphs/objects,yes,4K,4K 2x2 object material transformation,4,1,0,4,PLANNED_NOT_CHARGED
 R004,02_library/morphs/objects/R004_YELLOW_BUDAPEST_TRAM.txt,morphs/objects,yes,4K,4K 2x2 object material transformation,4,1,0,4,PLANNED_NOT_CHARGED

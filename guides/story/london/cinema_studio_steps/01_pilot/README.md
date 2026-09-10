@@ -52,7 +52,7 @@ The standalone [narration audio test](test_narration_audio.md) is saved for late
 
 Both visual segments have music/SFX without narration. The second is a continuation of the selected first result, not a replay of its restaurant, camera opening or cathedral transformation. Review the first result’s actual endpoint and adjust only the source-dependent staging of the continuation before copying it. No earlier rejected download is automatically selected as source.
 
-The four image references C01, C02, W01 and T01 are already bound and reusable. The expanded [restaurant reference Page A](../02_library/worlds/memories/T01_SOHO_RESTAURANT_SOURCE_A.txt) is in the library; its [Element description](../00_project/elements/archive/pilot/00_pilot_test_assets.md) is metadata. The accepted single image remains reusable; the A/B/C prompts prepare additional coverage, not an automatic replacement. Later world-reference improvements follow the existing image plan and verified Unlimited coverage; editing a world prompt does not update an existing rendered image automatically.
+The four image references C01, C02, W01 and T01 are already bound and reusable. The expanded [restaurant reference Page A](../02_library/worlds/memories/01_T01_SOHO_RESTAURANT_SOURCE_A.txt) is in the library; its [Element description](../00_project/elements/archive/pilot/00_pilot_test_assets.md) is metadata. The accepted single image remains reusable; the A/B/C prompts prepare additional coverage, not an automatic replacement. Later world-reference improvements follow the existing image plan and verified Unlimited coverage; editing a world prompt does not update an existing rendered image automatically.
 
 ## Join the two visual parts
 

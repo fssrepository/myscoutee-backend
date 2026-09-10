@@ -28,7 +28,7 @@ Generate only missing media. Reuse accepted dependencies from prior blocks. Each
 | [C22](../../02_library/characters/C22_ACCOUNTANT.txt) | None | `C22_ACCOUNTANT.png` |
 | [C23](../../02_library/characters/C23_ADMIN_COLLEAGUE_A.txt) | None | `C23_ADMIN_COLLEAGUE_A.png` |
 | [C24](../../02_library/characters/C24_ADMIN_COLLEAGUE_B.txt) | None | `C24_ADMIN_COLLEAGUE_B.png` |
-| [MW03](../../02_library/worlds/memories/MW03_WORK_RULE_CHANGE_ADMIN_A.txt) | C01, C22, C23, C24 | `MW03_WORK_RULE_CHANGE_ADMIN.png` |
+| [MW03](../../02_library/worlds/memories/10_MW03_WORK_RULE_CHANGE_ADMIN_A.txt) | C01, C22, C23, C24 | `MW03_WORK_RULE_CHANGE_ADMIN.png` |
 | [SB03](storyboard.txt) | W03, MW03, MWP01, C01, C22, C23, C24 | `SB03_STORYBOARD.png` |
 | [A03](narration.txt) | None | `A03_NARRATION.wav` |
 | [V03](video.txt) | W03, MW03, MWP01, C01, C22, C23, C24, SB03, A03, V02 | `V03_CHAIN_TO_0130.mp4` |

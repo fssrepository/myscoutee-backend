@@ -32,8 +32,8 @@ Generate only missing media. Reuse accepted dependencies from prior blocks. Each
 | [C08](../../02_library/characters/C08_FX_MORTGAGE_SPOUSE.txt) | None | `C08_FX_MORTGAGE_SPOUSE.png` |
 | [C09](../../02_library/characters/C09_FX_MORTGAGE_CHILD.txt) | None | `C09_FX_MORTGAGE_CHILD.png` |
 | [C10](../../02_library/characters/C10_BEGINNER_DANCE_WOMAN.txt) | None | `C10_BEGINNER_DANCE_WOMAN.png` |
-| [MW01](../../02_library/worlds/memories/MW01_LONDON_SOCIAL_A.txt) | C01, C02, C06, C07, C08, C09, C10 | `MW01_LONDON_SOCIAL.png` |
-| [MWP01](../../02_library/worlds/memories/MWP01_ROUTES_ROOMS_DOCUMENTS_A.txt) | C01 | `MWP01_ROUTES_ROOMS_DOCUMENTS.png` |
+| [MW01](../../02_library/worlds/memories/04_MW01_LONDON_SOCIAL_A.txt) | C01, C02, C06, C07, C08, C09, C10 | `MW01_LONDON_SOCIAL.png` |
+| [MWP01](../../02_library/worlds/memories/22_MWP01_ROUTES_ROOMS_DOCUMENTS_A.txt) | C01 | `MWP01_ROUTES_ROOMS_DOCUMENTS.png` |
 | [SB01](storyboard.txt) | W01, MW01, MWP01, C01, C02, C06, C07, C08, C09 | `SB01_STORYBOARD.png` |
 | [A01](narration.txt) | None | `A01_NARRATION.wav` |
 | [V01](video.txt) | W01, MW01, MWP01, C01, C02, C06, C07, C08, C09, SB01, A01 | `V01_CITY_JUDGES_FIRST.mp4` |

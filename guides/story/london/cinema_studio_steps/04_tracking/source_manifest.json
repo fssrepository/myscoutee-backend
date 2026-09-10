@@ -454,8 +454,8 @@
         2453
       ],
       "source_prompt_sha256": "717f8a13a997263b4988a3087369787649a75542e70f60f5bc32565a4a5fc759",
-      "file": "02_library/worlds/memories/MW01_LONDON_SOCIAL_A.txt",
-      "file_sha256": "906243f05d0341e108e390a7d85a6750dc62d2f9e69b4302b6b4dbf74d820eb6",
+      "file": "02_library/worlds/memories/04_MW01_LONDON_SOCIAL_A.txt",
+      "file_sha256": "a49c2ac3bc83152ac3897453afb292433955bf5506e16caca0d638bd2dc16dab",
       "changes": "Verbatim fenced prompt; explicit centrally maintained reference inputs Grid geometry uses the full selected image resolution instead of fixed pixel examples."
     },
     {
@@ -466,7 +466,7 @@
         2530
       ],
       "source_prompt_sha256": "6e25c11571314fb9f353911cdd369b867c1b90a45dcc5228ce69c24e48b7ba9c",
-      "file": "02_library/worlds/memories/MW02_GLOBAL_ROUTES_A.txt",
+      "file": "02_library/worlds/memories/07_MW02_GLOBAL_ROUTES_A.txt",
       "file_sha256": "059c3d3409283b41b5e404d660b273f0e56a26abe0bef2b820255cfb8c2d0a03",
       "changes": "Verbatim fenced prompt; explicit centrally maintained reference inputs; rural memory grounded in creator's Orosháza paprika/corn-field childhood Grid geometry uses the full selected image resolution instead of fixed pixel examples."
     },
@@ -478,7 +478,7 @@
         2603
       ],
       "source_prompt_sha256": "374ea4b6d0ac33d692653a08a02e706d01e0f45e4279451b364aba2f7263928d",
-      "file": "02_library/worlds/memories/MW03_WORK_RULE_CHANGE_ADMIN_A.txt",
+      "file": "02_library/worlds/memories/10_MW03_WORK_RULE_CHANGE_ADMIN_A.txt",
       "file_sha256": "35a49aa4cc17235ab05d4d9067233876983d4c282fb24fad2df833957d9909ca",
       "changes": "Verbatim fenced prompt; explicit centrally maintained reference inputs Grid geometry uses the full selected image resolution instead of fixed pixel examples."
     },
@@ -490,7 +490,7 @@
         2678
       ],
       "source_prompt_sha256": "7eacf040519edefdb7aa215ca4fb1e1c6524f4ed06dc69d6ef758048002745f9",
-      "file": "02_library/worlds/memories/MW04_POLICE_DEFENCE_A.txt",
+      "file": "02_library/worlds/memories/13_MW04_POLICE_DEFENCE_A.txt",
       "file_sha256": "e1e84606282e688002b1a3f76384687d071a30d42477032f3c8e76f5a4eb8d66",
       "changes": "Verbatim fenced prompt; explicit centrally maintained reference inputs Grid geometry uses the full selected image resolution instead of fixed pixel examples."
     },
@@ -502,7 +502,7 @@
         2753
       ],
       "source_prompt_sha256": "cac300bae4bd6f33e50ec5936c56622c5858e341d0494d281a87e70ed4ee9a04",
-      "file": "02_library/worlds/memories/MW05_COURT_FILE_A.txt",
+      "file": "02_library/worlds/memories/16_MW05_COURT_FILE_A.txt",
       "file_sha256": "f4e6c2cced1581b78ae91fa46008603491e0dbac6db26019fc6e6d469d660d1e",
       "changes": "Verbatim fenced prompt; explicit centrally maintained reference inputs Grid geometry uses the full selected image resolution instead of fixed pixel examples."
     },
@@ -514,7 +514,7 @@
         2832
       ],
       "source_prompt_sha256": "d53e141d60aa5359c28d8695bb7cb84134a480bf043551062606e199558cda02",
-      "file": "02_library/worlds/memories/MW06_HUMAN_COUNTERMEMORIES_A.txt",
+      "file": "02_library/worlds/memories/19_MW06_HUMAN_COUNTERMEMORIES_A.txt",
       "file_sha256": "00eea6abe8d7fa95899bf250866ae1babb59eb3087db92186ee3dcfd3669e3a5",
       "changes": "Verbatim fenced prompt; explicit centrally maintained reference inputs Grid geometry uses the full selected image resolution instead of fixed pixel examples."
     },
@@ -526,7 +526,7 @@
         2907
       ],
       "source_prompt_sha256": "16bf4be44836d9fb010f7825cc24770d0ce78cbd05373fc417d2155eba6ae1e1",
-      "file": "02_library/worlds/memories/MWP01_ROUTES_ROOMS_DOCUMENTS_A.txt",
+      "file": "02_library/worlds/memories/22_MWP01_ROUTES_ROOMS_DOCUMENTS_A.txt",
       "file_sha256": "8308eec6bdbca6ded3784fe9b2e998d240eb26061956ad958a0b385d3c2b62da",
       "changes": "Verbatim fenced prompt; explicit centrally maintained reference inputs; rural memory grounded in creator's Orosháza paprika/corn-field childhood Grid geometry uses the full selected image resolution instead of fixed pixel examples."
     },
@@ -538,7 +538,7 @@
         2967
       ],
       "source_prompt_sha256": "557e0016d71cfd83bfd2c240538a5a77f6b6d8785ceb0f79bb97e387e1ccbd6f",
-      "file": "02_library/worlds/memories/MWP02_SYSTEM_TIME_REVERSALS_A.txt",
+      "file": "02_library/worlds/memories/25_MWP02_SYSTEM_TIME_REVERSALS_A.txt",
       "file_sha256": "df4055c8194dedd71fa9991369896676875bbad3ab1b133800ec450401d1615b",
       "changes": "AI-specific screen becomes ordinary document cursor; citizen/review beat retained; explicit centrally maintained reference inputs Grid geometry uses the full selected image resolution instead of fixed pixel examples."
     },
@@ -550,7 +550,7 @@
         3048
       ],
       "source_prompt_sha256": "521c52dc6be7a4c8e015a67fab11b219bc387a315f00463f84acb191c81fc773",
-      "file": "02_library/worlds/memories/HRW07_CLINICAL_REALITY_A.txt",
+      "file": "02_library/worlds/memories/28_HRW07_CLINICAL_REALITY_A.txt",
       "file_sha256": "05d90bd70af965e9294344983de6241b75fdd57ed8be703ddcd138f4e7fbae98",
       "changes": "Verbatim fenced prompt; explicit centrally maintained reference inputs Grid geometry uses the full selected image resolution instead of fixed pixel examples."
     },
@@ -1822,7 +1822,7 @@
         2453
       ],
       "source_prompt_sha256": "717f8a13a997263b4988a3087369787649a75542e70f60f5bc32565a4a5fc759",
-      "file": "02_library/worlds/memories/MW01_LONDON_SOCIAL_B.txt",
+      "file": "02_library/worlds/memories/05_MW01_LONDON_SOCIAL_B.txt",
       "file_sha256": "8310a945baa53e36415e27cd581129954268ead596d1852586eefdf712b79176",
       "changes": "Verbatim fenced prompt; explicit centrally maintained reference inputs Grid geometry uses the full selected image resolution instead of fixed pixel examples.",
       "note": "Companion page B preserving original memory views."
@@ -1835,7 +1835,7 @@
         2453
       ],
       "source_prompt_sha256": "717f8a13a997263b4988a3087369787649a75542e70f60f5bc32565a4a5fc759",
-      "file": "02_library/worlds/memories/MW01_LONDON_SOCIAL_C.txt",
+      "file": "02_library/worlds/memories/06_MW01_LONDON_SOCIAL_C.txt",
       "file_sha256": "dd5f0ba4c6a2d09313f39c36251c9a606445178c87fe673c38268b406547b5e2",
       "changes": "Verbatim fenced prompt; explicit centrally maintained reference inputs Grid geometry uses the full selected image resolution instead of fixed pixel examples.",
       "note": "Companion page C preserving original memory views."
@@ -1848,7 +1848,7 @@
         2530
       ],
       "source_prompt_sha256": "6e25c11571314fb9f353911cdd369b867c1b90a45dcc5228ce69c24e48b7ba9c",
-      "file": "02_library/worlds/memories/MW02_GLOBAL_ROUTES_B.txt",
+      "file": "02_library/worlds/memories/08_MW02_GLOBAL_ROUTES_B.txt",
       "file_sha256": "6b92832d9dc212c4e1eabd9f459223cb920d38b5e575fdc0b5041f468d30aa76",
       "changes": "Verbatim fenced prompt; explicit centrally maintained reference inputs; rural memory grounded in creator's Orosháza paprika/corn-field childhood Grid geometry uses the full selected image resolution instead of fixed pixel examples.",
       "note": "Companion page B preserving original memory views."
@@ -1861,7 +1861,7 @@
         2530
       ],
       "source_prompt_sha256": "6e25c11571314fb9f353911cdd369b867c1b90a45dcc5228ce69c24e48b7ba9c",
-      "file": "02_library/worlds/memories/MW02_GLOBAL_ROUTES_C.txt",
+      "file": "02_library/worlds/memories/09_MW02_GLOBAL_ROUTES_C.txt",
       "file_sha256": "4641148adde7641ec083ddd779946091b4206f5804704cab9120bcd08775ff1c",
       "changes": "Verbatim fenced prompt; explicit centrally maintained reference inputs; rural memory grounded in creator's Orosháza paprika/corn-field childhood Grid geometry uses the full selected image resolution instead of fixed pixel examples.",
       "note": "Companion page C preserving original memory views."
@@ -1874,7 +1874,7 @@
         2603
       ],
       "source_prompt_sha256": "374ea4b6d0ac33d692653a08a02e706d01e0f45e4279451b364aba2f7263928d",
-      "file": "02_library/worlds/memories/MW03_WORK_RULE_CHANGE_ADMIN_B.txt",
+      "file": "02_library/worlds/memories/11_MW03_WORK_RULE_CHANGE_ADMIN_B.txt",
       "file_sha256": "09c7ad783034cbbd8ce061ceee928af210d77a60cde9e9c9e67aa0d84d82d550",
       "changes": "Verbatim fenced prompt; explicit centrally maintained reference inputs Grid geometry uses the full selected image resolution instead of fixed pixel examples.",
       "note": "Companion page B preserving original memory views."
@@ -1887,7 +1887,7 @@
         2603
       ],
       "source_prompt_sha256": "374ea4b6d0ac33d692653a08a02e706d01e0f45e4279451b364aba2f7263928d",
-      "file": "02_library/worlds/memories/MW03_WORK_RULE_CHANGE_ADMIN_C.txt",
+      "file": "02_library/worlds/memories/12_MW03_WORK_RULE_CHANGE_ADMIN_C.txt",
       "file_sha256": "cfafa5ce8549e67507f589714d907d76bf672638dbe8c118199ae3d6f4c33696",
       "changes": "Verbatim fenced prompt; explicit centrally maintained reference inputs Grid geometry uses the full selected image resolution instead of fixed pixel examples.",
       "note": "Companion page C preserving original memory views."
@@ -1900,7 +1900,7 @@
         2678
       ],
       "source_prompt_sha256": "7eacf040519edefdb7aa215ca4fb1e1c6524f4ed06dc69d6ef758048002745f9",
-      "file": "02_library/worlds/memories/MW04_POLICE_DEFENCE_B.txt",
+      "file": "02_library/worlds/memories/14_MW04_POLICE_DEFENCE_B.txt",
       "file_sha256": "ac5404bd2974a558c5de11f8f86f31f8bb1f051ff5de047223bf04ed57c94be6",
       "changes": "Verbatim fenced prompt; explicit centrally maintained reference inputs Grid geometry uses the full selected image resolution instead of fixed pixel examples.",
       "note": "Companion page B preserving original memory views."
@@ -1913,7 +1913,7 @@
         2678
       ],
       "source_prompt_sha256": "7eacf040519edefdb7aa215ca4fb1e1c6524f4ed06dc69d6ef758048002745f9",
-      "file": "02_library/worlds/memories/MW04_POLICE_DEFENCE_C.txt",
+      "file": "02_library/worlds/memories/15_MW04_POLICE_DEFENCE_C.txt",
       "file_sha256": "217ee0ede80b644b4c9b58889a8c2cdc5797e10bd21c2ab95ff0b9659fef07e5",
       "changes": "Verbatim fenced prompt; explicit centrally maintained reference inputs Grid geometry uses the full selected image resolution instead of fixed pixel examples.",
       "note": "Companion page C preserving original memory views."
@@ -1926,7 +1926,7 @@
         2753
       ],
       "source_prompt_sha256": "cac300bae4bd6f33e50ec5936c56622c5858e341d0494d281a87e70ed4ee9a04",
-      "file": "02_library/worlds/memories/MW05_COURT_FILE_B.txt",
+      "file": "02_library/worlds/memories/17_MW05_COURT_FILE_B.txt",
       "file_sha256": "4df474f73b3fdb69c6f1ad45eae7e013029254074c3b4e9e371e8c00741839ea",
       "changes": "Verbatim fenced prompt; explicit centrally maintained reference inputs Grid geometry uses the full selected image resolution instead of fixed pixel examples.",
       "note": "Companion page B preserving original memory views."
@@ -1939,7 +1939,7 @@
         2753
       ],
       "source_prompt_sha256": "cac300bae4bd6f33e50ec5936c56622c5858e341d0494d281a87e70ed4ee9a04",
-      "file": "02_library/worlds/memories/MW05_COURT_FILE_C.txt",
+      "file": "02_library/worlds/memories/18_MW05_COURT_FILE_C.txt",
       "file_sha256": "20966eae8f5359fbf21346fb3cb949ee4dfea1c18643ad30928cc2d23f5294b0",
       "changes": "Verbatim fenced prompt; explicit centrally maintained reference inputs Grid geometry uses the full selected image resolution instead of fixed pixel examples.",
       "note": "Companion page C preserving original memory views."
@@ -1952,7 +1952,7 @@
         2832
       ],
       "source_prompt_sha256": "d53e141d60aa5359c28d8695bb7cb84134a480bf043551062606e199558cda02",
-      "file": "02_library/worlds/memories/MW06_HUMAN_COUNTERMEMORIES_B.txt",
+      "file": "02_library/worlds/memories/20_MW06_HUMAN_COUNTERMEMORIES_B.txt",
       "file_sha256": "ad1dd57c53a7cdcd3a89155c703c25a350b0c19d9b47575ac24f3013225e46e6",
       "changes": "Verbatim fenced prompt; explicit centrally maintained reference inputs Grid geometry uses the full selected image resolution instead of fixed pixel examples.",
       "note": "Companion page B preserving original memory views."
@@ -1965,7 +1965,7 @@
         2832
       ],
       "source_prompt_sha256": "d53e141d60aa5359c28d8695bb7cb84134a480bf043551062606e199558cda02",
-      "file": "02_library/worlds/memories/MW06_HUMAN_COUNTERMEMORIES_C.txt",
+      "file": "02_library/worlds/memories/21_MW06_HUMAN_COUNTERMEMORIES_C.txt",
       "file_sha256": "0840814608c84064261c8a7d871802cd5b6186d6b8cfec38bc7bee526a1693ee",
       "changes": "Verbatim fenced prompt; explicit centrally maintained reference inputs Grid geometry uses the full selected image resolution instead of fixed pixel examples.",
       "note": "Companion page C preserving original memory views."
@@ -1978,7 +1978,7 @@
         2907
       ],
       "source_prompt_sha256": "16bf4be44836d9fb010f7825cc24770d0ce78cbd05373fc417d2155eba6ae1e1",
-      "file": "02_library/worlds/memories/MWP01_ROUTES_ROOMS_DOCUMENTS_B.txt",
+      "file": "02_library/worlds/memories/23_MWP01_ROUTES_ROOMS_DOCUMENTS_B.txt",
       "file_sha256": "3f16785d623149ac5e41b1d7104d51ca71228d9f459e0b8b5ac0d3f799e83e04",
       "changes": "Verbatim fenced prompt; explicit centrally maintained reference inputs; rural memory grounded in creator's Orosháza paprika/corn-field childhood Grid geometry uses the full selected image resolution instead of fixed pixel examples.",
       "note": "Companion page B preserving original memory views."
@@ -1991,7 +1991,7 @@
         2907
       ],
       "source_prompt_sha256": "16bf4be44836d9fb010f7825cc24770d0ce78cbd05373fc417d2155eba6ae1e1",
-      "file": "02_library/worlds/memories/MWP01_ROUTES_ROOMS_DOCUMENTS_C.txt",
+      "file": "02_library/worlds/memories/24_MWP01_ROUTES_ROOMS_DOCUMENTS_C.txt",
       "file_sha256": "103670cc9b3a5358207ca2a0359726186eb5633a978afd8591f2637a63b1002c",
       "changes": "Verbatim fenced prompt; explicit centrally maintained reference inputs; rural memory grounded in creator's Orosháza paprika/corn-field childhood Grid geometry uses the full selected image resolution instead of fixed pixel examples.",
       "note": "Companion page C preserving original memory views."
@@ -2004,7 +2004,7 @@
         2967
       ],
       "source_prompt_sha256": "557e0016d71cfd83bfd2c240538a5a77f6b6d8785ceb0f79bb97e387e1ccbd6f",
-      "file": "02_library/worlds/memories/MWP02_SYSTEM_TIME_REVERSALS_B.txt",
+      "file": "02_library/worlds/memories/26_MWP02_SYSTEM_TIME_REVERSALS_B.txt",
       "file_sha256": "3fc75e6fad253d1f3f93df4260215b9e220ae2969a471e2a46f16ba23e267c3b",
       "changes": "AI-specific screen becomes ordinary document cursor; citizen/review beat retained; explicit centrally maintained reference inputs Grid geometry uses the full selected image resolution instead of fixed pixel examples.",
       "note": "Companion page B preserving original memory views."
@@ -2017,7 +2017,7 @@
         2967
       ],
       "source_prompt_sha256": "557e0016d71cfd83bfd2c240538a5a77f6b6d8785ceb0f79bb97e387e1ccbd6f",
-      "file": "02_library/worlds/memories/MWP02_SYSTEM_TIME_REVERSALS_C.txt",
+      "file": "02_library/worlds/memories/27_MWP02_SYSTEM_TIME_REVERSALS_C.txt",
       "file_sha256": "b20e9ab8af41ce2e08e10a7dc2c083056f4228856d4d42db1ed027801bb8aebd",
       "changes": "AI-specific screen becomes ordinary document cursor; citizen/review beat retained; explicit centrally maintained reference inputs Grid geometry uses the full selected image resolution instead of fixed pixel examples.",
       "note": "Companion page C preserving original memory views."
@@ -2030,7 +2030,7 @@
         3048
       ],
       "source_prompt_sha256": "521c52dc6be7a4c8e015a67fab11b219bc387a315f00463f84acb191c81fc773",
-      "file": "02_library/worlds/memories/HRW07_CLINICAL_REALITY_B.txt",
+      "file": "02_library/worlds/memories/29_HRW07_CLINICAL_REALITY_B.txt",
       "file_sha256": "e5428d58b7de45e88ca46c9e419b835f4c6205e1c42eb3c60e2ba277e8f022d0",
       "changes": "Verbatim fenced prompt; explicit centrally maintained reference inputs Grid geometry uses the full selected image resolution instead of fixed pixel examples.",
       "note": "Companion page B preserving original memory views."
@@ -2043,7 +2043,7 @@
         3048
       ],
       "source_prompt_sha256": "521c52dc6be7a4c8e015a67fab11b219bc387a315f00463f84acb191c81fc773",
-      "file": "02_library/worlds/memories/HRW07_CLINICAL_REALITY_C.txt",
+      "file": "02_library/worlds/memories/30_HRW07_CLINICAL_REALITY_C.txt",
       "file_sha256": "7f36ef8f20f0afe2bd24876e80f5df862448b129c9ac56fa75037cfce01b9bbd",
       "changes": "Verbatim fenced prompt; explicit centrally maintained reference inputs Grid geometry uses the full selected image resolution instead of fixed pixel examples.",
       "note": "Companion page C preserving original memory views."
@@ -2579,16 +2579,11 @@
     },
     "MW01": {
       "key": "MW01",
-      "path": "02_library/worlds/memories/MW01_LONDON_SOCIAL_A.txt",
+      "path": "02_library/worlds/memories/04_MW01_LONDON_SOCIAL_A.txt",
       "output": "MW01_LONDON_SOCIAL.png",
       "refs": [
         "C01",
         "C02",
-        "C06",
-        "C07",
-        "C08",
-        "C09",
-        "C10",
         "T01_DETAILS"
       ],
       "layout": "4K 2x2 page A; original views 1–4",
@@ -2596,12 +2591,12 @@
         "MW01_B",
         "MW01_C"
       ],
-      "prompt_sha256": "906243f05d0341e108e390a7d85a6750dc62d2f9e69b4302b6b4dbf74d820eb6",
+      "prompt_sha256": "a49c2ac3bc83152ac3897453afb292433955bf5506e16caca0d638bd2dc16dab",
       "reference_review_note": "Use the current T01_DETAILS / T01_A restaurant page; the legacy pilot T01_IMAGE Element is not the input for the current memory generation workflow."
     },
     "MW02": {
       "key": "MW02",
-      "path": "02_library/worlds/memories/MW02_GLOBAL_ROUTES_A.txt",
+      "path": "02_library/worlds/memories/07_MW02_GLOBAL_ROUTES_A.txt",
       "output": "MW02_GLOBAL_ROUTES.png",
       "refs": [
         "C01",
@@ -2626,7 +2621,7 @@
     },
     "MW03": {
       "key": "MW03",
-      "path": "02_library/worlds/memories/MW03_WORK_RULE_CHANGE_ADMIN_A.txt",
+      "path": "02_library/worlds/memories/10_MW03_WORK_RULE_CHANGE_ADMIN_A.txt",
       "output": "MW03_WORK_RULE_CHANGE_ADMIN.png",
       "refs": [
         "C01",
@@ -2643,7 +2638,7 @@
     },
     "MW04": {
       "key": "MW04",
-      "path": "02_library/worlds/memories/MW04_POLICE_DEFENCE_A.txt",
+      "path": "02_library/worlds/memories/13_MW04_POLICE_DEFENCE_A.txt",
       "output": "MW04_POLICE_DEFENCE.png",
       "refs": [
         "C01",
@@ -2661,7 +2656,7 @@
     },
     "MW05": {
       "key": "MW05",
-      "path": "02_library/worlds/memories/MW05_COURT_FILE_A.txt",
+      "path": "02_library/worlds/memories/16_MW05_COURT_FILE_A.txt",
       "output": "MW05_COURT_FILE.png",
       "refs": [
         "C01",
@@ -2681,7 +2676,7 @@
     },
     "MW06": {
       "key": "MW06",
-      "path": "02_library/worlds/memories/MW06_HUMAN_COUNTERMEMORIES_A.txt",
+      "path": "02_library/worlds/memories/19_MW06_HUMAN_COUNTERMEMORIES_A.txt",
       "output": "MW06_HUMAN_COUNTERMEMORIES.png",
       "refs": [
         "C01",
@@ -2705,7 +2700,7 @@
     },
     "MWP01": {
       "key": "MWP01",
-      "path": "02_library/worlds/memories/MWP01_ROUTES_ROOMS_DOCUMENTS_A.txt",
+      "path": "02_library/worlds/memories/22_MWP01_ROUTES_ROOMS_DOCUMENTS_A.txt",
       "output": "MWP01_ROUTES_ROOMS_DOCUMENTS.png",
       "refs": [
         "C01"
@@ -2719,7 +2714,7 @@
     },
     "MWP02": {
       "key": "MWP02",
-      "path": "02_library/worlds/memories/MWP02_SYSTEM_TIME_REVERSALS_A.txt",
+      "path": "02_library/worlds/memories/25_MWP02_SYSTEM_TIME_REVERSALS_A.txt",
       "output": "MWP02_SYSTEM_TIME_REVERSALS.png",
       "refs": [
         "C01"
@@ -2733,7 +2728,7 @@
     },
     "HRW07": {
       "key": "HRW07",
-      "path": "02_library/worlds/memories/HRW07_CLINICAL_REALITY_A.txt",
+      "path": "02_library/worlds/memories/28_HRW07_CLINICAL_REALITY_A.txt",
       "output": "HRW07_CLINICAL_REALITY.png",
       "refs": [
         "C01",
@@ -3826,7 +3821,7 @@
     },
     "MW01_B": {
       "key": "MW01_B",
-      "path": "02_library/worlds/memories/MW01_LONDON_SOCIAL_B.txt",
+      "path": "02_library/worlds/memories/05_MW01_LONDON_SOCIAL_B.txt",
       "output": "MW01_LONDON_SOCIAL_B.png",
       "refs": [
         "C01",
@@ -3853,7 +3848,7 @@
     },
     "MW01_C": {
       "key": "MW01_C",
-      "path": "02_library/worlds/memories/MW01_LONDON_SOCIAL_C.txt",
+      "path": "02_library/worlds/memories/06_MW01_LONDON_SOCIAL_C.txt",
       "output": "MW01_LONDON_SOCIAL_C.png",
       "refs": [
         "C01",
@@ -3880,7 +3875,7 @@
     },
     "MW02_B": {
       "key": "MW02_B",
-      "path": "02_library/worlds/memories/MW02_GLOBAL_ROUTES_B.txt",
+      "path": "02_library/worlds/memories/08_MW02_GLOBAL_ROUTES_B.txt",
       "output": "MW02_GLOBAL_ROUTES_B.png",
       "refs": [
         "C01",
@@ -3910,7 +3905,7 @@
     },
     "MW02_C": {
       "key": "MW02_C",
-      "path": "02_library/worlds/memories/MW02_GLOBAL_ROUTES_C.txt",
+      "path": "02_library/worlds/memories/09_MW02_GLOBAL_ROUTES_C.txt",
       "output": "MW02_GLOBAL_ROUTES_C.png",
       "refs": [
         "C01",
@@ -3940,7 +3935,7 @@
     },
     "MW03_B": {
       "key": "MW03_B",
-      "path": "02_library/worlds/memories/MW03_WORK_RULE_CHANGE_ADMIN_B.txt",
+      "path": "02_library/worlds/memories/11_MW03_WORK_RULE_CHANGE_ADMIN_B.txt",
       "output": "MW03_WORK_RULE_CHANGE_ADMIN_B.png",
       "refs": [
         "C01",
@@ -3962,7 +3957,7 @@
     },
     "MW03_C": {
       "key": "MW03_C",
-      "path": "02_library/worlds/memories/MW03_WORK_RULE_CHANGE_ADMIN_C.txt",
+      "path": "02_library/worlds/memories/12_MW03_WORK_RULE_CHANGE_ADMIN_C.txt",
       "output": "MW03_WORK_RULE_CHANGE_ADMIN_C.png",
       "refs": [
         "C01",
@@ -3984,7 +3979,7 @@
     },
     "MW04_B": {
       "key": "MW04_B",
-      "path": "02_library/worlds/memories/MW04_POLICE_DEFENCE_B.txt",
+      "path": "02_library/worlds/memories/14_MW04_POLICE_DEFENCE_B.txt",
       "output": "MW04_POLICE_DEFENCE_B.png",
       "refs": [
         "C01",
@@ -4007,7 +4002,7 @@
     },
     "MW04_C": {
       "key": "MW04_C",
-      "path": "02_library/worlds/memories/MW04_POLICE_DEFENCE_C.txt",
+      "path": "02_library/worlds/memories/15_MW04_POLICE_DEFENCE_C.txt",
       "output": "MW04_POLICE_DEFENCE_C.png",
       "refs": [
         "C01",
@@ -4030,7 +4025,7 @@
     },
     "MW05_B": {
       "key": "MW05_B",
-      "path": "02_library/worlds/memories/MW05_COURT_FILE_B.txt",
+      "path": "02_library/worlds/memories/17_MW05_COURT_FILE_B.txt",
       "output": "MW05_COURT_FILE_B.png",
       "refs": [
         "C01",
@@ -4055,7 +4050,7 @@
     },
     "MW05_C": {
       "key": "MW05_C",
-      "path": "02_library/worlds/memories/MW05_COURT_FILE_C.txt",
+      "path": "02_library/worlds/memories/18_MW05_COURT_FILE_C.txt",
       "output": "MW05_COURT_FILE_C.png",
       "refs": [
         "C01",
@@ -4080,7 +4075,7 @@
     },
     "MW06_B": {
       "key": "MW06_B",
-      "path": "02_library/worlds/memories/MW06_HUMAN_COUNTERMEMORIES_B.txt",
+      "path": "02_library/worlds/memories/20_MW06_HUMAN_COUNTERMEMORIES_B.txt",
       "output": "MW06_HUMAN_COUNTERMEMORIES_B.png",
       "refs": [
         "C01",
@@ -4109,7 +4104,7 @@
     },
     "MW06_C": {
       "key": "MW06_C",
-      "path": "02_library/worlds/memories/MW06_HUMAN_COUNTERMEMORIES_C.txt",
+      "path": "02_library/worlds/memories/21_MW06_HUMAN_COUNTERMEMORIES_C.txt",
       "output": "MW06_HUMAN_COUNTERMEMORIES_C.png",
       "refs": [
         "C01",
@@ -4138,7 +4133,7 @@
     },
     "MWP01_B": {
       "key": "MWP01_B",
-      "path": "02_library/worlds/memories/MWP01_ROUTES_ROOMS_DOCUMENTS_B.txt",
+      "path": "02_library/worlds/memories/23_MWP01_ROUTES_ROOMS_DOCUMENTS_B.txt",
       "output": "MWP01_ROUTES_ROOMS_DOCUMENTS_B.png",
       "refs": [
         "C01",
@@ -4157,7 +4152,7 @@
     },
     "MWP01_C": {
       "key": "MWP01_C",
-      "path": "02_library/worlds/memories/MWP01_ROUTES_ROOMS_DOCUMENTS_C.txt",
+      "path": "02_library/worlds/memories/24_MWP01_ROUTES_ROOMS_DOCUMENTS_C.txt",
       "output": "MWP01_ROUTES_ROOMS_DOCUMENTS_C.png",
       "refs": [
         "C01",
@@ -4176,7 +4171,7 @@
     },
     "MWP02_B": {
       "key": "MWP02_B",
-      "path": "02_library/worlds/memories/MWP02_SYSTEM_TIME_REVERSALS_B.txt",
+      "path": "02_library/worlds/memories/26_MWP02_SYSTEM_TIME_REVERSALS_B.txt",
       "output": "MWP02_SYSTEM_TIME_REVERSALS_B.png",
       "refs": [
         "C01",
@@ -4195,7 +4190,7 @@
     },
     "MWP02_C": {
       "key": "MWP02_C",
-      "path": "02_library/worlds/memories/MWP02_SYSTEM_TIME_REVERSALS_C.txt",
+      "path": "02_library/worlds/memories/27_MWP02_SYSTEM_TIME_REVERSALS_C.txt",
       "output": "MWP02_SYSTEM_TIME_REVERSALS_C.png",
       "refs": [
         "C01",
@@ -4214,7 +4209,7 @@
     },
     "HRW07_B": {
       "key": "HRW07_B",
-      "path": "02_library/worlds/memories/HRW07_CLINICAL_REALITY_B.txt",
+      "path": "02_library/worlds/memories/29_HRW07_CLINICAL_REALITY_B.txt",
       "output": "HRW07_CLINICAL_REALITY_B.png",
       "refs": [
         "C01",
@@ -4234,7 +4229,7 @@
     },
     "HRW07_C": {
       "key": "HRW07_C",
-      "path": "02_library/worlds/memories/HRW07_CLINICAL_REALITY_C.txt",
+      "path": "02_library/worlds/memories/30_HRW07_CLINICAL_REALITY_C.txt",
       "output": "HRW07_CLINICAL_REALITY_C.png",
       "refs": [
         "C01",
@@ -4254,7 +4249,7 @@
     },
     "T01_DETAILS": {
       "key": "T01_DETAILS",
-      "path": "02_library/worlds/memories/T01_SOHO_RESTAURANT_SOURCE_A.txt",
+      "path": "02_library/worlds/memories/01_T01_SOHO_RESTAURANT_SOURCE_A.txt",
       "output": "T01_SOHO_RESTAURANT_DETAILS_A_2X2.png",
       "refs": [
         "C01",
@@ -4266,7 +4261,7 @@
     },
     "T01_DETAILS_B": {
       "key": "T01_DETAILS_B",
-      "path": "02_library/worlds/memories/T01_SOHO_RESTAURANT_SOURCE_B.txt",
+      "path": "02_library/worlds/memories/02_T01_SOHO_RESTAURANT_SOURCE_B.txt",
       "output": "T01_SOHO_RESTAURANT_DETAILS_B_2X2.png",
       "refs": [
         "C01",
@@ -4279,7 +4274,7 @@
     },
     "T01_DETAILS_C": {
       "key": "T01_DETAILS_C",
-      "path": "02_library/worlds/memories/T01_SOHO_RESTAURANT_SOURCE_C.txt",
+      "path": "02_library/worlds/memories/03_T01_SOHO_RESTAURANT_SOURCE_C.txt",
       "output": "T01_SOHO_RESTAURANT_DETAILS_C_2X2.png",
       "refs": [
         "C01",
@@ -6557,7 +6552,7 @@
       ]
     },
     {
-      "file": "02_library/worlds/memories/T01_SOHO_RESTAURANT_SOURCE_A.txt",
+      "file": "02_library/worlds/memories/01_T01_SOHO_RESTAURANT_SOURCE_A.txt",
       "sha256": "9702b4aba4930284b8d773cc1bcbaa083817bcbc7f17ea0784ab0ed3345ac42a",
       "reference_elements": {
         "C01": "char_MYS_mys-c01-protagonist_s0_v1",
@@ -9936,7 +9931,7 @@
         "pages": {
           "A": {
             "key": "MW01",
-            "file": "02_library/worlds/memories/MW01_LONDON_SOCIAL_A.txt",
+            "file": "02_library/worlds/memories/04_MW01_LONDON_SOCIAL_A.txt",
             "original_views": [
               1,
               2,
@@ -9944,11 +9939,11 @@
               4
             ],
             "status": "PREPARED_NOT_RENDERED",
-            "sha256": "906243f05d0341e108e390a7d85a6750dc62d2f9e69b4302b6b4dbf74d820eb6"
+            "sha256": "a49c2ac3bc83152ac3897453afb292433955bf5506e16caca0d638bd2dc16dab"
           },
           "B": {
             "key": "MW01_B",
-            "file": "02_library/worlds/memories/MW01_LONDON_SOCIAL_B.txt",
+            "file": "02_library/worlds/memories/05_MW01_LONDON_SOCIAL_B.txt",
             "original_views": [
               5,
               6,
@@ -9960,7 +9955,7 @@
           },
           "C": {
             "key": "MW01_C",
-            "file": "02_library/worlds/memories/MW01_LONDON_SOCIAL_C.txt",
+            "file": "02_library/worlds/memories/06_MW01_LONDON_SOCIAL_C.txt",
             "original_views": [
               9,
               1,
@@ -9979,7 +9974,7 @@
         "pages": {
           "A": {
             "key": "MW02",
-            "file": "02_library/worlds/memories/MW02_GLOBAL_ROUTES_A.txt",
+            "file": "02_library/worlds/memories/07_MW02_GLOBAL_ROUTES_A.txt",
             "original_views": [
               1,
               2,
@@ -9991,7 +9986,7 @@
           },
           "B": {
             "key": "MW02_B",
-            "file": "02_library/worlds/memories/MW02_GLOBAL_ROUTES_B.txt",
+            "file": "02_library/worlds/memories/08_MW02_GLOBAL_ROUTES_B.txt",
             "original_views": [
               5,
               6,
@@ -10003,7 +9998,7 @@
           },
           "C": {
             "key": "MW02_C",
-            "file": "02_library/worlds/memories/MW02_GLOBAL_ROUTES_C.txt",
+            "file": "02_library/worlds/memories/09_MW02_GLOBAL_ROUTES_C.txt",
             "original_views": [
               9,
               1,
@@ -10022,7 +10017,7 @@
         "pages": {
           "A": {
             "key": "MW03",
-            "file": "02_library/worlds/memories/MW03_WORK_RULE_CHANGE_ADMIN_A.txt",
+            "file": "02_library/worlds/memories/10_MW03_WORK_RULE_CHANGE_ADMIN_A.txt",
             "original_views": [
               1,
               2,
@@ -10034,7 +10029,7 @@
           },
           "B": {
             "key": "MW03_B",
-            "file": "02_library/worlds/memories/MW03_WORK_RULE_CHANGE_ADMIN_B.txt",
+            "file": "02_library/worlds/memories/11_MW03_WORK_RULE_CHANGE_ADMIN_B.txt",
             "original_views": [
               5,
               6,
@@ -10046,7 +10041,7 @@
           },
           "C": {
             "key": "MW03_C",
-            "file": "02_library/worlds/memories/MW03_WORK_RULE_CHANGE_ADMIN_C.txt",
+            "file": "02_library/worlds/memories/12_MW03_WORK_RULE_CHANGE_ADMIN_C.txt",
             "original_views": [
               9,
               1,
@@ -10065,7 +10060,7 @@
         "pages": {
           "A": {
             "key": "MW04",
-            "file": "02_library/worlds/memories/MW04_POLICE_DEFENCE_A.txt",
+            "file": "02_library/worlds/memories/13_MW04_POLICE_DEFENCE_A.txt",
             "original_views": [
               1,
               2,
@@ -10077,7 +10072,7 @@
           },
           "B": {
             "key": "MW04_B",
-            "file": "02_library/worlds/memories/MW04_POLICE_DEFENCE_B.txt",
+            "file": "02_library/worlds/memories/14_MW04_POLICE_DEFENCE_B.txt",
             "original_views": [
               5,
               6,
@@ -10089,7 +10084,7 @@
           },
           "C": {
             "key": "MW04_C",
-            "file": "02_library/worlds/memories/MW04_POLICE_DEFENCE_C.txt",
+            "file": "02_library/worlds/memories/15_MW04_POLICE_DEFENCE_C.txt",
             "original_views": [
               9,
               1,
@@ -10108,7 +10103,7 @@
         "pages": {
           "A": {
             "key": "MW05",
-            "file": "02_library/worlds/memories/MW05_COURT_FILE_A.txt",
+            "file": "02_library/worlds/memories/16_MW05_COURT_FILE_A.txt",
             "original_views": [
               1,
               2,
@@ -10120,7 +10115,7 @@
           },
           "B": {
             "key": "MW05_B",
-            "file": "02_library/worlds/memories/MW05_COURT_FILE_B.txt",
+            "file": "02_library/worlds/memories/17_MW05_COURT_FILE_B.txt",
             "original_views": [
               5,
               6,
@@ -10132,7 +10127,7 @@
           },
           "C": {
             "key": "MW05_C",
-            "file": "02_library/worlds/memories/MW05_COURT_FILE_C.txt",
+            "file": "02_library/worlds/memories/18_MW05_COURT_FILE_C.txt",
             "original_views": [
               9,
               1,
@@ -10151,7 +10146,7 @@
         "pages": {
           "A": {
             "key": "MW06",
-            "file": "02_library/worlds/memories/MW06_HUMAN_COUNTERMEMORIES_A.txt",
+            "file": "02_library/worlds/memories/19_MW06_HUMAN_COUNTERMEMORIES_A.txt",
             "original_views": [
               1,
               2,
@@ -10163,7 +10158,7 @@
           },
           "B": {
             "key": "MW06_B",
-            "file": "02_library/worlds/memories/MW06_HUMAN_COUNTERMEMORIES_B.txt",
+            "file": "02_library/worlds/memories/20_MW06_HUMAN_COUNTERMEMORIES_B.txt",
             "original_views": [
               5,
               6,
@@ -10175,7 +10170,7 @@
           },
           "C": {
             "key": "MW06_C",
-            "file": "02_library/worlds/memories/MW06_HUMAN_COUNTERMEMORIES_C.txt",
+            "file": "02_library/worlds/memories/21_MW06_HUMAN_COUNTERMEMORIES_C.txt",
             "original_views": [
               9,
               1,
@@ -10194,7 +10189,7 @@
         "pages": {
           "A": {
             "key": "MWP01",
-            "file": "02_library/worlds/memories/MWP01_ROUTES_ROOMS_DOCUMENTS_A.txt",
+            "file": "02_library/worlds/memories/22_MWP01_ROUTES_ROOMS_DOCUMENTS_A.txt",
             "original_views": [
               1,
               2,
@@ -10206,7 +10201,7 @@
           },
           "B": {
             "key": "MWP01_B",
-            "file": "02_library/worlds/memories/MWP01_ROUTES_ROOMS_DOCUMENTS_B.txt",
+            "file": "02_library/worlds/memories/23_MWP01_ROUTES_ROOMS_DOCUMENTS_B.txt",
             "original_views": [
               5,
               6,
@@ -10218,7 +10213,7 @@
           },
           "C": {
             "key": "MWP01_C",
-            "file": "02_library/worlds/memories/MWP01_ROUTES_ROOMS_DOCUMENTS_C.txt",
+            "file": "02_library/worlds/memories/24_MWP01_ROUTES_ROOMS_DOCUMENTS_C.txt",
             "original_views": [
               9,
               1,
@@ -10237,7 +10232,7 @@
         "pages": {
           "A": {
             "key": "MWP02",
-            "file": "02_library/worlds/memories/MWP02_SYSTEM_TIME_REVERSALS_A.txt",
+            "file": "02_library/worlds/memories/25_MWP02_SYSTEM_TIME_REVERSALS_A.txt",
             "original_views": [
               1,
               2,
@@ -10249,7 +10244,7 @@
           },
           "B": {
             "key": "MWP02_B",
-            "file": "02_library/worlds/memories/MWP02_SYSTEM_TIME_REVERSALS_B.txt",
+            "file": "02_library/worlds/memories/26_MWP02_SYSTEM_TIME_REVERSALS_B.txt",
             "original_views": [
               5,
               6,
@@ -10261,7 +10256,7 @@
           },
           "C": {
             "key": "MWP02_C",
-            "file": "02_library/worlds/memories/MWP02_SYSTEM_TIME_REVERSALS_C.txt",
+            "file": "02_library/worlds/memories/27_MWP02_SYSTEM_TIME_REVERSALS_C.txt",
             "original_views": [
               9,
               1,
@@ -10280,7 +10275,7 @@
         "pages": {
           "A": {
             "key": "HRW07",
-            "file": "02_library/worlds/memories/HRW07_CLINICAL_REALITY_A.txt",
+            "file": "02_library/worlds/memories/28_HRW07_CLINICAL_REALITY_A.txt",
             "original_views": [
               1,
               2,
@@ -10292,7 +10287,7 @@
           },
           "B": {
             "key": "HRW07_B",
-            "file": "02_library/worlds/memories/HRW07_CLINICAL_REALITY_B.txt",
+            "file": "02_library/worlds/memories/29_HRW07_CLINICAL_REALITY_B.txt",
             "original_views": [
               5,
               6,
@@ -10304,7 +10299,7 @@
           },
           "C": {
             "key": "HRW07_C",
-            "file": "02_library/worlds/memories/HRW07_CLINICAL_REALITY_C.txt",
+            "file": "02_library/worlds/memories/30_HRW07_CLINICAL_REALITY_C.txt",
             "original_views": [
               9,
               1,
@@ -10323,7 +10318,7 @@
         "pages": {
           "A": {
             "key": "T01_DETAILS",
-            "file": "02_library/worlds/memories/T01_SOHO_RESTAURANT_SOURCE_A.txt",
+            "file": "02_library/worlds/memories/01_T01_SOHO_RESTAURANT_SOURCE_A.txt",
             "views": [
               1,
               2,
@@ -10335,7 +10330,7 @@
           },
           "B": {
             "key": "T01_DETAILS_B",
-            "file": "02_library/worlds/memories/T01_SOHO_RESTAURANT_SOURCE_B.txt",
+            "file": "02_library/worlds/memories/02_T01_SOHO_RESTAURANT_SOURCE_B.txt",
             "views": [
               5,
               6,
@@ -10347,7 +10342,7 @@
           },
           "C": {
             "key": "T01_DETAILS_C",
-            "file": "02_library/worlds/memories/T01_SOHO_RESTAURANT_SOURCE_C.txt",
+            "file": "02_library/worlds/memories/03_T01_SOHO_RESTAURANT_SOURCE_C.txt",
             "views": [
               9,
               10,
@@ -10989,7 +10984,7 @@
         "type": "Location",
         "description": "London Social, page A: four assigned literal location and encounter views. Remembered people have no score cards.",
         "group": "memories",
-        "prompt": "02_library/worlds/memories/MW01_LONDON_SOCIAL_A.txt"
+        "prompt": "02_library/worlds/memories/04_MW01_LONDON_SOCIAL_A.txt"
       },
       {
         "key": "MW01_B",
@@ -10998,7 +10993,7 @@
         "type": "Location",
         "description": "London Social, page B: four assigned literal location and encounter views. Remembered people have no score cards.",
         "group": "memories",
-        "prompt": "02_library/worlds/memories/MW01_LONDON_SOCIAL_B.txt"
+        "prompt": "02_library/worlds/memories/05_MW01_LONDON_SOCIAL_B.txt"
       },
       {
         "key": "MW01_C",
@@ -11007,7 +11002,7 @@
         "type": "Location",
         "description": "London Social, page C: four assigned literal location and encounter views. Remembered people have no score cards.",
         "group": "memories",
-        "prompt": "02_library/worlds/memories/MW01_LONDON_SOCIAL_C.txt"
+        "prompt": "02_library/worlds/memories/06_MW01_LONDON_SOCIAL_C.txt"
       },
       {
         "key": "MW02",
@@ -11016,7 +11011,7 @@
         "type": "Location",
         "description": "Global Routes, page A: four assigned literal location and encounter views. Remembered people have no score cards.",
         "group": "memories",
-        "prompt": "02_library/worlds/memories/MW02_GLOBAL_ROUTES_A.txt"
+        "prompt": "02_library/worlds/memories/07_MW02_GLOBAL_ROUTES_A.txt"
       },
       {
         "key": "MW02_B",
@@ -11025,7 +11020,7 @@
         "type": "Location",
         "description": "Global Routes, page B: four assigned literal location and encounter views. Remembered people have no score cards.",
         "group": "memories",
-        "prompt": "02_library/worlds/memories/MW02_GLOBAL_ROUTES_B.txt"
+        "prompt": "02_library/worlds/memories/08_MW02_GLOBAL_ROUTES_B.txt"
       },
       {
         "key": "MW02_C",
@@ -11034,7 +11029,7 @@
         "type": "Location",
         "description": "Global Routes, page C: four assigned literal location and encounter views. Remembered people have no score cards.",
         "group": "memories",
-        "prompt": "02_library/worlds/memories/MW02_GLOBAL_ROUTES_C.txt"
+        "prompt": "02_library/worlds/memories/09_MW02_GLOBAL_ROUTES_C.txt"
       },
       {
         "key": "MW03",
@@ -11043,7 +11038,7 @@
         "type": "Location",
         "description": "Work Rule Change Admin, page A: four assigned literal location and encounter views. Remembered people have no score cards.",
         "group": "memories",
-        "prompt": "02_library/worlds/memories/MW03_WORK_RULE_CHANGE_ADMIN_A.txt"
+        "prompt": "02_library/worlds/memories/10_MW03_WORK_RULE_CHANGE_ADMIN_A.txt"
       },
       {
         "key": "MW03_B",
@@ -11052,7 +11047,7 @@
         "type": "Location",
         "description": "Work Rule Change Admin, page B: four assigned literal location and encounter views. Remembered people have no score cards.",
         "group": "memories",
-        "prompt": "02_library/worlds/memories/MW03_WORK_RULE_CHANGE_ADMIN_B.txt"
+        "prompt": "02_library/worlds/memories/11_MW03_WORK_RULE_CHANGE_ADMIN_B.txt"
       },
       {
         "key": "MW03_C",
@@ -11061,7 +11056,7 @@
         "type": "Location",
         "description": "Work Rule Change Admin, page C: four assigned literal location and encounter views. Remembered people have no score cards.",
         "group": "memories",
-        "prompt": "02_library/worlds/memories/MW03_WORK_RULE_CHANGE_ADMIN_C.txt"
+        "prompt": "02_library/worlds/memories/12_MW03_WORK_RULE_CHANGE_ADMIN_C.txt"
       },
       {
         "key": "MW04",
@@ -11070,7 +11065,7 @@
         "type": "Location",
         "description": "Police Defence, page A: four assigned literal location and encounter views. Remembered people have no score cards.",
         "group": "memories",
-        "prompt": "02_library/worlds/memories/MW04_POLICE_DEFENCE_A.txt"
+        "prompt": "02_library/worlds/memories/13_MW04_POLICE_DEFENCE_A.txt"
       },
       {
         "key": "MW04_B",
@@ -11079,7 +11074,7 @@
         "type": "Location",
         "description": "Police Defence, page B: four assigned literal location and encounter views. Remembered people have no score cards.",
         "group": "memories",
-        "prompt": "02_library/worlds/memories/MW04_POLICE_DEFENCE_B.txt"
+        "prompt": "02_library/worlds/memories/14_MW04_POLICE_DEFENCE_B.txt"
       },
       {
         "key": "MW04_C",
@@ -11088,7 +11083,7 @@
         "type": "Location",
         "description": "Police Defence, page C: four assigned literal location and encounter views. Remembered people have no score cards.",
         "group": "memories",
-        "prompt": "02_library/worlds/memories/MW04_POLICE_DEFENCE_C.txt"
+        "prompt": "02_library/worlds/memories/15_MW04_POLICE_DEFENCE_C.txt"
       },
       {
         "key": "MW05",
@@ -11097,7 +11092,7 @@
         "type": "Location",
         "description": "Court File, page A: four assigned literal location and encounter views. Remembered people have no score cards.",
         "group": "memories",
-        "prompt": "02_library/worlds/memories/MW05_COURT_FILE_A.txt"
+        "prompt": "02_library/worlds/memories/16_MW05_COURT_FILE_A.txt"
       },
       {
         "key": "MW05_B",
@@ -11106,7 +11101,7 @@
         "type": "Location",
         "description": "Court File, page B: four assigned literal location and encounter views. Remembered people have no score cards.",
         "group": "memories",
-        "prompt": "02_library/worlds/memories/MW05_COURT_FILE_B.txt"
+        "prompt": "02_library/worlds/memories/17_MW05_COURT_FILE_B.txt"
       },
       {
         "key": "MW05_C",
@@ -11115,7 +11110,7 @@
         "type": "Location",
         "description": "Court File, page C: four assigned literal location and encounter views. Remembered people have no score cards.",
         "group": "memories",
-        "prompt": "02_library/worlds/memories/MW05_COURT_FILE_C.txt"
+        "prompt": "02_library/worlds/memories/18_MW05_COURT_FILE_C.txt"
       },
       {
         "key": "MW06",
@@ -11124,7 +11119,7 @@
         "type": "Location",
         "description": "Human Countermemories, page A: four assigned literal location and encounter views. Remembered people have no score cards.",
         "group": "memories",
-        "prompt": "02_library/worlds/memories/MW06_HUMAN_COUNTERMEMORIES_A.txt"
+        "prompt": "02_library/worlds/memories/19_MW06_HUMAN_COUNTERMEMORIES_A.txt"
       },
       {
         "key": "MW06_B",
@@ -11133,7 +11128,7 @@
         "type": "Location",
         "description": "Human Countermemories, page B: four assigned literal location and encounter views. Remembered people have no score cards.",
         "group": "memories",
-        "prompt": "02_library/worlds/memories/MW06_HUMAN_COUNTERMEMORIES_B.txt"
+        "prompt": "02_library/worlds/memories/20_MW06_HUMAN_COUNTERMEMORIES_B.txt"
       },
       {
         "key": "MW06_C",
@@ -11142,7 +11137,7 @@
         "type": "Location",
         "description": "Human Countermemories, page C: four assigned literal location and encounter views. Remembered people have no score cards.",
         "group": "memories",
-        "prompt": "02_library/worlds/memories/MW06_HUMAN_COUNTERMEMORIES_C.txt"
+        "prompt": "02_library/worlds/memories/21_MW06_HUMAN_COUNTERMEMORIES_C.txt"
       },
       {
         "key": "MWP01",
@@ -11151,7 +11146,7 @@
         "type": "Location",
         "description": "Routes Rooms Documents, page A: four assigned literal location and encounter views. Remembered people have no score cards.",
         "group": "memories",
-        "prompt": "02_library/worlds/memories/MWP01_ROUTES_ROOMS_DOCUMENTS_A.txt"
+        "prompt": "02_library/worlds/memories/22_MWP01_ROUTES_ROOMS_DOCUMENTS_A.txt"
       },
       {
         "key": "MWP01_B",
@@ -11160,7 +11155,7 @@
         "type": "Location",
         "description": "Routes Rooms Documents, page B: four assigned literal location and encounter views. Remembered people have no score cards.",
         "group": "memories",
-        "prompt": "02_library/worlds/memories/MWP01_ROUTES_ROOMS_DOCUMENTS_B.txt"
+        "prompt": "02_library/worlds/memories/23_MWP01_ROUTES_ROOMS_DOCUMENTS_B.txt"
       },
       {
         "key": "MWP01_C",
@@ -11169,7 +11164,7 @@
         "type": "Location",
         "description": "Routes Rooms Documents, page C: four assigned literal location and encounter views. Remembered people have no score cards.",
         "group": "memories",
-        "prompt": "02_library/worlds/memories/MWP01_ROUTES_ROOMS_DOCUMENTS_C.txt"
+        "prompt": "02_library/worlds/memories/24_MWP01_ROUTES_ROOMS_DOCUMENTS_C.txt"
       },
       {
         "key": "MWP02",
@@ -11178,7 +11173,7 @@
         "type": "Location",
         "description": "System Time Reversals, page A: four assigned literal location and encounter views. Remembered people have no score cards.",
         "group": "memories",
-        "prompt": "02_library/worlds/memories/MWP02_SYSTEM_TIME_REVERSALS_A.txt"
+        "prompt": "02_library/worlds/memories/25_MWP02_SYSTEM_TIME_REVERSALS_A.txt"
       },
       {
         "key": "MWP02_B",
@@ -11187,7 +11182,7 @@
         "type": "Location",
         "description": "System Time Reversals, page B: four assigned literal location and encounter views. Remembered people have no score cards.",
         "group": "memories",
-        "prompt": "02_library/worlds/memories/MWP02_SYSTEM_TIME_REVERSALS_B.txt"
+        "prompt": "02_library/worlds/memories/26_MWP02_SYSTEM_TIME_REVERSALS_B.txt"
       },
       {
         "key": "MWP02_C",
@@ -11196,7 +11191,7 @@
         "type": "Location",
         "description": "System Time Reversals, page C: four assigned literal location and encounter views. Remembered people have no score cards.",
         "group": "memories",
-        "prompt": "02_library/worlds/memories/MWP02_SYSTEM_TIME_REVERSALS_C.txt"
+        "prompt": "02_library/worlds/memories/27_MWP02_SYSTEM_TIME_REVERSALS_C.txt"
       },
       {
         "key": "HRW07",
@@ -11205,7 +11200,7 @@
         "type": "Location",
         "description": "Clinical reality, page A: four ordinary room and patient detail views for Block 07 only; no score cards.",
         "group": "memories",
-        "prompt": "02_library/worlds/memories/HRW07_CLINICAL_REALITY_A.txt"
+        "prompt": "02_library/worlds/memories/28_HRW07_CLINICAL_REALITY_A.txt"
       },
       {
         "key": "HRW07_B",
@@ -11214,7 +11209,7 @@
         "type": "Location",
         "description": "Clinical reality, page B: four ordinary room and patient detail views for Block 07 only; no score cards.",
         "group": "memories",
-        "prompt": "02_library/worlds/memories/HRW07_CLINICAL_REALITY_B.txt"
+        "prompt": "02_library/worlds/memories/29_HRW07_CLINICAL_REALITY_B.txt"
       },
       {
         "key": "HRW07_C",
@@ -11223,7 +11218,7 @@
         "type": "Location",
         "description": "Clinical reality, page C: four ordinary room and patient detail views for Block 07 only; no score cards.",
         "group": "memories",
-        "prompt": "02_library/worlds/memories/HRW07_CLINICAL_REALITY_C.txt"
+        "prompt": "02_library/worlds/memories/30_HRW07_CLINICAL_REALITY_C.txt"
       },
       {
         "key": "T01_DETAILS",
@@ -11232,7 +11227,7 @@
         "type": "Location",
         "description": "Soho restaurant memory, page A: four views covering room layout and encounter. Same seated woman and man beside two restroom doors; no cards.",
         "group": "memories",
-        "prompt": "02_library/worlds/memories/T01_SOHO_RESTAURANT_SOURCE_A.txt"
+        "prompt": "02_library/worlds/memories/01_T01_SOHO_RESTAURANT_SOURCE_A.txt"
       },
       {
         "key": "T01_DETAILS_B",
@@ -11241,7 +11236,7 @@
         "type": "Location",
         "description": "Soho restaurant memory, page B: four views covering people, contact details and restroom doors. Same seated woman and man beside two restroom doors; no cards.",
         "group": "memories",
-        "prompt": "02_library/worlds/memories/T01_SOHO_RESTAURANT_SOURCE_B.txt"
+        "prompt": "02_library/worlds/memories/02_T01_SOHO_RESTAURANT_SOURCE_B.txt"
       },
       {
         "key": "T01_DETAILS_C",
@@ -11250,7 +11245,7 @@
         "type": "Location",
         "description": "Soho restaurant memory, page C: four views covering room construction, lighting and camera clearance. Same seated woman and man beside two restroom doors; no cards.",
         "group": "memories",
-        "prompt": "02_library/worlds/memories/T01_SOHO_RESTAURANT_SOURCE_C.txt"
+        "prompt": "02_library/worlds/memories/03_T01_SOHO_RESTAURANT_SOURCE_C.txt"
       },
       {
         "key": "MR001",

@@ -29,7 +29,7 @@ Generate only missing media. Reuse accepted dependencies from prior blocks. Each
 | [C04](../../02_library/characters/C04_APPOINTED_LAWYER.txt) | None | `C04_APPOINTED_LAWYER.png` |
 | [C25](../../02_library/characters/C25_SEARCH_OFFICER_MALE.txt) | None | `C25_SEARCH_OFFICER_MALE.png` |
 | [C26](../../02_library/characters/C26_DEFENCE_OFFICE_SUBSTITUTE.txt) | None | `C26_DEFENCE_OFFICE_SUBSTITUTE.png` |
-| [MW04](../../02_library/worlds/memories/MW04_POLICE_DEFENCE_A.txt) | C01, C03, C04, C25, C26 | `MW04_POLICE_DEFENCE.png` |
+| [MW04](../../02_library/worlds/memories/13_MW04_POLICE_DEFENCE_A.txt) | C01, C03, C04, C25, C26 | `MW04_POLICE_DEFENCE.png` |
 | [SB04](storyboard.txt) | W04, MW04, C01, C03, C04, C25, C26 | `SB04_STORYBOARD.png` |
 | [A04](narration.txt) | None | `A04_NARRATION.wav` |
 | [V04](video.txt) | W04, MW04, C01, C03, C04, C25, C26, SB04, A04, V03 | `V04_CHAIN_TO_0200.mp4` |

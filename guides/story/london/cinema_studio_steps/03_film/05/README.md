@@ -30,8 +30,8 @@ Generate only missing media. Reuse accepted dependencies from prior blocks. Each
 | [C29](../../02_library/characters/C29_FORENSIC_EXPERT_B.txt) | None | `C29_FORENSIC_EXPERT_B.png` |
 | [C30](../../02_library/characters/C30_COURT_CLERK.txt) | None | `C30_COURT_CLERK.png` |
 | [C31](../../02_library/characters/C31_ANONYMOUS_FICTIONAL_POLITICAL_FIGURE.txt) | None | `C31_ANONYMOUS_FICTIONAL_POLITICAL_FIGURE.png` |
-| [MW05](../../02_library/worlds/memories/MW05_COURT_FILE_A.txt) | C01, C04, C27, C28, C29, C30, C31 | `MW05_COURT_FILE.png` |
-| [MWP02](../../02_library/worlds/memories/MWP02_SYSTEM_TIME_REVERSALS_A.txt) | C01 | `MWP02_SYSTEM_TIME_REVERSALS.png` |
+| [MW05](../../02_library/worlds/memories/16_MW05_COURT_FILE_A.txt) | C01, C04, C27, C28, C29, C30, C31 | `MW05_COURT_FILE.png` |
+| [MWP02](../../02_library/worlds/memories/25_MWP02_SYSTEM_TIME_REVERSALS_A.txt) | C01 | `MWP02_SYSTEM_TIME_REVERSALS.png` |
 | [SB05](storyboard.txt) | W05, MW05, MWP02, C01, C04, C27, C28, C29, C30, C31 | `SB05_STORYBOARD.png` |
 | [A05](narration.txt) | None | `A05_NARRATION.wav` |
 | [V05](video.txt) | W05, MW05, MWP02, C01, C04, C27, C28, C29, C30, C31, SB05, A05, V04 | `V05_CHAIN_TO_0230.mp4` |

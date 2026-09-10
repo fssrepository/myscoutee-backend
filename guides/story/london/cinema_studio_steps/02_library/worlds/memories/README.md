@@ -1,24 +1,26 @@
 # Memory reference pages — 4K 2×2
 
+The `01_`–`30_` filename prefixes define generation order: T01, MW01–MW06, MWP01, MWP02, then HRW07; each group stays A, B, C. Every memory-image dependency precedes its dependent prompt. After generating a required source page, bind its actual Element ID before continuing to dependent pages. Already generated pages need no repeat generation. Prefixes change filenames only; prompt text, canonical keys and Element IDs are unchanged.
+
 Each file is one copy-ready image prompt for a 3840×2160 canvas divided into four 1920×1080 cells without gutters. Each original nine-view bank now has three pages, preserving all 81 original views across the nine banks. Every page filename ends in _A.txt, _B.txt or _C.txt so the pages sort together. The canonical Element keys identify these pages; binding an output ID does not by itself verify its attached image.
 
 | Bank | Page A: original 1–4 | Page B: original 5–8 | Page C: original 9, 1, 7, 8 |
 | --- | --- | --- | --- |
-| MW01 | [A](MW01_LONDON_SOCIAL_A.txt) | [B](MW01_LONDON_SOCIAL_B.txt) | [C](MW01_LONDON_SOCIAL_C.txt) |
-| MW02 | [A](MW02_GLOBAL_ROUTES_A.txt) | [B](MW02_GLOBAL_ROUTES_B.txt) | [C](MW02_GLOBAL_ROUTES_C.txt) |
-| MW03 | [A](MW03_WORK_RULE_CHANGE_ADMIN_A.txt) | [B](MW03_WORK_RULE_CHANGE_ADMIN_B.txt) | [C](MW03_WORK_RULE_CHANGE_ADMIN_C.txt) |
-| MW04 | [A](MW04_POLICE_DEFENCE_A.txt) | [B](MW04_POLICE_DEFENCE_B.txt) | [C](MW04_POLICE_DEFENCE_C.txt) |
-| MW05 | [A](MW05_COURT_FILE_A.txt) | [B](MW05_COURT_FILE_B.txt) | [C](MW05_COURT_FILE_C.txt) |
-| MW06 | [A](MW06_HUMAN_COUNTERMEMORIES_A.txt) | [B](MW06_HUMAN_COUNTERMEMORIES_B.txt) | [C](MW06_HUMAN_COUNTERMEMORIES_C.txt) |
-| MWP01 | [A](MWP01_ROUTES_ROOMS_DOCUMENTS_A.txt) | [B](MWP01_ROUTES_ROOMS_DOCUMENTS_B.txt) | [C](MWP01_ROUTES_ROOMS_DOCUMENTS_C.txt) |
-| MWP02 | [A](MWP02_SYSTEM_TIME_REVERSALS_A.txt) | [B](MWP02_SYSTEM_TIME_REVERSALS_B.txt) | [C](MWP02_SYSTEM_TIME_REVERSALS_C.txt) |
-| HRW07 | [A](HRW07_CLINICAL_REALITY_A.txt) | [B](HRW07_CLINICAL_REALITY_B.txt) | [C](HRW07_CLINICAL_REALITY_C.txt) |
+| MW01 | [A](04_MW01_LONDON_SOCIAL_A.txt) | [B](05_MW01_LONDON_SOCIAL_B.txt) | [C](06_MW01_LONDON_SOCIAL_C.txt) |
+| MW02 | [A](07_MW02_GLOBAL_ROUTES_A.txt) | [B](08_MW02_GLOBAL_ROUTES_B.txt) | [C](09_MW02_GLOBAL_ROUTES_C.txt) |
+| MW03 | [A](10_MW03_WORK_RULE_CHANGE_ADMIN_A.txt) | [B](11_MW03_WORK_RULE_CHANGE_ADMIN_B.txt) | [C](12_MW03_WORK_RULE_CHANGE_ADMIN_C.txt) |
+| MW04 | [A](13_MW04_POLICE_DEFENCE_A.txt) | [B](14_MW04_POLICE_DEFENCE_B.txt) | [C](15_MW04_POLICE_DEFENCE_C.txt) |
+| MW05 | [A](16_MW05_COURT_FILE_A.txt) | [B](17_MW05_COURT_FILE_B.txt) | [C](18_MW05_COURT_FILE_C.txt) |
+| MW06 | [A](19_MW06_HUMAN_COUNTERMEMORIES_A.txt) | [B](20_MW06_HUMAN_COUNTERMEMORIES_B.txt) | [C](21_MW06_HUMAN_COUNTERMEMORIES_C.txt) |
+| MWP01 | [A](22_MWP01_ROUTES_ROOMS_DOCUMENTS_A.txt) | [B](23_MWP01_ROUTES_ROOMS_DOCUMENTS_B.txt) | [C](24_MWP01_ROUTES_ROOMS_DOCUMENTS_C.txt) |
+| MWP02 | [A](25_MWP02_SYSTEM_TIME_REVERSALS_A.txt) | [B](26_MWP02_SYSTEM_TIME_REVERSALS_B.txt) | [C](27_MWP02_SYSTEM_TIME_REVERSALS_C.txt) |
+| HRW07 | [A](28_HRW07_CLINICAL_REALITY_A.txt) | [B](29_HRW07_CLINICAL_REALITY_B.txt) | [C](30_HRW07_CLINICAL_REALITY_C.txt) |
 
 T01 now follows the same A–B–C organization, with twelve detailed views of the accepted restaurant:
 
 | Bank | Page A | Page B | Page C |
 | --- | --- | --- | --- |
-| T01 | [Room and encounter](T01_SOHO_RESTAURANT_SOURCE_A.txt) | [People and contact details](T01_SOHO_RESTAURANT_SOURCE_B.txt) | [Construction and camera clearance](T01_SOHO_RESTAURANT_SOURCE_C.txt) |
+| T01 | [Room and encounter](01_T01_SOHO_RESTAURANT_SOURCE_A.txt) | [People and contact details](02_T01_SOHO_RESTAURANT_SOURCE_B.txt) | [Construction and camera clearance](03_T01_SOHO_RESTAURANT_SOURCE_C.txt) |
 
 In the clean restart, T01_A establishes the restaurant from its detailed text and C01/C02 character images. T01_B/C reuse accepted T01_A for consistent layout and furnishings. Output keys are T01_DETAILS (A), T01_DETAILS_B and T01_DETAILS_C. The deleted single-image T01_IMAGE is not recreated as an Element.
 
