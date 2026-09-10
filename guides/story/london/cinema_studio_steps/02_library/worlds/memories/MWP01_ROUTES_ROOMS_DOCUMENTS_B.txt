@@ -1,3 +1,5 @@
+REFERENCE ID: MWP01_ROUTES_ROOMS_DOCUMENTS_B (do not render this identifier).
+
 REFERENCE SETUP INCOMPLETE: MWP01
 Do not generate until these references are bound.
 

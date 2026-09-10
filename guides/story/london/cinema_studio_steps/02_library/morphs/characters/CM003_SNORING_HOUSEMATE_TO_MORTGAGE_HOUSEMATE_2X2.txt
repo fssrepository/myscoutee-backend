@@ -1,3 +1,5 @@
+REFERENCE ID: CM003_SNORING_HOUSEMATE_TO_MORTGAGE_HOUSEMATE_2X2 (do not render this identifier).
+
 REFERENCE SETUP INCOMPLETE: C06, C07
 Do not generate until these references are bound.
 

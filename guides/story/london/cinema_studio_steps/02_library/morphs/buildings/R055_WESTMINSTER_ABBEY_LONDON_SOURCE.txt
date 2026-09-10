@@ -1,3 +1,5 @@
+REFERENCE ID: R055_WESTMINSTER_ABBEY_LONDON_SOURCE (do not render this identifier).
+
 SUBJECT — WESTMINSTER ABBEY TO MATTHIAS CHURCH:
 Track an Abbey tracery joint into a new window, a tower-crown block into the tall spire and one source roof seam into the patterned destination roof. This is a library transformation option, not an automatic change to the final clinical sequence.
 

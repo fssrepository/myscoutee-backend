@@ -1,3 +1,5 @@
+REFERENCE ID: T01_SOHO_RESTAURANT_SOURCE_A (do not render this identifier).
+
 REFERENCE INPUTS:
 @char_mys_protagonist_s1_v1 supplies the remembered man's exact face, hair, body and dark jacket. There is one occurrence of him inside this memory.
 @char_mys_soho-woman_s1_v1 supplies the seated woman's exact identity. Use her dark everyday clothing and hair from her character image; keep her seated at the near right-hand table.

@@ -1,3 +1,5 @@
+REFERENCE ID: HRW07_CLINICAL_REALITY_C (do not render this identifier).
+
 REFERENCE SETUP INCOMPLETE: HRW07
 Do not generate until these references are bound.
 

@@ -1,3 +1,5 @@
+REFERENCE ID: HRW07_CLINICAL_REALITY_A (do not render this identifier).
+
 REFERENCE INPUTS:
 @char_mys_protagonist_s1_v1 = CHARACTER 01 — PROTAGONIST; exact person identity; use only where this person appears.
 @char_mys_final-nurse_s7_v1 = CHARACTER 05 — FINAL NURSE; exact person identity; use only where this person appears.

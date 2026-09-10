@@ -83,7 +83,7 @@
       ],
       "source_prompt_sha256": "1c7f054229ec7c5295ee6e424c9d169831af8221220b92deea92c9a83f564005",
       "file": "02_library/characters/C01_PROTAGONIST.txt",
-      "file_sha256": "3c828b0141c2c7a691eaf0619928e4fe4ee8d26984af6ac6e96269b3e5b1420d",
+      "file_sha256": "038b5c65e74931d3b7b19c84b1d853b59d5b60fcea2bfcbc44f0842ce7656457",
       "changes": "Verbatim fenced prompt"
     },
     {
@@ -95,7 +95,7 @@
       ],
       "source_prompt_sha256": "1c84a4aee0d00d764205f4d31ce7919c94264d76932fb45ddbe57b3e6b970581",
       "file": "02_library/characters/C02_SOHO_WOMAN.txt",
-      "file_sha256": "c3b9438be5dc0d54dd2767a4c933339d07d19b548af9b7c7d22798f3325c6974",
+      "file_sha256": "99ec2fadb6dfa0a1f5887a322063bc34b8eb5757895570f577ed31b798969961",
       "changes": "Verbatim fenced prompt"
     },
     {
@@ -107,7 +107,7 @@
       ],
       "source_prompt_sha256": "0cec9d04f9314393840ada226c7ca8e576f97e74b19eb9e5b473801db325befc",
       "file": "02_library/characters/C03_POLICEWOMAN.txt",
-      "file_sha256": "f5c7109b3ee7211ccf867ed2ad21cf00131494e56bd76429f7198747804b4fd7",
+      "file_sha256": "ed26138a1554c96142c3800fdfdeedd2a4b66a44c344f7ed80c4fd3e7b2f4f47",
       "changes": "Verbatim fenced prompt"
     },
     {
@@ -119,7 +119,7 @@
       ],
       "source_prompt_sha256": "5d09e227111b9df2ff0c6019138233806fcb4790776ceddadfab334f392c53aa",
       "file": "02_library/characters/C04_APPOINTED_LAWYER.txt",
-      "file_sha256": "7006ba20df546bba841ddc643ba7808f27ec7f3d49d1722bd799eb9f87a8b6bd",
+      "file_sha256": "0e9a00b85af0b1212d0b200ed2d836c81aa7432adb679eb12872f65dadfa8769",
       "changes": "Verbatim fenced prompt"
     },
     {
@@ -131,7 +131,7 @@
       ],
       "source_prompt_sha256": "db066590815046c07c45129a8145d1633cd1c18c0c3aea32cfdd7b7bf6e36650",
       "file": "02_library/characters/C05_FINAL_NURSE.txt",
-      "file_sha256": "bc009c26da3d71aeb153e0336f6bcef9a71c41b8dfd592bcb3bac85921fd15fc",
+      "file_sha256": "50b77491b9b9c6776413dd265b054ec0874e824310b926ff9a6324f78ebd27ac",
       "changes": "Verbatim fenced prompt"
     },
     {
@@ -143,7 +143,7 @@
       ],
       "source_prompt_sha256": "0e736b3252fe3cbd8ca19c597663879f0e480bb6803e168de6902c32a3173d0c",
       "file": "02_library/characters/C06_SHARED_HOUSE_SUBSTITUTE_SNORING_HOUSEMATE.txt",
-      "file_sha256": "c070c61cd614f04cc1c0589e99767d01320173c9bbc8e08c8ae3103fceb7443a",
+      "file_sha256": "86a5d81566a8ff13ac367cc396a337da94e4df4c9423bfbaad8619d1730663c6",
       "changes": "Verbatim fenced prompt"
     },
     {
@@ -155,7 +155,7 @@
       ],
       "source_prompt_sha256": "35f31171b6f526d520600915de5d7227a0bb7fadaef7748c0d8d978fc51cbd87",
       "file": "02_library/characters/C07_FX_MORTGAGE_HOUSEMATE.txt",
-      "file_sha256": "1dc9a7a3a10e81e4c7f63b70f9a9dba2be55c104327de552bcc00496b022ddea",
+      "file_sha256": "e58acd1ca40bfa43d95572528348777ca39f84b2fb07fe8d71213444fcfb132a",
       "changes": "Verbatim fenced prompt"
     },
     {
@@ -167,7 +167,7 @@
       ],
       "source_prompt_sha256": "fd0d8ef7f58a40bac83ccdf0bd9e0701aa59f5177acecc8f2a2ae28025580208",
       "file": "02_library/characters/C08_FX_MORTGAGE_SPOUSE.txt",
-      "file_sha256": "bdbdbbf4728550cbe2977850f5b662773c4c93f9864c63a2ca7d057fb158ec58",
+      "file_sha256": "7498dfd0cba204095799178350efe9e75d33a8caad5056a20aae18a6b33df30f",
       "changes": "Verbatim fenced prompt"
     },
     {
@@ -179,7 +179,7 @@
       ],
       "source_prompt_sha256": "27a9a08fc7ed627c3682c4c3af3959d7fd0a60589df5325211a885cda92acdb3",
       "file": "02_library/characters/C09_FX_MORTGAGE_CHILD.txt",
-      "file_sha256": "e4664db2e15bde42d4e12dd7f198b6eb462bbec2f95ce0cc61ab7394330fd9f8",
+      "file_sha256": "77c6c62c1944d3a5ae03e1ee9f9aea2225ecedf13eecd493d60c452a802934ce",
       "changes": "Verbatim fenced prompt"
     },
     {
@@ -191,7 +191,7 @@
       ],
       "source_prompt_sha256": "5e625999f68a36e46c2cdbe8f0c1dc0798b1a4bc650893d174b94c60eaf276f0",
       "file": "02_library/characters/C10_BEGINNER_DANCE_WOMAN.txt",
-      "file_sha256": "e436a6c2d33b869185fb33d6eb0e7d6889224ff6bbd087bbc3eb562e9b71e14b",
+      "file_sha256": "81a29b1136e2297ba3429266df0e60df80afbc6c99e8c05c35e367a8be0a118a",
       "changes": "Verbatim fenced prompt"
     },
     {
@@ -203,7 +203,7 @@
       ],
       "source_prompt_sha256": "c89e0907e8d5955412e5e56b23efa3f600f4b088b6fa44683517aa90fee06828",
       "file": "02_library/characters/C11_RUSSIAN_TRANSIT_PASSENGER.txt",
-      "file_sha256": "02039e198936b88e8c2fb61cf56c51ae7c923e500090e88e13c7360cf4ea2db9",
+      "file_sha256": "6465c56632a9ae8cde71395d00bf311544591d9394df216cbbf0d85c98583645",
       "changes": "Verbatim fenced prompt"
     },
     {
@@ -215,7 +215,7 @@
       ],
       "source_prompt_sha256": "0637e995e66788c7056925bf5c184e8f3db67839dd38b5d24a184426b4ef1300",
       "file": "02_library/characters/C12_AGRA_BUS_WOMAN.txt",
-      "file_sha256": "874cccb4d313732703e4060c1384c56bc717fae044e5090d791bafb0a05c196d",
+      "file_sha256": "5df1c6adec7790c93e936c8ac959e4dcac45ccc19870b0b949a6bb2435bc2628",
       "changes": "Verbatim fenced prompt"
     },
     {
@@ -227,7 +227,7 @@
       ],
       "source_prompt_sha256": "dd7cde7a051d4e7efa789d56f00bad57dd9bd3dbae401add10ea0405f3dd3680",
       "file": "02_library/characters/C13_SUDANESE_TRAVELER_MAN.txt",
-      "file_sha256": "6fb8f06908ae6dd7ab603f7aa7c75fc2f151682e0ff44d30431181784af7ead7",
+      "file_sha256": "a2e791577d38ba6b8f3ff4f23251ba62ac87026fcc6e326473453564ecbf8718",
       "changes": "Verbatim fenced prompt"
     },
     {
@@ -239,7 +239,7 @@
       ],
       "source_prompt_sha256": "9b54f9727e485a512c40c097a6cfdd96b4c2bbcf6d7f89dec10eaca3f46da85a",
       "file": "02_library/characters/C14_SUDANESE_TRAVELER_WOMAN.txt",
-      "file_sha256": "af09e22c58e975293aca31fcbca2159f3fa7736245f8a1479437d8df52db1119",
+      "file_sha256": "f43c802f9e98da989aaa7c98c1292f1d7021f85e2c78848d7efeedbd2c2fc3ae",
       "changes": "Verbatim fenced prompt"
     },
     {
@@ -251,7 +251,7 @@
       ],
       "source_prompt_sha256": "bafc8b624584a7e92edd1cf23479a0edda633a8f32de85747772b6fc5d145c8a",
       "file": "02_library/characters/C15_CAIRO_TAXI_DRIVER.txt",
-      "file_sha256": "98e52d78025ceca8a74d67015e7c423e3600834c932ca60cf129de36dc1cdf7b",
+      "file_sha256": "b9395487f9c81b01e99c20040c993bcd62ee014ee95a00fa97fe1ab32cfbdcb8",
       "changes": "Verbatim fenced prompt"
     },
     {
@@ -263,7 +263,7 @@
       ],
       "source_prompt_sha256": "0b8f95ede83e5818a8408fd70ecef99fce85cc0c12b653ef7bd7c624032e9228",
       "file": "02_library/characters/C16_BALLOON_LOCAL_HELPER_MAN.txt",
-      "file_sha256": "253290ca4bc98f435a77a1d24cf21c137a1cf344e8d8e69ecb8c8a3a53a3c8b0",
+      "file_sha256": "bcd44334645387cd66c4c14e2047d76e987807ac771eadbe31024a0b305424b5",
       "changes": "Verbatim fenced prompt"
     },
     {
@@ -275,7 +275,7 @@
       ],
       "source_prompt_sha256": "1401cf11e115f3131028751d2e03931c9124eacccaa3ce274e2e97a263c01cea",
       "file": "02_library/characters/C17_BALLOON_LOCAL_HELPER_WOMAN.txt",
-      "file_sha256": "32ca3ce93cf9b7db9fdc9d1fbea514a9582e91b902a49f15e48f91944e1f39e8",
+      "file_sha256": "aab1e3a69aad6149cb2d0829e8f259bbe495913ea6bd0f4e5a373a1e307c04dc",
       "changes": "Verbatim fenced prompt"
     },
     {
@@ -287,7 +287,7 @@
       ],
       "source_prompt_sha256": "9fe383e2200879b7ccd69a703e0547bdccc844248da93276d655f2a4a8d8ccd0",
       "file": "02_library/characters/C18_BARMOUTH_ROAD_TRIP_DRIVER_COMPANION.txt",
-      "file_sha256": "75283dc361c10e634e231e2f1a8362a0287244f8324cff82b1a4c9548443861b",
+      "file_sha256": "46aabd20df8f5a824ef11aa15921dda369567f9c3b64848b32067d8a73cc5457",
       "changes": "Verbatim fenced prompt"
     },
     {
@@ -299,7 +299,7 @@
       ],
       "source_prompt_sha256": "d301056bdcf14c631e8c6309a5e72c9574ce2ca47efa0ce5e5f9525c87d6562d",
       "file": "02_library/characters/C19_BARMOUTH_ROAD_TRIP_COMPANION_A.txt",
-      "file_sha256": "548a80f8b0dc0cbbd655aec81099794a474720f26175bb906ba2d786c9542910",
+      "file_sha256": "532863dab967fb632afc87eb5e86682e8e8820b6139bf952501409446d7da1b0",
       "changes": "Verbatim fenced prompt"
     },
     {
@@ -311,7 +311,7 @@
       ],
       "source_prompt_sha256": "dbfae744902e96125296d850d700ddd9a3b88581db7ad6b4ae796e99ed90e8e3",
       "file": "02_library/characters/C20_BARMOUTH_ROAD_TRIP_COMPANION_B.txt",
-      "file_sha256": "dba5c623b8e1d08dd401b09628d9a3c4bb0abff098a6e5b40da0f369b3f73ce3",
+      "file_sha256": "097f021d8821f6f883944bd6695ed693a24a7e7253c2d9bddf2a6e481f942f79",
       "changes": "Verbatim fenced prompt"
     },
     {
@@ -323,7 +323,7 @@
       ],
       "source_prompt_sha256": "d301056bdcf14c631e8c6309a5e72c9574ce2ca47efa0ce5e5f9525c87d6562d",
       "file": "02_library/characters/C21_BARMOUTH_ROAD_TRIP_COMPANION_C.txt",
-      "file_sha256": "9ec1985404797d96b99f15b0a0fd51f340a5992043ed34bd33e693a63e1e8a8f",
+      "file_sha256": "efe14bce29512e83ad33c3d00f50f3c4eaa96335c9fb9ce45f47baa262060b3a",
       "changes": "Verbatim fenced prompt"
     },
     {
@@ -335,7 +335,7 @@
       ],
       "source_prompt_sha256": "2dd89f6a917bf16ade5f432d3650934ad8e8b7275710b8f73b0b5bfd35a0b923",
       "file": "02_library/characters/C22_ACCOUNTANT.txt",
-      "file_sha256": "62ac52d407efcff19c3e2407f4c076aa105cff69ac3c3503dbc128c6ef24e5f1",
+      "file_sha256": "0c3e23cb069fd245bda95bc40d0e9a70412c14fc3f5b98ec2eccec7a606c2256",
       "changes": "Verbatim fenced prompt"
     },
     {
@@ -347,7 +347,7 @@
       ],
       "source_prompt_sha256": "cd3a8c255aba3556764d83315d95bafe0400dd967abe76bde806ebf4ed8030ad",
       "file": "02_library/characters/C23_ADMIN_COLLEAGUE_A.txt",
-      "file_sha256": "3c144061110dad864e659ed254f6824887181004065f4e1ede67475de092494c",
+      "file_sha256": "b727ff27d43298d4fa224affbf2cfa519fb70a91a1019285fefe2a3ab0405e84",
       "changes": "Verbatim fenced prompt"
     },
     {
@@ -359,7 +359,7 @@
       ],
       "source_prompt_sha256": "21a8f008db7ef74b242a1e5e092e760b77f0b921e69bd2aec33f2a8073632a5f",
       "file": "02_library/characters/C24_ADMIN_COLLEAGUE_B.txt",
-      "file_sha256": "a545dbb485a0d62d1bc1a1fd13d5ffec5ee96d7e1dd234fa6f630d70d2c9eb73",
+      "file_sha256": "d1c257a42344bfc1da07192c96c5b2f90298b7ae5b8f171628a0843fe6321bb2",
       "changes": "Verbatim fenced prompt"
     },
     {
@@ -371,7 +371,7 @@
       ],
       "source_prompt_sha256": "f483821bc97864c6c680e22a7a12f8ebc22ab7dbde55952c08bbfe79bea17c47",
       "file": "02_library/characters/C25_SEARCH_OFFICER_MALE.txt",
-      "file_sha256": "9bc5cc79eff4c41f2e4af305b89aef9521966c8fbdf77a092629c23b9171b5c7",
+      "file_sha256": "da15b1b573f48444790c7e3ec22f8724c078e75cde06b15c4d79125bbb235ee4",
       "changes": "Verbatim fenced prompt"
     },
     {
@@ -383,7 +383,7 @@
       ],
       "source_prompt_sha256": "1f0d7b11e5ae7a974429d747a769b30186288e53f3d3be0cdb523a9544e81854",
       "file": "02_library/characters/C26_DEFENCE_OFFICE_SUBSTITUTE.txt",
-      "file_sha256": "703db07855ad28dacdc1325399190e0a543d554e699ecf1e963ee551bc5d4e01",
+      "file_sha256": "c730f605d9e6c4944df7d70dfb39ca3f05541f962f920285520eaade32ba1cc1",
       "changes": "Verbatim fenced prompt"
     },
     {
@@ -395,7 +395,7 @@
       ],
       "source_prompt_sha256": "933b7e1083ca0a8d0a00c2f2cf6ee79b8f2c7bb189c9c7ccd1813ad99cb31a53",
       "file": "02_library/characters/C27_JUDGE.txt",
-      "file_sha256": "1c6f7cddd8a4801f67dd8870a19d945f2848b8b710b89214e3d48ccf919cb8d8",
+      "file_sha256": "22904f2aa3a7fc1d439a09f4e76714fcedb7dc60c2b769c1098d90566de89488",
       "changes": "Verbatim fenced prompt"
     },
     {
@@ -407,7 +407,7 @@
       ],
       "source_prompt_sha256": "8ea1c2f09462e040525d4f7b0a174e433e51849d4187b2ca5f8b45caace89acd",
       "file": "02_library/characters/C28_FORENSIC_EXPERT_A.txt",
-      "file_sha256": "25a54e16ce84fbbfaa51eb2b7addedef84c2e7bd05221c4ba825460fec65add3",
+      "file_sha256": "ea3a42d28b26c9495c549920c2ad1f923072c72db5ab3f6e1c2d575f626b6d8f",
       "changes": "Verbatim fenced prompt"
     },
     {
@@ -419,7 +419,7 @@
       ],
       "source_prompt_sha256": "2a575da9d93e6c68fb8c32b6160b00e16804931a97796e8e73277f312e1b30c5",
       "file": "02_library/characters/C29_FORENSIC_EXPERT_B.txt",
-      "file_sha256": "95a662560e18212357d1ec70fefb0c9bac97729e1c24d10e9f94a09a9c187ee0",
+      "file_sha256": "aa89011d85d56c50cf0892828f515fcbffc36be9e21ac5f781ccbd16116fb5dc",
       "changes": "Verbatim fenced prompt"
     },
     {
@@ -431,7 +431,7 @@
       ],
       "source_prompt_sha256": "60c8a27d366272250614c6103c2d64812940613e2bf365697be04e78b991e55a",
       "file": "02_library/characters/C30_COURT_CLERK.txt",
-      "file_sha256": "d2eeecc1dcd51abc8d2075261228b91ca1c48b6f54ca6511fcaa59c1cc9c9628",
+      "file_sha256": "1beb26b8d7d6f9fcad35658cf8b50f20da868d2b62aa1f6371b3e2b19e9f50d2",
       "changes": "Verbatim fenced prompt"
     },
     {
@@ -443,7 +443,7 @@
       ],
       "source_prompt_sha256": "5dc948b39e6864ba0f13158690ed2ec4ddfa0ccf0e5fabcc68705716f96dfb24",
       "file": "02_library/characters/C31_ANONYMOUS_FICTIONAL_POLITICAL_FIGURE.txt",
-      "file_sha256": "a5ec343f17e6251046a35e2de362f58406566d70610da77c7052bf0b46145fac",
+      "file_sha256": "d461b09a07fdd0e86a2f93f7d084e132d2b51ede01ade5974e4d1a6c0c7929ff",
       "changes": "Verbatim fenced prompt"
     },
     {
@@ -455,7 +455,7 @@
       ],
       "source_prompt_sha256": "717f8a13a997263b4988a3087369787649a75542e70f60f5bc32565a4a5fc759",
       "file": "02_library/worlds/memories/MW01_LONDON_SOCIAL_A.txt",
-      "file_sha256": "2a47dd0b5fc6ec485018e43e4b9ced22930b00b28b01e82de7f35a1236ceab77",
+      "file_sha256": "05255640c282507e63e4415e333186473de4613f1f97ac7b14369026688cb17e",
       "changes": "Verbatim fenced prompt; explicit centrally maintained reference inputs Grid geometry uses the full selected image resolution instead of fixed pixel examples."
     },
     {
@@ -467,7 +467,7 @@
       ],
       "source_prompt_sha256": "6e25c11571314fb9f353911cdd369b867c1b90a45dcc5228ce69c24e48b7ba9c",
       "file": "02_library/worlds/memories/MW02_GLOBAL_ROUTES_A.txt",
-      "file_sha256": "8754dd5d614a3668ca293429d8f4db48445b30e0903dcd34fabd3b09f9db64d0",
+      "file_sha256": "fad2e4867946d0f478cea30927c18644af1e81f22e53cf4ce7ac5f243e971a3f",
       "changes": "Verbatim fenced prompt; explicit centrally maintained reference inputs; rural memory grounded in creator's Orosháza paprika/corn-field childhood Grid geometry uses the full selected image resolution instead of fixed pixel examples."
     },
     {
@@ -479,7 +479,7 @@
       ],
       "source_prompt_sha256": "374ea4b6d0ac33d692653a08a02e706d01e0f45e4279451b364aba2f7263928d",
       "file": "02_library/worlds/memories/MW03_WORK_RULE_CHANGE_ADMIN_A.txt",
-      "file_sha256": "1df46a36e1006c7c07d25a04a0cc4c137e3f3c577760e0f3a1c5e3e994ed6bf4",
+      "file_sha256": "44fb66f104a7ae085aaaca62210fd3e30aea7b41d638232cc9edfd2ff03bde15",
       "changes": "Verbatim fenced prompt; explicit centrally maintained reference inputs Grid geometry uses the full selected image resolution instead of fixed pixel examples."
     },
     {
@@ -491,7 +491,7 @@
       ],
       "source_prompt_sha256": "7eacf040519edefdb7aa215ca4fb1e1c6524f4ed06dc69d6ef758048002745f9",
       "file": "02_library/worlds/memories/MW04_POLICE_DEFENCE_A.txt",
-      "file_sha256": "1ab9941ccccc1ef76aab23718c832f36cff58e70149b84979a1e87d4daf0789e",
+      "file_sha256": "52da4a3d2a5f422432bd45f06aa815c0af63349ab96216b80915f49bc5b344b4",
       "changes": "Verbatim fenced prompt; explicit centrally maintained reference inputs Grid geometry uses the full selected image resolution instead of fixed pixel examples."
     },
     {
@@ -503,7 +503,7 @@
       ],
       "source_prompt_sha256": "cac300bae4bd6f33e50ec5936c56622c5858e341d0494d281a87e70ed4ee9a04",
       "file": "02_library/worlds/memories/MW05_COURT_FILE_A.txt",
-      "file_sha256": "a48c36fbc7ba2ec0c9816fd1fabcf3d31680af66810be49cc17256f8a2faab43",
+      "file_sha256": "3338f1409eaa51b97b03bddebe892c855667dbe4e77e7f78bb64a07d7c3d2e26",
       "changes": "Verbatim fenced prompt; explicit centrally maintained reference inputs Grid geometry uses the full selected image resolution instead of fixed pixel examples."
     },
     {
@@ -515,7 +515,7 @@
       ],
       "source_prompt_sha256": "d53e141d60aa5359c28d8695bb7cb84134a480bf043551062606e199558cda02",
       "file": "02_library/worlds/memories/MW06_HUMAN_COUNTERMEMORIES_A.txt",
-      "file_sha256": "bcc11d0f4990b4fb742002504398b460afbe3ea26b67953d65a711238f719153",
+      "file_sha256": "b07e12310ae79577503d7155a4b3f89e48fa19a54a22c4cafab866e2019a6489",
       "changes": "Verbatim fenced prompt; explicit centrally maintained reference inputs Grid geometry uses the full selected image resolution instead of fixed pixel examples."
     },
     {
@@ -527,7 +527,7 @@
       ],
       "source_prompt_sha256": "16bf4be44836d9fb010f7825cc24770d0ce78cbd05373fc417d2155eba6ae1e1",
       "file": "02_library/worlds/memories/MWP01_ROUTES_ROOMS_DOCUMENTS_A.txt",
-      "file_sha256": "d3b5bd599170e54a3b60ef1f6181510a938c6a5c7d21ddb40995591a6c1fbaa5",
+      "file_sha256": "d5a6ed23ca4b4d9cc22018c07970da32d503c9a030714b7279f9a6b5fe46b8ef",
       "changes": "Verbatim fenced prompt; explicit centrally maintained reference inputs; rural memory grounded in creator's Orosháza paprika/corn-field childhood Grid geometry uses the full selected image resolution instead of fixed pixel examples."
     },
     {
@@ -539,7 +539,7 @@
       ],
       "source_prompt_sha256": "557e0016d71cfd83bfd2c240538a5a77f6b6d8785ceb0f79bb97e387e1ccbd6f",
       "file": "02_library/worlds/memories/MWP02_SYSTEM_TIME_REVERSALS_A.txt",
-      "file_sha256": "036cc06fbfcc75a091e8e202fc7b18379749a9afc6cbd0de97b59ddf2aad5fc7",
+      "file_sha256": "52ddbebc660e5281aabd890c6996fa23041d44301c02d9e5a9106740c517afb0",
       "changes": "AI-specific screen becomes ordinary document cursor; citizen/review beat retained; explicit centrally maintained reference inputs Grid geometry uses the full selected image resolution instead of fixed pixel examples."
     },
     {
@@ -551,7 +551,7 @@
       ],
       "source_prompt_sha256": "521c52dc6be7a4c8e015a67fab11b219bc387a315f00463f84acb191c81fc773",
       "file": "02_library/worlds/memories/HRW07_CLINICAL_REALITY_A.txt",
-      "file_sha256": "22d331cd2ff67948a6d960e1f9932cef29754d678d28e03c6a3d806248b5eab5",
+      "file_sha256": "25bdf2bf95ee4e7cdc7921deb72d7ec37c247325f49c10afcaf10ea9c52337fc",
       "changes": "Verbatim fenced prompt; explicit centrally maintained reference inputs Grid geometry uses the full selected image resolution instead of fixed pixel examples."
     },
     {
@@ -1823,7 +1823,7 @@
       ],
       "source_prompt_sha256": "717f8a13a997263b4988a3087369787649a75542e70f60f5bc32565a4a5fc759",
       "file": "02_library/worlds/memories/MW01_LONDON_SOCIAL_B.txt",
-      "file_sha256": "fff697a59f77b646827537d2ad8fbe04b7515569f90f36a995b59874101dc96e",
+      "file_sha256": "f91c624bd53569cf8ef149e474257574b42115958b2956c23c6305bbec7125d7",
       "changes": "Verbatim fenced prompt; explicit centrally maintained reference inputs Grid geometry uses the full selected image resolution instead of fixed pixel examples.",
       "note": "Companion page B preserving original memory views."
     },
@@ -1836,7 +1836,7 @@
       ],
       "source_prompt_sha256": "717f8a13a997263b4988a3087369787649a75542e70f60f5bc32565a4a5fc759",
       "file": "02_library/worlds/memories/MW01_LONDON_SOCIAL_C.txt",
-      "file_sha256": "66b71d8e933b407b0be4ee5e8bc15c3ef6cf354ef2bb8c34390884e00e642a8e",
+      "file_sha256": "f35f7b5c753b6733579ca84f8218c4eb62002f329b4b9ef865fe40211f7396bb",
       "changes": "Verbatim fenced prompt; explicit centrally maintained reference inputs Grid geometry uses the full selected image resolution instead of fixed pixel examples.",
       "note": "Companion page C preserving original memory views."
     },
@@ -1849,7 +1849,7 @@
       ],
       "source_prompt_sha256": "6e25c11571314fb9f353911cdd369b867c1b90a45dcc5228ce69c24e48b7ba9c",
       "file": "02_library/worlds/memories/MW02_GLOBAL_ROUTES_B.txt",
-      "file_sha256": "afcf42c12b5eff1e060f9b4fd71e1eb433806913b0ef7311fa0edd0aa785879f",
+      "file_sha256": "873079837863544bcbe56f09ee6c5582b1b15db16ec6d13792435deea5949677",
       "changes": "Verbatim fenced prompt; explicit centrally maintained reference inputs; rural memory grounded in creator's Orosháza paprika/corn-field childhood Grid geometry uses the full selected image resolution instead of fixed pixel examples.",
       "note": "Companion page B preserving original memory views."
     },
@@ -1862,7 +1862,7 @@
       ],
       "source_prompt_sha256": "6e25c11571314fb9f353911cdd369b867c1b90a45dcc5228ce69c24e48b7ba9c",
       "file": "02_library/worlds/memories/MW02_GLOBAL_ROUTES_C.txt",
-      "file_sha256": "6d2c3c44cdc72d9dd262abf7872cdd3ae741cb0b162e628861b599df65f86b69",
+      "file_sha256": "5518bbc635a95444185240631b7bf95fa7b671637d161858bd68d82d8539bf3c",
       "changes": "Verbatim fenced prompt; explicit centrally maintained reference inputs; rural memory grounded in creator's Orosháza paprika/corn-field childhood Grid geometry uses the full selected image resolution instead of fixed pixel examples.",
       "note": "Companion page C preserving original memory views."
     },
@@ -1875,7 +1875,7 @@
       ],
       "source_prompt_sha256": "374ea4b6d0ac33d692653a08a02e706d01e0f45e4279451b364aba2f7263928d",
       "file": "02_library/worlds/memories/MW03_WORK_RULE_CHANGE_ADMIN_B.txt",
-      "file_sha256": "3ec292bf10bd67b55f728d437bbd63d85d01346b728e693628957c64c56c7486",
+      "file_sha256": "4b9f688c79f97b933a6319c2c30ff5ff4358b784dea5be4b32d0c5ed7be580ca",
       "changes": "Verbatim fenced prompt; explicit centrally maintained reference inputs Grid geometry uses the full selected image resolution instead of fixed pixel examples.",
       "note": "Companion page B preserving original memory views."
     },
@@ -1888,7 +1888,7 @@
       ],
       "source_prompt_sha256": "374ea4b6d0ac33d692653a08a02e706d01e0f45e4279451b364aba2f7263928d",
       "file": "02_library/worlds/memories/MW03_WORK_RULE_CHANGE_ADMIN_C.txt",
-      "file_sha256": "ed5a9e869898507f4607824d77de3b9f322885bbcccd9e126457477d1dd4a23f",
+      "file_sha256": "1d07815d6b088f05f51e10cfe233a6f0e653d56a019001e4ff93f8673f10a1ae",
       "changes": "Verbatim fenced prompt; explicit centrally maintained reference inputs Grid geometry uses the full selected image resolution instead of fixed pixel examples.",
       "note": "Companion page C preserving original memory views."
     },
@@ -1901,7 +1901,7 @@
       ],
       "source_prompt_sha256": "7eacf040519edefdb7aa215ca4fb1e1c6524f4ed06dc69d6ef758048002745f9",
       "file": "02_library/worlds/memories/MW04_POLICE_DEFENCE_B.txt",
-      "file_sha256": "0e827793264ee1285057b10ad6536d6a5d3a8e59af50725911af2feda76e364f",
+      "file_sha256": "3365bfe9c455ee331827baf9e145339ba2963aaee6c4fd6b4d503abc9d0c1da3",
       "changes": "Verbatim fenced prompt; explicit centrally maintained reference inputs Grid geometry uses the full selected image resolution instead of fixed pixel examples.",
       "note": "Companion page B preserving original memory views."
     },
@@ -1914,7 +1914,7 @@
       ],
       "source_prompt_sha256": "7eacf040519edefdb7aa215ca4fb1e1c6524f4ed06dc69d6ef758048002745f9",
       "file": "02_library/worlds/memories/MW04_POLICE_DEFENCE_C.txt",
-      "file_sha256": "fc27acb040e8997cf8c09c06d85a3d9a08d1552b790432fc5766255b82aefd1c",
+      "file_sha256": "1af62a9e76ce2fe88f84b409f06f95379d289ea73c0615e18b4ba150c10e9fdb",
       "changes": "Verbatim fenced prompt; explicit centrally maintained reference inputs Grid geometry uses the full selected image resolution instead of fixed pixel examples.",
       "note": "Companion page C preserving original memory views."
     },
@@ -1927,7 +1927,7 @@
       ],
       "source_prompt_sha256": "cac300bae4bd6f33e50ec5936c56622c5858e341d0494d281a87e70ed4ee9a04",
       "file": "02_library/worlds/memories/MW05_COURT_FILE_B.txt",
-      "file_sha256": "2737175da22b08a0e94bad8ed530a462527449c8a2b6c4d5f626c825888ebbd3",
+      "file_sha256": "776014e7eb3d108b70aa07fa55f49677d424c94a5a61054b22a707bd10d71d29",
       "changes": "Verbatim fenced prompt; explicit centrally maintained reference inputs Grid geometry uses the full selected image resolution instead of fixed pixel examples.",
       "note": "Companion page B preserving original memory views."
     },
@@ -1940,7 +1940,7 @@
       ],
       "source_prompt_sha256": "cac300bae4bd6f33e50ec5936c56622c5858e341d0494d281a87e70ed4ee9a04",
       "file": "02_library/worlds/memories/MW05_COURT_FILE_C.txt",
-      "file_sha256": "719047945b8d066a4a7ae27de0ac0588f12ce88fcea28c310564e4972bc9c432",
+      "file_sha256": "36948de3f51cfa3ed2c4ac0d202fd8a1e25fa8d6385e222626821d57d864b143",
       "changes": "Verbatim fenced prompt; explicit centrally maintained reference inputs Grid geometry uses the full selected image resolution instead of fixed pixel examples.",
       "note": "Companion page C preserving original memory views."
     },
@@ -1953,7 +1953,7 @@
       ],
       "source_prompt_sha256": "d53e141d60aa5359c28d8695bb7cb84134a480bf043551062606e199558cda02",
       "file": "02_library/worlds/memories/MW06_HUMAN_COUNTERMEMORIES_B.txt",
-      "file_sha256": "178b9e8f06cb4832b275531434d631ba978d5cec1eece8237cdf28ba751d97d9",
+      "file_sha256": "42555095d8877a45e974d0504c37c3e7f38b4b72cc127592abfcba6087e15d26",
       "changes": "Verbatim fenced prompt; explicit centrally maintained reference inputs Grid geometry uses the full selected image resolution instead of fixed pixel examples.",
       "note": "Companion page B preserving original memory views."
     },
@@ -1966,7 +1966,7 @@
       ],
       "source_prompt_sha256": "d53e141d60aa5359c28d8695bb7cb84134a480bf043551062606e199558cda02",
       "file": "02_library/worlds/memories/MW06_HUMAN_COUNTERMEMORIES_C.txt",
-      "file_sha256": "d88f956043f056e5c49894ec81c83b5d0744b8b81d254bbfa62beab8e7b4e29e",
+      "file_sha256": "8fbbcd56e8abf1b9418c1edb2de8d5a0537a0f4b6f4196efa34337ffe11dec78",
       "changes": "Verbatim fenced prompt; explicit centrally maintained reference inputs Grid geometry uses the full selected image resolution instead of fixed pixel examples.",
       "note": "Companion page C preserving original memory views."
     },
@@ -1979,7 +1979,7 @@
       ],
       "source_prompt_sha256": "16bf4be44836d9fb010f7825cc24770d0ce78cbd05373fc417d2155eba6ae1e1",
       "file": "02_library/worlds/memories/MWP01_ROUTES_ROOMS_DOCUMENTS_B.txt",
-      "file_sha256": "2fbf13d61786ae11822c2336e4a16a9b31087a9db7d8fb992c121db69500c617",
+      "file_sha256": "b9b0bc92e517f7454941477043adace8e63cea636c7f23e31d4f7d3192967436",
       "changes": "Verbatim fenced prompt; explicit centrally maintained reference inputs; rural memory grounded in creator's Orosháza paprika/corn-field childhood Grid geometry uses the full selected image resolution instead of fixed pixel examples.",
       "note": "Companion page B preserving original memory views."
     },
@@ -1992,7 +1992,7 @@
       ],
       "source_prompt_sha256": "16bf4be44836d9fb010f7825cc24770d0ce78cbd05373fc417d2155eba6ae1e1",
       "file": "02_library/worlds/memories/MWP01_ROUTES_ROOMS_DOCUMENTS_C.txt",
-      "file_sha256": "17136fae518dbdc402c1690eb68019f47b75dcd735a5610da191f92bc7ebed43",
+      "file_sha256": "6b98d956184177e8836687a2df25faf038aeb94f3e4f7e31ffffa829364392cc",
       "changes": "Verbatim fenced prompt; explicit centrally maintained reference inputs; rural memory grounded in creator's Orosháza paprika/corn-field childhood Grid geometry uses the full selected image resolution instead of fixed pixel examples.",
       "note": "Companion page C preserving original memory views."
     },
@@ -2005,7 +2005,7 @@
       ],
       "source_prompt_sha256": "557e0016d71cfd83bfd2c240538a5a77f6b6d8785ceb0f79bb97e387e1ccbd6f",
       "file": "02_library/worlds/memories/MWP02_SYSTEM_TIME_REVERSALS_B.txt",
-      "file_sha256": "76c537d05798d68a32b0edc4ae14ed6ea7f20e5fba3a49e50c7ba85b0355e2b5",
+      "file_sha256": "1809164a0e35d36bc486f616f311b053a18354a17d6ba952fb60ae0f089a79bc",
       "changes": "AI-specific screen becomes ordinary document cursor; citizen/review beat retained; explicit centrally maintained reference inputs Grid geometry uses the full selected image resolution instead of fixed pixel examples.",
       "note": "Companion page B preserving original memory views."
     },
@@ -2018,7 +2018,7 @@
       ],
       "source_prompt_sha256": "557e0016d71cfd83bfd2c240538a5a77f6b6d8785ceb0f79bb97e387e1ccbd6f",
       "file": "02_library/worlds/memories/MWP02_SYSTEM_TIME_REVERSALS_C.txt",
-      "file_sha256": "8a619c50970fc21d91c91054c4ff8dcae5b7a8a09d19c321e66baffb115e3747",
+      "file_sha256": "3a8c8db2e87c22bb97495f597e69efa01c9e2cad72fd68a04eaeedd7309c6cd8",
       "changes": "AI-specific screen becomes ordinary document cursor; citizen/review beat retained; explicit centrally maintained reference inputs Grid geometry uses the full selected image resolution instead of fixed pixel examples.",
       "note": "Companion page C preserving original memory views."
     },
@@ -2031,7 +2031,7 @@
       ],
       "source_prompt_sha256": "521c52dc6be7a4c8e015a67fab11b219bc387a315f00463f84acb191c81fc773",
       "file": "02_library/worlds/memories/HRW07_CLINICAL_REALITY_B.txt",
-      "file_sha256": "98a54fc6c2e230ce6be38797503282b40ce45525e740a0732891a117ef1c7dfb",
+      "file_sha256": "775e4ff1f911b512d009fa79bbd28a51e27a3fa871cdcd5eb98cd8adc0fde6cd",
       "changes": "Verbatim fenced prompt; explicit centrally maintained reference inputs Grid geometry uses the full selected image resolution instead of fixed pixel examples.",
       "note": "Companion page B preserving original memory views."
     },
@@ -2044,7 +2044,7 @@
       ],
       "source_prompt_sha256": "521c52dc6be7a4c8e015a67fab11b219bc387a315f00463f84acb191c81fc773",
       "file": "02_library/worlds/memories/HRW07_CLINICAL_REALITY_C.txt",
-      "file_sha256": "3d1a39cb6c8fa0045f183cf3f30df640076a9b20b4e6433af86f87183812d024",
+      "file_sha256": "faa9d3dea6f47848fbcc2a30ffee61b32c79b0401f725a7da05bdd4e4ba17742",
       "changes": "Verbatim fenced prompt; explicit centrally maintained reference inputs Grid geometry uses the full selected image resolution instead of fixed pixel examples.",
       "note": "Companion page C preserving original memory views."
     }
@@ -2057,7 +2057,7 @@
       "refs": [],
       "layout": "1x3 identity",
       "intended_resolution": "4K",
-      "prompt_sha256": "3c828b0141c2c7a691eaf0619928e4fe4ee8d26984af6ac6e96269b3e5b1420d",
+      "prompt_sha256": "038b5c65e74931d3b7b19c84b1d853b59d5b60fcea2bfcbc44f0842ce7656457",
       "canvas_pixels": [
         3840,
         2160
@@ -2074,7 +2074,7 @@
       "refs": [],
       "layout": "1x3 identity",
       "intended_resolution": "4K",
-      "prompt_sha256": "c3b9438be5dc0d54dd2767a4c933339d07d19b548af9b7c7d22798f3325c6974",
+      "prompt_sha256": "99ec2fadb6dfa0a1f5887a322063bc34b8eb5757895570f577ed31b798969961",
       "canvas_pixels": [
         3840,
         2160
@@ -2091,7 +2091,7 @@
       "refs": [],
       "layout": "1x3 identity",
       "intended_resolution": "4K",
-      "prompt_sha256": "f5c7109b3ee7211ccf867ed2ad21cf00131494e56bd76429f7198747804b4fd7",
+      "prompt_sha256": "ed26138a1554c96142c3800fdfdeedd2a4b66a44c344f7ed80c4fd3e7b2f4f47",
       "canvas_pixels": [
         3840,
         2160
@@ -2108,7 +2108,7 @@
       "refs": [],
       "layout": "1x3 identity",
       "intended_resolution": "4K",
-      "prompt_sha256": "7006ba20df546bba841ddc643ba7808f27ec7f3d49d1722bd799eb9f87a8b6bd",
+      "prompt_sha256": "0e9a00b85af0b1212d0b200ed2d836c81aa7432adb679eb12872f65dadfa8769",
       "canvas_pixels": [
         3840,
         2160
@@ -2125,7 +2125,7 @@
       "refs": [],
       "layout": "1x3 identity",
       "intended_resolution": "4K",
-      "prompt_sha256": "bc009c26da3d71aeb153e0336f6bcef9a71c41b8dfd592bcb3bac85921fd15fc",
+      "prompt_sha256": "50b77491b9b9c6776413dd265b054ec0874e824310b926ff9a6324f78ebd27ac",
       "canvas_pixels": [
         3840,
         2160
@@ -2142,7 +2142,7 @@
       "refs": [],
       "layout": "1x3 identity",
       "intended_resolution": "4K",
-      "prompt_sha256": "c070c61cd614f04cc1c0589e99767d01320173c9bbc8e08c8ae3103fceb7443a",
+      "prompt_sha256": "86a5d81566a8ff13ac367cc396a337da94e4df4c9423bfbaad8619d1730663c6",
       "canvas_pixels": [
         3840,
         2160
@@ -2159,7 +2159,7 @@
       "refs": [],
       "layout": "1x3 identity",
       "intended_resolution": "4K",
-      "prompt_sha256": "1dc9a7a3a10e81e4c7f63b70f9a9dba2be55c104327de552bcc00496b022ddea",
+      "prompt_sha256": "e58acd1ca40bfa43d95572528348777ca39f84b2fb07fe8d71213444fcfb132a",
       "canvas_pixels": [
         3840,
         2160
@@ -2176,7 +2176,7 @@
       "refs": [],
       "layout": "1x3 identity",
       "intended_resolution": "4K",
-      "prompt_sha256": "bdbdbbf4728550cbe2977850f5b662773c4c93f9864c63a2ca7d057fb158ec58",
+      "prompt_sha256": "7498dfd0cba204095799178350efe9e75d33a8caad5056a20aae18a6b33df30f",
       "canvas_pixels": [
         3840,
         2160
@@ -2193,7 +2193,7 @@
       "refs": [],
       "layout": "1x3 identity",
       "intended_resolution": "4K",
-      "prompt_sha256": "e4664db2e15bde42d4e12dd7f198b6eb462bbec2f95ce0cc61ab7394330fd9f8",
+      "prompt_sha256": "77c6c62c1944d3a5ae03e1ee9f9aea2225ecedf13eecd493d60c452a802934ce",
       "canvas_pixels": [
         3840,
         2160
@@ -2210,7 +2210,7 @@
       "refs": [],
       "layout": "1x3 identity",
       "intended_resolution": "4K",
-      "prompt_sha256": "e436a6c2d33b869185fb33d6eb0e7d6889224ff6bbd087bbc3eb562e9b71e14b",
+      "prompt_sha256": "81a29b1136e2297ba3429266df0e60df80afbc6c99e8c05c35e367a8be0a118a",
       "canvas_pixels": [
         3840,
         2160
@@ -2227,7 +2227,7 @@
       "refs": [],
       "layout": "1x3 identity",
       "intended_resolution": "4K",
-      "prompt_sha256": "02039e198936b88e8c2fb61cf56c51ae7c923e500090e88e13c7360cf4ea2db9",
+      "prompt_sha256": "6465c56632a9ae8cde71395d00bf311544591d9394df216cbbf0d85c98583645",
       "canvas_pixels": [
         3840,
         2160
@@ -2244,7 +2244,7 @@
       "refs": [],
       "layout": "1x3 identity",
       "intended_resolution": "4K",
-      "prompt_sha256": "874cccb4d313732703e4060c1384c56bc717fae044e5090d791bafb0a05c196d",
+      "prompt_sha256": "5df1c6adec7790c93e936c8ac959e4dcac45ccc19870b0b949a6bb2435bc2628",
       "canvas_pixels": [
         3840,
         2160
@@ -2261,7 +2261,7 @@
       "refs": [],
       "layout": "1x3 identity",
       "intended_resolution": "4K",
-      "prompt_sha256": "6fb8f06908ae6dd7ab603f7aa7c75fc2f151682e0ff44d30431181784af7ead7",
+      "prompt_sha256": "a2e791577d38ba6b8f3ff4f23251ba62ac87026fcc6e326473453564ecbf8718",
       "canvas_pixels": [
         3840,
         2160
@@ -2278,7 +2278,7 @@
       "refs": [],
       "layout": "1x3 identity",
       "intended_resolution": "4K",
-      "prompt_sha256": "af09e22c58e975293aca31fcbca2159f3fa7736245f8a1479437d8df52db1119",
+      "prompt_sha256": "f43c802f9e98da989aaa7c98c1292f1d7021f85e2c78848d7efeedbd2c2fc3ae",
       "canvas_pixels": [
         3840,
         2160
@@ -2295,7 +2295,7 @@
       "refs": [],
       "layout": "1x3 identity",
       "intended_resolution": "4K",
-      "prompt_sha256": "98e52d78025ceca8a74d67015e7c423e3600834c932ca60cf129de36dc1cdf7b",
+      "prompt_sha256": "b9395487f9c81b01e99c20040c993bcd62ee014ee95a00fa97fe1ab32cfbdcb8",
       "canvas_pixels": [
         3840,
         2160
@@ -2312,7 +2312,7 @@
       "refs": [],
       "layout": "1x3 identity",
       "intended_resolution": "4K",
-      "prompt_sha256": "253290ca4bc98f435a77a1d24cf21c137a1cf344e8d8e69ecb8c8a3a53a3c8b0",
+      "prompt_sha256": "bcd44334645387cd66c4c14e2047d76e987807ac771eadbe31024a0b305424b5",
       "canvas_pixels": [
         3840,
         2160
@@ -2329,7 +2329,7 @@
       "refs": [],
       "layout": "1x3 identity",
       "intended_resolution": "4K",
-      "prompt_sha256": "32ca3ce93cf9b7db9fdc9d1fbea514a9582e91b902a49f15e48f91944e1f39e8",
+      "prompt_sha256": "aab1e3a69aad6149cb2d0829e8f259bbe495913ea6bd0f4e5a373a1e307c04dc",
       "canvas_pixels": [
         3840,
         2160
@@ -2346,7 +2346,7 @@
       "refs": [],
       "layout": "1x3 identity",
       "intended_resolution": "4K",
-      "prompt_sha256": "75283dc361c10e634e231e2f1a8362a0287244f8324cff82b1a4c9548443861b",
+      "prompt_sha256": "46aabd20df8f5a824ef11aa15921dda369567f9c3b64848b32067d8a73cc5457",
       "canvas_pixels": [
         3840,
         2160
@@ -2363,7 +2363,7 @@
       "refs": [],
       "layout": "1x3 identity",
       "intended_resolution": "4K",
-      "prompt_sha256": "548a80f8b0dc0cbbd655aec81099794a474720f26175bb906ba2d786c9542910",
+      "prompt_sha256": "532863dab967fb632afc87eb5e86682e8e8820b6139bf952501409446d7da1b0",
       "canvas_pixels": [
         3840,
         2160
@@ -2380,7 +2380,7 @@
       "refs": [],
       "layout": "1x3 identity",
       "intended_resolution": "4K",
-      "prompt_sha256": "dba5c623b8e1d08dd401b09628d9a3c4bb0abff098a6e5b40da0f369b3f73ce3",
+      "prompt_sha256": "097f021d8821f6f883944bd6695ed693a24a7e7253c2d9bddf2a6e481f942f79",
       "canvas_pixels": [
         3840,
         2160
@@ -2397,7 +2397,7 @@
       "refs": [],
       "layout": "1x3 identity",
       "intended_resolution": "4K",
-      "prompt_sha256": "9ec1985404797d96b99f15b0a0fd51f340a5992043ed34bd33e693a63e1e8a8f",
+      "prompt_sha256": "efe14bce29512e83ad33c3d00f50f3c4eaa96335c9fb9ce45f47baa262060b3a",
       "canvas_pixels": [
         3840,
         2160
@@ -2414,7 +2414,7 @@
       "refs": [],
       "layout": "1x3 identity",
       "intended_resolution": "4K",
-      "prompt_sha256": "62ac52d407efcff19c3e2407f4c076aa105cff69ac3c3503dbc128c6ef24e5f1",
+      "prompt_sha256": "0c3e23cb069fd245bda95bc40d0e9a70412c14fc3f5b98ec2eccec7a606c2256",
       "canvas_pixels": [
         3840,
         2160
@@ -2431,7 +2431,7 @@
       "refs": [],
       "layout": "1x3 identity",
       "intended_resolution": "4K",
-      "prompt_sha256": "3c144061110dad864e659ed254f6824887181004065f4e1ede67475de092494c",
+      "prompt_sha256": "b727ff27d43298d4fa224affbf2cfa519fb70a91a1019285fefe2a3ab0405e84",
       "canvas_pixels": [
         3840,
         2160
@@ -2448,7 +2448,7 @@
       "refs": [],
       "layout": "1x3 identity",
       "intended_resolution": "4K",
-      "prompt_sha256": "a545dbb485a0d62d1bc1a1fd13d5ffec5ee96d7e1dd234fa6f630d70d2c9eb73",
+      "prompt_sha256": "d1c257a42344bfc1da07192c96c5b2f90298b7ae5b8f171628a0843fe6321bb2",
       "canvas_pixels": [
         3840,
         2160
@@ -2465,7 +2465,7 @@
       "refs": [],
       "layout": "1x3 identity",
       "intended_resolution": "4K",
-      "prompt_sha256": "9bc5cc79eff4c41f2e4af305b89aef9521966c8fbdf77a092629c23b9171b5c7",
+      "prompt_sha256": "da15b1b573f48444790c7e3ec22f8724c078e75cde06b15c4d79125bbb235ee4",
       "canvas_pixels": [
         3840,
         2160
@@ -2482,7 +2482,7 @@
       "refs": [],
       "layout": "1x3 identity",
       "intended_resolution": "4K",
-      "prompt_sha256": "703db07855ad28dacdc1325399190e0a543d554e699ecf1e963ee551bc5d4e01",
+      "prompt_sha256": "c730f605d9e6c4944df7d70dfb39ca3f05541f962f920285520eaade32ba1cc1",
       "canvas_pixels": [
         3840,
         2160
@@ -2499,7 +2499,7 @@
       "refs": [],
       "layout": "1x3 identity",
       "intended_resolution": "4K",
-      "prompt_sha256": "1c6f7cddd8a4801f67dd8870a19d945f2848b8b710b89214e3d48ccf919cb8d8",
+      "prompt_sha256": "22904f2aa3a7fc1d439a09f4e76714fcedb7dc60c2b769c1098d90566de89488",
       "canvas_pixels": [
         3840,
         2160
@@ -2516,7 +2516,7 @@
       "refs": [],
       "layout": "1x3 identity",
       "intended_resolution": "4K",
-      "prompt_sha256": "25a54e16ce84fbbfaa51eb2b7addedef84c2e7bd05221c4ba825460fec65add3",
+      "prompt_sha256": "ea3a42d28b26c9495c549920c2ad1f923072c72db5ab3f6e1c2d575f626b6d8f",
       "canvas_pixels": [
         3840,
         2160
@@ -2533,7 +2533,7 @@
       "refs": [],
       "layout": "1x3 identity",
       "intended_resolution": "4K",
-      "prompt_sha256": "95a662560e18212357d1ec70fefb0c9bac97729e1c24d10e9f94a09a9c187ee0",
+      "prompt_sha256": "aa89011d85d56c50cf0892828f515fcbffc36be9e21ac5f781ccbd16116fb5dc",
       "canvas_pixels": [
         3840,
         2160
@@ -2550,7 +2550,7 @@
       "refs": [],
       "layout": "1x3 identity",
       "intended_resolution": "4K",
-      "prompt_sha256": "d2eeecc1dcd51abc8d2075261228b91ca1c48b6f54ca6511fcaa59c1cc9c9628",
+      "prompt_sha256": "1beb26b8d7d6f9fcad35658cf8b50f20da868d2b62aa1f6371b3e2b19e9f50d2",
       "canvas_pixels": [
         3840,
         2160
@@ -2567,7 +2567,7 @@
       "refs": [],
       "layout": "1x3 identity",
       "intended_resolution": "4K",
-      "prompt_sha256": "a5ec343f17e6251046a35e2de362f58406566d70610da77c7052bf0b46145fac",
+      "prompt_sha256": "d461b09a07fdd0e86a2f93f7d084e132d2b51ede01ade5974e4d1a6c0c7929ff",
       "canvas_pixels": [
         3840,
         2160
@@ -2596,7 +2596,7 @@
         "MW01_B",
         "MW01_C"
       ],
-      "prompt_sha256": "2a47dd0b5fc6ec485018e43e4b9ced22930b00b28b01e82de7f35a1236ceab77"
+      "prompt_sha256": "05255640c282507e63e4415e333186473de4613f1f97ac7b14369026688cb17e"
     },
     "MW02": {
       "key": "MW02",
@@ -2621,7 +2621,7 @@
         "MW02_B",
         "MW02_C"
       ],
-      "prompt_sha256": "8754dd5d614a3668ca293429d8f4db48445b30e0903dcd34fabd3b09f9db64d0"
+      "prompt_sha256": "fad2e4867946d0f478cea30927c18644af1e81f22e53cf4ce7ac5f243e971a3f"
     },
     "MW03": {
       "key": "MW03",
@@ -2638,7 +2638,7 @@
         "MW03_B",
         "MW03_C"
       ],
-      "prompt_sha256": "1df46a36e1006c7c07d25a04a0cc4c137e3f3c577760e0f3a1c5e3e994ed6bf4"
+      "prompt_sha256": "44fb66f104a7ae085aaaca62210fd3e30aea7b41d638232cc9edfd2ff03bde15"
     },
     "MW04": {
       "key": "MW04",
@@ -2656,7 +2656,7 @@
         "MW04_B",
         "MW04_C"
       ],
-      "prompt_sha256": "1ab9941ccccc1ef76aab23718c832f36cff58e70149b84979a1e87d4daf0789e"
+      "prompt_sha256": "52da4a3d2a5f422432bd45f06aa815c0af63349ab96216b80915f49bc5b344b4"
     },
     "MW05": {
       "key": "MW05",
@@ -2676,7 +2676,7 @@
         "MW05_B",
         "MW05_C"
       ],
-      "prompt_sha256": "a48c36fbc7ba2ec0c9816fd1fabcf3d31680af66810be49cc17256f8a2faab43"
+      "prompt_sha256": "3338f1409eaa51b97b03bddebe892c855667dbe4e77e7f78bb64a07d7c3d2e26"
     },
     "MW06": {
       "key": "MW06",
@@ -2700,7 +2700,7 @@
         "MW06_B",
         "MW06_C"
       ],
-      "prompt_sha256": "bcc11d0f4990b4fb742002504398b460afbe3ea26b67953d65a711238f719153"
+      "prompt_sha256": "b07e12310ae79577503d7155a4b3f89e48fa19a54a22c4cafab866e2019a6489"
     },
     "MWP01": {
       "key": "MWP01",
@@ -2714,7 +2714,7 @@
         "MWP01_B",
         "MWP01_C"
       ],
-      "prompt_sha256": "d3b5bd599170e54a3b60ef1f6181510a938c6a5c7d21ddb40995591a6c1fbaa5"
+      "prompt_sha256": "d5a6ed23ca4b4d9cc22018c07970da32d503c9a030714b7279f9a6b5fe46b8ef"
     },
     "MWP02": {
       "key": "MWP02",
@@ -2728,7 +2728,7 @@
         "MWP02_B",
         "MWP02_C"
       ],
-      "prompt_sha256": "036cc06fbfcc75a091e8e202fc7b18379749a9afc6cbd0de97b59ddf2aad5fc7"
+      "prompt_sha256": "52ddbebc660e5281aabd890c6996fa23041d44301c02d9e5a9106740c517afb0"
     },
     "HRW07": {
       "key": "HRW07",
@@ -2743,7 +2743,7 @@
         "HRW07_B",
         "HRW07_C"
       ],
-      "prompt_sha256": "22d331cd2ff67948a6d960e1f9932cef29754d678d28e03c6a3d806248b5eab5"
+      "prompt_sha256": "25bdf2bf95ee4e7cdc7921deb72d7ec37c247325f49c10afcaf10ea9c52337fc"
     },
     "SB01": {
       "key": "SB01",
@@ -3337,7 +3337,7 @@
         "03_film/01/video.txt"
       ],
       "note": "Standalone named-cathedral geometry study; no source images required. No image or video generated by this edit.",
-      "prompt_sha256": "0d40a2ed59d2d9f69b2f9a483741fea403dfc5f645d127158f411a3421a8c8c7",
+      "prompt_sha256": "cd58df1f3e2dc5fb246d22a6b7584375f1e77dbf286c949f8c04820c4bcbeadf",
       "latest_image_review": {
         "file": "/home/raxim/Downloads/hf_20260910_040957_bb7741e2-e1b8-41af-87aa-4fac4592d5f6.png",
         "compared_previous_file": "/home/raxim/Downloads/hf_20260909_195819_8c30af4b-1501-4ee3-b8cb-36e5e94906ff.png",
@@ -3363,7 +3363,7 @@
       "layout": "2x2 source/early/advanced/target",
       "intended_resolution": "4K",
       "note": "Prepared façade-detail morph study; no new Element imported, no image generated, no extra mandatory pilot job.",
-      "prompt_sha256": "1253139d837ba33a3d9ef629bf6e3ae5d9cd8f01b92625cb428d7a1675e2f7a0",
+      "prompt_sha256": "a83d3d0747b560021fbab5a4ebcd73ac4df1712b6ecf355534b1208526351bbd",
       "four_state_summary": "ATTACHED LONDON STONE RELIEF: → PROJECTING STONE BUST ON A SPLIT FAN OF MASS: → UNFURLED FIGURE WITH AN OPEN ARM LOOP AND HALF-DIVIDED LEGS: → FULL-DEPTH PEST-STYLE SCULPTED CORBEL:",
       "prompt_review_status": "FOUR_STATE_AND_MATERIAL_RESPONSE_TEXT_REVIEWED_NOT_IMAGE_VERIFIED",
       "review_note": "Four different configurations with per-object breakup/reshaping/reassembly. Removed mandatory conventional structural support from unoccupied intermediates; retained real material substance, tracked source parts, final supports and occupied contact.",
@@ -3381,7 +3381,7 @@
       "layout": "2x2 source/early/advanced/target",
       "intended_resolution": "4K",
       "note": "Prepared façade-detail morph study; no new Element imported, no image generated, no extra mandatory pilot job.",
-      "prompt_sha256": "a015e79373b416b2cfae12d47b6f235304d875b889870da36cae6fcf44d32cd5",
+      "prompt_sha256": "a4dc84da40779fecb3913c75c772f5758f42f6c6c9905c4b60cac563546a729d",
       "four_state_summary": "ORIGINAL LONDON WINDOW BAY: → SPLAYED RECTANGULAR FRAME AND SEPARATING STONE CROWNS: → ARCH CHAINS WITH A WIDE CROWN GAP AND OVERSIZED UNFINISHED VOLUTES: → RESOLVED PEST HISTORIC WINDOW BAY:",
       "prompt_review_status": "FOUR_STATE_AND_MATERIAL_RESPONSE_TEXT_REVIEWED_NOT_IMAGE_VERIFIED",
       "review_note": "Four different configurations with per-object breakup/reshaping/reassembly. Removed mandatory conventional structural support from unoccupied intermediates; retained real material substance, tracked source parts, final supports and occupied contact.",
@@ -3406,7 +3406,7 @@
       ],
       "four_state_summary": "SOURCE: → THREE-DIMENSIONAL GLASS SADDLE WITH SPLAYED CORNERS: → OPEN HELICAL SHADE BEFORE ITS RIMS JOIN: → RESOLVED DESTINATION:",
       "note": "Prepared only; no render, imported container, paid video job or mandatory pilot dependency assumed.",
-      "prompt_sha256": "c6541c38680b539526edc38eeffdeeb7df12fa9833ae3742478911bbc2497c66",
+      "prompt_sha256": "5a15434bc573d9ec7e5797c2149ff589def09029d85d5082d22dffa884927075",
       "prompt_review_status": "FOUR_STATE_AND_MATERIAL_RESPONSE_TEXT_REVIEWED_NOT_IMAGE_VERIFIED",
       "review_note": "Four different configurations with per-object breakup/reshaping/reassembly. Removed mandatory conventional structural support from unoccupied intermediates; retained real material substance, tracked source parts, final supports and occupied contact.",
       "input_mode": "TEXT_ONLY",
@@ -3429,7 +3429,7 @@
       ],
       "four_state_summary": "SOURCE: → OUTWARD SPREADING BRICK COURSES AND DEEP STONE BLANKS: → TWO INWARD CURLING ARCH HALVES, UNJOINED AT THE TOP: → RESOLVED DESTINATION:",
       "note": "Prepared only; no render, imported container, paid video job or mandatory pilot dependency assumed.",
-      "prompt_sha256": "5ae2844a2486b0846febeb0c0d5c5e58b65034bcafc5bf02d5b2e5c277b91bb6",
+      "prompt_sha256": "404cfd5c9b3741cd7169589b1c452d4fdd58408b9971aa36eb0c4c7a7eedfb2d",
       "prompt_review_status": "FOUR_STATE_AND_MATERIAL_RESPONSE_TEXT_REVIEWED_NOT_IMAGE_VERIFIED",
       "review_note": "Four different configurations with per-object breakup/reshaping/reassembly. Removed mandatory conventional structural support from unoccupied intermediates; retained real material substance, tracked source parts, final supports and occupied contact.",
       "input_mode": "TEXT_ONLY",
@@ -3452,7 +3452,7 @@
       ],
       "four_state_summary": "SOURCE: → FANNED STONE-TO-WOOD RIBS ABOVE THE PAVING: → OPEN TIMBER DECK WITH RAISED UNSEATED BOARD ENDS: → RESOLVED DESTINATION:",
       "note": "Prepared only; no render, imported container, paid video job or mandatory pilot dependency assumed.",
-      "prompt_sha256": "b42cb8a2e613cb3600fa91a404372c4773dc70ee10c80cad2be00ec8faeca13e",
+      "prompt_sha256": "0a48caa04fd97d1c6ff57fd03a4587de89f944b2f6bc029a7c4cd89dd752ffa5",
       "prompt_review_status": "FOUR_STATE_AND_MATERIAL_RESPONSE_TEXT_REVIEWED_NOT_IMAGE_VERIFIED",
       "review_note": "Four different configurations with per-object breakup/reshaping/reassembly. Removed mandatory conventional structural support from unoccupied intermediates; retained real material substance, tracked source parts, final supports and occupied contact.",
       "input_mode": "TEXT_ONLY",
@@ -3475,7 +3475,7 @@
       ],
       "four_state_summary": "SOURCE: → BENCH SLATS EXPAND INTO A WIDE ASYMMETRIC FAN: → TALL OPEN SPIRAL GATHERING INTO A LOW FLOOR BORDER: → RESOLVED DESTINATION:",
       "note": "Prepared only; no render, imported container, paid video job or mandatory pilot dependency assumed.",
-      "prompt_sha256": "7179ee621af2754f1ee1bd76e657ffb9a5d500ea6f7ae302d56d94d41bb3ca35",
+      "prompt_sha256": "af78e8816759ee247b29c783d856256ab3661eba6e323fbbe37750c877e9f611",
       "prompt_review_status": "FOUR_STATE_AND_MATERIAL_RESPONSE_TEXT_REVIEWED_NOT_IMAGE_VERIFIED",
       "review_note": "Four different configurations with per-object breakup/reshaping/reassembly. Removed mandatory conventional structural support from unoccupied intermediates; retained real material substance, tracked source parts, final supports and occupied contact.",
       "input_mode": "TEXT_ONLY",
@@ -3498,7 +3498,7 @@
       ],
       "four_state_summary": "SOURCE: → FIXING EXPANDS INTO AN ANGULAR METAL FORK: → OVERSIZED OPEN COIL CONVERGING ON THE LAMP NECK: → RESOLVED DESTINATION:",
       "note": "Prepared only; no render, imported container, paid video job or mandatory pilot dependency assumed.",
-      "prompt_sha256": "48fa76410b99f1ae1db260bbd01895011dc9c8ddcee898ec43348365ad0459a9",
+      "prompt_sha256": "c5ee43eb211173b85f04c0f76a2c549d1a494cc82ad777015608a06052384a94",
       "prompt_review_status": "FOUR_STATE_AND_MATERIAL_RESPONSE_TEXT_REVIEWED_NOT_IMAGE_VERIFIED",
       "review_note": "Four different configurations with per-object breakup/reshaping/reassembly. Removed mandatory conventional structural support from unoccupied intermediates; retained real material substance, tracked source parts, final supports and occupied contact.",
       "input_mode": "TEXT_ONLY",
@@ -3521,7 +3521,7 @@
       ],
       "four_state_summary": "SOURCE: → BALCONY COIL UNWINDS INTO THICK RADIAL TREAD BLANKS: → DOUBLE-ZIGZAG STAIR WITH ROTATED TREADS AND AN UNJOINED RAIL: → RESOLVED DESTINATION:",
       "note": "Prepared only; no render, imported container, paid video job or mandatory pilot dependency assumed.",
-      "prompt_sha256": "80bc08d5b2c96055afaa04c28839290aa28c941b64d124c9f0000b85e3e89293",
+      "prompt_sha256": "3efd6b33e7b8eb14ca194c77a96064d862fab22305223be25617c30a5cf4b0be",
       "prompt_review_status": "FOUR_STATE_AND_MATERIAL_RESPONSE_TEXT_REVIEWED_NOT_IMAGE_VERIFIED",
       "review_note": "Four different configurations with per-object breakup/reshaping/reassembly. Removed mandatory conventional structural support from unoccupied intermediates; retained real material substance, tracked source parts, final supports and occupied contact.",
       "input_mode": "TEXT_ONLY",
@@ -3544,7 +3544,7 @@
       ],
       "four_state_summary": "SOURCE: → RAISED LETTER STROKES SPREAD INTO A THREE-DIMENSIONAL LATTICE: → FOUR OPEN TARGET GLYPH SKELETONS BEFORE CLOSURE: → RESOLVED DESTINATION:",
       "note": "Prepared only; no render, imported container, paid video job or mandatory pilot dependency assumed.",
-      "prompt_sha256": "d0ef7a02ab177eb76c6ced767576e163401fdd82dc89d11acf082448b2a61135",
+      "prompt_sha256": "8fb816cdb3e4929538d1e4e1f40a86dc3e6546e5c6bd4d13b10173974fcefa57",
       "prompt_review_status": "FOUR_STATE_AND_MATERIAL_RESPONSE_TEXT_REVIEWED_NOT_IMAGE_VERIFIED",
       "review_note": "Four different configurations with per-object breakup/reshaping/reassembly. Removed mandatory conventional structural support from unoccupied intermediates; retained real material substance, tracked source parts, final supports and occupied contact.",
       "input_mode": "TEXT_ONLY",
@@ -3568,7 +3568,7 @@
       ],
       "four_state_summary": "SOURCE: → ROOF SECTORS OPEN INTO A WIDE UNEQUAL RIB CAGE: → CURVED GLASS ROOF WITH A LARGE OPEN CENTRAL SEAM: → RESOLVED DESTINATION:",
       "note": "Prepared only; no render, imported container, paid video job or mandatory pilot dependency assumed.",
-      "prompt_sha256": "0ab719fedf3ed6ffcbafd011dab5f77698e90d2e4cc8a5a3da4ebb13d5c5a868",
+      "prompt_sha256": "577d62f8a508703ddede841406227dc6d2a9fc97b88b3b812b0ea68ed990b242",
       "prompt_review_status": "FOUR_STATE_AND_MATERIAL_RESPONSE_TEXT_REVIEWED_NOT_IMAGE_VERIFIED",
       "review_note": "Four different configurations with per-object breakup/reshaping/reassembly. Removed mandatory conventional structural support from unoccupied intermediates; retained real material substance, tracked source parts, final supports and occupied contact.",
       "input_mode": "TEXT_ONLY",
@@ -3592,7 +3592,7 @@
       ],
       "four_state_summary": "SOURCE: → SEPARATED CHIMNEY BANDS IN AN EXPANDING HELIX: → CONVERGING SPIRAL UPRIGHTS WITH SPLAYED CROWN SEGMENTS: → RESOLVED DESTINATION:",
       "note": "Prepared only; no render, imported container, paid video job or mandatory pilot dependency assumed.",
-      "prompt_sha256": "7534bc6f13cc796494d438d9957bbaa6fb6b61301562846f5a39efa285ac17bc",
+      "prompt_sha256": "744d058d4ddd7a7eb2f67ec97915fa6002284dc213cca73930dc90d02238f05a",
       "prompt_review_status": "FOUR_STATE_AND_MATERIAL_RESPONSE_TEXT_REVIEWED_NOT_IMAGE_VERIFIED",
       "review_note": "Four different configurations with per-object breakup/reshaping/reassembly. Removed mandatory conventional structural support from unoccupied intermediates; retained real material substance, tracked source parts, final supports and occupied contact.",
       "input_mode": "TEXT_ONLY",
@@ -3615,7 +3615,7 @@
       ],
       "four_state_summary": "SOURCE: → RAIL OPENS INTO A BROAD FORK AND SPLIT GATE SHELL: → UNFINISHED ROTATING GATE WITH AN OPEN HOUSING AND OVERSIZED LEAF: → RESOLVED DESTINATION:",
       "note": "Prepared only; no render, imported container, paid video job or mandatory pilot dependency assumed.",
-      "prompt_sha256": "b2859fa4d773cb43ac5c3bbe22125cf8e4e43b72f27b74495ee558772ca9b8b6",
+      "prompt_sha256": "7580d40ea8133b663685026520f28baa27e5fbac73025e41a035299c864dff5c",
       "prompt_review_status": "FOUR_STATE_AND_MATERIAL_RESPONSE_TEXT_REVIEWED_NOT_IMAGE_VERIFIED",
       "review_note": "Four different configurations with per-object breakup/reshaping/reassembly. Removed mandatory conventional structural support from unoccupied intermediates; retained real material substance, tracked source parts, final supports and occupied contact.",
       "input_mode": "TEXT_ONLY",
@@ -3638,7 +3638,7 @@
       ],
       "four_state_summary": "SOURCE: → BENCH AND POSTS SPLAY INTO SEAT AND WINDOW FRAME PARTS: → CONVERGING BUS ROOM WITH RAISED SEAT SHELLS AND OFFSET PILLARS: → RESOLVED DESTINATION:",
       "note": "Prepared only; no render, imported container, paid video job or mandatory pilot dependency assumed.",
-      "prompt_sha256": "11113ab7038b21a5bf3f9cfd1cc28d526ba238d6904bf1f4f84f6e7753448b82",
+      "prompt_sha256": "2f7ffb26be207454585fd68b1d469dd1f85bf8137703978d3ea24c7a1af4eb42",
       "prompt_review_status": "FOUR_STATE_AND_MATERIAL_RESPONSE_TEXT_REVIEWED_NOT_IMAGE_VERIFIED",
       "review_note": "Four different configurations with per-object breakup/reshaping/reassembly. Removed mandatory conventional structural support from unoccupied intermediates; retained real material substance, tracked source parts, final supports and occupied contact.",
       "input_mode": "TEXT_ONLY",
@@ -3661,7 +3661,7 @@
       ],
       "four_state_summary": "SOURCE: → CANOPY EXPANDS INTO AN ASYMMETRIC ENVELOPE CAGE: → OPEN LOBED BALLOON WITH UNJOINED FABRIC SECTORS: → RESOLVED DESTINATION:",
       "note": "Prepared only; no render, imported container, paid video job or mandatory pilot dependency assumed.",
-      "prompt_sha256": "8c90db57c5dbc3060a8abd0325c3a009a5d2cb943b6d28ae0d3e3dded9689eaf",
+      "prompt_sha256": "6d043bbfa00cd6abd513e9a2ad03b65684b563c2f8b7a9cf22c8a1db3c0fe45c",
       "prompt_review_status": "FOUR_STATE_AND_MATERIAL_RESPONSE_TEXT_REVIEWED_NOT_IMAGE_VERIFIED",
       "review_note": "Four different configurations with per-object breakup/reshaping/reassembly. Removed mandatory conventional structural support from unoccupied intermediates; retained real material substance, tracked source parts, final supports and occupied contact.",
       "input_mode": "TEXT_ONLY",
@@ -3684,7 +3684,7 @@
       ],
       "four_state_summary": "SOURCE: → UPROOTED-SHAPED STALK ARCS OVER THE SAME SOIL STRIP: → RAISED TIMBER SLEEPER BLANKS WITH LARGE PLANT ENDS: → RESOLVED DESTINATION:",
       "note": "Prepared only; no render, imported container, paid video job or mandatory pilot dependency assumed.",
-      "prompt_sha256": "2489f45c42fa4ce57f27fcf2b28dacb41a875cd24709534904cba8b74a08e031",
+      "prompt_sha256": "e198f54d4d5cec8ba7b454f589ac37a42ff1805f2c5d1373f4081d5c866d62d4",
       "prompt_review_status": "FOUR_STATE_AND_MATERIAL_RESPONSE_TEXT_REVIEWED_NOT_IMAGE_VERIFIED",
       "review_note": "Four different configurations with per-object breakup/reshaping/reassembly. Removed mandatory conventional structural support from unoccupied intermediates; retained real material substance, tracked source parts, final supports and occupied contact.",
       "input_mode": "TEXT_ONLY",
@@ -3707,7 +3707,7 @@
       ],
       "four_state_summary": "SOURCE: → CABINET EXPANDS INTO A SPLAYED FURNITURE SKELETON: → UNJOINED DESK AND CHAIR WITH A LARGE REMAINING PANEL WEB: → RESOLVED DESTINATION:",
       "note": "Prepared only; no render, imported container, paid video job or mandatory pilot dependency assumed.",
-      "prompt_sha256": "6ffd5e447273b36e72a4740d84441b83bdd669dc2acbe3371216b7c890c96a6b",
+      "prompt_sha256": "012f917e24a3ade4137bcda8133d8828ef17bde6818349a9da305afd7447e8d0",
       "prompt_review_status": "FOUR_STATE_AND_MATERIAL_RESPONSE_TEXT_REVIEWED_NOT_IMAGE_VERIFIED",
       "review_note": "Four different configurations with per-object breakup/reshaping/reassembly. Removed mandatory conventional structural support from unoccupied intermediates; retained real material substance, tracked source parts, final supports and occupied contact.",
       "input_mode": "TEXT_ONLY",
@@ -3730,7 +3730,7 @@
       ],
       "four_state_summary": "SOURCE: → BENCH BOARDS SPLAY INTO A TALL BRANCHED TIMBER FRAME: → OPEN SHELVING WITH DIAGONAL DIVIDERS AND UNSEATED BOARDS: → RESOLVED DESTINATION:",
       "note": "Prepared only; no render, imported container, paid video job or mandatory pilot dependency assumed.",
-      "prompt_sha256": "991a24ed22d40772bc39d522b07660df1bbd765139b155c61ab3a069c9ebbc8d",
+      "prompt_sha256": "0a858ccc9a596e8d58a5d397d56f0960375e230b97f69575c3843bd1454e81f5",
       "prompt_review_status": "FOUR_STATE_AND_MATERIAL_RESPONSE_TEXT_REVIEWED_NOT_IMAGE_VERIFIED",
       "review_note": "Four different configurations with per-object breakup/reshaping/reassembly. Removed mandatory conventional structural support from unoccupied intermediates; retained real material substance, tracked source parts, final supports and occupied contact.",
       "input_mode": "TEXT_ONLY",
@@ -3755,7 +3755,7 @@
       ],
       "four_state_summary": "SOURCE: → PAVING COURSES SPREAD INTO A LARGE STEPPED STONE FAN: → BROAD TERRACE WITH UNSEATED RISERS AND OPEN ARCH CHAINS: → RESOLVED DESTINATION:",
       "note": "Prepared only; no render, imported container, paid video job or mandatory pilot dependency assumed.",
-      "prompt_sha256": "8cf5234f227ab97367d561a06e8da1833eee9e8e46de552691687f38237440cc",
+      "prompt_sha256": "aeec99858cec58437ba9a842a39363e854a15e7df6881f0913071711850d9db6",
       "prompt_review_status": "FOUR_STATE_AND_MATERIAL_RESPONSE_TEXT_REVIEWED_NOT_IMAGE_VERIFIED",
       "review_note": "Four different configurations with per-object breakup/reshaping/reassembly. Removed mandatory conventional structural support from unoccupied intermediates; retained real material substance, tracked source parts, final supports and occupied contact.",
       "input_mode": "TEXT_ONLY",
@@ -3778,7 +3778,7 @@
       ],
       "four_state_summary": "SOURCE: → ROPE UNTWISTS INTO A WIDE OPEN FIBRE FAN: → LOOSE WOVEN LATTICE WITH A THICK UNFINISHED ROPE EDGE: → RESOLVED DESTINATION:",
       "note": "Prepared only; no render, imported container, paid video job or mandatory pilot dependency assumed.",
-      "prompt_sha256": "4d6581e126c53f761b99bbdd7b2ae7c774253813eb2acb68f6e8807d28574a6b",
+      "prompt_sha256": "c565f85ec86eddb7c56980fc4fc56e1d00b29999e8140b311c175592afc52f44",
       "prompt_review_status": "FOUR_STATE_AND_MATERIAL_RESPONSE_TEXT_REVIEWED_NOT_IMAGE_VERIFIED",
       "review_note": "Four different configurations with per-object breakup/reshaping/reassembly. Removed mandatory conventional structural support from unoccupied intermediates; retained real material substance, tracked source parts, final supports and occupied contact.",
       "input_mode": "TEXT_ONLY",
@@ -3796,7 +3796,7 @@
         "03_film/01/video.txt"
       ],
       "layout": "2x2 source/unfinished/unfinished/target",
-      "prompt_sha256": "86166a307b2e13551dc686631df4f01bac999af36f309ef0349e85dd7e57be55",
+      "prompt_sha256": "7aec9b27554e36ef220c07a36510c9cd048f1734ce9e9cab9ac5d14969e4f0bb",
       "four_state_summary": "SOURCE: → FANLIGHT SPLITS INTO A WIDELY SPLAYED RIB ARRAY: → CONVERGING OVERHEAD CANOPY WITH A LARGE OPEN ROOF SECTOR: → RESOLVED DESTINATION:",
       "prompt_review_status": "FOUR_STATE_AND_MATERIAL_RESPONSE_TEXT_REVIEWED_NOT_IMAGE_VERIFIED",
       "review_note": "Four different configurations with per-object breakup/reshaping/reassembly. Removed mandatory conventional structural support from unoccupied intermediates; retained real material substance, tracked source parts, final supports and occupied contact.",
@@ -3815,7 +3815,7 @@
         "01_pilot/test_video_8s.txt",
         "03_film/01/video.txt"
       ],
-      "prompt_sha256": "e653d13525bc8563b896f7ad034e69476bc2cff5c80718c857bd559711b779a3",
+      "prompt_sha256": "c5d8a7368698aafa38132f3865f2525b6a916be7424ea980a0259cdd6670f901",
       "four_state_summary": "ORIGINAL SOURCE: the intact ground-floor café window, thick brick returns, timber mullion, attached glass, stone sill and adjoining paving. Show mortar depth, the sill's underside and a distinctive chipped corner low on the same brick pier. The restaurant described above occupies the actual depth behind this window: its existing table, chair, woman and remembered man retain their source positions. They can be partly obscured by the original window structure, but do not invent a different empty interior. → WINDOW BURSTS INTO A DEEP MASONRY AND GLASS ARRAY: → ROOM EMERGES THROUGH AN UNJOINED ARCH AND OPEN GLASS HELICES: → RESOLVED DESTINATION: the same window opening has become the full-depth occupied restaurant projecting into the street, with the same table and chair on the supported wooden floor beyond the original jamb. All THREE source glass segments have now resolved into complete attached curved pendant shades with closed finished profiles; none retains a flat shard face or open intermediate seam. The floor reaches its full approximately one-metre projection, carrying the entire occupied chair and near table beyond the original facade plane. The source glass now forms attached curved pendant shades, the fasteners form stems, the mullion forms trim and the brick courses form substantial stone/plaster returns. Show all chair legs, table thickness, floor edge, pendant attachments and both rear restroom doors. Preserve the same woman and man's identities within this sheet and their original encounter. The chipped corner and surviving paving edge locate this as the same physical site as the first cell. No remaining source part disappears to reveal a finished replacement room.",
       "prompt_review_status": "FOUR_STATE_AND_MATERIAL_RESPONSE_TEXT_REVIEWED_NOT_IMAGE_VERIFIED",
       "review_note": "Four different configurations with per-object breakup/reshaping/reassembly. Removed mandatory conventional structural support from unoccupied intermediates; retained real material substance, tracked source parts, final supports and occupied contact.",
@@ -3847,7 +3847,7 @@
         7,
         8
       ],
-      "prompt_sha256": "fff697a59f77b646827537d2ad8fbe04b7515569f90f36a995b59874101dc96e"
+      "prompt_sha256": "f91c624bd53569cf8ef149e474257574b42115958b2956c23c6305bbec7125d7"
     },
     "MW01_C": {
       "key": "MW01_C",
@@ -3873,7 +3873,7 @@
         7,
         8
       ],
-      "prompt_sha256": "66b71d8e933b407b0be4ee5e8bc15c3ef6cf354ef2bb8c34390884e00e642a8e"
+      "prompt_sha256": "f35f7b5c753b6733579ca84f8218c4eb62002f329b4b9ef865fe40211f7396bb"
     },
     "MW02_B": {
       "key": "MW02_B",
@@ -3903,7 +3903,7 @@
         7,
         8
       ],
-      "prompt_sha256": "afcf42c12b5eff1e060f9b4fd71e1eb433806913b0ef7311fa0edd0aa785879f"
+      "prompt_sha256": "873079837863544bcbe56f09ee6c5582b1b15db16ec6d13792435deea5949677"
     },
     "MW02_C": {
       "key": "MW02_C",
@@ -3933,7 +3933,7 @@
         7,
         8
       ],
-      "prompt_sha256": "6d2c3c44cdc72d9dd262abf7872cdd3ae741cb0b162e628861b599df65f86b69"
+      "prompt_sha256": "5518bbc635a95444185240631b7bf95fa7b671637d161858bd68d82d8539bf3c"
     },
     "MW03_B": {
       "key": "MW03_B",
@@ -3955,7 +3955,7 @@
         7,
         8
       ],
-      "prompt_sha256": "3ec292bf10bd67b55f728d437bbd63d85d01346b728e693628957c64c56c7486"
+      "prompt_sha256": "4b9f688c79f97b933a6319c2c30ff5ff4358b784dea5be4b32d0c5ed7be580ca"
     },
     "MW03_C": {
       "key": "MW03_C",
@@ -3977,7 +3977,7 @@
         7,
         8
       ],
-      "prompt_sha256": "ed5a9e869898507f4607824d77de3b9f322885bbcccd9e126457477d1dd4a23f"
+      "prompt_sha256": "1d07815d6b088f05f51e10cfe233a6f0e653d56a019001e4ff93f8673f10a1ae"
     },
     "MW04_B": {
       "key": "MW04_B",
@@ -4000,7 +4000,7 @@
         7,
         8
       ],
-      "prompt_sha256": "0e827793264ee1285057b10ad6536d6a5d3a8e59af50725911af2feda76e364f"
+      "prompt_sha256": "3365bfe9c455ee331827baf9e145339ba2963aaee6c4fd6b4d503abc9d0c1da3"
     },
     "MW04_C": {
       "key": "MW04_C",
@@ -4023,7 +4023,7 @@
         7,
         8
       ],
-      "prompt_sha256": "fc27acb040e8997cf8c09c06d85a3d9a08d1552b790432fc5766255b82aefd1c"
+      "prompt_sha256": "1af62a9e76ce2fe88f84b409f06f95379d289ea73c0615e18b4ba150c10e9fdb"
     },
     "MW05_B": {
       "key": "MW05_B",
@@ -4048,7 +4048,7 @@
         7,
         8
       ],
-      "prompt_sha256": "2737175da22b08a0e94bad8ed530a462527449c8a2b6c4d5f626c825888ebbd3"
+      "prompt_sha256": "776014e7eb3d108b70aa07fa55f49677d424c94a5a61054b22a707bd10d71d29"
     },
     "MW05_C": {
       "key": "MW05_C",
@@ -4073,7 +4073,7 @@
         7,
         8
       ],
-      "prompt_sha256": "719047945b8d066a4a7ae27de0ac0588f12ce88fcea28c310564e4972bc9c432"
+      "prompt_sha256": "36948de3f51cfa3ed2c4ac0d202fd8a1e25fa8d6385e222626821d57d864b143"
     },
     "MW06_B": {
       "key": "MW06_B",
@@ -4102,7 +4102,7 @@
         7,
         8
       ],
-      "prompt_sha256": "178b9e8f06cb4832b275531434d631ba978d5cec1eece8237cdf28ba751d97d9"
+      "prompt_sha256": "42555095d8877a45e974d0504c37c3e7f38b4b72cc127592abfcba6087e15d26"
     },
     "MW06_C": {
       "key": "MW06_C",
@@ -4131,7 +4131,7 @@
         7,
         8
       ],
-      "prompt_sha256": "d88f956043f056e5c49894ec81c83b5d0744b8b81d254bbfa62beab8e7b4e29e"
+      "prompt_sha256": "8fbbcd56e8abf1b9418c1edb2de8d5a0537a0f4b6f4196efa34337ffe11dec78"
     },
     "MWP01_B": {
       "key": "MWP01_B",
@@ -4150,7 +4150,7 @@
         7,
         8
       ],
-      "prompt_sha256": "2fbf13d61786ae11822c2336e4a16a9b31087a9db7d8fb992c121db69500c617"
+      "prompt_sha256": "b9b0bc92e517f7454941477043adace8e63cea636c7f23e31d4f7d3192967436"
     },
     "MWP01_C": {
       "key": "MWP01_C",
@@ -4169,7 +4169,7 @@
         7,
         8
       ],
-      "prompt_sha256": "17136fae518dbdc402c1690eb68019f47b75dcd735a5610da191f92bc7ebed43"
+      "prompt_sha256": "6b98d956184177e8836687a2df25faf038aeb94f3e4f7e31ffffa829364392cc"
     },
     "MWP02_B": {
       "key": "MWP02_B",
@@ -4188,7 +4188,7 @@
         7,
         8
       ],
-      "prompt_sha256": "76c537d05798d68a32b0edc4ae14ed6ea7f20e5fba3a49e50c7ba85b0355e2b5"
+      "prompt_sha256": "1809164a0e35d36bc486f616f311b053a18354a17d6ba952fb60ae0f089a79bc"
     },
     "MWP02_C": {
       "key": "MWP02_C",
@@ -4207,7 +4207,7 @@
         7,
         8
       ],
-      "prompt_sha256": "8a619c50970fc21d91c91054c4ff8dcae5b7a8a09d19c321e66baffb115e3747"
+      "prompt_sha256": "3a8c8db2e87c22bb97495f597e69efa01c9e2cad72fd68a04eaeedd7309c6cd8"
     },
     "HRW07_B": {
       "key": "HRW07_B",
@@ -4227,7 +4227,7 @@
         7,
         8
       ],
-      "prompt_sha256": "98a54fc6c2e230ce6be38797503282b40ce45525e740a0732891a117ef1c7dfb"
+      "prompt_sha256": "775e4ff1f911b512d009fa79bbd28a51e27a3fa871cdcd5eb98cd8adc0fde6cd"
     },
     "HRW07_C": {
       "key": "HRW07_C",
@@ -4247,7 +4247,7 @@
         7,
         8
       ],
-      "prompt_sha256": "3d1a39cb6c8fa0045f183cf3f30df640076a9b20b4e6433af86f87183812d024"
+      "prompt_sha256": "faa9d3dea6f47848fbcc2a30ffee61b32c79b0401f725a7da05bdd4e4ba17742"
     },
     "T01_DETAILS": {
       "key": "T01_DETAILS",
@@ -4259,7 +4259,7 @@
       ],
       "status": "PREPARED_NOT_RENDERED",
       "layout": "4K 2x2 restaurant coverage page A",
-      "prompt_sha256": "a48157af670716972e802c1ef34f68fcc3259c972dadb9418564d8ad5154d679"
+      "prompt_sha256": "cf467b8db3cfb04c450458ceae0edd8687a5ecf1cbb301cca7f81d48c1141f6b"
     },
     "T01_DETAILS_B": {
       "key": "T01_DETAILS_B",
@@ -4272,7 +4272,7 @@
       ],
       "status": "PREPARED_NOT_RENDERED",
       "layout": "4K 2x2 restaurant coverage page B",
-      "prompt_sha256": "a819db641f53b6fbdc796788a50aaafa47c2503efd3a2a00d9ceeeac652aa3b4"
+      "prompt_sha256": "e1baa5cb4bee93fb6760f0328f1d9705ec3c7c19408abdfbd4e71da2321a540d"
     },
     "T01_DETAILS_C": {
       "key": "T01_DETAILS_C",
@@ -4285,7 +4285,7 @@
       ],
       "status": "PREPARED_NOT_RENDERED",
       "layout": "4K 2x2 restaurant coverage page C",
-      "prompt_sha256": "e618c8635b574a9c0153d6a5bf39bbf5dcca1c43d18bb9b0cc69c571840c649b"
+      "prompt_sha256": "4f3b0ca03bb7baf8714ed46f7f92703bbfaed6b2c35d9796feaf1b4ce78cc8a8"
     },
     "R002": {
       "key": "R002",
@@ -4294,7 +4294,7 @@
       "refs": [],
       "status": "PREPARED_NOT_RENDERED",
       "layout": "4K 2x2 object material transformation",
-      "prompt_sha256": "30d18e514cd9dae2d36fc53623ce30ed6b65368f5309d0b88850e6be820ac403",
+      "prompt_sha256": "b5f6dc02a14b3182bea5fbddf9f703f4eade9c45f5ce5dd9af0e4c992197e32c",
       "current_prompt_image_verified": false,
       "input_mode": "TEXT_ONLY",
       "prompt_review_status": "FOUR_STATE_AND_MATERIAL_RESPONSE_TEXT_REVIEWED_NOT_IMAGE_VERIFIED",
@@ -4308,7 +4308,7 @@
       "refs": [],
       "status": "PREPARED_NOT_RENDERED",
       "layout": "4K 2x2 object material transformation",
-      "prompt_sha256": "1c02f208171540868bd3753f657e25e99e3ccd215d8c056db8b55e8fcdaf46aa",
+      "prompt_sha256": "2c5dba3e330b71dcaa52ea00f7ce10bb76b56d212eeb94d3a77dcaf5376c19ad",
       "current_prompt_image_verified": false,
       "input_mode": "TEXT_ONLY",
       "prompt_review_status": "FOUR_STATE_AND_MATERIAL_RESPONSE_TEXT_REVIEWED_NOT_IMAGE_VERIFIED",
@@ -4322,7 +4322,7 @@
       "refs": [],
       "status": "PREPARED_NOT_RENDERED",
       "layout": "4K 2x2 object material transformation",
-      "prompt_sha256": "aa9e28f1a3bbba413ae102f014d3699b4de527936a929ba912f078e4f3437a0b",
+      "prompt_sha256": "c37426e011fc13ac50d3068eb7d6d1487502ebc6de7323a687a0ad0ca842c12d",
       "current_prompt_image_verified": false,
       "input_mode": "TEXT_ONLY",
       "prompt_review_status": "FOUR_STATE_AND_MATERIAL_RESPONSE_TEXT_REVIEWED_NOT_IMAGE_VERIFIED",
@@ -4336,7 +4336,7 @@
       "refs": [],
       "status": "PREPARED_NOT_RENDERED",
       "layout": "4K 2x2 object material transformation",
-      "prompt_sha256": "90374379329fb808f05287e7f555f426cca1e08fa86fd5ddf235f5ae88dc7c22",
+      "prompt_sha256": "45700520a867b47c8978f39feae82939c5ce10330186d97ec47ebb6f0b34849c",
       "current_prompt_image_verified": false,
       "input_mode": "TEXT_ONLY",
       "prompt_review_status": "FOUR_STATE_AND_MATERIAL_RESPONSE_TEXT_REVIEWED_NOT_IMAGE_VERIFIED",
@@ -4350,7 +4350,7 @@
       "refs": [],
       "status": "PREPARED_NOT_RENDERED",
       "layout": "4K 2x2 object material transformation",
-      "prompt_sha256": "ae51cdc631d99df6962e2854df1c33c8c019799f21ab3dc6c1de5ec93b75ea2c",
+      "prompt_sha256": "1f53294776fdbf87d6e28479c94d519497ea35e144743b4f4caa2364e5340fd2",
       "current_prompt_image_verified": false,
       "input_mode": "TEXT_ONLY",
       "prompt_review_status": "FOUR_STATE_AND_MATERIAL_RESPONSE_TEXT_REVIEWED_NOT_IMAGE_VERIFIED",
@@ -4364,7 +4364,7 @@
       "refs": [],
       "status": "PREPARED_NOT_RENDERED",
       "layout": "4K 2x2 object material transformation",
-      "prompt_sha256": "d91e3cf18a9c6be12f19d7788f416d735d780cb0d1449f58ae2042d2f56d1576",
+      "prompt_sha256": "8157b3bc5f69c36a1b87b4ccb093d2a332d5b92276bae531e89321590be8b238",
       "current_prompt_image_verified": false,
       "input_mode": "TEXT_ONLY",
       "prompt_review_status": "FOUR_STATE_AND_MATERIAL_RESPONSE_TEXT_REVIEWED_NOT_IMAGE_VERIFIED",
@@ -4378,7 +4378,7 @@
       "refs": [],
       "status": "PREPARED_NOT_RENDERED",
       "layout": "4K 2x2 object material transformation",
-      "prompt_sha256": "7b14644f878de7293a01d214a964bf9323b007dde6fceaa98b145dede6df4a9b",
+      "prompt_sha256": "50fdce6d14c54c161fcc49dcd0d76087cd5dd8f08543ce8da879297d7188bf5a",
       "current_prompt_image_verified": false,
       "input_mode": "TEXT_ONLY",
       "prompt_review_status": "FOUR_STATE_AND_MATERIAL_RESPONSE_TEXT_REVIEWED_NOT_IMAGE_VERIFIED",
@@ -4392,7 +4392,7 @@
       "refs": [],
       "status": "PREPARED_NOT_RENDERED",
       "layout": "4K 2x2 object material transformation",
-      "prompt_sha256": "ad425d9587dd4281719279e7081817e819efe713da011c954dcd9a254340d9d7",
+      "prompt_sha256": "1460bd437c448a7d77f42b5383d25d9a085a1601dfe69be30f0b550096e56ae2",
       "current_prompt_image_verified": false,
       "input_mode": "TEXT_ONLY",
       "prompt_review_status": "FOUR_STATE_AND_MATERIAL_RESPONSE_TEXT_REVIEWED_NOT_IMAGE_VERIFIED",
@@ -4406,7 +4406,7 @@
       "refs": [],
       "status": "PREPARED_NOT_RENDERED",
       "layout": "4K 2x2 object material transformation",
-      "prompt_sha256": "f4d8ce387c97ceb65c84f0ed0bd6d7cbe246e98b8528b93d59eaed57a5b8bca2",
+      "prompt_sha256": "0f76e5ca68ded3749192159a566235f8214338256499f9cf035f3a59d202fa65",
       "current_prompt_image_verified": false,
       "input_mode": "TEXT_ONLY",
       "prompt_review_status": "FOUR_STATE_AND_MATERIAL_RESPONSE_TEXT_REVIEWED_NOT_IMAGE_VERIFIED",
@@ -4420,7 +4420,7 @@
       "refs": [],
       "status": "PREPARED_NOT_RENDERED",
       "layout": "4K 2x2 object material transformation",
-      "prompt_sha256": "b5b1c1639fbebaf887d384b17f6533b7d2ba1b8d881b44dfa8bfc8489c558d58",
+      "prompt_sha256": "1e5ec72c2869f6d8d219517a1622697b9edc8ad132c49486759132a133ffc796",
       "current_prompt_image_verified": false,
       "input_mode": "TEXT_ONLY",
       "prompt_review_status": "FOUR_STATE_AND_MATERIAL_RESPONSE_TEXT_REVIEWED_NOT_IMAGE_VERIFIED",
@@ -4434,7 +4434,7 @@
       "refs": [],
       "status": "PREPARED_NOT_RENDERED",
       "layout": "4K 2x2 object material transformation",
-      "prompt_sha256": "fd3f374aee62e1f31009e1e48c688bd291c98dd4cd216897d86017a1abd9a6af",
+      "prompt_sha256": "2d9301994174be30e5bc7e6b37f21eb1a36806485a0bb5975ac4c04fa3d9e3f4",
       "current_prompt_image_verified": false,
       "input_mode": "TEXT_ONLY",
       "prompt_review_status": "FOUR_STATE_AND_MATERIAL_RESPONSE_TEXT_REVIEWED_NOT_IMAGE_VERIFIED",
@@ -4448,7 +4448,7 @@
       "refs": [],
       "status": "PREPARED_NOT_RENDERED",
       "layout": "4K 2x2 object material transformation",
-      "prompt_sha256": "3e544805f73134a5a0f394305bd3255826177a24632598f7f1d6d1cad0ef53f7",
+      "prompt_sha256": "9183931ddd503a8986c0c7bc1539b37ba19edba2a3d70c9bde6ca1e4be2a8dae",
       "current_prompt_image_verified": false,
       "input_mode": "TEXT_ONLY",
       "prompt_review_status": "FOUR_STATE_AND_MATERIAL_RESPONSE_TEXT_REVIEWED_NOT_IMAGE_VERIFIED",
@@ -4462,7 +4462,7 @@
       "refs": [],
       "status": "PREPARED_NOT_RENDERED",
       "layout": "4K 2x2 object material transformation",
-      "prompt_sha256": "3840b8ead19459b101adc05f5ecfb5c2e405458c0942a35e9e00fe7fde492174",
+      "prompt_sha256": "926106351f1c9205989062bea7b653e1dfe683023f1ce4064f4a33dd4b2350c0",
       "current_prompt_image_verified": false,
       "input_mode": "TEXT_ONLY",
       "prompt_review_status": "FOUR_STATE_AND_MATERIAL_RESPONSE_TEXT_REVIEWED_NOT_IMAGE_VERIFIED",
@@ -4476,7 +4476,7 @@
       "refs": [],
       "status": "PREPARED_NOT_RENDERED",
       "layout": "4K 2x2 object material transformation",
-      "prompt_sha256": "e0e2548c8330e4d396e7d5ab0c980a7afcf5a18af6a14e8788fd76b36cc1c411",
+      "prompt_sha256": "b0a455f60ce1b2a48ff22b724a8ae052c7ff8f5a5a6916e98e769ff2ab3c21e5",
       "current_prompt_image_verified": false,
       "input_mode": "TEXT_ONLY",
       "prompt_review_status": "FOUR_STATE_AND_MATERIAL_RESPONSE_TEXT_REVIEWED_NOT_IMAGE_VERIFIED",
@@ -4490,7 +4490,7 @@
       "refs": [],
       "status": "PREPARED_NOT_RENDERED",
       "layout": "4K 2x2 object material transformation",
-      "prompt_sha256": "3031c46144ad2d5cfe9d576814d08205482456c6d5ac3db646ce75301a58bfcf",
+      "prompt_sha256": "d5e5afdcfe60ed6c5c507a8515b3e1f530b90a160097a40c81edfe30a389e2f3",
       "current_prompt_image_verified": false,
       "input_mode": "TEXT_ONLY",
       "prompt_review_status": "FOUR_STATE_AND_MATERIAL_RESPONSE_TEXT_REVIEWED_NOT_IMAGE_VERIFIED",
@@ -4504,7 +4504,7 @@
       "refs": [],
       "status": "PREPARED_NOT_RENDERED",
       "layout": "4K 2x2 object material transformation",
-      "prompt_sha256": "62e381af229acda858d7a113b3f60992cf79bbf81a613b1d4417ed6b12b76eed",
+      "prompt_sha256": "1f26cfb5ea8ae3f5b6f19ed311f11c28b0424a17c0574820e0fc9edab1514286",
       "current_prompt_image_verified": false,
       "input_mode": "TEXT_ONLY",
       "prompt_review_status": "FOUR_STATE_AND_MATERIAL_RESPONSE_TEXT_REVIEWED_NOT_IMAGE_VERIFIED",
@@ -4518,7 +4518,7 @@
       "refs": [],
       "status": "PREPARED_NOT_RENDERED",
       "layout": "4K 2x2 object material transformation",
-      "prompt_sha256": "ec9e69c946325852d199b4bde53aa1e6d1da6f70321d331c702375edbe8681fd",
+      "prompt_sha256": "9237ec263703d502c4a8a960d0a629e23847a90dcd26dc829498c4ba8ecdcdb1",
       "current_prompt_image_verified": false,
       "input_mode": "TEXT_ONLY",
       "prompt_review_status": "FOUR_STATE_AND_MATERIAL_RESPONSE_TEXT_REVIEWED_NOT_IMAGE_VERIFIED",
@@ -4532,7 +4532,7 @@
       "refs": [],
       "status": "PREPARED_NOT_RENDERED",
       "layout": "4K 2x2 object material transformation",
-      "prompt_sha256": "72b356988e22217afbdaf3f5354e1aaa4e6859267829760e9bc5e2db5089d275",
+      "prompt_sha256": "9cbaca86d754fbf9614b7dc46c6902f8f375e678241945769c3e461c0e8a443f",
       "current_prompt_image_verified": false,
       "input_mode": "TEXT_ONLY",
       "prompt_review_status": "FOUR_STATE_AND_MATERIAL_RESPONSE_TEXT_REVIEWED_NOT_IMAGE_VERIFIED",
@@ -4546,7 +4546,7 @@
       "refs": [],
       "status": "PREPARED_NOT_RENDERED",
       "layout": "4K 2x2 object material transformation",
-      "prompt_sha256": "9c658aeec5d781ad3794fff0ed0ee59699a403b0ac6fdb90d933011b0b67cc44",
+      "prompt_sha256": "debdfae10da450985e83c750e432dc2dba378a38f02cd50f625c09eae5e6bb86",
       "current_prompt_image_verified": false,
       "input_mode": "TEXT_ONLY",
       "prompt_review_status": "FOUR_STATE_AND_MATERIAL_RESPONSE_TEXT_REVIEWED_NOT_IMAGE_VERIFIED",
@@ -4560,7 +4560,7 @@
       "refs": [],
       "status": "PREPARED_NOT_RENDERED",
       "layout": "4K 2x2 object material transformation",
-      "prompt_sha256": "d5aa44ec43ec9e34967af6ee9a38c9c80fe05f6c64847c5a019f042992aafcf1",
+      "prompt_sha256": "7a7a00dab5f6826ae7cab992c4e72a09823de8f08e9cc67eda25e6e1a3b824cb",
       "current_prompt_image_verified": false,
       "input_mode": "TEXT_ONLY",
       "prompt_review_status": "FOUR_STATE_AND_MATERIAL_RESPONSE_TEXT_REVIEWED_NOT_IMAGE_VERIFIED",
@@ -4574,7 +4574,7 @@
       "refs": [],
       "status": "PREPARED_NOT_RENDERED",
       "layout": "4K 2x2 object material transformation",
-      "prompt_sha256": "6a64f336021501fdb830825b1ae665bee18bd3e972d6299356f645596d77c904",
+      "prompt_sha256": "b49798779119a3a80900c23c8b86df0c6bdeeb25b0565e11e873279ad9a8d522",
       "current_prompt_image_verified": false,
       "input_mode": "TEXT_ONLY",
       "prompt_review_status": "FOUR_STATE_AND_MATERIAL_RESPONSE_TEXT_REVIEWED_NOT_IMAGE_VERIFIED",
@@ -4588,7 +4588,7 @@
       "refs": [],
       "status": "PREPARED_NOT_RENDERED",
       "layout": "4K 2x2 object material transformation",
-      "prompt_sha256": "d21e6f1ec039f65d4d752a66e64296660ec7509bb3039c0bf433dac10814998c",
+      "prompt_sha256": "0be2498b7e4543909e489791d031acbdf7bfd569c2dbfb84a8cf4eaed4bf526f",
       "current_prompt_image_verified": false,
       "input_mode": "TEXT_ONLY",
       "prompt_review_status": "FOUR_STATE_AND_MATERIAL_RESPONSE_TEXT_REVIEWED_NOT_IMAGE_VERIFIED",
@@ -4602,7 +4602,7 @@
       "refs": [],
       "status": "PREPARED_NOT_RENDERED",
       "layout": "4K 2x2 object material transformation",
-      "prompt_sha256": "50162d12c634350d5975e804c61d43bc79b15baf76ce9caf5302a42bed4f69fa",
+      "prompt_sha256": "35e6c7ea38a0aaf28efe4a46b84d9a07cd4de52375d63dfece1b46bb9f355b8a",
       "current_prompt_image_verified": false,
       "input_mode": "TEXT_ONLY",
       "prompt_review_status": "FOUR_STATE_AND_MATERIAL_RESPONSE_TEXT_REVIEWED_NOT_IMAGE_VERIFIED",
@@ -4616,7 +4616,7 @@
       "refs": [],
       "status": "PREPARED_NOT_RENDERED",
       "layout": "4K 2x2 object material transformation",
-      "prompt_sha256": "3eb3b2d497dafa92935f00af5e26f949f4e08e7dd36e7372fae1d58b625ae15b",
+      "prompt_sha256": "36ac8a1aa8d80bd7ceeec11ec4f89a243fd092b227dece32b4cdfd0e1b9b0eb6",
       "current_prompt_image_verified": false,
       "input_mode": "TEXT_ONLY",
       "prompt_review_status": "FOUR_STATE_AND_MATERIAL_RESPONSE_TEXT_REVIEWED_NOT_IMAGE_VERIFIED",
@@ -4630,7 +4630,7 @@
       "refs": [],
       "status": "PREPARED_NOT_RENDERED",
       "layout": "4K 2x2 object material transformation",
-      "prompt_sha256": "5f9f9832368ce31e0a2be869402199c1f1068a87e458cd6286333fc2130fcb53",
+      "prompt_sha256": "813fc7eda84ca1ab09ab611dd8603a292687834f43d8e813ba1cc75b157fabf1",
       "current_prompt_image_verified": false,
       "input_mode": "TEXT_ONLY",
       "prompt_review_status": "FOUR_STATE_AND_MATERIAL_RESPONSE_TEXT_REVIEWED_NOT_IMAGE_VERIFIED",
@@ -4644,7 +4644,7 @@
       "refs": [],
       "status": "PREPARED_NOT_RENDERED",
       "layout": "4K 2x2 object material transformation",
-      "prompt_sha256": "e7b101fb3c6b9b234ee36bc3d47225aa421cd2e7c242de8787b7791b2b9af1e7",
+      "prompt_sha256": "d8e75523923f72985564a5e338ed18dee4d411dc61b600aae1059bcf2caffb02",
       "current_prompt_image_verified": false,
       "input_mode": "TEXT_ONLY",
       "prompt_review_status": "FOUR_STATE_AND_MATERIAL_RESPONSE_TEXT_REVIEWED_NOT_IMAGE_VERIFIED",
@@ -4658,7 +4658,7 @@
       "refs": [],
       "status": "PREPARED_NOT_RENDERED",
       "layout": "4K 2x2 object material transformation",
-      "prompt_sha256": "54508e68ab33d501e6de98ff17c6badc940d15dfc120f1211149e114b9f66a4b",
+      "prompt_sha256": "16c7cce78f9999cd66f678870b292ffd4935759f46d3712e7b7737200269852f",
       "current_prompt_image_verified": false,
       "input_mode": "TEXT_ONLY",
       "prompt_review_status": "FOUR_STATE_AND_MATERIAL_RESPONSE_TEXT_REVIEWED_NOT_IMAGE_VERIFIED",
@@ -4672,7 +4672,7 @@
       "refs": [],
       "status": "PREPARED_NOT_RENDERED",
       "layout": "4K 2x2 object material transformation",
-      "prompt_sha256": "c0bb8b97c6b5344953a5f9fd7aa3f67bc17b7956c5d3af67731c344b49e1a41b",
+      "prompt_sha256": "e92b3e0e2f84fad5630c301c1e0e83e2b3637aa515ca763fe431973f19dd9762",
       "current_prompt_image_verified": false,
       "input_mode": "TEXT_ONLY",
       "prompt_review_status": "FOUR_STATE_AND_MATERIAL_RESPONSE_TEXT_REVIEWED_NOT_IMAGE_VERIFIED",
@@ -4686,7 +4686,7 @@
       "refs": [],
       "status": "PREPARED_NOT_RENDERED",
       "layout": "4K 2x2 object material transformation",
-      "prompt_sha256": "d128f327f0e6c102bb407c7e0211b31c654da4ce4a4ff1d189e6bfc5937b5049",
+      "prompt_sha256": "d0da63e312c921d39bdd818c39086e59825694cd77643b804f067c60ef4a67ea",
       "current_prompt_image_verified": false,
       "input_mode": "TEXT_ONLY",
       "prompt_review_status": "FOUR_STATE_AND_MATERIAL_RESPONSE_TEXT_REVIEWED_NOT_IMAGE_VERIFIED",
@@ -4700,7 +4700,7 @@
       "refs": [],
       "status": "PREPARED_NOT_RENDERED",
       "layout": "4K 2x2 object material transformation",
-      "prompt_sha256": "01dd614ae0e3aa18d54a5126a2c6a1edc14039a82c1302efbf188951af9d755a",
+      "prompt_sha256": "fa2d3a9cd328a6790ca176d728258b949327151e93d138ba8a3d55946493ffe5",
       "current_prompt_image_verified": false,
       "input_mode": "TEXT_ONLY",
       "prompt_review_status": "FOUR_STATE_AND_MATERIAL_RESPONSE_TEXT_REVIEWED_NOT_IMAGE_VERIFIED",
@@ -4714,7 +4714,7 @@
       "refs": [],
       "status": "PREPARED_NOT_RENDERED",
       "layout": "4K 2x2 object material transformation",
-      "prompt_sha256": "17dc4ee93588cbf57178a7d92d3003b67bffd388d2f586a014913e648bef5686",
+      "prompt_sha256": "bad51ebd4c079f76f013cd912e71c9e34db1d175fd8a7f5a650c7b032fdb9196",
       "current_prompt_image_verified": false,
       "input_mode": "TEXT_ONLY",
       "prompt_review_status": "FOUR_STATE_AND_MATERIAL_RESPONSE_TEXT_REVIEWED_NOT_IMAGE_VERIFIED",
@@ -4728,7 +4728,7 @@
       "refs": [],
       "status": "PREPARED_NOT_RENDERED",
       "layout": "4K 2x2 object material transformation",
-      "prompt_sha256": "069abfee9d580ff25d1038c2b89b1167d9b05da181174dc4afe982b29a1b0a56",
+      "prompt_sha256": "ece80e90627e98b8b3295a3e00218679b864318dff934d13a624942e9a1bac3c",
       "current_prompt_image_verified": false,
       "input_mode": "TEXT_ONLY",
       "prompt_review_status": "FOUR_STATE_AND_MATERIAL_RESPONSE_TEXT_REVIEWED_NOT_IMAGE_VERIFIED",
@@ -4742,7 +4742,7 @@
       "refs": [],
       "status": "PREPARED_NOT_RENDERED",
       "layout": "4K 2x2 object material transformation",
-      "prompt_sha256": "7e692507845d7366eb95d559bab85459f034b5b4d4dd12344bf3bb6963ed991e",
+      "prompt_sha256": "7d69c0187950eda23a87cc9dbfb84002d422f79b435a4629539486f6a305c8ca",
       "current_prompt_image_verified": false,
       "input_mode": "TEXT_ONLY",
       "prompt_review_status": "FOUR_STATE_AND_MATERIAL_RESPONSE_TEXT_REVIEWED_NOT_IMAGE_VERIFIED",
@@ -4756,7 +4756,7 @@
       "refs": [],
       "status": "PREPARED_NOT_RENDERED",
       "layout": "4K 2x2 object material transformation",
-      "prompt_sha256": "a186f7f076bfe8f95aa56decbac3797a2e4b65340f0904c0b9f177de17ef7d90",
+      "prompt_sha256": "c9b2197b34116db59b7aa91149de4a6740ee7ec87847dfa77943de9bfa71bcde",
       "current_prompt_image_verified": false,
       "input_mode": "TEXT_ONLY",
       "prompt_review_status": "FOUR_STATE_AND_MATERIAL_RESPONSE_TEXT_REVIEWED_NOT_IMAGE_VERIFIED",
@@ -4770,7 +4770,7 @@
       "refs": [],
       "status": "PREPARED_NOT_RENDERED",
       "layout": "4K 2x2 object material transformation",
-      "prompt_sha256": "8327440de0e78239254e18df9c4fa0a7c458eb5782d6d247f2aa3502c6d4a417",
+      "prompt_sha256": "f651317de149f570e06f644fe0fb96eb9494ae039feaaeb41e495bcb9874e7ad",
       "current_prompt_image_verified": false,
       "input_mode": "TEXT_ONLY",
       "prompt_review_status": "FOUR_STATE_AND_MATERIAL_RESPONSE_TEXT_REVIEWED_NOT_IMAGE_VERIFIED",
@@ -4784,7 +4784,7 @@
       "refs": [],
       "status": "PREPARED_NOT_RENDERED",
       "layout": "4K 2x2 object material transformation",
-      "prompt_sha256": "d897c6ed0487ed43b712927b6cd8ab3cc00fe966c2623a183aad3e1d5be09c6a",
+      "prompt_sha256": "db785746d3ef2445a25b1d98d428bf66ce9bbadb05c3f93e95d9ce7fc124a607",
       "current_prompt_image_verified": false,
       "input_mode": "TEXT_ONLY",
       "prompt_review_status": "FOUR_STATE_AND_MATERIAL_RESPONSE_TEXT_REVIEWED_NOT_IMAGE_VERIFIED",
@@ -4798,7 +4798,7 @@
       "refs": [],
       "status": "PREPARED_NOT_RENDERED",
       "layout": "4K 2x2 object material transformation",
-      "prompt_sha256": "46fe8cb0abbeed69f52f5b34e4f58bbd5c86d40f77eb8e137d39c518fda7f854",
+      "prompt_sha256": "ef00b3b232cc4a732916ea0bd43ddc38b0e9c5d26e4e3cf552094653ca6d4b9b",
       "current_prompt_image_verified": false,
       "input_mode": "TEXT_ONLY",
       "prompt_review_status": "FOUR_STATE_AND_MATERIAL_RESPONSE_TEXT_REVIEWED_NOT_IMAGE_VERIFIED",
@@ -4812,7 +4812,7 @@
       "refs": [],
       "status": "PREPARED_NOT_RENDERED",
       "layout": "4K 2x2 object material transformation",
-      "prompt_sha256": "93336b46095ceadb6196bc822901d5a8d9440da2bdf37b15d5c1033d306391d7",
+      "prompt_sha256": "f7fa0538caea14aec33e676c5121ffb98519bd95e13435835565bf58468562f5",
       "current_prompt_image_verified": false,
       "input_mode": "TEXT_ONLY",
       "prompt_review_status": "FOUR_STATE_AND_MATERIAL_RESPONSE_TEXT_REVIEWED_NOT_IMAGE_VERIFIED",
@@ -4826,7 +4826,7 @@
       "refs": [],
       "status": "PREPARED_NOT_RENDERED",
       "layout": "4K 2x2 object material transformation",
-      "prompt_sha256": "41c398dfd605399cb6f705d23d189dcd165d3cd4661a6c838c296b486beb1468",
+      "prompt_sha256": "548620aa45b76b6c96dad49c6ce1c343a6c6a05cd4473f8a10cdfb6d57c362cd",
       "current_prompt_image_verified": false,
       "input_mode": "TEXT_ONLY",
       "prompt_review_status": "FOUR_STATE_AND_MATERIAL_RESPONSE_TEXT_REVIEWED_NOT_IMAGE_VERIFIED",
@@ -4840,7 +4840,7 @@
       "refs": [],
       "status": "PREPARED_NOT_RENDERED",
       "layout": "4K 2x2 object material transformation",
-      "prompt_sha256": "6d690c62fce334df5a64ef39170f6a8004e71e644abca75eb1954a227f4b1bee",
+      "prompt_sha256": "4cdee97e12f99198343056913eb255662bd5a0d2b0b971d092862adcd296dd66",
       "current_prompt_image_verified": false,
       "input_mode": "TEXT_ONLY",
       "prompt_review_status": "FOUR_STATE_AND_MATERIAL_RESPONSE_TEXT_REVIEWED_NOT_IMAGE_VERIFIED",
@@ -4854,7 +4854,7 @@
       "refs": [],
       "status": "PREPARED_NOT_RENDERED",
       "layout": "4K 2x2 object material transformation",
-      "prompt_sha256": "b03c5ed5fa921384fab53afdfa3be06a98405024eb1139e55888426634667032",
+      "prompt_sha256": "763425a36ca6925dfec49a4290fdfef3f5f0904ff16960994f154d6e3de80b11",
       "current_prompt_image_verified": false,
       "input_mode": "TEXT_ONLY",
       "prompt_review_status": "FOUR_STATE_AND_MATERIAL_RESPONSE_TEXT_REVIEWED_NOT_IMAGE_VERIFIED",
@@ -4868,7 +4868,7 @@
       "refs": [],
       "status": "PREPARED_NOT_RENDERED",
       "layout": "4K 2x2 object material transformation",
-      "prompt_sha256": "4dff01006e5235032944e4fbe83da02b78bf1efab0cbbe3bdfebe315312bae6e",
+      "prompt_sha256": "dfa9f515612c20cd627408fb359dfea3e2e2e0ec572deb656ef4a56c3f26d917",
       "current_prompt_image_verified": false,
       "input_mode": "TEXT_ONLY",
       "prompt_review_status": "FOUR_STATE_AND_MATERIAL_RESPONSE_TEXT_REVIEWED_NOT_IMAGE_VERIFIED",
@@ -4882,7 +4882,7 @@
       "refs": [],
       "status": "PREPARED_NOT_RENDERED",
       "layout": "4K 2x2 object material transformation",
-      "prompt_sha256": "65a29d1ecf63734c8b0be6d9c20041096ea9a18df56761da5eab2b91b7ade5e8",
+      "prompt_sha256": "40d73b61899df71f43698471ad3e570e373242b461b56a800152800be1b4c0d5",
       "current_prompt_image_verified": false,
       "input_mode": "TEXT_ONLY",
       "prompt_review_status": "FOUR_STATE_AND_MATERIAL_RESPONSE_TEXT_REVIEWED_NOT_IMAGE_VERIFIED",
@@ -4896,7 +4896,7 @@
       "refs": [],
       "status": "PREPARED_NOT_RENDERED",
       "layout": "4K 2x2 object material transformation",
-      "prompt_sha256": "242e211a4ec70420c1bba3f022222d65e25c8fd7c024118e089202c6cb6bcdeb",
+      "prompt_sha256": "ac5da433d09fb802c6e32207cd67c1355bff595ae17d6699deb70359d20eb1b3",
       "current_prompt_image_verified": false,
       "input_mode": "TEXT_ONLY",
       "prompt_review_status": "FOUR_STATE_AND_MATERIAL_RESPONSE_TEXT_REVIEWED_NOT_IMAGE_VERIFIED",
@@ -4910,7 +4910,7 @@
       "refs": [],
       "status": "PREPARED_NOT_RENDERED",
       "layout": "4K 2x2 object material transformation",
-      "prompt_sha256": "1be3b87cefcbedd1cdfaeed1f0f51871062f4b15b4544ffbb2f8a23ab392c857",
+      "prompt_sha256": "1d0532fc73e738f86c6fc8f7e7f6441cf458b54379a445607485d3d748bb44a7",
       "current_prompt_image_verified": false,
       "input_mode": "TEXT_ONLY",
       "prompt_review_status": "FOUR_STATE_AND_MATERIAL_RESPONSE_TEXT_REVIEWED_NOT_IMAGE_VERIFIED",
@@ -4924,7 +4924,7 @@
       "refs": [],
       "status": "PREPARED_NOT_RENDERED",
       "layout": "4K 2x2 object material transformation",
-      "prompt_sha256": "cf421d4578ade97051d8b3bd4d596d77f4b7b9a6ee0340990867d9dbca922f19",
+      "prompt_sha256": "c2b6f15416d0fbed7efdd334f09997eccc9b26ca13203de8fc1593c2afb4a780",
       "current_prompt_image_verified": false,
       "input_mode": "TEXT_ONLY",
       "prompt_review_status": "FOUR_STATE_AND_MATERIAL_RESPONSE_TEXT_REVIEWED_NOT_IMAGE_VERIFIED",
@@ -4949,7 +4949,7 @@
       "import_status": "CATEGORY_IMPORT_PREPARED_NOT_EXECUTED",
       "prompt_review_status": "FOUR_STATE_AND_MATERIAL_RESPONSE_TEXT_REVIEWED_NOT_IMAGE_VERIFIED",
       "current_prompt_image_verified": false,
-      "prompt_sha256": "f0731d7fff747625ed809b497ced72b1e19f8d73e3796ab9bed1348a5f7ea9e9"
+      "prompt_sha256": "f544f9a9133cf15fea7c523e13255290adf04f73f7385d45c3016bf9aa022c10"
     },
     "CM002": {
       "key": "CM002",
@@ -4969,7 +4969,7 @@
       "import_status": "CATEGORY_IMPORT_PREPARED_NOT_EXECUTED",
       "prompt_review_status": "FOUR_STATE_AND_MATERIAL_RESPONSE_TEXT_REVIEWED_NOT_IMAGE_VERIFIED",
       "current_prompt_image_verified": false,
-      "prompt_sha256": "c813f4eccf693447b96372a0a761a1fc1ecf7692669eaeca9ba94743b0f5dd08"
+      "prompt_sha256": "9eeb5e08c8478323837cd61081bc9393b8ac243a7bace2007f74271fc88efc64"
     },
     "CM003": {
       "key": "CM003",
@@ -4989,7 +4989,7 @@
       "import_status": "CATEGORY_IMPORT_PREPARED_NOT_EXECUTED",
       "prompt_review_status": "FOUR_STATE_AND_MATERIAL_RESPONSE_TEXT_REVIEWED_NOT_IMAGE_VERIFIED",
       "current_prompt_image_verified": false,
-      "prompt_sha256": "9a008338993c5a0cee6b811d0f5bf7c73e01bfe49a0c272aaf6a2703082aa3dd"
+      "prompt_sha256": "2ec1add8aed86177d0f1e54352a9f71fa6490f8176856e8747e07998a771a268"
     },
     "CM004": {
       "key": "CM004",
@@ -5009,7 +5009,7 @@
       "import_status": "CATEGORY_IMPORT_PREPARED_NOT_EXECUTED",
       "prompt_review_status": "FOUR_STATE_AND_MATERIAL_RESPONSE_TEXT_REVIEWED_NOT_IMAGE_VERIFIED",
       "current_prompt_image_verified": false,
-      "prompt_sha256": "8620318c5e997e1e58d8f2141675905f97678856763b2390f1c57d26a5c4ab5b"
+      "prompt_sha256": "6060ee10fdf5b8118a8e4dc8cb401cb5d0ae13ad4993dea960eb8cc2f2bec170"
     },
     "CM005": {
       "key": "CM005",
@@ -5029,7 +5029,7 @@
       "import_status": "CATEGORY_IMPORT_PREPARED_NOT_EXECUTED",
       "prompt_review_status": "FOUR_STATE_AND_MATERIAL_RESPONSE_TEXT_REVIEWED_NOT_IMAGE_VERIFIED",
       "current_prompt_image_verified": false,
-      "prompt_sha256": "6744f5e0cc97f07394e54b937894857bc8d5fd3a641e4b165aeba599a34f7501"
+      "prompt_sha256": "3b9accd408c827a287040398d31ad889e68a7cc84714696793c854367573283a"
     },
     "CM006": {
       "key": "CM006",
@@ -5049,7 +5049,7 @@
       "import_status": "CATEGORY_IMPORT_PREPARED_NOT_EXECUTED",
       "prompt_review_status": "FOUR_STATE_AND_MATERIAL_RESPONSE_TEXT_REVIEWED_NOT_IMAGE_VERIFIED",
       "current_prompt_image_verified": false,
-      "prompt_sha256": "f3ed0976f0d6d19162ea451fe95767a629b35887546274c548498807cf8a40de"
+      "prompt_sha256": "16b62d5166db5d4690e0d7a81d876d6de5fbf62815a62bfc8f63d639cfc328a4"
     },
     "MR021": {
       "key": "MR021",
@@ -5060,7 +5060,7 @@
       "layout": "4K 2x2 object material transformation",
       "intended_resolution": "4K",
       "input_mode": "TEXT_ONLY",
-      "prompt_sha256": "971b2fd2e7505ffa6ac396a1d49243cc4e6a80c47ce1b6fb8d81eae7b4ee694d",
+      "prompt_sha256": "a57aad461e614bdce5216a8a3b29fe407782751cb98dbd48cc4999caa5d3a048",
       "element_type": "Prop",
       "source_score": "6.2",
       "target_score": "9.2",
@@ -5084,7 +5084,7 @@
         720
       ],
       "input_mode": "TEXT_ONLY",
-      "prompt_sha256": "7a1e95aa99468fb87250dce788790e31693b9064d62f471d5c3856942be331a1",
+      "prompt_sha256": "ba3c51e70c0bf35b14480c3aac33cb3277ac9ee7dcc75d186fdabda314deae6c",
       "element_type": "Prop",
       "visible_text": [
         "1.0",
@@ -5117,7 +5117,7 @@
         1080
       ],
       "input_mode": "TEXT_ONLY",
-      "prompt_sha256": "df4f912398b39025bca681f417ffd6106ee2c0348295b223d1c38df63e438e29",
+      "prompt_sha256": "7263be02a0bd22636b4c8efa0faf7d5fa579770aa7f4e75873aecad97c077a40",
       "element_type": "Prop",
       "visible_text": [
         "COFFEE",
@@ -5143,7 +5143,7 @@
         1080
       ],
       "input_mode": "TEXT_ONLY",
-      "prompt_sha256": "3a5c7add8dcb8d583467ff9c9cd4403b931a7239fee49b7e31d9829bb780bcd5",
+      "prompt_sha256": "7ce78a6ebaf7d4c47ec53108bcb5b886fc6cf15a20f814a6a4fe7d517c2373d9",
       "element_type": "Prop",
       "visible_text": [
         "KÁVÉ",
@@ -5171,7 +5171,7 @@
         1080
       ],
       "input_mode": "TEXT_ONLY",
-      "prompt_sha256": "1c380a4e3663272a7ceac71d30eb5fcba1b3af6287d0c6eb6efd0befd0a6896f",
+      "prompt_sha256": "367f62f74103942d02b324604ea8ad2a2834e9a3c3703df4ab914f8ed46ac55f",
       "element_type": "Prop",
       "visible_text": [
         "OFFICE",
@@ -5199,7 +5199,7 @@
         1080
       ],
       "input_mode": "TEXT_ONLY",
-      "prompt_sha256": "8e87530fb9ec61ac5faeb8c11aaff1246a1f92e679708b57b1d70a1f8fe2fd0f",
+      "prompt_sha256": "8620841df4fc4f980d2b9dac2436e5ef5056625369765c1b8648fa480a8826ca",
       "element_type": "Prop",
       "visible_text": [
         "METRÓ",
@@ -5227,7 +5227,7 @@
         1080
       ],
       "input_mode": "TEXT_ONLY",
-      "prompt_sha256": "2bae13543fea7ed42bed8e88f575e0fa937f53a8b143250250faf5869f096c11",
+      "prompt_sha256": "504e35859c1f2d6507f4870c4daec1786252a3e916f87a9c6daee1b9d48e8e0d",
       "element_type": "Prop",
       "visible_text": [
         "37",
@@ -5253,7 +5253,7 @@
         1080
       ],
       "input_mode": "TEXT_ONLY",
-      "prompt_sha256": "696aba5be781b3b3bb5361742d94a82f0013549ad7d3f3c0dd7311a44b6c861e",
+      "prompt_sha256": "d338aedd0d8765201f786dc5535f143a46d001c7a8fed13c1294c43d872d960a",
       "element_type": "Prop",
       "visible_text": [
         "MYSCOUTEE",
@@ -6548,7 +6548,7 @@
     },
     {
       "file": "02_library/worlds/memories/T01_SOHO_RESTAURANT_SOURCE_A.txt",
-      "sha256": "a48157af670716972e802c1ef34f68fcc3259c972dadb9418564d8ad5154d679",
+      "sha256": "cf467b8db3cfb04c450458ceae0edd8687a5ecf1cbb301cca7f81d48c1141f6b",
       "reference_elements": {
         "C01": "char_mys_protagonist_s1_v1",
         "C02": "char_mys_soho-woman_s1_v1"
@@ -6620,7 +6620,7 @@
     "pilot_joined_seconds": 16,
     "reserve_additional_30s_attempts": 0,
     "additional_30s_attempt_quote_credits": null,
-    "budget_note": "84 present-world single views at eligible 2K Unlimited plus 143 paid 4K sheets: conditional image total 572. Video 1800, speech estimate 14, adjustable pilot 100, separate finishing 0 allocated. Total 2486 leaves 374 from reported 2860. No generation/debit; max 500 top-up unpurchased.",
+    "budget_note": "84 paid 2K worlds at 2 credits plus 143 paid 4K sheets at 4 credits: image total 740. Video 1800, narration estimate 14, adjustable tests 100, separate finishing 0 allocated. Total 2654 leaves 206 from reported 2860. No actual generation/debit or top-up recorded.",
     "remaining_credits_creator_reported": 2860,
     "balance_source": "CREATOR_REPORT_2026_09_10_NOT_TOOL_VERIFIED",
     "maximum_additional_purchase_credits": 500,
@@ -6633,9 +6633,9 @@
       "final_video_first_pass": 1800,
       "pilot_including_test_audio_and_finishing": 100,
       "final_narration": 14,
-      "total": 2486,
-      "remaining_current_balance": 374,
-      "remaining_if_maximum_top_up_purchased": 874,
+      "total": 2654,
+      "remaining_current_balance": 206,
+      "remaining_if_maximum_top_up_purchased": 706,
       "retries": 0,
       "ledger": "04_tracking/PRODUCTION_BUDGET_ESTIMATE.csv",
       "additional_credits_needed": 0,
@@ -6643,8 +6643,8 @@
       "summary_rows": [
         {
           "category": "REFERENCE_IMAGES_MIXED_RESOLUTION",
-          "credits": 572,
-          "condition": "84 eligible 2K Unlimited images free; 143 paid 4K images"
+          "credits": 740,
+          "condition": "84 paid 2K images at 2 credits; 143 paid 4K images at 4 credits"
         },
         {
           "category": "FINAL_FILM_VIDEO",
@@ -6663,13 +6663,14 @@
           "credits": 0
         }
       ],
-      "final_production_excluding_tests": 2386,
+      "final_production_excluding_tests": 2554,
       "test_allowance_separately_adjustable": true,
       "shortfall_excluding_tests": 0,
-      "remaining_current_balance_excluding_tests": 474,
+      "remaining_current_balance_excluding_tests": 306,
       "narration_scope": "A01-A07 first-pass speech only; higher observed A01 model quote scaled by script lengths and total rounded to 14. MiniMax alternative 7. Separate integration fee unestablished and excluded; no pilot double count.",
       "finishing_scope": "Zero allocated because no separate paid operation is established; not a verified zero-cost tariff. Use cumulative Extend output and download if available.",
-      "world_2k_images_conditional": 0
+      "world_2k_images_paid": 168,
+      "reference_images_total": 740
     },
     "published_video_price_basis": {
       "source": "https://higgsfield.ai/blog/seedance-2-5-pricing-2026",
@@ -7922,30 +7923,30 @@
         },
         "R002": {
           "file": "02_library/morphs/objects/R002_THE_SAME_RED_LONDON_BUS_FROM_USEFUL_ANGLES.txt",
-          "sha256": "4d2e15599707bba90b474cdbec98251a9eec75159724e283fed1e742ebe1da14",
+          "sha256": "b5f6dc02a14b3182bea5fbddf9f703f4eade9c45f5ce5dd9af0e4c992197e32c",
           "status": "GENERATED_IMAGE_SEEN_ASSOCIATION_REPORTED_ID_UNVERIFIED",
           "evidence": "Four generated thumbnails visible in creator screenshot 2026-09-09 21-13-04. After Element-name mapping, creator reports elvileg megvan, menjunk tovabb. Full Element IDs and saved associations not independently inspected."
         },
         "R003": {
           "file": "02_library/morphs/objects/R003_BLACK_LONDON_TAXI.txt",
-          "sha256": "7f03c7ec27ef9d401f7354d08ea053a15ad2a06f75bf5e5cd886ad743c65c8d5",
+          "sha256": "2c5dba3e330b71dcaa52ea00f7ce10bb76b56d212eeb94d3a77dcaf5376c19ad",
           "status": "PREPARED_NOT_RENDERED"
         },
         "R004": {
           "file": "02_library/morphs/objects/R004_YELLOW_BUDAPEST_TRAM.txt",
-          "sha256": "3257bb3df4ff5e8fa0c5f88eedb2d4006aa79068c4907d93c23bf3a42a8ff5db",
+          "sha256": "c37426e011fc13ac50d3068eb7d6d1487502ebc6de7323a687a0ad0ca842c12d",
           "status": "PREPARED_NOT_RENDERED"
         },
         "R005": {
           "file": "02_library/morphs/buildings/R005_ST_PAULS_COMPLETE_SOURCE_BUILDING.txt",
-          "sha256": "089760d751d61d925536e1d823fdf68386f72ed956ad768d2e6d333998b1ee92",
+          "sha256": "45700520a867b47c8978f39feae82939c5ce10330186d97ec47ebb6f0b34849c",
           "status": "PREPARED_NOT_RENDERED",
           "current_prompt_image_verified": false,
           "prompt_note": "Revised geometry/reference wording; no new generated output reviewed."
         },
         "R006": {
           "file": "02_library/morphs/buildings/R006_ST_STEPHENS_COMPLETE_DESTINATION_BUILDING.txt",
-          "sha256": "83b6a80170b6156a3fe60ef3314f4a9cebbd8f35cbd00ae98741314a43a6104a",
+          "sha256": "1f53294776fdbf87d6e28479c94d519497ea35e144743b4f4caa2364e5340fd2",
           "status": "ID_REPORTED_IMAGE_ASSOCIATION_REPORTED",
           "evidence": "Four generated thumbnails visible in creator screenshot 2026-09-09 21-13-04. After Element-name mapping, creator reports elvileg megvan, menjunk tovabb. Full Element IDs and saved associations not independently inspected.",
           "actual_mention": "@loc_MYS_mys-reference-06-st-stephens-complete-destination-building_s0_v1",
@@ -7960,7 +7961,7 @@
         },
         "R008": {
           "file": "02_library/morphs/buildings/R008_CAFE_OPENING_AND_FURNITURE_CONSTRUCTION_DETAILS.txt",
-          "sha256": "8de5da19bfb25126cb99b1ccb3cf567dd59723861f49bda882c5e2ea44f905e2",
+          "sha256": "c5d8a7368698aafa38132f3865f2525b6a916be7424ea980a0259cdd6670f901",
           "status": "GENERATED_IMAGE_SEEN_ASSOCIATION_REPORTED_ID_UNVERIFIED",
           "evidence": "Four generated thumbnails visible in creator screenshot 2026-09-09 21-13-04. After Element-name mapping, creator reports elvileg megvan, menjunk tovabb. Full Element IDs and saved associations not independently inspected.",
           "current_prompt_image_verified": false,
@@ -7968,14 +7969,14 @@
         },
         "R009": {
           "file": "02_library/morphs/buildings/R009_FANLIGHT_TO_CANOPY_JOINT_STUDY_FOR_THE_EXTEND.txt",
-          "sha256": "b1dd52b294675955fdafb69bee191312eb8c3e6d6d182a939fbb0f12c8fb1984",
+          "sha256": "7aec9b27554e36ef220c07a36510c9cd048f1734ce9e9cab9ac5d14969e4f0bb",
           "status": "PREPARED_NOT_RENDERED",
           "current_prompt_image_verified": false,
           "prompt_note": "Radical four-state geometry revision; no resulting image inspected yet."
         },
         "R010": {
           "file": "02_library/morphs/objects/R010_WINGED_STATUE_PLINTH_AND_CONTACT_DETAIL.txt",
-          "sha256": "4949e175e5b8e9e71f306e17426f51d6739631a516dd1e38626109667616a1e3",
+          "sha256": "8157b3bc5f69c36a1b87b4ccb093d2a332d5b92276bae531e89321590be8b238",
           "status": "PREPARED_NOT_RENDERED"
         },
         "R011": {
@@ -7990,72 +7991,72 @@
         },
         "R013": {
           "file": "02_library/morphs/objects/R013_RED_BUS_LOWER_DECK_PASSAGE_AND_OPEN_DOOR_GEOMETRY.txt",
-          "sha256": "66ed00ad9abcd5edf243362769a82580a37251dac5c0f51cbc8b983e0369038a",
+          "sha256": "50fdce6d14c54c161fcc49dcd0d76087cd5dd8f08543ce8da879297d7188bf5a",
           "status": "PREPARED_NOT_RENDERED"
         },
         "R014": {
           "file": "02_library/morphs/buildings/R014_ORIGINAL_LONDON_CAFE_WINDOW_BEFORE_FRACTURE.txt",
-          "sha256": "131b22128c270f62472c6a9685a0ec3ec7da2322dda7690f14387e1f39b38f5f",
+          "sha256": "1460bd437c448a7d77f42b5383d25d9a085a1601dfe69be30f0b550096e56ae2",
           "status": "PREPARED_NOT_RENDERED"
         },
         "R015": {
           "file": "02_library/morphs/objects/R015_GLASS_SOURCE_THICKNESS_AND_DESTINATION_PENDANT_SHADES.txt",
-          "sha256": "aa424ad923384b7ff5fd6f736ef67a8133834f644651d4f9409463f8f175a0a7",
+          "sha256": "0f76e5ca68ded3749192159a566235f8214338256499f9cf035f3a59d202fa65",
           "status": "PREPARED_NOT_RENDERED"
         },
         "R016": {
           "file": "02_library/morphs/buildings/R016_SOLID_LONDON_BRICK_AND_PEST_CARVED_STONE_CORRESPONDENCE.txt",
-          "sha256": "122ad9ff5e3339e31f42f1f15efd40736f28b75c9f19eeab65a6dfbf09fa7481",
+          "sha256": "1e5ec72c2869f6d8d219517a1622697b9edc8ad132c49486759132a133ffc796",
           "status": "PREPARED_NOT_RENDERED"
         },
         "R017": {
           "file": "02_library/morphs/buildings/R017_STONE_SILL_WET_PAVING_AND_SUPPORTED_TIMBER_THRESHOLD.txt",
-          "sha256": "bc84c1163c7fbc6dcbc8250243da116de3f60ff2d756163e7bc8b017902bcaf7",
+          "sha256": "2d9301994174be30e5bc7e6b37f21eb1a36806485a0bb5975ac4c04fa3d9e3f4",
           "status": "PREPARED_NOT_RENDERED"
         },
         "R018": {
           "file": "02_library/morphs/objects/R018_LONDON_TIMBER_BENCH_AND_CURVED_FLOOR_BORDER.txt",
-          "sha256": "100f620006896cd2be2cc75a13401c77552dd7744cdcf7181b80f3dbcfd06023",
+          "sha256": "9183931ddd503a8986c0c7bc1539b37ba19edba2a3d70c9bde6ca1e4be2a8dae",
           "status": "PREPARED_NOT_RENDERED"
         },
         "R019": {
           "file": "02_library/morphs/objects/R019_ACCEPTED_RESTAURANT_TABLE_AND_CHAIR_FROM_OUTSIDE.txt",
-          "sha256": "cf3c0fb2f99c1b83cf3faf24378db44b90b327d1cf0544f05a5e0af58d1f1774",
+          "sha256": "926106351f1c9205989062bea7b653e1dfe683023f1ce4064f4a33dd4b2350c0",
           "status": "PREPARED_NOT_RENDERED"
         },
         "R020": {
           "file": "02_library/morphs/objects/R020_CUP_HAND_CONTACT_AND_TABLETOP_DEPTH.txt",
-          "sha256": "55ceba277f2285b12e0250bc4a6ef967cee25affaf80ff4031e269f23862f806",
+          "sha256": "b0a455f60ce1b2a48ff22b724a8ae052c7ff8f5a5a6916e98e769ff2ab3c21e5",
           "status": "PREPARED_NOT_RENDERED"
         },
         "R021": {
           "file": "02_library/morphs/buildings/R021_RESTAURANT_REAR_DOORS_AND_DEPTH_RELATIONSHIPS.txt",
-          "sha256": "4f52fae3a9645df76bed36b69ead28bc61adfdeeb2bb27cdb61475cc2dadf539",
+          "sha256": "d5e5afdcfe60ed6c5c507a8515b3e1f530b90a160097a40c81edfe30a389e2f3",
           "status": "PREPARED_NOT_RENDERED"
         },
         "R022": {
           "file": "02_library/morphs/objects/R022_STREET_LIGHT_FITTINGS_AND_RESTAURANT_PENDANT_CONNECTIONS.txt",
-          "sha256": "c502a0ca36dcfe3e6638a281d765ab96075ffa250f705cd32c30d45bd3c8ca40",
+          "sha256": "1f26cfb5ea8ae3f5b6f19ed311f11c28b0424a17c0574820e0fc9edab1514286",
           "status": "PREPARED_NOT_RENDERED"
         },
         "R023": {
           "file": "02_library/morphs/objects/R023_BALCONY_SCROLL_AND_SIDEWAYS_STAIR_STRUCTURAL_PARTS.txt",
-          "sha256": "68c91111cecfe1f6d0463bd0e18343e54665e6c68b2a05e5ad3febf1c72009b0",
+          "sha256": "9237ec263703d502c4a8a960d0a629e23847a90dcd26dc829498c4ba8ecdcdb1",
           "status": "PREPARED_NOT_RENDERED"
         },
         "R024": {
           "file": "02_library/morphs/objects/R024_MOUNTED_ENGLISH_CAFE_SIGN_AND_HUNGARIAN_DESTINATION_SIGN.txt",
-          "sha256": "7239c15d1594b6177debf42ffe59fa9c9bfda297d9fe2d1fda98a4ee644fffc2",
+          "sha256": "9cbaca86d754fbf9614b7dc46c6902f8f375e678241945769c3e461c0e8a443f",
           "status": "PREPARED_NOT_RENDERED"
         },
         "R025": {
           "file": "02_library/morphs/buildings/R025_ORIGINAL_LONDON_ROOF_AND_CHIMNEY_VOLUMES.txt",
-          "sha256": "76397622e51f2890f349d651e6da6beeea5dc0dd42fdff8bb2967d89dd294c21",
+          "sha256": "debdfae10da450985e83c750e432dc2dba378a38f02cd50f625c09eae5e6bb86",
           "status": "PREPARED_NOT_RENDERED"
         },
         "R026": {
           "file": "02_library/morphs/buildings/R026_TARGET_ROOF_GLAZING_STONE_CORBELS_AND_CHIMNEY_CROWNS.txt",
-          "sha256": "3499468d80b3392056f3b1ad27655e8137784ec69380b56d97236e2d0fb22b57",
+          "sha256": "7a7a00dab5f6826ae7cab992c4e72a09823de8f08e9cc67eda25e6e1a3b824cb",
           "status": "PREPARED_NOT_RENDERED"
         },
         "R027": {
@@ -8064,117 +8065,117 @@
         },
         "R028": {
           "file": "02_library/morphs/buildings/R028_ORIGINAL_ARCADE_ARCH_AND_FANLIGHT.txt",
-          "sha256": "d0315b67b1fa7133ca725b6a798ed7733807bb264bf4d627fb4762698017e790",
+          "sha256": "b49798779119a3a80900c23c8b86df0c6bdeeb25b0565e11e873279ad9a8d522",
           "status": "PREPARED_NOT_RENDERED"
         },
         "R029": {
           "file": "02_library/morphs/buildings/R029_FULL_SUPPORTED_CANOPY_DESTINATION.txt",
-          "sha256": "bddf29a9c550b8025cc68ddb5364985f7e47f5271e361e5bedc117db27e499ee",
+          "sha256": "0be2498b7e4543909e489791d031acbdf7bfd569c2dbfb84a8cf4eaed4bf526f",
           "status": "PREPARED_NOT_RENDERED"
         },
         "R030": {
           "file": "02_library/morphs/buildings/R030_DEEP_GALLERY_THROUGH_THE_UNCHANGED_THRESHOLD.txt",
-          "sha256": "5a833ebe201ee4e47590b4ef4f87644b05d6dc325cb65f6c382df27eba667c5e",
+          "sha256": "35e6c7ea38a0aaf28efe4a46b84d9a07cd4de52375d63dfece1b46bb9f355b8a",
           "status": "PREPARED_NOT_RENDERED"
         },
         "R031": {
           "file": "02_library/morphs/buildings/R031_LONDON_STATION_SOURCE_EXTERIOR_AND_IRON_STRUCTURE.txt",
-          "sha256": "2225baf814fd486b2801ab571889948e9ab0ca222d99f21137d45f9df15495eb",
+          "sha256": "36ac8a1aa8d80bd7ceeec11ec4f89a243fd092b227dece32b4cdfd0e1b9b0eb6",
           "status": "PREPARED_NOT_RENDERED"
         },
         "R032": {
           "file": "02_library/morphs/buildings/R032_NYUGATI_STATION_DESTINATION_AND_ROOF_JOINTS.txt",
-          "sha256": "fe3740db9193fbcd5255d0aea53e9cd52297c60660fae7dd31ff22e8c0f88448",
+          "sha256": "813fc7eda84ca1ab09ab611dd8603a292687834f43d8e813ba1cc75b157fabf1",
           "status": "PREPARED_NOT_RENDERED"
         },
         "R033": {
           "file": "02_library/morphs/buildings/R033_HUNGARIAN_STATE_OPERA_TARGET_FACADE_AND_ENTRY_DEPTH.txt",
-          "sha256": "56d08843b852324179ebda565b06551e1a59082ed59e88f67e13cc94e16d3ac0",
+          "sha256": "d8e75523923f72985564a5e338ed18dee4d411dc61b600aae1059bcf2caffb02",
           "status": "PREPARED_NOT_RENDERED"
         },
         "R034": {
           "file": "02_library/morphs/buildings/R034_TOWER_BRIDGE_SOURCE_STRUCTURE.txt",
-          "sha256": "f49e2c8a2660dffbafaa8551d727cbfb3b0f2fe8f33ba2c41c914569019e359a",
+          "sha256": "16c7cce78f9999cd66f678870b292ffd4935759f46d3712e7b7737200269852f",
           "status": "PREPARED_NOT_RENDERED"
         },
         "R035": {
           "file": "02_library/morphs/buildings/R035_SZECHENYI_CHAIN_BRIDGE_DESTINATION_STRUCTURE.txt",
-          "sha256": "e80d11ce4e67d6fa3d83f6fbb593f57473edebdb2cc41293a1f86d72bffc6ba6",
+          "sha256": "e92b3e0e2f84fad5630c301c1e0e83e2b3637aa515ca763fe431973f19dd9762",
           "status": "PREPARED_NOT_RENDERED"
         },
         "R036": {
           "file": "02_library/morphs/buildings/R036_LONDON_EYE_AND_CONNECTED_SOUTH_BANK_DEPTH.txt",
-          "sha256": "db8de0f8563961cc79a7b36d4cc65d5ac3cef09360c6469e3287c2c30249558f",
+          "sha256": "d0da63e312c921d39bdd818c39086e59825694cd77643b804f067c60ef4a67ea",
           "status": "PREPARED_NOT_RENDERED"
         },
         "R037": {
           "file": "02_library/morphs/buildings/R037_GREAT_MARKET_HALL_ROOF_AND_BRICK_SOURCE_VOLUME.txt",
-          "sha256": "e9980c29d0cc5dadf1fc41be30f78d7119bfc967d9d75d7c5a00597278a31663",
+          "sha256": "fa2d3a9cd328a6790ca176d728258b949327151e93d138ba8a3d55946493ffe5",
           "status": "PREPARED_NOT_RENDERED"
         },
         "R038": {
           "file": "02_library/morphs/buildings/R038_BALNA_CURVED_GLASS_TARGET_VOLUME.txt",
-          "sha256": "7a77de21838fe0ed2181b11232649eac9932146f4efac83d2c4c5d7a77daf7fd",
+          "sha256": "bad51ebd4c079f76f013cd912e71c9e34db1d175fd8a7f5a650c7b032fdb9196",
           "status": "PREPARED_NOT_RENDERED"
         },
         "R039": {
           "file": "02_library/morphs/buildings/R039_WESTMINSTER_AND_PARLIAMENT_SQUARE_LONDON_SOURCE.txt",
-          "sha256": "13a745fd968bc8d98a7dd9e18cb5ff68f26fafd7db57dd87afe08e45dc6638d6",
+          "sha256": "ece80e90627e98b8b3295a3e00218679b864318dff934d13a624942e9a1bac3c",
           "status": "PREPARED_NOT_RENDERED"
         },
         "R040": {
           "file": "02_library/morphs/buildings/R040_HUNGARIAN_PARLIAMENT_COMPLETE_DESTINATION_SILHOUETTE.txt",
-          "sha256": "ff71eb6dcc8273b925d8ca8e63fb3bae60997af67822e3be6f47b2d86003c65c",
+          "sha256": "7d69c0187950eda23a87cc9dbfb84002d422f79b435a4629539486f6a305c8ca",
           "status": "PREPARED_NOT_RENDERED"
         },
         "R041": {
           "file": "02_library/morphs/buildings/R041_GRESHAM_PALACE_FRONTAGE_AND_DEEP_STONE_DETAILS.txt",
-          "sha256": "5f479d66a99968134630528c831d4f94c951a4736bc576e4b8139f05d72862d4",
+          "sha256": "c9b2197b34116db59b7aa91149de4a6740ee7ec87847dfa77943de9bfa71bcde",
           "status": "PREPARED_NOT_RENDERED"
         },
         "R042": {
           "file": "02_library/morphs/buildings/R042_NEW_YORK_PALACE_HISTORIC_EXTERIOR_WITH_OCCUPIED_BAY_DEPTH.txt",
-          "sha256": "23cf15ed83efa61bfd1a31aa91ad67f45637a172ed514dfc126def69d6e625ba",
+          "sha256": "f651317de149f570e06f644fe0fb96eb9494ae039feaaeb41e495bcb9874e7ad",
           "status": "PREPARED_NOT_RENDERED"
         },
         "R043": {
           "file": "02_library/morphs/objects/R043_LONDON_ENTRANCE_RAIL_AND_REMEMBERED_TRANSIT_GATE.txt",
-          "sha256": "689644328b2677fe4c145138bd96d420e334d6017b7e305ace7de57e5c39e97d",
+          "sha256": "db785746d3ef2445a25b1d98d428bf66ce9bbadb05c3f93e95d9ce7fc124a607",
           "status": "PREPARED_NOT_RENDERED"
         },
         "R044": {
           "file": "02_library/morphs/objects/R044_REMEMBERED_BUS_SEATS_AISLE_AND_CANOPY_POST_CORRESPONDENCE.txt",
-          "sha256": "d611645cdcc37aaf3b08c7b70e0e1bf399850542ae9f3ec32b43dc14c5388c1d",
+          "sha256": "ef00b3b232cc4a732916ea0bd43ddc38b0e9c5d26e4e3cf552094653ca6d4b9b",
           "status": "PREPARED_NOT_RENDERED"
         },
         "R045": {
           "file": "02_library/morphs/objects/R045_CAIRO_TAXI_CABIN_REAR_BENCH_AND_LUGGAGE_CONTACT.txt",
-          "sha256": "9960fb3886397dfa23759cf322574600300c3e9e0c57c71e99650d3cc58c503d",
+          "sha256": "f7fa0538caea14aec33e676c5121ffb98519bd95e13435835565bf58468562f5",
           "status": "PREPARED_NOT_RENDERED"
         },
         "R046": {
           "file": "02_library/morphs/objects/R046_CANOPY_AND_BALLOON_ENVELOPE_RIGGING_AND_BASKET_INTERFACES.txt",
-          "sha256": "27f88005bdfdb6f07fd5f54be414fb026c6c93f8c7796aabe029a30fc634febf",
+          "sha256": "548620aa45b76b6c96dad49c6ce1c343a6c6a05cd4473f8a10cdfb6d57c362cd",
           "status": "PREPARED_NOT_RENDERED"
         },
         "R047": {
           "file": "02_library/morphs/objects/R047_PAVING_SOIL_PAPRIKA_CORN_ROOTS_AND_RAIL_SLEEPERS.txt",
-          "sha256": "f939eec193ba2165f976cca1cab798d0cd2bec3de0c8be3eabc39384d9d812ad",
+          "sha256": "4cdee97e12f99198343056913eb255662bd5a0d2b0b971d092862adcd296dd66",
           "status": "PREPARED_NOT_RENDERED"
         },
         "R048": {
           "file": "02_library/morphs/objects/R048_ADMINISTRATIVE_DESK_ACTUAL_DOCUMENTS_AND_DEVICE_GEOMETRY.txt",
-          "sha256": "c2c7dfeff77b5b5ebc67de3f0da5649ab4ef49594b1d5a1bb4eb62112699af63",
+          "sha256": "763425a36ca6925dfec49a4290fdfef3f5f0904ff16960994f154d6e3de80b11",
           "status": "PREPARED_NOT_RENDERED"
         },
         "R049": {
           "file": "02_library/morphs/objects/R049_CABINET_FINGERPRINT_DESK_AND_CHAIR_CONSTRUCTION.txt",
-          "sha256": "bfe9841feeecee897a38c40c6b80fec3152a192a108be86de0a3b40d0fa9af2e",
+          "sha256": "dfa9f515612c20cd627408fb359dfea3e2e2e0ec572deb656ef4a56c3f26d917",
           "status": "PREPARED_NOT_RENDERED"
         },
         "R050": {
           "file": "02_library/morphs/objects/R050_COURT_FILE_COMPARTMENTS_AND_RETAINED_DEVICE_SUPPORTS.txt",
-          "sha256": "b841cd28d05bedf1777533b1b17251cb50f30c3c945710af81fbae921391b554",
+          "sha256": "40d73b61899df71f43698471ad3e570e373242b461b56a800152800be1b4c0d5",
           "status": "PREPARED_NOT_RENDERED"
         },
         "R051": {
@@ -8207,7 +8208,7 @@
       "image_prompt_files": {
         "R054": {
           "file": "02_library/morphs/buildings/R054_BIG_BEN_ELIZABETH_TOWER_LONDON_SOURCE.txt",
-          "sha256": "b341a6e0cabeb8c5cf561007cc91fb21abaaa92f4afd3f2743e566dd35999df0",
+          "sha256": "ac5da433d09fb802c6e32207cd67c1355bff595ae17d6699deb70359d20eb1b3",
           "status": "PREPARED_NOT_RENDERED",
           "production_consumers": [
             "03_film/07/video.txt",
@@ -8217,7 +8218,7 @@
         },
         "R055": {
           "file": "02_library/morphs/buildings/R055_WESTMINSTER_ABBEY_LONDON_SOURCE.txt",
-          "sha256": "3fc8995e1b20d2f7b2fa77f9ff3419185ba1cdd23ba5a6eb6a207bbe5c900bc2",
+          "sha256": "1d0532fc73e738f86c6fc8f7e7f6441cf458b54379a445607485d3d748bb44a7",
           "status": "PREPARED_NOT_RENDERED",
           "production_consumers": [
             "03_film/07/video.txt",
@@ -8227,7 +8228,7 @@
         },
         "R056": {
           "file": "02_library/morphs/buildings/R056_FISHERMANS_BASTION_DESTINATION.txt",
-          "sha256": "6c99787e52bff5282ae8377b8f62f41757d1cc59a8cefb64fa9c0f0f590f8604",
+          "sha256": "c2b6f15416d0fbed7efdd334f09997eccc9b26ca13203de8fc1593c2afb4a780",
           "status": "PREPARED_NOT_RENDERED",
           "production_consumers": [],
           "note": "Creator-requested future architectural destination option. No pilot or specific production beat added automatically."
@@ -9725,7 +9726,7 @@
               4
             ],
             "status": "PREPARED_NOT_RENDERED",
-            "sha256": "bc0bb85ff0cfb2cd9dd1459eee5872e9ea82031f7d3299ee4df229f291f6aff8"
+            "sha256": "05255640c282507e63e4415e333186473de4613f1f97ac7b14369026688cb17e"
           },
           "B": {
             "key": "MW01_B",
@@ -9737,7 +9738,7 @@
               8
             ],
             "status": "PREPARED_NOT_RENDERED",
-            "sha256": "c9ab9610e24e80e74893feee1987fc34ba1eda5a6286bc73be9a103d49679234"
+            "sha256": "f91c624bd53569cf8ef149e474257574b42115958b2956c23c6305bbec7125d7"
           },
           "C": {
             "key": "MW01_C",
@@ -9749,7 +9750,7 @@
               8
             ],
             "status": "PREPARED_NOT_RENDERED",
-            "sha256": "0b1afac9dbcbdb33057d1d4bd1ebc359d50e0f0178d755aa91181daf554d9e39"
+            "sha256": "f35f7b5c753b6733579ca84f8218c4eb62002f329b4b9ef865fe40211f7396bb"
           }
         },
         "original_views": 9,
@@ -9768,7 +9769,7 @@
               4
             ],
             "status": "PREPARED_NOT_RENDERED",
-            "sha256": "f15417b557b7f2bc2cf33d25254ea82fbf378eb3d67030ac9da453aec7ffeac0"
+            "sha256": "fad2e4867946d0f478cea30927c18644af1e81f22e53cf4ce7ac5f243e971a3f"
           },
           "B": {
             "key": "MW02_B",
@@ -9780,7 +9781,7 @@
               8
             ],
             "status": "PREPARED_NOT_RENDERED",
-            "sha256": "5db35368e90aa987e711d863fbace5cdae48f93dd686af712ab6ef1668d4b1b7"
+            "sha256": "873079837863544bcbe56f09ee6c5582b1b15db16ec6d13792435deea5949677"
           },
           "C": {
             "key": "MW02_C",
@@ -9792,7 +9793,7 @@
               8
             ],
             "status": "PREPARED_NOT_RENDERED",
-            "sha256": "503459fba8d502c3de27322f1e9ad1995638a946a0e808167c49d344ae6e2bed"
+            "sha256": "5518bbc635a95444185240631b7bf95fa7b671637d161858bd68d82d8539bf3c"
           }
         },
         "original_views": 9,
@@ -9811,7 +9812,7 @@
               4
             ],
             "status": "PREPARED_NOT_RENDERED",
-            "sha256": "e0bbe6027fd2658a6a8822a528f86a52d0279dbe632051ebf79ab6baf32c4af8"
+            "sha256": "44fb66f104a7ae085aaaca62210fd3e30aea7b41d638232cc9edfd2ff03bde15"
           },
           "B": {
             "key": "MW03_B",
@@ -9823,7 +9824,7 @@
               8
             ],
             "status": "PREPARED_NOT_RENDERED",
-            "sha256": "ee24d1394d6cd4c58d5a2dbcfe95cdcc35dbcc6ff2ea6cff19a3b8e430eee28e"
+            "sha256": "4b9f688c79f97b933a6319c2c30ff5ff4358b784dea5be4b32d0c5ed7be580ca"
           },
           "C": {
             "key": "MW03_C",
@@ -9835,7 +9836,7 @@
               8
             ],
             "status": "PREPARED_NOT_RENDERED",
-            "sha256": "0305de99c72b479190eddb1a2fac4a1f9df8b35a00449a6ebc5c8172b7817b71"
+            "sha256": "1d07815d6b088f05f51e10cfe233a6f0e653d56a019001e4ff93f8673f10a1ae"
           }
         },
         "original_views": 9,
@@ -9854,7 +9855,7 @@
               4
             ],
             "status": "PREPARED_NOT_RENDERED",
-            "sha256": "bd7fb1c7487705361d31bce325692a1e6e521278650e5f8acac7e5980a9c8425"
+            "sha256": "52da4a3d2a5f422432bd45f06aa815c0af63349ab96216b80915f49bc5b344b4"
           },
           "B": {
             "key": "MW04_B",
@@ -9866,7 +9867,7 @@
               8
             ],
             "status": "PREPARED_NOT_RENDERED",
-            "sha256": "c7c55eeed97158b18710218d91df7c37fd8da06754d3761a0aaaf3722228a688"
+            "sha256": "3365bfe9c455ee331827baf9e145339ba2963aaee6c4fd6b4d503abc9d0c1da3"
           },
           "C": {
             "key": "MW04_C",
@@ -9878,7 +9879,7 @@
               8
             ],
             "status": "PREPARED_NOT_RENDERED",
-            "sha256": "71c2ca2e9eaa5e53da4c17a34f7ebaacb0d58d944aec40ccc076e63a295447d1"
+            "sha256": "1af62a9e76ce2fe88f84b409f06f95379d289ea73c0615e18b4ba150c10e9fdb"
           }
         },
         "original_views": 9,
@@ -9897,7 +9898,7 @@
               4
             ],
             "status": "PREPARED_NOT_RENDERED",
-            "sha256": "483f39d52f5297b23a35924758c2cf9ccd5befda33c5259438306f8a36e221c5"
+            "sha256": "3338f1409eaa51b97b03bddebe892c855667dbe4e77e7f78bb64a07d7c3d2e26"
           },
           "B": {
             "key": "MW05_B",
@@ -9909,7 +9910,7 @@
               8
             ],
             "status": "PREPARED_NOT_RENDERED",
-            "sha256": "0dc6d879ff73e1fe3fe0febf3ac81d67d530b0b4fdba01e1b57bfa19a784b144"
+            "sha256": "776014e7eb3d108b70aa07fa55f49677d424c94a5a61054b22a707bd10d71d29"
           },
           "C": {
             "key": "MW05_C",
@@ -9921,7 +9922,7 @@
               8
             ],
             "status": "PREPARED_NOT_RENDERED",
-            "sha256": "7252271d379e7b37a9003f40ac7a3935fe92988b5b5cab5afe835dc26b057571"
+            "sha256": "36948de3f51cfa3ed2c4ac0d202fd8a1e25fa8d6385e222626821d57d864b143"
           }
         },
         "original_views": 9,
@@ -9940,7 +9941,7 @@
               4
             ],
             "status": "PREPARED_NOT_RENDERED",
-            "sha256": "0efd04008af928c0ce313bd8c1f72785878148c017c9c14e148191d090391fb9"
+            "sha256": "b07e12310ae79577503d7155a4b3f89e48fa19a54a22c4cafab866e2019a6489"
           },
           "B": {
             "key": "MW06_B",
@@ -9952,7 +9953,7 @@
               8
             ],
             "status": "PREPARED_NOT_RENDERED",
-            "sha256": "6c6eea89d1d51071e09d48f22d746338384ae893f5c5344179903b5f9086647b"
+            "sha256": "42555095d8877a45e974d0504c37c3e7f38b4b72cc127592abfcba6087e15d26"
           },
           "C": {
             "key": "MW06_C",
@@ -9964,7 +9965,7 @@
               8
             ],
             "status": "PREPARED_NOT_RENDERED",
-            "sha256": "3e36f2991662725c580ddc40c06fb886e3610ed03521b263be22ccee5edd5ac5"
+            "sha256": "8fbbcd56e8abf1b9418c1edb2de8d5a0537a0f4b6f4196efa34337ffe11dec78"
           }
         },
         "original_views": 9,
@@ -9983,7 +9984,7 @@
               4
             ],
             "status": "PREPARED_NOT_RENDERED",
-            "sha256": "560095b5daa1378bbbe9a1486a377c428df8182d297d23b1f2fcd9455c1239e9"
+            "sha256": "d5a6ed23ca4b4d9cc22018c07970da32d503c9a030714b7279f9a6b5fe46b8ef"
           },
           "B": {
             "key": "MWP01_B",
@@ -9995,7 +9996,7 @@
               8
             ],
             "status": "PREPARED_NOT_RENDERED",
-            "sha256": "40feebe5e1f17ec0bde52d236c146f005e9b0d59e4db97d948d617d72110f032"
+            "sha256": "b9b0bc92e517f7454941477043adace8e63cea636c7f23e31d4f7d3192967436"
           },
           "C": {
             "key": "MWP01_C",
@@ -10007,7 +10008,7 @@
               8
             ],
             "status": "PREPARED_NOT_RENDERED",
-            "sha256": "1772dc5dfb073118f1e51c49ae45f7d52228db0bf947d9a35f92ee3218781cd3"
+            "sha256": "6b98d956184177e8836687a2df25faf038aeb94f3e4f7e31ffffa829364392cc"
           }
         },
         "original_views": 9,
@@ -10026,7 +10027,7 @@
               4
             ],
             "status": "PREPARED_NOT_RENDERED",
-            "sha256": "32447c614afcabfc24629e916e983ef5e17560ea0afc9099b6644f424f6df674"
+            "sha256": "52ddbebc660e5281aabd890c6996fa23041d44301c02d9e5a9106740c517afb0"
           },
           "B": {
             "key": "MWP02_B",
@@ -10038,7 +10039,7 @@
               8
             ],
             "status": "PREPARED_NOT_RENDERED",
-            "sha256": "c445acb1d8b17f9de11d89518facda02c13887ad4d59fd8be4be8dba737229f5"
+            "sha256": "1809164a0e35d36bc486f616f311b053a18354a17d6ba952fb60ae0f089a79bc"
           },
           "C": {
             "key": "MWP02_C",
@@ -10050,7 +10051,7 @@
               8
             ],
             "status": "PREPARED_NOT_RENDERED",
-            "sha256": "d59685b96e220d615ab637534da60d8d7c5abe065e395a4269737884eb4f68de"
+            "sha256": "3a8c8db2e87c22bb97495f597e69efa01c9e2cad72fd68a04eaeedd7309c6cd8"
           }
         },
         "original_views": 9,
@@ -10069,7 +10070,7 @@
               4
             ],
             "status": "PREPARED_NOT_RENDERED",
-            "sha256": "f320b8e61f43790f6ed7ca842aa8c62c774d30943abe87281b48aa00fd077200"
+            "sha256": "25bdf2bf95ee4e7cdc7921deb72d7ec37c247325f49c10afcaf10ea9c52337fc"
           },
           "B": {
             "key": "HRW07_B",
@@ -10081,7 +10082,7 @@
               8
             ],
             "status": "PREPARED_NOT_RENDERED",
-            "sha256": "c897f157921794e23675e15426025b81d6bb4d0d0e08801c87e076ec378572b5"
+            "sha256": "775e4ff1f911b512d009fa79bbd28a51e27a3fa871cdcd5eb98cd8adc0fde6cd"
           },
           "C": {
             "key": "HRW07_C",
@@ -10093,7 +10094,7 @@
               8
             ],
             "status": "PREPARED_NOT_RENDERED",
-            "sha256": "579cf661c473eb13e6cb16f2999c7c55e9af35fa3974cbf03634e1f17636c8e6"
+            "sha256": "faa9d3dea6f47848fbcc2a30ffee61b32c79b0401f725a7da05bdd4e4ba17742"
           }
         },
         "original_views": 9,
@@ -10112,7 +10113,7 @@
               4
             ],
             "status": "PREPARED_NOT_RENDERED",
-            "sha256": "a48157af670716972e802c1ef34f68fcc3259c972dadb9418564d8ad5154d679"
+            "sha256": "cf467b8db3cfb04c450458ceae0edd8687a5ecf1cbb301cca7f81d48c1141f6b"
           },
           "B": {
             "key": "T01_DETAILS_B",
@@ -10124,7 +10125,7 @@
               8
             ],
             "status": "PREPARED_NOT_RENDERED",
-            "sha256": "a819db641f53b6fbdc796788a50aaafa47c2503efd3a2a00d9ceeeac652aa3b4"
+            "sha256": "e1baa5cb4bee93fb6760f0328f1d9705ec3c7c19408abdfbd4e71da2321a540d"
           },
           "C": {
             "key": "T01_DETAILS_C",
@@ -10136,7 +10137,7 @@
               12
             ],
             "status": "PREPARED_NOT_RENDERED",
-            "sha256": "e618c8635b574a9c0153d6a5bf39bbf5dcca1c43d18bb9b0cc69c571840c649b"
+            "sha256": "4f3b0ca03bb7baf8714ed46f7f92703bbfaed6b2c35d9796feaf1b4ce78cc8a8"
           }
         },
         "coverage_views": 12,
@@ -11867,15 +11868,15 @@
   "image_generation_cost_estimate": {
     "date": "2026-09-10",
     "unit_credits": null,
-    "price_source": "CREATOR_CONFIRMED_SELECTED_4K_IMAGE_UI_QUOTE",
+    "price_source": "CREATOR_CONFIRMED_4K_AND_PAID_2K_UI_QUOTES",
     "unit": "ONE_OUTPUT_IMAGE",
     "resolution": "84 single-view 2K + 143 existing-layout 4K",
     "imported_library_images": 227,
-    "imported_library_first_pass_credits": 572,
+    "imported_library_first_pass_credits": 740,
     "optional_map_images": 0,
     "optional_map_credits": 0,
     "all_image_prompts": 227,
-    "all_first_pass_credits": 572,
+    "all_first_pass_credits": 740,
     "typography_images": 7,
     "typography_first_pass_credits": 28,
     "prior_balance_estimate": 700,
@@ -11889,7 +11890,7 @@
       "status": "ADOPTED_FOR_PRESENT_WORLDS_ONLY",
       "outputs": 84,
       "layout": "one full-frame 16:9 view per image",
-      "condition": "Eligible active 2K Unlimited with displayed zero price",
+      "condition": "Paid 2K generation with Unlimited disabled; creator-confirmed 2 credits per image.",
       "morphs": "Unchanged 4K 2x2 sheets"
     },
     "unsplit_resolution_options": {
@@ -11906,7 +11907,8 @@
       "single_world_2k_images": 84,
       "retained_4k_images": 143,
       "superseded_world_pages": 21,
-      "image_generation_or_debit": false
+      "image_generation_or_debit": false,
+      "world_generation_mode": "PAID_2K_UNLIMITED_DISABLED"
     },
     "superseded_allowance_scenarios": {
       "status": "SUPERSEDED_BY_CREATOR_NO_REGENERATION_AND_500_TOP_UP_CAP",
@@ -11948,15 +11950,17 @@
     "additional_purchase_confirmed": false,
     "maximum_total_if_top_up_purchased": 3360,
     "after_first_pass_current_balance": {
-      "production_images": 2204
+      "production_images": 2120
     },
     "after_first_pass_with_maximum_top_up": {
-      "production_images": 2704
+      "production_images": 2620
     },
     "regeneration_allowed": false,
     "additional_attempts_allowed": 0,
     "excluded_map_prompts": 7,
-    "production_image_prompts": 164
+    "production_image_prompts": 227,
+    "paid_2k_unit_credits": 2,
+    "paid_4k_unit_credits": 4
   },
   "map_production_decision": {
     "status": "REMOVED_FROM_PROJECT",

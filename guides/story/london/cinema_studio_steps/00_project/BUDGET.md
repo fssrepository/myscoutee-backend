@@ -8,26 +8,26 @@ The active full import and prompt map now contain **227 Elements/image jobs**. M
 
 ## Creator-confirmed price basis
 
-The creator reports Nano Banana Pro **4 credits per 4K image** and a **seven-day Unlimited offer covering eligible 2K images**. The zero-credit world estimate is conditional on active eligibility, Unlimited mode enabled, and the displayed price. If the offer is unavailable, obtain the actual 2K quote before spending; this budget does not assume a paid 2K tariff. Imports and file edits do not generate media.
+The creator confirms Nano Banana Pro **4 credits per 4K image** and **2 credits per paid 2K image with Unlimited disabled**. The current working allocation uses paid 2K world generation to avoid the Unlimited queue. Eligible 2K Unlimited remains a zero-credit alternative, but is not assumed in this allocation. Imports and file edits do not generate media.
 
 | Category | Outputs | Resolution | First-pass credits |
 |---|---:|---|---:|
 | Character identities | 31 | 4K | 124 |
-| Present-world single views | 84 | 2K, eligible Unlimited | 0 conditional |
+| Present-world single views | 84 | 2K, paid | 168 |
 | Memory, clinical and restaurant worlds | 30 | 4K | 120 |
 | Building and space morphs | 37 | 4K | 148 |
 | Object and material morphs | 32 | 4K | 128 |
 | Character morphs | 6 | 4K | 24 |
 | Typography | 7 | 4K | 28 |
-| **Total** | **227** | **84 at 2K + 143 at 4K** | **572 conditional** |
+| **Total** | **227** | **84 at 2K + 143 at 4K** | **740** |
 
-This saves **84 credits** relative to the previous 164-image/all-4K estimate of 656. The seven typography images/28 credits are already included. Each reused paid 4K image removes 4 credits from the gross estimate; do not assume an old image meets a changed reference role without reviewing it. The three oversized morph prompts still need length work; no paid retry is authorized by their presence in this estimate.
+The 84 paid world images add **168 credits** to the previous Unlimited-based 572-credit image estimate. The seven typography images/28 credits are already included. Each reused paid 4K image removes 4 credits from the gross estimate; each reused 2K world image removes 2. Review whether an existing image covers its current reference role before counting it as reusable. No paid retries are included.
 
 ## Balance and hard limits
 
 The latest creator-reported balance is **2860 credits**. Up to **500 additional credits** may be purchased, but no purchase is confirmed. Historical test spend of 80 is already reflected in the reported balance and is not deducted again. No image or video regeneration allowance is included; additional attempts remain zero. No new actual generation or debit is recorded here.
 
-After the conditional 572-credit image pass, **2288 credits** remain from 2860; **2788** would remain if the maximum future top-up were purchased. These are planning balances, not a live account reading.
+After the 740-credit image pass, **2120 credits** remain from 2860; **2620** would remain if the maximum future top-up were purchased. These are planning balances, not a live account reading.
 
 ## Five-line working allocation
 
@@ -35,19 +35,23 @@ The film remains 200 seconds: six 30-second blocks and one 20-second ending. Ref
 
 | Work | Credits | Basis |
 |---|---:|---|
-| Reference images | **572 conditional** | 143 × 4K at 4 credits; 84 eligible 2K Unlimited at zero |
+| Reference images | **740** | 143 × 4K at 4 credits; 84 × paid 2K at 2 credits |
 | Final film video | **1800** | Six 30-second blocks × 270 plus the 20-second ending at 180; complete-input/Extend quotes pending |
 | Final narration | **14 estimated** | Higher observed A01 Seed Audio rate scaled by script lengths; MiniMax alternative approximately 7 |
 | Pilot/test workflow, adjustable | **100 allowance** | Planned first 8-second clip, 8-second continuation and test audio/integration; actual quotes pending |
 | Separate assembly/export | **0 allocated** | No separate fee verified; use cumulative Extend output and download if available |
 
-**Total with tests: 2486 credits; remaining: 374.** Final production excluding tests is **2386**, leaving **474**. With the optional maximum 500-credit purchase, the remaining balance after the current total would be **874**. MiniMax narration at approximately 7 instead of 14 would leave **381** without a top-up. These estimates depend on eligible free 2K world generation and the stated video/audio assumptions.
+**Total with tests: 2654 credits; remaining: 206.** Final production excluding tests is **2554**, leaving **306**. With the optional maximum 500-credit purchase, the remaining balance after the current total would be **706**. MiniMax narration at approximately 7 instead of 14 would leave **213** without a top-up. Video and narration retain their stated quote/estimate limitations. These are gross planning totals against the reported 2860-credit balance; subsequent actual debits and completed reusable outputs must be reconciled together.
 
 Tests remain the adjustable line. Do not shorten the film, reduce image detail or purchase credits automatically to make a planning allowance fit. Separate narration integration/export pricing remains unverified; add a confirmed fee if the chosen delivery workflow actually requires one.
 
+## Paid 2K versus eligible Unlimited
+
+At the creator-confirmed 2-credit paid 2K rate, generating all 84 worlds costs 168 credits. Eligible Unlimited would save those 168 credits, reducing the full allocation to 2486 and leaving 374 instead of 206. A paid-mode switch does not guarantee a particular generation time. No top-up, generation, debit or retry is recorded by this budget update. Image layouts, resolutions and detailed prompts are unchanged.
+
 ## Image model assumption
 
-Use **Nano Banana Pro at the creator-confirmed 4 credits per 4K image** for this budget. No model switch or paid comparison campaign is scheduled. Higgsfield's [published model guidance](https://github.com/higgsfield-ai/skills/blob/main/higgsfield-generate/SKILL.md) routes design/text work toward GPT Image 2 and character/reference work toward the Nano Banana family. This is workflow guidance, not a measured benchmark of our four-state morph sheets. It does not establish that a more expensive model would preserve our material transitions better.
+Use **Nano Banana Pro at the creator-confirmed 4 credits per 4K image and 2 credits per paid 2K image** for this budget. No model switch or paid comparison campaign is scheduled. Higgsfield's [published model guidance](https://github.com/higgsfield-ai/skills/blob/main/higgsfield-generate/SKILL.md) routes design/text work toward GPT Image 2 and character/reference work toward the Nano Banana family. This is workflow guidance, not a measured benchmark of our four-state morph sheets. It does not establish that a more expensive model would preserve our material transitions better.
 
 For this film, assess distinct physical states, correct endpoint identity, material thickness, coherent geometry and legible exact text. A model premium is not evidence of better video continuity. If an image model were later changed before generation, the extra cost would be `(new quoted image price − 4) × affected image count`; the new quote and decision are not present here.
 

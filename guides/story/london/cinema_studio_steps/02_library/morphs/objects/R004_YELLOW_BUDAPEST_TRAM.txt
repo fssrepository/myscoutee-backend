@@ -1,3 +1,5 @@
+REFERENCE ID: R004_YELLOW_BUDAPEST_TRAM (do not render this identifier).
+
 SUBJECT — YELLOW TRAM BODY TO IRON-AND-GLASS STREET ARCADE:
 Track a yellow door jamb into a roof edge, one wheel hub into a post foot and one window notch into a canopy pane. Vehicle-to-architecture scale growth is allowed, with thick intermediates and shadows making that growth legible.
 

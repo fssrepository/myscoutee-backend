@@ -1,3 +1,5 @@
+REFERENCE ID: MR013_ENTRANCE_RAIL_TO_TRANSIT_GATE_2X2 (do not render this identifier).
+
 SUBJECT AND MATERIALS:
 Study a dark metal London entrance rail with footplate, vertical bar and horizontal elbow becoming a compact pedestrian ticket gate. The target has a solid upright housing, a small unbranded rectangular reader support and one rotating metal gate leaf on a visible pivot above the same floor. Neutral practical light joins cool light from the street entrance; no logos or readable interface are needed.
 

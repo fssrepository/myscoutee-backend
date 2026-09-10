@@ -1,3 +1,5 @@
+REFERENCE ID: MW03_WORK_RULE_CHANGE_ADMIN_A (do not render this identifier).
+
 REFERENCE SETUP INCOMPLETE: C22
 Do not generate until these references are bound.
 

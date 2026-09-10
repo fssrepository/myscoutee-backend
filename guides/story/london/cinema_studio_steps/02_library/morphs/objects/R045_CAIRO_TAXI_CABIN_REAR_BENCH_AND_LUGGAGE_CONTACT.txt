@@ -1,3 +1,5 @@
+REFERENCE ID: R045_CAIRO_TAXI_CABIN_REAR_BENCH_AND_LUGGAGE_CONTACT (do not render this identifier).
+
 SUBJECT — LONDON TAXI REAR CABIN TO CAIRO MEMORY CABIN:
 Track the door-latch plate into the new sill, an upholstery seam into the lower bench and a floor rib into the extended footwell. The bag provides a consistent scale/contact anchor.
 

@@ -1,3 +1,5 @@
+REFERENCE ID: CM001_APPOINTED_LAWYER_TO_OFFICE_SUBSTITUTE_2X2 (do not render this identifier).
+
 REFERENCE SETUP INCOMPLETE: C04, C26
 Do not generate until these references are bound.
 

@@ -1,3 +1,5 @@
+REFERENCE ID: R025_ORIGINAL_LONDON_ROOF_AND_CHIMNEY_VOLUMES (do not render this identifier).
+
 OBJECT MORPH STUDY — R025 ORIGINAL LONDON ROOF AND CHIMNEY VOLUMES
 SUBJECT AND MATERIALS:
 Study a London pitched slate roof with straight ridge, substantial supporting ribs and stone eaves becoming a curved glass roof carried by arched ribs and deep carved stone corbels. Establish the two supporting walls and adjacent road from an elevated oblique view. Show overlapping slate edges initially and transparent curved glazing with thick joined edges at the destination.

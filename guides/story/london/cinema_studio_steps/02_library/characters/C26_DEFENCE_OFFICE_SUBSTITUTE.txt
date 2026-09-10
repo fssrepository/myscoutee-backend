@@ -1,3 +1,5 @@
+REFERENCE ID: C26_DEFENCE_OFFICE_SUBSTITUTE (do not render this identifier).
+
 OUTPUT LAYOUT AND RESOLUTION: One 16:9 identity sheet with exactly three equal vertical panels in one horizontal row (1x3: front, back, headshot). Generate at 3840×2160 pixels and select 4K in the output controls. The three equal edge-to-edge panels are each 1280×2160 pixels, with zero gutters and margins. These are three views of one unchanged identity, not a transformation sequence.
 
 Create ONE SINGLE photorealistic technical CHARACTER IDENTITY SHEET for ONE exact fictional person.

@@ -1,3 +1,5 @@
+REFERENCE ID: R013_RED_BUS_LOWER_DECK_PASSAGE_AND_OPEN_DOOR_GEOMETRY (do not render this identifier).
+
 SUBJECT — LONDON BUS LOWER DECK TO DEEP ARCADED PASSAGE:
 Track a scratched grab rail into an arch rib, a seat-cushion seam into a bench edge and the doorway’s step corner into the new threshold. Keep the depth between near frame, seats and far exit evident throughout.
 

@@ -1,3 +1,5 @@
+REFERENCE ID: MW01_LONDON_SOCIAL_B (do not render this identifier).
+
 REFERENCE SETUP INCOMPLETE: C06, C07, C08, MW01
 Do not generate until these references are bound.
 

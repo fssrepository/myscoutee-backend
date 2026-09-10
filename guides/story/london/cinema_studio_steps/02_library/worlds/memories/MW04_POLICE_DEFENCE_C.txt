@@ -1,3 +1,5 @@
+REFERENCE ID: MW04_POLICE_DEFENCE_C (do not render this identifier).
+
 REFERENCE SETUP INCOMPLETE: C03, C04, C26, MW04
 Do not generate until these references are bound.
 

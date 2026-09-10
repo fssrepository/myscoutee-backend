@@ -1,3 +1,5 @@
+REFERENCE ID: TY001_DECIMAL_RATING_GLYPHS_AND_TINTS_3X3 (do not render this identifier).
+
 ONE 4K TYPOGRAPHY SHEET — 3×3:
 Create ONE 3840×2160 image with exactly NINE equal edge-to-edge 1280×720 cells in three columns and three rows. Select 4K for the whole output. No margins, gutters, separators or letterboxing. This 3×3 layout is specifically for short numeral samples; each cell is 720p, not 1080p. Keep the three-character ratings large enough to inspect their actual strokes and decimal point. Reading order is left-to-right across each row, then down. Do not print row/column labels or subdivide any cell again.
 

@@ -1,3 +1,5 @@
+REFERENCE ID: MR021_RATING_CARD_6_2_TO_9_2_MATERIAL_MORPH_2X2 (do not render this identifier).
+
 SUBJECT — ONE PERSON'S RATING CARD, 6.2 TO 9.2:
 Create a concrete material-transformation reference for the floating rating cards of the MyScoutee current city. One ordinary adult London pedestrian remains the SAME person while their one card deliberately changes from 6.2 to 9.2. This is an explicitly authored score-change example. It does not instruct every gaze, every personal morph or every scene to increase ratings. The usual glance response changes illumination only. The card is a small tangible-looking landscape object in world space, not a number composited onto the screen, a projected image or a poster fading over another poster.
 

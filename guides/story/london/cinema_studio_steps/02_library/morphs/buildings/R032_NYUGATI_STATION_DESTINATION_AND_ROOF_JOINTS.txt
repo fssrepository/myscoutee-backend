@@ -1,3 +1,5 @@
+REFERENCE ID: R032_NYUGATI_STATION_DESTINATION_AND_ROOF_JOINTS (do not render this identifier).
+
 SUBJECT — LONDON ROOF TRUSSES TO NYUGATI GLAZED END FRAME:
 This is a close construction counterpart to the whole station morph. Keep one riveted node, one stone seam and one glazing corner traceable across the larger iron curvature and glass growth.
 

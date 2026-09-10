@@ -1,3 +1,5 @@
+REFERENCE ID: MR014_BENCH_AND_CANOPY_TO_BUS_SEATING_2X2 (do not render this identifier).
+
 SUBJECT AND MATERIALS:
 Study an empty timber street bench and its canopy posts becoming a modest remembered bus seating bay: paired upholstered seats on metal frames, a narrow aisle, side-window pillars, handrails and a supported floor. Use muted woven seat fabric, thick cushion edges and visible under-seat supports. Keep the scene empty of passengers for this geometry study. This is the remembered bus room; the red London double-decker in the street is a separate object. Soft diffuse daylight illuminates the whole process.
 

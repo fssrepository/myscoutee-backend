@@ -1,3 +1,5 @@
+REFERENCE ID: T01_SOHO_RESTAURANT_SOURCE_C (do not render this identifier).
+
 REFERENCE SETUP INCOMPLETE: T01_DETAILS
 Do not generate until these references are bound.
 

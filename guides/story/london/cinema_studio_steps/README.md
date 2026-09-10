@@ -6,7 +6,7 @@ Reference preparation: [75 morph sheets](02_library/morphs/README.md), [30 memor
 
 This is the **September 9, 2026 manual production edition**. Final target: **Seedance 2.5, 1080p, 16:9, six 30-second blocks plus 20 seconds = 3:20**. The pilot is a separate technical excerpt, not a shortened festival entry. Preparing this pack generated no media and spent no Higgsfield credits. The supplied screenshot shows the existing **MyScoutee** project and imported Elements with empty image slots; a complete account/media inventory and subscription entitlements remain unverified.
 
-**Current image plan:** 84 separate present-world views at eligible 2K Unlimited; 143 other references retain 4K. The conditional image estimate is 572 credits; the five-line production allocation is 2486, leaving 374 from the creator-reported 2860. No top-up or generation has been performed here. See the [budget](00_project/BUDGET.md) and [replacement import guide](00_project/elements/additions/WORLD_SINGLE_VIEWS_REPLACEMENT_GUIDE.md).
+**Current image plan:** 84 separate present-world views at paid 2K, 2 credits each; 143 other references retain 4K. The image estimate is 740 credits; the five-line production allocation is 2654, leaving 206 from the creator-reported 2860. No top-up or generation has been performed here. See the [budget](00_project/BUDGET.md) and [replacement import guide](00_project/elements/additions/WORLD_SINGLE_VIEWS_REPLACEMENT_GUIDE.md).
 
 ## Order of work
 

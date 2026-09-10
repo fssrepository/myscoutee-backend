@@ -1,3 +1,5 @@
+REFERENCE ID: R023_BALCONY_SCROLL_AND_SIDEWAYS_STAIR_STRUCTURAL_PARTS (do not render this identifier).
+
 OBJECT MORPH STUDY — R023 BALCONY SCROLL AND SIDEWAYS STAIR STRUCTURAL PARTS
 SUBJECT AND MATERIALS:
 Study a dark iron balcony scroll and railing becoming a short sideways staircase along the same historic wall. The final form has thick tread plates, twin stringers, visible brackets and a continuous handrail. Show the iron cross-sections and wall footplates from an oblique exterior view.

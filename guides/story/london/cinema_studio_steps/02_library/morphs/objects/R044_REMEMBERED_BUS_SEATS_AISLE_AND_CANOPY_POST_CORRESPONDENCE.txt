@@ -1,3 +1,5 @@
+REFERENCE ID: R044_REMEMBERED_BUS_SEATS_AISLE_AND_CANOPY_POST_CORRESPONDENCE (do not render this identifier).
+
 OBJECT MORPH STUDY — R044 REMEMBERED BUS SEATS AISLE AND CANOPY POST CORRESPONDENCE
 SUBJECT AND MATERIALS:
 Study an empty timber street bench and its canopy posts becoming a modest remembered bus seating bay: paired upholstered seats on metal frames, a narrow aisle, side-window pillars, handrails and a supported floor. Use muted woven seat fabric, thick cushion edges and visible under-seat supports. Keep the scene empty of passengers for this geometry study. This is the remembered bus room; the red London double-decker in the street is a separate object. Soft diffuse daylight illuminates the whole process.

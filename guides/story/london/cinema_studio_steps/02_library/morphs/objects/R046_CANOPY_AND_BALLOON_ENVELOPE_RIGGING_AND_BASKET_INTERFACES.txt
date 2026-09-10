@@ -1,3 +1,5 @@
+REFERENCE ID: R046_CANOPY_AND_BALLOON_ENVELOPE_RIGGING_AND_BASKET_INTERFACES (do not render this identifier).
+
 SUBJECT — CANOPY TIES AND FRAME TO BALLOON RIGGING AND BASKET:
 Track a knot, a timber grain stripe and a metal scratch into rope junction, basket rim and rigging collar. This is the close physical companion to the whole canopy-to-balloon morph.
 

@@ -1,3 +1,5 @@
+REFERENCE ID: TY005_TRANSIT_AND_ENTRANCE_SIGN_LETTERING_2X2 (do not render this identifier).
+
 ONE 4K TYPOGRAPHY SHEET — 2×2:
 Create ONE 3840×2160 image with exactly FOUR equal edge-to-edge 1920×1080 cells in two columns and two rows. Select 4K for the whole output. No margins, gutters, separators or letterboxing. Each cell is a separately composed full 16:9 image. The specified words are large and sharply resolved, with complete glyphs and space for their accents. The four assigned cells have different inspection purposes or material states; do not produce four near-identical decorative signs.
 

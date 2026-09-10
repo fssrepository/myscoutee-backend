@@ -1,3 +1,5 @@
+REFERENCE ID: R043_LONDON_ENTRANCE_RAIL_AND_REMEMBERED_TRANSIT_GATE (do not render this identifier).
+
 OBJECT MORPH STUDY — R043 LONDON ENTRANCE RAIL AND REMEMBERED TRANSIT GATE
 SUBJECT AND MATERIALS:
 Study a dark metal London entrance rail with footplate, vertical bar and horizontal elbow becoming a compact pedestrian ticket gate. The target has a solid upright housing, a small unbranded rectangular reader support and one rotating metal gate leaf on a visible pivot above the same floor. Neutral practical light joins cool light from the street entrance; no logos or readable interface are needed.
