@@ -599,7 +599,7 @@
       ],
       "source_prompt_sha256": "16bf4be44836d9fb010f7825cc24770d0ce78cbd05373fc417d2155eba6ae1e1",
       "file": "02_library/worlds/memories/22_MWP01_ROUTES_ROOMS_DOCUMENTS_A.txt",
-      "file_sha256": "991ed86b7ffbd0f40855e6a72227f2d89da86cbbcb8e7c4cac2b30ce216d8e5a",
+      "file_sha256": "bcbc4fc72ede1354c086143c9ba99ba73dfe01ae3f8bf0b86e6162258162704b",
       "changes": "Verbatim fenced prompt; explicit centrally maintained reference inputs; rural memory grounded in creator's Orosháza paprika/corn-field childhood Grid geometry uses the full selected image resolution instead of fixed pixel examples."
     },
     {
@@ -3042,7 +3042,7 @@
         "MWP01_B",
         "MWP01_C"
       ],
-      "prompt_sha256": "991ed86b7ffbd0f40855e6a72227f2d89da86cbbcb8e7c4cac2b30ce216d8e5a",
+      "prompt_sha256": "bcbc4fc72ede1354c086143c9ba99ba73dfe01ae3f8bf0b86e6162258162704b",
       "composition_revision_note": "2026-09-10: distinct physical subjects/actions replace repeated content; companion sources preserve the original story beats. No camera-only variation.",
       "current_prompt_image_verified": false,
       "content_assignments": {
@@ -13118,7 +13118,7 @@
               4
             ],
             "status": "PREPARED_NOT_RENDERED",
-            "sha256": "991ed86b7ffbd0f40855e6a72227f2d89da86cbbcb8e7c4cac2b30ce216d8e5a"
+            "sha256": "bcbc4fc72ede1354c086143c9ba99ba73dfe01ae3f8bf0b86e6162258162704b"
           },
           "B": {
             "key": "MWP01_B",

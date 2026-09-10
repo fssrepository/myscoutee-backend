@@ -49,7 +49,7 @@ For the bottom left image (source view 03; instruction only, never printed):
 PAPRIKA HARVEST AT THE EDGE OF THE CORN ROWS:
 An ordinary shallow wooden harvest crate rests on the soil between paprika plants and the tall corn rows near Orosháza. Picked peppers, leaf stems, loose earth on their skins, crate slats and a few dry corn husks are the principal physical subjects. Standing plants continue behind the crate toward the flat Viharsarok horizon.
 
-Keep this an unpeopled literal childhood landscape detail: no visible child, adult, souvenir stall or idealized farm advertisement. Retain leaf ribs, stems, soil clods and the gaps between real rows; the crate has weight and ground contact. MW02_B already supplies the broad field-to-railway connection. This cell adds the local agricultural objects and harvested crop rather than another field panorama differentiated only by eye height.
+Keep this an unpeopled literal childhood landscape detail: no visible child, adult, souvenir stall or idealized farm advertisement. Retain leaf ribs, stems, soil clods and the gaps between real rows; the crate has weight and ground contact. MW02_B already supplies the broad field-to-railway connection. This cell supplies the local agricultural objects and harvested crop.
 
 For the bottom right image (source view 04; instruction only, never printed):
 Trivandrum / Thiruvananthapuram airport or arrival-zone clock and ordinary travel threshold, luggage and fluorescent public architecture. This is the next literal route fragment after the field, not a graphic morph.
