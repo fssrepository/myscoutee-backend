@@ -1,5 +1,10 @@
 REFERENCE ID: MW03_WORK_RULE_CHANGE_ADMIN_B (never print IDs, headings or panel labels).
 
+OUTPUT ELEMENT ASSIGNMENT — OPERATOR METADATA ONLY, NEVER RENDER:
+Live output Element name (operator lookup only): loc_MYS_mys-mw03-b-work-rule-change-admin_s0_v1
+Live output Element UUID: 84607fe9-ff2d-4f29-b9e8-871ce72041c5
+Assign the finished image to this existing empty target. This output target is not an input reference.
+
 PAGE CONTINUITY INPUT: @loc_MYS_mys-mw03-a-work-rule-change-admin_s0_v1 supplies the accepted Page A identities, shared material palette and any recurring room geometry. New places explicitly assigned to this page retain their own stated setting; do not copy Page A into every cell.
 
 REFERENCE INPUTS:

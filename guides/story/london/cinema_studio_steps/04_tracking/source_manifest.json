@@ -611,7 +611,7 @@
       ],
       "source_prompt_sha256": "557e0016d71cfd83bfd2c240538a5a77f6b6d8785ceb0f79bb97e387e1ccbd6f",
       "file": "02_library/worlds/memories/25_MWP02_SYSTEM_TIME_REVERSALS_A.txt",
-      "file_sha256": "df4055c8194dedd71fa9991369896676875bbad3ab1b133800ec450401d1615b",
+      "file_sha256": "003bbf756a5b6c05835a1c5af08ca70bd24364db9192854097616e4bcb67f31b",
       "changes": "AI-specific screen becomes ordinary document cursor; citizen/review beat retained; explicit centrally maintained reference inputs Grid geometry uses the full selected image resolution instead of fixed pixel examples."
     },
     {
@@ -2064,7 +2064,7 @@
       ],
       "source_prompt_sha256": "374ea4b6d0ac33d692653a08a02e706d01e0f45e4279451b364aba2f7263928d",
       "file": "02_library/worlds/memories/11_MW03_WORK_RULE_CHANGE_ADMIN_B.txt",
-      "file_sha256": "eb78079e5f8d2329b4240b990dc0b55bf8c4609d842b374ca53b3bbe59bddb31",
+      "file_sha256": "129df3287d2803667b692786ac2b1e05c4c71b1cfa31455e7f70c998ae469d3c",
       "changes": "Verbatim fenced prompt; explicit centrally maintained reference inputs Grid geometry uses the full selected image resolution instead of fixed pixel examples.",
       "note": "Companion page B preserving original memory views."
     },
@@ -2077,7 +2077,7 @@
       ],
       "source_prompt_sha256": "374ea4b6d0ac33d692653a08a02e706d01e0f45e4279451b364aba2f7263928d",
       "file": "02_library/worlds/memories/12_MW03_WORK_RULE_CHANGE_ADMIN_C.txt",
-      "file_sha256": "79c83208adf64efb4a7ae84d9b89673a3d0e3161443b64ddff27885ab9b5c2a4",
+      "file_sha256": "90b077a2df3a448c86bea9581b81d7eb7fefad33395f9d8e002821adccd88332",
       "changes": "Verbatim fenced prompt; explicit centrally maintained reference inputs Grid geometry uses the full selected image resolution instead of fixed pixel examples.",
       "note": "Companion page C preserving original memory views."
     },
@@ -2246,7 +2246,7 @@
       ],
       "source_prompt_sha256": "16bf4be44836d9fb010f7825cc24770d0ce78cbd05373fc417d2155eba6ae1e1",
       "file": "02_library/worlds/memories/23_MWP01_ROUTES_ROOMS_DOCUMENTS_B.txt",
-      "file_sha256": "1bdf980a3e7abb5be8a06bf74f6b5676ec299ff1f5f6e408b14c7dc34caf18c7",
+      "file_sha256": "a691630d687b7751207b799584ec503414387c15fc4bfb95c9d054fe0c33d78e",
       "changes": "Verbatim fenced prompt; explicit centrally maintained reference inputs; rural memory grounded in creator's Orosháza paprika/corn-field childhood Grid geometry uses the full selected image resolution instead of fixed pixel examples.",
       "note": "Companion page B preserving original memory views."
     },
@@ -3149,7 +3149,7 @@
         "MWP02_B",
         "MWP02_C"
       ],
-      "prompt_sha256": "df4055c8194dedd71fa9991369896676875bbad3ab1b133800ec450401d1615b"
+      "prompt_sha256": "003bbf756a5b6c05835a1c5af08ca70bd24364db9192854097616e4bcb67f31b"
     },
     "HRW07": {
       "key": "HRW07",
@@ -4544,7 +4544,7 @@
         7,
         8
       ],
-      "prompt_sha256": "eb78079e5f8d2329b4240b990dc0b55bf8c4609d842b374ca53b3bbe59bddb31"
+      "prompt_sha256": "129df3287d2803667b692786ac2b1e05c4c71b1cfa31455e7f70c998ae469d3c"
     },
     "MW03_C": {
       "key": "MW03_C",
@@ -4566,7 +4566,7 @@
         7,
         8
       ],
-      "prompt_sha256": "79c83208adf64efb4a7ae84d9b89673a3d0e3161443b64ddff27885ab9b5c2a4",
+      "prompt_sha256": "90b077a2df3a448c86bea9581b81d7eb7fefad33395f9d8e002821adccd88332",
       "composition_revision_note": "2026-09-10: distinct physical subjects/actions replace repeated content; companion sources preserve the original story beats. No camera-only variation.",
       "current_prompt_image_verified": false,
       "content_assignments": {
@@ -4786,7 +4786,7 @@
         7,
         8
       ],
-      "prompt_sha256": "1bdf980a3e7abb5be8a06bf74f6b5676ec299ff1f5f6e408b14c7dc34caf18c7",
+      "prompt_sha256": "a691630d687b7751207b799584ec503414387c15fc4bfb95c9d054fe0c33d78e",
       "reference_scope_note": "Inputs scoped to the four assigned views; unrelated companion-page subjects removed. Literal scene descriptions unchanged."
     },
     "MWP01_C": {
@@ -13400,7 +13400,7 @@
               8
             ],
             "status": "PREPARED_NOT_RENDERED",
-            "sha256": "eb78079e5f8d2329b4240b990dc0b55bf8c4609d842b374ca53b3bbe59bddb31"
+            "sha256": "129df3287d2803667b692786ac2b1e05c4c71b1cfa31455e7f70c998ae469d3c"
           },
           "C": {
             "key": "MW03_C",
@@ -13412,7 +13412,7 @@
               8
             ],
             "status": "PREPARED_NOT_RENDERED",
-            "sha256": "79c83208adf64efb4a7ae84d9b89673a3d0e3161443b64ddff27885ab9b5c2a4"
+            "sha256": "90b077a2df3a448c86bea9581b81d7eb7fefad33395f9d8e002821adccd88332"
           }
         },
         "original_views": 9,
@@ -13641,7 +13641,7 @@
               8
             ],
             "status": "PREPARED_NOT_RENDERED",
-            "sha256": "1bdf980a3e7abb5be8a06bf74f6b5676ec299ff1f5f6e408b14c7dc34caf18c7"
+            "sha256": "a691630d687b7751207b799584ec503414387c15fc4bfb95c9d054fe0c33d78e"
           },
           "C": {
             "key": "MWP01_C",
@@ -13672,7 +13672,7 @@
               4
             ],
             "status": "PREPARED_NOT_RENDERED",
-            "sha256": "df4055c8194dedd71fa9991369896676875bbad3ab1b133800ec450401d1615b"
+            "sha256": "003bbf756a5b6c05835a1c5af08ca70bd24364db9192854097616e4bcb67f31b"
           },
           "B": {
             "key": "MWP02_B",
