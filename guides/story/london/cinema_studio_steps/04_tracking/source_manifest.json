@@ -4764,7 +4764,7 @@
     "pilot_joined_seconds": 16,
     "reserve_additional_30s_attempts": 0,
     "additional_30s_attempt_quote_credits": null,
-    "budget_note": "Creator-reported balance 2860; optional further purchase capped at 500, unpurchased. Five budget lines: all 171 Nano Banana Pro 4K images 684; final footage 1800; provisional final narration/integration 200; separately adjustable pilot 100; separate assembly/export 0 allocated. Removed unsupported 300-credit finishing allowance. Total 2784 leaves 76, or 576 if the maximum top-up is actually purchased. Complete-input/Extend quotes and cumulative delivery remain unverified; no regeneration or new debit.",
+    "budget_note": "Creator balance 2860; optional purchase max 500, unpurchased. All images remain 4K: 684; final footage 1800; A01 quote-scaled speech estimate 14; adjustable pilot 100; separate assembly/export 0 allocated. Total 2598 leaves 262. MiniMax-only rounded speech estimate 7 leaves 269. Actual continuation and integration/delivery quotes pending. No generation or debit.",
     "remaining_credits_creator_reported": 2860,
     "balance_source": "CREATOR_REPORT_2026_09_10_NOT_TOOL_VERIFIED",
     "maximum_additional_purchase_credits": 500,
@@ -4776,10 +4776,10 @@
       "all_4k_images": 684,
       "final_video_first_pass": 1800,
       "pilot_including_test_audio_and_finishing": 100,
-      "final_narration": 200,
-      "total": 2784,
-      "remaining_current_balance": 76,
-      "remaining_if_maximum_top_up_purchased": 576,
+      "final_narration": 14,
+      "total": 2598,
+      "remaining_current_balance": 262,
+      "remaining_if_maximum_top_up_purchased": 762,
       "retries": 0,
       "ledger": "04_tracking/PRODUCTION_BUDGET_ESTIMATE.csv",
       "additional_credits_needed": 0,
@@ -4795,7 +4795,7 @@
         },
         {
           "category": "FINAL_FILM_NARRATION",
-          "credits": 200
+          "credits": 14
         },
         {
           "category": "PILOT_TEST_WORKFLOW",
@@ -4806,11 +4806,11 @@
           "credits": 0
         }
       ],
-      "final_production_excluding_tests": 2684,
+      "final_production_excluding_tests": 2498,
       "test_allowance_separately_adjustable": true,
       "shortfall_excluding_tests": 0,
-      "remaining_current_balance_excluding_tests": 176,
-      "narration_scope": "Provisional combined allowance for final speech and any separately charged narration integration; no pilot double count.",
+      "remaining_current_balance_excluding_tests": 362,
+      "narration_scope": "A01-A07 first-pass speech only; higher observed A01 model quote scaled by script lengths and total rounded to 14. MiniMax alternative 7. Separate integration fee unestablished and excluded; no pilot double count.",
       "finishing_scope": "Zero allocated because no separate paid operation is established; not a verified zero-cost tariff. Use cumulative Extend output and download if available."
     },
     "published_video_price_basis": {
@@ -4862,6 +4862,54 @@
       "twenty_second_quote_source": "CREATOR_REPORT_2026_09_10",
       "twenty_second_quoted_credits": 180,
       "twenty_second_complete_input_quote_verified": false
+    },
+    "current_narration_price_basis": {
+      "status": "A01_OBSERVED_QUOTES_OTHER_PASSAGES_LENGTH_ESTIMATES",
+      "date": "2026-09-10",
+      "a01_characters": 262,
+      "total_script_characters": 2022,
+      "character_count_method": "Unicode characters including spaces and punctuation; stripped leading/trailing whitespace",
+      "seed_audio_1_0_a01_quote": 1.8,
+      "minimax_speech_2_8_hd_a01_quote": 0.9,
+      "seed_audio_total_estimate": 13.8916,
+      "minimax_total_estimate": 6.9458,
+      "seed_audio_rounded_allocation": 14,
+      "minimax_rounded_alternative": 7,
+      "pricing_assumption": "Proportional to script character count; provider rounding/minimums unverified",
+      "all_passage_quotes_verified": false,
+      "model_selected": false,
+      "integration_fee_verified": false,
+      "generation_submitted": false,
+      "scripts": [
+        {
+          "id": "A01",
+          "characters": 262
+        },
+        {
+          "id": "A02",
+          "characters": 256
+        },
+        {
+          "id": "A03",
+          "characters": 266
+        },
+        {
+          "id": "A04",
+          "characters": 344
+        },
+        {
+          "id": "A05",
+          "characters": 326
+        },
+        {
+          "id": "A06",
+          "characters": 377
+        },
+        {
+          "id": "A07",
+          "characters": 191
+        }
+      ]
     }
   },
   "reference_bindings": {

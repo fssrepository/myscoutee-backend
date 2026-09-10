@@ -40,6 +40,8 @@ The available assistant generation connector does not establish the creator's fr
 
 ## Visual prompts and the separate narrated test
 
+The standalone [narration audio test](test_narration_audio.md) is saved for later: it contains the full A01 script, Seed Audio voice direction, both models' visible settings and the observed 1.8/0.9-credit quotes. It is an audio audition reference, separate from the short narration used on the joined video below; no additional generation has been started or automatically scheduled.
+
 | Prompt | Content | Operation |
 | --- | --- | --- |
 | [test_video_8s.txt](test_video_8s.txt) | Complete detailed first scene: London becoming embodied memory, independent camera flight, recognisable landmarks, numerical cards, Hungarian theme and material SFX | 8 s / 480p / 16:9 / audio ON / one output |

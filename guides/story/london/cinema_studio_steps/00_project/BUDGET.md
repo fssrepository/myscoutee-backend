@@ -60,15 +60,37 @@ The current film is **200 seconds (3:20)**: six 30-second blocks and one 20-seco
 |---|---:|---|
 | Reference images, all 171 at 4K | **684** | Nano Banana Pro; 171 × 4; includes seven optional maps and shared pilot/final-film references, counted once |
 | Final film video generation | **1800** | Six 30-second blocks at 270 plus the creator-confirmed 20-second ending at 180; complete-input/Extend quotes pending |
-| Final film narration | **200** | Provisional combined allowance for A01–A07 speech and any separately charged integration of that narration; actual operation and price unverified |
+| Final film narration | **14** | A01–A07 speech estimate using the higher observed Seed Audio rate and relative script lengths; MiniMax alternative approximately 7; integration has no established separate fee |
 | Pilot/test workflow, separately adjustable | **100** | Combined first-pass allowance for the planned 8-second clip, 8-second continuation and test narration/integration; actual prices pending |
 | Separate assembly/export | **0 allocated** | No verified separate fee. If Extend returns the cumulative film with the intended soundtrack, use that result and download it; no additional render is budgeted |
 
-**Final production including images, excluding tests: 2684 credits. Total with the current 100-credit test allowance: 2784 credits.** The current 2860-credit balance leaves **76 credits**, or **176 without tests**. No top-up is required by this working estimate. If the optional maximum 500-credit top-up were purchased, 576 would remain; it has not been purchased.
+**Final production including images, excluding tests: 2498 credits. Total with the current 100-credit test allowance: 2598 credits.** The current 2860-credit balance leaves **262 credits**, or **362 without tests**. No top-up is required by this working estimate. If the optional maximum 500-credit top-up were purchased, 762 would remain; it has not been purchased.
 
-The former 300-credit finishing allowance is removed because no separately required paid assembly/export operation or fee has been established. Zero allocated is not a verified provider tariff or proof that Extend returns the cumulative master. If the actual workflow requires a separate paid operation, record its real quote and revise the budget before using it. Any separately charged final-narration integration belongs to the narration line and must not also be charged as general finishing.
+The previous 200-credit narration allowance is replaced with a **14-credit first-pass speech estimate**, freeing 186 credits. The separate **100-credit pilot allowance stays adjustable**; refine it later using actual test quotes. This change does not select an audio model or authorize extra tests or retries. Using MiniMax for all seven passages would give a rounded speech estimate of 7 credits, a total of 2591 and a remaining balance of 269.
 
-The narration allowance is an estimate, not an established 200-credit charge. The pilot allowance is also provisional and can be reduced independently. Keep their costs separate. Images plus final footage total 2484, leaving 376 for narration and tests within the current balance; with tests held at 100, narration can cost at most 276 before a top-up is needed. No generation retries, additional test-only image batch or automatic purchase are added.
+No separately required paid narration-integration, assembly or export operation has been established, so no invented fee is added. This is not proof that those operations are free or that cumulative export is available. Any real additional integration/delivery quote must be included once before use; the 262-credit unallocated balance is not automatic spending authorization. Images plus final footage remain 2484 credits, leaving 376 for narration and tests before those two lines are counted.
+
+### Observed narration quotes and length-based estimate
+
+2026-09-10: the creator entered `03_film/01/narration.txt` into Higgsfield Text to Speech. With one output selected (batch size 1/4), the displayed price is **1.8 credits for Seed Audio 1.0** and **0.9 credits for MiniMax Speech 2.8 HD**. Evidence: `Screenshot from 2026-09-10 09-28-54.png` and `Screenshot from 2026-09-10 09-28-47.png`. These are unsubmitted quotes, not debits.
+
+The first script contains **262 characters**; all seven contain **2022 characters**, counting spaces and punctuation but excluding leading/trailing whitespace. For planning, scale the observed A01 price by each script's character count: `A01 quote × script characters / 262`. This assumes approximately proportional text pricing; the provider's actual rounding, minimum charges and treatment of voice instructions are not established. The six other prices below are estimates, not UI quotes.
+
+| Passage | Characters | Seed Audio estimate | MiniMax estimate |
+|---|---:|---:|---:|
+| A01 | 262 | 1.80 | 0.90 |
+| A02 | 256 | 1.76 | 0.88 |
+| A03 | 266 | 1.83 | 0.91 |
+| A04 | 344 | 2.36 | 1.18 |
+| A05 | 326 | 2.24 | 1.12 |
+| A06 | 377 | 2.59 | 1.30 |
+| A07 | 191 | 1.31 | 0.66 |
+| **Total, calculated before rounding** | **2022** | **13.89** | **6.95** |
+| **Whole-credit planning allocation** | | **14** | **7** |
+
+Use the higher 14-credit model scenario in the main budget while the voice/model choice remains open. Recheck actual quotes after setting voice and output controls. The full-film speech estimate excludes test-only narration, which belongs to the pilot line, and excludes any as-yet-unestablished integration charge. Reuse an accepted A01 audition as the final passage where appropriate and count its charge once.
+
+The settings and copyable audition are saved in [test_narration_audio.md](../01_pilot/test_narration_audio.md); shared voice direction is in [VOICE.md](VOICE.md#observed-tts-controls-and-first-pass-settings).
 
 ### Basis of the video estimate: observed 1080p festival quote
 
@@ -93,16 +115,16 @@ The selected video resolution is already **1080p**, matching the delivery target
 
 ### Break-even limits
 
-Images, the current pilot allowance and provisional narration together total **984 credits**. Separate assembly/export has **zero allocated**, because no separate paid requirement is established. Holding those allocations fixed leaves **1876 credits for final-film video** without a purchase, or **2376** after the maximum top-up. Across 200 seconds these are average ceilings of **9.38** and **11.88 credits/second**. Compare the actual complete-input and continuation quotes against the total rather than assuming every operation uses one uniform rate.
+Images, the current pilot allowance and estimated narration total **798 credits** (684 + 100 + 14). Holding these fixed leaves **2062 credits for final-film video** without a purchase, or **2562** after the maximum top-up. Across 200 seconds these are average ceilings of **10.31** and **12.81 credits/second**. Any additional integration/delivery charge reduces these ceilings by the same amount.
 
-| Illustrative final-video rate | 200-second film | Total including the other 984 credits | Balance from 2860 |
+| Illustrative final-video rate | 200-second film | Total including the other 798 credits | Balance from 2860 |
 |---|---:|---:|---:|
-| **9 credits/second: current duration-rate basis** | **1800** | **2784** | **76 remaining** |
-| 10 credits/second | 2000 | 2984 | 124 shortfall |
-| 11 credits/second | 2200 | 3184 | 324 shortfall |
-| 12 credits/second | 2400 | 3384 | 524 shortfall; exceeds the 500-credit top-up cap |
+| **9 credits/second: current duration-rate basis** | **1800** | **2598** | **262 remaining** |
+| 10 credits/second | 2000 | 2798 | 62 remaining |
+| 11 credits/second | 2200 | 2998 | 138 shortfall |
+| 12 credits/second | 2400 | 3198 | 338 shortfall |
 
-These are sensitivity calculations, not additional provider tariffs. Any change to the narration/test allowances or an actual separately required delivery quote changes the remaining video ceiling by the same amount. The no-regeneration instruction and maximum further purchase of 500 credits remain in force.
+These are sensitivity calculations, not additional provider tariffs. The test allowance can be refined independently. The no-regeneration instruction and maximum further purchase of 500 credits remain in force.
 
 ## Image model assumption
 

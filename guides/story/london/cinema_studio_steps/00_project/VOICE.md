@@ -12,7 +12,35 @@ The joined 8+8-second pilot receives its short narration afterward, following th
 
 Use Higgsfield Audio / Seed Audio 1.0 if available for the project. Select one English-speaking adult male voice: approximately forty, low-to-mid register, intelligent, intimate, slightly tired and restrained; at most a light Central-European accent. Record the actual voice ID or preset in the [asset registry](../04_tracking/assets.csv) and retain it. Do not browse new voices per block.
 
-Request clean speech only in these audio jobs: no music, rain, transformation effects or added room ambience. Those layers belong to the audio-ON video generation. The current working allocation is 200 credits for first-pass A01–A07 narration and any separately charged integration of that final narration. TA01 and pilot mixing belong to the separate 100-credit combined pilot allowance. These are planning caps, not verified provider quotes. The creator reports 2860 credits available and forbids regeneration; price each first-pass operation before generation. See [BUDGET.md](BUDGET.md).
+Request clean speech only in these audio jobs: no music, rain, transformation effects or added room ambience. Those layers belong to the audio-ON video generation. The current working speech estimate is 14 credits for first-pass A01–A07, scaling the observed Seed Audio A01 price by the seven script lengths and rounding the total upward. MiniMax gives an alternative estimate of 7 credits; no model is selected. Any separate narration-integration fee is unestablished and excluded until quoted. TA01 and pilot mixing belong to the separate 100-credit combined pilot allowance. These are planning caps, not verified provider quotes. The creator reports 2860 credits available and forbids regeneration; price each first-pass operation before generation. See [BUDGET.md](BUDGET.md).
+
+## Observed TTS controls and first-pass settings
+
+Creator screenshots from 2026-09-10 09:28 show A01 priced at 1.8 credits in Seed Audio 1.0 and 0.9 credits in MiniMax Speech 2.8 HD, each with batch size 1/4. These are quotes only; neither output has been auditioned here and no final model or voice has been selected. The large voice cards on the right belong to the tutorial, not evidence of the selected narrator.
+
+For the first narration, use a restrained baseline:
+
+| Control | Seed Audio 1.0 | MiniMax Speech 2.8 HD |
+|---|---|---|
+| Batch size | One output (1/4) | One output (1/4) |
+| Speed | 1.0x initially | 1.0x initially |
+| Pitch | 0 | 0 |
+| Volume | 100% | 100% |
+| Expression / emotion | Expression intensity 5 as shown; mood Neutral | Neutral |
+| Sample rate | Keep the visible 24 kHz for the first audition | Keep the visible 32 kHz for the first audition |
+| Output format | MP3 is currently shown | No output-format selector is visible in this screenshot |
+| Language boost | Not shown | Select English if offered; otherwise retain Auto detect |
+| Text normalization | Not shown | Leave off for A01's already written-out prose |
+
+These settings establish an initial comparison point, not a guarantee of a 30-second read. Measure the resulting duration and listen for natural pauses. Saving controls does not by itself establish a fixed voice identity; retain the actual chosen voice or accepted voice reference for all seven passages. Do not infer voice quality from price or sample rate alone.
+
+Seed Audio exposes a separate Voice details field. Keep these instructions out of the Script field:
+
+```text
+Adult male voice, around forty. Low-to-mid register, warm and slightly textured. Intimate inner monologue, thoughtful and restrained, with a trace of fatigue and quiet tension. Natural English pronunciation and conversational pacing, with brief pauses between thoughts. Clean isolated speech, no music, sound effects or added ambience. No booming trailer-announcer delivery.
+```
+
+The MiniMax screenshot exposes emotion, speed, pitch, volume, sample rate, language boost and text normalization; do not assume a Voice details field exists there. Its provider's [TTS documentation](https://platform.minimax.io/docs/api-reference/speech-t2a-http) also distinguishes the voice ID from speed and pitch, and supports an English language-boost value. Provider API options do not establish additional controls in Higgsfield's UI.
 
 ## Seven recordings, one continuing speaker
 
