@@ -1,6 +1,6 @@
 # Elements — staged import without duplication
 
-New-only prepared supplements: [11_morph_reference_sheets.md](11_morph_reference_sheets.md) contains MR001–MR020; [12_memory_reference_pages.md](12_memory_reference_pages.md) contains 18 memory B/C pages and T01_DETAILS. Neither is reported imported. They exclude all previously imported objects and original memory worlds; detailed image prompts live in the corresponding library folders.
+New-only prepared supplements: [11_morph_reference_sheets.md](11_morph_reference_sheets.md) contains MR001–MR020; [12_memory_reference_pages.md](12_memory_reference_pages.md) contains 18 memory B/C pages and three T01 restaurant pages (21 new containers total). Neither is reported imported. They exclude all previously imported objects and original memory worlds; detailed image prompts live in the corresponding library folders.
 
 **The creator reports the new R001–R053 batch imported. Do not import it or the earlier batches again; Higgsfield does not merge imports. Next: render the five selected pilot images into their existing Elements. Actual new IDs and images remain unverified.**
 

@@ -133,5 +133,19 @@ Type: Location
 Canonical key: T01_DETAILS
 Name: MYS T01_DETAILS Reference Page
 Version: v1
-Description: Four spatial detail views of the accepted Soho restaurant, preserving people and layout.
+Description: Restaurant page A: complete room, woman and cup, furniture support and reverse view.
 
+
+## T01_DETAILS_B — MYS T01_DETAILS_B Reference Page
+Type: Location
+Canonical key: T01_DETAILS_B
+Name: MYS T01_DETAILS_B Reference Page
+Version: v1
+Description: Restaurant page B: restroom encounter, hand and cup, occupied chair and shared eyeline.
+
+## T01_DETAILS_C — MYS T01_DETAILS_C Reference Page
+Type: Location
+Canonical key: T01_DETAILS_C
+Name: MYS T01_DETAILS_C Reference Page
+Version: v1
+Description: Restaurant page C: aisle clearance, practical lamps, threshold detail and room depth.

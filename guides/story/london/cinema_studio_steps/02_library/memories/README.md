@@ -14,7 +14,13 @@ Each file is one copy-ready image prompt for a 3840×2160 canvas divided into fo
 | MWP02 | [A](MWP02_SYSTEM_TIME_REVERSALS_A.txt) | [B](MWP02_SYSTEM_TIME_REVERSALS_B.txt) | [C](MWP02_SYSTEM_TIME_REVERSALS_C.txt) |
 | HRW07 | [A](HRW07_CLINICAL_REALITY_A.txt) | [B](HRW07_CLINICAL_REALITY_B.txt) | [C](HRW07_CLINICAL_REALITY_C.txt) |
 
-[T01 restaurant detail page](T01_SOHO_RESTAURANT_SOURCE.txt) adds four spatial views of the already accepted restaurant: full arrangement, human gesture, floor/furniture support, and doors/exit route. Its input is the accepted T01 image and exact character references. It is prepared as a distinct T01_DETAILS output, not a replacement of the accepted single image.
+T01 now follows the same A–B–C organization, with twelve detailed views of the accepted restaurant:
+
+| Bank | Page A | Page B | Page C |
+| --- | --- | --- | --- |
+| T01 | [Room and encounter](T01_SOHO_RESTAURANT_SOURCE_A.txt) | [People and contact details](T01_SOHO_RESTAURANT_SOURCE_B.txt) | [Construction and camera clearance](T01_SOHO_RESTAURANT_SOURCE_C.txt) |
+
+Each page uses the accepted original T01 image and the two verified character inputs directly. They can be generated independently; B/C do not wait for a newly generated A. Output keys are T01_DETAILS (A), T01_DETAILS_B and T01_DETAILS_C. The accepted single image remains T01_IMAGE.
 
 ## Use several pages per video
 
@@ -24,8 +30,8 @@ The existing [normal worlds](../worlds/README.md) already have 21 pages: three 4
 
 ## Inputs, imports and reality boundary
 
-The [new-only memory import](../../00_project/elements/12_memory_reference_pages.md) contains 18 B/C companions plus T01_DETAILS, not the original memory Elements. It is prepared, not imported. Page B/C prompts use their source bank’s accepted Page A image for recurring geometry and identities, plus the existing character inputs. Missing actual mentions are marked explicitly; collect and bind them before rendering the affected page. No fictional @ identifier is usable in Higgsfield.
+The [new-only memory import](../../00_project/elements/12_memory_reference_pages.md) contains 18 B/C companions plus the three T01 coverage pages, not the original memory Elements. It is prepared, not imported. Page B/C prompts use their source bank’s accepted Page A image for recurring geometry and identities, plus the existing character inputs. Missing actual mentions are marked explicitly; collect and bind them before rendering the affected page. No fictional @ identifier is usable in Higgsfield.
 
 Clinical HRW07 remains ordinary reality, no cards or morph effects. All three HRW07 pages are restricted to Block 07, its scripted tiny fragments and final explicit hard cut. No nurse, restraint or room reveal is added to Blocks 01–06. Remembered people remain card-free; these files do not remove current-city ratings.
 
-All 28 prompts here are preparation choices for reusable sources. They are not 28 required pilot renders, extra paid video jobs, or claims that images have already been generated. The current pilot retains its accepted people/room and selected five reference subjects.
+All 30 prompts here are preparation choices for reusable sources. They are not 28 required pilot renders, extra paid video jobs, or claims that images have already been generated. The current pilot retains its accepted people/room and selected five reference subjects.

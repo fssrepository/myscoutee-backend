@@ -3224,15 +3224,42 @@
     },
     "T01_DETAILS": {
       "key": "T01_DETAILS",
-      "path": "02_library/memories/T01_SOHO_RESTAURANT_SOURCE.txt",
-      "output": "T01_SOHO_RESTAURANT_DETAILS_2X2.png",
+      "path": "02_library/memories/T01_SOHO_RESTAURANT_SOURCE_A.txt",
+      "output": "T01_SOHO_RESTAURANT_DETAILS_A_2X2.png",
       "refs": [
         "T01_IMAGE",
         "C01",
         "C02"
       ],
       "status": "PREPARED_NOT_RENDERED",
-      "layout": "4K 2x2 room/gesture/support/exit"
+      "layout": "4K 2x2 restaurant coverage page A",
+      "prompt_sha256": "528e7d113ab9e7be275512aa4338527b1c446de3b9562ac15d90e5de4b301da3"
+    },
+    "T01_DETAILS_B": {
+      "key": "T01_DETAILS_B",
+      "path": "02_library/memories/T01_SOHO_RESTAURANT_SOURCE_B.txt",
+      "output": "T01_SOHO_RESTAURANT_DETAILS_B_2X2.png",
+      "refs": [
+        "T01_IMAGE",
+        "C01",
+        "C02"
+      ],
+      "status": "PREPARED_NOT_RENDERED",
+      "layout": "4K 2x2 restaurant coverage page B",
+      "prompt_sha256": "3bb460c92897635a1f83d4ee95c8dbec5998266b582855c7e4342324755a80a0"
+    },
+    "T01_DETAILS_C": {
+      "key": "T01_DETAILS_C",
+      "path": "02_library/memories/T01_SOHO_RESTAURANT_SOURCE_C.txt",
+      "output": "T01_SOHO_RESTAURANT_DETAILS_C_2X2.png",
+      "refs": [
+        "T01_IMAGE",
+        "C01",
+        "C02"
+      ],
+      "status": "PREPARED_NOT_RENDERED",
+      "layout": "4K 2x2 restaurant coverage page C",
+      "prompt_sha256": "e707763e11d253ee2a3df2f628a3e083281b4a0ba35eb9c898db45b4a131b2a7"
     }
   },
   "operator_language": "English; Hungarian in-world signage and proper names are intentional story content.",
@@ -3248,8 +3275,8 @@
       ]
     },
     {
-      "file": "02_library/memories/T01_SOHO_RESTAURANT_SOURCE.txt",
-      "sha256": "77f41be7cb336133c33819c05eee1abe6b04456e072190629ebd75b5baa0a59c",
+      "file": "02_library/memories/T01_SOHO_RESTAURANT_SOURCE_A.txt",
+      "sha256": "528e7d113ab9e7be275512aa4338527b1c446de3b9562ac15d90e5de4b301da3",
       "reference_elements": {
         "C01": "char_mys_protagonist_s1_v1",
         "C02": "char_mys_soho-woman_s1_v1"
@@ -3958,7 +3985,19 @@
       "alias": "T01_DETAILS",
       "mention": null,
       "last_mention": "@UNBOUND_T01_DETAILS",
-      "evidence": "Prepared additional four-view coverage of accepted T01; not imported or rendered."
+      "evidence": "Prepared restaurant coverage page A; not imported or rendered. Uses accepted original room and character inputs."
+    },
+    "T01_DETAILS_B": {
+      "alias": "T01_DETAILS_B",
+      "mention": null,
+      "last_mention": "@UNBOUND_T01_DETAILS_B",
+      "evidence": "Prepared restaurant coverage page B; not imported or rendered. Uses accepted original room and character inputs."
+    },
+    "T01_DETAILS_C": {
+      "alias": "T01_DETAILS_C",
+      "mention": null,
+      "last_mention": "@UNBOUND_T01_DETAILS_C",
+      "evidence": "Prepared restaurant coverage page C; not imported or rendered. Uses accepted original room and character inputs."
     }
   },
   "reference_binding_note": "Only full verified Higgsfield mentions belong in mention. Null produces an explicit @UNBOUND_<key> slot and a do-not-generate notice. Run 04_tracking/sync_references.py --write once to propagate a binding across all prompts and guides. Previous videos remain in the actual Forward Extend source field. Raw-image, storyboard and audio autoload handles are unverified until observed; never guess an Element ID from a filename.",
@@ -4450,10 +4489,12 @@
         "MWP02_C",
         "HRW07_B",
         "HRW07_C",
-        "T01_DETAILS"
+        "T01_DETAILS",
+        "T01_DETAILS_B",
+        "T01_DETAILS_C"
       ],
-      "expected_new_elements": 19,
-      "file_sha256": "f7c34c78bf9faae5821af3e95bf92531905f889e441a26ccb2a9fb759220b08d",
+      "expected_new_elements": 21,
+      "file_sha256": "6dbaa038b84763b917e8214b8a2c01f086160f9a2247707edb2ed784b456d626",
       "status": "PREPARED_NOT_IMPORTED",
       "media_embedded": false,
       "note": "New containers only; render prompts separate; no existing Element reimport or merge."
@@ -5251,6 +5292,49 @@
           }
         },
         "original_views": 9,
+        "status": "PREPARED_NOT_RENDERED",
+        "legacy_image_unchanged": true
+      },
+      "T01": {
+        "pages": {
+          "A": {
+            "key": "T01_DETAILS",
+            "file": "02_library/memories/T01_SOHO_RESTAURANT_SOURCE_A.txt",
+            "views": [
+              1,
+              2,
+              3,
+              4
+            ],
+            "status": "PREPARED_NOT_RENDERED",
+            "sha256": "528e7d113ab9e7be275512aa4338527b1c446de3b9562ac15d90e5de4b301da3"
+          },
+          "B": {
+            "key": "T01_DETAILS_B",
+            "file": "02_library/memories/T01_SOHO_RESTAURANT_SOURCE_B.txt",
+            "views": [
+              5,
+              6,
+              7,
+              8
+            ],
+            "status": "PREPARED_NOT_RENDERED",
+            "sha256": "3bb460c92897635a1f83d4ee95c8dbec5998266b582855c7e4342324755a80a0"
+          },
+          "C": {
+            "key": "T01_DETAILS_C",
+            "file": "02_library/memories/T01_SOHO_RESTAURANT_SOURCE_C.txt",
+            "views": [
+              9,
+              10,
+              11,
+              12
+            ],
+            "status": "PREPARED_NOT_RENDERED",
+            "sha256": "e707763e11d253ee2a3df2f628a3e083281b4a0ba35eb9c898db45b4a131b2a7"
+          }
+        },
+        "coverage_views": 12,
         "status": "PREPARED_NOT_RENDERED",
         "legacy_image_unchanged": true
       }
