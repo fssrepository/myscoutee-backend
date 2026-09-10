@@ -1,0 +1,6 @@
+item,quantity,unit,estimated_credits,basis,status
+EXISTING_LIBRARY,266,attached image,0,Reuse existing attached images,NO_NEW_PASS
+STORYBOARDS,7,4K image,28,Assume 4 credits each; earlier unit price,PLANNING_ESTIMATE
+FINAL_FILM,200,seconds,1800,Earlier 30s=270 and 20s=180; complete-input and Extend quotes pending,HISTORICAL_RATE_ESTIMATE
+FINAL_NARRATION,7,passage,14,Earlier Seed Audio A01 quote scaled to total script length,PLANNING_ESTIMATE
+PILOT_LOGO_FINISHING,1,combined envelope,100,"4+4s test, test speech, 4s intro and finishing together; not a quote",UNQUOTED_PLANNING_ENVELOPE

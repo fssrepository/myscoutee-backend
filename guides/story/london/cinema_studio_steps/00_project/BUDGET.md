@@ -1,66 +1,59 @@
-# Latest balance and small-test override — 2026-09-10
+# Current budget reconciliation — 2026-09-10
 
-The creator now reports **2036 credits remaining**. The current pilot is **4 s + native Extend 4 s**, then a short narration mix. Its actual charges are unquoted. Earlier 2860-credit balances and gross allocations below are historical planning and must not be deducted from 2036 again. See [current pilot](../01_pilot/README.md). No generation, purchase or debit was made in this update.
+**Creator-reported balance: 2036 credits.** The last reference audit found images attached for all 266 active library definitions, including all 69 memory images. Existing library assets are therefore not charged again in the remaining-work estimate. No generation, purchase or account debit was made for this budget review.
 
-# Current production budget
+## Difference from the original image plan
 
-## Current image plan: separate 2K worlds, other sheets remain 4K
+| Basis | Credits |
+|---|---:|
+| Earlier creator-reported starting balance | 2860 |
+| Current creator-reported balance | 2036 |
+| Net balance reduction | **824** |
+| Original 171-image plan: 171 × 4 | 684 |
+| Reduction above that original image allocation | **140** |
+| Later 227-image plan after world splitting | 740 |
+| Reduction above that revised allocation | **84** |
 
-The 21 present-world 2×2 pages W01–W07 have been replaced by **84 separate full-frame 16:9 images at 2K**. Their four original view descriptions per group are retained, with standalone location context and material detail. The other **143 reference images retain their existing 4K layouts and prompts**. All four morph states remain together on one sheet; character identities remain 1×3 and TY001 retains its 3×3 typography layout. Memory, clinical and restaurant pages remain 2×2. Maps remain excluded.
+The original plan would have left 2176 after its image pass; the later plan would have left 2120. Current balance is 2036. The 824 is a net change between creator-reported balances, not an itemized provider billing export. It equals gross spending only if there were no intervening purchases, grants, refunds or other balance adjustments. We cannot assign every extra credit to failed generations from this evidence alone. The older reported 80-credit pilot spend predates the 2860 balance and is not deducted again.
 
-The active full import and prompt map now contain **227 Elements/image jobs**. More individual world images do not create extra film events or video tests. Existing usable outputs must be reused; this is a gross first-pass estimate, not a generation or debit ledger. Actual downloaded dimensions must be checked; a provider's 2K/4K label is not itself a measured pixel size.
+## Why the planned library cost changed
 
-## Creator-confirmed price basis
+The current image estimate contains **266 outputs: 136 × paid 2K at 2 credits + 130 × 4K at 4 credits = 792 credits** for a hypothetical clean first pass from scratch. This is a scope comparison, not future spending or a billing claim.
 
-The creator confirms Nano Banana Pro **4 credits per 4K image** and **2 credits per paid 2K image with Unlimited disabled**. The current working allocation uses paid 2K world generation to avoid the Unlimited queue. Eligible 2K Unlimited remains a zero-credit alternative, but is not assumed in this allocation. Imports and file edits do not generate media.
+Compared with the later 740-credit plan, splitting thirteen remaining memory grids adds 39 output jobs and **52 planned credits**: each old 4-credit grid became four 2-credit images, a net +4 per pack. Thus 740 + 52 = 792. The difference between the observed balance reduction and this revised gross scope is **824 − 792 = 32 credits**, but that residual is unreconciled; reused images, Unlimited, retries and other transactions cannot be disentangled without actual billing evidence.
 
-| Category | Outputs | Resolution | First-pass credits |
-|---|---:|---|---:|
-| Character identities | 31 | 4K | 124 |
-| Present-world single views | 84 | 2K, paid | 168 |
-| Memory, clinical and restaurant worlds | 30 | 4K | 120 |
-| Building and space morphs | 37 | 4K | 148 |
-| Object and material morphs | 32 | 4K | 128 |
-| Character morphs | 6 | 4K | 24 |
-| Typography | 7 | 4K | 28 |
-| **Total** | **227** | **84 at 2K + 143 at 4K** | **740** |
+## Remaining work from 2036
 
-The 84 paid world images add **168 credits** to the previous Unlimited-based 572-credit image estimate. The seven typography images/28 credits are already included. Each reused paid 4K image removes 4 credits from the gross estimate; each reused 2K world image removes 2. Review whether an existing image covers its current reference role before counting it as reusable. No paid retries are included.
-
-## Balance and hard limits
-
-The latest creator-reported balance is **2860 credits**. Up to **500 additional credits** may be purchased, but no purchase is confirmed. Historical test spend of 80 is already reflected in the reported balance and is not deducted again. No image or video regeneration allowance is included; additional attempts remain zero. No new actual generation or debit is recorded here.
-
-After the 740-credit image pass, **2120 credits** remain from 2860; **2620** would remain if the maximum future top-up were purchased. These are planning balances, not a live account reading.
-
-## Five-line working allocation
-
-The film remains 200 seconds: six 30-second blocks and one 20-second ending. References are shared by pilot and film and counted once.
-
-| Work | Credits | Basis |
+| Work | Planning credits | Basis and limitation |
 |---|---:|---|
-| Reference images | **740** | 143 × 4K at 4 credits; 84 × paid 2K at 2 credits |
-| Final film video | **1800** | Six 30-second blocks × 270 plus the 20-second ending at 180; complete-input/Extend quotes pending |
-| Final narration | **14 estimated** | Higher observed A01 Seed Audio rate scaled by script lengths; MiniMax alternative approximately 7 |
-| Pilot/test workflow, adjustable | **100 allowance** | Planned first 8-second clip, 8-second continuation and test audio/integration; actual quotes pending |
-| Separate assembly/export | **0 allocated** | No separate fee verified; use cumulative Extend output and download if available |
+| Existing 266 library images | **0** | Attached and reused; no new library pass |
+| Seven storyboards | **28** | 7 × 4 credits if generated as 4K images; absent from the earlier aggregate budget |
+| Final 200-second film | **1800** | Earlier observed/reported 30s = 270 and 20s = 180; six × 270 + 180 |
+| Seven final narration passages | **14 estimated** | Earlier Seed Audio A01 rate scaled by script length; MiniMax alternative estimate 7 |
+| **Subtotal before pilot, logo and finishing** | **1842** | All figures are planning values, not submitted charges |
+| **Balance available for pilot, logo, finishing and reserve** | **194** | 2036 − 1842 |
 
-**Total with tests: 2654 credits; remaining: 206.** Final production excluding tests is **2554**, leaving **306**. With the optional maximum 500-credit purchase, the remaining balance after the current total would be **706**. MiniMax narration at approximately 7 instead of 14 would leave **213** without a top-up. Video and narration retain their stated quote/estimate limitations. These are gross planning totals against the reported 2860-credit balance; subsequent actual debits and completed reusable outputs must be reconciled together.
+The proposed two 15-second portions preserve each affected block's total duration. For a 30-second block, 135 + 135 = 270 only if the complete-input/native Extend prices remain linear at the earlier 9-credit-per-second basis. The actual 15-second and native Extend quotes have not been verified. Do not count a second full 30-second charge, nor assume splitting is guaranteed price-neutral.
 
-Tests remain the adjustable line. Do not shorten the film, reduce image detail or purchase credits automatically to make a planning allowance fit. Separate narration integration/export pricing remains unverified; add a confirmed fee if the chosen delivery workflow actually requires one.
+The separate 4-second opening ident adds duration ahead of the 200-second story and is **not included in 1800**. Its low-cost model and quote remain unselected. The logo image already exists and costs nothing to reuse. The 4+4-second continuity pilot, test narration and narration/video mixing/export also remain unquoted. The Higgsfield web audio-overlay route is unresolved; a zero finishing fee is not established.
 
-## Paid 2K versus eligible Unlimited
+## Planning envelope for the unquoted small tasks
 
-At the creator-confirmed 2-credit paid 2K rate, generating all 84 worlds costs 168 credits. Eligible Unlimited would save those 168 credits, reducing the full allocation to 2486 and leaving 374 instead of 206. A paid-mode switch does not guarantee a particular generation time. No top-up, generation, debit or retry is recorded by this budget update. Image layouts, resolutions and detailed prompts are unchanged.
+Use **100 credits as a combined planning envelope for the small pilot, logo ident and any separately charged finishing**, rather than treating each as an additional 100-credit task. This is a budget scenario, not a quote or a new authorization to spend. It repurposes the earlier pilot allowance to cover these small outstanding tasks together.
 
-## Image model assumption
+- Remaining planned cost with that envelope: **1842 + 100 = 1942**.
+- Expected reserve if all prior price assumptions and the envelope hold: **2036 − 1942 = 94**.
+- Absolute maximum for those small tasks while keeping the other estimates: **194**, with zero reserve.
+- This leaves no funded 30-second retry at the earlier 270-credit rate. A 15-second retry at a hypothetical 135 would also exceed the 94-credit reserve.
 
-Use **Nano Banana Pro at the creator-confirmed 4 credits per 4K image and 2 credits per paid 2K image** for this budget. No model switch or paid comparison campaign is scheduled. Higgsfield's [published model guidance](https://github.com/higgsfield-ai/skills/blob/main/higgsfield-generate/SKILL.md) routes design/text work toward GPT Image 2 and character/reference work toward the Nano Banana family. This is workflow guidance, not a measured benchmark of our four-state morph sheets. It does not establish that a more expensive model would preserve our material transitions better.
+The film remains provisionally affordable within 2036, but the margin is limited and depends on actual native Extend, narration and finishing costs. No automatic top-up, extra render, shortening or model change is implied.
 
-For this film, assess distinct physical states, correct endpoint identity, material thickness, coherent geometry and legible exact text. A model premium is not evidence of better video continuity. If an image model were later changed before generation, the extra cost would be `(new quoted image price − 4) × affected image count`; the new quote and decision are not present here.
+## Sources and records
 
-## Tracking and execution
+- [Remaining-work estimate](../04_tracking/REMAINING_BUDGET_ESTIMATE.csv)
+- [Current library gross estimate](../04_tracking/IMAGE_GENERATION_ESTIMATE.csv)
+- [Historical quotes and reported spending](../04_tracking/credit_ledger.csv)
+- [Previous budget preserved for comparison](../04_tracking/archive/budgets/BUDGET_BEFORE_2036_RECONCILIATION_20260910.md)
+- [Small 4+4-second test](../01_pilot/README.md) and [0th logo clip](../03_film/00/README.md)
 
-The itemized image baseline is [IMAGE_GENERATION_ESTIMATE.csv](../04_tracking/IMAGE_GENERATION_ESTIMATE.csv). The full allocation is [PRODUCTION_BUDGET_ESTIMATE.csv](../04_tracking/PRODUCTION_BUDGET_ESTIMATE.csv). Both record plans, not orders or debits. Image `additional_attempts` and all production retries remain zero. Reuse usable existing outputs; adjust a planned image count only when its current role is actually covered.
-
-The actual historical charges in [credit_ledger.csv](../04_tracking/credit_ledger.csv) are unchanged. The earlier 80-credit test spend is already historical and must not be subtracted again from the newly reported 2860-credit balance. No generation or purchase was started here. Review exact complete-input UI quotes before committing the first operations; the planning allowances do not prove those operations are available at those prices.
+The older PRODUCTION_BUDGET_ESTIMATE.csv is the historical 2654-credit gross plan and is not a current remaining-balance forecast. The current 1942-credit scenario excludes already completed library costs and includes the previously omitted storyboard allowance. No itemized actual charge has been invented from the balance delta.

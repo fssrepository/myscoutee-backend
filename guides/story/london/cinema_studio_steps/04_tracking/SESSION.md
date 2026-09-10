@@ -1,3 +1,7 @@
+## Budget reconciliation — current 2036-credit balance
+
+Compared with the 2860 reported baseline, net balance reduction is 824: +140 against the original 684-credit image allocation, or +84 against the revised 740 allocation. Current 266-image scope is a hypothetical 792-credit clean pass, already attached and not payable again. Remaining scenario: film 1800 + seven 4K storyboards 28 + narration 14 = 1842, leaving 194 for the small pilot, logo and finishing. A combined 100-credit planning envelope for those leaves 94. Actual Extend/mix/logo quotes remain pending; this is not an itemized spend record. See [current budget](../00_project/BUDGET.md).
+
 ## Opening logo segment — identified and prompted
 
 The creator clarified the full-screen MyScoutee presents ident, using the existing repository/profile M-logo (creator-reported GPT Image 2 provenance). The old 4-second title-card video is not an input. [00/video.txt](../03_film/00/video.txt) describes a new restrained 4-second ident with only the logo image as reference. The latest instruction is prompt preparation; no upload or generation was performed. Model and price remain unselected. No Higgsfield/festival branding is requested inside the ident. The seven story blocks and the 4+4-second test are unchanged.
