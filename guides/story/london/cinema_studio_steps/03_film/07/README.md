@@ -7,13 +7,24 @@ Duration means NEW added footage. Select the previous accepted video in the actu
 
 ## Sequential preparation
 
-Image setup: Nano Banana Pro, 4K, 16:9, one output at the creator-reported 4 credits per image. Keep each prompt's current grid and all four morph states together. No image or video regeneration is allowed. Apply the [reference procedure](../../00_project/REFERENCES.md#remaining-binding-work-at-the-point-of-use) as each asset is accepted; dependent prompts require actual bound mentions.
+Image setup: Nano Banana Pro, 16:9, one output. Present-world single views use 2K; other reference sheets retain 4K at the reported 4 credits per image. Eligible 2K Unlimited generations are planned at zero credits only while the offer is active. Keep each prompt's current grid and all four morph states together. No image or video regeneration is allowed. Apply the [reference procedure](../../00_project/REFERENCES.md#remaining-binding-work-at-the-point-of-use) as each asset is accepted; dependent prompts require actual bound mentions.
 
 Generate only missing media. Reuse accepted dependencies from prior blocks. Each row lists existing image/audio/video inputs, the complete `.txt` prompt to paste into the appropriate field, and the output name to assign after generation. Output filenames do not imply that local media already exists. One row means one output.
 
 | Prompt | Required accepted references | Output name |
 | --- | --- | --- |
-| [W07](../../02_library/worlds/real/W07_MAIN_WORLD_A.txt) | None | `W07_MAIN_WORLD.png` |
+| [W07_A_01](../../02_library/worlds/real/W07_A_01_MAIN_WORLD_VIEW_01.txt) | None; compatible accepted companion view if available | `W07_A_01_MAIN_WORLD_VIEW_01.png` |
+| [W07_A_02](../../02_library/worlds/real/W07_A_02_MAIN_WORLD_VIEW_02.txt) | None; compatible accepted companion view if available | `W07_A_02_MAIN_WORLD_VIEW_02.png` |
+| [W07_A_03](../../02_library/worlds/real/W07_A_03_MAIN_WORLD_VIEW_03.txt) | None; compatible accepted companion view if available | `W07_A_03_MAIN_WORLD_VIEW_03.png` |
+| [W07_A_04](../../02_library/worlds/real/W07_A_04_MAIN_WORLD_VIEW_04.txt) | None; compatible accepted companion view if available | `W07_A_04_MAIN_WORLD_VIEW_04.png` |
+| [W07_B_01](../../02_library/worlds/real/W07_B_01_MAIN_WORLD_VIEW_05.txt) | None; compatible accepted companion view if available | `W07_B_01_MAIN_WORLD_VIEW_05.png` |
+| [W07_B_02](../../02_library/worlds/real/W07_B_02_MAIN_WORLD_VIEW_06.txt) | None; compatible accepted companion view if available | `W07_B_02_MAIN_WORLD_VIEW_06.png` |
+| [W07_B_03](../../02_library/worlds/real/W07_B_03_MAIN_WORLD_VIEW_07.txt) | None; compatible accepted companion view if available | `W07_B_03_MAIN_WORLD_VIEW_07.png` |
+| [W07_B_04](../../02_library/worlds/real/W07_B_04_MAIN_WORLD_VIEW_08.txt) | None; compatible accepted companion view if available | `W07_B_04_MAIN_WORLD_VIEW_08.png` |
+| [W07_C_01](../../02_library/worlds/real/W07_C_01_MAIN_WORLD_VIEW_09.txt) | None; compatible accepted companion view if available | `W07_C_01_MAIN_WORLD_VIEW_09.png` |
+| [W07_C_02](../../02_library/worlds/real/W07_C_02_MAIN_WORLD_VIEW_01.txt) | None; compatible accepted companion view if available | `W07_C_02_MAIN_WORLD_VIEW_01.png` |
+| [W07_C_03](../../02_library/worlds/real/W07_C_03_MAIN_WORLD_VIEW_07.txt) | None; compatible accepted companion view if available | `W07_C_03_MAIN_WORLD_VIEW_07.png` |
+| [W07_C_04](../../02_library/worlds/real/W07_C_04_MAIN_WORLD_VIEW_08.txt) | None; compatible accepted companion view if available | `W07_C_04_MAIN_WORLD_VIEW_08.png` |
 | [C05](../../02_library/characters/C05_FINAL_NURSE.txt) | None | `C05_FINAL_NURSE.png` |
 | [HRW07](../../02_library/worlds/memories/HRW07_CLINICAL_REALITY_A.txt) | C01, C05 | `HRW07_CLINICAL_REALITY.png` |
 | [SB07](storyboard.txt) | W07, HRW07, MWP01, MW01, MW02, C01, C05, C06, C16, C17 | `SB07_STORYBOARD.png` |
@@ -51,6 +62,17 @@ Watch once with sound. Check all nine beats and their short secondary memories a
 
 ## World pages for this block
 
-Use [W07 Page A](../../02_library/worlds/real/W07_MAIN_WORLD_A.txt), [Page B](../../02_library/worlds/real/W07_MAIN_WORLD_B.txt) and [Page C](../../02_library/worlds/real/W07_MAIN_WORLD_C.txt), each rendered as one 4K 2×2 image. Together they preserve all nine original view descriptions; the [world index](../../02_library/worlds/real/README.md) maps the repeated anchors. These are three inputs for this same film block, not three extra video jobs.
+| [W07_A_01](../../02_library/worlds/real/W07_A_01_MAIN_WORLD_VIEW_01.txt) | None; compatible accepted companion view if available | `W07_A_01_MAIN_WORLD_VIEW_01.png` |
+| [W07_A_02](../../02_library/worlds/real/W07_A_02_MAIN_WORLD_VIEW_02.txt) | None; compatible accepted companion view if available | `W07_A_02_MAIN_WORLD_VIEW_02.png` |
+| [W07_A_03](../../02_library/worlds/real/W07_A_03_MAIN_WORLD_VIEW_03.txt) | None; compatible accepted companion view if available | `W07_A_03_MAIN_WORLD_VIEW_03.png` |
+| [W07_A_04](../../02_library/worlds/real/W07_A_04_MAIN_WORLD_VIEW_04.txt) | None; compatible accepted companion view if available | `W07_A_04_MAIN_WORLD_VIEW_04.png` |
+| [W07_B_01](../../02_library/worlds/real/W07_B_01_MAIN_WORLD_VIEW_05.txt) | None; compatible accepted companion view if available | `W07_B_01_MAIN_WORLD_VIEW_05.png` |
+| [W07_B_02](../../02_library/worlds/real/W07_B_02_MAIN_WORLD_VIEW_06.txt) | None; compatible accepted companion view if available | `W07_B_02_MAIN_WORLD_VIEW_06.png` |
+| [W07_B_03](../../02_library/worlds/real/W07_B_03_MAIN_WORLD_VIEW_07.txt) | None; compatible accepted companion view if available | `W07_B_03_MAIN_WORLD_VIEW_07.png` |
+| [W07_B_04](../../02_library/worlds/real/W07_B_04_MAIN_WORLD_VIEW_08.txt) | None; compatible accepted companion view if available | `W07_B_04_MAIN_WORLD_VIEW_08.png` |
+| [W07_C_01](../../02_library/worlds/real/W07_C_01_MAIN_WORLD_VIEW_09.txt) | None; compatible accepted companion view if available | `W07_C_01_MAIN_WORLD_VIEW_09.png` |
+| [W07_C_02](../../02_library/worlds/real/W07_C_02_MAIN_WORLD_VIEW_01.txt) | None; compatible accepted companion view if available | `W07_C_02_MAIN_WORLD_VIEW_01.png` |
+| [W07_C_03](../../02_library/worlds/real/W07_C_03_MAIN_WORLD_VIEW_07.txt) | None; compatible accepted companion view if available | `W07_C_03_MAIN_WORLD_VIEW_07.png` |
+| [W07_C_04](../../02_library/worlds/real/W07_C_04_MAIN_WORLD_VIEW_08.txt) | None; compatible accepted companion view if available | `W07_C_04_MAIN_WORLD_VIEW_08.png` |
 
 The B/C Element definitions are in the [new-only companion import](../../00_project/elements/archive/batches/10_world_reference_pages.md); they have not been imported or rendered. Obtain their full actual IDs, check the accepted page images and replace the pending references before generating this block. The existing W07 Element still points to its previously associated image until Page A is accepted and associated. Do not use an old nine-cell image while telling the video that it is new Page A. Keep existing accepted media available and do not repeat earlier imports.

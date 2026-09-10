@@ -1,19 +1,22 @@
 # Current import and image-generation guide
 
-**Add the seven elements in [TYPOGRAPHY_IMPORT.md](../categories/TYPOGRAPHY_IMPORT.md) to the already imported 157-element set.** This gives 164 Elements. Do not reimport the existing set.
+## Existing library
 
-For an empty project, [FULL_PROJECT_IMPORT.md](../full/FULL_PROJECT_IMPORT.md) contains all 164 definitions. Alternatively use the four [category imports](../categories/README.md): 31 character identities, 51 world/memory pages, 75 morphs and seven typography elements. Import either the full file or the category files once.
+Import the [84 present-world single-view Elements](../additions/WORLD_SINGLE_VIEWS_IMPORT.md). Follow the [replacement guide](../additions/WORLD_SINGLE_VIEWS_REPLACEMENT_GUIDE.md) to remove exactly the 21 superseded W01–W07 page Elements. Keep characters, morphs, memories, restaurant/clinical references and typography. If the seven typography Elements are still missing from the earlier 157-element base, add [TYPOGRAPHY_IMPORT.md](../categories/TYPOGRAPHY_IMPORT.md) once.
 
-Import definitions contain only short identity metadata: Type, Canonical key, Name, Version and Description. The detailed image-generation text is in the TXT files linked by [FULL_PROJECT_PROMPT_MAP.csv](FULL_PROJECT_PROMPT_MAP.csv). Its paths are relative to the cinema_studio_steps project root.
+## Clean import
 
-## Fixed production scope
+[FULL_PROJECT_IMPORT.md](../full/FULL_PROJECT_IMPORT.md) contains **227 definitions**. Alternatively use the [four categories](../categories/README.md): 31 characters, 114 worlds/memories, 75 morphs and seven typography Elements. Use one import route, not both. Import files contain short Type, Canonical key, Name, Version and Description metadata; detailed render instructions belong in the TXT prompts.
 
-Generate the **164 references listed in the CSV**, all at 4K. MAP01–MAP07 are excluded from this production pass, not optional pending jobs. Their retired source files and archive copies have been deleted. They do not require an import or image generation. The previous 171-image count included those seven studies; the current image cost is 656 credits.
+## Generation
 
-Character identity sheets use 1×3 panels on a requested 3840×2160 canvas. World, memory and morph sheets use 2×2 cells. TY001 alone uses 3×3 short numerical samples; the other typography sheets use 2×2. Actual downloaded dimensions must be checked. These render instructions stay outside the import definitions.
+The [CSV prompt map](FULL_PROJECT_PROMPT_MAP.csv) lists all 227 references with paths relative to `cinema_studio_steps`.
 
-The four previously retained image keys are C01, C02, MR001 and R002. Reuse any accepted output that meets its current role; the old bus angle sheet is not evidence that the bus morph has been generated. The creator performs imports, generation and image attachment in Higgsfield. Resolve real Element handles before generating prompts marked `REFERENCE SETUP INCOMPLETE` or `@UNBOUND_…`; handles from an older import are not automatically verified.
+- Present worlds: **84 separate full-frame 16:9 images at 2K**, four replacements for each of the 21 former pages. All are below 15,000 characters. Names retain world, A/B/C group and 01–04 position; original view identities are explicit.
+- The other **143 references remain 4K**: 31 character identity sheets (1×3), 30 memory/clinical/restaurant pages (2×2), 75 morph sheets (2×2) and seven typography sheets (TY001 3×3, others 2×2).
+- The three oversized morph prompts MR001, R008 and R014 still require length work. They were not edited in the world split. Do not assume all 227 prompts fit the image UI limit.
+- Maps remain excluded. No image/video generation, platform import or debit has been performed by these file edits.
 
-Earlier pilot/film/batch lists are in [archive](../archive/README.md). The [MR021-only supplement](../additions/MR021_RATING_CARD_ONLY_IMPORT.md) is for an older set missing MR021; it is already included in the current 157-element base and the full/morph imports.
+Reuse accepted images when they satisfy their current roles. Resolve each real imported Element handle before generating a dependent prompt; an `@UNBOUND_...` token is not a bound reference. Attach world references in the order in the video setup; spatial view order does not create cuts or override the video choreography. Camera position, lens and image composition remain in the image prompts; camera travel, timing and sound are in the video prompts.
 
-The [typography guide](../../../02_library/typography/README.md) identifies the exact words and roles. Prompt review does not constitute acceptance of generated media. All active image generation remains in Higgsfield.
+At the reported rates, the gross image estimate is **572 credits** for 143 paid 4K outputs plus 84 eligible 2K Unlimited outputs at zero, conditional on active entitlement and the displayed price. See [BUDGET.md](../../BUDGET.md). Old archived import batches are not the current production route.

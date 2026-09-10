@@ -1,3 +1,5 @@
+Current present-world preparation: use [PILOT_IMAGE_QUEUE.md](PILOT_IMAGE_QUEUE.md) and the [world replacement guide](../00_project/elements/additions/WORLD_SINGLE_VIEWS_REPLACEMENT_GUIDE.md). Twelve separate W01 2K views replace the old W01 A/B/C sheets. Earlier W01_4K/same-Element replacement instructions below are superseded; morph and character reference roles remain unchanged.
+
 CURRENT WORKFLOW — 2026-09-10: the creator requested a full clean Element reimport, including characters. Use the [complete restart guide](../00_project/elements/index/FULL_PROJECT_GUIDE.md) and its 164-entry list. Earlier incremental-import and retained-image instructions below are historical where they conflict. Four images are reported retained; previous @ bindings are not verified for the new import.
 
 # Pilot — establish the reference at 480p before final production

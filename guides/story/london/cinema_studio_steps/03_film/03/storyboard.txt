@@ -1,4 +1,4 @@
-REFERENCE SETUP INCOMPLETE: C22, MW03, MW03_B, MW03_C, MWP01, MWP01_B, MWP01_C, W03, W03_B, W03_C
+REFERENCE SETUP INCOMPLETE: C22, MW03, MW03_B, MW03_C, MWP01, MWP01_B, MWP01_C, W03_A_01, W03_A_02, W03_A_03, W03_A_04, W03_B_01, W03_B_02, W03_B_03, W03_B_04, W03_C_01, W03_C_02, W03_C_03, W03_C_04
 Do not generate until these references are bound.
 
 MEMORY REFERENCE PAGES — DIRECT SOURCES, NOT EDITS:
@@ -6,11 +6,22 @@ MEMORY REFERENCE PAGES — DIRECT SOURCES, NOT EDITS:
 @UNBOUND_MWP01 supplies MWP01 Page A (original views 1–4); @UNBOUND_MWP01_B supplies Page B (5–8); @UNBOUND_MWP01_C supplies Page C (9, 1, 7, 8). Use the original-view assignment to select the actual place/event, not the sheet layout.
 Several pages may support the same block or remembered place. Reconstruct the people, objects, supports and entry/exit geometry at life size while following this video’s existing continuous route. Never switch scenes because a cell or page changes. Current-city cards remain on current people; remembered people have none. HRW07 pages remain exclusive to Block 07 and its scripted tiny fragments/final hard cut.
 
-WORLD REFERENCE PAGES FOR THIS BLOCK — ONE CONTINUOUS CONNECTED WORLD:
-@UNBOUND_W03 supplies W03 Page A: four environment views, corresponding to original views 1–4.
-@UNBOUND_W03_B supplies W03 Page B: original views 5–8, including further spaces and close material/transport construction.
-@UNBOUND_W03_C supplies W03 Page C: original view 9 at top-left, original view 1 at top-right, original view 7 at bottom-left and original view 8 at bottom-right. These repeated anchors connect the destination/detail view to the same source world.
-Each supplied new page is a 4K 2×2 reference image. Use its cells as geometric and material evidence, not additional shots or a slideshow. Several spaces and material changes can occur within this block: reach them along the established connected route, with actual camera travel and continuous material change. Multiple world-reference pages do not reset the walker, scenery or current people. Keep source, intermediate and destination geometry distinct. Preserve every scripted human encounter and the camera/sound timing below; page order is not a new event order. The final scripted clinical hard cut remains an explicit exception. Original-view numbers identify the old view descriptions, never a request for a fifth or ninth cell on a four-cell page.
+WORLD REFERENCES — ORDERED SINGLE VIEWS:
+@UNBOUND_W03_A_01 supplies W03 group A, position 01, original view 01.
+@UNBOUND_W03_A_02 supplies W03 group A, position 02, original view 02.
+@UNBOUND_W03_A_03 supplies W03 group A, position 03, original view 03.
+@UNBOUND_W03_A_04 supplies W03 group A, position 04, original view 04.
+@UNBOUND_W03_B_01 supplies W03 group B, position 01, original view 05.
+@UNBOUND_W03_B_02 supplies W03 group B, position 02, original view 06.
+@UNBOUND_W03_B_03 supplies W03 group B, position 03, original view 07.
+@UNBOUND_W03_B_04 supplies W03 group B, position 04, original view 08.
+@UNBOUND_W03_C_01 supplies W03 group C, position 01, original view 09.
+@UNBOUND_W03_C_02 supplies W03 group C, position 02, original view 01.
+@UNBOUND_W03_C_03 supplies W03 group C, position 03, original view 07.
+@UNBOUND_W03_C_04 supplies W03 group C, position 04, original view 08.
+
+These twelve full-frame 16:9 world images replace the former three comparison pages. Attach A01–A04, B01–B04, C01–C04 in the listed order and bind each actual Element to its named slot. Original-view order is A: 01–04; B: 05–08; C: 09, 01, 07, 08. Repeated views retain their source or destination identity. Use each as spatial and material evidence for its assigned part of the existing continuous route, not twelve cuts or sequential morph stages. Do not transfer a destination into the London opening. Preserve the existing cast, camera, sound, duration and ending. Dedicated morph sheets retain their own top-left, top-right, bottom-left, bottom-right material-state order.
+
 
 SPATIAL RULE — INDIVIDUAL LONDON OBJECTS BECOME THEIR PEST COUNTERPARTS:
 London is the starting location. During a London-to-Pest passage, individual buildings and objects already present change into their specified Pest counterparts at their own positions: St Paul's into St Stephen's Basilica, a London frontage's ironwork into Pest balcony ironwork, or an existing English café sign into its Hungarian counterpart. Trace the same object's solid parts through the intermediate shapes into the destination. Different objects start and progress independently, allowing London and Pest forms to coexist along the same street. The camera travels between, around and above these individual transformations.
@@ -23,7 +34,7 @@ WEATHER AND UNCOVERED HEADS:
 Heavy overcast London sky with cool diffuse evening light. The air is clear and dry; the paving, puddles, coats and stone can remain damp from earlier weather. No falling rain, drizzle, rain streaks or rainfall sound. Every current pedestrian is bareheaded, with hoods down, hair and face exposed and hands lowered naturally. No umbrellas anywhere: none open, folded, carried, held above a head or attached to street furniture. Use uncovered heads and damp clothing even when a supplied reference suggests wet weather. Preserve empty air above each crown for its readable numerical rating card. Wet tyre hiss, footsteps and distant traffic provide the continuous street ambience.
 
 REFERENCE INPUTS:
-@UNBOUND_W03 = LOCATION — W03 — WORLD 03 — WORK CITY — ALDWYCH / KINGSWAY / HOLBORN / PROFESSIONAL FACADES; physical present city; preserve materials and allow the directed architectural transformation.
+@UNBOUND_W03_A_01 @UNBOUND_W03_A_02 @UNBOUND_W03_A_03 @UNBOUND_W03_A_04 = LOCATION — W03 — WORLD 03 — WORK CITY — ALDWYCH / KINGSWAY / HOLBORN / PROFESSIONAL FACADES; physical present city; preserve materials and allow the directed architectural transformation.
 @UNBOUND_MW03 = LOCATION — MW03 — MEMORY WORLD 03 — WORK / ACCOUNTING / RULE CHANGE / ADMIN; the assigned remembered scenes; preserve the source identities and setting.
 @UNBOUND_MWP01 = LOCATION — MWP01 — MEMORY PRESERVATION WORLD P01 — ROUTES / ROOMS / DOCUMENT THRESHOLDS; the assigned remembered scenes; preserve the source identities and setting.
 @char_mys_protagonist_s1_v1 = CHARACTER 01 — PROTAGONIST; exact person identity; use only where this person appears.

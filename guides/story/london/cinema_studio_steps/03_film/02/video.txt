@@ -1,4 +1,4 @@
-REFERENCE SETUP INCOMPLETE: A02, C11, C16, C17, C18, C19, C20, C21, MW01, MW01_B, MW01_C, MW02, MW02_B, MW02_C, MWP01, MWP01_B, MWP01_C, SB02, W02, W02_B, W02_C
+REFERENCE SETUP INCOMPLETE: A02, C11, C16, C17, C18, C19, C20, C21, MW01, MW01_B, MW01_C, MW02, MW02_B, MW02_C, MWP01, MWP01_B, MWP01_C, SB02, W02_A_01, W02_A_02, W02_A_03, W02_A_04, W02_B_01, W02_B_02, W02_B_03, W02_B_04, W02_C_01, W02_C_02, W02_C_03, W02_C_04
 Do not generate until these references are bound.
 
 MEMORY REFERENCE PAGES — DIRECT SOURCES, NOT EDITS:
@@ -7,11 +7,22 @@ MEMORY REFERENCE PAGES — DIRECT SOURCES, NOT EDITS:
 @UNBOUND_MWP01 supplies MWP01 Page A (original views 1–4); @UNBOUND_MWP01_B supplies Page B (5–8); @UNBOUND_MWP01_C supplies Page C (9, 1, 7, 8). Use the original-view assignment to select the actual place/event, not the sheet layout.
 Several pages may support the same block or remembered place. Reconstruct the people, objects, supports and entry/exit geometry at life size while following this video’s existing continuous route. Never switch scenes because a cell or page changes. Current-city cards remain on current people; remembered people have none. HRW07 pages remain exclusive to Block 07 and its scripted tiny fragments/final hard cut.
 
-WORLD REFERENCE PAGES FOR THIS BLOCK — ONE CONTINUOUS CONNECTED WORLD:
-@UNBOUND_W02 supplies W02 Page A: four environment views, corresponding to original views 1–4.
-@UNBOUND_W02_B supplies W02 Page B: original views 5–8, including further spaces and close material/transport construction.
-@UNBOUND_W02_C supplies W02 Page C: original view 9 at top-left, original view 1 at top-right, original view 7 at bottom-left and original view 8 at bottom-right. These repeated anchors connect the destination/detail view to the same source world.
-Each supplied new page is a 4K 2×2 reference image. Use its cells as geometric and material evidence, not additional shots or a slideshow. Several spaces and material changes can occur within this block: reach them along the established connected route, with actual camera travel and continuous material change. Multiple world-reference pages do not reset the walker, scenery or current people. Keep source, intermediate and destination geometry distinct. Preserve every scripted human encounter and the camera/sound timing below; page order is not a new event order. The final scripted clinical hard cut remains an explicit exception. Original-view numbers identify the old view descriptions, never a request for a fifth or ninth cell on a four-cell page.
+WORLD REFERENCES — ORDERED SINGLE VIEWS:
+@UNBOUND_W02_A_01 supplies W02 group A, position 01, original view 01.
+@UNBOUND_W02_A_02 supplies W02 group A, position 02, original view 02.
+@UNBOUND_W02_A_03 supplies W02 group A, position 03, original view 03.
+@UNBOUND_W02_A_04 supplies W02 group A, position 04, original view 04.
+@UNBOUND_W02_B_01 supplies W02 group B, position 01, original view 05.
+@UNBOUND_W02_B_02 supplies W02 group B, position 02, original view 06.
+@UNBOUND_W02_B_03 supplies W02 group B, position 03, original view 07.
+@UNBOUND_W02_B_04 supplies W02 group B, position 04, original view 08.
+@UNBOUND_W02_C_01 supplies W02 group C, position 01, original view 09.
+@UNBOUND_W02_C_02 supplies W02 group C, position 02, original view 01.
+@UNBOUND_W02_C_03 supplies W02 group C, position 03, original view 07.
+@UNBOUND_W02_C_04 supplies W02 group C, position 04, original view 08.
+
+These twelve full-frame 16:9 world images replace the former three comparison pages. Attach A01–A04, B01–B04, C01–C04 in the listed order and bind each actual Element to its named slot. Original-view order is A: 01–04; B: 05–08; C: 09, 01, 07, 08. Repeated views retain their source or destination identity. Use each as spatial and material evidence for its assigned part of the existing continuous route, not twelve cuts or sequential morph stages. Do not transfer a destination into the London opening. Preserve the existing cast, camera, sound, duration and ending. Dedicated morph sheets retain their own top-left, top-right, bottom-left, bottom-right material-state order.
+
 
 SPATIAL RULE — INDIVIDUAL LONDON OBJECTS BECOME THEIR PEST COUNTERPARTS:
 London is the starting location. During a London-to-Pest passage, individual buildings and objects already present change into their specified Pest counterparts at their own positions: St Paul's into St Stephen's Basilica, a London frontage's ironwork into Pest balcony ironwork, or an existing English café sign into its Hungarian counterpart. Trace the same object's solid parts through the intermediate shapes into the destination. Different objects start and progress independently, allowing London and Pest forms to coexist along the same street. The camera travels between, around and above these individual transformations.
@@ -28,7 +39,7 @@ One 16:9 photorealistic moving film sequence. Continue the supplied previous acc
 Keep the narrator's established timbre, accent, pitch, loudness and dry recording character from the previous block. Start the new passage after a brief natural breath; do not repeat or overlap the previous sentence. Continue the existing music and ambience underneath that breath without a fade-out, silence or new opening cue. Apply the new narration only to the added portion; do not rewrite the preceding soundtrack.
 
 REFERENCES
-@UNBOUND_W02 = physical city, route, materials and recognizable architecture; transformation allowed as directed.
+@UNBOUND_W02_A_01 @UNBOUND_W02_A_02 @UNBOUND_W02_A_03 @UNBOUND_W02_A_04 = physical city, route, materials and recognizable architecture; transformation allowed as directed.
 @UNBOUND_MW02 = literal memory source; reconstruct its people and place in the changing street according to the named beat.
 @UNBOUND_MW01 = literal memory source; reconstruct its people and place in the changing street according to the named beat.
 @UNBOUND_MWP01 = literal memory source; reconstruct its people and place in the changing street according to the named beat.

@@ -1,5 +1,5 @@
-# Egyszeri kiegészítők
+# Incremental imports
 
-[MR021_RATING_CARD_ONLY_IMPORT.md](MR021_RATING_CARD_ONLY_IMPORT.md): egyetlen ratingkártya-morph kiegészítő a korábbi, MR021 nélküli állapothoz. A jelenlegi Morphs és Full listában az MR021 már benne van; ezek mellé ne importáld újra.
+The current [present-world replacement batch](WORLD_SINGLE_VIEWS_IMPORT.md) contains 84 new single-view Elements. Follow the [replacement guide](WORLD_SINGLE_VIEWS_REPLACEMENT_GUIDE.md) for the exact 21 old page names to remove and the ordered new references.
 
-A most kért új hét tipográfiai elem saját, átfedés nélküli listája: [TYPOGRAPHY_IMPORT.md](../categories/TYPOGRAPHY_IMPORT.md).
+[TYPOGRAPHY_IMPORT.md](../categories/TYPOGRAPHY_IMPORT.md) adds TY001–TY007 only if those seven Elements are still missing. [MR021_RATING_CARD_ONLY_IMPORT.md](MR021_RATING_CARD_ONLY_IMPORT.md) is only for a library missing MR021; it is already included in the current full and morph imports.

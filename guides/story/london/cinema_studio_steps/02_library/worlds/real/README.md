@@ -1,37 +1,29 @@
-CURRENT WORKFLOW — 2026-09-10: the creator requested a full clean Element reimport, including characters. Use the [complete restart guide](../../../00_project/elements/index/FULL_PROJECT_GUIDE.md) and its 105-entry list. Earlier incremental-import and retained-image instructions below are historical where they conflict. Four images are reported retained; previous @ bindings are not verified for the new import.
+# Present-world references — separate 2K images
 
-# World references — 4K, 2×2 pages
+Each TXT is one independent full-frame 16:9 composition, with its own location context, material detail, rating cards and assigned view. Select 2K. No grid is generated. All 84 prompts are below 15,000 characters. Their four-view groups retain the old page assignments and connected world identity.
 
-Each linked `.txt` file is a complete prompt to copy into Higgsfield. Render **one 3840×2160 image per prompt**, 16:9 / 4K. Four equal borderless cells give 1920×1080 per cell. No outer margins or internal gutters.
+Use the [incremental import and replacement guide](../../../00_project/elements/additions/WORLD_SINGLE_VIEWS_REPLACEMENT_GUIDE.md) when replacing already imported page Elements. The [full import](../../../00_project/elements/full/FULL_PROJECT_IMPORT.md) is for a clean import instead. Morph sheets and memory/clinical/restaurant pages retain their existing layouts.
 
-Each world retains all nine original view descriptions across three pages. Reading order within every page is top-left, top-right, bottom-left, bottom-right:
-
-| Page | Original views | Role |
-| --- | --- | --- |
-| A | 1, 2, 3, 4 | First four environment views |
-| B | 5, 6, 7, 8 | Remaining environment views and material/transport detail |
-| C | 9, 1, 7, 8 | Ninth view with repeated source/location and material anchors; no new story event |
-
-A “view” is a stable identity from the previous world plan, not the new page's cell number. These world pages contain different spatial views; they are not necessarily four consecutive morph states. Dedicated source/intermediate/target studies are in [morphs](../../morphs/README.md).
-
-| World | Page A | Page B | Page C |
-| --- | --- | --- | --- |
-| W01 | [W01_MAIN_WORLD_A.txt](W01_MAIN_WORLD_A.txt) | [Page B](W01_MAIN_WORLD_B.txt) | [Page C](W01_MAIN_WORLD_C.txt) |
-| W02 | [W02_MAIN_WORLD_A.txt](W02_MAIN_WORLD_A.txt) | [Page B](W02_MAIN_WORLD_B.txt) | [Page C](W02_MAIN_WORLD_C.txt) |
-| W03 | [W03_MAIN_WORLD_A.txt](W03_MAIN_WORLD_A.txt) | [Page B](W03_MAIN_WORLD_B.txt) | [Page C](W03_MAIN_WORLD_C.txt) |
-| W04 | [W04_MAIN_WORLD_A.txt](W04_MAIN_WORLD_A.txt) | [Page B](W04_MAIN_WORLD_B.txt) | [Page C](W04_MAIN_WORLD_C.txt) |
-| W05 | [W05_MAIN_WORLD_A.txt](W05_MAIN_WORLD_A.txt) | [Page B](W05_MAIN_WORLD_B.txt) | [Page C](W05_MAIN_WORLD_C.txt) |
-| W06 | [W06_MAIN_WORLD_A.txt](W06_MAIN_WORLD_A.txt) | [Page B](W06_MAIN_WORLD_B.txt) | [Page C](W06_MAIN_WORLD_C.txt) |
-| W07 | [W07_MAIN_WORLD_A.txt](W07_MAIN_WORLD_A.txt) | [Page B](W07_MAIN_WORLD_B.txt) | [Page C](W07_MAIN_WORLD_C.txt) |
-
-## Existing images and actual references
-
-All 21 prompts use 4K 2×2 pages. The creator restarted the image library and retained only C01, C02, MR001 and the bus identity image R002; old world media must not be assumed available. Bind the newly rendered pages to their actual new Elements before updating the video references. Editing a prompt does not render or bind its image.
-
-The separate [14-entry companion import](../../../00_project/elements/archive/batches/10_world_reference_pages.md) contains only the new B/C containers. Do not repeat any earlier import or reimport W01–W07. It has not been imported. Page A reuses the corresponding existing world container after the new image is accepted. For consistent later pages, attach the accepted Page A image in Higgsfield when rendering B/C; obtain and embed the actual reference mention before copying a dependent prompt. No new handle is guessed here.
-
-Before binding new pages into a video, copy their actual full @ mentions and confirm the selected images. A reference to old original view 9 now means Page C/top-left; old view 7 is Page B/bottom-left or Page C/bottom-left. Old view 1 remains Page A/top-left and also Page C/top-right. Never tell a four-cell page to supply its “cell 9”. Match the original-view mapping above to the actual attached page, then update that video's reference roles. Do not silently reinterpret the still-attached legacy world image as a new page.
-
-## Preparation scope
-
-Rendering every world page would be 21 image jobs instead of 7, an increase of 14 image jobs. Use the creator-confirmed covered Higgsfield web image workflow while applicable; no automatic jobs or charges are launched. The current five-subject pilot and production video counts remain unchanged. Reuse the accepted test/production images and prepare only the pages needed for the next production block. Rendered source and destination forms must stay distinct, and the existing final clinical reveal is preserved.
+| Group | 01 | 02 | 03 | 04 |
+|---|---|---|---|---|
+| W01_A | [View 01](W01_A_01_MAIN_WORLD_VIEW_01.txt) | [View 02](W01_A_02_MAIN_WORLD_VIEW_02.txt) | [View 03](W01_A_03_MAIN_WORLD_VIEW_03.txt) | [View 04](W01_A_04_MAIN_WORLD_VIEW_04.txt) |
+| W01_B | [View 05](W01_B_01_MAIN_WORLD_VIEW_05.txt) | [View 06](W01_B_02_MAIN_WORLD_VIEW_06.txt) | [View 07](W01_B_03_MAIN_WORLD_VIEW_07.txt) | [View 08](W01_B_04_MAIN_WORLD_VIEW_08.txt) |
+| W01_C | [View 09](W01_C_01_MAIN_WORLD_VIEW_09.txt) | [View 01](W01_C_02_MAIN_WORLD_VIEW_01.txt) | [View 07](W01_C_03_MAIN_WORLD_VIEW_07.txt) | [View 08](W01_C_04_MAIN_WORLD_VIEW_08.txt) |
+| W02_A | [View 01](W02_A_01_MAIN_WORLD_VIEW_01.txt) | [View 02](W02_A_02_MAIN_WORLD_VIEW_02.txt) | [View 03](W02_A_03_MAIN_WORLD_VIEW_03.txt) | [View 04](W02_A_04_MAIN_WORLD_VIEW_04.txt) |
+| W02_B | [View 05](W02_B_01_MAIN_WORLD_VIEW_05.txt) | [View 06](W02_B_02_MAIN_WORLD_VIEW_06.txt) | [View 07](W02_B_03_MAIN_WORLD_VIEW_07.txt) | [View 08](W02_B_04_MAIN_WORLD_VIEW_08.txt) |
+| W02_C | [View 09](W02_C_01_MAIN_WORLD_VIEW_09.txt) | [View 01](W02_C_02_MAIN_WORLD_VIEW_01.txt) | [View 07](W02_C_03_MAIN_WORLD_VIEW_07.txt) | [View 08](W02_C_04_MAIN_WORLD_VIEW_08.txt) |
+| W03_A | [View 01](W03_A_01_MAIN_WORLD_VIEW_01.txt) | [View 02](W03_A_02_MAIN_WORLD_VIEW_02.txt) | [View 03](W03_A_03_MAIN_WORLD_VIEW_03.txt) | [View 04](W03_A_04_MAIN_WORLD_VIEW_04.txt) |
+| W03_B | [View 05](W03_B_01_MAIN_WORLD_VIEW_05.txt) | [View 06](W03_B_02_MAIN_WORLD_VIEW_06.txt) | [View 07](W03_B_03_MAIN_WORLD_VIEW_07.txt) | [View 08](W03_B_04_MAIN_WORLD_VIEW_08.txt) |
+| W03_C | [View 09](W03_C_01_MAIN_WORLD_VIEW_09.txt) | [View 01](W03_C_02_MAIN_WORLD_VIEW_01.txt) | [View 07](W03_C_03_MAIN_WORLD_VIEW_07.txt) | [View 08](W03_C_04_MAIN_WORLD_VIEW_08.txt) |
+| W04_A | [View 01](W04_A_01_MAIN_WORLD_VIEW_01.txt) | [View 02](W04_A_02_MAIN_WORLD_VIEW_02.txt) | [View 03](W04_A_03_MAIN_WORLD_VIEW_03.txt) | [View 04](W04_A_04_MAIN_WORLD_VIEW_04.txt) |
+| W04_B | [View 05](W04_B_01_MAIN_WORLD_VIEW_05.txt) | [View 06](W04_B_02_MAIN_WORLD_VIEW_06.txt) | [View 07](W04_B_03_MAIN_WORLD_VIEW_07.txt) | [View 08](W04_B_04_MAIN_WORLD_VIEW_08.txt) |
+| W04_C | [View 09](W04_C_01_MAIN_WORLD_VIEW_09.txt) | [View 01](W04_C_02_MAIN_WORLD_VIEW_01.txt) | [View 07](W04_C_03_MAIN_WORLD_VIEW_07.txt) | [View 08](W04_C_04_MAIN_WORLD_VIEW_08.txt) |
+| W05_A | [View 01](W05_A_01_MAIN_WORLD_VIEW_01.txt) | [View 02](W05_A_02_MAIN_WORLD_VIEW_02.txt) | [View 03](W05_A_03_MAIN_WORLD_VIEW_03.txt) | [View 04](W05_A_04_MAIN_WORLD_VIEW_04.txt) |
+| W05_B | [View 05](W05_B_01_MAIN_WORLD_VIEW_05.txt) | [View 06](W05_B_02_MAIN_WORLD_VIEW_06.txt) | [View 07](W05_B_03_MAIN_WORLD_VIEW_07.txt) | [View 08](W05_B_04_MAIN_WORLD_VIEW_08.txt) |
+| W05_C | [View 09](W05_C_01_MAIN_WORLD_VIEW_09.txt) | [View 01](W05_C_02_MAIN_WORLD_VIEW_01.txt) | [View 07](W05_C_03_MAIN_WORLD_VIEW_07.txt) | [View 08](W05_C_04_MAIN_WORLD_VIEW_08.txt) |
+| W06_A | [View 01](W06_A_01_MAIN_WORLD_VIEW_01.txt) | [View 02](W06_A_02_MAIN_WORLD_VIEW_02.txt) | [View 03](W06_A_03_MAIN_WORLD_VIEW_03.txt) | [View 04](W06_A_04_MAIN_WORLD_VIEW_04.txt) |
+| W06_B | [View 05](W06_B_01_MAIN_WORLD_VIEW_05.txt) | [View 06](W06_B_02_MAIN_WORLD_VIEW_06.txt) | [View 07](W06_B_03_MAIN_WORLD_VIEW_07.txt) | [View 08](W06_B_04_MAIN_WORLD_VIEW_08.txt) |
+| W06_C | [View 09](W06_C_01_MAIN_WORLD_VIEW_09.txt) | [View 01](W06_C_02_MAIN_WORLD_VIEW_01.txt) | [View 07](W06_C_03_MAIN_WORLD_VIEW_07.txt) | [View 08](W06_C_04_MAIN_WORLD_VIEW_08.txt) |
+| W07_A | [View 01](W07_A_01_MAIN_WORLD_VIEW_01.txt) | [View 02](W07_A_02_MAIN_WORLD_VIEW_02.txt) | [View 03](W07_A_03_MAIN_WORLD_VIEW_03.txt) | [View 04](W07_A_04_MAIN_WORLD_VIEW_04.txt) |
+| W07_B | [View 05](W07_B_01_MAIN_WORLD_VIEW_05.txt) | [View 06](W07_B_02_MAIN_WORLD_VIEW_06.txt) | [View 07](W07_B_03_MAIN_WORLD_VIEW_07.txt) | [View 08](W07_B_04_MAIN_WORLD_VIEW_08.txt) |
+| W07_C | [View 09](W07_C_01_MAIN_WORLD_VIEW_09.txt) | [View 01](W07_C_02_MAIN_WORLD_VIEW_01.txt) | [View 07](W07_C_03_MAIN_WORLD_VIEW_07.txt) | [View 08](W07_C_04_MAIN_WORLD_VIEW_08.txt) |

@@ -39,13 +39,34 @@ MW06,MW06_HUMAN_COUNTERMEMORIES.png,MyScoutee,,,,,,,NOT_CHECKED,
 MWP01,MWP01_ROUTES_ROOMS_DOCUMENTS.png,MyScoutee,,,,,,,NOT_CHECKED,
 MWP02,MWP02_SYSTEM_TIME_REVERSALS.png,MyScoutee,,,,,,,NOT_CHECKED,
 HRW07,HRW07_CLINICAL_REALITY.png,MyScoutee,,,,,,,NOT_CHECKED,
-W01,W01_MAIN_WORLD.png,MyScoutee,loc_mys_world-01-the-city-judges-first-soho-piccadilly-leicester_s1_v1,,,,2K,,ACCEPTED,Accepted 2K W01 city sheet is saved on the correct World 01 Element (creator confirmation after 14:27:01 screenshot). Complete Element ID supplied as copied text on 2026-09-09. Reuse for the pilot; the separately planned W01_4K replacement remains pending.
-W02,W02_MAIN_WORLD.png,MyScoutee,,,,,,,NOT_CHECKED,
-W03,W03_MAIN_WORLD.png,MyScoutee,,,,,,,NOT_CHECKED,
-W04,W04_MAIN_WORLD.png,MyScoutee,,,,,,,NOT_CHECKED,
-W05,W05_MAIN_WORLD.png,MyScoutee,,,,,,,NOT_CHECKED,
-W06,W06_MAIN_WORLD.png,MyScoutee,,,,,,,NOT_CHECKED,
-W07,W07_MAIN_WORLD.png,MyScoutee,,,,,,,NOT_CHECKED,
+W01_A_01,W01_A_01_MAIN_WORLD_VIEW_01.png,MyScoutee,,,,,2K,,PREPARED_NOT_GENERATED,"New single-view replacement. Import, actual Element binding and media generation not confirmed; do not inherit the retired page acceptance."
+W01_A_02,W01_A_02_MAIN_WORLD_VIEW_02.png,MyScoutee,,,,,2K,,PREPARED_NOT_GENERATED,"New single-view replacement. Import, actual Element binding and media generation not confirmed; do not inherit the retired page acceptance."
+W01_A_03,W01_A_03_MAIN_WORLD_VIEW_03.png,MyScoutee,,,,,2K,,PREPARED_NOT_GENERATED,"New single-view replacement. Import, actual Element binding and media generation not confirmed; do not inherit the retired page acceptance."
+W01_A_04,W01_A_04_MAIN_WORLD_VIEW_04.png,MyScoutee,,,,,2K,,PREPARED_NOT_GENERATED,"New single-view replacement. Import, actual Element binding and media generation not confirmed; do not inherit the retired page acceptance."
+W02_A_01,W02_A_01_MAIN_WORLD_VIEW_01.png,MyScoutee,,,,,2K,,PREPARED_NOT_GENERATED,"New single-view replacement. Import, actual Element binding and media generation not confirmed; do not inherit the retired page acceptance."
+W02_A_02,W02_A_02_MAIN_WORLD_VIEW_02.png,MyScoutee,,,,,2K,,PREPARED_NOT_GENERATED,"New single-view replacement. Import, actual Element binding and media generation not confirmed; do not inherit the retired page acceptance."
+W02_A_03,W02_A_03_MAIN_WORLD_VIEW_03.png,MyScoutee,,,,,2K,,PREPARED_NOT_GENERATED,"New single-view replacement. Import, actual Element binding and media generation not confirmed; do not inherit the retired page acceptance."
+W02_A_04,W02_A_04_MAIN_WORLD_VIEW_04.png,MyScoutee,,,,,2K,,PREPARED_NOT_GENERATED,"New single-view replacement. Import, actual Element binding and media generation not confirmed; do not inherit the retired page acceptance."
+W03_A_01,W03_A_01_MAIN_WORLD_VIEW_01.png,MyScoutee,,,,,2K,,PREPARED_NOT_GENERATED,"New single-view replacement. Import, actual Element binding and media generation not confirmed; do not inherit the retired page acceptance."
+W03_A_02,W03_A_02_MAIN_WORLD_VIEW_02.png,MyScoutee,,,,,2K,,PREPARED_NOT_GENERATED,"New single-view replacement. Import, actual Element binding and media generation not confirmed; do not inherit the retired page acceptance."
+W03_A_03,W03_A_03_MAIN_WORLD_VIEW_03.png,MyScoutee,,,,,2K,,PREPARED_NOT_GENERATED,"New single-view replacement. Import, actual Element binding and media generation not confirmed; do not inherit the retired page acceptance."
+W03_A_04,W03_A_04_MAIN_WORLD_VIEW_04.png,MyScoutee,,,,,2K,,PREPARED_NOT_GENERATED,"New single-view replacement. Import, actual Element binding and media generation not confirmed; do not inherit the retired page acceptance."
+W04_A_01,W04_A_01_MAIN_WORLD_VIEW_01.png,MyScoutee,,,,,2K,,PREPARED_NOT_GENERATED,"New single-view replacement. Import, actual Element binding and media generation not confirmed; do not inherit the retired page acceptance."
+W04_A_02,W04_A_02_MAIN_WORLD_VIEW_02.png,MyScoutee,,,,,2K,,PREPARED_NOT_GENERATED,"New single-view replacement. Import, actual Element binding and media generation not confirmed; do not inherit the retired page acceptance."
+W04_A_03,W04_A_03_MAIN_WORLD_VIEW_03.png,MyScoutee,,,,,2K,,PREPARED_NOT_GENERATED,"New single-view replacement. Import, actual Element binding and media generation not confirmed; do not inherit the retired page acceptance."
+W04_A_04,W04_A_04_MAIN_WORLD_VIEW_04.png,MyScoutee,,,,,2K,,PREPARED_NOT_GENERATED,"New single-view replacement. Import, actual Element binding and media generation not confirmed; do not inherit the retired page acceptance."
+W05_A_01,W05_A_01_MAIN_WORLD_VIEW_01.png,MyScoutee,,,,,2K,,PREPARED_NOT_GENERATED,"New single-view replacement. Import, actual Element binding and media generation not confirmed; do not inherit the retired page acceptance."
+W05_A_02,W05_A_02_MAIN_WORLD_VIEW_02.png,MyScoutee,,,,,2K,,PREPARED_NOT_GENERATED,"New single-view replacement. Import, actual Element binding and media generation not confirmed; do not inherit the retired page acceptance."
+W05_A_03,W05_A_03_MAIN_WORLD_VIEW_03.png,MyScoutee,,,,,2K,,PREPARED_NOT_GENERATED,"New single-view replacement. Import, actual Element binding and media generation not confirmed; do not inherit the retired page acceptance."
+W05_A_04,W05_A_04_MAIN_WORLD_VIEW_04.png,MyScoutee,,,,,2K,,PREPARED_NOT_GENERATED,"New single-view replacement. Import, actual Element binding and media generation not confirmed; do not inherit the retired page acceptance."
+W06_A_01,W06_A_01_MAIN_WORLD_VIEW_01.png,MyScoutee,,,,,2K,,PREPARED_NOT_GENERATED,"New single-view replacement. Import, actual Element binding and media generation not confirmed; do not inherit the retired page acceptance."
+W06_A_02,W06_A_02_MAIN_WORLD_VIEW_02.png,MyScoutee,,,,,2K,,PREPARED_NOT_GENERATED,"New single-view replacement. Import, actual Element binding and media generation not confirmed; do not inherit the retired page acceptance."
+W06_A_03,W06_A_03_MAIN_WORLD_VIEW_03.png,MyScoutee,,,,,2K,,PREPARED_NOT_GENERATED,"New single-view replacement. Import, actual Element binding and media generation not confirmed; do not inherit the retired page acceptance."
+W06_A_04,W06_A_04_MAIN_WORLD_VIEW_04.png,MyScoutee,,,,,2K,,PREPARED_NOT_GENERATED,"New single-view replacement. Import, actual Element binding and media generation not confirmed; do not inherit the retired page acceptance."
+W07_A_01,W07_A_01_MAIN_WORLD_VIEW_01.png,MyScoutee,,,,,2K,,PREPARED_NOT_GENERATED,"New single-view replacement. Import, actual Element binding and media generation not confirmed; do not inherit the retired page acceptance."
+W07_A_02,W07_A_02_MAIN_WORLD_VIEW_02.png,MyScoutee,,,,,2K,,PREPARED_NOT_GENERATED,"New single-view replacement. Import, actual Element binding and media generation not confirmed; do not inherit the retired page acceptance."
+W07_A_03,W07_A_03_MAIN_WORLD_VIEW_03.png,MyScoutee,,,,,2K,,PREPARED_NOT_GENERATED,"New single-view replacement. Import, actual Element binding and media generation not confirmed; do not inherit the retired page acceptance."
+W07_A_04,W07_A_04_MAIN_WORLD_VIEW_04.png,MyScoutee,,,,,2K,,PREPARED_NOT_GENERATED,"New single-view replacement. Import, actual Element binding and media generation not confirmed; do not inherit the retired page acceptance."
 SB01,SB01_STORYBOARD.png,MyScoutee,,,,,,,NOT_CHECKED,
 A01,A01_NARRATION.wav,MyScoutee,,,,,,,NOT_CHECKED,
 V01,V01_CITY_JUDGES_FIRST.mp4,MyScoutee,,,,,,,NOT_CHECKED,

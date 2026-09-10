@@ -1,3 +1,22 @@
+REFERENCE SETUP INCOMPLETE: W01_A_01, W01_A_02, W01_A_03, W01_A_04, W01_B_01, W01_B_02, W01_B_03, W01_B_04, W01_C_01, W01_C_02, W01_C_03, W01_C_04
+Do not generate until these references are bound.
+
+WORLD REFERENCES — ORDERED SINGLE VIEWS:
+@UNBOUND_W01_A_01 supplies W01 group A, position 01, original view 01.
+@UNBOUND_W01_A_02 supplies W01 group A, position 02, original view 02.
+@UNBOUND_W01_A_03 supplies W01 group A, position 03, original view 03.
+@UNBOUND_W01_A_04 supplies W01 group A, position 04, original view 04.
+@UNBOUND_W01_B_01 supplies W01 group B, position 01, original view 05.
+@UNBOUND_W01_B_02 supplies W01 group B, position 02, original view 06.
+@UNBOUND_W01_B_03 supplies W01 group B, position 03, original view 07.
+@UNBOUND_W01_B_04 supplies W01 group B, position 04, original view 08.
+@UNBOUND_W01_C_01 supplies W01 group C, position 01, original view 09.
+@UNBOUND_W01_C_02 supplies W01 group C, position 02, original view 01.
+@UNBOUND_W01_C_03 supplies W01 group C, position 03, original view 07.
+@UNBOUND_W01_C_04 supplies W01 group C, position 04, original view 08.
+
+These twelve full-frame 16:9 world images replace the former three comparison pages. Attach A01–A04, B01–B04, C01–C04 in the listed order and bind each actual Element to its named slot. Original-view order is A: 01–04; B: 05–08; C: 09, 01, 07, 08. Repeated views retain their source or destination identity. Use each as spatial and material evidence for its assigned part of the existing continuous route, not twelve cuts or sequential morph stages. Do not transfer a destination into the London opening. Preserve the existing cast, camera, sound, duration and ending. Dedicated morph sheets retain their own top-left, top-right, bottom-left, bottom-right material-state order.
+
 NATIVE FORWARD EXTEND — EIGHT ADDED SECONDS, ONE CONTINUOUS 16:9 SHOT
 Continue the supplied first-scene video from its ACTUAL last visible frame and last sound sample. All times below run from 0–8 seconds of the added portion, equivalent to approximately 8–16 seconds of the joined test. The source image and motion take precedence over any written expectation of what the first test produced. This visual continuation has native music, ambience and synchronized material effects, with no narration or intelligible dialogue. The separate narrated test uses the complete joined picture afterward.
 
@@ -14,7 +33,7 @@ Heavy overcast London sky with cool diffuse evening light. The air is clear and 
 REFERENCE ROLES AND INHERITED STATE:
 @char_mys_protagonist_s1_v1 preserves the current walking man's exact face, hair, body and dark jacket. Continue the same occurrence, stride and walking direction from the source.
 @char_mys_soho-woman_s1_v1 and @loc_MYS_pilot-soho-restaurant-memory_s1_v1 preserve the remembered woman, restaurant and remembered man only where that already-existing room remains visible at the receding edge. Keep them in the source's actual place; do not move or recreate their room ahead, return to their table or repeat the smile.
-@loc_mys_world-01-the-city-judges-first-soho-piccadilly-leicester_s1_v1 supplies the same London materials, transport and inherited Hungarian architecture. Its cells are structural reference views, never replacement camera positions. Maintain the source's actual landmark state; if St Stephen's Basilica has fully formed, retain that resolved building, and if movement remains unfinished, continue only that movement from its visible state. Never reset to St Paul's or produce a second Basilica. Preserve the source bus's actual visible geometry, location and ongoing motion. Do not redesign it or move it from the foreground to a distant lane at the seam.
+@UNBOUND_W01_A_01 @UNBOUND_W01_A_02 @UNBOUND_W01_A_03 @UNBOUND_W01_A_04 supplies the same London materials, transport and inherited Hungarian architecture. Its cells are structural reference views, never replacement camera positions. Maintain the source's actual landmark state; if St Stephen's Basilica has fully formed, retain that resolved building, and if movement remains unfinished, continue only that movement from its visible state. Never reset to St Paul's or produce a second Basilica. Preserve the source bus's actual visible geometry, location and ongoing motion. Do not redesign it or move it from the foreground to a distant lane at the seam.
 The source's black taxi, yellow tram, red bus, current pedestrians and existing numerical cards continue from their actual positions and trajectories. The intended source ending is the accelerating upper part of a rising ellipse after an accumulated 180-degree heading change, looking down and back over the same London street. The walker remains below on his original path, the café and already-established roofs remain identifiable, and those roofs may still be transforming. The Basilica may now be outside the frame after its completed material change; do not teleport it into the new viewing direction. Preserve the actual result rather than forcing that description through a seam jump.
 
 SUPPLEMENTARY IMAGE ROLES FOR THIS CONTINUATION:

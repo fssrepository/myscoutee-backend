@@ -1,17 +1,15 @@
-# Elements — rendezett importkönyvtár
+# Element imports
 
-**Most csak az új tipográfiát importáld:** [categories/TYPOGRAPHY_IMPORT.md](categories/TYPOGRAPHY_IMPORT.md) — 7 új Prop, TY001–TY007. A korábbi 157 elem nincs benne.
+For the existing library, use the [84 present-world replacement Elements](additions/WORLD_SINGLE_VIEWS_IMPORT.md) and the [exact 21-Element deletion/replacement list](additions/WORLD_SINGLE_VIEWS_REPLACEMENT_GUIDE.md). Importing and deleting on the platform remain the creator's actions. Add the seven [typography Elements](categories/TYPOGRAPHY_IMPORT.md) only if they have not yet been imported.
 
-Teljes újrakezdéshez: [full/FULL_PROJECT_IMPORT.md](full/FULL_PROJECT_IMPORT.md) — **164 elem**, a tipográfiával együtt. A teljes importot és az ugyanazokat tartalmazó részeket ne importáld egymásra.
+For a clean library, use [FULL_PROJECT_IMPORT.md](full/FULL_PROJECT_IMPORT.md): **227 Elements**, or the equivalent category files once. Do not import both routes.
 
-| Könyvtár | Tartalom |
-|---|---|
-| [full](full/FULL_PROJECT_IMPORT.md) | A teljes aktuális import |
-| [categories](categories/README.md) | Characters 31, Worlds 51, Morphs 75, Typography 7 |
-| [additions](additions/README.md) | Egyszeri, korábbi állapothoz készült kiegészítők |
-| [index](index/FULL_PROJECT_GUIDE.md) | Útmutató és a 164 elemhez tartozó prompttérkép |
-| [archive](archive/README.md) | Régi pilot-, filmblokk- és részimportok; nem az aktuális újraimport részei |
+| Category | Elements |
+|---|---:|
+| Characters | 31 |
+| Worlds: 84 present views + 30 memory/clinical/restaurant pages | 114 |
+| Morphs | 75 |
+| Typography | 7 |
+| Total | 227 |
 
-Az importfájlok csak a rövid Element-definíciókat tartalmazzák. A részletes képgenerálási promptok a 02_library könyvtárban maradnak; a [CSV-jegyzék](index/FULL_PROJECT_PROMPT_MAP.csv) minden elemhez megadja a prompt és a kategóriaimport projektgyökérhez viszonyított útvonalát.
-
-Minden új referenciakép 4K. Karakterazonosság: 1×3. Világ/emlék/morph: 2×2. A tipográfián belül csak a rövid rating-számjegyek TY001 lapja 3×3; a többi 2×2. A renderparaméterek nem szerepelnek az importdefiníciókban.
+The [prompt map](index/FULL_PROJECT_PROMPT_MAP.csv) links each Element to its complete image prompt and category import. Import definitions contain only identity metadata, not render instructions. Present-world views use separate full-frame 16:9 2K images; other assets retain their existing 4K layouts. See the [generation guide](index/FULL_PROJECT_GUIDE.md), [category imports](categories/README.md) and [incremental additions](additions/README.md). Older [archived batches](archive/README.md) are not the active import route.
