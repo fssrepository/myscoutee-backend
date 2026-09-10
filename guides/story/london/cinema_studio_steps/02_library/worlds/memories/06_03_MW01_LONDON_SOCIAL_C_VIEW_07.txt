@@ -1,10 +1,10 @@
 REFERENCE ID: MW01_C_03 — ORIGINAL VIEW 07 (never print IDs, headings or labels).
 
-REFERENCE SETUP INCOMPLETE: MW01_B
+REFERENCE SETUP INCOMPLETE: MW01_B_03
 Do not generate until these references are bound.
 
 REFERENCE INPUTS:
-@UNBOUND_MW01_B = Use original view 7 of the accepted MW01_B page for the same housemate room and family photograph.
+@UNBOUND_MW01_B_03 = Use the accepted mortgage-housemate image for the same room, person and family photograph.
 @char_MYS_mys-c07-fx-mortgage-housemate_s0_v1 = CHARACTER 07 — FX-MORTGAGE HOUSEMATE; exact person identity; use only where this person appears.
 @char_MYS_mys-c08-fx-mortgage-spouse_s0_v1 = CHARACTER 08 — FX-MORTGAGE SPOUSE; exact person identity; use only where this person appears.
 @char_MYS_mys-c09-fx-mortgage-child_s0_v1 = CHARACTER 09 — FX-MORTGAGE CHILD; exact person identity; use only where this person appears.

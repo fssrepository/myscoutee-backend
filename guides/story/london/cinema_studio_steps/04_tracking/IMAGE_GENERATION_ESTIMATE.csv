@@ -151,7 +151,10 @@ MR019,02_library/morphs/buildings/MR019_PAVING_AND_GUTTER_TO_STREET_TERRACE_2X2.
 MR020,02_library/morphs/objects/MR020_ROPE_FIBRES_TO_SHEET_HEM_2X2.txt,morphs/objects,yes,4K,2x2 source/unfinished/unfinished/target,4,1,0,4,PLANNED_NOT_CHARGED
 R009,02_library/morphs/buildings/R009_FANLIGHT_TO_CANOPY_JOINT_STUDY_FOR_THE_EXTEND.txt,morphs/buildings,yes,4K,2x2 source/unfinished/unfinished/target,4,1,0,4,PLANNED_NOT_CHARGED
 R008,02_library/morphs/buildings/R008_CAFE_OPENING_AND_FURNITURE_CONSTRUCTION_DETAILS.txt,morphs/buildings,yes,4K,2x2 source/unfinished/unfinished/target,4,1,0,4,PLANNED_NOT_CHARGED
-MW01_B,02_library/worlds/memories/05_MW01_LONDON_SOCIAL_B.txt,worlds/memories,yes,4K,4K 2x2 page B,4,1,0,4,PLANNED_NOT_CHARGED
+MW01_B_01,02_library/worlds/memories/05_01_MW01_LONDON_SOCIAL_B_VIEW_05.txt,worlds/memories,yes,2K,single full-frame 16:9,2,1,0,2,PLANNED_NOT_CHARGED
+MW01_B_02,02_library/worlds/memories/05_02_MW01_LONDON_SOCIAL_B_VIEW_06.txt,worlds/memories,yes,2K,single full-frame 16:9,2,1,0,2,PLANNED_NOT_CHARGED
+MW01_B_03,02_library/worlds/memories/05_03_MW01_LONDON_SOCIAL_B_VIEW_07.txt,worlds/memories,yes,2K,single full-frame 16:9,2,1,0,2,PLANNED_NOT_CHARGED
+MW01_B_04,02_library/worlds/memories/05_04_MW01_LONDON_SOCIAL_B_VIEW_08.txt,worlds/memories,yes,2K,single full-frame 16:9,2,1,0,2,PLANNED_NOT_CHARGED
 MW01_C_01,02_library/worlds/memories/06_01_MW01_LONDON_SOCIAL_C_VIEW_09.txt,worlds/memories,yes,2K,single full-frame 16:9,2,1,0,2,PLANNED_NOT_CHARGED
 MW01_C_02,02_library/worlds/memories/06_02_MW01_LONDON_SOCIAL_C_VIEW_01.txt,worlds/memories,yes,2K,single full-frame 16:9,2,1,0,2,PLANNED_NOT_CHARGED
 MW01_C_03,02_library/worlds/memories/06_03_MW01_LONDON_SOCIAL_C_VIEW_07.txt,worlds/memories,yes,2K,single full-frame 16:9,2,1,0,2,PLANNED_NOT_CHARGED

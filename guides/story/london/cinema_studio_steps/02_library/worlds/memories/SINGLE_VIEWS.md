@@ -1,12 +1,23 @@
 # Memory single views — generation order
 
-Six former 4K grids are now 24 separate full-frame 16:9 images. Select **2K** and generate one image per prompt. Other memory prompts keep their specified 4K grid format. The 24 scene assignment bodies were copied verbatim; only layout instructions, per-view references and the permitted optional cast selection changed.
+Seven former 4K grids are now 28 separate full-frame 16:9 images. Select **2K** and generate one image per prompt. Other memory prompts keep their specified 4K grid format. The 28 scene assignment bodies were copied verbatim; only layout instructions, per-view references and the permitted optional cast selection changed.
 
 Use the filename order. A missing Element ID is an actual dependency: wait for the earlier output and bind its ID before pasting that prompt. Do not paste an `@UNBOUND_...` placeholder into generation. Readiness below reflects the currently saved bindings.
 
-Import the [24 Location additions](../../../00_project/elements/additions/MEMORY_SINGLE_VIEWS_IMPORT.md) once for the new images. Original grid definitions may remain in the external library; the active prompts use the new single-view keys. No existing external media is deleted.
+Import the [28 Location additions](../../../00_project/elements/additions/MEMORY_SINGLE_VIEWS_IMPORT.md) once for the new images. Original grid definitions may remain in the external library; the active prompts use the new single-view keys. No existing external media is deleted.
 
-At the creator-reported rates, these 24 images cost 48 credits for one attempt each; the former six 4K grids cost 24 credits. Difference: **+24 credits**, excluding retries. This is a planning comparison, not a charge or current account balance.
+At the creator-reported rates, these 28 images cost 56 credits for one attempt each; the former seven 4K grids cost 28 credits. Difference: **+28 credits**, excluding retries. This is a planning comparison, not a charge or current account balance.
+
+## MW01_B
+
+| Prompt | Original view | Character inputs | Missing Element IDs |
+| --- | ---: | ---: | --- |
+| [05_01_MW01_LONDON_SOCIAL_B_VIEW_05.txt](05_01_MW01_LONDON_SOCIAL_B_VIEW_05.txt) | 05 | 0 | **Ready** |
+| [05_02_MW01_LONDON_SOCIAL_B_VIEW_06.txt](05_02_MW01_LONDON_SOCIAL_B_VIEW_06.txt) | 06 | 1 | MW01_B_01 |
+| [05_03_MW01_LONDON_SOCIAL_B_VIEW_07.txt](05_03_MW01_LONDON_SOCIAL_B_VIEW_07.txt) | 07 | 3 | MW01_B_02 |
+| [05_04_MW01_LONDON_SOCIAL_B_VIEW_08.txt](05_04_MW01_LONDON_SOCIAL_B_VIEW_08.txt) | 08 | 1 | **Ready** |
+
+Original text: [archived MW01_B](../../../04_tracking/archive/memory_grids_before_single_views/05_MW01_LONDON_SOCIAL_B.md).
 
 ## MW01_C
 
@@ -14,8 +25,8 @@ At the creator-reported rates, these 24 images cost 48 credits for one attempt e
 | --- | ---: | ---: | --- |
 | [06_01_MW01_LONDON_SOCIAL_C_VIEW_09.txt](06_01_MW01_LONDON_SOCIAL_C_VIEW_09.txt) | 09 | 2 | **Ready** |
 | [06_02_MW01_LONDON_SOCIAL_C_VIEW_01.txt](06_02_MW01_LONDON_SOCIAL_C_VIEW_01.txt) | 01 | 2 | **Ready** |
-| [06_03_MW01_LONDON_SOCIAL_C_VIEW_07.txt](06_03_MW01_LONDON_SOCIAL_C_VIEW_07.txt) | 07 | 3 | MW01_B |
-| [06_04_MW01_LONDON_SOCIAL_C_VIEW_08.txt](06_04_MW01_LONDON_SOCIAL_C_VIEW_08.txt) | 08 | 1 | MW01_B |
+| [06_03_MW01_LONDON_SOCIAL_C_VIEW_07.txt](06_03_MW01_LONDON_SOCIAL_C_VIEW_07.txt) | 07 | 3 | MW01_B_03 |
+| [06_04_MW01_LONDON_SOCIAL_C_VIEW_08.txt](06_04_MW01_LONDON_SOCIAL_C_VIEW_08.txt) | 08 | 1 | MW01_B_04 |
 
 Original text: [archived MW01_C](../../../04_tracking/archive/memory_grids_before_single_views/06_MW01_LONDON_SOCIAL_C.md).
 
