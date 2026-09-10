@@ -599,7 +599,7 @@
       ],
       "source_prompt_sha256": "16bf4be44836d9fb010f7825cc24770d0ce78cbd05373fc417d2155eba6ae1e1",
       "file": "02_library/worlds/memories/22_MWP01_ROUTES_ROOMS_DOCUMENTS_A.txt",
-      "file_sha256": "2bbaf1e39530ff0a328cf2df2ac32bf7fbb9161f17e6b89f82f6631d8612d629",
+      "file_sha256": "b59a785f5f0897ace1fade62b511cddb8468672fef36c9e38ec0aeebd181aa80",
       "changes": "Verbatim fenced prompt; explicit centrally maintained reference inputs; rural memory grounded in creator's Orosháza paprika/corn-field childhood Grid geometry uses the full selected image resolution instead of fixed pixel examples."
     },
     {
@@ -971,7 +971,7 @@
       ],
       "source_prompt_sha256": "76a53b46490f7087051a6b61360543112b874118c1dec4b28d592f08a5c3ed46",
       "file": "03_film/01/storyboard.txt",
-      "file_sha256": "8211fbb97f98a15f64c190bb40799446d9cc08215584f741e6a80bedbfd19f94",
+      "file_sha256": "7d9db9fb5803b4d856b0a08e7447e104a8e1d26d73ae07af045a10faf1a2f571",
       "changes": "All nine beats retained; requested camera/architecture added; card and AI-screen contradictions corrected; SB06 memory dependencies repaired; explicit centrally maintained reference inputs Grid geometry uses the full selected image resolution instead of fixed pixel examples."
     },
     {
@@ -995,7 +995,7 @@
       ],
       "source_prompt_sha256": "d111e179fa9211ddb262d74468ee38305f1776d75138a0c33a3e229ff58dff3d",
       "file": "03_film/01/video.txt",
-      "file_sha256": "9b0736f6179a47947e11499869fe340667e4b25987ab17d2b9c99c808dd1c79d",
+      "file_sha256": "1eb2781e41ede6458209a25b865a76db444da2b054ddcd3c9f73d776e0f83c9a",
       "changes": "Operator/retry prose and repeated rules removed; all nine story beats retained; camera/architecture updated; audio cues follow visuals; reveal and reference contradictions repaired; Verified C01/C02 Element IDs substituted for local aliases; explicit reference binding; original Hungarian folk-rooted score and synchronized material transformation foley; researched Dél-Alföld tekerő/clarinet arrangement, phrase-synchronized facade motion, explicit protagonist inner monologue"
     },
     {
@@ -1007,7 +1007,7 @@
       ],
       "source_prompt_sha256": "28ff9c6f1fdfeb4618c4696283c1e38722a62ee2792af219b5b9f14cc9bcfc29",
       "file": "03_film/02/storyboard.txt",
-      "file_sha256": "570b86698de823b0febe3d59f0a3bc28caa4c161586f67fba0b587f5297f32ec",
+      "file_sha256": "d3c057d87343d1a1a513f9dcca2b0a4fb720dd627025a33de3d83ce400af376a",
       "changes": "All nine beats retained; requested camera/architecture added; card and AI-screen contradictions corrected; SB06 memory dependencies repaired; explicit centrally maintained reference inputs; rural memory grounded in creator's Orosháza paprika/corn-field childhood Grid geometry uses the full selected image resolution instead of fixed pixel examples."
     },
     {
@@ -1031,7 +1031,7 @@
       ],
       "source_prompt_sha256": "1ee3bb2feea06f9cb11dac2f33cac0b6c8a0735bc0a73938e537a716ad9146ba",
       "file": "03_film/02/video.txt",
-      "file_sha256": "9da907fd854061e13fa2c81024c8fa03dabaea8279d407e0e16e44c19134a0dd",
+      "file_sha256": "1ffc1d34423da1773bb46cf01ece139a1b52e885b39b9d6bfeb0d85e3a266e9c",
       "changes": "Operator/retry prose and repeated rules removed; all nine story beats retained; camera/architecture updated; audio cues follow visuals; reveal and reference contradictions repaired; Verified C01/C02 Element IDs substituted for local aliases; explicit reference binding; original Hungarian folk-rooted score and synchronized material transformation foley; researched Dél-Alföld tekerő/clarinet arrangement, phrase-synchronized facade motion, explicit protagonist inner monologue; rural memory grounded in creator's Orosháza paprika/corn-field childhood Continuation preserves narrator timbre and a natural breath over an uninterrupted sound bed."
     },
     {
@@ -1043,7 +1043,7 @@
       ],
       "source_prompt_sha256": "533e440baa4117a4d2f7733e327dfca304ea8a54d066010cc8ab8722cadb259c",
       "file": "03_film/03/storyboard.txt",
-      "file_sha256": "9d0c0f5541f56b4b63ed5b1375aca7da0982708efadb2f8dc123365573329ee2",
+      "file_sha256": "3b65d8f55fef172c5f4803116cab361eab85b0bc18a3d2442c9e1879454d419c",
       "changes": "All nine beats retained; requested camera/architecture added; card and AI-screen contradictions corrected; SB06 memory dependencies repaired; explicit centrally maintained reference inputs Grid geometry uses the full selected image resolution instead of fixed pixel examples."
     },
     {
@@ -1067,7 +1067,7 @@
       ],
       "source_prompt_sha256": "4970f288124db4473bf4af10c0fb6a9d66f5bae619718ed4d3907489e0c8cc95",
       "file": "03_film/03/video.txt",
-      "file_sha256": "cc3f8e223606ee13c965d17be75de2f9ab63526857244017952d366e6c184ef2",
+      "file_sha256": "5dae38d21e481818c5b110f090ea957ee5ec874019f9b515a39d7a8841594db3",
       "changes": "Operator/retry prose and repeated rules removed; all nine story beats retained; camera/architecture updated; audio cues follow visuals; reveal and reference contradictions repaired; Verified C01/C02 Element IDs substituted for local aliases; explicit reference binding; original Hungarian folk-rooted score and synchronized material transformation foley; researched Dél-Alföld tekerő/clarinet arrangement, phrase-synchronized facade motion, explicit protagonist inner monologue Continuation preserves narrator timbre and a natural breath over an uninterrupted sound bed."
     },
     {
@@ -1187,7 +1187,7 @@
       ],
       "source_prompt_sha256": "2b7b76d2d3593fcff5854695f2ee366e9486822241fe7b80f3f09df0035291d4",
       "file": "03_film/07/storyboard.txt",
-      "file_sha256": "f29b4b8e0905cfb4ee9c6a4be9ca01238865dd8f87b74593c564be7645c9d494",
+      "file_sha256": "f9e594281689059604a08c2d48fad04a74242f10ee048597e017c6f9c26e57bc",
       "changes": "All nine beats retained; requested camera/architecture added; card and AI-screen contradictions corrected; SB06 memory dependencies repaired; explicit centrally maintained reference inputs Grid geometry uses the full selected image resolution instead of fixed pixel examples."
     },
     {
@@ -1211,7 +1211,7 @@
       ],
       "source_prompt_sha256": "ac40bf3eee9daac90310ed6ff05a2b72832c27347255c481694023e8db6f759b",
       "file": "03_film/07/video.txt",
-      "file_sha256": "7df0abde18ba65e9a6af06967125b12ce6843c524af79d87d3c3b686a03d8360",
+      "file_sha256": "9e168e16d5e8e10a5ff0ae8c2ffc330441efe766ae63c19c0809c2ec61fc0585",
       "changes": "Operator/retry prose and repeated rules removed; all nine story beats retained; camera/architecture updated; audio cues follow visuals; reveal and reference contradictions repaired; Verified C01/C02 Element IDs substituted for local aliases; explicit reference binding; original Hungarian folk-rooted score and synchronized material transformation foley; researched Dél-Alföld tekerő/clarinet arrangement, phrase-synchronized facade motion, explicit protagonist inner monologue Continuation preserves narrator timbre and a natural breath over an uninterrupted sound bed."
     },
     {
@@ -2259,7 +2259,7 @@
       ],
       "source_prompt_sha256": "16bf4be44836d9fb010f7825cc24770d0ce78cbd05373fc417d2155eba6ae1e1",
       "file": "02_library/worlds/memories/24_MWP01_ROUTES_ROOMS_DOCUMENTS_C.txt",
-      "file_sha256": "408099d38a2bb32ccfa31d8844179067663059927c3230fea378e4121d05cc00",
+      "file_sha256": "b72d18e55c7a4b3ec246593fbed58e8fc9507b71ed16eca4e42aaac785feb5ed",
       "changes": "Verbatim fenced prompt; explicit centrally maintained reference inputs; rural memory grounded in creator's Orosháza paprika/corn-field childhood Grid geometry uses the full selected image resolution instead of fixed pixel examples.",
       "note": "Companion page C preserving original memory views."
     },
@@ -3126,12 +3126,16 @@
         "MWP01_B",
         "MWP01_C"
       ],
-      "prompt_sha256": "2bbaf1e39530ff0a328cf2df2ac32bf7fbb9161f17e6b89f82f6631d8612d629",
+      "prompt_sha256": "b59a785f5f0897ace1fade62b511cddb8468672fef36c9e38ec0aeebd181aa80",
       "composition_revision_note": "2026-09-10: distinct physical subjects/actions replace repeated content; companion sources preserve the original story beats. No camera-only variation.",
       "current_prompt_image_verified": false,
       "content_assignments": {
         "3": "PAPRIKA HARVEST AT THE EDGE OF THE CORN ROWS"
-      }
+      },
+      "status": "MCP_IMAGE_ATTACHMENT_CONFIRMED",
+      "mcp_element_uuid": "221e40ec-450c-438e-bdee-5f0aca3df485",
+      "matched_generation_id": "6cbce918-90cf-4a31-8358-ca4060781642",
+      "generation_match_evidence": "2026-09-10: Element get confirms attachment of previously verified completed MWP01_ROUTES_ROOMS_DOCUMENTS_A generation."
     },
     "MWP02": {
       "key": "MWP02",
@@ -3201,7 +3205,7 @@
         "MWP01_B",
         "MWP01_C"
       ],
-      "prompt_sha256": "8211fbb97f98a15f64c190bb40799446d9cc08215584f741e6a80bedbfd19f94"
+      "prompt_sha256": "7d9db9fb5803b4d856b0a08e7447e104a8e1d26d73ae07af045a10faf1a2f571"
     },
     "A01": {
       "key": "A01",
@@ -3249,7 +3253,7 @@
         "MWP01_B",
         "MWP01_C"
       ],
-      "prompt_sha256": "9b0736f6179a47947e11499869fe340667e4b25987ab17d2b9c99c808dd1c79d"
+      "prompt_sha256": "1eb2781e41ede6458209a25b865a76db444da2b054ddcd3c9f73d776e0f83c9a"
     },
     "SB02": {
       "key": "SB02",
@@ -3303,7 +3307,7 @@
         "MWP01_B",
         "MWP01_C"
       ],
-      "prompt_sha256": "570b86698de823b0febe3d59f0a3bc28caa4c161586f67fba0b587f5297f32ec"
+      "prompt_sha256": "d3c057d87343d1a1a513f9dcca2b0a4fb720dd627025a33de3d83ce400af376a"
     },
     "A02": {
       "key": "A02",
@@ -3367,7 +3371,7 @@
         "MWP01_B",
         "MWP01_C"
       ],
-      "prompt_sha256": "9da907fd854061e13fa2c81024c8fa03dabaea8279d407e0e16e44c19134a0dd"
+      "prompt_sha256": "1ffc1d34423da1773bb46cf01ece139a1b52e885b39b9d6bfeb0d85e3a266e9c"
     },
     "SB03": {
       "key": "SB03",
@@ -3397,7 +3401,7 @@
         "MWP01_B",
         "MWP01_C"
       ],
-      "prompt_sha256": "9d0c0f5541f56b4b63ed5b1375aca7da0982708efadb2f8dc123365573329ee2"
+      "prompt_sha256": "3b65d8f55fef172c5f4803116cab361eab85b0bc18a3d2442c9e1879454d419c"
     },
     "A03": {
       "key": "A03",
@@ -3437,7 +3441,7 @@
         "MWP01_B",
         "MWP01_C"
       ],
-      "prompt_sha256": "cc3f8e223606ee13c965d17be75de2f9ab63526857244017952d366e6c184ef2"
+      "prompt_sha256": "5dae38d21e481818c5b110f090ea957ee5ec874019f9b515a39d7a8841594db3"
     },
     "SB04": {
       "key": "SB04",
@@ -3820,7 +3824,7 @@
         "MW02_C_03",
         "MW02_C_04"
       ],
-      "prompt_sha256": "f29b4b8e0905cfb4ee9c6a4be9ca01238865dd8f87b74593c564be7645c9d494"
+      "prompt_sha256": "f9e594281689059604a08c2d48fad04a74242f10ee048597e017c6f9c26e57bc"
     },
     "A07": {
       "key": "A07",
@@ -3879,7 +3883,7 @@
         "MW02_C_03",
         "MW02_C_04"
       ],
-      "prompt_sha256": "7df0abde18ba65e9a6af06967125b12ce6843c524af79d87d3c3b686a03d8360"
+      "prompt_sha256": "9e168e16d5e8e10a5ff0ae8c2ffc330441efe766ae63c19c0809c2ec61fc0585"
     },
     "MR001": {
       "key": "MR001",
@@ -4802,7 +4806,7 @@
         7,
         8
       ],
-      "prompt_sha256": "408099d38a2bb32ccfa31d8844179067663059927c3230fea378e4121d05cc00",
+      "prompt_sha256": "b72d18e55c7a4b3ec246593fbed58e8fc9507b71ed16eca4e42aaac785feb5ed",
       "composition_revision_note": "2026-09-10: distinct physical subjects/actions replace repeated content; companion sources preserve the original story beats. No camera-only variation.",
       "current_prompt_image_verified": false,
       "content_assignments": {
@@ -8888,8 +8892,8 @@
     },
     "MWP01": {
       "alias": "MWP01_ROUTES_ROOMS_DOCUMENTS",
-      "mention": null,
-      "last_mention": "@UNBOUND_MWP01"
+      "mention": "@loc_MYS_mys-mwp01-a-routes-rooms-documents_s0_v1",
+      "last_mention": "@loc_MYS_mys-mwp01-a-routes-rooms-documents_s0_v1"
     },
     "MWP02": {
       "alias": "MWP02_SYSTEM_TIME_REVERSALS",
@@ -13625,7 +13629,7 @@
               4
             ],
             "status": "PREPARED_NOT_RENDERED",
-            "sha256": "2bbaf1e39530ff0a328cf2df2ac32bf7fbb9161f17e6b89f82f6631d8612d629"
+            "sha256": "b59a785f5f0897ace1fade62b511cddb8468672fef36c9e38ec0aeebd181aa80"
           },
           "B": {
             "key": "MWP01_B",
@@ -13649,7 +13653,7 @@
               8
             ],
             "status": "PREPARED_NOT_RENDERED",
-            "sha256": "408099d38a2bb32ccfa31d8844179067663059927c3230fea378e4121d05cc00"
+            "sha256": "b72d18e55c7a4b3ec246593fbed58e8fc9507b71ed16eca4e42aaac785feb5ed"
           }
         },
         "original_views": 9,

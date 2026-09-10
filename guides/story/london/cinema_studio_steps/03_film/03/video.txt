@@ -3,7 +3,7 @@ Do not generate until these references are bound.
 
 MEMORY REFERENCE PAGES — DIRECT SOURCES, NOT EDITS:
 @UNBOUND_MW03 supplies MW03 Page A (original views 1–4); @UNBOUND_MW03_B supplies Page B (5–8); @UNBOUND_MW03_C supplies Page C (9, 1, 7, 8). Use the original-view assignment to select the actual place/event, not the sheet layout.
-@UNBOUND_MWP01 supplies MWP01 Page A (original views 1–4); @UNBOUND_MWP01_B supplies Page B (5–8); @UNBOUND_MWP01_C supplies Page C (9, 1, 7, 8). Use the original-view assignment to select the actual place/event, not the sheet layout.
+@loc_MYS_mys-mwp01-a-routes-rooms-documents_s0_v1 supplies MWP01 Page A (original views 1–4); @UNBOUND_MWP01_B supplies Page B (5–8); @UNBOUND_MWP01_C supplies Page C (9, 1, 7, 8). Use the original-view assignment to select the actual place/event, not the sheet layout.
 Several pages may support the same block or remembered place. Reconstruct the people, objects, supports and entry/exit geometry at life size while following this video’s existing continuous route. Never switch scenes because a cell or page changes. Current-city cards remain on current people; remembered people have none. HRW07 pages remain exclusive to Block 07 and its scripted tiny fragments/final hard cut.
 
 WORLD REFERENCES — ORDERED SINGLE VIEWS:
@@ -40,7 +40,7 @@ Keep the narrator's established timbre, accent, pitch, loudness and dry recordin
 REFERENCES
 @loc_MYS_mys-w03-a-01-world-view-01_s0_v1 @loc_MYS_mys-w03-a-02-world-view-02_s0_v1 @loc_MYS_mys-w03-a-03-world-view-03_s0_v1 @loc_MYS_mys-w03-a-04-world-view-04_s0_v1 = physical city, route, materials and recognizable architecture; transformation allowed as directed.
 @UNBOUND_MW03 = literal memory source; reconstruct its people and place in the changing street according to the named beat.
-@UNBOUND_MWP01 = literal memory source; reconstruct its people and place in the changing street according to the named beat.
+@loc_MYS_mys-mwp01-a-routes-rooms-documents_s0_v1 = literal memory source; reconstruct its people and place in the changing street according to the named beat.
 @char_MYS_mys-c01-protagonist_s0_v1 = exact face, age, hair and body; memory wardrobe follows its source scene.
 @char_MYS_mys-c22-accountant_s0_v1 = exact face, age, hair and body; memory wardrobe follows its source scene.
 @char_MYS_mys-c23-admin-colleague-a_s0_v1 = exact face, age, hair and body; memory wardrobe follows its source scene.
