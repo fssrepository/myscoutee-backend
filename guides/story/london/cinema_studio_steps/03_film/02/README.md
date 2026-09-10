@@ -36,7 +36,7 @@ Generate only missing media. Reuse accepted dependencies from prior blocks. Each
 | [C19](../../02_library/characters/C19_BARMOUTH_ROAD_TRIP_COMPANION_A.txt) | None | `C19_BARMOUTH_ROAD_TRIP_COMPANION_A.png` |
 | [C20](../../02_library/characters/C20_BARMOUTH_ROAD_TRIP_COMPANION_B.txt) | None | `C20_BARMOUTH_ROAD_TRIP_COMPANION_B.png` |
 | [C21](../../02_library/characters/C21_BARMOUTH_ROAD_TRIP_COMPANION_C.txt) | None | `C21_BARMOUTH_ROAD_TRIP_COMPANION_C.png` |
-| [MW02](../../02_library/worlds/memories/07_MW02_GLOBAL_ROUTES_A.txt) | C01, C11, C12, C13, C14, C15, C16, C17, C18, C19, C20, C21 | `MW02_GLOBAL_ROUTES.png` |
+| [MW02](../../02_library/worlds/memories/SINGLE_VIEWS.md#mw02) | C01, C11, C12, C13, C14, C15, C16, C17, C18, C19, C20, C21 | `MW02_GLOBAL_ROUTES.png` |
 | [SB02](storyboard.txt) | W02, MW02, MW01, MWP01, C01, C10, C11, C12, C13, C14, C15, C16, C17, C18, C19, C20, C21 | `SB02_STORYBOARD.png` |
 | [A02](narration.txt) | None | `A02_NARRATION.wav` |
 | [V02](video.txt) | W02, MW02, MW01, MWP01, C01, C10, C11, C12, C13, C14, C15, C16, C17, C18, C19, C20, C21, SB02, A02, V01 | `V02_CHAIN_TO_0100.mp4` |
@@ -52,7 +52,7 @@ Generate only missing media. Reuse accepted dependencies from prior blocks. Each
 | ID | Required media | Reference mention (UNBOUND means missing ID) |
 | --- | --- | --- |
 | W02 | `W02_MAIN_WORLD.png` | `@UNBOUND_W02` |
-| MW02 | `MW02_GLOBAL_ROUTES.png` | `@UNBOUND_MW02` |
+| MW02 | `MW02_GLOBAL_ROUTES.png` | `@UNBOUND_MW02_A_01, @UNBOUND_MW02_A_02, @UNBOUND_MW02_A_03, @UNBOUND_MW02_A_04` |
 | MW01 | `MW01_LONDON_SOCIAL.png` | `@loc_MYS_mys-mw01-a-london-social_s0_v1` |
 | MWP01 | `MWP01_ROUTES_ROOMS_DOCUMENTS.png` | `@UNBOUND_MWP01` |
 | C01 | `C01_PROTAGONIST.png` | `@char_MYS_mys-c01-protagonist_s0_v1` |

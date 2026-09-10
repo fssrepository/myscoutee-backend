@@ -25,7 +25,7 @@ Generate only missing media. Reuse accepted dependencies from prior blocks. Each
 | [W06_C_02](../../02_library/worlds/real/W06_C_02_MAIN_WORLD_VIEW_01.txt) | None; compatible accepted companion view if available | `W06_C_02_MAIN_WORLD_VIEW_01.png` |
 | [W06_C_03](../../02_library/worlds/real/W06_C_03_MAIN_WORLD_VIEW_07.txt) | None; compatible accepted companion view if available | `W06_C_03_MAIN_WORLD_VIEW_07.png` |
 | [W06_C_04](../../02_library/worlds/real/W06_C_04_MAIN_WORLD_VIEW_08.txt) | None; compatible accepted companion view if available | `W06_C_04_MAIN_WORLD_VIEW_08.png` |
-| [MW06](../../02_library/worlds/memories/19_MW06_HUMAN_COUNTERMEMORIES_A.txt) | C01, C02, C03, C04, C10, C11, C16, C17, C27, C28, C29 | `MW06_HUMAN_COUNTERMEMORIES.png` |
+| [MW06](../../02_library/worlds/memories/SINGLE_VIEWS.md#mw06) | C01, C02, C03, C04, C10, C11, C16, C17, C27, C28, C29 | `MW06_HUMAN_COUNTERMEMORIES.png` |
 | [SB06](storyboard.txt) | W06, MW06, MWP02, MW01, MW02, MW03, MW04, MW05, C01, C02, C03, C04, C10, C11, C16, C17, C27, C28, C29 | `SB06_STORYBOARD.png` |
 | [A06](narration.txt) | None | `A06_NARRATION.wav` |
 | [V06](video.txt) | W06, MW06, MWP02, MW01, MW02, MW03, MW04, MW05, C01, C02, C03, C04, C10, C11, C16, C17, C27, C28, C29, SB06, A06, V05 | `V06_CHAIN_TO_0300.mp4` |
@@ -41,10 +41,10 @@ Generate only missing media. Reuse accepted dependencies from prior blocks. Each
 | ID | Required media | Reference mention (UNBOUND means missing ID) |
 | --- | --- | --- |
 | W06 | `W06_MAIN_WORLD.png` | `@UNBOUND_W06` |
-| MW06 | `MW06_HUMAN_COUNTERMEMORIES.png` | `@UNBOUND_MW06` |
+| MW06 | `MW06_HUMAN_COUNTERMEMORIES.png` | `@UNBOUND_MW06_A_01, @UNBOUND_MW06_A_02, @UNBOUND_MW06_A_03, @UNBOUND_MW06_A_04` |
 | MWP02 | `MWP02_SYSTEM_TIME_REVERSALS.png` | `@UNBOUND_MWP02` |
 | MW01 | `MW01_LONDON_SOCIAL.png` | `@loc_MYS_mys-mw01-a-london-social_s0_v1` |
-| MW02 | `MW02_GLOBAL_ROUTES.png` | `@UNBOUND_MW02` |
+| MW02 | `MW02_GLOBAL_ROUTES.png` | `@UNBOUND_MW02_A_01, @UNBOUND_MW02_A_02, @UNBOUND_MW02_A_03, @UNBOUND_MW02_A_04` |
 | MW03 | `MW03_WORK_RULE_CHANGE_ADMIN.png` | `@UNBOUND_MW03` |
 | MW04 | `MW04_POLICE_DEFENCE.png` | `@UNBOUND_MW04` |
 | MW05 | `MW05_COURT_FILE.png` | `@UNBOUND_MW05` |

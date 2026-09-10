@@ -1,0 +1,60 @@
+REFERENCE ID: MW02_C_02 — ORIGINAL VIEW 01 (never print IDs, headings or labels).
+
+REFERENCE SETUP INCOMPLETE: MW02_A_01
+Do not generate until these references are bound.
+
+REFERENCE INPUTS:
+@UNBOUND_MW02_A_01 = Use the accepted metro-gate image for this same helper, gate, pass reader and station.
+@char_MYS_mys-c01-protagonist_s0_v1 = CHARACTER 01 — PROTAGONIST; exact person identity; use only where this person appears.
+@char_MYS_mys-c11-russian-transit-passenger_s0_v1 = CHARACTER 11 — RUSSIAN TRANSIT PASSENGER; exact person identity; use only where this person appears.
+
+OUTPUT GEOMETRY — ONE 2K FULL-FRAME IMAGE:
+Generate ONE photographic widescreen 16:9 image; select 2K in the output controls. One uninterrupted scene fills the complete canvas. No grid, split screen, contact sheet, panels, inset, border, gutters, margins, letterboxing, headings, labels or captions. In-world objects and text explicitly assigned below remain visible.
+Use character references for identity and wardrobe only, and accepted location references for their assigned spatial content. Reconstruct the assigned scene at full frame; never copy an input sheet layout.
+
+MEMORY-WORLD FUNCTION:
+This is a CLEAN VISUAL SOURCE REFERENCE for a remembered place/event.
+Show the memory scene DIRECTLY, as if the camera were physically inside the remembered world.
+DO NOT show the London–Budapest present city.
+DO NOT display the memory as an insert inside a present-city window, shopfront, puddle or mirror. A real vehicle window and its natural reflection within the assigned remembered journey remain allowed.
+DO NOT add rain/reflection layers from the present city.
+DO NOT add score cards.
+ This source sheet remains a sharp direct view of the memory; it is not a cut or flat image to display in the video.
+
+VISUAL LANGUAGE:
+Photorealistic live-action European feature-film realism.
+Natural human proportions, realistic contemporary wardrobe and props, ordinary practical lighting, believable interiors/exteriors.
+Keep this source image sharp and literal so faces, furniture and room layout remain reconstructable. The film, unlike this source sheet, turns these places into impossible architecture within London.
+This image must be a usable literal location/event reference, not an illustration of an idea.
+
+IDENTITY ANCHORS — REQUIRED:
+Preserve the exact identities, age, hair, body proportions and context-appropriate wardrobe supplied for this scene. Apply a character reference only where that person appears; incidental people do not become additional named cast.
+
+PURPOSE:
+Build the reusable literal travel-memory source bank around the principle: Global route. Local encounter. The important subject is ordinary human contact inside movement, not postcard tourism.
+
+REFERENCE COVERAGE FOR THE MOVING FILM:
+This image supplies the one assigned literal view. It is not a cut or a morph stage. Make this view useful for its assigned purpose: room layout shows supports and an entry/exit; a gesture view retains its hand, furniture edge and background anchor; an object detail shows side/underside and contact. Different views of the SAME room preserve its floor plan, furniture, identities, clothes and light sources even when the viewpoint changes. Distinct memories remain distinct places; do not fuse them into one room. Repeated anchor views in another image must preserve the same state and layout.
+Additional detail images of the same place retain that memory and its established event. Keep full body/furniture support legible wherever the assigned view permits. Keep the assigned subject and framing; do not substitute a generic wide shot for a detail.
+
+ASSIGNED COMPOSITION — ORIGINAL VIEW 01, ONE IMAGE:
+Moscow / Saint Petersburg metro or transit-gate memory. A local passenger calmly uses a monthly travel card/pass to help the protagonist through a gate. Ordinary station, realistic crowd, no heroic gesture.
+
+The helper stands beside the gate reader with the monthly pass held close to its actual surface; the protagonist is at the adjacent passage ready to move through. Show reader housing, barrier edge and tiled floor together. Other passengers remain behind their own lane boundaries. Their hands do not merge into the reader or each other, and no score cards appear.
+
+FINAL CHECK:
+One full-frame 16:9 image at selected 2K. Direct memory scene, no score cards, no present-city overlay, no printed instruction labels.
+
+SPATIAL INFORMATION FOR LATER EMBODIED MEMORY:
+The later film grows this exact remembered encounter from London materials. Supply enough geometry to reconstruct a solid place: a near seat or table corner with two readable sides, full supporting legs where furniture matters, visible floor contact, and a rear door, wall or landscape plane at a different distance. Use the existing widest relevant reference view for the whole arrangement and the existing human-detail reference view for the gesture; use the companion image when that required contextual view is assigned there. Keep principal faces, hands and interactions in useful focus. Show natural occlusion and contact shadows. Avoid hiding the relationship between a person, their chair, the floor and the rear doorway in shallow focus or tight crops. A detail image may be close, but its contextual reference view must retain the full arrangement. Preserve the assigned encounter and identity. These literal source shapes give the later film recognisable people and materials to carry through the impossible transformation.
+
+SOURCE CONTINUITY FOR THE MOVING FILM:
+Render this image as a single clear, solid view of the specified people and their actual room or place. Show a usable doorway edge, furniture corner or support beside the central gesture, with full bodily depth, clear hands and contact shadows. Never supply ghosted people, translucent rooms, double exposures or blended before/after scenes. The source image is a direct view of the remembered place, with no transition overlay. Preserve the assigned identities and events across alternative views. Keep the source free of present-city overlays and rating cards.
+
+Keep the assigned room and human event specific and intact. Its source doorway, furniture corner or open side can support either a matched material development or continuous camera entry/exit. No forced mutation of the people, furniture or room is needed when the next setting lacks corresponding structure; let the film travel onward through a visible connected opening.
+
+RATING ROLE IN THIS IMAGE:
+These are remembered or clinical people, not current-city pedestrians. Keep this image without floating rating cards. A printed pass, family photograph or ordinary document remains its physical story object, not an above-head score.
+
+NO UMBRELLAS:
+No umbrellas anywhere in this image: none open, folded, carried, tucked into a bag, leaning against a wall, mounted over a table or held above a head. Do not copy an umbrella from an input reference. Outdoor present-city people have uncovered heads, hoods down and exposed hair; leave open air above every crown. Keep the specified weather for this scene. This restriction applies to the foreground, background, reflections and the entire image.
