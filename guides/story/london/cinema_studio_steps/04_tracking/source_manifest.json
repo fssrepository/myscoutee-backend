@@ -8412,6 +8412,7 @@
           "MR018",
           "MR019",
           "MR020",
+          "MR021",
           "R008",
           "R009",
           "R002",
@@ -8465,11 +8466,10 @@
           "CM003",
           "CM004",
           "CM005",
-          "CM006",
-          "MR021"
+          "CM006"
         ],
         "count": 75,
-        "file_sha256": "fe5ffb72aafe83b1a51cfb7f368785e3bf497f03b1d0b176400e3db42fb2854a"
+        "file_sha256": "cb87c59e00d7916ab64adc5b4c90e263719b89e08ba62b30e7c9febdf6d06b3d"
       }
     ],
     "maps": "Optional planning images, not reference Elements",
@@ -8513,7 +8513,7 @@
   "full_project_current_import": {
     "date": "2026-09-10",
     "file": "00_project/elements/FULL_PROJECT_IMPORT.md",
-    "file_sha256": "3d4693f98ad2212de5e50436a9b95efcf6bf49274e9524881f91fb05349033d0",
+    "file_sha256": "eef27f53ff88cac0979c24ab338f48f8579ac99dc1432c9c3d5c6156b4d52c24",
     "count": 157,
     "canonical_keys": [
       "C01",
@@ -8618,6 +8618,7 @@
       "MR018",
       "MR019",
       "MR020",
+      "MR021",
       "R008",
       "R009",
       "R002",
@@ -8671,8 +8672,7 @@
       "CM003",
       "CM004",
       "CM005",
-      "CM006",
-      "MR021"
+      "CM006"
     ],
     "status": "READY_FOR_CREATOR_REIMPORT_NOT_YET_CONFIRMED",
     "equivalent_category_files": [

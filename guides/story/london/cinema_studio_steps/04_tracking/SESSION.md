@@ -1,5 +1,10 @@
 ## Current category import request — 2026-09-10
 
+## 2026-09-10 — MR021 a rendes importok sorrendjében
+
+Az MR021 Prop definíció a MORPHS_IMPORT.md-ben és a FULL_PROJECT_IMPORT.md-ben az MR020 után szerepel, nem a karakter-morphok után hozzáfűzve. A tárgymorph-jegyzék és a CSV sorrendje egyezik. A teljes fájl továbbra is 157 egyedi elem; rendes import mellett nem kell a külön MR021-kiegészítőt is importálni.
+
+
 ## 2026-09-10 — Teljes képelőkészítés: ratingkártyák, esernyőtilalom, MR021
 
 - 164 aktív képprompt explicit esernyőtilalommal. A 21 jelen-világ lapon és a 68 korábbi épület/tárgymorphban a jelen-városi emberek kártyája már az állóképen szerepel; a későbbi videóra halasztó ellentmondó mondat javítva. Stúdióazonosító, emlék és klinikai kép kártya nélkül, az eddigi szereposztás szerint.

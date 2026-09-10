@@ -13,6 +13,7 @@ Minden aktív TXT egy képet kér négy eltérő anyagállapottal: eredeti, két
 - [MR017_CABINET_TO_DESK_AND_CHAIR_2X2](MR017_CABINET_TO_DESK_AND_CHAIR_2X2.txt)
 - [MR018_HEARING_BENCH_TO_DOCUMENT_SHELVING_2X2](MR018_HEARING_BENCH_TO_DOCUMENT_SHELVING_2X2.txt)
 - [MR020_ROPE_FIBRES_TO_SHEET_HEM_2X2](MR020_ROPE_FIBRES_TO_SHEET_HEM_2X2.txt)
+- [MR021 — ratingkártya 6.2 → 9.2](MR021_RATING_CARD_6_2_TO_9_2_MATERIAL_MORPH_2X2.txt): a számjegy, keret és színezett laptest négy térbeli állapota. Prop típusú tárgymorph, nem Character elem. Csak kifejezetten előírt pontszámváltozáskor használjuk; a rátekintés önmagában nem emeli a pontot.
 - [R002_THE_SAME_RED_LONDON_BUS_FROM_USEFUL_ANGLES](R002_THE_SAME_RED_LONDON_BUS_FROM_USEFUL_ANGLES.txt)
 - [R003_BLACK_LONDON_TAXI](R003_BLACK_LONDON_TAXI.txt)
 - [R004_YELLOW_BUDAPEST_TRAM](R004_YELLOW_BUDAPEST_TRAM.txt)
@@ -35,5 +36,3 @@ Minden aktív TXT egy képet kér négy eltérő anyagállapottal: eredeti, két
 - [R050_COURT_FILE_COMPARTMENTS_AND_RETAINED_DEVICE_SUPPORTS](R050_COURT_FILE_COMPARTMENTS_AND_RETAINED_DEVICE_SUPPORTS.txt)
 
 Az Element neve/kulcsa a mappaváltás miatt nem változik. Az import metaadat, a generálási leírás az egyes TXT-kben található.
-
-- [MR021 — ratingkártya 6.2 → 9.2](MR021_RATING_CARD_6_2_TO_9_2_MATERIAL_MORPH_2X2.txt): a számjegy, keret és színezett laptest négy térbeli állapota. Prop típusú tárgymorph, nem Character elem. Csak kifejezetten előírt pontszámváltozáskor használjuk; a rátekintés önmagában nem emeli a pontot.
