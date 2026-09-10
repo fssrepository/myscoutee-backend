@@ -851,7 +851,7 @@
       ],
       "source_prompt_sha256": "a82a51ff228ecd6bd99c6018e59cd64495bc98fe46e349b64bbe805e0b18319f",
       "file": "02_library/worlds/real/W07_A_01_MAIN_WORLD_VIEW_01.txt",
-      "file_sha256": "cddcb458b98555df8acec9ea3c219a78a3c6a510edbe968212586c759485f45a",
+      "file_sha256": "bb3ea1e42d990f61a4be243e93e24889ea25c605368fa76b4d65662d2ab5f273",
       "changes": "Single assigned world view with retained composition details and consolidated standalone world context; 2K."
     },
     {
@@ -1115,7 +1115,7 @@
       ],
       "source_prompt_sha256": "2b7b76d2d3593fcff5854695f2ee366e9486822241fe7b80f3f09df0035291d4",
       "file": "03_film/07/storyboard.txt",
-      "file_sha256": "793a104a51d254492c79d95ba06fd00202ca893a310eb66bd8f0fe075c7a5d65",
+      "file_sha256": "967451fb340ed2e58b55f3654a407731dfafb2551ec53c1f4e1d3181fed1b451",
       "changes": "All nine beats retained; requested camera/architecture added; card and AI-screen contradictions corrected; SB06 memory dependencies repaired; explicit centrally maintained reference inputs Grid geometry uses the full selected image resolution instead of fixed pixel examples."
     },
     {
@@ -1139,7 +1139,7 @@
       ],
       "source_prompt_sha256": "ac40bf3eee9daac90310ed6ff05a2b72832c27347255c481694023e8db6f759b",
       "file": "03_film/07/video.txt",
-      "file_sha256": "a16e2a6d73de990eba8d1bb33591890909d0ffdcd4a296c7cd1ab76f21e723ae",
+      "file_sha256": "0e3ed588fd20d57631b863de908666c392906e8dc5dde86a4143e7bc8dc9fd42",
       "changes": "Operator/retry prose and repeated rules removed; all nine story beats retained; camera/architecture updated; audio cues follow visuals; reveal and reference contradictions repaired; Verified C01/C02 Element IDs substituted for local aliases; explicit reference binding; original Hungarian folk-rooted score and synchronized material transformation foley; researched Dél-Alföld tekerő/clarinet arrangement, phrase-synchronized facade motion, explicit protagonist inner monologue Continuation preserves narrator timbre and a natural breath over an uninterrupted sound bed."
     },
     {
@@ -3275,7 +3275,7 @@
         "MW02_B",
         "MW02_C"
       ],
-      "prompt_sha256": "793a104a51d254492c79d95ba06fd00202ca893a310eb66bd8f0fe075c7a5d65"
+      "prompt_sha256": "967451fb340ed2e58b55f3654a407731dfafb2551ec53c1f4e1d3181fed1b451"
     },
     "A07": {
       "key": "A07",
@@ -3322,7 +3322,7 @@
         "MW02_B",
         "MW02_C"
       ],
-      "prompt_sha256": "a16e2a6d73de990eba8d1bb33591890909d0ffdcd4a296c7cd1ab76f21e723ae"
+      "prompt_sha256": "0e3ed588fd20d57631b863de908666c392906e8dc5dde86a4143e7bc8dc9fd42"
     },
     "MR001": {
       "key": "MR001",
@@ -6349,13 +6349,20 @@
       "refs": [],
       "layout": "single full-frame 16:9",
       "intended_resolution": "2K",
-      "prompt_sha256": "cddcb458b98555df8acec9ea3c219a78a3c6a510edbe968212586c759485f45a",
-      "status": "PREPARED_NOT_GENERATED",
+      "prompt_sha256": "bb3ea1e42d990f61a4be243e93e24889ea25c605368fa76b4d65662d2ab5f273",
+      "status": "REPLACEMENT_PROMPT_READY_CREATOR_REGENERATION_PENDING",
       "world": "W07",
       "group": "A",
       "group_position": 1,
       "original_view": 1,
-      "replaces_page_asset": "W07"
+      "replaces_page_asset": "W07",
+      "replacement_note": "Creator identified the reviewed split-composition image as W07_A_01 and requested a corrected prompt for one regeneration. Revised to one elevated bridge-exit viewpoint with a physically joined side street, shared horizon and uninterrupted sky. Replace media on the existing W07_A_01 Element after generation; no duplicate Element or automatic generation.",
+      "reviewed_output": {
+        "path": "/home/raxim/Downloads/hf_20260910_105308_ec7f1484-0efe-40a2-8350-5fd58c41afc4.png",
+        "width": 2752,
+        "height": 1536,
+        "finding": "Visible vertical split between bridge scene and Basilica street; unsuitable as a continuous spatial reference."
+      }
     },
     "W07_A_02": {
       "key": "W07_A_02",
@@ -6365,7 +6372,7 @@
       "layout": "single full-frame 16:9",
       "intended_resolution": "2K",
       "prompt_sha256": "f432a1ad3c1efd74c12b9b0e0a71f27d240901d436f09f07a5bf914363069017",
-      "status": "PREPARED_NOT_GENERATED",
+      "status": "CREATOR_SUPPLIED_OUTPUT_ELEMENT_ID_MEDIA_NOT_REVIEWED",
       "world": "W07",
       "group": "A",
       "group_position": 2,
@@ -6380,7 +6387,7 @@
       "layout": "single full-frame 16:9",
       "intended_resolution": "2K",
       "prompt_sha256": "33f5bee0b1c6c6c28174bafc2cfb190f1ff1f79b6741a6e5401861341f24bfd7",
-      "status": "PREPARED_NOT_GENERATED",
+      "status": "CREATOR_SUPPLIED_OUTPUT_ELEMENT_ID_MEDIA_NOT_REVIEWED",
       "world": "W07",
       "group": "A",
       "group_position": 3,
@@ -6395,7 +6402,7 @@
       "layout": "single full-frame 16:9",
       "intended_resolution": "2K",
       "prompt_sha256": "98a0dd53053fae8be80539fa486a9d4cb7bf3a3bb70034855fe1411a0aeb07d5",
-      "status": "PREPARED_NOT_GENERATED",
+      "status": "CREATOR_SUPPLIED_OUTPUT_ELEMENT_ID_MEDIA_NOT_REVIEWED",
       "world": "W07",
       "group": "A",
       "group_position": 4,
@@ -6410,7 +6417,7 @@
       "layout": "single full-frame 16:9",
       "intended_resolution": "2K",
       "prompt_sha256": "c08a9853e37e4b845ec4a9c183a75bb67e58f667a48275d916a590849734c708",
-      "status": "PREPARED_NOT_GENERATED",
+      "status": "CREATOR_SUPPLIED_OUTPUT_ELEMENT_ID_MEDIA_NOT_REVIEWED",
       "world": "W07",
       "group": "B",
       "group_position": 1,
@@ -6425,7 +6432,7 @@
       "layout": "single full-frame 16:9",
       "intended_resolution": "2K",
       "prompt_sha256": "966815edc58fd221fcfbe0488ef7b612c080f6f0f5427879b8e6701681cfff59",
-      "status": "PREPARED_NOT_GENERATED",
+      "status": "CREATOR_SUPPLIED_OUTPUT_ELEMENT_ID_MEDIA_NOT_REVIEWED",
       "world": "W07",
       "group": "B",
       "group_position": 2,
@@ -6440,7 +6447,7 @@
       "layout": "single full-frame 16:9",
       "intended_resolution": "2K",
       "prompt_sha256": "8211a561ef7c452b8c78988969ff8f0f0b446a285f504813349bcc857eeec654",
-      "status": "PREPARED_NOT_GENERATED",
+      "status": "CREATOR_SUPPLIED_OUTPUT_ELEMENT_ID_MEDIA_NOT_REVIEWED",
       "world": "W07",
       "group": "B",
       "group_position": 3,
@@ -6455,7 +6462,7 @@
       "layout": "single full-frame 16:9",
       "intended_resolution": "2K",
       "prompt_sha256": "8178486a484445424b535d127a71eb376414a56d9ce9d299ebfa87215a87566c",
-      "status": "PREPARED_NOT_GENERATED",
+      "status": "CREATOR_SUPPLIED_OUTPUT_ELEMENT_ID_MEDIA_NOT_REVIEWED",
       "world": "W07",
       "group": "B",
       "group_position": 4,
@@ -6470,7 +6477,7 @@
       "layout": "single full-frame 16:9",
       "intended_resolution": "2K",
       "prompt_sha256": "4e1efb45bc486628300dec5c0551ff2192c95ac5aa491848b217ff4344cd6b46",
-      "status": "PREPARED_NOT_GENERATED",
+      "status": "CREATOR_SUPPLIED_OUTPUT_ELEMENT_ID_MEDIA_NOT_REVIEWED",
       "world": "W07",
       "group": "C",
       "group_position": 1,
@@ -6485,7 +6492,7 @@
       "layout": "single full-frame 16:9",
       "intended_resolution": "2K",
       "prompt_sha256": "c93e5c3c4b0b86547699a364eb2a8071114d2dba1ff4b118684c08eccdb30889",
-      "status": "PREPARED_NOT_GENERATED",
+      "status": "CREATOR_SUPPLIED_OUTPUT_ELEMENT_ID_MEDIA_NOT_REVIEWED",
       "world": "W07",
       "group": "C",
       "group_position": 2,
@@ -6500,7 +6507,7 @@
       "layout": "single full-frame 16:9",
       "intended_resolution": "2K",
       "prompt_sha256": "d2f5db21bfa2bc8b8629d62c4cd56d74c4e3a539d47db5f2ad6bdbaa1abb8491",
-      "status": "PREPARED_NOT_GENERATED",
+      "status": "CREATOR_SUPPLIED_OUTPUT_ELEMENT_ID_MEDIA_NOT_REVIEWED",
       "world": "W07",
       "group": "C",
       "group_position": 3,
@@ -6515,7 +6522,7 @@
       "layout": "single full-frame 16:9",
       "intended_resolution": "2K",
       "prompt_sha256": "a494f5c5c373fca6710c446083a6437df612f0ec7dc65c5fee367cbf2e560987",
-      "status": "PREPARED_NOT_GENERATED",
+      "status": "CREATOR_SUPPLIED_OUTPUT_ELEMENT_ID_MEDIA_NOT_REVIEWED",
       "world": "W07",
       "group": "C",
       "group_position": 4,
@@ -7951,63 +7958,87 @@
     },
     "W07_A_01": {
       "alias": "W07_A_01_MAIN_WORLD_VIEW_01",
-      "mention": null,
-      "last_mention": "@UNBOUND_W07_A_01"
+      "mention": "@loc_MYS_mys-w07-a-01-world-view-01_s0_v1",
+      "last_mention": "@loc_MYS_mys-w07-a-01-world-view-01_s0_v1",
+      "mention_source": "CREATOR_SUPPLIED_EXACT_ELEMENT_ID_2026_09_10",
+      "evidence": "Creator supplied exact output Element ID. Unique keys, complete W07 coverage and original-view mapping checked. Binding does not establish output quality or attachment completion."
     },
     "W07_A_02": {
       "alias": "W07_A_02_MAIN_WORLD_VIEW_02",
-      "mention": null,
-      "last_mention": "@UNBOUND_W07_A_02"
+      "mention": "@loc_MYS_mys-w07-a-02-world-view-02_s0_v1",
+      "last_mention": "@loc_MYS_mys-w07-a-02-world-view-02_s0_v1",
+      "mention_source": "CREATOR_SUPPLIED_EXACT_ELEMENT_ID_2026_09_10",
+      "evidence": "Creator supplied exact output Element ID. Unique keys, complete W07 coverage and original-view mapping checked. Binding does not establish output quality or attachment completion."
     },
     "W07_A_03": {
       "alias": "W07_A_03_MAIN_WORLD_VIEW_03",
-      "mention": null,
-      "last_mention": "@UNBOUND_W07_A_03"
+      "mention": "@loc_MYS_mys-w07-a-03-world-view-03_s0_v1",
+      "last_mention": "@loc_MYS_mys-w07-a-03-world-view-03_s0_v1",
+      "mention_source": "CREATOR_SUPPLIED_EXACT_ELEMENT_ID_2026_09_10",
+      "evidence": "Creator supplied exact output Element ID. Unique keys, complete W07 coverage and original-view mapping checked. Binding does not establish output quality or attachment completion."
     },
     "W07_A_04": {
       "alias": "W07_A_04_MAIN_WORLD_VIEW_04",
-      "mention": null,
-      "last_mention": "@UNBOUND_W07_A_04"
+      "mention": "@loc_MYS_mys-w07-a-04-world-view-04_s0_v1",
+      "last_mention": "@loc_MYS_mys-w07-a-04-world-view-04_s0_v1",
+      "mention_source": "CREATOR_SUPPLIED_EXACT_ELEMENT_ID_2026_09_10",
+      "evidence": "Creator supplied exact output Element ID. Unique keys, complete W07 coverage and original-view mapping checked. Binding does not establish output quality or attachment completion."
     },
     "W07_B_01": {
       "alias": "W07_B_01_MAIN_WORLD_VIEW_05",
-      "mention": null,
-      "last_mention": "@UNBOUND_W07_B_01"
+      "mention": "@loc_MYS_mys-w07-b-01-world-view-05_s0_v1",
+      "last_mention": "@loc_MYS_mys-w07-b-01-world-view-05_s0_v1",
+      "mention_source": "CREATOR_SUPPLIED_EXACT_ELEMENT_ID_2026_09_10",
+      "evidence": "Creator supplied exact output Element ID. Unique keys, complete W07 coverage and original-view mapping checked. Binding does not establish output quality or attachment completion."
     },
     "W07_B_02": {
       "alias": "W07_B_02_MAIN_WORLD_VIEW_06",
-      "mention": null,
-      "last_mention": "@UNBOUND_W07_B_02"
+      "mention": "@loc_MYS_mys-w07-b-02-world-view-06_s0_v1",
+      "last_mention": "@loc_MYS_mys-w07-b-02-world-view-06_s0_v1",
+      "mention_source": "CREATOR_SUPPLIED_EXACT_ELEMENT_ID_2026_09_10",
+      "evidence": "Creator supplied exact output Element ID. Unique keys, complete W07 coverage and original-view mapping checked. Binding does not establish output quality or attachment completion."
     },
     "W07_B_03": {
       "alias": "W07_B_03_MAIN_WORLD_VIEW_07",
-      "mention": null,
-      "last_mention": "@UNBOUND_W07_B_03"
+      "mention": "@loc_MYS_mys-w07-b-03-world-view-07_s0_v1",
+      "last_mention": "@loc_MYS_mys-w07-b-03-world-view-07_s0_v1",
+      "mention_source": "CREATOR_SUPPLIED_EXACT_ELEMENT_ID_2026_09_10",
+      "evidence": "Creator supplied exact output Element ID. Unique keys, complete W07 coverage and original-view mapping checked. Binding does not establish output quality or attachment completion."
     },
     "W07_B_04": {
       "alias": "W07_B_04_MAIN_WORLD_VIEW_08",
-      "mention": null,
-      "last_mention": "@UNBOUND_W07_B_04"
+      "mention": "@loc_MYS_mys-w07-b-04-world-view-08_s0_v1",
+      "last_mention": "@loc_MYS_mys-w07-b-04-world-view-08_s0_v1",
+      "mention_source": "CREATOR_SUPPLIED_EXACT_ELEMENT_ID_2026_09_10",
+      "evidence": "Creator supplied exact output Element ID. Unique keys, complete W07 coverage and original-view mapping checked. Binding does not establish output quality or attachment completion."
     },
     "W07_C_01": {
       "alias": "W07_C_01_MAIN_WORLD_VIEW_09",
-      "mention": null,
-      "last_mention": "@UNBOUND_W07_C_01"
+      "mention": "@loc_MYS_mys-w07-c-01-world-view-09_s0_v1",
+      "last_mention": "@loc_MYS_mys-w07-c-01-world-view-09_s0_v1",
+      "mention_source": "CREATOR_SUPPLIED_EXACT_ELEMENT_ID_2026_09_10",
+      "evidence": "Creator supplied exact output Element ID. Unique keys, complete W07 coverage and original-view mapping checked. Binding does not establish output quality or attachment completion."
     },
     "W07_C_02": {
       "alias": "W07_C_02_MAIN_WORLD_VIEW_01",
-      "mention": null,
-      "last_mention": "@UNBOUND_W07_C_02"
+      "mention": "@loc_MYS_mys-w07-c-02-world-view-01_s0_v1",
+      "last_mention": "@loc_MYS_mys-w07-c-02-world-view-01_s0_v1",
+      "mention_source": "CREATOR_SUPPLIED_EXACT_ELEMENT_ID_2026_09_10",
+      "evidence": "Creator supplied exact output Element ID. Unique keys, complete W07 coverage and original-view mapping checked. Binding does not establish output quality or attachment completion."
     },
     "W07_C_03": {
       "alias": "W07_C_03_MAIN_WORLD_VIEW_07",
-      "mention": null,
-      "last_mention": "@UNBOUND_W07_C_03"
+      "mention": "@loc_MYS_mys-w07-c-03-world-view-07_s0_v1",
+      "last_mention": "@loc_MYS_mys-w07-c-03-world-view-07_s0_v1",
+      "mention_source": "CREATOR_SUPPLIED_EXACT_ELEMENT_ID_2026_09_10",
+      "evidence": "Creator supplied exact output Element ID. Unique keys, complete W07 coverage and original-view mapping checked. Binding does not establish output quality or attachment completion."
     },
     "W07_C_04": {
       "alias": "W07_C_04_MAIN_WORLD_VIEW_08",
-      "mention": null,
-      "last_mention": "@UNBOUND_W07_C_04"
+      "mention": "@loc_MYS_mys-w07-c-04-world-view-08_s0_v1",
+      "last_mention": "@loc_MYS_mys-w07-c-04-world-view-08_s0_v1",
+      "mention_source": "CREATOR_SUPPLIED_EXACT_ELEMENT_ID_2026_09_10",
+      "evidence": "Creator supplied exact output Element ID. Unique keys, complete W07 coverage and original-view mapping checked. Binding does not establish output quality or attachment completion."
     }
   },
   "reference_binding_note": "Only full verified Higgsfield mentions belong in mention. Null produces an explicit @UNBOUND_<key> slot and a do-not-generate notice. Run 04_tracking/sync_references.py --write once to propagate a binding across all prompts and guides. Previous videos remain in the actual Forward Extend source field. Raw-image, storyboard and audio autoload handles are unverified until observed; never guess an Element ID from a filename.",
@@ -9750,8 +9781,8 @@
           "asset": "W07_A_01",
           "file": "02_library/worlds/real/W07_A_01_MAIN_WORLD_VIEW_01.txt",
           "original_view": 1,
-          "sha256": "cddcb458b98555df8acec9ea3c219a78a3c6a510edbe968212586c759485f45a",
-          "status": "PREPARED_NOT_GENERATED"
+          "sha256": "bb3ea1e42d990f61a4be243e93e24889ea25c605368fa76b4d65662d2ab5f273",
+          "status": "REPLACEMENT_PROMPT_READY_CREATOR_REGENERATION_PENDING"
         },
         {
           "group": "A",
@@ -9760,7 +9791,7 @@
           "file": "02_library/worlds/real/W07_A_02_MAIN_WORLD_VIEW_02.txt",
           "original_view": 2,
           "sha256": "f432a1ad3c1efd74c12b9b0e0a71f27d240901d436f09f07a5bf914363069017",
-          "status": "PREPARED_NOT_GENERATED"
+          "status": "CREATOR_SUPPLIED_OUTPUT_ELEMENT_ID_MEDIA_NOT_REVIEWED"
         },
         {
           "group": "A",
@@ -9769,7 +9800,7 @@
           "file": "02_library/worlds/real/W07_A_03_MAIN_WORLD_VIEW_03.txt",
           "original_view": 3,
           "sha256": "33f5bee0b1c6c6c28174bafc2cfb190f1ff1f79b6741a6e5401861341f24bfd7",
-          "status": "PREPARED_NOT_GENERATED"
+          "status": "CREATOR_SUPPLIED_OUTPUT_ELEMENT_ID_MEDIA_NOT_REVIEWED"
         },
         {
           "group": "A",
@@ -9778,7 +9809,7 @@
           "file": "02_library/worlds/real/W07_A_04_MAIN_WORLD_VIEW_04.txt",
           "original_view": 4,
           "sha256": "98a0dd53053fae8be80539fa486a9d4cb7bf3a3bb70034855fe1411a0aeb07d5",
-          "status": "PREPARED_NOT_GENERATED"
+          "status": "CREATOR_SUPPLIED_OUTPUT_ELEMENT_ID_MEDIA_NOT_REVIEWED"
         },
         {
           "group": "B",
@@ -9787,7 +9818,7 @@
           "file": "02_library/worlds/real/W07_B_01_MAIN_WORLD_VIEW_05.txt",
           "original_view": 5,
           "sha256": "c08a9853e37e4b845ec4a9c183a75bb67e58f667a48275d916a590849734c708",
-          "status": "PREPARED_NOT_GENERATED"
+          "status": "CREATOR_SUPPLIED_OUTPUT_ELEMENT_ID_MEDIA_NOT_REVIEWED"
         },
         {
           "group": "B",
@@ -9796,7 +9827,7 @@
           "file": "02_library/worlds/real/W07_B_02_MAIN_WORLD_VIEW_06.txt",
           "original_view": 6,
           "sha256": "966815edc58fd221fcfbe0488ef7b612c080f6f0f5427879b8e6701681cfff59",
-          "status": "PREPARED_NOT_GENERATED"
+          "status": "CREATOR_SUPPLIED_OUTPUT_ELEMENT_ID_MEDIA_NOT_REVIEWED"
         },
         {
           "group": "B",
@@ -9805,7 +9836,7 @@
           "file": "02_library/worlds/real/W07_B_03_MAIN_WORLD_VIEW_07.txt",
           "original_view": 7,
           "sha256": "8211a561ef7c452b8c78988969ff8f0f0b446a285f504813349bcc857eeec654",
-          "status": "PREPARED_NOT_GENERATED"
+          "status": "CREATOR_SUPPLIED_OUTPUT_ELEMENT_ID_MEDIA_NOT_REVIEWED"
         },
         {
           "group": "B",
@@ -9814,7 +9845,7 @@
           "file": "02_library/worlds/real/W07_B_04_MAIN_WORLD_VIEW_08.txt",
           "original_view": 8,
           "sha256": "8178486a484445424b535d127a71eb376414a56d9ce9d299ebfa87215a87566c",
-          "status": "PREPARED_NOT_GENERATED"
+          "status": "CREATOR_SUPPLIED_OUTPUT_ELEMENT_ID_MEDIA_NOT_REVIEWED"
         },
         {
           "group": "C",
@@ -9823,7 +9854,7 @@
           "file": "02_library/worlds/real/W07_C_01_MAIN_WORLD_VIEW_09.txt",
           "original_view": 9,
           "sha256": "4e1efb45bc486628300dec5c0551ff2192c95ac5aa491848b217ff4344cd6b46",
-          "status": "PREPARED_NOT_GENERATED"
+          "status": "CREATOR_SUPPLIED_OUTPUT_ELEMENT_ID_MEDIA_NOT_REVIEWED"
         },
         {
           "group": "C",
@@ -9832,7 +9863,7 @@
           "file": "02_library/worlds/real/W07_C_02_MAIN_WORLD_VIEW_01.txt",
           "original_view": 1,
           "sha256": "c93e5c3c4b0b86547699a364eb2a8071114d2dba1ff4b118684c08eccdb30889",
-          "status": "PREPARED_NOT_GENERATED"
+          "status": "CREATOR_SUPPLIED_OUTPUT_ELEMENT_ID_MEDIA_NOT_REVIEWED"
         },
         {
           "group": "C",
@@ -9841,7 +9872,7 @@
           "file": "02_library/worlds/real/W07_C_03_MAIN_WORLD_VIEW_07.txt",
           "original_view": 7,
           "sha256": "d2f5db21bfa2bc8b8629d62c4cd56d74c4e3a539d47db5f2ad6bdbaa1abb8491",
-          "status": "PREPARED_NOT_GENERATED"
+          "status": "CREATOR_SUPPLIED_OUTPUT_ELEMENT_ID_MEDIA_NOT_REVIEWED"
         },
         {
           "group": "C",
@@ -9850,7 +9881,7 @@
           "file": "02_library/worlds/real/W07_C_04_MAIN_WORLD_VIEW_08.txt",
           "original_view": 8,
           "sha256": "a494f5c5c373fca6710c446083a6437df612f0ec7dc65c5fee367cbf2e560987",
-          "status": "PREPARED_NOT_GENERATED"
+          "status": "CREATOR_SUPPLIED_OUTPUT_ELEMENT_ID_MEDIA_NOT_REVIEWED"
         }
       ]
     }
