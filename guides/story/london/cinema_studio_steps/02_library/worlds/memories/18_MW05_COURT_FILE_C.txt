@@ -1,5 +1,10 @@
 REFERENCE ID: MW05_COURT_FILE_C (never print IDs, headings or panel labels).
 
+OUTPUT ELEMENT ASSIGNMENT — OPERATOR METADATA ONLY, NEVER RENDER:
+Live output Element name (operator lookup only): loc_MYS_mys-mw05-c-court-file_s0_v1
+Live output Element UUID: 4172ffc4-184a-4954-80f4-03ea03ad6418
+Assign the finished image to this existing empty target. This output target is not an input reference.
+
 PAGE CONTINUITY INPUT: @loc_MYS_mys-mw05-a-court-file_s0_v1 supplies the accepted Page A identities, shared material palette and any recurring room geometry. New places explicitly assigned to this page retain their own stated setting; do not copy Page A into every cell.
 
 REFERENCE INPUTS:

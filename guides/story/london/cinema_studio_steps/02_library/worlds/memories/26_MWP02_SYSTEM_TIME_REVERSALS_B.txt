@@ -1,5 +1,10 @@
 REFERENCE ID: MWP02_SYSTEM_TIME_REVERSALS_B (never print IDs, headings or panel labels).
 
+OUTPUT ELEMENT ASSIGNMENT — OPERATOR METADATA ONLY, NEVER RENDER:
+Live output Element name (operator lookup only): loc_MYS_mys-mwp02-b-system-time-reversals_s0_v1
+Live output Element UUID: 6a867b37-16f5-4ecb-85ed-c8b92aa40311
+Assign the finished image to this existing empty target. This output target is not an input reference.
+
 REFERENCE SETUP INCOMPLETE: MWP02
 Do not generate until these references are bound.
 

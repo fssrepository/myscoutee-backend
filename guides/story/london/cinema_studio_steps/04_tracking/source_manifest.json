@@ -2129,7 +2129,7 @@
       ],
       "source_prompt_sha256": "cac300bae4bd6f33e50ec5936c56622c5858e341d0494d281a87e70ed4ee9a04",
       "file": "02_library/worlds/memories/18_MW05_COURT_FILE_C.txt",
-      "file_sha256": "5c52bb57c0ee3e81ac6604ca88232bf73353e98ee5da4cb28b1caada02c3f84e",
+      "file_sha256": "82e079a142342dcb0c6b9433504790ea7f8acdf6fad03443dd40ce365308c09a",
       "changes": "Verbatim fenced prompt; explicit centrally maintained reference inputs Grid geometry uses the full selected image resolution instead of fixed pixel examples.",
       "note": "Companion page C preserving original memory views."
     },
@@ -2259,7 +2259,7 @@
       ],
       "source_prompt_sha256": "16bf4be44836d9fb010f7825cc24770d0ce78cbd05373fc417d2155eba6ae1e1",
       "file": "02_library/worlds/memories/24_MWP01_ROUTES_ROOMS_DOCUMENTS_C.txt",
-      "file_sha256": "b72d18e55c7a4b3ec246593fbed58e8fc9507b71ed16eca4e42aaac785feb5ed",
+      "file_sha256": "c6fffec3d3d101ccc2747882ddac45ce6959d8602e92f7be6d64e85f27f1974c",
       "changes": "Verbatim fenced prompt; explicit centrally maintained reference inputs; rural memory grounded in creator's Orosháza paprika/corn-field childhood Grid geometry uses the full selected image resolution instead of fixed pixel examples.",
       "note": "Companion page C preserving original memory views."
     },
@@ -2272,7 +2272,7 @@
       ],
       "source_prompt_sha256": "557e0016d71cfd83bfd2c240538a5a77f6b6d8785ceb0f79bb97e387e1ccbd6f",
       "file": "02_library/worlds/memories/26_MWP02_SYSTEM_TIME_REVERSALS_B.txt",
-      "file_sha256": "7dd8abfd4a5f26d3cc3b119f448cdab078194f5e0a2db693c24b1f084dd77c4c",
+      "file_sha256": "81abf0f87d4dfb83c1c34b5d0065df5e62e41a02bdc19be3ed4e3d5f2270d62a",
       "changes": "AI-specific screen becomes ordinary document cursor; citizen/review beat retained; explicit centrally maintained reference inputs Grid geometry uses the full selected image resolution instead of fixed pixel examples.",
       "note": "Companion page B preserving original memory views."
     },
@@ -2285,7 +2285,7 @@
       ],
       "source_prompt_sha256": "557e0016d71cfd83bfd2c240538a5a77f6b6d8785ceb0f79bb97e387e1ccbd6f",
       "file": "02_library/worlds/memories/27_MWP02_SYSTEM_TIME_REVERSALS_C.txt",
-      "file_sha256": "bd5f5868d9bb4eb12f3c4c157b9b2c9650d4f2c63f833acebc01aa70c1185301",
+      "file_sha256": "54d9d48b55bed8fcddf1b3f244446ae6b206b36afa354d941c5e2b4c0b378e2f",
       "changes": "AI-specific screen becomes ordinary document cursor; citizen/review beat retained; explicit centrally maintained reference inputs Grid geometry uses the full selected image resolution instead of fixed pixel examples.",
       "note": "Companion page C preserving original memory views."
     },
@@ -4695,7 +4695,7 @@
         7,
         8
       ],
-      "prompt_sha256": "5c52bb57c0ee3e81ac6604ca88232bf73353e98ee5da4cb28b1caada02c3f84e",
+      "prompt_sha256": "82e079a142342dcb0c6b9433504790ea7f8acdf6fad03443dd40ce365308c09a",
       "reference_scope_note": "Inputs scoped to the four assigned views; unrelated companion-page subjects removed. Literal scene descriptions unchanged.",
       "composition_revision_note": "2026-09-10: distinct physical subjects/actions replace repeated content; companion sources preserve the original story beats. No camera-only variation.",
       "current_prompt_image_verified": false,
@@ -4795,7 +4795,8 @@
       "output": "MWP01_ROUTES_ROOMS_DOCUMENTS_C.png",
       "refs": [
         "C01",
-        "MWP01"
+        "MWP01",
+        "MWP01_B"
       ],
       "layout": "4K 2x2 page C",
       "status": "PREPARED_NOT_RENDERED",
@@ -4806,7 +4807,7 @@
         7,
         8
       ],
-      "prompt_sha256": "b72d18e55c7a4b3ec246593fbed58e8fc9507b71ed16eca4e42aaac785feb5ed",
+      "prompt_sha256": "c6fffec3d3d101ccc2747882ddac45ce6959d8602e92f7be6d64e85f27f1974c",
       "composition_revision_note": "2026-09-10: distinct physical subjects/actions replace repeated content; companion sources preserve the original story beats. No camera-only variation.",
       "current_prompt_image_verified": false,
       "content_assignments": {
@@ -4832,7 +4833,7 @@
         7,
         8
       ],
-      "prompt_sha256": "7dd8abfd4a5f26d3cc3b119f448cdab078194f5e0a2db693c24b1f084dd77c4c",
+      "prompt_sha256": "81abf0f87d4dfb83c1c34b5d0065df5e62e41a02bdc19be3ed4e3d5f2270d62a",
       "composition_revision_note": "2026-09-10: distinct physical subjects/actions replace repeated content; companion sources preserve the original story beats. No camera-only variation.",
       "current_prompt_image_verified": false,
       "content_assignments": {
@@ -4856,7 +4857,7 @@
         7,
         8
       ],
-      "prompt_sha256": "bd5f5868d9bb4eb12f3c4c157b9b2c9650d4f2c63f833acebc01aa70c1185301",
+      "prompt_sha256": "54d9d48b55bed8fcddf1b3f244446ae6b206b36afa354d941c5e2b4c0b378e2f",
       "composition_revision_note": "2026-09-10: distinct physical subjects/actions replace repeated content; companion sources preserve the original story beats. No camera-only variation.",
       "current_prompt_image_verified": false,
       "content_assignments": {
@@ -13498,7 +13499,7 @@
               8
             ],
             "status": "PREPARED_NOT_RENDERED",
-            "sha256": "5c52bb57c0ee3e81ac6604ca88232bf73353e98ee5da4cb28b1caada02c3f84e"
+            "sha256": "82e079a142342dcb0c6b9433504790ea7f8acdf6fad03443dd40ce365308c09a"
           }
         },
         "original_views": 9,
@@ -13653,7 +13654,7 @@
               8
             ],
             "status": "PREPARED_NOT_RENDERED",
-            "sha256": "b72d18e55c7a4b3ec246593fbed58e8fc9507b71ed16eca4e42aaac785feb5ed"
+            "sha256": "c6fffec3d3d101ccc2747882ddac45ce6959d8602e92f7be6d64e85f27f1974c"
           }
         },
         "original_views": 9,
@@ -13684,7 +13685,7 @@
               8
             ],
             "status": "PREPARED_NOT_RENDERED",
-            "sha256": "7dd8abfd4a5f26d3cc3b119f448cdab078194f5e0a2db693c24b1f084dd77c4c"
+            "sha256": "81abf0f87d4dfb83c1c34b5d0065df5e62e41a02bdc19be3ed4e3d5f2270d62a"
           },
           "C": {
             "key": "MWP02_C",
@@ -13696,7 +13697,7 @@
               8
             ],
             "status": "PREPARED_NOT_RENDERED",
-            "sha256": "bd5f5868d9bb4eb12f3c4c157b9b2c9650d4f2c63f833acebc01aa70c1185301"
+            "sha256": "54d9d48b55bed8fcddf1b3f244446ae6b206b36afa354d941c5e2b4c0b378e2f"
           }
         },
         "original_views": 9,

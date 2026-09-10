@@ -1,8 +1,17 @@
 REFERENCE ID: MWP01_ROUTES_ROOMS_DOCUMENTS_C (never print IDs, headings or panel labels).
 
+OUTPUT ELEMENT ASSIGNMENT — OPERATOR METADATA ONLY, NEVER RENDER:
+Live output Element name (operator lookup only): loc_MYS_mys-mwp01-c-routes-rooms-documents_s0_v1
+Live output Element UUID: 956de5c1-41b0-49a5-9dc7-0e6ffb3f61e8
+Assign the finished image to this existing empty target. This output target is not an input reference.
+
 PAGE CONTINUITY INPUT: @loc_MYS_mys-mwp01-a-routes-rooms-documents_s0_v1 supplies the accepted Page A identities, shared material palette and any recurring room geometry. New places explicitly assigned to this page retain their own stated setting; do not copy Page A into every cell.
 
+REFERENCE SETUP INCOMPLETE: MWP01_B
+Do not generate until these references are bound.
+
 REFERENCE INPUTS:
+@UNBOUND_MWP01_B = Use original views 7 and 8 of the accepted MWP01_B page for the same two-bed Nile/Aswan hotel room and unfinished health-insurance form. Apply only to the bottom two cells.
 @char_MYS_mys-c01-protagonist_s0_v1 = CHARACTER 01 — PROTAGONIST; exact person identity; use only where this person appears.
 
 OUTPUT GEOMETRY — ONE 4K 2×2 REFERENCE PAGE:
