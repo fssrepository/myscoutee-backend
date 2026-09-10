@@ -455,7 +455,7 @@
       ],
       "source_prompt_sha256": "717f8a13a997263b4988a3087369787649a75542e70f60f5bc32565a4a5fc759",
       "file": "02_library/worlds/memories/MW01_LONDON_SOCIAL_A.txt",
-      "file_sha256": "aa3f82eb12d85f694d4f00dcce87e6adb3786f3555ab4ecabe5def47d35238e5",
+      "file_sha256": "906243f05d0341e108e390a7d85a6750dc62d2f9e69b4302b6b4dbf74d820eb6",
       "changes": "Verbatim fenced prompt; explicit centrally maintained reference inputs Grid geometry uses the full selected image resolution instead of fixed pixel examples."
     },
     {
@@ -1823,7 +1823,7 @@
       ],
       "source_prompt_sha256": "717f8a13a997263b4988a3087369787649a75542e70f60f5bc32565a4a5fc759",
       "file": "02_library/worlds/memories/MW01_LONDON_SOCIAL_B.txt",
-      "file_sha256": "434ce51fd0ab41396f29bb10c6167cff47261c504439f7cf63498f69eb2a0fe8",
+      "file_sha256": "8310a945baa53e36415e27cd581129954268ead596d1852586eefdf712b79176",
       "changes": "Verbatim fenced prompt; explicit centrally maintained reference inputs Grid geometry uses the full selected image resolution instead of fixed pixel examples.",
       "note": "Companion page B preserving original memory views."
     },
@@ -1836,7 +1836,7 @@
       ],
       "source_prompt_sha256": "717f8a13a997263b4988a3087369787649a75542e70f60f5bc32565a4a5fc759",
       "file": "02_library/worlds/memories/MW01_LONDON_SOCIAL_C.txt",
-      "file_sha256": "469c8e37675f7a62bf4cc3f603fa923ac76135c4b9f2ad909ccb58219f53fd84",
+      "file_sha256": "dd5f0ba4c6a2d09313f39c36251c9a606445178c87fe673c38268b406547b5e2",
       "changes": "Verbatim fenced prompt; explicit centrally maintained reference inputs Grid geometry uses the full selected image resolution instead of fixed pixel examples.",
       "note": "Companion page C preserving original memory views."
     },
@@ -2596,7 +2596,7 @@
         "MW01_B",
         "MW01_C"
       ],
-      "prompt_sha256": "aa3f82eb12d85f694d4f00dcce87e6adb3786f3555ab4ecabe5def47d35238e5",
+      "prompt_sha256": "906243f05d0341e108e390a7d85a6750dc62d2f9e69b4302b6b4dbf74d820eb6",
       "reference_review_note": "Use the current T01_DETAILS / T01_A restaurant page; the legacy pilot T01_IMAGE Element is not the input for the current memory generation workflow."
     },
     "MW02": {
@@ -3848,7 +3848,7 @@
         7,
         8
       ],
-      "prompt_sha256": "434ce51fd0ab41396f29bb10c6167cff47261c504439f7cf63498f69eb2a0fe8",
+      "prompt_sha256": "8310a945baa53e36415e27cd581129954268ead596d1852586eefdf712b79176",
       "reference_review_note": "Use the current T01_DETAILS / T01_A restaurant page; the legacy pilot T01_IMAGE Element is not the input for the current memory generation workflow."
     },
     "MW01_C": {
@@ -3875,7 +3875,7 @@
         7,
         8
       ],
-      "prompt_sha256": "469c8e37675f7a62bf4cc3f603fa923ac76135c4b9f2ad909ccb58219f53fd84",
+      "prompt_sha256": "dd5f0ba4c6a2d09313f39c36251c9a606445178c87fe673c38268b406547b5e2",
       "reference_review_note": "Use the current T01_DETAILS / T01_A restaurant page; the legacy pilot T01_IMAGE Element is not the input for the current memory generation workflow."
     },
     "MW02_B": {
@@ -4260,7 +4260,7 @@
         "C01",
         "C02"
       ],
-      "status": "PREPARED_NOT_RENDERED",
+      "status": "CREATOR_SUPPLIED_OUTPUT_ELEMENT_ID_MEDIA_NOT_REVIEWED",
       "layout": "4K 2x2 restaurant coverage page A",
       "prompt_sha256": "9702b4aba4930284b8d773cc1bcbaa083817bcbc7f17ea0784ab0ed3345ac42a"
     },
@@ -4273,9 +4273,9 @@
         "C02",
         "T01_DETAILS"
       ],
-      "status": "PREPARED_NOT_RENDERED",
+      "status": "CREATOR_SUPPLIED_OUTPUT_ELEMENT_ID_MEDIA_NOT_REVIEWED",
       "layout": "4K 2x2 restaurant coverage page B",
-      "prompt_sha256": "1871005982cc1e767e3a6611c20def6d85b1e8048a571f8efb984d493d297362"
+      "prompt_sha256": "ce9591723b2199ad302f6c463b6ef7fc1d91cee270721f215b758f75e5bf9b7d"
     },
     "T01_DETAILS_C": {
       "key": "T01_DETAILS_C",
@@ -4286,9 +4286,9 @@
         "C02",
         "T01_DETAILS"
       ],
-      "status": "PREPARED_NOT_RENDERED",
+      "status": "CREATOR_SUPPLIED_OUTPUT_ELEMENT_ID_MEDIA_NOT_REVIEWED",
       "layout": "4K 2x2 restaurant coverage page C",
-      "prompt_sha256": "020628143593fdbbcd4b2915be5b7ba8b1d2321e3742f61d7b388975f53db0f4"
+      "prompt_sha256": "c34164c4cb769203452627f5ad439c7baa1765a765bae8f2c0166bc0b4772677"
     },
     "R002": {
       "key": "R002",
@@ -7349,21 +7349,24 @@
     },
     "T01_DETAILS": {
       "alias": "T01_DETAILS",
-      "mention": null,
-      "last_mention": "@UNBOUND_T01_DETAILS",
-      "evidence": "Prepared restaurant coverage page A; not imported or rendered. Uses accepted original room and character inputs."
+      "mention": "@loc_MYS_mys-t01-a-soho-restaurant_s0_v1",
+      "last_mention": "@loc_MYS_mys-t01-a-soho-restaurant_s0_v1",
+      "evidence": "Creator supplied this exact T01 restaurant page Element ID on 2026-09-10. Markdown underscore escapes removed. Current image attachment and Save state have not been independently verified.",
+      "mention_source": "CREATOR_SUPPLIED_EXACT_ELEMENT_ID_2026_09_10"
     },
     "T01_DETAILS_B": {
       "alias": "T01_DETAILS_B",
-      "mention": null,
-      "last_mention": "@UNBOUND_T01_DETAILS_B",
-      "evidence": "Prepared restaurant coverage page B; not imported or rendered. Uses accepted original room and character inputs."
+      "mention": "@loc_MYS_mys-t01-b-soho-restaurant_s0_v1",
+      "last_mention": "@loc_MYS_mys-t01-b-soho-restaurant_s0_v1",
+      "evidence": "Creator supplied this exact T01 restaurant page Element ID on 2026-09-10. Markdown underscore escapes removed. Current image attachment and Save state have not been independently verified.",
+      "mention_source": "CREATOR_SUPPLIED_EXACT_ELEMENT_ID_2026_09_10"
     },
     "T01_DETAILS_C": {
       "alias": "T01_DETAILS_C",
-      "mention": null,
-      "last_mention": "@UNBOUND_T01_DETAILS_C",
-      "evidence": "Prepared restaurant coverage page C; not imported or rendered. Uses accepted original room and character inputs."
+      "mention": "@loc_MYS_mys-t01-c-soho-restaurant_s0_v1",
+      "last_mention": "@loc_MYS_mys-t01-c-soho-restaurant_s0_v1",
+      "evidence": "Creator supplied this exact T01_C restaurant page Element ID on 2026-09-10. Markdown underscore escapes removed. Current image attachment and Save state have not been independently verified.",
+      "mention_source": "CREATOR_SUPPLIED_EXACT_ELEMENT_ID_2026_09_10"
     },
     "CM001": {
       "alias": "CM001_APPOINTED_LAWYER_TO_OFFICE_SUBSTITUTE_2X2",
@@ -9941,7 +9944,7 @@
               4
             ],
             "status": "PREPARED_NOT_RENDERED",
-            "sha256": "aa3f82eb12d85f694d4f00dcce87e6adb3786f3555ab4ecabe5def47d35238e5"
+            "sha256": "906243f05d0341e108e390a7d85a6750dc62d2f9e69b4302b6b4dbf74d820eb6"
           },
           "B": {
             "key": "MW01_B",
@@ -9953,7 +9956,7 @@
               8
             ],
             "status": "PREPARED_NOT_RENDERED",
-            "sha256": "434ce51fd0ab41396f29bb10c6167cff47261c504439f7cf63498f69eb2a0fe8"
+            "sha256": "8310a945baa53e36415e27cd581129954268ead596d1852586eefdf712b79176"
           },
           "C": {
             "key": "MW01_C",
@@ -9965,7 +9968,7 @@
               8
             ],
             "status": "PREPARED_NOT_RENDERED",
-            "sha256": "469c8e37675f7a62bf4cc3f603fa923ac76135c4b9f2ad909ccb58219f53fd84"
+            "sha256": "dd5f0ba4c6a2d09313f39c36251c9a606445178c87fe673c38268b406547b5e2"
           }
         },
         "original_views": 9,
@@ -10340,7 +10343,7 @@
               8
             ],
             "status": "PREPARED_NOT_RENDERED",
-            "sha256": "1871005982cc1e767e3a6611c20def6d85b1e8048a571f8efb984d493d297362"
+            "sha256": "ce9591723b2199ad302f6c463b6ef7fc1d91cee270721f215b758f75e5bf9b7d"
           },
           "C": {
             "key": "T01_DETAILS_C",
@@ -10352,7 +10355,7 @@
               12
             ],
             "status": "PREPARED_NOT_RENDERED",
-            "sha256": "020628143593fdbbcd4b2915be5b7ba8b1d2321e3742f61d7b388975f53db0f4"
+            "sha256": "c34164c4cb769203452627f5ad439c7baa1765a765bae8f2c0166bc0b4772677"
           }
         },
         "coverage_views": 12,

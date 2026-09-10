@@ -1,12 +1,12 @@
 REFERENCE ID: MW01_LONDON_SOCIAL_B (never print IDs, headings or panel labels).
 
-REFERENCE SETUP INCOMPLETE: MW01, T01_DETAILS
+REFERENCE SETUP INCOMPLETE: MW01
 Do not generate until these references are bound.
 
 PAGE CONTINUITY INPUT: @UNBOUND_MW01 supplies the accepted Page A identities, shared material palette and any recurring room geometry. New places explicitly assigned to this page retain their own stated setting; do not copy Page A into every cell.
 
 REFERENCE INPUTS:
-@UNBOUND_T01_DETAILS = accepted T01_A Soho restaurant source, reused for original view 1–3. Preserve this exact room, warm lighting, modest wooden table, two restroom doors and the seated woman / remembered man arrangement when framing those details. These cells are different views of the accepted place, not a newly designed restaurant. Character references retain their identity roles.
+@loc_MYS_mys-t01-a-soho-restaurant_s0_v1 = accepted T01_A Soho restaurant source, reused for original view 1–3. Preserve this exact room, warm lighting, modest wooden table, two restroom doors and the seated woman / remembered man arrangement when framing those details. These cells are different views of the accepted place, not a newly designed restaurant. Character references retain their identity roles.
 @char_MYS_mys-c01-protagonist_s0_v1 = CHARACTER 01 — PROTAGONIST; exact person identity; use only where this person appears.
 @char_MYS_mys-c02-soho-woman_s0_v1 = CHARACTER 02 — SOHO WOMAN; exact person identity; use only where this person appears.
 @char_MYS_mys-c06-shared-house-substitute-snoring-housemate_s0_v1 = CHARACTER 06 — SHARED-HOUSE SUBSTITUTE / SNORING HOUSEMATE; exact person identity; use only where this person appears.

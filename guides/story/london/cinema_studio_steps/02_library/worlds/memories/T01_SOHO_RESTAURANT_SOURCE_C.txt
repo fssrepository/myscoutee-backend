@@ -1,10 +1,7 @@
 REFERENCE ID: T01_SOHO_RESTAURANT_SOURCE_C (never print IDs, headings or panel labels).
 
-REFERENCE SETUP INCOMPLETE: T01_DETAILS
-Do not generate until these references are bound.
-
 REFERENCE INPUTS:
-@UNBOUND_T01_DETAILS supplies the accepted T01_A restaurant layout, furniture, lights, poses and object placement. Reconstruct the same room from the views below.
+@loc_MYS_mys-t01-a-soho-restaurant_s0_v1 supplies the accepted T01_A restaurant layout, furniture, lights, poses and object placement. Reconstruct the same room from the views below.
 @char_MYS_mys-c01-protagonist_s0_v1 supplies the remembered man's exact face, hair, body and dark jacket. There is one occurrence of him inside this memory.
 @char_MYS_mys-c02-soho-woman_s0_v1 supplies the seated woman's exact identity. Preserve her clothing, hair and seated placement from the accepted Page A restaurant.
 
