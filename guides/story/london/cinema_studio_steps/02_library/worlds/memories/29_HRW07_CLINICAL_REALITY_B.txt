@@ -1,0 +1,86 @@
+REFERENCE ID: HRW07_CLINICAL_REALITY_B (never print IDs, headings or panel labels).
+
+PAGE CONTINUITY INPUT: @loc_MYS_mys-hrw07-a-clinical-reality_s0_v1 supplies the accepted Page A identities, shared material palette and any recurring room geometry. New places explicitly assigned to this page retain their own stated setting; do not copy Page A into every cell.
+
+REFERENCE INPUTS:
+@char_MYS_mys-c01-protagonist_s0_v1 = CHARACTER 01 — PROTAGONIST; exact person identity; use only where this person appears.
+@char_MYS_mys-c05-final-nurse_s0_v1 = CHARACTER 05 — FINAL NURSE; exact person identity; use only where this person appears.
+
+OUTPUT GEOMETRY — ONE 4K 2×2 REFERENCE PAGE:
+Generate ONE photographic 3840×2160 widescreen 16:9 image. Exactly FOUR equal edge-to-edge 1920×1080 cells in a 2×2 grid, without gutters, margins, letterboxing, labels, headings or captions. Select 4K for the entire output. Cell order is top-left, top-right, bottom-left, bottom-right. This is one image output, not four separate jobs.
+Use character references for identity and wardrobe only, and accepted location pages for their assigned spatial content. Reconstruct each assigned cell as one scene; never copy a reference sheet inside it. No front/back/headshot identity layout, nested grid or extra panels.
+
+MEMORY-WORLD FUNCTION:
+This is a CLEAN VISUAL SOURCE REFERENCE for the final clinical reality.
+Show the clinical room DIRECTLY, as if the camera were physically inside it.
+DO NOT show the London–Budapest present city.
+DO NOT place the memory inside a taxi window, bus window, tram window, shopfront, puddle or mirror.
+DO NOT add rain/reflection layers from the present city.
+DO NOT add score cards.
+This source sheet supplies clinical reality directly. The light, coat, foot and sheet detail cells all belong to this same clinical room; show only the assigned subject in each cell. No cards exist here.
+
+VISUAL LANGUAGE:
+Photorealistic live-action European feature-film realism.
+Natural human proportions, realistic contemporary wardrobe and props, ordinary practical lighting, believable interiors/exteriors.
+No fantasy glow, no dream haze, no collage, no split reality, no floating UI, no symbolic surrealism.
+Each cell must be a usable literal location/event reference, not an illustration of an idea.
+
+CRITICAL ROLE:
+This is NOT a normal memory world. It is the hidden physical reality used ONLY in STORYBOARD 07 and the final video reveal.
+Do not reference or expose this world in STORYBOARD 01–06.
+
+IDENTITY ANCHORS — REQUIRED:
+Use CHARACTER 01 — PROTAGONIST as the exact patient identity.
+Use CHARACTER 05 — FINAL NURSE as the exact nurse identity.
+Do not substitute or redesign either person in the reveal.
+
+CLINICAL TONE:
+Ordinary contemporary European clinical room.
+Cold-neutral institutional light, practical equipment, clean but not futuristic.
+No horror, no gore, no sinister staff, no psychiatric-horror coding, no supernatural quality.
+The protagonist is returning from anaesthesia. The patient gesture view captures one full, deep inhalation with the physical sense of a first breath at rebirth; the chest is expanded and the face conveys returning awareness, without a repeated gasping or panting expression; the final two-shot captures the quieter moment afterward. Render only the assigned still state.
+One foot is propped up on a padded support beneath the heel/ankle. The rest of the leg rests on the mattress; it is not raised or suspended as a whole.
+A metal handcuff surrounds one wrist and connects by a short chain to the bed frame. Show the cuff, real chain links and bed attachment wherever the assigned framing includes that wrist.
+The nurse is calm, competent and ordinary, with a small genuine everyday smile.
+Any enema/endoscopy-related preparation is routine and NON-GRAPHIC; no invasive detail.
+
+PAGE B OF HRW07: This page contains original views 5, 6, 7, 8. Original-view numbers below are provenance identifiers, not cell positions. Render ONLY the four cell assignments on this page. Global identity rules apply only when their person actually occurs in an assigned view.
+
+REFERENCE COVERAGE FOR THE MOVING FILM:
+This page supplies the four assigned literal views, not four cuts, morph stages or interchangeable world designs. Make each view useful for its assigned purpose: room layout shows supports and an entry/exit; a gesture view retains its hand, furniture edge and background anchor; an object detail shows side/underside and contact. Different views of the SAME room preserve its floor plan, furniture, identities, clothes and light sources even when the viewpoint changes. Distinct memories remain distinct places; do not fuse them into one room to match the grid. Repeated anchor views on another page must preserve the same state and layout.
+Additional detail pages of the same place retain that memory and its established event. Keep full body/furniture support legible wherever the assigned view permits. Never substitute four nearly identical wide shots for the four assigned subjects.
+
+FOUR IMAGE ASSIGNMENTS — INSTRUCTIONS ONLY, NO PRINTED TEXT:
+For the top left image (source view 05; instruction only, never printed):
+FINAL NURSE in the room preparing routine non-graphic clinical equipment for an enema/endoscopy-related procedure. Competent, ordinary, no menace.
+
+The nurse occupies the accessible bed side established in the wide view. Show a modest preparation surface with the non-graphic equipment already specified by the scene, her hands and a clear work area. Keep the patient covered and the activity at preparation stage. Do not add a second procedure, invasive close-up, dramatic instrument array or invented clinical apparatus.
+
+For the top right image (source view 06; instruction only, never printed):
+Nurse close/medium reference with the small everyday human smile that can echo earlier institutional smiles.
+
+Frame her face and upper torso with part of her working hand and the bed edge below. The small smile affects the mouth corners, cheeks and eyes together while her posture remains practical. Keep the protagonist at his established eyeline, optionally visible at a foreground edge. Her clothing, secured hair and light direction match the wider preparation view.
+
+For the bottom left image (source view 07; instruction only, never printed):
+Clinical white-coat / cold-light fragment composition designed so only a tiny crop could plausibly appear in a brief embodied pre-reveal intrusion without exposing the full room.
+
+Compose a physically possible close crop of the same light clinical garment beside the bed under the same cold-neutral light. Resolve fabric weave, seam thickness and a small sleeve fold, with only an indistinct portion of the room behind. This is a detail of existing clothing, not an extra white-coated doctor or a different location.
+
+For the bottom right image (source view 08; instruction only, never printed):
+Fragment composition combining a small portion of the propped-up foot, white sheet and wrist cuff/chain, cropped from this same real room, with the three materials visibly distinct.
+
+Choose an angle from beside the same bed that naturally includes a small foot-support portion, sheet fold and the existing wrist cuff/chain at different depths. Do not pull those parts together or change which limb is restrained to force the composition. Retain one bed-frame edge as an orientation anchor; this cell supplies a possible crop, not a new clinical event.
+
+FINAL CHECK:
+Exactly one 16:9 image.
+Exactly four 1920×1080 photographic cells on this 3840×2160 2×2 page.
+No score cards.
+No dream effects.
+No London–Budapest city.
+This reference is forbidden before STORYBOARD 07.
+
+RATING ROLE IN THIS SHEET:
+These are remembered or clinical people, not current-city pedestrians. Keep every one of the four cells without floating rating cards. A printed pass, family photograph or ordinary document remains its physical story object, not an above-head score.
+
+NO UMBRELLAS — EVERY CELL:
+No umbrellas anywhere in this image: none open, folded, carried, tucked into a bag, leaning against a wall, mounted over a table or held above a head. Do not copy an umbrella from an input reference. Outdoor present-city people have uncovered heads, hoods down and exposed hair; leave open air above every crown. Keep the specified weather for this scene. This restriction applies to the foreground, background, reflections and all cells of the sheet.

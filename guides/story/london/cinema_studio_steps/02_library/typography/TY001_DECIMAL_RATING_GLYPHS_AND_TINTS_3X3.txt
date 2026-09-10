@@ -1,0 +1,31 @@
+REFERENCE ID: TY001_DECIMAL_RATING_GLYPHS_AND_TINTS_3X3 (never print IDs, headings or panel labels).
+
+ONE 4K TYPOGRAPHY SHEET — 3×3:
+Create ONE 3840×2160 image with exactly NINE equal edge-to-edge 1280×720 cells in three columns and three rows. Select 4K for the whole output. No margins, gutters, separators or letterboxing. This 3×3 layout is specifically for short numeral samples; each cell is 720p, not 1080p. Keep the three-character ratings large enough to inspect their actual strokes and decimal point. Reading order is left-to-right across each row, then down. Do not print row/column labels or subdivide any cell again.
+
+SUBJECT — THE EXISTING RATING DESIGN:
+Show nine complete landscape rating plaques, one per cell, all with the SAME typeface, numeral height, plaque proportions, border weight and frontal inspection scale. Their values and score-dependent face tints differ. These are nine separate sample values, not a sequence where one pedestrian receives nine scores. Use a clean bold sans-serif with tabular-width numerals, dark charcoal strokes (#182024), open internal counters, a clear baseline and a distinct circular decimal point. The point sits low between the two digits with clear air on both sides; it must not become a comma, colon, centred dot, scratch or third digit. Retain the same glyph construction for every occurrence of 0, 1, 2, 3, 4, 5, 6, 7, 8 and 9.
+
+PLAQUE CONSTRUCTION:
+Use the existing shallow landscape card, with a thin stronger-tinted rim and a pale face. Let the plaque occupy most of the cell width while its complete rim remains inside the image. Show a very slight visible lower edge to establish thickness, but keep the face effectively frontal for spelling inspection. The number occupies most of the face height with uncluttered padding. Use a plain dark neutral background and soft neutral illumination. The visible text is exactly one decimal rating per card; no title, name, percentage, level, star, icon, rank or progress bar. Fine surface detail cannot weaken the glyph contrast. The card is not a luminous white bloom around illegible black marks.
+
+EXACT NINE CELLS:
+Top-left: "1.0", pale red face at the 1.0 anchor #F8D5D5.
+Top-centre: "2.3", pale red-orange interpolated between the 1.0 and 3.0 anchors.
+Top-right: "3.0", pale orange face at #F7DCC1.
+Middle-left: "4.6", pale orange-gold interpolated between 3.0 and 5.0.
+Centre: "5.0", pale gold face at #F6EDBE.
+Middle-right: "6.2", pale yellow-green interpolated between 5.0 and 7.0. Preserve the lower closed bowl and upper open hook of the 6.
+Bottom-left: "7.4", pale yellow-green toward mint, interpolated between 7.0 (#DEEDC6) and 9.0 (#CBE9D8).
+Bottom-centre: "8.6", near the high-score mint anchor, retaining two clear counters in the 8 and the correct lower bowl of the 6.
+Bottom-right: "9.2", the high-score pale mint/emerald face #CBE9D8. The printed value remains 9.2, never rounded or clamped to 9.0. The 9 has its closed upper bowl and downward stem; the 2 retains a curved top, descending diagonal and firm lower foot.
+
+GLYPH CONSISTENCY AND SCORE USE:
+Match the baseline, digit spacing and decimal position across all samples. Keep 6 and 9 distinct by their actual upright stroke structure rather than rotating a complete card. The example colours follow the actual fractional values; they are not demographic or nationality labels. Ordinary gaze changes only illumination, not the score or hue. These samples define the alphabet and palette; MR021 supplies the separate physical 6.2-to-9.2 card transformation. Do not copy this nine-card array above a single person. In the film, each person has one card, while the protagonist's unrevealed card remains neutral and uninformative.
+
+REFERENCE PURPOSE:
+This is a typography construction reference for the existing MyScoutee film. Generate the lettering directly from this text; no input image or Element mention is required for this image job. Preserve the actual letters, accents, decimal points, spacing and material attachment in each assigned perspective.
+The cell assignments below are exact image content, not captions to print. No row numbers, panel labels, typographic measurements, arrows, sample captions, decorative borders, additional slogans or watermark. Do not fill unused areas with random letter strings. Print only the expressly quoted visible text. A legibility study is not permission to make deliberately unreadable case documents, private records or other background text readable in the film.
+
+NO UMBRELLAS — EVERY CELL:
+No umbrellas, open, folded, carried, stored, reflected or mounted. These typography studies have no human figures or faces; they do not replace the inhabited world references. When their graphics are applied in the current city, each living person's rating card remains attached above that person's uncovered head. Remembered/clinical people remain without rating cards. No typography sample assigns a score to the protagonist before the scripted Block 06 reveal.

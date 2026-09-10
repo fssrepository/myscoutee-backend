@@ -1,0 +1,99 @@
+# MW03_C — superseded 4K sheet
+
+Replaced by four 2K full-frame images at user request. Original complete text retained below; no Higgsfield media was deleted.
+
+```text
+REFERENCE ID: MW03_WORK_RULE_CHANGE_ADMIN_C (never print IDs, headings or panel labels).
+
+OUTPUT ELEMENT ASSIGNMENT — OPERATOR METADATA ONLY, NEVER RENDER:
+Live output Element name (operator lookup only): loc_MYS_mys-mw03-c-work-rule-change-admin_s0_v1
+Live output Element UUID: 57a942a9-c35f-4a4e-b545-132be45b91e9
+Assign the finished image to this existing empty target. This output target is not an input reference.
+
+PAGE CONTINUITY INPUT: @loc_MYS_mys-mw03-a-work-rule-change-admin_s0_v1 supplies the accepted Page A identities, shared material palette and any recurring room geometry. New places explicitly assigned to this page retain their own stated setting; do not copy Page A into every cell.
+
+REFERENCE INPUTS:
+@char_MYS_mys-c01-protagonist_s0_v1 = CHARACTER 01 — PROTAGONIST; exact person identity; use only where this person appears.
+@char_MYS_mys-c22-accountant_s0_v1 = CHARACTER 22 — ACCOUNTANT; exact person identity; use only where this person appears.
+@char_MYS_mys-c23-admin-colleague-a_s0_v1 = CHARACTER 23 — ADMIN COLLEAGUE A; exact person identity; use only where this person appears.
+@char_MYS_mys-c24-admin-colleague-b_s0_v1 = CHARACTER 24 — ADMIN COLLEAGUE B; exact person identity; use only where this person appears.
+
+OUTPUT GEOMETRY — ONE 4K 2×2 REFERENCE PAGE:
+Generate ONE photographic 3840×2160 widescreen 16:9 image. Exactly FOUR equal edge-to-edge 1920×1080 cells in a 2×2 grid, without gutters, margins, letterboxing, labels, headings or captions. Select 4K for the entire output. Cell order is top-left, top-right, bottom-left, bottom-right. This is one image output, not four separate jobs.
+Use character references for identity and wardrobe only, and accepted location pages for their assigned spatial content. Reconstruct each assigned cell as one scene; never copy a reference sheet inside it. No front/back/headshot identity layout, nested grid or extra panels.
+
+MEMORY-WORLD FUNCTION:
+This is a CLEAN VISUAL SOURCE REFERENCE for a remembered place/event.
+Show the memory scene DIRECTLY, as if the camera were physically inside the remembered world.
+DO NOT show the London–Budapest present city.
+DO NOT place the memory inside a taxi window, bus window, tram window, shopfront, puddle or mirror.
+DO NOT add rain/reflection layers from the present city.
+DO NOT add score cards.
+ This source sheet remains a sharp direct view of the memory; its cells are not cuts or flat images to display in the video.
+
+VISUAL LANGUAGE:
+Photorealistic live-action European feature-film realism.
+Natural human proportions, realistic contemporary wardrobe and props, ordinary practical lighting, believable interiors/exteriors.
+Keep this source image sharp and literal so faces, furniture and room layout remain reconstructable. The film, unlike this source sheet, turns these places into impossible architecture within London.
+Each cell must be a usable literal location/event reference, not an illustration of an idea.
+
+IDENTITY ANCHORS — REQUIRED:
+Use CHARACTER 01 — PROTAGONIST wherever the protagonist appears.
+Use CHARACTER 22 — ACCOUNTANT in accounting/delegation/repair scenes.
+Use CHARACTER 23 — ADMIN COLLEAGUE A and CHARACTER 24 — ADMIN COLLEAGUE B together with the protagonist in the three-people / no-shared-screen triangle.
+Do not redesign or substitute these people between cells. Other background office workers may remain anonymous. Nobody is visually coded as a villain.
+
+PURPOSE:
+Build the literal work/system memory source bank: cross-border remote work, long days, accounting delegation, forms, portal responsibility, inconsistent records and the low-trust triangle of three people without one shared screen.
+
+PAGE C OF MW03: The four slots retain provenance numbers 9, 1, 7, 8. The repeated slots now supply the distinct supplementary content specified below; these numbers do not instruct a repeat of an earlier image. Render ONLY the four cell assignments on this page. Global identity rules apply only when their person actually occurs in an assigned view.
+
+REFERENCE COVERAGE FOR THE MOVING FILM:
+This page supplies the four assigned literal views, not four cuts, morph stages or interchangeable world designs. Make each view useful for its assigned purpose: room layout shows supports and an entry/exit; a gesture view retains its hand, furniture edge and background anchor; an object detail shows side/underside and contact. Different views of the SAME room preserve its floor plan, furniture, identities, clothes and light sources even when the viewpoint changes. Distinct memories remain distinct places; do not fuse them into one room to match the grid. Recurring places retain their established layout; each cell uses its explicitly assigned action and object state.
+Additional detail pages of the same place retain that memory and its established event. Keep full body/furniture support legible wherever the assigned view permits. Never substitute four nearly identical wide shots for the four assigned subjects.
+
+FOUR IMAGE ASSIGNMENTS — INSTRUCTIONS ONLY, NO PRINTED TEXT:
+For the top left image (source view 09; instruction only, never printed):
+Correction-chain memory: a previously inconsistent return/form, marked correction, resubmission or updated record, with the protagonist still trying to keep work and administration aligned. Grounded and procedural.
+
+Inspect the corrected form beside its earlier version as two real paper sheets, with one modest mark or field difference visible. The protagonist remains at the desk, holding or checking the current page. Show paper curl, clip thickness and a computer at a different depth. Do not claim the correction succeeded through celebratory symbols or a fabricated approval message.
+
+For the top right image (source view 01; instruction only, never printed):
+PRINTER PAPER SUPPLY WHILE CONTRACT WORK CONTINUES:
+The accountant crouches at the ordinary office printer's open paper cassette and seats a fresh paper stack between its side guides. Resolve the tray walls, feed rollers where visible, stacked sheet edges and the accountant's separate hands. The printer remains on a stable cabinet with a real cable route.
+
+The protagonist continues the international-contract task at the established desk behind, with the laptop hinge, keyboard, power lead, note stack and supported forearms retained. The active work screen stays generic and unreadable. This cell's action is the practical printer task that keeps administration moving alongside paid work. Do not show a successful submission or add a printer fault, confidential document or invented amount.
+
+For the bottom left image (source view 07; instruction only, never printed):
+FINDING THE SEPARATE RECORD IN OFFICE STORAGE:
+Admin Colleague A pulls one slim record folder from an open filing-cabinet drawer while Admin Colleague B holds a different folder beside it. Their shelves, hanging-file tabs, drawer runners, hands and separate records occupy the scene. The folders stay distinct; no shared master record has appeared.
+
+The protagonist's ongoing clarification call remains at the established work position, with phone, papers and lamp. He listens while the colleagues physically search the other record source. Preserve the actual office and ordinary restrained frustration. Labels are small unreadable text, with no invented legal dates, missing-evidence claim or resolution. The open storage construction and retrieval task distinguish this cell from the phone conversation in MW03_B.
+
+For the bottom right image (source view 08; instruction only, never printed):
+CARRYING PAPER BETWEEN THE SEPARATE WORK POSITIONS:
+Admin Colleague B stands between two occupied work positions holding a rigid document tray containing a printed form; Admin Colleague A extends one hand to receive that tray while the protagonist remains occupied with his own mobile and computer at another position. Show the tray's supported bottom, loose paper corners, separate hands and a clear floor route around the chairs.
+
+Keep the desk phone, mobile, monitor and printed form as distinct physical endpoints at their established desks. No new central screen unifies them. The carried paper is the material link between people who still hold separate parts of the process. Retain the ordinary unreadable portal/email content, practical cables and room geometry. Do not stage a unanimous decision, a completed correction or a diagram of communication arrows.
+
+FINAL CHECK:
+Exactly one 16:9 image.
+Exactly four 1920×1080 photographic cells on this 3840×2160 2×2 page.
+Direct work/admin memories only.
+No present-city reflection composite.
+No score cards.
+
+SPATIAL INFORMATION FOR LATER EMBODIED MEMORY:
+The later film grows this exact remembered encounter from London materials. Supply enough geometry to reconstruct a solid place: a near seat or table corner with two readable sides, full supporting legs where furniture matters, visible floor contact, and a rear door, wall or landscape plane at a different distance. Use the existing widest relevant cell for the whole arrangement and the existing human-detail cell for the gesture; use the companion page when that required contextual view is assigned there. Keep principal faces, hands and interactions in useful focus. Show natural occlusion and contact shadows. Avoid hiding the relationship between a person, their chair, the floor and the rear doorway in shallow focus or tight crops. A detail cell may be close, but its contextual cell must retain the full arrangement. Preserve the assigned encounter and identity. These literal source shapes give the later film recognisable people and materials to carry through the impossible transformation.
+
+SOURCE CONTINUITY FOR THE MOVING FILM:
+Render each cell as a single clear, solid view of the specified people and their actual room or place. Show a usable doorway edge, furniture corner or support beside the central gesture, with full bodily depth, clear hands and contact shadows. Never supply ghosted people, translucent rooms, double exposures or blended before/after scenes. The source image is a direct view of the remembered place, with no transition overlay. Preserve the assigned identities and events across alternative views. Keep the source free of present-city overlays and rating cards.
+
+Keep the assigned room and human event specific and intact. Its source doorway, furniture corner or open side can support either a matched material development or continuous camera entry/exit. No forced mutation of the people, furniture or room is needed when the next setting lacks corresponding structure; let the film travel onward through a visible connected opening.
+
+RATING ROLE IN THIS SHEET:
+These are remembered or clinical people, not current-city pedestrians. Keep every one of the four cells without floating rating cards. A printed pass, family photograph or ordinary document remains its physical story object, not an above-head score.
+
+NO UMBRELLAS — EVERY CELL:
+No umbrellas anywhere in this image: none open, folded, carried, tucked into a bag, leaning against a wall, mounted over a table or held above a head. Do not copy an umbrella from an input reference. Outdoor present-city people have uncovered heads, hoods down and exposed hair; leave open air above every crown. Keep the specified weather for this scene. This restriction applies to the foreground, background, reflections and all cells of the sheet.
+```

@@ -1,0 +1,92 @@
+# MW04_B — superseded 4K sheet
+
+Replaced by MW04_B_01–MW04_B_04 at user request. Existing Higgsfield media is retained.
+
+```text
+REFERENCE ID: MW04_POLICE_DEFENCE_B (never print IDs, headings or panel labels).
+
+PAGE CONTINUITY INPUT: @loc_MYS_mys-mw04-a-police-defence_s0_v1 supplies the accepted Page A identities, shared material palette and any recurring room geometry. New places explicitly assigned to this page retain their own stated setting; do not copy Page A into every cell.
+
+REFERENCE INPUTS:
+@char_MYS_mys-c01-protagonist_s0_v1 = CHARACTER 01 — PROTAGONIST; exact person identity; use only where this person appears.
+@char_MYS_mys-c03-policewoman_s0_v1 = CHARACTER 03 — POLICEWOMAN; exact person identity; use only where this person appears.
+@char_MYS_mys-c25-search-officer-male_s0_v1 = CHARACTER 25 — SEARCH OFFICER — MALE; exact person identity; use only where this person appears.
+@char_MYS_mys-c26-defence-office-substitute_s0_v1 = CHARACTER 26 — DEFENCE-OFFICE SUBSTITUTE; exact person identity; use only where this person appears.
+
+OUTPUT GEOMETRY — ONE 4K 2×2 REFERENCE PAGE:
+Generate ONE photographic 3840×2160 widescreen 16:9 image. Exactly FOUR equal edge-to-edge 1920×1080 cells in a 2×2 grid, without gutters, margins, letterboxing, labels, headings or captions. Select 4K for the entire output. Cell order is top-left, top-right, bottom-left, bottom-right. This is one image output, not four separate jobs.
+Use character references for identity and wardrobe only, and accepted location pages for their assigned spatial content. Reconstruct each assigned cell as one scene; never copy a reference sheet inside it. No front/back/headshot identity layout, nested grid or extra panels.
+
+MEMORY-WORLD FUNCTION:
+This is a CLEAN VISUAL SOURCE REFERENCE for a remembered place/event.
+Show the memory scene DIRECTLY, as if the camera were physically inside the remembered world.
+DO NOT show the London–Budapest present city.
+DO NOT place the memory inside a taxi window, bus window, tram window, shopfront, puddle or mirror.
+DO NOT add rain/reflection layers from the present city.
+DO NOT add score cards.
+ This source sheet remains a sharp direct view of the memory; its cells are not cuts or flat images to display in the video.
+
+VISUAL LANGUAGE:
+Photorealistic live-action European feature-film realism.
+Natural human proportions, realistic contemporary wardrobe and props, ordinary practical lighting, believable interiors/exteriors.
+Keep this source image sharp and literal so faces, furniture and room layout remain reconstructable. The film, unlike this source sheet, turns these places into impossible architecture within London.
+Each cell must be a usable literal location/event reference, not an illustration of an idea.
+
+IDENTITY ANCHORS — REQUIRED:
+Use CHARACTER 01 — PROTAGONIST wherever the protagonist appears.
+Use CHARACTER 03 — POLICEWOMAN for the recurring policewoman, especially original view 6 and 9.
+Use CHARACTER 25 — SEARCH OFFICER — MALE in the apartment-search sequence, especially the accidental-foot-step memory.
+Use CHARACTER 26 — DEFENCE-OFFICE SUBSTITUTE for the discontinuous appointed-defence handoff in original view 7.
+Other background officers may remain anonymous, but do not replace or merge the fixed identities above.
+
+PURPOSE:
+Build the literal police/procedure memory source bank. The tone is ordinary institutional reality containing moments of vulnerability, confusion and humanity — not an action thriller and not a conspiracy tableau.
+
+PAGE B OF MW04: This page contains original views 5, 6, 7, 8. Original-view numbers below are provenance identifiers, not cell positions. Render ONLY the four cell assignments on this page. Global identity rules apply only when their person actually occurs in an assigned view.
+
+REFERENCE COVERAGE FOR THE MOVING FILM:
+This page supplies the four assigned literal views, not four cuts, morph stages or interchangeable world designs. Make each view useful for its assigned purpose: room layout shows supports and an entry/exit; a gesture view retains its hand, furniture edge and background anchor; an object detail shows side/underside and contact. Different views of the SAME room preserve its floor plan, furniture, identities, clothes and light sources even when the viewpoint changes. Distinct memories remain distinct places; do not fuse them into one room to match the grid. Repeated anchor views on another page must preserve the same state and layout.
+Additional detail pages of the same place retain that memory and its established event. Keep full body/furniture support legible wherever the assigned view permits. Never substitute four nearly identical wide shots for the four assigned subjects.
+
+FOUR IMAGE ASSIGNMENTS — INSTRUCTIONS ONLY, NO PRINTED TEXT:
+For the top left image (source view 05; instruction only, never printed):
+Continuation in the apartment: an officer accidentally steps on the protagonist's recently operated foot. Sudden physical pain and vulnerability, no gore, no medical reveal, no exaggerated violence.
+
+Use a low-to-medium angle showing the officer shoe, the protagonist foot and both bodies enough to explain the accidental contact. His posture recoils slightly while the foot remains grounded; keep the interaction non-graphic. Furniture and the floor retain the apartment layout. Do not introduce a kick, deliberate assault or a new visible surgical injury.
+
+For the top right image (source view 06; instruction only, never printed):
+Fingerprinting / formal processing with the recurring POLICEWOMAN. The procedure is ordinary. Include the awkward contradiction of attraction / embarrassed human expression without romantic staging.
+
+Show the policewoman guiding the protagonist hand at the existing fingerprinting surface, with each finger, the support pad or device and desk edge distinct. Both people stand or sit in physically reachable positions. Their small embarrassed expressions remain visible above the working hands. Keep uniform, equipment and room ordinary without romantic lighting.
+
+For the bottom left image (source view 07; instruction only, never printed):
+Appointed-defence discontinuity: a substitute/person from the defence office appears instead of the expected lawyer, or a handoff between defence contacts is visibly unclear. Show discontinuity, not villainy.
+
+Place the office substitute opposite the protagonist at a plain consultation desk, with a folder and a spare chair visible. The person has their own established identity, not the appointed lawyer face. The scene records a discontinuity in contact; no ghost portrait of the missing lawyer, villain pose or unexplained morph is inserted into this literal memory cell.
+
+For the bottom right image (source view 08; instruction only, never printed):
+Attempts to reach police/prosecution/court/defence routes by phone and in corridors/offices. Different ordinary people redirect the protagonist; no one appears sinister.
+
+Choose one grounded contact moment: the protagonist with a phone beside a corridor doorway or office counter, another person indicating the next physical direction. Keep the phone, hand and doorway connected in one space. Do not combine police, prosecution, court and defence into four miniature rooms inside this cell; other moments belong to companion views or the video.
+
+FINAL CHECK:
+Exactly one 16:9 image.
+Exactly four 1920×1080 photographic cells on this 3840×2160 2×2 page.
+Direct literal police/defence memories only.
+No present-city reflection composite.
+No score cards.
+
+SPATIAL INFORMATION FOR LATER EMBODIED MEMORY:
+The later film grows this exact remembered encounter from London materials. Supply enough geometry to reconstruct a solid place: a near seat or table corner with two readable sides, full supporting legs where furniture matters, visible floor contact, and a rear door, wall or landscape plane at a different distance. Use the existing widest relevant cell for the whole arrangement and the existing human-detail cell for the gesture; use the companion page when that required contextual view is assigned there. Keep principal faces, hands and interactions in useful focus. Show natural occlusion and contact shadows. Avoid hiding the relationship between a person, their chair, the floor and the rear doorway in shallow focus or tight crops. A detail cell may be close, but its contextual cell must retain the full arrangement. Preserve the assigned encounter and identity. These literal source shapes give the later film recognisable people and materials to carry through the impossible transformation.
+
+SOURCE CONTINUITY FOR THE MOVING FILM:
+Render each cell as a single clear, solid view of the specified people and their actual room or place. Show a usable doorway edge, furniture corner or support beside the central gesture, with full bodily depth, clear hands and contact shadows. Never supply ghosted people, translucent rooms, double exposures or blended before/after scenes. The source image is a direct view of the remembered place, with no transition overlay. Preserve the assigned identities and events across alternative views. Keep the source free of present-city overlays and rating cards.
+
+Keep the assigned room and human event specific and intact. Its source doorway, furniture corner or open side can support either a matched material development or continuous camera entry/exit. No forced mutation of the people, furniture or room is needed when the next setting lacks corresponding structure; let the film travel onward through a visible connected opening.
+
+RATING ROLE IN THIS SHEET:
+These are remembered or clinical people, not current-city pedestrians. Keep every one of the four cells without floating rating cards. A printed pass, family photograph or ordinary document remains its physical story object, not an above-head score.
+
+NO UMBRELLAS — EVERY CELL:
+No umbrellas anywhere in this image: none open, folded, carried, tucked into a bag, leaning against a wall, mounted over a table or held above a head. Do not copy an umbrella from an input reference. Outdoor present-city people have uncovered heads, hoods down and exposed hair; leave open air above every crown. Keep the specified weather for this scene. This restriction applies to the foreground, background, reflections and all cells of the sheet.
+```

@@ -1,0 +1,62 @@
+REFERENCE ID: C07_FX_MORTGAGE_HOUSEMATE (never print IDs, headings or panel labels).
+
+OUTPUT LAYOUT AND RESOLUTION: One 16:9 identity sheet with exactly three equal vertical panels in one horizontal row (1x3: front, back, headshot). Generate at 3840×2160 pixels and select 4K in the output controls. The three equal edge-to-edge panels are each 1280×2160 pixels, with zero gutters and margins. These are three views of one unchanged identity, not a transformation sequence.
+
+Create ONE SINGLE photorealistic technical CHARACTER IDENTITY SHEET for ONE exact fictional person.
+
+EXACT LAYOUT:
+Three vertical photographic panels filling the complete canvas:
+In the left panel, show the full-body front view.
+In the centre panel, show the full-body back view.
+In the right panel, show the frontal close-up headshot.
+
+The same exact person appears in all three panels.
+The studio background reaches all four physical canvas edges.
+No outer frame, no title, no header, no footer, no caption bands, no labels, no extra panels.
+The three photographs meet directly edge-to-edge, without drawn separator lines or gutters.
+
+BACKGROUND / LIGHT:
+Seamless neutral MID-GREY professional casting/VFX studio background.
+Soft even neutral light, minimal soft floor shadow, neutral white balance.
+No city, scene furniture or cinematic environment. Retain only the wardrobe and worn accessories explicitly specified for this identity.
+
+CONSISTENCY:
+Preserve identical age, face shape, eyes, nose, mouth, ears, hairline, hair colour, skin tone, body build, clothing and footwear across views.
+Do not beautify or change age in the headshot.
+Natural skin texture and asymmetry.
+Accurate anatomy.
+This is a FICTIONALIZED CASTING INTERPRETATION for the film and must not attempt to reproduce the real participant from the memoir.
+
+CAMERA:
+Full-body panels approximately 50–70mm full-frame equivalent, complete body including shoes.
+Headshot approximately 85mm, upper shoulders upward.
+Technical identity asset, not a film scene.
+
+CHARACTER:
+Fictional Hungarian / Central-European man, apparent age about 32–42, average build, grounded responsible face with visible everyday pressure rather than misery. He is the London housemate whose spouse, child and foreign-currency mortgage obligations remain connected to Hungary. Do not make him a stereotype of poverty or debt.
+
+Wardrobe: ordinary London workday / shared-house clothing: simple dark jacket or knit, muted shirt or T-shirt, dark trousers, practical shoes, no luxury or brand emphasis.
+
+Front view: neutral upright posture, arms relaxed, calm, slightly burdened but dignified expression.
+Back view: exact same clothing, hairstyle and proportions.
+Headshot: direct eye contact, same exact face, calm, slightly burdened but dignified expression.
+
+VIEW-SPECIFIC INSPECTION DETAIL:
+In the front full-body panel, keep a narrow air gap between each relaxed hand and the torso so fingers, sleeve ends and garment sides remain separable. Show both shoes completely with a small floor margin and natural contact shadows. The back panel shows the same person turned around: preserve actual left/right accessory placement and garment fastening, rather than mirroring the front photograph. Show rear shoulder seams, hair at the nape, waistband or outer hem and shoe heels where visible.
+In the headshot, include the complete crown and hair silhouette, both visible ear contours and the base of the neck above the shoulders. Resolve eyelid thickness, iris detail, eyebrow hairs, nostril rims, lip edges and natural skin texture at the portrait's actual scale. Keep subtle asymmetry; avoid waxy smoothing, sharpening halos or identical repeated pores. Use even focus across the face and hair so detail is not lost to shallow depth of field. Do not enlarge the eyes or alter the nose, jaw or age to improve the portrait.
+
+CHARACTER-SPECIFIC CONSTRUCTION DETAIL:
+Resolve the practical outer layer front fastening, shoulder seams and the shirt or knit edge beneath. The clothing hangs on an ordinary adult build with natural elbow and waist folds. Keep his responsible, tired face readable through actual brow, cheek and mouth contours rather than a dramatic frown. Family photograph, mortgage documents and travel baggage belong to later memory scenes, not this studio identity.
+
+FINAL CHECK:
+One identity, appearing once in each of the three assigned views.
+Three panels only: front full-body / back full-body / frontal headshot.
+Same exact identity and wardrobe.
+Mid-grey background reaches the canvas edges.
+No title or outer frame.
+
+IDENTITY SHEET AND SCENE RATINGS:
+These three neutral studio views define the same person, not the rated city. Keep this identity sheet without floating rating cards, so the face and hair remain clear. In a current-city scene the scene prompt supplies the owner-linked numerical card; remembered/clinical appearances have none. Leave useful space around the head in the identity views. Do not infer a visible score or score colour for the protagonist from this sheet.
+
+NO UMBRELLAS — EVERY CELL:
+No umbrellas anywhere in this image: none open, folded, carried, tucked into a bag, leaning against a wall, mounted over a table or held above a head. Do not copy an umbrella from an input reference. Outdoor present-city people have uncovered heads, hoods down and exposed hair; leave open air above every crown. Keep the specified weather for this scene. This restriction applies to the foreground, background, reflections and all cells of the sheet.

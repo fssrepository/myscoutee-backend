@@ -1,0 +1,92 @@
+# MW05_B — superseded 4K sheet
+
+Replaced by MW05_B_01–MW05_B_04 at user request. Existing Higgsfield media is retained.
+
+```text
+REFERENCE ID: MW05_COURT_FILE_B (never print IDs, headings or panel labels).
+
+REFERENCE INPUTS:
+@char_MYS_mys-c01-protagonist_s0_v1 = CHARACTER 01 — PROTAGONIST; exact person identity; use only where this person appears.
+@char_MYS_mys-c28-forensic-expert-a_s0_v1 = CHARACTER 28 — FORENSIC EXPERT A; exact person identity; use only where this person appears.
+@char_MYS_mys-c29-forensic-expert-b_s0_v1 = CHARACTER 29 — FORENSIC EXPERT B; exact person identity; use only where this person appears.
+@char_MYS_mys-c30-court-clerk_s0_v1 = CHARACTER 30 — COURT CLERK; exact person identity; use only where this person appears.
+@char_MYS_mys-c31-anonymous-fictional-cardboard-public-figure_s0_v1 = CHARACTER 31 — ANONYMOUS FICTIONAL CARDBOARD PUBLIC FIGURE; exact person identity; use only where this person appears.
+
+OUTPUT GEOMETRY — ONE 4K 2×2 REFERENCE PAGE:
+Generate ONE photographic 3840×2160 widescreen 16:9 image. Exactly FOUR equal edge-to-edge 1920×1080 cells in a 2×2 grid, without gutters, margins, letterboxing, labels, headings or captions. Select 4K for the entire output. Cell order is top-left, top-right, bottom-left, bottom-right. This is one image output, not four separate jobs.
+Use character references for identity and wardrobe only, and accepted location pages for their assigned spatial content. Reconstruct each assigned cell as one scene; never copy a reference sheet inside it. No front/back/headshot identity layout, nested grid or extra panels.
+
+MEMORY-WORLD FUNCTION:
+This is a CLEAN VISUAL SOURCE REFERENCE for a remembered place/event.
+Show the memory scene DIRECTLY, as if the camera were physically inside the remembered world.
+DO NOT show the London–Budapest present city.
+DO NOT place the memory inside a taxi window, bus window, tram window, shopfront, puddle or mirror.
+DO NOT add rain/reflection layers from the present city.
+DO NOT add score cards.
+ This source sheet remains a sharp direct view of the memory; its cells are not cuts or flat images to display in the video.
+
+VISUAL LANGUAGE:
+Photorealistic live-action European feature-film realism.
+Natural human proportions, realistic contemporary wardrobe and props, ordinary practical lighting, believable interiors/exteriors.
+Keep this source image sharp and literal so faces, furniture and room layout remain reconstructable. The film, unlike this source sheet, turns these places into impossible architecture within London.
+Each cell must be a usable literal location/event reference, not an illustration of an idea.
+
+IDENTITY ANCHORS — REQUIRED:
+Use CHARACTER 01 — PROTAGONIST wherever the protagonist appears.
+Use CHARACTER 28 — FORENSIC EXPERT A and CHARACTER 29 — FORENSIC EXPERT B together in the two-expert examination memory.
+Use CHARACTER 30 — COURT CLERK in the recording/evidence-request memory.
+Use CHARACTER 31 — ANONYMOUS FICTIONAL CARDBOARD PUBLIC FIGURE for the cardboard absurdity memory; it must remain non-identifiable and must not resemble a real politician, party leader or identifiable public figure.
+
+PURPOSE:
+Build the literal court/file/classification memory source bank: hearing, assets, retained belongings, forensic examination, documents replacing biography, complaint routes and black humour used as a human response to an absurd process.
+
+PAGE B OF MW05: This page contains original views 5, 6, 7, 8. Original-view numbers below are provenance identifiers, not cell positions. Render ONLY the four cell assignments on this page. Global identity rules apply only when their person actually occurs in an assigned view.
+
+REFERENCE COVERAGE FOR THE MOVING FILM:
+This page supplies the four assigned literal views, not four cuts, morph stages or interchangeable world designs. Make each view useful for its assigned purpose: room layout shows supports and an entry/exit; a gesture view retains its hand, furniture edge and background anchor; an object detail shows side/underside and contact. Different views of the SAME room preserve its floor plan, furniture, identities, clothes and light sources even when the viewpoint changes. Distinct memories remain distinct places; do not fuse them into one room to match the grid. Recurring places retain their established layout; each cell uses its explicitly assigned action and object state.
+Additional detail pages of the same place retain that memory and its established event. Keep full body/furniture support legible wherever the assigned view permits. Never substitute four nearly identical wide shots for the four assigned subjects.
+
+FOUR IMAGE ASSIGNMENTS — INSTRUCTIONS ONLY, NO PRINTED TEXT:
+For the top left image (source view 05; instruction only, never printed):
+Forensic-examination memory with two expert chairs / two experts. The protagonist is calm and cooperative; the experts' reactions differ. Do not imply a single unified expert voice.
+
+Give Expert A and Expert B separate chairs, faces, note positions and eyelines toward the protagonist. One may look directly while the other checks a page; keep both reactions ordinary and distinct. Show the table edge and the gap between their chairs. Never merge them into one person or duplicate the same face to imply agreement.
+
+For the top right image (source view 06; instruction only, never printed):
+Clerk / recording / evidence-request memory: phone, hearing paperwork, request for official recording or witnesses/evidence, and the practical response that the route is costly or deferred. Keep written text mostly unreadable.
+
+Place the clerk behind a practical desk with phone and hearing documents, the protagonist opposite or beside the counter. The clerk indicates a paper or record area while listening. Show the handset support, document stack and actual desk depth. The cost or deferral belongs to the story; avoid invented readable fees, formal quotations or a visible final decision.
+
+For the bottom left image (source view 07; instruction only, never printed):
+SELF-MADE WANTED-PAGE JOKE:
+The protagonist assembles one small self-made "THE SYSTEM'S MOST WANTED" satirical page on his ordinary desk. A cut paper portrait, glue stick, scissors lying closed and uneven paper edges make the personal construction evident. His hands press one corner flat while the rest of the page lies supported on the table.
+
+Keep the phrase modest in size and the surrounding papers mundane. This is homemade absurdism, never a police notice, database, real allegation or official wanted poster. Preserve his actual unchanged face in any printed portrait. The separate impossible police-career CV/application joke belongs to MW05_C, so this cell contains only the handmade wanted-page object, without a second miniature composition.
+
+For the bottom right image (source view 08; instruction only, never printed):
+FICTIONAL CARDBOARD FIGURE WITH ITS RIDICULOUS HAT:
+One anonymous fictional cardboard public figure stands on its simple support with the deliberately ridiculous hat resting on its flat printed head. The physical board, silly hat and empty place in front of the cutout are the subjects of this source. Resolve cardboard thickness, rear brace, hat material and actual base contact with desk or floor.
+
+Use the established C31 fictional design, never a real politician or living official. Retain the asylum-request black-humour context without adding party branding, a campaign slogan, recognizable office, policy statement or official response. The protagonist addressing this prop with his request papers is assigned separately to MW05_C; here the prop remains an intact ordinary constructed object in the same room.
+
+FINAL CHECK:
+Exactly one 16:9 image.
+Exactly four 1920×1080 photographic cells on this 3840×2160 2×2 page.
+Direct literal court/file/black-humour memories only.
+No present-city reflection composite.
+No score cards.
+
+SPATIAL INFORMATION FOR LATER EMBODIED MEMORY:
+The later film grows this exact remembered encounter from London materials. Supply enough geometry to reconstruct a solid place: a near seat or table corner with two readable sides, full supporting legs where furniture matters, visible floor contact, and a rear door, wall or landscape plane at a different distance. Use the existing widest relevant cell for the whole arrangement and the existing human-detail cell for the gesture; use the companion page when that required contextual view is assigned there. Keep principal faces, hands and interactions in useful focus. Show natural occlusion and contact shadows. Avoid hiding the relationship between a person, their chair, the floor and the rear doorway in shallow focus or tight crops. A detail cell may be close, but its contextual cell must retain the full arrangement. Preserve the assigned encounter and identity. These literal source shapes give the later film recognisable people and materials to carry through the impossible transformation.
+
+SOURCE CONTINUITY FOR THE MOVING FILM:
+Render each cell as a single clear, solid view of the specified people and their actual room or place. Show a usable doorway edge, furniture corner or support beside the central gesture, with full bodily depth, clear hands and contact shadows. Never supply ghosted people, translucent rooms, double exposures or blended before/after scenes. The source image is a direct view of the remembered place, with no transition overlay. Preserve the assigned identities and events across alternative views. Keep the source free of present-city overlays and rating cards.
+
+Keep the assigned room and human event specific and intact. Its source doorway, furniture corner or open side can support either a matched material development or continuous camera entry/exit. No forced mutation of the people, furniture or room is needed when the next setting lacks corresponding structure; let the film travel onward through a visible connected opening.
+
+RATING ROLE IN THIS SHEET:
+These are remembered or clinical people, not current-city pedestrians. Keep every one of the four cells without floating rating cards. A printed pass, family photograph or ordinary document remains its physical story object, not an above-head score.
+
+NO UMBRELLAS — EVERY CELL:
+No umbrellas anywhere in this image: none open, folded, carried, tucked into a bag, leaning against a wall, mounted over a table or held above a head. Do not copy an umbrella from an input reference. Outdoor present-city people have uncovered heads, hoods down and exposed hair; leave open air above every crown. Keep the specified weather for this scene. This restriction applies to the foreground, background, reflections and all cells of the sheet.
+```

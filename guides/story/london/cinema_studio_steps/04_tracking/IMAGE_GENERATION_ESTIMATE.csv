@@ -1,0 +1,267 @@
+canonical_key,prompt_file,group,included_in_element_import,resolution,layout,credits_per_image,planned_new_images,additional_attempts,estimated_credits,status
+C01,02_library/characters/C01_PROTAGONIST.txt,characters,yes,4K,1x3 identity,4,1,0,4,PLANNED_NOT_CHARGED
+C02,02_library/characters/C02_SOHO_WOMAN.txt,characters,yes,4K,1x3 identity,4,1,0,4,PLANNED_NOT_CHARGED
+C03,02_library/characters/C03_POLICEWOMAN.txt,characters,yes,4K,1x3 identity,4,1,0,4,PLANNED_NOT_CHARGED
+C04,02_library/characters/C04_APPOINTED_LAWYER.txt,characters,yes,4K,1x3 identity,4,1,0,4,PLANNED_NOT_CHARGED
+C05,02_library/characters/C05_FINAL_NURSE.txt,characters,yes,4K,1x3 identity,4,1,0,4,PLANNED_NOT_CHARGED
+C06,02_library/characters/C06_SHARED_HOUSE_SUBSTITUTE_SNORING_HOUSEMATE.txt,characters,yes,4K,1x3 identity,4,1,0,4,PLANNED_NOT_CHARGED
+C07,02_library/characters/C07_FX_MORTGAGE_HOUSEMATE.txt,characters,yes,4K,1x3 identity,4,1,0,4,PLANNED_NOT_CHARGED
+C08,02_library/characters/C08_FX_MORTGAGE_SPOUSE.txt,characters,yes,4K,1x3 identity,4,1,0,4,PLANNED_NOT_CHARGED
+C09,02_library/characters/C09_FX_MORTGAGE_CHILD.txt,characters,yes,4K,1x3 identity,4,1,0,4,PLANNED_NOT_CHARGED
+C10,02_library/characters/C10_BEGINNER_DANCE_WOMAN.txt,characters,yes,4K,1x3 identity,4,1,0,4,PLANNED_NOT_CHARGED
+C11,02_library/characters/C11_RUSSIAN_TRANSIT_PASSENGER.txt,characters,yes,4K,1x3 identity,4,1,0,4,PLANNED_NOT_CHARGED
+C12,02_library/characters/C12_AGRA_BUS_WOMAN.txt,characters,yes,4K,1x3 identity,4,1,0,4,PLANNED_NOT_CHARGED
+C13,02_library/characters/C13_SUDANESE_TRAVELER_MAN.txt,characters,yes,4K,1x3 identity,4,1,0,4,PLANNED_NOT_CHARGED
+C14,02_library/characters/C14_SUDANESE_TRAVELER_WOMAN.txt,characters,yes,4K,1x3 identity,4,1,0,4,PLANNED_NOT_CHARGED
+C15,02_library/characters/C15_CAIRO_TAXI_DRIVER.txt,characters,yes,4K,1x3 identity,4,1,0,4,PLANNED_NOT_CHARGED
+C16,02_library/characters/C16_BALLOON_LOCAL_HELPER_MAN.txt,characters,yes,4K,1x3 identity,4,1,0,4,PLANNED_NOT_CHARGED
+C17,02_library/characters/C17_BALLOON_LOCAL_HELPER_WOMAN.txt,characters,yes,4K,1x3 identity,4,1,0,4,PLANNED_NOT_CHARGED
+C18,02_library/characters/C18_BARMOUTH_ROAD_TRIP_DRIVER_COMPANION.txt,characters,yes,4K,1x3 identity,4,1,0,4,PLANNED_NOT_CHARGED
+C19,02_library/characters/C19_BARMOUTH_ROAD_TRIP_COMPANION_A.txt,characters,yes,4K,1x3 identity,4,1,0,4,PLANNED_NOT_CHARGED
+C20,02_library/characters/C20_BARMOUTH_ROAD_TRIP_COMPANION_B.txt,characters,yes,4K,1x3 identity,4,1,0,4,PLANNED_NOT_CHARGED
+C21,02_library/characters/C21_BARMOUTH_ROAD_TRIP_COMPANION_C.txt,characters,yes,4K,1x3 identity,4,1,0,4,PLANNED_NOT_CHARGED
+C22,02_library/characters/C22_ACCOUNTANT.txt,characters,yes,4K,1x3 identity,4,1,0,4,PLANNED_NOT_CHARGED
+C23,02_library/characters/C23_ADMIN_COLLEAGUE_A.txt,characters,yes,4K,1x3 identity,4,1,0,4,PLANNED_NOT_CHARGED
+C24,02_library/characters/C24_ADMIN_COLLEAGUE_B.txt,characters,yes,4K,1x3 identity,4,1,0,4,PLANNED_NOT_CHARGED
+C25,02_library/characters/C25_SEARCH_OFFICER_MALE.txt,characters,yes,4K,1x3 identity,4,1,0,4,PLANNED_NOT_CHARGED
+C26,02_library/characters/C26_DEFENCE_OFFICE_SUBSTITUTE.txt,characters,yes,4K,1x3 identity,4,1,0,4,PLANNED_NOT_CHARGED
+C27,02_library/characters/C27_JUDGE.txt,characters,yes,4K,1x3 identity,4,1,0,4,PLANNED_NOT_CHARGED
+C28,02_library/characters/C28_FORENSIC_EXPERT_A.txt,characters,yes,4K,1x3 identity,4,1,0,4,PLANNED_NOT_CHARGED
+C29,02_library/characters/C29_FORENSIC_EXPERT_B.txt,characters,yes,4K,1x3 identity,4,1,0,4,PLANNED_NOT_CHARGED
+C30,02_library/characters/C30_COURT_CLERK.txt,characters,yes,4K,1x3 identity,4,1,0,4,PLANNED_NOT_CHARGED
+C31,02_library/characters/C31_ANONYMOUS_FICTIONAL_POLITICAL_FIGURE.txt,characters,yes,4K,1x3 identity,4,1,0,4,PLANNED_NOT_CHARGED
+MW01,02_library/worlds/memories/04_MW01_LONDON_SOCIAL_A.txt,worlds/memories,yes,4K,4K 2x2 page A; original views 1–4,4,1,0,4,PLANNED_NOT_CHARGED
+MW02_A_01,02_library/worlds/memories/07_01_MW02_GLOBAL_ROUTES_A_VIEW_01.txt,worlds/memories,yes,2K,single full-frame 16:9,2,1,0,2,PLANNED_NOT_CHARGED
+MW02_A_02,02_library/worlds/memories/07_02_MW02_GLOBAL_ROUTES_A_VIEW_02.txt,worlds/memories,yes,2K,single full-frame 16:9,2,1,0,2,PLANNED_NOT_CHARGED
+MW02_A_03,02_library/worlds/memories/07_03_MW02_GLOBAL_ROUTES_A_VIEW_03.txt,worlds/memories,yes,2K,single full-frame 16:9,2,1,0,2,PLANNED_NOT_CHARGED
+MW02_A_04,02_library/worlds/memories/07_04_MW02_GLOBAL_ROUTES_A_VIEW_04.txt,worlds/memories,yes,2K,single full-frame 16:9,2,1,0,2,PLANNED_NOT_CHARGED
+MW03,02_library/worlds/memories/10_MW03_WORK_RULE_CHANGE_ADMIN_A.txt,worlds/memories,yes,4K,4K 2x2 page A; original views 1–4,4,1,0,4,PLANNED_NOT_CHARGED
+MW04,02_library/worlds/memories/13_MW04_POLICE_DEFENCE_A.txt,worlds/memories,yes,4K,4K 2x2 page A; original views 1–4,4,1,0,4,PLANNED_NOT_CHARGED
+MW05,02_library/worlds/memories/16_MW05_COURT_FILE_A.txt,worlds/memories,yes,4K,4K 2x2 page A; original views 1–4,4,1,0,4,PLANNED_NOT_CHARGED
+MW06_A_01,02_library/worlds/memories/19_01_MW06_HUMAN_COUNTERMEMORIES_A_VIEW_01.txt,worlds/memories,yes,2K,single full-frame 16:9,2,1,0,2,PLANNED_NOT_CHARGED
+MW06_A_02,02_library/worlds/memories/19_02_MW06_HUMAN_COUNTERMEMORIES_A_VIEW_02.txt,worlds/memories,yes,2K,single full-frame 16:9,2,1,0,2,PLANNED_NOT_CHARGED
+MW06_A_03,02_library/worlds/memories/19_03_MW06_HUMAN_COUNTERMEMORIES_A_VIEW_03.txt,worlds/memories,yes,2K,single full-frame 16:9,2,1,0,2,PLANNED_NOT_CHARGED
+MW06_A_04,02_library/worlds/memories/19_04_MW06_HUMAN_COUNTERMEMORIES_A_VIEW_04.txt,worlds/memories,yes,2K,single full-frame 16:9,2,1,0,2,PLANNED_NOT_CHARGED
+MWP01,02_library/worlds/memories/22_MWP01_ROUTES_ROOMS_DOCUMENTS_A.txt,worlds/memories,yes,4K,4K 2x2 page A; original views 1–4,4,1,0,4,PLANNED_NOT_CHARGED
+MWP02,02_library/worlds/memories/25_MWP02_SYSTEM_TIME_REVERSALS_A.txt,worlds/memories,yes,4K,4K 2x2 page A; original views 1–4,4,1,0,4,PLANNED_NOT_CHARGED
+HRW07,02_library/worlds/memories/28_HRW07_CLINICAL_REALITY_A.txt,worlds/memories,yes,4K,4K 2x2 page A; original views 1–4,4,1,0,4,PLANNED_NOT_CHARGED
+W01_A_01,02_library/worlds/real/W01_A_01_MAIN_WORLD_VIEW_01.txt,worlds/real,yes,2K,single full-frame 16:9,2,1,0,2,CREATOR_CONFIRMED_PAID_2K_PLANNED_NOT_CHARGED
+W01_A_02,02_library/worlds/real/W01_A_02_MAIN_WORLD_VIEW_02.txt,worlds/real,yes,2K,single full-frame 16:9,2,1,0,2,CREATOR_CONFIRMED_PAID_2K_PLANNED_NOT_CHARGED
+W01_A_03,02_library/worlds/real/W01_A_03_MAIN_WORLD_VIEW_03.txt,worlds/real,yes,2K,single full-frame 16:9,2,1,0,2,CREATOR_CONFIRMED_PAID_2K_PLANNED_NOT_CHARGED
+W01_A_04,02_library/worlds/real/W01_A_04_MAIN_WORLD_VIEW_04.txt,worlds/real,yes,2K,single full-frame 16:9,2,1,0,2,CREATOR_CONFIRMED_PAID_2K_PLANNED_NOT_CHARGED
+W02_A_01,02_library/worlds/real/W02_A_01_MAIN_WORLD_VIEW_01.txt,worlds/real,yes,2K,single full-frame 16:9,2,1,0,2,CREATOR_CONFIRMED_PAID_2K_PLANNED_NOT_CHARGED
+W02_A_02,02_library/worlds/real/W02_A_02_MAIN_WORLD_VIEW_02.txt,worlds/real,yes,2K,single full-frame 16:9,2,1,0,2,CREATOR_CONFIRMED_PAID_2K_PLANNED_NOT_CHARGED
+W02_A_03,02_library/worlds/real/W02_A_03_MAIN_WORLD_VIEW_03.txt,worlds/real,yes,2K,single full-frame 16:9,2,1,0,2,CREATOR_CONFIRMED_PAID_2K_PLANNED_NOT_CHARGED
+W02_A_04,02_library/worlds/real/W02_A_04_MAIN_WORLD_VIEW_04.txt,worlds/real,yes,2K,single full-frame 16:9,2,1,0,2,CREATOR_CONFIRMED_PAID_2K_PLANNED_NOT_CHARGED
+W03_A_01,02_library/worlds/real/W03_A_01_MAIN_WORLD_VIEW_01.txt,worlds/real,yes,2K,single full-frame 16:9,2,1,0,2,CREATOR_CONFIRMED_PAID_2K_PLANNED_NOT_CHARGED
+W03_A_02,02_library/worlds/real/W03_A_02_MAIN_WORLD_VIEW_02.txt,worlds/real,yes,2K,single full-frame 16:9,2,1,0,2,CREATOR_CONFIRMED_PAID_2K_PLANNED_NOT_CHARGED
+W03_A_03,02_library/worlds/real/W03_A_03_MAIN_WORLD_VIEW_03.txt,worlds/real,yes,2K,single full-frame 16:9,2,1,0,2,CREATOR_CONFIRMED_PAID_2K_PLANNED_NOT_CHARGED
+W03_A_04,02_library/worlds/real/W03_A_04_MAIN_WORLD_VIEW_04.txt,worlds/real,yes,2K,single full-frame 16:9,2,1,0,2,CREATOR_CONFIRMED_PAID_2K_PLANNED_NOT_CHARGED
+W04_A_01,02_library/worlds/real/W04_A_01_MAIN_WORLD_VIEW_01.txt,worlds/real,yes,2K,single full-frame 16:9,2,1,0,2,CREATOR_CONFIRMED_PAID_2K_PLANNED_NOT_CHARGED
+W04_A_02,02_library/worlds/real/W04_A_02_MAIN_WORLD_VIEW_02.txt,worlds/real,yes,2K,single full-frame 16:9,2,1,0,2,CREATOR_CONFIRMED_PAID_2K_PLANNED_NOT_CHARGED
+W04_A_03,02_library/worlds/real/W04_A_03_MAIN_WORLD_VIEW_03.txt,worlds/real,yes,2K,single full-frame 16:9,2,1,0,2,CREATOR_CONFIRMED_PAID_2K_PLANNED_NOT_CHARGED
+W04_A_04,02_library/worlds/real/W04_A_04_MAIN_WORLD_VIEW_04.txt,worlds/real,yes,2K,single full-frame 16:9,2,1,0,2,CREATOR_CONFIRMED_PAID_2K_PLANNED_NOT_CHARGED
+W05_A_01,02_library/worlds/real/W05_A_01_MAIN_WORLD_VIEW_01.txt,worlds/real,yes,2K,single full-frame 16:9,2,1,0,2,CREATOR_CONFIRMED_PAID_2K_PLANNED_NOT_CHARGED
+W05_A_02,02_library/worlds/real/W05_A_02_MAIN_WORLD_VIEW_02.txt,worlds/real,yes,2K,single full-frame 16:9,2,1,0,2,CREATOR_CONFIRMED_PAID_2K_PLANNED_NOT_CHARGED
+W05_A_03,02_library/worlds/real/W05_A_03_MAIN_WORLD_VIEW_03.txt,worlds/real,yes,2K,single full-frame 16:9,2,1,0,2,CREATOR_CONFIRMED_PAID_2K_PLANNED_NOT_CHARGED
+W05_A_04,02_library/worlds/real/W05_A_04_MAIN_WORLD_VIEW_04.txt,worlds/real,yes,2K,single full-frame 16:9,2,1,0,2,CREATOR_CONFIRMED_PAID_2K_PLANNED_NOT_CHARGED
+W06_A_01,02_library/worlds/real/W06_A_01_MAIN_WORLD_VIEW_01.txt,worlds/real,yes,2K,single full-frame 16:9,2,1,0,2,CREATOR_CONFIRMED_PAID_2K_PLANNED_NOT_CHARGED
+W06_A_02,02_library/worlds/real/W06_A_02_MAIN_WORLD_VIEW_02.txt,worlds/real,yes,2K,single full-frame 16:9,2,1,0,2,CREATOR_CONFIRMED_PAID_2K_PLANNED_NOT_CHARGED
+W06_A_03,02_library/worlds/real/W06_A_03_MAIN_WORLD_VIEW_03.txt,worlds/real,yes,2K,single full-frame 16:9,2,1,0,2,CREATOR_CONFIRMED_PAID_2K_PLANNED_NOT_CHARGED
+W06_A_04,02_library/worlds/real/W06_A_04_MAIN_WORLD_VIEW_04.txt,worlds/real,yes,2K,single full-frame 16:9,2,1,0,2,CREATOR_CONFIRMED_PAID_2K_PLANNED_NOT_CHARGED
+W07_A_01,02_library/worlds/real/W07_A_01_MAIN_WORLD_VIEW_01.txt,worlds/real,yes,2K,single full-frame 16:9,2,1,0,2,CREATOR_CONFIRMED_PAID_2K_PLANNED_NOT_CHARGED
+W07_A_02,02_library/worlds/real/W07_A_02_MAIN_WORLD_VIEW_02.txt,worlds/real,yes,2K,single full-frame 16:9,2,1,0,2,CREATOR_CONFIRMED_PAID_2K_PLANNED_NOT_CHARGED
+W07_A_03,02_library/worlds/real/W07_A_03_MAIN_WORLD_VIEW_03.txt,worlds/real,yes,2K,single full-frame 16:9,2,1,0,2,CREATOR_CONFIRMED_PAID_2K_PLANNED_NOT_CHARGED
+W07_A_04,02_library/worlds/real/W07_A_04_MAIN_WORLD_VIEW_04.txt,worlds/real,yes,2K,single full-frame 16:9,2,1,0,2,CREATOR_CONFIRMED_PAID_2K_PLANNED_NOT_CHARGED
+MR001,02_library/morphs/buildings/MR001_ST_PAULS_TO_ST_STEPHENS_2X2.txt,morphs/buildings,yes,4K,2x2 source/early/advanced/target,4,1,0,4,PLANNED_NOT_CHARGED
+MR002,02_library/morphs/buildings/MR002_FACADE_RELIEF_TO_SCULPTED_SUPPORT_2X2.txt,morphs/buildings,yes,4K,2x2 source/early/advanced/target,4,1,0,4,PLANNED_NOT_CHARGED
+MR003,02_library/morphs/buildings/MR003_FACADE_WINDOW_CAPITAL_AND_CORNICE_2X2.txt,morphs/buildings,yes,4K,2x2 source/early/advanced/target,4,1,0,4,PLANNED_NOT_CHARGED
+W01_B_01,02_library/worlds/real/W01_B_01_MAIN_WORLD_VIEW_05.txt,worlds/real,yes,2K,single full-frame 16:9,2,1,0,2,CREATOR_CONFIRMED_PAID_2K_PLANNED_NOT_CHARGED
+W01_B_02,02_library/worlds/real/W01_B_02_MAIN_WORLD_VIEW_06.txt,worlds/real,yes,2K,single full-frame 16:9,2,1,0,2,CREATOR_CONFIRMED_PAID_2K_PLANNED_NOT_CHARGED
+W01_B_03,02_library/worlds/real/W01_B_03_MAIN_WORLD_VIEW_07.txt,worlds/real,yes,2K,single full-frame 16:9,2,1,0,2,CREATOR_CONFIRMED_PAID_2K_PLANNED_NOT_CHARGED
+W01_B_04,02_library/worlds/real/W01_B_04_MAIN_WORLD_VIEW_08.txt,worlds/real,yes,2K,single full-frame 16:9,2,1,0,2,CREATOR_CONFIRMED_PAID_2K_PLANNED_NOT_CHARGED
+W01_C_01,02_library/worlds/real/W01_C_01_MAIN_WORLD_VIEW_09.txt,worlds/real,yes,2K,single full-frame 16:9,2,1,0,2,CREATOR_CONFIRMED_PAID_2K_PLANNED_NOT_CHARGED
+W01_C_02,02_library/worlds/real/W01_C_02_MAIN_WORLD_VIEW_01.txt,worlds/real,yes,2K,single full-frame 16:9,2,1,0,2,CREATOR_CONFIRMED_PAID_2K_PLANNED_NOT_CHARGED
+W01_C_03,02_library/worlds/real/W01_C_03_MAIN_WORLD_VIEW_07.txt,worlds/real,yes,2K,single full-frame 16:9,2,1,0,2,CREATOR_CONFIRMED_PAID_2K_PLANNED_NOT_CHARGED
+W01_C_04,02_library/worlds/real/W01_C_04_MAIN_WORLD_VIEW_08.txt,worlds/real,yes,2K,single full-frame 16:9,2,1,0,2,CREATOR_CONFIRMED_PAID_2K_PLANNED_NOT_CHARGED
+W02_B_01,02_library/worlds/real/W02_B_01_MAIN_WORLD_VIEW_05.txt,worlds/real,yes,2K,single full-frame 16:9,2,1,0,2,CREATOR_CONFIRMED_PAID_2K_PLANNED_NOT_CHARGED
+W02_B_02,02_library/worlds/real/W02_B_02_MAIN_WORLD_VIEW_06.txt,worlds/real,yes,2K,single full-frame 16:9,2,1,0,2,CREATOR_CONFIRMED_PAID_2K_PLANNED_NOT_CHARGED
+W02_B_03,02_library/worlds/real/W02_B_03_MAIN_WORLD_VIEW_07.txt,worlds/real,yes,2K,single full-frame 16:9,2,1,0,2,CREATOR_CONFIRMED_PAID_2K_PLANNED_NOT_CHARGED
+W02_B_04,02_library/worlds/real/W02_B_04_MAIN_WORLD_VIEW_08.txt,worlds/real,yes,2K,single full-frame 16:9,2,1,0,2,CREATOR_CONFIRMED_PAID_2K_PLANNED_NOT_CHARGED
+W02_C_01,02_library/worlds/real/W02_C_01_MAIN_WORLD_VIEW_09.txt,worlds/real,yes,2K,single full-frame 16:9,2,1,0,2,CREATOR_CONFIRMED_PAID_2K_PLANNED_NOT_CHARGED
+W02_C_02,02_library/worlds/real/W02_C_02_MAIN_WORLD_VIEW_01.txt,worlds/real,yes,2K,single full-frame 16:9,2,1,0,2,CREATOR_CONFIRMED_PAID_2K_PLANNED_NOT_CHARGED
+W02_C_03,02_library/worlds/real/W02_C_03_MAIN_WORLD_VIEW_07.txt,worlds/real,yes,2K,single full-frame 16:9,2,1,0,2,CREATOR_CONFIRMED_PAID_2K_PLANNED_NOT_CHARGED
+W02_C_04,02_library/worlds/real/W02_C_04_MAIN_WORLD_VIEW_08.txt,worlds/real,yes,2K,single full-frame 16:9,2,1,0,2,CREATOR_CONFIRMED_PAID_2K_PLANNED_NOT_CHARGED
+W03_B_01,02_library/worlds/real/W03_B_01_MAIN_WORLD_VIEW_05.txt,worlds/real,yes,2K,single full-frame 16:9,2,1,0,2,CREATOR_CONFIRMED_PAID_2K_PLANNED_NOT_CHARGED
+W03_B_02,02_library/worlds/real/W03_B_02_MAIN_WORLD_VIEW_06.txt,worlds/real,yes,2K,single full-frame 16:9,2,1,0,2,CREATOR_CONFIRMED_PAID_2K_PLANNED_NOT_CHARGED
+W03_B_03,02_library/worlds/real/W03_B_03_MAIN_WORLD_VIEW_07.txt,worlds/real,yes,2K,single full-frame 16:9,2,1,0,2,CREATOR_CONFIRMED_PAID_2K_PLANNED_NOT_CHARGED
+W03_B_04,02_library/worlds/real/W03_B_04_MAIN_WORLD_VIEW_08.txt,worlds/real,yes,2K,single full-frame 16:9,2,1,0,2,CREATOR_CONFIRMED_PAID_2K_PLANNED_NOT_CHARGED
+W03_C_01,02_library/worlds/real/W03_C_01_MAIN_WORLD_VIEW_09.txt,worlds/real,yes,2K,single full-frame 16:9,2,1,0,2,CREATOR_CONFIRMED_PAID_2K_PLANNED_NOT_CHARGED
+W03_C_02,02_library/worlds/real/W03_C_02_MAIN_WORLD_VIEW_01.txt,worlds/real,yes,2K,single full-frame 16:9,2,1,0,2,CREATOR_CONFIRMED_PAID_2K_PLANNED_NOT_CHARGED
+W03_C_03,02_library/worlds/real/W03_C_03_MAIN_WORLD_VIEW_07.txt,worlds/real,yes,2K,single full-frame 16:9,2,1,0,2,CREATOR_CONFIRMED_PAID_2K_PLANNED_NOT_CHARGED
+W03_C_04,02_library/worlds/real/W03_C_04_MAIN_WORLD_VIEW_08.txt,worlds/real,yes,2K,single full-frame 16:9,2,1,0,2,CREATOR_CONFIRMED_PAID_2K_PLANNED_NOT_CHARGED
+W04_B_01,02_library/worlds/real/W04_B_01_MAIN_WORLD_VIEW_05.txt,worlds/real,yes,2K,single full-frame 16:9,2,1,0,2,CREATOR_CONFIRMED_PAID_2K_PLANNED_NOT_CHARGED
+W04_B_02,02_library/worlds/real/W04_B_02_MAIN_WORLD_VIEW_06.txt,worlds/real,yes,2K,single full-frame 16:9,2,1,0,2,CREATOR_CONFIRMED_PAID_2K_PLANNED_NOT_CHARGED
+W04_B_03,02_library/worlds/real/W04_B_03_MAIN_WORLD_VIEW_07.txt,worlds/real,yes,2K,single full-frame 16:9,2,1,0,2,CREATOR_CONFIRMED_PAID_2K_PLANNED_NOT_CHARGED
+W04_B_04,02_library/worlds/real/W04_B_04_MAIN_WORLD_VIEW_08.txt,worlds/real,yes,2K,single full-frame 16:9,2,1,0,2,CREATOR_CONFIRMED_PAID_2K_PLANNED_NOT_CHARGED
+W04_C_01,02_library/worlds/real/W04_C_01_MAIN_WORLD_VIEW_09.txt,worlds/real,yes,2K,single full-frame 16:9,2,1,0,2,CREATOR_CONFIRMED_PAID_2K_PLANNED_NOT_CHARGED
+W04_C_02,02_library/worlds/real/W04_C_02_MAIN_WORLD_VIEW_01.txt,worlds/real,yes,2K,single full-frame 16:9,2,1,0,2,CREATOR_CONFIRMED_PAID_2K_PLANNED_NOT_CHARGED
+W04_C_03,02_library/worlds/real/W04_C_03_MAIN_WORLD_VIEW_07.txt,worlds/real,yes,2K,single full-frame 16:9,2,1,0,2,CREATOR_CONFIRMED_PAID_2K_PLANNED_NOT_CHARGED
+W04_C_04,02_library/worlds/real/W04_C_04_MAIN_WORLD_VIEW_08.txt,worlds/real,yes,2K,single full-frame 16:9,2,1,0,2,CREATOR_CONFIRMED_PAID_2K_PLANNED_NOT_CHARGED
+W05_B_01,02_library/worlds/real/W05_B_01_MAIN_WORLD_VIEW_05.txt,worlds/real,yes,2K,single full-frame 16:9,2,1,0,2,CREATOR_CONFIRMED_PAID_2K_PLANNED_NOT_CHARGED
+W05_B_02,02_library/worlds/real/W05_B_02_MAIN_WORLD_VIEW_06.txt,worlds/real,yes,2K,single full-frame 16:9,2,1,0,2,CREATOR_CONFIRMED_PAID_2K_PLANNED_NOT_CHARGED
+W05_B_03,02_library/worlds/real/W05_B_03_MAIN_WORLD_VIEW_07.txt,worlds/real,yes,2K,single full-frame 16:9,2,1,0,2,CREATOR_CONFIRMED_PAID_2K_PLANNED_NOT_CHARGED
+W05_B_04,02_library/worlds/real/W05_B_04_MAIN_WORLD_VIEW_08.txt,worlds/real,yes,2K,single full-frame 16:9,2,1,0,2,CREATOR_CONFIRMED_PAID_2K_PLANNED_NOT_CHARGED
+W05_C_01,02_library/worlds/real/W05_C_01_MAIN_WORLD_VIEW_09.txt,worlds/real,yes,2K,single full-frame 16:9,2,1,0,2,CREATOR_CONFIRMED_PAID_2K_PLANNED_NOT_CHARGED
+W05_C_02,02_library/worlds/real/W05_C_02_MAIN_WORLD_VIEW_01.txt,worlds/real,yes,2K,single full-frame 16:9,2,1,0,2,CREATOR_CONFIRMED_PAID_2K_PLANNED_NOT_CHARGED
+W05_C_03,02_library/worlds/real/W05_C_03_MAIN_WORLD_VIEW_07.txt,worlds/real,yes,2K,single full-frame 16:9,2,1,0,2,CREATOR_CONFIRMED_PAID_2K_PLANNED_NOT_CHARGED
+W05_C_04,02_library/worlds/real/W05_C_04_MAIN_WORLD_VIEW_08.txt,worlds/real,yes,2K,single full-frame 16:9,2,1,0,2,CREATOR_CONFIRMED_PAID_2K_PLANNED_NOT_CHARGED
+W06_B_01,02_library/worlds/real/W06_B_01_MAIN_WORLD_VIEW_05.txt,worlds/real,yes,2K,single full-frame 16:9,2,1,0,2,CREATOR_CONFIRMED_PAID_2K_PLANNED_NOT_CHARGED
+W06_B_02,02_library/worlds/real/W06_B_02_MAIN_WORLD_VIEW_06.txt,worlds/real,yes,2K,single full-frame 16:9,2,1,0,2,CREATOR_CONFIRMED_PAID_2K_PLANNED_NOT_CHARGED
+W06_B_03,02_library/worlds/real/W06_B_03_MAIN_WORLD_VIEW_07.txt,worlds/real,yes,2K,single full-frame 16:9,2,1,0,2,CREATOR_CONFIRMED_PAID_2K_PLANNED_NOT_CHARGED
+W06_B_04,02_library/worlds/real/W06_B_04_MAIN_WORLD_VIEW_08.txt,worlds/real,yes,2K,single full-frame 16:9,2,1,0,2,CREATOR_CONFIRMED_PAID_2K_PLANNED_NOT_CHARGED
+W06_C_01,02_library/worlds/real/W06_C_01_MAIN_WORLD_VIEW_09.txt,worlds/real,yes,2K,single full-frame 16:9,2,1,0,2,CREATOR_CONFIRMED_PAID_2K_PLANNED_NOT_CHARGED
+W06_C_02,02_library/worlds/real/W06_C_02_MAIN_WORLD_VIEW_01.txt,worlds/real,yes,2K,single full-frame 16:9,2,1,0,2,CREATOR_CONFIRMED_PAID_2K_PLANNED_NOT_CHARGED
+W06_C_03,02_library/worlds/real/W06_C_03_MAIN_WORLD_VIEW_07.txt,worlds/real,yes,2K,single full-frame 16:9,2,1,0,2,CREATOR_CONFIRMED_PAID_2K_PLANNED_NOT_CHARGED
+W06_C_04,02_library/worlds/real/W06_C_04_MAIN_WORLD_VIEW_08.txt,worlds/real,yes,2K,single full-frame 16:9,2,1,0,2,CREATOR_CONFIRMED_PAID_2K_PLANNED_NOT_CHARGED
+W07_B_01,02_library/worlds/real/W07_B_01_MAIN_WORLD_VIEW_05.txt,worlds/real,yes,2K,single full-frame 16:9,2,1,0,2,CREATOR_CONFIRMED_PAID_2K_PLANNED_NOT_CHARGED
+W07_B_02,02_library/worlds/real/W07_B_02_MAIN_WORLD_VIEW_06.txt,worlds/real,yes,2K,single full-frame 16:9,2,1,0,2,CREATOR_CONFIRMED_PAID_2K_PLANNED_NOT_CHARGED
+W07_B_03,02_library/worlds/real/W07_B_03_MAIN_WORLD_VIEW_07.txt,worlds/real,yes,2K,single full-frame 16:9,2,1,0,2,CREATOR_CONFIRMED_PAID_2K_PLANNED_NOT_CHARGED
+W07_B_04,02_library/worlds/real/W07_B_04_MAIN_WORLD_VIEW_08.txt,worlds/real,yes,2K,single full-frame 16:9,2,1,0,2,CREATOR_CONFIRMED_PAID_2K_PLANNED_NOT_CHARGED
+W07_C_01,02_library/worlds/real/W07_C_01_MAIN_WORLD_VIEW_09.txt,worlds/real,yes,2K,single full-frame 16:9,2,1,0,2,CREATOR_CONFIRMED_PAID_2K_PLANNED_NOT_CHARGED
+W07_C_02,02_library/worlds/real/W07_C_02_MAIN_WORLD_VIEW_01.txt,worlds/real,yes,2K,single full-frame 16:9,2,1,0,2,CREATOR_CONFIRMED_PAID_2K_PLANNED_NOT_CHARGED
+W07_C_03,02_library/worlds/real/W07_C_03_MAIN_WORLD_VIEW_07.txt,worlds/real,yes,2K,single full-frame 16:9,2,1,0,2,CREATOR_CONFIRMED_PAID_2K_PLANNED_NOT_CHARGED
+W07_C_04,02_library/worlds/real/W07_C_04_MAIN_WORLD_VIEW_08.txt,worlds/real,yes,2K,single full-frame 16:9,2,1,0,2,CREATOR_CONFIRMED_PAID_2K_PLANNED_NOT_CHARGED
+MR004,02_library/morphs/objects/MR004_WINDOW_GLASS_TO_PENDANT_SHADE_2X2.txt,morphs/objects,yes,4K,2x2 source/unfinished/unfinished/target,4,1,0,4,PLANNED_NOT_CHARGED
+MR005,02_library/morphs/buildings/MR005_BRICK_COURSES_TO_CARVED_ARCH_2X2.txt,morphs/buildings,yes,4K,2x2 source/unfinished/unfinished/target,4,1,0,4,PLANNED_NOT_CHARGED
+MR006,02_library/morphs/buildings/MR006_STONE_THRESHOLD_TO_SUPPORTED_TIMBER_FLOOR_2X2.txt,morphs/buildings,yes,4K,2x2 source/unfinished/unfinished/target,4,1,0,4,PLANNED_NOT_CHARGED
+MR007,02_library/morphs/objects/MR007_BENCH_TO_CURVED_FLOOR_BORDER_2X2.txt,morphs/objects,yes,4K,2x2 source/unfinished/unfinished/target,4,1,0,4,PLANNED_NOT_CHARGED
+MR008,02_library/morphs/objects/MR008_WINDOW_FITTINGS_TO_PENDANT_STEM_2X2.txt,morphs/objects,yes,4K,2x2 source/unfinished/unfinished/target,4,1,0,4,PLANNED_NOT_CHARGED
+MR009,02_library/morphs/buildings/MR009_BALCONY_SCROLL_TO_SIDEWAYS_STAIR_2X2.txt,morphs/buildings,yes,4K,2x2 source/unfinished/unfinished/target,4,1,0,4,PLANNED_NOT_CHARGED
+MR010,02_library/morphs/objects/MR010_ENGLISH_SIGN_TO_KAVE_LETTERING_2X2.txt,morphs/objects,yes,4K,2x2 source/unfinished/unfinished/target,4,1,0,4,PLANNED_NOT_CHARGED
+MR011,02_library/morphs/buildings/MR011_SLATE_ROOF_TO_CURVED_GLAZING_2X2.txt,morphs/buildings,yes,4K,2x2 source/unfinished/unfinished/target,4,1,0,4,PLANNED_NOT_CHARGED
+MR012,02_library/morphs/buildings/MR012_CHIMNEY_SHAFTS_TO_SPIRAL_CROWNS_2X2.txt,morphs/buildings,yes,4K,2x2 source/unfinished/unfinished/target,4,1,0,4,PLANNED_NOT_CHARGED
+MR013,02_library/morphs/objects/MR013_ENTRANCE_RAIL_TO_TRANSIT_GATE_2X2.txt,morphs/objects,yes,4K,2x2 source/unfinished/unfinished/target,4,1,0,4,PLANNED_NOT_CHARGED
+MR014,02_library/morphs/objects/MR014_BENCH_AND_CANOPY_TO_BUS_SEATING_2X2.txt,morphs/objects,yes,4K,2x2 source/unfinished/unfinished/target,4,1,0,4,PLANNED_NOT_CHARGED
+MR015,02_library/morphs/objects/MR015_CANOPY_TO_BALLOON_ENVELOPE_2X2.txt,morphs/objects,yes,4K,2x2 source/unfinished/unfinished/target,4,1,0,4,PLANNED_NOT_CHARGED
+MR016,02_library/morphs/objects/MR016_CROP_STALKS_TO_RAIL_SLEEPERS_2X2.txt,morphs/objects,yes,4K,2x2 source/unfinished/unfinished/target,4,1,0,4,PLANNED_NOT_CHARGED
+MR017,02_library/morphs/objects/MR017_CABINET_TO_DESK_AND_CHAIR_2X2.txt,morphs/objects,yes,4K,2x2 source/unfinished/unfinished/target,4,1,0,4,PLANNED_NOT_CHARGED
+MR018,02_library/morphs/objects/MR018_HEARING_BENCH_TO_DOCUMENT_SHELVING_2X2.txt,morphs/objects,yes,4K,2x2 source/unfinished/unfinished/target,4,1,0,4,PLANNED_NOT_CHARGED
+MR019,02_library/morphs/buildings/MR019_PAVING_AND_GUTTER_TO_STREET_TERRACE_2X2.txt,morphs/buildings,yes,4K,2x2 source/unfinished/unfinished/target,4,1,0,4,PLANNED_NOT_CHARGED
+MR020,02_library/morphs/objects/MR020_ROPE_FIBRES_TO_SHEET_HEM_2X2.txt,morphs/objects,yes,4K,2x2 source/unfinished/unfinished/target,4,1,0,4,PLANNED_NOT_CHARGED
+R009,02_library/morphs/buildings/R009_FANLIGHT_TO_CANOPY_JOINT_STUDY_FOR_THE_EXTEND.txt,morphs/buildings,yes,4K,2x2 source/unfinished/unfinished/target,4,1,0,4,PLANNED_NOT_CHARGED
+R008,02_library/morphs/buildings/R008_CAFE_OPENING_AND_FURNITURE_CONSTRUCTION_DETAILS.txt,morphs/buildings,yes,4K,2x2 source/unfinished/unfinished/target,4,1,0,4,PLANNED_NOT_CHARGED
+MW01_B_01,02_library/worlds/memories/05_01_MW01_LONDON_SOCIAL_B_VIEW_05.txt,worlds/memories,yes,2K,single full-frame 16:9,2,1,0,2,PLANNED_NOT_CHARGED
+MW01_B_02,02_library/worlds/memories/05_02_MW01_LONDON_SOCIAL_B_VIEW_06.txt,worlds/memories,yes,2K,single full-frame 16:9,2,1,0,2,PLANNED_NOT_CHARGED
+MW01_B_03,02_library/worlds/memories/05_03_MW01_LONDON_SOCIAL_B_VIEW_07.txt,worlds/memories,yes,2K,single full-frame 16:9,2,1,0,2,PLANNED_NOT_CHARGED
+MW01_B_04,02_library/worlds/memories/05_04_MW01_LONDON_SOCIAL_B_VIEW_08.txt,worlds/memories,yes,2K,single full-frame 16:9,2,1,0,2,PLANNED_NOT_CHARGED
+MW01_C_01,02_library/worlds/memories/06_01_MW01_LONDON_SOCIAL_C_VIEW_09.txt,worlds/memories,yes,2K,single full-frame 16:9,2,1,0,2,PLANNED_NOT_CHARGED
+MW01_C_02,02_library/worlds/memories/06_02_MW01_LONDON_SOCIAL_C_VIEW_01.txt,worlds/memories,yes,2K,single full-frame 16:9,2,1,0,2,PLANNED_NOT_CHARGED
+MW01_C_03,02_library/worlds/memories/06_03_MW01_LONDON_SOCIAL_C_VIEW_07.txt,worlds/memories,yes,2K,single full-frame 16:9,2,1,0,2,PLANNED_NOT_CHARGED
+MW01_C_04,02_library/worlds/memories/06_04_MW01_LONDON_SOCIAL_C_VIEW_08.txt,worlds/memories,yes,2K,single full-frame 16:9,2,1,0,2,PLANNED_NOT_CHARGED
+MW02_B,02_library/worlds/memories/08_MW02_GLOBAL_ROUTES_B.txt,worlds/memories,yes,4K,4K 2x2 page B,4,1,0,4,PLANNED_NOT_CHARGED
+MW02_C_01,02_library/worlds/memories/09_01_MW02_GLOBAL_ROUTES_C_VIEW_09.txt,worlds/memories,yes,2K,single full-frame 16:9,2,1,0,2,PLANNED_NOT_CHARGED
+MW02_C_02,02_library/worlds/memories/09_02_MW02_GLOBAL_ROUTES_C_VIEW_01.txt,worlds/memories,yes,2K,single full-frame 16:9,2,1,0,2,PLANNED_NOT_CHARGED
+MW02_C_03,02_library/worlds/memories/09_03_MW02_GLOBAL_ROUTES_C_VIEW_07.txt,worlds/memories,yes,2K,single full-frame 16:9,2,1,0,2,PLANNED_NOT_CHARGED
+MW02_C_04,02_library/worlds/memories/09_04_MW02_GLOBAL_ROUTES_C_VIEW_08.txt,worlds/memories,yes,2K,single full-frame 16:9,2,1,0,2,PLANNED_NOT_CHARGED
+MW03_B_01,02_library/worlds/memories/11_01_MW03_WORK_RULE_CHANGE_ADMIN_B_VIEW_05.txt,worlds/memories,yes,2K,single full-frame 16:9,2,1,0,2,PLANNED_NOT_CHARGED
+MW03_B_02,02_library/worlds/memories/11_02_MW03_WORK_RULE_CHANGE_ADMIN_B_VIEW_06.txt,worlds/memories,yes,2K,single full-frame 16:9,2,1,0,2,PLANNED_NOT_CHARGED
+MW03_B_03,02_library/worlds/memories/11_03_MW03_WORK_RULE_CHANGE_ADMIN_B_VIEW_07.txt,worlds/memories,yes,2K,single full-frame 16:9,2,1,0,2,PLANNED_NOT_CHARGED
+MW03_B_04,02_library/worlds/memories/11_04_MW03_WORK_RULE_CHANGE_ADMIN_B_VIEW_08.txt,worlds/memories,yes,2K,single full-frame 16:9,2,1,0,2,PLANNED_NOT_CHARGED
+MW03_C_01,02_library/worlds/memories/12_01_MW03_WORK_RULE_CHANGE_ADMIN_C_VIEW_09.txt,worlds/memories,yes,2K,single full-frame 16:9,2,1,0,2,PLANNED_NOT_CHARGED
+MW03_C_02,02_library/worlds/memories/12_02_MW03_WORK_RULE_CHANGE_ADMIN_C_VIEW_01.txt,worlds/memories,yes,2K,single full-frame 16:9,2,1,0,2,PLANNED_NOT_CHARGED
+MW03_C_03,02_library/worlds/memories/12_03_MW03_WORK_RULE_CHANGE_ADMIN_C_VIEW_07.txt,worlds/memories,yes,2K,single full-frame 16:9,2,1,0,2,PLANNED_NOT_CHARGED
+MW03_C_04,02_library/worlds/memories/12_04_MW03_WORK_RULE_CHANGE_ADMIN_C_VIEW_08.txt,worlds/memories,yes,2K,single full-frame 16:9,2,1,0,2,PLANNED_NOT_CHARGED
+MW04_B_01,02_library/worlds/memories/14_01_MW04_POLICE_DEFENCE_B_VIEW_05.txt,worlds/memories,yes,2K,single full-frame 16:9,2,1,0,2,PLANNED_NOT_CHARGED
+MW04_B_02,02_library/worlds/memories/14_02_MW04_POLICE_DEFENCE_B_VIEW_06.txt,worlds/memories,yes,2K,single full-frame 16:9,2,1,0,2,PLANNED_NOT_CHARGED
+MW04_B_03,02_library/worlds/memories/14_03_MW04_POLICE_DEFENCE_B_VIEW_07.txt,worlds/memories,yes,2K,single full-frame 16:9,2,1,0,2,PLANNED_NOT_CHARGED
+MW04_B_04,02_library/worlds/memories/14_04_MW04_POLICE_DEFENCE_B_VIEW_08.txt,worlds/memories,yes,2K,single full-frame 16:9,2,1,0,2,PLANNED_NOT_CHARGED
+MW04_C_01,02_library/worlds/memories/15_01_MW04_POLICE_DEFENCE_C_VIEW_09.txt,worlds/memories,yes,2K,single full-frame 16:9,2,1,0,2,PLANNED_NOT_CHARGED
+MW04_C_02,02_library/worlds/memories/15_02_MW04_POLICE_DEFENCE_C_VIEW_01.txt,worlds/memories,yes,2K,single full-frame 16:9,2,1,0,2,PLANNED_NOT_CHARGED
+MW04_C_03,02_library/worlds/memories/15_03_MW04_POLICE_DEFENCE_C_VIEW_07.txt,worlds/memories,yes,2K,single full-frame 16:9,2,1,0,2,PLANNED_NOT_CHARGED
+MW04_C_04,02_library/worlds/memories/15_04_MW04_POLICE_DEFENCE_C_VIEW_08.txt,worlds/memories,yes,2K,single full-frame 16:9,2,1,0,2,PLANNED_NOT_CHARGED
+MW05_B_01,02_library/worlds/memories/17_01_MW05_COURT_FILE_B_VIEW_05.txt,worlds/memories,yes,2K,single full-frame 16:9,2,1,0,2,PLANNED_NOT_CHARGED
+MW05_B_02,02_library/worlds/memories/17_02_MW05_COURT_FILE_B_VIEW_06.txt,worlds/memories,yes,2K,single full-frame 16:9,2,1,0,2,PLANNED_NOT_CHARGED
+MW05_B_03,02_library/worlds/memories/17_03_MW05_COURT_FILE_B_VIEW_07.txt,worlds/memories,yes,2K,single full-frame 16:9,2,1,0,2,PLANNED_NOT_CHARGED
+MW05_B_04,02_library/worlds/memories/17_04_MW05_COURT_FILE_B_VIEW_08.txt,worlds/memories,yes,2K,single full-frame 16:9,2,1,0,2,PLANNED_NOT_CHARGED
+MW05_C_01,02_library/worlds/memories/18_01_MW05_COURT_FILE_C_VIEW_09.txt,worlds/memories,yes,2K,single full-frame 16:9,2,1,0,2,PLANNED_NOT_CHARGED
+MW05_C_02,02_library/worlds/memories/18_02_MW05_COURT_FILE_C_VIEW_01.txt,worlds/memories,yes,2K,single full-frame 16:9,2,1,0,2,PLANNED_NOT_CHARGED
+MW05_C_03,02_library/worlds/memories/18_03_MW05_COURT_FILE_C_VIEW_07.txt,worlds/memories,yes,2K,single full-frame 16:9,2,1,0,2,PLANNED_NOT_CHARGED
+MW05_C_04,02_library/worlds/memories/18_04_MW05_COURT_FILE_C_VIEW_08.txt,worlds/memories,yes,2K,single full-frame 16:9,2,1,0,2,PLANNED_NOT_CHARGED
+MW06_B_01,02_library/worlds/memories/20_01_MW06_HUMAN_COUNTERMEMORIES_B_VIEW_05.txt,worlds/memories,yes,2K,single full-frame 16:9,2,1,0,2,PLANNED_NOT_CHARGED
+MW06_B_02,02_library/worlds/memories/20_02_MW06_HUMAN_COUNTERMEMORIES_B_VIEW_06.txt,worlds/memories,yes,2K,single full-frame 16:9,2,1,0,2,PLANNED_NOT_CHARGED
+MW06_B_03,02_library/worlds/memories/20_03_MW06_HUMAN_COUNTERMEMORIES_B_VIEW_07.txt,worlds/memories,yes,2K,single full-frame 16:9,2,1,0,2,PLANNED_NOT_CHARGED
+MW06_B_04,02_library/worlds/memories/20_04_MW06_HUMAN_COUNTERMEMORIES_B_VIEW_08.txt,worlds/memories,yes,2K,single full-frame 16:9,2,1,0,2,PLANNED_NOT_CHARGED
+MW06_C_01,02_library/worlds/memories/21_01_MW06_HUMAN_COUNTERMEMORIES_C_VIEW_09.txt,worlds/memories,yes,2K,single full-frame 16:9,2,1,0,2,PLANNED_NOT_CHARGED
+MW06_C_02,02_library/worlds/memories/21_02_MW06_HUMAN_COUNTERMEMORIES_C_VIEW_01.txt,worlds/memories,yes,2K,single full-frame 16:9,2,1,0,2,PLANNED_NOT_CHARGED
+MW06_C_03,02_library/worlds/memories/21_03_MW06_HUMAN_COUNTERMEMORIES_C_VIEW_07.txt,worlds/memories,yes,2K,single full-frame 16:9,2,1,0,2,PLANNED_NOT_CHARGED
+MW06_C_04,02_library/worlds/memories/21_04_MW06_HUMAN_COUNTERMEMORIES_C_VIEW_08.txt,worlds/memories,yes,2K,single full-frame 16:9,2,1,0,2,PLANNED_NOT_CHARGED
+MWP01_B,02_library/worlds/memories/23_MWP01_ROUTES_ROOMS_DOCUMENTS_B.txt,worlds/memories,yes,4K,4K 2x2 page B,4,1,0,4,PLANNED_NOT_CHARGED
+MWP01_C,02_library/worlds/memories/24_MWP01_ROUTES_ROOMS_DOCUMENTS_C.txt,worlds/memories,yes,4K,4K 2x2 page C,4,1,0,4,PLANNED_NOT_CHARGED
+MWP02_B,02_library/worlds/memories/26_MWP02_SYSTEM_TIME_REVERSALS_B.txt,worlds/memories,yes,4K,4K 2x2 page B,4,1,0,4,PLANNED_NOT_CHARGED
+MWP02_C,02_library/worlds/memories/27_MWP02_SYSTEM_TIME_REVERSALS_C.txt,worlds/memories,yes,4K,4K 2x2 page C,4,1,0,4,PLANNED_NOT_CHARGED
+HRW07_B,02_library/worlds/memories/29_HRW07_CLINICAL_REALITY_B.txt,worlds/memories,yes,4K,4K 2x2 page B,4,1,0,4,PLANNED_NOT_CHARGED
+HRW07_C,02_library/worlds/memories/30_HRW07_CLINICAL_REALITY_C.txt,worlds/memories,yes,4K,4K 2x2 page C,4,1,0,4,PLANNED_NOT_CHARGED
+T01_DETAILS,02_library/worlds/memories/01_T01_SOHO_RESTAURANT_SOURCE_A.txt,worlds/memories,yes,4K,4K 2x2 restaurant coverage page A,4,1,0,4,PLANNED_NOT_CHARGED
+T01_DETAILS_B,02_library/worlds/memories/02_T01_SOHO_RESTAURANT_SOURCE_B.txt,worlds/memories,yes,4K,4K 2x2 restaurant coverage page B,4,1,0,4,PLANNED_NOT_CHARGED
+T01_DETAILS_C,02_library/worlds/memories/03_T01_SOHO_RESTAURANT_SOURCE_C.txt,worlds/memories,yes,4K,4K 2x2 restaurant coverage page C,4,1,0,4,PLANNED_NOT_CHARGED
+R002,02_library/morphs/objects/R002_THE_SAME_RED_LONDON_BUS_FROM_USEFUL_ANGLES.txt,morphs/objects,yes,4K,4K 2x2 object material transformation,4,1,0,4,PLANNED_NOT_CHARGED
+R003,02_library/morphs/objects/R003_BLACK_LONDON_TAXI.txt,morphs/objects,yes,4K,4K 2x2 object material transformation,4,1,0,4,PLANNED_NOT_CHARGED
+R004,02_library/morphs/objects/R004_YELLOW_BUDAPEST_TRAM.txt,morphs/objects,yes,4K,4K 2x2 object material transformation,4,1,0,4,PLANNED_NOT_CHARGED
+R005,02_library/morphs/buildings/R005_ST_PAULS_COMPLETE_SOURCE_BUILDING.txt,morphs/buildings,yes,4K,4K 2x2 object material transformation,4,1,0,4,PLANNED_NOT_CHARGED
+R006,02_library/morphs/buildings/R006_ST_STEPHENS_COMPLETE_DESTINATION_BUILDING.txt,morphs/buildings,yes,4K,4K 2x2 object material transformation,4,1,0,4,PLANNED_NOT_CHARGED
+R010,02_library/morphs/objects/R010_WINGED_STATUE_PLINTH_AND_CONTACT_DETAIL.txt,morphs/objects,yes,4K,4K 2x2 object material transformation,4,1,0,4,PLANNED_NOT_CHARGED
+R013,02_library/morphs/objects/R013_RED_BUS_LOWER_DECK_PASSAGE_AND_OPEN_DOOR_GEOMETRY.txt,morphs/objects,yes,4K,4K 2x2 object material transformation,4,1,0,4,PLANNED_NOT_CHARGED
+R014,02_library/morphs/buildings/R014_ORIGINAL_LONDON_CAFE_WINDOW_BEFORE_FRACTURE.txt,morphs/buildings,yes,4K,4K 2x2 object material transformation,4,1,0,4,PLANNED_NOT_CHARGED
+R015,02_library/morphs/objects/R015_GLASS_SOURCE_THICKNESS_AND_DESTINATION_PENDANT_SHADES.txt,morphs/objects,yes,4K,4K 2x2 object material transformation,4,1,0,4,PLANNED_NOT_CHARGED
+R016,02_library/morphs/buildings/R016_SOLID_LONDON_BRICK_AND_PEST_CARVED_STONE_CORRESPONDENCE.txt,morphs/buildings,yes,4K,4K 2x2 object material transformation,4,1,0,4,PLANNED_NOT_CHARGED
+R017,02_library/morphs/buildings/R017_STONE_SILL_WET_PAVING_AND_SUPPORTED_TIMBER_THRESHOLD.txt,morphs/buildings,yes,4K,4K 2x2 object material transformation,4,1,0,4,PLANNED_NOT_CHARGED
+R018,02_library/morphs/objects/R018_LONDON_TIMBER_BENCH_AND_CURVED_FLOOR_BORDER.txt,morphs/objects,yes,4K,4K 2x2 object material transformation,4,1,0,4,PLANNED_NOT_CHARGED
+R019,02_library/morphs/objects/R019_ACCEPTED_RESTAURANT_TABLE_AND_CHAIR_FROM_OUTSIDE.txt,morphs/objects,yes,4K,4K 2x2 object material transformation,4,1,0,4,PLANNED_NOT_CHARGED
+R020,02_library/morphs/objects/R020_CUP_HAND_CONTACT_AND_TABLETOP_DEPTH.txt,morphs/objects,yes,4K,4K 2x2 object material transformation,4,1,0,4,PLANNED_NOT_CHARGED
+R021,02_library/morphs/buildings/R021_RESTAURANT_REAR_DOORS_AND_DEPTH_RELATIONSHIPS.txt,morphs/buildings,yes,4K,4K 2x2 object material transformation,4,1,0,4,PLANNED_NOT_CHARGED
+R022,02_library/morphs/objects/R022_STREET_LIGHT_FITTINGS_AND_RESTAURANT_PENDANT_CONNECTIONS.txt,morphs/objects,yes,4K,4K 2x2 object material transformation,4,1,0,4,PLANNED_NOT_CHARGED
+R023,02_library/morphs/objects/R023_BALCONY_SCROLL_AND_SIDEWAYS_STAIR_STRUCTURAL_PARTS.txt,morphs/objects,yes,4K,4K 2x2 object material transformation,4,1,0,4,PLANNED_NOT_CHARGED
+R024,02_library/morphs/objects/R024_MOUNTED_ENGLISH_CAFE_SIGN_AND_HUNGARIAN_DESTINATION_SIGN.txt,morphs/objects,yes,4K,4K 2x2 object material transformation,4,1,0,4,PLANNED_NOT_CHARGED
+R025,02_library/morphs/buildings/R025_ORIGINAL_LONDON_ROOF_AND_CHIMNEY_VOLUMES.txt,morphs/buildings,yes,4K,4K 2x2 object material transformation,4,1,0,4,PLANNED_NOT_CHARGED
+R026,02_library/morphs/buildings/R026_TARGET_ROOF_GLAZING_STONE_CORBELS_AND_CHIMNEY_CROWNS.txt,morphs/buildings,yes,4K,4K 2x2 object material transformation,4,1,0,4,PLANNED_NOT_CHARGED
+R028,02_library/morphs/buildings/R028_ORIGINAL_ARCADE_ARCH_AND_FANLIGHT.txt,morphs/buildings,yes,4K,4K 2x2 object material transformation,4,1,0,4,PLANNED_NOT_CHARGED
+R029,02_library/morphs/buildings/R029_FULL_SUPPORTED_CANOPY_DESTINATION.txt,morphs/buildings,yes,4K,4K 2x2 object material transformation,4,1,0,4,PLANNED_NOT_CHARGED
+R030,02_library/morphs/buildings/R030_DEEP_GALLERY_THROUGH_THE_UNCHANGED_THRESHOLD.txt,morphs/buildings,yes,4K,4K 2x2 object material transformation,4,1,0,4,PLANNED_NOT_CHARGED
+R031,02_library/morphs/buildings/R031_LONDON_STATION_SOURCE_EXTERIOR_AND_IRON_STRUCTURE.txt,morphs/buildings,yes,4K,4K 2x2 object material transformation,4,1,0,4,PLANNED_NOT_CHARGED
+R032,02_library/morphs/buildings/R032_NYUGATI_STATION_DESTINATION_AND_ROOF_JOINTS.txt,morphs/buildings,yes,4K,4K 2x2 object material transformation,4,1,0,4,PLANNED_NOT_CHARGED
+R033,02_library/morphs/buildings/R033_HUNGARIAN_STATE_OPERA_TARGET_FACADE_AND_ENTRY_DEPTH.txt,morphs/buildings,yes,4K,4K 2x2 object material transformation,4,1,0,4,PLANNED_NOT_CHARGED
+R034,02_library/morphs/buildings/R034_TOWER_BRIDGE_SOURCE_STRUCTURE.txt,morphs/buildings,yes,4K,4K 2x2 object material transformation,4,1,0,4,PLANNED_NOT_CHARGED
+R035,02_library/morphs/buildings/R035_SZECHENYI_CHAIN_BRIDGE_DESTINATION_STRUCTURE.txt,morphs/buildings,yes,4K,4K 2x2 object material transformation,4,1,0,4,PLANNED_NOT_CHARGED
+R036,02_library/morphs/buildings/R036_LONDON_EYE_AND_CONNECTED_SOUTH_BANK_DEPTH.txt,morphs/buildings,yes,4K,4K 2x2 object material transformation,4,1,0,4,PLANNED_NOT_CHARGED
+R037,02_library/morphs/buildings/R037_GREAT_MARKET_HALL_ROOF_AND_BRICK_SOURCE_VOLUME.txt,morphs/buildings,yes,4K,4K 2x2 object material transformation,4,1,0,4,PLANNED_NOT_CHARGED
+R038,02_library/morphs/buildings/R038_BALNA_CURVED_GLASS_TARGET_VOLUME.txt,morphs/buildings,yes,4K,4K 2x2 object material transformation,4,1,0,4,PLANNED_NOT_CHARGED
+R039,02_library/morphs/buildings/R039_WESTMINSTER_AND_PARLIAMENT_SQUARE_LONDON_SOURCE.txt,morphs/buildings,yes,4K,4K 2x2 object material transformation,4,1,0,4,PLANNED_NOT_CHARGED
+R040,02_library/morphs/buildings/R040_HUNGARIAN_PARLIAMENT_COMPLETE_DESTINATION_SILHOUETTE.txt,morphs/buildings,yes,4K,4K 2x2 object material transformation,4,1,0,4,PLANNED_NOT_CHARGED
+R041,02_library/morphs/buildings/R041_GRESHAM_PALACE_FRONTAGE_AND_DEEP_STONE_DETAILS.txt,morphs/buildings,yes,4K,4K 2x2 object material transformation,4,1,0,4,PLANNED_NOT_CHARGED
+R042,02_library/morphs/buildings/R042_NEW_YORK_PALACE_HISTORIC_EXTERIOR_WITH_OCCUPIED_BAY_DEPTH.txt,morphs/buildings,yes,4K,4K 2x2 object material transformation,4,1,0,4,PLANNED_NOT_CHARGED
+R043,02_library/morphs/objects/R043_LONDON_ENTRANCE_RAIL_AND_REMEMBERED_TRANSIT_GATE.txt,morphs/objects,yes,4K,4K 2x2 object material transformation,4,1,0,4,PLANNED_NOT_CHARGED
+R044,02_library/morphs/objects/R044_REMEMBERED_BUS_SEATS_AISLE_AND_CANOPY_POST_CORRESPONDENCE.txt,morphs/objects,yes,4K,4K 2x2 object material transformation,4,1,0,4,PLANNED_NOT_CHARGED
+R045,02_library/morphs/objects/R045_CAIRO_TAXI_CABIN_REAR_BENCH_AND_LUGGAGE_CONTACT.txt,morphs/objects,yes,4K,4K 2x2 object material transformation,4,1,0,4,PLANNED_NOT_CHARGED
+R046,02_library/morphs/objects/R046_CANOPY_AND_BALLOON_ENVELOPE_RIGGING_AND_BASKET_INTERFACES.txt,morphs/objects,yes,4K,4K 2x2 object material transformation,4,1,0,4,PLANNED_NOT_CHARGED
+R047,02_library/morphs/objects/R047_PAVING_SOIL_PAPRIKA_CORN_ROOTS_AND_RAIL_SLEEPERS.txt,morphs/objects,yes,4K,4K 2x2 object material transformation,4,1,0,4,PLANNED_NOT_CHARGED
+R048,02_library/morphs/objects/R048_ADMINISTRATIVE_DESK_ACTUAL_DOCUMENTS_AND_DEVICE_GEOMETRY.txt,morphs/objects,yes,4K,4K 2x2 object material transformation,4,1,0,4,PLANNED_NOT_CHARGED
+R049,02_library/morphs/objects/R049_CABINET_FINGERPRINT_DESK_AND_CHAIR_CONSTRUCTION.txt,morphs/objects,yes,4K,4K 2x2 object material transformation,4,1,0,4,PLANNED_NOT_CHARGED
+R050,02_library/morphs/objects/R050_COURT_FILE_COMPARTMENTS_AND_RETAINED_DEVICE_SUPPORTS.txt,morphs/objects,yes,4K,4K 2x2 object material transformation,4,1,0,4,PLANNED_NOT_CHARGED
+R054,02_library/morphs/buildings/R054_BIG_BEN_ELIZABETH_TOWER_LONDON_SOURCE.txt,morphs/buildings,yes,4K,4K 2x2 object material transformation,4,1,0,4,PLANNED_NOT_CHARGED
+R055,02_library/morphs/buildings/R055_WESTMINSTER_ABBEY_LONDON_SOURCE.txt,morphs/buildings,yes,4K,4K 2x2 object material transformation,4,1,0,4,PLANNED_NOT_CHARGED
+R056,02_library/morphs/buildings/R056_FISHERMANS_BASTION_DESTINATION.txt,morphs/buildings,yes,4K,4K 2x2 object material transformation,4,1,0,4,PLANNED_NOT_CHARGED
+CM001,02_library/morphs/characters/CM001_APPOINTED_LAWYER_TO_OFFICE_SUBSTITUTE_2X2.txt,morphs/characters,yes,4K,4K 2x2 character material transformation,4,1,0,4,PLANNED_NOT_CHARGED
+CM002,02_library/morphs/characters/CM002_SOHO_WOMAN_TO_BEGINNER_DANCE_WOMAN_2X2.txt,morphs/characters,yes,4K,4K 2x2 character material transformation,4,1,0,4,PLANNED_NOT_CHARGED
+CM003,02_library/morphs/characters/CM003_SNORING_HOUSEMATE_TO_MORTGAGE_HOUSEMATE_2X2.txt,morphs/characters,yes,4K,4K 2x2 character material transformation,4,1,0,4,PLANNED_NOT_CHARGED
+CM004,02_library/morphs/characters/CM004_TRANSIT_HELPER_TO_CAIRO_TRAVELER_2X2.txt,morphs/characters,yes,4K,4K 2x2 character material transformation,4,1,0,4,PLANNED_NOT_CHARGED
+CM005,02_library/morphs/characters/CM005_ADMIN_COLLEAGUE_A_TO_B_2X2.txt,morphs/characters,yes,4K,4K 2x2 character material transformation,4,1,0,4,PLANNED_NOT_CHARGED
+CM006,02_library/morphs/characters/CM006_FORENSIC_EXPERT_A_TO_B_2X2.txt,morphs/characters,yes,4K,4K 2x2 character material transformation,4,1,0,4,PLANNED_NOT_CHARGED
+MR021,02_library/morphs/objects/MR021_RATING_CARD_6_2_TO_9_2_MATERIAL_MORPH_2X2.txt,morphs/objects,yes,4K,4K 2x2 object material transformation,4,1,0,4,PLANNED_NOT_CHARGED
+TY001,02_library/typography/TY001_DECIMAL_RATING_GLYPHS_AND_TINTS_3X3.txt,typography,yes,4K,3x3 typography,4,1,0,4,PLANNED_NOT_CHARGED
+TY002,02_library/typography/TY002_COFFEE_TO_KAVE_LETTER_MATERIAL_2X2.txt,typography,yes,4K,2x2 typography,4,1,0,4,PLANNED_NOT_CHARGED
+TY003,02_library/typography/TY003_CAFE_AND_CULTURE_SIGN_LETTERING_2X2.txt,typography,yes,4K,2x2 typography,4,1,0,4,PLANNED_NOT_CHARGED
+TY004,02_library/typography/TY004_OFFICE_AND_ACCOUNTING_SIGN_LETTERING_2X2.txt,typography,yes,4K,2x2 typography,4,1,0,4,PLANNED_NOT_CHARGED
+TY005,02_library/typography/TY005_TRANSIT_AND_ENTRANCE_SIGN_LETTERING_2X2.txt,typography,yes,4K,2x2 typography,4,1,0,4,PLANNED_NOT_CHARGED
+TY006,02_library/typography/TY006_PROFILE_AGE_37_TO_33_GLYPH_CHANGE_2X2.txt,typography,yes,4K,2x2 typography,4,1,0,4,PLANNED_NOT_CHARGED
+TY007,02_library/typography/TY007_FINAL_TITLE_LOCKUP_AND_LETTER_DETAILS_2X2.txt,typography,yes,4K,2x2 typography,4,1,0,4,PLANNED_NOT_CHARGED

@@ -1,0 +1,29 @@
+REFERENCE ID: TY005_TRANSIT_AND_ENTRANCE_SIGN_LETTERING_2X2 (never print IDs, headings or panel labels).
+
+ONE 4K TYPOGRAPHY SHEET — 2×2:
+Create ONE 3840×2160 image with exactly FOUR equal edge-to-edge 1920×1080 cells in two columns and two rows. Select 4K for the whole output. No margins, gutters, separators or letterboxing. Each cell is a separately composed full 16:9 image. The specified words are large and sharply resolved, with complete glyphs and space for their accents. The four assigned cells have different inspection purposes or material states; do not produce four near-identical decorative signs.
+
+SUBJECT — TRANSIT AND PUBLIC-ENTRANCE TYPOGRAPHY:
+Produce four useful close sign identities from the world prompts, with one exact word per cell. Use clear, ordinary high-contrast wayfinding lettering, a solid rectangular face and modest mounting hardware. These are design references for existing dream-city signs, not a reproduction of an official transport signage standard. Do not add transit logos, line numbers, destination lists, arrows, pictograms or emergency notices that were not requested.
+
+At top left: "METRÓ":
+Render METRÓ as five uppercase letters on a restrained dark sign face with pale lettering. Keep M and its internal diagonals, E three arms, T crossbar, R bowl and diagonal leg, then Ó with its oval counter and one upward-right acute accent. Show the full accent above the cap line with clear top padding. The sign has a shallow enamel or painted-metal edge and an actual bracket attachment.
+
+At top right: "KIJÁRAT":
+Render KIJÁRAT as seven uppercase letters, with one acute above the fourth letter Á. Keep the I and J separately readable; the J lower hook cannot become an extra comma or disappear into the neighbouring A. Show an entire wall-mounted sign face with modest spacing and useful contrast. A small door-return edge provides physical depth, without adding a second label or graphic exit arrow.
+
+At bottom left: "BEJÁRAT":
+Render BEJÁRAT as seven uppercase letters. Resolve the two B counters, E arms, J hook, accented Á, R leg, plain A and final T. The accent appears only above the first A in this word. The sign sits above or beside an ordinary entrance with a visible mounting gap and cast shadow. Keep the sign complete and free of medical symbols, especially for use near the final non-medical building.
+
+At bottom right: "VILLAMOS":
+Render VILLAMOS as eight uppercase letters. Keep the I narrow but visible and the two L letters distinct; the final sequence A-M-O-S remains correctly ordered. Use a long modest transit plaque with visible thickness, a metal fixing and a neutral fragment of its pole or wall support. No tram vehicle needs to fill this typography cell. Do not substitute a vehicle destination display or an invented route number for the word.
+
+READABILITY THROUGH PERSPECTIVE:
+Give each sign a near-frontal three-quarter angle with one edge visible so it has thickness without extreme foreshortening. Keep glyph weight and counters readable under cool overcast illumination; small damp highlights may stay at the border but not obscure accents. Keep the sign attached to its assigned entrance or tram-stop support. No separate title overlay, grid flash or false change of language is implied by this coverage sheet.
+
+REFERENCE PURPOSE:
+This is a typography construction reference for the existing MyScoutee film. Generate the lettering directly from this text; no input image or Element mention is required for this image job. Preserve the actual letters, accents, decimal points, spacing and material attachment in each assigned perspective.
+The cell assignments below are exact image content, not captions to print. No row numbers, panel labels, typographic measurements, arrows, sample captions, decorative borders, additional slogans or watermark. Do not fill unused areas with random letter strings. Print only the expressly quoted visible text. A legibility study is not permission to make deliberately unreadable case documents, private records or other background text readable in the film.
+
+NO UMBRELLAS — EVERY CELL:
+No umbrellas, open, folded, carried, stored, reflected or mounted. These typography studies have no human figures or faces; they do not replace the inhabited world references. When their graphics are applied in the current city, each living person's rating card remains attached above that person's uncovered head. Remembered/clinical people remain without rating cards. No typography sample assigns a score to the protagonist before the scripted Block 06 reveal.

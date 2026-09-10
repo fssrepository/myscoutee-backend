@@ -1,0 +1,88 @@
+REFERENCE ID: MWP02_SYSTEM_TIME_REVERSALS_C (never print IDs, headings or panel labels).
+
+OUTPUT ELEMENT ASSIGNMENT — OPERATOR METADATA ONLY, NEVER RENDER:
+Live output Element name (operator lookup only): loc_MYS_mys-mwp02-c-system-time-reversals_s0_v1
+Live output Element UUID: cb490952-2890-43f9-8e2c-b79e0d40fce9
+Image attachment verified via MCP on 2026-09-10. This output target is not an input reference.
+
+PAGE CONTINUITY INPUT: @loc_MYS_mys-mwp02-a-system-time-reversals_s0_v1 supplies the accepted Page A identities, shared material palette and any recurring room geometry. New places explicitly assigned to this page retain their own stated setting; do not copy Page A into every cell.
+
+REFERENCE INPUTS:
+@char_MYS_mys-c01-protagonist_s0_v1 = CHARACTER 01 — PROTAGONIST; exact person identity; use only where this person appears.
+
+OUTPUT GEOMETRY — ONE 4K 2×2 REFERENCE PAGE:
+Generate ONE photographic 3840×2160 widescreen 16:9 image. Exactly FOUR equal edge-to-edge 1920×1080 cells in a 2×2 grid, without gutters, margins, letterboxing, labels, headings or captions. Select 4K for the entire output. Cell order is top-left, top-right, bottom-left, bottom-right. This is one image output, not four separate jobs.
+Use character references for identity and wardrobe only, and accepted location pages for their assigned spatial content. Reconstruct each assigned cell as one scene; never copy a reference sheet inside it. No front/back/headshot identity layout, nested grid or extra panels.
+
+PURPOSE — GALA ABSTRACTION LOCK:
+This is a STORY-PRESERVATION SOURCE BANK for the late moment when one private life collides with institutional time.
+The autobiographical STRUCTURE is preserved, but every contemporary political identifier is removed.
+Do NOT name or depict a real officeholder, party, named high-state body, international public-affairs body, named tax regime or identifiable current public event.
+These cells are not proof of causation and must not imply that the protagonist caused any later institutional change.
+
+REFERENCE RULE:
+Use the supplied protagonist reference only where the protagonist is visible.
+All officials, senior officeholders and institutional staff remain fictional, anonymous and non-identifiable. No additional real-public-figure reference is required.
+
+SOURCE VERSUS FILM:
+These cells establish literal documents, rooms and people. Later film beats can extend their paper, furniture or architectural forms into the dream city; keep those transformations out of this reusable source sheet.
+
+VISUAL LANGUAGE:
+Photorealistic live-action institutional realism.
+Ordinary paper, laptops, offices, review-room furniture and administrative architecture rather than symbolic fantasy.
+No news-graphics collage, campaign material, national insignia, parliamentary imagery, falling-head montage, propaganda poster or coup imagery.
+All destination names, regime names, office titles and document text remain unreadable or invented.
+
+PAGE C OF MWP02: The four slots retain provenance numbers 9, 1, 7, 8. The repeated slots now supply the distinct supplementary content specified below; these numbers do not instruct a repeat of an earlier image. Render ONLY the four cell assignments on this page. Global identity rules apply only when their person actually occurs in an assigned view.
+
+REFERENCE COVERAGE FOR THE MOVING FILM:
+This page supplies the four assigned literal views, not four cuts, morph stages or interchangeable world designs. Make each view useful for its assigned purpose: room layout shows supports and an entry/exit; a gesture view retains its hand, furniture edge and background anchor; an object detail shows side/underside and contact. Different views of the SAME room preserve its floor plan, furniture, identities, clothes and light sources even when the viewpoint changes. Distinct memories remain distinct places; do not fuse them into one room to match the grid. Recurring places retain their established layout; each cell uses its explicitly assigned action and object state.
+Additional detail pages of the same place retain that memory and its established event. Keep full body/furniture support legible wherever the assigned view permits. Never substitute four nearly identical wide shots for the four assigned subjects.
+
+FOUR IMAGE ASSIGNMENTS — INSTRUCTIONS ONLY, NO PRINTED TEXT:
+For the top left image (source view 09; instruction only, never printed):
+EMPTY CHAIR HIGH IN THE SYSTEM: an anonymous formal senior-office chair stands empty after the office changes occupant. Restrained architecture, no portrait, flag, seal, title or recognizable seat of government. Quiet, institutional, non-triumphal. The chair is explicitly NOT a verdict in the protagonist's case; it only completes the structural irony that a request sent upward can remain still while the levels above it change.
+
+Frame the empty office chair behind one ordinary formal desk, with visible chair legs or base, table thickness and a quiet rear wall. The removed or absent nameplate leaves a small physical trace without readable office title. Keep the room neutral and non-identifying. Nothing on the desk presents a verdict, award or resolution of the protagonist papers.
+
+For the top right image (source view 01; instruction only, never printed):
+PUTTING THE REFUSAL AMONG THE STORED CASE PAPERS:
+The protagonist kneels beside an ordinary domestic storage box, placing the opened refusal letter and its envelope into a case folder among older papers. The box lid leans against the real shelf or bed edge; folder spines, worn cardboard and his hands make the subject. His unused laptop remains on the ordinary desk elsewhere in the same room.
+
+Preserve the refusal's generic unreadable content and the earlier case papers. Do not invent a reason, a new decision, document destruction or abandonment of future relief. The revised packet for a later institutional opening remains separate and intact. MWP02_A supplies the moment of reading the refusal; this cell supplies the material burden of keeping the accumulated case.
+
+For the bottom left image (source view 07; instruction only, never printed):
+AN UNFINISHED EVERYDAY TASK WHILE THE REVIEW WAITS:
+In the protagonist's ordinary room, a simple food-preparation surface holds an unbranded kettle, one cup and a small plate with unfinished bread. He stands beside it with his hand resting near the cup, attention still turned toward the laptop and review papers on the separate desk. This ordinary interrupted meal is the principal physical activity, showing a person's life continuing around the unresolved task.
+
+Keep a physically coherent room with supported objects and a real clear path between work and food surfaces; do not turn the desk into a kitchen or invent a second apartment. The ordinary closed room door remains closed. Keep the laptop interface small and unanswered, with no new message, outcome or magical institutional opening. The stopped review task is explicitly preserved in MWP02_B; this supplementary moment adds household objects and bodily activity instead of repeating a person facing that screen.
+
+For the bottom right image (source view 08; instruction only, never printed):
+ANONYMOUS OFFICE-TURNOVER OBJECTS BEING PACKED:
+At an anonymous institutional work surface, ordinary staff hands place a removed blank nameplate holder and a plain desk organizer into a shallow moving box. A disconnected desk telephone and empty stationery tray remain on the surface. The box, fittings and hands doing an unceremonious clear-out are the principal physical subjects.
+
+Keep faces, titles, seals, flags, party marks and identifiable office architecture absent. This is a separate literal office-turnover source, not a remote office pasted into the protagonist's room. Do not put his personal note or case file here. His earlier absurd declaration that an institution was "fired" remains on the separate MWP02_B source; the association is timing only, never prediction, authority or causation. The empty senior chair is separately preserved in this page's first cell, and neither event is a verdict in his case.
+
+FINAL CHECK:
+Exactly one 16:9 image.
+Exactly four literal photographic cells in a 4K 2×2 grid.
+No present-city reflection layer.
+No score cards.
+No real politician or identifiable public figure.
+No named contemporary public institution, officeholder, current event, tax regime or international body.
+No causal claim that the protagonist produced later institutional outcomes.
+No narrative element in this bank may be silently deleted merely because it is a micro-flash.
+
+SPATIAL INFORMATION FOR LATER EMBODIED MEMORY:
+The later film grows this exact remembered encounter from London materials. Supply enough geometry to reconstruct a solid place: a near seat or table corner with two readable sides, full supporting legs where furniture matters, visible floor contact, and a rear door, wall or landscape plane at a different distance. Use the existing widest relevant cell for the whole arrangement and the existing human-detail cell for the gesture; use the companion page when that required contextual view is assigned there. Keep principal faces, hands and interactions in useful focus. Show natural occlusion and contact shadows. Avoid hiding the relationship between a person, their chair, the floor and the rear doorway in shallow focus or tight crops. A detail cell may be close, but its contextual cell must retain the full arrangement. Preserve the assigned encounter and identity. These literal source shapes give the later film recognisable people and materials to carry through the impossible transformation.
+
+SOURCE CONTINUITY FOR THE MOVING FILM:
+Render each cell as a single clear, solid view of the specified people and their actual room or place. Show a usable doorway edge, furniture corner or support beside the central gesture, with full bodily depth, clear hands and contact shadows. Never supply ghosted people, translucent rooms, double exposures or blended before/after scenes. The source image is a direct view of the remembered place, with no transition overlay. Preserve the assigned identities and events across alternative views. Keep the source free of present-city overlays and rating cards.
+
+Keep the assigned room and human event specific and intact. Its source doorway, furniture corner or open side can support either a matched material development or continuous camera entry/exit. No forced mutation of the people, furniture or room is needed when the next setting lacks corresponding structure; let the film travel onward through a visible connected opening.
+
+RATING ROLE IN THIS SHEET:
+These are remembered or clinical people, not current-city pedestrians. Keep every one of the four cells without floating rating cards. A printed pass, family photograph or ordinary document remains its physical story object, not an above-head score.
+
+NO UMBRELLAS — EVERY CELL:
+No umbrellas anywhere in this image: none open, folded, carried, tucked into a bag, leaning against a wall, mounted over a table or held above a head. Do not copy an umbrella from an input reference. Outdoor present-city people have uncovered heads, hoods down and exposed hair; leave open air above every crown. Keep the specified weather for this scene. This restriction applies to the foreground, background, reflections and all cells of the sheet.

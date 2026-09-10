@@ -1,0 +1,19 @@
+NARRATED CONTINUITY TEST — EXISTING JOINED 4+4-SECOND VIDEO
+
+This is an audio-finishing specification for an operation that accepts existing video and a separate narration track. It is not a video-generation or lip-sync prompt. The actual Higgsfield post-production mixing route is not yet verified; see NARRATION_ROUTE.md.
+
+SOURCE:
+Use the actual complete joined clip, approximately 8 seconds, including its native soundtrack. Preserve its video frames, duration, frame rate, dimensions and the real source-to-extension boundary at approximately 4 seconds. No visual regeneration, retiming, crop, transition, interpolation or mouth animation.
+
+EXACT SPOKEN TEXT — ONE CONTINUOUS TAKE:
+Sometimes the only thing that survives the cut is a smile.
+
+VOICE AND PLACEMENT:
+One adult English-speaking male voice, low-to-mid register, close, restrained and thoughtful. Use the retained project voice if available. Natural clear delivery, approximately 5–6 seconds, without music or effects in the separate recording. Say the sentence once, without headings or additional words. This is off-screen inner narration; no visible character speaks.
+Place the actual recording roughly from 1 to 7 seconds of the complete video, adjusting the start to its measured natural length. Ensure voiced words cross the actual 4-second join: do not put a deliberate pause at the seam. Use one unbroken audio clip across both parts, never two independently generated voices. Do not clip, loop, accelerate or stretch speech to force a fit.
+
+MIX:
+Retain the original room tone, footfalls and music. Lower that existing bed modestly and smoothly beneath the voice, then restore it smoothly after the sentence. If music and effects are already one mixed track, treat them as one bed. Keep their timing and the original join intact. Avoid clicks, clipping, abrupt gain changes, voice changes or replacing the background with silence.
+
+REVIEW:
+Keep the unnarrated joined source for comparison. First listen to its native audio at the join without narration masking it. Then compare the narrated version: identical picture and timing, complete intelligible sentence, steady voice through the join and retained background sound. This tests native picture/background continuity and later narration mixing separately; it does not prove that Extend can continue a generated speaker's voice.

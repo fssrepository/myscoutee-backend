@@ -1,0 +1,44 @@
+REFERENCE ID: T01_SOHO_RESTAURANT_SOURCE_A (never print IDs, headings or panel labels).
+
+REFERENCE INPUTS:
+@char_MYS_mys-c01-protagonist_s0_v1 supplies the remembered man's exact face, hair, body and dark jacket. There is one occurrence of him inside this memory.
+@char_MYS_mys-c02-soho-woman_s0_v1 supplies the seated woman's exact identity. Use her dark everyday clothing and hair from her character image; keep her seated at the near right-hand table.
+
+OUTPUT GEOMETRY — ONE 4K 2×2 MEMORY PAGE:
+Generate ONE photographic 3840×2160 widescreen 16:9 image containing exactly FOUR equal edge-to-edge 1920×1080 cells, two columns and two rows. Select 4K for the whole output. Zero gutters, margins, borders, labels, arrows or captions. Every cell is a complete composition of its assigned subject, not a panoramic image quartered after rendering. This prompt produces one page only.
+Use character references for identity and wardrobe only, and accepted location pages for their assigned spatial content. Reconstruct each assigned cell as one scene; never copy a reference sheet inside it. No front/back/headshot identity layout, nested grid or extra panels.
+
+ONE ESTABLISHED ROOM AND ENCOUNTER:
+Show the remembered restaurant directly from inside its physical space. Establish a narrow rectangular room with warm cream/tan walls, a near right-hand table, smaller tables along the left wall, an open central aisle, two separate restroom doors on the rear wall, and warm pendant lamps above the tables. Show thick wooden tabletops, ordinary chairs, modest wall menus and a small amount of everyday wear. The woman sits at the same near table on the right side of the entrance-facing view; the man stands farther back beside the SAME two restroom doors. Place a small plate of sushi, chopsticks and a ceramic cup on the near table, keeping their positions consistent through all four cells. Establish two unobtrusive background diners at the left-side tables in the first wide view, keeping their positions consistent in later views. Do not invent an additional counter, corridor, restroom door, furniture set or customer group to fill a new angle.
+The man has turned away from the wrong restroom door toward the woman; she turns slightly and gives him a small spontaneous smile. Use this same quiet instant across the coverage, with natural posture and room for their eyeline. No new dialogue, embrace, standing-up action or extra story beat. These are different spatial views of one encounter, not successive phases of a material morph. The separate R008 sheet describes the street-to-restaurant transformation.
+Map the same physical relationships through every viewpoint: table corner to chair; woman's hand to cup; chair legs to floor; man's shoes to the rear threshold; two doors to the adjacent wall. New angles may hide objects through ordinary occlusion, but cannot relocate them or mirror the floor plan. Keep occupied furniture solid, full-size and supported. Where a close view cannot show every anchor, retain at least one adjacent furniture edge or recognizable background feature.
+
+PHOTOGRAPHY AND MATERIAL DETAIL:
+Photorealistic live-action interior photography, warm practical lighting with soft natural shadows and believable skin. Preserve the ceiling lamps' positions and the direction of their illumination. A reverse view may change which surfaces catch highlights, not relocate the lights. Expose faces, grain, joinery, ceramic rims, glass reflections, fabric and plaster without flattening their depth. Show thick boards, chair joints, door reveals, contact shadows and actual air between objects. Avoid heavy blur, glamour retouching or ultra-shallow focus that conceals the assigned construction. Use roughly 24–28mm equivalent for spatial views, 35–50mm for people and 50–85mm for details, keeping natural proportions. Vary subject distance and angle to make the four assigned views useful, not four nearly identical wide frames.
+This is the literal memory interior: no current London street, Budapest skyline, numerical score cards, umbrellas, projected room, reflection overlay or morphing furniture. Door labels and existing wall notices remain ordinary incidental details; do not add explanatory text. Keep remembered people card-free.
+
+PAGE A — ROOM, ENCOUNTER AND BASIC SPATIAL ANCHORS:
+Render only the four assigned views below. Pages A, B and C together provide twelve complementary views of this same room. Establish this room from the character inputs and the detailed layout below.
+
+FOUR IMAGE ASSIGNMENTS — INSTRUCTIONS ONLY, NO PRINTED TEXT:
+
+For the top left image (source view 01; instruction only, never printed) — COMPLETE ROOM FROM THE ENTRANCE:
+A wide oblique interior view establishes the described room from its entrance side. Include the seated woman and near table, the clear aisle, background tables and the remembered man beside both restroom doors. Show the table and occupied chair down to their actual floor contacts, with sufficient headroom for the ceiling fixtures. Keep the woman’s near-table position and the man’s more distant scale consistent with the room established on this page. The room has a definite front, back and width; retain side-wall depth rather than turning the background into a flat backdrop.
+
+For the top right image (source view 02; instruction only, never printed) — WOMAN, CUP AND RETURNED GLANCE:
+A closer three-quarter view from beside the aisle centres the woman’s face, small smile and hand beside the cup. Include her shoulders, near table edge and enough chair back to explain her seated posture. The man and one recognizable edge of the restroom-door pair remain at greater depth in the direction she looks. Keep her head turn modest and her hand on or just above the same tabletop position. The cup rim, fingers and hand shadow are separately visible; dishes do not move to improve the framing.
+
+For the bottom left image (source view 03; instruction only, never printed) — OCCUPIED FURNITURE AND FLOOR SUPPORT:
+Use a low oblique view of the same table corner and occupied chair. Show all four chair legs, the seat’s thickness, leg-to-seat joints, the woman’s natural seated lower body, the table apron and visible supporting legs. Resolve wood end grain, screws or joints where actually plausible, wear along the corner and contact shadows on the floor. Keep a rear door jamb at background depth to connect the detail to the room. No new wooden platform, exposed street paving or unsupported furniture is introduced.
+
+For the bottom right image (source view 04; instruction only, never printed) — REVERSE VIEW TOWARD THE ENTRANCE:
+From an open position farther inside the room, look obliquely past the other face of the same occupied table toward the existing entrance and aisle. Keep the man beside the rear restroom doors at the appropriate frame edge when visible; he does not move to remain centred. Show a real empty-air route beside the table and chair, with the entrance growing out of the established floor plan. The table’s near and far corners exchange projected positions because the viewpoint changes; wall fixtures and furniture remain on their actual sides. Do not mirror the original room or manufacture an extra exit.
+
+FINAL CHECK:
+One 3840×2160 output with four complete 1920×1080 views. Same restaurant, identities, clothing, furniture and practical lights. Each cell covers its assigned spatial or physical detail. No grid text, repeated generic view, current-city cards or material transformation. These reference views support the video’s own continuous camera; page or cell changes do not request cuts.
+
+RATING ROLE IN THIS SHEET:
+These are remembered or clinical people, not current-city pedestrians. Keep every one of the four cells without floating rating cards. A printed pass, family photograph or ordinary document remains its physical story object, not an above-head score.
+
+NO UMBRELLAS — EVERY CELL:
+No umbrellas anywhere in this image: none open, folded, carried, tucked into a bag, leaning against a wall, mounted over a table or held above a head. Do not copy an umbrella from an input reference. Outdoor present-city people have uncovered heads, hoods down and exposed hair; leave open air above every crown. Keep the specified weather for this scene. This restriction applies to the foreground, background, reflections and all cells of the sheet.

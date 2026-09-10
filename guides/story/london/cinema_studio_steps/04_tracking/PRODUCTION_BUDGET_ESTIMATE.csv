@@ -1,0 +1,13 @@
+item,quantity,unit,duration_s,unit_allocation_credits,allocated_credits,cost_basis,retry_outputs,scope
+REFERENCE_IMAGES_4K,143,image,,4,572,CREATOR_CONFIRMED_UNIT_PRICE,0,143 non-world reference sheets at 4K; 84 paid 2K world images are counted separately.
+REFERENCE_WORLDS_2K,84,image,,2,168,CREATOR_CONFIRMED_PAID_2K_UI_PRICE,0,84 full-frame world images at 2 credits each with Unlimited disabled. Planned cost only; no generation or debit recorded.
+FILM_01,1,block,30,270,270,OBSERVED_30S_1080P_UI_RATE_APPLIED_TO_PLANNING,0,Cinema Studio 4.0; 1080p; audio On; observed quote had empty prompt and 0/50 refs. Actual complete-input/Extend quote pending.
+FILM_02,1,block,30,270,270,OBSERVED_30S_1080P_UI_RATE_APPLIED_TO_PLANNING,0,Cinema Studio 4.0; 1080p; audio On; observed quote had empty prompt and 0/50 refs. Actual complete-input/Extend quote pending.
+FILM_03,1,block,30,270,270,OBSERVED_30S_1080P_UI_RATE_APPLIED_TO_PLANNING,0,Cinema Studio 4.0; 1080p; audio On; observed quote had empty prompt and 0/50 refs. Actual complete-input/Extend quote pending.
+FILM_04,1,block,30,270,270,OBSERVED_30S_1080P_UI_RATE_APPLIED_TO_PLANNING,0,Cinema Studio 4.0; 1080p; audio On; observed quote had empty prompt and 0/50 refs. Actual complete-input/Extend quote pending.
+FILM_05,1,block,30,270,270,OBSERVED_30S_1080P_UI_RATE_APPLIED_TO_PLANNING,0,Cinema Studio 4.0; 1080p; audio On; observed quote had empty prompt and 0/50 refs. Actual complete-input/Extend quote pending.
+FILM_06,1,block,30,270,270,OBSERVED_30S_1080P_UI_RATE_APPLIED_TO_PLANNING,0,Cinema Studio 4.0; 1080p; audio On; observed quote had empty prompt and 0/50 refs. Actual complete-input/Extend quote pending.
+FILM_07,1,block,20,180,180,CREATOR_CONFIRMED_20S_UI_PRICE,0,Creator confirms Block 07: 20s costs 180 credits. Final complete-input/continuation configuration still to be checked.
+PILOT_WORKFLOW,1,combined allocation,,100,100,UNQUOTED_PLANNING_ALLOWANCE,0,First-pass 8s clip plus 8s Extend and test narration/integration; separately adjustable combined allowance; actual quotes pending.
+FINAL_NARRATION,1,speech estimate,,14,14,A01_UI_QUOTE_SCALED_BY_SCRIPT_CHARACTERS_ROUNDED_TOTAL,0,A01-A07 first-pass speech: 2022/262 x 1.8 = 13.89 rounded to 14; MiniMax alternative 6.95 rounded to 7. Linear pricing assumption; six other UI quotes pending. No model selected. Separate integration fee unestablished and excluded; no pilot double count.
+FINAL_FINISHING,1,combined allocation,,0,0,NO_SEPARATE_PAID_OPERATION_ESTABLISHED,0,No separate assembly/export/upscale or narration-integration fee established or allocated. Actual delivery route unverified; include any real separately charged operation once before use.

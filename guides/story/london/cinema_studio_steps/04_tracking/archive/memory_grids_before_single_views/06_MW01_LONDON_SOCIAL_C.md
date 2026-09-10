@@ -1,0 +1,89 @@
+REFERENCE ID: MW01_LONDON_SOCIAL_C (never print IDs, headings or panel labels).
+
+PAGE CONTINUITY INPUT: @loc_MYS_mys-mw01-a-london-social_s0_v1 supplies the accepted Page A identities, shared material palette and any recurring room geometry. New places explicitly assigned to this page retain their own stated setting; do not copy Page A into every cell.
+
+REFERENCE INPUTS:
+@loc_MYS_mys-t01-a-soho-restaurant_s0_v1 = accepted T01_A Soho restaurant source, reused for original view 1–3. Preserve this exact room, warm lighting, modest wooden table, two restroom doors and the seated woman / remembered man arrangement when framing those details. These cells are different views of the accepted place, not a newly designed restaurant. Character references retain their identity roles.
+@char_MYS_mys-c01-protagonist_s0_v1 = CHARACTER 01 — PROTAGONIST; exact person identity; use only where this person appears.
+@char_MYS_mys-c02-soho-woman_s0_v1 = CHARACTER 02 — SOHO WOMAN; exact person identity; use only where this person appears.
+@char_MYS_mys-c07-fx-mortgage-housemate_s0_v1 = CHARACTER 07 — FX-MORTGAGE HOUSEMATE; exact person identity; use only where this person appears.
+@char_MYS_mys-c08-fx-mortgage-spouse_s0_v1 = CHARACTER 08 — FX-MORTGAGE SPOUSE; exact person identity; use only where this person appears.
+@char_MYS_mys-c09-fx-mortgage-child_s0_v1 = CHARACTER 09 — FX-MORTGAGE CHILD; exact person identity; use only where this person appears.
+@char_MYS_mys-c10-beginner-dance-woman_s0_v1 = CHARACTER 10 — BEGINNER-DANCE WOMAN; exact person identity; use only where this person appears.
+
+OUTPUT GEOMETRY — ONE 4K 2×2 REFERENCE PAGE:
+Generate ONE photographic 3840×2160 widescreen 16:9 image. Exactly FOUR equal edge-to-edge 1920×1080 cells in a 2×2 grid, without gutters, margins, letterboxing, labels, headings or captions. Select 4K for the entire output. Cell order is top-left, top-right, bottom-left, bottom-right. This is one image output, not four separate jobs.
+Use character references for identity and wardrobe only, and accepted location pages for their assigned spatial content. Reconstruct each assigned cell as one scene; never copy a reference sheet inside it. No front/back/headshot identity layout, nested grid or extra panels.
+
+MEMORY-WORLD FUNCTION:
+This is a CLEAN VISUAL SOURCE REFERENCE for a remembered place/event.
+Show the memory scene DIRECTLY, as if the camera were physically inside the remembered world.
+DO NOT show the London–Budapest present city.
+DO NOT place the memory inside a taxi window, bus window, tram window, shopfront, puddle or mirror.
+DO NOT add rain/reflection layers from the present city.
+DO NOT add score cards.
+ This source sheet remains a sharp direct view of the memory; its cells are not cuts or flat images to display in the video.
+
+VISUAL LANGUAGE:
+Photorealistic live-action European feature-film realism.
+Natural human proportions, realistic contemporary wardrobe and props, ordinary practical lighting, believable interiors/exteriors.
+Keep this source image sharp and literal so faces, furniture and room layout remain reconstructable. The film, unlike this source sheet, turns these places into impossible architecture within London.
+Each cell must be a usable literal location/event reference, not an illustration of an idea.
+
+IDENTITY ANCHORS — REQUIRED:
+Use CHARACTER 01 — PROTAGONIST wherever the protagonist appears.
+Use CHARACTER 02 — SOHO WOMAN in original view 3 and any direct Soho-woman recurrence.
+Use CHARACTER 07 — FX-MORTGAGE HOUSEMATE, CHARACTER 08 — FX-MORTGAGE SPOUSE and CHARACTER 09 — FX-MORTGAGE CHILD in original view 7.
+Use CHARACTER 10 — BEGINNER-DANCE WOMAN in original view 9.
+Keep every referenced identity, age, hair, body proportions and context-appropriate wardrobe stable across all relevant cells.
+
+PURPOSE:
+Build the reusable literal London-life memory source bank: Soho work/social life, cramped shared housing, ordinary relationship/dating moments and the contrast between visible profile data and the whole person.
+
+PAGE C OF MW01: This page contains original views 9, 1, 7, 8. Original-view numbers below are provenance identifiers, not cell positions. Render ONLY the four cell assignments on this page. Global identity rules apply only when their person actually occurs in an assigned view.
+
+REFERENCE COVERAGE FOR THE MOVING FILM:
+This page supplies the four assigned literal views, not four cuts, morph stages or interchangeable world designs. Make each view useful for its assigned purpose: room layout shows supports and an entry/exit; a gesture view retains its hand, furniture edge and background anchor; an object detail shows side/underside and contact. Different views of the SAME room preserve its floor plan, furniture, identities, clothes and light sources even when the viewpoint changes. Distinct memories remain distinct places; do not fuse them into one room to match the grid. Repeated anchor views on another page must preserve the same state and layout.
+Additional detail pages of the same place retain that memory and its established event. Keep full body/furniture support legible wherever the assigned view permits. Never substitute four nearly identical wide shots for the four assigned subjects.
+
+FOUR IMAGE ASSIGNMENTS — INSTRUCTIONS ONLY, NO PRINTED TEXT:
+For the top left image (source view 09; instruction only, never printed):
+Beginner dance-floor / social-room memory: ordinary adults learning or dancing imperfectly, the protagonist participating without glamour or performance-show staging. Warm human context, natural awkwardness, possibility of connection without guaranteed romance.
+
+Keep the protagonist and established dance woman at a comfortable beginner distance on a real floor. Show their feet, weight distribution and the hand position relevant to the simple step, with other learners farther behind. A chair or wall edge anchors the room. Their slightly uncertain timing comes from natural posture, not distorted limbs or a stage-performance pose.
+
+For the top right image (source view 01; instruction only, never printed):
+Small realistic Soho sushi/restaurant interior during an ordinary evening. Compact London layout, warm practical light, tables close together, no glamour. The protagonist is present naturally.
+
+Keep the entrance, close-set wooden tables, narrow aisle and rear restroom-door pair connected on one visible floor. Seat the woman at her established table and place the remembered man by the rear doors when this encounter is shown. Lamps illuminate actual tabletops and faces locally. Resolve chair legs and the gap under the near table; this room must retain the accepted Soho restaurant identity.
+
+For the bottom left image (source view 07; instruction only, never printed):
+Ordinary memory of a Hungarian housemate living in London while spouse/child/home obligations remain in Hungary. Show a modest shared-room context with a family photograph / call / small domestic cue, not explanatory text and not a melodramatic separation scene.
+
+Place the mortgage housemate in the same modest room beside one small family photograph showing the established spouse and child. Keep the photograph a physical print or actual device image with frame thickness or screen edge, not a floating memory window. Show his ordinary belongings and posture in the room; the family remains elsewhere rather than appearing life-size beside him.
+
+For the bottom right image (source view 08; instruction only, never printed):
+Dating-profile memory after the age-field edit from 37 to 33: the SAME unchanged photograph appears with the current age field clearly displaying 33. Keep the device/profile interface small and realistic; the face itself must not change. This still captures only the edited state.
+
+Use a close oblique device view in one solid state: the unchanged profile photograph above an active age field displaying 33, with the cursor or selected field indicating an edit. Retain the device bezel, supporting hand and room surface. Do not double-print 37 and 33 or morph the face to force time into one still.
+
+FINAL CHECK:
+Exactly one 16:9 image.
+Exactly four 1920×1080 photographic cells on this 3840×2160 2×2 page.
+Every cell is a DIRECT memory-world scene, never a reflection.
+No present London–Budapest hybrid city layer.
+No score cards.
+
+SPATIAL INFORMATION FOR LATER EMBODIED MEMORY:
+The later film grows this exact remembered encounter from London materials. Supply enough geometry to reconstruct a solid place: a near seat or table corner with two readable sides, full supporting legs where furniture matters, visible floor contact, and a rear door, wall or landscape plane at a different distance. Use the existing widest relevant cell for the whole arrangement and the existing human-detail cell for the gesture; use the companion page when that required contextual view is assigned there. Keep principal faces, hands and interactions in useful focus. Show natural occlusion and contact shadows. Avoid hiding the relationship between a person, their chair, the floor and the rear doorway in shallow focus or tight crops. A detail cell may be close, but its contextual cell must retain the full arrangement. Preserve the assigned encounter and identity. These literal source shapes give the later film recognisable people and materials to carry through the impossible transformation.
+
+SOURCE CONTINUITY FOR THE MOVING FILM:
+Render each cell as a single clear, solid view of the specified people and their actual room or place. Show a usable doorway edge, furniture corner or support beside the central gesture, with full bodily depth, clear hands and contact shadows. Never supply ghosted people, translucent rooms, double exposures or blended before/after scenes. The source image is a direct view of the remembered place, with no transition overlay. Preserve the assigned identities and events across alternative views. Keep the source free of present-city overlays and rating cards.
+
+Keep the assigned room and human event specific and intact. Its source doorway, furniture corner or open side can support either a matched material development or continuous camera entry/exit. No forced mutation of the people, furniture or room is needed when the next setting lacks corresponding structure; let the film travel onward through a visible connected opening.
+
+RATING ROLE IN THIS SHEET:
+These are remembered or clinical people, not current-city pedestrians. Keep every one of the four cells without floating rating cards. A printed pass, family photograph or ordinary document remains its physical story object, not an above-head score.
+
+NO UMBRELLAS — EVERY CELL:
+No umbrellas anywhere in this image: none open, folded, carried, tucked into a bag, leaning against a wall, mounted over a table or held above a head. Do not copy an umbrella from an input reference. Outdoor present-city people have uncovered heads, hoods down and exposed hair; leave open air above every crown. Keep the specified weather for this scene. This restriction applies to the foreground, background, reflections and all cells of the sheet.

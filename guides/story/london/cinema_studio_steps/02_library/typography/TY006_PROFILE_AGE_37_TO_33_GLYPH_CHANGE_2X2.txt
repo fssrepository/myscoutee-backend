@@ -1,0 +1,32 @@
+REFERENCE ID: TY006_PROFILE_AGE_37_TO_33_GLYPH_CHANGE_2X2 (never print IDs, headings or panel labels).
+
+ONE 4K TYPOGRAPHY SHEET — 2×2:
+Create ONE 3840×2160 image with exactly FOUR equal edge-to-edge 1920×1080 cells in two columns and two rows. Select 4K for the whole output. No margins, gutters, separators or letterboxing. Each cell is a separately composed full 16:9 image. The specified words are large and sharply resolved, with complete glyphs and space for their accents. The four assigned cells have different inspection purposes or material states; do not produce four near-identical decorative signs.
+
+SUBJECT — THE SPECIFIC PROFILE-AGE EDIT:
+Create a close typography study of the existing phone profile age field changing from "37" to "33". This is an ordinary remembered device, without current-city rating cards. The person's photograph is unchanged in the film. For this close image sheet keep the photograph outside the crop, so no character image input is needed and no substitute face is invented. Show the same small portion of phone bezel, screen surface and age-field rectangle in every cell. No other interface labels or text are printed.
+
+DISPLAY AND GLYPHS:
+Use the same ordinary screen typography, dark charcoal numeral strokes on a pale neutral field. Both digits share a baseline and font size. The first 3 is unchanged in all four cells; only the second digit reshapes. Retain the screen's real glass, faint reflection, edge depth and consistent viewing angle. The changing strokes remain within the active field and on the screen plane. They do not become raised metal, detach into the room or melt the phone. Show a controlled elastic deformation of the displayed glyph contour at full opacity, with continuously connected stroke material rather than two transparent finished numerals overlaid.
+
+At top left: EXACT "37":
+Show an intact 3 followed by a clear 7. The 3 has two open rounded lobes on its right-facing outline with a narrow inward waist. The 7 has a firm top bar and a diagonal descending stroke in the selected consistent font. Keep enough spacing between the two digits for their outlines to remain separate. The age field has one value only; no 33 is printed elsewhere.
+
+At top right: WIDE BOWED SECOND GLYPH:
+The unchanged first 3 remains at its original position. The 7 top bar has stretched into a broad outward upper hook while its diagonal bows to the right and its lower end swings outward, making an open angular loop substantially wider than either finished digit. The glyph remains one cohesive dark shape on the display plane, with clearly exposed pale negative space inside the bent outline. It is a visibly unfinished construction, not a random replacement 8, 9 or a second overlapping 7.
+
+At bottom left: TALL DOUBLE-LOBE OUTLINE WITH UNSETTLED WAIST:
+The second glyph is now much narrower and taller than the previous wide loop. Its upper and lower portions curl into the two future 3 lobes, but the lower lobe extends below the final baseline and the waist remains an exaggerated inward notch. A remnant of the source diagonal is still visible as a connected thick diagonal region between the forming lobes. Keep the first 3 completely unchanged. This tall unfinished shape must differ clearly from both the early wide loop and the final normally proportioned digit.
+
+At bottom right: EXACT "33":
+The second glyph has settled into a normal 3 with the same font construction, cap height, baseline, stroke weight and open lobes as the first 3. The old 7 diagonal has become material in its two curved lobes and connecting waist, with no extra stroke remaining beside it. Show exactly 33, with one ordinary field border and the unchanged screen/bezel arrangement. The full profile image remains outside this detail crop and unchanged in the later film.
+
+GLYPH STUDY SCOPE:
+This sheet supplies a possible continuous glyph path for the already scripted 37-to-33 edit. Keep the actual phone geometry and a useful detail scale for the assigned glyph states. The displayed change stays local to this field. Do not age the face, change any profile photograph, introduce a new dating scene, animate every UI label or reveal the protagonist's current-city score through these numbers.
+
+REFERENCE PURPOSE:
+This is a typography construction reference for the existing MyScoutee film. Generate the lettering directly from this text; no input image or Element mention is required for this image job. Preserve the actual letters, accents, decimal points, spacing and material attachment in each assigned perspective.
+The cell assignments below are exact image content, not captions to print. No row numbers, panel labels, typographic measurements, arrows, sample captions, decorative borders, additional slogans or watermark. Do not fill unused areas with random letter strings. Print only the expressly quoted visible text. A legibility study is not permission to make deliberately unreadable case documents, private records or other background text readable in the film.
+
+NO UMBRELLAS — EVERY CELL:
+No umbrellas, open, folded, carried, stored, reflected or mounted. These typography studies have no human figures or faces; they do not replace the inhabited world references. When their graphics are applied in the current city, each living person's rating card remains attached above that person's uncovered head. Remembered/clinical people remain without rating cards. No typography sample assigns a score to the protagonist before the scripted Block 06 reveal.

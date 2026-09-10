@@ -1,0 +1,83 @@
+REFERENCE ID: MWP02_SYSTEM_TIME_REVERSALS_A (never print IDs, headings or panel labels).
+
+OUTPUT ELEMENT ASSIGNMENT — OPERATOR METADATA ONLY, NEVER RENDER:
+Live output Element name (operator lookup only): loc_MYS_mys-mwp02-a-system-time-reversals_s0_v1
+Live output Element UUID: d680aae8-196b-479a-8cf1-edb42f15429b
+Image attachment verified via MCP on 2026-09-10. This output target is not an input reference.
+
+REFERENCE INPUTS:
+@char_MYS_mys-c01-protagonist_s0_v1 = CHARACTER 01 — PROTAGONIST; exact person identity; use only where this person appears.
+
+OUTPUT GEOMETRY — ONE 4K 2×2 REFERENCE PAGE:
+Generate ONE photographic 3840×2160 widescreen 16:9 image. Exactly FOUR equal edge-to-edge 1920×1080 cells in a 2×2 grid, without gutters, margins, letterboxing, labels, headings or captions. Select 4K for the entire output. Cell order is top-left, top-right, bottom-left, bottom-right. This is one image output, not four separate jobs.
+Use character references for identity and wardrobe only, and accepted location pages for their assigned spatial content. Reconstruct each assigned cell as one scene; never copy a reference sheet inside it. No front/back/headshot identity layout, nested grid or extra panels.
+
+PURPOSE — GALA ABSTRACTION LOCK:
+This is a STORY-PRESERVATION SOURCE BANK for the late moment when one private life collides with institutional time.
+The autobiographical STRUCTURE is preserved, but every contemporary political identifier is removed.
+Do NOT name or depict a real officeholder, party, named high-state body, international public-affairs body, named tax regime or identifiable current public event.
+These cells are not proof of causation and must not imply that the protagonist caused any later institutional change.
+
+REFERENCE RULE:
+Use the supplied protagonist reference only where the protagonist is visible.
+All officials, senior officeholders and institutional staff remain fictional, anonymous and non-identifiable. No additional real-public-figure reference is required.
+
+SOURCE VERSUS FILM:
+These cells establish literal documents, rooms and people. Later film beats can extend their paper, furniture or architectural forms into the dream city; keep those transformations out of this reusable source sheet.
+
+VISUAL LANGUAGE:
+Photorealistic live-action institutional realism.
+Ordinary paper, laptops, offices, review-room furniture and administrative architecture rather than symbolic fantasy.
+No news-graphics collage, campaign material, national insignia, parliamentary imagery, falling-head montage, propaganda poster or coup imagery.
+All destination names, regime names, office titles and document text remain unreadable or invented.
+
+PAGE A OF MWP02: This page contains original views 1, 2, 3, 4. Original-view numbers below are provenance identifiers, not cell positions. Render ONLY the four cell assignments on this page. Global identity rules apply only when their person actually occurs in an assigned view.
+
+REFERENCE COVERAGE FOR THE MOVING FILM:
+This page supplies the four assigned literal views, not four cuts, morph stages or interchangeable world designs. Make each view useful for its assigned purpose: room layout shows supports and an entry/exit; a gesture view retains its hand, furniture edge and background anchor; an object detail shows side/underside and contact. Different views of the SAME room preserve its floor plan, furniture, identities, clothes and light sources even when the viewpoint changes. Distinct memories remain distinct places; do not fuse them into one room to match the grid. Repeated anchor views on another page must preserve the same state and layout.
+Additional detail pages of the same place retain that memory and its established event. Keep full body/furniture support legible wherever the assigned view permits. Never substitute four nearly identical wide shots for the four assigned subjects.
+
+FOUR IMAGE ASSIGNMENTS — INSTRUCTIONS ONLY, NO PRINTED TEXT:
+For the top left image (source view 01; instruction only, never printed):
+Ordinary protagonist desk / home-paperwork memory after a REQUEST FOR RELIEF IS REFUSED. A restrained generic refusal letter and envelope sit among the protagonist's existing case papers. The protagonist is present at human scale. No named office, no portrait, no triumph or rage, and no invented reason for the refusal.
+
+Use the protagonist existing desk with the refusal letter opened beside its envelope and older case papers. His hand rests near the page while his face is farther back at ordinary seated height. Render generic text texture without inventing the reason for refusal. The unchanged laptop and room corner keep the moment part of his ongoing work.
+
+For the top right image (source view 02; instruction only, never printed):
+Revised relief papers prepared later and deliberately set aside for a LATER INSTITUTIONAL OPENING. Show an ordinary dated document stack, envelope and neutral routing note indicating "hold / submit later" without naming an officeholder, ministry, government or real institution.
+
+Place the revised stack neatly beside the earlier papers, partly inside or under an unsealed envelope. A small routing slip is visibly set apart as a practical reminder; keep its text modest and generic. The protagonist hand is withdrawing after setting it aside. No official seal, political portrait or approving hand from outside the scene appears.
+
+For the bottom left image (source view 03; instruction only, never printed):
+TWO LETTERS TO ONE DISTANT DOOR, FROM BELOW: the protagonist at an ordinary laptop/desk sending his own submission to an unnamed external review body. A small clock/time cue may suggest an ordinary afternoon send. This is the from-below image: one citizen, ordinary room, laptop, documents, no heroic staging.
+
+Keep the laptop, keyboard hand and review papers on the ordinary desk. The protagonist is visible in profile or three-quarter view, with a wall clock or daylight cue small in the background. A normal document or mail interface occupies the screen, without readable addresses. No beams, delivery arrows or image of the destination institution are superimposed.
+
+For the bottom right image (source view 04; instruction only, never printed):
+TWO LETTERS TO ONE DISTANT DOOR, FROM ABOVE: an anonymous senior-institution desk where a different formal question is being prepared or sent to the SAME unnamed external review body. No identifiable officeholder is visible; use only hands, restrained stationery and generic institutional architecture.
+
+Compose an anonymous formal desk with a different document and only the relevant hands visible. The paper and laptop or stationery sit at a more formal working position, with restrained room depth behind. Maintain the submission as separate from the protagonist papers. No recognisable officeholder, national emblem or invented authority to decide his case is shown.
+
+FINAL CHECK:
+Exactly one 16:9 image.
+Exactly four literal photographic cells in a 4K 2×2 grid.
+No present-city reflection layer.
+No score cards.
+No real politician or identifiable public figure.
+No named contemporary public institution, officeholder, current event, tax regime or international body.
+No causal claim that the protagonist produced later institutional outcomes.
+No narrative element in this bank may be silently deleted merely because it is a micro-flash.
+
+SPATIAL INFORMATION FOR LATER EMBODIED MEMORY:
+The later film grows this exact remembered encounter from London materials. Supply enough geometry to reconstruct a solid place: a near seat or table corner with two readable sides, full supporting legs where furniture matters, visible floor contact, and a rear door, wall or landscape plane at a different distance. Use the existing widest relevant cell for the whole arrangement and the existing human-detail cell for the gesture; use the companion page when that required contextual view is assigned there. Keep principal faces, hands and interactions in useful focus. Show natural occlusion and contact shadows. Avoid hiding the relationship between a person, their chair, the floor and the rear doorway in shallow focus or tight crops. A detail cell may be close, but its contextual cell must retain the full arrangement. Preserve the assigned encounter and identity. These literal source shapes give the later film recognisable people and materials to carry through the impossible transformation.
+
+SOURCE CONTINUITY FOR THE MOVING FILM:
+Render each cell as a single clear, solid view of the specified people and their actual room or place. Show a usable doorway edge, furniture corner or support beside the central gesture, with full bodily depth, clear hands and contact shadows. Never supply ghosted people, translucent rooms, double exposures or blended before/after scenes. The source image is a direct view of the remembered place, with no transition overlay. Preserve the assigned identities and events across alternative views. Keep the source free of present-city overlays and rating cards.
+
+Keep the assigned room and human event specific and intact. Its source doorway, furniture corner or open side can support either a matched material development or continuous camera entry/exit. No forced mutation of the people, furniture or room is needed when the next setting lacks corresponding structure; let the film travel onward through a visible connected opening.
+
+RATING ROLE IN THIS SHEET:
+These are remembered or clinical people, not current-city pedestrians. Keep every one of the four cells without floating rating cards. A printed pass, family photograph or ordinary document remains its physical story object, not an above-head score.
+
+NO UMBRELLAS — EVERY CELL:
+No umbrellas anywhere in this image: none open, folded, carried, tucked into a bag, leaning against a wall, mounted over a table or held above a head. Do not copy an umbrella from an input reference. Outdoor present-city people have uncovered heads, hoods down and exposed hair; leave open air above every crown. Keep the specified weather for this scene. This restriction applies to the foreground, background, reflections and all cells of the sheet.

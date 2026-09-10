@@ -1,0 +1,28 @@
+{
+  "date": "2026-09-10",
+  "moves": {
+    "00_project/elements/FULL_PROJECT_IMPORT.md": "00_project/elements/full/FULL_PROJECT_IMPORT.md",
+    "00_project/elements/CHARACTERS_IMPORT.md": "00_project/elements/categories/CHARACTERS_IMPORT.md",
+    "00_project/elements/WORLDS_IMPORT.md": "00_project/elements/categories/WORLDS_IMPORT.md",
+    "00_project/elements/MORPHS_IMPORT.md": "00_project/elements/categories/MORPHS_IMPORT.md",
+    "00_project/elements/TYPOGRAPHY_IMPORT.md": "00_project/elements/categories/TYPOGRAPHY_IMPORT.md",
+    "00_project/elements/MR021_RATING_CARD_ONLY_IMPORT.md": "00_project/elements/additions/MR021_RATING_CARD_ONLY_IMPORT.md",
+    "00_project/elements/FULL_PROJECT_GUIDE.md": "00_project/elements/index/FULL_PROJECT_GUIDE.md",
+    "00_project/elements/FULL_PROJECT_PROMPT_MAP.csv": "00_project/elements/index/FULL_PROJECT_PROMPT_MAP.csv",
+    "00_project/elements/00_pilot.md": "00_project/elements/archive/pilot/00_pilot.md",
+    "00_project/elements/00_pilot_test_assets.md": "00_project/elements/archive/pilot/00_pilot_test_assets.md",
+    "00_project/elements/01_film.md": "00_project/elements/archive/film/01_film.md",
+    "00_project/elements/02_film.md": "00_project/elements/archive/film/02_film.md",
+    "00_project/elements/03_film.md": "00_project/elements/archive/film/03_film.md",
+    "00_project/elements/04_film.md": "00_project/elements/archive/film/04_film.md",
+    "00_project/elements/05_film.md": "00_project/elements/archive/film/05_film.md",
+    "00_project/elements/06_film.md": "00_project/elements/archive/film/06_film.md",
+    "00_project/elements/07_film.md": "00_project/elements/archive/film/07_film.md",
+    "00_project/elements/12_memory_reference_pages.md": "00_project/elements/archive/batches/12_memory_reference_pages.md",
+    "00_project/elements/13_ADDITIONAL_OBJECT_REFERENCES.md": "00_project/elements/archive/batches/13_ADDITIONAL_OBJECT_REFERENCES.md",
+    "00_project/elements/10_world_reference_pages.md": "00_project/elements/archive/batches/10_world_reference_pages.md",
+    "00_project/elements/11_morph_reference_sheets.md": "00_project/elements/archive/batches/11_morph_reference_sheets.md",
+    "00_project/elements/09_london_landmarks.md": "00_project/elements/archive/batches/09_london_landmarks.md",
+    "00_project/elements/08_reference_assets.md": "00_project/elements/archive/batches/08_reference_assets.md"
+  }
+}
