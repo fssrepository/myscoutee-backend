@@ -1,14 +1,14 @@
-# Aktuális képbeállítás — 2026-09-10
+# Current image settings — 2026-09-10
 
-Minden új képlap 4K / 3840×2160 / 16:9. A felhasználó most **4 kredit/kép** árat jelzett; a régebbi, 2K-s Unlimited-felületi megfigyelések alább történeti információk, és nem teszik az aktuális 4K képkört ingyenessé. Egy rácslap egy kimeneti kép. [Aktuális költségterv](BUDGET.md).
+Every image remains 4K / requested 3840×2160 / 16:9 at the creator-reported 4 credits per output. The older 2K Unlimited observations below are historical and do not apply to the current 4K image budget. [Current budget](BUDGET.md).
 
-A már előkészített könyvtárhoz csak a [7 új tipográfiai elemet](elements/categories/TYPOGRAPHY_IMPORT.md) kell külön importálni. [Teljes rendezett importkönyvtár](elements/README.md).
+For the already prepared library, the [seven new typography Elements](elements/categories/TYPOGRAPHY_IMPORT.md) have a separate import. [Organized import directory](elements/README.md).
 
 # Setup and checks before generation
 
 **Completion constraint:** the creator cannot perform local video editing, audio mixing or rendering. Each generated clip must arrive with its intended soundtrack, and the complete film must have a verified hosted assembly/export route within the existing budget. Do not assume a later desktop-editor repair. This clarifies the existing production requirement and adds no generation task.
 
-**Budget update:** 80 credits recorded as historical test spend; latest remaining estimate approximately 700, creator-reported, with about 100 potentially needed for the remaining tests and a reserve for one or two 30-second retries. The former 1080p cost plan is superseded; see BUDGET.md before final production.
+**Budget update:** creator-reported balance 2860 credits; maximum further purchase 500, not yet purchased. All images remain 4K. No image or video regeneration is allowed. The full working allocation is 2684 credits, including unquoted pilot/audio/finishing allowances; see [BUDGET.md](BUDGET.md). Historical test spend of 80 is not deducted again.
 
 Production plan; public documentation checked **2026-09-09**. The supplied screenshot from **2026-09-09 09:37:22** shows the existing project named **MyScoutee**, its Elements page, and visible imported entries displaying **Add element image**. This establishes existing metadata containers with no image shown on those visible entries; it does not establish the full Element count or off-screen media state. Continue in this project; do not create or import a duplicate because the old master used the name `AI Film Festival`.
 
@@ -16,9 +16,9 @@ The creator plans one month of Ultra and reports a seven-day Nano Banana Pro unl
 
 Later evidence, 2026-09-09 13:54:14: the shared Cinema Studio Home model menu visibly labels Nano Banana Pro UNLIMITED. Soul 2.0 is still selected and its Generate quote is 0.125; this is not the quote for a selected Nano Banana Pro job. Confirm the intended model and actual coverage inside MyScoutee before generation. The Home-page view alone does not establish festival-project association or the allowance's expiry.
 
-Confirmed UI configuration, 2026-09-09 14:07:12: Image / Nano Banana Pro / 16:9 / 2K / output control 1/4, with a separate green Unlimited switch and an UNLIMITED generation button. The creator has generated the C01 sheet. The model-menu badge alone does not activate this switch. Use one output for the next character sheets and explicitly include Unlimited ON in each chat configuration. Actual charged credits and expiry are not shown. This screenshot is in New project / Getting Started; its association with the MyScoutee festival project remains unresolved.
+Confirmed UI configuration, 2026-09-09 14:07:12: Image / Nano Banana Pro / 16:9 / 2K / output control 1/4, with a separate green Unlimited switch and an UNLIMITED generation button. The creator has generated the C01 sheet. The model-menu badge alone does not activate this switch. This was a historical 2K configuration; current character sheets remain 4K with one output and their displayed paid quote. Actual charged credits and expiry are not shown. This screenshot is in New project / Getting Started; its association with the MyScoutee festival project remains unresolved.
 
-Project-scoped controls confirmed, 2026-09-09 14:10:52: open the existing MyScoutee festival project and select All assets. The image composer appears at the bottom with Nano Banana Pro, 16:9, 2K, output control 1/4, and Unlimited ON. Use this observed route for subsequent project generations. Canvas and the Element metadata editor are not required to reach it. The original C01 image from New project remains a reference candidate; its history has not been shown inside MyScoutee.
+Project-scoped controls confirmed, 2026-09-09 14:10:52: open the existing MyScoutee festival project and select All assets. The image composer appears at the bottom with Nano Banana Pro, 16:9, 2K, output control 1/4, and Unlimited ON. The project route was observed then; current generations use the agreed 4K setting and paid quote. Canvas and the Element metadata editor are not required to reach it. The original C01 image from New project remains a reference candidate; its history has not been shown inside MyScoutee.
 
 | Setting | Pilot | Final film |
 | --- | --- | --- |
@@ -32,7 +32,7 @@ Project-scoped controls confirmed, 2026-09-09 14:10:52: open the existing MyScou
 | Look | Contemporary overcast blue hour, damp streets and clear air, natural skin and materials | Same |
 | Optics | Approximately 24–28 mm; readable subject and environment | Same; fast movement directed in the prompt |
 
-For reference images, the intended model is **Nano Banana Pro during the stated seven-day unlimited window**, provided it is available inside this project, accepts the required reference set and the actual operation is covered. Do not run a model comparison campaign. Character sheets and 3×3 boards are 16:9 images; their resolution is separate from the 480p video setting. Keep them detailed enough for recognition. Use the existing Element's visible **Add element image** entry point for its matching accepted image, following the controls actually offered next. Do not create another Element for the same person or location. The assistant maintains verified mentions centrally and propagates them across the pack. These Element mentions autoload in the creator's composer. Do not generate a prompt containing UNBOUND reference slots; see [reference binding](REFERENCES.md).
+For reference images, use **Nano Banana Pro at 4K**, one output per prompt, at the creator-confirmed 4-credit rate; the earlier 2K Unlimited offer is not the current production setting. Do not run a model comparison campaign. Character sheets and 3×3 boards are 16:9 images; their resolution is separate from the 480p video setting. Keep them detailed enough for recognition. Use the existing Element's visible **Add element image** entry point for its matching accepted image, following the controls actually offered next. Do not create another Element for the same person or location. The assistant maintains verified mentions centrally and propagates them across the pack. These Element mentions autoload in the creator's composer. Do not generate a prompt containing UNBOUND reference slots; see [reference binding](REFERENCES.md).
 
 Drama is a suitable Director's Panel starting point. The overload comes from camera movement and architecture; the man is not constantly shouting. For this continuous-shot pilot, select Film setup → Tempo → Single Shot when that control is available; do not leave cutting tempo on Auto or select Chaotic. Camera, colour palette and lighting may remain Auto because the prompt specifies the shot. Specific camera actions are already in each video prompt.
 
@@ -40,7 +40,7 @@ Drama is a suitable Director's Panel starting point. The overload comes from cam
 
 The original canonical world design used nine views on one 3×3 sheet. The active W01–W07 prompts now distribute those views over three 4K 2×2 pages per world. At 3840×2160 with no margins or gutters, each cell is 1920×1080. The original view mapping and all page files are in [the world index](../02_library/worlds/real/README.md).
 
-**1280x720 is 720p; 1920x1080 is 1080p.** The number refers to vertical pixel count, with `p` denoting progressive scan. The final video target remains 1080p, but its cost must now be verified against the latest approximately 700-credit remaining budget. A 720-pixel-high reference cell does not force a 720p output, but missing source detail cannot be assumed to return faithfully: generated fine detail may be invented. A full 3840x2160 grid is therefore not equivalent to nine 1080p references.
+**1280x720 is 720p; 1920x1080 is 1080p.** The number refers to vertical pixel count, with `p` denoting progressive scan. The final video target remains 1080p, but its cost must now be verified against the current 2860-credit balance and the allocations in BUDGET.md. A 720-pixel-high reference cell does not force a 720p output, but missing source detail cannot be assumed to return faithfully: generated fine detail may be invented. A full 3840x2160 grid is therefore not equivalent to nine 1080p references.
 
 Use existing W01 as a context reference for the 480p motion/mechanics pilot, never as a literal multi-panel opening frame. References mode generates a new shot; native video resolution is a separate setting. This does not guarantee detailed architecture, readable signs, or preservation of every cell, and a successful 480p pilot does not establish final 1080p sharpness.
 

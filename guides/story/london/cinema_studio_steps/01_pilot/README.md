@@ -1,4 +1,4 @@
-CURRENT WORKFLOW — 2026-09-10: the creator requested a full clean Element reimport, including characters. Use the [complete restart guide](../00_project/elements/index/FULL_PROJECT_GUIDE.md) and its 105-entry list. Earlier incremental-import and retained-image instructions below are historical where they conflict. Four images are reported retained; previous @ bindings are not verified for the new import.
+CURRENT WORKFLOW — 2026-09-10: the creator requested a full clean Element reimport, including characters. Use the [complete restart guide](../00_project/elements/index/FULL_PROJECT_GUIDE.md) and its 164-entry list. Earlier incremental-import and retained-image instructions below are historical where they conflict. Four images are reported retained; previous @ bindings are not verified for the new import.
 
 # Pilot — establish the reference at 480p before final production
 
@@ -6,7 +6,7 @@ The creator’s sequence is: **detailed first video → native visual continuati
 
 ## Spend at a glance
 
-**Recorded historical test spend: 80 credits. Latest remaining estimate: approximately 700 credits**, creator-reported. Plan approximately 100 for the remaining test workflow, leaving about 600 for production and its retry reserves; these are allowances, not quoted costs.
+**Current balance: 2860 credits**, creator-reported; maximum additional purchase 500, not made. The remaining pilot workflow has a combined 100-credit planning allowance, including test speech and hosted joining/mix/output. No regeneration is allowed. The historical 80-credit spend is not deducted again.
 
 | Separate test | Price known now |
 | --- | --- |
@@ -14,11 +14,11 @@ The creator’s sequence is: **detailed first video → native visual continuati
 | Native 8-second continuation | **Not yet quoted** |
 | Narrated joined video | **Not yet quoted**; includes speech and mixing/output components |
 
-The total next-round cost is **not yet known**. No additional charge is recorded. If the next video actually costs 20, the current planning remainder becomes approximately 680 before the other operations. The change from the earlier 720 estimate does not itself record a new debit. See the [itemised cost tracker](../00_project/BUDGET.md#visible-pilot-cost-tracker--three-tests) for quotes, actual charges and the remaining cap. This is three test tasks; separately billed audio/finishing must remain visible inside the narrated-test cost.
+The next-round UI cost is not yet known. Keep all first-pass test components inside the 100-credit combined planning allowance, subject to their actual quotes. See the [current production budget](../00_project/BUDGET.md). No new charge is recorded.
 
-## Free image-reference preparation before the next paid video
+## Image-reference preparation before the next paid video
 
-The creator has confirmed a seven-day Unlimited web image window. Prepare the additional references there, using [the separate copyable image prompts](../02_library/morphs/objects/README.md), and keep the same three video/audio test tasks.
+All current image prompts remain 4K at the reported 4-credit rate; the earlier seven-day 2K Unlimited window does not cover this setting. Prepare the additional references in the Higgsfield UI, using [the separate copyable image prompts](../02_library/morphs/objects/README.md), and keep the same three video/audio test tasks.
 
 The creator reports the R001–R053 batch imported. Do not import it again. The import contains short identities; full image prompts remain in the R-numbered `.txt` files. Prepare **five additional images for the first 8-second test**, using the matching Elements in Higgsfield:
 
@@ -72,7 +72,7 @@ Retain the actual approved video, narrated result, exact prompts, attached refer
 
 ## Cost scope
 
-Recorded historical test spend is 80; latest remaining estimate is approximately 700. Allow around 100 for the remaining three-test workflow, including speech and required joining/mixing/output. If that allowance is used, approximately 600 must still cover the full film, delivery and one or two possible 30-second additional attempts. Their actual price is unknown: available first-pass production funds are `600 − C30` or `600 − 2 × C30`. See the [cost tracker and retry scenarios](../00_project/BUDGET.md). Do not treat a failed effect as an automatic new video job or count any estimated allowance as already spent.
+The pilot has a combined 100-credit first-pass planning allowance within the current 2860-credit balance. Include test narration and hosted joining/mix/output once. No additional attempts or retry reserve are allowed. The [full budget](../00_project/BUDGET.md) separately allocates final-film narration and final delivery. These allowances are not quotes or charges.
 
 ## Three-prompt audit before the next attempt
 

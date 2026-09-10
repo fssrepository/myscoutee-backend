@@ -52,26 +52,66 @@ All images remain 4K with their current complete grid compositions and detailed 
 
 The remainder must cover the first planned test-video generations, final footage, audio, assembly and export. These are remaining spending ceilings, not a quote for those operations or confirmation that the entire film will fit. The optional 500 credits must not be treated as already available. No larger top-up is part of this plan.
 
-## Video and finishing costs are separate
+## Complete working allocation
 
-| Operation | Last known price or status |
-|---|---|
-| Detailed 8-second / 480p pilot | Earlier standalone UI quote: 20 credits; current price with the complete input set is unconfirmed |
-| Native extension, +8 seconds | Current Extend price unknown |
-| Narrated version of the joined test | Current speech, mix and any attachment/output costs unknown |
-| Full film: six 30-second blocks and one 20-second ending | Current prices of the selected final generation operations unknown |
-| Assembly, mix and export | Calculate from the actual Higgsfield operation |
+The current film is **200 seconds (3:20)**: six 30-second blocks and one 20-second ending. Keep that duration and all detailed image/video content. This allocation uses the creator-reported 2860-credit balance, all 171 images at 4K, and no regeneration.
 
-The narrated test uses a 16-word excerpt lasting approximately 7–9 seconds; it does not require replacing the existing scene with a new generation or another image pass. Accepted images can also be reused in the final film. This budget does not change the film's duration, story or visual content.
+| Work | Planning allocation | Evidence and scope |
+|---|---:|---|
+| All 171 reference images at 4K | **684** | 171 × 4; creator-confirmed image price; includes all seven optional maps |
+| Full film, first generation of each block | **1400** | Working allowance of 210 per 30-second block and 140 for the 20-second ending; derived estimate, not a UI quote |
+| Remaining pilot workflow | **100** | Combined cap for the planned first 8-second clip, 8-second continuation, test narration and hosted joining/mixing/output; unquoted |
+| Final narration A01–A07 | **200** | Combined planning allowance for seven first-pass speech recordings; test narration belongs to the pilot line; unquoted |
+| Final hosted finishing and delivery | **300** | Combined allowance for any required 1080p upscale, final assembly, audio mixing and export; unquoted |
+| **Total allocated** | **2684** | Includes allowances, not a verified invoice |
+| **Unallocated balance from 2860** | **176** | Not a regeneration allowance |
+| **Unallocated balance if the maximum 500-credit top-up is purchased** | **676** | Top-up remains optional and unpurchased |
 
-```text
-remaining new paid 4K sheets × 4
-+ further test videos and their audio
-+ first generations of the full film
-+ assembly / mix / export
-= total remaining credit requirement
-```
+The 176-credit balance can absorb differences between estimates and actual first-pass quotes. It does not authorize retries. The additional 500 credits are not required by this working allocation, but there is no guarantee that the unquoted operations fit their allowances. No automatic purchase is authorized.
 
-The itemized estimate is [IMAGE_GENERATION_ESTIMATE.csv](../04_tracking/IMAGE_GENERATION_ESTIMATE.csv). Its current baseline remains one 4K output per prompt, using `planned_new_images × credits_per_image`; `additional_attempts` must remain zero under the no-regeneration constraint. It records a plan, not an order or debit. Actual entries in [credit_ledger.csv](../04_tracking/credit_ledger.csv) are unchanged; do not deduct the previously recorded 80-credit test spend again. No image generation was started here.
+### Basis of the video estimate
+
+Higgsfield's [Seedance 2.5 pricing article](https://higgsfield.ai/blog/seedance-2-5-pricing-2026), checked 2026-09-10, lists 52 credits for an 8-second 720p clip and 24 for 480p. The former implies 6.5 credits/second. Linear extrapolation gives 195 credits per 30 seconds, 130 per 20 seconds, and **1300 for 200 seconds**. This is an inference from the published example, not a verified quote for our long clips, reference inputs, audio settings or Extend operations. The 1400-credit allocation allows 100 above that estimate for first-pass pricing differences, not for extra generations.
+
+The final delivery target remains **1080p**. The published 720p example does not establish a native 1080p rate. A required hosted upscale belongs in the 300-credit finishing allowance; its availability, quote and suitability for the complete film remain unverified. No video prompt or output target has been downgraded. All reference images remain 4K.
+
+| Block | New footage | Linear 720p estimate | Working allocation |
+|---|---:|---:|---:|
+| 01 | 30 seconds | 195 | 210 |
+| 02 | 30 seconds | 195 | 210 |
+| 03 | 30 seconds | 195 | 210 |
+| 04 | 30 seconds | 195 | 210 |
+| 05 | 30 seconds | 195 | 210 |
+| 06 | 30 seconds | 195 | 210 |
+| 07 | 20 seconds | 130 | 140 |
+| **Total** | **200 seconds** | **1300** | **1400** |
+
+Price each actual operation against its NEW output duration. A continuation may charge differently from a standalone clip; do not extrapolate from cumulative master length or assume the price above applies to Extend. Native music and material SFX remain part of the intended audio-on video workflow; no separate music/SFX generation campaign is added. Charge each actual operation once if the platform bundles components.
+
+### Break-even limits
+
+Images, pilot, narration and finishing together are allocated **1284 credits**. Holding those lines fixed leaves **1576 credits for the final film** without a purchase, or **2076** after the maximum top-up. These imply average final-video ceilings of **7.88** or **10.38 credits/second** across the 200-second film. Compare the sum of real block quotes with these ceilings; individual durations need not share a flat rate.
+
+| Illustrative average final-video rate | 200-second film | Total including the other 1284 credits | Additional credits needed beyond 2860 |
+|---|---:|---:|---:|
+| 6.5 credits/second | 1300 | 2584 | 0; 276 remain |
+| 7 credits/second | 1400 | 2684 | 0; 176 remain |
+| 8 credits/second | 1600 | 2884 | 24 |
+| 10 credits/second | 2000 | 3284 | 424 |
+| 10.5 credits/second | 2100 | 3384 | 524; exceeds the 500-credit top-up limit |
+
+These rows are sensitivity calculations, not additional provider tariffs. If pilot, narration or finishing quotes exceed their allocations, the available final-video ceiling falls by the same amount. The full production fits the current balance only if the actual combined first-pass charges fit; the maximum permitted additional purchase remains 500.
+
+## Image model assumption
+
+Use **Nano Banana Pro at the creator-confirmed 4 credits per 4K image** for this budget. No model switch or paid comparison campaign is scheduled. Higgsfield's [published model guidance](https://github.com/higgsfield-ai/skills/blob/main/higgsfield-generate/SKILL.md) routes design/text work toward GPT Image 2 and character/reference work toward the Nano Banana family. This is workflow guidance, not a measured benchmark of our four-state morph sheets. It does not establish that a more expensive model would preserve our material transitions better.
+
+For this film, assess distinct physical states, correct endpoint identity, material thickness, coherent geometry and legible exact text. A model premium is not evidence of better video continuity. If an image model were later changed before generation, the extra cost would be `(new quoted image price − 4) × affected image count`; the new quote and decision are not present here.
+
+## Tracking and execution
+
+The itemized image baseline is [IMAGE_GENERATION_ESTIMATE.csv](../04_tracking/IMAGE_GENERATION_ESTIMATE.csv). The full allocation is [PRODUCTION_BUDGET_ESTIMATE.csv](../04_tracking/PRODUCTION_BUDGET_ESTIMATE.csv). Both record plans, not orders or debits. Image `additional_attempts` and all production retries remain zero. Reuse usable existing outputs; adjust a planned image count only when its current role is actually covered.
+
+The actual historical charges in [credit_ledger.csv](../04_tracking/credit_ledger.csv) are unchanged. The earlier 80-credit test spend is already historical and must not be subtracted again from the newly reported 2860-credit balance. No generation or purchase was started here. Review exact complete-input UI quotes before committing the first operations; the planning allowances do not prove those operations are available at those prices.
 
 The [archived earlier budget](../04_tracking/archive/budgets/BUDGET_BEFORE_4K_IMAGE_QUOTE_2026_09_10.md) preserves the previous Unlimited assumption and test plan. Use this current document for forward estimates.

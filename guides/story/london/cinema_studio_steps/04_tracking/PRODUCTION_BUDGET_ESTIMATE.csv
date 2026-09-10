@@ -1,0 +1,12 @@
+item,quantity,unit,duration_s,unit_allocation_credits,allocated_credits,cost_basis,retry_outputs,scope
+REFERENCE_IMAGES_4K,171,image,,4,684,CREATOR_CONFIRMED_UNIT_PRICE,0,All library prompts including seven optional maps
+FILM_01,1,block,30,210,210,UNVERIFIED_FIRST_PASS_ALLOWANCE_FROM_720P_PUBLISHED_EXAMPLE,0,New footage; 1080p delivery target remains; exact operation quote pending
+FILM_02,1,block,30,210,210,UNVERIFIED_FIRST_PASS_ALLOWANCE_FROM_720P_PUBLISHED_EXAMPLE,0,New footage; 1080p delivery target remains; exact operation quote pending
+FILM_03,1,block,30,210,210,UNVERIFIED_FIRST_PASS_ALLOWANCE_FROM_720P_PUBLISHED_EXAMPLE,0,New footage; 1080p delivery target remains; exact operation quote pending
+FILM_04,1,block,30,210,210,UNVERIFIED_FIRST_PASS_ALLOWANCE_FROM_720P_PUBLISHED_EXAMPLE,0,New footage; 1080p delivery target remains; exact operation quote pending
+FILM_05,1,block,30,210,210,UNVERIFIED_FIRST_PASS_ALLOWANCE_FROM_720P_PUBLISHED_EXAMPLE,0,New footage; 1080p delivery target remains; exact operation quote pending
+FILM_06,1,block,30,210,210,UNVERIFIED_FIRST_PASS_ALLOWANCE_FROM_720P_PUBLISHED_EXAMPLE,0,New footage; 1080p delivery target remains; exact operation quote pending
+FILM_07,1,block,20,140,140,UNVERIFIED_FIRST_PASS_ALLOWANCE_FROM_720P_PUBLISHED_EXAMPLE,0,New footage; 1080p delivery target remains; exact operation quote pending
+PILOT_WORKFLOW,1,combined allocation,,100,100,UNQUOTED_PLANNING_ALLOWANCE,0,One first-pass 8s video plus 8s Extend; pilot speech and hosted joining/mix/output included
+FINAL_NARRATION,1,combined allocation,,200,200,UNQUOTED_PLANNING_ALLOWANCE,0,A01-A07 first-pass speech only; no pilot double count
+FINAL_FINISHING,1,combined allocation,,300,300,UNQUOTED_PLANNING_ALLOWANCE,0,Hosted final assembly/mix/export and any required 1080p upscale; quote and route pending

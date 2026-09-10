@@ -4758,19 +4758,42 @@
     },
     "remaining_credits_creator_estimate": 2860,
     "recorded_historical_test_spend_credits": 80,
-    "provisional_remaining_test_allowance_credits": null,
+    "provisional_remaining_test_allowance_credits": 100,
     "pilot_video_seconds": 8,
     "pilot_extend_added_seconds": 8,
     "pilot_joined_seconds": 16,
     "reserve_additional_30s_attempts": 0,
     "additional_30s_attempt_quote_credits": null,
-    "budget_note": "Creator reports 2860 credits available and caps any further purchase at 500 credits. All images remain 4K. No image or video regeneration is allowed. After all 171 first-pass images at 4 credits each, 2176 credits remain, or 2676 only if the maximum top-up is actually purchased. Test, final-video, audio and finishing quotes remain unverified; no additional attempt reserve or new charge is inferred.",
+    "budget_note": "Creator-reported balance 2860; additional purchase capped at 500 and not made. All images stay 4K; no regeneration. Working allocation 2684 leaves 176. Image price is creator-confirmed; video amount is inferred from a published 720p example with additional first-pass pricing headroom. Pilot/audio/finishing amounts are unquoted planning allocations. Exact final operation quotes and hosted 1080p delivery route remain unverified.",
     "remaining_credits_creator_reported": 2860,
     "balance_source": "CREATOR_REPORT_2026_09_10_NOT_TOOL_VERIFIED",
     "maximum_additional_purchase_credits": 500,
     "additional_purchase_confirmed": false,
     "maximum_total_if_top_up_purchased": 3360,
-    "regeneration_allowed": false
+    "regeneration_allowed": false,
+    "current_allocation": {
+      "status": "PLANNING_ALLOWANCES_NOT_COMPLETE_UI_QUOTES",
+      "all_4k_images": 684,
+      "final_video_first_pass": 1400,
+      "pilot_including_test_audio_and_finishing": 100,
+      "final_narration": 200,
+      "final_finishing_including_any_required_1080p_upscale": 300,
+      "total": 2684,
+      "remaining_current_balance": 176,
+      "remaining_if_maximum_top_up_purchased": 676,
+      "retries": 0,
+      "ledger": "04_tracking/PRODUCTION_BUDGET_ESTIMATE.csv"
+    },
+    "published_video_price_basis": {
+      "source": "https://higgsfield.ai/blog/seedance-2-5-pricing-2026",
+      "checked_date": "2026-09-10",
+      "duration_s": 8,
+      "resolution": "720p",
+      "credits": 52,
+      "linear_200s_estimate": 1300,
+      "current_complete_input_quote_verified": false,
+      "native_1080p_quote_verified": false
+    }
   },
   "reference_bindings": {
     "A01": {
