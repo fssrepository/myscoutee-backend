@@ -191,3 +191,9 @@ Generálás a Higgsfield felületén történik. A `REFERENCE SETUP INCOMPLETE` 
 | [W07_MAIN_WORLD_A.txt](../02_library/worlds/real/W07_MAIN_WORLD_A.txt) | Bővítve / javítva | 3811 |
 | [W07_MAIN_WORLD_B.txt](../02_library/worlds/real/W07_MAIN_WORLD_B.txt) | Bővítve / javítva | 3787 |
 | [W07_MAIN_WORLD_C.txt](../02_library/worlds/real/W07_MAIN_WORLD_C.txt) | Bővítve / javítva | 3803 |
+
+## Kiegészítés — hét új tipográfiai prompt
+
+Az eredeti 164 képprompt ellenőrzése után TY001–TY007 hozzáadásával **171 aktív képprompt és 164 importelem** van. A hét új prompt pontos szó-/számjegy-, ékezet-, cellakiosztás- és videószerep-ellenőrzése is elkészült. A gépi jegyzék a hét új sort tartalmazza. A 4K 3×3 rövid számlap TY001 az egyetlen háromszor hármas kivétel; minden más új tipográfia 2×2. [Tipográfiai promptok](../02_library/typography/README.md).
+
+A 4 kredit / Nano Banana Pro 4K kép árat a felhasználó megerősítette. A felvetett 2K-s kétcellás alternatíva külön költségváltozat; a promptokat ez még nem alakította át. [Költségterv](../00_project/BUDGET.md).

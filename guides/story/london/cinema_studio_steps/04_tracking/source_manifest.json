@@ -4756,15 +4756,21 @@
       "narration_allocation_credits": 250,
       "finishing_and_other_allocation_credits": 50
     },
-    "remaining_credits_creator_estimate": 700,
+    "remaining_credits_creator_estimate": 2860,
     "recorded_historical_test_spend_credits": 80,
-    "provisional_remaining_test_allowance_credits": 100,
+    "provisional_remaining_test_allowance_credits": null,
     "pilot_video_seconds": 8,
     "pilot_extend_added_seconds": 8,
     "pilot_joined_seconds": 16,
-    "reserve_additional_30s_attempts": 2,
+    "reserve_additional_30s_attempts": 0,
     "additional_30s_attempt_quote_credits": null,
-    "budget_note": "Current approximate creator estimate; not a live account balance. Around 100 for remaining tests, then reserve one or two actual quoted 30-second attempts within the same remainder. No new charge inferred."
+    "budget_note": "Creator reports 2860 credits available and caps any further purchase at 500 credits. All images remain 4K. No image or video regeneration is allowed. After all 171 first-pass images at 4 credits each, 2176 credits remain, or 2676 only if the maximum top-up is actually purchased. Test, final-video, audio and finishing quotes remain unverified; no additional attempt reserve or new charge is inferred.",
+    "remaining_credits_creator_reported": 2860,
+    "balance_source": "CREATOR_REPORT_2026_09_10_NOT_TOOL_VERIFIED",
+    "maximum_additional_purchase_credits": 500,
+    "additional_purchase_confirmed": false,
+    "maximum_total_if_top_up_purchased": 3360,
+    "regeneration_allowed": false
   },
   "reference_bindings": {
     "A01": {
@@ -8973,11 +8979,13 @@
     "scope": "ALL_ACTIVE_IMAGE_PROMPT_TEXT_NOT_GENERATED_IMAGES",
     "report": "04_tracking/IMAGE_PROMPT_DETAIL_REVIEW.md",
     "records": "04_tracking/IMAGE_PROMPT_DETAIL_REVIEW.json",
-    "reviewed": 164,
+    "reviewed": 171,
     "expanded_or_corrected": 80,
     "rendering_performed": false,
-    "import_definition_count": 157,
-    "ui_import_count_investigation": "IGNORED_AT_USER_REQUEST_INCOMPLETE_PRIOR_DELETION_REPORTED"
+    "import_definition_count": 164,
+    "ui_import_count_investigation": "IGNORED_AT_USER_REQUEST_INCOMPLETE_PRIOR_DELETION_REPORTED",
+    "new_typography_prompts": 7,
+    "original_review_count": 164
   },
   "typography_library": {
     "date": "2026-09-10",
@@ -9024,21 +9032,13 @@
     "typography_first_pass_credits": 28,
     "prior_balance_estimate": 700,
     "prior_balance_not_reverified": true,
-    "with_10_percent_additional_images": {
-      "library_only": 724,
-      "including_maps": 756
-    },
-    "with_20_percent_additional_images": {
-      "library_only": 788,
-      "including_maps": 824
-    },
     "ledger": "04_tracking/IMAGE_GENERATION_ESTIMATE.csv",
     "actual_generation_or_debit_recorded": false,
     "video_costs_excluded": true,
     "prior_unlimited_assumption_superseded_for_selected_4k_operation": true,
     "model": "Nano Banana Pro",
     "two_k_split_option": {
-      "status": "DISCUSSED_NOT_APPLIED",
+      "status": "SET_ASIDE_KEEP_FOUR_STATES_ON_ONE_SHEET",
       "canvas_example": [
         2048,
         2048
@@ -9053,7 +9053,74 @@
       "world_and_morph_split_outputs": 252,
       "remaining_4k_character_and_typography_outputs": 38,
       "conditional_first_pass_credits": 152,
-      "condition": "Selected 2K UI operation must actually be covered by Unlimited at 0 credits; actual downloaded pixel geometry must be checked."
-    }
+      "condition": "Historical proposal only. The creator subsequently prioritised keeping all four morph states together; no split was applied.",
+      "unlimited_2k_coverage": "CREATOR_CONFIRMED_SEVEN_DAY_2K_ONLY_OFFER"
+    },
+    "unsplit_resolution_options": {
+      "status": "HISTORICAL_OPTIONS_NOT_SELECTED_ALL_IMAGES_REMAIN_4K",
+      "morph_layout": "ONE_2X2_SHEET_WITH_ALL_FOUR_STATES",
+      "all_imported_4k_credits": 656,
+      "only_75_morph_sheets_4k_other_89_eligible_2k_credits": 300,
+      "all_imported_eligible_2k_credits": 0,
+      "condition": "Zero-credit 2K outputs require eligible Unlimited generation within the creator-confirmed active seven-day window. Maps, retries and video costs excluded. Actual output dimensions must be checked."
+    },
+    "current_decision": {
+      "date": "2026-09-10",
+      "status": "CREATOR_CONFIRMED_ALL_IMAGES_REMAIN_4K",
+      "active_image_prompts": 171,
+      "prompt_resolution_changes": 0,
+      "split_sheets_created": 0,
+      "retain_existing_detailed_content": true,
+      "retain_existing_grid_layouts": true
+    },
+    "superseded_allowance_scenarios": {
+      "status": "SUPERSEDED_BY_CREATOR_NO_REGENERATION_AND_500_TOP_UP_CAP",
+      "historical_scenarios": {
+        "with_10_percent_additional_images": {
+          "library_only": 724,
+          "including_maps": 756
+        },
+        "with_20_percent_additional_images": {
+          "library_only": 788,
+          "including_maps": 824
+        },
+        "possible_top_ups": {
+          "purchase_confirmed": false,
+          "assumed_existing_balance": 700,
+          "balance_reverified": false,
+          "scenarios": [
+            {
+              "additional_credits": 500,
+              "total": 1200,
+              "after_164_images": 544,
+              "after_171_images": 516,
+              "after_171_plus_10_percent_extra_images": 444
+            },
+            {
+              "additional_credits": 1000,
+              "total": 1700,
+              "after_164_images": 1044,
+              "after_171_images": 1016,
+              "after_171_plus_10_percent_extra_images": 944
+            }
+          ]
+        }
+      }
+    },
+    "current_balance_creator_reported": 2860,
+    "balance_source": "CREATOR_REPORT_2026_09_10_NOT_TOOL_VERIFIED",
+    "maximum_additional_purchase_credits": 500,
+    "additional_purchase_confirmed": false,
+    "maximum_total_if_top_up_purchased": 3360,
+    "after_first_pass_current_balance": {
+      "library_only": 2204,
+      "including_maps": 2176
+    },
+    "after_first_pass_with_maximum_top_up": {
+      "library_only": 2704,
+      "including_maps": 2676
+    },
+    "regeneration_allowed": false,
+    "additional_attempts_allowed": 0
   }
 }

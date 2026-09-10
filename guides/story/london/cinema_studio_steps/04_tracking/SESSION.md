@@ -1,3 +1,5 @@
+A felhasználó külön megerősítette: a hétnapos Unlimited felirat valóban 2K képekre vonatkozik. A 2K-bontási költségváltozat ennek aktív időablakára számol 0 képkreditet. Az egész könyvtár átállítása továbbra sincs elrendelve; a 4K promptok megmaradtak.
+
 ## 2026-09-10 — Képmodell és felvetett 2K alternatíva
 
 A felhasználó pontosította: Nano Banana Pro, 4 kredit / 4K kép. Felvetette a 2K-s kétcellás bontást, de még nem rendelte el az átállítást; az aktív 171 képprompt továbbra is 4K. A BUDGET.md-ben összehasonlítás szerepel: 2048×2048 négyzeten két egymás alatti 2048×1024 cella, két lap az eredeti négy nézethez/állapothoz. 126 világ/emlék/morph lap bontása 252 2K kimenet lenne, 31 karakter + 7 tipográfia 4K mellett feltételesen 152 kredit, ha a 2K valóban 0 kredites Unlimited. Nem történt újrabontás, újraimport vagy render. A 4K/UHD kért pixelgeometria és a modell tényleges kimeneti mérete nem azonosnak tekintendő mérés nélkül.
@@ -213,3 +215,7 @@ Reference preparation clarification: the creator confirms covered web image gene
 ## World-page conversion prepared
 
 All W01–W07 world prompts now use 4K 2×2 pages A/B/C; all 63 original view descriptions remain. Fourteen companion-image tasks and a separate new-only 14-entry metadata import are prepared. Existing accepted media have not changed and no new import or generation was executed. Full-film video/storyboard prompts now declare the three relevant world inputs, with B/C IDs pending. Current active pilot preparation still uses the five selected subjects and the requested detailed morph sheets; it does not wait for the full world library.
+
+## 2026-09-10 — Confirmed balance and no-regeneration constraint
+
+The creator reports 2860 credits currently available and a maximum further purchase of 500 credits. No top-up is recorded as purchased. All 171 image prompts remain 4K with their existing detailed content and grid layouts. At 4 credits per image, the full first pass costs 684 credits and leaves 2176; the conditional remainder after the maximum top-up would be 2676. Images and videos must not be regenerated under the current instruction. Previous percentage retry allowances and additional video-attempt reserves are superseded. The remaining video/audio/finishing costs are not yet verified. BUDGET.md and source_manifest.json carry these current limits; the actual spending ledger is unchanged.

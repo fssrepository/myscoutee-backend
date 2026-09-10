@@ -1,88 +1,77 @@
-# Aktuális gyártási költségterv
+# Current production budget
 
-## 4K képek — a felhasználó által megerősített ár
+## Current decision: all images remain 4K
 
-2026-09-10: **egy elkészült 4K képlap 4 kredit** a felhasználó által választott **Nano Banana Pro** Higgsfield-műveletnél. Ezt használjuk az összes tervezett 4K lap becsléséhez. A teljes lap egy kép: az 1×3, 2×2 vagy 3×3 celláit nem számoljuk külön generálásnak. Egy promptból több kimeneti változat és minden fizetős újragenerálás külön képnek számít.
+2026-09-10: the creator explicitly confirmed that **every image remains at 4K**. All 171 active image prompts retain their existing detailed content and grid layouts. No prompt was converted to 2K or split into two sheets for budget reasons.
 
-A korábbi hétnapos Unlimited-képkeret nem teszi ezeket a kiválasztott 4K generálásokat ingyenessé. A 4 kredites ár forrása a felhasználó mostani felületi visszajelzése, nem általános ár minden modellre. A [Higgsfield kreditútmutatója](https://higgsfield.ai/creator-hub/help-center/credits/how-credits-work) külön kezeli a kredites és jogosult Unlimited-műveleteket. A becslés a ténylegesen kijelzett 4 kredites műveletre vonatkozik.
+Keep all four morph states together on ONE 2×2 sheet: intact source, first substantial material reconstruction, a distinctly different advanced reconstruction, and resolved destination. Character identity sheets retain 1×3; TY001 retains its specific 3×3 typography layout. All these sheets remain 4K.
 
-Minden aktív képprompt 3840×2160 / 4K. Karakterazonosság 1×3; világ/emlék/morph 2×2; a tipográfia rövid ratingmintája 3×3, a többi tipográfia 2×2. A 3×3 lap cellája 1280×720, a 2×2 lapé 1920×1080; a teljes kép ára a megadott beállításnál ettől még 4 kredit.
+The prompts request 3840×2160 pixels. At that exact canvas size, each 2×2 cell is 1920×1080. Check actual downloaded file dimensions rather than treating a model's resolution label as a measured output. The earlier 2K and split-sheet scenarios were discussed but not adopted; they are not the current production plan.
 
-## Egy első teljes képkör
+## Creator-confirmed image prices
 
-| Kategória | Képlap | Kredit/kép | Első kör |
+2026-09-10: the creator reports **4 credits per 4K output image using Nano Banana Pro in Higgsfield**, and confirms that the seven-day Unlimited offer covers **2K images only**. Use these account-specific observations for planning; they are not a universal price for every model or operation.
+
+One complete sheet is one image, regardless of whether it contains 1×3, 2×2 or 3×3 cells. Additional output variants and paid regenerations count as additional images. Importing Elements and editing files do not generate images or incur an image-generation debit.
+
+The conditional zero-credit 2K estimate applies only to eligible generations made in Unlimited mode during the active seven-day window. The 4K operation remains chargeable at the reported rate.
+
+## Full first pass at the current 4K setting
+
+| Category | Sheets | Credits/image | First pass |
 |---|---:|---:|---:|
-| Karakterazonosságok | 31 | 4 | 124 |
-| Jelen-világok | 21 | 4 | 84 |
-| Emlék/klinikai/éttermi világok | 30 | 4 | 120 |
-| Épület- és térmorphok | 37 | 4 | 148 |
-| Tárgy- és anyagmorphok | 32 | 4 | 128 |
-| Karaktermorphok | 6 | 4 | 24 |
-| Tipográfiai lapok | 7 | 4 | 28 |
-| Opcionális térképek | 7 | 4 | 28 |
-| **Importálható könyvtár, térképek nélkül** | **164** | **4** | **656** |
-| **Minden képprompt, térképekkel együtt** | **171** | **4** | **684** |
+| Character identities | 31 | 4 | 124 |
+| Present-world references | 21 | 4 | 84 |
+| Memory, clinical and restaurant worlds | 30 | 4 | 120 |
+| Building and space morphs | 37 | 4 | 148 |
+| Object and material morphs | 32 | 4 | 128 |
+| Character morphs | 6 | 4 | 24 |
+| Typography sheets | 7 | 4 | 28 |
+| Optional maps | 7 | 4 | 28 |
+| **Imported library, excluding maps** | **164** | **4** | **656** |
+| **All image prompts, including maps** | **171** | **4** | **684** |
 
-A tipográfiai kiegészítő **7 kép / 28 kredit**, már benne van a 656 és 684 összegben. A korábbi, tipográfia nélküli 157 elem első köre 628 kredit lett volna. Az import és a fájlok szerkesztése nem képgenerálás, nem könyvelünk rá terhelést.
+The typography supplement is **7 images / 28 credits**, already included in both totals. The earlier 157-asset library without typography would have cost 628 credits for one complete 4K pass.
 
-Ez bruttó újragyártási becslés: minden felsorolt promptból egy új 4K kép. A korábban megmaradt C01, C02, MR001 és R002 képek miatt nem vonunk le automatikusan négy generálást; csak a jelenlegi szerepre és minőségi célra ténylegesen újrahasznált kész lapot kell levonni. A korábbi R002 nézetlap nem ugyanaz, mint az új buszmorph. Képenkénti újrahasználat esetén a tervezett költség 4 kredittel csökken.
+Current prompts request a 3840×2160 canvas. Character identity sheets use 1×3 cells; worlds, memories and morphs use 2×2. TY001 uses 3×3 short rating samples; the other typography sheets use 2×2. At that exact canvas size, the cells are 1280×2160, 1920×1080 and 1280×720 respectively. These are requested dimensions, not verified generated-file measurements.
 
-## Újragenerálási forgatókönyvek
+This is a gross first-pass estimate: one new image per listed prompt. Existing usable outputs must be reused rather than regenerated. Do not automatically subtract the four retained C01, C02, MR001 and R002 images. Subtract only images actually reused for the current role and quality requirement. The older R002 bus angle sheet is not the new bus morph. Each reused image removes 4 credits from the planned 4K first pass.
 
-A százalékok tervezési forgatókönyvek, nem előrejelzett AI-hibaarányok és nem automatikus generálási felhatalmazások. A tartalék csak a később ténylegesen szükséges plusz képekre szolgál.
+## Current balance and hard spending limits
 
-| Könyvtár | Első kör | +10% pluszkép, felfelé kerekítve | +20% pluszkép, felfelé kerekítve |
+2026-09-10: the creator reports **2860 credits currently available**. This replaces the earlier approximate 700-credit balance. The creator will purchase **no more than 500 additional credits**. No purchase has been confirmed or made here; the current available balance remains 2860, and the maximum balance including a future permitted top-up would be 3360.
+
+**No regeneration is allowed for images or videos under the current plan.** Additional attempts and retry allowances are zero. The earlier 10%/20% image allowances and one/two extra video attempts are superseded. Review prompts, reference assignments, settings and the displayed cost before the first generation; retain usable existing outputs. A failed output does not authorize another attempt. No automatic retry, variant batch or replacement generation is included.
+
+All images remain 4K with their current complete grid compositions and detailed prompts.
+
+| Funding scenario | Total credits | After 164 imported-asset images (656 credits) | After all 171 images including maps (684 credits) |
 |---|---:|---:|---:|
-| 164 importelem | 656 | 17 kép +68 → **724** | 33 kép +132 → **788** |
-| 171 kép a térképekkel | 684 | 18 kép +72 → **756** | 35 kép +140 → **824** |
+| Current creator-reported balance | 2860 | 2204 | **2176** |
+| With the maximum further 500-credit purchase, if made | 3360 | 2704 | **2676** |
 
-A hét új tipográfiai lap első köre 28 kredit; további két teljes tipográfiai újragenerálás +8 kredit, összesen 36. Ez két plusz lapot jelent, nem két teljes új kört mind a hétből.
+The remainder must cover the first planned test-video generations, final footage, audio, assembly and export. These are remaining spending ceilings, not a quote for those operations or confirmation that the entire film will fit. The optional 500 credits must not be treated as already available. No larger top-up is part of this plan.
 
-## Hatás a korábbi egyenlegre és a videókra
+## Video and finishing costs are separate
 
-A legutóbb feljegyzett egyenleg **körülbelül 700 kredit** volt; ez nem most ellenőrzött fiókegyenleg. Ha még érvényes, akkor a 164 képes első kör után **44 kredit**, a 171 képes kör után **16 kredit** maradna. A 10%-os képtartalékkal számolt 724/756 kredit már ezt a régi becslést is meghaladja, még videó nélkül.
-
-A korábbi körülbelül 100 kredites további tesztkeret és 700 kredites teljes hátralévő terv így nem tekinthető finanszírozottnak pusztán attól, hogy a képekhez korábban Unlimitedet terveztünk. A képek, tesztvideók, teljes film és befejezés ugyanazt a ténylegesen rendelkezésre álló keretet használják. További videóárak vagy aktuális egyenleg nélkül nem állítjuk, hogy a teljes gyártás belefér.
-
-## A további videóműveletek árai külön tételek
-
-| Művelet | Legutóbbi ismert ár / állapot |
+| Operation | Last known price or status |
 |---|---|
-| Részletes 8 s / 480p pilot | Korábbi önálló UI-ár 20 kredit; a mostani teljes bemeneti készlet aktuális ára nincs megerősítve |
-| Natív folytatás, +8 s | Aktuális Extend-ár ismeretlen |
-| Narrált változat az összefűzött teszthez | Beszéd, mix és esetleges csatlakoztatás/kimenet aktuális ára ismeretlen |
-| Teljes film: hat 30 s blokk és egy 20 s befejezés | A választott végleges generálási műveletek aktuális árai ismeretlenek |
-| Összeállítás / mix / export | A tényleges Higgsfield-művelet alapján számolandó |
+| Detailed 8-second / 480p pilot | Earlier standalone UI quote: 20 credits; current price with the complete input set is unconfirmed |
+| Native extension, +8 seconds | Current Extend price unknown |
+| Narrated version of the joined test | Current speech, mix and any attachment/output costs unknown |
+| Full film: six 30-second blocks and one 20-second ending | Current prices of the selected final generation operations unknown |
+| Assembly, mix and export | Calculate from the actual Higgsfield operation |
 
-A narrált teszt 16 szavas, körülbelül 7–9 másodperces kivonatát nem kell új jelenetgenerálással vagy új képkörrel helyettesíteni. A meglévő jó képek újrahasználhatók a végső filmben is. A költségbecslés nem módosítja a film hosszát, történetét vagy képtartalmát.
+The narrated test uses a 16-word excerpt lasting approximately 7–9 seconds; it does not require replacing the existing scene with a new generation or another image pass. Accepted images can also be reused in the final film. This budget does not change the film's duration, story or visual content.
 
 ```text
-hátralévő új 4K képlapok × 4
-+ tényleges plusz képgenerálások × 4
-+ további tesztvideók és hangjuk
-+ teljes film első generálásai
-+ szükséges videóismétlések
-+ összeállítás / mix / export
-= teljes hátralévő kreditigény
+remaining new paid 4K sheets × 4
++ further test videos and their audio
++ first generations of the full film
++ assembly / mix / export
+= total remaining credit requirement
 ```
 
-A tételes képbecslés: [IMAGE_GENERATION_ESTIMATE.csv](../04_tracking/IMAGE_GENERATION_ESTIMATE.csv). Képlet fájlonként: `(planned_new_images + additional_attempts) × credits_per_image`. Az ottani első kör tervezés, nem rendelés vagy terhelés. A [credit_ledger.csv](../04_tracking/credit_ledger.csv) tényleges költési sorai nem változtak; a korábban rögzített 80 kredites tesztköltést nem vonjuk le újra. Képgenerálás nem indult ebben a munkamenetben.
+The itemized estimate is [IMAGE_GENERATION_ESTIMATE.csv](../04_tracking/IMAGE_GENERATION_ESTIMATE.csv). Its current baseline remains one 4K output per prompt, using `planned_new_images × credits_per_image`; `additional_attempts` must remain zero under the no-regeneration constraint. It records a plan, not an order or debit. Actual entries in [credit_ledger.csv](../04_tracking/credit_ledger.csv) are unchanged; do not deduct the previously recorded 80-credit test spend again. No image generation was started here.
 
-A régi becslés [archív példánya](../04_tracking/archive/budgets/BUDGET_BEFORE_4K_IMAGE_QUOTE_2026_09_10.md) megőrzi a korábbi Unlimited-feltételezést és teszttervet; előretekintő számolásra ez a friss dokumentum szolgál.
-
-## Felvetett alternatíva: 2K kétcellás lapok
-
-A felhasználó felvetette a 2K-s bontást, de még nem döntött a teljes könyvtár átállításáról. **Az aktív promptok továbbra is 4K-sak.** A részletes leírásból és a négy állapotból a bontás sem hagyhat el semmit.
-
-Egy lehetséges geometria: **2K, 1:1 vászon, egy oszlopban két egymás alatti cella**. Ha a letöltött kimenet 2048×2048, akkor egy cella **2048×1024**, 2:1 képaránnyal. Két ilyen lap viszi tovább az eredeti négy nézetet/állapotot: első lap 1–2, második lap 3–4. Ez cellánként közel az eredetileg megcélzott 1920×1080 képpontszám, de más képarány; a kompozíciót újra kell írni a teljes tárgy és a legnagyobb köztes forma befogadására. Az első lap nem lehet két forráskép, és a második két kész célkép: a morph mind a négy eltérő állapota megmarad.
-
-A 2K/4K elnevezés önmagában nem garantál 2560×1440/3840×2160 fájlt. A [Google képfelbontási táblázata](https://ai.google.dev/gemini-api/docs/image-generation#aspect-ratios-and-image-size) a képarányhoz eltérő pixelméreteket rendel; a 2K-s négyzetes sor 2048×2048. A Higgsfield tényleges letöltött kimeneti méretét az első mintán ellenőrizni kell. A jelenlegi promptokban szereplő 3840×2160 a kért vászongeometria, nem egy már megmért generált fájl adata.
-
-Példaszámítás, kizárólag ha a felhasználó 2K művelete ténylegesen 0 kredites Unlimited:
-
-| Változat | Új képkimenetek | Első kör kredit |
-|---|---:|---:|
-| Minden importelem a mostani 4K lapon | 164 | 656 |
-| 51 világ/emlék + 75 morph két-két 2K lapon; 31 karakter + 7 tipográfia a jelenlegi 4K formában | 252 darab 2K + 38 darab 4K = 290 | **152**, ha a 252 darab 2K valóban 0 kredit |
-
-Ez 504 kreditnyi lehetséges megtakarítás több generálási feladatért, több csatolandó referencialapért és két lap között ellenőrizendő folytonosságért. A térképek és az újragenerálások nincsenek ebben az alternatív sorban. A 2K jogosultságot nem következtetjük a 4K árból. A karakter- és tipográfialapok későbbi bontása külön formátumtervezést igényel; ebben az összevetésben a jelenlegi részletezettségükkel szerepelnek.
+The [archived earlier budget](../04_tracking/archive/budgets/BUDGET_BEFORE_4K_IMAGE_QUOTE_2026_09_10.md) preserves the previous Unlimited assumption and test plan. Use this current document for forward estimates.

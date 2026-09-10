@@ -8,12 +8,13 @@
     "morphs/objects": 32,
     "worlds/maps": 7,
     "worlds/memories": 30,
-    "worlds/real": 21
+    "worlds/real": 21,
+    "typography": 7
   },
-  "reviewed": 164,
+  "reviewed": 171,
   "expanded_or_corrected": 80,
   "existing_detail_retained": 84,
-  "unique_import_elements": 157,
+  "unique_import_elements": 164,
   "imported_ui_list": "IGNORED_AT_USER_REQUEST_INCOMPLETE_PRIOR_DELETION_REPORTED",
   "rendering_performed": false,
   "records": [
@@ -2619,6 +2620,126 @@
       "rating_policy": "CURRENT_CITY_CARDS_WHEN_PEOPLE_VISIBLE",
       "unbound_reference_slots": [],
       "change": "Expanded each assigned world view with its own spatial and material construction details; clarified source/destination scope."
+    },
+    {
+      "prompt": "02_library/typography/TY001_DECIMAL_RATING_GLYPHS_AND_TINTS_3X3.txt",
+      "group": "typography",
+      "status": "NEW_TYPOGRAPHY_PROMPT_TEXT_REVIEWED",
+      "review": "Exact visible words/numerals, diacritics, separate assigned cell purposes, material or display attachment and film timing checked; no image rendered.",
+      "words": 827,
+      "sha256": "05bdca2dd7405bc6a37e606cddc1a669f94a532d0bcb1a81b3e6b2170615a61e",
+      "rating_policy": "TYPOGRAPHY_ONLY_NO_HUMAN_FIGURES",
+      "unbound_reference_slots": [],
+      "visible_text": [
+        "1.0",
+        "2.3",
+        "3.0",
+        "4.6",
+        "5.0",
+        "6.2",
+        "7.4",
+        "8.6",
+        "9.2"
+      ],
+      "layout": "3x3"
+    },
+    {
+      "prompt": "02_library/typography/TY002_COFFEE_TO_KAVE_LETTER_MATERIAL_2X2.txt",
+      "group": "typography",
+      "status": "NEW_TYPOGRAPHY_PROMPT_TEXT_REVIEWED",
+      "review": "Exact visible words/numerals, diacritics, separate assigned cell purposes, material or display attachment and film timing checked; no image rendered.",
+      "words": 1059,
+      "sha256": "3c96cc65195b3755d69c354f1c94df46c020338a598da5661c8f505f4ad7b670",
+      "rating_policy": "TYPOGRAPHY_ONLY_NO_HUMAN_FIGURES",
+      "unbound_reference_slots": [],
+      "visible_text": [
+        "COFFEE",
+        "KÁVÉ"
+      ],
+      "layout": "2x2"
+    },
+    {
+      "prompt": "02_library/typography/TY003_CAFE_AND_CULTURE_SIGN_LETTERING_2X2.txt",
+      "group": "typography",
+      "status": "NEW_TYPOGRAPHY_PROMPT_TEXT_REVIEWED",
+      "review": "Exact visible words/numerals, diacritics, separate assigned cell purposes, material or display attachment and film timing checked; no image rendered.",
+      "words": 869,
+      "sha256": "5d02552e9db3daaedd69589923f6590c6951a6614239bb7cc730de24aee07fe2",
+      "rating_policy": "TYPOGRAPHY_ONLY_NO_HUMAN_FIGURES",
+      "unbound_reference_slots": [],
+      "visible_text": [
+        "KÁVÉ",
+        "SZÍNHÁZ",
+        "MOZI",
+        "KÖNYV"
+      ],
+      "layout": "2x2"
+    },
+    {
+      "prompt": "02_library/typography/TY004_OFFICE_AND_ACCOUNTING_SIGN_LETTERING_2X2.txt",
+      "group": "typography",
+      "status": "NEW_TYPOGRAPHY_PROMPT_TEXT_REVIEWED",
+      "review": "Exact visible words/numerals, diacritics, separate assigned cell purposes, material or display attachment and film timing checked; no image rendered.",
+      "words": 806,
+      "sha256": "34d6481c852284881fc8995c759bb017c9db0a51e246fcc713b526aacac88ac2",
+      "rating_policy": "TYPOGRAPHY_ONLY_NO_HUMAN_FIGURES",
+      "unbound_reference_slots": [],
+      "visible_text": [
+        "OFFICE",
+        "ACCOUNTING",
+        "IRODA",
+        "KÖNYVELÉS"
+      ],
+      "layout": "2x2"
+    },
+    {
+      "prompt": "02_library/typography/TY005_TRANSIT_AND_ENTRANCE_SIGN_LETTERING_2X2.txt",
+      "group": "typography",
+      "status": "NEW_TYPOGRAPHY_PROMPT_TEXT_REVIEWED",
+      "review": "Exact visible words/numerals, diacritics, separate assigned cell purposes, material or display attachment and film timing checked; no image rendered.",
+      "words": 776,
+      "sha256": "b78734d62a4a3fa8180e74227acc923c7a77fcef6ac10fbf44d4a6ee27cd1ce2",
+      "rating_policy": "TYPOGRAPHY_ONLY_NO_HUMAN_FIGURES",
+      "unbound_reference_slots": [],
+      "visible_text": [
+        "METRÓ",
+        "KIJÁRAT",
+        "BEJÁRAT",
+        "VILLAMOS"
+      ],
+      "layout": "2x2"
+    },
+    {
+      "prompt": "02_library/typography/TY006_PROFILE_AGE_37_TO_33_GLYPH_CHANGE_2X2.txt",
+      "group": "typography",
+      "status": "NEW_TYPOGRAPHY_PROMPT_TEXT_REVIEWED",
+      "review": "Exact visible words/numerals, diacritics, separate assigned cell purposes, material or display attachment and film timing checked; no image rendered.",
+      "words": 941,
+      "sha256": "2129b3ebdba44a39b0386be9e1e0c9437d7c5ed6070a17042db1f151f8b19527",
+      "rating_policy": "TYPOGRAPHY_ONLY_NO_HUMAN_FIGURES",
+      "unbound_reference_slots": [],
+      "visible_text": [
+        "37",
+        "33"
+      ],
+      "layout": "2x2"
+    },
+    {
+      "prompt": "02_library/typography/TY007_FINAL_TITLE_LOCKUP_AND_LETTER_DETAILS_2X2.txt",
+      "group": "typography",
+      "status": "NEW_TYPOGRAPHY_PROMPT_TEXT_REVIEWED",
+      "review": "Exact visible words/numerals, diacritics, separate assigned cell purposes, material or display attachment and film timing checked; no image rendered.",
+      "words": 967,
+      "sha256": "c6f1d19eb0f94a23a5ae1a196b57516502ab4b9070624530e2c7b44d32aedf47",
+      "rating_policy": "TYPOGRAPHY_ONLY_NO_HUMAN_FIGURES",
+      "unbound_reference_slots": [],
+      "visible_text": [
+        "MYSCOUTEE",
+        "THE PATH BETWEEN PEOPLE"
+      ],
+      "layout": "2x2"
     }
-  ]
+  ],
+  "original_prompt_review_count": 164,
+  "new_typography_prompts": 7
 }

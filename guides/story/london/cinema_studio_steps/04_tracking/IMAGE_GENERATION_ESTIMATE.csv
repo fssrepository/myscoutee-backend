@@ -87,8 +87,8 @@ MR017,02_library/morphs/objects/MR017_CABINET_TO_DESK_AND_CHAIR_2X2.txt,morphs/o
 MR018,02_library/morphs/objects/MR018_HEARING_BENCH_TO_DOCUMENT_SHELVING_2X2.txt,morphs/objects,yes,4K,2x2 source/unfinished/unfinished/target,4,1,0,4,PLANNED_NOT_CHARGED
 MR019,02_library/morphs/buildings/MR019_PAVING_AND_GUTTER_TO_STREET_TERRACE_2X2.txt,morphs/buildings,yes,4K,2x2 source/unfinished/unfinished/target,4,1,0,4,PLANNED_NOT_CHARGED
 MR020,02_library/morphs/objects/MR020_ROPE_FIBRES_TO_SHEET_HEM_2X2.txt,morphs/objects,yes,4K,2x2 source/unfinished/unfinished/target,4,1,0,4,PLANNED_NOT_CHARGED
-R009_STUDY,02_library/morphs/buildings/R009_FANLIGHT_TO_CANOPY_JOINT_STUDY_FOR_THE_EXTEND.txt,morphs/buildings,no_optional_map,4K,2x2 source/unfinished/unfinished/target,4,1,0,4,PLANNED_NOT_CHARGED
-R008_STUDY,02_library/morphs/buildings/R008_CAFE_OPENING_AND_FURNITURE_CONSTRUCTION_DETAILS.txt,morphs/buildings,no_optional_map,4K,2x2 source/unfinished/unfinished/target,4,1,0,4,PLANNED_NOT_CHARGED
+R009,02_library/morphs/buildings/R009_FANLIGHT_TO_CANOPY_JOINT_STUDY_FOR_THE_EXTEND.txt,morphs/buildings,yes,4K,2x2 source/unfinished/unfinished/target,4,1,0,4,PLANNED_NOT_CHARGED
+R008,02_library/morphs/buildings/R008_CAFE_OPENING_AND_FURNITURE_CONSTRUCTION_DETAILS.txt,morphs/buildings,yes,4K,2x2 source/unfinished/unfinished/target,4,1,0,4,PLANNED_NOT_CHARGED
 MW01_B,02_library/worlds/memories/MW01_LONDON_SOCIAL_B.txt,worlds/memories,yes,4K,4K 2x2 page B,4,1,0,4,PLANNED_NOT_CHARGED
 MW01_C,02_library/worlds/memories/MW01_LONDON_SOCIAL_C.txt,worlds/memories,yes,4K,4K 2x2 page C,4,1,0,4,PLANNED_NOT_CHARGED
 MW02_B,02_library/worlds/memories/MW02_GLOBAL_ROUTES_B.txt,worlds/memories,yes,4K,4K 2x2 page B,4,1,0,4,PLANNED_NOT_CHARGED
