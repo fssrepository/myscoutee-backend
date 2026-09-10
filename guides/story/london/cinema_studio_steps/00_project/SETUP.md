@@ -32,7 +32,7 @@ Drama is a suitable Director's Panel starting point. The overload comes from cam
 
 ## Reference detail and contact sheets
 
-The original canonical world design used nine views on one 3×3 sheet. The active W01–W07 prompts now distribute those views over three 4K 2×2 pages per world. At 3840×2160 with no margins or gutters, each cell is 1920×1080. The original view mapping and all page files are in [the world index](../02_library/worlds/README.md).
+The original canonical world design used nine views on one 3×3 sheet. The active W01–W07 prompts now distribute those views over three 4K 2×2 pages per world. At 3840×2160 with no margins or gutters, each cell is 1920×1080. The original view mapping and all page files are in [the world index](../02_library/worlds/real/README.md).
 
 **1280x720 is 720p; 1920x1080 is 1080p.** The number refers to vertical pixel count, with `p` denoting progressive scan. The final video target remains 1080p, but its cost must now be verified against the latest approximately 700-credit remaining budget. A 720-pixel-high reference cell does not force a 720p output, but missing source detail cannot be assumed to return faithfully: generated fine detail may be invented. A full 3840x2160 grid is therefore not equivalent to nine 1080p references.
 

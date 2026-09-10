@@ -13,7 +13,7 @@ Generate only missing media. Reuse accepted dependencies from prior blocks. Each
 
 | Prompt | Required accepted references | Output name |
 | --- | --- | --- |
-| [W02](../../02_library/worlds/W02_MAIN_WORLD_A.txt) | None | `W02_MAIN_WORLD.png` |
+| [W02](../../02_library/worlds/real/W02_MAIN_WORLD_A.txt) | None | `W02_MAIN_WORLD.png` |
 | [C11](../../02_library/characters/C11_RUSSIAN_TRANSIT_PASSENGER.txt) | None | `C11_RUSSIAN_TRANSIT_PASSENGER.png` |
 | [C12](../../02_library/characters/C12_AGRA_BUS_WOMAN.txt) | None | `C12_AGRA_BUS_WOMAN.png` |
 | [C13](../../02_library/characters/C13_SUDANESE_TRAVELER_MAN.txt) | None | `C13_SUDANESE_TRAVELER_MAN.png` |
@@ -25,7 +25,7 @@ Generate only missing media. Reuse accepted dependencies from prior blocks. Each
 | [C19](../../02_library/characters/C19_BARMOUTH_ROAD_TRIP_COMPANION_A.txt) | None | `C19_BARMOUTH_ROAD_TRIP_COMPANION_A.png` |
 | [C20](../../02_library/characters/C20_BARMOUTH_ROAD_TRIP_COMPANION_B.txt) | None | `C20_BARMOUTH_ROAD_TRIP_COMPANION_B.png` |
 | [C21](../../02_library/characters/C21_BARMOUTH_ROAD_TRIP_COMPANION_C.txt) | None | `C21_BARMOUTH_ROAD_TRIP_COMPANION_C.png` |
-| [MW02](../../02_library/memories/MW02_GLOBAL_ROUTES_A.txt) | C01, C11, C12, C13, C14, C15, C16, C17, C18, C19, C20, C21 | `MW02_GLOBAL_ROUTES.png` |
+| [MW02](../../02_library/worlds/memories/MW02_GLOBAL_ROUTES_A.txt) | C01, C11, C12, C13, C14, C15, C16, C17, C18, C19, C20, C21 | `MW02_GLOBAL_ROUTES.png` |
 | [SB02](storyboard.txt) | W02, MW02, MW01, MWP01, C01, C10, C11, C12, C13, C14, C15, C16, C17, C18, C19, C20, C21 | `SB02_STORYBOARD.png` |
 | [A02](narration.txt) | None | `A02_NARRATION.wav` |
 | [V02](video.txt) | W02, MW02, MW01, MWP01, C01, C10, C11, C12, C13, C14, C15, C16, C17, C18, C19, C20, C21, SB02, A02, V01 | `V02_CHAIN_TO_0100.mp4` |
@@ -68,6 +68,6 @@ Watch once with sound. Check all nine beats and their short secondary memories a
 
 ## World pages for this block
 
-Use [W02 Page A](../../02_library/worlds/W02_MAIN_WORLD_A.txt), [Page B](../../02_library/worlds/W02_MAIN_WORLD_B.txt) and [Page C](../../02_library/worlds/W02_MAIN_WORLD_C.txt), each rendered as one 4K 2×2 image. Together they preserve all nine original view descriptions; the [world index](../../02_library/worlds/README.md) maps the repeated anchors. These are three inputs for this same film block, not three extra video jobs.
+Use [W02 Page A](../../02_library/worlds/real/W02_MAIN_WORLD_A.txt), [Page B](../../02_library/worlds/real/W02_MAIN_WORLD_B.txt) and [Page C](../../02_library/worlds/real/W02_MAIN_WORLD_C.txt), each rendered as one 4K 2×2 image. Together they preserve all nine original view descriptions; the [world index](../../02_library/worlds/real/README.md) maps the repeated anchors. These are three inputs for this same film block, not three extra video jobs.
 
 The B/C Element definitions are in the [new-only companion import](../../00_project/elements/10_world_reference_pages.md); they have not been imported or rendered. Obtain their full actual IDs, check the accepted page images and replace the pending references before generating this block. The existing W02 Element still points to its previously associated image until Page A is accepted and associated. Do not use an old nine-cell image while telling the video that it is new Page A. Keep existing accepted media available and do not repeat earlier imports.

@@ -18,7 +18,7 @@ The total next-round cost is **not yet known**. No additional charge is recorded
 
 ## Free image-reference preparation before the next paid video
 
-The creator has confirmed a seven-day Unlimited web image window. Prepare the additional references there, using [the separate copyable image prompts](../02_library/objects/README.md), and keep the same three video/audio test tasks.
+The creator has confirmed a seven-day Unlimited web image window. Prepare the additional references there, using [the separate copyable image prompts](../02_library/morphs/objects/README.md), and keep the same three video/audio test tasks.
 
 The creator reports the R001–R053 batch imported. Do not import it again. The import contains short identities; full image prompts remain in the R-numbered `.txt` files. Prepare **five additional images for the first 8-second test**, using the matching Elements in Higgsfield:
 
@@ -48,7 +48,7 @@ The available assistant generation connector does not establish the creator's fr
 
 Both visual segments have music/SFX without narration. The second is a continuation of the selected first result, not a replay of its restaurant, camera opening or cathedral transformation. Review the first result’s actual endpoint and adjust only the source-dependent staging of the continuation before copying it. No earlier rejected download is automatically selected as source.
 
-The four image references C01, C02, W01 and T01 are already bound and reusable. The expanded [restaurant reference Page A](../02_library/memories/T01_SOHO_RESTAURANT_SOURCE_A.txt) is in the library; its [Element description](../00_project/elements/00_pilot_test_assets.md) is metadata. The accepted single image remains reusable; the A/B/C prompts prepare additional coverage, not an automatic replacement. Later world-reference improvements follow the existing image plan and verified Unlimited coverage; editing a world prompt does not update an existing rendered image automatically.
+The four image references C01, C02, W01 and T01 are already bound and reusable. The expanded [restaurant reference Page A](../02_library/worlds/memories/T01_SOHO_RESTAURANT_SOURCE_A.txt) is in the library; its [Element description](../00_project/elements/00_pilot_test_assets.md) is metadata. The accepted single image remains reusable; the A/B/C prompts prepare additional coverage, not an automatic replacement. Later world-reference improvements follow the existing image plan and verified Unlimited coverage; editing a world prompt does not update an existing rendered image automatically.
 
 ## Join the two visual parts
 

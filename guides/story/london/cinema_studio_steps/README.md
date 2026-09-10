@@ -1,6 +1,6 @@
 # MYSCOUTEE — Cinema Studio, step by step
 
-Reference preparation: [22 morph sheets](02_library/morphs/README.md), [28 memory/clinical pages](02_library/memories/README.md), and [21 normal-world pages](02_library/worlds/README.md). These are reusable image prompts with explicit input state; no new media or extra video tests have been generated.
+Reference preparation: [22 morph sheets](02_library/morphs/README.md), [28 memory/clinical pages](02_library/worlds/memories/README.md), and [21 normal-world pages](02_library/worlds/real/README.md). These are reusable image prompts with explicit input state; no new media or extra video tests have been generated.
 
 **Resume at [the current session](04_tracking/SESSION.md), using [the numbered production list](04_tracking/production_steps.csv).** Do not restart completed assets. The [480p pilot](01_pilot/README.md) keeps the complete first scene and adds one native visual continuation. Join them, then add the short narration and review the whole picture/music/SFX result as the reference before 1080p. There are two active video-test prompts; completed image sources and metadata are not new tests. One output per request; no per-feature generation campaign.
 
@@ -13,7 +13,7 @@ This is the **September 9, 2026 manual production edition**. Final target: **See
 1. Read [setup and capability checks](00_project/SETUP.md) and the [budget](00_project/BUDGET.md). Use the price displayed for the actual operation.
 2. Continue in the existing **MyScoutee** project shown in the screenshot. If needed, paste [project_brief.txt](00_project/project_brief.txt) into its brief field. Existing Elements do not need re-importing.
 3. Follow the [numbered pilot steps](01_pilot/README.md). Do not build the whole asset library first.
-4. After a usable pilot, prepare the needed [4K 2×2 world pages](02_library/worlds/README.md), including the requested W01 replacement, under verified Unlimited and the full-budget/hosted-delivery check, then follow the film blocks below. Each README lists **prompt → required existing references → output name**.
+4. After a usable pilot, prepare the needed [4K 2×2 world pages](02_library/worlds/real/README.md), including the requested W01 replacement, under verified Unlimited and the full-budget/hosted-delivery check, then follow the film blocks below. Each README lists **prompt → required existing references → output name**.
 5. After V02, verify the actual returned duration, voice/music seam and native continuation beyond 60 seconds before preparing the remaining blocks. Do not assume the result is cumulative or that a 60-second file is accepted by the source field.
 
 The production list includes the outstanding reference binding, clean narration, native sound, image resolution, budget and hosted export checks at their point of use. Image acceptance alone does not make an unbound downstream prompt ready. Before each generation the assistant gives the complete configuration in chat, opens the exact prompt and follows the [reference procedure](00_project/REFERENCES.md#remaining-binding-work-at-the-point-of-use). The original checklist had 77 rows. Fourteen world companion-image tasks are now tracked separately at the end of that list and belong before their respective production blocks; the list has 91 rows. They are additional image preparation, not paid video tests. Other object/morph preparation is tracked in its reference library and manifest.
@@ -50,4 +50,4 @@ Read the [review](00_project/REVIEW.md) for repairs and unresolved risks, or the
 
 **Keep the first usable take.** More effects increase generation difficulty. Neither a prompt nor an 8-second success guarantees a flawless 200-second film; the pilot exposes expensive uncertainties early. All operator documentation is English. Hungarian in-world signage remains intentional story content.
 
-World prompts now produce 4K 2×2 pages, with all nine original views retained across A/B/C. See the [world index and page mapping](02_library/worlds/README.md). Multiple pages can be referenced within one 30-second film block; they do not add scenes, cuts or video-generation jobs by themselves.
+World prompts now produce 4K 2×2 pages, with all nine original views retained across A/B/C. See the [world index and page mapping](02_library/worlds/real/README.md). Multiple pages can be referenced within one 30-second film block; they do not add scenes, cuts or video-generation jobs by themselves.

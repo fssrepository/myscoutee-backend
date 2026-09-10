@@ -13,12 +13,12 @@ Generate only missing media. Reuse accepted dependencies from prior blocks. Each
 
 | Prompt | Required accepted references | Output name |
 | --- | --- | --- |
-| [W04](../../02_library/worlds/W04_MAIN_WORLD_A.txt) | None | `W04_MAIN_WORLD.png` |
+| [W04](../../02_library/worlds/real/W04_MAIN_WORLD_A.txt) | None | `W04_MAIN_WORLD.png` |
 | [C03](../../02_library/characters/C03_POLICEWOMAN.txt) | None | `C03_POLICEWOMAN.png` |
 | [C04](../../02_library/characters/C04_APPOINTED_LAWYER.txt) | None | `C04_APPOINTED_LAWYER.png` |
 | [C25](../../02_library/characters/C25_SEARCH_OFFICER_MALE.txt) | None | `C25_SEARCH_OFFICER_MALE.png` |
 | [C26](../../02_library/characters/C26_DEFENCE_OFFICE_SUBSTITUTE.txt) | None | `C26_DEFENCE_OFFICE_SUBSTITUTE.png` |
-| [MW04](../../02_library/memories/MW04_POLICE_DEFENCE_A.txt) | C01, C03, C04, C25, C26 | `MW04_POLICE_DEFENCE.png` |
+| [MW04](../../02_library/worlds/memories/MW04_POLICE_DEFENCE_A.txt) | C01, C03, C04, C25, C26 | `MW04_POLICE_DEFENCE.png` |
 | [SB04](storyboard.txt) | W04, MW04, C01, C03, C04, C25, C26 | `SB04_STORYBOARD.png` |
 | [A04](narration.txt) | None | `A04_NARRATION.wav` |
 | [V04](video.txt) | W04, MW04, C01, C03, C04, C25, C26, SB04, A04, V03 | `V04_CHAIN_TO_0200.mp4` |
@@ -51,6 +51,6 @@ Watch once with sound. Check all nine beats and their short secondary memories a
 
 ## World pages for this block
 
-Use [W04 Page A](../../02_library/worlds/W04_MAIN_WORLD_A.txt), [Page B](../../02_library/worlds/W04_MAIN_WORLD_B.txt) and [Page C](../../02_library/worlds/W04_MAIN_WORLD_C.txt), each rendered as one 4K 2×2 image. Together they preserve all nine original view descriptions; the [world index](../../02_library/worlds/README.md) maps the repeated anchors. These are three inputs for this same film block, not three extra video jobs.
+Use [W04 Page A](../../02_library/worlds/real/W04_MAIN_WORLD_A.txt), [Page B](../../02_library/worlds/real/W04_MAIN_WORLD_B.txt) and [Page C](../../02_library/worlds/real/W04_MAIN_WORLD_C.txt), each rendered as one 4K 2×2 image. Together they preserve all nine original view descriptions; the [world index](../../02_library/worlds/real/README.md) maps the repeated anchors. These are three inputs for this same film block, not three extra video jobs.
 
 The B/C Element definitions are in the [new-only companion import](../../00_project/elements/10_world_reference_pages.md); they have not been imported or rendered. Obtain their full actual IDs, check the accepted page images and replace the pending references before generating this block. The existing W04 Element still points to its previously associated image until Page A is accepted and associated. Do not use an old nine-cell image while telling the video that it is new Page A. Keep existing accepted media available and do not repeat earlier imports.

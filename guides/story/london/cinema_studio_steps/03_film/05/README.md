@@ -13,14 +13,14 @@ Generate only missing media. Reuse accepted dependencies from prior blocks. Each
 
 | Prompt | Required accepted references | Output name |
 | --- | --- | --- |
-| [W05](../../02_library/worlds/W05_MAIN_WORLD_A.txt) | None | `W05_MAIN_WORLD.png` |
+| [W05](../../02_library/worlds/real/W05_MAIN_WORLD_A.txt) | None | `W05_MAIN_WORLD.png` |
 | [C27](../../02_library/characters/C27_JUDGE.txt) | None | `C27_JUDGE.png` |
 | [C28](../../02_library/characters/C28_FORENSIC_EXPERT_A.txt) | None | `C28_FORENSIC_EXPERT_A.png` |
 | [C29](../../02_library/characters/C29_FORENSIC_EXPERT_B.txt) | None | `C29_FORENSIC_EXPERT_B.png` |
 | [C30](../../02_library/characters/C30_COURT_CLERK.txt) | None | `C30_COURT_CLERK.png` |
 | [C31](../../02_library/characters/C31_ANONYMOUS_FICTIONAL_POLITICAL_FIGURE.txt) | None | `C31_ANONYMOUS_FICTIONAL_POLITICAL_FIGURE.png` |
-| [MW05](../../02_library/memories/MW05_COURT_FILE_A.txt) | C01, C04, C27, C28, C29, C30, C31 | `MW05_COURT_FILE.png` |
-| [MWP02](../../02_library/memories/MWP02_SYSTEM_TIME_REVERSALS_A.txt) | C01 | `MWP02_SYSTEM_TIME_REVERSALS.png` |
+| [MW05](../../02_library/worlds/memories/MW05_COURT_FILE_A.txt) | C01, C04, C27, C28, C29, C30, C31 | `MW05_COURT_FILE.png` |
+| [MWP02](../../02_library/worlds/memories/MWP02_SYSTEM_TIME_REVERSALS_A.txt) | C01 | `MWP02_SYSTEM_TIME_REVERSALS.png` |
 | [SB05](storyboard.txt) | W05, MW05, MWP02, C01, C04, C27, C28, C29, C30, C31 | `SB05_STORYBOARD.png` |
 | [A05](narration.txt) | None | `A05_NARRATION.wav` |
 | [V05](video.txt) | W05, MW05, MWP02, C01, C04, C27, C28, C29, C30, C31, SB05, A05, V04 | `V05_CHAIN_TO_0230.mp4` |
@@ -56,6 +56,6 @@ Watch once with sound. Check all nine beats and their short secondary memories a
 
 ## World pages for this block
 
-Use [W05 Page A](../../02_library/worlds/W05_MAIN_WORLD_A.txt), [Page B](../../02_library/worlds/W05_MAIN_WORLD_B.txt) and [Page C](../../02_library/worlds/W05_MAIN_WORLD_C.txt), each rendered as one 4K 2×2 image. Together they preserve all nine original view descriptions; the [world index](../../02_library/worlds/README.md) maps the repeated anchors. These are three inputs for this same film block, not three extra video jobs.
+Use [W05 Page A](../../02_library/worlds/real/W05_MAIN_WORLD_A.txt), [Page B](../../02_library/worlds/real/W05_MAIN_WORLD_B.txt) and [Page C](../../02_library/worlds/real/W05_MAIN_WORLD_C.txt), each rendered as one 4K 2×2 image. Together they preserve all nine original view descriptions; the [world index](../../02_library/worlds/real/README.md) maps the repeated anchors. These are three inputs for this same film block, not three extra video jobs.
 
 The B/C Element definitions are in the [new-only companion import](../../00_project/elements/10_world_reference_pages.md); they have not been imported or rendered. Obtain their full actual IDs, check the accepted page images and replace the pending references before generating this block. The existing W05 Element still points to its previously associated image until Page A is accepted and associated. Do not use an old nine-cell image while telling the video that it is new Page A. Keep existing accepted media available and do not repeat earlier imports.
