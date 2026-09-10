@@ -25,8 +25,8 @@ Original text: [archived MW01_B](../../../04_tracking/archive/memory_grids_befor
 | --- | ---: | ---: | --- |
 | [06_01_MW01_LONDON_SOCIAL_C_VIEW_09.txt](06_01_MW01_LONDON_SOCIAL_C_VIEW_09.txt) | 09 | 2 | **Ready** |
 | [06_02_MW01_LONDON_SOCIAL_C_VIEW_01.txt](06_02_MW01_LONDON_SOCIAL_C_VIEW_01.txt) | 01 | 2 | **Ready** |
-| [06_03_MW01_LONDON_SOCIAL_C_VIEW_07.txt](06_03_MW01_LONDON_SOCIAL_C_VIEW_07.txt) | 07 | 3 | MW01_B_03 |
-| [06_04_MW01_LONDON_SOCIAL_C_VIEW_08.txt](06_04_MW01_LONDON_SOCIAL_C_VIEW_08.txt) | 08 | 1 | MW01_B_04 |
+| [06_03_MW01_LONDON_SOCIAL_C_VIEW_07.txt](06_03_MW01_LONDON_SOCIAL_C_VIEW_07.txt) | 07 | 3 | **Ready** |
+| [06_04_MW01_LONDON_SOCIAL_C_VIEW_08.txt](06_04_MW01_LONDON_SOCIAL_C_VIEW_08.txt) | 08 | 1 | **Ready** |
 
 Original text: [archived MW01_C](../../../04_tracking/archive/memory_grids_before_single_views/06_MW01_LONDON_SOCIAL_C.md).
 
@@ -46,7 +46,7 @@ Original text: [archived MW02](../../../04_tracking/archive/memory_grids_before_
 | Prompt | Original view | Character inputs | Missing Element IDs |
 | --- | ---: | ---: | --- |
 | [09_01_MW02_GLOBAL_ROUTES_C_VIEW_09.txt](09_01_MW02_GLOBAL_ROUTES_C_VIEW_09.txt) | 09 | 5 | **Ready** |
-| [09_02_MW02_GLOBAL_ROUTES_C_VIEW_01.txt](09_02_MW02_GLOBAL_ROUTES_C_VIEW_01.txt) | 01 | 2 | MW02_A_01 |
+| [09_02_MW02_GLOBAL_ROUTES_C_VIEW_01.txt](09_02_MW02_GLOBAL_ROUTES_C_VIEW_01.txt) | 01 | 2 | **Ready** |
 | [09_03_MW02_GLOBAL_ROUTES_C_VIEW_07.txt](09_03_MW02_GLOBAL_ROUTES_C_VIEW_07.txt) | 07 | 0 | MW02_B |
 | [09_04_MW02_GLOBAL_ROUTES_C_VIEW_08.txt](09_04_MW02_GLOBAL_ROUTES_C_VIEW_08.txt) | 08 | 0 | MW02_B |
 
@@ -57,7 +57,7 @@ Original text: [archived MW02_C](../../../04_tracking/archive/memory_grids_befor
 | Prompt | Original view | Character inputs | Missing Element IDs |
 | --- | ---: | ---: | --- |
 | [19_01_MW06_HUMAN_COUNTERMEMORIES_A_VIEW_01.txt](19_01_MW06_HUMAN_COUNTERMEMORIES_A_VIEW_01.txt) | 01 | 2 | **Ready** |
-| [19_02_MW06_HUMAN_COUNTERMEMORIES_A_VIEW_02.txt](19_02_MW06_HUMAN_COUNTERMEMORIES_A_VIEW_02.txt) | 02 | 2 | MW02_A_01 |
+| [19_02_MW06_HUMAN_COUNTERMEMORIES_A_VIEW_02.txt](19_02_MW06_HUMAN_COUNTERMEMORIES_A_VIEW_02.txt) | 02 | 2 | **Ready** |
 | [19_03_MW06_HUMAN_COUNTERMEMORIES_A_VIEW_03.txt](19_03_MW06_HUMAN_COUNTERMEMORIES_A_VIEW_03.txt) | 03 | 3 | MW02_B |
 | [19_04_MW06_HUMAN_COUNTERMEMORIES_A_VIEW_04.txt](19_04_MW06_HUMAN_COUNTERMEMORIES_A_VIEW_04.txt) | 04 | 2 | MW04_C |
 
@@ -69,7 +69,7 @@ Original text: [archived MW06](../../../04_tracking/archive/memory_grids_before_
 | --- | ---: | ---: | --- |
 | [20_01_MW06_HUMAN_COUNTERMEMORIES_B_VIEW_05.txt](20_01_MW06_HUMAN_COUNTERMEMORIES_B_VIEW_05.txt) | 05 | 2 | **Ready** |
 | [20_02_MW06_HUMAN_COUNTERMEMORIES_B_VIEW_06.txt](20_02_MW06_HUMAN_COUNTERMEMORIES_B_VIEW_06.txt) | 06 | 2 | MW05 |
-| [20_03_MW06_HUMAN_COUNTERMEMORIES_B_VIEW_07.txt](20_03_MW06_HUMAN_COUNTERMEMORIES_B_VIEW_07.txt) | 07 | 2 | MW01_C_01 |
+| [20_03_MW06_HUMAN_COUNTERMEMORIES_B_VIEW_07.txt](20_03_MW06_HUMAN_COUNTERMEMORIES_B_VIEW_07.txt) | 07 | 2 | **Ready** |
 | [20_04_MW06_HUMAN_COUNTERMEMORIES_B_VIEW_08.txt](20_04_MW06_HUMAN_COUNTERMEMORIES_B_VIEW_08.txt) | 08 | 1 | **Ready** |
 
 Original text: [archived MW06_B](../../../04_tracking/archive/memory_grids_before_single_views/20_MW06_HUMAN_COUNTERMEMORIES_B.md).

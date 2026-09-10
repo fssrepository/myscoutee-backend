@@ -1,10 +1,7 @@
 REFERENCE ID: MW06_B_03 — ORIGINAL VIEW 07 (never print IDs, headings or labels).
 
-REFERENCE SETUP INCOMPLETE: MW01_C_01
-Do not generate until these references are bound.
-
 REFERENCE INPUTS:
-@UNBOUND_MW01_C_01 = Use the accepted beginner-dance image for the same pair, clothing and room.
+@loc_MYS_mys-mw01-c-01-memory-view-09_s0_v1 = Use the accepted beginner-dance image for the same pair, clothing and room.
 @char_MYS_mys-c01-protagonist_s0_v1 = CHARACTER 01 — PROTAGONIST; exact person identity; use only where this person appears.
 @char_MYS_mys-c10-beginner-dance-woman_s0_v1 = CHARACTER 10 — BEGINNER-DANCE WOMAN; exact person identity; use only where this person appears.
 

@@ -52,7 +52,7 @@ Generate only missing media. Reuse accepted dependencies from prior blocks. Each
 | ID | Required media | Reference mention (UNBOUND means missing ID) |
 | --- | --- | --- |
 | W02 | `W02_MAIN_WORLD.png` | `@UNBOUND_W02` |
-| MW02 | `MW02_GLOBAL_ROUTES.png` | `@UNBOUND_MW02_A_01, @UNBOUND_MW02_A_02, @UNBOUND_MW02_A_03, @UNBOUND_MW02_A_04` |
+| MW02 | `MW02_GLOBAL_ROUTES.png` | `@loc_MYS_mys-mw02-a-01-memory-view-01_s0_v1, @UNBOUND_MW02_A_02, @UNBOUND_MW02_A_03, @UNBOUND_MW02_A_04` |
 | MW01 | `MW01_LONDON_SOCIAL.png` | `@loc_MYS_mys-mw01-a-london-social_s0_v1` |
 | MWP01 | `MWP01_ROUTES_ROOMS_DOCUMENTS.png` | `@UNBOUND_MWP01` |
 | C01 | `C01_PROTAGONIST.png` | `@char_MYS_mys-c01-protagonist_s0_v1` |
