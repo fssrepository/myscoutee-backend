@@ -14,7 +14,7 @@ DO NOT show the London–Budapest present city.
 DO NOT place the memory inside a taxi window, bus window, tram window, shopfront, puddle or mirror.
 DO NOT add rain/reflection layers from the present city.
 DO NOT add score cards.
-This source sheet supplies clinical reality directly. The light, coat, leg and sheet detail cells all belong to this same clinical room; show only the assigned subject in each cell. No cards exist here.
+This source sheet supplies clinical reality directly. The light, coat, foot and sheet detail cells all belong to this same clinical room; show only the assigned subject in each cell. No cards exist here.
 
 VISUAL LANGUAGE:
 Photorealistic live-action European feature-film realism.
@@ -35,9 +35,9 @@ CLINICAL TONE:
 Ordinary contemporary European clinical room.
 Cold-neutral institutional light, practical equipment, clean but not futuristic.
 No horror, no gore, no sinister staff, no psychiatric-horror coding, no supernatural quality.
-The protagonist is conscious; he does NOT wake up.
-One leg is elevated and immobilized.
-One arm is restrained.
+The protagonist is returning from anaesthesia. The patient gesture view captures one full, deep inhalation with the physical sense of a first breath at rebirth; the chest is expanded and the face conveys returning awareness, without a repeated gasping or panting expression; the final two-shot captures the quieter moment afterward. Render only the assigned still state.
+One foot is propped up on a padded support beneath the heel/ankle. The rest of the leg rests on the mattress; it is not raised or suspended as a whole.
+A metal handcuff surrounds one wrist and connects by a short chain to the bed frame. Show the cuff, real chain links and bed attachment wherever the assigned framing includes that wrist.
 The nurse is calm, competent and ordinary, with a small genuine everyday smile.
 Any enema/endoscopy-related preparation is routine and NON-GRAPHIC; no invasive detail.
 
@@ -51,22 +51,22 @@ FOUR ASSIGNED CELLS:
 CELL 1 — TOP-LEFT — ORIGINAL VIEW 01:
 Wide establishing view of the entire ordinary clinical room, showing bed, practical furniture, cold-neutral light and enough spatial layout for later shot continuity.
 
-Place the bed lengthwise with its head against the rear wall, an accessible side for the nurse and a small practical bedside surface on the other side. Show the mattress thickness, bed frame, floor contact and the path from the room doorway. Keep the elevated leg and restrained arm on consistent sides in every companion view; retain any already accepted arrangement instead of mirroring it.
+Place the bed lengthwise with its head against the rear wall, an accessible side for the nurse and a small practical bedside surface on the other side. Show the mattress thickness, bed frame, floor contact and the path from the room doorway. Keep the propped-up foot and cuffed wrist on consistent sides in every companion view; retain any already accepted arrangement instead of mirroring it.
 
 CELL 2 — TOP-RIGHT — ORIGINAL VIEW 02:
-Medium-wide side view of the protagonist lying conscious in bed, one leg elevated/immobilized, body physically vulnerable but calm.
+Medium-wide side view of the protagonist returning from anaesthesia in bed, captured at the fullness of one deep rebirth-like inhalation: mouth open, chest expanded, eyes opening toward the room, with one foot propped up and one wrist cuffed to the bed.
 
-Include the head, torso, mattress edge and elevated leg in one side composition. His head rests on the pillow with eyes open toward the nurse side; the body stays supported by the bed. Show the limb support meeting the bed structure and the sheet draping around it. The pose conveys the scripted condition without adding a new injury or procedure.
+Include the head, expanded chest, cuffed wrist, mattress edge and propped-up foot in one side composition. His head remains against the pillow as his jaw opens for the deep breath; the rest of his body stays supported by the mattress. Show the padded support under the heel/ankle and the sheet draping around it. The wrist and short cuff chain remain connected to the same bed frame. Capture one sharp pose with full chest expansion and a face registering returning awareness, without motion trails or an invented injury.
 
 CELL 3 — BOTTOM-LEFT — ORIGINAL VIEW 03:
-Close physical reference of the elevated/immobilized leg and supporting equipment, non-graphic and clinically ordinary.
+Close physical reference of the propped-up foot, heel/ankle and padded support, non-graphic and clinically ordinary.
 
-Frame the same elevated leg with the support beneath it, the mattress edge below and enough bed-frame geometry to explain the elevation. Skin or covering remains intact and non-graphic. Distinguish the support material, sheet folds and limb contours with clear contact shadows. Do not turn a local close view into an invented diagnostic or surgical scene.
+Frame the same foot and heel/ankle on the padded support, with the mattress edge below and a short lower-leg section showing how the rest of the limb rests on the bed. Preserve the foot contour and actual contact with the padding; do not raise the entire leg or invent a full-leg cast or overhead suspension. Skin or covering remains intact and non-graphic. Distinguish padding, sheet folds and foot contours through clear contact shadows.
 
 CELL 4 — BOTTOM-RIGHT — ORIGINAL VIEW 04:
-Close physical reference of the restrained arm / metal restraint with white-sheet edge, non-graphic, no punishment aesthetic.
+Close physical reference of the cuffed wrist, short metal chain and its bed-frame attachment beside the white-sheet edge; one sharp instant of the brief cuff shake, non-graphic.
 
-Keep the same arm resting at the established bed side, with the visible metal restraint attached to that bed rather than floating beside it. Show the wrist contour, restraint edge and white sheet as separate surfaces. Fingers remain naturally relaxed and anatomically clear. Preserve the ordinary final-room condition without adding tightening, struggle, wounds or a new restraint elsewhere.
+Keep the same arm at the established bed side. The wrist is lifted slightly from its resting position and the hand is tense, with the cuff chain taut toward its fixed bed-frame attachment. Show the wrist contour, cuff thickness, separate chain links, attachment point and white sheet at distinct depths. Fingers remain anatomically clear. This is one solid captured posture for the short shake, with no duplicated hand or motion blur; the cuff remains fastened and the bed attachment holds.
 
 FINAL CHECK:
 Exactly one 16:9 image.

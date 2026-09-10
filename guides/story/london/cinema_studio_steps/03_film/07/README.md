@@ -3,7 +3,7 @@
 Status: prepared prompt files; existing account media has not been checked. [Start](../../README.md).
 
 Seedance 2.5; 16:9; **20 s, 1080p target**, audio ON, one output.
-Duration means NEW added footage. Select the previous accepted video in the actual Forward Extend source field. A filename alone does not establish an extension. HRW07 and C05 enter video references only here. The man is conscious, not waking up. All transformation stops at the clinical cut.
+Duration means NEW added footage. Select the previous accepted video in the actual Forward Extend source field. A filename alone does not establish an extension. HRW07 and C05 enter video references only here. At the clinical cut the man comes round from anaesthesia with one full, deep inhalation that feels like a first breath at rebirth, then briefly shakes the wrist handcuff chained to the bed frame. Only the foot is propped up beneath the heel/ankle; the rest of the leg rests on the mattress. He settles and looks toward the nurse before the title. All dream transformation stops at the clinical cut.
 
 ## Sequential preparation
 
