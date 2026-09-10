@@ -1,10 +1,7 @@
 REFERENCE ID: MW01_C_04 — ORIGINAL VIEW 08 (never print IDs, headings or labels).
 
-REFERENCE SETUP INCOMPLETE: MW01_B_04
-Do not generate until these references are bound.
-
 REFERENCE INPUTS:
-@UNBOUND_MW01_B_04 = Use the accepted profile-detail image for the same device, unchanged photograph and edited age field.
+@loc_MYS_mys-mw01-b-04-memory-view-08_s0_v1 = Use the accepted profile-detail image for the same device, unchanged photograph and edited age field.
 @char_MYS_mys-c01-protagonist_s0_v1 = CHARACTER 01 — PROTAGONIST; exact person identity; use only where this person appears.
 
 OUTPUT GEOMETRY — ONE 2K FULL-FRAME IMAGE:
