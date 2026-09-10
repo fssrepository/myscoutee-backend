@@ -1,9 +1,6 @@
 REFERENCE ID: MW05_COURT_FILE_B (never print IDs, headings or panel labels).
 
-REFERENCE SETUP INCOMPLETE: MW05
-Do not generate until these references are bound.
-
-PAGE CONTINUITY INPUT: @UNBOUND_MW05 supplies the accepted Page A identities, shared material palette and any recurring room geometry. New places explicitly assigned to this page retain their own stated setting; do not copy Page A into every cell.
+PAGE CONTINUITY INPUT: @loc_MYS_mys-mw05-a-court-file_s0_v1 supplies the accepted Page A identities, shared material palette and any recurring room geometry. New places explicitly assigned to this page retain their own stated setting; do not copy Page A into every cell.
 
 REFERENCE INPUTS:
 @char_MYS_mys-c01-protagonist_s0_v1 = CHARACTER 01 — PROTAGONIST; exact person identity; use only where this person appears.

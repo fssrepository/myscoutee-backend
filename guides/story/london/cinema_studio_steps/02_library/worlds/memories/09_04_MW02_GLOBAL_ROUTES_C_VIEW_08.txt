@@ -1,10 +1,7 @@
 REFERENCE ID: MW02_C_04 — ORIGINAL VIEW 08 (never print IDs, headings or labels).
 
-REFERENCE SETUP INCOMPLETE: MW02_B
-Do not generate until these references are bound.
-
 REFERENCE INPUTS:
-@UNBOUND_MW02_B = Use original view 8 of the accepted MW02_B page for the same coach window and journey.
+@loc_MYS_mys-mw02-b-global-routes_s0_v1 = Use original view 8 of the accepted MW02_B page for the same coach window and journey.
 
 OUTPUT GEOMETRY — ONE 2K FULL-FRAME IMAGE:
 Generate ONE photographic widescreen 16:9 image; select 2K in the output controls. One uninterrupted scene fills the complete canvas. No grid, split screen, contact sheet, panels, inset, border, gutters, margins, letterboxing, headings, labels or captions. In-world objects and text explicitly assigned below remain visible.

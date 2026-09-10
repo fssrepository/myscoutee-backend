@@ -575,7 +575,7 @@
       ],
       "source_prompt_sha256": "d53e141d60aa5359c28d8695bb7cb84134a480bf043551062606e199558cda02",
       "file": "02_library/worlds/memories/19_03_MW06_HUMAN_COUNTERMEMORIES_A_VIEW_03.txt",
-      "file_sha256": "bea1e02df3d53cd8d2d66465a577e99efeb6622f8e09f56270b480931961e3c1",
+      "file_sha256": "5f3f1d826c88810c7f6d765ec09a2bbf868a04fd7e60e7841cb13baa67f58f48",
       "changes": "Single 2K assigned view extracted verbatim from archived page; view-specific input references and full-frame instructions."
     },
     {
@@ -2038,7 +2038,7 @@
       ],
       "source_prompt_sha256": "6e25c11571314fb9f353911cdd369b867c1b90a45dcc5228ce69c24e48b7ba9c",
       "file": "02_library/worlds/memories/09_03_MW02_GLOBAL_ROUTES_C_VIEW_07.txt",
-      "file_sha256": "41a3b7b186803f17b6b46dae10d549179d18a46f139c390244ae9e501f1eace9",
+      "file_sha256": "0789a0c2e171799af05427fc58f614c722408ac97875220ab6086c7b0ec414cf",
       "changes": "Single 2K assigned view extracted verbatim from archived page; view-specific input references and full-frame instructions.",
       "note": "Companion page C preserving original memory views."
     },
@@ -2051,7 +2051,7 @@
       ],
       "source_prompt_sha256": "6e25c11571314fb9f353911cdd369b867c1b90a45dcc5228ce69c24e48b7ba9c",
       "file": "02_library/worlds/memories/09_04_MW02_GLOBAL_ROUTES_C_VIEW_08.txt",
-      "file_sha256": "b1fc12f7ad362d4f053b2b6327bc0c023550ebc80b6f538b896eb0e1c2f23a57",
+      "file_sha256": "2033d6c50b22493ce900e8ede6553da78cc23671bcc33db3349790f54497226a",
       "changes": "Single 2K assigned view extracted verbatim from archived page; view-specific input references and full-frame instructions.",
       "note": "Companion page C preserving original memory views."
     },
@@ -2103,7 +2103,7 @@
       ],
       "source_prompt_sha256": "7eacf040519edefdb7aa215ca4fb1e1c6524f4ed06dc69d6ef758048002745f9",
       "file": "02_library/worlds/memories/15_MW04_POLICE_DEFENCE_C.txt",
-      "file_sha256": "2d1fc1e3758b4fbf653675cc396a6762315d0bbc953133b819809f6dc0ded786",
+      "file_sha256": "8dc40f0716ecf554d3e17bdec9a47971385110e0d74a4d43ebe1b03c31c79b3c",
       "changes": "Verbatim fenced prompt; explicit centrally maintained reference inputs Grid geometry uses the full selected image resolution instead of fixed pixel examples.",
       "note": "Companion page C preserving original memory views."
     },
@@ -2116,7 +2116,7 @@
       ],
       "source_prompt_sha256": "cac300bae4bd6f33e50ec5936c56622c5858e341d0494d281a87e70ed4ee9a04",
       "file": "02_library/worlds/memories/17_MW05_COURT_FILE_B.txt",
-      "file_sha256": "e56497e5044daecd040d1f1419312d18bacb2019657af4e68cd7175d66b0e8fd",
+      "file_sha256": "42d824a852d1d07939b89ec0ef73493faa5a530010d712ed52f74d36f58b2f05",
       "changes": "Verbatim fenced prompt; explicit centrally maintained reference inputs Grid geometry uses the full selected image resolution instead of fixed pixel examples.",
       "note": "Companion page B preserving original memory views."
     },
@@ -2129,7 +2129,7 @@
       ],
       "source_prompt_sha256": "cac300bae4bd6f33e50ec5936c56622c5858e341d0494d281a87e70ed4ee9a04",
       "file": "02_library/worlds/memories/18_MW05_COURT_FILE_C.txt",
-      "file_sha256": "3af63491c997126c754d024ca2260998934f5b33f4ba3da5f2529fdc05a97223",
+      "file_sha256": "01e8b9b848896cd40df26c4df8dc128981e93ac2038905652a562d13087690a3",
       "changes": "Verbatim fenced prompt; explicit centrally maintained reference inputs Grid geometry uses the full selected image resolution instead of fixed pixel examples.",
       "note": "Companion page C preserving original memory views."
     },
@@ -4494,7 +4494,7 @@
         7,
         8
       ],
-      "prompt_sha256": "2d1fc1e3758b4fbf653675cc396a6762315d0bbc953133b819809f6dc0ded786",
+      "prompt_sha256": "8dc40f0716ecf554d3e17bdec9a47971385110e0d74a4d43ebe1b03c31c79b3c",
       "reference_scope_note": "Inputs scoped to the four assigned views; unrelated companion-page subjects removed. Literal scene descriptions unchanged.",
       "composition_revision_note": "2026-09-10: distinct physical subjects/actions replace repeated content; companion sources preserve the original story beats. No camera-only variation.",
       "current_prompt_image_verified": false,
@@ -4525,7 +4525,7 @@
         7,
         8
       ],
-      "prompt_sha256": "e56497e5044daecd040d1f1419312d18bacb2019657af4e68cd7175d66b0e8fd",
+      "prompt_sha256": "42d824a852d1d07939b89ec0ef73493faa5a530010d712ed52f74d36f58b2f05",
       "reference_scope_note": "Inputs scoped to the four assigned views; unrelated companion-page subjects removed. Literal scene descriptions unchanged.",
       "composition_revision_note": "2026-09-10: distinct physical subjects/actions replace repeated content; companion sources preserve the original story beats. No camera-only variation.",
       "current_prompt_image_verified": false,
@@ -4554,7 +4554,7 @@
         7,
         8
       ],
-      "prompt_sha256": "3af63491c997126c754d024ca2260998934f5b33f4ba3da5f2529fdc05a97223",
+      "prompt_sha256": "01e8b9b848896cd40df26c4df8dc128981e93ac2038905652a562d13087690a3",
       "reference_scope_note": "Inputs scoped to the four assigned views; unrelated companion-page subjects removed. Literal scene descriptions unchanged.",
       "composition_revision_note": "2026-09-10: distinct physical subjects/actions replace repeated content; companion sources preserve the original story beats. No camera-only variation.",
       "current_prompt_image_verified": false,
@@ -7418,7 +7418,7 @@
       "original_view": 7,
       "generation_position": 3,
       "element_name": "MYS MW02_C_03 Memory View 07",
-      "prompt_sha256": "41a3b7b186803f17b6b46dae10d549179d18a46f139c390244ae9e501f1eace9",
+      "prompt_sha256": "0789a0c2e171799af05427fc58f614c722408ac97875220ab6086c7b0ec414cf",
       "composition_revision_note": "2026-09-10: distinct physical subjects/actions replace repeated content; companion sources preserve the original story beats. No camera-only variation.",
       "current_prompt_image_verified": false,
       "content_assignments": {
@@ -7438,7 +7438,7 @@
       "original_view": 8,
       "generation_position": 4,
       "element_name": "MYS MW02_C_04 Memory View 08",
-      "prompt_sha256": "b1fc12f7ad362d4f053b2b6327bc0c023550ebc80b6f538b896eb0e1c2f23a57",
+      "prompt_sha256": "2033d6c50b22493ce900e8ede6553da78cc23671bcc33db3349790f54497226a",
       "composition_revision_note": "2026-09-10: distinct physical subjects/actions replace repeated content; companion sources preserve the original story beats. No camera-only variation.",
       "current_prompt_image_verified": false,
       "content_assignments": {
@@ -7500,7 +7500,7 @@
       "original_view": 3,
       "generation_position": 3,
       "element_name": "MYS MW06_A_03 Memory View 03",
-      "prompt_sha256": "bea1e02df3d53cd8d2d66465a577e99efeb6622f8e09f56270b480931961e3c1",
+      "prompt_sha256": "5f3f1d826c88810c7f6d765ec09a2bbf868a04fd7e60e7841cb13baa67f58f48",
       "composition_revision_note": "2026-09-10: distinct physical subjects/actions replace repeated content; companion sources preserve the original story beats. No camera-only variation.",
       "current_prompt_image_verified": false,
       "content_assignments": {
@@ -8437,8 +8437,8 @@
     },
     "MW05": {
       "alias": "MW05_COURT_FILE",
-      "mention": null,
-      "last_mention": "@UNBOUND_MW05"
+      "mention": "@loc_MYS_mys-mw05-a-court-file_s0_v1",
+      "last_mention": "@loc_MYS_mys-mw05-a-court-file_s0_v1"
     },
     "MW06": {
       "alias": "MW06_HUMAN_COUNTERMEMORIES",
@@ -8755,8 +8755,8 @@
     },
     "MW02_B": {
       "alias": "MW02_B",
-      "mention": null,
-      "last_mention": "@UNBOUND_MW02_B",
+      "mention": "@loc_MYS_mys-mw02-b-global-routes_s0_v1",
+      "last_mention": "@loc_MYS_mys-mw02-b-global-routes_s0_v1",
       "evidence": "Prepared new memory companion page; no imported Element or generated image reported."
     },
     "MW02_C": {
@@ -12856,13 +12856,13 @@
                 "key": "MW02_C_03",
                 "file": "02_library/worlds/memories/09_03_MW02_GLOBAL_ROUTES_C_VIEW_07.txt",
                 "original_view": 7,
-                "sha256": "41a3b7b186803f17b6b46dae10d549179d18a46f139c390244ae9e501f1eace9"
+                "sha256": "0789a0c2e171799af05427fc58f614c722408ac97875220ab6086c7b0ec414cf"
               },
               {
                 "key": "MW02_C_04",
                 "file": "02_library/worlds/memories/09_04_MW02_GLOBAL_ROUTES_C_VIEW_08.txt",
                 "original_view": 8,
-                "sha256": "b1fc12f7ad362d4f053b2b6327bc0c023550ebc80b6f538b896eb0e1c2f23a57"
+                "sha256": "2033d6c50b22493ce900e8ede6553da78cc23671bcc33db3349790f54497226a"
               }
             ]
           }
@@ -12950,7 +12950,7 @@
               8
             ],
             "status": "PREPARED_NOT_RENDERED",
-            "sha256": "2d1fc1e3758b4fbf653675cc396a6762315d0bbc953133b819809f6dc0ded786"
+            "sha256": "8dc40f0716ecf554d3e17bdec9a47971385110e0d74a4d43ebe1b03c31c79b3c"
           }
         },
         "original_views": 9,
@@ -12981,7 +12981,7 @@
               8
             ],
             "status": "PREPARED_NOT_RENDERED",
-            "sha256": "e56497e5044daecd040d1f1419312d18bacb2019657af4e68cd7175d66b0e8fd"
+            "sha256": "42d824a852d1d07939b89ec0ef73493faa5a530010d712ed52f74d36f58b2f05"
           },
           "C": {
             "key": "MW05_C",
@@ -12993,7 +12993,7 @@
               8
             ],
             "status": "PREPARED_NOT_RENDERED",
-            "sha256": "3af63491c997126c754d024ca2260998934f5b33f4ba3da5f2529fdc05a97223"
+            "sha256": "01e8b9b848896cd40df26c4df8dc128981e93ac2038905652a562d13087690a3"
           }
         },
         "original_views": 9,
@@ -13027,7 +13027,7 @@
                 "key": "MW06_A_03",
                 "file": "02_library/worlds/memories/19_03_MW06_HUMAN_COUNTERMEMORIES_A_VIEW_03.txt",
                 "original_view": 3,
-                "sha256": "bea1e02df3d53cd8d2d66465a577e99efeb6622f8e09f56270b480931961e3c1"
+                "sha256": "5f3f1d826c88810c7f6d765ec09a2bbf868a04fd7e60e7841cb13baa67f58f48"
               },
               {
                 "key": "MW06_A_04",

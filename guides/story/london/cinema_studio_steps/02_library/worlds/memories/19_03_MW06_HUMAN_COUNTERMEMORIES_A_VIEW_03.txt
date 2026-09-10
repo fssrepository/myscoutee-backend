@@ -1,10 +1,7 @@
 REFERENCE ID: MW06_A_03 — ORIGINAL VIEW 03 (never print IDs, headings or labels).
 
-REFERENCE SETUP INCOMPLETE: MW02_B
-Do not generate until these references are bound.
-
 REFERENCE INPUTS:
-@UNBOUND_MW02_B = Use original view 5 of the accepted MW02_B page for the same balloon basket, landing site and helpers.
+@loc_MYS_mys-mw02-b-global-routes_s0_v1 = Use original view 5 of the accepted MW02_B page for the same balloon basket, landing site and helpers.
 @char_MYS_mys-c01-protagonist_s0_v1 = CHARACTER 01 — PROTAGONIST; exact person identity; use only where this person appears.
 @char_MYS_mys-c16-balloon-local-helper-man_s0_v1 = CHARACTER 16 — BALLOON LOCAL HELPER — MAN; exact person identity; use only where this person appears.
 @char_MYS_mys-c17-balloon-local-helper-woman_s0_v1 = CHARACTER 17 — BALLOON LOCAL HELPER — WOMAN; exact person identity; use only where this person appears.
