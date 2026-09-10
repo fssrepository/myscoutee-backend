@@ -1,7 +1,10 @@
 REFERENCE ID: MW06_A_04 — ORIGINAL VIEW 04 (never print IDs, headings or labels).
 
-REFERENCE SETUP INCOMPLETE: MW04_C_01
-Do not generate until these references are bound.
+OUTPUT ELEMENT ASSIGNMENT — OPERATOR METADATA ONLY, NEVER RENDER:
+Target import name: MYS MW06_A_04 Memory View 04
+Live output Element name (operator lookup only): loc_MYS_mys-mw06-a-04-memory-view-04_s0_v1
+Live output Element UUID: c1044064-3353-4c29-b8e2-8f6cf10aae19
+Assign the finished image to this existing empty target. This output target is not an input reference.
 
 REFERENCE INPUTS:
 @loc_MYS_mys-mw04-c-01-memory-view-09_s0_v1 = Use the accepted original-view-9 image for the same policewoman, procedure surface and ordinary human tone; reconstruct the assigned chair assistance.
