@@ -345,6 +345,8 @@ Output: `p00_p03_transition.mp4`, original P00–P03 in order with only the P02/
 
 The command retains unpublished work if verification fails and prints its private directory. `--resume-work DIRECTORY` reuses the rendered boundary for a remux/validation retry; use it only with the same original inputs and transition recipe. A successful fresh run cleans up its temporary work. A resumed directory is retained for explicit inspection.
 
+Completed validation: `p00_p03_transition.mp4` is 166,500,073 bytes, with 1176 picture frames / 49.000 s and 1536 AAC packets / approximately 49.035 s including container padding. All 997 copied picture frames match their original decoded hashes; the complete decode matches the copied sections plus the rendered block. All assembled AAC payloads match the prepared audio sections, including the 900 preserved P02/P03 packets. Every successive picture timestamp differs by 1/24 s within TS timestamp rounding. Keep every video concat input video-only and every audio concat input audio-only; mixed stream layouts initially omitted boundary audio and introduced a 32 ms picture timestamp discontinuity. Both were corrected by remuxing the existing rendered block, without another picture encode.
+
 Planning lesson from the creator: ending a scene near each generation boundary would make assembly easier than requiring exact continuation of a fast camera move. A prompt cannot establish that the generated clip actually ends the scene; review the generated ending before preparing its continuation. No regeneration or prompt rewrite is requested for this assembly.
 
 ### P03 final frame for P04
