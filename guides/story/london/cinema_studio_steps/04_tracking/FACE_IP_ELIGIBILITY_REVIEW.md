@@ -51,3 +51,7 @@ Each replacement has exactly one attached image. Both new scene images were visu
 The old C_03 (`62d04035-4aa6-4a76-a6cf-1358c2ff34f0`, `s0_v1`) appeared as ip_checking in the list, then could not be fetched individually during the audit; deletion is not confirmed. The old B_03 (`11b92bb5-3b4e-49a6-b2b3-93991a3ece86`, `s0_v1`) appeared as completed.
 
 C_04 (`560a9880-116f-4865-8ac6-1b852d82dab9`) remains a separate unresolved profile/cafe Element: ip_checking, with image jobs `8d1a8d2b-d225-4e70-a501-d823dcaab241` and `a42d3540-8e06-4a6b-875e-df0026b18850`. It is not replaced by either housemate image. All other fetched P02 Elements had one attached image and completed API status. No remote Elements or media were deleted: the available MCP tool exposes list/get/create only.
+
+### MW01_C_04 replacement binding — 2026-09-11
+
+Current handle: `@loc_MYS_mw01-c-04-memory-view-08_s0_v1` (the second `mys-` prefix is absent). Element UUID: `38847058-729c-40cf-9d3d-17f616f29704`. One attached image: `f52dc2ed-a78d-408a-89b8-5a80bf827292`. API status: completed; separate Face/IP eligibility not confirmed. This supersedes the old C_04 attachment observation above. Production P02, prerelease P02 and the current reference binding now use this handle.

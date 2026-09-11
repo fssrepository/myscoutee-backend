@@ -11028,8 +11028,14 @@
     },
     "MW01_C_04": {
       "alias": "MW01_C_04",
-      "mention": "@loc_MYS_mys-mw01-c-04-memory-view-08_s0_v1",
-      "last_mention": "@loc_MYS_mys-mw01-c-04-memory-view-08_s0_v1"
+      "mention": "@loc_MYS_mw01-c-04-memory-view-08_s0_v1",
+      "last_mention": "@loc_MYS_mw01-c-04-memory-view-08_s0_v1",
+      "mcp_element_uuid": "38847058-729c-40cf-9d3d-17f616f29704",
+      "mcp_media_ids": [
+        "f52dc2ed-a78d-408a-89b8-5a80bf827292"
+      ],
+      "mention_source": "MCP_REPLACEMENT_ELEMENT_VERIFIED_2026_09_11",
+      "mcp_observation": "2026-09-11: replacement Element has one attached image and completed API status. Separate Cinema Studio Face/IP eligibility result not confirmed."
     },
     "MW02_A_01": {
       "alias": "MW02_A_01",

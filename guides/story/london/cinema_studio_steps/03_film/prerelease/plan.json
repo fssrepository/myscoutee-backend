@@ -46,9 +46,9 @@
       "id": "P02",
       "file": "03_film/prerelease/P02/video.txt",
       "source_file": "03_film/production/P02/video.txt",
-      "sha256": "0a9bf83c3fc7e45ba5050a6f9215aaf6e92806d140bdea17f0fb3692338bb008",
+      "sha256": "2ad59bb5f6682f042c0e787296452aad9fda1c15970371be064390be8517fbb5",
       "lines": 77,
-      "characters": 12140,
+      "characters": 12136,
       "references": 27,
       "ui_duration_seconds": 4,
       "ui_resolution": "480p"

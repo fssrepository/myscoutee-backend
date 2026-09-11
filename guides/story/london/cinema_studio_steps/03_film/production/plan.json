@@ -1115,7 +1115,7 @@
     "MW01_C_01": "@loc_MYS_mys-mw01-c-01-memory-view-09_s0_v1",
     "MW01_C_02": "@loc_MYS_mys-mw01-c-02-memory-view-01_s0_v1",
     "MW01_C_03": "@loc_MYS_mys-mw01-c-03-memory-view-07_s0_v1",
-    "MW01_C_04": "@loc_MYS_mys-mw01-c-04-memory-view-08_s0_v1",
+    "MW01_C_04": "@loc_MYS_mw01-c-04-memory-view-08_s0_v1",
     "MWP01": "@loc_MYS_mys-mwp01-a-routes-rooms-documents_s0_v1",
     "MWP01_B": "@loc_MYS_mys-mwp01-b-routes-rooms-documents_s0_v1",
     "MWP01_C": "@loc_MYS_mys-mwp01-c-routes-rooms-documents_s0_v1",
@@ -1469,12 +1469,12 @@
         "W01_C_01"
       ],
       "reference_count": 27,
-      "chars": 12140,
+      "chars": 12136,
       "credits": 135,
       "incoming_frame": "EF01",
       "incoming_mention": "@loc_MYS_mys-film-v01-end-frame_s0_v1",
       "incoming_status": "EXISTING_ELEMENT_AWAITING_ACCEPTED_PREDECESSOR_FRAME",
-      "sha256": "0a9bf83c3fc7e45ba5050a6f9215aaf6e92806d140bdea17f0fb3692338bb008",
+      "sha256": "2ad59bb5f6682f042c0e787296452aad9fda1c15970371be064390be8517fbb5",
       "file": "03_film/production/P02/video.txt"
     },
     {
