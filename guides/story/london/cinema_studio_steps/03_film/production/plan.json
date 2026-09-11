@@ -1551,12 +1551,12 @@
         "W02_B_01"
       ],
       "reference_count": 28,
-      "chars": 12504,
+      "chars": 13543,
       "credits": 135,
       "incoming_frame": "EF02",
       "incoming_mention": "@loc_MYS_mys-film-v02-end-frame_s0_v1",
-      "incoming_status": "EXISTING_ELEMENT_AWAITING_ACCEPTED_PREDECESSOR_FRAME",
-      "sha256": "7104d8415379c1edaa5380c7c50000cb33d06642a59b39a64e09d7a44806fd3a",
+      "incoming_status": "ATTACHED_FRAME_VISUALLY_CHECKED_AGAINST_P02_ENDING",
+      "sha256": "2f8f07e68ba506e1310afeefd2580a786194144ca5ed3aab4a4c25c5e7112c97",
       "file": "03_film/production/P03/video.txt"
     },
     {

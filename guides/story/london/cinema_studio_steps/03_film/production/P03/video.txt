@@ -1,9 +1,11 @@
 MYSCOUTEE — PRODUCTION P03 — 15 SECONDS, 16:9, AUDIO ON
 One new photographic sequence.
 
-OPENING CONTINUATION:
-@loc_MYS_mys-film-v02-end-frame_s0_v1 is the exact final frame of the accepted preceding clip, not a reconstructed still. Use its crop, horizon, lens perspective, people, wardrobe, hands, object positions and lighting as this shot's first composition. Do not shift the entire image upward/sideways, zoom to a reference crop or replay an approach. Generate only the new portion, not a cumulative movie.
-Continue the actual preceding camera path and ongoing gesture immediately, with real parallax and current C01 walking onward; do not force a fresh level street pass at an interior boundary. The actual predecessor must be reviewed before generation: this text describes the intended movement; a still image is not evidence of actual speed or sound. No freeze, opening pose or new establishing shot.
+CRITICAL — OPENING FRAME HAS ABSOLUTE PRIORITY OVER ALL 27 OTHER REFERENCES!
+The preceding clip's final frame MUST be this clip's first frame. All other references supply identities, materials and later destinations; none may choose, replace or blend into the opening composition.
+@loc_MYS_mys-film-v02-end-frame_s0_v1 defines frame 0 of this clip. Match this image's composition before developing any new scene. It takes priority over every other location reference for the opening: the broad iron-and-glass canopy spans overhead, the yellow tram occupies the left road, the distant dome remains near the centre, and the warmly lit colonnaded passage opens on the right. Retain the foreground pedestrians, their positions and attached cards, wet paving, rails, framing and exposure exactly as supplied.
+Continue the existing street movement immediately from this arrangement. The red bus has already cleared the left edge; keep it offscreen as the tram and pedestrians continue their trajectories. Develop the next architecture from the visible canopy, supports and adjoining street. Reveal later landmarks through continuous travel; do not replace this opening with a different reference view, a new establishing shot or a reframed composition. No freeze or replay. Generate only the new 15-second portion.
+Preserve each incoming pedestrian as the same person; none becomes C01. Where C01 is outside the incoming crop, reveal him naturally along the connected route using his character reference, without moving the starting camera to introduce him. The frame supplies composition; the reviewed P02 ending supplies the continuing movement. No prior audio is attached for exact phase continuation.
 
 EXISTING WHOLE-IMAGE REFERENCES:
 C01 @char_MYS_mys-c01-protagonist_s0_v1
@@ -53,7 +55,7 @@ Each current pedestrian has one persistent landscape card about 0.8 head-width b
 
 ORDERED STORY BEATS — ONE CONTINUOUS ROUTE:
 
-BEAT 02.1 — 0–3 s: Continue along Charing Cross/Strand from the supplied final frame. Nelson's Column and National Gallery lead through connected London geometry toward the complete Hungarian Opera frontage and Nyugati hall. Existing cornice strips become iron roof ribs; their mullions and attached panes extend into Nyugati's glazed end. Neighbouring columns spread into the Opera arcades. A separate Heroes' Square association keeps its central column and paired colonnades recognisable, never confused with Nelson's lone column.
+BEAT 02.1 — 0–3 s: Begin in the supplied canopy-and-tram street composition and continue along the connected Charing Cross/Strand route. Keep the existing dome sightline until travel changes it naturally. Reveal Nelson's Column and National Gallery along the route toward the complete Hungarian Opera frontage and Nyugati hall; these later landmarks do not replace the supplied opening. Existing cornice strips become iron roof ribs; their mullions and attached panes extend into Nyugati's glazed end. Neighbouring columns spread into the Opera arcades. A separate Heroes' Square association keeps its central column and paired colonnades recognisable, never confused with Nelson's lone column.
 
 BEAT 02.2 — 3–6 s: Retain one Underground railing footplate as the bar thickens into the remembered Moscow/St Petersburg ticket gate and its elbow becomes a reader support. Paving extends into tiles and thick passage walls. Reveal C11's hand at the reader, then his full body and remembered C01 following through the actual rotating gate leaf. Current C01 stays above ground beside it. Extend the gate frame into the next transit canopy.
 
