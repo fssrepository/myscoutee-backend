@@ -1,5 +1,3 @@
-REFERENCE MEDIA PENDING: attach accepted images to SB04, EF03. Element handles are verified; these image slots are still empty.
-
 MYSCOUTEE — BLOCK 04 — 30 SECONDS, 16:9, AUDIO ON
 One new photographic sequence.
 
@@ -7,7 +5,7 @@ OPENING CONTINUATION:
 @loc_MYS_mys-film-v03-end-frame_s0_v1 is the exact final frame of the accepted preceding clip, not a reconstructed still. Use its crop, horizon, lens perspective, people, wardrobe, hands, object positions and lighting as this shot's first composition. Do not shift the entire image upward/sideways, zoom to a reference crop or replay an approach. Generate only the new portion, not a cumulative movie.
 Boundary motion target: a level forward-right street pass, current C01 walking onward at a steady pace. Start that motion immediately with real parallax and a continuing step, then ease into this part's route. The actual predecessor must be reviewed before generation: this text describes the intended movement; a still image is not evidence of actual speed or sound. No freeze, opening pose or new establishing shot.
 
-LIBRARY INPUTS — REUSE THESE EXISTING ELEMENTS:
+EXISTING WHOLE-IMAGE REFERENCES:
 @loc_MYS_mys-mw04-a-police-defence_s0_v1
 @loc_MYS_mys-mw04-b-01-memory-view-05_s0_v1
 @loc_MYS_mys-mw04-b-02-memory-view-06_s0_v1
@@ -26,26 +24,26 @@ LIBRARY INPUTS — REUSE THESE EXISTING ELEMENTS:
 @loc_MYS_mys-w04-b-03-world-view-07_s0_v1
 @loc_MYS_mys-w04-b-04-world-view-08_s0_v1
 @loc_MYS_mys-w04-c-01-world-view-09_s0_v1
-@loc_MYS_mys-w04-c-02-world-view-01_s0_v1
-@loc_MYS_mys-w04-c-03-world-view-07_s0_v1
-@loc_MYS_mys-w04-c-04-world-view-08_s0_v1
-@char_MYS_mys-c01-protagonist_s0_v1
-@char_MYS_mys-c03-policewoman_s0_v1
-@char_MYS_mys-c04-appointed-lawyer_s0_v1
-@char_MYS_mys-c25-search-officer-male_s0_v1
-@char_MYS_mys-c26-defence-office-substitute_s0_v1
-
-@loc_MYS_mys-film-sb04-storyboard_s0_v1 supplies this part's ordered storyboard moments only, never its opening crop.
+C01 @char_MYS_mys-c01-protagonist_s0_v1
+C03 @char_MYS_mys-c03-policewoman_s0_v1
+C04 @char_MYS_mys-c04-appointed-lawyer_s0_v1
+C25 @char_MYS_mys-c25-search-officer-male_s0_v1
+C26 @char_MYS_mys-c26-defence-office-substitute_s0_v1
+MR009 @loc_MYS_mys-mr009-balcony-scroll-to-sideways-stair_s0_v1
+MR017 @prop_MYS_mys-mr017-cabinet-to-desk-and-chair_s0_v1
+R049 @prop_MYS_mys-reference-49-cabinet-fingerprint-desk-and-chair-construction_s0_v1
+R030 @loc_MYS_mys-reference-30-deep-gallery-through-the-unchanged-threshold_s0_v1
+TY001 @prop_MYS_mys-ty001-decimal-rating-glyphs-and-tints_s0_v1
 
 PICTURE AND REFERENCE ROLES:
 Photographic people and materials; one connected London exterior walk at overcast blue hour, gradually deepening toward night. Damp stone, puddles and coats after rain; clear air, no falling rain or rainfall sound. Warm practical interiors. Current C01 keeps exact face, hair, build and dark jacket. His remembered occurrences are distinct from the walker and use their source wardrobe. All named people retain identity, full bodies and physical support. Never turn a current pedestrian into a memory character.
-World views define source/destination buildings and materials; memory views define assigned people, props and rooms. Preserve numbered view roles; reconstruct one space from its views. Never show grids, thumbnails, captions or storyboard numbers. Storyboard cells order moments, not cuts or camera setups. The final frame overrides other opening compositions.
+W: world geometry. MW/MWP/HRW/T01: assigned rooms and human moments. C: identity and wardrobe. MR/R: material stages and object construction only. TY: lettering and card appearance only. Use existing sheets whole; their panels are reference views/stages, never cuts or grids in the output. Follow the ordered beats below. Character identity and scripted card rules override incidental people or changing numbers in morph sheets. No separate storyboard image is required. The supplied final frame takes priority for the opening composition; identity sheets do not reset the scene.
 
 MATERIAL ACTION AND CAMERA:
 London objects become their named Pest counterparts at traceable positions. Connect impossible adjacencies through paving, supports, parallax and continuous travel. Show whole identifiable landmarks and distinctive features, not generic buildings or skyline collage. Establish each source, then resolve its destination before obscuring it.
 For every featured change, track a chipped corner, grain line, seam or fixing through source part, intermediate cross-section and destination function. Retain thickness, side faces, underside, grounded support and moving contact shadows. Stone gains carved depth, glass fragments curve and thicken, wood grain follows bending solid timber, iron stretches from its actual attachments. Keep opaque material opaque: no dissolve, ghosted overlay, texture-only replacement, flat paper architecture or finished room behind a lifted image. If two forms lack a material connection, travel past the first into an adjacent already-glimpsed volume instead of replacing it.
 Memories grow from the street: glimpse a hand/face, then reveal the SAME life-size person, chair legs, floor and furniture. Near edges cross faster than rear doors; hands occlude cups and supports cast shadows. Let the human gesture read while other morphs continue. Leave inhabitants behind through travel, never disappearance or body swaps. No memory projection; only the final clinical threshold uses glass to reveal another reality.
-Use one independently travelling camera, approximately 24–28 mm, with controlled horizon. Ease and partially orbit at the featured material/human action, accelerate through open connections. Rise on a half-elliptical path tangent to the low pass, reveal underside/side/top in order and descend through real empty gaps. A high return may look back through a cumulative 180-degree sweep where the route allows it; never force a new loop or camera reset. Keep C01 and the shared street traceable. No full-screen occlusion, hidden cut, jump zoom or freeze. The clinical cut and final title cut in Block 07 are deliberate exceptions.
+One independently travelling 24–28 mm camera with controlled horizon: ease and partially orbit at material/human actions, accelerate through open connections. Rise on a half-ellipse tangent to the low pass, exposing underside, side and top, then descend through real gaps. A high return may look back through a cumulative 180-degree sweep only where the route allows; no forced loop or reset. Keep C01 and street traceable. No full-screen occlusion, hidden cut, jump zoom or freeze. Only Block 07 has the specified clinical/title cuts.
 Keep simultaneous changes at several depths: one starts, another is midway and another settles or briefly reverses. Stones, roof seams, glass edges and furniture remain active during fast travel. Do not reduce the city to a static background while the camera moves. Current crowds, buses, taxis and trams continue their own grounded trajectories. Selected commuter coat seams thicken into lapels and bag straps reshape into handles, retaining the same bodies, hands and cards; no national identity assigned by complexion or face. These local changes overlap the featured morph rather than adding portrait shots.
 
 RATING RULE:

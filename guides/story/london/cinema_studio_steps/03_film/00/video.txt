@@ -1,26 +1,28 @@
-MYSCOUTEE PRESENTS — FULL-SCREEN OPENING, 4 SECONDS, 16:9
+MYSCOUTEE PRESENTS — MATERIAL-ASSEMBLY FILM IDENT, 4 SECONDS, 16:9
 
 SOLE IMAGE REFERENCE:
-@prop_MYS_mys-film-m-logo_s0_v1 = the existing uploaded MyScoutee M-logo image; do not generate a replacement logo.
-Use the supplied MyScoutee M-logo image as the exact existing brand mark: the blue-violet-magenta M-shaped emblem, white heart and gold star. Preserve its silhouette, internal shapes, colours and proportions throughout. The reference supplies only this logo, not a full-frame composition. Keep its transparent surroundings transparent; do not introduce a square white backing or redraw the mark. Construct the background, typography and animation from the description below.
+@prop_MYS_mys-film-m-logo_s0_v1 supplies the exact existing MyScoutee emblem: blue-violet-magenta M-shaped form, white heart and gold star. The completed mark must match its silhouette, internal shapes, colours and proportions. Use the reference for the brand mark only; build the widescreen scene below around it. No replacement logo or square image backing.
 
-COMPOSITION:
-An elegant, restrained film-production ident fills the whole widescreen canvas. Deep midnight navy with a soft indigo glow near the centre and very faint flowing route-like light lines far behind the title. The unchanged M emblem sits centred above a clean, large white wordmark. Directly below the wordmark, the smaller word "presents" appears with generous spacing and ample breathing room. The logo is a separate emblem above the complete written brand name, not a replacement for a letter. Keep the emblem and both text lines inside the central safe area with visible gaps between them. The virtual camera stays fixed; the title does not move toward the lens. Keep the star glint local to the star, without washing out the white heart or the lettering.
+IDEA AND MATERIAL:
+Separate paths and fragments of one life find a shared arrangement. Express this through a small, precise assembly of the actual emblem's coloured forms. They start separated by narrow gaps and slightly different depths, then travel into alignment around the white heart. The completed logo gives the fragments a coherent shape. Keep this meaning visual: no explanatory symbols, extra people or score cards.
 
-EXACT VISIBLE TEXT — TWO LINES:
+Render the emblem as a finely made, shallow relief: substantial blue-violet-magenta enamel faces, narrow satin-finished edges, a smooth white heart inset and the existing small gold star with restrained metallic reflections. The reference colours remain visible through the lighting. Pieces have real thickness, fitted edges, weight and contact shadows. The moving pieces are sections of the final mark itself, with no leftover machinery around it. A broad grazing light reveals their construction. Dark midnight-navy backdrop, soft grounded shadow and ample negative space; let the material and precise movement carry the ident.
+
+FRAMING:
+The full eventual emblem and both text lines fit inside the central safe area from the start. Emblem above the written brand name, not replacing any letter. Begin at a slight oblique angle so the separated depths and edges read. A very small controlled camera arc settles frontally as the parts meet, without cropping the emblem or changing its apparent size abruptly. The white heart and gold star remain recognisable throughout their short movement. Keep light restrained, with no flare obscuring the mark.
+
+FOUR-SECOND ACTION:
+0.00–0.45: The coloured sections are already visible as physical objects, slightly separated around their future positions. A travelling highlight reveals their thickness. Their movement begins immediately; no empty opening pause.
+0.45–1.65: The sections slide along short converging paths, with slight rotations of their edge planes, to build the exact M silhouette. Each piece has one destination and a continuous trajectory. The white heart seats in its reference position as the adjacent coloured edges settle around it; the gold star settles into its own original position. Start the movements a little apart in time, then decelerate them together. No collisions, bouncing or elastic deformation. Do not extrude new ornamental shapes, scatter particles or expose a machine.
+1.65–2.05: All pieces are seated flush. Fine assembly seams become unobtrusive; the mark reads as the exact supplied emblem. The camera finishes its shallow arc and stops frontally. A single soft highlight crosses the gold star. Reveal the two complete text lines in their final positions with a short restrained opacity rise, never letter morphing or typing.
+2.05–3.60: Hold the finished MyScoutee lockup completely steady and sharply readable. The emblem retains shallow physical depth, but its front silhouette and colour arrangement match the reference. No rotating logo or continued assembly during the reading interval.
+3.60–4.00: Fade the complete finished composition smoothly to black, ready for the first film scene.
+
+EXACT VISIBLE TEXT — TWO CENTRED LINES:
 MyScoutee
 presents
 
-Spell both lines exactly, preserving the capital M and S in MyScoutee. Keep every letter stable, sharply legible and centred. Do not add a film subtitle, slogan, work-in-progress notice, festival badge, Higgsfield mark, laurels, frame or extra text.
+Clean white typography, capital M and S exactly as written; smaller lowercase presents beneath, with clear spacing between emblem and both lines. No slogan, film subtitle, festival mark, laurels, watermark request or extra text. The finished lockup is a film-production ident with precise material motion and a readable hold.
 
-ANIMATION — ONE CONTINUOUS GRAPHIC COMPOSITION:
-0.0–0.8 seconds: the indigo glow gently opens from the dark navy background. The intact logo fades into view with a small smooth upward ease, moving as one solid graphic without bending, spinning or changing shape.
-0.5–1.2 seconds: "MyScoutee" fades up in its final position, followed by "presents" a fraction later. Reveal whole words with opacity, never write or morph individual letter strokes.
-1.2–3.4 seconds: hold the complete lockup steady and readable. One soft violet-blue light ribbon glides slowly through the distant background, echoing a path between people. A delicate warm glint passes over the existing gold star once; it does not change the star or obscure the logo. Keep the background movement quiet and subordinate to the title.
-3.4–4.0 seconds: logo, text and background glow fade smoothly together to black, ready for the first film scene. No cut within the ident, no flash and no abrupt scale change.
-
-SOUND:
-Silent opening ident. No spoken brand name, narration, music, impact, whoosh or separate sound logo. The film's own soundtrack begins with its first scene.
-
-OUTPUT:
-One new 4-second 16:9 video. Full-frame background with no letterboxing. The logo remains recognisably identical to the supplied existing mark; only its entrance opacity, position and subtle lighting treatment animate. The finished title holds long enough to read "MyScoutee presents" comfortably.
+SOUND / OUTPUT:
+One silent four-second 16:9 video, full-frame background, no letterboxing. No voice, music, whoosh or separate sound logo; the story soundtrack begins in V01. Preserve the exact completed brand mark and all four seconds of the staged assembly, hold and fade.

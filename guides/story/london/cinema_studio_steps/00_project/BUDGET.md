@@ -1,32 +1,25 @@
 # Remaining production budget — 2026-09-11
 
-**Creator-reported balance: 1979 credits**, correcting the briefly reported 1797. Goal: finish within the original 3000-credit allocation, without a top-up. No new account lookup, purchase or generation was performed for this plan.
+Goal: complete within the original 3000-credit allocation. The last creator-reported balance was **1979**, before the full narration. The creator then reported a **6.15-credit narration quote** and downloaded the recording. The account debit and current balance have not been independently reconciled. If that was the only later charge, the arithmetic balance is **1972.85**.
 
-| Remaining work | Quantity / basis | Planning credits |
+| Remaining work | Basis | Planning credits |
 |---|---|---:|
-| Existing library and uploaded M-logo | Reuse accepted media | 0 |
-| Story videos | Five × 30 s, two × 15 s (Block 06), one × 20 s = 200 s | 1800 |
-| Storyboards | Eight 4K images × earlier 4-credit quote | 32 |
-| Full Grady narration | One recording; conservative allowance carried forward, not a current quote | 14 |
-| Separate MyScoutee presents ident | 4 s × assumed 9 credits/s | 36 |
-| Local FFmpeg assembly and narration mix | No Higgsfield generation job | 0 |
-| **Planned remaining total** | | **1882** |
-| **Reserve from 1979** | 1979 − 1882 | **97** |
+| Existing library, whole-image storyboard plans and logo | Reuse attached images; no crops, new grids or paid board series | 0 |
+| Story videos | Five × 30 s + two × 15 s + 20 s = 200 s | 1800 |
+| Separate MyScoutee presents ident | Four seconds, existing logo reference | 36 |
+| Narration | Already generated/downloaded; no second generation | 0 |
+| Local FFmpeg assembly and narration mix | Local work | 0 |
+| **Remaining production reserve** | Historical footage-rate assumptions | **1836** |
+| **Conditional surplus** | 1979 − 6.15 − 1836 | **136.85** |
 
-Without the ident the core plan is 1846, leaving 133; the ident is now explicitly included in the 1882 plan. Five 30-second portions cost 1350, two 15-second portions 270 and the final 20-second portion 180 only if the earlier 30s=270 / 20s=180 pricing remains linear for the actual complete-reference jobs. The 15-second, 1080p, ident and full-narration quotes are not verified. Check the price displayed for each intended request before generating. Storyboard 4K pricing is also a prior observation, not a new quote.
+The previous 32-credit generated-storyboard allocation is removed. The old 14-credit narration allowance is replaced by the reported 6.15 quote, not charged again as future work. This plan schedules no bulk image generation, panel extraction, composite reference creation or associated re-upload. Use the existing whole images and grids.
 
-The completed pilot, its failed attempts, earlier TTS and Supercomputer use are already reflected in the current balance; do not charge them again in remaining work. From an original 3000 to the reported 1979, the net reduction is 1021. Projected total at these remaining assumptions: 1021 + 1882 = **2903**, leaving 97 of the original allocation. This is a balance-based projection, not an itemized proof of gross spending; refunds, grants or other account adjustments must be reconciled before claiming a verified 3000-credit production.
+The 1800 footage estimate assumes the historical 9 credits/second rate: 1350 for five 30-second requests, 270 for two 15-second requests and 180 for the final 20 seconds. The 36-credit ident estimate uses the same rate. Actual 1080p/model/reference-dependent quotes must be read from the intended UI jobs; these numbers are not confirmed prices. Deduct any intervening spending from the surplus.
 
-The creator reports the upload test completed through Update project film with watermark added. No additional publishing fee has been established; any actual charge or required extra asset comes from the 97 reserve and must be recorded. The reserve does not fund a 30-second retry (270) or even a 15-second retry (135) at the assumed rate. No automatic retry, top-up, model switch, shortening or paid music job is authorized by this budget.
+At those assumptions, projected total use is 3000 − 136.85 = 2863.15. This is a balance-based scenario, not an itemized proof of spending; credits, refunds and other adjustments have not been reconciled. Earlier pilot, TTS and Supercomputer charges already reflected in the 1979 balance are not charged again here.
 
-The story remains 3:20. Adding the separate ident makes 3:24 before any platform-added packshot or later local trims; do not silently count it inside the 200 story seconds. Preserve sufficient ending/holding time to place the full narration without truncation or speech acceleration.
+Preserve the main-film allocation before considering one or two focused 480p tests. No separate 1080p test, automatic paid retry or top-up is planned. A 30-second retry at the assumed rate would cost 270 and exceed the conditional surplus. Any exceptional necessary image must have a specific purpose and a known quote before spending; no such image job is currently scheduled.
 
-[Remaining estimate](../04_tracking/REMAINING_BUDGET_ESTIMATE.csv) · [historical charges/quotes](../04_tracking/credit_ledger.csv) · [production order](../03_film/README.md)
+The story remains 3:20; the separate silent ident makes 3:24 before platform packshot or later local trims. The downloaded narration was previously measured at 150.334694 seconds. Place it with natural pauses against the story; do not regenerate it or accelerate speech simply to fit a block. Future final-frame extraction uses the accepted videos locally and is not paid image generation.
 
-## Narration-first spending order — creator decision
-
-Generate the full Grady narration before the ident, storyboards and story footage. Record its actual quote/debit and the resulting balance. The 14-credit allowance is replaced by that actual cost, not charged again later.
-
-With the last reported 1979 balance and narration cost N, the estimated surplus is 1979 − N − 1868 = 111 − N credits. Equivalently, use the actual post-narration balance minus 1868. The 1868 reserves 1800 for story footage, 32 for boards and 36 for the ident; those rates still need confirmation against the actual UI quotes. Any intervening spend must also be deducted.
-
-No additional 1080p test is planned. Only consider one or two focused 480p tests after this reconciliation, using their displayed prices and preserving the remaining production allocation. An apparent surplus is not a guaranteed test allowance while production prices remain estimates. No test is submitted automatically.
+[Estimate ledger](../04_tracking/REMAINING_BUDGET_ESTIMATE.csv) · [Historical charges](../04_tracking/credit_ledger.csv) · [Production order](../03_film/README.md)

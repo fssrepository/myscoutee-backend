@@ -1,11 +1,9 @@
-REFERENCE MEDIA PENDING: attach accepted images to SB01. Element handles are verified; these image slots are still empty.
-
 MYSCOUTEE — BLOCK 01 — 30 SECONDS, 16:9, AUDIO ON
 One new photographic sequence.
 
 OPENING: Already track C01 through Soho at street height on a forward-right oblique path. Begin living motion immediately; this is the first story clip, not a continuation from the logo.
 
-LIBRARY INPUTS — REUSE THESE EXISTING ELEMENTS:
+EXISTING WHOLE-IMAGE REFERENCES:
 @loc_MYS_mys-mw01-a-london-social_s0_v1
 @loc_MYS_mys-mw01-b-01-memory-view-05_s0_v1
 @loc_MYS_mys-mw01-b-02-memory-view-06_s0_v1
@@ -27,29 +25,43 @@ LIBRARY INPUTS — REUSE THESE EXISTING ELEMENTS:
 @loc_MYS_mys-w01-b-03-world-view-07_s0_v1
 @loc_MYS_mys-w01-b-04-world-view-08_s0_v1
 @loc_MYS_mys-w01-c-01-world-view-09_s0_v1
-@loc_MYS_mys-w01-c-02-world-view-01_s0_v1
-@loc_MYS_mys-w01-c-03-world-view-07_s0_v1
-@loc_MYS_mys-w01-c-04-world-view-08_s0_v1
 @loc_MYS_mys-t01-a-soho-restaurant_s0_v1
-@char_MYS_mys-c01-protagonist_s0_v1
-@char_MYS_mys-c02-soho-woman_s0_v1
-@char_MYS_mys-c06-shared-house-substitute-snoring-housemate_s0_v1
-@char_MYS_mys-c07-fx-mortgage-housemate_s0_v1
-@char_MYS_mys-c08-fx-mortgage-spouse_s0_v1
-@char_MYS_mys-c09-fx-mortgage-child_s0_v1
-@char_MYS_mys-c10-beginner-dance-woman_s0_v1
-
-@loc_MYS_mys-film-sb01-storyboard_s0_v1 supplies this part's ordered storyboard moments only, never its opening crop.
+C01 @char_MYS_mys-c01-protagonist_s0_v1
+C02 @char_MYS_mys-c02-soho-woman_s0_v1
+C06 @char_MYS_mys-c06-shared-house-substitute-snoring-housemate_s0_v1
+C07 @char_MYS_mys-c07-fx-mortgage-housemate_s0_v1
+C08 @char_MYS_mys-c08-fx-mortgage-spouse_s0_v1
+C09 @char_MYS_mys-c09-fx-mortgage-child_s0_v1
+C10 @char_MYS_mys-c10-beginner-dance-woman_s0_v1
+MR001 @loc_MYS_mys-mr001-st-pauls-to-st-stephens_s0_v1
+MR004 @prop_MYS_mys-mr004-window-glass-to-pendant-shade_s0_v1
+MR005 @loc_MYS_mys-mr005-brick-courses-to-carved-arch_s0_v1
+MR006 @loc_MYS_mys-mr006-stone-threshold-to-supported-timber-floor_s0_v1
+MR007 @prop_MYS_mys-mr007-bench-to-curved-floor-border_s0_v1
+MR008 @prop_MYS_mys-mr008-window-fittings-to-pendant-stem_s0_v1
+MR009 @loc_MYS_mys-mr009-balcony-scroll-to-sideways-stair_s0_v1
+MR010 @prop_MYS_mys-mr010-english-sign-to-kave-lettering_s0_v1
+R008 @loc_MYS_mys-r008-cafe-to-occupied-restaurant_s0_v1
+R010 @prop_MYS_mys-reference-10-winged-statue-plinth-and-contact-detail_s0_v1
+R021 @loc_MYS_mys-reference-21-restaurant-rear-doors-and-depth-relationships_s0_v1
+R025 @loc_MYS_mys-reference-25-original-london-roof-and-chimney-volumes_s0_v1
+R026 @loc_MYS_mys-reference-26-target-roof-glazing-stone-corbels-and-chimney-crowns_s0_v1
+R028 @loc_MYS_mys-reference-28-original-arcade-arch-and-fanlight_s0_v1
+R030 @loc_MYS_mys-reference-30-deep-gallery-through-the-unchanged-threshold_s0_v1
+TY001 @prop_MYS_mys-ty001-decimal-rating-glyphs-and-tints_s0_v1
+TY002 @prop_MYS_mys-ty002-coffee-to-kave-letter-material_s0_v1
+TY003 @prop_MYS_mys-ty003-cafe-and-culture-sign-lettering_s0_v1
+TY006 @prop_MYS_mys-ty006-profile-age-37-to-33-glyph-change_s0_v1
 
 PICTURE AND REFERENCE ROLES:
 Photographic people and materials; one connected London exterior walk at overcast blue hour, gradually deepening toward night. Damp stone, puddles and coats after rain; clear air, no falling rain or rainfall sound. Warm practical interiors. Current C01 keeps exact face, hair, build and dark jacket. His remembered occurrences are distinct from the walker and use their source wardrobe. All named people retain identity, full bodies and physical support. Never turn a current pedestrian into a memory character.
-World views define source/destination buildings and materials; memory views define assigned people, props and rooms. Preserve numbered view roles; reconstruct one space from its views. Never show grids, thumbnails, captions or storyboard numbers. Storyboard cells order moments, not cuts or camera setups. The final frame overrides other opening compositions.
+W: world geometry. MW/MWP/HRW/T01: assigned rooms and human moments. C: identity and wardrobe. MR/R: material stages and object construction only. TY: lettering and card appearance only. Use existing sheets whole; their panels are reference views/stages, never cuts or grids in the output. Follow the ordered beats below. Character identity and scripted card rules override incidental people or changing numbers in morph sheets. No separate storyboard image is required.
 
 MATERIAL ACTION AND CAMERA:
 London objects become their named Pest counterparts at traceable positions. Connect impossible adjacencies through paving, supports, parallax and continuous travel. Show whole identifiable landmarks and distinctive features, not generic buildings or skyline collage. Establish each source, then resolve its destination before obscuring it.
 For every featured change, track a chipped corner, grain line, seam or fixing through source part, intermediate cross-section and destination function. Retain thickness, side faces, underside, grounded support and moving contact shadows. Stone gains carved depth, glass fragments curve and thicken, wood grain follows bending solid timber, iron stretches from its actual attachments. Keep opaque material opaque: no dissolve, ghosted overlay, texture-only replacement, flat paper architecture or finished room behind a lifted image. If two forms lack a material connection, travel past the first into an adjacent already-glimpsed volume instead of replacing it.
 Memories grow from the street: glimpse a hand/face, then reveal the SAME life-size person, chair legs, floor and furniture. Near edges cross faster than rear doors; hands occlude cups and supports cast shadows. Let the human gesture read while other morphs continue. Leave inhabitants behind through travel, never disappearance or body swaps. No memory projection; only the final clinical threshold uses glass to reveal another reality.
-Use one independently travelling camera, approximately 24–28 mm, with controlled horizon. Ease and partially orbit at the featured material/human action, accelerate through open connections. Rise on a half-elliptical path tangent to the low pass, reveal underside/side/top in order and descend through real empty gaps. A high return may look back through a cumulative 180-degree sweep where the route allows it; never force a new loop or camera reset. Keep C01 and the shared street traceable. No full-screen occlusion, hidden cut, jump zoom or freeze. The clinical cut and final title cut in Block 07 are deliberate exceptions.
+One independently travelling 24–28 mm camera with controlled horizon: ease and partially orbit at material/human actions, accelerate through open connections. Rise on a half-ellipse tangent to the low pass, exposing underside, side and top, then descend through real gaps. A high return may look back through a cumulative 180-degree sweep only where the route allows; no forced loop or reset. Keep C01 and street traceable. No full-screen occlusion, hidden cut, jump zoom or freeze. Only Block 07 has the specified clinical/title cuts.
 Keep simultaneous changes at several depths: one starts, another is midway and another settles or briefly reverses. Stones, roof seams, glass edges and furniture remain active during fast travel. Do not reduce the city to a static background while the camera moves. Current crowds, buses, taxis and trams continue their own grounded trajectories. Selected commuter coat seams thicken into lapels and bag straps reshape into handles, retaining the same bodies, hands and cards; no national identity assigned by complexion or face. These local changes overlap the featured morph rather than adding portrait shots.
 
 RATING RULE:
@@ -74,8 +86,7 @@ BEAT 8 — 22–26 s: Arc through the Leicester crowd; glances affect only viewe
 
 BEAT 9 — 26–30 s: Travel toward Haymarket/Trafalgar with a later Nelson's Column sightline. Occupied room ribs lengthen into arches and wall courses move into spandrels; inhabitants remain behind the open arcades. A red double-decker passes on the camera's left, about one third of the view, retaining front corner, side and upper windows. Keep café edge, kerb, taxi and tram rails traceable around it. No full-frame wipe or bus redesign. Ease from the broad city arc into a level forward-right street pass for the boundary; motion continues without a concluding pose.
 
-BLOCK 01 MATERIAL COVERAGE:
-Fifteen overlapping changes share the existing beats, not fifteen shots: (1) chipped brick pier to deep carved arch blocks; (2) flat pane fragments to curved pendant shades; (3) split straight mullion to spiral solid arch trim; (4) fasteners to load-bearing shade stems; (5) stone sill to timber threshold, chipped corner retained; (6) slabs to supported boards, joints becoming seams and puddle draining; (7) bench slats to curved floor border with support feet; (8) masonry to thick cream-plaster room returns; (9) balcony scroll to sideways stair, anchored coil widening into treads with visible undersides and handrail; (10) dome ribs and attached sliding sheets to Basilica dome; (11) drum openings and piers reshaped on the same ring; (12) both tower shafts/courses/crowns to distinct bell towers with staggered starts; (13) columns sliding on the portico platform and entablature rising into a solid pediment; (14) raised COFFEE strokes changing on mounted sign slats into KÁVÉ; (15) wall-lamp bracket branching at its fixing while retaining glass housings. Keep the named source feature, changing section and destination support visible during its existing camera pass. No stone confetti or flying abandoned parts; glass pieces retain their new function. Current C01 and C02 never mutate to repair architecture.
+MATERIAL COVERAGE: Keep the fifteen concurrent material changes described by the existing transition sheets and beats: brick/arch, pane/shade, mullion/trim, fastener/stem, sill/threshold, paving/boards, bench/floor border, masonry/plaster, balcony/stair, dome ribs, drum piers, paired towers, portico, sign lettering and branching lamps. Track contact, thickness and support. C01 and C02 never mutate to repair architecture.
 
 SOUND — GENERATE BACKGROUND ONLY:
 No narrator, voiceover, sung lyrics or intelligible added dialogue. People may gesture and move mouths only as the scripted memory requires; do not generate the separately prepared monologue or lip-sync it. Narration will be placed over the assembled film locally.
