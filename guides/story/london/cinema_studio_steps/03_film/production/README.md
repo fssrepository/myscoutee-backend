@@ -262,9 +262,9 @@ Completed validation: all 722 decoded output frame hashes match the input frames
 
 If the creator rejects this direct join, edit only the necessary boundary sections and copy all other encoded footage unchanged. Determine safe decoder/keyframe boundaries before cutting HEVC; do not promise an arbitrary few-frame smart render without checking prediction dependencies. No further full-video re-encode is authorized merely to adjust a short transition. The original `p02.mp4` and `p03.mp4` remain the recovery sources; `p03_fixed.mp4` is a separate corrected derivative.
 
-### Accepted local P02 → P03 join — copy everything outside the boundary
+### Rejected local P02 → P03 trial — retain the bounded-edit method
 
-The creator reported that this local approach looked good on 2026-09-11 and requested that the method be recorded. Working result: `p02_p03_local_join_fix.mp4`, from original `p02.mp4` and standalone `p03_fixed.mp4`. Keep both source files and the direct-copy baseline. Do not add another spatial or colour correction to P03 during assembly.
+The creator initially reported that this local approach looked good on 2026-09-11, then explicitly rejected the result and stopped further work. `p02_p03_local_join_fix.mp4` is not accepted and must not be used as the final assembly recipe. The last technical revision was not fully validated before the stop. Retain the bounded-edit methodology below, but do not automatically replay this transition. Keep original sources and the direct-copy baseline.
 
 **Default for future repairs: inspect the join, identify the smallest safe editable interval, render only that interval, and stream-copy everything else. Do not re-encode the whole film to fix a short boundary.** Establish the actual HEVC prediction dependencies before choosing cuts; a visible eight-frame transition can require a longer encoded segment. Use the completed individual corrected clip for upload, and a separate assembled file for review.
 
@@ -283,6 +283,12 @@ Encode only that local block at 1920×1080, 24 fps, HEVC Main10 / limited-range 
 Audio is also repaired locally. At 32 kHz, use a 10,240-sample (0.32 s) quarter-sine crossfade after trimming each source to 481,280 samples (15.04 s). The 0.32 s overlap aligns to ten AAC frames. Copy the first 450 P02 AAC packets (including its priming packet); replace only 31 AAC packets; then copy fixed P03 packets 21–470 inclusive. For the replacement, extract mixed PCM samples 455680–495615 (four AAC frames of preroll, 31 replacement frames, four postroll frames), encode AAC at 288 kb/s, and retain encoded ADTS frames 5–35 inclusive, discarding the priming/preroll and postroll. Concatenate the resulting 931 ADTS packets and mux with audio timestamp offset `-0.032` to account for the retained source priming packet. This preserves 900 original compressed audio packets and changes 31 packets / 0.992 s. Audio duration is 29.76 s; its P03 offset differs from the picture overlap by about 12 ms. Do not re-encode the complete soundtrack or repeat boundary excerpts.
 
 Remux the three video sections to MPEG-TS using `-c:v copy -bsf:v hevc_mp4toannexb`. In the concat manifest, explicitly specify section durations `14.583333333`, `7.125` and `8.041666667`; inferred TS durations caused timestamp discontinuities. Mux the concatenated video and repaired AAC to MP4 using stream copy, `aac_adtstoasc`, `hev1` and faststart. Preserve each section's HEVC parameter sets. Verify complete decoding, continuous 24 fps presentation timestamps, unchanged decoded frame hashes for prefix/suffix, and unchanged AAC payload hashes outside the repaired packets before delivery.
+
+### Current review: original P00–P03 copied together
+
+At the creator's request, assemble original `p00.mp4`, `p01.mp4`, `p02.mp4` and `p03.mp4` in that order as `p00_p03_originals_joined.mp4`. Do not use `p03_fixed.mp4` or any earlier combined preview. Use the MPEG-TS / Annex-B stream-copy route described above to retain each clip's HEVC parameters, then remux to MP4. No encoding, correction, trimming or transition is applied. Container timestamps may be adjusted while compressed picture and audio content are preserved.
+
+Deferred P01–P02 follow-up: if the earlier join masks a defect that belongs to an individual clip, fix that standalone clip before final assembly and keep its corrected uploadable version. Do not solve it only inside the assembled preview. The creator explicitly deferred this work; record it here without editing P01 or P02 now.
 
 ### Final-quality replay requirements
 
