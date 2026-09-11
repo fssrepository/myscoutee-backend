@@ -325,6 +325,28 @@ Reapply the recorded trims, overlaps and affine correction directly to the origi
 
 Replay and inspect every corrected join on the original sources. Use measured rendered frame/sample counts for narration placement; the existing preview has rounding and padding that must not silently become final timing decisions. Keep the final ident and title placement consistent with the resulting timeline.
 
+### P02 → P03 short dissolve from original sources
+
+The creator rejected the remaining canopy bob in the fixed version and requested a short transition like the street-to-statue change around 3–4 s in original P01. Frame inspection shows approximately four blended frames there. This revision uses original `p02.mp4` and `p03.mp4`; the deleted fixed derivative is not reconstructed. The earlier opening correction above is historical, not an accepted repair.
+
+Reproduce the new review with:
+
+```bash
+python3 guides/story/london/cinema_studio_steps/03_film/production/tools/p03_transition.py --media-dir /home/raxim/Downloads
+```
+
+Output: `p00_p03_transition.mp4`, original P00–P03 in order with only the P02/P03 boundary changed. P00/P01 and P01/P02 retain plain joins. Originals are never overwritten. This is an assembly transition, not a new standalone fixed P03 upload. Creator acceptance remains pending.
+
+- Copy P02 frames 0–353. Encode a 179-frame boundary block: P02 354–356, four blends of P02 357–360 with P03 0–3 using incoming weights 1/5, 2/5, 3/5, 4/5, then P03 4–175. Copy original P03 176–360 from its 7.333333 s random-access point.
+- Blend in 10-bit YUV; keep 1920×1080, 24 fps, original geometry and colour. Encode only that block using the recorded 30,342,392 bit/s HEVC target and closed 120-frame GOP. The rest of the assembly is stream-copied: 997 of 1176 output frames. The visible dissolve is four frames / 0.166667 s; HEVC dependencies require encoding 179 frames / 7.458333 s. This is a lossy local delivery encode, not a lossless master or whole-film encode.
+- Audio uses a 5120-sample / 0.16 s quarter-sine overlap at 32 kHz. Copy P02 AAC packets 0–449 and P03 packets 21–470. Replace only 36 packets / 1.152 s. Encode mixed samples 455680–500735 with four packets of preroll and postroll; keep encoded ADTS packets 5–40. Trim each source audio to 481280 samples before mixing; mux with −0.032 s priming offset. The joined audio lasts 29.92 s versus 29.916667 s of picture; P03 audio placement differs by approximately 5 ms.
+- Use the MPEG-TS/Annex-B copy route with explicit video section durations 97/24, 361/24, 14.75, 7.458333333 and 7.708333333 s for P00, P01, P02 prefix, bridge and P03 suffix respectively. Concatenate these five video TS segments directly. Do not remux the mixed-parameter boundary MP4 back through `hevc_mp4toannexb`: reinjecting its first SPS/PPS at later IDRs caused decoder errors. Concatenate audio separately from P00, P01 and the audio-only boundary TS, then mux both tracks by copy. The full picture is 1176 frames / 49 s; the dissolve starts at 33.958333 s.
+- Before publishing, validate complete decoding, unchanged copied frame hashes, copied AAC payload hashes, 1080p/24 fps/10-bit format and continuous presentation timestamps. Verification decodes the untouched footage without re-encoding it.
+
+The command retains unpublished work if verification fails and prints its private directory. `--resume-work DIRECTORY` reuses the rendered boundary for a remux/validation retry; use it only with the same original inputs and transition recipe. A successful fresh run cleans up its temporary work. A resumed directory is retained for explicit inspection.
+
+Planning lesson from the creator: ending a scene near each generation boundary would make assembly easier than requiring exact continuation of a fast camera move. A prompt cannot establish that the generated clip actually ends the scene; review the generated ending before preparing its continuation. No regeneration or prompt rewrite is requested for this assembly.
+
 ### P03 final frame for P04
 
 `p03_last_frame.png` is extracted from original `p03.mp4`, decoded frame index 360 (the 361st frame), at 1920×1080. It is not extracted from the corrected or compressed preview. The P04 reference container is `@loc_MYS_mys-film-v03-end-frame_s0_v1`; extraction alone does not attach the PNG to that Element.
