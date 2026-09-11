@@ -28,4 +28,6 @@ A meglévő last-frame hivatkozások és UNBOUND helyőrzők is változatlanok. 
 
 ## Aktuális P01 próba
 
-Csak az R010 képreferencia eltávolítva; a jelenetszöveg és a többi 21 referencia változatlan. Beállítás: 4 mp / 480p. Eredmény még nincs rögzítve.
+Csak az R010 képreferencia eltávolítva; a jelenetszöveg és a többi 21 referencia változatlan. Beállítás: 4 mp / 480p. Állapot: a felhasználó szerint az R010 nélküli kérés túljutott a processing szakaszon, de kész videó még nincs; a végső eredmény nincs megerősítve. A felületi árajánlat 10 kredit volt; a tényleges levonás nincs ellenőrizve. Az R010 helyettesítő képének promptja előkészítve; új képgenerálást az asszisztens nem indított.
+
+Problémás jelenetnél 4 mp / 480p tesztet használunk a teljes prompttal. A P01-nél látott 10 kredites tesztár a felhasználónak elfogadható; ez nem automatikus teljes sorozat indítása.

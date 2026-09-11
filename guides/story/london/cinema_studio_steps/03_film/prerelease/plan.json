@@ -36,7 +36,10 @@
       "test_variant": {
         "change": "Remove only R010 image reference; all scene text and other references unchanged.",
         "removed_reference": "R010 @prop_MYS_mys-reference-10-winged-statue-plinth-and-contact-detail_s0_v1",
-        "result": "NOT_REPORTED"
+        "result": "USER_REPORTED_PAST_PROCESSING_VIDEO_NOT_YET_GENERATED",
+        "ui_quote_credits": 10,
+        "actual_debit_credits": null,
+        "observation": "User reports the request progressed past processing; no completed video or final moderation outcome confirmed."
       }
     },
     {
@@ -2568,5 +2571,6 @@
       "beat_preservation": "62 beat bodies remain verbatim; 06.4 changes only old last-frame/next-clip wording to the internal 6-second transition. All story events, material actions, reference handles and beat times remain.",
       "scope": "Local musical cues; current-clip rating state; P12 clinical timing and camera scope; P01 no incoming frame; no blue-hour reset; no paid generation."
     }
-  }
+  },
+  "test_policy": "Use a 4-second 480p full-prompt diagnostic test when a scene has problems; no automatic batch. Observed P01 UI quote: 10 credits. Confirm actual quote and debit per request."
 }
