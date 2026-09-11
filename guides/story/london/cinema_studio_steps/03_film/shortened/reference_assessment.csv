@@ -106,3 +106,30 @@ P04,25,@loc_MYS_mys-w02-b-02-world-view-06_s0_v1,0,0–15,A tükröződő üvegf
 P04,26,@loc_MYS_mys-w02-b-03-world-view-07_s0_v1,1,0–1.5,A szélesen hajló üvegtető nyitóképe közvetlen egyezés.,5f094a3d-64cf-43e4-aa8b-e5a7c9cc9c4d,158383a8-c69b-44fb-becd-da4d8c54859c
 P04,27,@loc_MYS_mys-w02-b-04-world-view-08_s0_v1,0.5,0–1.5,"Busz és villamos környezeti motívum, de a saját közeli kompozíció hiányzik.",2dc2ae9d-3f38-42d1-8bfe-43934f52c4f7,737dedb9-ab6a-40d7-a158-f2fd6db1794f
 P04,28,@loc_MYS_mys-w02-c-01-world-view-09_s0_v1,0,0–15,A díszes metróbejárat és közeli felirat nem látszik.,afc05ea6-3fe1-4736-a28d-053353ace5a2,dda5b835-1203-4ba1-ba79-1bc3d5f708cf
+P05,0,@loc_MYS_mys-film-v04-end-frame_s0_v1,1,0–1.5,P04 záró állomásképe felismerhető.,188f6c41-597e-4673-a7c1-9b0125184c73,b88adfbc-a4a6-4099-b9e5-c2d00824caa2
+P05,1,@char_MYS_mys-c01-protagonist_s0_v1,1,3–11;15–16,"C01 a folyosón, irodákban és videohívásban.",774b8a46-1402-4342-9e10-403848e8f53e,0bd3ca76-6f75-4d36-9d47-9bf177669302
+P05,2,@char_MYS_mys-c22-accountant_s0_v1,0.5,4–6;15–16,Hasonló női kolléga; a saját könyvelői portré szerepe a memóriafotókkal átfed.,40d5cdad-1d4b-4040-9248-df81cdc97cea,de96fd77-bca8-4e90-8290-64b011ce12d8
+P05,3,@char_MYS_mys-c23-admin-colleague-a_s0_v1,1,5.5–6.5,C23 az asztalnál laptop előtt.,04fe2f68-d6a4-48e1-ab0e-47404b13273d,ff32aab3-9eff-4568-b3a7-69650969218f
+P05,4,@char_MYS_mys-c24-admin-colleague-b_s0_v1,1,5.5–6.5,C24 a mappával álló kolléga.,45465c02-afde-4d93-acd0-e206049d0405,46226e16-3d7c-4634-b987-77a290a7ee87
+P05,5,@loc_MYS_mys-mr002-facade-relief-to-sculpted-support_s0_v1,0,0–3,A tunikás atlasz konkrét alakja és négy fázisa nem azonosítható.,ce95ca29-09cd-4d51-a04d-93dcb44e6a0a,2057bfa4-acc4-414c-a14c-9e04691e9bd2
+P05,6,@loc_MYS_mys-mr003-facade-window-capital-and-cornice_s0_v1,0,0–3,Az X/Y ablakkeret és kőív saját morphja nem jelenik meg.,4a043f41-7b3b-4224-b377-244877bd55de,1a907eb5-3122-4938-807d-c5d47bfb8f89
+P05,7,@loc_MYS_mys-mr011-slate-roof-to-curved-glazing_s0_v1,0,0–3,A palatetőből ívelt üvegtetővé alakulás nem látszik; a nyitó csarnok EF04-ből is ismert.,9fba43d5-8b5e-40df-bbde-6036d71aad94,b750726f-75fe-4ff8-bd48-2f360a043321
+P05,8,@loc_MYS_mys-mr012-chimney-shafts-to-spiral-crowns_s0_v1,0,0–20,Csavart kéménykoronák nem látszanak.,0484735d-71cb-4a1d-ba49-e5680207d449,45755c6c-d836-40e8-bb37-bee011aa99c6
+P05,9,@loc_MYS_mys-mw03-a-work-rule-change-admin_s0_v1,1,5.5–6.5;15–16,Az irodai csoport/laptopos kolléga jelenetei felismerhetők.,5d76868c-de71-4b38-a0c3-02429ed0f8f9,8aa5a0f3-2dc6-42c8-afb3-8d4b1d004583
+P05,10,@loc_MYS_mys-mw03-b-01-memory-view-05_s0_v1,1,8.5–11,"C01 íróasztala naptárral, nyomtatóval és iratokkal.",bba82dbb-98b2-4295-a1f3-659b11c77001,b043534f-c886-49d9-bf8e-f6b75f52b835
+P05,11,@loc_MYS_mys-mw03-b-02-memory-view-06_s0_v1,0.5,4–6.5,"Közös munka és papírok, de a referencia konkrét monitoros portálbeállítása nem.",027e9ae2-ffff-4219-9143-d9bf58666126,1702fd93-5445-4ff3-8e08-df30dfb46cf2
+P05,12,@loc_MYS_mys-mw03-c-01-memory-view-09_s0_v1,0.5,8.5–10,C01 papírt kezel; az éjszakai saját beállítás nem látszik.,afd0a2b6-65d9-4c98-b746-512c710f381b,764b0ba2-1ed5-41df-8f77-cd4385ab8f8b
+P05,13,@loc_MYS_mys-mw03-c-02-memory-view-01_s0_v1,0.5,15–16,Két ember és laptopos asztal; a konkrét mappafeladat nem azonosítható.,c3b6377f-2f65-4d19-9588-f820426b7ff2,28275f56-2f4c-49e7-88e0-56c91963df48
+P05,14,@loc_MYS_mys-mw03-c-03-memory-view-07_s0_v1,1,4–5.5,Két kolléga iratokat válogat C01 előtt: közvetlen képi egyezés.,0da3fbe0-51f4-4cdf-8a06-8496134397f9,c3a940c3-30b2-4c56-a67c-6257f2e70b10
+P05,15,@loc_MYS_mys-mw03-c-04-memory-view-08_s0_v1,1,5.5–6.5,A három kolléga és átadott mappa elrendezése közvetlenül felismerhető.,6d72803a-1fea-4a0f-a265-9eb9322fd672,85a05e6e-8a87-45f0-ada1-756f2a92b8c7
+P05,16,@loc_MYS_mys-mwp01-b-routes-rooms-documents_s0_v1,0,0–20,Az utazási/kulcsos/hoteles saját panelek nem azonosíthatók.,7f046551-7f87-447b-b8bd-38cc090c4f5e,104cee82-c924-42ef-9a82-18207528f186
+P05,17,@loc_MYS_mys-mwp01-c-routes-rooms-documents_s0_v1,1,3–4;6.5–8.5,A folyosó és a diploma panelje bekerül; ezek nem a P05 kért történeti eseményei.,956de5c1-41b0-49a5-9dc7-0e6ffb3f61e8,980c0f1b-dcb8-4f85-9a18-9bdfae4efb16
+P05,18,@loc_MYS_mys-reference-42-new-york-palace-historic-exterior-with-occupied-bay-depth_s0_v1,1,1–3;16–20,A szétnyíló történeti sarokház konkrét fázisa felismerhető.,d9c34cfc-0f7a-4a1d-898c-662ea46944b0,e1bdc3e3-3eb5-4c59-86c5-5999369ec609
+P05,19,@prop_MYS_mys-ty001-decimal-rating-glyphs-and-tints_s0_v1,1,0–3;10–14;16–20,"Halvány tizedes kártyák, eltérő mérettel és néhol világos számokkal.",4df5d85c-db91-43db-8569-fbcb705e89fe,41f533ae-777d-4873-a434-627177e2d8e3
+P05,20,@prop_MYS_mys-ty004-office-and-accounting-sign-lettering_s0_v1,0.5,16–20,"IRODA felirat van, a KÖNYVELÉS és a külön táblák nem azonosíthatók.",e104c737-4a02-45ed-bc39-ba08b9d4be91,1129b4ba-6277-49b8-9ab9-6788c7be8b2d
+P05,21,@loc_MYS_mys-w03-a-01-world-view-01_s0_v1,1,16–20,A nagy saroképület és kereszteződés elrendezése.,3448627e-7432-476f-a481-60acc68bedf8,14bee880-bc6c-406c-8ba1-be552fdf0036
+P05,22,@loc_MYS_mys-w03-a-02-world-view-02_s0_v1,0.5,10–14,Irodai ablak és utca; W03_B_02 ugyanezt konkrétabban hordozza.,e7f6a340-4bc1-499f-b276-c532cc2a6a69,99017740-e213-4dbb-8a9d-c927473eb13e
+P05,23,@loc_MYS_mys-w03-a-03-world-view-03_s0_v1,0,0–20,A saját metró-/irodabejáratos nézet Sharddal nem szerepel.,44a59cef-ee1b-4cf9-bd75-331baf355b63,9a5f844b-6dab-4424-9304-e9b3dd3174c5
+P05,24,@loc_MYS_mys-w03-a-04-world-view-04_s0_v1,0,0–20,A mintás Lechner-tető saját képe nincs.,bdf6af76-beeb-49f2-bd6b-ddf997ff2560,15fcdb1d-223d-4b71-9f96-07e30645a38a
+P05,25,@loc_MYS_mys-w03-b-01-world-view-05_s0_v1,0,0–20,A villamosközeli utca Gherkinnel nem szerepel.,441aed99-c331-44b2-b6a8-f1fdf8ad6fe1,c6979619-a90c-4a95-a384-890eeb09778d
+P05,26,@loc_MYS_mys-w03-b-02-world-view-06_s0_v1,1,10–14.7,"Többszintes nyitott irodasarok, könyvesbolt és nő kártyával.",b146984c-f058-4741-81f3-711a3ed960c0,8ae25114-7f42-41d9-8f66-8d200514ece9

@@ -1,0 +1,119 @@
+{
+  "review_date": "2026-09-11",
+  "repository_commit": "62f68aa597f274d65344550d9ed5c90bda3ec1c5",
+  "method": "Visual review of 2 fps samples across each complete clip, selected 6 fps detail intervals and full-resolution frames. Audio not assessed. Current Element attachments, not a historical submission snapshot.",
+  "sources": [
+    {
+      "clip": "P00",
+      "video_path": "/home/raxim/Downloads/p00.mp4",
+      "video_bytes": 1327216,
+      "video_sha256": "950e6849e9e6cda910ba0a10598f8b1ad8e476230deb0875ea3dd24cf6087582",
+      "stream": {
+        "width": 1920,
+        "height": 1080,
+        "pix_fmt": "yuv420p10le",
+        "r_frame_rate": "24/1",
+        "duration": "4.041667",
+        "nb_frames": "97"
+      },
+      "comparison_prompt": "03_film/production/P00/video.txt",
+      "comparison_prompt_sha256": "04f6a1c052cac7ed5e6e8340f7b795ec926c34a503a455191b84e52fd5225934",
+      "shortened_prompt_sha256": "16b82955b6c30fa4537136a8a5c178657c8f3183e04b8e2a01614efe94d38972"
+    },
+    {
+      "clip": "P01",
+      "video_path": "/home/raxim/Downloads/p01.mp4",
+      "video_bytes": 60203717,
+      "video_sha256": "a55f495a7e93dfb9a1d06d4296c83203df7da93e711e90a71e53c223c7d6ec77",
+      "stream": {
+        "width": 1920,
+        "height": 1080,
+        "pix_fmt": "yuv420p10le",
+        "r_frame_rate": "24/1",
+        "duration": "15.041667",
+        "nb_frames": "361"
+      },
+      "comparison_prompt": "03_film/production/P01/video.txt",
+      "comparison_prompt_sha256": "457ab348696a7fdc462bad1ae986177d859607bfa5b5f04f7cd6d36fab942b19",
+      "shortened_prompt_sha256": "a3944d2304090e589c5aec6351b71717a4dc88574a6de69ac207b93c5ed11b09"
+    },
+    {
+      "clip": "P02",
+      "video_path": "/home/raxim/Downloads/p02.mp4",
+      "video_bytes": 53039537,
+      "video_sha256": "30e8b62e7af1d48c5dc56036266bd47a1b3d883e78277f6633e792d1e5bdfa22",
+      "stream": {
+        "width": 1920,
+        "height": 1080,
+        "pix_fmt": "yuv420p10le",
+        "r_frame_rate": "24/1",
+        "duration": "15.041667",
+        "nb_frames": "361"
+      },
+      "comparison_prompt": "03_film/production/P02/video.txt",
+      "comparison_prompt_sha256": "2ad59bb5f6682f042c0e787296452aad9fda1c15970371be064390be8517fbb5",
+      "shortened_prompt_sha256": "d79fe44001eddfee406cbb05a138f1266a8d46061f5f743dbbb71de19f9184bb"
+    },
+    {
+      "clip": "P03",
+      "video_path": "/home/raxim/Downloads/p03.mp4",
+      "video_bytes": 57604238,
+      "video_sha256": "67df2941557d38ed16662e3c2fe01c59c29e9c0555524483bede241515357daf",
+      "stream": {
+        "width": 1920,
+        "height": 1080,
+        "pix_fmt": "yuv420p10le",
+        "r_frame_rate": "24/1",
+        "duration": "15.041667",
+        "nb_frames": "361"
+      },
+      "comparison_prompt": "03_film/production/P03/video.txt",
+      "comparison_prompt_sha256": "2f8f07e68ba506e1310afeefd2580a786194144ca5ed3aab4a4c25c5e7112c97",
+      "shortened_prompt_sha256": "20ca50aa4fd3f77ae1997120c785052b366439412bc9f3d5df647d6f61884da1"
+    },
+    {
+      "clip": "P04",
+      "video_path": "/home/raxim/Downloads/p04.mp4",
+      "video_bytes": 63556390,
+      "video_sha256": "b91382509a92d6cef5f044f1d39214d10c6157efc375d2f8898562800cff9559",
+      "stream": {
+        "width": 1920,
+        "height": 1080,
+        "pix_fmt": "yuv420p10le",
+        "r_frame_rate": "24/1",
+        "duration": "15.041667",
+        "nb_frames": "361"
+      },
+      "comparison_prompt": "03_film/production/P04/video.txt",
+      "comparison_prompt_sha256": "5c5562031d311fbbad2fa765fac10ed25f2d0bf8e9e4036addec36482f50b84b",
+      "shortened_prompt_sha256": "1fb89814a62cb74febdae32d1532bb76bcb45d8b339ed2f74fce2257c8922960"
+    },
+    {
+      "clip": "P05",
+      "video_path": "/home/raxim/Downloads/p05.mp4",
+      "video_bytes": 60778732,
+      "video_sha256": "aa35cf0c4079217e3370bfa5645a6eb4f70a859624a8264c9e644facfba02f0d",
+      "stream": {
+        "width": 1920,
+        "height": 1080,
+        "pix_fmt": "yuv420p10le",
+        "r_frame_rate": "24/1",
+        "duration": "20.041667",
+        "nb_frames": "481"
+      },
+      "comparison_prompt": "03_film/production/P05/video.txt",
+      "comparison_prompt_sha256": "51e17cd5533c854d5d5a1d87cddf8e25c2a5df9efe4448b1ee42561fda0157f3",
+      "shortened_prompt_sha256": "77da6d5edeeb25573592e4a52bfa65b0aa09d7013fa13b65d913a47df4bf09a2"
+    }
+  ],
+  "p05_last_frame": {
+    "path": "/home/raxim/Downloads/p05_last_frame.png",
+    "source": "p05.mp4",
+    "decoded_frame_count": 481,
+    "index_zero_based": 480,
+    "time_seconds": 20,
+    "width": 1920,
+    "height": 1080,
+    "png_sha256": "46feec458c8be591cbc9ba39d91ef1d3b53b8e584e39ceb9e5af3b0d94a4372a"
+  }
+}

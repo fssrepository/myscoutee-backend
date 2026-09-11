@@ -43,6 +43,21 @@ Video and narration are generated in Higgsfield. The full narration will be gene
 - **SCENE EDITOR GAP:** Seedance already generates music and ambience, but Cinema Studio needs a simple timeline to join clips and add separately editable narration over that soundtrack. The minimal Extend interface leaves basic assembly to downloading, external editing and re-uploading. With Supercomputer already available, this feels like a missing integration. Finishing an AI film should not require professional editing software—DaVinci Resolve cannot run on my machine because of GPU limitations.
 - **SUPERCOMPUTER INTEGRATION GAP:** We have not seen deeper project integration than an external AI assistant connected through MCP. The MCP limitations documented above would still block our workflow. Without direct asset management, clip assembly and separate narration controls, the added value over our existing OpenAI subscription is unclear, while chat consumes additional Higgsfield credits.
 
+## Prompt length versus visible result — P00–P05
+
+The observed sequences can be described in **19,994 characters instead of 68,912 (71% less text)**, while keeping all reference handles in the comparison prompts. This does not establish that the shorter prompts would generate the same result.
+
+| Clip | Shorter text | Story match* | Detail loss* | Reference match* |
+| --- | ---: | ---: | ---: | ---: |
+| P00 | 84% | ~90% | ~35% | ~100% |
+| P01 | 73% | ~55% | ~65% | ~60% |
+| P02 | 69% | ~65% | ~65% | ~50% |
+| P03 | 71% | ~60% | ~60% | ~65% |
+| P04 | 66% | ~75% | ~60% | ~55% |
+| P05 | 70% | ~30% | ~60% | ~60% |
+
+*Visual estimates from selected scored requirements and recognisable image-reference content (full / partial / not identifiable = 1 / 0.5 / 0), rounded to 5 percentage points. Detail loss includes simplification, omission and replacement. Reference match is visible correspondence, not measured internal model use. Text reduction describes a retrospective rewrite of the observed result, not a tested equivalent generation prompt. Audio is excluded; P00 is the corrected ident.*
+
 ## 🔗 Resources
 
 - Two-volume MyScoutee Amazon book;

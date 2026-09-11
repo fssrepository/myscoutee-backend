@@ -26,7 +26,7 @@ P02,story,Kossuth-jellegű emlékmű kőből kibomolva,0,10–13,"Távoli oszlop
 P02,story,Mély árkádsor alakulása,1,12–13,A szögletes nyílásokból egymás mögötti boltívek lesznek.
 P02,story,"Bal oldali piros busz, villamos és mozgó záró utca",1,13–15,"A busz kimegy balra, mögötte a sárga villamos és az üvegtető marad."
 P03,story,Előző üvegtetős-villamosos kép pontos folytatása,0.5,0–4.5,A kompozíció témája egyezik; a történeti összeillesztésnél jelzett geometriai eltérés miatt nem tekinthető pontos képillesztésnek.
-P03,story,Üvegtetőből nagy pályaudvari csarnok,1,4.5–7.5,A szétterülő üvegrácsok a Nyugati-reference jellegzetes homlokzatához vezetnek.
+P03,story,Üvegtetőből nagy pályaudvari csarnok,0.5,4.5–7.5,"A nagy pályaudvari csarnok megvan, leginkább R031 fázisaival egyezik; R032 pontos Nyugati-célhomlokzata nem egyértelmű."
 P03,story,Opera teljes homlokzata és árkádjai,0.5,4–5.5,Díszes sarokhomlokzat/árkádos épület jelenik meg; a teljes külön Opera-cél kevésbé olvasható.
 P03,story,"Nelson, National Gallery és külön Hősök tere",0,0–7.5,"A teljes, elkülönített landmark-sor nem azonosítható."
 P03,story,C11 és C01 a jegykapunál,1,7.5–9.3,"A két férfi, az olvasó használata és a kapusor felismerhető."
@@ -73,3 +73,21 @@ P04,detail,Több mélységben egyszerre aktív átalakulások,0.5,teljes klip,Fo
 P04,detail,Jelenbeli sétáló és emlékbeli szereplő végig térben elkülönül,0.5,teljes klip,"Az emlékszereplők megjelennek, de a jelenbeli sétáló összefüggő külső útja nem követhető végig."
 P04,detail,"Kártyák: stabil szám/tulajdonos, előírt kis méret és szín",0.5,utcai részek,"A tizedes kártyák felismerhetők, de méretük gyakran fejméretű vagy nagyobb; ez nem az előírt 0.8 × 0.35 fejméret."
 P04,detail,"C01 saját kártyája csatolt, olvashatatlan és semleges",,utcai részek,A jelenbeli C01 saját kártyáját a minták nem mutatják kellően egyértelműen.
+P05,story,IRODA/KÖNYVELÉS munkavárosi utca,0.5,16.3–20,"IRODA olvasható, KÖNYVELÉS nem különül el."
+P05,story,Gherkin és Shard külön látóirányban,0,0–20,"A két jellegzetes torony külön, olvasható bemutatása hiányzik."
+P05,story,Történeti sarokból New York-palota/Akadémia-formák,0.5,0–3;16–20,A R042 jellegű sarok és ablaktestek átalakulnak; a konkrét teljes cél kevésbé olvasható.
+P05,story,Lechner mintás tetőcserepei,0,0–20,A megkülönböztető színes tető nem látszik.
+P05,story,C01 számítógépes hívása hosszú munkanapon,0.5,4–5.5;14.7–16.3,"Számítógépes munka, telefon és videohívás látható, de más szereposztással/időzítéssel; az elhúzódó munkanap nem olvasható ki."
+P05,story,"Könyvelő C01 mellett iratokkal, naptárral és nyomtatóval",0.5,4–6.5;8.5–11,A munkakörnyezet és papírkezelés megvan; a teljes közös könyvelői gesztussor több külön beállításra esik.
+P05,story,Három eltérő adminisztratív rekord külön szobákban,0.5,11–14.7,"Több megvilágított irodaszint látszik, de a három eltérő rekord és szereplő-kiosztás nem különül el."
+P05,story,"Eltolt asztalok, szétcsúszó padlók és össze nem érő papír/kő csíkok",0,11–14.7,"Az ablakok kész irodaszinteket mutatnak, a konfliktus fizikai koreográfiája nem olvasható."
+P05,story,Adószabály-változás és javítandó bevallás,0.5,8.5–10,C01 papírt ellenőriz naptár és nyomtató mellett; a szabályváltozás konkrét jelentése nem világos.
+P05,story,Papírszalagból üres mezős homlokzati panel,0.5,6.5–8.5,"A felső lap felpöndörödik, de nem lesz követhetően homlokzati panel."
+P05,story,Külön egészségbiztosítási űrlap hiányzó mezővel,0,0–20,A külön biztosítási probléma nem olvasható.
+P05,story,Delegálás és hozzáférés közös portáljelenetben a végén,0,16.84–20,A klip vége utcakép; nem könyvelővel közös portál/iratkezelés.
+P05,detail,"Egyetlen megszakítatlan kameraút, áttűnés nélkül",0,teljes klip,"Több kész belsőre váltás, pl. folyosó–iroda kb. 4 s; utcai beállításváltások is vannak."
+P05,detail,"Követhető forrásanyagból cél, kész terek leleplezése nélkül",0.5,0–3;6.5–8.5;10–14,Kiálló épülettestek és pöndörödő papír vannak; a részletes anyagláncokat kész terek váltják.
+P05,detail,Több mélységben egyszerre aktív átalakulások,0.5,0–3;16–20,"Néhol épület és forgalom együtt mozog, a belsők többnyire önálló jelenetek."
+P05,detail,Jelenbeli és emlékbeli C01 végig térben elkülönül,0.5,teljes klip,"C01 felismerhető az irodákban, de a külső sétája és az emlékek térkapcsolata nem folyamatos."
+P05,detail,"Kártyák stabil mérete, száma, tulajdonosa és színe",0.5,0–3;10–14;16–20,"Tizedes kártyák vannak, de túlméretesek; a végén a 9.2 alatt külön arcképszerű elem látszik."
+P05,detail,"C01 saját kártyája csatolt, olvashatatlan és semleges",,utcai részek,Az utcai főalak-azonosság nem elég biztos a saját kártya pontozásához.
