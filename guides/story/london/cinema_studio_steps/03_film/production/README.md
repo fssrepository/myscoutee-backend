@@ -102,6 +102,176 @@ ffmpeg -v warning \
 
 For each later join, review the actual outgoing and incoming footage and record the chosen transition and overlap here. The P01–P02 dissolve is the current review version, not a blanket instruction to dissolve every boundary. Account for overlaps when placing narration and the final title; keep whole narration sentences and check the rendered picture/audio timing. Rebuild from originals for each revision so encoding loss and prior transitions do not accumulate.
 
+### P02 → P03 alignment revision
+
+The creator observed a backward jump and upward displacement at this join. P03 starts in the expected canopy-and-tram scene, but its opening geometry is slightly smaller and displaced relative to P02's final image. A background-feature fit on the upper architecture was used to separate this framing mismatch from independently moving pedestrians and vehicles.
+
+Current review output: `p01_p03_preview_aligned.mp4`. It retains the existing P01–P02 dissolve and replaces the direct P02–P03 join with the following trimmed and aligned entrance. Visual acceptance of this revision remains pending.
+
+| Edit | Exact preview setting |
+|---|---|
+| P03 source | Original `p03.mp4`, 1920×1080, 24 fps, 361 frames |
+| Removed frames | Source indices 0 and 1 (zero-based), 2/24 s |
+| First retained frame | Source index 2; 359 P03 frames remain |
+| Spatial target | Original P02 final frame, index 360 |
+| Initial transform | Source-to-output affine matrix below, in full-resolution pixels |
+| Correction duration | First 30 retained P03 frames, indices 0–29 of the trimmed clip |
+| Correction decay | `t = n / 29; w = 1 - (3*t*t - 2*t*t*t); A(n) = I + w*(M-I)` |
+| After retained frame 29 | Identity transform; no continuing crop, zoom or translation |
+| Resampling in preview | OpenCV `INTER_CUBIC`, `BORDER_REFLECT_101` for small exposed edges |
+| P03 audio | Trim original audio from 0.083333333 s to 15.041666667 s, reset timestamps |
+| P02–P03 transition | Direct join of corrected frames; no added picture dissolve or sound effect |
+| Existing preview audio | Pad to its video duration, then trim at 29.791666667 s before appending P03 audio |
+
+```text
+M = [[1.0116949679854472, -0.0019158942211959815, 5.572761497034969],
+     [0.0019158942211959815, 1.0116949679854472, 2.698868875843136]]
+I = [[1, 0, 0],
+     [0, 1, 0]]
+```
+
+The matrix maps source pixel coordinates to corrected output coordinates. Apply it before any preview scaling. The first corrected frame aligns the incoming architecture to the preceding ending; the smooth decay releases the correction over approximately 1.25 s. This does not claim pixel-perfect continuity of independently moving people or objects.
+
+For this quick review only, the existing `p01_p02_preview_dissolve.mp4` was reused and the corrected P03 was appended. Preview processing uses 8-bit BGR / yuv420p, H.264 CRF 18 and AAC 192 kb/s. These settings are not the final-quality workflow.
+
+### P02 → P03 revision 2: contrast match and short dissolve
+
+The creator still observed a small jump and a washed-out P03 entrance in the first alignment preview. Revision 2, `p01_p03_preview_aligned_color_v2.mp4`, supersedes that direct-join review version. It retains the two-frame P03 trim and the 30-frame spatial correction above, then adds the following processing. Acceptance remains pending creator review.
+
+Static upper-architecture samples showed elevated shadow levels and reduced contrast in the incoming image. After spatial alignment, apply `corrected = input * gain + offset` independently to B, G and R channels. Coefficients below use decoded preview code values in the 0–255 range:
+
+```text
+B: gain 1.080217758202677,  offset -11.16006403170023
+G: gain 1.0804238251311418, offset -13.325359396944952
+R: gain 1.0563823762283022, offset -10.879140492164233
+```
+
+For retained P03 frame `n` from 0 through 47, use `t=n/47` and `w=1-(3*t*t-2*t*t*t)`. Effective gain is `1+w*(gain-1)` and effective offset is `w*offset`. Clip the preview result to 0–255. From frame 48 onward, apply no colour correction. This releases the match smoothly over approximately two seconds. The coefficients describe encoded RGB sample values, not linear-light values; final replay must account for sample range and colour conversion. For an equivalent normalized RGB implementation, divide offsets by 255 and retain the gains. Do not reduce the final processing precision to 8-bit to reuse these coefficients.
+
+At the P02–P03 join, apply a linear picture cross-dissolve of 0.25 s (approximately six frames), beginning at 29.541666667 s in the current P01–P02 preview. Apply a matching 0.25 s triangular audio crossfade. This replaces the direct join in revision 1; the P01–P02 transition remains unchanged. Recalculate this offset from original-source rendered frame counts during final assembly, including the earlier overlap. This short blend softens residual differences in independently generated motion; it is not a guarantee of exact motion continuity.
+
+### P02 → P03 revision 3: four motion-interpolated bridge frames
+
+The creator confirmed the colour was now satisfactory but identified a remaining motion jump resembling missing frames, requesting additional frames rather than further trimming. Review candidate `p01_p03_preview_bridge4_v3.mp4` retains revision 2's spatial and colour corrections and the existing two-frame P03 source trim. It replaces the P02–P03 six-frame overlap with four newly interpolated frames inserted between the complete P01–P02 preview and corrected P03. This is a four-frame trial, not a confirmed optimum or recovered original footage. The P01–P02 dissolve remains unchanged.
+
+Bridge endpoints: A is frame 714 of `p01_p02_preview_dissolve.mp4` (its last frame); B is frame 0 of the spatially and colour-corrected P03 segment (original source index 2). The four intermediate times are `t = 1/5, 2/5, 3/5, 4/5`. Insert them at 24 fps, adding 4/24 s without overlapping either endpoint clip. In this preview, the bridge starts at 29.791666667 s and the retained P03 segment starts at 29.958333333 s.
+
+Preview interpolation uses OpenCV DIS optical flow, `DISOPTICAL_FLOW_PRESET_MEDIUM`, computed in both directions on grayscale 960×540 endpoint images. Resize each flow field to 1920×1080 and multiply displacement vectors by two. With forward flow F (A→B), backward flow R (B→A), and output coordinate grid X, calculate `warpA = remap(A, X-t*F)` and `warpB = remap(B, X-(1-t)*R)`, using cubic interpolation and reflected borders. The output is `(1-t)*warpA + t*warpB`. Check the walking limbs, tram edges and occlusions for interpolation artefacts before accepting this candidate.
+
+For the inserted audio interval, take the last 1/6 s of the padded P01–P02 audio and the first 1/6 s of trimmed P03 audio. Crossfade these excerpts with triangular curves over 1/6 s to make a bridge, and insert it between the full adjacent audio segments. This repeats small ambient excerpts; review the join by ear before final acceptance. No narration or newly generated audio is added.
+
+Final replay must compute the corrected endpoint images from originals at high precision. Low-resolution grayscale flow estimation is only a motion-analysis proxy; remap and blend the original-resolution, at-least-10-bit images in a high-precision pipeline. Never reuse these 8-bit interpolated preview frames for the final master.
+
+### P02 → P03 revision 4: hold opening geometry
+
+The creator described a spring-like movement and differing endpoint geometry. The earlier 30-frame release of the affine correction could introduce an opposing scale/position movement during the opening camera travel. Review candidate `p01_p03_preview_bridge4_v4.mp4` therefore retains the same affine matrix throughout the opening street section. It keeps revision 3's four interpolated bridge frames, source trim and audio bridge, and revision 2's colour correction unchanged.
+
+For retained P03 frames 0–164, apply the full matrix M. Release it only during the later rapid scene transition: for retained frame `n=164..175`, set `t=(n-164)/11`, `w=1-(3*t*t-2*t*t*t)`, and `A=I+w*(M-I)`. From frame 176 onward use the identity transform. The release corresponds to original P03 source frames 166–177 (approximately 6.92–7.38 s). This replaces the 30-frame spatial decay in all earlier recipes; do not apply both decays. Colour still releases over the original 48 retained frames. Review acceptance and any remaining generated motion mismatch are pending.
+
+### Revision 4 rejected — motion and audio diagnosis
+
+The creator rejected the spring-like geometry and reported an audio jump. Revisions 3 and 4 are experimental, not accepted final edit recipes. Do not automatically replay their optical-flow bridge or repeated audio excerpts into the final master. The colour match was separately reported satisfactory.
+
+Frame comparison found no geometric edit introduced at preview seconds 26–29 relative to the earlier P01–P02 preview; mean absolute decoded 8-bit differences were approximately 0.9–1.5 levels from additional encoding. The P02–P03 bridge begins at 29.791667 s. A perceived event around 27 s must therefore also be checked against the original P02 internal transition. All inspected video streams are 1920×1080 at 24 fps; the fitted geometry correction uses uniform scale and rotation, not separate horizontal/vertical stretching.
+
+Background feature measurements against P02 frame 360 show differing source camera scale trajectories: the correction scale for P02 frame 344 is about 0.98994 and approaches 1.0 by frame 360; P03 frame 0 requires about 1.01425, decreasing to about 0.96352 by frame 48. Thus the originals themselves reverse their apparent scale movement across the join, with additional small P03 fluctuations. The early affine decay and local optical-flow interpolation can add further apparent elasticity. More interpolated frames alone do not establish continuous camera movement.
+
+Next correction must address the measured camera trajectory as a whole, retain the accepted colour, and avoid locally deforming static architecture. Rework the audio join without replaying boundary snippets; revision 3/4's repeated excerpts are a potential audible discontinuity. No corrected successor to revision 4 has yet been accepted.
+
+### P02 → P03 original-quality comparison: constant alignment
+
+The creator requested a fresh comparison from original `p02.mp4` and `p03.mp4`, preserving quality, then identified a remaining leftward jump. This candidate supersedes the experimental preview recipes for the current review; it is not yet visually accepted. It contains P02 and P03 only. The preceding uncorrected comparison is `p02_p03_original_quality.mp4`, whose video and AAC packet payloads match the two originals in order.
+
+Corrected outputs in the local Downloads directory: `p02_p03_spatial_aligned_lossless.mkv` (FFV1 master) and `p02_p03_spatial_aligned_lossless.mp4` (lossless HEVC copy for upload testing). Higgsfield acceptance of these exports has not been verified. MP4 uses the originals' HEVC / 10-bit format family, with the `hvc1` tag.
+
+Retain all 361 frames of each original: 722 frames at 24 fps, 1920×1080, with P03 beginning at frame 361 / 15.041667 s. P02 decoded pixels remain unchanged. Apply the following constant source-to-output matrix to every P03 frame, including its ending. There is no animated release, frame removal, inserted bridge, dissolve or colour correction in this comparison.
+
+```text
+Y plane matrix M:
+[[1.014711517037021, -0.001650698165160679, 2.7279979513516137],
+ [0.001650698165160679, 1.014711517037021, 1.6022900500953343]]
+
+U and V plane matrix C:
+[[1.014711517037021, -0.001650698165160679, 1.367264180393772],
+ [0.001650698165160679, 1.014711517037021, 0.8052355788482126]]
+```
+
+Decode directly to planar `yuv420p10le`: Y is 1920×1080, U and V are 960×540, each stored as unsigned 16-bit samples. Warp each plane separately with OpenCV `warpAffine`, `INTER_CUBIC`, `BORDER_REFLECT_101`, using M for Y and C for chroma. C uses `C.translation = (M.translation + M.linear*[0.5,0.5] - [0.5,0.5])/2`. Limit cubic overshoot to the 0–1023 sample domain and retain 10-bit output precision. Preserve limited-range BT.709 tags. This geometric resampling changes P03 pixels and slightly crops/enlarges the view; lossless encoding preserves the resulting samples without further compression loss. No separate horizontal/vertical scale adjustment is applied.
+
+Encode the master with FFV1 level 3, coder 1, context 1, slice CRC enabled and `yuv420p10le`. Copy the AAC stream from the original stream-copy comparison, without re-encoding or repeated boundary excerpts. That comparison required a roughly 22 ms AAC timestamp adjustment at the join; original compressed audio payloads are preserved, but this does not establish perceptually continuous sound.
+
+Create the MP4 from the lossless master with:
+
+```bash
+ffmpeg -i p02_p03_spatial_aligned_lossless.mkv \
+  -map 0:v:0 -map 0:a:0 \
+  -c:v libx265 -preset fast \
+  -x265-params 'lossless=1:pools=2:frame-threads=2' \
+  -pix_fmt yuv420p10le -tag:v hvc1 -vsync cfr -r 24 \
+  -c:a copy -movflags +faststart \
+  -n p02_p03_spatial_aligned_lossless.mp4
+```
+
+Validation of the FFV1 master found 722 decoded frames matching the encoder-input SHA-256 hashes per clip. P02's decoded samples are unchanged, and all 944 original AAC packet payloads are retained in order. The master is 796,212,755 bytes; lossless compression is substantially larger than the approximately 106 MiB original stream-copy join. Changing the container to MP4 does not itself reduce size. The creator questioned this size; encoding a smaller delivery copy awaits clarification of the earlier no-quality-reduction requirement.
+
+The creator also reported a residual saturation/colour difference. A robust fit on aligned static architecture in the original 10-bit planes found a larger luminance/contrast difference than chroma difference. Trial code-value mappings are Y `1.0501197581387722*x - 41.15201880260138`, U `1.0179209131189408*x - 6.4400212624719915`, V `1.0302460501176716*x - 16.614469773527233`. On the selected samples, median absolute Y error falls from 23.29 to 13.40 levels; U from 4.61 to 3.25 and V from 3.67 to 2.94. These are measured candidate coefficients, not an accepted grade, and are not applied to the constant-alignment exports above. A frame-pair fit does not establish the correct grade for all later P03 scenes.
+
+The uncorrected `p03_last_frame.png` remains the original P04 reference. Because this candidate also transforms P03's ending, later final assembly must explicitly reconcile that geometry with P04; do not silently replace the original reference or assume the correction ends before the boundary.
+
+### Current P02 → P03 review: original-bitrate MP4 with entrance colour match
+
+The creator reported the constant spatial alignment approximately satisfactory, but still saw a colour/saturation difference and rejected the excessive lossless export size. The following review copy implements that correction at the original combined video bitrate. This supersedes the pending size clarification above: the latest instruction permits an original-bitrate delivery encode, while keeping resolution, frame rate and 10-bit precision. Lossless files are not required as the review deliverable.
+
+Output: `p02_p03_aligned_color.mp4` in Downloads. Render from the original stream-copy `p02_p03_original_quality.mp4`, whose encoded video payloads are unchanged from P02 followed by P03. Retain all 722 frames. Apply the exact constant M/C plane transforms recorded above to P03 only. Do not introduce another spatial correction, animated geometry, optical-flow bridge, trim or dissolve.
+
+Apply the measured Y/U/V colour mappings above after spatial resampling, only during P03 frames 0–47 (zero-based). With `t=n/47` and `w=1-(3*t*t-2*t*t*t)`, use effective gain `1+w*(gain-1)` and offset `w*offset`. At frame 47 the grade reaches identity, and later frames remain ungraded. Process unsigned 10-bit planes through float64 arithmetic, round to nearest integer and constrain to 0–1023. This two-second release limits a boundary colour fit to the entrance rather than grading unrelated later memories.
+
+Encode HEVC Main10 with libx265 preset `fast`, `pools=2:frame-threads=2`, video bitrate `29120847` bits/s (measured from the original combined stream), `yuv420p10le`, `hvc1`, limited-range BT.709, 1920×1080 at 24 fps, and MP4 faststart. Copy the original AAC packets. This is a lossy delivery encode at the source's average bitrate, not pixel-identical or lossless; retain the originals and exact edit settings for final assembly. The target is approximately the original combined file size, rather than the 0.8–1+ GB lossless experiments. Perceptual acceptance of the colour correction remains pending.
+
+Validation: the completed colour-matched MP4 is 115,784,444 bytes (115.8 MB / 110.4 MiB), compared with the original join's 110,596,623 bytes. Actual average video bitrate is 30,508,731 bits/s after single-pass rate control. Full decoding confirms 722 frames, 1920×1080, 24 fps, `yuv420p10le`, limited-range BT.709, and all 944 original AAC packet payloads unchanged. The corrected boundary image pair was inspected; creator playback acceptance remains pending. The exact spatial and colour settings are recorded above for reproduction from the originals.
+
+### P02 → P03 smoothing recipe for later assembly: short picture and sound overlap
+
+The creator still observed an abrupt picture change and a small sound jump in `p02_p03_aligned_color.mp4`, then reported softer detail. A combined candidate was started as `p02_p03_aligned_color_smooth.mp4`, but the creator clarified that the deliverable must be a standalone corrected P03 for Higgsfield upload. The combined render was stopped and its incomplete output moved out of Downloads. The overlap settings below are a proposed later-assembly recipe, not a completed or accepted deliverable. Apply them to original P02 and the standalone corrected P03 described below; do not apply P03's spatial/colour correction twice.
+
+Picture: overlap P02 source frames 353–360 with corrected P03 source frames 0–7. For overlap index `j=0..7`, blend 10-bit planes in float64 with `t=(j+1)/9`, output `(1-t)*P02[353+j] + t*corrected_P03[j]`, rounded and constrained to the 10-bit domain. Retain P02 frames 0–352 beforehand and corrected P03 frames 8–360 afterward. This yields 714 output frames / 29.75 s at 24 fps. The eight-frame overlap starts at output frame 353 / 14.708333 s and ends before frame 361 / 15.041667 s. No optical-flow deformation, animated alignment release or additional synthetic bridge frames are used. Blended moving edges can soften temporarily during the 0.333333 s transition; review the actual playback before acceptance.
+
+Sound: measured half-second windows around the previous direct join differed by approximately 5.8 dB RMS. Trim each original 32 kHz stereo audio stream to 481333 samples, reset timestamps, then apply `acrossfade=ns=10667:c1=qsin:c2=qsin`. This overlaps the original audio in place, with no repeated boundary excerpts. The resulting 951999 samples span 29.74996875 s. Intermediate sound is floating-point PCM; the delivery MP4 encodes AAC at 288 kb/s. Audio is necessarily re-encoded for this edit, unlike the preceding direct-join export.
+
+Detail: two static-architecture crops of the preceding MP4 had approximately 3–5% lower Laplacian variance than its pre-encode colour-corrected image; this is a local metric, not a perceptual sharpness percentage. The inspected opening pair had approximately 46.2 dB RGB PSNR. The smoothing revision changes the encoder from x265 `fast` to `medium`, with `sao=0:strong-intra-smoothing=0`, retaining the 29,120,847 bits/s target, HEVC Main10, 1920×1080, 24 fps and BT.709. No sharpening filter is added. The final bitrate and size depend on single-pass rate control; visual and sound acceptance remain pending creator review.
+
+### Current deliverable: standalone P03 for Higgsfield upload
+
+The creator explicitly requires corrections in the individual P03 clip, followed by assembly later. Deliver `p03_fixed.mp4` from original `p03.mp4` only. Preserve all 361 source frames, their order, 1920×1080, 24 fps, 10-bit limited-range BT.709 and the original AAC packet content. No P02 frames, picture overlap, audio crossfade, source trim or extra padding are baked into this file.
+
+Apply constant geometry M/C to all P03 frames and the recorded colour match with the 48-frame release. Encode once from the original with HEVC Main10 / `hvc1`, x265 preset `medium`, `pools=2:frame-threads=2:sao=0:strong-intra-smoothing=0`, and target bitrate `30342392` bits/s, measured from original P03. Copy audio without re-encoding. No sharpening filter is added. The higher-quality encoder settings address the small encoding-related detail loss without changing resolution or deliberately increasing file size to a lossless master.
+
+The short picture and sound overlap above belongs to subsequent assembly. Uploading this corrected clip alone does not apply or validate that boundary transition. Keep original `p03.mp4` unchanged and preserve this recipe for final reproduction. The final frame of the corrected clip has different geometry from the original; provide `p03_fixed_last_frame.png` as a separate continuation reference without overwriting the original `p03_last_frame.png`.
+
+Completed validation: `p03_fixed.mp4` is 52,326,264 bytes (52.3 MB), duration 15.05 s including audio. Full decoding confirms all 361 video frames, HEVC Main10, 1920×1080, 24 fps. All 471 original AAC packet payloads match the source. Single-pass video rate control produced an actual average of 27,546,825 bits/s against the 30,342,392 bits/s target; this is a lossy delivery encode, not a lossless master. `p03_fixed_last_frame.png` was extracted from this completed file's final decoded frame as 1920×1080 RGB48 PNG. Neither file has been uploaded or attached to a Higgsfield Element by this edit.
+
+The creator requested completion of this version and continuation with the remaining clips, accepting that the join may remain imperfect. Treat this as the current working P03, without claiming the proposed later-assembly transition has already been rendered or approved.
+
+### Current assembled review: copy P02 + fixed P03 without encoding
+
+The creator requested a simple copy join first, explicitly excluding further whole-video encoding or transitions. Current output: `p02_p03_fixed_joined.mp4`, assembled from original `p02.mp4` and completed `p03_fixed.mp4`. The attempted full combined transition render was stopped. Neither input is overwritten. There is no new spatial/colour processing, trim, frame overlap or audio crossfade in this assembly.
+
+Direct MP4 concatenation initially exposed differing track timescales and HEVC parameter sets. Correct the packaging without re-encoding: remux each input to MPEG-TS with `-c copy -bsf:v hevc_mp4toannexb`, concatenate those two TS files with the concat demuxer, then remux to MP4 with `-c copy -bsf:a aac_adtstoasc -tag:v hev1 -movflags +faststart`. Retaining each segment's in-band HEVC parameter sets is necessary; equal packet payloads alone did not prove a valid direct MP4 join. Validate decoded frames across both complete clips, not only packet counts.
+
+Completed validation: all 722 decoded output frame hashes match the input frames in order, with no decoder errors. All 944 AAC packet payloads match the inputs. The MP4 is 105,359,877 bytes (105.4 MB), with 30.144 s container duration, 1920×1080 and 10-bit HEVC. Container timestamps were remuxed; no image or audio encoding occurred in this final assembly.
+
+If the creator rejects this direct join, edit only the necessary boundary sections and copy all other encoded footage unchanged. Determine safe decoder/keyframe boundaries before cutting HEVC; do not promise an arbitrary few-frame smart render without checking prediction dependencies. No further full-video re-encode is authorized merely to adjust a short transition. The original `p02.mp4` and `p03.mp4` remain the recovery sources; `p03_fixed.mp4` is a separate corrected derivative.
+
+### Final-quality replay requirements
+
+Reapply the recorded trims, overlaps and affine correction directly to the original downloaded clips. Retain their original 1920×1080 resolution, 24 fps and at least 10-bit image precision throughout processing and output. Do not use the 8-bit preview intermediates, OpenCV's default 8-bit video decoding path, or the preview CRF/bitrate settings for the master. No bitrate reduction is authorized for final assembly. Render changed frames through a high-precision pipeline into a lossless master/intermediate; preserve audio without further lossy generations. Transition blending and geometric resampling change pixels, but their outputs must not incur an additional lossy encoding step in that master. Any separate delivery compression requires its own agreed settings.
+
+Replay and inspect every corrected join on the original sources. Use measured rendered frame/sample counts for narration placement; the existing preview has rounding and padding that must not silently become final timing decisions. Keep the final ident and title placement consistent with the resulting timeline.
+
+### P03 final frame for P04
+
+`p03_last_frame.png` is extracted from original `p03.mp4`, decoded frame index 360 (the 361st frame), at 1920×1080. It is not extracted from the corrected or compressed preview. The P04 reference container is `@loc_MYS_mys-film-v03-end-frame_s0_v1`; extraction alone does not attach the PNG to that Element.
+
 ## Eligibility and spending
 
 C07 failed face/IP eligibility in the UI and needs the already requested replacement original fictional character image, attached to its existing Element. The two MW01_C_03 / MW01_C_04 checks looped; first retry them in the smaller request rather than assume replacement images are needed. Element-level completed status alone is not a passed image eligibility check. P02 uses all three affected Elements.
