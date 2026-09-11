@@ -113,9 +113,11 @@ def transition(media, work):
            "-y", suffix)
     check_equal(frame_hashes(prefix), original[2][:354], "safe P02 copied prefix")
     check_equal(frame_hashes(suffix), original[3][176:], "safe P03 copied suffix")
-    print("Encoding only the 179-frame boundary block; copying 997 other frames.", flush=True)
     if not bridge.exists():
+        print("Encoding only the 179-frame boundary block; copying 997 other frames.", flush=True)
         render_bridge(media, bridge)
+    else:
+        print("Reusing the rendered boundary; no new picture encoding.", flush=True)
     require_video(bridge, 179)
     local_audio(media, work)
     for name, path in (("prefix", prefix), ("bridge", bridge), ("suffix", suffix)):
@@ -134,16 +136,17 @@ def transition(media, work):
     check_equal(audio[-450:], audio_hashes(sources[3])[21:471], "P03 copied AAC suffix")
     parts = [sources[0], sources[1], boundary]
     for i, path in enumerate(parts[:2]):
-        transport(path, work / f"part{i}.ts", audio=True)
         transport(path, work / f"video{i}.ts")
+        ffmpeg("-i", path, "-map", "0:a:0", "-c", "copy", "-f", "mpegts",
+               "-y", work / f"audio{i}.ts")
     # Do not pass the mixed-parameter boundary MP4 through hevc_mp4toannexb again:
     # reinjecting its initial extradata at later IDRs can overwrite the new SPS/PPS.
     # Keep each original video TS segment and concatenate it exactly once.
     ffmpeg("-i", boundary, "-map", "0:a:0", "-c", "copy", "-f", "mpegts",
            "-y", work / "audio2.ts")
     audio_manifest = work / "all_audio.txt"
-    audio_manifest.write_text("file 'part0.ts'\nduration 4.041666667\n"
-                              "file 'part1.ts'\nduration 15.041666667\n"
+    audio_manifest.write_text("file 'audio0.ts'\nduration 4.041666667\n"
+                              "file 'audio1.ts'\nduration 15.041666667\n"
                               "file 'audio2.ts'\nduration 29.916666667\n")
     manifest = work / "all.txt"
     manifest.write_text("file 'video0.ts'\nduration 4.041666667\n"
