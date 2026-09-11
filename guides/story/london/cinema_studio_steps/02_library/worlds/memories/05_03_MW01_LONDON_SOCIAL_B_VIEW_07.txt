@@ -26,6 +26,7 @@ Keep this source image sharp and literal so faces, furniture and room layout rem
 This image must be a usable literal location/event reference, not an illustration of an idea.
 
 IDENTITY ANCHORS — REQUIRED:
+Use the newly selected C07 character image as the sole identity source for the housemate: the shorter, slim adult man with receding ash-brown hair, grey at the temples, grey-blue eyes and a clean-shaven face. Preserve the actual facial proportions and narrow build in that image. Location references supply room geometry and materials only; their occupants do not override this casting. C08 and C09 supply the spouse and child identities only within the assigned family photograph or phone screen.
 Preserve the exact identities, age, hair, body proportions and context-appropriate wardrobe supplied for this scene. Apply a character reference only where that person appears; incidental people do not become additional named cast.
 
 PURPOSE:
@@ -38,7 +39,9 @@ Additional detail images of the same place retain that memory and its establishe
 ASSIGNED COMPOSITION — ORIGINAL VIEW 07, ONE IMAGE:
 Ordinary memory of a Hungarian housemate living in London while spouse/child/home obligations remain in Hungary. Show a modest shared-room context with a family photograph / call / small domestic cue, not explanatory text and not a melodramatic separation scene.
 
-Place the mortgage housemate in the same modest room beside one small family photograph showing the established spouse and child. Keep the photograph a physical print or actual device image with frame thickness or screen edge, not a floating memory window. Show his ordinary belongings and posture in the room; the family remains elsewhere rather than appearing life-size beside him.
+Seat C07 on the edge of one of the established beds, beside the bedside surface bearing a small framed family photograph of C08 and C09. Keep both shoes grounded in the narrow floor gap, with the mattress compressed beneath his seated weight. One hand rests on his knee and the other lies beside the photograph, with separate fingers and a clear contact shadow. He wears the faded dark olive work jacket, charcoal crew-neck T-shirt, dark trousers and worn brown lace-up shoes from the new character image. His posture is quietly attentive; avoid a staged expression of distress.
+
+The photograph is one physical print in a small frame, with glass, edge thickness and a supported base. C08 and C09 retain their reference identities and ordinary clothing within the photograph; they remain in Hungary, not physically in the London room. Retain the accepted two beds, narrow floor gap, window, bedside lamp, room entrance and ordinary belongings. Show the near furniture edge and rear room boundary at separate depths. Keep the clothes rail accessible for the companion view. This image establishes the seated moment with the family photograph; the separate live phone-call action belongs to MW01_C_03.
 
 FINAL CHECK:
 One full-frame 16:9 image at selected 2K. Direct memory scene, no score cards, no present-city overlay, no printed instruction labels.

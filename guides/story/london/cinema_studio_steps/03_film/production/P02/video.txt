@@ -13,9 +13,9 @@ C08 @char_MYS_mys-c08-fx-mortgage-spouse_s0_v1
 C09 @char_MYS_mys-c09-fx-mortgage-child_s0_v1
 MW01_B_01 @loc_MYS_mys-mw01-b-01-memory-view-05_s0_v1
 MW01_B_02 @loc_MYS_mys-mw01-b-02-memory-view-06_s0_v1
-MW01_B_03 @loc_MYS_mys-mw01-b-03-memory-view-07_s0_v1
+MW01_B_03 @loc_MYS_mys-mw01-b-03-memory-view-07_s1_v1
 MW01_B_04 @loc_MYS_mys-mw01-b-04-memory-view-08_s0_v1
-MW01_C_03 @loc_MYS_mys-mw01-c-03-memory-view-07_s0_v1
+MW01_C_03 @loc_MYS_mys-mw01-c-03-memory-view-07_s2_v1
 MW01_C_04 @loc_MYS_mys-mw01-c-04-memory-view-08_s0_v1
 MWP01 @loc_MYS_mys-mwp01-a-routes-rooms-documents_s0_v1
 MWP01_B @loc_MYS_mys-mwp01-b-routes-rooms-documents_s0_v1

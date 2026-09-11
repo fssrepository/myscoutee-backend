@@ -2,7 +2,7 @@ REFERENCE ID: C07_FX_MORTGAGE_HOUSEMATE (never print IDs, headings or panel labe
 
 OUTPUT LAYOUT AND RESOLUTION: One 16:9 identity sheet with exactly three equal vertical panels in one horizontal row (1x3: front, back, headshot). Generate at 3840×2160 pixels and select 4K in the output controls. The three equal edge-to-edge panels are each 1280×2160 pixels, with zero gutters and margins. These are three views of one unchanged identity, not a transformation sequence.
 
-Create ONE SINGLE photorealistic technical CHARACTER IDENTITY SHEET for ONE exact fictional person.
+Create one photographic studio character sheet of one original fictional adult man, using the physical description below. The three photographs show the same man during the same studio session, wearing the same clothes. Develop his appearance directly from this description.
 
 EXACT LAYOUT:
 Three vertical photographic panels filling the complete canvas:
@@ -25,38 +25,44 @@ Preserve identical age, face shape, eyes, nose, mouth, ears, hairline, hair colo
 Do not beautify or change age in the headshot.
 Natural skin texture and asymmetry.
 Accurate anatomy.
-This is a FICTIONALIZED CASTING INTERPRETATION for the film and must not attempt to reproduce the real participant from the memoir.
+The subject is an original fictional character defined by the appearance described below.
 
 CAMERA:
 Full-body panels approximately 50–70mm full-frame equivalent, complete body including shoes.
 Headshot approximately 85mm, upper shoulders upward.
 Technical identity asset, not a film scene.
 
-CHARACTER:
-Cast an original fictional adult man, approximately 38 years old, of average height and build. Give him short brown hair with a slightly uneven hairline, a softly rectangular face, brown eyes, straight eyebrows, a broad nose bridge and light uneven stubble. Keep small natural differences between the two sides of his face. His expression is attentive and reserved, with ordinary tiredness around the eyes. Establish this same individual in all three panels. His Hungarian background and London housemate role are story context, not facial or costume stereotypes. His spouse and child live in Hungary, where the family has a foreign-currency mortgage; express none of this through written labels or exaggerated distress.
+CHARACTER — NEW HOUSEMATE CASTING:
+An original fictional adult man, approximately 41 years old, of below-average adult male height and a noticeably slim, lightly built frame. Give him a slight everyday build: narrow shoulders and ribcage, a slim waist, slender forearms and modest upper-arm volume. His neck is slender and his head remains naturally proportioned to his smaller frame. Preserve healthy ordinary muscle tone and believable adult proportions. His weight is balanced evenly over both feet, with relaxed knees and a natural upright posture. His short stature comes from consistent adult skeletal proportions, with a naturally smaller frame; keep the head, hands and feet in proportion. Show one person per panel.
 
-Wardrobe: an unbranded dark navy everyday jacket over an opaque charcoal crew-neck T-shirt, dark straight-cut trousers and worn practical closed shoes. The T-shirt covers the torso to below the waistband. Use the identical garments, fastening, sleeve lengths and shoe design in both full-body views, with the same collar layers visible in the headshot. Preserve ordinary fabric weight, stitching and wear; no luxury styling.
+FACE AND HAIR:
+Give him a broad oval face, full lower cheeks, a short rounded chin and a softly defined jaw. A high forehead leads into a clearly receding hairline at both temples. Short, tightly waved dark ash-brown hair remains across the crown and sides, with scattered grey strands concentrated above the ears. Keep the crown slightly thinner than the sides, and render the same hair distribution in the back view. His face is clean-shaven, with natural pores and a faint cool beard shadow beneath the skin rather than visible stubble.
 
-Front view: neutral upright posture, arms relaxed, calm, slightly burdened but dignified expression.
-Back view: exact same clothing, hairstyle and proportions.
-Headshot: direct eye contact, same exact face, calm, slightly burdened but dignified expression.
+His eyes are grey-blue, moderately deep-set, with gently hooded upper lids and fine outer-corner creases. The eyebrows are thick, softly arched and slightly uneven: his left brow sits a little higher at rest. The nose has a narrow upper bridge widening into a rounded tip with clearly modelled nostril wings. Give him a thin upper lip, a fuller lower lip and a small natural offset at one mouth corner. His ears have rounded outer rims and attached lobes; the right ear projects slightly farther than the left. Keep these side-specific traits anatomically consistent across the views rather than mirroring them. Skin is naturally textured, with mild cheek redness and subtle under-eye shadows under neutral studio light.
+
+EXPRESSION:
+His expression is patient, attentive and quietly practical. His lips rest together, his brow remains relaxed, and his gaze is steady with ordinary end-of-workday tiredness. Small creases beside the eyes and a relaxed mouth convey this expression without a dramatic frown. Keep the studio photograph focused on his appearance, posture and clothing.
+
+WARDROBE:
+An unbranded faded dark olive cotton work jacket with a short stand collar, a dull metal front zipper, two low patch pockets and plain cuff seams. Leave the zipper open to mid-chest so the opaque charcoal crew-neck T-shirt beneath reads clearly; the T-shirt extends below the waistband. Dark straight-cut trousers rest naturally over worn dark brown lace-up shoes with rounded toes and low rubber soles. Keep the clothing fitted to his slim frame, with modest natural ease at the waist and upper arms. The jacket follows his narrow shoulders and torso without padding or oversized fabric that would make him appear broader. Preserve elbow creases, slight wear at the pocket mouths, individual stitches, zipper teeth and scuffed shoe edges. No jewellery, eyewear, hat or bag. Use exactly the same garments, fastening position, sleeve lengths and shoe construction in every relevant view.
+
+Front view: relaxed upright stance with both feet grounded, arms beside the body, hands open naturally and separated from the jacket silhouette. Show the shorter, slender build, receding hairline and calm expression together.
+Back view: the same man turned around, retaining his narrow sloping shoulders, slim waist, hair thinning, grey temple strands and ear asymmetry. Show the jacket's back yoke, centre seam and shallow folds above the hem, with both shoe heels fully visible.
+Headshot: direct eye contact, complete crown and both ear contours, with the olive collar and charcoal neckline visible above the shoulders. Retain the same broad oval face, rounded chin, grey-blue eyes and clean-shaven skin. Use the same relaxed mouth and brow as in the front view.
 
 VIEW-SPECIFIC INSPECTION DETAIL:
 In the front full-body panel, keep a narrow air gap between each relaxed hand and the torso so fingers, sleeve ends and garment sides remain separable. Show both shoes completely with a small floor margin and natural contact shadows. The back panel shows the same person turned around: preserve actual left/right accessory placement and garment fastening, rather than mirroring the front photograph. Show rear shoulder seams, hair at the nape, waistband or outer hem and shoe heels where visible.
 In the headshot, include the complete crown and hair silhouette, both visible ear contours and the base of the neck above the shoulders. Resolve eyelid thickness, iris detail, eyebrow hairs, nostril rims, lip edges and natural skin texture at the portrait's actual scale. Keep subtle asymmetry; avoid waxy smoothing, sharpening halos or identical repeated pores. Use even focus across the face and hair so detail is not lost to shallow depth of field. Do not enlarge the eyes or alter the nose, jaw or age to improve the portrait.
 
 CHARACTER-SPECIFIC CONSTRUCTION DETAIL:
-Resolve the practical outer layer front fastening, shoulder seams and the shirt or knit edge beneath. The clothing hangs on an ordinary adult build with natural elbow and waist folds. Keep his responsible, tired face readable through actual brow, cheek and mouth contours rather than a dramatic frown. Family photograph, mortgage documents and travel baggage belong to later memory scenes, not this studio identity.
+The olive jacket forms short compression folds at the slender elbows and light vertical folds beside the narrow waist; its patch pockets retain their thickness and sit on the same sides in each view. The charcoal neckline lies flat against the upper chest. Resolve the transition from the fuller cheek into the short jaw and neck without smoothing it into a generic face. Preserve the precise temple recession, grey hair distribution, higher left brow and projecting right ear in the headshot. His hands have natural knuckle contours and short ordinary fingernails; all fingers remain separate and proportionate. Keep his hands empty and the studio floor clear so the complete silhouette and shoe contacts remain visible.
 
 FINAL CHECK:
 One identity, appearing once in each of the three assigned views.
 Three panels only: front full-body / back full-body / frontal headshot.
-Same exact identity and wardrobe.
+The newly specified identity and wardrobe remain identical across all three panels.
 Mid-grey background reaches the canvas edges.
 No title or outer frame.
 
-IDENTITY SHEET AND SCENE RATINGS:
-These three neutral studio views define the same person, not the rated city. Keep this identity sheet without floating rating cards, so the face and hair remain clear. In a current-city scene the scene prompt supplies the owner-linked numerical card; remembered/clinical appearances have none. Leave useful space around the head in the identity views. Do not infer a visible score or score colour for the protagonist from this sheet.
-
-NO UMBRELLAS — EVERY CELL:
-No umbrellas anywhere in this image: none open, folded, carried, tucked into a bag, leaning against a wall, mounted over a table or held above a head. Do not copy an umbrella from an input reference. Outdoor present-city people have uncovered heads, hoods down and exposed hair; leave open air above every crown. Keep the specified weather for this scene. This restriction applies to the foreground, background, reflections and all cells of the sheet.
+STUDIO FRAME CONTENT:
+Only the specified man, his clothing, the neutral grey backdrop and his natural floor shadows appear in the three views. Leave clear space above the crown and around both hands. Keep the face and hair unobstructed, with no floating cards, graphic overlays or printed text. His head is uncovered. No umbrellas or additional props appear in any panel.
