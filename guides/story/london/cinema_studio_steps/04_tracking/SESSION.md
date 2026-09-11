@@ -1,3 +1,7 @@
+## 2026-09-11 — Prompt precision review completed
+
+Production P01–P12: fixed stale chapter-wide music cues, P10 internal 6-second transition, P11/P12 clinical sound timing, and request-local C01 rating state. All 63 story beats and all reference handles retained; 62 beat bodies remain verbatim, with only boundary wording changed in 06.4. Prompt hashes/counts updated in production/plan.json. User reports 1937 credits; 1800 story allocation, 137 contingency, no separate 480p trial. Do not open or switch editor tabs without an explicit current user request. Four-frame metadata import is prepared, not imported; UNBOUND handles remain deliberate.
+
 ## 2026-09-11 — Current production queue: P01–P12
 
 Repartitioned all 63 complete story beats into 12 requests, 200 seconds; 22–29 Element references inclusive of incoming final frames; 216 existing library Elements retained globally. Source beat bodies verified verbatim. Current order: `03_film/production/README.md`; machine-readable provenance: `03_film/production/plan.json`. Old 01–07 files remain source chapters only. Four additional frame definitions prepared; P09–P12 placeholders require actual MCP binding after import. No paid generation or remote mutation performed. V00 and narration remain accepted/downloaded. Story allocation 1800, provisional image-replacement envelope 40, conditional test balance 97 assuming 1973 minus only the 36-credit ident.

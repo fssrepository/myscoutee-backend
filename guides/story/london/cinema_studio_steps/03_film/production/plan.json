@@ -8,7 +8,7 @@
   "planned_max_references": 29,
   "reference_count_unit": "unique Element handles, including one incoming final-frame slot; not individual image attachments inside an Element",
   "selected_existing_library_elements": 216,
-  "original_beat_bodies_preserved_verbatim": 63,
+  "original_beat_bodies_preserved_verbatim": 62,
   "minimum_requests_for_recorded_beat_reference_map": 12,
   "minimum_scope": "Chronological complete beats and the recorded beat-reference map. This is not a proof over every possible alternative asset selection or generation quality.",
   "sources": {
@@ -1388,12 +1388,12 @@
         "W01_A_04"
       ],
       "reference_count": 22,
-      "chars": 11892,
+      "chars": 12232,
       "credits": 135,
       "incoming_frame": null,
       "incoming_mention": null,
       "incoming_status": "NONE",
-      "sha256": "f15bf2231095d9b6b967b6d8580474bc31fd090f4847f73d57b10776ee52c1c2",
+      "sha256": "457ab348696a7fdc462bad1ae986177d859607bfa5b5f04f7cd6d36fab942b19",
       "file": "03_film/production/P01/video.txt"
     },
     {
@@ -1469,12 +1469,12 @@
         "W01_C_01"
       ],
       "reference_count": 27,
-      "chars": 11894,
+      "chars": 12140,
       "credits": 135,
       "incoming_frame": "EF01",
       "incoming_mention": "@loc_MYS_mys-film-v01-end-frame_s0_v1",
       "incoming_status": "EXISTING_ELEMENT_AWAITING_ACCEPTED_PREDECESSOR_FRAME",
-      "sha256": "7e0bcd8ce842013c73b9cf1c75a6d4605d27fb822213b4b76a2361a22c21398a",
+      "sha256": "0a9bf83c3fc7e45ba5050a6f9215aaf6e92806d140bdea17f0fb3692338bb008",
       "file": "03_film/production/P02/video.txt"
     },
     {
@@ -1551,12 +1551,12 @@
         "W02_B_01"
       ],
       "reference_count": 28,
-      "chars": 12319,
+      "chars": 12504,
       "credits": 135,
       "incoming_frame": "EF02",
       "incoming_mention": "@loc_MYS_mys-film-v02-end-frame_s0_v1",
       "incoming_status": "EXISTING_ELEMENT_AWAITING_ACCEPTED_PREDECESSOR_FRAME",
-      "sha256": "cf92e979aba2d23faaf111a5e6f9a342d111624f26c8f08c69d783740ba97472",
+      "sha256": "7104d8415379c1edaa5380c7c50000cb33d06642a59b39a64e09d7a44806fd3a",
       "file": "03_film/production/P03/video.txt"
     },
     {
@@ -1628,12 +1628,12 @@
         "W02_C_01"
       ],
       "reference_count": 29,
-      "chars": 11963,
+      "chars": 12174,
       "credits": 135,
       "incoming_frame": "EF03",
       "incoming_mention": "@loc_MYS_mys-film-v03-end-frame_s0_v1",
       "incoming_status": "EXISTING_ELEMENT_AWAITING_ACCEPTED_PREDECESSOR_FRAME",
-      "sha256": "73c75b6ca954c68db8bc1cc10e3d72e268606b9e8e33a90e188ef7a78d3a5271",
+      "sha256": "5c5562031d311fbbad2fa765fac10ed25f2d0bf8e9e4036addec36482f50b84b",
       "file": "03_film/production/P04/video.txt"
     },
     {
@@ -1715,12 +1715,12 @@
         "W03_B_02"
       ],
       "reference_count": 27,
-      "chars": 13018,
+      "chars": 13157,
       "credits": 180,
       "incoming_frame": "EF04",
       "incoming_mention": "@loc_MYS_mys-film-v04-end-frame_s0_v1",
       "incoming_status": "EXISTING_ELEMENT_AWAITING_ACCEPTED_PREDECESSOR_FRAME",
-      "sha256": "e98446c09459e68ebffa4d73bbcd489884bde39b059c1bbf54bd8d28f6f4a078",
+      "sha256": "51e17cd5533c854d5d5a1d87cddf8e25c2a5df9efe4448b1ee42561fda0157f3",
       "file": "03_film/production/P05/video.txt"
     },
     {
@@ -1816,12 +1816,12 @@
         "W04_B_01"
       ],
       "reference_count": 28,
-      "chars": 14321,
+      "chars": 14413,
       "credits": 225,
       "incoming_frame": "EF05",
       "incoming_mention": "@loc_MYS_mys-film-v05-end-frame_s0_v1",
       "incoming_status": "EXISTING_ELEMENT_AWAITING_ACCEPTED_PREDECESSOR_FRAME",
-      "sha256": "0bd9b2879b8c548b1200b0214b23b8773a046a9bccb2b35429fc0e74bd93de47",
+      "sha256": "3e3d1ef9c356f7855e3e94137975ad678645e90d1697e5ffb6202bf1780bfe95",
       "file": "03_film/production/P06/video.txt"
     },
     {
@@ -1921,12 +1921,12 @@
         "W05_B_01"
       ],
       "reference_count": 26,
-      "chars": 14377,
+      "chars": 14515,
       "credits": 270,
       "incoming_frame": "EF06A",
       "incoming_mention": "@loc_MYS_mys-film-v06a-end-frame_s0_v1",
       "incoming_status": "EXISTING_ELEMENT_AWAITING_ACCEPTED_PREDECESSOR_FRAME",
-      "sha256": "bbebc52c9c4bb81d3ce9e5f16ac6eee7cc3943c12ee6be9f10fce6d90515025b",
+      "sha256": "2f8ba8704bcda6039edfe5bcffb2085de32c46cd976bc32e2026e98eb7f85825",
       "file": "03_film/production/P07/video.txt"
     },
     {
@@ -1996,12 +1996,12 @@
         "W05_C_01"
       ],
       "reference_count": 27,
-      "chars": 12247,
+      "chars": 12476,
       "credits": 135,
       "incoming_frame": "EF06B",
       "incoming_mention": "@loc_MYS_mys-film-v06b-end-frame_s0_v1",
       "incoming_status": "EXISTING_ELEMENT_AWAITING_ACCEPTED_PREDECESSOR_FRAME",
-      "sha256": "6bd16bc591f133adc4b41c406690816c7aac4c75595f55755dd0505645c2a264",
+      "sha256": "806fb2445c5c32bdd19102572b9782db9e335fc97a6d502d06fe012731c87854",
       "file": "03_film/production/P08/video.txt"
     },
     {
@@ -2057,12 +2057,12 @@
         "W06_A_03"
       ],
       "reference_count": 25,
-      "chars": 11243,
+      "chars": 11360,
       "credits": 90,
       "incoming_frame": "EFP08",
       "incoming_mention": "@UNBOUND_EFP08",
       "incoming_status": "METADATA_IMPORT_AND_MCP_BINDING_PENDING",
-      "sha256": "061aaea91bbc59d7fcd7f556e20880d23c2a15c6bbf834461eb22d76062ec58c",
+      "sha256": "26002851c8b245009e1dd3d2d4f405b245cc104204546893e901f020422de372",
       "file": "03_film/production/P09/video.txt"
     },
     {
@@ -2128,12 +2128,12 @@
         "W06_B_02"
       ],
       "reference_count": 28,
-      "chars": 12352,
+      "chars": 12500,
       "credits": 90,
       "incoming_frame": "EFP09",
       "incoming_mention": "@UNBOUND_EFP09",
       "incoming_status": "METADATA_IMPORT_AND_MCP_BINDING_PENDING",
-      "sha256": "bc71b5e0f5d2649a4d767550c3a9984aea195b0eb995ce2e81fc977dbd7e70eb",
+      "sha256": "859b97db67f570a4d1156179e294c32080adfe9228cef8dda1c708ee8ab8b974",
       "file": "03_film/production/P10/video.txt"
     },
     {
@@ -2208,12 +2208,12 @@
         "W07_A_01"
       ],
       "reference_count": 25,
-      "chars": 13116,
+      "chars": 13134,
       "credits": 90,
       "incoming_frame": "EFP10",
       "incoming_mention": "@UNBOUND_EFP10",
       "incoming_status": "METADATA_IMPORT_AND_MCP_BINDING_PENDING",
-      "sha256": "35776006c60b42a8c03ba1f11dbc40095e09adcf4abe3e8a44d06fd703bda268",
+      "sha256": "e61d05f044dd0cf766eb222ecda9a06344b10440ae77c8360c719627ef546c36",
       "file": "03_film/production/P11/video.txt"
     },
     {
@@ -2305,13 +2305,104 @@
         "W07_C_01"
       ],
       "reference_count": 25,
-      "chars": 13537,
+      "chars": 14151,
       "credits": 180,
       "incoming_frame": "EFP11",
       "incoming_mention": "@UNBOUND_EFP11",
       "incoming_status": "METADATA_IMPORT_AND_MCP_BINDING_PENDING",
-      "sha256": "3c0ac3818c8bcd90428f5b7d02bf57a37cfb4fec8632064be0b84dcd5bf23e25",
+      "sha256": "3c5f477c508d1143e4b781b946d6d8cb32042def1822136c6ef32c629839ff48",
       "file": "03_film/production/P12/video.txt"
     }
-  ]
+  ],
+  "prompt_precision_review": {
+    "date": "2026-09-11",
+    "changes": [
+      {
+        "id": "P01",
+        "before_sha256": "f15bf2231095d9b6b967b6d8580474bc31fd090f4847f73d57b10776ee52c1c2",
+        "after_sha256": "457ab348696a7fdc462bad1ae986177d859607bfa5b5f04f7cd6d36fab942b19",
+        "before_chars": 11892,
+        "after_chars": 12232
+      },
+      {
+        "id": "P02",
+        "before_sha256": "7e0bcd8ce842013c73b9cf1c75a6d4605d27fb822213b4b76a2361a22c21398a",
+        "after_sha256": "0a9bf83c3fc7e45ba5050a6f9215aaf6e92806d140bdea17f0fb3692338bb008",
+        "before_chars": 11894,
+        "after_chars": 12140
+      },
+      {
+        "id": "P03",
+        "before_sha256": "cf92e979aba2d23faaf111a5e6f9a342d111624f26c8f08c69d783740ba97472",
+        "after_sha256": "7104d8415379c1edaa5380c7c50000cb33d06642a59b39a64e09d7a44806fd3a",
+        "before_chars": 12319,
+        "after_chars": 12504
+      },
+      {
+        "id": "P04",
+        "before_sha256": "73c75b6ca954c68db8bc1cc10e3d72e268606b9e8e33a90e188ef7a78d3a5271",
+        "after_sha256": "5c5562031d311fbbad2fa765fac10ed25f2d0bf8e9e4036addec36482f50b84b",
+        "before_chars": 11963,
+        "after_chars": 12174
+      },
+      {
+        "id": "P05",
+        "before_sha256": "e98446c09459e68ebffa4d73bbcd489884bde39b059c1bbf54bd8d28f6f4a078",
+        "after_sha256": "51e17cd5533c854d5d5a1d87cddf8e25c2a5df9efe4448b1ee42561fda0157f3",
+        "before_chars": 13018,
+        "after_chars": 13157
+      },
+      {
+        "id": "P06",
+        "before_sha256": "0bd9b2879b8c548b1200b0214b23b8773a046a9bccb2b35429fc0e74bd93de47",
+        "after_sha256": "3e3d1ef9c356f7855e3e94137975ad678645e90d1697e5ffb6202bf1780bfe95",
+        "before_chars": 14321,
+        "after_chars": 14413
+      },
+      {
+        "id": "P07",
+        "before_sha256": "bbebc52c9c4bb81d3ce9e5f16ac6eee7cc3943c12ee6be9f10fce6d90515025b",
+        "after_sha256": "2f8ba8704bcda6039edfe5bcffb2085de32c46cd976bc32e2026e98eb7f85825",
+        "before_chars": 14377,
+        "after_chars": 14515
+      },
+      {
+        "id": "P08",
+        "before_sha256": "6bd16bc591f133adc4b41c406690816c7aac4c75595f55755dd0505645c2a264",
+        "after_sha256": "806fb2445c5c32bdd19102572b9782db9e335fc97a6d502d06fe012731c87854",
+        "before_chars": 12247,
+        "after_chars": 12476
+      },
+      {
+        "id": "P09",
+        "before_sha256": "061aaea91bbc59d7fcd7f556e20880d23c2a15c6bbf834461eb22d76062ec58c",
+        "after_sha256": "26002851c8b245009e1dd3d2d4f405b245cc104204546893e901f020422de372",
+        "before_chars": 11243,
+        "after_chars": 11360
+      },
+      {
+        "id": "P10",
+        "before_sha256": "bc71b5e0f5d2649a4d767550c3a9984aea195b0eb995ce2e81fc977dbd7e70eb",
+        "after_sha256": "859b97db67f570a4d1156179e294c32080adfe9228cef8dda1c708ee8ab8b974",
+        "before_chars": 12352,
+        "after_chars": 12500
+      },
+      {
+        "id": "P11",
+        "before_sha256": "35776006c60b42a8c03ba1f11dbc40095e09adcf4abe3e8a44d06fd703bda268",
+        "after_sha256": "e61d05f044dd0cf766eb222ecda9a06344b10440ae77c8360c719627ef546c36",
+        "before_chars": 13116,
+        "after_chars": 13134
+      },
+      {
+        "id": "P12",
+        "before_sha256": "3c0ac3818c8bcd90428f5b7d02bf57a37cfb4fec8632064be0b84dcd5bf23e25",
+        "after_sha256": "3c5f477c508d1143e4b781b946d6d8cb32042def1822136c6ef32c629839ff48",
+        "before_chars": 13537,
+        "after_chars": 14151
+      }
+    ],
+    "beat_preservation": "62 beat bodies remain verbatim; 06.4 changes only old last-frame/next-clip wording to the internal 6-second transition. All story events, material actions, reference handles and beat times remain.",
+    "scope": "Local musical cues; current-clip rating state; P12 clinical timing and camera scope; P01 no incoming frame; no blue-hour reset; no paid generation."
+  }
 }

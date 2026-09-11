@@ -1,6 +1,6 @@
 ## Current production repartition — 2026-09-11
 
-The tables below describe the retained original chapter prompts. The **active queue is P01–P12**, with 22–29 Element references including incoming frames. See [current plan](../03_film/production/README.md) and [current asset mapping](PRODUCTION_ASSET_COVERAGE.csv). All 216 previously selected canonical library Elements remain used; all 63 beat bodies are preserved verbatim.
+The tables below describe the retained original chapter prompts. The **active queue is P01–P12**, with 22–29 Element references including incoming frames. See [current plan](../03_film/production/README.md) and [current asset mapping](PRODUCTION_ASSET_COVERAGE.csv). All 216 previously selected canonical library Elements remain used; all 63 story beats remain, with only obsolete clip-boundary wording revised in 06.4.
 
 # Film reference audit — current whole-image route, 2026-09-11
 
