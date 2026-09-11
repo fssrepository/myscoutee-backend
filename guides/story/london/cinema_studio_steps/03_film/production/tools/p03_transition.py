@@ -1,5 +1,8 @@
 #!/usr/bin/env python3
-"""Join original P00–P03 with a four-frame P02/P03 dissolve; copy the rest.
+"""Join original P00–P03 with four-frame dissolves; copy untouched sections.
+
+Use --all-joins for the current three-boundary recipe; default retains the earlier
+P02/P03-only recipe. --normalize-only repairs HEVC headers without encoding.
 
 Requires FFmpeg, ffprobe and NumPy. No geometry or colour correction is applied.
 Run with --media-dir pointing to the four original p00.mp4–p03.mp4 files.
