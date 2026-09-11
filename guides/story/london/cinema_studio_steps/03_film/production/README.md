@@ -391,11 +391,11 @@ python3 guides/story/london/cinema_studio_steps/03_film/production/tools/p03_tra
 
 The header-only remux preserved all 1176 decoded picture hashes and all AAC packet hashes. The VLC comparison no longer reported the profile-level mismatch. This validates the identified decoder reconfiguration problem; final visual playback acceptance remains with the creator. The dissolve, timing, geometry, colour and encoded image quality are unchanged.
 
-### Opening policy for the remaining P04–P12 generations
+### P04–P12 prompt restoration after the overly broad opening rewrite
 
-The creator requested that remaining prompts stop enforcing the P03-style exact start frame. P04–P12 now use the preceding end frame as a guide to story state, identities, wardrobe, completed material changes and time of evening. Each opening may choose a natural composition for its first scripted action. No pixel-matched crop, identical camera pose or exact inherited velocity is required.
+The creator rejected the broader permission to choose a fresh composition and camera path. Commit `c7a075dc` had changed seven lines in each P04–P12 prompt, including opening, timing, reference-role and material/camera wording. All nine local prompts are restored byte-for-byte to `c7a075dc^`, the version immediately before that rewrite. Their original opening-continuation wording is restored; P03's extra absolute-priority block is not propagated into them. Story beats, durations, references and sound instructions are unchanged by this restoration.
 
-Cuts or short dissolves between generated clips may be added during assembly. Generate a complete moving opening, without holding the reference still or baking an editorial dissolve into the generated clip. Within-clip material transformations retain their existing physical-continuity rules. All scripted beats, durations, reference handles, character detail and sound directions are preserved. P03 and the earlier generated prompts are unchanged by this policy update.
+The short assembly dissolve remains an editing decision. It does not authorize loosening the generation prompts. P04 was already generated with the broader wording before this restoration; restoring the local file does not change that downloaded clip or the historical submitted request. P03 and earlier prompt files are unchanged.
 
 ### P03 final frame for P04
 
