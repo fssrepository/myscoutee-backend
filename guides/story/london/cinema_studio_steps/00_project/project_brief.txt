@@ -33,6 +33,9 @@ Video and narration are generated in Higgsfield. The full narration will be gene
 - PROMPT LENGTH: 15.000 characters limit
 - **REFERENCE LIMIT BUG:** Cinema Studio showed 48/50 references, but only 30 were accessible for eligibility checks. Removing three made the next three accessible. This forces us to split scenes planned for the advertised 50-reference capacity into more video generations.
 - **UPLOADED-IMAGE ASSIGNMENT GAP:** When we tried to attach the already uploaded logo to its Element, the uploaded image had no “Assign to element” action. The working route was to open the Element, upload the image from there and assign it. Existing uploaded images should offer a direct assignment action so users can reuse them without repeating the upload.
+- **ELIGIBILITY REFRESH ISSUE:** In our tests, replacing an Element’s image and clicking “Check eligibility” appeared to retain the previous result instead of checking the new image.
+- **LIKELY NSFW FALSE POSITIVE:** The non-sexual classical statue reference was flagged as NSFW.
+- **EARLIER ELIGIBILITY CHECK:** Image generation should apply the intended video model’s eligibility checks before delivering an image as a usable reference, avoiding paid outputs that are later rejected.
 - ELEMENT MEDIA GAP: MCP can upload media and create Elements, but cannot attach / replace / upsert image media on an existing imported Element.
 - PROJECT-STATE GAP: Elements are workspace-global; MCP cannot manage Scene-folder membership or reliably transfer existing assets into the contest project. `Move to` removed project visibility in testing.
 - **PROJECT REMOVAL GAP:** In our testing, deleting Elements from a project leaves them available outside that project. The UI should clearly distinguish removing an Element from a project from deleting it globally.
