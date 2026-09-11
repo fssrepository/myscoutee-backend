@@ -6,14 +6,14 @@ All original 63 story beats are mapped to the prepared prompts. Existing library
 
 | Portion | Original block beats | Video chars | Board chars | Video input count | Pending media |
 |---|---|---:|---:|---:|---|
-| 01 | 1,2,3,4,5,6,7,8,9 | 14573 | 13039 | 33 | SB01 |
-| 02 | 1,2,3,4,5,6,7,8,9 | 13854 | 11910 | 48 | SB02, EF01 |
-| 03 | 1,2,3,4,5,6,7,8,9 | 12570 | 10641 | 30 | SB03, EF02 |
-| 04 | 1,2,3,4,5,6,7,8,9 | 12264 | 10316 | 28 | SB04, EF03 |
-| 05 | 1,2,3,4,5,6,7,8,9 | 12722 | 10797 | 33 | SB05, EF04 |
-| 06A | 1,2,3,4 | 11419 | 9495 | 48 | SB06A, EF05 |
-| 06B | 5,6,7,8,9 | 11775 | 9856 | 46 | SB06B, EF06A |
-| 07 | 1,2,3,4,5,6,7,8,9 | 12895 | 10864 | 43 | SB07, EF06B |
+| 01 | 1,2,3,4,5,6,7,8,9 | 14793 | 13039 | 33 | SB01 |
+| 02 | 1,2,3,4,5,6,7,8,9 | 14450 | 11910 | 48 | SB02, EF01 |
+| 03 | 1,2,3,4,5,6,7,8,9 | 13783 | 10641 | 30 | SB03, EF02 |
+| 04 | 1,2,3,4,5,6,7,8,9 | 13384 | 10316 | 28 | SB04, EF03 |
+| 05 | 1,2,3,4,5,6,7,8,9 | 14001 | 10797 | 33 | SB05, EF04 |
+| 06A | 1,2,3,4 | 12846 | 9495 | 48 | SB06A, EF05 |
+| 06B | 5,6,7,8,9 | 13104 | 9856 | 46 | SB06B, EF06A |
+| 07 | 1,2,3,4,5,6,7,8,9 | 13987 | 10864 | 43 | SB07, EF06B |
 
 The import contains 25 unique keys and Names: LOGO_MYS, V00, eight SB, eight story V and seven EF records. V07 needs no outgoing EF; V00 is a graphic ident and does not supply V01's opening. All 17 generation prompts were checked after actual handle binding and remain below 15,000 characters. Both the storyboard and video request stay within 50 inputs, including each required end frame.
 
@@ -28,3 +28,7 @@ For each generation request, preserve its existing refs plus only its own SB and
 - The exact effect of storyboard conditioning, generic end-frame references and longer 1080p video jobs remains unverified. The pilot showed that spatial correction may be needed.
 - Local sound mixing is planned; an image cannot guarantee native musical phase continuity. One clean full narration is prepared; duration, cost and final mix remain unmeasured.
 - The 1882-credit remaining estimate uses historical rates. Import/binding do not authorize an unquoted paid job.
+
+## Video detail revision — 2026-09-11
+
+Expanded selected existing material transitions, spatial separation of memory rooms, hand/object contact and the clinical reveal. No new story beats, reference inputs or duration changes. All nine video prompts remain below 15,000 characters; the 00 ident remains proportionate to its simpler action. Prompt length is a constraint, not evidence of generation quality. Storyboard images and preceding final frames still require sequential generation/attachment before the dependent film clips.
