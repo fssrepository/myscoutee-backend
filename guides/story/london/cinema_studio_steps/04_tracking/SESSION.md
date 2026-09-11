@@ -1,5 +1,7 @@
 ## Active production preparation — 2026-09-11, steps 3–6
 
+Current checkpoint update: creator questioned full asset coverage and duplicate storyboard generation. Read-only full-library audit found 182/266 canonical handles used directly in videos, with 84 omitted (all 75 morph assets, seven typography assets, two restaurant detail views). See FILM_REFERENCE_AUDIT.md and VIDEO_ASSET_COVERAGE.csv. Do not generate the overloaded storyboard prompts or multiply them into paid smaller grids. Reconcile relevant existing assets with each scene first; use local review sheets if needed. Current SB-dependent video prompts are not ready for a storyboard-free route until revised. No new generation was performed.
+
 Final-frame ownership: the creator downloads accepted originals; Astra extracts and verifies the actual final decoded frame locally with FFmpeg into a new source-resolution PNG. The creator uploads/assigns it to the matching EF Element. Do not use the unverified Higgsfield last-frame export. Creator reports the original support letter and first follow-up sent; later clarification is in 00_project/higgsfield_support_workflow_clarification.txt.
 
 Creator selected pilot version 10; version 11's extra trim was rejected. Creator reports Update project film upload/publication test working with watermark added; embedded subtitle did not display. No independent published URL/playback inspection is recorded.

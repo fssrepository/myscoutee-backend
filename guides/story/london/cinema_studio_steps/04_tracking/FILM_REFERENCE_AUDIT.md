@@ -1,5 +1,39 @@
 # Film prompt preparation audit — 2026-09-11
 
+## Full-library coverage correction — 2026-09-11
+
+This audit supersedes the earlier implication that preserving the previous video prompts' reference sets meant the entire prepared library was connected. The current video prompts contain only 182 of the 266 canonical library handles. All 266 canonical Elements were found with images attached in the read-only MCP inventory; 84 are absent from every direct video input list. Text descriptions of their actions do not pass their images to the model. No indirect use through a newly generated storyboard can be claimed: those storyboard slots are empty and their current prompts omit these same library groups.
+
+Live inventory: 292 workspace Elements, 268 with an image and 24 empty. These are Element counts, not the project's All assets output count. The 266 canonical library records, one logo, one pilot end-frame and 24 empty production containers account for these counts. Project membership and visual quality are not established by this list.
+
+Current production is nine generated videos: V00 ident plus eight story portions (01–05, 06A, 06B, 07). The final assembled export is not a tenth generation job.
+
+| Video | Existing image references | Pending storyboard references | Pending preceding end-frame references | Total current mentions |
+|---|---:|---:|---:|---:|
+| 00 | 1 | 0 | 0 | 1 |
+| 01 | 32 | 1 | 0 | 33 |
+| 02 | 46 | 1 | 1 | 48 |
+| 03 | 28 | 1 | 1 | 30 |
+| 04 | 26 | 1 | 1 | 28 |
+| 05 | 31 | 1 | 1 | 33 |
+| 06A | 46 | 1 | 1 | 48 |
+| 06B | 44 | 1 | 1 | 46 |
+| 07 | 41 | 1 | 1 | 43 |
+
+The per-video counts overlap because identities and locations recur. They cannot be added to obtain unique-library coverage.
+
+Unconnected groups: 21 architectural morphs (MR), 48 object/material references (R), six character morphs (CM), seven typography references (TY), and two restaurant detail views (T01_DETAILS_B/C). The MR/R/CM groups total all 75 prepared morph assets. These are omissions from direct inputs, not a finding that all 84 should appear in every clip. Each needs assignment to the actual scripted material/action or an explicit reason to remain an alternative.
+
+The exact asset-to-video matrix, including every omitted handle, is [VIDEO_ASSET_COVERAGE.csv](VIDEO_ASSET_COVERAGE.csv).
+
+### Storyboard decision before further spending
+
+Do not generate the current storyboard prompts. They request nine panels but contain multi-stage video actions and 32–47 reference mentions, and the first prompt even mixes a grid requirement with generic prohibitions on grids/numbers. The previous UI-level 50-reference check did not validate Nano Banana Pro's model-level image support. The public Google documentation reports up to 14 reference images for Nano Banana Pro; the Higgsfield model metadata returned no numerical cap and did not establish how excess Element images are handled. [Google image-generation documentation](https://ai.google.dev/gemini-api/docs/generate-content/image-generation)
+
+A storyboard is an ordered composition plan, not a requirement to regenerate the already available characters, rooms or morph studies. First reuse the existing images to inspect coverage and, if helpful, arrange local review contact sheets without AI generation or Higgsfield credits. Such a sheet does not prove the combined scene or its motion. Commission an additional composition image only for a specific visual question the existing material cannot answer; do not multiply paid jobs merely by changing a 3×3 layout to 2×2 or 2K.
+
+Next: map omitted action/typography assets to their scripted portions and select relevant views within the actual model input constraints. Do not append all 84 indiscriminately or remove unique story content to meet an arbitrary reference count. Current video prompts still depend on empty SB Elements; they must be revised if generated storyboards are removed from the route. No reference selection, generation, new grid jobs or budget debit occurred in this audit. The previous 32-credit board allowance remains provisional, not committed spend.
+
 Preparation only; no generation, upload, account mutation or debit. Creator confirmed the 25-Element import and logo attachment. Read-only MCP verified all production handles; local prompt binding is complete. Only LOGO_MYS currently has attached media; SB/EF/video containers remain empty. Previous full prompt wording remains in Git commit `b516ef057dcf1188e18fe50a8512bfc546367c73`; the canonical master and library image prompts are unchanged.
 
 All original 63 story beats are mapped to the prepared prompts. Existing library mentions remain in each block; Block 06's two-part union contains its complete previous 83-reference inventory. Block 01 also includes the already existing C10 handle for its scripted dating-memory identity. Narration reference placeholders A01–A07 are removed from all film video prompts; the seven spoken source files remain byte-for-byte unchanged and are concatenated in 03_film/narration.txt.
