@@ -16,7 +16,7 @@ Photorealistic European feature-film realism: rainy blue hour, wet stone, real g
 
 ## 🎬 Production
 
-Final production is Higgsfield-native through the official MCP. Seedance 2.5, seven logical video blocks, locked Higgsfield narration, one output per canonical asset, no external video editor. V01 is the opening generation; V02–V07 continue by native forward extension.
+Video and narration are generated in Higgsfield. GPT-6 Astra will use FFmpeg locally to join the clips and add narration, then the finished film will be uploaded to Higgsfield for publication. This workflow is being tested.
 
 ## 🚀 Status
 
