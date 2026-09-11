@@ -23,6 +23,15 @@ MW04_C_01 failed in both P06 and P10; it is counted once. MW02_C_02 belongs to t
 
 ## Current regeneration work
 
+**Next replacements requested on 2026-09-11:** MW04_C_01 and W04_A_03. Both are already included in the seven historical Face/IP blocks above; do not count them again. No replacement is generated or marked accepted by this entry. Individual API reads confirmed the following current bindings, each with one image and `completed` Element status (not a separate eligibility pass):
+
+| Key | Element UUID | Current image job | Production use |
+| --- | --- | --- | --- |
+| MW04_C_01 | `b0619552-033e-4a72-a222-357881e95419` | `7ae043af-44de-444d-bfe1-a932f7e3f999` | P06, P10 |
+| W04_A_03 | `c53dab8a-f35f-4575-b788-6d03d0fda348` | `0a776a51-5f42-4ff2-9ead-6e6fd06b0bf5` | P06 |
+
+The `p_eligibility` folder membership is not exposed by this Element API; inclusion above refers to this versioned problem-image checklist.
+
 1. **C07:** replacement character prompt and [Element import file](../00_project/elements/additions/C07_HOUSEMATE_REPLACEMENT_IMPORT.md) are ready. Use the new short, slim housemate. Confirm that the intended image is the only attachment before checking eligibility.
 2. **MW01_B_03:** regenerate the [seated family-photograph scene](../02_library/worlds/memories/05_03_MW01_LONDON_SOCIAL_B_VIEW_07.txt) with the new C07. This is a continuity update, not an additional reported Face/IP failure, so it is outside the ten-item total.
 3. **MW01_C_03:** regenerate the phone-call scene using the new C07 and the accepted replacement MW01_B_03 room image.
