@@ -11052,11 +11052,11 @@
       "alias": "MW02_A_02",
       "mention": "@loc_MYS_mys-mw02-a-02-memory-view-02_s0_v1",
       "last_mention": "@loc_MYS_mys-mw02-a-02-memory-view-02_s0_v1",
-      "mcp_element_uuid": "1ea1b9b7-451d-43ef-a164-b5dcb446bd45",
+      "mcp_element_uuid": "5ac3c0ae-f8fc-46dd-a04b-bde4b67353ef",
       "mcp_media_ids": [
-        "c50b5eb7-d6ae-41f5-a0a0-f1d81b42bbca"
+        "e566a2c7-bbb6-46cc-9db6-a009f2981dc4"
       ],
-      "mention_source": "MCP_ATTACHED_IMAGE_VERIFIED_2026_09_10"
+      "mention_source": "MCP_REPLACEMENT_ATTACHED_IMAGE_VERIFIED_2026_09_11"
     },
     "MW02_A_03": {
       "alias": "MW02_A_03",
@@ -11091,7 +11091,12 @@
     "MW02_C_02": {
       "alias": "MW02_C_02",
       "mention": "@loc_MYS_mys-mw02-c-02-memory-view-01_s0_v1",
-      "last_mention": "@loc_MYS_mys-mw02-c-02-memory-view-01_s0_v1"
+      "last_mention": "@loc_MYS_mys-mw02-c-02-memory-view-01_s0_v1",
+      "mcp_element_uuid": "62978407-701a-44fc-80bb-80e971175911",
+      "mcp_media_ids": [
+        "5c6fa164-a2e7-4780-a505-517563544f5d"
+      ],
+      "mention_source": "MCP_REPLACEMENT_ATTACHED_IMAGE_VERIFIED_2026_09_11"
     },
     "MW02_C_03": {
       "alias": "MW02_C_03",

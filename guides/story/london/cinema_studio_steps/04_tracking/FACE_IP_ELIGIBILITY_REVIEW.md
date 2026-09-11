@@ -4,22 +4,22 @@ Updated: 2026-09-11.
 
 **10 affected Elements: 7 Face/IP blocks, 3 slow or pending checks.** These are the reported problem states; replacement images are not marked as passed until their eligibility result is confirmed. Slow checks are not confirmed rejections.
 
-## Reported status
+## Reported status and replacement results
 
 | ID | Status | Element | Source prompt |
 | --- | --- | --- | --- |
 | C07 | Face/IP blocked | `@char_MYS_mys-c07-fx-mortgage-housemate_s0_v1` | [Housemate character sheet](../02_library/characters/C07_FX_MORTGAGE_HOUSEMATE.txt) |
 | MW01_C_03 | Slow / pending | `@loc_MYS_mys-mw01-c-03-memory-view-07_s0_v1` | [Family video call](../02_library/worlds/memories/06_03_MW01_LONDON_SOCIAL_C_VIEW_07.txt) |
 | MW01_C_04 | Slow / pending | `@loc_MYS_mys-mw01-c-04-memory-view-08_s0_v1` | [Leaving the cafe](../02_library/worlds/memories/06_04_MW01_LONDON_SOCIAL_C_VIEW_08.txt) |
-| MW02_A_02 | Face/IP blocked | `@loc_MYS_mys-mw02-a-02-memory-view-02_s0_v1` | [Agra bus memory](../02_library/worlds/memories/07_02_MW02_GLOBAL_ROUTES_A_VIEW_02.txt) |
-| MW02_C_02 | Slow / pending | `@loc_MYS_mys-mw02-c-02-memory-view-01_s0_v1` | [Continuing into the metro station](../02_library/worlds/memories/09_02_MW02_GLOBAL_ROUTES_C_VIEW_01.txt) |
+| MW02_A_02 | Replacement accepted; original Face/IP blocked | `@loc_MYS_mys-mw02-a-02-memory-view-02_s0_v1` | [Agra bus memory](../02_library/worlds/memories/07_02_MW02_GLOBAL_ROUTES_A_VIEW_02.txt) |
+| MW02_C_02 | Replacement accepted; original check slow / pending | `@loc_MYS_mys-mw02-c-02-memory-view-01_s0_v1` | [Continuing into the metro station](../02_library/worlds/memories/09_02_MW02_GLOBAL_ROUTES_C_VIEW_01.txt) |
 | MW04_C_01 | Face/IP blocked | `@loc_MYS_mys-mw04-c-01-memory-view-09_s0_v1` | [Police-defence memory, view 09](../02_library/worlds/memories/15_01_MW04_POLICE_DEFENCE_C_VIEW_09.txt) |
 | W04_A_03 | Face/IP blocked | `@loc_MYS_mys-w04-a-03-world-view-03_s0_v1` | [Main world W04, view 03](../02_library/worlds/real/W04_A_03_MAIN_WORLD_VIEW_03.txt) |
 | MW05_B_03 | Face/IP blocked | `@loc_MYS_mys-mw05-b-03-memory-view-07_s0_v1` | [Handmade satirical wanted-page memory](../02_library/worlds/memories/17_03_MW05_COURT_FILE_B_VIEW_07.txt) |
 | MW06_A_02 | Face/IP blocked | `@loc_MYS_mys-mw06-a-02-memory-view-02_s0_v1` | [Human counter-memory, view 02](../02_library/worlds/memories/19_02_MW06_HUMAN_COUNTERMEMORIES_A_VIEW_02.txt) |
 | MW06_B_03 | Face/IP blocked | `@loc_MYS_mys-mw06-b-03-memory-view-07_s0_v1` | [Human counter-memory, view 07](../02_library/worlds/memories/20_03_MW06_HUMAN_COUNTERMEMORIES_B_VIEW_07.txt) |
 
-MW04_C_01 failed in both P06 and P10; it is counted once. MW02_C_02 remains in the slow/pending group from the reported three-item total; no explicit rejection was recorded for it.
+MW04_C_01 failed in both P06 and P10; it is counted once. MW02_C_02 belongs to the historical slow/pending group; no explicit rejection was recorded for its original image. Both MW02 replacement images were confirmed accepted on 2026-09-11.
 
 ## Current regeneration work
 
@@ -55,3 +55,11 @@ C_04 (`560a9880-116f-4865-8ac6-1b852d82dab9`) remains a separate unresolved prof
 ### MW01_C_04 replacement binding — 2026-09-11
 
 Current handle: `@loc_MYS_mw01-c-04-memory-view-08_s0_v1` (the second `mys-` prefix is absent). Element UUID: `38847058-729c-40cf-9d3d-17f616f29704`. One attached image: `f52dc2ed-a78d-408a-89b8-5a80bf827292`. API status: completed; separate Face/IP eligibility not confirmed. This supersedes the old C_04 attachment observation above. Production P02, prerelease P02 and the current reference binding now use this handle.
+## P03 replacement binding verification — 2026-09-11
+
+MW02_A_02 and MW02_C_02 have been recreated with the rewritten descriptions. Their visible handles are unchanged, so the existing P03 prompt references already match the replacements. Each replacement has exactly one attached image and API status `completed`. The creator subsequently confirmed that both replacement images passed the eligibility check for P03 on 2026-09-11. This resolves these two reference-image issues; it does not record a completed P03 video generation.
+
+| Key | New Element UUID | Attached image job |
+|---|---|---|
+| MW02_A_02 | `5ac3c0ae-f8fc-46dd-a04b-bde4b67353ef` | `e566a2c7-bbb6-46cc-9db6-a009f2981dc4` |
+| MW02_C_02 | `62978407-701a-44fc-80bb-80e971175911` | `5c6fa164-a2e7-4780-a505-517563544f5d` |
