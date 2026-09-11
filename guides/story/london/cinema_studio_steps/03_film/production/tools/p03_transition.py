@@ -6,6 +6,7 @@ Run with --media-dir pointing to the four original p00.mp4–p03.mp4 files.
 """
 
 import argparse
+import hashlib
 import json
 from pathlib import Path
 import shutil
@@ -16,7 +17,7 @@ import tempfile
 sys.dont_write_bytecode = True
 
 from p03_edit import (audio_hashes, check_equal, ffmpeg, frame_hashes,
-                      require_video, run, transport)
+                      probe, require_video, run, transport)
 
 COMPAT_HEADERS = "hevc_metadata=level=4.1:chroma_sample_loc_type=0:aud=insert"
 
@@ -34,18 +35,23 @@ def normalize_headers(media, work):
     print(f"Updated {source}: headers only; no video or audio encoding.", flush=True)
 
 
-def render_bridge(media, output):
+def render_bridge(media, output, outgoing="p02.mp4", incoming="p03.mp4",
+                  cut_frame=354, source_frames=361, head_frames=176):
     import numpy as np
 
+    video = next(s for s in probe(media / incoming)["streams"] if s["codec_type"] == "video")
+    bitrate = str(int(video["bit_rate"]))
     size = 1920 * 1080 * 3  # planar 10-bit YUV420, stored as uint16
-    raw = ffmpeg("-threads", "2", "-ss", "14.75", "-i", media / "p02.mp4",
-                 "-frames:v", "7", "-vsync", "0", "-f", "rawvideo",
+    tail_frames = source_frames - cut_frame
+    raw = ffmpeg("-threads", "2", "-ss", f"{cut_frame / 24:.9f}", "-i", media / outgoing,
+                 "-frames:v", str(tail_frames), "-vsync", "0", "-f", "rawvideo",
                  "-pix_fmt", "yuv420p10le", "pipe:1").stdout
-    check_equal(len(raw), 7 * size, "seven P02 tail frames")
-    tail = [np.frombuffer(raw[i * size:(i + 1) * size], dtype="<u2") for i in range(7)]
+    check_equal(len(raw), tail_frames * size, "outgoing tail frames")
+    tail = [np.frombuffer(raw[i * size:(i + 1) * size], dtype="<u2") for i in range(tail_frames)]
+    lead = tail_frames - 4
     decoder = subprocess.Popen([
-        "ffmpeg", "-v", "error", "-threads", "2", "-i", str(media / "p03.mp4"),
-        "-frames:v", "176", "-vsync", "0", "-f", "rawvideo",
+        "ffmpeg", "-v", "error", "-threads", "2", "-i", str(media / incoming),
+        "-frames:v", str(head_frames), "-vsync", "0", "-f", "rawvideo",
         "-pix_fmt", "yuv420p10le", "pipe:1"], stdout=subprocess.PIPE)
     encoder = None
     try:
@@ -55,17 +61,17 @@ def render_bridge(media, output):
             "-c:v", "libx265", "-preset", "medium", "-x265-params",
             "pools=2:frame-threads=2:log-level=error:sao=0:strong-intra-smoothing=0:"
             "open-gop=0:keyint=120:min-keyint=120:scenecut=0",
-            "-b:v", "30342392", "-pix_fmt", "yuv420p10le", "-tag:v", "hvc1",
+            "-b:v", bitrate, "-pix_fmt", "yuv420p10le", "-tag:v", "hvc1",
             "-color_range", "tv", "-colorspace", "bt709", "-color_trc", "bt709",
             "-color_primaries", "bt709", "-y", str(output)], stdin=subprocess.PIPE)
-        for frame in tail[:3]:
+        for frame in tail[:lead]:
             encoder.stdin.write(frame.tobytes())
-        for n in range(176):
+        for n in range(head_frames):
             frame = decoder.stdout.read(size)
             check_equal(len(frame), size, f"P03 frame {n}")
             if n < 4:
                 weight = (n + 1) / 5
-                frame = np.rint((1 - weight) * tail[n + 3].astype(np.float64)
+                frame = np.rint((1 - weight) * tail[n + lead].astype(np.float64)
                                 + weight * np.frombuffer(frame, dtype="<u2").astype(np.float64)
                                 ).clip(0, 1023).astype("<u2").tobytes()
             encoder.stdin.write(frame)
@@ -114,6 +120,99 @@ def local_audio(media, work):
     replacement = encoded[5:41]  # omit encoder priming and four preroll packets
     check_equal(len(replacement), 36, "local AAC replacement")
     (work / "audio.aac").write_bytes(b"".join(a[:450] + replacement + b[21:471]))
+
+
+def all_audio(media, work):
+    """Three equal short joins; preserve AAC payloads outside their small windows."""
+    packets = []
+    for i in range(4):
+        source, target = media / f"p0{i}.mp4", work / f"source{i}.aac"
+        ffmpeg("-i", source, "-vn", "-c:a", "copy", "-f", "adts", "-y", target)
+        frames = adts_frames(target)
+        check_equal(len(frames), 128 if i == 0 else 472, "original AAC packet count")
+        hashes = ["SHA256:" + hashlib.sha256(f[7:]).hexdigest() for f in frames]
+        check_equal(hashes, audio_hashes(source), "original AAC extraction")
+        packets.append(frames)
+    replacements = []
+    for i, full_frames in enumerate((126, 470, 470)):
+        filters = (f"[0:a]atrim=end_sample={full_frames * 1024},asetpts=PTS-STARTPTS[a];"
+                   "[1:a]atrim=end_sample=481280,asetpts=PTS-STARTPTS[b];"
+                   "[a][b]acrossfade=ns=5120:c1=qsin:c2=qsin,"
+                   f"atrim=start_sample={(full_frames - 25) * 1024}:"
+                   f"end_sample={(full_frames + 19) * 1024},asetpts=PTS-STARTPTS[out]")
+        encoded = work / f"audio_join{i}.aac"
+        ffmpeg("-i", media / f"p0{i}.mp4", "-i", media / f"p0{i+1}.mp4",
+               "-filter_complex", filters, "-map", "[out]", "-c:a", "aac", "-b:a", "288k",
+               "-f", "adts", "-y", encoded)
+        replacement = adts_frames(encoded)[5:41]
+        check_equal(len(replacement), 36, "36 AAC packets per transition")
+        replacements.append(replacement)
+    result = (packets[0][:106] + replacements[0] + packets[1][21:450] + replacements[1]
+              + packets[2][21:450] + replacements[2] + packets[3][21:471])
+    check_equal(len(result), 1522, "complete joined soundtrack")
+    (work / "all_audio.aac").write_bytes(b"".join(result))
+    return ["SHA256:" + hashlib.sha256(f[7:]).hexdigest() for f in result]
+
+
+def all_transitions(media, work):
+    """The recorded four-clip recipe: identical moving dissolves at all three joins."""
+    sources = [media / f"p0{i}.mp4" for i in range(4)]
+    for path, count in zip(sources, (97, 361, 361, 361)):
+        require_video(path, count)
+    original = [frame_hashes(path) for path in sources]
+    prefix, suffix = work / "prefix0.mp4", work / "suffix3.mp4"
+    ffmpeg("-i", sources[0], "-map", "0:v:0", "-frames:v", "92", "-c:v", "copy",
+           "-y", prefix)
+    ffmpeg("-ss", "7.333333333", "-i", sources[3], "-map", "0:v:0", "-c:v", "copy",
+           "-y", suffix)
+    check_equal(frame_hashes(prefix), original[0][:92], "copied P00 prefix")
+    check_equal(frame_hashes(suffix), original[3][176:], "copied P03 suffix")
+    for i in (1, 2):
+        end_cut, middle = work / f"p0{i}_prefix.mp4", work / f"middle{i}.mp4"
+        ffmpeg("-i", sources[i], "-map", "0:v:0", "-frames:v", "354", "-c:v", "copy",
+               "-y", end_cut)
+        # CRA at display frame 250 precedes four RASL pictures in packet order.
+        # Those leading pictures belong before this cut and must not reappear.
+        ffmpeg("-ss", "10.416666667", "-i", end_cut, "-map", "0:v:0", "-c:v", "copy",
+               "-bsf:v", "filter_units=remove_types=8|9", "-y", middle)
+        check_equal(frame_hashes(middle), original[i][250:354], f"copied P0{i} middle")
+    for i, cut, count, head in ((0, 92, 97, 250), (1, 354, 361, 250), (2, 354, 361, 176)):
+        bridge = work / f"bridge{i}.mp4"
+        if not bridge.exists():
+            print(f"Rendering only P0{i}/P0{i+1} boundary from originals...", flush=True)
+            render_bridge(media, bridge, f"p0{i}.mp4", f"p0{i+1}.mp4", cut, count, head)
+        else:
+            print(f"Reusing completed boundary {i}; no picture encoding.", flush=True)
+        require_video(bridge, count - cut + head - 4)
+    expected_audio = all_audio(media, work)
+    names = ["prefix0", "bridge0", "middle1", "bridge1", "middle2", "bridge2", "suffix3"]
+    counts = [92, 251, 104, 253, 104, 179, 185]
+    for name in names:
+        transport(work / f"{name}.mp4", work / f"{name}.ts")
+    manifest = work / "all_joins.txt"
+    manifest.write_text("".join(f"file '{name}.ts'\nduration {count / 24:.9f}\n"
+                               for name, count in zip(names, counts)))
+    output = work / "all_joins_verified.mp4"
+    ffmpeg("-f", "concat", "-safe", "0", "-i", manifest, "-itsoffset", "-0.032",
+           "-i", work / "all_audio.aac", "-map", "0:v:0", "-map", "1:a:0", "-c", "copy",
+           "-bsf:v", COMPAT_HEADERS, "-bsf:a", "aac_adtstoasc", "-tag:v", "hev1",
+           "-movflags", "+faststart", "-y", output)
+    expected = (original[0][:92] + frame_hashes(work / "bridge0.mp4") + original[1][250:354]
+                + frame_hashes(work / "bridge1.mp4") + original[2][250:354]
+                + frame_hashes(work / "bridge2.mp4") + original[3][176:])
+    print("Checking complete decode, copied pictures/audio and timestamps...", flush=True)
+    check_equal(frame_hashes(output), expected, "all 1168 picture frames")
+    check_equal(audio_hashes(output), expected_audio, "all 1522 audio packets")
+    data = json.loads(run(["ffprobe", "-v", "error", "-select_streams", "v:0",
+                          "-show_packets", "-show_entries", "packet=pts_time",
+                          "-of", "json", output]).stdout)["packets"]
+    times = sorted(float(p["pts_time"]) for p in data)
+    if any(abs(b - a - 1 / 24) > 0.0011 for a, b in zip(times, times[1:])):
+        raise RuntimeError("Non-continuous video presentation timestamps")
+    require_video(output, 1168)
+    output.replace(media / "p00_p03_transition.mp4")
+    print("Saved p00_p03_transition.mp4: all three joins use the same four-frame dissolve.",
+          flush=True)
 
 
 def transition(media, work):
@@ -195,17 +294,23 @@ def transition(media, work):
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--media-dir", type=Path, required=True)
+    parser.add_argument("--all-joins", action="store_true",
+                        help="Use the four-frame dissolve at P00/P01, P01/P02 and P02/P03")
     parser.add_argument("--normalize-only", action="store_true",
                         help="Normalize the existing assembly's HEVC headers, without any encoding")
     parser.add_argument("--resume-work", type=Path,
                         help="Reuse the private work directory printed after a failed validation")
     args = parser.parse_args()
+    if args.all_joins and args.normalize_only:
+        parser.error("--all-joins and --normalize-only are separate operations")
     media = args.media_dir.resolve(strict=True)
     work = (args.resume_work.resolve(strict=True) if args.resume_work else
             Path(tempfile.mkdtemp(prefix=".p03-transition-", dir=media)))
     try:
         if args.normalize_only:
             normalize_headers(media, work)
+        elif args.all_joins:
+            all_transitions(media, work)
         else:
             transition(media, work)
     except BaseException:

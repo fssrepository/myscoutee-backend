@@ -349,6 +349,34 @@ Completed validation: `p00_p03_transition.mp4` is 166,500,073 bytes, with 1176 p
 
 Planning lesson from the creator: ending a scene near each generation boundary would make assembly easier than requiring exact continuation of a fast camera move. A prompt cannot establish that the generated clip actually ends the scene; review the generated ending before preparing its continuation. No regeneration or prompt rewrite is requested for this assembly.
 
+### Current assembly rule: the same short transition at every P00–P12 clip boundary
+
+The creator requested one repeatable assembly method for the remaining film rather than individual editing experiments: use the approximately four-frame photographic dissolve seen at P01's 3–4 s statue change at every inter-clip boundary, with the same short audio crossfade. This is a 0.166667 s transition at 24 fps, not a 3–4 second dissolve. Use the original downloaded clips; keep their internal generated transitions untouched. The full P00–P12 assembly follows this rule as the remaining source clips become available.
+
+For the currently available P00–P03 clips:
+
+```bash
+python3 guides/story/london/cinema_studio_steps/03_film/production/tools/p03_transition.py --media-dir /home/raxim/Downloads --all-joins
+```
+
+This supersedes the earlier P00/P01 and P01/P02 plain joins. Output remains `p00_p03_transition.mp4`. Blend the outgoing last four moving frames with incoming frames 0–3, using incoming weights 1/5, 2/5, 3/5, 4/5. No frame hold, optical-flow warp or new spatial/colour adjustment is added. The completed P02/P03 bridge can be reused in a matching retained work directory as `bridge2.mp4`; it already came from the originals, so reusing it avoids another picture encode. Resume only with the same original inputs and recipe.
+
+| Video section | Source frames, zero-based | Handling |
+|---|---|---|
+| P00 prefix | P00 0–91 | Copy 92 frames |
+| First boundary | P00 92, then P00 93–96 blended with P01 0–3, then P01 4–249 | Render 251 frames from originals |
+| P01 middle | P01 250–353 | Copy 104 frames |
+| Second boundary | P01 354–356, then P01 357–360 blended with P02 0–3, then P02 4–249 | Render 253 frames from originals |
+| P02 middle | P02 250–353 | Copy 104 frames |
+| Third boundary | Existing original-source P02/P03 bridge | Reuse 179 rendered frames |
+| P03 suffix | P03 176–360 | Copy 185 frames |
+
+The first usable incoming random-access point in original P01 and P02 is frame 250 / 10.416667 s, so their initial prediction-dependent blocks must be rendered when modifying their opening frames. Preserve the remainder by copy; never re-encode the full assembly. Target each incoming original's reported video bitrate, retaining 1080p, 24 fps and 10-bit precision. At the P01/P02 copied CRA starts, remove the four preceding RASL pictures with `filter_units=remove_types=8|9`; verify decoded equality to frames 250–353 before assembly. Normalize the final HEVC headers as described below so VLC does not restart its decoder at these joins.
+
+The assembled picture has 1168 frames / 48.666667 s. Dissolves start at 3.875, 18.75 and 33.625 s. Each overlap removes four frames from the combined duration; use this revised timeline for later narration placement.
+
+For audio, use 126 complete post-priming AAC frames from P00 and 470 from each later original. At each boundary apply the existing five-AAC-frame / 0.16 s quarter-sine overlap, encoding only a 36-packet / 1.152 s replacement window with four packets of preroll and postroll. The compressed assembly order is P00 packets 0–105; replacement 01; P01 packets 21–449; replacement 12; P02 packets 21–449; replacement 23; P03 packets 21–470. This yields 1522 AAC packets including one initial priming packet, with 1414 copied and 108 newly encoded. Mux with −0.032 s priming offset. Decoded duration is approximately 48.672 s, within 6 ms of picture duration. Keep audio and video as separate streams until final copy muxing.
+
 ### VLC pause before the dissolve — header-only compatibility correction
 
 The creator accepted the dissolve's character but reported a freeze immediately before it in VLC. Software decoding and VAAPI hardware decoding yielded identical moving frames; frame hashes alone did not detect the playback problem. VLC 3.0.20 logging reproduced `mismatched profile level 2/123 was 2/120`, followed by decoder teardown/recreation. Original clips declare HEVC level 4 (120), while the locally encoded bridge declares level 4.1 (123).
