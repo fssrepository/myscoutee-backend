@@ -10,7 +10,6 @@ C01 @char_MYS_mys-c01-protagonist_s0_v1
 C22 @char_MYS_mys-c22-accountant_s0_v1
 C23 @char_MYS_mys-c23-admin-colleague-a_s0_v1
 C24 @char_MYS_mys-c24-admin-colleague-b_s0_v1
-MR002 @loc_MYS_mys-mr002-facade-relief-to-sculpted-support_s0_v1
 MR003 @loc_MYS_mys-mr003-facade-window-capital-and-cornice_s0_v1
 MR011 @loc_MYS_mys-mr011-slate-roof-to-curved-glazing_s0_v1
 MR012 @loc_MYS_mys-mr012-chimney-shafts-to-spiral-crowns_s0_v1
