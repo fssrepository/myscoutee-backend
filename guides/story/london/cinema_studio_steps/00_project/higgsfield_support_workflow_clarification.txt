@@ -1,0 +1,15 @@
+Subject: Re: MyScoutee festival project — workflow clarification
+
+Dear Jason,
+
+One clarification to my previous reply: we have already established a workable route and will continue production with it. We are not waiting for your team to solve the assembly for us.
+
+We will use Elements and image references in Cinema Studio, extract and verify final frames locally, and have GPT-6 Astra run FFmpeg to join the clips and add the separately generated narration. We will handle the remaining upload and assignment steps manually, then upload the assembled film through Update project film. We have already tested that upload/publication route successfully.
+
+The questions in my previous message were intended to clarify the supported capabilities and report where automation breaks down. Please keep the reported defects and integration gaps under review; our workaround lets us proceed, but it does not remove those issues or the extra work they cause.
+
+Thank you for taking these findings to the team. We will carry on with the MyScoutee festival film using the workflow we have tested.
+
+Best regards,
+Peter
+MyScoutee — The Path Between People

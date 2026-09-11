@@ -1,0 +1,51 @@
+MYSCOUTEE — SHORTENED P04 — 15 SECONDS, 16:9, AUDIO ON
+One photographic sequence.
+
+EXISTING WHOLE-IMAGE REFERENCES:
+@loc_MYS_mys-film-v03-end-frame_s0_v1
+C01 @char_MYS_mys-c01-protagonist_s0_v1
+C10 @char_MYS_mys-c10-beginner-dance-woman_s0_v1
+C16 @char_MYS_mys-c16-balloon-local-helper-man_s0_v1
+C17 @char_MYS_mys-c17-balloon-local-helper-woman_s0_v1
+C18 @char_MYS_mys-c18-barmouth-road-trip-driver-companion_s0_v1
+C19 @char_MYS_mys-c19-barmouth-road-trip-companion-a_s0_v1
+C20 @char_MYS_mys-c20-barmouth-road-trip-companion-b_s0_v1
+C21 @char_MYS_mys-c21-barmouth-road-trip-companion-c_s0_v1
+MR015 @prop_MYS_mys-mr015-canopy-to-balloon-envelope_s0_v1
+MR016 @prop_MYS_mys-mr016-crop-stalks-to-rail-sleepers_s0_v1
+MW01_C_01 @loc_MYS_mys-mw01-c-01-memory-view-09_s0_v1
+MW02_B @loc_MYS_mys-mw02-b-global-routes_s0_v1
+MW02_C_01 @loc_MYS_mys-mw02-c-01-memory-view-09_s0_v1
+MW02_C_03 @loc_MYS_mys-mw02-c-03-memory-view-07_s0_v1
+MW02_C_04 @loc_MYS_mys-mw02-c-04-memory-view-08_s0_v1
+MWP01 @loc_MYS_mys-mwp01-a-routes-rooms-documents_s0_v1
+MWP01_B @loc_MYS_mys-mwp01-b-routes-rooms-documents_s0_v1
+MWP01_C @loc_MYS_mys-mwp01-c-routes-rooms-documents_s0_v1
+R031 @loc_MYS_mys-reference-31-london-station-source-exterior-and-iron-structure_s0_v1
+R032 @loc_MYS_mys-reference-32-nyugati-station-destination-and-roof-joints_s0_v1
+R033 @loc_MYS_mys-reference-33-hungarian-state-opera-target-facade-and-entry-depth_s0_v1
+R046 @prop_MYS_mys-reference-46-canopy-and-balloon-envelope-rigging-and-basket-interfaces_s0_v1
+TY001 @prop_MYS_mys-ty001-decimal-rating-glyphs-and-tints_s0_v1
+TY005 @prop_MYS_mys-ty005-transit-and-entrance-sign-lettering_s0_v1
+W02_B_02 @loc_MYS_mys-w02-b-02-world-view-06_s0_v1
+W02_B_03 @loc_MYS_mys-w02-b-03-world-view-07_s0_v1
+W02_B_04 @loc_MYS_mys-w02-b-04-world-view-08_s0_v1
+W02_C_01 @loc_MYS_mys-w02-c-01-world-view-09_s0_v1
+
+LOOK AND PEOPLE:
+Photographic London/Pest city imagery, damp paving, evening light and warm interiors. Use the supplied people and places. Keep C01 recognisable in his dark jacket and distinguish his memories from the present street. Present-day pedestrians carry owner-linked decimal cards, including 6.2 and 9.2; remembered people have none. Keep C01's own score hidden. No umbrellas or falling rain. Reference sheets guide the scene; never show their grids.
+
+CAMERA AND CHANGE:
+Move through the scenes with forward travel and short lateral passes. Emphasise a few large architectural changes and readable human gestures. Show substantial stone, timber, glass and iron, with depth and contact shadows. Short transitions connect the distinct views below.
+
+ACTION — LOCAL TIME:
+0–1.5 s: Begin beside the large curved iron-and-glass canopy. Amber fabric swells across its ribs, turning the roof toward a balloon envelope.
+1.5–3.5 s: Show the supplied helpers and passengers steadying a tilted wicker balloon basket among vegetable plots, holding its rim and rigging together.
+3.5–4.5 s: Return to the city: the amber envelope hangs like a broad canopy over the basket beside rated pedestrians. Move beneath its fabric edge toward a wooden dance floor.
+4.5–7.5 s: C10 and remembered C01 practise a slightly awkward partnered dance in a warm room with other couples. Keep their connected hands and footwork readable, including a turn beneath his raised arm.
+7.5–10.3 s: Pass C01's sleeve into rows of paprika and corn beside railway tracks. Move past a round clock into a modest furnished space with a key on a wooden table and upholstered seating.
+10.3–13 s: A coach window opens the view toward five travelling companions standing on a broad low-tide beach. Move closer to the group with the coastal town behind them.
+13–15 s: Return to the large glass-roofed city station. The complete balloon and basket rise above its frontage and leave through the upper frame while pedestrians and traffic continue below.
+
+SOUND:
+Background only: an original Hungarian folk-rooted fiddle theme, tekerő drone and clarinet answers, with traffic, footsteps and material sounds following visible action. Leave room for the separately added narration. No generated narrator, lyrics or intelligible dialogue; keep the musical phrase open at the end.

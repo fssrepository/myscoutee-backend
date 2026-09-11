@@ -1,19 +1,22 @@
-NARRATED CONTINUITY TEST — EXISTING JOINED 4+4-SECOND VIDEO
+LOCAL ASSEMBLY AND NARRATION TEST — TWO VIDEO CLIPS, TWO EXISTING GRADY RECORDINGS
 
-This is an audio-finishing specification for an operation that accepts existing video and a separate narration track. It is not a video-generation or lip-sync prompt. The actual Higgsfield post-production mixing route is not yet verified; see NARRATION_ROUTE.md.
+This is an FFmpeg finishing specification, not a video-generation prompt.
 
-SOURCE:
-Use the actual complete joined clip, approximately 8 seconds, including its native soundtrack. Preserve its video frames, duration, frame rate, dimensions and the real source-to-extension boundary at approximately 4 seconds. No visual regeneration, retiming, crop, transition, interpolation or mouth animation.
+INPUTS:
+Use the user's downloaded first clip and the new four-second continuation generated from that clip's exact final frame. Inspect actual durations, frame rates and the shared boundary before concatenating. Retain original files. Do not use a different take as the opening clip.
+Use the two existing clean Grady recordings in this order:
+1. Sometimes the only thing that survives the cut is a smile.
+2. For a moment, that was enough.
+No further speech generation is needed for this test. The intended full-film approach is one continuous narration generation, with timing adjusted afterward as needed.
 
-EXACT SPOKEN TEXT — ONE CONTINUOUS TAKE:
-Sometimes the only thing that survives the cut is a smile.
+ASSEMBLY:
+Place the two video clips in order. Inspect the join without a dissolve first, including any duplicated boundary frame. Preserve source speed and composition. Copy the video streams where technically compatible; if a necessary frame correction requires encoding, keep source dimensions and frame rate.
+Measure both narration recordings. Place the first sentence over the opening segment and the second over the continuation, using a natural sentence pause and retaining their normal speed. Do not force voiced words across the seam: this test uses two complete sentences. Keep narration files separately editable before producing the final mix.
 
-VOICE AND PLACEMENT:
-One adult English-speaking male voice, low-to-mid register, close, restrained and thoughtful. Use the retained project voice if available. Natural clear delivery, approximately 5–6 seconds, without music or effects in the separate recording. Say the sentence once, without headings or additional words. This is off-screen inner narration; no visible character speaks.
-Place the actual recording roughly from 1 to 7 seconds of the complete video, adjusting the start to its measured natural length. Ensure voiced words cross the actual 4-second join: do not put a deliberate pause at the seam. Use one unbroken audio clip across both parts, never two independently generated voices. Do not clip, loop, accelerate or stretch speech to force a fit.
+AUDIO:
+The currently available downloaded source contains a single mixed narration/background audio stream. Do not layer the clean narration over that existing voice. Its whole audio stream must be replaced for a clean two-recording mix; losing its original background sound is a real limitation, not selective narrator removal. Use a suitable speech-free ambience from the continuation only if available and usable, and inspect the resulting bed for audible repetition or discontinuity. Keep the bed quiet under the voice. Do not generate another paid asset for this automatically.
+If a matching clean, unnarrated source is supplied instead, retain its usable background track. Do not substitute a visually different take merely because its audio is clean.
 
-MIX:
-Retain the original room tone, footfalls and music. Lower that existing bed modestly and smoothly beneath the voice, then restore it smoothly after the sentence. If music and effects are already one mixed track, treat them as one bed. Keep their timing and the original join intact. Avoid clicks, clipping, abrupt gain changes, voice changes or replacing the background with silence.
-
-REVIEW:
-Keep the unnarrated joined source for comparison. First listen to its native audio at the join without narration masking it. Then compare the narrated version: identical picture and timing, complete intelligible sentence, steady voice through the join and retained background sound. This tests native picture/background continuity and later narration mixing separately; it does not prove that Extend can continue a generated speaker's voice.
+DELIVERY AND CHECK:
+Export one MP4 with one final stereo mix and retain the separate source narration recordings. Check complete words, voice consistency between takes, no clipping, image continuity and audio synchronization. Local export must not regenerate the picture.
+The user uploads the assembled result to Higgsfield and completes the Publish workflow. Inspect actual duration acceptance and publication target before submitting; this short test is not automatically a festival entry. Verify the published playback against the local finished file. The test remains incomplete until that step is checked.

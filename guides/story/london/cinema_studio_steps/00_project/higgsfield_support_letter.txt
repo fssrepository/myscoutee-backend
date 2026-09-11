@@ -1,0 +1,53 @@
+Subject: MyScoutee festival project — continuity bugs and production workflow gaps
+
+Hello Higgsfield Support,
+
+We are participating in the Higgsfield Global Film Festival with “MyScoutee — The Path Between People”, a planned 3:20 film. You can find our project and its documented observations under MyScoutee. We are aiming to complete it within our original 3,000-credit allocation.
+
+Before spending on the full film, we tested generation, continuation, narration, local assembly and publication. Update project film worked and added the watermark. However, we encountered the following issues:
+
+1. BUG: Last-frame export returns an earlier source frame
+
+Steps: export the last frame of the first generated restaurant clip in Higgsfield, download the JPG, and compare it with every decoded frame of the original video.
+Expected: the exported image represents the actual final frame, ready to use as the next clip's starting point.
+Actual: the source contains 97 frames at 24 fps. The JPG matches zero-based frame 94, whereas the final frame is 96. It is two frames, approximately 83 ms, early.
+Evidence: all files are 854 × 480. Frame 94 matches the JPG with grayscale mean absolute error 1.47/255 and 410/413 robust feature matches. The fitted scale is 1.00004 with effectively zero translation: the export selected the wrong moment, but did not meaningfully move the selected image.
+Impact: starting a continuation from this image takes the action back before the preceding clip ends. Our workaround is to extract and verify the actual final frame locally with FFmpeg through Astra.
+
+2. BUG: The continuation changes the supplied opening composition
+
+Steps: assign the exported JPG to an Element, reference it in Cinema Studio, and request a four-second continuation beginning from that composition. Compare the generated first frame directly with the supplied JPG.
+Expected: the next shot starts from the supplied arrangement, without a sudden change of framing or object positions.
+Actual: image content moves left and upward, with a small scale change. At 854 × 480, the median optical-flow displacement is approximately 8.1 px left and 7.7 px up; a fitted similarity transform gives a scale of 0.987. This is not just a timing problem or one uniform vertical translation.
+Impact: the joined video visibly jumps. Improving it required local spatial warping, gradually reduced across the first 30 continuation frames (1.25 seconds), plus frame cuts, audio retiming and re-encoding. Simply joining the original encoded streams did not produce a continuous shot.
+
+These are TWO measured defects: the export returned an earlier frame, and the continuation changed the composition relative to that exported image itself. Fixing the export alone would not resolve the second mismatch. This test used an Element image reference, not a verified locked start-frame control. Please investigate which generation/reference-processing stage introduced the spatial change and clarify how to enforce the supplied starting composition.
+
+3. Continuation context: supplying the preceding video as a reference produced a revised shot rather than the requested next four seconds. Using its last frame gives the starting composition but cannot supply camera velocity, walking rhythm or the preceding sound. We need a supported route that carries this history into the continuation. Missing motion history is a workflow gap; it does not explain the separate composition mismatch above.
+
+4. Extend references: Element references resolved automatically in the main Cinema Studio composer, but we did not get that behaviour in Extend. Continuing a shot therefore required manual reference selection in a more limited interface. Please make the same reference resolution available there, or identify the supported equivalent.
+
+5. End-frame asset management: extracted frames appeared as temporary references, with no clear way to find them in Assets or link them to the source video's Element for reuse. Downloading and re-uploading them adds manual work and a risk of choosing the wrong file.
+
+6. Audio handling: videos could be assigned to reusable Elements, but audio could not, despite being accepted as a generation reference. Generated narration was mixed into the background soundtrack rather than delivered as an independently editable voice track. Our removal attempt damaged the background, so we will generate narration separately and add it after assembly.
+
+7. MCP media management: after importing Element definitions, we needed to attach their corresponding images. The tools available to us could upload media and create Elements, but could not attach, replace or upsert image media on those existing Elements. This prevents completing an imported asset library automatically and forces manual attachment.
+
+8. Project scope: MCP could not manage Scene-folder membership or reliably transfer existing assets into the festival project. “Move to” removed project visibility in testing. Removing Elements from a project left them available outside it. The distinction between project membership and global deletion is unclear.
+
+9. Generation destination: generating outside a project created a new project automatically instead of asking where to save the output. The UI did not make the active project versus global context clear enough.
+
+10. Basic assembly: although Seedance generates music and ambience, we did not find a simple timeline for joining clips and adding separately editable narration. Our workaround is local FFmpeg assembly through Astra, followed by re-upload. Professional editing software should not be necessary for this basic step; DaVinci Resolve cannot run on our machine because of GPU limitations.
+
+11. Supercomputer integration: we did not see deeper project integration than an external AI assistant connected through MCP. Those MCP gaps would still block automation, while chat consumes additional Higgsfield credits. With an existing OpenAI subscription, its added value is unclear without direct asset management, assembly and narration controls.
+
+12. Embedded subtitles: we uploaded one MP4 containing an embedded mov_text subtitle track marked as default, with “TEST PUBLICATION — NOT THE FINAL FILM” covering the clip. We expected the label to appear without burning it into the video pixels; it did not appear in the Higgsfield player. Please confirm whether upload processing removes this track or the player does not render it, and whether a supported embedded-subtitle route exists.
+
+We also encountered a 128 KiB Markdown import limit and a 15,000-character prompt limit. We are adapting our preparation to these limits; clearer guidance alongside the reference limits would help.
+
+Could you investigate the export and alignment issues, clarify the supported continuation and subtitle workflows, and tell us which of the integration gaps have an existing solution? We would particularly appreciate a reliable route for completing the festival film without repeated manual export/import steps or unnecessary regeneration costs.
+
+For the frame investigation, the source video is hf_20260911_045948_dc0fdaab-8c79-4bab-b846-f40a84080a7e.mp4, the exported image is d0be92b5-32ed-4c57-8c55-78db5b922caa.jpg, and the continuation is hf_20260911_070152_727a9946-0720-476c-a100-0be18752e94c.mp4. We have retained the originals and comparison results and can provide them if needed.
+
+Thank you,
+MyScoutee

@@ -1,0 +1,39 @@
+Subject: Re: MyScoutee festival project — investigation details and one additional UI issue
+
+Dear Jason,
+
+Thank you for forwarding the findings and clarifying the documented workflows. We appreciate the specialist follow-up.
+
+Our goal is to automate the complete production workflow with OpenAI GPT-6 Astra, including local video editing, clip assembly, final-frame extraction and narration mixing through FFmpeg. We currently perform the unsupported Higgsfield steps manually. We upload the locally extracted images back to Higgsfield and attach them to named Elements so Cinema Studio can automatically resolve and load the references from our prompts. This is why Element assignment and automatic reference loading matter to us: selecting files manually for each generation interrupts the automation and introduces opportunities to attach the wrong asset.
+
+To distinguish the measured test from Forward Extend: we exported the preceding clip's last frame, assigned that image to an Element, and used it in the main Cinema Studio 4.0 composer to request a four-second continuation. The two measured defects concern that export and the generated opening in this route; we are not presenting them as a measured Forward Extend result.
+
+The export matched source frame 94 rather than the actual final frame 96. Separately, the generated opening displaced image content approximately 8 px left and 8 px up, with a small scale change, relative to the supplied image itself. These are separate mismatches, so correcting the exported frame alone would not address both.
+
+We understand that Forward Extend is the documented route for motion history. The practical obstacle we encountered there was the lack of the automatic Element reference resolution available in the main composer. Could the specialist explain how to carry our character and location Elements into Forward Extend, alongside the preceding video's motion and sound? Please also clarify whether any supported start-frame control can preserve the supplied opening composition in that workflow.
+
+We have already tested separately generated Voiceover as a reference, and Cinema Studio incorporated it. The remaining issue is editability: the downloaded result mixed narration and background audio into one stereo track. Removing the narration damaged the background. We will therefore retain a separate narration recording and add it during local assembly; using it as a generation reference does not solve the separate-track requirement.
+
+Environment details available for the investigation:
+- Operating system: Ubuntu 22.04.5 LTS, x86_64.
+- Device: local x86_64 computer, using the browser UI.
+- Browser currently running: Google Chrome; installed version 152.0.7977.64. We did not record the browser version at the exact time of the measured run.
+- Current network connection: Wi-Fi; the connection type was not logged at the time of generation.
+- Measured workflow: Cinema Studio 4.0, as shown in the composer, 480p, 16:9, four seconds, audio on; downloaded video resolution 854 × 480 at 24 fps.
+- Input route: the exported image attached to an Element in the main composer. We referred to the underlying model as Seedance 2.5 in our report, but the visible selector for this run said Cinema Studio 4.0. Please use the previously supplied generation identifiers to confirm the exact backend model/version.
+
+One additional UI issue arose after our original report. Our MyScoutee logo was already uploaded, but the uploaded image's menu had no “Assign to element” action. We had seen that action on generated videos.
+
+Expected: assign the existing uploaded image to the target Element without uploading it again.
+Actual: the working route was to open the target Element, upload the image from there and assign it. Starting from the already uploaded image did not offer that action.
+
+This adds a repeated upload and the risk of selecting a different copy. It is separate from the MCP attachment limitation: this concerns the manual UI. Could you provide the direct assignment action, or point us to the supported route for selecting an existing upload from within an Element?
+
+Target Element: prop_MYS_mys-film-m-logo_s0_v1
+Existing uploaded image ID: 477d0da8-de8a-48d0-a1ef-dd3a9e25deac
+
+I have never made a film or worked through a production process like this before. Without my own AI assistant, I would not be able to do this. That is why a workflow I can reliably operate with its help matters so much to me.
+
+Thank you,
+Peter
+MyScoutee — The Path Between People

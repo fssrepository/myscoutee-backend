@@ -1,7 +1,7 @@
 REFERENCE ID: MW01_C_03 — ORIGINAL VIEW 07 (never print IDs, headings or labels).
 
 REFERENCE INPUTS:
-@loc_MYS_mys-mw01-b-03-memory-view-07_s0_v1 = Use the accepted mortgage-housemate image for the same room, person and family photograph.
+@loc_MYS_mys-mw01-b-03-memory-view-07_s1_v1 = Use the newly regenerated and accepted MW01_B_03 image with the new C07 for the same room layout, furniture, family photograph and lighting. This is the companion moment in that same room.
 @char_MYS_mys-c07-fx-mortgage-housemate_s0_v1 = CHARACTER 07 — FX-MORTGAGE HOUSEMATE; exact person identity; use only where this person appears.
 @char_MYS_mys-c08-fx-mortgage-spouse_s0_v1 = CHARACTER 08 — FX-MORTGAGE SPOUSE; exact person identity; use only where this person appears.
 @char_MYS_mys-c09-fx-mortgage-child_s0_v1 = CHARACTER 09 — FX-MORTGAGE CHILD; exact person identity; use only where this person appears.
@@ -26,6 +26,7 @@ Keep this source image sharp and literal so faces, furniture and room layout rem
 This image must be a usable literal location/event reference, not an illustration of an idea.
 
 IDENTITY ANCHORS — REQUIRED:
+Use the newly selected C07 character image as the sole identity source for the housemate: the shorter, slim adult man with receding ash-brown hair, grey at the temples, grey-blue eyes and a clean-shaven face. Preserve the actual facial proportions and narrow build in that image. Location references supply room geometry and materials only; their occupants do not override this casting. C08 and C09 supply the spouse and child identities only within the assigned family photograph or phone screen.
 Preserve the exact identities, age, hair, body proportions and context-appropriate wardrobe supplied for this scene. Apply a character reference only where that person appears; incidental people do not become additional named cast.
 
 PURPOSE:
@@ -37,7 +38,9 @@ Additional detail images of the same place retain that memory and its establishe
 
 ASSIGNED COMPOSITION — ORIGINAL VIEW 07, ONE IMAGE:
 FAMILY CONTACT WHILE PUTTING AWAY WORK CLOTHES:
-The mortgage housemate stands at the shared bedroom's open clothes rail, hanging his worn work shirt while speaking to his spouse and child on a real phone propped on the bedside surface. The phone contains their established faces within one ordinary call image; they remain in Hungary, never life-size in the London room. His free hand rests on the shirt hanger and he listens with ordinary attention, without a theatrical farewell.
+The adult mortgage housemate C07 stands beside the shared bedroom's open clothes rail, already wearing his opaque charcoal crew-neck T-shirt, dark trousers and practical shoes. His dark olive jacket is now draped over the foot of his bed, with its sleeves and hem visibly supported. A separate worn work shirt is on a hanger in his hands; he is putting this garment away, not changing the clothes he is wearing. One hand guides the hanger hook onto the rail while the other steadies the shirt at its shoulder. His head turns toward a real phone standing securely on the bedside surface as he listens to his family. Keep his face, both hands and the hanging shirt readable in one coherent moment.
+
+On the ordinary-sized phone screen, spouse C08 and child C09 sit beside each other in their home in Hungary, wearing ordinary daytime clothing consistent with their character references. They share one continuous video-call view within the phone bezel. Their faces remain the supplied identities at their supplied ages. Neither appears physically in the London bedroom. Keep the device resting on its support, with screen reflections, thickness and a contact shadow; do not enlarge the call into an inset or floating portrait. This is an everyday family conversation with quiet attention, without a theatrical farewell.
 
 Retain the accepted two beds, narrow floor gap, window, bedside lamp and small framed family photograph. The photograph stays in its original place; the live device is a separate physical object with a supported base, bezel and glass. Show the garment's hanging weight, hanger hook, separate fingers, his standing body and shoe contact. The main event is divided attention between everyday work clothes and distant family contact. No readable mortgage balance, invented message, new family member or floating portrait. The seated photograph-view is supplied by MW01_B_03.
 

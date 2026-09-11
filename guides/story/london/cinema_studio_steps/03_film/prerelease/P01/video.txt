@@ -1,0 +1,68 @@
+MYSCOUTEE — PRODUCTION P01 — 15 SECONDS, 16:9, AUDIO ON
+One new photographic sequence.
+
+OPENING: Already track C01 through Soho at street height on a forward-right oblique path. Begin living motion immediately; this is the first story clip, not a continuation from the logo.
+
+EXISTING WHOLE-IMAGE REFERENCES:
+C01 @char_MYS_mys-c01-protagonist_s0_v1
+C02 @char_MYS_mys-c02-soho-woman_s0_v1
+MR001 @loc_MYS_mys-mr001-st-pauls-to-st-stephens_s0_v1
+MR004 @prop_MYS_mys-mr004-window-glass-to-pendant-shade_s0_v1
+MR005 @loc_MYS_mys-mr005-brick-courses-to-carved-arch_s0_v1
+MR006 @loc_MYS_mys-mr006-stone-threshold-to-supported-timber-floor_s0_v1
+MR007 @prop_MYS_mys-mr007-bench-to-curved-floor-border_s0_v1
+MR008 @prop_MYS_mys-mr008-window-fittings-to-pendant-stem_s0_v1
+MR009 @loc_MYS_mys-mr009-balcony-scroll-to-sideways-stair_s0_v1
+MR010 @prop_MYS_mys-mr010-english-sign-to-kave-lettering_s0_v1
+MW01 @loc_MYS_mys-mw01-a-london-social_s0_v1
+MW01_C_02 @loc_MYS_mys-mw01-c-02-memory-view-01_s0_v1
+R008 @loc_MYS_mys-r008-cafe-to-occupied-restaurant_s0_v1
+R021 @loc_MYS_mys-reference-21-restaurant-rear-doors-and-depth-relationships_s0_v1
+T01_DETAILS @loc_MYS_mys-t01-a-soho-restaurant_s0_v1
+TY001 @prop_MYS_mys-ty001-decimal-rating-glyphs-and-tints_s0_v1
+TY002 @prop_MYS_mys-ty002-coffee-to-kave-letter-material_s0_v1
+W01_A_01 @loc_MYS_mys-w01-a-01-world-view-01_s0_v1
+W01_A_02 @loc_MYS_mys-w01-a-02-world-view-02_s0_v1
+W01_A_03 @loc_MYS_mys-w01-a-03-world-view-03_s0_v1
+W01_A_04 @loc_MYS_mys-w01-a-04-world-view-04_s0_v1
+
+TIMING AND CONTINUITY:
+All timed beat headings below are local to this request. Original Block numbers identify story chapters, not generation boundaries. Preserve their events in order; do not replay earlier actions. At a new request boundary keep visible rooms, people and material changes in place and continue their trajectories. Resolve each established destination during its story chapter. This is the first story shot: the supplied images define people, places and material forms, not an incoming video frame. Complete the St Paul’s-to-St Stephen’s transformation recognisably within this 15-second request, allowing it to continue at background depth while the nearer actions unfold.
+
+PICTURE AND REFERENCE ROLES:
+Photographic people and materials; one connected London exterior walk at overcast blue hour, gradually deepening toward night. Damp stone, puddles and coats after rain; clear air, no falling rain or rainfall sound. Warm practical interiors. Current C01 keeps exact face, hair, build and dark jacket. His remembered occurrences are distinct from the walker and use their source wardrobe. All named people retain identity, full bodies and physical support. Never turn a current pedestrian into a memory character.
+W: world geometry. MW/MWP/HRW/T01: assigned rooms and human moments. C: identity and wardrobe. MR/R: material stages and object construction only. TY: lettering and card appearance only. Use existing sheets whole; their panels are reference views/stages, never cuts or grids in the output. Follow the ordered beats below. Character identity and scripted card rules override incidental people or changing numbers in morph sheets.
+
+MATERIAL ACTION AND CAMERA:
+London objects become their named Pest counterparts at traceable positions. Connect impossible adjacencies through paving, supports, parallax and continuous travel. Show whole identifiable landmarks and distinctive features, not generic buildings or skyline collage. Establish each source, then resolve its destination before obscuring it.
+For every featured change, track a chipped corner, grain line, seam or fixing through source part, intermediate cross-section and destination function. Retain thickness, side faces, underside, grounded support and moving contact shadows. Stone gains carved depth, glass fragments curve and thicken, wood grain follows bending solid timber, iron stretches from its actual attachments. Keep opaque material opaque: no dissolve, ghosted overlay, texture-only replacement, flat paper architecture or finished room behind a lifted image. If two forms lack a material connection, travel past the first into an adjacent already-glimpsed volume instead of replacing it.
+Memories grow from the street: glimpse a hand/face, then reveal the SAME life-size person, chair legs, floor and furniture. Near edges cross faster than rear doors; hands occlude cups and supports cast shadows. Let the human gesture read while other morphs continue. Leave inhabitants behind through travel, never disappearance or body swaps. No memory projection; only the final clinical threshold uses glass to reveal another reality.
+One independently travelling 24–28 mm camera with controlled horizon: ease and partially orbit at material/human actions, accelerate through open connections. Rise on a half-ellipse tangent to the low pass, exposing underside, side and top, then descend through real gaps. A high return may look back through a cumulative 180-degree sweep only where the route allows; no forced loop or reset. Keep C01 and street traceable. No full-screen occlusion, hidden cut, jump zoom or freeze. There are no clinical or title cuts anywhere in this request.
+Keep simultaneous changes at several depths: one starts, another is midway and another settles or briefly reverses. Stones, roof seams, glass edges and furniture remain active during fast travel. Do not reduce the city to a static background while the camera moves. Current crowds, buses, taxis and trams continue their own grounded trajectories. Selected commuter coat seams thicken into lapels and bag straps reshape into handles, retaining the same bodies, hands and cards; no national identity assigned by complexion or face. These local changes overlap the featured morph rather than adding portrait shots.
+
+RATING RULE:
+Each current pedestrian has one persistent landscape card about 0.8 head-width by 0.35 head-height, centred a quarter-head above their uncovered crown. Featured nearest pedestrians retain readable dark 6.2 and 9.2 decimal numbers on pale score-tinted faces; others vary. Pale red/orange/gold/yellow-green/green follows the actual fractional score, with dark #182024 digits, decimal point and clean rim. No percentage, integer replacement or bar instead of the number. Direct gaze briefly increases only the viewed person's internal fill; the number and owner stay stable. No demographic colour coding. Keep heads bare, hoods down, no umbrellas open, folded or carried. Remembered and clinical people have no cards. Keep C01's existing card unreadable and its face neutral throughout this entire request; neither its numeral nor its score colour is revealed here. Preserve the card’s attachment above his crown. Keep sign lettering and diacritics on their actual objects; private documents specified as unreadable stay unreadable.
+
+ORDERED STORY BEATS — ONE CONTINUOUS ROUTE:
+
+BEAT 01.1 — 0–3.46 s: Track the walking protagonist through recognisable Soho: pub fronts, wet paving, black taxis, red buses and card-bearing pedestrians. St Paul's great ribbed dome, drum, classical body and paired west towers stand beyond the roofs. Begin its change into St Stephen's Basilica: bow the same ribs, slide attached roof sheets, reshape the drum piers, alter both tower crowns and slide entrance columns on the same platform into the triangular-pediment portico. Retain the complete grounded building and intermediate shapes; the destination must resolve recognisably during the block.
+
+BEAT 01.2 — 3.46–5.77 s: Reach the curved Piccadilly frontage and Eros through the same street. Red bus, yellow tram and black taxi move in separate lanes. Two pedestrians exchange a glance; only the viewed card's internal fill briefly brightens, without changing its number. As secondary action, the same winged metal statue bends its knee and jumps from its upper support to the lower plinth step; show the arc, flexing wings and landing shadow, with its plinth rooted.
+
+BEAT 01.3 — 5.77–11.54 s: Approach the café below an outward-hinging upper room beside the taxi. Track a chipped brick swelling into a deep carved arch block. Broken pane pieces rotate in opposite directions, thicken and curl into pendant shades; a notched corner becomes a shade rim. Split mullion grain twists into solid arch trim; its fasteners lengthen into the lamp stems. Stone sill becomes timber threshold; paving lengthens into boards as the puddle drains. Bench slats arc into the supported floor border; rough masonry becomes thick cream-plastered room returns. Balcony iron uncurls into a sideways stair above. Progressively reveal the SAME T01 restaurant: seated C02, white cup, wooden table, complete chair legs, rear restroom doors and remembered C01 turning from the wrong door. Her smile must register. Let her eyes meet the remembered man before the small smile settles; keep her face and cup visible together during the table-corner pass. His reaction stays within that memory while the current walker continues outside. Keep current C01 outside, distinct. Ease into an oblique table-corner arc with parallax, never substitute an interior shot. Mounted COFFEE sign strokes reshape into KÁVÉ; wall-lamp brackets branch while retaining their shades and warm pools.
+
+BEAT 01.4 — 11.54–15 s: The café wall ribs rotate from their roots into the adjacent lunch-room ceiling over the continuing floor. Glimpse a colleague's moving fork before exposing the same lunch group. The remembered protagonist has an empty place, touches unused cutlery and withdraws his hand. Preserve the lack of food. Leave the woman's occupied table behind; nobody changes identity to populate the lunch room.
+
+MATERIAL COVERAGE: Fifteen overlapping changes within the existing beats: brick/arch, pane/shade, mullion/trim, fastener/stem, sill/threshold, paving/boards, bench/floor border, masonry/plaster, anchored balcony coil widening into treads with visible undersides and handrail, dome ribs, drum openings and piers reshaping on the same ring, paired towers changing with staggered starts, columns sliding on the portico platform as its entablature rises into a solid pediment, sign lettering and branching lamps. Track contact, thickness and support. C01 and C02 never mutate to repair architecture.
+
+SOUND — GENERATE BACKGROUND ONLY:
+
+No narrator, voiceover, sung lyrics or intelligible added dialogue. People may gesture and move mouths only as the scripted memory requires; do not generate the separately prepared monologue or lip-sync it. Narration will be placed over the assembled film locally.
+
+An original Hungarian folk-rooted instrumental theme: raw close fiddle with audible bow grain, rising minor-pentatonic call, held peak and falling answer; acoustic tekerő string drone with rasping buzz attacks; woody ornamented clarinet response. Distinct acoustic instruments, no generic synth pad, piano loop or trailer swell. Vary register, note lengths, ornaments, gaps and answering instrument with the story; volume alone is not development. Keep musical time independent of camera speed, leave headroom for later narration and avoid a grand ending at an ordinary clip boundary.
+
+Wet tyre hiss, footfalls and traffic under prominent spatial material foley. Each featured morph has contact onset, sustained strain and settling/reversal: granular stone grind, stressed iron creak/ringing release, taut glass vibration and dry wooden joint sounds. Follow the actual visible object through the sound field. No generic transition whoosh. Begin and end with a stable ambient bed; do not insert silence or fades to conceal joins. This request sets sound character; no prior audio is attached or assumed available for exact phase continuation.
+
+MUSIC PHASE — LOCAL 0–15 s: Introduce the bare fiddle lament at the opening; admit tekerő with the first building transformation. At 5.77–11.54 s thin the accompaniment beneath the restaurant smile. As the camera enters the lunch room at 11.54–15 s, return higher with a changed fiddle answer and restrained clarinet support. Keep the phrase open across the outgoing boundary.
+
+LOCAL 0–15 s: No clinical images or medical sounds in this part.

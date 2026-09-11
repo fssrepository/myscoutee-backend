@@ -1,6 +1,9 @@
 item,quantity,unit,estimated_credits,basis,status
-EXISTING_LIBRARY,266,attached image,0,Reuse existing attached images,NO_NEW_PASS
-STORYBOARDS,7,4K image,28,Assume 4 credits each; earlier unit price,PLANNING_ESTIMATE
-FINAL_FILM,200,seconds,1800,Earlier 30s=270 and 20s=180; complete-input and Extend quotes pending,HISTORICAL_RATE_ESTIMATE
-FINAL_NARRATION,7,passage,14,Earlier Seed Audio A01 quote scaled to total script length,PLANNING_ESTIMATE
-PILOT_LOGO_FINISHING,1,combined envelope,100,"4+4s test, test speech, 4s intro and finishing together; not a quote",UNQUOTED_PLANNING_ENVELOPE
+FINAL_FILM,200,seconds,1800,12 requests; creator-reported 9 credits/s,QUOTE_CHECK_PER_REQUEST
+ELIGIBILITY_AND_REPAIR_CONTINGENCY,1,spending envelope,137,1937 reported balance minus 1800 story; no separate test,RESERVED_CONTINGENCY
+STORYBOARDS,0,generated image,0,Reuse existing whole images,NO_PAID_SERIES
+FULL_NARRATION,0,future recording,0,Already downloaded,DO_NOT_REGENERATE
+OPENING_IDENT,0,future generation,0,Accepted V00; prior 36 quote accounted in conditional balance,COMPLETE
+FINAL_FRAMES_AND_ASSEMBLY,1,local work,0,Local extraction and FFmpeg assembly; four metadata definitions,NO_GENERATIVE_JOB
+RESERVED_TOTAL,1,plan,1937,1800 story plus 137 contingency,PLANNING_TOTAL
+TEST_OR_UNALLOCATED,1,conditional credits,0,Separate 480p trial dropped,NO_SEPARATE_TEST

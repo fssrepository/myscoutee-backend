@@ -1,9 +1,7 @@
-# Film prompts
+# Film production — current P01–P12 sequence
 
-[00 — MyScoutee presents](00/README.md): separate 4-second opening ident, prompted with the existing M-logo as its sole image input. Prepared only; no generation submitted. The seven story blocks retain their own durations.
+The current generation order and prompts are in [production/README.md](production/README.md): **12 requests, 200 seconds, 22–29 references including each incoming frame, all prompts below 15000 characters**. The accepted four-second V00 ident and downloaded narration are already complete.
 
-The numbered folders contain each block's storyboard, video prompt and narration. Image-generation prompts remain in `02_library`; their view geometry, material states and appearance rules belong there. Camera travel, timed actions and sound belong in the corresponding video prompt.
+The original 01–07 video and storyboard files are retained as detailed source chapters, not the current generation queue. All 63 story beats are preserved. The precision review only changes obsolete clip-boundary wording in beat 06.4; the other 62 beat paragraphs remain verbatim. Storyboard files are local reference plans; do not generate them. Reuse existing whole images.
 
-[Optional reference motion](reference_motion_options.txt) preserves the character-pair and MR021 score-change video instructions extracted from image prompts. These are selectable inserts, not newly scheduled film events. Copy only a selected transition into its actual video beat with its bound references. The numbered video prompts already retain the active world movement, weather/sound, rating continuity and scene-specific actions.
-
-The image grids, output settings, Element names and import lists are unchanged by this separation. Image prompt lengths must still be checked against the UI limit; separating video instructions alone does not guarantee that a prompt fits.
+[Current budget](../00_project/BUDGET.md) · [Four additional frame definitions](../00_project/elements/additions/PRODUCTION_REPARTITION_FRAMES_IMPORT.md) · [Narration](narration.txt)

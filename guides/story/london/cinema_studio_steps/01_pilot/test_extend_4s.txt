@@ -1,12 +1,13 @@
-NATIVE FORWARD EXTEND — ADD 4 SECONDS TO THE SELECTED 4-SECOND SOURCE
+CONTINUE FROM THE SUPPLIED FINAL FRAME — 4 SECONDS, 16:9, AUDIO ON
 
-Use the actual selected video as the native extension source, including its motion and audio context. The added portion is 0–4 seconds; the intended complete joined result is approximately 8 seconds. Continue from the real ending, not a reconstructed first frame or a separately generated matching shot.
+REFERENCE INPUTS — FINAL FRAME AND CHARACTER:
+@loc_MYS_mys-test-v01-end-frame_s0_v1 supplies the exact last frame of the preceding clip. Use it as the opening composition for this new four-second shot: the same seated woman, her hands beside the white cup, the wooden table, empty foreground chair, background diners and rear doors. Begin the action immediately from that arrangement. No video or narration reference is required for this generation.
+@char_MYS_mys-c02-soho-woman_s0_v1 supplies the seated woman's established facial identity, hair and body proportions. Apply it only to the existing woman beside the cup. The final frame supplies her opening pose, clothes, lighting and position in the room. Preserve her identity throughout the gesture without a sudden facial change at the join. Do not add another woman or copy the character-sheet layout.
 
-Inherit the source man's and woman's exact identities, clothes, posture, hand positions, the cup, table corner, chair, doorway, lighting and the actual camera position, direction and velocity. The source video governs any details that differ from the written first prompt. Retain the original three reference identities if the Extend interface retains or accepts them; they supply identity and room materials, never an alternative starting composition. No additional reference image is required.
+NEXT ACTION:
+The woman gently lifts her cup from its saucer, brings it toward her lips and takes a small sip. Her expression remains relaxed after the encounter. The background diners continue their quiet conversation with small natural gestures. Keep the man who has already left the frame off-screen; do not bring him back or replay his approach.
 
-Continue the man's unfinished walking step past the same occupied table. The seated woman's small glance/smile develops naturally and she then returns her attention toward her cup. Keep the camera drifting at the inherited pace, with the same table corner and doorway remaining traceable. One ordinary continuing action is enough. Do not replay the approach, restart a gesture, teleport a person, replace the room, change camera side, insert a cut or freeze a boundary frame. Allow motion to continue naturally through the final frame.
+One uninterrupted photographic restaurant shot in the same warm practical light. Keep the camera steady with only a subtle natural drift, preserving the opening framing as the gesture begins. Natural hand contact, believable cup weight and supported furniture. No cut, freeze, zoom jump, fade, new room or added person. Preserve the woman's referenced identity and the clothes shown in the final frame.
 
-NATIVE SOUND CONTINUITY:
-Carry the actual source room tone, footstep rhythm and instrumental phrase across the boundary. Continue the note or reverberation already sounding rather than restarting the track or repeating its opening attack. Match apparent distance, timbre and loudness. Subsequent footfalls follow subsequent steps. No click, gap, doubled beat, sudden new background, fade at the join or speech. Keep the final ambience alive.
-
-Return the native cumulative result if that operation provides it. The test must preserve the original 4 seconds and append the 4-second continuation. If the UI returns only the added portion, retain both original files for frame-preserving assembly; never regenerate the original part to join them. No transition effect should conceal the seam.
+SOUND:
+Quiet restaurant ambience, soft indistinct background murmur and a subtle cup/saucer sound timed to her movement. No intelligible speech, narrator or music. Leave the ambience running naturally at the end. Narration will be added separately during final assembly. No captions, score cards or visible instructions.

@@ -1,10 +1,54 @@
+## 2026-09-11 — Prompt precision review completed
+
+Production P01–P12: fixed stale chapter-wide music cues, P10 internal 6-second transition, P11/P12 clinical sound timing, and request-local C01 rating state. All 63 story beats and all reference handles retained; 62 beat bodies remain verbatim, with only boundary wording changed in 06.4. Prompt hashes/counts updated in production/plan.json. User reports 1937 credits; 1800 story allocation, 137 contingency, no separate 480p trial. Do not open or switch editor tabs without an explicit current user request. Four-frame metadata import is prepared, not imported; UNBOUND handles remain deliberate.
+
+## 2026-09-11 — Current production queue: P01–P12
+
+Repartitioned all 63 complete story beats into 12 requests, 200 seconds; 22–29 Element references inclusive of incoming final frames; 216 existing library Elements retained globally. Source beat bodies verified verbatim. Current order: `03_film/production/README.md`; machine-readable provenance: `03_film/production/plan.json`. Old 01–07 files remain source chapters only. Four additional frame definitions prepared; P09–P12 placeholders require actual MCP binding after import. No paid generation or remote mutation performed. V00 and narration remain accepted/downloaded. Story allocation 1800, provisional image-replacement envelope 40, conditional test balance 97 assuming 1973 minus only the 36-credit ident.
+
+### Read-only MCP check of the reported references — 2026-09-11
+
+Fetched 21 affected Elements with `show_reference_elements(action=get)`. MW01_C_03 (`62d04035-4aa6-4a76-a6cf-1358c2ff34f0`) and MW01_C_04 (`560a9880-116f-4865-8ac6-1b852d82dab9`) both returned `ip_checking`, each with TWO attached image jobs. C03 images: `a31432e2-7cc1-406a-8d46-9047ac880b8e`, `2148c24e-53c1-4e55-80c7-6cffba56e8ce`. C04 images: `8d1a8d2b-d225-4e70-a501-d823dcaab241`, `a42d3540-8e06-4a6b-875e-df0026b18850`. The response does not identify which image/check is responsible or whether either check is stuck.
+
+All 18 red MR/R/TY mentions inspected (MR004–MR010; R008/R010/R021/R025/R026/R028/R030; TY001/TY002/TY003/TY006) exist under their expected names/UUIDs, report `completed`, and each has one attached image. C07 also reports `completed` with its original image job `2b79b786-db22-4ddd-9211-39a2679fcbee`, despite the creator's explicit UI “face IP failed” result. Therefore Element `completed` must not be equated with passing the separate Cinema Studio media/model eligibility check. No per-image IP outcome/reason is exposed by this response. Current evidence rules out missing Element records or empty media lists for these inspected references, but does not establish why the composer renders red UUIDs. No remote mutations or paid calls performed.
+
+## V01 reference checks — creator observations, 2026-09-11
+
+All 48 references are listed in the composer, but the thumbnail strip has no visible scrollbar. The creator confirmed Shift + wheel reaches the hidden thumbnails, in the opposite direction to the one initially expected. C07 (`char_MYS_mys-c07-fx-mortgage-housemate_s0_v1`) returned “face IP failed”; the creator requested a replacement image. Its existing character prompt already explicitly requests fictional casting rather than reproduction of the memoir participant. Opened the C07 image prompt for the creator; no image generation, media replacement or prompt alteration performed here. The two repeatedly returning checks were identified by the creator as `loc_MYS_mys-mw01-c-03-memory-view-07_s0_v1` and `loc_MYS_mys-mw01-c-04-memory-view-08_s0_v1`; their exact final error/status is not known. Screenshots at 13:59:26 and 13:59:35 also show red UUID mentions for MR004–MR010, R008/R010/R021/R025/R026/R028/R030 and TY001/TY002/TY003/TY006. Sample comparisons of MR004 and MR008 match the recorded Element UUIDs exactly: red UUID rendering alone does not establish a wrong Element target. The creator reports many checks accepted; per-asset acceptance for this red group has not been verified. Do not classify those two as rejected or schedule regeneration from this symptom alone.
+
+## V00 accepted; next V01 — 2026-09-11
+
+The creator accepted `/home/raxim/Downloads/myscoutee_v00_title_corrected_1080p.mp4`. The generated V00 spelled the brand “MyScuitee”; local non-generative masked retouching and font compositing corrected it to “MyScoutee”, following the original title fade. Original download retained: `hf_20260911_112632_b19fcc49-ce7e-4dcd-9ecd-ea8b3ca67d87.mp4`. Corrected output retains 97 frames, 1920×1080, 24 fps, 10-bit HEVC and 4.05-second container duration; video re-encoded, AAC audio verified bit-identical. No paid repair or regeneration. Festival rules section 4 explicitly permits external titles and precise mask-based retouching.
+
+Next UI checkpoint: V01 (`03_film/draft/01/video.txt`), 30 seconds, 16:9, audio ON, one output; review the full-request 480p quote for the planned first-story test. Current file: 14,960 characters and 48 unique Element references. No V00 last frame is needed: V01 opens a new story shot after the ident. No additional storyboard generation or narration reference. Preserve story detail. The last creator-reported pre-V00 balance was 1973; V00's UI quote was 36. A 1937 post-V00 balance and 137 surplus after the 1800 story reserve are conditional arithmetic, not a verified account balance. A 75-credit V01 test remains an estimate until the UI displays the actual quote.
+
+# Current checkpoint — whole-image reference union, 2026-09-11
+
+Latest decision: no arbitrary 30-reference cap and no reference thinning solely to reduce the count. Keep the current requests within the observed 50-reference / 15,000-character limits. Preserve animation detail; V01 now restores its omitted stair, drum, staggered-tower and portico details at 14960 characters. No further generated storyboard image is required for this film plan. If a concrete capacity problem requires restructuring, examine a 15-second split before simplifying the story.
+
+Implemented: eight local storyboard plans and eight corresponding story-video prompts now use the selected existing whole images. No generated SB dependency remains. 216/266 canonical images are direct references; all 50 alternatives have explicit reasons in VIDEO_ASSET_COVERAGE.csv. All 63 beat paragraphs remain verbatim. Prompt counts are 48/49/35/29/36/37/47/30; each video text is under 15,000 characters. These are composer-level checks, not backend-quality guarantees.
+
+Creator constraints: no panel cutting, no resized/composite grids, no bulk image generation or replacement uploads. Preserve the main-film budget and consider only one or two focused 480p tests from confirmed surplus. Existing imported SB Elements stay unused. Existing source images, the canonical master and narration texts are unchanged.
+
+V00 now specifies a four-second symbolic material assembly: separated paths/coloured logo sections converge around the white heart, settle into the exact logo and hold MyScoutee presents. No literal gears. One existing logo reference, material sounds and a short acoustic signature with Audio ON; no additional image or audio-reference job.
+
+Narration already downloaded: hf_20260911_092854_627d5d9b-4dc2-4d8a-82ea-b53a24eb0021.mp3, previously measured 150.334694 seconds; creator-reported quote 6.15. Do not regenerate. Last reported pre-narration balance 1979. Remaining footage/ident planning reserve 1836; arithmetic surplus 136.85 only if no other debit. See BUDGET.md for uncertainty.
+
+Next: review the intended request's existing inputs and UI quote before video generation. Each later continuation requires the accepted predecessor's actual final decoded frame, extracted/verified locally by Astra and assigned by the creator to its existing EF Element. No paid job or upload was performed in this revision. The user operates Higgsfield generation/upload/publication.
+
+Earlier entries below are historical and may describe superseded paid boards, pending narration or full-library binding. Follow 03_film/README.md and FILM_REFERENCE_AUDIT.md for current state.
+
+## Active small-test checkpoint — 2026-09-11
+
+The creator is starting the 4+4-second test and explicitly requires the workflow to continue through Publish and published playback. Current first step: prepare 01_pilot/test_video_4s.txt in the existing project with C01, C02 and MW01 Page A image references; 4 s, 16:9, audio ON, one output, 480p if offered; inspect actual model/settings and quote. Continue through native Extend, real narration mixing, publishing preview/submission and playback at the returned published URL. No first clip or published test is yet verified. See [the full current test sequence](../01_pilot/README.md). This is the Higgsfield creative test workflow, not the repository's fixture-backed manual QA campaign.
+
 ## Budget reconciliation — current 2036-credit balance
 
 Compared with the 2860 reported baseline, net balance reduction is 824: +140 against the original 684-credit image allocation, or +84 against the revised 740 allocation. Current 266-image scope is a hypothetical 792-credit clean pass, already attached and not payable again. Remaining scenario: film 1800 + seven 4K storyboards 28 + narration 14 = 1842, leaving 194 for the small pilot, logo and finishing. A combined 100-credit planning envelope for those leaves 94. Actual Extend/mix/logo quotes remain pending; this is not an itemized spend record. See [current budget](../00_project/BUDGET.md).
 
 ## Opening logo segment — identified and prompted
 
-The creator clarified the full-screen MyScoutee presents ident, using the existing repository/profile M-logo (creator-reported GPT Image 2 provenance). The old 4-second title-card video is not an input. [00/video.txt](../03_film/00/video.txt) describes a new restrained 4-second ident with only the logo image as reference. The latest instruction is prompt preparation; no upload or generation was performed. Model and price remain unselected. No Higgsfield/festival branding is requested inside the ident. The seven story blocks and the 4+4-second test are unchanged.
+The creator clarified the full-screen MyScoutee presents ident, using the existing repository/profile M-logo (creator-reported GPT Image 2 provenance). The old 4-second title-card video is not an input. [00/video.txt](../03_film/production/P00/video.txt) describes a new restrained 4-second ident with only the logo image as reference. The latest instruction is prompt preparation; no upload or generation was performed. Model and price remain unselected. No Higgsfield/festival branding is requested inside the ident. The seven story blocks and the 4+4-second test are unchanged.
 
 # Current override — small continuity test, 2026-09-10
 

@@ -1,56 +1,41 @@
 REFERENCE ID: MW02_A_02 — ORIGINAL VIEW 02 (never print IDs, headings or labels).
 
 REFERENCE INPUTS:
-@char_MYS_mys-c01-protagonist_s0_v1 = CHARACTER 01 — PROTAGONIST; exact person identity; use only where this person appears.
-@char_MYS_mys-c12-agra-bus-woman_s0_v1 = CHARACTER 12 — AGRA BUS WOMAN; exact person identity; use only where this person appears.
+@char_MYS_mys-c01-protagonist_s0_v1 = C01, the adult traveller seated in the bus. Use his established face, hair, adult proportions and clothing for this person.
+@char_MYS_mys-c12-agra-bus-woman_s0_v1 = C12, the adult woman speaking to him from the neighbouring row. Use her established appearance and clothing for this person.
 
-OUTPUT GEOMETRY — ONE 2K FULL-FRAME IMAGE:
-Generate ONE photographic widescreen 16:9 image; select 2K in the output controls. One uninterrupted scene fills the complete canvas. No grid, split screen, contact sheet, panels, inset, border, gutters, margins, letterboxing, headings, labels or captions. In-world objects and text explicitly assigned below remain visible.
-Use character references for identity and wardrobe only, and accepted location references for their assigned spatial content. Reconstruct the assigned scene at full frame; never copy an input sheet layout.
+OUTPUT — ONE 2K FULL-FRAME PHOTOGRAPH:
+Create one photographic 16:9 widescreen image and select 2K in the output controls. The entire canvas shows one continuous bus interior during one moment. The character sheets supply the appearance of the two assigned people; compose them within the actual seats and aisle. Keep sheet panels, studio backgrounds, borders, captions and instruction labels out of the output. An ordinary bus window remains part of this scene, with its own frame, glass and exterior view.
 
-MEMORY-WORLD FUNCTION:
-This is a CLEAN VISUAL SOURCE REFERENCE for a remembered place/event.
-Show the memory scene DIRECTLY, as if the camera were physically inside the remembered world.
-DO NOT show the London–Budapest present city.
-DO NOT display the memory as an insert inside a present-city window, shopfront, puddle or mirror. A real vehicle window and its natural reflection within the assigned remembered journey remain allowed.
-DO NOT add rain/reflection layers from the present city.
-DO NOT add score cards.
- This source sheet remains a sharp direct view of the memory; it is not a cut or flat image to display in the video.
+SCENE — A CONVERSATION DURING THE AGRA BUS JOURNEY:
+Inside an ordinary passenger bus in Agra, India, C01 sits among other travellers. C12 occupies the neighbouring row just behind him, across the aisle, and addresses him over the intervening seat corner. He turns his head and upper shoulders slightly toward her while remaining seated. Her face and his listening response form a clear exchange across a short physical distance. Capture the natural instant of someone speaking and another person attending to her; no caption or written dialogue accompanies it.
 
-VISUAL LANGUAGE:
-Photorealistic live-action European feature-film realism.
-Natural human proportions, realistic contemporary wardrobe and props, ordinary practical lighting, believable interiors/exteriors.
-Keep this source image sharp and literal so faces, furniture and room layout remain reconstructable. The film, unlike this source sheet, turns these places into impossible architecture within London.
-This image must be a usable literal location/event reference, not an illustration of an idea.
+The encounter is an everyday part of travelling. Both people remain comfortably within their own seats. Her relaxed expression and a small conversational hand gesture convey her attention; his expression is receptive and unforced. Avoid a staged group portrait, a dramatic confrontation or an exaggerated reaction. Other passengers continue their own quiet activities and retain individual appearances. They do not become copies of either named character or gather to watch the exchange.
 
-IDENTITY ANCHORS — REQUIRED:
-Preserve the exact identities, age, hair, body proportions and context-appropriate wardrobe supplied for this scene. Apply a character reference only where that person appears; incidental people do not become additional named cast.
+CHARACTER AND CLOTHING CONTINUITY:
+C01 and C12 retain the adult ages, facial proportions, hair distribution, skin texture and body builds supplied by their character images. Preserve natural differences between the two sides of each face. Use their established travel clothing, with credible seated folds at shoulders, elbows, waist and knees. Clothing remains fully worn and opaque. Hair, collars and sleeves stay consistent between the visible person and any faint reflection naturally produced by the window.
 
-PURPOSE:
-Build the reusable literal travel-memory source bank around the principle: Global route. Local encounter. The important subject is ordinary human contact inside movement, not postcard tourism.
+The head turn changes the view of C01's existing face rather than changing his identity. C12's speaking expression comes from a small mouth opening and relaxed facial muscles, without reshaping her eyes, jaw or age. Give each person two separate hands with proportionate fingers. One of her hands may rest on her own seat edge while the other makes the small gesture; his hands remain naturally supported in his lap or on his own seat. Keep the central faces and hands clear of grab rails and neighbouring heads.
 
-REFERENCE COVERAGE FOR THE MOVING FILM:
-This image supplies the one assigned literal view. It is not a cut or a morph stage. Make this view useful for its assigned purpose: room layout shows supports and an entry/exit; a gesture view retains its hand, furniture edge and background anchor; an object detail shows side/underside and contact. Different views of the SAME room preserve its floor plan, furniture, identities, clothes and light sources even when the viewpoint changes. Distinct memories remain distinct places; do not fuse them into one room. Repeated anchor views in another image must preserve the same state and layout.
-Additional detail images of the same place retain that memory and its established event. Keep full body/furniture support legible wherever the assigned view permits. Keep the assigned subject and framing; do not substitute a generic wide shot for a detail.
+CAMERA AND COMPOSITION:
+Place the camera physically in the bus aisle, looking diagonally along the rows at approximately seated eye height. A near seat corner establishes the foreground; C01 and C12 occupy the middle distance; successive seat backs, aisle flooring and the far interior provide depth behind them. Leave a readable eyeline over or beside the intervening seat. Frame enough of their seated bodies and surrounding supports to explain how both people occupy the vehicle. Do not replace the encounter with isolated face close-ups.
 
-ASSIGNED COMPOSITION — ORIGINAL VIEW 02, ONE IMAGE:
-India / Agra bus interior. The protagonist sits among ordinary passengers while a woman speaks from behind or across the seat. Human proximity and voice are central; avoid iconic monument imagery and exoticized styling.
+The aisle remains a continuous walkable strip. Seat backs at increasing distances become smaller with perspective, and nearby edges overlap the farther rows naturally. Keep the real seat spacing, window rhythm and grab-rail attachments coherent. Where visible, show knees beneath the proper seat edge, feet resting on the floor and seat legs meeting the same floor plane. A foreground seat can hide part of a lower body naturally, but the available geometry must still explain the seated posture. The camera does not occupy a seat back or pass through a passenger.
 
-Compose down the actual bus aisle with seat backs at successive distances. Seat the protagonist and the woman in the positions described, keeping a clear eyeline over or beside the seat between them. Window seals, grab rails, upholstery seams and floor joins remain visible. Landscape through the windows belongs to this remembered journey, without adding tourist monuments.
+BUS CONSTRUCTION AND CONTACT:
+Resolve upholstery seams, piping, shallow compression under seated weight and modest wear at frequently touched seat corners. The near seat has a front or rear face and a visible side, with actual thickness rather than a flat printed outline. Its frame and exposed supporting legs connect to floor fixings. Window seals follow the glass perimeter; posts, grab rails and brackets have separate edges and plausible attachment points. Floor joins continue beneath the rows and along the aisle without changing direction arbitrarily.
+
+Hands rest against fabric or a seat surface with small contact shadows. Fingers overlap the seat edge correctly and remain separate from its seams. Clothing folds settle around the supported body. Window glass has restrained reflections, visible thickness where its edge is exposed and a clear relationship to the surrounding rubber seals. Keep the solid seats, people and vehicle panels opaque.
+
+LIGHT AND EXTERIOR:
+Use ordinary daylight entering through the bus windows, balanced by the softer light inside the cabin. Faces on either side of the aisle share this same lighting arrangement. Preserve readable shadow detail under seats and beneath hands while keeping highlights on glass and metal controlled. Use natural colour and photographic skin texture, with sufficient depth of field to inspect faces, hands, nearby seat construction and the continuing aisle. This source still stays sharp, without motion blur or shallow focus hiding the supports.
+
+The landscape visible through the windows belongs to this remembered journey and remains subordinate to the conversation. Show an ordinary passing environment rather than a tourist landmark. The location is established through the assigned bus journey, not costume stereotypes, invented ceremonial decoration or exaggerated styling. Window reflections stay on the glass and do not turn into a second version of the encounter.
+
+MEMORY SOURCE AND REUSE:
+This is a direct photographic view from inside the remembered bus. It supplies the actual encounter, seated bodies and vehicle geometry for the later film. No present-day London street, Budapest architecture, city rain overlay, floating score card or transition effect is rendered here. Do not place the whole scene inside a shop window, puddle, mirror or another vehicle's window. The bus's own windows remain ordinary physical parts of its interior.
+
+Keep this encounter distinct from the metro, taxi and hotel memories. Repeated views of this bus retain the same seat layout, people, clothing and lighting. A closer gesture view must agree with the wider arrangement rather than relocating either passenger. Provide a readable aisle opening and a substantial seat or canopy support that later camera travel can follow. Future material transformations belong to the moving film; the source photograph contains no ghosted duplicate, translucent room, blended time states or morph stage.
 
 FINAL CHECK:
-One full-frame 16:9 image at selected 2K. Direct memory scene, no score cards, no present-city overlay, no printed instruction labels.
-
-SPATIAL INFORMATION FOR LATER EMBODIED MEMORY:
-The later film grows this exact remembered encounter from London materials. Supply enough geometry to reconstruct a solid place: a near seat or table corner with two readable sides, full supporting legs where furniture matters, visible floor contact, and a rear door, wall or landscape plane at a different distance. Use the existing widest relevant reference view for the whole arrangement and the existing human-detail reference view for the gesture; use the companion image when that required contextual view is assigned there. Keep principal faces, hands and interactions in useful focus. Show natural occlusion and contact shadows. Avoid hiding the relationship between a person, their chair, the floor and the rear doorway in shallow focus or tight crops. A detail image may be close, but its contextual reference view must retain the full arrangement. Preserve the assigned encounter and identity. These literal source shapes give the later film recognisable people and materials to carry through the impossible transformation.
-
-SOURCE CONTINUITY FOR THE MOVING FILM:
-Render this image as a single clear, solid view of the specified people and their actual room or place. Show a usable doorway edge, furniture corner or support beside the central gesture, with full bodily depth, clear hands and contact shadows. Never supply ghosted people, translucent rooms, double exposures or blended before/after scenes. The source image is a direct view of the remembered place, with no transition overlay. Preserve the assigned identities and events across alternative views. Keep the source free of present-city overlays and rating cards.
-
-Keep the assigned room and human event specific and intact. Its source doorway, furniture corner or open side can support either a matched material development or continuous camera entry/exit. No forced mutation of the people, furniture or room is needed when the next setting lacks corresponding structure; let the film travel onward through a visible connected opening.
-
-RATING ROLE IN THIS IMAGE:
-These are remembered or clinical people, not current-city pedestrians. Keep this image without floating rating cards. A printed pass, family photograph or ordinary document remains its physical story object, not an above-head score.
-
-NO UMBRELLAS:
-No umbrellas anywhere in this image: none open, folded, carried, tucked into a bag, leaning against a wall, mounted over a table or held above a head. Do not copy an umbrella from an input reference. Outdoor present-city people have uncovered heads, hoods down and exposed hair; leave open air above every crown. Keep the specified weather for this scene. This restriction applies to the foreground, background, reflections and the entire image.
+One uninterrupted 2K image, 16:9. C01 seated and listening to C12 across the neighbouring row, with ordinary passengers behind them. Preserve both supplied identities, their clothing, the clear eyeline, distinct hands, seat depth, floor support, window seals, grab rails, upholstery seams and successive aisle distances. No new participant or story outcome is introduced. No floating ratings, graphic overlays, printed prompt labels, panels or umbrellas appear anywhere, including the windows and reflections. Keep the principal heads uncovered and their faces unobstructed.

@@ -1,0 +1,50 @@
+MYSCOUTEE — SHORTENED P05 — 20 SECONDS, 16:9, AUDIO ON
+One photographic sequence.
+
+EXISTING WHOLE-IMAGE REFERENCES:
+@loc_MYS_mys-film-v04-end-frame_s0_v1
+C01 @char_MYS_mys-c01-protagonist_s0_v1
+C22 @char_MYS_mys-c22-accountant_s0_v1
+C23 @char_MYS_mys-c23-admin-colleague-a_s0_v1
+C24 @char_MYS_mys-c24-admin-colleague-b_s0_v1
+MR002 @loc_MYS_mys-mr002-facade-relief-to-sculpted-support_s0_v1
+MR003 @loc_MYS_mys-mr003-facade-window-capital-and-cornice_s0_v1
+MR011 @loc_MYS_mys-mr011-slate-roof-to-curved-glazing_s0_v1
+MR012 @loc_MYS_mys-mr012-chimney-shafts-to-spiral-crowns_s0_v1
+MW03 @loc_MYS_mys-mw03-a-work-rule-change-admin_s0_v1
+MW03_B_01 @loc_MYS_mys-mw03-b-01-memory-view-05_s0_v1
+MW03_B_02 @loc_MYS_mys-mw03-b-02-memory-view-06_s0_v1
+MW03_C_01 @loc_MYS_mys-mw03-c-01-memory-view-09_s0_v1
+MW03_C_02 @loc_MYS_mys-mw03-c-02-memory-view-01_s0_v1
+MW03_C_03 @loc_MYS_mys-mw03-c-03-memory-view-07_s0_v1
+MW03_C_04 @loc_MYS_mys-mw03-c-04-memory-view-08_s0_v1
+MWP01_B @loc_MYS_mys-mwp01-b-routes-rooms-documents_s0_v1
+MWP01_C @loc_MYS_mys-mwp01-c-routes-rooms-documents_s0_v1
+R042 @loc_MYS_mys-reference-42-new-york-palace-historic-exterior-with-occupied-bay-depth_s0_v1
+TY001 @prop_MYS_mys-ty001-decimal-rating-glyphs-and-tints_s0_v1
+TY004 @prop_MYS_mys-ty004-office-and-accounting-sign-lettering_s0_v1
+W03_A_01 @loc_MYS_mys-w03-a-01-world-view-01_s0_v1
+W03_A_02 @loc_MYS_mys-w03-a-02-world-view-02_s0_v1
+W03_A_03 @loc_MYS_mys-w03-a-03-world-view-03_s0_v1
+W03_A_04 @loc_MYS_mys-w03-a-04-world-view-04_s0_v1
+W03_B_01 @loc_MYS_mys-w03-b-01-world-view-05_s0_v1
+W03_B_02 @loc_MYS_mys-w03-b-02-world-view-06_s0_v1
+
+LOOK AND PEOPLE:
+Photographic London/Pest city imagery, damp paving, evening light and warm interiors. Use the supplied people and places. Keep C01 recognisable in his dark jacket and distinguish his memories from the present street. Present-day pedestrians carry owner-linked decimal cards, including 6.2 and 9.2; remembered people have none. Keep C01's own score hidden. No umbrellas or falling rain. Reference sheets guide the scene; never show their grids.
+
+CAMERA AND CHANGE:
+Move through the scenes with forward travel and short lateral passes. Emphasise a few large architectural changes and readable human gestures. Show substantial stone, timber, glass and iron, with depth and contact shadows. Short transitions connect the distinct views below.
+
+ACTION — LOCAL TIME:
+0–3 s: Begin at the preceding glass-roofed station. Its frontage changes into a historic corner building with heavy stone window bays and cornices projecting at different angles; move close to the central bay.
+3–4 s: Show C01 alone on a wooden bench in a plain fluorescent-lit corridor, with his bag at his feet.
+4–6.5 s: Move through busy office rooms. Colleagues sort files and exchange papers beside C01 working at a computer and using a phone. Desks, filing drawers, monitors and document stacks fill the rooms.
+6.5–8.5 s: Look down at a stack of certificates and forms on a desk. The upper sheet curls upward into a narrow pale fibrous strip.
+8.5–11 s: C01 checks and marks paperwork beside a calendar and printer. Pull back to reveal his complete office as an open bay projecting over the wet city pavement.
+11–14.7 s: Travel around the building corner, revealing several illuminated office levels, rated pedestrians, a yellow tram and black taxis.
+14.7–16.3 s: Pass close to a colleague's hands on a laptop; C01's face is visible in a video call on its display, then the wider desk comes into view.
+16.3–20 s: Return to the historic work-city street with an IRODA sign, buses, taxis and pedestrians. The projecting stone bays settle into the long façade as the camera moves past the junction.
+
+SOUND:
+Background only: a restrained Hungarian folk-rooted fiddle, tekerő drone and short clarinet answers, with traffic, footsteps and material sounds. Leave room for the separately added narration. No generated narrator, lyrics or intelligible dialogue. Keep the musical tension unresolved at the boundary.

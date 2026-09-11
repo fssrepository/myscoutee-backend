@@ -1,0 +1,217 @@
+key,mention,production_requests
+C01,@char_MYS_mys-c01-protagonist_s0_v1,P01 P02 P03 P04 P05 P06 P07 P08 P09 P10 P11 P12
+C02,@char_MYS_mys-c02-soho-woman_s0_v1,P01 P09
+C03,@char_MYS_mys-c03-policewoman_s0_v1,P06 P10 P11
+C04,@char_MYS_mys-c04-appointed-lawyer_s0_v1,P07 P08 P10 P11
+C05,@char_MYS_mys-c05-final-nurse_s0_v1,P12
+C06,@char_MYS_mys-c06-shared-house-substitute-snoring-housemate_s0_v1,P02 P12
+C07,@char_MYS_mys-c07-fx-mortgage-housemate_s0_v1,P02
+C08,@char_MYS_mys-c08-fx-mortgage-spouse_s0_v1,P02
+C09,@char_MYS_mys-c09-fx-mortgage-child_s0_v1,P02
+C10,@char_MYS_mys-c10-beginner-dance-woman_s0_v1,P04 P10
+C11,@char_MYS_mys-c11-russian-transit-passenger_s0_v1,P03 P09
+C12,@char_MYS_mys-c12-agra-bus-woman_s0_v1,P03
+C13,@char_MYS_mys-c13-sudanese-traveler-man_s0_v1,P03
+C14,@char_MYS_mys-c14-sudanese-traveler-woman_s0_v1,P03
+C15,@char_MYS_mys-c15-cairo-taxi-driver_s0_v1,P03
+C16,@char_MYS_mys-c16-balloon-local-helper-man_s0_v1,P04 P09 P12
+C17,@char_MYS_mys-c17-balloon-local-helper-woman_s0_v1,P04 P09 P12
+C18,@char_MYS_mys-c18-barmouth-road-trip-driver-companion_s0_v1,P04
+C19,@char_MYS_mys-c19-barmouth-road-trip-companion-a_s0_v1,P04
+C20,@char_MYS_mys-c20-barmouth-road-trip-companion-b_s0_v1,P04
+C21,@char_MYS_mys-c21-barmouth-road-trip-companion-c_s0_v1,P04
+C22,@char_MYS_mys-c22-accountant_s0_v1,P05
+C23,@char_MYS_mys-c23-admin-colleague-a_s0_v1,P05
+C24,@char_MYS_mys-c24-admin-colleague-b_s0_v1,P05
+C25,@char_MYS_mys-c25-search-officer-male_s0_v1,P06
+C26,@char_MYS_mys-c26-defence-office-substitute_s0_v1,P07
+C27,@char_MYS_mys-c27-judge_s0_v1,P07 P10
+C28,@char_MYS_mys-c28-forensic-expert-a_s0_v1,P08 P10
+C29,@char_MYS_mys-c29-forensic-expert-b_s0_v1,P08 P10
+C30,@char_MYS_mys-c30-court-clerk_s0_v1,P08
+C31,@char_MYS_mys-c31-anonymous-fictional-cardboard-public-figure_s0_v1,P08
+HRW07,@loc_MYS_mys-hrw07-a-clinical-reality_s0_v1,P12
+HRW07_B,@loc_MYS_mys-hrw07-b-clinical-reality_s0_v1,P12
+HRW07_C,@loc_MYS_mys-hrw07-c-clinical-reality_s0_v1,P12
+MR001,@loc_MYS_mys-mr001-st-pauls-to-st-stephens_s0_v1,P01
+MR002,@loc_MYS_mys-mr002-facade-relief-to-sculpted-support_s0_v1,P05 P06
+MR003,@loc_MYS_mys-mr003-facade-window-capital-and-cornice_s0_v1,P05 P06
+MR004,@prop_MYS_mys-mr004-window-glass-to-pendant-shade_s0_v1,P01
+MR005,@loc_MYS_mys-mr005-brick-courses-to-carved-arch_s0_v1,P01
+MR006,@loc_MYS_mys-mr006-stone-threshold-to-supported-timber-floor_s0_v1,P01
+MR007,@prop_MYS_mys-mr007-bench-to-curved-floor-border_s0_v1,P01
+MR008,@prop_MYS_mys-mr008-window-fittings-to-pendant-stem_s0_v1,P01
+MR009,@loc_MYS_mys-mr009-balcony-scroll-to-sideways-stair_s0_v1,P01 P07 P11
+MR010,@prop_MYS_mys-mr010-english-sign-to-kave-lettering_s0_v1,P01
+MR011,@loc_MYS_mys-mr011-slate-roof-to-curved-glazing_s0_v1,P05
+MR012,@loc_MYS_mys-mr012-chimney-shafts-to-spiral-crowns_s0_v1,P05
+MR013,@prop_MYS_mys-mr013-entrance-rail-to-transit-gate_s0_v1,P03 P09
+MR014,@prop_MYS_mys-mr014-bench-and-canopy-to-bus-seating_s0_v1,P03
+MR015,@prop_MYS_mys-mr015-canopy-to-balloon-envelope_s0_v1,P04 P09
+MR016,@prop_MYS_mys-mr016-crop-stalks-to-rail-sleepers_s0_v1,P04
+MR017,@prop_MYS_mys-mr017-cabinet-to-desk-and-chair_s0_v1,P06 P10
+MR018,@prop_MYS_mys-mr018-hearing-bench-to-document-shelving_s0_v1,P07
+MR019,@loc_MYS_mys-mr019-paving-and-gutter-to-street-terrace_s0_v1,P11
+MR020,@prop_MYS_mys-mr020-rope-fibres-to-sheet-hem_s0_v1,P12
+MW01,@loc_MYS_mys-mw01-a-london-social_s0_v1,P01 P09 P11
+MW01_B_01,@loc_MYS_mys-mw01-b-01-memory-view-05_s0_v1,P02
+MW01_B_02,@loc_MYS_mys-mw01-b-02-memory-view-06_s0_v1,P02 P12
+MW01_B_03,@loc_MYS_mys-mw01-b-03-memory-view-07_s0_v1,P02
+MW01_B_04,@loc_MYS_mys-mw01-b-04-memory-view-08_s0_v1,P02
+MW01_C_01,@loc_MYS_mys-mw01-c-01-memory-view-09_s0_v1,P04
+MW01_C_02,@loc_MYS_mys-mw01-c-02-memory-view-01_s0_v1,P01
+MW01_C_03,@loc_MYS_mys-mw01-c-03-memory-view-07_s0_v1,P02
+MW01_C_04,@loc_MYS_mys-mw01-c-04-memory-view-08_s0_v1,P02
+MW02_A_01,@loc_MYS_mys-mw02-a-01-memory-view-01_s0_v1,P03 P09
+MW02_A_02,@loc_MYS_mys-mw02-a-02-memory-view-02_s0_v1,P03
+MW02_A_03,@loc_MYS_mys-mw02-a-03-memory-view-03_s0_v1,P03
+MW02_A_04,@loc_MYS_mys-mw02-a-04-memory-view-04_s0_v1,P03
+MW02_B,@loc_MYS_mys-mw02-b-global-routes_s0_v1,P04 P09 P11 P12
+MW02_C_01,@loc_MYS_mys-mw02-c-01-memory-view-09_s0_v1,P04
+MW02_C_02,@loc_MYS_mys-mw02-c-02-memory-view-01_s0_v1,P03
+MW02_C_03,@loc_MYS_mys-mw02-c-03-memory-view-07_s0_v1,P04
+MW02_C_04,@loc_MYS_mys-mw02-c-04-memory-view-08_s0_v1,P04
+MW03,@loc_MYS_mys-mw03-a-work-rule-change-admin_s0_v1,P05 P11
+MW03_B_01,@loc_MYS_mys-mw03-b-01-memory-view-05_s0_v1,P05
+MW03_B_02,@loc_MYS_mys-mw03-b-02-memory-view-06_s0_v1,P05
+MW03_B_03,@loc_MYS_mys-mw03-b-03-memory-view-07_s0_v1,P06
+MW03_B_04,@loc_MYS_mys-mw03-b-04-memory-view-08_s0_v1,P06
+MW03_C_01,@loc_MYS_mys-mw03-c-01-memory-view-09_s0_v1,P05
+MW03_C_02,@loc_MYS_mys-mw03-c-02-memory-view-01_s0_v1,P05
+MW03_C_03,@loc_MYS_mys-mw03-c-03-memory-view-07_s0_v1,P05
+MW03_C_04,@loc_MYS_mys-mw03-c-04-memory-view-08_s0_v1,P05
+MW04,@loc_MYS_mys-mw04-a-police-defence_s0_v1,P06 P10 P11
+MW04_B_01,@loc_MYS_mys-mw04-b-01-memory-view-05_s0_v1,P06
+MW04_B_02,@loc_MYS_mys-mw04-b-02-memory-view-06_s0_v1,P06 P10
+MW04_B_03,@loc_MYS_mys-mw04-b-03-memory-view-07_s0_v1,P07
+MW04_B_04,@loc_MYS_mys-mw04-b-04-memory-view-08_s0_v1,P07
+MW04_C_01,@loc_MYS_mys-mw04-c-01-memory-view-09_s0_v1,P06 P10
+MW04_C_02,@loc_MYS_mys-mw04-c-02-memory-view-01_s0_v1,P06
+MW04_C_03,@loc_MYS_mys-mw04-c-03-memory-view-07_s0_v1,P07
+MW04_C_04,@loc_MYS_mys-mw04-c-04-memory-view-08_s0_v1,P07
+MW05,@loc_MYS_mys-mw05-a-court-file_s0_v1,P07 P11
+MW05_B_01,@loc_MYS_mys-mw05-b-01-memory-view-05_s0_v1,P08 P10
+MW05_B_02,@loc_MYS_mys-mw05-b-02-memory-view-06_s0_v1,P08
+MW05_B_03,@loc_MYS_mys-mw05-b-03-memory-view-07_s0_v1,P08
+MW05_B_04,@loc_MYS_mys-mw05-b-04-memory-view-08_s0_v1,P08
+MW05_C_01,@loc_MYS_mys-mw05-c-01-memory-view-09_s0_v1,P08
+MW05_C_02,@loc_MYS_mys-mw05-c-02-memory-view-01_s0_v1,P08
+MW05_C_03,@loc_MYS_mys-mw05-c-03-memory-view-07_s0_v1,P08
+MW05_C_04,@loc_MYS_mys-mw05-c-04-memory-view-08_s0_v1,P08
+MW06_A_01,@loc_MYS_mys-mw06-a-01-memory-view-01_s0_v1,P09
+MW06_A_02,@loc_MYS_mys-mw06-a-02-memory-view-02_s0_v1,P09
+MW06_A_03,@loc_MYS_mys-mw06-a-03-memory-view-03_s0_v1,P09
+MW06_A_04,@loc_MYS_mys-mw06-a-04-memory-view-04_s0_v1,P10
+MW06_B_01,@loc_MYS_mys-mw06-b-01-memory-view-05_s0_v1,P10
+MW06_B_02,@loc_MYS_mys-mw06-b-02-memory-view-06_s0_v1,P10
+MW06_B_03,@loc_MYS_mys-mw06-b-03-memory-view-07_s0_v1,P10
+MW06_B_04,@loc_MYS_mys-mw06-b-04-memory-view-08_s0_v1,P10
+MW06_C_01,@loc_MYS_mys-mw06-c-01-memory-view-09_s0_v1,P10
+MW06_C_02,@loc_MYS_mys-mw06-c-02-memory-view-01_s0_v1,P09
+MW06_C_03,@loc_MYS_mys-mw06-c-03-memory-view-07_s0_v1,P10
+MW06_C_04,@loc_MYS_mys-mw06-c-04-memory-view-08_s0_v1,P10
+MWP01,@loc_MYS_mys-mwp01-a-routes-rooms-documents_s0_v1,P02 P04 P06 P12
+MWP01_B,@loc_MYS_mys-mwp01-b-routes-rooms-documents_s0_v1,P02 P03 P04 P05 P06 P12
+MWP01_C,@loc_MYS_mys-mwp01-c-routes-rooms-documents_s0_v1,P02 P03 P04 P05 P06 P12
+MWP02,@loc_MYS_mys-mwp02-a-system-time-reversals_s0_v1,P08 P11
+MWP02_B,@loc_MYS_mys-mwp02-b-system-time-reversals_s0_v1,P08 P11
+MWP02_C,@loc_MYS_mys-mwp02-c-system-time-reversals_s0_v1,P08 P11
+R008,@loc_MYS_mys-r008-cafe-to-occupied-restaurant_s0_v1,P01 P09
+R010,@prop_MYS_mys-reference-10-winged-statue-plinth-and-contact-detail_s0_v1,P01
+R021,@loc_MYS_mys-reference-21-restaurant-rear-doors-and-depth-relationships_s0_v1,P01
+R025,@loc_MYS_mys-reference-25-original-london-roof-and-chimney-volumes_s0_v1,P02
+R026,@loc_MYS_mys-reference-26-target-roof-glazing-stone-corbels-and-chimney-crowns_s0_v1,P02
+R028,@loc_MYS_mys-reference-28-original-arcade-arch-and-fanlight_s0_v1,P02
+R030,@loc_MYS_mys-reference-30-deep-gallery-through-the-unchanged-threshold_s0_v1,P02 P07
+R031,@loc_MYS_mys-reference-31-london-station-source-exterior-and-iron-structure_s0_v1,P03 P04
+R032,@loc_MYS_mys-reference-32-nyugati-station-destination-and-roof-joints_s0_v1,P03 P04
+R033,@loc_MYS_mys-reference-33-hungarian-state-opera-target-facade-and-entry-depth_s0_v1,P03 P04
+R034,@loc_MYS_mys-reference-34-tower-bridge-source-structure_s0_v1,P08
+R035,@loc_MYS_mys-reference-35-szechenyi-chain-bridge-destination-structure_s0_v1,P08
+R036,@loc_MYS_mys-reference-36-london-eye-and-connected-south-bank-depth_s0_v1,P09
+R037,@loc_MYS_mys-reference-37-great-market-hall-roof-and-brick-source-volume_s0_v1,P09 P11
+R038,@loc_MYS_mys-reference-38-balna-curved-glass-target-volume_s0_v1,P09 P11
+R039,@loc_MYS_mys-reference-39-westminster-and-parliament-square-london-source_s0_v1,P11
+R040,@loc_MYS_mys-reference-40-hungarian-parliament-complete-destination-silhouette_s0_v1,P07 P08 P11
+R041,@loc_MYS_mys-reference-41-gresham-palace-frontage-and-deep-stone-details_s0_v1,P07 P08
+R042,@loc_MYS_mys-reference-42-new-york-palace-historic-exterior-with-occupied-bay-depth_s0_v1,P05
+R043,@prop_MYS_mys-reference-43-london-entrance-rail-and-remembered-transit-gate_s0_v1,P03 P09
+R044,@prop_MYS_mys-reference-44-remembered-bus-seats-aisle-and-canopy-post-correspondence_s0_v1,P03
+R045,@prop_MYS_mys-reference-45-cairo-taxi-cabin-rear-bench-and-luggage-contact_s0_v1,P03
+R046,@prop_MYS_mys-reference-46-canopy-and-balloon-envelope-rigging-and-basket-interfaces_s0_v1,P04 P09
+R048,@prop_MYS_mys-reference-48-administrative-desk-actual-documents-and-device-geometry_s0_v1,P06
+R049,@prop_MYS_mys-reference-49-cabinet-fingerprint-desk-and-chair-construction_s0_v1,P06 P10
+R050,@prop_MYS_mys-reference-50-court-file-compartments-and-retained-device-supports_s0_v1,P07
+R054,@loc_MYS_mys-reference-54-big-ben-elizabeth-tower-london-source_s0_v1,P11
+R055,@loc_MYS_mys-reference-55-westminster-abbey-london-source_s0_v1,P11
+T01_DETAILS,@loc_MYS_mys-t01-a-soho-restaurant_s0_v1,P01
+TY001,@prop_MYS_mys-ty001-decimal-rating-glyphs-and-tints_s0_v1,P01 P02 P03 P04 P05 P06 P07 P08 P09 P10 P11 P12
+TY002,@prop_MYS_mys-ty002-coffee-to-kave-letter-material_s0_v1,P01
+TY003,@prop_MYS_mys-ty003-cafe-and-culture-sign-lettering_s0_v1,P02
+TY004,@prop_MYS_mys-ty004-office-and-accounting-sign-lettering_s0_v1,P05
+TY005,@prop_MYS_mys-ty005-transit-and-entrance-sign-lettering_s0_v1,P04
+TY006,@prop_MYS_mys-ty006-profile-age-37-to-33-glyph-change_s0_v1,P02
+TY007,@prop_MYS_mys-ty007-final-title-lockup-and-letter-details_s0_v1,P12
+W01_A_01,@loc_MYS_mys-w01-a-01-world-view-01_s0_v1,P01
+W01_A_02,@loc_MYS_mys-w01-a-02-world-view-02_s0_v1,P01
+W01_A_03,@loc_MYS_mys-w01-a-03-world-view-03_s0_v1,P01
+W01_A_04,@loc_MYS_mys-w01-a-04-world-view-04_s0_v1,P01
+W01_B_01,@loc_MYS_mys-w01-b-01-world-view-05_s0_v1,P02
+W01_B_02,@loc_MYS_mys-w01-b-02-world-view-06_s0_v1,P02
+W01_B_03,@loc_MYS_mys-w01-b-03-world-view-07_s0_v1,P02
+W01_B_04,@loc_MYS_mys-w01-b-04-world-view-08_s0_v1,P02
+W01_C_01,@loc_MYS_mys-w01-c-01-world-view-09_s0_v1,P02
+W02_A_01,@loc_MYS_mys-w02-a-01-world-view-01_s0_v1,P03
+W02_A_02,@loc_MYS_mys-w02-a-02-world-view-02_s0_v1,P03
+W02_A_03,@loc_MYS_mys-w02-a-03-world-view-03_s0_v1,P03
+W02_A_04,@loc_MYS_mys-w02-a-04-world-view-04_s0_v1,P03
+W02_B_01,@loc_MYS_mys-w02-b-01-world-view-05_s0_v1,P03
+W02_B_02,@loc_MYS_mys-w02-b-02-world-view-06_s0_v1,P04
+W02_B_03,@loc_MYS_mys-w02-b-03-world-view-07_s0_v1,P04
+W02_B_04,@loc_MYS_mys-w02-b-04-world-view-08_s0_v1,P04
+W02_C_01,@loc_MYS_mys-w02-c-01-world-view-09_s0_v1,P04
+W03_A_01,@loc_MYS_mys-w03-a-01-world-view-01_s0_v1,P05
+W03_A_02,@loc_MYS_mys-w03-a-02-world-view-02_s0_v1,P05
+W03_A_03,@loc_MYS_mys-w03-a-03-world-view-03_s0_v1,P05
+W03_A_04,@loc_MYS_mys-w03-a-04-world-view-04_s0_v1,P05
+W03_B_01,@loc_MYS_mys-w03-b-01-world-view-05_s0_v1,P05
+W03_B_02,@loc_MYS_mys-w03-b-02-world-view-06_s0_v1,P05
+W03_B_03,@loc_MYS_mys-w03-b-03-world-view-07_s0_v1,P06
+W03_B_04,@loc_MYS_mys-w03-b-04-world-view-08_s0_v1,P06
+W03_C_01,@loc_MYS_mys-w03-c-01-world-view-09_s0_v1,P06
+W04_A_01,@loc_MYS_mys-w04-a-01-world-view-01_s0_v1,P06
+W04_A_02,@loc_MYS_mys-w04-a-02-world-view-02_s0_v1,P06
+W04_A_03,@loc_MYS_mys-w04-a-03-world-view-03_s0_v1,P06
+W04_A_04,@loc_MYS_mys-w04-a-04-world-view-04_s0_v1,P06
+W04_B_01,@loc_MYS_mys-w04-b-01-world-view-05_s0_v1,P06
+W04_B_02,@loc_MYS_mys-w04-b-02-world-view-06_s0_v1,P07
+W04_B_03,@loc_MYS_mys-w04-b-03-world-view-07_s0_v1,P07
+W04_B_04,@loc_MYS_mys-w04-b-04-world-view-08_s0_v1,P07
+W04_C_01,@loc_MYS_mys-w04-c-01-world-view-09_s0_v1,P07
+W05_A_01,@loc_MYS_mys-w05-a-01-world-view-01_s0_v1,P07
+W05_A_02,@loc_MYS_mys-w05-a-02-world-view-02_s0_v1,P07
+W05_A_03,@loc_MYS_mys-w05-a-03-world-view-03_s0_v1,P07
+W05_A_04,@loc_MYS_mys-w05-a-04-world-view-04_s0_v1,P07
+W05_B_01,@loc_MYS_mys-w05-b-01-world-view-05_s0_v1,P07
+W05_B_02,@loc_MYS_mys-w05-b-02-world-view-06_s0_v1,P08
+W05_B_03,@loc_MYS_mys-w05-b-03-world-view-07_s0_v1,P08
+W05_B_04,@loc_MYS_mys-w05-b-04-world-view-08_s0_v1,P08
+W05_C_01,@loc_MYS_mys-w05-c-01-world-view-09_s0_v1,P08
+W06_A_01,@loc_MYS_mys-w06-a-01-world-view-01_s0_v1,P09 P10
+W06_A_02,@loc_MYS_mys-w06-a-02-world-view-02_s0_v1,P09
+W06_A_03,@loc_MYS_mys-w06-a-03-world-view-03_s0_v1,P09 P10
+W06_A_04,@loc_MYS_mys-w06-a-04-world-view-04_s0_v1,P10
+W06_B_01,@loc_MYS_mys-w06-b-01-world-view-05_s0_v1,P10
+W06_B_02,@loc_MYS_mys-w06-b-02-world-view-06_s0_v1,P10
+W06_B_03,@loc_MYS_mys-w06-b-03-world-view-07_s0_v1,P11
+W06_B_04,@loc_MYS_mys-w06-b-04-world-view-08_s0_v1,P11
+W06_C_01,@loc_MYS_mys-w06-c-01-world-view-09_s0_v1,P11
+W07_A_01,@loc_MYS_mys-w07-a-01-world-view-01_s0_v1,P11
+W07_A_02,@loc_MYS_mys-w07-a-02-world-view-02_s0_v1,P12
+W07_A_03,@loc_MYS_mys-w07-a-03-world-view-03_s0_v1,P12
+W07_A_04,@loc_MYS_mys-w07-a-04-world-view-04_s0_v1,P12
+W07_B_01,@loc_MYS_mys-w07-b-01-world-view-05_s0_v1,P12
+W07_B_02,@loc_MYS_mys-w07-b-02-world-view-06_s0_v1,P12
+W07_B_03,@loc_MYS_mys-w07-b-03-world-view-07_s0_v1,P12
+W07_B_04,@loc_MYS_mys-w07-b-04-world-view-08_s0_v1,P12
+W07_C_01,@loc_MYS_mys-w07-c-01-world-view-09_s0_v1,P12

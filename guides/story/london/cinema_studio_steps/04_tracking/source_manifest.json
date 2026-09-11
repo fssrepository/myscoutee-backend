@@ -970,9 +970,10 @@
         4247
       ],
       "source_prompt_sha256": "76a53b46490f7087051a6b61360543112b874118c1dec4b28d592f08a5c3ed46",
-      "file": "03_film/01/storyboard.txt",
-      "file_sha256": "8e2918952683de3771eadf568efbf9874d4824dd9980c572ad5cd3480994ecbe",
-      "changes": "All nine beats retained; requested camera/architecture added; card and AI-screen contradictions corrected; SB06 memory dependencies repaired; explicit centrally maintained reference inputs Grid geometry uses the full selected image resolution instead of fixed pixel examples."
+      "file": "03_film/draft/01/storyboard.txt",
+      "file_sha256": "0184fc45b1c26e591a150c3be00244d8a494d08782bb00becc2f87d364f6b9cc",
+      "changes": "Existing whole-image reference union; storyboard is a local plan, no paid board. Story beats retained; V00 now symbolic material assembly.",
+      "note": "2026-09-11 compact production version; original source extraction provenance retained. See current_film_preparation for 06 split and reference plan."
     },
     {
       "asset": "A01",
@@ -982,7 +983,7 @@
         4908
       ],
       "source_prompt_sha256": "0a23bff68df30ef4f1011862f5508eddc76e26743cda0800c0f1d1e67c20090e",
-      "file": "03_film/01/narration.txt",
+      "file": "03_film/draft/01/narration.txt",
       "file_sha256": "0a23bff68df30ef4f1011862f5508eddc76e26743cda0800c0f1d1e67c20090e",
       "changes": "Verbatim fenced prompt"
     },
@@ -994,9 +995,10 @@
         5188
       ],
       "source_prompt_sha256": "d111e179fa9211ddb262d74468ee38305f1776d75138a0c33a3e229ff58dff3d",
-      "file": "03_film/01/video.txt",
-      "file_sha256": "4f31ccae5ed9405261c2bacd237a90a4332a2a71f32d60e81f40d9a5a014b32e",
-      "changes": "Operator/retry prose and repeated rules removed; all nine story beats retained; camera/architecture updated; audio cues follow visuals; reveal and reference contradictions repaired; Verified C01/C02 Element IDs substituted for local aliases; explicit reference binding; original Hungarian folk-rooted score and synchronized material transformation foley; researched Dél-Alföld tekerő/clarinet arrangement, phrase-synchronized facade motion, explicit protagonist inner monologue"
+      "file": "03_film/draft/01/video.txt",
+      "file_sha256": "6dce96a11e4d02a8361768d6b8a51ba4240d03eecd815042964f9f3b7b263a04",
+      "changes": "Existing whole-image reference union; storyboard is a local plan, no paid board. Story beats retained; V00 now symbolic material assembly.",
+      "note": "2026-09-11 compact production version; original source extraction provenance retained. See current_film_preparation for 06 split and reference plan."
     },
     {
       "asset": "SB02",
@@ -1006,9 +1008,10 @@
         4357
       ],
       "source_prompt_sha256": "28ff9c6f1fdfeb4618c4696283c1e38722a62ee2792af219b5b9f14cc9bcfc29",
-      "file": "03_film/02/storyboard.txt",
-      "file_sha256": "abc44de7a392d19a8390ecb94365f3ed13a0604577063ad69f4c178f033bc821",
-      "changes": "All nine beats retained; requested camera/architecture added; card and AI-screen contradictions corrected; SB06 memory dependencies repaired; explicit centrally maintained reference inputs; rural memory grounded in creator's Orosháza paprika/corn-field childhood Grid geometry uses the full selected image resolution instead of fixed pixel examples."
+      "file": "03_film/draft/02/storyboard.txt",
+      "file_sha256": "b2c73d9413970c0adc7da16a588726be82db1fcf65a07844c17f19167461d614",
+      "changes": "Existing whole-image reference union; storyboard is a local plan, no paid board. Story beats retained; V00 now symbolic material assembly.",
+      "note": "2026-09-11 compact production version; original source extraction provenance retained. See current_film_preparation for 06 split and reference plan."
     },
     {
       "asset": "A02",
@@ -1018,7 +1021,7 @@
         4923
       ],
       "source_prompt_sha256": "7f851264f25e5344924b5a4bf32ac10bec8cda53e90f2102b5d6420aeefabf19",
-      "file": "03_film/02/narration.txt",
+      "file": "03_film/draft/02/narration.txt",
       "file_sha256": "7f851264f25e5344924b5a4bf32ac10bec8cda53e90f2102b5d6420aeefabf19",
       "changes": "Verbatim fenced prompt"
     },
@@ -1030,9 +1033,10 @@
         5376
       ],
       "source_prompt_sha256": "1ee3bb2feea06f9cb11dac2f33cac0b6c8a0735bc0a73938e537a716ad9146ba",
-      "file": "03_film/02/video.txt",
-      "file_sha256": "7e3464ed570b99f733627996d1438996665e5da3417deb556f73864b0fbbf614",
-      "changes": "Operator/retry prose and repeated rules removed; all nine story beats retained; camera/architecture updated; audio cues follow visuals; reveal and reference contradictions repaired; Verified C01/C02 Element IDs substituted for local aliases; explicit reference binding; original Hungarian folk-rooted score and synchronized material transformation foley; researched Dél-Alföld tekerő/clarinet arrangement, phrase-synchronized facade motion, explicit protagonist inner monologue; rural memory grounded in creator's Orosháza paprika/corn-field childhood Continuation preserves narrator timbre and a natural breath over an uninterrupted sound bed."
+      "file": "03_film/draft/02/video.txt",
+      "file_sha256": "da8feaf9ee2eddc1883070a42dc7ba6e2ec12b68ba96ecd33ac8c7743f73194f",
+      "changes": "Existing whole-image reference union; storyboard is a local plan, no paid board. Story beats retained; V00 now symbolic material assembly.",
+      "note": "2026-09-11 compact production version; original source extraction provenance retained. See current_film_preparation for 06 split and reference plan."
     },
     {
       "asset": "SB03",
@@ -1042,9 +1046,10 @@
         4460
       ],
       "source_prompt_sha256": "533e440baa4117a4d2f7733e327dfca304ea8a54d066010cc8ab8722cadb259c",
-      "file": "03_film/03/storyboard.txt",
-      "file_sha256": "577ebded1a38c5825a5d1e8688b5bb3a69e962550a7eb8985937713fa1eaf207",
-      "changes": "All nine beats retained; requested camera/architecture added; card and AI-screen contradictions corrected; SB06 memory dependencies repaired; explicit centrally maintained reference inputs Grid geometry uses the full selected image resolution instead of fixed pixel examples."
+      "file": "03_film/draft/03/storyboard.txt",
+      "file_sha256": "083d17052eadf132af555fd0612e132cdb18857128608f8fcd19d800532bc199",
+      "changes": "Existing whole-image reference union; storyboard is a local plan, no paid board. Story beats retained; V00 now symbolic material assembly.",
+      "note": "2026-09-11 compact production version; original source extraction provenance retained. See current_film_preparation for 06 split and reference plan."
     },
     {
       "asset": "A03",
@@ -1054,7 +1059,7 @@
         4938
       ],
       "source_prompt_sha256": "8dbf6f97a5bbdc57e7f7949beab851a0549b402fcb506f656eb303cdd0fe965e",
-      "file": "03_film/03/narration.txt",
+      "file": "03_film/draft/03/narration.txt",
       "file_sha256": "8dbf6f97a5bbdc57e7f7949beab851a0549b402fcb506f656eb303cdd0fe965e",
       "changes": "Verbatim fenced prompt"
     },
@@ -1066,9 +1071,10 @@
         5533
       ],
       "source_prompt_sha256": "4970f288124db4473bf4af10c0fb6a9d66f5bae619718ed4d3907489e0c8cc95",
-      "file": "03_film/03/video.txt",
-      "file_sha256": "b840db7b71b0be789dbb95a0c40b0ebfa164d0c6e53f8cea2bf593334a7e56be",
-      "changes": "Operator/retry prose and repeated rules removed; all nine story beats retained; camera/architecture updated; audio cues follow visuals; reveal and reference contradictions repaired; Verified C01/C02 Element IDs substituted for local aliases; explicit reference binding; original Hungarian folk-rooted score and synchronized material transformation foley; researched Dél-Alföld tekerő/clarinet arrangement, phrase-synchronized facade motion, explicit protagonist inner monologue Continuation preserves narrator timbre and a natural breath over an uninterrupted sound bed."
+      "file": "03_film/draft/03/video.txt",
+      "file_sha256": "5c66d36eb1a62af00fd2bb3979a888f3471c3332000cd1aebf396bf878c59696",
+      "changes": "Existing whole-image reference union; storyboard is a local plan, no paid board. Story beats retained; V00 now symbolic material assembly.",
+      "note": "2026-09-11 compact production version; original source extraction provenance retained. See current_film_preparation for 06 split and reference plan."
     },
     {
       "asset": "SB04",
@@ -1078,9 +1084,10 @@
         4563
       ],
       "source_prompt_sha256": "5459cc1d93853c47aacf113a3e593f61ee6cb49aa0fe81079b89706e0588086a",
-      "file": "03_film/04/storyboard.txt",
-      "file_sha256": "51e212b158a13e19b1921f7672233f8087e8ad70b5be6ffd6b537685d233a322",
-      "changes": "All nine beats retained; requested camera/architecture added; card and AI-screen contradictions corrected; SB06 memory dependencies repaired; explicit centrally maintained reference inputs Grid geometry uses the full selected image resolution instead of fixed pixel examples."
+      "file": "03_film/draft/04/storyboard.txt",
+      "file_sha256": "af23792cf6321c854820a4de5a75e10ca78336bf30143a78f23cfc000ab0a0bf",
+      "changes": "Existing whole-image reference union; storyboard is a local plan, no paid board. Story beats retained; V00 now symbolic material assembly.",
+      "note": "2026-09-11 compact production version; original source extraction provenance retained. See current_film_preparation for 06 split and reference plan."
     },
     {
       "asset": "A04",
@@ -1090,7 +1097,7 @@
         4953
       ],
       "source_prompt_sha256": "7c03c47fa2a236b4412aa2ad3eef14214fa16fd4f9fd15259a156769d90e7727",
-      "file": "03_film/04/narration.txt",
+      "file": "03_film/draft/04/narration.txt",
       "file_sha256": "7c03c47fa2a236b4412aa2ad3eef14214fa16fd4f9fd15259a156769d90e7727",
       "changes": "Verbatim fenced prompt"
     },
@@ -1102,9 +1109,10 @@
         5694
       ],
       "source_prompt_sha256": "dcfdef2b9227d2f0528bbca68b9dad63fc71b2087b289dbfbb25c8dfb8ff6370",
-      "file": "03_film/04/video.txt",
-      "file_sha256": "ab0ac16369c610f123dc4f63ae863c93131af36748162108431affb3f21daeb5",
-      "changes": "Operator/retry prose and repeated rules removed; all nine story beats retained; camera/architecture updated; audio cues follow visuals; reveal and reference contradictions repaired; Verified C01/C02 Element IDs substituted for local aliases; explicit reference binding; original Hungarian folk-rooted score and synchronized material transformation foley; researched Dél-Alföld tekerő/clarinet arrangement, phrase-synchronized facade motion, explicit protagonist inner monologue Continuation preserves narrator timbre and a natural breath over an uninterrupted sound bed."
+      "file": "03_film/draft/04/video.txt",
+      "file_sha256": "51c5dbc839ef6880f7e801e604a7049abe9b850e6465e307449da538f7964655",
+      "changes": "Existing whole-image reference union; storyboard is a local plan, no paid board. Story beats retained; V00 now symbolic material assembly.",
+      "note": "2026-09-11 compact production version; original source extraction provenance retained. See current_film_preparation for 06 split and reference plan."
     },
     {
       "asset": "SB05",
@@ -1114,9 +1122,10 @@
         4669
       ],
       "source_prompt_sha256": "e80c1062f8699884509043c0dc23d9205573f2eae58119513f6f3bdb1d3cf9b1",
-      "file": "03_film/05/storyboard.txt",
-      "file_sha256": "2670be228169bfee35b798edde38b0c33517e70dc53ac4adee9a66f14ca9f8aa",
-      "changes": "All nine beats retained; requested camera/architecture added; card and AI-screen contradictions corrected; SB06 memory dependencies repaired; explicit centrally maintained reference inputs Grid geometry uses the full selected image resolution instead of fixed pixel examples."
+      "file": "03_film/draft/05/storyboard.txt",
+      "file_sha256": "fe21b2f96161b6c498444ab75140781b97b97c683ecf67a40aae156149347b7d",
+      "changes": "Existing whole-image reference union; storyboard is a local plan, no paid board. Story beats retained; V00 now symbolic material assembly.",
+      "note": "2026-09-11 compact production version; original source extraction provenance retained. See current_film_preparation for 06 split and reference plan."
     },
     {
       "asset": "A05",
@@ -1126,7 +1135,7 @@
         4968
       ],
       "source_prompt_sha256": "f2431b1f66cf118227294e02d49b9a3057469166a35029af21b538ab25ec42ec",
-      "file": "03_film/05/narration.txt",
+      "file": "03_film/draft/05/narration.txt",
       "file_sha256": "f2431b1f66cf118227294e02d49b9a3057469166a35029af21b538ab25ec42ec",
       "changes": "Verbatim fenced prompt"
     },
@@ -1138,9 +1147,10 @@
         5860
       ],
       "source_prompt_sha256": "2c24d5a0b90307baa614606b633838697ec3355e0dbb1df515d095dee403fdd6",
-      "file": "03_film/05/video.txt",
-      "file_sha256": "a486ac423570097a05a3f6d627c185bcfb5192df2516630632ddf7dbdbdd2476",
-      "changes": "Operator/retry prose and repeated rules removed; all nine story beats retained; camera/architecture updated; audio cues follow visuals; reveal and reference contradictions repaired; Verified C01/C02 Element IDs substituted for local aliases; explicit reference binding; original Hungarian folk-rooted score and synchronized material transformation foley; researched Dél-Alföld tekerő/clarinet arrangement, phrase-synchronized facade motion, explicit protagonist inner monologue Continuation preserves narrator timbre and a natural breath over an uninterrupted sound bed."
+      "file": "03_film/draft/05/video.txt",
+      "file_sha256": "7bda9d70f004a8d87414dfc96f32850f774f1d7aeb7b38aa68f683498d16cef5",
+      "changes": "Existing whole-image reference union; storyboard is a local plan, no paid board. Story beats retained; V00 now symbolic material assembly.",
+      "note": "2026-09-11 compact production version; original source extraction provenance retained. See current_film_preparation for 06 split and reference plan."
     },
     {
       "asset": "SB06",
@@ -1150,9 +1160,10 @@
         4777
       ],
       "source_prompt_sha256": "6e57e8c9f69656463159011cd13b16d6b88d02db6738131013a82f4f5f778aec",
-      "file": "03_film/06/storyboard.txt",
-      "file_sha256": "0f71f427a83ba9b81f4b49b2830c19dc22db67eec409242f415e585b581a8c14",
-      "changes": "All nine beats retained; requested camera/architecture added; card and AI-screen contradictions corrected; SB06 memory dependencies repaired; explicit centrally maintained reference inputs Grid geometry uses the full selected image resolution instead of fixed pixel examples."
+      "file": "03_film/draft/06/storyboard.txt",
+      "file_sha256": "30ee0c6742b28f028d1bdd420b6bce4e2ca64ac40625dd5c8dc10f35443dacec",
+      "changes": "Existing whole-image reference union; storyboard is a local plan, no paid board. Story beats retained; V00 now symbolic material assembly.",
+      "note": "2026-09-11 compact production version; original source extraction provenance retained. See current_film_preparation for 06 split and reference plan."
     },
     {
       "asset": "A06",
@@ -1162,7 +1173,7 @@
         4983
       ],
       "source_prompt_sha256": "8eea05414eb6ec2153d183414746f388f8b9f99186ee2e9abc9e57de4055f221",
-      "file": "03_film/06/narration.txt",
+      "file": "03_film/draft/06/narration.txt",
       "file_sha256": "8eea05414eb6ec2153d183414746f388f8b9f99186ee2e9abc9e57de4055f221",
       "changes": "Verbatim fenced prompt"
     },
@@ -1174,9 +1185,10 @@
         6039
       ],
       "source_prompt_sha256": "52008590a700611bd6959ec7ae9cb86efeb01101257fce007de3b9eaa75417e6",
-      "file": "03_film/06/video.txt",
-      "file_sha256": "a40c749697979fb9189a418dc472e3b029671b68509add6d5b33305b4a5bc252",
-      "changes": "Operator/retry prose and repeated rules removed; all nine story beats retained; camera/architecture updated; audio cues follow visuals; reveal and reference contradictions repaired; Verified C01/C02 Element IDs substituted for local aliases; explicit reference binding; original Hungarian folk-rooted score and synchronized material transformation foley; researched Dél-Alföld tekerő/clarinet arrangement, phrase-synchronized facade motion, explicit protagonist inner monologue Continuation preserves narrator timbre and a natural breath over an uninterrupted sound bed."
+      "file": "03_film/draft/06/video.txt",
+      "file_sha256": "fcc03b48a98bec34a738e1a31cf69731cb868cee659d510e9dbcdb64eee67bc7",
+      "changes": "Existing whole-image reference union; storyboard is a local plan, no paid board. Story beats retained; V00 now symbolic material assembly.",
+      "note": "2026-09-11 compact production version; original source extraction provenance retained. See current_film_preparation for 06 split and reference plan."
     },
     {
       "asset": "SB07",
@@ -1186,9 +1198,10 @@
         4883
       ],
       "source_prompt_sha256": "2b7b76d2d3593fcff5854695f2ee366e9486822241fe7b80f3f09df0035291d4",
-      "file": "03_film/07/storyboard.txt",
-      "file_sha256": "86143b05ad4f3cc48e59453192d06e433566919a7ae685c8333fbb2da348a8e3",
-      "changes": "All nine beats retained; requested camera/architecture added; card and AI-screen contradictions corrected; SB06 memory dependencies repaired; explicit centrally maintained reference inputs Grid geometry uses the full selected image resolution instead of fixed pixel examples."
+      "file": "03_film/draft/07/storyboard.txt",
+      "file_sha256": "534d4bc72a35887ad0b98dc81bb94414bd3b0d174421f7f3f08a0250ad2f1ba7",
+      "changes": "Existing whole-image reference union; storyboard is a local plan, no paid board. Story beats retained; V00 now symbolic material assembly.",
+      "note": "2026-09-11 compact production version; original source extraction provenance retained. See current_film_preparation for 06 split and reference plan."
     },
     {
       "asset": "A07",
@@ -1198,7 +1211,7 @@
         4998
       ],
       "source_prompt_sha256": "7e52c85c6fc3805308ad2b2fe5f520db0813137d06960c8a826e992ecf20b792",
-      "file": "03_film/07/narration.txt",
+      "file": "03_film/draft/07/narration.txt",
       "file_sha256": "7e52c85c6fc3805308ad2b2fe5f520db0813137d06960c8a826e992ecf20b792",
       "changes": "Verbatim fenced prompt"
     },
@@ -1210,9 +1223,10 @@
         6204
       ],
       "source_prompt_sha256": "ac40bf3eee9daac90310ed6ff05a2b72832c27347255c481694023e8db6f759b",
-      "file": "03_film/07/video.txt",
-      "file_sha256": "2b7c6477407dc93b633325f42f5fb63c11d9b8f71f0308fad521b8eb18f48c14",
-      "changes": "Operator/retry prose and repeated rules removed; all nine story beats retained; camera/architecture updated; audio cues follow visuals; reveal and reference contradictions repaired; Verified C01/C02 Element IDs substituted for local aliases; explicit reference binding; original Hungarian folk-rooted score and synchronized material transformation foley; researched Dél-Alföld tekerő/clarinet arrangement, phrase-synchronized facade motion, explicit protagonist inner monologue Continuation preserves narrator timbre and a natural breath over an uninterrupted sound bed."
+      "file": "03_film/draft/07/video.txt",
+      "file_sha256": "517b30093db6f66fea1ed4119c2ca4a5d7bba234f8fe61f36a4f401e7adc9b30",
+      "changes": "Existing whole-image reference union; storyboard is a local plan, no paid board. Story beats retained; V00 now symbolic material assembly.",
+      "note": "2026-09-11 compact production version; original source extraction provenance retained. See current_film_preparation for 06 split and reference plan."
     },
     {
       "asset": "W01_B_01",
@@ -3260,7 +3274,7 @@
     },
     "SB01": {
       "key": "SB01",
-      "path": "03_film/01/storyboard.txt",
+      "path": "03_film/draft/01/storyboard.txt",
       "output": "SB01_STORYBOARD.png",
       "refs": [
         "W01_A_01",
@@ -3299,14 +3313,14 @@
     },
     "A01": {
       "key": "A01",
-      "path": "03_film/01/narration.txt",
+      "path": "03_film/draft/01/narration.txt",
       "output": "A01_NARRATION.wav",
       "refs": [],
       "prompt_sha256": "0a23bff68df30ef4f1011862f5508eddc76e26743cda0800c0f1d1e67c20090e"
     },
     "V01": {
       "key": "V01",
-      "path": "03_film/01/video.txt",
+      "path": "03_film/draft/01/video.txt",
       "output": "V01_CITY_JUDGES_FIRST.mp4",
       "refs": [
         "W01_A_01",
@@ -3347,7 +3361,7 @@
     },
     "SB02": {
       "key": "SB02",
-      "path": "03_film/02/storyboard.txt",
+      "path": "03_film/draft/02/storyboard.txt",
       "output": "SB02_STORYBOARD.png",
       "refs": [
         "W02_A_01",
@@ -3401,14 +3415,14 @@
     },
     "A02": {
       "key": "A02",
-      "path": "03_film/02/narration.txt",
+      "path": "03_film/draft/02/narration.txt",
       "output": "A02_NARRATION.wav",
       "refs": [],
       "prompt_sha256": "7f851264f25e5344924b5a4bf32ac10bec8cda53e90f2102b5d6420aeefabf19"
     },
     "V02": {
       "key": "V02",
-      "path": "03_film/02/video.txt",
+      "path": "03_film/draft/02/video.txt",
       "output": "V02_CHAIN_TO_0100.mp4",
       "refs": [
         "W02_A_01",
@@ -3465,7 +3479,7 @@
     },
     "SB03": {
       "key": "SB03",
-      "path": "03_film/03/storyboard.txt",
+      "path": "03_film/draft/03/storyboard.txt",
       "output": "SB03_STORYBOARD.png",
       "refs": [
         "W03_A_01",
@@ -3501,14 +3515,14 @@
     },
     "A03": {
       "key": "A03",
-      "path": "03_film/03/narration.txt",
+      "path": "03_film/draft/03/narration.txt",
       "output": "A03_NARRATION.wav",
       "refs": [],
       "prompt_sha256": "8dbf6f97a5bbdc57e7f7949beab851a0549b402fcb506f656eb303cdd0fe965e"
     },
     "V03": {
       "key": "V03",
-      "path": "03_film/03/video.txt",
+      "path": "03_film/draft/03/video.txt",
       "output": "V03_CHAIN_TO_0130.mp4",
       "refs": [
         "W03_A_01",
@@ -3547,7 +3561,7 @@
     },
     "SB04": {
       "key": "SB04",
-      "path": "03_film/04/storyboard.txt",
+      "path": "03_film/draft/04/storyboard.txt",
       "output": "SB04_STORYBOARD.png",
       "refs": [
         "W04_A_01",
@@ -3581,14 +3595,14 @@
     },
     "A04": {
       "key": "A04",
-      "path": "03_film/04/narration.txt",
+      "path": "03_film/draft/04/narration.txt",
       "output": "A04_NARRATION.wav",
       "refs": [],
       "prompt_sha256": "7c03c47fa2a236b4412aa2ad3eef14214fa16fd4f9fd15259a156769d90e7727"
     },
     "V04": {
       "key": "V04",
-      "path": "03_film/04/video.txt",
+      "path": "03_film/draft/04/video.txt",
       "output": "V04_CHAIN_TO_0200.mp4",
       "refs": [
         "W04_A_01",
@@ -3625,7 +3639,7 @@
     },
     "SB05": {
       "key": "SB05",
-      "path": "03_film/05/storyboard.txt",
+      "path": "03_film/draft/05/storyboard.txt",
       "output": "SB05_STORYBOARD.png",
       "refs": [
         "W05_A_01",
@@ -3664,14 +3678,14 @@
     },
     "A05": {
       "key": "A05",
-      "path": "03_film/05/narration.txt",
+      "path": "03_film/draft/05/narration.txt",
       "output": "A05_NARRATION.wav",
       "refs": [],
       "prompt_sha256": "f2431b1f66cf118227294e02d49b9a3057469166a35029af21b538ab25ec42ec"
     },
     "V05": {
       "key": "V05",
-      "path": "03_film/05/video.txt",
+      "path": "03_film/draft/05/video.txt",
       "output": "V05_CHAIN_TO_0230.mp4",
       "refs": [
         "W05_A_01",
@@ -3713,7 +3727,7 @@
     },
     "SB06": {
       "key": "SB06",
-      "path": "03_film/06/storyboard.txt",
+      "path": "03_film/draft/06/storyboard.txt",
       "output": "SB06_STORYBOARD.png",
       "refs": [
         "W06_A_01",
@@ -3804,14 +3818,14 @@
     },
     "A06": {
       "key": "A06",
-      "path": "03_film/06/narration.txt",
+      "path": "03_film/draft/06/narration.txt",
       "output": "A06_NARRATION.wav",
       "refs": [],
       "prompt_sha256": "8eea05414eb6ec2153d183414746f388f8b9f99186ee2e9abc9e57de4055f221"
     },
     "V06": {
       "key": "V06",
-      "path": "03_film/06/video.txt",
+      "path": "03_film/draft/06/video.txt",
       "output": "V06_CHAIN_TO_0300.mp4",
       "refs": [
         "W06_A_01",
@@ -3905,7 +3919,7 @@
     },
     "SB07": {
       "key": "SB07",
-      "path": "03_film/07/storyboard.txt",
+      "path": "03_film/draft/07/storyboard.txt",
       "output": "SB07_STORYBOARD.png",
       "refs": [
         "W07_A_01",
@@ -3954,14 +3968,14 @@
     },
     "A07": {
       "key": "A07",
-      "path": "03_film/07/narration.txt",
+      "path": "03_film/draft/07/narration.txt",
       "output": "A07_NARRATION.wav",
       "refs": [],
       "prompt_sha256": "7e52c85c6fc3805308ad2b2fe5f520db0813137d06960c8a826e992ecf20b792"
     },
     "V07": {
       "key": "V07",
-      "path": "03_film/07/video.txt",
+      "path": "03_film/draft/07/video.txt",
       "output": "V07_MASTER_0320.mp4",
       "refs": [
         "W07_A_01",
@@ -4021,7 +4035,7 @@
       "layout": "2x2 source/early/advanced/target",
       "intended_resolution": "4K",
       "production_reuse": [
-        "03_film/01/video.txt"
+        "03_film/draft/01/video.txt"
       ],
       "note": "Standalone named-cathedral geometry study; no source images required. No image or video generated by this edit.",
       "prompt_sha256": "8aeb7fcdc8f2748cc58c68b988ee81f8673e450af834884e77153da3358ebfcb",
@@ -4088,7 +4102,7 @@
       "layout": "2x2 source/unfinished/unfinished/target",
       "intended_resolution": "4K",
       "production_reuse": [
-        "03_film/01/video.txt"
+        "03_film/draft/01/video.txt"
       ],
       "source_object_keys": [
         "R015",
@@ -4113,7 +4127,7 @@
       "layout": "2x2 source/unfinished/unfinished/target",
       "intended_resolution": "4K",
       "production_reuse": [
-        "03_film/01/video.txt"
+        "03_film/draft/01/video.txt"
       ],
       "source_object_keys": [
         "R016"
@@ -4137,7 +4151,7 @@
       "layout": "2x2 source/unfinished/unfinished/target",
       "intended_resolution": "4K",
       "production_reuse": [
-        "03_film/01/video.txt"
+        "03_film/draft/01/video.txt"
       ],
       "source_object_keys": [
         "R017"
@@ -4161,7 +4175,7 @@
       "layout": "2x2 source/unfinished/unfinished/target",
       "intended_resolution": "4K",
       "production_reuse": [
-        "03_film/01/video.txt"
+        "03_film/draft/01/video.txt"
       ],
       "source_object_keys": [
         "R018"
@@ -4185,7 +4199,7 @@
       "layout": "2x2 source/unfinished/unfinished/target",
       "intended_resolution": "4K",
       "production_reuse": [
-        "03_film/01/video.txt"
+        "03_film/draft/01/video.txt"
       ],
       "source_object_keys": [
         "R022"
@@ -4209,7 +4223,7 @@
       "layout": "2x2 source/unfinished/unfinished/target",
       "intended_resolution": "4K",
       "production_reuse": [
-        "03_film/01/video.txt"
+        "03_film/draft/01/video.txt"
       ],
       "source_object_keys": [
         "R023"
@@ -4233,7 +4247,7 @@
       "layout": "2x2 source/unfinished/unfinished/target",
       "intended_resolution": "4K",
       "production_reuse": [
-        "03_film/01/video.txt"
+        "03_film/draft/01/video.txt"
       ],
       "source_object_keys": [
         "R024"
@@ -4257,7 +4271,7 @@
       "layout": "2x2 source/unfinished/unfinished/target",
       "intended_resolution": "4K",
       "production_reuse": [
-        "03_film/01/video.txt"
+        "03_film/draft/01/video.txt"
       ],
       "source_object_keys": [
         "R025",
@@ -4282,7 +4296,7 @@
       "layout": "2x2 source/unfinished/unfinished/target",
       "intended_resolution": "4K",
       "production_reuse": [
-        "03_film/01/video.txt"
+        "03_film/draft/01/video.txt"
       ],
       "source_object_keys": [
         "R025",
@@ -4307,7 +4321,7 @@
       "layout": "2x2 source/unfinished/unfinished/target",
       "intended_resolution": "4K",
       "production_reuse": [
-        "03_film/02/video.txt"
+        "03_film/draft/02/video.txt"
       ],
       "source_object_keys": [
         "R043"
@@ -4331,7 +4345,7 @@
       "layout": "2x2 source/unfinished/unfinished/target",
       "intended_resolution": "4K",
       "production_reuse": [
-        "03_film/02/video.txt"
+        "03_film/draft/02/video.txt"
       ],
       "source_object_keys": [
         "R044"
@@ -4355,7 +4369,7 @@
       "layout": "2x2 source/unfinished/unfinished/target",
       "intended_resolution": "4K",
       "production_reuse": [
-        "03_film/02/video.txt"
+        "03_film/draft/02/video.txt"
       ],
       "source_object_keys": [
         "R046"
@@ -4379,7 +4393,7 @@
       "layout": "2x2 source/unfinished/unfinished/target",
       "intended_resolution": "4K",
       "production_reuse": [
-        "03_film/02/video.txt"
+        "03_film/draft/02/video.txt"
       ],
       "source_object_keys": [
         "R047"
@@ -4403,7 +4417,7 @@
       "layout": "2x2 source/unfinished/unfinished/target",
       "intended_resolution": "4K",
       "production_reuse": [
-        "03_film/04/video.txt"
+        "03_film/draft/04/video.txt"
       ],
       "source_object_keys": [
         "R049"
@@ -4427,7 +4441,7 @@
       "layout": "2x2 source/unfinished/unfinished/target",
       "intended_resolution": "4K",
       "production_reuse": [
-        "03_film/05/video.txt"
+        "03_film/draft/05/video.txt"
       ],
       "source_object_keys": [
         "R050"
@@ -4451,7 +4465,7 @@
       "layout": "2x2 source/unfinished/unfinished/target",
       "intended_resolution": "4K",
       "production_reuse": [
-        "03_film/01/video.txt"
+        "03_film/draft/01/video.txt"
       ],
       "source_object_keys": [
         "R051",
@@ -4477,7 +4491,7 @@
       "layout": "2x2 source/unfinished/unfinished/target",
       "intended_resolution": "4K",
       "production_reuse": [
-        "03_film/07/video.txt"
+        "03_film/draft/07/video.txt"
       ],
       "source_object_keys": [
         "HRW07"
@@ -4499,7 +4513,7 @@
       "refs": [],
       "status": "MCP_IMAGE_ATTACHMENT_CONFIRMED",
       "production_reuse": [
-        "03_film/01/video.txt"
+        "03_film/draft/01/video.txt"
       ],
       "layout": "2x2 source/unfinished/unfinished/target",
       "prompt_sha256": "a6a8716806aae8f6bf7b6c1a6a465e8df5341477fc69ac5790c53665df17c49e",
@@ -4519,7 +4533,7 @@
       "status": "MCP_IMAGE_ATTACHMENT_CONFIRMED",
       "layout": "2x2 source/unfinished/unfinished/target",
       "production_reuse": [
-        "03_film/01/video.txt"
+        "03_film/draft/01/video.txt"
       ],
       "prompt_sha256": "ae3a1684d5caf0a4b6ca18e559de4f8359f533542c55c47d3ba3560a7b3c7fad",
       "four_state_summary": "ORIGINAL SOURCE: the intact ground-floor café window, thick brick returns, timber mullion, attached glass, stone sill and adjoining paving. Show mortar depth, the sill's underside and a distinctive chipped corner low on the same brick pier. The restaurant described above occupies the actual depth behind this window: its existing table, chair, woman and remembered man retain their source positions. They can be partly obscured by the original window structure, but do not invent a different empty interior. → WINDOW BURSTS INTO A DEEP MASONRY AND GLASS ARRAY: → ROOM EMERGES THROUGH AN UNJOINED ARCH AND OPEN GLASS HELICES: → RESOLVED DESTINATION: the same window opening has become the full-depth occupied restaurant projecting into the street, with the same table and chair on the supported wooden floor beyond the original jamb. All THREE source glass segments have now resolved into complete attached curved pendant shades with closed finished profiles; none retains a flat shard face or open intermediate seam. The floor reaches its full approximately one-metre projection, carrying the entire occupied chair and near table beyond the original facade plane. The source glass now forms attached curved pendant shades, the fasteners form stems, the mullion forms trim and the brick courses form substantial stone/plaster returns. Show all chair legs, table thickness, floor edge, pendant attachments and both rear restroom doors. Preserve the same woman and man's identities within this sheet and their original encounter. The chipped corner and surviving paving edge locate this as the same physical site as the first cell. No remaining source part disappears to reveal a finished replacement room.",
@@ -8637,7 +8651,7 @@
     },
     "V00": {
       "key": "V00",
-      "path": "03_film/00/video.txt",
+      "path": "03_film/production/P00/video.txt",
       "output": "V00_MYSCOUTEE_PRESENTS_4S.mp4",
       "refs": [],
       "duration_seconds": 4,
@@ -9352,28 +9366,38 @@
     },
     "SB01": {
       "alias": "SB01_STORYBOARD",
-      "mention": null,
-      "last_mention": "@UNBOUND_SB01"
+      "mention": "@loc_MYS_mys-film-sb01-storyboard_s0_v1",
+      "last_mention": "@UNBOUND_SB01",
+      "element_id": "ddadbdad-36d1-436b-84b3-5373c04d5ebc",
+      "media_ready": false
     },
     "SB02": {
       "alias": "SB02_STORYBOARD",
-      "mention": null,
-      "last_mention": "@UNBOUND_SB02"
+      "mention": "@loc_MYS_mys-film-sb02-storyboard_s0_v1",
+      "last_mention": "@UNBOUND_SB02",
+      "element_id": "45698f2b-79fa-46c9-bea6-062d9c808ea6",
+      "media_ready": false
     },
     "SB03": {
       "alias": "SB03_STORYBOARD",
-      "mention": null,
-      "last_mention": "@UNBOUND_SB03"
+      "mention": "@loc_MYS_mys-film-sb03-storyboard_s0_v1",
+      "last_mention": "@UNBOUND_SB03",
+      "element_id": "96c77f92-8d3a-4de8-9ac8-43a48822ea73",
+      "media_ready": false
     },
     "SB04": {
       "alias": "SB04_STORYBOARD",
-      "mention": null,
-      "last_mention": "@UNBOUND_SB04"
+      "mention": "@loc_MYS_mys-film-sb04-storyboard_s0_v1",
+      "last_mention": "@UNBOUND_SB04",
+      "element_id": "09a8bf15-467a-4993-9961-396250a1fb72",
+      "media_ready": false
     },
     "SB05": {
       "alias": "SB05_STORYBOARD",
-      "mention": null,
-      "last_mention": "@UNBOUND_SB05"
+      "mention": "@loc_MYS_mys-film-sb05-storyboard_s0_v1",
+      "last_mention": "@UNBOUND_SB05",
+      "element_id": "5c7675fb-e9b9-41d7-a240-f0ba9ea8d83f",
+      "media_ready": false
     },
     "SB06": {
       "alias": "SB06_STORYBOARD",
@@ -9382,8 +9406,10 @@
     },
     "SB07": {
       "alias": "SB07_STORYBOARD",
-      "mention": null,
-      "last_mention": "@UNBOUND_SB07"
+      "mention": "@loc_MYS_mys-film-sb07-storyboard_s0_v1",
+      "last_mention": "@UNBOUND_SB07",
+      "element_id": "bb2bbcc8-b2c1-4f3e-8a5c-27ce3b7c57b2",
+      "media_ready": false
     },
     "T01_IMAGE": {
       "alias": "T01_SOHO_MEMORY",
@@ -11002,8 +11028,14 @@
     },
     "MW01_C_04": {
       "alias": "MW01_C_04",
-      "mention": "@loc_MYS_mys-mw01-c-04-memory-view-08_s0_v1",
-      "last_mention": "@loc_MYS_mys-mw01-c-04-memory-view-08_s0_v1"
+      "mention": "@loc_MYS_mw01-c-04-memory-view-08_s0_v1",
+      "last_mention": "@loc_MYS_mw01-c-04-memory-view-08_s0_v1",
+      "mcp_element_uuid": "38847058-729c-40cf-9d3d-17f616f29704",
+      "mcp_media_ids": [
+        "f52dc2ed-a78d-408a-89b8-5a80bf827292"
+      ],
+      "mention_source": "MCP_REPLACEMENT_ELEMENT_VERIFIED_2026_09_11",
+      "mcp_observation": "2026-09-11: replacement Element has one attached image and completed API status. Separate Cinema Studio Face/IP eligibility result not confirmed."
     },
     "MW02_A_01": {
       "alias": "MW02_A_01",
@@ -11020,11 +11052,11 @@
       "alias": "MW02_A_02",
       "mention": "@loc_MYS_mys-mw02-a-02-memory-view-02_s0_v1",
       "last_mention": "@loc_MYS_mys-mw02-a-02-memory-view-02_s0_v1",
-      "mcp_element_uuid": "1ea1b9b7-451d-43ef-a164-b5dcb446bd45",
+      "mcp_element_uuid": "5ac3c0ae-f8fc-46dd-a04b-bde4b67353ef",
       "mcp_media_ids": [
-        "c50b5eb7-d6ae-41f5-a0a0-f1d81b42bbca"
+        "e566a2c7-bbb6-46cc-9db6-a009f2981dc4"
       ],
-      "mention_source": "MCP_ATTACHED_IMAGE_VERIFIED_2026_09_10"
+      "mention_source": "MCP_REPLACEMENT_ATTACHED_IMAGE_VERIFIED_2026_09_11"
     },
     "MW02_A_03": {
       "alias": "MW02_A_03",
@@ -11059,7 +11091,12 @@
     "MW02_C_02": {
       "alias": "MW02_C_02",
       "mention": "@loc_MYS_mys-mw02-c-02-memory-view-01_s0_v1",
-      "last_mention": "@loc_MYS_mys-mw02-c-02-memory-view-01_s0_v1"
+      "last_mention": "@loc_MYS_mys-mw02-c-02-memory-view-01_s0_v1",
+      "mcp_element_uuid": "62978407-701a-44fc-80bb-80e971175911",
+      "mcp_media_ids": [
+        "5c6fa164-a2e7-4780-a505-517563544f5d"
+      ],
+      "mention_source": "MCP_REPLACEMENT_ATTACHED_IMAGE_VERIFIED_2026_09_11"
     },
     "MW02_C_03": {
       "alias": "MW02_C_03",
@@ -11928,6 +11965,101 @@
       ],
       "mention_source": "MCP_ELEMENT_WITH_ATTACHED_IMAGE_2026_09_10",
       "mcp_observation": "Image attached; exact generation REFERENCE ID matches canonical key. Visual quality not reviewed."
+    },
+    "V07": {
+      "mention": "@loc_MYS_mys-film-v07-video_s0_v1",
+      "element_id": "6a64dbb6-410c-40a8-8ca5-41829b878039",
+      "media_ready": false
+    },
+    "EF06B": {
+      "mention": "@loc_MYS_mys-film-v06b-end-frame_s0_v1",
+      "element_id": "232fc925-c9ce-40ee-8d37-648ae28a65e8",
+      "media_ready": false
+    },
+    "V06B": {
+      "mention": "@loc_MYS_mys-film-v06b-video_s0_v1",
+      "element_id": "79722925-6b46-4364-b5f7-4a47475df6aa",
+      "media_ready": false
+    },
+    "SB06B": {
+      "mention": "@loc_MYS_mys-film-sb06b-storyboard_s0_v1",
+      "element_id": "f26f5f4d-1c09-4d61-871f-2702e947cd53",
+      "media_ready": false
+    },
+    "EF06A": {
+      "mention": "@loc_MYS_mys-film-v06a-end-frame_s0_v1",
+      "element_id": "6549e44e-b882-410e-899c-585ee0fa7d40",
+      "media_ready": false
+    },
+    "V06A": {
+      "mention": "@loc_MYS_mys-film-v06a-video_s0_v1",
+      "element_id": "d00ff3e6-7f05-423a-a461-62dda6fe7a1e",
+      "media_ready": false
+    },
+    "SB06A": {
+      "mention": "@loc_MYS_mys-film-sb06a-storyboard_s0_v1",
+      "element_id": "64b39d73-a421-400b-93e1-5b7c6b20a2c9",
+      "media_ready": false
+    },
+    "EF05": {
+      "mention": "@loc_MYS_mys-film-v05-end-frame_s0_v1",
+      "element_id": "e8dced94-2f45-4a2b-a54f-2617102e76e1",
+      "media_ready": false
+    },
+    "V05": {
+      "mention": "@loc_MYS_mys-film-v05-video_s0_v1",
+      "element_id": "5764f0d8-d1cb-4376-b669-f5d299e979a6",
+      "media_ready": false
+    },
+    "EF04": {
+      "mention": "@loc_MYS_mys-film-v04-end-frame_s0_v1",
+      "element_id": "188f6c41-597e-4673-a7c1-9b0125184c73",
+      "media_ready": false
+    },
+    "V04": {
+      "mention": "@loc_MYS_mys-film-v04-video_s0_v1",
+      "element_id": "4483a667-eafb-433a-b8e7-2b47eaffcb97",
+      "media_ready": false
+    },
+    "EF03": {
+      "mention": "@loc_MYS_mys-film-v03-end-frame_s0_v1",
+      "element_id": "51043fe3-5c45-43eb-a05b-8eab1858a335",
+      "media_ready": false
+    },
+    "V03": {
+      "mention": "@loc_MYS_mys-film-v03-video_s0_v1",
+      "element_id": "e9fab753-238d-4637-8f16-aff1af2d5606",
+      "media_ready": false
+    },
+    "EF02": {
+      "mention": "@loc_MYS_mys-film-v02-end-frame_s0_v1",
+      "element_id": "40dd7389-cf0f-4d35-a225-9b66dc8ccc55",
+      "media_ready": false
+    },
+    "V02": {
+      "mention": "@loc_MYS_mys-film-v02-video_s0_v1",
+      "element_id": "bc89014c-0d66-4822-9d59-75d57eeafd9c",
+      "media_ready": false
+    },
+    "EF01": {
+      "mention": "@loc_MYS_mys-film-v01-end-frame_s0_v1",
+      "element_id": "f37e86f1-1cde-4783-85ac-e2c13ba81725",
+      "media_ready": false
+    },
+    "V01": {
+      "mention": "@loc_MYS_mys-film-v01-video_s0_v1",
+      "element_id": "6e12dca5-9402-463c-b8af-d15c1b07c32a",
+      "media_ready": false
+    },
+    "V00": {
+      "mention": "@loc_MYS_mys-film-v00-myscoutee-presents_s0_v1",
+      "element_id": "a22c75a6-8b62-451b-a2b5-6f9b1c490d03",
+      "media_ready": false
+    },
+    "LOGO_MYS": {
+      "mention": "@prop_MYS_mys-film-m-logo_s0_v1",
+      "element_id": "d56b05dc-4e51-456d-bf3d-7acd0479e402",
+      "media_ready": true
     }
   },
   "reference_binding_note": "Only full verified Higgsfield mentions belong in mention. Null produces an explicit @UNBOUND_<key> slot and a do-not-generate notice. Run 04_tracking/sync_references.py --write once to propagate a binding across all prompts and guides. Previous videos remain in the actual Forward Extend source field. Raw-image, storyboard and audio autoload handles are unverified until observed; never guess an Element ID from a filename.",
@@ -12312,8 +12444,8 @@
           "sha256": "53e8173bceab28aea29db9308b1cb8b04801892354bf72d0a4bee22d699b8797",
           "status": "PREPARED_NOT_RENDERED",
           "production_consumers": [
-            "03_film/07/video.txt",
-            "03_film/07/storyboard.txt",
+            "03_film/draft/07/video.txt",
+            "03_film/draft/07/storyboard.txt",
             "02_library/worlds/real/W07_MAIN_WORLD_A.txt"
           ]
         },
@@ -12322,8 +12454,8 @@
           "sha256": "38b3f919b26c06a3a27ad7fafb06fbfc110e074708344ce675c6c5899c3621e1",
           "status": "PREPARED_NOT_RENDERED",
           "production_consumers": [
-            "03_film/07/video.txt",
-            "03_film/07/storyboard.txt",
+            "03_film/draft/07/video.txt",
+            "03_film/draft/07/storyboard.txt",
             "02_library/worlds/real/W07_MAIN_WORLD_A.txt"
           ]
         },
@@ -16601,5 +16733,1044 @@
     "creator_reported_balance": 2036,
     "narration_overlay_route": "UNVERIFIED_IN_HIGGSFIELD_WEB",
     "status": "PREPARED_NOT_GENERATED"
+  },
+  "current_film_preparation": {
+    "date": "2026-09-11",
+    "source_git_commit": "b516ef057dcf1188e18fe50a8512bfc546367c73",
+    "canonical_master_changed": false,
+    "spoken_passages_changed": false,
+    "status": "P01_P12_REPARTITION_PREPARED_PENDING_ELIGIBILITY_AND_FOUR_FRAME_BINDINGS",
+    "production_import": "00_project/elements/additions/FILM_PRODUCTION_IMPORT.md",
+    "production_definitions": 25,
+    "full_narration": "03_film/narration.txt",
+    "reported_remaining_credits": 1979,
+    "estimated_remaining_cost": 1836,
+    "reserve": 136.85,
+    "jobs": [
+      {
+        "job": "01",
+        "block": 1,
+        "prev": null,
+        "duration": 30,
+        "video": "03_film/draft/01/video.txt",
+        "storyboard": "03_film/draft/01/storyboard.txt",
+        "library": [
+          "@loc_MYS_mys-mw01-a-london-social_s0_v1",
+          "@loc_MYS_mys-mw01-b-01-memory-view-05_s0_v1",
+          "@loc_MYS_mys-mw01-b-02-memory-view-06_s0_v1",
+          "@loc_MYS_mys-mw01-b-03-memory-view-07_s0_v1",
+          "@loc_MYS_mys-mw01-b-04-memory-view-08_s0_v1",
+          "@loc_MYS_mys-mw01-c-01-memory-view-09_s0_v1",
+          "@loc_MYS_mys-mw01-c-02-memory-view-01_s0_v1",
+          "@loc_MYS_mys-mw01-c-03-memory-view-07_s0_v1",
+          "@loc_MYS_mys-mw01-c-04-memory-view-08_s0_v1",
+          "@loc_MYS_mys-mwp01-a-routes-rooms-documents_s0_v1",
+          "@loc_MYS_mys-mwp01-b-routes-rooms-documents_s0_v1",
+          "@loc_MYS_mys-mwp01-c-routes-rooms-documents_s0_v1",
+          "@loc_MYS_mys-w01-a-01-world-view-01_s0_v1",
+          "@loc_MYS_mys-w01-a-02-world-view-02_s0_v1",
+          "@loc_MYS_mys-w01-a-03-world-view-03_s0_v1",
+          "@loc_MYS_mys-w01-a-04-world-view-04_s0_v1",
+          "@loc_MYS_mys-w01-b-01-world-view-05_s0_v1",
+          "@loc_MYS_mys-w01-b-02-world-view-06_s0_v1",
+          "@loc_MYS_mys-w01-b-03-world-view-07_s0_v1",
+          "@loc_MYS_mys-w01-b-04-world-view-08_s0_v1",
+          "@loc_MYS_mys-w01-c-01-world-view-09_s0_v1",
+          "@loc_MYS_mys-t01-a-soho-restaurant_s0_v1",
+          "@char_MYS_mys-c01-protagonist_s0_v1",
+          "@char_MYS_mys-c02-soho-woman_s0_v1",
+          "@char_MYS_mys-c06-shared-house-substitute-snoring-housemate_s0_v1",
+          "@char_MYS_mys-c07-fx-mortgage-housemate_s0_v1",
+          "@char_MYS_mys-c08-fx-mortgage-spouse_s0_v1",
+          "@char_MYS_mys-c09-fx-mortgage-child_s0_v1",
+          "@char_MYS_mys-c10-beginner-dance-woman_s0_v1",
+          "@loc_MYS_mys-mr001-st-pauls-to-st-stephens_s0_v1",
+          "@prop_MYS_mys-mr004-window-glass-to-pendant-shade_s0_v1",
+          "@loc_MYS_mys-mr005-brick-courses-to-carved-arch_s0_v1",
+          "@loc_MYS_mys-mr006-stone-threshold-to-supported-timber-floor_s0_v1",
+          "@prop_MYS_mys-mr007-bench-to-curved-floor-border_s0_v1",
+          "@prop_MYS_mys-mr008-window-fittings-to-pendant-stem_s0_v1",
+          "@loc_MYS_mys-mr009-balcony-scroll-to-sideways-stair_s0_v1",
+          "@prop_MYS_mys-mr010-english-sign-to-kave-lettering_s0_v1",
+          "@loc_MYS_mys-r008-cafe-to-occupied-restaurant_s0_v1",
+          "@prop_MYS_mys-reference-10-winged-statue-plinth-and-contact-detail_s0_v1",
+          "@loc_MYS_mys-reference-21-restaurant-rear-doors-and-depth-relationships_s0_v1",
+          "@loc_MYS_mys-reference-25-original-london-roof-and-chimney-volumes_s0_v1",
+          "@loc_MYS_mys-reference-26-target-roof-glazing-stone-corbels-and-chimney-crowns_s0_v1",
+          "@loc_MYS_mys-reference-28-original-arcade-arch-and-fanlight_s0_v1",
+          "@loc_MYS_mys-reference-30-deep-gallery-through-the-unchanged-threshold_s0_v1",
+          "@prop_MYS_mys-ty001-decimal-rating-glyphs-and-tints_s0_v1",
+          "@prop_MYS_mys-ty002-coffee-to-kave-letter-material_s0_v1",
+          "@prop_MYS_mys-ty003-cafe-and-culture-sign-lettering_s0_v1",
+          "@prop_MYS_mys-ty006-profile-age-37-to-33-glyph-change_s0_v1"
+        ],
+        "beats": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9
+        ],
+        "total_refs": 48,
+        "boundary_note": "First story clip; no final-frame input from the graphic logo.",
+        "library_keys": [
+          "MW01",
+          "MW01_B_01",
+          "MW01_B_02",
+          "MW01_B_03",
+          "MW01_B_04",
+          "MW01_C_01",
+          "MW01_C_02",
+          "MW01_C_03",
+          "MW01_C_04",
+          "MWP01",
+          "MWP01_B",
+          "MWP01_C",
+          "W01_A_01",
+          "W01_A_02",
+          "W01_A_03",
+          "W01_A_04",
+          "W01_B_01",
+          "W01_B_02",
+          "W01_B_03",
+          "W01_B_04",
+          "W01_C_01",
+          "T01_DETAILS",
+          "C01",
+          "C02",
+          "C06",
+          "C07",
+          "C08",
+          "C09",
+          "C10",
+          "MR001",
+          "MR004",
+          "MR005",
+          "MR006",
+          "MR007",
+          "MR008",
+          "MR009",
+          "MR010",
+          "R008",
+          "R010",
+          "R021",
+          "R025",
+          "R026",
+          "R028",
+          "R030",
+          "TY001",
+          "TY002",
+          "TY003",
+          "TY006"
+        ],
+        "storyboard_type": "LOCAL_PLAN_NOT_GENERATION",
+        "required_storyboard_media": false,
+        "incoming_end_frame": null,
+        "video_chars": 14960,
+        "video_sha256": "6dce96a11e4d02a8361768d6b8a51ba4240d03eecd815042964f9f3b7b263a04",
+        "storyboard_sha256": "0184fc45b1c26e591a150c3be00244d8a494d08782bb00becc2f87d364f6b9cc"
+      },
+      {
+        "job": "02",
+        "block": 2,
+        "prev": "01",
+        "duration": 30,
+        "video": "03_film/draft/02/video.txt",
+        "storyboard": "03_film/draft/02/storyboard.txt",
+        "library": [
+          "@loc_MYS_mys-mw02-a-01-memory-view-01_s0_v1",
+          "@loc_MYS_mys-mw02-a-02-memory-view-02_s0_v1",
+          "@loc_MYS_mys-mw02-a-03-memory-view-03_s0_v1",
+          "@loc_MYS_mys-mw02-a-04-memory-view-04_s0_v1",
+          "@loc_MYS_mys-mw02-b-global-routes_s0_v1",
+          "@loc_MYS_mys-mw02-c-01-memory-view-09_s0_v1",
+          "@loc_MYS_mys-mw02-c-02-memory-view-01_s0_v1",
+          "@loc_MYS_mys-mw02-c-03-memory-view-07_s0_v1",
+          "@loc_MYS_mys-mw02-c-04-memory-view-08_s0_v1",
+          "@loc_MYS_mys-mw01-c-01-memory-view-09_s0_v1",
+          "@loc_MYS_mys-mwp01-a-routes-rooms-documents_s0_v1",
+          "@loc_MYS_mys-mwp01-b-routes-rooms-documents_s0_v1",
+          "@loc_MYS_mys-mwp01-c-routes-rooms-documents_s0_v1",
+          "@loc_MYS_mys-w02-a-01-world-view-01_s0_v1",
+          "@loc_MYS_mys-w02-a-02-world-view-02_s0_v1",
+          "@loc_MYS_mys-w02-a-03-world-view-03_s0_v1",
+          "@loc_MYS_mys-w02-a-04-world-view-04_s0_v1",
+          "@loc_MYS_mys-w02-b-01-world-view-05_s0_v1",
+          "@loc_MYS_mys-w02-b-02-world-view-06_s0_v1",
+          "@loc_MYS_mys-w02-b-03-world-view-07_s0_v1",
+          "@loc_MYS_mys-w02-b-04-world-view-08_s0_v1",
+          "@loc_MYS_mys-w02-c-01-world-view-09_s0_v1",
+          "@char_MYS_mys-c01-protagonist_s0_v1",
+          "@char_MYS_mys-c10-beginner-dance-woman_s0_v1",
+          "@char_MYS_mys-c11-russian-transit-passenger_s0_v1",
+          "@char_MYS_mys-c12-agra-bus-woman_s0_v1",
+          "@char_MYS_mys-c13-sudanese-traveler-man_s0_v1",
+          "@char_MYS_mys-c14-sudanese-traveler-woman_s0_v1",
+          "@char_MYS_mys-c15-cairo-taxi-driver_s0_v1",
+          "@char_MYS_mys-c16-balloon-local-helper-man_s0_v1",
+          "@char_MYS_mys-c17-balloon-local-helper-woman_s0_v1",
+          "@char_MYS_mys-c18-barmouth-road-trip-driver-companion_s0_v1",
+          "@char_MYS_mys-c19-barmouth-road-trip-companion-a_s0_v1",
+          "@char_MYS_mys-c20-barmouth-road-trip-companion-b_s0_v1",
+          "@char_MYS_mys-c21-barmouth-road-trip-companion-c_s0_v1",
+          "@prop_MYS_mys-mr013-entrance-rail-to-transit-gate_s0_v1",
+          "@prop_MYS_mys-mr014-bench-and-canopy-to-bus-seating_s0_v1",
+          "@prop_MYS_mys-mr015-canopy-to-balloon-envelope_s0_v1",
+          "@prop_MYS_mys-mr016-crop-stalks-to-rail-sleepers_s0_v1",
+          "@loc_MYS_mys-reference-31-london-station-source-exterior-and-iron-structure_s0_v1",
+          "@loc_MYS_mys-reference-32-nyugati-station-destination-and-roof-joints_s0_v1",
+          "@loc_MYS_mys-reference-33-hungarian-state-opera-target-facade-and-entry-depth_s0_v1",
+          "@prop_MYS_mys-reference-43-london-entrance-rail-and-remembered-transit-gate_s0_v1",
+          "@prop_MYS_mys-reference-44-remembered-bus-seats-aisle-and-canopy-post-correspondence_s0_v1",
+          "@prop_MYS_mys-reference-45-cairo-taxi-cabin-rear-bench-and-luggage-contact_s0_v1",
+          "@prop_MYS_mys-reference-46-canopy-and-balloon-envelope-rigging-and-basket-interfaces_s0_v1",
+          "@prop_MYS_mys-ty001-decimal-rating-glyphs-and-tints_s0_v1",
+          "@prop_MYS_mys-ty005-transit-and-entrance-sign-lettering_s0_v1"
+        ],
+        "beats": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9
+        ],
+        "total_refs": 49,
+        "boundary_note": "Check the actual preceding clip and replace the planned boundary motion if it differs; never contradict the supplied frame.",
+        "library_keys": [
+          "MW02_A_01",
+          "MW02_A_02",
+          "MW02_A_03",
+          "MW02_A_04",
+          "MW02_B",
+          "MW02_C_01",
+          "MW02_C_02",
+          "MW02_C_03",
+          "MW02_C_04",
+          "MW01_C_01",
+          "MWP01",
+          "MWP01_B",
+          "MWP01_C",
+          "W02_A_01",
+          "W02_A_02",
+          "W02_A_03",
+          "W02_A_04",
+          "W02_B_01",
+          "W02_B_02",
+          "W02_B_03",
+          "W02_B_04",
+          "W02_C_01",
+          "C01",
+          "C10",
+          "C11",
+          "C12",
+          "C13",
+          "C14",
+          "C15",
+          "C16",
+          "C17",
+          "C18",
+          "C19",
+          "C20",
+          "C21",
+          "MR013",
+          "MR014",
+          "MR015",
+          "MR016",
+          "R031",
+          "R032",
+          "R033",
+          "R043",
+          "R044",
+          "R045",
+          "R046",
+          "TY001",
+          "TY005"
+        ],
+        "storyboard_type": "LOCAL_PLAN_NOT_GENERATION",
+        "required_storyboard_media": false,
+        "incoming_end_frame": "EF01",
+        "video_chars": 14892,
+        "video_sha256": "da8feaf9ee2eddc1883070a42dc7ba6e2ec12b68ba96ecd33ac8c7743f73194f",
+        "storyboard_sha256": "b2c73d9413970c0adc7da16a588726be82db1fcf65a07844c17f19167461d614"
+      },
+      {
+        "job": "03",
+        "block": 3,
+        "prev": "02",
+        "duration": 30,
+        "video": "03_film/draft/03/video.txt",
+        "storyboard": "03_film/draft/03/storyboard.txt",
+        "library": [
+          "@loc_MYS_mys-mw03-a-work-rule-change-admin_s0_v1",
+          "@loc_MYS_mys-mw03-b-01-memory-view-05_s0_v1",
+          "@loc_MYS_mys-mw03-b-02-memory-view-06_s0_v1",
+          "@loc_MYS_mys-mw03-b-03-memory-view-07_s0_v1",
+          "@loc_MYS_mys-mw03-b-04-memory-view-08_s0_v1",
+          "@loc_MYS_mys-mw03-c-01-memory-view-09_s0_v1",
+          "@loc_MYS_mys-mw03-c-02-memory-view-01_s0_v1",
+          "@loc_MYS_mys-mw03-c-03-memory-view-07_s0_v1",
+          "@loc_MYS_mys-mw03-c-04-memory-view-08_s0_v1",
+          "@loc_MYS_mys-mwp01-a-routes-rooms-documents_s0_v1",
+          "@loc_MYS_mys-mwp01-b-routes-rooms-documents_s0_v1",
+          "@loc_MYS_mys-mwp01-c-routes-rooms-documents_s0_v1",
+          "@loc_MYS_mys-w03-a-01-world-view-01_s0_v1",
+          "@loc_MYS_mys-w03-a-02-world-view-02_s0_v1",
+          "@loc_MYS_mys-w03-a-03-world-view-03_s0_v1",
+          "@loc_MYS_mys-w03-a-04-world-view-04_s0_v1",
+          "@loc_MYS_mys-w03-b-01-world-view-05_s0_v1",
+          "@loc_MYS_mys-w03-b-02-world-view-06_s0_v1",
+          "@loc_MYS_mys-w03-b-03-world-view-07_s0_v1",
+          "@loc_MYS_mys-w03-b-04-world-view-08_s0_v1",
+          "@loc_MYS_mys-w03-c-01-world-view-09_s0_v1",
+          "@char_MYS_mys-c01-protagonist_s0_v1",
+          "@char_MYS_mys-c22-accountant_s0_v1",
+          "@char_MYS_mys-c23-admin-colleague-a_s0_v1",
+          "@char_MYS_mys-c24-admin-colleague-b_s0_v1",
+          "@loc_MYS_mys-mr002-facade-relief-to-sculpted-support_s0_v1",
+          "@loc_MYS_mys-mr003-facade-window-capital-and-cornice_s0_v1",
+          "@loc_MYS_mys-mr011-slate-roof-to-curved-glazing_s0_v1",
+          "@loc_MYS_mys-mr012-chimney-shafts-to-spiral-crowns_s0_v1",
+          "@prop_MYS_mys-mr017-cabinet-to-desk-and-chair_s0_v1",
+          "@prop_MYS_mys-reference-48-administrative-desk-actual-documents-and-device-geometry_s0_v1",
+          "@loc_MYS_mys-reference-42-new-york-palace-historic-exterior-with-occupied-bay-depth_s0_v1",
+          "@prop_MYS_mys-ty001-decimal-rating-glyphs-and-tints_s0_v1",
+          "@prop_MYS_mys-ty004-office-and-accounting-sign-lettering_s0_v1"
+        ],
+        "beats": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9
+        ],
+        "total_refs": 35,
+        "boundary_note": "Check the actual preceding clip and replace the planned boundary motion if it differs; never contradict the supplied frame.",
+        "library_keys": [
+          "MW03",
+          "MW03_B_01",
+          "MW03_B_02",
+          "MW03_B_03",
+          "MW03_B_04",
+          "MW03_C_01",
+          "MW03_C_02",
+          "MW03_C_03",
+          "MW03_C_04",
+          "MWP01",
+          "MWP01_B",
+          "MWP01_C",
+          "W03_A_01",
+          "W03_A_02",
+          "W03_A_03",
+          "W03_A_04",
+          "W03_B_01",
+          "W03_B_02",
+          "W03_B_03",
+          "W03_B_04",
+          "W03_C_01",
+          "C01",
+          "C22",
+          "C23",
+          "C24",
+          "MR002",
+          "MR003",
+          "MR011",
+          "MR012",
+          "MR017",
+          "R048",
+          "R042",
+          "TY001",
+          "TY004"
+        ],
+        "storyboard_type": "LOCAL_PLAN_NOT_GENERATION",
+        "required_storyboard_media": false,
+        "incoming_end_frame": "EF02",
+        "video_chars": 14171,
+        "video_sha256": "5c66d36eb1a62af00fd2bb3979a888f3471c3332000cd1aebf396bf878c59696",
+        "storyboard_sha256": "083d17052eadf132af555fd0612e132cdb18857128608f8fcd19d800532bc199"
+      },
+      {
+        "job": "04",
+        "block": 4,
+        "prev": "03",
+        "duration": 30,
+        "video": "03_film/draft/04/video.txt",
+        "storyboard": "03_film/draft/04/storyboard.txt",
+        "library": [
+          "@loc_MYS_mys-mw04-a-police-defence_s0_v1",
+          "@loc_MYS_mys-mw04-b-01-memory-view-05_s0_v1",
+          "@loc_MYS_mys-mw04-b-02-memory-view-06_s0_v1",
+          "@loc_MYS_mys-mw04-b-03-memory-view-07_s0_v1",
+          "@loc_MYS_mys-mw04-b-04-memory-view-08_s0_v1",
+          "@loc_MYS_mys-mw04-c-01-memory-view-09_s0_v1",
+          "@loc_MYS_mys-mw04-c-02-memory-view-01_s0_v1",
+          "@loc_MYS_mys-mw04-c-03-memory-view-07_s0_v1",
+          "@loc_MYS_mys-mw04-c-04-memory-view-08_s0_v1",
+          "@loc_MYS_mys-w04-a-01-world-view-01_s0_v1",
+          "@loc_MYS_mys-w04-a-02-world-view-02_s0_v1",
+          "@loc_MYS_mys-w04-a-03-world-view-03_s0_v1",
+          "@loc_MYS_mys-w04-a-04-world-view-04_s0_v1",
+          "@loc_MYS_mys-w04-b-01-world-view-05_s0_v1",
+          "@loc_MYS_mys-w04-b-02-world-view-06_s0_v1",
+          "@loc_MYS_mys-w04-b-03-world-view-07_s0_v1",
+          "@loc_MYS_mys-w04-b-04-world-view-08_s0_v1",
+          "@loc_MYS_mys-w04-c-01-world-view-09_s0_v1",
+          "@char_MYS_mys-c01-protagonist_s0_v1",
+          "@char_MYS_mys-c03-policewoman_s0_v1",
+          "@char_MYS_mys-c04-appointed-lawyer_s0_v1",
+          "@char_MYS_mys-c25-search-officer-male_s0_v1",
+          "@char_MYS_mys-c26-defence-office-substitute_s0_v1",
+          "@loc_MYS_mys-mr009-balcony-scroll-to-sideways-stair_s0_v1",
+          "@prop_MYS_mys-mr017-cabinet-to-desk-and-chair_s0_v1",
+          "@prop_MYS_mys-reference-49-cabinet-fingerprint-desk-and-chair-construction_s0_v1",
+          "@loc_MYS_mys-reference-30-deep-gallery-through-the-unchanged-threshold_s0_v1",
+          "@prop_MYS_mys-ty001-decimal-rating-glyphs-and-tints_s0_v1"
+        ],
+        "beats": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9
+        ],
+        "total_refs": 29,
+        "boundary_note": "Check the actual preceding clip and replace the planned boundary motion if it differs; never contradict the supplied frame.",
+        "library_keys": [
+          "MW04",
+          "MW04_B_01",
+          "MW04_B_02",
+          "MW04_B_03",
+          "MW04_B_04",
+          "MW04_C_01",
+          "MW04_C_02",
+          "MW04_C_03",
+          "MW04_C_04",
+          "W04_A_01",
+          "W04_A_02",
+          "W04_A_03",
+          "W04_A_04",
+          "W04_B_01",
+          "W04_B_02",
+          "W04_B_03",
+          "W04_B_04",
+          "W04_C_01",
+          "C01",
+          "C03",
+          "C04",
+          "C25",
+          "C26",
+          "MR009",
+          "MR017",
+          "R049",
+          "R030",
+          "TY001"
+        ],
+        "storyboard_type": "LOCAL_PLAN_NOT_GENERATION",
+        "required_storyboard_media": false,
+        "incoming_end_frame": "EF03",
+        "video_chars": 13496,
+        "video_sha256": "51c5dbc839ef6880f7e801e604a7049abe9b850e6465e307449da538f7964655",
+        "storyboard_sha256": "af23792cf6321c854820a4de5a75e10ca78336bf30143a78f23cfc000ab0a0bf"
+      },
+      {
+        "job": "05",
+        "block": 5,
+        "prev": "04",
+        "duration": 30,
+        "video": "03_film/draft/05/video.txt",
+        "storyboard": "03_film/draft/05/storyboard.txt",
+        "library": [
+          "@loc_MYS_mys-mw05-a-court-file_s0_v1",
+          "@loc_MYS_mys-mw05-b-01-memory-view-05_s0_v1",
+          "@loc_MYS_mys-mw05-b-02-memory-view-06_s0_v1",
+          "@loc_MYS_mys-mw05-b-03-memory-view-07_s0_v1",
+          "@loc_MYS_mys-mw05-b-04-memory-view-08_s0_v1",
+          "@loc_MYS_mys-mw05-c-01-memory-view-09_s0_v1",
+          "@loc_MYS_mys-mw05-c-02-memory-view-01_s0_v1",
+          "@loc_MYS_mys-mw05-c-03-memory-view-07_s0_v1",
+          "@loc_MYS_mys-mw05-c-04-memory-view-08_s0_v1",
+          "@loc_MYS_mys-mwp02-a-system-time-reversals_s0_v1",
+          "@loc_MYS_mys-mwp02-b-system-time-reversals_s0_v1",
+          "@loc_MYS_mys-mwp02-c-system-time-reversals_s0_v1",
+          "@loc_MYS_mys-w05-a-01-world-view-01_s0_v1",
+          "@loc_MYS_mys-w05-a-02-world-view-02_s0_v1",
+          "@loc_MYS_mys-w05-a-03-world-view-03_s0_v1",
+          "@loc_MYS_mys-w05-a-04-world-view-04_s0_v1",
+          "@loc_MYS_mys-w05-b-01-world-view-05_s0_v1",
+          "@loc_MYS_mys-w05-b-02-world-view-06_s0_v1",
+          "@loc_MYS_mys-w05-b-03-world-view-07_s0_v1",
+          "@loc_MYS_mys-w05-b-04-world-view-08_s0_v1",
+          "@loc_MYS_mys-w05-c-01-world-view-09_s0_v1",
+          "@char_MYS_mys-c01-protagonist_s0_v1",
+          "@char_MYS_mys-c04-appointed-lawyer_s0_v1",
+          "@char_MYS_mys-c27-judge_s0_v1",
+          "@char_MYS_mys-c28-forensic-expert-a_s0_v1",
+          "@char_MYS_mys-c29-forensic-expert-b_s0_v1",
+          "@char_MYS_mys-c30-court-clerk_s0_v1",
+          "@char_MYS_mys-c31-anonymous-fictional-cardboard-public-figure_s0_v1",
+          "@prop_MYS_mys-mr018-hearing-bench-to-document-shelving_s0_v1",
+          "@prop_MYS_mys-reference-50-court-file-compartments-and-retained-device-supports_s0_v1",
+          "@loc_MYS_mys-reference-34-tower-bridge-source-structure_s0_v1",
+          "@loc_MYS_mys-reference-35-szechenyi-chain-bridge-destination-structure_s0_v1",
+          "@loc_MYS_mys-reference-40-hungarian-parliament-complete-destination-silhouette_s0_v1",
+          "@loc_MYS_mys-reference-41-gresham-palace-frontage-and-deep-stone-details_s0_v1",
+          "@prop_MYS_mys-ty001-decimal-rating-glyphs-and-tints_s0_v1"
+        ],
+        "beats": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9
+        ],
+        "total_refs": 36,
+        "boundary_note": "Check the actual preceding clip and replace the planned boundary motion if it differs; never contradict the supplied frame.",
+        "library_keys": [
+          "MW05",
+          "MW05_B_01",
+          "MW05_B_02",
+          "MW05_B_03",
+          "MW05_B_04",
+          "MW05_C_01",
+          "MW05_C_02",
+          "MW05_C_03",
+          "MW05_C_04",
+          "MWP02",
+          "MWP02_B",
+          "MWP02_C",
+          "W05_A_01",
+          "W05_A_02",
+          "W05_A_03",
+          "W05_A_04",
+          "W05_B_01",
+          "W05_B_02",
+          "W05_B_03",
+          "W05_B_04",
+          "W05_C_01",
+          "C01",
+          "C04",
+          "C27",
+          "C28",
+          "C29",
+          "C30",
+          "C31",
+          "MR018",
+          "R050",
+          "R034",
+          "R035",
+          "R040",
+          "R041",
+          "TY001"
+        ],
+        "storyboard_type": "LOCAL_PLAN_NOT_GENERATION",
+        "required_storyboard_media": false,
+        "incoming_end_frame": "EF04",
+        "video_chars": 14312,
+        "video_sha256": "7bda9d70f004a8d87414dfc96f32850f774f1d7aeb7b38aa68f683498d16cef5",
+        "storyboard_sha256": "fe21b2f96161b6c498444ab75140781b97b97c683ecf67a40aae156149347b7d"
+      },
+      {
+        "job": "06A",
+        "block": 6,
+        "prev": "05",
+        "duration": 15,
+        "video": "03_film/draft/06/video.txt",
+        "storyboard": "03_film/draft/06/storyboard.txt",
+        "library": [
+          "@loc_MYS_mys-mw06-a-01-memory-view-01_s0_v1",
+          "@loc_MYS_mys-mw06-a-02-memory-view-02_s0_v1",
+          "@loc_MYS_mys-mw06-a-03-memory-view-03_s0_v1",
+          "@loc_MYS_mys-mw06-a-04-memory-view-04_s0_v1",
+          "@loc_MYS_mys-mw06-b-01-memory-view-05_s0_v1",
+          "@loc_MYS_mys-mw06-c-02-memory-view-01_s0_v1",
+          "@loc_MYS_mys-mw01-a-london-social_s0_v1",
+          "@loc_MYS_mys-mw02-a-01-memory-view-01_s0_v1",
+          "@loc_MYS_mys-mw02-b-global-routes_s0_v1",
+          "@loc_MYS_mys-mw04-a-police-defence_s0_v1",
+          "@loc_MYS_mys-mw04-b-02-memory-view-06_s0_v1",
+          "@loc_MYS_mys-mw04-c-01-memory-view-09_s0_v1",
+          "@loc_MYS_mys-w06-a-01-world-view-01_s0_v1",
+          "@loc_MYS_mys-w06-a-02-world-view-02_s0_v1",
+          "@loc_MYS_mys-w06-a-03-world-view-03_s0_v1",
+          "@loc_MYS_mys-w06-a-04-world-view-04_s0_v1",
+          "@loc_MYS_mys-w06-b-01-world-view-05_s0_v1",
+          "@loc_MYS_mys-w06-b-02-world-view-06_s0_v1",
+          "@char_MYS_mys-c01-protagonist_s0_v1",
+          "@char_MYS_mys-c02-soho-woman_s0_v1",
+          "@char_MYS_mys-c03-policewoman_s0_v1",
+          "@char_MYS_mys-c04-appointed-lawyer_s0_v1",
+          "@char_MYS_mys-c11-russian-transit-passenger_s0_v1",
+          "@char_MYS_mys-c16-balloon-local-helper-man_s0_v1",
+          "@char_MYS_mys-c17-balloon-local-helper-woman_s0_v1",
+          "@prop_MYS_mys-mr013-entrance-rail-to-transit-gate_s0_v1",
+          "@prop_MYS_mys-mr015-canopy-to-balloon-envelope_s0_v1",
+          "@prop_MYS_mys-mr017-cabinet-to-desk-and-chair_s0_v1",
+          "@loc_MYS_mys-r008-cafe-to-occupied-restaurant_s0_v1",
+          "@loc_MYS_mys-reference-36-london-eye-and-connected-south-bank-depth_s0_v1",
+          "@loc_MYS_mys-reference-37-great-market-hall-roof-and-brick-source-volume_s0_v1",
+          "@loc_MYS_mys-reference-38-balna-curved-glass-target-volume_s0_v1",
+          "@prop_MYS_mys-reference-43-london-entrance-rail-and-remembered-transit-gate_s0_v1",
+          "@prop_MYS_mys-reference-46-canopy-and-balloon-envelope-rigging-and-basket-interfaces_s0_v1",
+          "@prop_MYS_mys-reference-49-cabinet-fingerprint-desk-and-chair-construction_s0_v1",
+          "@prop_MYS_mys-ty001-decimal-rating-glyphs-and-tints_s0_v1"
+        ],
+        "beats": [
+          1,
+          2,
+          3,
+          4
+        ],
+        "total_refs": 37,
+        "boundary_note": "Check the actual preceding clip and replace the planned boundary motion if it differs; never contradict the supplied frame.",
+        "library_keys": [
+          "MW06_A_01",
+          "MW06_A_02",
+          "MW06_A_03",
+          "MW06_A_04",
+          "MW06_B_01",
+          "MW06_C_02",
+          "MW01",
+          "MW02_A_01",
+          "MW02_B",
+          "MW04",
+          "MW04_B_02",
+          "MW04_C_01",
+          "W06_A_01",
+          "W06_A_02",
+          "W06_A_03",
+          "W06_A_04",
+          "W06_B_01",
+          "W06_B_02",
+          "C01",
+          "C02",
+          "C03",
+          "C04",
+          "C11",
+          "C16",
+          "C17",
+          "MR013",
+          "MR015",
+          "MR017",
+          "R008",
+          "R036",
+          "R037",
+          "R038",
+          "R043",
+          "R046",
+          "R049",
+          "TY001"
+        ],
+        "storyboard_type": "LOCAL_PLAN_NOT_GENERATION",
+        "required_storyboard_media": false,
+        "incoming_end_frame": "EF05",
+        "video_chars": 12614,
+        "video_sha256": "fcc03b48a98bec34a738e1a31cf69731cb868cee659d510e9dbcdb64eee67bc7",
+        "storyboard_sha256": "30ee0c6742b28f028d1bdd420b6bce4e2ca64ac40625dd5c8dc10f35443dacec"
+      },
+      {
+        "job": "06B",
+        "block": 6,
+        "prev": "06A",
+        "duration": 15,
+        "video": "03_film/draft/06/video_b.txt",
+        "storyboard": "03_film/draft/06/storyboard_b.txt",
+        "library": [
+          "@loc_MYS_mys-mw06-b-02-memory-view-06_s0_v1",
+          "@loc_MYS_mys-mw06-b-03-memory-view-07_s0_v1",
+          "@loc_MYS_mys-mw06-b-04-memory-view-08_s0_v1",
+          "@loc_MYS_mys-mw06-c-01-memory-view-09_s0_v1",
+          "@loc_MYS_mys-mw06-c-03-memory-view-07_s0_v1",
+          "@loc_MYS_mys-mw06-c-04-memory-view-08_s0_v1",
+          "@loc_MYS_mys-mwp02-a-system-time-reversals_s0_v1",
+          "@loc_MYS_mys-mwp02-b-system-time-reversals_s0_v1",
+          "@loc_MYS_mys-mwp02-c-system-time-reversals_s0_v1",
+          "@loc_MYS_mys-mw03-a-work-rule-change-admin_s0_v1",
+          "@loc_MYS_mys-mw03-b-01-memory-view-05_s0_v1",
+          "@loc_MYS_mys-mw03-b-02-memory-view-06_s0_v1",
+          "@loc_MYS_mys-mw03-b-03-memory-view-07_s0_v1",
+          "@loc_MYS_mys-mw03-b-04-memory-view-08_s0_v1",
+          "@loc_MYS_mys-mw03-c-01-memory-view-09_s0_v1",
+          "@loc_MYS_mys-mw03-c-02-memory-view-01_s0_v1",
+          "@loc_MYS_mys-mw03-c-03-memory-view-07_s0_v1",
+          "@loc_MYS_mys-mw03-c-04-memory-view-08_s0_v1",
+          "@loc_MYS_mys-mw05-a-court-file_s0_v1",
+          "@loc_MYS_mys-mw05-b-01-memory-view-05_s0_v1",
+          "@loc_MYS_mys-mw05-b-02-memory-view-06_s0_v1",
+          "@loc_MYS_mys-mw05-b-03-memory-view-07_s0_v1",
+          "@loc_MYS_mys-mw05-b-04-memory-view-08_s0_v1",
+          "@loc_MYS_mys-mw05-c-01-memory-view-09_s0_v1",
+          "@loc_MYS_mys-mw05-c-02-memory-view-01_s0_v1",
+          "@loc_MYS_mys-mw05-c-03-memory-view-07_s0_v1",
+          "@loc_MYS_mys-mw05-c-04-memory-view-08_s0_v1",
+          "@loc_MYS_mys-w06-b-03-world-view-07_s0_v1",
+          "@loc_MYS_mys-w06-b-04-world-view-08_s0_v1",
+          "@loc_MYS_mys-w06-c-01-world-view-09_s0_v1",
+          "@char_MYS_mys-c10-beginner-dance-woman_s0_v1",
+          "@char_MYS_mys-c27-judge_s0_v1",
+          "@char_MYS_mys-c28-forensic-expert-a_s0_v1",
+          "@char_MYS_mys-c29-forensic-expert-b_s0_v1",
+          "@char_MYS_mys-c01-protagonist_s0_v1",
+          "@char_MYS_mys-c03-policewoman_s0_v1",
+          "@char_MYS_mys-c04-appointed-lawyer_s0_v1",
+          "@loc_MYS_mys-w06-a-01-world-view-01_s0_v1",
+          "@loc_MYS_mys-mw01-a-london-social_s0_v1",
+          "@loc_MYS_mys-mw02-b-global-routes_s0_v1",
+          "@loc_MYS_mys-mw04-a-police-defence_s0_v1",
+          "@loc_MYS_mys-mr009-balcony-scroll-to-sideways-stair_s0_v1",
+          "@loc_MYS_mys-mr019-paving-and-gutter-to-street-terrace_s0_v1",
+          "@loc_MYS_mys-reference-37-great-market-hall-roof-and-brick-source-volume_s0_v1",
+          "@loc_MYS_mys-reference-38-balna-curved-glass-target-volume_s0_v1",
+          "@prop_MYS_mys-ty001-decimal-rating-glyphs-and-tints_s0_v1"
+        ],
+        "beats": [
+          5,
+          6,
+          7,
+          8,
+          9
+        ],
+        "total_refs": 47,
+        "boundary_note": "Check the actual preceding clip and replace the planned boundary motion if it differs; never contradict the supplied frame.",
+        "library_keys": [
+          "MW06_B_02",
+          "MW06_B_03",
+          "MW06_B_04",
+          "MW06_C_01",
+          "MW06_C_03",
+          "MW06_C_04",
+          "MWP02",
+          "MWP02_B",
+          "MWP02_C",
+          "MW03",
+          "MW03_B_01",
+          "MW03_B_02",
+          "MW03_B_03",
+          "MW03_B_04",
+          "MW03_C_01",
+          "MW03_C_02",
+          "MW03_C_03",
+          "MW03_C_04",
+          "MW05",
+          "MW05_B_01",
+          "MW05_B_02",
+          "MW05_B_03",
+          "MW05_B_04",
+          "MW05_C_01",
+          "MW05_C_02",
+          "MW05_C_03",
+          "MW05_C_04",
+          "W06_B_03",
+          "W06_B_04",
+          "W06_C_01",
+          "C10",
+          "C27",
+          "C28",
+          "C29",
+          "C01",
+          "C03",
+          "C04",
+          "W06_A_01",
+          "MW01",
+          "MW02_B",
+          "MW04",
+          "MR009",
+          "MR019",
+          "R037",
+          "R038",
+          "TY001"
+        ],
+        "storyboard_type": "LOCAL_PLAN_NOT_GENERATION",
+        "required_storyboard_media": false,
+        "incoming_end_frame": "EF06A",
+        "video_chars": 13216,
+        "video_sha256": "6c25c8be1182a2370f1636b360556dde59d5487fa385da263d6ca617d0dc0629",
+        "storyboard_sha256": "b27ab4b6b1220cb0492eeab570db92dc88651f3f52ee67db69828acd74c48031"
+      },
+      {
+        "job": "07",
+        "block": 7,
+        "prev": "06B",
+        "duration": 20,
+        "video": "03_film/draft/07/video.txt",
+        "storyboard": "03_film/draft/07/storyboard.txt",
+        "library": [
+          "@loc_MYS_mys-hrw07-a-clinical-reality_s0_v1",
+          "@loc_MYS_mys-hrw07-b-clinical-reality_s0_v1",
+          "@loc_MYS_mys-hrw07-c-clinical-reality_s0_v1",
+          "@loc_MYS_mys-mwp01-a-routes-rooms-documents_s0_v1",
+          "@loc_MYS_mys-mwp01-b-routes-rooms-documents_s0_v1",
+          "@loc_MYS_mys-mwp01-c-routes-rooms-documents_s0_v1",
+          "@loc_MYS_mys-mw01-b-02-memory-view-06_s0_v1",
+          "@loc_MYS_mys-mw02-b-global-routes_s0_v1",
+          "@loc_MYS_mys-w07-a-01-world-view-01_s0_v1",
+          "@loc_MYS_mys-w07-a-02-world-view-02_s0_v1",
+          "@loc_MYS_mys-w07-a-03-world-view-03_s0_v1",
+          "@loc_MYS_mys-w07-a-04-world-view-04_s0_v1",
+          "@loc_MYS_mys-w07-b-01-world-view-05_s0_v1",
+          "@loc_MYS_mys-w07-b-02-world-view-06_s0_v1",
+          "@loc_MYS_mys-w07-b-03-world-view-07_s0_v1",
+          "@loc_MYS_mys-w07-b-04-world-view-08_s0_v1",
+          "@loc_MYS_mys-w07-c-01-world-view-09_s0_v1",
+          "@char_MYS_mys-c01-protagonist_s0_v1",
+          "@char_MYS_mys-c05-final-nurse_s0_v1",
+          "@char_MYS_mys-c06-shared-house-substitute-snoring-housemate_s0_v1",
+          "@char_MYS_mys-c16-balloon-local-helper-man_s0_v1",
+          "@char_MYS_mys-c17-balloon-local-helper-woman_s0_v1",
+          "@prop_MYS_mys-mr020-rope-fibres-to-sheet-hem_s0_v1",
+          "@loc_MYS_mys-reference-54-big-ben-elizabeth-tower-london-source_s0_v1",
+          "@loc_MYS_mys-reference-55-westminster-abbey-london-source_s0_v1",
+          "@loc_MYS_mys-reference-39-westminster-and-parliament-square-london-source_s0_v1",
+          "@loc_MYS_mys-reference-40-hungarian-parliament-complete-destination-silhouette_s0_v1",
+          "@prop_MYS_mys-ty001-decimal-rating-glyphs-and-tints_s0_v1",
+          "@prop_MYS_mys-ty007-final-title-lockup-and-letter-details_s0_v1"
+        ],
+        "beats": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9
+        ],
+        "total_refs": 30,
+        "boundary_note": "Check the actual preceding clip and replace the planned boundary motion if it differs; never contradict the supplied frame.",
+        "library_keys": [
+          "HRW07",
+          "HRW07_B",
+          "HRW07_C",
+          "MWP01",
+          "MWP01_B",
+          "MWP01_C",
+          "MW01_B_02",
+          "MW02_B",
+          "W07_A_01",
+          "W07_A_02",
+          "W07_A_03",
+          "W07_A_04",
+          "W07_B_01",
+          "W07_B_02",
+          "W07_B_03",
+          "W07_B_04",
+          "W07_C_01",
+          "C01",
+          "C05",
+          "C06",
+          "C16",
+          "C17",
+          "MR020",
+          "R054",
+          "R055",
+          "R039",
+          "R040",
+          "TY001",
+          "TY007"
+        ],
+        "storyboard_type": "LOCAL_PLAN_NOT_GENERATION",
+        "required_storyboard_media": false,
+        "incoming_end_frame": "EF06B",
+        "video_chars": 13554,
+        "video_sha256": "517b30093db6f66fea1ed4119c2ca4a5d7bba234f8fe61f36a4f401e7adc9b30",
+        "storyboard_sha256": "534d4bc72a35887ad0b98dc81bb94414bd3b0d174421f7f3f08a0250ad2f1ba7"
+      }
+    ],
+    "verified_production_elements": {
+      "V07": {
+        "id": "6a64dbb6-410c-40a8-8ca5-41829b878039",
+        "mention": "@loc_MYS_mys-film-v07-video_s0_v1",
+        "media_ids": [],
+        "video_media_ids": []
+      },
+      "SB07": {
+        "id": "bb2bbcc8-b2c1-4f3e-8a5c-27ce3b7c57b2",
+        "mention": "@loc_MYS_mys-film-sb07-storyboard_s0_v1",
+        "media_ids": [],
+        "video_media_ids": []
+      },
+      "EF06B": {
+        "id": "232fc925-c9ce-40ee-8d37-648ae28a65e8",
+        "mention": "@loc_MYS_mys-film-v06b-end-frame_s0_v1",
+        "media_ids": [],
+        "video_media_ids": []
+      },
+      "V06B": {
+        "id": "79722925-6b46-4364-b5f7-4a47475df6aa",
+        "mention": "@loc_MYS_mys-film-v06b-video_s0_v1",
+        "media_ids": [],
+        "video_media_ids": []
+      },
+      "SB06B": {
+        "id": "f26f5f4d-1c09-4d61-871f-2702e947cd53",
+        "mention": "@loc_MYS_mys-film-sb06b-storyboard_s0_v1",
+        "media_ids": [],
+        "video_media_ids": []
+      },
+      "EF06A": {
+        "id": "6549e44e-b882-410e-899c-585ee0fa7d40",
+        "mention": "@loc_MYS_mys-film-v06a-end-frame_s0_v1",
+        "media_ids": [],
+        "video_media_ids": []
+      },
+      "V06A": {
+        "id": "d00ff3e6-7f05-423a-a461-62dda6fe7a1e",
+        "mention": "@loc_MYS_mys-film-v06a-video_s0_v1",
+        "media_ids": [],
+        "video_media_ids": []
+      },
+      "SB06A": {
+        "id": "64b39d73-a421-400b-93e1-5b7c6b20a2c9",
+        "mention": "@loc_MYS_mys-film-sb06a-storyboard_s0_v1",
+        "media_ids": [],
+        "video_media_ids": []
+      },
+      "EF05": {
+        "id": "e8dced94-2f45-4a2b-a54f-2617102e76e1",
+        "mention": "@loc_MYS_mys-film-v05-end-frame_s0_v1",
+        "media_ids": [],
+        "video_media_ids": []
+      },
+      "V05": {
+        "id": "5764f0d8-d1cb-4376-b669-f5d299e979a6",
+        "mention": "@loc_MYS_mys-film-v05-video_s0_v1",
+        "media_ids": [],
+        "video_media_ids": []
+      },
+      "SB05": {
+        "id": "5c7675fb-e9b9-41d7-a240-f0ba9ea8d83f",
+        "mention": "@loc_MYS_mys-film-sb05-storyboard_s0_v1",
+        "media_ids": [],
+        "video_media_ids": []
+      },
+      "EF04": {
+        "id": "188f6c41-597e-4673-a7c1-9b0125184c73",
+        "mention": "@loc_MYS_mys-film-v04-end-frame_s0_v1",
+        "media_ids": [],
+        "video_media_ids": []
+      },
+      "V04": {
+        "id": "4483a667-eafb-433a-b8e7-2b47eaffcb97",
+        "mention": "@loc_MYS_mys-film-v04-video_s0_v1",
+        "media_ids": [],
+        "video_media_ids": []
+      },
+      "SB04": {
+        "id": "09a8bf15-467a-4993-9961-396250a1fb72",
+        "mention": "@loc_MYS_mys-film-sb04-storyboard_s0_v1",
+        "media_ids": [],
+        "video_media_ids": []
+      },
+      "EF03": {
+        "id": "51043fe3-5c45-43eb-a05b-8eab1858a335",
+        "mention": "@loc_MYS_mys-film-v03-end-frame_s0_v1",
+        "media_ids": [],
+        "video_media_ids": []
+      },
+      "V03": {
+        "id": "e9fab753-238d-4637-8f16-aff1af2d5606",
+        "mention": "@loc_MYS_mys-film-v03-video_s0_v1",
+        "media_ids": [],
+        "video_media_ids": []
+      },
+      "SB03": {
+        "id": "96c77f92-8d3a-4de8-9ac8-43a48822ea73",
+        "mention": "@loc_MYS_mys-film-sb03-storyboard_s0_v1",
+        "media_ids": [],
+        "video_media_ids": []
+      },
+      "EF02": {
+        "id": "40dd7389-cf0f-4d35-a225-9b66dc8ccc55",
+        "mention": "@loc_MYS_mys-film-v02-end-frame_s0_v1",
+        "media_ids": [],
+        "video_media_ids": []
+      },
+      "V02": {
+        "id": "bc89014c-0d66-4822-9d59-75d57eeafd9c",
+        "mention": "@loc_MYS_mys-film-v02-video_s0_v1",
+        "media_ids": [],
+        "video_media_ids": []
+      },
+      "SB02": {
+        "id": "45698f2b-79fa-46c9-bea6-062d9c808ea6",
+        "mention": "@loc_MYS_mys-film-sb02-storyboard_s0_v1",
+        "media_ids": [],
+        "video_media_ids": []
+      },
+      "EF01": {
+        "id": "f37e86f1-1cde-4783-85ac-e2c13ba81725",
+        "mention": "@loc_MYS_mys-film-v01-end-frame_s0_v1",
+        "media_ids": [],
+        "video_media_ids": []
+      },
+      "V01": {
+        "id": "6e12dca5-9402-463c-b8af-d15c1b07c32a",
+        "mention": "@loc_MYS_mys-film-v01-video_s0_v1",
+        "media_ids": [],
+        "video_media_ids": []
+      },
+      "SB01": {
+        "id": "ddadbdad-36d1-436b-84b3-5373c04d5ebc",
+        "mention": "@loc_MYS_mys-film-sb01-storyboard_s0_v1",
+        "media_ids": [],
+        "video_media_ids": []
+      },
+      "V00": {
+        "id": "a22c75a6-8b62-451b-a2b5-6f9b1c490d03",
+        "mention": "@loc_MYS_mys-film-v00-myscoutee-presents_s0_v1",
+        "media_ids": [],
+        "video_media_ids": []
+      },
+      "LOGO_MYS": {
+        "id": "d56b05dc-4e51-456d-bf3d-7acd0479e402",
+        "mention": "@prop_MYS_mys-film-m-logo_s0_v1",
+        "media_ids": [
+          "7c332e7e-e64e-4a23-94c9-ef445ecbc23d"
+        ],
+        "video_media_ids": []
+      }
+    },
+    "video_detail_revision": "2026-09-11: expanded selected existing material transitions, hand/object contact, scene separation and clinical reveal. Beat timings, reference sets and narration unchanged; all video prompts under 15000 characters.",
+    "next_step": "Use production/P01/video.txt; resolve per-image eligibility before generation. Future P09–P12 require four additional frame definitions and actual MCP handles.",
+    "additional_test_policy": "No separate 1080p test. Consider one or two focused 480p tests only after narration debit and remaining production quote reconciliation; no automatic generation.",
+    "reserve_basis": "1979 last reported before narration minus user-reported 6.15 narration quote minus 1836 provisional footage/ident reserve; not a verified current balance.",
+    "storyboard_route": {
+      "type": "LOCAL_PLAN_EXISTING_WHOLE_IMAGES",
+      "paid_images": 0,
+      "crop_or_reupload_required": false,
+      "unused_sb_containers": "Keep existing imported SB containers unused; do not delete or reimport.",
+      "library_direct": 216,
+      "library_alternatives": 50,
+      "coverage_file": "04_tracking/VIDEO_ASSET_COVERAGE.csv",
+      "decision": "No further generated storyboard image is required for the current film plan. Preserve concrete movement details in the video requests; shorten redundant prose/prohibitions before sacrificing detail."
+    },
+    "narration_observation": {
+      "user_reported_quote": 6.15,
+      "downloaded_file": "/home/raxim/Downloads/hf_20260911_092854_627d5d9b-4dc2-4d8a-82ea-b53a24eb0021.mp3",
+      "previously_measured_duration_seconds": 150.334694,
+      "account_debit_reconciled": false
+    },
+    "ident_audio": "Audio ON: synchronised material sounds, short warm acoustic signature, natural decay; no voice or separate audio reference.",
+    "previous_jobs_status": "SUPERSEDED_GENERATION_BOUNDARIES_RETAINED_AS_SOURCE_CHAPTERS",
+    "active_generation_plan": "03_film/production/plan.json"
   }
 }
