@@ -1,3 +1,7 @@
+## 2026-09-11 — Current production queue: P01–P12
+
+Repartitioned all 63 complete story beats into 12 requests, 200 seconds; 22–29 Element references inclusive of incoming final frames; 216 existing library Elements retained globally. Source beat bodies verified verbatim. Current order: `03_film/production/README.md`; machine-readable provenance: `03_film/production/plan.json`. Old 01–07 files remain source chapters only. Four additional frame definitions prepared; P09–P12 placeholders require actual MCP binding after import. No paid generation or remote mutation performed. V00 and narration remain accepted/downloaded. Story allocation 1800, provisional image-replacement envelope 40, conditional test balance 97 assuming 1973 minus only the 36-credit ident.
+
 ### Read-only MCP check of the reported references — 2026-09-11
 
 Fetched 21 affected Elements with `show_reference_elements(action=get)`. MW01_C_03 (`62d04035-4aa6-4a76-a6cf-1358c2ff34f0`) and MW01_C_04 (`560a9880-116f-4865-8ac6-1b852d82dab9`) both returned `ip_checking`, each with TWO attached image jobs. C03 images: `a31432e2-7cc1-406a-8d46-9047ac880b8e`, `2148c24e-53c1-4e55-80c7-6cffba56e8ce`. C04 images: `8d1a8d2b-d225-4e70-a501-d823dcaab241`, `a42d3540-8e06-4a6b-875e-df0026b18850`. The response does not identify which image/check is responsible or whether either check is stuck.
@@ -12,7 +16,7 @@ All 48 references are listed in the composer, but the thumbnail strip has no vis
 
 The creator accepted `/home/raxim/Downloads/myscoutee_v00_title_corrected_1080p.mp4`. The generated V00 spelled the brand “MyScuitee”; local non-generative masked retouching and font compositing corrected it to “MyScoutee”, following the original title fade. Original download retained: `hf_20260911_112632_b19fcc49-ce7e-4dcd-9ecd-ea8b3ca67d87.mp4`. Corrected output retains 97 frames, 1920×1080, 24 fps, 10-bit HEVC and 4.05-second container duration; video re-encoded, AAC audio verified bit-identical. No paid repair or regeneration. Festival rules section 4 explicitly permits external titles and precise mask-based retouching.
 
-Next UI checkpoint: V01 (`03_film/01/video.txt`), 30 seconds, 16:9, audio ON, one output; review the full-request 480p quote for the planned first-story test. Current file: 14,960 characters and 48 unique Element references. No V00 last frame is needed: V01 opens a new story shot after the ident. No additional storyboard generation or narration reference. Preserve story detail. The last creator-reported pre-V00 balance was 1973; V00's UI quote was 36. A 1937 post-V00 balance and 137 surplus after the 1800 story reserve are conditional arithmetic, not a verified account balance. A 75-credit V01 test remains an estimate until the UI displays the actual quote.
+Next UI checkpoint: V01 (`03_film/draft/01/video.txt`), 30 seconds, 16:9, audio ON, one output; review the full-request 480p quote for the planned first-story test. Current file: 14,960 characters and 48 unique Element references. No V00 last frame is needed: V01 opens a new story shot after the ident. No additional storyboard generation or narration reference. Preserve story detail. The last creator-reported pre-V00 balance was 1973; V00's UI quote was 36. A 1937 post-V00 balance and 137 surplus after the 1800 story reserve are conditional arithmetic, not a verified account balance. A 75-credit V01 test remains an estimate until the UI displays the actual quote.
 
 # Current checkpoint — whole-image reference union, 2026-09-11
 
@@ -40,7 +44,7 @@ Compared with the 2860 reported baseline, net balance reduction is 824: +140 aga
 
 ## Opening logo segment — identified and prompted
 
-The creator clarified the full-screen MyScoutee presents ident, using the existing repository/profile M-logo (creator-reported GPT Image 2 provenance). The old 4-second title-card video is not an input. [00/video.txt](../03_film/00/video.txt) describes a new restrained 4-second ident with only the logo image as reference. The latest instruction is prompt preparation; no upload or generation was performed. Model and price remain unselected. No Higgsfield/festival branding is requested inside the ident. The seven story blocks and the 4+4-second test are unchanged.
+The creator clarified the full-screen MyScoutee presents ident, using the existing repository/profile M-logo (creator-reported GPT Image 2 provenance). The old 4-second title-card video is not an input. [00/video.txt](../03_film/production/P00/video.txt) describes a new restrained 4-second ident with only the logo image as reference. The latest instruction is prompt preparation; no upload or generation was performed. Model and price remain unselected. No Higgsfield/festival branding is requested inside the ident. The seven story blocks and the 4+4-second test are unchanged.
 
 # Current override — small continuity test, 2026-09-10
 

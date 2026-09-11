@@ -1,3 +1,7 @@
+## Current film generation order
+
+Use [03_film/production/README.md](03_film/production/README.md): P01–P12, 200 seconds, at most 29 Element references including the incoming frame. V00 and narration are complete. The old chapter prompts remain comparison sources.
+
 # MYSCOUTEE — Cinema Studio production
 
 Current route: [film preparation and ordered generation](03_film/README.md). Seven story blocks / eight video portions total 3:20; the separate MyScoutee presents ident adds four seconds. Reuse the accepted library and uploaded logo. No new library generation pass.

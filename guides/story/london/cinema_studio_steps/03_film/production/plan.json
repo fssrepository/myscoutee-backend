@@ -1,0 +1,2317 @@
+{
+  "date": "2026-09-11",
+  "status": "PREPARED_NOT_GENERATED",
+  "story_seconds": 200,
+  "accepted_ident_seconds": 4,
+  "future_story_credits_at_user_rate": 1800,
+  "reference_limit_observed": 30,
+  "planned_max_references": 29,
+  "reference_count_unit": "unique Element handles, including one incoming final-frame slot; not individual image attachments inside an Element",
+  "selected_existing_library_elements": 216,
+  "original_beat_bodies_preserved_verbatim": 63,
+  "minimum_requests_for_recorded_beat_reference_map": 12,
+  "minimum_scope": "Chronological complete beats and the recorded beat-reference map. This is not a proof over every possible alternative asset selection or generation quality.",
+  "sources": {
+    "01": {
+      "file": "03_film/draft/01/video.txt",
+      "sha256": "6dce96a11e4d02a8361768d6b8a51ba4240d03eecd815042964f9f3b7b263a04"
+    },
+    "02": {
+      "file": "03_film/draft/02/video.txt",
+      "sha256": "da8feaf9ee2eddc1883070a42dc7ba6e2ec12b68ba96ecd33ac8c7743f73194f"
+    },
+    "03": {
+      "file": "03_film/draft/03/video.txt",
+      "sha256": "5c66d36eb1a62af00fd2bb3979a888f3471c3332000cd1aebf396bf878c59696"
+    },
+    "04": {
+      "file": "03_film/draft/04/video.txt",
+      "sha256": "51c5dbc839ef6880f7e801e604a7049abe9b850e6465e307449da538f7964655"
+    },
+    "05": {
+      "file": "03_film/draft/05/video.txt",
+      "sha256": "7bda9d70f004a8d87414dfc96f32850f774f1d7aeb7b38aa68f683498d16cef5"
+    },
+    "06": {
+      "file": "03_film/draft/06/video.txt",
+      "sha256": "fcc03b48a98bec34a738e1a31cf69731cb868cee659d510e9dbcdb64eee67bc7"
+    },
+    "06B": {
+      "file": "03_film/draft/06/video_b.txt",
+      "sha256": "6c25c8be1182a2370f1636b360556dde59d5487fa385da263d6ca617d0dc0629"
+    },
+    "07": {
+      "file": "03_film/draft/07/video.txt",
+      "sha256": "517b30093db6f66fea1ed4119c2ca4a5d7bba234f8fe61f36a4f401e7adc9b30"
+    }
+  },
+  "beat_reference_map": [
+    {
+      "id": "01.1",
+      "part": "01",
+      "n": 1,
+      "start": 0,
+      "end": 3,
+      "body": "Track the walking protagonist through recognisable Soho: pub fronts, wet paving, black taxis, red buses and card-bearing pedestrians. St Paul's great ribbed dome, drum, classical body and paired west towers stand beyond the roofs. Begin its change into St Stephen's Basilica: bow the same ribs, slide attached roof sheets, reshape the drum piers, alter both tower crowns and slide entrance columns on the same platform into the triangular-pediment portico. Retain the complete grounded building and intermediate shapes; the destination must resolve recognisably during the block.",
+      "refs": [
+        "C01",
+        "MR001",
+        "TY001",
+        "W01_A_01"
+      ]
+    },
+    {
+      "id": "01.2",
+      "part": "01",
+      "n": 2,
+      "start": 3,
+      "end": 5,
+      "body": "Reach the curved Piccadilly frontage and Eros through the same street. Red bus, yellow tram and black taxi move in separate lanes. Two pedestrians exchange a glance; only the viewed card's internal fill briefly brightens, without changing its number. As secondary action, the same winged metal statue bends its knee and jumps from its upper support to the lower plinth step; show the arc, flexing wings and landing shadow, with its plinth rooted.",
+      "refs": [
+        "C01",
+        "R010",
+        "TY001",
+        "W01_A_02"
+      ]
+    },
+    {
+      "id": "01.3",
+      "part": "01",
+      "n": 3,
+      "start": 5,
+      "end": 10,
+      "body": "Approach the café below an outward-hinging upper room beside the taxi. Track a chipped brick swelling into a deep carved arch block. Broken pane pieces rotate in opposite directions, thicken and curl into pendant shades; a notched corner becomes a shade rim. Split mullion grain twists into solid arch trim; its fasteners lengthen into the lamp stems. Stone sill becomes timber threshold; paving lengthens into boards as the puddle drains. Bench slats arc into the supported floor border; rough masonry becomes thick cream-plastered room returns. Balcony iron uncurls into a sideways stair above. Progressively reveal the SAME T01 restaurant: seated C02, white cup, wooden table, complete chair legs, rear restroom doors and remembered C01 turning from the wrong door. Her smile must register. Let her eyes meet the remembered man before the small smile settles; keep her face and cup visible together during the table-corner pass. His reaction stays within that memory while the current walker continues outside. Keep current C01 outside, distinct. Ease into an oblique table-corner arc with parallax, never substitute an interior shot. Mounted COFFEE sign strokes reshape into KÁVÉ; wall-lamp brackets branch while retaining their shades and warm pools.",
+      "refs": [
+        "C01",
+        "C02",
+        "MR004",
+        "MR005",
+        "MR006",
+        "MR007",
+        "MR008",
+        "MR009",
+        "MR010",
+        "MW01",
+        "MW01_C_02",
+        "R008",
+        "R021",
+        "T01_DETAILS",
+        "TY001",
+        "TY002",
+        "W01_A_03"
+      ]
+    },
+    {
+      "id": "01.4",
+      "part": "01",
+      "n": 4,
+      "start": 10,
+      "end": 13,
+      "body": "The café wall ribs rotate from their roots into the adjacent lunch-room ceiling over the continuing floor. Glimpse a colleague's moving fork before exposing the same lunch group. The remembered protagonist has an empty place, touches unused cutlery and withdraws his hand. Preserve the lack of food. Leave the woman's occupied table behind; nobody changes identity to populate the lunch room.",
+      "refs": [
+        "C01",
+        "MW01",
+        "TY001",
+        "W01_A_04"
+      ]
+    },
+    {
+      "id": "01.5",
+      "part": "01",
+      "n": 5,
+      "start": 13,
+      "end": 16,
+      "body": "Compress house-front stone bands into two staggered, full-depth shared rooms. Paving becomes timber floors, ledges become bed and shelves, iron supports become the complete bed frame; show material changes rather than prebuilt rooms behind lifted walls. C06 occupies the DIFFERENT-SNORE arrangement among ordinary crowded belongings. A bed curtain extends into the next arch's fabric while the tram continues on the road.",
+      "refs": [
+        "C01",
+        "C06",
+        "MW01_B_01",
+        "MW01_B_02",
+        "TY001",
+        "W01_B_01"
+      ]
+    },
+    {
+      "id": "01.6",
+      "part": "01",
+      "n": 6,
+      "start": 16,
+      "end": 19,
+      "body": "Open the adjoining wall corner from its skirting upward; track screw heads as the skirting becomes a shelf. Reveal C07's hand beside a family photograph or call, then the same seated Hungarian housemate among London belongings, with C08, C09 and Hungarian home obligations in the domestic cue. Keep the preceding room behind; no explanatory graphics.",
+      "refs": [
+        "C01",
+        "C07",
+        "C08",
+        "C09",
+        "MW01_B_03",
+        "MW01_C_03",
+        "TY001",
+        "W01_B_02"
+      ]
+    },
+    {
+      "id": "01.7",
+      "part": "01",
+      "n": 7,
+      "start": 19,
+      "end": 22,
+      "body": "Leicester theatre red stone becomes dating-room plaster, poster rail becomes a full timber doorframe and paving its floor. In that embodied memory, keep the phone photograph and face unchanged while its age field changes 37 to 33: only the second digit reshapes on the screen. Give the ordinary-sized device a readable interval. The room ceiling continues into the theatre canopy.",
+      "refs": [
+        "C01",
+        "MW01_B_04",
+        "MW01_C_04",
+        "TY001",
+        "TY006",
+        "W01_B_03"
+      ]
+    },
+    {
+      "id": "01.8",
+      "part": "01",
+      "n": 8,
+      "start": 22,
+      "end": 26,
+      "body": "Arc through the Leicester crowd; glances affect only viewed cards. Along the same wall, stone bands narrow into fluorescent housings and paving seams extend toward the closed workers' hostel door. At the kerb, slabs lower into the canal edge with reeds and the shoe-crowded shared-house entrance. A cultural block and Kossuth-style monument grow from existing masonry; show the plinth's stone-to-figure intermediates. These threshold memories remain secondary, inhabited spaces.",
+      "refs": [
+        "C01",
+        "MWP01",
+        "MWP01_B",
+        "MWP01_C",
+        "TY001",
+        "TY003",
+        "W01_B_04"
+      ]
+    },
+    {
+      "id": "01.9",
+      "part": "01",
+      "n": 9,
+      "start": 26,
+      "end": 30,
+      "body": "Travel toward Haymarket/Trafalgar with a later Nelson's Column sightline. Occupied room ribs lengthen into arches and wall courses move into spandrels; inhabitants remain behind the open arcades. A red double-decker passes on the camera's left, about one third of the view, retaining front corner, side and upper windows. Keep café edge, kerb, taxi and tram rails traceable around it. No full-frame wipe or bus redesign. Ease from the broad city arc into a level forward-right street pass for the boundary; motion continues without a concluding pose.",
+      "refs": [
+        "C01",
+        "R025",
+        "R026",
+        "R028",
+        "R030",
+        "TY001",
+        "W01_C_01"
+      ]
+    },
+    {
+      "id": "02.1",
+      "part": "02",
+      "n": 1,
+      "start": 30,
+      "end": 33,
+      "body": "Continue along Charing Cross/Strand from the supplied final frame. Nelson's Column and National Gallery lead through connected London geometry toward the complete Hungarian Opera frontage and Nyugati hall. Existing cornice strips become iron roof ribs; their mullions and attached panes extend into Nyugati's glazed end. Neighbouring columns spread into the Opera arcades. A separate Heroes' Square association keeps its central column and paired colonnades recognisable, never confused with Nelson's lone column.",
+      "refs": [
+        "C01",
+        "R031",
+        "R032",
+        "R033",
+        "TY001",
+        "W02_A_01"
+      ]
+    },
+    {
+      "id": "02.2",
+      "part": "02",
+      "n": 2,
+      "start": 33,
+      "end": 36,
+      "body": "Retain one Underground railing footplate as the bar thickens into the remembered Moscow/St Petersburg ticket gate and its elbow becomes a reader support. Paving extends into tiles and thick passage walls. Reveal C11's hand at the reader, then his full body and remembered C01 following through the actual rotating gate leaf. Current C01 stays above ground beside it. Extend the gate frame into the next transit canopy.",
+      "refs": [
+        "C01",
+        "C11",
+        "MR013",
+        "MW02_A_01",
+        "MW02_C_02",
+        "R043",
+        "TY001",
+        "W02_A_02"
+      ]
+    },
+    {
+      "id": "02.3",
+      "part": "02",
+      "n": 3,
+      "start": 36,
+      "end": 39,
+      "body": "Under that canopy, bench slats curve into upholstered Agra bus seats, supports unfold into visible legs, posts become window pillars and paving rises into the aisle. Glimpse C12's sleeve before exposing her seated gesture to remembered C01. Preserve complete seats, floor contact and ordinary travel, without intelligible extra dialogue or tourist monuments. The current London red bus remains a separate vehicle.",
+      "refs": [
+        "C01",
+        "C12",
+        "MR014",
+        "MW02_A_02",
+        "R044",
+        "TY001",
+        "W02_A_03"
+      ]
+    },
+    {
+      "id": "02.4",
+      "part": "02",
+      "n": 4,
+      "start": 39,
+      "end": 42,
+      "body": "Follow the extending seat rail into the NEXT cabin bay. Its seat lowers and widens, upright curves into a Cairo taxi pillar and floor narrows into a footwell. Reveal C13 and C14 sharing the cabin with remembered C01 and driver C15. A phone briefly carries the camel photograph with ordinary security personnel behind it. The Agra group remains on its receding seats; do not transform its people into the couple. Keep the receding bus pillar visible beside the growing taxi pillar long enough to establish two different cabin bays. The lens passes between their outer supports; it never passes through a passenger or a seat back.",
+      "refs": [
+        "C01",
+        "C13",
+        "C14",
+        "C15",
+        "MW02_A_03",
+        "R045",
+        "TY001",
+        "W02_A_04"
+      ]
+    },
+    {
+      "id": "02.5",
+      "part": "02",
+      "n": 5,
+      "start": 42,
+      "end": 45,
+      "body": "The Cairo luggage rack tips and a bag falls visibly to its landing, with practical surprised reactions. Pass the cabin's solid rear pillar into an adjacent hotel opening on the same floor route. Glimpse remembered C01's hand and the second pillow before revealing the Nile/Aswan hotel room prepared for two but occupied by one. Hold the empty half readably. Let the pillow and unused sleeping space share the view with the lone occupant, so the absence reads through the room arrangement rather than a close-up of a symbolic object. Do not turn occupied taxi seats into the bed.",
+      "refs": [
+        "C01",
+        "MW02_A_04",
+        "MWP01_B",
+        "MWP01_C",
+        "TY001",
+        "W02_B_01"
+      ]
+    },
+    {
+      "id": "02.6",
+      "part": "02",
+      "n": 6,
+      "start": 45,
+      "end": 49,
+      "body": "Canopy ribs bend into the balloon volume; their cloth swells into stitched panels, ties lengthen into rigging and woven screen forms the basket. Paving joints open into vegetable-plot soil. Reveal C16/C17's gripping hands and the same helpers/passengers cooperating at the ropes. The envelope lifts free after its attachments are visible, rising between cornices, across tram wires and casting a facade shadow. Hands remain wrapped around their own ropes as those ropes pull taut; the basket keeps its woven base, rim and attached rigging. Show clearance from the wires through parallax, without intersecting them. This event occupies the real city ground and sky, not glass.",
+      "refs": [
+        "C01",
+        "C16",
+        "C17",
+        "MR015",
+        "MW02_B",
+        "R046",
+        "TY001",
+        "W02_B_02"
+      ]
+    },
+    {
+      "id": "02.7",
+      "part": "02",
+      "n": 7,
+      "start": 49,
+      "end": 52,
+      "body": "A timber strip widens into the beginner dance floor and awning arms rise into ceiling supports. Reveal C10 and remembered C01 through the opening supports, with awkward connected hand-and-foot movement. The basket/helpers recede behind the awning. Memory dancers have no cards; current pedestrians beside them retain theirs.",
+      "refs": [
+        "C01",
+        "C10",
+        "MW01_C_01",
+        "TY001",
+        "W02_B_03"
+      ]
+    },
+    {
+      "id": "02.8",
+      "part": "02",
+      "n": 8,
+      "start": 52,
+      "end": 57,
+      "body": "Along successive parts of the route, paving becomes Orosháza/Viharsarok paprika rows and corn roots; leaves cast stripes over the coat then fold into sleepers. A clock on its same spindle takes Trivandrum airport time as its support becomes a Budapest wire bracket. Shelter slats become the budget-hotel table holding the rented-car key; farther seat frames and wet window form the long-distance bus. Rail-side slabs separate into Barmouth low-tide sand, revealing the five-person group: C01 and C18–C21. Keep these literal memories spatially separate, briefly readable and subordinate to the continuing journey.",
+      "refs": [
+        "C01",
+        "C18",
+        "C19",
+        "C20",
+        "C21",
+        "MR016",
+        "MW02_B",
+        "MW02_C_01",
+        "MW02_C_03",
+        "MW02_C_04",
+        "MWP01",
+        "MWP01_B",
+        "MWP01_C",
+        "TY001",
+        "TY005",
+        "W02_B_04"
+      ]
+    },
+    {
+      "id": "02.9",
+      "part": "02",
+      "n": 9,
+      "start": 57,
+      "end": 60,
+      "body": "Follow the same wet edge into Aldwych/Embankment. Stalks bend into sleeper joints and sand ridges compact into riverside paving. The balloon leaves through the upper frame edge with rigging intact. Opera, Nyugati and M4 forms, Hungarian signs and traffic remain inhabited. Ease into a level forward-right pass toward the work-city route; do not replay an opening skyline.",
+      "refs": [
+        "C01",
+        "MR016",
+        "R031",
+        "R032",
+        "R033",
+        "TY001",
+        "W02_C_01"
+      ]
+    },
+    {
+      "id": "03.1",
+      "part": "03",
+      "n": 1,
+      "start": 60,
+      "end": 63,
+      "body": "Continue into the work-city exterior with IRODA/KÖNYVELÉS signs. Keep the rounded, diagonally glazed Gherkin and pointed Shard in separate sightlines. Travel around an existing historic corner before its grounded surrounds, capitals and cornice extend into New York Palace/Academy forms. Neighbouring roof seams separate into Lechner Postal Savings Bank patterned tiles. Keep whole named silhouettes; do not opacity-blend an anonymous glass tower into a palace.",
+      "refs": [
+        "C01",
+        "MR002",
+        "MR003",
+        "MR011",
+        "MR012",
+        "R042",
+        "TY001",
+        "TY004",
+        "W03_A_01"
+      ]
+    },
+    {
+      "id": "03.2",
+      "part": "03",
+      "n": 2,
+      "start": 63,
+      "end": 66,
+      "body": "An office ledge grows a supported timber floor; the sill lengthens into a desk and its bracket into a leg. Wirework becomes cables and lamp stems. Reveal remembered C01's keyboard hand, then his same face and chair on an international computer call during a long workday. Retain the lower window corner as the workspace projects into the street, without a heroic technology montage.",
+      "refs": [
+        "C01",
+        "MW03",
+        "TY001",
+        "W03_A_02"
+      ]
+    },
+    {
+      "id": "03.3",
+      "part": "03",
+      "n": 3,
+      "start": 66,
+      "end": 69,
+      "body": "Accounting panels turn their facing surfaces into interior paint while sills form desks and brackets their legs. Reveal C22's form-holding hand before the whole room with remembered C01, invoices, calendar and printer. Their 13–15-hour workday, need to delegate and continuing foreign contract remain practical human circumstances. Cast a solid desk shadow onto the same pavement.",
+      "refs": [
+        "C01",
+        "C22",
+        "MW03",
+        "MW03_C_02",
+        "TY001",
+        "W03_A_03"
+      ]
+    },
+    {
+      "id": "03.4",
+      "part": "03",
+      "n": 4,
+      "start": 69,
+      "end": 72,
+      "body": "Three original window bays open into three deep workrooms containing C22/C23/C24 as assigned by their memory sources, each with a different administrative record. Desks nearly meet but remain misaligned; floors slide to different depths below the recognisable historic frontage. Track paper edges thickening into stone strips that stop short of connecting the rooms. Never duplicate one occupant across all bays. During the sideways pass, the nearest desk edge crosses the middle desk while the far room moves more slowly. Keep the same accountant, document stack and chair in each bay as its floor recedes. Their incompatible records remain three physical workspaces; they do not merge into one official-looking master file.",
+      "refs": [
+        "C01",
+        "C22",
+        "C23",
+        "C24",
+        "MW03",
+        "MW03_C_03",
+        "MW03_C_04",
+        "TY001",
+        "W03_A_04"
+      ]
+    },
+    {
+      "id": "03.5",
+      "part": "03",
+      "n": 5,
+      "start": 72,
+      "end": 76,
+      "body": "A paving slab's corner strips hinge into the tax-rule-change desk supports. Retain calendar, neutral notice and return needing correction. A curled sheet lifts from that actual desktop into a fibrous ribbon, then its fibres compact into a facade panel with a conspicuously empty field. On a separate supported desk, the health-insurance form retains its missing field. Keep the untouched papers resting on the first desk while only the selected sheet curls upward. Its lower edge remains traceable through the ribbon into the new panel; the panel gains thickness and a supported edge before settling. The separate insurance form remains on its own surface, preserving the distinction between the two administrative problems. The ribbon shadow crosses the walker; no explanatory regime banner.",
+      "refs": [
+        "C01",
+        "MW03_B_01",
+        "MWP01_B",
+        "MWP01_C",
+        "TY001",
+        "W03_B_01"
+      ]
+    },
+    {
+      "id": "03.6",
+      "part": "03",
+      "n": 6,
+      "start": 76,
+      "end": 79,
+      "body": "A brass sign rail widens into a desk edge, its supports extend into chairs and the wall unfolds into an office corner. Reveal C22's fingers beside an actual administrative portal, then the accountant and remembered C01 handling delegation, password access and paperwork. Preserve the practical responsibility/correction chain; no cybersecurity graphics or full-screen portal scene. Frame the hands, keyboard and two people together: an indicated item, a pause to check it and a small return to the paperwork are enough. Keep screen contents within the physical laptop display; do not make a legible password or an invented error message the centre of the scene.",
+      "refs": [
+        "C01",
+        "C22",
+        "MW03_B_02",
+        "MW03_C_01",
+        "TY001",
+        "W03_B_02"
+      ]
+    },
+    {
+      "id": "03.7",
+      "part": "03",
+      "n": 7,
+      "start": 79,
+      "end": 82,
+      "body": "An adjoining office partition warms into café plaster while its lower rail rounds into a table edge over the same floor. Reveal remembered C01's phone hand and another person checking a different record. The current walker and judging pedestrians pass outside this complete open café-work room; their cards do not belong to its remembered occupants.",
+      "refs": [
+        "C01",
+        "MW03_B_03",
+        "TY001",
+        "W03_B_03"
+      ]
+    },
+    {
+      "id": "03.8",
+      "part": "03",
+      "n": 8,
+      "start": 82,
+      "end": 87,
+      "body": "Pivot several occupied office walls on their own floor joints into a deep fan of rooms, with mouths, phones and incompatible records. A ledge forms the diploma/certificate desk with its missing language-exam credential; a separate rail forms the shelf for later Brexit/work-coverage papers. Keep the two physical records, people and supports distinct. Each wall pivots with its own floor edge still visible. Chairs and papers travel with their supporting floor, while occupants continue small working gestures. Keep gaps between the fanned rooms open to the exterior so their different depths remain understandable. Current C01 hesitates briefly and continues.",
+      "refs": [
+        "C01",
+        "MR017",
+        "MW03_B_04",
+        "MWP01",
+        "MWP01_B",
+        "MWP01_C",
+        "R048",
+        "TY001",
+        "W03_B_04"
+      ]
+    },
+    {
+      "id": "03.9",
+      "part": "03",
+      "n": 9,
+      "start": 87,
+      "end": 90,
+      "body": "Open toward Holborn/Fleet along the same damp exterior. Professional crowds carry slightly clearer numerical cards; the phenomenon remains unexplained. Keep carved corner, patterned roof and individual rooms behind the walker. Settle into a level forward-right pass toward the formal city with continuing small material movement.",
+      "refs": [
+        "C01",
+        "MR002",
+        "MR003",
+        "TY001",
+        "W03_C_01"
+      ]
+    },
+    {
+      "id": "04.1",
+      "part": "04",
+      "n": 1,
+      "start": 90,
+      "end": 93,
+      "body": "Continue along Fleet Street/Temple. Royal Courts of Justice pointed entrances and clustered towers develop National Museum portico/pediment and Palace of Justice forms through sliding arch joints, tracked capitals and grounded columns. Buckingham Palace's broad symmetrical frontage appears in a SEPARATE courtyard sightline reached around a pier. These buildings provide dream architecture, not claims that the fictional proceedings happened inside named institutions.",
+      "refs": [
+        "C01",
+        "TY001",
+        "W04_A_01"
+      ]
+    },
+    {
+      "id": "04.2",
+      "part": "04",
+      "n": 2,
+      "start": 93,
+      "end": 96,
+      "body": "Hold the apartment door's lower hinge at the street threshold while brick courses separate into a painted room return, stone jamb becomes timber and floor extends outward. Reveal the speaker's face and postman-announcement mouth gesture, then open the SAME door for ordinary police to enter. Current C01 passes outside. No printed announcement or intelligible extra dialogue. Establish the closed door, the person beyond it and the remembered man on its interior side before it opens. The same hinged leaf then reveals the officers through the widening gap; no uniformed person materialises in front of the door. The current walker remains on the exterior pavement throughout.",
+      "refs": [
+        "C01",
+        "MW04",
+        "TY001",
+        "W04_A_02"
+      ]
+    },
+    {
+      "id": "04.3",
+      "part": "04",
+      "n": 3,
+      "start": 96,
+      "end": 99,
+      "body": "Apartment skirting divides into complete cabinet rails and drawers with bases, sides and handles. C25 and the other source officer inspect them beside remembered C01. Keep the inspecting hand on its drawer handle while another officer addresses him through ordinary mouth movement. The growing floor and shifting wall expose the same people; no thriller staging.",
+      "refs": [
+        "C01",
+        "C25",
+        "MW04",
+        "MW04_C_02",
+        "TY001",
+        "W04_A_03"
+      ]
+    },
+    {
+      "id": "04.4",
+      "part": "04",
+      "n": 4,
+      "start": 99,
+      "end": 101,
+      "body": "Stay at that exposed apartment floor as an officer accidentally steps on remembered C01's recently operated foot. Show brief pain and vulnerability without gore or a clinical reveal. The present-day walking occurrence remains distinct outside the room. Keep the officer’s descending shoe and the remembered man’s supported foot in the same view, then show his brief recoil in the same body. The contact is a single accidental step during the existing search; do not repeat it or turn it into a separate assault sequence.",
+      "refs": [
+        "C01",
+        "MW04_B_01",
+        "TY001",
+        "W04_A_04"
+      ]
+    },
+    {
+      "id": "04.5",
+      "part": "04",
+      "n": 5,
+      "start": 101,
+      "end": 105,
+      "body": "Track the cabinet top into a fingerprinting desk, its side boards into legs and a drawer base into a chair. Reveal C03's working hand, then the policewoman and remembered C01 at the same supported surface. Their embarrassed attraction or suppressed smile is a small human contradiction within procedure, with paper and contact visible; no romance staging. Her working hand remains on the task as the expression briefly changes. Keep the fingerprint sheet flat against the supported desk and the remembered man’s fingers connected to his arm; the small exchanged look happens above that continuing procedure.",
+      "refs": [
+        "C01",
+        "C03",
+        "MR017",
+        "MW04_B_02",
+        "MW04_C_01",
+        "R049",
+        "TY001",
+        "W04_B_01"
+      ]
+    },
+    {
+      "id": "04.6",
+      "part": "04",
+      "n": 6,
+      "start": 105,
+      "end": 109,
+      "body": "A civic sill projects a defence-office floor while the jamb becomes plaster, bronze handle line becomes a desk frame and rail becomes an empty chair. Reveal C26, the office substitute, instead of expected C04. Retain the subsequent difficulty contacting defenders through the phone and empty chair; use C04 only in his assigned source encounter. The people stay ordinary while the architecture stretches.",
+      "refs": [
+        "C01",
+        "C04",
+        "C26",
+        "MW04_B_03",
+        "MW04_C_03",
+        "TY001",
+        "W04_B_02"
+      ]
+    },
+    {
+      "id": "04.7",
+      "part": "04",
+      "n": 7,
+      "start": 109,
+      "end": 113,
+      "body": "Extend corridor floor seams and ceiling strips along the same public route. Open successive hinged doors onto different people redirecting calls among police, prosecution, court and defence. Show hands with real phones before faces; earlier callers remain in receding occupied doorways. The camera passes each doorway once. Near doorframes occlude and reveal the next caller naturally, while the previous caller can still be glimpsed behind. Separate phone gestures suggest the repeated redirection without adding subtitles, branching diagrams or a montage of isolated phone close-ups. No explanatory subtitles or screen-bound room substitutions.",
+      "refs": [
+        "C01",
+        "MW04_B_04",
+        "MW04_C_04",
+        "TY001",
+        "W04_B_03"
+      ]
+    },
+    {
+      "id": "04.8",
+      "part": "04",
+      "n": 8,
+      "start": 113,
+      "end": 117,
+      "body": "During a travelling half-orbit, keep the nearest Temple arch feet rooted while crown segments extend a vault and its far door retreats with the same growing floor. Its handle turns toward the walker and away. A neighbouring stair threads sideways through an upper arch and returns at impossible height. Retain current C01, kerb and card-bearing pedestrians beneath; keep the near procedural encounters human-sized and readable.",
+      "refs": [
+        "C01",
+        "MR009",
+        "R030",
+        "TY001",
+        "W04_B_04"
+      ]
+    },
+    {
+      "id": "04.9",
+      "part": "04",
+      "n": 9,
+      "start": 117,
+      "end": 120,
+      "body": "Approach Blackfriars. Ceiling ribs join the next stone pier while room-wall courses move into spandrels, leaving the same inhabitants visible in receding side corridors. Museum/Justice forms remain grounded in London's formal stone. Use level forward-right travel through the last second; do not fade away the rooms.",
+      "refs": [
+        "C01",
+        "R030",
+        "TY001",
+        "W04_C_01"
+      ]
+    },
+    {
+      "id": "05.1",
+      "part": "05",
+      "n": 1,
+      "start": 120,
+      "end": 123,
+      "body": "Continue along Blackfriars riverfront, current C01 outside. Hungarian Parliament's long Gothic facade and central dome and Gresham Palace's curved Art Nouveau front occupy separate Thames-bank depths. Keep the inherited river path and bridge geometry traceable.",
+      "refs": [
+        "C01",
+        "R040",
+        "R041",
+        "TY001",
+        "W05_A_01"
+      ]
+    },
+    {
+      "id": "05.2",
+      "part": "05",
+      "n": 2,
+      "start": 123,
+      "end": 126,
+      "body": "Railing footplates stay rooted as posts hinge into court-bench supports and slab seams lengthen into timber floorboards. Reveal C27's question gesture through a growing wall gap, then the anonymous judge, remembered C01 and complete hearing furniture. The prison question belongs to the later narration; generate no intelligible dialogue or subtitle.",
+      "refs": [
+        "C01",
+        "C27",
+        "MW05",
+        "TY001",
+        "W05_A_02"
+      ]
+    },
+    {
+      "id": "05.3",
+      "part": "05",
+      "n": 3,
+      "start": 126,
+      "end": 129,
+      "body": "Keep the hearing wall's facing plane and corner as its finish becomes a Budapest apartment. Bench supports extend into domestic shelving carrying belongings, savings records and home objects. Shelves become numbered-looking but unreadable administrative compartments as a life is reduced to assets. Retain a recognisable home object on its shelf as dividers rise around it. The compartment is built from that shelf’s boards and supports; the object does not dissolve into a document. Other belongings remain present at different depths while the domestic space becomes more tightly subdivided. Hearing participants stay on their own receding floor; never swap rooms behind unchanged screen-position bodies.",
+      "refs": [
+        "C01",
+        "MR018",
+        "MW05",
+        "R050",
+        "TY001",
+        "W05_A_03"
+      ]
+    },
+    {
+      "id": "05.4",
+      "part": "05",
+      "n": 4,
+      "start": 129,
+      "end": 132,
+      "body": "Compartment divider boards hinge into desk legs and bases widen into its tabletop. Reveal the handler's fingers on a closed property box, then phone, laptop, storage and paperwork retained on the full-size desk. Keep objects on real supports and ordinary hands; no crime-thriller evidence wall. A shelf continues into the riverside railing.",
+      "refs": [
+        "C01",
+        "MW05",
+        "R050",
+        "TY001",
+        "W05_A_04"
+      ]
+    },
+    {
+      "id": "05.5",
+      "part": "05",
+      "n": 5,
+      "start": 132,
+      "end": 135,
+      "body": "That railing-grown desk holds photograph, fingerprint sheet, signature, closed folder and forms. Track one ink ridge lifting from the actual paper into an iron line and thickening into giant loops over the riverside path. The current walker passes through their spacing; wet iron, paper and moving shadows coexist while original records remain behind. Follow one continuous segment from the ink ridge through its thickening cross-section into the nearest loop. Let that loop arch above the route with enough space for C01 beneath it, and retain its connection to the transforming desk structure. The farther loops cast separate moving shadows rather than becoming a flat graphic over the image.",
+      "refs": [
+        "C01",
+        "MW05",
+        "TY001",
+        "W05_B_01"
+      ]
+    },
+    {
+      "id": "05.6",
+      "part": "05",
+      "n": 6,
+      "start": 135,
+      "end": 139,
+      "body": "Two riverfront bays develop one forensic room with two distinct chair positions: low ledges become desk, brackets round into chairs and existing wall faces become paint. Reveal C28 and C29 separately, preserving their different reactions. One asks what happened through a gesture; remembered C01 is calm and cooperative. Keep both experts visible within the same room geometry as the camera passes: one directs a small open-hand question, the other retains a different listening expression. Their faces, chairs and papers remain assigned to their own sides; do not alternate between separate portrait shots or blend the experts into one person. No invented unified expert voice.",
+      "refs": [
+        "C01",
+        "C28",
+        "C29",
+        "MW05_B_01",
+        "TY001",
+        "W05_B_02"
+      ]
+    },
+    {
+      "id": "05.7",
+      "part": "05",
+      "n": 7,
+      "start": 139,
+      "end": 143,
+      "body": "Bench slats form the remembered desk holding the self-made SYSTEM'S MOST WANTED / absurd police-career application and CV fragment, then the self-made institution-fired paper. An adjacent shelf folds a plinth beneath C31, the anonymous fictional cardboard public figure with ridiculous hat and asylum-request joke. Keep its thin opaque edge visible. This is personal black humour: no real politician, party or causal claim linking the joke to institutional events.",
+      "refs": [
+        "C01",
+        "C31",
+        "MW05_B_03",
+        "MW05_B_04",
+        "MW05_C_03",
+        "MW05_C_04",
+        "TY001",
+        "W05_B_03"
+      ]
+    },
+    {
+      "id": "05.8",
+      "part": "05",
+      "n": 8,
+      "start": 143,
+      "end": 147,
+      "body": "An entrance sill extends into C30's clerk/court-route desk with papers on jointed shelves. Remembered C01 requests recording/evidence amid costly official recording and later complaint/appeal routes. A separate MWP02 desk holds refused relief and revised papers kept for later. Two physical letter routes lead toward a distant unnamed door: his laptop submission from below and an anonymous senior institutional submission from above. Keep floors and routes distinct; neither causes the other or a later outcome.",
+      "refs": [
+        "C01",
+        "C04",
+        "C30",
+        "MW05_B_02",
+        "MW05_C_01",
+        "MW05_C_02",
+        "MWP02",
+        "MWP02_B",
+        "MWP02_C",
+        "TY001",
+        "W05_B_04"
+      ]
+    },
+    {
+      "id": "05.9",
+      "part": "05",
+      "n": 9,
+      "start": 147,
+      "end": 150,
+      "body": "Reveal the wide river city while Tower Bridge's BOTH towers, high walkways and blue suspension elements become Chain Bridge pylons, hanging chains and approach lions. Track the deck, river and footings: walkways lower on joints, tower courses slide, suspension lines thicken into links and approach blocks articulate into lions. Keep both riverbanks and the load-bearing deck traceable while the upper walkway descends. Individual links acquire thickness in sequence along the same suspension path. At each approach, the stone block keeps its base on the parapet while the lion’s body and paws emerge; neither animal walks away from its support. Parliament and Gresham remain separate recognisable buildings. Current C01 is small among iron record-loops, panes, traffic and cards. Ease into the same level forward-right river pass.",
+      "refs": [
+        "C01",
+        "R034",
+        "R035",
+        "R040",
+        "R041",
+        "TY001",
+        "W05_C_01"
+      ]
+    },
+    {
+      "id": "06.1",
+      "part": "06",
+      "n": 1,
+      "start": 150,
+      "end": 153,
+      "body": "Continue west along South Bank in the densest hybrid city. Keep the complete London Eye and capsules, Parliament dome/facade and inherited river bridge in separate sightlines. Great Market Hall's pitched roof bends outward along its existing seam: attached tiles slide into lower cladding, roof windows extend between curved ribs into Bálna glass. Retain brick base and door positions; National Theatre forms remain distinct. Follow one roof rib from its lower attachment into the changing curve. Adjacent ribs begin later, so pitched, bending and curved sections coexist briefly along the same roof. Glass grows between the attached ribs with visible reflections and changing edge angles; the brick hall is never exchanged for a separate finished glass building. Current pedestrians carry clear cards.",
+      "refs": [
+        "C01",
+        "R036",
+        "R037",
+        "R038",
+        "TY001",
+        "W06_A_01"
+      ]
+    },
+    {
+      "id": "06.2",
+      "part": "06",
+      "n": 2,
+      "start": 153,
+      "end": 159,
+      "body": "Along three adjacent anchored spaces, reveal the Soho woman's smile beside her cup, C11 opening the Russian transit gate, and C16/C17 cooperating with balloon ropes over soil. Bench slats become table, rails become gate and canopy ties become rigging. Glimpse each same person's hand through the developing gap before exposing their body. Give each helpful gesture a readable interval while the preceding pocket remains inhabited. Within these six seconds, approach the three pockets in the stated order: first allow the woman’s glance and smile to settle beside the cup, then show the gate opening far enough for the remembered traveller, then the helpers maintaining their grip on the balloon ropes. Begin each pocket’s material growth before the lens reaches it. Keep the preceding people visible until an actual wall edge or the camera’s travel carries them out of view. These are successive encounters along one route, not three camera cuts or simultaneous inset pictures.",
+      "refs": [
+        "C01",
+        "C02",
+        "C11",
+        "C16",
+        "C17",
+        "MR013",
+        "MR015",
+        "MW01",
+        "MW02_A_01",
+        "MW02_B",
+        "MW06_A_01",
+        "MW06_A_02",
+        "MW06_A_03",
+        "MW06_C_02",
+        "R008",
+        "R043",
+        "R046",
+        "TY001",
+        "W06_A_02",
+        "W06_A_03"
+      ]
+    },
+    {
+      "id": "06.3",
+      "part": "06",
+      "n": 3,
+      "start": 159,
+      "end": 162,
+      "body": "A pavement slab's corners become procedural-desk supports and an iron rail bends into a chair. Reveal C03's hand and lower face through the opening, then the same policewoman briefly struggling not to laugh. Her ordinary embarrassed smile changes nothing about the procedure. Keep her working hand and the remembered man’s hand at the desk while the smile briefly reaches her face. The expression subsides naturally as attention returns to the task; no held comedy reaction or sudden change in the room’s lighting. Keep the nearby rooms and current walker spatially distinct.",
+      "refs": [
+        "C01",
+        "C03",
+        "MR017",
+        "MW04_B_02",
+        "MW04_C_01",
+        "MW06_A_04",
+        "R049",
+        "TY001",
+        "W06_A_03",
+        "W06_A_04"
+      ]
+    },
+    {
+      "id": "06.4",
+      "part": "06",
+      "n": 4,
+      "start": 162,
+      "end": 165,
+      "body": "The adjacent partition seam opens into thick door returns above the extending floor. Reveal C04's hand, face and complete chair as he asks for another room or offers practical help; the real door rotates on its hinge. No hero/villain framing. Pass the door edge into level forward-right travel, with helpful rooms remaining behind and the six-person table's source bench ahead. Keep motion running through this new internal boundary. Leave the six-person table’s source bench still recognisable in the outgoing view, at its actual distance from the door. Do not reveal the table gathering early or move the bench into a different position for the last frame. End during travel, with no gesture deliberately reset for the following clip.",
+      "refs": [
+        "C01",
+        "C04",
+        "MW04",
+        "MW06_B_01",
+        "TY001",
+        "W06_A_04",
+        "W06_B_01"
+      ]
+    },
+    {
+      "id": "06.5",
+      "part": "06B",
+      "n": 5,
+      "start": 165,
+      "end": 169,
+      "body": "Briefly revisit the distinct C27/C28/C29 expressions in their own rooms. Bench slats then widen into the SIX ORDINARY PEOPLE'S table, with six iron loops unfolding into complete chairs over a timber floor. Reveal the same hands/shoulders before the whole group. Slowly pass its corner for a cup passed, glance and small laugh, including the shared-table actions of the MW06 views. Preserve six separate people and support contact. Keep the six chair positions distinct around the growing tabletop. The cup passes from one supported hand to another over the table, with a brief shared contact before release; it does not jump between people. Allow the receiver’s glance and the small group response to read within the same moving composition. The warmth comes from these ordinary interactions, not exaggerated laughter or a celebratory camera move. Memory participants have no cards; current people behind them do. The enormous roof keeps flexing during the warmth.",
+      "refs": [
+        "C01",
+        "C10",
+        "C27",
+        "C28",
+        "C29",
+        "MW05_B_01",
+        "MW06_B_02",
+        "MW06_B_03",
+        "MW06_B_04",
+        "MW06_C_01",
+        "MW06_C_03",
+        "MW06_C_04",
+        "TY001",
+        "W06_A_01",
+        "W06_B_02"
+      ]
+    },
+    {
+      "id": "06.6",
+      "part": "06B",
+      "n": 6,
+      "start": 169,
+      "end": 173,
+      "body": "Court, work, police, shared-house and travel rooms open on separate floor plates at several levels, curling into a second inhabited street with stairs growing tread by tread between landings. MWP02 supplies two distinct alcoves: an anonymous high-review chamber unable to assemble a quorum as participants step aside, and C01 alone at a laptop seeking review from below. Neither route determines the other. Keep the review chamber’s vacant positions and people stepping aside visible within its own doorway, while the lone laptop user stays in a separate alcove below. A stair joins landings physically without connecting their actions into a cause-and-effect verdict. Floors remain thick, supported surfaces; people do not slide through them as rooms curl upward. Keep people and gestures readable on their own floors rather than duplicating one room.",
+      "refs": [
+        "C01",
+        "C03",
+        "C04",
+        "MR009",
+        "MW01",
+        "MW02_B",
+        "MW03",
+        "MW04",
+        "MW05",
+        "MWP02",
+        "MWP02_B",
+        "MWP02_C",
+        "TY001"
+      ]
+    },
+    {
+      "id": "06.7",
+      "part": "06B",
+      "n": 7,
+      "start": 173,
+      "end": 175,
+      "body": "Follow a living web of current pedestrians looking at one another. Viewed cards gain a slightly fuller internal fill at different moments while their existing decimal numbers stay stable. The protagonist is neither the only observer nor the only judged person.",
+      "refs": [
+        "C01",
+        "TY001",
+        "W06_B_03"
+      ]
+    },
+    {
+      "id": "06.8",
+      "part": "06B",
+      "n": 8,
+      "start": 175,
+      "end": 177,
+      "body": "For the first time, make C01's OWN decimal card readable above his head with the same gap, size and sharpness as neighbouring cards. His brief recognition is restrained, without panic. He is one record among many. Reveal readability through the camera’s viewing angle and his head position, rather than spawning a new card. His existing card remains anchored above the same crown with the same dimensions. Nearby people continue walking and judging one another; the entire crowd does not stop to watch him. Do not reveal it earlier in part A or previous blocks.",
+      "refs": [
+        "C01",
+        "TY001",
+        "W06_B_04"
+      ]
+    },
+    {
+      "id": "06.9",
+      "part": "06B",
+      "n": 9,
+      "start": 177,
+      "end": 180,
+      "body": "Toward Westminster Bridge, extend an existing civic wall base into MWP02's anonymous alcove and bend its ornamental rail into the EMPTY CHAIR HIGH IN THE SYSTEM after its occupant has changed. Show an empty seat from its first reveal; do not fade out an occupant. Hold the seat, back and support together briefly through the opening so the vacancy is unmistakable. The chair remains an ordinary solid object in its remote alcove; keep the current walker on the lower street, continuing past it without a triumphant reaction. No identifiable office, flag, public figure or verdict in C01's case; the earlier institution-fired joke is not prediction or cause. Pass into a quieter city with level forward-right motion. No clinical imagery yet.",
+      "refs": [
+        "C01",
+        "MR019",
+        "R037",
+        "R038",
+        "TY001",
+        "W06_C_01"
+      ]
+    },
+    {
+      "id": "07.1",
+      "part": "07",
+      "n": 1,
+      "start": 180,
+      "end": 182,
+      "body": "Continue the quieter Westminster/Whitehall walk. Keep Big Ben's clock faces and pointed crown attached to the Palace of Westminster, Westminster Abbey's separate paired towers, and Parliament/Basilica echoes in other sightlines. Retain earlier settled impossible forms as activity drains away; do not reset to ordinary London. Cards are clearer but the pedestrians are farther away.",
+      "refs": [
+        "C01",
+        "R039",
+        "R040",
+        "R054",
+        "R055",
+        "TY001",
+        "W07_A_01"
+      ]
+    },
+    {
+      "id": "07.2",
+      "part": "07",
+      "n": 2,
+      "start": 182,
+      "end": 184,
+      "body": "Wall paint becomes Nile/Aswan hotel finish, sill becomes bed base and floor extends into the room prepared for two but occupied by one. Reveal the hand and second pillow before the full bed. One lamp briefly takes the hidden-reality cold clinical light for less than a second, then warms again. Only its light changes; no full-screen flash or room replacement. Keep the same lamp housing, pillow, occupant and warm neighbouring surfaces visible during that brief cold interval. The camera continues past the bed at the same pace, allowing the interruption to register without stopping for an explanatory insert.",
+      "refs": [
+        "C01",
+        "MWP01",
+        "MWP01_B",
+        "MWP01_C",
+        "TY001",
+        "W07_A_02"
+      ]
+    },
+    {
+      "id": "07.3",
+      "part": "07",
+      "n": 3,
+      "start": 184,
+      "end": 186,
+      "body": "The next ledge becomes the cramped shared bed as its bracket curves into the frame and stone face becomes plaster. Reveal the DIFFERENT-SNORE arrangement with C06. Snoring becomes monitor-like for one beat while only a white-coat edge physically crosses behind the bed. No full clinic yet; continue travelling past the same open room.",
+      "refs": [
+        "C01",
+        "C06",
+        "MW01_B_02",
+        "TY001",
+        "W07_A_03"
+      ]
+    },
+    {
+      "id": "07.4",
+      "part": "07",
+      "n": 4,
+      "start": 186,
+      "end": 187,
+      "body": "A thick lower wall panel rotates at its visible joint to briefly expose only a propped foot with heel/ankle support in real depth. Keep current C01 and the street visible. The same panel rotates onward and physically hides the foot again; no fade or full clinical view. Keep the panel edge between the lens and the foot throughout the reveal. The foot is already resting behind it when the gap opens; its heel remains on the support as the moving panel closes the sightline. Preserve the surrounding city depth.",
+      "refs": [
+        "C01",
+        "HRW07",
+        "HRW07_B",
+        "HRW07_C",
+        "TY001",
+        "W07_A_04"
+      ]
+    },
+    {
+      "id": "07.5",
+      "part": "07",
+      "n": 5,
+      "start": 187,
+      "end": 189,
+      "body": "Paving joints open into balloon-landing soil with C16/C17's helping hands and ropes. Rope fibres briefly spread into a white-sheet hem beside a small metal-restraint detail, then gather back into rope. Keep the same solid hand throughout. Current pedestrians' cards fold on their own centre hinges into narrow solid strips one by one, retaining opacity and moving with their owners.",
+      "refs": [
+        "C01",
+        "C16",
+        "C17",
+        "MR020",
+        "MW02_B",
+        "TY001",
+        "W07_B_01"
+      ]
+    },
+    {
+      "id": "07.6",
+      "part": "07",
+      "n": 6,
+      "start": 189,
+      "end": 192,
+      "body": "C01 reaches the broad dark-glass entrance and approaches its real handle. The same pane reflects hybrid city stone, red bus, yellow tram, black taxi and wet road. His own card remains at its restrained visible baseline. Slow the camera continuously as he comes to this threshold.",
+      "refs": [
+        "C01",
+        "TY001",
+        "W07_B_02"
+      ]
+    },
+    {
+      "id": "07.7",
+      "part": "07",
+      "n": 7,
+      "start": 192,
+      "end": 195,
+      "body": "Move obliquely closer to the SAME pane so changing physical viewing angle carries city reflections toward its edge and allows a direct view into the ordinary cold clinical room behind it. Keep frame and residual reflection visible together with the room. Retain the entrance frame at the image edge as the camera approaches obliquely; nearby reflected traffic moves across the pane faster than the room behind it. The clinical room becomes visible through an actual viewing angle, without the pane itself turning into an animated screen. Reflected card strips leave with their walking owners. C01 turns. No opacity animation, crossfade or double exposure: this is the last dream-city moment.",
+      "refs": [
+        "C01",
+        "HRW07",
+        "HRW07_B",
+        "HRW07_C",
+        "TY001",
+        "W07_B_03"
+      ]
+    },
+    {
+      "id": "07.8",
+      "part": "07",
+      "n": 8,
+      "start": 195,
+      "end": 198,
+      "body": "HARD CUT to clinical reality. Same C01 comes round from anaesthesia: one sustained deep inhalation, mouth opening and chest expanding, eyes finding the room, then natural exhalation. One brief shake pulls the wrist cuff's short chain taut at its bed-frame attachment and rattles as the hand settles. Keep wrist, cuff, chain and attachment visible. One heel/ankle rests on padded support; the rest of the leg stays on the mattress. C05 calmly prepares routine non-graphic enema/endoscopy-related equipment with a small ordinary smile. No cards, horror or gore. Briefly hold their unexplained human look. Keep the single inhalation, brief wrist movement and settled exhalation in one clinical composition. The cuff stays around the same wrist, the chain remains attached to the same bed point, and the supported heel does not switch legs or rise independently. The clinician’s small smile stays ordinary and unexplained.",
+      "refs": [
+        "C01",
+        "C05",
+        "HRW07",
+        "HRW07_B",
+        "HRW07_C",
+        "TY001",
+        "W07_B_04"
+      ]
+    },
+    {
+      "id": "07.9",
+      "part": "07",
+      "n": 9,
+      "start": 198,
+      "end": 200,
+      "body": "Clean hard transition to black with exactly two restrained centred lines: MYSCOUTEE / THE PATH BETWEEN PEOPLE. Keep the final title stable and readable. No explanatory dialogue.",
+      "refs": [
+        "C01",
+        "TY001",
+        "TY007",
+        "W07_C_01"
+      ]
+    }
+  ],
+  "aliases": {
+    "MW01": "@loc_MYS_mys-mw01-a-london-social_s0_v1",
+    "MW01_B_01": "@loc_MYS_mys-mw01-b-01-memory-view-05_s0_v1",
+    "MW01_B_02": "@loc_MYS_mys-mw01-b-02-memory-view-06_s0_v1",
+    "MW01_B_03": "@loc_MYS_mys-mw01-b-03-memory-view-07_s0_v1",
+    "MW01_B_04": "@loc_MYS_mys-mw01-b-04-memory-view-08_s0_v1",
+    "MW01_C_01": "@loc_MYS_mys-mw01-c-01-memory-view-09_s0_v1",
+    "MW01_C_02": "@loc_MYS_mys-mw01-c-02-memory-view-01_s0_v1",
+    "MW01_C_03": "@loc_MYS_mys-mw01-c-03-memory-view-07_s0_v1",
+    "MW01_C_04": "@loc_MYS_mys-mw01-c-04-memory-view-08_s0_v1",
+    "MWP01": "@loc_MYS_mys-mwp01-a-routes-rooms-documents_s0_v1",
+    "MWP01_B": "@loc_MYS_mys-mwp01-b-routes-rooms-documents_s0_v1",
+    "MWP01_C": "@loc_MYS_mys-mwp01-c-routes-rooms-documents_s0_v1",
+    "W01_A_01": "@loc_MYS_mys-w01-a-01-world-view-01_s0_v1",
+    "W01_A_02": "@loc_MYS_mys-w01-a-02-world-view-02_s0_v1",
+    "W01_A_03": "@loc_MYS_mys-w01-a-03-world-view-03_s0_v1",
+    "W01_A_04": "@loc_MYS_mys-w01-a-04-world-view-04_s0_v1",
+    "W01_B_01": "@loc_MYS_mys-w01-b-01-world-view-05_s0_v1",
+    "W01_B_02": "@loc_MYS_mys-w01-b-02-world-view-06_s0_v1",
+    "W01_B_03": "@loc_MYS_mys-w01-b-03-world-view-07_s0_v1",
+    "W01_B_04": "@loc_MYS_mys-w01-b-04-world-view-08_s0_v1",
+    "W01_C_01": "@loc_MYS_mys-w01-c-01-world-view-09_s0_v1",
+    "T01_DETAILS": "@loc_MYS_mys-t01-a-soho-restaurant_s0_v1",
+    "C01": "@char_MYS_mys-c01-protagonist_s0_v1",
+    "C02": "@char_MYS_mys-c02-soho-woman_s0_v1",
+    "C06": "@char_MYS_mys-c06-shared-house-substitute-snoring-housemate_s0_v1",
+    "C07": "@char_MYS_mys-c07-fx-mortgage-housemate_s0_v1",
+    "C08": "@char_MYS_mys-c08-fx-mortgage-spouse_s0_v1",
+    "C09": "@char_MYS_mys-c09-fx-mortgage-child_s0_v1",
+    "C10": "@char_MYS_mys-c10-beginner-dance-woman_s0_v1",
+    "MR001": "@loc_MYS_mys-mr001-st-pauls-to-st-stephens_s0_v1",
+    "MR004": "@prop_MYS_mys-mr004-window-glass-to-pendant-shade_s0_v1",
+    "MR005": "@loc_MYS_mys-mr005-brick-courses-to-carved-arch_s0_v1",
+    "MR006": "@loc_MYS_mys-mr006-stone-threshold-to-supported-timber-floor_s0_v1",
+    "MR007": "@prop_MYS_mys-mr007-bench-to-curved-floor-border_s0_v1",
+    "MR008": "@prop_MYS_mys-mr008-window-fittings-to-pendant-stem_s0_v1",
+    "MR009": "@loc_MYS_mys-mr009-balcony-scroll-to-sideways-stair_s0_v1",
+    "MR010": "@prop_MYS_mys-mr010-english-sign-to-kave-lettering_s0_v1",
+    "R008": "@loc_MYS_mys-r008-cafe-to-occupied-restaurant_s0_v1",
+    "R010": "@prop_MYS_mys-reference-10-winged-statue-plinth-and-contact-detail_s0_v1",
+    "R021": "@loc_MYS_mys-reference-21-restaurant-rear-doors-and-depth-relationships_s0_v1",
+    "R025": "@loc_MYS_mys-reference-25-original-london-roof-and-chimney-volumes_s0_v1",
+    "R026": "@loc_MYS_mys-reference-26-target-roof-glazing-stone-corbels-and-chimney-crowns_s0_v1",
+    "R028": "@loc_MYS_mys-reference-28-original-arcade-arch-and-fanlight_s0_v1",
+    "R030": "@loc_MYS_mys-reference-30-deep-gallery-through-the-unchanged-threshold_s0_v1",
+    "TY001": "@prop_MYS_mys-ty001-decimal-rating-glyphs-and-tints_s0_v1",
+    "TY002": "@prop_MYS_mys-ty002-coffee-to-kave-letter-material_s0_v1",
+    "TY003": "@prop_MYS_mys-ty003-cafe-and-culture-sign-lettering_s0_v1",
+    "TY006": "@prop_MYS_mys-ty006-profile-age-37-to-33-glyph-change_s0_v1",
+    "MW02_A_01": "@loc_MYS_mys-mw02-a-01-memory-view-01_s0_v1",
+    "MW02_A_02": "@loc_MYS_mys-mw02-a-02-memory-view-02_s0_v1",
+    "MW02_A_03": "@loc_MYS_mys-mw02-a-03-memory-view-03_s0_v1",
+    "MW02_A_04": "@loc_MYS_mys-mw02-a-04-memory-view-04_s0_v1",
+    "MW02_B": "@loc_MYS_mys-mw02-b-global-routes_s0_v1",
+    "MW02_C_01": "@loc_MYS_mys-mw02-c-01-memory-view-09_s0_v1",
+    "MW02_C_02": "@loc_MYS_mys-mw02-c-02-memory-view-01_s0_v1",
+    "MW02_C_03": "@loc_MYS_mys-mw02-c-03-memory-view-07_s0_v1",
+    "MW02_C_04": "@loc_MYS_mys-mw02-c-04-memory-view-08_s0_v1",
+    "W02_A_01": "@loc_MYS_mys-w02-a-01-world-view-01_s0_v1",
+    "W02_A_02": "@loc_MYS_mys-w02-a-02-world-view-02_s0_v1",
+    "W02_A_03": "@loc_MYS_mys-w02-a-03-world-view-03_s0_v1",
+    "W02_A_04": "@loc_MYS_mys-w02-a-04-world-view-04_s0_v1",
+    "W02_B_01": "@loc_MYS_mys-w02-b-01-world-view-05_s0_v1",
+    "W02_B_02": "@loc_MYS_mys-w02-b-02-world-view-06_s0_v1",
+    "W02_B_03": "@loc_MYS_mys-w02-b-03-world-view-07_s0_v1",
+    "W02_B_04": "@loc_MYS_mys-w02-b-04-world-view-08_s0_v1",
+    "W02_C_01": "@loc_MYS_mys-w02-c-01-world-view-09_s0_v1",
+    "C11": "@char_MYS_mys-c11-russian-transit-passenger_s0_v1",
+    "C12": "@char_MYS_mys-c12-agra-bus-woman_s0_v1",
+    "C13": "@char_MYS_mys-c13-sudanese-traveler-man_s0_v1",
+    "C14": "@char_MYS_mys-c14-sudanese-traveler-woman_s0_v1",
+    "C15": "@char_MYS_mys-c15-cairo-taxi-driver_s0_v1",
+    "C16": "@char_MYS_mys-c16-balloon-local-helper-man_s0_v1",
+    "C17": "@char_MYS_mys-c17-balloon-local-helper-woman_s0_v1",
+    "C18": "@char_MYS_mys-c18-barmouth-road-trip-driver-companion_s0_v1",
+    "C19": "@char_MYS_mys-c19-barmouth-road-trip-companion-a_s0_v1",
+    "C20": "@char_MYS_mys-c20-barmouth-road-trip-companion-b_s0_v1",
+    "C21": "@char_MYS_mys-c21-barmouth-road-trip-companion-c_s0_v1",
+    "MR013": "@prop_MYS_mys-mr013-entrance-rail-to-transit-gate_s0_v1",
+    "MR014": "@prop_MYS_mys-mr014-bench-and-canopy-to-bus-seating_s0_v1",
+    "MR015": "@prop_MYS_mys-mr015-canopy-to-balloon-envelope_s0_v1",
+    "MR016": "@prop_MYS_mys-mr016-crop-stalks-to-rail-sleepers_s0_v1",
+    "R031": "@loc_MYS_mys-reference-31-london-station-source-exterior-and-iron-structure_s0_v1",
+    "R032": "@loc_MYS_mys-reference-32-nyugati-station-destination-and-roof-joints_s0_v1",
+    "R033": "@loc_MYS_mys-reference-33-hungarian-state-opera-target-facade-and-entry-depth_s0_v1",
+    "R043": "@prop_MYS_mys-reference-43-london-entrance-rail-and-remembered-transit-gate_s0_v1",
+    "R044": "@prop_MYS_mys-reference-44-remembered-bus-seats-aisle-and-canopy-post-correspondence_s0_v1",
+    "R045": "@prop_MYS_mys-reference-45-cairo-taxi-cabin-rear-bench-and-luggage-contact_s0_v1",
+    "R046": "@prop_MYS_mys-reference-46-canopy-and-balloon-envelope-rigging-and-basket-interfaces_s0_v1",
+    "TY005": "@prop_MYS_mys-ty005-transit-and-entrance-sign-lettering_s0_v1",
+    "MW03": "@loc_MYS_mys-mw03-a-work-rule-change-admin_s0_v1",
+    "MW03_B_01": "@loc_MYS_mys-mw03-b-01-memory-view-05_s0_v1",
+    "MW03_B_02": "@loc_MYS_mys-mw03-b-02-memory-view-06_s0_v1",
+    "MW03_B_03": "@loc_MYS_mys-mw03-b-03-memory-view-07_s0_v1",
+    "MW03_B_04": "@loc_MYS_mys-mw03-b-04-memory-view-08_s0_v1",
+    "MW03_C_01": "@loc_MYS_mys-mw03-c-01-memory-view-09_s0_v1",
+    "MW03_C_02": "@loc_MYS_mys-mw03-c-02-memory-view-01_s0_v1",
+    "MW03_C_03": "@loc_MYS_mys-mw03-c-03-memory-view-07_s0_v1",
+    "MW03_C_04": "@loc_MYS_mys-mw03-c-04-memory-view-08_s0_v1",
+    "W03_A_01": "@loc_MYS_mys-w03-a-01-world-view-01_s0_v1",
+    "W03_A_02": "@loc_MYS_mys-w03-a-02-world-view-02_s0_v1",
+    "W03_A_03": "@loc_MYS_mys-w03-a-03-world-view-03_s0_v1",
+    "W03_A_04": "@loc_MYS_mys-w03-a-04-world-view-04_s0_v1",
+    "W03_B_01": "@loc_MYS_mys-w03-b-01-world-view-05_s0_v1",
+    "W03_B_02": "@loc_MYS_mys-w03-b-02-world-view-06_s0_v1",
+    "W03_B_03": "@loc_MYS_mys-w03-b-03-world-view-07_s0_v1",
+    "W03_B_04": "@loc_MYS_mys-w03-b-04-world-view-08_s0_v1",
+    "W03_C_01": "@loc_MYS_mys-w03-c-01-world-view-09_s0_v1",
+    "C22": "@char_MYS_mys-c22-accountant_s0_v1",
+    "C23": "@char_MYS_mys-c23-admin-colleague-a_s0_v1",
+    "C24": "@char_MYS_mys-c24-admin-colleague-b_s0_v1",
+    "MR002": "@loc_MYS_mys-mr002-facade-relief-to-sculpted-support_s0_v1",
+    "MR003": "@loc_MYS_mys-mr003-facade-window-capital-and-cornice_s0_v1",
+    "MR011": "@loc_MYS_mys-mr011-slate-roof-to-curved-glazing_s0_v1",
+    "MR012": "@loc_MYS_mys-mr012-chimney-shafts-to-spiral-crowns_s0_v1",
+    "MR017": "@prop_MYS_mys-mr017-cabinet-to-desk-and-chair_s0_v1",
+    "R048": "@prop_MYS_mys-reference-48-administrative-desk-actual-documents-and-device-geometry_s0_v1",
+    "R042": "@loc_MYS_mys-reference-42-new-york-palace-historic-exterior-with-occupied-bay-depth_s0_v1",
+    "TY004": "@prop_MYS_mys-ty004-office-and-accounting-sign-lettering_s0_v1",
+    "MW04": "@loc_MYS_mys-mw04-a-police-defence_s0_v1",
+    "MW04_B_01": "@loc_MYS_mys-mw04-b-01-memory-view-05_s0_v1",
+    "MW04_B_02": "@loc_MYS_mys-mw04-b-02-memory-view-06_s0_v1",
+    "MW04_B_03": "@loc_MYS_mys-mw04-b-03-memory-view-07_s0_v1",
+    "MW04_B_04": "@loc_MYS_mys-mw04-b-04-memory-view-08_s0_v1",
+    "MW04_C_01": "@loc_MYS_mys-mw04-c-01-memory-view-09_s0_v1",
+    "MW04_C_02": "@loc_MYS_mys-mw04-c-02-memory-view-01_s0_v1",
+    "MW04_C_03": "@loc_MYS_mys-mw04-c-03-memory-view-07_s0_v1",
+    "MW04_C_04": "@loc_MYS_mys-mw04-c-04-memory-view-08_s0_v1",
+    "W04_A_01": "@loc_MYS_mys-w04-a-01-world-view-01_s0_v1",
+    "W04_A_02": "@loc_MYS_mys-w04-a-02-world-view-02_s0_v1",
+    "W04_A_03": "@loc_MYS_mys-w04-a-03-world-view-03_s0_v1",
+    "W04_A_04": "@loc_MYS_mys-w04-a-04-world-view-04_s0_v1",
+    "W04_B_01": "@loc_MYS_mys-w04-b-01-world-view-05_s0_v1",
+    "W04_B_02": "@loc_MYS_mys-w04-b-02-world-view-06_s0_v1",
+    "W04_B_03": "@loc_MYS_mys-w04-b-03-world-view-07_s0_v1",
+    "W04_B_04": "@loc_MYS_mys-w04-b-04-world-view-08_s0_v1",
+    "W04_C_01": "@loc_MYS_mys-w04-c-01-world-view-09_s0_v1",
+    "C03": "@char_MYS_mys-c03-policewoman_s0_v1",
+    "C04": "@char_MYS_mys-c04-appointed-lawyer_s0_v1",
+    "C25": "@char_MYS_mys-c25-search-officer-male_s0_v1",
+    "C26": "@char_MYS_mys-c26-defence-office-substitute_s0_v1",
+    "R049": "@prop_MYS_mys-reference-49-cabinet-fingerprint-desk-and-chair-construction_s0_v1",
+    "MW05": "@loc_MYS_mys-mw05-a-court-file_s0_v1",
+    "MW05_B_01": "@loc_MYS_mys-mw05-b-01-memory-view-05_s0_v1",
+    "MW05_B_02": "@loc_MYS_mys-mw05-b-02-memory-view-06_s0_v1",
+    "MW05_B_03": "@loc_MYS_mys-mw05-b-03-memory-view-07_s0_v1",
+    "MW05_B_04": "@loc_MYS_mys-mw05-b-04-memory-view-08_s0_v1",
+    "MW05_C_01": "@loc_MYS_mys-mw05-c-01-memory-view-09_s0_v1",
+    "MW05_C_02": "@loc_MYS_mys-mw05-c-02-memory-view-01_s0_v1",
+    "MW05_C_03": "@loc_MYS_mys-mw05-c-03-memory-view-07_s0_v1",
+    "MW05_C_04": "@loc_MYS_mys-mw05-c-04-memory-view-08_s0_v1",
+    "MWP02": "@loc_MYS_mys-mwp02-a-system-time-reversals_s0_v1",
+    "MWP02_B": "@loc_MYS_mys-mwp02-b-system-time-reversals_s0_v1",
+    "MWP02_C": "@loc_MYS_mys-mwp02-c-system-time-reversals_s0_v1",
+    "W05_A_01": "@loc_MYS_mys-w05-a-01-world-view-01_s0_v1",
+    "W05_A_02": "@loc_MYS_mys-w05-a-02-world-view-02_s0_v1",
+    "W05_A_03": "@loc_MYS_mys-w05-a-03-world-view-03_s0_v1",
+    "W05_A_04": "@loc_MYS_mys-w05-a-04-world-view-04_s0_v1",
+    "W05_B_01": "@loc_MYS_mys-w05-b-01-world-view-05_s0_v1",
+    "W05_B_02": "@loc_MYS_mys-w05-b-02-world-view-06_s0_v1",
+    "W05_B_03": "@loc_MYS_mys-w05-b-03-world-view-07_s0_v1",
+    "W05_B_04": "@loc_MYS_mys-w05-b-04-world-view-08_s0_v1",
+    "W05_C_01": "@loc_MYS_mys-w05-c-01-world-view-09_s0_v1",
+    "C27": "@char_MYS_mys-c27-judge_s0_v1",
+    "C28": "@char_MYS_mys-c28-forensic-expert-a_s0_v1",
+    "C29": "@char_MYS_mys-c29-forensic-expert-b_s0_v1",
+    "C30": "@char_MYS_mys-c30-court-clerk_s0_v1",
+    "C31": "@char_MYS_mys-c31-anonymous-fictional-cardboard-public-figure_s0_v1",
+    "MR018": "@prop_MYS_mys-mr018-hearing-bench-to-document-shelving_s0_v1",
+    "R050": "@prop_MYS_mys-reference-50-court-file-compartments-and-retained-device-supports_s0_v1",
+    "R034": "@loc_MYS_mys-reference-34-tower-bridge-source-structure_s0_v1",
+    "R035": "@loc_MYS_mys-reference-35-szechenyi-chain-bridge-destination-structure_s0_v1",
+    "R040": "@loc_MYS_mys-reference-40-hungarian-parliament-complete-destination-silhouette_s0_v1",
+    "R041": "@loc_MYS_mys-reference-41-gresham-palace-frontage-and-deep-stone-details_s0_v1",
+    "MW06_A_01": "@loc_MYS_mys-mw06-a-01-memory-view-01_s0_v1",
+    "MW06_A_02": "@loc_MYS_mys-mw06-a-02-memory-view-02_s0_v1",
+    "MW06_A_03": "@loc_MYS_mys-mw06-a-03-memory-view-03_s0_v1",
+    "MW06_A_04": "@loc_MYS_mys-mw06-a-04-memory-view-04_s0_v1",
+    "MW06_B_01": "@loc_MYS_mys-mw06-b-01-memory-view-05_s0_v1",
+    "MW06_C_02": "@loc_MYS_mys-mw06-c-02-memory-view-01_s0_v1",
+    "W06_A_01": "@loc_MYS_mys-w06-a-01-world-view-01_s0_v1",
+    "W06_A_02": "@loc_MYS_mys-w06-a-02-world-view-02_s0_v1",
+    "W06_A_03": "@loc_MYS_mys-w06-a-03-world-view-03_s0_v1",
+    "W06_A_04": "@loc_MYS_mys-w06-a-04-world-view-04_s0_v1",
+    "W06_B_01": "@loc_MYS_mys-w06-b-01-world-view-05_s0_v1",
+    "W06_B_02": "@loc_MYS_mys-w06-b-02-world-view-06_s0_v1",
+    "R036": "@loc_MYS_mys-reference-36-london-eye-and-connected-south-bank-depth_s0_v1",
+    "R037": "@loc_MYS_mys-reference-37-great-market-hall-roof-and-brick-source-volume_s0_v1",
+    "R038": "@loc_MYS_mys-reference-38-balna-curved-glass-target-volume_s0_v1",
+    "MW06_B_02": "@loc_MYS_mys-mw06-b-02-memory-view-06_s0_v1",
+    "MW06_B_03": "@loc_MYS_mys-mw06-b-03-memory-view-07_s0_v1",
+    "MW06_B_04": "@loc_MYS_mys-mw06-b-04-memory-view-08_s0_v1",
+    "MW06_C_01": "@loc_MYS_mys-mw06-c-01-memory-view-09_s0_v1",
+    "MW06_C_03": "@loc_MYS_mys-mw06-c-03-memory-view-07_s0_v1",
+    "MW06_C_04": "@loc_MYS_mys-mw06-c-04-memory-view-08_s0_v1",
+    "W06_B_03": "@loc_MYS_mys-w06-b-03-world-view-07_s0_v1",
+    "W06_B_04": "@loc_MYS_mys-w06-b-04-world-view-08_s0_v1",
+    "W06_C_01": "@loc_MYS_mys-w06-c-01-world-view-09_s0_v1",
+    "MR019": "@loc_MYS_mys-mr019-paving-and-gutter-to-street-terrace_s0_v1",
+    "HRW07": "@loc_MYS_mys-hrw07-a-clinical-reality_s0_v1",
+    "HRW07_B": "@loc_MYS_mys-hrw07-b-clinical-reality_s0_v1",
+    "HRW07_C": "@loc_MYS_mys-hrw07-c-clinical-reality_s0_v1",
+    "W07_A_01": "@loc_MYS_mys-w07-a-01-world-view-01_s0_v1",
+    "W07_A_02": "@loc_MYS_mys-w07-a-02-world-view-02_s0_v1",
+    "W07_A_03": "@loc_MYS_mys-w07-a-03-world-view-03_s0_v1",
+    "W07_A_04": "@loc_MYS_mys-w07-a-04-world-view-04_s0_v1",
+    "W07_B_01": "@loc_MYS_mys-w07-b-01-world-view-05_s0_v1",
+    "W07_B_02": "@loc_MYS_mys-w07-b-02-world-view-06_s0_v1",
+    "W07_B_03": "@loc_MYS_mys-w07-b-03-world-view-07_s0_v1",
+    "W07_B_04": "@loc_MYS_mys-w07-b-04-world-view-08_s0_v1",
+    "W07_C_01": "@loc_MYS_mys-w07-c-01-world-view-09_s0_v1",
+    "C05": "@char_MYS_mys-c05-final-nurse_s0_v1",
+    "MR020": "@prop_MYS_mys-mr020-rope-fibres-to-sheet-hem_s0_v1",
+    "R054": "@loc_MYS_mys-reference-54-big-ben-elizabeth-tower-london-source_s0_v1",
+    "R055": "@loc_MYS_mys-reference-55-westminster-abbey-london-source_s0_v1",
+    "R039": "@loc_MYS_mys-reference-39-westminster-and-parliament-square-london-source_s0_v1",
+    "TY007": "@prop_MYS_mys-ty007-final-title-lockup-and-letter-details_s0_v1"
+  },
+  "requests": [
+    {
+      "id": "P01",
+      "start": 0,
+      "end": 15,
+      "duration": 15,
+      "original_start": 0,
+      "original_end": 13,
+      "parts": [
+        "01"
+      ],
+      "beats": [
+        "01.1",
+        "01.2",
+        "01.3",
+        "01.4"
+      ],
+      "beat_timings": [
+        {
+          "id": "01.1",
+          "start": 0.0,
+          "end": 3.4615384615384617
+        },
+        {
+          "id": "01.2",
+          "start": 3.4615384615384617,
+          "end": 5.769230769230769
+        },
+        {
+          "id": "01.3",
+          "start": 5.769230769230769,
+          "end": 11.538461538461538
+        },
+        {
+          "id": "01.4",
+          "start": 11.538461538461538,
+          "end": 15.0
+        }
+      ],
+      "keys": [
+        "C01",
+        "C02",
+        "MR001",
+        "MR004",
+        "MR005",
+        "MR006",
+        "MR007",
+        "MR008",
+        "MR009",
+        "MR010",
+        "MW01",
+        "MW01_C_02",
+        "R008",
+        "R010",
+        "R021",
+        "T01_DETAILS",
+        "TY001",
+        "TY002",
+        "W01_A_01",
+        "W01_A_02",
+        "W01_A_03",
+        "W01_A_04"
+      ],
+      "reference_count": 22,
+      "chars": 11892,
+      "credits": 135,
+      "incoming_frame": null,
+      "incoming_mention": null,
+      "incoming_status": "NONE",
+      "sha256": "f15bf2231095d9b6b967b6d8580474bc31fd090f4847f73d57b10776ee52c1c2",
+      "file": "03_film/production/P01/video.txt"
+    },
+    {
+      "id": "P02",
+      "start": 15,
+      "end": 30,
+      "duration": 15,
+      "original_start": 13,
+      "original_end": 30,
+      "parts": [
+        "01"
+      ],
+      "beats": [
+        "01.5",
+        "01.6",
+        "01.7",
+        "01.8",
+        "01.9"
+      ],
+      "beat_timings": [
+        {
+          "id": "01.5",
+          "start": 0.0,
+          "end": 2.6470588235294117
+        },
+        {
+          "id": "01.6",
+          "start": 2.6470588235294117,
+          "end": 5.294117647058823
+        },
+        {
+          "id": "01.7",
+          "start": 5.294117647058823,
+          "end": 7.9411764705882355
+        },
+        {
+          "id": "01.8",
+          "start": 7.9411764705882355,
+          "end": 11.470588235294118
+        },
+        {
+          "id": "01.9",
+          "start": 11.470588235294118,
+          "end": 15.0
+        }
+      ],
+      "keys": [
+        "C01",
+        "C06",
+        "C07",
+        "C08",
+        "C09",
+        "MW01_B_01",
+        "MW01_B_02",
+        "MW01_B_03",
+        "MW01_B_04",
+        "MW01_C_03",
+        "MW01_C_04",
+        "MWP01",
+        "MWP01_B",
+        "MWP01_C",
+        "R025",
+        "R026",
+        "R028",
+        "R030",
+        "TY001",
+        "TY003",
+        "TY006",
+        "W01_B_01",
+        "W01_B_02",
+        "W01_B_03",
+        "W01_B_04",
+        "W01_C_01"
+      ],
+      "reference_count": 27,
+      "chars": 11894,
+      "credits": 135,
+      "incoming_frame": "EF01",
+      "incoming_mention": "@loc_MYS_mys-film-v01-end-frame_s0_v1",
+      "incoming_status": "EXISTING_ELEMENT_AWAITING_ACCEPTED_PREDECESSOR_FRAME",
+      "sha256": "7e0bcd8ce842013c73b9cf1c75a6d4605d27fb822213b4b76a2361a22c21398a",
+      "file": "03_film/production/P02/video.txt"
+    },
+    {
+      "id": "P03",
+      "start": 30,
+      "end": 45,
+      "duration": 15,
+      "original_start": 30,
+      "original_end": 45,
+      "parts": [
+        "02"
+      ],
+      "beats": [
+        "02.1",
+        "02.2",
+        "02.3",
+        "02.4",
+        "02.5"
+      ],
+      "beat_timings": [
+        {
+          "id": "02.1",
+          "start": 0.0,
+          "end": 3.0
+        },
+        {
+          "id": "02.2",
+          "start": 3.0,
+          "end": 6.0
+        },
+        {
+          "id": "02.3",
+          "start": 6.0,
+          "end": 9.0
+        },
+        {
+          "id": "02.4",
+          "start": 9.0,
+          "end": 12.0
+        },
+        {
+          "id": "02.5",
+          "start": 12.0,
+          "end": 15.0
+        }
+      ],
+      "keys": [
+        "C01",
+        "C11",
+        "C12",
+        "C13",
+        "C14",
+        "C15",
+        "MR013",
+        "MR014",
+        "MW02_A_01",
+        "MW02_A_02",
+        "MW02_A_03",
+        "MW02_A_04",
+        "MW02_C_02",
+        "MWP01_B",
+        "MWP01_C",
+        "R031",
+        "R032",
+        "R033",
+        "R043",
+        "R044",
+        "R045",
+        "TY001",
+        "W02_A_01",
+        "W02_A_02",
+        "W02_A_03",
+        "W02_A_04",
+        "W02_B_01"
+      ],
+      "reference_count": 28,
+      "chars": 12319,
+      "credits": 135,
+      "incoming_frame": "EF02",
+      "incoming_mention": "@loc_MYS_mys-film-v02-end-frame_s0_v1",
+      "incoming_status": "EXISTING_ELEMENT_AWAITING_ACCEPTED_PREDECESSOR_FRAME",
+      "sha256": "cf92e979aba2d23faaf111a5e6f9a342d111624f26c8f08c69d783740ba97472",
+      "file": "03_film/production/P03/video.txt"
+    },
+    {
+      "id": "P04",
+      "start": 45,
+      "end": 60,
+      "duration": 15,
+      "original_start": 45,
+      "original_end": 60,
+      "parts": [
+        "02"
+      ],
+      "beats": [
+        "02.6",
+        "02.7",
+        "02.8",
+        "02.9"
+      ],
+      "beat_timings": [
+        {
+          "id": "02.6",
+          "start": 0.0,
+          "end": 4.0
+        },
+        {
+          "id": "02.7",
+          "start": 4.0,
+          "end": 7.0
+        },
+        {
+          "id": "02.8",
+          "start": 7.0,
+          "end": 12.0
+        },
+        {
+          "id": "02.9",
+          "start": 12.0,
+          "end": 15.0
+        }
+      ],
+      "keys": [
+        "C01",
+        "C10",
+        "C16",
+        "C17",
+        "C18",
+        "C19",
+        "C20",
+        "C21",
+        "MR015",
+        "MR016",
+        "MW01_C_01",
+        "MW02_B",
+        "MW02_C_01",
+        "MW02_C_03",
+        "MW02_C_04",
+        "MWP01",
+        "MWP01_B",
+        "MWP01_C",
+        "R031",
+        "R032",
+        "R033",
+        "R046",
+        "TY001",
+        "TY005",
+        "W02_B_02",
+        "W02_B_03",
+        "W02_B_04",
+        "W02_C_01"
+      ],
+      "reference_count": 29,
+      "chars": 11963,
+      "credits": 135,
+      "incoming_frame": "EF03",
+      "incoming_mention": "@loc_MYS_mys-film-v03-end-frame_s0_v1",
+      "incoming_status": "EXISTING_ELEMENT_AWAITING_ACCEPTED_PREDECESSOR_FRAME",
+      "sha256": "73c75b6ca954c68db8bc1cc10e3d72e268606b9e8e33a90e188ef7a78d3a5271",
+      "file": "03_film/production/P04/video.txt"
+    },
+    {
+      "id": "P05",
+      "start": 60,
+      "end": 80,
+      "duration": 20,
+      "original_start": 60,
+      "original_end": 79,
+      "parts": [
+        "03"
+      ],
+      "beats": [
+        "03.1",
+        "03.2",
+        "03.3",
+        "03.4",
+        "03.5",
+        "03.6"
+      ],
+      "beat_timings": [
+        {
+          "id": "03.1",
+          "start": 0.0,
+          "end": 3.1578947368421053
+        },
+        {
+          "id": "03.2",
+          "start": 3.1578947368421053,
+          "end": 6.315789473684211
+        },
+        {
+          "id": "03.3",
+          "start": 6.315789473684211,
+          "end": 9.473684210526315
+        },
+        {
+          "id": "03.4",
+          "start": 9.473684210526315,
+          "end": 12.631578947368421
+        },
+        {
+          "id": "03.5",
+          "start": 12.631578947368421,
+          "end": 16.842105263157894
+        },
+        {
+          "id": "03.6",
+          "start": 16.842105263157894,
+          "end": 20.0
+        }
+      ],
+      "keys": [
+        "C01",
+        "C22",
+        "C23",
+        "C24",
+        "MR002",
+        "MR003",
+        "MR011",
+        "MR012",
+        "MW03",
+        "MW03_B_01",
+        "MW03_B_02",
+        "MW03_C_01",
+        "MW03_C_02",
+        "MW03_C_03",
+        "MW03_C_04",
+        "MWP01_B",
+        "MWP01_C",
+        "R042",
+        "TY001",
+        "TY004",
+        "W03_A_01",
+        "W03_A_02",
+        "W03_A_03",
+        "W03_A_04",
+        "W03_B_01",
+        "W03_B_02"
+      ],
+      "reference_count": 27,
+      "chars": 13018,
+      "credits": 180,
+      "incoming_frame": "EF04",
+      "incoming_mention": "@loc_MYS_mys-film-v04-end-frame_s0_v1",
+      "incoming_status": "EXISTING_ELEMENT_AWAITING_ACCEPTED_PREDECESSOR_FRAME",
+      "sha256": "e98446c09459e68ebffa4d73bbcd489884bde39b059c1bbf54bd8d28f6f4a078",
+      "file": "03_film/production/P05/video.txt"
+    },
+    {
+      "id": "P06",
+      "start": 80,
+      "end": 105,
+      "duration": 25,
+      "original_start": 79,
+      "original_end": 105,
+      "parts": [
+        "03",
+        "04"
+      ],
+      "beats": [
+        "03.7",
+        "03.8",
+        "03.9",
+        "04.1",
+        "04.2",
+        "04.3",
+        "04.4",
+        "04.5"
+      ],
+      "beat_timings": [
+        {
+          "id": "03.7",
+          "start": 0.0,
+          "end": 2.8846153846153846
+        },
+        {
+          "id": "03.8",
+          "start": 2.8846153846153846,
+          "end": 7.6923076923076925
+        },
+        {
+          "id": "03.9",
+          "start": 7.6923076923076925,
+          "end": 10.576923076923077
+        },
+        {
+          "id": "04.1",
+          "start": 10.576923076923077,
+          "end": 13.461538461538462
+        },
+        {
+          "id": "04.2",
+          "start": 13.461538461538462,
+          "end": 16.346153846153847
+        },
+        {
+          "id": "04.3",
+          "start": 16.346153846153847,
+          "end": 19.23076923076923
+        },
+        {
+          "id": "04.4",
+          "start": 19.23076923076923,
+          "end": 21.153846153846153
+        },
+        {
+          "id": "04.5",
+          "start": 21.153846153846153,
+          "end": 25.0
+        }
+      ],
+      "keys": [
+        "C01",
+        "C03",
+        "C25",
+        "MR002",
+        "MR003",
+        "MR017",
+        "MW03_B_03",
+        "MW03_B_04",
+        "MW04",
+        "MW04_B_01",
+        "MW04_B_02",
+        "MW04_C_01",
+        "MW04_C_02",
+        "MWP01",
+        "MWP01_B",
+        "MWP01_C",
+        "R048",
+        "R049",
+        "TY001",
+        "W03_B_03",
+        "W03_B_04",
+        "W03_C_01",
+        "W04_A_01",
+        "W04_A_02",
+        "W04_A_03",
+        "W04_A_04",
+        "W04_B_01"
+      ],
+      "reference_count": 28,
+      "chars": 14321,
+      "credits": 225,
+      "incoming_frame": "EF05",
+      "incoming_mention": "@loc_MYS_mys-film-v05-end-frame_s0_v1",
+      "incoming_status": "EXISTING_ELEMENT_AWAITING_ACCEPTED_PREDECESSOR_FRAME",
+      "sha256": "0bd9b2879b8c548b1200b0214b23b8773a046a9bccb2b35429fc0e74bd93de47",
+      "file": "03_film/production/P06/video.txt"
+    },
+    {
+      "id": "P07",
+      "start": 105,
+      "end": 135,
+      "duration": 30,
+      "original_start": 105,
+      "original_end": 135,
+      "parts": [
+        "04",
+        "05"
+      ],
+      "beats": [
+        "04.6",
+        "04.7",
+        "04.8",
+        "04.9",
+        "05.1",
+        "05.2",
+        "05.3",
+        "05.4",
+        "05.5"
+      ],
+      "beat_timings": [
+        {
+          "id": "04.6",
+          "start": 0.0,
+          "end": 4.0
+        },
+        {
+          "id": "04.7",
+          "start": 4.0,
+          "end": 8.0
+        },
+        {
+          "id": "04.8",
+          "start": 8.0,
+          "end": 12.0
+        },
+        {
+          "id": "04.9",
+          "start": 12.0,
+          "end": 15.0
+        },
+        {
+          "id": "05.1",
+          "start": 15.0,
+          "end": 18.0
+        },
+        {
+          "id": "05.2",
+          "start": 18.0,
+          "end": 21.0
+        },
+        {
+          "id": "05.3",
+          "start": 21.0,
+          "end": 24.0
+        },
+        {
+          "id": "05.4",
+          "start": 24.0,
+          "end": 27.0
+        },
+        {
+          "id": "05.5",
+          "start": 27.0,
+          "end": 30.0
+        }
+      ],
+      "keys": [
+        "C01",
+        "C04",
+        "C26",
+        "C27",
+        "MR009",
+        "MR018",
+        "MW04_B_03",
+        "MW04_B_04",
+        "MW04_C_03",
+        "MW04_C_04",
+        "MW05",
+        "R030",
+        "R040",
+        "R041",
+        "R050",
+        "TY001",
+        "W04_B_02",
+        "W04_B_03",
+        "W04_B_04",
+        "W04_C_01",
+        "W05_A_01",
+        "W05_A_02",
+        "W05_A_03",
+        "W05_A_04",
+        "W05_B_01"
+      ],
+      "reference_count": 26,
+      "chars": 14377,
+      "credits": 270,
+      "incoming_frame": "EF06A",
+      "incoming_mention": "@loc_MYS_mys-film-v06a-end-frame_s0_v1",
+      "incoming_status": "EXISTING_ELEMENT_AWAITING_ACCEPTED_PREDECESSOR_FRAME",
+      "sha256": "bbebc52c9c4bb81d3ce9e5f16ac6eee7cc3943c12ee6be9f10fce6d90515025b",
+      "file": "03_film/production/P07/video.txt"
+    },
+    {
+      "id": "P08",
+      "start": 135,
+      "end": 150,
+      "duration": 15,
+      "original_start": 135,
+      "original_end": 150,
+      "parts": [
+        "05"
+      ],
+      "beats": [
+        "05.6",
+        "05.7",
+        "05.8",
+        "05.9"
+      ],
+      "beat_timings": [
+        {
+          "id": "05.6",
+          "start": 0.0,
+          "end": 4.0
+        },
+        {
+          "id": "05.7",
+          "start": 4.0,
+          "end": 8.0
+        },
+        {
+          "id": "05.8",
+          "start": 8.0,
+          "end": 12.0
+        },
+        {
+          "id": "05.9",
+          "start": 12.0,
+          "end": 15.0
+        }
+      ],
+      "keys": [
+        "C01",
+        "C04",
+        "C28",
+        "C29",
+        "C30",
+        "C31",
+        "MW05_B_01",
+        "MW05_B_02",
+        "MW05_B_03",
+        "MW05_B_04",
+        "MW05_C_01",
+        "MW05_C_02",
+        "MW05_C_03",
+        "MW05_C_04",
+        "MWP02",
+        "MWP02_B",
+        "MWP02_C",
+        "R034",
+        "R035",
+        "R040",
+        "R041",
+        "TY001",
+        "W05_B_02",
+        "W05_B_03",
+        "W05_B_04",
+        "W05_C_01"
+      ],
+      "reference_count": 27,
+      "chars": 12247,
+      "credits": 135,
+      "incoming_frame": "EF06B",
+      "incoming_mention": "@loc_MYS_mys-film-v06b-end-frame_s0_v1",
+      "incoming_status": "EXISTING_ELEMENT_AWAITING_ACCEPTED_PREDECESSOR_FRAME",
+      "sha256": "6bd16bc591f133adc4b41c406690816c7aac4c75595f55755dd0505645c2a264",
+      "file": "03_film/production/P08/video.txt"
+    },
+    {
+      "id": "P09",
+      "start": 150,
+      "end": 160,
+      "duration": 10,
+      "original_start": 150,
+      "original_end": 159,
+      "parts": [
+        "06"
+      ],
+      "beats": [
+        "06.1",
+        "06.2"
+      ],
+      "beat_timings": [
+        {
+          "id": "06.1",
+          "start": 0,
+          "end": 4
+        },
+        {
+          "id": "06.2",
+          "start": 4,
+          "end": 10
+        }
+      ],
+      "keys": [
+        "C01",
+        "C02",
+        "C11",
+        "C16",
+        "C17",
+        "MR013",
+        "MR015",
+        "MW01",
+        "MW02_A_01",
+        "MW02_B",
+        "MW06_A_01",
+        "MW06_A_02",
+        "MW06_A_03",
+        "MW06_C_02",
+        "R008",
+        "R036",
+        "R037",
+        "R038",
+        "R043",
+        "R046",
+        "TY001",
+        "W06_A_01",
+        "W06_A_02",
+        "W06_A_03"
+      ],
+      "reference_count": 25,
+      "chars": 11243,
+      "credits": 90,
+      "incoming_frame": "EFP08",
+      "incoming_mention": "@UNBOUND_EFP08",
+      "incoming_status": "METADATA_IMPORT_AND_MCP_BINDING_PENDING",
+      "sha256": "061aaea91bbc59d7fcd7f556e20880d23c2a15c6bbf834461eb22d76062ec58c",
+      "file": "03_film/production/P09/video.txt"
+    },
+    {
+      "id": "P10",
+      "start": 160,
+      "end": 170,
+      "duration": 10,
+      "original_start": 159,
+      "original_end": 169,
+      "parts": [
+        "06",
+        "06B"
+      ],
+      "beats": [
+        "06.3",
+        "06.4",
+        "06.5"
+      ],
+      "beat_timings": [
+        {
+          "id": "06.3",
+          "start": 0.0,
+          "end": 3.0
+        },
+        {
+          "id": "06.4",
+          "start": 3.0,
+          "end": 6.0
+        },
+        {
+          "id": "06.5",
+          "start": 6.0,
+          "end": 10.0
+        }
+      ],
+      "keys": [
+        "C01",
+        "C03",
+        "C04",
+        "C10",
+        "C27",
+        "C28",
+        "C29",
+        "MR017",
+        "MW04",
+        "MW04_B_02",
+        "MW04_C_01",
+        "MW05_B_01",
+        "MW06_A_04",
+        "MW06_B_01",
+        "MW06_B_02",
+        "MW06_B_03",
+        "MW06_B_04",
+        "MW06_C_01",
+        "MW06_C_03",
+        "MW06_C_04",
+        "R049",
+        "TY001",
+        "W06_A_01",
+        "W06_A_03",
+        "W06_A_04",
+        "W06_B_01",
+        "W06_B_02"
+      ],
+      "reference_count": 28,
+      "chars": 12352,
+      "credits": 90,
+      "incoming_frame": "EFP09",
+      "incoming_mention": "@UNBOUND_EFP09",
+      "incoming_status": "METADATA_IMPORT_AND_MCP_BINDING_PENDING",
+      "sha256": "bc71b5e0f5d2649a4d767550c3a9984aea195b0eb995ce2e81fc977dbd7e70eb",
+      "file": "03_film/production/P10/video.txt"
+    },
+    {
+      "id": "P11",
+      "start": 170,
+      "end": 180,
+      "duration": 10,
+      "original_start": 169,
+      "original_end": 182,
+      "parts": [
+        "06B",
+        "07"
+      ],
+      "beats": [
+        "06.6",
+        "06.7",
+        "06.8",
+        "06.9",
+        "07.1"
+      ],
+      "beat_timings": [
+        {
+          "id": "06.6",
+          "start": 0.0,
+          "end": 3.076923076923077
+        },
+        {
+          "id": "06.7",
+          "start": 3.076923076923077,
+          "end": 4.615384615384615
+        },
+        {
+          "id": "06.8",
+          "start": 4.615384615384615,
+          "end": 6.153846153846154
+        },
+        {
+          "id": "06.9",
+          "start": 6.153846153846154,
+          "end": 8.461538461538462
+        },
+        {
+          "id": "07.1",
+          "start": 8.461538461538462,
+          "end": 10.0
+        }
+      ],
+      "keys": [
+        "C01",
+        "C03",
+        "C04",
+        "MR009",
+        "MR019",
+        "MW01",
+        "MW02_B",
+        "MW03",
+        "MW04",
+        "MW05",
+        "MWP02",
+        "MWP02_B",
+        "MWP02_C",
+        "R037",
+        "R038",
+        "R039",
+        "R040",
+        "R054",
+        "R055",
+        "TY001",
+        "W06_B_03",
+        "W06_B_04",
+        "W06_C_01",
+        "W07_A_01"
+      ],
+      "reference_count": 25,
+      "chars": 13116,
+      "credits": 90,
+      "incoming_frame": "EFP10",
+      "incoming_mention": "@UNBOUND_EFP10",
+      "incoming_status": "METADATA_IMPORT_AND_MCP_BINDING_PENDING",
+      "sha256": "35776006c60b42a8c03ba1f11dbc40095e09adcf4abe3e8a44d06fd703bda268",
+      "file": "03_film/production/P11/video.txt"
+    },
+    {
+      "id": "P12",
+      "start": 180,
+      "end": 200,
+      "duration": 20,
+      "original_start": 182,
+      "original_end": 200,
+      "parts": [
+        "07"
+      ],
+      "beats": [
+        "07.2",
+        "07.3",
+        "07.4",
+        "07.5",
+        "07.6",
+        "07.7",
+        "07.8",
+        "07.9"
+      ],
+      "beat_timings": [
+        {
+          "id": "07.2",
+          "start": 0,
+          "end": 4
+        },
+        {
+          "id": "07.3",
+          "start": 4,
+          "end": 6
+        },
+        {
+          "id": "07.4",
+          "start": 6,
+          "end": 7
+        },
+        {
+          "id": "07.5",
+          "start": 7,
+          "end": 9
+        },
+        {
+          "id": "07.6",
+          "start": 9,
+          "end": 12
+        },
+        {
+          "id": "07.7",
+          "start": 12,
+          "end": 15
+        },
+        {
+          "id": "07.8",
+          "start": 15,
+          "end": 18
+        },
+        {
+          "id": "07.9",
+          "start": 18,
+          "end": 20
+        }
+      ],
+      "keys": [
+        "C01",
+        "C05",
+        "C06",
+        "C16",
+        "C17",
+        "HRW07",
+        "HRW07_B",
+        "HRW07_C",
+        "MR020",
+        "MW01_B_02",
+        "MW02_B",
+        "MWP01",
+        "MWP01_B",
+        "MWP01_C",
+        "TY001",
+        "TY007",
+        "W07_A_02",
+        "W07_A_03",
+        "W07_A_04",
+        "W07_B_01",
+        "W07_B_02",
+        "W07_B_03",
+        "W07_B_04",
+        "W07_C_01"
+      ],
+      "reference_count": 25,
+      "chars": 13537,
+      "credits": 180,
+      "incoming_frame": "EFP11",
+      "incoming_mention": "@UNBOUND_EFP11",
+      "incoming_status": "METADATA_IMPORT_AND_MCP_BINDING_PENDING",
+      "sha256": "3c0ac3818c8bcd90428f5b7d02bf57a37cfb4fec8632064be0b84dcd5bf23e25",
+      "file": "03_film/production/P12/video.txt"
+    }
+  ]
+}

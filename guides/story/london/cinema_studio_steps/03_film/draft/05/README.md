@@ -1,10 +1,12 @@
-# Block 01 — Soho, glances, shared lives and profiles
+> Retained source chapter. The current generation prompts are [P01–P12](../../production/README.md); do not queue this chapter’s old video.txt directly.
 
-Use existing whole-image references. No new storyboard generation, panel cropping or reference re-upload. [Current production order](../README.md).
+# Block 05 — Person versus file and institutional routes
+
+Use existing whole-image references. No new storyboard generation, panel cropping or reference re-upload. [Current production order](../../README.md).
 
 | Portion | Seconds | Local storyboard plan | Video request | Incoming frame | References |
 |---|---:|---|---|---|---:|
-| 01 | 30 | [storyboard.txt](storyboard.txt) | [video.txt](video.txt) | None | 48 |
+| 05 | 30 | [storyboard.txt](storyboard.txt) | [video.txt](video.txt) | EF04 | 36 |
 
 1. Review the local storyboard plan: its ordered beats refer to the already attached whole images/grids. Do not paste it into an image generator.
 2. For a continuation, download the accepted predecessor. Astra extracts and verifies its actual last decoded frame locally; the creator uploads/assigns that PNG to the corresponding existing EF Element. This future video frame is the only new required image here.

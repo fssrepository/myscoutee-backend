@@ -970,7 +970,7 @@
         4247
       ],
       "source_prompt_sha256": "76a53b46490f7087051a6b61360543112b874118c1dec4b28d592f08a5c3ed46",
-      "file": "03_film/01/storyboard.txt",
+      "file": "03_film/draft/01/storyboard.txt",
       "file_sha256": "0184fc45b1c26e591a150c3be00244d8a494d08782bb00becc2f87d364f6b9cc",
       "changes": "Existing whole-image reference union; storyboard is a local plan, no paid board. Story beats retained; V00 now symbolic material assembly.",
       "note": "2026-09-11 compact production version; original source extraction provenance retained. See current_film_preparation for 06 split and reference plan."
@@ -983,7 +983,7 @@
         4908
       ],
       "source_prompt_sha256": "0a23bff68df30ef4f1011862f5508eddc76e26743cda0800c0f1d1e67c20090e",
-      "file": "03_film/01/narration.txt",
+      "file": "03_film/draft/01/narration.txt",
       "file_sha256": "0a23bff68df30ef4f1011862f5508eddc76e26743cda0800c0f1d1e67c20090e",
       "changes": "Verbatim fenced prompt"
     },
@@ -995,7 +995,7 @@
         5188
       ],
       "source_prompt_sha256": "d111e179fa9211ddb262d74468ee38305f1776d75138a0c33a3e229ff58dff3d",
-      "file": "03_film/01/video.txt",
+      "file": "03_film/draft/01/video.txt",
       "file_sha256": "6dce96a11e4d02a8361768d6b8a51ba4240d03eecd815042964f9f3b7b263a04",
       "changes": "Existing whole-image reference union; storyboard is a local plan, no paid board. Story beats retained; V00 now symbolic material assembly.",
       "note": "2026-09-11 compact production version; original source extraction provenance retained. See current_film_preparation for 06 split and reference plan."
@@ -1008,7 +1008,7 @@
         4357
       ],
       "source_prompt_sha256": "28ff9c6f1fdfeb4618c4696283c1e38722a62ee2792af219b5b9f14cc9bcfc29",
-      "file": "03_film/02/storyboard.txt",
+      "file": "03_film/draft/02/storyboard.txt",
       "file_sha256": "b2c73d9413970c0adc7da16a588726be82db1fcf65a07844c17f19167461d614",
       "changes": "Existing whole-image reference union; storyboard is a local plan, no paid board. Story beats retained; V00 now symbolic material assembly.",
       "note": "2026-09-11 compact production version; original source extraction provenance retained. See current_film_preparation for 06 split and reference plan."
@@ -1021,7 +1021,7 @@
         4923
       ],
       "source_prompt_sha256": "7f851264f25e5344924b5a4bf32ac10bec8cda53e90f2102b5d6420aeefabf19",
-      "file": "03_film/02/narration.txt",
+      "file": "03_film/draft/02/narration.txt",
       "file_sha256": "7f851264f25e5344924b5a4bf32ac10bec8cda53e90f2102b5d6420aeefabf19",
       "changes": "Verbatim fenced prompt"
     },
@@ -1033,7 +1033,7 @@
         5376
       ],
       "source_prompt_sha256": "1ee3bb2feea06f9cb11dac2f33cac0b6c8a0735bc0a73938e537a716ad9146ba",
-      "file": "03_film/02/video.txt",
+      "file": "03_film/draft/02/video.txt",
       "file_sha256": "da8feaf9ee2eddc1883070a42dc7ba6e2ec12b68ba96ecd33ac8c7743f73194f",
       "changes": "Existing whole-image reference union; storyboard is a local plan, no paid board. Story beats retained; V00 now symbolic material assembly.",
       "note": "2026-09-11 compact production version; original source extraction provenance retained. See current_film_preparation for 06 split and reference plan."
@@ -1046,7 +1046,7 @@
         4460
       ],
       "source_prompt_sha256": "533e440baa4117a4d2f7733e327dfca304ea8a54d066010cc8ab8722cadb259c",
-      "file": "03_film/03/storyboard.txt",
+      "file": "03_film/draft/03/storyboard.txt",
       "file_sha256": "083d17052eadf132af555fd0612e132cdb18857128608f8fcd19d800532bc199",
       "changes": "Existing whole-image reference union; storyboard is a local plan, no paid board. Story beats retained; V00 now symbolic material assembly.",
       "note": "2026-09-11 compact production version; original source extraction provenance retained. See current_film_preparation for 06 split and reference plan."
@@ -1059,7 +1059,7 @@
         4938
       ],
       "source_prompt_sha256": "8dbf6f97a5bbdc57e7f7949beab851a0549b402fcb506f656eb303cdd0fe965e",
-      "file": "03_film/03/narration.txt",
+      "file": "03_film/draft/03/narration.txt",
       "file_sha256": "8dbf6f97a5bbdc57e7f7949beab851a0549b402fcb506f656eb303cdd0fe965e",
       "changes": "Verbatim fenced prompt"
     },
@@ -1071,7 +1071,7 @@
         5533
       ],
       "source_prompt_sha256": "4970f288124db4473bf4af10c0fb6a9d66f5bae619718ed4d3907489e0c8cc95",
-      "file": "03_film/03/video.txt",
+      "file": "03_film/draft/03/video.txt",
       "file_sha256": "5c66d36eb1a62af00fd2bb3979a888f3471c3332000cd1aebf396bf878c59696",
       "changes": "Existing whole-image reference union; storyboard is a local plan, no paid board. Story beats retained; V00 now symbolic material assembly.",
       "note": "2026-09-11 compact production version; original source extraction provenance retained. See current_film_preparation for 06 split and reference plan."
@@ -1084,7 +1084,7 @@
         4563
       ],
       "source_prompt_sha256": "5459cc1d93853c47aacf113a3e593f61ee6cb49aa0fe81079b89706e0588086a",
-      "file": "03_film/04/storyboard.txt",
+      "file": "03_film/draft/04/storyboard.txt",
       "file_sha256": "af23792cf6321c854820a4de5a75e10ca78336bf30143a78f23cfc000ab0a0bf",
       "changes": "Existing whole-image reference union; storyboard is a local plan, no paid board. Story beats retained; V00 now symbolic material assembly.",
       "note": "2026-09-11 compact production version; original source extraction provenance retained. See current_film_preparation for 06 split and reference plan."
@@ -1097,7 +1097,7 @@
         4953
       ],
       "source_prompt_sha256": "7c03c47fa2a236b4412aa2ad3eef14214fa16fd4f9fd15259a156769d90e7727",
-      "file": "03_film/04/narration.txt",
+      "file": "03_film/draft/04/narration.txt",
       "file_sha256": "7c03c47fa2a236b4412aa2ad3eef14214fa16fd4f9fd15259a156769d90e7727",
       "changes": "Verbatim fenced prompt"
     },
@@ -1109,7 +1109,7 @@
         5694
       ],
       "source_prompt_sha256": "dcfdef2b9227d2f0528bbca68b9dad63fc71b2087b289dbfbb25c8dfb8ff6370",
-      "file": "03_film/04/video.txt",
+      "file": "03_film/draft/04/video.txt",
       "file_sha256": "51c5dbc839ef6880f7e801e604a7049abe9b850e6465e307449da538f7964655",
       "changes": "Existing whole-image reference union; storyboard is a local plan, no paid board. Story beats retained; V00 now symbolic material assembly.",
       "note": "2026-09-11 compact production version; original source extraction provenance retained. See current_film_preparation for 06 split and reference plan."
@@ -1122,7 +1122,7 @@
         4669
       ],
       "source_prompt_sha256": "e80c1062f8699884509043c0dc23d9205573f2eae58119513f6f3bdb1d3cf9b1",
-      "file": "03_film/05/storyboard.txt",
+      "file": "03_film/draft/05/storyboard.txt",
       "file_sha256": "fe21b2f96161b6c498444ab75140781b97b97c683ecf67a40aae156149347b7d",
       "changes": "Existing whole-image reference union; storyboard is a local plan, no paid board. Story beats retained; V00 now symbolic material assembly.",
       "note": "2026-09-11 compact production version; original source extraction provenance retained. See current_film_preparation for 06 split and reference plan."
@@ -1135,7 +1135,7 @@
         4968
       ],
       "source_prompt_sha256": "f2431b1f66cf118227294e02d49b9a3057469166a35029af21b538ab25ec42ec",
-      "file": "03_film/05/narration.txt",
+      "file": "03_film/draft/05/narration.txt",
       "file_sha256": "f2431b1f66cf118227294e02d49b9a3057469166a35029af21b538ab25ec42ec",
       "changes": "Verbatim fenced prompt"
     },
@@ -1147,7 +1147,7 @@
         5860
       ],
       "source_prompt_sha256": "2c24d5a0b90307baa614606b633838697ec3355e0dbb1df515d095dee403fdd6",
-      "file": "03_film/05/video.txt",
+      "file": "03_film/draft/05/video.txt",
       "file_sha256": "7bda9d70f004a8d87414dfc96f32850f774f1d7aeb7b38aa68f683498d16cef5",
       "changes": "Existing whole-image reference union; storyboard is a local plan, no paid board. Story beats retained; V00 now symbolic material assembly.",
       "note": "2026-09-11 compact production version; original source extraction provenance retained. See current_film_preparation for 06 split and reference plan."
@@ -1160,7 +1160,7 @@
         4777
       ],
       "source_prompt_sha256": "6e57e8c9f69656463159011cd13b16d6b88d02db6738131013a82f4f5f778aec",
-      "file": "03_film/06/storyboard.txt",
+      "file": "03_film/draft/06/storyboard.txt",
       "file_sha256": "30ee0c6742b28f028d1bdd420b6bce4e2ca64ac40625dd5c8dc10f35443dacec",
       "changes": "Existing whole-image reference union; storyboard is a local plan, no paid board. Story beats retained; V00 now symbolic material assembly.",
       "note": "2026-09-11 compact production version; original source extraction provenance retained. See current_film_preparation for 06 split and reference plan."
@@ -1173,7 +1173,7 @@
         4983
       ],
       "source_prompt_sha256": "8eea05414eb6ec2153d183414746f388f8b9f99186ee2e9abc9e57de4055f221",
-      "file": "03_film/06/narration.txt",
+      "file": "03_film/draft/06/narration.txt",
       "file_sha256": "8eea05414eb6ec2153d183414746f388f8b9f99186ee2e9abc9e57de4055f221",
       "changes": "Verbatim fenced prompt"
     },
@@ -1185,7 +1185,7 @@
         6039
       ],
       "source_prompt_sha256": "52008590a700611bd6959ec7ae9cb86efeb01101257fce007de3b9eaa75417e6",
-      "file": "03_film/06/video.txt",
+      "file": "03_film/draft/06/video.txt",
       "file_sha256": "fcc03b48a98bec34a738e1a31cf69731cb868cee659d510e9dbcdb64eee67bc7",
       "changes": "Existing whole-image reference union; storyboard is a local plan, no paid board. Story beats retained; V00 now symbolic material assembly.",
       "note": "2026-09-11 compact production version; original source extraction provenance retained. See current_film_preparation for 06 split and reference plan."
@@ -1198,7 +1198,7 @@
         4883
       ],
       "source_prompt_sha256": "2b7b76d2d3593fcff5854695f2ee366e9486822241fe7b80f3f09df0035291d4",
-      "file": "03_film/07/storyboard.txt",
+      "file": "03_film/draft/07/storyboard.txt",
       "file_sha256": "534d4bc72a35887ad0b98dc81bb94414bd3b0d174421f7f3f08a0250ad2f1ba7",
       "changes": "Existing whole-image reference union; storyboard is a local plan, no paid board. Story beats retained; V00 now symbolic material assembly.",
       "note": "2026-09-11 compact production version; original source extraction provenance retained. See current_film_preparation for 06 split and reference plan."
@@ -1211,7 +1211,7 @@
         4998
       ],
       "source_prompt_sha256": "7e52c85c6fc3805308ad2b2fe5f520db0813137d06960c8a826e992ecf20b792",
-      "file": "03_film/07/narration.txt",
+      "file": "03_film/draft/07/narration.txt",
       "file_sha256": "7e52c85c6fc3805308ad2b2fe5f520db0813137d06960c8a826e992ecf20b792",
       "changes": "Verbatim fenced prompt"
     },
@@ -1223,7 +1223,7 @@
         6204
       ],
       "source_prompt_sha256": "ac40bf3eee9daac90310ed6ff05a2b72832c27347255c481694023e8db6f759b",
-      "file": "03_film/07/video.txt",
+      "file": "03_film/draft/07/video.txt",
       "file_sha256": "517b30093db6f66fea1ed4119c2ca4a5d7bba234f8fe61f36a4f401e7adc9b30",
       "changes": "Existing whole-image reference union; storyboard is a local plan, no paid board. Story beats retained; V00 now symbolic material assembly.",
       "note": "2026-09-11 compact production version; original source extraction provenance retained. See current_film_preparation for 06 split and reference plan."
@@ -3274,7 +3274,7 @@
     },
     "SB01": {
       "key": "SB01",
-      "path": "03_film/01/storyboard.txt",
+      "path": "03_film/draft/01/storyboard.txt",
       "output": "SB01_STORYBOARD.png",
       "refs": [
         "W01_A_01",
@@ -3313,14 +3313,14 @@
     },
     "A01": {
       "key": "A01",
-      "path": "03_film/01/narration.txt",
+      "path": "03_film/draft/01/narration.txt",
       "output": "A01_NARRATION.wav",
       "refs": [],
       "prompt_sha256": "0a23bff68df30ef4f1011862f5508eddc76e26743cda0800c0f1d1e67c20090e"
     },
     "V01": {
       "key": "V01",
-      "path": "03_film/01/video.txt",
+      "path": "03_film/draft/01/video.txt",
       "output": "V01_CITY_JUDGES_FIRST.mp4",
       "refs": [
         "W01_A_01",
@@ -3361,7 +3361,7 @@
     },
     "SB02": {
       "key": "SB02",
-      "path": "03_film/02/storyboard.txt",
+      "path": "03_film/draft/02/storyboard.txt",
       "output": "SB02_STORYBOARD.png",
       "refs": [
         "W02_A_01",
@@ -3415,14 +3415,14 @@
     },
     "A02": {
       "key": "A02",
-      "path": "03_film/02/narration.txt",
+      "path": "03_film/draft/02/narration.txt",
       "output": "A02_NARRATION.wav",
       "refs": [],
       "prompt_sha256": "7f851264f25e5344924b5a4bf32ac10bec8cda53e90f2102b5d6420aeefabf19"
     },
     "V02": {
       "key": "V02",
-      "path": "03_film/02/video.txt",
+      "path": "03_film/draft/02/video.txt",
       "output": "V02_CHAIN_TO_0100.mp4",
       "refs": [
         "W02_A_01",
@@ -3479,7 +3479,7 @@
     },
     "SB03": {
       "key": "SB03",
-      "path": "03_film/03/storyboard.txt",
+      "path": "03_film/draft/03/storyboard.txt",
       "output": "SB03_STORYBOARD.png",
       "refs": [
         "W03_A_01",
@@ -3515,14 +3515,14 @@
     },
     "A03": {
       "key": "A03",
-      "path": "03_film/03/narration.txt",
+      "path": "03_film/draft/03/narration.txt",
       "output": "A03_NARRATION.wav",
       "refs": [],
       "prompt_sha256": "8dbf6f97a5bbdc57e7f7949beab851a0549b402fcb506f656eb303cdd0fe965e"
     },
     "V03": {
       "key": "V03",
-      "path": "03_film/03/video.txt",
+      "path": "03_film/draft/03/video.txt",
       "output": "V03_CHAIN_TO_0130.mp4",
       "refs": [
         "W03_A_01",
@@ -3561,7 +3561,7 @@
     },
     "SB04": {
       "key": "SB04",
-      "path": "03_film/04/storyboard.txt",
+      "path": "03_film/draft/04/storyboard.txt",
       "output": "SB04_STORYBOARD.png",
       "refs": [
         "W04_A_01",
@@ -3595,14 +3595,14 @@
     },
     "A04": {
       "key": "A04",
-      "path": "03_film/04/narration.txt",
+      "path": "03_film/draft/04/narration.txt",
       "output": "A04_NARRATION.wav",
       "refs": [],
       "prompt_sha256": "7c03c47fa2a236b4412aa2ad3eef14214fa16fd4f9fd15259a156769d90e7727"
     },
     "V04": {
       "key": "V04",
-      "path": "03_film/04/video.txt",
+      "path": "03_film/draft/04/video.txt",
       "output": "V04_CHAIN_TO_0200.mp4",
       "refs": [
         "W04_A_01",
@@ -3639,7 +3639,7 @@
     },
     "SB05": {
       "key": "SB05",
-      "path": "03_film/05/storyboard.txt",
+      "path": "03_film/draft/05/storyboard.txt",
       "output": "SB05_STORYBOARD.png",
       "refs": [
         "W05_A_01",
@@ -3678,14 +3678,14 @@
     },
     "A05": {
       "key": "A05",
-      "path": "03_film/05/narration.txt",
+      "path": "03_film/draft/05/narration.txt",
       "output": "A05_NARRATION.wav",
       "refs": [],
       "prompt_sha256": "f2431b1f66cf118227294e02d49b9a3057469166a35029af21b538ab25ec42ec"
     },
     "V05": {
       "key": "V05",
-      "path": "03_film/05/video.txt",
+      "path": "03_film/draft/05/video.txt",
       "output": "V05_CHAIN_TO_0230.mp4",
       "refs": [
         "W05_A_01",
@@ -3727,7 +3727,7 @@
     },
     "SB06": {
       "key": "SB06",
-      "path": "03_film/06/storyboard.txt",
+      "path": "03_film/draft/06/storyboard.txt",
       "output": "SB06_STORYBOARD.png",
       "refs": [
         "W06_A_01",
@@ -3818,14 +3818,14 @@
     },
     "A06": {
       "key": "A06",
-      "path": "03_film/06/narration.txt",
+      "path": "03_film/draft/06/narration.txt",
       "output": "A06_NARRATION.wav",
       "refs": [],
       "prompt_sha256": "8eea05414eb6ec2153d183414746f388f8b9f99186ee2e9abc9e57de4055f221"
     },
     "V06": {
       "key": "V06",
-      "path": "03_film/06/video.txt",
+      "path": "03_film/draft/06/video.txt",
       "output": "V06_CHAIN_TO_0300.mp4",
       "refs": [
         "W06_A_01",
@@ -3919,7 +3919,7 @@
     },
     "SB07": {
       "key": "SB07",
-      "path": "03_film/07/storyboard.txt",
+      "path": "03_film/draft/07/storyboard.txt",
       "output": "SB07_STORYBOARD.png",
       "refs": [
         "W07_A_01",
@@ -3968,14 +3968,14 @@
     },
     "A07": {
       "key": "A07",
-      "path": "03_film/07/narration.txt",
+      "path": "03_film/draft/07/narration.txt",
       "output": "A07_NARRATION.wav",
       "refs": [],
       "prompt_sha256": "7e52c85c6fc3805308ad2b2fe5f520db0813137d06960c8a826e992ecf20b792"
     },
     "V07": {
       "key": "V07",
-      "path": "03_film/07/video.txt",
+      "path": "03_film/draft/07/video.txt",
       "output": "V07_MASTER_0320.mp4",
       "refs": [
         "W07_A_01",
@@ -4035,7 +4035,7 @@
       "layout": "2x2 source/early/advanced/target",
       "intended_resolution": "4K",
       "production_reuse": [
-        "03_film/01/video.txt"
+        "03_film/draft/01/video.txt"
       ],
       "note": "Standalone named-cathedral geometry study; no source images required. No image or video generated by this edit.",
       "prompt_sha256": "8aeb7fcdc8f2748cc58c68b988ee81f8673e450af834884e77153da3358ebfcb",
@@ -4102,7 +4102,7 @@
       "layout": "2x2 source/unfinished/unfinished/target",
       "intended_resolution": "4K",
       "production_reuse": [
-        "03_film/01/video.txt"
+        "03_film/draft/01/video.txt"
       ],
       "source_object_keys": [
         "R015",
@@ -4127,7 +4127,7 @@
       "layout": "2x2 source/unfinished/unfinished/target",
       "intended_resolution": "4K",
       "production_reuse": [
-        "03_film/01/video.txt"
+        "03_film/draft/01/video.txt"
       ],
       "source_object_keys": [
         "R016"
@@ -4151,7 +4151,7 @@
       "layout": "2x2 source/unfinished/unfinished/target",
       "intended_resolution": "4K",
       "production_reuse": [
-        "03_film/01/video.txt"
+        "03_film/draft/01/video.txt"
       ],
       "source_object_keys": [
         "R017"
@@ -4175,7 +4175,7 @@
       "layout": "2x2 source/unfinished/unfinished/target",
       "intended_resolution": "4K",
       "production_reuse": [
-        "03_film/01/video.txt"
+        "03_film/draft/01/video.txt"
       ],
       "source_object_keys": [
         "R018"
@@ -4199,7 +4199,7 @@
       "layout": "2x2 source/unfinished/unfinished/target",
       "intended_resolution": "4K",
       "production_reuse": [
-        "03_film/01/video.txt"
+        "03_film/draft/01/video.txt"
       ],
       "source_object_keys": [
         "R022"
@@ -4223,7 +4223,7 @@
       "layout": "2x2 source/unfinished/unfinished/target",
       "intended_resolution": "4K",
       "production_reuse": [
-        "03_film/01/video.txt"
+        "03_film/draft/01/video.txt"
       ],
       "source_object_keys": [
         "R023"
@@ -4247,7 +4247,7 @@
       "layout": "2x2 source/unfinished/unfinished/target",
       "intended_resolution": "4K",
       "production_reuse": [
-        "03_film/01/video.txt"
+        "03_film/draft/01/video.txt"
       ],
       "source_object_keys": [
         "R024"
@@ -4271,7 +4271,7 @@
       "layout": "2x2 source/unfinished/unfinished/target",
       "intended_resolution": "4K",
       "production_reuse": [
-        "03_film/01/video.txt"
+        "03_film/draft/01/video.txt"
       ],
       "source_object_keys": [
         "R025",
@@ -4296,7 +4296,7 @@
       "layout": "2x2 source/unfinished/unfinished/target",
       "intended_resolution": "4K",
       "production_reuse": [
-        "03_film/01/video.txt"
+        "03_film/draft/01/video.txt"
       ],
       "source_object_keys": [
         "R025",
@@ -4321,7 +4321,7 @@
       "layout": "2x2 source/unfinished/unfinished/target",
       "intended_resolution": "4K",
       "production_reuse": [
-        "03_film/02/video.txt"
+        "03_film/draft/02/video.txt"
       ],
       "source_object_keys": [
         "R043"
@@ -4345,7 +4345,7 @@
       "layout": "2x2 source/unfinished/unfinished/target",
       "intended_resolution": "4K",
       "production_reuse": [
-        "03_film/02/video.txt"
+        "03_film/draft/02/video.txt"
       ],
       "source_object_keys": [
         "R044"
@@ -4369,7 +4369,7 @@
       "layout": "2x2 source/unfinished/unfinished/target",
       "intended_resolution": "4K",
       "production_reuse": [
-        "03_film/02/video.txt"
+        "03_film/draft/02/video.txt"
       ],
       "source_object_keys": [
         "R046"
@@ -4393,7 +4393,7 @@
       "layout": "2x2 source/unfinished/unfinished/target",
       "intended_resolution": "4K",
       "production_reuse": [
-        "03_film/02/video.txt"
+        "03_film/draft/02/video.txt"
       ],
       "source_object_keys": [
         "R047"
@@ -4417,7 +4417,7 @@
       "layout": "2x2 source/unfinished/unfinished/target",
       "intended_resolution": "4K",
       "production_reuse": [
-        "03_film/04/video.txt"
+        "03_film/draft/04/video.txt"
       ],
       "source_object_keys": [
         "R049"
@@ -4441,7 +4441,7 @@
       "layout": "2x2 source/unfinished/unfinished/target",
       "intended_resolution": "4K",
       "production_reuse": [
-        "03_film/05/video.txt"
+        "03_film/draft/05/video.txt"
       ],
       "source_object_keys": [
         "R050"
@@ -4465,7 +4465,7 @@
       "layout": "2x2 source/unfinished/unfinished/target",
       "intended_resolution": "4K",
       "production_reuse": [
-        "03_film/01/video.txt"
+        "03_film/draft/01/video.txt"
       ],
       "source_object_keys": [
         "R051",
@@ -4491,7 +4491,7 @@
       "layout": "2x2 source/unfinished/unfinished/target",
       "intended_resolution": "4K",
       "production_reuse": [
-        "03_film/07/video.txt"
+        "03_film/draft/07/video.txt"
       ],
       "source_object_keys": [
         "HRW07"
@@ -4513,7 +4513,7 @@
       "refs": [],
       "status": "MCP_IMAGE_ATTACHMENT_CONFIRMED",
       "production_reuse": [
-        "03_film/01/video.txt"
+        "03_film/draft/01/video.txt"
       ],
       "layout": "2x2 source/unfinished/unfinished/target",
       "prompt_sha256": "a6a8716806aae8f6bf7b6c1a6a465e8df5341477fc69ac5790c53665df17c49e",
@@ -4533,7 +4533,7 @@
       "status": "MCP_IMAGE_ATTACHMENT_CONFIRMED",
       "layout": "2x2 source/unfinished/unfinished/target",
       "production_reuse": [
-        "03_film/01/video.txt"
+        "03_film/draft/01/video.txt"
       ],
       "prompt_sha256": "ae3a1684d5caf0a4b6ca18e559de4f8359f533542c55c47d3ba3560a7b3c7fad",
       "four_state_summary": "ORIGINAL SOURCE: the intact ground-floor café window, thick brick returns, timber mullion, attached glass, stone sill and adjoining paving. Show mortar depth, the sill's underside and a distinctive chipped corner low on the same brick pier. The restaurant described above occupies the actual depth behind this window: its existing table, chair, woman and remembered man retain their source positions. They can be partly obscured by the original window structure, but do not invent a different empty interior. → WINDOW BURSTS INTO A DEEP MASONRY AND GLASS ARRAY: → ROOM EMERGES THROUGH AN UNJOINED ARCH AND OPEN GLASS HELICES: → RESOLVED DESTINATION: the same window opening has become the full-depth occupied restaurant projecting into the street, with the same table and chair on the supported wooden floor beyond the original jamb. All THREE source glass segments have now resolved into complete attached curved pendant shades with closed finished profiles; none retains a flat shard face or open intermediate seam. The floor reaches its full approximately one-metre projection, carrying the entire occupied chair and near table beyond the original facade plane. The source glass now forms attached curved pendant shades, the fasteners form stems, the mullion forms trim and the brick courses form substantial stone/plaster returns. Show all chair legs, table thickness, floor edge, pendant attachments and both rear restroom doors. Preserve the same woman and man's identities within this sheet and their original encounter. The chipped corner and surviving paving edge locate this as the same physical site as the first cell. No remaining source part disappears to reveal a finished replacement room.",
@@ -8651,7 +8651,7 @@
     },
     "V00": {
       "key": "V00",
-      "path": "03_film/00/video.txt",
+      "path": "03_film/production/P00/video.txt",
       "output": "V00_MYSCOUTEE_PRESENTS_4S.mp4",
       "refs": [],
       "duration_seconds": 4,
@@ -12433,8 +12433,8 @@
           "sha256": "53e8173bceab28aea29db9308b1cb8b04801892354bf72d0a4bee22d699b8797",
           "status": "PREPARED_NOT_RENDERED",
           "production_consumers": [
-            "03_film/07/video.txt",
-            "03_film/07/storyboard.txt",
+            "03_film/draft/07/video.txt",
+            "03_film/draft/07/storyboard.txt",
             "02_library/worlds/real/W07_MAIN_WORLD_A.txt"
           ]
         },
@@ -12443,8 +12443,8 @@
           "sha256": "38b3f919b26c06a3a27ad7fafb06fbfc110e074708344ce675c6c5899c3621e1",
           "status": "PREPARED_NOT_RENDERED",
           "production_consumers": [
-            "03_film/07/video.txt",
-            "03_film/07/storyboard.txt",
+            "03_film/draft/07/video.txt",
+            "03_film/draft/07/storyboard.txt",
             "02_library/worlds/real/W07_MAIN_WORLD_A.txt"
           ]
         },
@@ -16728,7 +16728,7 @@
     "source_git_commit": "b516ef057dcf1188e18fe50a8512bfc546367c73",
     "canonical_master_changed": false,
     "spoken_passages_changed": false,
-    "status": "WHOLE_IMAGE_REFERENCE_UNION_PREPARED_FUTURE_END_FRAMES_PENDING",
+    "status": "P01_P12_REPARTITION_PREPARED_PENDING_ELIGIBILITY_AND_FOUR_FRAME_BINDINGS",
     "production_import": "00_project/elements/additions/FILM_PRODUCTION_IMPORT.md",
     "production_definitions": 25,
     "full_narration": "03_film/narration.txt",
@@ -16741,8 +16741,8 @@
         "block": 1,
         "prev": null,
         "duration": 30,
-        "video": "03_film/01/video.txt",
-        "storyboard": "03_film/01/storyboard.txt",
+        "video": "03_film/draft/01/video.txt",
+        "storyboard": "03_film/draft/01/storyboard.txt",
         "library": [
           "@loc_MYS_mys-mw01-a-london-social_s0_v1",
           "@loc_MYS_mys-mw01-b-01-memory-view-05_s0_v1",
@@ -16868,8 +16868,8 @@
         "block": 2,
         "prev": "01",
         "duration": 30,
-        "video": "03_film/02/video.txt",
-        "storyboard": "03_film/02/storyboard.txt",
+        "video": "03_film/draft/02/video.txt",
+        "storyboard": "03_film/draft/02/storyboard.txt",
         "library": [
           "@loc_MYS_mys-mw02-a-01-memory-view-01_s0_v1",
           "@loc_MYS_mys-mw02-a-02-memory-view-02_s0_v1",
@@ -16995,8 +16995,8 @@
         "block": 3,
         "prev": "02",
         "duration": 30,
-        "video": "03_film/03/video.txt",
-        "storyboard": "03_film/03/storyboard.txt",
+        "video": "03_film/draft/03/video.txt",
+        "storyboard": "03_film/draft/03/storyboard.txt",
         "library": [
           "@loc_MYS_mys-mw03-a-work-rule-change-admin_s0_v1",
           "@loc_MYS_mys-mw03-b-01-memory-view-05_s0_v1",
@@ -17094,8 +17094,8 @@
         "block": 4,
         "prev": "03",
         "duration": 30,
-        "video": "03_film/04/video.txt",
-        "storyboard": "03_film/04/storyboard.txt",
+        "video": "03_film/draft/04/video.txt",
+        "storyboard": "03_film/draft/04/storyboard.txt",
         "library": [
           "@loc_MYS_mys-mw04-a-police-defence_s0_v1",
           "@loc_MYS_mys-mw04-b-01-memory-view-05_s0_v1",
@@ -17181,8 +17181,8 @@
         "block": 5,
         "prev": "04",
         "duration": 30,
-        "video": "03_film/05/video.txt",
-        "storyboard": "03_film/05/storyboard.txt",
+        "video": "03_film/draft/05/video.txt",
+        "storyboard": "03_film/draft/05/storyboard.txt",
         "library": [
           "@loc_MYS_mys-mw05-a-court-file_s0_v1",
           "@loc_MYS_mys-mw05-b-01-memory-view-05_s0_v1",
@@ -17282,8 +17282,8 @@
         "block": 6,
         "prev": "05",
         "duration": 15,
-        "video": "03_film/06/video.txt",
-        "storyboard": "03_film/06/storyboard.txt",
+        "video": "03_film/draft/06/video.txt",
+        "storyboard": "03_film/draft/06/storyboard.txt",
         "library": [
           "@loc_MYS_mys-mw06-a-01-memory-view-01_s0_v1",
           "@loc_MYS_mys-mw06-a-02-memory-view-02_s0_v1",
@@ -17380,8 +17380,8 @@
         "block": 6,
         "prev": "06A",
         "duration": 15,
-        "video": "03_film/06/video_b.txt",
-        "storyboard": "03_film/06/storyboard_b.txt",
+        "video": "03_film/draft/06/video_b.txt",
+        "storyboard": "03_film/draft/06/storyboard_b.txt",
         "library": [
           "@loc_MYS_mys-mw06-b-02-memory-view-06_s0_v1",
           "@loc_MYS_mys-mw06-b-03-memory-view-07_s0_v1",
@@ -17499,8 +17499,8 @@
         "block": 7,
         "prev": "06B",
         "duration": 20,
-        "video": "03_film/07/video.txt",
-        "storyboard": "03_film/07/storyboard.txt",
+        "video": "03_film/draft/07/video.txt",
+        "storyboard": "03_film/draft/07/storyboard.txt",
         "library": [
           "@loc_MYS_mys-hrw07-a-clinical-reality_s0_v1",
           "@loc_MYS_mys-hrw07-b-clinical-reality_s0_v1",
@@ -17739,7 +17739,7 @@
       }
     },
     "video_detail_revision": "2026-09-11: expanded selected existing material transitions, hand/object contact, scene separation and clinical reveal. Beat timings, reference sets and narration unchanged; all video prompts under 15000 characters.",
-    "next_step": "Review intended video request and actual UI price; continuations require accepted predecessor and its verified final frame. Narration already downloaded; no paid storyboard series.",
+    "next_step": "Use production/P01/video.txt; resolve per-image eligibility before generation. Future P09–P12 require four additional frame definitions and actual MCP handles.",
     "additional_test_policy": "No separate 1080p test. Consider one or two focused 480p tests only after narration debit and remaining production quote reconciliation; no automatic generation.",
     "reserve_basis": "1979 last reported before narration minus user-reported 6.15 narration quote minus 1836 provisional footage/ident reserve; not a verified current balance.",
     "storyboard_route": {
@@ -17758,6 +17758,8 @@
       "previously_measured_duration_seconds": 150.334694,
       "account_debit_reconciled": false
     },
-    "ident_audio": "Audio ON: synchronised material sounds, short warm acoustic signature, natural decay; no voice or separate audio reference."
+    "ident_audio": "Audio ON: synchronised material sounds, short warm acoustic signature, natural decay; no voice or separate audio reference.",
+    "previous_jobs_status": "SUPERSEDED_GENERATION_BOUNDARIES_RETAINED_AS_SOURCE_CHAPTERS",
+    "active_generation_plan": "03_film/production/plan.json"
   }
 }

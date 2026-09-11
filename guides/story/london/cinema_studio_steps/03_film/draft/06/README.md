@@ -1,6 +1,8 @@
+> Retained source chapter. The current generation prompts are [P01–P12](../../production/README.md); do not queue this chapter’s old video.txt directly.
+
 # Block 06 — Human counter-memories and classification
 
-Use existing whole-image references. No new storyboard generation, panel cropping or reference re-upload. [Current production order](../README.md).
+Use existing whole-image references. No new storyboard generation, panel cropping or reference re-upload. [Current production order](../../README.md).
 
 | Portion | Seconds | Local storyboard plan | Video request | Incoming frame | References |
 |---|---:|---|---|---|---:|

@@ -8,7 +8,7 @@ This file collects the copyable script, voice direction, visible settings and ob
 
 ## Script — paste only this into the Script field
 
-The exact text comes from [film Block 01](../03_film/01/narration.txt). It is the full A01 passage, not the shorter excerpt used by the joined 8-second video test.
+The exact text comes from [film Block 01](../03_film/draft/01/narration.txt). It is the full A01 passage, not the shorter excerpt used by the joined 8-second video test.
 
 ```text
 I don't remember my life as a straight line. A street becomes a room, a window becomes another country, a glance becomes a verdict before anyone has time to speak. Memory edits without asking permission. Sometimes the only thing that survives the cut is a smile.

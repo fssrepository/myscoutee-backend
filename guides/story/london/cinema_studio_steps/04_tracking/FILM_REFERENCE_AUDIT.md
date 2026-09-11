@@ -1,3 +1,7 @@
+## Current production repartition — 2026-09-11
+
+The tables below describe the retained original chapter prompts. The **active queue is P01–P12**, with 22–29 Element references including incoming frames. See [current plan](../03_film/production/README.md) and [current asset mapping](PRODUCTION_ASSET_COVERAGE.csv). All 216 previously selected canonical library Elements remain used; all 63 beat bodies are preserved verbatim.
+
 # Film reference audit — current whole-image route, 2026-09-11
 
 The storyboard is now a local ordered scene plan made from existing whole images. No new paid storyboard image, cropped panel, resized grid, local composite or reference re-upload is required. The imported SB containers remain unused; keep them rather than reimporting or deleting them. This supersedes the previous eight generated 3×3 boards and 32-credit allowance.

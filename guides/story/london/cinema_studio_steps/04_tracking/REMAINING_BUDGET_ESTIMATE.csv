@@ -1,9 +1,9 @@
 item,quantity,unit,estimated_credits,basis,status
-EXISTING_LIBRARY_AND_LOGO,1,reuse,0,Existing whole attached images; no crops or replacement uploads,NO_NEW_PASS
-STORYBOARDS,0,generated image,0,Local plans using existing whole images and grids,NO_PAID_SERIES
-FINAL_FILM,200,seconds,1800,5x30 + 2x15 + 20; historical 9 credits/s; actual quote pending,HISTORICAL_RATE_ESTIMATE
-FULL_NARRATION,0,future recording,0,Already downloaded; reported 6.15 quote deducted separately in conditional balance,DO_NOT_REGENERATE
-OPENING_IDENT,4,seconds,36,Assumed 9 credits/s; actual quote pending,PLANNING_ESTIMATE
-LOCAL_ASSEMBLY,1,FFmpeg assembly,0,No Higgsfield generation job,LOCAL
-REMAINING_TOTAL,1,plan,1836,Footage plus ident; excludes already generated narration,PLANNING_TOTAL
-RESERVE,1,remaining credits,136.85,1979 minus reported 6.15 narration quote minus 1836; no other debit assumed,CONDITIONAL_NOT_VERIFIED_BALANCE
+FINAL_FILM,200,seconds,1800,12 requests; creator-reported 9 credits/s,QUOTE_CHECK_PER_REQUEST
+ELIGIBILITY_IMAGE_RESERVE,1,spending envelope,40,Necessary replacements only; not a batch order,PROVISIONAL_RESERVE
+STORYBOARDS,0,generated image,0,Reuse existing whole images,NO_PAID_SERIES
+FULL_NARRATION,0,future recording,0,Already downloaded,DO_NOT_REGENERATE
+OPENING_IDENT,0,future generation,0,Accepted V00; prior 36 quote accounted in conditional balance,COMPLETE
+FINAL_FRAMES_AND_ASSEMBLY,1,local work,0,Local extraction and FFmpeg assembly; four metadata definitions,NO_GENERATIVE_JOB
+RESERVED_TOTAL,1,plan,1840,Story plus replacement-image envelope,PLANNING_TOTAL
+TEST_OR_UNALLOCATED,1,conditional credits,97,1973 - 36 - 1800 - 40; assumes no other debits,NOT_VERIFIED_BALANCE
