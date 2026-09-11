@@ -1,9 +1,7 @@
-REFERENCE SETUP PENDING: bind LOGO_MYS after import and attachment of the existing logo.
-
 MYSCOUTEE PRESENTS — FULL-SCREEN OPENING, 4 SECONDS, 16:9
 
 SOLE IMAGE REFERENCE:
-@UNBOUND_LOGO_MYS = the existing uploaded MyScoutee M-logo image; do not generate a replacement logo.
+@prop_MYS_mys-film-m-logo_s0_v1 = the existing uploaded MyScoutee M-logo image; do not generate a replacement logo.
 Use the supplied MyScoutee M-logo image as the exact existing brand mark: the blue-violet-magenta M-shaped emblem, white heart and gold star. Preserve its silhouette, internal shapes, colours and proportions throughout. The reference supplies only this logo, not a full-frame composition. Keep its transparent surroundings transparent; do not introduce a square white backing or redraw the mark. Construct the background, typography and animation from the description below.
 
 COMPOSITION:

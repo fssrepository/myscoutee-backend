@@ -1,9 +1,9 @@
-REFERENCE SETUP PENDING: bind EF06B to the accepted preceding clip's exact final frame.
+REFERENCE MEDIA PENDING: attach accepted images to EF06B. Element handles are verified; these image slots are still empty.
 
 MYSCOUTEE — STORYBOARD 07 — ONE 4K 16:9 IMAGE
 Generate one edge-to-edge 3×3 cinematic storyboard with nine equal 16:9 cells, hairline internal gutters and no outer margin. Tiny cell numbers 1–9 only; no title band, labels or explanatory text. Photographic people, material depth and plausible light. These are sampled moments of one continuous camera route, not nine cuts. Never place a contact sheet inside an individual cell.
 
-@UNBOUND_EF06B supplies cell 1's starting composition; later cells develop from it, retaining its people, supports and framing before the camera travels.
+@loc_MYS_mys-film-v06b-end-frame_s0_v1 supplies cell 1's starting composition; later cells develop from it, retaining its people, supports and framing before the camera travels.
 LIBRARY INPUTS — REUSE THESE EXISTING ELEMENTS:
 @loc_MYS_mys-hrw07-a-clinical-reality_s0_v1
 @loc_MYS_mys-hrw07-b-clinical-reality_s0_v1
