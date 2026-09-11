@@ -1,6 +1,9 @@
 item,quantity,unit,estimated_credits,basis,status
-EXISTING_LIBRARY,266,attached image,0,Reuse existing attached images,NO_NEW_PASS
-STORYBOARDS,7,4K image,28,Assume 4 credits each; earlier unit price,PLANNING_ESTIMATE
-FINAL_FILM,200,seconds,1800,Earlier 30s=270 and 20s=180; complete-input and Extend quotes pending,HISTORICAL_RATE_ESTIMATE
-FINAL_NARRATION,7,passage,14,Earlier Seed Audio A01 quote scaled to total script length,PLANNING_ESTIMATE
-PILOT_LOGO_FINISHING,1,combined envelope,100,"4+4s test, test speech, 4s intro and finishing together; not a quote",UNQUOTED_PLANNING_ENVELOPE
+EXISTING_LIBRARY_AND_LOGO,1,reuse,0,Existing attached/uploaded media,NO_NEW_PASS
+STORYBOARDS,8,4K image,32,Earlier 4 credits each; actual quote pending,PLANNING_ESTIMATE
+FINAL_FILM,200,seconds,1800,5x30 + 2x15 + 20; historical 9 credits/s; actual quote pending,HISTORICAL_RATE_ESTIMATE
+FULL_NARRATION,1,Grady recording,14,Conservative allowance; not a measured full-script quote,PLANNING_ALLOWANCE
+OPENING_IDENT,4,seconds,36,Assumed same 9 credits/s; actual quote pending,PLANNING_ESTIMATE
+LOCAL_ASSEMBLY,1,FFmpeg assembly,0,No Higgsfield generation job,LOCAL
+REMAINING_TOTAL,1,plan,1882,Excludes already incurred spending,PLANNING_TOTAL
+RESERVE,1,remaining credits,97,1979 minus 1882,UNALLOCATED

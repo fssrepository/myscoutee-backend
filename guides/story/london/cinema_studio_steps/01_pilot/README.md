@@ -1,3 +1,7 @@
+## Latest creator decision — 2026-09-11
+
+Version 10 (`10_TEST_PUBLICATION_soft_subtitles.mp4`) is selected for the test; version 11's additional two-frame cut was rejected. Version 10 keeps version 08's picture/audio and embeds a separate default subtitle track. The creator reports the uploaded subtitle was not visible, chose not to burn it in, and completed the UI route through Update project film with watermark added. The upload/publication checkpoint is creator-reported complete; no published URL or independent playback inspection has been recorded here. Further pilot repair/generation is not scheduled. Continue with [main-film preparation](../03_film/README.md). Earlier pending/review-candidate statements below are historical.
+
 # Small continuity test — 4 seconds + 4 seconds
 
 ## Current checkpoint — 2026-09-11
@@ -138,3 +142,24 @@ Keep these findings separate in future summaries:
 - **Bug — spatial alignment:** The generated opening shifted upward and changed positions relative to the supplied reference composition. The still image does contain that spatial information. The observed mismatch is an alignment defect in this trial, independent of the missing motion history. Local warping of 30 frames was a workaround for this defect, not a substitute for video context.
 
 The source-to-reference mismatch remains separately documented; it must not be attributed to generation. The audio jump is also a separate creator observation whose source-versus-assembly cause is unresolved. The public brief now uses separate CONTINUATION CONTEXT GAP and FRAME ALIGNMENT BUG entries.
+
+
+## Export diagnosis — two distinct mismatches, 2026-09-11
+
+Compared the downloaded `d0be92b5-32ed-4c57-8c55-78db5b922caa.jpg` against every decoded frame of `hf_20260911_045948_dc0fdaab-8c79-4bab-b846-f40a84080a7e.mp4`, then against the opening of `hf_20260911_070152_727a9946-0720-476c-a100-0be18752e94c.mp4`. All are 854 × 480. Frame numbers below are zero-based; the source has 97 frames at 24 fps.
+
+| Comparison | Result |
+|---|---|
+| Source frame 94 → exported JPG | Closest of all 97 frames: grayscale MAE 1.47/255, 410/413 robust feature matches, scale 1.00004 and fitted translation about −0.006/−0.022 px. No meaningful spatial shift. JPEG differences prevent byte/pixel identity. |
+| Source frame 95 → exported JPG | MAE 5.27/255; less similar than frame 94. |
+| Source frame 96 (actual final frame) → exported JPG | MAE 10.68/255. The export corresponds to two frame positions earlier, approximately 83 ms before the final source frame. |
+| Exported JPG → continuation frame 0 | MAE 15.21/255; dense optical-flow median about 8.1 px left / 7.7 px up. A fitted similarity transform also shows a scale difference (~0.987), so this is not solely a rigid vertical offset. |
+
+**Attribution correction:** the export selected an earlier frame; it did not spatially shift that selected frame. The generated continuation then diverged spatially from the exported reference itself. Both contribute to the source-to-continuation join. It was too strong to assign the whole defect to Seedance: these files do not isolate the model from Higgsfield's reference processing, and the test used an Element reference rather than a verified locked first-frame input. Earlier generic Seedance-bug wording is superseded by this decomposition.
+
+For main-film preparation, extract and verify the actual final decoded frame locally from the accepted original clip before assigning its EF Element. Do not trust a downloaded last-frame label without matching it to the source. This avoids the demonstrated export selection error; it does not guarantee that the next generation will honour the image exactly. The selected delivery remains version 10; no further pilot render was made for this diagnosis. The creator-reported audio jump remains a separate unisolated observation.
+
+
+## Final-frame extraction responsibility — agreed 2026-09-11
+
+The creator downloads each accepted original video. Astra uses FFmpeg locally to extract its actual last decoded frame into a new lossless PNG at source resolution, verifies it against the source, and records the source filename and frame index. Preserve the original clip. The creator uploads that PNG and assigns it to the matching EF Element; do not rely on Higgsfield's exported last-frame selection for this production. After import/attachment confirmation, use the authorized read-only MCP lookup to verify the real Element handle and update dependent local prompts. No upload or generation through MCP is implied. Correct extraction addresses the observed early-frame selection, not the separate generated-opening alignment problem.

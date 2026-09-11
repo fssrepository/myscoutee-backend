@@ -1,78 +1,15 @@
-# Block 04 — 01:30–02:00
+# Block 04 — Police, procedure and defence
 
-Status: prepared prompt files; existing account media has not been checked. [Start](../../README.md).
+Prepared 2026-09-11; not generated. Reuse the existing library. The original nine story beats remain; Block 06 is generated as two 15-second portions. [Current production order](../README.md).
 
-Seedance 2.5; 16:9; **30 s, 1080p target**, audio ON, one output.
-Duration means NEW added footage. Select the previous accepted video in the actual Forward Extend source field. A filename alone does not establish an extension.
+| Portion | Duration | Storyboard prompt | Video prompt | Required final-frame input | Total video references |
+|---|---:|---|---|---|---:|
+| 04 | 30 s | [storyboard.txt](storyboard.txt) | [video.txt](video.txt) | EF03 | 28 |
 
-## Sequential preparation
+1. Import the shared [production definitions](../../00_project/elements/additions/FILM_PRODUCTION_IMPORT.md) once for the film, reusing existing matching containers. After the creator confirms import, the assistant may query MCP read-only and replace UNBOUND tokens with actual handles in the local prompts. No automatic upload, attachment or generation follows from binding.
+2. For continuation, the creator downloads the accepted predecessor. Astra extracts and verifies its actual last decoded frame locally with FFmpeg into a new source-resolution PNG. The creator uploads that image and assigns it to the named EF container. Review the final movement and have the assistant update the planned boundary direction/pace if needed. Do not infer velocity from the still alone. If the UI offers an explicit first-frame role, use it; a generic Element mention has not been proven to lock the opening exactly.
+3. Generate this portion's storyboard using its assigned library references and, where applicable, the predecessor EF. Nano Banana Pro, one 4K 16:9 output, earlier quote 4 credits. This is composition planning, not a temporal-context substitute. Attach to the matching SB container and review all nine cells against the mapped beats before video generation.
+4. Generate one new video portion: 1080p target, 16:9, audio ON, one output, specified duration. Verify actual model, available controls and quote. Use the entire prepared prompt after all required references are bound and attached. Keep the library identities as well as the EF and SB. No narration audio input; no intelligible extra dialogue. Do not append the whole previous clip or ask for a cumulative master.
+5. Download the accepted original and preserve it. Inspect the source's last frames against the new opening for framing, pose, direction and tempo, then check background sound. Do not apply a universal seven-frame trim or assume a prompt fixes the pilot's alignment defect. Any local repair creates a new output and documents its pixel/timing changes.
 
-Image setup: Nano Banana Pro, 16:9, one output. Present-world single views use 2K; other reference sheets retain 4K at the reported 4 credits per image. Eligible 2K Unlimited generations are planned at zero credits only while the offer is active. Keep each prompt's current grid and all four morph states together. No image or video regeneration is allowed. Apply the [reference procedure](../../00_project/REFERENCES.md#remaining-binding-work-at-the-point-of-use) as each asset is accepted; dependent prompts require actual bound mentions.
-
-Generate only missing media. Reuse accepted dependencies from prior blocks. Each row lists existing image/audio/video inputs, the complete `.txt` prompt to paste into the appropriate field, and the output name to assign after generation. Output filenames do not imply that local media already exists. One row means one output.
-
-| Prompt | Required accepted references | Output name |
-| --- | --- | --- |
-| [W04_A_01](../../02_library/worlds/real/W04_A_01_MAIN_WORLD_VIEW_01.txt) | None; compatible accepted companion view if available | `W04_A_01_MAIN_WORLD_VIEW_01.png` |
-| [W04_A_02](../../02_library/worlds/real/W04_A_02_MAIN_WORLD_VIEW_02.txt) | None; compatible accepted companion view if available | `W04_A_02_MAIN_WORLD_VIEW_02.png` |
-| [W04_A_03](../../02_library/worlds/real/W04_A_03_MAIN_WORLD_VIEW_03.txt) | None; compatible accepted companion view if available | `W04_A_03_MAIN_WORLD_VIEW_03.png` |
-| [W04_A_04](../../02_library/worlds/real/W04_A_04_MAIN_WORLD_VIEW_04.txt) | None; compatible accepted companion view if available | `W04_A_04_MAIN_WORLD_VIEW_04.png` |
-| [W04_B_01](../../02_library/worlds/real/W04_B_01_MAIN_WORLD_VIEW_05.txt) | None; compatible accepted companion view if available | `W04_B_01_MAIN_WORLD_VIEW_05.png` |
-| [W04_B_02](../../02_library/worlds/real/W04_B_02_MAIN_WORLD_VIEW_06.txt) | None; compatible accepted companion view if available | `W04_B_02_MAIN_WORLD_VIEW_06.png` |
-| [W04_B_03](../../02_library/worlds/real/W04_B_03_MAIN_WORLD_VIEW_07.txt) | None; compatible accepted companion view if available | `W04_B_03_MAIN_WORLD_VIEW_07.png` |
-| [W04_B_04](../../02_library/worlds/real/W04_B_04_MAIN_WORLD_VIEW_08.txt) | None; compatible accepted companion view if available | `W04_B_04_MAIN_WORLD_VIEW_08.png` |
-| [W04_C_01](../../02_library/worlds/real/W04_C_01_MAIN_WORLD_VIEW_09.txt) | None; compatible accepted companion view if available | `W04_C_01_MAIN_WORLD_VIEW_09.png` |
-| [W04_C_02](../../02_library/worlds/real/W04_C_02_MAIN_WORLD_VIEW_01.txt) | None; compatible accepted companion view if available | `W04_C_02_MAIN_WORLD_VIEW_01.png` |
-| [W04_C_03](../../02_library/worlds/real/W04_C_03_MAIN_WORLD_VIEW_07.txt) | None; compatible accepted companion view if available | `W04_C_03_MAIN_WORLD_VIEW_07.png` |
-| [W04_C_04](../../02_library/worlds/real/W04_C_04_MAIN_WORLD_VIEW_08.txt) | None; compatible accepted companion view if available | `W04_C_04_MAIN_WORLD_VIEW_08.png` |
-| [C03](../../02_library/characters/C03_POLICEWOMAN.txt) | None | `C03_POLICEWOMAN.png` |
-| [C04](../../02_library/characters/C04_APPOINTED_LAWYER.txt) | None | `C04_APPOINTED_LAWYER.png` |
-| [C25](../../02_library/characters/C25_SEARCH_OFFICER_MALE.txt) | None | `C25_SEARCH_OFFICER_MALE.png` |
-| [C26](../../02_library/characters/C26_DEFENCE_OFFICE_SUBSTITUTE.txt) | None | `C26_DEFENCE_OFFICE_SUBSTITUTE.png` |
-| [MW04](../../02_library/worlds/memories/13_MW04_POLICE_DEFENCE_A.txt) | C01, C03, C04, C25, C26 | `MW04_POLICE_DEFENCE.png` |
-| [SB04](storyboard.txt) | W04, MW04, C01, C03, C04, C25, C26 | `SB04_STORYBOARD.png` |
-| [A04](narration.txt) | None | `A04_NARRATION.wav` |
-| [V04](video.txt) | W04, MW04, C01, C03, C04, C25, C26, SB04, A04, V03 | `V04_CHAIN_TO_0200.mp4` |
-
-## Before video generation
-
-- [narration.txt](narration.txt) contains only spoken words: 61 whitespace-delimited tokens, original target 23–27 s, approximately 136–159 words/minute. Keep the same male voice and exact wording. Follow the [voice plan](../../00_project/VOICE.md); a natural shorter recording is not an automatic failure.
-- [storyboard.txt](storyboard.txt) generates one 3×3 image. [video.txt](video.txt) generates one moving sequence. Never paste them together.
-- All nine story beats remain. Fast camera movement and architectural transformation are already included.
-- Paste the complete prompt after its reference setup notice has cleared. Verified Element mentions autoload. Missing IDs are bound once for the entire pack by the assistant; do not rewrite individual prompts. See [reference binding](../../00_project/REFERENCES.md).
-- Enter the actual quote in the [credit ledger](../../04_tracking/credit_ledger.csv) and leave sufficient funds for the remaining film.
-
-| ID | Required media | Reference mention (UNBOUND means missing ID) |
-| --- | --- | --- |
-| W04 | `W04_MAIN_WORLD.png` | `@UNBOUND_W04` |
-| MW04 | `MW04_POLICE_DEFENCE.png` | `@UNBOUND_MW04` |
-| C01 | `C01_PROTAGONIST.png` | `@char_MYS_mys-c01-protagonist_s0_v1` |
-| C03 | `C03_POLICEWOMAN.png` | `@char_MYS_mys-c03-policewoman_s0_v1` |
-| C04 | `C04_APPOINTED_LAWYER.png` | `@char_MYS_mys-c04-appointed-lawyer_s0_v1` |
-| C25 | `C25_SEARCH_OFFICER_MALE.png` | `@char_MYS_mys-c25-search-officer-male_s0_v1` |
-| C26 | `C26_DEFENCE_OFFICE_SUBSTITUTE.png` | `@char_MYS_mys-c26-defence-office-substitute_s0_v1` |
-| SB04 | `SB04_STORYBOARD.png` | `@UNBOUND_SB04` |
-| A04 | `A04_NARRATION.wav` | `@UNBOUND_A04` |
-
-## After generation
-
-Watch once with sound. Check all nine beats and their short secondary memories against the [story checklist](../../04_tracking/story_beats.csv). Verify identity, the exterior present, moving memories, correct narration and continuation of the previous camera/sound state where applicable. Keep the first usable take; name any missing story beat before considering a paid repair. Minor coherent generative irregularities are acceptable.
-
-`CHAIN` and `MASTER` names describe intended outputs. Treat an output as a cumulative master only if the actual native export contains all preceding footage and sound. A separate continuation segment is not that master.
-
-## World pages for this block
-
-| [W04_A_01](../../02_library/worlds/real/W04_A_01_MAIN_WORLD_VIEW_01.txt) | None; compatible accepted companion view if available | `W04_A_01_MAIN_WORLD_VIEW_01.png` |
-| [W04_A_02](../../02_library/worlds/real/W04_A_02_MAIN_WORLD_VIEW_02.txt) | None; compatible accepted companion view if available | `W04_A_02_MAIN_WORLD_VIEW_02.png` |
-| [W04_A_03](../../02_library/worlds/real/W04_A_03_MAIN_WORLD_VIEW_03.txt) | None; compatible accepted companion view if available | `W04_A_03_MAIN_WORLD_VIEW_03.png` |
-| [W04_A_04](../../02_library/worlds/real/W04_A_04_MAIN_WORLD_VIEW_04.txt) | None; compatible accepted companion view if available | `W04_A_04_MAIN_WORLD_VIEW_04.png` |
-| [W04_B_01](../../02_library/worlds/real/W04_B_01_MAIN_WORLD_VIEW_05.txt) | None; compatible accepted companion view if available | `W04_B_01_MAIN_WORLD_VIEW_05.png` |
-| [W04_B_02](../../02_library/worlds/real/W04_B_02_MAIN_WORLD_VIEW_06.txt) | None; compatible accepted companion view if available | `W04_B_02_MAIN_WORLD_VIEW_06.png` |
-| [W04_B_03](../../02_library/worlds/real/W04_B_03_MAIN_WORLD_VIEW_07.txt) | None; compatible accepted companion view if available | `W04_B_03_MAIN_WORLD_VIEW_07.png` |
-| [W04_B_04](../../02_library/worlds/real/W04_B_04_MAIN_WORLD_VIEW_08.txt) | None; compatible accepted companion view if available | `W04_B_04_MAIN_WORLD_VIEW_08.png` |
-| [W04_C_01](../../02_library/worlds/real/W04_C_01_MAIN_WORLD_VIEW_09.txt) | None; compatible accepted companion view if available | `W04_C_01_MAIN_WORLD_VIEW_09.png` |
-| [W04_C_02](../../02_library/worlds/real/W04_C_02_MAIN_WORLD_VIEW_01.txt) | None; compatible accepted companion view if available | `W04_C_02_MAIN_WORLD_VIEW_01.png` |
-| [W04_C_03](../../02_library/worlds/real/W04_C_03_MAIN_WORLD_VIEW_07.txt) | None; compatible accepted companion view if available | `W04_C_03_MAIN_WORLD_VIEW_07.png` |
-| [W04_C_04](../../02_library/worlds/real/W04_C_04_MAIN_WORLD_VIEW_08.txt) | None; compatible accepted companion view if available | `W04_C_04_MAIN_WORLD_VIEW_08.png` |
-
-The B/C Element definitions are in the [new-only companion import](../../00_project/elements/archive/batches/10_world_reference_pages.md); they have not been imported or rendered. Obtain their full actual IDs, check the accepted page images and replace the pending references before generating this block. The existing W04 Element still points to its previously associated image until Page A is accepted and associated. Do not use an old nine-cell image while telling the video that it is new Page A. Keep existing accepted media available and do not repeat earlier imports.
+[narration.txt](narration.txt) remains this block's exact script passage, not a separate generation job. Generate [the full narration](../narration.txt) once with the selected Grady voice and add it locally after picture assembly. Keep the source recording separate from the native background mix. No new source wording or on-screen lip-sync.

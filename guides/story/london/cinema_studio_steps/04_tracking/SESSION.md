@@ -1,3 +1,15 @@
+## Active production preparation — 2026-09-11, steps 3–6
+
+Final-frame ownership: the creator downloads accepted originals; Astra extracts and verifies the actual final decoded frame locally with FFmpeg into a new source-resolution PNG. The creator uploads/assigns it to the matching EF Element. Do not use the unverified Higgsfield last-frame export. Support letter covering all brief findings is drafted in 00_project/higgsfield_support_letter.txt; it has not been sent.
+
+Creator selected pilot version 10; version 11's extra trim was rejected. Creator reports Update project film upload/publication test working with watermark added; embedded subtitle did not display. No independent published URL/playback inspection is recorded.
+
+Remaining balance corrected by creator to 1979 (not 1797). Current estimate 1882 including eight boards, 200-second story, one narration allowance and four-second ident; reserve 97. Goal remains original 3000 without top-up.
+
+Current files: [production import](../00_project/elements/additions/FILM_PRODUCTION_IMPORT.md), [ordered film plan](../03_film/README.md), [audit](FILM_REFERENCE_AUDIT.md), [one full narration](../03_film/narration.txt). Steps 3–6 are prepared locally. Next external dependency: creator imports and attaches the existing uploaded logo. After import confirmation, read-only MCP lookup of real handles and local prompt binding are explicitly authorized. No remote generation, upload, attachment, move or delete is authorized by this handoff.
+
+06 is split into 06A/06B, 15 seconds each, preserving beats 1–4 / 5–9 and all 83 earlier library mentions across both requests. Eight storyboard prompts and eight video prompts fit the observed character/reference limits; real handle replacement must be checked again. No footage or storyboard was generated. Narration passages and the canonical master remain unchanged. All earlier session entries below are historical; do not replay their library, native Extend, separate-Axx or cumulative-export plans.
+
 ## Active small-test checkpoint — 2026-09-11
 
 The creator is starting the 4+4-second test and explicitly requires the workflow to continue through Publish and published playback. Current first step: prepare 01_pilot/test_video_4s.txt in the existing project with C01, C02 and MW01 Page A image references; 4 s, 16:9, audio ON, one output, 480p if offered; inspect actual model/settings and quote. Continue through native Extend, real narration mixing, publishing preview/submission and playback at the returned published URL. No first clip or published test is yet verified. See [the full current test sequence](../01_pilot/README.md). This is the Higgsfield creative test workflow, not the repository's fixture-backed manual QA campaign.

@@ -1,59 +1,24 @@
-# Current budget reconciliation — 2026-09-10
+# Remaining production budget — 2026-09-11
 
-**Creator-reported balance: 2036 credits.** The last reference audit found images attached for all 266 active library definitions, including all 69 memory images. Existing library assets are therefore not charged again in the remaining-work estimate. No generation, purchase or account debit was made for this budget review.
+**Creator-reported balance: 1979 credits**, correcting the briefly reported 1797. Goal: finish within the original 3000-credit allocation, without a top-up. No new account lookup, purchase or generation was performed for this plan.
 
-## Difference from the original image plan
+| Remaining work | Quantity / basis | Planning credits |
+|---|---|---:|
+| Existing library and uploaded M-logo | Reuse accepted media | 0 |
+| Story videos | Five × 30 s, two × 15 s (Block 06), one × 20 s = 200 s | 1800 |
+| Storyboards | Eight 4K images × earlier 4-credit quote | 32 |
+| Full Grady narration | One recording; conservative allowance carried forward, not a current quote | 14 |
+| Separate MyScoutee presents ident | 4 s × assumed 9 credits/s | 36 |
+| Local FFmpeg assembly and narration mix | No Higgsfield generation job | 0 |
+| **Planned remaining total** | | **1882** |
+| **Reserve from 1979** | 1979 − 1882 | **97** |
 
-| Basis | Credits |
-|---|---:|
-| Earlier creator-reported starting balance | 2860 |
-| Current creator-reported balance | 2036 |
-| Net balance reduction | **824** |
-| Original 171-image plan: 171 × 4 | 684 |
-| Reduction above that original image allocation | **140** |
-| Later 227-image plan after world splitting | 740 |
-| Reduction above that revised allocation | **84** |
+Without the ident the core plan is 1846, leaving 133; the ident is now explicitly included in the 1882 plan. Five 30-second portions cost 1350, two 15-second portions 270 and the final 20-second portion 180 only if the earlier 30s=270 / 20s=180 pricing remains linear for the actual complete-reference jobs. The 15-second, 1080p, ident and full-narration quotes are not verified. Check the price displayed for each intended request before generating. Storyboard 4K pricing is also a prior observation, not a new quote.
 
-The original plan would have left 2176 after its image pass; the later plan would have left 2120. Current balance is 2036. The 824 is a net change between creator-reported balances, not an itemized provider billing export. It equals gross spending only if there were no intervening purchases, grants, refunds or other balance adjustments. We cannot assign every extra credit to failed generations from this evidence alone. The older reported 80-credit pilot spend predates the 2860 balance and is not deducted again.
+The completed pilot, its failed attempts, earlier TTS and Supercomputer use are already reflected in the current balance; do not charge them again in remaining work. From an original 3000 to the reported 1979, the net reduction is 1021. Projected total at these remaining assumptions: 1021 + 1882 = **2903**, leaving 97 of the original allocation. This is a balance-based projection, not an itemized proof of gross spending; refunds, grants or other account adjustments must be reconciled before claiming a verified 3000-credit production.
 
-## Why the planned library cost changed
+The creator reports the upload test completed through Update project film with watermark added. No additional publishing fee has been established; any actual charge or required extra asset comes from the 97 reserve and must be recorded. The reserve does not fund a 30-second retry (270) or even a 15-second retry (135) at the assumed rate. No automatic retry, top-up, model switch, shortening or paid music job is authorized by this budget.
 
-The current image estimate contains **266 outputs: 136 × paid 2K at 2 credits + 130 × 4K at 4 credits = 792 credits** for a hypothetical clean first pass from scratch. This is a scope comparison, not future spending or a billing claim.
+The story remains 3:20. Adding the separate ident makes 3:24 before any platform-added packshot or later local trims; do not silently count it inside the 200 story seconds. Preserve sufficient ending/holding time to place the full narration without truncation or speech acceleration.
 
-Compared with the later 740-credit plan, splitting thirteen remaining memory grids adds 39 output jobs and **52 planned credits**: each old 4-credit grid became four 2-credit images, a net +4 per pack. Thus 740 + 52 = 792. The difference between the observed balance reduction and this revised gross scope is **824 − 792 = 32 credits**, but that residual is unreconciled; reused images, Unlimited, retries and other transactions cannot be disentangled without actual billing evidence.
-
-## Remaining work from 2036
-
-| Work | Planning credits | Basis and limitation |
-|---|---:|---|
-| Existing 266 library images | **0** | Attached and reused; no new library pass |
-| Seven storyboards | **28** | 7 × 4 credits if generated as 4K images; absent from the earlier aggregate budget |
-| Final 200-second film | **1800** | Earlier observed/reported 30s = 270 and 20s = 180; six × 270 + 180 |
-| Seven final narration passages | **14 estimated** | Earlier Seed Audio A01 rate scaled by script length; MiniMax alternative estimate 7 |
-| **Subtotal before pilot, logo and finishing** | **1842** | All figures are planning values, not submitted charges |
-| **Balance available for pilot, logo, finishing and reserve** | **194** | 2036 − 1842 |
-
-The proposed two 15-second portions preserve each affected block's total duration. For a 30-second block, 135 + 135 = 270 only if the complete-input/native Extend prices remain linear at the earlier 9-credit-per-second basis. The actual 15-second and native Extend quotes have not been verified. Do not count a second full 30-second charge, nor assume splitting is guaranteed price-neutral.
-
-The separate 4-second opening ident adds duration ahead of the 200-second story and is **not included in 1800**. Its low-cost model and quote remain unselected. The logo image already exists and costs nothing to reuse. The 4+4-second continuity pilot, test narration and narration/video mixing/export also remain unquoted. The Higgsfield web audio-overlay route is unresolved; a zero finishing fee is not established.
-
-## Planning envelope for the unquoted small tasks
-
-Use **100 credits as a combined planning envelope for the small pilot, logo ident and any separately charged finishing**, rather than treating each as an additional 100-credit task. This is a budget scenario, not a quote or a new authorization to spend. It repurposes the earlier pilot allowance to cover these small outstanding tasks together.
-
-- Remaining planned cost with that envelope: **1842 + 100 = 1942**.
-- Expected reserve if all prior price assumptions and the envelope hold: **2036 − 1942 = 94**.
-- Absolute maximum for those small tasks while keeping the other estimates: **194**, with zero reserve.
-- This leaves no funded 30-second retry at the earlier 270-credit rate. A 15-second retry at a hypothetical 135 would also exceed the 94-credit reserve.
-
-The film remains provisionally affordable within 2036, but the margin is limited and depends on actual native Extend, narration and finishing costs. No automatic top-up, extra render, shortening or model change is implied.
-
-## Sources and records
-
-- [Remaining-work estimate](../04_tracking/REMAINING_BUDGET_ESTIMATE.csv)
-- [Current library gross estimate](../04_tracking/IMAGE_GENERATION_ESTIMATE.csv)
-- [Historical quotes and reported spending](../04_tracking/credit_ledger.csv)
-- [Previous budget preserved for comparison](../04_tracking/archive/budgets/BUDGET_BEFORE_2036_RECONCILIATION_20260910.md)
-- [Small 4+4-second test](../01_pilot/README.md) and [0th logo clip](../03_film/00/README.md)
-
-The older PRODUCTION_BUDGET_ESTIMATE.csv is the historical 2654-credit gross plan and is not a current remaining-balance forecast. The current 1942-credit scenario excludes already completed library costs and includes the previously omitted storyboard allowance. No itemized actual charge has been invented from the balance delta.
+[Remaining estimate](../04_tracking/REMAINING_BUDGET_ESTIMATE.csv) · [historical charges/quotes](../04_tracking/credit_ledger.csv) · [production order](../03_film/README.md)

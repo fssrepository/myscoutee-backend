@@ -1,3 +1,9 @@
+# Current production application — 2026-09-11
+
+Use the compact current film prompts and [reference audit](../04_tracking/FILM_REFERENCE_AUDIT.md). All 63 story beats and explicit material paths are retained with repeated global paragraphs consolidated. The observed 15,000-character limit applies to each pasted prompt, not just images. Preserve concrete source/intermediate/destination mechanics; do not re-expand a request beyond the limit. The detailed historical direction below remains design context, not additional text to paste.
+
+The current route uses exact final-frame composition plus identity/world/storyboard references, and a motion description reviewed against the actual predecessor. It does not assume access to previous video velocity or audio phase. Narration is generated once separately and mixed locally. Any older native-audio-reference, pilot-duration or cumulative-export language below is superseded by this route.
+
 # Prompting evidence and working method
 
 SPATIAL RULE — INDIVIDUAL LONDON OBJECTS BECOME THEIR PEST COUNTERPARTS:
