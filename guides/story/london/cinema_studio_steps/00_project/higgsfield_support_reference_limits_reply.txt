@@ -1,0 +1,32 @@
+Subject: Re: MyScoutee festival project — 50-reference composer blocked by apparent 30-reference eligibility limit
+
+Dear Jason,
+
+Following up on our earlier reports for MyScoutee — The Path Between People, we have encountered another production blocker while preparing the first full story clip for the festival.
+
+Cinema Studio 4.0 advertises up to 50 references. Our 30-second prompt contains 48 named Elements and 14,960 characters, within both displayed limits. The composer loads the references and shows 48/50, but its eligibility handling appears to stop at 30.
+
+The decisive observation was that removing three references made eligibility checks available for three more references that we could not check before. This is more than a hidden-thumbnail problem: removing entries changes which remaining references can enter the eligibility workflow.
+
+Reproduction:
+1. In the MyScoutee festival project, paste the Block 01 prompt with its 48 Element references into Cinema Studio 4.0.
+2. Confirm the composer displays 48/50. Work through the reference eligibility checks; later references do not offer the same usable check path.
+3. Remove three references. Eligibility checks become available for another three references.
+
+Expected: all 48 accepted references can be checked and used, with their status accessible before generation.
+Actual: we encounter an apparent 30-reference bottleneck despite the advertised 50-reference capacity and the 48/50 counter.
+
+This materially undermines the advertised workflow. We prepared and paid for a substantial image library around the stated capacity. Discovering an effective lower limit only when assembling the video request forces manual troubleshooting and potentially restructuring scenes. Please investigate the composer and eligibility queue together, confirm the usable limit, and explain whether all 48 references will actually reach generation. We have not established a separate limit in the underlying Seedance model; the observed failure is in Cinema Studio's reference preparation.
+
+Read-only MCP checks also exposed a status mismatch: 18 red UUID mentions in the composer resolve to the correct MR/R/TY Elements, all marked completed with an image attached. C07 also reports completed through MCP while the UI reported “face IP failed”. Element completion therefore does not give us a reliable view of the video eligibility result. Two other Elements remain ip_checking: loc_MYS_mys-mw01-c-03-memory-view-07_s0_v1 and loc_MYS_mys-mw01-c-04-memory-view-08_s0_v1. Both have two attached images; the response does not identify which image is being checked or causing the delay.
+
+The thumbnail strip has no visible scrollbar. We eventually reached the hidden references using Shift + mouse wheel, in the opposite direction to what we expected. A complete reference list with per-image check status, together with eligibility checks available during asset preparation, would make this much easier to diagnose.
+
+The reference-limit issue is reproduced through the browser UI; MCP was used only to inspect the existing Element records. No video-generation result is being claimed for this blocked request. The browser and operating-system details remain those provided in my earlier reply.
+
+Official 50-reference description: https://higgsfield.ai/cinematic-video-generator
+Screenshots retained: 2026-09-11 13-47-34, 13-53-20, 13-59-26 and 13-59-35. These show the reference counter, thumbnail strip and red mentions; the remove-three/reveal-three behaviour was observed afterwards during the same session.
+
+Best regards,
+Peter
+MyScoutee — The Path Between People
