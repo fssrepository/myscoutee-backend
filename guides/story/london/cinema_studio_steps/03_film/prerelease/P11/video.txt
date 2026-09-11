@@ -1,0 +1,77 @@
+MYSCOUTEE — PRODUCTION P11 — 10 SECONDS, 16:9, AUDIO ON
+One new photographic sequence.
+
+OPENING CONTINUATION:
+@UNBOUND_EFP10 is the exact final frame of the accepted preceding clip, not a reconstructed still. Use its crop, horizon, lens perspective, people, wardrobe, hands, object positions and lighting as this shot's first composition. Do not shift the entire image upward/sideways, zoom to a reference crop or replay an approach. Generate only the new portion, not a cumulative movie.
+Continue the actual preceding camera path and ongoing gesture immediately, with real parallax and current C01 walking onward; do not force a fresh level street pass at an interior boundary. The actual predecessor must be reviewed before generation: this text describes the intended movement; a still image is not evidence of actual speed or sound. No freeze, opening pose or new establishing shot.
+
+EXISTING WHOLE-IMAGE REFERENCES:
+C01 @char_MYS_mys-c01-protagonist_s0_v1
+C03 @char_MYS_mys-c03-policewoman_s0_v1
+C04 @char_MYS_mys-c04-appointed-lawyer_s0_v1
+MR009 @loc_MYS_mys-mr009-balcony-scroll-to-sideways-stair_s0_v1
+MR019 @loc_MYS_mys-mr019-paving-and-gutter-to-street-terrace_s0_v1
+MW01 @loc_MYS_mys-mw01-a-london-social_s0_v1
+MW02_B @loc_MYS_mys-mw02-b-global-routes_s0_v1
+MW03 @loc_MYS_mys-mw03-a-work-rule-change-admin_s0_v1
+MW04 @loc_MYS_mys-mw04-a-police-defence_s0_v1
+MW05 @loc_MYS_mys-mw05-a-court-file_s0_v1
+MWP02 @loc_MYS_mys-mwp02-a-system-time-reversals_s0_v1
+MWP02_B @loc_MYS_mys-mwp02-b-system-time-reversals_s0_v1
+MWP02_C @loc_MYS_mys-mwp02-c-system-time-reversals_s0_v1
+R037 @loc_MYS_mys-reference-37-great-market-hall-roof-and-brick-source-volume_s0_v1
+R038 @loc_MYS_mys-reference-38-balna-curved-glass-target-volume_s0_v1
+R039 @loc_MYS_mys-reference-39-westminster-and-parliament-square-london-source_s0_v1
+R040 @loc_MYS_mys-reference-40-hungarian-parliament-complete-destination-silhouette_s0_v1
+R054 @loc_MYS_mys-reference-54-big-ben-elizabeth-tower-london-source_s0_v1
+R055 @loc_MYS_mys-reference-55-westminster-abbey-london-source_s0_v1
+TY001 @prop_MYS_mys-ty001-decimal-rating-glyphs-and-tints_s0_v1
+W06_B_03 @loc_MYS_mys-w06-b-03-world-view-07_s0_v1
+W06_B_04 @loc_MYS_mys-w06-b-04-world-view-08_s0_v1
+W06_C_01 @loc_MYS_mys-w06-c-01-world-view-09_s0_v1
+W07_A_01 @loc_MYS_mys-w07-a-01-world-view-01_s0_v1
+
+TIMING AND CONTINUITY:
+All timed beat headings below are local to this request. Original Block numbers identify story chapters, not generation boundaries. Preserve their events in order; do not replay earlier actions. At a new request boundary keep visible rooms, people and material changes in place and continue their trajectories. Resolve each established destination during its story chapter. The incoming frame carries the accepted visible state, not prior sound or velocity.
+
+PICTURE AND REFERENCE ROLES:
+Photographic people and materials; continue the same connected London exterior walk. Preserve the accepted incoming exposure and time of evening, deepening gradually toward night without resetting to earlier blue hour. Damp stone, puddles and coats after rain; clear air, no falling rain or rainfall sound. Warm practical interiors. Current C01 keeps exact face, hair, build and dark jacket. His remembered occurrences are distinct from the walker and use their source wardrobe. All named people retain identity, full bodies and physical support. Never turn a current pedestrian into a memory character.
+W: world geometry. MW/MWP/HRW/T01: assigned rooms and human moments. C: identity and wardrobe. MR/R: material stages and object construction only. TY: lettering and card appearance only. Use existing sheets whole; their panels are reference views/stages, never cuts or grids in the output. Follow the ordered beats below. Character identity and scripted card rules override incidental people or changing numbers in morph sheets. No separate storyboard image is required. The supplied final frame takes priority for the opening composition; identity sheets do not reset the scene.
+
+MATERIAL ACTION AND CAMERA:
+London objects become their named Pest counterparts at traceable positions. Connect impossible adjacencies through paving, supports, parallax and continuous travel. Show whole identifiable landmarks and distinctive features, not generic buildings or skyline collage. Establish each source, then resolve its destination before obscuring it.
+For every featured change, track a chipped corner, grain line, seam or fixing through source part, intermediate cross-section and destination function. Retain thickness, side faces, underside, grounded support and moving contact shadows. Stone gains carved depth, glass fragments curve and thicken, wood grain follows bending solid timber, iron stretches from its actual attachments. Keep opaque material opaque: no dissolve, ghosted overlay, texture-only replacement, flat paper architecture or finished room behind a lifted image. If two forms lack a material connection, travel past the first into an adjacent already-glimpsed volume instead of replacing it.
+Memories grow from the street: glimpse a hand/face, then reveal the SAME life-size person, chair legs, floor and furniture. Near edges cross faster than rear doors; hands occlude cups and supports cast shadows. Let the human gesture read while other morphs continue. Leave inhabitants behind through travel, never disappearance or body swaps. No memory projection; only the final clinical threshold uses glass to reveal another reality.
+One independently travelling 24–28 mm camera with controlled horizon: ease and partially orbit at material/human actions, accelerate through open connections. Rise on a half-ellipse tangent to the low pass, exposing underside, side and top, then descend through real gaps. A high return may look back through a cumulative 180-degree sweep only where the route allows; no forced loop or reset. Keep C01 and street traceable. No full-screen occlusion, hidden cut, jump zoom or freeze. There are no clinical or title cuts anywhere in this request.
+Keep simultaneous changes at several depths: one starts, another is midway and another settles or briefly reverses. Stones, roof seams, glass edges and furniture remain active during fast travel. Do not reduce the city to a static background while the camera moves. Current crowds, buses, taxis and trams continue their own grounded trajectories. Selected commuter coat seams thicken into lapels and bag straps reshape into handles, retaining the same bodies, hands and cards; no national identity assigned by complexion or face. These local changes overlap the featured morph rather than adding portrait shots.
+
+RATING RULE:
+Each current pedestrian has one persistent landscape card about 0.8 head-width by 0.35 head-height, centred a quarter-head above their uncovered crown. Featured nearest pedestrians retain readable dark 6.2 and 9.2 decimal numbers on pale score-tinted faces; others vary. Pale red/orange/gold/yellow-green/green follows the actual fractional score, with dark #182024 digits, decimal point and clean rim. No percentage, integer replacement or bar instead of the number. Direct gaze briefly increases only the viewed person's internal fill; the number and owner stay stable. No demographic colour coding. Keep heads bare, hoods down, no umbrellas open, folded or carried. Remembered and clinical people have no cards. Keep C01's existing card unreadable and its face neutral until local 4.62 s. Reveal its decimal face only during BEAT 06.8 at 4.62–6.15 s through viewing angle and head position, then preserve that same value, tint and attachment for the rest of this request. Keep sign lettering and diacritics on their actual objects; private documents specified as unreadable stay unreadable.
+
+ORDERED STORY BEATS — ONE CONTINUOUS ROUTE:
+
+BEAT 06.6 — 0–3.08 s: Court, work, police, shared-house and travel rooms open on separate floor plates at several levels, curling into a second inhabited street with stairs growing tread by tread between landings. MWP02 supplies two distinct alcoves: an anonymous high-review chamber unable to assemble a quorum as participants step aside, and C01 alone at a laptop seeking review from below. Neither route determines the other. Keep the review chamber’s vacant positions and people stepping aside visible within its own doorway, while the lone laptop user stays in a separate alcove below. A stair joins landings physically without connecting their actions into a cause-and-effect verdict. Floors remain thick, supported surfaces; people do not slide through them as rooms curl upward. Keep people and gestures readable on their own floors rather than duplicating one room.
+
+BEAT 06.7 — 3.08–4.62 s: Follow a living web of current pedestrians looking at one another. Viewed cards gain a slightly fuller internal fill at different moments while their existing decimal numbers stay stable. The protagonist is neither the only observer nor the only judged person.
+
+BEAT 06.8 — 4.62–6.15 s: For the first time, make C01's OWN decimal card readable above his head with the same gap, size and sharpness as neighbouring cards. His brief recognition is restrained, without panic. He is one record among many. Reveal readability through the camera’s viewing angle and his head position, rather than spawning a new card. His existing card remains anchored above the same crown with the same dimensions. Nearby people continue walking and judging one another; the entire crowd does not stop to watch him. Do not reveal it earlier in part A or previous blocks.
+
+BEAT 06.9 — 6.15–8.46 s: Toward Westminster Bridge, extend an existing civic wall base into MWP02's anonymous alcove and bend its ornamental rail into the EMPTY CHAIR HIGH IN THE SYSTEM after its occupant has changed. Show an empty seat from its first reveal; do not fade out an occupant. Hold the seat, back and support together briefly through the opening so the vacancy is unmistakable. The chair remains an ordinary solid object in its remote alcove; keep the current walker on the lower street, continuing past it without a triumphant reaction. No identifiable office, flag, public figure or verdict in C01's case; the earlier institution-fired joke is not prediction or cause. Pass into a quieter city with level forward-right motion. No clinical imagery yet.
+
+BEAT 07.1 — 8.46–10 s: Continue the quieter Westminster/Whitehall walk. Keep Big Ben's clock faces and pointed crown attached to the Palace of Westminster, Westminster Abbey's separate paired towers, and Parliament/Basilica echoes in other sightlines. Retain earlier settled impossible forms as activity drains away; do not reset to ordinary London. Cards are clearer but the pedestrians are farther away.
+
+SOUND — GENERATE BACKGROUND ONLY:
+
+No narrator, voiceover, sung lyrics or intelligible added dialogue. People may gesture and move mouths only as the scripted memory requires; do not generate the separately prepared monologue or lip-sync it. Narration will be placed over the assembled film locally.
+
+An original Hungarian folk-rooted instrumental theme: raw close fiddle with audible bow grain, rising minor-pentatonic call, held peak and falling answer; acoustic tekerő string drone with rasping buzz attacks; woody ornamented clarinet response. Distinct acoustic instruments, no generic synth pad, piano loop or trailer swell. Vary register, note lengths, ornaments, gaps and answering instrument with the story; volume alone is not development. Keep musical time independent of camera speed, leave headroom for later narration and avoid a grand ending at an ordinary clip boundary.
+
+Wet tyre hiss, footfalls and traffic under prominent spatial material foley. Each featured morph has contact onset, sustained strain and settling/reversal: granular stone grind, stressed iron creak/ringing release, taut glass vibration and dry wooden joint sounds. Follow the actual visible object through the sound field. No generic transition whoosh. Begin and end with a stable ambient bed; do not insert silence or fades to conceal joins. This request sets sound character; no prior audio is attached or assumed available for exact phase continuation.
+
+MUSIC PHASE — LOCAL 0–8.46 s: After the preceding shared-table release, bring back the densest fiddle/tekerő/clarinet pressure as the inhabited records and review alcoves open at 0–3.08 s. Maintain it through the mutual glances and C01’s card reveal at 3.08–6.15 s. Thin toward the empty chair at 6.15–8.46 s; no triumphant resolution.
+
+LOCAL 0–8.46 s: No clinical images or medical sounds in this part.
+
+CONTINUOUS INTERNAL TRANSITION — LOCAL 7.46–8.46 s: Preserve grounded walking, the level forward-right pass and small ongoing material motion; no ending flourish, freeze or pose. Continue directly into the following beat in this same request.
+
+MUSIC PHASE — LOCAL 8.46–10 s: Begin removing layers as the Westminster walk quiets: space the tekerő attacks, end clarinet answers and expose a slower lower fiddle fragment. No reassuring cadence. Keep city ambience through the end; there is no clinical cut, breathing/cuff cue, title or medical sound in this request.
