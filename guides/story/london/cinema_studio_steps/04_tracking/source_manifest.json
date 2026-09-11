@@ -996,7 +996,7 @@
       ],
       "source_prompt_sha256": "d111e179fa9211ddb262d74468ee38305f1776d75138a0c33a3e229ff58dff3d",
       "file": "03_film/01/video.txt",
-      "file_sha256": "285edad91795ecc00eed269307e164ddd4132c60bd65162c286362465f2fc24a",
+      "file_sha256": "6dce96a11e4d02a8361768d6b8a51ba4240d03eecd815042964f9f3b7b263a04",
       "changes": "Existing whole-image reference union; storyboard is a local plan, no paid board. Story beats retained; V00 now symbolic material assembly.",
       "note": "2026-09-11 compact production version; original source extraction provenance retained. See current_film_preparation for 06 split and reference plan."
     },
@@ -16859,8 +16859,8 @@
         "storyboard_type": "LOCAL_PLAN_NOT_GENERATION",
         "required_storyboard_media": false,
         "incoming_end_frame": null,
-        "video_chars": 14831,
-        "video_sha256": "285edad91795ecc00eed269307e164ddd4132c60bd65162c286362465f2fc24a",
+        "video_chars": 14960,
+        "video_sha256": "6dce96a11e4d02a8361768d6b8a51ba4240d03eecd815042964f9f3b7b263a04",
         "storyboard_sha256": "0184fc45b1c26e591a150c3be00244d8a494d08782bb00becc2f87d364f6b9cc"
       },
       {
@@ -17749,7 +17749,8 @@
       "unused_sb_containers": "Keep existing imported SB containers unused; do not delete or reimport.",
       "library_direct": 216,
       "library_alternatives": 50,
-      "coverage_file": "04_tracking/VIDEO_ASSET_COVERAGE.csv"
+      "coverage_file": "04_tracking/VIDEO_ASSET_COVERAGE.csv",
+      "decision": "No further generated storyboard image is required for the current film plan. Preserve concrete movement details in the video requests; shorten redundant prose/prohibitions before sacrificing detail."
     },
     "narration_observation": {
       "user_reported_quote": 6.15,

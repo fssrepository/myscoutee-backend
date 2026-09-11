@@ -12,7 +12,7 @@ The storyboard files are now local planning documents containing selected existi
 
 | Portion | Seconds | Existing whole images | Incoming frame | Total references | Video characters |
 |---|---:|---:|---|---:|---:|
-| 01 | 30 | 48 | None | 48 | 14831 |
+| 01 | 30 | 48 | None | 48 | 14960 |
 | 02 | 30 | 48 | EF01 | 49 | 14892 |
 | 03 | 30 | 34 | EF02 | 35 | 14171 |
 | 04 | 30 | 28 | EF03 | 29 | 13496 |

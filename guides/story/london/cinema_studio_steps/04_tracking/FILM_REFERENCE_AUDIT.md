@@ -12,7 +12,7 @@ Character-to-character morphs are not added because the current story keeps thos
 
 | Portion | Seconds | Existing whole images | Incoming frame | Total references | Video characters |
 |---|---:|---:|---|---:|---:|
-| 01 | 30 | 48 | None | 48 | 14831 |
+| 01 | 30 | 48 | None | 48 | 14960 |
 | 02 | 30 | 48 | EF01 | 49 | 14892 |
 | 03 | 30 | 34 | EF02 | 35 | 14171 |
 | 04 | 30 | 28 | EF03 | 29 | 13496 |
@@ -40,3 +40,7 @@ The abandoned Banana prompts contained 32–47 references and conflicting nine-p
 V00 remains four silent seconds using only the existing logo. Its new material-assembly direction brings the emblem's separated coloured forms into alignment around its heart, symbolising fragmented lives and connection, then holds the exact MyScoutee presents lockup. No literal gear motif or new logo image is requested.
 
 No generation, upload, crop, media edit, account mutation or credit debit occurred in this revision. The canonical master, existing library image prompts and all narration texts remain unchanged. Source media availability comes from the earlier read-only MCP inventory (266 canonical Elements with images); project membership, full visual quality and backend interpretation are not newly verified here.
+
+## Detail restoration — 2026-09-11
+
+V01 explicitly restores the anchored balcony coil widening into treads with visible undersides and a handrail, drum openings/piers reshaping on the same ring, staggered tower transformations, and the rising portico entablature/pediment. Space came from a shorter coverage introduction and removal of the procedural sentence about not needing a storyboard image. No beat, reference or duration changed. V01 is 14960 characters with 48 references. No additional generated storyboard image is required for the current film plan; visual source sheets remain whole and concrete animation instructions belong in the video prompt.

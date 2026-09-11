@@ -1,5 +1,7 @@
 # Current checkpoint — whole-image reference union, 2026-09-11
 
+Latest decision: no arbitrary 30-reference cap and no reference thinning solely to reduce the count. Keep the current requests within the observed 50-reference / 15,000-character limits. Preserve animation detail; V01 now restores its omitted stair, drum, staggered-tower and portico details at 14960 characters. No further generated storyboard image is required for this film plan. If a concrete capacity problem requires restructuring, examine a 15-second split before simplifying the story.
+
 Implemented: eight local storyboard plans and eight corresponding story-video prompts now use the selected existing whole images. No generated SB dependency remains. 216/266 canonical images are direct references; all 50 alternatives have explicit reasons in VIDEO_ASSET_COVERAGE.csv. All 63 beat paragraphs remain verbatim. Prompt counts are 48/49/35/29/36/37/47/30; each video text is under 15,000 characters. These are composer-level checks, not backend-quality guarantees.
 
 Creator constraints: no panel cutting, no resized/composite grids, no bulk image generation or replacement uploads. Preserve the main-film budget and consider only one or two focused 480p tests from confirmed surplus. Existing imported SB Elements stay unused. Existing source images, the canonical master and narration texts are unchanged.
