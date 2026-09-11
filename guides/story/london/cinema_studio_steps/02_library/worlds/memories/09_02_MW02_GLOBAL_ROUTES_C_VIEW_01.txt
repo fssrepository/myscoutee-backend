@@ -1,58 +1,47 @@
 REFERENCE ID: MW02_C_02 — ORIGINAL VIEW 01 (never print IDs, headings or labels).
 
 REFERENCE INPUTS:
-@loc_MYS_mys-mw02-a-01-memory-view-01_s0_v1 = Use the accepted metro-gate image for this same helper, gate, pass reader and station.
-@char_MYS_mys-c01-protagonist_s0_v1 = CHARACTER 01 — PROTAGONIST; exact person identity; use only where this person appears.
-@char_MYS_mys-c11-russian-transit-passenger_s0_v1 = CHARACTER 11 — RUSSIAN TRANSIT PASSENGER; exact person identity; use only where this person appears.
+@loc_MYS_mys-mw02-a-01-memory-view-01_s0_v1 = The accepted metro encounter: retain this station's tiled surfaces, gate arrangement, pass reader, corridor connections and lighting. This image shows the following moment farther along the same route.
+@char_MYS_mys-c01-protagonist_s0_v1 = C01, the adult traveller continuing into the station. Preserve his established appearance and clothing.
+@char_MYS_mys-c11-russian-transit-passenger_s0_v1 = C11, the adult local passenger accompanying him. Preserve this helper's established appearance and clothing.
 
-OUTPUT GEOMETRY — ONE 2K FULL-FRAME IMAGE:
-Generate ONE photographic widescreen 16:9 image; select 2K in the output controls. One uninterrupted scene fills the complete canvas. No grid, split screen, contact sheet, panels, inset, border, gutters, margins, letterboxing, headings, labels or captions. In-world objects and text explicitly assigned below remain visible.
-Use character references for identity and wardrobe only, and accepted location references for their assigned spatial content. Reconstruct the assigned scene at full frame; never copy an input sheet layout.
+OUTPUT — ONE 2K FULL-FRAME PHOTOGRAPH:
+Generate one widescreen 16:9 photographic image and select 2K in the output controls. A single continuous station scene fills the complete canvas. Character images define their assigned people; the accepted station image defines the physical setting. Compose a new camera view of the following action without reproducing reference-sheet panels or copying the preceding crop. No contact sheet, inset, border, letterboxing, labels or captions.
 
-MEMORY-WORLD FUNCTION:
-This is a CLEAN VISUAL SOURCE REFERENCE for a remembered place/event.
-Show the memory scene DIRECTLY, as if the camera were physically inside the remembered world.
-DO NOT show the London–Budapest present city.
-DO NOT display the memory as an insert inside a present-city window, shopfront, puddle or mirror. A real vehicle window and its natural reflection within the assigned remembered journey remain allowed.
-DO NOT add rain/reflection layers from the present city.
-DO NOT add score cards.
- This source sheet remains a sharp direct view of the memory; it is not a cut or flat image to display in the video.
+SCENE — WALKING ON AFTER THE GATE:
+Inside the same remembered Moscow / Saint Petersburg metro station, C01 and C11 have passed through the gate and are continuing into the actual adjoining passage. C11 indicates that onward corridor with a relaxed open hand. Walking beside him, C01 turns his head toward the helper and gives a small acknowledging expression. Their ordinary shared movement and this modest exchange are the central event. The helper's monthly travel pass has already been put away; neither person holds it against the reader or repeats the earlier action.
 
-VISUAL LANGUAGE:
-Photorealistic live-action European feature-film realism.
-Natural human proportions, realistic contemporary wardrobe and props, ordinary practical lighting, believable interiors/exteriors.
-Keep this source image sharp and literal so faces, furniture and room layout remain reconstructable. The film, unlike this source sheet, turns these places into impossible architecture within London.
-This image must be a usable literal location/event reference, not an illustration of an idea.
+Place the gate lanes behind the two men, at a legible distance that establishes where they have just come from. The corridor ahead is visibly connected to their present floor position. C11's gesture points into that real opening rather than toward the camera or a floating graphic. Their bodies remain side by side with enough lateral space for each person's arms and walking stride. Do not merge their hands, intersect their legs or turn the acknowledgement into an embrace, handshake or theatrical farewell.
 
-IDENTITY ANCHORS — REQUIRED:
-Preserve the exact identities, age, hair, body proportions and context-appropriate wardrobe supplied for this scene. Apply a character reference only where that person appears; incidental people do not become additional named cast.
+PEOPLE AND CONTINUITY:
+Use the same two adults, wearing the clothes established in the accepted gate encounter. Preserve each character's face shape, hair, adult age, build and natural skin texture. C01 remains C01 in the turned listening view; C11 remains the helper from the preceding image. Their differing appearances remain distinct even where shoulders overlap in projection. The station's incidental commuters keep their own identities and do not become additional instances of the named cast.
 
-PURPOSE:
-Build the reusable literal travel-memory source bank around the principle: Global route. Local encounter. The important subject is ordinary human contact inside movement, not postcard tourism.
+C11's indicating arm bends naturally at the elbow, with a relaxed wrist and an open palm. Model the fingers as separate volumes with ordinary knuckle contours. His other arm follows his walking posture. C01's hands remain naturally beside his body or associated with an already established worn item; do not invent a new document, device or prop to occupy them. Preserve any existing worn belongings in their original positions, including the side on which a strap or bag is carried.
 
-REFERENCE COVERAGE FOR THE MOVING FILM:
-This image supplies the one assigned literal view. It is not a cut or a morph stage. Make this view useful for its assigned purpose: room layout shows supports and an entry/exit; a gesture view retains its hand, furniture edge and background anchor; an object detail shows side/underside and contact. Different views of the SAME room preserve its floor plan, furniture, identities, clothes and light sources even when the viewpoint changes. Distinct memories remain distinct places; do not fuse them into one room. Recurring places retain their established layout; use the distinct action and object state assigned in this image.
-Additional detail images of the same place retain that memory and its established event. Keep full body/furniture support legible wherever the assigned view permits. Keep the assigned subject and framing; do not substitute a generic wide shot for a detail.
+Show the transfer of walking weight through hips, knees and ankles. A planted shoe has a visible floor contact shadow; a lifted heel or advancing foot has a small physically readable gap. Trousers and sleeves fold with the actual posture, retaining fabric weight and garment seams. Keep both heads uncovered and facial expressions quiet: a slight head turn, attentive eyes and an ordinary resting mouth are enough to convey acknowledgement.
 
-ASSIGNED COMPOSITION — ORIGINAL VIEW 01, ONE IMAGE:
-CONTINUING INTO THE STATION AFTER THE HELP:
-The protagonist is now beyond the transit gate, walking into the station passage with the local helper. The helper indicates the actual onward corridor with an open hand while the protagonist turns toward him with a small acknowledgement. Their walking bodies and the ordinary movement of commuters are the subject. The monthly pass has been put away; nobody is tapping the reader in this image.
+CAMERA AND SPATIAL ARRANGEMENT:
+Set the camera inside the passage on the far side of the gate, at a natural oblique angle that shows the two men continuing toward and along the corridor. Frame their complete walking figures, including shoes, with clear space around the gesture. Keep their faces and C11's indicating hand readable in the same view. Avoid a portrait crop that removes the floor, gate or corridor connection.
 
-Retain the accepted tiled station, gate lanes and the same two identities and clothes. Keep the gate hardware behind them as the point they have just passed, with a continuous walkable floor into the corridor. Each pedestrian remains in their own space, with distinct hands and grounded feet. Any direction signage stays incidental and unreadable; do not invent a named destination, platform number or new journey. The actual pass-reader assistance is preserved in MW02_A_01.
+Organise depth through a near wall return or gate-housing corner, the walking pair in the middle and the gate lanes and station interior farther behind. At least one substantial nearby corner shows two side faces and thickness. Tile seams and floor joins connect these distances continuously. Perspective should explain the route through the gate into the passage; the new view changes the camera position, not the station's floor plan. Preserve the accepted spacing of lanes, reader mounting and the relation between walls and openings.
+
+STATION MATERIALS AND GATE HARDWARE:
+Retain the source station's tile size, grout rhythm, surface wear, metal finishes and practical light fixtures. Show the gate housing as a solid object with a top, side faces, panel joints and a base attached to the floor. Its reader remains mounted on the same support and oriented toward the original approach lane. Preserve the accepted gate mechanism and its physical clearance behind the walkers; do not redesign it into a different barrier type.
+
+The finished passage floor continues past the gate bases and into the indicated corridor. Small scuffs, joints and contact shadows follow the real surface geometry. Polished metal may reflect nearby light, but the housing stays opaque and substantial. Tile reflections remain restrained and cannot substitute for floor contact. The far wall or doorway establishes another depth beyond the central gesture. Keep supports, corners and the passage opening sufficiently clear for the later film to reconstruct the place.
+
+COMMUTERS AND SIGNAGE:
+A few ordinary commuters continue along their own plausible paths through the station, with natural spacing and grounded feet. Leave the central faces, hands and the indicated route unobstructed. Background movement is suggested by posture in a sharp still, without blurred silhouettes, duplicated limbs or a staged crowd looking at the pair.
+
+Any existing direction signage remains incidental and unreadable at this framing. Preserve its placement as a station object without inventing a named destination, platform number, message or new journey. The monthly pass is put away and no above-head card, score, speech bubble or explanatory graphic appears. The earlier pass-reader assistance belongs to MW02_A_01; this image records its continuation.
+
+PHOTOGRAPHIC LIGHT AND DETAIL:
+Use the accepted station's ordinary practical lighting, matching its light direction, exposure and colour balance. Faces, clothes and tiles share the same illumination. Keep subtle skin texture and natural facial asymmetry, with no beautifying age change or waxy smoothing. Use enough depth of field to read the two faces, open hand, clothing edges, shoes, gate construction and corridor relationship together. The image remains sharp, with restrained highlights and visible detail inside the softer shadows.
+
+MEMORY SOURCE AND LATER FILM:
+This is a direct view of one remembered station, with the camera physically inside it. Preserve the solid people, hardware and walkable route as usable source geometry. Do not render a present-city street, a London–Budapest architectural transformation, a rain overlay or a projected memory. The encounter is not framed inside a vehicle window, shopfront, puddle or mirror. Reflections belong only to actual reflective surfaces within this station.
+
+Alternative images of this place must agree on identities, wardrobe, floor plan, gate hardware and lighting while retaining their separate assigned moments. The later film can follow a gate support, wall corner or open passage into or out of this memory. No transition needs to be illustrated in the source still: keep bodies and surfaces opaque, without double exposure, ghosted figures, blended before/after actions or floating room fragments. Keep the metro encounter distinct from the bus, taxi and hotel memories.
 
 FINAL CHECK:
-One full-frame 16:9 image at selected 2K. Direct memory scene, no score cards, no present-city overlay, no printed instruction labels.
-
-SPATIAL INFORMATION FOR LATER EMBODIED MEMORY:
-The later film grows this exact remembered encounter from London materials. Supply enough geometry to reconstruct a solid place: a near seat or table corner with two readable sides, full supporting legs where furniture matters, visible floor contact, and a rear door, wall or landscape plane at a different distance. Use the existing widest relevant reference view for the whole arrangement and the existing human-detail reference view for the gesture; use the companion image when that required contextual view is assigned there. Keep principal faces, hands and interactions in useful focus. Show natural occlusion and contact shadows. Avoid hiding the relationship between a person, their chair, the floor and the rear doorway in shallow focus or tight crops. A detail image may be close, but its contextual reference view must retain the full arrangement. Preserve the assigned encounter and identity. These literal source shapes give the later film recognisable people and materials to carry through the impossible transformation.
-
-SOURCE CONTINUITY FOR THE MOVING FILM:
-Render this image as a single clear, solid view of the specified people and their actual room or place. Show a usable doorway edge, furniture corner or support beside the central gesture, with full bodily depth, clear hands and contact shadows. Never supply ghosted people, translucent rooms, double exposures or blended before/after scenes. The source image is a direct view of the remembered place, with no transition overlay. Preserve the assigned identities and events across alternative views. Keep the source free of present-city overlays and rating cards.
-
-Keep the assigned room and human event specific and intact. Its source doorway, furniture corner or open side can support either a matched material development or continuous camera entry/exit. No forced mutation of the people, furniture or room is needed when the next setting lacks corresponding structure; let the film travel onward through a visible connected opening.
-
-RATING ROLE IN THIS IMAGE:
-These are remembered or clinical people, not current-city pedestrians. Keep this image without floating rating cards. A printed pass, family photograph or ordinary document remains its physical story object, not an above-head score.
-
-NO UMBRELLAS:
-No umbrellas anywhere in this image: none open, folded, carried, tucked into a bag, leaning against a wall, mounted over a table or held above a head. Do not copy an umbrella from an input reference. Outdoor present-city people have uncovered heads, hoods down and exposed hair; leave open air above every crown. Keep the specified weather for this scene. This restriction applies to the foreground, background, reflections and the entire image.
+One full-frame 2K photograph, 16:9. C01 and C11 walking beyond the established gate; C11 indicates the connected corridor and C01 acknowledges him. Same adults, clothes, tiled station, reader and lane geometry as the accepted source. The pass stays put away and the reader interaction is not repeated. Preserve separate hands, complete walking figures, natural foot support, near corner depth and the rear gate anchor. No new story outcome, readable invented destination, floating rating, prompt label, panel or umbrella anywhere in the scene or reflections.
