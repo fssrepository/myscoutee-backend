@@ -16,13 +16,15 @@ Photorealistic European feature-film realism: rainy blue hour, wet stone, real g
 
 ## 🎬 Production
 
-Video and narration are generated in Higgsfield. GPT-6 Astra will use FFmpeg locally to join the clips and add narration, then the finished film will be uploaded to Higgsfield for publication. This workflow is being tested.
+Video and narration are generated in Higgsfield. The full narration will be generated as one recording and added to the assembled 3:20 film. GPT-6 Astra will use FFmpeg locally to join the clips and add narration, then the finished film will be uploaded to Higgsfield for publication. This workflow is being tested.
 
 ## 🚀 Status
 
 - MASTER PROMPT READY: v2.2.57 — 488,623 bytes (~477 KiB), 6,425 lines, ~68,700 words.
 - IMPORT ELEMENTS: 128 KiB Markdown limit; clean import = 48 canonical Elements: 31 Characters + 16 Locations + 1 Prop.
 - AUDIO LIMITATION: Videos can be saved as reusable Elements; audio files cannot, despite being accepted as generation references.
+- **NARRATION REMOVAL TEST:** Generated narration was mixed with the video's background audio. Our removal attempt also damaged the background and was not usable. We will generate the film clips without narration and add the complete narration recording afterwards.
+- **CONTINUITY TEST:** Joining the two Seedance clips without video re-encoding preserved every original frame but exposed a visible jump. An end-frame Element alone did not produce a seamless continuation in this trial. We are testing frame trimming; a dissolve was rejected. In a previous Google Flow Veo test, removing seven frames corrected a backward jump. That does not establish the same correction for Seedance.
 - LAST-FRAME GAP: Extracted end frames appear as temporary references, with no clear way to find them in Assets or link them to the source video’s Element for reliable reuse.
 - **EXTEND REFERENCE GAP:** In our workflow, the Extend interface is a reduced version of the Cinema Studio composer: it lacks the automatic Element reference resolution available in the main composer, requiring manual reference selection for continuation.
 - PROMPT LENGTH: 15.000 characters limit

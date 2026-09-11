@@ -78,3 +78,13 @@ Use the existing main assembled output for the remaining technical checkpoint. T
 After publication, retain the URL and review the beginning, the join and the ending. Compare picture continuity, full duration, narration timing and background audio against the local assembled file. Check whether platform processing introduces additional changes. Publication may re-encode the upload; preservation by local FFmpeg does not prove that the published version remains unchanged.
 
 Do not mark the test complete until the published result has been reviewed. No new generation, frame trimming, seam repair or upload was performed by this documentation update.
+
+## Follow-up: rejected approaches and trim-only repair
+
+The creator rejected both the narration-removal result and the dissolve approach. For the main film, generate narration as one complete recording and add it after assembling the 3:20 picture. Do not generate narration into the scene clips. Keep music and ambience as the video background and retain the separate narration source until mixing.
+
+`05_joined_softened_seam.mp4` is a rejected dissolve experiment, not the selected result. An optical-flow alignment was inspected on still frames, but was not applied to the trim-only output.
+
+`06_joined_trim_only.mp4` tests removal of the first clip's last three frames and the second clip's first eight frames. It contains 183 frames, lasts 7.625 seconds and has no dissolve, warp or interpolated frames. The native background audio was cut with the picture; the new narration begins at 4.375 seconds. This is a candidate join for playback review, not a claim that the framing difference has disappeared.
+
+Each source contains only one keyframe at its beginning, so these arbitrary frame cuts were encoded with lossless H.264 (`libx264 -crf 0`). This is re-encoding, not stream copy; it avoids further lossy video compression. The retained decoded frames are checked against the exact retained source-frame sequence. All earlier media files remain unchanged.
