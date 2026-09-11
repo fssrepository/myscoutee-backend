@@ -1,0 +1,108 @@
+clip,index,handle,score,time_local,evidence,element_id,media_ids
+P00,0,@prop_MYS_mys-film-m-logo_s0_v1,1,0–4,"Az embléma sziluettje, színei, szíve és csillaga felismerhető.",d56b05dc-4e51-456d-bf3d-7acd0479e402,7c332e7e-e64e-4a23-94c9-ef445ecbc23d
+P01,0,@char_MYS_mys-c01-protagonist_s0_v1,1,11–15,C01 arca és sötét kabátja.,774b8a46-1402-4342-9e10-403848e8f53e,0bd3ca76-6f75-4d36-9d47-9bf177669302
+P01,1,@char_MYS_mys-c02-soho-woman_s0_v1,1,11–14,"C02 arca, ruhája és asztali jelenete.",e7262332-356e-4efc-b0cb-672eb0deb79a,6ffc98d6-a777-41d2-b49b-fdd1d918bf8f
+P01,2,@loc_MYS_mys-mr001-st-pauls-to-st-stephens_s0_v1,0.5,0–3,Kupola és kettős tornyok; a külön morph-fázisok nem követhetők.,655e2d6f-f0e7-4704-bb5e-b02b4022873c,b1c2ab8a-62a5-4266-a435-08ead0afa241
+P01,3,@prop_MYS_mys-mr004-window-glass-to-pendant-shade_s0_v1,0,7–11,A lapból gömbös üvegbúrává váló jellegzetes morph nem látszik.,561e61a5-ba8c-4346-b52e-1ca9b5146048,bfce906e-39bf-465b-9993-1b4d33ad3cd2
+P01,4,@loc_MYS_mys-mr005-brick-courses-to-carved-arch_s0_v1,1,10–11.5,"Azonos ablak, kiálló kőtömbök és kőív.",5e05885c-08a1-4d99-9b92-de70f67ccd77,2f6956d5-93dc-475b-ba1f-5d7a2a1af2c9
+P01,5,@loc_MYS_mys-mr006-stone-threshold-to-supported-timber-floor_s0_v1,0.5,9–10,Kiemelkedő küszöbdarabok; teljes fa padlófázis nem azonosítható.,47ac9222-dba7-475e-84b9-bc780051925d,f604e520-db1a-4dbe-8423-40012a2719df
+P01,6,@prop_MYS_mys-mr007-bench-to-curved-floor-border_s0_v1,0,0–15,"Pad látszik, a referencia saját hajló pad–padlószegély alakja nem.",a02dd122-75dd-4820-9526-13fc79082453,69f2f0e3-2170-4cb3-a73c-c3bafa097670
+P01,7,@prop_MYS_mys-mr008-window-fittings-to-pendant-stem_s0_v1,0,7–11,Nincs felismerhető csavart tartó–lámpaszár lánc.,34d4f80e-1a64-4a3a-bfcd-e1acc94bf74b,b8e6e604-2c3f-456e-809d-bd68669559e3
+P01,8,@loc_MYS_mys-mr009-balcony-scroll-to-sideways-stair_s0_v1,0,7–11,Nincs elkülöníthető erkélyvas–oldallépcső.,d8a670fd-a086-4ca3-93c0-47e94cbccf25,a88629b3-f60a-47b8-ab44-b27e470df279
+P01,9,@prop_MYS_mys-mr010-english-sign-to-kave-lettering_s0_v1,0,0–15,A COFFEE–KÁVÉ átalakulás nincs meg.,ea2b2968-3788-46b0-871f-d669a99c51bb,a734909c-9973-48ba-9743-2debd8a457fd
+P01,10,@loc_MYS_mys-mw01-a-london-social_s0_v1,1,11–14,Étkező és a nő csészés közeli beállítása.,d91b43bf-7eb9-47c0-82d4-ee2aa47398c0,d51fba67-da5e-4770-b33d-161cfa256d5f
+P01,11,@loc_MYS_mys-mw01-c-02-memory-view-01_s0_v1,1,11–13,A teljes éttermi beállítás közvetlenül felismerhető.,7c112ede-741e-4bfa-a136-d523ba240dc6,e03672b6-5df3-4910-85d2-c379edab3342
+P01,12,@loc_MYS_mys-r008-cafe-to-occupied-restaurant_s0_v1,1,9–10,"Y alakban nyíló ablakkeret, nő és hátsó ajtóknál álló férfi.",94066002-f8e1-4f02-b8df-37d74945c172,4279299a-05c2-410b-aa69-64f40750e32f
+P01,13,@prop_MYS_mys-reference-10-winged-statue-plinth-and-contact-detail_s0_v1,0.5,3–7,"Szárnyas bronzalak; W01_A_03 is tartalmazza. R010 két képet tartalmaz, az első más szobor.",7f48d7c8-111a-4ed8-8a4f-f18fd6bf5175,e697b086-7af8-4ee4-8fc4-200cb4aa1e6d;79633bce-7698-4867-948f-b9f3ffb97957
+P01,14,@loc_MYS_mys-reference-21-restaurant-rear-doors-and-depth-relationships_s0_v1,0.5,11–13,Hátsó ajtópár megvan; a specifikus mélységépítés nem különül el.,bf63660e-24c8-4389-ac7d-ebdc3faef70f,9664e52c-9578-455a-bb7e-7ff1581e8ff1
+P01,15,@loc_MYS_mys-t01-a-soho-restaurant_s0_v1,0.5,11–14,"Éttermi bútorzat és csésze, de MW01 ugyanezt a helyzetet is hordozza.",ef86d63b-6128-4d25-b2c4-c6b42ba3a922,a679bc0b-9777-47e8-b049-9217599d41c0
+P01,16,@prop_MYS_mys-ty001-decimal-rating-glyphs-and-tints_s0_v1,1,0–15,Halvány színezésű tizedes kártyák felismerhető megjelenése.,4df5d85c-db91-43db-8569-fbcb705e89fe,41f533ae-777d-4873-a434-627177e2d8e3
+P01,17,@prop_MYS_mys-ty002-coffee-to-kave-letter-material_s0_v1,0,0–15,KÁVÉ betűátalakulás nem azonosítható.,82625a05-d699-4bbb-bed5-b4e9affb434e,a9a42e6a-1834-4247-828e-47a7b13e5918
+P01,18,@loc_MYS_mys-w01-a-01-world-view-01_s0_v1,1,0–3,"Soho nyitókép, pad, kupola, taxi és busz elrendezése.",e04592f9-c4e4-406c-b2d6-872314f1b187,b7358c58-6c12-4c39-be9d-2687da9cc7b0
+P01,19,@loc_MYS_mys-w01-a-02-world-view-02_s0_v1,1,7–9,"Kinyúló téglaszoba, meleg sarokkávézó.",01971888-2505-48be-ae54-e91a8923bfed,79eda4c1-adcc-4461-bddb-b65faca706c9
+P01,20,@loc_MYS_mys-w01-a-03-world-view-03_s0_v1,1,3–7,"Szárnyas szobor, talapzat, saroképület és utca elrendezése.",968f84d0-15b7-442e-9fa7-d79a765c7b52,893978d8-192f-4800-ab2f-ee420ea49879
+P01,21,@loc_MYS_mys-w01-a-04-world-view-04_s0_v1,0.5,0–7,Busz és kupola általános közös motívum; a saját közeli busznézet nem jelenik meg.,8cd26e7d-beaf-4154-ba53-cf5d4acfa830,534a8734-2e89-4cb0-a514-8033bca630c8
+P02,0,@loc_MYS_mys-film-v01-end-frame_s0_v1,0,0,A P01 záró étteremablaka helyett R026 udvara nyit.,f37e86f1-1cde-4783-85ac-e2c13ba81725,3a82fa83-b90a-44fb-bd85-2dc76de33ed8
+P02,1,@char_MYS_mys-c01-protagonist_s0_v1,1,0–3;8–10,"C01 arca, kabátja és telefonportréja.",774b8a46-1402-4342-9e10-403848e8f53e,0bd3ca76-6f75-4d36-9d47-9bf177669302
+P02,2,@char_MYS_mys-c06-shared-house-substitute-snoring-housemate_s0_v1,0.5,2–5,"Hasonló fekvő férfi, de a memóriafotó külön is hordozza az arcot.",fc55d4b7-c30b-47a6-a892-aec72043d24c,718a37aa-d8b5-47c0-bc32-b188f05f8071
+P02,3,@char_MYS_mys-c07-fx-mortgage-housemate_s0_v1,0.5,6–7,Olívakabátos ülő férfi; pontos arcazonosság nem biztos.,03707746-3d9b-46ed-8c39-53e805142c56,167e10f9-cd36-4ef9-9026-2ec6ed1af0a1
+P02,4,@char_MYS_mys-c08-fx-mortgage-spouse_s0_v1,0.5,6–7,Apró családfotón nő látszik; a külön karakterlap egyezése nem dönthető el.,10c785b6-d707-4ff9-8a59-4b575ad792ed,31ec29eb-0aae-4a3b-a5f0-ba92a8d0f99c
+P02,5,@char_MYS_mys-c09-fx-mortgage-child_s0_v1,0,6–7,C09 gyermekalakja nem azonosítható a kis fényképekből.,142ccae5-878d-40a7-b42d-705a3cf90be0,9cce7152-35eb-425a-a844-11fe48e924c0
+P02,6,@loc_MYS_mys-mw01-b-01-memory-view-05_s0_v1,0,2–7,A népes közös nappali nem jelenik meg.,a45b85dd-bd58-4eb5-b19f-f4e822fffe5c,2eedfaf3-6689-458d-ac17-5d7763271a10
+P02,7,@loc_MYS_mys-mw01-b-02-memory-view-06_s0_v1,1,2.5–5.5,"A kétágyas szoba, fekvő alak és ruhatartó elrendezése.",1adefce9-c22d-4e5a-adb6-931862db4035,f7d2aaf1-58a9-431f-8959-2645f71fd5a4
+P02,8,@loc_MYS_mys-mw01-b-03-memory-view-07_s1_v1,0.5,5.5–7.5,Ülő férfi és családi fotó; más szobabeállításban.,6119baef-469a-4e82-891f-e9e11005d031,1e325537-3fb4-4fa9-84f3-a46350cf9b3b
+P02,9,@loc_MYS_mys-mw01-b-04-memory-view-08_s0_v1,1,8.5–10,Telefonportré és kávézói háttér közvetlen képi egyezése.,a1222301-8c37-4d55-b6fc-b9ad3666a5b5,ad9cac0e-6ff0-4b4f-8b05-e369873e3581
+P02,10,@loc_MYS_mys-mw01-c-03-memory-view-07_s2_v1,0,2–8,A ruhát válogató gesztus nem látszik.,83296cbc-cfd9-498e-ba45-5cd83fc3f42f,daa6c21c-5447-496b-b762-d53fba4487b4
+P02,11,@loc_MYS_mw01-c-04-memory-view-08_s0_v1,0.5,7.5–8.5,A kávézó és a kabátos férfi elemei; a teljes referencia-póz nem szerepel.,38847058-729c-40cf-9d3d-17f616f29704,f52dc2ed-a78d-408a-89b8-5a80bf827292
+P02,12,@loc_MYS_mys-mwp01-a-routes-rooms-documents_s0_v1,0.5,11–12,Csatornamotívum; a cipős házbejárat és a hostel nem jelenik meg.,221e40ec-450c-438e-bdee-5f0aca3df485,6cbce918-90cf-4a31-8358-ca4060781642
+P02,13,@loc_MYS_mys-mwp01-b-routes-rooms-documents_s0_v1,0,0–15,Az utazási dokumentum/repülőtér/hotel lap paneljei nem azonosíthatók.,7f046551-7f87-447b-b8bd-38cc090c4f5e,104cee82-c924-42ef-9a82-18207528f186
+P02,14,@loc_MYS_mys-mwp01-c-routes-rooms-documents_s0_v1,0,0–15,Dokumentumok és portál nem jelennek meg.,956de5c1-41b0-49a5-9dc7-0e6ffb3f61e8,980c0f1b-dcb8-4f85-9a18-9bdfae4efb16
+P02,15,@loc_MYS_mys-reference-25-original-london-roof-and-chimney-volumes_s0_v1,0,0–15,Tetőfelülnézet és a saját átépülési fázisok nem látszanak.,0d28a7f2-8293-4f3c-9af5-4354f1e59ef1,dd0a6c6b-47d1-4c68-b5a4-564713fa1218
+P02,16,@loc_MYS_mys-reference-26-target-roof-glazing-stone-corbels-and-chimney-crowns_s0_v1,1,0–2,A boltíves üvegtetős téglás udvar közvetlenül felismerhető.,56206b4a-238c-45e3-b583-2e1aa52454b4,b0c796af-9543-449e-9342-1859f32da6ce
+P02,17,@loc_MYS_mys-reference-28-original-arcade-arch-and-fanlight_s0_v1,0.5,12–15,Ívek és üvegfedés; a konkrét legyezőablak morph nem különül el.,6ca8001d-3353-477e-af69-2bc633e325b3,39298fe5-bd92-40e1-a776-36dbc65164f5
+P02,18,@loc_MYS_mys-reference-30-deep-gallery-through-the-unchanged-threshold_s0_v1,1,12–13,A mély négyszögletes majd boltozott átjáró képi egyezése.,a67cf009-f9eb-421c-b6fd-5deb5021712f,09f99992-e472-41b1-9bd2-328912575417
+P02,19,@prop_MYS_mys-ty001-decimal-rating-glyphs-and-tints_s0_v1,1,0–15,Tizedes értékű színezett kártyák.,4df5d85c-db91-43db-8569-fbcb705e89fe,41f533ae-777d-4873-a434-627177e2d8e3
+P02,20,@prop_MYS_mys-ty003-cafe-and-culture-sign-lettering_s0_v1,1,10–11,MOZI és SZÍNHÁZ feliratok.,5a321fb9-0891-47b9-94c1-fdcaeb3dd2a3,45901b59-f2a3-4b07-b6af-b69fc996db15
+P02,21,@prop_MYS_mys-ty006-profile-age-37-to-33-glyph-change_s0_v1,0.5,8.5–10,"Életkor-átírás és 33 megvan, de 47-ről indul a kért 37 helyett.",0d736fb6-da0a-4ff2-a839-43d6a77669ac,cc91c413-925d-4724-a4e9-d63dda416e9a
+P02,22,@loc_MYS_mys-w01-b-01-world-view-05_s0_v1,1,10–11,Leicester/mozi utca közvetlen elrendezése.,8425ee99-6317-4e66-80f6-fa233d3aa49c,d317c427-a541-431c-a5d5-3d993694e4cc
+P02,23,@loc_MYS_mys-w01-b-02-world-view-06_s0_v1,1,13–15,Villamosos üvegtető és jobb oldali meleg átjáró.,6ab31723-74cd-4cbb-a2b4-a2ab4cdb29db,0156be7e-0bfb-4b00-8dcd-c8efe62c8eaa
+P02,24,@loc_MYS_mys-w01-b-03-world-view-07_s0_v1,0,0–15,A saját bazilika-közeli kompozíció nem szerepel.,b4d5151f-7ebf-498a-a6b0-d0cee8fdbf7c,0cf7dc51-e287-40eb-a764-a1346b27406d
+P02,25,@loc_MYS_mys-w01-b-04-world-view-08_s0_v1,0.5,13–15,"Sárga villamos közös motívum, más nézetből.",70a3c836-b51e-4ebe-95c6-dc4168584a64,fbc58b14-2b72-4f50-9e31-bb1034954d72
+P02,26,@loc_MYS_mys-w01-c-01-world-view-09_s0_v1,0,0–15,A saját frontális bazilikanézet nem látható.,0a93af87-af9a-42b0-89ba-d88d72bb3ddc,0edd9cca-f80b-4022-8633-a3c7623a0ff0
+P03,0,@loc_MYS_mys-film-v02-end-frame_s0_v1,1,0–4,"Előző villamosos kompozíció jól felismerhető, geometriai eltéréssel.",40dd7389-cf0f-4d35-a225-9b66dc8ccc55,a207fed9-bcbb-427e-8f31-dcfcd38a8c3c
+P03,1,@char_MYS_mys-c01-protagonist_s0_v1,1,7.5–15,"C01 a kapunál, buszon és hotelben.",774b8a46-1402-4342-9e10-403848e8f53e,0bd3ca76-6f75-4d36-9d47-9bf177669302
+P03,2,@char_MYS_mys-c11-russian-transit-passenger_s0_v1,0.5,7.5–9,A partner szerepe és ruhája megvan; arca inkább az MW02_A_01 lapét követi.,82b22889-e6e8-43cc-9b83-968f75b24821,904bb713-b13a-4160-9bb7-d5cb3765bcb3
+P03,3,@char_MYS_mys-c12-agra-bus-woman_s0_v1,1,10–11.5,C12 arca és ruhája a buszon.,551ccb10-2064-4e20-8bcf-9bd8cd63682c,38b72155-eef1-4b96-b0f0-573faf800567
+P03,4,@char_MYS_mys-c13-sudanese-traveler-man_s0_v1,1,12–14,C13 a taxi első utasülésén.,eb2e92e5-c202-47eb-a3e8-7f049806df79,33086a12-5799-403a-bdba-d380469a1681
+P03,5,@char_MYS_mys-c14-sudanese-traveler-woman_s0_v1,0.5,12–14,C14 szerepe és általános megjelenése; a ruha erősebben zöld és a memóriafotó átfed.,50fe37f2-ffb4-4ecb-bced-99a0233fde9e,6f1e0494-62f5-42da-ab70-4cd5afafe715
+P03,6,@char_MYS_mys-c15-cairo-taxi-driver_s0_v1,1,12–14,C15 arca és kék ing/szürke felső kombinációja.,78150daa-46e5-45cc-9cb0-02fcde6fdd31,8fbd02e0-eb12-4f68-9e8a-0a0dc80106e8
+P03,7,@prop_MYS_mys-mr013-entrance-rail-to-transit-gate_s0_v1,0,7.5–9,"A saját korlát–kapu morph nincs, másfajta kész beléptetősor látszik.",d1a8774c-f787-4b94-b61f-0c604d74d895,a271cf32-2b3d-4892-b83f-f28ecc2aa2d3
+P03,8,@prop_MYS_mys-mr014-bench-and-canopy-to-bus-seating_s0_v1,1,9.3–10,A padok és az egymás felé forduló ülésközi szerkezet közvetlen egyezése.,4c5cac18-571b-49bd-94e5-7bd6bb7a7d03,a99a0eeb-d1d6-422c-b77e-aa60aca0250b
+P03,9,@loc_MYS_mys-mw02-a-01-memory-view-01_s0_v1,1,7.5–9.3,A két férfi és a beléptetősor konkrét beállítása.,59962c17-d624-4e75-bf18-664c3874d1d5,3986b83c-7ad5-416b-bf93-ea4a4177345d
+P03,10,@loc_MYS_mys-mw02-a-02-memory-view-02_s0_v1,1,10–11.5,A buszos páros és ülésrend közvetlen egyezése.,5ac3c0ae-f8fc-46dd-a04b-bde4b67353ef,e566a2c7-bbb6-46cc-9db6-a009f2981dc4
+P03,11,@loc_MYS_mys-mw02-a-03-memory-view-03_s0_v1,1,12–14,A taxibelső teljes szereplő- és ülésrendje.,17aec457-a52f-4fe4-8ca5-33bee69bdb71,f4325981-dbdf-48ca-916b-d2fc01992420
+P03,12,@loc_MYS_mys-mw02-a-04-memory-view-04_s0_v1,0.5,12–13.5,Lebillenő csomag; kültéri rack és álló C01 helyett utastérben.,d50a42c8-9e80-4ebf-a62c-686d5d8551c5,5a7d3eae-8085-4382-91f5-e80ec2ee5b23
+P03,13,@loc_MYS_mys-mw02-c-02-memory-view-01_s0_v1,0.5,7.5–9.3,Ugyanaz a tranzitpár és hall; a kapu utáni folyosói jelenet nem különül el.,62978407-701a-44fc-80bb-80e971175911,5c6fa164-a2e7-4780-a505-517563544f5d
+P03,14,@loc_MYS_mys-mwp01-b-routes-rooms-documents_s0_v1,1,14–15,A kétágyas folyóparti hotelszoba panelje felismerhető.,7f046551-7f87-447b-b8bd-38cc090c4f5e,104cee82-c924-42ef-9a82-18207528f186
+P03,15,@loc_MYS_mys-mwp01-c-routes-rooms-documents_s0_v1,0.5,14–15,"Átfedő hotelpanel, de a dokumentumkezelő gesztus nincs meg.",956de5c1-41b0-49a5-9dc7-0e6ffb3f61e8,980c0f1b-dcb8-4f85-9a18-9bdfae4efb16
+P03,16,@loc_MYS_mys-reference-31-london-station-source-exterior-and-iron-structure_s0_v1,1,5.5–7.5,A felnyíló tetők és az átépülő állomás konkrét fázisai.,dafe92b9-ac6b-47a1-bca8-b504625cb064,2dc23eb8-f828-4862-960c-6d06c82ba0f7
+P03,17,@loc_MYS_mys-reference-32-nyugati-station-destination-and-roof-joints_s0_v1,0.5,5.5–7.5,Üvegrácsos csarnokmotívum; a saját Nyugati-célhomlokzat nem tisztán azonosítható.,c6952c20-b1bc-4257-81d2-47d2028563b2,46c76eac-bb58-4702-8acc-d7886fc7b030
+P03,18,@loc_MYS_mys-reference-33-hungarian-state-opera-target-facade-and-entry-depth_s0_v1,0.5,4–5.5,"Opera-jellegű homlokzat, W02_A_02-vel átfedésben.",185863a5-bc57-4fd3-9fa1-028f80ab9343,efee1553-ef33-417a-9a2c-bdfba9406854
+P03,19,@prop_MYS_mys-reference-43-london-entrance-rail-and-remembered-transit-gate_s0_v1,0,7.5–9,A korlát specifikus reader-tartóvá alakulása nem jelenik meg.,8f448764-13b5-4530-a29a-8fef3f9916a4,3ddd7fbe-1da4-4bf2-8c09-d40317a47d47
+P03,20,@prop_MYS_mys-reference-44-remembered-bus-seats-aisle-and-canopy-post-correspondence_s0_v1,0.5,9.3–10,Pad–ülés átalakulás; a konkrét nézet inkább MR014-é.,ee062d91-1328-4f24-ae3f-eb9e4c46e150,02c18779-d478-4643-9946-317feb016408
+P03,21,@prop_MYS_mys-reference-45-cairo-taxi-cabin-rear-bench-and-luggage-contact_s0_v1,0.5,12–14,"Taxi és csomag motívum, de nem ez az oldalsó konstrukciós nézet.",bab168cf-6f46-4e35-9510-8b2b9004a7ab,a1ea869c-fc3e-4ca2-b452-0a8d159fee1b
+P03,22,@prop_MYS_mys-ty001-decimal-rating-glyphs-and-tints_s0_v1,1,0–7;9.3–10,Tizedes rating kártyák.,4df5d85c-db91-43db-8569-fbcb705e89fe,41f533ae-777d-4873-a434-627177e2d8e3
+P03,23,@loc_MYS_mys-w02-a-01-world-view-01_s0_v1,0,0–7.5,A hosszú oldalhomlokzat saját kompozíciója nincs meg.,4d9de53d-d039-4996-8010-cf65dda53816,3b3f519e-08ed-429f-acf0-e9a90e14f2b9
+P03,24,@loc_MYS_mys-w02-a-02-world-view-02_s0_v1,1,4–5.5,A díszes saroképület és kupolás távoli utca felismerhető.,3a09f167-7522-4bce-b999-31f3c6a7a478,e58ac1ae-1d35-4373-8559-81a1c3f5dff5
+P03,25,@loc_MYS_mys-w02-a-03-world-view-03_s0_v1,0,0–15,A lépcsős METRÓ 4 lejárat nem szerepel.,92b47ecf-259a-422a-a25e-34484357a502,0ade902a-cac3-4b2c-ae04-417e150ab925
+P03,26,@loc_MYS_mys-w02-a-04-world-view-04_s0_v1,0,0–15,A saját sarki csarnoknézet nem szerepel.,f9dcea7e-af15-41e0-a186-60f25bd1895a,4269fb8e-898e-4254-83a2-9ab7d297b4e9
+P03,27,@loc_MYS_mys-w02-b-01-world-view-05_s0_v1,0,0–15,A saját villamosos utcafront nem különíthető el.,0057862d-3feb-4672-8470-4721c893a880,49b85b18-51a7-4088-9f16-1fde32bd0700
+P04,0,@loc_MYS_mys-film-v03-end-frame_s0_v1,0,0,A hotelzárókép helyett a W02_B_03 tetőképe nyit.,51043fe3-5c45-43eb-a05b-8eab1858a335,72b9da16-9c1a-4d66-8218-51ffe720dcb1
+P04,1,@char_MYS_mys-c01-protagonist_s0_v1,1,4.5–8,C01 a táncteremben és a növények mellett.,774b8a46-1402-4342-9e10-403848e8f53e,0bd3ca76-6f75-4d36-9d47-9bf177669302
+P04,2,@char_MYS_mys-c10-beginner-dance-woman_s0_v1,1,4.5–7.5,"C10 ruhája, arca és párostánca.",2cfe201b-ad86-4569-a60e-2bd96b9806a8,cff1962e-048a-49a1-8baa-59ff37735f61
+P04,3,@char_MYS_mys-c16-balloon-local-helper-man_s0_v1,0.5,1.5–3.5,"Segítő férfi, de a csoportképen a külön arcazonosság korlátozottan olvasható.",c24a8a43-4c2c-4d21-b990-38893a402baa,1f8ae540-1435-4169-8abe-9a18f04d1bae
+P04,4,@char_MYS_mys-c17-balloon-local-helper-woman_s0_v1,0.5,1.5–3.5,Segítő nő; MW02_B ugyanazt a csoportot is mutatja.,7e847706-055a-40f8-903b-a9a0b3988ae5,369f5469-e8c4-4c09-afe9-4e07c3764e8d
+P04,5,@char_MYS_mys-c18-barmouth-road-trip-driver-companion_s0_v1,0.5,11–13,A társaság férfi tagja felismerhető típus és ruha szerint; a memóriafotóval átfed.,3b75d987-30f6-4f4f-b42d-08dbae4c85a1,be83ef65-e051-433b-81b7-db0ae66593d9
+P04,6,@char_MYS_mys-c19-barmouth-road-trip-companion-a_s0_v1,0.5,11–13,"Ötfős csoport egyik tagja, külön portréegyezés nem biztos.",46d8d9c3-ff95-468c-9133-7d6ee0827a3f,21bb7b1e-0922-4911-b3d1-2a202f364f7c
+P04,7,@char_MYS_mys-c20-barmouth-road-trip-companion-b_s0_v1,0.5,11–13,"Ötfős csoport egyik tagja, külön portréegyezés nem biztos.",fe1d54ba-f221-43d0-8a59-1c67b982d6e8,c80e5c01-4d55-4c7e-a9ba-633078b2c382
+P04,8,@char_MYS_mys-c21-barmouth-road-trip-companion-c_s0_v1,0.5,11–13,"Ötfős csoport egyik tagja, külön portréegyezés nem biztos.",0bdaf766-de76-4bca-b76b-a63516b4d30c,eb72051b-9ff9-45a2-a687-2a9717d5149f
+P04,9,@prop_MYS_mys-mr015-canopy-to-balloon-envelope_s0_v1,1,3.5–4.5;13–15,"Amber kupolaszerű fedés, kosár és teljes ballon.",aef5fa13-79b6-49ba-8a80-d64f409a9709,0ba3f435-b86f-4b5a-af88-6e8e0b10bb71
+P04,10,@prop_MYS_mys-mr016-crop-stalks-to-rail-sleepers_s0_v1,0.5,7.5–9.5,Növény és sín motívumok megvannak; a specifikus morph-fázisok nem.,403b4893-fc17-4292-b11b-5202ce9e37a9,14e6e280-6a6a-4c31-a289-f28b8a5ce073
+P04,11,@loc_MYS_mys-mw01-c-01-memory-view-09_s0_v1,1,4.5–7.5,"A táncpartner, kéztartás és terem közvetlen képi egyezése.",3fcddade-77bd-4fe7-b04e-60c8423d712a,76496d43-bb87-4542-b705-d2738d394bdc
+P04,12,@loc_MYS_mys-mw02-b-global-routes_s0_v1,1,1.5–3.5;8–11,"A kosaras csoport, növénysorok és buszablak paneljei felismerhetők.",ba95af4c-d4b0-41c4-ae58-d3da77ae226b,97c2dd95-0aff-4a15-8436-7f652324555a
+P04,13,@loc_MYS_mys-mw02-c-01-memory-view-09_s0_v1,1,11–13,Az ötfős apályos parti kép közvetlen egyezése.,678014ba-52fb-448b-a219-72de02ad350a,adb022e7-930c-4297-82ea-703f29902b91
+P04,14,@loc_MYS_mys-mw02-c-03-memory-view-07_s0_v1,0,0–15,A buszra/villamosra fellépés közeli emléke nem szerepel.,f6c7764e-abca-40fe-8ed3-1c2703fbd4d9,6cb2fc4a-8f54-45e5-b99d-107102f42a28
+P04,15,@loc_MYS_mys-mw02-c-04-memory-view-08_s0_v1,0.5,10.3–11.5,Coachbelső és táj; a felső csomagot igazító gesztus nem látszik.,c3f340c3-d955-4820-a6fd-22904b1b3865,496806a9-3ca0-49f1-9f5f-4f6d034ad537
+P04,16,@loc_MYS_mys-mwp01-a-routes-rooms-documents_s0_v1,0.5,8–10,"Növények és kerek óra motívuma, de nem a konkrét reptéri/kerti kompozíció.",221e40ec-450c-438e-bdee-5f0aca3df485,6cbce918-90cf-4a31-8358-ca4060781642
+P04,17,@loc_MYS_mys-mwp01-b-routes-rooms-documents_s0_v1,0.5,9.3–10.3,Kulcs az asztalon; a dokumentumok és külön hotelszoba nem azonosítható.,7f046551-7f87-447b-b8bd-38cc090c4f5e,104cee82-c924-42ef-9a82-18207528f186
+P04,18,@loc_MYS_mys-mwp01-c-routes-rooms-documents_s0_v1,0,0–15,Dokumentum/portál/hotel paneljei nem jelennek meg.,956de5c1-41b0-49a5-9dc7-0e6ffb3f61e8,980c0f1b-dcb8-4f85-9a18-9bdfae4efb16
+P04,19,@loc_MYS_mys-reference-31-london-station-source-exterior-and-iron-structure_s0_v1,1,13–15,Az átépült állomás homlokzata közvetlenül felismerhető.,dafe92b9-ac6b-47a1-bca8-b504625cb064,2dc23eb8-f828-4862-960c-6d06c82ba0f7
+P04,20,@loc_MYS_mys-reference-32-nyugati-station-destination-and-roof-joints_s0_v1,0.5,13–15,Üveges állomásmotívum; R031 közelebbi képi egyezés.,c6952c20-b1bc-4257-81d2-47d2028563b2,46c76eac-bb58-4702-8acc-d7886fc7b030
+P04,21,@loc_MYS_mys-reference-33-hungarian-state-opera-target-facade-and-entry-depth_s0_v1,0,0–15,Opera konkrét célhomlokzata nem látható.,185863a5-bc57-4fd3-9fa1-028f80ab9343,efee1553-ef33-417a-9a2c-bdfba9406854
+P04,22,@prop_MYS_mys-reference-46-canopy-and-balloon-envelope-rigging-and-basket-interfaces_s0_v1,0.5,1.5–4.5;13–15,Kosár és kötelek megvannak; a külön építési lap fázisai nem olvashatók.,ae2d47db-09a9-4128-be35-f48db3d4edf0,6789039b-227e-4bcc-8c4d-28f6d3fe742a
+P04,23,@prop_MYS_mys-ty001-decimal-rating-glyphs-and-tints_s0_v1,1,3.5–4.5;13–15,Jól látható 6.2/9.2 kártyák.,4df5d85c-db91-43db-8569-fbcb705e89fe,41f533ae-777d-4873-a434-627177e2d8e3
+P04,24,@prop_MYS_mys-ty005-transit-and-entrance-sign-lettering_s0_v1,0,0–15,A lap saját METRÓ/KIJÁRAT/BEJÁRAT/VILLAMOS feliratai nem olvashatók.,ae35d051-c776-4e3b-ad8c-a9520ac7f63b,03e00862-2189-4e26-a550-1149a9b9bd64
+P04,25,@loc_MYS_mys-w02-b-02-world-view-06_s0_v1,0,0–15,A tükröződő üvegfal utcaképe nem szerepel.,bc5941bd-67de-40e8-82b6-30f64d08e24a,6f8d20c1-a458-4219-b078-fbe6823a79de
+P04,26,@loc_MYS_mys-w02-b-03-world-view-07_s0_v1,1,0–1.5,A szélesen hajló üvegtető nyitóképe közvetlen egyezés.,5f094a3d-64cf-43e4-aa8b-e5a7c9cc9c4d,158383a8-c69b-44fb-becd-da4d8c54859c
+P04,27,@loc_MYS_mys-w02-b-04-world-view-08_s0_v1,0.5,0–1.5,"Busz és villamos környezeti motívum, de a saját közeli kompozíció hiányzik.",2dc2ae9d-3f38-42d1-8bfe-43934f52c4f7,737dedb9-ab6a-40d7-a158-f2fd6db1794f
+P04,28,@loc_MYS_mys-w02-c-01-world-view-09_s0_v1,0,0–15,A díszes metróbejárat és közeli felirat nem látszik.,afc05ea6-3fe1-4736-a28d-053353ace5a2,dda5b835-1203-4ba1-ba79-1bc3d5f708cf

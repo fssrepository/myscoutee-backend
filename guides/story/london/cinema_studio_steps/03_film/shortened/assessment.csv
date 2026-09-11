@@ -1,0 +1,75 @@
+clip,group,requirement,score,time_local,evidence
+P00,story,Az embléma részei összeállnak,1,0–2,Az elkülönülő színes formák egy kompakt jelbe záródnak.
+P00,story,"Színes M, fehér szív és arany csillag",1,0–4,Mindhárom forma végig felismerhető.
+P00,story,MyScoutee / presents két sorban,1,2–4,A vizsgált letöltésen mindkét felirat olvasható; ez már a korrigált ident.
+P00,story,Stabil olvasási szakasz,1,2.5–3.6,A kész jel és felirat együtt megáll.
+P00,story,Teljes feketébe kifutás,0.5,3.6–4.0,"Sötétedik, de a 4.000 s képkockán a jel és a szöveg még látszik."
+P01,story,"Soho, nedves utca és mozgó forgalom",1,0–3,"Pubfrontok, busz, taxi és gyalogosok látszanak."
+P01,story,A jelenbeli C01 követhető sétája,0.5,0–15,A sötét kabátos főalak felismerhető a későbbi képeken; a kezdeti utca és az emlék közti személyes út nem végig követhető.
+P01,story,St Paul’s → Szent István-bazilika,0.5,0–3,A kupola/tornyok sziluettje változik; a kért borda–dob–torony–portikusz lánc nem különül el.
+P01,story,Szárnyas szobor leugrik az alsó lépcsőre,0.5,3–7,A szobor és a közeli elhaladás megvan; az ugrás és az alsó lépcsőre érkezés nem olvasható egyértelműen.
+P01,story,Pillantás csak a nézett kártya töltését változtatja,0,0–3,A számtartó pillantás–töltés kapcsolat nem olvasható; az elöl haladó férfi 9.2 értéke 6.2-re változik.
+P01,story,Kávézó és kinyúló felső szoba,1,7–9,Meleg sarokhelyiség és kiálló téglatömeg látszik.
+P01,story,Téglaablakból mély kőív és étteremnyílás,1,9–11.5,A nyílás oldala és boltozata nagy tömbökkel átformálódik.
+P01,story,C02 csészével és olvasható mosollyal,1,11.5–14,A nő a csésze mellett a férfira néz és mosolyog.
+P01,story,Emlékbeli C01 rossz hátsó ajtótól fordul vissza,0.5,11.5–13,Férfi áll a hátsó ajtóknál; a rossz ajtó felismerése nem világos.
+P01,story,"Külön ebédcsoport, étel nélkül és elhúzott kézzel",0,11.5–15,Az éttermi találkozás folytatódik; a külön üres ebédhely gesztusa nem jelenik meg olvashatóan.
+P01,story,COFFEE betűi KÁVÉ-vá alakulnak,0,7–15,A kért betűátalakulás nem olvasható ki.
+P02,story,Közös szoba két ággyal és lakóval,1,2–5.5,"Két ágy, fekvő férfi, ruhák és személyes tárgyak láthatók."
+P02,story,Külön szomszédos szoba az ülő lakótárssal,1,5.5–7.5,"Az ülő férfi külön, polcos helyiségben jelenik meg."
+P02,story,Család és magyar otthoni kötelezettség,0.5,6–7.5,Családi fényképek vannak; a kötelezettség történeti jelentése önmagában nem olvasható.
+P02,story,Változatlan portré mellett 37 → 33,0.5,8.5–9.7,"Az életkor változik és a portré megmarad, de a kiinduló szám 47, nem 37."
+P02,story,Leicester kulturális utca és feliratok,1,10–11,"MOZI, SZÍNHÁZ és színházi utcakép jelenik meg."
+P02,story,Zárt munkásszálló és cipőkkel zsúfolt bejárat,0,10–13,Nem különül el ilyen olvasható küszöbemlék.
+P02,story,Csatornapart náddal,0.5,11–11.8,A csatorna bevágása megvan; a nád és kapcsolódó házbejárat nem olvasható.
+P02,story,Kossuth-jellegű emlékmű kőből kibomolva,0,10–13,"Távoli oszlop van, de az előírt figurális emlékmű-átalakulás nem azonosítható."
+P02,story,Mély árkádsor alakulása,1,12–13,A szögletes nyílásokból egymás mögötti boltívek lesznek.
+P02,story,"Bal oldali piros busz, villamos és mozgó záró utca",1,13–15,"A busz kimegy balra, mögötte a sárga villamos és az üvegtető marad."
+P03,story,Előző üvegtetős-villamosos kép pontos folytatása,0.5,0–4.5,A kompozíció témája egyezik; a történeti összeillesztésnél jelzett geometriai eltérés miatt nem tekinthető pontos képillesztésnek.
+P03,story,Üvegtetőből nagy pályaudvari csarnok,1,4.5–7.5,A szétterülő üvegrácsok a Nyugati-reference jellegzetes homlokzatához vezetnek.
+P03,story,Opera teljes homlokzata és árkádjai,0.5,4–5.5,Díszes sarokhomlokzat/árkádos épület jelenik meg; a teljes külön Opera-cél kevésbé olvasható.
+P03,story,"Nelson, National Gallery és külön Hősök tere",0,0–7.5,"A teljes, elkülönített landmark-sor nem azonosítható."
+P03,story,C11 és C01 a jegykapunál,1,7.5–9.3,"A két férfi, az olvasó használata és a kapusor felismerhető."
+P03,story,C12 és C01 Agra buszán,1,10–11.7,"A két szereplő ülése, szemkontaktusa és a nő kézmozdulata olvasható."
+P03,story,"Cairo taxi, sofőr, pár és C01",1,12–14,A szereplőcsoport a külön taxibelsőben látható.
+P03,story,Telefonon tevés kép biztonsági emberekkel,0,12–14,A kért telefonkép nem látszik olvashatóan.
+P03,story,"Csomagtartó billen, táska leesik, meglepett reakció",0.5,12.2–13.4,A táska lebillen és lejjebb kerül; a teljes rack–elengedés–landolás–reakció lánc nem különül el.
+P03,story,"Két főnek készített hotel, egyetlen lakó",1,14–15,"C01 az egyik ágyon ül; a másik ágy és párna üres, a folyó az ablakban látható."
+P04,story,Tetőből ballon teljes anyagi lánccal,0.5,0–1.5,A tetőmezők szövetté válnak; a kosárhoz és rigginghez vezető teljes lánc helyett nézetváltás következik.
+P04,story,Segítők együtt tartják a kosarat a veteményesben,1,1.5–3.5,Több ember közösen fogja a kosarat és a szerkezetet.
+P04,story,Ballon felemelkedik és távozik a város felett,1,13–15,A ballon és a kosár együtt emelkedik a pályaudvar fölé.
+P04,story,C10 és C01 kezdő párostánca,1,4.5–7.5,"Kézfogás, lábmunka és kar alatti fordulat látható."
+P04,story,Paprika/kukorica sorok az utazásban,1,7.5–9.5,Növénysorok és mellettük sínpálya látszik.
+P04,story,Levelek és gyökerek talpfává alakulnak,0,7.5–10,A sínek készen vannak; a növényi anyag talpfává válása nem olvasható.
+P04,story,Trivandrum-óra budapesti vezetéktartón,0.5,9–10,Kerek óra van; a konkrét reptér és a vezetéktartóvá alakulás nincs megkülönböztetve.
+P04,story,Bérelt autó kulcsa külön olcsó hotelszobában,0.5,9.3–10.3,"Kulcs van az asztalon, de a helyiség és az utazási ülés tere összeolvad."
+P04,story,Távolsági busz ablakkal és ülésekkel,1,10.3–11.5,Az autóbusz belseje jól felismerhető.
+P04,story,Ötfős társaság Barmouth apályos partján,1,11–13,"Öt ember áll a széles parton, mögöttük a parti település."
+P04,story,Folyóparti Aldwych/Embankment munka-város kijárat,0.5,13–15,"Városi kijárat van, de a kép a pályaudvarnál marad, nem a kért folyóparton."
+P00,detail,"Kis elmozdulású, nem rugalmas alkatrészpályák",0.5,0–2,A rétegek nagyobb alakváltozással záródnak össze; nem pusztán merev darabok illesztése.
+P00,detail,"Valós reliefmélység, anyag és árnyék",1,0–4,Vastag színes élek és talajárnyék látszanak.
+P00,detail,Előírt szakaszhatárok és olvasási idő,0.5,0–4,A cím csak kb. 2.3–2.5 s körül olvasható teljesen; a végső fekete sem teljes.
+P01,detail,"Egyetlen megszakítatlan kameraút, áttűnés nélkül",0,teljes klip,"Kettős képes áttűnések kb. 6.8, 10.1 és 14 s-nél."
+P01,detail,"Követhető forrásanyagból létrejövő cél, kész szoba leleplezése nélkül",0.5,teljes klip,"Nagy anyagmozgások vannak, de kész terekre váltásokkal keverednek; a részletes csavar/szilánk/erezet út nem végig követhető."
+P01,detail,Több mélységben egyszerre aktív átalakulások,0.5,teljes klip,Forgalom és emberek mozognak; az építészeti morphok többnyire egymás után kapnak külön figyelmet.
+P01,detail,Jelenbeli sétáló és emlékbeli szereplő végig térben elkülönül,0.5,teljes klip,"Az emlékszereplők megjelennek, de a jelenbeli sétáló összefüggő külső útja nem követhető végig."
+P01,detail,"Kártyák: stabil szám/tulajdonos, előírt kis méret és szín",0.5,utcai részek,"A tizedes kártyák felismerhetők, de méretük gyakran fejméretű vagy nagyobb; ez nem az előírt 0.8 × 0.35 fejméret."
+P01,detail,"C01 saját kártyája csatolt, olvashatatlan és semleges",0,utcai részek,A záró külső C01 felett nincs látható csatolt kártya.
+P02,detail,"Egyetlen megszakítatlan kameraút, áttűnés nélkül",0,teljes klip,Telefonos közeli és utcai nézet közötti áttűnés kb. 9.9 s-nél.
+P02,detail,"Követhető forrásanyagból létrejövő cél, kész szoba leleplezése nélkül",0.5,teljes klip,"Nagy anyagmozgások vannak, de kész terekre váltásokkal keverednek; a részletes csavar/szilánk/erezet út nem végig követhető."
+P02,detail,Több mélységben egyszerre aktív átalakulások,0.5,teljes klip,Forgalom és emberek mozognak; az építészeti morphok többnyire egymás után kapnak külön figyelmet.
+P02,detail,Jelenbeli sétáló és emlékbeli szereplő végig térben elkülönül,0.5,teljes klip,"Az emlékszereplők megjelennek, de a jelenbeli sétáló összefüggő külső útja nem követhető végig."
+P02,detail,"Kártyák: stabil szám/tulajdonos, előírt kis méret és szín",0.5,utcai részek,"A tizedes kártyák felismerhetők, de méretük gyakran fejméretű vagy nagyobb; ez nem az előírt 0.8 × 0.35 fejméret."
+P02,detail,"C01 saját kártyája csatolt, olvashatatlan és semleges",0,utcai részek,A nyitó sétáló C01 felett nagy és olvasható 6.2 látszik.
+P03,detail,"Egyetlen megszakítatlan kameraút, áttűnés nélkül",0,teljes klip,"Pályaudvar, kapu, busz és taxi külön képi beállításokként követik egymást."
+P03,detail,"Követhető forrásanyagból létrejövő cél, kész szoba leleplezése nélkül",0.5,teljes klip,"Nagy anyagmozgások vannak, de kész terekre váltásokkal keverednek; a részletes csavar/szilánk/erezet út nem végig követhető."
+P03,detail,Több mélységben egyszerre aktív átalakulások,0.5,teljes klip,Forgalom és emberek mozognak; az építészeti morphok többnyire egymás után kapnak külön figyelmet.
+P03,detail,Jelenbeli sétáló és emlékbeli szereplő végig térben elkülönül,0.5,teljes klip,"Az emlékszereplők megjelennek, de a jelenbeli sétáló összefüggő külső útja nem követhető végig."
+P03,detail,"Kártyák: stabil szám/tulajdonos, előírt kis méret és szín",0.5,utcai részek,"A tizedes kártyák felismerhetők, de méretük gyakran fejméretű vagy nagyobb; ez nem az előírt 0.8 × 0.35 fejméret."
+P03,detail,"C01 saját kártyája csatolt, olvashatatlan és semleges",,utcai részek,A rövid külső jelenetekben a C01-azonosság és saját kártyája nem értékelhető kellő biztonsággal.
+P04,detail,"Egyetlen megszakítatlan kameraút, áttűnés nélkül",0,teljes klip,"Veteményes, város, táncterem és part külön nézetek; a buszablaknál áttűnés is látszik."
+P04,detail,"Követhető forrásanyagból létrejövő cél, kész szoba leleplezése nélkül",0.5,teljes klip,"Nagy anyagmozgások vannak, de kész terekre váltásokkal keverednek; a részletes csavar/szilánk/erezet út nem végig követhető."
+P04,detail,Több mélységben egyszerre aktív átalakulások,0.5,teljes klip,Forgalom és emberek mozognak; az építészeti morphok többnyire egymás után kapnak külön figyelmet.
+P04,detail,Jelenbeli sétáló és emlékbeli szereplő végig térben elkülönül,0.5,teljes klip,"Az emlékszereplők megjelennek, de a jelenbeli sétáló összefüggő külső útja nem követhető végig."
+P04,detail,"Kártyák: stabil szám/tulajdonos, előírt kis méret és szín",0.5,utcai részek,"A tizedes kártyák felismerhetők, de méretük gyakran fejméretű vagy nagyobb; ez nem az előírt 0.8 × 0.35 fejméret."
+P04,detail,"C01 saját kártyája csatolt, olvashatatlan és semleges",,utcai részek,A jelenbeli C01 saját kártyáját a minták nem mutatják kellően egyértelműen.

@@ -1,0 +1,41 @@
+MYSCOUTEE — SHORTENED P01 — 15 SECONDS, 16:9, AUDIO ON
+One photographic sequence.
+
+EXISTING WHOLE-IMAGE REFERENCES:
+C01 @char_MYS_mys-c01-protagonist_s0_v1
+C02 @char_MYS_mys-c02-soho-woman_s0_v1
+MR001 @loc_MYS_mys-mr001-st-pauls-to-st-stephens_s0_v1
+MR004 @prop_MYS_mys-mr004-window-glass-to-pendant-shade_s0_v1
+MR005 @loc_MYS_mys-mr005-brick-courses-to-carved-arch_s0_v1
+MR006 @loc_MYS_mys-mr006-stone-threshold-to-supported-timber-floor_s0_v1
+MR007 @prop_MYS_mys-mr007-bench-to-curved-floor-border_s0_v1
+MR008 @prop_MYS_mys-mr008-window-fittings-to-pendant-stem_s0_v1
+MR009 @loc_MYS_mys-mr009-balcony-scroll-to-sideways-stair_s0_v1
+MR010 @prop_MYS_mys-mr010-english-sign-to-kave-lettering_s0_v1
+MW01 @loc_MYS_mys-mw01-a-london-social_s0_v1
+MW01_C_02 @loc_MYS_mys-mw01-c-02-memory-view-01_s0_v1
+R008 @loc_MYS_mys-r008-cafe-to-occupied-restaurant_s0_v1
+R010 @prop_MYS_mys-reference-10-winged-statue-plinth-and-contact-detail_s0_v1
+R021 @loc_MYS_mys-reference-21-restaurant-rear-doors-and-depth-relationships_s0_v1
+T01_DETAILS @loc_MYS_mys-t01-a-soho-restaurant_s0_v1
+TY001 @prop_MYS_mys-ty001-decimal-rating-glyphs-and-tints_s0_v1
+TY002 @prop_MYS_mys-ty002-coffee-to-kave-letter-material_s0_v1
+W01_A_01 @loc_MYS_mys-w01-a-01-world-view-01_s0_v1
+W01_A_02 @loc_MYS_mys-w01-a-02-world-view-02_s0_v1
+W01_A_03 @loc_MYS_mys-w01-a-03-world-view-03_s0_v1
+W01_A_04 @loc_MYS_mys-w01-a-04-world-view-04_s0_v1
+
+LOOK AND PEOPLE:
+Photographic London/Pest city imagery, damp paving, evening light and warm interiors. Use the supplied people and places. Keep C01 recognisable in his dark jacket and distinguish his memories from the present street. Present-day pedestrians carry owner-linked decimal cards, including 6.2 and 9.2; remembered people have none. Keep C01's own score hidden. No umbrellas or falling rain. Reference sheets guide the scene; never show their grids.
+
+CAMERA AND CHANGE:
+Move through the scenes with forward travel and short lateral passes. Emphasise a few large architectural changes and readable human gestures. Show substantial stone, timber, glass and iron, with depth and contact shadows. Short transitions connect the distinct views below.
+
+ACTION — LOCAL TIME:
+0–3 s: Advance along a wet Soho street with pub fronts, pedestrians, a red bus and black taxis. A large domed church remains visible ahead as its silhouette changes toward the supplied Pest basilica.
+3–7 s: Rise toward the winged metal statue on its plinth. Pass close to its body and spread wings, with traffic and the domed skyline behind it.
+7–11.5 s: Approach the warm corner café beneath a projecting upper room. Its window supports open and its brick surround changes into a broad stone arch, exposing a furnished restaurant.
+11.5–15 s: Inside, C02 sits at a wooden table with a white cup; C01 stands near the rear doors. Move closer as she looks toward him and smiles. Finish with C01 outside the restaurant window and the occupied room behind him.
+
+SOUND:
+Background only: an original Hungarian folk-rooted fiddle theme, tekerő drone and clarinet answers, with traffic, footsteps and material sounds following visible action. Leave room for the separately added narration. No generated narrator, lyrics or intelligible dialogue; keep the musical phrase open at the end.

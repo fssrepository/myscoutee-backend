@@ -1,0 +1,49 @@
+MYSCOUTEE — SHORTENED P03 — 15 SECONDS, 16:9, AUDIO ON
+One photographic sequence.
+
+EXISTING WHOLE-IMAGE REFERENCES:
+@loc_MYS_mys-film-v02-end-frame_s0_v1
+C01 @char_MYS_mys-c01-protagonist_s0_v1
+C11 @char_MYS_mys-c11-russian-transit-passenger_s0_v1
+C12 @char_MYS_mys-c12-agra-bus-woman_s0_v1
+C13 @char_MYS_mys-c13-sudanese-traveler-man_s0_v1
+C14 @char_MYS_mys-c14-sudanese-traveler-woman_s0_v1
+C15 @char_MYS_mys-c15-cairo-taxi-driver_s0_v1
+MR013 @prop_MYS_mys-mr013-entrance-rail-to-transit-gate_s0_v1
+MR014 @prop_MYS_mys-mr014-bench-and-canopy-to-bus-seating_s0_v1
+MW02_A_01 @loc_MYS_mys-mw02-a-01-memory-view-01_s0_v1
+MW02_A_02 @loc_MYS_mys-mw02-a-02-memory-view-02_s0_v1
+MW02_A_03 @loc_MYS_mys-mw02-a-03-memory-view-03_s0_v1
+MW02_A_04 @loc_MYS_mys-mw02-a-04-memory-view-04_s0_v1
+MW02_C_02 @loc_MYS_mys-mw02-c-02-memory-view-01_s0_v1
+MWP01_B @loc_MYS_mys-mwp01-b-routes-rooms-documents_s0_v1
+MWP01_C @loc_MYS_mys-mwp01-c-routes-rooms-documents_s0_v1
+R031 @loc_MYS_mys-reference-31-london-station-source-exterior-and-iron-structure_s0_v1
+R032 @loc_MYS_mys-reference-32-nyugati-station-destination-and-roof-joints_s0_v1
+R033 @loc_MYS_mys-reference-33-hungarian-state-opera-target-facade-and-entry-depth_s0_v1
+R043 @prop_MYS_mys-reference-43-london-entrance-rail-and-remembered-transit-gate_s0_v1
+R044 @prop_MYS_mys-reference-44-remembered-bus-seats-aisle-and-canopy-post-correspondence_s0_v1
+R045 @prop_MYS_mys-reference-45-cairo-taxi-cabin-rear-bench-and-luggage-contact_s0_v1
+TY001 @prop_MYS_mys-ty001-decimal-rating-glyphs-and-tints_s0_v1
+W02_A_01 @loc_MYS_mys-w02-a-01-world-view-01_s0_v1
+W02_A_02 @loc_MYS_mys-w02-a-02-world-view-02_s0_v1
+W02_A_03 @loc_MYS_mys-w02-a-03-world-view-03_s0_v1
+W02_A_04 @loc_MYS_mys-w02-a-04-world-view-04_s0_v1
+W02_B_01 @loc_MYS_mys-w02-b-01-world-view-05_s0_v1
+
+LOOK AND PEOPLE:
+Photographic London/Pest city imagery, damp paving, evening light and warm interiors. Use the supplied people and places. Keep C01 recognisable in his dark jacket and distinguish his memories from the present street. Present-day pedestrians carry owner-linked decimal cards, including 6.2 and 9.2; remembered people have none. Keep C01's own score hidden. No umbrellas or falling rain. Reference sheets guide the scene; never show their grids.
+
+CAMERA AND CHANGE:
+Move through the scenes with forward travel and short lateral passes. Emphasise a few large architectural changes and readable human gestures. Show substantial stone, timber, glass and iron, with depth and contact shadows. Short transitions connect the distinct views below.
+
+ACTION — LOCAL TIME:
+0–4.5 s: Move forward beneath the broad iron-and-glass canopy, with a yellow tram on the left, rated pedestrians, a dome ahead and a warm passage on the right. Use the preceding frame for this street arrangement.
+4.5–7.5 s: Lift and spread the glazed roof sections into the large station frontage shown by R032. Travel past the stone supports and the adjoining square.
+7.5–9.3 s: Reveal the transit hall. C11 uses a ticket reader with remembered C01 beside him; they move through the gate area.
+9.3–12 s: Wooden street benches and supports reshape into bus seating. Reveal remembered C01 and C12 sitting across the aisle, exchanging a look and a small hand gesture. Move between the seat rows.
+12–14 s: Enter the separate Cairo taxi memory with driver C15, C13, C14 and remembered C01. A loose bag tips down into the cabin beside the passengers.
+14–15 s: Reveal the riverside hotel room: remembered C01 sits on one of two single beds. The other bed is unoccupied, with its own pillow and a bag; keep both beds and the river view visible together.
+
+SOUND:
+Background only: an original Hungarian folk-rooted fiddle theme, tekerő drone and clarinet answers, with traffic, footsteps and material sounds following visible action. Leave room for the separately added narration. No generated narrator, lyrics or intelligible dialogue; keep the musical phrase open at the end.

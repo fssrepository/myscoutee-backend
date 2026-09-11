@@ -1,0 +1,48 @@
+MYSCOUTEE — SHORTENED P02 — 15 SECONDS, 16:9, AUDIO ON
+One photographic sequence.
+
+EXISTING WHOLE-IMAGE REFERENCES:
+@loc_MYS_mys-film-v01-end-frame_s0_v1
+C01 @char_MYS_mys-c01-protagonist_s0_v1
+C06 @char_MYS_mys-c06-shared-house-substitute-snoring-housemate_s0_v1
+C07 @char_MYS_mys-c07-fx-mortgage-housemate_s0_v1
+C08 @char_MYS_mys-c08-fx-mortgage-spouse_s0_v1
+C09 @char_MYS_mys-c09-fx-mortgage-child_s0_v1
+MW01_B_01 @loc_MYS_mys-mw01-b-01-memory-view-05_s0_v1
+MW01_B_02 @loc_MYS_mys-mw01-b-02-memory-view-06_s0_v1
+MW01_B_03 @loc_MYS_mys-mw01-b-03-memory-view-07_s1_v1
+MW01_B_04 @loc_MYS_mys-mw01-b-04-memory-view-08_s0_v1
+MW01_C_03 @loc_MYS_mys-mw01-c-03-memory-view-07_s2_v1
+MW01_C_04 @loc_MYS_mw01-c-04-memory-view-08_s0_v1
+MWP01 @loc_MYS_mys-mwp01-a-routes-rooms-documents_s0_v1
+MWP01_B @loc_MYS_mys-mwp01-b-routes-rooms-documents_s0_v1
+MWP01_C @loc_MYS_mys-mwp01-c-routes-rooms-documents_s0_v1
+R025 @loc_MYS_mys-reference-25-original-london-roof-and-chimney-volumes_s0_v1
+R026 @loc_MYS_mys-reference-26-target-roof-glazing-stone-corbels-and-chimney-crowns_s0_v1
+R028 @loc_MYS_mys-reference-28-original-arcade-arch-and-fanlight_s0_v1
+R030 @loc_MYS_mys-reference-30-deep-gallery-through-the-unchanged-threshold_s0_v1
+TY001 @prop_MYS_mys-ty001-decimal-rating-glyphs-and-tints_s0_v1
+TY003 @prop_MYS_mys-ty003-cafe-and-culture-sign-lettering_s0_v1
+TY006 @prop_MYS_mys-ty006-profile-age-37-to-33-glyph-change_s0_v1
+W01_B_01 @loc_MYS_mys-w01-b-01-world-view-05_s0_v1
+W01_B_02 @loc_MYS_mys-w01-b-02-world-view-06_s0_v1
+W01_B_03 @loc_MYS_mys-w01-b-03-world-view-07_s0_v1
+W01_B_04 @loc_MYS_mys-w01-b-04-world-view-08_s0_v1
+W01_C_01 @loc_MYS_mys-w01-c-01-world-view-09_s0_v1
+
+LOOK AND PEOPLE:
+Photographic London/Pest city imagery, damp paving, evening light and warm interiors. Use the supplied people and places. Keep C01 recognisable in his dark jacket and distinguish his memories from the present street. Present-day pedestrians carry owner-linked decimal cards, including 6.2 and 9.2; remembered people have none. Keep C01's own score hidden. No umbrellas or falling rain. Reference sheets guide the scene; never show their grids.
+
+CAMERA AND CHANGE:
+Move through the scenes with forward travel and short lateral passes. Emphasise a few large architectural changes and readable human gestures. Show substantial stone, timber, glass and iron, with depth and contact shadows. Short transitions connect the distinct views below.
+
+ACTION — LOCAL TIME:
+0–2.5 s: Track C01 across a damp courtyard beneath an iron-and-glass canopy. A brick wall opens beside him into a shared bedroom.
+2.5–5.5 s: Pass two single beds, crowded belongings, a clothes rail and a bedside photograph. A man lies on one bed with his head resting on his hand; the other bed remains empty.
+5.5–8.5 s: Travel into an adjoining room with the seated housemate, shelves and family photographs. The masonry and shelving open toward a café counter.
+8.5–10 s: Show a hand holding a phone with C01's unchanged portrait. The profile age changes to 33 while the portrait remains still.
+10–13 s: Return to a wet theatre street with rated pedestrians and illuminated MOZI/SZÍNHÁZ signs. Pass a canal edge, a distant column and a deep arcade whose openings become rounded arches.
+13–15 s: Move beneath a wide iron-and-glass canopy. A red double-decker passes leftward, revealing a yellow tram; retain the distant dome and warm passage on the right.
+
+SOUND:
+Background only: an original Hungarian folk-rooted fiddle theme, tekerő drone and clarinet answers, with traffic, footsteps and material sounds following visible action. Leave room for the separately added narration. No generated narrator, lyrics or intelligible dialogue; keep the musical phrase open at the end.
