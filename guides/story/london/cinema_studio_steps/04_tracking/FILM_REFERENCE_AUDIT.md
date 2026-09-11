@@ -37,7 +37,7 @@ The abandoned Banana prompts contained 32–47 references and conflicting nine-p
 
 ## Logo and verification boundary
 
-V00 remains four silent seconds using only the existing logo. Its new material-assembly direction brings the emblem's separated coloured forms into alignment around its heart, symbolising fragmented lives and connection, then holds the exact MyScoutee presents lockup. No literal gear motif or new logo image is requested.
+V00 remains four seconds, now with synchronised material sound and a short acoustic signature using only the existing logo. Its new material-assembly direction brings the emblem's separated coloured forms into alignment around its heart, symbolising fragmented lives and connection, then holds the exact MyScoutee presents lockup. No literal gear motif or new logo image is requested.
 
 No generation, upload, crop, media edit, account mutation or credit debit occurred in this revision. The canonical master, existing library image prompts and all narration texts remain unchanged. Source media availability comes from the earlier read-only MCP inventory (266 canonical Elements with images); project membership, full visual quality and backend interpretation are not newly verified here.
 

@@ -1,6 +1,6 @@
 # Film production — existing-image storyboard route
 
-Seven story blocks, eight story-video requests (01–05, 06A, 06B, 07), total 200 seconds. V00 is a separate silent four-second material-assembly MyScoutee presents ident. The 63 detailed story beats remain unchanged. [V00](00/video.txt) uses only the already attached logo.
+Seven story blocks, eight story-video requests (01–05, 06A, 06B, 07), total 200 seconds. V00 is a separate four-second material-assembly ident with sound: MyScoutee presents ident. The 63 detailed story beats remain unchanged. [V00](00/video.txt) uses only the already attached logo.
 
 ## Current preparation
 

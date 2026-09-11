@@ -1,4 +1,4 @@
-MYSCOUTEE PRESENTS — MATERIAL-ASSEMBLY FILM IDENT, 4 SECONDS, 16:9
+MYSCOUTEE PRESENTS — MATERIAL-ASSEMBLY FILM IDENT, 4 SECONDS, 16:9, AUDIO ON
 
 SOLE IMAGE REFERENCE:
 @prop_MYS_mys-film-m-logo_s0_v1 supplies the exact existing MyScoutee emblem: blue-violet-magenta M-shaped form, white heart and gold star. The completed mark must match its silhouette, internal shapes, colours and proportions. Use the reference for the brand mark only; build the widescreen scene below around it. No replacement logo or square image backing.
@@ -24,5 +24,11 @@ presents
 
 Clean white typography, capital M and S exactly as written; smaller lowercase presents beneath, with clear spacing between emblem and both lines. No slogan, film subtitle, festival mark, laurels, watermark request or extra text. The finished lockup is a film-production ident with precise material motion and a readable hold.
 
-SOUND / OUTPUT:
-One silent four-second 16:9 video, full-frame background, no letterboxing. No voice, music, whoosh or separate sound logo; the story soundtrack begins in V01. Preserve the exact completed brand mark and all four seconds of the staged assembly, hold and fade.
+SOUND — MATERIALS FINDING A SHARED PHRASE:
+An intimate sound design follows the physical assembly, with a quiet tonal thread present from the opening movement through the final fade. Give each moving section a soft close friction sound, then a precise muted enamel/metal contact as it seats. Small sounds travel gently with their visible pieces and converge toward the centre as the logo comes together. Keep their weight believable at this scale.
+0.00–1.65: A low, softly bowed acoustic string tone supports the separate movements. Two restrained pitched contact notes answer from the moving pieces, initially spaced apart, then drawing into one phrase as their paths converge. Synchronise each seating sound to the actual visible contact; no unrelated rhythmic ticking.
+1.65–2.05: The heart's final seating and the completed emblem resolve the phrase into a warm, brief three-note acoustic signature. A delicate metallic overtone accompanies the single gold-star highlight. The sound suggests separate parts finding a connection, without speech.
+2.05–4.00: Let that consonant string-and-metal resonance sustain quietly under the readable title and decay naturally with the fade to black. Complete the decay within the clip, without an abruptly cut reverb tail. This short acoustic motif anticipates the film's fiddle-led soundtrack; it is not a full new musical introduction. No spoken brand name, narration, sung voice, explosive impact or sweeping trailer whoosh.
+
+OUTPUT:
+One four-second 16:9 video with generated sound, full-frame background, no letterboxing. Preserve the exact completed brand mark and all four seconds of the staged assembly, hold and fade. Audio on; no separate audio reference is required.

@@ -6,7 +6,7 @@ Implemented: eight local storyboard plans and eight corresponding story-video pr
 
 Creator constraints: no panel cutting, no resized/composite grids, no bulk image generation or replacement uploads. Preserve the main-film budget and consider only one or two focused 480p tests from confirmed surplus. Existing imported SB Elements stay unused. Existing source images, the canonical master and narration texts are unchanged.
 
-V00 now specifies a four-second symbolic material assembly: separated paths/coloured logo sections converge around the white heart, settle into the exact logo and hold MyScoutee presents. No literal gears. One existing logo reference, silent, no additional image job.
+V00 now specifies a four-second symbolic material assembly: separated paths/coloured logo sections converge around the white heart, settle into the exact logo and hold MyScoutee presents. No literal gears. One existing logo reference, material sounds and a short acoustic signature with Audio ON; no additional image or audio-reference job.
 
 Narration already downloaded: hf_20260911_092854_627d5d9b-4dc2-4d8a-82ea-b53a24eb0021.mp3, previously measured 150.334694 seconds; creator-reported quote 6.15. Do not regenerate. Last reported pre-narration balance 1979. Remaining footage/ident planning reserve 1836; arithmetic surplus 136.85 only if no other debit. See BUDGET.md for uncertainty.
 

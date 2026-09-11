@@ -20,6 +20,6 @@ At those assumptions, projected total use is 3000 − 136.85 = 2863.15. This is 
 
 Preserve the main-film allocation before considering one or two focused 480p tests. No separate 1080p test, automatic paid retry or top-up is planned. A 30-second retry at the assumed rate would cost 270 and exceed the conditional surplus. Any exceptional necessary image must have a specific purpose and a known quote before spending; no such image job is currently scheduled.
 
-The story remains 3:20; the separate silent ident makes 3:24 before platform packshot or later local trims. The downloaded narration was previously measured at 150.334694 seconds. Place it with natural pauses against the story; do not regenerate it or accelerate speech simply to fit a block. Future final-frame extraction uses the accepted videos locally and is not paid image generation.
+The story remains 3:20; the separate ident with generated sound makes 3:24 before platform packshot or later local trims. The downloaded narration was previously measured at 150.334694 seconds. Place it with natural pauses against the story; do not regenerate it or accelerate speech simply to fit a block. Future final-frame extraction uses the accepted videos locally and is not paid image generation.
 
 [Estimate ledger](../04_tracking/REMAINING_BUDGET_ESTIMATE.csv) · [Historical charges](../04_tracking/credit_ledger.csv) · [Production order](../03_film/README.md)
