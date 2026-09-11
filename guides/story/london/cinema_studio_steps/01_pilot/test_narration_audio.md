@@ -53,7 +53,7 @@ If accepted for its final A01 role and timing, reuse that recording rather than 
 ## Relation to the video tests
 
 - [test_video_4s.txt](test_video_4s.txt): first visual test with native music and effects.
-- [test_extend_4s.txt](test_extend_4s.txt): native continuation of the accepted visual result.
+- [test_extend_4s.txt](test_extend_4s.txt): current next-four-seconds continuation prompt using the accepted video as preceding context.
 - [test_narrated_video.txt](test_narrated_video.txt): the separate short narration excerpt and intended mix on the joined visual test.
 
 The full passage in this audio audition must not be squeezed into that shorter joined-video excerpt. This audition does not verify a hosted operation for adding voice to existing footage or preserving its music. Keep the detailed shared voice contract in [VOICE.md](../00_project/VOICE.md).

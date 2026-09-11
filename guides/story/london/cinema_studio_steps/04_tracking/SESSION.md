@@ -1,3 +1,7 @@
+## Active small-test checkpoint — 2026-09-11
+
+The creator is starting the 4+4-second test and explicitly requires the workflow to continue through Publish and published playback. Current first step: prepare 01_pilot/test_video_4s.txt in the existing project with C01, C02 and MW01 Page A image references; 4 s, 16:9, audio ON, one output, 480p if offered; inspect actual model/settings and quote. Continue through native Extend, real narration mixing, publishing preview/submission and playback at the returned published URL. No first clip or published test is yet verified. See [the full current test sequence](../01_pilot/README.md). This is the Higgsfield creative test workflow, not the repository's fixture-backed manual QA campaign.
+
 ## Budget reconciliation — current 2036-credit balance
 
 Compared with the 2860 reported baseline, net balance reduction is 824: +140 against the original 684-credit image allocation, or +84 against the revised 740 allocation. Current 266-image scope is a hypothetical 792-credit clean pass, already attached and not payable again. Remaining scenario: film 1800 + seven 4K storyboards 28 + narration 14 = 1842, leaving 194 for the small pilot, logo and finishing. A combined 100-credit planning envelope for those leaves 94. Actual Extend/mix/logo quotes remain pending; this is not an itemized spend record. See [current budget](../00_project/BUDGET.md).
