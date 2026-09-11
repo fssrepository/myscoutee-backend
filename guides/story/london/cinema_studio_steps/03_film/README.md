@@ -2,6 +2,12 @@
 
 Seven story blocks, eight video portions: 01–05 at 30 seconds, 06A/06B at 15 seconds each, 07 at 20 seconds. The story remains 200 seconds. Separate [00 MyScoutee presents](00/README.md) adds four silent seconds before it. The creator selects pilot version 10 for delivery; the additional version 11 trim was rejected. Update project film and watermarking were reported working; the embedded subtitle was not displayed.
 
+## Current next step — generate narration first
+
+The creator confirmed the production import and logo attachment; actual production handles are bound. Generate [narration.txt](narration.txt) first as one Grady recording, using the controls in [VOICE.md](../00_project/VOICE.md). Record the displayed quote and the balance after generation, download the original audio, and measure its duration before spending on the ident or story footage. The current 14-credit narration allowance is only an estimate.
+
+After that debit, reserve the remaining main production budget before allocating any tests. No separate 1080p test or test retry is planned. One or two focused 480p tests may be considered only if their actual quotes fit the surplus after reserving the film, boards and ident; they are not automatically authorized jobs. The 1080p production clips remain in the plan.
+
 ## 3. Import the production containers
 
 Use **[FILM_PRODUCTION_IMPORT.md](../00_project/elements/additions/FILM_PRODUCTION_IMPORT.md)** once: 25 definitions = 1 existing-logo container + 9 video containers + 8 storyboards + 7 final frames. This supplements the accepted library; do not reimport it. No audio Elements. Assign the existing uploaded logo to LOGO_MYS.
@@ -23,7 +29,7 @@ Generate in the order below. Prepare each continuation storyboard only after the
 | 06B | 165–180 s | 15 s | 44 | 46 | [06B](06/video_b.txt) | EF06A |
 | 07 | 180–200 s | 20 s | 41 | 43 | [07](07/video.txt) | EF06B |
 
-06A uses original beats 1–4; 06B uses 5–9. All 83 prior Block 06 library references remain represented across the two requests. Shared references are repeated only where the new portion needs them. Each full video and storyboard prompt is below the observed 15,000-character limit, with headroom for real imported handles. Recount after binding. The existing `06/video.txt` and `06/storyboard.txt` are part A; only part B adds `video_b.txt` and `storyboard_b.txt`. There is no unsplit 30-second request hidden in these files.
+06A uses original beats 1–4; 06B uses 5–9. All 83 prior Block 06 library references remain represented across the two requests. Shared references are repeated only where the new portion needs them. Each full video and storyboard prompt is below the observed 15,000-character limit, after binding the verified imported handles. Recount after any further edits. The existing `06/video.txt` and `06/storyboard.txt` are part A; only part B adds `video_b.txt` and `storyboard_b.txt`. There is no unsplit 30-second request hidden in these files.
 
 Each continuation has a planned level forward-right boundary pass, but the predecessor's actual ending governs. Review its final frames and motion and update the next prompt before generation if the result differs. The exact extracted frame supplies the opening crop and positions; character references still supply identity. Use a dedicated first-frame role if the UI actually offers one. Generic reference loading has not been proven to lock the frame. The native Extend temporal contract is not assumed.
 
@@ -31,7 +37,7 @@ All 63 story beats, assigned memory events, rating reveal, material action paths
 
 ## 6. Narration and assembly
 
-Generate [the complete narration](narration.txt) once with MiniMax Speech 2.8 HD / Grady, according to [VOICE.md](../00_project/VOICE.md). The seven passage files remain unchanged. No narration input to video generation; native music/ambience/foley only. Keep clean narration separate, measure its actual duration, and place complete sentences with natural pauses against the assembled picture. No speech acceleration or automatic regeneration.
+Use the single narration recording generated in the first step, with MiniMax Speech 2.8 HD / Grady according to [VOICE.md](../00_project/VOICE.md); do not generate it a second time during assembly. The seven passage files remain unchanged. No narration input to video generation; native music/ambience/foley only. Keep clean narration separate, measure its actual duration, and place complete sentences with natural pauses against the assembled picture. No speech acceleration or automatic regeneration.
 
 Download and preserve originals. FFmpeg can copy compatible video streams for a straight join; frame edits and spatial repairs require an explicit new render. There is no universal seven-frame trim. Inspect each actual visual and audio join, retain the source narration/background separately, then create the final delivery file. The creator performs upload and Update project film in the UI. Do not assume a soft-subtitle label will be displayed: it was absent in the test.
 

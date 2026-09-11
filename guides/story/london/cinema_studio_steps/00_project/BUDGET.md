@@ -22,3 +22,11 @@ The creator reports the upload test completed through Update project film with w
 The story remains 3:20. Adding the separate ident makes 3:24 before any platform-added packshot or later local trims; do not silently count it inside the 200 story seconds. Preserve sufficient ending/holding time to place the full narration without truncation or speech acceleration.
 
 [Remaining estimate](../04_tracking/REMAINING_BUDGET_ESTIMATE.csv) · [historical charges/quotes](../04_tracking/credit_ledger.csv) · [production order](../03_film/README.md)
+
+## Narration-first spending order — creator decision
+
+Generate the full Grady narration before the ident, storyboards and story footage. Record its actual quote/debit and the resulting balance. The 14-credit allowance is replaced by that actual cost, not charged again later.
+
+With the last reported 1979 balance and narration cost N, the estimated surplus is 1979 − N − 1868 = 111 − N credits. Equivalently, use the actual post-narration balance minus 1868. The 1868 reserves 1800 for story footage, 32 for boards and 36 for the ident; those rates still need confirmation against the actual UI quotes. Any intervening spend must also be deducted.
+
+No additional 1080p test is planned. Only consider one or two focused 480p tests after this reconciliation, using their displayed prices and preserving the remaining production allocation. An apparent surplus is not a guaranteed test allowance while production prices remain estimates. No test is submitted automatically.

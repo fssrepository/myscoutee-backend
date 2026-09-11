@@ -17360,6 +17360,8 @@
         "video_media_ids": []
       }
     },
-    "video_detail_revision": "2026-09-11: expanded selected existing material transitions, hand/object contact, scene separation and clinical reveal. Beat timings, reference sets and narration unchanged; all video prompts under 15000 characters."
+    "video_detail_revision": "2026-09-11: expanded selected existing material transitions, hand/object contact, scene separation and clinical reveal. Beat timings, reference sets and narration unchanged; all video prompts under 15000 characters.",
+    "next_step": "FULL_NARRATION_FIRST_THEN_ACTUAL_BUDGET_RECONCILIATION",
+    "additional_test_policy": "No separate 1080p test. Consider one or two focused 480p tests only after narration debit and remaining production quote reconciliation; no automatic generation."
   }
 }
