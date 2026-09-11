@@ -18,6 +18,21 @@ sys.dont_write_bytecode = True
 from p03_edit import (audio_hashes, check_equal, ffmpeg, frame_hashes,
                       require_video, run, transport)
 
+COMPAT_HEADERS = "hevc_metadata=level=4.1:chroma_sample_loc_type=0:aud=insert"
+
+
+def normalize_headers(media, work):
+    """Prevent VLC decoder restarts on level changes, without encoding pixels."""
+    source = media / "p00_p03_transition.mp4"
+    output = work / "compatible.mp4"
+    ffmpeg("-i", source, "-map", "0:v:0", "-map", "0:a:0", "-c", "copy",
+           "-bsf:v", COMPAT_HEADERS, "-tag:v", "hev1", "-movflags", "+faststart",
+           "-y", output)
+    check_equal(frame_hashes(output), frame_hashes(source), "header-only picture preservation")
+    check_equal(audio_hashes(output), audio_hashes(source), "header-only audio preservation")
+    output.replace(source)
+    print(f"Updated {source}: headers only; no video or audio encoding.", flush=True)
+
 
 def render_bridge(media, output):
     import numpy as np
@@ -158,7 +173,8 @@ def transition(media, work):
     ffmpeg("-f", "concat", "-safe", "0", "-i", manifest,
            "-f", "concat", "-safe", "0", "-i", audio_manifest,
            "-map", "0:v:0", "-map", "1:a:0",
-           "-c", "copy", "-bsf:a", "aac_adtstoasc", "-tag:v", "hev1",
+           "-c", "copy", "-bsf:a", "aac_adtstoasc", "-bsf:v", COMPAT_HEADERS,
+           "-tag:v", "hev1",
            "-movflags", "+faststart", "-y", output)
     print("Checking copied picture/audio data and presentation timestamps...", flush=True)
     check_equal(frame_hashes(output), original[0] + original[1] + expected, "1176 output frames")
@@ -179,6 +195,8 @@ def transition(media, work):
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--media-dir", type=Path, required=True)
+    parser.add_argument("--normalize-only", action="store_true",
+                        help="Normalize the existing assembly's HEVC headers, without any encoding")
     parser.add_argument("--resume-work", type=Path,
                         help="Reuse the private work directory printed after a failed validation")
     args = parser.parse_args()
@@ -186,7 +204,10 @@ def main():
     work = (args.resume_work.resolve(strict=True) if args.resume_work else
             Path(tempfile.mkdtemp(prefix=".p03-transition-", dir=media)))
     try:
-        transition(media, work)
+        if args.normalize_only:
+            normalize_headers(media, work)
+        else:
+            transition(media, work)
     except BaseException:
         print(f"Unpublished work retained for remux/validation retry: {work}", file=sys.stderr)
         raise

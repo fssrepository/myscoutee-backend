@@ -349,6 +349,24 @@ Completed validation: `p00_p03_transition.mp4` is 166,500,073 bytes, with 1176 p
 
 Planning lesson from the creator: ending a scene near each generation boundary would make assembly easier than requiring exact continuation of a fast camera move. A prompt cannot establish that the generated clip actually ends the scene; review the generated ending before preparing its continuation. No regeneration or prompt rewrite is requested for this assembly.
 
+### VLC pause before the dissolve — header-only compatibility correction
+
+The creator accepted the dissolve's character but reported a freeze immediately before it in VLC. Software decoding and VAAPI hardware decoding yielded identical moving frames; frame hashes alone did not detect the playback problem. VLC 3.0.20 logging reproduced `mismatched profile level 2/123 was 2/120`, followed by decoder teardown/recreation. Original clips declare HEVC level 4 (120), while the locally encoded bridge declares level 4.1 (123).
+
+Normalize HEVC metadata consistently to level 4.1, explicit chroma sample location 0 and access-unit delimiters. Preserve encoded picture content and AAC with `-c copy -bsf:v hevc_metadata=level=4.1:chroma_sample_loc_type=0:aud=insert -tag:v hev1 -movflags +faststart`. Do not lower the bridge's declared level or re-encode the picture to address this mismatch. The assembly command now applies this filter during final muxing. Repair an existing assembly independently with:
+
+```bash
+python3 guides/story/london/cinema_studio_steps/03_film/production/tools/p03_transition.py --media-dir /home/raxim/Downloads --normalize-only
+```
+
+The header-only remux preserved all 1176 decoded picture hashes and all AAC packet hashes. The VLC comparison no longer reported the profile-level mismatch. This validates the identified decoder reconfiguration problem; final visual playback acceptance remains with the creator. The dissolve, timing, geometry, colour and encoded image quality are unchanged.
+
+### Opening policy for the remaining P04–P12 generations
+
+The creator requested that remaining prompts stop enforcing the P03-style exact start frame. P04–P12 now use the preceding end frame as a guide to story state, identities, wardrobe, completed material changes and time of evening. Each opening may choose a natural composition for its first scripted action. No pixel-matched crop, identical camera pose or exact inherited velocity is required.
+
+Cuts or short dissolves between generated clips may be added during assembly. Generate a complete moving opening, without holding the reference still or baking an editorial dissolve into the generated clip. Within-clip material transformations retain their existing physical-continuity rules. All scripted beats, durations, reference handles, character detail and sound directions are preserved. P03 and the earlier generated prompts are unchanged by this policy update.
+
 ### P03 final frame for P04
 
 `p03_last_frame.png` is extracted from original `p03.mp4`, decoded frame index 360 (the 361st frame), at 1920×1080. It is not extracted from the corrected or compressed preview. The P04 reference container is `@loc_MYS_mys-film-v03-end-frame_s0_v1`; extraction alone does not attach the PNG to that Element.
