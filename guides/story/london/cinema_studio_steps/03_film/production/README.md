@@ -284,13 +284,40 @@ Audio is also repaired locally. At 32 kHz, use a 10,240-sample (0.32 s) quarter-
 
 Remux the three video sections to MPEG-TS using `-c:v copy -bsf:v hevc_mp4toannexb`. In the concat manifest, explicitly specify section durations `14.583333333`, `7.125` and `8.041666667`; inferred TS durations caused timestamp discontinuities. Mux the concatenated video and repaired AAC to MP4 using stream copy, `aac_adtstoasc`, `hev1` and faststart. Preserve each section's HEVC parameter sets. Verify complete decoding, continuous 24 fps presentation timestamps, unchanged decoded frame hashes for prefix/suffix, and unchanged AAC payload hashes outside the repaired packets before delivery.
 
-### Current review: original P00–P03 copied together
+### Original-source comparison: P00–P03 copied together
 
 At the creator's request, assemble original `p00.mp4`, `p01.mp4`, `p02.mp4` and `p03.mp4` in that order as `p00_p03_originals_joined.mp4`. Do not use `p03_fixed.mp4` or any earlier combined preview. Use the MPEG-TS / Annex-B stream-copy route described above to retain each clip's HEVC parameters, then remux to MP4. No encoding, correction, trimming or transition is applied. Container timestamps may be adjusted while compressed picture and audio content are preserved.
 
 Deferred P01–P02 follow-up: if the earlier join masks a defect that belongs to an individual clip, fix that standalone clip before final assembly and keep its corrected uploadable version. Do not solve it only inside the assembled preview. The creator explicitly deferred this work; record it here without editing P01 or P02 now.
 
+### Current review: P00–P02 plus fixed P03, copy only
+
+The creator subsequently requested the same direct assembly using `p03_fixed.mp4`. Output: `p00_p03_fixed_joined.mp4`, containing original `p00.mp4`, `p01.mp4`, `p02.mp4`, then `p03_fixed.mp4`, in that order. Use the same MPEG-TS / Annex-B stream-copy remux route. No new encoding, transition, trimming or correction is applied during this assembly. The prior `p00_p03_originals_joined.mp4` remains available for comparison; neither it nor the individual inputs is overwritten. The existing corrections and compression in `p03_fixed.mp4` are preserved as supplied.
+
 ### Final-quality replay requirements
+
+The recorded operations are now available in [`tools/p03_edit.py`](tools/p03_edit.py). Run from the repository root:
+
+```bash
+python3 guides/story/london/cinema_studio_steps/03_film/production/tools/p03_edit.py fix --media-dir /home/raxim/Downloads
+python3 guides/story/london/cinema_studio_steps/03_film/production/tools/p03_edit.py join --media-dir /home/raxim/Downloads
+```
+
+`fix` requires original `p03.mp4` and the existing `p03_fixed.mp4`, whose unchanged suffix it preserves. It encodes only the opening seven seconds from the original, then replaces `p03_fixed.mp4` after verification. Do not delete the existing fixed clip before running this command; replacement is automatic. `join` copies P00, P01, P02 and the completed fixed P03 into `p00_p03_fixed_joined.mp4` without encoding. Run `join` alone when only assembly is required. Both commands verify decoded frame hashes and audio packet hashes before publishing their outputs. Verification decodes footage but does not encode it. Source files `p00.mp4`–`p03.mp4` are never overwritten; temporary work is cleaned up after each command. Dependencies: Python 3, FFmpeg and ffprobe; `fix` also needs NumPy and OpenCV.
+
+Latest P03 opening revision: the creator identified a remaining glass-canopy vertical bob and requested a standalone correction followed by a copy-only P00–P03 assembly. Keep the filename `p03_fixed.mp4` (no `fixed2` filename), and update `p00_p03_fixed_joined.mp4` only by remuxing the completed individual clips. The previously rendered large assembly is never the processing input.
+
+Roof-feature measurements against P02 frame 360 found a roughly 2-pixel downward change between fixed P03 frames 0 and 1. No missing-frame-sized timestamp gap was found at the assembled boundary. Add only the following vertical output translations to the existing geometry matrix for P03 frames 0–12, in full-resolution pixels:
+
+```text
+[1.481895685, -0.130573865, 0.519374825, 2.075102453,
+ 1.150093254, 1.276978378, 1.383933208, 2.046457979,
+ 0.673420906, 0.607318391, 0.058070323, 0.138346587, 0.0]
+```
+
+These offsets fit a smooth roof trajectory at image coordinate (800,250): start at the P02 ending with vertical velocity 0.605 pixels/frame, then join P03's measured frame-12 position and velocity using a cubic Hermite curve. The endpoint is −5.506411641 pixels relative to the reference, with velocity −0.338460449 pixels/frame. Subtract each measured source roof position from the target curve to obtain the offsets above. This adds no scale or rotation. Add the full offset to the Y-plane matrix translation and half to the chroma-plane translation before the single existing resampling operation. From frame 13 onward the additional translation is zero; keep the existing entrance colour correction unchanged.
+
+Render P03 frames 0–167 directly from original `p03.mp4`, applying the existing M/C matrices, this opening correction and the recorded colour grade. Use the same 10-bit HEVC settings and source-bitrate target, with a closed 120-frame GOP. Only this initial 7 s must be encoded because the unchanged suffix starts at random-access frame 168. Copy the previous fixed clip's frames 168–360 and all original P03 AAC packets. No picture/audio transition is baked into the standalone clip or the large copy-only assembly. Preserve 361 frames, 1080p, 24 fps and 10-bit precision. Creator acceptance of this new opening adjustment remains pending.
 
 Reapply the recorded trims, overlaps and affine correction directly to the original downloaded clips. Retain their original 1920×1080 resolution, 24 fps and at least 10-bit image precision throughout processing and output. Do not use the 8-bit preview intermediates, OpenCV's default 8-bit video decoding path, or the preview CRF/bitrate settings for the master. No bitrate reduction is authorized for final assembly. Render changed frames through a high-precision pipeline into a lossless master/intermediate; preserve audio without further lossy generations. Transition blending and geometric resampling change pixels, but their outputs must not incur an additional lossy encoding step in that master. Any separate delivery compression requires its own agreed settings.
 
