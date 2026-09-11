@@ -99,4 +99,42 @@ Inspection found a spatial discontinuity as well as timing differences: optical 
 
 The creator described version 07 as almost right, with a brief freeze/pause remaining. `08_joined_continuous_test.mp4` therefore removes zero-based frames 96 and 97 from version 07 (the continuation's first two frames), and removes the corresponding 4.000–4.083333-second audio interval. No other picture processing is added. Its 191 retained frames are checked pixel-for-pixel against version 07; duration is approximately 7.96 seconds. The first sentence remains from the narrated source and the second narration is shifted with the audio cut.
 
-**Version 08 is the current playback-review candidate, not yet creator-approved.** Keep all original media and the raw version 01 for comparison. Do not publish the rejected dissolve or trim-only experiments. These repairs do not demonstrate native Seedance continuity and do not satisfy the original no-video-reencoding goal. Publication and review of the published result remain pending.
+**Version 08 was followed by the all-frames comparison below; no final publication choice has been confirmed.** Keep all original media and the raw version 01 for comparison. Do not publish the rejected dissolve or trim-only experiments. These repairs do not demonstrate native Seedance continuity and do not satisfy the original no-video-reencoding goal. Publication and review of the published result remain pending.
+
+
+## Follow-up: all-frames comparison and confirmed workflow failure
+
+The creator requested a spatial-only version to see whether removing frames actually helped. `09_joined_spatial_only_all_frames.mp4` retains all 194 original frame positions (approximately 8.08 seconds), with no frame removal or duplication. Its first 30 continuation frames are spatially remapped; the other 164 decoded frames match the sources exactly. The audio stream is copied from the raw version 01 assembly.
+
+The creator still saw the join in version 09 and also heard an audio jump. This version has not passed playback review. The audio observation is creator-reported; the assistant has not independently listened to it or established whether the discontinuity comes from the source soundtracks, their local join or the narration mix.
+
+### What actually changed between versions
+
+| Version | Frame handling | Spatial processing | Audio handling |
+|---|---|---|---|
+| 07 | Remove first clip frame 96; retain 193 frames. | Dense optical-flow remapping of the continuation's first 30 frames toward first clip frame 95, gradually reducing the correction. | Align the background join and second narration to the shorter picture; encode the resulting audio mix. |
+| 08 | Additionally remove version 07 frames 96 and 97; retain 191 frames. | Keep version 07's retained picture exactly; no further warping. | Remove the matching 4.000–4.083333-second interval from version 07 audio. |
+| 09 | Retain all 194 source frame positions. | Recompute the 30-frame correction toward first clip frame 96 instead of frame 95. | Copy version 01's audio stream, rather than restoring only the removed interval in version 07. |
+
+**Version 07 was not a simple pixel translation or a single-frame trim.** The spatial operation locally warps and resamples picture content over 30 frames (1.25 seconds). Its lossless H.264 encode avoids further quantization loss but does not preserve those altered source pixels. Versions 07 and 09 also differ in alignment target and audio treatment, so they are not a controlled comparison of frame removal alone. The assistant should have disclosed these differences before presenting version 09 as the requested comparison. Do not attribute their entire perceptual difference to one omitted frame.
+
+**Production finding:** This end-frame Element trial exposed two distinct issues: unavailable temporal context and a spatial alignment defect. Local repair was substantially more involved than concatenation or removing a repeated frame: it required spatial warping, trimming and audio timing work. The creator considers this a significant generation failure for the intended continuous-shot film. The visible improvement after repair is an editing result, not proof that Seedance generated a seamless continuation. The supplied-reference mismatch documented above remains a separate contributing factor; this trial does not establish that every Seedance mode or native Extend behaves identically.
+
+Retain the originals and all existing comparison outputs. No new generation or publication is authorized by this finding. The main seven video prompts remain unchanged; the full narration will still be generated separately and added after picture assembly.
+
+
+### Required continuity support and value concern
+
+The creator expects continuation to use the preceding video's temporal context as well as its last-frame composition. A still frame alone does not specify movement direction, speed or the sound already underway. This is a requirement for the workflow, not a claim that attaching a video in the current composer has been proven to provide that context; the earlier video-reference attempt did not establish reliable continuation either.
+
+The creator considers the need for local spatial warping a serious shortcoming at this generation price. Matching the supplied opening composition should not require manually deforming 30 generated frames afterwards; this spatial defect is separate from the missing temporal context. Document this as a substantial continuity and production-cost problem, rather than routine clip assembly.
+
+
+### Clarification: temporal context gap versus frame alignment bug
+
+Keep these findings separate in future summaries:
+
+- **Gap — preceding video context:** A single last frame does not establish how the camera or people were moving, or what sound was playing. This workflow did not demonstrate that the continuation model could inspect the preceding video. Do not blame the model for failing to recover motion history that the still image did not supply. The creator notes that this limitation also occurs on other platforms.
+- **Bug — spatial alignment:** The generated opening shifted upward and changed positions relative to the supplied reference composition. The still image does contain that spatial information. The observed mismatch is an alignment defect in this trial, independent of the missing motion history. Local warping of 30 frames was a workaround for this defect, not a substitute for video context.
+
+The source-to-reference mismatch remains separately documented; it must not be attributed to generation. The audio jump is also a separate creator observation whose source-versus-assembly cause is unresolved. The public brief now uses separate CONTINUATION CONTEXT GAP and FRAME ALIGNMENT BUG entries.
