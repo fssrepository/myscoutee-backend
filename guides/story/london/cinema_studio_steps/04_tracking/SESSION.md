@@ -1,4 +1,12 @@
-# Current checkpoint — frozen metrics, 2026-09-12
+# Current checkpoint — publication follow-up, 2026-09-12
+
+The creator reports the film is now uploaded/published in Higgsfield and is leaving temporarily. Resume with the LinkedIn article, public YouTube upload and description, optional Hungarian subtitles on YouTube, then final festival submission intended for today. No social upload or final submission is confirmed yet. The previous Download button stalled; retrieval and playback of the completed watermarked/packshot export are not independently verified. Use that processed version for the social upload. Do not restart editing, narration generation or compression.
+
+Official festival rules checked today require a public full-film post with watermark and packshot on YouTube, Instagram, X or Reddit; LinkedIn is supplementary. Final submission deadline: September 14, 2026, 23:59 UTC. Source: https://higgsfield.ai/contests/higgsfield-global-film-festival?tab=rules
+
+Brief metrics are complete; preserve the frozen audit and existing paragraphs. The brief now starts with the higher-bitrate video (~4 GB) and WAV location, `a_video/director_cut/raw`, and includes overall effort/token totals before Higgsfield statistics.
+
+## Previous checkpoint — frozen metrics, 2026-09-12
 
 Production and delivery are complete. The creator reports both final deliverables uploaded. Current task: add the saved image/adherence and production-effort statistics to the existing brief, preserving its other paragraphs. All measured results and method are saved in [production_audit/README.md](production_audit/README.md), [summary.json](production_audit/summary.json) and companion CSVs. **Do not rescan or recalculate for formatting.** Source cutoff is 16:48:54 UTC on September 12. The book model is Sol / Extra High; the original master-prompt session is missing. Image history labels the sampled output Nano Banana 2, not verified Pro.
 
