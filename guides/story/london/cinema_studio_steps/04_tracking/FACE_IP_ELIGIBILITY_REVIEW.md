@@ -2,16 +2,15 @@
 
 Frissítve: **2026-09-12**. Az alábbi táblázat az aktuális nyilvántartás; új eredménynél a megfelelő sort és az összesítést kell frissíteni, nem újabb státuszbekezdést hozzáfűzni.
 
-**10 eredetileg problémás elem: 2 lezárt, 8 nyitott.** A nyitott nyolcból **5-höz még új kép kell**, **3-nál a csere már csatolva van, az elfogadás visszaigazolása hiányzik**. Ez nem nyolc újragenerálást jelent.
+**10 eredetileg problémás elem: 2 lezárt, 8 nyitott.** A nyitott nyolcból **3-hoz még új kép kell**, **5-nél a csere már csatolva van, az elfogadás visszaigazolása hiányzik**. Ez nem nyolc újragenerálást jelent.
 
 Ezen felül **1 kapcsolódó folytonossági csere (MW01_B_03)** már csatolva van, végső elfogadása nincs rögzítve. A teljes munkalista így **11 tétel: 2 lezárt és 9 adminisztratívan nyitott**.
 
 | Állapot | Tételek | Darab |
 | --- | --- | ---: |
 | Lezárt | MW02_A_02, MW02_C_02 | 2 |
-| Új prompt és import kész; kép még kell | MW04_C_01, W04_A_03 | 2 |
 | Csere még előkészítendő | MW05_B_03, MW06_A_02, MW06_B_03 | 3 |
-| Csere csatolva; eligibility-visszaigazolás hiányzik | C07, MW01_C_03, MW01_C_04 | 3 |
+| Csere csatolva; eligibility-visszaigazolás hiányzik | C07, MW01_C_03, MW01_C_04, MW04_C_01, W04_A_03 | 5 |
 | Kapcsolódó csere csatolva; végső elfogadás hiányzik | MW01_B_03 | 1 |
 
 Az eredeti hibastatisztika továbbra is **7 Face/IP-blokk + 3 lassú/függő ellenőrzés**. A függő ellenőrzés nem igazolt elutasítás. MW04_C_01 P06/P10 előfordulása egyetlen tétel. MW01_B_03 nem önálló Face/IP-hiba. Az API `completed` állapota önmagában nem igazolja a Cinema Studio eligibility eredményét; a hiányzó visszaigazolás miatt nem kell automatikusan újragenerálni a már lecserélt képet.
@@ -28,13 +27,13 @@ Az azonosítóra kattintva a képprompt nyílik meg. A handle az utoljára igazo
 | [MW01_C_04](../02_library/worlds/memories/06_04_MW01_LONDON_SOCIAL_C_VIEW_08.txt) | Lassú / függő ellenőrzés | **CSERE FELTÖLTVE** | Új kép csatolva; az eligibility eredményét rögzíteni kell. | `@loc_MYS_mw01-c-04-memory-view-08_s0_v1` |
 | [MW02_A_02](../02_library/worlds/memories/07_02_MW02_GLOBAL_ROUTES_A_VIEW_02.txt) | Face/IP-blokk | **LEZÁRT** | A csere elfogadását a készítő 2026-09-11-én megerősítette. | `@loc_MYS_mys-mw02-a-02-memory-view-02_s0_v1` |
 | [MW02_C_02](../02_library/worlds/memories/09_02_MW02_GLOBAL_ROUTES_C_VIEW_01.txt) | Lassú / függő ellenőrzés | **LEZÁRT** | A csere elfogadását a készítő 2026-09-11-én megerősítette. | `@loc_MYS_mys-mw02-c-02-memory-view-01_s0_v1` |
-| [MW04_C_01](../02_library/worlds/memories/15_01_MW04_POLICE_DEFENCE_C_VIEW_09.txt) | Face/IP-blokk | **ÚJ PROMPT KÉSZ** | 2K kép generálása, csatolás, eligibility. Közös P06-import kész; használat: P06 és P10. | `@loc_MYS_mys-mw04-c-01-memory-view-09_s0_v1` |
-| [W04_A_03](../02_library/worlds/real/W04_A_03_MAIN_WORLD_VIEW_03.txt) | Face/IP-blokk | **ÚJ PROMPT KÉSZ** | 2K kép generálása, csatolás, eligibility. Közös P06-import kész; használat: P06. | `@loc_MYS_mys-w04-a-03-world-view-03_s0_v1` |
+| [MW04_C_01](../02_library/worlds/memories/15_01_MW04_POLICE_DEFENCE_C_VIEW_09.txt) | Face/IP-blokk | **CSERE FELTÖLTVE ÉS BEFŰZVE** | 2026-09-12 MCP: új elem `677bae2a-0620-4b61-ad82-3735b3196cce`, egy új kép csatolva. P06-befűzés a készítő által megerősítve; eligibility-eredmény még nincs rögzítve. | `@loc_MYS_mys-mw04-c-01-memory-view-09_s0_v1` |
+| [W04_A_03](../02_library/worlds/real/W04_A_03_MAIN_WORLD_VIEW_03.txt) | Face/IP-blokk | **CSERE FELTÖLTVE ÉS BEFŰZVE** | 2026-09-12 MCP: új elem `3870047d-f72c-4f4d-894b-bf13dd20c89a`, egy új kép csatolva. P06-befűzés a készítő által megerősítve; eligibility-eredmény még nincs rögzítve. | `@loc_MYS_mys-w04-a-03-world-view-03_s0_v1` |
 | [MW05_B_03](../02_library/worlds/memories/17_03_MW05_COURT_FILE_B_VIEW_07.txt) | Face/IP-blokk | **CSERE ELŐKÉSZÍTENDŐ** | Csereprompt, új kép, csatolás és eligibility még hátravan. | `@loc_MYS_mys-mw05-b-03-memory-view-07_s0_v1` |
 | [MW06_A_02](../02_library/worlds/memories/19_02_MW06_HUMAN_COUNTERMEMORIES_A_VIEW_02.txt) | Face/IP-blokk | **CSERE ELŐKÉSZÍTENDŐ** | Csereprompt, új kép, csatolás és eligibility még hátravan. | `@loc_MYS_mys-mw06-a-02-memory-view-02_s0_v1` |
 | [MW06_B_03](../02_library/worlds/memories/20_03_MW06_HUMAN_COUNTERMEMORIES_B_VIEW_07.txt) | Face/IP-blokk | **CSERE ELŐKÉSZÍTENDŐ** | Csereprompt, új kép, csatolás és eligibility még hátravan. | `@loc_MYS_mys-mw06-b-03-memory-view-07_s0_v1` |
 
-Importok: [P06 — MW04_C_01 és W04_A_03](../00_project/elements/additions/P06_REFERENCE_REPLACEMENT_IMPORT.md), [C07](../00_project/elements/additions/C07_HOUSEMATE_REPLACEMENT_IMPORT.md), [P03 utazási emlékek](../00_project/elements/additions/P03_TRAVEL_MEMORIES_REPLACEMENT_IMPORT.md).
+Importok: [P06 — MW04_C_01 és W04_A_03](../00_project/elements/additions/P06_TWO_ELEMENTS_IMPORT.md), [C07](../00_project/elements/additions/C07_HOUSEMATE_REPLACEMENT_IMPORT.md), [P03 utazási emlékek](../00_project/elements/additions/P03_TRAVEL_MEMORIES_REPLACEMENT_IMPORT.md).
 
 A `p_eligibility` felületi mappatagságot az Element API nem mutatja; ez a lista a dokumentált problémás képek munkalistája. NSFW- és általános Failed-generálások külön kategóriák, a [projektbrief](../00_project/project_brief.txt) statisztikájában szerepelnek.
 
