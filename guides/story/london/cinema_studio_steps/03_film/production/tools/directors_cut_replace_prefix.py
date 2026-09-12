@@ -18,6 +18,8 @@ assert not a.output.exists()
 with av.open(str(a.prefix)) as head, av.open(str(a.source)) as original, av.open(str(a.output), 'w') as dst:
     hs, ss = head.streams.video[0], original.streams.video[0]
     st = dst.add_stream_from_template(hs)
+    # Retain the original movie's fine DTS ticks at its existing internal splices.
+    st.time_base = ss.time_base
     for packet in head.demux(hs):
         if not packet.size:
             continue
