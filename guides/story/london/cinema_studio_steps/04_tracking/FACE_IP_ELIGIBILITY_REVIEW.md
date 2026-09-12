@@ -1,3 +1,48 @@
+# Face/IP — teljes kép- és teendőlista
+
+Frissítve: **2026-09-12**. Az alábbi táblázat az aktuális nyilvántartás; új eredménynél a megfelelő sort és az összesítést kell frissíteni, nem újabb státuszbekezdést hozzáfűzni.
+
+**10 eredetileg problémás elem: 2 lezárt, 8 nyitott.** A nyitott nyolcból **5-höz még új kép kell**, **3-nál a csere már csatolva van, az elfogadás visszaigazolása hiányzik**. Ez nem nyolc újragenerálást jelent.
+
+Ezen felül **1 kapcsolódó folytonossági csere (MW01_B_03)** már csatolva van, végső elfogadása nincs rögzítve. A teljes munkalista így **11 tétel: 2 lezárt és 9 adminisztratívan nyitott**.
+
+| Állapot | Tételek | Darab |
+| --- | --- | ---: |
+| Lezárt | MW02_A_02, MW02_C_02 | 2 |
+| Új prompt és import kész; kép még kell | MW04_C_01, W04_A_03 | 2 |
+| Csere még előkészítendő | MW05_B_03, MW06_A_02, MW06_B_03 | 3 |
+| Csere csatolva; eligibility-visszaigazolás hiányzik | C07, MW01_C_03, MW01_C_04 | 3 |
+| Kapcsolódó csere csatolva; végső elfogadás hiányzik | MW01_B_03 | 1 |
+
+Az eredeti hibastatisztika továbbra is **7 Face/IP-blokk + 3 lassú/függő ellenőrzés**. A függő ellenőrzés nem igazolt elutasítás. MW04_C_01 P06/P10 előfordulása egyetlen tétel. MW01_B_03 nem önálló Face/IP-hiba. Az API `completed` állapota önmagában nem igazolja a Cinema Studio eligibility eredményét; a hiányzó visszaigazolás miatt nem kell automatikusan újragenerálni a már lecserélt képet.
+
+## Teljes munkalista
+
+Az azonosítóra kattintva a képprompt nyílik meg. A handle az utoljára igazolt aktuális kötés; az újonnan generálandó elemeknél még a lecserélendő régi kötést jelöli.
+
+| Kép / prompt | Eredeti ok | Aktuális állapot | Hátralévő teendő / lezárás | Aktuális Element-hivatkozás |
+| --- | --- | --- | --- | --- |
+| [C07](../02_library/characters/C07_FX_MORTGAGE_HOUSEMATE.txt) | Face/IP-blokk | **CSERE FELTÖLTVE** | Új kép és egyetlen csatolmány igazolva; az eligibility eredményét rögzíteni kell. | `@char_MYS_mys-c07-fx-mortgage-housemate_s0_v1` |
+| [MW01_B_03](../02_library/worlds/memories/05_03_MW01_LONDON_SOCIAL_B_VIEW_07.txt) | Kapcsolódó folytonossági csere | **CSERE FELTÖLTVE** | Az új C07-tel készült ülő jelenet csatolva, képi ellenőrzése megtörtént; végső elfogadás nincs rögzítve. | `@loc_MYS_mys-mw01-b-03-memory-view-07_s1_v1` |
+| [MW01_C_03](../02_library/worlds/memories/06_03_MW01_LONDON_SOCIAL_C_VIEW_07.txt) | Lassú / függő ellenőrzés | **CSERE FELTÖLTVE** | Új telefonos jelenet csatolva; az eligibility eredményét rögzíteni kell. | `@loc_MYS_mys-mw01-c-03-memory-view-07_s2_v1` |
+| [MW01_C_04](../02_library/worlds/memories/06_04_MW01_LONDON_SOCIAL_C_VIEW_08.txt) | Lassú / függő ellenőrzés | **CSERE FELTÖLTVE** | Új kép csatolva; az eligibility eredményét rögzíteni kell. | `@loc_MYS_mw01-c-04-memory-view-08_s0_v1` |
+| [MW02_A_02](../02_library/worlds/memories/07_02_MW02_GLOBAL_ROUTES_A_VIEW_02.txt) | Face/IP-blokk | **LEZÁRT** | A csere elfogadását a készítő 2026-09-11-én megerősítette. | `@loc_MYS_mys-mw02-a-02-memory-view-02_s0_v1` |
+| [MW02_C_02](../02_library/worlds/memories/09_02_MW02_GLOBAL_ROUTES_C_VIEW_01.txt) | Lassú / függő ellenőrzés | **LEZÁRT** | A csere elfogadását a készítő 2026-09-11-én megerősítette. | `@loc_MYS_mys-mw02-c-02-memory-view-01_s0_v1` |
+| [MW04_C_01](../02_library/worlds/memories/15_01_MW04_POLICE_DEFENCE_C_VIEW_09.txt) | Face/IP-blokk | **ÚJ PROMPT KÉSZ** | 2K kép generálása, csatolás, eligibility. Közös P06-import kész; használat: P06 és P10. | `@loc_MYS_mys-mw04-c-01-memory-view-09_s0_v1` |
+| [W04_A_03](../02_library/worlds/real/W04_A_03_MAIN_WORLD_VIEW_03.txt) | Face/IP-blokk | **ÚJ PROMPT KÉSZ** | 2K kép generálása, csatolás, eligibility. Közös P06-import kész; használat: P06. | `@loc_MYS_mys-w04-a-03-world-view-03_s0_v1` |
+| [MW05_B_03](../02_library/worlds/memories/17_03_MW05_COURT_FILE_B_VIEW_07.txt) | Face/IP-blokk | **CSERE ELŐKÉSZÍTENDŐ** | Csereprompt, új kép, csatolás és eligibility még hátravan. | `@loc_MYS_mys-mw05-b-03-memory-view-07_s0_v1` |
+| [MW06_A_02](../02_library/worlds/memories/19_02_MW06_HUMAN_COUNTERMEMORIES_A_VIEW_02.txt) | Face/IP-blokk | **CSERE ELŐKÉSZÍTENDŐ** | Csereprompt, új kép, csatolás és eligibility még hátravan. | `@loc_MYS_mys-mw06-a-02-memory-view-02_s0_v1` |
+| [MW06_B_03](../02_library/worlds/memories/20_03_MW06_HUMAN_COUNTERMEMORIES_B_VIEW_07.txt) | Face/IP-blokk | **CSERE ELŐKÉSZÍTENDŐ** | Csereprompt, új kép, csatolás és eligibility még hátravan. | `@loc_MYS_mys-mw06-b-03-memory-view-07_s0_v1` |
+
+Importok: [P06 — MW04_C_01 és W04_A_03](../00_project/elements/additions/P06_REFERENCE_REPLACEMENT_IMPORT.md), [C07](../00_project/elements/additions/C07_HOUSEMATE_REPLACEMENT_IMPORT.md), [P03 utazási emlékek](../00_project/elements/additions/P03_TRAVEL_MEMORIES_REPLACEMENT_IMPORT.md).
+
+A `p_eligibility` felületi mappatagságot az Element API nem mutatja; ez a lista a dokumentált problémás képek munkalistája. NSFW- és általános Failed-generálások külön kategóriák, a [projektbrief](../00_project/project_brief.txt) statisztikájában szerepelnek.
+
+<details>
+<summary>Korábbi ellenőrzések és technikai azonosítók — archív bizonyíték, nem aktuális teendőlista</summary>
+
+A következő szöveg a rendezés előtti ellenőrzési napló. Régi és később felülírt státuszokat is tartalmaz; a fenti munkalista az irányadó. Megőrzi a csere-UUID-kat, képazonosítókat és a korábbi megfigyelések részleteit.
+
 # Face/IP eligibility — image checklist
 
 Updated: 2026-09-11.
@@ -31,6 +76,8 @@ MW04_C_01 failed in both P06 and P10; it is counted once. MW02_C_02 belongs to t
 | W04_A_03 | `c53dab8a-f35f-4575-b788-6d03d0fda348` | `0a776a51-5f42-4ff2-9ead-6e6fd06b0bf5` | P06 |
 
 The `p_eligibility` folder membership is not exposed by this Element API; inclusion above refers to this versioned problem-image checklist.
+
+2026-09-12: Both linked image prompts have been revised and the [two-Element replacement import](../00_project/elements/additions/P06_REFERENCE_REPLACEMENT_IMPORT.md) is ready. MW04_C_01 now specifies the formal fingerprinting desk, two seated named participants and their restrained smile, using C01/C03 character inputs only. The old output visibly placed the encounter in an apartment with an extra searching officer. W04_A_03 retains its assigned Palace of Justice street role with incidental adult pedestrians and correctly sized rectangular score cards; its old output had oversized speech-bubble cards. These are visible composition corrections, not established causes of the reported Face/IP blocks. Image generation, attachment and eligibility remain pending; production P06/P10 mentions remain unchanged until replacement bindings are observed.
 
 1. **C07:** replacement character prompt and [Element import file](../00_project/elements/additions/C07_HOUSEMATE_REPLACEMENT_IMPORT.md) are ready. Use the new short, slim housemate. Confirm that the intended image is the only attachment before checking eligibility.
 2. **MW01_B_03:** regenerate the [seated family-photograph scene](../02_library/worlds/memories/05_03_MW01_LONDON_SOCIAL_B_VIEW_07.txt) with the new C07. This is a continuity update, not an additional reported Face/IP failure, so it is outside the ten-item total.
@@ -72,3 +119,5 @@ MW02_A_02 and MW02_C_02 have been recreated with the rewritten descriptions. The
 |---|---|---|
 | MW02_A_02 | `5ac3c0ae-f8fc-46dd-a04b-bde4b67353ef` | `e566a2c7-bbb6-46cc-9db6-a009f2981dc4` |
 | MW02_C_02 | `62978407-701a-44fc-80bb-80e971175911` | `5c6fa164-a2e7-4780-a505-517563544f5d` |
+
+</details>
