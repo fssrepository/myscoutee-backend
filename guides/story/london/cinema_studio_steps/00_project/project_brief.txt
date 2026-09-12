@@ -80,6 +80,8 @@ This review measures how much of the requested story, detail and reference conte
 
 As supporting context, the observed sequences were described retrospectively in **19,994 characters versus the original 68,912 (71% less text)**, retaining every reference handle. This is not a 71% instruction-failure rate or evidence that the original prompts could have been shortened without losing their intended detail. The gap motivates examining what Seedance simplified, omitted or replaced; the scored requirements above provide the instruction-following evidence.
 
+**Suggested improvement:** Before generation, the video AI should flag prompt complexity it is unlikely to fulfil at the selected duration and suggest simplification, instead of leaving creators to discover its limits through trial and error in ChatGPT or Claude.
+
 ## 🔗 Resources
 
 - Two-volume MyScoutee Amazon book;
