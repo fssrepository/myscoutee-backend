@@ -1,0 +1,11 @@
+# LinkedIn article package
+
+`article_en.md` contains the title and complete English article, including the creator-supplied YouTube link https://youtu.be/cA52DXZs5DI after the second paragraph and five topical hashtags at the end. Copy the first heading into LinkedIn's Title field and the remaining paragraphs into the article body. The same YouTube URL can be used for an embedded video. Hashtags are editorial recommendations, not festival requirements. Final festival submission remains separate and is not claimed complete in the article.
+
+Cover target: 1920 × 1080, 16:9, JPEG. The [specific LinkedIn article-media guide](https://www.linkedin.com/help/linkedin/answer/a518895) and [Page article guide](https://www.linkedin.com/help/lms/answer/a569569/?lang=en-US), checked 2026-09-12, both recommend 1920 × 1080; the article-media guide explicitly states a 16:9 crop. This is an article cover, not the narrow profile banner.
+
+Upload **`article_cover.jpg`** (1920 × 1080), with the enlarged upper-left wordmark and M-logo replacing the initial letter. The generated 1672 × 941 image was resized with Lanczos. Generation and edit instructions are saved in `cover_prompt.txt`; logo reference: `frontend/src/assets/logo/heart.png`. Keep this filename for future edits and use Git for version history; do not create numbered image copies. Alt text: “Two books beside a rain-wet walkway joining London and Budapest, with a yellow tram and the title The Path Between People.”
+
+The article uses the accepted v4 narration, project brief and frozen `04_tracking/production_audit` results. The 49–50 h figure covers the recorded festival workflow, not all book/project development; 28.5 h assistant intervals overlap that total and include tool/render waiting. Original master-prompt authoring is excluded because its session was not recovered. Image percentages are sampled visual estimates. The five-story-clip range excludes the separately corrected P00 ident. No benchmark or exact manual-labour claim is made.
+
+The cover is new promotional artwork generated with the built-in image tool, not a film frame or an addition to the festival film. Generation prompt is saved alongside it. No LinkedIn publishing or Git commit is performed by this preparation.
