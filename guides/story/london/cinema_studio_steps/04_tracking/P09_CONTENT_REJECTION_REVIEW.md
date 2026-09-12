@@ -1,6 +1,6 @@
 # P09 content-rejection investigation — 2026-09-12
 
-Status: submitted generation rejected; the exact moderation cause and provider stage remain unconfirmed. Production P09 has not been rewritten or retried as part of this investigation.
+Status: the creator reports that P09 completed after restarting generation. The initial rejection and subsequent completion made the workflow unpredictable and delayed production. The exact moderation cause and provider stage remain unconfirmed; the successful retry's payload and output have not yet been independently reviewed. No production prompt rewrite or retry was performed by the assistant as part of this investigation.
 
 ## Observed incident
 
@@ -57,7 +57,7 @@ The most defensible diagnosis is a content-moderation rejection of a submitted r
    - Replace “before exposing their body” with “before the moving camera reveals the same fully clothed person, their grounded feet and surrounding room.”
    - Clarify the balloon action from its source: the basket is on the soil; the helpers hold equipment ropes clear of their bodies while freeing the line from crop leaves.
    - Keep the clinical exclusion local to P09 rather than explaining a different, later scene inside its material-action paragraph.
-4. A new attempt would remain an experiment with no acceptance guarantee. No paid retry, upload, deletion or external message has been performed in this review. P10's usable starting frame still depends on an accepted P09.
+4. The creator subsequently reported a successful restart. No paid retry, upload, deletion or external message was performed by the assistant in this review. Review the completed P09 and extract its actual final frame before using it for P10 continuity.
 
 ## Exact image reuse comparison
 
