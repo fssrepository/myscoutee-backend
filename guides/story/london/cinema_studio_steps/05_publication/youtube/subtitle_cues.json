@@ -1,0 +1,362 @@
+[
+  {
+    "paragraph": 0,
+    "source_start": 0,
+    "source_end": 2.4,
+    "start": 6.2,
+    "end": 8.8,
+    "text": "Nem egyenes vonalként\nemlékszem az életemre.",
+    "characters_per_second": 16.92
+  },
+  {
+    "paragraph": 0,
+    "source_start": 3.3,
+    "source_end": 6.86,
+    "start": 9.5,
+    "end": 13.26,
+    "text": "Az utcából szoba lesz,\naz ablakból egy másik ország.",
+    "characters_per_second": 13.83
+  },
+  {
+    "paragraph": 0,
+    "source_start": 7.76,
+    "source_end": 11.38,
+    "start": 13.96,
+    "end": 17.78,
+    "text": "Néha csak egy mosoly éli túl a vágást.",
+    "characters_per_second": 9.95
+  },
+  {
+    "paragraph": 1,
+    "source_start": 12.56,
+    "source_end": 14.08,
+    "start": 21.495,
+    "end": 23.328,
+    "text": "Az emlékezet engedély nélkül vág.",
+    "characters_per_second": 18.0
+  },
+  {
+    "paragraph": 1,
+    "source_start": 15.06,
+    "source_end": 17.14,
+    "start": 23.995,
+    "end": 26.773,
+    "text": "Az üres ágyat éppoly élesen\nőrzi, mint az arcokat.",
+    "characters_per_second": 18.0
+  },
+  {
+    "paragraph": 1,
+    "source_start": 17.9,
+    "source_end": 20.88,
+    "start": 26.835,
+    "end": 30.113,
+    "text": "Egy pillantásból ítélet lesz,\nmielőtt bárki megszólalhatna.",
+    "characters_per_second": 18.0
+  },
+  {
+    "paragraph": 2,
+    "source_start": 21.48,
+    "source_end": 24.86,
+    "start": 39.885,
+    "end": 43.718,
+    "text": "Előbb jutnak eszembe utak, mint dátumok.\nEgy hely egy idegen mellett.",
+    "characters_per_second": 18.0
+  },
+  {
+    "paragraph": 2,
+    "source_start": 25.62,
+    "source_end": 27.72,
+    "start": 44.025,
+    "end": 46.325,
+    "text": "Egy beszélgetés, ami egy útig tartott.",
+    "characters_per_second": 16.52
+  },
+  {
+    "paragraph": 2,
+    "source_start": 28.31,
+    "source_end": 32.26,
+    "start": 46.715,
+    "end": 50.865,
+    "text": "A világ nagy volt.\nAz emberi pillanatok maradtak meg.",
+    "characters_per_second": 12.77
+  },
+  {
+    "paragraph": 3,
+    "source_start": 33,
+    "source_end": 35.72,
+    "start": 53.94,
+    "end": 57.162,
+    "text": "Az út sorrendje elveszhet,\nde arra emlékszem, ki segített.",
+    "characters_per_second": 18.0
+  },
+  {
+    "paragraph": 3,
+    "source_start": 36.78,
+    "source_end": 38.4,
+    "start": 57.72,
+    "end": 60.053,
+    "text": "Az emlékezet másképp vezet nyilvántartást.",
+    "characters_per_second": 18.0
+  },
+  {
+    "paragraph": 4,
+    "source_start": 39.08,
+    "source_end": 41.68,
+    "start": 65.895,
+    "end": 69.173,
+    "text": "A munkának egyszerűbbnek kellett volna\nlennie az utazásnál.",
+    "characters_per_second": 18.0
+  },
+  {
+    "paragraph": 4,
+    "source_start": 42.48,
+    "source_end": 46.02,
+    "start": 69.295,
+    "end": 73.035,
+    "text": "Más lett az űrlap, változott a szabály,\nlejárt a határidő.",
+    "characters_per_second": 15.51
+  },
+  {
+    "paragraph": 4,
+    "source_start": 47.02,
+    "source_end": 48.2,
+    "start": 73.835,
+    "end": 75.915,
+    "text": "Senkinek sem kellett kegyetlennek lennie.",
+    "characters_per_second": 19.71
+  },
+  {
+    "paragraph": 4,
+    "source_start": 49.26,
+    "source_end": 51.66,
+    "start": 76.075,
+    "end": 78.797,
+    "text": "Elég volt a rés a hétköznapi\ncselekedetek között.",
+    "characters_per_second": 18.0
+  },
+  {
+    "paragraph": 5,
+    "source_start": 52.44,
+    "source_end": 55.14,
+    "start": 83.58,
+    "end": 87.14,
+    "text": "Próbáltam helyrehozni az ügyiratot,\nmiközben a munka ment tovább.",
+    "characters_per_second": 18.26
+  },
+  {
+    "paragraph": 5,
+    "source_start": 56.06,
+    "source_end": 58.54,
+    "start": 87.2,
+    "end": 89.88,
+    "text": "Egy MI segített egyben tartani\na teljes történetet.",
+    "characters_per_second": 19.03
+  },
+  {
+    "paragraph": 5,
+    "source_start": 59.76,
+    "source_end": 62.26,
+    "start": 90.9,
+    "end": 93.6,
+    "text": "Néha pedig egyszerűen abban,\nhogy továbbmenjek.",
+    "characters_per_second": 17.41
+  },
+  {
+    "paragraph": 6,
+    "source_start": 62.9,
+    "source_end": 66.46,
+    "start": 101.255,
+    "end": 105.695,
+    "text": "Aztán belépett a rendszer a történetbe.\nDe sosem öltött egyetlen emberben testet.",
+    "characters_per_second": 18.24
+  },
+  {
+    "paragraph": 6,
+    "source_start": 67.4,
+    "source_end": 69.72,
+    "start": 105.755,
+    "end": 108.755,
+    "text": "Az ujjlenyomatom meggyőzőbb volt,\nmint a magyarázatom.",
+    "characters_per_second": 18.0
+  },
+  {
+    "paragraph": 6,
+    "source_start": 70.8,
+    "source_end": 74.18,
+    "start": 109.155,
+    "end": 112.988,
+    "text": "Az emberek emberek maradhattak,\nmiközben az eljárás ezt elfelejtette.",
+    "characters_per_second": 18.0
+  },
+  {
+    "paragraph": 7,
+    "source_start": 74.8,
+    "source_end": 78.64,
+    "start": 114.855,
+    "end": 118.895,
+    "text": "Egész intézmények mozdultak hetek alatt,\nmiközben az aktám évekig várt.",
+    "characters_per_second": 17.57
+  },
+  {
+    "paragraph": 7,
+    "source_start": 79.58,
+    "source_end": 81.58,
+    "start": 119.635,
+    "end": 121.835,
+    "text": "Még az épületek is többre jutottak.",
+    "characters_per_second": 15.91
+  },
+  {
+    "paragraph": 8,
+    "source_start": 82.44,
+    "source_end": 85.96,
+    "start": 126.52,
+    "end": 130.24,
+    "text": "Egy aktában elfér egy fénykép\nés a tulajdonod leltára.",
+    "characters_per_second": 14.52
+  },
+  {
+    "paragraph": 8,
+    "source_start": 86.62,
+    "source_end": 88.18,
+    "start": 130.7,
+    "end": 132.589,
+    "text": "Az már nem, hogy miről mondtál le,",
+    "characters_per_second": 18.0
+  },
+  {
+    "paragraph": 8,
+    "source_start": 88.66,
+    "source_end": 91.58,
+    "start": 132.74,
+    "end": 135.86,
+    "text": "miért jöttél haza,\nvagy mit próbáltál helyrehozni.",
+    "characters_per_second": 16.03
+  },
+  {
+    "paragraph": 9,
+    "source_start": 92.36,
+    "source_end": 93.96,
+    "start": 140.835,
+    "end": 143.175,
+    "text": "Még mindig próbáltam elérni,\nhogy meghalljanak.",
+    "characters_per_second": 20.09
+  },
+  {
+    "paragraph": 9,
+    "source_start": 94.76,
+    "source_end": 96.98,
+    "start": 143.235,
+    "end": 145.846,
+    "text": "Kértem a rendszert,\nadjon esélyt a jóvátételre.",
+    "characters_per_second": 18.0
+  },
+  {
+    "paragraph": 9,
+    "source_start": 97.96,
+    "source_end": 98.4,
+    "start": 146.435,
+    "end": 147.535,
+    "text": "Elutasított.",
+    "characters_per_second": 10.91
+  },
+  {
+    "paragraph": 10,
+    "source_start": 99.32,
+    "source_end": 101.14,
+    "start": 154.565,
+    "end": 156.585,
+    "text": "De az emberség mégis átszivárgott.",
+    "characters_per_second": 16.83
+  },
+  {
+    "paragraph": 10,
+    "source_start": 101.96,
+    "source_end": 105.38,
+    "start": 157.205,
+    "end": 160.565,
+    "text": "Néha egy mosoly vagy egy idegen,\naki kaput nyitott,",
+    "characters_per_second": 15.18
+  },
+  {
+    "paragraph": 10,
+    "source_start": 105.38,
+    "source_end": 107.04,
+    "start": 160.625,
+    "end": 162.569,
+    "text": "elég volt ahhoz, hogy továbbjussak.",
+    "characters_per_second": 18.0
+  },
+  {
+    "paragraph": 11,
+    "source_start": 107.68,
+    "source_end": 109.64,
+    "start": 164.46,
+    "end": 166.96,
+    "text": "Az emberek abban segítettek,\nami épp előttük volt.",
+    "characters_per_second": 20.0
+  },
+  {
+    "paragraph": 11,
+    "source_start": 110.24,
+    "source_end": 112.34,
+    "start": 167.02,
+    "end": 169.32,
+    "text": "Egy pillanatra nekem is jutott hely.",
+    "characters_per_second": 15.65
+  },
+  {
+    "paragraph": 11,
+    "source_start": 113.12,
+    "source_end": 115.32,
+    "start": 169.9,
+    "end": 172.3,
+    "text": "Előbb voltam ember, mint ügy.",
+    "characters_per_second": 12.08
+  },
+  {
+    "paragraph": 12,
+    "source_start": 115.9,
+    "source_end": 119.42,
+    "start": 174.95,
+    "end": 178.67,
+    "text": "Aztán a rendszer ment tovább,\nés már a város is engem olvasott.",
+    "characters_per_second": 16.94
+  },
+  {
+    "paragraph": 12,
+    "source_start": 120.26,
+    "source_end": 124.18,
+    "start": 179.31,
+    "end": 183.43,
+    "text": "A szám világos lehetett,\nde az ember alatta ismeretlen maradt.",
+    "characters_per_second": 15.05
+  },
+  {
+    "paragraph": 13,
+    "source_start": 125.44,
+    "source_end": 128.74,
+    "start": 185.02,
+    "end": 188.52,
+    "text": "London, Budapest. Visszatértek a szobák.",
+    "characters_per_second": 11.43
+  },
+  {
+    "paragraph": 13,
+    "source_start": 130,
+    "source_end": 131.76,
+    "start": 189.58,
+    "end": 191.54,
+    "text": "Ami megmaradt, nem volt válasz.",
+    "characters_per_second": 15.82
+  },
+  {
+    "paragraph": 13,
+    "source_start": 132.74,
+    "source_end": 136.38,
+    "start": 192.32,
+    "end": 196.16,
+    "text": "Még mindig ott voltam, mindazzal,\nami az aktába nem fért bele.",
+    "characters_per_second": 16.15
+  }
+]

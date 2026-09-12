@@ -1,0 +1,39 @@
+# P11 Westminster jump and P12 continuity review — 2026-09-12
+
+## Reported defect and evidence
+
+The creator reports a tear-like Parliament/Westminster transition in the completed P11 and rules out regeneration. Review source: local `/home/raxim/Downloads/p11.mp4`, SHA-256 `f815add0524ae502e75ac159bb44109631868bf610af08171eb77a10db5628ce`. This pass did not re-query Higgsfield or independently match the file to a remote job. Reviewed the full ten seconds at 4 fps, consecutive frames 202–213 around the reported transition, the final decoded image and all video timestamps. Audio/player playback was not reviewed.
+
+The file contains 241 frames, 1920×1080, 24 fps, HEVC 10-bit, video duration 10.041667 s. All adjacent video PTS differences are 0.041666–0.041667 s. At **frame 207 / 8.625 s → frame 208 / 8.666667 s**, the near Bálna/Market Hall shell view changes directly into a distant elevated Westminster/Parliament river-junction view. Frame 208 is marked a keyframe. The complete scene changes in one frame; this is a visible generated hard cut despite the continuous-route instruction, not evidence of a missing timestamp. No horizontal partial-frame tearing is visible in the examined transition frames.
+
+The local P11 prompt asks for continuous forward-right travel into Westminster at 8.46 s but does not spell out a concrete shared route from the preceding near shell to the distant panorama. That under-specified spatial connection is a plausible prompt contribution; causation and equality with the submitted job prompt were not independently established in this pass. The inspected video also has large scene changes near 0.333, 2.0, 2.625, 3.875 and 5.917 s; those are additional review candidates, not automatically authorised repairs.
+
+## Local repair — existing statue recipe, now rendered
+
+The creator's latest correction controls: reuse the established photographic transition at approximately seconds 3–4 of P01 and its existing Python workflow, not a newly invented zoom, blur animation or other effect. The reference time identifies the example's position, not a 3–4-second transition duration. The recorded baseline is four moving blended frames (about 0.1667 s at 24 fps), weights 1/5, 2/5, 3/5, 4/5; see `03_film/production/tools/p03_transition.py`. The creator permits drawing more of the transition interval from the comparatively long Bálna view before the cut, preserving the shorter Westminster reveal.
+
+A local photographic transition is technically feasible because both sides have usable frames. It can soften the abrupt scene change; it cannot reconstruct the missing camera journey or restore omitted story events. Existing `render_bridge` is an inter-clip helper with fixed defaults; do not execute its unchanged P00–P03 assembly command against P11. Reuse its moving-frame blend approach for this internal boundary, determine a bounded replacement interval and verify HEVC prediction dependencies before stream-copy joins. The encoded interval may exceed the four visible blend frames. The GOP before the cut begins at marked keyframe 142 and the final GOP begins at 208; keyframe flags alone do not prove arbitrary packet cuts safe.
+
+Completed local output: `/home/raxim/Downloads/p11_fixed.mp4`, 178,400,996 bytes. Original `p11.mp4` is unchanged. No generation was submitted. The creator accepted the visual repair, while noting the larger lossless file size.
+
+Only zero-based output frames **206–209** (8.583333–8.750000 s exclusive) change. The four moving source pairs are outgoing 204–207 and incoming 208–211, using incoming weights 0.2/0.4/0.6/0.8. The overlap is centred on the existing cut to keep the original frame count and all timestamps; source sampling differs locally by two frames, with no shift to the remaining timeline. No zoom, geometry correction, grading, optical-flow warp or blur is added. This is a brief photographic overlap, not a reconstruction of the missing camera journey.
+
+Compressed video frames 0–141 are copied. HEVC prediction dependencies require encoding frames 142–240 (99 frames / 4.125 s); this block is **lossless x265**, preserving original planar 10-bit YUV values outside the four intended blends. It is not pure stream copy and not a full-video lossy re-encode. Header metadata is normalized to level 4.1, chroma sample location 0 and access-unit delimiters, with `hev1` signalling, following the recorded VLC compatibility repair. AAC audio is copied without an audio crossfade or re-encode. The larger file is a consequence of lossless storage, not additional source detail.
+
+Verification passed: 241 frames; 1920×1080; 24 fps; 10-bit BT.709; all **237 unaffected decoded frame hashes identical**; the four changed hashes exactly match the calculated blends; all original video PTS/durations and all AAC packet payloads/PTS/durations identical; final frame identical; source SHA-256 unchanged. Video duration remains 10.041667 s and audio duration 10.050000 s. Consecutive frames 204–211 were visually inspected. A separate VLC dummy-output diagnostic across the copied/lossless boundary and transition reported no profile-level mismatch or HEVC decode error; it is not a visual playback or listening review.
+
+Reproducible bounded workflow: `03_film/production/tools/p11_transition.py --media-dir /home/raxim/Downloads`. It pins the source hash, refuses to overwrite an existing fixed output, validates decoded image/audio/timing equality before publishing, and leaves its temporary validation evidence path in stdout.
+
+## P12 corrections against the actual P11 ending
+
+The final P11 image is an elevated wide river junction: clock tower left, Hungarian Parliament across the river, domed church right, yellow tram and curved wet paving below. C01 is not clearly identifiable in that wide endpoint. The old generic P12 opening did not explain how to reach its street-level bed encounter from that camera height.
+
+P12 now preserves the actual wide composition and descends continuously toward the near pavement/first bed, rather than resetting to a street-level room. The inherited skyline stays in place; its large landmark transformations must not replay. The opening crowd, including already visible umbrellas, recedes intact instead of disappearing under the generic no-umbrella rule; newly revealed pedestrians retain the intended bare-head rule. C01 must be revealed through the approach, never created by changing another walker. His last clearly readable P11 card is 6.2; the prompt preserves it rather than borrowing a different score from the distant final crowd.
+
+The glass entrance is now specified as already visible beyond the bed spaces on the same pavement before the 9–12 s approach. The local foot panel remains confined to one side of the view, and the rope/soil detail stays surrounded by visible paving. These are the principal boundaries to inspect in the completed output; no output compliance is promised. The intentional clinical hard cut at 15 s and black title at 18 s remain unchanged and are not candidates for automatic smoothing.
+
+Current P12: **14938 characters**, 25 unchanged handles. Beat times, all sound text and the clinical/title sequence are unchanged. Repetition was shortened to fit the 15,000-character ceiling. This prompt review does not confirm that the final P11 frame has been attached in the live composer.
+
+## Rejected P01–P02 experiment
+
+The creator rejects the crop-release/dissolve preview as unlike the intended dream transition and pauses that task. Do not use `p01_p02_dream_transition_preview.mp4` as an accepted assembly source, repeat its 1.96× crop or continue this experiment. The creator initially described a blurred-to-sharp statue-like feeling, then clarified to use the actual existing P01 statue transition rather than invent a new effect. The original clips and prior accepted assembly remain the sources.

@@ -1,0 +1,215 @@
+{
+  "clips": [
+    {
+      "i": 0,
+      "file": "p00_fixed.mp4",
+      "frames": 97,
+      "keys": [
+        0,
+        96
+      ],
+      "sha256": "f5ad4dfe1e6c6afd304401f2930b8c98a88412c44b3c8c453f183c9d69f5cd88",
+      "start": 0,
+      "copy": null
+    },
+    {
+      "i": 1,
+      "file": "p01.mp4",
+      "frames": 361,
+      "keys": [
+        0,
+        250,
+        307
+      ],
+      "sha256": "a55f495a7e93dfb9a1d06d4296c83203df7da93e711e90a71e53c223c7d6ec77",
+      "start": 93,
+      "copy": [
+        250,
+        307
+      ]
+    },
+    {
+      "i": 2,
+      "file": "p02.mp4",
+      "frames": 361,
+      "keys": [
+        0,
+        250
+      ],
+      "sha256": "30e8b62e7af1d48c5dc56036266bd47a1b3d883e78277f6633e792d1e5bdfa22",
+      "start": 450,
+      "copy": null
+    },
+    {
+      "i": 3,
+      "file": "p03.mp4",
+      "frames": 361,
+      "keys": [
+        0,
+        176,
+        224,
+        288,
+        336
+      ],
+      "sha256": "67df2941557d38ed16662e3c2fe01c59c29e9c0555524483bede241515357daf",
+      "start": 807,
+      "copy": [
+        176,
+        336
+      ]
+    },
+    {
+      "i": 4,
+      "file": "p04.mp4",
+      "frames": 361,
+      "keys": [
+        0,
+        40,
+        83,
+        108,
+        248,
+        309
+      ],
+      "sha256": "b91382509a92d6cef5f044f1d39214d10c6157efc375d2f8898562800cff9559",
+      "start": 1164,
+      "copy": [
+        40,
+        309
+      ]
+    },
+    {
+      "i": 5,
+      "file": "p05.mp4",
+      "frames": 481,
+      "keys": [
+        0,
+        68,
+        96,
+        125,
+        157,
+        192,
+        360,
+        384
+      ],
+      "sha256": "aa35cf0c4079217e3370bfa5645a6eb4f70a859624a8264c9e644facfba02f0d",
+      "start": 1521,
+      "copy": [
+        68,
+        384
+      ]
+    },
+    {
+      "i": 6,
+      "file": "p06.mp4",
+      "frames": 601,
+      "keys": [
+        0,
+        86,
+        254,
+        375,
+        420,
+        480,
+        544
+      ],
+      "sha256": "98a35ab8be0b4c2ef8352e754cab7a39facd65412757f70639bbe9c6695abe4d",
+      "start": 1998,
+      "copy": [
+        86,
+        544
+      ]
+    },
+    {
+      "i": 7,
+      "file": "p07.mp4",
+      "frames": 721,
+      "keys": [
+        0,
+        250,
+        385,
+        533
+      ],
+      "sha256": "72da905c59acde5220c5ce54fecff90002bd08fc98166087b62b1d82c22f0e9c",
+      "start": 2595,
+      "copy": [
+        250,
+        533
+      ]
+    },
+    {
+      "i": 8,
+      "file": "p08.mp4",
+      "frames": 361,
+      "keys": [
+        0,
+        136,
+        207,
+        325
+      ],
+      "sha256": "60bc4029a4998cad907c8552374b3c4a0af8ba63baa60d4b96d8be0497991cd4",
+      "start": 3312,
+      "copy": [
+        136,
+        325
+      ]
+    },
+    {
+      "i": 9,
+      "file": "p09.mp4",
+      "frames": 241,
+      "keys": [
+        0,
+        55
+      ],
+      "sha256": "8a45c53163fd8e2e398f36e271bc38476d083501d1e4050b1a8f15ed53e06ec5",
+      "start": 3669,
+      "copy": null
+    },
+    {
+      "i": 10,
+      "file": "p10.mp4",
+      "frames": 241,
+      "keys": [
+        0
+      ],
+      "sha256": "0bef65b3e06f98d533ee4a677c519bbada555b4b431f20d037f988fab189fad3",
+      "start": 3906,
+      "copy": null
+    },
+    {
+      "i": 11,
+      "file": "p11_fixed.mp4",
+      "frames": 241,
+      "keys": [
+        0,
+        48,
+        93,
+        142
+      ],
+      "sha256": "505e376644badc1ae3065768f325697977bd81c01040a3765884f94948109031",
+      "start": 4143,
+      "copy": [
+        48,
+        142
+      ]
+    },
+    {
+      "i": 12,
+      "file": "p12.mp4",
+      "frames": 481,
+      "keys": [
+        0,
+        89,
+        339,
+        456
+      ],
+      "sha256": "1c9e9ef7d69e8587ca57ca1715006438029089b33a8caf74cb25b5bfebe37e14",
+      "start": 4380,
+      "copy": [
+        89,
+        481
+      ]
+    }
+  ],
+  "frames": 4861,
+  "duration": 202.54166666666666
+}

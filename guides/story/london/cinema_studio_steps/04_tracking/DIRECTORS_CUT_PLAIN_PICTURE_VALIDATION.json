@@ -1,0 +1,116 @@
+{
+  "transition": "plain",
+  "frames": 4861,
+  "duration": 202.54166666666666,
+  "boundaries_seconds": [
+    3.875,
+    18.75,
+    33.625,
+    48.5,
+    63.375,
+    83.25,
+    108.125,
+    138.0,
+    152.875,
+    162.75,
+    172.625,
+    182.5
+  ],
+  "copied_frames": 2218,
+  "losslessly_encoded_frames": 2643,
+  "visually_modified_frames": 48,
+  "unaffected_pixels": "identical to selected original source frames",
+  "p11_source": "p11_fixed.mp4",
+  "parts": [
+    {
+      "file": "lossless_0_343.ts",
+      "frames": 343,
+      "mode": "lossless"
+    },
+    {
+      "file": "copy01.ts",
+      "frames": 57,
+      "mode": "copy"
+    },
+    {
+      "file": "lossless_400_983.ts",
+      "frames": 583,
+      "mode": "lossless"
+    },
+    {
+      "file": "copy03.ts",
+      "frames": 160,
+      "mode": "copy"
+    },
+    {
+      "file": "lossless_1143_1204.ts",
+      "frames": 61,
+      "mode": "lossless"
+    },
+    {
+      "file": "copy04.ts",
+      "frames": 269,
+      "mode": "copy"
+    },
+    {
+      "file": "lossless_1473_1589.ts",
+      "frames": 116,
+      "mode": "lossless"
+    },
+    {
+      "file": "copy05.ts",
+      "frames": 316,
+      "mode": "copy"
+    },
+    {
+      "file": "lossless_1905_2084.ts",
+      "frames": 179,
+      "mode": "lossless"
+    },
+    {
+      "file": "copy06.ts",
+      "frames": 458,
+      "mode": "copy"
+    },
+    {
+      "file": "lossless_2542_2845.ts",
+      "frames": 303,
+      "mode": "lossless"
+    },
+    {
+      "file": "copy07.ts",
+      "frames": 283,
+      "mode": "copy"
+    },
+    {
+      "file": "lossless_3128_3448.ts",
+      "frames": 320,
+      "mode": "lossless"
+    },
+    {
+      "file": "copy08.ts",
+      "frames": 189,
+      "mode": "copy"
+    },
+    {
+      "file": "lossless_3637_4191.ts",
+      "frames": 554,
+      "mode": "lossless"
+    },
+    {
+      "file": "copy11.ts",
+      "frames": 94,
+      "mode": "copy"
+    },
+    {
+      "file": "lossless_4285_4469.ts",
+      "frames": 184,
+      "mode": "lossless"
+    },
+    {
+      "file": "copy12.ts",
+      "frames": 392,
+      "mode": "copy"
+    }
+  ]
+}

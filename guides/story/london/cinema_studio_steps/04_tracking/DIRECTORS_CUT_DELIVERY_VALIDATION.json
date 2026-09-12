@@ -1,0 +1,17 @@
+{
+  "video": "all 4861 compressed picture packet hashes and timestamps identical to verified picture master in both files",
+  "editable_audio": "both PCM float tracks decode identically to aligned source stems",
+  "outputs": [
+    {
+      "file": "/home/raxim/Downloads/myscoutee_directors_cut.mp4",
+      "bytes": 4001177891
+    },
+    {
+      "file": "/home/raxim/Downloads/myscoutee_directors_cut_editable.mov",
+      "bytes": 4136180324
+    }
+  ],
+  "preview_audio": "single AAC listening mix; editing movie retains separate un-ducked background and clean narration",
+  "originals": "untouched",
+  "vlc_check": "12\u201321 s playback: no HEVC profile mismatch, duplicate POC or missing-reference error; existing Intel GL initialization warning remains. Seeking to 12 s discarded one stale audio buffer."
+}

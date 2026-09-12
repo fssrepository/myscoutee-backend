@@ -1,3 +1,25 @@
+# Current checkpoint — publication follow-up, 2026-09-12
+
+Creator supplied the Higgsfield project URL: https://higgsfield.ai/@myscoutee/projects/swipe-economy. Added to the LinkedIn article immediately after the YouTube link. The article now has six icon-led sections, a pull quote and a short metrics list. Publication links do not by themselves confirm final festival submission.
+
+Creator supplied the YouTube film URL: https://youtu.be/cA52DXZs5DI. It is now in the LinkedIn article after the second paragraph, with five topical hashtags at the end. Current LinkedIn cover is `05_publication/linkedin/article_cover.jpg`, featuring the enlarged upper-left wordmark with the M-logo replacing its initial letter. Creator requires stable image filenames: update the existing image and use Git history, not separate numbered/source image copies. Redundant cover copies were removed. Older notes saying the YouTube URL is missing are superseded. LinkedIn publication and final festival submission are not yet confirmed.
+
+The creator now reports YouTube setup complete and requests the LinkedIn article and article-ratio cover. [LinkedIn package](../05_publication/linkedin/README.md) contains a 634-word English article and a generated cover exported at 1920 × 1080 (16:9), with original PNG and generation prompt retained. Text uses frozen production metrics and does not claim completed festival submission. The actual YouTube URL is still needed for embedding; no URL was invented. No social posting or Git commit performed. Next: creator reviews/publishes the article, then final festival submission.
+
+YouTube preparation resumed: the creator is uploading `festival-final-cut-watermark-packshot.mp4` in YouTube Studio. [YouTube package](../05_publication/youtube/README.md) now contains the English title/short description, optional tags, a generated JPEG thumbnail, and 40 timed Hungarian SRT cues based on the accepted Neutral v4. Three sampled audio matches confirm zero published-version offset. No video/audio changes, automated social posting or Git commit. Official rules/entry guide checked: no specific mandatory YouTube hashtag found; named final-form tags remain unspecified in the public rules. Next: creator adds these files, completes YouTube publication, then LinkedIn article and final festival submission. The published URL and final submission are not yet confirmed.
+
+The creator reports the film is now uploaded/published in Higgsfield and is leaving temporarily. Resume with the LinkedIn article, public YouTube upload and description, optional Hungarian subtitles on YouTube, then final festival submission intended for today. No social upload or final submission is confirmed yet. The previous Download button stalled; retrieval and playback of the completed watermarked/packshot export are not independently verified. Use that processed version for the social upload. Do not restart editing, narration generation or compression.
+
+Official festival rules checked today require a public full-film post with watermark and packshot on YouTube, Instagram, X or Reddit; LinkedIn is supplementary. Final submission deadline: September 14, 2026, 23:59 UTC. Source: https://higgsfield.ai/contests/higgsfield-global-film-festival?tab=rules
+
+Brief metrics are complete; preserve the frozen audit and existing paragraphs. The brief now starts with the higher-bitrate video (~4 GB) and WAV location, `a_video/director_cut/raw`, and includes overall effort/token totals before Higgsfield statistics.
+
+## Previous checkpoint — frozen metrics, 2026-09-12
+
+Production and delivery are complete. The creator reports both final deliverables uploaded. Current task: add the saved image/adherence and production-effort statistics to the existing brief, preserving its other paragraphs. All measured results and method are saved in [production_audit/README.md](production_audit/README.md), [summary.json](production_audit/summary.json) and companion CSVs. **Do not rescan or recalculate for formatting.** Source cutoff is 16:48:54 UTC on September 12. The book model is Sol / Extra High; the original master-prompt session is missing. Image history labels the sampled output Nano Banana 2, not verified Pro.
+
+The previous checkpoints below are historical.
+
 ## 2026-09-11 — Prompt precision review completed
 
 Production P01–P12: fixed stale chapter-wide music cues, P10 internal 6-second transition, P11/P12 clinical sound timing, and request-local C01 rating state. All 63 story beats and all reference handles retained; 62 beat bodies remain verbatim, with only boundary wording changed in 06.4. Prompt hashes/counts updated in production/plan.json. User reports 1937 credits; 1800 story allocation, 137 contingency, no separate 480p trial. Do not open or switch editor tabs without an explicit current user request. Four-frame metadata import is prepared, not imported; UNBOUND handles remain deliberate.

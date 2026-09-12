@@ -1,0 +1,125 @@
+{
+  "sample_rate": 44100,
+  "channels": 2,
+  "samples": 8932088,
+  "duration": 202.54167800453516,
+  "narration_source": "narration_v4.mp3",
+  "narration_source_sha256": "19b6fc01ef49a292448dd73218f2ee97dd406b050c52d0a76fdf218bc48e8cb9",
+  "source_decoded_samples_retained": 6038255,
+  "narration_speed_pitch": "unchanged; every decoded source sample retained in order",
+  "segments": [
+    {
+      "passage": "opening",
+      "source_start": 0.0,
+      "source_end": 11.96498866213152,
+      "timeline_start": 6.2,
+      "timeline_end": 18.16498866213152
+    },
+    {
+      "passage": "memory_judgment",
+      "source_start": 11.96498866213152,
+      "source_end": 21.34498866213152,
+      "timeline_start": 20.9,
+      "timeline_end": 30.28
+    },
+    {
+      "passage": "routes",
+      "source_start": 21.34498866213152,
+      "source_end": 32.86,
+      "timeline_start": 39.75,
+      "timeline_end": 51.26501133786848
+    },
+    {
+      "passage": "remembered_help",
+      "source_start": 32.86,
+      "source_end": 38.98498866213152,
+      "timeline_start": 53.8,
+      "timeline_end": 59.92498866213152
+    },
+    {
+      "passage": "work",
+      "source_start": 38.98498866213152,
+      "source_end": 52.36,
+      "timeline_start": 65.8,
+      "timeline_end": 79.17501133786848
+    },
+    {
+      "passage": "repair_ai",
+      "source_start": 52.36,
+      "source_end": 62.69501133786848,
+      "timeline_start": 83.5,
+      "timeline_end": 93.83501133786848
+    },
+    {
+      "passage": "police_fingerprint",
+      "source_start": 62.69501133786848,
+      "source_end": 74.74498866213152,
+      "timeline_start": 101.05,
+      "timeline_end": 113.09997732426304
+    },
+    {
+      "passage": "institutional_time",
+      "source_start": 74.74498866213152,
+      "source_end": 82.32,
+      "timeline_start": 114.8,
+      "timeline_end": 122.37501133786849
+    },
+    {
+      "passage": "file_and_life",
+      "source_start": 82.32,
+      "source_end": 92.22498866213152,
+      "timeline_start": 126.4,
+      "timeline_end": 136.3049886621315
+    },
+    {
+      "passage": "refusal",
+      "source_start": 92.22498866213152,
+      "source_end": 99.25501133786848,
+      "timeline_start": 140.7,
+      "timeline_end": 147.73002267573696
+    },
+    {
+      "passage": "warmth",
+      "source_start": 99.25501133786848,
+      "source_end": 107.62,
+      "timeline_start": 154.5,
+      "timeline_end": 162.8649886621315
+    },
+    {
+      "passage": "help_and_table",
+      "source_start": 107.62,
+      "source_end": 115.75,
+      "timeline_start": 164.4,
+      "timeline_end": 172.53
+    },
+    {
+      "passage": "score",
+      "source_start": 115.75,
+      "source_end": 124.92,
+      "timeline_start": 174.8,
+      "timeline_end": 183.97
+    },
+    {
+      "passage": "ending",
+      "source_start": 124.92,
+      "source_end": 136.9218820861678,
+      "timeline_start": 184.5,
+      "timeline_end": 196.5018820861678
+    }
+  ],
+  "actual_p12_clinical_cut": 197.04166666666666,
+  "narration_end": 196.5018820861678,
+  "background": "original clip audio resampled once to 44100 Hz; 4-frame linear crossfades; raw aligned stem retained",
+  "mix": {
+    "narration_gain_db": -3,
+    "background_gain": 0.8,
+    "voice_duck_multiplier": 0.3,
+    "attack_seconds": 0.035,
+    "hold_seconds": 0.25,
+    "release_seconds": 0.35,
+    "global_headroom_gain": 1.0,
+    "sample_peak": 0.5151805877685547
+  },
+  "stems": "32-bit float WAV; narration/background independently editable; original files untouched",
+  "independent_disk_validation": "Every decoded source sample equals the delivered narration WAV sample at its placement; all gaps are zero; coverage is complete and source order retained."
+}

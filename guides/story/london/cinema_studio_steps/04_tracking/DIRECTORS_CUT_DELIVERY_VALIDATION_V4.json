@@ -1,0 +1,56 @@
+{
+  "file": "/home/raxim/Downloads/myscoutee_directors_cut_v4.mp4",
+  "bytes": 4001323941,
+  "picture_source": "/home/raxim/Downloads/myscoutee_directors_cut_v3_retimed_title.mp4",
+  "picture_validation": "All 4861 compressed video packet hashes and integer PTS/DTS/durations identical to title-corrected v3 master. No video re-encoding.",
+  "metadata": {
+    "programs": [],
+    "streams": [
+      {
+        "codec_name": "hevc",
+        "profile": "Main 10",
+        "codec_tag_string": "hev1",
+        "width": 1920,
+        "height": 1080,
+        "pix_fmt": "yuv420p10le",
+        "r_frame_rate": "24/1",
+        "time_base": "1/90000",
+        "duration": "202.541656",
+        "bit_rate": "157720361"
+      },
+      {
+        "codec_name": "aac",
+        "profile": "LC",
+        "codec_tag_string": "mp4a",
+        "sample_rate": "44100",
+        "channels": 2,
+        "r_frame_rate": "0/0",
+        "time_base": "1/44100",
+        "duration": "202.540998",
+        "bit_rate": "317749"
+      },
+      {
+        "codec_name": "bin_data",
+        "codec_tag_string": "text",
+        "r_frame_rate": "0/0",
+        "time_base": "1/1000",
+        "duration": "202.542000",
+        "bit_rate": "9"
+      }
+    ],
+    "format": {
+      "duration": "202.542000",
+      "size": "4001323941"
+    }
+  },
+  "audio_validation": "AAC listening mix decodes without errors; original background mixed with selected Neutral v4. Independent aligned WAV retains all 6038255 decoded source sample frames exactly once in original order.",
+  "narration_source": "narration_v4.mp3",
+  "source_sha256": "19b6fc01ef49a292448dd73218f2ee97dd406b050c52d0a76fdf218bc48e8cb9",
+  "narration_paragraphs": 14,
+  "voice_operations": "Only pauses between complete paragraphs extended. No internal speech cuts, sentence reordering, voice fades, pitch, timbre or speed change. Mix uses existing gain/ducking settings.",
+  "narration_end": 196.5018820861678,
+  "clinical_cut": 197.04166666666666,
+  "separate_narration": "/home/raxim/Downloads/myscoutee_directors_cut_narration_v4.wav",
+  "background_stem": "/home/raxim/Downloads/.full-film-dream/background.wav",
+  "acceptance": "Technical checks and existing sampled-picture/word-time alignment only; creator playback acceptance pending. No full-film perceptual listening claimed."
+}

@@ -31,6 +31,7 @@ will eventually be skimmed or skipped.
 | `patterns/` | curated responsibility references, not copy templates |
 | `learnings/` | accepted, candidate, rejected, and provenance records |
 | `templates/` | optional working records; do not fill them ritualistically |
+| [higgsfield/](higgsfield/README.md) | separate film-production continuity, entered through the [Higgsfield skill](../skills/myscoutee-higgsfield/SKILL.md); not application manual QA |
 
 The companion `tools/trust/suite/` keeps model-regression prompts, semantic
 assertions, and accepted baseline reports outside the context loaded by the

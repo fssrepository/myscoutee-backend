@@ -2,7 +2,7 @@
 
 The accepted 4-second V00 ident is complete. Generate the following 12 story requests in order, using the linked video.txt files. They total 200 seconds. The old 01–07 files remain the unmodified detailed source chapters; do not use their former generation boundaries.
 
-All 63 original story beats remain. 62 beat paragraphs remain verbatim; in 06.4 only obsolete last-frame/next-clip wording now describes the internal transition at 6 seconds. Musical cues and rating rules are scoped to the actual production request. The existing 216 selected library Elements are still used across the film. Repeated chapter-wide reference lists are replaced by the union needed for the assigned beats. No new storyboard images, panel crops, grids or narration generation.
+All 63 original story beats remain. At initial repartition, 62 beat paragraphs remained verbatim and only 06.4 changed its boundary wording. Later continuity and staging revisions are recorded below and in the linked tracking reports; the current prompts include those revisions. Musical cues and rating rules are scoped to the actual production request. The existing 216 selected library Elements are still used across the film. Repeated chapter-wide reference lists are replaced by the union needed for the assigned beats. No new storyboard images, panel crops, grids or narration generation.
 
 | Request | Story time | Seconds | Source beats | Refs incl. incoming frame | Characters | 1080p credits |
 |---|---|---:|---|---:|---:|---:|
@@ -15,9 +15,9 @@ All 63 original story beats remain. 62 beat paragraphs remain verbatim; in 06.4 
 | [P07](P07/video.txt) | 105–135 s | 30 | 04.6 → 05.5 | 26 | 14515 | 270 |
 | [P08](P08/video.txt) | 135–150 s | 15 | 05.6 → 05.9 | 27 | 12476 | 135 |
 | [P09](P09/video.txt) | 150–160 s | 10 | 06.1 → 06.2 | 25 | 11360 | 90 |
-| [P10](P10/video.txt) | 160–170 s | 10 | 06.3 → 06.5 | 28 | 12500 | 90 |
-| [P11](P11/video.txt) | 170–180 s | 10 | 06.6 → 07.1 | 25 | 13134 | 90 |
-| [P12](P12/video.txt) | 180–200 s | 20 | 07.2 → 07.9 | 25 | 14151 | 180 |
+| [P10](P10/video.txt) | 160–170 s | 10 | 06.3 → 06.5 | 28 | 14934 | 90 |
+| [P11](P11/video.txt) | 170–180 s | 10 | 06.6 → 07.1 | 25 | 14542 | 90 |
+| [P12](P12/video.txt) | 180–200 s | 20 | 07.2 → 07.9 | 25 | 14938 | 180 |
 
 The story clock starts after the ident; add 4 seconds for the full-film clock. At the creator-reported 9 credits/second, these requests cost 1800 in total. Splitting adds no footage seconds. Read the actual UI quote before each paid request.
 
@@ -49,6 +49,28 @@ Reuse the seven existing frame Elements in the order below. Their old Vxx names 
 
 For every boundary, extract and verify the true last decoded frame locally. Review the outgoing camera direction, gesture and objects before the next generation; adjust only the continuation instructions to the actual accepted result. Do not use the known early Higgsfield end-frame export. Final-frame extraction has zero generative credit cost.
 
+## Remaining production order and credit allocation — 2026-09-12
+
+Creator pacing assessment: with more credits, the dense clips would have received longer durations to let camera travel and gestures read. Treat duration/event density as a production constraint in later model evaluation. Improvement from longer takes is untested, and this note does not change the current clip durations or the P11 → P12 → optional P10 priority.
+
+P11 preparation was checked against the 12:03 composer screenshots and all 25 live Element attachments; see [P11_PRE_GENERATION_CHECK.md](../../04_tracking/P11_PRE_GENERATION_CHECK.md) for exact bindings, image-review scope and the incoming-frame pixel comparison. No prompt change or generation followed that check.
+
+Live balance checked at 361.2 credits. Prioritise P11 (10 s / last observed 90 credits), then extract and attach its verified final frame for P12 (20 s / 180). This leaves an estimated 91.2 credits for the creator's optional later P10 retry (10 s / 90), with 1.2 left afterward. Confirm the actual composer quote; no retry is included automatically. P12's incoming P11-frame Element is currently empty. P11 and P12 must therefore proceed sequentially.
+
+The P10 retry prompt is prepared; the successful earlier P10 prompt is archived in [P10_COMPLETED_RETRY_PROMPT.txt](../../04_tracking/P10_COMPLETED_RETRY_PROMPT.txt). P10 now uses one curved desk-to-lawyer-to-table route, P11 strengthens the rise and descent through occupied levels, and P12 preserves its scripted withdrawal into stillness. See the [remaining-credit review](../../04_tracking/P10_PRE_GENERATION_CHECK.md) for validation, P06 sampling and current character counts. A P10 retry made after P11 must match the completed P11 opening as well as the P09 ending before replacing the original; retain the original and its frame until both joins have been reviewed. No new output is claimed by these prompt edits.
+
+## Generated spatial-transition defect and P11–P12 revision — 2026-09-12
+
+P11 has since completed with a confirmed hard scene change at frame 208 (8.666667 s) into the Westminster panorama. Regeneration is ruled out. [Local repair and P12 correction](../../04_tracking/P11_WESTMINSTER_TRANSITION_REVIEW.md) records the completed `/home/raxim/Downloads/p11_fixed.mp4`: four moving blended frames (206–209), original duration and AAC unchanged. Frames 0–141 are copied; frames 142–240 are encoded losslessly because of HEVC dependencies. All 237 unaffected decoded frames, audio payloads/timestamps and the final frame match the original. The 178,400,996-byte output preserves 1080p/24 fps/10-bit BT.709; only HEVC compatibility headers are normalized. Reproduce with `tools/p11_transition.py --media-dir /home/raxim/Downloads` (refuses to overwrite). The creator accepted the repair and noted its larger lossless file size. P12 now descends from the actual elevated endpoint and retains the skyline.
+
+Creator-selected camera reference: P06 has the most spectacular camera movement in the current film; use its actual footage as the comparison reference for later motion reviews. This records the creator’s preference, not a new frame-by-frame comparative analysis. Before transferring a specific move to another prompt, check its path, speed changes, parallax and available space against that clip’s incoming frame and story actions.
+
+P10's completed retry has repeated vertical scene wipes, uneven movement and partial transparent overlap; the creator rejects the page-turning effect and reports much better earlier clips and other camera movements. This is an output-quality/instruction-following bug, separate from P10's generic generation failure. See [the P10 motion review and follow-up](../../04_tracking/P10_PRE_GENERATION_CHECK.md#completed-retry-motion-and-transition-review) for source provenance, observed intervals and limits of the diagnosis. “Seedance 2.5” is the creator's version attribution; the recorded job identifies Cinema Studio 4.0, not an independently verified underlying version.
+
+P11 and P12 now use continuous visible floors/supports and multiple occupied spaces in depth, with a specific smooth camera curve rather than successive full-frame room reveals behind moving edges. P11 starts at the actual P10 six-person table, pulls back and rises, then descends toward the separate public walker. P12 advances diagonally along the bed spaces and local foot/rope details before approaching the glass. Local material folds remain; whole-scene page turns and lateral wipes are prohibited. All events, reference handles, beat times and sound sections are retained, including P12's deliberate clinical/title cuts. Both prompts fit the 15,000-character limit. These revisions have not yet been validated in generated output.
+
+This changes instructions for internal generated transitions only. The recorded short inter-clip assembly dissolve remains a separate editing decision.
+
 ## Local assembly and transition record — 2026-09-11
 
 Build every new preview and the final film from the original downloaded clips, in production order. Do not use a previously concatenated or re-encoded preview as a source for the next assembly. Keep the originals unchanged. The intended final order is the accepted P00 ident followed by P01–P12, with the existing narration added as a separate audio track during finishing. The two previews below contain only P01 and P02 and their generated background audio; neither includes P00 or narration.
@@ -63,6 +85,32 @@ Current local media directory: `/home/raxim/Downloads/`.
 | `p02.mp4` | 1920×1080, 24 fps, 361 frames, 15.041667 s, HEVC 10-bit | AAC stereo, 32 kHz, 15.050000 s | `p02_last_frame.png` |
 
 Both final-frame PNGs were extracted from decoded frame index 360 (zero-based). Extract continuation frames from each original clip, never from an assembly with transitions. Determine the actual last decoded frame for each future clip rather than assuming every clip has 361 frames.
+
+### P01 → P02 proposed memory crossing — 2026-09-12
+
+**Current status: the creator selected v3 focus blur for the Director’s Cut assembly.** The earlier crop-release preview remains rejected. V3 combines the four-frame moving dissolve with brief focus loss/recovery, without zoom or warp. The compressed trial is not a master source; see the v3 recipe below.
+
+The creator requests the feeling of a person stepping from one memory into another, taking the near-successful statue change around seconds 3–4 of P01 as the visual reference. The literal crossing remains a design proposal; the v2 local photographic overlap below is a rendered trial, not an accepted replacement for the assembly.
+
+Source inspection for this proposal sampled P01 seconds 13–15 and P02 seconds 0–2 at 4 fps, and the P01 statue transition around seconds 3–4 at 12 fps. P01 ends with a near, front-facing man outside the Dog & Duck window; P02 begins with a more distant figure walking across a brick courtyard. These samples do not establish a matching stride, identity or camera velocity at the boundary. No full audio review was performed.
+
+Proposed action: retain the departing memory behind the crossing person; show the destination beyond a physical edge before crossing. Carry one foot's swing, torso rotation and grounded landing continuously into the new space. Let the landing coincide with a brief approximately four-frame environment transition, retaining one opaque, anatomically consistent person and continuous contact shadows. Use the window jamb/brick pier and paving seams as spatial anchors. The source's frontal close scale must ease into the destination's wider side view through camera travel rather than an instant size change. No duplicated transparent body, frozen pose, full-frame blackout or rubber-like architectural warp. The short statue-style transition supplies the pace; it does not by itself create this missing action.
+
+A provisional 0.5–0.8 s connecting action would provide room for the step, with the actual environmental change concentrated around the foot plant. Duration is a design estimate, not a tested fit. A literal continuous crossing needs newly authored connecting footage because a matching step is not established in the inspected endpoints. A local four-frame blend alone can suggest an associative memory change, but should not be described as a physically continuous step. Do not identify P02's score-bearing figure as P01's protagonist or transfer the visible score to him without resolving identity against the actual footage. Preserve the originals and the existing assembly. No connecting footage has been generated; the resumed local v2 trial is recorded below.
+
+### P01 → P02 dream transition v2 preview — 2026-09-12
+
+Output: `/home/raxim/Downloads/p01_p02_dream_transition_v2_preview.mp4` (26,249,869 bytes), 165 frames / 6.875 s, 1920×1080, 24 fps, HEVC 10-bit. P01 frames 288–360 followed by P02 frames 0–95, overlapping four moving frames with incoming weights 0.2/0.4/0.6/0.8. The transition occupies preview frames 69–72, starting at 2.875 s. Reused `tools/p03_transition.py:render_bridge` with `outgoing="p01.mp4", incoming="p02.mp4", cut_frame=288, source_frames=361, head_frames=96`.
+
+The previous preview’s 1.96× crop/release is removed. Geometry and source colours are unchanged before encoding; no added blur or optical-flow warp. Encoding follows the existing helper’s source-P02 bitrate target, so this is a lossy review preview, not a lossless master. The same prior preview AAC is copied without another audio encode, retaining its four-frame triangular crossfade and timing. Whole-clip decode, 165-frame count, post-mux frame hashes, unchanged AAC payloads and original source hashes passed. Transition frames 67–74 visually inspected; no listening/player review claimed. Source hashes and exact recipe: `04_tracking/P01_P02_DREAM_V2_RECIPE.json`.
+
+This tests a short associative change of memory space. The differing person scale/pose remains; the overlap does not manufacture a continuous physical step. Creator acceptance is pending, and the current assembly is untouched.
+
+### P01 → P02 dream transition v3 — requested focus blur
+
+The creator clarified that v2 lacks the requested blurred/dreamlike quality. New trial: `/home/raxim/Downloads/p01_p02_dream_transition_v3_blur_preview.mp4`. Same 6.875 s excerpt, original crop, four moving blend frames and cached v2 soundtrack. Smooth Gaussian focus loss/recovery affects preview frames 65–80 only, with sharp endpoints at frames 64 and 81 (2.667–3.375 s); maximum designed luma sigma 14 px, half that for subsampled chroma. Blur peaks during the photographic change, then the destination becomes sharp. No zoom or spatial warp. Encoding uses the same original-source 10-bit preview recipe; not a lossless master.
+
+Full decode, frame count, video duration, post-mux frame equality, original file hashes and unchanged cached soundtrack AAC payloads verified; six frames across focus loss/recovery visually inspected. The v2 Downloads file was no longer available at verification, so audio equality was checked against its retained soundtrack. No source or assembly replacement. This is a trial, not an accepted rule for every join. Exact parameters: `04_tracking/P01_P02_DREAM_V3_RECIPE.json`.
 
 ### P01 → P02 join
 
@@ -408,3 +456,96 @@ C07 failed face/IP eligibility in the UI and needs the already requested replace
 The creator now reports 1937 credits. Reserve 1800 for the story and the remaining 137 for eligibility-related image replacements or necessary repairs. Skip the separate 480p trial; P01 is intended as the final 15-second 1080p request. Actual per-job quotes and subsequent debits still need tracking. No paid job was launched by this repartition.
 
 [Exact mapping and hashes](plan.json) · [budget](../../00_project/BUDGET.md)
+
+### P11 original final frame for P12
+
+At the creator’s explicit correction, `/home/raxim/Downloads/p11_last_frame.png` was extracted directly from original `p11.mp4`, not the fixed derivative: zero-based frame 240 (241st frame), PTS 10.000000 s, 1920×1080, 16-bit RGB PNG. The original and fixed last decoded 10-bit YUV frames have identical SHA-256 `32eda199f75f0476680bd30caac442aa7246eabcf20cb01ef82bb5a63ed6d539`. P12’s local opening matches the elevated skyline and gradual descent; 14938 characters, 25 unique references. Preparation may proceed with this image for `@loc_MYS_mys-film-p11-end-frame_s0_v1`. Extraction does not upload or attach it, and this local check does not verify the live composer.
+
+### P12 composer double check
+
+The 12:45 composer screenshots and all 25 live attachments were checked; see [P12_PRE_GENERATION_CHECK.md](../../04_tracking/P12_PRE_GENERATION_CHECK.md). The P11 end-frame Element is now populated. Settings match 20 s, 1080p, 16:9, audio On, 180 credits. No visible warning or missing reference was found. Uploaded scene/crop matches the original P11 endpoint, with a documented RGB-value difference. No prompt edit or generation was performed; output continuity and provider acceptance remain unproven.
+
+
+## Director’s Cut assembly — 2026-09-12
+
+Completed: P00–P12 from downloaded sources, using `p00_fixed.mp4` rebuilt from the newly downloaded `p00_orig.mp4`, and the accepted `p11_fixed.mp4`. P10 is retained pending the creator’s possible later retry. The accepted v3 focus-blur/four-frame moving overlap applies to all twelve clip boundaries. Picture duration: 4861 frames / 202.541667 s (3:22.54). No new paid generation.
+
+P00 quality correction: the earlier title fix used a whole-clip CRF 14 encode (6.92 → 2.38 Mbit/s), so its retained 1080p/24/10-bit format did not establish original picture quality. Rebuilt the same accepted “MyScoutee” mask/font treatment directly from `p00_orig.mp4`. Only frames 53–96 in rectangle x=700–1219, y=820–935 are changed; all decoded YUV samples outside that rectangle and all samples of frames 0–52 match the original exactly. Original AAC packet hashes match. The new standalone `p00_fixed.mp4` uses lossless HEVC and is larger. Both earlier files remain untouched. See [P00 validation](../../04_tracking/P00_LOSSLESS_TITLE_VALIDATION.json) and `tools/p00_title_lossless.py`.
+
+Narration uses the existing Grady recording `narration.mp3`; all decoded samples are retained in order, with clean paragraph pauses extended to fit the story. No words, speech speed or pitch are changed. P12’s measured clinical cut is local 14.541667 s, global 197.041667 s; narration ends before it. The editable movie keeps background and narration as separate embedded audio tracks. A separate viewing MP4 mixes them for normal playback; its video is copied from the same master. Background WAV is only an internal assembly work file, not a requested separate deliverable.
+
+P00 VLC follow-up: normalized compatibility headers by remux only, with all 97 picture frames and AAC packets verified unchanged. VLC window tests show Intel GL driver-loading failures and late frames; no profile mismatch or corrupt decoded frame was reproduced. See [playback review](../../04_tracking/P00_VLC_PLAYBACK_REVIEW.md).
+
+
+Director’s Cut deliverables: `/home/raxim/Downloads/myscoutee_directors_cut.mp4` (4,001,177,891 bytes, listening mix) and `myscoutee_directors_cut_editable.mov` (4,136,180,324 bytes, original-background and narration as two separately editable PCM float tracks). The MP4 is for ordinary playback; a standard player selects one MOV audio track at a time, while an editor can mix both. The separate narration WAV remains available; no separate background WAV is required in Downloads. Original clips retain their own audio.
+
+Final quality proof: all 4861 decoded frames match the exact selected original-source frames or the specified local edits, and all picture timestamps are continuous at 24 fps. 2218 frames retain their coded image data, while 2643 prediction-dependent frames are encoded losslessly. Only 192 frames receive the new boundary blur/blend, in addition to the separately validated P00 title and accepted P11 internal repair. Resolution, frame rate, 10-bit depth and BT.709 colour are retained. Both delivered files’ video packet hashes/timestamps match the verified picture master; both editable PCM tracks match their aligned working audio sample-for-sample. The larger files are a consequence of lossless storage, not increased resolution.
+
+HEVC splice correction: copied ranges begin at CRA pictures. Reclassify their first CRA as BLA_N_LP and omit negative-PTS, non-displayed leading RASL packets (four each for copy01/copy07). This changes access headers without recoding image coefficients; the full hardware decode matches all 4861 expected 10-bit frame hashes with zero decoder errors. Plain concatenation had produced duplicate-POC errors, so it was rejected. Inserting EOS into the CRA packet was also rejected after reference errors. Neither failed candidate was delivered.
+
+Reproduction: the exact source/frame plan and validation reports are in `04_tracking/DIRECTORS_CUT_*.json`. Run the versioned `tools/directors_cut_picture.py`, `tools/directors_cut_audio.py` and `tools/directors_cut_mux.py` from the repository root with the recorded media/work directory. `directors_cut_access.py` requires PyAV; `MYSCOUTEE_AV_PYTHON` selects that interpreter (this build used `/tmp/myscoutee-speech-align/bin/python`). Picture preparation uses NumPy/OpenCV and ffmpeg; title restoration also uses Pillow and the recorded DejaVu font. Keep the source hashes fixed and invalidate dependent cached blocks after any source change. The delivered files are never used as generation sources.
+
+### Current revision: narration first
+
+The creator rejected the old narration’s content and timing against the completed picture. The [new 323-word script](../narration_directors_cut.txt) and [fourteen placement windows](../../04_tracking/DIRECTORS_CUT_NARRATION_REWRITE.md) follow the actual images, retaining the AI assistance acknowledgement and leaving the clinical ending unvoiced. The creator’s new `narration_new.mp3` is now placed in the `_v2` outputs; the unsuffixed movies retain the earlier narration. Picture duration stays 202.541667 s; native background stays with the film and narration remains separately editable.
+
+Defer P10 regeneration, replacement of boundary blur with the plain four-frame statue-style dissolve, and a smaller whole-film export. Keep the large working parts; the creator cancelled separate part-file recompression. These are scope decisions, not completed media changes.
+
+
+Narration v2 completed: `myscoutee_directors_cut_v2.mp4` and `myscoutee_directors_cut_editable_v2.mov`, plus `myscoutee_directors_cut_narration_v2.wav` in Downloads. All new voice samples retained at original speed; 37 quiet cut points align the thoughts and key gestures. Narration ends at 195.930862 s, before the clinical cut. Both movies preserve all 4861 picture packet hashes and timestamps; editable background/narration tracks match their source stems. See [narration placement and reproduction](../../04_tracking/DIRECTORS_CUT_NARRATION_REWRITE.md) and [v2 delivery validation](../../04_tracking/DIRECTORS_CUT_DELIVERY_VALIDATION_V2.json). Earlier files remain unchanged.
+
+Latest feedback: v2 fits the picture but loses too much of the original meaning. [V3 draft](../narration_directors_cut_v3.txt) combines that picture sequence with the original’s stronger claims about institutional time, refusal, the limits of a file and humanity surviving the process. [Comparison and timing envelope](../../04_tracking/DIRECTORS_CUT_NARRATION_V3_REVIEW.md). No v3 voice generation or movie change; keep the recorded v2 intact.
+
+### Plain transition comparison completed — narration paused
+
+`/home/raxim/Downloads/myscoutee_directors_cut_plain_no_narration.mp4` is rebuilt from the original clips, using the approved `p00_final_fixed.mp4` (renamed P00 lossless repair) and `p11_fixed.mp4`. All twelve boundaries use the statue-style four-frame moving dissolve without added blur. Original background audio remains; there is no narration. Duration stays 4861 frames / 202.541667 s (3:22.54). Earlier exports and source files are unchanged.
+
+All decoded frames match the selected source frames or exact blend calculations: 48 frames change at the joins. Dependency blocks are encoded losslessly; the final HEVC Main10 1080p/24 BT.709 picture packets match the verified master. Original unducked background is encoded once to AAC 384 kbit/s. File size: 4,022,087,911 bytes. Narration work and smaller whole-film export remain deferred; part-file recompression is cancelled.
+
+Reproduction: `tools/directors_cut_picture.py --work-dir /home/raxim/Downloads/.full-film-plain --transition plain`, using the recorded [source plan](../../04_tracking/DIRECTORS_CUT_PLAIN_PLAN.json) and validated original-source caches. No frames come from the blurred assembled movie. See [picture validation](../../04_tracking/DIRECTORS_CUT_PLAIN_PICTURE_VALIDATION.json) and [delivery validation](../../04_tracking/DIRECTORS_CUT_PLAIN_DELIVERY_VALIDATION.json).
+
+### Current decision: retain v3 picture; finish narration
+
+The creator sets aside the plain-transition comparison and retains `myscoutee_directors_cut_v3.mp4`. Video generation is closed. Narration timing and wording are the remaining creative work, with 80 credits reported available; make a smaller whole-film export only after narration is accepted. Part-file recompression stays cancelled.
+
+The separate `myscoutee_directors_cut_v3_retimed.mp4` comparison adjusts 18 narration placements against the retained picture. Original v3 words and voice samples are preserved; video is stream-copied directly from v3. The original background remains in the film and the retimed narration WAV stays separate. The reviewed 344-word v4 script preserves the original meaning and restrained dry humour while grouping short visual cues into complete thoughts; it is not yet recorded. After the sentence auditions, the creator selects MiniMax Speech 2.8 HD / Grady / Disgusted for the next full v4 take; the 344-word text passed a final picture-order preflight without further changes. The short samples do not establish a full-take winner. No further editing inside the recorded speech is authorized. The picture and original background stay fixed; check whole-thought timing on each new take. See [picture/voice findings, timing targets and reproduction](../../04_tracking/DIRECTORS_CUT_NARRATION_V4_REVIEW.md). No paid generation or film compression was performed.
+
+### Opening film title — replaces “presents”
+
+The requested subtitle is now `THE PATH BETWEEN PEOPLE`, in regular DejaVu Sans 34 px, centred below the existing MyScoutee lettering with the original subtitle fade. Standalone: `/home/raxim/Downloads/p00_film_title_fixed.mp4`. Full film: `/home/raxim/Downloads/myscoutee_directors_cut_v3_retimed_title.mp4`, retaining the latest timing comparison's recorded v3 narration and original background. The separate v4 text is still unrecorded.
+
+The P00 edit is confined to x=680–1239, y=922–969 in frames 53–96. In the full movie, the first 120 frames are encoded losslessly to the next closed-GOP boundary; the remaining 4741 compressed picture packets and their timestamps are copied exactly. Both movie and standalone audio packets are unchanged. Duration stays 3:22.54, with the existing v3 opening transition. Reproduce with `python3 guides/story/london/cinema_studio_steps/03_film/production/tools/p00_film_subtitle.py` and the recorded source files; its packet-splice helper uses `MYSCOUTEE_AV_PYTHON` (default `/tmp/myscoutee-speech-align/bin/python`). Existing outputs are protected from overwrite. See [subtitle and splice validation](../../04_tracking/P00_FILM_SUBTITLE_VALIDATION.json).
+
+### Current delivery — v4 Neutral narration on the retained picture
+
+The creator chose the complete Neutral recording and renamed it `narration_v4.mp3`. Delivered `/home/raxim/Downloads/myscoutee_directors_cut_v4.mp4` (4,001,323,941 bytes, 4861 frames / 3:22.54), plus `myscoutee_directors_cut_narration_v4.wav` as the separate clean narration stem. The picture source is `myscoutee_directors_cut_v3_retimed_title.mp4`, retaining P11 fixed, the accepted v3 transitions and the opening film-title repair. All compressed picture packets and timestamps match that source exactly. Original background remains in the listening mix; `.full-film-dream/background.wav` remains its independent un-ducked source.
+
+Fourteen whole paragraphs are positioned in picture order using measured pauses. No word or internal sentence edit, reordering, voice fade, pitch/timbre processing or speed change was applied. The delivered narration WAV retains all 6,038,255 source sample frames exactly once. The last spoken word is around 195.96 s and the complete narration tail ends at 196.502 s, before the clinical cut at 197.042 s. Listening mix gains/ducking match the established workflow; AAC is encoded once and the picture is stream-copied. Full perceptual acceptance and smaller whole-film export remain pending; no working parts were recompressed.
+
+Reproduce the audio with `python3 guides/story/london/cinema_studio_steps/03_film/production/tools/directors_cut_audio.py --placement-file guides/story/london/cinema_studio_steps/04_tracking/DIRECTORS_CUT_NARRATION_PLACEMENT_V4.json --source narration_v4.mp3 --suffix _v4`. Then mux the title-corrected source's `0:v:0` with `.full-film-dream/mix_v4.wav` using `-c:v copy -tag:v hev1 -c:a aac -b:a 384k -map_metadata 0 -map_chapters 0 -movflags +faststart`, mapping only the new mix as audio. Do not use the older hardcoded picture source in `directors_cut_mux.py` for this revision. Existing outputs should be protected from accidental overwrite.
+
+See [v4 review](../../04_tracking/DIRECTORS_CUT_NARRATION_V4_REVIEW.md), [placement](../../04_tracking/DIRECTORS_CUT_NARRATION_PLACEMENT_V4.json), [audio validation](../../04_tracking/DIRECTORS_CUT_AUDIO_VALIDATION_V4.json) and [delivery validation](../../04_tracking/DIRECTORS_CUT_DELIVERY_VALIDATION_V4.json). Earlier exports and original sources remain intact.
+
+
+### Final delivery — source-matched CRF 8 export
+
+The creator closes the film with the accepted v4 Neutral narration and existing ending. The requested smaller delivery must follow the downloaded clips' encoding quality, not a low-bitrate streaming target; 300 MB or more is acceptable. The first CRF 18 attempt was stopped and its partial file quarantined in the hidden working directory. It is not a deliverable. No part files were recompressed.
+
+Delivered in `/home/raxim/Downloads`: `myscoutee_directors_cut_v4_final.mp4` — 604,817,042 bytes, down from 4,001,323,941 bytes — and `myscoutee_directors_cut_narration_v4.mp3` — 3,241,830 bytes. The large v4, working WAVs and original clips remain untouched. The separate MP3 is the full aligned 202.541678-second narration stem, including initial silence and paragraph spacing, at the original recording's mono / 44.1 kHz / 128 kbit/s format. No new voice performance, timing edits, speed or pitch changes.
+
+All thirteen downloaded source videos contain the same x265 3.5+1-f0c1022b6 / CRF 8 encoder settings. The final uses those image-coding settings, HEVC Main 10 / level 4, hvc1, 1920×1080, 24 fps, 4:2:0 10-bit, limited-range BT.709, left chroma positioning and a 90 kHz track timescale. Original GOP settings retained: open GOP, keyint 250, min-keyint 24, four B-frames and scene-cut detection 40. No VBV or 34 Mbit/s cap. Local CPU pool and explicit/default signalling of the equivalent left chroma location differ; image-coding options match. This is a lossy re-encode from the accepted large v4, not the discarded CRF 18 file, and equal settings do not mean bit-identical images.
+
+Measured final video average: 23.635717 Mbit/s; maximum complete one-second bucket: 56.779784 Mbit/s, with 33 buckets over 34 Mbit/s. Original P01–P12 duration-weighted average: 27.680550 Mbit/s. Audio is encoded directly from `.full-film-dream/mix_v4.wav` as AAC LC stereo at the original clips' 32 kHz, with 320 kbit/s requested and 246,796 bit/s measured; the original AAC target setting is not recoverable from the files. Existing mix balance and native background remain. MP4 metadata precedes media for progressive playback; chapters are retained.
+
+Validation: all 4861 decoded frames compared by frame index, SSIM mean 0.998879 / worst frame 0.996194. No decoder errors. Sampled native-size visual crops at 3, 97, 180 and 198 seconds show no conspicuous new compression artifact. Export timestamps differ by at most one 1/90000-second rounding tick; count/order and practical timing are unchanged. AAC and MP3 decode successfully; the aligned MP3 has exactly 8,932,088 decoded samples, matching its source WAV length. Audio is lossy-compressed, not sample-identical. AAC padding is confined to the last codec frame.
+
+Reproduction and full measured parameters: [original encoding audit](../../04_tracking/DIRECTORS_CUT_ORIGINAL_ENCODING_AUDIT.json) and [final delivery validation](../../04_tracking/DIRECTORS_CUT_FINAL_COMPRESSION_VALIDATION.json). The latter stores the exact video and standalone MP3 commands. File-size reduction is 84.88%; no visual changes or further generation were made during this export.
+
+
+### Frozen production metrics — 12 September 2026
+
+The source-history, image-adherence and time/token audit is saved in [the audit log](../../04_tracking/production_audit/README.md), with exact totals in [summary.json](../../04_tracking/production_audit/summary.json) and full-precision CSV ledgers. Cutoff: 2026-09-12 16:48:54 UTC; this audit itself is excluded. It includes 12 sampled raw image outputs, 25 selected root session segments, 15,061 usage records/deltas, phase/model/day/continuous-session accounting and 20 selected repair/creative-review windows.
+
+**Reuse the saved figures when formatting the brief; do not repeat the session scan or calculations.** The creator explicitly limited edits to the statistics section: preserve all other brief paragraphs. The accidental whole-brief rewrite was restored before adding the metrics. The short MYSCOUTEE typography-failure entry is separately authorized. Public statistics omit Element/file handles; detailed evidence stays in the audit log.
+
+Books are confirmed as GPT-5.6 Sol / Extra High. The original canonical-prompt authoring model is not recovered; the creator recalls Sol / Extra High or Astra / High. The later Codex review is logged separately. Current image-job metadata says Nano Banana 2, so the sample must not be presented as a verified Nano Banana Pro benchmark. Manual work and platform waits are not exactly separable; incident-window effort is not a proven waste total. No media or production prompts were changed by the audit.

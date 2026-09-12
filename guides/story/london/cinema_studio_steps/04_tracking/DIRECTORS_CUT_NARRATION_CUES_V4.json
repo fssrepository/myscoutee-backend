@@ -1,0 +1,90 @@
+{
+  "method": "ASR estimates placed by intact paragraph offsets; compare to existing sampled picture evidence, not frame-perfect lip sync.",
+  "cues": [
+    {
+      "paragraph": "opening",
+      "anchor": "smile",
+      "timeline_start": 17.26,
+      "timeline_end": 17.58
+    },
+    {
+      "paragraph": "memory_judgment",
+      "anchor": "verdict",
+      "timeline_start": 27.755,
+      "timeline_end": 28.055
+    },
+    {
+      "paragraph": "routes",
+      "anchor": "stranger",
+      "timeline_start": 42.985,
+      "timeline_end": 43.265
+    },
+    {
+      "paragraph": "remembered_help",
+      "anchor": "helped",
+      "timeline_start": 56.2,
+      "timeline_end": 56.42
+    },
+    {
+      "paragraph": "work",
+      "anchor": "form",
+      "timeline_start": 69.355,
+      "timeline_end": 69.635
+    },
+    {
+      "paragraph": "repair_ai",
+      "anchor": "AI",
+      "timeline_start": 87.52,
+      "timeline_end": 87.78
+    },
+    {
+      "paragraph": "police_fingerprint",
+      "anchor": "fingerprints",
+      "timeline_start": 105.835,
+      "timeline_end": 106.195
+    },
+    {
+      "paragraph": "institutional_time",
+      "anchor": "buildings",
+      "timeline_start": 119.955,
+      "timeline_end": 120.335
+    },
+    {
+      "paragraph": "file_and_life",
+      "anchor": "photograph",
+      "timeline_start": 127.36,
+      "timeline_end": 127.92
+    },
+    {
+      "paragraph": "refusal",
+      "anchor": "refused",
+      "timeline_start": 146.555,
+      "timeline_end": 146.875
+    },
+    {
+      "paragraph": "warmth",
+      "anchor": "gate",
+      "timeline_start": 160.445,
+      "timeline_end": 160.625
+    },
+    {
+      "paragraph": "help_and_table",
+      "anchor": "case",
+      "timeline_start": 171.9,
+      "timeline_end": 172.1
+    },
+    {
+      "paragraph": "score",
+      "anchor": "number",
+      "timeline_start": 179.39,
+      "timeline_end": 179.65
+    },
+    {
+      "paragraph": "ending",
+      "anchor": "hold",
+      "timeline_start": 195.74,
+      "timeline_end": 195.96
+    }
+  ],
+  "police_picture_recheck": "Fingerprint scan visible by 106 s in the half-second contact sequence."
+}

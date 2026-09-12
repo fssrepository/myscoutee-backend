@@ -1,0 +1,2115 @@
+{
+  "cutoff_utc": "2026-09-12T16:48:54.304Z",
+  "scan": {
+    "files": 595,
+    "bytes": 17026755416,
+    "selected_root_segments": 25,
+    "selected_root_threads": 21,
+    "root_linked_guardian_logs": 29
+  },
+  "scope_totals": {
+    "Festival film incl. local title": {
+      "input_tokens": 560640645,
+      "cached_input_tokens": 547169792,
+      "output_tokens": 2078512,
+      "reasoning_output_tokens": 392909,
+      "total_tokens": 562719157,
+      "automatic_seconds": 102659.96500015259,
+      "window15_seconds": 176903.11700034142,
+      "window30_seconds": 181277.34299993515,
+      "residual30_seconds": 78617.37799978256,
+      "blocks15": 12,
+      "blocks30": 8,
+      "responses": 3468,
+      "turns": 795,
+      "uncached_input_tokens": 13470853
+    },
+    "Two English books + paired prompts": {
+      "input_tokens": 761834958,
+      "cached_input_tokens": 741319040,
+      "output_tokens": 2464592,
+      "reasoning_output_tokens": 718780,
+      "total_tokens": 764299550,
+      "automatic_seconds": 91124.07999825478,
+      "window15_seconds": 100124.57599973679,
+      "window30_seconds": 103776.26399993896,
+      "residual30_seconds": 12652.184001684189,
+      "blocks15": 9,
+      "blocks30": 6,
+      "responses": 4512,
+      "turns": 77,
+      "uncached_input_tokens": 20515918
+    },
+    "Whole measured lineage excl. product campaign": {
+      "input_tokens": 2176800805,
+      "cached_input_tokens": 2116033408,
+      "output_tokens": 8492781,
+      "reasoning_output_tokens": 2679145,
+      "total_tokens": 2185293586,
+      "automatic_seconds": 352962.02799367905,
+      "window15_seconds": 497025.59500074387,
+      "window30_seconds": 510007.65600037575,
+      "residual30_seconds": 157045.6280066967,
+      "blocks15": 42,
+      "blocks30": 31,
+      "responses": 14206,
+      "turns": 1367,
+      "uncached_input_tokens": 60767397
+    },
+    "Related product campaign only": {
+      "input_tokens": 108994039,
+      "cached_input_tokens": 106117888,
+      "output_tokens": 619958,
+      "reasoning_output_tokens": 241459,
+      "total_tokens": 109613997,
+      "automatic_seconds": 26366.259999752045,
+      "window15_seconds": 34726.1810002327,
+      "window30_seconds": 34726.1810002327,
+      "residual30_seconds": 8359.921000480652,
+      "blocks15": 2,
+      "blocks30": 2,
+      "responses": 855,
+      "turns": 89,
+      "uncached_input_tokens": 2876151
+    }
+  },
+  "all_selected_root_totals": {
+    "input_tokens": 2285794844,
+    "cached_input_tokens": 2222151296,
+    "output_tokens": 9112739,
+    "reasoning_output_tokens": 2920604,
+    "total_tokens": 2294907583,
+    "automatic_seconds": 379328.2879934311,
+    "window15_seconds": 531751.7760009766,
+    "window30_seconds": 546094.2380006313,
+    "blocks15": 44,
+    "blocks30": 32,
+    "turns": 1457,
+    "responses": 15061,
+    "user_messages": 3419
+  },
+  "phases": [
+    {
+      "phase": "01 Storyboard and source-film preparation (mixed in 402)",
+      "model_reasoning": "gpt-5.6-sol/xhigh",
+      "turns": 24,
+      "responses": 509,
+      "automatic_seconds": 18313.55199933052,
+      "window15_seconds": 22439.02800011635,
+      "window30_seconds": 22439.02800011635,
+      "residual30_seconds": 4125.476000785828,
+      "blocks15": 2,
+      "blocks30": 2,
+      "input_tokens": 64098679,
+      "cached_input_tokens": 61295360,
+      "output_tokens": 459238,
+      "reasoning_output_tokens": 130555,
+      "total_tokens": 64557917
+    },
+    {
+      "phase": "02 Early Flow tests and source story",
+      "model_reasoning": "gpt-5.6-sol/xhigh",
+      "turns": 50,
+      "responses": 565,
+      "automatic_seconds": 13706.573998689651,
+      "window15_seconds": 20101.62700009346,
+      "window30_seconds": 21401.730999946594,
+      "residual30_seconds": 7695.157001256943,
+      "blocks15": 3,
+      "blocks30": 2,
+      "input_tokens": 72691955,
+      "cached_input_tokens": 69984640,
+      "output_tokens": 409855,
+      "reasoning_output_tokens": 149821,
+      "total_tokens": 73101810
+    },
+    {
+      "phase": "03 Two English books, illustrations and paired prompts",
+      "model_reasoning": "gpt-5.6-sol/xhigh",
+      "turns": 77,
+      "responses": 4512,
+      "automatic_seconds": 91124.07999825478,
+      "window15_seconds": 100124.57599973679,
+      "window30_seconds": 103776.26399993896,
+      "residual30_seconds": 12652.184001684189,
+      "blocks15": 9,
+      "blocks30": 6,
+      "input_tokens": 761834958,
+      "cached_input_tokens": 741319040,
+      "output_tokens": 2464592,
+      "reasoning_output_tokens": 718780,
+      "total_tokens": 764299550
+    },
+    {
+      "phase": "04 Earlier Part I/II films and experiments",
+      "model_reasoning": "gpt-5.6-sol/xhigh",
+      "turns": 340,
+      "responses": 3464,
+      "automatic_seconds": 91261.97599840164,
+      "window15_seconds": 134383.98699998856,
+      "window30_seconds": 136603.9960000515,
+      "residual30_seconds": 45342.02000164986,
+      "blocks15": 10,
+      "blocks30": 8,
+      "input_tokens": 500265378,
+      "cached_input_tokens": 485586816,
+      "output_tokens": 1864577,
+      "reasoning_output_tokens": 890224,
+      "total_tokens": 502129955
+    },
+    {
+      "phase": "05 Hungarian books, subtitles and release copy",
+      "model_reasoning": "gpt-5.6-sol/xhigh",
+      "turns": 33,
+      "responses": 1018,
+      "automatic_seconds": 24243.40099954605,
+      "window15_seconds": 26178.29200029373,
+      "window30_seconds": 26178.29200029373,
+      "residual30_seconds": 1934.8910007476807,
+      "blocks15": 2,
+      "blocks30": 2,
+      "input_tokens": 133865672,
+      "cached_input_tokens": 129224064,
+      "output_tokens": 836739,
+      "reasoning_output_tokens": 226245,
+      "total_tokens": 134702411
+    },
+    {
+      "phase": "06 Related product campaign (separate)",
+      "model_reasoning": "gpt-5.6-sol/xhigh",
+      "turns": 89,
+      "responses": 855,
+      "automatic_seconds": 26366.259999752045,
+      "window15_seconds": 34726.1810002327,
+      "window30_seconds": 34726.1810002327,
+      "residual30_seconds": 8359.921000480652,
+      "blocks15": 2,
+      "blocks30": 2,
+      "input_tokens": 108994039,
+      "cached_input_tokens": 106117888,
+      "output_tokens": 619958,
+      "reasoning_output_tokens": 241459,
+      "total_tokens": 109613997
+    },
+    {
+      "phase": "07 Book audiobook preparation and Kindle packaging",
+      "model_reasoning": "gpt-5.6-sol/xhigh",
+      "turns": 37,
+      "responses": 323,
+      "automatic_seconds": 5802.42099905014,
+      "window15_seconds": 9540.360000133514,
+      "window30_seconds": 10976.394000053406,
+      "residual30_seconds": 5173.973001003265,
+      "blocks15": 4,
+      "blocks30": 3,
+      "input_tokens": 38588190,
+      "cached_input_tokens": 37517824,
+      "output_tokens": 193304,
+      "reasoning_output_tokens": 91322,
+      "total_tokens": 38781494
+    },
+    {
+      "phase": "08 Paperback correction and packaging",
+      "model_reasoning": "gpt-5.6-sol/xhigh",
+      "turns": 12,
+      "responses": 347,
+      "automatic_seconds": 5850.059000253677,
+      "window15_seconds": 7354.608000040054,
+      "window30_seconds": 7354.608000040054,
+      "residual30_seconds": 1504.548999786377,
+      "blocks15": 1,
+      "blocks30": 1,
+      "input_tokens": 44815328,
+      "cached_input_tokens": 43935872,
+      "output_tokens": 185964,
+      "reasoning_output_tokens": 79289,
+      "total_tokens": 45001292
+    },
+    {
+      "phase": "09 Festival title / master-prompt-era local work",
+      "model_reasoning": "gpt-5.6-terra/high",
+      "turns": 3,
+      "responses": 39,
+      "automatic_seconds": 408.91100001335144,
+      "window15_seconds": 507.6489999294281,
+      "window30_seconds": 507.6489999294281,
+      "residual30_seconds": 98.73799991607666,
+      "blocks15": 1,
+      "blocks30": 1,
+      "input_tokens": 2674529,
+      "cached_input_tokens": 2542464,
+      "output_tokens": 15299,
+      "reasoning_output_tokens": 6242,
+      "total_tokens": 2689828
+    },
+    {
+      "phase": "10 Festival master-prompt review and adaptation",
+      "model_reasoning": "gpt-6-astra/xhigh",
+      "turns": 7,
+      "responses": 36,
+      "automatic_seconds": 1863.1679997444153,
+      "window15_seconds": 2393.287999868393,
+      "window30_seconds": 2393.287999868393,
+      "residual30_seconds": 530.1200001239777,
+      "blocks15": 1,
+      "blocks30": 1,
+      "input_tokens": 5004564,
+      "cached_input_tokens": 4786048,
+      "output_tokens": 47969,
+      "reasoning_output_tokens": 7043,
+      "total_tokens": 5052533
+    },
+    {
+      "phase": "11 Image library, prompts, imports and pilot tests",
+      "model_reasoning": "gpt-6-astra/high; gpt-6-astra/xhigh",
+      "turns": 356,
+      "responses": 1511,
+      "automatic_seconds": 45971.33900260925,
+      "window15_seconds": 81371.34200000763,
+      "window30_seconds": 81371.34200000763,
+      "residual30_seconds": 35400.00299739838,
+      "blocks15": 3,
+      "blocks30": 3,
+      "input_tokens": 249000985,
+      "cached_input_tokens": 242268672,
+      "output_tokens": 1108513,
+      "reasoning_output_tokens": 173139,
+      "total_tokens": 250109498
+    },
+    {
+      "phase": "12 Festival video production and continuity repairs",
+      "model_reasoning": "gpt-6-astra/high",
+      "turns": 386,
+      "responses": 1501,
+      "automatic_seconds": 39789.545996427536,
+      "window15_seconds": 73436.34800052643,
+      "window30_seconds": 76498.22800016403,
+      "residual30_seconds": 36708.682003736496,
+      "blocks15": 6,
+      "blocks30": 3,
+      "input_tokens": 241726178,
+      "cached_input_tokens": 236422400,
+      "output_tokens": 677646,
+      "reasoning_output_tokens": 123208,
+      "total_tokens": 242403824
+    },
+    {
+      "phase": "13 Assembly, narration, voice tests and local repairs",
+      "model_reasoning": "gpt-6-astra/high",
+      "turns": 40,
+      "responses": 330,
+      "automatic_seconds": 12433.444001197815,
+      "window15_seconds": 16098.730000019073,
+      "window30_seconds": 16098.730000019073,
+      "residual30_seconds": 3665.2859988212585,
+      "blocks15": 1,
+      "blocks30": 1,
+      "input_tokens": 55493586,
+      "cached_input_tokens": 54494464,
+      "output_tokens": 202022,
+      "reasoning_output_tokens": 72184,
+      "total_tokens": 55695608
+    },
+    {
+      "phase": "14 Source-matched final delivery and compression",
+      "model_reasoning": "gpt-6-astra/high",
+      "turns": 3,
+      "responses": 51,
+      "automatic_seconds": 2193.5570001602173,
+      "window15_seconds": 2485.5780000686646,
+      "window30_seconds": 3797.9240000247955,
+      "residual30_seconds": 1604.3669998645782,
+      "blocks15": 2,
+      "blocks30": 1,
+      "input_tokens": 6740803,
+      "cached_input_tokens": 6655744,
+      "output_tokens": 27063,
+      "reasoning_output_tokens": 11093,
+      "total_tokens": 6767866
+    }
+  ],
+  "models": [
+    {
+      "model": "gpt-5.6-sol",
+      "reasoning_effort": "xhigh",
+      "responses": 11593,
+      "input_tokens": 1725154199,
+      "cached_input_tokens": 1674981504,
+      "output_tokens": 7034227,
+      "reasoning_output_tokens": 2527695,
+      "total_tokens": 1732188426
+    },
+    {
+      "model": "gpt-5.6-terra",
+      "reasoning_effort": "high",
+      "responses": 39,
+      "input_tokens": 2674529,
+      "cached_input_tokens": 2542464,
+      "output_tokens": 15299,
+      "reasoning_output_tokens": 6242,
+      "total_tokens": 2689828
+    },
+    {
+      "model": "gpt-6-astra",
+      "reasoning_effort": "high",
+      "responses": 3242,
+      "input_tokens": 529051618,
+      "cached_input_tokens": 516908544,
+      "output_tokens": 1873606,
+      "reasoning_output_tokens": 327709,
+      "total_tokens": 530925224
+    },
+    {
+      "model": "gpt-6-astra",
+      "reasoning_effort": "xhigh",
+      "responses": 187,
+      "input_tokens": 28914498,
+      "cached_input_tokens": 27718784,
+      "output_tokens": 189607,
+      "reasoning_output_tokens": 58958,
+      "total_tokens": 29104105
+    }
+  ],
+  "episodes": [
+    {
+      "input_tokens": 5633165,
+      "cached_input_tokens": 5571840,
+      "output_tokens": 7873,
+      "reasoning_output_tokens": 2868,
+      "total_tokens": 5641038,
+      "automatic_seconds": 410.4370000362396,
+      "window15_seconds": 410.4370000362396,
+      "window30_seconds": 410.4370000362396,
+      "residual30_seconds": 0.0,
+      "blocks15": 1,
+      "blocks30": 1,
+      "responses": 36,
+      "turns": 1,
+      "uncached_input_tokens": 61325,
+      "id": "B01",
+      "start_utc": "2026-08-09T17:33:45Z",
+      "end_utc": "2026-08-09T17:40:36Z",
+      "category": "technical",
+      "episode": "Book PDF blank-page and publication-state repair",
+      "note": "One blank page removed; regenerated publication and checksums.",
+      "elapsed_seconds": 411.0,
+      "evidence": [
+        {
+          "session_id": "019fd763-142d-7621-bd5b-7d8da7c29fc3",
+          "line": 26078,
+          "ts": "2026-08-09T17:34:10.201Z"
+        }
+      ]
+    },
+    {
+      "input_tokens": 28048817,
+      "cached_input_tokens": 27335296,
+      "output_tokens": 141931,
+      "reasoning_output_tokens": 84427,
+      "total_tokens": 28190748,
+      "automatic_seconds": 5830.295000076294,
+      "window15_seconds": 6435.62099981308,
+      "window30_seconds": 6435.62099981308,
+      "residual30_seconds": 605.3259997367859,
+      "blocks15": 1,
+      "blocks30": 1,
+      "responses": 239,
+      "turns": 11,
+      "uncached_input_tokens": 713521,
+      "id": "F01",
+      "start_utc": "2026-08-10T16:18:34Z",
+      "end_utc": "2026-08-10T18:05:51Z",
+      "category": "technical",
+      "episode": "Earlier film joins / freeze-frame corrections",
+      "note": "Two consecutive local repair conversations; not current festival film.",
+      "elapsed_seconds": 6437.0,
+      "evidence": [
+        {
+          "session_id": "019fec77-0068-7fc0-baf1-4b4c0e2f0c5f",
+          "line": 9,
+          "ts": "2026-08-10T16:18:35.485Z"
+        },
+        {
+          "session_id": "019fec77-0068-7fc0-baf1-4b4c0e2f0c5f",
+          "line": 54,
+          "ts": "2026-08-10T16:20:43.453Z"
+        },
+        {
+          "session_id": "019fec77-0068-7fc0-baf1-4b4c0e2f0c5f",
+          "line": 63,
+          "ts": "2026-08-10T16:21:09.053Z"
+        },
+        {
+          "session_id": "019fec77-0068-7fc0-baf1-4b4c0e2f0c5f",
+          "line": 65,
+          "ts": "2026-08-10T16:21:09.056Z"
+        },
+        {
+          "session_id": "019fec77-0068-7fc0-baf1-4b4c0e2f0c5f",
+          "line": 74,
+          "ts": "2026-08-10T16:21:35.495Z"
+        }
+      ]
+    },
+    {
+      "input_tokens": 68542755,
+      "cached_input_tokens": 66998400,
+      "output_tokens": 239587,
+      "reasoning_output_tokens": 125141,
+      "total_tokens": 68782342,
+      "automatic_seconds": 10272.09299993515,
+      "window15_seconds": 13301.199000120163,
+      "window30_seconds": 14398.75100016594,
+      "residual30_seconds": 4126.658000230789,
+      "blocks15": 2,
+      "blocks30": 1,
+      "responses": 577,
+      "turns": 34,
+      "uncached_input_tokens": 1544355,
+      "id": "F02",
+      "start_utc": "2026-08-10T18:07:14Z",
+      "end_utc": "2026-08-10T22:07:14Z",
+      "category": "technical",
+      "episode": "Earlier film native voice/background repair",
+      "note": "Audio continuity and unwanted generated voice required local reconstruction.",
+      "elapsed_seconds": 14400.0,
+      "evidence": [
+        {
+          "session_id": "019fecda-61fe-7a13-bdb9-6dfecaabb755",
+          "line": 9,
+          "ts": "2026-08-10T18:07:15.615Z"
+        },
+        {
+          "session_id": "019fecda-61fe-7a13-bdb9-6dfecaabb755",
+          "line": 53,
+          "ts": "2026-08-10T18:08:38.313Z"
+        },
+        {
+          "session_id": "019fecda-61fe-7a13-bdb9-6dfecaabb755",
+          "line": 119,
+          "ts": "2026-08-10T18:11:50.899Z"
+        },
+        {
+          "session_id": "019fecda-61fe-7a13-bdb9-6dfecaabb755",
+          "line": 163,
+          "ts": "2026-08-10T18:15:10.464Z"
+        },
+        {
+          "session_id": "019fecda-61fe-7a13-bdb9-6dfecaabb755",
+          "line": 172,
+          "ts": "2026-08-10T18:15:49.481Z"
+        }
+      ]
+    },
+    {
+      "input_tokens": 7661544,
+      "cached_input_tokens": 7573376,
+      "output_tokens": 36409,
+      "reasoning_output_tokens": 6354,
+      "total_tokens": 7697953,
+      "automatic_seconds": 1517.1530001163483,
+      "window15_seconds": 1735.263000011444,
+      "window30_seconds": 1735.263000011444,
+      "residual30_seconds": 218.10999989509583,
+      "blocks15": 1,
+      "blocks30": 1,
+      "responses": 44,
+      "turns": 5,
+      "uncached_input_tokens": 88168,
+      "id": "N01",
+      "start_utc": "2026-09-09T16:21:26Z",
+      "end_utc": "2026-09-09T16:50:22Z",
+      "category": "workflow",
+      "episode": "Pilot prompt scope rollback",
+      "note": "User reverted unwanted cumulative changes; rebuilt separate test requests.",
+      "elapsed_seconds": 1736.0,
+      "evidence": [
+        {
+          "session_id": "01a08501-79bb-7141-9e97-e6a86d21f07e",
+          "line": 2632,
+          "ts": "2026-09-09T16:21:26.811Z"
+        },
+        {
+          "session_id": "01a08501-79bb-7141-9e97-e6a86d21f07e",
+          "line": 2643,
+          "ts": "2026-09-09T16:22:00.984Z"
+        },
+        {
+          "session_id": "01a08501-79bb-7141-9e97-e6a86d21f07e",
+          "line": 2661,
+          "ts": "2026-09-09T16:22:54.398Z"
+        },
+        {
+          "session_id": "01a08501-79bb-7141-9e97-e6a86d21f07e",
+          "line": 2663,
+          "ts": "2026-09-09T16:22:54.401Z"
+        },
+        {
+          "session_id": "01a08501-79bb-7141-9e97-e6a86d21f07e",
+          "line": 2672,
+          "ts": "2026-09-09T16:24:16.665Z"
+        }
+      ]
+    },
+    {
+      "input_tokens": 5350167,
+      "cached_input_tokens": 5303040,
+      "output_tokens": 10065,
+      "reasoning_output_tokens": 2055,
+      "total_tokens": 5360232,
+      "automatic_seconds": 587.8549995422363,
+      "window15_seconds": 1473.7539999485016,
+      "window30_seconds": 1473.7539999485016,
+      "residual30_seconds": 885.8990004062653,
+      "blocks15": 1,
+      "blocks30": 1,
+      "responses": 32,
+      "turns": 17,
+      "uncached_input_tokens": 47127,
+      "id": "N02",
+      "start_utc": "2026-09-10T12:23:29Z",
+      "end_utc": "2026-09-10T12:48:03Z",
+      "category": "workflow",
+      "episode": "Memory detail omitted during prompt restructuring",
+      "note": "Restoration/checking after user reported details removed.",
+      "elapsed_seconds": 1474.0,
+      "evidence": [
+        {
+          "session_id": "01a08501-79bb-7141-9e97-e6a86d21f07e",
+          "line": 8975,
+          "ts": "2026-09-10T12:23:29.340Z"
+        },
+        {
+          "session_id": "01a08501-79bb-7141-9e97-e6a86d21f07e",
+          "line": 8981,
+          "ts": "2026-09-10T12:23:48.812Z"
+        },
+        {
+          "session_id": "01a08501-79bb-7141-9e97-e6a86d21f07e",
+          "line": 8991,
+          "ts": "2026-09-10T12:24:14.963Z"
+        },
+        {
+          "session_id": "01a08501-79bb-7141-9e97-e6a86d21f07e",
+          "line": 9000,
+          "ts": "2026-09-10T12:24:33.018Z"
+        },
+        {
+          "session_id": "01a08501-79bb-7141-9e97-e6a86d21f07e",
+          "line": 9006,
+          "ts": "2026-09-10T12:24:46.344Z"
+        }
+      ]
+    },
+    {
+      "input_tokens": 2421117,
+      "cached_input_tokens": 2397184,
+      "output_tokens": 8034,
+      "reasoning_output_tokens": 1186,
+      "total_tokens": 2429151,
+      "automatic_seconds": 336.25800037384033,
+      "window15_seconds": 799.0,
+      "window30_seconds": 799.0,
+      "residual30_seconds": 462.74199962615967,
+      "blocks15": 1,
+      "blocks30": 1,
+      "responses": 15,
+      "turns": 6,
+      "uncached_input_tokens": 23933,
+      "id": "N03",
+      "start_utc": "2026-09-10T13:28:08Z",
+      "end_utc": "2026-09-10T13:41:27Z",
+      "category": "platform",
+      "episode": "Image generation with references failed",
+      "note": "Investigated failed reference-bound job and continued memory setup.",
+      "elapsed_seconds": 799.0,
+      "evidence": [
+        {
+          "session_id": "01a08501-79bb-7141-9e97-e6a86d21f07e",
+          "line": 9721,
+          "ts": "2026-09-10T13:28:08.938Z"
+        },
+        {
+          "session_id": "01a08501-79bb-7141-9e97-e6a86d21f07e",
+          "line": 9733,
+          "ts": "2026-09-10T13:28:28.506Z"
+        },
+        {
+          "session_id": "01a08501-79bb-7141-9e97-e6a86d21f07e",
+          "line": 9756,
+          "ts": "2026-09-10T13:30:04.915Z"
+        },
+        {
+          "session_id": "01a08501-79bb-7141-9e97-e6a86d21f07e",
+          "line": 9777,
+          "ts": "2026-09-10T13:31:55.144Z"
+        },
+        {
+          "session_id": "01a08501-79bb-7141-9e97-e6a86d21f07e",
+          "line": 9801,
+          "ts": "2026-09-10T13:33:43.616Z"
+        }
+      ]
+    },
+    {
+      "input_tokens": 16526669,
+      "cached_input_tokens": 16166528,
+      "output_tokens": 77201,
+      "reasoning_output_tokens": 11187,
+      "total_tokens": 16603870,
+      "automatic_seconds": 3420.084000349045,
+      "window15_seconds": 4359.0,
+      "window30_seconds": 4359.0,
+      "residual30_seconds": 938.9159996509552,
+      "blocks15": 1,
+      "blocks30": 1,
+      "responses": 98,
+      "turns": 16,
+      "uncached_input_tokens": 360141,
+      "id": "N04",
+      "start_utc": "2026-09-11T07:16:21Z",
+      "end_utc": "2026-09-11T08:29:00Z",
+      "category": "technical",
+      "episode": "End-frame export and continuation displacement",
+      "note": "Compared frames, diagnosed separate early export and spatial offset; repaired test join.",
+      "elapsed_seconds": 4359.0,
+      "evidence": [
+        {
+          "session_id": "01a08501-79bb-7141-9e97-e6a86d21f07e",
+          "line": 291,
+          "ts": "2026-09-11T07:16:21.658Z"
+        },
+        {
+          "session_id": "01a08501-79bb-7141-9e97-e6a86d21f07e",
+          "line": 303,
+          "ts": "2026-09-11T07:16:59.766Z"
+        },
+        {
+          "session_id": "01a08501-79bb-7141-9e97-e6a86d21f07e",
+          "line": 349,
+          "ts": "2026-09-11T07:20:18.535Z"
+        },
+        {
+          "session_id": "01a08501-79bb-7141-9e97-e6a86d21f07e",
+          "line": 351,
+          "ts": "2026-09-11T07:20:18.538Z"
+        },
+        {
+          "session_id": "01a08501-79bb-7141-9e97-e6a86d21f07e",
+          "line": 362,
+          "ts": "2026-09-11T07:20:32.067Z"
+        }
+      ]
+    },
+    {
+      "input_tokens": 21990071,
+      "cached_input_tokens": 21452928,
+      "output_tokens": 66348,
+      "reasoning_output_tokens": 14792,
+      "total_tokens": 22056419,
+      "automatic_seconds": 3631.081999540329,
+      "window15_seconds": 6374.245000123978,
+      "window30_seconds": 6374.245000123978,
+      "residual30_seconds": 2743.1630005836487,
+      "blocks15": 1,
+      "blocks30": 1,
+      "responses": 132,
+      "turns": 38,
+      "uncached_input_tokens": 537143,
+      "id": "N05",
+      "start_utc": "2026-09-11T11:48:09Z",
+      "end_utc": "2026-09-11T13:35:00Z",
+      "category": "platform",
+      "episode": "Eligibility / 30-reference limit / early replacements",
+      "note": "Composer capacity and moderation forced repartition and replacement work.",
+      "elapsed_seconds": 6411.0,
+      "evidence": [
+        {
+          "session_id": "01a08501-79bb-7141-9e97-e6a86d21f07e",
+          "line": 316,
+          "ts": "2026-09-11T11:48:09.981Z"
+        },
+        {
+          "session_id": "01a08501-79bb-7141-9e97-e6a86d21f07e",
+          "line": 335,
+          "ts": "2026-09-11T11:50:14.137Z"
+        },
+        {
+          "session_id": "01a08501-79bb-7141-9e97-e6a86d21f07e",
+          "line": 359,
+          "ts": "2026-09-11T11:51:56.938Z"
+        },
+        {
+          "session_id": "01a08501-79bb-7141-9e97-e6a86d21f07e",
+          "line": 377,
+          "ts": "2026-09-11T11:52:38.511Z"
+        },
+        {
+          "session_id": "01a08501-79bb-7141-9e97-e6a86d21f07e",
+          "line": 387,
+          "ts": "2026-09-11T11:53:35.863Z"
+        }
+      ]
+    },
+    {
+      "input_tokens": 14349828,
+      "cached_input_tokens": 14199808,
+      "output_tokens": 25645,
+      "reasoning_output_tokens": 1999,
+      "total_tokens": 14375473,
+      "automatic_seconds": 1511.3239991664886,
+      "window15_seconds": 4930.0,
+      "window30_seconds": 4930.0,
+      "residual30_seconds": 3418.6760008335114,
+      "blocks15": 1,
+      "blocks30": 1,
+      "responses": 89,
+      "turns": 38,
+      "uncached_input_tokens": 150020,
+      "id": "N06",
+      "start_utc": "2026-09-11T14:17:50Z",
+      "end_utc": "2026-09-11T15:40:00Z",
+      "category": "platform",
+      "episode": "Further Face/IP replacements and stale eligibility",
+      "note": "Distinct blocked references and replacement binding checks.",
+      "elapsed_seconds": 4930.0,
+      "evidence": [
+        {
+          "session_id": "01a08501-79bb-7141-9e97-e6a86d21f07e",
+          "line": 1835,
+          "ts": "2026-09-11T14:17:50.002Z"
+        },
+        {
+          "session_id": "01a08501-79bb-7141-9e97-e6a86d21f07e",
+          "line": 1845,
+          "ts": "2026-09-11T14:18:39.355Z"
+        },
+        {
+          "session_id": "01a08501-79bb-7141-9e97-e6a86d21f07e",
+          "line": 1872,
+          "ts": "2026-09-11T14:20:34.783Z"
+        },
+        {
+          "session_id": "01a08501-79bb-7141-9e97-e6a86d21f07e",
+          "line": 1886,
+          "ts": "2026-09-11T14:21:12.777Z"
+        },
+        {
+          "session_id": "01a08501-79bb-7141-9e97-e6a86d21f07e",
+          "line": 1903,
+          "ts": "2026-09-11T14:25:36.534Z"
+        }
+      ]
+    },
+    {
+      "input_tokens": 19284568,
+      "cached_input_tokens": 19033088,
+      "output_tokens": 78702,
+      "reasoning_output_tokens": 29801,
+      "total_tokens": 19363270,
+      "automatic_seconds": 3472.8370003700256,
+      "window15_seconds": 3998.8849999904633,
+      "window30_seconds": 3998.8849999904633,
+      "residual30_seconds": 526.0479996204376,
+      "blocks15": 1,
+      "blocks30": 1,
+      "responses": 125,
+      "turns": 12,
+      "uncached_input_tokens": 251480,
+      "id": "N07",
+      "start_utc": "2026-09-11T18:18:41Z",
+      "end_utc": "2026-09-11T19:26:00Z",
+      "category": "technical",
+      "episode": "Statue join / freeze / VLC repair",
+      "note": "Local transition and playback correction; includes attempted solutions.",
+      "elapsed_seconds": 4039.0,
+      "evidence": [
+        {
+          "session_id": "01a08501-79bb-7141-9e97-e6a86d21f07e",
+          "line": 2223,
+          "ts": "2026-09-11T18:18:41.265Z"
+        },
+        {
+          "session_id": "01a08501-79bb-7141-9e97-e6a86d21f07e",
+          "line": 2254,
+          "ts": "2026-09-11T18:20:46.734Z"
+        },
+        {
+          "session_id": "01a08501-79bb-7141-9e97-e6a86d21f07e",
+          "line": 2349,
+          "ts": "2026-09-11T18:26:51.593Z"
+        },
+        {
+          "session_id": "01a08501-79bb-7141-9e97-e6a86d21f07e",
+          "line": 2351,
+          "ts": "2026-09-11T18:26:51.597Z"
+        },
+        {
+          "session_id": "01a08501-79bb-7141-9e97-e6a86d21f07e",
+          "line": 2370,
+          "ts": "2026-09-11T18:28:08.391Z"
+        }
+      ]
+    },
+    {
+      "input_tokens": 4703334,
+      "cached_input_tokens": 4596352,
+      "output_tokens": 5302,
+      "reasoning_output_tokens": 411,
+      "total_tokens": 4708636,
+      "automatic_seconds": 700.0190000534058,
+      "window15_seconds": 1073.3940000534058,
+      "window30_seconds": 1073.3940000534058,
+      "residual30_seconds": 373.375,
+      "blocks15": 1,
+      "blocks30": 1,
+      "responses": 27,
+      "turns": 9,
+      "uncached_input_tokens": 106982,
+      "id": "N08",
+      "start_utc": "2026-09-11T20:13:06Z",
+      "end_utc": "2026-09-11T20:31:00Z",
+      "category": "platform",
+      "episode": "P05 statue NSFW inconsistency",
+      "note": "Rejected reference compared with generated content; diagnosis/reporting.",
+      "elapsed_seconds": 1074.0,
+      "evidence": [
+        {
+          "session_id": "01a08501-79bb-7141-9e97-e6a86d21f07e",
+          "line": 3626,
+          "ts": "2026-09-11T20:13:06.697Z"
+        },
+        {
+          "session_id": "01a08501-79bb-7141-9e97-e6a86d21f07e",
+          "line": 3734,
+          "ts": "2026-09-11T20:18:09.940Z"
+        },
+        {
+          "session_id": "01a08501-79bb-7141-9e97-e6a86d21f07e",
+          "line": 3761,
+          "ts": "2026-09-11T20:21:26.635Z"
+        },
+        {
+          "session_id": "01a08501-79bb-7141-9e97-e6a86d21f07e",
+          "line": 3776,
+          "ts": "2026-09-11T20:22:02.957Z"
+        },
+        {
+          "session_id": "01a08501-79bb-7141-9e97-e6a86d21f07e",
+          "line": 3796,
+          "ts": "2026-09-11T20:23:24.253Z"
+        }
+      ]
+    },
+    {
+      "input_tokens": 6678668,
+      "cached_input_tokens": 6345984,
+      "output_tokens": 21573,
+      "reasoning_output_tokens": 3326,
+      "total_tokens": 6700241,
+      "automatic_seconds": 1063.5769999027252,
+      "window15_seconds": 1504.0,
+      "window30_seconds": 1504.0,
+      "residual30_seconds": 440.4230000972748,
+      "blocks15": 1,
+      "blocks30": 1,
+      "responses": 46,
+      "turns": 8,
+      "uncached_input_tokens": 332684,
+      "id": "N09",
+      "start_utc": "2026-09-12T08:43:00Z",
+      "end_utc": "2026-09-12T09:08:04Z",
+      "category": "platform",
+      "episode": "P09 sensitive-output rejection and retry",
+      "note": "Restart subsequently completed; exact rejection cause unknown.",
+      "elapsed_seconds": 1504.0,
+      "evidence": [
+        {
+          "session_id": "01a09460-6c70-7752-ab54-2481e82f0d44",
+          "line": 832,
+          "ts": "2026-09-12T08:44:14.708Z"
+        },
+        {
+          "session_id": "01a09460-6c70-7752-ab54-2481e82f0d44",
+          "line": 867,
+          "ts": "2026-09-12T08:46:21.722Z"
+        },
+        {
+          "session_id": "01a09460-6c70-7752-ab54-2481e82f0d44",
+          "line": 878,
+          "ts": "2026-09-12T08:47:06.267Z"
+        },
+        {
+          "session_id": "01a09460-6c70-7752-ab54-2481e82f0d44",
+          "line": 927,
+          "ts": "2026-09-12T08:48:26.010Z"
+        },
+        {
+          "session_id": "01a09460-6c70-7752-ab54-2481e82f0d44",
+          "line": 1050,
+          "ts": "2026-09-12T08:58:18.983Z"
+        }
+      ]
+    },
+    {
+      "input_tokens": 5994293,
+      "cached_input_tokens": 5833344,
+      "output_tokens": 18665,
+      "reasoning_output_tokens": 2172,
+      "total_tokens": 6012958,
+      "automatic_seconds": 1061.5030000209808,
+      "window15_seconds": 1712.6280000209808,
+      "window30_seconds": 1712.6280000209808,
+      "residual30_seconds": 651.125,
+      "blocks15": 1,
+      "blocks30": 1,
+      "responses": 32,
+      "turns": 8,
+      "uncached_input_tokens": 160949,
+      "id": "N10",
+      "start_utc": "2026-09-12T09:27:27Z",
+      "end_utc": "2026-09-12T09:56:00Z",
+      "category": "technical",
+      "episode": "P10 failure / page-turn transition review",
+      "note": "Prompt correction and safeguards for P11/P12; no claim that all this interval is rerendering.",
+      "elapsed_seconds": 1713.0,
+      "evidence": [
+        {
+          "session_id": "01a09460-6c70-7752-ab54-2481e82f0d44",
+          "line": 1423,
+          "ts": "2026-09-12T09:27:27.448Z"
+        },
+        {
+          "session_id": "01a09460-6c70-7752-ab54-2481e82f0d44",
+          "line": 1453,
+          "ts": "2026-09-12T09:33:42.801Z"
+        },
+        {
+          "session_id": "01a09460-6c70-7752-ab54-2481e82f0d44",
+          "line": 1488,
+          "ts": "2026-09-12T09:39:01.072Z"
+        },
+        {
+          "session_id": "01a09460-6c70-7752-ab54-2481e82f0d44",
+          "line": 1512,
+          "ts": "2026-09-12T09:40:29.493Z"
+        },
+        {
+          "session_id": "01a09460-6c70-7752-ab54-2481e82f0d44",
+          "line": 1514,
+          "ts": "2026-09-12T09:40:29.511Z"
+        }
+      ]
+    },
+    {
+      "input_tokens": 5661276,
+      "cached_input_tokens": 5501952,
+      "output_tokens": 23584,
+      "reasoning_output_tokens": 5902,
+      "total_tokens": 5684860,
+      "automatic_seconds": 1326.4989998340607,
+      "window15_seconds": 1500.0,
+      "window30_seconds": 1500.0,
+      "residual30_seconds": 173.50100016593933,
+      "blocks15": 1,
+      "blocks30": 1,
+      "responses": 38,
+      "turns": 5,
+      "uncached_input_tokens": 159324,
+      "id": "N11",
+      "start_utc": "2026-09-12T10:18:00Z",
+      "end_utc": "2026-09-12T10:43:00Z",
+      "category": "technical",
+      "episode": "P11 Parliament/Westminster jump and fixed export",
+      "note": "Local statue-style repair and end-frame source correction.",
+      "elapsed_seconds": 1500.0,
+      "evidence": [
+        {
+          "session_id": "01a09460-6c70-7752-ab54-2481e82f0d44",
+          "line": 1941,
+          "ts": "2026-09-12T10:23:01.879Z"
+        },
+        {
+          "session_id": "01a09460-6c70-7752-ab54-2481e82f0d44",
+          "line": 1986,
+          "ts": "2026-09-12T10:27:31.268Z"
+        },
+        {
+          "session_id": "01a09460-6c70-7752-ab54-2481e82f0d44",
+          "line": 1996,
+          "ts": "2026-09-12T10:29:06.573Z"
+        },
+        {
+          "session_id": "01a09460-6c70-7752-ab54-2481e82f0d44",
+          "line": 2101,
+          "ts": "2026-09-12T10:39:10.958Z"
+        },
+        {
+          "session_id": "01a09460-6c70-7752-ab54-2481e82f0d44",
+          "line": 2112,
+          "ts": "2026-09-12T10:40:37.647Z"
+        }
+      ]
+    },
+    {
+      "input_tokens": 1648846,
+      "cached_input_tokens": 1640576,
+      "output_tokens": 1905,
+      "reasoning_output_tokens": 178,
+      "total_tokens": 1650751,
+      "automatic_seconds": 196.62400007247925,
+      "window15_seconds": 240.09599995613098,
+      "window30_seconds": 240.09599995613098,
+      "residual30_seconds": 43.47199988365173,
+      "blocks15": 1,
+      "blocks30": 1,
+      "responses": 10,
+      "turns": 3,
+      "uncached_input_tokens": 8270,
+      "id": "N12",
+      "start_utc": "2026-09-12T10:52:56Z",
+      "end_utc": "2026-09-12T11:01:00Z",
+      "category": "platform",
+      "episode": "Element image fidelity discrepancy",
+      "note": "Bit-depth/pixel/metadata comparison; gateway causal link remains unproved.",
+      "elapsed_seconds": 484.0,
+      "evidence": [
+        {
+          "session_id": "01a09460-6c70-7752-ab54-2481e82f0d44",
+          "line": 2286,
+          "ts": "2026-09-12T10:52:56.276Z"
+        },
+        {
+          "session_id": "01a09460-6c70-7752-ab54-2481e82f0d44",
+          "line": 2309,
+          "ts": "2026-09-12T10:54:35.025Z"
+        },
+        {
+          "session_id": "01a09460-6c70-7752-ab54-2481e82f0d44",
+          "line": 2327,
+          "ts": "2026-09-12T10:55:36.173Z"
+        },
+        {
+          "session_id": "01a09460-6c70-7752-ab54-2481e82f0d44",
+          "line": 2337,
+          "ts": "2026-09-12T10:55:55.137Z"
+        },
+        {
+          "session_id": "01a09460-6c70-7752-ab54-2481e82f0d44",
+          "line": 2351,
+          "ts": "2026-09-12T10:56:39.003Z"
+        }
+      ]
+    },
+    {
+      "input_tokens": 7014927,
+      "cached_input_tokens": 6933760,
+      "output_tokens": 25903,
+      "reasoning_output_tokens": 9483,
+      "total_tokens": 7040830,
+      "automatic_seconds": 2059.233000278473,
+      "window15_seconds": 2135.3410000801086,
+      "window30_seconds": 2135.3410000801086,
+      "residual30_seconds": 76.10799980163574,
+      "blocks15": 1,
+      "blocks30": 1,
+      "responses": 47,
+      "turns": 3,
+      "uncached_input_tokens": 81167,
+      "id": "N13",
+      "start_utc": "2026-09-12T11:35:24Z",
+      "end_utc": "2026-09-12T12:11:00Z",
+      "category": "technical",
+      "episode": "P00 original-quality, lettering, audio and VLC correction",
+      "note": "Revisited downloaded original, local title repair and playback/audio handling.",
+      "elapsed_seconds": 2136.0,
+      "evidence": [
+        {
+          "session_id": "01a09460-6c70-7752-ab54-2481e82f0d44",
+          "line": 2634,
+          "ts": "2026-09-12T11:35:24.771Z"
+        },
+        {
+          "session_id": "01a09460-6c70-7752-ab54-2481e82f0d44",
+          "line": 2650,
+          "ts": "2026-09-12T11:36:10.570Z"
+        },
+        {
+          "session_id": "01a09460-6c70-7752-ab54-2481e82f0d44",
+          "line": 2733,
+          "ts": "2026-09-12T11:45:32.744Z"
+        },
+        {
+          "session_id": "01a09460-6c70-7752-ab54-2481e82f0d44",
+          "line": 2753,
+          "ts": "2026-09-12T11:48:18.767Z"
+        },
+        {
+          "session_id": "01a09460-6c70-7752-ab54-2481e82f0d44",
+          "line": 2763,
+          "ts": "2026-09-12T11:49:48.754Z"
+        }
+      ]
+    },
+    {
+      "input_tokens": 5609097,
+      "cached_input_tokens": 5431424,
+      "output_tokens": 30996,
+      "reasoning_output_tokens": 9390,
+      "total_tokens": 5640093,
+      "automatic_seconds": 1520.0249993801117,
+      "window15_seconds": 2138.3399999141693,
+      "window30_seconds": 2138.3399999141693,
+      "residual30_seconds": 618.3150005340576,
+      "blocks15": 1,
+      "blocks30": 1,
+      "responses": 40,
+      "turns": 5,
+      "uncached_input_tokens": 177673,
+      "id": "C01",
+      "start_utc": "2026-09-12T12:23:00Z",
+      "end_utc": "2026-09-12T12:59:11Z",
+      "category": "creative",
+      "episode": "Narration meaning and picture-fit rewrite",
+      "note": "Creative revision following full-film review; not classified as technical waste.",
+      "elapsed_seconds": 2171.0,
+      "evidence": [
+        {
+          "session_id": "01a09460-6c70-7752-ab54-2481e82f0d44",
+          "line": 3030,
+          "ts": "2026-09-12T12:23:32.723Z"
+        },
+        {
+          "session_id": "01a09460-6c70-7752-ab54-2481e82f0d44",
+          "line": 3052,
+          "ts": "2026-09-12T12:25:38.548Z"
+        },
+        {
+          "session_id": "01a09460-6c70-7752-ab54-2481e82f0d44",
+          "line": 3054,
+          "ts": "2026-09-12T12:25:38.562Z"
+        },
+        {
+          "session_id": "01a09460-6c70-7752-ab54-2481e82f0d44",
+          "line": 3056,
+          "ts": "2026-09-12T12:25:38.574Z"
+        },
+        {
+          "session_id": "01a09460-6c70-7752-ab54-2481e82f0d44",
+          "line": 3066,
+          "ts": "2026-09-12T12:26:24.000Z"
+        }
+      ]
+    },
+    {
+      "input_tokens": 9207628,
+      "cached_input_tokens": 9081472,
+      "output_tokens": 20663,
+      "reasoning_output_tokens": 9092,
+      "total_tokens": 9228291,
+      "automatic_seconds": 1553.3229999542236,
+      "window15_seconds": 1957.0,
+      "window30_seconds": 1957.0,
+      "residual30_seconds": 403.67700004577637,
+      "blocks15": 1,
+      "blocks30": 1,
+      "responses": 50,
+      "turns": 5,
+      "uncached_input_tokens": 126156,
+      "id": "C02",
+      "start_utc": "2026-09-12T13:08:00Z",
+      "end_utc": "2026-09-12T13:40:37Z",
+      "category": "creative",
+      "episode": "Dream versus plain transition comparison",
+      "note": "User-selected experiment later set aside; not all experimentation is failure.",
+      "elapsed_seconds": 1957.0,
+      "evidence": [
+        {
+          "session_id": "01a09460-6c70-7752-ab54-2481e82f0d44",
+          "line": 3409,
+          "ts": "2026-09-12T13:09:03.989Z"
+        },
+        {
+          "session_id": "01a09460-6c70-7752-ab54-2481e82f0d44",
+          "line": 3420,
+          "ts": "2026-09-12T13:09:47.209Z"
+        },
+        {
+          "session_id": "01a09460-6c70-7752-ab54-2481e82f0d44",
+          "line": 3430,
+          "ts": "2026-09-12T13:10:30.646Z"
+        },
+        {
+          "session_id": "01a09460-6c70-7752-ab54-2481e82f0d44",
+          "line": 3440,
+          "ts": "2026-09-12T13:10:49.280Z"
+        },
+        {
+          "session_id": "01a09460-6c70-7752-ab54-2481e82f0d44",
+          "line": 3611,
+          "ts": "2026-09-12T13:27:18.826Z"
+        }
+      ]
+    },
+    {
+      "input_tokens": 635407,
+      "cached_input_tokens": 630656,
+      "output_tokens": 643,
+      "reasoning_output_tokens": 156,
+      "total_tokens": 636050,
+      "automatic_seconds": 49.3030002117157,
+      "window15_seconds": 307.8110001087189,
+      "window30_seconds": 307.8110001087189,
+      "residual30_seconds": 258.5079998970032,
+      "blocks15": 1,
+      "blocks30": 1,
+      "responses": 4,
+      "turns": 3,
+      "uncached_input_tokens": 4751,
+      "id": "N14",
+      "start_utc": "2026-09-12T14:45:00Z",
+      "end_utc": "2026-09-12T14:50:23Z",
+      "category": "platform",
+      "episode": "Qwen incompatible voice preset",
+      "note": "Grady voice preset unavailable; attempted model comparison could not start.",
+      "elapsed_seconds": 323.0,
+      "evidence": [
+        {
+          "session_id": "01a09460-6c70-7752-ab54-2481e82f0d44",
+          "line": 4287,
+          "ts": "2026-09-12T14:45:39.816Z"
+        },
+        {
+          "session_id": "01a09460-6c70-7752-ab54-2481e82f0d44",
+          "line": 4298,
+          "ts": "2026-09-12T14:49:40.341Z"
+        },
+        {
+          "session_id": "01a09460-6c70-7752-ab54-2481e82f0d44",
+          "line": 4306,
+          "ts": "2026-09-12T14:49:56.147Z"
+        }
+      ]
+    },
+    {
+      "input_tokens": 1922306,
+      "cached_input_tokens": 1877888,
+      "output_tokens": 8029,
+      "reasoning_output_tokens": 2529,
+      "total_tokens": 1930335,
+      "automatic_seconds": 623.6679999828339,
+      "window15_seconds": 623.6679999828339,
+      "window30_seconds": 623.6679999828339,
+      "residual30_seconds": 0.0,
+      "blocks15": 1,
+      "blocks30": 1,
+      "responses": 18,
+      "turns": 1,
+      "uncached_input_tokens": 44418,
+      "id": "N15",
+      "start_utc": "2026-09-12T15:45:36Z",
+      "end_utc": "2026-09-12T15:56:00Z",
+      "category": "workflow",
+      "episode": "Over-aggressive first compression attempt",
+      "note": "CRF 18 attempt stopped after correction; replaced with source-matched CRF 8. Accepted final encode is outside this error window.",
+      "elapsed_seconds": 624.0,
+      "evidence": [
+        {
+          "session_id": "01a09460-6c70-7752-ab54-2481e82f0d44",
+          "line": 4688,
+          "ts": "2026-09-12T15:45:36.412Z"
+        },
+        {
+          "session_id": "01a09460-6c70-7752-ab54-2481e82f0d44",
+          "line": 4767,
+          "ts": "2026-09-12T15:53:20.707Z"
+        },
+        {
+          "session_id": "01a09460-6c70-7752-ab54-2481e82f0d44",
+          "line": 4769,
+          "ts": "2026-09-12T15:53:20.720Z"
+        },
+        {
+          "session_id": "01a09460-6c70-7752-ab54-2481e82f0d44",
+          "line": 4771,
+          "ts": "2026-09-12T15:53:20.735Z"
+        },
+        {
+          "session_id": "01a09460-6c70-7752-ab54-2481e82f0d44",
+          "line": 4795,
+          "ts": "2026-09-12T15:54:35.556Z"
+        }
+      ]
+    }
+  ],
+  "manifest": [
+    {
+      "index": 399,
+      "session_id": "019fcacb-5c43-7360-a8bb-0ac9dde5eca5",
+      "file": "/home/raxim/.codex/archived_sessions/rollout-2026-08-04T05-22-32-019fcacb-5c43-7360-a8bb-0ac9dde5eca5.jsonl",
+      "bytes": 6213556,
+      "first": "2026-08-04T03:22:33.240Z",
+      "last": "2026-08-04T05:24:13.201Z",
+      "method": "cumulative_delta"
+    },
+    {
+      "index": 402,
+      "session_id": "019fd05f-63b2-7b52-96a5-e0a70e046cb8",
+      "file": "/home/raxim/.codex/archived_sessions/rollout-2026-08-05T07-22-20-019fd05f-63b2-7b52-96a5-e0a70e046cb8.jsonl",
+      "bytes": 269067262,
+      "first": "2026-08-05T05:24:03.317Z",
+      "last": "2026-08-05T09:36:22.384Z",
+      "method": "cumulative_delta"
+    },
+    {
+      "index": 406,
+      "session_id": "019fd763-142d-7621-bd5b-7d8da7c29fc3",
+      "file": "/home/raxim/.codex/archived_sessions/rollout-2026-08-06T16-03-42-019fd763-142d-7621-bd5b-7d8da7c29fc3.jsonl",
+      "bytes": 2421985588,
+      "first": "2026-08-06T14:04:19.782Z",
+      "last": "2026-08-10T16:16:45.715Z",
+      "method": "cumulative_delta"
+    },
+    {
+      "index": 413,
+      "session_id": "019fec77-0068-7fc0-baf1-4b4c0e2f0c5f",
+      "file": "/home/raxim/.codex/archived_sessions/rollout-2026-08-10T18-17-29-019fec77-0068-7fc0-baf1-4b4c0e2f0c5f.jsonl",
+      "bytes": 18333135,
+      "first": "2026-08-10T16:18:34.880Z",
+      "last": "2026-08-10T17:24:41.208Z",
+      "method": "cumulative_delta"
+    },
+    {
+      "index": 414,
+      "session_id": "019fecb4-9292-72c3-9450-b5bb2f59fb0f",
+      "file": "/home/raxim/.codex/archived_sessions/rollout-2026-08-10T19-24-44-019fecb4-9292-72c3-9450-b5bb2f59fb0f.jsonl",
+      "bytes": 18733633,
+      "first": "2026-08-10T17:26:13.274Z",
+      "last": "2026-08-10T18:05:50.501Z",
+      "method": "cumulative_delta"
+    },
+    {
+      "index": 415,
+      "session_id": "019fecda-61fe-7a13-bdb9-6dfecaabb755",
+      "file": "/home/raxim/.codex/archived_sessions/rollout-2026-08-10T20-06-02-019fecda-61fe-7a13-bdb9-6dfecaabb755.jsonl",
+      "bytes": 5484090,
+      "first": "2026-08-10T18:07:14.817Z",
+      "last": "2026-08-10T19:02:17.289Z",
+      "method": "cumulative_delta"
+    },
+    {
+      "index": 416,
+      "session_id": "019fed13-222c-7941-a165-6b0eeb23d0a1",
+      "file": "/home/raxim/.codex/archived_sessions/rollout-2026-08-10T21-08-01-019fed13-222c-7941-a165-6b0eeb23d0a1.jsonl",
+      "bytes": 69904337,
+      "first": "2026-08-10T19:09:26.319Z",
+      "last": "2026-08-10T22:07:13.568Z",
+      "method": "cumulative_delta"
+    },
+    {
+      "index": 419,
+      "session_id": "019ff021-db9e-73a2-9b8e-5752f04c8ae0",
+      "file": "/home/raxim/.codex/archived_sessions/rollout-2026-08-11T11-22-58-019ff021-db9e-73a2-9b8e-5752f04c8ae0.jsonl",
+      "bytes": 3566639,
+      "first": "2026-08-11T09:23:51.645Z",
+      "last": "2026-08-11T09:32:12.586Z",
+      "method": "cumulative_delta"
+    },
+    {
+      "index": 420,
+      "session_id": "019ff02a-895b-7b13-9cf9-f4c03a064675",
+      "file": "/home/raxim/.codex/archived_sessions/rollout-2026-08-11T11-32-27-019ff02a-895b-7b13-9cf9-f4c03a064675.jsonl",
+      "bytes": 328449962,
+      "first": "2026-08-11T09:34:03.779Z",
+      "last": "2026-08-12T12:07:05.053Z",
+      "method": "cumulative_delta"
+    },
+    {
+      "index": 422,
+      "session_id": "019ff5e5-8f1e-7271-b16d-bbba4728ce09",
+      "file": "/home/raxim/.codex/archived_sessions/rollout-2026-08-12T14-14-50-019ff5e5-8f1e-7271-b16d-bbba4728ce09.jsonl",
+      "bytes": 821338,
+      "first": "2026-08-12T12:15:21.940Z",
+      "last": "2026-08-12T12:31:18.653Z",
+      "method": "cumulative_delta"
+    },
+    {
+      "index": 427,
+      "session_id": "019ff6d1-9aaa-7721-98ad-16fe1c7aa2ea",
+      "file": "/home/raxim/.codex/archived_sessions/rollout-2026-08-12T18-32-39-019ff6d1-9aaa-7721-98ad-16fe1c7aa2ea.jsonl",
+      "bytes": 31363967,
+      "first": "2026-08-12T16:33:40.235Z",
+      "last": "2026-08-13T00:36:16.894Z",
+      "method": "cumulative_delta"
+    },
+    {
+      "index": 428,
+      "session_id": "019ff896-027e-7681-a7f0-6454c81cb2bb",
+      "file": "/home/raxim/.codex/archived_sessions/rollout-2026-08-13T02-46-48-019ff896-027e-7681-a7f0-6454c81cb2bb.jsonl",
+      "bytes": 451076,
+      "first": "2026-08-13T00:47:13.627Z",
+      "last": "2026-08-13T00:52:13.134Z",
+      "method": "cumulative_delta"
+    },
+    {
+      "index": 429,
+      "session_id": "019ffc5c-f7e9-7cc0-bf5b-64cd1151e9be",
+      "file": "/home/raxim/.codex/archived_sessions/rollout-2026-08-13T20-22-59-019ffc5c-f7e9-7cc0-bf5b-64cd1151e9be.jsonl",
+      "bytes": 491816,
+      "first": "2026-08-13T18:23:41.865Z",
+      "last": "2026-08-13T18:37:32.293Z",
+      "method": "cumulative_delta"
+    },
+    {
+      "index": 430,
+      "session_id": "01a00011-3967-7241-99c1-35b345a3b49c",
+      "file": "/home/raxim/.codex/archived_sessions/rollout-2026-08-14T13-38-43-01a00011-3967-7241-99c1-35b345a3b49c.jsonl",
+      "bytes": 531380789,
+      "first": "2026-08-14T11:42:27.356Z",
+      "last": "2026-08-14T23:38:56.159Z",
+      "method": "cumulative_delta"
+    },
+    {
+      "index": 431,
+      "session_id": "01a002d9-2c93-79a1-93d1-4a8822e8508e",
+      "file": "/home/raxim/.codex/archived_sessions/rollout-2026-08-15T02-36-22-01a002d9-2c93-79a1-93d1-4a8822e8508e.jsonl",
+      "bytes": 5775685,
+      "first": "2026-08-15T00:37:49.553Z",
+      "last": "2026-08-15T02:18:25.641Z",
+      "method": "cumulative_delta"
+    },
+    {
+      "index": 436,
+      "session_id": "01a00cef-d4f9-7813-8a0a-63683ff3d711",
+      "file": "/home/raxim/.codex/archived_sessions/rollout-2026-08-17T01-37-19-01a00cef-d4f9-7813-8a0a-63683ff3d711.jsonl",
+      "bytes": 234757,
+      "first": "2026-08-16T23:37:27.010Z",
+      "last": "2026-08-16T23:39:48.091Z",
+      "method": "cumulative_delta"
+    },
+    {
+      "index": 443,
+      "session_id": "01a01d02-7bd8-7181-a028-b83afa977297",
+      "file": "/home/raxim/.codex/archived_sessions/rollout-2026-08-20T04-31-37-01a01d02-7bd8-7181-a028-b83afa977297.jsonl",
+      "bytes": 38847249,
+      "first": "2026-08-20T02:32:16.717Z",
+      "last": "2026-08-20T04:34:51.325Z",
+      "method": "cumulative_delta"
+    },
+    {
+      "index": 449,
+      "session_id": "01a04162-f50c-7dc3-b9c1-5980a05989f1",
+      "file": "/home/raxim/.codex/archived_sessions/rollout-2026-08-27T06-03-19-01a04162-f50c-7dc3-b9c1-5980a05989f1.jsonl",
+      "bytes": 11004744,
+      "first": "2026-08-27T04:03:23.688Z",
+      "last": "2026-08-27T04:11:51.337Z",
+      "method": "cumulative_delta"
+    },
+    {
+      "index": 484,
+      "session_id": "01a08501-79bb-7141-9e97-e6a86d21f07e",
+      "file": "/home/raxim/.codex/archived_sessions/rollout-2026-09-09T09-11-01-01a08501-79bb-7141-9e97-e6a86d21f07e.jsonl",
+      "bytes": 435123290,
+      "first": "2026-09-09T07:11:02.019Z",
+      "last": "2026-09-11T06:44:11.105Z",
+      "method": "response_id"
+    },
+    {
+      "index": 485,
+      "session_id": "01a08501-79bb-7141-9e97-e6a86d21f07e",
+      "file": "/home/raxim/.codex/archived_sessions/rollout-2026-09-11T08-44-25-01a08501-79bb-7141-9e97-e6a86d21f07e_01a08f35-d7f0-7ff1-b6b0-8aa7a699a4a9.jsonl",
+      "bytes": 82770599,
+      "first": "2026-09-11T06:44:25.967Z",
+      "last": "2026-09-11T10:22:55.838Z",
+      "method": "response_id"
+    },
+    {
+      "index": 486,
+      "session_id": "01a08501-79bb-7141-9e97-e6a86d21f07e",
+      "file": "/home/raxim/.codex/archived_sessions/rollout-2026-09-11T12-23-02-01a08501-79bb-7141-9e97-e6a86d21f07e_01a08ffd-fc53-7553-a38b-205d78ba3504.jsonl",
+      "bytes": 219674,
+      "first": "2026-09-11T10:23:02.760Z",
+      "last": "2026-09-11T11:16:52.779Z",
+      "method": "response_id"
+    },
+    {
+      "index": 487,
+      "session_id": "01a08501-79bb-7141-9e97-e6a86d21f07e",
+      "file": "/home/raxim/.codex/archived_sessions/rollout-2026-09-11T13-17-04-01a08501-79bb-7141-9e97-e6a86d21f07e_01a0902f-7574-79a0-8dff-9266e1d61d1c.jsonl",
+      "bytes": 171903105,
+      "first": "2026-09-11T11:17:04.839Z",
+      "last": "2026-09-11T14:38:56.487Z",
+      "method": "response_id"
+    },
+    {
+      "index": 488,
+      "session_id": "01a08501-79bb-7141-9e97-e6a86d21f07e",
+      "file": "/home/raxim/.codex/archived_sessions/rollout-2026-09-11T16-39-09-01a08501-79bb-7141-9e97-e6a86d21f07e_01a090e8-7833-7d41-9f47-c91c8425794f.jsonl",
+      "bytes": 387810908,
+      "first": "2026-09-11T14:39:09.751Z",
+      "last": "2026-09-12T06:47:39.993Z",
+      "method": "response_id"
+    },
+    {
+      "index": 489,
+      "session_id": "01a0945f-5fe9-77c2-b79b-2a89d1ab69ff",
+      "file": "/home/raxim/.codex/archived_sessions/rollout-2026-09-12T08-47-53-01a0945f-5fe9-77c2-b79b-2a89d1ab69ff.jsonl",
+      "bytes": 3374282,
+      "first": "2026-09-12T06:48:38.220Z",
+      "last": "2026-09-12T06:48:42.906Z",
+      "method": "cumulative_delta"
+    },
+    {
+      "index": 594,
+      "session_id": "01a09460-6c70-7752-ab54-2481e82f0d44",
+      "file": "/home/raxim/.codex/sessions/2026/09/12/rollout-2026-09-12T08-49-02-01a09460-6c70-7752-ab54-2481e82f0d44.jsonl",
+      "bytes": 517486832,
+      "first": "2026-09-12T06:49:03.476Z",
+      "last": "2026-09-12T16:48:54.304Z",
+      "method": "response_id"
+    }
+  ],
+  "unreconciled_guardian_counters": [
+    {
+      "session_id": "019fd0d0-e60e-7093-8e16-2a9c4728e319",
+      "parent_id": "019fd05f-63b2-7b52-96a5-e0a70e046cb8",
+      "file": "/home/raxim/.codex/sessions/2026/08/05/rollout-2026-08-05T09-26-19-019fd0d0-e60e-7093-8e16-2a9c4728e319.jsonl",
+      "first": "2026-08-05T07:26:19.227Z",
+      "last": "2026-08-05T07:26:26.008Z",
+      "counter_records": 1,
+      "reported_final_counter": {
+        "input_tokens": 20511,
+        "cached_input_tokens": 4864,
+        "cache_write_input_tokens": 0,
+        "output_tokens": 213,
+        "reasoning_output_tokens": 153,
+        "total_tokens": 20724
+      },
+      "accounting": "Excluded from root totals: overlap/aggregation unverified; never count copied user history as new work."
+    },
+    {
+      "session_id": "019fd142-db29-7600-9b28-c7264e76be16",
+      "parent_id": "019fd05f-63b2-7b52-96a5-e0a70e046cb8",
+      "file": "/home/raxim/.codex/sessions/2026/08/05/rollout-2026-08-05T11-30-47-019fd142-db29-7600-9b28-c7264e76be16.jsonl",
+      "first": "2026-08-05T09:30:47.553Z",
+      "last": "2026-08-05T09:33:24.614Z",
+      "counter_records": 2,
+      "reported_final_counter": {
+        "input_tokens": 47434,
+        "cached_input_tokens": 26112,
+        "cache_write_input_tokens": 0,
+        "output_tokens": 502,
+        "reasoning_output_tokens": 379,
+        "total_tokens": 47936
+      },
+      "accounting": "Excluded from root totals: overlap/aggregation unverified; never count copied user history as new work."
+    },
+    {
+      "session_id": "019fd765-8f0d-7c02-950d-380b2bb20796",
+      "parent_id": "019fd763-142d-7621-bd5b-7d8da7c29fc3",
+      "file": "/home/raxim/.codex/sessions/2026/08/06/rollout-2026-08-06T16-06-25-019fd765-8f0d-7c02-950d-380b2bb20796.jsonl",
+      "first": "2026-08-06T14:06:25.118Z",
+      "last": "2026-08-06T16:28:22.477Z",
+      "counter_records": 38,
+      "reported_final_counter": {
+        "input_tokens": 1496294,
+        "cached_input_tokens": 1237504,
+        "cache_write_input_tokens": 0,
+        "output_tokens": 3822,
+        "reasoning_output_tokens": 1471,
+        "total_tokens": 1500116
+      },
+      "accounting": "Excluded from root totals: overlap/aggregation unverified; never count copied user history as new work."
+    },
+    {
+      "session_id": "019fdb88-51fb-76a1-9bcb-51b0c6e9066f",
+      "parent_id": "019fd763-142d-7621-bd5b-7d8da7c29fc3",
+      "file": "/home/raxim/.codex/sessions/2026/08/07/rollout-2026-08-07T11-22-52-019fdb88-51fb-76a1-9bcb-51b0c6e9066f.jsonl",
+      "first": "2026-08-07T09:22:52.101Z",
+      "last": "2026-08-07T09:22:52.101Z",
+      "counter_records": 3,
+      "reported_final_counter": {
+        "input_tokens": 3991765,
+        "cached_input_tokens": 2879232,
+        "cache_write_input_tokens": 0,
+        "output_tokens": 1977,
+        "reasoning_output_tokens": 612,
+        "total_tokens": 3993742
+      },
+      "accounting": "Excluded from root totals: overlap/aggregation unverified; never count copied user history as new work."
+    },
+    {
+      "session_id": "019fdd30-936b-7121-90e3-e3e9240b5382",
+      "parent_id": "019fd763-142d-7621-bd5b-7d8da7c29fc3",
+      "file": "/home/raxim/.codex/sessions/2026/08/07/rollout-2026-08-07T19-06-16-019fdd30-936b-7121-90e3-e3e9240b5382.jsonl",
+      "first": "2026-08-07T17:06:16.115Z",
+      "last": "2026-08-07T17:06:16.115Z",
+      "counter_records": 26,
+      "reported_final_counter": {
+        "input_tokens": 11077311,
+        "cached_input_tokens": 8612864,
+        "cache_write_input_tokens": 0,
+        "output_tokens": 5968,
+        "reasoning_output_tokens": 1756,
+        "total_tokens": 11083279
+      },
+      "accounting": "Excluded from root totals: overlap/aggregation unverified; never count copied user history as new work."
+    },
+    {
+      "session_id": "019fde7d-d1af-7a42-a958-aedad8cc5bde",
+      "parent_id": "019fd763-142d-7621-bd5b-7d8da7c29fc3",
+      "file": "/home/raxim/.codex/sessions/2026/08/08/rollout-2026-08-08T01-10-15-019fde7d-d1af-7a42-a958-aedad8cc5bde.jsonl",
+      "first": "2026-08-07T23:10:15.544Z",
+      "last": "2026-08-07T23:10:23.286Z",
+      "counter_records": 1,
+      "reported_final_counter": {
+        "input_tokens": 29060,
+        "cached_input_tokens": 4864,
+        "cache_write_input_tokens": 0,
+        "output_tokens": 292,
+        "reasoning_output_tokens": 203,
+        "total_tokens": 29352
+      },
+      "accounting": "Excluded from root totals: overlap/aggregation unverified; never count copied user history as new work."
+    },
+    {
+      "session_id": "019fe026-7a57-7cc1-aa8d-d54f50ca77c5",
+      "parent_id": "019fd763-142d-7621-bd5b-7d8da7c29fc3",
+      "file": "/home/raxim/.codex/sessions/2026/08/08/rollout-2026-08-08T08-54-05-019fe026-7a57-7cc1-aa8d-d54f50ca77c5.jsonl",
+      "first": "2026-08-08T06:54:05.996Z",
+      "last": "2026-08-08T06:54:05.996Z",
+      "counter_records": 11,
+      "reported_final_counter": {
+        "input_tokens": 4545924,
+        "cached_input_tokens": 2762752,
+        "cache_write_input_tokens": 0,
+        "output_tokens": 3282,
+        "reasoning_output_tokens": 1326,
+        "total_tokens": 4549206
+      },
+      "accounting": "Excluded from root totals: overlap/aggregation unverified; never count copied user history as new work."
+    },
+    {
+      "session_id": "019fe18e-82ed-79f2-b086-12ce065a8889",
+      "parent_id": "019fd763-142d-7621-bd5b-7d8da7c29fc3",
+      "file": "/home/raxim/.codex/sessions/2026/08/08/rollout-2026-08-08T15-27-21-019fe18e-82ed-79f2-b086-12ce065a8889.jsonl",
+      "first": "2026-08-08T13:27:21.137Z",
+      "last": "2026-08-08T15:13:01.827Z",
+      "counter_records": 27,
+      "reported_final_counter": {
+        "input_tokens": 2775184,
+        "cached_input_tokens": 1836288,
+        "cache_write_input_tokens": 0,
+        "output_tokens": 3193,
+        "reasoning_output_tokens": 1269,
+        "total_tokens": 2778377
+      },
+      "accounting": "Excluded from root totals: overlap/aggregation unverified; never count copied user history as new work."
+    },
+    {
+      "session_id": "019fe2cc-b00e-77f1-9c72-c563d10a571c",
+      "parent_id": "019fd763-142d-7621-bd5b-7d8da7c29fc3",
+      "file": "/home/raxim/.codex/sessions/2026/08/08/rollout-2026-08-08T21-14-53-019fe2cc-b00e-77f1-9c72-c563d10a571c.jsonl",
+      "first": "2026-08-08T19:14:53.152Z",
+      "last": "2026-08-08T20:21:54.748Z",
+      "counter_records": 16,
+      "reported_final_counter": {
+        "input_tokens": 1297128,
+        "cached_input_tokens": 904192,
+        "cache_write_input_tokens": 0,
+        "output_tokens": 1461,
+        "reasoning_output_tokens": 464,
+        "total_tokens": 1298589
+      },
+      "accounting": "Excluded from root totals: overlap/aggregation unverified; never count copied user history as new work."
+    },
+    {
+      "session_id": "019fe607-6b7a-7ca2-8033-fe8bc319b8a6",
+      "parent_id": "019fd763-142d-7621-bd5b-7d8da7c29fc3",
+      "file": "/home/raxim/.codex/sessions/2026/08/09/rollout-2026-08-09T12-17-53-019fe607-6b7a-7ca2-8033-fe8bc319b8a6.jsonl",
+      "first": "2026-08-09T10:17:53.853Z",
+      "last": "2026-08-09T10:17:53.853Z",
+      "counter_records": 10,
+      "reported_final_counter": {
+        "input_tokens": 12152287,
+        "cached_input_tokens": 7260928,
+        "cache_write_input_tokens": 0,
+        "output_tokens": 8027,
+        "reasoning_output_tokens": 3256,
+        "total_tokens": 12160314
+      },
+      "accounting": "Excluded from root totals: overlap/aggregation unverified; never count copied user history as new work."
+    },
+    {
+      "session_id": "019fe884-53ea-7672-b007-cacfc6261cd3",
+      "parent_id": "019fd763-142d-7621-bd5b-7d8da7c29fc3",
+      "file": "/home/raxim/.codex/sessions/2026/08/09/rollout-2026-08-09T23-53-34-019fe884-53ea-7672-b007-cacfc6261cd3.jsonl",
+      "first": "2026-08-09T21:53:34.255Z",
+      "last": "2026-08-10T03:32:56.375Z",
+      "counter_records": 11,
+      "reported_final_counter": {
+        "input_tokens": 730427,
+        "cached_input_tokens": 405760,
+        "cache_write_input_tokens": 0,
+        "output_tokens": 1691,
+        "reasoning_output_tokens": 1010,
+        "total_tokens": 732118
+      },
+      "accounting": "Excluded from root totals: overlap/aggregation unverified; never count copied user history as new work."
+    },
+    {
+      "session_id": "019feb61-cf20-7750-8f54-e69939404b4b",
+      "parent_id": "019fd763-142d-7621-bd5b-7d8da7c29fc3",
+      "file": "/home/raxim/.codex/sessions/2026/08/10/rollout-2026-08-10T13-14-43-019feb61-cf20-7750-8f54-e69939404b4b.jsonl",
+      "first": "2026-08-10T11:14:43.688Z",
+      "last": "2026-08-10T11:16:36.131Z",
+      "counter_records": 2,
+      "reported_final_counter": {
+        "input_tokens": 57873,
+        "cached_input_tokens": 32256,
+        "cache_write_input_tokens": 0,
+        "output_tokens": 350,
+        "reasoning_output_tokens": 224,
+        "total_tokens": 58223
+      },
+      "accounting": "Excluded from root totals: overlap/aggregation unverified; never count copied user history as new work."
+    },
+    {
+      "session_id": "019fec10-6888-7381-bceb-40d151dd149c",
+      "parent_id": "019fd763-142d-7621-bd5b-7d8da7c29fc3",
+      "file": "/home/raxim/.codex/sessions/2026/08/10/rollout-2026-08-10T16-25-26-019fec10-6888-7381-bceb-40d151dd149c.jsonl",
+      "first": "2026-08-10T14:25:26.218Z",
+      "last": "2026-08-10T16:13:29.905Z",
+      "counter_records": 7,
+      "reported_final_counter": {
+        "input_tokens": 469199,
+        "cached_input_tokens": 225536,
+        "cache_write_input_tokens": 0,
+        "output_tokens": 1214,
+        "reasoning_output_tokens": 709,
+        "total_tokens": 470413
+      },
+      "accounting": "Excluded from root totals: overlap/aggregation unverified; never count copied user history as new work."
+    },
+    {
+      "session_id": "019fec7e-4b5e-7e31-8429-b90f7d946587",
+      "parent_id": "019fec77-0068-7fc0-baf1-4b4c0e2f0c5f",
+      "file": "/home/raxim/.codex/sessions/2026/08/10/rollout-2026-08-10T18-25-27-019fec7e-4b5e-7e31-8429-b90f7d946587.jsonl",
+      "first": "2026-08-10T16:25:27.703Z",
+      "last": "2026-08-10T17:19:04.595Z",
+      "counter_records": 31,
+      "reported_final_counter": {
+        "input_tokens": 1851071,
+        "cached_input_tokens": 1412352,
+        "cache_write_input_tokens": 0,
+        "output_tokens": 3170,
+        "reasoning_output_tokens": 1292,
+        "total_tokens": 1854241
+      },
+      "accounting": "Excluded from root totals: overlap/aggregation unverified; never count copied user history as new work."
+    },
+    {
+      "session_id": "019fecb9-202f-7373-a24d-b1fcd75c37ac",
+      "parent_id": "019fecb4-9292-72c3-9450-b5bb2f59fb0f",
+      "file": "/home/raxim/.codex/sessions/2026/08/10/rollout-2026-08-10T19-29-43-019fecb9-202f-7373-a24d-b1fcd75c37ac.jsonl",
+      "first": "2026-08-10T17:29:43.276Z",
+      "last": "2026-08-10T18:02:04.934Z",
+      "counter_records": 18,
+      "reported_final_counter": {
+        "input_tokens": 823204,
+        "cached_input_tokens": 597504,
+        "cache_write_input_tokens": 0,
+        "output_tokens": 1758,
+        "reasoning_output_tokens": 658,
+        "total_tokens": 824962
+      },
+      "accounting": "Excluded from root totals: overlap/aggregation unverified; never count copied user history as new work."
+    },
+    {
+      "session_id": "019fecdd-ce3b-7982-92f5-f8a7bee5beb4",
+      "parent_id": "019fecda-61fe-7a13-bdb9-6dfecaabb755",
+      "file": "/home/raxim/.codex/sessions/2026/08/10/rollout-2026-08-10T20-09-47-019fecdd-ce3b-7982-92f5-f8a7bee5beb4.jsonl",
+      "first": "2026-08-10T18:09:47.138Z",
+      "last": "2026-08-10T18:39:02.392Z",
+      "counter_records": 24,
+      "reported_final_counter": {
+        "input_tokens": 1322831,
+        "cached_input_tokens": 1075200,
+        "cache_write_input_tokens": 0,
+        "output_tokens": 2767,
+        "reasoning_output_tokens": 1044,
+        "total_tokens": 1325598
+      },
+      "accounting": "Excluded from root totals: overlap/aggregation unverified; never count copied user history as new work."
+    },
+    {
+      "session_id": "019fed17-1be5-7411-b558-e7bfb85045e0",
+      "parent_id": "019fed13-222c-7941-a165-6b0eeb23d0a1",
+      "file": "/home/raxim/.codex/sessions/2026/08/10/rollout-2026-08-10T21-12-22-019fed17-1be5-7411-b558-e7bfb85045e0.jsonl",
+      "first": "2026-08-10T19:12:22.573Z",
+      "last": "2026-08-10T19:37:37.487Z",
+      "counter_records": 8,
+      "reported_final_counter": {
+        "input_tokens": 227953,
+        "cached_input_tokens": 108544,
+        "cache_write_input_tokens": 0,
+        "output_tokens": 916,
+        "reasoning_output_tokens": 531,
+        "total_tokens": 228869
+      },
+      "accounting": "Excluded from root totals: overlap/aggregation unverified; never count copied user history as new work."
+    },
+    {
+      "session_id": "019fed34-dab9-7001-bd77-6fd48fc52b89",
+      "parent_id": "019fed13-222c-7941-a165-6b0eeb23d0a1",
+      "file": "/home/raxim/.codex/sessions/2026/08/10/rollout-2026-08-10T21-44-51-019fed34-dab9-7001-bd77-6fd48fc52b89.jsonl",
+      "first": "2026-08-10T19:44:51.954Z",
+      "last": "2026-08-10T20:34:49.628Z",
+      "counter_records": 15,
+      "reported_final_counter": {
+        "input_tokens": 453302,
+        "cached_input_tokens": 323840,
+        "cache_write_input_tokens": 0,
+        "output_tokens": 1563,
+        "reasoning_output_tokens": 647,
+        "total_tokens": 454865
+      },
+      "accounting": "Excluded from root totals: overlap/aggregation unverified; never count copied user history as new work."
+    },
+    {
+      "session_id": "019fed99-3691-7630-a623-38d1eb6fd4e3",
+      "parent_id": "019fed13-222c-7941-a165-6b0eeb23d0a1",
+      "file": "/home/raxim/.codex/sessions/2026/08/10/rollout-2026-08-10T23-34-29-019fed99-3691-7630-a623-38d1eb6fd4e3.jsonl",
+      "first": "2026-08-10T21:34:29.075Z",
+      "last": "2026-08-10T21:47:42.991Z",
+      "counter_records": 4,
+      "reported_final_counter": {
+        "input_tokens": 114140,
+        "cached_input_tokens": 57344,
+        "cache_write_input_tokens": 0,
+        "output_tokens": 545,
+        "reasoning_output_tokens": 319,
+        "total_tokens": 114685
+      },
+      "accounting": "Excluded from root totals: overlap/aggregation unverified; never count copied user history as new work."
+    },
+    {
+      "session_id": "019ff095-fe04-7ca3-9681-8b8c4a02b1f4",
+      "parent_id": "019ff02a-895b-7b13-9cf9-f4c03a064675",
+      "file": "/home/raxim/.codex/sessions/2026/08/11/rollout-2026-08-11T13-29-49-019ff095-fe04-7ca3-9681-8b8c4a02b1f4.jsonl",
+      "first": "2026-08-11T11:29:49.630Z",
+      "last": "2026-08-11T14:45:06.546Z",
+      "counter_records": 10,
+      "reported_final_counter": {
+        "input_tokens": 593999,
+        "cached_input_tokens": 100864,
+        "cache_write_input_tokens": 0,
+        "output_tokens": 1074,
+        "reasoning_output_tokens": 453,
+        "total_tokens": 595073
+      },
+      "accounting": "Excluded from root totals: overlap/aggregation unverified; never count copied user history as new work."
+    },
+    {
+      "session_id": "019ff2f5-40f8-7d02-abdd-e0117f6b1ada",
+      "parent_id": "019ff02a-895b-7b13-9cf9-f4c03a064675",
+      "file": "/home/raxim/.codex/sessions/2026/08/12/rollout-2026-08-12T00-33-07-019ff2f5-40f8-7d02-abdd-e0117f6b1ada.jsonl",
+      "first": "2026-08-11T22:33:07.130Z",
+      "last": "2026-08-11T22:33:07.130Z",
+      "counter_records": 10,
+      "reported_final_counter": {
+        "input_tokens": 5674552,
+        "cached_input_tokens": 1496576,
+        "cache_write_input_tokens": 0,
+        "output_tokens": 3877,
+        "reasoning_output_tokens": 1673,
+        "total_tokens": 5678429
+      },
+      "accounting": "Excluded from root totals: overlap/aggregation unverified; never count copied user history as new work."
+    },
+    {
+      "session_id": "019ff5c9-a218-7ee2-a6b3-1fd73270c01d",
+      "parent_id": "019ff02a-895b-7b13-9cf9-f4c03a064675",
+      "file": "/home/raxim/.codex/sessions/2026/08/12/rollout-2026-08-12T13-44-19-019ff5c9-a218-7ee2-a6b3-1fd73270c01d.jsonl",
+      "first": "2026-08-12T11:44:20.067Z",
+      "last": "2026-08-12T12:02:36.814Z",
+      "counter_records": 4,
+      "reported_final_counter": {
+        "input_tokens": 155970,
+        "cached_input_tokens": 44032,
+        "cache_write_input_tokens": 0,
+        "output_tokens": 760,
+        "reasoning_output_tokens": 493,
+        "total_tokens": 156730
+      },
+      "accounting": "Excluded from root totals: overlap/aggregation unverified; never count copied user history as new work."
+    },
+    {
+      "session_id": "019ff706-f4c1-7261-abb7-721d33c815c6",
+      "parent_id": "019ff6d1-9aaa-7721-98ad-16fe1c7aa2ea",
+      "file": "/home/raxim/.codex/sessions/2026/08/12/rollout-2026-08-12T19-30-56-019ff706-f4c1-7261-abb7-721d33c815c6.jsonl",
+      "first": "2026-08-12T17:30:56.125Z",
+      "last": "2026-08-12T20:54:41.719Z",
+      "counter_records": 26,
+      "reported_final_counter": {
+        "input_tokens": 2817658,
+        "cached_input_tokens": 1915392,
+        "cache_write_input_tokens": 0,
+        "output_tokens": 2554,
+        "reasoning_output_tokens": 952,
+        "total_tokens": 2820212
+      },
+      "accounting": "Excluded from root totals: overlap/aggregation unverified; never count copied user history as new work."
+    },
+    {
+      "session_id": "019ff876-e79b-7241-874d-4a115ba0ea70",
+      "parent_id": "019ff6d1-9aaa-7721-98ad-16fe1c7aa2ea",
+      "file": "/home/raxim/.codex/sessions/2026/08/13/rollout-2026-08-13T02-12-49-019ff876-e79b-7241-874d-4a115ba0ea70.jsonl",
+      "first": "2026-08-13T00:12:50.012Z",
+      "last": "2026-08-13T00:35:47.985Z",
+      "counter_records": 10,
+      "reported_final_counter": {
+        "input_tokens": 517993,
+        "cached_input_tokens": 236032,
+        "cache_write_input_tokens": 0,
+        "output_tokens": 1054,
+        "reasoning_output_tokens": 559,
+        "total_tokens": 519047
+      },
+      "accounting": "Excluded from root totals: overlap/aggregation unverified; never count copied user history as new work."
+    },
+    {
+      "session_id": "01a00037-0ffd-78f2-99cd-baf167b636df",
+      "parent_id": "01a00011-3967-7241-99c1-35b345a3b49c",
+      "file": "/home/raxim/.codex/sessions/2026/08/14/rollout-2026-08-14T14-20-03-01a00037-0ffd-78f2-99cd-baf167b636df.jsonl",
+      "first": "2026-08-14T12:20:03.771Z",
+      "last": "2026-08-14T15:58:29.706Z",
+      "counter_records": 15,
+      "reported_final_counter": {
+        "input_tokens": 1023172,
+        "cached_input_tokens": 362752,
+        "cache_write_input_tokens": 0,
+        "output_tokens": 1705,
+        "reasoning_output_tokens": 714,
+        "total_tokens": 1024877
+      },
+      "accounting": "Excluded from root totals: overlap/aggregation unverified; never count copied user history as new work."
+    },
+    {
+      "session_id": "01a00193-1722-7ea3-889a-17ea274b0bbb",
+      "parent_id": "01a00011-3967-7241-99c1-35b345a3b49c",
+      "file": "/home/raxim/.codex/sessions/2026/08/14/rollout-2026-08-14T20-40-12-01a00193-1722-7ea3-889a-17ea274b0bbb.jsonl",
+      "first": "2026-08-14T18:40:12.140Z",
+      "last": "2026-08-14T23:38:01.960Z",
+      "counter_records": 27,
+      "reported_final_counter": {
+        "input_tokens": 3430764,
+        "cached_input_tokens": 1639680,
+        "cache_write_input_tokens": 0,
+        "output_tokens": 2729,
+        "reasoning_output_tokens": 1077,
+        "total_tokens": 3433493
+      },
+      "accounting": "Excluded from root totals: overlap/aggregation unverified; never count copied user history as new work."
+    },
+    {
+      "session_id": "01a002f2-622d-7a60-88fc-64184220907d",
+      "parent_id": "01a002d9-2c93-79a1-93d1-4a8822e8508e",
+      "file": "/home/raxim/.codex/sessions/2026/08/15/rollout-2026-08-15T03-03-54-01a002f2-622d-7a60-88fc-64184220907d.jsonl",
+      "first": "2026-08-15T01:03:54.480Z",
+      "last": "2026-08-15T01:11:31.725Z",
+      "counter_records": 2,
+      "reported_final_counter": {
+        "input_tokens": 54328,
+        "cached_input_tokens": 9728,
+        "cache_write_input_tokens": 0,
+        "output_tokens": 348,
+        "reasoning_output_tokens": 226,
+        "total_tokens": 54676
+      },
+      "accounting": "Excluded from root totals: overlap/aggregation unverified; never count copied user history as new work."
+    },
+    {
+      "session_id": "01a01d1f-381d-7503-863f-ddef59c3692d",
+      "parent_id": "01a01d02-7bd8-7181-a028-b83afa977297",
+      "file": "/home/raxim/.codex/sessions/2026/08/20/rollout-2026-08-20T05-03-00-01a01d1f-381d-7503-863f-ddef59c3692d.jsonl",
+      "first": "2026-08-20T03:03:00.453Z",
+      "last": "2026-08-20T03:44:41.018Z",
+      "counter_records": 37,
+      "reported_final_counter": {
+        "input_tokens": 2854738,
+        "cached_input_tokens": 2582272,
+        "cache_write_input_tokens": 0,
+        "output_tokens": 3392,
+        "reasoning_output_tokens": 1218,
+        "total_tokens": 2858130
+      },
+      "accounting": "Excluded from root totals: overlap/aggregation unverified; never count copied user history as new work."
+    },
+    {
+      "session_id": "01a01d4e-e1d9-79d1-96ba-f767f3b6377a",
+      "parent_id": "01a01d02-7bd8-7181-a028-b83afa977297",
+      "file": "/home/raxim/.codex/sessions/2026/08/20/rollout-2026-08-20T05-55-04-01a01d4e-e1d9-79d1-96ba-f767f3b6377a.jsonl",
+      "first": "2026-08-20T03:55:04.082Z",
+      "last": "2026-08-20T04:34:06.901Z",
+      "counter_records": 40,
+      "reported_final_counter": {
+        "input_tokens": 2527029,
+        "cached_input_tokens": 2195456,
+        "cache_write_input_tokens": 0,
+        "output_tokens": 3700,
+        "reasoning_output_tokens": 1333,
+        "total_tokens": 2530729
+      },
+      "accounting": "Excluded from root totals: overlap/aggregation unverified; never count copied user history as new work."
+    }
+  ],
+  "image_summary": {
+    "sample_size": 12,
+    "population_completed_image_jobs": 286,
+    "model": "nano_banana_2",
+    "sampling": "Fixed seed 20260912; latest job per parsed asset key; 2 character, 3 memory, 3 world, 3 material/source, 1 typography. Material/source yielded 2 morph sheets and 1 restaurant coverage sheet. Not population-weighted.",
+    "original_chars": 108342,
+    "candidate_chars": 28196,
+    "core_score": 43.0,
+    "core_denominator": 48,
+    "detail_score": 30.0,
+    "detail_denominator": 48,
+    "reference_score": 4,
+    "reference_denominator": 6,
+    "reference_checks": [
+      [
+        "MW06_B_04",
+        "C01",
+        1
+      ],
+      [
+        "MW03_C_03",
+        "C01",
+        1
+      ],
+      [
+        "MW03_C_03",
+        "C23",
+        0
+      ],
+      [
+        "MW03_C_03",
+        "C24",
+        1
+      ],
+      [
+        "MW02_A_04",
+        "C01",
+        0
+      ],
+      [
+        "T01_SOHO_RESTAURANT_SOURCE_B",
+        "C01",
+        1
+      ]
+    ],
+    "warning": "Retrospective untested simplification candidates, not evidence of equivalent generation. Selected rubric, one reviewer, no inferential population confidence interval. Resolution mismatch is recorded separately, not attributed to model instruction-following.",
+    "reduction_percent": 73.97500507651695
+  }
+}

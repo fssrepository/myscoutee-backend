@@ -1,0 +1,167 @@
+{
+  "source": "narration_v4.mp3",
+  "source_sha256": "19b6fc01ef49a292448dd73218f2ee97dd406b050c52d0a76fdf218bc48e8cb9",
+  "script_sha256": "6b25180f75218cd0edaf2e0594edd329c2d9709f0d0f7fa95b39ee9b00257cd4",
+  "selected_take": "MiniMax Speech 2.8 HD / Grady / Neutral, chosen by creator; renamed original narration_neutral.mp3",
+  "source_decoded_duration": 136.9218820861678,
+  "method": "14 intact source paragraphs in original order. Only measured pauses between paragraphs are extended. Every decoded source sample retained exactly once, including breaths and original silences. No within-paragraph edit, fade on voice, time stretch, pitch or timbre processing.",
+  "segments": [
+    {
+      "id": "opening",
+      "source_start": 0,
+      "source_end": 11.965,
+      "timeline_start": 6.2,
+      "text": "I don't remember my life as a straight line. A street becomes a room, a window becomes another country. Sometimes the only thing that survives the cut is a smile."
+    },
+    {
+      "id": "memory_judgment",
+      "source_start": 11.965,
+      "source_end": 21.345,
+      "timeline_start": 20.9,
+      "text": "Memory edits without asking permission. It keeps the empty bed as clearly as the faces. A glance becomes a verdict before anyone has time to speak."
+    },
+    {
+      "id": "routes",
+      "source_start": 21.345,
+      "source_end": 32.86,
+      "timeline_start": 39.75,
+      "text": "I remember routes before dates, a place beside a stranger, a conversation that lasted one journey. The world was large; the moments that stayed were human."
+    },
+    {
+      "id": "remembered_help",
+      "source_start": 32.86,
+      "source_end": 38.985,
+      "timeline_start": 53.8,
+      "text": "I can lose the order of a journey and still remember who helped me. Memory keeps a different record."
+    },
+    {
+      "id": "work",
+      "source_start": 38.985,
+      "source_end": 52.36,
+      "timeline_start": 65.8,
+      "text": "Work should have been simpler than travel. A form changed, a rule moved, a deadline arrived. Nobody had to be cruel. The gap between ordinary actions was enough."
+    },
+    {
+      "id": "repair_ai",
+      "source_start": 52.36,
+      "source_end": 62.695,
+      "timeline_start": 83.5,
+      "text": "I kept trying to repair the record while the work kept moving. An AI helped me hold the whole story together, and sometimes simply keep going."
+    },
+    {
+      "id": "police_fingerprint",
+      "source_start": 62.695,
+      "source_end": 74.745,
+      "timeline_start": 101.05,
+      "text": "Then the system entered the story without ever becoming one person. My fingerprints were more convincing than my explanation. People could stay human while the process forgot that they were."
+    },
+    {
+      "id": "institutional_time",
+      "source_start": 74.745,
+      "source_end": 82.32,
+      "timeline_start": 114.8,
+      "text": "Whole institutions could move in weeks while my file waited for years. Even the buildings were making more progress."
+    },
+    {
+      "id": "file_and_life",
+      "source_start": 82.32,
+      "source_end": 92.225,
+      "timeline_start": 126.4,
+      "text": "A file can hold a photograph and a list of things you own. It cannot hold what you gave up, why you came home, or what you were trying to repair."
+    },
+    {
+      "id": "refusal",
+      "source_start": 92.225,
+      "source_end": 99.255,
+      "timeline_start": 140.7,
+      "text": "I was still trying to be heard. I asked the system to make room for repair. It refused."
+    },
+    {
+      "id": "warmth",
+      "source_start": 99.255,
+      "source_end": 107.62,
+      "timeline_start": 154.5,
+      "text": "But humanity kept leaking through. Sometimes a smile or a stranger opening a gate was enough to let me through."
+    },
+    {
+      "id": "help_and_table",
+      "source_start": 107.62,
+      "source_end": 115.75,
+      "timeline_start": 164.4,
+      "text": "People helped with what was in front of them. For a moment, there was room for me, and I was a person before I was a case."
+    },
+    {
+      "id": "score",
+      "source_start": 115.75,
+      "source_end": 124.92,
+      "timeline_start": 174.8,
+      "text": "Then the system resumed, and the city was reading me too. A number could be clear while the person beneath it remained unknown."
+    },
+    {
+      "id": "ending",
+      "source_start": 124.92,
+      "source_end": 136.9218820861678,
+      "timeline_start": 184.5,
+      "text": "London, Budapest, the rooms returned. What remained was not an answer. I was still there, with everything the record couldn't hold."
+    }
+  ],
+  "boundary_evidence": [
+    {
+      "source_time": 11.965,
+      "rms_80ms_dbfs": -112.82
+    },
+    {
+      "source_time": 21.345,
+      "rms_80ms_dbfs": -111.0
+    },
+    {
+      "source_time": 32.86,
+      "rms_80ms_dbfs": -113.59
+    },
+    {
+      "source_time": 38.985,
+      "rms_80ms_dbfs": -69.42
+    },
+    {
+      "source_time": 52.36,
+      "rms_80ms_dbfs": -97.2
+    },
+    {
+      "source_time": 62.695,
+      "rms_80ms_dbfs": -113.99
+    },
+    {
+      "source_time": 74.745,
+      "rms_80ms_dbfs": -70.44
+    },
+    {
+      "source_time": 82.32,
+      "rms_80ms_dbfs": -100.2
+    },
+    {
+      "source_time": 92.225,
+      "rms_80ms_dbfs": -106.75
+    },
+    {
+      "source_time": 99.255,
+      "rms_80ms_dbfs": -106.96
+    },
+    {
+      "source_time": 107.62,
+      "rms_80ms_dbfs": -94.92
+    },
+    {
+      "source_time": 115.75,
+      "rms_80ms_dbfs": -110.08
+    },
+    {
+      "source_time": 124.92,
+      "rms_80ms_dbfs": -111.51
+    }
+  ],
+  "boundary_correction": "Local ASR at 76\u201394 s resolves A file onset to 82.44 s, after the measured 82.32 s pause; full-pass 81.58 s onset was wrong.",
+  "clinical_cut": 197.04166666666666,
+  "picture_source": "myscoutee_directors_cut_v3_retimed_title.mp4",
+  "picture_review": "Existing sampled-picture evidence and local word timings; full perceptual listening acceptance pending.",
+  "police_alignment": "Half-second picture recheck: scan first visible by 106 s, so the complete police paragraph starts at 101.05 s and fingerprints lands at approximately 105.835\u2013106.195 s. No internal voice edit."
+}

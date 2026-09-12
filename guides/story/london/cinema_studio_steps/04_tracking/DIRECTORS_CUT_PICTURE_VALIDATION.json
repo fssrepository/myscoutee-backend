@@ -1,0 +1,12 @@
+{
+  "frames": 4861,
+  "duration": 202.54166666666666,
+  "copied_frames": 2218,
+  "losslessly_encoded_frames": 2643,
+  "visually_modified_frames": 192,
+  "pixel_validation": "all 4861 decoded frames match exact selected source or calculated transition; zero mismatches",
+  "decoder": "full VAAPI decode; no errors; 10-bit YUV hashes",
+  "timestamps": "continuous 24 fps; 4861 packets",
+  "sources": "p00_fixed from p00_orig; p11_fixed; other original clips; SHA256 unchanged",
+  "splicing": "first CRA slice in each copied range reclassified as BLA_N_LP; first negative-PTS RASL packets removed (4 each from copy01/copy07); no displayed frames removed, no image coefficients re-encoded"
+}

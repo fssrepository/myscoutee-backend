@@ -1,0 +1,33 @@
+{
+  "film": "festival-final-cut-watermark-packshot.mp4",
+  "published_duration_seconds": 211.694,
+  "cue_count": 40,
+  "first_cue": 6.2,
+  "last_cue_end": 196.16,
+  "clinical_cut": 197.04166666666666,
+  "maximum_line_length": 42,
+  "maximum_characters_per_second": 20.09,
+  "audio_sync_samples": [
+    {
+      "original_time": 8,
+      "published_time": 8.0,
+      "offset_seconds": 0.0,
+      "correlation": 0.9998313063220179
+    },
+    {
+      "original_time": 102,
+      "published_time": 102.0,
+      "offset_seconds": 0.0,
+      "correlation": 0.9998749893396015
+    },
+    {
+      "original_time": 186,
+      "published_time": 186.0,
+      "offset_seconds": 0.0,
+      "correlation": 0.9997083047881007
+    }
+  ],
+  "source_script_sha256": "6b25180f75218cd0edaf2e0594edd329c2d9709f0d0f7fa95b39ee9b00257cd4",
+  "timing_basis": "Saved Neutral v4 word timings mapped through the delivered 14-paragraph placement; local correction of A file onset and split of fused It refused / But humanity across two paragraphs. Three audio-correlation checks confirm no offset in published version. Subtitle hold extensions up to 0.9 s in pauses for readability. No full new listening pass.",
+  "video_or_audio_modified": false
+}

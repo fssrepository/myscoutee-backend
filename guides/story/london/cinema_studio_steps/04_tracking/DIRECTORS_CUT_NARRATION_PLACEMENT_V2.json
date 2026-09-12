@@ -1,0 +1,192 @@
+{
+  "source": "narration_new.mp3",
+  "source_sha256": "ad17aacc43d767d5243f9be0f1da9e854dccb1491e8ac4596fb96d6c0024c90c",
+  "method": "ASR word alignment checked against measured low-energy pauses; every decoded source sample retained in order. Only silence is inserted. No speech stretching, word removal or pitch change. The source end is determined from actual decoded samples.",
+  "segments": [
+    {
+      "id": "DC01a",
+      "source_start": 0,
+      "timeline_start": 4.4
+    },
+    {
+      "id": "DC01b",
+      "source_start": 2.64,
+      "timeline_start": 9.1
+    },
+    {
+      "id": "DC02a",
+      "source_start": 7.54,
+      "timeline_start": 20.5
+    },
+    {
+      "id": "DC02b",
+      "source_start": 11.83,
+      "timeline_start": 26
+    },
+    {
+      "id": "DC03a",
+      "source_start": 16.51,
+      "timeline_start": 35.5
+    },
+    {
+      "id": "DC03b",
+      "source_start": 20.41,
+      "timeline_start": 41.5
+    },
+    {
+      "id": "DC04a",
+      "source_start": 26.14,
+      "timeline_start": 50.7
+    },
+    {
+      "id": "DC04b",
+      "source_start": 28.22,
+      "timeline_start": 54
+    },
+    {
+      "id": "DC04c",
+      "source_start": 31.44,
+      "timeline_start": 57.7
+    },
+    {
+      "id": "DC05a",
+      "source_start": 35.24,
+      "timeline_start": 65.5
+    },
+    {
+      "id": "DC05b",
+      "source_start": 38.13,
+      "timeline_start": 69.5
+    },
+    {
+      "id": "DC06a",
+      "source_start": 44.11,
+      "timeline_start": 79
+    },
+    {
+      "id": "DC06b",
+      "source_start": 47.37,
+      "timeline_start": 84
+    },
+    {
+      "id": "DC06c",
+      "source_start": 53,
+      "timeline_start": 91
+    },
+    {
+      "id": "DC07a",
+      "source_start": 55.26,
+      "timeline_start": 98
+    },
+    {
+      "id": "DC07b",
+      "source_start": 59.4,
+      "timeline_start": 102.5
+    },
+    {
+      "id": "DC07c",
+      "source_start": 61.41,
+      "timeline_start": 105
+    },
+    {
+      "id": "DC08a",
+      "source_start": 64.52,
+      "timeline_start": 110
+    },
+    {
+      "id": "DC08b",
+      "source_start": 70.96,
+      "timeline_start": 117
+    },
+    {
+      "id": "DC09a",
+      "source_start": 76.82,
+      "timeline_start": 126
+    },
+    {
+      "id": "DC09b",
+      "source_start": 79.36,
+      "timeline_start": 129
+    },
+    {
+      "id": "DC09c",
+      "source_start": 82.18,
+      "timeline_start": 133
+    },
+    {
+      "id": "DC10a",
+      "source_start": 85.36,
+      "timeline_start": 139.5
+    },
+    {
+      "id": "DC10b",
+      "source_start": 87.34,
+      "timeline_start": 143
+    },
+    {
+      "id": "DC11a",
+      "source_start": 93.35,
+      "timeline_start": 156.6
+    },
+    {
+      "id": "DC11b",
+      "source_start": 95.36,
+      "timeline_start": 159
+    },
+    {
+      "id": "DC11c",
+      "source_start": 97.24,
+      "timeline_start": 161
+    },
+    {
+      "id": "DC12a",
+      "source_start": 100.447,
+      "timeline_start": 164.4
+    },
+    {
+      "id": "DC12b",
+      "source_start": 102.98,
+      "timeline_start": 167.5
+    },
+    {
+      "id": "DC12c",
+      "source_start": 104.68,
+      "timeline_start": 171.5
+    },
+    {
+      "id": "DC12d",
+      "source_start": 106.16,
+      "timeline_start": 173
+    },
+    {
+      "id": "DC13a",
+      "source_start": 108.292,
+      "timeline_start": 178.3
+    },
+    {
+      "id": "DC13b",
+      "source_start": 110.425,
+      "timeline_start": 180.5
+    },
+    {
+      "id": "DC14a",
+      "source_start": 113.416,
+      "timeline_start": 185
+    },
+    {
+      "id": "DC14b",
+      "source_start": 117.7,
+      "timeline_start": 189.5
+    },
+    {
+      "id": "DC14c",
+      "source_start": 119.43,
+      "timeline_start": 192
+    },
+    {
+      "id": "DC14d",
+      "source_start": 120.82,
+      "timeline_start": 193.7
+    }
+  ]
+}

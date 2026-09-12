@@ -2,7 +2,7 @@ MYSCOUTEE — PRODUCTION P09 — 10 SECONDS, 16:9, AUDIO ON
 One new photographic sequence.
 
 OPENING CONTINUATION:
-@UNBOUND_EFP08 is the exact final frame of the accepted preceding clip, not a reconstructed still. Use its crop, horizon, lens perspective, people, wardrobe, hands, object positions and lighting as this shot's first composition. Do not shift the entire image upward/sideways, zoom to a reference crop or replay an approach. Generate only the new portion, not a cumulative movie.
+@loc_MYS_mys-film-p08-end-frame_s0_v1 is the exact final frame of the accepted preceding clip, not a reconstructed still. Use its crop, horizon, lens perspective, people, wardrobe, hands, object positions and lighting as this shot's first composition. Do not shift the entire image upward/sideways, zoom to a reference crop or replay an approach. Generate only the new portion, not a cumulative movie.
 Continue the actual preceding camera path and ongoing gesture immediately, with real parallax and current C01 walking onward; do not force a fresh level street pass at an interior boundary. The actual predecessor must be reviewed before generation: this text describes the intended movement; a still image is not evidence of actual speed or sound. No freeze, opening pose or new establishing shot.
 
 EXISTING WHOLE-IMAGE REFERENCES:
@@ -17,7 +17,7 @@ MW01 @loc_MYS_mys-mw01-a-london-social_s0_v1
 MW02_A_01 @loc_MYS_mys-mw02-a-01-memory-view-01_s0_v1
 MW02_B @loc_MYS_mys-mw02-b-global-routes_s0_v1
 MW06_A_01 @loc_MYS_mys-mw06-a-01-memory-view-01_s0_v1
-MW06_A_02 @loc_MYS_mys-mw06-a-02-memory-view-02_s0_v1
+MW06_A_02 @loc_MYS_mw06-a-02-memory-view-02_s0_v1
 MW06_A_03 @loc_MYS_mys-mw06-a-03-memory-view-03_s0_v1
 MW06_C_02 @loc_MYS_mys-mw06-c-02-memory-view-01_s0_v1
 R008 @loc_MYS_mys-r008-cafe-to-occupied-restaurant_s0_v1

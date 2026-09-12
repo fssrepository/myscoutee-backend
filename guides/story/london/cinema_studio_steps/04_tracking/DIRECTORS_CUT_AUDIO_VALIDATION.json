@@ -1,0 +1,75 @@
+{
+  "sample_rate": 44100,
+  "channels": 2,
+  "samples": 8932088,
+  "duration": 202.54167800453516,
+  "narration_source": "narration.mp3",
+  "narration_source_sha256": "3e0573960d49625ad288e4f6c8136470006c06c9d84f7c7b2643a7c624a7426b",
+  "source_decoded_samples_retained": 6629231,
+  "narration_speed_pitch": "unchanged; every decoded source sample retained in order",
+  "segments": [
+    {
+      "passage": "A01",
+      "source_start": 0.0,
+      "source_end": 16.81,
+      "timeline_start": 4.0416780045351475,
+      "timeline_end": 20.85167800453515
+    },
+    {
+      "passage": "A02",
+      "source_start": 16.81,
+      "source_end": 35.46,
+      "timeline_start": 33.62498866213152,
+      "timeline_end": 52.27498866213152
+    },
+    {
+      "passage": "A03",
+      "source_start": 35.46,
+      "source_end": 56.88,
+      "timeline_start": 63.37501133786848,
+      "timeline_end": 84.79501133786849
+    },
+    {
+      "passage": "A04",
+      "source_start": 56.88,
+      "source_end": 80.19,
+      "timeline_start": 93.83,
+      "timeline_end": 117.14
+    },
+    {
+      "passage": "A05",
+      "source_start": 80.19,
+      "source_end": 104.27,
+      "timeline_start": 123.12498866213151,
+      "timeline_end": 147.2049886621315
+    },
+    {
+      "passage": "A06",
+      "source_start": 104.27,
+      "source_end": 134.0,
+      "timeline_start": 150.9,
+      "timeline_end": 180.63
+    },
+    {
+      "passage": "A07",
+      "source_start": 134.0,
+      "source_end": 150.3226984126984,
+      "timeline_start": 180.7,
+      "timeline_end": 197.02269841269842
+    }
+  ],
+  "actual_p12_clinical_cut": 197.04166666666666,
+  "narration_end": 197.02269841269842,
+  "background": "original clip audio resampled once to 44100 Hz; 4-frame linear crossfades; raw aligned stem retained",
+  "mix": {
+    "narration_gain_db": -3,
+    "background_gain": 0.8,
+    "voice_duck_multiplier": 0.3,
+    "attack_seconds": 0.035,
+    "hold_seconds": 0.25,
+    "release_seconds": 0.35,
+    "global_headroom_gain": 1.0,
+    "sample_peak": 0.5702048540115356
+  },
+  "stems": "32-bit float WAV; narration/background independently editable; original files untouched"
+}

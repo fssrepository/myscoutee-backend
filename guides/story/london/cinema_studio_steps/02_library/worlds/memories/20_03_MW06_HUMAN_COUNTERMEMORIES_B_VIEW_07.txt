@@ -1,13 +1,8 @@
-REFERENCE ID: MW06_B_03 — ORIGINAL VIEW 07 (never print IDs, headings or labels).
-
-OUTPUT ELEMENT ASSIGNMENT — OPERATOR METADATA ONLY, NEVER RENDER:
-Target import name: MYS MW06_B_03 Memory View 07
-Live output Element name (operator lookup only): loc_MYS_mys-mw06-b-03-memory-view-07_s0_v1
-Live output Element UUID: 7ae5de20-2527-4bc2-b9a4-d4f1f3af1158
-Image attachment verified via MCP on 2026-09-10. This output target is not an input reference.
+REFERENCE ID: MW06_B_03 — ORIGINAL VIEW 07 — 2K — 16:9 — ONE FULL-FRAME IMAGE.
+The reference ID and output settings are instructions, not text to print inside the image.
 
 REFERENCE INPUTS:
-@loc_MYS_mys-mw01-c-01-memory-view-09_s0_v1 = Use the accepted beginner-dance image for the same pair, clothing and room.
+@loc_MYS_mys-mw01-c-01-memory-view-09_s0_v1 = Use the accepted beginner-dance image for the same room, pair, clothing and practical lighting. Advance to the separate side-by-side step attempt after releasing the partnered hold; do not repeat the earlier pose. Character references below define each person's identity.
 @char_MYS_mys-c01-protagonist_s0_v1 = CHARACTER 01 — PROTAGONIST; exact person identity; use only where this person appears.
 @char_MYS_mys-c10-beginner-dance-woman_s0_v1 = CHARACTER 10 — BEGINNER-DANCE WOMAN; exact person identity; use only where this person appears.
 
@@ -45,7 +40,19 @@ ASSIGNED COMPOSITION — ORIGINAL VIEW 07, ONE IMAGE:
 BEGINNERS WORK OUT THE STEP TOGETHER:
 The protagonist and the established dance woman have released the partnered hold and stand side by side, testing which foot starts the simple step. She indicates one foot with a small downward hand gesture; he mirrors the weight shift imperfectly while they look toward the floor between their shoes. Their separate hands, offset feet and shared concentration make an ordinary learning moment.
 
+Keep C01 and C10 as the exact two adult participants from their supplied character references. Preserve their ages, facial structure, hair, natural skin texture and body proportions; do not blend their faces with background learners. Retain the source scene's practical clothes: C01's dark navy jacket over a dark top with dark trousers and everyday shoes; C10's understated dark top, dark trousers and low-heeled dance-class shoes. Keep her established practical hairstyle. Neither becomes an instructor or a professional performer. Their slightly uncertain timing is ordinary beginner concentration, with a small possibility of shared amusement rather than an exaggerated comic reaction or romantic pose.
+
+Arrange them beside one another at comfortable beginner spacing, facing broadly the same way with a small inward turn of their heads toward the working foot positions. Keep a clear strip of floor between them. Their partnered hold is fully released: no joined hands, interlocked fingers or arm around the other person. C10's indicating hand hangs naturally below waist height with a relaxed wrist and a small downward indication toward her own starting shoe; her other arm rests beside her body. Both of C01's hands remain separate and relaxed while he tries the movement. Show each wrist connected to its own sleeve and each hand belonging visibly to one person.
+
+Capture a single modest weight-shift attempt. C10's supporting shoe stays planted on the wooden floor while her starting foot makes a short forward placement close to the floor. C01 tries the same small direction with slightly delayed weight transfer, leaving his feet offset from hers rather than perfectly synchronised. His supporting foot remains grounded beneath his balance; his testing foot is only slightly advanced, never a kick or high leg lift. Keep the two bodies independent, with four distinct shoes, readable soles and heels, natural ankle and knee alignment and local contact shadows. The shoes neither touch one another nor cross into the other person's stance. Do not show two stages of either leg at once, motion trails or duplicated limbs.
+
 Keep the accepted dance room, practical clothes, other learners and chair row. Show both complete supported bodies and enough floor to read the actual foot positions. No drawn footprints, numbered instructions, performance pose, body distortion or new instructor is introduced. The partnered dance is preserved in MW01_C_01; this image supplies the practical discussion and attempt before returning to the hold.
+
+Preserve the modest social room as a complete physical space: warm neutral walls with low wall trim, worn wooden floorboards, the row of ordinary wooden chairs along the side wall, the upright piano, the rear door and its existing exit sign, and warm ceiling and wall practical lights. Retain the accepted layout and distances rather than rearranging the room around the figures. Keep the chair legs, piano base, wall-floor junction and rear doorway legible. The floorboards run continuously beneath both people and back toward the other learners; they are not a stage or a marked teaching diagram.
+
+Other ordinary adult learners remain farther behind in their own pairs, with enough separation to read their supported bodies and hand positions. Keep the background inhabited without a crowd crossing in front of C01 or C10. Background arms and hands belong to visible nearby partners, not to the principal pair. Retain natural variation in age, everyday clothes and concentration; do not clone either named participant into another pair.
+
+Use one full-body medium-wide photographic view at ordinary standing eye level, with a slight oblique angle that shows the space between the principal pair, the downward hand gesture and the floor ahead of their shoes. Keep both complete heads, hands and all four shoes inside the canvas with a small floor margin. Faces, the indicating hand and foot positions remain in useful focus together; the rear door and chair row supply depth rather than becoming a featureless blur. Warm practical light produces believable fabric folds, wood grain and soft contact shadows without stage spotlights, glamour retouching or a change of room atmosphere. No second scene, split layout or explanatory caption is added.
 
 FINAL CHECK:
 One full-frame 16:9 image at selected 2K. Direct memory scene, no score cards, no present-city overlay, no printed instruction labels.
