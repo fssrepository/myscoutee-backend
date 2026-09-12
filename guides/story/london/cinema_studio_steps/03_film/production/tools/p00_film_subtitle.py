@@ -4,11 +4,11 @@ Run from the repository root. Reuses the lossless title-patch and four-frame
 assembly recipes; never overwrites source clips or previously delivered films.
 """
 from pathlib import Path
-import argparse, hashlib, json, subprocess
+import argparse, hashlib, json, subprocess, os
 import cv2
 import numpy as np
 from PIL import Image, ImageDraw, ImageFont
-from p03_edit import ffmpeg, frame_hashes, audio_hashes, check_equal, transport
+from p03_edit import ffmpeg, frame_hashes, audio_hashes, check_equal
 from p03_transition import COMPAT_HEADERS
 
 parser = argparse.ArgumentParser()
@@ -145,14 +145,14 @@ prefix = W / 'prefix.mp4'
 print('Encoding the first 5 seconds losslessly; copying the remaining film.', flush=True)
 encode(prefix, head)
 check_equal(frame_hashes(prefix), [hashlib.md5(f.tobytes()).hexdigest() for f in head], 'movie prefix lossless pixels')
-suffix = W / 'suffix.mp4'
-ffmpeg('-ss', '5', '-i', movie, '-map', '0:v:0', '-c', 'copy', '-n', suffix)
-transport(prefix, W / 'prefix.ts'); transport(suffix, W / 'suffix.ts')
-manifest = W / 'parts.txt'
-manifest.write_text(f"file '{W / 'prefix.ts'}'\nduration 5.000000000\nfile '{W / 'suffix.ts'}'\nduration {4741/24:.9f}\n")
-ffmpeg('-f', 'concat', '-safe', '0', '-i', manifest, '-i', movie,
+joined = W / 'joined_picture.mp4'
+subprocess.run([os.environ.get('MYSCOUTEE_AV_PYTHON', '/tmp/myscoutee-speech-align/bin/python'),
+                str(Path(__file__).with_name('directors_cut_replace_prefix.py')),
+                '--prefix', str(prefix), '--source', str(movie), '--seconds', '5',
+                '--output', str(joined)], check=True)
+ffmpeg('-i', joined, '-i', movie,
        '-map', '0:v:0', '-map', '1:a:0', '-map_metadata', '1', '-map_chapters', '1',
-       '-c', 'copy', '-bsf:v', COMPAT_HEADERS, '-tag:v', 'hev1', '-movflags', '+faststart', '-n', delivery)
+       '-c', 'copy', '-tag:v', 'hev1', '-movflags', '+faststart', '-n', delivery)
 
 def packets(path):
     return json.loads(ffmpeg_probe(path))['packets']
