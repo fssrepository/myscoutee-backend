@@ -2,7 +2,7 @@
   "source": "/home/raxim/Downloads/p00_orig.mp4",
   "source_sha256": "0dcfd31ce2dbf3afc3c33923fde220a174c56680c9fc18a7f1c1b23bd7f90cea",
   "output": "/home/raxim/Downloads/p00_fixed.mp4",
-  "output_sha256": "6fe32b57d0cbe2c801aa95bdf82bf4305208dfa3d62c00a0076160f66ddf0bd9",
+  "output_sha256": "f5ad4dfe1e6c6afd304401f2930b8c98a88412c44b3c8c453f183c9d69f5cd88",
   "frames": 97,
   "edited_frames": [
     53,
@@ -18,5 +18,6 @@
   "frames_0_52": "all original samples identical",
   "audio": "original AAC packet hashes identical",
   "encoding": "lossless HEVC Main10; source 1080p/24/BT.709 retained",
-  "title": "same accepted DejaVu Sans Bold 79px mask/compositing recipe rebuilt from original; no compressed preview pixels reused"
+  "title": "same accepted DejaVu Sans Bold 79px mask/compositing recipe rebuilt from original; no compressed preview pixels reused",
+  "header_normalization": "hevc_metadata level=4.1, chroma_sample_loc_type=0, aud=insert; hev1; decoded picture/AAC unchanged"
 }
