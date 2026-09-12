@@ -88,7 +88,7 @@ Both final-frame PNGs were extracted from decoded frame index 360 (zero-based). 
 
 ### P01 → P02 proposed memory crossing — 2026-09-12
 
-**Current status: v3 focus-blur preview rendered, acceptance pending.** The earlier crop-release preview remains rejected. The new trial uses the existing four-frame statue recipe with original uncropped moving images. No zoom, warp or added blur. See the v2 record below.
+**Current status: the creator selected v3 focus blur for the Director’s Cut assembly.** The earlier crop-release preview remains rejected. V3 combines the four-frame moving dissolve with brief focus loss/recovery, without zoom or warp. The compressed trial is not a master source; see the v3 recipe below.
 
 The creator requests the feeling of a person stepping from one memory into another, taking the near-successful statue change around seconds 3–4 of P01 as the visual reference. The literal crossing remains a design proposal; the v2 local photographic overlap below is a rendered trial, not an accepted replacement for the assembly.
 
@@ -464,3 +464,12 @@ At the creator’s explicit correction, `/home/raxim/Downloads/p11_last_frame.pn
 ### P12 composer double check
 
 The 12:45 composer screenshots and all 25 live attachments were checked; see [P12_PRE_GENERATION_CHECK.md](../../04_tracking/P12_PRE_GENERATION_CHECK.md). The P11 end-frame Element is now populated. Settings match 20 s, 1080p, 16:9, audio On, 180 credits. No visible warning or missing reference was found. Uploaded scene/crop matches the original P11 endpoint, with a documented RGB-value difference. No prompt edit or generation was performed; output continuity and provider acceptance remain unproven.
+
+
+## Director’s Cut assembly — 2026-09-12
+
+In progress: P00–P12 from downloaded sources, using `p00_fixed.mp4` rebuilt from the newly downloaded `p00_orig.mp4`, and the accepted `p11_fixed.mp4`. P10 is retained pending the creator’s possible later retry. The accepted v3 focus-blur/four-frame moving overlap applies to all twelve clip boundaries. Picture duration: 4861 frames / 202.541667 s (3:22.54). No new paid generation.
+
+P00 quality correction: the earlier title fix used a whole-clip CRF 14 encode (6.92 → 2.38 Mbit/s), so its retained 1080p/24/10-bit format did not establish original picture quality. Rebuilt the same accepted “MyScoutee” mask/font treatment directly from `p00_orig.mp4`. Only frames 53–96 in rectangle x=700–1219, y=820–935 are changed; all decoded YUV samples outside that rectangle and all samples of frames 0–52 match the original exactly. Original AAC packet hashes match. The new standalone `p00_fixed.mp4` uses lossless HEVC and is larger. Both earlier files remain untouched. See [P00 validation](../../04_tracking/P00_LOSSLESS_TITLE_VALIDATION.json) and `tools/p00_title_lossless.py`.
+
+Narration uses the existing Grady recording `narration.mp3`; all decoded samples are retained in order, with clean paragraph pauses extended to fit the story. No words, speech speed or pitch are changed. P12’s measured clinical cut is local 14.541667 s, global 197.041667 s; narration ends before it. The editable movie keeps background and narration as separate embedded audio tracks. A separate viewing MP4 mixes them for normal playback; its video is copied from the same master. Background WAV is only an internal assembly work file, not a requested separate deliverable.

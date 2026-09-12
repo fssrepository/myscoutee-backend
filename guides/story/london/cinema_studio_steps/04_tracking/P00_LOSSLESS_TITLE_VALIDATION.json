@@ -1,0 +1,22 @@
+{
+  "source": "/home/raxim/Downloads/p00_orig.mp4",
+  "source_sha256": "0dcfd31ce2dbf3afc3c33923fde220a174c56680c9fc18a7f1c1b23bd7f90cea",
+  "output": "/home/raxim/Downloads/p00_fixed.mp4",
+  "output_sha256": "6fe32b57d0cbe2c801aa95bdf82bf4305208dfa3d62c00a0076160f66ddf0bd9",
+  "frames": 97,
+  "edited_frames": [
+    53,
+    96
+  ],
+  "edited_rectangle_xyxy": [
+    700,
+    820,
+    1220,
+    936
+  ],
+  "outside_rectangle": "all original 10-bit YUV samples identical",
+  "frames_0_52": "all original samples identical",
+  "audio": "original AAC packet hashes identical",
+  "encoding": "lossless HEVC Main10; source 1080p/24/BT.709 retained",
+  "title": "same accepted DejaVu Sans Bold 79px mask/compositing recipe rebuilt from original; no compressed preview pixels reused"
+}
