@@ -1,5 +1,3 @@
-#!/usr/bin/env python3
-"""Recorded Director's Cut recipe. Run from repository root; media/work files live in ~/Downloads. See production README."""
 from pathlib import Path
 import json,subprocess,hashlib
 import numpy as np

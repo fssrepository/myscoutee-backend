@@ -1,5 +1,3 @@
-#!/usr/bin/env python3
-"""Recorded Director's Cut recipe. Run from repository root; media/work files live in ~/Downloads. See production README."""
 from pathlib import Path
 import subprocess,json,hashlib,sys
 import numpy as np,cv2
@@ -43,7 +41,7 @@ subprocess.run(['ffmpeg','-v','error','-threads','2','-f','rawvideo','-pixel_for
 B=1920*1080*3//2
 orig=np.memmap(W/'p00_original.yuv',dtype='<u2',mode='r',shape=(97,B))
 patch=np.memmap(W/'p00_patch.yuv',dtype='<u2',mode='r',shape=(97,B))
-enc=subprocess.Popen(['ffmpeg','-v','error','-f','rawvideo','-pixel_format','yuv420p10le','-video_size','1920x1080','-framerate','24','-i','pipe:0','-i',str(src),'-map','0:v:0','-map','1:a:0','-c:v','libx265','-preset','fast','-x265-params','lossless=1:pools=2:frame-threads=2:log-level=error:open-gop=0:keyint=48:min-keyint=48:scenecut=0','-pix_fmt','yuv420p10le','-color_range','tv','-colorspace','bt709','-color_trc','bt709','-color_primaries','bt709','-tag:v','hvc1','-c:a','copy','-movflags','+faststart','-n',str(out)],stdin=subprocess.PIPE)
+enc=subprocess.Popen(['ffmpeg','-v','error','-f','rawvideo','-pixel_format','yuv420p10le','-video_size','1920x1080','-framerate','24','-i','pipe:0','-i',str(src),'-map','0:v:0','-map','1:a:0','-c:v','libx265','-preset','fast','-x265-params','lossless=1:pools=2:frame-threads=2:log-level=error:open-gop=0:keyint=48:min-keyint=48:scenecut=0','-pix_fmt','yuv420p10le','-color_range','tv','-colorspace','bt709','-color_trc','bt709','-color_primaries','bt709','-bsf:v','hevc_metadata=level=4.1:chroma_sample_loc_type=0:aud=insert','-tag:v','hev1','-c:a','copy','-movflags','+faststart','-n',str(out)],stdin=subprocess.PIPE)
 expected=[];outside=np.ones(B,bool)
 off=0
 for h,w,scale in [(1080,1920,1),(540,960,2),(540,960,2)]:
