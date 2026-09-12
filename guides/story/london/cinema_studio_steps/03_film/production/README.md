@@ -64,6 +64,16 @@ Current local media directory: `/home/raxim/Downloads/`.
 
 Both final-frame PNGs were extracted from decoded frame index 360 (zero-based). Extract continuation frames from each original clip, never from an assembly with transitions. Determine the actual last decoded frame for each future clip rather than assuming every clip has 361 frames.
 
+### P01 → P02 proposed memory crossing — 2026-09-12
+
+The creator requests the feeling of a person stepping from one memory into another, taking the near-successful statue change around seconds 3–4 of P01 as the visual reference. This is a design proposal, not a rendered or accepted replacement for the current four-frame assembly transition.
+
+Source inspection for this proposal sampled P01 seconds 13–15 and P02 seconds 0–2 at 4 fps, and the P01 statue transition around seconds 3–4 at 12 fps. P01 ends with a near, front-facing man outside the Dog & Duck window; P02 begins with a more distant figure walking across a brick courtyard. These samples do not establish a matching stride, identity or camera velocity at the boundary. No full audio review was performed.
+
+Proposed action: retain the departing memory behind the crossing person; show the destination beyond a physical edge before crossing. Carry one foot's swing, torso rotation and grounded landing continuously into the new space. Let the landing coincide with a brief approximately four-frame environment transition, retaining one opaque, anatomically consistent person and continuous contact shadows. Use the window jamb/brick pier and paving seams as spatial anchors. The source's frontal close scale must ease into the destination's wider side view through camera travel rather than an instant size change. No duplicated transparent body, frozen pose, full-frame blackout or rubber-like architectural warp. The short statue-style transition supplies the pace; it does not by itself create this missing action.
+
+A provisional 0.5–0.8 s connecting action would provide room for the step, with the actual environmental change concentrated around the foot plant. Duration is a design estimate, not a tested fit. A literal continuous crossing needs newly authored connecting footage because a matching step is not established in the inspected endpoints. A local four-frame blend alone can suggest an associative memory change, but should not be described as a physically continuous step. Do not identify P02's score-bearing figure as P01's protagonist or transfer the visible score to him without resolving identity against the actual footage. Preserve the originals and the existing assembly; no additional generation, retiming or transition render has been performed for this proposal.
+
 ### P01 → P02 join
 
 P01 ends outside the Dog & Duck with the protagonist in front of the restaurant window. P02 starts in a different brick courtyard beneath a glass canopy. Although the P01 final-frame reference was visible in the submitted composer, P02 did not preserve that opening composition.

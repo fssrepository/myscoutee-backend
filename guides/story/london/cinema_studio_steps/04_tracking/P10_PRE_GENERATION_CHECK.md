@@ -26,6 +26,14 @@ At the creator's request, production P10 now begins from the occupied balloon fi
 
 Validation: 14,204 characters (796 below the 15,000 limit); all 28 reference handles and their order are unchanged. The rating rule and all text from beat 06.4 through the end, including the six-person table, cup handover and complete sound instructions, remain verbatim. The prompt changes preserve the requested events and add the missing opening connection. They have not been submitted to the composer or tested in a new generation; the incoming uploaded PNG's colour difference remains unchanged.
 
+## Subsequent generation failure — observed at 11:27:03
+
+The creator reported an error in the P10 attempt. The local screenshot `/home/raxim/Pictures/Screenshots/Screenshot from 2026-09-12 11-27-03.png` shows a new card labelled **Failed** and **Credits refunded**, with the message: “Something went wrong. Please try again, or change your input files or prompt.” It does not show an NSFW or Face/IP label, a job ID, a provider error code or the full submitted payload. Record this as one generic failed-generation incident, separately from P09's sensitive-content rejection. The refund badge is observed; its amount has not been checked against account usage.
+
+The preceding 11:23:40 and 11:23:49 screenshots show the repaired opening text in the composer, highlighted visible Element handles, 28 references, Cinema Studio 4.0, 1080p, 16:9, 10 seconds, audio on and a 90-credit quote. Only the visible portions of the composer text are verified. The later empty composer (0/50) does not establish that the submitted request lost its prompt or references.
+
+A fresh MCP completed-video history read still returns P09 (`d428eb2e-4717-4559-84f4-0274cb615da3`) as the latest completed video. This endpoint lists completed jobs and does not expose the failed P10's backend cause. No attribution to Higgsfield versus Seedance, moderation, the opening repair or a specific image is supported by this evidence. The prepared-input check did not guarantee generation success. No additional prompt edit, image replacement or paid retry was performed during this incident review.
+
 ## Exact checked attachments
 
 | Prompt handle | Element ID | Image ID |
