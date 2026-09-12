@@ -2,15 +2,15 @@
 
 Frissítve: **2026-09-12**. Az alábbi táblázat az aktuális nyilvántartás; új eredménynél a megfelelő sort és az összesítést kell frissíteni, nem újabb státuszbekezdést hozzáfűzni.
 
-**10 eredetileg problémás elem: 2 lezárt, 8 nyitott.** A nyitott nyolcból **2-höz még új kép kell**, **6-nál a csere már csatolva van, az elfogadás visszaigazolása hiányzik**. Ez nem nyolc újragenerálást jelent.
+**10 eredetileg problémás elem: 2 lezárt, 8 nyitott.** A nyitott nyolcból **1-hez még új kép kell**, **7-nél a csere már csatolva van, az elfogadás visszaigazolása hiányzik**. Ez nem nyolc újragenerálást jelent.
 
 Ezen felül **1 kapcsolódó folytonossági csere (MW01_B_03)** már csatolva van, végső elfogadása nincs rögzítve. A teljes munkalista így **11 tétel: 2 lezárt és 9 adminisztratívan nyitott**.
 
 | Állapot | Tételek | Darab |
 | --- | --- | ---: |
 | Lezárt | MW02_A_02, MW02_C_02 | 2 |
-| Új kép még szükséges | MW06_A_02, MW06_B_03 | 2 |
-| Csere csatolva; eligibility-visszaigazolás hiányzik | C07, MW01_C_03, MW01_C_04, MW04_C_01, W04_A_03, MW05_B_03 | 6 |
+| Új kép még szükséges | MW06_B_03 | 1 |
+| Csere csatolva; eligibility-visszaigazolás hiányzik | C07, MW01_C_03, MW01_C_04, MW04_C_01, W04_A_03, MW05_B_03, MW06_A_02 | 7 |
 | Kapcsolódó csere csatolva; végső elfogadás hiányzik | MW01_B_03 | 1 |
 
 Az eredeti hibastatisztika továbbra is **7 Face/IP-blokk + 3 lassú/függő ellenőrzés**. A függő ellenőrzés nem igazolt elutasítás. MW04_C_01 P06/P10 előfordulása egyetlen tétel. MW01_B_03 nem önálló Face/IP-hiba. Az API `completed` állapota önmagában nem igazolja a Cinema Studio eligibility eredményét; a hiányzó visszaigazolás miatt nem kell automatikusan újragenerálni a már lecserélt képet.
@@ -30,7 +30,7 @@ Az azonosítóra kattintva a képprompt nyílik meg. A handle az utoljára igazo
 | [MW04_C_01](../02_library/worlds/memories/15_01_MW04_POLICE_DEFENCE_C_VIEW_09.txt) | Face/IP-blokk | **CSERE FELTÖLTVE ÉS BEFŰZVE** | 2026-09-12 MCP: új elem `677bae2a-0620-4b61-ad82-3735b3196cce`, egy új kép csatolva. P06-befűzés a készítő által megerősítve; eligibility-eredmény még nincs rögzítve. | `@loc_MYS_mys-mw04-c-01-memory-view-09_s0_v1` |
 | [W04_A_03](../02_library/worlds/real/W04_A_03_MAIN_WORLD_VIEW_03.txt) | Face/IP-blokk | **CSERE FELTÖLTVE ÉS BEFŰZVE** | 2026-09-12 MCP: új elem `3870047d-f72c-4f4d-894b-bf13dd20c89a`, egy új kép csatolva. P06-befűzés a készítő által megerősítve; eligibility-eredmény még nincs rögzítve. | `@loc_MYS_mys-w04-a-03-world-view-03_s0_v1` |
 | [MW05_B_03](../02_library/worlds/memories/17_03_MW05_COURT_FILE_B_VIEW_07.txt) | Face/IP-blokk | **REPLACEMENT ATTACHED; ACCEPTANCE PENDING** | 2026-09-12 MCP: replacement Element `35917bd1-eff6-4318-b4b3-13689ed3d744`, one image `07eb3e8e-a603-46fe-bb15-8813489020ba`; revised home-study description verified. Attached image visually reviewed: C01, his printed portrait, satire heading, paper-craft gesture and study retained. Handle unchanged; P08 prompt matches. Supplied composer screenshots show 27 references without visible eligibility warnings; separate eligibility pass not confirmed. [Import](../00_project/elements/additions/MW05_B_03_REPLACEMENT_IMPORT.md). | `@loc_MYS_mys-mw05-b-03-memory-view-07_s0_v1` |
-| [MW06_A_02](../02_library/worlds/memories/19_02_MW06_HUMAN_COUNTERMEMORIES_A_VIEW_02.txt) | Face/IP-blokk | **REPLACEMENT PROMPT AND IMPORT READY** | 2026-09-12: detailed replacement prompt preserves C01/C11, station, pass, wallet, bags and the post-tap courtesy; clarifies two-hand anatomy and the cleared passage. [Single-Element import](../00_project/elements/additions/MW06_A_02_REPLACEMENT_IMPORT.md) prepared. MCP: original Element `b05cfd51-c418-49f8-99fa-a098b52ed3bc`, one image `7082560c-1ea8-44f1-8f6c-a64b6d6044c9`, visually reviewed. Rejection cause unconfirmed; new image, binding and eligibility remain pending. | `@loc_MYS_mys-mw06-a-02-memory-view-02_s0_v1` |
+| [MW06_A_02](../02_library/worlds/memories/19_02_MW06_HUMAN_COUNTERMEMORIES_A_VIEW_02.txt) | Face/IP-blokk | **REPLACEMENT ATTACHED; ACCEPTANCE PENDING** | 2026-09-12 MCP: replacement `1ebcd87e-0561-44a3-a323-6ae203c096cb`, one image `ba339d6a-36d4-41f6-b368-f725695cb55e`, completed. Station description and attached metro image reviewed. Actual handle omits the second mys- prefix; production P09 updated. Separate eligibility acceptance remains unconfirmed. | `@loc_MYS_mw06-a-02-memory-view-02_s0_v1` |
 | [MW06_B_03](../02_library/worlds/memories/20_03_MW06_HUMAN_COUNTERMEMORIES_B_VIEW_07.txt) | Face/IP-blokk | **CSERE ELŐKÉSZÍTENDŐ** | Csereprompt, új kép, csatolás és eligibility még hátravan. | `@loc_MYS_mys-mw06-b-03-memory-view-07_s0_v1` |
 
 Importok: [P06 — MW04_C_01 és W04_A_03](../00_project/elements/additions/P06_TWO_ELEMENTS_IMPORT.md), [C07](../00_project/elements/additions/C07_HOUSEMATE_REPLACEMENT_IMPORT.md), [P03 utazási emlékek](../00_project/elements/additions/P03_TRAVEL_MEMORIES_REPLACEMENT_IMPORT.md).

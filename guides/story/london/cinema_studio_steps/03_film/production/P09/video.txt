@@ -17,7 +17,7 @@ MW01 @loc_MYS_mys-mw01-a-london-social_s0_v1
 MW02_A_01 @loc_MYS_mys-mw02-a-01-memory-view-01_s0_v1
 MW02_B @loc_MYS_mys-mw02-b-global-routes_s0_v1
 MW06_A_01 @loc_MYS_mys-mw06-a-01-memory-view-01_s0_v1
-MW06_A_02 @loc_MYS_mys-mw06-a-02-memory-view-02_s0_v1
+MW06_A_02 @loc_MYS_mw06-a-02-memory-view-02_s0_v1
 MW06_A_03 @loc_MYS_mys-mw06-a-03-memory-view-03_s0_v1
 MW06_C_02 @loc_MYS_mys-mw06-c-02-memory-view-01_s0_v1
 R008 @loc_MYS_mys-r008-cafe-to-occupied-restaurant_s0_v1
