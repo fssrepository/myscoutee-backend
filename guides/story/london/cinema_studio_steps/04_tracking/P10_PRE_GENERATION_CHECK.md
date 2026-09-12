@@ -18,7 +18,13 @@ P10's incoming Element contains image b44df1c7-7cbd-4930-a697-15c228aa477b, a 19
 
 The actual final composition shows the remembered protagonist crouching with two helpers beside a balloon basket in a field, with no visible current street walker. P10's opening still requests current C01 walking onward, continued London exterior evening exposure, and a pavement-to-procedural-desk first beat. That is a continuity conflict with the visible predecessor ending, not an Element-binding or moderation finding. The last three seconds were inspected at two sampled frames per second, plus the true final frame; no complete motion or audio review is claimed.
 
-No prompt rewrite, image replacement, upload or generation was performed in this check.
+No prompt rewrite, image replacement, upload or generation was performed during the initial check.
+
+## Follow-up opening repair
+
+At the creator's request, production P10 now begins from the occupied balloon field, keeps the crouching remembered protagonist and helpers in their own space, and reveals an adjoining paved public route through camera travel beside the dry-stone boundary. The desk/rail transformation and policewoman's restrained smile remain within beat 06.3 (0–3 s), overlapping the field exit. The current walker and the separate seated memory protagonist are revealed in their own spaces. Incoming field light is retained before the adjoining dusk city is revealed.
+
+Validation: 14,204 characters (796 below the 15,000 limit); all 28 reference handles and their order are unchanged. The rating rule and all text from beat 06.4 through the end, including the six-person table, cup handover and complete sound instructions, remain verbatim. The prompt changes preserve the requested events and add the missing opening connection. They have not been submitted to the composer or tested in a new generation; the incoming uploaded PNG's colour difference remains unchanged.
 
 ## Exact checked attachments
 
@@ -52,4 +58,3 @@ No prompt rewrite, image replacement, upload or generation was performed in this
 | @loc_MYS_mys-w06-a-04-world-view-04_s0_v1 | da152c5b-5dcf-43a9-83c6-7b09c00746dc | ec34a3fd-d35d-4695-870b-233bd0e2e61a |
 | @loc_MYS_mys-w06-b-01-world-view-05_s0_v1 | 4ebe10f6-d4fc-4dcc-b6e0-08ed05337f03 | d6048c38-211f-479f-b974-d14114cc20ce |
 | @loc_MYS_mys-w06-b-02-world-view-06_s0_v1 | f55acb20-55c2-431a-bd29-03de2b982e58 | b63d8d5c-a1a3-4ffd-b647-d7d9a7ac4954 |
-
