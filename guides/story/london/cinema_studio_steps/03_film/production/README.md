@@ -51,6 +51,8 @@ For every boundary, extract and verify the true last decoded frame locally. Revi
 
 ## Remaining production order and credit allocation — 2026-09-12
 
+Creator pacing assessment: with more credits, the dense clips would have received longer durations to let camera travel and gestures read. Treat duration/event density as a production constraint in later model evaluation. Improvement from longer takes is untested, and this note does not change the current clip durations or the P11 → P12 → optional P10 priority.
+
 P11 preparation was checked against the 12:03 composer screenshots and all 25 live Element attachments; see [P11_PRE_GENERATION_CHECK.md](../../04_tracking/P11_PRE_GENERATION_CHECK.md) for exact bindings, image-review scope and the incoming-frame pixel comparison. No prompt change or generation followed that check.
 
 Live balance checked at 361.2 credits. Prioritise P11 (10 s / last observed 90 credits), then extract and attach its verified final frame for P12 (20 s / 180). This leaves an estimated 91.2 credits for the creator's optional later P10 retry (10 s / 90), with 1.2 left afterward. Confirm the actual composer quote; no retry is included automatically. P12's incoming P11-frame Element is currently empty. P11 and P12 must therefore proceed sequentially.

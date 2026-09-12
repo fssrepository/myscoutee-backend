@@ -55,3 +55,21 @@ P11 can proceed on the checked preparation without another prompt edit. At the d
 | @loc_MYS_mys-w06-b-04-world-view-08_s0_v1 | ae8f4017-e28b-4295-89c7-c9915f691e50 | 72c9147d-eb04-4b33-af8a-1f3d161f2db5 |
 | @loc_MYS_mys-w06-c-01-world-view-09_s0_v1 | 4231767d-e7da-4589-a7b3-5e7268f4997c | f14190f1-43fd-4646-b4d7-51dcdda3d06c |
 | @loc_MYS_mys-w07-a-01-world-view-01_s0_v1 | 837e0ba0-d171-468e-bcd2-71c27e62c0b0 | 64bcbaca-b59f-4d44-8946-a619300871f3 |
+
+## Prior reference reuse and pacing context
+
+Compared exact image IDs with the already retrieved completed P01–P10 job snapshots (11 jobs, including two P01 results). No additional remote query was needed after the creator requested use of the existing log. Of P11's 25 attached images, **16 were previously submitted as references and 9 were not**. The 9 comprise **8 library images plus the extracted P10 continuation frame**. The frame’s content comes from P10 itself; “new” here means first use as an attached input, not new visual content. Prior submission does not establish how much appeared in the generated footage or guarantee future moderation acceptance.
+
+| First-use P11 input | Image ID |
+| --- | --- |
+| @loc_MYS_mys-film-p10-end-frame_s0_v1 | d4e14a7a-49b3-4e43-8fdd-9ca05abd86c1 |
+| @loc_MYS_mys-mr019-paving-and-gutter-to-street-terrace_s0_v1 | b4cf34bc-dd72-49f6-8031-6aeb88c29b33 |
+| @loc_MYS_mys-reference-39-westminster-and-parliament-square-london-source_s0_v1 | 17a4addc-0e77-41a2-b134-299659db3fa4 |
+| @loc_MYS_mys-reference-54-big-ben-elizabeth-tower-london-source_s0_v1 | 5f9c38df-8941-4bc3-88d0-efb59af3495c |
+| @loc_MYS_mys-reference-55-westminster-abbey-london-source_s0_v1 | 012127b3-b531-4e1e-b615-e25cb57d1b62 |
+| @loc_MYS_mys-w06-b-03-world-view-07_s0_v1 | c3aad5e6-2405-44ea-83ee-204d4795669e |
+| @loc_MYS_mys-w06-b-04-world-view-08_s0_v1 | 72c9147d-eb04-4b33-af8a-1f3d161f2db5 |
+| @loc_MYS_mys-w06-c-01-world-view-09_s0_v1 | f14190f1-43fd-4646-b4d7-51dcdda3d06c |
+| @loc_MYS_mys-w07-a-01-world-view-01_s0_v1 | 64bcbaca-b59f-4d44-8946-a619300871f3 |
+
+The creator identifies limited credits as a constraint on clip duration and would have lengthened dense clips with a larger budget. Longer camera/gesture intervals plausibly improve readability, but no controlled duration comparison was run. Keep this production constraint separate from measured output defects and model-wide claims. Current durations and credit allocation remain unchanged.
