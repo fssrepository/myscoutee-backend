@@ -1,5 +1,7 @@
 # MyScoutee - THE PATH BETWEEN PEOPLE
 
+The higher-bitrate video (~4 GB) and separate WAV narration are available in `a_video/director_cut/raw`.
+
 - MYSCOUTEE — THE PATH BETWEEN PEOPLE follows one continuous walk through an impossible London–Budapest city, where fragments of a life appear inside windows, vehicles and wet reflections. Travel, work, relationships and encounters with institutions collide out of order, while people continuously reduce one another to visible scores. Beneath the systems, classifications and absurdities, the film keeps returning to the same question: what remains of a person when the record can never contain the whole story?
 
 ## ✨ Context
