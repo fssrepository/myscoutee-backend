@@ -1,6 +1,8 @@
 # Narration — one continuous recording, separate until the final mix
 
-Use [03_film/narration.txt](../03_film/narration.txt) as the single TTS Script input. It concatenates all seven existing passages verbatim and in order, separated only by blank lines. A01–A07 stay as source text files, not seven paid jobs or audio Elements. The AI-survival acknowledgement in A04 and final uncertainty remain unchanged.
+Current Director’s Cut text: [narration_directors_cut.txt](../03_film/narration_directors_cut.txt), a 323-word rewrite for the actual 202.541667-second picture. The creator rejected the old recording’s content alignment as well as its timing. See the [picture-based placement draft](../04_tracking/DIRECTORS_CUT_NARRATION_REWRITE.md). This is a new script for review, not a generated or mixed replacement recording. Keep Grady and the existing voice controls. The AI assistance acknowledgement and uncertain ending remain.
+
+The original [narration.txt](../03_film/narration.txt) and A01–A07 are retained as provenance for the existing MP3. They concatenate seven passages verbatim; do not use that old block schedule for the rewrite. The historical timing section below describes that recording, not the new draft. The Script field always contains spoken words only.
 
 ## Locked working voice and controls
 
@@ -8,7 +10,7 @@ The creator selected **Grady**, using **MiniMax Speech 2.8 HD**, during the pilo
 
 The Script field contains spoken words only. Do not paste timing tables, instructions or section headings into it. Request clean narration without music or ambience using a separate direction field only if the UI actually offers one. The performance is intimate, restrained, slightly tired inner monologue; no trailer delivery, reassuring advertising cadence or audible block announcements.
 
-## Timing and local placement
+## Original recording: historical timing and local placement
 
 The full source contains 360 whitespace-delimited tokens (isolated dashes are included); 200 seconds implies approximately 108 tokens/minute including pauses. This is a planning ratio, not a generated duration.
 
