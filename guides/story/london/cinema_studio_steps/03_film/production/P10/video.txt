@@ -21,7 +21,7 @@ MW05_B_01 @loc_MYS_mys-mw05-b-01-memory-view-05_s0_v1
 MW06_A_04 @loc_MYS_mys-mw06-a-04-memory-view-04_s0_v1
 MW06_B_01 @loc_MYS_mys-mw06-b-01-memory-view-05_s0_v1
 MW06_B_02 @loc_MYS_mys-mw06-b-02-memory-view-06_s0_v1
-MW06_B_03 @loc_MYS_mys-mw06-b-03-memory-view-07_s0_v1
+MW06_B_03 @loc_MYS_mw06-b-03-memory-view-07_s0_v1
 MW06_B_04 @loc_MYS_mys-mw06-b-04-memory-view-08_s0_v1
 MW06_C_01 @loc_MYS_mys-mw06-c-01-memory-view-09_s0_v1
 MW06_C_03 @loc_MYS_mys-mw06-c-03-memory-view-07_s0_v1
