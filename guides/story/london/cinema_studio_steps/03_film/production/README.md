@@ -2,7 +2,7 @@
 
 The accepted 4-second V00 ident is complete. Generate the following 12 story requests in order, using the linked video.txt files. They total 200 seconds. The old 01–07 files remain the unmodified detailed source chapters; do not use their former generation boundaries.
 
-All 63 original story beats remain. 62 beat paragraphs remain verbatim; in 06.4 only obsolete last-frame/next-clip wording now describes the internal transition at 6 seconds. Musical cues and rating rules are scoped to the actual production request. The existing 216 selected library Elements are still used across the film. Repeated chapter-wide reference lists are replaced by the union needed for the assigned beats. No new storyboard images, panel crops, grids or narration generation.
+All 63 original story beats remain. At initial repartition, 62 beat paragraphs remained verbatim and only 06.4 changed its boundary wording. Later continuity and staging revisions are recorded below and in the linked tracking reports; the current prompts include those revisions. Musical cues and rating rules are scoped to the actual production request. The existing 216 selected library Elements are still used across the film. Repeated chapter-wide reference lists are replaced by the union needed for the assigned beats. No new storyboard images, panel crops, grids or narration generation.
 
 | Request | Story time | Seconds | Source beats | Refs incl. incoming frame | Characters | 1080p credits |
 |---|---|---:|---|---:|---:|---:|
@@ -15,9 +15,9 @@ All 63 original story beats remain. 62 beat paragraphs remain verbatim; in 06.4 
 | [P07](P07/video.txt) | 105–135 s | 30 | 04.6 → 05.5 | 26 | 14515 | 270 |
 | [P08](P08/video.txt) | 135–150 s | 15 | 05.6 → 05.9 | 27 | 12476 | 135 |
 | [P09](P09/video.txt) | 150–160 s | 10 | 06.1 → 06.2 | 25 | 11360 | 90 |
-| [P10](P10/video.txt) | 160–170 s | 10 | 06.3 → 06.5 | 28 | 12500 | 90 |
-| [P11](P11/video.txt) | 170–180 s | 10 | 06.6 → 07.1 | 25 | 13134 | 90 |
-| [P12](P12/video.txt) | 180–200 s | 20 | 07.2 → 07.9 | 25 | 14151 | 180 |
+| [P10](P10/video.txt) | 160–170 s | 10 | 06.3 → 06.5 | 28 | 14934 | 90 |
+| [P11](P11/video.txt) | 170–180 s | 10 | 06.6 → 07.1 | 25 | 14542 | 90 |
+| [P12](P12/video.txt) | 180–200 s | 20 | 07.2 → 07.9 | 25 | 14957 | 180 |
 
 The story clock starts after the ident; add 4 seconds for the full-film clock. At the creator-reported 9 credits/second, these requests cost 1800 in total. Splitting adds no footage seconds. Read the actual UI quote before each paid request.
 
@@ -48,6 +48,22 @@ Reuse the seven existing frame Elements in the order below. Their old Vxx names 
 [Import the four additional final-frame definitions](../../00_project/elements/additions/PRODUCTION_REPARTITION_FRAMES_IMPORT.md). This is metadata only, not image generation. P09–P12 deliberately contain UNBOUND placeholders until these definitions have been imported and their actual handles queried. Do not paste those four prompts before binding. P02–P08 also need their accepted predecessor frames attached before use. P01 needs no incoming frame.
 
 For every boundary, extract and verify the true last decoded frame locally. Review the outgoing camera direction, gesture and objects before the next generation; adjust only the continuation instructions to the actual accepted result. Do not use the known early Higgsfield end-frame export. Final-frame extraction has zero generative credit cost.
+
+## Remaining production order and credit allocation — 2026-09-12
+
+Live balance checked at 361.2 credits. Prioritise P11 (10 s / last observed 90 credits), then extract and attach its verified final frame for P12 (20 s / 180). This leaves an estimated 91.2 credits for the creator's optional later P10 retry (10 s / 90), with 1.2 left afterward. Confirm the actual composer quote; no retry is included automatically. P12's incoming P11-frame Element is currently empty. P11 and P12 must therefore proceed sequentially.
+
+The P10 retry prompt is prepared; the successful earlier P10 prompt is archived in [P10_COMPLETED_RETRY_PROMPT.txt](../../04_tracking/P10_COMPLETED_RETRY_PROMPT.txt). P10 now uses one curved desk-to-lawyer-to-table route, P11 strengthens the rise and descent through occupied levels, and P12 preserves its scripted withdrawal into stillness. See the [remaining-credit review](../../04_tracking/P10_PRE_GENERATION_CHECK.md) for validation, P06 sampling and current character counts. A P10 retry made after P11 must match the completed P11 opening as well as the P09 ending before replacing the original; retain the original and its frame until both joins have been reviewed. No new output is claimed by these prompt edits.
+
+## Generated spatial-transition defect and P11–P12 revision — 2026-09-12
+
+Creator-selected camera reference: P06 has the most spectacular camera movement in the current film; use its actual footage as the comparison reference for later motion reviews. This records the creator’s preference, not a new frame-by-frame comparative analysis. Before transferring a specific move to another prompt, check its path, speed changes, parallax and available space against that clip’s incoming frame and story actions.
+
+P10's completed retry has repeated vertical scene wipes, uneven movement and partial transparent overlap; the creator rejects the page-turning effect and reports much better earlier clips and other camera movements. This is an output-quality/instruction-following bug, separate from P10's generic generation failure. See [the P10 motion review and follow-up](../../04_tracking/P10_PRE_GENERATION_CHECK.md#completed-retry-motion-and-transition-review) for source provenance, observed intervals and limits of the diagnosis. “Seedance 2.5” is the creator's version attribution; the recorded job identifies Cinema Studio 4.0, not an independently verified underlying version.
+
+P11 and P12 now use continuous visible floors/supports and multiple occupied spaces in depth, with a specific smooth camera curve rather than successive full-frame room reveals behind moving edges. P11 starts at the actual P10 six-person table, pulls back and rises, then descends toward the separate public walker. P12 advances diagonally along the bed spaces and local foot/rope details before approaching the glass. Local material folds remain; whole-scene page turns and lateral wipes are prohibited. All events, reference handles, beat times and sound sections are retained, including P12's deliberate clinical/title cuts. Both prompts fit the 15,000-character limit. These revisions have not yet been validated in generated output.
+
+This changes instructions for internal generated transitions only. The recorded short inter-clip assembly dissolve remains a separate editing decision.
 
 ## Local assembly and transition record — 2026-09-11
 
