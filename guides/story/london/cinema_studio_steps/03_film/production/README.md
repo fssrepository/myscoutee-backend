@@ -51,6 +51,8 @@ For every boundary, extract and verify the true last decoded frame locally. Revi
 
 ## Remaining production order and credit allocation — 2026-09-12
 
+P11 preparation was checked against the 12:03 composer screenshots and all 25 live Element attachments; see [P11_PRE_GENERATION_CHECK.md](../../04_tracking/P11_PRE_GENERATION_CHECK.md) for exact bindings, image-review scope and the incoming-frame pixel comparison. No prompt change or generation followed that check.
+
 Live balance checked at 361.2 credits. Prioritise P11 (10 s / last observed 90 credits), then extract and attach its verified final frame for P12 (20 s / 180). This leaves an estimated 91.2 credits for the creator's optional later P10 retry (10 s / 90), with 1.2 left afterward. Confirm the actual composer quote; no retry is included automatically. P12's incoming P11-frame Element is currently empty. P11 and P12 must therefore proceed sequentially.
 
 The P10 retry prompt is prepared; the successful earlier P10 prompt is archived in [P10_COMPLETED_RETRY_PROMPT.txt](../../04_tracking/P10_COMPLETED_RETRY_PROMPT.txt). P10 now uses one curved desk-to-lawyer-to-table route, P11 strengthens the rise and descent through occupied levels, and P12 preserves its scripted withdrawal into stillness. See the [remaining-credit review](../../04_tracking/P10_PRE_GENERATION_CHECK.md) for validation, P06 sampling and current character counts. A P10 retry made after P11 must match the completed P11 opening as well as the P09 ending before replacing the original; retain the original and its frame until both joins have been reviewed. No new output is claimed by these prompt edits.
