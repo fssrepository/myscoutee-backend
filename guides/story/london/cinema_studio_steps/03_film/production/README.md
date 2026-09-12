@@ -446,3 +446,7 @@ The creator now reports 1937 credits. Reserve 1800 for the story and the remaini
 ### P11 original final frame for P12
 
 At the creator’s explicit correction, `/home/raxim/Downloads/p11_last_frame.png` was extracted directly from original `p11.mp4`, not the fixed derivative: zero-based frame 240 (241st frame), PTS 10.000000 s, 1920×1080, 16-bit RGB PNG. The original and fixed last decoded 10-bit YUV frames have identical SHA-256 `32eda199f75f0476680bd30caac442aa7246eabcf20cb01ef82bb5a63ed6d539`. P12’s local opening matches the elevated skyline and gradual descent; 14938 characters, 25 unique references. Preparation may proceed with this image for `@loc_MYS_mys-film-p11-end-frame_s0_v1`. Extraction does not upload or attach it, and this local check does not verify the live composer.
+
+### P12 composer double check
+
+The 12:45 composer screenshots and all 25 live attachments were checked; see [P12_PRE_GENERATION_CHECK.md](../../04_tracking/P12_PRE_GENERATION_CHECK.md). The P11 end-frame Element is now populated. Settings match 20 s, 1080p, 16:9, audio On, 180 credits. No visible warning or missing reference was found. Uploaded scene/crop matches the original P11 endpoint, with a documented RGB-value difference. No prompt edit or generation was performed; output continuity and provider acceptance remain unproven.
