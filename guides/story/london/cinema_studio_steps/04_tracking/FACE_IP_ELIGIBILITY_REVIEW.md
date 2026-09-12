@@ -9,7 +9,7 @@ Ezen felül **1 kapcsolódó folytonossági csere (MW01_B_03)** már csatolva va
 | Állapot | Tételek | Darab |
 | --- | --- | ---: |
 | Lezárt | MW02_A_02, MW02_C_02 | 2 |
-| Csere még előkészítendő | MW05_B_03, MW06_A_02, MW06_B_03 | 3 |
+| Új kép még szükséges | MW05_B_03, MW06_A_02, MW06_B_03 | 3 |
 | Csere csatolva; eligibility-visszaigazolás hiányzik | C07, MW01_C_03, MW01_C_04, MW04_C_01, W04_A_03 | 5 |
 | Kapcsolódó csere csatolva; végső elfogadás hiányzik | MW01_B_03 | 1 |
 
@@ -29,7 +29,7 @@ Az azonosítóra kattintva a képprompt nyílik meg. A handle az utoljára igazo
 | [MW02_C_02](../02_library/worlds/memories/09_02_MW02_GLOBAL_ROUTES_C_VIEW_01.txt) | Lassú / függő ellenőrzés | **LEZÁRT** | A csere elfogadását a készítő 2026-09-11-én megerősítette. | `@loc_MYS_mys-mw02-c-02-memory-view-01_s0_v1` |
 | [MW04_C_01](../02_library/worlds/memories/15_01_MW04_POLICE_DEFENCE_C_VIEW_09.txt) | Face/IP-blokk | **CSERE FELTÖLTVE ÉS BEFŰZVE** | 2026-09-12 MCP: új elem `677bae2a-0620-4b61-ad82-3735b3196cce`, egy új kép csatolva. P06-befűzés a készítő által megerősítve; eligibility-eredmény még nincs rögzítve. | `@loc_MYS_mys-mw04-c-01-memory-view-09_s0_v1` |
 | [W04_A_03](../02_library/worlds/real/W04_A_03_MAIN_WORLD_VIEW_03.txt) | Face/IP-blokk | **CSERE FELTÖLTVE ÉS BEFŰZVE** | 2026-09-12 MCP: új elem `3870047d-f72c-4f4d-894b-bf13dd20c89a`, egy új kép csatolva. P06-befűzés a készítő által megerősítve; eligibility-eredmény még nincs rögzítve. | `@loc_MYS_mys-w04-a-03-world-view-03_s0_v1` |
-| [MW05_B_03](../02_library/worlds/memories/17_03_MW05_COURT_FILE_B_VIEW_07.txt) | Face/IP-blokk | **CSERE ELŐKÉSZÍTENDŐ** | Csereprompt, új kép, csatolás és eligibility még hátravan. | `@loc_MYS_mys-mw05-b-03-memory-view-07_s0_v1` |
+| [MW05_B_03](../02_library/worlds/memories/17_03_MW05_COURT_FILE_B_VIEW_07.txt) | Face/IP-blokk | **REPLACEMENT PROMPT AND IMPORT READY** | 2026-09-12: revised image prompt preserves C01, his printed portrait, the satire text, craft gesture and study details. [Single-Element import](../00_project/elements/additions/MW05_B_03_REPLACEMENT_IMPORT.md) prepared. MCP still shows the original Element with one image; rejection cause unconfirmed. New image, import/binding verification and eligibility remain pending. | `@loc_MYS_mys-mw05-b-03-memory-view-07_s0_v1` |
 | [MW06_A_02](../02_library/worlds/memories/19_02_MW06_HUMAN_COUNTERMEMORIES_A_VIEW_02.txt) | Face/IP-blokk | **CSERE ELŐKÉSZÍTENDŐ** | Csereprompt, új kép, csatolás és eligibility még hátravan. | `@loc_MYS_mys-mw06-a-02-memory-view-02_s0_v1` |
 | [MW06_B_03](../02_library/worlds/memories/20_03_MW06_HUMAN_COUNTERMEMORIES_B_VIEW_07.txt) | Face/IP-blokk | **CSERE ELŐKÉSZÍTENDŐ** | Csereprompt, új kép, csatolás és eligibility még hátravan. | `@loc_MYS_mys-mw06-b-03-memory-view-07_s0_v1` |
 
