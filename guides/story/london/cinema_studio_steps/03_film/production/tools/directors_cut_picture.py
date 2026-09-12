@@ -1,13 +1,23 @@
 #!/usr/bin/env python3
 """Original-source lossless Director Cut. Run from repository root; see production README."""
 from pathlib import Path
-import sys,json,subprocess,hashlib,os
+import argparse,sys,json,subprocess,hashlib,os
 import numpy as np,cv2
 sys.path.insert(0,str(Path.cwd()/'guides/story/london/cinema_studio_steps/03_film/production/tools'))
 from p03_edit import ffmpeg,frame_hashes,check_equal,transport,probe
 from p03_transition import COMPAT_HEADERS
 cv2.setNumThreads(2)
-M=Path('/home/raxim/Downloads');W=M/'.full-film-dream';plan=json.loads((W/'plan.json').read_text());rows=plan['clips'];B=1920*1080*3
+parser=argparse.ArgumentParser()
+parser.add_argument('--work-dir',type=Path,default=Path('/home/raxim/Downloads/.full-film-dream'))
+parser.add_argument('--transition',choices=['blur','plain'],default='blur')
+args=parser.parse_args()
+M=Path('/home/raxim/Downloads');W=args.work_dir;plan=json.loads((W/'plan.json').read_text());rows=plan['clips'];B=1920*1080*3
+recipe=W/'transition_recipe.json'
+if recipe.exists():
+ assert json.loads(recipe.read_text())['transition']==args.transition,'Use a separate work directory for each transition recipe'
+else:
+ assert not list(W.glob('lossless_*.mp4')),'Unlabelled encoded cache: use a fresh work directory'
+ recipe.write_text(json.dumps({'transition':args.transition,'overlap_frames':4}))
 # Original decode is the pixel oracle, including the requested fixed P11.
 for r in rows:
  assert hashlib.sha256((M/r['file']).read_bytes()).hexdigest()==r['sha256'],'Source changed: invalidate its dependent caches before rebuilding'
@@ -51,7 +61,7 @@ def frame(g):
  if blend:
   a=(n+1)/5;f=np.rint((1-a)*raws[idx-1][rows[idx-1]['frames']-4+n].astype(np.float64)+a*f.astype(np.float64)).clip(0,1023).astype('<u2')
  sigma=0
- for boundary in boundaries:
+ for boundary in (boundaries if args.transition=='blur' else []):
   t=g-boundary
   if -5<t<12:
    q=(t+5)/6.5 if t<=1.5 else (12-t)/10.5;q=max(0,min(1,q));sigma=14*q*q*(3-2*q);break
@@ -101,5 +111,5 @@ assert len(times)==plan['frames'] and abs(times[0])<.00001
 assert all(abs(b-a-1/24)<.00002 for a,b in zip(times,times[1:]))
 for r in rows:check_equal(hashlib.sha256((M/r['file']).read_bytes()).hexdigest(),r['sha256'],'original file unchanged')
 (W/'expected_picture_hashes.json').write_text(json.dumps(expected))
-result={'frames':plan['frames'],'duration':plan['duration'],'boundaries_seconds':[x/24 for x in boundaries],'copied_frames':sum(n for _,n,k in parts if k=='copy'),'losslessly_encoded_frames':sum(n for _,n,k in parts if k=='lossless'),'visually_modified_frames':len(set(modified)),'unaffected_pixels':'identical to selected original source frames','p11_source':'p11_fixed.mp4','parts':[{'file':p.name,'frames':n,'mode':k} for p,n,k in parts]}
+result={'transition':args.transition,'frames':plan['frames'],'duration':plan['duration'],'boundaries_seconds':[x/24 for x in boundaries],'copied_frames':sum(n for _,n,k in parts if k=='copy'),'losslessly_encoded_frames':sum(n for _,n,k in parts if k=='lossless'),'visually_modified_frames':len(set(modified)),'unaffected_pixels':'identical to selected original source frames','p11_source':'p11_fixed.mp4','parts':[{'file':p.name,'frames':n,'mode':k} for p,n,k in parts]}
 (W/'picture_validation.json').write_text(json.dumps(result,indent=2));print(json.dumps(result),flush=True)
