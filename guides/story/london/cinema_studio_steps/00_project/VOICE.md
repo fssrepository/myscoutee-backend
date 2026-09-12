@@ -1,6 +1,8 @@
 # Narration — one continuous recording, separate until the final mix
 
-Current Director’s Cut text: [narration_directors_cut.txt](../03_film/narration_directors_cut.txt), a 323-word rewrite for the actual 202.541667-second picture. The creator rejected the old recording’s content alignment as well as its timing. See the [picture-based placement draft](../04_tracking/DIRECTORS_CUT_NARRATION_REWRITE.md). This is a new script for review, not a generated or mixed replacement recording. Keep Grady and the existing voice controls. The AI assistance acknowledgement and uncertain ending remain.
+Latest editorial draft: [narration_directors_cut_v3.txt](../03_film/narration_directors_cut_v3.txt), 320 words. The creator found the recorded v2 better aligned but weaker in meaning. V3 restores the original’s institutional critique, limits of the record and unresolved humanity; see the [comparison](../04_tracking/DIRECTORS_CUT_NARRATION_V3_REVIEW.md). V3 is not recorded or mixed; the existing v2 files remain unchanged.
+
+Recorded v2 text: [narration_directors_cut.txt](../03_film/narration_directors_cut.txt), a 323-word rewrite for the actual 202.541667-second picture. The creator rejected the old recording’s content alignment as well as its timing. See the [picture-based placement draft](../04_tracking/DIRECTORS_CUT_NARRATION_REWRITE.md). The creator supplied `narration_new.mp3`; it is now placed in the v2 viewing and editable movies. See [measured placement](../04_tracking/DIRECTORS_CUT_AUDIO_VALIDATION_V2.json). Keep Grady and the existing voice controls. The AI assistance acknowledgement and uncertain ending remain.
 
 The original [narration.txt](../03_film/narration.txt) and A01–A07 are retained as provenance for the existing MP3. They concatenate seven passages verbatim; do not use that old block schedule for the rewrite. The historical timing section below describes that recording, not the new draft. The Script field always contains spoken words only.
 

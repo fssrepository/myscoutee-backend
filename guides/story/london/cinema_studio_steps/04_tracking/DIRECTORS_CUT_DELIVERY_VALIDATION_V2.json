@@ -1,0 +1,16 @@
+{
+  "video": "all 4861 compressed picture packet hashes and timestamps identical to verified picture master in both files",
+  "editable_audio": "both PCM float tracks decode identically to aligned source stems",
+  "outputs": [
+    {
+      "file": "/home/raxim/Downloads/myscoutee_directors_cut_v2.mp4",
+      "bytes": 4001250998
+    },
+    {
+      "file": "/home/raxim/Downloads/myscoutee_directors_cut_editable_v2.mov",
+      "bytes": 4136180324
+    }
+  ],
+  "preview_audio": "single AAC listening mix; editing movie retains separate un-ducked background and clean narration",
+  "originals": "untouched"
+}
