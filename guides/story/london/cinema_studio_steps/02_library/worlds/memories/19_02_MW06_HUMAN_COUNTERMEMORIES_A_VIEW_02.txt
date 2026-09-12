@@ -1,13 +1,8 @@
-REFERENCE ID: MW06_A_02 — ORIGINAL VIEW 02 (never print IDs, headings or labels).
-
-OUTPUT ELEMENT ASSIGNMENT — OPERATOR METADATA ONLY, NEVER RENDER:
-Target import name: MYS MW06_A_02 Memory View 02
-Live output Element name (operator lookup only): loc_MYS_mys-mw06-a-02-memory-view-02_s0_v1
-Live output Element UUID: b05cfd51-c418-49f8-99fa-a098b52ed3bc
-Image attachment verified via MCP on 2026-09-10. This output target is not an input reference.
+REFERENCE ID: MW06_A_02 — ORIGINAL VIEW 02 — 2K — 16:9 — ONE FULL-FRAME IMAGE.
+The reference ID and output settings are instructions, not text to print inside the image.
 
 REFERENCE INPUTS:
-@loc_MYS_mys-mw02-a-01-memory-view-01_s0_v1 = Use the accepted metro-gate image for the same helper, monthly pass and station; reconstruct the assigned action after the tap.
+@loc_MYS_mys-mw02-a-01-memory-view-01_s0_v1 = Use the accepted metro-gate image for the same station, gate construction, monthly pass, bags, wardrobe and spatial relationships. Advance the action to AFTER the tap; do not repeat its earlier hand pose.
 @char_MYS_mys-c01-protagonist_s0_v1 = CHARACTER 01 — PROTAGONIST; exact person identity; use only where this person appears.
 @char_MYS_mys-c11-russian-transit-passenger_s0_v1 = CHARACTER 11 — RUSSIAN TRANSIT PASSENGER; exact person identity; use only where this person appears.
 
@@ -43,9 +38,19 @@ Additional detail images of the same place retain that memory and its establishe
 
 ASSIGNED COMPOSITION — ORIGINAL VIEW 02, ONE IMAGE:
 MONTHLY PASS PUT AWAY, PASSAGE KEPT CLEAR:
-Within the established gate assistance, the helper has finished the tap and is putting his single monthly travel pass back into an open wallet. The protagonist is physically passing through the cleared lane with his bag kept close to his body. The helper uses his free hand to keep his own belongings out of the narrow passage; it is a small practical courtesy, with no theatrical gesture.
+Show the next ordinary moment in the established Moscow / Saint Petersburg metro encounter. C11 is the same adult local passenger from the character reference, helping remembered C01 through the transit gate. Preserve both supplied identities, ages, hair, builds and source clothing: the helper's dark commuter coat over a simple knit layer and his small everyday shoulder bag; the protagonist's dark navy jacket, dark top, trousers and travel bag. The helper remains a fellow passenger, with a calm practical expression. C01 is quietly attentive to the passage. No pose toward the camera or exaggerated gratitude.
+
+The tap has already finished. The helper stands beside the same reader, clear of C01's lane, and is putting his SINGLE monthly travel pass back into his open wallet. Show one plain card partly inserted into a wallet pocket, with its remaining edge visible. The wallet has a readable fold, layered leather edge and slot opening; the card is an ordinary physical travel document, without a legible personal name, number or portrait. Keep its material and design consistent with the source reference. Do not invent a second loose pass or repeat the tap.
+
+Give the helper exactly two anatomically separate hands. One hand supports the open wallet at waist height and uses its thumb to slide the partly inserted card farther into the slot. His other hand holds his own bag or its strap close against his hip, keeping it out of the narrow passage. Retain the source bag side and strap attachment. Keep both wrists connected to their correct sleeves, with natural finger joints and visible contact at the wallet and bag. The card and wallet remain well away from the reader, separated from it by clear air; no third hand is needed to perform this moment.
+
+C01 is physically mid-step through the cleared lane, keeping his own travel bag close to his body. Preserve his source bag and its handle or strap rather than exchanging it for the helper's bag. Show a supporting foot on the tiled floor and the other leg continuing through the opening. His coat, hand and bag all fit between the actual barrier edges; no body or luggage intersects the gate. The helper's stillness beside the reader and C01's small forward step make the practical courtesy legible without a theatrical gesture.
 
 Resolve wallet fold, card edge, bag strap and the two separate working hands. Keep the actual reader, barrier edge and tiled floor at their established locations, with other commuters behind their own lane boundaries. The pass is not touching the reader in this still and is not duplicated. MW02_A_01 supplies the tap itself; this image supplies personal objects being put away while another person gains room to pass.
+
+Use one oblique medium-wide view at ordinary standing eye level. Keep both principal faces, the wallet action, the helper's bag hand, C01's passage and the gate opening visible together. Let the nearest reader housing show its curved top and solid metal side, with the barrier's thickness and floor fixings in the same view. Preserve the accepted station's stone or tiled columns, overhead practical lights, rear entrance and receding parallel lanes. Keep the same gate mechanism: its existing leaves or barrier arms are in the cleared position, not replaced by a different type of turnstile. Retain any source passage indicator on its actual reader; the station does not become a screen graphic.
+
+The wallet and card remain large enough to distinguish at 2K without isolating them in an inset. Keep useful focus across the two people and their hands, natural contact shadows on metal, fabric and flooring, and enough visible floor to establish both people's physical support. Other ordinary commuters occupy deeper parts of the same station behind their own lane boundaries. They remain incidental and distinct, without copies of C01 or C11. No one reaches across the protagonists' working hands. Preserve the crowd's presence while keeping a clear sightline to this single helpful action.
 
 FINAL CHECK:
 One full-frame 16:9 image at selected 2K. Direct memory scene, no score cards, no present-city overlay, no printed instruction labels.
