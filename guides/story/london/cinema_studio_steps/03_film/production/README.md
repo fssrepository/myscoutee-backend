@@ -17,7 +17,7 @@ All 63 original story beats remain. At initial repartition, 62 beat paragraphs r
 | [P09](P09/video.txt) | 150–160 s | 10 | 06.1 → 06.2 | 25 | 11360 | 90 |
 | [P10](P10/video.txt) | 160–170 s | 10 | 06.3 → 06.5 | 28 | 14934 | 90 |
 | [P11](P11/video.txt) | 170–180 s | 10 | 06.6 → 07.1 | 25 | 14542 | 90 |
-| [P12](P12/video.txt) | 180–200 s | 20 | 07.2 → 07.9 | 25 | 14957 | 180 |
+| [P12](P12/video.txt) | 180–200 s | 20 | 07.2 → 07.9 | 25 | 14938 | 180 |
 
 The story clock starts after the ident; add 4 seconds for the full-film clock. At the creator-reported 9 credits/second, these requests cost 1800 in total. Splitting adds no footage seconds. Read the actual UI quote before each paid request.
 
@@ -61,6 +61,8 @@ The P10 retry prompt is prepared; the successful earlier P10 prompt is archived 
 
 ## Generated spatial-transition defect and P11–P12 revision — 2026-09-12
 
+P11 has since completed with a confirmed hard scene change at frame 208 (8.666667 s) into the Westminster panorama. Regeneration is ruled out. [Local repair and P12 correction](../../04_tracking/P11_WESTMINSTER_TRANSITION_REVIEW.md) records the completed `/home/raxim/Downloads/p11_fixed.mp4`: four moving blended frames (206–209), original duration and AAC unchanged. Frames 0–141 are copied; frames 142–240 are encoded losslessly because of HEVC dependencies. All 237 unaffected decoded frames, audio payloads/timestamps and the final frame match the original. The 178,400,996-byte output preserves 1080p/24 fps/10-bit BT.709; only HEVC compatibility headers are normalized. Reproduce with `tools/p11_transition.py --media-dir /home/raxim/Downloads` (refuses to overwrite). Creator visual acceptance is pending. P12 now descends from the actual elevated endpoint and retains the skyline.
+
 Creator-selected camera reference: P06 has the most spectacular camera movement in the current film; use its actual footage as the comparison reference for later motion reviews. This records the creator’s preference, not a new frame-by-frame comparative analysis. Before transferring a specific move to another prompt, check its path, speed changes, parallax and available space against that clip’s incoming frame and story actions.
 
 P10's completed retry has repeated vertical scene wipes, uneven movement and partial transparent overlap; the creator rejects the page-turning effect and reports much better earlier clips and other camera movements. This is an output-quality/instruction-following bug, separate from P10's generic generation failure. See [the P10 motion review and follow-up](../../04_tracking/P10_PRE_GENERATION_CHECK.md#completed-retry-motion-and-transition-review) for source provenance, observed intervals and limits of the diagnosis. “Seedance 2.5” is the creator's version attribution; the recorded job identifies Cinema Studio 4.0, not an independently verified underlying version.
@@ -85,6 +87,8 @@ Current local media directory: `/home/raxim/Downloads/`.
 Both final-frame PNGs were extracted from decoded frame index 360 (zero-based). Extract continuation frames from each original clip, never from an assembly with transitions. Determine the actual last decoded frame for each future clip rather than assuming every clip has 361 frames.
 
 ### P01 → P02 proposed memory crossing — 2026-09-12
+
+**Current status: paused; crop-release preview rejected.** The creator says the local zoom/cross-dissolve experiment does not reproduce the statue’s dreamlike change. Do not reuse that preview or continue it. The latest direction is to reuse the actual P01 statue transition and the existing Python recipe, without inventing another effect.
 
 The creator requests the feeling of a person stepping from one memory into another, taking the near-successful statue change around seconds 3–4 of P01 as the visual reference. This is a design proposal, not a rendered or accepted replacement for the current four-frame assembly transition.
 
