@@ -88,7 +88,7 @@ Both final-frame PNGs were extracted from decoded frame index 360 (zero-based). 
 
 ### P01 → P02 proposed memory crossing — 2026-09-12
 
-**Current status: resumed by the creator; v2 preview rendered, acceptance pending.** The earlier crop-release preview remains rejected. The new trial uses the existing four-frame statue recipe with original uncropped moving images. No zoom, warp or added blur. See the v2 record below.
+**Current status: v3 focus-blur preview rendered, acceptance pending.** The earlier crop-release preview remains rejected. The new trial uses the existing four-frame statue recipe with original uncropped moving images. No zoom, warp or added blur. See the v2 record below.
 
 The creator requests the feeling of a person stepping from one memory into another, taking the near-successful statue change around seconds 3–4 of P01 as the visual reference. The literal crossing remains a design proposal; the v2 local photographic overlap below is a rendered trial, not an accepted replacement for the assembly.
 
@@ -105,6 +105,12 @@ Output: `/home/raxim/Downloads/p01_p02_dream_transition_v2_preview.mp4` (26,249,
 The previous preview’s 1.96× crop/release is removed. Geometry and source colours are unchanged before encoding; no added blur or optical-flow warp. Encoding follows the existing helper’s source-P02 bitrate target, so this is a lossy review preview, not a lossless master. The same prior preview AAC is copied without another audio encode, retaining its four-frame triangular crossfade and timing. Whole-clip decode, 165-frame count, post-mux frame hashes, unchanged AAC payloads and original source hashes passed. Transition frames 67–74 visually inspected; no listening/player review claimed. Source hashes and exact recipe: `04_tracking/P01_P02_DREAM_V2_RECIPE.json`.
 
 This tests a short associative change of memory space. The differing person scale/pose remains; the overlap does not manufacture a continuous physical step. Creator acceptance is pending, and the current assembly is untouched.
+
+### P01 → P02 dream transition v3 — requested focus blur
+
+The creator clarified that v2 lacks the requested blurred/dreamlike quality. New trial: `/home/raxim/Downloads/p01_p02_dream_transition_v3_blur_preview.mp4`. Same 6.875 s excerpt, original crop, four moving blend frames and cached v2 soundtrack. Smooth Gaussian focus loss/recovery affects preview frames 65–80 only, with sharp endpoints at frames 64 and 81 (2.667–3.375 s); maximum designed luma sigma 14 px, half that for subsampled chroma. Blur peaks during the photographic change, then the destination becomes sharp. No zoom or spatial warp. Encoding uses the same original-source 10-bit preview recipe; not a lossless master.
+
+Full decode, frame count, video duration, post-mux frame equality, original file hashes and unchanged cached soundtrack AAC payloads verified; six frames across focus loss/recovery visually inspected. The v2 Downloads file was no longer available at verification, so audio equality was checked against its retained soundtrack. No source or assembly replacement. This is a trial, not an accepted rule for every join. Exact parameters: `04_tracking/P01_P02_DREAM_V3_RECIPE.json`.
 
 ### P01 → P02 join
 
