@@ -31,13 +31,25 @@ if args.placement_file:
  assert hashlib.sha256((M/args.source).read_bytes()).hexdigest()==placement['source_sha256']
  rows=placement['segments'];cuts=[r['source_start'] for r in rows]+[len(voice)/rate]
  starts=[r['timeline_start'] for r in rows];ids=[r['id'] for r in rows]
- assert cuts[0]==0 and all(a<b for a,b in zip(cuts,cuts[1:]))
+ if all('source_end' in r for r in rows):
+  ranges=[(r['source_start'],r['source_end']) for r in rows]
+ else:
+  assert not any('source_end' in r for r in rows)
+  assert cuts[0]==0 and all(a<b for a,b in zip(cuts,cuts[1:]))
+  ranges=list(zip(cuts,cuts[1:]))
 else:
  cuts=[0,16.81,35.46,56.88,80.19,104.27,134.0,len(voice)/rate]
  starts=[97/24,807/24,1521/24,93.83,123.125,150.9,180.7]
  ids=[f'A{i+1:02}' for i in range(len(starts))]
+ ranges=list(zip(cuts,cuts[1:]))
+# Whole thoughts may move, but no original sample may be lost or duplicated.
+coverage=sorted((round(a*rate),round(b*rate)) for a,b in ranges)
+assert coverage[0][0]==0 and coverage[-1][1]==len(voice)
+assert all(a<b for a,b in coverage)
+assert all(left[1]==right[0] for left,right in zip(coverage,coverage[1:]))
+reordered=coverage!=[(round(a*rate),round(b*rate)) for a,b in ranges]
 narr=np.zeros((N,2),np.float32);segments=[];last=0;preserved=0
-for i,(a,b,start) in enumerate(zip(cuts,cuts[1:],starts)):
+for i,((a,b),start) in enumerate(zip(ranges,starts)):
  lo=round(a*rate);hi=round(b*rate);at=round(start*rate)
  assert at>=last and at+hi-lo<=N
  narr[at:at+hi-lo]=voice[lo:hi];assert np.array_equal(narr[at:at+hi-lo],voice[lo:hi])
@@ -61,5 +73,5 @@ peak=float(np.max(np.abs(mix)));gain=min(1.,.95/max(peak,1e-10));mix*=gain
 wav(M/f'myscoutee_directors_cut_narration{args.suffix}.wav',narr)
 if not args.placement_file: wav(W/'background.wav',bg)
 wav(W/f'mix{args.suffix}.wav',mix)
-result={'sample_rate':rate,'channels':2,'samples':N,'duration':N/rate,'narration_source':args.source,'narration_source_sha256':hashlib.sha256((M/args.source).read_bytes()).hexdigest(),'source_decoded_samples_retained':preserved,'narration_speed_pitch':'unchanged; every decoded source sample retained in order','segments':segments,'actual_p12_clinical_cut':clinical,'narration_end':last/rate,'background':'original clip audio resampled once to 44100 Hz; 4-frame linear crossfades; raw aligned stem retained','mix':{'narration_gain_db':-3,'background_gain':.8,'voice_duck_multiplier':.3,'attack_seconds':.035,'hold_seconds':.25,'release_seconds':.35,'global_headroom_gain':gain,'sample_peak':float(np.max(np.abs(mix)))},'stems':'32-bit float WAV; narration/background independently editable; original files untouched'}
+result={'sample_rate':rate,'channels':2,'samples':N,'duration':N/rate,'narration_source':args.source,'narration_source_sha256':hashlib.sha256((M/args.source).read_bytes()).hexdigest(),'source_decoded_samples_retained':preserved,'narration_speed_pitch':'unchanged; every decoded source sample retained exactly once; whole phrases reordered' if reordered else 'unchanged; every decoded source sample retained in order','segments':segments,'actual_p12_clinical_cut':clinical,'narration_end':last/rate,'background':'original clip audio resampled once to 44100 Hz; 4-frame linear crossfades; raw aligned stem retained','mix':{'narration_gain_db':-3,'background_gain':.8,'voice_duck_multiplier':.3,'attack_seconds':.035,'hold_seconds':.25,'release_seconds':.35,'global_headroom_gain':gain,'sample_peak':float(np.max(np.abs(mix)))},'stems':'32-bit float WAV; narration/background independently editable; original files untouched'}
 (W/f'audio_validation{args.suffix}.json').write_text(json.dumps(result,indent=2));print(json.dumps(result),flush=True)
