@@ -2,7 +2,7 @@ MYSCOUTEE — PRODUCTION P11 — 10 SECONDS, 16:9, AUDIO ON
 One new photographic sequence.
 
 OPENING CONTINUATION:
-@UNBOUND_EFP10 is the exact final frame of the accepted preceding clip, not a reconstructed still. Use its crop, horizon, lens perspective, people, wardrobe, hands, object positions and lighting as this shot's first composition. Do not shift the entire image upward/sideways, zoom to a reference crop or replay an approach. Generate only the new portion, not a cumulative movie.
+@loc_MYS_mys-film-p10-end-frame_s0_v1 is the exact final frame of the accepted preceding clip, not a reconstructed still. Use its crop, horizon, lens perspective, people, wardrobe, hands, object positions and lighting as this shot's first composition. Do not shift the entire image upward/sideways, zoom to a reference crop or replay an approach. Generate only the new portion, not a cumulative movie.
 Continue the actual preceding camera path and ongoing gesture immediately, with real parallax and current C01 walking onward; do not force a fresh level street pass at an interior boundary. The actual predecessor must be reviewed before generation: this text describes the intended movement; a still image is not evidence of actual speed or sound. No freeze, opening pose or new establishing shot.
 
 EXISTING WHOLE-IMAGE REFERENCES:
