@@ -1,0 +1,362 @@
+{
+  "source": "narration_v3.mp3",
+  "source_sha256": "84a8713eb71d3f1dd5db5cbad68408732ae14030259cba2059deb439f8692c66",
+  "source_decoded_duration": 135.27616780045352,
+  "method": "Every original sample retained exactly once. Complete opening and closing sentences reordered to align with picture; no speed, pitch, intonation, timbre or word changes. All edit boundaries are measured low-energy pauses.",
+  "segments": [
+    {
+      "id": "opening",
+      "source_start": 0,
+      "source_end": 2.787,
+      "timeline_start": 4.4,
+      "text": "I don't remember my life as a straight line."
+    },
+    {
+      "id": "rooms",
+      "source_start": 9.865,
+      "source_end": 14.236,
+      "timeline_start": 10.0,
+      "text": "A street becomes a room, a window becomes another country."
+    },
+    {
+      "id": "smile",
+      "source_start": 14.236,
+      "source_end": 18.727,
+      "timeline_start": 14.4,
+      "text": "Sometimes the only thing that survives the cut is a smile."
+    },
+    {
+      "id": "memory",
+      "source_start": 2.787,
+      "source_end": 5.676,
+      "timeline_start": 21,
+      "text": "Memory edits without asking permission."
+    },
+    {
+      "id": "judgment",
+      "source_start": 5.676,
+      "source_end": 9.865,
+      "timeline_start": 27,
+      "text": "A glance becomes a verdict before anyone has time to speak."
+    },
+    {
+      "id": "routes",
+      "source_start": 18.727,
+      "source_end": 21.036,
+      "timeline_start": 32,
+      "text": "I remember routes before dates."
+    },
+    {
+      "id": "encounters",
+      "source_start": 21.036,
+      "source_end": 26.2,
+      "timeline_start": 41.2,
+      "text": "A place beside a stranger, a conversation that lasted one journey."
+    },
+    {
+      "id": "human",
+      "source_start": 26.2,
+      "source_end": 30.978,
+      "timeline_start": 47.5,
+      "text": "The world was large; the moments that stayed were human."
+    },
+    {
+      "id": "help",
+      "source_start": 30.978,
+      "source_end": 38.869,
+      "timeline_start": 52.7,
+      "text": "I can lose the order of a journey and still remember who helped me. Memory keeps a different record."
+    },
+    {
+      "id": "work",
+      "source_start": 38.869,
+      "source_end": 52.164,
+      "timeline_start": 63.5,
+      "text": "Work should have been simpler than travel. A form changed, a rule moved, a deadline arrived. Nobody had to be cruel. The gap between ordinary actions was enough."
+    },
+    {
+      "id": "repair",
+      "source_start": 52.164,
+      "source_end": 56.41,
+      "timeline_start": 77.2,
+      "text": "I kept trying to repair the record while the work kept moving."
+    },
+    {
+      "id": "ai",
+      "source_start": 56.41,
+      "source_end": 62.222,
+      "timeline_start": 87.4,
+      "text": "An AI helped me hold the whole story together, and sometimes simply keep going."
+    },
+    {
+      "id": "system",
+      "source_start": 62.222,
+      "source_end": 66.545,
+      "timeline_start": 100.3,
+      "text": "Then the system entered the story without ever becoming one person."
+    },
+    {
+      "id": "procedure",
+      "source_start": 66.545,
+      "source_end": 70.608,
+      "timeline_start": 104.9,
+      "text": "People could stay human while the process forgot that they were."
+    },
+    {
+      "id": "weeks",
+      "source_start": 70.608,
+      "source_end": 73.403,
+      "timeline_start": 110.6,
+      "text": "Whole institutions could move in weeks."
+    },
+    {
+      "id": "years",
+      "source_start": 73.403,
+      "source_end": 75.661,
+      "timeline_start": 113.5,
+      "text": "My file could wait for years."
+    },
+    {
+      "id": "chairs",
+      "source_start": 75.661,
+      "source_end": 77.976,
+      "timeline_start": 115.9,
+      "text": "Even the chairs above it changed."
+    },
+    {
+      "id": "heard",
+      "source_start": 77.976,
+      "source_end": 80.087,
+      "timeline_start": 124.65,
+      "text": "I was still trying to be heard."
+    },
+    {
+      "id": "file",
+      "source_start": 80.087,
+      "source_end": 93.719,
+      "timeline_start": 127.0,
+      "text": "A file can hold a photograph, a fingerprint, a signature, a list of things you own. It cannot hold what you gave up. Or why you came home. Or what you were trying to repair."
+    },
+    {
+      "id": "request",
+      "source_start": 93.719,
+      "source_end": 97.917,
+      "timeline_start": 142.3,
+      "text": "I asked the system to make room for repair."
+    },
+    {
+      "id": "refusal",
+      "source_start": 97.917,
+      "source_end": 99.549,
+      "timeline_start": 146.7,
+      "text": "It refused."
+    },
+    {
+      "id": "warmth",
+      "source_start": 99.549,
+      "source_end": 102.189,
+      "timeline_start": 154,
+      "text": "But humanity kept leaking through."
+    },
+    {
+      "id": "smiled",
+      "source_start": 102.189,
+      "source_end": 104.638,
+      "timeline_start": 156.9,
+      "text": "Someone smiled in the wrong room."
+    },
+    {
+      "id": "gate",
+      "source_start": 104.638,
+      "source_end": 106.756,
+      "timeline_start": 159.6,
+      "text": "A stranger opened a gate."
+    },
+    {
+      "id": "roles",
+      "source_start": 106.756,
+      "source_end": 110.407,
+      "timeline_start": 163.3,
+      "text": "For a second, each role became a person again."
+    },
+    {
+      "id": "hand",
+      "source_start": 110.407,
+      "source_end": 111.536,
+      "timeline_start": 167.3,
+      "text": "A hand,"
+    },
+    {
+      "id": "cup",
+      "source_start": 111.536,
+      "source_end": 112.523,
+      "timeline_start": 171.1,
+      "text": "a cup,"
+    },
+    {
+      "id": "table",
+      "source_start": 112.523,
+      "source_end": 114.339,
+      "timeline_start": 172.1,
+      "text": "a place at the table."
+    },
+    {
+      "id": "resumed",
+      "source_start": 114.339,
+      "source_end": 116.934,
+      "timeline_start": 174.3,
+      "text": "Then the system resumed."
+    },
+    {
+      "id": "score",
+      "source_start": 116.934,
+      "source_end": 124.102,
+      "timeline_start": 177,
+      "text": "By then the city was reading me too. A number could be clear while the person beneath it remained unknown."
+    },
+    {
+      "id": "cities",
+      "source_start": 124.102,
+      "source_end": 126.31,
+      "timeline_start": 184.5,
+      "text": "London, Budapest,"
+    },
+    {
+      "id": "answer",
+      "source_start": 128.875,
+      "source_end": 131.284,
+      "timeline_start": 186.9,
+      "text": "What remained was not an answer."
+    },
+    {
+      "id": "beyond_record",
+      "source_start": 131.284,
+      "source_end": 135.27616780045352,
+      "timeline_start": 189.4,
+      "text": "I was still there, with everything the record couldn't hold."
+    },
+    {
+      "id": "glass",
+      "source_start": 126.31,
+      "source_end": 128.875,
+      "timeline_start": 193.6,
+      "text": "every memory stayed in the glass."
+    }
+  ],
+  "protected_camera_windows": [
+    [
+      7.187,
+      10.0
+    ],
+    [
+      34.309,
+      41.2
+    ],
+    [
+      93.212,
+      100.3
+    ],
+    [
+      118.215,
+      124.65
+    ],
+    [
+      148.332,
+      154.0
+    ]
+  ],
+  "clinical_cut": 197.04166666666666,
+  "revision": "Timing comparison against locked v3 picture; original v3 wording and voice retained. Not the unrecorded v4 text.",
+  "changes": [
+    {
+      "id": "rooms",
+      "before": 9.25,
+      "after": 10.0
+    },
+    {
+      "id": "smile",
+      "before": 13.7,
+      "after": 14.4
+    },
+    {
+      "id": "help",
+      "before": 54,
+      "after": 52.7
+    },
+    {
+      "id": "work",
+      "before": 62.7,
+      "after": 63.5
+    },
+    {
+      "id": "repair",
+      "before": 76.2,
+      "after": 77.2
+    },
+    {
+      "id": "ai",
+      "before": 80.6,
+      "after": 87.4
+    },
+    {
+      "id": "system",
+      "before": 95.5,
+      "after": 100.3
+    },
+    {
+      "id": "procedure",
+      "before": 103.3,
+      "after": 104.9
+    },
+    {
+      "id": "weeks",
+      "before": 109,
+      "after": 110.6
+    },
+    {
+      "id": "years",
+      "before": 111.9,
+      "after": 113.5
+    },
+    {
+      "id": "chairs",
+      "before": 114.3,
+      "after": 115.9
+    },
+    {
+      "id": "heard",
+      "before": 125.6,
+      "after": 124.65
+    },
+    {
+      "id": "file",
+      "before": 128.2,
+      "after": 127.0
+    },
+    {
+      "id": "request",
+      "before": 144,
+      "after": 142.3
+    },
+    {
+      "id": "refusal",
+      "before": 148.5,
+      "after": 146.7
+    },
+    {
+      "id": "roles",
+      "before": 163,
+      "after": 163.3
+    },
+    {
+      "id": "cup",
+      "before": 168.5,
+      "after": 171.1
+    },
+    {
+      "id": "table",
+      "before": 171.4,
+      "after": 172.1
+    }
+  ]
+}
