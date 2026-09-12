@@ -55,6 +55,15 @@ The trust protocol is project context, not an optional skill. A skill or
 harness may automate it but does not override the selected mode or the current
 user instruction.
 
+## Higgsfield production route
+
+For MyScoutee Higgsfield / Cinema Studio work, including continuation in a new
+Codex session, first read the
+[Higgsfield skill](.agents/skills/myscoutee-higgsfield/SKILL.md), which points to
+the separate [Higgsfield trust guide](.agents/trust/higgsfield/README.md).
+Use that guide for production continuity and recovered conversation decisions.
+This does not activate application manual QA or its handoff/checklist.
+
 ## Optional manual-QA continuation route
 
 Treat manual-QA continuation as an opt-in repository workflow skill, not as
