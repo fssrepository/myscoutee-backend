@@ -1,0 +1,258 @@
+{
+  "cutoff_utc": "2026-09-12T16:48:54.304Z",
+  "warning": "Frozen evidence. Formatting changes must use summary.json/CSV, not rescan or reclassify. Reproduction scripts expect the original cache/index ordering; verify this manifest before rerunning. The original master-prompt ChatGPT session is not available.",
+  "selected_root_sources": [
+    {
+      "index": 399,
+      "session_id": "019fcacb-5c43-7360-a8bb-0ac9dde5eca5",
+      "file": "/home/raxim/.codex/archived_sessions/rollout-2026-08-04T05-22-32-019fcacb-5c43-7360-a8bb-0ac9dde5eca5.jsonl",
+      "bytes": 6213556,
+      "first": "2026-08-04T03:22:33.240Z",
+      "last": "2026-08-04T05:24:13.201Z",
+      "method": "cumulative_delta"
+    },
+    {
+      "index": 402,
+      "session_id": "019fd05f-63b2-7b52-96a5-e0a70e046cb8",
+      "file": "/home/raxim/.codex/archived_sessions/rollout-2026-08-05T07-22-20-019fd05f-63b2-7b52-96a5-e0a70e046cb8.jsonl",
+      "bytes": 269067262,
+      "first": "2026-08-05T05:24:03.317Z",
+      "last": "2026-08-05T09:36:22.384Z",
+      "method": "cumulative_delta"
+    },
+    {
+      "index": 406,
+      "session_id": "019fd763-142d-7621-bd5b-7d8da7c29fc3",
+      "file": "/home/raxim/.codex/archived_sessions/rollout-2026-08-06T16-03-42-019fd763-142d-7621-bd5b-7d8da7c29fc3.jsonl",
+      "bytes": 2421985588,
+      "first": "2026-08-06T14:04:19.782Z",
+      "last": "2026-08-10T16:16:45.715Z",
+      "method": "cumulative_delta"
+    },
+    {
+      "index": 413,
+      "session_id": "019fec77-0068-7fc0-baf1-4b4c0e2f0c5f",
+      "file": "/home/raxim/.codex/archived_sessions/rollout-2026-08-10T18-17-29-019fec77-0068-7fc0-baf1-4b4c0e2f0c5f.jsonl",
+      "bytes": 18333135,
+      "first": "2026-08-10T16:18:34.880Z",
+      "last": "2026-08-10T17:24:41.208Z",
+      "method": "cumulative_delta"
+    },
+    {
+      "index": 414,
+      "session_id": "019fecb4-9292-72c3-9450-b5bb2f59fb0f",
+      "file": "/home/raxim/.codex/archived_sessions/rollout-2026-08-10T19-24-44-019fecb4-9292-72c3-9450-b5bb2f59fb0f.jsonl",
+      "bytes": 18733633,
+      "first": "2026-08-10T17:26:13.274Z",
+      "last": "2026-08-10T18:05:50.501Z",
+      "method": "cumulative_delta"
+    },
+    {
+      "index": 415,
+      "session_id": "019fecda-61fe-7a13-bdb9-6dfecaabb755",
+      "file": "/home/raxim/.codex/archived_sessions/rollout-2026-08-10T20-06-02-019fecda-61fe-7a13-bdb9-6dfecaabb755.jsonl",
+      "bytes": 5484090,
+      "first": "2026-08-10T18:07:14.817Z",
+      "last": "2026-08-10T19:02:17.289Z",
+      "method": "cumulative_delta"
+    },
+    {
+      "index": 416,
+      "session_id": "019fed13-222c-7941-a165-6b0eeb23d0a1",
+      "file": "/home/raxim/.codex/archived_sessions/rollout-2026-08-10T21-08-01-019fed13-222c-7941-a165-6b0eeb23d0a1.jsonl",
+      "bytes": 69904337,
+      "first": "2026-08-10T19:09:26.319Z",
+      "last": "2026-08-10T22:07:13.568Z",
+      "method": "cumulative_delta"
+    },
+    {
+      "index": 419,
+      "session_id": "019ff021-db9e-73a2-9b8e-5752f04c8ae0",
+      "file": "/home/raxim/.codex/archived_sessions/rollout-2026-08-11T11-22-58-019ff021-db9e-73a2-9b8e-5752f04c8ae0.jsonl",
+      "bytes": 3566639,
+      "first": "2026-08-11T09:23:51.645Z",
+      "last": "2026-08-11T09:32:12.586Z",
+      "method": "cumulative_delta"
+    },
+    {
+      "index": 420,
+      "session_id": "019ff02a-895b-7b13-9cf9-f4c03a064675",
+      "file": "/home/raxim/.codex/archived_sessions/rollout-2026-08-11T11-32-27-019ff02a-895b-7b13-9cf9-f4c03a064675.jsonl",
+      "bytes": 328449962,
+      "first": "2026-08-11T09:34:03.779Z",
+      "last": "2026-08-12T12:07:05.053Z",
+      "method": "cumulative_delta"
+    },
+    {
+      "index": 422,
+      "session_id": "019ff5e5-8f1e-7271-b16d-bbba4728ce09",
+      "file": "/home/raxim/.codex/archived_sessions/rollout-2026-08-12T14-14-50-019ff5e5-8f1e-7271-b16d-bbba4728ce09.jsonl",
+      "bytes": 821338,
+      "first": "2026-08-12T12:15:21.940Z",
+      "last": "2026-08-12T12:31:18.653Z",
+      "method": "cumulative_delta"
+    },
+    {
+      "index": 427,
+      "session_id": "019ff6d1-9aaa-7721-98ad-16fe1c7aa2ea",
+      "file": "/home/raxim/.codex/archived_sessions/rollout-2026-08-12T18-32-39-019ff6d1-9aaa-7721-98ad-16fe1c7aa2ea.jsonl",
+      "bytes": 31363967,
+      "first": "2026-08-12T16:33:40.235Z",
+      "last": "2026-08-13T00:36:16.894Z",
+      "method": "cumulative_delta"
+    },
+    {
+      "index": 428,
+      "session_id": "019ff896-027e-7681-a7f0-6454c81cb2bb",
+      "file": "/home/raxim/.codex/archived_sessions/rollout-2026-08-13T02-46-48-019ff896-027e-7681-a7f0-6454c81cb2bb.jsonl",
+      "bytes": 451076,
+      "first": "2026-08-13T00:47:13.627Z",
+      "last": "2026-08-13T00:52:13.134Z",
+      "method": "cumulative_delta"
+    },
+    {
+      "index": 429,
+      "session_id": "019ffc5c-f7e9-7cc0-bf5b-64cd1151e9be",
+      "file": "/home/raxim/.codex/archived_sessions/rollout-2026-08-13T20-22-59-019ffc5c-f7e9-7cc0-bf5b-64cd1151e9be.jsonl",
+      "bytes": 491816,
+      "first": "2026-08-13T18:23:41.865Z",
+      "last": "2026-08-13T18:37:32.293Z",
+      "method": "cumulative_delta"
+    },
+    {
+      "index": 430,
+      "session_id": "01a00011-3967-7241-99c1-35b345a3b49c",
+      "file": "/home/raxim/.codex/archived_sessions/rollout-2026-08-14T13-38-43-01a00011-3967-7241-99c1-35b345a3b49c.jsonl",
+      "bytes": 531380789,
+      "first": "2026-08-14T11:42:27.356Z",
+      "last": "2026-08-14T23:38:56.159Z",
+      "method": "cumulative_delta"
+    },
+    {
+      "index": 431,
+      "session_id": "01a002d9-2c93-79a1-93d1-4a8822e8508e",
+      "file": "/home/raxim/.codex/archived_sessions/rollout-2026-08-15T02-36-22-01a002d9-2c93-79a1-93d1-4a8822e8508e.jsonl",
+      "bytes": 5775685,
+      "first": "2026-08-15T00:37:49.553Z",
+      "last": "2026-08-15T02:18:25.641Z",
+      "method": "cumulative_delta"
+    },
+    {
+      "index": 436,
+      "session_id": "01a00cef-d4f9-7813-8a0a-63683ff3d711",
+      "file": "/home/raxim/.codex/archived_sessions/rollout-2026-08-17T01-37-19-01a00cef-d4f9-7813-8a0a-63683ff3d711.jsonl",
+      "bytes": 234757,
+      "first": "2026-08-16T23:37:27.010Z",
+      "last": "2026-08-16T23:39:48.091Z",
+      "method": "cumulative_delta"
+    },
+    {
+      "index": 443,
+      "session_id": "01a01d02-7bd8-7181-a028-b83afa977297",
+      "file": "/home/raxim/.codex/archived_sessions/rollout-2026-08-20T04-31-37-01a01d02-7bd8-7181-a028-b83afa977297.jsonl",
+      "bytes": 38847249,
+      "first": "2026-08-20T02:32:16.717Z",
+      "last": "2026-08-20T04:34:51.325Z",
+      "method": "cumulative_delta"
+    },
+    {
+      "index": 449,
+      "session_id": "01a04162-f50c-7dc3-b9c1-5980a05989f1",
+      "file": "/home/raxim/.codex/archived_sessions/rollout-2026-08-27T06-03-19-01a04162-f50c-7dc3-b9c1-5980a05989f1.jsonl",
+      "bytes": 11004744,
+      "first": "2026-08-27T04:03:23.688Z",
+      "last": "2026-08-27T04:11:51.337Z",
+      "method": "cumulative_delta"
+    },
+    {
+      "index": 484,
+      "session_id": "01a08501-79bb-7141-9e97-e6a86d21f07e",
+      "file": "/home/raxim/.codex/archived_sessions/rollout-2026-09-09T09-11-01-01a08501-79bb-7141-9e97-e6a86d21f07e.jsonl",
+      "bytes": 435123290,
+      "first": "2026-09-09T07:11:02.019Z",
+      "last": "2026-09-11T06:44:11.105Z",
+      "method": "response_id"
+    },
+    {
+      "index": 485,
+      "session_id": "01a08501-79bb-7141-9e97-e6a86d21f07e",
+      "file": "/home/raxim/.codex/archived_sessions/rollout-2026-09-11T08-44-25-01a08501-79bb-7141-9e97-e6a86d21f07e_01a08f35-d7f0-7ff1-b6b0-8aa7a699a4a9.jsonl",
+      "bytes": 82770599,
+      "first": "2026-09-11T06:44:25.967Z",
+      "last": "2026-09-11T10:22:55.838Z",
+      "method": "response_id"
+    },
+    {
+      "index": 486,
+      "session_id": "01a08501-79bb-7141-9e97-e6a86d21f07e",
+      "file": "/home/raxim/.codex/archived_sessions/rollout-2026-09-11T12-23-02-01a08501-79bb-7141-9e97-e6a86d21f07e_01a08ffd-fc53-7553-a38b-205d78ba3504.jsonl",
+      "bytes": 219674,
+      "first": "2026-09-11T10:23:02.760Z",
+      "last": "2026-09-11T11:16:52.779Z",
+      "method": "response_id"
+    },
+    {
+      "index": 487,
+      "session_id": "01a08501-79bb-7141-9e97-e6a86d21f07e",
+      "file": "/home/raxim/.codex/archived_sessions/rollout-2026-09-11T13-17-04-01a08501-79bb-7141-9e97-e6a86d21f07e_01a0902f-7574-79a0-8dff-9266e1d61d1c.jsonl",
+      "bytes": 171903105,
+      "first": "2026-09-11T11:17:04.839Z",
+      "last": "2026-09-11T14:38:56.487Z",
+      "method": "response_id"
+    },
+    {
+      "index": 488,
+      "session_id": "01a08501-79bb-7141-9e97-e6a86d21f07e",
+      "file": "/home/raxim/.codex/archived_sessions/rollout-2026-09-11T16-39-09-01a08501-79bb-7141-9e97-e6a86d21f07e_01a090e8-7833-7d41-9f47-c91c8425794f.jsonl",
+      "bytes": 387810908,
+      "first": "2026-09-11T14:39:09.751Z",
+      "last": "2026-09-12T06:47:39.993Z",
+      "method": "response_id"
+    },
+    {
+      "index": 489,
+      "session_id": "01a0945f-5fe9-77c2-b79b-2a89d1ab69ff",
+      "file": "/home/raxim/.codex/archived_sessions/rollout-2026-09-12T08-47-53-01a0945f-5fe9-77c2-b79b-2a89d1ab69ff.jsonl",
+      "bytes": 3374282,
+      "first": "2026-09-12T06:48:38.220Z",
+      "last": "2026-09-12T06:48:42.906Z",
+      "method": "cumulative_delta"
+    },
+    {
+      "index": 594,
+      "session_id": "01a09460-6c70-7752-ab54-2481e82f0d44",
+      "file": "/home/raxim/.codex/sessions/2026/09/12/rollout-2026-09-12T08-49-02-01a09460-6c70-7752-ab54-2481e82f0d44.jsonl",
+      "bytes": 517486832,
+      "first": "2026-09-12T06:49:03.476Z",
+      "last": "2026-09-12T16:48:54.304Z",
+      "method": "response_id"
+    }
+  ],
+  "cache_hashes": {
+    "rollout-2026-08-04T05-22-32-019fcacb-5c43-7360-a8bb-0ac9dde5eca5.json": "f18c8eb87caeca8e0bdd4101320d32286665b03b62e0c198e0a6648a2fd57ce9",
+    "rollout-2026-08-05T07-22-20-019fd05f-63b2-7b52-96a5-e0a70e046cb8.json": "92aca346983d7bc4178d9a9190b5af018474287df90d5d773c1f082773cfd017",
+    "rollout-2026-08-06T16-03-42-019fd763-142d-7621-bd5b-7d8da7c29fc3.json": "23770ec4f924695c89d568ec50b70aa1a39c011af8d14c41c7df26cf827b24af",
+    "rollout-2026-08-10T18-17-29-019fec77-0068-7fc0-baf1-4b4c0e2f0c5f.json": "19753f20cc8faa4989ad6c5f1085901566c09e2a2b83cee74c033a9614965aed",
+    "rollout-2026-08-10T19-24-44-019fecb4-9292-72c3-9450-b5bb2f59fb0f.json": "aee1857c666cf76e26a151c2cbc612a5e4b4e80732e1bcffc099759800f024bc",
+    "rollout-2026-08-10T20-06-02-019fecda-61fe-7a13-bdb9-6dfecaabb755.json": "005e9eddab98906a97a21aa88ef94f047a5bf60be6f8c813f90ba51ede20e054",
+    "rollout-2026-08-10T21-08-01-019fed13-222c-7941-a165-6b0eeb23d0a1.json": "56133715877c894c490ff508985ca27d85a0b94e51404fc220a8bb87f6cc53c2",
+    "rollout-2026-08-11T11-22-58-019ff021-db9e-73a2-9b8e-5752f04c8ae0.json": "d981807c2d2404587cd917ac28798dbcae8a48328d274c6e769c78a890f011fc",
+    "rollout-2026-08-11T11-32-27-019ff02a-895b-7b13-9cf9-f4c03a064675.json": "8e9d271563ea40dd0df6b5c663735cfd9d6b45e4ecb1803b727f1ffae062da3b",
+    "rollout-2026-08-12T14-14-50-019ff5e5-8f1e-7271-b16d-bbba4728ce09.json": "b1df4c51017ec577dda50496dfe94f05f9e0318c6502d2ca18116ed145a51ad2",
+    "rollout-2026-08-12T18-32-39-019ff6d1-9aaa-7721-98ad-16fe1c7aa2ea.json": "ab00898a9061795cefdc188b81311a829e5377696c5a7a088d9c345a90a1beb5",
+    "rollout-2026-08-13T02-46-48-019ff896-027e-7681-a7f0-6454c81cb2bb.json": "770ac1692ba378b280a60df70628966758881e1d15085d72b342514e13f09617",
+    "rollout-2026-08-13T20-22-59-019ffc5c-f7e9-7cc0-bf5b-64cd1151e9be.json": "cd00b63b53b03542663dbd1a5641a094d87a1015e9e6b3f664ed3941652bd73d",
+    "rollout-2026-08-14T13-38-43-01a00011-3967-7241-99c1-35b345a3b49c.json": "584138d4d00eaea8f941c0a147e52908b8e95c3d3ada1a67c54daaf87d597664",
+    "rollout-2026-08-15T02-36-22-01a002d9-2c93-79a1-93d1-4a8822e8508e.json": "e5052a621b9ed51cc06d9cd00bf6dc22a18d1e081c7e4245d5a85c474b44bf8e",
+    "rollout-2026-08-17T01-37-19-01a00cef-d4f9-7813-8a0a-63683ff3d711.json": "667518fc2710d91c895490af5d73face8e3597bb81d0b52592db2c2ca0c95b1d",
+    "rollout-2026-08-20T04-31-37-01a01d02-7bd8-7181-a028-b83afa977297.json": "63fa94d7d6577ff47737ac58cc5b2b741808fb817eb85c071c1132a597d1f701",
+    "rollout-2026-08-27T06-03-19-01a04162-f50c-7dc3-b9c1-5980a05989f1.json": "e335ae3a9b50d74938378434d661b1472c66ee803b79d5dca4634a0e424e3d12",
+    "rollout-2026-09-09T09-11-01-01a08501-79bb-7141-9e97-e6a86d21f07e.json": "f2df72d8aec48da095194e87c3862f6a4eb1ccd19fb5c76dbe6a445e6ac855a8",
+    "rollout-2026-09-11T08-44-25-01a08501-79bb-7141-9e97-e6a86d21f07e_01a08f35-d7f0-7ff1-b6b0-8aa7a699a4a9.json": "6e455bdb1ca8ecaa25ec2d5d63ce8df9734b6ae37291a3f18dd26303ca5a6c02",
+    "rollout-2026-09-11T12-23-02-01a08501-79bb-7141-9e97-e6a86d21f07e_01a08ffd-fc53-7553-a38b-205d78ba3504.json": "8293129e0d7965c65f57a1b7f1579142aa4255786cb59c57657ce4286178f992",
+    "rollout-2026-09-11T13-17-04-01a08501-79bb-7141-9e97-e6a86d21f07e_01a0902f-7574-79a0-8dff-9266e1d61d1c.json": "c4bc8b6065a2093002d452aca0b2b6bc5d59cd9bdce67e2905ced9c571a3df25",
+    "rollout-2026-09-11T16-39-09-01a08501-79bb-7141-9e97-e6a86d21f07e_01a090e8-7833-7d41-9f47-c91c8425794f.json": "7170b73a040edd38a02a8f1884e56c2e64a6fb4f08009cb75b1f756d48cdaeb9",
+    "rollout-2026-09-12T08-47-53-01a0945f-5fe9-77c2-b79b-2a89d1ab69ff.json": "3b30fcdd9acab7a14cdc2e37f579634ec6597a7c3ea0080440e288fa6ad67000",
+    "rollout-2026-09-12T08-49-02-01a09460-6c70-7752-ab54-2481e82f0d44.json": "c32161ff459258688cfaa0656a11fe07a6869608a378490f0518c6772df39090"
+  }
+}

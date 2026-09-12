@@ -1,3 +1,9 @@
+# Current checkpoint — frozen metrics, 2026-09-12
+
+Production and delivery are complete. The creator reports both final deliverables uploaded. Current task: add the saved image/adherence and production-effort statistics to the existing brief, preserving its other paragraphs. All measured results and method are saved in [production_audit/README.md](production_audit/README.md), [summary.json](production_audit/summary.json) and companion CSVs. **Do not rescan or recalculate for formatting.** Source cutoff is 16:48:54 UTC on September 12. The book model is Sol / Extra High; the original master-prompt session is missing. Image history labels the sampled output Nano Banana 2, not verified Pro.
+
+The previous checkpoints below are historical.
+
 ## 2026-09-11 — Prompt precision review completed
 
 Production P01–P12: fixed stale chapter-wide music cues, P10 internal 6-second transition, P11/P12 clinical sound timing, and request-local C01 rating state. All 63 story beats and all reference handles retained; 62 beat bodies remain verbatim, with only boundary wording changed in 06.4. Prompt hashes/counts updated in production/plan.json. User reports 1937 credits; 1800 story allocation, 137 contingency, no separate 480p trial. Do not open or switch editor tabs without an explicit current user request. Four-frame metadata import is prepared, not imported; UNBOUND handles remain deliberate.

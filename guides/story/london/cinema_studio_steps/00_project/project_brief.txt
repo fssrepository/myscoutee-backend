@@ -23,6 +23,7 @@ Video and narration are generated in Higgsfield. The full narration will be gene
 - MASTER PROMPT READY: v2.2.57 — 488,623 bytes (~477 KiB), 6,425 lines, ~68,700 words.
 - IMPORT ELEMENTS: 128 KiB Markdown limit; clean import = 48 canonical Elements: 31 Characters + 16 Locations + 1 Prop.
 - AUDIO LIMITATION: Videos can be saved as reusable Elements; audio files cannot, despite being accepted as generation references.
+- **BASIC TYPOGRAPHY FAILURE — SEEDANCE 2.5:** Even the simple “MYSCOUTEE” lettering was not reproduced correctly and required a local correction.
 - **WEB VIDEO PLUGIN PLAYBACK BUG:** Uploaded individual production clips cannot be played in Higgsfield’s web video plugin. This report concerns the separate clips, not the published film.
 - **NARRATION REMOVAL TEST:** Generated narration was mixed with the video's background audio. Our removal attempt also damaged the background and was not usable. We will generate the film clips without narration and add the complete narration recording afterwards.
 - **EMBEDDED SUBTITLE GAP:** We uploaded an MP4 with an embedded subtitle track marked as default, intended to display “TEST PUBLICATION — NOT THE FINAL FILM” without changing the video pixels. The Higgsfield player did not show the label. Uploading the subtitles inside the video file was therefore insufficient to make this test notice visible.
@@ -52,22 +53,18 @@ Video and narration are generated in Higgsfield. The full narration will be gene
 
 ## Higgsfield checks and failed results — recorded on 2026-09-11
 
-| Reported outcome | Count | Basis |
+| Outcome | Count | Effect |
 | --- | ---: | --- |
-| Face/IP blocked reference Elements | 7 | Distinct Elements in the eligibility log; repeated blocks of the same Element count once. |
-| Slow / pending reference checks | 3 | Historical cases, not confirmed rejections. |
-| Assets filed under NSFW | 2 | Visible `p_nsfw` folder count; one generation card explicitly shows `NSFW`. |
-| Other failed generation | 1 | Separate `Failed` card; the cause is not established. |
+| Face/IP blocked references | 7 | Replacement images needed. |
+| Slow / pending reference checks | 3 | Production delayed; not confirmed rejections. |
+| Assets flagged as NSFW | 2 | Production interrupted. |
+| Other failed generation | 1 | Retry needed; cause unspecified. |
 
-These are recorded workflow incidents, not a failure rate or a live unresolved total. Reference Elements and generation results are different units and are not added together. The visible NSFW and Failed generation cards show **Credits refunded**. Counts come from the eligibility log and the 2026-09-11 22:22:59 screenshot, rather than a complete generation-history export.
+Historical counts, not failure percentages: complete attempt totals are unavailable. Failed-generation cards showed refund notices.
 
-Two already-listed Face/IP-blocked references are queued for replacement: **MW04_C_01** (`@loc_MYS_mys-mw04-c-01-memory-view-09_s0_v1`, used in P06/P10) and **W04_A_03** (`@loc_MYS_mys-w04-a-03-world-view-03_s0_v1`, used in P06). Their existing image attachments were confirmed through the API; an Element status of `completed` does not confirm the separate Cinema Studio Face/IP check. These are not two additional incidents.
+## Seedance instruction following — sampled clips
 
-## Seedance instruction following and room for improvement — P00–P05
-
-This review measures how much of the requested story, detail and reference content is visible in the generated clips. The development priorities are stronger adherence to scripted events, preservation of physical and human detail, and more faithful use of the supplied references. The figures below describe this production, not a general model benchmark.
-
-| Clip | Retrospective description reduction* | Story match* | Detail loss* | Reference match* |
+| Clip | Text reduction* | Story match | Detail loss | Reference match |
 | --- | ---: | ---: | ---: | ---: |
 | P00 | 84% | ~90% | ~35% | ~100% |
 | P01 | 73% | ~55% | ~65% | ~60% |
@@ -76,11 +73,53 @@ This review measures how much of the requested story, detail and reference conte
 | P04 | 66% | ~75% | ~60% | ~55% |
 | P05 | 70% | ~30% | ~60% | ~60% |
 
-*Visual estimates from selected scored requirements and recognisable image-reference content (full / partial / not identifiable = 1 / 0.5 / 0), rounded to 5 percentage points. Detail loss includes simplification, omission and replacement. Reference match is visible correspondence, not measured internal model use. Audio is excluded; P00 is the corrected ident.*
+## Nano Banana instruction following — image sample
 
-As supporting context, the observed sequences were described retrospectively in **19,994 characters versus the original 68,912 (71% less text)**, retaining every reference handle. This is not a 71% instruction-failure rate or evidence that the original prompts could have been shortened without losing their intended detail. The gap motivates examining what Seedance simplified, omitted or replaced; the scored requirements above provide the instruction-following evidence.
+| Sample | Text reduction* | Main content match | Detail loss | Identity-reference match |
+| --- | ---: | ---: | ---: | ---: |
+| 12 images | 74% | ~90% | ~40% | ~65% |
 
-**Suggested improvement:** Before generation, the video AI should flag prompt complexity it is unlikely to fulfil at the selected duration and suggest simplification, instead of leaving creators to discover its limits through trial and error in ChatGPT or Claude.
+Main scenes held up better than exact lettering, score cards, identities and intermediate shapes. The API identifies these jobs as **Nano Banana 2**, not verified Pro.
+
+*Visual estimates on selected criteria; reference match means visible resemblance. Image identity matching uses six comparisons; the video ident was already corrected. Text reduction is retrospective/untested: video **68,912 → 19,994 characters**, images **108,342 → 28,196**. It does not prove equivalent generation.*
+
+## Production workload — saved session audit
+
+| Work | Joint time (h) | Codex time (h) | Tokens (M)* | Model / reasoning |
+| --- | ---: | ---: | ---: | --- |
+| Story / storyboard | 6.2 | 5.1 | 3.26 | Sol 5.6 / XHigh |
+| Early image/video tests | 5.6–5.9 | 3.8 | 3.12 | Sol 5.6 / XHigh |
+| Books — 2 volumes | 27.8–28.8 | 25.3 | 22.98 | Sol 5.6 / XHigh |
+| Earlier films | 37.3–37.9 | 25.4 | 16.54 | Sol 5.6 / XHigh |
+| Translation / subtitles | 7.3 | 6.7 | 5.48 | Sol 5.6 / XHigh |
+| Audiobook / Kindle | 2.7–3.0 | 1.6 | 1.26 | Sol 5.6 / XHigh |
+| Paperback | 2.0 | 1.6 | 1.07 | Sol 5.6 / XHigh |
+| Opening title | 0.1 | 0.1 | 0.15 | Terra 5.6 / High |
+| Original master prompt | ~1 day | — | — | Unconfirmed |
+| Master-prompt review | 0.7 | 0.5 | 0.27 | Astra 6 / XHigh |
+| Images / references / pilots | 22.6 | 12.8 | 7.84 | Astra 6 / High–XHigh |
+| Video generation | 20.4–21.2 | 11.1 | 5.98 | Astra 6 / High |
+| Editing / narration | 4.5 | 3.5 | 1.20 | Astra 6 / High |
+| Final export | 0.7–1.1 | 0.6 | 0.11 | Astra 6 / High |
+
+Joint time uses a 15–30-minute gap rule and includes manual work/waiting. Codex time includes tool/render waits. *Tokens = uncached input + output; reused cached context is excluded. The original master-prompt session was not recovered.*
+
+| Scope | Joint time (h) | Codex time (h) | Tokens (M)* |
+| --- | ---: | ---: | ---: |
+| Festival film | 49.1–50.4 | 28.5 | 15.55 |
+| Project history, excluding product campaign | 138.1–141.7 | 98.0 | 69.26 |
+
+## Selected festival repair effort
+
+| Repair category | Reviewed windows | Codex time (h) | Tokens (M)* |
+| --- | ---: | ---: | ---: |
+| Platform failures | 7 | 2.1 | 1.29 |
+| Picture / audio repairs | 5 | 3.2 | 1.24 |
+| Workflow corrections | 3 | 0.8 | 0.23 |
+
+Selected incident windows, not all failures or a proven waste total. Detailed evidence and cached-token accounting are saved separately.
+
+**Suggested improvement:** Before generation, flag excessive prompt complexity and suggest simplification for the selected duration, instead of making creators discover the limits through trial and error in ChatGPT or Claude.
 
 ## 🔗 Resources
 
