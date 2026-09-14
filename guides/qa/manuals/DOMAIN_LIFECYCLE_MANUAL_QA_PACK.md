@@ -9267,3 +9267,68 @@ fresh evidence for this run. Do not silently mark those replays executed.
   HTTP checks as a browser-rendering PASS. After that, resume the v4 activation
   boundary, then consent 003 and AUTH-SESSION-001. Overall WebView remains
   PARTIAL/OPEN; physical-phone and previously listed evidence gaps remain.
+
+### Consent v4 desktop replay — 2026-09-15
+
+- User explicitly delegated the remaining UI actions and continued tests in
+  the current turn. Ordinary visible controls were used; no application state
+  or credential injection. The tester separately reported that Guide images
+  worked on another surface; this is tester evidence, not an agent Home cards
+  reopen claim.
+- ENTRY-CONSENT-002 v4 activated at 2026-09-14T22:29:01.527Z. Ordinary reload
+  forced privacy v4 over the authenticated Nova game. Clicking Close privacy
+  popup did not dismiss it. Selected only Current analytics and approved.
+- Versioned verify PASS at 22:29:18.948Z: v4 consent
+  `6aa8753efce30caf4117d0b6`, source settings, accepted 22:29:18.186037099Z,
+  only `qa-current-analytics`; marketing unselected. v3 consent unchanged
+  byte-for-byte. Target/total +2, anonymous 0. Desktop consent 002 replay PASS.
+  Next reset retains evidence, then consent 003 baseline. Phone remains pending.
+
+### Consent v5 desktop replay — 2026-09-15
+
+- Consent 002 reset at 22:30:01.969Z retained both consents/revisions; consent
+  003 staged at 22:30:02.550Z. The versioned launcher prepared a fresh Nova
+  browser. Mandatory v5 showed analytics selected, marketing and new research
+  unselected. Screenshot: `/tmp/myscoutee-consent-v5-inherited.png`.
+- Execution deviation: the agent initially approved before selecting research.
+  Verify correctly rejected analytics-only terminal state. This was an agent
+  sequence error, not a product defect. Through Settings -> Privacy, explicitly
+  selected Product research and clicked Save choices. No database correction,
+  fixture relaxation or product change was used.
+- Verify passed at 22:31:29.822Z: consent `6aa8758cfce30caf4117d0b8` contains
+  analytics/research, marketing absent; target/total +1, anonymous 0; source v4
+  revision and consent byte-identical. v5 accepted 22:30:36.287625781Z and its
+  explicit choice update saved 22:31:28.978556542Z. Inheritance, required v5
+  acceptance and terminal persistence are proved; research was added through
+  the existing choice-update UI after initial approval, not in the first save.
+
+### Per-profile session limit desktop replay — 2026-09-15
+
+- All three isolated clients used the SAME profile: Maya Stone,
+  `1b1c70be2349b3359a8f6f94`. The contract is at most two active sessions per
+  profile. This was not a test of a global two-user or two-browser limit.
+  The user reiterated this scope after the run.
+- Used the harness's existing MANUAL_QA_INVITEE_USER_ID override because Nova
+  retained 51 login audits and prior session/security records. Those records
+  were left intact. Maya's read-only preflight was clean; stage at
+  22:32:53.105Z confirmed zero sessions/audits/security warnings/outbox. Its
+  unrelated existing notifications (11 unread) and domain data were retained.
+- A actual selector login 22:33:59.776Z: 1 session/1 audit/0 warnings. Normal
+  reload retained the same slot; capture-reload PASS at 22:34:21.260Z.
+- B same-profile login 22:34:32.059Z: 2 sessions/2 audits/1 warning. C
+  same-profile attempt 22:34:57.037Z stayed on Entry with the explicit
+  two-sessions-active message: 2 sessions/3 audits/2 warnings. A and B stayed
+  authenticated; A's unread count converged from 11 to 13.
+- A ordinary Logout/confirmation released only its slot (one session, three
+  audit records retained). C Try again/selector login at 22:35:33.227Z then
+  succeeded: terminal phase complete, 2 sessions, exact audit order ACCEPTED,
+  ACCEPTED, BLOCKED_LIMIT, ACCEPTED; 3 security notifications and outbox rows.
+- B and C both showed unread 14 (11 preexisting +3 test warnings). B's actual
+  notification list displayed two new-login and one blocked-login messages,
+  normalized Chrome on Linux desktop, separate event timestamps and no raw
+  credentials/source metadata. Screenshot:
+  `/tmp/myscoutee-auth-session-warnings-pass.png`; terminal oracle retained in
+  `/tmp/myscoutee-auth-session-final.json`. Desktop AUTH-SESSION-001 PASS.
+- The same run also visually confirmed the repaired Home cards guide images:
+  `/tmp/myscoutee-guide-rendered-clear.png`. All five image resource reads
+  returned 200 and the screenshot shows the actual rating/graph illustrations.

@@ -7,17 +7,14 @@ test is meant to prove.
 
 ## Current progress — 2026-09-15
 
-**Overall: PARTIAL / OPEN. Desktop game-card image repair and new-profile
-session registration: PASS. Current campaign checkpoint: `ENTRY-CONSENT-002`
-(previous v3 accepted; v4 not activated yet).**
+**Overall: PARTIAL / OPEN. Desktop card/session and consent 002 checks passed.
+Consent 003 inheritance and terminal checks passed with a separately saved
+research choice, documented in the evidence. Per-profile `AUTH-SESSION-001` also passed. Next: remaining phone checks.**
 
-Current interruption: Help / Guide images were denied by the media gateway.
-They are bundled MinIO `seeded-help/` assets. The public-namespace fix is live;
-all 77 distinct seeded guide images now return HTTP 200 with the exact seed
-content. The already-open guide still needs a tester close/reopen to verify
-rendering; HTTP success alone is not a visual PASS. Then resume consent 002
-at the newer-revision transition, preserving the accepted v3 record.
-[Guide repair and current fixture evidence](../../manuals/DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md#helpguide-media-repair-and-consent-resume--2026-09-15).
+Help / Guide image access is repaired: all 77 MinIO SVG reads passed, and the
+tester reported working images on another surface. Continue the remaining
+session and phone checks; do not replay completed image/consent steps.
+[Latest consent evidence](../../manuals/DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md#consent-v5-desktop-replay--2026-09-15).
 
 User clarification: visibility belongs to the **profile**, with no separate
 private-image setting. A private profile does not appear as a game card.
@@ -57,9 +54,9 @@ section 0 does not reset the recorded results in sections 1–7.
 | Order | State | Checkpoint / work | Exact remaining proof |
 | --- | --- | --- | --- |
 | 1 | DONE — DESKTOP | Game-card image / first-save session repair | Normal sign-in, all three card images, profile detail, installed-app close/reopen, fresh profile save and reload passed. Retain evidence; do not replay to reach the next checkpoint. |
-| **2** | **IN PROGRESS** | `ENTRY-CONSENT-002` | Rejection and previous v3 acceptance recorded; activate v4 after Guide rendering replay, then prove required acceptance and unchanged older consent audit. |
-| 3 | QUEUED | `ENTRY-CONSENT-003` | Retain choices by stable optional-section ID; new optional sections start unchecked; acceptance creates a new consent without rewriting the old one. |
-| 4 | QUEUED | `AUTH-SESSION-001` | Existing session-limit and audit checks, revocation and ordinary logout. |
+| 2 | DONE — DESKTOP | `ENTRY-CONSENT-002` | Forced v4 acceptance, blocked dismissal, exact consent counts and unchanged v3 verified. |
+| 3 | DESKTOP VERIFIED | `ENTRY-CONSENT-003` | Stable-ID inheritance and unchanged v4 verified; research added via a separate Save choices after initial approval. Exact sequence recorded in evidence. |
+| 4 | DONE — DESKTOP | `AUTH-SESSION-001` | All three clients used the same Maya Stone profile: first two accepted, third blocked; logout frees one slot. Four audits and three warnings verified. |
 | 5 | PHONE REPLAY PENDING | Native install progress | Desktop native decision without ring, Cancel, accepted-installation ring and completion passed. Physical-phone post-fix native replay remains unproven. |
 | 6 | CLOSURE REVIEW | Affected regressions and evidence gaps below | Check only behavior affected by subsequent changes and explicitly unproven requirements; reconcile desktop/phone evidence, restore owned fixtures and update the ledger. |
 

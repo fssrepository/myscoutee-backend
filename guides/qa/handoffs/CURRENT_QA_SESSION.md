@@ -104,16 +104,16 @@ when shaping only its route to the QA application.
 ```yaml
 checkpoint: MOBILE-WEBVIEW-LIFECYCLE-001 — PARTIAL / OPEN
 checklist: ../checklists/notifications/MOBILE-WEBVIEW-LIFECYCLE-001.md
-substage: Help/Guide MinIO access repaired; 77/77 seeded SVG reads and 2 focused path/security tests PASS. Tester close/reopen visual check pending. Consent 002 v3 acceptance retained; v4 not activated. Desktop card/first-save results remain PASS.
+substage: Desktop consent 002 PASS; 003 inheritance and terminal oracle PASS with separate choice-save sequence recorded. AUTH-SESSION-001 baseline staged for clean control Maya Stone, three anonymous clients launching.
 notification_order: MOBILE-WEBVIEW-LIFECYCLE-001, MOBILE-PUSH-LIFECYCLE-001, NOTIFICATION-ADMIN-LIFECYCLE-001, JOB-MESSAGES, BELL-RATING-LIFECYCLE-001
 notification_remaining_complexity: estimates retained pending defect triage
-fixture_phase: entry-domain tracking reset 2026-09-14T22:03:51.139Z retaining all three transaction profiles. ENTRY-CONSENT-002 staged 22:03:52.319Z; status previous-active, Nova v3 consent accepted 22:08:05.423005288Z with only qa-previous-analytics; target/total delta +1, anonymous 0, v4 absent. Common launcher snapshot retains two prelaunch Nova sessions for reset restoration.
-browser_control: Current AGENTS.md boundary applies; tester controls manual checklist navigation/clicks after standardized launcher startup. Agent inspected reported Guide defect read-only. Desktop manifest /tmp/myscoutee-qa-browser-sessions/ENTRY-CONSENT-002.json; /game as Nova with Home cards Guide open. Do not replay completed v3 steps or relaunch these windows.
+fixture_phase: Consent 003 reset 2026-09-14T22:32:19.688Z retaining v4/v5 evidence. Auth-session staged 22:32:53.105Z with MANUAL_QA_INVITEE_USER_ID=1b1c70be2349b3359a8f6f94 (Maya Stone), exact zero sessions/audits/security warnings/outbox. Nova had retained evidence and was left untouched.
+browser_control: User explicitly delegated continued visible UI testing. Versioned launcher config /tmp/myscoutee-webview-entry-checkpoints.json, manifest AUTH-SESSION-001.json; three isolated anonymous A/B/C clients for Maya Stone. Use QA_SESSION_INDEX=0/1/2. No application-state/cookie override.
 desktop_geometry: user-approved measured outer window 1180x950 at x107/y68; viewport 1136x763, DPR1 on 1920x1080 screen. Persisted in checkpoint session.window; use these bounds on next launch, no mobile emulation or further resizing.
 ledger_status: 90/104 passed; Notifications 1/6; Mobile WebView PARTIAL/OPEN
-required_resume: Tester closes/reopens Guide to confirm images after backend repair. Then activate-newer entry-consent ENTRY-CONSENT-002 and hand off required v4 acceptance; do not activate while Guide rendering replay is pending. Continue 003, AUTH-SESSION-001 and listed physical-phone gaps. Footer provider colors removed with Facebook icon retained; visual check pending. Candidate lifecycle-30 is served on phone route but latest recorded phone document still had older build; no data/cache clearing.
-last_completed: Guide media HTTP repair verified 77/77 SVGs and 2 security tests; existing watcher build/restart PASS. Earlier desktop card and new-profile first-save/reload PASS retained; overall PARTIAL.
-last_evidence: ../manuals/DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md#helpguide-media-repair-and-consent-resume--2026-09-15
+required_resume: Use MANUAL_QA_INVITEE_USER_ID=1b1c70be2349b3359a8f6f94 for every auth-session harness command, including reset. A login/reload/capture-reload, B login, C blocked, A logout, C retry; verify exact 4 audits/2 sessions/3 warnings, then reset. Phone latest entry/native install, Settings resident resume and local-device persistence gaps remain.
+last_completed: Consent 003 inheritance/terminal oracle verified 22:31:29.822Z; v4 immutable, +1 v5 consent, analytics/research only; separate Save choices sequence documented.
+last_evidence: ../manuals/DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md#consent-v5-desktop-replay--2026-09-15
 ```
 
 ### Notifications takeover notes
