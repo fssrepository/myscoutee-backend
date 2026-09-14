@@ -7,7 +7,8 @@
   const CHECKPOINT = "ENTRY-CONSENT-002";
   const TARGET_USER_ID = "650000000000000000000062";
   const TARGET_USER_NAME = "Nova Social";
-  const PRIVACY_SELECTOR = { documentType: "privacy", lang: "en" };
+  const PRIVACY_LANG = Q.text(process.env.MANUAL_QA_PRIVACY_LANG) || "en";
+  const PRIVACY_SELECTOR = { documentType: "privacy", lang: PRIVACY_LANG };
   const QA_REVISION_PREFIX = "manual-qa-entry-consent-002-";
   const OLD_OPTIONAL_SECTION_ID = "qa-previous-analytics";
   const NEW_OPTIONAL_SECTION_ID = "qa-current-analytics";
@@ -16,6 +17,7 @@
   const checkpointId = Q.text(process.env.MANUAL_QA_CHECKPOINT_ID).toUpperCase();
 
   function config() {
+    if (!["en", "hu"].includes(PRIVACY_LANG)) Q.fail("MANUAL_QA_PRIVACY_LANG must be en or hu.");
     if (checkpointId !== CHECKPOINT) {
       Q.fail(`entry-consent revision harness supports only ${CHECKPOINT}.`);
     }
@@ -23,6 +25,7 @@
 
   function requireState() {
     const state = Q.activeState(SCENARIO, true);
+    if ((state.privacyLang || "en") !== PRIVACY_LANG) Q.fail("Use the staged MANUAL_QA_PRIVACY_LANG for this checkpoint.");
     if (Q.text(state.checkpointId).toUpperCase() !== checkpointId) {
       Q.fail(`staged consent checkpoint is '${Q.text(state.checkpointId)}', not '${checkpointId}'.`);
     }
@@ -88,9 +91,9 @@
     return {
       _id: id,
       documentType: "privacy",
-      lang: "en",
+      lang: PRIVACY_LANG,
       contextKey: "",
-      languageLabel: "English",
+      languageLabel: PRIVACY_LANG === "hu" ? "Hungarian" : "English",
       version,
       active,
       title,
@@ -131,7 +134,7 @@
   function assertSoleActive(revisionId) {
     const active = activeEnglishPrivacyRevisions();
     if (active.length !== 1 || Q.text(active[0]._id) !== Q.text(revisionId)) {
-      Q.fail(`expected '${Q.text(revisionId)}' as the sole active English privacy revision.`);
+      Q.fail(`expected '${Q.text(revisionId)}' as the sole active selected-language privacy revision.`);
     }
   }
 
@@ -174,7 +177,7 @@
       .toArray();
     const originalActive = originalPrivacyRevisions.filter(revision => revision.active === true);
     if (originalPrivacyRevisions.length === 0 || originalActive.length !== 1) {
-      Q.fail(`expected one active English privacy revision before stage, found ${originalActive.length}.`);
+      Q.fail(`expected one active selected-language privacy revision before stage, found ${originalActive.length}.`);
     }
 
     const highestVersion = originalPrivacyRevisions.reduce(
@@ -242,6 +245,7 @@
       phase: "previous-active",
       stagedAtIso,
       targetUserId: TARGET_USER_ID,
+      privacyLang: PRIVACY_LANG,
       targetUserName: TARGET_USER_NAME,
       previousRevisionId,
       previousRevisionVersion: previousVersion,
@@ -532,7 +536,7 @@
     if (active.length !== 1
         || Q.text(active[0]._id) !== Q.text(state.currentRevisionId)
         || Q.number(active[0].version) !== previewVersion) {
-      Q.fail("visual v5 preview did not become the sole active English privacy revision.");
+      Q.fail("visual v5 preview did not become the sole active selected-language privacy revision.");
     }
     Q.printObject({
       scenario: SCENARIO,
@@ -567,7 +571,7 @@
       .map(revision => Q.text(revision._id));
     const unexpectedIds = currentIds.filter(id => !expectedIds.has(id));
     if (unexpectedIds.length > 0) {
-      Q.fail(`refusing to reset after unexpected English privacy revisions appeared: ${unexpectedIds.join(", ")}.`);
+      Q.fail(`refusing to reset after unexpected selected-language privacy revisions appeared: ${unexpectedIds.join(", ")}.`);
     }
 
     const resetAtIso = Q.nowIso();
@@ -592,7 +596,7 @@
       .map(revision => Q.text(revision._id))
       .sort();
     if (!Q.sameJson(restoredActiveIds, expectedActiveIds)) {
-      Q.fail("original active English privacy revision was not restored exactly.");
+      Q.fail("original active selected-language privacy revision was not restored exactly.");
     }
 
     Q.collection(Q.STATE_COLLECTION).deleteOne({ _id: state._id });

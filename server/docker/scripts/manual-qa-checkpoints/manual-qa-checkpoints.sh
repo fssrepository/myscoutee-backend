@@ -624,6 +624,7 @@ run_scenario() {
       -e "MANUAL_QA_CHAT_TITLE=${MANUAL_QA_CHAT_TITLE:-}" \
       -e "MANUAL_QA_EVENT_ID=${MANUAL_QA_EVENT_ID:-}" \
       -e "MANUAL_QA_EVENT_IMAGE_URL=${MANUAL_QA_EVENT_IMAGE_URL:-}" \
+      -e "MANUAL_QA_PRIVACY_LANG=${MANUAL_QA_PRIVACY_LANG:-en}" \
       -e "MANUAL_QA_CHECKPOINT_ID=${checkpoint_id}" \
       -e "MANUAL_QA_SOURCE_CHECKPOINT_ID=${source_checkpoint_id}" \
       -e "MANUAL_QA_PAYMENT_PROVIDER=${payment_provider}" \
@@ -658,6 +659,7 @@ run_scenario() {
     MANUAL_QA_CHAT_TITLE="${MANUAL_QA_CHAT_TITLE:-}" \
     MANUAL_QA_EVENT_ID="${MANUAL_QA_EVENT_ID:-}" \
     MANUAL_QA_EVENT_IMAGE_URL="${MANUAL_QA_EVENT_IMAGE_URL:-}" \
+    MANUAL_QA_PRIVACY_LANG="${MANUAL_QA_PRIVACY_LANG:-en}" \
     MANUAL_QA_CHECKPOINT_ID="${checkpoint_id}" \
     MANUAL_QA_SOURCE_CHECKPOINT_ID="${source_checkpoint_id}" \
     MANUAL_QA_PAYMENT_PROVIDER="${payment_provider}" \

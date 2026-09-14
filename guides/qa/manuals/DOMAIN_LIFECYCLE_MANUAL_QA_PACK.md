@@ -9510,3 +9510,100 @@ fresh evidence for this run. Do not silently mark those replays executed.
   devices empty and Balázs owns exactly the same browser device. Native grant
   and both HTTP preference/device keys remain unchanged. Further off/reload
   and reverse account-switch checks follow before closure.
+
+
+### Physical consent revision and inheritance replay — 2026-09-15
+
+- The phone prefers Hungarian content. The revision fixture now accepts
+  `MANUAL_QA_PRIVACY_LANG=en|hu` (default en), persists the selected language,
+  and refuses status/mutation/reset with a mismatched language. The common
+  Docker/local wrapper forwards the setting. The inheritance fixture selects
+  the latest exact matching source consent in that language and requires that
+  source to be the latest revision before creating the next immutable version.
+  Stable optional IDs, exact counts and immutable-source checks are unchanged.
+  JS syntax and shell syntax checks passed; actual hu stage/verify/reset passed.
+  Legacy result-property names containing V4/V5 remain compatible; numeric
+  revisionVersion fields are authoritative for repeated/localized runs.
+- Initial en v6/v7 preparation was reset without consent transactions after
+  identifying the language mismatch. Those inactive fixture revisions are
+  retained by the normal harness; no prior evidence was deleted.
+- Phone hu ENTRY-CONSENT-002 baseline 23:30:11.460Z: v2/v3, target 5 consents,
+  total 33, anonymous 0. Ordinary Reject left no HTTP user or entry consent and
+  all server deltas zero. Selected only Previous analytics, then real Nova
+  selector login. v2 consent `6aa88418fce30caf4117d0d9` accepted
+  23:32:40.657767710Z, source entry.
+- Newer v3 activation 23:33:01.230Z forced the authenticated phone popup after
+  reload; Close left it open. Selected only Current analytics and approved.
+  Verify 23:33:31.933Z: v3 consent `6aa88442fce30caf4117d0da`, target/total +2,
+  anonymous +0, earlier v2 unchanged. Reset 23:33:32.965Z retained both audits
+  and restored hu default v1. `/tmp/myscoutee-phone-consent-002-pass.json`.
+- Phone hu ENTRY-CONSENT-003 staged 23:33:33.491Z: source hu v3, new hu v4.
+  After normal Nova sign-in, required popup showed Current analytics selected,
+  Current marketing and new Product research unselected. Screenshot:
+  `/tmp/myscoutee-phone-consent-inherited.png`. Selected Product research BEFORE
+  the first approval. Verify 23:35:36.690Z: one new consent
+  `6aa884c1fce30caf4117d0dc`, analytics+research, no marketing, source settings;
+  accepted/updated 23:35:29.557310663Z; source revision/consent unchanged,
+  target/total +1, anonymous +0. Exact first-approval sequence PASS on phone.
+  Reset 23:35:37.707Z restored hu default v1 and retained evidence.
+  `/tmp/myscoutee-phone-consent-003-pass.json`.
+
+
+### WebView final physical replay and cleanup — 2026-09-15
+
+Times below are UTC on 2026-09-14 (local date 2026-09-15). This section
+supersedes the pending follow-up and temporary deployment notes above.
+
+- Local candidate 35 post-fix continuation: Balázs off/Update left both u1/u2
+  device lists empty at 23:25:55.516Z; reload retained off/empty at
+  23:26:10.168Z. On/Update restored exactly one Balázs device at
+  23:26:14.857Z. Normal completed Logout followed by real Anna selection
+  automatically transferred the same browser device to Anna: u1 one, u2 zero
+  at 23:27:18.105Z. Popup off/on, persistence after reload, repeated Update,
+  unrelated profile save and both account-transfer directions are now observed
+  through ordinary physical-phone controls. Other-device preservation retains
+  the earlier adapter coverage; this run did not add a second local device.
+  Original About text was restored through UI; Anna then logged out normally.
+  HTTP preference/device keys were preserved. No Firebase token was invented.
+- Supplemental AUTH-SESSION-001 used Maya Stone
+  `1b1c70be2349b3359a8f6f94`. Fixture staged 23:36:25.973Z; versioned launcher
+  prepared desktop A/B with two accepted sessions. Those prepared logins are
+  prerequisites, not new manual login evidence (the actual earlier desktop
+  A/B/C run remains authoritative). Physical C selected Maya normally and was
+  blocked on entry: two active sessions, third audit BLOCKED_LIMIT, Android
+  client label. Desktop A normal Logout released one slot. Phone Try again
+  restored the selector; actual Maya selection entered /game successfully.
+  Final two active sessions, four audits (ACCEPTED, ACCEPTED, BLOCKED_LIMIT,
+  ACCEPTED), three warning notifications/outbox records. Last two audits are
+  Android. `/tmp/myscoutee-phone-session-limit-final.json`.
+  Phone Maya logged out normally before fixture reset at 23:40:18.108Z.
+  Per-profile enforcement remains unchanged; the earlier same-browser
+  Maya-blocked -> Balázs-accepted proof is retained. The selector is not blocked
+  globally, and there is no newly introduced demo exemption.
+- Physical entry footer visual and computed-style verification passed: all
+  three contact icons are 28 CSS px, neutral/light, with Facebook retained and
+  no clipped glyph. `/tmp/myscoutee-phone-footer-large-icons.png`.
+- Normal HTTP dev configuration restored byte-for-byte (SHA256
+  `bd938c8438d6baf591628f779b0dc08a0b7181f3d0c690b7e3aa70df0e15b54b`). Existing
+  frontend watcher generated lifecycle-36, build
+  `mobile-webview-lifecycle-1789428466369`, at 23:27:46.395Z. Index SHA256
+  `bfc630a6e417096a0b62338a1409e4c8e9c55c210b750b52fd5c91c2cd0aa56e`;
+  worker SHA256 `598f4fb9762bf950a2121d04933ce2b16479a56d61d5d02873f322c6301c6176`.
+  Closing only the localhost QA client and reopening the original installed
+  app activated this build normally: /game, standalone, activated worker and
+  no waiting worker. No app data/cache clearing or reinstall was used.
+- Cleanup verified: mobile, auth and both consent checkpoints report
+  not-staged. Maya's auth/session/audit/notification/outbox residue is zero;
+  retained Nova consent evidence is intentionally preserved (8 target, 37
+  total), with `privacy-default-hu-v1` restored active. Earlier en fixture
+  preparation also reset without acceptance. AUTH managed desktop windows
+  closed through the versioned launcher. The owned 127.0.0.1 probe tabs and
+  temporary WebAPK `org.chromium.webapk.a15bb28bd0ec620cc_v2` were removed after
+  verifying its origin. Original localhost and GitHub WebAPKs remain installed;
+  `tcp:8080 -> tcp:80` reverse transport remains available.
+- Active WebView execution is complete for the non-deferred work. Status stays
+  PARTIAL because fresh phone native clipboard Allow and desktop allowed paste
+  were explicitly deferred by the tester. Already-granted phone paste and
+  native Block remain proven. The desktop consent-003 sequence caveat remains
+  recorded; the exact initial-approval sequence now passes on physical phone.
+  Real FCM delivery remains owned by MOBILE-PUSH-LIFECYCLE-001.

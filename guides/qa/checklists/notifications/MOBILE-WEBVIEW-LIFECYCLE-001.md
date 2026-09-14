@@ -7,14 +7,15 @@ test is meant to prove.
 
 ## Current progress — 2026-09-15
 
-**Overall: PARTIAL / OPEN. Desktop card/session and consent 002 checks passed.
-Consent 003 inheritance and terminal checks passed with a separately saved
-research choice, documented in the evidence. Per-profile `AUTH-SESSION-001` also passed. Phone resident Settings and footer/entry checks also passed. Mobile main-rating photo fit also passed on candidate 32. Remaining: install/local-device checks.**
+**Overall: PARTIAL — non-deferred execution complete. Physical native install,
+local-device UI/reload/account transfer, consent 002/003 and Maya session-limit
+replay passed. Loading progress and enlarged contact icons passed on phone.
+Only the explicitly deferred clipboard observations remain open.**
 
 Help / Guide image access is repaired: all 77 MinIO SVG reads passed, and the
-tester reported working images on another surface. Continue the remaining
-session and phone checks; do not replay completed image/consent steps.
-[Latest consent evidence](../../manuals/DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md#consent-v5-desktop-replay--2026-09-15).
+tester reported working images on another surface. Retain the completed
+observations; do not restart them to reach the deferred clipboard boundary.
+[Final replay and cleanup](../../manuals/DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md#webview-final-physical-replay-and-cleanup--2026-09-15).
 
 User clarification: visibility belongs to the **profile**, with no separate
 private-image setting. A private profile does not appear as a game card.
@@ -36,8 +37,9 @@ physical-phone post-fix coverage remains explicit below.
 [Replay evidence](../../manuals/DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md#desktop-card-and-first-save-session-replay--2026-09-1415).
 
 Desktop native install waiting/cancellation/acceptance/completion now passed
-with the corrected ring timing. Physical-phone post-fix native replay remains
-unproven. The original **WebView Consent Replay** profile returned through
+with the corrected ring timing. Physical-phone native waiting, cancellation,
+acceptance and completion also passed through the real Chrome install flow.
+The original **WebView Consent Replay** profile returned through
 ordinary logout and demo selection without onboarding. The user saved a fresh
 **WebView Email Replay** profile; the 21:24:16 UTC oracle proves one new public
 profile, three images, one experience profile and one unique development email
@@ -49,21 +51,23 @@ Keep it aligned with those records and the [resume pointer](../../handoffs/CURRE
 Section numbers below identify test definitions, not progress: returning to
 section 0 does not reset the recorded results in sections 1–7.
 
-### Remaining work, in execution order
+### Execution status and remaining work
 
-| Order | State | Checkpoint / work | Exact remaining proof |
-| --- | --- | --- | --- |
-| 1 | DONE — DESKTOP | Game-card image / first-save session repair | Normal sign-in, all three card images, profile detail, installed-app close/reopen, fresh profile save and reload passed. Retain evidence; do not replay to reach the next checkpoint. |
-| 2 | DONE — DESKTOP | `ENTRY-CONSENT-002` | Forced v4 acceptance, blocked dismissal, exact consent counts and unchanged v3 verified. |
-| 3 | DESKTOP VERIFIED | `ENTRY-CONSENT-003` | Stable-ID inheritance and unchanged v4 verified; research added via a separate Save choices after initial approval. Exact sequence recorded in evidence. |
-| 4 | DONE — DESKTOP | `AUTH-SESSION-001` | All three clients used the same Maya Stone profile: first two accepted, third blocked; logout frees one slot. Four audits and three warnings verified. |
-| 5 | PHONE REPLAY PENDING | Native install progress | Desktop native decision without ring, Cancel, accepted-installation ring and completion passed. Physical-phone post-fix native replay remains unproven. |
-| 6 | CLOSURE REVIEW | Affected regressions and evidence gaps below | Check only behavior affected by subsequent changes and explicitly unproven requirements; reconcile desktop/phone evidence, restore owned fixtures and update the ledger. |
+| State | Checkpoint / work | Proven scope or exact remaining proof |
+| --- | --- | --- |
+| DONE — DESKTOP | Game-card image / first-save session repair | Normal sign-in, all three card images, profile detail, installed-app close/reopen, fresh profile save and reload passed. |
+| DONE — DESKTOP + PHONE | `ENTRY-CONSENT-002` | Reject without session/consent, forced newer acceptance, blocked dismissal, exact consent counts and unchanged previous consent. |
+| DONE — PHONE; DESKTOP CAVEAT RETAINED | `ENTRY-CONSENT-003` | Phone inherited only analytics, selected new research before first approval, and preserved the source. Desktop research was saved separately; that sequence is not relabeled. |
+| DONE — DESKTOP + PHONE | `AUTH-SESSION-001` | Same Maya profile: first two sessions accepted, third blocked; normal logout frees a slot. Earlier same-browser Balázs login proved the selector remains usable for another profile. |
+| DONE — DESKTOP + PHONE | Native install progress | No ring during native decision or Cancel; ring only after native acceptance; completion removes Install. |
+| DONE — PHONE | Local device persistence | Off/on, repeated Update, popup reopen, reload, unrelated profile save and automatic transfer between Anna/Balázs passed after the initialization fix. |
+| DONE — PHONE | Affected visual/loading regressions | Proportional main-rating image retained; neutral 28 px contact icons with Facebook; seed progress never decreases and reaches 100. |
+| DONE | Cleanup and records | Fixtures reset, normal HTTP build/config restored, owned temporary app and managed windows removed; original phone apps/cache retained. |
+| DEFERRED BY TESTER | Clipboard | Fresh phone native Allow and desktop allowed paste remain unproven. Already-granted phone exact paste and native Block passed. Do not replay other branches. |
 
 The entry regression requires separate desktop and physical-phone evidence.
-Do not treat one platform's result as proof for both. Complete the current row
-before moving to the next; do not restart completed branches merely to reach a
-later fixture baseline. Real push delivery belongs to
+Do not treat one platform's result as proof for both. Retain completed branches
+and use the closest fixture baseline if the deferred clipboard work is resumed. Real push delivery belongs to
 [MOBILE-PUSH-LIFECYCLE-001](MOBILE-PUSH-LIFECYCLE-001.md).
 
 ### Recorded results to retain
@@ -87,7 +91,7 @@ Mobile main-rating photo fit is verified on physical phone candidate 32: the
 complete image fits proportionally within the card.
 [Photo-fit evidence](../../manuals/DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md#mobile-home-rating-photo-fit--2026-09-15).
 
-### Evidence gaps to resolve at closure
+### Coverage limits retained after this run
 
 These limits were already recorded in the detailed evidence. Keep them
 visible; do not silently promote a partial observation to a full PASS or
@@ -97,9 +101,9 @@ automatically replay a branch the tester explicitly deferred.
 | --- | --- |
 | [1. Clipboard](#1-coherent-cold-start-upgrade-and-popup-layout) | Phone exact paste with permission already granted and native Block passed. Fresh native Allow and desktop allowed paste remain unproven; the tester requested moving on. [Details](../../manuals/DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md#native-clipboard-observation-and-demo-replay--2026-09-14). |
 | [2. Background resume](#2-background-mutation-and-resume) | Chrome resident-list recovery was observed. Candidate 31 Settings resident replay now passed: same document, one controlled row, unread 4 → 5 stable after polling and reopen. [Details](../../manuals/DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md#current-build-cache-retest--2026-09-14-17341743-utc). |
-| [0. Latest entry UI](#0-repeat-the-complete-entry-journey) | Candidate 31 phone footer visual replay passed with neutral glyphs/Facebook retained; actual phone Riley entry and protected large-photo reads passed. Native permission and paired entry coverage must remain explicit. [Details](../../manuals/DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md#entry-login-and-footer-corrections--2026-09-14). |
-| [7. Native install progress](#7-shared-permissions-and-installation--desktop-and-physical-phone) | Desktop actual installation and installed-app reopen are now recorded. Post-fix native waiting without ring, cancellation, accepted-installation ring and completion passed on desktop. Physical-phone native replay remains unverified; isolated service checks are not that evidence. |
-| [Local device persistence](#local-device-registration-persistence-regression) | Adapter/persistence checks and controlled popup contracts do not prove the full ordinary frontend-local UI/reload journey. This is separate from the passed physical Firebase device-preference replay. |
+| [0. Latest entry UI](#0-repeat-the-complete-entry-journey) | Final phone footer replay passed with neutral 28 px glyphs/Facebook retained; actual phone Riley entry and protected large-photo reads passed. Native permission and paired entry coverage must remain explicit. [Details](../../manuals/DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md#entry-login-and-footer-corrections--2026-09-14). |
+| [7. Native install progress](#7-shared-permissions-and-installation--desktop-and-physical-phone) | Desktop actual installation and installed-app reopen are now recorded. Post-fix native waiting without ring, cancellation, accepted-installation ring and completion passed on desktop. Physical-phone native waiting/cancel/accept/completion also passed. [Final evidence](../../manuals/DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md#webview-final-physical-replay-and-cleanup--2026-09-15). |
+| [Local device persistence](#local-device-registration-persistence-regression) | Full ordinary frontend-local phone UI/reload and account transfer now passed after initialization repair. Other-device preservation retains adapter coverage; this run did not use two local devices. Separate physical Firebase device-preference evidence is retained. [Final evidence](../../manuals/DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md#webview-final-physical-replay-and-cleanup--2026-09-15). |
 
 ### Detailed guide navigation
 
@@ -186,10 +190,16 @@ authenticated cache items exist and ADB transport is healthy.
 
 ## 0. Repeat the complete entry journey
 
+For `ENTRY-CONSENT-002/003`, select the fixture language matching the browser:
+`MANUAL_QA_PRIVACY_LANG=hu` for Hungarian or `en` (default) for English. Keep it
+identical for stage, status, verify and reset. Replays create the next revision
+numbers and retain earlier consent evidence; apply stable section-ID assertions
+to the versions emitted by the fixture, rather than hardcoding v4/v5.
+
 For a fresh regression run, execute these branches on the candidate build in
 the desktop browser and physical phone PWA. Prior standalone checkpoint results
 do not replace this regression run. During continuation, use the
-[current progress](#current-progress--2026-09-14) above: retain observations
+[current progress](#current-progress--2026-09-15) above: retain observations
 already recorded for this run and resume only the outstanding branches.
 Preserve the recorded old-cache boundary before changing accounts or loading
 the candidate.

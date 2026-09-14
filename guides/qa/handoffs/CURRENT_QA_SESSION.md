@@ -102,25 +102,25 @@ repair an established product defect. Preserve the phone's tethering connection
 when shaping only its route to the QA application.
 
 ```yaml
-checkpoint: MOBILE-WEBVIEW-LIFECYCLE-001 — PARTIAL / OPEN
+checkpoint: MOBILE-WEBVIEW-LIFECYCLE-001 — PARTIAL / CLIPBOARD DEFERRED
 checklist: ../checklists/notifications/MOBILE-WEBVIEW-LIFECYCLE-001.md
-substage: Physical native install and seed progress replay passed. Local-device off/on/reload/profile-save passed; cross-account automatic transfer failed because local messaging initialization was skipped. Fix under watcher; replay this boundary next. Footer icons enlarged, visual verification pending.
+substage: Non-deferred execution and cleanup complete. Physical native install, local device UI/reload/account transfer, consent 002/003, Maya session limit, seed progress and enlarged neutral footer icons passed. Retain the earlier main-rating photo fit PASS.
 notification_order: MOBILE-WEBVIEW-LIFECYCLE-001, MOBILE-PUSH-LIFECYCLE-001, NOTIFICATION-ADMIN-LIFECYCLE-001, JOB-MESSAGES, BELL-RATING-LIFECYCLE-001
-notification_remaining_complexity: estimates retained pending defect triage
-fixture_phase: Auth supplemental reset 22:45:33.243Z. Mobile fixture staged 22:47:11.399Z remains fixture-ready with background-settings-resident mutation 22:48:32.550Z; read-only status confirmed. Consent transactions retained. Common launcher snapshotted and cleared only Casey sessions, then prepared Casey desktop control.
+fixture_phase: Mobile, auth and both consent checkpoints reset and report not-staged. Maya residue zero; Nova consent evidence retained, hu default v1 restored. No active checkpoint fixture.
 browser_control: User explicitly renewed delegation for the entire remaining test, including ordinary phone/browser actions. This current instruction overrides the default manual-browser handoff boundary. Use visible controls; no app API mocks.
-desktop_geometry: user-approved measured outer window 1180x950 at x107/y68; viewport 1136x763, DPR1 on 1920x1080 screen. Persisted in checkpoint session.window; use these bounds on next launch, no mobile emulation or further resizing.
-ledger_status: 90/104 passed; Notifications 1/6; Mobile WebView PARTIAL/OPEN
-required_resume: Phone localhost:8080 currently local candidate34 1789427977519 as u2; candidate35 local registration fix being compiled. environment.dev.ts temporarily local; restore exact /tmp/myscoutee-webview-environment.dev.before-local.ts after snapshot. Preserve original apps/cache. New owned 127.0.0.1 WebAPK a15bb28bd0ec620cc_v2 retained for cleanup. Finish device transfer/off-on replay, restore HTTP candidate and verify icons; clipboard remains deferred.
-last_completed: Read-only mobile fixture status matched retained state; device and reverse tunnel present; stack healthy. Versioned launcher reports Casey Bridge ready. Main rating photo PASS retained; native install still unproven.
-last_evidence: ../manuals/DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md#mobile-home-rating-photo-fit--2026-09-15
+desktop_geometry: user-approved outer window 1180x950 at x107/y68; viewport 1136x763, DPR1 on 1920x1080. AUTH managed windows now closed through the versioned launcher.
+ledger_status: 90/104 passed; Notifications 1/6; Mobile WebView PARTIAL solely for deferred clipboard proof
+required_resume: Do not restart completed WebView branches. Fresh phone native clipboard Allow and desktop allowed paste remain explicitly deferred. If asked to advance the campaign, use the next notification checkpoint and its prerequisites. Verify the runtime read-only before a new fixture launch.
+runtime: Original localhost PWA activated normal HTTP lifecycle-36 build mobile-webview-lifecycle-1789428466369, standalone /game with no waiting worker. Exact environment.dev.ts restored. Original localhost/GitHub installations and caches preserved; only owned 127.0.0.1 probe WebAPK removed. USB reverse tcp:8080 to tcp:80 retained.
+last_completed: Final fixture cleanup, HTTP candidate activation, physical footer screenshot and exact source/config review.
+last_evidence: ../manuals/DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md#webview-final-physical-replay-and-cleanup--2026-09-15
 ```
 
 ### Notifications takeover notes
 
 `UI-POLL-JANK-001` is closed. Its detailed evidence is in the linked diagnosis
-and CSV/XLSX ledger. The Mobile WebView checkpoint is PARTIAL/OPEN; do not replay the
-completed performance fixture or create additional browser sessions.
+and CSV/XLSX ledger. The Mobile WebView checkpoint is PARTIAL only for deferred clipboard proof;
+non-deferred execution and cleanup are complete. Do not replay completed work.
 
 Existing support for the later Notifications guides must be reused before new
 harness code is created:
@@ -141,7 +141,9 @@ harness code is created:
   Never clear app data before capturing the old-cache and account-isolation
   boundaries.
 
-Remaining estimates: Mobile WebView `110/260`, Mobile Push `100/235`,
+Mobile WebView retains only deferred clipboard work, estimated `20/45` minutes
+if resumed; its original `110/260` estimate is superseded. Other estimates:
+Mobile Push `100/235`,
 Notification Admin `80/190`, Scheduled Messages `20/65`, Bell/Rating `55/130`
 minutes. The completed UI poll estimate is excluded from the remaining total.
 

@@ -7,7 +7,8 @@
   const CHECKPOINT = "ENTRY-CONSENT-003";
   const TARGET_USER_ID = "650000000000000000000062";
   const TARGET_USER_NAME = "Nova Social";
-  const PRIVACY_SELECTOR = { documentType: "privacy", lang: "en" };
+  const PRIVACY_LANG = Q.text(process.env.MANUAL_QA_PRIVACY_LANG) || "en";
+  const PRIVACY_SELECTOR = { documentType: "privacy", lang: PRIVACY_LANG };
   const SOURCE_REVISION_PREFIX = "manual-qa-entry-consent-002-";
   const SOURCE_EXISTING_SECTION_ID = "qa-current-analytics";
   const SOURCE_UNSELECTED_SECTION_ID = "qa-current-marketing";
@@ -17,6 +18,7 @@
   const checkpointId = Q.text(process.env.MANUAL_QA_CHECKPOINT_ID).toUpperCase();
 
   function config() {
+    if (!["en", "hu"].includes(PRIVACY_LANG)) Q.fail("MANUAL_QA_PRIVACY_LANG must be en or hu.");
     if (checkpointId !== CHECKPOINT) {
       Q.fail(`entry-consent inheritance harness supports only ${CHECKPOINT}.`);
     }
@@ -24,6 +26,7 @@
 
   function requireState() {
     const state = Q.activeState(SCENARIO, true);
+    if ((state.privacyLang || "en") !== PRIVACY_LANG) Q.fail("Use the staged MANUAL_QA_PRIVACY_LANG for this checkpoint.");
     if (Q.text(state.checkpointId).toUpperCase() !== checkpointId) {
       Q.fail(`staged consent checkpoint is '${Q.text(state.checkpointId)}', not '${checkpointId}'.`);
     }
@@ -70,36 +73,39 @@
   }
 
   function sourceCandidates() {
-    return targetConsents().filter(consent => {
+    const revisionIds = new Set(Q.collection("helpCenterRevisions").find(PRIVACY_SELECTOR).toArray().map(revision => Q.text(revision._id)));
+    const candidates = targetConsents().filter(consent => {
       const summary = consentSummary(consent);
       return summary.revisionId.startsWith(SOURCE_REVISION_PREFIX)
         && summary.revisionId.endsWith("-current")
-        && summary.revisionVersion === 4
+        && revisionIds.has(summary.revisionId)
         && summary.source === "settings"
         && Q.sameJson(summary.approvedOptionalSectionIds, [SOURCE_EXISTING_SECTION_ID]);
     });
+    const latestVersion = Math.max(0, ...candidates.map(consent => Q.number(consent.revisionVersion)));
+    return candidates.filter(consent => Q.number(consent.revisionVersion) === latestVersion);
   }
 
   function assertSoleActive(revisionId) {
     const active = activeEnglishPrivacyRevisions();
     if (active.length !== 1 || Q.text(active[0]._id) !== Q.text(revisionId)) {
-      Q.fail(`expected '${Q.text(revisionId)}' as the sole active English privacy revision.`);
+      Q.fail(`expected '${Q.text(revisionId)}' as the sole active selected-language privacy revision.`);
     }
   }
 
   function assertSourceRevision(revision, consent) {
-    if (!revision || Q.number(revision.version) !== 4 || revision.active === true) {
-      Q.fail("retained v4 source revision is missing, active or has an unexpected version.");
+    if (!revision || Q.number(revision.version) !== Q.number(consent.revisionVersion) || revision.active === true) {
+      Q.fail("retained source revision is missing, active or has an unexpected version.");
     }
     const sectionIds = (revision.sections || []).map(section => Q.text(section.id));
     if (!sectionIds.includes(SOURCE_EXISTING_SECTION_ID)
         || !sectionIds.includes(SOURCE_UNSELECTED_SECTION_ID)) {
-      Q.fail("retained v4 source revision does not contain the stable optional section IDs required by this checkpoint.");
+      Q.fail("retained source revision does not contain the stable optional section IDs required by this checkpoint.");
     }
     const summary = consentSummary(consent);
     if (summary.revisionId !== Q.text(revision._id)
         || !Q.sameJson(summary.approvedOptionalSectionIds, [SOURCE_EXISTING_SECTION_ID])) {
-      Q.fail("retained v4 source consent does not match the exact inherited-choice baseline.");
+      Q.fail("retained source consent does not match the exact inherited-choice baseline.");
     }
     return summary;
   }
@@ -120,7 +126,7 @@
 
     const candidates = sourceCandidates();
     if (candidates.length !== 1) {
-      Q.fail(`expected exactly one retained v4 source consent, found ${candidates.length}.`);
+      Q.fail(`expected exactly one retained source consent, found ${candidates.length}.`);
     }
     const sourceConsent = candidates[0];
     const sourceRevision = Q.collection("helpCenterRevisions").findOne({
@@ -135,15 +141,15 @@
       .toArray();
     const originalActive = originalPrivacyRevisions.filter(revision => revision.active === true);
     if (originalPrivacyRevisions.length === 0 || originalActive.length !== 1) {
-      Q.fail(`expected one active English privacy revision before stage, found ${originalActive.length}.`);
+      Q.fail(`expected one active selected-language privacy revision before stage, found ${originalActive.length}.`);
     }
     const highestVersion = originalPrivacyRevisions.reduce(
       (highest, revision) => Math.max(highest, Q.number(revision.version)),
       0
     );
     const revisionVersion = highestVersion + 1;
-    if (revisionVersion !== 5) {
-      Q.fail(`expected the new inherited-choice revision to be v5, found v${revisionVersion}.`);
+    if (highestVersion !== sourceConsentSummary.revisionVersion) {
+      Q.fail("The inherited-choice source must be the latest selected-language revision; complete ENTRY-CONSENT-002 first.");
     }
 
     const stagedAtIso = Q.nowIso();
@@ -159,14 +165,14 @@
     Q.collection("helpCenterRevisions").insertOne({
       _id: revisionId,
       documentType: "privacy",
-      lang: "en",
+      lang: PRIVACY_LANG,
       contextKey: "",
-      languageLabel: "English",
+      languageLabel: PRIVACY_LANG === "hu" ? "Hungarian" : "English",
       version: revisionVersion,
       active: true,
       title: "ENTRY-CONSENT-003 inherited privacy choices",
       summary: "Manual QA privacy choice inheritance",
-      description: "The v4 analytics choice must remain selected; the new Product research choice starts unselected.",
+      description: "The source analytics choice must remain selected; the new Product research choice starts unselected.",
       headerColor: "amber",
       createdDate: stagedAtIso,
       createdUser: Q.ACTOR,
@@ -174,11 +180,11 @@
       updatedUser: Q.ACTOR,
       sections: [
         {
-          id: "qa-required-v5",
+          id: `qa-required-v${revisionVersion}`,
           icon: "policy",
-          title: "Required privacy v5",
+          title: `Required privacy v${revisionVersion}`,
           blurb: "Required processing for the controlled inherited-choice checkpoint.",
-          contentHtml: "<p>This is a new immutable v5 revision record derived from the v4 contract.</p>",
+          contentHtml: "<p>This is a new immutable revision record derived from the retained source contract.</p>",
           imageUrls: [],
           panelSpan: "span-1",
           optional: false
@@ -187,7 +193,7 @@
           id: SOURCE_EXISTING_SECTION_ID,
           icon: "analytics",
           title: "Current analytics",
-          blurb: "This stable v4 choice must be preselected from the latest consent.",
+          blurb: "This stable existing choice must be preselected from the latest consent.",
           contentHtml: "<p>The existing optional choice keeps its stable section identity across revisions.</p>",
           imageUrls: [],
           panelSpan: "span-1",
@@ -207,7 +213,7 @@
           id: ADDED_SECTION_ID,
           icon: "science",
           title: "Product research",
-          blurb: "This rubric is new in v5 and must start unselected.",
+          blurb: "This rubric is new in this revision and must start unselected.",
           contentHtml: "<p>A newly introduced optional purpose always requires an explicit opt-in.</p>",
           imageUrls: [],
           panelSpan: "span-1",
@@ -223,6 +229,7 @@
       phase: "baseline",
       stagedAtIso,
       targetUserId: TARGET_USER_ID,
+      privacyLang: PRIVACY_LANG,
       targetUserName: TARGET_USER_NAME,
       sourceRevisionId: Q.text(sourceRevision._id),
       sourceRevisionVersion: Q.number(sourceRevision.version),
@@ -243,7 +250,7 @@
 
     assertSoleActive(revisionId);
     if (Q.collection("privacyConsents").findOne({ userId: TARGET_USER_ID, revisionId })) {
-      Q.fail("new v5 revision already has a Nova consent after stage.");
+      Q.fail("new inherited revision already has a Nova consent after stage.");
     }
 
     Q.printObject({
@@ -266,7 +273,7 @@
       baselineTargetConsentCount: baselineTargetConsents.length,
       baselineTotalConsentCount,
       baselineAnonymousConsentCount,
-      next: "Open one fresh Nova managed browser. The mandatory v5 popup must preload only Current analytics from v4; Current marketing and new Product research must both be unselected."
+      next: "Open one fresh Nova managed browser. The mandatory new popup must preload only Current analytics from the source revision; Current marketing and new Product research must both be unselected."
     });
   }
 
@@ -314,7 +321,7 @@
       anonymousServerConsentDelta: anonymousConsentCount() - Q.number(state.baselineAnonymousConsentCount),
       next: v5Consent
         ? `Run verify ${SCENARIO} ${checkpointId}.`
-        : "Prove the v5 popup inherited only Current analytics. Then select Product research as well, leave Current marketing unselected and approve."
+        : "Prove the new popup inherited only Current analytics. Then select Product research as well, leave Current marketing unselected and approve."
     });
   }
 
@@ -330,10 +337,10 @@
       _id: state.sourceConsentSnapshot._id
     });
     if (!Q.sameJson(currentSourceRevision, state.sourceRevisionSnapshot)) {
-      Q.fail("retained v4 source revision changed during v5 consent.");
+      Q.fail("retained source revision changed during inherited consent.");
     }
     if (!Q.sameJson(currentSourceConsent, state.sourceConsentSnapshot)) {
-      Q.fail("retained v4 source consent changed during v5 consent.");
+      Q.fail("retained source consent changed during inherited consent.");
     }
 
     const v5Consents = Q.collection("privacyConsents").find({
@@ -341,18 +348,18 @@
       revisionId: Q.text(state.qaRevisionId)
     }).toArray();
     if (v5Consents.length !== 1) {
-      Q.fail(`expected exactly one v5 consent, found ${v5Consents.length}.`);
+      Q.fail(`expected exactly one inherited consent, found ${v5Consents.length}.`);
     }
     const v5Summary = consentSummary(v5Consents[0]);
     if (v5Summary.revisionVersion !== Q.number(state.qaRevisionVersion)
         || v5Summary.source !== "settings"
         || !v5Summary.acceptedAtIso
         || !v5Summary.updatedAtIso) {
-      Q.fail("v5 consent has the wrong revision, source or timestamps.");
+      Q.fail("inherited consent has the wrong revision, source or timestamps.");
     }
     const expectedApprovals = [SOURCE_EXISTING_SECTION_ID, ADDED_SECTION_ID].sort();
     if (!Q.sameJson(v5Summary.approvedOptionalSectionIds, expectedApprovals)) {
-      Q.fail(`v5 optional approvals are ${JSON.stringify(v5Summary.approvedOptionalSectionIds)}; expected ${JSON.stringify(expectedApprovals)}.`);
+      Q.fail(`inherited optional approvals are ${JSON.stringify(v5Summary.approvedOptionalSectionIds)}; expected ${JSON.stringify(expectedApprovals)}.`);
     }
 
     const targetDelta = targetConsents().length - Q.number(state.baselineTargetConsentCount);
@@ -386,7 +393,7 @@
         eventFixtures: "not touched",
         paymentRuntime: "not used"
       },
-      next: `Record ${checkpointId} PASS/CLOSED, then reset to restore the original active privacy revision while retaining the inactive v5 revision and consent evidence.`
+      next: `Record ${checkpointId} PASS/CLOSED, then reset to restore the original active privacy revision while retaining the inactive inherited revision and consent evidence.`
     });
   }
 
@@ -409,7 +416,7 @@
       _id: state.sourceRevisionSnapshot._id
     });
     if (!Q.sameJson(repairedSourceRevision, state.sourceRevisionSnapshot)) {
-      Q.fail("retained v4 source revision could not be restored from the stage baseline.");
+      Q.fail("retained source revision could not be restored from the stage baseline.");
     }
     assertSoleActive(state.qaRevisionId);
 
@@ -439,7 +446,7 @@
       .map(revision => Q.text(revision._id));
     const unexpectedIds = currentIds.filter(id => !expectedIds.has(id));
     if (unexpectedIds.length > 0) {
-      Q.fail(`refusing to reset after unexpected English privacy revisions appeared: ${unexpectedIds.join(", ")}.`);
+      Q.fail(`refusing to reset after unexpected selected-language privacy revisions appeared: ${unexpectedIds.join(", ")}.`);
     }
 
     const resetAtIso = Q.nowIso();
@@ -457,7 +464,7 @@
       .map(revision => Q.text(revision._id))
       .sort();
     if (!Q.sameJson(restoredActiveIds, expectedActiveIds)) {
-      Q.fail("original active English privacy revision was not restored exactly.");
+      Q.fail("original active selected-language privacy revision was not restored exactly.");
     }
 
     Q.collection(Q.STATE_COLLECTION).deleteOne({ _id: state._id });
