@@ -8564,6 +8564,84 @@ Riley/Nova private-media isolation. No prior PASS replaces those observations.
   overwrite its state. Desktop QA continues independently. The obsolete
   document restoration cause and the complete WebView result remain open.
 
+#### Current-build cache retest — 2026-09-14 17:34–17:43 UTC
+
+- The user returned the phone to the QA PWA. The actual standalone document
+  was candidate 23 (`mobile-webview-lifecycle-1789405049656`, `main.js`).
+  A read-only browser-level observer recorded Settings/Recents returning a
+  navigation served by the service worker (HTTP 200, `fromServiceWorker=true`).
+  The resulting document retained candidate 23; time origin changed from
+  `1789406956856.3` to `1789407290248.4`. This is a recreated-document result,
+  not proof of resident resume. The earlier obsolete-document cause remains
+  unconfirmed; no application workaround was added.
+- Normal Nova logout, Riley login, Riley Ticket/QR open and Riley logout on
+  candidate 23 removed both previously retained Riley offline keys. Both
+  static app generations remained. Normal Nova login then displayed only
+  Nova's controlled Ticket and loaded QR; Riley offline keys remained absent.
+  The desktop Riley notification count changed from five to six after the
+  real second-device login. This was not an extra background-fixture mutation.
+- Closing/reopening the QA WebAPK produced a new document time origin
+  `1789407529122.2`, the same candidate build, Nova identity and no Riley keys.
+  With the versioned page/worker network fixture offline, Nova's QR reopened
+  at 1024 pixels with the avatar loaded and no horizontal overflow. Nova's
+  Notifications remained empty; its mute control was disabled with the
+  offline icon. Restoring transport retained the same document, empty list
+  and absent Riley keys; notification controls returned online. The shaping
+  process and passive observer were stopped. Phone radios/data were untouched.
+- Evidence: `/tmp/myscoutee-phone-cache-observer.jsonl`,
+  `/tmp/myscoutee-riley-current-logout-cache.json`,
+  `/tmp/myscoutee-nova-current-isolation.json`,
+  `/tmp/myscoutee-nova-current-isolation.png`,
+  `/tmp/myscoutee-nova-offline-current.png` and
+  `/tmp/myscoutee-nova-offline-notifications.png`.
+- Desktop Transport Source: typed the exact controlled URL, selected/copied
+  it using normal keyboard input, cleared the field and pressed Paste link.
+  The native permission was denied. The field remained empty; retry remained
+  available and showed browser-site-settings guidance. Successful allowed
+  paste is pending. The user requested shorter guidance; both language bundles
+  and generated Mongo seeds now use one short sentence. i18n seed audit passed;
+  the existing frontend watcher and Mongo seed watcher applied the change.
+- Full checkpoint stays PARTIAL/OPEN. This retest proves current account cache
+  cleanup and the above warm-cache recovery; Firebase login, authenticated
+  private-image access/revocation, complete entry regression and frontend-local
+  fallback still require their own evidence.
+
+#### Clipboard continuation and candidate 24 — 2026-09-14
+
+- Candidate 24 is a stamped snapshot of the existing watcher output, build
+  `mobile-webview-lifecycle-1789407847999`. No second compiler ran. After
+  installation completed, closing/reopening Chrome and the local QA WebAPK
+  activated candidate 24 without clearing application data.
+- Desktop ordinary reload and reopening the controlled Transport editor showed
+  the shortened denial guidance: "Allow clipboard access in site settings,
+  then retry." Native clipboard permission remains denied; an allowed desktop
+  Paste result is still pending the site-setting change. No Asset was saved.
+- On physical Android, the complete exact fixture URL was selected
+  (`selectionStart=0`, `selectionEnd=44`) and copied with Android's native
+  text-selection Copy menu. After clearing the field with ordinary keyboard
+  input and closing the keyboard, Paste link inserted exactly
+  `https://example.com/qa/mobile-webview-source`. Existing clipboard permission
+  was already granted: no new Allow dialog appeared. The early keyboard-open
+  coordinate attempt was discarded and its unsaved stray character cleared;
+  it is not evidence of clipboard behavior.
+- A versioned external browser permission override to denied preserved the
+  existing URL and showed the short Hungarian guidance without horizontal
+  overflow; a fresh Paste click remained retryable. Removing the override
+  restored the native granted setting; Paste succeeded and cleared the error.
+  The fixture helper now explicitly removes debugger permission overrides on
+  exit. Syntax check passed; this is fixture cleanup, not application logic.
+- Setting the external override to prompt did NOT display a native permission
+  popup: Paste returned the error instead. The override was removed, native
+  permission was verified granted again and a final ordinary Paste succeeded.
+  Do not report this attempt as a native Allow/Block test. The mobile native
+  first-permission branch remains NOT PROVEN, as explicitly clarified to the
+  user. No synthetic grant or fake browser API is counted as that proof.
+- Evidence: `/tmp/myscoutee-short-clipboard-error.png`,
+  `/tmp/myscoutee-phone-copy-menu.png`,
+  `/tmp/myscoutee-phone-paste-result.png`,
+  `/tmp/myscoutee-phone-clipboard-denied.png` and
+  `/tmp/myscoutee-phone-clipboard-prompt.png` (no popup).
+
 #### Test-hook audit and full entry regression — 2026-09-14
 
 Scope: current frontend application source/environments and backend main

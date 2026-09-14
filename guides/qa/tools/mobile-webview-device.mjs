@@ -189,4 +189,12 @@ try {
     for (const page of pages.filter(p => p.id !== target.id)) await send('Target.closeTarget', { targetId: page.id });
     console.log('Closed only other localhost:8080 QA pages.');
   } else throw Error('Usage: mobile-webview-device.mjs launch|inspect|eval|click|text|navigate|backend-offline|network-offline|drag-notification|close-other-qa-tabs');
-} finally { socket.close(); }
+} finally {
+  try {
+    if (action === 'permission') {
+      // Remove only debugger overrides; Chrome's native site decisions remain.
+      await send('Browser.resetPermissions');
+      console.log('Removed QA permission overrides; native site settings restored.');
+    }
+  } finally { socket.close(); }
+}
