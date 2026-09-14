@@ -14,6 +14,36 @@
     "screenHeight": 1000
   },
   "checkpoints": {
+    "UI-POLL-JANK-001": {
+      "layout": {
+        "columns": 3
+      },
+      "startupOracle": "ui-poll",
+      "additionalDemoUserIds": ["650000000000000000000062"],
+      "sessions": [
+        {
+          "actor": "Ava",
+          "sessionKind": "demo",
+          "userId": "admin-demo-ava",
+          "expectedName": "Ava Moderation",
+          "autoDismissExplanationGuide": false,
+          "targetUrl": "http://localhost/admin",
+          "entryUrl": "http://localhost/entry?redirect=%2Fadmin"
+        },
+        {
+          "actor": "Casey A",
+          "sessionKind": "demo",
+          "userId": "650000000000000000000061",
+          "expectedName": "Casey Bridge · first session"
+        },
+        {
+          "actor": "Casey B",
+          "sessionKind": "demo",
+          "userId": "650000000000000000000061",
+          "expectedName": "Casey Bridge · second session"
+        }
+      ]
+    },
     "QA-RESET-001": {
       "layout": {
         "columns": 1

@@ -527,6 +527,7 @@ run_scenario() {
     stat-012) scenario_script="${SCRIPT_DIR}/scenarios/stat-012-auto-inviter.js" ;;
     event-schedulers) scenario_script="${SCRIPT_DIR}/scenarios/event-schedulers.js" ;;
     role-triad) scenario_script="${SCRIPT_DIR}/scenarios/role-triad-checkpoints.js" ;;
+    ui-poll) scenario_script="${SCRIPT_DIR}/scenarios/chat-domain-checkpoints.js" ;;
     chat-domain)
       if [ "${checkpoint_id}" = "CHAT-GOVERNANCE-001" ]; then
         scenario_script="${SCRIPT_DIR}/scenarios/chat-governance-checkpoints.js"
@@ -678,6 +679,10 @@ command="$1"
 scenario="$2"
 
 case "${scenario}:${command}" in
+  ui-poll:stage|ui-poll:status|ui-poll:reset|ui-poll:session-status)
+    [ "$#" -eq 3 ] && [ "$3" = "UI-POLL-JANK-001" ] || { usage >&2; exit 2; }
+    run_scenario "${command}" "${scenario}" 30 "$3"
+    ;;
   browser-sessions:prepare)
     [ "$#" -eq 3 ] || { usage >&2; exit 2; }
     run_scenario "${command}" "${scenario}" 30 "$3"

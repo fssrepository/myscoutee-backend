@@ -11,13 +11,15 @@ dates, screenshots or machine evidence here.
 
 ## Actors and startup
 
-Codex prepares one controlled populated Group chat and opens four isolated
-managed Chrome windows:
+Codex prepares one controlled populated Group chat and opens three isolated
+managed Chrome windows, matching the three available Google-account slots:
 
-- **Ava** — Admin Jobs observer;
+- **Ava → Nova** — Admin Jobs observer first; after the Admin recordings,
+  the tester signs Ava out and signs Nova in within this same window;
 - **Casey A** — first session of the controlled user and Chat reader;
 - **Casey B** — second session of the same controlled user;
-- **Nova** — participant who sends one live Chat message.
+Nova sends the one live Chat message from the former Ava window. This is a
+desktop test; a phone is not required.
 
 Casey A and Casey B must be the same account in two different managed Chrome
 profiles. They are the only two active server sessions for Casey at the
@@ -32,9 +34,9 @@ Start step 1 only after Codex confirms all of the following:
 
 - the fixture and exact two-session Casey boundary are verified;
 - every window shows the configured identity;
-- Casey and Nova can see the controlled Group chat;
-- no replacement launcher, login, logout or session cleanup will run during
-  the test.
+- Casey can read the controlled Group chat, and Nova has its verified fixture membership;
+- no replacement launcher or session cleanup will run during the test;
+  the one explicit Ava → Nova account switch is performed by the tester.
 
 After the windows are handed over, the tester owns every navigation, click,
 keystroke, DevTools action and browser close. Stop at the first visible
@@ -84,7 +86,11 @@ mismatch and report the step number.
      occurs.
 
 10. Close Admin Jobs completely so its five-second list refresh is not active
-    during the Chat recording.
+    during the Chat recording. In this same window, sign Ava out using the
+    account menu. On Entry, select Member and sign in as **Nova Social**.
+    Confirm Nova's name, then open `Chats -> Group` and the
+    **QA UI-POLL-JANK-001 Group** thread. Leave both Casey windows signed in
+    throughout; do not open a fourth window.
 
 ## 3. Chat trace with one live notification event
 
@@ -164,8 +170,9 @@ Codex now classifies the first measured divergence rather than guessing:
 
     `UI-POLL-JANK-001 user steps complete`
 
-Codex checks the traces and machine snapshots, removes the one controlled Chat
-message, closes the remaining managed sessions through the versioned cleanup,
+After Codex confirms the final snapshots are captured, sign Nova out in the
+former Ava window. Codex checks the traces and machine snapshots, removes the
+one controlled Chat message, closes the remaining managed sessions through the versioned cleanup,
 and restores the fixture. The testcase passes only when:
 
 - Admin Job Detail has no visible periodic hitch and no refresh-aligned main
@@ -181,7 +188,7 @@ and restores the fixture. The testcase passes only when:
 
 | Work | Clean run | With one diagnostic replay |
 | --- | ---: | ---: |
-| Fixture, four windows and identity/session baseline | 10 min | 20 min |
+| Fixture, three windows and identity/session baseline | 10 min | 20 min |
 | Idle, Admin list and Admin detail recordings | 20 min | 40 min |
 | Chat recording and one live message | 8 min | 15 min |
 | Observer/session/normal-close comparison | 10 min | 25 min |

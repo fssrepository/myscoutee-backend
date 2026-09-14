@@ -1,6 +1,6 @@
 # Current manual QA session
 
-Updated: 2026-09-08 21:29 CEST
+Updated: 2026-09-14 09:30 CEST
 
 This is the context-saving entry point for continuing the manual QA campaign.
 It stores one minimal live resume pointer plus reusable pair-QA execution lessons. It
@@ -85,55 +85,25 @@ resume pointer and reusable working method.
 ## Active resume point
 
 ```yaml
-checkpoint: UI-POLL-JANK-001 — SELECTED / GUIDE READY / INFRASTRUCTURE NOT YET PREPARED / USER ACTION NOT STARTED
+checkpoint: UI-POLL-JANK-001 — FIXTURE VERIFIED / THREE MANAGED WINDOWS READY / USER ACTION NOT STARTED
 detail: ../manuals/ADMIN_DYNAMIC_SURFACES_QA_PLAN.md#queued-cross-surface-performance-defect
 checklist: ../checklists/notifications/UI-POLL-JANK-001.md
-substage: implement or bind the versioned fixture/browser/session-snapshot helpers, then verify the complete preflight before checklist step 1
+substage: hand over checklist step 1; Ava switches to Nova in the same window at step 10; keep both Casey sessions open
 selection_reason: the user explicitly paused Asset Borrow and moved the manual-QA cursor to Notifications; UI-POLL-JANK-001 is the selected first Notifications row despite its lower numeric priority
 notification_guides: all six open Notifications matrix rows now have stable user-facing guides; they remain separate consolidated journeys and were not expanded into new matrix rows
 notification_order: UI-POLL-JANK-001 first by explicit user selection, then MOBILE-WEBVIEW-LIFECYCLE-001, MOBILE-PUSH-LIFECYCLE-001, NOTIFICATION-ADMIN-LIFECYCLE-001, JOB-MESSAGES and BELL-RATING-LIFECYCLE-001 by existing priority
 notification_remaining_complexity: 425/1025 minutes across the six unchanged matrix rows
-fixture_phase: UI-POLL-JANK-001 is not staged and no managed browser was launched; the guide requires Ava, Casey A, Casey B and Nova, with exactly two active server sessions for Casey
-required_infrastructure: one disposable populated Casey/Nova Group Chat; four-session managed-browser configuration; secret-safe before/after session, audit, process/profile, page-target/context, auth-carrier and `/auth/me` snapshots; trace evidence and exact reset
+fixture_phase: ui-poll fixture-ready; 18 Group history messages; three managed windows Ava / Casey A / Casey B; startup identity, Chat visibility and exact two-session Casey oracle passed
+required_infrastructure: one disposable populated Casey/Nova Group Chat; three-session managed-browser configuration with a manual Ava-to-Nova account switch; secret-safe before/after session, audit, process/profile, page-target/context, auth-carrier and `/auth/me` snapshots; trace evidence and exact reset
 runtime_contract: capture exact idle/Admin list/Admin detail/Chat traces, then attribute the already-reported two-session lockout around read-only CDP attachment and ordinary browser close before intentional launcher cleanup
 browser_control: after standardized startup, the user exclusively controls navigation, DevTools recording, Chat input and browser close. Diagnostic CDP may only observe the already-reported session defect and must never create a context, login or QA action
 ledger_status: 89/104 passed; no Notifications result/status changed by generating the guides
-required_resume: do not hand checklist step 1 to the user yet. First resolve the parked Borrow cleanup gate without starting a second simulator/stack, then add or bind UI-POLL-JANK-001's versioned fixture, browser config and secret-safe session oracle; only after stage/status and identity/session preflight may the standard launcher hand over the four windows
+required_resume: continue UI-POLL-JANK-001 checklist step 1 in the prepared windows; do not relaunch or run a parked testcase gate. The user owns all navigation, recordings and the Ava-to-Nova switch.
 actors: Ava observes Admin Jobs; Casey A is the Chat reader; Casey B is the same controlled account's second session; Nova sends the one live Chat message
 pending_machine_oracle: correlate four saved Performance traces; compare server sessions/audits and browser target/context/auth presence before/after read-only observer attachment and immediately after Casey B closes; capture before any launcher cleanup
 deployment_boundary: deployment method and candidate evidence are maintained separately in `../../releases/PRERELEASE_DEPLOYMENT_QUALIFICATION.md` and `../../releases/v1.0.0-qa.2.md`; this pair-QA continuation must not rebuild or reinstall
 last_completed: ASSET-CHECKOUT-001 PASS/CLOSED through its full 98-step user journey and terminal guarded oracles
 ```
-
-The prior Asset Borrow checkpoint is parked, not continued. No Borrow user
-action started. Its last proven baseline was `phase=baseline-ready`, staged at
-`2026-09-08T09:24:00.778Z`, with all ten checks true and the overlap/non-overlap
-windows recorded in the Asset pack. The attempt to recheck it while switching
-domains stopped before reset because the already-running payment simulator
-configuration endpoint at `127.0.0.1:18082` was unavailable. No fixture reset,
-restage, browser launch or checklist action was performed. Do not start a new
-simulator or stack merely to bypass this gate. Once the owning runtime is
-available, run:
-
-```bash
-bash server/docker/scripts/manual-qa-checkpoints/manual-qa-checkpoints-docker.sh \
-  status asset-domain ASSET-BORROW-001
-```
-
-If and only if that status again proves the recorded `baseline-ready` boundary,
-reset the parked fixture and verify `phase=not-staged` before staging any
-transactional Notifications support fixture:
-
-```bash
-bash server/docker/scripts/manual-qa-checkpoints/manual-qa-checkpoints-docker.sh \
-  reset asset-domain ASSET-BORROW-001
-
-bash server/docker/scripts/manual-qa-checkpoints/manual-qa-checkpoints-docker.sh \
-  status asset-domain ASSET-BORROW-001
-```
-
-Restaging Borrow later reconstructs a fresh time window; never reuse the old
-timestamps or pre-restage browser projection as new evidence.
 
 ### Notifications takeover notes
 
@@ -145,15 +115,15 @@ its guide exists.
 
 For the selected `UI-POLL-JANK-001`, the next implementation work is:
 
-1. resolve the parked Borrow reset gate exactly as described above;
+1. use the independent `ui-poll` fixture for this selected test;
 2. reuse or wrap the existing `CHAT-FLOW-001` disposable Group Chat fixture
    without reopening its closed result;
-3. add the four-window Ava / Casey A / Casey B / Nova configuration to the
+3. use the three-window Ava / Casey A / Casey B configuration with the manual Ava-to-Nova switch in the
    versioned managed-browser launcher;
 4. add a read-only, secret-safe session snapshot oracle for the guide's three
    stop points; it may report counts, equality/hashes and boolean carrier
    presence, never raw cookies, bearer tokens or session IDs;
-5. prove stage/status/reset plus exactly two Casey sessions before launching;
+5. prove stage/status/reset, then exactly two Casey sessions at launcher handoff;
    after handoff, the user alone records the traces and closes Casey B.
 
 Existing support for the later Notifications guides must be reused before new
@@ -319,9 +289,9 @@ the checkpoint says otherwise.
 
 ### Next manual action
 
-Run the read-only `status asset-domain ASSET-BORROW-001` gate. If it remains
-`baseline-ready`, prepare and launch the configured Casey/Nova/Riley sessions
-once, then hand control to the user at checklist step 1. Do not restage.
+UI-POLL-JANK-001 step 1: in Ava's Admin landing window, open DevTools Performance
+and record the 30-second idle control. Follow its stable checklist; step 10
+switches only this window from Ava to Nova. Keep both Casey sessions open.
 
 Group-size audit: retain `TOURNAMENT-MEMBER-002` as 2+1 because Riley's Group B
 proves parent-event notification delivery across room boundaries while Group B
