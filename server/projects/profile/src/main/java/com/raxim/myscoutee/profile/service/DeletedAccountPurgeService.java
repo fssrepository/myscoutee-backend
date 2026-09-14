@@ -722,6 +722,7 @@ public class DeletedAccountPurgeService {
     private void purgeUserReferencedDocuments(String userId) {
         deleteDocumentsByAnyField("userRates", List.of("ownerUserId", "relatedUserId", "secondaryRelatedUserId", "bridgeUserId", "createdUser", "updatedUser"), userId);
         deleteDocumentsByAnyField("userAffinityEdges", List.of("leftUserId", "rightUserId"), userId);
+        deleteDocumentsByAnyField("userFriendships", List.of("leftUserId", "rightUserId"), userId);
         deleteDocumentsByAnyField("userExperienceProfiles", List.of("userId"), userId);
         deleteDocumentsByAnyField("userFilterPreferences", List.of("userId", "createdUser", "updatedUser"), userId);
         deleteDocumentsByAnyField("privacyConsents", List.of("userId"), userId);

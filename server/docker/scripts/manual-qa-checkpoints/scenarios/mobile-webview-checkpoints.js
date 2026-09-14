@@ -125,6 +125,8 @@
       notifications: notifications.map(n => ({ id: n._id, recipientUserId: n.recipientUserId, read: Boolean(n.readAtIso), updatedDate: n.updatedDate })),
       asset: { id: ASSET, title: "QA Mobile Public Transport" },
       variants: state.variants,
+      activeSessions: ACTORS.map(actor => ({ userId: actor.id,
+        count: (Q.collection("userSessionStates").findOne({ _id: actor.id })?.activeSessions || []).length })),
       checks: { twoDistinctUpcomingTickets: tickets.length === 2 && ACTORS.every(a => tickets.filter(t => t.holderUserId === a.id && t.status === "A").length === 1
           && Q.collection("events").countDocuments({ sourceId: eventId(a), ownerUserId: a.id, status: "A", ticketing: true }) === 1),
         rileyOnlyNotifications: notifications.every(n => n.recipientUserId === RILEY),
@@ -149,6 +151,42 @@
   if (command === "stage") stage();
   else if (command === "stage-demo") stageDemoFailover();
   else if (command === "status") status();
+  else if (command === "profile-batch-timing") {
+    Q.activeState(SCENARIO, true);
+    const users = Q.collection("users");
+    const ids = users.find({ userId: { $type: "string", $ne: "" } }, { userId: 1 }).sort({ userId: 1 }).limit(50).toArray().map(u => u.userId);
+    const clock = require('node:perf_hooks').performance;
+    const median = values => [...values].sort((a, b) => a - b)[Math.floor(values.length / 2)];
+    const results = [];
+    for (const size of [1, 10, 50].filter(n => n <= ids.length)) {
+      const selected = ids.slice(0, size);
+      const canonical = rows => EJSON.stringify(rows.sort((a, b) => a.userId.localeCompare(b.userId)));
+      const individual = () => selected.map(userId => users.findOne({ userId }));
+      const batch = () => users.find({ userId: { $in: selected } }).toArray();
+      const expected = canonical(individual());
+      if (canonical(batch()) !== expected) Q.fail("Batch profile contents differ from individual reads.");
+      const times = { individual: [], batch: [] };
+      for (let round = 0; round < 20; round += 1) {
+        for (const name of round % 2 ? ['batch', 'individual'] : ['individual', 'batch']) {
+          const start = clock.now();
+          const rows = name === 'batch' ? batch() : individual();
+          times[name].push(clock.now() - start);
+          if (canonical(rows) !== expected) Q.fail("Profiles changed during timing; discard this measurement.");
+        }
+      }
+      results.push({ profiles: size, rounds: 20, individualQueries: size, batchQueries: 1,
+        individualMedianMs: Number(median(times.individual).toFixed(3)),
+        batchMedianMs: Number(median(times.batch).toFixed(3)), equalFullDocuments: true });
+    }
+    Q.printObject({ scenario: SCENARIO, measurement: 'Mongo profile reads only; warm cache, alternating order, no writes; not full HTTP latency', results });
+  }
+  else if (command === "media-controls") {
+    const state = Q.activeState(SCENARIO, true);
+    if (state.phase !== "fixture-ready") Q.fail("The full Mobile WebView fixture must be ready.");
+    const asset = Q.collection("assets").findOne({ assetId: ASSET, ownerUserId: RILEY });
+    if (!asset || !Q.text(asset.imageUrl).startsWith("/media/public?")) Q.fail("Public fixture image is missing.");
+    Q.printObject({ publicImageUrl: asset.imageUrl });
+  }
   else if (command === "reset") reset();
   else if (["background-settings", "background-chrome"].includes(command)) {
     const state = Q.activeState(SCENARIO, true);

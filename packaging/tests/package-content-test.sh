@@ -35,6 +35,9 @@ done
 [[ ! -e "${REPO_ROOT}/smoke" && ! -e "${REPO_ROOT}/packaging/smoke" ]] \
   || fail "deployment verifier still has an ambiguous smoke source path"
 
+node "${SCRIPT_DIR}/mobile-qa-isolation-test.mjs" >/dev/null \
+  || fail "development/QA production isolation regression"
+
 bash "${SCRIPT_DIR}/numeric-ownership-policy-test.sh" >/dev/null \
   || fail "numeric host ownership policy regression"
 bash "${SCRIPT_DIR}/demo-reset-test.sh" >/dev/null \
@@ -141,7 +144,7 @@ PRODUCTION_COMPOSE="${REPO_ROOT}/server/docker-compose-prod.yml"
 PRODUCTION_API_DOCKERFILE="${REPO_ROOT}/server/docker/images/profilemanagement/prod/Dockerfile"
 for pattern in \
   '.env' '.env.*' 'projects/profile/secrets/' \
-  'docker/scripts/admin-job-fixtures/' \
+  'docker/scripts/admin-job-fixtures/' 'docker/.qa-mobile-runtime/' \
   'docker/conf/nginx/keys/' 'data/' \
   '**/*.pem' '**/*.key' '**/*.p8' \
   '**/*service-account*.json' '**/*client-secret*.json' \
@@ -158,7 +161,7 @@ grep -Eq '^COPY --chown=myscoutee:myscoutee \*\.jar /app/spring-boot-application
 
 for pattern in \
   'conf/nginx/keys/' \
-  'scripts/admin-job-fixtures/' \
+  'scripts/admin-job-fixtures/' '.qa-mobile-runtime/' \
   '**/*.pem' '**/*.key' '**/*.p8' \
   '**/*service-account*.json' '**/*client-secret*.json' \
   '**/*provider-credentials*.json'; do
@@ -191,8 +194,8 @@ if grep -Fxq './opt/myscoutee/server/projects/profile/secrets/firebase-service-a
   "${CONTENTS}"; then
   fail "real Firebase service-account JSON was embedded in the package"
 fi
-if grep -Fq '/admin-job-fixtures/' "${CONTENTS}"; then
-  fail "development admin-job fixtures were embedded in the production package"
+if grep -Eq '/(admin-job-fixtures|manual-qa-checkpoints|\.qa-mobile-runtime)(/|$)|/(start_profilemanagement_dev|frontend_auto_watch)\.sh$' "${CONTENTS}"; then
+  fail "development/QA helpers were embedded in the production package"
 fi
 if grep -Eq '^\./opt/myscoutee/packaging/release(/|$)' "${CONTENTS}"; then
   fail "source-only release tools were embedded in the production package"

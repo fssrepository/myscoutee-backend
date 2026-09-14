@@ -196,6 +196,9 @@ done < <(
     -mindepth 1 \
     -maxdepth 1 \
     ! -name "admin-job-fixtures" \
+    ! -name "manual-qa-checkpoints" \
+    ! -name "start_profilemanagement_dev.sh" \
+    ! -name "frontend_auto_watch.sh" \
     -print \
     | sort
 )

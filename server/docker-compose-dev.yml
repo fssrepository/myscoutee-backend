@@ -36,7 +36,9 @@ services:
       - 443:443
       - 127.0.0.1:27017-27019:27017-27019
     volumes:
-      - ./docker/conf/nginx/conf/http:/etc/nginx/conf.d/
+      - ./docker/conf/nginx/conf/http:/etc/nginx/dev-templates:ro
+      - ./docker/images/nginx/dev/nginx-entrypoint.sh:/scripts/nginx-entrypoint.sh:ro
+      - ./docker/.qa-mobile-runtime:/var/lib/myscoutee-qa:ro
       - ./docker/conf/nginx/conf/stream:/etc/nginx/stream_conf.d/
       - ./docker/conf/nginx/nginx.conf:/etc/nginx/nginx.conf
       - ./docker/conf/nginx/app/myscoutee:/usr/share/nginx/html

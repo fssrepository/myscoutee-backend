@@ -15,3 +15,5 @@ scripts/admin-job-fixtures/
 **/*service-account*.json
 **/*client-secret*.json
 **/*provider-credentials*.json
+.qa-mobile-runtime/
+scripts/manual-qa-checkpoints/

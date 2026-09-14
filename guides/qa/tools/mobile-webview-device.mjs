@@ -1,7 +1,8 @@
 #!/usr/bin/env node
 // User-delegated physical-device execution; only the local QA origin is targeted.
 import WebSocket from '../../../frontend/node_modules/ws/index.js';
-import { readFileSync } from 'node:fs';
+import { readFileSync, writeFileSync, existsSync, unlinkSync } from 'node:fs';
+import { fileURLToPath } from 'node:url';
 import { execFileSync } from 'node:child_process';
 import { once } from 'node:events';
 import { createInterface } from 'node:readline';
@@ -9,7 +10,29 @@ const [action, ...args] = process.argv.slice(2);
 const port = Number(process.env.QA_PHONE_CDP_PORT || 36087);
 const packageName = process.env.QA_PHONE_PACKAGE || 'org.chromium.webapk.af8b7eef107d7742f_v2';
 if (!/^org\.chromium\.webapk\.[a-z0-9_]+$/.test(packageName)) throw Error('Invalid QA WebAPK package');
-if (action === 'launch') {
+const transportSnapshot = fileURLToPath(new URL('../../../server/docker/.qa-mobile-runtime/device-transport.before.json', import.meta.url));
+if (action === 'transport-offline') {
+  if (existsSync(transportSnapshot)) throw Error('QA transport already has a retained restore point');
+  const mappings = execFileSync('adb', ['reverse', '--list'], { encoding: 'utf8' }).trim().split('\n').filter(Boolean);
+  if (mappings.length !== 1 || !mappings[0].endsWith('tcp:8080 tcp:80')) throw Error('Expected only the configured QA reverse mapping');
+  writeFileSync(transportSnapshot, JSON.stringify({ local: 'tcp:8080', remote: 'tcp:80', cdpPort: port }));
+  execFileSync('adb', ['reverse', '--remove', 'tcp:8080']);
+  // Close retained HTTP sockets; the phone radios and Chrome data stay intact.
+  execFileSync('adb', ['reconnect'], { stdio: 'pipe' });
+  execFileSync('adb', ['wait-for-device'], { timeout: 15000 });
+  execFileSync('adb', ['forward', `tcp:${port}`, 'localabstract:chrome_devtools_remote']);
+  console.log('QA reverse transport disconnected; CDP restored.'); process.exit(0);
+}
+if (action === 'transport-online') {
+  const saved = JSON.parse(readFileSync(transportSnapshot, 'utf8'));
+  if (saved.local !== 'tcp:8080' || saved.remote !== 'tcp:80' || saved.cdpPort !== port) throw Error('Unexpected QA restore point');
+  execFileSync('adb', ['reverse', saved.local, saved.remote]);
+  execFileSync('adb', ['forward', `tcp:${port}`, 'localabstract:chrome_devtools_remote']);
+  unlinkSync(transportSnapshot);
+  console.log('Restored the recorded QA reverse transport and CDP.'); process.exit(0);
+}
+if (action === 'launch' || action === 'cold-launch') {
+  if (action === 'cold-launch') execFileSync('adb', ['shell', 'am', 'force-stop', packageName]);
   const component = execFileSync('adb', ['shell', 'cmd', 'package', 'resolve-activity', '--brief', packageName], { encoding: 'utf8' }).trim().split('\n').at(-1);
   execFileSync('adb', ['shell', 'am', 'start', '-n', component], { stdio: 'pipe' });
   console.log('Launched the installed local QA PWA.'); process.exit(0);

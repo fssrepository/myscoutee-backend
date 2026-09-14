@@ -38,7 +38,8 @@ class FirebaseFilterOperatorTest {
                 firebaseService,
                 properties,
                 mock(FirebaseTokenVerifier.class),
-                sessionService);
+                sessionService,
+                mock(com.raxim.myscoutee.profile.service.media.MediaSessionAccessService.class));
         MockHttpServletRequest request = demoOperatorRequest();
         FilterChain chain = mock(FilterChain.class);
 
@@ -63,7 +64,8 @@ class FirebaseFilterOperatorTest {
                 firebaseService,
                 properties,
                 mock(FirebaseTokenVerifier.class),
-                sessionService);
+                sessionService,
+                mock(com.raxim.myscoutee.profile.service.media.MediaSessionAccessService.class));
         MockHttpServletRequest request =
                 new MockHttpServletRequest("GET", "/health");
         MockHttpServletResponse response = new MockHttpServletResponse();
@@ -93,7 +95,8 @@ class FirebaseFilterOperatorTest {
                 firebaseService,
                 properties,
                 mock(FirebaseTokenVerifier.class),
-                sessionService);
+                sessionService,
+                mock(com.raxim.myscoutee.profile.service.media.MediaSessionAccessService.class));
         MockHttpServletRequest request =
                 new MockHttpServletRequest("GET", "/health");
         MockHttpServletResponse response = new MockHttpServletResponse();
@@ -123,7 +126,8 @@ class FirebaseFilterOperatorTest {
                 firebaseService,
                 properties,
                 mock(FirebaseTokenVerifier.class),
-                sessionService);
+                sessionService,
+                mock(com.raxim.myscoutee.profile.service.media.MediaSessionAccessService.class));
         MockHttpServletRequest request =
                 new MockHttpServletRequest("GET", "/api/media/public/help/e2e-small.webp");
         MockHttpServletResponse response = new MockHttpServletResponse();
@@ -160,7 +164,8 @@ class FirebaseFilterOperatorTest {
                 firebaseService,
                 properties,
                 mock(FirebaseTokenVerifier.class),
-                mock(UserLoginSessionService.class));
+                mock(UserLoginSessionService.class),
+                mock(com.raxim.myscoutee.profile.service.media.MediaSessionAccessService.class));
         MockHttpServletRequest request = demoOperatorRequest();
         request.addHeader("X-Demo-User-Id", "operator-demo-dev");
 
@@ -194,7 +199,8 @@ class FirebaseFilterOperatorTest {
                 firebaseService,
                 properties,
                 mock(FirebaseTokenVerifier.class),
-                mock(UserLoginSessionService.class));
+                mock(UserLoginSessionService.class),
+                mock(com.raxim.myscoutee.profile.service.media.MediaSessionAccessService.class));
         MockHttpServletRequest request = demoOperatorRequest();
         request.addHeader("X-Demo-User-Id", "operator-demo-dev");
         FilterChain chain = mock(FilterChain.class);
@@ -238,7 +244,8 @@ class FirebaseFilterOperatorTest {
                 firebaseService,
                 properties,
                 mock(FirebaseTokenVerifier.class),
-                mock(UserLoginSessionService.class));
+                mock(UserLoginSessionService.class),
+                mock(com.raxim.myscoutee.profile.service.media.MediaSessionAccessService.class));
         MockHttpServletRequest request =
                 new MockHttpServletRequest("POST", "/api/game-cards/query");
         request.addHeader(
@@ -273,7 +280,8 @@ class FirebaseFilterOperatorTest {
                 firebaseService,
                 properties,
                 verifier,
-                mock(UserLoginSessionService.class));
+                mock(UserLoginSessionService.class),
+                mock(com.raxim.myscoutee.profile.service.media.MediaSessionAccessService.class));
         MockHttpServletRequest request =
                 new MockHttpServletRequest(
                         "POST",

@@ -216,8 +216,9 @@ public class ActivitiesMembersService {
                 normalizedOwnerType,
                 normalizedOwnerId,
                 ownerMembers);
+        Map<String, Users> usersById = memberUsersById(ownerMembers);
         return ownerMembers.stream()
-                .map(member -> toEntryDto(member, viewerUserId))
+                .map(member -> toEntryDto(member, viewerUserId, usersById))
                 .filter(Objects::nonNull)
                 .map(entry -> withInvolvements(entry, involvementsByUserId.getOrDefault(normalizeId(entry.userId()), List.of())))
                 .toList();
@@ -1507,6 +1508,9 @@ public class ActivitiesMembersService {
             ActivityMember next) {
         String viewerUserId = homeUserProfileService.resolveSelectedUserId(actorUserId);
         List<ActivityMemberEntryDto> nextEntries = new ArrayList<>();
+        List<ActivityMember> profileMembers = new ArrayList<>(existing == null ? List.of() : existing);
+        if (next != null) profileMembers.add(next);
+        Map<String, Users> usersById = memberUsersById(profileMembers);
         for (ActivityMember member : existing == null ? List.<ActivityMember>of() : existing) {
             String memberId = member == null ? "" : firstNonBlank(
                     normalizeId(member.getSyncKey()),
@@ -1517,13 +1521,13 @@ public class ActivitiesMembersService {
             if (member == null || target) {
                 continue;
             }
-            ActivityMemberEntryDto entry = toEntryDto(member, viewerUserId);
+            ActivityMemberEntryDto entry = toEntryDto(member, viewerUserId, usersById);
             if (entry != null) {
                 nextEntries.add(entry);
             }
         }
         if (next != null && !STATUS_DELETED.equals(normalizeStatus(next.getStatus()))) {
-            ActivityMemberEntryDto nextEntry = toEntryDto(next, viewerUserId);
+            ActivityMemberEntryDto nextEntry = toEntryDto(next, viewerUserId, usersById);
             if (nextEntry != null) {
                 nextEntries.add(nextEntry);
             }
@@ -4062,11 +4066,25 @@ public class ActivitiesMembersService {
         return toSortableDate(next.getUpdatedDate()) >= toSortableDate(current.getUpdatedDate());
     }
 
-    private ActivityMemberEntryDto toEntryDto(ActivityMember member, String viewerUserId) {
+    private Map<String, Users> memberUsersById(Collection<ActivityMember> members) {
+        Set<String> userIds = new LinkedHashSet<>();
+        for (ActivityMember member : members) {
+            String userId = normalizeId(member == null ? null : member.getUserId());
+            if (StringUtils.hasText(userId)) userIds.add(userId);
+        }
+        if (userIds.isEmpty()) return Map.of();
+        Map<String, Users> usersById = new LinkedHashMap<>();
+        for (Users user : usersRepository.findByUserIdIn(userIds)) {
+            if (user != null) usersById.put(normalizeId(user.getUserId()), user);
+        }
+        return usersById;
+    }
+
+    private ActivityMemberEntryDto toEntryDto(ActivityMember member, String viewerUserId, Map<String, Users> usersById) {
         if (member == null || !StringUtils.hasText(normalizeId(member.getUserId()))) {
             return null;
         }
-        Users user = usersRepository.findByUserId(normalizeId(member.getUserId())).orElse(null);
+        Users user = usersById.get(normalizeId(member.getUserId()));
         String role = resolveStoredRole(member, member.getOwnerType(), member.getOwnerId());
         String status = normalizeStatus(member.getStatus());
         String pendingSource = resolvePendingSource(member.getPendingSource(), status);

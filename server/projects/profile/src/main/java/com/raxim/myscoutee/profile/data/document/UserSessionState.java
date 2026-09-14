@@ -63,6 +63,11 @@ public class UserSessionState {
         private String provider;
         private String createdAtIso;
         private String lastSeenAtIso;
+        private String mediaTokenHash;
+
+        public String getMediaTokenHash() { return mediaTokenHash; }
+
+        public void setMediaTokenHash(String mediaTokenHash) { this.mediaTokenHash = mediaTokenHash; }
 
         public String getSessionId() {
             return sessionId;

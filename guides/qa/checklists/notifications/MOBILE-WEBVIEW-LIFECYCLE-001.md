@@ -84,10 +84,14 @@ authenticated cache items exist and ADB transport is healthy.
 3. Cold-start the app normally. It must render one coherent candidate build:
    no blank screen, endless loader, missing-chunk error, repeated reload or
    mixture of old labels with new code.
-4. Open Riley's menu and select `Location`. Confirm the popup has normal phone
-   width/height, scrolls inside its body and closes once with its close action.
-5. Open `Location` again. It must have the same layout and fresh usable
-   controls; the earlier overlay must not remain behind it.
+4. Check the startup **location-permission popup**, not a Location menu item.
+   With permission undecided, the normal location request must show the browser/
+   Android prompt. Accept it and confirm the app receives location access.
+5. Repeat after declining location access, then reopening the app. Location is
+   required for the applicable entry flow; rejection must not silently bypass
+   it. Keep an explicit retry available. A persistent browser/OS block requires
+   changing site/app settings; restarting cannot override that native decision.
+   Restore the permission state recorded before this branch.
 6. Open `My Assets -> Transport`, select the exact controlled Asset printed by
    Codex and choose `Edit`. In Details, copy this value on the phone:
 
@@ -96,9 +100,11 @@ authenticated cache items exist and ADB transport is healthy.
 7. Select the Source link `Paste link` action once. The field shows that exact
    value without stretching, clipping or blanking the popup. Cancel the Asset
    editor; this layout check does not save an Asset change.
-8. Reopen `Location`, then close it and open one other available side-menu
-   popup. Both use their normal dimensions and scrolling; no Asset editor or
-   clipboard overlay leaks into them.
+8. Repeat the Source link Paste action after declining clipboard access. A
+   fresh click must retry the browser API; if the browser retains a block, show
+   actionable guidance. Clipboard access can wait until this form action.
+   Open one other available side-menu popup: normal dimensions and scrolling
+   remain, with no Asset editor or clipboard overlay left behind.
 9. Report:
 
    `MOBILE-WEBVIEW-LIFECYCLE-001 coherent upgrade complete`
@@ -168,7 +174,12 @@ are scoped to the current user without exposing their stored values.
     disables only the checkpoint's device-to-QA transport. Do not enable
     airplane mode or clear app data unless Codex's prepared route explicitly
     uses it.
-22. In the app, confirm the offline state is explicit. Open only the supported
+22. In the app, confirm the offline state is explicit. The cached avatar remains
+    visible and clickable, including when only the backend is unavailable.
+    Verify the cached Ticket menu and available server-independent header
+    actions (including the GitHub report link). Previously loaded policy/consent
+    content remains readable where cached; submitting changes still requires
+    the server. Open only the supported
     cached Ticket/QR contract prepared for the current actor. An uncached or
     server-required surface must show an honest unavailable/offline state, not
     stale success for another user.
@@ -261,3 +272,37 @@ separate service-worker/cache assertion. API failover alone does not prove it.
 | Account switch and cache isolation | 20 min | 45 min |
 | Offline/online recovery, evidence and cleanup | 20 min | 55 min |
 | **Total** | **110 min** | **260 min** |
+
+## 6. Public demo images and protected Firebase media
+
+This is part of this testcase, not a separate PASS inferred from logout or
+list visibility. Public landing, Explore and generated demo images remain
+anonymous; Firebase disabled means demo entry, not an authenticated media test.
+
+1. Record the public demo image and a controlled real-session image separately.
+   An anonymous direct request to the public image succeeds. Do not classify
+   a publicly accessible generated demo avatar as a private-image leak.
+2. With an active Firebase app session, display the controlled private image
+   through the ordinary UI. It must use the protected media read boundary.
+   Public and private namespaces cannot be selected merely by changing the
+   read URL or supplying demo headers.
+3. Repeat the private request without its credential and with an invalid one:
+   neither returns image bytes. A retained legacy public URL for the same
+   private key must also end at the protected boundary.
+4. Log out normally. The old credential no longer reads the image, and neither
+   service-worker cache nor another user's session restores private image data.
+   Public demo images may remain cached. Private responses are not stored in
+   a shared or persistent public cache.
+5. In a scrolling list, verify that image loading does not repeat Firebase
+   sign-in or run a per-image visibility query chain. After an avatar update,
+   the normal live profile/poll result selects the new image without reload;
+   the offline cache must not overwrite the newer profile on reconnect.
+6. Retain existing visibility levels (including Friends only) in their owning
+   list/detail flows. Record image-endpoint fine-grained visibility separately
+   from the mandatory active-session gate. A ten-minute signed URL is not an
+   agreed acceptance requirement.
+
+Record authenticated positive, anonymous/invalid/revoked negatives and browser
+cache evidence separately. If Firebase entry is not configured, the public-demo
+checks and automated private-route tests do not prove the physical Firebase
+sign-in/image/logout branch; leave that branch explicitly unproven.

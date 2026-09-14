@@ -1,6 +1,8 @@
 package com.raxim.myscoutee.profile.controller.media;
 
 import java.time.Duration;
+import java.net.URI;
+import java.nio.charset.StandardCharsets;
 
 import org.springframework.http.CacheControl;
 import org.springframework.http.HttpStatus;
@@ -14,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
+import org.springframework.web.util.UriUtils;
 
 import com.raxim.myscoutee.profile.data.dto.media.MediaDtos.MediaImageImportRequestDto;
 import com.raxim.myscoutee.profile.data.dto.media.MediaDtos.MediaImageSetDto;
@@ -24,6 +27,7 @@ import com.raxim.myscoutee.profile.security.RequiresPolicy;
 import com.raxim.myscoutee.profile.service.MediaStorageService;
 import com.raxim.myscoutee.profile.service.MediaStorageService.StoredImageSet;
 import com.raxim.myscoutee.profile.service.MediaStorageService.StoredMediaObject;
+import com.raxim.myscoutee.profile.service.media.MediaAccessPaths;
 
 @RestController
 @RequestMapping("/media")
@@ -85,6 +89,23 @@ public class MediaController {
 
     @GetMapping("/public")
     public ResponseEntity<byte[]> loadPublic(@RequestParam("key") String key) {
+        if (!MediaAccessPaths.validKey(key)) throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid media key.");
+        if (!MediaAccessPaths.isPublicKey(key)) {
+            // Retained private references must never bypass authentication via the old public route.
+            return ResponseEntity.status(HttpStatus.TEMPORARY_REDIRECT)
+                    .location(URI.create("/api/media/private?key=" + UriUtils.encodeQueryParam(key, StandardCharsets.UTF_8)))
+                    .cacheControl(CacheControl.noStore()).build();
+        }
+        return loadMedia(key, true);
+    }
+
+    @GetMapping("/private")
+    public ResponseEntity<byte[]> loadPrivate(@RequestParam("key") String key) {
+        if (!MediaAccessPaths.validKey(key)) throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid media key.");
+        return loadMedia(key, false);
+    }
+
+    private ResponseEntity<byte[]> loadMedia(String key, boolean publicMedia) {
         StoredMediaObject stored = mediaStorageService.loadPublicObject(key);
         if (stored == null || stored.bytes() == null || stored.bytes().length == 0) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Media not found.");
@@ -92,7 +113,7 @@ public class MediaController {
         return ResponseEntity.ok()
                 .contentType(resolveMediaType(stored.contentType()))
                 .header("X-Content-Type-Options", "nosniff")
-                .cacheControl(CacheControl.maxAge(Duration.ofDays(365)).cachePublic())
+                .cacheControl(publicMedia ? CacheControl.maxAge(Duration.ofDays(365)).cachePublic() : CacheControl.noStore().cachePrivate())
                 .body(stored.bytes());
     }
 

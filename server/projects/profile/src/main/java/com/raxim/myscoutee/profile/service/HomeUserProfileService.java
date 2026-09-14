@@ -43,6 +43,7 @@ import com.raxim.myscoutee.profile.data.document.UserFeedbackSubmission;
 import com.raxim.myscoutee.profile.data.document.UserFilterPreferences;
 import com.raxim.myscoutee.profile.data.document.UserExperienceProfile;
 import com.raxim.myscoutee.profile.data.document.UserAffinityEdge;
+import com.raxim.myscoutee.profile.data.document.UserFriendship;
 import com.raxim.myscoutee.profile.data.document.UserRate;
 import com.raxim.myscoutee.profile.data.document.UserReportSubmission;
 import com.raxim.myscoutee.profile.data.document.UserSessionAction;
@@ -91,6 +92,7 @@ import com.raxim.myscoutee.profile.repository.UserFeedbackSubmissionsRepository;
 import com.raxim.myscoutee.profile.repository.UserFilterPreferencesRepository;
 import com.raxim.myscoutee.profile.repository.UserExperienceProfilesRepository;
 import com.raxim.myscoutee.profile.repository.UserAffinityEdgesRepository;
+import com.raxim.myscoutee.profile.repository.UserFriendshipsRepository;
 import com.raxim.myscoutee.profile.repository.UserRatesRepository;
 import com.raxim.myscoutee.profile.repository.UserReportSubmissionsRepository;
 import com.raxim.myscoutee.profile.repository.UserSessionActionsRepository;
@@ -203,6 +205,7 @@ public class HomeUserProfileService {
     private final UserFilterPreferencesRepository userFilterPreferencesRepository;
     private final UserExperienceProfilesRepository userExperienceProfilesRepository;
     private final UserAffinityEdgesRepository userAffinityEdgesRepository;
+    private final UserFriendshipsRepository userFriendshipsRepository;
     private final UserRatesRepository userRatesRepository;
     private final ChatsRepository chatsRepository;
     private final ChatMessagesRepository chatMessagesRepository;
@@ -237,6 +240,7 @@ public class HomeUserProfileService {
             UserFilterPreferencesRepository userFilterPreferencesRepository,
             UserExperienceProfilesRepository userExperienceProfilesRepository,
             UserAffinityEdgesRepository userAffinityEdgesRepository,
+            UserFriendshipsRepository userFriendshipsRepository,
             UserRatesRepository userRatesRepository,
             ChatsRepository chatsRepository,
             ChatMessagesRepository chatMessagesRepository,
@@ -262,6 +266,7 @@ public class HomeUserProfileService {
         this.userFilterPreferencesRepository = userFilterPreferencesRepository;
         this.userExperienceProfilesRepository = userExperienceProfilesRepository;
         this.userAffinityEdgesRepository = userAffinityEdgesRepository;
+        this.userFriendshipsRepository = userFriendshipsRepository;
         this.userRatesRepository = userRatesRepository;
         this.chatsRepository = chatsRepository;
         this.chatMessagesRepository = chatMessagesRepository;
@@ -1783,31 +1788,16 @@ public class HomeUserProfileService {
         return scoreGiven != null && scoreGiven > 0;
     }
 
-    private ActivitySocialGraph buildActivitySocialGraph(List<ActivityEvent> memberProjections) {
-        if (!hasHomeGameMemberProjections(memberProjections)) {
-            return buildLegacyActivitySocialGraph();
-        }
-
+    private ActivitySocialGraph buildActivitySocialGraph(List<Users> visibleUsers) {
+        List<String> userIds = visibleUsers.stream().map(Users::getId).filter(StringUtils::hasText).distinct().toList();
         Map<String, Set<String>> neighborsByUserId = new LinkedHashMap<>();
         Map<String, String> latestEventNameByEdgeKey = new LinkedHashMap<>();
         Map<String, Long> latestTimestampByEdgeKey = new LinkedHashMap<>();
-        for (ActivityEvent event : memberProjections) {
-            List<String> acceptedUserIds = normalizeStrings(
-                    event == null ? null : event.getAcceptedMemberUserIds()).stream()
-                    .distinct()
-                    .toList();
-            long eventActivityMs = homeGameEventActivityMillis(event);
-            for (int leftIndex = 0; leftIndex < acceptedUserIds.size(); leftIndex += 1) {
-                for (int rightIndex = leftIndex + 1; rightIndex < acceptedUserIds.size(); rightIndex += 1) {
-                    registerSocialEdge(
-                            neighborsByUserId,
-                            latestEventNameByEdgeKey,
-                            latestTimestampByEdgeKey,
-                            acceptedUserIds.get(leftIndex),
-                            acceptedUserIds.get(rightIndex),
-                            event == null ? null : event.getTitle(),
-                            eventActivityMs);
-                }
+        if (!userIds.isEmpty()) {
+            for (UserFriendship friendship : userFriendshipsRepository.findRelevantByUserIds(userIds)) {
+                registerSocialEdge(neighborsByUserId, latestEventNameByEdgeKey, latestTimestampByEdgeKey,
+                        friendship.leftUserId(), friendship.rightUserId(), friendship.lastEventName(),
+                        friendship.lastMetAt() == null ? 0L : friendship.lastMetAt().toEpochMilli());
             }
         }
         return new ActivitySocialGraph(neighborsByUserId, latestEventNameByEdgeKey);
@@ -1822,60 +1812,12 @@ public class HomeUserProfileService {
                         .anyMatch(userIds -> !userIds.isEmpty());
     }
 
-    private ActivitySocialGraph buildLegacyActivitySocialGraph() {
-        Map<String, Set<String>> neighborsByUserId = new LinkedHashMap<>();
-        Map<String, String> latestEventNameByEdgeKey = new LinkedHashMap<>();
-        Map<String, Long> latestTimestampByEdgeKey = new LinkedHashMap<>();
-        Map<String, List<ActivityMember>> acceptedMembersByOwnerKey = new LinkedHashMap<>();
-
-        for (ActivityMember member : activityMembersRepository.findAll()) {
-            if (member == null
-                    || !isSocialGraphMemberOwner(member.getOwnerType())
-                    || !STATUS_ACCEPTED.equals(safeText(member.getStatus()))) {
-                continue;
-            }
-            String ownerId = normalizeId(member.getOwnerId());
-            String userId = normalizeId(member.getUserId());
-            if (!StringUtils.hasText(ownerId) || !StringUtils.hasText(userId)) {
-                continue;
-            }
-            String ownerKey = safeText(member.getOwnerType()) + ":" + ownerId;
-            acceptedMembersByOwnerKey.computeIfAbsent(ownerKey, ignored -> new ArrayList<>()).add(member);
-        }
-
-        for (List<ActivityMember> members : acceptedMembersByOwnerKey.values()) {
-            for (int leftIndex = 0; leftIndex < members.size(); leftIndex += 1) {
-                ActivityMember left = members.get(leftIndex);
-                for (int rightIndex = leftIndex + 1; rightIndex < members.size(); rightIndex += 1) {
-                    ActivityMember right = members.get(rightIndex);
-                    registerSocialEdge(
-                            neighborsByUserId,
-                            latestEventNameByEdgeKey,
-                            latestTimestampByEdgeKey,
-                            normalizeId(left.getUserId()),
-                            normalizeId(right.getUserId()),
-                            firstNonBlank(left.getMetWhere(), right.getMetWhere()),
-                            Math.max(resolveMemberRecordTimestampMs(left), resolveMemberRecordTimestampMs(right)));
-                }
-            }
-        }
-
-        return new ActivitySocialGraph(neighborsByUserId, latestEventNameByEdgeKey);
-    }
-
     private long homeGameEventActivityMillis(ActivityEvent event) {
         return parseIsoMillis(firstNonBlank(
                 event == null ? null : event.getStartAtIso(),
                 event == null ? null : event.getUpdatedDate(),
                 event == null ? null : event.getCreatedDate(),
                 event == null ? null : event.getEndAtIso()));
-    }
-
-    private boolean isSocialGraphMemberOwner(String ownerType) {
-        String normalizedOwnerType = safeText(ownerType);
-        return OWNER_TYPE_EVENT.equals(normalizedOwnerType)
-                || "subEvent".equals(normalizedOwnerType)
-                || "group".equals(normalizedOwnerType);
     }
 
     private GameStackSnapshot resolveGameStackSnapshot() {
@@ -1899,7 +1841,7 @@ public class HomeUserProfileService {
             GameStackSnapshot snapshot = new GameStackSnapshot(
                     List.copyOf(visibleGameUsers),
                     indexUsersById(visibleGameUsers),
-                    buildActivitySocialGraph(homeGameMemberProjections),
+                    buildActivitySocialGraph(visibleGameUsers),
                     Map.copyOf(queryLatestHomeActivityMsByUserId(
                             visibleGameUsers,
                             homeGameMemberProjections)));

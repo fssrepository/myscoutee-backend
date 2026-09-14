@@ -32,6 +32,10 @@ import org.springframework.web.util.UriUtils;
 import com.raxim.myscoutee.common.config.properties.MediaStorageProperties;
 import com.raxim.myscoutee.profile.service.media.MediaObjectStoreClient;
 import com.raxim.myscoutee.profile.service.media.MediaObjectStoreClient.StoredObject;
+import com.raxim.myscoutee.profile.service.media.MediaAccessPaths;
+import com.raxim.myscoutee.common.config.mongo.MongoSessionMode;
+import com.raxim.myscoutee.common.config.mongo.MongoSessionModeContext;
+import org.springframework.security.core.context.SecurityContextHolder;
 
 @Service
 public class MediaStorageService {
@@ -201,6 +205,7 @@ public class MediaStorageService {
         }
         try {
             String objectKey = String.join("/",
+                    uploadNamespace(normalizedEntityId),
                     normalizedMediaKind,
                     normalizedOwnerId,
                     StringUtils.hasText(normalizedEntityId) ? normalizedEntityId : "shared",
@@ -262,6 +267,7 @@ public class MediaStorageService {
             String contentType,
             byte[] bytes) {
         String imageGroupKey = String.join("/",
+                uploadNamespace(normalizedEntityId),
                 IMAGE_MEDIA_KIND,
                 normalizedOwnerId,
                 StringUtils.hasText(normalizedEntityId) ? normalizedEntityId : "shared",
@@ -383,7 +389,16 @@ public class MediaStorageService {
     }
 
     private String publicMediaUrl(String objectKey) {
-        return "/media/public?key=" + UriUtils.encodeQueryParam(objectKey, StandardCharsets.UTF_8);
+        return (MediaAccessPaths.isPublicKey(objectKey) ? "/media/public?key=" : "/api/media/private?key=")
+                + UriUtils.encodeQueryParam(objectKey, StandardCharsets.UTF_8);
+    }
+
+    private String uploadNamespace(String entityId) {
+        if (MongoSessionModeContext.currentMode() == MongoSessionMode.DEMO) return "public/demo";
+        var actor = SecurityContextHolder.getContext().getAuthentication();
+        if ("deployment-branding-logo".equals(entityId) && actor != null && actor.isAuthenticated()
+                && actor.getAuthorities().stream().anyMatch(authority -> "O".equals(authority.getAuthority()))) return "public/branding";
+        return "private";
     }
 
     private boolean deleteManagedImageSetObjects(String key) {
@@ -609,7 +624,7 @@ public class MediaStorageService {
         if (!StringUtils.hasText(normalized)) {
             return "";
         }
-        if (!normalized.contains("/media/public")) {
+        if (!normalized.contains("/media/public") && !normalized.contains("/media/private")) {
             return normalized.contains("/") ? "" : normalized;
         }
         int keyIndex = normalized.indexOf("key=");

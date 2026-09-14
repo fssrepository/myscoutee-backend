@@ -7,7 +7,7 @@ COMMON_SCRIPT="${SCRIPT_DIR}/scenarios/common.js"
 usage() {
   cat <<'USAGE'
 Usage:
-  bash manual-qa-checkpoints.sh stage|stage-demo|status|background-settings|background-chrome|reset mobile-webview MOBILE-WEBVIEW-LIFECYCLE-001
+  bash manual-qa-checkpoints.sh stage|stage-demo|status|verify-media-boundary|profile-batch-timing|background-settings|background-chrome|reset mobile-webview MOBILE-WEBVIEW-LIFECYCLE-001
   bash manual-qa-checkpoints.sh prepare browser-sessions <checkpoint-id>
   bash manual-qa-checkpoints.sh stage base-stat
   bash manual-qa-checkpoints.sh status base-stat
@@ -681,7 +681,63 @@ command="$1"
 scenario="$2"
 
 case "${scenario}:${command}" in
-  mobile-webview:stage|mobile-webview:stage-demo|mobile-webview:status|mobile-webview:background-settings|mobile-webview:background-chrome|mobile-webview:reset)
+  mobile-webview:verify-media-boundary)
+    [ "$#" -eq 3 ] && [ "$3" = "MOBILE-WEBVIEW-LIFECYCLE-001" ] || { usage >&2; exit 2; }
+    media_controls="$(run_scenario media-controls "${scenario}" 30 "$3")"
+    MANUAL_QA_MEDIA_CONTROLS="${media_controls}" python3 - <<'PY'
+import json
+import os
+import urllib.error
+import urllib.parse
+import urllib.request
+
+class NoRedirect(urllib.request.HTTPRedirectHandler):
+    def redirect_request(self, *args, **kwargs):
+        return None
+
+opener = urllib.request.build_opener(NoRedirect)
+base = os.environ.get('QA_API_BASE_URL', 'http://localhost/api').rstrip('/')
+controls = json.loads(os.environ['MANUAL_QA_MEDIA_CONTROLS'])
+public = controls['publicImageUrl']
+assert public.startswith('/media/public?'), 'Unexpected fixture media URL'
+public_key = urllib.parse.parse_qs(urllib.parse.urlsplit(public).query)['key'][0]
+
+def request(route, headers=None):
+    try:
+        response = opener.open(urllib.request.Request(base + route, headers=headers or {}), timeout=15)
+    except urllib.error.HTTPError as error:
+        response = error
+    with response:
+        return response.status, response.headers, response.read()
+
+def denied(label, route, headers=None):
+    status, response_headers, body = request(route, headers)
+    assert status == 401, f'{label}: expected 401, got {status}'
+    assert 'no-store' in response_headers.get('Cache-Control', ''), f'{label}: missing no-store'
+    assert not response_headers.get('Content-Type', '').startswith('image/'), f'{label}: image response leaked'
+    print(f'PASS: {label}')
+
+status, headers, body = request(public)
+assert status == 200 and body and headers.get('Content-Type', '').startswith('image/'), 'Public fixture image unavailable'
+assert 'public' in headers.get('Cache-Control', ''), 'Public image is not cacheable'
+print('PASS: anonymous public fixture image bytes and caching')
+private = '/media/private?' + urllib.parse.urlencode({'key': public_key})
+denied('private boundary without credentials', private)
+denied('demo headers cannot authorize private media', private,
+       {'X-App-Session-Kind': 'demo', 'X-Demo-User-Id': '650000000000000000000063'})
+denied('invalid media credential', private, {'Cookie': 'myscoutee_media_session=invalid'})
+legacy = '/media/public?' + urllib.parse.urlencode({'key': 'private/images/manual-qa/large.webp'})
+status, headers, _ = request(legacy)
+assert status == 307 and headers.get('Location', '').startswith('/api/media/private?'), 'Legacy private reference bypassed the gate'
+assert 'no-store' in headers.get('Cache-Control', ''), 'Private redirect is cacheable'
+denied('legacy private reference reaches the protected boundary', headers['Location'].removeprefix('/api'))
+status, _, _ = request('/media/public?' + urllib.parse.urlencode({'key': 'images/demo-assets/../private/large.webp'}))
+assert status == 400, 'Public namespace traversal was accepted'
+print('PASS: public namespace traversal rejected')
+print('NOT PROVEN: real Firebase sign-in, authorized private bytes, session revocation and fine-grained visibility require their own fixture/UI evidence.')
+PY
+    ;;
+  mobile-webview:stage|mobile-webview:stage-demo|mobile-webview:status|mobile-webview:profile-batch-timing|mobile-webview:background-settings|mobile-webview:background-chrome|mobile-webview:reset)
     [ "$#" -eq 3 ] && [ "$3" = "MOBILE-WEBVIEW-LIFECYCLE-001" ] || { usage >&2; exit 2; }
     run_scenario "${command}" "${scenario}" 30 "$3"
     ;;

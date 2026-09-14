@@ -46,6 +46,9 @@ class EventCounterExpiryServiceTest {
     @Mock
     private UserActivityCountersService userActivityCountersService;
 
+    @Mock
+    private EventFriendshipProjectionService eventFriendshipProjectionService;
+
     private EventCounterExpiryService service;
 
     @BeforeEach
@@ -57,6 +60,7 @@ class EventCounterExpiryServiceTest {
                 notificationRuleRegistryService,
                 adminTelemetryService,
                 userActivityCountersService,
+                eventFriendshipProjectionService,
                 20);
     }
 

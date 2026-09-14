@@ -8180,6 +8180,86 @@ external portraits/assets. Local changes never synchronize to HTTP. FCM remains
 unconfigured, and the original Mobile WebView findings/overall PARTIAL status
 remain open. Evidence is in the same local directory as the physical run above.
 
+### Mobile cache/media continuation and relationship analysis — 2026-09-14
+
+Overall **PARTIAL / OPEN**. The full `mobile-webview` fixture remains staged;
+common session restoration and the temporary nginx route still require cleanup.
+
+- Riley's ordinary logout removed own profile/Ticket storage and private runtime
+  cache entries; public demo images remained. Nova's subsequent login showed
+  only Nova's controlled ticket. This is demo-session cache evidence.
+- On retained `lifecycle-3` build `mobile-webview-lifecycle-1789383083341`, a real
+  transport-disconnected cold start at `/game` displayed a loaded cached avatar.
+  Its enabled button opened Nova's saved Ticket and rendered its QR (1024 px).
+  Restoring the recorded ADB reverse removed both offline indicators with the
+  same page time origin `1789383192275`. No page reload was required.
+- `verify-media-boundary mobile-webview MOBILE-WEBVIEW-LIFECYCLE-001` through the
+  existing Docker fixture harness passed public image bytes/cache, anonymous,
+  invalid-cookie and spoofed-demo private rejection, legacy public-to-private
+  routing and public-prefix traversal rejection. The standalone Java QA client
+  and its compiler launcher were removed at the user's request. Real Firebase
+  image success/revocation and fine-grained visibility remain **NOT PROVEN**.
+- User clarified that friendship comes from participation when an event expires.
+  Code inspection finds expiry due at event end; the extra two hours belongs to
+  feedback unlock. Existing Friends only checks instead hash user IDs; Asset
+  Explore loads all users for this decision. This cannot prove the clarified
+  rule. `userAffinityEdges` is rating evidence, not an interchangeable friendship
+  source. No change to its scoring is justified by this finding.
+- Member surface analysis: Event Members carries live role/status, invitation,
+  check-in, organizer-only state, avatar/profile and scoped involvements. Its
+  DTO mapper performs one user lookup per member; its revision currently tracks
+  membership timestamps only. Participation popup reuses received involvements
+  without another request. Chat Members already batches profiles per page;
+  Contacts list already reads an embedded document. A completed-event friendship
+  snapshot cannot replace pending/live management state. Any embedded avatar URL
+  must follow profile writes and advance the member read revision.
+- At the user's request, unfinished friendship model/wiring was removed pending
+  this screen/contract analysis; runtime `userFriendships` row count was zero.
+  Existing member/affinity functions were restored. Backend watcher compilation
+  and restart succeeded; no separate application build or test server ran.
+
+- Subsequent environment isolation correction: shared `spring.conf` restored;
+  dev nginx renders a writable container-local copy from read-only templates.
+  QA build/state files moved outside the web root to `server/docker/.qa-mobile-runtime`;
+  only dev mounts them. The launcher rejects production/E2E and shared config
+  mounts before mutation. Production packaging excludes manual QA fixtures and
+  dev watcher/launcher scripts; both Docker build contexts exclude QA state.
+  `node packaging/tests/mobile-qa-isolation-test.mjs` passed seven runtime-gate
+  cases plus production source/context/package-selection checks. Dev `nginx -t`,
+  route restore/reactivation and HTTP build identity checks passed. No production
+  image/package was built or release-qualified by these checks.
+
+- Performance continuation: Event Members now batches live profiles; home network
+  reads consume minimal stored `userFriendships` pairs. Event-pair generation is
+  owned by the expiry job, and indexes are initialized in both session databases.
+  Affinity scoring and activity-rating reads are unchanged. The watcher compiled
+  and restarted successfully. Seventeen focused tests passed (home graph 4,
+  member reads 3, expiry 7, friendship projection 3). Broader test compilation
+  encountered 67 errors; the three selected suites subsequently ran 120 tests
+  with six failures, one corrected batch-stub mismatch and five failures outside
+  the selected paths. This is not a whole-suite PASS.
+- Replayable read-only timing: `profile-batch-timing mobile-webview
+  MOBILE-WEBVIEW-LIFECYCLE-001` in the existing Docker harness compares identical
+  full Mongo documents, warm cache, 20 alternating-order rounds. For 10 profiles:
+  10 individual reads median 10.803 ms versus one batch 1.783 ms (6.06×); for 50:
+  31.630 versus 3.027 ms (10.45×). This measures Mongo reads from mongosh, not Java
+  mapper, transport, rendering, or total page latency.
+- Phone home HTTP medians, before→after (expired application cache / warm cache):
+  single 58.0→73.5 / 45.3→39.2 ms; friends-in-common 73.6→67.0 / 40.1→32.7;
+  separated-friends 77.3→52.2 / 41.3→34.3; outside-network 73.3→68.8 / 41.3→38.6.
+  Three cold and nine warm requests per mode. **Not a valid speedup claim:**
+  the current demo's events are future events, so the corrected completed-event
+  rule changes candidate totals (29→30, 1→0, 0→0, 231→496 respectively).
+  Persistent completed-event/retry fixture proof and comparable populated-graph
+  performance remain pending. JSON and focused-test output are retained in the
+  local 2026-09-14 Mobile WebView evidence directory.
+
+Remaining original lifecycle oracles include native permission decline/retry,
+Settings resident-page return, offline policy content, localized unavailable
+text, protected Firebase media and final fixture/route cleanup. The relationship
+and media visibility changes require fixture coverage of the clarified rule,
+not reuse of the older deterministic-friend PASS.
+
 ## Execution and evidence rules
 
 **KÖTELEZŐ QA-SZABÁLY: CODEX SOHA TÖBBÉ NEM ELLENŐRZI A FRONTENDET. A FRONTEND KÉZI, VIZUÁLIS ÉS INTERAKCIÓS ELLENŐRZÉSÉT KIZÁRÓLAG A FELHASZNÁLÓ VÉGZI. CODEX KIZÁRÓLAG A FELHASZNÁLÓI LÉPÉS UTÁNI BACKEND/API/PERZISZTÁLT ORACLE-T VALIDÁLJA.**

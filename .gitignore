@@ -89,3 +89,4 @@ Thumbs.db
 
 # local target deploy configs
 /packaging/client-tools/*.env
+/server/docker/.qa-mobile-runtime/

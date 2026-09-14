@@ -36,6 +36,9 @@ public class SessionMongoRoutingFilter extends OncePerRequestFilter {
 
     private MongoSessionMode resolveMode(HttpServletRequest request) {
         String requestUri = request == null ? null : request.getRequestURI();
+        if ("/media/private".equals(requestUri) || "/api/media/private".equals(requestUri)) {
+            return MongoSessionMode.REAL;
+        }
         if (OperatorBootstrapRequestSupport.isLoginRequest(request)
                 || OperatorBootstrapRequestSupport
                         .hasAuthorizationHeader(request)) {

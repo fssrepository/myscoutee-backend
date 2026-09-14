@@ -27,3 +27,5 @@ projects/profile/build/*
 .gradle/
 **/.gradle/
 *.log
+docker/.qa-mobile-runtime/
+docker/scripts/manual-qa-checkpoints/
