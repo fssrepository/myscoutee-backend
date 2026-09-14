@@ -7487,6 +7487,18 @@ the active WebView/Push journey; C02–C04 and final restoration remain required
 
 #### Shared Firebase revision and entry repairs — 2026-09-14
 
+User clarified that Firebase-related Operator Save/save-reopen remains in the
+WebView run. Operator restore and other configuration workflows are deferred
+to the separate Operator journey; retained fixture cleanup is not a restore-test
+PASS.
+
+User subsequently parked the broader Operator journey. Retain this partial
+evidence and the guide as a draft; continue only the WebView-specific Firebase
+branches with active revision 1. Public configuration, TLS and payment are not
+next actions in the current run. Phone candidate lifecycle-26
+(`mobile-webview-lifecycle-1789413268062`) is now served, retaining its existing
+cache and original build snapshots. Updated-device replay is not yet proven.
+
 - Current read-only `status operator-domain OPERATOR-FIREBASE-001` confirms
   revision 1 active, Authentication tested revision 1, Messaging tested revision
   1, both private credential envelopes present and all public client fields

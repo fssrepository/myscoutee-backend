@@ -111,6 +111,11 @@ Do not mark native allow/deny as tested when a fixture pregranted it. Restore
 only the fixture-owned location/transport settings between branches; keep the
 phone's tethering and the desktop window dimensions unchanged.
 
+The Firebase-related Operator **Save Firebase**, reopen and saved-state check
+are part of this WebView setup. This does not add the Operator restore workflow,
+public configuration, TLS or payment tests; those belong to the separate
+Operator journey. Retain fixture cleanup records independently of test coverage.
+
 Reuse the same Firebase configuration/test/activation and real fresh-sign-in
 evidence through [Operator checkpoints C05–C07](../operator/OPERATOR-CONFIGURATION-LIFECYCLE-001.md).
 That guide identifies the shared steps and the public configuration, TLS and
