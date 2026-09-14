@@ -1,5 +1,23 @@
 [
   {
+    "_id": "i18n-message-en-unavailable-here",
+    "key": "unavailable.here",
+    "lang": "en",
+    "value": "Unavailable here"
+  },
+  {
+    "_id": "i18n-message-en-allow-location",
+    "key": "allow.location",
+    "lang": "en",
+    "value": "Allow location"
+  },
+  {
+    "_id": "i18n-message-en-checking-location",
+    "key": "checking.location",
+    "lang": "en",
+    "value": "Checking location"
+  },
+  {
     "_id": "i18n-message-en-clipboard-paste-permission-help",
     "key": "clipboard.paste.permission.help",
     "lang": "en",
@@ -20458,6 +20476,24 @@
     "key": "app.setup.update",
     "lang": "en",
     "value": "Update"
+  },
+  {
+    "_id": "i18n-message-hu-unavailable-here",
+    "key": "unavailable.here",
+    "lang": "hu",
+    "value": "Itt nem elérhető"
+  },
+  {
+    "_id": "i18n-message-hu-allow-location",
+    "key": "allow.location",
+    "lang": "hu",
+    "value": "Hely engedélyezése"
+  },
+  {
+    "_id": "i18n-message-hu-checking-location",
+    "key": "checking.location",
+    "lang": "hu",
+    "value": "Hely ellenőrzése"
   },
   {
     "_id": "i18n-message-hu-clipboard-paste-permission-help",

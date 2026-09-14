@@ -7469,6 +7469,11 @@ publication evidence.
 
 ### `OPERATOR-CONFIGURATION-LIFECYCLE-001` — configuration workspace
 
+Stable click guide and shared-coverage map:
+[`OPERATOR-CONFIGURATION-LIFECYCLE-001.md`](../checklists/operator/OPERATOR-CONFIGURATION-LIFECYCLE-001.md).
+Checkpoints C01–C08 belong to this one matrix row. C05–C07 share evidence with
+the active WebView/Push journey; C02–C04 and final restoration remain required.
+
 - Open Configuration once and use one reversible happy-path value in the
   public configuration, TLS, payment and Firebase blocks.
 - After each Save/Test action, reopen the same block and compare the normalized
@@ -7479,6 +7484,39 @@ publication evidence.
 - Invalid-input, callback-security, secret-leak, TLS-worker failure and other
   fault-injection branches belong to automated regression coverage. Checkout and real-device push
   effects stay in Event/Asset and Notifications.
+
+#### Shared Firebase revision and entry repairs — 2026-09-14
+
+- Current read-only `status operator-domain OPERATOR-FIREBASE-001` confirms
+  revision 1 active, Authentication tested revision 1, Messaging tested revision
+  1, both private credential envelopes present and all public client fields
+  present. The original deployment snapshot remains retained.
+- Earlier in this shared run, configuration save and Authentication capability
+  testing used the real Operator API. Desktop Message Test used the normal UI;
+  the user confirmed the native notification Allow action. These facts do not
+  substitute for an unobserved manual save/reopen or consumer registration.
+- C05/C06 are partial shared evidence, not closure of the Operator parent.
+  Fresh Firebase registration/repeat identity, C02 public configuration, C03 TLS,
+  C04 payment and C08 exact restoration still require their own evidence.
+- The phone's reported Paris layout defect was inspected read-only: CSS viewport
+  360px; unavailable button width 201.59px, label width 151.69px and height
+  29.02px (two lines), icon width 14.95px. The current source shortens the label
+  to localized “Unavailable here”, prevents icon shrink and reduces its gap.
+- Entry had no browser online/offline listeners. The repair updates the gate
+  on both events, invalidates pre-disconnection eligibility/content requests,
+  and retries the ordinary entry/Firebase/location path on reconnect. Browser
+  connection transitions remain distinct from a backend-only outage.
+- Focused regression cases cover repeated transitions and a late eligibility
+  response after disconnection. They are added but not executed: the current
+  Angular test command would start an additional compilation path during the
+  owned dev watcher. Do not record them as PASS.
+- The existing frontend watcher compiled the repair successfully at
+  19:09:49.421Z. The English/Hungarian .102 bundles and all three generated
+  Mongo seeds pass `audit-i18n-mongo-seed.js`. Actual updated-phone layout and
+  native event recovery remain pending on the new candidate; no page APIs,
+  browser state or production test parameters were replaced to prove them.
+- Stable C01–C08 actions and the cross-guide coverage table are in the linked
+  Operator checklist. Keep detailed outcomes here and the parent row partial.
 
 ### `OPERATOR-REGISTRY-LIFECYCLE-001` — registry and community
 

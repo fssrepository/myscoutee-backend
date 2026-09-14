@@ -96,9 +96,9 @@ recorded dimensions, and repeat it on the phone.
 | --- | --- |
 | Initial entry | Observe the header before clicking. No unsolicited native permission request. With location unresolved, the Firebase action shows **Allow location**; an already granted permission may show **Checking location** while the real eligibility request completes. |
 | Eligible location | Use the external browser-location fixture for Budapest (`47.4979, 19.0402`), then London (`51.5074, -0.1278`). Require the backend to resolve `country:hu`, then `country:gb`, and the normal **Login** action. Check each after an ordinary reload so the previous answer cannot satisfy the next branch. |
-| Location not available | First verify the existing landing fixture's absent-country control. For Paris (`48.8566, 2.3522`), with `country:fr` absent, require **Unavailable in your country**, disabled consumer login, no partition and no new session. Do not alter country data to force this result. |
+| Location not available | First verify the existing landing fixture's absent-country control. For Paris (`48.8566, 2.3522`), with `country:fr` absent, require **Unavailable here** (localized), disabled consumer login, no partition and no new session. The icon and label fit the mobile button on one line. Do not alter country data to force this result. |
 | Location rejected and retried | Use native site permission controls to reject/reset the permission. The shared popup remains retryable; X closes it and the next login click reopens it. No invented coordinates or authentication after rejection. Restore permission through the native UI and repeat. |
-| Entry connection lost | After warming entry, interrupt only the application's transport through the external fixture. Require **No network**, disabled network-dependent entry actions and preserved landing content. Restore transport and verify recovery, including an ordinary reload. |
+| Entry connection lost | After warming entry, use the external network fixture to cause browser offline/online transitions without changing the phone radios. Require **No network** immediately on offline, preserved landing content, and entry/eligibility re-evaluation on online without reload. Repeat offline once more; a late response must not reopen the gate. Separately interrupt only the backend route: request failure must recover when transport returns, but a backend-only outage need not emit a browser connectivity event. Ordinary reload is an additional check, not proof of event-driven recovery. |
 | Public exploration | From the unavailable-country state, **Start exploring** still enters the public demo selector. Choose the fixture actor normally; this must not impersonate a Firebase user or persist the controlled coordinates to a seeded demo member. Logout returns to entry. |
 | Consent | Repeat `ENTRY-CONSENT-001/002/003` using their isolated revision fixtures: required plus selected optional acceptance, rejection without session, newer revision requiring acceptance, retained stable optional IDs and newly added optional IDs initially unchecked. Require unchanged older audit records. |
 | Registration and return | Repeat `ENTRY-DEMO-REG-001` and `ENTRY-FIREBASE-REG-001` in their respective real deployment modes. Complete required onboarding, reload and sign in again; one identity/profile persists. A retained Firebase profile may show its name/**Continue** rather than **Login**. |
@@ -110,6 +110,11 @@ application, including on the physical PWA target. It must not replace
 Do not mark native allow/deny as tested when a fixture pregranted it. Restore
 only the fixture-owned location/transport settings between branches; keep the
 phone's tethering and the desktop window dimensions unchanged.
+
+Reuse the same Firebase configuration/test/activation and real fresh-sign-in
+evidence through [Operator checkpoints C05–C07](../operator/OPERATOR-CONFIGURATION-LIFECYCLE-001.md).
+That guide identifies the shared steps and the public configuration, TLS and
+payment steps that remain independently required for the Operator row.
 
 ## 1. Coherent cold-start upgrade and popup layout
 
