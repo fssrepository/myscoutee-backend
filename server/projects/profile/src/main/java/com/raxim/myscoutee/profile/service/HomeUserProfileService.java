@@ -29,6 +29,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.springframework.web.server.ResponseStatusException;
 
+import com.raxim.myscoutee.common.config.firebase.DevelopmentIdentityEmail;
 import com.raxim.myscoutee.common.config.firebase.dto.FirebasePrincipal;
 import com.raxim.myscoutee.common.config.properties.RegionSecurityProperties;
 import com.raxim.myscoutee.profile.data.AssetCatalog;
@@ -2397,6 +2398,9 @@ public class HomeUserProfileService {
         String resolvedPrincipalEmail = resolveAuthenticatedEmailForUser(userId);
         if (StringUtils.hasText(resolvedPrincipalEmail)) {
             return normalizeUserEmail(resolvedPrincipalEmail);
+        }
+        if (!StringUtils.hasText(fallbackEmail) && userId.startsWith("demo-profile-")) {
+            return DevelopmentIdentityEmail.forProfile(userId);
         }
         return normalizeUserEmail(fallbackEmail);
     }

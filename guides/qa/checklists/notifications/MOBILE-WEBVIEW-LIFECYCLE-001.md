@@ -94,7 +94,7 @@ recorded dimensions, and repeat it on the phone.
 
 | Branch | Normal action and expected result |
 | --- | --- |
-| Initial entry | Observe the header before clicking. No unsolicited native permission request. With location unresolved, the Firebase action shows **Allow location**; an already granted permission may show **Checking location** while the real eligibility request completes. |
+| Initial entry | Observe the header before clicking. No unsolicited native permission request. With location unresolved, the Firebase action remains **Login**. Clicking it opens the required permission flow. A granted permission may be checked silently, but neither a pending nor failed coordinate lookup changes the button to **Allow location** or **Checking location**. |
 | Eligible location | Use the external browser-location fixture for Budapest (`47.4979, 19.0402`), then London (`51.5074, -0.1278`). Require the backend to resolve `country:hu`, then `country:gb`, and the normal **Login** action. Check each after an ordinary reload so the previous answer cannot satisfy the next branch. |
 | Location not available | First verify the existing landing fixture's absent-country control. For Paris (`48.8566, 2.3522`), with `country:fr` absent, require **Unavailable here** (localized), disabled consumer login, no partition and no new session. The icon and label fit the mobile button on one line. Do not alter country data to force this result. |
 | Location rejected and retried | Use native site permission controls to reject/reset the permission. The shared popup remains retryable; X closes it and the next login click reopens it. No invented coordinates or authentication after rejection. Restore permission through the native UI and repeat. |
@@ -397,7 +397,8 @@ for the physical phone. Preserve the phone's existing cache and identity.
 5. After native decisions, the button shows a ring only for background work.
    X uses the common close behavior; a late permission response cannot continue
    a closed entry workflow. Reopening starts a new attempt.
-6. After login, location cannot be switched off in this popup. Notifications
+6. After login, reopen the same popup through `Settings -> Permissions`,
+   including in the already installed PWA. Location cannot be switched off. Notifications
    remain editable: Update off removes this device's push registration and
    remembers the opt-out across reload; startup must not register it again.
    Update on registers it after any required native approval. This device

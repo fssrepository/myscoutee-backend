@@ -8904,3 +8904,138 @@ zero extra offline labels/notes, zero visible "Offline" text, two `cloud_off`
 notification controls, usable avatar and no horizontal overflow. Screenshot:
 `~/.local/share/myscoutee-qa-evidence/MOBILE-WEBVIEW-LIFECYCLE-001/2026-09-14/offline-icons-only-phone.png`.
 Transport restored online and fixture detached.
+
+
+#### Firebase registration and desktop login footer — 2026-09-14
+
+Continuation evidence supersedes the earlier unexecuted Firebase and updated
+country-label notes, without closing the full WebView journey.
+
+- Physical phone: real Google account selection reached required registration.
+  The tester supplied three logo images; ordinary profile Save and privacy
+  acceptance reached the game. Normal logout returned to entry and cleared the
+  app session; repeat Google login reused the same identity without onboarding.
+  A fresh read-only Mongo oracle confirms exactly one matching user, three
+  images, Budapest, profile form version 2 and one device registration. No
+  account email, provider subject or credential is copied into this ledger.
+- The authenticated avatar rendered through protected media. The prior logout
+  observation showed no private image in the DOM and an anonymous direct media
+  request returned 401. Private-media cache entries were already zero before
+  logout: this does not prove purge of a previously populated private cache.
+  Invalid/revoked-credential and cross-account checks retain separate oracles.
+- The short country label fits one line on the physical 360px viewport; the
+  tester accepted the repaired button. External page/worker transport replay
+  proved offline -> online -> offline on the same page time origin, with fresh
+  eligibility on recovery and retained landing content. The first replay was
+  invalid because worker transport recovered after the page online event.
+  The fixture now restores workers first; corrected replay passed and transport
+  was restored. No phone radio or application API was replaced.
+- Shared Operator scope: ordinary no-change Firebase Save displayed success;
+  close/reopen preserved active configuration with credential inputs masked.
+  Fresh harness status confirms active revision 1 and both Authentication and
+  Messaging tested revision 1. This proves preservation/readback, not changed
+  credential rotation or the broader Operator restore journey.
+- Desktop Login footer: retained screenshot at 1136x763 shows all three provider
+  buttons and the complete provider-terms notice below them, inside the popup.
+  Facebook is visibly Coming soon. Screenshot:
+  `/tmp/myscoutee-desktop-login-footer.png`. The tester confirmed completion.
+  This is a layout PASS, not a legal-compliance determination.
+- Candidate lifecycle-26 is served, but the previous live shell still reported
+  lifecycle-25 with a waiting worker. Do not infer coherent candidate activation
+  from updated button code alone. Normal reload/cold-resume with the retained
+  Firebase identity remains the next check; do not clear app data.
+
+The full row remains PARTIAL/OPEN. Continue retained-session reload/resume,
+shared permission/device opt-out persistence and the remaining protected-media
+isolation checks. Real push delivery belongs to MOBILE-PUSH-LIFECYCLE-001.
+
+
+#### Firebase resume, outage and media revocation — 2026-09-14
+
+- User explicitly reauthorized Codex to execute ordinary phone/browser actions.
+  Physical WebAPK force-stop/relaunch preserved the Firebase session, loaded
+  avatar and completed profile without onboarding. Mongo still has one matching
+  user, three images and one device. Screenshot:
+  `/tmp/myscoutee-phone-firebase-reopen.png`.
+- API-only outage on the existing Firebase page kept `/game`, Firebase session
+  and time origin 1789414680958.9. Two notification controls indicated offline;
+  `navigator.onLine` stayed true. Restoring worker/page transport removed both
+  markers without reload or demo conversion. Fixture stopped and restored.
+  User reiterated that this signed-in Firebase flow cannot switch to demo;
+  demo selection belongs to entry.
+- Real private image read with the current media cookie: 200 image/webp,
+  8758 bytes, `Cache-Control: no-store, private`. Anonymous and malformed-cookie
+  reads: 401 JSON, no-store. The old public route redirects a private key to the
+  protected route (307), whose anonymous read is 401.
+- After normal Logout and confirmation, replaying that previously successful
+  cookie returns 401. `/entry` has no app session, private DOM image or private
+  service-worker cache entry. The restricted temporary cookie snapshot is
+  solely a read-oracle credential, not an injected browser login or app change.
+  Immediate screenshot: `/tmp/myscoutee-phone-private-logout-immediate.png`.
+- Normal Google login afterward reused the same account. WebAPK restart alone
+  retained a service-worker client; closing only the local QA page before
+  relaunch allowed candidate 26 to activate naturally, preserving the Firebase
+  identity and avatar. No cache clearing or injected SKIP_WAITING was used.
+  Candidate 27 began installing afterward; that repair replay remains pending.
+- Defect: installed PWA had no normal way to reopen the shared permission popup;
+  the sole signed-in entry point was gated on install availability. Added
+  `Settings -> Permissions` for ordinary member workspaces, opening the existing
+  AppSetupStore/popup. No new permission/storage mechanism. Existing watcher
+  compilation passed at 19:43:32.765Z. Candidate 27 is served with build ID
+  mobile-webview-lifecycle-1789415030969. Next: actual device off/reload/on and
+  bell-mute separation using that control.
+
+
+#### Installed-PWA permission replay — 2026-09-14
+
+- Candidate 27 activated naturally after closing only the QA origin's retained
+  page and reopening its WebAPK. Effective document build
+  `mobile-webview-lifecycle-1789415030969`; active worker, no waiting worker,
+  no failed script resources, Firebase identity and private avatar retained.
+- Ordinary `Settings -> Permissions` opens the existing shared popup on the
+  installed PWA. There is no redundant Install block. Location is checked and
+  disabled; Notifications stays editable. Both rows are 224px; Update is
+  content-sized (97.742px); no horizontal overflow. Screenshot:
+  `/tmp/myscoutee-phone-permissions-installed.png`.
+- Notifications off -> Update removes the only server device (1 -> 0), while
+  native notification permission remains granted. WebAPK reopen preserves the
+  false device preference and zero server devices.
+- Normal notification-list Mute and Unmute confirmations both work with device
+  opt-out retained. Unmute does not recreate the device (still zero). This
+  proves separation of alert preference from device registration.
+- Settings -> Permissions reopens with Notifications off and Location locked.
+  On -> Update restores exactly one device. Another WebAPK reopen retains true
+  and one device. Reopening and pressing Update again with on unchanged still
+  leaves one distinct enabled device: no duplicate registration.
+- No native notification prompt was claimed: permission was already granted.
+  The user explicitly deferred actual Firebase message delivery to the separate
+  Push row. No test message was sent during this continuation.
+- Current fixture transport is online. The phone is signed into its real QA
+  Firebase profile on `/game`; desktop dimensions remain 1136x763. Broader
+  Operator tests remain parked. The temporary private-media read credential
+  was removed after the revoked-cookie negative check.
+
+Closure audit: these results complete the current physical Firebase resume,
+API-outage, private-media revocation and device preference block. The expanded
+entry table still explicitly requests fresh ENTRY-CONSENT-001/002/003,
+ENTRY-DEMO-REG-001 and AUTH-SESSION-001 replays; their prior closed rows are not
+fresh evidence for this run. Do not silently mark those replays executed.
+
+
+### Entry login and footer corrections — 2026-09-14
+
+- User simplified the unresolved-location action to ordinary Login. Removed the presentation-only Allow location / Checking location inputs and deferred label timers. Silent granted-permission eligibility resolution and the actual login permission/region checks remain; confirmed unavailable-country and network states remain distinct.
+- Landing social glyphs use Instagram pink, YouTube red and Facebook blue while retaining the shared neutral background. Facebook renders the Facebook glyph instead of the configured generic globe.
+- Removed the Preview badge from the landing template. The existing Bug report popup no longer uses the test-version title or introductory warning; its reporting action remains available.
+- Existing frontend-sync watcher compiled successfully at 20:05:37.893 UTC; no additional compiler or test runner was started. Frontend diff whitespace check passed.
+- Served candidate lifecycle-28, build mobile-webview-lifecycle-1789416355389, through the existing mobile fixture route. Read-only desktop inspection still found the prior loaded document (generic globe, no provider attributes); this is not a rendered PASS for the new candidate. Native permission, new-candidate visual checks and the remaining entry lifecycle replays are not claimed complete.
+
+
+### Entry consent and demo registration replay — 2026-09-14
+
+- ENTRY-CONSENT-001 persisted oracle passed at 20:40:54.998Z: acceptance selected qa-analytics only; one new registered-user consent and no anonymous consent. The user completed three image uploads and saved the profile through the normal form.
+- Registered profile: demo-profile-51978303-f163-49a3-a581-e32cb5771315, WebView Consent Replay, London, active/public, profile form version 2, three images, one experience profile and no external-provider identity.
+- Anonymous demo draft uploads previously used private media and their previews returned 401. The session-mode interceptor now routes anonymous selector-mode demo draft image/profile writes through the existing demo request contract without inventing a logged-in user. Existing frontend watcher compilation passed at 20:39:07.222Z; candidate lifecycle-29 was served. Read-only diagnosis after the user's save confirms the rendered avatar loads successfully from public/demo media.
+- Registration verification first failed because the newly saved demo profile lacked its established per-profile development email. HomeUserProfileService now reuses DevelopmentIdentityEmail when saving a demo-profile with no principal/fallback email. The existing backend watcher compiled successfully and restarted at 20:42:34.497Z.
+- Persisted registration verification passed at 20:45:30.236Z, including unique development email ownership. This is not yet proof of initial-save email generation: the existing startup initializer can normalize the same record during restart. Fresh initial-save and ordinary registration-return evidence remain pending; do not close the full WebView row from this database result alone.
+- Next remaining entry checkpoints: ENTRY-CONSENT-002, ENTRY-CONSENT-003 and AUTH-SESSION-001. Keep physical-phone versus desktop replay evidence distinct. Existing completed cache/media/device-preference evidence is retained; only affected regressions need replay after the entry block.

@@ -162,8 +162,11 @@ try {
           if (!['online', 'offline'].includes(line.trim())) return;
           try {
             offline = line.trim() === 'offline';
-            await apply();
+            if (offline) await apply();
             await Promise.all([...workers.values()].map(async task => apply(await task)));
+            // The page's online event can immediately fetch through its worker.
+            // Restore worker transport before exposing that event to the app.
+            if (!offline) await apply();
             console.log(`QA transport ${line.trim()}; page and workers updated.`);
           } catch (error) { console.error(error.message); resolve(); }
         });
@@ -173,10 +176,11 @@ try {
       socket.off('message', onTarget);
       input.close();
       offline = false;
-      const restoration = await Promise.allSettled([apply(), ...[...workers.values()].map(async task => {
+      const restoration = await Promise.allSettled([...workers.values()].map(async task => {
         const sessionId = await task;
         try { await apply(sessionId); } finally { await send('Target.detachFromTarget', { sessionId }); }
-      })]);
+      }));
+      restoration.push(...await Promise.allSettled([apply()]));
       await send('Target.setDiscoverTargets', { discover: false });
       if (restoration.some(result => result.status === 'rejected')) {
         throw Error('Transport restoration needs inspection: a page or worker detached during the test.');
