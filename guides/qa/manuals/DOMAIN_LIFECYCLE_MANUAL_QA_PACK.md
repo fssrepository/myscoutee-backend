@@ -8642,6 +8642,52 @@ Riley/Nova private-media isolation. No prior PASS replaces those observations.
   `/tmp/myscoutee-phone-clipboard-denied.png` and
   `/tmp/myscoutee-phone-clipboard-prompt.png` (no popup).
 
+#### Native clipboard observation and demo replay — 2026-09-14
+
+- After the user removed only the QA origin's native Clipboard exception,
+  physical Android Paste displayed the real Block/Allow permission dialog.
+  Actual Block left the Source empty and displayed the short Hungarian
+  guidance; retry remained available. Evidence:
+  `/tmp/myscoutee-phone-real-clipboard-prompt.png` and
+  `/tmp/myscoutee-phone-native-block-result.png`.
+- This supersedes the earlier NOT PROVEN statement for popup appearance and
+  native Block only. Native Allow after a fresh prompt remains unproven;
+  already-granted exact URL paste was independently successful. The user
+  requested moving on. Neither platform saved the Transport editor.
+- Normal logout reached `/entry` on both devices. The versioned mobile fixture
+  reset restored its snapshots, then `stage-demo` and common session preparation
+  established canonical Anna. Both devices signed in through the ordinary demo
+  selector as HTTP `bf057de7c586eede7e84bdc7`. Phone remains candidate 24.
+  The current replay now targets real API transport loss and local persistence.
+
+#### Local demo offline controls defect — 2026-09-14
+
+- Candidate 24 replay: API-only outage switched canonical HTTP Anna to local
+  `u1` in a separate IndexedDB database. About marker
+  `[QA-local-20260914-2010]` survived save/reopen; an unsaved draft survived
+  reconnect without navigation (`timeOrigin=1789409129753.6`). Cancelling the
+  draft retained only the saved marker. Desktop HTTP About remained unchanged.
+  Full target network emulation returned `navigator.onLine=false`; reconnect
+  retained the local identity/document. Explicit app reopening preferred HTTP.
+- The user identified an incorrect acceptance assumption: local demo actions
+  must remain usable without internet, including local Chat and notifications.
+  The earlier disabled-mute observation is not a PASS for the local adapter.
+  Root cause: Home controls and side-menu guards used physical connectivity;
+  several list progress/poll predicates did the same. The full local adapter
+  can execute those operations offline.
+- Shared runtime data-source availability now allows the existing local adapter
+  offline. Home, menu, local notification preferences and existing list consumers
+  use it. Physical connectivity still drives notification offline indicators;
+  real HTTP actions retain connectivity restrictions. Removed the unrelated grey
+  avatar-header treatment. No test URL, runtime override or fake API was added.
+- Existing watcher compiled the repair in 7.384 seconds at
+  `2026-09-14T18:12:30.328Z`. Candidate 25:
+  `mobile-webview-lifecycle-1789409560944`. Existing compiled failover regression
+  passed; actual repaired phone UI replay is in progress. Desktop retains its
+  real `1136x763` viewport and enabled online header controls.
+- Evidence: `/tmp/myscoutee-anna-local-reconnect-draft.png` and
+  `/tmp/myscoutee-anna-local-network-reconnect.png` (candidate 24 observations).
+
 #### Test-hook audit and full entry regression — 2026-09-14
 
 Scope: current frontend application source/environments and backend main

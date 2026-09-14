@@ -266,13 +266,17 @@ local edits remain local and are never uploaded on reconnect.
 4. Edit Anna's About text with a unique QA marker and save. Reopen the editor
    to prove local persistence. Add another unsaved marker. Send `online` to
    the transport helper and wait more than 10 seconds: the editor, draft and
-   page time origin must remain unchanged. The floating icon and
+   page time origin must remain unchanged. Under full target network loss,
+   game mode, filters, history, profile editing, Assets, Events, local Chats
+   and local notification preferences remain usable through their local
+   adapters. Existing role/status restrictions still apply. The floating icon and
    menu bell show `cloud_off` on a grey/slate background, not the muted-bell symbol. They return to their
    online icons when connectivity returns, even with the editor still open.
    The floating icon appears offline even at zero unread count; its counter,
    click, drag and dismissal still work. Dismissal persists for that outage.
-   The notification-list mute toggle shows the same offline icon and is
-   disabled until reconnect, preserving the prior mute preference.
+   The notification-list mute toggle shows the offline icon and remains usable
+   in the local demo, persisting its local mute preference. HTTP-backed changes
+   still wait for reconnect.
    Repeat with `network-offline` on an already loaded local page to emulate
    complete target network loss (`navigator.onLine === false`), then `online`;
    distinguish this CDP emulation from a physical-radio or cold-start test.
