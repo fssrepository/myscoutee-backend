@@ -24,6 +24,7 @@ import com.raxim.myscoutee.common.config.firebase.FirebaseService;
 import com.raxim.myscoutee.common.config.firebase.FirebaseTokenVerifier;
 import com.raxim.myscoutee.common.config.properties.ConfigProperties;
 import com.raxim.myscoutee.profile.service.UserLoginSessionService;
+import com.raxim.myscoutee.profile.service.media.MediaSessionAccessService;
 
 @Configuration
 @EnableWebSecurity
@@ -37,6 +38,7 @@ public class WebSecurityConfig {
             operatorBootstrapAuthenticationService;
     private final ConfigProperties configProperties;
     private final UserLoginSessionService userLoginSessionService;
+    private final MediaSessionAccessService mediaSessionAccess;
 
     public WebSecurityConfig(FirebaseService firebaseService,
             FirebaseAuthenticationProvider firebaseProvider,
@@ -44,7 +46,8 @@ public class WebSecurityConfig {
             OperatorBootstrapAuthenticationService
                     operatorBootstrapAuthenticationService,
             ConfigProperties configProperties,
-            UserLoginSessionService userLoginSessionService) {
+            UserLoginSessionService userLoginSessionService,
+            MediaSessionAccessService mediaSessionAccess) {
         this.firebaseService = firebaseService;
         this.firebaseProvider = firebaseProvider;
         this.firebaseTokenVerifier = firebaseTokenVerifier;
@@ -52,6 +55,7 @@ public class WebSecurityConfig {
                 operatorBootstrapAuthenticationService;
         this.configProperties = configProperties;
         this.userLoginSessionService = userLoginSessionService;
+        this.mediaSessionAccess = mediaSessionAccess;
     }
 
     @Autowired
@@ -70,6 +74,7 @@ public class WebSecurityConfig {
                         OperatorBootstrapAuthenticationFilter.class)
                 .authorizeHttpRequests(authorizeRequests -> {
                     authorizeRequests.requestMatchers("/shutdown").denyAll();
+                    authorizeRequests.requestMatchers("/media/private", "/api/media/private").hasAuthority("MEDIA");
                     authorizeRequests.requestMatchers("/metrics").hasAuthority("A");
                     authorizeRequests.requestMatchers("/operator/**", "/api/operator/**").hasAuthority("O");
                     authorizeRequests.requestMatchers(
@@ -142,7 +147,8 @@ public class WebSecurityConfig {
                 firebaseService,
                 configProperties,
                 firebaseTokenVerifier,
-                userLoginSessionService);
+                userLoginSessionService,
+                mediaSessionAccess);
     }
 
     private OperatorBootstrapAuthenticationFilter

@@ -1,5 +1,41 @@
 [
   {
+    "_id": "i18n-message-en-unavailable-here",
+    "key": "unavailable.here",
+    "lang": "en",
+    "value": "Unavailable here"
+  },
+  {
+    "_id": "i18n-message-en-allow-location",
+    "key": "allow.location",
+    "lang": "en",
+    "value": "Allow location"
+  },
+  {
+    "_id": "i18n-message-en-checking-location",
+    "key": "checking.location",
+    "lang": "en",
+    "value": "Checking location"
+  },
+  {
+    "_id": "i18n-message-en-clipboard-paste-permission-help",
+    "key": "clipboard.paste.permission.help",
+    "lang": "en",
+    "value": "Allow clipboard access in site settings, then retry."
+  },
+  {
+    "_id": "i18n-message-en-no-network",
+    "key": "no.network",
+    "lang": "en",
+    "value": "No network"
+  },
+  {
+    "_id": "i18n-message-en-saved-tickets-remain-available-profiles-need-a-connection",
+    "key": "saved.tickets.remain.available.profiles.need.a.connection",
+    "lang": "en",
+    "value": "Saved tickets remain available. Profiles need a connection."
+  },
+  {
     "_id": "i18n-message-en-about",
     "key": "about",
     "lang": "en",
@@ -7665,7 +7701,7 @@
     "_id": "i18n-message-en-install-prompt-description",
     "key": "install.prompt.description",
     "lang": "en",
-    "value": "Install {productName} for quick access from your home screen."
+    "value": "Open {productName} quickly from your home screen, in its own window without browser tabs. Notifications can alert you to new messages when you grant permission separately."
   },
   {
     "_id": "i18n-message-en-keep-tickets-cached-profile-details-and-chat-notifications-available-wit",
@@ -20364,6 +20400,120 @@
     "value": "The operator request failed."
   },
   {
+    "_id": "i18n-message-en-entry-permissions-title",
+    "key": "entry.permissions.title",
+    "lang": "en",
+    "value": "Permissions before sign-in"
+  },
+  {
+    "_id": "i18n-message-en-entry-permissions-description",
+    "key": "entry.permissions.description",
+    "lang": "en",
+    "value": "Location is required to check availability in your region. Notifications alert you to new messages and events. After confirmation, the browser asks for notifications, then location, one at a time. A blocked permission can be changed in site settings."
+  },
+  {
+    "_id": "i18n-message-en-entry-permissions-checking",
+    "key": "entry.permissions.checking",
+    "lang": "en",
+    "value": "Saving…"
+  },
+  {
+    "_id": "i18n-message-en-install-app",
+    "key": "install.app",
+    "lang": "en",
+    "value": "Install"
+  },
+  {
+    "_id": "i18n-message-en-entry-permissions-notifications-blocked",
+    "key": "entry.permissions.notifications.blocked",
+    "lang": "en",
+    "value": "Allow notifications in the browser site settings, then try again."
+  },
+  {
+    "_id": "i18n-message-en-app-setup-title",
+    "key": "app.setup.title",
+    "lang": "en",
+    "value": "Permissions and installation"
+  },
+  {
+    "_id": "i18n-message-en-app-setup-description",
+    "key": "app.setup.description",
+    "lang": "en",
+    "value": "Quick access in its own app window."
+  },
+  {
+    "_id": "i18n-message-en-app-setup-location",
+    "key": "app.setup.location",
+    "lang": "en",
+    "value": "Location"
+  },
+  {
+    "_id": "i18n-message-en-app-setup-notifications",
+    "key": "app.setup.notifications",
+    "lang": "en",
+    "value": "Notifications"
+  },
+  {
+    "_id": "i18n-message-en-app-setup-permission-help",
+    "key": "app.setup.permission.help",
+    "lang": "en",
+    "value": "Location is required to sign in."
+  },
+  {
+    "_id": "i18n-message-en-app-setup-allow",
+    "key": "app.setup.allow",
+    "lang": "en",
+    "value": "Allow"
+  },
+  {
+    "_id": "i18n-message-en-app-setup-permissions",
+    "key": "app.setup.permissions",
+    "lang": "en",
+    "value": "Permissions"
+  },
+  {
+    "_id": "i18n-message-en-app-setup-update",
+    "key": "app.setup.update",
+    "lang": "en",
+    "value": "Update"
+  },
+  {
+    "_id": "i18n-message-hu-unavailable-here",
+    "key": "unavailable.here",
+    "lang": "hu",
+    "value": "Itt nem elérhető"
+  },
+  {
+    "_id": "i18n-message-hu-allow-location",
+    "key": "allow.location",
+    "lang": "hu",
+    "value": "Hely engedélyezése"
+  },
+  {
+    "_id": "i18n-message-hu-checking-location",
+    "key": "checking.location",
+    "lang": "hu",
+    "value": "Hely ellenőrzése"
+  },
+  {
+    "_id": "i18n-message-hu-clipboard-paste-permission-help",
+    "key": "clipboard.paste.permission.help",
+    "lang": "hu",
+    "value": "Engedélyezd a vágólapot a webhelybeállításokban, majd próbáld újra."
+  },
+  {
+    "_id": "i18n-message-hu-no-network",
+    "key": "no.network",
+    "lang": "hu",
+    "value": "Nincs hálózat"
+  },
+  {
+    "_id": "i18n-message-hu-saved-tickets-remain-available-profiles-need-a-connection",
+    "key": "saved.tickets.remain.available.profiles.need.a.connection",
+    "lang": "hu",
+    "value": "A mentett jegyek elérhetők. A profilokhoz hálózati kapcsolat szükséges."
+  },
+  {
     "_id": "i18n-message-hu-about",
     "key": "about",
     "lang": "hu",
@@ -28029,7 +28179,7 @@
     "_id": "i18n-message-hu-install-prompt-description",
     "key": "install.prompt.description",
     "lang": "hu",
-    "value": "{productName} telepítésével gyorsan elérheted az alkalmazást a kezdőképernyőről."
+    "value": "Nyisd meg a(z) {productName} alkalmazást közvetlenül a kezdőképernyőről, saját ablakban, böngészőfülek nélkül. Külön engedélyezett értesítésekkel az új üzenetekről is értesülhetsz."
   },
   {
     "_id": "i18n-message-hu-keep-tickets-cached-profile-details-and-chat-notifications-available-wit",
@@ -40726,5 +40876,83 @@
     "key": "operator.request.failed",
     "lang": "hu",
     "value": "Az operátori kérés sikertelen."
+  },
+  {
+    "_id": "i18n-message-hu-entry-permissions-title",
+    "key": "entry.permissions.title",
+    "lang": "hu",
+    "value": "Engedélyek a belépéshez"
+  },
+  {
+    "_id": "i18n-message-hu-entry-permissions-description",
+    "key": "entry.permissions.description",
+    "lang": "hu",
+    "value": "A helyadat szükséges a régiós elérhetőség ellenőrzéséhez. Az értesítések az új üzenetekről és eseményekről jeleznek. Jóváhagyás után a böngésző először az értesítéseket, majd a helyadatot kéri, egymás után. A letiltott engedélyt a webhely beállításainál módosíthatod."
+  },
+  {
+    "_id": "i18n-message-hu-entry-permissions-checking",
+    "key": "entry.permissions.checking",
+    "lang": "hu",
+    "value": "Mentés…"
+  },
+  {
+    "_id": "i18n-message-hu-install-app",
+    "key": "install.app",
+    "lang": "hu",
+    "value": "Telepítés"
+  },
+  {
+    "_id": "i18n-message-hu-entry-permissions-notifications-blocked",
+    "key": "entry.permissions.notifications.blocked",
+    "lang": "hu",
+    "value": "Engedélyezd az értesítéseket a böngésző webhelybeállításaiban, majd próbáld újra."
+  },
+  {
+    "_id": "i18n-message-hu-app-setup-title",
+    "key": "app.setup.title",
+    "lang": "hu",
+    "value": "Engedélyek és telepítés"
+  },
+  {
+    "_id": "i18n-message-hu-app-setup-description",
+    "key": "app.setup.description",
+    "lang": "hu",
+    "value": "Gyors elérés, saját alkalmazásablak."
+  },
+  {
+    "_id": "i18n-message-hu-app-setup-location",
+    "key": "app.setup.location",
+    "lang": "hu",
+    "value": "Helyadat"
+  },
+  {
+    "_id": "i18n-message-hu-app-setup-notifications",
+    "key": "app.setup.notifications",
+    "lang": "hu",
+    "value": "Értesítések"
+  },
+  {
+    "_id": "i18n-message-hu-app-setup-permission-help",
+    "key": "app.setup.permission.help",
+    "lang": "hu",
+    "value": "A helyadat kötelező a belépéshez."
+  },
+  {
+    "_id": "i18n-message-hu-app-setup-allow",
+    "key": "app.setup.allow",
+    "lang": "hu",
+    "value": "Engedélyezés"
+  },
+  {
+    "_id": "i18n-message-hu-app-setup-permissions",
+    "key": "app.setup.permissions",
+    "lang": "hu",
+    "value": "Engedélyek"
+  },
+  {
+    "_id": "i18n-message-hu-app-setup-update",
+    "key": "app.setup.update",
+    "lang": "hu",
+    "value": "Frissítés"
   }
 ]

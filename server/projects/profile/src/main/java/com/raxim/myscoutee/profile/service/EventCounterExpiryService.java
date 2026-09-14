@@ -50,6 +50,7 @@ public class EventCounterExpiryService {
     private final NotificationRuleRegistryService notificationRuleRegistryService;
     private final AdminTelemetryService adminTelemetryService;
     private final UserActivityCountersService userActivityCountersService;
+    private final EventFriendshipProjectionService eventFriendshipProjectionService;
     private final int batchSize;
     private final AtomicBoolean processing = new AtomicBoolean(false);
 
@@ -60,9 +61,10 @@ public class EventCounterExpiryService {
             long markedEventRecords,
             long markedTicketRecords,
             int feedbackProjectionSources,
-            int feedbackCounterUsers) {
+            int feedbackCounterUsers,
+            int friendshipProjectionSources) {
         int processedSources() {
-            return dueSources + feedbackProjectionSources;
+            return dueSources + feedbackProjectionSources + friendshipProjectionSources;
         }
     }
     private record EventCounterState(int invitations, int events, int hosting) {}
@@ -74,6 +76,7 @@ public class EventCounterExpiryService {
             NotificationRuleRegistryService notificationRuleRegistryService,
             AdminTelemetryService adminTelemetryService,
             UserActivityCountersService userActivityCountersService,
+            EventFriendshipProjectionService eventFriendshipProjectionService,
             @Value("${events.counter-expiry.batch-size:200}") int batchSize) {
         this.activityMembersRepository = activityMembersRepository;
         this.usersRepository = usersRepository;
@@ -81,6 +84,7 @@ public class EventCounterExpiryService {
         this.notificationRuleRegistryService = notificationRuleRegistryService;
         this.adminTelemetryService = adminTelemetryService;
         this.userActivityCountersService = userActivityCountersService;
+        this.eventFriendshipProjectionService = eventFriendshipProjectionService;
         this.batchSize = Math.max(1, Math.min(1000, batchSize));
     }
 
@@ -94,7 +98,7 @@ public class EventCounterExpiryService {
 
     private ExpiryRunResult runExpiryPass(Instant requestedStart, boolean scheduled) {
         if (!processing.compareAndSet(false, true)) {
-            return new ExpiryRunResult(0, 0, 0, 0L, 0L, 0, 0);
+            return new ExpiryRunResult(0, 0, 0, 0L, 0L, 0, 0, 0);
         }
         Instant startedAt = requestedStart == null ? Instant.now() : requestedStart;
         int claimedPendingCount = 0;
@@ -106,7 +110,7 @@ public class EventCounterExpiryService {
                         "Scanning expired event counters.",
                         SYSTEM_USER,
                         startedAt) == null) {
-                    return new ExpiryRunResult(0, 0, 0, 0L, 0L, 0, 0);
+                    return new ExpiryRunResult(0, 0, 0, 0L, 0L, 0, 0, 0);
                 }
             } else {
                 notificationRuleRegistryService.beginRun(
@@ -120,14 +124,15 @@ public class EventCounterExpiryService {
                     NotificationRuleRegistryService.RULE_EVENT_COUNTER_EXPIRY);
             ExpiryRunResult result = processDueEvents(Instant.now());
             String detail = result.processedSources() == 0 && result.markedTicketRecords() == 0
-                    ? "No expired event counters, ticket records, or feedback counter projections were due."
+                    ? "No expired event counters, ticket records, feedback counters, or friendships were due."
                     : "Expired " + result.dueSources() + " event source(s), refreshed "
                     + result.updatedUsers() + "/" + result.affectedUsers()
                     + " affected user counter document(s), marked "
                     + result.markedEventRecords() + " event record(s), and marked "
                     + result.markedTicketRecords() + " ticket record(s); projected feedback counters for "
                     + result.feedbackCounterUsers() + " user(s) across "
-                    + result.feedbackProjectionSources() + " event source(s).";
+                    + result.feedbackProjectionSources() + " event source(s); projected friendships for "
+                    + result.friendshipProjectionSources() + " event source(s).";
             notificationRuleRegistryService.recordRun(
                     NotificationRuleRegistryService.RULE_EVENT_COUNTER_EXPIRY,
                     result.processedSources(),
@@ -161,13 +166,14 @@ public class EventCounterExpiryService {
                         SYSTEM_USER,
                         startedAt);
             }
-            return new ExpiryRunResult(0, 0, 0, 0L, 0L, 0, 0);
+            return new ExpiryRunResult(0, 0, 0, 0L, 0L, 0, 0, 0);
         } finally {
             processing.set(false);
         }
     }
 
     private ExpiryRunResult processDueEvents(Instant now) {
+        int friendshipProjectionSources = eventFriendshipProjectionService.projectCompletedEvents(now, batchSize);
         String nowIso = (now == null ? Instant.now() : now).toString();
         List<ActivityEvent> dueDocuments = dueEventDocuments(nowIso);
         List<ActivityEvent> dueTicketDocuments = dueTicketDocuments(nowIso);
@@ -185,7 +191,8 @@ public class EventCounterExpiryService {
                     0L,
                     markedTicketRecords,
                     feedbackProjectionSourceIds.size(),
-                    feedbackCounterUsers);
+                    feedbackCounterUsers,
+                    friendshipProjectionSources);
         }
 
         List<ActivityEvent> sourceDocuments = loadEventDocumentsBySourceIds(dueSourceIds);
@@ -200,7 +207,8 @@ public class EventCounterExpiryService {
                 markedEventRecords,
                 markedTicketRecords,
                 feedbackProjectionSourceIds.size(),
-                feedbackCounterUsers);
+                feedbackCounterUsers,
+                friendshipProjectionSources);
     }
 
     private List<ActivityEvent> dueFeedbackProjectionDocuments(Instant now) {

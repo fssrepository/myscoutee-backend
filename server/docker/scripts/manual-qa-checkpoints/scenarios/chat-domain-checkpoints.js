@@ -3,20 +3,22 @@
   "use strict";
 
   const Q = ManualQa;
-  const SCENARIO = "chat-domain";
   const CHECKPOINT = Q.text(process.env.MANUAL_QA_CHECKPOINT_ID).toUpperCase();
+  const POLL_CHECKPOINT = "UI-POLL-JANK-001";
+  const IS_POLL = CHECKPOINT === POLL_CHECKPOINT;
+  const SCENARIO = IS_POLL ? "ui-poll" : "chat-domain";
   const COMMAND = Q.text(process.env.MANUAL_QA_COMMAND);
   const LIST_CHECKPOINT = "CHAT-LIST-001";
   const FLOW_CHECKPOINT = "CHAT-FLOW-001";
   const ACTIONS_CHECKPOINT = "CHAT-ACTIONS-001";
   const CONTENT_CHECKPOINT = "CHAT-CONTENT-001";
   const PREFIX = "manual-qa-checkpoint:v1:chat-list";
-  const FLOW_PREFIX = "manual-qa-checkpoint:v1:chat-flow";
+  const FLOW_PREFIX = IS_POLL ? "manual-qa-checkpoint:v1:ui-poll" : "manual-qa-checkpoint:v1:chat-flow";
   const CASEY_ID = Q.text(process.env.MANUAL_QA_CREATOR_USER_ID) || "650000000000000000000061";
   const NOVA_ID = Q.text(process.env.MANUAL_QA_INVITEE_USER_ID) || "650000000000000000000062";
   const RILEY_ID = "650000000000000000000063";
   const CONTENT_OWNER_ID = "178e8d0cbe164fa3fede5884";
-  const FLOW_ACTOR_IDS = [CASEY_ID, NOVA_ID, RILEY_ID];
+  const FLOW_ACTOR_IDS = IS_POLL ? [CASEY_ID, NOVA_ID] : [CASEY_ID, NOVA_ID, RILEY_ID];
   const FLOW_EVENT_ID = `${FLOW_PREFIX}:event`;
   const FLOW_STAGE_ID = `${FLOW_EVENT_ID}:stage`;
   const FLOW_GROUP_ID = `${FLOW_STAGE_ID}:group`;
@@ -40,10 +42,11 @@
     { key: "group", channelType: "groupSubEvent", suffix: "group", title: "QA Chat · Group", avatar: "QG" },
     { key: "service", channelType: "serviceEvent", suffix: "service", title: "QA Chat · Service", avatar: "QS" },
     { key: "appSupport", channelType: "appSupport", suffix: "support", title: "QA Chat · App Support", avatar: "QA" }
-  ];
+  ].filter(item => !IS_POLL || item.key === "group");
+  const GROUP_CONTEXT = CONTEXTS.find(item => item.key === "group");
 
   function assertCheckpoint() {
-    if (![LIST_CHECKPOINT, FLOW_CHECKPOINT, ACTIONS_CHECKPOINT, CONTENT_CHECKPOINT].includes(CHECKPOINT)) {
+    if (![LIST_CHECKPOINT, FLOW_CHECKPOINT, ACTIONS_CHECKPOINT, CONTENT_CHECKPOINT, POLL_CHECKPOINT].includes(CHECKPOINT)) {
       Q.fail(`unsupported Chat checkpoint '${CHECKPOINT}'.`);
     }
   }
@@ -267,12 +270,15 @@
     ] };
   }
 
+  function flowChatSelector() {
+    return IS_POLL
+      ? { id: { $regex: `^${FLOW_PREFIX}:` } }
+      : { $or: [{ ownerUserId: { $in: FLOW_ACTOR_IDS } }, { id: { $regex: `^${FLOW_PREFIX}:` } }] };
+  }
+
   function flowSnapshotSpecs() {
     return [
-      { collection: "chats", selector: { $or: [
-        { ownerUserId: { $in: FLOW_ACTOR_IDS } },
-        { id: { $regex: `^${FLOW_PREFIX}:` } }
-      ] } },
+      { collection: "chats", selector: flowChatSelector() },
       { collection: "chatMessages", selector: { chatId: { $regex: `^${FLOW_PREFIX}:` } } },
       { collection: "activityMembers", selector: { ownerId: { $in: [FLOW_EVENT_ID, FLOW_GROUP_ID] } } },
       { collection: "events", selector: { $or: [
@@ -318,7 +324,7 @@
       id,
       ownerUserId,
       avatar: item.avatar,
-      title: item.title,
+      title: IS_POLL ? "QA UI-POLL-JANK-001 Group" : item.title,
       lastMessage,
       lastSenderId,
       memberIds: [...FLOW_ACTOR_IDS],
@@ -362,8 +368,8 @@
     const readers = FLOW_ACTOR_IDS.filter(userId => userId !== senderUserId).map(flowAvatar);
     const id = `${FLOW_PREFIX}:history:${String(index + 1).padStart(2, "0")}`;
     return {
-      _id: `chat-message:${flowChatId(CONTEXTS[1])}:${id}`,
-      chatId: flowChatId(CONTEXTS[1]),
+      _id: `chat-message:${flowChatId(GROUP_CONTEXT)}:${id}`,
+      chatId: flowChatId(GROUP_CONTEXT),
       id,
       clientId: `${id}:client`,
       sender: Q.text(sender.name) || senderUserId,
@@ -394,8 +400,8 @@
     const sender = flowUserRecord(CASEY_ID);
     const readers = [NOVA_ID, RILEY_ID].map(flowAvatar);
     return {
-      _id: `chat-message:${flowChatId(CONTEXTS[1])}:${CONTENT_UNAVAILABLE_MESSAGE_ID}`,
-      chatId: flowChatId(CONTEXTS[1]),
+      _id: `chat-message:${flowChatId(GROUP_CONTEXT)}:${CONTENT_UNAVAILABLE_MESSAGE_ID}`,
+      chatId: flowChatId(GROUP_CONTEXT),
       id: CONTENT_UNAVAILABLE_MESSAGE_ID,
       clientId: `${CONTENT_UNAVAILABLE_MESSAGE_ID}:client`,
       sender: Q.text(sender.name) || CASEY_ID,
@@ -583,7 +589,7 @@
 
   function flowSnapshot() {
     const chats = Q.collection("chats")
-      .find({ $or: [{ ownerUserId: { $in: FLOW_ACTOR_IDS } }, { id: { $regex: `^${FLOW_PREFIX}:` } }] })
+      .find(flowChatSelector())
       .sort({ ownerUserId: 1, id: 1, _id: 1 })
       .toArray();
     const messages = Q.collection("chatMessages")
@@ -643,6 +649,8 @@
     const ordinaryHistory = history.filter(message => Q.text(message.id) !== CONTENT_UNAVAILABLE_MESSAGE_ID);
     const unavailableMessage = history.find(message => Q.text(message.id) === CONTENT_UNAVAILABLE_MESSAGE_ID);
     const contentFixture = CHECKPOINT === CONTENT_CHECKPOINT;
+    const originalUsers = IS_POLL ? Q.activeState(SCENARIO, true).snapshots
+      .find(item => item.collection === "users").documents : [];
     return {
       exactOwnerCopies: (snapshot.chats || []).length === FLOW_ACTOR_IDS.length * CONTEXTS.length
         && FLOW_ACTOR_IDS.every(userId => expectedChatIds.every(id => (snapshot.chats || []).some(chat =>
@@ -668,7 +676,11 @@
         const actualReaders = (message.messageReadByUserIds || []).map(Q.text).sort();
         return Q.sameJson(actualReaders, expectedReaders);
       }),
-      zeroCounters: (snapshot.users || []).length === FLOW_ACTOR_IDS.length && (snapshot.users || []).every(flowCounterZero),
+      ...(IS_POLL ? { existingChatCountersPreserved: (snapshot.users || []).every(user => {
+        const original = originalUsers.find(item => Q.text(item.userId || item._id) === user.userId);
+        return Q.sameJson(user.activities && user.activities.chat, original.activities && original.activities.chat)
+          && Q.number(user.activities && user.activities.chats) === Q.number(original.activities && original.activities.chats);
+      }) } : { zeroCounters: (snapshot.users || []).length === FLOW_ACTOR_IDS.length && (snapshot.users || []).every(flowCounterZero) }),
       zeroNotifications: (snapshot.outbox || []).length === 0 && (snapshot.notifications || []).length === 0,
       exactContentSources: contentFixture
         ? (snapshot.events || []).length === 2
@@ -708,7 +720,7 @@
           && Q.sameJson(readers, [NOVA_ID, RILEY_ID].sort());
       });
     const latest = byText[FLOW_LIST_POLL_MESSAGE];
-    const groupId = flowChatId(CONTEXTS[1]);
+    const groupId = flowChatId(GROUP_CONTEXT);
     const groupCopies = (snapshot.chats || []).filter(chat => Q.text(chat.id) === groupId);
     const outbox = snapshot.outbox || [];
     const notifications = snapshot.notifications || [];
@@ -764,7 +776,12 @@
 
   function flowStage() {
     Q.assertNotStaged(SCENARIO);
-    Q.assertNoOtherActiveScenario(SCENARIO);
+    // The performance support fixture is namespace-isolated and leaves existing
+    // chats and counters intact. Parked campaign metadata is not its baseline.
+    if (!IS_POLL) Q.assertNoOtherActiveScenario(SCENARIO);
+    if (IS_POLL && Q.collection("chats").countDocuments(flowChatSelector()) !== 0) {
+      Q.fail("UI-POLL-JANK-001 namespace is not empty; refusing to replace it.");
+    }
     FLOW_ACTOR_IDS.forEach(flowUserRecord);
     const snapshots = Q.snapshotSpecs(flowSnapshotSpecs());
     const stagedAtIso = Q.nowIso();
@@ -816,7 +833,7 @@
         ]);
         Q.collection("assets").insertOne(contentAssetDocument(stagedAtIso));
       }
-      for (const userId of FLOW_ACTOR_IDS) {
+      for (const userId of IS_POLL ? [] : FLOW_ACTOR_IDS) {
         const update = Q.collection("users").updateOne(
           { $or: [{ _id: userId }, { userId }] },
           { $set: {
@@ -838,7 +855,7 @@
         phase: "fixture-ready",
       context: {
         actorUserIds: FLOW_ACTOR_IDS,
-        groupChatId: flowChatId(CONTEXTS[1]),
+        groupChatId: flowChatId(GROUP_CONTEXT),
         firstMessage: FLOW_FIRST_MESSAGE,
         listPollMessage: FLOW_LIST_POLL_MESSAGE,
         expectedContextIds: Object.fromEntries(CONTEXTS.map(item => [item.key, flowChatId(item)])),
@@ -861,14 +878,14 @@
         phase: "fixture-ready",
         actors: FLOW_ACTOR_IDS.map(Q.user),
         expected: {
-          contextsPerActor: 4,
+          contextsPerActor: CONTEXTS.length,
           groupHistory: CHECKPOINT === CONTENT_CHECKPOINT ? 19 : 18,
           unreadPerActor: 0,
           firstMessage: FLOW_FIRST_MESSAGE,
           listPollMessage: FLOW_LIST_POLL_MESSAGE
         },
         validation,
-        next: "Open the three managed browser sessions, run the authenticated read oracle, then repeat this status command before manual execution."
+        next: IS_POLL ? "Launch UI-POLL-JANK-001 through the managed launcher; require three authenticated windows and exactly two Casey sessions before user step 1." : "Open the three managed browser sessions, run the authenticated read oracle, then repeat this status command before manual execution."
       });
     } catch (error) {
       Q.restoreSnapshots(snapshots);
@@ -923,7 +940,7 @@
         checkpoint: CHECKPOINT,
         phase: "fixture-ready",
         expected: {
-          groupChatId: flowChatId(CONTEXTS[1]),
+          groupChatId: flowChatId(GROUP_CONTEXT),
           sourceMessageId: ACTIONS_SOURCE_ID,
           sourceMessageText: "QA history 02",
           replyText: ACTIONS_REPLY_TEXT,
@@ -948,7 +965,7 @@
     if (target && Q.text(target.text) === ACTIONS_READ_RACE_TEXT && !Q.text(target.deletedAtIso)) {
       const readers = (target.readBy || []).map(reader => Q.text(reader && reader.id)).sort();
       const readerSearchIds = (target.messageReadByUserIds || []).map(Q.text).sort();
-      const groupCopies = (current.chats || []).filter(chat => Q.text(chat.id) === flowChatId(CONTEXTS[1]));
+      const groupCopies = (current.chats || []).filter(chat => Q.text(chat.id) === flowChatId(GROUP_CONTEXT));
       const validation = {
         oneNormalActionMessage: actionMessages.length === 1,
         exactPersistedReaders: Q.sameJson(readers, [NOVA_ID, RILEY_ID].sort()),
@@ -1085,7 +1102,7 @@
       && !Q.text(message.deletedAtIso)
       && (message.attachments || []).length === 1
       && exactReaders(message);
-    const groupId = flowChatId(CONTEXTS[1]);
+    const groupId = flowChatId(GROUP_CONTEXT);
     const groupCopies = (current.chats || []).filter(chat => Q.text(chat.id) === groupId);
     const baselineUsers = Object.fromEntries((state.baseline.users || []).map(user => [Q.text(user.userId), user]));
     const currentUsers = Object.fromEntries((current.users || []).map(user => [Q.text(user.userId), user]));
@@ -1188,11 +1205,11 @@
       && Q.text(message.deletedAtIso));
     if (!target) Q.fail("CHAT-ACTIONS-001 has no unique deleted Casey target for the read regression.");
     const tombstoneUpdate = Q.collection("chatMessages").updateOne(
-      { chatId: flowChatId(CONTEXTS[1]), id: target.id, deletedAtIso: { $nin: [null, ""] } },
+      { chatId: flowChatId(GROUP_CONTEXT), id: target.id, deletedAtIso: { $nin: [null, ""] } },
       { $set: { readBy: [], messageReadByUserIds: [] } }
     );
     const raceUpdate = Q.collection("chatMessages").updateOne(
-      { chatId: flowChatId(CONTEXTS[1]), id: `${FLOW_PREFIX}:history:01`, "senderAvatar.id": CASEY_ID },
+      { chatId: flowChatId(GROUP_CONTEXT), id: `${FLOW_PREFIX}:history:01`, "senderAvatar.id": CASEY_ID },
       { $set: { readBy: [], messageReadByUserIds: [] } }
     );
     if (tombstoneUpdate.matchedCount !== 1 || raceUpdate.matchedCount !== 1) {
@@ -1303,7 +1320,28 @@
   function flowReset() {
     const state = Q.activeState(SCENARIO, true);
     if (Q.text(state.checkpointId) !== CHECKPOINT) Q.fail(`active Chat checkpoint is '${Q.text(state.checkpointId)}', not '${CHECKPOINT}'.`);
-    Q.restoreSnapshots(state.snapshots);
+    if (IS_POLL) {
+      const current = flowSnapshot();
+      if (current.notifications.length || current.outbox.length) {
+        Q.fail("Owned notification work must be resolved before performance fixture cleanup.");
+      }
+      const unreadByUser = new Map(current.chats.map(chat => [chat.ownerUserId, Q.number(chat.unread)]));
+      for (const [userId, unread] of unreadByUser) {
+        const user = Q.ensureUser(userId, "performance fixture cleanup");
+        if (unread < 0 || [user.activities?.chats, user.activities?.chat?.all, user.activities?.chat?.group]
+            .some(value => Q.number(value) < unread)) Q.fail("Owned Chat unread delta exceeds its stored counters.");
+      }
+      for (const [userId, unread] of unreadByUser) {
+        if (!unread) continue;
+        const result = Q.collection("users").updateOne(
+          { userId, "activities.chats": { $gte: unread }, "activities.chat.all": { $gte: unread }, "activities.chat.group": { $gte: unread } },
+          { $inc: { "activities.chats": -unread, "activities.chat.all": -unread, "activities.chat.group": -unread } });
+        if (result.modifiedCount !== 1) Q.fail("Performance fixture unread reversal lost its guard.");
+      }
+    }
+    // For the performance fixture, reverse only its owned unread contribution;
+    // preserve consent, login and other legitimate account changes made during QA.
+    Q.restoreSnapshots(IS_POLL ? state.snapshots.filter(item => item.collection !== "users") : state.snapshots);
     Q.collection(Q.STATE_COLLECTION).deleteOne({ _id: state._id });
     const remaining = Q.collection("chats").countDocuments({ id: { $regex: `^${FLOW_PREFIX}:` } })
       + Q.collection("chatMessages").countDocuments({ chatId: { $regex: `^${FLOW_PREFIX}:` } })
@@ -1318,9 +1356,51 @@
     Q.printObject({ scenario: SCENARIO, checkpoint: CHECKPOINT, phase: "reset-complete", restored: true });
   }
 
+
+  function pollSessionStatus() {
+    const hash = value => require("crypto").createHash("sha256").update(Q.text(value)).digest("hex");
+    const actors = ["admin-demo-ava", CASEY_ID, NOVA_ID].map(userId => {
+      const sessions = Q.collection("userSessionStates").findOne({ _id: userId });
+      const audits = Q.collection("userLoginAudits").find({ userId }).toArray();
+      return {
+        userId,
+        activeSessionHashes: (sessions && sessions.activeSessions || []).map(item => hash(item.sessionId)).sort(),
+        loginAuditCount: audits.length,
+        loginAuditHashes: audits.map(item => hash(item._id)).sort()
+      };
+    });
+    Q.printObject({ checkpoint: CHECKPOINT, capturedAtIso: Q.nowIso(), actors });
+  }
+
+  function pollStatus() {
+    const state = Q.activeState(SCENARIO, false);
+    if (!state) {
+      Q.printObject({ scenario: SCENARIO, checkpoint: CHECKPOINT, phase: "not-staged" });
+      return;
+    }
+    if (state.checkpointId !== CHECKPOINT) Q.fail("Unexpected performance fixture identity.");
+    const current = flowSnapshot();
+    const live = current.messages.filter(item => !(state.context.historyIds || []).includes(item.id));
+    const validation = live.length === 0 ? flowBaselineValidation(current) : {
+      exactOneNovaMessage: live.length === 1 && live[0].text === "UI-POLL-JANK-001 live message"
+        && Q.text(live[0].senderAvatar && live[0].senderAvatar.id) === NOVA_ID,
+      historyRetained: current.messages.length === 19,
+      twoGroupCopies: current.chats.length === 2 && current.chats.every(item => item.lastMessage === "UI-POLL-JANK-001 live message"),
+      acceptedMembersRetained: sameNormalizedSnapshot(current.members, state.baseline.members)
+    };
+    Q.printObject({ scenario: SCENARIO, checkpoint: CHECKPOINT,
+      phase: live.length ? "message-observed" : "fixture-ready", groupChatId: state.context.groupChatId,
+      groupTitle: "QA UI-POLL-JANK-001 Group", historyCount: current.messages.length,
+      ownedOutboxCount: current.outbox.length, ownedInboxCount: current.notifications.length,
+      unreadByActor: current.chats.map(chat => ({ userId: chat.ownerUserId, unread: chat.unread })), validation });
+    if (!Object.values(validation).every(Boolean)) Q.fail("UI-POLL-JANK-001 fixture oracle failed.");
+  }
+
   Q.assertDeploymentSafety();
   assertCheckpoint();
-  if (COMMAND === "prepare-actions-read-race-retest") prepareActionsReadRaceRetest();
+  if (IS_POLL && COMMAND === "session-status") pollSessionStatus();
+  else if (IS_POLL && COMMAND === "status") pollStatus();
+  else if (COMMAND === "prepare-actions-read-race-retest") prepareActionsReadRaceRetest();
   else if (COMMAND === "repair-content-share-sources") repairContentShareSources();
   else if (COMMAND === "stage") (CHECKPOINT === LIST_CHECKPOINT ? listStage : flowStage)();
   else if (COMMAND === "status") (

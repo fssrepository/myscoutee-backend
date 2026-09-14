@@ -7469,6 +7469,11 @@ publication evidence.
 
 ### `OPERATOR-CONFIGURATION-LIFECYCLE-001` — configuration workspace
 
+Stable click guide and shared-coverage map:
+[`OPERATOR-CONFIGURATION-LIFECYCLE-001.md`](../checklists/operator/OPERATOR-CONFIGURATION-LIFECYCLE-001.md).
+Checkpoints C01–C08 belong to this one matrix row. C05–C07 share evidence with
+the active WebView/Push journey; C02–C04 and final restoration remain required.
+
 - Open Configuration once and use one reversible happy-path value in the
   public configuration, TLS, payment and Firebase blocks.
 - After each Save/Test action, reopen the same block and compare the normalized
@@ -7479,6 +7484,51 @@ publication evidence.
 - Invalid-input, callback-security, secret-leak, TLS-worker failure and other
   fault-injection branches belong to automated regression coverage. Checkout and real-device push
   effects stay in Event/Asset and Notifications.
+
+#### Shared Firebase revision and entry repairs — 2026-09-14
+
+User clarified that Firebase-related Operator Save/save-reopen remains in the
+WebView run. Operator restore and other configuration workflows are deferred
+to the separate Operator journey; retained fixture cleanup is not a restore-test
+PASS.
+
+User subsequently parked the broader Operator journey. Retain this partial
+evidence and the guide as a draft; continue only the WebView-specific Firebase
+branches with active revision 1. Public configuration, TLS and payment are not
+next actions in the current run. Phone candidate lifecycle-26
+(`mobile-webview-lifecycle-1789413268062`) is now served, retaining its existing
+cache and original build snapshots. Updated-device replay is not yet proven.
+
+- Current read-only `status operator-domain OPERATOR-FIREBASE-001` confirms
+  revision 1 active, Authentication tested revision 1, Messaging tested revision
+  1, both private credential envelopes present and all public client fields
+  present. The original deployment snapshot remains retained.
+- Earlier in this shared run, configuration save and Authentication capability
+  testing used the real Operator API. Desktop Message Test used the normal UI;
+  the user confirmed the native notification Allow action. These facts do not
+  substitute for an unobserved manual save/reopen or consumer registration.
+- C05/C06 are partial shared evidence, not closure of the Operator parent.
+  Fresh Firebase registration/repeat identity, C02 public configuration, C03 TLS,
+  C04 payment and C08 exact restoration still require their own evidence.
+- The phone's reported Paris layout defect was inspected read-only: CSS viewport
+  360px; unavailable button width 201.59px, label width 151.69px and height
+  29.02px (two lines), icon width 14.95px. The current source shortens the label
+  to localized “Unavailable here”, prevents icon shrink and reduces its gap.
+- Entry had no browser online/offline listeners. The repair updates the gate
+  on both events, invalidates pre-disconnection eligibility/content requests,
+  and retries the ordinary entry/Firebase/location path on reconnect. Browser
+  connection transitions remain distinct from a backend-only outage.
+- Focused regression cases cover repeated transitions and a late eligibility
+  response after disconnection. They are added but not executed: the current
+  Angular test command would start an additional compilation path during the
+  owned dev watcher. Do not record them as PASS.
+- The existing frontend watcher compiled the repair successfully at
+  19:09:49.421Z. The English/Hungarian .102 bundles and all three generated
+  Mongo seeds pass `audit-i18n-mongo-seed.js`. Actual updated-phone layout and
+  native event recovery remain pending on the new candidate; no page APIs,
+  browser state or production test parameters were replaced to prove them.
+- Stable C01–C08 actions and the cross-guide coverage table are in the linked
+  Operator checklist. Keep detailed outcomes here and the parent row partial.
 
 ### `OPERATOR-REGISTRY-LIFECYCLE-001` — registry and community
 
@@ -8068,6 +8118,290 @@ evidence and status.
   verdict, not a claim that one post-reset document still contains every
   historical transition.
 
+## Mobile WebView physical-device execution — 2026-09-14
+
+`MOBILE-WEBVIEW-LIFECYCLE-001`: **PARTIAL / OPEN**, executed through explicitly
+user-delegated ADB/CDP on Android 14, local Chrome-installed PWA. Evidence is
+retained locally at `~/.local/share/myscoutee-qa-evidence/MOBILE-WEBVIEW-LIFECYCLE-001/2026-09-14/`.
+
+- Old `4be4a1c596e2-20260905140310` automatically upgraded to
+  `mobile-webview-20260914-icon-fix`; candidate fonts loaded, no failed
+  resource requests observed. Closure used force-stop of the owned WebAPK,
+  not Chrome. No app-data clear or reinstall was used in the measured journey.
+- Preparation initially mixed an unstamped dev page with the old production
+  route: font URLs returned HTML. Activating the installed old worker and
+  loading its coherent shell resolved this; screenshots retained. Candidate
+  Preview badge is hidden offline too. The reported No network header wrap
+  was not reproduced on the candidate.
+- Riley and Nova each displayed their own controlled Ticket/QR. Ordinary Riley
+  logout hid identity and revoked the client session; Nova Notifications was
+  empty, with no Riley rows. **User-scope purge failed:** Riley offline Ticket
+  and profile entries remained in localStorage after logout.
+- Chrome background/resume retained the same page and open Notifications;
+  its single mutation appeared once, counter 2 -> 3, stable after reopening.
+  Settings return recreated the page; the launcher return path confounds the
+  resident observation. Its row and counter were correct after reopening,
+  but retained-open-list reconciliation is not proven.
+- Source-link Paste produced the exact fixture URL after native clipboard
+  permission. The final clipboard fixture used `clipboard.writeText` because
+  Android key-combination copy did not replace the clipboard. Editor width
+  stayed 360 CSS px and Cancel saved nothing. The floating notification
+  trigger covered Remove link at one scroll position; record as a layout
+  finding, without inventing a visibility-policy change.
+- Removing ADB reverse alone retained an existing HTTP socket. Reconnecting
+  the device transport closed it; a unique health request then failed. Nova
+  cached Ticket/QR remained usable offline and after transport restoration.
+  Uncached Game showed No matching profiles instead of explicit unavailable.
+  Native Chrome SIGTRAP occurred during inspection (local crash log retained);
+  cold-start opened Entry, with explicit `/game` navigation needed for the
+  cached-ticket observation. Do not count this as seamless offline cold-start.
+- Checklist gaps: candidate has no standalone Location side-menu entry;
+  managed images use public `/media/public`, so authenticated-image isolation
+  was not proven. FCM remains unconfigured and was not exercised here.
+
+The fixture was corrected to include holder-owned participation records, not
+only ticket credentials, and its status now checks both. The device login
+helper now uses the canonical demo-active-user storage key. Offline local-demo
+switching was initially investigated only; the later authorized development
+trial below implements a narrow opt-in route.
+
+### Opt-in demo fallback trial — 2026-09-14
+
+The user authorized a small implementation and delegated its phone execution.
+The final agreed behavior keeps an offline local demo session on reconnect:
+only connectivity indicators change. A later explicit reload/reopen prefers
+HTTP. A real HTTP session never switches to seed data or reloads on reconnect.
+`?qaOfflineDemo=1` enables the localhost/dev trial for 50 canonical demo members;
+Firebase, operator, support and synthetic QA actors are excluded.
+
+- **PASS, physical phone:** API-only outage moved idle HTTP Anna to local `u1`.
+  Canonical identity mapping was checked for all 50 members. The HTTP session
+  remained separate from `myscoutee_demo_db`; name/city matched, while seeded
+  counters differed. A local About marker survived save/reopen and another
+  outage; the cancelled draft did not. A read-only Mongo oracle confirmed
+  neither marker reached the server user. Earlier automatic live-return
+  behavior was superseded by the user's no-reload rule.
+- **PASS, final local reconnect rule:** restoring API connectivity left the
+  local pair and time origin `1789379125506.1` unchanged beyond the next
+  health-check interval, including idle. The zero-count floating offline icon
+  disappeared online without reloading the local page.
+- **PASS, physical phone, HTTP control with trial disabled:** blocking only
+  `/api/*` made the floating and menu icons `cloud_off` while the phone still
+  reported online. Existing long-poll failed, then succeeded after transport
+  restoration; icons recovered without reload or identity change. Time origin
+  stayed `1789378928446.2`; successful poll transfer sizes changed from 1373
+  to 1371 bytes around the blocked request. No manual refresh or health call
+  was used to clear the live indicator.
+- **PASS, physical phone:** CDP target network emulation produced
+  `navigator.onLine === false` and the same offline icons. The notification
+  list still opened; its mute toggle showed `cloud_off` and was disabled.
+  Reconnect restored `notifications_active` and enabled the toggle with the
+  previous unmuted state, in the same page (`1789378928446.2`). This is target
+  network emulation, not a radio/airplane-mode or offline cold-start test.
+- **PASS, physical phone:** the offline floating control appeared when its
+  unread count was zero, opened Notifications, moved by `(-90, -100)` CSS px,
+  and was dragged into the existing dismiss target. It stayed dismissed during
+  that outage. The initial screenshot used a small cloud marker; the final
+  requested design replaces the bell glyph with `cloud_off` on all three
+  controls, using one shared dark blue-grey offline palette; normal
+  bell/muted-bell meaning and colors return online. The final single-cloud
+  glyph was also moved/dismissed at zero unread (`1789379125506.1`).
+  Final screenshot `offline-icons-grey-final.png` confirms both menu/floating
+  backgrounds are exactly `#64748b -> #475569`, with white icons, distinct
+  from adjacent menu buttons. Watcher build: `2026-09-14T09:50:03.791Z`.
+- **PASS, compiled-code checks:** opt-in/production/Firebase/operator/support/
+  unmapped-identity gates, transport versus auth/business status, independent
+  session storage, prior local-session restoration, editor/in-flight-write
+  guards, reconnect without reload, cold-start flag persistence, logout loop
+  prevention and account re-pairing. `check-demo-failover.mjs` consumes the
+  existing watcher's output; no second compiler/test server was started.
+- Two early transport attempts lost their Chrome/CDP target before the
+  reconnect oracle and were excluded. Later runs retained a single transport
+  attachment with stdin `online`/`offline` controls. The notification permission
+  sheet on the QA PWA was accepted during the delegated run.
+
+Cleanup completed: API/network emulation stopped, trial flag and pair removed,
+ordinary HTTP logout completed, and the common harness restored Anna's pre-launch
+server-session snapshot before resetting the fixture. Phone is online at Entry;
+local demo data remains in its separate database.
+
+This does not prove a full internet-offline cold start or availability of all
+external portraits/assets. Local changes never synchronize to HTTP. FCM remains
+unconfigured, and the original Mobile WebView findings/overall PARTIAL status
+remain open. Evidence is in the same local directory as the physical run above.
+
+### Mobile cache/media continuation and relationship analysis — 2026-09-14
+
+Overall **PARTIAL / OPEN**. The full `mobile-webview` fixture remains staged;
+common session restoration and the temporary nginx route still require cleanup.
+
+- Riley's ordinary logout removed own profile/Ticket storage and private runtime
+  cache entries; public demo images remained. Nova's subsequent login showed
+  only Nova's controlled ticket. This is demo-session cache evidence.
+- On retained `lifecycle-3` build `mobile-webview-lifecycle-1789383083341`, a real
+  transport-disconnected cold start at `/game` displayed a loaded cached avatar.
+  Its enabled button opened Nova's saved Ticket and rendered its QR (1024 px).
+  Restoring the recorded ADB reverse removed both offline indicators with the
+  same page time origin `1789383192275`. No page reload was required.
+- `verify-media-boundary mobile-webview MOBILE-WEBVIEW-LIFECYCLE-001` through the
+  existing Docker fixture harness passed public image bytes/cache, anonymous,
+  invalid-cookie and spoofed-demo private rejection, legacy public-to-private
+  routing and public-prefix traversal rejection. The standalone Java QA client
+  and its compiler launcher were removed at the user's request. Real Firebase
+  image success/revocation and fine-grained visibility remain **NOT PROVEN**.
+- User clarified that friendship comes from participation when an event expires.
+  Code inspection finds expiry due at event end; the extra two hours belongs to
+  feedback unlock. Existing Friends only checks instead hash user IDs; Asset
+  Explore loads all users for this decision. This cannot prove the clarified
+  rule. `userAffinityEdges` is rating evidence, not an interchangeable friendship
+  source. No change to its scoring is justified by this finding.
+- Member surface analysis: Event Members carries live role/status, invitation,
+  check-in, organizer-only state, avatar/profile and scoped involvements. Its
+  DTO mapper performs one user lookup per member; its revision currently tracks
+  membership timestamps only. Participation popup reuses received involvements
+  without another request. Chat Members already batches profiles per page;
+  Contacts list already reads an embedded document. A completed-event friendship
+  snapshot cannot replace pending/live management state. Any embedded avatar URL
+  must follow profile writes and advance the member read revision.
+- At the user's request, unfinished friendship model/wiring was removed pending
+  this screen/contract analysis; runtime `userFriendships` row count was zero.
+  Existing member/affinity functions were restored. Backend watcher compilation
+  and restart succeeded; no separate application build or test server ran.
+
+- Subsequent environment isolation correction: shared `spring.conf` restored;
+  dev nginx renders a writable container-local copy from read-only templates.
+  QA build/state files moved outside the web root to `server/docker/.qa-mobile-runtime`;
+  only dev mounts them. The launcher rejects production/E2E and shared config
+  mounts before mutation. Production packaging excludes manual QA fixtures and
+  dev watcher/launcher scripts; both Docker build contexts exclude QA state.
+  `node packaging/tests/mobile-qa-isolation-test.mjs` passed seven runtime-gate
+  cases plus production source/context/package-selection checks. Dev `nginx -t`,
+  route restore/reactivation and HTTP build identity checks passed. No production
+  image/package was built or release-qualified by these checks.
+
+- Performance continuation: Event Members now batches live profiles; home network
+  reads consume minimal stored `userFriendships` pairs. Event-pair generation is
+  owned by the expiry job, and indexes are initialized in both session databases.
+  Affinity scoring and activity-rating reads are unchanged. The watcher compiled
+  and restarted successfully. Seventeen focused tests passed (home graph 4,
+  member reads 3, expiry 7, friendship projection 3). Broader test compilation
+  encountered 67 errors; the three selected suites subsequently ran 120 tests
+  with six failures, one corrected batch-stub mismatch and five failures outside
+  the selected paths. This is not a whole-suite PASS.
+- Replayable read-only timing: `profile-batch-timing mobile-webview
+  MOBILE-WEBVIEW-LIFECYCLE-001` in the existing Docker harness compares identical
+  full Mongo documents, warm cache, 20 alternating-order rounds. For 10 profiles:
+  10 individual reads median 10.803 ms versus one batch 1.783 ms (6.06×); for 50:
+  31.630 versus 3.027 ms (10.45×). This measures Mongo reads from mongosh, not Java
+  mapper, transport, rendering, or total page latency.
+- Phone home HTTP medians, before→after (expired application cache / warm cache):
+  single 58.0→73.5 / 45.3→39.2 ms; friends-in-common 73.6→67.0 / 40.1→32.7;
+  separated-friends 77.3→52.2 / 41.3→34.3; outside-network 73.3→68.8 / 41.3→38.6.
+  Three cold and nine warm requests per mode. **Not a valid speedup claim:**
+  the current demo's events are future events, so the corrected completed-event
+  rule changes candidate totals (29→30, 1→0, 0→0, 231→496 respectively).
+  Persistent completed-event/retry fixture proof and comparable populated-graph
+  performance remain pending. JSON and focused-test output are retained in the
+  local 2026-09-14 Mobile WebView evidence directory.
+
+Further continuation (same checkpoint, still **PARTIAL / OPEN**):
+
+- Actual HTTP testing exposed an unenforced `@RequiresPolicy` advisor. A Spring
+  method-security registration test reproduced the bypass; marking the advisor
+  as infrastructure fixed registration. Seventeen focused unit tests passed.
+- One opt-in `MediaFriendshipQualificationTest` passed against the existing dev
+  Mongo/MinIO/nginx/API. Its disposable namespace was removed in `finally`.
+  It proved event-end-only accepted/non-organizer friendship, atomic pair upsert,
+  retry idempotence, retained first-event and updated last-event metadata,
+  profile/asset/event/chat visibility, friendship/chat-membership revocation,
+  session revocation, public demo bytes and private `no-store` responses.
+  This fixture issues its own valid media-session cookie; it does **not** prove
+  external Firebase sign-in. Pair writes are atomic; this standalone Mongo
+  does not provide an event-wide multi-document transaction.
+- HTTP Asset/Event list filtering now uses one request-scoped indexed friendship
+  adjacency read. A 100-candidate regression test verifies one read and fresh
+  decisions on the next request. Direct private image checks retain their own
+  current resource/session guard. Frontend-local deterministic friendship remains
+  separate; the HTTP proof cannot be claimed for that adapter.
+- Settings resident return passed on `lifecycle-4`, same page time origin
+  `1789388858798.2`, retained open New list and Riley identity, exact count 2→3,
+  one new `background-settings-resident` row. The earlier launcher-based replay
+  reopened the WebAPK; its owned mutation was reset before the resident replay.
+  Returning with Android Back from Settings preserved the existing page.
+- On Nova's already-loaded page, disconnected QA transport left Privacy v1
+  enabled/readable after close/reopen; reconnect retained time origin
+  `1789386434642.6`. This proves resident cached content, not persistent policy
+  content after a disconnected cold start.
+- Clipboard permission was overridden only for the QA origin while its CDP
+  connection stayed attached. Denied Paste showed Hungarian inline guidance;
+  detaching restored the original grant, and a fresh tap pasted the exact
+  fixture URL with no alert, reload or horizontal overflow. The editor was
+  cancelled. The native prompt itself was not repeated by this override test.
+  EN/HU offline and clipboard messages now match all three Mongo seed profiles.
+- Notification-title overlap was reproduced on the phone: title right edge
+  262.3 px crossed the timestamp's left edge 222.4 px. A mobile-only title-row
+  reserve restores ellipsis; subtitle/detail rectangles and card heights remain
+  identical. The `Tag` subtitle is retained. Built snapshot validation follows.
+
+The remaining oracles are real Firebase entry/location, physical authenticated
+image/logout/cache and final fixture/route cleanup. Dev currently opens the demo
+selector; this is not the protected entry flow. The user supplied Firebase
+client/VAPID settings and an Admin SDK file outside git; its permitted dev/prod
+use is being clarified. No credential was imported or activated. Evidence is in
+`2026-09-14` local Mobile WebView evidence files, including the qualification
+summary, Settings resident before/after, clipboard denied/retry and offline
+policy result. The unrelated shared install-prompt UX fix is queued after full
+checkpoint closure as requested.
+
+
+Shared setup continuation, 2026-09-14 (same checkpoint, **PARTIAL / OPEN**):
+
+- The user's subsequent desktop/physical-phone delegation brought the shared
+  install/permission correction into this run. It uses the existing Popup header
+  and X, with a compact body: permissions first, optional installation second,
+  short EN/HU copy, equal-width original sliding switches, and separate
+  right-aligned Update/Install actions. Fixed blue location and notification
+  violet rows are independent from each switch's permission-status palette.
+- Required location controls Firebase entry. Notification selection is optional
+  and remains editable both ways; after login the popup locks location. Update
+  performs native decisions before background work. X/rejection never approves
+  entry. Device push opt-out persists and unregisters separately from bell mute;
+  background auto-registration observes it. The bell keeps its direct native
+  request path and native-wait/background-ring phases.
+- Managed Casey desktop plus physical Riley PWA were exercised. The versioned
+  `check-entry-prompts.browser.js` runs the actual compiled store prototypes with
+  deferred native/provider doubles: native sequence, required-location rejection,
+  X/reopen and late-result cancellation, optional notification rejection,
+  signed-in device update, bell deduplication/account switch, persisted device
+  opt-out/strict unregister and startup-registration guard. These are controlled
+  contracts, **not real permission prompts or FCM delivery evidence**.
+- Native desktop installability exposed a blob-manifest relative `start_url`
+  error. Deriving absolute scope/start URL from the document base removed
+  `start-url-not-valid`; Chrome returned no installability errors. The native
+  install event is consumed once; dismissal retains a still-unused event for
+  reopening, and installation is reoffered once after first login.
+- Only the existing frontend-sync watcher compiled. The dev i18n importer had
+  cached a new revision with old/empty messages during collection replacement.
+  Avoiding unchanged generator writes and republishing the bundle revision after
+  message import restored the live EN/HU bundles (revision .100, 3410 per language).
+  This does not claim a general fix for the dev import ordering race.
+- Final layout on `lifecycle-16` (`mobile-webview-lifecycle-1789393814593`):
+  physical PWA viewport 360 px/panel 341 px; full desktop viewport 1850 px/panel
+  340 px. Both switch rows measured 224 px on both devices, no horizontal
+  overflow, Update aligned to the block's right edge. Actual UI clicks changed
+  notifications both ways and restored the starting selection; location stayed
+  disabled. Common content-sized action configuration keeps phone Update at
+  97.74 px and Explore at 161.18 px in a 342.42 px block. The shared dim backdrop
+  retains the page behind a 3 px blur. Common X closed and the existing install offer reopened on desktop.
+  Seven compiled contract groups passed on both devices. Final screenshots and
+  `shared-setup-results.json` are in the existing local evidence directory.
+- Current Firebase runtime/provider activation remains unproven. No private key
+  was imported, logged or committed; production Firebase settings were untouched.
+  The earlier credential-scope question was answered, then dev/prod separation
+  was requested. Continue with the existing Operator encrypted test/activation
+  workflow and exact public VAPID; do not infer real push from the mocked checks.
+  Fixture/actor snapshots and the isolated dev phone route remain staged.
+
 ## Execution and evidence rules
 
 **KÖTELEZŐ QA-SZABÁLY: CODEX SOHA TÖBBÉ NEM ELLENŐRZI A FRONTENDET. A FRONTEND KÉZI, VIZUÁLIS ÉS INTERAKCIÓS ELLENŐRZÉSÉT KIZÁRÓLAG A FELHASZNÁLÓ VÉGZI. CODEX KIZÁRÓLAG A FELHASZNÁLÓI LÉPÉS UTÁNI BACKEND/API/PERZISZTÁLT ORACLE-T VALIDÁLJA.**
@@ -8095,3 +8429,613 @@ evidence and status.
    missing delta.
 7. Reset every staged identity, scheduler timing change and provider
    configuration after evidence is captured.
+
+### Mobile WebView correction and rerun — 2026-09-14 16:14
+
+#### Paired continuation and measured logout delay — 2026-09-14
+
+- Recovered the missing phone USB reverse route (`8080 -> 80`) after the
+  reported network interruption. The retained mobile-webview fixture was
+  checked without restaging. The user explicitly delegated normal desktop
+  and physical-phone actions again; no window resize or application test
+  override was used.
+- Desktop Casey: privacy Cancel left `/entry` without a session; Login
+  reopened privacy. After acceptance, the next Login opened the ordinary
+  demo selector and Casey entered `/game`. This is demo login evidence,
+  not Firebase or revised-consent fixture coverage.
+- Desktop shared setup: centered 340px popup at the unchanged 1136x763
+  viewport; both switches measured 224px. Location was selected and disabled
+  for the signed-in user. Notifications could be selected and deselected;
+  native permission remained `default` before submission. Submitting the
+  deselected notification preference closed the popup. Screenshot:
+  `/tmp/myscoutee-desktop-permissions-resume.png`. Native permission decisions
+  and device registration are not proven by this observation.
+- Phone Riley: the controlled QR loaded at 1024px natural width, remained
+  available after closing/reopening during external page-and-worker network
+  emulation, and had no horizontal overflow. Restoration returned ticket
+  sync to HTTP 200 and removed the notification offline indicator. This
+  Riley control does not replace the checklist's Nova account-isolation
+  offline branch. The shaping process restored transport and exited.
+- A normal Nova logout reproduced the reported loading delay: HTTP success
+  took 26ms, session storage was already cleared by the 527ms sample, but
+  entry with the Login button was first observed at 8133ms. Actual ADB
+  screenshots were started at 500, 1500 and 3200ms; transfer completed later,
+  so these labels are capture-start times, not exact image frame timestamps.
+  Evidence: `/tmp/myscoutee-logout-before.json` and
+  `/tmp/myscoutee-logout-500ms.png`, `/tmp/myscoutee-logout-3200ms.png`.
+- The bottleneck was reproduced independently with read-only Cache Storage
+  enumeration: 7651ms total, including 3726ms for 1028 old app-cache requests
+  and 3632ms for 1026 current app-cache requests. Logout was scanning static
+  build caches despite only deleting private API/media entries.
+- Product fix: `OfflineCacheService.clearUser` now enumerates only the
+  existing runtime API/media cache families. The private-entry deletion
+  predicate and synchronous user revocation remain unchanged. The existing
+  frontend watcher compiled successfully at 16:39:19 UTC; no second build
+  process was started. Physical candidate `lifecycle-22`, build
+  `mobile-webview-lifecycle-1789403969808`, activated through normal cold
+  reopening with retained cache/data. Its corrected chunk was observed loaded.
+- Same-phone Nova retest: entry appeared at 971ms and the Login button at
+  1121ms; first logout HTTP success took 16ms. Nova private cache keys and
+  session storage were absent afterward; current and previous app caches
+  remained. Evidence: `/tmp/myscoutee-logout-after-measurement.json` and
+  `/tmp/myscoutee-logout-after-1500ms.png`. This is one before/after observation,
+  not a latency percentile. A separate redundant logout request still
+  returns 401: the side-menu submits logout before `SessionService.logout`
+  invokes the session registry again. It was not the multi-second bottleneck
+  and is not repaired by this cache change.
+- Desktop retest after ordinary reload loaded the corrected chunk and
+  completed Casey's confirmed logout to visible Login in 266ms; first HTTP
+  logout took 15ms. Viewport remained 1136x763. Evidence:
+  `/tmp/myscoutee-desktop-logout-after.json`. The duplicate registry request
+  remains observable here as well (401 in 8ms).
+
+The full checklist remains PARTIAL/OPEN, including Firebase activation,
+native permission decisions, fresh background variants and complete
+Riley/Nova private-media isolation. No prior PASS replaces those observations.
+
+#### Ticket organizer avatar defect — 2026-09-14
+
+- Reported on the physical phone: the Nova Ticket showed `QM`, derived from
+  its event title, instead of the organizer avatar. Read-only inspection of
+  the active lifecycle-22 card confirmed the monogram. Evidence:
+  `/tmp/myscoutee-ticket-avatar-current.png`.
+- Root cause: the Ticket DTO and converter omitted the organizer image. The
+  server now resolves distinct organizer IDs in one existing user-summary
+  batch; the local repository passes its existing in-memory users to the
+  mapper. Both paths provide `creatorName` and `creatorAvatarUrl`. The shared
+  card receives the image and uses the organizer name for the monogram
+  fallback. The ticket revision includes both fields so synchronization can
+  update an existing card. No fixture-specific production branch was added.
+- Existing frontend watcher compilation passed at 16:55:56 UTC; the backend
+  continuous compiler reported `BUILD SUCCESSFUL` and restarted the app.
+  Direct Vitest run of `asset-ticket-info-card.converter.spec.ts` with
+  `--globals --maxWorkers=1`: **4/4 passed**, including image/fallback cases.
+  Both worktree `git diff --check` checks passed.
+- An authenticated read-only GET of `/api/assets/tickets`, using the phone's
+  existing Nova session, returned HTTP 200 and organizer `Casey Bridge` with
+  `/media/public?key=images/demo-profiles/650000000000000000000061/photo-01/large.webp`.
+  Sanitized evidence: `/tmp/myscoutee-ticket-avatar-response.json`.
+- Backend regression test added for batched organizer lookup and an avatar
+  change appearing in ticket synchronization. Its attempted command was
+  `docker exec myscoutee ./gradlew :projects:profile:test --tests
+  'com.raxim.myscoutee.profile.service.AssetsServiceTest.ticketSync*'
+  -x :projects:profile:compileJava -x :projects:profile:processResources
+  --max-workers=1`. The test did **not run**: test-source compilation failed
+  with 76 existing errors outside this patch, including outdated
+  `OwnerMembersSnapshot` constructors, a missing `Instant` import and removed
+  `NotificationIntent.notificationType()` references. No application compiler
+  was duplicated. Only the additional idle daemon created by this test attempt
+  was stopped; the existing dev owners remain running.
+- Retained watcher-output snapshot `lifecycle-23`, build
+  `mobile-webview-lifecycle-1789405049656`, is served through the existing
+  phone-only fixture route. The phone still had lifecycle-22 loaded when last
+  inspected. **Visual retest on the new build is pending**; no browser clicks,
+  navigation or app-state mutation were performed for this defect diagnosis.
+  The overall WebView checkpoint remains **PARTIAL / OPEN**.
+
+#### Candidate 23 paired cache continuation — 2026-09-14
+
+- User reauthorized ordinary desktop and physical-phone actions after the
+  explicit browser-boundary question. No application state was injected.
+- Phone retained lifecycle-22 during candidate-23 worker installation. Once
+  the worker reached `installed`/waiting, normal app cold reopen activated
+  `mobile-webview-lifecycle-1789405049656`. No app data or caches were cleared.
+- Physical Nova and desktop Riley each opened their own Ticket normally.
+  Both organizer avatar images loaded successfully through the shared image
+  renderer. Phone screenshot: `/tmp/myscoutee-ticket-avatar-phone-fixed.png`.
+  Desktop retained viewport **1136 x 763**.
+- Both normal QR actions showed their respective owners. Candidate-23 phone
+  Nova QR was warmed, then external `network-offline` shaped the page and its
+  service worker. Closing/reopening the QR through actual phone taps returned
+  the loaded 1024-pixel QR and retained avatar. No Riley Ticket appeared and
+  no Riley-scoped offline storage keys remained. No horizontal page overflow.
+  Evidence: `/tmp/myscoutee-lifecycle23-nova-offline-qr.png`.
+- Transport restored through `online`, then `stop`; helper confirmed page and
+  worker restoration. Phone radios/tethering unchanged. Nova logged out
+  normally. Desktop Riley opened New notifications at the one-row baseline.
+  Background mutation variants remain to be executed; the full checkpoint
+  is still **PARTIAL / OPEN**.
+
+#### Candidate 23 background observations — 2026-09-14
+
+- Baseline after normal phone Riley login: **2 unread** on both phone and
+  desktop (the retained fixture baseline plus the real new-device login
+  security notification). The extra login row was not a fixture mutation.
+- The first Settings attempt was reset with the versioned
+  `reset-background-settings-resident` command because hidden-page state had
+  not been confirmed before its mutation. It is not counted as evidence.
+- Repeated Settings setup confirmed Android Settings foreground and PWA
+  `visibilityState=hidden`, time origin `1789406030472.8`, with 2 rows.
+  One versioned `background-settings-resident` mutation was applied. Returning
+  by actual Recents tile tap recreated the document (new time origin
+  `1789406104714.8`, navigation `back_forward`). Riley identity remained;
+  reopening Notifications returned 3 rows. Desktop reconciled the same 3.
+  This is recreated-document recovery evidence, **not resident-list PASS**.
+- Chrome branch: external Chrome displayed `https://example.com/`, with PWA
+  confirmed hidden at time origin `1789406104714.8`. One `background-chrome`
+  mutation was applied. Actual Recents tile return retained the same document
+  time origin and already-open Notifications; 3 became **4**, with exactly one
+  `QA Mobile background-chrome` row. Desktop independently showed the same 4.
+  Screenshots: `/tmp/myscoutee-recents-chrome.png` and
+  `/tmp/myscoutee-chrome-resume-immediate.png`.
+- A second Settings branch used the separate versioned `background-settings`
+  mutation after confirmed hidden state at time origin `1789406104714.8` and
+  a four-row baseline. Actual Recents return again reconstructed the document
+  (`1789406293653.3`, navigation `back_forward`, `document.wasDiscarded=false`)
+  and closed the previously open list. Identity persisted; normal reopening
+  reconciled five notifications, matching the desktop. Android's
+  `always_finish_activities` setting was read as `0`; it was not changed.
+  Resident Settings retention is **not proven** and the reconstruction cause
+  is under diagnosis. Do not label this as an application-triggered reload
+  or an Android memory kill without evidence.
+- No app data was cleared and no application lifecycle methods were invoked
+  by a test hook. Screenshot: `/tmp/myscoutee-settings-resident-restored.png`.
+  All three fixture mutation variants are now retained; do not reapply them.
+
+#### Settings restore returned an obsolete document — diagnosis in progress
+
+- After the Settings/Recents path, Nova's normal login displayed an empty
+  notification list and no Riley rows. Two Riley offline keys remained:
+  its user snapshot and upcoming Ticket snapshot. Do not count this storage
+  boundary as PASS.
+- Subsequent read-only inspection identified the actual document as old build
+  `4be4a1c596e2-20260905140310`, loading `main-57AMUGJO.js` and
+  `chunk-SC5LCGOC.js`; these files belong to retained `old`, not candidate 23.
+  The new worker caches still contained candidate-22/23 index documents with
+  `main.js`. A normal read of `/index.html` returned candidate 23. Therefore
+  the retained-key observation is not evidence that the current cache-clear
+  implementation failed. No speculative cache-clear change was made.
+- The old restored document had time origin `1789406404238.6` and the target
+  had changed to `31743`. The earlier new-build/avatar screenshots remain
+  valid for the point before this restoration; build metadata must be captured
+  together with script URLs at each resume boundary.
+- The phone then moved to a non-QA application and Chrome stopped; USB device
+  and both ADB mappings remained healthy. Do not inspect that other app or
+  overwrite its state. Desktop QA continues independently. The obsolete
+  document restoration cause and the complete WebView result remain open.
+
+#### Current-build cache retest — 2026-09-14 17:34–17:43 UTC
+
+- The user returned the phone to the QA PWA. The actual standalone document
+  was candidate 23 (`mobile-webview-lifecycle-1789405049656`, `main.js`).
+  A read-only browser-level observer recorded Settings/Recents returning a
+  navigation served by the service worker (HTTP 200, `fromServiceWorker=true`).
+  The resulting document retained candidate 23; time origin changed from
+  `1789406956856.3` to `1789407290248.4`. This is a recreated-document result,
+  not proof of resident resume. The earlier obsolete-document cause remains
+  unconfirmed; no application workaround was added.
+- Normal Nova logout, Riley login, Riley Ticket/QR open and Riley logout on
+  candidate 23 removed both previously retained Riley offline keys. Both
+  static app generations remained. Normal Nova login then displayed only
+  Nova's controlled Ticket and loaded QR; Riley offline keys remained absent.
+  The desktop Riley notification count changed from five to six after the
+  real second-device login. This was not an extra background-fixture mutation.
+- Closing/reopening the QA WebAPK produced a new document time origin
+  `1789407529122.2`, the same candidate build, Nova identity and no Riley keys.
+  With the versioned page/worker network fixture offline, Nova's QR reopened
+  at 1024 pixels with the avatar loaded and no horizontal overflow. Nova's
+  Notifications remained empty; its mute control was disabled with the
+  offline icon. Restoring transport retained the same document, empty list
+  and absent Riley keys; notification controls returned online. The shaping
+  process and passive observer were stopped. Phone radios/data were untouched.
+- Evidence: `/tmp/myscoutee-phone-cache-observer.jsonl`,
+  `/tmp/myscoutee-riley-current-logout-cache.json`,
+  `/tmp/myscoutee-nova-current-isolation.json`,
+  `/tmp/myscoutee-nova-current-isolation.png`,
+  `/tmp/myscoutee-nova-offline-current.png` and
+  `/tmp/myscoutee-nova-offline-notifications.png`.
+- Desktop Transport Source: typed the exact controlled URL, selected/copied
+  it using normal keyboard input, cleared the field and pressed Paste link.
+  The native permission was denied. The field remained empty; retry remained
+  available and showed browser-site-settings guidance. Successful allowed
+  paste is pending. The user requested shorter guidance; both language bundles
+  and generated Mongo seeds now use one short sentence. i18n seed audit passed;
+  the existing frontend watcher and Mongo seed watcher applied the change.
+- Full checkpoint stays PARTIAL/OPEN. This retest proves current account cache
+  cleanup and the above warm-cache recovery; Firebase login, authenticated
+  private-image access/revocation, complete entry regression and frontend-local
+  fallback still require their own evidence.
+
+#### Clipboard continuation and candidate 24 — 2026-09-14
+
+- Candidate 24 is a stamped snapshot of the existing watcher output, build
+  `mobile-webview-lifecycle-1789407847999`. No second compiler ran. After
+  installation completed, closing/reopening Chrome and the local QA WebAPK
+  activated candidate 24 without clearing application data.
+- Desktop ordinary reload and reopening the controlled Transport editor showed
+  the shortened denial guidance: "Allow clipboard access in site settings,
+  then retry." Native clipboard permission remains denied; an allowed desktop
+  Paste result is still pending the site-setting change. No Asset was saved.
+- On physical Android, the complete exact fixture URL was selected
+  (`selectionStart=0`, `selectionEnd=44`) and copied with Android's native
+  text-selection Copy menu. After clearing the field with ordinary keyboard
+  input and closing the keyboard, Paste link inserted exactly
+  `https://example.com/qa/mobile-webview-source`. Existing clipboard permission
+  was already granted: no new Allow dialog appeared. The early keyboard-open
+  coordinate attempt was discarded and its unsaved stray character cleared;
+  it is not evidence of clipboard behavior.
+- A versioned external browser permission override to denied preserved the
+  existing URL and showed the short Hungarian guidance without horizontal
+  overflow; a fresh Paste click remained retryable. Removing the override
+  restored the native granted setting; Paste succeeded and cleared the error.
+  The fixture helper now explicitly removes debugger permission overrides on
+  exit. Syntax check passed; this is fixture cleanup, not application logic.
+- Setting the external override to prompt did NOT display a native permission
+  popup: Paste returned the error instead. The override was removed, native
+  permission was verified granted again and a final ordinary Paste succeeded.
+  Do not report this attempt as a native Allow/Block test. The mobile native
+  first-permission branch remains NOT PROVEN, as explicitly clarified to the
+  user. No synthetic grant or fake browser API is counted as that proof.
+- Evidence: `/tmp/myscoutee-short-clipboard-error.png`,
+  `/tmp/myscoutee-phone-copy-menu.png`,
+  `/tmp/myscoutee-phone-paste-result.png`,
+  `/tmp/myscoutee-phone-clipboard-denied.png` and
+  `/tmp/myscoutee-phone-clipboard-prompt.png` (no popup).
+
+#### Native clipboard observation and demo replay — 2026-09-14
+
+- After the user removed only the QA origin's native Clipboard exception,
+  physical Android Paste displayed the real Block/Allow permission dialog.
+  Actual Block left the Source empty and displayed the short Hungarian
+  guidance; retry remained available. Evidence:
+  `/tmp/myscoutee-phone-real-clipboard-prompt.png` and
+  `/tmp/myscoutee-phone-native-block-result.png`.
+- This supersedes the earlier NOT PROVEN statement for popup appearance and
+  native Block only. Native Allow after a fresh prompt remains unproven;
+  already-granted exact URL paste was independently successful. The user
+  requested moving on. Neither platform saved the Transport editor.
+- Normal logout reached `/entry` on both devices. The versioned mobile fixture
+  reset restored its snapshots, then `stage-demo` and common session preparation
+  established canonical Anna. Both devices signed in through the ordinary demo
+  selector as HTTP `bf057de7c586eede7e84bdc7`. Phone remains candidate 24.
+  The current replay now targets real API transport loss and local persistence.
+
+#### Local demo offline controls defect — 2026-09-14
+
+- Candidate 24 replay: API-only outage switched canonical HTTP Anna to local
+  `u1` in a separate IndexedDB database. About marker
+  `[QA-local-20260914-2010]` survived save/reopen; an unsaved draft survived
+  reconnect without navigation (`timeOrigin=1789409129753.6`). Cancelling the
+  draft retained only the saved marker. Desktop HTTP About remained unchanged.
+  Full target network emulation returned `navigator.onLine=false`; reconnect
+  retained the local identity/document. Explicit app reopening preferred HTTP.
+- The user identified an incorrect acceptance assumption: local demo actions
+  must remain usable without internet, including local Chat and notifications.
+  The earlier disabled-mute observation is not a PASS for the local adapter.
+  Root cause: Home controls and side-menu guards used physical connectivity;
+  several list progress/poll predicates did the same. The full local adapter
+  can execute those operations offline.
+- Shared runtime data-source availability now allows the existing local adapter
+  offline. Home, menu, local notification preferences and existing list consumers
+  use it. Physical connectivity still drives notification offline indicators;
+  real HTTP actions retain connectivity restrictions. Removed the unrelated grey
+  avatar-header treatment. No test URL, runtime override or fake API was added.
+- Existing watcher compiled the repair in 7.384 seconds at
+  `2026-09-14T18:12:30.328Z`. Candidate 25:
+  `mobile-webview-lifecycle-1789409560944`. Existing compiled failover regression
+  passed; actual repaired phone UI replay is in progress. Desktop retains its
+  real `1136x763` viewport and enabled online header controls.
+- Evidence: `/tmp/myscoutee-anna-local-reconnect-draft.png` and
+  `/tmp/myscoutee-anna-local-network-reconnect.png` (candidate 24 observations).
+
+#### Candidate 25 local offline verification — 2026-09-14
+
+- Physical standalone PWA candidate 25 switched from canonical HTTP Anna to
+  local `u1` through API-only transport loss. A subsequent full page/worker
+  network outage reported `navigator.onLine=false`. Mode, filters and history
+  were enabled; ordinary touches opened all three. The side-menu profile,
+  Chat, Event, Asset and contact actions were enabled under the same outage.
+- Local Chat list loaded its seeded conversations. Opening Driver Split —
+  Alpine Weekend loaded messages and enabled the composer while still offline.
+  No message was sent. Local notification mute changed to true, remained true
+  after closing/reopening, and was restored to false with the ordinary
+  confirmation. Pending-save disabling ended after the local operation.
+- Two missing Rating portraits were external URLs, not invalid application
+  routes: randomuser.me `men/12.jpg` and `women/84.jpg`. Both returned HTTP 200
+  JPEG outside the device. The PWA had no service-worker cache entries for
+  them. After transport restoration and ordinary list reopen, both image
+  directives completed without errors on the phone. A cross-origin fetch
+  diagnostic failed (the server exposes no CORS header); actual image rendering
+  succeeded. Do not confuse fetch CORS restrictions with image unreachability.
+  User accepted uncached external images being absent during full network loss.
+- Desktop online header controls remained enabled at the original 1136x763
+  viewport. A brief desktop offline control triggered canonical-demo failover
+  before inspection; discard it as an HTTP-disabled-state oracle. Transport
+  was restored in `finally` and ordinary reload requested to return to HTTP.
+- All page/worker shaping processes stopped with restoration confirmed.
+  Public image limitation and unexecuted real Firebase branches remain explicit;
+  the full checkpoint is still PARTIAL/OPEN.
+- Evidence: `/tmp/myscoutee-local-offline-filter-fixed.png`,
+  `/tmp/myscoutee-local-offline-chat-fixed.png`,
+  `/tmp/myscoutee-local-offline-rating-images.png`, and
+  `/tmp/myscoutee-local-offline-preference-fixed.png` (main-screen enabled header).
+
+#### Demo cleanup and Firebase bootstrap correction — 2026-09-14
+
+- Restored the local About text and notification mute through ordinary UI actions;
+  both devices logged out normally. The versioned WebView fixture reset restored
+  its retained pre-launch server-session snapshot. Candidate 25 remains installed,
+  caches preserved, and all transport/permission overrides stopped.
+- Distinguish API-only server loss from full network loss: external image hosts
+  can remain reachable during the former. The accepted missing-portrait observation
+  belongs only to the latter, with no cached bytes available.
+- Before cleanup, the public Firebase client-config request returned 401 with
+  "App session is not active." After fixture reset it returned the controller's
+  404 "Firebase client configuration has not been activated." Source diagnosis
+  found that WebSecurityConfig permitted the two exact public config paths, but
+  FirebaseFilter omitted them from its entry-bootstrap exemptions. Added those
+  exact paths; no wildcard or protected configuration access was added.
+- Existing backend watcher compiled successfully in 1 second and restarted at
+  20:29:46 local time. Anonymous HTTP recheck reaches the intended config handler
+  (404, no active revision); Operator configuration remains 403 and private media
+  remains 401. A nonexistent child path returns 404, not configuration content.
+- Added a regression for both public paths with an expired authenticated app
+  session, plus adjacent-path rejection. The JUnit regression was not executed:
+  the existing test-source compilation blocker (76 unrelated errors, documented
+  above) remains unresolved. No second application compiler was started.
+- Actual Firebase entry/location and positive protected-image tests remain open
+  pending an Operator-tested active application configuration. This repair is not
+  evidence of successful real-provider login. Overall status remains PARTIAL/OPEN.
+
+#### Test-hook audit and full entry regression — 2026-09-14
+
+Scope: current frontend application source/environments and backend main
+sources, the frontend changes since `6d04ac06`, backend changes since
+`44fab031`, and the historical implementations of the entry/PWA overrides.
+This is a targeted source/history audit, not a claim that every historical QA
+checkpoint used an unmodified application.
+
+| Finding | Historical behavior | Current working-tree status |
+| --- | --- | --- |
+| `qaAuth=firebase` | `479ecfa1` (2026-08-14) added a query-based Firebase login override in application code. It was gated against production and required the QA opt-in. The old eligibility launcher used it. | Runtime parser and environment opt-in removed. Removed the two remaining obsolete eligibility launcher URL references. Real Firebase configuration is required. |
+| `qaOfflineDemo=1/0` | `fdb865d7` added a dev/loopback test switch and `myscoutee.qa.offline-demo` storage gate in application bootstrap. | Query/storage gate removed. The retained demo failover is application behavior driven by a canonical demo identity and actual transport loss, not a test condition. Its whole UI lifecycle still needs fresh evidence. |
+| `qaConnectivity` | Added a timestamp query to the fallback health request. | Removed; the request uses the ordinary configuration endpoint with `cache: no-store`. |
+| `pwa=on/off` and `myscoutee.dev.service-worker` | Application code could override the worker's configured state. The old March implementation had no production guard on query parsing; the later implementation did. | Query parser and storage override removed. The existing build environment's service-worker configuration owns capability. |
+| Browser helpers using live internals | `check-entry-prompts.browser.js` used compiled store prototypes/doubles; an earlier block replaced live `Storage.prototype.setItem`. `check-local-device-registrations.browser.js` invoked a live local adapter/database from the HTTP page. | Both helpers retained: their deletion during this audit was reversed after the user's clarification. Necessary fixture-only internal setup is allowed if there is no practical external alternative, with exact scope, cleanup and evidence limits recorded. Historical contract results are not normal UI lifecycle evidence. The earlier live `Storage.prototype` replacement remains removed. |
+
+No additional QA query switch, hard-coded fixture identity or test-only route
+was found in the inspected current application sources. Normal `redirect`,
+`onboarding` and media-key parameters are not QA switches. The private media
+endpoint is a product authorization change, not a test endpoint. The isolated
+VM contract fixture, database fixtures, browser Sensors and page/worker network
+emulation remain valid external test tools; they do not establish a real native
+permission decision or end-to-end login by themselves.
+
+Mobile label follow-up: removed the mobile-only icon compression from the
+existing entry button. The watcher completed at 15:00:22 UTC. After normal
+cold launch activated candidate `lifecycle-21`
+(`mobile-webview-lifecycle-1789398081228`), the physical 360x753 PWA displayed
+**Bejelentkezés** beside the brand without horizontal overflow. Screenshot:
+`/tmp/myscoutee-mobile-login-label.png`. No permission/login branch is implied
+by this layout observation.
+
+Fresh full-entry coverage is now listed at the start of
+`MOBILE-WEBVIEW-LIFECYCLE-001.md`: Budapest/London/absent Paris, location
+allow/deny/retry, unavailable-country label and public exploration control,
+offline entry/recovery, `ENTRY-CONSENT-001/002/003`, demo/Firebase registration,
+returning identity, session limits and logout. Existing results remain
+historical; this rerun is OPEN. Public Firebase configuration currently returns
+HTTP 404, so the real Firebase/location-label branches cannot yet be counted.
+
+Separate observed product defect and repair: a server-revoked Riley session
+received HTTP 401 on ordinary Logout and previously remained signed in behind
+an error dialog. The narrow HTTP adapter fix lets local sign-out finish when
+the server already rejects that session. On physical candidate `lifecycle-20`
+(`mobile-webview-lifecycle-1789397341066`), the same fixture revocation followed
+by normal Logout/confirmation cleared the local session and reached `/entry`.
+This proves that transition; complete private-cache isolation remains a
+separate pending check. The existing watcher compiled the fix; no duplicate
+build was started.
+
+The device opt-out block in `check-entry-prompts.browser.js` that temporarily
+replaced live-page `Storage.prototype.setItem` has been removed. Its previous
+controlled result is not normal-UI persistence evidence. Syntax validation
+passed; the script was not executed against either open application for this
+correction. Device opt-out persistence still requires the ordinary UI journey
+or an isolated unit-test environment. No application source or runtime state
+was changed by this correction.
+
+Continuation diagnostic: read-only desktop inspection at viewport 1136×763
+found the shared setup dialog with `aria-modal=true`. A hit test at the
+Settings button returned `ui-popup__backdrop ui-popup__backdrop--dim`, not the
+button. The earlier programmatic `.click()` sequence bypassed ordinary pointer
+hit testing; it is not manual-user evidence and must not count as a PASS or
+justify a product workaround. No application code or browser state was changed
+for this diagnosis. Full rerun remains OPEN. Independent fixture status remains
+`fixture-ready`, with two distinct Upcoming Tickets, Riley's single unread
+baseline notification, the public Transport Asset and no background variants.
+
+- Removed application URL/storage test switches for demo fallback, PWA and
+  Firebase login. Dev uses its ordinary serviceWorkerEnabled and
+  firebaseLoginEnabled configuration; an active Firebase runtime is still
+  required. Demo fallback now follows eligible demo session + actual backend
+  transport loss, including deployed builds. Firebase/operator/support actors
+  are never converted to local demo actors. Earlier switch-based observations
+  do not prove this corrected path.
+- Existing watcher compiled successfully at 14:14:13 UTC; no duplicate build.
+  check-demo-failover.mjs passed five exclusion cases, deployed-demo fallback,
+  authorization errors, independent storage, editor/write guards, reconnect
+  without reload, cold start, logout and account switch using compiled code
+  with controlled transport. This is a contract check, not whole-device proof.
+- Desktop + physical PWA lifecycle-17: seven shared-popup workflow groups passed
+  with native/provider doubles. Six local-device cases passed through the real
+  local service/repository with fresh IndexedDB reads and disposable-user
+  cleanup. The running deployment was HTTP (delay 0); a separate controlled
+  RouteDelayService check resolved local configuration to 1500 ms and measured
+  1501 ms. Full frontend-local UI/reload remains to be run.
+- Enhanced only the versioned phone transport fixture to include same-origin
+  workers. On lifecycle-17, retained CDP session: navigator.onLine=false, API
+  network error, worker still controlling cache, both cloud_off controls,
+  clickable avatar and cached Riley ticket list. Restoring transport produced
+  navigator.onLine=true, API 200 and zero cloud_off buttons with unchanged
+  page timeOrigin 1789394928600.1. Fixture restored and detached; phone radios
+  and tethering unchanged. Separate debugger clients can reset Chrome's network
+  state: use the fixture's retained eval connection for inspection/actions.
+- Removed unsolicited home/header/menu offline badges and menu offline note.
+  Only the agreed notification icons indicate connectivity. Candidate
+  lifecycle-19: mobile-webview-lifecycle-1789395283443.
+- Keep PARTIAL/OPEN: ordinary full frontend-local UI, real Firebase activation,
+  native delivery/background/lost-connection reconciliation, authenticated
+  media/logout and physical whole-device offline behavior are not established
+  by the above checks. No private key imported or committed.
+
+Final physical label regression on lifecycle-19: actual fixture offline state,
+zero extra offline labels/notes, zero visible "Offline" text, two `cloud_off`
+notification controls, usable avatar and no horizontal overflow. Screenshot:
+`~/.local/share/myscoutee-qa-evidence/MOBILE-WEBVIEW-LIFECYCLE-001/2026-09-14/offline-icons-only-phone.png`.
+Transport restored online and fixture detached.
+
+
+#### Firebase registration and desktop login footer — 2026-09-14
+
+Continuation evidence supersedes the earlier unexecuted Firebase and updated
+country-label notes, without closing the full WebView journey.
+
+- Physical phone: real Google account selection reached required registration.
+  The tester supplied three logo images; ordinary profile Save and privacy
+  acceptance reached the game. Normal logout returned to entry and cleared the
+  app session; repeat Google login reused the same identity without onboarding.
+  A fresh read-only Mongo oracle confirms exactly one matching user, three
+  images, Budapest, profile form version 2 and one device registration. No
+  account email, provider subject or credential is copied into this ledger.
+- The authenticated avatar rendered through protected media. The prior logout
+  observation showed no private image in the DOM and an anonymous direct media
+  request returned 401. Private-media cache entries were already zero before
+  logout: this does not prove purge of a previously populated private cache.
+  Invalid/revoked-credential and cross-account checks retain separate oracles.
+- The short country label fits one line on the physical 360px viewport; the
+  tester accepted the repaired button. External page/worker transport replay
+  proved offline -> online -> offline on the same page time origin, with fresh
+  eligibility on recovery and retained landing content. The first replay was
+  invalid because worker transport recovered after the page online event.
+  The fixture now restores workers first; corrected replay passed and transport
+  was restored. No phone radio or application API was replaced.
+- Shared Operator scope: ordinary no-change Firebase Save displayed success;
+  close/reopen preserved active configuration with credential inputs masked.
+  Fresh harness status confirms active revision 1 and both Authentication and
+  Messaging tested revision 1. This proves preservation/readback, not changed
+  credential rotation or the broader Operator restore journey.
+- Desktop Login footer: retained screenshot at 1136x763 shows all three provider
+  buttons and the complete provider-terms notice below them, inside the popup.
+  Facebook is visibly Coming soon. Screenshot:
+  `/tmp/myscoutee-desktop-login-footer.png`. The tester confirmed completion.
+  This is a layout PASS, not a legal-compliance determination.
+- Candidate lifecycle-26 is served, but the previous live shell still reported
+  lifecycle-25 with a waiting worker. Do not infer coherent candidate activation
+  from updated button code alone. Normal reload/cold-resume with the retained
+  Firebase identity remains the next check; do not clear app data.
+
+The full row remains PARTIAL/OPEN. Continue retained-session reload/resume,
+shared permission/device opt-out persistence and the remaining protected-media
+isolation checks. Real push delivery belongs to MOBILE-PUSH-LIFECYCLE-001.
+
+
+#### Firebase resume, outage and media revocation — 2026-09-14
+
+- User explicitly reauthorized Codex to execute ordinary phone/browser actions.
+  Physical WebAPK force-stop/relaunch preserved the Firebase session, loaded
+  avatar and completed profile without onboarding. Mongo still has one matching
+  user, three images and one device. Screenshot:
+  `/tmp/myscoutee-phone-firebase-reopen.png`.
+- API-only outage on the existing Firebase page kept `/game`, Firebase session
+  and time origin 1789414680958.9. Two notification controls indicated offline;
+  `navigator.onLine` stayed true. Restoring worker/page transport removed both
+  markers without reload or demo conversion. Fixture stopped and restored.
+  User reiterated that this signed-in Firebase flow cannot switch to demo;
+  demo selection belongs to entry.
+- Real private image read with the current media cookie: 200 image/webp,
+  8758 bytes, `Cache-Control: no-store, private`. Anonymous and malformed-cookie
+  reads: 401 JSON, no-store. The old public route redirects a private key to the
+  protected route (307), whose anonymous read is 401.
+- After normal Logout and confirmation, replaying that previously successful
+  cookie returns 401. `/entry` has no app session, private DOM image or private
+  service-worker cache entry. The restricted temporary cookie snapshot is
+  solely a read-oracle credential, not an injected browser login or app change.
+  Immediate screenshot: `/tmp/myscoutee-phone-private-logout-immediate.png`.
+- Normal Google login afterward reused the same account. WebAPK restart alone
+  retained a service-worker client; closing only the local QA page before
+  relaunch allowed candidate 26 to activate naturally, preserving the Firebase
+  identity and avatar. No cache clearing or injected SKIP_WAITING was used.
+  Candidate 27 began installing afterward; that repair replay remains pending.
+- Defect: installed PWA had no normal way to reopen the shared permission popup;
+  the sole signed-in entry point was gated on install availability. Added
+  `Settings -> Permissions` for ordinary member workspaces, opening the existing
+  AppSetupStore/popup. No new permission/storage mechanism. Existing watcher
+  compilation passed at 19:43:32.765Z. Candidate 27 is served with build ID
+  mobile-webview-lifecycle-1789415030969. Next: actual device off/reload/on and
+  bell-mute separation using that control.
+
+
+#### Installed-PWA permission replay — 2026-09-14
+
+- Candidate 27 activated naturally after closing only the QA origin's retained
+  page and reopening its WebAPK. Effective document build
+  `mobile-webview-lifecycle-1789415030969`; active worker, no waiting worker,
+  no failed script resources, Firebase identity and private avatar retained.
+- Ordinary `Settings -> Permissions` opens the existing shared popup on the
+  installed PWA. There is no redundant Install block. Location is checked and
+  disabled; Notifications stays editable. Both rows are 224px; Update is
+  content-sized (97.742px); no horizontal overflow. Screenshot:
+  `/tmp/myscoutee-phone-permissions-installed.png`.
+- Notifications off -> Update removes the only server device (1 -> 0), while
+  native notification permission remains granted. WebAPK reopen preserves the
+  false device preference and zero server devices.
+- Normal notification-list Mute and Unmute confirmations both work with device
+  opt-out retained. Unmute does not recreate the device (still zero). This
+  proves separation of alert preference from device registration.
+- Settings -> Permissions reopens with Notifications off and Location locked.
+  On -> Update restores exactly one device. Another WebAPK reopen retains true
+  and one device. Reopening and pressing Update again with on unchanged still
+  leaves one distinct enabled device: no duplicate registration.
+- No native notification prompt was claimed: permission was already granted.
+  The user explicitly deferred actual Firebase message delivery to the separate
+  Push row. No test message was sent during this continuation.
+- Current fixture transport is online. The phone is signed into its real QA
+  Firebase profile on `/game`; desktop dimensions remain 1136x763. Broader
+  Operator tests remain parked. The temporary private-media read credential
+  was removed after the revoked-cookie negative check.
+
+Closure audit: these results complete the current physical Firebase resume,
+API-outage, private-media revocation and device preference block. The expanded
+entry table still explicitly requests fresh ENTRY-CONSENT-001/002/003,
+ENTRY-DEMO-REG-001 and AUTH-SESSION-001 replays; their prior closed rows are not
+fresh evidence for this run. Do not silently mark those replays executed.
+
+
+### Entry login and footer corrections — 2026-09-14
+
+- User simplified the unresolved-location action to ordinary Login. Removed the presentation-only Allow location / Checking location inputs and deferred label timers. Silent granted-permission eligibility resolution and the actual login permission/region checks remain; confirmed unavailable-country and network states remain distinct.
+- Landing social glyphs use Instagram pink, YouTube red and Facebook blue while retaining the shared neutral background. Facebook renders the Facebook glyph instead of the configured generic globe.
+- Removed the Preview badge from the landing template. The existing Bug report popup no longer uses the test-version title or introductory warning; its reporting action remains available.
+- Existing frontend-sync watcher compiled successfully at 20:05:37.893 UTC; no additional compiler or test runner was started. Frontend diff whitespace check passed.
+- Served candidate lifecycle-28, build mobile-webview-lifecycle-1789416355389, through the existing mobile fixture route. Read-only desktop inspection still found the prior loaded document (generic globe, no provider attributes); this is not a rendered PASS for the new candidate. Native permission, new-candidate visual checks and the remaining entry lifecycle replays are not claimed complete.
+
+
+### Entry consent and demo registration replay — 2026-09-14
+
+- ENTRY-CONSENT-001 persisted oracle passed at 20:40:54.998Z: acceptance selected qa-analytics only; one new registered-user consent and no anonymous consent. The user completed three image uploads and saved the profile through the normal form.
+- Registered profile: demo-profile-51978303-f163-49a3-a581-e32cb5771315, WebView Consent Replay, London, active/public, profile form version 2, three images, one experience profile and no external-provider identity.
+- Anonymous demo draft uploads previously used private media and their previews returned 401. The session-mode interceptor now routes anonymous selector-mode demo draft image/profile writes through the existing demo request contract without inventing a logged-in user. Existing frontend watcher compilation passed at 20:39:07.222Z; candidate lifecycle-29 was served. Read-only diagnosis after the user's save confirms the rendered avatar loads successfully from public/demo media.
+- Registration verification first failed because the newly saved demo profile lacked its established per-profile development email. HomeUserProfileService now reuses DevelopmentIdentityEmail when saving a demo-profile with no principal/fallback email. The existing backend watcher compiled successfully and restarted at 20:42:34.497Z.
+- Persisted registration verification passed at 20:45:30.236Z, including unique development email ownership. This is not yet proof of initial-save email generation: the existing startup initializer can normalize the same record during restart. Fresh initial-save and ordinary registration-return evidence remain pending; do not close the full WebView row from this database result alone.
+- Next remaining entry checkpoints: ENTRY-CONSENT-002, ENTRY-CONSENT-003 and AUTH-SESSION-001. Keep physical-phone versus desktop replay evidence distinct. Existing completed cache/media/device-preference evidence is retained; only affected regressions need replay after the entry block.

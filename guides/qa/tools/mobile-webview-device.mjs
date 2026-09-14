@@ -1,0 +1,204 @@
+#!/usr/bin/env node
+// User-delegated physical-device execution; only the local QA origin is targeted.
+import WebSocket from '../../../frontend/node_modules/ws/index.js';
+import { readFileSync, writeFileSync, existsSync, unlinkSync } from 'node:fs';
+import { fileURLToPath } from 'node:url';
+import { execFileSync } from 'node:child_process';
+import { once } from 'node:events';
+import { createInterface } from 'node:readline';
+const [action, ...args] = process.argv.slice(2);
+const port = Number(process.env.QA_PHONE_CDP_PORT || 36087);
+const packageName = process.env.QA_PHONE_PACKAGE || 'org.chromium.webapk.af8b7eef107d7742f_v2';
+if (!/^org\.chromium\.webapk\.[a-z0-9_]+$/.test(packageName)) throw Error('Invalid QA WebAPK package');
+const transportSnapshot = fileURLToPath(new URL('../../../server/docker/.qa-mobile-runtime/device-transport.before.json', import.meta.url));
+if (action === 'transport-offline') {
+  if (existsSync(transportSnapshot)) throw Error('QA transport already has a retained restore point');
+  const mappings = execFileSync('adb', ['reverse', '--list'], { encoding: 'utf8' }).trim().split('\n').filter(Boolean);
+  if (mappings.length !== 1 || !mappings[0].endsWith('tcp:8080 tcp:80')) throw Error('Expected only the configured QA reverse mapping');
+  writeFileSync(transportSnapshot, JSON.stringify({ local: 'tcp:8080', remote: 'tcp:80', cdpPort: port }));
+  execFileSync('adb', ['reverse', '--remove', 'tcp:8080']);
+  // Close retained HTTP sockets; the phone radios and Chrome data stay intact.
+  execFileSync('adb', ['reconnect'], { stdio: 'pipe' });
+  execFileSync('adb', ['wait-for-device'], { timeout: 15000 });
+  execFileSync('adb', ['forward', `tcp:${port}`, 'localabstract:chrome_devtools_remote']);
+  console.log('QA reverse transport disconnected; CDP restored.'); process.exit(0);
+}
+if (action === 'transport-online') {
+  const saved = JSON.parse(readFileSync(transportSnapshot, 'utf8'));
+  if (saved.local !== 'tcp:8080' || saved.remote !== 'tcp:80' || saved.cdpPort !== port) throw Error('Unexpected QA restore point');
+  execFileSync('adb', ['reverse', saved.local, saved.remote]);
+  execFileSync('adb', ['forward', `tcp:${port}`, 'localabstract:chrome_devtools_remote']);
+  unlinkSync(transportSnapshot);
+  console.log('Restored the recorded QA reverse transport and CDP.'); process.exit(0);
+}
+if (action === 'launch' || action === 'cold-launch') {
+  if (action === 'cold-launch') execFileSync('adb', ['shell', 'am', 'force-stop', packageName]);
+  const component = execFileSync('adb', ['shell', 'cmd', 'package', 'resolve-activity', '--brief', packageName], { encoding: 'utf8' }).trim().split('\n').at(-1);
+  execFileSync('adb', ['shell', 'am', 'start', '-n', component], { stdio: 'pipe' });
+  console.log('Launched the installed local QA PWA.'); process.exit(0);
+}
+const targets = await fetch(`http://127.0.0.1:${port}/json/list`).then(r => r.json());
+const pages = targets.filter(p => p.type === 'page' && p.url.startsWith('http://localhost:8080/'));
+const target = args.includes('--target') ? pages.find(p => p.id === args[args.indexOf('--target') + 1]) : pages[0];
+if (!target) throw Error('No existing local QA page');
+const socket = new WebSocket(target.webSocketDebuggerUrl);
+let sequence = 0;
+const pending = new Map();
+socket.on('message', data => {
+  const message = JSON.parse(data), request = pending.get(message.id);
+  if (!request) return;
+  clearTimeout(request.timer); pending.delete(message.id);
+  message.error ? request.reject(Error(message.error.message)) : request.resolve(message.result);
+});
+await once(socket, 'open');
+const send = (method, params = {}, sessionId) => new Promise((resolve, reject) => {
+  const id = ++sequence;
+  const timer = setTimeout(() => { pending.delete(id); reject(Error(`${method} timed out`)); }, 20000);
+  pending.set(id, { resolve, reject, timer }); socket.send(JSON.stringify({ id, method, params, ...(sessionId ? { sessionId } : {}) }));
+});
+const evaluate = async expression => {
+  const result = await send('Runtime.evaluate', { expression, returnByValue: true, awaitPromise: true });
+  if (result.exceptionDetails) throw Error(result.exceptionDetails.exception?.description || result.exceptionDetails.text);
+  return result.result?.value;
+};
+try {
+  if (action === 'inspect') {
+    console.log(JSON.stringify(await evaluate(`(async()=>({
+      path:location.pathname,visible:document.visibilityState,standalone:matchMedia('(display-mode: standalone)').matches,
+      identity:JSON.parse(localStorage.getItem('myscoutee.http.session.v1')||'null')?.userId||null,
+      buildId:document.querySelector('meta[name="myscoutee-build-id"]')?.content||null,
+      worker:!!navigator.serviceWorker.controller,cacheNames:await caches.keys(),
+      text:document.body.innerText.slice(0,16000),
+      controls:[...document.querySelectorAll('button,input,textarea,[role="button"]')].filter(e=>{const r=e.getBoundingClientRect();return r.width&&r.height&&r.top<innerHeight&&r.bottom>0}).map(e=>({tag:e.tagName,text:(e.innerText||e.getAttribute('aria-label')||'').slice(0,110),aria:e.getAttribute('aria-label'),placeholder:e.getAttribute('placeholder'),class:e.className}))
+    }))()`), null, 2));
+  } else if (action === 'permission') {
+    const [name, setting] = args;
+    if (!['geolocation', 'clipboard-read'].includes(name) || !['granted', 'denied', 'prompt'].includes(setting)) {
+      throw Error('Use permission geolocation|clipboard-read granted|denied|prompt');
+    }
+    const before = await evaluate(`navigator.permissions.query({name:${JSON.stringify(name)}}).then(p=>p.state)`);
+    const permission = name === 'clipboard-read' ? { name: 'clipboard-read', allowWithoutSanitization: true } : { name };
+    await send('Browser.setPermission', { permission, setting, origin: 'http://localhost:8080' });
+    console.log(JSON.stringify({ origin: 'http://localhost:8080', name, before, setting }));
+    console.log('Permission override retained. Send stop to detach and restore the native setting.');
+    const input = createInterface({ input: process.stdin });
+    await new Promise(resolve => {
+      process.once('SIGINT', resolve); process.once('SIGTERM', resolve);
+      input.on('line', line => { if (line.trim() === 'stop') resolve(); });
+      input.once('close', resolve);
+    });
+    input.close();
+  } else if (action === 'eval') console.log(JSON.stringify(await evaluate(readFileSync(0, 'utf8')), null, 2));
+  else if (action === 'click') {
+    const point = await evaluate(`(()=>{const e=document.querySelectorAll(${JSON.stringify(args[0])})[${Number(args[1] || 0)}];if(!e)throw Error('Control missing');const r=e.getBoundingClientRect(),x=r.x+r.width/2,y=r.y+r.height/2;if(e.disabled||!r.width||!r.height||!e.contains(document.elementFromPoint(x,y)))throw Error('Control covered, offscreen or disabled');return{x,y}})()`);
+    await send('Input.dispatchTouchEvent', { type: 'touchStart', touchPoints: [point] });
+    await send('Input.dispatchTouchEvent', { type: 'touchEnd', touchPoints: [] });
+  } else if (action === 'drag-notification') {
+    const start = await evaluate(`(()=>{const r=document.querySelector('.notification-attention-menu button')?.getBoundingClientRect();if(!r)throw Error('Notification control missing');return{x:r.x+r.width/2,y:r.y+r.height/2}})()`);
+    await send('Input.dispatchTouchEvent', { type: 'touchStart', touchPoints: [start] });
+    await new Promise(resolve => setTimeout(resolve, 450));
+    let end = { x: start.x - 90, y: start.y - 100 };
+    if (args[0] === 'dismiss') {
+      // The existing menu exposes its dismiss target after drag activation.
+      await send('Input.dispatchTouchEvent', { type: 'touchMove', touchPoints: [{ x: start.x - 8, y: start.y - 8 }] });
+      await new Promise(resolve => setTimeout(resolve, 200));
+      end = await evaluate(`(()=>{const r=document.querySelector('.notification-attention-dismiss-target')?.getBoundingClientRect();if(!r)throw Error('Dismiss target missing');return{x:r.x+r.width/2,y:r.y+r.height/2}})()`);
+    }
+    for (let step = 1; step <= 10; step++) {
+      await send('Input.dispatchTouchEvent', { type: 'touchMove', touchPoints: [{ x: start.x + (end.x - start.x) * step / 10, y: start.y + (end.y - start.y) * step / 10 }] });
+      await new Promise(resolve => setTimeout(resolve, 35));
+    }
+    await send('Input.dispatchTouchEvent', { type: 'touchEnd', touchPoints: [] });
+    console.log(args[0] === 'dismiss' ? 'Dragged the QA notification into its dismiss target.' : 'Moved the QA notification.');
+  } else if (action === 'text') await send('Input.insertText', { text: args[0] });
+  else if (action === 'navigate') {
+    if (!args[0]?.startsWith('/') || args[0].startsWith('//')) throw Error('Only QA-relative paths allowed');
+    await send('Page.navigate', { url: `http://localhost:8080${args[0]}` });
+  } else if (action === 'backend-offline' || action === 'network-offline') {
+    // Fixture-only CDP shaping: keep phone radios/tethering and native caches intact.
+    // Include this origin's service worker so its fetches cannot bypass page shaping.
+    const origin = new URL(target.url).origin;
+    const workers = new Map();
+    let offline = true;
+    let stopping = false;
+    const apply = sessionId => action === 'network-offline'
+      ? send('Network.emulateNetworkConditions', { offline, latency: 0, downloadThroughput: -1, uploadThroughput: -1 }, sessionId)
+      : send('Network.setBlockedURLs', { urls: offline ? [`${origin}/api/*`] : [] }, sessionId);
+    const attachWorker = info => {
+      if (stopping || info.type !== 'service_worker' || !info.url.startsWith(`${origin}/`) || workers.has(info.targetId)) return;
+      const task = (async () => {
+        const { sessionId } = await send('Target.attachToTarget', { targetId: info.targetId, flatten: true });
+        await send('Network.enable', {}, sessionId);
+        await apply(sessionId);
+        return sessionId;
+      })();
+      workers.set(info.targetId, task);
+      task.catch(error => console.error(`QA worker shaping failed: ${error.message}`));
+    };
+    const onTarget = data => {
+      const event = JSON.parse(data);
+      if (event.method === 'Target.targetCreated' || event.method === 'Target.targetInfoChanged') attachWorker(event.params.targetInfo);
+    };
+    const input = createInterface({ input: process.stdin });
+    try {
+      socket.on('message', onTarget);
+      await send('Target.setDiscoverTargets', { discover: true });
+      const { targetInfos } = await send('Target.getTargets');
+      targetInfos.forEach(attachWorker);
+      await send('Network.enable');
+      await apply();
+      await Promise.all([...workers.values()]);
+      console.log(`${action}: QA page and ${workers.size} same-origin workers shaped. Send online/offline or stop. Phone radios unchanged.`);
+      await new Promise(resolve => {
+        process.once('SIGINT', resolve); process.once('SIGTERM', resolve);
+        input.once('close', resolve);
+        input.on('line', async line => {
+          if (line.trim() === 'stop') { resolve(); return; }
+          if (line.startsWith('eval ')) {
+            try { console.log(JSON.stringify(await evaluate(line.slice(5)))); }
+            catch (error) { console.error(error.message); }
+            return;
+          }
+          if (!['online', 'offline'].includes(line.trim())) return;
+          try {
+            offline = line.trim() === 'offline';
+            if (offline) await apply();
+            await Promise.all([...workers.values()].map(async task => apply(await task)));
+            // The page's online event can immediately fetch through its worker.
+            // Restore worker transport before exposing that event to the app.
+            if (!offline) await apply();
+            console.log(`QA transport ${line.trim()}; page and workers updated.`);
+          } catch (error) { console.error(error.message); resolve(); }
+        });
+      });
+    } finally {
+      stopping = true;
+      socket.off('message', onTarget);
+      input.close();
+      offline = false;
+      const restoration = await Promise.allSettled([...workers.values()].map(async task => {
+        const sessionId = await task;
+        try { await apply(sessionId); } finally { await send('Target.detachFromTarget', { sessionId }); }
+      }));
+      restoration.push(...await Promise.allSettled([apply()]));
+      await send('Target.setDiscoverTargets', { discover: false });
+      if (restoration.some(result => result.status === 'rejected')) {
+        throw Error('Transport restoration needs inspection: a page or worker detached during the test.');
+      }
+      console.log('Restored QA page and worker transport.');
+    }
+  } else if (action === 'close-other-qa-tabs') {
+    const isPwa = await evaluate(`matchMedia('(display-mode: standalone)').matches`);
+    if (!isPwa) throw Error('Launch the QA PWA before closing its browser controls');
+    for (const page of pages.filter(p => p.id !== target.id)) await send('Target.closeTarget', { targetId: page.id });
+    console.log('Closed only other localhost:8080 QA pages.');
+  } else throw Error('Usage: mobile-webview-device.mjs launch|inspect|eval|click|text|navigate|backend-offline|network-offline|drag-notification|close-other-qa-tabs');
+} finally {
+  try {
+    if (action === 'permission') {
+      // Remove only debugger overrides; Chrome's native site decisions remain.
+      await send('Browser.resetPermissions');
+      console.log('Removed QA permission overrides; native site settings restored.');
+    }
+  } finally { socket.close(); }
+}

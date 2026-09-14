@@ -15,6 +15,7 @@ import com.raxim.myscoutee.common.config.firebase.exception.FirebaseTokenInvalid
 import com.raxim.myscoutee.common.config.mongo.DemoSessionRequestSupport;
 import com.raxim.myscoutee.common.config.properties.ConfigProperties;
 import com.raxim.myscoutee.profile.service.UserLoginSessionService;
+import com.raxim.myscoutee.profile.service.media.MediaSessionAccessService;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -31,16 +32,19 @@ public class FirebaseFilter extends OncePerRequestFilter {
     private final ConfigProperties configProperties;
     private final FirebaseTokenVerifier firebaseTokenVerifier;
     private final UserLoginSessionService userLoginSessionService;
+    private final MediaSessionAccessService mediaSessionAccess;
 
     public FirebaseFilter(
             FirebaseService firebaseService,
             ConfigProperties configProperties,
             FirebaseTokenVerifier firebaseTokenVerifier,
-            UserLoginSessionService userLoginSessionService) {
+            UserLoginSessionService userLoginSessionService,
+            MediaSessionAccessService mediaSessionAccess) {
         this.firebaseService = firebaseService;
         this.configProperties = configProperties;
         this.firebaseTokenVerifier = firebaseTokenVerifier;
         this.userLoginSessionService = userLoginSessionService;
+        this.mediaSessionAccess = mediaSessionAccess;
     }
 
     @Override
@@ -48,6 +52,17 @@ public class FirebaseFilter extends OncePerRequestFilter {
             HttpServletRequest request,
             HttpServletResponse response,
             FilterChain filterChain) throws ServletException, IOException {
+        if (MediaSessionAccessService.isPrivateRead(request)) {
+            Authentication media = mediaSessionAccess.authenticate(request);
+            if (media == null || !("GET".equals(request.getMethod()) || "HEAD".equals(request.getMethod()))) {
+                response.setHeader("Cache-Control", "no-store");
+                response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "An active Firebase app session is required.");
+                return;
+            }
+            SecurityContextHolder.getContext().setAuthentication(media);
+            filterChain.doFilter(request, response);
+            return;
+        }
         // A fresh local-operator login must not be rejected because the browser
         // still carries an expired Firebase credential from an earlier session.
         if (OperatorBootstrapRequestSupport.isLoginRequest(request)) {
@@ -92,8 +107,7 @@ public class FirebaseFilter extends OncePerRequestFilter {
 
             UserDetails userDetails = firebaseService.loadUserByCredential(credential, xLink, request.getRequestURI());
             setAuthentication(userDetails, credential);
-
-            filterChain.doFilter(request, response);
+            continueIfSessionActive(request, response, filterChain);
         } catch (FirebaseTokenInvalidException e) {
             response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Invalid Firebase token.");
         }
@@ -188,6 +202,8 @@ public class FirebaseFilter extends OncePerRequestFilter {
                 || requestUri.startsWith("/api/media/public/")
                 || requestUri.equals("/deployment/configuration")
                 || requestUri.equals("/api/deployment/configuration")
+                || requestUri.equals("/deployment/configuration/firebase-config")
+                || requestUri.equals("/api/deployment/configuration/firebase-config")
                 || requestUri.equals("/i18n/bundle")
                 || requestUri.equals("/api/i18n/bundle")
                 || requestUri.equals("/auth/eligibility")
@@ -212,6 +228,7 @@ public class FirebaseFilter extends OncePerRequestFilter {
                 || isSessionLoginRequest(request)
                 || userLoginSessionService == null
                 || !userLoginSessionService.isCurrentUserEnrolled()) {
+            mediaSessionAccess.issueForProfileRead(request, response, authentication);
             filterChain.doFilter(request, response);
             return;
         }
@@ -220,6 +237,7 @@ public class FirebaseFilter extends OncePerRequestFilter {
             sessionId = request.getParameter("sessionId");
         }
         if (userLoginSessionService.isCurrentSessionActive(sessionId)) {
+            mediaSessionAccess.issueForProfileRead(request, response, authentication);
             filterChain.doFilter(request, response);
             return;
         }

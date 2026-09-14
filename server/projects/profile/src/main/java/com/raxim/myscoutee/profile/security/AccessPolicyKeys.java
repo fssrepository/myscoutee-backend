@@ -148,6 +148,8 @@ public final class AccessPolicyKeys {
     // 49. User may import media for own object.
     public static final String USER_MEDIA_IMPORT = "user.media.import";
 
+    public static final String MEDIA_READ = "media.read";
+
     // 50. User may submit own privacy consent.
     public static final String PRIVACY_CONSENT_SUBMIT = "privacy.consent.submit";
 }

@@ -416,6 +416,8 @@ public final class AssetsDtos {
             String visibility,
             String avatarInitials,
             String creatorInitials,
+            String creatorName,
+            String creatorAvatarUrl,
             String revision) {
     }
 

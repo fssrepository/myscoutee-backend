@@ -1,6 +1,6 @@
 # Current manual QA session
 
-Updated: 2026-09-08 21:29 CEST
+Updated: 2026-09-14
 
 This is the context-saving entry point for continuing the manual QA campaign.
 It stores one minimal live resume pointer plus reusable pair-QA execution lessons. It
@@ -25,8 +25,7 @@ file first, then open only the linked active checkpoint section.
   [`PAYMENT-METHODS-HISTORY-001.md`](../checklists/event/PAYMENT-METHODS-HISTORY-001.md).
 - Stable user-facing click guide for the parked Asset Borrow journey:
   [`ASSET-BORROW-001.md`](../checklists/asset/ASSET-BORROW-001.md).
-- Stable user-facing guides for all six open Notifications rows, with the
-  current checkpoint first:
+- Stable user-facing guides for the six Notifications rows (UI poll is closed):
   [`UI-POLL-JANK-001.md`](../checklists/notifications/UI-POLL-JANK-001.md),
   [`MOBILE-PUSH-LIFECYCLE-001.md`](../checklists/notifications/MOBILE-PUSH-LIFECYCLE-001.md),
   [`MOBILE-WEBVIEW-LIFECYCLE-001.md`](../checklists/notifications/MOBILE-WEBVIEW-LIFECYCLE-001.md),
@@ -84,77 +83,44 @@ resume pointer and reusable working method.
 
 ## Active resume point
 
+Testing boundary confirmed by the user: use versioned fixtures for test data
+and external tunnels/proxies/network emulation for transport conditions. Do not
+add application test parameters or test-only production branches. Fixture-only
+internal setup is allowed when no practical external setup exists, with exact
+scope and cleanup; it cannot replace the behavior being tested or manufacture
+its successful result. Do not replace live browser APIs to prove native behavior.
+User clarification: fixture storage/database/session preparation is allowed
+to start or resume directly at a block's defined baseline, without replaying
+all earlier clicks. Prefer the closest practical emulation of the real
+environment. Record prepared state separately from observed results. When
+login itself is under test, perform real login; for another block, a prepared
+authenticated session is a valid prerequisite, not a login PASS.
+Keep authorized standardized fixture startup separate from the behavior under
+test. Manual lifecycle evidence must follow ordinary user-accessible actions;
+isolated test doubles are not proof of that lifecycle. Application changes must
+repair an established product defect. Preserve the phone's tethering connection
+when shaping only its route to the QA application.
+
 ```yaml
-checkpoint: UI-POLL-JANK-001 — SELECTED / GUIDE READY / INFRASTRUCTURE NOT YET PREPARED / USER ACTION NOT STARTED
-detail: ../manuals/ADMIN_DYNAMIC_SURFACES_QA_PLAN.md#queued-cross-surface-performance-defect
-checklist: ../checklists/notifications/UI-POLL-JANK-001.md
-substage: implement or bind the versioned fixture/browser/session-snapshot helpers, then verify the complete preflight before checklist step 1
-selection_reason: the user explicitly paused Asset Borrow and moved the manual-QA cursor to Notifications; UI-POLL-JANK-001 is the selected first Notifications row despite its lower numeric priority
-notification_guides: all six open Notifications matrix rows now have stable user-facing guides; they remain separate consolidated journeys and were not expanded into new matrix rows
-notification_order: UI-POLL-JANK-001 first by explicit user selection, then MOBILE-WEBVIEW-LIFECYCLE-001, MOBILE-PUSH-LIFECYCLE-001, NOTIFICATION-ADMIN-LIFECYCLE-001, JOB-MESSAGES and BELL-RATING-LIFECYCLE-001 by existing priority
-notification_remaining_complexity: 425/1025 minutes across the six unchanged matrix rows
-fixture_phase: UI-POLL-JANK-001 is not staged and no managed browser was launched; the guide requires Ava, Casey A, Casey B and Nova, with exactly two active server sessions for Casey
-required_infrastructure: one disposable populated Casey/Nova Group Chat; four-session managed-browser configuration; secret-safe before/after session, audit, process/profile, page-target/context, auth-carrier and `/auth/me` snapshots; trace evidence and exact reset
-runtime_contract: capture exact idle/Admin list/Admin detail/Chat traces, then attribute the already-reported two-session lockout around read-only CDP attachment and ordinary browser close before intentional launcher cleanup
-browser_control: after standardized startup, the user exclusively controls navigation, DevTools recording, Chat input and browser close. Diagnostic CDP may only observe the already-reported session defect and must never create a context, login or QA action
-ledger_status: 89/104 passed; no Notifications result/status changed by generating the guides
-required_resume: do not hand checklist step 1 to the user yet. First resolve the parked Borrow cleanup gate without starting a second simulator/stack, then add or bind UI-POLL-JANK-001's versioned fixture, browser config and secret-safe session oracle; only after stage/status and identity/session preflight may the standard launcher hand over the four windows
-actors: Ava observes Admin Jobs; Casey A is the Chat reader; Casey B is the same controlled account's second session; Nova sends the one live Chat message
-pending_machine_oracle: correlate four saved Performance traces; compare server sessions/audits and browser target/context/auth presence before/after read-only observer attachment and immediately after Casey B closes; capture before any launcher cleanup
-deployment_boundary: deployment method and candidate evidence are maintained separately in `../../releases/PRERELEASE_DEPLOYMENT_QUALIFICATION.md` and `../../releases/v1.0.0-qa.2.md`; this pair-QA continuation must not rebuild or reinstall
-last_completed: ASSET-CHECKOUT-001 PASS/CLOSED through its full 98-step user journey and terminal guarded oracles
+checkpoint: MOBILE-WEBVIEW-LIFECYCLE-001 — PARTIAL / OPEN
+checklist: ../checklists/notifications/MOBILE-WEBVIEW-LIFECYCLE-001.md
+substage: ENTRY-CONSENT-001 persisted oracle PASS after actual acceptance and user-completed profile save. ENTRY-DEMO-REG-001 has one active public profile, three images and one experience profile; initial verification exposed missing development email. Save-path repair compiled through existing backend watcher; post-restart persisted oracle passes, but startup normalization can also explain the repaired email, so fresh initial-save proof and registration return remain pending. Then ENTRY-CONSENT-002, ENTRY-CONSENT-003 and AUTH-SESSION-001. Fresh paired coverage remains required; no Push sending.
+notification_order: MOBILE-WEBVIEW-LIFECYCLE-001, MOBILE-PUSH-LIFECYCLE-001, NOTIFICATION-ADMIN-LIFECYCLE-001, JOB-MESSAGES, BELL-RATING-LIFECYCLE-001
+notification_remaining_complexity: estimates retained pending defect triage
+fixture_phase: Operator Firebase fixture reset at 19:58:10 UTC; runtime Firebase inactive revision 0. Encrypted active revision 1 retained in /tmp/myscoutee-firebase-bootstrap-fixture/active-firebase-after-webview.ejson (0600) for later Push setup. Current entry-consent 001 baseline has 23 consents and zero anonymous; entry-domain baseline 58 users and zero demo-profile registrations. Phone normally logged out, /entry; desktop normal /entry. Temporary bootstrap settings restored to original local baseline; previous bootstrap variant retained securely. Existing backend restarted once; anonymous upload now returns 200.
+browser_control: User reauthorized ordinary desktop and phone QA actions after the explicit delegation question. Continue visible hit-tested controls without further handoff pauses. No internal state overrides, production test flags, viewport changes or AGENTS.md edits. Current desktop manifest /tmp/myscoutee-qa-browser-sessions/ENTRY-CONSENT-001.json.
+desktop_geometry: user-approved measured outer window 1180x950 at x107/y68; viewport 1136x763, DPR1 on 1920x1080 screen. Persisted in checkpoint session.window; use these bounds on next launch, no mobile emulation or further resizing.
+ledger_status: 90/104 passed; Notifications 1/6; Mobile WebView PARTIAL/OPEN
+required_resume: Read the latest Mobile WebView continuation evidence in the QA pack. Keep PARTIAL/OPEN. Shared setup contracts and local repository persistence checked on desktop/physical PWA lifecycle-17; latest label-free candidate lifecycle-19 (mobile-webview-lifecycle-1789395283443). External CDP page+worker outage/reconnect passed without changing phone radios. URL/storage test switches were removed; do not count old switch-based evidence as current application proof. Full frontend-local UI/reload remains unverified; continue actual Firebase entry/private-image/logout and Push activation/delivery. Shared shell/header/X are unchanged; permissions first, optional install second, stacked original switches, fixed blue/violet rows and status-colored switches, one right-aligned Update label. Location is mandatory for login and locked after login; optional device push can be updated separately from in-app bell mute. Native decisions precede background ring; reject/retry/X must preserve the flow. Existing private Admin SDK file remains outside git; user allowed QA use, later requested dev/prod separation. Firebase revision 1 is now Operator-tested and active; no Firebase console configuration changes. Use existing Operator encrypted configuration/test/activation workflow; confirm exact public VAPID rather than guessing screenshot characters. Retain fixture/session snapshot and dev route until real remaining branches and cleanup are complete. Earlier friendship/media batch/policy evidence remains in the pack and is not a physical Firebase-login proof.
+last_completed: Candidate 27 Firebase device opt-out/reopen/on/reopen/dedup and bell separation passed. Candidate 28 Entry Login/footer corrections compiled, served but not visually replayed. No message sent. Only fixture cleanup deactivated Firebase; broader Operator restore was not tested.
+last_evidence: ../manuals/DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md#installed-pwa-permission-replay--2026-09-14
 ```
-
-The prior Asset Borrow checkpoint is parked, not continued. No Borrow user
-action started. Its last proven baseline was `phase=baseline-ready`, staged at
-`2026-09-08T09:24:00.778Z`, with all ten checks true and the overlap/non-overlap
-windows recorded in the Asset pack. The attempt to recheck it while switching
-domains stopped before reset because the already-running payment simulator
-configuration endpoint at `127.0.0.1:18082` was unavailable. No fixture reset,
-restage, browser launch or checklist action was performed. Do not start a new
-simulator or stack merely to bypass this gate. Once the owning runtime is
-available, run:
-
-```bash
-bash server/docker/scripts/manual-qa-checkpoints/manual-qa-checkpoints-docker.sh \
-  status asset-domain ASSET-BORROW-001
-```
-
-If and only if that status again proves the recorded `baseline-ready` boundary,
-reset the parked fixture and verify `phase=not-staged` before staging any
-transactional Notifications support fixture:
-
-```bash
-bash server/docker/scripts/manual-qa-checkpoints/manual-qa-checkpoints-docker.sh \
-  reset asset-domain ASSET-BORROW-001
-
-bash server/docker/scripts/manual-qa-checkpoints/manual-qa-checkpoints-docker.sh \
-  status asset-domain ASSET-BORROW-001
-```
-
-Restaging Borrow later reconstructs a fresh time window; never reuse the old
-timestamps or pre-restage browser projection as new evidence.
 
 ### Notifications takeover notes
 
-The guide-generation pass changed documentation only. It did not change any
-matrix result, stage a Notifications fixture, add a browser-session entry,
-attach CDP, launch Chrome, send a message or run a product build/test. A new
-Codex session must not tell the user to begin `UI-POLL-JANK-001` merely because
-its guide exists.
-
-For the selected `UI-POLL-JANK-001`, the next implementation work is:
-
-1. resolve the parked Borrow reset gate exactly as described above;
-2. reuse or wrap the existing `CHAT-FLOW-001` disposable Group Chat fixture
-   without reopening its closed result;
-3. add the four-window Ava / Casey A / Casey B / Nova configuration to the
-   versioned managed-browser launcher;
-4. add a read-only, secret-safe session snapshot oracle for the guide's three
-   stop points; it may report counts, equality/hashes and boolean carrier
-   presence, never raw cookies, bearer tokens or session IDs;
-5. prove stage/status/reset plus exactly two Casey sessions before launching;
-   after handoff, the user alone records the traces and closes Casey B.
+`UI-POLL-JANK-001` is closed. Its detailed evidence is in the linked diagnosis
+and CSV/XLSX ledger. The Mobile WebView checkpoint is PARTIAL/OPEN; do not replay the
+completed performance fixture or create additional browser sessions.
 
 Existing support for the later Notifications guides must be reused before new
 harness code is created:
@@ -175,9 +141,9 @@ harness code is created:
   Never clear app data before capturing the old-cache and account-isolation
   boundaries.
 
-The six stable guide estimates exactly match the unchanged matrix values:
-UI poll `60/145`, Mobile WebView `110/260`, Mobile Push `100/235`, Notification
-Admin `80/190`, Scheduled Messages `20/65`, and Bell/Rating `55/130` minutes.
+Remaining estimates: Mobile WebView `110/260`, Mobile Push `100/235`,
+Notification Admin `80/190`, Scheduled Messages `20/65`, Bell/Rating `55/130`
+minutes. The completed UI poll estimate is excluded from the remaining total.
 
 Resolved admission decision: first-stage admission locks on the successful
 materialization commit, not when a scheduled Start is merely queued or stuck.
@@ -319,9 +285,8 @@ the checkpoint says otherwise.
 
 ### Next manual action
 
-Run the read-only `status asset-domain ASSET-BORROW-001` gate. If it remains
-`baseline-ready`, prepare and launch the configured Casey/Nova/Riley sessions
-once, then hand control to the user at checklist step 1. Do not restage.
+No action remains for UI-POLL-JANK-001. On QA continuation, start the queued
+Mobile WebView checkpoint from its read-only device/build/cache gate.
 
 Group-size audit: retain `TOURNAMENT-MEMBER-002` as 2+1 because Riley's Group B
 proves parent-event notification delivery across room boundaries while Group B

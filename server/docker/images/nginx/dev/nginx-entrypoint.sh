@@ -1,5 +1,9 @@
 #! /bin/bash
 
+# Dev owns a writable runtime copy; shared templates also feed production.
+mkdir -p /etc/nginx/conf.d
+cp /etc/nginx/dev-templates/*.conf /etc/nginx/conf.d/
+
 # Configuration
 DOMAIN=${DOMAIN:-localhost}
 LETSENCRYPT_ENABLED=${LETSENCRYPT_ENABLED:-false}
@@ -62,8 +66,12 @@ fi
 
 if command -v inotifywait >/dev/null 2>&1; then
     while true; do
-        inotifywait -qq -r -e modify,create,delete /etc/nginx >/dev/null 2>&1
-        nginx -s reload
+        changed_path=$(inotifywait -q -r -e close_write,create,delete,moved_to --format '%w' \
+            /etc/nginx/dev-templates /etc/nginx/stream_conf.d /etc/nginx/keys /etc/nginx/nginx.conf)
+        if [[ "$changed_path" == /etc/nginx/dev-templates/* ]]; then
+            cp /etc/nginx/dev-templates/*.conf /etc/nginx/conf.d/
+        fi
+        nginx -t && nginx -s reload
     done &
 fi
 

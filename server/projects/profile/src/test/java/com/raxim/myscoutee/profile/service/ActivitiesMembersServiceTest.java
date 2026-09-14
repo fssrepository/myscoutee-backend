@@ -19,6 +19,7 @@ import static org.mockito.Mockito.when;
 
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Set;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicReference;
@@ -628,6 +629,7 @@ class ActivitiesMembersServiceTest {
         ActivityMember pendingMember = member("pending-sync", "event-1", "pending-user", "Member", "pending");
         Users pendingUser = new Users();
         pendingUser.setId("pending-user");
+        pendingUser.setUserId("pending-user");
         pendingUser.setName("Pending User");
 
         when(activityMembersRepository.findByOwnerTypeAndOwnerIdAndStatusOrderByActionAtIsoDescUserIdAsc(
@@ -635,7 +637,7 @@ class ActivitiesMembersServiceTest {
                 "event-1",
                 "pending"))
                 .thenReturn(List.of(pendingMember));
-        when(usersRepository.findByUserId("pending-user")).thenReturn(Optional.of(pendingUser));
+        when(usersRepository.findByUserIdIn(Set.of("pending-user"))).thenReturn(List.of(pendingUser));
 
         List<ActivityMemberEntryDto> result = service.queryMembers("event", "event-1", true);
 
@@ -671,6 +673,8 @@ class ActivitiesMembersServiceTest {
                 .extracting(ActivityMemberEntryDto::userId)
                 .containsExactly("pending-new", "pending-old", "manager", "admin", "member");
         verify(activityMembersRepository).findManagementOrderedByOwner("event", "event-1");
+        verify(usersRepository).findByUserIdIn(Set.of("pending-new", "pending-old", "manager", "admin", "member"));
+        verify(usersRepository, never()).findByUserId(anyString());
     }
 
     @Test
@@ -745,8 +749,7 @@ class ActivitiesMembersServiceTest {
                 "subevent-1",
                 null))
                 .thenReturn(Optional.of(scopedAsset));
-        when(usersRepository.findByUserId("owner-1")).thenReturn(Optional.empty());
-        when(usersRepository.findByUserId("invitee-1")).thenReturn(Optional.of(invitee));
+        when(usersRepository.findByUserIdIn(any())).thenReturn(List.of(invitee));
 
         List<ActivityMemberEntryDto> result = service.queryMembers(
                 "asset",
@@ -811,8 +814,6 @@ class ActivitiesMembersServiceTest {
                 .thenReturn(Optional.of(scopedAsset));
         when(activityMembersRepository.findByOwnerTypeAndOwnerId("asset", "asset-1"))
                 .thenReturn(List.of(storedManager));
-        when(usersRepository.findByUserId("owner-1")).thenReturn(Optional.empty());
-        when(usersRepository.findByUserId("manager-1")).thenReturn(Optional.empty());
 
         List<ActivityMemberEntryDto> result = service.queryMembers(
                 "asset",
@@ -869,7 +870,6 @@ class ActivitiesMembersServiceTest {
                 .thenReturn(Optional.of(scopedAsset));
         when(activityMembersRepository.findByOwnerTypeAndOwnerId("asset", "asset-1"))
                 .thenReturn(List.of(storedManager));
-        when(usersRepository.findByUserId("manager-1")).thenReturn(Optional.empty());
 
         List<ActivityMemberEntryDto> result = service.queryMembers(
                 "asset",
@@ -951,7 +951,6 @@ class ActivitiesMembersServiceTest {
                 "subevent-1",
                 "D"))
                 .thenReturn(List.of(directAssignment));
-        when(usersRepository.findByUserId("owner-1")).thenReturn(Optional.empty());
 
         List<ActivityMemberEntryDto> result = service.queryMembers(
                 "asset",
@@ -1027,7 +1026,6 @@ class ActivitiesMembersServiceTest {
                 "subevent-1",
                 "D"))
                 .thenReturn(List.of(borrowedAssignment));
-        when(usersRepository.findByUserId("borrower-1")).thenReturn(Optional.empty());
 
         List<ActivityMemberEntryDto> result = service.queryMembers(
                 "asset",
@@ -1132,7 +1130,6 @@ class ActivitiesMembersServiceTest {
                 subEventId,
                 "D"))
                 .thenReturn(List.of(assignment));
-        when(usersRepository.findByUserId("borrower-1")).thenReturn(Optional.empty());
 
         List<ActivityMemberEntryDto> result = service.applyAction(new ActivityMemberActionRequestDto(
                 new ActivityMemberOwnerRefDto("asset", "asset-1"),

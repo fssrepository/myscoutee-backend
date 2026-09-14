@@ -1,7 +1,7 @@
 # Admin dynamic surfaces manual QA plan
 
 Status: living manual execution plan and evidence index
-Last updated: 2026-09-08
+Last updated: 2026-09-14
 Companion tracker: [`ADMIN_DYNAMIC_SURFACES_QA_MATRIX.xlsx`](../matrices/ADMIN_DYNAMIC_SURFACES_QA_MATRIX.xlsx)
 Reviewable spreadsheet source: [`ADMIN_DYNAMIC_SURFACES_QA_MATRIX.csv`](../matrices/ADMIN_DYNAMIC_SURFACES_QA_MATRIX.csv)
 Priority model: [`MANUAL_QA_PRIORITY_MODEL.md`](../reference/MANUAL_QA_PRIORITY_MODEL.md)
@@ -620,53 +620,20 @@ as proof of its downstream scheduled or projection behavior.
 
 ## Queued cross-surface performance defect
 
-`UI-POLL-JANK-001` has an Admin Job `MANUAL VISUAL PASS`, with its browser trace
-and the Chat retest still pending. It remains a `P1 65` (`I2 L3 A5 N4 O2`)
-checkpoint in the master spreadsheet until **both** UI checkpoints pass:
+`UI-POLL-JANK-001` is **PASS / CLOSED (2026-09-14)** after the user's explicit
+CDP delegation. Idle, Admin list and detail were recorded for 30 seconds each;
+Chat for 45 seconds with typing, scrolling and one live message. Two SmartList
+identity defects were repaired and verified through the existing frontend
+watcher and four compiled-method CDP regressions. Final traces contained no
+main-thread task ≥50 ms; Chat's maximum frame interval was 42.7 ms.
 
-Detailed code-path evidence and the reproducible trace procedure are in
-[`UI_POLL_JANK_DIAGNOSIS.md`](../diagnostics/UI_POLL_JANK_DIAGNOSIS.md).
-The tester follows the stable click-by-click
-[`UI-POLL-JANK-001` guide](../checklists/notifications/UI-POLL-JANK-001.md),
-including its explicit `60/145 min` effort breakdown.
-
-1. **Admin Job checkpoint — manual visual pass, performance trace pending.** The process
-   table now delegates its five-second live refresh, cancellation, keyed
-   equality, visible-row patching and re-sorting to SmartList. The component
-   uses `OnPush`; unchanged rows preserve references; and Job Detail has a
-   separate signal that receives only its selected changed rule. The full
-   center remains the table source and does not create a second detail poll.
-   The stutter was no longer visible in the 2026-08-04 hot-deployed build, but
-   no Performance trace was captured.
-2. **Chat checkpoint — reported, root cause unconfirmed, trace pending.** Similar
-   stutter was reported in an open chat. Chat itself uses `OnPush` and WebSocket
-   events; a separate global user realtime long-poll runs every 30 seconds, or
-   10 seconds in demo mode. Do not assume this is the same five-second Job path.
-3. **Session-retention attribution — supplemental block, pending.** During the
-   same still-open testcase, compare the same controlled user's two intended
-   browser sessions before and after read-only DevTools/CDP attachment, then
-   after the user normally closes one browser. Record the server-side active
-   session count and opaque-ID set, login-audit count, Chrome process/profile,
-   page-target/browser-context set, auth-carrier presence and `/auth/me`
-   identity without recording raw cookies, tokens or session IDs. Inspect the
-   close boundary before any `prepare-browser`, launcher replacement or
-   explicit revoke, because those operations intentionally alter session
-   state. This block diagnoses the reported lockout; it does not reopen the
-   closed `AUTH-SESSION-001` testcase.
-
-Run this pack as a separate dedicated performance session; the completed
-`STAT-012` scheduler evidence remains valid. Record 20–30 second browser
-Performance and Network traces for idle UI, Admin process list, Job Detail and
-Chat while continuously moving the pointer and, in Chat, scrolling/typing. Mark
-the exact hitch timestamps and correlate them with the five-second Job request,
-WebSocket messages, user realtime long-poll completion, scripting, layout and
-paint. For Admin Jobs, also prove that unchanged polls do not mutate rows and a
-non-selected row update does not re-render Job Detail. A fix is accepted only
-when the affected trace no longer has the periodic hitch and both UI
-checkpoints remain functionally correct. Run the supplemental session block
-exactly as specified in
-[`UI_POLL_JANK_DIAGNOSIS.md`](../diagnostics/UI_POLL_JANK_DIAGNOSIS.md); never
-infer its cause merely from a browser disappearing or a later launcher run.
+CDP attachment preserved Casey's two sessions and audit/context sets. Ordinary
+browser close retained its server slot, measured before cleanup. The managed
+browsers were then closed and the fixture/session baseline restored. Detailed
+measurements, limitations and local artifact location are in
+[`UI_POLL_JANK_DIAGNOSIS.md`](../diagnostics/UI_POLL_JANK_DIAGNOSIS.md#measured-closure--2026-09-14).
+The stable [repeatable guide](../checklists/notifications/UI-POLL-JANK-001.md)
+remains separate from execution evidence.
 
 ## Execution order for the next manual session
 
@@ -679,7 +646,7 @@ infer its cause merely from a browser disappearing or a later launcher run.
 5. Run `PARAM-011`–`PARAM-016`, reverting after each section.
 6. Finish the Statistics action deltas, Monitoring failure/recovery and graph
    interaction/large-data packs.
-7. Run `UI-POLL-JANK-001` for both Admin Job and Chat with browser traces.
+7. `UI-POLL-JANK-001` closed on 2026-09-14; retain its traces as regression evidence.
 8. Run the static-form smoke pack and record only newly found failures.
 
 ## Completion rule

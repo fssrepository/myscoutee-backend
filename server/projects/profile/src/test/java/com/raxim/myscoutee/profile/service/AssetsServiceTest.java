@@ -3,6 +3,7 @@ package com.raxim.myscoutee.profile.service;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.tuple;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
@@ -70,6 +71,7 @@ import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.PricingTimeRuleDto
 import com.raxim.myscoutee.profile.repository.ActivityMembersRepository;
 import com.raxim.myscoutee.profile.repository.AssetsRepository;
 import com.raxim.myscoutee.profile.repository.UsersRepository;
+import com.raxim.myscoutee.profile.security.FriendshipFacts;
 import com.raxim.myscoutee.profile.security.AccessControlService;
 import com.raxim.myscoutee.profile.service.notifications.NotificationOutboxService;
 import com.raxim.myscoutee.profile.service.notifications.NotificationOutboxService.NotificationIntent;
@@ -105,6 +107,7 @@ class AssetsServiceTest {
         AssetsService service = assetReadService(
                 assetsRepository,
                 usersRepository,
+                mock(FriendshipFacts.class),
                 mongoTemplate,
                 mock(AccessControlService.class));
 
@@ -133,6 +136,7 @@ class AssetsServiceTest {
         AssetsService service = assetReadService(
                 assetsRepository,
                 usersRepository,
+                mock(FriendshipFacts.class),
                 mongoTemplate,
                 mock(AccessControlService.class));
 
@@ -195,6 +199,7 @@ class AssetsServiceTest {
         AssetsService service = assetReadService(
                 assetsRepository,
                 usersRepository,
+                mock(FriendshipFacts.class),
                 mongoTemplate,
                 mock(AccessControlService.class));
         service.setEventCheckoutBasketService(basketService);
@@ -285,6 +290,7 @@ class AssetsServiceTest {
         AssetsService service = new AssetsService(
                 assetsRepository,
                 mock(UsersRepository.class),
+                mock(FriendshipFacts.class),
                 mock(ActivityMembersRepository.class),
                 mock(EventParticipationTicketService.class),
                 mock(PaymentService.class),
@@ -334,6 +340,7 @@ class AssetsServiceTest {
         AssetsService service = new AssetsService(
                 assetsRepository,
                 usersRepository,
+                mock(FriendshipFacts.class),
                 activityMembersRepository,
                 mock(EventParticipationTicketService.class),
                 mock(PaymentService.class),
@@ -378,6 +385,7 @@ class AssetsServiceTest {
         AssetsService service = new AssetsService(
                 assetsRepository,
                 usersRepository,
+                mock(FriendshipFacts.class),
                 activityMembersRepository,
                 mock(EventParticipationTicketService.class),
                 mock(PaymentService.class),
@@ -423,6 +431,7 @@ class AssetsServiceTest {
         AssetsService service = new AssetsService(
                 assetsRepository,
                 usersRepository,
+                mock(FriendshipFacts.class),
                 activityMembersRepository,
                 mock(EventParticipationTicketService.class),
                 mock(PaymentService.class),
@@ -460,6 +469,7 @@ class AssetsServiceTest {
         AssetsService service = assetReadService(
                 assetsRepository,
                 usersRepository,
+                mock(FriendshipFacts.class),
                 mongoTemplate,
                 accessControlService);
 
@@ -489,6 +499,7 @@ class AssetsServiceTest {
         AssetsService service = assetReadService(
                 assetsRepository,
                 usersRepository,
+                mock(FriendshipFacts.class),
                 mongoTemplate,
                 accessControlService);
 
@@ -497,6 +508,46 @@ class AssetsServiceTest {
         assertThat(detail).isNotNull();
         assertThat(detail.id()).isEqualTo("asset-1");
         assertThat(detail.ownerUserId()).isEqualTo("u1");
+    }
+
+    @Test
+    void ticketSyncIncludesOrganizerAvatarAndUpdatesItsRevisionWhenTheImageChanges() {
+        EventParticipationTicketService ticketService = mock(EventParticipationTicketService.class);
+        AccessControlService accessControlService = mock(AccessControlService.class);
+        UsersRepository usersRepository = mock(UsersRepository.class);
+        ActivityEvent eventA = ticketListEvent("event-a", "holder-user", "2030-04-18T19:00:00Z");
+        ActivityEvent eventB = ticketListEvent("event-b", "holder-user", "2030-04-19T19:00:00Z");
+        eventA.setCreatorUserId("organizer");
+        eventB.setCreatorUserId("organizer");
+        Users organizer = user("organizer", "Casey Bridge", "CB");
+        organizer.setImages(List.of("/media/organizer.webp"));
+        when(usersRepository.findByUserIdIn(List.of("organizer"))).thenReturn(List.of(organizer));
+        when(accessControlService.requiresAuthenticatedActor()).thenReturn(false);
+        when(ticketService.queryTicketSnapshotRecordsForUser("holder-user")).thenReturn(List.of(
+                new EventParticipationTicketService.TicketSnapshotRecord(eventA,
+                        activeTicket("ticket-a", "event-a", "holder-user", "TKT-a")),
+                new EventParticipationTicketService.TicketSnapshotRecord(eventB,
+                        activeTicket("ticket-b", "event-b", "holder-user", "TKT-b"))));
+        AssetsService service = ticketValidationService(usersRepository, mock(FriendshipFacts.class),
+                mock(ActivityMembersRepository.class), ticketService,
+                mock(NotificationOutboxService.class), accessControlService);
+
+        var initial = service.syncTickets(new AssetTicketSyncRequestDto(
+                "holder-user", "upcoming", 6, List.of(), null));
+        assertThat(initial.upserts()).hasSize(2).allSatisfy(row -> {
+            assertThat(row.creatorName()).isEqualTo("Casey Bridge");
+            assertThat(row.creatorAvatarUrl()).isEqualTo("/media/organizer.webp");
+        });
+        verify(usersRepository, times(1)).findByUserIdIn(List.of("organizer"));
+        var known = initial.upserts().stream()
+                .map(row -> new AssetTicketSyncKnownItemDto(row.type() + ":" + row.id(), row.revision()))
+                .toList();
+        organizer.setImages(List.of("/media/organizer-new.webp"));
+
+        var updated = service.syncTickets(new AssetTicketSyncRequestDto(
+                "holder-user", "upcoming", 6, known, null));
+        assertThat(updated.upserts()).hasSize(2).allSatisfy(row ->
+                assertThat(row.creatorAvatarUrl()).isEqualTo("/media/organizer-new.webp"));
     }
 
     @Test
@@ -517,6 +568,7 @@ class AssetsServiceTest {
                         List.of(new EventParticipationTicketService.TicketSnapshotRecord(eventB, ticketB)));
         AssetsService service = ticketValidationService(
                 mock(UsersRepository.class),
+                mock(FriendshipFacts.class),
                 mock(ActivityMembersRepository.class),
                 ticketService,
                 mock(NotificationOutboxService.class),
@@ -562,6 +614,7 @@ class AssetsServiceTest {
 
         AssetsService service = ticketValidationService(
                 usersRepository,
+                mock(FriendshipFacts.class),
                 activityMembersRepository,
                 ticketService,
                 notificationOutboxService,
@@ -617,6 +670,7 @@ class AssetsServiceTest {
 
         AssetsService service = ticketValidationService(
                 usersRepository,
+                mock(FriendshipFacts.class),
                 activityMembersRepository,
                 ticketService,
                 notificationOutboxService,
@@ -656,6 +710,7 @@ class AssetsServiceTest {
 
         AssetsService service = ticketValidationService(
                 usersRepository,
+                mock(FriendshipFacts.class),
                 activityMembersRepository,
                 ticketService,
                 notificationOutboxService,
@@ -697,6 +752,7 @@ class AssetsServiceTest {
                 .thenReturn(EventTicketService.CheckInResult.invalid("not_found"));
         AssetsService service = ticketValidationService(
                 mock(UsersRepository.class),
+                mock(FriendshipFacts.class),
                 mock(ActivityMembersRepository.class),
                 ticketService,
                 notificationOutboxService,
@@ -747,6 +803,7 @@ class AssetsServiceTest {
         AssetsService service = new AssetsService(
                 assetsRepository,
                 usersRepository,
+                mock(FriendshipFacts.class),
                 activityMembersRepository,
                 mock(EventParticipationTicketService.class),
                 mock(PaymentService.class),
@@ -869,6 +926,7 @@ class AssetsServiceTest {
         AssetsService service = new AssetsService(
                 assetsRepository,
                 usersRepository,
+                mock(FriendshipFacts.class),
                 mock(ActivityMembersRepository.class),
                 mock(EventParticipationTicketService.class),
                 mock(PaymentService.class),
@@ -944,6 +1002,7 @@ class AssetsServiceTest {
         AssetsService service = new AssetsService(
                 assetsRepository,
                 mock(UsersRepository.class),
+                mock(FriendshipFacts.class),
                 mock(ActivityMembersRepository.class),
                 mock(EventParticipationTicketService.class),
                 mock(PaymentService.class),
@@ -990,6 +1049,7 @@ class AssetsServiceTest {
         AssetsService service = new AssetsService(
                 assetsRepository,
                 mock(UsersRepository.class),
+                mock(FriendshipFacts.class),
                 mock(ActivityMembersRepository.class),
                 mock(EventParticipationTicketService.class),
                 mock(PaymentService.class),
@@ -1057,6 +1117,7 @@ class AssetsServiceTest {
         AssetsService service = new AssetsService(
                 assetsRepository,
                 usersRepository,
+                mock(FriendshipFacts.class),
                 mock(ActivityMembersRepository.class),
                 mock(EventParticipationTicketService.class),
                 paymentService,
@@ -1158,6 +1219,7 @@ class AssetsServiceTest {
         AssetsService service = new AssetsService(
                 assetsRepository,
                 usersRepository,
+                mock(FriendshipFacts.class),
                 activityMembersRepository,
                 mock(EventParticipationTicketService.class),
                 mock(PaymentService.class),
@@ -1204,6 +1266,7 @@ class AssetsServiceTest {
         AssetsService service = new AssetsService(
                 assetsRepository,
                 mock(UsersRepository.class),
+                mock(FriendshipFacts.class),
                 activityMembersRepository,
                 mock(EventParticipationTicketService.class),
                 mock(PaymentService.class),
@@ -1276,6 +1339,7 @@ class AssetsServiceTest {
         AssetsService service = new AssetsService(
                 assetsRepository,
                 mock(UsersRepository.class),
+                mock(FriendshipFacts.class),
                 mock(ActivityMembersRepository.class),
                 mock(EventParticipationTicketService.class),
                 mock(PaymentService.class),
@@ -1347,6 +1411,7 @@ class AssetsServiceTest {
         AssetsService service = new AssetsService(
                 assetsRepository,
                 usersRepository,
+                mock(FriendshipFacts.class),
                 activityMembersRepository,
                 mock(EventParticipationTicketService.class),
                 mock(PaymentService.class),
@@ -1419,6 +1484,7 @@ class AssetsServiceTest {
         AssetsService service = new AssetsService(
                 assetsRepository,
                 usersRepository,
+                mock(FriendshipFacts.class),
                 activityMembersRepository,
                 mock(EventParticipationTicketService.class),
                 mock(PaymentService.class),
@@ -1496,6 +1562,7 @@ class AssetsServiceTest {
         AssetsService service = new AssetsService(
                 assetsRepository,
                 usersRepository,
+                mock(FriendshipFacts.class),
                 activityMembersRepository,
                 mock(EventParticipationTicketService.class),
                 mock(PaymentService.class),
@@ -1569,6 +1636,7 @@ class AssetsServiceTest {
         AssetsService service = new AssetsService(
                 assetsRepository,
                 usersRepository,
+                mock(FriendshipFacts.class),
                 activityMembersRepository,
                 mock(EventParticipationTicketService.class),
                 mock(PaymentService.class),
@@ -1632,6 +1700,7 @@ class AssetsServiceTest {
         AssetsService service = new AssetsService(
                 assetsRepository,
                 usersRepository,
+                mock(FriendshipFacts.class),
                 activityMembersRepository,
                 mock(EventParticipationTicketService.class),
                 mock(PaymentService.class),
@@ -1688,6 +1757,7 @@ class AssetsServiceTest {
         AssetsService service = new AssetsService(
                 assetsRepository,
                 usersRepository,
+                mock(FriendshipFacts.class),
                 activityMembersRepository,
                 mock(EventParticipationTicketService.class),
                 mock(PaymentService.class),
@@ -1745,6 +1815,7 @@ class AssetsServiceTest {
         AssetsService service = new AssetsService(
                 assetsRepository,
                 usersRepository,
+                mock(FriendshipFacts.class),
                 activityMembersRepository,
                 mock(EventParticipationTicketService.class),
                 mock(PaymentService.class),
@@ -1801,6 +1872,7 @@ class AssetsServiceTest {
         AssetsService service = new AssetsService(
                 assetsRepository,
                 usersRepository,
+                mock(FriendshipFacts.class),
                 activityMembersRepository,
                 mock(EventParticipationTicketService.class),
                 mock(PaymentService.class),
@@ -1858,6 +1930,7 @@ class AssetsServiceTest {
         AssetsService service = new AssetsService(
                 assetsRepository,
                 usersRepository,
+                mock(FriendshipFacts.class),
                 activityMembersRepository,
                 mock(EventParticipationTicketService.class),
                 mock(PaymentService.class),
@@ -1911,6 +1984,7 @@ class AssetsServiceTest {
         AssetsService service = new AssetsService(
                 assetsRepository,
                 usersRepository,
+                mock(FriendshipFacts.class),
                 activityMembersRepository,
                 mock(EventParticipationTicketService.class),
                 mock(PaymentService.class),
@@ -1966,6 +2040,7 @@ class AssetsServiceTest {
         AssetsService service = new AssetsService(
                 assetsRepository,
                 usersRepository,
+                mock(FriendshipFacts.class),
                 activityMembersRepository,
                 mock(EventParticipationTicketService.class),
                 mock(PaymentService.class),
@@ -2035,6 +2110,7 @@ class AssetsServiceTest {
         AssetsService service = new AssetsService(
                 assetsRepository,
                 usersRepository,
+                mock(FriendshipFacts.class),
                 activityMembersRepository,
                 mock(EventParticipationTicketService.class),
                 mock(PaymentService.class),
@@ -2095,6 +2171,7 @@ class AssetsServiceTest {
         AssetsService service = new AssetsService(
                 assetsRepository,
                 usersRepository,
+                mock(FriendshipFacts.class),
                 activityMembersRepository,
                 mock(EventParticipationTicketService.class),
                 mock(PaymentService.class),
@@ -2149,6 +2226,7 @@ class AssetsServiceTest {
         AssetsService service = new AssetsService(
                 assetsRepository,
                 usersRepository,
+                mock(FriendshipFacts.class),
                 activityMembersRepository,
                 mock(EventParticipationTicketService.class),
                 mock(PaymentService.class),
@@ -2220,6 +2298,7 @@ class AssetsServiceTest {
         AssetsService service = new AssetsService(
                 assetsRepository,
                 usersRepository,
+                mock(FriendshipFacts.class),
                 activityMembersRepository,
                 mock(EventParticipationTicketService.class),
                 mock(PaymentService.class),
@@ -2293,6 +2372,7 @@ class AssetsServiceTest {
         AssetsService service = new AssetsService(
                 assetsRepository,
                 usersRepository,
+                mock(FriendshipFacts.class),
                 activityMembersRepository,
                 mock(EventParticipationTicketService.class),
                 mock(PaymentService.class),
@@ -2333,6 +2413,7 @@ class AssetsServiceTest {
         AssetsService service = new AssetsService(
                 assetsRepository,
                 usersRepository,
+                mock(FriendshipFacts.class),
                 activityMembersRepository,
                 mock(EventParticipationTicketService.class),
                 mock(PaymentService.class),
@@ -2391,6 +2472,7 @@ class AssetsServiceTest {
         AssetsService service = new AssetsService(
                 assetsRepository,
                 usersRepository,
+                mock(FriendshipFacts.class),
                 activityMembersRepository,
                 mock(EventParticipationTicketService.class),
                 mock(PaymentService.class),
@@ -2437,6 +2519,7 @@ class AssetsServiceTest {
         AssetsService service = new AssetsService(
                 assetsRepository,
                 usersRepository,
+                mock(FriendshipFacts.class),
                 activityMembersRepository,
                 mock(EventParticipationTicketService.class),
                 mock(PaymentService.class),
@@ -2463,6 +2546,7 @@ class AssetsServiceTest {
         AssetsService service = new AssetsService(
                 assetsRepository,
                 mock(UsersRepository.class),
+                mock(FriendshipFacts.class),
                 mock(ActivityMembersRepository.class),
                 mock(EventParticipationTicketService.class),
                 mock(PaymentService.class),
@@ -2489,6 +2573,7 @@ class AssetsServiceTest {
         AssetsService service = new AssetsService(
                 assetsRepository,
                 mock(UsersRepository.class),
+                mock(FriendshipFacts.class),
                 mock(ActivityMembersRepository.class),
                 mock(EventParticipationTicketService.class),
                 mock(PaymentService.class),
@@ -2515,6 +2600,7 @@ class AssetsServiceTest {
         AssetsService service = new AssetsService(
                 assetsRepository,
                 mock(UsersRepository.class),
+                mock(FriendshipFacts.class),
                 mock(ActivityMembersRepository.class),
                 mock(EventParticipationTicketService.class),
                 mock(PaymentService.class),
@@ -2553,6 +2639,7 @@ class AssetsServiceTest {
         AssetsService service = new AssetsService(
                 assetsRepository,
                 usersRepository,
+                mock(FriendshipFacts.class),
                 activityMembersRepository,
                 mock(EventParticipationTicketService.class),
                 mock(PaymentService.class),
@@ -2651,6 +2738,7 @@ class AssetsServiceTest {
         AssetsService service = new AssetsService(
                 assetsRepository,
                 usersRepository,
+                mock(FriendshipFacts.class),
                 mock(ActivityMembersRepository.class),
                 mock(EventParticipationTicketService.class),
                 mock(PaymentService.class),
@@ -2681,6 +2769,7 @@ class AssetsServiceTest {
         AssetsService service = new AssetsService(
                 assetsRepository,
                 mock(UsersRepository.class),
+                mock(FriendshipFacts.class),
                 mock(ActivityMembersRepository.class),
                 mock(EventParticipationTicketService.class),
                 mock(PaymentService.class),
@@ -2719,6 +2808,7 @@ class AssetsServiceTest {
         AssetsService service = new AssetsService(
                 assetsRepository,
                 usersRepository,
+                mock(FriendshipFacts.class),
                 activityMembersRepository,
                 mock(EventParticipationTicketService.class),
                 mock(PaymentService.class),
@@ -2790,6 +2880,7 @@ class AssetsServiceTest {
         AssetsService service = new AssetsService(
                 assetsRepository,
                 mock(UsersRepository.class),
+                mock(FriendshipFacts.class),
                 mock(ActivityMembersRepository.class),
                 mock(EventParticipationTicketService.class),
                 mock(PaymentService.class),
@@ -2826,6 +2917,7 @@ class AssetsServiceTest {
         AssetsService service = new AssetsService(
                 assetsRepository,
                 mock(UsersRepository.class),
+                mock(FriendshipFacts.class),
                 mock(ActivityMembersRepository.class),
                 mock(EventParticipationTicketService.class),
                 mock(PaymentService.class),
@@ -2863,6 +2955,7 @@ class AssetsServiceTest {
         AssetsService service = new AssetsService(
                 assetsRepository,
                 mock(UsersRepository.class),
+                mock(FriendshipFacts.class),
                 mock(ActivityMembersRepository.class),
                 mock(EventParticipationTicketService.class),
                 mock(PaymentService.class),
@@ -2925,6 +3018,7 @@ class AssetsServiceTest {
         AssetsService service = new AssetsService(
                 assetsRepository,
                 usersRepository,
+                mock(FriendshipFacts.class),
                 activityMembersRepository,
                 mock(EventParticipationTicketService.class),
                 mock(PaymentService.class),
@@ -3025,6 +3119,7 @@ class AssetsServiceTest {
         AssetsService service = new AssetsService(
                 assetsRepository,
                 usersRepository,
+                mock(FriendshipFacts.class),
                 activityMembersRepository,
                 mock(EventParticipationTicketService.class),
                 mock(PaymentService.class),
@@ -3088,6 +3183,7 @@ class AssetsServiceTest {
         AssetsService service = new AssetsService(
                 assetsRepository,
                 usersRepository,
+                mock(FriendshipFacts.class),
                 activityMembersRepository,
                 mock(EventParticipationTicketService.class),
                 mock(PaymentService.class),
@@ -3146,6 +3242,7 @@ class AssetsServiceTest {
         AssetsService service = new AssetsService(
                 assetsRepository,
                 usersRepository,
+                mock(FriendshipFacts.class),
                 activityMembersRepository,
                 mock(EventParticipationTicketService.class),
                 mock(PaymentService.class),
@@ -3188,6 +3285,7 @@ class AssetsServiceTest {
         AssetsService service = new AssetsService(
                 assetsRepository,
                 mock(UsersRepository.class),
+                mock(FriendshipFacts.class),
                 activityMembersRepository,
                 mock(EventParticipationTicketService.class),
                 mock(PaymentService.class),
@@ -3225,6 +3323,7 @@ class AssetsServiceTest {
         AssetsService service = new AssetsService(
                 assetsRepository,
                 mock(UsersRepository.class),
+                mock(FriendshipFacts.class),
                 mock(ActivityMembersRepository.class),
                 mock(EventParticipationTicketService.class),
                 mock(PaymentService.class),
@@ -3259,6 +3358,7 @@ class AssetsServiceTest {
         AssetsService service = new AssetsService(
                 assetsRepository,
                 mock(UsersRepository.class),
+                mock(FriendshipFacts.class),
                 mock(ActivityMembersRepository.class),
                 mock(EventParticipationTicketService.class),
                 mock(PaymentService.class),
@@ -3323,6 +3423,7 @@ class AssetsServiceTest {
         AssetsService service = new AssetsService(
                 assetsRepository,
                 mock(UsersRepository.class),
+                mock(FriendshipFacts.class),
                 mock(ActivityMembersRepository.class),
                 mock(EventParticipationTicketService.class),
                 paymentService,
@@ -3607,6 +3708,7 @@ class AssetsServiceTest {
         return new AssetsService(
                 mock(AssetsRepository.class),
                 usersRepository,
+                mock(FriendshipFacts.class),
                 activityMembersRepository,
                 ticketService,
                 mock(PaymentService.class),
@@ -3628,6 +3730,7 @@ class AssetsServiceTest {
         return new AssetsService(
                 assetsRepository,
                 usersRepository,
+                mock(FriendshipFacts.class),
                 mock(ActivityMembersRepository.class),
                 mock(EventParticipationTicketService.class),
                 mock(PaymentService.class),

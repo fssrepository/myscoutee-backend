@@ -34,6 +34,7 @@ import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import com.raxim.myscoutee.profile.security.FriendshipFacts;
 import org.springframework.util.StringUtils;
 
 import com.mongodb.client.result.UpdateResult;
@@ -102,6 +103,7 @@ public class AssetsService {
 
     private final AssetsRepository assetsRepository;
     private final UsersRepository usersRepository;
+    private final FriendshipFacts friendshipFacts;
     private final ActivityMembersRepository activityMembersRepository;
     private final EventParticipationTicketService eventParticipationTicketService;
     private final PaymentService paymentService;
@@ -121,6 +123,7 @@ public class AssetsService {
     public AssetsService(
             AssetsRepository assetsRepository,
             UsersRepository usersRepository,
+            FriendshipFacts friendshipFacts,
             ActivityMembersRepository activityMembersRepository,
             EventParticipationTicketService eventParticipationTicketService,
             PaymentService paymentService,
@@ -134,6 +137,7 @@ public class AssetsService {
             UserActivityCountersService userActivityCountersService) {
         this.assetsRepository = assetsRepository;
         this.usersRepository = usersRepository;
+        this.friendshipFacts = friendshipFacts;
         this.activityMembersRepository = activityMembersRepository;
         this.eventParticipationTicketService = eventParticipationTicketService;
         this.paymentService = paymentService;
@@ -462,9 +466,16 @@ public class AssetsService {
         int normalizedPageSize = Math.max(1, pageSize == null ? 20 : pageSize.intValue());
         boolean upcoming = !"past".equalsIgnoreCase(safeText(order));
 
-        List<AssetTicketDto> ordered = eventParticipationTicketService.queryTicketSnapshotRecordsForUser(normalizedUserId).stream()
+        var snapshots = eventParticipationTicketService.queryTicketSnapshotRecordsForUser(normalizedUserId).stream()
                 .filter(Objects::nonNull)
-                .map(this::toAssetTicketDto)
+                .toList();
+        Map<String, AssetOwnerSummary> creatorsByUserId = resolveUserSummaries(snapshots.stream()
+                .map(snapshot -> normalizeId(snapshot.event() == null ? null : snapshot.event().getCreatorUserId()))
+                .filter(StringUtils::hasText)
+                .distinct()
+                .toList());
+        List<AssetTicketDto> ordered = snapshots.stream()
+                .map(snapshot -> toAssetTicketDto(snapshot, creatorsByUserId))
                 .filter(Objects::nonNull)
                 .sorted(Comparator.comparing((AssetTicketDto item) -> toSortableDate(item.dateIso())))
                 .toList();
@@ -2443,7 +2454,9 @@ public class AssetsService {
         return clone;
     }
 
-    private AssetTicketDto toAssetTicketDto(EventParticipationTicketService.TicketSnapshotRecord snapshot) {
+    private AssetTicketDto toAssetTicketDto(
+            EventParticipationTicketService.TicketSnapshotRecord snapshot,
+            Map<String, AssetOwnerSummary> creatorsByUserId) {
         ActivityEvent event = snapshot == null ? null : snapshot.event();
         EventTicket credential = snapshot == null ? null : snapshot.credential();
         if (event == null) {
@@ -2458,6 +2471,10 @@ public class AssetsService {
             return null;
         }
         boolean admin = Boolean.TRUE.equals(event.getIsAdmin());
+        AssetOwnerSummary creator = creatorsByUserId.get(normalizeId(event.getCreatorUserId()));
+        String creatorName = creator != null && StringUtils.hasText(creator.name())
+                ? creator.name() : safeText(event.getCreatorName());
+        String creatorAvatarUrl = creator == null ? null : creator.avatarUrl();
         return new AssetTicketDto(
                 sourceId,
                 holderUserId,
@@ -2477,7 +2494,9 @@ public class AssetsService {
                 safeText(event.getVisibility()),
                 safeText(event.getCreatorInitials()),
                 safeText(event.getCreatorInitials()),
-                assetTicketRevision(event, credential));
+                creatorName,
+                creatorAvatarUrl,
+                assetTicketRevision(event, credential, creatorName, creatorAvatarUrl));
     }
 
     private String assetTicketIdentity(AssetTicketDto ticket) {
@@ -2487,7 +2506,8 @@ public class AssetsService {
         return safeText(ticket.type()) + ":" + normalizeId(ticket.id());
     }
 
-    private String assetTicketRevision(ActivityEvent event, EventTicket credential) {
+    private String assetTicketRevision(
+            ActivityEvent event, EventTicket credential, String creatorName, String creatorAvatarUrl) {
         return String.join("\u001f",
                 normalizeId(credential == null ? null : credential.getId()),
                 safeText(credential == null ? null : credential.getCode()),
@@ -2501,7 +2521,9 @@ public class AssetsService {
                 safeText(event == null ? null : event.getStartAtIso()),
                 safeText(event == null ? null : event.getEndAtIso()),
                 safeText(event == null ? null : event.getImageUrl()),
-                safeText(event == null ? null : event.getVisibility()));
+                safeText(event == null ? null : event.getVisibility()),
+                safeText(creatorName),
+                safeText(creatorAvatarUrl));
     }
 
     private AssetTicketScanPayloadDto toTicketScanPayload(EventTicket ticket, ActivityEvent event) {
@@ -2592,6 +2614,10 @@ public class AssetsService {
                 .filter(StringUtils::hasText)
                 .distinct()
                 .toList();
+        return resolveUserSummaries(ownerUserIds);
+    }
+
+    private Map<String, AssetOwnerSummary> resolveUserSummaries(List<String> ownerUserIds) {
         if (ownerUserIds.isEmpty()) {
             return Map.of();
         }
@@ -2692,11 +2718,7 @@ public class AssetsService {
         if (!StringUtils.hasText(normalizedUserId)) {
             return List.of();
         }
-        return usersRepository.findAll().stream()
-                .map(user -> normalizeId(user == null ? null : user.getUserId()))
-                .filter(StringUtils::hasText)
-                .filter(ownerUserId -> isFriendOfActiveUser(ownerUserId, normalizedUserId))
-                .toList();
+        return List.copyOf(friendshipFacts.friendIds(normalizedUserId));
     }
 
     @SuppressWarnings("unchecked")
@@ -4844,13 +4866,7 @@ public class AssetsService {
     }
 
     private boolean isFriendOfActiveUser(String userId, String activeUserId) {
-        if (!StringUtils.hasText(userId) || !StringUtils.hasText(activeUserId) || userId.equals(activeUserId)) {
-            return false;
-        }
-        String firstId = userId.compareTo(activeUserId) <= 0 ? userId : activeUserId;
-        String secondId = userId.compareTo(activeUserId) <= 0 ? activeUserId : userId;
-        int seed = hashText("friend-pair:" + firstId + ":" + secondId);
-        return (seed % 100) < 32;
+        return friendshipFacts.areFriends(userId, activeUserId);
     }
 
     private int hashText(String value) {

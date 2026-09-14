@@ -45,6 +45,8 @@ import com.raxim.myscoutee.profile.repository.AssetsRepository;
 import com.raxim.myscoutee.profile.repository.EventFeedbackAnswersRepository;
 import com.raxim.myscoutee.profile.repository.EventFeedbackStatesRepository;
 import com.raxim.myscoutee.profile.repository.UserAffinityEdgesRepository;
+import com.raxim.myscoutee.profile.repository.UserFriendshipsRepository;
+import com.raxim.myscoutee.profile.data.document.UserFriendship;
 import com.raxim.myscoutee.profile.repository.UserExperienceProfilesRepository;
 import com.raxim.myscoutee.profile.repository.UserFeedbackSubmissionsRepository;
 import com.raxim.myscoutee.profile.repository.UserFilterPreferencesRepository;
@@ -121,6 +123,9 @@ class HomeUserProfileServiceTest {
     @Mock
     private UserNotificationPageRepository userNotificationPageRepository;
 
+    @Mock
+    private UserFriendshipsRepository userFriendshipsRepository;
+
     private HomeUserProfileService service;
     private final AbsoluteAffinityService absoluteAffinityService = new AbsoluteAffinityService(null, null);
 
@@ -141,6 +146,7 @@ class HomeUserProfileServiceTest {
                 userFilterPreferencesRepository,
                 userExperienceProfilesRepository,
                 userAffinityEdgesRepository,
+                userFriendshipsRepository,
                 userRatesRepository,
                 chatsRepository,
                 chatMessagesRepository,
@@ -315,11 +321,8 @@ class HomeUserProfileServiceTest {
 
         when(usersRepository.findByProfileStatusIn(List.of("public", "friends only")))
                 .thenReturn(List.of(active, bridge, socialCandidate, outsideCandidate));
-        when(activityMembersRepository.findAll()).thenReturn(List.of(
-                acceptedMember("active-bridge", "active"),
-                acceptedMember("active-bridge", "bridge"),
-                acceptedMember("bridge-candidate", "bridge"),
-                acceptedMember("bridge-candidate", "social-candidate")));
+        when(userFriendshipsRepository.findRelevantByUserIds(List.of("active", "bridge", "social-candidate", "outside-candidate")))
+                .thenReturn(List.of(friendship("active", "bridge"), friendship("bridge", "social-candidate")));
         when(userAffinityEdgesRepository.findRelevantByUserIds(List.of("active"))).thenReturn(List.of());
 
         List<Users> cards = service.queryGameStackUserRecords("active");
@@ -365,7 +368,7 @@ class HomeUserProfileServiceTest {
         assertThat(secondCards).extracting(Users::getId).containsExactly("candidate");
         verify(usersRepository, times(1)).findByProfileStatusIn(List.of("public", "friends only"));
         verify(userRatesRepository, times(1)).findAll();
-        verify(activityMembersRepository, times(2)).findAll();
+        verify(activityMembersRepository, times(1)).findAll();
         verify(userRatesRepository, times(2)).findHomeGameExclusionProjections("active");
         verify(userAffinityEdgesRepository, times(1)).findRelevantByUserIds(List.of("active"));
     }
@@ -430,7 +433,7 @@ class HomeUserProfileServiceTest {
     }
 
     @Test
-    void socialBucketsShareEventParentProjectionSnapshot() {
+    void socialBucketsShareStoredFriendshipsAndBatchProfiles() {
         Users active = projectedUser("active", 0d);
         Users friend = projectedUser("friend", 10d);
         friend.setProfileStatus("friends only");
@@ -443,10 +446,14 @@ class HomeUserProfileServiceTest {
                 .thenReturn(List.of(active, friend));
         when(activityEventsRepository.findHomeGameMemberProjections()).thenReturn(List.of(event));
 
+        when(userFriendshipsRepository.findRelevantByUserIds(List.of("active", "friend")))
+                .thenReturn(List.of(friendship("active", "friend")));
+
         assertThat(service.queryOrderedUserRecords()).containsExactly(active, friend);
         assertThat(service.queryActivitySocialGraph().neighborsByUserId().get("active"))
                 .containsExactly("friend");
         verify(usersRepository, times(1)).findByProfileStatusIn(List.of("public", "friends only"));
+        verify(userFriendshipsRepository, times(1)).findRelevantByUserIds(List.of("active", "friend"));
         verify(activityEventsRepository, times(1)).findHomeGameMemberProjections();
         verify(activityMembersRepository, never()).findAll();
         verify(userRatesRepository, never()).findAll();
@@ -877,6 +884,24 @@ class HomeUserProfileServiceTest {
         } finally {
             SecurityContextHolder.clearContext();
         }
+    }
+
+    private UserFriendship friendship(String left, String right) {
+        return new UserFriendship(left + ":" + right, left, right, null, "event-1", null, "event-1", "Coffee Social");
+    }
+
+    @Test
+    void acceptedEventMembersDoNotBecomeFriendsWithoutCompletedEventProjection() {
+        Users active = projectedUser("active", 0d);
+        Users candidate = projectedUser("candidate", 0d);
+        ActivityEvent future = new ActivityEvent();
+        future.setAcceptedMemberUserIds(List.of("active", "candidate"));
+        future.setStartAtIso("2099-01-01T12:00:00Z");
+        when(usersRepository.findByProfileStatusIn(List.of("public", "friends only"))).thenReturn(List.of(active, candidate));
+        when(activityEventsRepository.findHomeGameMemberProjections()).thenReturn(List.of(future));
+        assertThat(service.queryActivitySocialGraph().neighborsByUserId()).isEmpty();
+        verify(userFriendshipsRepository).findRelevantByUserIds(List.of("active", "candidate"));
+        verify(activityMembersRepository, never()).findAll();
     }
 
     private HomeUserProfileService.ActivitySocialGraph graph(Map<String, Set<String>> neighborsByUserId) {

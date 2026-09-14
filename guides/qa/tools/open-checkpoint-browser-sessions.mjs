@@ -18,6 +18,7 @@ const configurationPath = process.env.QA_BROWSER_SESSION_CONFIG
   || path.join(scriptDirectory, 'browser-session-checkpoints.json');
 const chromeBinary = process.env.CHROME_BIN || '/opt/google/chrome/chrome';
 const argumentsList = process.argv.slice(2);
+const closeOnly = argumentsList.includes('--close-only');
 const dismissGuidesOnly = argumentsList.includes('--dismiss-guides');
 const verifyExistingOnly = argumentsList.includes('--verify-existing');
 const checkpointId = `${argumentsList.find(argument => !argument.startsWith('--')) || process.env.QA_CHECKPOINT || ''}`.trim();
@@ -62,6 +63,10 @@ const manifestPath = path.join(runtimeRoot, `${safeCheckpointId}.json`);
 
 await mkdir(runtimeRoot, { recursive: true, mode: 0o700 });
 await chmod(runtimeRoot, 0o700);
+if (closeOnly) {
+  await closePreviousCheckpointSessions(manifestPath);
+  process.exit(0);
+}
 if (verifyExistingOnly) {
   await verifyExistingManagedSessions(manifestPath);
   process.exit(0);
@@ -108,8 +113,13 @@ try {
       x: column * windowWidth,
       y: row * windowHeight,
       width: windowWidth,
-      height: windowHeight
+      height: windowHeight,
+      ...(session.window ?? {})
     };
+    if (!['x', 'y', 'width', 'height'].every(key => Number.isInteger(position[key]))
+      || position.width <= 0 || position.height <= 0) {
+      fail(`Invalid configured window bounds for ${session.actor}`);
+    }
 
     const browserArguments = [
       `--user-data-dir=${userDataDirectory}`,
@@ -196,6 +206,11 @@ try {
     await persistManifest();
     process.stdout.write(`${session.actor}: ${session.expectedName} ready.\n`);
   }
+  if (checkpoint.startupOracle === 'ui-poll') {
+    await runAttachedCommand(process.execPath,
+      [path.join(scriptDirectory, 'verify-ui-poll-sessions.mjs'), 'preflight', manifestPath], process.env);
+    process.stdout.write('UI-POLL-JANK-001: three identities, Group Chat visibility and exactly two Casey sessions verified.\n');
+  }
 } catch (error) {
   try {
     await closePreviousCheckpointSessions(manifestPath);
@@ -219,12 +234,13 @@ async function persistManifest() {
 }
 
 async function prepareConfiguredDemoSessions() {
-  const userIds = [...new Set(
-    checkpoint.sessions
+  const userIds = [...new Set([
+    ...(checkpoint.additionalDemoUserIds || []),
+    ...checkpoint.sessions
       .filter(session => `${session.sessionKind ?? 'demo'}`.trim().toLowerCase() === 'demo')
       .map(session => `${session.userId ?? ''}`.trim())
       .filter(Boolean)
-  )];
+  ])];
   if (userIds.length === 0) return;
   if (!existsSync(browserSessionCheckpointHarnessPath)) {
     throw new Error(`Browser-session checkpoint harness is missing at ${browserSessionCheckpointHarnessPath}.`);
