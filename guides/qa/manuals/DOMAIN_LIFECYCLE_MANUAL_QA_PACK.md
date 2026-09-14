@@ -8068,6 +8068,53 @@ evidence and status.
   verdict, not a claim that one post-reset document still contains every
   historical transition.
 
+## Mobile WebView physical-device execution — 2026-09-14
+
+`MOBILE-WEBVIEW-LIFECYCLE-001`: **PARTIAL / OPEN**, executed through explicitly
+user-delegated ADB/CDP on Android 14, local Chrome-installed PWA. Evidence is
+retained locally at `~/.local/share/myscoutee-qa-evidence/MOBILE-WEBVIEW-LIFECYCLE-001/2026-09-14/`.
+
+- Old `4be4a1c596e2-20260905140310` automatically upgraded to
+  `mobile-webview-20260914-icon-fix`; candidate fonts loaded, no failed
+  resource requests observed. Closure used force-stop of the owned WebAPK,
+  not Chrome. No app-data clear or reinstall was used in the measured journey.
+- Preparation initially mixed an unstamped dev page with the old production
+  route: font URLs returned HTML. Activating the installed old worker and
+  loading its coherent shell resolved this; screenshots retained. Candidate
+  Preview badge is hidden offline too. The reported No network header wrap
+  was not reproduced on the candidate.
+- Riley and Nova each displayed their own controlled Ticket/QR. Ordinary Riley
+  logout hid identity and revoked the client session; Nova Notifications was
+  empty, with no Riley rows. **User-scope purge failed:** Riley offline Ticket
+  and profile entries remained in localStorage after logout.
+- Chrome background/resume retained the same page and open Notifications;
+  its single mutation appeared once, counter 2 -> 3, stable after reopening.
+  Settings return recreated the page; the launcher return path confounds the
+  resident observation. Its row and counter were correct after reopening,
+  but retained-open-list reconciliation is not proven.
+- Source-link Paste produced the exact fixture URL after native clipboard
+  permission. The final clipboard fixture used `clipboard.writeText` because
+  Android key-combination copy did not replace the clipboard. Editor width
+  stayed 360 CSS px and Cancel saved nothing. The floating notification
+  trigger covered Remove link at one scroll position; record as a layout
+  finding, without inventing a visibility-policy change.
+- Removing ADB reverse alone retained an existing HTTP socket. Reconnecting
+  the device transport closed it; a unique health request then failed. Nova
+  cached Ticket/QR remained usable offline and after transport restoration.
+  Uncached Game showed No matching profiles instead of explicit unavailable.
+  Native Chrome SIGTRAP occurred during inspection (local crash log retained);
+  cold-start opened Entry, with explicit `/game` navigation needed for the
+  cached-ticket observation. Do not count this as seamless offline cold-start.
+- Checklist gaps: candidate has no standalone Location side-menu entry;
+  managed images use public `/media/public`, so authenticated-image isolation
+  was not proven. FCM remains unconfigured and was not exercised here.
+
+The fixture was corrected to include holder-owned participation records, not
+only ticket credentials, and its status now checks both. The device login
+helper now uses the canonical demo-active-user storage key. Offline local-demo
+switching was investigated only: seed chunks are present and cached, but HTTP
+storage/session scope is fixed by the build environment; no fallback was added.
+
 ## Execution and evidence rules
 
 **KÖTELEZŐ QA-SZABÁLY: CODEX SOHA TÖBBÉ NEM ELLENŐRZI A FRONTENDET. A FRONTEND KÉZI, VIZUÁLIS ÉS INTERAKCIÓS ELLENŐRZÉSÉT KIZÁRÓLAG A FELHASZNÁLÓ VÉGZI. CODEX KIZÁRÓLAG A FELHASZNÁLÓI LÉPÉS UTÁNI BACKEND/API/PERZISZTÁLT ORACLE-T VALIDÁLJA.**

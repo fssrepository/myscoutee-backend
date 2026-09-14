@@ -63,7 +63,7 @@ try {
       const r=await fetch('/api/auth/session/login',{method:'POST',cache:'no-store',headers:{'Content-Type':'application/json','X-App-Session-Id':sessionId,'X-App-Session-Kind':'demo','X-Demo-User-Id':userId},body:JSON.stringify({attemptId:'attempt:'+crypto.randomUUID(),provider:'demo'})});
       const body=await r.json();if(!r.ok||!body.accepted)throw Error('QA login rejected: '+body.outcome);
       localStorage.setItem('myscoutee.http.session.v1',JSON.stringify({kind:'demo',userId,sessionId}));
-      localStorage.setItem('myscoutee.http.demo.active-user-id',userId);return{accepted:true,userId};})()`)));
+      localStorage.setItem('myscoutee.http.demo.active-user.v1',userId);return{accepted:true,userId};})()`)));
   } else if (action === 'close-other-qa-tabs') {
     const isPwa = await evaluate(`matchMedia('(display-mode: standalone)').matches`);
     if (!isPwa) throw Error('Launch the QA PWA before closing its browser controls');

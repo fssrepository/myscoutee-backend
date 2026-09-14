@@ -69,6 +69,9 @@
         mode: "Casual", topics: ["Manual QA"], imageUrl: eventTemplate.imageUrl,
         location: "Austin", locationCoordinates: { latitude: 30.2672, longitude: -97.7431 },
         startAtIso, endAtIso, createdDate: now, updatedDate: now, createdUser: Q.ACTOR, updatedUser: Q.ACTOR });
+      const source = Q.collection("events").findOne({ _id: id });
+      Q.collection("events").insertOne({ ...source, _id: `${id}:participant`,
+        syncKey: `${id}:participant`, ownerUserId: actor.id, isAdmin: false });
       for (const userId of accepted) {
         Q.collection("activityMembers").insertOne({ _id: `${id}:member:${userId}`, syncKey: `${id}:member:${userId}`,
           ownerType: "event", ownerId: id, userId, role: userId === HOST ? "Admin" : "Member",
@@ -108,7 +111,8 @@
       notifications: notifications.map(n => ({ id: n._id, recipientUserId: n.recipientUserId, read: Boolean(n.readAtIso), updatedDate: n.updatedDate })),
       asset: { id: ASSET, title: "QA Mobile Public Transport" },
       variants: state.variants,
-      checks: { twoDistinctUpcomingTickets: tickets.length === 2 && ACTORS.every(a => tickets.filter(t => t.holderUserId === a.id && t.status === "A").length === 1),
+      checks: { twoDistinctUpcomingTickets: tickets.length === 2 && ACTORS.every(a => tickets.filter(t => t.holderUserId === a.id && t.status === "A").length === 1
+          && Q.collection("events").countDocuments({ sourceId: eventId(a), ownerUserId: a.id, status: "A", ticketing: true }) === 1),
         rileyOnlyNotifications: notifications.every(n => n.recipientUserId === RILEY),
         publicAssetPresent: Q.collection("assets").countDocuments({ assetId: ASSET, ownerUserId: RILEY, status: "A" }) === 1 } });
   }

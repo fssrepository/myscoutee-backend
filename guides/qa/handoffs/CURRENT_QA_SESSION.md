@@ -84,23 +84,23 @@ resume pointer and reusable working method.
 ## Active resume point
 
 ```yaml
-checkpoint: MOBILE-WEBVIEW-LIFECYCLE-001 — PREPARATION / OLD-CACHE GATE
+checkpoint: MOBILE-WEBVIEW-LIFECYCLE-001 — PARTIAL / OPEN
 checklist: ../checklists/notifications/MOBILE-WEBVIEW-LIFECYCLE-001.md
-substage: local QA PWA installed and opened on Android 14; localhost:8080 standalone mode and activated controlling service worker verified; old-build/domain-cache preparation remains
+substage: physical Android run completed with findings; authenticated offline cache purge and remaining lifecycle controls need follow-up
 notification_order: MOBILE-WEBVIEW-LIFECYCLE-001, MOBILE-PUSH-LIFECYCLE-001, NOTIFICATION-ADMIN-LIFECYCLE-001, JOB-MESSAGES, BELL-RATING-LIFECYCLE-001
-notification_remaining_complexity: 365/880 minutes across five open Notifications rows
-fixture_phase: completed ui-poll reset; not-staged; its managed browsers closed and pre-launch server sessions restored
+notification_remaining_complexity: estimates retained pending defect triage
+fixture_phase: mobile-webview reset-complete; pre-launch Riley/Nova server sessions restored; original nginx route restored; phone transport online
 browser_control: user explicitly delegated the entire Mobile WebView testcase to Codex, including visible phone UI actions, installation, lifecycle, account switch and offline/reconnect. Continue autonomously through ADB/CDP; no user click gate is pending.
-ledger_status: 90/104 passed; Notifications 1/6
-required_resume: use the installed localhost:8080 PWA (package org.chromium.webapk.af8b7eef107d7742f_v2), not the retained GitHub Pages app. ADB reverse tcp:8080 tcp:80 is active. Local dev files are still unstamped (worker v1); establish a genuine old/candidate build pair and Riley/Nova fixture caches before step 1. Do not repeat installation or clear app data.
-last_completed: UI-POLL-JANK-001 PASS/CLOSED on 2026-09-14; two SmartList defects fixed; four recordings and session-close attribution completed through user-authorized CDP
-last_evidence: ../diagnostics/UI_POLL_JANK_DIAGNOSIS.md#measured-closure--2026-09-14
+ledger_status: 90/104 passed; Notifications 1/6; Mobile WebView PARTIAL/OPEN
+required_resume: use installed localhost:8080 PWA package org.chromium.webapk.af8b7eef107d7742f_v2; GitHub Pages app is untouched. ADB reverse tcp:8080 tcp:80 and CDP forward tcp:36087 restored. Nova logged out. No app-data clear. Read the linked execution evidence before restaging; do not repeat successful branches blindly. Current candidate hides Preview badge; reported No network header wrap not reproduced. Local seed exists in HTTP build and cached chunks, but automatic offline-demo switching was investigated only and not implemented.
+last_completed: coherent old/candidate upgrade, exact clipboard Paste, Chrome resident notification reconciliation, Nova own Ticket/QR and empty Notifications, verified offline cached QR and reconnect
+last_evidence: ../manuals/DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md#mobile-webview-physical-device-execution--2026-09-14
 ```
 
 ### Notifications takeover notes
 
 `UI-POLL-JANK-001` is closed. Its detailed evidence is in the linked diagnosis
-and CSV/XLSX ledger. The next checkpoint is queued only; do not replay the
+and CSV/XLSX ledger. The Mobile WebView checkpoint is PARTIAL/OPEN; do not replay the
 completed performance fixture or create additional browser sessions.
 
 Existing support for the later Notifications guides must be reused before new
