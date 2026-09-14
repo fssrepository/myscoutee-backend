@@ -104,15 +104,15 @@ when shaping only its route to the QA application.
 ```yaml
 checkpoint: MOBILE-WEBVIEW-LIFECYCLE-001 — PARTIAL / OPEN
 checklist: ../checklists/notifications/MOBILE-WEBVIEW-LIFECYCLE-001.md
-substage: Desktop consent/session and alternate-profile control complete; phone Settings resident resume, footer/entry and main rating photo fit complete. Native install and local-device UI/reload remain open.
+substage: Physical native install and seed progress replay passed. Local-device off/on/reload/profile-save passed; cross-account automatic transfer failed because local messaging initialization was skipped. Fix under watcher; replay this boundary next. Footer icons enlarged, visual verification pending.
 notification_order: MOBILE-WEBVIEW-LIFECYCLE-001, MOBILE-PUSH-LIFECYCLE-001, NOTIFICATION-ADMIN-LIFECYCLE-001, JOB-MESSAGES, BELL-RATING-LIFECYCLE-001
 notification_remaining_complexity: estimates retained pending defect triage
-fixture_phase: Auth supplemental reset 22:45:33.243Z. Mobile fixture staged 22:47:11.399Z remains fixture-ready with background-settings-resident mutation 22:48:32.550Z; read-only status confirmed. Consent transactions retained.
-browser_control: Current repository boundary reserves post-startup manual browser actions for the user; read-only inspection of reported defects is allowed. Retain historical delegated-action evidence without treating it as a new browser-action authorization.
+fixture_phase: Auth supplemental reset 22:45:33.243Z. Mobile fixture staged 22:47:11.399Z remains fixture-ready with background-settings-resident mutation 22:48:32.550Z; read-only status confirmed. Consent transactions retained. Common launcher snapshotted and cleared only Casey sessions, then prepared Casey desktop control.
+browser_control: User explicitly renewed delegation for the entire remaining test, including ordinary phone/browser actions. This current instruction overrides the default manual-browser handoff boundary. Use visible controls; no app API mocks.
 desktop_geometry: user-approved measured outer window 1180x950 at x107/y68; viewport 1136x763, DPR1 on 1920x1080 screen. Persisted in checkpoint session.window; use these bounds on next launch, no mobile emulation or further resizing.
 ledger_status: 90/104 passed; Notifications 1/6; Mobile WebView PARTIAL/OPEN
-required_resume: Phone aer8vgcmyd9lzxv8, CDP36087/reverse8080; local QA WebAPK org.chromium.webapk.af8b7eef107d7742f_v2 loaded lifecycle-32 1789426314950 at /game as Riley. Preserve storage. Read-only runtime gate before fixture changes. Next open proofs are physical native install timing and frontend-local device preference UI/reload; clipboard remains deferred.
-last_completed: Mobile main rating photo fits proportionally using contain; physical screenshot and live computed styles verified. Settings resident resume and neutral footer/Facebook also passed.
+required_resume: Phone localhost:8080 currently local candidate34 1789427977519 as u2; candidate35 local registration fix being compiled. environment.dev.ts temporarily local; restore exact /tmp/myscoutee-webview-environment.dev.before-local.ts after snapshot. Preserve original apps/cache. New owned 127.0.0.1 WebAPK a15bb28bd0ec620cc_v2 retained for cleanup. Finish device transfer/off-on replay, restore HTTP candidate and verify icons; clipboard remains deferred.
+last_completed: Read-only mobile fixture status matched retained state; device and reverse tunnel present; stack healthy. Versioned launcher reports Casey Bridge ready. Main rating photo PASS retained; native install still unproven.
 last_evidence: ../manuals/DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md#mobile-home-rating-photo-fit--2026-09-15
 ```
 

@@ -9409,3 +9409,104 @@ fresh evidence for this run. Do not silently mark those replays executed.
 - The overall WebView checkpoint remains PARTIAL/OPEN. Physical native install
   timing and ordinary frontend-local device-preference UI/reload remain open;
   clipboard branches previously deferred by the tester remain deferred.
+
+
+### Native install continuation preparation — 2026-09-15
+
+- Read-only mobile fixture status matches the retained resident Settings
+  boundary; both tickets, Riley-only notifications and public asset checks
+  pass. Phone `aer8vgcmyd9lzxv8` and reverse `tcp:8080 tcp:80` remain available;
+  existing frontend/backend containers are healthy.
+- Versioned `open-checkpoint-browser-sessions.mjs
+  MOBILE-WEBVIEW-LIFECYCLE-001` completed standardized startup for Casey Bridge.
+  Common startup retained the pre-launch session snapshot and prepared only
+  the configured Casey identity. No subsequent manual checklist action ran.
+- The next phone step uses Chrome at `http://127.0.0.1:8080/`, a separate origin
+  from the retained installed `http://localhost:8080/` QA PWA. Host-side reads
+  confirm the existing server supplies its page and relative app manifest.
+  Native install eligibility on the phone is not yet proven. The user performs
+  the native dialog sequence under the current AGENTS.md manual-QA boundary;
+  do not uninstall or clear the existing localhost application.
+
+
+### Physical native installation replay — 2026-09-15
+
+- User explicitly reauthorized agent execution of the entire remaining test,
+  including ordinary browser/device actions. This overrides the default
+  user-only manual browser boundary for this continuation.
+- Opened Chrome at the separate QA origin `http://127.0.0.1:8080/`, accepted
+  ordinary entry consent, then used the visible application Install action.
+  Native UI showed Install app / MyScoutee / the exact QA origin.
+- Native decision pending: application Install button disabled and no ring.
+  Native Cancel: action released, no ring. A newly offered installer was then
+  opened through the application action, with the same pending state.
+- Read-only DOM/event observation around actual native acceptance recorded:
+  1789427458667 pending without ring; 1789427458837 loading ring;
+  1789427458840 real `appinstalled`; 1789427458864 Install action removed.
+  Raw observation: `/tmp/myscoutee-phone-native-install-observation.json`.
+  No browser API replacement or synthetic install event was used.
+- Android package `org.chromium.webapk.a15bb28bd0ec620cc_v2` appeared;
+  package inspection identifies `127.0.0.1`. Both pre-existing WebAPKs remain
+  installed. Physical native waiting/cancel/accept/completion timing PASS.
+- Local-device UI qualification now temporarily uses the normal local data
+  source configuration through the existing watcher, with worker enabled and
+  Firebase login disabled. The exact dev configuration is retained at
+  `/tmp/myscoutee-webview-environment.dev.before-local.ts`, SHA256
+  `bd938c8438d6baf591628f779b0dc08a0b7181f3d0c690b7e3aa70df0e15b54b`.
+  Restore those exact bytes after this branch. No second compiler was started;
+  existing watcher compiled at 23:12:01.182Z. Original localhost:8080 phone
+  snapshot still serves lifecycle-32 unchanged.
+
+
+### Local device UI persistence replay — 2026-09-15
+
+- Used the physical localhost:8080 QA PWA with normal local deployment
+  candidate 33 (`1789427667878`), existing native notification grant and
+  ordinary Farkas Anna (`u1`) entry. Read IndexedDB directly, without service
+  invocation, for each persistence observation. The separate 127.0.0.1 probe
+  did not establish permission-enabled persistence; it is not counted as PASS.
+- Baseline retained one pre-existing Anna registration for browser device
+  `94416021-6b84-47a2-b1cd-2ea8b10054c1`. Settings -> Permissions -> off ->
+  Update removed it (23:16:57.937Z). Popup reopen showed off; ordinary page
+  reload kept off and zero devices (23:17:50.366Z).
+- On -> Update restored one registration at 23:18:43.716Z. Popup reopen showed
+  on; repeated Update kept one record and preserved registeredAt while updating
+  lastSeenAt (23:19:14.762Z). Reload retained on and exactly one record
+  (23:19:37.214Z). No Firebase token was fabricated.
+- Profile About edit/save/reopen retained the device unchanged
+  (23:20:01.271Z); ordinary UI restored the original About text immediately.
+- An early reload interrupted the first attempted logout before completion;
+  no logout PASS was inferred. The normal logout was repeated and allowed to
+  finish: /entry, no active local user at 23:21:19.160Z. Cross-account
+  registration transfer is the next oracle.
+
+
+### Seed progress order correction — 2026-09-15
+
+- User reported the loading percentage jumping backwards near completion.
+  Union bootstrap ran common collections to 94%, admin users to 97%, then
+  operator users through the old shared `users` step at 34%, before 98/100.
+- Added a distinct `operatorUsers` progress stage at 97% and used it at the
+  actual late operator-seeding boundary. Seed execution/dependencies remain
+  unchanged. Extended the existing union bootstrap regression to require a
+  non-decreasing 0-to-100 trace; no separate Vitest compiler was launched.
+- Existing watcher produced local candidate 34 (`1789427977519`). Physical
+  phone normal selector entry, with read-only DOM observation, recorded
+  0,0,11,22,34,40,43,52,64,82,94,97,97,98,100. Runtime assertion confirmed
+  non-decreasing progress and terminal 100. Screenshot/state was not injected.
+  Trace: `/tmp/myscoutee-phone-seed-progress-pass.json`. Physical regression PASS.
+
+### Local account registration initialization repair — 2026-09-15
+
+- Before fix, ordinary local switch to Balázs (`u2`) left the registration on
+  Anna (`u1`). PWA startup gates external Firebase registration to HTTP mode;
+  the local messaging service's account-change effect therefore never started.
+- Local messaging construction now starts its existing local registration
+  effect. HTTP initialization remains under its existing gate. The local branch
+  also avoids reading the external Firebase runtime. This registers no token
+  and requests no native permission automatically.
+- Existing watcher built local candidate 35 (`1789428253622`). Physical normal
+  close/reopen activated it; 23:25:13.523Z direct IndexedDB read confirms Anna
+  devices empty and Balázs owns exactly the same browser device. Native grant
+  and both HTTP preference/device keys remain unchanged. Further off/reload
+  and reverse account-switch checks follow before closure.
