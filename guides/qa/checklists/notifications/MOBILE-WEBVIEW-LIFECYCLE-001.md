@@ -8,7 +8,16 @@ test is meant to prove.
 ## Current progress — 2026-09-15
 
 **Overall: PARTIAL / OPEN. Desktop game-card image repair and new-profile
-session registration: PASS. Next campaign checkpoint: `ENTRY-CONSENT-002`.**
+session registration: PASS. Current campaign checkpoint: `ENTRY-CONSENT-002`
+(previous v3 accepted; v4 not activated yet).**
+
+Current interruption: Help / Guide images were denied by the media gateway.
+They are bundled MinIO `seeded-help/` assets. The public-namespace fix is live;
+all 77 distinct seeded guide images now return HTTP 200 with the exact seed
+content. The already-open guide still needs a tester close/reopen to verify
+rendering; HTTP success alone is not a visual PASS. Then resume consent 002
+at the newer-revision transition, preserving the accepted v3 record.
+[Guide repair and current fixture evidence](../../manuals/DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md#helpguide-media-repair-and-consent-resume--2026-09-15).
 
 User clarification: visibility belongs to the **profile**, with no separate
 private-image setting. A private profile does not appear as a game card.
@@ -48,7 +57,7 @@ section 0 does not reset the recorded results in sections 1–7.
 | Order | State | Checkpoint / work | Exact remaining proof |
 | --- | --- | --- | --- |
 | 1 | DONE — DESKTOP | Game-card image / first-save session repair | Normal sign-in, all three card images, profile detail, installed-app close/reopen, fresh profile save and reload passed. Retain evidence; do not replay to reach the next checkpoint. |
-| **2** | **NEXT** | `ENTRY-CONSENT-002` | Reject without creating a session; a newer privacy revision requires acceptance; older consent audit records remain unchanged. |
+| **2** | **IN PROGRESS** | `ENTRY-CONSENT-002` | Rejection and previous v3 acceptance recorded; activate v4 after Guide rendering replay, then prove required acceptance and unchanged older consent audit. |
 | 3 | QUEUED | `ENTRY-CONSENT-003` | Retain choices by stable optional-section ID; new optional sections start unchecked; acceptance creates a new consent without rewriting the old one. |
 | 4 | QUEUED | `AUTH-SESSION-001` | Existing session-limit and audit checks, revocation and ordinary logout. |
 | 5 | PHONE REPLAY PENDING | Native install progress | Desktop native decision without ring, Cancel, accepted-installation ring and completion passed. Physical-phone post-fix native replay remains unproven. |

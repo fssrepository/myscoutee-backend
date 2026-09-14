@@ -9222,3 +9222,48 @@ fresh evidence for this run. Do not silently mark those replays executed.
   explicit coverage gaps remain. Current entry-domain fixture is verified;
   retain all three transaction profiles. Reset only its tracking before the
   next checkpoint's baseline, not their saved domain data.
+
+### Help/Guide media repair and consent resume — 2026-09-15
+
+- Reset only entry-domain tracking at 2026-09-14T22:03:51.139Z, retaining
+  Consent Replay, Email Replay and Session Replay. Staged ENTRY-CONSENT-002
+  at 22:03:52.319Z for Nova Social. Earlier UI observations recorded Cancel
+  with no session/server consent, then acceptance of only Previous analytics.
+- The anonymous checkpoint launcher originally omitted Nova from its common
+  actor-session preparation, so two retained sessions blocked login. Added
+  Nova to `additionalDemoUserIds` in the versioned browser configuration;
+  centralized startup snapshots/clears those sessions and reset restores them.
+- The read-only status oracle reconfirmed phase `previous-active`: v3 consent
+  `6aa87045fce30caf4117d0b3`, accepted 22:08:05.423005288Z, source `entry`,
+  only `qa-previous-analytics`. Target/total consent deltas are both +1;
+  anonymous delta is zero, v4 consent is absent, newer activation is absent.
+  Do not stage/reset/replay the completed v3 steps to resume.
+- User clarified that the failing images belong to Help / Guide. Read-only
+  inspection of the open Home cards guide found five `seeded-help/*.svg`
+  requests ending in 403 and a displayed No image fallback. A cookie-free
+  HTTP request independently showed the first wrong boundary: `/media/public`
+  redirected the bundled guide key to `/api/media/private` (307).
+- These images are server-seeded MinIO objects, not external image links.
+  The same 77 distinct keys appear in demo/e2e/real help revision seeds and
+  all exist under `server/docker/conf/minio/media/seeded-help/`.
+  `MediaAccessPaths` omitted this public namespace. Added only `seeded-help/`;
+  normal user uploads cannot select this namespace.
+- Existing backend watcher compiled successfully and restarted at
+  22:13:11.206Z. No separate main build/server was started. Two focused
+  `MediaAccessPathsTest` tests passed against the watcher-built main classes
+  using the retained test-only javac/JUnit runner (128 MiB heap). They cover
+  public guides, protected uploads, lookalike prefixes and malformed/traversal
+  keys. Available memory was 4.4 GiB; the existing watcher owns main compilation.
+- Cookie-free HTTP verification passed for all 77 distinct guide images:
+  HTTP 200, `image/svg+xml`, byte-for-byte equality with the seeded SVG,
+  public cache headers. A private upload key still redirects to the protected
+  route; `seeded-help/../private/image.svg` returns 400.
+- User-requested social glyph colors were removed from the landing footer;
+  Facebook markup/icon remains. Existing frontend watcher compiled/synced
+  at 22:07:15/17Z. Post-change visual replay remains unproven.
+- No Guide navigation, close/reopen or reload was performed during this
+  defect diagnosis, following the current AGENTS.md manual-browser boundary.
+  Guide rendering therefore awaits the tester's close/reopen. Do not record
+  HTTP checks as a browser-rendering PASS. After that, resume the v4 activation
+  boundary, then consent 003 and AUTH-SESSION-001. Overall WebView remains
+  PARTIAL/OPEN; physical-phone and previously listed evidence gaps remain.
