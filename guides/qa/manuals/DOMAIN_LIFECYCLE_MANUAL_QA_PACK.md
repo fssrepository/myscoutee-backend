@@ -9039,3 +9039,186 @@ fresh evidence for this run. Do not silently mark those replays executed.
 - Registration verification first failed because the newly saved demo profile lacked its established per-profile development email. HomeUserProfileService now reuses DevelopmentIdentityEmail when saving a demo-profile with no principal/fallback email. The existing backend watcher compiled successfully and restarted at 20:42:34.497Z.
 - Persisted registration verification passed at 20:45:30.236Z, including unique development email ownership. This is not yet proof of initial-save email generation: the existing startup initializer can normalize the same record during restart. Fresh initial-save and ordinary registration-return evidence remain pending; do not close the full WebView row from this database result alone.
 - Next remaining entry checkpoints: ENTRY-CONSENT-002, ENTRY-CONSENT-003 and AUTH-SESSION-001. Keep physical-phone versus desktop replay evidence distinct. Existing completed cache/media/device-preference evidence is retained; only affected regressions need replay after the entry block.
+
+
+### Desktop installation, native progress and mixed dev media — 2026-09-14
+
+- Actual desktop Install opened Chrome's native installer for `http://localhost`.
+  Acceptance created the managed profile's MyScoutee desktop launcher and moved
+  the QA page into an installed app window. Standalone display, `/game`, active
+  service-worker control and the same WebView Consent Replay identity were
+  observed. Native screenshot: `/tmp/myscoutee-desktop-native-install.png`;
+  installed window: `/tmp/myscoutee-desktop-installed.png`.
+- Closed the installed app using its normal window close control. A shell
+  shortcut launch did not establish a reopened app and is not counted as proof.
+  Opening MyScoutee through Chrome's visible Apps page then created a new
+  standalone `/game` document (`timeOrigin=1789420173953.4`) with the same
+  identity, controlled worker and no Install action. Screenshot:
+  `/tmp/myscoutee-desktop-installed-reopen.png`. The registration oracle at
+  21:07:45.496Z still had exactly one new user, three images, one experience
+  profile and one email owner. This proves installed-app return, not fresh
+  initial-save email creation or logout/sign-in return.
+- User identified an early loading ring under the native install dialog and
+  required the same rule on desktop and physical WebView/PWA: disable during
+  the native decision without a ring; show progress only after acceptance,
+  ending at `appinstalled`. The common PwaService now separates native waiting
+  from accepted installation; AppSetupPopup uses combined pending state for
+  disabling and installation-only state for progress. Early appinstalled
+  ordering cannot restart a completed ring. Dismissal/error releases the action.
+- Existing frontend-sync owner compiled and synced the fix at
+  21:05:04.433Z / 21:05:06Z. An isolated Node VM executed its compiled PwaService
+  and passed native-wait/no-ring, duplicate suppression, dismissal, accepted
+  progress/completion, early-completion ordering and native-error checks. No
+  compiler or live browser API replacement was used. Matching unit tests were
+  authored; the Angular test runner was not started. At that point actual native
+  replay was pending; the subsequent desktop result is recorded below.
+- User reported the missing game-card picture. Read-only diagnosis found the
+  own demo avatar loaded successfully (1280x674), while the earlier real
+  Firebase QA profile's three private image requests returned 401. The dev
+  Compose intentionally maps both real and demo Mongo routes to `demo_db`;
+  a real Firebase trial profile is therefore visible in that demo dataset.
+  Private media correctly requires an active Firebase media session. This is
+  mixed QA data, not proof of an install/cache image regression. No image was
+  made public, no credential was injected and no profile was hidden/deleted.
+- Subsequent actual desktop native replay passed: Install was disabled without
+  a ring during Chrome's decision dialog; Cancel released it without a ring.
+  On the second attempt, native acceptance preceded the ring, then
+  `appinstalled` removed the action. A read-only DOM/event observation recorded
+  ring at 184122.3 ms, `appinstalled` at 184122.6 ms, action absent at 184123.4 ms
+  on one document clock. No browser API was replaced. Screenshots:
+  `/tmp/myscoutee-native-install-no-ring.png` and
+  `/tmp/myscoutee-native-reinstall-prompt.png`. The previous QA installation was
+  removed through native UI with app-data removal unchecked before this replay;
+  the QA app is installed again. Physical-phone post-fix replay remains open.
+- Original WebView Consent Replay ordinary Logout -> Start exploring -> profile
+  selection returned to `/game` without onboarding and with a loaded avatar.
+  Registration verify at 21:19:09.027Z retained one user/three images/one email;
+  consent verify at 21:19:09.625Z retained the single unchanged acceptance and
+  no anonymous consent.
+- Entry-domain tracking reset at 21:19:42.150Z retained the original profile;
+  entry-consent reset at 21:19:43.150Z restored `privacy-default-v1`, retaining
+  the inactive QA revision/audit. Fresh entry-domain stage at 21:19:43.757Z had
+  59 users including one existing demo registration. The tester completed the
+  WebView Email Replay uploads/save while the agent prepared the Photos step;
+  no agent upload succeeded. Verify at 21:24:16.469Z passed for
+  `demo-profile-cd150570-785f-4ecd-a628-a4d73ec6c14f`: one new active/public user,
+  form version 2, three images, one experience profile, no Firebase linkage,
+  one unique development-email owner. No backend restart occurred between
+  baseline and verification. Fresh first-save email proof is complete.
+- The tester's screenshot `Screenshot from 2026-09-14 23-20-52.png` confirms the
+  Peter Szabo card still shows No image. Read-only inspection after the fresh
+  save again found its three private image requests returning 401, while the
+  new demo profile's own public avatar loaded at natural width 1280. The card
+  defect remains OPEN and has not been repaired. Avatar/registration success
+  is not card-image success. The identified inconsistent boundary is dev
+  candidate visibility versus private-media access; canonical dev uses
+  `demo_db`. No eligibility rule, data migration, profile removal or auth
+  relaxation was introduced.
+- Overall remains PARTIAL/OPEN. Current entry-domain fixture is verified and
+  retained; entry-consent fixture is reset. Pending: missing-card resolution,
+  consent 002/003, AUTH-SESSION-001, physical-phone native replay and existing
+  explicit coverage gaps. Push delivery remains separate.
+
+### Profile visibility and demo media session repair — 2026-09-14
+
+- User corrected the interpretation: there is no separate private-image
+  setting; private profiles do not appear as game cards. `isPublicGameUser`
+  already filters cards by public profile status, and `MediaPolicyFacts`
+  already derives image visibility from the profile. The earlier statement
+  that private-media 401 was justified by the shared dev dataset was incorrect.
+- Two code defects caused this case. `MediaSessionAccessService` issued its
+  credential only for Firebase-authenticated sessions and private reads always
+  routed to REAL. In addition, `onOnboardingCompleted` used untracked
+  `startDemoSession` even for HTTP onboarding. The browser-held WebView Email
+  Replay session ID has no `userSessionStates` record; its `/auth/me` succeeds
+  but cannot receive a credential backed by an active server session.
+- Registered demo sessions now obtain a media-only cookie scoped to DEMO. Its
+  full hash includes the realm prefix; changing/removing that prefix cannot
+  reuse the token in REAL, even when dev shares one physical database. Existing
+  Firebase credentials retain their REAL format. Authentication, active-session
+  revocation and the existing resource/profile policy still apply. No profile
+  was hidden, no image was made anonymously readable and no database migrated.
+- New HTTP onboarding now awaits `startTrackedDemoSession`, then loads the
+  profile under that session before navigating, matching ordinary demo sign-in.
+  Local onboarding stays local. Registration denial prevents navigation.
+- Existing backend compiler completed in 2 seconds and DevTools restarted at
+  23:32:41.573 local time. Existing frontend-sync compiled at 21:37:07.560Z and
+  synced at 23:37:09 local (`entry-page.component-SXKTCUCG.js`). No parallel main
+  compiler, server or Gradle process was started.
+- Focused validation: 11 JUnit tests passed for media credential issuance,
+  active/revoked/malformed state, REAL/DEMO routing, tamper rejection and
+  public/private/Friends-only profile policy. Only test sources were compiled
+  against the existing watcher's compiled application classes; tests ran via
+  JUnit Platform with a bounded 256 MiB JVM. Log:
+  `/tmp/myscoutee-media-session-tests/result.log`.
+- One scoped versioned HTTP qualification method passed on the existing
+  dev Mongo/MinIO/API: legacy REAL credential reads image bytes; `/auth/me`
+  issues a DEMO cookie for a fixture-backed active demo session; public profile
+  image returns 200 with exact bytes/no-store, private profile returns 403,
+  restored public status returns 200, anonymous/invalid/altered-realm/revoked
+  credentials return 401. Its exact temporary users/session/objects were
+  cleaned up. Method:
+  `MediaFriendshipQualificationTest#demoMediaSessionUsesProfileVisibilityAndRejectsRevokedOrAlteredCredentials`;
+  log `/tmp/myscoutee-media-session-tests/http-result.log`.
+- Four checks executed the watcher's compiled onboarding method in an isolated
+  Node VM: HTTP registration -> profile read -> navigation; local-only path;
+  rejected registration; unavailable profile prevents navigation and logs out.
+  All passed. Matching frontend specs were added; the Angular spec runner was
+  not run. This is code-path evidence, not a browser onboarding PASS.
+- UI replay remains pending. The user owns normal Logout -> Start exploring ->
+  WebView Email Replay selection and then inspecting Peter Szabo's card. The
+  agent did not inject a credential or register the user's old untracked
+  session through a test request. No new demo profile is required for this
+  image replay. Keep the original screenshot failure and PARTIAL/OPEN status
+  until the screen result is confirmed. The already-proven unique email/three
+  images on first save remain valid, separately from tracked-session behavior.
+
+### Desktop card and first-save session replay — 2026-09-14/15
+
+- User explicitly delegated the full affected UI replay after rejecting a
+  handoff of the remaining clicks. The agent used ordinary visible controls;
+  no browser cookie/session injection or application-state override was used.
+- WebView Email Replay: normal Logout/confirmation -> entry consent -> Start
+  exploring -> existing profile selection returned to `/game`. Peter Szabo's
+  card image appeared. All three image selectors were exercised and the
+  profile detail also rendered its photo. Screenshots:
+  `/tmp/myscoutee-card-after-demo-relogin.png`,
+  `/tmp/myscoutee-card-image-2.png`, `/tmp/myscoutee-card-image-3.png`,
+  `/tmp/myscoutee-peter-profile-images.png`.
+- Closed the installed app using its native window close control and reopened
+  MyScoutee through Chrome Apps. New standalone document
+  `timeOrigin=1789423078579.3` retained the same Email Replay identity. All
+  three Peter Szabo large image requests returned 200. Screenshot:
+  `/tmp/myscoutee-card-installed-reopen.png`. Registration oracle at
+  21:58:23.101Z retained one profile, three images, one experience and email.
+- Reset entry-domain tracking at 21:58:41.945Z without deleting the profile;
+  staged a fresh baseline at 21:58:42.562Z with 60 users/two prior demo
+  registrations. The agent opened New profile and filled WebView Session
+  Replay, London, 1995-06-15, 180 cm, Athletic, Man, English. The tester then
+  completed uploads/save concurrently and explicitly confirmed the save.
+  The agent's attempted upload found the form already closed and did not
+  upload a file; do not attribute those final UI actions to the agent.
+- The actual loaded entry chunk was `entry-page.component-SXKTCUCG.js`.
+  Verify at 21:59:58.349Z passed for
+  `demo-profile-23436aab-ed5f-466a-a037-90c9ab40c2b7`: exactly one new
+  active/public version-2 profile, three images, one experience profile, one
+  unique development email and no Firebase linkage. A separate read-only
+  persistence check found one active server session with a media credential
+  hash and exactly one login audit. Thus the new first-save tracked-session
+  path is now proved through ordinary UI, not only compiled-code tests.
+- Peter Szabo's three images returned 200 under this newly created demo
+  session. Ordinary page reload created document `timeOrigin=1789423227219.3`
+  on `/game`, retained Session Replay, showed no onboarding form, and all
+  three image requests again returned 200. Session and audit counts remained
+  one. Screenshots: `/tmp/myscoutee-new-registration-card-pass.png` and
+  `/tmp/myscoutee-new-registration-reload-pass.png`.
+- During entry the UI displayed the prior QA privacy v2 and after fresh save
+  displayed default privacy v1 approval. The tester completed that approval.
+  Preserve this observed sequence for the queued consent revision checks;
+  this image/session replay does not count as consent 002/003 completion.
+- Desktop missing-card and first-save session regressions are PASS. The
+  broader MOBILE-WEBVIEW-LIFECYCLE-001 row remains PARTIAL/OPEN: consent
+  002/003, AUTH-SESSION-001, physical-phone post-fix evidence and the other
+  explicit coverage gaps remain. Current entry-domain fixture is verified;
+  retain all three transaction profiles. Reset only its tracking before the
+  next checkpoint's baseline, not their saved domain data.

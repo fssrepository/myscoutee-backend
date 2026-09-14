@@ -1,6 +1,6 @@
 # Current manual QA session
 
-Updated: 2026-09-14
+Updated: 2026-09-15
 
 This is the context-saving entry point for continuing the manual QA campaign.
 It stores one minimal live resume pointer plus reusable pair-QA execution lessons. It
@@ -104,16 +104,16 @@ when shaping only its route to the QA application.
 ```yaml
 checkpoint: MOBILE-WEBVIEW-LIFECYCLE-001 — PARTIAL / OPEN
 checklist: ../checklists/notifications/MOBILE-WEBVIEW-LIFECYCLE-001.md
-substage: ENTRY-CONSENT-001 persisted oracle PASS after actual acceptance and user-completed profile save. ENTRY-DEMO-REG-001 has one active public profile, three images and one experience profile; initial verification exposed missing development email. Save-path repair compiled through existing backend watcher; post-restart persisted oracle passes, but startup normalization can also explain the repaired email, so fresh initial-save proof and registration return remain pending. Then ENTRY-CONSENT-002, ENTRY-CONSENT-003 and AUTH-SESSION-001. Fresh paired coverage remains required; no Push sending.
+substage: Desktop card-image and first-save session fixes PASS through ordinary UI: Email Replay normal sign-in, all 3 images/profile detail, installed-app close/reopen; new user-completed Session Replay first save and reload retained 3 images, unique email, 1 active server session and 1 login audit. No separate private-image setting; profile visibility remains authoritative. Next ENTRY-CONSENT-002, then 003, AUTH-SESSION-001 and physical-phone gaps.
 notification_order: MOBILE-WEBVIEW-LIFECYCLE-001, MOBILE-PUSH-LIFECYCLE-001, NOTIFICATION-ADMIN-LIFECYCLE-001, JOB-MESSAGES, BELL-RATING-LIFECYCLE-001
 notification_remaining_complexity: estimates retained pending defect triage
-fixture_phase: Operator Firebase fixture reset at 19:58:10 UTC; runtime Firebase inactive revision 0. Encrypted active revision 1 retained in /tmp/myscoutee-firebase-bootstrap-fixture/active-firebase-after-webview.ejson (0600) for later Push setup. Current entry-consent 001 baseline has 23 consents and zero anonymous; entry-domain baseline 58 users and zero demo-profile registrations. Phone normally logged out, /entry; desktop normal /entry. Temporary bootstrap settings restored to original local baseline; previous bootstrap variant retained securely. Existing backend restarted once; anonymous upload now returns 200.
-browser_control: User reauthorized ordinary desktop and phone QA actions after the explicit delegation question. Continue visible hit-tested controls without further handoff pauses. No internal state overrides, production test flags, viewport changes or AGENTS.md edits. Current desktop manifest /tmp/myscoutee-qa-browser-sessions/ENTRY-CONSENT-001.json.
+fixture_phase: entry-domain ENTRY-DEMO-REG-001 reset 21:58:41.945Z retaining Email Replay; new baseline 21:58:42.562Z had 60 users/2 demo registrations. Verified 21:59:58.349Z new WebView Session Replay demo-profile-23436aab-ed5f-466a-a037-90c9ab40c2b7 with 3 images, unique email, 1 experience, 1 active session/1 login audit; reload retains counts. Fixture remains verified. Prior Consent Replay and Email Replay retained. Desktop installed app currently /game as Session Replay. Phone untouched. Earlier entry-consent fixture reset; entry UI later showed QA v2 followed by default v1 approval, retain for upcoming revision checks. Firebase remains inactive after prior Operator reset.
+browser_control: User explicitly reauthorized the agent to perform the full affected UI replay (why leave it to me; check the whole thing). Use ordinary visible hit-tested controls for the authorized work, no cookie injection, internal state overrides, viewport changes or AGENTS.md edits. User may act concurrently; inspect current UI before each dependent action. Desktop manifest /tmp/myscoutee-qa-browser-sessions/ENTRY-CONSENT-001.json.
 desktop_geometry: user-approved measured outer window 1180x950 at x107/y68; viewport 1136x763, DPR1 on 1920x1080 screen. Persisted in checkpoint session.window; use these bounds on next launch, no mobile emulation or further resizing.
 ledger_status: 90/104 passed; Notifications 1/6; Mobile WebView PARTIAL/OPEN
-required_resume: Read the latest Mobile WebView continuation evidence in the QA pack. Keep PARTIAL/OPEN. Shared setup contracts and local repository persistence checked on desktop/physical PWA lifecycle-17; latest label-free candidate lifecycle-19 (mobile-webview-lifecycle-1789395283443). External CDP page+worker outage/reconnect passed without changing phone radios. URL/storage test switches were removed; do not count old switch-based evidence as current application proof. Full frontend-local UI/reload remains unverified; continue actual Firebase entry/private-image/logout and Push activation/delivery. Shared shell/header/X are unchanged; permissions first, optional install second, stacked original switches, fixed blue/violet rows and status-colored switches, one right-aligned Update label. Location is mandatory for login and locked after login; optional device push can be updated separately from in-app bell mute. Native decisions precede background ring; reject/retry/X must preserve the flow. Existing private Admin SDK file remains outside git; user allowed QA use, later requested dev/prod separation. Firebase revision 1 is now Operator-tested and active; no Firebase console configuration changes. Use existing Operator encrypted configuration/test/activation workflow; confirm exact public VAPID rather than guessing screenshot characters. Retain fixture/session snapshot and dev route until real remaining branches and cleanup are complete. Earlier friendship/media batch/policy evidence remains in the pack and is not a physical Firebase-login proof.
-last_completed: Candidate 27 Firebase device opt-out/reopen/on/reopen/dedup and bell separation passed. Candidate 28 Entry Login/footer corrections compiled, served but not visually replayed. No message sent. Only fixture cleanup deactivated Firebase; broader Operator restore was not tested.
-last_evidence: ../manuals/DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md#installed-pwa-permission-replay--2026-09-14
+required_resume: Proceed to ENTRY-CONSENT-002 then 003 and AUTH-SESSION-001 from their versioned baseline; reset only current entry-domain tracking when needed, retaining transaction profiles. Do not re-run completed desktop card-image or new-profile first-save/session checks. Preserve the observed QA v2/default v1 entry sequence for consent revision diagnosis. Physical-phone native timing and post-fix coverage plus listed earlier gaps remain; overall PARTIAL/OPEN.
+last_completed: Desktop card all 3 images/profile detail, installed-app close/reopen; fresh Session Replay UI save and reload with 1 active session/1 login audit and all image reads 200. Original email/save and desktop native ring timing evidence retained.
+last_evidence: ../manuals/DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md#desktop-card-and-first-save-session-replay--2026-09-1415
 ```
 
 ### Notifications takeover notes
@@ -285,8 +285,15 @@ the checkpoint says otherwise.
 
 ### Next manual action
 
-No action remains for UI-POLL-JANK-001. On QA continuation, start the queued
-Mobile WebView checkpoint from its read-only device/build/cache gate.
+Continue the active `ENTRY-DEMO-REG-001` first-save email proof and ordinary
+registration return. The saved three-image profile and persisted consent remain
+transaction evidence. Then run `ENTRY-CONSENT-002`, `ENTRY-CONSENT-003` and
+`AUTH-SESSION-001` in that order. Do not restart the Mobile WebView journey from
+its old-cache setup. The checklist's
+[current progress](../checklists/notifications/MOBILE-WEBVIEW-LIFECYCLE-001.md#current-progress--2026-09-14)
+separates retained results from remaining requirements, including pending
+post-fix native install progress replay; actual desktop installation/reopen is
+now recorded. UI-POLL-JANK-001 remains closed.
 
 Group-size audit: retain `TOURNAMENT-MEMBER-002` as 2+1 because Riley's Group B
 proves parent-event notification delivery across room boundaries while Group B

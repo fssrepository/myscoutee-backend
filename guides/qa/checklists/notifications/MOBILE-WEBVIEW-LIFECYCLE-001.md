@@ -5,6 +5,105 @@ account-switch isolation and deliberate offline/online recovery. It must use a
 real disposable device state: clearing app data would erase the boundary the
 test is meant to prove.
 
+## Current progress — 2026-09-15
+
+**Overall: PARTIAL / OPEN. Desktop game-card image repair and new-profile
+session registration: PASS. Next campaign checkpoint: `ENTRY-CONSENT-002`.**
+
+User clarification: visibility belongs to the **profile**, with no separate
+private-image setting. A private profile does not appear as a game card.
+The `/media/private` path is an authenticated transport boundary. The earlier
+claim that missing images were justified by mixed dev data was incorrect.
+
+The repaired media gate and HTTP onboarding flow now pass their actual desktop
+replay. With **WebView Email Replay**, ordinary logout/selector sign-in loaded
+all three Peter Szabo images, including the profile detail. Closing the
+installed app and reopening it from Chrome Apps retained the identity and
+loaded all three images with HTTP 200.
+
+The subsequent **WebView Session Replay** first save also passed: one new
+profile, three images, unique email, one active server session and one login
+audit. The tester completed the uploads/save after the agent filled the form.
+The card images loaded immediately and after ordinary page reload, with no
+second onboarding and no duplicate session/audit. These are desktop results;
+physical-phone post-fix coverage remains explicit below.
+[Replay evidence](../../manuals/DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md#desktop-card-and-first-save-session-replay--2026-09-1415).
+
+Desktop native install waiting/cancellation/acceptance/completion now passed
+with the corrected ring timing. Physical-phone post-fix native replay remains
+unproven. The original **WebView Consent Replay** profile returned through
+ordinary logout and demo selection without onboarding. The user saved a fresh
+**WebView Email Replay** profile; the 21:24:16 UTC oracle proves one new public
+profile, three images, one experience profile and one unique development email
+before any subsequent backend restart. Fresh initial-save email proof is complete.
+
+This progress view summarizes the [execution evidence](../../manuals/DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md#entry-consent-and-demo-registration-replay--2026-09-14)
+and [status ledger](../../matrices/ADMIN_DYNAMIC_SURFACES_QA_MATRIX.csv).
+Keep it aligned with those records and the [resume pointer](../../handoffs/CURRENT_QA_SESSION.md#active-resume-point).
+Section numbers below identify test definitions, not progress: returning to
+section 0 does not reset the recorded results in sections 1–7.
+
+### Remaining work, in execution order
+
+| Order | State | Checkpoint / work | Exact remaining proof |
+| --- | --- | --- | --- |
+| 1 | DONE — DESKTOP | Game-card image / first-save session repair | Normal sign-in, all three card images, profile detail, installed-app close/reopen, fresh profile save and reload passed. Retain evidence; do not replay to reach the next checkpoint. |
+| **2** | **NEXT** | `ENTRY-CONSENT-002` | Reject without creating a session; a newer privacy revision requires acceptance; older consent audit records remain unchanged. |
+| 3 | QUEUED | `ENTRY-CONSENT-003` | Retain choices by stable optional-section ID; new optional sections start unchecked; acceptance creates a new consent without rewriting the old one. |
+| 4 | QUEUED | `AUTH-SESSION-001` | Existing session-limit and audit checks, revocation and ordinary logout. |
+| 5 | PHONE REPLAY PENDING | Native install progress | Desktop native decision without ring, Cancel, accepted-installation ring and completion passed. Physical-phone post-fix native replay remains unproven. |
+| 6 | CLOSURE REVIEW | Affected regressions and evidence gaps below | Check only behavior affected by subsequent changes and explicitly unproven requirements; reconcile desktop/phone evidence, restore owned fixtures and update the ledger. |
+
+The entry regression requires separate desktop and physical-phone evidence.
+Do not treat one platform's result as proof for both. Complete the current row
+before moving to the next; do not restart completed branches merely to reach a
+later fixture baseline. Real push delivery belongs to
+[MOBILE-PUSH-LIFECYCLE-001](MOBILE-PUSH-LIFECYCLE-001.md).
+
+### Recorded results to retain
+
+These are completed observations with the stated scope, not blanket PASSes
+for every requirement in the linked section.
+
+| Guide block | Recorded result | Evidence |
+| --- | --- | --- |
+| [0. Entry](#0-repeat-the-complete-entry-journey) | `ENTRY-CONSENT-001`: selected optional acceptance transferred to the saved demo profile, with no anonymous server consent. | [Consent and registration](../../manuals/DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md#entry-consent-and-demo-registration-replay--2026-09-14) |
+| [0. Demo registration](#0-repeat-the-complete-entry-journey) | Original profile logout/sign-in return passed; fresh user-completed save verified three images and a unique email without backend restart. Post-fix Session Replay also created one active server session and one login audit, retained after reload. | [Fresh save evidence](../../manuals/DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md#desktop-installation-native-progress-and-mixed-dev-media--2026-09-14) |
+| [0. Firebase entry](#0-repeat-the-complete-entry-journey) | Physical Google registration, three-image profile, logout and repeat login with the same identity. Desktop Login footer checked separately. | [Firebase registration](../../manuals/DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md#firebase-registration-and-desktop-login-footer--2026-09-14) |
+| [1. Upgrade](#1-coherent-cold-start-upgrade-and-popup-layout) | Coherent candidate activation without clearing app data; retained Firebase identity and avatar on reopen. | [Firebase resume](../../manuals/DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md#firebase-resume-outage-and-media-revocation--2026-09-14) |
+| [3–4. Account cache and recovery](#3-logout-and-account-switch-cache-isolation) | Riley cache removed at logout; Nova's own Ticket/QR retained across reopen and transport outage; reconnect preserved isolation. | [Current-build cache retest](../../manuals/DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md#current-build-cache-retest--2026-09-14-17341743-utc) |
+| [5. Local demo](#5-demo-fallback-through-real-transport-loss) | Local About save/reopen, draft-preserving reconnect and no server merge; offline mode/filter/history, Chat read/composer and mute persistence observed. | [Local save/reconnect](../../manuals/DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md#local-demo-offline-controls-defect--2026-09-14), [candidate 25](../../manuals/DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md#candidate-25-local-offline-verification--2026-09-14) |
+| [6. Private media](#6-public-demo-images-and-protected-firebase-media) | Authenticated image succeeds; anonymous, invalid and revoked credentials fail; legacy public URL cannot bypass protection. Firebase API outage/recovery preserves the session. | [Media revocation](../../manuals/DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md#firebase-resume-outage-and-media-revocation--2026-09-14) |
+| [7. Desktop installation](#desktop-pwa-installation-and-reopen) | Actual native installation and subsequent standalone launch from Chrome Apps retained the QA origin and profile. | [Desktop installation/reopen](../../manuals/DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md#desktop-installation-native-progress-and-mixed-dev-media--2026-09-14) |
+| [7. Device preference](#7-shared-permissions-and-installation--desktop-and-physical-phone) | Installed PWA permission popup reopens; off/reopen retains zero devices; on/reopen/repeated Update retains one; bell mute does not override device opt-out. | [Installed-PWA replay](../../manuals/DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md#installed-pwa-permission-replay--2026-09-14) |
+
+### Evidence gaps to resolve at closure
+
+These limits were already recorded in the detailed evidence. Keep them
+visible; do not silently promote a partial observation to a full PASS or
+automatically replay a branch the tester explicitly deferred.
+
+| Guide block | Proven boundary and remaining limit |
+| --- | --- |
+| [1. Clipboard](#1-coherent-cold-start-upgrade-and-popup-layout) | Phone exact paste with permission already granted and native Block passed. Fresh native Allow and desktop allowed paste remain unproven; the tester requested moving on. [Details](../../manuals/DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md#native-clipboard-observation-and-demo-replay--2026-09-14). |
+| [2. Background resume](#2-background-mutation-and-resume) | Chrome resident-list recovery was observed. Settings returned a recreated document on the current build; this does not prove resident Settings recovery. [Details](../../manuals/DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md#current-build-cache-retest--2026-09-14-17341743-utc). |
+| [0. Latest entry UI](#0-repeat-the-complete-entry-journey) | Candidate 28 Login/footer changes compiled and were served; their updated visual replay was not recorded. Native permission and paired entry coverage must remain explicit. [Details](../../manuals/DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md#entry-login-and-footer-corrections--2026-09-14). |
+| [7. Native install progress](#7-shared-permissions-and-installation--desktop-and-physical-phone) | Desktop actual installation and installed-app reopen are now recorded. Post-fix native waiting without ring, cancellation, accepted-installation ring and completion passed on desktop. Physical-phone native replay remains unverified; isolated service checks are not that evidence. |
+| [Local device persistence](#local-device-registration-persistence-regression) | Adapter/persistence checks and controlled popup contracts do not prove the full ordinary frontend-local UI/reload journey. This is separate from the passed physical Firebase device-preference replay. |
+
+### Detailed guide navigation
+
+[Prerequisites](#required-environment-and-actors) ·
+[Installation setup](#install-the-local-qa-app-before-establishing-the-old-cache-baseline) ·
+[0. Entry](#0-repeat-the-complete-entry-journey) ·
+[1. Upgrade / clipboard](#1-coherent-cold-start-upgrade-and-popup-layout) ·
+[2. Background resume](#2-background-mutation-and-resume) ·
+[3. Account isolation](#3-logout-and-account-switch-cache-isolation) ·
+[4. Offline recovery](#4-deliberate-offline-and-online-recovery) ·
+[5. Demo fallback](#5-demo-fallback-through-real-transport-loss) ·
+[6. Media](#6-public-demo-images-and-protected-firebase-media) ·
+[7. Permissions / install](#7-shared-permissions-and-installation--desktop-and-physical-phone)
+
 ## Required environment and actors
 
 - One disposable Android phone starts with the previous QA frontend shell and
@@ -77,10 +176,13 @@ authenticated cache items exist and ADB transport is healthy.
 
 ## 0. Repeat the complete entry journey
 
-Run these branches again on the candidate build in the desktop browser and
-physical phone PWA before counting this journey complete. Prior checkpoint
-results do not replace this regression run. Preserve the recorded old-cache
-boundary before changing accounts or loading the candidate.
+For a fresh regression run, execute these branches on the candidate build in
+the desktop browser and physical phone PWA. Prior standalone checkpoint results
+do not replace this regression run. During continuation, use the
+[current progress](#current-progress--2026-09-14) above: retain observations
+already recorded for this run and resume only the outstanding branches.
+Preserve the recorded old-cache boundary before changing accounts or loading
+the candidate.
 
 Use ordinary `/entry` and the actual deployment configuration. Firebase
 branches require an Operator-tested active Firebase revision; a URL flag,
@@ -321,18 +423,11 @@ account or reload is allowed in this control.
 A full device-offline cold start, including all portraits/assets, remains a
 separate service-worker/cache assertion. API failover alone does not prove it.
 
-## Expected effort
-
-| Work | Clean run | With one cache/transport replay |
-| --- | ---: | ---: |
-| Old/new build and ADB preflight | 25 min | 60 min |
-| Cold-start upgrade and popup regression | 25 min | 55 min |
-| Resume mutation and reconciliation | 20 min | 45 min |
-| Account switch and cache isolation | 20 min | 45 min |
-| Offline/online recovery, evidence and cleanup | 20 min | 55 min |
-| **Total** | **110 min** | **260 min** |
-
 ## 6. Public demo images and protected Firebase media
+
+Here “protected/private media” names the technical read boundary, not a
+separate image privacy setting. The profile's visibility controls access;
+a private profile is excluded from game cards.
 
 This is part of this testcase, not a separate PASS inferred from logout or
 list visibility. Public landing, Explore and generated demo images remain
@@ -408,8 +503,11 @@ for the physical phone. Preserve the phone's existing cache and identity.
    registration/preference work. A rejected request leaves it muted; repeated
    clicks cannot duplicate the operation. A device-level opt-out must not be
    silently undone by an ordinary bell preference change.
-8. Install opens the browser's native installer once. Dismissal releases busy
-   state; an event already consumed cannot be prompted again. The avatar header's
+8. Install opens the browser's native installer once. While the native dialog
+   awaits a decision, the Install action is disabled with **no loading ring**.
+   Only acceptance starts the ring for installation work; `appinstalled` ends
+   it. Cancellation or failure releases the action without an installation
+   ring; an event already consumed cannot be prompted again. The avatar header's
    lower-right Install action reopens the shared popup when installable. A first
    successful login reoffers installation once if still eligible. Check both
    landing and signed-in entry points without stacking overlays.
@@ -417,6 +515,24 @@ for the physical phone. Preserve the phone's existing cache and identity.
    provider registration and real FCM delivery evidence distinct. Controlled
    browser doubles prove sequencing only. Real delivery belongs to the linked
    Push lifecycle, with an active tested Firebase configuration.
+
+### Desktop PWA installation and reopen
+
+1. In the existing managed desktop QA browser, record the current QA origin and
+   identity. Retain its configured profile and window dimensions.
+2. Use the ordinary Install action and complete the browser's native installer.
+   Confirm it targets the same QA origin. Opening the application popup or
+   mocking an installer response does not complete this step.
+   Before accepting, confirm the application button is disabled without a
+   loading ring. The ring may start only after native acceptance and must end
+   when installation completes. Record cancellation separately.
+3. Launch the installed app. Confirm standalone display, the same QA origin,
+   coherent build and the expected identity/onboarding state.
+4. Close the installed app and reopen it normally. The same identity remains;
+   no duplicate registration, unexpected onboarding or blank shell appears.
+5. Record desktop installation/reopen evidence separately from physical-phone
+   installation and from shared-popup layout checks. Track the fixture-owned
+   installation for cleanup without touching any personal installation.
 
 ## Local device-registration persistence regression
 
@@ -438,3 +554,19 @@ for the physical phone. Preserve the phone's existing cache and identity.
   invoking it in the HTTP application does not prove the local UI journey.
 - Offline is represented by the common `cloud_off` controls. No additional
   offline badge appears below the avatar or in the home header.
+
+## Original effort estimate — reference only
+
+This estimate covers the original cache/transport journey from a fresh
+baseline. It is not remaining time and does not include the expanded entry,
+media and permission work or subsequent defect repairs. Use the current
+progress table to identify remaining work.
+
+| Work | Clean run | With one cache/transport replay |
+| --- | ---: | ---: |
+| Old/new build and ADB preflight | 25 min | 60 min |
+| Cold-start upgrade and popup regression | 25 min | 55 min |
+| Resume mutation and reconciliation | 20 min | 45 min |
+| Account switch and cache isolation | 20 min | 45 min |
+| Offline/online recovery, evidence and cleanup | 20 min | 55 min |
+| **Original total** | **110 min** | **260 min** |
