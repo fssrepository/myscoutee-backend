@@ -83,6 +83,45 @@ class FirebaseFilterOperatorTest {
     }
 
     @Test
+    void publicFirebaseConfigurationRemainsReachableWithAnExpiredAppSession()
+            throws Exception {
+        for (String path : List.of(
+                "/deployment/configuration/firebase-config",
+                "/api/deployment/configuration/firebase-config")) {
+            UserLoginSessionService sessionService = mock(UserLoginSessionService.class);
+            when(sessionService.isCurrentUserEnrolled()).thenReturn(true);
+            FirebasePrincipal principal = new FirebasePrincipal(
+                    "member", "member@example.invalid", List.of("U"), null);
+            SecurityContextHolder.getContext().setAuthentication(
+                    new FirebaseAuthenticationToken(principal, null, principal.getAuthorities()));
+            FirebaseFilter filter = new FirebaseFilter(
+                    mock(FirebaseService.class),
+                    new ConfigProperties(),
+                    mock(FirebaseTokenVerifier.class),
+                    sessionService,
+                    mock(com.raxim.myscoutee.profile.service.media.MediaSessionAccessService.class));
+            MockHttpServletRequest request = new MockHttpServletRequest("GET", path);
+            MockHttpServletResponse response = new MockHttpServletResponse();
+            FilterChain chain = mock(FilterChain.class);
+
+            filter.doFilter(request, response, chain);
+
+            assertThat(response.getStatus()).isEqualTo(200);
+            verify(sessionService, never()).isCurrentUserEnrolled();
+            verify(chain).doFilter(request, response);
+
+            // The public exception must not admit adjacent configuration paths.
+            MockHttpServletRequest protectedRequest =
+                    new MockHttpServletRequest("GET", path + "/credentials");
+            MockHttpServletResponse protectedResponse = new MockHttpServletResponse();
+            FilterChain protectedChain = mock(FilterChain.class);
+            filter.doFilter(protectedRequest, protectedResponse, protectedChain);
+            assertThat(protectedResponse.getStatus()).isEqualTo(401);
+            verify(protectedChain, never()).doFilter(protectedRequest, protectedResponse);
+        }
+    }
+
+    @Test
     void publicHealthRequestSkipsMemberFallbackWhenFirebaseIsDisabled()
             throws Exception {
         FirebaseService firebaseService = mock(FirebaseService.class);

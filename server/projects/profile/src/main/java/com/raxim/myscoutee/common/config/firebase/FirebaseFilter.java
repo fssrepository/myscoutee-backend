@@ -202,6 +202,8 @@ public class FirebaseFilter extends OncePerRequestFilter {
                 || requestUri.startsWith("/api/media/public/")
                 || requestUri.equals("/deployment/configuration")
                 || requestUri.equals("/api/deployment/configuration")
+                || requestUri.equals("/deployment/configuration/firebase-config")
+                || requestUri.equals("/api/deployment/configuration/firebase-config")
                 || requestUri.equals("/i18n/bundle")
                 || requestUri.equals("/api/i18n/bundle")
                 || requestUri.equals("/auth/eligibility")

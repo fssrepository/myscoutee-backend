@@ -8688,6 +8688,65 @@ Riley/Nova private-media isolation. No prior PASS replaces those observations.
 - Evidence: `/tmp/myscoutee-anna-local-reconnect-draft.png` and
   `/tmp/myscoutee-anna-local-network-reconnect.png` (candidate 24 observations).
 
+#### Candidate 25 local offline verification — 2026-09-14
+
+- Physical standalone PWA candidate 25 switched from canonical HTTP Anna to
+  local `u1` through API-only transport loss. A subsequent full page/worker
+  network outage reported `navigator.onLine=false`. Mode, filters and history
+  were enabled; ordinary touches opened all three. The side-menu profile,
+  Chat, Event, Asset and contact actions were enabled under the same outage.
+- Local Chat list loaded its seeded conversations. Opening Driver Split —
+  Alpine Weekend loaded messages and enabled the composer while still offline.
+  No message was sent. Local notification mute changed to true, remained true
+  after closing/reopening, and was restored to false with the ordinary
+  confirmation. Pending-save disabling ended after the local operation.
+- Two missing Rating portraits were external URLs, not invalid application
+  routes: randomuser.me `men/12.jpg` and `women/84.jpg`. Both returned HTTP 200
+  JPEG outside the device. The PWA had no service-worker cache entries for
+  them. After transport restoration and ordinary list reopen, both image
+  directives completed without errors on the phone. A cross-origin fetch
+  diagnostic failed (the server exposes no CORS header); actual image rendering
+  succeeded. Do not confuse fetch CORS restrictions with image unreachability.
+  User accepted uncached external images being absent during full network loss.
+- Desktop online header controls remained enabled at the original 1136x763
+  viewport. A brief desktop offline control triggered canonical-demo failover
+  before inspection; discard it as an HTTP-disabled-state oracle. Transport
+  was restored in `finally` and ordinary reload requested to return to HTTP.
+- All page/worker shaping processes stopped with restoration confirmed.
+  Public image limitation and unexecuted real Firebase branches remain explicit;
+  the full checkpoint is still PARTIAL/OPEN.
+- Evidence: `/tmp/myscoutee-local-offline-filter-fixed.png`,
+  `/tmp/myscoutee-local-offline-chat-fixed.png`,
+  `/tmp/myscoutee-local-offline-rating-images.png`, and
+  `/tmp/myscoutee-local-offline-preference-fixed.png` (main-screen enabled header).
+
+#### Demo cleanup and Firebase bootstrap correction — 2026-09-14
+
+- Restored the local About text and notification mute through ordinary UI actions;
+  both devices logged out normally. The versioned WebView fixture reset restored
+  its retained pre-launch server-session snapshot. Candidate 25 remains installed,
+  caches preserved, and all transport/permission overrides stopped.
+- Distinguish API-only server loss from full network loss: external image hosts
+  can remain reachable during the former. The accepted missing-portrait observation
+  belongs only to the latter, with no cached bytes available.
+- Before cleanup, the public Firebase client-config request returned 401 with
+  "App session is not active." After fixture reset it returned the controller's
+  404 "Firebase client configuration has not been activated." Source diagnosis
+  found that WebSecurityConfig permitted the two exact public config paths, but
+  FirebaseFilter omitted them from its entry-bootstrap exemptions. Added those
+  exact paths; no wildcard or protected configuration access was added.
+- Existing backend watcher compiled successfully in 1 second and restarted at
+  20:29:46 local time. Anonymous HTTP recheck reaches the intended config handler
+  (404, no active revision); Operator configuration remains 403 and private media
+  remains 401. A nonexistent child path returns 404, not configuration content.
+- Added a regression for both public paths with an expired authenticated app
+  session, plus adjacent-path rejection. The JUnit regression was not executed:
+  the existing test-source compilation blocker (76 unrelated errors, documented
+  above) remains unresolved. No second application compiler was started.
+- Actual Firebase entry/location and positive protected-image tests remain open
+  pending an Operator-tested active application configuration. This repair is not
+  evidence of successful real-provider login. Overall status remains PARTIAL/OPEN.
+
 #### Test-hook audit and full entry regression — 2026-09-14
 
 Scope: current frontend application source/environments and backend main
