@@ -1320,7 +1320,28 @@
   function flowReset() {
     const state = Q.activeState(SCENARIO, true);
     if (Q.text(state.checkpointId) !== CHECKPOINT) Q.fail(`active Chat checkpoint is '${Q.text(state.checkpointId)}', not '${CHECKPOINT}'.`);
-    Q.restoreSnapshots(state.snapshots);
+    if (IS_POLL) {
+      const current = flowSnapshot();
+      if (current.notifications.length || current.outbox.length) {
+        Q.fail("Owned notification work must be resolved before performance fixture cleanup.");
+      }
+      const unreadByUser = new Map(current.chats.map(chat => [chat.ownerUserId, Q.number(chat.unread)]));
+      for (const [userId, unread] of unreadByUser) {
+        const user = Q.ensureUser(userId, "performance fixture cleanup");
+        if (unread < 0 || [user.activities?.chats, user.activities?.chat?.all, user.activities?.chat?.group]
+            .some(value => Q.number(value) < unread)) Q.fail("Owned Chat unread delta exceeds its stored counters.");
+      }
+      for (const [userId, unread] of unreadByUser) {
+        if (!unread) continue;
+        const result = Q.collection("users").updateOne(
+          { userId, "activities.chats": { $gte: unread }, "activities.chat.all": { $gte: unread }, "activities.chat.group": { $gte: unread } },
+          { $inc: { "activities.chats": -unread, "activities.chat.all": -unread, "activities.chat.group": -unread } });
+        if (result.modifiedCount !== 1) Q.fail("Performance fixture unread reversal lost its guard.");
+      }
+    }
+    // For the performance fixture, reverse only its owned unread contribution;
+    // preserve consent, login and other legitimate account changes made during QA.
+    Q.restoreSnapshots(IS_POLL ? state.snapshots.filter(item => item.collection !== "users") : state.snapshots);
     Q.collection(Q.STATE_COLLECTION).deleteOne({ _id: state._id });
     const remaining = Q.collection("chats").countDocuments({ id: { $regex: `^${FLOW_PREFIX}:` } })
       + Q.collection("chatMessages").countDocuments({ chatId: { $regex: `^${FLOW_PREFIX}:` } })
@@ -1369,7 +1390,9 @@
     };
     Q.printObject({ scenario: SCENARIO, checkpoint: CHECKPOINT,
       phase: live.length ? "message-observed" : "fixture-ready", groupChatId: state.context.groupChatId,
-      groupTitle: "QA UI-POLL-JANK-001 Group", historyCount: current.messages.length, validation });
+      groupTitle: "QA UI-POLL-JANK-001 Group", historyCount: current.messages.length,
+      ownedOutboxCount: current.outbox.length, ownedInboxCount: current.notifications.length,
+      unreadByActor: current.chats.map(chat => ({ userId: chat.ownerUserId, unread: chat.unread })), validation });
     if (!Object.values(validation).every(Boolean)) Q.fail("UI-POLL-JANK-001 fixture oracle failed.");
   }
 

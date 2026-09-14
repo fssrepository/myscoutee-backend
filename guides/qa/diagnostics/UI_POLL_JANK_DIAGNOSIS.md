@@ -1,10 +1,78 @@
 # Periodic UI update jank diagnosis
 
-Status: Admin Job manual visual pass; performance trace and Chat retest pending
+Status: PASS / CLOSED — user-authorized CDP execution on 2026-09-14
 Defect: `UI-POLL-JANK-001`
-Last updated: 2026-09-08
+Last updated: 2026-09-14
 
-## Scope
+## Measured closure — 2026-09-14
+
+The user explicitly delegated this checkpoint's UI actions to CDP. The run used
+three existing managed windows: Ava switched to Nova in the same window;
+Casey A and Casey B retained their two separate profiles. No fourth window was
+created. Earlier Admin manual visual evidence remains historical; this closure
+records automated browser measurements, not a new human visual assessment.
+
+| Final recording | Duration | Frame p99 / maximum | Long tasks ≥50 ms | Maximum main-thread task |
+| --- | --- | --- | --- | --- |
+| Idle | 30 s | 16.8 / 16.8 ms | 0 | 27.364 ms |
+| Admin list | 30 s | 17.5 / 20.9 ms | 0 | 17.537 ms |
+| Admin detail | 30 s | 16.8 / 16.8 ms | 0 | 13.450 ms |
+| Chat | 45 s | 18.1 / 42.7 ms | 0 | 41.050 ms |
+
+Frame statistics exclude the trace-export observation tail and the initial
+non-positive rAF interval. Main-thread tasks were independently counted from
+`CrRendererMain` trace events as well as the browser Long Tasks observer.
+Chat's isolated 42.7 ms frame interval occurred near live-message arrival;
+these results establish no reproduced periodic long-task hitch, not perfect
+frame pacing on every frame or on untested devices.
+
+Two SmartList defects reproduced during the initial Admin recordings and were
+fixed in `syncVisibleItems` and `rebuildResolvedListTrackKeys`:
+
+- Reordering after another rule changed replaced unchanged row objects and
+  needlessly notified the selected detail. Reconciliation now retains equal
+  objects by stable key across changes in order, total and visible membership.
+- Clearing object-to-key WeakMaps before Angular reconciled the previous rows
+  assigned an old changed object another row's key. Retaining the WeakMaps
+  preserves its identity through reconciliation without retaining retired rows.
+
+The final Admin recordings retained unchanged object/DOM identities through
+five-second center responses; the 30-second windows had no DOM mutations.
+Changed non-selected rule data did not replace the selected detail; selected
+runtime changes were observed in the preceding repair replay. List and history
+scrolling covered 323 and 330 pixels. No job was run or reconfigured.
+The four focused regressions passed against the actual compiled SmartList
+methods through CDP. Matching Vitest cases were authored, but a separate Vitest
+run was not started alongside the existing build owner. The frontend watcher
+completed the final build at 09:46:44 CEST and synced at 09:46:47.
+
+Chat covered typing, reverse scrolling through 960 pixels, four received
+WebSocket frames and a successful user-realtime completion. Nova's native UI
+send at 22.523 s produced exactly one live bubble and one persisted message;
+history increased from 18 to 19. The unsent Casey typing probe was cleared.
+The terminal fixture oracle passed all four history/membership/message checks
+and found no owned inbox or outbox work.
+
+Read-only observer attachment changed neither Casey's two active session IDs,
+29 login audits nor page/context sets. At ordinary Casey B browser close,
+its process ended, no logout request was observed, and the same server session
+still authenticated successfully; both server slots remained. This proves
+ordinary close retained the slot in this run. It does not demonstrate a new
+`BLOCKED_LIMIT` login attempt or justify changing the two-session policy.
+
+After attribution, Nova logged out, the versioned launcher closed its remaining
+managed browsers, and the normal fixture reset restored pre-launch sessions.
+Cleanup reversed only the fixture's remaining unread contribution, preserved
+other user state and returned `not-staged` with no owned fixture rows left.
+
+Raw traces, observations, session comparisons and SHA-256 hashes are retained
+locally at `~/.local/share/myscoutee-qa-evidence/UI-POLL-JANK-001/2026-09-14/`
+(`cdp-evidence.tar.gz`, 23 files; `sha256.json`). The repository records this
+summary; raw authentication carriers are excluded from the evidence.
+
+## Original investigation and repeatable procedure
+
+### Scope
 
 This note separates two reported symptoms:
 
@@ -53,7 +121,7 @@ in-flight request. It does not run the timer or state update outside Angular,
 and it does not suppress a state commit when the response is materially
 unchanged.
 
-### Current conclusion
+### Original conclusion before measured closure
 
 Periodic full-state processing and Angular rendering on the UI thread is a
 credible primary cause of the observed five-second Job Detail hitch. This is a

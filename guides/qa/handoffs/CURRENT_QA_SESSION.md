@@ -1,6 +1,6 @@
 # Current manual QA session
 
-Updated: 2026-09-14 09:30 CEST
+Updated: 2026-09-14
 
 This is the context-saving entry point for continuing the manual QA campaign.
 It stores one minimal live resume pointer plus reusable pair-QA execution lessons. It
@@ -25,8 +25,7 @@ file first, then open only the linked active checkpoint section.
   [`PAYMENT-METHODS-HISTORY-001.md`](../checklists/event/PAYMENT-METHODS-HISTORY-001.md).
 - Stable user-facing click guide for the parked Asset Borrow journey:
   [`ASSET-BORROW-001.md`](../checklists/asset/ASSET-BORROW-001.md).
-- Stable user-facing guides for all six open Notifications rows, with the
-  current checkpoint first:
+- Stable user-facing guides for the six Notifications rows (UI poll is closed):
   [`UI-POLL-JANK-001.md`](../checklists/notifications/UI-POLL-JANK-001.md),
   [`MOBILE-PUSH-LIFECYCLE-001.md`](../checklists/notifications/MOBILE-PUSH-LIFECYCLE-001.md),
   [`MOBILE-WEBVIEW-LIFECYCLE-001.md`](../checklists/notifications/MOBILE-WEBVIEW-LIFECYCLE-001.md),
@@ -85,46 +84,24 @@ resume pointer and reusable working method.
 ## Active resume point
 
 ```yaml
-checkpoint: UI-POLL-JANK-001 — FIXTURE VERIFIED / THREE MANAGED WINDOWS READY / USER ACTION NOT STARTED
-detail: ../manuals/ADMIN_DYNAMIC_SURFACES_QA_PLAN.md#queued-cross-surface-performance-defect
-checklist: ../checklists/notifications/UI-POLL-JANK-001.md
-substage: hand over checklist step 1; Ava switches to Nova in the same window at step 10; keep both Casey sessions open
-selection_reason: the user explicitly paused Asset Borrow and moved the manual-QA cursor to Notifications; UI-POLL-JANK-001 is the selected first Notifications row despite its lower numeric priority
-notification_guides: all six open Notifications matrix rows now have stable user-facing guides; they remain separate consolidated journeys and were not expanded into new matrix rows
-notification_order: UI-POLL-JANK-001 first by explicit user selection, then MOBILE-WEBVIEW-LIFECYCLE-001, MOBILE-PUSH-LIFECYCLE-001, NOTIFICATION-ADMIN-LIFECYCLE-001, JOB-MESSAGES and BELL-RATING-LIFECYCLE-001 by existing priority
-notification_remaining_complexity: 425/1025 minutes across the six unchanged matrix rows
-fixture_phase: ui-poll fixture-ready; 18 Group history messages; three managed windows Ava / Casey A / Casey B; startup identity, Chat visibility and exact two-session Casey oracle passed
-required_infrastructure: one disposable populated Casey/Nova Group Chat; three-session managed-browser configuration with a manual Ava-to-Nova account switch; secret-safe before/after session, audit, process/profile, page-target/context, auth-carrier and `/auth/me` snapshots; trace evidence and exact reset
-runtime_contract: capture exact idle/Admin list/Admin detail/Chat traces, then attribute the already-reported two-session lockout around read-only CDP attachment and ordinary browser close before intentional launcher cleanup
-browser_control: after standardized startup, the user exclusively controls navigation, DevTools recording, Chat input and browser close. Diagnostic CDP may only observe the already-reported session defect and must never create a context, login or QA action
-ledger_status: 89/104 passed; no Notifications result/status changed by generating the guides
-required_resume: continue UI-POLL-JANK-001 checklist step 1 in the prepared windows; do not relaunch or run a parked testcase gate. The user owns all navigation, recordings and the Ava-to-Nova switch.
-actors: Ava observes Admin Jobs; Casey A is the Chat reader; Casey B is the same controlled account's second session; Nova sends the one live Chat message
-pending_machine_oracle: correlate four saved Performance traces; compare server sessions/audits and browser target/context/auth presence before/after read-only observer attachment and immediately after Casey B closes; capture before any launcher cleanup
-deployment_boundary: deployment method and candidate evidence are maintained separately in `../../releases/PRERELEASE_DEPLOYMENT_QUALIFICATION.md` and `../../releases/v1.0.0-qa.2.md`; this pair-QA continuation must not rebuild or reinstall
-last_completed: ASSET-CHECKOUT-001 PASS/CLOSED through its full 98-step user journey and terminal guarded oracles
+checkpoint: MOBILE-WEBVIEW-LIFECYCLE-001 — QUEUED / NOT STARTED
+checklist: ../checklists/notifications/MOBILE-WEBVIEW-LIFECYCLE-001.md
+substage: next Notifications checkpoint; no phone preparation or app-data mutation performed
+notification_order: MOBILE-WEBVIEW-LIFECYCLE-001, MOBILE-PUSH-LIFECYCLE-001, NOTIFICATION-ADMIN-LIFECYCLE-001, JOB-MESSAGES, BELL-RATING-LIFECYCLE-001
+notification_remaining_complexity: 365/880 minutes across five open Notifications rows
+fixture_phase: completed ui-poll reset; not-staged; its managed browsers closed and pre-launch server sessions restored
+browser_control: explicit CDP UI delegation applied to the completed UI-POLL-JANK-001 only; retain the normal manual-QA boundary for subsequent checkpoints unless the user delegates them
+ledger_status: 90/104 passed; Notifications 1/6
+required_resume: read the linked Mobile WebView checklist and perform its read-only device/build/cache baseline gate before any preparation; preserve existing app data
+last_completed: UI-POLL-JANK-001 PASS/CLOSED on 2026-09-14; two SmartList defects fixed; four recordings and session-close attribution completed through user-authorized CDP
+last_evidence: ../diagnostics/UI_POLL_JANK_DIAGNOSIS.md#measured-closure--2026-09-14
 ```
 
 ### Notifications takeover notes
 
-The guide-generation pass changed documentation only. It did not change any
-matrix result, stage a Notifications fixture, add a browser-session entry,
-attach CDP, launch Chrome, send a message or run a product build/test. A new
-Codex session must not tell the user to begin `UI-POLL-JANK-001` merely because
-its guide exists.
-
-For the selected `UI-POLL-JANK-001`, the next implementation work is:
-
-1. use the independent `ui-poll` fixture for this selected test;
-2. reuse or wrap the existing `CHAT-FLOW-001` disposable Group Chat fixture
-   without reopening its closed result;
-3. use the three-window Ava / Casey A / Casey B configuration with the manual Ava-to-Nova switch in the
-   versioned managed-browser launcher;
-4. add a read-only, secret-safe session snapshot oracle for the guide's three
-   stop points; it may report counts, equality/hashes and boolean carrier
-   presence, never raw cookies, bearer tokens or session IDs;
-5. prove stage/status/reset, then exactly two Casey sessions at launcher handoff;
-   after handoff, the user alone records the traces and closes Casey B.
+`UI-POLL-JANK-001` is closed. Its detailed evidence is in the linked diagnosis
+and CSV/XLSX ledger. The next checkpoint is queued only; do not replay the
+completed performance fixture or create additional browser sessions.
 
 Existing support for the later Notifications guides must be reused before new
 harness code is created:
@@ -145,9 +122,9 @@ harness code is created:
   Never clear app data before capturing the old-cache and account-isolation
   boundaries.
 
-The six stable guide estimates exactly match the unchanged matrix values:
-UI poll `60/145`, Mobile WebView `110/260`, Mobile Push `100/235`, Notification
-Admin `80/190`, Scheduled Messages `20/65`, and Bell/Rating `55/130` minutes.
+Remaining estimates: Mobile WebView `110/260`, Mobile Push `100/235`,
+Notification Admin `80/190`, Scheduled Messages `20/65`, Bell/Rating `55/130`
+minutes. The completed UI poll estimate is excluded from the remaining total.
 
 Resolved admission decision: first-stage admission locks on the successful
 materialization commit, not when a scheduled Start is merely queued or stuck.
@@ -289,9 +266,8 @@ the checkpoint says otherwise.
 
 ### Next manual action
 
-UI-POLL-JANK-001 step 1: in Ava's Admin landing window, open DevTools Performance
-and record the 30-second idle control. Follow its stable checklist; step 10
-switches only this window from Ava to Nova. Keep both Casey sessions open.
+No action remains for UI-POLL-JANK-001. On QA continuation, start the queued
+Mobile WebView checkpoint from its read-only device/build/cache gate.
 
 Group-size audit: retain `TOURNAMENT-MEMBER-002` as 2+1 because Riley's Group B
 proves parent-event notification delivery across room boundaries while Group B

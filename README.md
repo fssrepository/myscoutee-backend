@@ -20,7 +20,7 @@ remaining qualification work is completed.
 
 ### Manual QA status and estimate
 
-**2026-09-08:** 89/104 passed; QA infrastructure 2/2, Identity & access 8/8, Event 49/49, Tournament 15/15 and Chat 6/6 complete. `ASSET-CHECKOUT-001` is PASS/CLOSED through its full user journey and guarded terminal oracles. Asset Borrow is parked before its first user action; the selected cursor is now Notifications `UI-POLL-JANK-001`, whose stable guide is ready while its versioned fixture/browser/session-oracle wiring remains to be prepared. Deployment is not a Pair-QA domain; Operator work is consolidated into four screen-level journeys, real-device push remains in Notifications, and downstream product behavior stays in its owning domain.
+**2026-09-14:** 90/104 passed; QA infrastructure 2/2, Identity & access 8/8, Event 49/49, Tournament 15/15 and Chat 6/6 complete; Notifications 1/6. `UI-POLL-JANK-001` is PASS/CLOSED after user-authorized CDP recordings, two SmartList fixes and session-close attribution; its fixture and managed browsers are cleaned up. The next queued Notifications checkpoint is `MOBILE-WEBVIEW-LIFECYCLE-001`. Deployment is not a Pair-QA domain; Operator work is consolidated into four screen-level journeys, real-device push remains in Notifications, and downstream product behavior stays in its owning domain.
 
 | Remaining phase | Scope | Estimate |
 |---|---|---:|
