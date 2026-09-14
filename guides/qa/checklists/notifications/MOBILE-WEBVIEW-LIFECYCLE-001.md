@@ -189,6 +189,68 @@ are scoped to the current user without exposing their stored values.
 Codex captures final transport/cache diagnostics, compares server truth and
 restores the versioned device/fixture boundary.
 
+## 5. Opt-in development demo fallback
+
+This additional trial uses the existing HTTP and local seed adapters. It is
+limited to a development HTTP build on localhost and the 50 canonical demo
+members. Firebase, support, operator and synthetic QA identities are excluded.
+It changes adapters through a page reload at an idle main-screen boundary;
+local edits remain local and are never uploaded on reconnect.
+
+1. With the existing dev stack running and no other Mobile WebView fixture
+   staged, run the common harness `stage-demo mobile-webview
+   MOBILE-WEBVIEW-LIFECYCLE-001`. Prepare browser sessions through the same
+   harness with `MANUAL_QA_BROWSER_USER_IDS=bf057de7c586eede7e84bdc7` and
+   `prepare browser-sessions MOBILE-WEBVIEW-LIFECYCLE-001`. Use the physical
+   device helper's tracked `login Anna` startup. This maps HTTP Farkas Anna to
+   local seed `u1`; it does not create a second backend account.
+2. Open `/game?qaOfflineDemo=1` in the installed local QA PWA. Confirm the live
+   HTTP profile while the backend is healthy. The trial flag persists across
+   reloads/cold starts on this origin until explicitly disabled.
+3. Run `node guides/qa/tools/mobile-webview-device.mjs backend-offline` and keep
+   its terminal attached. This blocks only the QA page's `/api/*` requests;
+   it does not simulate a complete internet outage. Return to the idle main
+   screen. Within the next 10-second check plus health timeout/bootstrap,
+   confirm local Anna appears. Capture both distinct IndexedDB names and
+   verify the retained HTTP session is unchanged, without exposing tokens.
+4. Edit Anna's About text with a unique QA marker and save. Reopen the editor
+   to prove local persistence. Add another unsaved marker. Send `online` to
+   the transport helper and wait more than 10 seconds: the editor, draft and
+   page time origin must remain unchanged. The floating icon and
+   menu bell show `cloud_off` on a grey/slate background, not the muted-bell symbol. They return to their
+   online icons when connectivity returns, even with the editor still open.
+   The floating icon appears offline even at zero unread count; its counter,
+   click, drag and dismissal still work. Dismissal persists for that outage.
+   The notification-list mute toggle shows the same offline icon and is
+   disabled until reconnect, preserving the prior mute preference.
+   Repeat with `network-offline` on an already loaded local page to emulate
+   complete target network loss (`navigator.onLine === false`), then `online`;
+   distinguish this CDP emulation from a physical-radio or cold-start test.
+5. Cancel the draft and return to the main screen. Reconnect must keep the
+   same local session and page time origin, including at idle. Its bell marker
+   clears once the backend is reachable. On a later explicit reload/reopen,
+   HTTP Anna is preferred. Reopen the profile: neither local marker may have
+   reached the server. Different live/local counters are expected; no data
+   merge is part of this trial. A repeated outage retains the saved local edit.
+6. Run `node --experimental-vm-modules guides/qa/tools/check-demo-failover.mjs`
+   against the existing watcher's output for exclusion gates, auth errors,
+   session restoration, reconnect without reload, cold start, account switch
+   and editor/write guards.
+   Do not launch another Angular build or test compiler.
+7. Send `stop` to restore transport and detach. Open `/game?qaOfflineDemo=0`,
+   use ordinary logout for the tracked HTTP session, then run the common
+   harness `reset mobile-webview MOBILE-WEBVIEW-LIFECYCLE-001`. Disabling the
+   trial restores any pre-existing local session; local demo data stays in
+   its separate database. Do not clear the HTTP cache or unrelated app data.
+
+With the trial disabled, block only the API while an HTTP page is open. The
+notification marker must indicate the outage and clear after the existing poll
+succeeds again. Keep the same page time origin and session throughout; no seed
+account or reload is allowed in this control.
+
+A full device-offline cold start, including all portraits/assets, remains a
+separate service-worker/cache assertion. API failover alone does not prove it.
+
 ## Expected effort
 
 | Work | Clean run | With one cache/transport replay |

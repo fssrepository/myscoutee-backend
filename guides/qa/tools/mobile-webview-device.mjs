@@ -4,6 +4,7 @@ import WebSocket from '../../../frontend/node_modules/ws/index.js';
 import { readFileSync } from 'node:fs';
 import { execFileSync } from 'node:child_process';
 import { once } from 'node:events';
+import { createInterface } from 'node:readline';
 const [action, ...args] = process.argv.slice(2);
 const port = Number(process.env.QA_PHONE_CDP_PORT || 36087);
 const packageName = process.env.QA_PHONE_PACKAGE || 'org.chromium.webapk.af8b7eef107d7742f_v2';
@@ -52,22 +53,61 @@ try {
     const point = await evaluate(`(()=>{const e=document.querySelectorAll(${JSON.stringify(args[0])})[${Number(args[1] || 0)}];if(!e)throw Error('Control missing');e.scrollIntoView({block:'nearest'});const r=e.getBoundingClientRect(),x=r.x+r.width/2,y=r.y+r.height/2;if(!e.contains(document.elementFromPoint(x,y)))throw Error('Control covered');return{x,y}})()`);
     await send('Input.dispatchTouchEvent', { type: 'touchStart', touchPoints: [point] });
     await send('Input.dispatchTouchEvent', { type: 'touchEnd', touchPoints: [] });
+  } else if (action === 'drag-notification') {
+    const start = await evaluate(`(()=>{const r=document.querySelector('.notification-attention-menu button')?.getBoundingClientRect();if(!r)throw Error('Notification control missing');return{x:r.x+r.width/2,y:r.y+r.height/2}})()`);
+    await send('Input.dispatchTouchEvent', { type: 'touchStart', touchPoints: [start] });
+    await new Promise(resolve => setTimeout(resolve, 450));
+    let end = { x: start.x - 90, y: start.y - 100 };
+    if (args[0] === 'dismiss') {
+      // The existing menu exposes its dismiss target after drag activation.
+      await send('Input.dispatchTouchEvent', { type: 'touchMove', touchPoints: [{ x: start.x - 8, y: start.y - 8 }] });
+      await new Promise(resolve => setTimeout(resolve, 200));
+      end = await evaluate(`(()=>{const r=document.querySelector('.notification-attention-dismiss-target')?.getBoundingClientRect();if(!r)throw Error('Dismiss target missing');return{x:r.x+r.width/2,y:r.y+r.height/2}})()`);
+    }
+    for (let step = 1; step <= 10; step++) {
+      await send('Input.dispatchTouchEvent', { type: 'touchMove', touchPoints: [{ x: start.x + (end.x - start.x) * step / 10, y: start.y + (end.y - start.y) * step / 10 }] });
+      await new Promise(resolve => setTimeout(resolve, 35));
+    }
+    await send('Input.dispatchTouchEvent', { type: 'touchEnd', touchPoints: [] });
+    console.log(args[0] === 'dismiss' ? 'Dragged the QA notification into its dismiss target.' : 'Moved the QA notification.');
   } else if (action === 'text') await send('Input.insertText', { text: args[0] });
   else if (action === 'navigate') {
     if (!args[0]?.startsWith('/') || args[0].startsWith('//')) throw Error('Only QA-relative paths allowed');
     await send('Page.navigate', { url: `http://localhost:8080${args[0]}` });
   } else if (action === 'login') {
-    const userId = { Riley: '650000000000000000000063', Nova: '650000000000000000000062' }[args[0]];
+    const userId = { Riley: '650000000000000000000063', Nova: '650000000000000000000062', Anna: 'bf057de7c586eede7e84bdc7' }[args[0]];
     if (!userId) throw Error('Unknown configured actor');
     console.log(JSON.stringify(await evaluate(`(async()=>{const userId=${JSON.stringify(userId)},sessionId='session:'+crypto.randomUUID();
       const r=await fetch('/api/auth/session/login',{method:'POST',cache:'no-store',headers:{'Content-Type':'application/json','X-App-Session-Id':sessionId,'X-App-Session-Kind':'demo','X-Demo-User-Id':userId},body:JSON.stringify({attemptId:'attempt:'+crypto.randomUUID(),provider:'demo'})});
       const body=await r.json();if(!r.ok||!body.accepted)throw Error('QA login rejected: '+body.outcome);
       localStorage.setItem('myscoutee.http.session.v1',JSON.stringify({kind:'demo',userId,sessionId}));
       localStorage.setItem('myscoutee.http.demo.active-user.v1',userId);return{accepted:true,userId};})()`)));
+  } else if (action === 'backend-offline' || action === 'network-offline') {
+    await send('Network.enable');
+    const setTransport = offline => action === 'network-offline'
+      ? send('Network.emulateNetworkConditions', { offline, latency: 0, downloadThroughput: -1, uploadThroughput: -1 })
+      : send('Network.setBlockedURLs', { urls: offline ? ['http://localhost:8080/api/*'] : [] });
+    await setTransport(true);
+    console.log(`${action}: QA target offline. Send online/offline, or stop to restore and detach.`);
+    const input = createInterface({ input: process.stdin });
+    await new Promise(resolve => {
+      process.once('SIGINT', resolve); process.once('SIGTERM', resolve);
+      input.on('line', async line => {
+        if (line.trim() === 'stop') { resolve(); return; }
+        if (!['online', 'offline'].includes(line.trim())) return;
+        try {
+          await setTransport(line.trim() === 'offline');
+          console.log(`QA API ${line.trim()}; CDP attachment retained.`);
+        } catch (error) { console.error(error.message); resolve(); }
+      });
+    });
+    input.close();
+    await setTransport(false);
+    console.log('Restored QA transport.');
   } else if (action === 'close-other-qa-tabs') {
     const isPwa = await evaluate(`matchMedia('(display-mode: standalone)').matches`);
     if (!isPwa) throw Error('Launch the QA PWA before closing its browser controls');
     for (const page of pages.filter(p => p.id !== target.id)) await send('Target.closeTarget', { targetId: page.id });
     console.log('Closed only other localhost:8080 QA pages.');
-  } else throw Error('Usage: mobile-webview-device.mjs launch|inspect|eval|click|text|navigate|login|close-other-qa-tabs');
+  } else throw Error('Usage: mobile-webview-device.mjs launch|inspect|eval|click|text|navigate|login|backend-offline|network-offline|drag-notification|close-other-qa-tabs');
 } finally { socket.close(); }

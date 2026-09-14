@@ -101,9 +101,23 @@
     Q.collection(Q.STATE_COLLECTION).updateOne({ _id: state._id }, { $set: { phase: "fixture-ready" } });
     status();
   }
+  function stageDemoFailover() {
+    Q.assertNotStaged(SCENARIO);
+    const user = Q.ensureUser('bf057de7c586eede7e84bdc7');
+    Q.collection(Q.STATE_COLLECTION).insertOne({ _id: Q.stateId(SCENARIO), scenario: SCENARIO,
+      checkpointId: CHECKPOINT, phase: 'demo-failover-ready', stagedAtIso: Q.nowIso(),
+      snapshots: [], counterDeltas: [], variants: [] });
+    Q.printObject({ scenario: SCENARIO, phase: 'demo-failover-ready',
+      httpUserId: 'bf057de7c586eede7e84bdc7', localUserId: 'u1', name: user.name });
+  }
   function status() {
     const state = Q.activeState(SCENARIO);
     if (!state) return Q.printObject({ scenario: SCENARIO, checkpoint: CHECKPOINT, phase: "not-staged" });
+    if (state.phase === 'demo-failover-ready') return Q.printObject({
+      scenario: SCENARIO, checkpoint: CHECKPOINT, phase: state.phase,
+      httpUserId: 'bf057de7c586eede7e84bdc7', localUserId: 'u1',
+      canonicalActorPresent: Boolean(Q.ensureUser('bf057de7c586eede7e84bdc7'))
+    });
     const tickets = Q.collection("eventTickets").find({ eventId: { $in: eventIds } }).toArray();
     const notifications = Q.collection("userNotifications").find(notificationSelector).toArray();
     Q.printObject({ scenario: SCENARIO, checkpoint: CHECKPOINT, phase: state.phase,
@@ -133,6 +147,7 @@
     Q.printObject({ scenario: SCENARIO, checkpoint: CHECKPOINT, phase: "reset-complete" });
   }
   if (command === "stage") stage();
+  else if (command === "stage-demo") stageDemoFailover();
   else if (command === "status") status();
   else if (command === "reset") reset();
   else if (["background-settings", "background-chrome"].includes(command)) {

@@ -7,7 +7,7 @@ COMMON_SCRIPT="${SCRIPT_DIR}/scenarios/common.js"
 usage() {
   cat <<'USAGE'
 Usage:
-  bash manual-qa-checkpoints.sh stage|status|background-settings|background-chrome|reset mobile-webview MOBILE-WEBVIEW-LIFECYCLE-001
+  bash manual-qa-checkpoints.sh stage|stage-demo|status|background-settings|background-chrome|reset mobile-webview MOBILE-WEBVIEW-LIFECYCLE-001
   bash manual-qa-checkpoints.sh prepare browser-sessions <checkpoint-id>
   bash manual-qa-checkpoints.sh stage base-stat
   bash manual-qa-checkpoints.sh status base-stat
@@ -681,7 +681,7 @@ command="$1"
 scenario="$2"
 
 case "${scenario}:${command}" in
-  mobile-webview:stage|mobile-webview:status|mobile-webview:background-settings|mobile-webview:background-chrome|mobile-webview:reset)
+  mobile-webview:stage|mobile-webview:stage-demo|mobile-webview:status|mobile-webview:background-settings|mobile-webview:background-chrome|mobile-webview:reset)
     [ "$#" -eq 3 ] && [ "$3" = "MOBILE-WEBVIEW-LIFECYCLE-001" ] || { usage >&2; exit 2; }
     run_scenario "${command}" "${scenario}" 30 "$3"
     ;;

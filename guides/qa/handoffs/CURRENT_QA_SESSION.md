@@ -86,13 +86,13 @@ resume pointer and reusable working method.
 ```yaml
 checkpoint: MOBILE-WEBVIEW-LIFECYCLE-001 — PARTIAL / OPEN
 checklist: ../checklists/notifications/MOBILE-WEBVIEW-LIFECYCLE-001.md
-substage: physical Android run completed with findings; authenticated offline cache purge and remaining lifecycle controls need follow-up
+substage: opt-in demo fallback and offline notification indicators implemented/tested; original authenticated-cache purge and remaining lifecycle findings stay open
 notification_order: MOBILE-WEBVIEW-LIFECYCLE-001, MOBILE-PUSH-LIFECYCLE-001, NOTIFICATION-ADMIN-LIFECYCLE-001, JOB-MESSAGES, BELL-RATING-LIFECYCLE-001
 notification_remaining_complexity: estimates retained pending defect triage
-fixture_phase: mobile-webview reset-complete; pre-launch Riley/Nova server sessions restored; original nginx route restored; phone transport online
+fixture_phase: mobile-webview demo trial reset-complete; pre-launch Anna server sessions restored; phone transport online; trial flag disabled; HTTP logout complete; local demo database retained separately
 browser_control: user explicitly delegated the entire Mobile WebView testcase to Codex, including visible phone UI actions, installation, lifecycle, account switch and offline/reconnect. Continue autonomously through ADB/CDP; no user click gate is pending.
 ledger_status: 90/104 passed; Notifications 1/6; Mobile WebView PARTIAL/OPEN
-required_resume: use installed localhost:8080 PWA package org.chromium.webapk.af8b7eef107d7742f_v2; GitHub Pages app is untouched. ADB reverse tcp:8080 tcp:80 and CDP forward tcp:36087 restored. Nova logged out. No app-data clear. Read the linked execution evidence before restaging; do not repeat successful branches blindly. Current candidate hides Preview badge; reported No network header wrap not reproduced. Local seed exists in HTTP build and cached chunks, but automatic offline-demo switching was investigated only and not implemented.
+required_resume: use installed localhost:8080 PWA package org.chromium.webapk.af8b7eef107d7742f_v2; GitHub Pages app is untouched. ADB reverse tcp:8080 tcp:80 and CDP forward tcp:36087 restored. Anna logged out after the demo trial. No app-data clear. Read the linked execution evidence before restaging; do not repeat successful branches blindly. Current candidate hides Preview badge; reported No network header wrap not reproduced. Localhost/dev trial ?qaOfflineDemo=1 maps canonical HTTP demo users to the local seed on outage. Reconnect only updates connection icons and stays in the local page; next explicit reopening prefers HTTP. Real HTTP sessions keep polling without reload or seed substitution. See the opt-in trial evidence for tested boundaries.
 last_completed: coherent old/candidate upgrade, exact clipboard Paste, Chrome resident notification reconciliation, Nova own Ticket/QR and empty Notifications, verified offline cached QR and reconnect
 last_evidence: ../manuals/DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md#mobile-webview-physical-device-execution--2026-09-14
 ```

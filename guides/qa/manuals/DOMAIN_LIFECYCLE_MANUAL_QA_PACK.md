@@ -8112,8 +8112,73 @@ retained locally at `~/.local/share/myscoutee-qa-evidence/MOBILE-WEBVIEW-LIFECYC
 The fixture was corrected to include holder-owned participation records, not
 only ticket credentials, and its status now checks both. The device login
 helper now uses the canonical demo-active-user storage key. Offline local-demo
-switching was investigated only: seed chunks are present and cached, but HTTP
-storage/session scope is fixed by the build environment; no fallback was added.
+switching was initially investigated only; the later authorized development
+trial below implements a narrow opt-in route.
+
+### Opt-in demo fallback trial — 2026-09-14
+
+The user authorized a small implementation and delegated its phone execution.
+The final agreed behavior keeps an offline local demo session on reconnect:
+only connectivity indicators change. A later explicit reload/reopen prefers
+HTTP. A real HTTP session never switches to seed data or reloads on reconnect.
+`?qaOfflineDemo=1` enables the localhost/dev trial for 50 canonical demo members;
+Firebase, operator, support and synthetic QA actors are excluded.
+
+- **PASS, physical phone:** API-only outage moved idle HTTP Anna to local `u1`.
+  Canonical identity mapping was checked for all 50 members. The HTTP session
+  remained separate from `myscoutee_demo_db`; name/city matched, while seeded
+  counters differed. A local About marker survived save/reopen and another
+  outage; the cancelled draft did not. A read-only Mongo oracle confirmed
+  neither marker reached the server user. Earlier automatic live-return
+  behavior was superseded by the user's no-reload rule.
+- **PASS, final local reconnect rule:** restoring API connectivity left the
+  local pair and time origin `1789379125506.1` unchanged beyond the next
+  health-check interval, including idle. The zero-count floating offline icon
+  disappeared online without reloading the local page.
+- **PASS, physical phone, HTTP control with trial disabled:** blocking only
+  `/api/*` made the floating and menu icons `cloud_off` while the phone still
+  reported online. Existing long-poll failed, then succeeded after transport
+  restoration; icons recovered without reload or identity change. Time origin
+  stayed `1789378928446.2`; successful poll transfer sizes changed from 1373
+  to 1371 bytes around the blocked request. No manual refresh or health call
+  was used to clear the live indicator.
+- **PASS, physical phone:** CDP target network emulation produced
+  `navigator.onLine === false` and the same offline icons. The notification
+  list still opened; its mute toggle showed `cloud_off` and was disabled.
+  Reconnect restored `notifications_active` and enabled the toggle with the
+  previous unmuted state, in the same page (`1789378928446.2`). This is target
+  network emulation, not a radio/airplane-mode or offline cold-start test.
+- **PASS, physical phone:** the offline floating control appeared when its
+  unread count was zero, opened Notifications, moved by `(-90, -100)` CSS px,
+  and was dragged into the existing dismiss target. It stayed dismissed during
+  that outage. The initial screenshot used a small cloud marker; the final
+  requested design replaces the bell glyph with `cloud_off` on all three
+  controls, using one shared dark blue-grey offline palette; normal
+  bell/muted-bell meaning and colors return online. The final single-cloud
+  glyph was also moved/dismissed at zero unread (`1789379125506.1`).
+  Final screenshot `offline-icons-grey-final.png` confirms both menu/floating
+  backgrounds are exactly `#64748b -> #475569`, with white icons, distinct
+  from adjacent menu buttons. Watcher build: `2026-09-14T09:50:03.791Z`.
+- **PASS, compiled-code checks:** opt-in/production/Firebase/operator/support/
+  unmapped-identity gates, transport versus auth/business status, independent
+  session storage, prior local-session restoration, editor/in-flight-write
+  guards, reconnect without reload, cold-start flag persistence, logout loop
+  prevention and account re-pairing. `check-demo-failover.mjs` consumes the
+  existing watcher's output; no second compiler/test server was started.
+- Two early transport attempts lost their Chrome/CDP target before the
+  reconnect oracle and were excluded. Later runs retained a single transport
+  attachment with stdin `online`/`offline` controls. The notification permission
+  sheet on the QA PWA was accepted during the delegated run.
+
+Cleanup completed: API/network emulation stopped, trial flag and pair removed,
+ordinary HTTP logout completed, and the common harness restored Anna's pre-launch
+server-session snapshot before resetting the fixture. Phone is online at Entry;
+local demo data remains in its separate database.
+
+This does not prove a full internet-offline cold start or availability of all
+external portraits/assets. Local changes never synchronize to HTTP. FCM remains
+unconfigured, and the original Mobile WebView findings/overall PARTIAL status
+remain open. Evidence is in the same local directory as the physical run above.
 
 ## Execution and evidence rules
 
