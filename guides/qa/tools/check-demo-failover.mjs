@@ -10,17 +10,17 @@ import path from 'node:path';
 const root = path.resolve('server/docker/conf/nginx/app/myscoutee');
 const main = readFileSync(path.join(root, 'main.js'), 'utf8');
 const entry = /import\s*\{[^}]*prepareDemoFailover[^}]*\}\s*from\s*"([^"]+)"/.exec(main)?.[1];
-assert.ok(entry, 'Watcher output must contain the demo trial entry point');
+assert.ok(entry, 'Watcher output must contain the demo failover entry point');
 const httpKey = 'myscoutee.http.session.v1';
 const localKey = 'myscoutee.demo.session.v1';
-const trialKey = 'myscoutee.qa.offline-demo';
+const failoverKey = 'myscoutee.demo.failover';
 const anna = 'bf057de7c586eede7e84bdc7';
 
-async function fixture({ production = false, session, enabled = true, data = new Map(), reachable = false, status = 200 } = {}) {
+async function fixture({ production = false, session, data = new Map(), reachable = false, status = 200 } = {}) {
   if (session) data.set(httpKey, JSON.stringify(session));
   const state = { calls: 0, reloads: 0, reachable, status, popup: false, interval: null };
   const storage = { getItem: k => data.get(k) ?? null, setItem: (k, v) => data.set(k, String(v)), removeItem: k => data.delete(k) };
-  const location = { search: enabled ? '?qaOfflineDemo=1' : '', hostname: 'localhost', pathname: '/game', reload: () => state.reloads++ };
+  const location = { search: '', hostname: production ? 'app.myscoutee.example' : 'localhost', pathname: '/game', reload: () => state.reloads++ };
   const context = vm.createContext({ console, crypto: webcrypto, TextEncoder, TextDecoder,
     URL, URLSearchParams, AbortSignal, setTimeout, clearTimeout, performance,
     localStorage: storage, location,
@@ -45,8 +45,7 @@ async function fixture({ production = false, session, enabled = true, data = new
 }
 
 for (const options of [
-  { enabled: false, session: { kind: 'demo', userId: anna } },
-  { production: true, session: { kind: 'demo', userId: anna } },
+  {},
   { session: { kind: 'firebase', profile: { id: anna } } },
   { session: { kind: 'operator-bootstrap' } },
   { session: { kind: 'demo', userId: anna, supportContext: { kind: 'admin-support' } } },
@@ -100,21 +99,23 @@ httpPage.api.trackDemoWrite(false);
 httpPage.state.interval();
 await new Promise(resolve => setTimeout(resolve, 20));
 assert.equal(httpPage.state.reloads, 1, 'Idle HTTP demo falls back on outage');
-const resumed = await fixture({ enabled: false, data: f.data, reachable: true });
+const resumed = await fixture({ data: f.data, reachable: true });
 assert.equal(resumed.env.activitiesDataSource, 'http');
 assert.equal(resumed.data.get(httpKey), JSON.stringify(live));
-assert.equal(resumed.data.get(localKey), priorLocal, 'Restore pre-trial local session');
-assert.equal(resumed.data.get(`${trialKey}.pair`), undefined);
-const coldOffline = await fixture({ enabled: false, data: new Map(f.data), reachable: false });
-assert.equal(coldOffline.env.activitiesDataSource, 'local', 'Trial survives a cold start without the URL flag');
+assert.equal(resumed.data.get(localKey), priorLocal, 'Restore pre-failover local session');
+assert.equal(resumed.data.get(`${failoverKey}.pair`), undefined);
+const coldOffline = await fixture({ data: new Map(f.data), reachable: false });
+assert.equal(coldOffline.env.activitiesDataSource, 'local', 'Ordinary demo session survives an offline cold start');
 const loggedOutData = new Map(coldOffline.data);
 loggedOutData.delete(localKey);
-const loggedOut = await fixture({ enabled: false, data: loggedOutData });
+const loggedOut = await fixture({ data: loggedOutData });
 loggedOut.api.startDemoFailover();
 assert.equal(loggedOut.state.interval, null, 'Local logout must not start a reload/relogin loop');
-assert.equal(loggedOut.data.get(trialKey), undefined);
+assert.equal(loggedOut.data.get(httpKey), undefined, 'Local logout clears the retained demo login');
 const otherIdentity = new Map(coldOffline.data);
 const u2 = [...new Uint8Array(await webcrypto.subtle.digest('SHA-1', new TextEncoder().encode('users:u2')))].map(n => n.toString(16).padStart(2, '0')).join('').slice(0, 24);
 const switched = await fixture({ data: otherIdentity, session: { kind: 'demo', userId: u2 } });
 assert.equal(JSON.parse(switched.data.get(localKey)).userId, 'u2', 'HTTP account switch must not reuse Anna');
-console.log('PASS: 6 exclusion gates, auth-error handling, mapped fallback, store isolation, editor/write guard, reconnect without reload, cold start, logout and account switch.');
+const productionDemo = await fixture({ production: true, session: live });
+assert.equal(productionDemo.env.activitiesDataSource, 'local', 'Deployed demo uses the same application path without an override');
+console.log('PASS: 5 exclusion gates, auth-error handling, mapped fallback, store isolation, editor/write guard, reconnect without reload, cold start, logout and account switch.');

@@ -511,6 +511,46 @@ class AssetsServiceTest {
     }
 
     @Test
+    void ticketSyncIncludesOrganizerAvatarAndUpdatesItsRevisionWhenTheImageChanges() {
+        EventParticipationTicketService ticketService = mock(EventParticipationTicketService.class);
+        AccessControlService accessControlService = mock(AccessControlService.class);
+        UsersRepository usersRepository = mock(UsersRepository.class);
+        ActivityEvent eventA = ticketListEvent("event-a", "holder-user", "2030-04-18T19:00:00Z");
+        ActivityEvent eventB = ticketListEvent("event-b", "holder-user", "2030-04-19T19:00:00Z");
+        eventA.setCreatorUserId("organizer");
+        eventB.setCreatorUserId("organizer");
+        Users organizer = user("organizer", "Casey Bridge", "CB");
+        organizer.setImages(List.of("/media/organizer.webp"));
+        when(usersRepository.findByUserIdIn(List.of("organizer"))).thenReturn(List.of(organizer));
+        when(accessControlService.requiresAuthenticatedActor()).thenReturn(false);
+        when(ticketService.queryTicketSnapshotRecordsForUser("holder-user")).thenReturn(List.of(
+                new EventParticipationTicketService.TicketSnapshotRecord(eventA,
+                        activeTicket("ticket-a", "event-a", "holder-user", "TKT-a")),
+                new EventParticipationTicketService.TicketSnapshotRecord(eventB,
+                        activeTicket("ticket-b", "event-b", "holder-user", "TKT-b"))));
+        AssetsService service = ticketValidationService(usersRepository, mock(FriendshipFacts.class),
+                mock(ActivityMembersRepository.class), ticketService,
+                mock(NotificationOutboxService.class), accessControlService);
+
+        var initial = service.syncTickets(new AssetTicketSyncRequestDto(
+                "holder-user", "upcoming", 6, List.of(), null));
+        assertThat(initial.upserts()).hasSize(2).allSatisfy(row -> {
+            assertThat(row.creatorName()).isEqualTo("Casey Bridge");
+            assertThat(row.creatorAvatarUrl()).isEqualTo("/media/organizer.webp");
+        });
+        verify(usersRepository, times(1)).findByUserIdIn(List.of("organizer"));
+        var known = initial.upserts().stream()
+                .map(row -> new AssetTicketSyncKnownItemDto(row.type() + ":" + row.id(), row.revision()))
+                .toList();
+        organizer.setImages(List.of("/media/organizer-new.webp"));
+
+        var updated = service.syncTickets(new AssetTicketSyncRequestDto(
+                "holder-user", "upcoming", 6, known, null));
+        assertThat(updated.upserts()).hasSize(2).allSatisfy(row ->
+                assertThat(row.creatorAvatarUrl()).isEqualTo("/media/organizer-new.webp"));
+    }
+
+    @Test
     void ticketSyncReportsRemovedRowsAgainstTheKnownSmartListWindow() {
         EventParticipationTicketService ticketService = mock(EventParticipationTicketService.class);
         AccessControlService accessControlService = mock(AccessControlService.class);

@@ -51,10 +51,10 @@ socket.on('message', data => {
   message.error ? request.reject(Error(message.error.message)) : request.resolve(message.result);
 });
 await once(socket, 'open');
-const send = (method, params = {}) => new Promise((resolve, reject) => {
+const send = (method, params = {}, sessionId) => new Promise((resolve, reject) => {
   const id = ++sequence;
   const timer = setTimeout(() => { pending.delete(id); reject(Error(`${method} timed out`)); }, 20000);
-  pending.set(id, { resolve, reject, timer }); socket.send(JSON.stringify({ id, method, params }));
+  pending.set(id, { resolve, reject, timer }); socket.send(JSON.stringify({ id, method, params, ...(sessionId ? { sessionId } : {}) }));
 });
 const evaluate = async expression => {
   const result = await send('Runtime.evaluate', { expression, returnByValue: true, awaitPromise: true });
@@ -90,7 +90,7 @@ try {
     input.close();
   } else if (action === 'eval') console.log(JSON.stringify(await evaluate(readFileSync(0, 'utf8')), null, 2));
   else if (action === 'click') {
-    const point = await evaluate(`(()=>{const e=document.querySelectorAll(${JSON.stringify(args[0])})[${Number(args[1] || 0)}];if(!e)throw Error('Control missing');e.scrollIntoView({block:'nearest'});const r=e.getBoundingClientRect(),x=r.x+r.width/2,y=r.y+r.height/2;if(!e.contains(document.elementFromPoint(x,y)))throw Error('Control covered');return{x,y}})()`);
+    const point = await evaluate(`(()=>{const e=document.querySelectorAll(${JSON.stringify(args[0])})[${Number(args[1] || 0)}];if(!e)throw Error('Control missing');const r=e.getBoundingClientRect(),x=r.x+r.width/2,y=r.y+r.height/2;if(e.disabled||!r.width||!r.height||!e.contains(document.elementFromPoint(x,y)))throw Error('Control covered, offscreen or disabled');return{x,y}})()`);
     await send('Input.dispatchTouchEvent', { type: 'touchStart', touchPoints: [point] });
     await send('Input.dispatchTouchEvent', { type: 'touchEnd', touchPoints: [] });
   } else if (action === 'drag-notification') {
@@ -114,40 +114,79 @@ try {
   else if (action === 'navigate') {
     if (!args[0]?.startsWith('/') || args[0].startsWith('//')) throw Error('Only QA-relative paths allowed');
     await send('Page.navigate', { url: `http://localhost:8080${args[0]}` });
-  } else if (action === 'login') {
-    const userId = { Riley: '650000000000000000000063', Nova: '650000000000000000000062', Anna: 'bf057de7c586eede7e84bdc7' }[args[0]];
-    if (!userId) throw Error('Unknown configured actor');
-    console.log(JSON.stringify(await evaluate(`(async()=>{const userId=${JSON.stringify(userId)},sessionId='session:'+crypto.randomUUID();
-      const r=await fetch('/api/auth/session/login',{method:'POST',cache:'no-store',headers:{'Content-Type':'application/json','X-App-Session-Id':sessionId,'X-App-Session-Kind':'demo','X-Demo-User-Id':userId},body:JSON.stringify({attemptId:'attempt:'+crypto.randomUUID(),provider:'demo'})});
-      const body=await r.json();if(!r.ok||!body.accepted)throw Error('QA login rejected: '+body.outcome);
-      localStorage.setItem('myscoutee.http.session.v1',JSON.stringify({kind:'demo',userId,sessionId}));
-      localStorage.setItem('myscoutee.http.demo.active-user.v1',userId);return{accepted:true,userId};})()`)));
   } else if (action === 'backend-offline' || action === 'network-offline') {
-    await send('Network.enable');
-    const setTransport = offline => action === 'network-offline'
-      ? send('Network.emulateNetworkConditions', { offline, latency: 0, downloadThroughput: -1, uploadThroughput: -1 })
-      : send('Network.setBlockedURLs', { urls: offline ? ['http://localhost:8080/api/*'] : [] });
-    await setTransport(true);
-    console.log(`${action}: QA target offline. Send online/offline, or stop to restore and detach.`);
+    // Fixture-only CDP shaping: keep phone radios/tethering and native caches intact.
+    // Include this origin's service worker so its fetches cannot bypass page shaping.
+    const origin = new URL(target.url).origin;
+    const workers = new Map();
+    let offline = true;
+    let stopping = false;
+    const apply = sessionId => action === 'network-offline'
+      ? send('Network.emulateNetworkConditions', { offline, latency: 0, downloadThroughput: -1, uploadThroughput: -1 }, sessionId)
+      : send('Network.setBlockedURLs', { urls: offline ? [`${origin}/api/*`] : [] }, sessionId);
+    const attachWorker = info => {
+      if (stopping || info.type !== 'service_worker' || !info.url.startsWith(`${origin}/`) || workers.has(info.targetId)) return;
+      const task = (async () => {
+        const { sessionId } = await send('Target.attachToTarget', { targetId: info.targetId, flatten: true });
+        await send('Network.enable', {}, sessionId);
+        await apply(sessionId);
+        return sessionId;
+      })();
+      workers.set(info.targetId, task);
+      task.catch(error => console.error(`QA worker shaping failed: ${error.message}`));
+    };
+    const onTarget = data => {
+      const event = JSON.parse(data);
+      if (event.method === 'Target.targetCreated' || event.method === 'Target.targetInfoChanged') attachWorker(event.params.targetInfo);
+    };
     const input = createInterface({ input: process.stdin });
-    await new Promise(resolve => {
-      process.once('SIGINT', resolve); process.once('SIGTERM', resolve);
-      input.on('line', async line => {
-        if (line.trim() === 'stop') { resolve(); return; }
-        if (!['online', 'offline'].includes(line.trim())) return;
-        try {
-          await setTransport(line.trim() === 'offline');
-          console.log(`QA API ${line.trim()}; CDP attachment retained.`);
-        } catch (error) { console.error(error.message); resolve(); }
+    try {
+      socket.on('message', onTarget);
+      await send('Target.setDiscoverTargets', { discover: true });
+      const { targetInfos } = await send('Target.getTargets');
+      targetInfos.forEach(attachWorker);
+      await send('Network.enable');
+      await apply();
+      await Promise.all([...workers.values()]);
+      console.log(`${action}: QA page and ${workers.size} same-origin workers shaped. Send online/offline or stop. Phone radios unchanged.`);
+      await new Promise(resolve => {
+        process.once('SIGINT', resolve); process.once('SIGTERM', resolve);
+        input.once('close', resolve);
+        input.on('line', async line => {
+          if (line.trim() === 'stop') { resolve(); return; }
+          if (line.startsWith('eval ')) {
+            try { console.log(JSON.stringify(await evaluate(line.slice(5)))); }
+            catch (error) { console.error(error.message); }
+            return;
+          }
+          if (!['online', 'offline'].includes(line.trim())) return;
+          try {
+            offline = line.trim() === 'offline';
+            await apply();
+            await Promise.all([...workers.values()].map(async task => apply(await task)));
+            console.log(`QA transport ${line.trim()}; page and workers updated.`);
+          } catch (error) { console.error(error.message); resolve(); }
+        });
       });
-    });
-    input.close();
-    await setTransport(false);
-    console.log('Restored QA transport.');
+    } finally {
+      stopping = true;
+      socket.off('message', onTarget);
+      input.close();
+      offline = false;
+      const restoration = await Promise.allSettled([apply(), ...[...workers.values()].map(async task => {
+        const sessionId = await task;
+        try { await apply(sessionId); } finally { await send('Target.detachFromTarget', { sessionId }); }
+      })]);
+      await send('Target.setDiscoverTargets', { discover: false });
+      if (restoration.some(result => result.status === 'rejected')) {
+        throw Error('Transport restoration needs inspection: a page or worker detached during the test.');
+      }
+      console.log('Restored QA page and worker transport.');
+    }
   } else if (action === 'close-other-qa-tabs') {
     const isPwa = await evaluate(`matchMedia('(display-mode: standalone)').matches`);
     if (!isPwa) throw Error('Launch the QA PWA before closing its browser controls');
     for (const page of pages.filter(p => p.id !== target.id)) await send('Target.closeTarget', { targetId: page.id });
     console.log('Closed only other localhost:8080 QA pages.');
-  } else throw Error('Usage: mobile-webview-device.mjs launch|inspect|eval|click|text|navigate|login|backend-offline|network-offline|drag-notification|close-other-qa-tabs');
+  } else throw Error('Usage: mobile-webview-device.mjs launch|inspect|eval|click|text|navigate|backend-offline|network-offline|drag-notification|close-other-qa-tabs');
 } finally { socket.close(); }

@@ -74,6 +74,7 @@ Thumbs.db
 /server/docker/conf/nginx/app/myscoutee/.frontend-ready
 
 # local secrets
+*-firebase-adminsdk-*.json
 /server/.env.secret
 /server/.env.secrets
 /frontend/src/secrets/keys.ts

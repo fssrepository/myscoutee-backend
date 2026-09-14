@@ -83,18 +83,37 @@ resume pointer and reusable working method.
 
 ## Active resume point
 
+Testing boundary confirmed by the user: use versioned fixtures for test data
+and external tunnels/proxies/network emulation for transport conditions. Do not
+add application test parameters or test-only production branches. Fixture-only
+internal setup is allowed when no practical external setup exists, with exact
+scope and cleanup; it cannot replace the behavior being tested or manufacture
+its successful result. Do not replace live browser APIs to prove native behavior.
+User clarification: fixture storage/database/session preparation is allowed
+to start or resume directly at a block's defined baseline, without replaying
+all earlier clicks. Prefer the closest practical emulation of the real
+environment. Record prepared state separately from observed results. When
+login itself is under test, perform real login; for another block, a prepared
+authenticated session is a valid prerequisite, not a login PASS.
+Keep authorized standardized fixture startup separate from the behavior under
+test. Manual lifecycle evidence must follow ordinary user-accessible actions;
+isolated test doubles are not proof of that lifecycle. Application changes must
+repair an established product defect. Preserve the phone's tethering connection
+when shaping only its route to the QA application.
+
 ```yaml
 checkpoint: MOBILE-WEBVIEW-LIFECYCLE-001 — PARTIAL / OPEN
 checklist: ../checklists/notifications/MOBILE-WEBVIEW-LIFECYCLE-001.md
-substage: real friendship/media policy and Spring advisor regression proven; Settings resident resume, offline policy and clipboard retry passed; Firebase setup pending credential deployment scope; notification title mobile fix validating
+substage: test-hook audit recorded in the QA pack; full entry regression added before the WebView sequence. Old qaAuth launcher references removed; application qaAuth/qaOfflineDemo/pwa overrides absent. Physical Riley normal logout after fixture session revocation now reaches /entry on lifecycle-20. Mobile Login label restored using the existing regular button style; watcher compilation and actual 360x753 phone layout passed on lifecycle-21 (mobile-webview-lifecycle-1789398081228), no horizontal overflow. Both QA helpers restored after the user clarified that necessary internal fixture setup is allowed. Firebase public configuration currently HTTP 404; no Firebase/location-label PASS.
 notification_order: MOBILE-WEBVIEW-LIFECYCLE-001, MOBILE-PUSH-LIFECYCLE-001, NOTIFICATION-ADMIN-LIFECYCLE-001, JOB-MESSAGES, BELL-RATING-LIFECYCLE-001
 notification_remaining_complexity: estimates retained pending defect triage
-fixture_phase: full mobile-webview fixture remains fixture-ready; Riley logged out, Nova logged in; QA phone transport restored online; lifecycle-3 route retained only in isolated dev nginx runtime; pre-launch session snapshot still owned by common reset
-browser_control: user explicitly delegated the entire Mobile WebView testcase to Codex, including visible phone UI actions, installation, lifecycle, account switch and offline/reconnect. Continue autonomously through ADB/CDP; no user click gate is pending.
+fixture_phase: retained mobile-webview fixture; phone Nova has its normal active session and the Ticket list open on lifecycle-22. Riley was logged out. Desktop remains at /entry, viewport 1136x763. USB reverse tcp:8080 -> tcp:80 and CDP tcp:36087 restored. Transport online; no offline-shaping process remains. lifecycle-23 is served and awaits normal client adoption. Do not restage or clear phone cache.
+browser_control: user reauthorized autonomous ordinary desktop and physical-phone QA actions after the explicit permission question. Use normal reachable clicks/touches, no injected application state or test URL overrides. Preserve desktop geometry and phone data. No AGENTS.md changes.
+desktop_geometry: user-approved measured outer window 1180x950 at x107/y68; viewport 1136x763, DPR1 on 1920x1080 screen. Persisted in checkpoint session.window; use these bounds on next launch, no mobile emulation or further resizing.
 ledger_status: 90/104 passed; Notifications 1/6; Mobile WebView PARTIAL/OPEN
-required_resume: Continue MOBILE-WEBVIEW-LIFECYCLE-001; keep PARTIAL/OPEN. Read the latest continuation evidence in the QA pack. Fixture remains ready, phone online on localhost, Riley has one tracked session; Nova logged out. lifecycle-5 contains the notification-title-only mobile spacing correction and clipboard-denial help; lifecycle-4 proven for Settings resident resume (same time origin, 2→3 notifications) and clipboard blocked→granted retry. Main watcher compiled the real friendship policy and infrastructure-role RequiresPolicy advisor; 17 focused unit tests and one disposable Mongo/MinIO/HTTP qualification passed, including real completed-event persistence/retry, Friends only/revocation, private profile/asset/event/chat and public demo bytes. Fixture-issued credentials are not external Firebase sign-in evidence. Google client config and VAPID were supplied; Admin SDK file is outside the repository, never print/copy its private contents into git/evidence. User says it belongs to VMware .deb prod; clarification pending whether local dev QA may use it too. Do not import/activate until that scope is clear. Existing Operator test/activation pattern is required. Firebase entry/location and physical authenticated-image/logout remain unproven; frontend-local deterministic friendship is not the proven HTTP policy. Keep the common session snapshot and dev nginx route until the remaining branch/cleanup is resolved. Queued after full test closure: shared app-level install prompt stuck at Opening, larger centered explanation, on landing and after login, absent in installed mode. Latest separate notification UI correction applies only to the larger bold first line beside the timestamp badge; retain Tag, subtitle and detail.
-last_completed: coherent old/candidate upgrade, exact clipboard Paste, Chrome resident notification reconciliation, Nova own Ticket/QR and empty Notifications, verified offline cached QR and reconnect
-last_evidence: ../manuals/DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md#mobile-webview-physical-device-execution--2026-09-14
+required_resume: Read the latest Mobile WebView continuation evidence in the QA pack. Keep PARTIAL/OPEN. Shared setup contracts and local repository persistence checked on desktop/physical PWA lifecycle-17; latest label-free candidate lifecycle-19 (mobile-webview-lifecycle-1789395283443). External CDP page+worker outage/reconnect passed without changing phone radios. URL/storage test switches were removed; do not count old switch-based evidence as current application proof. Full frontend-local UI/reload remains unverified; continue actual Firebase entry/private-image/logout and Push activation/delivery. Shared shell/header/X are unchanged; permissions first, optional install second, stacked original switches, fixed blue/violet rows and status-colored switches, one right-aligned Update label. Location is mandatory for login and locked after login; optional device push can be updated separately from in-app bell mute. Native decisions precede background ring; reject/retry/X must preserve the flow. Existing private Admin SDK file remains outside git; user allowed QA use, later requested dev/prod separation. No configuration imported/activated in this continuation; no production Firebase console changes. Use existing Operator encrypted configuration/test/activation workflow; confirm exact public VAPID rather than guessing screenshot characters. Retain fixture/session snapshot and dev route until real remaining branches and cleanup are complete. Earlier friendship/media batch/policy evidence remains in the pack and is not a physical Firebase-login proof.
+last_completed: logout delay repaired and measured on phone (8133ms before, 1121ms after) and desktop (266ms after). Nova cold reopen and own cached QR offline/reconnect checked on lifecycle-22. Ticket organizer avatar code repaired; 4 converter tests and authenticated DTO read passed; new-build visual retest pending.
+last_evidence: ../manuals/DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md#ticket-organizer-avatar-defect--2026-09-14
 ```
 
 ### Notifications takeover notes

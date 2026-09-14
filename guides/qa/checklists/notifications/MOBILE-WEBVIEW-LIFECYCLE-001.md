@@ -44,9 +44,9 @@ Codex performs the following installation setup when delegated by the tester:
   service worker controls the page. Both home-screen icons may be named
   MyScoutee: identify the local app by its installation origin/package, not its
   label alone. Retain the device route and package identity in execution evidence.
-- If the dev build's worker is disabled, enable only the existing dev
-  service-worker override during setup and verify activation. Do not treat a
-  successful installation alone as proof that offline caching works.
+- Verify the build's configured service worker is activated. Do not use URL
+  overrides or browser-storage switches. Installation alone does not prove
+  offline caching.
 - Establish Riley's controlled old-build/cache baseline in this local app,
   record the old and candidate build identities, and then hand off the test.
   If an old local baseline already exists, capture it before loading a newer
@@ -75,6 +75,42 @@ Start only after Codex confirms the old shell was genuinely loaded once, app
 data was not cleared, the candidate build is ready, Riley's three controlled
 authenticated cache items exist and ADB transport is healthy.
 
+## 0. Repeat the complete entry journey
+
+Run these branches again on the candidate build in the desktop browser and
+physical phone PWA before counting this journey complete. Prior checkpoint
+results do not replace this regression run. Preserve the recorded old-cache
+boundary before changing accounts or loading the candidate.
+
+Use ordinary `/entry` and the actual deployment configuration. Firebase
+branches require an Operator-tested active Firebase revision; a URL flag,
+injected session, internal store call or demo selector is not a substitute.
+This restriction concerns proving login itself. Other blocks may start from
+fixture-prepared storage, database records or a valid session so earlier
+journeys need not be repeated just to reach their starting point. Record the
+prepared baseline and cleanup, then exercise the actual behavior under test.
+Keep one visible branch at a time in the existing desktop window, at its
+recorded dimensions, and repeat it on the phone.
+
+| Branch | Normal action and expected result |
+| --- | --- |
+| Initial entry | Observe the header before clicking. No unsolicited native permission request. With location unresolved, the Firebase action shows **Allow location**; an already granted permission may show **Checking location** while the real eligibility request completes. |
+| Eligible location | Use the external browser-location fixture for Budapest (`47.4979, 19.0402`), then London (`51.5074, -0.1278`). Require the backend to resolve `country:hu`, then `country:gb`, and the normal **Login** action. Check each after an ordinary reload so the previous answer cannot satisfy the next branch. |
+| Location not available | First verify the existing landing fixture's absent-country control. For Paris (`48.8566, 2.3522`), with `country:fr` absent, require **Unavailable in your country**, disabled consumer login, no partition and no new session. Do not alter country data to force this result. |
+| Location rejected and retried | Use native site permission controls to reject/reset the permission. The shared popup remains retryable; X closes it and the next login click reopens it. No invented coordinates or authentication after rejection. Restore permission through the native UI and repeat. |
+| Entry connection lost | After warming entry, interrupt only the application's transport through the external fixture. Require **No network**, disabled network-dependent entry actions and preserved landing content. Restore transport and verify recovery, including an ordinary reload. |
+| Public exploration | From the unavailable-country state, **Start exploring** still enters the public demo selector. Choose the fixture actor normally; this must not impersonate a Firebase user or persist the controlled coordinates to a seeded demo member. Logout returns to entry. |
+| Consent | Repeat `ENTRY-CONSENT-001/002/003` using their isolated revision fixtures: required plus selected optional acceptance, rejection without session, newer revision requiring acceptance, retained stable optional IDs and newly added optional IDs initially unchecked. Require unchanged older audit records. |
+| Registration and return | Repeat `ENTRY-DEMO-REG-001` and `ENTRY-FIREBASE-REG-001` in their respective real deployment modes. Complete required onboarding, reload and sign in again; one identity/profile persists. A retained Firebase profile may show its name/**Continue** rather than **Login**. |
+| Session lifecycle | Repeat `AUTH-SESSION-001` using its existing limit and audit oracles, then normal logout and the Riley/Nova isolation steps below. An expired/revoked session must still permit local sign-out; unrelated server failures must not be reported as successful logout. |
+
+The browser's Sensors/CDP location fixture supplies coordinates outside the
+application, including on the physical PWA target. It must not replace
+`navigator.geolocation`, permission APIs, application state or HTTP responses.
+Do not mark native allow/deny as tested when a fixture pregranted it. Restore
+only the fixture-owned location/transport settings between branches; keep the
+phone's tethering and the desktop window dimensions unchanged.
+
 ## 1. Coherent cold-start upgrade and popup layout
 
 1. Fully close the phone app. Do not clear storage or uninstall it.
@@ -84,9 +120,10 @@ authenticated cache items exist and ADB transport is healthy.
 3. Cold-start the app normally. It must render one coherent candidate build:
    no blank screen, endless loader, missing-chunk error, repeated reload or
    mixture of old labels with new code.
-4. Check the startup **location-permission popup**, not a Location menu item.
-   With permission undecided, the normal location request must show the browser/
-   Android prompt. Accept it and confirm the app receives location access.
+4. With Firebase enabled, press **Login** to open the shared permissions/install
+   popup described below. There is no independent startup Location menu/popup.
+   Select location and press **Update**; accept the native location request and
+   confirm the app receives location access.
 5. Repeat after declining location access, then reopening the app. Location is
    required for the applicable entry flow; rejection must not silently bypass
    it. Keep an explicit retry available. A persistent browser/OS block requires
@@ -200,11 +237,11 @@ are scoped to the current user without exposing their stored values.
 Codex captures final transport/cache diagnostics, compares server truth and
 restores the versioned device/fixture boundary.
 
-## 5. Opt-in development demo fallback
+## 5. Demo fallback through real transport loss
 
-This additional trial uses the existing HTTP and local seed adapters. It is
-limited to a development HTTP build on localhost and the 50 canonical demo
-members. Firebase, support, operator and synthetic QA identities are excluded.
+The application uses the existing HTTP and local seed adapters for the 50
+canonical demo members when the backend becomes unavailable. No URL or storage
+test switch enables this behavior. Firebase, support, operator and synthetic QA identities are excluded.
 It changes adapters through a page reload at an idle main-screen boundary;
 local edits remain local and are never uploaded on reconnect.
 
@@ -212,15 +249,17 @@ local edits remain local and are never uploaded on reconnect.
    staged, run the common harness `stage-demo mobile-webview
    MOBILE-WEBVIEW-LIFECYCLE-001`. Prepare browser sessions through the same
    harness with `MANUAL_QA_BROWSER_USER_IDS=bf057de7c586eede7e84bdc7` and
-   `prepare browser-sessions MOBILE-WEBVIEW-LIFECYCLE-001`. Use the physical
-   device helper's tracked `login Anna` startup. This maps HTTP Farkas Anna to
-   local seed `u1`; it does not create a second backend account.
-2. Open `/game?qaOfflineDemo=1` in the installed local QA PWA. Confirm the live
-   HTTP profile while the backend is healthy. The trial flag persists across
-   reloads/cold starts on this origin until explicitly disabled.
+   `prepare browser-sessions MOBILE-WEBVIEW-LIFECYCLE-001`. On the physical
+   device, use ordinary entry, **Start exploring**, and select **Farkas Anna**
+   through the demo selector. This maps HTTP Farkas Anna to local seed `u1`;
+   do not inject a session or create a second backend account.
+2. Open ordinary `/game` in the installed PWA. Confirm the live HTTP profile
+   while the backend is healthy. The configured service worker is enabled in
+   the dev deployment; no `pwa` query parameter is used.
 3. Run `node guides/qa/tools/mobile-webview-device.mjs backend-offline` and keep
    its terminal attached. This blocks only the QA page's `/api/*` requests;
-   it does not simulate a complete internet outage. Return to the idle main
+   it does not simulate a complete internet outage. The fixture also applies the
+   restriction to this origin's service-worker network requests. Return to the idle main
    screen. Within the next 10-second check plus health timeout/bootstrap,
    confirm local Anna appears. Capture both distinct IndexedDB names and
    verify the retained HTTP session is unchanged, without exposing tokens.
@@ -237,24 +276,30 @@ local edits remain local and are never uploaded on reconnect.
    Repeat with `network-offline` on an already loaded local page to emulate
    complete target network loss (`navigator.onLine === false`), then `online`;
    distinguish this CDP emulation from a physical-radio or cold-start test.
+   Run the transport fixture interactively; keep inspection/actions on its
+   retained CDP connection (`eval` command) so another debugger disconnect
+   cannot reset Chrome's emulated network state. The fixture restores page
+   and worker transport on `stop`/SIGINT. Never disable phone radios or
+   tethering: the operator uses that internet connection. Native Android/FCM
+   system transport is outside this browser-level emulation.
 5. Cancel the draft and return to the main screen. Reconnect must keep the
    same local session and page time origin, including at idle. Its bell marker
    clears once the backend is reachable. On a later explicit reload/reopen,
    HTTP Anna is preferred. Reopen the profile: neither local marker may have
    reached the server. Different live/local counters are expected; no data
-   merge is part of this trial. A repeated outage retains the saved local edit.
+   merge is performed. A repeated outage retains the saved local edit.
 6. Run `node --experimental-vm-modules guides/qa/tools/check-demo-failover.mjs`
    against the existing watcher's output for exclusion gates, auth errors,
    session restoration, reconnect without reload, cold start, account switch
    and editor/write guards.
    Do not launch another Angular build or test compiler.
-7. Send `stop` to restore transport and detach. Open `/game?qaOfflineDemo=0`,
-   use ordinary logout for the tracked HTTP session, then run the common
-   harness `reset mobile-webview MOBILE-WEBVIEW-LIFECYCLE-001`. Disabling the
-   trial restores any pre-existing local session; local demo data stays in
-   its separate database. Do not clear the HTTP cache or unrelated app data.
+7. Send `stop` to restore transport and detach. Reload ordinary `/game` with
+   the backend reachable, then use ordinary logout for the tracked HTTP session
+   and run the common harness `reset mobile-webview MOBILE-WEBVIEW-LIFECYCLE-001`.
+   Returning to HTTP restores any pre-existing local session; local demo data
+   stays in its separate database. Do not clear the HTTP cache or unrelated app data.
 
-With the trial disabled, block only the API while an HTTP page is open. The
+With a Firebase-authenticated session, block only the API while an HTTP page is open. The
 notification marker must indicate the outage and clear after the existing poll
 succeeds again. Keep the same page time origin and session throughout; no seed
 account or reload is allowed in this control.
@@ -306,3 +351,75 @@ Record authenticated positive, anonymous/invalid/revoked negatives and browser
 cache evidence separately. If Firebase entry is not configured, the public-demo
 checks and automated private-route tests do not prove the physical Firebase
 sign-in/image/logout branch; leave that branch explicitly unproven.
+
+## 7. Shared permissions and installation — desktop and physical phone
+
+Use one managed desktop actor and the existing physical phone installation.
+A narrow desktop viewport is supplementary layout evidence, not a substitute
+for the physical phone. Preserve the phone's existing cache and identity.
+
+1. On Firebase-enabled Login, missing permissions open one ordinary shared
+   popup with the standard header/X. Demo entry does not independently request
+   these permissions. X closes without signing in; another Login can reopen it.
+2. The body has **Permissions first**, then **Install** when installation is
+   available. Each has short explanatory text and its own compact, right-aligned
+   button configured through the common menu. The common dim backdrop leaves
+   the page visible through blur; it does not replace the page with a solid fill.
+   The permission action is always **Update**. Installation remains optional;
+   the installed PWA has no redundant Install block.
+3. Location and notification controls are the common sliding switches, one per
+   row. Location keeps a blue row, notifications a violet row. Only the switch
+   color follows status: undecided gray, selected blue, granted green, denied
+   red. Browser permission queries initialize the state; a pending selection
+   alone must not be presented as a grant. Neither language may overflow mobile.
+   Both switch rows have equal widths. The landing Explore action also remains
+   content-sized on the physical phone.
+4. Before login, Update is disabled until location is selected/already granted.
+   Selected missing native requests run sequentially. While the native prompt
+   is pending, Update is disabled without a loading ring. Accepted location is
+   mandatory; rejected location leaves the popup open for retry with guidance
+   and starts no background work. Notifications are optional. Persistent native
+   blocks require site/app settings; the application cannot revoke that block.
+5. After native decisions, the button shows a ring only for background work.
+   X uses the common close behavior; a late permission response cannot continue
+   a closed entry workflow. Reopening starts a new attempt.
+6. After login, location cannot be switched off in this popup. Notifications
+   remain editable: Update off removes this device's push registration and
+   remembers the opt-out across reload; startup must not register it again.
+   Update on registers it after any required native approval. This device
+   setting is separate from the existing in-app bell mute preference.
+7. The avatar-menu bell directly requests missing native notification permission,
+   with no shared setup popup: disabled during the native decision, ring during
+   registration/preference work. A rejected request leaves it muted; repeated
+   clicks cannot duplicate the operation. A device-level opt-out must not be
+   silently undone by an ordinary bell preference change.
+8. Install opens the browser's native installer once. Dismissal releases busy
+   state; an event already consumed cannot be prompted again. The avatar header's
+   lower-right Install action reopens the shared popup when installable. A first
+   successful login reoffers installation once if still eligible. Check both
+   landing and signed-in entry points without stacking overlays.
+9. Keep native permission, service-worker upgrade, local configured delay,
+   provider registration and real FCM delivery evidence distinct. Controlled
+   browser doubles prove sequencing only. Real delivery belongs to the linked
+   Push lifecycle, with an active tested Firebase configuration.
+
+## Local device-registration persistence regression
+
+- Use the normal frontend-local deployment. Update the notification selection,
+  reopen the popup, then reload: the saved device preference must persist.
+- The local service uses the configured route delay during registration only;
+  native permission decisions keep the control disabled without a loading ring.
+- Verify the user record in local IndexedDB after enable/disable. Repeating
+  enable must not duplicate a device; disable must remove only that device.
+- Switch accounts: the previous local user loses that browser registration,
+  other devices remain intact, and profile editing must not erase registrations.
+- Device registration is separate from in-app notification mute. A local record
+  contains no fabricated Firebase token and proves no external push delivery.
+- Exercise these writes through the ordinary controls in a local deployment;
+  read IndexedDB afterward as the persistence oracle. If a necessary adapter
+  case cannot practically be arranged externally, the disposable
+  `guides/qa/tools/check-local-device-registrations.browser.js` fixture remains
+  available with its cleanup. Record that as adapter/persistence evidence;
+  invoking it in the HTTP application does not prove the local UI journey.
+- Offline is represented by the common `cloud_off` controls. No additional
+  offline badge appears below the avatar or in the home header.

@@ -113,8 +113,13 @@ try {
       x: column * windowWidth,
       y: row * windowHeight,
       width: windowWidth,
-      height: windowHeight
+      height: windowHeight,
+      ...(session.window ?? {})
     };
+    if (!['x', 'y', 'width', 'height'].every(key => Number.isInteger(position[key]))
+      || position.width <= 0 || position.height <= 0) {
+      fail(`Invalid configured window bounds for ${session.actor}`);
+    }
 
     const browserArguments = [
       `--user-data-dir=${userDataDirectory}`,

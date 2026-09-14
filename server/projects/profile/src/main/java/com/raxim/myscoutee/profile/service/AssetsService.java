@@ -466,9 +466,16 @@ public class AssetsService {
         int normalizedPageSize = Math.max(1, pageSize == null ? 20 : pageSize.intValue());
         boolean upcoming = !"past".equalsIgnoreCase(safeText(order));
 
-        List<AssetTicketDto> ordered = eventParticipationTicketService.queryTicketSnapshotRecordsForUser(normalizedUserId).stream()
+        var snapshots = eventParticipationTicketService.queryTicketSnapshotRecordsForUser(normalizedUserId).stream()
                 .filter(Objects::nonNull)
-                .map(this::toAssetTicketDto)
+                .toList();
+        Map<String, AssetOwnerSummary> creatorsByUserId = resolveUserSummaries(snapshots.stream()
+                .map(snapshot -> normalizeId(snapshot.event() == null ? null : snapshot.event().getCreatorUserId()))
+                .filter(StringUtils::hasText)
+                .distinct()
+                .toList());
+        List<AssetTicketDto> ordered = snapshots.stream()
+                .map(snapshot -> toAssetTicketDto(snapshot, creatorsByUserId))
                 .filter(Objects::nonNull)
                 .sorted(Comparator.comparing((AssetTicketDto item) -> toSortableDate(item.dateIso())))
                 .toList();
@@ -2447,7 +2454,9 @@ public class AssetsService {
         return clone;
     }
 
-    private AssetTicketDto toAssetTicketDto(EventParticipationTicketService.TicketSnapshotRecord snapshot) {
+    private AssetTicketDto toAssetTicketDto(
+            EventParticipationTicketService.TicketSnapshotRecord snapshot,
+            Map<String, AssetOwnerSummary> creatorsByUserId) {
         ActivityEvent event = snapshot == null ? null : snapshot.event();
         EventTicket credential = snapshot == null ? null : snapshot.credential();
         if (event == null) {
@@ -2462,6 +2471,10 @@ public class AssetsService {
             return null;
         }
         boolean admin = Boolean.TRUE.equals(event.getIsAdmin());
+        AssetOwnerSummary creator = creatorsByUserId.get(normalizeId(event.getCreatorUserId()));
+        String creatorName = creator != null && StringUtils.hasText(creator.name())
+                ? creator.name() : safeText(event.getCreatorName());
+        String creatorAvatarUrl = creator == null ? null : creator.avatarUrl();
         return new AssetTicketDto(
                 sourceId,
                 holderUserId,
@@ -2481,7 +2494,9 @@ public class AssetsService {
                 safeText(event.getVisibility()),
                 safeText(event.getCreatorInitials()),
                 safeText(event.getCreatorInitials()),
-                assetTicketRevision(event, credential));
+                creatorName,
+                creatorAvatarUrl,
+                assetTicketRevision(event, credential, creatorName, creatorAvatarUrl));
     }
 
     private String assetTicketIdentity(AssetTicketDto ticket) {
@@ -2491,7 +2506,8 @@ public class AssetsService {
         return safeText(ticket.type()) + ":" + normalizeId(ticket.id());
     }
 
-    private String assetTicketRevision(ActivityEvent event, EventTicket credential) {
+    private String assetTicketRevision(
+            ActivityEvent event, EventTicket credential, String creatorName, String creatorAvatarUrl) {
         return String.join("\u001f",
                 normalizeId(credential == null ? null : credential.getId()),
                 safeText(credential == null ? null : credential.getCode()),
@@ -2505,7 +2521,9 @@ public class AssetsService {
                 safeText(event == null ? null : event.getStartAtIso()),
                 safeText(event == null ? null : event.getEndAtIso()),
                 safeText(event == null ? null : event.getImageUrl()),
-                safeText(event == null ? null : event.getVisibility()));
+                safeText(event == null ? null : event.getVisibility()),
+                safeText(creatorName),
+                safeText(creatorAvatarUrl));
     }
 
     private AssetTicketScanPayloadDto toTicketScanPayload(EventTicket ticket, ActivityEvent event) {
@@ -2596,6 +2614,10 @@ public class AssetsService {
                 .filter(StringUtils::hasText)
                 .distinct()
                 .toList();
+        return resolveUserSummaries(ownerUserIds);
+    }
+
+    private Map<String, AssetOwnerSummary> resolveUserSummaries(List<String> ownerUserIds) {
         if (ownerUserIds.isEmpty()) {
             return Map.of();
         }

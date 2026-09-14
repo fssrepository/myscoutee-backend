@@ -27,6 +27,17 @@ Begin after Codex confirms ADB transport/tunnel, package/build identity,
 Firebase revision, Riley identity, one opaque device registration, zero target
 message rows and the current Android notification permission.
 
+## Shared permission and device-registration preflight
+
+First exercise section 7 of [the WebView guide](MOBILE-WEBVIEW-LIFECYCLE-001.md)
+with the same phone and a managed desktop actor. The shared popup controls the
+physical device registration, separately from in-app bell muting. Update off
+must remove the registration and survive reload; Update on must restore exactly
+one registration after any native permission decision. Only then establish the
+one-registration baseline below. Do not count a mocked provider or a later poll
+refresh as FCM delivery. A native decision disables its button without a ring;
+background registration shows the ring after the decision.
+
 ## 1. Foreground delivery
 
 1. On Riley's phone, keep the app visible but keep the controlled Chat and
@@ -159,3 +170,14 @@ resets the disposable Chat/device fixture without printing token material.
 | Permission and token replacement | 20 min | 50 min |
 | Evidence and cleanup | 10 min | 25 min |
 | **Total** | **100 min** | **235 min** |
+
+### Device persistence and transport preflight
+
+Use the normal configured PWA/Firebase deployment, without query or browser-
+storage test switches. Cover the shared popup local-device persistence cases
+from MOBILE-WEBVIEW-LIFECYCLE-001 before real delivery. Local registrations
+contain no Firebase token and cannot count as a provider-delivery result.
+The phone transport fixture may shape the PWA and its same-origin worker; it
+must leave phone radios/tethering intact. This does not disconnect Android's
+FCM system transport, so it cannot prove provider behavior during a physical
+whole-device internet outage.
