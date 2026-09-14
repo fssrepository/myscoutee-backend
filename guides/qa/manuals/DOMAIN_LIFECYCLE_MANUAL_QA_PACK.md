@@ -8254,11 +8254,54 @@ common session restoration and the temporary nginx route still require cleanup.
   performance remain pending. JSON and focused-test output are retained in the
   local 2026-09-14 Mobile WebView evidence directory.
 
-Remaining original lifecycle oracles include native permission decline/retry,
-Settings resident-page return, offline policy content, localized unavailable
-text, protected Firebase media and final fixture/route cleanup. The relationship
-and media visibility changes require fixture coverage of the clarified rule,
-not reuse of the older deterministic-friend PASS.
+Further continuation (same checkpoint, still **PARTIAL / OPEN**):
+
+- Actual HTTP testing exposed an unenforced `@RequiresPolicy` advisor. A Spring
+  method-security registration test reproduced the bypass; marking the advisor
+  as infrastructure fixed registration. Seventeen focused unit tests passed.
+- One opt-in `MediaFriendshipQualificationTest` passed against the existing dev
+  Mongo/MinIO/nginx/API. Its disposable namespace was removed in `finally`.
+  It proved event-end-only accepted/non-organizer friendship, atomic pair upsert,
+  retry idempotence, retained first-event and updated last-event metadata,
+  profile/asset/event/chat visibility, friendship/chat-membership revocation,
+  session revocation, public demo bytes and private `no-store` responses.
+  This fixture issues its own valid media-session cookie; it does **not** prove
+  external Firebase sign-in. Pair writes are atomic; this standalone Mongo
+  does not provide an event-wide multi-document transaction.
+- HTTP Asset/Event list filtering now uses one request-scoped indexed friendship
+  adjacency read. A 100-candidate regression test verifies one read and fresh
+  decisions on the next request. Direct private image checks retain their own
+  current resource/session guard. Frontend-local deterministic friendship remains
+  separate; the HTTP proof cannot be claimed for that adapter.
+- Settings resident return passed on `lifecycle-4`, same page time origin
+  `1789388858798.2`, retained open New list and Riley identity, exact count 2→3,
+  one new `background-settings-resident` row. The earlier launcher-based replay
+  reopened the WebAPK; its owned mutation was reset before the resident replay.
+  Returning with Android Back from Settings preserved the existing page.
+- On Nova's already-loaded page, disconnected QA transport left Privacy v1
+  enabled/readable after close/reopen; reconnect retained time origin
+  `1789386434642.6`. This proves resident cached content, not persistent policy
+  content after a disconnected cold start.
+- Clipboard permission was overridden only for the QA origin while its CDP
+  connection stayed attached. Denied Paste showed Hungarian inline guidance;
+  detaching restored the original grant, and a fresh tap pasted the exact
+  fixture URL with no alert, reload or horizontal overflow. The editor was
+  cancelled. The native prompt itself was not repeated by this override test.
+  EN/HU offline and clipboard messages now match all three Mongo seed profiles.
+- Notification-title overlap was reproduced on the phone: title right edge
+  262.3 px crossed the timestamp's left edge 222.4 px. A mobile-only title-row
+  reserve restores ellipsis; subtitle/detail rectangles and card heights remain
+  identical. The `Tag` subtitle is retained. Built snapshot validation follows.
+
+The remaining oracles are real Firebase entry/location, physical authenticated
+image/logout/cache and final fixture/route cleanup. Dev currently opens the demo
+selector; this is not the protected entry flow. The user supplied Firebase
+client/VAPID settings and an Admin SDK file outside git; its permitted dev/prod
+use is being clarified. No credential was imported or activated. Evidence is in
+`2026-09-14` local Mobile WebView evidence files, including the qualification
+summary, Settings resident before/after, clipboard denied/retry and offline
+policy result. The unrelated shared install-prompt UX fix is queued after full
+checkpoint closure as requested.
 
 ## Execution and evidence rules
 

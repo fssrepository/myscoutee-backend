@@ -35,6 +35,7 @@ import org.springframework.data.mongodb.core.geo.GeoJsonPoint;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
+import com.raxim.myscoutee.profile.security.FriendshipFacts;
 import org.springframework.util.StringUtils;
 
 import tools.jackson.core.type.TypeReference;
@@ -157,6 +158,7 @@ public class ActivitiesEventsService {
     private final ActivitySubEventStageRuntimeRepository activitySubEventStageRuntimeRepository;
     private final ActivityMembersRepository activityMembersRepository;
     private final UsersRepository usersRepository;
+    private final FriendshipFacts friendshipFacts;
     private final UserAffinityEdgesRepository userAffinityEdgesRepository;
     private final HomeUserProfileService homeUserProfileService;
     private final ActivitiesMembersService activitiesMembersService;
@@ -193,6 +195,7 @@ public class ActivitiesEventsService {
             ActivitySubEventStageRuntimeRepository activitySubEventStageRuntimeRepository,
             ActivityMembersRepository activityMembersRepository,
             UsersRepository usersRepository,
+            FriendshipFacts friendshipFacts,
             UserAffinityEdgesRepository userAffinityEdgesRepository,
             HomeUserProfileService homeUserProfileService,
             ActivitiesMembersService activitiesMembersService,
@@ -227,6 +230,7 @@ public class ActivitiesEventsService {
         this.activitySubEventStageRuntimeRepository = activitySubEventStageRuntimeRepository;
         this.activityMembersRepository = activityMembersRepository;
         this.usersRepository = usersRepository;
+        this.friendshipFacts = friendshipFacts;
         this.userAffinityEdgesRepository = userAffinityEdgesRepository;
         this.homeUserProfileService = homeUserProfileService;
         this.activitiesMembersService = activitiesMembersService;
@@ -7372,13 +7376,7 @@ public class ActivitiesEventsService {
     }
 
     private boolean isFriendOfActiveUser(String userId, String activeUserId) {
-        if (!StringUtils.hasText(userId) || !StringUtils.hasText(activeUserId) || userId.equals(activeUserId)) {
-            return false;
-        }
-        String firstId = userId.compareTo(activeUserId) <= 0 ? userId : activeUserId;
-        String secondId = userId.compareTo(activeUserId) <= 0 ? activeUserId : userId;
-        int seed = hashText("friend-pair:" + firstId + ":" + secondId);
-        return (seed % 100) < 32;
+        return friendshipFacts.areFriends(userId, activeUserId);
     }
 
     private int hashText(String value) {

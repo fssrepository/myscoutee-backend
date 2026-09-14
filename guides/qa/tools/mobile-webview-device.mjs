@@ -71,6 +71,23 @@ try {
       text:document.body.innerText.slice(0,16000),
       controls:[...document.querySelectorAll('button,input,textarea,[role="button"]')].filter(e=>{const r=e.getBoundingClientRect();return r.width&&r.height&&r.top<innerHeight&&r.bottom>0}).map(e=>({tag:e.tagName,text:(e.innerText||e.getAttribute('aria-label')||'').slice(0,110),aria:e.getAttribute('aria-label'),placeholder:e.getAttribute('placeholder'),class:e.className}))
     }))()`), null, 2));
+  } else if (action === 'permission') {
+    const [name, setting] = args;
+    if (!['geolocation', 'clipboard-read'].includes(name) || !['granted', 'denied', 'prompt'].includes(setting)) {
+      throw Error('Use permission geolocation|clipboard-read granted|denied|prompt');
+    }
+    const before = await evaluate(`navigator.permissions.query({name:${JSON.stringify(name)}}).then(p=>p.state)`);
+    const permission = name === 'clipboard-read' ? { name: 'clipboard-read', allowWithoutSanitization: true } : { name };
+    await send('Browser.setPermission', { permission, setting, origin: 'http://localhost:8080' });
+    console.log(JSON.stringify({ origin: 'http://localhost:8080', name, before, setting }));
+    console.log('Permission override retained. Send stop to detach and restore the native setting.');
+    const input = createInterface({ input: process.stdin });
+    await new Promise(resolve => {
+      process.once('SIGINT', resolve); process.once('SIGTERM', resolve);
+      input.on('line', line => { if (line.trim() === 'stop') resolve(); });
+      input.once('close', resolve);
+    });
+    input.close();
   } else if (action === 'eval') console.log(JSON.stringify(await evaluate(readFileSync(0, 'utf8')), null, 2));
   else if (action === 'click') {
     const point = await evaluate(`(()=>{const e=document.querySelectorAll(${JSON.stringify(args[0])})[${Number(args[1] || 0)}];if(!e)throw Error('Control missing');e.scrollIntoView({block:'nearest'});const r=e.getBoundingClientRect(),x=r.x+r.width/2,y=r.y+r.height/2;if(!e.contains(document.elementFromPoint(x,y)))throw Error('Control covered');return{x,y}})()`);

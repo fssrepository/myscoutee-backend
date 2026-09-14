@@ -188,7 +188,22 @@
     Q.printObject({ publicImageUrl: asset.imageUrl });
   }
   else if (command === "reset") reset();
-  else if (["background-settings", "background-chrome"].includes(command)) {
+  else if (command === "reset-background-settings-resident") {
+    const state = Q.activeState(SCENARIO, true);
+    const phase = "background-settings-resident";
+    const id = `${PREFIX}:notification:${phase}`;
+    const row = Q.collection("userNotifications").findOne({ _id: id, ...notificationSelector, recipientUserId: RILEY });
+    if (!row || !state.variants.some(v => v.phase === phase && v.id === id)) Q.fail("No owned resident replay to reset.");
+    if (!row.readAtIso) {
+      const result = Q.collection("users").updateOne({ userId: RILEY, "activities.notifications": { $gte: 1 } },
+        { $inc: { "activities.notifications": -1 }, $set: { updatedDate: Q.nowIso() } });
+      if (result.modifiedCount !== 1) Q.fail("Resident replay counter reversal guard failed.");
+    }
+    Q.collection("userNotifications").deleteOne({ _id: id });
+    Q.collection(Q.STATE_COLLECTION).updateOne({ _id: state._id }, { $pull: { variants: { phase } } });
+    status();
+  }
+  else if (["background-settings", "background-settings-resident", "background-chrome"].includes(command)) {
     const state = Q.activeState(SCENARIO, true);
     const mutation = addNotification(command);
     Q.collection(Q.STATE_COLLECTION).updateOne({ _id: state._id }, { $push: { variants: { phase: command, ...mutation } } });

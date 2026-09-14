@@ -1,5 +1,23 @@
 [
   {
+    "_id": "i18n-message-en-clipboard-paste-permission-help",
+    "key": "clipboard.paste.permission.help",
+    "lang": "en",
+    "value": "Clipboard access failed. Allow it in the browser site settings and press Paste link again, or paste the link manually."
+  },
+  {
+    "_id": "i18n-message-en-no-network",
+    "key": "no.network",
+    "lang": "en",
+    "value": "No network"
+  },
+  {
+    "_id": "i18n-message-en-saved-tickets-remain-available-profiles-need-a-connection",
+    "key": "saved.tickets.remain.available.profiles.need.a.connection",
+    "lang": "en",
+    "value": "Saved tickets remain available. Profiles need a connection."
+  },
+  {
     "_id": "i18n-message-en-about",
     "key": "about",
     "lang": "en",
@@ -20362,6 +20380,24 @@
     "key": "operator.request.failed",
     "lang": "en",
     "value": "The operator request failed."
+  },
+  {
+    "_id": "i18n-message-hu-clipboard-paste-permission-help",
+    "key": "clipboard.paste.permission.help",
+    "lang": "hu",
+    "value": "A vágólap nem érhető el. Engedélyezd a böngésző webhelybeállításaiban, majd nyomd meg újra a hivatkozás beillesztését, vagy illeszd be kézzel."
+  },
+  {
+    "_id": "i18n-message-hu-no-network",
+    "key": "no.network",
+    "lang": "hu",
+    "value": "Nincs hálózat"
+  },
+  {
+    "_id": "i18n-message-hu-saved-tickets-remain-available-profiles-need-a-connection",
+    "key": "saved.tickets.remain.available.profiles.need.a.connection",
+    "lang": "hu",
+    "value": "A mentett jegyek elérhetők. A profilokhoz hálózati kapcsolat szükséges."
   },
   {
     "_id": "i18n-message-hu-about",

@@ -100,6 +100,7 @@ public class MediaController {
     }
 
     @GetMapping("/private")
+    @RequiresPolicy(key = AccessPolicyKeys.MEDIA_READ, subject = "#actorUserId", resourceId = "#key")
     public ResponseEntity<byte[]> loadPrivate(@RequestParam("key") String key) {
         if (!MediaAccessPaths.validKey(key)) throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid media key.");
         return loadMedia(key, false);

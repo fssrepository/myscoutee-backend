@@ -7,7 +7,7 @@ COMMON_SCRIPT="${SCRIPT_DIR}/scenarios/common.js"
 usage() {
   cat <<'USAGE'
 Usage:
-  bash manual-qa-checkpoints.sh stage|stage-demo|status|verify-media-boundary|profile-batch-timing|background-settings|background-chrome|reset mobile-webview MOBILE-WEBVIEW-LIFECYCLE-001
+  bash manual-qa-checkpoints.sh stage|stage-demo|status|verify-media-boundary|profile-batch-timing|background-settings|background-settings-resident|reset-background-settings-resident|background-chrome|reset mobile-webview MOBILE-WEBVIEW-LIFECYCLE-001
   bash manual-qa-checkpoints.sh prepare browser-sessions <checkpoint-id>
   bash manual-qa-checkpoints.sh stage base-stat
   bash manual-qa-checkpoints.sh status base-stat
@@ -737,7 +737,7 @@ print('PASS: public namespace traversal rejected')
 print('NOT PROVEN: real Firebase sign-in, authorized private bytes, session revocation and fine-grained visibility require their own fixture/UI evidence.')
 PY
     ;;
-  mobile-webview:stage|mobile-webview:stage-demo|mobile-webview:status|mobile-webview:profile-batch-timing|mobile-webview:background-settings|mobile-webview:background-chrome|mobile-webview:reset)
+  mobile-webview:stage|mobile-webview:stage-demo|mobile-webview:status|mobile-webview:profile-batch-timing|mobile-webview:background-settings|mobile-webview:background-settings-resident|mobile-webview:reset-background-settings-resident|mobile-webview:background-chrome|mobile-webview:reset)
     [ "$#" -eq 3 ] && [ "$3" = "MOBILE-WEBVIEW-LIFECYCLE-001" ] || { usage >&2; exit 2; }
     run_scenario "${command}" "${scenario}" 30 "$3"
     ;;

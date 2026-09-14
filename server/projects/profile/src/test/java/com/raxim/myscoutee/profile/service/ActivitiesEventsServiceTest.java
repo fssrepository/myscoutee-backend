@@ -66,6 +66,7 @@ import com.raxim.myscoutee.profile.repository.ActivitySubEventResourcesRepositor
 import com.raxim.myscoutee.profile.repository.ActivitySubEventStageRuntimeRepository;
 import com.raxim.myscoutee.profile.repository.UserAffinityEdgesRepository;
 import com.raxim.myscoutee.profile.repository.UsersRepository;
+import com.raxim.myscoutee.profile.security.FriendshipFacts;
 import com.raxim.myscoutee.profile.security.AccessControlService;
 import com.raxim.myscoutee.profile.service.mapper.ActivityEventDetailMapper;
 import com.raxim.myscoutee.profile.service.mapper.ActivityEventMapper;
@@ -153,6 +154,7 @@ class ActivitiesEventsServiceTest {
                 activitySubEventStageRuntimeRepository,
                 activityMembersRepository,
                 usersRepository,
+                org.mockito.Mockito.mock(FriendshipFacts.class),
                 userAffinityEdgesRepository,
                 homeUserProfileService,
                 activitiesMembersService,

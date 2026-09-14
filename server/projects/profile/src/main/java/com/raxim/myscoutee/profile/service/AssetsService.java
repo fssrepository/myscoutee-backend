@@ -34,6 +34,7 @@ import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import com.raxim.myscoutee.profile.security.FriendshipFacts;
 import org.springframework.util.StringUtils;
 
 import com.mongodb.client.result.UpdateResult;
@@ -102,6 +103,7 @@ public class AssetsService {
 
     private final AssetsRepository assetsRepository;
     private final UsersRepository usersRepository;
+    private final FriendshipFacts friendshipFacts;
     private final ActivityMembersRepository activityMembersRepository;
     private final EventParticipationTicketService eventParticipationTicketService;
     private final PaymentService paymentService;
@@ -121,6 +123,7 @@ public class AssetsService {
     public AssetsService(
             AssetsRepository assetsRepository,
             UsersRepository usersRepository,
+            FriendshipFacts friendshipFacts,
             ActivityMembersRepository activityMembersRepository,
             EventParticipationTicketService eventParticipationTicketService,
             PaymentService paymentService,
@@ -134,6 +137,7 @@ public class AssetsService {
             UserActivityCountersService userActivityCountersService) {
         this.assetsRepository = assetsRepository;
         this.usersRepository = usersRepository;
+        this.friendshipFacts = friendshipFacts;
         this.activityMembersRepository = activityMembersRepository;
         this.eventParticipationTicketService = eventParticipationTicketService;
         this.paymentService = paymentService;
@@ -2692,11 +2696,7 @@ public class AssetsService {
         if (!StringUtils.hasText(normalizedUserId)) {
             return List.of();
         }
-        return usersRepository.findAll().stream()
-                .map(user -> normalizeId(user == null ? null : user.getUserId()))
-                .filter(StringUtils::hasText)
-                .filter(ownerUserId -> isFriendOfActiveUser(ownerUserId, normalizedUserId))
-                .toList();
+        return List.copyOf(friendshipFacts.friendIds(normalizedUserId));
     }
 
     @SuppressWarnings("unchecked")
@@ -4844,13 +4844,7 @@ public class AssetsService {
     }
 
     private boolean isFriendOfActiveUser(String userId, String activeUserId) {
-        if (!StringUtils.hasText(userId) || !StringUtils.hasText(activeUserId) || userId.equals(activeUserId)) {
-            return false;
-        }
-        String firstId = userId.compareTo(activeUserId) <= 0 ? userId : activeUserId;
-        String secondId = userId.compareTo(activeUserId) <= 0 ? activeUserId : userId;
-        int seed = hashText("friend-pair:" + firstId + ":" + secondId);
-        return (seed % 100) < 32;
+        return friendshipFacts.areFriends(userId, activeUserId);
     }
 
     private int hashText(String value) {

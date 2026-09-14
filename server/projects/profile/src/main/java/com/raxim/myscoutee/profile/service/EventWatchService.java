@@ -15,6 +15,7 @@ import java.util.UUID;
 import org.bson.types.ObjectId;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
+import com.raxim.myscoutee.profile.security.FriendshipFacts;
 import org.springframework.util.StringUtils;
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.http.HttpStatus;
@@ -37,6 +38,7 @@ public class EventWatchService {
     private final EventWatchSubscriptionsRepository eventWatchSubscriptionsRepository;
     private final ActivityEventsRepository activityEventsRepository;
     private final HomeUserProfileService homeUserProfileService;
+    private final FriendshipFacts friendshipFacts;
     private final UserActivityCountersService userActivityCountersService;
     private final NotificationOutboxService notificationOutboxService;
 
@@ -44,11 +46,13 @@ public class EventWatchService {
             EventWatchSubscriptionsRepository eventWatchSubscriptionsRepository,
             ActivityEventsRepository activityEventsRepository,
             HomeUserProfileService homeUserProfileService,
+            FriendshipFacts friendshipFacts,
             UserActivityCountersService userActivityCountersService,
             NotificationOutboxService notificationOutboxService) {
         this.eventWatchSubscriptionsRepository = eventWatchSubscriptionsRepository;
         this.activityEventsRepository = activityEventsRepository;
         this.homeUserProfileService = homeUserProfileService;
+        this.friendshipFacts = friendshipFacts;
         this.userActivityCountersService = userActivityCountersService;
         this.notificationOutboxService = notificationOutboxService;
     }
@@ -314,13 +318,7 @@ public class EventWatchService {
     }
 
     private boolean isFriendOfActiveUser(String userId, String activeUserId) {
-        if (!StringUtils.hasText(userId) || !StringUtils.hasText(activeUserId) || userId.equals(activeUserId)) {
-            return false;
-        }
-        String firstId = userId.compareTo(activeUserId) <= 0 ? userId : activeUserId;
-        String secondId = userId.compareTo(activeUserId) <= 0 ? activeUserId : userId;
-        int seed = hashText("friend-pair:" + firstId + ":" + secondId);
-        return (seed % 100) < 32;
+        return friendshipFacts.areFriends(userId, activeUserId);
     }
 
     private int hashText(String value) {
