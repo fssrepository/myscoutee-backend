@@ -104,16 +104,16 @@ when shaping only its route to the QA application.
 ```yaml
 checkpoint: MOBILE-WEBVIEW-LIFECYCLE-001 — PARTIAL / OPEN
 checklist: ../checklists/notifications/MOBILE-WEBVIEW-LIFECYCLE-001.md
-substage: Desktop consent 002 PASS; 003 inheritance and terminal oracle PASS with separate choice-save sequence recorded. AUTH-SESSION-001 baseline staged for clean control Maya Stone, three anonymous clients launching.
+substage: Desktop consent/session and alternate-profile control complete; phone Settings resident resume, footer/entry and main rating photo fit complete. Native install and local-device UI/reload remain open.
 notification_order: MOBILE-WEBVIEW-LIFECYCLE-001, MOBILE-PUSH-LIFECYCLE-001, NOTIFICATION-ADMIN-LIFECYCLE-001, JOB-MESSAGES, BELL-RATING-LIFECYCLE-001
 notification_remaining_complexity: estimates retained pending defect triage
-fixture_phase: Consent 003 reset 2026-09-14T22:32:19.688Z retaining v4/v5 evidence. Auth-session staged 22:32:53.105Z with MANUAL_QA_INVITEE_USER_ID=1b1c70be2349b3359a8f6f94 (Maya Stone), exact zero sessions/audits/security warnings/outbox. Nova had retained evidence and was left untouched.
-browser_control: User explicitly delegated continued visible UI testing. Versioned launcher config /tmp/myscoutee-webview-entry-checkpoints.json, manifest AUTH-SESSION-001.json; three isolated anonymous A/B/C clients for Maya Stone. Use QA_SESSION_INDEX=0/1/2. No application-state/cookie override.
+fixture_phase: Auth supplemental reset 22:45:33.243Z. Mobile fixture staged 22:47:11.399Z remains fixture-ready with background-settings-resident mutation 22:48:32.550Z; read-only status confirmed. Consent transactions retained.
+browser_control: Current repository boundary reserves post-startup manual browser actions for the user; read-only inspection of reported defects is allowed. Retain historical delegated-action evidence without treating it as a new browser-action authorization.
 desktop_geometry: user-approved measured outer window 1180x950 at x107/y68; viewport 1136x763, DPR1 on 1920x1080 screen. Persisted in checkpoint session.window; use these bounds on next launch, no mobile emulation or further resizing.
 ledger_status: 90/104 passed; Notifications 1/6; Mobile WebView PARTIAL/OPEN
-required_resume: Use MANUAL_QA_INVITEE_USER_ID=1b1c70be2349b3359a8f6f94 for every auth-session harness command, including reset. A login/reload/capture-reload, B login, C blocked, A logout, C retry; verify exact 4 audits/2 sessions/3 warnings, then reset. Phone latest entry/native install, Settings resident resume and local-device persistence gaps remain.
-last_completed: Consent 003 inheritance/terminal oracle verified 22:31:29.822Z; v4 immutable, +1 v5 consent, analytics/research only; separate Save choices sequence documented.
-last_evidence: ../manuals/DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md#consent-v5-desktop-replay--2026-09-15
+required_resume: Phone aer8vgcmyd9lzxv8, CDP36087/reverse8080; local QA WebAPK org.chromium.webapk.af8b7eef107d7742f_v2 loaded lifecycle-32 1789426314950 at /game as Riley. Preserve storage. Read-only runtime gate before fixture changes. Next open proofs are physical native install timing and frontend-local device preference UI/reload; clipboard remains deferred.
+last_completed: Mobile main rating photo fits proportionally using contain; physical screenshot and live computed styles verified. Settings resident resume and neutral footer/Facebook also passed.
+last_evidence: ../manuals/DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md#mobile-home-rating-photo-fit--2026-09-15
 ```
 
 ### Notifications takeover notes

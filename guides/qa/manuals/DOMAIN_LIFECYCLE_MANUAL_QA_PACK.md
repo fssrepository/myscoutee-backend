@@ -9332,3 +9332,80 @@ fresh evidence for this run. Do not silently mark those replays executed.
 - The same run also visually confirmed the repaired Home cards guide images:
   `/tmp/myscoutee-guide-rendered-clear.png`. All five image resource reads
   returned 200 and the screenshot shows the actual rating/graph illustrations.
+
+### Session scope clarification and cross-profile control — 2026-09-15
+
+- User clarified that Maya's per-profile limit test was valid: rejecting Maya
+  must not prevent choosing another profile from the list. The agent had
+  mistakenly interpreted an earlier remark as a demo exemption and briefly
+  changed admission/maxActiveSessions. Those exact changes and their temporary
+  test were fully reverted. Both source files match HEAD again; existing
+  backend watcher restarted the restored implementation at 22:42:23.645Z.
+  No unlimited-demo behavior is retained and the original Maya PASS stands.
+- Supplemental baseline staged 22:43:42.726Z after a failed launcher startup
+  was reset. The versioned launcher prepared two Maya sessions as saturation
+  prerequisites and an anonymous C window. No manual-login PASS is inferred
+  from these prepared sessions.
+- In C, selecting Maya produced the two-sessions message. Try again restored
+  the selector; selecting Kiss Balázs (`b29df68956f3fe15e04558de`) opened
+  `/game` as Balázs in the SAME browser. Independent persisted read proved
+  Maya still has two active sessions with ACCEPTED/ACCEPTED/BLOCKED_LIMIT;
+  Balázs has one active session and one ACCEPTED audit. The whole selector is
+  not globally locked: its error view requires Try again to show the list.
+- Candidate lifecycle-31 copied only existing frontend watcher output, with
+  buildId `mobile-webview-lifecycle-1789425829732`, git `880ba00ff9cf`,
+  index SHA256 `5c3ff07ca8b5e7cdc2e8a1eac843d706d13cddf33d5a637ca8fe061c899c8dd2`,
+  worker SHA256 `09a91b1802894f115f8bfee2df54f4dbc4855a2b23ceec481315546bd058e161`.
+  Served only on the phone localhost:8080 route. Phone still had the earlier
+  loaded build before the upcoming normal close/reopen; do not infer activation.
+
+### Candidate 31 phone entry and resident Settings resume — 2026-09-15
+
+- Auth supplemental fixture reset 22:45:33.243Z. Normal local QA WebAPK close
+  and launcher reopen activated lifecycle-31 (`1789425829732`) on
+  `http://localhost:8080/`, standalone, without clearing storage or uninstall.
+  Phone UI remained Hungarian. Footer screenshot
+  `/tmp/myscoutee-phone-footer-neutral.png` proves neutral social glyphs with
+  Facebook retained; computed colors match their button text colors.
+- Mobile fixture staged at 22:47:11.399Z. Actual phone selector login as Riley
+  succeeded, and all three Peter large image URLs returned 200 after the
+  tracked session was established. A startup small image request returned 401;
+  this does not invalidate the subsequent large-photo reads and is retained
+  as a timing observation rather than claimed as an all-request PASS.
+- Opened Notifications/New: baseline unread 4, including one controlled
+  baseline row. Document timeOrigin `1789425983526.4`. Pressed Android Home,
+  opened native Settings (`com.android.settings/.MiuiSettings` confirmed),
+  and verified app visibility hidden with the same timeOrigin.
+- Versioned background-settings-resident mutation created exactly one Riley
+  notification at 22:48:32.550Z. Used Android Recents and tapped the measured
+  MyScoutee card. No page reload: same timeOrigin, visibility visible, same
+  Riley identity, unread 5, new controlled row once. After normal polling and
+  Notifications close/reopen, the count stayed 5 and the row remained single.
+  This closes the previously unproven resident Settings variant.
+- User then requested proportional fitting of the main rating photo on mobile.
+  The measured fullscreen background used cover (312.8 x 523.5 CSS px), which
+  cropped the image. Mobile home deck now sets contain through a scoped card
+  image-fit property, covering both single/pair cards. The completed watcher
+  and physical-phone verification follows below; Help/Guide layout is unchanged.
+
+
+### Mobile home rating photo fit — 2026-09-15
+
+- User clarified that the requested proportional fit applies to the main
+  Home rating card. Its mobile deck now supplies `--rate-card-image-fit:
+  contain`; single/pair photo backgrounds consume that property. The full
+  image fits by whichever dimension constrains it, centered with unused space
+  where necessary. Other consumers retain their existing default.
+- Existing frontend-sync watcher compiled successfully at 22:51:09.164Z and
+  synced at 22:51:11. No separate compiler or test process was started.
+- Candidate lifecycle-32, build `mobile-webview-lifecycle-1789426314950`, was
+  activated on the physical phone without clearing application storage.
+  Read-only inspection of `/game` confirms all three profile photo layers use
+  `background-size: contain` within 312.8125 x 523.5234375 CSS px frames.
+- Before/after captures: `/tmp/myscoutee-phone-rating-before-contain.png` and
+  `/tmp/myscoutee-phone-rating-contain.png`. The latter shows the complete
+  uploaded logo with preserved proportions and space above/below. Main mobile
+  rating-photo regression PASS; no separate pair-card visual replay claimed.
+- The overall WebView checkpoint remains PARTIAL/OPEN. Physical native install
+  timing and ordinary frontend-local device-preference UI/reload remain open;
+  clipboard branches previously deferred by the tester remain deferred.

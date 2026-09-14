@@ -9,7 +9,7 @@ test is meant to prove.
 
 **Overall: PARTIAL / OPEN. Desktop card/session and consent 002 checks passed.
 Consent 003 inheritance and terminal checks passed with a separately saved
-research choice, documented in the evidence. Per-profile `AUTH-SESSION-001` also passed. Next: remaining phone checks.**
+research choice, documented in the evidence. Per-profile `AUTH-SESSION-001` also passed. Phone resident Settings and footer/entry checks also passed. Mobile main-rating photo fit also passed on candidate 32. Remaining: install/local-device checks.**
 
 Help / Guide image access is repaired: all 77 MinIO SVG reads passed, and the
 tester reported working images on another surface. Continue the remaining
@@ -83,6 +83,10 @@ for every requirement in the linked section.
 | [7. Desktop installation](#desktop-pwa-installation-and-reopen) | Actual native installation and subsequent standalone launch from Chrome Apps retained the QA origin and profile. | [Desktop installation/reopen](../../manuals/DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md#desktop-installation-native-progress-and-mixed-dev-media--2026-09-14) |
 | [7. Device preference](#7-shared-permissions-and-installation--desktop-and-physical-phone) | Installed PWA permission popup reopens; off/reopen retains zero devices; on/reopen/repeated Update retains one; bell mute does not override device opt-out. | [Installed-PWA replay](../../manuals/DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md#installed-pwa-permission-replay--2026-09-14) |
 
+Mobile main-rating photo fit is verified on physical phone candidate 32: the
+complete image fits proportionally within the card.
+[Photo-fit evidence](../../manuals/DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md#mobile-home-rating-photo-fit--2026-09-15).
+
 ### Evidence gaps to resolve at closure
 
 These limits were already recorded in the detailed evidence. Keep them
@@ -92,8 +96,8 @@ automatically replay a branch the tester explicitly deferred.
 | Guide block | Proven boundary and remaining limit |
 | --- | --- |
 | [1. Clipboard](#1-coherent-cold-start-upgrade-and-popup-layout) | Phone exact paste with permission already granted and native Block passed. Fresh native Allow and desktop allowed paste remain unproven; the tester requested moving on. [Details](../../manuals/DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md#native-clipboard-observation-and-demo-replay--2026-09-14). |
-| [2. Background resume](#2-background-mutation-and-resume) | Chrome resident-list recovery was observed. Settings returned a recreated document on the current build; this does not prove resident Settings recovery. [Details](../../manuals/DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md#current-build-cache-retest--2026-09-14-17341743-utc). |
-| [0. Latest entry UI](#0-repeat-the-complete-entry-journey) | Candidate 28 Login/footer changes compiled and were served; their updated visual replay was not recorded. Native permission and paired entry coverage must remain explicit. [Details](../../manuals/DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md#entry-login-and-footer-corrections--2026-09-14). |
+| [2. Background resume](#2-background-mutation-and-resume) | Chrome resident-list recovery was observed. Candidate 31 Settings resident replay now passed: same document, one controlled row, unread 4 → 5 stable after polling and reopen. [Details](../../manuals/DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md#current-build-cache-retest--2026-09-14-17341743-utc). |
+| [0. Latest entry UI](#0-repeat-the-complete-entry-journey) | Candidate 31 phone footer visual replay passed with neutral glyphs/Facebook retained; actual phone Riley entry and protected large-photo reads passed. Native permission and paired entry coverage must remain explicit. [Details](../../manuals/DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md#entry-login-and-footer-corrections--2026-09-14). |
 | [7. Native install progress](#7-shared-permissions-and-installation--desktop-and-physical-phone) | Desktop actual installation and installed-app reopen are now recorded. Post-fix native waiting without ring, cancellation, accepted-installation ring and completion passed on desktop. Physical-phone native replay remains unverified; isolated service checks are not that evidence. |
 | [Local device persistence](#local-device-registration-persistence-regression) | Adapter/persistence checks and controlled popup contracts do not prove the full ordinary frontend-local UI/reload journey. This is separate from the passed physical Firebase device-preference replay. |
 
