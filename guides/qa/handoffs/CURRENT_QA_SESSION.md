@@ -84,15 +84,15 @@ resume pointer and reusable working method.
 ## Active resume point
 
 ```yaml
-checkpoint: MOBILE-WEBVIEW-LIFECYCLE-001 — QUEUED / NOT STARTED
+checkpoint: MOBILE-WEBVIEW-LIFECYCLE-001 — PREPARATION / OLD-CACHE GATE
 checklist: ../checklists/notifications/MOBILE-WEBVIEW-LIFECYCLE-001.md
-substage: next Notifications checkpoint; no phone preparation or app-data mutation performed
+substage: local QA PWA installed and opened on Android 14; localhost:8080 standalone mode and activated controlling service worker verified; old-build/domain-cache preparation remains
 notification_order: MOBILE-WEBVIEW-LIFECYCLE-001, MOBILE-PUSH-LIFECYCLE-001, NOTIFICATION-ADMIN-LIFECYCLE-001, JOB-MESSAGES, BELL-RATING-LIFECYCLE-001
 notification_remaining_complexity: 365/880 minutes across five open Notifications rows
 fixture_phase: completed ui-poll reset; not-staged; its managed browsers closed and pre-launch server sessions restored
-browser_control: explicit CDP UI delegation applied to the completed UI-POLL-JANK-001 only; retain the normal manual-QA boundary for subsequent checkpoints unless the user delegates them
+browser_control: user explicitly delegated the entire Mobile WebView testcase to Codex, including visible phone UI actions, installation, lifecycle, account switch and offline/reconnect. Continue autonomously through ADB/CDP; no user click gate is pending.
 ledger_status: 90/104 passed; Notifications 1/6
-required_resume: read the linked Mobile WebView checklist and perform its read-only device/build/cache baseline gate before any preparation; preserve existing app data
+required_resume: use the installed localhost:8080 PWA (package org.chromium.webapk.af8b7eef107d7742f_v2), not the retained GitHub Pages app. ADB reverse tcp:8080 tcp:80 is active. Local dev files are still unstamped (worker v1); establish a genuine old/candidate build pair and Riley/Nova fixture caches before step 1. Do not repeat installation or clear app data.
 last_completed: UI-POLL-JANK-001 PASS/CLOSED on 2026-09-14; two SmartList defects fixed; four recordings and session-close attribution completed through user-authorized CDP
 last_evidence: ../diagnostics/UI_POLL_JANK_DIAGNOSIS.md#measured-closure--2026-09-14
 ```

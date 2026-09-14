@@ -49,6 +49,29 @@ attempt with matching unread count.
 
 ## 2. Background and fully closed delivery
 
+The resident-background branch also covers **several different Android
+applications open at the same time**. This means switching between MyScoutee,
+Android Settings and Chrome on a non-QA page; it does not mean opening more
+MyScoutee instances or registering another push client.
+
+Repeat steps 5–8 with Settings foregrounded and then with the non-QA Chrome
+page foregrounded, keeping the other applications in Recents. Use one fresh
+message per variant, with `background-settings` or `background-chrome` in place
+of `background`, and retain each message ID in the same testcase's evidence.
+Apply the existing background oracle in both variants: exactly one Android
+notification, one persisted inbox/counter delta, and the same row after return
+without duplication. Record whether Android retained or recreated MyScoutee.
+The fully closed branch at step 9 remains a separate observation.
+
+Attribute the delivery path as well as the visible result. While another
+Android application is foregrounded, prove that the system notification came
+through the real Firebase Messaging delivery and the service worker, rather
+than inferring push success from a later WebSocket/poll refresh. On resume,
+reconcile the same notification identity with server truth once. Firebase
+handles background notification delivery; it does not replace the application's
+ordinary HTTP data reads. Retain the active/tested Firebase revision and opaque
+registration/delivery identities, without logging the token or payload secrets.
+
 5. Return to the app's normal screen and press Android Home so the app is in
    the background. Do not swipe it away yet.
 6. Casey sends exactly once:
@@ -121,7 +144,8 @@ remains the foreground no-system-push control.
 
     `MOBILE-PUSH-LIFECYCLE-001 user steps complete`
 
-Codex verifies all five message IDs, per-phase delivery results, target-only
+Codex verifies the five main message IDs plus the two other-application
+background variant IDs, per-phase delivery results, target-only
 audience, dedupe, token retirement/replacement and terminal counters, then
 resets the disposable Chat/device fixture without printing token material.
 

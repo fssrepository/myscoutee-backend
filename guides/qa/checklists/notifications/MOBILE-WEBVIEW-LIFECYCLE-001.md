@@ -17,9 +17,55 @@ test is meant to prove.
   cached after the switch for the offline branch.
 - A controlled Public Asset may remain cached across users; authenticated
   Ticket, QR, image and notification data may not.
-- Codex owns ADB inspection, reverse-tunnel changes and server-side fixture
-  mutations. The tester owns every phone tap, popup, clipboard action, app
-  background/close and login/logout.
+- Codex owns ADB inspection, reverse-tunnel changes, the explicitly delegated
+  QA PWA installation below and server-side fixture mutations. After setup
+  handoff, the tester owns every phone tap, popup, clipboard action, app
+  background/close and login/logout in the numbered journey.
+
+## Install the local QA app before establishing the old-cache baseline
+
+The phone's existing MyScoutee icon may point to
+`https://fssrepository.github.io/myscoutee/`. Keep that installation; its origin
+and cache are separate from the local QA environment. This test uses a separate
+Chrome-installed **PWA at `http://localhost:8080/`**, not a replacement Android
+System WebView package.
+
+Codex performs the following installation setup when delegated by the tester:
+
+- Connect the phone over USB, verify `adb devices` reports `device`, and set
+  `adb reverse tcp:8080 tcp:80` against the already-running QA server. Record
+  any existing mapping before changing it; do not restart the application stack.
+- Open `http://localhost:8080/` in phone Chrome. Use Chrome's menu:
+  `Install and create shortcut -> Install`, then confirm that the installation
+  dialog shows `http://localhost:8080` before pressing `Install`. Choose the
+  installed app option; `Create shortcut` opens an ordinary Chrome tab.
+- Open the newly installed local app and verify its origin is
+  `http://localhost:8080`, its display mode is `standalone`, and an activated
+  service worker controls the page. Both home-screen icons may be named
+  MyScoutee: identify the local app by its installation origin/package, not its
+  label alone. Retain the device route and package identity in execution evidence.
+- If the dev build's worker is disabled, enable only the existing dev
+  service-worker override during setup and verify activation. Do not treat a
+  successful installation alone as proof that offline caching works.
+- Establish Riley's controlled old-build/cache baseline in this local app,
+  record the old and candidate build identities, and then hand off the test.
+  If an old local baseline already exists, capture it before loading a newer
+  build. Never use reinstall or clear-storage as an upgrade-test step.
+
+Keep USB connected. After an ADB daemon restart or USB reconnection, verify and
+restore the same reverse mapping before continuing online observations. App
+data and both installations remain intact throughout the numbered journey.
+For a visible paired run, record the previous power setting and use
+`adb shell svc power stayon usb` so the phone stays awake while USB-powered.
+Keep this setting fixed during the observations; screen sleep is not the
+backgrounding action under test.
+
+Transport security belongs to the checkpoint fixture. The USB route above uses
+loopback `localhost`; verify `isSecureContext` on the phone before requesting
+device capabilities. If a testcase requires an HTTPS origin, its fixture must
+provide a local test certificate trusted by the device, record its hostname,
+certificate identity and prior route/trust state, and define exact restoration.
+Do not substitute a certificate-error bypass for that HTTPS observation.
 
 To start, tell Codex:
 
@@ -62,6 +108,18 @@ HTML must never request missing candidate chunks, and the candidate cache is
 promoted only after all required files are available.
 
 ## 2. Background mutation and resume
+
+Exercise this block with **different Android applications** open, not several
+MyScoutee tabs or sessions. Retain the same Riley identity and registration.
+Repeat the background/resume observation once with Android **Settings** in the
+foreground, and once with **Chrome displaying a non-QA page** in the foreground.
+Other applications may remain in Recents. Do not change Settings during the
+measured interval or close MyScoutee for these resident-background variants.
+Each variant has its own single controlled notification mutation; record which
+application was foregrounded and whether MyScoutee remained resident or was
+recreated by Android. Verify the same identity, one new row and one counter
+delta after returning to MyScoutee. System-push delivery is measured separately
+in the [Push lifecycle guide](MOBILE-PUSH-LIFECYCLE-001.md).
 
 10. In Riley, open `Notifications -> New` and leave that surface open at the
     controlled baseline. Press Android Home to background the app; do not close

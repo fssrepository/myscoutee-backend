@@ -7,6 +7,7 @@ COMMON_SCRIPT="${SCRIPT_DIR}/scenarios/common.js"
 usage() {
   cat <<'USAGE'
 Usage:
+  bash manual-qa-checkpoints.sh stage|status|background-settings|background-chrome|reset mobile-webview MOBILE-WEBVIEW-LIFECYCLE-001
   bash manual-qa-checkpoints.sh prepare browser-sessions <checkpoint-id>
   bash manual-qa-checkpoints.sh stage base-stat
   bash manual-qa-checkpoints.sh status base-stat
@@ -528,6 +529,7 @@ run_scenario() {
     event-schedulers) scenario_script="${SCRIPT_DIR}/scenarios/event-schedulers.js" ;;
     role-triad) scenario_script="${SCRIPT_DIR}/scenarios/role-triad-checkpoints.js" ;;
     ui-poll) scenario_script="${SCRIPT_DIR}/scenarios/chat-domain-checkpoints.js" ;;
+    mobile-webview) scenario_script="${SCRIPT_DIR}/scenarios/mobile-webview-checkpoints.js" ;;
     chat-domain)
       if [ "${checkpoint_id}" = "CHAT-GOVERNANCE-001" ]; then
         scenario_script="${SCRIPT_DIR}/scenarios/chat-governance-checkpoints.js"
@@ -679,6 +681,10 @@ command="$1"
 scenario="$2"
 
 case "${scenario}:${command}" in
+  mobile-webview:stage|mobile-webview:status|mobile-webview:background-settings|mobile-webview:background-chrome|mobile-webview:reset)
+    [ "$#" -eq 3 ] && [ "$3" = "MOBILE-WEBVIEW-LIFECYCLE-001" ] || { usage >&2; exit 2; }
+    run_scenario "${command}" "${scenario}" 30 "$3"
+    ;;
   ui-poll:stage|ui-poll:status|ui-poll:reset|ui-poll:session-status)
     [ "$#" -eq 3 ] && [ "$3" = "UI-POLL-JANK-001" ] || { usage >&2; exit 2; }
     run_scenario "${command}" "${scenario}" 30 "$3"
