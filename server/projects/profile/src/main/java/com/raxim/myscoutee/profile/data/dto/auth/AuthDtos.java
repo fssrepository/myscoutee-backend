@@ -512,6 +512,9 @@ public final class AuthDtos {
             String deletedAtIso) {
     }
 
+    public record UserNotificationDeviceDto(String deviceId, boolean notificationsEnabled) {
+    }
+
     public record UserRealtimeLongPollResponseDto(
             String userId,
             String profileStatus,
@@ -519,6 +522,7 @@ public final class AuthDtos {
             UserImpressionsDto impressions,
             AssetTicketsPageDto offlineTicketSnapshot,
             UserPaymentTotalsDto paymentTotals,
+            List<UserNotificationDeviceDto> notificationDevices,
             String cursor,
             String serverTsIso) {
     }

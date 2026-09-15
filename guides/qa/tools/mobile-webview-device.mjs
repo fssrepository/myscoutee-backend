@@ -12,6 +12,30 @@ const packageName = process.env.QA_PHONE_PACKAGE || 'org.chromium.webapk.af8b7ee
 if (!/^org\.chromium\.webapk\.[a-z0-9_]+$/.test(packageName)) throw Error('Invalid QA WebAPK package');
 const transportSnapshot = fileURLToPath(new URL('../../../server/docker/.qa-mobile-runtime/device-transport.before.json', import.meta.url));
 const screenSnapshot = fileURLToPath(new URL('../../../server/docker/.qa-mobile-runtime/device-screen.before.json', import.meta.url));
+const chromePermissionSnapshot = fileURLToPath(new URL('../../../server/docker/.qa-mobile-runtime/chrome-notifications.before.json', import.meta.url));
+if (action === 'snapshot-chrome-notifications' || action === 'restore-chrome-notifications') {
+  const serial = execFileSync('adb', ['get-serialno'], { encoding: 'utf8' }).trim();
+  if (action === 'snapshot-chrome-notifications') {
+    if (existsSync(chromePermissionSnapshot)) throw Error('Chrome notification permission already has a restore point');
+    const dump = execFileSync('adb', ['shell', 'dumpsys', 'package', 'com.android.chrome'], { encoding: 'utf8' });
+    const permission = dump.match(/android\.permission\.POST_NOTIFICATIONS: granted=(true|false), flags=\[([^\]]*)\]/);
+    if (!permission) throw Error('Chrome native notification permission not found');
+    writeFileSync(chromePermissionSnapshot, JSON.stringify({ serial, granted: permission[1] === 'true',
+      userSet: permission[2].includes('USER_SET'), userFixed: permission[2].includes('USER_FIXED') }), { mode: 0o600 });
+    console.log(JSON.stringify({ action, originalGranted: permission[1] === 'true' }));
+  } else {
+    const saved = JSON.parse(readFileSync(chromePermissionSnapshot, 'utf8'));
+    if (saved.serial !== serial) throw Error('Chrome permission snapshot belongs to another phone');
+    const permission = 'android.permission.POST_NOTIFICATIONS';
+    execFileSync('adb', ['shell', 'pm', saved.granted ? 'grant' : 'revoke', '--user', '0', 'com.android.chrome', permission]);
+    execFileSync('adb', ['shell', 'pm', 'clear-permission-flags', '--user', '0', 'com.android.chrome', permission, 'user-set', 'user-fixed']);
+    const flags = [saved.userSet && 'user-set', saved.userFixed && 'user-fixed'].filter(Boolean);
+    if (flags.length) execFileSync('adb', ['shell', 'pm', 'set-permission-flags', '--user', '0', 'com.android.chrome', permission, ...flags]);
+    unlinkSync(chromePermissionSnapshot);
+    console.log(JSON.stringify({ action, restoredGranted: saved.granted }));
+  }
+  process.exit(0);
+}
 if (action === 'keep-screen-awake' || action === 'restore-screen') {
   const readSetting = (scope, key) => execFileSync('adb', ['shell', 'settings', 'get', scope, key], { encoding: 'utf8' }).trim();
   const serial = execFileSync('adb', ['get-serialno'], { encoding: 'utf8' }).trim();
