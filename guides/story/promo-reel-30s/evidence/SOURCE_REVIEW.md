@@ -31,11 +31,12 @@ documented H3 tool route. Web Element handling may differ.
 
 ## Production status
 
-Only the H3 route remains in this package. The user reports the Element import
-is complete and has generated/downloaded I01–I07. All seven downloaded images
-were visually reviewed below. I08 and the videos have not been reviewed.
-Codex has not submitted a generation or spent credits. Subsequent I08 review
-found a missing sixth person; see the video-reference update below.
+Only the H3 route remains in this package. I01–I07 and the corrected I08 have
+been visually reviewed. The replacement I08 contains all six people and is the
+sole image attached to its unchanged Element. Both video source sets are ready;
+composer selection and video output remain unverified. Codex has not submitted
+a generation or spent credits. The earlier missing-person issue and its resolution
+are recorded below.
 
 ## Video-reference update and incomplete I08
 
@@ -82,7 +83,8 @@ six enumerated positions: five seated people and Tomas standing at the far centr
 between Nia and Eva, with his face and upper torso clear above the seated row.
 The existing five-person group is not an input to this new request. B's staging
 now agrees with that arrangement. I08_REPAIR_TOMAS is an inactive prior route.
-No new generation was submitted by Codex and six-person success is still pending.
+At this stage no new generation was submitted by Codex and six-person success
+was still pending; the completed replacement review follows below.
 Camera directions, shot timing, six-face consistency and the four-hour finish
 remain production targets, not verified output results.
 
@@ -162,3 +164,23 @@ identity/wardrobe to character references and location to the park. Near-seat
 angles clarify the already-required six visible faces. This does not verify
 composer selection, eligibility or a generated group result. MCP generation
 would require UUID placeholders instead of web @ names; no generation was called.
+
+## Corrected I08 attached and visually reviewed
+
+The same Element `loc_MYS_mys-promo-i08-meeting_s0_v1`, UUID
+`a274b0a3-4038-4bbd-8f47-aefa0c0944e5`, is completed and now contains exactly
+one image job: `9f1bb8ba-fcdc-4965-ab1c-413b3d0335b7`. The old five-person
+attachment is absent; no video is attached. Its name and UUID did not change.
+
+Viewed `/home/raxim/Downloads/hf_20260915_193818_9f1bb8ba-fcdc-4965-ab1c-413b3d0335b7.png`
+(2752×1536, displayed at 2048×1143; embedded job ID matches the attachment).
+Six distinct people are visible: Mara near left, Nia farther left, Tomas standing
+centrally between Nia and Eva, Eva just right of centre, Leo farther right and
+Arun near right. Faces are unobscured and their hair/clothing follow the cast
+references. Tomas's olive overshirt and grey shirt are clearly visible above
+the seated row. The park, wooden table and coloured game tiles remain present.
+
+This matches B's existing five-seated/one-standing staging; no video prompt or
+Element-reference change is required. Current production status and attachment
+records were updated. This verifies the source image and library binding, not
+selection in the video composer, video eligibility or H3 motion quality.

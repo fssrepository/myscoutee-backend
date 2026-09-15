@@ -24,8 +24,9 @@ Cast ages: Mara 31, Leo 32, Nia 30, Arun 34, Eva 43, Tomas 38.
 
 Nano Banana Pro's provider describes up to fourteen image inputs but likeness
 consistency for up to five people. Six-person I08 is therefore an unproven
-composition, not a guarantee from the attachment count. Inspect each face against
-its original. A focused repair pass may help but also needs checking.
+task beyond that advertised likeness count, not a guarantee from the attachment
+count. The current I08 output has been visually reviewed and contains six
+distinct people with the expected appearance and clothing.
 [Google's description](https://blog.google/innovation-and-ai/products/nano-banana-pro/).
 
 I08 must contain each adult once, with fixed seating and no obscured faces.
@@ -33,17 +34,14 @@ All phones are put away in the final scene. Product lettering is added in the ed
 
 ## Current I08 correction
 
-The imported I08 result contains five people; Tomas is absent. The user reports
-the local insertion attempt essentially repeated the original and chose a fresh
-composition instead. Use [I08_MEETING_COMPOSITION](I08_MEETING_COMPOSITION.txt)
-with the six character Elements and the empty park Element, in Unlimited mode.
-It now gives Tomas a clearly visible standing position behind the five seated
-people and enumerates all six positions. Do not attach the previous five-person
-group to this fresh composition request. The repair file is an inactive prior
-attempt, not the current generation route. Verify six distinct faces and the
-original identities before replacing the image in the I08 Element.
-Keep just the accepted replacement attached there. B's reference set remains
-pending that correction; A's six individual references are already verified.
+The fresh [I08 composition](I08_MEETING_COMPOSITION.txt) resolves the missing
+Tomas: five people sit around the table and Tomas stands visibly between Nia
+and Eva. All six faces are unobscured and the wardrobe matches the cast.
+MCP confirms the existing `loc_MYS_mys-promo-i08-meeting_s0_v1` Element now has
+one image only, job `9f1bb8ba-fcdc-4965-ab1c-413b3d0335b7`. The old five-person
+attachment is gone; the Element name and UUID are unchanged. Both video parts'
+source reference sets are ready. The repair file remains an inactive prior
+attempt. No further I08 regeneration or reimport is needed for this correction.
 
 Optional [Element import](ELEMENT_IMPORT_OPTIONAL.txt): six characters and one
 park. Bind Mara→I01, Leo→I02, Nia→I03, Arun→I04, Eva→I05, Tomas→I06, Park→I07.
@@ -53,4 +51,4 @@ For H3, attach the actual images; importing alone does not bind them.
 Save native downloads, model/settings, input order and job IDs. If the available
 video eligibility check reports a problem, record the exact message and repair
 the implicated benign source while images are covered. Image completion alone
-does not establish video eligibility. No generation or import has been performed.
+does not establish video eligibility. Codex has performed no generation or import.

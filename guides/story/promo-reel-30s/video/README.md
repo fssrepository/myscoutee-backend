@@ -3,11 +3,10 @@
 Select **MiniMax H3, 15 seconds, 9:16, 2K, one result** per part.
 Final delivery: 720×1280, 30 seconds. Credits are reserved for these two jobs.
 
-**A: reference set verified. B: replace the incomplete I08 image before submission.**
-The live I08 Element currently holds a five-person result: Tomas is absent.
-Use [the revised full composition](../images/I08_MEETING_COMPOSITION.txt), inspect the
-six-person output, then replace the image attached to that same I08 Element.
-Remove the five-person attachment when replacing it; do not accumulate both.
+**A and B: source reference sets verified.**
+The same I08 Element now holds only the corrected six-person image. Visual review
+confirms five seated people and Tomas standing between Nia and Eva, matching B's
+existing staging. Its name and UUID are unchanged, so the prompt reference stays.
 
 | Part | Generic references, in exact order | Paste |
 | --- | --- | --- |
@@ -57,11 +56,12 @@ select the source image explicitly. Six images for A, eight for B.
 | I05 | char_MYS_mys-promo-eva_s0_v1 | f2b79e50-5abd-4ec4-8f0a-069673860811 |
 | I06 | char_MYS_mys-promo-tomas_s0_v1 | 1e628820-7982-4923-93af-049ee095c1ee |
 | I07 | loc_MYS_mys-promo-park_s0_v1 | 867d4bb4-3c3f-416a-9656-587babefe89e |
-| I08 | loc_MYS_mys-promo-i08-meeting_s0_v1 | 0af7ccf0-5a6f-40a8-8a79-3646646ff1e2 — replace; Tomas missing |
+| I08 | loc_MYS_mys-promo-i08-meeting_s0_v1 | 9f1bb8ba-fcdc-4965-ab1c-413b3d0335b7 — six people visually verified |
 
 All eight Elements are completed with one attached image each. That is library
 state, not proof that an image was selected in the video composer or passed
-video eligibility. The I08 row must be rechecked after replacement.
+video eligibility. I08's replacement attachment and visible six-person staging
+have both been checked.
 
 ## A's final frame
 
