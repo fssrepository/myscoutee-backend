@@ -31,7 +31,7 @@ oracle = json.loads(subprocess.check_output([
     'bash', str(ROOT / 'server/docker/scripts/manual-qa-checkpoints/manual-qa-checkpoints-docker.sh'),
     'status', 'mobile-push', 'MOBILE-PUSH-LIFECYCLE-001'
 ], text=True))
-if oracle['phase'] == 'not-staged':
+if oracle['phase'] == 'not-staged' and ACTION == 'stage':
     raise SystemExit('Stage the guarded Mongo Push fixture first')
 account = json.loads((SECRET_DIR / 'firebase-service-account.json').read_text())
 web = json.loads((SECRET_DIR / 'firebase-web-config.json').read_text())
@@ -88,8 +88,10 @@ if ACTION == 'stage' and not users:
 elif ACTION == 'reset':
     if users:
         request(base + 'delete', {'localId': UID}, access)
+    users = request(base + 'lookup', {'localId': [UID]}, access).get('users', [])
+    if users:
+        raise SystemExit('Provider identity still present; ownership file retained')
     if STATE.exists():
         STATE.unlink()
-    users = []
 print(json.dumps({'action': ACTION, 'uid': UID, 'providerUserPresent': len(users) == 1,
                   'emailVerified': bool(users and users[0].get('emailVerified')), 'secretFilePresent': STATE.exists()}))

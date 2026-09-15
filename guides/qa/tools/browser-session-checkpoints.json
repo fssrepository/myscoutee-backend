@@ -14,6 +14,36 @@
     "screenHeight": 1000
   },
   "checkpoints": {
+    "NOTIFICATION-ADMIN-LIFECYCLE-001": {
+      "layout": {
+        "columns": 3
+      },
+      "sessions": [
+        {
+          "actor": "Ava",
+          "sessionKind": "demo",
+          "userId": "admin-demo-ava",
+          "expectedName": "Ava Moderation",
+          "targetUrl": "http://localhost/admin",
+          "entryUrl": "http://localhost/entry?redirect=%2Fadmin",
+          "autoDismissExplanationGuide": true
+        },
+        {
+          "actor": "Nova",
+          "sessionKind": "demo",
+          "userId": "650000000000000000000062",
+          "expectedName": "Nova Social",
+          "autoDismissExplanationGuide": true
+        },
+        {
+          "actor": "Casey",
+          "sessionKind": "demo",
+          "userId": "650000000000000000000061",
+          "expectedName": "Casey Bridge",
+          "autoDismissExplanationGuide": true
+        }
+      ]
+    },
     "MOBILE-PUSH-LIFECYCLE-001": {
       "layout": { "columns": 2 },
       "sessions": [

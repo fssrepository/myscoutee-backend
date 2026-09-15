@@ -7,13 +7,18 @@
   const chatId = `${prefix}:group-chat`, eventId = `${prefix}:event`, groupId = `${prefix}:group`, stageId = `${prefix}:stage`;
   const related = { $or: [{ sourceId: chatId }, { 'payload.chatId': chatId }, { 'payload.eventId': eventId }] };
   const userSelector = { userId: { $in: actors } };
+  const securityOutbox = { notificationType: 'security-login', createdUser: { $in: actors } };
+  const securityInbox = { kind: 'security-login', recipientUserId: { $in: actors } };
   const specs = [
+    { collection: 'userLoginAudits', selector: userSelector },
+    { collection: 'userSessionActions', selector: userSelector },
+    { collection: 'userSessionStates', selector: { _id: { $in: actors } } },
     { collection: 'users', selector: userSelector },
     { collection: 'chats', selector: { id: chatId } },
     { collection: 'chatMessages', selector: { chatId } },
     { collection: 'activityMembers', selector: { ownerId: { $in: [eventId, groupId] } } },
-    { collection: 'notificationOutbox', selector: related },
-    { collection: 'userNotifications', selector: related }
+    { collection: 'notificationOutbox', selector: { $or: [related, securityOutbox] } },
+    { collection: 'userNotifications', selector: { $or: [related, securityInbox] } }
   ];
   Q.assertDeploymentSafety();
   if (Q.text(process.env.MANUAL_QA_CHECKPOINT_ID) !== checkpoint) Q.fail('Unsupported Push checkpoint');
@@ -198,7 +203,35 @@
     const saved = state();
     if (Q.collection('chatMessages').countDocuments({ chatId, text: { $not: /^MOBILE-PUSH-LIFECYCLE-001 / },
         id: { $nin: saved.foregroundMessageIds || [] } })) Q.fail('Unexpected message; review before reset');
+    // The retained September 15 baseline predates login snapshots. Only remove
+    // this run's exact actor/attempt identities; never replace historical sessions.
+    if (!saved.snapshots.some(s => s.collection === 'userLoginAudits')) {
+      const audits = Q.collection('userLoginAudits').find({ ...userSelector,
+        attemptedAtIso: { $gte: saved.stagedAtIso } }).toArray();
+      for (const audit of audits) {
+        if (!audit.attemptId || !audit.sessionId || !['demo', 'firebase'].includes(audit.provider))
+          Q.fail('Unexpected login ownership; preserve retained rollback state');
+      }
+      const attempts = audits.map(a => a.attemptId);
+      Q.collection('notificationOutbox').deleteMany({ ...securityOutbox, entityId: { $in: attempts } });
+      Q.collection('userNotifications').deleteMany({ ...securityInbox, sourceId: { $in: attempts } });
+      for (const userId of actors) {
+        const sessions = audits.filter(a => a.userId === userId).map(a => a.sessionId);
+        Q.collection('userSessionStates').updateOne({ _id: userId }, {
+          $pull: { activeSessions: { sessionId: { $in: sessions } } }
+        });
+      }
+      Q.collection('userSessionActions').deleteMany({ ...userSelector, createdDate: { $gte: saved.stagedAtIso } });
+      Q.collection('userLoginAudits').deleteMany({ _id: { $in: audits.map(a => a._id) } });
+    }
     Q.restoreSnapshots(saved.snapshots);
+    const canonical = docs => docs.map(d => EJSON.stringify(d)).sort();
+    for (const snapshot of saved.snapshots) {
+      const actual = Q.collection(snapshot.collection).find(snapshot.selector).toArray();
+      if (JSON.stringify(canonical(actual)) !== JSON.stringify(canonical(snapshot.documents || [])))
+        Q.fail(`Restored baseline differs in ${snapshot.collection}; snapshot retained`);
+    }
+    Q.printObject({ restoredCollections: saved.snapshots.length, baselineVerified: true });
     Q.collection(Q.STATE_COLLECTION).deleteOne({ _id: saved._id });
     status();
   }

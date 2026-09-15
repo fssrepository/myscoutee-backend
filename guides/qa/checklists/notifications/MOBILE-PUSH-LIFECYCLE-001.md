@@ -237,3 +237,20 @@ The phone transport fixture may shape the PWA and its same-origin worker; it
 must leave phone radios/tethering intact. This does not disconnect Android's
 FCM system transport, so it cannot prove provider behavior during a physical
 whole-device internet outage.
+
+### Unified rollback fixture
+
+After step 23 evidence, turn notifications off and save in the shared Permissions
+popup, then sign out of the QA phone. Check and restore with:
+
+```bash
+python3 guides/qa/tools/rollback-mobile-push.py --check
+python3 guides/qa/tools/rollback-mobile-push.py --apply
+```
+
+The tool closes the owned QA sessions, deletes and verifies the disposable
+Firebase identity, restores and compares the retained Mongo baseline, and
+restores the saved Chrome notification and screen settings. It retains provider
+credential files for future fixtures. Repeating the command safely verifies the
+already-clean state. Unknown provider ownership or another connected device
+stops cleanup and retains its restore point.

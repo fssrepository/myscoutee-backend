@@ -7971,6 +7971,22 @@ Replacement delivery and route, section4 steps18/20–22 PASS: popup off/Update 
 
 Section4 step19 native re-prompt remains NOT PROVEN after the deliberate OS-level denial: popup Notification.requestPermission returned denied with no native dialog; it stayed open with a blocked message and performed no redirect. Clearing the QA WebAPK user-set/user-fixed test flags did not restore an ask state. The WebAPK permission-history boundary is separate from browser JavaScript. Original granted OS permission was restored as fixture preparation via ADB; the subsequent popup registration and provider-token delivery passes above do not count as native-dialog proof. No WebAPK reinstall, app-data wipe, fake token or browser permission override was used. Retain this qualification and the earlier stopped-Chrome LOW_MEMORY observation; do not label the complete Push checkpoint PASS.
 
+- **Push closure — 2026-09-15, section 4 step 23: PASS/CLOSED.** User explicitly
+  requested PASS and continuation after rollback. The recorded native re-prompt
+  after deliberate OS denial and stopped-Chrome LOW_MEMORY qualifications remain;
+  no successful native re-prompt or stopped-host delivery is asserted.
+  `rollback-mobile-push.py --apply` passed, then passed again without mutation.
+  Seven retained Mongo snapshot collections compared equal after restoration;
+  common managed-session snapshots were restored. Provider lookup verified the
+  owned Riley Firebase account absent. Chrome's original denied USER_SET/USER_FIXED
+  state and screen timeout 60000 / stay-on 2 were restored and read back.
+  Independent Mongo counts: zero checkpoint/browser snapshots, controlled chats,
+  messages, outbox, inbox, devices and new actor login audits/security outbox.
+  The older snapshot lacked session/audit baselines: only this run's dated actor
+  audits and exact login-attempt notifications were removed; historical sessions
+  and audit rows were preserved. Future stages now snapshot those scopes too.
+  The application and installed PWA were retained.
+
 ### `QA-EXPANSION-CP05` — registry, claims and operator network
 
 | Testcase | Controlled action | Decisive oracle |
