@@ -3,17 +3,76 @@
 These instructions cover this repository, its `frontend` submodule, and work
 that crosses into the sibling `myscoutee-registry` repository.
 
+## Focus and continuation
+
+- During active implementation, debugging or QA, a user question, correction,
+  side note or status request does not pause or replace the active task. Answer
+  briefly and continue until the requested work is complete, unless the user
+  explicitly asks to stop, pause or switch tasks.
+- A defect reported during that work is an instruction to diagnose, fix and
+  verify it within the active scope, then continue the remaining work. Do not
+  stop at acknowledging the defect or ask again whether to fix it. Respect an
+  explicit diagnosis-only or no-edit instruction.
+- Do not ask optional, speculative or adjacent-feature questions during active
+  work. Ask only when missing information genuinely blocks progress or a
+  material, destructive or irreversible scope decision needs user direction.
+
+## User-authorized full-flow testing
+
+- Codex takes over full-flow testing only when the user clearly and explicitly
+  requests it for a specified flow, checkpoint or campaign (for example,
+  `test the entire flow yourself`). Merely discussing this option or asking
+  to document it does not activate it. Once granted, authorization remains
+  active for the delegated scope until completion or
+  until the user changes or revokes it; do not request it again after each
+  step, question or defect report.
+- Within that scope, Codex may inspect and operate the browser, navigate,
+  click, fill forms, submit the intended test actions and execute the full
+  applicable checklist. Diagnose, repair and retest in-scope defects, then
+  continue the remaining steps. Report verified results and actual blockers.
+- This explicit delegation overrides the default manual-QA restriction that
+  reserves browser actions to the user after standardized startup. Without
+  that delegation, the user retains browser control; a question or defect
+  report alone does not authorize browser interaction.
+- Keep the versioned fixture baseline and browser launcher requirements, the
+  existing resource rules and the user's explicit acceptance criteria. Use
+  the active stable checklist where applicable; do not invent acceptance
+  rules or expand the delegated testing scope.
+
 ## CRITICAL LOCAL RESOURCE RULE
 
-**HA A DEV STACK MÁR FUT, ÉS A HOT-DEPLOY/WATCHER MAGA VÉGZI A FORDÍTÁST VAGY BUILD-ET, AKKOR KAPACITÁSTÓL FÜGGETLENÜL AZT KELL TRIGGERELNI ÉS ANNAK A LOGJÁT KELL ELLENŐRIZNI. ILYENKOR TILOS UGYANAZT A FORDÍTÁST KÜLÖN `NPM`, `NG TEST`, VITEST, GRADLE, JAVA BUILD, WATCHER, TESZT- VAGY SZERVERFOLYAMATTAL MEGISMÉTELNI. KÜLÖN FÓKUSZÁLT BUILD VAGY TESZT CSAK AKKOR FUTTATHATÓ, HA AZT A FUTÓ DEV PIPELINE NEM VÉGZI EL, A GÉP KAPACITÁSA ELŐTTE ELLENŐRZÖTT, ÉS NINCS FELHASZNÁLÓI TILTÁS.**
+**If the dev stack is already running and its hot-deploy process or watcher
+handles compilation or builds, trigger that existing process and inspect its
+logs, regardless of available capacity. Never repeat the same compilation or
+build with a separate npm, ng test, Vitest, Gradle, Java build, watcher, test or
+server process. A separate focused build or test may run only if the running
+dev pipeline does not perform it, machine capacity has been checked first,
+and the user has not prohibited it.**
 
-**CACHE LOCK ESETÉN ELŐSZÖR AZONOSÍTSD A LOCKOT BIRTOKLÓ MEGLÉVŐ FOLYAMATOT. HA A FUTÓ DEV STACK A FORDÍTÁS/BUILD TULAJDONOSA, TILOS ÚJ CACHE-T, ÚJ `GRADLE_USER_HOME`-OT, `/TMP` KERÜLŐUTAT VAGY MÁSODIK FOLYAMATOT INDÍTANI; KIZÁRÓLAG A LOCK TULAJDONOSÁT INDÍTSD ÚJRA. HA A TULAJDONOS VAGY AZ ÚJRAINDÍTÁS HATÁSA NEM EGYÉRTELMŰ, ÁLLJ MEG ÉS KÉRJ IRÁNYMUTATÁST.**
+**For a cache lock, first identify the existing process holding the lock. If
+the running dev stack owns compilation or builds, never create a new cache,
+use a new `GRADLE_USER_HOME`, use a `/tmp` workaround or start a second process;
+restart only the lock owner. If the owner or the impact of restarting it is
+unclear, stop and ask for direction.**
 
-**A FUTÓ DEV HOT-DEPLOY FORDÍTÁSI/BUILD-ELLENŐRZÉSÉT A MEGFELELŐ FORRÁSFÁJL SZŰK MÓDOSÍTÁSÁVAL VAGY A PROJEKT SAJÁT TRIGGERÉVEL INDÍTSD EL, MAJD A MEGLÉVŐ BACKEND- VAGY FRONTEND-FOLYAMAT LOGJÁT OLVASD. HA A HOT-DEPLOY HIBÁS VAGY BERAGADT, A LOCKOT/FOLYAMATOT AZONOSÍTSD, ÉS CSAK AZT AZ EGY MEGLÉVŐ CÉLFOLYAMATOT INDÍTSD ÚJRA.**
+**Trigger compilation or build verification through the running dev
+hot-deploy process with a narrow change to the relevant source file or the
+project's own trigger, then read the existing backend or frontend process
+logs. If hot-deploy fails or gets stuck, identify the lock and its owning
+process, and restart only that one existing target process.**
 
-**HA EGY MÓDOSÍTÁS MIATT A MEGLÉVŐ TULAJDONOS-FOLYAMATOT LE KELL ÁLLÍTANI, ELŐBB AZT AZ EGY FOLYAMATOT ÁLLÍTSD LE, MAJD UGYANAZT INDÍTSD ÚJRA. SOHA NE INDÍTSD EL AZ UTÓDJÁT A RÉGI MELLÉ.**
+**If a change requires stopping the existing owner process, stop that one
+process first, then restart it. Never start its replacement alongside the
+old process.**
 
-**A VERZIÓZOTT MANUÁLIS QA CHECKPOINT HARNESST A MÁR FUTÓ MONGODB KONTÉNERHEZ SZÜKSÉGES DOCKER-HOZZÁFÉRÉSSEL KELL ELSŐRE MEGHÍVNI. A SANDBOXOLT FUTÁS DOCKER SOCKET JOGOSULTSÁGHIBA MIATT HAMISAN AZT IS ÍRHATJA, HOGY `MONGO CONTAINER 'MONGODB' IS NOT ALREADY RUNNING`; EZ NEM BIZONYÍTJA, HOGY A KONTÉNER ÁLL. ILYENKOR UGYANAZT A HARNESS PARANCSOT FUTTASD ÚJRA DOCKER-HOZZÁFÉRÉSSEL, ÉS ELLENŐRIZD A MÁR FUTÓ KONTÉNERT. EMIATT TILOS MONGODB-T, SZERVERT, WATCHERT VAGY COMPOSE STACKET INDÍTANI, ÚJRAÉPÍTENI VAGY DUPLIKÁLNI.**
+**Invoke the versioned manual-QA checkpoint harness with the Docker access
+needed for the already-running MongoDB container on the first attempt. A
+sandboxed run may falsely report `MONGO CONTAINER 'MONGODB' IS NOT ALREADY RUNNING`
+because of a Docker socket permission error; this does not prove that the
+container is stopped. In that case, rerun the same harness command with Docker
+access and verify the already-running container. Do not start, rebuild or
+duplicate MongoDB, a server, a watcher or a Compose stack because of this
+error.**
 
 ## Managed manual-QA browser sessions
 
@@ -26,7 +85,9 @@ that crosses into the sibling `myscoutee-registry` repository.
   into each scenario. A normal versioned fixture `reset` restores the retained
   pre-launch session-state snapshot before restoring the fixture itself.
 - The common preparation is part of standardized startup only. It does not
-  authorize any browser navigation or checklist action after handoff.
+  itself authorize any browser navigation or checklist action after handoff.
+  Explicit user delegation under **User-authorized full-flow testing** permits
+  those actions within the delegated scope.
 
 ## Trust mode gate
 
@@ -69,8 +130,8 @@ This does not activate application manual QA or its handoff/checklist.
 Treat manual-QA continuation as an opt-in repository workflow skill, not as
 default context for ordinary engineering tasks. Activate it only when the user
 explicitly asks to continue/resume the manual QA campaign (for example,
-`folytasd a QA-t`), even if the request arrives months after the previous
-session.
+`continue the QA campaign`), even if the request arrives months after the
+previous session.
 
 When this route is active, read
 [`guides/qa/handoffs/CURRENT_QA_SESSION.md`](guides/qa/handoffs/CURRENT_QA_SESSION.md)
