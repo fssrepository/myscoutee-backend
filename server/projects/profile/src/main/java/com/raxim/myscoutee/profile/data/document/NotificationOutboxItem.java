@@ -34,6 +34,10 @@ public class NotificationOutboxItem {
     private String entityId;
     private String recipientScope;
     private List<String> recipientUserIds = new ArrayList<>();
+    // Null identifies records queued before delivery decisions were snapshotted.
+    private Boolean firebaseDeliveryRequested;
+    // User -> device -> token fingerprint. Provider tokens stay in users.devices.
+    private Map<String, Map<String, String>> firebaseDevices;
     private String deliveryStrategy;
     private String topicName;
     private String title;
@@ -114,6 +118,22 @@ public class NotificationOutboxItem {
 
     public void setRecipientUserIds(List<String> recipientUserIds) {
         this.recipientUserIds = recipientUserIds == null ? new ArrayList<>() : new ArrayList<>(recipientUserIds);
+    }
+
+    public Boolean getFirebaseDeliveryRequested() {
+        return firebaseDeliveryRequested;
+    }
+
+    public void setFirebaseDeliveryRequested(Boolean requested) {
+        this.firebaseDeliveryRequested = requested;
+    }
+
+    public Map<String, Map<String, String>> getFirebaseDevices() {
+        return firebaseDevices;
+    }
+
+    public void setFirebaseDevices(Map<String, Map<String, String>> devices) {
+        this.firebaseDevices = devices == null ? null : new LinkedHashMap<>(devices);
     }
 
     public String getDeliveryStrategy() {

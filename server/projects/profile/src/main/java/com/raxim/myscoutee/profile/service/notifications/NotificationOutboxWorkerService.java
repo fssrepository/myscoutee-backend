@@ -164,9 +164,7 @@ public class NotificationOutboxWorkerService {
         try {
             int processedCount = processDueNotificationsNow();
             if (ruleConfigured) {
-                String detail = configProperties.isFirebaseEnabled()
-                        ? "Processed pending notification outbox work."
-                        : "Firebase delivery is inactive; pending notification outbox work was retained.";
+                String detail = "Processed pending notification outbox delivery decisions.";
                 registry.recordRun(
                         NotificationRuleRegistryService.RULE_NOTIFICATION_OUTBOX,
                         processedCount,
@@ -190,12 +188,14 @@ public class NotificationOutboxWorkerService {
     }
 
     private int processDueNotificationsNow() {
-        if (!configProperties.isFirebaseEnabled() || !isInsideDeliveryWindow()) {
+        if (!isInsideDeliveryWindow()) {
             return 0;
         }
         String nowIso = Instant.now().toString();
         List<NotificationOutboxItem> leasedItems = new ArrayList<>();
         for (NotificationOutboxItem item : dueItems(nowIso, effectiveBatchSize())) {
+            // Only pre-snapshot records retain the former live-config gate.
+            if (item.getFirebaseDeliveryRequested() == null && !configProperties.isFirebaseEnabled()) continue;
             NotificationOutboxItem leased = lease(item, nowIso).orElse(null);
             if (leased == null) {
                 continue;
@@ -347,6 +347,9 @@ public class NotificationOutboxWorkerService {
         Query query = Query.query(new Criteria().andOperator(statusCriteria, retryCriteria))
                 .with(Sort.by(Sort.Direction.ASC, "createdDate"))
                 .limit(Math.max(1, limit));
+        if (!configProperties.isFirebaseEnabled()) {
+            query.addCriteria(Criteria.where("firebaseDeliveryRequested").ne(null));
+        }
         return mongoTemplate.find(query, NotificationOutboxItem.class);
     }
 
@@ -376,6 +379,9 @@ public class NotificationOutboxWorkerService {
     }
 
     private DeliveryResult deliver(NotificationOutboxItem item) throws FirebaseMessagingException {
+        if (Boolean.FALSE.equals(item.getFirebaseDeliveryRequested())) {
+            return new DeliveryResult(0, 0, Set.of());
+        }
         if (DELIVERY_STRATEGY_TOPIC.equals(safeText(item.getDeliveryStrategy())) && StringUtils.hasText(safeText(item.getTopicName()))) {
             firebaseMessagingGateway.send(buildTopicMessage(item, safeText(item.getTopicName())));
             return new DeliveryResult(1, 0, Set.of());
@@ -385,7 +391,7 @@ public class NotificationOutboxWorkerService {
             return new DeliveryResult(0, 0, Set.of());
         }
         List<Users> users = usersRepository.findByUserIdIn(recipientUserIds);
-        List<TokenRegistration> registrations = tokenRegistrations(users);
+        List<TokenRegistration> registrations = tokenRegistrations(item, users);
         if (registrations.isEmpty()) {
             return new DeliveryResult(0, 0, Set.of());
         }
@@ -397,6 +403,11 @@ public class NotificationOutboxWorkerService {
     }
 
     List<String> deliveryRecipientUserIds(NotificationOutboxItem item) {
+        if (item != null && item.getFirebaseDeliveryRequested() != null) {
+            return item.getFirebaseDevices() == null ? List.of() : item.getFirebaseDevices().entrySet().stream()
+                    .filter(entry -> entry.getValue() != null && !entry.getValue().isEmpty())
+                    .map(Map.Entry::getKey).toList();
+        }
         List<String> recipientUserIds = compactIds(item == null ? null : item.getRecipientUserIds());
         if (item == null
                 || !"chat-message".equals(safeText(item.getNotificationType()))
@@ -565,7 +576,7 @@ public class NotificationOutboxWorkerService {
                 revision);
     }
 
-    private List<TokenRegistration> tokenRegistrations(List<Users> users) {
+    private List<TokenRegistration> tokenRegistrations(NotificationOutboxItem item, List<Users> users) {
         LinkedHashMap<String, TokenRegistration> byToken = new LinkedHashMap<>();
         for (Users user : users == null ? List.<Users>of() : users) {
             if (user == null) {
@@ -580,6 +591,12 @@ public class NotificationOutboxWorkerService {
                     continue;
                 }
                 String token = safeText(device.getFirebaseToken());
+                if (item.getFirebaseDeliveryRequested() != null) {
+                    Map<String, String> planned = item.getFirebaseDevices() == null ? Map.of()
+                            : item.getFirebaseDevices().getOrDefault(userId, Map.of());
+                    // Resolve only the saved registration; a revoke/rotation cannot retarget old work.
+                    if (!NotificationOutboxService.sha256(token).equals(planned.get(safeText(device.getDeviceId())))) continue;
+                }
                 if (StringUtils.hasText(token)) {
                     byToken.putIfAbsent(token, new TokenRegistration(userId, token));
                 }

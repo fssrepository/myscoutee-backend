@@ -102,15 +102,15 @@ repair an established product defect. Preserve the phone's tethering connection
 when shaping only its route to the QA application.
 
 ```yaml
-checkpoint: MOBILE-PUSH-LIFECYCLE-001 — SECTION 2 / STEP 12 REPAIR
+checkpoint: MOBILE-PUSH-LIFECYCLE-001 — SECTION 3 / STEP 14 PREPARATION
 checklist: ../checklists/notifications/MOBILE-PUSH-LIFECYCLE-001.md
-substage: Foreground and Home/Settings/Chrome background PASS retained. Cold-start native delivery blocked by Android LOW_MEMORY; resident-Chrome route diagnostic launched Riley on Home instead of Chat. Queue/inbox redesign and incomplete deep-link edits rolled back at user request; application code restored to pre-investigation baseline.
-fixture_phase: mobile-push background-chrome; nine messages retained. Casey0/Nova7/Riley10 before further actions. Cold-start660828b8-0eab-4f49-8579-90160b314511 and route diagnostic9590b1f9-804b-4a17-803a-2ff37dbd353c both persisted/provider-success but not full phase PASS.
-browser_control: Full Push delegated; user assists. Announce both block and list-step numbers before each action; inspect before sending.
-required_resume: User narrowed scope: preserve existing queue/inbox/WebSocket architecture; only prevent Firebase sends when unavailable (the original guard already exists). No refactor is authorized. User explicitly resumed work. Current changes are limited to section2 steps12–13: consume chat/message push link once and preserve other unread rows; queue/inbox remain unchanged. Do not replay passed phases or count resident-host route test as stopped-host delivery proof.
-runtime: Candidate lifecycle43 (1789469081349) installing; original QA PWA lifecycle42 foreground at /game?chatId=manual-qa-checkpoint:v1:mobile-push:group-chat; timeOrigin1789467774147, Riley still authenticated, no Chat popup/read changes. One real registration. Chrome original denied USER_SET/USER_FIXED snapshot retained; temporary grant explicitly approved and enabled, restore during cleanup.
+substage: Foreground, Home/Settings/Chrome background and closed-QA-PWA route/read/back/relaunch PASS retained. Earlier stopped-Chrome LOW_MEMORY failure remains a separate unproven host boundary.
+fixture_phase: mobile-push cold-start; ten messages; Casey0/Nova8/Riley10; cold-start-replay saved.
+browser_control: Full Push delegated; user assists. Announce block and step before actions; inspect before sending.
+required_resume: Complete explicitly requested immutable Firebase decision and eligible-device snapshot on the existing outbox, focused verification, then section3 permission denial and section4 replacement. Preserve queue/inbox/WebSocket architecture and prior PASS evidence. No broad refactor. Menu mute controls personal in-app attention; registered-device permission controls device push independently.
+runtime: Original QA PWA lifecycle43 active at /game, Riley, no Chat popup; timeOrigin1789469575318.8. One real registration. Temporary Chrome native permission grant remains explicitly approved; original denial/flags and screen settings snapshots retained for cleanup.
 ledger_status: 91/104 passed; Notifications2/6; Push IN PROGRESS
-last_completed: Section2 step8 Chrome replay PASS. Section2 step12 observed defect; current route remained unconsumed.
+last_completed: Section2 step13 normal relaunch, no repeated route/read; cold-start-replay capture.
 last_evidence: ../manuals/DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md#mobile-push-device-preflight--2026-09-15
 ```
 
@@ -284,13 +284,7 @@ the checkpoint says otherwise.
 
 ### Next manual action
 
-`MOBILE-PUSH-LIFECYCLE-001` is blocked at the read-only environment preflight:
-current Firebase configuration is empty/inactive. Await the requested local
-location of the prior QA configuration/backup, then restore and verify the
-supported provider activation before preparing the phone/actors. The user has
-already delegated the entire Push flow to Codex. Preserve closed WebView proof;
-no message, fixture or browser startup has occurred for Push. Detailed live
-observations are in the linked QA-pack preflight evidence.
+`MOBILE-PUSH-LIFECYCLE-001`: finish the authorized saved Firebase/device delivery decision and its focused checks, then section3 step14 deny native permission. Continue from the retained cold-start savepoint. Full Push remains delegated; do not replay passed WebView, Operator or Push phases.
 
 Group-size audit: retain `TOURNAMENT-MEMBER-002` as 2+1 because Riley's Group B
 proves parent-event notification delivery across room boundaries while Group B
