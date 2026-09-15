@@ -163,6 +163,54 @@ class NotificationDeliveryDecisionTest {
         });
     }
 
+    @Test
+    void mongoMergePreservesSavedDecisionsAndAddsOnlyNewRecipients() {
+        String uri = System.getenv("QA_NOTIFICATION_MONGO_URI");
+        org.junit.jupiter.api.Assumptions.assumeTrue(uri != null && !uri.isBlank());
+        String database = System.getenv("QA_NOTIFICATION_MONGO_DATABASE");
+        org.junit.jupiter.api.Assumptions.assumeTrue("demo_db".equals(database) || "e2e_db".equals(database));
+        String collection = "qa_notification_decision_" + java.util.UUID.randomUUID().toString().replace("-", "");
+        var settings = com.mongodb.MongoClientSettings.builder().applyConnectionString(new com.mongodb.ConnectionString(uri));
+        String username = System.getenv("MONGO_APP_USERNAME");
+        String password = System.getenv("MONGO_APP_PASSWORD");
+        if (username != null && password != null) {
+            settings.credential(com.mongodb.MongoCredential.createCredential(username, database, password.toCharArray()));
+        }
+        try (com.mongodb.client.MongoClient client = com.mongodb.client.MongoClients.create(settings.build())) {
+            MongoTemplate actualMongo = new MongoTemplate(client, database) {
+                @Override public String getCollectionName(Class<?> type) { return collection; }
+            };
+            try {
+                config.setFirebaseEnabled(true);
+                when(users.findByUserIdIn(anyList())).thenAnswer(call -> {
+                    List<String> ids = call.getArgument(0);
+                    return ids.stream().map(id -> user(id, device(id + "-phone", id + "-token", !id.equals("viewer")))).toList();
+                });
+                NotificationOutboxService producer = producer();
+                producer.setMongoTemplate(actualMongo);
+                when(outbox.save(any())).thenAnswer(call -> actualMongo.save(call.getArgument(0, NotificationOutboxItem.class)));
+                when(outbox.findById(anyString())).thenAnswer(call -> Optional.ofNullable(
+                        actualMongo.findById(call.getArgument(0, String.class), NotificationOutboxItem.class)));
+                NotificationOutboxItem first = producer.enqueue(intent(List.of("viewer"))).orElseThrow();
+                // Both merges see the same stale initial recipient list; the database must preserve both additions.
+                when(outbox.findFirstByCollapseKeyAndStatusInAndCreatedDateGreaterThanEqualOrderByCreatedDateAsc(
+                        anyString(), anyCollection(), anyString())).thenReturn(Optional.of(first));
+                producer.enqueue(intent(List.of("viewer", "second")));
+                producer.enqueue(intent(List.of("viewer", "third")));
+                NotificationOutboxItem stored = actualMongo.findById(first.getId(), NotificationOutboxItem.class);
+                assertThat(stored.getSyncKey()).isEqualTo(first.getSyncKey());
+                assertThat(stored.getFirebaseDeliveryRequested()).isTrue();
+                assertThat(stored.getRecipientUserIds()).containsExactlyInAnyOrder("viewer", "second", "third");
+                assertThat(stored.getFirebaseDevices().get("viewer")).isEmpty();
+                assertThat(stored.getFirebaseDevices().get("second")).containsKey("second-phone");
+                assertThat(stored.getFirebaseDevices().get("third")).containsKey("third-phone");
+                assertThat(actualMongo.count(new Query(), NotificationOutboxItem.class)).isEqualTo(1);
+            } finally {
+                client.getDatabase(database).getCollection(collection).drop();
+            }
+        }
+    }
+
     private NotificationOutboxService producer() {
         when(outbox.save(any())).thenAnswer(call -> call.getArgument(0));
         NotificationOutboxService producer = new NotificationOutboxService(outbox);

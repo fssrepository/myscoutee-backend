@@ -159,6 +159,19 @@ remains the foreground no-system-push control.
 
     `MOBILE-PUSH-LIFECYCLE-001 denial complete`
 
+For steps 14–17, distinguish native/device push denial from the personal menu
+notification toggle. Record the user's `notificationPreferences.muted` and each
+registered device's `notificationsEnabled` separately. The menu toggle suppresses
+in-app attention; the existing inbox row and unread counter remain available.
+Native denial must be reflected in the backend device state after the app
+observes it, before Casey sends the denial marker.
+
+Inspect the saved outbox decision: Firebase availability and eligible device
+identities are captured at enqueue time. A denied/unregistered recipient has no
+push target; the worker completes that decision without a provider send for
+that recipient. Retry retains the outbox identity and saved decision. Do not
+infer this from absence of an Android notification alone.
+
 ## 4. Revoke, replace and re-register
 
 18. Wait while Codex captures the old opaque device-registration identity and
@@ -174,7 +187,8 @@ remains the foreground no-system-push control.
 
 21. Android shows exactly one system notification delivered through the new
     registration. There is no attempt that successfully targets the retired
-    registration and no duplicate inbox row.
+    registration and no duplicate inbox row. The new outbox decision contains only
+    the replacement registration; old queued decisions never adopt the new token.
 22. Tap it and confirm the exact Chat route, one read transition and stable
     result after back/relaunch.
 23. Report:

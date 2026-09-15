@@ -29,11 +29,13 @@
       const u = Q.ensureUser(userId);
       return { userId, deviceCount: (u.devices || []).length,
         providerRegistrations: (u.devices || []).filter(d => d.firebaseToken).map(d => ({ deviceId: d.deviceId, platform: d.platform, notificationsEnabled: d.notificationsEnabled })),
-        unread: u.activities?.notifications || 0 };
+        muted: u.notificationPreferences?.muted === true, unread: u.activities?.notifications || 0 };
     }), firebase: { active: firebase.active, revision: firebase.revision, baselineSource: saved.firebaseBaselineSource },
     messages: messages.map(m => ({ id: m.id, text: m.text, senderUserId: m.senderAvatar?.id })),
     inbox: inbox.map(n => ({ id: n._id, recipientUserId: n.recipientUserId, sourceId: n.sourceId, readAtIso: n.readAtIso })),
     outbox: outbox.map(n => ({ id: n._id, recipientUserIds: n.recipientUserIds, status: n.status,
+      firebaseDeliveryRequested: n.firebaseDeliveryRequested,
+      firebaseDevices: n.firebaseDevices == null ? null : Object.fromEntries(Object.entries(n.firebaseDevices).map(([userId, devices]) => [userId, Object.keys(devices || {})])),
       retryCount: n.retryCount, nextRetryAt: n.nextRetryAt, tokenSuccessCount: n.tokenSuccessCount,
       tokenFailureCount: n.tokenFailureCount, sentDate: n.sentDate,
       messageId: n.payload?.messageId })),
@@ -83,6 +85,7 @@
   }
   function capture() {
     const saved = state(), name = Q.text(process.env.MANUAL_QA_SOURCE_CHECKPOINT_ID);
+    if (name === 'old-registration') return captureOldRegistration();
     if (!/^(baseline|foreground|foreground-replay|background|background-settings|background-chrome|background-chrome-replay|cold-start|cold-start-replay|permission-denied|replacement-token)$/.test(name)) Q.fail('Invalid Push savepoint');
     const phase = name === 'foreground-replay' ? 'foreground' : name === 'background-chrome-replay' ? 'background-chrome' : name === 'cold-start-replay' ? 'cold-start' : name;
     const riley = Q.ensureUser(actors[2]);
@@ -106,6 +109,11 @@
         const inbox = Q.collection('userNotifications').find({ ...related, 'payload.messageId': m.id }).toArray();
         if (outbox.length !== 1 || inbox.length !== 2
             || actors.slice(1).some(id => inbox.filter(n => n.recipientUserId === id).length !== 1)) Q.fail('Message audience or dedupe oracle failed');
+        if (name === 'permission-denied' && (outbox[0].firebaseDeliveryRequested !== true
+            || !outbox[0].firebaseDevices || actors.slice(1).some(id => !Object.hasOwn(outbox[0].firebaseDevices, id)
+              || Object.keys(outbox[0].firebaseDevices[id]).length !== 0)
+            || outbox[0].status !== 'sent' || outbox[0].retryCount !== 0
+            || outbox[0].tokenSuccessCount !== 0 || outbox[0].tokenFailureCount !== 0)) Q.fail('Denied/no-device saved decision must complete without a provider attempt');
         if (name !== 'permission-denied' && (outbox[0].status !== 'sent'
             || outbox[0].tokenSuccessCount !== 1 || outbox[0].tokenFailureCount !== 0)) Q.fail('One successful provider-token delivery is not proven');
       }
@@ -153,6 +161,16 @@
     if (Q.collection('users').countDocuments({ email, userId: { $ne: actors[2] } })) Q.fail('Fixture identity email is already used');
     Q.collection('users').updateOne({ userId: actors[2] }, { $set: { email } });
     Q.printObject({ scenario, phase: saved.phase, physicalActor: actors[2], providerIdentityPrepared: true });
+  }
+  function captureOldRegistration() {
+    const saved = state(), devices = Q.ensureUser(actors[2]).devices || [];
+    if (saved.phase !== 'permission-denied' || saved.oldRegistration || devices.length !== 1
+        || !devices[0].firebaseToken || devices[0].notificationsEnabled !== false) Q.fail('Expected one denied registration before supported revoke');
+    const tokenFingerprint = require('crypto').createHash('sha256').update(devices[0].firebaseToken.trim()).digest('hex');
+    Q.collection(Q.STATE_COLLECTION).updateOne({ _id: saved._id }, { $set: {
+      oldRegistration: { deviceId: devices[0].deviceId, tokenFingerprint, capturedAt: Q.nowIso() }
+    } });
+    Q.printObject({ scenario, oldDeviceId: devices[0].deviceId, registrationFingerprintCaptured: true });
   }
   function reset() {
     const saved = state();
