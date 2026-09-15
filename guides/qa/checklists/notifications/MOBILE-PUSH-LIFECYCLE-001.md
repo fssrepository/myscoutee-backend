@@ -197,6 +197,18 @@ resets the disposable Chat/device fixture without printing token material.
 | Evidence and cleanup | 10 min | 25 min |
 | **Total** | **100 min** | **235 min** |
 
+### Permission state ownership
+
+The shared Install/Permissions popup consumes backend device state through the
+side menu's existing users poll and a shared store signal. Device registration
+writes own `users.devices`; the poll exposes only safe device identity and
+notification-enabled fields, never provider tokens. The popup has no separate
+lazy backend fetch. While open, it follows confirmed signal changes without
+overwriting an explicit unsaved user selection. Native browser permission is
+observed locally and a denial must not remain displayed as granted. Permission
+enabling starts from the shared popup; manual Android-settings changes must not
+substitute for that product path.
+
 ### Device persistence and transport preflight
 
 Use the normal configured PWA/Firebase deployment, without query or browser-

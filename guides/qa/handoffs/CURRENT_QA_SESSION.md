@@ -102,15 +102,15 @@ repair an established product defect. Preserve the phone's tethering connection
 when shaping only its route to the QA application.
 
 ```yaml
-checkpoint: MOBILE-PUSH-LIFECYCLE-001 — SECTION 2 / CHROME BACKGROUND NEXT
+checkpoint: MOBILE-PUSH-LIFECYCLE-001 — SECTION 2 / CHROME PERMISSION-STATE REPAIR
 checklist: ../checklists/notifications/MOBILE-PUSH-LIFECYCLE-001.md
-substage: Section1 foreground replay PASS; retain WebView PASS/CLOSED and foreground evidence.
-fixture_phase: mobile-push background-settings, five messages retained, counters Casey0/Nova3/Riley6.
-browser_control: Full Push delegated to Codex; user assists. Announce checklist block/title, step and immediate action; inspect before each send to skip user-completed actions.
-ledger_status: 91/104 passed; Notifications2/6; Push remains IN PROGRESS
-required_resume: Section2 Chrome background then cold start; Home/Settings passed. Prepare phone background before sender action; one new message per phase.
-runtime: lifecycle39 mobile-webview-lifecycle-1789465435253 active on original localhost WebAPK, Riley real Firebase user, one current device. CaseyCDP46477/Nova33347/phone36087. Firebase Admin9.10.0 loaded in restarted existing backend, API200, FCM delivery verified. Provider fixture account and saved screen settings need cleanup at closure.
-last_completed: Foreground message5e9f8221-f05e-4f7f-80e9-dd4b15f7b355 sent09:45:24Z retry0/success1/failure0; one unread inbox each recipient, Casey excluded, zero native system notifications. Phone New list marker once unread.
+substage: Foreground, Home and Settings PASS retained. Chrome variant provider accepted, but native notification absent with Chrome system permission denied; user requires enabling through shared popup and users-poll signal state.
+fixture_phase: mobile-push background-settings; six messages retained including failed Chrome marker957517eb-0600-4055-81a0-06eb3f205257. Riley unread7, Nova4 before any further user actions.
+browser_control: Full Push delegated; user assists. Announce block/title, step and action, inspect before sends. No manual OS permission bypass; user explicitly requires shared popup entry.
+required_resume: Users-poll signal popup verification PASS on lifecycle41: fixture flag false observed, then same open popup switched true at next normal poll; fixture flag restored, token preserved. Native Chrome background observation PASS: permission denied, signal denied, selected/effectivefalse. Now same shared popup in regular Chrome host context to determine actual native enabling path; original PWA page closed without data clearing. Do not claim Chrome PASS or replay prior sections.
+runtime: Original phone PWA native permission granted; Chrome host native permission denied USER_FIXED. PWA native API changes granted-to-denied when Chrome is foreground, old UI signal stayed granted. Chrome original permission snapshot saved but OS toggle was never changed. Device remains one real Riley registration; Firebase9.10.0 provider sends work.
+ledger_status: 91/104 passed; Notifications2/6; Push IN PROGRESS
+last_completed: Settings background message6e4df2b0-9c9e-45cc-9125-e5fa721256e8 successful FCM1, native1, Recents same timeOrigin, unread row once. Shared popup must consume side menu users poll by signal, no lazy backend read; draft edits must survive poll.
 last_evidence: ../manuals/DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md#mobile-push-device-preflight--2026-09-15
 ```
 

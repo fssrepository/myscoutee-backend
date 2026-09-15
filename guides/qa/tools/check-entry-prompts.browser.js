@@ -17,14 +17,14 @@
     const native = defer(), coordinates = defer(), eligibility = defer(), registration = defer();
     Object.assign(store, {
       loggedIn: () => false, generation: 0, completeLogin: null, checkLocation: null, permission: null,
-      isOpen: signal(false), locationSelected: signal(false), notificationsSelected: signal(false),
+      isOpen: signal(false), locationSelected: signal(false), notificationsSelected: signal(false), notificationsEdited: signal(false),
       locationGranted: signal(false), locationPermission: signal('prompt'), nativePending: signal(false),
       busy: signal(false), error: signal(''),
       actionPending: () => store.busy() || store.nativePending(),
       allowDisabled: () => !store.locationSelected() || store.actionPending(),
       refreshPermissions: async () => {}, i18n: { translate: text => text },
       location: { requestCurrentCoordinates: () => { calls.push('location'); return coordinates.promise; } },
-      messaging: { deviceNotificationsEnabled: () => false, requestEntryPermission: () => { calls.push('notification'); return native.promise; },
+      messaging: { refreshNotificationPermission: () => {}, deviceNotificationsEnabled: () => false, requestEntryPermission: () => { calls.push('notification'); return native.promise; },
         setDeviceNotificationsEnabled: enabled => { calls.push(enabled ? 'registration' : 'unregister'); return enabled ? registration.promise : Promise.resolve(); } },
       pwa: { dismissInstallPrompt() {}, requestNotificationRegistrationForActiveUser: () => {
         calls.push('registration'); return registration.promise;

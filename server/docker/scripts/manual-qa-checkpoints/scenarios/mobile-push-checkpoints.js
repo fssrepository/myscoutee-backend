@@ -161,12 +161,31 @@
     Q.collection(Q.STATE_COLLECTION).deleteOne({ _id: saved._id });
     status();
   }
+  function popupRegistration(enabled) {
+    const saved = state(), user = Q.ensureUser(actors[2]), devices = user.devices || [];
+    if (saved.phase !== 'background-settings' || devices.length !== 1 || !devices[0].firebaseToken) Q.fail('Popup oracle requires the retained single-device Chrome boundary');
+    if (!enabled) {
+      if (saved.popupRegistrationSnapshot || devices[0].notificationsEnabled !== true) Q.fail('Popup oracle already prepared or registration disabled');
+      Q.collection(Q.STATE_COLLECTION).updateOne({ _id: saved._id }, { $set: { popupRegistrationSnapshot: devices[0] } });
+    } else {
+      const before = saved.popupRegistrationSnapshot;
+      if (!before || saved.popupRegistrationRestoredAt || before.deviceId !== devices[0].deviceId
+          || before.firebaseToken !== devices[0].firebaseToken || devices[0].notificationsEnabled !== false) Q.fail('Registration identity changed during popup oracle');
+    }
+    Q.collection('users').updateOne({ userId: actors[2], 'devices.0.deviceId': devices[0].deviceId }, {
+      $set: { 'devices.0.notificationsEnabled': enabled }
+    });
+    if (enabled) Q.collection(Q.STATE_COLLECTION).updateOne({ _id: saved._id }, { $set: { popupRegistrationRestoredAt: Q.nowIso() } });
+    Q.printObject({ scenario, phase: saved.phase, notificationsEnabled: enabled, tokenAndDevicePreserved: true });
+  }
   switch (Q.text(process.env.MANUAL_QA_COMMAND)) {
     case 'stage': stage(); break;
     case 'status': status(); break;
     case 'capture': capture(); break;
     case 'adopt-foreground': adoptForeground(); break;
     case 'recover-foreground-worker': recoverForegroundWorker(); break;
+    case 'popup-registration-off': popupRegistration(false); break;
+    case 'popup-registration-restore': popupRegistration(true); break;
     case 'prepare-device-identity': prepareDeviceIdentity(); break;
     case 'reset': reset(); break;
     default: Q.fail('Unsupported Push command');
