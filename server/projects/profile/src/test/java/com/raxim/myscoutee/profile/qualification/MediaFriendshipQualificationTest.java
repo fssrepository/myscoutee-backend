@@ -32,6 +32,65 @@ import com.raxim.myscoutee.profile.service.media.S3CompatibleMediaObjectStoreCli
 @Tag("qualification")
 class MediaFriendshipQualificationTest {
     @Test
+    void demoMediaSessionUsesProfileVisibilityAndRejectsRevokedOrAlteredCredentials() throws Exception {
+        assumeTrue("true".equals(System.getenv("QA_MEDIA_FRIENDSHIP_FIXTURE")));
+        assertThat(System.getenv("SPRING_PROFILES_ACTIVE")).isEqualTo("dev");
+        assertThat(System.getenv("MONGODB_DATABASE")).isEqualTo("demo_db");
+        String prefix = "qa-media-session-" + UUID.randomUUID();
+        String owner = prefix + "-owner", viewer = prefix + "-viewer";
+        String uri = "mongodb://" + encoded(env("MONGODB_USERNAME", "guest")) + ":"
+                + encoded(env("MONGODB_PASSWORD", "guest")) + "@mongodb:27017/demo_db?authSource=demo_db";
+        MediaStorageProperties storage = new MediaStorageProperties();
+        storage.setEndpoint("http://minio:9000");
+        storage.setBucket(env("MEDIA_BUCKET", "myscoutee-media"));
+        storage.setAccessKey(env("MEDIA_OBJECT_STORE_ACCESS_KEY", "minioadmin"));
+        storage.setSecretKey(env("MEDIA_OBJECT_STORE_SECRET_KEY", "minioadmin"));
+        var objects = new S3CompatibleMediaObjectStoreClient(storage);
+        List<String> keys = new ArrayList<>();
+        byte[] png = Base64.getDecoder().decode("iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAusB9Y9Zl1sAAAAASUVORK5CYII=");
+        try (var client = MongoClients.create(uri)) {
+            var db = client.getDatabase("demo_db");
+            try {
+                for (String user : List.of(owner, viewer)) {
+                    db.getCollection("users").insertOne(new Document("_id", user).append("userId", user)
+                            .append("email", user + "@myscoutee.local").append("profileStatus", "public"));
+                }
+                String retainedRealCookie = session(db, viewer);
+                String key = "private/images/" + owner + "/" + owner + "/fixture/large.webp";
+                put(objects, storage, keys, key, png);
+                assertBytes(key, retainedRealCookie, png);
+                var profileRequest = HttpRequest.newBuilder(URI.create("http://nginx/api/auth/me"))
+                        .header("X-App-Session-Kind", "demo").header("X-Demo-User-Id", viewer)
+                        .header("X-App-Session-Id", "fixture").GET().build();
+                var profile = HttpClient.newHttpClient().send(profileRequest, HttpResponse.BodyHandlers.ofString());
+                assertThat(profile.statusCode()).isEqualTo(200);
+                String setCookie = profile.headers().allValues("set-cookie").stream()
+                        .filter(value -> value.startsWith("myscoutee_media_session=")).findFirst().orElseThrow();
+                String cookie = setCookie.substring("myscoutee_media_session=".length()).split(";", 2)[0];
+                assertThat(cookie).startsWith("demo.");
+                assertBytes(key, cookie, png);
+                assertStatus(key, null, 401);
+                assertStatus(key, "invalid", 401);
+                assertStatus(key, cookie.substring("demo.".length()), 401);
+                db.getCollection("users").updateOne(new Document("_id", owner),
+                        new Document("$set", new Document("profileStatus", "private")));
+                assertStatus(key, cookie, 403);
+                db.getCollection("users").updateOne(new Document("_id", owner),
+                        new Document("$set", new Document("profileStatus", "public")));
+                assertBytes(key, cookie, png);
+                db.getCollection("userSessionStates").deleteOne(new Document("_id", viewer));
+                assertStatus(key, cookie, 401);
+            } finally {
+                db.getCollection("users").deleteMany(new Document("_id", new Document("$in", List.of(owner, viewer))));
+                db.getCollection("userSessionStates").deleteOne(new Document("_id", viewer));
+                for (String key : keys) objects.deleteObject(storage.getBucket(), key);
+            }
+            assertThat(db.getCollection("users").countDocuments(new Document("_id", new Document("$in", List.of(owner, viewer))))).isZero();
+            assertThat(db.getCollection("userSessionStates").countDocuments(new Document("_id", viewer))).isZero();
+        }
+    }
+
+    @Test
     void completedParticipationAndMediaVisibilityUseTheRealDatabaseAndHttpBoundary() throws Exception {
         assumeTrue("true".equals(System.getenv("QA_MEDIA_FRIENDSHIP_FIXTURE")));
         assertThat(System.getenv("SPRING_PROFILES_ACTIVE")).isEqualTo("dev");

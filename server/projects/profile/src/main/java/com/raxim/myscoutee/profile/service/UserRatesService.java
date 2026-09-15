@@ -808,10 +808,12 @@ public class UserRatesService {
         if ("met".equals(direction) && isFutureActivityDate(happenedAt)) {
             return null;
         }
-        int scoreGiven = isOwnerView ? normalizeScore(record.getScoreGiven()) : 0;
+        boolean isSingle = "single".equals(normalizeMode(record.getMode()));
+        int scoreGiven = isOwnerView ? normalizeScore(record.getScoreGiven())
+                : isSingle ? normalizeScore(record.getScoreReceived()) : 0;
         int scoreReceived = isOwnerView
                 ? normalizeScore(record.getScoreReceived())
-                : resolveParticipantIncomingScore(record);
+                : isSingle ? normalizeScore(record.getScoreGiven()) : resolveParticipantIncomingScore(record);
         String eventName = StringUtils.hasText(normalizeOptionalText(record.getEventName()))
                 ? normalizeOptionalText(record.getEventName())
                 : ("met".equals(direction) ? "Met" : "Rate");
@@ -1155,6 +1157,9 @@ public class UserRatesService {
         }
         if (Boolean.TRUE.equals(record.getMet())) {
             return "met";
+        }
+        if ("single".equals(normalizeMode(record.getMode())) && normalizeScore(record.getScoreReceived()) > 0) {
+            return normalizeScore(record.getScoreGiven()) > 0 ? "mutual" : "given";
         }
         if (normalizeScore(record.getScoreGiven()) > 0 || normalizeScore(record.getScoreReceived()) > 0) {
             return "received";

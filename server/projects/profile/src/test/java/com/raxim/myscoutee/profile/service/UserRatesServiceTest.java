@@ -180,6 +180,36 @@ class UserRatesServiceTest {
     }
 
     @Test
+    void sharedSingleRatingShowsBothScoresFromEachViewersPerspective() {
+        UserRate record = singleRate("shared-rating", "u2", "u1", 3);
+        record.setScoreReceived(4);
+        record.setMet(true);
+        UserRatesService service = queryService(Map.of(
+                "u1", user("u1", "First", List.of("music")),
+                "u2", user("u2", "Second", List.of("music"))), List.of(record));
+
+        assertThat(service.queryActivityRatePage("u1", "single", "met", "date", "desc",
+                null, false, null, 10, null, null).items()).singleElement().satisfies(item -> {
+            assertThat(item.scoreGiven()).isEqualTo(4);
+            assertThat(item.scoreReceived()).isEqualTo(3);
+            assertThat(item.direction()).isEqualTo("met");
+        });
+        assertThat(service.queryRateItemsByUser("u2")).singleElement().satisfies(item -> {
+            assertThat(item.scoreGiven()).isEqualTo(3);
+            assertThat(item.scoreReceived()).isEqualTo(4);
+        });
+        record.setMet(false);
+        assertThat(service.queryRateItemsByUser("u1")).singleElement()
+                .satisfies(item -> assertThat(item.direction()).isEqualTo("mutual"));
+        record.setScoreReceived(0);
+        assertThat(service.queryRateItemsByUser("u1")).singleElement().satisfies(item -> {
+            assertThat(item.scoreGiven()).isZero();
+            assertThat(item.scoreReceived()).isEqualTo(3);
+            assertThat(item.direction()).isEqualTo("received");
+        });
+    }
+
+    @Test
     void syncCalculatesBackendOwnedAffinityBeforeSaveAndRecomputesEdges() {
         Users owner = user("u1", "Owner", List.of("music"));
         Users related = user("u2", "Related", List.of("music"));

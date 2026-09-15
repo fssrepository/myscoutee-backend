@@ -11,6 +11,66 @@ const port = Number(process.env.QA_PHONE_CDP_PORT || 36087);
 const packageName = process.env.QA_PHONE_PACKAGE || 'org.chromium.webapk.af8b7eef107d7742f_v2';
 if (!/^org\.chromium\.webapk\.[a-z0-9_]+$/.test(packageName)) throw Error('Invalid QA WebAPK package');
 const transportSnapshot = fileURLToPath(new URL('../../../server/docker/.qa-mobile-runtime/device-transport.before.json', import.meta.url));
+const screenSnapshot = fileURLToPath(new URL('../../../server/docker/.qa-mobile-runtime/device-screen.before.json', import.meta.url));
+const chromePermissionSnapshot = fileURLToPath(new URL('../../../server/docker/.qa-mobile-runtime/chrome-notifications.before.json', import.meta.url));
+if (action === 'snapshot-chrome-notifications' || action === 'restore-chrome-notifications') {
+  const serial = execFileSync('adb', ['get-serialno'], { encoding: 'utf8' }).trim();
+  if (action === 'snapshot-chrome-notifications') {
+    if (existsSync(chromePermissionSnapshot)) throw Error('Chrome notification permission already has a restore point');
+    const dump = execFileSync('adb', ['shell', 'dumpsys', 'package', 'com.android.chrome'], { encoding: 'utf8' });
+    const permission = dump.match(/android\.permission\.POST_NOTIFICATIONS: granted=(true|false), flags=\[([^\]]*)\]/);
+    if (!permission) throw Error('Chrome native notification permission not found');
+    writeFileSync(chromePermissionSnapshot, JSON.stringify({ serial, granted: permission[1] === 'true',
+      userSet: permission[2].includes('USER_SET'), userFixed: permission[2].includes('USER_FIXED') }), { mode: 0o600 });
+    console.log(JSON.stringify({ action, originalGranted: permission[1] === 'true' }));
+  } else {
+    const saved = JSON.parse(readFileSync(chromePermissionSnapshot, 'utf8'));
+    if (saved.serial !== serial) throw Error('Chrome permission snapshot belongs to another phone');
+    const permission = 'android.permission.POST_NOTIFICATIONS';
+    execFileSync('adb', ['shell', 'pm', saved.granted ? 'grant' : 'revoke', '--user', '0', 'com.android.chrome', permission]);
+    execFileSync('adb', ['shell', 'pm', 'clear-permission-flags', '--user', '0', 'com.android.chrome', permission, 'user-set', 'user-fixed']);
+    const flags = [saved.userSet && 'user-set', saved.userFixed && 'user-fixed'].filter(Boolean);
+    if (flags.length) execFileSync('adb', ['shell', 'pm', 'set-permission-flags', '--user', '0', 'com.android.chrome', permission, ...flags]);
+    unlinkSync(chromePermissionSnapshot);
+    console.log(JSON.stringify({ action, restoredGranted: saved.granted }));
+  }
+  process.exit(0);
+}
+if (action === 'keep-screen-awake' || action === 'restore-screen') {
+  const readSetting = (scope, key) => execFileSync('adb', ['shell', 'settings', 'get', scope, key], { encoding: 'utf8' }).trim();
+  const serial = execFileSync('adb', ['get-serialno'], { encoding: 'utf8' }).trim();
+  if (action === 'keep-screen-awake') {
+    if (!existsSync(screenSnapshot)) writeFileSync(screenSnapshot, JSON.stringify({ serial,
+      timeout: readSetting('system', 'screen_off_timeout'), stayOn: readSetting('global', 'stay_on_while_plugged_in') }), { mode: 0o600 });
+    const saved = JSON.parse(readFileSync(screenSnapshot, 'utf8'));
+    if (saved.serial !== serial) throw Error('Screen restore point belongs to another device');
+    execFileSync('adb', ['shell', 'settings', 'put', 'system', 'screen_off_timeout', '1800000']);
+    execFileSync('adb', ['shell', 'svc', 'power', 'stayon', 'usb']);
+  } else {
+    const saved = JSON.parse(readFileSync(screenSnapshot, 'utf8'));
+    if (saved.serial !== serial) throw Error('Screen restore point belongs to another device');
+    for (const [scope, key, value] of [['system', 'screen_off_timeout', saved.timeout], ['global', 'stay_on_while_plugged_in', saved.stayOn]]) {
+      if (!/^(null|[0-9]+)$/.test(value)) throw Error('Invalid retained screen setting');
+      execFileSync('adb', ['shell', 'settings', value === 'null' ? 'delete' : 'put', scope, key, ...(value === 'null' ? [] : [value])]);
+    }
+    unlinkSync(screenSnapshot);
+  }
+  console.log(JSON.stringify({ action, timeout: readSetting('system', 'screen_off_timeout'), stayOn: readSetting('global', 'stay_on_while_plugged_in') }));
+  process.exit(0);
+}
+if (action === 'prepare-transport') {
+  if (existsSync(transportSnapshot)) throw Error('Restore the retained offline boundary before preparing transport');
+  const mappings = execFileSync('adb', ['reverse', '--list'], { encoding: 'utf8' }).trim().split('\n').filter(Boolean);
+  if (mappings.some(line => !line.endsWith('tcp:8080 tcp:80'))) throw Error('Unexpected reverse mapping; preserve existing transport');
+  const forwards = execFileSync('adb', ['forward', '--list'], { encoding: 'utf8' }).trim().split('\n').filter(Boolean);
+  if (forwards.some(line => line.includes(` tcp:${port} `) && !line.endsWith('localabstract:chrome_devtools_remote'))) {
+    throw Error('QA CDP port is owned by another forward');
+  }
+  execFileSync('adb', ['reverse', 'tcp:8080', 'tcp:80']);
+  execFileSync('adb', ['forward', `tcp:${port}`, 'localabstract:chrome_devtools_remote']);
+  console.log('Prepared the configured QA reverse tunnel and Chrome inspection forward; device data/radios unchanged.');
+  process.exit(0);
+}
 if (action === 'transport-offline') {
   if (existsSync(transportSnapshot)) throw Error('QA transport already has a retained restore point');
   const mappings = execFileSync('adb', ['reverse', '--list'], { encoding: 'utf8' }).trim().split('\n').filter(Boolean);
@@ -41,6 +101,12 @@ const targets = await fetch(`http://127.0.0.1:${port}/json/list`).then(r => r.js
 const pages = targets.filter(p => p.type === 'page' && p.url.startsWith('http://localhost:8080/'));
 const target = args.includes('--target') ? pages.find(p => p.id === args[args.indexOf('--target') + 1]) : pages[0];
 if (!target) throw Error('No existing local QA page');
+if (action === 'close-qa-page') {
+  const response = await fetch(`http://127.0.0.1:${port}/json/close/${encodeURIComponent(target.id)}`);
+  if (!response.ok) throw Error('Chrome did not accept closing the selected QA page');
+  console.log('Closed the selected localhost QA page; installation and storage retained.');
+  process.exit(0);
+}
 const socket = new WebSocket(target.webSocketDebuggerUrl);
 let sequence = 0;
 const pending = new Map();

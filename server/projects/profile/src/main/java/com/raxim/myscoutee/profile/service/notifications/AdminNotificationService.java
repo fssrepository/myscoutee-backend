@@ -28,6 +28,8 @@ import com.raxim.myscoutee.profile.data.dto.admin.AdminDtos.AdminNotificationCen
 import com.raxim.myscoutee.profile.data.dto.admin.AdminDtos.AdminNotificationChannelsDto;
 import com.raxim.myscoutee.profile.data.dto.admin.AdminDtos.AdminNotificationMessageDto;
 import com.raxim.myscoutee.profile.data.dto.admin.AdminDtos.AdminNotificationRuleDto;
+import com.raxim.myscoutee.profile.data.dto.admin.AdminDtos.AdminScheduledTaskResultDto;
+import com.raxim.myscoutee.profile.repository.ScheduledMessageTasksRepository;
 import com.raxim.myscoutee.profile.data.dto.admin.AdminDtos.AdminNotificationRuleRunRequestDto;
 import com.raxim.myscoutee.profile.data.dto.admin.AdminDtos.AdminNotificationRuleRunResultDto;
 import com.raxim.myscoutee.profile.data.dto.admin.AdminDtos.AdminNotificationRuleSaveRequestDto;
@@ -63,6 +65,7 @@ public class AdminNotificationService {
     private final EventScheduler eventScheduler;
     private final AdminModerationService adminModerationService;
     private final AdminTelemetryService adminTelemetryService;
+    private final ScheduledMessageTasksRepository scheduledMessageTasksRepository;
     private final AtomicInteger expectedRandomRunMillis = new AtomicInteger((int) DEFAULT_EXPECTED_RANDOM_RUN_MILLIS);
     private final ExecutorService runExecutor = Executors.newFixedThreadPool(2, runnable -> {
         Thread thread = new Thread(runnable, "admin-notification-runner");
@@ -80,12 +83,14 @@ public class AdminNotificationService {
             EmailTemplatesRepository emailTemplatesRepository,
             EventScheduler eventScheduler,
             AdminModerationService adminModerationService,
-            AdminTelemetryService adminTelemetryService) {
+            AdminTelemetryService adminTelemetryService,
+            ScheduledMessageTasksRepository scheduledMessageTasksRepository) {
         this.notificationRuleRegistryService = notificationRuleRegistryService;
         this.emailTemplatesRepository = emailTemplatesRepository;
         this.eventScheduler = eventScheduler;
         this.adminModerationService = adminModerationService;
         this.adminTelemetryService = adminTelemetryService;
+        this.scheduledMessageTasksRepository = scheduledMessageTasksRepository;
     }
 
     @PreDestroy
@@ -633,8 +638,22 @@ public class AdminNotificationService {
                 rule.getRunHistory() == null ? List.of() : rule.getRunHistory().stream()
                         .map(this::toRunHistoryEntry)
                         .toList(),
+                NotificationRuleRegistryService.RULE_SCHEDULED_MESSAGES.equals(rule.getRuleKey())
+                        ? scheduledTaskResults() : List.of(),
                 rule.getUpdatedDate(),
                 rule.getUpdatedUser());
+    }
+
+    private List<AdminScheduledTaskResultDto> scheduledTaskResults() {
+        return scheduledMessageTasksRepository.findTop12ByLastRunAtIsoNotNullOrderByLastRunAtIsoDesc().stream()
+                .map(task -> new AdminScheduledTaskResultDto(
+                        task.getTaskKey(),
+                        task.getLastRunAtIso(),
+                        task.getLastRunStatus(),
+                        task.getLastRunDetail(),
+                        task.getLastRunCount(),
+                        "scheduled".equals(task.getStatus()) ? task.getDueAtIso() : ""))
+                .toList();
     }
 
     private NotificationRuleConfig toDocument(AdminNotificationRuleDto dto) {

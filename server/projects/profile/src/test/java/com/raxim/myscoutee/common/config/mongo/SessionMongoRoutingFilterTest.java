@@ -11,6 +11,7 @@ import org.springframework.mock.web.MockHttpServletResponse;
 
 import com.raxim.myscoutee.common.config.bootstrap.OperatorBootstrapRequestSupport;
 import com.raxim.myscoutee.common.config.properties.ConfigProperties;
+import jakarta.servlet.http.Cookie;
 
 class SessionMongoRoutingFilterTest {
     @AfterEach
@@ -81,6 +82,23 @@ class SessionMongoRoutingFilterTest {
                 "GET",
                 "/admin/payment-simulator/configuration-access");
         assertThat(modeInside(filter, real)).isEqualTo(MongoSessionMode.REAL);
+    }
+
+    @Test
+    void protectedMediaUsesCredentialRealmInsteadOfCallerHeaders() throws Exception {
+        ConfigProperties properties = new ConfigProperties();
+        properties.setFirebaseEnabled(true);
+        SessionMongoRoutingFilter filter = new SessionMongoRoutingFilter(properties);
+        MockHttpServletRequest request = new MockHttpServletRequest("GET", "/api/media/private");
+        request.addHeader(DemoSessionRequestSupport.SESSION_KIND_HEADER, "real");
+        request.setCookies(new Cookie("myscoutee_media_session", "demo.dmlld2Vy." + "a".repeat(64)));
+        assertThat(modeInside(filter, request)).isEqualTo(MongoSessionMode.DEMO);
+
+        request.addHeader(DemoSessionRequestSupport.SESSION_KIND_HEADER, "demo");
+        request.setCookies(new Cookie("myscoutee_media_session", "dmlld2Vy." + "a".repeat(64)));
+        assertThat(modeInside(filter, request)).isEqualTo(MongoSessionMode.REAL);
+        request.setCookies();
+        assertThat(modeInside(filter, request)).isEqualTo(MongoSessionMode.REAL);
     }
 
     private MongoSessionMode modeInside(

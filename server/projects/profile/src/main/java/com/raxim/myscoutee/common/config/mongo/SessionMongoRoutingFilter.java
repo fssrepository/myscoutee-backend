@@ -6,6 +6,7 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 import com.raxim.myscoutee.common.config.bootstrap.OperatorBootstrapRequestSupport;
 import com.raxim.myscoutee.common.config.properties.ConfigProperties;
+import com.raxim.myscoutee.profile.service.media.MediaSessionAccessService;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -36,8 +37,8 @@ public class SessionMongoRoutingFilter extends OncePerRequestFilter {
 
     private MongoSessionMode resolveMode(HttpServletRequest request) {
         String requestUri = request == null ? null : request.getRequestURI();
-        if ("/media/private".equals(requestUri) || "/api/media/private".equals(requestUri)) {
-            return MongoSessionMode.REAL;
+        if (MediaSessionAccessService.isPrivateRead(request)) {
+            return MediaSessionAccessService.sessionMode(request);
         }
         if (OperatorBootstrapRequestSupport.isLoginRequest(request)
                 || OperatorBootstrapRequestSupport

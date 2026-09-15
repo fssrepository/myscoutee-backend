@@ -18,7 +18,17 @@ To start, tell Codex:
 
 Start only after Codex prints the original Send notifications interval and
 confirms that no target row has yet been enqueued. The test uses the already
-running scheduler and current configured Firebase mode.
+running scheduler and current configured Firebase mode. The versioned baseline
+is prepared with:
+
+```bash
+bash server/docker/scripts/manual-qa-checkpoints/manual-qa-checkpoints-docker.sh stage notification-admin NOTIFICATION-ADMIN-LIFECYCLE-001
+node guides/qa/tools/open-checkpoint-browser-sessions.mjs NOTIFICATION-ADMIN-LIFECYCLE-001
+```
+
+`status notification-admin NOTIFICATION-ADMIN-LIFECYCLE-001` reads the baseline;
+`reset` with the same arguments restores its retained documents and the common
+browser-session baseline after the owned clients are closed.
 
 ## 1. Save, reopen and invalid atomicity
 
@@ -49,7 +59,10 @@ running scheduler and current configured Firebase mode.
 
 10. Wait while Codex uses the versioned fixture to enqueue one controlled
     Casey-to-Nova notification and arms only **Send notifications** for its
-    next normal scheduler pass.
+    next normal scheduler pass. The fixture briefly holds the rule while the
+    real Chat API creates the item and removes only that item's Redis wake-up
+    hint to isolate the scheduled branch. The durable outbox stays intact;
+    restore the enabled state and reopen Job Detail after this setup boundary.
 11. Without reloading, Nova's counter increases by one. In
     `Notifications -> New`, exactly one row identifies the controlled source;
     Casey receives no matching row.
@@ -59,18 +72,24 @@ running scheduler and current configured Firebase mode.
 13. Confirm one new terminal Runner history row, a duration, no unexplained
     second run and a detail matching the environment:
 
-    - with Firebase inactive, the job completes with zero sent and explicitly
-      says delivery is inactive; the one logical outbox row remains Pending;
-    - with verified Firebase active, the outbox reaches its real Sent/Failed
-      result and its device-result counts agree with Monitoring.
+    - when the queued message records `firebaseDeliveryRequested=false`, the
+      worker completes the logical item with zero provider successes/failures
+      and no Firebase call; its terminal Sent status means processing completed,
+      and does not claim a delivered push;
+    - when the message records `true`, only its saved eligible device targets
+      are considered; the real result and device counts agree with Monitoring.
+      An empty saved device map also completes without a provider call.
+
+    Older messages without a saved decision retain their legacy behavior;
+    they do not define the acceptance rule for this newly queued test message.
 
     The already-created in-app bell is valid in both modes.
 
-14. Open Nova's row once. It leaves New, remains once in All and decrements
+14. In Nova, use the row menu to mark the notification read once. It leaves New, remains once in All and decrements
     only Nova's notification count. It does not mark the source Chat read.
 15. In Ava, open `Monitoring -> Notifications`. Pending/running/sent/failed and
-    health must match the actual Firebase branch; an inactive gateway is not
-    recorded as a fabricated successful push.
+    health must match the saved delivery decision and actual provider counts;
+    processing a no-delivery item is not evidence of a successful push.
 16. Report:
 
     `NOTIFICATION-ADMIN-LIFECYCLE-001 first delivery complete`
@@ -83,8 +102,8 @@ row, the stable read timestamp and matching Job/Monitoring identity.
 17. Wait while Codex re-arms only the same scheduler rule without creating a
     new producer item. Leave Job Detail open for the second normal pass.
 18. Confirm the second run adds no inbox row, no logical outbox row and no
-    counter increment. The existing Firebase-inactive Pending row may remain
-    Pending; an active environment retains its prior terminal delivery.
+    counter increment. The same logical item retains its previous terminal
+    result and saved delivery decision.
 19. Open Timing, restore the exact original interval printed at startup and
     save once. Close/reopen Job Detail and confirm the original interval and
     enabled state.

@@ -1,6 +1,6 @@
 # Current manual QA session
 
-Updated: 2026-09-14
+Updated: 2026-09-15
 
 This is the context-saving entry point for continuing the manual QA campaign.
 It stores one minimal live resume pointer plus reusable pair-QA execution lessons. It
@@ -102,25 +102,28 @@ repair an established product defect. Preserve the phone's tethering connection
 when shaping only its route to the QA application.
 
 ```yaml
-checkpoint: MOBILE-WEBVIEW-LIFECYCLE-001 — PARTIAL / OPEN
-checklist: ../checklists/notifications/MOBILE-WEBVIEW-LIFECYCLE-001.md
-substage: ENTRY-CONSENT-001 persisted oracle PASS after actual acceptance and user-completed profile save. ENTRY-DEMO-REG-001 has one active public profile, three images and one experience profile; initial verification exposed missing development email. Save-path repair compiled through existing backend watcher; post-restart persisted oracle passes, but startup normalization can also explain the repaired email, so fresh initial-save proof and registration return remain pending. Then ENTRY-CONSENT-002, ENTRY-CONSENT-003 and AUTH-SESSION-001. Fresh paired coverage remains required; no Push sending.
-notification_order: MOBILE-WEBVIEW-LIFECYCLE-001, MOBILE-PUSH-LIFECYCLE-001, NOTIFICATION-ADMIN-LIFECYCLE-001, JOB-MESSAGES, BELL-RATING-LIFECYCLE-001
-notification_remaining_complexity: estimates retained pending defect triage
-fixture_phase: Operator Firebase fixture reset at 19:58:10 UTC; runtime Firebase inactive revision 0. Encrypted active revision 1 retained in /tmp/myscoutee-firebase-bootstrap-fixture/active-firebase-after-webview.ejson (0600) for later Push setup. Current entry-consent 001 baseline has 23 consents and zero anonymous; entry-domain baseline 58 users and zero demo-profile registrations. Phone normally logged out, /entry; desktop normal /entry. Temporary bootstrap settings restored to original local baseline; previous bootstrap variant retained securely. Existing backend restarted once; anonymous upload now returns 200.
-browser_control: User reauthorized ordinary desktop and phone QA actions after the explicit delegation question. Continue visible hit-tested controls without further handoff pauses. No internal state overrides, production test flags, viewport changes or AGENTS.md edits. Current desktop manifest /tmp/myscoutee-qa-browser-sessions/ENTRY-CONSENT-001.json.
-desktop_geometry: user-approved measured outer window 1180x950 at x107/y68; viewport 1136x763, DPR1 on 1920x1080 screen. Persisted in checkpoint session.window; use these bounds on next launch, no mobile emulation or further resizing.
-ledger_status: 90/104 passed; Notifications 1/6; Mobile WebView PARTIAL/OPEN
-required_resume: Read the latest Mobile WebView continuation evidence in the QA pack. Keep PARTIAL/OPEN. Shared setup contracts and local repository persistence checked on desktop/physical PWA lifecycle-17; latest label-free candidate lifecycle-19 (mobile-webview-lifecycle-1789395283443). External CDP page+worker outage/reconnect passed without changing phone radios. URL/storage test switches were removed; do not count old switch-based evidence as current application proof. Full frontend-local UI/reload remains unverified; continue actual Firebase entry/private-image/logout and Push activation/delivery. Shared shell/header/X are unchanged; permissions first, optional install second, stacked original switches, fixed blue/violet rows and status-colored switches, one right-aligned Update label. Location is mandatory for login and locked after login; optional device push can be updated separately from in-app bell mute. Native decisions precede background ring; reject/retry/X must preserve the flow. Existing private Admin SDK file remains outside git; user allowed QA use, later requested dev/prod separation. Firebase revision 1 is now Operator-tested and active; no Firebase console configuration changes. Use existing Operator encrypted configuration/test/activation workflow; confirm exact public VAPID rather than guessing screenshot characters. Retain fixture/session snapshot and dev route until real remaining branches and cleanup are complete. Earlier friendship/media batch/policy evidence remains in the pack and is not a physical Firebase-login proof.
-last_completed: Candidate 27 Firebase device opt-out/reopen/on/reopen/dedup and bell separation passed. Candidate 28 Entry Login/footer corrections compiled, served but not visually replayed. No message sent. Only fixture cleanup deactivated Firebase; broader Operator restore was not tested.
-last_evidence: ../manuals/DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md#installed-pwa-permission-replay--2026-09-14
+checkpoint: ADMIN-MONITORING-001 — PREPARED / NOT RUN
+checklist: ../checklists/administration/ADMIN-MONITORING-001.md
+substage: Block1 step1 Metrics, awaiting user review/start. No Admin checklist actions performed.
+fixture_phase: admin-monitoring baseline-ready-not-started; no test parameter save or job armed.
+browser_control: Managed Ava Admin session ready; existing-session authentication/realtime readiness verified. User explicitly requested preparation only; do not execute the checklist.
+required_resume: Read-only baseline/session readiness check if stale. Continue only when user starts the prepared test; do not replay completed Bell/Jobs flows.
+queued_work: All three Administration and four Operator guides written in English. Only Monitoring scripts prepared; other fixture orchestration deferred. Monitoring owns parameter save/history/revert once; other tests replace proven prerequisite actions with fixtures, not repeated clicks. No separate common testcase. Administration coverage restored against334d4787: Monitoring20, Graph23, Parameters25 explicit steps with source-ID mappings; evidence reuse is assertion-specific. Operator guide omissions now repaired against334d4787 at user request: Configuration C01–C08, Registry18, Updates11, Revenue11; per-guide requirement mapping retained. Documentation only; dedicated Operator fixtures deferred.
+last_completed: BELL-RATING all1–20 PASS, final consistent feedback worker oracle and exact fixture/session resets verified.
+runtime: Existing watchers only. No application code changed in this continuation.
+ledger_status: 95/104 PASS; Notifications6/6. Admin Monitoring prepared, Graph/Parameters and Operator not newly executed.
+last_evidence: ../manuals/DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md#operator-coverage-repair-against-the-original-matrix--2026-09-15
 ```
 
 ### Notifications takeover notes
 
+Before each new testcase, briefly explain its purpose and expected outcomes in
+Hungarian. Throughout execution, announce the exact checklist block and step
+number and the immediate action; this lets the user follow and assist.
+
 `UI-POLL-JANK-001` is closed. Its detailed evidence is in the linked diagnosis
-and CSV/XLSX ledger. The Mobile WebView checkpoint is PARTIAL/OPEN; do not replay the
-completed performance fixture or create additional browser sessions.
+and CSV/XLSX ledger. Mobile WebView is also PASS/CLOSED after both remaining
+clipboard observations and cleanup. Do not replay completed work.
 
 Existing support for the later Notifications guides must be reused before new
 harness code is created:
@@ -128,11 +131,16 @@ harness code is created:
 - `BELL-RATING-LIFECYCLE-001`: `bell-rating-feedback`, `stat-010` and
   `graph-rating` fixtures exist; a consolidated wrapper/browser setup is not
   yet bound.
-- `JOB-MESSAGES`: the `scheduled-messages` inactive-user/recent-user fixture
-  exists; its Admin/fixture-user browser setup is not yet bound.
-- `NOTIFICATION-ADMIN-LIFECYCLE-001`: `notification-read-path` and
-  `notification-outbox` fixtures exist; the combined rule-save/invalid-save/
-  restore wrapper and browser setup are not yet bound.
+- `JOB-MESSAGES`: the existing `scheduled-messages` inactive-user/recent-user fixture
+  is now bound to `job-messages` stage/ready/arm/status/reset and the versioned
+  two-window launcher. Prepare Admin fixture between checkpoint stage and ready;
+  release only after the baseline is visible. No application worker path changed.
+- `NOTIFICATION-ADMIN-LIFECYCLE-001`: versioned `notification-admin` stage/status/reset
+  and Ava/Nova/Casey browser setup now own the rule-edit baseline. Reuse existing
+  `notification-read-path` / `notification-outbox` helpers for later phases;
+  `notification-admin-http.py` binds invalid-field rejection and the real Chat
+  producer; capture savepoints bind scheduler/read/dedupe boundaries. Do not run
+  those phases during startup.
 - `MOBILE-PUSH-LIFECYCLE-001`: execution remains gated on an Operator-tested
   active Firebase revision and a disposable physical Android device. Never
   manufacture a local token fallback.
@@ -141,7 +149,7 @@ harness code is created:
   Never clear app data before capturing the old-cache and account-isolation
   boundaries.
 
-Remaining estimates: Mobile WebView `110/260`, Mobile Push `100/235`,
+Mobile WebView has no remaining estimate because it is closed. Remaining:
 Notification Admin `80/190`, Scheduled Messages `20/65`, Bell/Rating `55/130`
 minutes. The completed UI poll estimate is excluded from the remaining total.
 
@@ -285,8 +293,11 @@ the checkpoint says otherwise.
 
 ### Next manual action
 
-No action remains for UI-POLL-JANK-001. On QA continuation, start the queued
-Mobile WebView checkpoint from its read-only device/build/cache gate.
+`NOTIFICATION-ADMIN-LIFECYCLE-001` — **section 1, steps 1–2**: in Ava, open
+`Configuration -> Jobs -> Send notifications`. Record the original **1 minute**
+Timing, enabled state, Last run and newest Runner history. Then follow steps
+3–5: save **2 minutes**, close/reopen and report the persisted value.
+
 
 Group-size audit: retain `TOURNAMENT-MEMBER-002` as 2+1 because Riley's Group B
 proves parent-event notification delivery across room boundaries while Group B
@@ -345,6 +356,14 @@ conflicts with them, record the mismatch and repair the owning code or fixture;
 do not silently redefine the expected behavior or expand the current test.
 
 ### Pair-QA execution and replay contract
+
+User clarification (2026-09-15): execute one visible, ordered chain with brief
+savepoint results and next actions. Preparation belongs in fixtures, with only
+the real browser/device registration needed for the active test. Never replay
+completed WebView/Operator journeys as Push preparation. After a fix, resume
+from the nearest valid savepoint and repeat only the affected causal tail;
+revisit passed work only when its baseline or proved behavior was invalidated,
+and state the reason. Time matters: avoid redundant checks and adjacent work.
 
 1. Select the next testcase from the canonical CSV/XLSX Pair-QA order and open
    its stable file under `guides/qa/checklists/`.

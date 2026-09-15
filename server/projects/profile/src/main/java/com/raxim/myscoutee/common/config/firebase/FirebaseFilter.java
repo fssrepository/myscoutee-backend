@@ -56,7 +56,7 @@ public class FirebaseFilter extends OncePerRequestFilter {
             Authentication media = mediaSessionAccess.authenticate(request);
             if (media == null || !("GET".equals(request.getMethod()) || "HEAD".equals(request.getMethod()))) {
                 response.setHeader("Cache-Control", "no-store");
-                response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "An active Firebase app session is required.");
+                response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "An active app session is required.");
                 return;
             }
             SecurityContextHolder.getContext().setAuthentication(media);

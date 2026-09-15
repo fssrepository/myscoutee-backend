@@ -6,7 +6,8 @@ import java.util.List;
 /** Only server-owned public namespaces are anonymously readable. */
 public final class MediaAccessPaths {
     private static final List<String> PUBLIC_PREFIXES = List.of("public/demo/", "public/branding/",
-            "images/demo-profiles/", "images/demo-assets/", "images/demo-events/", "images/system/", "payment-cards/");
+            "images/demo-profiles/", "images/demo-assets/", "images/demo-events/", "images/system/", "payment-cards/",
+            "seeded-help/");
 
     private MediaAccessPaths() {}
 

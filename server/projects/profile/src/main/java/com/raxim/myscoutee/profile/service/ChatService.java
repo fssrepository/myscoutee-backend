@@ -771,10 +771,26 @@ public class ChatService {
             String requestedUserId,
             Integer limit,
             String cursor) {
+        return queryMessagesPage(chatId, requestedUserId, limit, cursor, null);
+    }
+
+    public ChatMessagesPageResponseDto queryMessagesPage(
+            String chatId, String requestedUserId, Integer limit, String cursor,
+            String targetMessageId) {
         String userId = requireResolvedUserId(requestedUserId);
         ChatDocumentsSnapshot snapshot = requireChat(chatId, userId);
+        String targetId = normalizeId(targetMessageId);
+        ChatMessage target = StringUtils.hasText(targetId)
+                ? chatMessagesRepository.findByChatIdAndMessageId(snapshot.chatId(), targetId)
+                        .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Chat message not found."))
+                : null;
         int pageSize = normalizeChatMessagesPageSize(limit);
         int startIndex = normalizeChatMessagesCursor(cursor);
+        if (target != null && !StringUtils.hasText(cursor)) {
+            int newer = normalizeLongCount(chatMessagesRepository.countByChatIdAndSentAtIsoGreaterThan(
+                    snapshot.chatId(), target.getSentAtIso()));
+            startIndex = (newer / pageSize) * pageSize;
+        }
         int total = normalizeLongCount(chatMessagesRepository.countByChatId(snapshot.chatId()));
         if (startIndex >= total) {
             return new ChatMessagesPageResponseDto(
@@ -794,9 +810,11 @@ public class ChatService {
                 .map(this::normalizeId)
                 .filter(StringUtils::hasText)
                 .toList();
-        ChatReadUpdate readUpdate = startIndex == 0
-                ? markChannelRead(snapshot, userId, messages)
-                : markMessagesRead(snapshot, userId, loadedMessageIds, messages);
+        ChatReadUpdate readUpdate = target != null
+                ? markMessagesRead(snapshot, userId, List.of(targetId), messages)
+                : startIndex == 0
+                        ? markChannelRead(snapshot, userId, messages)
+                        : markMessagesRead(snapshot, userId, loadedMessageIds, messages);
         if (readUpdate.changed() && !readUpdate.readMessageIds().isEmpty()) {
             publishChatEvent(toReadEvent(snapshot.chatId(), readUpdate));
         }

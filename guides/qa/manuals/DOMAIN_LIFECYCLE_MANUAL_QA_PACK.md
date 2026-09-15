@@ -7822,6 +7822,171 @@ app target.
 | `MOBILE-PUSH-003` | Tap the closed-app notification and let the WebView cold-start. | The authenticated target route opens once, matching inbox row becomes read only after the intentional open, and back/relaunch does not repeat the action. |
 | `MOBILE-PUSH-004` | Deny permission, rotate/revoke the token and later grant permission. | Denial is non-blocking, stale token failure is safely retired/replaced, and a later message reaches only the new token without leaking token text. |
 
+#### Mobile Push device preflight — 2026-09-15
+
+User explicitly delegated the entire `MOBILE-PUSH-LIFECYCLE-001` flow to Codex,
+including physical-device and browser actions. This authority persists for this
+checkpoint. Shared WebView evidence remains PASS/CLOSED and was not replayed.
+
+Read-only resume gate at approximately 09:02 UTC: **BLOCKED / DELIVERY NOT RUN**.
+The current runtime differs from the saved closure boundary:
+
+- Existing dev containers are running; backend and frontend watcher are healthy.
+  No build, restart, fixture mutation or browser launch was performed. Available
+  memory was 6.3 GiB with zero swap use.
+- Physical Android `22126RN91Y` is ADB-connected. Original localhost WebAPK
+  `org.chromium.webapk.af8b7eef107d7742f_v2`, version 1, remains installed and its
+  native `POST_NOTIFICATIONS` permission is granted. Phone page/session/build
+  and browser-origin permission have not yet been inspected.
+- ADB reverse and forward mappings are empty. The versioned build-route status
+  reports `phoneRouteActive=false`; current server `/app-version.json` reports
+  `4be4a1c596e2-20260905140310`. Do not infer this is the phone's cached build.
+- Direct, masked `demo_db.deploymentConfigurations` projection: Firebase
+  revision **0**, **inactive**, both tested revisions null, both tested timestamps
+  absent, both credential envelopes absent, and all checked public client fields
+  absent (`apiKey`, `authDomain`, `storageBucket`, `messagingSenderId`, `appId`,
+  `vapidKey`). Public `/api/deployment/configuration` returns 200; the exact
+  `/api/deployment/configuration/firebase-config` endpoint returns 404.
+- Casey, Nova and Riley exist (ObjectId identities); each has zero device
+  records and zero provider tokens. No raw credentials or tokens were printed.
+- Versioned `status mobile-webview MOBILE-WEBVIEW-LIFECYCLE-001` is `not-staged`.
+  Both common checkpoint and browser-session snapshot collections are empty.
+  `chatMessages.text` and legacy `chats.messages.text` contain zero messages
+  with this checkpoint's exact prefix. No controlled Chat was staged or sent.
+
+Next dependency: locate the user's prior disposable QA Firebase configuration
+or backup, then restore it through the supported configuration workflow and
+verify its real Authentication/Messaging activation gate. User was asked only
+for its local path, never for secret contents in chat. Afterwards restore the
+versioned phone transport/build route, establish Riley's authenticated single
+real-device registration and controlled Chat baseline, and use the configured
+managed launcher before the first ordinary message. No product failure or FCM
+PASS is claimed; no other Notifications checkpoint was started.
+
+Continuation supersedes the initial missing-configuration blocker. Ignored local
+project Firebase service-account/public-config files were present and restored
+through versioned setup. The Push fixture adopts the retained configuration
+snapshot and prepares active revision 1 from prior provider evidence; its
+capability markers are prepared prerequisites, not newly observed Operator
+tests. A genuine disposable Firebase Riley identity and normal browser-issued
+FCM registration were established. Raw credentials/tokens remain local only.
+Baseline captured at 09:22:20.836Z: Casey/Nova/Riley unread 0/0/1, exactly one
+Riley web-pwa registration and zero controlled messages. Managed Casey/Nova
+sessions and original Android localhost WebAPK are retained; versioned ADB
+transport and reversible keep-awake preparation are active.
+
+The first attempted marker and user extra `ggg` never persisted: demo WebSocket
+callbacks lost request mode/authentication context and returned 403. The scoped
+mode/security-context repair compiled through the existing backend owner at
+09:30 UTC; no standalone test build was run. At 09:35:25Z the user's `haha`
+message persisted as `c0f060ab-c088-4e53-a538-63bb97bc5ce4`; this is the foreground
+phase's actual message, replacing its suggested marker. Codex detected the
+user's send and did not send a duplicate. Nova/Riley each gained one unread
+inbox row; Casey remained excluded, counters 0/1/2. The phone remained visible,
+Chat/Notifications closed, with zero Android QA system notifications.
+Real provider delivery is currently FAIL/unproven: Firebase Admin 7.1.1 batch
+send receives HTTP404; the same outbox remains pending for retry. SDK/gateway
+migration is underway; preserve this transaction for its normal retry.
+
+User-reported menu regression was repaired without reopening the WebView
+journey: the avatar Install/Permissions action is always present, its label
+uses actual install availability, and both entry paths leave the menu open.
+On lifecycle38 (`mobile-webview-lifecycle-1789464566357`) the original physical
+installed PWA shows `Engedélyek`; popup has permission controls without the
+install section. After real popup open and close, the menu remains open.
+Frontend owner's existing build succeeded at 09:28:29Z. Foreground FCM and all
+later Push phases remain open. Provider-account cleanup, exact fixture/session
+reset and saved screen-setting restoration are required at closure.
+
+Foreground continuation at 09:42 UTC: user also sent `proba`, ID
+`7dad4235-7427-42a8-ad15-1bf20356c094`; both messages were explicitly adopted
+into the foreground fixture evidence/cleanup manifest. User clarified clicking
+the Chat channel badge, rather than the Notifications New row. Nova's two rows
+became read through that ordinary Chat path (09:36:06Z and 09:40:32Z); Riley's
+rows stayed unread. Phone Notifications New list visually showed both Chat
+rows once plus the pre-existing security row; unread total 3.
+
+Firebase Admin 9.10.0 / sendEach migration compiled through the existing owner
+at 09:38:43Z. The backend was restarted alone to load the new dependency and
+was ready at 09:40:15Z (public configuration HTTP200). The previous runtime's
+NoSuchMethodError left one outbox lease/rule running; the guarded fixture
+`recover-foreground-worker` captured and released only that stopped worker's
+state without changing message/inbox IDs, retry history or delivery outcomes.
+Both actual outboxes became sent at 09:41:53Z, each tokenSuccessCount=1 and
+tokenFailureCount=0; no duplicate inbox rows. This proves provider acceptance.
+
+Foreground native result is **FAIL**, despite persisted delivery savepoint
+`foreground`: the visible phone displayed a system notification for `proba`.
+The custom app-sw push handler unconditionally called showNotification and
+ignored visible clients. Scoped repair adds a visibility/scope guard and
+preserves the supplied notification tag. Four direct Node worker tests PASS
+(visible/background/closed/out-of-scope); no compiler was started for them.
+Existing frontend watcher synchronized at 09:43:16Z. Candidate lifecycle39
+`mobile-webview-lifecycle-1789465435253` is served; activation and one focused
+foreground replay remain next. The previous QA system notification was closed
+without marking its inbox row read. No background phase PASS is claimed.
+
+Foreground replay **PASS** at 09:46 UTC on active lifecycle39. User clicked
+Send after Codex prepared the exact marker; duplicate-send guard prevented a
+second action. Message `5e9f8221-f05e-4f7f-80e9-dd4b15f7b355`, outbox
+`6aa913b2f59d38d912af4208`, sent09:45:24.516Z, retry0, tokenSuccess1/failure0.
+Exactly one new unread inbox each Nova/Riley; Casey excluded. Counters 0/1/4,
+including the retained earlier messages and Riley security baseline. Phone
+visible, controlled Chat closed, worker getNotifications empty and Android
+notification records zero. Notifications New list shows marker exactly once,
+still unread. Nova visible with Chat closed and one new badge, no registered
+provider device. `foreground-replay` savepoint09:46:03.267Z retains the exact
+post-fix transaction. Next: section2 Home background; earlier failed native
+foreground evidence is superseded only by this focused replay.
+
+Home background PASS09:48Z: message5dfaba47-9347-4396-9429-e6f9945b66a9, outbox6aa9141df59d38d912af420b sent09:47:09.912Z retry0/success1/failure0. Phone hidden received exactly one worker notification with exact Chat tag/url; Android record1 before resume. Recents card return preserved timeOrigin1789465508440.1. New list row exactly once unread; counters Casey0/Nova2/Riley5. Background savepoint09:48:15.943Z. Settings variant next.
+
+Settings background PASS09:49Z: message6e4df2b0-9c9e-45cc-9125-e5fa721256e8, outbox6aa91489f59d38d912af420e sent09:49:00.318Z success1/failure0. Android Settings activity foreground, app hidden; one native/worker notification with exact background-settings body and Chat tag. Recents return preserved timeOrigin1789465508440.1; New list exact row once unread, counters Casey0/Nova3/Riley6. background-settings savepoint captured. Chrome variant next.
+
+Chrome background remains NOT PASSED: marker957517eb-0600-4055-81a0-06eb3f205257 outbox6aa914e9f59d38d912af4211 sent09:50:36.165Z success1/failure0, two unread inbox rows, but native shade retained previous Settings notification. With Chrome example.com foreground, PWA Notification.permission and Permissions API both denied while old UI signal still granted. Returning to installed PWA restores native granted. Native WebAPK permission granted; Chrome host permission denied USER_FIXED. No OS permission toggle was changed. User requires enabling through shared popup and backend device data through users poll -> shared signal, no lazy popup read. Backend users.devices already owns registration writes; added token-free notificationDevices projection to existing realtime response and signal propagation through side menu, HTTP/local adapters and popup with draft preservation. Native visibility/permission onchange observers added. Existing backend build passed09:58:40Z; frontend local mapper union fixed, final owner build passed10:01:47Z. Lifecycle41 1789466529464 now being activated. Direct live popup signal oracle and native replay remain pending; earlier foreground/Home/Settings passes retained.
+
+Users-poll signal oracle PASS on lifecycle41: original real Riley device remains unchanged. Guarded popup-registration-off wrote only notificationsEnabled=false while preserving token/device; normal poll2 projected false and popup displayed off with native permission still granted. popup-registration-restore restored exact enabled=true. While the same popup stayed open and unedited, normal poll3 changed its switch from false to true. No popup fetch, reload or native permission mutation; both fixture operations retained exact identity and restore evidence. Backend DTO exposes only deviceId/notificationsEnabled. Remaining native Chrome permission-state observation and Chrome delivery are still open.
+
+Permission repair continuation: lifecycle42 confirmed the real shared popup request returns denied under Chrome Android app-level USER_FIXED denial, keeps the popup open and displays the translated blocked message. Native permission observation now agrees with the popup signal. The user explicitly authorized temporarily enabling Chrome system notifications and restoring the saved original denial after QA. Native Settings Show notifications was enabled; Android subsequently confirmed granted=true. This is recorded environment preparation, not a popup ability to override an OS denial. Original snapshot retained in the ignored device runtime folder.
+
+Chrome background replay PASS, section2 steps5–8: message65fe8c07-e273-4d42-87a8-d56f82e80e09, outbox6aa91b0af59d38d912af4216 sent10:16:44.547Z retry0/success1/failure0. Chrome non-QA page foreground; PWA hidden with permissiongranted. Worker and native shade displayed exactly the new background-chrome-replay body and Chat tag before resume. Recents return retained timeOrigin1789467344102.6; Notifications New list contains the exact row once and unread. Casey0/Nova5/Riley8; one Riley registration, restored platform web-pwa, other actors zero. Failed Chrome diagnostic retained separately; background-chrome-replay capture advances only the affected phase. Next section2 step9, closed-app branch.
+
+Cold-start section2 steps9–11 NOT PASSED: swiping only MyScoutee out of Recents left zero localhost QA pages and no QA WebAPK activity. Message660828b8-0eab-4f49-8579-90160b314511, outbox6aa91ba9f59d38d912af4219 sent10:19:25.005Z success1/failure0, exact two unread inbox rows. Native shade retained the preceding Chrome replay. Android ActivityManager records Chrome12687 launched by Google Play Services FirebaseInstanceIdReceiver12:19:24.619 local time, then lowmemorykiller killed it12:19:26.969; exit-info reasonLOW_MEMORY. Thus provider acceptance is not system-delivery PASS.
+
+Targeted route-only diagnostic with the QA app closed and the separate Chrome host resident: message9590b1f9-804b-4a17-803a-2ff37dbd353c, outbox6aa91c65f59d38d912af421c sent10:22:31.062Z success1/failure0. Exact native cold-start-route notification appeared. Tapping it launched original standalone Riley app timeOrigin1789467774147 but left /game?chatId=manual-qa-checkpoint:v1:mobile-push:group-chat on Home with zero Chat popups and zero read transitions. Section2 step12 FAIL, step13 not yet exercised. This resident-host diagnostic does not supersede the stopped-host LOW_MEMORY failure. Nine messages retained, Casey0/Nova7/Riley10; fixture phase remains background-chrome. Next required repair is missing notification deep-link consumption plus target-only message/read context; no frontend route edit has been made yet.
+
+Correction and rollback at user request: the queue/inbox redesign exceeded the intended scope. The direct-inbox branch, NotificationContent type, changed dispatch return contract, worker scheduling gates, repository lookup and associated tests were all removed. The incomplete Chat/message deep-link edits were also rolled back. Application source is back to the pre-investigation committed state; earlier Firebase SDK, foreground worker, menu and users-poll fixes remain intact. The35 passing tests applied only to the withdrawn design and are not evidence of current behavior. The original worker already returns before Firebase delivery when isFirebaseEnabled is false; the existing queue/inbox/WebSocket sequence is unchanged. Section2 step12 remains an observed unresolved defect, not PASS. No additional device action or message followed the rollback request. Retain the approved temporary Chrome notification grant and original-state snapshot with the active fixture for continuation/cleanup.
+
+Cold-start focused replay, section2 steps9–13 PASS on lifecycle43 (1789469081349): message1f0959d0-22cc-4a21-8d82-23c8e03f06c3, outbox6aa9220df59d38d912af422b sent10:46:39.426Z retry0/success1/failure0. QA PWA swiped from Recents, zero QA pages/activity before send; exact native notification observed before tap. Tap created one standalone Riley document (timeOrigin1789469234143.1), one correct Chat popup, matching target/highlight ID, and consumed the URL to /game. Exactly Riley inbox6aa9220df59d38d912af422d became read at10:47:19.228555542Z; earlier background rows remained unread. Android Back followed by normal launch produced /game, zero Chat popups and timeOrigin1789469575318.8; persisted inbox unchanged. Counters Casey0/Nova8/Riley10. cold-start-replay savepoint captured10:53:33.737Z. This proves the closed QA PWA path; it does not prove delivery with a stopped Chrome host, whose earlier LOW_MEMORY failure remains recorded. Focused ChatService target-only-read and ordinary-first-page regressions both passed (2 tests); owning backend/frontend watcher builds passed for that candidate.
+
+Current user-authorized extension before section3: snapshot Firebase enabled/disabled and each recipient's eligible device registrations in the existing outbox message. Worker follows that saved decision; retries retain its identity and decision. Device revocation/rotation must not retarget old messages. Preserve inbox/queue/WebSocket ordering. Menu notificationPreferences.muted currently suppresses in-app attention, while persisted inbox/counter remain; device notificationsEnabled is separate. Snapshot implementation and focused checks are in progress; permission/token physical steps have not yet run.
+
+Saved Firebase/device decision verification PASS: eight new decision tests plus six existing worker tests (14 tests, zero skipped/failures). The real already-running Mongo instance verified save/read and atomic pending-recipient merge using an isolated temporary collection, removed in finally; an older per-user deny decision survived two stale-reader recipient additions without a duplicate outbox item. Earlier attempts failed on test-harness Mongo authentication, corrected to the existing scoped QA account; no application change was made for those failures. No duplicate main compiler was started. Current decision tests cover config-off, absent/denied devices, unchanged inbox audience, stable identity/decision on retry, changed runtime config, and exclusion of new/revoked/rotated devices.
+
+Section3 step14 physical denial reproduced a synchronization defect: QA WebAPK POST_NOTIFICATIONS=false and Notification.permission=denied, while backend device4efd1d0e-caac-4f72-9566-2212a6f2759b stayed notificationsEnabled=true. Personal menu preference remained muted=false; effective in-app attention muted=true from native denial. No denial-marker message was sent. Fix in progress: persist the observed native denial on the existing registration via its normal write route, then existing users poll/shared signal; retain device/token identity for step18. Candidate44 built; initial-load users-poll dependency requires a focused correction before replay.
+
+Permission denial section3 steps14–17 PASS on lifecycle46 (1789470707679): native deny persisted as notificationsEnabled=false on the same device before Casey sent messagebb4ef0ae-622a-4871-b151-3abe0f3cf4cf. Outbox6aa92738f59d38d912af4230 saved Firebase=true with explicit empty Nova/Riley device maps; sent11:08:41.237Z retry0/success0/failure0. Native shade had no new denial notification. Inbox audience unchanged: one new unread row each; Casey0/Nova9/Riley11. The first attempt to open Notifications exposed an unrelated native-permission gate on the list button. Focused repair removed native permission/registration actions from the list and personal mute controls; device permissions remain in the shared setup popup. After the owning watcher build and candidate46 activation, the same denial row appeared exactly once in New without resending. Personal mute true then false persisted through normal UI confirmations while the device stayed denied and unread11 remained. permission-denied savepoint captured. Step18 shared popup off/Update removed the old registration (zero devices); guarded old-registration capture retained its opaque identity/fingerprint. Step19 popup re-enable returned native denied, leaving the popup open; restoring the deliberately denied Android app permission is now in progress before completing registration from the popup.
+
+Replacement delivery and route, section4 steps18/20–22 PASS: popup off/Update removed the old provider registration; popup on/Update after restoring the deliberately denied OS permission registered exactly one new provider-token fingerprint, keeping physical device4efd1d0e-caac-4f72-9566-2212a6f2759b. Message869b435c-b8c1-4028-bf12-a52a7a32c2eb, outbox6aa92aa3f59d38d912af4233 sent11:23:18.547Z retry0/success1/failure0. Saved Firebase=true; Nova device map empty and Riley map contains exactly the replacement fingerprint, verified against the old-registration capture. Exact native replacement-token notification observed before tap. Tap opened one Chat with matching message target and read only Riley inbox6aa92aa3f59d38d912af4235 at11:24:04.082675091Z. Back/normal launch returned /game, zero Chat popups, timeOrigin1789471463153.3; inbox unchanged. Twelve messages retained; Casey0/Nova10/Riley11. replacement-token savepoint captured. The source bundles and all three Mongo i18n seeds now publish version2026.09.15.{en,hu}.103; i18n audit PASS. Live translated Hungarian denial message was verified on the phone and no longer mentions browser/site settings. Before the versioned seed update, all6826 live QA translation rows matched the seed; only two translated values and bundle metadata changed.
+
+Section4 step19 native re-prompt remains NOT PROVEN after the deliberate OS-level denial: popup Notification.requestPermission returned denied with no native dialog; it stayed open with a blocked message and performed no redirect. Clearing the QA WebAPK user-set/user-fixed test flags did not restore an ask state. The WebAPK permission-history boundary is separate from browser JavaScript. Original granted OS permission was restored as fixture preparation via ADB; the subsequent popup registration and provider-token delivery passes above do not count as native-dialog proof. No WebAPK reinstall, app-data wipe, fake token or browser permission override was used. This observation did not close the checkpoint; the subsequent user-accepted closure below retains this qualification and the earlier stopped-Chrome LOW_MEMORY observation.
+
+- **Push closure — 2026-09-15, section 4 step 23: PASS/CLOSED.** User explicitly
+  requested PASS and continuation after rollback. The recorded native re-prompt
+  after deliberate OS denial and stopped-Chrome LOW_MEMORY qualifications remain;
+  no successful native re-prompt or stopped-host delivery is asserted.
+  `rollback-mobile-push.py --apply` passed, then passed again without mutation.
+  Seven retained Mongo snapshot collections compared equal after restoration;
+  common managed-session snapshots were restored. Provider lookup verified the
+  owned Riley Firebase account absent. Chrome's original denied USER_SET/USER_FIXED
+  state and screen timeout 60000 / stay-on 2 were restored and read back.
+  Independent Mongo counts: zero checkpoint/browser snapshots, controlled chats,
+  messages, outbox, inbox, devices and new actor login audits/security outbox.
+  The older snapshot lacked session/audit baselines: only this run's dated actor
+  audits and exact login-attempt notifications were removed; historical sessions
+  and audit rows were preserved. Future stages now snapshot those scopes too.
+  The application and installed PWA were retained.
+
 ### `QA-EXPANSION-CP05` — registry, claims and operator network
 
 | Testcase | Controlled action | Decisive oracle |
@@ -9039,3 +9204,1099 @@ fresh evidence for this run. Do not silently mark those replays executed.
 - Registration verification first failed because the newly saved demo profile lacked its established per-profile development email. HomeUserProfileService now reuses DevelopmentIdentityEmail when saving a demo-profile with no principal/fallback email. The existing backend watcher compiled successfully and restarted at 20:42:34.497Z.
 - Persisted registration verification passed at 20:45:30.236Z, including unique development email ownership. This is not yet proof of initial-save email generation: the existing startup initializer can normalize the same record during restart. Fresh initial-save and ordinary registration-return evidence remain pending; do not close the full WebView row from this database result alone.
 - Next remaining entry checkpoints: ENTRY-CONSENT-002, ENTRY-CONSENT-003 and AUTH-SESSION-001. Keep physical-phone versus desktop replay evidence distinct. Existing completed cache/media/device-preference evidence is retained; only affected regressions need replay after the entry block.
+
+
+### Desktop installation, native progress and mixed dev media — 2026-09-14
+
+- Actual desktop Install opened Chrome's native installer for `http://localhost`.
+  Acceptance created the managed profile's MyScoutee desktop launcher and moved
+  the QA page into an installed app window. Standalone display, `/game`, active
+  service-worker control and the same WebView Consent Replay identity were
+  observed. Native screenshot: `/tmp/myscoutee-desktop-native-install.png`;
+  installed window: `/tmp/myscoutee-desktop-installed.png`.
+- Closed the installed app using its normal window close control. A shell
+  shortcut launch did not establish a reopened app and is not counted as proof.
+  Opening MyScoutee through Chrome's visible Apps page then created a new
+  standalone `/game` document (`timeOrigin=1789420173953.4`) with the same
+  identity, controlled worker and no Install action. Screenshot:
+  `/tmp/myscoutee-desktop-installed-reopen.png`. The registration oracle at
+  21:07:45.496Z still had exactly one new user, three images, one experience
+  profile and one email owner. This proves installed-app return, not fresh
+  initial-save email creation or logout/sign-in return.
+- User identified an early loading ring under the native install dialog and
+  required the same rule on desktop and physical WebView/PWA: disable during
+  the native decision without a ring; show progress only after acceptance,
+  ending at `appinstalled`. The common PwaService now separates native waiting
+  from accepted installation; AppSetupPopup uses combined pending state for
+  disabling and installation-only state for progress. Early appinstalled
+  ordering cannot restart a completed ring. Dismissal/error releases the action.
+- Existing frontend-sync owner compiled and synced the fix at
+  21:05:04.433Z / 21:05:06Z. An isolated Node VM executed its compiled PwaService
+  and passed native-wait/no-ring, duplicate suppression, dismissal, accepted
+  progress/completion, early-completion ordering and native-error checks. No
+  compiler or live browser API replacement was used. Matching unit tests were
+  authored; the Angular test runner was not started. At that point actual native
+  replay was pending; the subsequent desktop result is recorded below.
+- User reported the missing game-card picture. Read-only diagnosis found the
+  own demo avatar loaded successfully (1280x674), while the earlier real
+  Firebase QA profile's three private image requests returned 401. The dev
+  Compose intentionally maps both real and demo Mongo routes to `demo_db`;
+  a real Firebase trial profile is therefore visible in that demo dataset.
+  Private media correctly requires an active Firebase media session. This is
+  mixed QA data, not proof of an install/cache image regression. No image was
+  made public, no credential was injected and no profile was hidden/deleted.
+- Subsequent actual desktop native replay passed: Install was disabled without
+  a ring during Chrome's decision dialog; Cancel released it without a ring.
+  On the second attempt, native acceptance preceded the ring, then
+  `appinstalled` removed the action. A read-only DOM/event observation recorded
+  ring at 184122.3 ms, `appinstalled` at 184122.6 ms, action absent at 184123.4 ms
+  on one document clock. No browser API was replaced. Screenshots:
+  `/tmp/myscoutee-native-install-no-ring.png` and
+  `/tmp/myscoutee-native-reinstall-prompt.png`. The previous QA installation was
+  removed through native UI with app-data removal unchecked before this replay;
+  the QA app is installed again. Physical-phone post-fix replay remains open.
+- Original WebView Consent Replay ordinary Logout -> Start exploring -> profile
+  selection returned to `/game` without onboarding and with a loaded avatar.
+  Registration verify at 21:19:09.027Z retained one user/three images/one email;
+  consent verify at 21:19:09.625Z retained the single unchanged acceptance and
+  no anonymous consent.
+- Entry-domain tracking reset at 21:19:42.150Z retained the original profile;
+  entry-consent reset at 21:19:43.150Z restored `privacy-default-v1`, retaining
+  the inactive QA revision/audit. Fresh entry-domain stage at 21:19:43.757Z had
+  59 users including one existing demo registration. The tester completed the
+  WebView Email Replay uploads/save while the agent prepared the Photos step;
+  no agent upload succeeded. Verify at 21:24:16.469Z passed for
+  `demo-profile-cd150570-785f-4ecd-a628-a4d73ec6c14f`: one new active/public user,
+  form version 2, three images, one experience profile, no Firebase linkage,
+  one unique development-email owner. No backend restart occurred between
+  baseline and verification. Fresh first-save email proof is complete.
+- The tester's screenshot `Screenshot from 2026-09-14 23-20-52.png` confirms the
+  Peter Szabo card still shows No image. Read-only inspection after the fresh
+  save again found its three private image requests returning 401, while the
+  new demo profile's own public avatar loaded at natural width 1280. The card
+  defect remains OPEN and has not been repaired. Avatar/registration success
+  is not card-image success. The identified inconsistent boundary is dev
+  candidate visibility versus private-media access; canonical dev uses
+  `demo_db`. No eligibility rule, data migration, profile removal or auth
+  relaxation was introduced.
+- Overall remains PARTIAL/OPEN. Current entry-domain fixture is verified and
+  retained; entry-consent fixture is reset. Pending: missing-card resolution,
+  consent 002/003, AUTH-SESSION-001, physical-phone native replay and existing
+  explicit coverage gaps. Push delivery remains separate.
+
+### Profile visibility and demo media session repair — 2026-09-14
+
+- User corrected the interpretation: there is no separate private-image
+  setting; private profiles do not appear as game cards. `isPublicGameUser`
+  already filters cards by public profile status, and `MediaPolicyFacts`
+  already derives image visibility from the profile. The earlier statement
+  that private-media 401 was justified by the shared dev dataset was incorrect.
+- Two code defects caused this case. `MediaSessionAccessService` issued its
+  credential only for Firebase-authenticated sessions and private reads always
+  routed to REAL. In addition, `onOnboardingCompleted` used untracked
+  `startDemoSession` even for HTTP onboarding. The browser-held WebView Email
+  Replay session ID has no `userSessionStates` record; its `/auth/me` succeeds
+  but cannot receive a credential backed by an active server session.
+- Registered demo sessions now obtain a media-only cookie scoped to DEMO. Its
+  full hash includes the realm prefix; changing/removing that prefix cannot
+  reuse the token in REAL, even when dev shares one physical database. Existing
+  Firebase credentials retain their REAL format. Authentication, active-session
+  revocation and the existing resource/profile policy still apply. No profile
+  was hidden, no image was made anonymously readable and no database migrated.
+- New HTTP onboarding now awaits `startTrackedDemoSession`, then loads the
+  profile under that session before navigating, matching ordinary demo sign-in.
+  Local onboarding stays local. Registration denial prevents navigation.
+- Existing backend compiler completed in 2 seconds and DevTools restarted at
+  23:32:41.573 local time. Existing frontend-sync compiled at 21:37:07.560Z and
+  synced at 23:37:09 local (`entry-page.component-SXKTCUCG.js`). No parallel main
+  compiler, server or Gradle process was started.
+- Focused validation: 11 JUnit tests passed for media credential issuance,
+  active/revoked/malformed state, REAL/DEMO routing, tamper rejection and
+  public/private/Friends-only profile policy. Only test sources were compiled
+  against the existing watcher's compiled application classes; tests ran via
+  JUnit Platform with a bounded 256 MiB JVM. Log:
+  `/tmp/myscoutee-media-session-tests/result.log`.
+- One scoped versioned HTTP qualification method passed on the existing
+  dev Mongo/MinIO/API: legacy REAL credential reads image bytes; `/auth/me`
+  issues a DEMO cookie for a fixture-backed active demo session; public profile
+  image returns 200 with exact bytes/no-store, private profile returns 403,
+  restored public status returns 200, anonymous/invalid/altered-realm/revoked
+  credentials return 401. Its exact temporary users/session/objects were
+  cleaned up. Method:
+  `MediaFriendshipQualificationTest#demoMediaSessionUsesProfileVisibilityAndRejectsRevokedOrAlteredCredentials`;
+  log `/tmp/myscoutee-media-session-tests/http-result.log`.
+- Four checks executed the watcher's compiled onboarding method in an isolated
+  Node VM: HTTP registration -> profile read -> navigation; local-only path;
+  rejected registration; unavailable profile prevents navigation and logs out.
+  All passed. Matching frontend specs were added; the Angular spec runner was
+  not run. This is code-path evidence, not a browser onboarding PASS.
+- UI replay remains pending. The user owns normal Logout -> Start exploring ->
+  WebView Email Replay selection and then inspecting Peter Szabo's card. The
+  agent did not inject a credential or register the user's old untracked
+  session through a test request. No new demo profile is required for this
+  image replay. Keep the original screenshot failure and PARTIAL/OPEN status
+  until the screen result is confirmed. The already-proven unique email/three
+  images on first save remain valid, separately from tracked-session behavior.
+
+### Desktop card and first-save session replay — 2026-09-14/15
+
+- User explicitly delegated the full affected UI replay after rejecting a
+  handoff of the remaining clicks. The agent used ordinary visible controls;
+  no browser cookie/session injection or application-state override was used.
+- WebView Email Replay: normal Logout/confirmation -> entry consent -> Start
+  exploring -> existing profile selection returned to `/game`. Peter Szabo's
+  card image appeared. All three image selectors were exercised and the
+  profile detail also rendered its photo. Screenshots:
+  `/tmp/myscoutee-card-after-demo-relogin.png`,
+  `/tmp/myscoutee-card-image-2.png`, `/tmp/myscoutee-card-image-3.png`,
+  `/tmp/myscoutee-peter-profile-images.png`.
+- Closed the installed app using its native window close control and reopened
+  MyScoutee through Chrome Apps. New standalone document
+  `timeOrigin=1789423078579.3` retained the same Email Replay identity. All
+  three Peter Szabo large image requests returned 200. Screenshot:
+  `/tmp/myscoutee-card-installed-reopen.png`. Registration oracle at
+  21:58:23.101Z retained one profile, three images, one experience and email.
+- Reset entry-domain tracking at 21:58:41.945Z without deleting the profile;
+  staged a fresh baseline at 21:58:42.562Z with 60 users/two prior demo
+  registrations. The agent opened New profile and filled WebView Session
+  Replay, London, 1995-06-15, 180 cm, Athletic, Man, English. The tester then
+  completed uploads/save concurrently and explicitly confirmed the save.
+  The agent's attempted upload found the form already closed and did not
+  upload a file; do not attribute those final UI actions to the agent.
+- The actual loaded entry chunk was `entry-page.component-SXKTCUCG.js`.
+  Verify at 21:59:58.349Z passed for
+  `demo-profile-23436aab-ed5f-466a-a037-90c9ab40c2b7`: exactly one new
+  active/public version-2 profile, three images, one experience profile, one
+  unique development email and no Firebase linkage. A separate read-only
+  persistence check found one active server session with a media credential
+  hash and exactly one login audit. Thus the new first-save tracked-session
+  path is now proved through ordinary UI, not only compiled-code tests.
+- Peter Szabo's three images returned 200 under this newly created demo
+  session. Ordinary page reload created document `timeOrigin=1789423227219.3`
+  on `/game`, retained Session Replay, showed no onboarding form, and all
+  three image requests again returned 200. Session and audit counts remained
+  one. Screenshots: `/tmp/myscoutee-new-registration-card-pass.png` and
+  `/tmp/myscoutee-new-registration-reload-pass.png`.
+- During entry the UI displayed the prior QA privacy v2 and after fresh save
+  displayed default privacy v1 approval. The tester completed that approval.
+  Preserve this observed sequence for the queued consent revision checks;
+  this image/session replay does not count as consent 002/003 completion.
+- Desktop missing-card and first-save session regressions are PASS. The
+  broader MOBILE-WEBVIEW-LIFECYCLE-001 row remains PARTIAL/OPEN: consent
+  002/003, AUTH-SESSION-001, physical-phone post-fix evidence and the other
+  explicit coverage gaps remain. Current entry-domain fixture is verified;
+  retain all three transaction profiles. Reset only its tracking before the
+  next checkpoint's baseline, not their saved domain data.
+
+### Help/Guide media repair and consent resume — 2026-09-15
+
+- Reset only entry-domain tracking at 2026-09-14T22:03:51.139Z, retaining
+  Consent Replay, Email Replay and Session Replay. Staged ENTRY-CONSENT-002
+  at 22:03:52.319Z for Nova Social. Earlier UI observations recorded Cancel
+  with no session/server consent, then acceptance of only Previous analytics.
+- The anonymous checkpoint launcher originally omitted Nova from its common
+  actor-session preparation, so two retained sessions blocked login. Added
+  Nova to `additionalDemoUserIds` in the versioned browser configuration;
+  centralized startup snapshots/clears those sessions and reset restores them.
+- The read-only status oracle reconfirmed phase `previous-active`: v3 consent
+  `6aa87045fce30caf4117d0b3`, accepted 22:08:05.423005288Z, source `entry`,
+  only `qa-previous-analytics`. Target/total consent deltas are both +1;
+  anonymous delta is zero, v4 consent is absent, newer activation is absent.
+  Do not stage/reset/replay the completed v3 steps to resume.
+- User clarified that the failing images belong to Help / Guide. Read-only
+  inspection of the open Home cards guide found five `seeded-help/*.svg`
+  requests ending in 403 and a displayed No image fallback. A cookie-free
+  HTTP request independently showed the first wrong boundary: `/media/public`
+  redirected the bundled guide key to `/api/media/private` (307).
+- These images are server-seeded MinIO objects, not external image links.
+  The same 77 distinct keys appear in demo/e2e/real help revision seeds and
+  all exist under `server/docker/conf/minio/media/seeded-help/`.
+  `MediaAccessPaths` omitted this public namespace. Added only `seeded-help/`;
+  normal user uploads cannot select this namespace.
+- Existing backend watcher compiled successfully and restarted at
+  22:13:11.206Z. No separate main build/server was started. Two focused
+  `MediaAccessPathsTest` tests passed against the watcher-built main classes
+  using the retained test-only javac/JUnit runner (128 MiB heap). They cover
+  public guides, protected uploads, lookalike prefixes and malformed/traversal
+  keys. Available memory was 4.4 GiB; the existing watcher owns main compilation.
+- Cookie-free HTTP verification passed for all 77 distinct guide images:
+  HTTP 200, `image/svg+xml`, byte-for-byte equality with the seeded SVG,
+  public cache headers. A private upload key still redirects to the protected
+  route; `seeded-help/../private/image.svg` returns 400.
+- User-requested social glyph colors were removed from the landing footer;
+  Facebook markup/icon remains. Existing frontend watcher compiled/synced
+  at 22:07:15/17Z. Post-change visual replay remains unproven.
+- No Guide navigation, close/reopen or reload was performed during this
+  defect diagnosis, following the current AGENTS.md manual-browser boundary.
+  Guide rendering therefore awaits the tester's close/reopen. Do not record
+  HTTP checks as a browser-rendering PASS. After that, resume the v4 activation
+  boundary, then consent 003 and AUTH-SESSION-001. Overall WebView remains
+  PARTIAL/OPEN; physical-phone and previously listed evidence gaps remain.
+
+### Consent v4 desktop replay — 2026-09-15
+
+- User explicitly delegated the remaining UI actions and continued tests in
+  the current turn. Ordinary visible controls were used; no application state
+  or credential injection. The tester separately reported that Guide images
+  worked on another surface; this is tester evidence, not an agent Home cards
+  reopen claim.
+- ENTRY-CONSENT-002 v4 activated at 2026-09-14T22:29:01.527Z. Ordinary reload
+  forced privacy v4 over the authenticated Nova game. Clicking Close privacy
+  popup did not dismiss it. Selected only Current analytics and approved.
+- Versioned verify PASS at 22:29:18.948Z: v4 consent
+  `6aa8753efce30caf4117d0b6`, source settings, accepted 22:29:18.186037099Z,
+  only `qa-current-analytics`; marketing unselected. v3 consent unchanged
+  byte-for-byte. Target/total +2, anonymous 0. Desktop consent 002 replay PASS.
+  Next reset retains evidence, then consent 003 baseline. Phone remains pending.
+
+### Consent v5 desktop replay — 2026-09-15
+
+- Consent 002 reset at 22:30:01.969Z retained both consents/revisions; consent
+  003 staged at 22:30:02.550Z. The versioned launcher prepared a fresh Nova
+  browser. Mandatory v5 showed analytics selected, marketing and new research
+  unselected. Screenshot: `/tmp/myscoutee-consent-v5-inherited.png`.
+- Execution deviation: the agent initially approved before selecting research.
+  Verify correctly rejected analytics-only terminal state. This was an agent
+  sequence error, not a product defect. Through Settings -> Privacy, explicitly
+  selected Product research and clicked Save choices. No database correction,
+  fixture relaxation or product change was used.
+- Verify passed at 22:31:29.822Z: consent `6aa8758cfce30caf4117d0b8` contains
+  analytics/research, marketing absent; target/total +1, anonymous 0; source v4
+  revision and consent byte-identical. v5 accepted 22:30:36.287625781Z and its
+  explicit choice update saved 22:31:28.978556542Z. Inheritance, required v5
+  acceptance and terminal persistence are proved; research was added through
+  the existing choice-update UI after initial approval, not in the first save.
+
+### Per-profile session limit desktop replay — 2026-09-15
+
+- All three isolated clients used the SAME profile: Maya Stone,
+  `1b1c70be2349b3359a8f6f94`. The contract is at most two active sessions per
+  profile. This was not a test of a global two-user or two-browser limit.
+  The user reiterated this scope after the run.
+- Used the harness's existing MANUAL_QA_INVITEE_USER_ID override because Nova
+  retained 51 login audits and prior session/security records. Those records
+  were left intact. Maya's read-only preflight was clean; stage at
+  22:32:53.105Z confirmed zero sessions/audits/security warnings/outbox. Its
+  unrelated existing notifications (11 unread) and domain data were retained.
+- A actual selector login 22:33:59.776Z: 1 session/1 audit/0 warnings. Normal
+  reload retained the same slot; capture-reload PASS at 22:34:21.260Z.
+- B same-profile login 22:34:32.059Z: 2 sessions/2 audits/1 warning. C
+  same-profile attempt 22:34:57.037Z stayed on Entry with the explicit
+  two-sessions-active message: 2 sessions/3 audits/2 warnings. A and B stayed
+  authenticated; A's unread count converged from 11 to 13.
+- A ordinary Logout/confirmation released only its slot (one session, three
+  audit records retained). C Try again/selector login at 22:35:33.227Z then
+  succeeded: terminal phase complete, 2 sessions, exact audit order ACCEPTED,
+  ACCEPTED, BLOCKED_LIMIT, ACCEPTED; 3 security notifications and outbox rows.
+- B and C both showed unread 14 (11 preexisting +3 test warnings). B's actual
+  notification list displayed two new-login and one blocked-login messages,
+  normalized Chrome on Linux desktop, separate event timestamps and no raw
+  credentials/source metadata. Screenshot:
+  `/tmp/myscoutee-auth-session-warnings-pass.png`; terminal oracle retained in
+  `/tmp/myscoutee-auth-session-final.json`. Desktop AUTH-SESSION-001 PASS.
+- The same run also visually confirmed the repaired Home cards guide images:
+  `/tmp/myscoutee-guide-rendered-clear.png`. All five image resource reads
+  returned 200 and the screenshot shows the actual rating/graph illustrations.
+
+### Session scope clarification and cross-profile control — 2026-09-15
+
+- User clarified that Maya's per-profile limit test was valid: rejecting Maya
+  must not prevent choosing another profile from the list. The agent had
+  mistakenly interpreted an earlier remark as a demo exemption and briefly
+  changed admission/maxActiveSessions. Those exact changes and their temporary
+  test were fully reverted. Both source files match HEAD again; existing
+  backend watcher restarted the restored implementation at 22:42:23.645Z.
+  No unlimited-demo behavior is retained and the original Maya PASS stands.
+- Supplemental baseline staged 22:43:42.726Z after a failed launcher startup
+  was reset. The versioned launcher prepared two Maya sessions as saturation
+  prerequisites and an anonymous C window. No manual-login PASS is inferred
+  from these prepared sessions.
+- In C, selecting Maya produced the two-sessions message. Try again restored
+  the selector; selecting Kiss Balázs (`b29df68956f3fe15e04558de`) opened
+  `/game` as Balázs in the SAME browser. Independent persisted read proved
+  Maya still has two active sessions with ACCEPTED/ACCEPTED/BLOCKED_LIMIT;
+  Balázs has one active session and one ACCEPTED audit. The whole selector is
+  not globally locked: its error view requires Try again to show the list.
+- Candidate lifecycle-31 copied only existing frontend watcher output, with
+  buildId `mobile-webview-lifecycle-1789425829732`, git `880ba00ff9cf`,
+  index SHA256 `5c3ff07ca8b5e7cdc2e8a1eac843d706d13cddf33d5a637ca8fe061c899c8dd2`,
+  worker SHA256 `09a91b1802894f115f8bfee2df54f4dbc4855a2b23ceec481315546bd058e161`.
+  Served only on the phone localhost:8080 route. Phone still had the earlier
+  loaded build before the upcoming normal close/reopen; do not infer activation.
+
+### Candidate 31 phone entry and resident Settings resume — 2026-09-15
+
+- Auth supplemental fixture reset 22:45:33.243Z. Normal local QA WebAPK close
+  and launcher reopen activated lifecycle-31 (`1789425829732`) on
+  `http://localhost:8080/`, standalone, without clearing storage or uninstall.
+  Phone UI remained Hungarian. Footer screenshot
+  `/tmp/myscoutee-phone-footer-neutral.png` proves neutral social glyphs with
+  Facebook retained; computed colors match their button text colors.
+- Mobile fixture staged at 22:47:11.399Z. Actual phone selector login as Riley
+  succeeded, and all three Peter large image URLs returned 200 after the
+  tracked session was established. A startup small image request returned 401;
+  this does not invalidate the subsequent large-photo reads and is retained
+  as a timing observation rather than claimed as an all-request PASS.
+- Opened Notifications/New: baseline unread 4, including one controlled
+  baseline row. Document timeOrigin `1789425983526.4`. Pressed Android Home,
+  opened native Settings (`com.android.settings/.MiuiSettings` confirmed),
+  and verified app visibility hidden with the same timeOrigin.
+- Versioned background-settings-resident mutation created exactly one Riley
+  notification at 22:48:32.550Z. Used Android Recents and tapped the measured
+  MyScoutee card. No page reload: same timeOrigin, visibility visible, same
+  Riley identity, unread 5, new controlled row once. After normal polling and
+  Notifications close/reopen, the count stayed 5 and the row remained single.
+  This closes the previously unproven resident Settings variant.
+- User then requested proportional fitting of the main rating photo on mobile.
+  The measured fullscreen background used cover (312.8 x 523.5 CSS px), which
+  cropped the image. Mobile home deck now sets contain through a scoped card
+  image-fit property, covering both single/pair cards. The completed watcher
+  and physical-phone verification follows below; Help/Guide layout is unchanged.
+
+
+### Mobile home rating photo fit — 2026-09-15
+
+- User clarified that the requested proportional fit applies to the main
+  Home rating card. Its mobile deck now supplies `--rate-card-image-fit:
+  contain`; single/pair photo backgrounds consume that property. The full
+  image fits by whichever dimension constrains it, centered with unused space
+  where necessary. Other consumers retain their existing default.
+- Existing frontend-sync watcher compiled successfully at 22:51:09.164Z and
+  synced at 22:51:11. No separate compiler or test process was started.
+- Candidate lifecycle-32, build `mobile-webview-lifecycle-1789426314950`, was
+  activated on the physical phone without clearing application storage.
+  Read-only inspection of `/game` confirms all three profile photo layers use
+  `background-size: contain` within 312.8125 x 523.5234375 CSS px frames.
+- Before/after captures: `/tmp/myscoutee-phone-rating-before-contain.png` and
+  `/tmp/myscoutee-phone-rating-contain.png`. The latter shows the complete
+  uploaded logo with preserved proportions and space above/below. Main mobile
+  rating-photo regression PASS; no separate pair-card visual replay claimed.
+- The overall WebView checkpoint remains PARTIAL/OPEN. Physical native install
+  timing and ordinary frontend-local device-preference UI/reload remain open;
+  clipboard branches previously deferred by the tester remain deferred.
+
+
+### Native install continuation preparation — 2026-09-15
+
+- Read-only mobile fixture status matches the retained resident Settings
+  boundary; both tickets, Riley-only notifications and public asset checks
+  pass. Phone `aer8vgcmyd9lzxv8` and reverse `tcp:8080 tcp:80` remain available;
+  existing frontend/backend containers are healthy.
+- Versioned `open-checkpoint-browser-sessions.mjs
+  MOBILE-WEBVIEW-LIFECYCLE-001` completed standardized startup for Casey Bridge.
+  Common startup retained the pre-launch session snapshot and prepared only
+  the configured Casey identity. No subsequent manual checklist action ran.
+- The next phone step uses Chrome at `http://127.0.0.1:8080/`, a separate origin
+  from the retained installed `http://localhost:8080/` QA PWA. Host-side reads
+  confirm the existing server supplies its page and relative app manifest.
+  Native install eligibility on the phone is not yet proven. The user performs
+  the native dialog sequence under the current AGENTS.md manual-QA boundary;
+  do not uninstall or clear the existing localhost application.
+
+
+### Physical native installation replay — 2026-09-15
+
+- User explicitly reauthorized agent execution of the entire remaining test,
+  including ordinary browser/device actions. This overrides the default
+  user-only manual browser boundary for this continuation.
+- Opened Chrome at the separate QA origin `http://127.0.0.1:8080/`, accepted
+  ordinary entry consent, then used the visible application Install action.
+  Native UI showed Install app / MyScoutee / the exact QA origin.
+- Native decision pending: application Install button disabled and no ring.
+  Native Cancel: action released, no ring. A newly offered installer was then
+  opened through the application action, with the same pending state.
+- Read-only DOM/event observation around actual native acceptance recorded:
+  1789427458667 pending without ring; 1789427458837 loading ring;
+  1789427458840 real `appinstalled`; 1789427458864 Install action removed.
+  Raw observation: `/tmp/myscoutee-phone-native-install-observation.json`.
+  No browser API replacement or synthetic install event was used.
+- Android package `org.chromium.webapk.a15bb28bd0ec620cc_v2` appeared;
+  package inspection identifies `127.0.0.1`. Both pre-existing WebAPKs remain
+  installed. Physical native waiting/cancel/accept/completion timing PASS.
+- Local-device UI qualification now temporarily uses the normal local data
+  source configuration through the existing watcher, with worker enabled and
+  Firebase login disabled. The exact dev configuration is retained at
+  `/tmp/myscoutee-webview-environment.dev.before-local.ts`, SHA256
+  `bd938c8438d6baf591628f779b0dc08a0b7181f3d0c690b7e3aa70df0e15b54b`.
+  Restore those exact bytes after this branch. No second compiler was started;
+  existing watcher compiled at 23:12:01.182Z. Original localhost:8080 phone
+  snapshot still serves lifecycle-32 unchanged.
+
+
+### Local device UI persistence replay — 2026-09-15
+
+- Used the physical localhost:8080 QA PWA with normal local deployment
+  candidate 33 (`1789427667878`), existing native notification grant and
+  ordinary Farkas Anna (`u1`) entry. Read IndexedDB directly, without service
+  invocation, for each persistence observation. The separate 127.0.0.1 probe
+  did not establish permission-enabled persistence; it is not counted as PASS.
+- Baseline retained one pre-existing Anna registration for browser device
+  `94416021-6b84-47a2-b1cd-2ea8b10054c1`. Settings -> Permissions -> off ->
+  Update removed it (23:16:57.937Z). Popup reopen showed off; ordinary page
+  reload kept off and zero devices (23:17:50.366Z).
+- On -> Update restored one registration at 23:18:43.716Z. Popup reopen showed
+  on; repeated Update kept one record and preserved registeredAt while updating
+  lastSeenAt (23:19:14.762Z). Reload retained on and exactly one record
+  (23:19:37.214Z). No Firebase token was fabricated.
+- Profile About edit/save/reopen retained the device unchanged
+  (23:20:01.271Z); ordinary UI restored the original About text immediately.
+- An early reload interrupted the first attempted logout before completion;
+  no logout PASS was inferred. The normal logout was repeated and allowed to
+  finish: /entry, no active local user at 23:21:19.160Z. Cross-account
+  registration transfer is the next oracle.
+
+
+### Seed progress order correction — 2026-09-15
+
+- User reported the loading percentage jumping backwards near completion.
+  Union bootstrap ran common collections to 94%, admin users to 97%, then
+  operator users through the old shared `users` step at 34%, before 98/100.
+- Added a distinct `operatorUsers` progress stage at 97% and used it at the
+  actual late operator-seeding boundary. Seed execution/dependencies remain
+  unchanged. Extended the existing union bootstrap regression to require a
+  non-decreasing 0-to-100 trace; no separate Vitest compiler was launched.
+- Existing watcher produced local candidate 34 (`1789427977519`). Physical
+  phone normal selector entry, with read-only DOM observation, recorded
+  0,0,11,22,34,40,43,52,64,82,94,97,97,98,100. Runtime assertion confirmed
+  non-decreasing progress and terminal 100. Screenshot/state was not injected.
+  Trace: `/tmp/myscoutee-phone-seed-progress-pass.json`. Physical regression PASS.
+
+### Local account registration initialization repair — 2026-09-15
+
+- Before fix, ordinary local switch to Balázs (`u2`) left the registration on
+  Anna (`u1`). PWA startup gates external Firebase registration to HTTP mode;
+  the local messaging service's account-change effect therefore never started.
+- Local messaging construction now starts its existing local registration
+  effect. HTTP initialization remains under its existing gate. The local branch
+  also avoids reading the external Firebase runtime. This registers no token
+  and requests no native permission automatically.
+- Existing watcher built local candidate 35 (`1789428253622`). Physical normal
+  close/reopen activated it; 23:25:13.523Z direct IndexedDB read confirms Anna
+  devices empty and Balázs owns exactly the same browser device. Native grant
+  and both HTTP preference/device keys remain unchanged. Further off/reload
+  and reverse account-switch checks follow before closure.
+
+
+### Physical consent revision and inheritance replay — 2026-09-15
+
+- The phone prefers Hungarian content. The revision fixture now accepts
+  `MANUAL_QA_PRIVACY_LANG=en|hu` (default en), persists the selected language,
+  and refuses status/mutation/reset with a mismatched language. The common
+  Docker/local wrapper forwards the setting. The inheritance fixture selects
+  the latest exact matching source consent in that language and requires that
+  source to be the latest revision before creating the next immutable version.
+  Stable optional IDs, exact counts and immutable-source checks are unchanged.
+  JS syntax and shell syntax checks passed; actual hu stage/verify/reset passed.
+  Legacy result-property names containing V4/V5 remain compatible; numeric
+  revisionVersion fields are authoritative for repeated/localized runs.
+- Initial en v6/v7 preparation was reset without consent transactions after
+  identifying the language mismatch. Those inactive fixture revisions are
+  retained by the normal harness; no prior evidence was deleted.
+- Phone hu ENTRY-CONSENT-002 baseline 23:30:11.460Z: v2/v3, target 5 consents,
+  total 33, anonymous 0. Ordinary Reject left no HTTP user or entry consent and
+  all server deltas zero. Selected only Previous analytics, then real Nova
+  selector login. v2 consent `6aa88418fce30caf4117d0d9` accepted
+  23:32:40.657767710Z, source entry.
+- Newer v3 activation 23:33:01.230Z forced the authenticated phone popup after
+  reload; Close left it open. Selected only Current analytics and approved.
+  Verify 23:33:31.933Z: v3 consent `6aa88442fce30caf4117d0da`, target/total +2,
+  anonymous +0, earlier v2 unchanged. Reset 23:33:32.965Z retained both audits
+  and restored hu default v1. `/tmp/myscoutee-phone-consent-002-pass.json`.
+- Phone hu ENTRY-CONSENT-003 staged 23:33:33.491Z: source hu v3, new hu v4.
+  After normal Nova sign-in, required popup showed Current analytics selected,
+  Current marketing and new Product research unselected. Screenshot:
+  `/tmp/myscoutee-phone-consent-inherited.png`. Selected Product research BEFORE
+  the first approval. Verify 23:35:36.690Z: one new consent
+  `6aa884c1fce30caf4117d0dc`, analytics+research, no marketing, source settings;
+  accepted/updated 23:35:29.557310663Z; source revision/consent unchanged,
+  target/total +1, anonymous +0. Exact first-approval sequence PASS on phone.
+  Reset 23:35:37.707Z restored hu default v1 and retained evidence.
+  `/tmp/myscoutee-phone-consent-003-pass.json`.
+
+
+### WebView final physical replay and cleanup — 2026-09-15
+
+Times below are UTC on 2026-09-14 (local date 2026-09-15). This section
+supersedes the pending follow-up and temporary deployment notes above.
+
+- Local candidate 35 post-fix continuation: Balázs off/Update left both u1/u2
+  device lists empty at 23:25:55.516Z; reload retained off/empty at
+  23:26:10.168Z. On/Update restored exactly one Balázs device at
+  23:26:14.857Z. Normal completed Logout followed by real Anna selection
+  automatically transferred the same browser device to Anna: u1 one, u2 zero
+  at 23:27:18.105Z. Popup off/on, persistence after reload, repeated Update,
+  unrelated profile save and both account-transfer directions are now observed
+  through ordinary physical-phone controls. Other-device preservation retains
+  the earlier adapter coverage; this run did not add a second local device.
+  Original About text was restored through UI; Anna then logged out normally.
+  HTTP preference/device keys were preserved. No Firebase token was invented.
+- Supplemental AUTH-SESSION-001 used Maya Stone
+  `1b1c70be2349b3359a8f6f94`. Fixture staged 23:36:25.973Z; versioned launcher
+  prepared desktop A/B with two accepted sessions. Those prepared logins are
+  prerequisites, not new manual login evidence (the actual earlier desktop
+  A/B/C run remains authoritative). Physical C selected Maya normally and was
+  blocked on entry: two active sessions, third audit BLOCKED_LIMIT, Android
+  client label. Desktop A normal Logout released one slot. Phone Try again
+  restored the selector; actual Maya selection entered /game successfully.
+  Final two active sessions, four audits (ACCEPTED, ACCEPTED, BLOCKED_LIMIT,
+  ACCEPTED), three warning notifications/outbox records. Last two audits are
+  Android. `/tmp/myscoutee-phone-session-limit-final.json`.
+  Phone Maya logged out normally before fixture reset at 23:40:18.108Z.
+  Per-profile enforcement remains unchanged; the earlier same-browser
+  Maya-blocked -> Balázs-accepted proof is retained. The selector is not blocked
+  globally, and there is no newly introduced demo exemption.
+- Physical entry footer visual and computed-style verification passed: all
+  three contact icons are 28 CSS px, neutral/light, with Facebook retained and
+  no clipped glyph. `/tmp/myscoutee-phone-footer-large-icons.png`.
+- Normal HTTP dev configuration restored byte-for-byte (SHA256
+  `bd938c8438d6baf591628f779b0dc08a0b7181f3d0c690b7e3aa70df0e15b54b`). Existing
+  frontend watcher generated lifecycle-36, build
+  `mobile-webview-lifecycle-1789428466369`, at 23:27:46.395Z. Index SHA256
+  `bfc630a6e417096a0b62338a1409e4c8e9c55c210b750b52fd5c91c2cd0aa56e`;
+  worker SHA256 `598f4fb9762bf950a2121d04933ce2b16479a56d61d5d02873f322c6301c6176`.
+  Closing only the localhost QA client and reopening the original installed
+  app activated this build normally: /game, standalone, activated worker and
+  no waiting worker. No app data/cache clearing or reinstall was used.
+- Cleanup verified: mobile, auth and both consent checkpoints report
+  not-staged. Maya's auth/session/audit/notification/outbox residue is zero;
+  retained Nova consent evidence is intentionally preserved (8 target, 37
+  total), with `privacy-default-hu-v1` restored active. Earlier en fixture
+  preparation also reset without acceptance. AUTH managed desktop windows
+  closed through the versioned launcher. The owned 127.0.0.1 probe tabs and
+  temporary WebAPK `org.chromium.webapk.a15bb28bd0ec620cc_v2` were removed after
+  verifying its origin. Original localhost and GitHub WebAPKs remain installed;
+  `tcp:8080 -> tcp:80` reverse transport remains available.
+- Active WebView execution is complete for the non-deferred work. Status stays
+  PARTIAL because fresh phone native clipboard Allow and desktop allowed paste
+  were explicitly deferred by the tester. Already-granted phone paste and
+  native Block remain proven. The desktop consent-003 sequence caveat remains
+  recorded; the exact initial-approval sequence now passes on physical phone.
+  Real FCM delivery remains owned by MOBILE-PUSH-LIFECYCLE-001.
+
+
+### WebView clipboard closure — 2026-09-15
+
+The user requested finishing the remaining WebView work, superseding the
+clipboard deferral. Both remaining observations now PASS; no application code
+or build was changed for this closure.
+
+- Resumed from the retained lifecycle-36 phone build
+  `mobile-webview-lifecycle-1789428466369`. Read-only preflight confirmed the
+  running stack, USB reverse route and no staged mobile fixture. Versioned
+  mobile fixture staged at 2026-09-14T23:56:01Z. Versioned browser launcher
+  prepared one isolated desktop Riley control through a temporary checkpoint
+  actor override; common session preparation snapshotted Riley's original
+  session. This preparation is not new login evidence.
+- Desktop: opened My Assets -> Transport -> QA Mobile Public Transport ->
+  Edit. Typed the exact 44-character URL
+  `https://example.com/qa/mobile-webview-source`, copied via real Ctrl+A/C,
+  cleared the field, then clicked the application's Paste link button. The
+  actual Chrome prompt appeared; screenshot-verified native Allow inserted
+  exactly the URL and changed native permission to granted. Viewport
+  1136x763, document scrollWidth 1136; no horizontal expansion. Screenshots:
+  `/tmp/myscoutee-desktop-clipboard-prompt.png` and
+  `/tmp/myscoutee-desktop-clipboard-allowed.png`.
+- Cancelled the desktop Asset editor without Save. Opened Settings ->
+  Permissions: 340 px dialog/client/scroll width, zero Asset editor instances,
+  normal content and controls. Closed the popup normally.
+- Phone: the user removed the retained native clipboard exception. After
+  returning to the original installed localhost PWA, a read-only browser query
+  confirmed prompt. Completed ordinary entry consent/real Riley selection to
+  reach the fixture; no session injection or clipboard API override was used.
+  Opened the same Transport editor, entered the exact URL, selected all 44
+  characters and tapped Android's actual Copy action. Cleared the source field
+  and dismissed the keyboard before the application's Paste link click.
+- The fresh native Block/Allow dialog identified `http://localhost:8080`.
+  Screenshot `/tmp/myscoutee-phone-fresh-clipboard-allow-prompt.png`. Native
+  Allow was tapped. At 2026-09-15T00:04:21.759Z the field equalled the complete
+  URL, permission was granted, and the app remained standalone on lifecycle-36.
+  Viewport 360x753, document width 360; both Asset dialogs had
+  clientWidth=scrollWidth=360. The one-line URL scrolls within its input; the
+  popup does not stretch. Screenshot:
+  `/tmp/myscoutee-phone-fresh-clipboard-allowed.png`.
+- Cancelled the phone editor without Save and opened Settings -> Permissions.
+  At 00:05:06.002Z there were zero Asset editor instances, document width 360,
+  permission dialog width 340.796875 with clientWidth=scrollWidth=341. Normal
+  controls remained available; popup then closed normally. Earlier native
+  Block/denied retry evidence remains valid and was not replayed.
+- Read-only Mongo oracle after both cancellations: controlled sourceLink still
+  empty; createdDate and updatedDate both `2026-09-14T23:56:01.260Z`. No Asset
+  edit persisted. Both clients completed normal Logout confirmation and
+  reached /entry. Versioned reset restored common session state and fixture
+  snapshots; final status is not-staged. Owned desktop session and temporary
+  phone Chrome QA tab closed. Original two WebAPKs/cache and reverse route
+  remain; the accepted native clipboard grant is retained.
+- MOBILE-WEBVIEW-LIFECYCLE-001: PASS/CLOSED. These observations close both
+  previously deferred clipboard gaps. Retain the earlier platform-specific
+  evidence and consent-sequence caveat without rewriting their history.
+  Campaign now 91/104 passed, Notifications 2/6. Next queued journey is
+  MOBILE-PUSH-LIFECYCLE-001; actual FCM delivery has not been exercised here.
+
+
+### Notification Admin rule-edit baseline — 2026-09-15
+
+`NOTIFICATION-ADMIN-LIFECYCLE-001`, section 1 steps 1–2: the versioned
+`notification-admin` scenario captured the original rule, actor data/session
+baselines, target row selectors and read-only unrelated-rule/Monitoring controls.
+Original Send notifications interval: 1 minute (60 seconds), enabled true.
+Firebase is inactive after Push rollback; target outbox/inbox 0/0 and all three
+actor notification counters 0. No rule edit or producer action was performed.
+The stable guide now describes the user-approved saved Firebase decision
+contract: new explicit false decisions complete with zero provider calls, while
+legacy null-decision messages retain their older behavior.
+
+- **Notification Admin section1 PASS, 2026-09-15.** Runtime preflight exposed a
+  Push-fixture cleanup gap: direct Mongo rollback left the Java Firebase flag
+  active. Existing DevTools reload refreshed it; `/api/admin/dashboard` then
+  returned exact Ava identity. The rollback helper now reloads the running
+  backend after direct configuration restoration and retains a retry marker.
+  No application authentication code changed.
+  Timing Save originally submitted the old list copy instead of the edited
+  detail object. One call now passes `[rule]` to the existing save path.
+  Existing frontend watcher build succeeded11:52:18Z; focused UI replay persisted
+  Every2 minutes and reopen matched Mongo, enabled true, same Runner history,
+  no inbox/outbox. The versioned invalid-rule request sends a nonnumeric interval
+  amount: HTTP400, entire rules/outbox/inbox collection digests unchanged.
+  This proves malformed-field rejection, not validation of every numeric range.
+  Nova and Casey Notifications/New both visibly showed0 before the producer.
+
+- **Section2 steps10–14 PASS.** Exactly one controlled Chat API message
+  `18c4030e-ced6-491c-84e3-6678f2e5c7de` produced outbox
+  `6aa932a6f59d38d912af4243` and Nova inbox `6aa932a6f59d38d912af4244`.
+  Normal scheduler run `d66911ba-1a2f-4efc-aeed-1bd017e30e4c` completed
+  2026-09-15T11:59:04.588750821Z,52ms,processed1. Saved Firebase decisionfalse,
+  provider success/failure/retry0. Nova New1, Casey0; normal row-menu Mark as
+  read persisted12:00:15.762233394Z, Nova New0/AlloneRead, source Chat unread1.
+  Versioned delivery/read savepoints verified exact identities and counters.
+- **Step15 partial.** Monitoring showed stale seeded queue values: one controlled sent item among308 global sent rows, displayed sent0. Backend telemetry persistence throws MappingException for
+  dotted map keys before updating Monitoring. Diagnosis remains open.
+  Responsive cards now use4columns at596px and2columns at360px; all node/badge
+  scroll widths and badge bounding rectangles remain contained. Long badge
+  labels wrap and numeric counts stay visible. Existing watcher build passed
+  12:04:39Z. Screenshots: `/tmp/myscoutee-qa-browser-sessions/evidence/notification-admin-cdp/monitoring-badges-four-columns.png`
+  and `monitoring-badges-mobile.png`. Ava restored to the596px view.
+
+- **Step15 PASS after focused Mongo initialization fix.** Runtime logs named
+  `projectingArgumentResolverBeanPostProcessor` as the eager creator of
+  `mappingMongoConverter`/`mongoTemplate`, before the existing dotted-key
+  post-processor was registered. Read-only JDWP inspection confirmed the actual
+  converter had a null dot replacement. The same existing post-processor now
+  implements PriorityOrdered and its bean declares that concrete type, so it
+  runs before eager repository initialization. No queue/delivery logic changed.
+  Existing compiler/DevTools build succeeded12:13:31Z; fresh Monitoring snapshot
+  at12:13:32Z matched Mongo: pending0,running0,failed0,sent308. Reopened UI showed
+  those values and Healthy. The controlled outbox is exactlyone of308; its
+  saved Firebasefalse and provider0/0 remain unchanged. No native push is claimed.
+  Three focused MongoConverterConfigTest cases passed, including early converter
+  creation by another post-processor, dotted-key writing and embedded pricing-id
+  roundtrip. Command used existing compiled main classes, one worker,256MiB test
+  heap, and excluded compileJava/processResources/touchDevtoolsReloadTrigger.
+  Screenshot: `/tmp/myscoutee-qa-browser-sessions/evidence/notification-admin-cdp/monitoring-delivery-pass.png`.
+
+- **Section3 steps17–20 and cleanup PASS.** Second attributed scheduler run
+  `df6b70e7-9cbf-4e47-b08e-6b4f8d26f421` completed12:16:03.109732335Z,
+  35ms,processed0. Exact persisted outbox/inbox documents and read timestamp
+  unchanged; Nova UI AlloneRead/New0, Casey New0, Chat unread1. The harness first
+  compared a Mongo object wrapper with a JS wrapper of different key order;
+  comparing the two persisted documents individually removed that false failure.
+  UI Timing restored1minute and reopen matched enabledtrue; unused calendar
+  fields normalize during interval edits, so this oracle compares interval
+  fields. The full original timing, including null calendar fields, was restored
+  by exact fixture reset. The unrelated scheduled-messages rule retained30minute
+  timing/enabled state; its unused calendar defaults had normalized during the
+  original pre-fix all-rule save and normal scheduler history advanced. It was
+  deliberately not rolled back with unrelated scheduler writes.
+  The versioned launcher closed all3 owned browsers; common session reset and
+  scenario reset succeeded. Final controlled chats/messages/outbox/inbox/member
+  rows and scenario snapshots all0; all3 actor notification counters0. Every
+  scenario-owned snapshot was compared after restoration. Monitoring retains
+  ordinary telemetry history; no global telemetry rollback was performed.
+  **NOTIFICATION-ADMIN-LIFECYCLE-001 PASS/CLOSED; campaign93/104, Notifications4/6.**
+
+### Scheduled messages baseline — 2026-09-15
+
+`JOB-MESSAGES`, section1 before step1: reused the versioned Admin
+`scheduled-messages` inactive-user fixture and bound its managed startup to
+`job-messages` checkpoint stage/ready/arm/status/reset. Original rule enabledtrue,
+interval1800seconds; startup holds its scheduler timestamp until explicit arm.
+At12:22:53Z the fixture created exactlyone Scheduled action task for
+`admin-job-fixture:v1:scheduled-messages:user`; user statusA/profileStatuspublic,
+no runs or deliveries, no preexisting due tasks to quarantine. First launcher
+attempt waited for an absent explanation guide and cleaned up its windows;
+per-checkpoint guide dismissal disabled. A subsequent readiness check exposed
+a fixture-only onboarding redirect because profileFormVersion was missing.
+The ready fixture now supplies version2, without changing onboarding code.
+After versioned relaunch both Ava and **Admin fixture scheduled-message user**
+passed the final authentication/realtime readiness gate; the task was still
+Scheduled with no run or delivery. No manual checklist action or worker result claimed.
+Inactive-user arm ages only disposable startup activity before scheduler release;
+this is baseline preparation, not proof of an inactivity action. Current point:
+section1 step1. Notification Admin remains PASS/CLOSED; campaign93/104,
+Notifications4/6. User requests an introductory explanation for each testcase,
+plus continuing exact block/step/action commentary during execution.
+
+### Scheduled messages full-flow execution — 2026-09-15
+
+The user explicitly delegated both JOB-MESSAGES variations and cleanup to Codex.
+Current result: **PASS / CLOSED**. Both business branches and the step12 display fix are verified; see the focused closure evidence below.
+
+- Section1 steps1–2: existing Ava Job Detail showed Eligible1, enabledtrue,
+  disabled Run, old Runner history. The future Last run timestamp was the
+  documented fixture hold, not a real run. Initial Monitoring Jobs690/689.
+- The existing operational poll was1800000ms, so the initial one-minute wait
+  yielded no worker result. `job-messages-runtime.py enable` retained its exact
+  compiled dev property and temporarily selected60000ms through existing
+  DevTools. No main compilation, second worker, hidden Run, new endpoint or
+  worker implementation was used. The normal scheduler ran on application
+  startup after this configuration reload; this is an environmental timing
+  qualification, not an on-schedule minute-poll timing PASS for the first run.
+- Section1 action PASS: dispatcher `2b2d6a97-0544-4ac7-8577-8d910dcb9b4c`
+  completed12:33:01.958482791Z,31ms,one scheduled task. The separate task audit
+  `312012cc-bfbb-4d7d-8c3f-820d0c0e67a9` completed12:33:02.040979439Z,
+  affected1, notification0/email0/failure0. Task completed/lastRunCount1;
+  exactlyone completed action delivery and one ADMIN_STATUS_CHANGED USER
+  affinity task. Profile statusI/profileStatusinactive. The existing browser
+  showed Your profile is inactive and no rating controls; no reload was used
+  to manufacture this transition. No bell was created.
+- Section1 Monitoring was Healthy and advanced706/705, including unrelated
+  job activity. Target attribution comes from the exact dispatcher/task audit;
+  do not treat the whole+16 aggregate as this task. Its transient Redis events
+  had been consumed before the probe captured them. This narrower attribution
+  evidence is retained explicitly. Exact first-variation reset succeeded.
+- Section2 baseline: newly prepared recent-user, Eligible1, enabledtrue,
+  Run disabled, original history. Monitoring before720/719. Normal minute poll
+  dispatcher `d93e9054-4db7-4b8e-8870-326ff5a13f0d` completed12:38:02.005848283Z,
+  19ms,one scheduled task. Task audit `29ae84a5-5730-4f23-b7d5-711dab7c2fa0`
+  ended12:38:02.023001114Z with User active; rescheduled, affected0.
+  Exactlyone rescheduled action delivery; no affinity task/notification/email.
+  DueAt moved to2026-10-15T12:35:27.643Z, exactly30days after recorded device
+  activity. Profile remained A/public, no inactive banner, rating controls
+  remained present. Versioned read-only oracle assertions passed for both
+  task/user/audit/delivery/affinity cases.
+- Section2 Monitoring PASS: target Redis events1789475882001-0 (started) and
+  1789475882009-0 (completed) both name scheduled-messages, scheduled trigger,
+  amount1; completion19ms/processedCount1 matches the dispatcher. Monitoring
+  watermark1789475942188-0 at12:39:04Z passed both IDs; UI Healthy727/726.
+  Other jobs account for the remainder of the global+7/+7 change.
+- **Initial step12 UI expectation NOT MET; resolved below.** The public Job Detail records the
+  scheduler's dispatch operation, with generic Scheduled due message tasks for
+  local execution. User active; rescheduled exists in the persisted task audit,
+  which this surface does not expose. The stable requirement was not weakened,
+  no task result was injected into dispatcher history, and the existing worker
+  scheduling was not refactored. Thus the complete checklist is not marked PASS.
+- User-requested Monitoring presentation fix: card content aligns to the top;
+  compact badges stay on one line and within cards, with full native titles
+  for clipped text. Narrower connectors leave more room for card titles.
+  Existing frontend watcher succeeded12:36:48Z. Actual916px,596px/four-column,
+  and360px/two-column views had zero node/badge overflow; all nodes top-aligned,
+  no multiline badges. Screenshots are under
+  `/tmp/myscoutee-qa-browser-sessions/evidence/job-messages-cdp/`:
+  inactive-banner, inactive-worker-complete, inactive-monitoring-after,
+  recent-profile-active, recent-worker-complete, recent-monitoring-after,
+  monitoring-top-alignment, monitoring-top-four-columns, monitoring-top-mobile.
+  Exact original task artifacts: inactive-user-oracle.json and recent-user-business-oracle.json (retained before the focused display retest).
+- Cleanup PASS: owned browsers closed; both variation resets restored retained
+  documents, primary rule and secondary counters. Final user/task/run/delivery/
+  affinity/session/session-action/inbox and both fixture snapshot counts0.
+  Rule remains enabled with original30minute Timing. Runtime helper restored
+  `${SCHEDULED_MESSAGES_TASK_POLL_DELAY_MS:1800000}` and verified existing
+  DevTools reload; its retained override marker is removed. Campaign remains
+  93/104 passed, Notifications4/6. Remaining scope is the step12 UI audit gap;
+  earlier successful branch execution does not need to restart.
+
+
+### Scheduled messages step12 display closure — 2026-09-15
+
+**JOB-MESSAGES PASS / CLOSED.** The already-proven inactive and recent-user
+business cases remain valid. The focused retest exercised only the new task-result
+display through one real recent-user scheduler pass.
+
+- Job Detail now reads the 12 most recently executed tasks through the existing
+  authorized Jobs response and SmartList poll. Each item shows that task's latest
+  stored result, affected count and next due time if it is still Scheduled.
+  This is a bounded latest-results list, not every historical run of each task.
+  The existing task audit and separate dispatcher Runner history are preserved.
+  No worker, queue, inactivity rule or production Timing behavior changed.
+- Normal scheduler dispatcher `cafd7fe0-676f-4d99-9873-de06cf88e20c` completed at
+  12:54:16.964220821Z, 34ms, processed1. The exact task audit
+  `506eea79-8b65-4724-9a6c-27b0b3916f4e` completed at12:54:17.019435337Z:
+  Scheduled/affected0, one rescheduled action delivery, no affinity/bell/email/failure,
+  user A/public. DueAt2026-10-15T12:52:04.201Z equals recorded activity plus30days.
+  The read-only versioned task/user/audit/delivery/affinity oracle passed.
+- Ava's already-open **Latest task results** changed from No runs yet to
+  Scheduled / 0 affected / User active; rescheduled. / Next task due:15Oct14:52.
+  It required no reload or manual job action. Reopening Job Detail retained the
+  same result. Timing stayed Every30minutes. At916px and360px the result and
+  identifier stayed inside the card. The user saw the managed browser surface.
+- Evidence under `/tmp/myscoutee-qa-browser-sessions/evidence/job-messages-cdp/`:
+  `recent-user-oracle.json` is the focused retest; `recent-user-business-oracle.json`
+  retains the original business/Monitoring evidence. Screenshots:
+  `step12-task-result-live.png`, `step12-task-result-mobile.png`,
+  `step12-task-result-reopened.png`.
+- Existing main backend/frontend watchers compiled the changes successfully.
+  Focused AdminNotificationServiceTest:5 passed,0 failures/errors/skips. It covers
+  the reschedule due date, absence of a next due date for a completed task,
+  unchanged dispatcher history and no task query for unrelated jobs. The focused
+  test excluded main compile/resource/DevTools tasks. English/Hungarian i18n audit
+  passed for both source bundles and all three Mongo seeds.
+- Cleanup PASS: versioned launcher closed its windows, Admin fixture restored
+  exact documents/rule/counters, checkpoint restored actor sessions and reports
+  not-staged/tasknull. Original1800000ms operational poll restored through the
+  existing DevTools process; override marker removed. Campaign94/104,
+  Notifications5/6. Next checkpoint: BELL-RATING-LIFECYCLE-001.
+
+
+### Scheduled messages final table presentation — 2026-09-15
+
+User-requested presentation, verified after the step12 business/UI closure:
+
+- Runner history and Latest task results share the compact table style. Status
+  uses a Completed check icon or Scheduled clock with its full accessible label.
+  Internal task identifiers are no longer rendered.
+- A borderless, transparent info control stays20x20px inside an unchanged28px
+  hit area. Closed uses info_outline; open uses the filled info glyph, with no
+  filled rectangular background or hover/press scaling. The row stays visible;
+  the full detail appears beneath it like an accordion and toggles closed again.
+- Live916px and360px verification passed for both tables. At360px each table's
+  clientWidth and scrollWidth are282px: no horizontal scrollbar. Info toggles
+  keep aria-pressed/aria-expanded in sync, and the unchanged result appears
+  below its source row. Existing frontend watcher completed13:12:16Z.
+- Final screenshots in the existing job-messages-cdp evidence directory:
+  step12-icon-only-desktop.png and step12-icon-only-mobile.png.
+  This presentation-only fixture loaded the already-proven12:54 task result;
+  it did not run another worker or supply new business-behavior evidence.
+  The earlier real scheduler, audit and Monitoring proofs remain authoritative.
+
+
+### Rating bell consolidated baseline — 2026-09-15
+
+BELL-RATING-LIFECYCLE-001 section1 step1: user authorized continuing the full
+Notifications testing after accepting the JOB-MESSAGES presentation. Its final
+presentation fixture/session reset passed. Existing graph-rating fixture was
+bound to the consolidated checkpoint and staged13:13:43.700Z. Casey061/Nova062
+forward rating072 has scoreGiven0/scoreReceived0/Mettrue; reverse row and direct
+pair edge absent. Snapshot retains actor sessions, original ratings, affected
+affinity edges, notifications/outbox and Statistics/Monitoring/control/layout
+baselines. Existing materialized layout08:59 is older and has no pair edge;
+this is a captured prerequisite, not proof of the forthcoming graph update.
+Managed Casey/Nova/Ava startup initiated; no rating action or new PASS yet.
+
+### Rating bell and reciprocal delivery — 2026-09-15
+
+`BELL-RATING-LIFECYCLE-001` remains IN PROGRESS. Section1 steps1–8 passed:
+Casey selected4 without a write, saved once, normal batch persisted one rating
+and one Nova inbox/outbox; Mark as read set readAt once and reopening All kept
+the same row and zero New count. Section2 steps9–10: Nova saved3 once, Casey
+received one row and marked it read; both target unread projections are zero,
+no self notification or duplicate. Evidence: `/tmp/myscoutee-qa-browser-sessions/
+evidence/bell-rating-cdp/` labels `score-four-not-saved`, `forward-saved`,
+`first-mark-read`, `first-reopened`, `reciprocal-saved`, `reciprocal-read`,
+`before-fixture-correction`. Persisted one paired row currently stores3/4 and
+mutuallyRated=true; its owner switched to Nova. Separate directional-row
+assumptions need checking; no application change or reciprocal persistence PASS
+was inferred from that alone.
+
+Step11 Ava Stats shows today's Ratings2 (baseline0) and Matching/Rating
+activity344 (baseline342). Captured unrelated Events/assets, Communication
+and Moderation counters are unchanged. Both recompute targets are now done;
+Monitoring and graph UI checks remain.
+
+The pair was already `met:true` in the versioned seed, eventName
+`Seeded Coffee Bridge`, dated2026-03-22. The user clarified mutual ratings
+versus completed-event Met semantics, then explicitly cancelled the proposed
+fixture correction. No fixture change/reset occurred. The current test proves
+rating notifications on a prepared Met pair, not the event-completion-to-Met
+transition. Existing event-counter-expiry invokes EventFriendshipProjectionService
+after event end and writes userFriendships; it does not directly set userRates.met.
+
+### Rating investigation and Graph loading — 2026-09-15 (ownership diagnosis superseded)
+
+Step12 Monitoring Matching/Notifications Healthy; pending/running/failed0.
+Step13 reproduced Graph iframe showing admin shell: service worker intercepted
+all navigations. Static assets HTML now uses existing static-asset network/cache
+path. Seven focused navigation/push tests pass; existing frontend watcher
+deployed13:32:10, real Graph title/canvas verified (`graph-loaded.png`).
+The graph still uses the old08:59 materialization; real Rebuild is pending.
+
+Step9 reciprocal persistence FAIL confirmed by reopening Casey Rates/Met:
+Nova card showed RATE instead of Casey's4. Java sync reused another owner's
+sync-key record when no own natural-key row existed. Narrow identity guard
+keeps the original row and gives the reciprocal row an independent key;
+retry resolves that same own row. UserRatesServiceTest12/12 PASS, including
+equal-score reciprocal notification and retry idempotence; existing backend
+watcher compiled/reloaded successfully13:36:28. HTTP browser replay pending.
+Local adapter constructs participant-specific received IDs; local replay not run.
+
+Exact originalfixture reset passed and fresh original Met fixture staged
+13:38:02.382Z. Only affected4/3 saves are replayed; earlier no-save/read evidence
+is retained. The proposed Met-removal fixture change was cancelled and never
+implemented. New stage captures graph layouts/nodes/edges/forests and layout
+rule configuration solely for exact restoration after the existing Admin Run
+job. First4 saved in replay (`retest-first-save-oracle.json`), Nova3 just saved.
+
+### Rating model correction — 2026-09-15
+
+The preceding claim that the original paired-row persistence was faulty was
+incorrect. The original single row already retained both scores3/4. The actual
+UI defect was that participant mapping always returned scoreGiven0. The
+assistant mistakenly introduced a second record and then a duplicate-card
+filter. User rejected these changes. Both were removed, including the changes
+backed up in commit66bb5eaf, by restoring precisely those two rating files to
+66bb5eaf's parent (no commit-history rewrite). The rejected tests were removed.
+
+The final candidate keeps original writes/model and reads a single record from
+the viewer's perspective: participant given=stored received, participant
+received=stored given. Non-Met single direction follows those scores; Met and
+pair branches retain their existing priority/behavior. A one-record test covers
+both viewers and Met/Mutual/Received. Initial assertions passed but the test
+failed an unused shared-helper stub; switched first check to the actual paged
+query and rerunning. This is not yet final PASS.
+
+Bad replayfixture reset completed exactly after both workers drained. Current
+original Met baseline staged13:48:17.058Z; two affected real UI saves are being
+retested. Old read/bell/Statistics evidence remains historical, not proof of the
+rejected two-record implementation. Graph service-worker fix remains independent.
+
+Final shared-record repair verification: existing watcher build PASS13:47:37;
+UserRatesServiceTest12/12 PASS after test-helper correction. Actual UI replay
+`shared-model-first-save-oracle.json` then `shared-model-reciprocal-oracle.json`
+at13:51:26 shows exactly one original row072, ownerNova, scores3/4, mutualtrue,
+affinity0.46644592907179067, two recipient outboxes. Both views reopened:
+Casey has exactly one Nova card4; Nova exactly one Casey card3. Screenshots
+`shared-model-casey-reopened.png` and `shared-model-nova-reopened.png`.
+Original normalizeRecord persistence method verified byte-for-byte equal to
+66bb5eaf parent. Actual diff versus original: viewer score mapping and single
+participant direction only, plus one focused regression test. The versioned
+graph-rating status now reads both scores from the shared record rather than
+requiring a second directional record. Further graph/feedback checks remain.
+
+### Reciprocal graph closure — 2026-09-15
+
+BELL-RATING-LIFECYCLE-001 section2 steps13–15 PASS. Both recompute targets done13:57Z; the fixture scheduled the existing affinity-graph-layout rule (manual Run is disabled) and the real scheduler published layout-1789480922331 at14:02:02.331286021Z. The sole Casey/Nova materialized edge weight .501429373752175 and affinity .46644592907179067 match the recompute oracle; mutualSingleCount1. In Ava’s graph, real cluster expansion and Casey selection showed Casey Bridge, direct depth1,2 members,1 visible link, Nova Social50% (rounded weight). The subsequent expanded-panel screenshot captured the cluster overview, so it is not evidence of the selected pair; the observed selected-member DOM is the UI evidence. `rebuilt-graph-oracle.json` proves unrelated control and older layouts unchanged. Managed rating windows closed and graph-rating reset completed with exact snapshot verification, including graph materializations and original rule configuration. Feedback16–20 remains pending; no checkpoint-wide PASS yet.
+
+### Feedback bell and read — 2026-09-15
+
+BELL-RATING-LIFECYCLE-001 section3 steps16–20 observed through the ordinary Lucas Lane Event Feedback UI: Harbor Warehouse Percussion Lab, three required cards, one Submit at14:09:25.081Z. Exactly one logical outbox fanout, three target rows for Nagy Eszter/Maya Stone/Kiss Balázs, no actor row; persisted source/payload/projections all PASS. UI New counts35→36,11→12,13→14 respectively, with the exact event title and Lucas as sender. Maya Mark as read at14:10:56.528793428Z removed only her row from New and restored11; All/reopen retained the single Read row and first timestamp. Feedback answers/states and other target rows were unchanged by reading. All userRates documents matched the baseline immediately after submission and reading. Evidence `feedback-unread`, `feedback-read`, `feedback-reopened` oracles and three target screenshots.
+
+The later worker-completion full-document equality check failed after the five-minute debounce. The first oracle had not retained individual changed fields, so it cannot classify that difference. The completed branch was exactly restored (Admin fixture + common browser sessions + wrapper all snapshot comparisons passed); a focused replay prepared14:17:09.167Z now retains full before/after rate documents. No application code was modified. Full checkpoint closure awaits classification of this worker boundary; earlier read/delivery proof remains valid.
+
+### Administration guides prepared — 2026-09-15
+
+Per user request, all three remaining Administration journeys now have stable numbered guides under `checklists/administration`: ADMIN-MONITORING-001, ADMIN-AFFINITY-GRAPH-001 and ADMIN-PARAMETERS-001. BASE-STAT remains previously PASS, so Monitoring is the domain’s second test. Only Monitoring receives new startup/capture/reset scripts and a managed Ava browser configuration now; Graph/Parameters are documentation preparation only. No Administration checklist action is authorized for this handoff: after Bell closure, prepare Monitoring baseline and open Admin home, then hand control to the user before step1.
+
+### Final Bell closure — 2026-09-15
+
+BELL-RATING-LIFECYCLE-001 is PASS/CLOSED, all steps1–20. The earlier worker
+comparison required a fixture correction, not an application/model change:
+a full saved diff showed10 scoreReceived and7 mutuallyRated changes resolving
+pre-existing seeded opposite-direction scores. The initial claim that only
+calculated fields changed was incomplete and is superseded here.
+
+The versioned feedback wrapper now settles the three target users through the
+normal worker before capturing the test baseline. It retains the original
+snapshot for exact rollback. The final real UI submission, three-recipient
+fanout and Maya read/reopen replay used that consistent baseline. The fixture
+made only those three pending recompute tasks due, avoiding the five-minute
+wait while retaining real worker execution. At14:32:21.553Z all three were
+done and untracked; all465 rating identities and every input/score/Met/mutual
+field remained unchanged, with exactly one computed affinityScore update.
+Evidence: `feedback-consistent-submission-oracle.json`,
+`feedback-consistent-read-oracle.json`, `feedback-consistent-final-oracle.json`,
+and `feedback-consistent-read-reopened.png`, under the retained local
+`/tmp/myscoutee-qa-browser-sessions/evidence/bell-rating-cdp/` directory.
+Earlier first/reciprocal rating, Statistics, Monitoring and graph evidence
+remains valid as corrected above. Final reset readiness, browser closure,
+Admin feedback fixture reset and wrapper exact snapshot comparison all passed.
+No application code changed during this continuation.
+
+### Admin handoff and Operator guides — 2026-09-15
+
+ADMIN-MONITORING-001 baseline staged with zero test parameter versions/tasks;
+managed Ava Admin window ready. First startup timed out waiting for the home
+guide absent on Admin; checkpoint guide dismissal disabled and standardized
+startup retried successfully. No Admin checklist action was performed.
+
+All three Administration and four Operator guides are written. Only Monitoring
+has new dedicated scripts now; the remaining fixture orchestration is deferred
+until its checkpoint. User clarified that repeated actions belong in one owning
+test, with fixtures replacing them elsewhere: Monitoring owns the parameter
+save/history/revert sequence; Parameters keeps distinct section effects and
+validation, using fixtures for the prior Jobs save and cleanup. Proven Jobs UI
+and Bell rating/materialization actions are removed from the other Admin click
+lists. No separate common testcase was introduced. Operator guides preserve
+existing partial evidence and do not claim execution.
+
+Final preparation review: all three Administration guides and all four Operator
+guides plus their Operator index are now English. Monitoring has11 steps,
+Graph8 and Parameters14. The parameter lifecycle remains only in Monitoring
+block3; other journeys use fixtures for already tested prerequisites, with no
+separate common testcase. Dedicated Monitoring/feedback/graph fixture syntax,
+Python oracle syntax, guide links and whitespace checks pass. The managed
+Monitoring Ava session passed the final existing-session authentication/realtime
+readiness gate. Ledger/workbook agree at95/104 complete, Notifications6/6.
+No Admin/Operator checklist was executed by this preparation review.
+
+### Administration coverage repair against the original matrix — 2026-09-15
+
+Compared the three Administration journeys with matrix commit334d4787, including
+all cross-surface columns and consolidated source IDs, rather than only the
+Scenario summary or top-level step count. Earlier compact guide claims are
+superseded by this documentation review; no new manual PASS is implied.
+
+- Monitoring now has20 explicit steps covering BASE-MON, MON-011, MON-013 and
+  MON-014. Per-job history/audit/domain evidence remains required; existing
+  business runs are reused only for exact recorded assertions. Missing job
+  correlations require a scoped normal run from its existing fixture, not a
+  replay of its originating user journey or synthetic audit evidence.
+- Graph now has23 steps covering overview/component/member data, depths1/2/3,
+  ranges, controls, isolated members, large/disconnected loading limits and
+  stored/header/reopened materialization counts. Bell and STAT-020 evidence
+  covers its actual changed-pair/scheduler/control/history assertions; it does
+  not silently pass untested loading or count comparisons.
+- Parameters now has25 steps covering all seven section consumers, real
+  section-specific persistence and side effects, numeric/strategy validation,
+  cancellation and baseline consumer restoration. Per user, shared editor/
+  History/revert interaction stays in Monitoring only; repeated preparation,
+  Jobs save and branch cleanup use fixtures. Section-specific version, task,
+  notification/projection and causal output checks remain requirements.
+
+Every guide is English and includes an Original matrix coverage table. The
+step numbers are navigation/reporting points, not an estimate of total clicks.
+Existing remaining-time estimates and test statuses are unchanged. Monitoring
+startup/capture/reset scripts already exist; other dedicated fixture orchestration
+remains deferred. The active boundary stays Monitoring block1 step1, preparation
+only. No browser action, fixture mutation or application-code change occurred.
+
+The requested Operator comparison was read-only in this revision. Its guides
+also omit some original matrix detail: per-changed-block Configuration revisions;
+Registry signed membership/claim receipts, provider availability and exact-once
+measurement totals; Updates one verified release/job and no duplicate work;
+Revenue authorized/dummy exclusions plus report revision/sync-job correlation.
+These gaps were reported and are not claimed fixed by the Administration edits.
+
+### Operator coverage repair against the original matrix — 2026-09-15
+
+User requested the same detailed coverage repair for all four Operator guides.
+The omissions identified in the preceding read-only comparison are now addressed
+in documentation against matrix334d4787, not claimed as newly tested behavior.
+
+- Configuration retains C01–C08 and adds exact changed-block revision/result
+  correlations, conditional real operation results, distinction between no-change
+  and changed-value Save, unique Firebase identity and full restoration. Proven
+  device/entry paths are fixture prerequisites linked to their owning evidence.
+- Registry18 steps explicitly cover signed membership and claim/group receipts,
+  provider availability, exact accepted measurement totals/receipt, no duplicate
+  binding/identity/group/report, member/Admin fail-closed checks and recovery.
+- Updates11 steps correlate one verified release and one durable job through
+  honest progress, controlled restart/reconnection, installed version and no
+  duplicate work from reopening.
+- Revenue11 steps include captured-once aggregation and authorized-only/released/
+  dummy exclusions, provider/currency/period boundaries, one job/report revision/
+  reconciliation and exact settlement/payment/booking identity.
+
+Each English guide includes an Original matrix coverage table. Existing source
+requirements, statuses and effort estimates remain unchanged; only documentation
+notes are added to the ledger and the workbook is regenerated. No fixture,
+browser, Registry, provider or update operation was executed. Dedicated Operator
+fixture orchestration is still prepared when its own checkpoint starts. The
+active preparation-only handoff remains ADMIN-MONITORING-001 block1 step1.

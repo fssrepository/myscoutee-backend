@@ -34,6 +34,7 @@ public class ScheduledMessageTask {
     private String status;
     private Boolean suspended;
     private Boolean pendingCounterTracked;
+    @Indexed(name = "scheduled_message_task_last_run", direction = org.springframework.data.mongodb.core.index.IndexDirection.DESCENDING)
     private String lastRunAtIso;
     private String lastRunStatus;
     private String lastRunDetail;

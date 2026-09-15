@@ -5,6 +5,8 @@
   const Q = ManualQa;
   const SCENARIO = "graph-rating";
   const command = Q.text(process.env.MANUAL_QA_COMMAND);
+  const checkpointId = Q.text(process.env.MANUAL_QA_CHECKPOINT_ID) || "GRAPH-RATING-001";
+  const bellJourney = checkpointId === "BELL-RATING-LIFECYCLE-001";
   const actorUserId = Q.text(process.env.MANUAL_QA_CREATOR_USER_ID)
     || "650000000000000000000061";
   const targetUserId = Q.text(process.env.MANUAL_QA_INVITEE_USER_ID)
@@ -176,10 +178,17 @@
     if (forwardRows.length !== 1) {
       Q.fail(`expected one controlled forward rating row, found ${forwardRows.length}.`);
     }
+    if (Q.collection("notificationOutbox").countDocuments({ $and: [pairOutboxSelector(), { pendingCounterTracked: true }] }))
+      Q.fail("Wait for the pair's tracked notification work before staging.");
+    if (Q.collection("affinityRecomputeTasks").countDocuments({ targetId: { $in: pairUserIds }, status: "running" }))
+      Q.fail("Wait for the pair's running affinity work before staging.");
+    const actors = ["admin-demo-ava", ...pairUserIds];
     const stagedAtIso = Q.nowIso();
     const state = {
       _id: Q.stateId(SCENARIO),
       scenario: SCENARIO,
+      checkpointId,
+      phase: "baseline-ready",
       database: db.getName(),
       stagedAtIso,
       context: {
@@ -189,13 +198,35 @@
         forwardRateId: forwardRows[0]._id
       },
       config: activeConfigSummary(),
+      layoutRuleConfig: bellJourney
+        ? Q.ruleConfigSnapshot(Q.assertRuleNotRunning("affinity-graph-layout")) : null,
+      bellBaseline: bellJourney ? {
+        stats: Q.collection("adminStats").findOne({ statsKey: "global" }),
+        monitoring: Q.collection("adminMonitoring").findOne({ monitoringKey: "global" }),
+        controlEdge: Q.collection("userAffinityEdges").find({
+          leftUserId: { $nin: pairUserIds }, rightUserId: { $nin: pairUserIds }
+        }).sort({ pairKey: 1 }).limit(1).toArray()[0] || null,
+        timelines: Q.collection("adminAffinityGraphLayouts").find({}).toArray()
+      } : null,
       activities: [activitySnapshot(actorUserId), activitySnapshot(targetUserId)],
       snapshots: Q.snapshotSpecs([
         { collection: "userRates", selector: pairRateSelector() },
         { collection: "notificationOutbox", selector: pairOutboxSelector() },
         { collection: "userNotifications", selector: pairNotificationSelector() },
         { collection: "affinityRecomputeTasks", selector: { targetId: { $in: pairUserIds } } },
-        { collection: "userAffinityEdges", selector: { pairKey } }
+        { collection: "userAffinityEdges", selector: bellJourney ? {
+          $or: [{ leftUserId: { $in: pairUserIds } }, { rightUserId: { $in: pairUserIds } }]
+        } : { pairKey } },
+        ...(bellJourney ? [
+          ...["adminAffinityGraphLayouts", "adminAffinityGraphNodes", "adminAffinityGraphEdges", "adminAffinityGraphForests"]
+            .map(collection => ({ collection, selector: {} })),
+          { collection: "users", selector: { userId: { $in: actors } } },
+          { collection: "userLoginAudits", selector: { userId: { $in: actors } } },
+          { collection: "userSessionActions", selector: { userId: { $in: actors } } },
+          { collection: "userSessionStates", selector: { _id: { $in: actors } } },
+          { collection: "userNotifications", selector: { recipientUserId: { $in: actors } } },
+          { collection: "notificationOutbox", selector: { notificationType: "security-login", createdUser: { $in: actors } } }
+        ] : [])
       ])
     };
     Q.collection(Q.STATE_COLLECTION).insertOne(state);
@@ -228,7 +259,7 @@
     }
     Q.printObject({
       scenario: SCENARIO,
-      checkpointId: "GRAPH-RATING-001",
+      checkpointId,
       phase: "baseline-ready",
       stagedAtIso,
       firstUser: Q.user(actorUserId),
@@ -250,7 +281,7 @@
     if (!state) {
       Q.printObject({
         scenario: SCENARIO,
-        checkpointId: "GRAPH-RATING-001",
+        checkpointId,
         phase: "not-staged",
         next: "Run stage graph-rating only when no other manual checkpoint is active."
       });
@@ -259,8 +290,8 @@
     const rates = rateSummary();
     const forward = rates.find(rate => rate.ownerUserId === state.context.actorUserId) || null;
     const reverse = rates.find(rate => rate.ownerUserId === state.context.targetUserId) || null;
-    const forwardSaved = Q.number(forward && forward.scoreGiven) > 0;
-    const reverseSaved = Q.number(reverse && reverse.scoreGiven) > 0;
+    const forwardSaved = Q.number(forward ? forward.scoreGiven : reverse && reverse.scoreReceived) > 0;
+    const reverseSaved = Q.number(reverse ? reverse.scoreGiven : forward && forward.scoreReceived) > 0;
     const reciprocalSaved = forwardSaved && reverseSaved;
     const directEdge = directEdgeSummary();
     const graphLayout = latestLayoutSummary();
@@ -286,7 +317,7 @@
           : "reciprocal-rating-materializing";
     Q.printObject({
       scenario: SCENARIO,
-      checkpointId: "GRAPH-RATING-001",
+      checkpointId,
       phase,
       firstUser: Q.user(state.context.actorUserId),
       reciprocalUser: Q.user(state.context.targetUserId),
@@ -326,27 +357,53 @@
     });
   }
 
+  function scheduleLayout() {
+    const state = Q.activeState(SCENARIO, true);
+    if (!bellJourney || !state.layoutRuleConfig) Q.fail("A retained Bell graph baseline is required.");
+    if (state.layoutScheduledAtIso) Q.fail("Layout already scheduled; use status.");
+    if (Q.collection("affinityRecomputeTasks").countDocuments({ targetId: { $in: pairUserIds }, status: { $in: ["pending", "running"] } }))
+      Q.fail("Wait for the pair's affinity work before scheduling the layout.");
+    Q.assertRuleNotRunning("affinity-graph-layout");
+    const timing = Q.scheduleRule("affinity-graph-layout", 30);
+    Q.collection(Q.STATE_COLLECTION).updateOne({ _id: state._id }, {
+      $set: { layoutScheduledAtIso: timing.scheduledAtIso }
+    });
+    Q.printObject({ scenario: SCENARIO, checkpointId, phase: "layout-scheduled", ...timing });
+  }
+
   function reset() {
     const state = Q.activeState(SCENARIO, true);
     const tracked = Q.collection("notificationOutbox").countDocuments({
       $and: [pairOutboxSelector(), { pendingCounterTracked: true }]
     });
     if (tracked > 0) Q.fail("pair rating outbox is still tracked by the worker; wait before reset.");
+    if (Q.collection("affinityRecomputeTasks").countDocuments({ targetId: { $in: pairUserIds }, status: { $in: ["pending", "running"] } }))
+      Q.fail("Wait for the pair's affinity work before reset.");
+    if (state.layoutRuleConfig) Q.assertRuleNotRunning("affinity-graph-layout");
     Q.restoreSnapshots(state.snapshots);
+    if (state.layoutRuleConfig) Q.restoreRuleConfig(state.layoutRuleConfig);
     for (const saved of state.activities || []) restoreActivities(saved);
+    if (bellJourney) {
+      const byId = docs => docs.sort((a, b) => String(a._id).localeCompare(String(b._id)));
+      for (const snapshot of state.snapshots) {
+        if (!Q.sameJson(byId(Q.collection(snapshot.collection).find(snapshot.selector).toArray()), byId(snapshot.documents)))
+          Q.fail(`Restored ${snapshot.collection} differs; snapshot retained.`);
+      }
+    }
     Q.collection(Q.STATE_COLLECTION).deleteOne({ _id: state._id });
     Q.printObject({
       scenario: SCENARIO,
-      checkpointId: "GRAPH-RATING-001",
+      checkpointId,
       phase: "reset-complete",
       restored: true,
-      detail: "Both directional ratings, pair notifications/outbox, recompute tasks, direct affinity edge, and both activity projections were restored. Graph materializations were read-only in this scenario."
+      detail: "Controlled ratings, notifications/outbox, recompute tasks, affinity edges and activities restored; retained graph materializations and layout timing also restored when snapshotted."
     });
   }
 
   Q.assertDeploymentSafety();
   if (command === "stage") stage();
   else if (command === "status") status();
+  else if (command === "schedule-layout") scheduleLayout();
   else if (command === "reset") reset();
   else Q.fail(`unsupported command '${command}' for ${SCENARIO}.`);
 })();

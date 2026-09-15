@@ -97,7 +97,7 @@ class NotificationOutboxWorkerServiceTest {
                 eq(NotificationRuleRegistryService.RULE_NOTIFICATION_OUTBOX),
                 eq(0),
                 eq("completed"),
-                eq("Firebase delivery is inactive; pending notification outbox work was retained."),
+                eq("Processed pending notification outbox delivery decisions."),
                 eq("notification-outbox"),
                 recordedAt.capture());
         assertThat(recordedAt.getValue()).isEqualTo(beginAt.getValue());
@@ -105,7 +105,8 @@ class NotificationOutboxWorkerServiceTest {
                 any(String.class),
                 anyInt(),
                 any(String.class));
-        verifyNoInteractions(outboxRepository, usersRepository, mongoTemplate, gateway);
+        verifyNoInteractions(outboxRepository, usersRepository, gateway);
+        verify(mongoTemplate).find(any(Query.class), eq(NotificationOutboxItem.class));
     }
 
     @Test

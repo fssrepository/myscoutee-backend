@@ -7,6 +7,9 @@ import java.util.Map;
 import org.bson.Document;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.config.BeanPostProcessor;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.data.mongodb.core.convert.MappingMongoConverter;
 import org.springframework.data.mongodb.core.convert.NoOpDbRefResolver;
 import org.springframework.data.mongodb.core.mapping.MongoMappingContext;
@@ -16,6 +19,34 @@ import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.PricingActionDto;
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.PricingPromoCodeDto;
 
 class MongoConverterConfigTest {
+    @Test
+    void preservesDottedKeysWhenAnotherPostProcessorCreatesTheConverterEarly() {
+        try (var context = new AnnotationConfigApplicationContext(
+                MongoConverterConfig.class, EarlyConverterConfiguration.class)) {
+            var snapshot = new AdminStatsSnapshot();
+            snapshot.setCounters(Map.of("profile.registered", 3L));
+            var document = new Document();
+            context.getBean(MappingMongoConverter.class).write(snapshot, document);
+            assertThat(document.get("counters", Document.class))
+                    .containsEntry("profile.registered", 3L);
+        }
+    }
+
+    @Configuration(proxyBeanMethods = false)
+    static class EarlyConverterConfiguration {
+        @Bean
+        static BeanPostProcessor eagerConverterConsumer(MappingMongoConverter converter) {
+            return new BeanPostProcessor() {};
+        }
+
+        @Bean
+        MappingMongoConverter earlyConverter() {
+            MongoMappingContext mappingContext = new MongoMappingContext();
+            mappingContext.afterPropertiesSet();
+            return new MappingMongoConverter(NoOpDbRefResolver.INSTANCE, mappingContext);
+        }
+    }
+
     @Test
     void preservesDottedMapKeysWhenWritingDocuments() {
         MappingMongoConverter converter = mappingMongoConverter();

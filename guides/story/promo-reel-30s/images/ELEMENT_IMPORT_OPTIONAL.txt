@@ -1,0 +1,27 @@
+Name: MYS_PROMO_MARA
+Type: Character
+Description: Fictional woman, 31, light olive skin, dark bob, coral overshirt.
+
+Name: MYS_PROMO_LEO
+Type: Character
+Description: Fictional man, 32, light skin, short brown curls, navy knitted sweater.
+
+Name: MYS_PROMO_NIA
+Type: Character
+Description: Fictional Black woman, 30, short natural curls, teal cardigan.
+
+Name: MYS_PROMO_ARUN
+Type: Character
+Description: Fictional man, 34, medium brown skin, short black hair, ochre shirt.
+
+Name: MYS_PROMO_EVA
+Type: Character
+Description: Fictional woman, 43, light skin, shoulder-length chestnut hair, plum jacket.
+
+Name: MYS_PROMO_TOMAS
+Type: Character
+Description: Fictional man, 38, light skin, close dark hair, olive overshirt.
+
+Name: MYS_PROMO_PARK
+Type: Environment
+Description: Sunlit neighbourhood park with mature trees, a pale gravel path and one oval wooden outdoor game table.

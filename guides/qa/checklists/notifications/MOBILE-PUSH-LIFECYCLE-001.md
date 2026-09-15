@@ -19,24 +19,50 @@ tested active Firebase revision is a prerequisite.
 - Do not clear app data, reinstall, rotate a token or change permission except
   at the exact step that requests it.
 
-To start, tell Codex:
-
-`Prepare MOBILE-PUSH-LIFECYCLE-001 device preflight only.`
-
-Begin after Codex confirms ADB transport/tunnel, package/build identity,
+Codex prepares the versioned fixture and confirms ADB transport/tunnel, package/build identity,
 Firebase revision, Riley identity, one opaque device registration, zero target
-message rows and the current Android notification permission.
+message rows and the current Android notification permission. If the user has
+delegated this checkpoint, Codex also performs its browser and device actions.
 
-## Shared permission and device-registration preflight
+## Fixture and device-registration baseline
 
-First exercise section 7 of [the WebView guide](MOBILE-WEBVIEW-LIFECYCLE-001.md)
-with the same phone and a managed desktop actor. The shared popup controls the
-physical device registration, separately from in-app bell muting. Update off
-must remove the registration and survive reload; Update on must restore exactly
-one registration after any native permission decision. Only then establish the
-one-registration baseline below. Do not count a mocked provider or a later poll
-refresh as FCM delivery. A native decision disables its button without a ring;
-background registration shows the ring after the decision.
+Reuse the completed [WebView evidence](MOBILE-WEBVIEW-LIFECYCLE-001.md).
+Do not repeat its permission-popup, off/on/reload, installation, clipboard,
+consent, login or cache journeys. Do not replay the Operator configuration
+journey to reach this test.
+
+Codex loads the QA Firebase configuration and controlled actors/Chat through
+the versioned fixture. Retain the provenance of the previously tested provider
+configuration. If Riley has no current real device registration, register this
+one browser/device through its normal registration path, including only the
+native permission decision required for that setup. This is baseline
+preparation, not another WebView or Operator test or a new PASS for either.
+
+Require exactly one current Riley provider registration and zero controlled
+Chat messages before section 1. Fixture state or an opaque placeholder cannot
+substitute for a genuine browser-issued FCM token. Do not count a mocked
+provider or a later poll refresh as FCM delivery. Permission denial and token
+replacement are exercised only in their Push sections below.
+
+## Execution order and recovery
+
+Follow this order once: fixture/device baseline → foreground → background
+(Home, Settings, Chrome) → fully closed/cold start → permission denial → token
+replacement → final oracle and cleanup. Report the current section, its result
+and the next action at each boundary. Before each browser/device action,
+Codex announces the checklist section number/title, current step and immediate
+action so the user can follow the same block and assist. Reinspect the
+current UI and persisted message state before acting; skip an action already
+completed by the user, especially a send. Record any user-supplied message
+text against its exact phase/message ID instead of sending a duplicate marker.
+
+After a defect, repair its owner and resume from the nearest valid fixture
+savepoint. Replay only the affected action and its necessary causal tail.
+Repeat an earlier passed section only if the defect contaminated its baseline
+or the repair changed the behavior that section proved; record that reason
+before replaying it. Keep passed evidence and avoid full checkpoint restarts,
+adjacent journeys and redundant checks. Elapsed time is part of execution
+planning; it never turns an unobserved result into a PASS.
 
 ## 1. Foreground delivery
 
@@ -133,6 +159,19 @@ remains the foreground no-system-push control.
 
     `MOBILE-PUSH-LIFECYCLE-001 denial complete`
 
+For steps 14–17, distinguish native/device push denial from the personal menu
+notification toggle. Record the user's `notificationPreferences.muted` and each
+registered device's `notificationsEnabled` separately. The menu toggle suppresses
+in-app attention; the existing inbox row and unread counter remain available.
+Native denial must be reflected in the backend device state after the app
+observes it, before Casey sends the denial marker.
+
+Inspect the saved outbox decision: Firebase availability and eligible device
+identities are captured at enqueue time. A denied/unregistered recipient has no
+push target; the worker completes that decision without a provider send for
+that recipient. Retry retains the outbox identity and saved decision. Do not
+infer this from absence of an Android notification alone.
+
 ## 4. Revoke, replace and re-register
 
 18. Wait while Codex captures the old opaque device-registration identity and
@@ -142,13 +181,17 @@ remains the foreground no-system-push control.
     the app to the foreground once so registration can finish. Codex confirms
     exactly one different current opaque registration and that the old one is
     retired; do not continue while both are eligible.
+    Compare provider registration identity by an opaque token fingerprint; the
+    physical installation's device ID can remain stable across token replacement.
+
 20. Background the app. Casey sends exactly once:
 
     `MOBILE-PUSH-LIFECYCLE-001 replacement-token`
 
 21. Android shows exactly one system notification delivered through the new
     registration. There is no attempt that successfully targets the retired
-    registration and no duplicate inbox row.
+    registration and no duplicate inbox row. The new outbox decision contains only
+    the replacement registration; old queued decisions never adopt the new token.
 22. Tap it and confirm the exact Chat route, one read transition and stable
     result after back/relaunch.
 23. Report:
@@ -171,13 +214,43 @@ resets the disposable Chat/device fixture without printing token material.
 | Evidence and cleanup | 10 min | 25 min |
 | **Total** | **100 min** | **235 min** |
 
+### Permission state ownership
+
+The shared Install/Permissions popup consumes backend device state through the
+side menu's existing users poll and a shared store signal. Device registration
+writes own `users.devices`; the poll exposes only safe device identity and
+notification-enabled fields, never provider tokens. The popup has no separate
+lazy backend fetch. While open, it follows confirmed signal changes without
+overwriting an explicit unsaved user selection. Native browser permission is
+observed locally and a denial must not remain displayed as granted. Permission
+enabling starts from the shared popup; manual Android-settings changes must not
+substitute for that product path.
+
 ### Device persistence and transport preflight
 
 Use the normal configured PWA/Firebase deployment, without query or browser-
-storage test switches. Cover the shared popup local-device persistence cases
-from MOBILE-WEBVIEW-LIFECYCLE-001 before real delivery. Local registrations
+storage test switches. Reuse the completed shared popup/local-device persistence
+evidence from MOBILE-WEBVIEW-LIFECYCLE-001; prepare only the current Push baseline.
+Local registrations
 contain no Firebase token and cannot count as a provider-delivery result.
 The phone transport fixture may shape the PWA and its same-origin worker; it
 must leave phone radios/tethering intact. This does not disconnect Android's
 FCM system transport, so it cannot prove provider behavior during a physical
 whole-device internet outage.
+
+### Unified rollback fixture
+
+After step 23 evidence, turn notifications off and save in the shared Permissions
+popup, then sign out of the QA phone. Check and restore with:
+
+```bash
+python3 guides/qa/tools/rollback-mobile-push.py --check
+python3 guides/qa/tools/rollback-mobile-push.py --apply
+```
+
+The tool closes the owned QA sessions, deletes and verifies the disposable
+Firebase identity, restores and compares the retained Mongo baseline, and
+restores the saved Chrome notification and screen settings. It retains provider
+credential files for future fixtures. Repeating the command safely verifies the
+already-clean state. Unknown provider ownership or another connected device
+stops cleanup and retains its restore point.

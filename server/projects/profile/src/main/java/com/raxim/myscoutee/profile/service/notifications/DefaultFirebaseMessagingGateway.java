@@ -28,12 +28,12 @@ public class DefaultFirebaseMessagingGateway implements FirebaseMessagingGateway
 
     @Override
     public FirebaseMessagingGateway.FirebaseBatchSendResult sendAll(List<Message> messages, List<String> tokens) throws FirebaseMessagingException {
-        return toResult(firebaseRuntime.messaging().sendAll(messages));
+        return toResult(firebaseRuntime.messaging().sendEach(messages));
     }
 
     @Override
     public FirebaseMessagingGateway.FirebaseBatchSendResult sendMulticast(MulticastMessage message, List<String> tokens) throws FirebaseMessagingException {
-        return toResult(firebaseRuntime.messaging().sendMulticast(message));
+        return toResult(firebaseRuntime.messaging().sendEachForMulticast(message));
     }
 
     private FirebaseMessagingGateway.FirebaseBatchSendResult toResult(BatchResponse response) {

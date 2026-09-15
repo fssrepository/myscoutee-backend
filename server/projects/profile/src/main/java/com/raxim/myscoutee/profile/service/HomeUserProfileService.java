@@ -59,6 +59,7 @@ import com.raxim.myscoutee.profile.data.dto.auth.AuthDtos.UserDeleteRequestDto;
 import com.raxim.myscoutee.profile.data.dto.auth.AuthDtos.ProfileExtDto;
 import com.raxim.myscoutee.profile.data.dto.auth.AuthDtos.ProfileExtByIdResponseDto;
 import com.raxim.myscoutee.profile.data.dto.auth.AuthDtos.UserDto;
+import com.raxim.myscoutee.profile.data.dto.auth.AuthDtos.UserNotificationDeviceDto;
 import com.raxim.myscoutee.profile.data.dto.auth.AuthDtos.UserEventCountersDto;
 import com.raxim.myscoutee.profile.data.dto.auth.AuthDtos.UserEventFeedbackCountersDto;
 import com.raxim.myscoutee.profile.data.dto.auth.AuthDtos.UserFeedbackSubmitRequestDto;
@@ -520,6 +521,11 @@ public class HomeUserProfileService {
                 impressions,
                 offlineTicketSnapshot,
                 paymentTotalsDto(user),
+                (user.getDevices() == null ? List.<Users.UserDeviceRecord>of() : user.getDevices()).stream()
+                        .filter(Objects::nonNull)
+                        .map(device -> new UserNotificationDeviceDto(
+                                device.getDeviceId(), Boolean.TRUE.equals(device.getNotificationsEnabled())))
+                        .toList(),
                 buildRealtimeCursor(user, counters),
                 Instant.now().toString());
     }

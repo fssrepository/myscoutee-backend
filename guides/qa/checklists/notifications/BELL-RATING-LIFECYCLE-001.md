@@ -19,6 +19,55 @@ To start, tell Codex:
 
 `Prepare BELL-RATING-LIFECYCLE-001 at the rating baseline.`
 
+For the rating sections, Codex reuses the versioned reciprocal-rating fixture:
+
+```bash
+bash server/docker/scripts/manual-qa-checkpoints/manual-qa-checkpoints-docker.sh stage graph-rating BELL-RATING-LIFECYCLE-001
+node guides/qa/tools/open-checkpoint-browser-sessions.mjs BELL-RATING-LIFECYCLE-001
+```
+
+Read-only evidence: `python3 guides/qa/tools/bell-rating-oracle.py <label>`.
+If the graph still shows an older materialized layout after both recompute
+targets complete, use `schedule-layout graph-rating BELL-RATING-LIFECYCLE-001`
+with the same Docker harness. It makes the existing scheduler rule due; its
+original configuration and graph materializations are retained for reset.
+Close the managed windows before
+`reset graph-rating BELL-RATING-LIFECYCLE-001`; the common launcher/harness
+restores retained sessions before the fixture restores the controlled documents.
+
+The feedback section reuses the existing feedback fixture with a browser/session
+rollback wrapper (the browser ID is a substage of this same testcase):
+
+```bash
+bash server/docker/scripts/admin-job-fixtures/admin-job-fixtures.sh prepare bell-rating-feedback feedback
+bash server/docker/scripts/manual-qa-checkpoints/manual-qa-checkpoints-docker.sh stage bell-feedback BELL-RATING-FEEDBACK-001
+bash server/docker/scripts/manual-qa-checkpoints/manual-qa-checkpoints-docker.sh prepare-rating-baseline bell-feedback BELL-RATING-FEEDBACK-001
+# Wait for the normal worker's three baseline tasks to finish, then:
+bash server/docker/scripts/manual-qa-checkpoints/manual-qa-checkpoints-docker.sh capture-rating-baseline bell-feedback BELL-RATING-FEEDBACK-001
+node guides/qa/tools/open-checkpoint-browser-sessions.mjs BELL-RATING-FEEDBACK-001
+```
+
+The configured seed actors are Lucas Lane, Nagy Eszter, Maya Stone and Kiss
+Balázs. Complete the three required cards, then submit once. The wrapper checks
+the prepared identities before startup. The normal worker settles existing seed
+rating projections before the feedback baseline is captured; the original
+documents remain retained for reset. The oracle keeps submitted rating inputs
+separate from the worker's calculated affinity/confidence fields. Use
+`python3 guides/qa/tools/bell-feedback-oracle.py <label> [previous-label]` for
+recipient/read isolation evidence. After submission and its immediate oracle,
+use `make-recompute-due bell-feedback BELL-RATING-FEEDBACK-001` with the common
+Docker harness: only this fixture's newly created pending tasks become due,
+so the normal worker can process them without the five-minute debounce wait.
+After observation, close the windows and
+restore in this order:
+
+```bash
+bash server/docker/scripts/manual-qa-checkpoints/manual-qa-checkpoints-docker.sh verify-reset-ready bell-feedback BELL-RATING-FEEDBACK-001
+node guides/qa/tools/open-checkpoint-browser-sessions.mjs BELL-RATING-FEEDBACK-001 --close-only
+bash server/docker/scripts/admin-job-fixtures/admin-job-fixtures.sh reset bell-rating-feedback
+bash server/docker/scripts/manual-qa-checkpoints/manual-qa-checkpoints-docker.sh reset bell-feedback BELL-RATING-FEEDBACK-001
+```
+
 Begin only after Codex confirms the printed Casey/Nova pair, zero target
 notification delta, the starting Statistics values and the unchanged graph
 control pair.
@@ -27,7 +76,7 @@ control pair.
 
 1. In **Nova**, open Notifications and record the visible New count. Leave the
    target row absent.
-2. In **Casey**, open `Activities -> Rates`, select the **Individual / Met**
+2. In **Casey**, open `Activities -> Rates`, select the **Preferences / Met** (Single)
    filter and find Nova's exact prepared card.
 3. Open the card's `Rate` control and select **4**, but do not select `Save`.
    The editor shows 4 while Nova's bell and the card's persisted state remain
@@ -43,9 +92,9 @@ control pair.
 6. In Nova, open `Notifications -> New`. Exactly one new row is titled
    **New rating**, identifies Casey as sender and has the expected timestamp.
    Casey has no matching self-notification.
-7. Open that one Nova row. It becomes read exactly once, leaves New, remains
-   once in All, and Nova's counter returns to its recorded baseline. Opening
-   the row must not alter either rating or create another notification.
+7. Use that one Nova row’s `⋮ -> Mark as read` action. It becomes read exactly once, leaves New, remains
+   once in All, and Nova's counter returns to its recorded baseline. Marking
+   it read must not alter either rating or create another notification.
 8. Close and reopen Notifications once. The same row remains read in All and
    does not return to New. Report:
 
@@ -57,10 +106,10 @@ counter projections.
 
 ## 2. Reciprocal rating, Statistics and affinity
 
-9. In **Nova**, open Casey's prepared Individual / Met card. Select **3** and
+9. In **Nova**, open Casey's prepared Preferences / Met (Single) card. Select **3** and
    then `Save` exactly once.
 10. Allow the same normal batch window. Casey receives exactly one New rating
-    row from Nova; Nova receives no self-notification. Open Casey's row once and
+    row from Nova; Nova receives no self-notification. Use Casey's row’s `⋮ -> Mark as read` action once and
     confirm the same New-to-All read transition.
 11. In **Ava**, open Statistics after Codex says the normal Statistics worker
     completed. Compared with the captured baseline:
@@ -94,7 +143,7 @@ counter projections.
     organizer note or repeat the broader Event Feedback lifecycle.
 18. In each printed target window, confirm exactly one matching unread feedback
     notification. The submitting actor receives none.
-19. Open one target notification once. It becomes read without changing the
+19. Use one target notification’s `⋮ -> Mark as read` action once. It becomes read without changing the
     submitted feedback or the other target rows, and the feedback branch must
     not create or change any rating. The earlier rating/graph evidence was
     already captured before its fixture was restored.

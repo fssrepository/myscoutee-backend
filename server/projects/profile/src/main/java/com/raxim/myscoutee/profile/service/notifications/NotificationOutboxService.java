@@ -13,7 +13,14 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 
+import org.bson.Document;
 import org.bson.types.ObjectId;
+import org.springframework.data.mongodb.core.aggregation.AggregationExpression;
+import org.springframework.data.mongodb.core.aggregation.AggregationUpdate;
+import com.raxim.myscoutee.common.config.properties.ConfigProperties;
+import com.raxim.myscoutee.profile.data.document.Users;
+import com.raxim.myscoutee.profile.repository.UsersRepository;
+import com.raxim.myscoutee.profile.service.ChatWebSocketSessionRegistry;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.ObjectProvider;
@@ -55,6 +62,17 @@ public class NotificationOutboxService {
     private ObjectProvider<NotificationRuleRegistryService> notificationRuleRegistryServiceProvider;
     private DeploymentBrandingResolver deploymentBrandingResolver;
     private MongoTemplate mongoTemplate;
+    private ConfigProperties configProperties;
+    private UsersRepository usersRepository;
+    private ChatWebSocketSessionRegistry chatWebSocketSessionRegistry;
+
+    @Autowired
+    void configureDelivery(ConfigProperties configProperties, UsersRepository usersRepository,
+            ChatWebSocketSessionRegistry chatWebSocketSessionRegistry) {
+        this.configProperties = configProperties;
+        this.usersRepository = usersRepository;
+        this.chatWebSocketSessionRegistry = chatWebSocketSessionRegistry;
+    }
 
     @Autowired
     public NotificationOutboxService(
@@ -178,13 +196,22 @@ public class NotificationOutboxService {
         if (existing == null || mongoTemplate == null || !StringUtils.hasText(safeText(existing.getId()))) {
             return null;
         }
-        Update update = new Update()
-                .set("pendingCounterTracked", true)
-                .set("nextRetryAt", firstNonBlank(existing.getNextRetryAt(), nowIso))
-                .set("updatedDate", nowIso)
-                .set("updatedUser", safeNullableText(actorUserId));
-        if (recipientUserIds != null && !recipientUserIds.isEmpty()) {
-            update.addToSet("recipientUserIds").each(recipientUserIds.toArray());
+        AggregationUpdate update = AggregationUpdate.update()
+                .set("pendingCounterTracked").toValue(true)
+                .set("nextRetryAt").toValue(firstNonBlank(existing.getNextRetryAt(), nowIso))
+                .set("updatedDate").toValue(nowIso)
+                .set("updatedUser").toValue((AggregationExpression) context ->
+                        new Document("$literal", safeNullableText(actorUserId)))
+                .set("recipientUserIds").toValue((AggregationExpression) context -> new Document(
+                        "$setUnion", List.of(new Document("$ifNull", List.of("$recipientUserIds", List.of())),
+                                new Document("$literal", recipientUserIds))));
+        if (existing.getFirebaseDeliveryRequested() != null) {
+            Map<String, Map<String, String>> additional = snapshotFirebaseDevices(existing,
+                    recipientUserIds.stream().filter(id -> !existing.getRecipientUserIds().contains(id)).toList());
+            // Existing per-user decisions win, including an explicitly empty device map.
+            update.set("firebaseDevices").toValue((AggregationExpression) context -> new Document(
+                    "$mergeObjects", List.of(new Document("$literal", additional),
+                            new Document("$ifNull", List.of("$firebaseDevices", new Document())))));
         }
         NotificationOutboxItem previous = mongoTemplate.findAndModify(
                 Query.query(new Criteria().andOperator(
@@ -257,6 +284,8 @@ public class NotificationOutboxService {
         item.setRecipientScope(firstNonBlank(intent.recipientScope(), "users"));
         item.setRecipientUserIds(recipientUserIds);
         item.setDeliveryStrategy(deliveryStrategy);
+        item.setFirebaseDeliveryRequested(configProperties != null && configProperties.isFirebaseEnabled());
+        item.setFirebaseDevices(snapshotFirebaseDevices(item, recipientUserIds));
         item.setTopicName(safeNullableText(topicName));
         item.setTitle(firstNonBlank(
                 payload.get("title"),
@@ -292,6 +321,13 @@ public class NotificationOutboxService {
             String nowIso,
             String actorUserId) {
         LinkedHashSet<String> merged = new LinkedHashSet<>(compactIds(item.getRecipientUserIds()));
+        if (item.getFirebaseDeliveryRequested() != null) {
+            Map<String, Map<String, String>> devices = new LinkedHashMap<>(
+                    item.getFirebaseDevices() == null ? Map.of() : item.getFirebaseDevices());
+            snapshotFirebaseDevices(item, recipientUserIds.stream().filter(id -> !merged.contains(id)).toList())
+                    .forEach(devices::putIfAbsent);
+            item.setFirebaseDevices(devices);
+        }
         merged.addAll(recipientUserIds);
         item.setRecipientUserIds(List.copyOf(merged));
         if (!DELIVERY_STRATEGY_TOPIC.equals(safeText(item.getDeliveryStrategy()))) {
@@ -301,6 +337,29 @@ public class NotificationOutboxService {
         item.setUpdatedDate(nowIso);
         item.setUpdatedUser(safeNullableText(actorUserId));
         return item;
+    }
+
+    private Map<String, Map<String, String>> snapshotFirebaseDevices(
+            NotificationOutboxItem item, List<String> recipients) {
+        Map<String, Map<String, String>> result = new LinkedHashMap<>();
+        recipients.forEach(id -> result.put(id, new LinkedHashMap<>()));
+        if (!Boolean.TRUE.equals(item.getFirebaseDeliveryRequested()) || recipients.isEmpty()
+                || DELIVERY_STRATEGY_TOPIC.equals(item.getDeliveryStrategy()) || usersRepository == null) {
+            return result;
+        }
+        for (Users user : usersRepository.findByUserIdIn(recipients)) {
+            Map<String, String> devices = result.get(safeText(user.getUserId()));
+            if (devices == null || user.getDevices() == null) continue;
+            if ("chat-message".equals(item.getNotificationType()) && chatWebSocketSessionRegistry != null
+                    && chatWebSocketSessionRegistry.isUserConnected(item.getEntityId(), user.getUserId())) continue;
+            for (Users.UserDeviceRecord device : user.getDevices()) {
+                if (device != null && Boolean.TRUE.equals(device.getNotificationsEnabled())
+                        && StringUtils.hasText(device.getDeviceId()) && StringUtils.hasText(device.getFirebaseToken())) {
+                    devices.put(safeText(device.getDeviceId()), sha256(safeText(device.getFirebaseToken())));
+                }
+            }
+        }
+        return result;
     }
 
     private String resolveStableTopicName(NotificationIntent intent, Map<String, String> payload, int recipientCount) {
@@ -479,7 +538,7 @@ public class NotificationOutboxService {
             return List.of();
         }
         return values.stream()
-                .map(this::safeText)
+                .map(NotificationOutboxService::safeText)
                 .filter(StringUtils::hasText)
                 .distinct()
                 .toList();
@@ -496,7 +555,7 @@ public class NotificationOutboxService {
                 .orElse("");
     }
 
-    private String sha256(String value) {
+    static String sha256(String value) {
         try {
             MessageDigest digest = MessageDigest.getInstance("SHA-256");
             byte[] hashed = digest.digest(safeText(value).getBytes(StandardCharsets.UTF_8));
@@ -533,7 +592,7 @@ public class NotificationOutboxService {
         return StringUtils.hasText(normalized) ? normalized : null;
     }
 
-    private String safeText(String value) {
+    private static String safeText(String value) {
         return value == null ? "" : value.trim();
     }
 

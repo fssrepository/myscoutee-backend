@@ -10,5 +10,7 @@ import com.raxim.myscoutee.profile.data.document.ScheduledMessageTask;
 public interface ScheduledMessageTasksRepository extends MongoRepository<ScheduledMessageTask, String> {
     Optional<ScheduledMessageTask> findByTaskKey(String taskKey);
 
+    List<ScheduledMessageTask> findTop12ByLastRunAtIsoNotNullOrderByLastRunAtIsoDesc();
+
     List<ScheduledMessageTask> findByEventIdAndActionKey(String eventId, String actionKey);
 }

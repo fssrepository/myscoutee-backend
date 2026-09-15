@@ -6,10 +6,13 @@
   const userId = F.fixtureId(job, "user");
   const taskId = F.fixtureId(job, "task");
   const taskKey = F.fixtureId(job, "inactivity");
+  const checkpointHeld = Boolean(F.collection("manualQaCheckpointSnapshots")
+    .findOne({ scenario: "job-messages", checkpointId: "JOB-MESSAGES", phase: "staging" }));
 
   F.run({
     job,
     ruleKey: job,
+    manualTrigger: checkpointHeld,
     variations: ["inactive-user", "recent-user"],
     build(variation) {
       const isolatedTaskIds = F.collection("scheduledMessageTasks")
@@ -22,6 +25,7 @@
         .map(task => task._id)
         .toArray();
       return {
+        next: checkpointHeld ? "JOB-MESSAGES baseline held; use its versioned arm command after browser startup." : undefined,
         pendingCount: 1,
         pendingCountUnit: "admin.jobs.rule.scheduled.messages",
         expected: variation === "inactive-user"
@@ -105,6 +109,12 @@
         updatedDate: now,
         updatedUser: F.FIXTURE_ACTOR
       });
+      if (checkpointHeld) {
+        // Keep the baseline visible until the checkpoint explicitly arms the existing scheduler.
+        F.collection("notificationRuleConfigs").updateOne({ ruleKey: job }, {
+          $set: { enabled: true, "runState.lastRunAtIso": F.futureIso(24 * 60) }
+        });
+      }
     },
     status(context) {
       const currentTask = F.collection("scheduledMessageTasks").findOne({

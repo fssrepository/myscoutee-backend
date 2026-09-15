@@ -26,6 +26,8 @@ import org.springframework.security.core.context.SecurityContextHolder;
 
 import com.raxim.myscoutee.common.config.firebase.FirebaseAuthenticationToken;
 import com.raxim.myscoutee.common.config.firebase.dto.FirebasePrincipal;
+import com.raxim.myscoutee.common.config.mongo.MongoSessionMode;
+import com.raxim.myscoutee.common.config.mongo.MongoSessionModeContext;
 import com.raxim.myscoutee.common.config.properties.ConfigProperties;
 import com.raxim.myscoutee.profile.data.document.AccessGrant;
 import com.raxim.myscoutee.profile.data.document.AccessPolicyDefinition;
@@ -85,6 +87,16 @@ class AccessControlServiceTest {
     @AfterEach
     void tearDown() {
         SecurityContextHolder.clearContext();
+        MongoSessionModeContext.clear();
+    }
+
+    @Test
+    void websocketDemoModeRetainsDemoPolicyWithoutAnHttpRequest() {
+        MongoSessionModeContext.set(MongoSessionMode.DEMO);
+        assertThat(service.canCurrentActorCreateChatMessage("u1", "chat-1")).isTrue();
+
+        MongoSessionModeContext.set(MongoSessionMode.REAL);
+        assertThat(service.canCurrentActorCreateChatMessage("u1", "chat-1")).isFalse();
     }
 
     @Test

@@ -104,8 +104,16 @@ public final class AdminDtos {
             AdminNotificationMessageDto message,
             AdminNotificationRunStateDto runState,
             List<AdminNotificationRunHistoryEntryDto> runHistory,
+            List<AdminScheduledTaskResultDto> taskResults,
             String updatedDate,
             String updatedUser) {}
+    public record AdminScheduledTaskResultDto(
+            String taskKey,
+            String lastRunAtIso,
+            String status,
+            String detail,
+            Integer affectedCount,
+            String nextDueAtIso) {}
     public record AdminNotificationChannelsDto(
             Boolean pushEnabled,
             Boolean emailEnabled,

@@ -1,0 +1,7 @@
+IMAGE ID: I01_MARA_WALK
+MODEL SETTING: Nano Banana Pro, 2K, 9:16, one single full-frame image.
+REFERENCE INPUTS: None. Create one fictional adult.
+
+Mara, a fictional 31-year-old woman with light olive skin, a straight dark chin-length bob and a coral cotton overshirt over an ivory T-shirt. Medium shot beside a sunlit apartment window. A small walking backpack and comfortable outdoor shoes are ready beside her. A plain black phone rests face down on a small table within easy reach. She looks toward the bright outdoors with a small wistful smile: she would love to go somewhere, and is waiting for a reason to set off. Upright, energetic posture with a brief hesitation. Both hands relaxed and visible. Ordinary warm apartment, no other featured people.
+
+All featured people are naturally energetic adults aged 30–45, with believable age-appropriate skin and everyday styling. Photographic contemporary European cinema, real skin and fabric, natural facial proportions, clean midtones and readable eyes. Soft directional late-afternoon light, restrained warm colour, natural 35mm perspective and medium depth of field. Vertical composition for a 720x1280 video. Keep faces clear and leave some breathing room for short camera moves and editorial copy. No lettering, logos, watermark, floating interface, scores, split screen, collage, illustration or 3D-render look. One full-frame scene within a film, not a poster.

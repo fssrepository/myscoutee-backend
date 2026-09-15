@@ -20,14 +20,42 @@ To start, tell Codex:
 
 Do not start another worker, edit Timing or press any hidden/manual trigger.
 
+Codex uses the existing Admin job fixture with the versioned browser checkpoint:
+
+```bash
+bash server/docker/scripts/manual-qa-checkpoints/manual-qa-checkpoints-docker.sh stage job-messages JOB-MESSAGES
+bash server/docker/scripts/admin-job-fixtures/admin-job-fixtures.sh prepare scheduled-messages inactive-user
+bash server/docker/scripts/manual-qa-checkpoints/manual-qa-checkpoints-docker.sh ready job-messages JOB-MESSAGES
+node guides/qa/tools/open-checkpoint-browser-sessions.mjs JOB-MESSAGES
+```
+
+The baseline holds the scheduler timestamp until step 4. This timestamp is
+fixture preparation, not an actual Runner history entry. The fixture user is
+**Admin fixture scheduled-message user**. After the baseline observations,
+`arm job-messages JOB-MESSAGES` releases the normal scheduler. For the inactive
+variation it first ages only this disposable user's startup device/session-action
+activity so signing in for observation does not turn it into the recent-user case.
+No worker result is supplied by this preparation.
+
+Before the first arm, `python3 guides/qa/tools/job-messages-runtime.py enable`
+snapshots the existing compiled dev poll property and temporarily sets it to
+60 seconds through the running DevTools process. The rule's 30-minute Timing
+is unchanged. Keep this override across both variations; run the helper with
+`reset` after their cleanup to restore the original operational poll property.
+The source configuration and worker implementation remain unchanged.
+
+Cleanup order: versioned launcher `--close-only`, Admin job fixture
+`reset scheduled-messages`, then checkpoint `reset job-messages JOB-MESSAGES`.
+Repeat startup with `recent-user` for block 2.
+
 ## 1. Inactive-user action
 
 1. In **Ava**, open `Configuration -> Jobs -> Send scheduled messages`.
 2. Confirm `Eligible before next run` is **1**, the job is enabled, `Run` is
    disabled, and the newest Runner history row predates this fixture.
-3. Open `Monitoring -> Background -> Jobs` and record Scheduler / Scheduled
+3. Open `Monitoring -> Jobs` and record Scheduler / Scheduled
    triggers and Audit trail / Audit events, then return to Job Detail.
-4. Leave Job Detail open for up to one minute. The normal scheduler must run
+4. Codex arms the held baseline. Leave Job Detail open for up to one minute. The normal scheduler must run
    without a manual action.
 5. After the live update, confirm one new Completed history row, affected count
    **1**, a duration and no error. Eligible work returns to zero.
@@ -52,9 +80,15 @@ user-affinity task. This variation does not require a user bell or email.
 10. In Ava, reopen **Send scheduled messages**. Again confirm Eligible is 1,
     `Run` is disabled and the top history row predates this variation.
 11. Leave the page open for the normal scheduler pass.
-12. Confirm the new history detail says the active user was rescheduled, not
-    inactivated. The task remains Scheduled and its due time moves to about 30
-    days after the fixture's recorded activity.
+12. In Job Detail, scroll below **Runner history** to **Latest task results**.
+    Confirm the row has the Scheduled clock icon, 0 affected, and **Next task
+    due** about 30 days after the fixture's recorded activity. Toggle its info
+    icon: the icon fills and **User active; rescheduled.** appears below
+    the unchanged row. Toggle it again to collapse the detail. Both tables
+    use this interaction and fit the mobile width without horizontal scrolling.
+    This moves the individual user's next check; the job's
+    **Timing** interval remains unchanged. Runner history records the scheduler
+    dispatch; Latest task results shows each task's most recent outcome.
 13. In the fixture-user window, confirm the profile remains active and no
     inactive banner appears. No unexplained notification/email is visible.
 14. Reopen Monitoring once and confirm exactly one attributed scheduler/audit
@@ -74,4 +108,3 @@ delivery, isolated controls and exact reset.
 | Recent-user control | 7 min | 20 min |
 | Monitoring, evidence and reset | 5 min | 20 min |
 | **Total** | **20 min** | **65 min** |
-
