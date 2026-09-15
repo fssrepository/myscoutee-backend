@@ -91,3 +91,26 @@ regeneration/cropping on that basis. The production video target remains 9:16.
 
 No images or production prompts were changed during this review. Keep the current
 identities; inspect I08's faces, seating and group engagement when it is ready.
+
+## Live Elements bound for I08
+
+Read-only MCP list and individual get requests verified the seven entries below.
+Every entry is completed, contains exactly one image_job attachment and has no
+video attachment. Each image ID matches the embedded hf-job-id of its previously
+viewed local PNG. No extra stale image was present in any of the seven Elements.
+
+| Role | Live Element name | Element UUID | Attached image job |
+| --- | --- | --- | --- |
+| Mara | char_MYS_mys-promo-mara_s0_v1 | 879edecf-faaa-456f-998c-80b740f8cd72 | 08cc2d8f-3d14-4170-8340-dae38811595d |
+| Leo | char_MYS_mys-promo-leo_s0_v1 | 4bc75499-4f04-48d5-84df-d0785a5028c7 | eafb32cc-8aa8-43b1-909d-2e29618331af |
+| Nia | char_MYS_mys-promo-nia_s0_v1 | b3d1efed-19fc-4100-a7a1-9a3f135ce800 | daa0f51d-12f5-453b-b2b8-7988e17222be |
+| Arun | char_MYS_mys-promo-arun_s0_v1 | 8491ba9b-36fc-40fb-aac8-34d13935122b | f1733523-55aa-46c2-b02e-cd3fde65c3f5 |
+| Eva | char_MYS_mys-promo-eva_s0_v1 | 8bd44e8a-c72f-4af4-bc54-595f19bc5f51 | f2b79e50-5abd-4ec4-8f0a-069673860811 |
+| Tomas | char_MYS_mys-promo-tomas_s0_v1 | fadbf4c1-b5f6-43b5-9bc4-700cf76976ee | 1e628820-7982-4923-93af-049ee095c1ee |
+| Park | loc_MYS_mys-promo-park_s0_v1 | 2b0929af-ab3b-4604-8b25-0ce18a6513bc | 867d4bb4-3c3f-416a-9656-587babefe89e |
+
+I08 now uses these actual web-composer @ names, once each, and explicitly assigns
+identity/wardrobe to character references and location to the park. Near-seat
+angles clarify the already-required six visible faces. This does not verify
+composer selection, eligibility or a generated group result. MCP generation
+would require UUID placeholders instead of web @ names; no generation was called.
