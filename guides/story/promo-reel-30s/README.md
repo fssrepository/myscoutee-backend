@@ -2,7 +2,8 @@
 
 **Selected: MiniMax H3 · 2 × 15 seconds · final 720×1280 · 15 September 2026.**
 **Images: Nano Banana Pro 2K Unlimited only. Credits are reserved for H3 video.**
-Production prompts and instructions; media have not been generated.
+Production prompts and instructions. The user has generated I01–I07; their
+downloaded outputs were reviewed in [the source review](evidence/SOURCE_REVIEW.md).
 
 Six activity wishes → private priorities → a group and a plan → an outdoor game.
 Photographic cinema, rightward motion-concealed transitions and a continuous
@@ -25,4 +26,5 @@ Only these two H3 video prompts are active. Prepare six character/activity image
 one empty park world and one group composition. Part A uses six references;
 Part B uses eight. Neither depends on mixed reference/END mode or a seamless join.
 
-No credits spent, media uploaded, Elements imported or final video rendered.
+The user reports the Element import is complete. Codex has spent no credits or
+submitted media jobs. I08 and the final video have not been reviewed.
