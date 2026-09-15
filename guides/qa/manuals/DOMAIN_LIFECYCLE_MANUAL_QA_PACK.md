@@ -7822,6 +7822,47 @@ app target.
 | `MOBILE-PUSH-003` | Tap the closed-app notification and let the WebView cold-start. | The authenticated target route opens once, matching inbox row becomes read only after the intentional open, and back/relaunch does not repeat the action. |
 | `MOBILE-PUSH-004` | Deny permission, rotate/revoke the token and later grant permission. | Denial is non-blocking, stale token failure is safely retired/replaced, and a later message reaches only the new token without leaking token text. |
 
+#### Mobile Push device preflight — 2026-09-15
+
+User explicitly delegated the entire `MOBILE-PUSH-LIFECYCLE-001` flow to Codex,
+including physical-device and browser actions. This authority persists for this
+checkpoint. Shared WebView evidence remains PASS/CLOSED and was not replayed.
+
+Read-only resume gate at approximately 09:02 UTC: **BLOCKED / DELIVERY NOT RUN**.
+The current runtime differs from the saved closure boundary:
+
+- Existing dev containers are running; backend and frontend watcher are healthy.
+  No build, restart, fixture mutation or browser launch was performed. Available
+  memory was 6.3 GiB with zero swap use.
+- Physical Android `22126RN91Y` is ADB-connected. Original localhost WebAPK
+  `org.chromium.webapk.af8b7eef107d7742f_v2`, version 1, remains installed and its
+  native `POST_NOTIFICATIONS` permission is granted. Phone page/session/build
+  and browser-origin permission have not yet been inspected.
+- ADB reverse and forward mappings are empty. The versioned build-route status
+  reports `phoneRouteActive=false`; current server `/app-version.json` reports
+  `4be4a1c596e2-20260905140310`. Do not infer this is the phone's cached build.
+- Direct, masked `demo_db.deploymentConfigurations` projection: Firebase
+  revision **0**, **inactive**, both tested revisions null, both tested timestamps
+  absent, both credential envelopes absent, and all checked public client fields
+  absent (`apiKey`, `authDomain`, `storageBucket`, `messagingSenderId`, `appId`,
+  `vapidKey`). Public `/api/deployment/configuration` returns 200; the exact
+  `/api/deployment/configuration/firebase-config` endpoint returns 404.
+- Casey, Nova and Riley exist (ObjectId identities); each has zero device
+  records and zero provider tokens. No raw credentials or tokens were printed.
+- Versioned `status mobile-webview MOBILE-WEBVIEW-LIFECYCLE-001` is `not-staged`.
+  Both common checkpoint and browser-session snapshot collections are empty.
+  `chatMessages.text` and legacy `chats.messages.text` contain zero messages
+  with this checkpoint's exact prefix. No controlled Chat was staged or sent.
+
+Next dependency: locate the user's prior disposable QA Firebase configuration
+or backup, then restore it through the supported configuration workflow and
+verify its real Authentication/Messaging activation gate. User was asked only
+for its local path, never for secret contents in chat. Afterwards restore the
+versioned phone transport/build route, establish Riley's authenticated single
+real-device registration and controlled Chat baseline, and use the configured
+managed launcher before the first ordinary message. No product failure or FCM
+PASS is claimed; no other Notifications checkpoint was started.
+
 ### `QA-EXPANSION-CP05` — registry, claims and operator network
 
 | Testcase | Controlled action | Decisive oracle |

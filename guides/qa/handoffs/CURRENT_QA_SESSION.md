@@ -102,18 +102,18 @@ repair an established product defect. Preserve the phone's tethering connection
 when shaping only its route to the QA application.
 
 ```yaml
-checkpoint: MOBILE-PUSH-LIFECYCLE-001 — NOT STARTED / DEVICE PREFLIGHT NEXT
+checkpoint: MOBILE-PUSH-LIFECYCLE-001 — PREFLIGHT BLOCKED / FIREBASE CONFIGURATION MISSING
 checklist: ../checklists/notifications/MOBILE-PUSH-LIFECYCLE-001.md
 substage: WebView PASS/CLOSED, including fresh phone native clipboard Allow and desktop allowed paste. Retain all completed WebView/shared-permission evidence; next work is the Push-specific device/actor/transport baseline.
 notification_order: MOBILE-PUSH-LIFECYCLE-001, NOTIFICATION-ADMIN-LIFECYCLE-001, JOB-MESSAGES, BELL-RATING-LIFECYCLE-001
 fixture_phase: WebView closure fixture and common session snapshot reset; final status not-staged. No Push fixture prepared or message sent.
-browser_control: Explicit WebView action delegation applied through closure. Follow the current user instruction and next checkpoint execution boundary for Push.
+browser_control: User explicitly delegated the complete Push checkpoint to Codex on 2026-09-15, including phone/browser actions, diagnosis, repair and retest; do not request delegation again.
 desktop_geometry: user-approved outer window 1180x950 at x107/y68; viewport 1136x763, DPR1 on 1920x1080. WebView managed desktop window is closed.
 ledger_status: 91/104 passed; Notifications 2/6; Mobile WebView PASS/CLOSED
-required_resume: Read the linked Push guide and verify its preflight read-only before preparing actors. Operator-tested active Firebase revision/public config, physical Riley identity, exactly one current opaque device registration, zero controlled messages and native notification permission are required. Reuse completed shared-popup proof; do not replay WebView or infer FCM delivery from polling.
-runtime: Original localhost PWA retains HTTP lifecycle-36 build mobile-webview-lifecycle-1789428466369, normally logged out at /entry. Exact environment.dev.ts unchanged. Original localhost/GitHub installations/cache and USB reverse tcp:8080 to tcp:80 preserved. Native clipboard Allow accepted; temporary phone Chrome QA tab closed.
+required_resume: Await location of prior disposable QA Firebase configuration/backup, requested from user. Masked live preflight shows revision0 inactive with no tested revisions, public fields or credentials. Restore through supported workflow, verify real provider tests/activation, then versioned phone route and controlled actor/single-registration baseline. Retain completed shared-popup evidence.
+runtime: 2026-09-15 09:02 UTC read-only gate supersedes saved runtime assumptions. Dev stack running; Android connected, original WebAPKs installed, localhost WebAPK native notifications granted. No ADB forward/reverse mappings; phone route inactive; server serves 4be4a1c596e2-20260905140310. Phone cached build/session not yet inspected. Casey/Nova/Riley have zero devices; zero Push messages/common snapshots. No startup mutations performed.
 last_completed: Desktop and physical phone native clipboard Allow/exact paste, editor cancellation, subsequent popup layout, unchanged Asset DB oracle and fixture/session cleanup.
-last_evidence: ../manuals/DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md#webview-clipboard-closure--2026-09-15
+last_evidence: ../manuals/DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md#mobile-push-device-preflight--2026-09-15
 ```
 
 ### Notifications takeover notes
@@ -286,12 +286,13 @@ the checkpoint says otherwise.
 
 ### Next manual action
 
-Begin the linked `MOBILE-PUSH-LIFECYCLE-001` device preflight when continuing the
-Notifications campaign. WebView, including both previously deferred clipboard
-observations, is PASS/CLOSED with fixtures restored. The active resume block is
-the sole checkpoint pointer; do not replay registration, consent, installation,
-clipboard or cache checks to reach Push. Establish the Push-specific current
-single-registration and controlled-chat baseline before its first message.
+`MOBILE-PUSH-LIFECYCLE-001` is blocked at the read-only environment preflight:
+current Firebase configuration is empty/inactive. Await the requested local
+location of the prior QA configuration/backup, then restore and verify the
+supported provider activation before preparing the phone/actors. The user has
+already delegated the entire Push flow to Codex. Preserve closed WebView proof;
+no message, fixture or browser startup has occurred for Push. Detailed live
+observations are in the linked QA-pack preflight evidence.
 
 Group-size audit: retain `TOURNAMENT-MEMBER-002` as 2+1 because Riley's Group B
 proves parent-event notification delivery across room boundaries while Group B
