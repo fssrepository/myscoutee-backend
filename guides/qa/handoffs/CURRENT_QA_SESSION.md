@@ -102,15 +102,15 @@ repair an established product defect. Preserve the phone's tethering connection
 when shaping only its route to the QA application.
 
 ```yaml
-checkpoint: BELL-RATING-LIFECYCLE-001 — SECTION 2 / STEP 9 FOCUSED REPLAY
+checkpoint: BELL-RATING-LIFECYCLE-001 — SECTION 3 / STEPS 16–20
 checklist: ../checklists/notifications/BELL-RATING-LIFECYCLE-001.md
-substage: User rejected two-record model change; reverted precisely my UserRatesService/Test changes including backed-up66bb5eaf to its parent, then user authorized proper fix. Original model retains one row3/4; actual defect participant scoreGiven always0. Final candidate only swaps displayed single scores/direction by viewer; original sync writes unchanged.
-fixture_phase: Erroneous two-record replay fully reset after workers done. Fresh original Met baseline13:48:17.058Z; Casey4 Save done about13:50Z, wait real batch then Nova3. User cancelled Met fixture changes; preserve Met.
-browser_control: Full flow delegated; Casey/Nova Rates Met open, Ava setup popup. Verify exactly one record and one card per viewer after reciprocal/reopen. No further model or queue changes.
-required_resume: Poll focused Gradle session and first-save oracle, perform Nova3, confirm one shared record3/4 and Casey4/Nova3 UI. Then continue Monitoring/graph13–15 and feedback16–20; no current full PASS.
-runtime: Existing frontend/backend watchers only. Narrow graph HTML service-worker fix verified7 tests. Backend final read-mapping compiled13:47:37. Focused12tests rerunning after correcting unused test helper stub.
-ledger_status:94/104, Notifications5/6; BELL IN PROGRESS. Earlier ownership diagnosis and two-row PASS claims explicitly superseded in pack.
-last_completed: Exact rollback of erroneous fixture; original prior notification/read/Stats/Monitoring evidence retained. Graph still old08:59 materialization; real Admin Rebuild pending after current affinity tasks done.
+substage: Shared-record read fix verified 12/12 tests and real Casey4/Nova3 single-row replay; original writes unchanged. Graph steps13–15 passed after real scheduled layout14:02:02Z; UI Casey/Nova direct link50%, persisted .501429373752175, controls/history unchanged.
+fixture_phase: Rating fixture exact reset complete. Existing bell-rating-feedback feedback prepared14:05:15.986Z, wrapper bell-feedback staged; Lucas Lane submitting for Maya Stone at Harbor Warehouse Percussion Lab.
+browser_control: Full flow delegated; managed BELL-RATING-FEEDBACK-001 Lucas/Maya windows starting. Continue ordinary UI feedback submission once, target New/read/reopen.
+required_resume: Inspect current Lucas/Maya windows, complete steps17–20 with persisted cardinality/read evidence; wait workers, close windows, reset Admin fixture then wrapper with exact verification. No full PASS until finished.
+runtime: Existing watchers only; no new production code changes for continuation. Graph SW7 tests and final UserRatesService12 tests PASS.
+ledger_status: 94/104, Notifications5/6; BELL IN PROGRESS pending feedback.
+last_completed: Rating and reciprocal graph1–15; original model single row3/4; graph controls/history and exact fixture reset verified.
 last_evidence: ../manuals/DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md#rating-model-correction--2026-09-15
 ```
 

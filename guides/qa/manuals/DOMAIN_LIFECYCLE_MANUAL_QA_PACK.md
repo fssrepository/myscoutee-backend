@@ -10156,3 +10156,20 @@ Bad replayfixture reset completed exactly after both workers drained. Current
 original Met baseline staged13:48:17.058Z; two affected real UI saves are being
 retested. Old read/bell/Statistics evidence remains historical, not proof of the
 rejected two-record implementation. Graph service-worker fix remains independent.
+
+Final shared-record repair verification: existing watcher build PASS13:47:37;
+UserRatesServiceTest12/12 PASS after test-helper correction. Actual UI replay
+`shared-model-first-save-oracle.json` then `shared-model-reciprocal-oracle.json`
+at13:51:26 shows exactly one original row072, ownerNova, scores3/4, mutualtrue,
+affinity0.46644592907179067, two recipient outboxes. Both views reopened:
+Casey has exactly one Nova card4; Nova exactly one Casey card3. Screenshots
+`shared-model-casey-reopened.png` and `shared-model-nova-reopened.png`.
+Original normalizeRecord persistence method verified byte-for-byte equal to
+66bb5eaf parent. Actual diff versus original: viewer score mapping and single
+participant direction only, plus one focused regression test. The versioned
+graph-rating status now reads both scores from the shared record rather than
+requiring a second directional record. Further graph/feedback checks remain.
+
+### Reciprocal graph closure — 2026-09-15
+
+BELL-RATING-LIFECYCLE-001 section2 steps13–15 PASS. Both recompute targets done13:57Z; the fixture scheduled the existing affinity-graph-layout rule (manual Run is disabled) and the real scheduler published layout-1789480922331 at14:02:02.331286021Z. The sole Casey/Nova materialized edge weight .501429373752175 and affinity .46644592907179067 match the recompute oracle; mutualSingleCount1. In Ava’s graph, real cluster expansion and Casey selection showed Casey Bridge, direct depth1,2 members,1 visible link, Nova Social50% (rounded weight). The subsequent expanded-panel screenshot captured the cluster overview, so it is not evidence of the selected pair; the observed selected-member DOM is the UI evidence. `rebuilt-graph-oracle.json` proves unrelated control and older layouts unchanged. Managed rating windows closed and graph-rating reset completed with exact snapshot verification, including graph materializations and original rule configuration. Feedback16–20 remains pending; no checkpoint-wide PASS yet.

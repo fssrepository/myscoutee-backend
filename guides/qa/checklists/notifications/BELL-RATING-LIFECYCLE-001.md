@@ -27,9 +27,36 @@ node guides/qa/tools/open-checkpoint-browser-sessions.mjs BELL-RATING-LIFECYCLE-
 ```
 
 Read-only evidence: `python3 guides/qa/tools/bell-rating-oracle.py <label>`.
+If the graph still shows an older materialized layout after both recompute
+targets complete, use `schedule-layout graph-rating BELL-RATING-LIFECYCLE-001`
+with the same Docker harness. It makes the existing scheduler rule due; its
+original configuration and graph materializations are retained for reset.
 Close the managed windows before
 `reset graph-rating BELL-RATING-LIFECYCLE-001`; the common launcher/harness
 restores retained sessions before the fixture restores the controlled documents.
+
+The feedback section reuses the existing feedback fixture with a browser/session
+rollback wrapper (the browser ID is a substage of this same testcase):
+
+```bash
+bash server/docker/scripts/admin-job-fixtures/admin-job-fixtures.sh prepare bell-rating-feedback feedback
+bash server/docker/scripts/manual-qa-checkpoints/manual-qa-checkpoints-docker.sh stage bell-feedback BELL-RATING-FEEDBACK-001
+node guides/qa/tools/open-checkpoint-browser-sessions.mjs BELL-RATING-FEEDBACK-001
+```
+
+The configured seed actors are Lucas Lane, Nagy Eszter, Maya Stone and Kiss
+Balázs. Complete the three required cards, then submit once. The wrapper checks
+the prepared identities before startup. Use
+`python3 guides/qa/tools/bell-feedback-oracle.py <label> [previous-label]` for
+recipient/read isolation evidence. After observation, close the windows and
+restore in this order:
+
+```bash
+bash server/docker/scripts/manual-qa-checkpoints/manual-qa-checkpoints-docker.sh verify-reset-ready bell-feedback BELL-RATING-FEEDBACK-001
+node guides/qa/tools/open-checkpoint-browser-sessions.mjs BELL-RATING-FEEDBACK-001 --close-only
+bash server/docker/scripts/admin-job-fixtures/admin-job-fixtures.sh reset bell-rating-feedback
+bash server/docker/scripts/manual-qa-checkpoints/manual-qa-checkpoints-docker.sh reset bell-feedback BELL-RATING-FEEDBACK-001
+```
 
 Begin only after Codex confirms the printed Casey/Nova pair, zero target
 notification delta, the starting Statistics values and the unchanged graph

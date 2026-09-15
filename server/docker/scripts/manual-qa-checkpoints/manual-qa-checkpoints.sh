@@ -567,6 +567,7 @@ run_scenario() {
     content-admin) scenario_script="${SCRIPT_DIR}/scenarios/content-admin-lifecycle-checkpoints.js" ;;
     operator-domain) scenario_script="${SCRIPT_DIR}/scenarios/operator-domain-checkpoints.js" ;;
     job-messages) scenario_script="${SCRIPT_DIR}/scenarios/job-messages-checkpoints.js" ;;
+    bell-feedback) scenario_script="${SCRIPT_DIR}/scenarios/bell-feedback-checkpoints.js" ;;
     notification-admin) scenario_script="${SCRIPT_DIR}/scenarios/notification-admin-checkpoints.js" ;;
     mobile-push) scenario_script="${SCRIPT_DIR}/scenarios/mobile-push-checkpoints.js" ;;
     auth-session) scenario_script="${SCRIPT_DIR}/scenarios/auth-session-checkpoints.js" ;;
@@ -762,7 +763,7 @@ PY
     [ "$#" -eq 3 ] || { usage >&2; exit 2; }
     run_scenario "${command}" "${scenario}" 30 "$3"
     ;;
-  graph-rating:stage|graph-rating:status|graph-rating:reset)
+  graph-rating:stage|graph-rating:status|graph-rating:reset|graph-rating:schedule-layout)
     [ "$#" -eq 2 ] || { [ "$#" -eq 3 ] && [ "$3" = "BELL-RATING-LIFECYCLE-001" ]; } || { usage >&2; exit 2; }
     run_scenario "${command}" "${scenario}" 30 "${3:-GRAPH-RATING-001}"
     ;;
@@ -891,6 +892,7 @@ PY
   asset-domain:stage|asset-domain:next|asset-domain:status|asset-domain:capture-lifecycle-created|asset-domain:verify-lifecycle-edited|asset-domain:verify-lifecycle-deleted|asset-domain:verify-visibility-readonly|asset-domain:repair-visibility-fixture|asset-domain:verify-visibility-edited|asset-domain:verify-borrow-cancel|asset-domain:verify-borrow-reject|asset-domain:verify-borrow-accepted|asset-domain:verify-borrow-paid-pending-organizer|asset-domain:verify-borrow-paid-accepted-participant|asset-domain:verify-borrow-terminal|asset-domain:verify-asset-member-pending|asset-domain:verify-asset-member-terminal|asset-domain:refresh-retained-window|asset-domain:prepare-owner-leave-replay|asset-domain:rollback-owner-leave|asset-domain:reset|\
   asset-assignment:stage|asset-assignment:status|asset-assignment:repair-normal-supplies-owner|asset-assignment:verify-normal-assignment|asset-assignment:verify-supply-contribution-delete|asset-assignment:restore-normal-assignment-branch|asset-assignment:repair-tournament-group-ids|asset-assignment:stage-step-10-boundary|asset-assignment:rollback-step-10-boundary|asset-assignment:verify-group-capacity-edit|asset-assignment:stage-step-16-boundary|asset-assignment:rollback-step-16-boundary|asset-assignment:verify-group-unassign|asset-assignment:stage-step-22-boundary|asset-assignment:rollback-step-22-boundary|asset-assignment:verify-group-reassign|asset-assignment:stage-step-29-boundary|asset-assignment:rollback-step-29-boundary|asset-assignment:verify-group-manager-removal|asset-assignment:reset|\
   content-admin:stage|content-admin:status|content-admin:verify-drafts-saved|content-admin:verify-privacy-active|content-admin:restage-step-32-boundary|content-admin:rollback-step-32-boundary|content-admin:verify-privacy-fallback|content-admin:verify-article-trashed|content-admin:verify-article-restored|content-admin:rollback-step-59-boundary|content-admin:verify-article-republished|content-admin:reset|\
+  bell-feedback:stage|bell-feedback:status|bell-feedback:verify-reset-ready|bell-feedback:reset|\
   job-messages:stage|job-messages:ready|job-messages:status|job-messages:arm|job-messages:reset|\
   notification-admin:stage|notification-admin:status|notification-admin:reset|\
   mobile-push:stage|mobile-push:status|mobile-push:prepare-device-identity|mobile-push:adopt-foreground|mobile-push:recover-foreground-worker|mobile-push:popup-registration-off|mobile-push:popup-registration-restore|mobile-push:reset|\

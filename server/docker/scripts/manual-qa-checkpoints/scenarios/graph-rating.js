@@ -357,6 +357,20 @@
     });
   }
 
+  function scheduleLayout() {
+    const state = Q.activeState(SCENARIO, true);
+    if (!bellJourney || !state.layoutRuleConfig) Q.fail("A retained Bell graph baseline is required.");
+    if (state.layoutScheduledAtIso) Q.fail("Layout already scheduled; use status.");
+    if (Q.collection("affinityRecomputeTasks").countDocuments({ targetId: { $in: pairUserIds }, status: { $in: ["pending", "running"] } }))
+      Q.fail("Wait for the pair's affinity work before scheduling the layout.");
+    Q.assertRuleNotRunning("affinity-graph-layout");
+    const timing = Q.scheduleRule("affinity-graph-layout", 30);
+    Q.collection(Q.STATE_COLLECTION).updateOne({ _id: state._id }, {
+      $set: { layoutScheduledAtIso: timing.scheduledAtIso }
+    });
+    Q.printObject({ scenario: SCENARIO, checkpointId, phase: "layout-scheduled", ...timing });
+  }
+
   function reset() {
     const state = Q.activeState(SCENARIO, true);
     const tracked = Q.collection("notificationOutbox").countDocuments({
@@ -389,6 +403,7 @@
   Q.assertDeploymentSafety();
   if (command === "stage") stage();
   else if (command === "status") status();
+  else if (command === "schedule-layout") scheduleLayout();
   else if (command === "reset") reset();
   else Q.fail(`unsupported command '${command}' for ${SCENARIO}.`);
 })();

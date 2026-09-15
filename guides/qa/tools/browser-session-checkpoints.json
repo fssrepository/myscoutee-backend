@@ -1630,6 +1630,41 @@
           "autoDismissExplanationGuide": false
         }
       ]
+    },
+    "BELL-RATING-FEEDBACK-001": {
+      "layout": {
+        "columns": 4
+      },
+      "sessions": [
+        {
+          "actor": "Lucas",
+          "sessionKind": "demo",
+          "userId": "23820c1e76d3bd843f61c799",
+          "expectedName": "Lucas Lane",
+          "autoDismissExplanationGuide": true
+        },
+        {
+          "actor": "Maya",
+          "sessionKind": "demo",
+          "userId": "1b1c70be2349b3359a8f6f94",
+          "expectedName": "Maya Stone",
+          "autoDismissExplanationGuide": true
+        },
+        {
+          "actor": "Eszter",
+          "sessionKind": "demo",
+          "userId": "9f3b3f085e23af6c89dbc432",
+          "expectedName": "Nagy Eszter",
+          "autoDismissExplanationGuide": true
+        },
+        {
+          "actor": "Balázs",
+          "sessionKind": "demo",
+          "userId": "b29df68956f3fe15e04558de",
+          "expectedName": "Kiss Balázs",
+          "autoDismissExplanationGuide": true
+        }
+      ]
     }
   }
 }
