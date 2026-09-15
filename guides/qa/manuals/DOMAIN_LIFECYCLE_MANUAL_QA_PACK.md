@@ -9912,3 +9912,94 @@ legacy null-decision messages retain their older behavior.
   scenario-owned snapshot was compared after restoration. Monitoring retains
   ordinary telemetry history; no global telemetry rollback was performed.
   **NOTIFICATION-ADMIN-LIFECYCLE-001 PASS/CLOSED; campaign93/104, Notifications4/6.**
+
+### Scheduled messages baseline — 2026-09-15
+
+`JOB-MESSAGES`, section1 before step1: reused the versioned Admin
+`scheduled-messages` inactive-user fixture and bound its managed startup to
+`job-messages` checkpoint stage/ready/arm/status/reset. Original rule enabledtrue,
+interval1800seconds; startup holds its scheduler timestamp until explicit arm.
+At12:22:53Z the fixture created exactlyone Scheduled action task for
+`admin-job-fixture:v1:scheduled-messages:user`; user statusA/profileStatuspublic,
+no runs or deliveries, no preexisting due tasks to quarantine. First launcher
+attempt waited for an absent explanation guide and cleaned up its windows;
+per-checkpoint guide dismissal disabled. A subsequent readiness check exposed
+a fixture-only onboarding redirect because profileFormVersion was missing.
+The ready fixture now supplies version2, without changing onboarding code.
+After versioned relaunch both Ava and **Admin fixture scheduled-message user**
+passed the final authentication/realtime readiness gate; the task was still
+Scheduled with no run or delivery. No manual checklist action or worker result claimed.
+Inactive-user arm ages only disposable startup activity before scheduler release;
+this is baseline preparation, not proof of an inactivity action. Current point:
+section1 step1. Notification Admin remains PASS/CLOSED; campaign93/104,
+Notifications4/6. User requests an introductory explanation for each testcase,
+plus continuing exact block/step/action commentary during execution.
+
+### Scheduled messages full-flow execution — 2026-09-15
+
+The user explicitly delegated both JOB-MESSAGES variations and cleanup to Codex.
+Current result: **PARTIAL / UI GAP**, with both business branches verified.
+
+- Section1 steps1–2: existing Ava Job Detail showed Eligible1, enabledtrue,
+  disabled Run, old Runner history. The future Last run timestamp was the
+  documented fixture hold, not a real run. Initial Monitoring Jobs690/689.
+- The existing operational poll was1800000ms, so the initial one-minute wait
+  yielded no worker result. `job-messages-runtime.py enable` retained its exact
+  compiled dev property and temporarily selected60000ms through existing
+  DevTools. No main compilation, second worker, hidden Run, new endpoint or
+  worker implementation was used. The normal scheduler ran on application
+  startup after this configuration reload; this is an environmental timing
+  qualification, not an on-schedule minute-poll timing PASS for the first run.
+- Section1 action PASS: dispatcher `2b2d6a97-0544-4ac7-8577-8d910dcb9b4c`
+  completed12:33:01.958482791Z,31ms,one scheduled task. The separate task audit
+  `312012cc-bfbb-4d7d-8c3f-820d0c0e67a9` completed12:33:02.040979439Z,
+  affected1, notification0/email0/failure0. Task completed/lastRunCount1;
+  exactlyone completed action delivery and one ADMIN_STATUS_CHANGED USER
+  affinity task. Profile statusI/profileStatusinactive. The existing browser
+  showed Your profile is inactive and no rating controls; no reload was used
+  to manufacture this transition. No bell was created.
+- Section1 Monitoring was Healthy and advanced706/705, including unrelated
+  job activity. Target attribution comes from the exact dispatcher/task audit;
+  do not treat the whole+16 aggregate as this task. Its transient Redis events
+  had been consumed before the probe captured them. This narrower attribution
+  evidence is retained explicitly. Exact first-variation reset succeeded.
+- Section2 baseline: newly prepared recent-user, Eligible1, enabledtrue,
+  Run disabled, original history. Monitoring before720/719. Normal minute poll
+  dispatcher `d93e9054-4db7-4b8e-8870-326ff5a13f0d` completed12:38:02.005848283Z,
+  19ms,one scheduled task. Task audit `29ae84a5-5730-4f23-b7d5-711dab7c2fa0`
+  ended12:38:02.023001114Z with User active; rescheduled, affected0.
+  Exactlyone rescheduled action delivery; no affinity task/notification/email.
+  DueAt moved to2026-10-15T12:35:27.643Z, exactly30days after recorded device
+  activity. Profile remained A/public, no inactive banner, rating controls
+  remained present. Versioned read-only oracle assertions passed for both
+  task/user/audit/delivery/affinity cases.
+- Section2 Monitoring PASS: target Redis events1789475882001-0 (started) and
+  1789475882009-0 (completed) both name scheduled-messages, scheduled trigger,
+  amount1; completion19ms/processedCount1 matches the dispatcher. Monitoring
+  watermark1789475942188-0 at12:39:04Z passed both IDs; UI Healthy727/726.
+  Other jobs account for the remainder of the global+7/+7 change.
+- **Step12 UI expectation NOT MET.** The public Job Detail records the
+  scheduler's dispatch operation, with generic Scheduled due message tasks for
+  local execution. User active; rescheduled exists in the persisted task audit,
+  which this surface does not expose. The stable requirement was not weakened,
+  no task result was injected into dispatcher history, and the existing worker
+  scheduling was not refactored. Thus the complete checklist is not marked PASS.
+- User-requested Monitoring presentation fix: card content aligns to the top;
+  compact badges stay on one line and within cards, with full native titles
+  for clipped text. Narrower connectors leave more room for card titles.
+  Existing frontend watcher succeeded12:36:48Z. Actual916px,596px/four-column,
+  and360px/two-column views had zero node/badge overflow; all nodes top-aligned,
+  no multiline badges. Screenshots are under
+  `/tmp/myscoutee-qa-browser-sessions/evidence/job-messages-cdp/`:
+  inactive-banner, inactive-worker-complete, inactive-monitoring-after,
+  recent-profile-active, recent-worker-complete, recent-monitoring-after,
+  monitoring-top-alignment, monitoring-top-four-columns, monitoring-top-mobile.
+  Exact task artifacts: inactive-user-oracle.json and recent-user-oracle.json.
+- Cleanup PASS: owned browsers closed; both variation resets restored retained
+  documents, primary rule and secondary counters. Final user/task/run/delivery/
+  affinity/session/session-action/inbox and both fixture snapshot counts0.
+  Rule remains enabled with original30minute Timing. Runtime helper restored
+  `${SCHEDULED_MESSAGES_TASK_POLL_DELAY_MS:1800000}` and verified existing
+  DevTools reload; its retained override marker is removed. Campaign remains
+  93/104 passed, Notifications4/6. Remaining scope is the step12 UI audit gap;
+  earlier successful branch execution does not need to restart.

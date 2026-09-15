@@ -102,19 +102,23 @@ repair an established product defect. Preserve the phone's tethering connection
 when shaping only its route to the QA application.
 
 ```yaml
-checkpoint: NOTIFICATION-ADMIN-LIFECYCLE-001 — SECTION 3 / STEPS 17–18
-checklist: ../checklists/notifications/NOTIFICATION-ADMIN-LIFECYCLE-001.md
-substage: Section1 PASS; first real scheduler completion and Nova mark-read PASS. Monitoring layout verified at596px/four columns and360px/two columns, all badges contained. Monitoring persistence fixed and verified; global queues match0/0/0/308, target exactlyone.
-fixture_phase: notification-admin arm-second; current interval2minutes, original1minute, enabledtrue; one terminal outbox and one read Nova inbox; actor notification counters0, source Chat unread1.
-browser_control: User explicitly delegated the entire Notification Admin test to Codex, visibly in existing Ava/Nova/Casey windows. Announce block/step before actions and check for user assistance.
-required_resume: Second scheduler pass armed for12:16Z, Ava Job Detail open. Capture dedupe without resending, restore original1minute via UI, then close owned browsers and reset exact fixture. Message18c4030e-ced6-491c-84e3-6678f2e5c7de. Converter initialization fix passed three focused tests and live Monitoring; temporary diagnostic logs removed.
-runtime: Existing dev stack; Firebase inactive after verified Push rollback. Three configured desktop sessions; physical phone signed out and restored.
-ledger_status: 92/104 passed; Notifications3/6; Push PASS/CLOSED; Notification Admin IN PROGRESS.
-last_completed: Push section4 step23 rollback PASS twice; zero fixture remnants, owned Firebase identity absent, original Chrome/screen settings restored. User accepted closure with recorded platform qualifications.
-last_evidence: ../manuals/DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md#notification-admin-rule-edit-baseline--2026-09-15
+checkpoint: JOB-MESSAGES — SECTION 2 / STEP 12 UI GAP
+checklist: ../checklists/notifications/JOB-MESSAGES.md
+substage: Both business branches and UI profile states verified; task-level reschedule detail is absent from public Job Detail. All fixture/runtime cleanup complete.
+fixture_phase: not-staged; zero controlled user/task/run/delivery/affinity/session/inbox/snapshot remnants.
+browser_control: User explicitly delegated the full JOB-MESSAGES test; both variations executed. Owned windows now closed. Keep exact block/step commentary and preserve completed evidence.
+required_resume: Remaining step12 expects task-level User active; rescheduled in Job history, while the implemented surface only exposes scheduler dispatch history. Task outcome itself is proven by exact persisted audit. Resolve the public audit-display gap without altering worker scheduling or replaying already-proven business branches. Detailed artifacts and qualification are in the execution evidence; do not mark full PASS until this gap is resolved or the user changes the acceptance rule.
+runtime: Existing dev stack; original scheduled-message operational poll restored and DevTools reload verified; no temporary poll marker or extra worker remains.
+ledger_status: 93/104 passed; Notifications4/6; JOB-MESSAGES PARTIAL / UI GAP.
+last_completed: Both inactive/recent cases, exact database oracles, profile UI, Monitoring check and cleanup; requested Monitoring alignment/one-line contained badges verified916/596/360px.
+last_evidence: ../manuals/DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md#scheduled-messages-full-flow-execution--2026-09-15
 ```
 
 ### Notifications takeover notes
+
+Before each new testcase, briefly explain its purpose and expected outcomes in
+Hungarian. Throughout execution, announce the exact checklist block and step
+number and the immediate action; this lets the user follow and assist.
 
 `UI-POLL-JANK-001` is closed. Its detailed evidence is in the linked diagnosis
 and CSV/XLSX ledger. Mobile WebView is also PASS/CLOSED after both remaining
@@ -126,8 +130,10 @@ harness code is created:
 - `BELL-RATING-LIFECYCLE-001`: `bell-rating-feedback`, `stat-010` and
   `graph-rating` fixtures exist; a consolidated wrapper/browser setup is not
   yet bound.
-- `JOB-MESSAGES`: the `scheduled-messages` inactive-user/recent-user fixture
-  exists; its Admin/fixture-user browser setup is not yet bound.
+- `JOB-MESSAGES`: the existing `scheduled-messages` inactive-user/recent-user fixture
+  is now bound to `job-messages` stage/ready/arm/status/reset and the versioned
+  two-window launcher. Prepare Admin fixture between checkpoint stage and ready;
+  release only after the baseline is visible. No application worker path changed.
 - `NOTIFICATION-ADMIN-LIFECYCLE-001`: versioned `notification-admin` stage/status/reset
   and Ava/Nova/Casey browser setup now own the rule-edit baseline. Reuse existing
   `notification-read-path` / `notification-outbox` helpers for later phases;

@@ -20,14 +20,42 @@ To start, tell Codex:
 
 Do not start another worker, edit Timing or press any hidden/manual trigger.
 
+Codex uses the existing Admin job fixture with the versioned browser checkpoint:
+
+```bash
+bash server/docker/scripts/manual-qa-checkpoints/manual-qa-checkpoints-docker.sh stage job-messages JOB-MESSAGES
+bash server/docker/scripts/admin-job-fixtures/admin-job-fixtures.sh prepare scheduled-messages inactive-user
+bash server/docker/scripts/manual-qa-checkpoints/manual-qa-checkpoints-docker.sh ready job-messages JOB-MESSAGES
+node guides/qa/tools/open-checkpoint-browser-sessions.mjs JOB-MESSAGES
+```
+
+The baseline holds the scheduler timestamp until step 4. This timestamp is
+fixture preparation, not an actual Runner history entry. The fixture user is
+**Admin fixture scheduled-message user**. After the baseline observations,
+`arm job-messages JOB-MESSAGES` releases the normal scheduler. For the inactive
+variation it first ages only this disposable user's startup device/session-action
+activity so signing in for observation does not turn it into the recent-user case.
+No worker result is supplied by this preparation.
+
+Before the first arm, `python3 guides/qa/tools/job-messages-runtime.py enable`
+snapshots the existing compiled dev poll property and temporarily sets it to
+60 seconds through the running DevTools process. The rule's 30-minute Timing
+is unchanged. Keep this override across both variations; run the helper with
+`reset` after their cleanup to restore the original operational poll property.
+The source configuration and worker implementation remain unchanged.
+
+Cleanup order: versioned launcher `--close-only`, Admin job fixture
+`reset scheduled-messages`, then checkpoint `reset job-messages JOB-MESSAGES`.
+Repeat startup with `recent-user` for block 2.
+
 ## 1. Inactive-user action
 
 1. In **Ava**, open `Configuration -> Jobs -> Send scheduled messages`.
 2. Confirm `Eligible before next run` is **1**, the job is enabled, `Run` is
    disabled, and the newest Runner history row predates this fixture.
-3. Open `Monitoring -> Background -> Jobs` and record Scheduler / Scheduled
+3. Open `Monitoring -> Jobs` and record Scheduler / Scheduled
    triggers and Audit trail / Audit events, then return to Job Detail.
-4. Leave Job Detail open for up to one minute. The normal scheduler must run
+4. Codex arms the held baseline. Leave Job Detail open for up to one minute. The normal scheduler must run
    without a manual action.
 5. After the live update, confirm one new Completed history row, affected count
    **1**, a duration and no error. Eligible work returns to zero.
@@ -74,4 +102,3 @@ delivery, isolated controls and exact reset.
 | Recent-user control | 7 min | 20 min |
 | Monitoring, evidence and reset | 5 min | 20 min |
 | **Total** | **20 min** | **65 min** |
-

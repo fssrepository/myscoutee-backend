@@ -45,7 +45,9 @@
       ]
     },
     "MOBILE-PUSH-LIFECYCLE-001": {
-      "layout": { "columns": 2 },
+      "layout": {
+        "columns": 2
+      },
       "sessions": [
         {
           "actor": "Casey Push sender",
@@ -53,7 +55,12 @@
           "userId": "650000000000000000000061",
           "expectedName": "Casey Bridge",
           "autoDismissExplanationGuide": true,
-          "window": { "x": 0, "y": 68, "width": 960, "height": 950 }
+          "window": {
+            "x": 0,
+            "y": 68,
+            "width": 960,
+            "height": 950
+          }
         },
         {
           "actor": "Nova foreground control",
@@ -61,7 +68,12 @@
           "userId": "650000000000000000000062",
           "expectedName": "Nova",
           "autoDismissExplanationGuide": true,
-          "window": { "x": 960, "y": 68, "width": 960, "height": 950 }
+          "window": {
+            "x": 960,
+            "y": 68,
+            "width": 960,
+            "height": 950
+          }
         }
       ]
     },
@@ -338,7 +350,9 @@
       ]
     },
     "ENTRY-CONSENT-002": {
-      "additionalDemoUserIds": ["650000000000000000000062"],
+      "additionalDemoUserIds": [
+        "650000000000000000000062"
+      ],
       "targetUrl": "http://localhost/entry?redirect=%2Fgame",
       "entryUrl": "http://localhost/entry?redirect=%2Fgame",
       "bootstrapEntryConsent": false,
@@ -1561,6 +1575,29 @@
           "actor": "Riley",
           "userId": "650000000000000000000063",
           "expectedName": "Riley Outside"
+        }
+      ]
+    },
+    "JOB-MESSAGES": {
+      "layout": {
+        "columns": 2
+      },
+      "sessions": [
+        {
+          "actor": "Ava",
+          "sessionKind": "demo",
+          "userId": "admin-demo-ava",
+          "expectedName": "Ava Moderation",
+          "targetUrl": "http://localhost/admin",
+          "entryUrl": "http://localhost/entry?redirect=%2Fadmin",
+          "autoDismissExplanationGuide": false
+        },
+        {
+          "actor": "Scheduled-message user",
+          "sessionKind": "demo",
+          "userId": "admin-job-fixture:v1:scheduled-messages:user",
+          "expectedName": "Admin fixture scheduled-message user",
+          "autoDismissExplanationGuide": false
         }
       ]
     }
