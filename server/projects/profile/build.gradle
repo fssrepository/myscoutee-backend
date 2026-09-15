@@ -61,7 +61,7 @@ configurations {
 }
 
 dependencies {
-	implementation 'com.google.firebase:firebase-admin:7.1.1'
+	implementation 'com.google.firebase:firebase-admin:9.10.0'
 	implementation 'org.bouncycastle:bcprov-jdk18on:1.84'
 	implementation 'org.apache.httpcomponents:httpasyncclient'
 	implementation 'org.jsoup:jsoup:1.18.1'

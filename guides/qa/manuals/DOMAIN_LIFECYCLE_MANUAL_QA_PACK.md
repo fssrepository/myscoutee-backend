@@ -7863,6 +7863,41 @@ real-device registration and controlled Chat baseline, and use the configured
 managed launcher before the first ordinary message. No product failure or FCM
 PASS is claimed; no other Notifications checkpoint was started.
 
+Continuation supersedes the initial missing-configuration blocker. Ignored local
+project Firebase service-account/public-config files were present and restored
+through versioned setup. The Push fixture adopts the retained configuration
+snapshot and prepares active revision 1 from prior provider evidence; its
+capability markers are prepared prerequisites, not newly observed Operator
+tests. A genuine disposable Firebase Riley identity and normal browser-issued
+FCM registration were established. Raw credentials/tokens remain local only.
+Baseline captured at 09:22:20.836Z: Casey/Nova/Riley unread 0/0/1, exactly one
+Riley web-pwa registration and zero controlled messages. Managed Casey/Nova
+sessions and original Android localhost WebAPK are retained; versioned ADB
+transport and reversible keep-awake preparation are active.
+
+The first attempted marker and user extra `ggg` never persisted: demo WebSocket
+callbacks lost request mode/authentication context and returned 403. The scoped
+mode/security-context repair compiled through the existing backend owner at
+09:30 UTC; no standalone test build was run. At 09:35:25Z the user's `haha`
+message persisted as `c0f060ab-c088-4e53-a538-63bb97bc5ce4`; this is the foreground
+phase's actual message, replacing its suggested marker. Codex detected the
+user's send and did not send a duplicate. Nova/Riley each gained one unread
+inbox row; Casey remained excluded, counters 0/1/2. The phone remained visible,
+Chat/Notifications closed, with zero Android QA system notifications.
+Real provider delivery is currently FAIL/unproven: Firebase Admin 7.1.1 batch
+send receives HTTP404; the same outbox remains pending for retry. SDK/gateway
+migration is underway; preserve this transaction for its normal retry.
+
+User-reported menu regression was repaired without reopening the WebView
+journey: the avatar Install/Permissions action is always present, its label
+uses actual install availability, and both entry paths leave the menu open.
+On lifecycle38 (`mobile-webview-lifecycle-1789464566357`) the original physical
+installed PWA shows `Engedélyek`; popup has permission controls without the
+install section. After real popup open and close, the menu remains open.
+Frontend owner's existing build succeeded at 09:28:29Z. Foreground FCM and all
+later Push phases remain open. Provider-account cleanup, exact fixture/session
+reset and saved screen-setting restoration are required at closure.
+
 ### `QA-EXPANSION-CP05` — registry, claims and operator network
 
 | Testcase | Controlled action | Decisive oracle |

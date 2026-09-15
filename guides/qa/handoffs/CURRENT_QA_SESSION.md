@@ -102,17 +102,17 @@ repair an established product defect. Preserve the phone's tethering connection
 when shaping only its route to the QA application.
 
 ```yaml
-checkpoint: MOBILE-PUSH-LIFECYCLE-001 — PREFLIGHT BLOCKED / FIREBASE CONFIGURATION MISSING
+checkpoint: MOBILE-PUSH-LIFECYCLE-001 — IN PROGRESS / FOREGROUND PROVIDER REPAIR
 checklist: ../checklists/notifications/MOBILE-PUSH-LIFECYCLE-001.md
-substage: WebView PASS/CLOSED, including fresh phone native clipboard Allow and desktop allowed paste. Retain all completed WebView/shared-permission evidence; next work is the Push-specific device/actor/transport baseline.
+substage: Fixture/device baseline ready. One user-sent foreground message persisted; provider batch HTTP404 repair underway. Retain WebView PASS/CLOSED.
 notification_order: MOBILE-PUSH-LIFECYCLE-001, NOTIFICATION-ADMIN-LIFECYCLE-001, JOB-MESSAGES, BELL-RATING-LIFECYCLE-001
-fixture_phase: WebView closure fixture and common session snapshot reset; final status not-staged. No Push fixture prepared or message sent.
-browser_control: User explicitly delegated the complete Push checkpoint to Codex on 2026-09-15, including phone/browser actions, diagnosis, repair and retest; do not request delegation again.
-desktop_geometry: user-approved outer window 1180x950 at x107/y68; viewport 1136x763, DPR1 on 1920x1080. WebView managed desktop window is closed.
+fixture_phase: mobile-push baseline; two foreground messages c0f060ab-c088-4e53-a538-63bb97bc5ce4 (haha) and 7dad4235-7427-42a8-ad15-1bf20356c094 (proba), two retrying outbox rows; Riley both unread, Nova first read by user. Do not send a duplicate.
+browser_control: Full Push checkpoint delegated to Codex. User also assists with clicks; announce checklist block number/title, step and action; inspect current state before doing it, especially before sending.
+desktop_geometry: Managed Casey and Nova side by side; configured Push launcher manifest retained.
 ledger_status: 91/104 passed; Notifications 2/6; Mobile WebView PASS/CLOSED
-required_resume: Await location of prior disposable QA Firebase configuration/backup, requested from user. Masked live preflight shows revision0 inactive with no tested revisions, public fields or credentials. Restore through supported workflow, verify real provider tests/activation, then versioned phone route and controlled actor/single-registration baseline. Retain completed shared-popup evidence.
-runtime: 2026-09-15 09:02 UTC read-only gate supersedes saved runtime assumptions. Dev stack running; Android connected, original WebAPKs installed, localhost WebAPK native notifications granted. No ADB forward/reverse mappings; phone route inactive; server serves 4be4a1c596e2-20260905140310. Phone cached build/session not yet inspected. Casey/Nova/Riley have zero devices; zero Push messages/common snapshots. No startup mutations performed.
-last_completed: Desktop and physical phone native clipboard Allow/exact paste, editor cancellation, subsequent popup layout, unchanged Asset DB oracle and fixture/session cleanup.
+required_resume: Verify existing owner build and Firebase SDK migration, then observe retry of the same foreground outbox with phone visible. Preserve message/inbox identities; no setup or WebView replay.
+runtime: Android original localhost WebAPK, lifecycle38 mobile-webview-lifecycle-1789464566357; reverse8080-to80, CDP36087. Riley Firebase UID650000000000000000000063, one real web-pwa registration. Casey CDP46477, Nova33347. Firebase revision1 restored from ignored local project files via fixture; prepared capability markers are not new Operator evidence. Versioned provider-user and keep-screen-awake snapshots require final cleanup.
+last_completed: Menu Permissions popup opens and closes while leaving side menu open; installed phone shows Permissions and no install body. Chat WS auth repair allows first persisted user message; Riley unread1-to2, Nova0-to1, Casey0.
 last_evidence: ../manuals/DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md#mobile-push-device-preflight--2026-09-15
 ```
 

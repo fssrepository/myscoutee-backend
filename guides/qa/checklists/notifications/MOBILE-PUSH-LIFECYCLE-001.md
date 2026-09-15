@@ -49,7 +49,12 @@ replacement are exercised only in their Push sections below.
 Follow this order once: fixture/device baseline → foreground → background
 (Home, Settings, Chrome) → fully closed/cold start → permission denial → token
 replacement → final oracle and cleanup. Report the current section, its result
-and the next action at each boundary.
+and the next action at each boundary. Before each browser/device action,
+Codex announces the checklist section number/title, current step and immediate
+action so the user can follow the same block and assist. Reinspect the
+current UI and persisted message state before acting; skip an action already
+completed by the user, especially a send. Record any user-supplied message
+text against its exact phase/message ID instead of sending a duplicate marker.
 
 After a defect, repair its owner and resume from the nearest valid fixture
 savepoint. Replay only the affected action and its necessary causal tail.

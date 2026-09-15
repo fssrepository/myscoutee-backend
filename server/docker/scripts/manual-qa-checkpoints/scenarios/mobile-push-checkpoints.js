@@ -33,8 +33,10 @@
     }), firebase: { active: firebase.active, revision: firebase.revision, baselineSource: saved.firebaseBaselineSource },
     messages: messages.map(m => ({ id: m.id, text: m.text, senderUserId: m.senderAvatar?.id })),
     inbox: inbox.map(n => ({ id: n._id, recipientUserId: n.recipientUserId, sourceId: n.sourceId, readAtIso: n.readAtIso })),
-    outbox: outbox.map(n => ({ id: n._id, recipientUserId: n.recipientUserId, status: n.status,
-      attemptCount: n.attemptCount, successCount: n.successCount, failureCount: n.failureCount })),
+    outbox: outbox.map(n => ({ id: n._id, recipientUserIds: n.recipientUserIds, status: n.status,
+      retryCount: n.retryCount, nextRetryAt: n.nextRetryAt, tokenSuccessCount: n.tokenSuccessCount,
+      tokenFailureCount: n.tokenFailureCount, sentDate: n.sentDate,
+      messageId: n.payload?.messageId })),
     savepoints: (saved.savepoints || []).map(p => ({ name: p.name, capturedAt: p.capturedAt })) });
   }
   function stage() {
@@ -86,9 +88,61 @@
     if (name === 'baseline' && ((riley.devices || []).filter(d => d.firebaseToken).length !== 1
         || Q.collection('chatMessages').countDocuments({ chatId }) !== 0)) Q.fail('Baseline needs one real Riley registration and zero messages');
     if ((saved.savepoints || []).some(p => p.name === name)) Q.fail('Savepoint already exists');
+    const order = ['baseline','foreground','background','background-settings','background-chrome','cold-start','permission-denied','replacement-token'];
+    if (name !== 'baseline') {
+      if (saved.phase !== order[order.indexOf(name) - 1]) Q.fail('Capture phases in checklist order');
+      // Capture validates persisted delivery; native UI observations remain
+      // separately recorded evidence and are never inferred from this oracle.
+      const messages = Q.collection('chatMessages').find({ chatId }).toArray();
+      const expectedText = `${checkpoint} ${name}`;
+      const current = name === 'foreground'
+        ? messages.filter(m => (saved.foregroundMessageIds || []).includes(m.id))
+        : messages.filter(m => m.text === expectedText);
+      if (!current.length || (name !== 'foreground' && current.length !== 1)) Q.fail('Expected phase message is absent or duplicated');
+      for (const m of current) {
+        if (m.senderAvatar?.id !== actors[0]) Q.fail('Unexpected message sender');
+        const outbox = Q.collection('notificationOutbox').find({ ...related, 'payload.messageId': m.id }).toArray();
+        const inbox = Q.collection('userNotifications').find({ ...related, 'payload.messageId': m.id }).toArray();
+        if (outbox.length !== 1 || inbox.length !== 2
+            || actors.slice(1).some(id => inbox.filter(n => n.recipientUserId === id).length !== 1)) Q.fail('Message audience or dedupe oracle failed');
+        if (name !== 'permission-denied' && (outbox[0].status !== 'sent'
+            || outbox[0].tokenSuccessCount !== 1 || outbox[0].tokenFailureCount !== 0)) Q.fail('One successful provider-token delivery is not proven');
+      }
+    }
     Q.collection(Q.STATE_COLLECTION).updateOne({ _id: saved._id }, { $set: { phase: name }, $push: {
       savepoints: { name, capturedAt: Q.nowIso(), snapshots: Q.snapshotSpecs(specs) }
     } });
+    status();
+  }
+  function adoptForeground() {
+    const saved = state();
+    if (saved.phase !== 'baseline' || saved.foregroundMessageIds?.length) Q.fail('Foreground adoption requires the unrecorded baseline phase');
+    const messages = Q.collection('chatMessages').find({ chatId }).toArray();
+    if (!messages.length || messages.some(m => m.senderAvatar?.id !== actors[0]
+        || m.sentAtIso < saved.stagedAtIso)) Q.fail('Only current fixture sender messages can be adopted');
+    Q.collection(Q.STATE_COLLECTION).updateOne({ _id: saved._id }, { $set: { foregroundMessageIds: messages.map(m => m.id) } });
+    status();
+  }
+  function recoverForegroundWorker() {
+    const saved = state();
+    if (saved.phase !== 'baseline' || !saved.foregroundMessageIds?.length || saved.workerRecovery) Q.fail('Recovery is limited to the recorded foreground failure');
+    const owned = Q.collection('notificationOutbox').find({ ...related, 'payload.messageId': { $in: saved.foregroundMessageIds } }).toArray();
+    const running = owned.filter(n => n.status === 'running');
+    const rule = Q.collection('notificationRuleConfigs').findOne({ ruleKey: 'notification-outbox' });
+    if (running.length !== 1 || rule?.runState?.currentStatus !== 'running'
+        || owned.some(n => n.tokenSuccessCount || n.tokenFailureCount)
+        || Q.collection('notificationOutbox').countDocuments({ status: { $in: ['pending','running'] }, _id: { $nin: owned.map(n => n._id) } })) Q.fail('Worker state is not isolated to the failed foreground sends');
+    Q.collection(Q.STATE_COLLECTION).updateOne({ _id: saved._id }, { $set: { workerRecovery: {
+      capturedAt: Q.nowIso(), reason: 'Old backend stopped after SDK classpath NoSuchMethodError; replacement started with upgraded dependency.',
+      outbox: owned, rule
+    } } });
+    Q.collection('notificationOutbox').updateOne({ _id: running[0]._id, status: 'running', lockedUntil: running[0].lockedUntil }, {
+      $set: { status: 'pending', nextRetryAt: Q.nowIso() }, $unset: { lockedUntil: '' }
+    });
+    Q.collection('notificationRuleConfigs').updateOne({ _id: rule._id, 'runState.startedAtIso': rule.runState.startedAtIso }, {
+      $set: { 'runState.currentStatus': 'failed', 'runState.finishedAtIso': Q.nowIso(),
+        'runState.progressDetail': 'QA fixture released the stopped pre-upgrade worker; same outbox will retry.' }
+    });
     status();
   }
   function prepareDeviceIdentity() {
@@ -101,7 +155,8 @@
   }
   function reset() {
     const saved = state();
-    if (Q.collection('chatMessages').countDocuments({ chatId, text: { $not: /^MOBILE-PUSH-LIFECYCLE-001 / } })) Q.fail('Unexpected message; review before reset');
+    if (Q.collection('chatMessages').countDocuments({ chatId, text: { $not: /^MOBILE-PUSH-LIFECYCLE-001 / },
+        id: { $nin: saved.foregroundMessageIds || [] } })) Q.fail('Unexpected message; review before reset');
     Q.restoreSnapshots(saved.snapshots);
     Q.collection(Q.STATE_COLLECTION).deleteOne({ _id: saved._id });
     status();
@@ -110,6 +165,8 @@
     case 'stage': stage(); break;
     case 'status': status(); break;
     case 'capture': capture(); break;
+    case 'adopt-foreground': adoptForeground(); break;
+    case 'recover-foreground-worker': recoverForegroundWorker(); break;
     case 'prepare-device-identity': prepareDeviceIdentity(); break;
     case 'reset': reset(); break;
     default: Q.fail('Unsupported Push command');
