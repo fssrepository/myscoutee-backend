@@ -59,7 +59,10 @@ browser-session baseline after the owned clients are closed.
 
 10. Wait while Codex uses the versioned fixture to enqueue one controlled
     Casey-to-Nova notification and arms only **Send notifications** for its
-    next normal scheduler pass.
+    next normal scheduler pass. The fixture briefly holds the rule while the
+    real Chat API creates the item and removes only that item's Redis wake-up
+    hint to isolate the scheduled branch. The durable outbox stays intact;
+    restore the enabled state and reopen Job Detail after this setup boundary.
 11. Without reloading, Nova's counter increases by one. In
     `Notifications -> New`, exactly one row identifies the controlled source;
     Casey receives no matching row.
@@ -82,7 +85,7 @@ browser-session baseline after the owned clients are closed.
 
     The already-created in-app bell is valid in both modes.
 
-14. Open Nova's row once. It leaves New, remains once in All and decrements
+14. In Nova, use the row menu to mark the notification read once. It leaves New, remains once in All and decrements
     only Nova's notification count. It does not mark the source Chat read.
 15. In Ava, open `Monitoring -> Notifications`. Pending/running/sent/failed and
     health must match the saved delivery decision and actual provider counts;

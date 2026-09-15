@@ -6,6 +6,8 @@ The provider helper verifies ownership and deletion; Mongo reset verifies every
 retained baseline document before discarding its snapshot. Re-running is safe.
 """
 import argparse
+import datetime
+import time
 import json
 import os
 from pathlib import Path
@@ -18,6 +20,7 @@ TOOLS = ROOT / 'guides/qa/tools'
 RUNTIME = ROOT / 'server/docker/.qa-mobile-runtime'
 PROVIDER_STATE = ROOT / 'server/projects/profile/secrets/mobile-push-provider-user.local.json'
 MANIFEST = Path('/tmp/myscoutee-qa-browser-sessions') / (CHECKPOINT + '.json')
+RUNTIME_REFRESH = RUNTIME / 'push-runtime-refresh.pending'
 HARNESS = ROOT / 'server/docker/scripts/manual-qa-checkpoints/manual-qa-checkpoints-docker.sh'
 parser = argparse.ArgumentParser(description=__doc__)
 parser.add_argument('--apply', action='store_true')
@@ -71,7 +74,23 @@ if MANIFEST.exists():
 if provider['providerUserPresent'] or PROVIDER_STATE.exists():
     run('python3', TOOLS / 'mobile-push-provider-user.py', 'reset')
 if staged:
+    # Direct Mongo restoration bypasses Operator's Java cache refresh callback.
+    # Keep a retry marker across partial cleanup; use only the existing DevTools owner.
+    RUNTIME_REFRESH.write_text('Refresh Java availability after Mongo rollback\n')
     run('bash', HARNESS, 'reset', 'mobile-push', CHECKPOINT)
+if RUNTIME_REFRESH.exists():
+    since = datetime.datetime.now(datetime.timezone.utc).isoformat()
+    run('docker', 'exec', 'myscoutee', 'touch', '/workspace/projects/profile/build/resources/main/application-dev.yaml', '/workspace/projects/profile/build/resources/main/.reloadtrigger')
+    for _ in range(45):
+        time.sleep(1)
+        logs = subprocess.run(['docker', 'logs', '--since', since, 'myscoutee'],
+                              capture_output=True, text=True, check=True)
+        if 'Started Main' in logs.stdout + logs.stderr:
+            RUNTIME_REFRESH.unlink()
+            print('Existing backend DevTools reload completed; Firebase availability reloaded.', flush=True)
+            break
+    else:
+        raise SystemExit('Existing backend reload not confirmed; runtime retry marker retained')
 for path, action, saved in retained:
     run('node', TOOLS / 'mobile-webview-device.mjs', action)
     if action == 'restore-screen':
@@ -88,7 +107,7 @@ for path, action, saved in retained:
         if not match or (match[1] == 'true', 'USER_SET' in match[2], 'USER_FIXED' in match[2]) != (saved['granted'], saved['userSet'], saved['userFixed']):
             path.write_text(json.dumps(saved)); path.chmod(0o600)
             raise SystemExit('Chrome permission verification failed; restore point retained')
-if status()['phase'] != 'not-staged' or MANIFEST.exists() or PROVIDER_STATE.exists() or any(p.exists() for p, _ in snapshots):
+if RUNTIME_REFRESH.exists() or status()['phase'] != 'not-staged' or MANIFEST.exists() or PROVIDER_STATE.exists() or any(p.exists() for p, _ in snapshots):
     raise SystemExit('Rollback incomplete; retained state remains')
 print(json.dumps({'checkpoint': CHECKPOINT, 'rollback': 'PASS', 'fixture': 'not-staged',
                   'providerUserPresent': False, 'deviceSettingsRestored': True}))

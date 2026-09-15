@@ -9844,3 +9844,71 @@ actor notification counters 0. No rule edit or producer action was performed.
 The stable guide now describes the user-approved saved Firebase decision
 contract: new explicit false decisions complete with zero provider calls, while
 legacy null-decision messages retain their older behavior.
+
+- **Notification Admin section1 PASS, 2026-09-15.** Runtime preflight exposed a
+  Push-fixture cleanup gap: direct Mongo rollback left the Java Firebase flag
+  active. Existing DevTools reload refreshed it; `/api/admin/dashboard` then
+  returned exact Ava identity. The rollback helper now reloads the running
+  backend after direct configuration restoration and retains a retry marker.
+  No application authentication code changed.
+  Timing Save originally submitted the old list copy instead of the edited
+  detail object. One call now passes `[rule]` to the existing save path.
+  Existing frontend watcher build succeeded11:52:18Z; focused UI replay persisted
+  Every2 minutes and reopen matched Mongo, enabled true, same Runner history,
+  no inbox/outbox. The versioned invalid-rule request sends a nonnumeric interval
+  amount: HTTP400, entire rules/outbox/inbox collection digests unchanged.
+  This proves malformed-field rejection, not validation of every numeric range.
+  Nova and Casey Notifications/New both visibly showed0 before the producer.
+
+- **Section2 steps10–14 PASS.** Exactly one controlled Chat API message
+  `18c4030e-ced6-491c-84e3-6678f2e5c7de` produced outbox
+  `6aa932a6f59d38d912af4243` and Nova inbox `6aa932a6f59d38d912af4244`.
+  Normal scheduler run `d66911ba-1a2f-4efc-aeed-1bd017e30e4c` completed
+  2026-09-15T11:59:04.588750821Z,52ms,processed1. Saved Firebase decisionfalse,
+  provider success/failure/retry0. Nova New1, Casey0; normal row-menu Mark as
+  read persisted12:00:15.762233394Z, Nova New0/AlloneRead, source Chat unread1.
+  Versioned delivery/read savepoints verified exact identities and counters.
+- **Step15 partial.** Monitoring showed stale seeded queue values: one controlled sent item among308 global sent rows, displayed sent0. Backend telemetry persistence throws MappingException for
+  dotted map keys before updating Monitoring. Diagnosis remains open.
+  Responsive cards now use4columns at596px and2columns at360px; all node/badge
+  scroll widths and badge bounding rectangles remain contained. Long badge
+  labels wrap and numeric counts stay visible. Existing watcher build passed
+  12:04:39Z. Screenshots: `/tmp/myscoutee-qa-browser-sessions/evidence/notification-admin-cdp/monitoring-badges-four-columns.png`
+  and `monitoring-badges-mobile.png`. Ava restored to the596px view.
+
+- **Step15 PASS after focused Mongo initialization fix.** Runtime logs named
+  `projectingArgumentResolverBeanPostProcessor` as the eager creator of
+  `mappingMongoConverter`/`mongoTemplate`, before the existing dotted-key
+  post-processor was registered. Read-only JDWP inspection confirmed the actual
+  converter had a null dot replacement. The same existing post-processor now
+  implements PriorityOrdered and its bean declares that concrete type, so it
+  runs before eager repository initialization. No queue/delivery logic changed.
+  Existing compiler/DevTools build succeeded12:13:31Z; fresh Monitoring snapshot
+  at12:13:32Z matched Mongo: pending0,running0,failed0,sent308. Reopened UI showed
+  those values and Healthy. The controlled outbox is exactlyone of308; its
+  saved Firebasefalse and provider0/0 remain unchanged. No native push is claimed.
+  Three focused MongoConverterConfigTest cases passed, including early converter
+  creation by another post-processor, dotted-key writing and embedded pricing-id
+  roundtrip. Command used existing compiled main classes, one worker,256MiB test
+  heap, and excluded compileJava/processResources/touchDevtoolsReloadTrigger.
+  Screenshot: `/tmp/myscoutee-qa-browser-sessions/evidence/notification-admin-cdp/monitoring-delivery-pass.png`.
+
+- **Section3 steps17–20 and cleanup PASS.** Second attributed scheduler run
+  `df6b70e7-9cbf-4e47-b08e-6b4f8d26f421` completed12:16:03.109732335Z,
+  35ms,processed0. Exact persisted outbox/inbox documents and read timestamp
+  unchanged; Nova UI AlloneRead/New0, Casey New0, Chat unread1. The harness first
+  compared a Mongo object wrapper with a JS wrapper of different key order;
+  comparing the two persisted documents individually removed that false failure.
+  UI Timing restored1minute and reopen matched enabledtrue; unused calendar
+  fields normalize during interval edits, so this oracle compares interval
+  fields. The full original timing, including null calendar fields, was restored
+  by exact fixture reset. The unrelated scheduled-messages rule retained30minute
+  timing/enabled state; its unused calendar defaults had normalized during the
+  original pre-fix all-rule save and normal scheduler history advanced. It was
+  deliberately not rolled back with unrelated scheduler writes.
+  The versioned launcher closed all3 owned browsers; common session reset and
+  scenario reset succeeded. Final controlled chats/messages/outbox/inbox/member
+  rows and scenario snapshots all0; all3 actor notification counters0. Every
+  scenario-owned snapshot was compared after restoration. Monitoring retains
+  ordinary telemetry history; no global telemetry rollback was performed.
+  **NOTIFICATION-ADMIN-LIFECYCLE-001 PASS/CLOSED; campaign93/104, Notifications4/6.**

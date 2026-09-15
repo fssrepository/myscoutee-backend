@@ -688,7 +688,7 @@ command="$1"
 scenario="$2"
 
 case "${scenario}:${command}" in
-  mobile-push:capture)
+  mobile-push:capture|notification-admin:capture)
     [ "$#" -eq 4 ] || { usage >&2; exit 2; }
     run_scenario "${command}" "${scenario}" 30 "$3" "$4"
     ;;
