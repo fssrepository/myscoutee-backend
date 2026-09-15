@@ -1,6 +1,8 @@
 package com.raxim.myscoutee.profile.websocket;
 
 import org.springframework.stereotype.Component;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.util.StringUtils;
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.socket.CloseStatus;
@@ -157,10 +159,17 @@ public class ChatWebSocketHandler extends TextWebSocketHandler {
 
     private void runWithSessionMode(WebSocketSession session, SocketOperation operation) throws Exception {
         MongoSessionMode previousMode = MongoSessionModeContext.currentMode();
+        var previousSecurityContext = SecurityContextHolder.getContext();
+        var socketSecurityContext = SecurityContextHolder.createEmptyContext();
+        if (session.getPrincipal() instanceof Authentication authentication) {
+            socketSecurityContext.setAuthentication(authentication);
+        }
         MongoSessionModeContext.set(resolveSessionMode(session));
+        SecurityContextHolder.setContext(socketSecurityContext);
         try {
             operation.run();
         } finally {
+            SecurityContextHolder.setContext(previousSecurityContext);
             MongoSessionModeContext.set(previousMode);
         }
     }

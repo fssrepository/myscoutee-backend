@@ -19,6 +19,8 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 
 import com.raxim.myscoutee.common.config.firebase.dto.FirebasePrincipal;
 import com.raxim.myscoutee.common.config.mongo.DemoSessionRequestSupport;
+import com.raxim.myscoutee.common.config.mongo.MongoSessionMode;
+import com.raxim.myscoutee.common.config.mongo.MongoSessionModeContext;
 import com.raxim.myscoutee.common.config.properties.ConfigProperties;
 import com.raxim.myscoutee.profile.data.document.AccessGrant;
 import com.raxim.myscoutee.profile.data.document.AccessPolicyDefinition;
@@ -586,6 +588,11 @@ public class AccessControlService implements AccessPolicyData {
     }
 
     private boolean isDemoSessionRequest() {
+        // WebSocket callbacks retain the routed session mode after the HTTP
+        // handshake request has ended.
+        if (MongoSessionModeContext.currentMode() == MongoSessionMode.DEMO) {
+            return true;
+        }
         RequestAttributes requestAttributes = RequestContextHolder.getRequestAttributes();
         if (!(requestAttributes instanceof ServletRequestAttributes servletRequestAttributes)) {
             return false;

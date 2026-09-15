@@ -14,6 +14,27 @@
     "screenHeight": 1000
   },
   "checkpoints": {
+    "MOBILE-PUSH-LIFECYCLE-001": {
+      "layout": { "columns": 2 },
+      "sessions": [
+        {
+          "actor": "Casey Push sender",
+          "sessionKind": "demo",
+          "userId": "650000000000000000000061",
+          "expectedName": "Casey Bridge",
+          "autoDismissExplanationGuide": true,
+          "window": { "x": 0, "y": 68, "width": 960, "height": 950 }
+        },
+        {
+          "actor": "Nova foreground control",
+          "sessionKind": "demo",
+          "userId": "650000000000000000000062",
+          "expectedName": "Nova",
+          "autoDismissExplanationGuide": true,
+          "window": { "x": 960, "y": 68, "width": 960, "height": 950 }
+        }
+      ]
+    },
     "MOBILE-WEBVIEW-LIFECYCLE-001": {
       "layout": {
         "columns": 1

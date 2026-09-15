@@ -11,6 +11,29 @@ const port = Number(process.env.QA_PHONE_CDP_PORT || 36087);
 const packageName = process.env.QA_PHONE_PACKAGE || 'org.chromium.webapk.af8b7eef107d7742f_v2';
 if (!/^org\.chromium\.webapk\.[a-z0-9_]+$/.test(packageName)) throw Error('Invalid QA WebAPK package');
 const transportSnapshot = fileURLToPath(new URL('../../../server/docker/.qa-mobile-runtime/device-transport.before.json', import.meta.url));
+const screenSnapshot = fileURLToPath(new URL('../../../server/docker/.qa-mobile-runtime/device-screen.before.json', import.meta.url));
+if (action === 'keep-screen-awake' || action === 'restore-screen') {
+  const readSetting = (scope, key) => execFileSync('adb', ['shell', 'settings', 'get', scope, key], { encoding: 'utf8' }).trim();
+  const serial = execFileSync('adb', ['get-serialno'], { encoding: 'utf8' }).trim();
+  if (action === 'keep-screen-awake') {
+    if (!existsSync(screenSnapshot)) writeFileSync(screenSnapshot, JSON.stringify({ serial,
+      timeout: readSetting('system', 'screen_off_timeout'), stayOn: readSetting('global', 'stay_on_while_plugged_in') }), { mode: 0o600 });
+    const saved = JSON.parse(readFileSync(screenSnapshot, 'utf8'));
+    if (saved.serial !== serial) throw Error('Screen restore point belongs to another device');
+    execFileSync('adb', ['shell', 'settings', 'put', 'system', 'screen_off_timeout', '1800000']);
+    execFileSync('adb', ['shell', 'svc', 'power', 'stayon', 'usb']);
+  } else {
+    const saved = JSON.parse(readFileSync(screenSnapshot, 'utf8'));
+    if (saved.serial !== serial) throw Error('Screen restore point belongs to another device');
+    for (const [scope, key, value] of [['system', 'screen_off_timeout', saved.timeout], ['global', 'stay_on_while_plugged_in', saved.stayOn]]) {
+      if (!/^(null|[0-9]+)$/.test(value)) throw Error('Invalid retained screen setting');
+      execFileSync('adb', ['shell', 'settings', value === 'null' ? 'delete' : 'put', scope, key, ...(value === 'null' ? [] : [value])]);
+    }
+    unlinkSync(screenSnapshot);
+  }
+  console.log(JSON.stringify({ action, timeout: readSetting('system', 'screen_off_timeout'), stayOn: readSetting('global', 'stay_on_while_plugged_in') }));
+  process.exit(0);
+}
 if (action === 'prepare-transport') {
   if (existsSync(transportSnapshot)) throw Error('Restore the retained offline boundary before preparing transport');
   const mappings = execFileSync('adb', ['reverse', '--list'], { encoding: 'utf8' }).trim().split('\n').filter(Boolean);
@@ -200,6 +223,9 @@ try {
       }
       console.log('Restored QA page and worker transport.');
     }
+  } else if (action === 'close-qa-page') {
+    await send('Target.closeTarget', { targetId: target.id });
+    console.log('Closed the selected localhost QA page; installation and storage retained.');
   } else if (action === 'close-other-qa-tabs') {
     const isPwa = await evaluate(`matchMedia('(display-mode: standalone)').matches`);
     if (!isPwa) throw Error('Launch the QA PWA before closing its browser controls');
