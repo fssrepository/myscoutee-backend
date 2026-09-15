@@ -102,25 +102,25 @@ repair an established product defect. Preserve the phone's tethering connection
 when shaping only its route to the QA application.
 
 ```yaml
-checkpoint: MOBILE-WEBVIEW-LIFECYCLE-001 — PARTIAL / CLIPBOARD DEFERRED
-checklist: ../checklists/notifications/MOBILE-WEBVIEW-LIFECYCLE-001.md
-substage: Non-deferred execution and cleanup complete. Physical native install, local device UI/reload/account transfer, consent 002/003, Maya session limit, seed progress and enlarged neutral footer icons passed. Retain the earlier main-rating photo fit PASS.
-notification_order: MOBILE-WEBVIEW-LIFECYCLE-001, MOBILE-PUSH-LIFECYCLE-001, NOTIFICATION-ADMIN-LIFECYCLE-001, JOB-MESSAGES, BELL-RATING-LIFECYCLE-001
-fixture_phase: Mobile, auth and both consent checkpoints reset and report not-staged. Maya residue zero; Nova consent evidence retained, hu default v1 restored. No active checkpoint fixture.
-browser_control: User explicitly renewed delegation for the entire remaining test, including ordinary phone/browser actions. This current instruction overrides the default manual-browser handoff boundary. Use visible controls; no app API mocks.
-desktop_geometry: user-approved outer window 1180x950 at x107/y68; viewport 1136x763, DPR1 on 1920x1080. AUTH managed windows now closed through the versioned launcher.
-ledger_status: 90/104 passed; Notifications 1/6; Mobile WebView PARTIAL solely for deferred clipboard proof
-required_resume: Do not restart completed WebView branches. Fresh phone native clipboard Allow and desktop allowed paste remain explicitly deferred. If asked to advance the campaign, use the next notification checkpoint and its prerequisites. Verify the runtime read-only before a new fixture launch.
-runtime: Original localhost PWA activated normal HTTP lifecycle-36 build mobile-webview-lifecycle-1789428466369, standalone /game with no waiting worker. Exact environment.dev.ts restored. Original localhost/GitHub installations and caches preserved; only owned 127.0.0.1 probe WebAPK removed. USB reverse tcp:8080 to tcp:80 retained.
-last_completed: Final fixture cleanup, HTTP candidate activation, physical footer screenshot and exact source/config review.
-last_evidence: ../manuals/DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md#webview-final-physical-replay-and-cleanup--2026-09-15
+checkpoint: MOBILE-PUSH-LIFECYCLE-001 — NOT STARTED / DEVICE PREFLIGHT NEXT
+checklist: ../checklists/notifications/MOBILE-PUSH-LIFECYCLE-001.md
+substage: WebView PASS/CLOSED, including fresh phone native clipboard Allow and desktop allowed paste. Retain all completed WebView/shared-permission evidence; next work is the Push-specific device/actor/transport baseline.
+notification_order: MOBILE-PUSH-LIFECYCLE-001, NOTIFICATION-ADMIN-LIFECYCLE-001, JOB-MESSAGES, BELL-RATING-LIFECYCLE-001
+fixture_phase: WebView closure fixture and common session snapshot reset; final status not-staged. No Push fixture prepared or message sent.
+browser_control: Explicit WebView action delegation applied through closure. Follow the current user instruction and next checkpoint execution boundary for Push.
+desktop_geometry: user-approved outer window 1180x950 at x107/y68; viewport 1136x763, DPR1 on 1920x1080. WebView managed desktop window is closed.
+ledger_status: 91/104 passed; Notifications 2/6; Mobile WebView PASS/CLOSED
+required_resume: Read the linked Push guide and verify its preflight read-only before preparing actors. Operator-tested active Firebase revision/public config, physical Riley identity, exactly one current opaque device registration, zero controlled messages and native notification permission are required. Reuse completed shared-popup proof; do not replay WebView or infer FCM delivery from polling.
+runtime: Original localhost PWA retains HTTP lifecycle-36 build mobile-webview-lifecycle-1789428466369, normally logged out at /entry. Exact environment.dev.ts unchanged. Original localhost/GitHub installations/cache and USB reverse tcp:8080 to tcp:80 preserved. Native clipboard Allow accepted; temporary phone Chrome QA tab closed.
+last_completed: Desktop and physical phone native clipboard Allow/exact paste, editor cancellation, subsequent popup layout, unchanged Asset DB oracle and fixture/session cleanup.
+last_evidence: ../manuals/DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md#webview-clipboard-closure--2026-09-15
 ```
 
 ### Notifications takeover notes
 
 `UI-POLL-JANK-001` is closed. Its detailed evidence is in the linked diagnosis
-and CSV/XLSX ledger. The Mobile WebView checkpoint is PARTIAL only for deferred clipboard proof;
-non-deferred execution and cleanup are complete. Do not replay completed work.
+and CSV/XLSX ledger. Mobile WebView is also PASS/CLOSED after both remaining
+clipboard observations and cleanup. Do not replay completed work.
 
 Existing support for the later Notifications guides must be reused before new
 harness code is created:
@@ -141,8 +141,7 @@ harness code is created:
   Never clear app data before capturing the old-cache and account-isolation
   boundaries.
 
-Mobile WebView retains only deferred clipboard work, estimated `20/45` minutes
-if resumed; its original `110/260` estimate is superseded. Other estimates:
+Mobile WebView has no remaining estimate because it is closed. Remaining:
 Mobile Push `100/235`,
 Notification Admin `80/190`, Scheduled Messages `20/65`, Bell/Rating `55/130`
 minutes. The completed UI poll estimate is excluded from the remaining total.
@@ -287,15 +286,12 @@ the checkpoint says otherwise.
 
 ### Next manual action
 
-Continue the active `ENTRY-DEMO-REG-001` first-save email proof and ordinary
-registration return. The saved three-image profile and persisted consent remain
-transaction evidence. Then run `ENTRY-CONSENT-002`, `ENTRY-CONSENT-003` and
-`AUTH-SESSION-001` in that order. Do not restart the Mobile WebView journey from
-its old-cache setup. The checklist's
-[current progress](../checklists/notifications/MOBILE-WEBVIEW-LIFECYCLE-001.md#current-progress--2026-09-14)
-separates retained results from remaining requirements, including pending
-post-fix native install progress replay; actual desktop installation/reopen is
-now recorded. UI-POLL-JANK-001 remains closed.
+Begin the linked `MOBILE-PUSH-LIFECYCLE-001` device preflight when continuing the
+Notifications campaign. WebView, including both previously deferred clipboard
+observations, is PASS/CLOSED with fixtures restored. The active resume block is
+the sole checkpoint pointer; do not replay registration, consent, installation,
+clipboard or cache checks to reach Push. Establish the Push-specific current
+single-registration and controlled-chat baseline before its first message.
 
 Group-size audit: retain `TOURNAMENT-MEMBER-002` as 2+1 because Riley's Group B
 proves parent-event notification delivery across room boundaries while Group B

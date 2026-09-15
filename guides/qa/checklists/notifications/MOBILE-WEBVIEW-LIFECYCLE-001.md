@@ -7,15 +7,14 @@ test is meant to prove.
 
 ## Current progress — 2026-09-15
 
-**Overall: PARTIAL — non-deferred execution complete. Physical native install,
-local-device UI/reload/account transfer, consent 002/003 and Maya session-limit
-replay passed. Loading progress and enlarged contact icons passed on phone.
-Only the explicitly deferred clipboard observations remain open.**
+**Overall: PASS / CLOSED. The final desktop allowed-paste and phone fresh
+native-Allow/paste observations passed. All remaining WebView work and fixture
+cleanup are complete. Next journey: MOBILE-PUSH-LIFECYCLE-001.**
 
 Help / Guide image access is repaired: all 77 MinIO SVG reads passed, and the
 tester reported working images on another surface. Retain the completed
-observations; do not restart them to reach the deferred clipboard boundary.
-[Final replay and cleanup](../../manuals/DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md#webview-final-physical-replay-and-cleanup--2026-09-15).
+observations; do not restart this closed journey.
+[Final replay and cleanup](../../manuals/DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md#webview-clipboard-closure--2026-09-15).
 
 User clarification: visibility belongs to the **profile**, with no separate
 private-image setting. A private profile does not appear as a game card.
@@ -63,11 +62,11 @@ section 0 does not reset the recorded results in sections 1–7.
 | DONE — PHONE | Local device persistence | Off/on, repeated Update, popup reopen, reload, unrelated profile save and automatic transfer between Anna/Balázs passed after the initialization fix. |
 | DONE — PHONE | Affected visual/loading regressions | Proportional main-rating image retained; neutral 28 px contact icons with Facebook; seed progress never decreases and reaches 100. |
 | DONE | Cleanup and records | Fixtures reset, normal HTTP build/config restored, owned temporary app and managed windows removed; original phone apps/cache retained. |
-| DEFERRED BY TESTER | Clipboard | Fresh phone native Allow and desktop allowed paste remain unproven. Already-granted phone exact paste and native Block passed. Do not replay other branches. |
+| DONE — DESKTOP + PHONE | Clipboard | Fresh native Allow and exact paste passed on both platforms; no editor overflow or later popup contamination. Earlier phone native Block/retry retained. Neither Asset edit was saved. [Closure evidence](../../manuals/DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md#webview-clipboard-closure--2026-09-15). |
 
 The entry regression requires separate desktop and physical-phone evidence.
 Do not treat one platform's result as proof for both. Retain completed branches
-and use the closest fixture baseline if the deferred clipboard work is resumed. Real push delivery belongs to
+rather than replaying them for the next journey. Real push delivery belongs to
 [MOBILE-PUSH-LIFECYCLE-001](MOBILE-PUSH-LIFECYCLE-001.md).
 
 ### Recorded results to retain
@@ -95,11 +94,12 @@ complete image fits proportionally within the card.
 
 These limits were already recorded in the detailed evidence. Keep them
 visible; do not silently promote a partial observation to a full PASS or
-automatically replay a branch the tester explicitly deferred.
+rewrite earlier platform-specific observations. The clipboard deferral was
+explicitly resumed and completed in the final closure below.
 
 | Guide block | Proven boundary and remaining limit |
 | --- | --- |
-| [1. Clipboard](#1-coherent-cold-start-upgrade-and-popup-layout) | Phone exact paste with permission already granted and native Block passed. Fresh native Allow and desktop allowed paste remain unproven; the tester requested moving on. [Details](../../manuals/DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md#native-clipboard-observation-and-demo-replay--2026-09-14). |
+| [1. Clipboard](#1-coherent-cold-start-upgrade-and-popup-layout) | Fresh phone native Allow and desktop allowed paste now passed; exact URL and subsequent popup layout verified. Earlier phone native Block/retry evidence retained. No remaining clipboard gap. [Closure](../../manuals/DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md#webview-clipboard-closure--2026-09-15). |
 | [2. Background resume](#2-background-mutation-and-resume) | Chrome resident-list recovery was observed. Candidate 31 Settings resident replay now passed: same document, one controlled row, unread 4 → 5 stable after polling and reopen. [Details](../../manuals/DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md#current-build-cache-retest--2026-09-14-17341743-utc). |
 | [0. Latest entry UI](#0-repeat-the-complete-entry-journey) | Final phone footer replay passed with neutral 28 px glyphs/Facebook retained; actual phone Riley entry and protected large-photo reads passed. Native permission and paired entry coverage must remain explicit. [Details](../../manuals/DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md#entry-login-and-footer-corrections--2026-09-14). |
 | [7. Native install progress](#7-shared-permissions-and-installation--desktop-and-physical-phone) | Desktop actual installation and installed-app reopen are now recorded. Post-fix native waiting without ring, cancellation, accepted-installation ring and completion passed on desktop. Physical-phone native waiting/cancel/accept/completion also passed. [Final evidence](../../manuals/DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md#webview-final-physical-replay-and-cleanup--2026-09-15). |

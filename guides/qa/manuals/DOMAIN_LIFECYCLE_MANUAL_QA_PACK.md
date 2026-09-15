@@ -9607,3 +9607,62 @@ supersedes the pending follow-up and temporary deployment notes above.
   native Block remain proven. The desktop consent-003 sequence caveat remains
   recorded; the exact initial-approval sequence now passes on physical phone.
   Real FCM delivery remains owned by MOBILE-PUSH-LIFECYCLE-001.
+
+
+### WebView clipboard closure — 2026-09-15
+
+The user requested finishing the remaining WebView work, superseding the
+clipboard deferral. Both remaining observations now PASS; no application code
+or build was changed for this closure.
+
+- Resumed from the retained lifecycle-36 phone build
+  `mobile-webview-lifecycle-1789428466369`. Read-only preflight confirmed the
+  running stack, USB reverse route and no staged mobile fixture. Versioned
+  mobile fixture staged at 2026-09-14T23:56:01Z. Versioned browser launcher
+  prepared one isolated desktop Riley control through a temporary checkpoint
+  actor override; common session preparation snapshotted Riley's original
+  session. This preparation is not new login evidence.
+- Desktop: opened My Assets -> Transport -> QA Mobile Public Transport ->
+  Edit. Typed the exact 44-character URL
+  `https://example.com/qa/mobile-webview-source`, copied via real Ctrl+A/C,
+  cleared the field, then clicked the application's Paste link button. The
+  actual Chrome prompt appeared; screenshot-verified native Allow inserted
+  exactly the URL and changed native permission to granted. Viewport
+  1136x763, document scrollWidth 1136; no horizontal expansion. Screenshots:
+  `/tmp/myscoutee-desktop-clipboard-prompt.png` and
+  `/tmp/myscoutee-desktop-clipboard-allowed.png`.
+- Cancelled the desktop Asset editor without Save. Opened Settings ->
+  Permissions: 340 px dialog/client/scroll width, zero Asset editor instances,
+  normal content and controls. Closed the popup normally.
+- Phone: the user removed the retained native clipboard exception. After
+  returning to the original installed localhost PWA, a read-only browser query
+  confirmed prompt. Completed ordinary entry consent/real Riley selection to
+  reach the fixture; no session injection or clipboard API override was used.
+  Opened the same Transport editor, entered the exact URL, selected all 44
+  characters and tapped Android's actual Copy action. Cleared the source field
+  and dismissed the keyboard before the application's Paste link click.
+- The fresh native Block/Allow dialog identified `http://localhost:8080`.
+  Screenshot `/tmp/myscoutee-phone-fresh-clipboard-allow-prompt.png`. Native
+  Allow was tapped. At 2026-09-15T00:04:21.759Z the field equalled the complete
+  URL, permission was granted, and the app remained standalone on lifecycle-36.
+  Viewport 360x753, document width 360; both Asset dialogs had
+  clientWidth=scrollWidth=360. The one-line URL scrolls within its input; the
+  popup does not stretch. Screenshot:
+  `/tmp/myscoutee-phone-fresh-clipboard-allowed.png`.
+- Cancelled the phone editor without Save and opened Settings -> Permissions.
+  At 00:05:06.002Z there were zero Asset editor instances, document width 360,
+  permission dialog width 340.796875 with clientWidth=scrollWidth=341. Normal
+  controls remained available; popup then closed normally. Earlier native
+  Block/denied retry evidence remains valid and was not replayed.
+- Read-only Mongo oracle after both cancellations: controlled sourceLink still
+  empty; createdDate and updatedDate both `2026-09-14T23:56:01.260Z`. No Asset
+  edit persisted. Both clients completed normal Logout confirmation and
+  reached /entry. Versioned reset restored common session state and fixture
+  snapshots; final status is not-staged. Owned desktop session and temporary
+  phone Chrome QA tab closed. Original two WebAPKs/cache and reverse route
+  remain; the accepted native clipboard grant is retained.
+- MOBILE-WEBVIEW-LIFECYCLE-001: PASS/CLOSED. These observations close both
+  previously deferred clipboard gaps. Retain the earlier platform-specific
+  evidence and consent-sequence caveat without rewriting their history.
+  Campaign now 91/104 passed, Notifications 2/6. Next queued journey is
+  MOBILE-PUSH-LIFECYCLE-001; actual FCM delivery has not been exercised here.
