@@ -198,6 +198,8 @@
         forwardRateId: forwardRows[0]._id
       },
       config: activeConfigSummary(),
+      layoutRuleConfig: bellJourney
+        ? Q.ruleConfigSnapshot(Q.assertRuleNotRunning("affinity-graph-layout")) : null,
       bellBaseline: bellJourney ? {
         stats: Q.collection("adminStats").findOne({ statsKey: "global" }),
         monitoring: Q.collection("adminMonitoring").findOne({ monitoringKey: "global" }),
@@ -216,6 +218,8 @@
           $or: [{ leftUserId: { $in: pairUserIds } }, { rightUserId: { $in: pairUserIds } }]
         } : { pairKey } },
         ...(bellJourney ? [
+          ...["adminAffinityGraphLayouts", "adminAffinityGraphNodes", "adminAffinityGraphEdges", "adminAffinityGraphForests"]
+            .map(collection => ({ collection, selector: {} })),
           { collection: "users", selector: { userId: { $in: actors } } },
           { collection: "userLoginAudits", selector: { userId: { $in: actors } } },
           { collection: "userSessionActions", selector: { userId: { $in: actors } } },
@@ -359,7 +363,11 @@
       $and: [pairOutboxSelector(), { pendingCounterTracked: true }]
     });
     if (tracked > 0) Q.fail("pair rating outbox is still tracked by the worker; wait before reset.");
+    if (Q.collection("affinityRecomputeTasks").countDocuments({ targetId: { $in: pairUserIds }, status: { $in: ["pending", "running"] } }))
+      Q.fail("Wait for the pair's affinity work before reset.");
+    if (state.layoutRuleConfig) Q.assertRuleNotRunning("affinity-graph-layout");
     Q.restoreSnapshots(state.snapshots);
+    if (state.layoutRuleConfig) Q.restoreRuleConfig(state.layoutRuleConfig);
     for (const saved of state.activities || []) restoreActivities(saved);
     if (bellJourney) {
       const byId = docs => docs.sort((a, b) => String(a._id).localeCompare(String(b._id)));
@@ -374,7 +382,7 @@
       checkpointId,
       phase: "reset-complete",
       restored: true,
-      detail: "Both directional ratings, pair notifications/outbox, recompute tasks, direct affinity edge, and both activity projections were restored. Graph materializations were read-only in this scenario."
+      detail: "Controlled ratings, notifications/outbox, recompute tasks, affinity edges and activities restored; retained graph materializations and layout timing also restored when snapshotted."
     });
   }
 

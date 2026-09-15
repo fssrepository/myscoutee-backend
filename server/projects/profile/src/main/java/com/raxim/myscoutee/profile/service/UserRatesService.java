@@ -659,7 +659,13 @@ public class UserRatesService {
         addIfText(affectedHomeProjectionOwnerIds, syncKeyRecord == null ? null : syncKeyRecord.getOwnerUserId());
         addIfText(affectedHomeProjectionOwnerIds, naturalKeyRecord == null ? null : naturalKeyRecord.getOwnerUserId());
         addIfText(affectedHomeProjectionOwnerIds, ownerUserId);
-        UserRate existing = naturalKeyRecord != null ? naturalKeyRecord : syncKeyRecord;
+        boolean syncKeyMatchesNaturalKey = syncKeyRecord != null
+                && Objects.equals(ownerUserId, normalizeOptionalId(syncKeyRecord.getOwnerUserId()))
+                && Objects.equals(mode, normalizeMode(syncKeyRecord.getMode()))
+                && Objects.equals(relatedUserId, normalizeOptionalId(syncKeyRecord.getRelatedUserId()))
+                && Objects.equals(secondaryRelatedUserId, normalizeOptionalId(syncKeyRecord.getSecondaryRelatedUserId()));
+        UserRate existing = naturalKeyRecord != null ? naturalKeyRecord
+                : syncKeyMatchesNaturalKey ? syncKeyRecord : null;
         int previousScoreGiven = normalizeScore(existing == null ? null : existing.getScoreGiven());
         boolean syncKeyBelongsToDifferentRecord = naturalKeyRecord != null
                 && syncKeyRecord != null
@@ -672,7 +678,8 @@ public class UserRatesService {
 
         UserRate document = existing != null ? existing : new UserRate();
         document.setId(existing != null ? existing.getId() : new ObjectId().toHexString());
-        document.setSyncKey(syncKeyBelongsToDifferentRecord ? naturalKeyRecord.getSyncKey() : syncKey);
+        document.setSyncKey(syncKeyBelongsToDifferentRecord ? naturalKeyRecord.getSyncKey()
+                : syncKeyRecord != null && !syncKeyMatchesNaturalKey ? document.getId() : syncKey);
         document.setMode(mode);
         document.setCreatedDate(existing != null
                 ? normalizeDate(existing.getCreatedDate(), nowIso)

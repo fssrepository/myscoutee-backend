@@ -10066,3 +10066,45 @@ User-requested presentation, verified after the step12 business/UI closure:
   This presentation-only fixture loaded the already-proven12:54 task result;
   it did not run another worker or supply new business-behavior evidence.
   The earlier real scheduler, audit and Monitoring proofs remain authoritative.
+
+
+### Rating bell consolidated baseline — 2026-09-15
+
+BELL-RATING-LIFECYCLE-001 section1 step1: user authorized continuing the full
+Notifications testing after accepting the JOB-MESSAGES presentation. Its final
+presentation fixture/session reset passed. Existing graph-rating fixture was
+bound to the consolidated checkpoint and staged13:13:43.700Z. Casey061/Nova062
+forward rating072 has scoreGiven0/scoreReceived0/Mettrue; reverse row and direct
+pair edge absent. Snapshot retains actor sessions, original ratings, affected
+affinity edges, notifications/outbox and Statistics/Monitoring/control/layout
+baselines. Existing materialized layout08:59 is older and has no pair edge;
+this is a captured prerequisite, not proof of the forthcoming graph update.
+Managed Casey/Nova/Ava startup initiated; no rating action or new PASS yet.
+
+### Rating bell and reciprocal delivery — 2026-09-15
+
+`BELL-RATING-LIFECYCLE-001` remains IN PROGRESS. Section1 steps1–8 passed:
+Casey selected4 without a write, saved once, normal batch persisted one rating
+and one Nova inbox/outbox; Mark as read set readAt once and reopening All kept
+the same row and zero New count. Section2 steps9–10: Nova saved3 once, Casey
+received one row and marked it read; both target unread projections are zero,
+no self notification or duplicate. Evidence: `/tmp/myscoutee-qa-browser-sessions/
+evidence/bell-rating-cdp/` labels `score-four-not-saved`, `forward-saved`,
+`first-mark-read`, `first-reopened`, `reciprocal-saved`, `reciprocal-read`,
+`before-fixture-correction`. Persisted one paired row currently stores3/4 and
+mutuallyRated=true; its owner switched to Nova. Separate directional-row
+assumptions need checking; no application change or reciprocal persistence PASS
+was inferred from that alone.
+
+Step11 Ava Stats shows today's Ratings2 (baseline0) and Matching/Rating
+activity344 (baseline342). Captured unrelated Events/assets, Communication
+and Moderation counters are unchanged. Both recompute targets are now done;
+Monitoring and graph UI checks remain.
+
+The pair was already `met:true` in the versioned seed, eventName
+`Seeded Coffee Bridge`, dated2026-03-22. The user clarified mutual ratings
+versus completed-event Met semantics, then explicitly cancelled the proposed
+fixture correction. No fixture change/reset occurred. The current test proves
+rating notifications on a prepared Met pair, not the event-completion-to-Met
+transition. Existing event-counter-expiry invokes EventFriendshipProjectionService
+after event end and writes userFriendships; it does not directly set userRates.met.

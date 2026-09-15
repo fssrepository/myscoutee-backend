@@ -102,16 +102,16 @@ repair an established product defect. Preserve the phone's tethering connection
 when shaping only its route to the QA application.
 
 ```yaml
-checkpoint: BELL-RATING-LIFECYCLE-001 — NOT STARTED
+checkpoint: BELL-RATING-LIFECYCLE-001 — SECTION 2 / STEP 12
 checklist: ../checklists/notifications/BELL-RATING-LIFECYCLE-001.md
-substage: JOB-MESSAGES PASS/CLOSED, including step12 latest task results display and focused real scheduler/UI retest.
-fixture_phase: not-staged; JOB-MESSAGES exact fixture/session reset completed.
-browser_control: JOB-MESSAGES full-flow delegation completed; its owned windows are closed. Keep exact block/step commentary for the next checkpoint.
-required_resume: Load the linked next checklist and verify its runtime baseline before fixture mutation. Preserve all completed Notifications evidence; do not replay JOB-MESSAGES.
-runtime: Existing dev stack; original1800000ms scheduled-message operational poll restored; DevTools reload verified; no temporary override marker remains.
-ledger_status: 94/104 passed; Notifications5/6; JOB-MESSAGES PASS/CLOSED.
-last_completed: JOB-MESSAGES both business cases, Monitoring, step12 live/reopened916px/mobile360px task results,5 focused service tests,i18n audit,exact cleanup.
-last_evidence: ../manuals/DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md#scheduled-messages-step12-display-closure--2026-09-15
+substage: First rating/read steps1–8 and reciprocal bell/read9–10 passed; Stats11 shows Ratings0->2 and Matching342->344. Monitoring12 and graph13–15 next, then feedback16–20.
+fixture_phase: Original graph-rating baseline retained. Seeded Met pair now stores one row Nova3/received4/mutualtrue; both recompute tasks done. User cancelled proposed fixture correction; no fixture mutation/reset performed.
+browser_control: Full Notifications flow explicitly delegated. Casey Notifications New0; Nova Rates Met; Ava Stats open. Announce exact numbered block/step.
+required_resume: Inspect existing sessions and read-only oracle. Complete Monitoring12 and graph13–15. Investigate directional-row assumption before declaring reciprocal persistence PASS; preserve all existing evidence.
+runtime: Existing dev stack; original scheduled-message1800000ms poll. No extra builds or workers.
+ledger_status: 94/104 passed; Notifications5/6; BELL remains IN PROGRESS.
+last_completed: Section2 step11 Stats UI and persisted counters; both rating inbox rows read, no duplicates/self notifications.
+last_evidence: ../manuals/DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md#rating-bell-and-reciprocal-delivery--2026-09-15
 ```
 
 ### Notifications takeover notes

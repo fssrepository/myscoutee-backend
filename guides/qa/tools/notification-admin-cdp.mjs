@@ -62,6 +62,22 @@ try {
     await page.send('Input.dispatchMouseEvent', {type:'mousePressed',button:'left',clickCount:1,...box});
     await page.send('Input.dispatchMouseEvent', {type:'mouseReleased',button:'left',clickCount:1,...box});
     await delay(600); console.log('Clicked configured existing-page control.');
+  } else if (action === 'point') {
+    const x = Number(args[0]), y = Number(args[1]);
+    if (!Number.isFinite(x) || !Number.isFinite(y) || !await page.evaluate(`(${x}>=0&&${y}>=0&&${x}<innerWidth&&${y}<innerHeight)`)) throw new Error('Point outside current viewport');
+    await page.send('Input.dispatchMouseEvent', {type:'mousePressed',button:'left',clickCount:1,x,y});
+    await page.send('Input.dispatchMouseEvent', {type:'mouseReleased',button:'left',clickCount:1,x,y});
+    await delay(600); console.log('Clicked point from the inspected current screenshot.');
+  } else if (action === 'range') {
+    const range = await page.evaluate(`(() => { const e=document.querySelector(${JSON.stringify(args[0])}); if(!e || e.type!=='range')throw Error('Range input missing');e.focus();return {min:Number(e.min),max:Number(e.max),step:Number(e.step||1)};})()`);
+    const count = (Number(args[1]) - range.min) / range.step;
+    if (!Number.isInteger(count) || count < 0 || count > 20 || Number(args[1]) > range.max) throw new Error('Unsupported range value');
+    for (const key of ['Home', ...Array(count).fill('ArrowRight')]) {
+      const code = key === 'Home' ? 36 : 39;
+      await page.send('Input.dispatchKeyEvent', {type:'keyDown',key,code:key,windowsVirtualKeyCode:code});
+      await page.send('Input.dispatchKeyEvent', {type:'keyUp',key,code:key,windowsVirtualKeyCode:code});
+    }
+    console.log('Selected range value through keyboard input; no Save invoked.');
   } else if (action === 'clear-draft') {
     await page.send('Page.bringToFront');
     await page.evaluate(`(()=>{const e=document.querySelector('textarea');e.focus();e.select()})()`);
