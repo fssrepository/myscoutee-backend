@@ -11,6 +11,19 @@ const port = Number(process.env.QA_PHONE_CDP_PORT || 36087);
 const packageName = process.env.QA_PHONE_PACKAGE || 'org.chromium.webapk.af8b7eef107d7742f_v2';
 if (!/^org\.chromium\.webapk\.[a-z0-9_]+$/.test(packageName)) throw Error('Invalid QA WebAPK package');
 const transportSnapshot = fileURLToPath(new URL('../../../server/docker/.qa-mobile-runtime/device-transport.before.json', import.meta.url));
+if (action === 'prepare-transport') {
+  if (existsSync(transportSnapshot)) throw Error('Restore the retained offline boundary before preparing transport');
+  const mappings = execFileSync('adb', ['reverse', '--list'], { encoding: 'utf8' }).trim().split('\n').filter(Boolean);
+  if (mappings.some(line => !line.endsWith('tcp:8080 tcp:80'))) throw Error('Unexpected reverse mapping; preserve existing transport');
+  const forwards = execFileSync('adb', ['forward', '--list'], { encoding: 'utf8' }).trim().split('\n').filter(Boolean);
+  if (forwards.some(line => line.includes(` tcp:${port} `) && !line.endsWith('localabstract:chrome_devtools_remote'))) {
+    throw Error('QA CDP port is owned by another forward');
+  }
+  execFileSync('adb', ['reverse', 'tcp:8080', 'tcp:80']);
+  execFileSync('adb', ['forward', `tcp:${port}`, 'localabstract:chrome_devtools_remote']);
+  console.log('Prepared the configured QA reverse tunnel and Chrome inspection forward; device data/radios unchanged.');
+  process.exit(0);
+}
 if (action === 'transport-offline') {
   if (existsSync(transportSnapshot)) throw Error('QA transport already has a retained restore point');
   const mappings = execFileSync('adb', ['reverse', '--list'], { encoding: 'utf8' }).trim().split('\n').filter(Boolean);

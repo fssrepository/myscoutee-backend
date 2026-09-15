@@ -19,24 +19,45 @@ tested active Firebase revision is a prerequisite.
 - Do not clear app data, reinstall, rotate a token or change permission except
   at the exact step that requests it.
 
-To start, tell Codex:
-
-`Prepare MOBILE-PUSH-LIFECYCLE-001 device preflight only.`
-
-Begin after Codex confirms ADB transport/tunnel, package/build identity,
+Codex prepares the versioned fixture and confirms ADB transport/tunnel, package/build identity,
 Firebase revision, Riley identity, one opaque device registration, zero target
-message rows and the current Android notification permission.
+message rows and the current Android notification permission. If the user has
+delegated this checkpoint, Codex also performs its browser and device actions.
 
-## Shared permission and device-registration preflight
+## Fixture and device-registration baseline
 
-First exercise section 7 of [the WebView guide](MOBILE-WEBVIEW-LIFECYCLE-001.md)
-with the same phone and a managed desktop actor. The shared popup controls the
-physical device registration, separately from in-app bell muting. Update off
-must remove the registration and survive reload; Update on must restore exactly
-one registration after any native permission decision. Only then establish the
-one-registration baseline below. Do not count a mocked provider or a later poll
-refresh as FCM delivery. A native decision disables its button without a ring;
-background registration shows the ring after the decision.
+Reuse the completed [WebView evidence](MOBILE-WEBVIEW-LIFECYCLE-001.md).
+Do not repeat its permission-popup, off/on/reload, installation, clipboard,
+consent, login or cache journeys. Do not replay the Operator configuration
+journey to reach this test.
+
+Codex loads the QA Firebase configuration and controlled actors/Chat through
+the versioned fixture. Retain the provenance of the previously tested provider
+configuration. If Riley has no current real device registration, register this
+one browser/device through its normal registration path, including only the
+native permission decision required for that setup. This is baseline
+preparation, not another WebView or Operator test or a new PASS for either.
+
+Require exactly one current Riley provider registration and zero controlled
+Chat messages before section 1. Fixture state or an opaque placeholder cannot
+substitute for a genuine browser-issued FCM token. Do not count a mocked
+provider or a later poll refresh as FCM delivery. Permission denial and token
+replacement are exercised only in their Push sections below.
+
+## Execution order and recovery
+
+Follow this order once: fixture/device baseline → foreground → background
+(Home, Settings, Chrome) → fully closed/cold start → permission denial → token
+replacement → final oracle and cleanup. Report the current section, its result
+and the next action at each boundary.
+
+After a defect, repair its owner and resume from the nearest valid fixture
+savepoint. Replay only the affected action and its necessary causal tail.
+Repeat an earlier passed section only if the defect contaminated its baseline
+or the repair changed the behavior that section proved; record that reason
+before replaying it. Keep passed evidence and avoid full checkpoint restarts,
+adjacent journeys and redundant checks. Elapsed time is part of execution
+planning; it never turns an unobserved result into a PASS.
 
 ## 1. Foreground delivery
 
@@ -174,8 +195,9 @@ resets the disposable Chat/device fixture without printing token material.
 ### Device persistence and transport preflight
 
 Use the normal configured PWA/Firebase deployment, without query or browser-
-storage test switches. Cover the shared popup local-device persistence cases
-from MOBILE-WEBVIEW-LIFECYCLE-001 before real delivery. Local registrations
+storage test switches. Reuse the completed shared popup/local-device persistence
+evidence from MOBILE-WEBVIEW-LIFECYCLE-001; prepare only the current Push baseline.
+Local registrations
 contain no Firebase token and cannot count as a provider-delivery result.
 The phone transport fixture may shape the PWA and its same-origin worker; it
 must leave phone radios/tethering intact. This does not disconnect Android's

@@ -352,6 +352,14 @@ do not silently redefine the expected behavior or expand the current test.
 
 ### Pair-QA execution and replay contract
 
+User clarification (2026-09-15): execute one visible, ordered chain with brief
+savepoint results and next actions. Preparation belongs in fixtures, with only
+the real browser/device registration needed for the active test. Never replay
+completed WebView/Operator journeys as Push preparation. After a fix, resume
+from the nearest valid savepoint and repeat only the affected causal tail;
+revisit passed work only when its baseline or proved behavior was invalidated,
+and state the reason. Time matters: avoid redundant checks and adjacent work.
+
 1. Select the next testcase from the canonical CSV/XLSX Pair-QA order and open
    its stable file under `guides/qa/checklists/`.
 2. Before asking for a user action, Codex provides or reuses a versioned
