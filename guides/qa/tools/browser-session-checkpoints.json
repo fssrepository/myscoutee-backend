@@ -26,7 +26,7 @@
           "expectedName": "Ava Moderation",
           "targetUrl": "http://localhost/admin",
           "entryUrl": "http://localhost/entry?redirect=%2Fadmin",
-          "autoDismissExplanationGuide": true
+          "autoDismissExplanationGuide": false
         },
         {
           "actor": "Nova",

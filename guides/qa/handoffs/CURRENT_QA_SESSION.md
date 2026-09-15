@@ -102,16 +102,16 @@ repair an established product defect. Preserve the phone's tethering connection
 when shaping only its route to the QA application.
 
 ```yaml
-checkpoint: MOBILE-PUSH-LIFECYCLE-001 — SECTION 4 / STEP 23 EVIDENCE AND CLEANUP
-checklist: ../checklists/notifications/MOBILE-PUSH-LIFECYCLE-001.md
-substage: Foreground, Home/Settings/Chrome background, closed-QA-PWA route/read, denial and replacement delivery/read/back/relaunch PASS retained. Step19 native re-prompt after OS denial NOT PROVEN; earlier stopped-Chrome LOW_MEMORY remains separate.
-fixture_phase: mobile-push replacement-token; twelve messages; Casey0/Nova10/Riley11; all phase savepoints through replacement-token captured.
-browser_control: Full Push delegated; user assists. Announce block and step before actions; inspect before sending.
-required_resume: Finish exact owned-fixture cleanup and final records. Saved Firebase/device decision implemented;14 focused tests including actual Mongo merge PASS. Native popup re-prompt after explicit OS denial returned denied; restoring original OS grant was fixture preparation, not a native-dialog PASS. Preserve that qualification; no full replay or broad application refactor.
-runtime: Original QA PWA lifecycle47 at /game; Riley, no Chat popup; timeOrigin1789471463153.3. Exactly one enabled replacement provider registration, same physical device ID/new token fingerprint. QA WebAPK original native grant restored. Chrome temporary native grant and screen overrides still require their saved cleanup restoration.
-ledger_status: 91/104 passed; Notifications2/6; Push IN PROGRESS
-last_completed: Section4 step22 replacement-only FCM delivery, exact message/read, stable Back/relaunch; replacement-token savepoint.
-last_evidence: ../manuals/DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md#mobile-push-device-preflight--2026-09-15
+checkpoint: NOTIFICATION-ADMIN-LIFECYCLE-001 — SECTION 1 / STEPS 1–2
+checklist: ../checklists/notifications/NOTIFICATION-ADMIN-LIFECYCLE-001.md
+substage: Rule-edit baseline; no checklist action performed.
+fixture_phase: notification-admin rule-edit-baseline; original interval 1 minute, enabled true; target outbox/inbox 0/0; Ava/Casey/Nova unread 0.
+browser_control: Standardized versioned launcher prepares Ava/Nova/Casey in one row; user performs the next manual checklist actions.
+required_resume: Read fixture status first; retain the baseline and existing prepared windows. Ava opens Configuration -> Jobs -> Send notifications, records Timing/enabled/Last run/newest Runner history, then performs steps3–5. Do not repeat Push.
+runtime: Existing dev stack; Firebase inactive after verified Push rollback. Three configured desktop sessions; physical phone signed out and restored.
+ledger_status: 92/104 passed; Notifications3/6; Push PASS/CLOSED; Notification Admin IN PROGRESS.
+last_completed: Push section4 step23 rollback PASS twice; zero fixture remnants, owned Firebase identity absent, original Chrome/screen settings restored. User accepted closure with recorded platform qualifications.
+last_evidence: ../manuals/DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md#notification-admin-rule-edit-baseline--2026-09-15
 ```
 
 ### Notifications takeover notes
@@ -128,9 +128,11 @@ harness code is created:
   yet bound.
 - `JOB-MESSAGES`: the `scheduled-messages` inactive-user/recent-user fixture
   exists; its Admin/fixture-user browser setup is not yet bound.
-- `NOTIFICATION-ADMIN-LIFECYCLE-001`: `notification-read-path` and
-  `notification-outbox` fixtures exist; the combined rule-save/invalid-save/
-  restore wrapper and browser setup are not yet bound.
+- `NOTIFICATION-ADMIN-LIFECYCLE-001`: versioned `notification-admin` stage/status/reset
+  and Ava/Nova/Casey browser setup now own the rule-edit baseline. Reuse existing
+  `notification-read-path` / `notification-outbox` helpers for later phases;
+  the invalid-rule and controlled-enqueue commands still need their checkpoint
+  binding before steps6/10. Do not run those phases during startup.
 - `MOBILE-PUSH-LIFECYCLE-001`: execution remains gated on an Operator-tested
   active Firebase revision and a disposable physical Android device. Never
   manufacture a local token fallback.
@@ -140,7 +142,6 @@ harness code is created:
   boundaries.
 
 Mobile WebView has no remaining estimate because it is closed. Remaining:
-Mobile Push `100/235`,
 Notification Admin `80/190`, Scheduled Messages `20/65`, Bell/Rating `55/130`
 minutes. The completed UI poll estimate is excluded from the remaining total.
 
@@ -284,7 +285,11 @@ the checkpoint says otherwise.
 
 ### Next manual action
 
-`MOBILE-PUSH-LIFECYCLE-001`: finish exact fixture/provider cleanup and restore retained runtime settings. Device delivery/read phases are saved through replacement-token. Keep the step19 native re-prompt qualification and stopped-Chrome LOW_MEMORY observation explicit; do not claim full PASS or replay completed phases.
+`NOTIFICATION-ADMIN-LIFECYCLE-001` — **section 1, steps 1–2**: in Ava, open
+`Configuration -> Jobs -> Send notifications`. Record the original **1 minute**
+Timing, enabled state, Last run and newest Runner history. Then follow steps
+3–5: save **2 minutes**, close/reopen and report the persisted value.
+
 
 Group-size audit: retain `TOURNAMENT-MEMBER-002` as 2+1 because Riley's Group B
 proves parent-event notification delivery across room boundaries while Group B

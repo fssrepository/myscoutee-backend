@@ -7969,7 +7969,7 @@ Permission denial section3 steps14–17 PASS on lifecycle46 (1789470707679): nat
 
 Replacement delivery and route, section4 steps18/20–22 PASS: popup off/Update removed the old provider registration; popup on/Update after restoring the deliberately denied OS permission registered exactly one new provider-token fingerprint, keeping physical device4efd1d0e-caac-4f72-9566-2212a6f2759b. Message869b435c-b8c1-4028-bf12-a52a7a32c2eb, outbox6aa92aa3f59d38d912af4233 sent11:23:18.547Z retry0/success1/failure0. Saved Firebase=true; Nova device map empty and Riley map contains exactly the replacement fingerprint, verified against the old-registration capture. Exact native replacement-token notification observed before tap. Tap opened one Chat with matching message target and read only Riley inbox6aa92aa3f59d38d912af4235 at11:24:04.082675091Z. Back/normal launch returned /game, zero Chat popups, timeOrigin1789471463153.3; inbox unchanged. Twelve messages retained; Casey0/Nova10/Riley11. replacement-token savepoint captured. The source bundles and all three Mongo i18n seeds now publish version2026.09.15.{en,hu}.103; i18n audit PASS. Live translated Hungarian denial message was verified on the phone and no longer mentions browser/site settings. Before the versioned seed update, all6826 live QA translation rows matched the seed; only two translated values and bundle metadata changed.
 
-Section4 step19 native re-prompt remains NOT PROVEN after the deliberate OS-level denial: popup Notification.requestPermission returned denied with no native dialog; it stayed open with a blocked message and performed no redirect. Clearing the QA WebAPK user-set/user-fixed test flags did not restore an ask state. The WebAPK permission-history boundary is separate from browser JavaScript. Original granted OS permission was restored as fixture preparation via ADB; the subsequent popup registration and provider-token delivery passes above do not count as native-dialog proof. No WebAPK reinstall, app-data wipe, fake token or browser permission override was used. Retain this qualification and the earlier stopped-Chrome LOW_MEMORY observation; do not label the complete Push checkpoint PASS.
+Section4 step19 native re-prompt remains NOT PROVEN after the deliberate OS-level denial: popup Notification.requestPermission returned denied with no native dialog; it stayed open with a blocked message and performed no redirect. Clearing the QA WebAPK user-set/user-fixed test flags did not restore an ask state. The WebAPK permission-history boundary is separate from browser JavaScript. Original granted OS permission was restored as fixture preparation via ADB; the subsequent popup registration and provider-token delivery passes above do not count as native-dialog proof. No WebAPK reinstall, app-data wipe, fake token or browser permission override was used. This observation did not close the checkpoint; the subsequent user-accepted closure below retains this qualification and the earlier stopped-Chrome LOW_MEMORY observation.
 
 - **Push closure — 2026-09-15, section 4 step 23: PASS/CLOSED.** User explicitly
   requested PASS and continuation after rollback. The recorded native re-prompt
@@ -9831,3 +9831,16 @@ or build was changed for this closure.
   evidence and consent-sequence caveat without rewriting their history.
   Campaign now 91/104 passed, Notifications 2/6. Next queued journey is
   MOBILE-PUSH-LIFECYCLE-001; actual FCM delivery has not been exercised here.
+
+
+### Notification Admin rule-edit baseline — 2026-09-15
+
+`NOTIFICATION-ADMIN-LIFECYCLE-001`, section 1 steps 1–2: the versioned
+`notification-admin` scenario captured the original rule, actor data/session
+baselines, target row selectors and read-only unrelated-rule/Monitoring controls.
+Original Send notifications interval: 1 minute (60 seconds), enabled true.
+Firebase is inactive after Push rollback; target outbox/inbox 0/0 and all three
+actor notification counters 0. No rule edit or producer action was performed.
+The stable guide now describes the user-approved saved Firebase decision
+contract: new explicit false decisions complete with zero provider calls, while
+legacy null-decision messages retain their older behavior.
