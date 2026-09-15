@@ -10044,3 +10044,25 @@ display through one real recent-user scheduler pass.
   not-staged/tasknull. Original1800000ms operational poll restored through the
   existing DevTools process; override marker removed. Campaign94/104,
   Notifications5/6. Next checkpoint: BELL-RATING-LIFECYCLE-001.
+
+
+### Scheduled messages final table presentation — 2026-09-15
+
+User-requested presentation, verified after the step12 business/UI closure:
+
+- Runner history and Latest task results share the compact table style. Status
+  uses a Completed check icon or Scheduled clock with its full accessible label.
+  Internal task identifiers are no longer rendered.
+- A borderless, transparent info control stays20x20px inside an unchanged28px
+  hit area. Closed uses info_outline; open uses the filled info glyph, with no
+  filled rectangular background or hover/press scaling. The row stays visible;
+  the full detail appears beneath it like an accordion and toggles closed again.
+- Live916px and360px verification passed for both tables. At360px each table's
+  clientWidth and scrollWidth are282px: no horizontal scrollbar. Info toggles
+  keep aria-pressed/aria-expanded in sync, and the unchanged result appears
+  below its source row. Existing frontend watcher completed13:12:16Z.
+- Final screenshots in the existing job-messages-cdp evidence directory:
+  step12-icon-only-desktop.png and step12-icon-only-mobile.png.
+  This presentation-only fixture loaded the already-proven12:54 task result;
+  it did not run another worker or supply new business-behavior evidence.
+  The earlier real scheduler, audit and Monitoring proofs remain authoritative.

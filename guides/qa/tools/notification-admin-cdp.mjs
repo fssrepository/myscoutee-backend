@@ -9,12 +9,12 @@ import WebSocket from '../../../frontend/node_modules/ws/index.js';
 
 const [action, actor = 'Ava', ...args] = process.argv.slice(2);
 const checkpointId = process.env.QA_CHECKPOINT || 'NOTIFICATION-ADMIN-LIFECYCLE-001';
-if (!['NOTIFICATION-ADMIN-LIFECYCLE-001', 'JOB-MESSAGES'].includes(checkpointId)) throw new Error('Unsupported delegated checkpoint');
+if (!['NOTIFICATION-ADMIN-LIFECYCLE-001', 'JOB-MESSAGES', 'BELL-RATING-LIFECYCLE-001'].includes(checkpointId)) throw new Error('Unsupported delegated checkpoint');
 const root = path.join(os.tmpdir(), 'myscoutee-qa-browser-sessions');
 const manifest = JSON.parse(readFileSync(path.join(root, checkpointId + '.json'), 'utf8'));
 const session = manifest.sessions.find(item => item.actor === actor);
 if (!session || manifest.checkpointId !== checkpointId) throw new Error('Missing managed checkpoint actor.');
-const evidence = path.join(root, 'evidence', checkpointId === 'JOB-MESSAGES' ? 'job-messages-cdp' : 'notification-admin-cdp');
+const evidence = path.join(root, 'evidence', checkpointId === 'JOB-MESSAGES' ? 'job-messages-cdp' : checkpointId === 'BELL-RATING-LIFECYCLE-001' ? 'bell-rating-cdp' : 'notification-admin-cdp');
 mkdirSync(evidence, { recursive: true, mode: 0o700 });
 const delay = ms => new Promise(resolve => setTimeout(resolve, ms));
 const digest = value => createHash('sha256').update(JSON.stringify(value)).digest('hex');

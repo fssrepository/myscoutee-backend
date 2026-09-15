@@ -762,9 +762,12 @@ PY
     [ "$#" -eq 3 ] || { usage >&2; exit 2; }
     run_scenario "${command}" "${scenario}" 30 "$3"
     ;;
+  graph-rating:stage|graph-rating:status|graph-rating:reset)
+    [ "$#" -eq 2 ] || { [ "$#" -eq 3 ] && [ "$3" = "BELL-RATING-LIFECYCLE-001" ]; } || { usage >&2; exit 2; }
+    run_scenario "${command}" "${scenario}" 30 "${3:-GRAPH-RATING-001}"
+    ;;
   base-stat:stage|base-stat:status|base-stat:reset|\
   stat-010:stage|stat-010:status|stat-010:reset|\
-  graph-rating:stage|graph-rating:status|graph-rating:reset|\
   graph-layout:stage|graph-layout:status|graph-layout:reset|\
   stat-011:stage|stat-011:status|stat-011:reset|\
   stat-020:stage|stat-020:status|stat-020:reset|\

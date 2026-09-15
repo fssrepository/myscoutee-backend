@@ -81,9 +81,12 @@ user-affinity task. This variation does not require a user bell or email.
     `Run` is disabled and the top history row predates this variation.
 11. Leave the page open for the normal scheduler pass.
 12. In Job Detail, scroll below **Runner history** to **Latest task results**.
-    Confirm the new result says **User active; rescheduled.**, shows Scheduled
-    and 0 affected, and **Next task due** is about 30 days after the fixture's
-    recorded activity. This moves the individual user's next check; the job's
+    Confirm the row has the Scheduled clock icon, 0 affected, and **Next task
+    due** about 30 days after the fixture's recorded activity. Toggle its info
+    icon: the icon fills and **User active; rescheduled.** appears below
+    the unchanged row. Toggle it again to collapse the detail. Both tables
+    use this interaction and fit the mobile width without horizontal scrolling.
+    This moves the individual user's next check; the job's
     **Timing** interval remains unchanged. Runner history records the scheduler
     dispatch; Latest task results shows each task's most recent outcome.
 13. In the fixture-user window, confirm the profile remains active and no
