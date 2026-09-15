@@ -26,11 +26,63 @@ import com.raxim.myscoutee.profile.data.dto.admin.AdminDtos.AdminParamFieldDto;
 import com.raxim.myscoutee.profile.data.dto.admin.AdminDtos.AdminParamOptionDto;
 import com.raxim.myscoutee.profile.data.dto.admin.AdminDtos.AdminUserDto;
 import com.raxim.myscoutee.profile.repository.EmailTemplatesRepository;
+import com.raxim.myscoutee.profile.repository.ScheduledMessageTasksRepository;
+import com.raxim.myscoutee.profile.data.document.ScheduledMessageTask;
 import com.raxim.myscoutee.profile.service.AdminModerationService;
 import com.raxim.myscoutee.profile.service.AdminTelemetryService;
 import com.raxim.myscoutee.profile.service.EventScheduler;
 
 class AdminNotificationServiceTest {
+    @Test
+    void scheduledTaskResultsExposeRescheduleDueDateWithoutChangingRunnerHistory() {
+        var registry = mock(NotificationRuleRegistryService.class);
+        var tasks = mock(ScheduledMessageTasksRepository.class);
+        var rule = rule("scheduled-messages", true, "completed", "completed");
+        when(registry.findRule("scheduled-messages")).thenReturn(java.util.Optional.of(rule));
+        var task = new ScheduledMessageTask();
+        task.setTaskKey("user-inactivity-1");
+        task.setStatus("scheduled");
+        task.setLastRunStatus("scheduled");
+        task.setLastRunDetail("User active; rescheduled.");
+        task.setLastRunCount(0);
+        task.setLastRunAtIso("2026-09-15T12:38:02Z");
+        task.setDueAtIso("2026-10-15T12:35:27Z");
+        when(tasks.findTop12ByLastRunAtIsoNotNullOrderByLastRunAtIsoDesc()).thenReturn(List.of(task));
+        var service = service(registry, tasks);
+        try {
+            var state = service.ruleState("scheduled-messages", "admin-1");
+            assertThat(state.runHistory()).isEmpty();
+            assertThat(state.taskResults()).singleElement().satisfies(result -> {
+                assertThat(result.detail()).isEqualTo("User active; rescheduled.");
+                assertThat(result.status()).isEqualTo("scheduled");
+                assertThat(result.affectedCount()).isZero();
+                assertThat(result.nextDueAtIso()).isEqualTo("2026-10-15T12:35:27Z");
+            });
+            task.setStatus("completed");
+            task.setLastRunStatus("completed");
+            task.setLastRunCount(1);
+            assertThat(service.ruleState("scheduled-messages", "admin-1").taskResults())
+                    .singleElement().satisfies(result -> assertThat(result.nextDueAtIso()).isEmpty());
+        } finally {
+            service.shutdown();
+        }
+    }
+
+    @Test
+    void unrelatedJobDoesNotReadScheduledTaskResults() {
+        var registry = mock(NotificationRuleRegistryService.class);
+        var tasks = mock(ScheduledMessageTasksRepository.class);
+        when(registry.findRule("event-random-groups"))
+                .thenReturn(java.util.Optional.of(rule("event-random-groups", true, "idle", "")));
+        var service = service(registry, tasks);
+        try {
+            assertThat(service.ruleState("event-random-groups", "admin-1").taskResults()).isEmpty();
+            verify(tasks, never()).findTop12ByLastRunAtIsoNotNullOrderByLastRunAtIsoDesc();
+        } finally {
+            service.shutdown();
+        }
+    }
+
     @Test
     void runRejectsNonManualRuleBeforeStartingAnyWorker() {
         NotificationRuleRegistryService registry = mock(NotificationRuleRegistryService.class);
@@ -117,6 +169,10 @@ class AdminNotificationServiceTest {
     }
 
     private AdminNotificationService service(NotificationRuleRegistryService registry) {
+        return service(registry, mock(ScheduledMessageTasksRepository.class));
+    }
+
+    private AdminNotificationService service(NotificationRuleRegistryService registry, ScheduledMessageTasksRepository tasks) {
         EmailTemplatesRepository emailTemplatesRepository = mock(EmailTemplatesRepository.class);
         when(emailTemplatesRepository.findByEnabledTrueOrderByTemplateKeyAsc()).thenReturn(List.of());
         AdminModerationService moderation = mock(AdminModerationService.class);
@@ -127,7 +183,8 @@ class AdminNotificationServiceTest {
                 emailTemplatesRepository,
                 mock(EventScheduler.class),
                 moderation,
-                mock(AdminTelemetryService.class));
+                mock(AdminTelemetryService.class),
+                tasks);
     }
 
     private NotificationRuleConfig rule(
@@ -247,6 +304,7 @@ class AdminNotificationServiceTest {
                         0,
                         "",
                         ""),
+                List.of(),
                 List.of(),
                 "2026-07-25T00:00:01Z",
                 "admin-1");

@@ -80,9 +80,12 @@ user-affinity task. This variation does not require a user bell or email.
 10. In Ava, reopen **Send scheduled messages**. Again confirm Eligible is 1,
     `Run` is disabled and the top history row predates this variation.
 11. Leave the page open for the normal scheduler pass.
-12. Confirm the new history detail says the active user was rescheduled, not
-    inactivated. The task remains Scheduled and its due time moves to about 30
-    days after the fixture's recorded activity.
+12. In Job Detail, scroll below **Runner history** to **Latest task results**.
+    Confirm the new result says **User active; rescheduled.**, shows Scheduled
+    and 0 affected, and **Next task due** is about 30 days after the fixture's
+    recorded activity. This moves the individual user's next check; the job's
+    **Timing** interval remains unchanged. Runner history records the scheduler
+    dispatch; Latest task results shows each task's most recent outcome.
 13. In the fixture-user window, confirm the profile remains active and no
     inactive banner appears. No unexplained notification/email is visible.
 14. Reopen Monitoring once and confirm exactly one attributed scheduler/audit

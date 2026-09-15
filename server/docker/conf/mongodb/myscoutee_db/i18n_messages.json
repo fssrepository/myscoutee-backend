@@ -20478,6 +20478,30 @@
     "value": "Update"
   },
   {
+    "_id": "i18n-message-en-admin-jobs-task-results",
+    "key": "admin.jobs.task.results",
+    "lang": "en",
+    "value": "Latest task results"
+  },
+  {
+    "_id": "i18n-message-en-admin-jobs-task-next-due",
+    "key": "admin.jobs.task.next.due",
+    "lang": "en",
+    "value": "Next task due"
+  },
+  {
+    "_id": "i18n-message-en-user-active-rescheduled",
+    "key": "User active; rescheduled.",
+    "lang": "en",
+    "value": "User active; rescheduled."
+  },
+  {
+    "_id": "i18n-message-en-profile-set-to-inactive",
+    "key": "Profile set to inactive.",
+    "lang": "en",
+    "value": "Profile set to inactive."
+  },
+  {
     "_id": "i18n-message-hu-unavailable-here",
     "key": "unavailable.here",
     "lang": "hu",
@@ -40954,5 +40978,29 @@
     "key": "app.setup.update",
     "lang": "hu",
     "value": "Frissítés"
+  },
+  {
+    "_id": "i18n-message-hu-admin-jobs-task-results",
+    "key": "admin.jobs.task.results",
+    "lang": "hu",
+    "value": "Feladatok legutóbbi eredményei"
+  },
+  {
+    "_id": "i18n-message-hu-admin-jobs-task-next-due",
+    "key": "admin.jobs.task.next.due",
+    "lang": "hu",
+    "value": "Feladat következő esedékessége"
+  },
+  {
+    "_id": "i18n-message-hu-user-active-rescheduled",
+    "key": "User active; rescheduled.",
+    "lang": "hu",
+    "value": "Aktív felhasználó; ellenőrzés átütemezve."
+  },
+  {
+    "_id": "i18n-message-hu-profile-set-to-inactive",
+    "key": "Profile set to inactive.",
+    "lang": "hu",
+    "value": "A profil inaktívra állítva."
   }
 ]

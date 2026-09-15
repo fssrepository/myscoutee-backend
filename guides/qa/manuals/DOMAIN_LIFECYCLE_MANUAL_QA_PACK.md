@@ -9938,7 +9938,7 @@ plus continuing exact block/step/action commentary during execution.
 ### Scheduled messages full-flow execution — 2026-09-15
 
 The user explicitly delegated both JOB-MESSAGES variations and cleanup to Codex.
-Current result: **PARTIAL / UI GAP**, with both business branches verified.
+Current result: **PASS / CLOSED**. Both business branches and the step12 display fix are verified; see the focused closure evidence below.
 
 - Section1 steps1–2: existing Ava Job Detail showed Eligible1, enabledtrue,
   disabled Run, old Runner history. The future Last run timestamp was the
@@ -9978,7 +9978,7 @@ Current result: **PARTIAL / UI GAP**, with both business branches verified.
   amount1; completion19ms/processedCount1 matches the dispatcher. Monitoring
   watermark1789475942188-0 at12:39:04Z passed both IDs; UI Healthy727/726.
   Other jobs account for the remainder of the global+7/+7 change.
-- **Step12 UI expectation NOT MET.** The public Job Detail records the
+- **Initial step12 UI expectation NOT MET; resolved below.** The public Job Detail records the
   scheduler's dispatch operation, with generic Scheduled due message tasks for
   local execution. User active; rescheduled exists in the persisted task audit,
   which this surface does not expose. The stable requirement was not weakened,
@@ -9994,7 +9994,7 @@ Current result: **PARTIAL / UI GAP**, with both business branches verified.
   inactive-banner, inactive-worker-complete, inactive-monitoring-after,
   recent-profile-active, recent-worker-complete, recent-monitoring-after,
   monitoring-top-alignment, monitoring-top-four-columns, monitoring-top-mobile.
-  Exact task artifacts: inactive-user-oracle.json and recent-user-oracle.json.
+  Exact original task artifacts: inactive-user-oracle.json and recent-user-business-oracle.json (retained before the focused display retest).
 - Cleanup PASS: owned browsers closed; both variation resets restored retained
   documents, primary rule and secondary counters. Final user/task/run/delivery/
   affinity/session/session-action/inbox and both fixture snapshot counts0.
@@ -10003,3 +10003,44 @@ Current result: **PARTIAL / UI GAP**, with both business branches verified.
   DevTools reload; its retained override marker is removed. Campaign remains
   93/104 passed, Notifications4/6. Remaining scope is the step12 UI audit gap;
   earlier successful branch execution does not need to restart.
+
+
+### Scheduled messages step12 display closure — 2026-09-15
+
+**JOB-MESSAGES PASS / CLOSED.** The already-proven inactive and recent-user
+business cases remain valid. The focused retest exercised only the new task-result
+display through one real recent-user scheduler pass.
+
+- Job Detail now reads the 12 most recently executed tasks through the existing
+  authorized Jobs response and SmartList poll. Each item shows that task's latest
+  stored result, affected count and next due time if it is still Scheduled.
+  This is a bounded latest-results list, not every historical run of each task.
+  The existing task audit and separate dispatcher Runner history are preserved.
+  No worker, queue, inactivity rule or production Timing behavior changed.
+- Normal scheduler dispatcher `cafd7fe0-676f-4d99-9873-de06cf88e20c` completed at
+  12:54:16.964220821Z, 34ms, processed1. The exact task audit
+  `506eea79-8b65-4724-9a6c-27b0b3916f4e` completed at12:54:17.019435337Z:
+  Scheduled/affected0, one rescheduled action delivery, no affinity/bell/email/failure,
+  user A/public. DueAt2026-10-15T12:52:04.201Z equals recorded activity plus30days.
+  The read-only versioned task/user/audit/delivery/affinity oracle passed.
+- Ava's already-open **Latest task results** changed from No runs yet to
+  Scheduled / 0 affected / User active; rescheduled. / Next task due:15Oct14:52.
+  It required no reload or manual job action. Reopening Job Detail retained the
+  same result. Timing stayed Every30minutes. At916px and360px the result and
+  identifier stayed inside the card. The user saw the managed browser surface.
+- Evidence under `/tmp/myscoutee-qa-browser-sessions/evidence/job-messages-cdp/`:
+  `recent-user-oracle.json` is the focused retest; `recent-user-business-oracle.json`
+  retains the original business/Monitoring evidence. Screenshots:
+  `step12-task-result-live.png`, `step12-task-result-mobile.png`,
+  `step12-task-result-reopened.png`.
+- Existing main backend/frontend watchers compiled the changes successfully.
+  Focused AdminNotificationServiceTest:5 passed,0 failures/errors/skips. It covers
+  the reschedule due date, absence of a next due date for a completed task,
+  unchanged dispatcher history and no task query for unrelated jobs. The focused
+  test excluded main compile/resource/DevTools tasks. English/Hungarian i18n audit
+  passed for both source bundles and all three Mongo seeds.
+- Cleanup PASS: versioned launcher closed its windows, Admin fixture restored
+  exact documents/rule/counters, checkpoint restored actor sessions and reports
+  not-staged/tasknull. Original1800000ms operational poll restored through the
+  existing DevTools process; override marker removed. Campaign94/104,
+  Notifications5/6. Next checkpoint: BELL-RATING-LIFECYCLE-001.

@@ -102,16 +102,16 @@ repair an established product defect. Preserve the phone's tethering connection
 when shaping only its route to the QA application.
 
 ```yaml
-checkpoint: JOB-MESSAGES — SECTION 2 / STEP 12 UI GAP
-checklist: ../checklists/notifications/JOB-MESSAGES.md
-substage: Both business branches and UI profile states verified; task-level reschedule detail is absent from public Job Detail. All fixture/runtime cleanup complete.
-fixture_phase: not-staged; zero controlled user/task/run/delivery/affinity/session/inbox/snapshot remnants.
-browser_control: User explicitly delegated the full JOB-MESSAGES test; both variations executed. Owned windows now closed. Keep exact block/step commentary and preserve completed evidence.
-required_resume: Remaining step12 expects task-level User active; rescheduled in Job history, while the implemented surface only exposes scheduler dispatch history. Task outcome itself is proven by exact persisted audit. Resolve the public audit-display gap without altering worker scheduling or replaying already-proven business branches. Detailed artifacts and qualification are in the execution evidence; do not mark full PASS until this gap is resolved or the user changes the acceptance rule.
-runtime: Existing dev stack; original scheduled-message operational poll restored and DevTools reload verified; no temporary poll marker or extra worker remains.
-ledger_status: 93/104 passed; Notifications4/6; JOB-MESSAGES PARTIAL / UI GAP.
-last_completed: Both inactive/recent cases, exact database oracles, profile UI, Monitoring check and cleanup; requested Monitoring alignment/one-line contained badges verified916/596/360px.
-last_evidence: ../manuals/DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md#scheduled-messages-full-flow-execution--2026-09-15
+checkpoint: BELL-RATING-LIFECYCLE-001 — NOT STARTED
+checklist: ../checklists/notifications/BELL-RATING-LIFECYCLE-001.md
+substage: JOB-MESSAGES PASS/CLOSED, including step12 latest task results display and focused real scheduler/UI retest.
+fixture_phase: not-staged; JOB-MESSAGES exact fixture/session reset completed.
+browser_control: JOB-MESSAGES full-flow delegation completed; its owned windows are closed. Keep exact block/step commentary for the next checkpoint.
+required_resume: Load the linked next checklist and verify its runtime baseline before fixture mutation. Preserve all completed Notifications evidence; do not replay JOB-MESSAGES.
+runtime: Existing dev stack; original1800000ms scheduled-message operational poll restored; DevTools reload verified; no temporary override marker remains.
+ledger_status: 94/104 passed; Notifications5/6; JOB-MESSAGES PASS/CLOSED.
+last_completed: JOB-MESSAGES both business cases, Monitoring, step12 live/reopened916px/mobile360px task results,5 focused service tests,i18n audit,exact cleanup.
+last_evidence: ../manuals/DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md#scheduled-messages-step12-display-closure--2026-09-15
 ```
 
 ### Notifications takeover notes
