@@ -181,6 +181,9 @@ infer this from absence of an Android notification alone.
     the app to the foreground once so registration can finish. Codex confirms
     exactly one different current opaque registration and that the old one is
     retired; do not continue while both are eligible.
+    Compare provider registration identity by an opaque token fingerprint; the
+    physical installation's device ID can remain stable across token replacement.
+
 20. Background the app. Casey sends exactly once:
 
     `MOBILE-PUSH-LIFECYCLE-001 replacement-token`

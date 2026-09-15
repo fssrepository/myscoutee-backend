@@ -86,6 +86,7 @@
   function capture() {
     const saved = state(), name = Q.text(process.env.MANUAL_QA_SOURCE_CHECKPOINT_ID);
     if (name === 'old-registration') return captureOldRegistration();
+    if (name === 'replacement-registration') return captureReplacementRegistration();
     if (!/^(baseline|foreground|foreground-replay|background|background-settings|background-chrome|background-chrome-replay|cold-start|cold-start-replay|permission-denied|replacement-token)$/.test(name)) Q.fail('Invalid Push savepoint');
     const phase = name === 'foreground-replay' ? 'foreground' : name === 'background-chrome-replay' ? 'background-chrome' : name === 'cold-start-replay' ? 'cold-start' : name;
     const riley = Q.ensureUser(actors[2]);
@@ -114,6 +115,16 @@
               || Object.keys(outbox[0].firebaseDevices[id]).length !== 0)
             || outbox[0].status !== 'sent' || outbox[0].retryCount !== 0
             || outbox[0].tokenSuccessCount !== 0 || outbox[0].tokenFailureCount !== 0)) Q.fail('Denied/no-device saved decision must complete without a provider attempt');
+        if (name === 'replacement-token') {
+          const devices = Q.ensureUser(actors[2]).devices || [];
+          if (!saved.oldRegistration || devices.length !== 1 || !devices[0].firebaseToken
+              || devices[0].notificationsEnabled !== true) Q.fail('Expected one replacement provider registration');
+          const fingerprint = require('crypto').createHash('sha256').update(devices[0].firebaseToken.trim()).digest('hex');
+          if (fingerprint === saved.oldRegistration.tokenFingerprint || outbox[0].firebaseDeliveryRequested !== true
+              || Object.keys(outbox[0].firebaseDevices?.[actors[2]] || {}).length !== 1
+              || outbox[0].firebaseDevices[actors[2]][devices[0].deviceId] !== fingerprint
+              || Object.keys(outbox[0].firebaseDevices?.[actors[1]] || {}).length) Q.fail('Replacement outbox must target only the new provider registration');
+        }
         if (name !== 'permission-denied' && (outbox[0].status !== 'sent'
             || outbox[0].tokenSuccessCount !== 1 || outbox[0].tokenFailureCount !== 0)) Q.fail('One successful provider-token delivery is not proven');
       }
@@ -171,6 +182,17 @@
       oldRegistration: { deviceId: devices[0].deviceId, tokenFingerprint, capturedAt: Q.nowIso() }
     } });
     Q.printObject({ scenario, oldDeviceId: devices[0].deviceId, registrationFingerprintCaptured: true });
+  }
+  function captureReplacementRegistration() {
+    const saved = state(), devices = Q.ensureUser(actors[2]).devices || [];
+    if (saved.phase !== 'permission-denied' || !saved.oldRegistration || devices.length !== 1
+        || !devices[0].firebaseToken || devices[0].notificationsEnabled !== true) Q.fail('Expected one enabled replacement registration');
+    const fingerprint = require('crypto').createHash('sha256').update(devices[0].firebaseToken.trim()).digest('hex');
+    if (fingerprint === saved.oldRegistration.tokenFingerprint) Q.fail('Provider token has not changed');
+    Q.collection(Q.STATE_COLLECTION).updateOne({ _id: saved._id }, { $set: {
+      replacementRegistration: { deviceId: devices[0].deviceId, tokenFingerprint: fingerprint, capturedAt: Q.nowIso() }
+    } });
+    Q.printObject({ scenario, deviceId: devices[0].deviceId, currentRegistrations: 1, providerTokenChanged: true });
   }
   function reset() {
     const saved = state();

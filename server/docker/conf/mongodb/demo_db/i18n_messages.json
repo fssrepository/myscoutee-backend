@@ -20427,7 +20427,7 @@
     "_id": "i18n-message-en-entry-permissions-notifications-blocked",
     "key": "entry.permissions.notifications.blocked",
     "lang": "en",
-    "value": "Allow notifications in the browser site settings, then try again."
+    "value": "Notifications are blocked. Enable them in notification settings, then try again."
   },
   {
     "_id": "i18n-message-en-app-setup-title",
@@ -40905,7 +40905,7 @@
     "_id": "i18n-message-hu-entry-permissions-notifications-blocked",
     "key": "entry.permissions.notifications.blocked",
     "lang": "hu",
-    "value": "Engedélyezd az értesítéseket a böngésző webhelybeállításaiban, majd próbáld újra."
+    "value": "Az értesítések tiltva vannak. Engedélyezd őket az értesítési beállításokban, majd próbáld újra."
   },
   {
     "_id": "i18n-message-hu-app-setup-title",

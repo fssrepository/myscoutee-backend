@@ -102,15 +102,15 @@ repair an established product defect. Preserve the phone's tethering connection
 when shaping only its route to the QA application.
 
 ```yaml
-checkpoint: MOBILE-PUSH-LIFECYCLE-001 — SECTION 3 / STEP 14 PREPARATION
+checkpoint: MOBILE-PUSH-LIFECYCLE-001 — SECTION 4 / STEP 23 EVIDENCE AND CLEANUP
 checklist: ../checklists/notifications/MOBILE-PUSH-LIFECYCLE-001.md
-substage: Foreground, Home/Settings/Chrome background and closed-QA-PWA route/read/back/relaunch PASS retained. Earlier stopped-Chrome LOW_MEMORY failure remains a separate unproven host boundary.
-fixture_phase: mobile-push cold-start; ten messages; Casey0/Nova8/Riley10; cold-start-replay saved.
+substage: Foreground, Home/Settings/Chrome background, closed-QA-PWA route/read, denial and replacement delivery/read/back/relaunch PASS retained. Step19 native re-prompt after OS denial NOT PROVEN; earlier stopped-Chrome LOW_MEMORY remains separate.
+fixture_phase: mobile-push replacement-token; twelve messages; Casey0/Nova10/Riley11; all phase savepoints through replacement-token captured.
 browser_control: Full Push delegated; user assists. Announce block and step before actions; inspect before sending.
-required_resume: Complete explicitly requested immutable Firebase decision and eligible-device snapshot on the existing outbox, focused verification, then section3 permission denial and section4 replacement. Preserve queue/inbox/WebSocket architecture and prior PASS evidence. No broad refactor. Menu mute controls personal in-app attention; registered-device permission controls device push independently.
-runtime: Original QA PWA lifecycle43 active at /game, Riley, no Chat popup; timeOrigin1789469575318.8. One real registration. Temporary Chrome native permission grant remains explicitly approved; original denial/flags and screen settings snapshots retained for cleanup.
+required_resume: Finish exact owned-fixture cleanup and final records. Saved Firebase/device decision implemented;14 focused tests including actual Mongo merge PASS. Native popup re-prompt after explicit OS denial returned denied; restoring original OS grant was fixture preparation, not a native-dialog PASS. Preserve that qualification; no full replay or broad application refactor.
+runtime: Original QA PWA lifecycle47 at /game; Riley, no Chat popup; timeOrigin1789471463153.3. Exactly one enabled replacement provider registration, same physical device ID/new token fingerprint. QA WebAPK original native grant restored. Chrome temporary native grant and screen overrides still require their saved cleanup restoration.
 ledger_status: 91/104 passed; Notifications2/6; Push IN PROGRESS
-last_completed: Section2 step13 normal relaunch, no repeated route/read; cold-start-replay capture.
+last_completed: Section4 step22 replacement-only FCM delivery, exact message/read, stable Back/relaunch; replacement-token savepoint.
 last_evidence: ../manuals/DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md#mobile-push-device-preflight--2026-09-15
 ```
 
@@ -284,7 +284,7 @@ the checkpoint says otherwise.
 
 ### Next manual action
 
-`MOBILE-PUSH-LIFECYCLE-001`: finish the authorized saved Firebase/device delivery decision and its focused checks, then section3 step14 deny native permission. Continue from the retained cold-start savepoint. Full Push remains delegated; do not replay passed WebView, Operator or Push phases.
+`MOBILE-PUSH-LIFECYCLE-001`: finish exact fixture/provider cleanup and restore retained runtime settings. Device delivery/read phases are saved through replacement-token. Keep the step19 native re-prompt qualification and stopped-Chrome LOW_MEMORY observation explicit; do not claim full PASS or replay completed phases.
 
 Group-size audit: retain `TOURNAMENT-MEMBER-002` as 2+1 because Riley's Group B
 proves parent-event notification delivery across room boundaries while Group B
