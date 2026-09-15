@@ -1,75 +1,61 @@
-# ADMIN-MONITORING-001 — Monitoring, queues and Jobs
+# ADMIN-MONITORING-001 — Monitoring, queues and configuration counters
 
-## Miről szól?
+## Purpose
 
-Ez az Admin domain második tesztje, a már lezárt BASE-STAT után. Azt
-ellenőrizzük, hogy a Monitoring szűrői és számai a tényleges feldolgozást
-mutatják: egy feladat várakozik, lefut, majd lezárul; a Jobs részletei és az
-adatbázis ugyanazt az eredményt mutatják. Egy paraméter mentése és
-visszaállítása külön-külön egyszer jelenik meg a konfigurációs számlálóban.
+Check Monitoring filters and counters against one real task and one parameter
+save/revert. This is the second Administration test after BASE-STAT.
+**Actor:** Ava Moderation. Startup opens Admin home; step 1 begins the test.
 
-**Szereplő:** Ava Moderation. A teszt a meglévő alkalmazásban fut.
-Az előkészítés csak belépteti Avát az Admin kezdőoldalra. Az alábbi első
-kattintás már a teszt része; a felhasználó indítja.
+## Fixture prerequisites
 
-## 1. Monitoring alapállapot és szűrők
+The JOB-MESSAGES test owns the Jobs table, detail and mobile presentation.
+Use a fixture for the task baseline here; do not repeat those UI checks.
+The parameter save/history/revert sequence is tested once in block 3 below.
+ADMIN-PARAMETERS uses fixtures instead of repeating that sequence.
 
-1. Ava menüjében nyisd meg a **Metrics** felületet. Az **All** nézetben
-   olvasd el a kategóriákat és az állapotjelzőket. Codex rögzíti a hozzájuk
-   tartozó kiinduló adatokat.
-2. A fejléc szűrőjében válaszd sorban a **Watch**, **Domains**, **Delivery**
-   és **Workers** nézetet. A szűrő száma a hozzá tartozó kategóriák száma;
-   a Watch üres lehet, ha minden kategória egészséges.
-3. Térj vissza az **All** nézetre. A szűrőváltás nem hoz létre feladatot és
-   nem növeli a feldolgozási számlálókat. Az időközben valóban lefutott
-   háttérmunkát Codex külön azonosítja.
+## 1. Baseline and filters
 
-Jelzés: `ADMIN-MONITORING-001 1. blokk kész`.
+1. Open **Metrics** from Ava’s menu. Read the categories and status indicators
+   in **All**. Codex records the baseline.
+2. Select **Watch**, **Domains**, **Delivery** and **Workers** in turn.
+   Each filter count matches its categories; Watch may be empty when healthy.
+3. Return to **All**. Filter changes create no work or counter increments;
+   Codex identifies any real background activity separately.
 
-## 2. Egy feladat útja a Monitoring és Jobs felületén
+Report: `ADMIN-MONITORING-001 block 1 done`.
 
-4. Maradj a **Domains / Matching** résznél. Codex előkészíti az egyetlen,
-   megnevezett újraszámítási feladatot a meglévő `affinity-recompute /
-   isolated-user` fixture-rel. Csak ennek az állapotát követjük.
-5. Figyeld a függő és futó munkát, majd a befejeződést. A terminális állapotban
-   a tesztfeladat már nem függő és nem futó; nincs megmagyarázatlan hibás
-   tétel. A rövid futó állapotot a megőrzött futástörténet is bizonyíthatja.
-6. Nyisd meg a **Jobs → Refresh affinities → View process** részleteit.
-   Egyezzen a feladat neve, futási ideje, feldolgozott eredménye és állapota
-   a Monitoringgal és Codex független ellenőrzésével.
-7. Térj vissza a Monitoringra. A függő darabszám kiürül, a kumulált
-   feldolgozási előzmény megmarad. A kontrollkategóriákban csak külön
-   azonosított valódi háttérművelet okozhat eltérést.
+## 2. One task’s counters
 
-Jelzés: `ADMIN-MONITORING-001 2. blokk kész`.
+4. Stay on **Domains / Matching**. Codex prepares one named recompute task
+   with the existing fixture; do not repeat its originating user journey.
+5. Observe pending/running state and completion. Retained run history may
+   prove a short running transition. Codex correlates the same task.
+6. After completion, the test task is no longer pending/running; cumulative
+   processing history remains. Control changes require identified background work.
 
-## 3. Paramétermentés és visszaállítás nyoma
+Report: `ADMIN-MONITORING-001 block 2 done`.
 
-8. Codex visszaállítja az előző fixture-t, majd rögzíti a paraméterág
-   kiinduló verzióját, értékeit, feladatait és értesítéseit. Nyisd meg a
-   **Params → Jobs** szekciót; jegyezd fel a **User debounce** értékét.
-9. Az **Edit** gombbal emeld ezt az értéket egy másodperccel, és ments egyszer.
-   Például `300 s → 301 s`; a tényleges induló értéket az előkészítés írja ki.
-10. Zárd be és nyisd meg újra a Params felületet, majd a Jobs **History**
-    nézetét. Az új értékhez egy új verzió, helyes szerző és időpont tartozik.
-11. A Monitoring **Workers / Jobs** részén egy konfigurációváltozás legyen
-    kimutatható. Codex ugyanahhoz a mentéshez kapcsolja az újraszámítási
-    feladatot és az Admin értesítés küldési tételét; a futásokat külön követi.
-12. A History nézetben állítsd vissza a feljegyzett induló verzió értékeit.
-    Újranyitás után az induló érték látszik; a visszaállítás új, megőrzött
-    történeti bejegyzés, és egy további konfigurációváltozás tartozik hozzá.
-13. A már aktív verzió ismételt visszaállítása nem hoz létre újabb változást.
-    A kapcsolódó feladatok befejeződése után a függő számlálók rendeződnek.
+## 3. Exact configuration-change counts
 
-Jelzés: `ADMIN-MONITORING-001 3. blokk kész`.
+7. Codex resets the task fixture and captures the parameter baseline. Open
+   **Params → Jobs → Edit**, increase **User debounce** by one second and
+   save once, for example `300 s → 301 s`.
+8. Reopen Params: the new value persists. **History** shows one new version
+   with the correct author/time; Monitoring **Workers / Jobs** shows one
+   configuration change. Codex correlates the records.
+9. Restore the baseline values through **History**. The original value returns;
+   one further history entry and configuration-change increment appear.
+10. Reverting the already active version causes no further change. After the
+    related work completes, pending counters settle.
 
-## 4. Lezárás
+Report: `ADMIN-MONITORING-001 block 3 done`.
 
-14. Codex összeveti a mentés/visszaállítás pontos darabszámait, a Jobs
-    futástörténetét és a megnevezett kontrollokat, majd visszaállítja a
-    fixture-t. PASS csak ezek és az előző három blokk bizonyítékaival adható.
+## 4. Closure
 
-## Előkészítő parancsok
+11. Codex compares exact counts and controls, retains the parameter lifecycle
+    evidence for Parameters, and restores the fixture.
+
+## Preparation commands
 
 ```bash
 bash server/docker/scripts/manual-qa-checkpoints/manual-qa-checkpoints-docker.sh stage admin-monitoring ADMIN-MONITORING-001
@@ -77,23 +63,22 @@ bash server/docker/scripts/manual-qa-checkpoints/manual-qa-checkpoints-docker.sh
 node guides/qa/tools/open-checkpoint-browser-sessions.mjs ADMIN-MONITORING-001
 ```
 
-A kezdőállapot nem élesít feladatot és nem ment paramétert. A további fixture
-műveleteket a [Monitoring futtatási script](../../../../server/docker/scripts/manual-qa-checkpoints/scenarios/admin-monitoring-checkpoints.js)
-és a közös Admin-job harness végzi a megfelelő blokk megkezdésekor.
+The baseline neither arms a task nor saves a parameter. The
+[Monitoring script](../../../../server/docker/scripts/manual-qa-checkpoints/scenarios/admin-monitoring-checkpoints.js)
+provides startup, evidence capture and cleanup.
 
-A 2. blokkban a meglévő job-fixture parancsai:
+Block 2 uses the existing job fixture:
 
 ```bash
 bash server/docker/scripts/admin-job-fixtures/admin-job-fixtures.sh prepare affinity-recompute isolated-user
 bash server/docker/scripts/admin-job-fixtures/admin-job-fixtures.sh status affinity-recompute
-# Csak a feladat befejezése és a bizonyíték mentése után:
+# Only after completion and evidence capture:
 bash server/docker/scripts/admin-job-fixtures/admin-job-fixtures.sh reset affinity-recompute
 ```
 
-A 3. blokk bizonyítékpontjai a közös Docker harnessben:
-`capture-before-params`, `capture-after-save`, `capture-after-revert`
-az `admin-monitoring ADMIN-MONITORING-001` argumentumokkal. A felületi
-mentést és visszaállítást nem ezek a parancsok végzik. A lezáró `reset`
-ellenőrzi az induló Jobs-értékeket és a befejezett munkát, majd helyreállítja
-a böngészőindítás mentett állapotát. A tényleges paraméterverziók,
-futástörténet és audit megmaradnak bizonyítékként.
+Block 3 capture commands are `capture-before-params`, `capture-after-save` and
+`capture-after-revert`, with `admin-monitoring ADMIN-MONITORING-001` as the
+Docker harness arguments. These commands do not perform the UI actions.
+`reset` verifies original Jobs values and terminal work, then restores the
+retained browser-startup state. Real parameter versions, history and audit
+remain as evidence.

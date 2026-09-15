@@ -1,88 +1,82 @@
-# ADMIN-PARAMETERS-001 — Paraméterek teljes életciklusa
+# ADMIN-PARAMETERS-001 — Parameter effects and validation
 
-## Miről szól?
+## Purpose
 
-Mind a hét Params szekcióban egy biztonságos módosítást mentünk, újranyitjuk,
-megnézzük a történetét, és visszaállítjuk. Ahol a paraméter működést
-befolyásol, előkészített adatokon azt is megnézzük. A hibás értékek és a
-mentés nélküli bezárás nem okozhatnak részleges módosítást.
+Check the specific effect of a parameter in each of the seven sections,
+invalid values and cancellation. **Actor:** Ava Moderation. Codex prepares
+consumer data and any required member sessions through fixtures.
 
-**Szereplő:** Ava Moderation; a hatásellenőrzéshez szükséges tagablakokat és
-adatokat Codex az adott blokk előtt nevezi meg és készíti elő.
+## Fixture prerequisites
 
-## 1. Közös mentés, történet és visszaállítás
+Monitoring block 3 owns the shared save/reopen/History/revert checks. Do not
+repeat them here. Fixtures provide the Jobs test value and restore every
+branch. Do not replay Graph controls, Monitoring filters or notification
+lifecycles. The other six sections still require their own field save because
+they handle different data; their consumer effects are distinct checks.
 
-1. Nyisd meg az Admin menü **Params** felületét. A hét szekció: **Matching,
-   Profile, Events, Assets, Discovery, Notifications, Jobs**.
-2. Az adott szekcióban jegyezd fel a kiinduló verziót és a lent megnevezett
-   mező értékét. Codex kiírja a konkrét régi → tesztérték változást és az
-   előre várt hatást, majd elmenti a visszaállítási alapot.
-3. Az **Edit** gombbal módosítsd az egyetlen mezőt; ments egyszer. Zárd be
-   és nyisd meg újra a Params felületet: az új érték látszik.
-4. Nyisd meg a szekció **History** nézetét. Egy új verzió jelenik meg a
-   megfelelő értékkel, szerzővel, időponttal és összefoglalóval.
-5. Végezd el az adott szekció alábbi hatásellenőrzését. A mentett érték
-   önmagában nem bizonyítja a működés változását.
-6. A Historyból állítsd vissza a kiinduló értékeket. Újranyitás után azok
-   érvényesek, az új és a visszaállított verzió története is megmarad.
-   Codex ellenőrzi a kapcsolódó feladatokat és értesítéseket, majd lezárja
-   az adott szekció fixture-jét, mielőtt a következőre térünk.
+## 1. Procedure for each section
 
-## 2. Matching és Profile
+1. Open **Params**. Codex states the exact old → test value and expected
+   effect for the section, and snapshots the baseline through the fixture.
+2. Change the named field under **Edit** and save once. Reopen to confirm
+   that section’s persisted value. For Jobs, the fixture supplies the value
+   instead of repeating the save already tested in Monitoring.
+3. Check the section-specific effect below. Codex compares stored results,
+   waits for the required work, then restores the baseline through the fixture.
 
-7. **Matching:** egy rating/evidence szorzón hajtsd végre a 2–6. lépést.
-   Codex két olyan profilt készít elő, ahol a kijelölt jel hatása elkülöníthető.
-   Az újraszámított kapcsolat súlya az előre leírt módon változik; a friss
-   Graph és a Stats gráfadatai ugyanazt az eredményt mutatják.
-8. **Profile:** egy profil-/trait szabályon vagy abszolút profilszorzón
-   végezd el ugyanezt. A megnevezett profilpontszám vagy sorrend változik;
-   a kontrollprofil eltérését a változtatott mező alapján értelmezzük.
+## 2. Matching and Profile
 
-Jelzés: `ADMIN-PARAMETERS-001 2. blokk kész`.
+4. **Matching:** apply steps 1–3 to one rating/evidence multiplier. Codex
+   prepares a pair with an isolated signal. The recalculated weight changes
+   as predicted; the fresh Graph and Statistics graph data agree.
+5. **Profile:** use one profile/trait rule or absolute profile multiplier.
+   The named score or ordering changes; interpret control-profile differences
+   against the selected field.
 
-## 3. Events és Assets
+Report: `ADMIN-PARAMETERS-001 block 2 done`.
 
-9. **Events:** egy tartalom- vagy boost-szorzón végezd el a 2–6. lépést.
-   A két előkészített esemény pontszáma vagy ajánlási sorrendje a várt
-   irányban változik. Ezt az eseményfelületen és a tárolt pontszámban nézzük.
-10. **Assets:** egy erőforrás-tartalom, kapacitás, mennyiség vagy boost mezőn
-    ismételd meg. Az előkészített erőforrások pontszáma/sorrendje egyezzen a
-    várakozással. Az Events és Assets hatását nem a felhasználói gráf méri.
+## 3. Events and Assets
 
-Jelzés: `ADMIN-PARAMETERS-001 3. blokk kész`.
+6. **Events:** apply steps 1–3 to one content/boost multiplier. The two
+   prepared events’ scores or recommendation order change as predicted;
+   compare the event UI and persisted scores.
+7. **Assets:** use one resource content, capacity, quantity or boost field.
+   Prepared resource scores/order match expectations. User graphs do not
+   measure Event or Asset ranking effects.
 
-## 4. Discovery, Notifications és Jobs
+Report: `ADMIN-PARAMETERS-001 block 3 done`.
 
-11. **Discovery:** a távolsági szorzó/határ/stratégia egy mezőjével végezd el
-    a 2–6. lépést. Codex a határ két oldalára helyezett profilokat készít elő;
-    az eredmény és a pontos határérték viselkedése egyezzen a szabállyal.
-12. **Notifications:** a **Multicast threshold** értékén végezd el a 2–6.
-    lépést, ismert számú tesztcímzettel. A közvetlen és a multicast küldési
-    mód közötti váltást Codex a valódi küldési tételeken ellenőrzi.
-13. **Jobs:** egy debounce/batch/lease értéken végezd el a 2–6. lépést.
-    Egy izolált feladatnál a munkafolyamat a mentett beállítást használja;
-    a konkrét mezőhöz tartozó várakozás/darabszám/lease az ellenőrzés tárgya.
+## 4. Discovery, Notifications and Jobs
 
-Jelzés: `ADMIN-PARAMETERS-001 4. blokk kész`.
+8. **Discovery:** use one distance multiplier, boundary or strategy field.
+   Fixture profiles on either side of the boundary verify ranking and the
+   exact boundary behavior.
+9. **Notifications:** apply steps 1–3 to **Multicast threshold** with a known
+   recipient count. Codex checks the direct/multicast transition in real
+   delivery items, using fixture recipients instead of replaying their journeys.
+10. **Jobs:** the fixture sets the debounce value whose save was tested in
+    Monitoring. Verify that one isolated task actually uses that value.
+    This checks runtime timing, not the previously verified editor/history.
 
-## 5. Hibás értékek, megszakítás és lezárás
+Report: `ADMIN-PARAMETERS-001 block 4 done`.
 
-14. Az előkészítésben kijelölt számmezőn próbálj a megengedett alsó, majd
-    felső határon túli értéket. A felület és a szerver a mező dokumentált
-    validációját/normalizálását követi; elutasított mentés nem lehet részleges.
-15. A támogatott választási/stratégia mezőn ellenőrizd a megengedett értékeket.
-    Codex külön ellenőrzi az érvénytelen szerveroldali érték elutasítását;
-    a választómezőbe nem kell nem létező opciót begépelni.
-16. Módosíts egy értéket, majd zárd be mentés nélkül. Újranyitáskor az eredeti
-    érték látszik; nincs új verzió, feladat vagy értesítés.
-17. Nézd meg újra a hét szekciót. Codex ellenőrzi az induló értékeket,
-    a mentés/visszaállítás történetét, a befejezett munkát és a kontrollokat,
-    majd visszaállítja a teljes tesztalapot.
+## 5. Invalid values, cancellation and closure
 
-Jelzés: `ADMIN-PARAMETERS-001 kész`.
+11. Try values below and above the documented bounds of the prepared numeric
+    field. UI/server follow its validation or normalization contract;
+    a rejected save must not partially persist.
+12. Check supported values in the selected strategy field. Codex separately
+    verifies rejection of an invalid server-side value; do not inject a
+    nonexistent option into the UI selector.
+13. Edit a value and close without saving. Reopen: the original value remains,
+    with no new version, task or notification.
+14. Codex verifies restored values across all seven sections, terminal work
+    and controls, then restores the full fixture baseline.
 
-## Futtatási határ
+Report: `ADMIN-PARAMETERS-001 done`.
 
-A konkrét értékpárok és hatásadatok az adott szekció fixture-jéből jönnek;
-nem szabad találomra éles beállításokat változtatni. A külön fixture-script
-és böngészőindítás ennek a tesztnek a későbbi előkészítéséhez tartozik.
+## Execution boundary
+
+Exact values and consumer data come from each section’s fixture, never from
+arbitrary live configuration edits. Dedicated fixture scripts and browser
+startup are prepared when this checkpoint starts.

@@ -1,77 +1,52 @@
-# ADMIN-AFFINITY-GRAPH-001 — Gráf bejárása és frissítése
+# ADMIN-AFFINITY-GRAPH-001 — Graph controls and larger datasets
 
-## Miről szól?
+## Purpose
 
-A hálózati gráfban a csoportoktól egy kiválasztott ember kapcsolataiig jutunk
-el. Ellenőrizzük a kapcsolati mélységet, az erősségszűrést, a mozgatást és
-nagyítást, majd a valódi gráffrissítő feladat eredményét és a korábbi
-időpontok megőrzését. Ez a felület felhasználói kapcsolatokat mutat.
+Check relationship depth, weight filtering, viewport controls, isolated members
+and loading a larger graph. **Actor:** Ava Moderation.
 
-**Szereplő:** Ava Moderation. Codex a blokk előtt megnevezi a kontrollpárt,
-az elkülönült tagot és a kiinduló gráfverziót. A részben már bizonyított
-statisztikai előzményeket a QA-napló alapján használjuk fel.
+## Fixture prerequisites
 
-## 1. Áttekintés és egy tag kiválasztása
+BELL-RATING steps 13–15 and the retained Statistics evidence own rating input,
+the direct control-pair link, real graph materialization and historical-data
+preservation. Do not repeat those actions here. Codex prepares the completed
+graph, control edge and isolated member through fixtures and records the
+source evidence separately from the prepared state.
 
-1. Nyisd meg az Admin menü **Graph** felületét. Jegyezd fel a Members,
-   Links, Components és Isolated összesítőket.
-2. Kattints a megnevezett csoportra. A csoporthoz tartozó tagok jelennek meg;
-   a látható és összecsukott tagok száma értelmezhető és egyezik az adatokkal.
-3. Nagyítással bontsd ki a szükséges tagokat, majd válaszd ki a megnevezett
-   személyt. A részletekben a megfelelő név, profil és kapcsolatok látszanak.
-4. Állítsd a **Link depth** értéket **Direct / 1** szintre. Csak a kiválasztott
-   tag közvetlen kapcsolatai tartoznak ebbe a nézetbe. Codex összeveti az
-   azonosítókat és a kijelzett, kerekített súlyokat a tárolt értékekkel.
+## 1. Depth and weight
 
-Jelzés: `ADMIN-AFFINITY-GRAPH-001 1. blokk kész`.
+1. Open **Graph** and select the named fixture member. This positions the
+   view for testing; do not repeat the earlier group/member-selection checks.
+   Overview totals must match the fixture.
+2. Change **Link depth** from **Direct / 1** to the next supported level and
+   back. Added and removed members belong to the corresponding neighborhood.
+3. Move the **Link range** lower and upper bounds across the control edge’s
+   weight. Edge visibility and visible-link counts follow the selected range.
 
-## 2. Mélység, erősség és nézetvezérlés
+Report: `ADMIN-AFFINITY-GRAPH-001 block 1 done`.
 
-5. Emeld a kapcsolati mélységet a következő támogatott szintre, majd vissza
-   egyre. A hozzáadott és eltűnő tagok a megfelelő szomszédsági körből jönnek.
-6. A **Link range** alsó és felső határát állítsd a megnevezett kontrollél
-   két oldalára. Az él a beállított tartomány szerint jelenjen meg vagy
-   tűnjön el; a látható kapcsolatok száma kövesse ezt.
-7. Állítsd vissza a tartományt. Mozgasd a gráfot, forgass és nagyíts az
-   útmutatóban jelzett egér-/érintésvezérléssel. A kiválasztás és a
-   szűrőértékek maradjanak követhetők.
-8. Használd a **Reset** vezérlőt, majd az **Expand / Collapse** panelgombot.
-   A gráf és a részletek elférnek az ablakban; a vezérlők kattinthatók.
-9. Keresd meg a megnevezett elkülönült tagot. Kapcsolat nélküli tag is
-   elérhető marad, saját profilja és nulla kapcsolata helyesen látszik.
+## 2. Viewport controls and isolated member
 
-Jelzés: `ADMIN-AFFINITY-GRAPH-001 2. blokk kész`.
+4. Restore the range. Pan, rotate and zoom using the displayed controls;
+   selection and filter values remain understandable.
+5. Use **Reset**, then **Expand / Collapse**. The graph and details fit the
+   window and the controls remain usable.
+6. Select the fixture’s isolated member. Their profile remains accessible
+   and shows zero connections.
 
-## 3. Nagyobb gráf és betöltés
+Report: `ADMIN-AFFINITY-GRAPH-001 block 2 done`.
 
-10. Codex előkészíti a meghatározott nagyobb, több összefüggő részből álló
-    gráfot. Ismételd meg rajta az áttekintés → csoport → tag útvonalat.
-11. Nagyításkor a további tagok fokozatosan jelenjenek meg; a nézet
-    kezelhető maradjon. Codex ellenőrzi a betöltési korlátokat és azt, hogy
-    nincs vég nélküli ismételt kérés.
+## 3. Larger graph and closure
 
-Jelzés: `ADMIN-AFFINITY-GRAPH-001 3. blokk kész`.
+7. Codex prepares a larger graph with multiple components through a fixture.
+   Open it and zoom into the named group. Further members load progressively
+   while the view remains usable. Codex checks loading bounds and repeated requests.
+8. Codex records the results and restores the fixture exactly.
 
-## 4. Friss gráf és megőrzött előzmények
+Report: `ADMIN-AFFINITY-GRAPH-001 done`.
 
-12. Codex elmenti a régi elrendezést és a kontrollokat, majd előkészít egy
-    megnevezett kapcsolati változást. A már igazolt rating-lépéseket csak
-    akkor kell megismételni, ha a változás bizonyításához szükséges.
-13. A tényleges újraszámítás befejezése után nézd meg a **Jobs → Rebuild
-    affinity graph layout** részleteit. Codex a meglévő fixture-rel teszi
-    esedékessé a mentett ütemezést; a rendes scheduler futtatja a feladatot.
-14. Befejezés után zárd be és nyisd meg újra a Graph felületét. Az új
-    elrendezés tag-/él-/csoportszámai és a megváltozott kontrollpár egyeznek
-    a befejezett futás eredményével.
-15. A **Stats** gráf-idősorában nézd meg a megnevezett korábbi időpontot és
-    a mait. A mai változás nem írhatja át a korábbi rögzített időpontot.
-    Codex ellenőrzi a tárolt történeti adatokat is.
-16. Codex menti az eredményt és pontosan visszaállítja a fixture-t.
+## Execution boundary
 
-Jelzés: `ADMIN-AFFINITY-GRAPH-001 kész`.
-
-## Futtatási határ
-
-Ez a leírás a meglévő konszolidált Graph tesztet bontja olvasható lépésekre.
-A külön fixture-összeállítás és a böngészőindítás ennek a tesztnek a későbbi
-előkészítéséhez tartozik. A Monitoring előkészítése nem indítja el ezt a tesztet.
+The dedicated fixture script is prepared when this checkpoint starts.
+Prepared data is not PASS: the controls above require actual verification.
+Previously tested paths retain their original evidence.

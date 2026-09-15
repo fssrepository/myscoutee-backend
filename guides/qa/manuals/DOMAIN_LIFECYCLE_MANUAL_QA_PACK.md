@@ -10183,3 +10183,55 @@ The later worker-completion full-document equality check failed after the five-m
 ### Administration guides prepared — 2026-09-15
 
 Per user request, all three remaining Administration journeys now have stable numbered guides under `checklists/administration`: ADMIN-MONITORING-001, ADMIN-AFFINITY-GRAPH-001 and ADMIN-PARAMETERS-001. BASE-STAT remains previously PASS, so Monitoring is the domain’s second test. Only Monitoring receives new startup/capture/reset scripts and a managed Ava browser configuration now; Graph/Parameters are documentation preparation only. No Administration checklist action is authorized for this handoff: after Bell closure, prepare Monitoring baseline and open Admin home, then hand control to the user before step1.
+
+### Final Bell closure — 2026-09-15
+
+BELL-RATING-LIFECYCLE-001 is PASS/CLOSED, all steps1–20. The earlier worker
+comparison required a fixture correction, not an application/model change:
+a full saved diff showed10 scoreReceived and7 mutuallyRated changes resolving
+pre-existing seeded opposite-direction scores. The initial claim that only
+calculated fields changed was incomplete and is superseded here.
+
+The versioned feedback wrapper now settles the three target users through the
+normal worker before capturing the test baseline. It retains the original
+snapshot for exact rollback. The final real UI submission, three-recipient
+fanout and Maya read/reopen replay used that consistent baseline. The fixture
+made only those three pending recompute tasks due, avoiding the five-minute
+wait while retaining real worker execution. At14:32:21.553Z all three were
+done and untracked; all465 rating identities and every input/score/Met/mutual
+field remained unchanged, with exactly one computed affinityScore update.
+Evidence: `feedback-consistent-submission-oracle.json`,
+`feedback-consistent-read-oracle.json`, `feedback-consistent-final-oracle.json`,
+and `feedback-consistent-read-reopened.png`, under the retained local
+`/tmp/myscoutee-qa-browser-sessions/evidence/bell-rating-cdp/` directory.
+Earlier first/reciprocal rating, Statistics, Monitoring and graph evidence
+remains valid as corrected above. Final reset readiness, browser closure,
+Admin feedback fixture reset and wrapper exact snapshot comparison all passed.
+No application code changed during this continuation.
+
+### Admin handoff and Operator guides — 2026-09-15
+
+ADMIN-MONITORING-001 baseline staged with zero test parameter versions/tasks;
+managed Ava Admin window ready. First startup timed out waiting for the home
+guide absent on Admin; checkpoint guide dismissal disabled and standardized
+startup retried successfully. No Admin checklist action was performed.
+
+All three Administration and four Operator guides are written. Only Monitoring
+has new dedicated scripts now; the remaining fixture orchestration is deferred
+until its checkpoint. User clarified that repeated actions belong in one owning
+test, with fixtures replacing them elsewhere: Monitoring owns the parameter
+save/history/revert sequence; Parameters keeps distinct section effects and
+validation, using fixtures for the prior Jobs save and cleanup. Proven Jobs UI
+and Bell rating/materialization actions are removed from the other Admin click
+lists. No separate common testcase was introduced. Operator guides preserve
+existing partial evidence and do not claim execution.
+
+Final preparation review: all three Administration guides and all four Operator
+guides plus their Operator index are now English. Monitoring has11 steps,
+Graph8 and Parameters14. The parameter lifecycle remains only in Monitoring
+block3; other journeys use fixtures for already tested prerequisites, with no
+separate common testcase. Dedicated Monitoring/feedback/graph fixture syntax,
+Python oracle syntax, guide links and whitespace checks pass. The managed
+Monitoring Ava session passed the final existing-session authentication/realtime
+readiness gate. Ledger/workbook agree at95/104 complete, Notifications6/6.
+No Admin/Operator checklist was executed by this preparation review.

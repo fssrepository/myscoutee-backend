@@ -1,12 +1,6 @@
 # OPERATOR-CONFIGURATION-LIFECYCLE-001 user test guide
 
-## Miről szól?
-
-Egy Operator Configuration folyamatban ellenőrizzük a nyilvános beállítások,
-HTTPS, fizetési szolgáltató és Firebase mentését, újranyitását, működését és
-visszaállítását. Az alábbi C01–C08 blokkok egyetlen teszthez tartoznak.
-A korábban már igazolt Firebase/WebView/Push részek bizonyítékát átvesszük;
-csak a hiányzó vagy azóta érintett részt kell futtatni.
+## Purpose
 
 One Configuration journey: public configuration, HTTPS, payment and Firebase,
 followed by fresh sign-in and exact restoration. These checkpoints belong to

@@ -1,14 +1,15 @@
-# Operator tesztek
+# Operator tests
 
-A meglévő Operator domain négy konszolidált tesztje, a QA-mátrix sorrendjében:
+The existing four consolidated Operator tests, in QA matrix order:
 
-| Teszt | Mit nézünk? | Blokkok |
+| Test | Scope | Blocks |
 | --- | --- | --- |
-| [Configuration](OPERATOR-CONFIGURATION-LIFECYCLE-001.md) | Nyilvános beállítások, HTTPS, fizetési szolgáltató, Firebase és visszaállítás; a már igazolt WebView/Push bizonyíték újrafelhasználásával | C01–C08 |
-| [Registry](OPERATOR-REGISTRY-LIFECYCLE-001.md) | Regisztráció, claim/link, közösség és ranglista, mérési szinkron, deaktiválás és helyreállítás | 1–4; 13 lépés |
-| [Updates](OPERATOR-UPDATE-LIFECYCLE-001.md) | Egy kompatibilis QA-kiadás alkalmazása, folyamatjelzés és a telepített verzió | 1–3; 9 lépés |
-| [Revenue](OPERATOR-REVENUE-LIFECYCLE-001.md) | Előkészített fizetések összesítése, egy szinkron és egy elszámolás | 1–3; 8 lépés |
+| [Configuration](OPERATOR-CONFIGURATION-LIFECYCLE-001.md) | Public settings, HTTPS, payment provider, Firebase and restoration; reuse proven WebView/Push evidence | C01–C08 |
+| [Registry](OPERATOR-REGISTRY-LIFECYCLE-001.md) | Registration, claim/link, community/leaderboard, measurements, deactivation and recovery | 1–4; 13 steps |
+| [Updates](OPERATOR-UPDATE-LIFECYCLE-001.md) | Apply a compatible QA release, observe progress and verify installed version | 1–3; 9 steps |
+| [Revenue](OPERATOR-REVENUE-LIFECYCLE-001.md) | Prepared payments, one synchronization and one settlement | 1–3; 8 steps |
 
-A részletes eredmények és a már bizonyított részágak a QA packben és a
-CSV/XLSX mátrixban vannak. Ezek az útmutatók nem jelentenek futtatást vagy PASS-t.
-A külön fixture- és böngésző-előkészítés az adott teszt indulásakor történik.
+Results and previously verified branches belong in the QA pack and CSV/XLSX
+matrix. These guides do not imply execution or PASS. Dedicated fixtures and
+browser startup are prepared when each test starts. Use fixtures for already
+verified prerequisite journeys instead of repeating their manual steps.

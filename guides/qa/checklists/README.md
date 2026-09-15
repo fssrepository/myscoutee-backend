@@ -80,9 +80,9 @@ must never overwrite the user-facing checklist.
 1. [ADMIN-MONITORING-001](administration/ADMIN-MONITORING-001.md) — filters, one
    recompute task, Jobs evidence and one parameter save/revert; startup harness available.
 2. [ADMIN-AFFINITY-GRAPH-001](administration/ADMIN-AFFINITY-GRAPH-001.md) — graph
-   navigation, depth/weight filters, scale, materialization and historical controls.
+   depth/weight filters, viewport controls and scale; shared materialization evidence reused.
 3. [ADMIN-PARAMETERS-001](administration/ADMIN-PARAMETERS-001.md) — seven sections,
-   save/history/revert, consumer effects, validation and cancellation.
+   section-specific consumer effects, validation and cancellation; shared history/revert tested once.
 
 The latter two currently provide the user-facing sequence; their dedicated
 fixture orchestration is prepared when their own checkpoint is requested.

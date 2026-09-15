@@ -1,51 +1,46 @@
-# OPERATOR-REVENUE-LIFECYCLE-001 — Bevételi összesítés és elszámolás
+# OPERATOR-REVENUE-LIFECYCLE-001 — Revenue totals and settlement
 
-## Miről szól?
+## Purpose
 
-Egy előkészített fizetési adathalmazból nézzük meg a Revenue összesítőjét,
-egyszer szinkronizálunk, majd megnyitunk egy elszámolást. A megjelenő
-összegek, deviza, időszak és fizetési azonosítók a tényleges forrásadatokhoz
-tartozzanak, és újranyitás után is ugyanaz az eredmény maradjon meg.
+Inspect Revenue from a prepared payment dataset, synchronize once and open
+one settlement. Amounts, currency, period and payment identifiers must match
+source records and remain consistent after reopening.
 
-**Szereplő:** a kijelölt QA-telepítés Operatora. Codex előre kiírja a
-szolgáltatót, devizát, időszakot, a sikeresen terhelt (captured) fizetéseket,
-a feloldott (released) kontrollt és a várt összeget. A fizetések előkészítése
-fixture; itt nem ismételjük meg a checkoutot.
+**Actor:** Operator on the designated QA deployment. Codex names the provider,
+currency, period, captured payments, released control and expected total.
+Payments are fixture prerequisites; do not repeat checkout here.
 
-## 1. Revenue alapállapot
+## 1. Revenue baseline
 
-1. Nyisd meg az Operator **Revenue** felületét. Ellenőrizd a kijelölt
-   telepítést és a megjelenő időszakot/devizát.
-2. Jegyezd fel az összesítő számait és az előkészített időszak pontját.
-   Codex elmenti a hozzájuk tartozó forrás-fizetési adatokat.
+1. Open **Revenue** in Operator. Check the deployment and displayed period/currency.
+2. Record totals and the prepared period’s point. Codex retains the underlying
+   source payment records.
 
-Jelzés: `OPERATOR-REVENUE-LIFECYCLE-001 1. blokk kész`.
+Report: `OPERATOR-REVENUE-LIFECYCLE-001 block 1 done`.
 
-## 2. Szinkronizálás és összesítők
+## 2. Synchronization and totals
 
-3. Indíts egyszer szinkronizálást a Revenue normál műveletével.
-4. Várd meg a megjelenő végső eredményt. A sikeres állapot a ténylegesen
-   elkészült jelentéshez tartozzon; Codex azonosítja a tartós eredményt.
-5. Hasonlítsd össze az előkészítésben kiírt összeggel és darabszámmal.
-   A feloldott kontroll nem növeli a terhelt bevételt. Eltérő szolgáltató,
-   deviza vagy időszak adatai nem keveredhetnek a kijelölt összesítésbe.
+3. Start one synchronization through the normal Revenue action.
+4. Wait for its final result. Success corresponds to an actually completed
+   report; Codex identifies the durable result.
+5. Compare with the prepared amount and count. The released control does not
+   increase captured revenue. Other providers, currencies or periods must
+   not be mixed into the selected total.
 
-Jelzés: `OPERATOR-REVENUE-LIFECYCLE-001 2. blokk kész`.
+Report: `OPERATOR-REVENUE-LIFECYCLE-001 block 2 done`.
 
-## 3. Egy elszámolás és újranyitás
+## 3. Settlement and reopening
 
-6. Nyisd meg a megnevezett **settlement / elszámolás** részleteit. A
-   szolgáltató, fizetési művelet, fizetés/foglalás azonosítója, deviza és
-   összeg egyezzen a kijelölt forrással.
-7. Zárd be és nyisd meg újra a Revenue nézetet. A szinkronizált eredmény és
-   az ellenőrzött elszámolás tartósan ugyanaz maradjon.
-8. Codex összeveti a forrásadatokat, a jelentést, az elszámolást és a
-   változatlan kontrollt, majd visszaállítja a QA-adathalmazt.
+6. Open the named **settlement**. Provider, payment operation, payment/booking
+   identifier, currency and amount match the selected source.
+7. Close and reopen Revenue. The synchronized result and checked settlement persist.
+8. Codex compares source records, report, settlement and unchanged control,
+   then restores the QA dataset.
 
-Jelzés: `OPERATOR-REVENUE-LIFECYCLE-001 kész`.
+Report: `OPERATOR-REVENUE-LIFECYCLE-001 done`.
 
-## Futtatási határ
+## Execution boundary
 
-Ez a konszolidált Revenue sor normál felületi útvonala. A külön fixture és
-böngészőindítás későbbi előkészítés. Jelentési hiba, újraküldés, teljes
-idempotencia- és kizárásimátrix automatizált teszt, nem új kézi tesztsor.
+Dedicated fixtures and browser startup are prepared when this test starts.
+Reporting failures, retries and the full idempotence/exclusion matrix belong
+to automated coverage, not extra manual blocks in this journey.

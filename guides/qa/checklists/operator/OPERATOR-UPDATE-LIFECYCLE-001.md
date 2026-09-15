@@ -1,50 +1,50 @@
-# OPERATOR-UPDATE-LIFECYCLE-001 — Egy előkészített frissítés
+# OPERATOR-UPDATE-LIFECYCLE-001 — Apply one prepared update
 
-## Miről szól?
+## Purpose
 
-Az Updates felületen egy érvényes, kompatibilis QA-kiadást alkalmazunk.
-A felületi folyamatjelzőt, a tartós feladateredményt és a ténylegesen
-telepített verziót vetjük össze, majd újranyitjuk az Operatort.
+Apply one valid, compatible QA release from Updates. Compare progress, the
+durable task result and the installed version, then reopen Operator.
 
-**Szereplő:** a kijelölt, eldobható frissítési QA-célpont Operatora.
-Codex előre megadja az induló és célverziót, a csomagot és a helyreállítási
-alapot. Ez a teszt nem az aktív fejlesztői checkouton fut.
+**Actor:** Operator on the designated disposable update target. Codex names
+the current/target versions, package and recovery baseline in advance.
+The active development checkout is not the update target.
 
-## 1. Kiinduló és célverzió
+## 1. Current and target versions
 
-1. A kijelölt Operatorban nyisd meg az **Updates** felületet. Ellenőrizd a
-   telepítés nevét és az aktuális verziót.
-2. A **Refresh** művelettel kérd le az elérhető kiadást. Az ajánlott
-   célverzió és kompatibilitás egyezzen az előkészített csomaggal.
-3. Olvasd el a frissítéshez megjelenő információkat. Codex ellenőrzi, hogy
-   a kijelölt QA-csomag és a felületen kiválasztott kiadás azonos.
+1. Open **Updates** on the designated Operator. Check deployment name and
+   current version.
+2. Use **Refresh** to retrieve the available release. Target version and
+   compatibility match the prepared package.
+3. Read the update information. Codex verifies that the selected release
+   matches the designated QA package.
 
-Jelzés: `OPERATOR-UPDATE-LIFECYCLE-001 1. blokk kész`.
+Report: `OPERATOR-UPDATE-LIFECYCLE-001 block 1 done`.
 
-## 2. Alkalmazás és folyamatjelzés
+## 2. Apply and observe progress
 
-4. Válaszd egyszer az **Apply update** műveletet.
-5. Kövesd a megjelenő fázisokat. A felület nem jelezhet kész állapotot,
-   amíg a tényleges frissítési feladat nem fejeződött be.
-6. Várd meg a végső eredményt. Codex összeveti a feladat azonosítóját,
-   kezdési/befejezési idejét, állapotát és célverzióját a kijelölt QA-célponttal.
+4. Select **Apply update** once.
+5. Follow the displayed phases. The UI must not report completion before
+   the actual update task finishes.
+6. Wait for the final result. Codex compares task identity, start/end times,
+   status and target version against the designated QA target.
 
-Jelzés: `OPERATOR-UPDATE-LIFECYCLE-001 2. blokk kész`.
+Report: `OPERATOR-UPDATE-LIFECYCLE-001 block 2 done`.
 
-## 3. Frissítés utáni Operator
+## 3. Operator after the update
 
-7. Nyisd újra az Operator felületét a frissített QA-célponton. A normál
-   hozzáférés használható, és a ténylegesen telepített célverzió látszik.
-8. Nyisd meg újra az Updates nézetet. A befejezett eredmény megmarad;
-   ugyanaz a kiadás már az aktuális verzióként jelenik meg.
-9. Codex menti a képernyős és tartós bizonyítékot, majd a kijelölt QA-célpontot
-   a tesztalap szerint rendezi. A frissítés eredményét és a fixture
-   visszaállítását külön rögzíti.
+7. Reopen Operator on the updated target. Normal access works and the
+   actually installed target version is displayed.
+8. Reopen Updates. The completed result persists and that release is now
+   shown as the current version.
+9. Codex retains UI and durable evidence, then restores the designated QA
+   target according to its baseline. Update outcome and fixture restoration
+   are recorded separately.
 
-Jelzés: `OPERATOR-UPDATE-LIFECYCLE-001 kész`.
+Report: `OPERATOR-UPDATE-LIFECYCLE-001 done`.
 
-## Futtatási határ
+## Execution boundary
 
-Most ez a lépéssor készül el. A kiadás/célpont fixture külön előkészítés.
-Sérült csomag, hibás aláírás, downgrade, megszakítás és rollback
-hibainjektálás a csomagolási/frissítési automatizált tesztekhez tartozik.
+The release/target fixture is prepared separately when this test starts.
+Use fixture prerequisites instead of repeating deployment or registration
+journeys. Corrupt packages, invalid signatures, downgrade, interruption and
+rollback failure injection belong to packaging/update automated coverage.

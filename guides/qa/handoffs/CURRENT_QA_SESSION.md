@@ -102,16 +102,17 @@ repair an established product defect. Preserve the phone's tethering connection
 when shaping only its route to the QA application.
 
 ```yaml
-checkpoint: BELL-RATING-LIFECYCLE-001 — FEEDBACK WORKER FOLLOW-UP
-checklist: ../checklists/notifications/BELL-RATING-LIFECYCLE-001.md
-substage: Steps1–20 UI/delivery/read passed and first feedback reset exact. Later worker oracle found full userRates document differences; initial oracle omitted changed fields. Focused feedback replay now captures entire before/after rates to classify fields; no application edits.
-fixture_phase: bell-rating-feedback feedback prepared14:17:09.167Z, wrapper bell-feedback active, Lucas resubmitted around14:20Z. Wait real five-minute debounce then worker; inspect feedback-worker-diagnosis full field diff before reset.
-browser_control: Bell full flow delegated. Four BELL-RATING-FEEDBACK-001 sessions open. User explicitly asks next Admin test prepared ONLY, no execution.
-required_resume: Resolve exact worker field differences, preserve evidence, wait terminal tasks then close and reset Admin fixture and wrapper. Mark Bell full PASS only when supported. Then stage/admin-monitoring baseline and use managed ADMIN-MONITORING-001 launcher; stop at Admin home before any checklist click.
-queued_work: User requested all three Admin guides, scripts only for Monitoring. Three guides plus Monitoring baseline/capture/reset script and launcher configuration written; syntax checks pass. BASE-STAT already PASS; Monitoring is domain second test.
-runtime: Existing watchers only. No production code changed during this continuation.
-ledger_status: Bell still IN PROGRESS until worker classification. Admin new tests not executed.
-last_evidence: ../manuals/DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md#reciprocal-graph-closure--2026-09-15
+checkpoint: ADMIN-MONITORING-001 — PREPARED / NOT RUN
+checklist: ../checklists/administration/ADMIN-MONITORING-001.md
+substage: Block1 step1 Metrics, awaiting user review/start. No Admin checklist actions performed.
+fixture_phase: admin-monitoring baseline-ready-not-started; no test parameter save or job armed.
+browser_control: Managed Ava Admin session ready; existing-session authentication/realtime readiness verified. User explicitly requested preparation only; do not execute the checklist.
+required_resume: Read-only baseline/session readiness check if stale. Continue only when user starts the prepared test; do not replay completed Bell/Jobs flows.
+queued_work: All three Administration and four Operator guides written in English. Only Monitoring scripts prepared; other fixture orchestration deferred. Monitoring owns parameter save/history/revert once; other tests replace proven prerequisite actions with fixtures, not repeated clicks. No separate common testcase.
+last_completed: BELL-RATING all1–20 PASS, final consistent feedback worker oracle and exact fixture/session resets verified.
+runtime: Existing watchers only. No application code changed in this continuation.
+ledger_status: 95/104 PASS; Notifications6/6. Admin Monitoring prepared, Graph/Parameters and Operator not newly executed.
+last_evidence: ../manuals/DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md#final-bell-closure--2026-09-15
 ```
 
 ### Notifications takeover notes
