@@ -34,7 +34,55 @@ documented H3 tool route. Web Element handling may differ.
 Only the H3 route remains in this package. The user reports the Element import
 is complete and has generated/downloaded I01–I07. All seven downloaded images
 were visually reviewed below. I08 and the videos have not been reviewed.
-Codex has not submitted a generation or spent credits.
+Codex has not submitted a generation or spent credits. Subsequent I08 review
+found a missing sixth person; see the video-reference update below.
+
+## Video-reference update and incomplete I08
+
+A fresh MCP list plus individual get requests verified all eight promo Elements.
+The original seven still have the same single image attachments recorded below.
+The new I08 Element is `loc_MYS_mys-promo-i08-meeting_s0_v1`, UUID
+`a274b0a3-4038-4bbd-8f47-aefa0c0944e5`, completed, with one image_job attachment:
+`0af7ccf0-5a6f-40a8-8a79-3646646ff1e2`. No extra old image or video is attached.
+
+Viewed the matching local file
+`/home/raxim/Downloads/hf_20260915_190310_0af7ccf0-5a6f-40a8-8a79-3646646ff1e2.png`
+(native 2752×1536; displayed at 2048×1143). There are only five visible people:
+Mara near left, Nia farther left, Eva centrally, Leo farther right, Arun near
+right. Tomas and his olive outfit are absent. The cause is not established;
+the user's suggestion that the seating made him disappear is a hypothesis.
+The visible arrangement also differs from the original written seating map.
+
+Both video prompts now include verified source @ names alongside numbered image
+roles. Actual images must still be selected for H3; its current MCP contract
+does not automatically inject Element references. A needs six images. B needs
+eight, with I08 replaced by a reviewed six-person correction. B now takes its
+seating from that corrected composition to avoid conflicting placement commands.
+
+Prepared `images/I08_REPAIR_TOMAS.txt`: two-reference image edit, existing group
+plus Tomas, preserving the existing five and adding Tomas in the far-side gap
+between Nia and Eva. Unlimited only; no edit job submitted. Repair acceptance
+and replacement attachment are pending. This is the required group image's
+replacement, not an additional ninth production image.
+
+A's actual last frame can be extracted only after the video exists. If used for
+frame continuation it would become B's START; the current blur-matched scene cut
+does not require it. No future frame, UUID or mixed-mode acceptance was invented.
+
+### I08 insertion did not resolve the missing person
+
+The user reports the insertion attempt essentially reproduced the five-person
+image. A fresh read of the I08 Element still returns the original image job
+`0af7ccf0-5a6f-40a8-8a79-3646646ff1e2`; no new repair result was found in Downloads.
+The failed attempt is therefore user-reported, not separately visually audited.
+
+The user chose to regenerate the complete composition from the original six
+character references and the empty park. Updated I08_MEETING_COMPOSITION with
+six enumerated positions: five seated people and Tomas standing at the far centre
+between Nia and Eva, with his face and upper torso clear above the seated row.
+The existing five-person group is not an input to this new request. B's staging
+now agrees with that arrangement. I08_REPAIR_TOMAS is an inactive prior route.
+No new generation was submitted by Codex and six-person success is still pending.
 Camera directions, shot timing, six-face consistency and the four-hour finish
 remain production targets, not verified output results.
 

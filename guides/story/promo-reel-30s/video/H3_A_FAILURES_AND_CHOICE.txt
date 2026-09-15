@@ -2,7 +2,15 @@ MINIMAX H3 — MYSCOUTEE — CINEMATIC LIVE-ACTION AD — PART A — 15 SECONDS 
 
 CAST: Six adults aged 30–45: Mara 31, Leo 32, Nia 30, Arun 34, Eva 43, Tomas 38. Natural, energetic everyday adults; preserve these ages throughout.
 
-REFERENCES: Images 1–6 define Mara in coral, Leo in navy, Nia in teal, Arun in ochre, Eva in plum and Tomas in olive, each in their own preparation scene. Preserve each face, clothes, activity object and location. Mara's last scene returns to the exact apartment from Image 1.
+REFERENCE IMAGE MAP (actual attached images, in this order; @ names identify their source Elements):
+Image 1: @char_MYS_mys-promo-mara_s0_v1 — Mara; identity, coral clothing and apartment preparation scene.
+Image 2: @char_MYS_mys-promo-leo_s0_v1 — Leo; identity, navy clothing and bicycle preparation scene.
+Image 3: @char_MYS_mys-promo-nia_s0_v1 — Nia; identity, teal clothing and basketball-court scene.
+Image 4: @char_MYS_mys-promo-arun_s0_v1 — Arun; identity, ochre clothing and music preparation scene.
+Image 5: @char_MYS_mys-promo-eva_s0_v1 — Eva; identity, plum clothing and game preparation scene.
+Image 6: @char_MYS_mys-promo-tomas_s0_v1 — Tomas; identity, olive clothing and park-entrance scene.
+
+REFERENCE USE: Images 1–6 define Mara in coral, Leo in navy, Nia in teal, Arun in ochre, Eva in plum and Tomas in olive, each in their own preparation scene. Preserve each face, clothes, activity object and location. Mara's last scene returns to the exact apartment from Image 1.
 
 Six people would love to do something, and are missing company. Ready posture, a small wistful pause, hopeful eyes. Their activity objects communicate the wish. Real contemporary European cinema, tactile materials, natural skin and inviting late-afternoon light.
 

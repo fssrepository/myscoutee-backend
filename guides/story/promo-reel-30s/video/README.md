@@ -3,6 +3,12 @@
 Select **MiniMax H3, 15 seconds, 9:16, 2K, one result** per part.
 Final delivery: 720×1280, 30 seconds. Credits are reserved for these two jobs.
 
+**A: reference set verified. B: replace the incomplete I08 image before submission.**
+The live I08 Element currently holds a five-person result: Tomas is absent.
+Use [the revised full composition](../images/I08_MEETING_COMPOSITION.txt), inspect the
+six-person output, then replace the image attached to that same I08 Element.
+Remove the five-person attachment when replacing it; do not accumulate both.
+
 | Part | Generic references, in exact order | Paste |
 | --- | --- | --- |
 | A: wishes → choice | I01, I02, I03, I04, I05, I06 | [H3_A_FAILURES_AND_CHOICE](H3_A_FAILURES_AND_CHOICE.txt) |
@@ -32,3 +38,39 @@ separately; native audio is requested as ambience only.
 
 [Higgsfield's H3 camera/multi-shot guide](https://higgsfield.ai/blog/minimax-h3-higgsfield)
 documents the general workflow, not successful execution of these prompts.
+
+## Verified live source Elements
+
+The @ names in the prompts identify the actual source Elements, checked via MCP.
+**They are not a promise of automatic H3 attachment.** H3's current MCP Element
+contract does not inject images from Element placeholders. Use actual images in
+image-reference slots, in the prompt's numbered order. If the web composer
+resolves an @ mention itself, verify the resulting image attachments; otherwise
+select the source image explicitly. Six images for A, eight for B.
+
+| Image | Source Element | Current attached image job |
+| --- | --- | --- |
+| I01 | char_MYS_mys-promo-mara_s0_v1 | 08cc2d8f-3d14-4170-8340-dae38811595d |
+| I02 | char_MYS_mys-promo-leo_s0_v1 | eafb32cc-8aa8-43b1-909d-2e29618331af |
+| I03 | char_MYS_mys-promo-nia_s0_v1 | daa0f51d-12f5-453b-b2b8-7988e17222be |
+| I04 | char_MYS_mys-promo-arun_s0_v1 | f1733523-55aa-46c2-b02e-cd3fde65c3f5 |
+| I05 | char_MYS_mys-promo-eva_s0_v1 | f2b79e50-5abd-4ec4-8f0a-069673860811 |
+| I06 | char_MYS_mys-promo-tomas_s0_v1 | 1e628820-7982-4923-93af-049ee095c1ee |
+| I07 | loc_MYS_mys-promo-park_s0_v1 | 867d4bb4-3c3f-416a-9656-587babefe89e |
+| I08 | loc_MYS_mys-promo-i08-meeting_s0_v1 | 0af7ccf0-5a6f-40a8-8a79-3646646ff1e2 — replace; Tomas missing |
+
+All eight Elements are completed with one attached image each. That is library
+state, not proof that an image was selected in the video composer or passed
+video eligibility. The I08 row must be rechecked after replacement.
+
+## A's final frame
+
+Once A is accepted, its actual last decoded frame can be extracted for reviewing
+the join. It does not exist yet and no placeholder asset is attached.
+A previous final frame would go into the next clip's **START**, not its END.
+Our current A→B transition is a cut concealed by matching rightward motion blur,
+so both clips keep START/END empty and use the cast/world references.
+
+H3 frame-plus-reference mixing remains inconsistent between Higgsfield's guide
+and MiniMax's API. Do not add an assumed ninth start input. A still cannot preserve
+camera speed; inspect the end of A and start of B in motion before joining them.

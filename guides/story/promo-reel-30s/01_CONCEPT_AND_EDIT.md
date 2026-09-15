@@ -49,6 +49,10 @@ energetic and age-appropriate; preserve these ages in the group and moving shots
 | I07 | empty park | one outdoor game table and six chairs |
 | I08 | same six at that table | shared game and desired closing composition |
 
+Current I08 placement: five seated people, with Tomas standing visibly at the
+far centre between Nia and Eva. The original all-seated result omitted Tomas;
+the full composition prompt now gives each person an explicit separate position.
+
 I01–I07 are independent image requests. I08 uses all seven as references.
 Part A needs I01–I06 only. Part B uses all eight.
 

@@ -1,5 +1,5 @@
 IMAGE ID: I08_MEETING_COMPOSITION
-MODEL SETTING: Nano Banana Pro, 2K, 9:16, one single full-frame image.
+MODEL SETTING: Nano Banana Pro, 2K, 9:16, one single full-frame image, Unlimited only.
 
 REFERENCE ELEMENTS:
 Mara: @char_MYS_mys-promo-mara_s0_v1 — 31, dark bob, coral overshirt over ivory.
@@ -10,12 +10,20 @@ Eva: @char_MYS_mys-promo-eva_s0_v1 — 43, shoulder-length chestnut hair, plum j
 Tomas: @char_MYS_mys-promo-tomas_s0_v1 — 38, close dark hair, olive overshirt over grey.
 Park: @loc_MYS_mys-promo-park_s0_v1 — sunlit trees, pale gravel path, oval wooden game table and six chairs.
 
-Create one photographic group scene using the six referenced adults exactly once each. Preserve their individual faces, ages, hairstyles, skin tones and clothing from their attached images. Use the character references for identity and wardrobe; use only the park reference for the setting. The earlier apartments, basketball court, bicycle, backpack, guitar, camera and grey game box do not appear here.
+Generate a NEW group photograph from these seven references: SIX different adults sharing a game in the referenced park. Use the six individual character images for faces and clothing, and the empty park image for the environment. Build the whole group composition together. Every referenced person appears exactly once.
 
-Place the same six around the oval wooden game table in the referenced park. Preserve the park's mature trees, pale gravel path, warm late-afternoon light, tactile wooden furniture and simple coloured game tiles. Mara sits near left, Leo near right, Nia middle left, Arun middle right, Eva and Tomas at the far end. Angle the two near chairs and their seated occupants naturally inward so their faces remain visible at three-quarter angles; no foreground person has their back fully toward the camera. Stagger the heads so no person or chair back obscures another face. Exactly six people and six occupied chairs.
+Place the six people as follows:
+1. Mara in coral — seated at the near left corner, face turned inward in a clear three-quarter view.
+2. Nia in teal — seated on the far left side, clearly visible behind Mara.
+3. Tomas in olive over grey — STANDING at the far centre of the table, between Nia and Eva. His entire head, shoulders and upper torso are clearly visible against the green background, above the seated row.
+4. Eva in plum — seated just right of Tomas, one hand beside a coloured game tile.
+5. Leo in navy — seated farther right, his face separated from Eva's and Arun's.
+6. Arun in ochre — seated at the near right corner, turned inward so his face is visible.
 
-Camera slightly above seated eye level, natural 35mm perspective, a medium-wide group composition with all six faces clearly readable. Leave breathing room around the group for the video's curved pull-back and shallow arc, with simple green background above them for later editorial copy. Compose this as a new shared scene rather than reproducing the separate portrait backgrounds.
+Tomas is a full-size member of the foreground group, not a distant passer-by or a face behind somebody. Give his standing body its own space between the seated neighbours. The composition contains FIVE SEATED PEOPLE AND ONE STANDING PERSON: six distinct, visible faces. Leave enough space around the table to fit everyone; move chairs slightly as needed rather than hiding or omitting a person.
 
-Eva rests one hand beside a coloured game tile. Mara and Arun exchange an amused smile; the others are naturally engaged in that same game, with different relaxed expressions and eye lines. All phones are put away. Warm, spontaneous company during an outdoor activity; believable small gestures and separately readable hands. Keep the game pieces resting on the table.
+The same sunlit park, oval wooden game table, simple coloured tiles, mature trees and pale gravel path. Keep each person's reference face, hairstyle, age and clothing. All are naturally energetic adults aged 30–45. Tomas's camera is put away; the earlier bicycle, ball, guitar, backpack and phone props are absent.
 
-All six are naturally energetic adults aged 30–45, with age-appropriate skin and everyday styling. Photographic contemporary European cinema, real skin and fabric, natural facial proportions, clean midtones, readable eyes and medium depth of field. One coherent scene. No duplicate or merged faces, extra people, lettering, logos, watermark, floating interface, scores, split screen, collage, illustration or 3D-render look. This is the desired closing composition within the film.
+Mara and Arun share an amused smile while Eva considers her game move. Nia, Leo and Tomas watch with relaxed, different expressions. Natural shared activity, with nobody posing toward the viewer. Chest-height camera, enough depth of field for all six faces, realistic skin and hands, warm late-afternoon light. Leave breathing room above and around the group for the later video camera move and editorial copy.
+
+One coherent photographic scene, six distinct identities, no duplicate people, merged faces, floating bodies, lettering, logos, collage or borders.

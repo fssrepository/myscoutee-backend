@@ -26,5 +26,8 @@ Only these two H3 video prompts are active. Prepare six character/activity image
 one empty park world and one group composition. Part A uses six references;
 Part B uses eight. Neither depends on mixed reference/END mode or a seamless join.
 
-The user reports the Element import is complete. Codex has spent no credits or
-submitted media jobs. I08 and the final video have not been reviewed.
+All eight live Elements and their image attachments were verified through MCP.
+The first I08 result was reviewed: it contains five people and omits Tomas.
+The [revised full composition](images/I08_MEETING_COMPOSITION.txt) is prepared; Part B
+needs the corrected six-person I08. Part A's references are ready.
+Codex has spent no credits or submitted media jobs. The videos are unreviewed.

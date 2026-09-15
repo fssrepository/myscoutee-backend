@@ -31,6 +31,20 @@ its original. A focused repair pass may help but also needs checking.
 I08 must contain each adult once, with fixed seating and no obscured faces.
 All phones are put away in the final scene. Product lettering is added in the edit.
 
+## Current I08 correction
+
+The imported I08 result contains five people; Tomas is absent. The user reports
+the local insertion attempt essentially repeated the original and chose a fresh
+composition instead. Use [I08_MEETING_COMPOSITION](I08_MEETING_COMPOSITION.txt)
+with the six character Elements and the empty park Element, in Unlimited mode.
+It now gives Tomas a clearly visible standing position behind the five seated
+people and enumerates all six positions. Do not attach the previous five-person
+group to this fresh composition request. The repair file is an inactive prior
+attempt, not the current generation route. Verify six distinct faces and the
+original identities before replacing the image in the I08 Element.
+Keep just the accepted replacement attached there. B's reference set remains
+pending that correction; A's six individual references are already verified.
+
 Optional [Element import](ELEMENT_IMPORT_OPTIONAL.txt): six characters and one
 park. Bind Mara→I01, Leo→I02, Nia→I03, Arun→I04, Eva→I05, Tomas→I06, Park→I07.
 For H3, attach the actual images; importing alone does not bind them.
