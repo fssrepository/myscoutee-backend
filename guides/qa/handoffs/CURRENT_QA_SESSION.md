@@ -108,11 +108,11 @@ substage: Block1 step1 Metrics, awaiting user review/start. No Admin checklist a
 fixture_phase: admin-monitoring baseline-ready-not-started; no test parameter save or job armed.
 browser_control: Managed Ava Admin session ready; existing-session authentication/realtime readiness verified. User explicitly requested preparation only; do not execute the checklist.
 required_resume: Read-only baseline/session readiness check if stale. Continue only when user starts the prepared test; do not replay completed Bell/Jobs flows.
-queued_work: All three Administration and four Operator guides written in English. Only Monitoring scripts prepared; other fixture orchestration deferred. Monitoring owns parameter save/history/revert once; other tests replace proven prerequisite actions with fixtures, not repeated clicks. No separate common testcase.
+queued_work: All three Administration and four Operator guides written in English. Only Monitoring scripts prepared; other fixture orchestration deferred. Monitoring owns parameter save/history/revert once; other tests replace proven prerequisite actions with fixtures, not repeated clicks. No separate common testcase. Administration coverage restored against334d4787: Monitoring20, Graph23, Parameters25 explicit steps with source-ID mappings; evidence reuse is assertion-specific. Operator guide omissions now repaired against334d4787 at user request: Configuration C01–C08, Registry18, Updates11, Revenue11; per-guide requirement mapping retained. Documentation only; dedicated Operator fixtures deferred.
 last_completed: BELL-RATING all1–20 PASS, final consistent feedback worker oracle and exact fixture/session resets verified.
 runtime: Existing watchers only. No application code changed in this continuation.
 ledger_status: 95/104 PASS; Notifications6/6. Admin Monitoring prepared, Graph/Parameters and Operator not newly executed.
-last_evidence: ../manuals/DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md#final-bell-closure--2026-09-15
+last_evidence: ../manuals/DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md#operator-coverage-repair-against-the-original-matrix--2026-09-15
 ```
 
 ### Notifications takeover notes

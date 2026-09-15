@@ -1,59 +1,108 @@
-# ADMIN-MONITORING-001 — Monitoring, queues and configuration counters
+# ADMIN-MONITORING-001 — Monitoring, task lifecycle and configuration counters
 
 ## Purpose
 
-Check Monitoring filters and counters against one real task and one parameter
-save/revert. This is the second Administration test after BASE-STAT.
+Verify the Monitoring dashboard against real queue, scheduler, audit and
+configuration records. This is the second Administration test after BASE-STAT.
 **Actor:** Ava Moderation. Startup opens Admin home; step 1 begins the test.
 
-## Fixture prerequisites
+## Fixture prerequisites and previously tested work
 
-The JOB-MESSAGES test owns the Jobs table, detail and mobile presentation.
-Use a fixture for the task baseline here; do not repeat those UI checks.
-The parameter save/history/revert sequence is tested once in block 3 below.
-ADMIN-PARAMETERS uses fixtures instead of repeating that sequence.
+Codex snapshots the baseline and names the isolated recompute task, expected
+output and unaffected controls. Fixture setup replaces the rating or other
+user journey that would enqueue it. A real worker must still process the task.
 
-## 1. Baseline and filters
+JOB-MESSAGES owns the Jobs table/detail/mobile presentation. Reuse that evidence;
+do not retest its layout. A job's own run history and business result are separate
+assertions: a working table does not prove every job's audit. Codex maps MON-013
+jobs to their existing domain evidence before block 2. Only missing assertions
+need a fixture-backed run, without repeating the originating user journey.
 
-1. Open **Metrics** from Ava’s menu. Read the categories and status indicators
-   in **All**. Codex records the baseline.
+The shared Params editor/History/revert interaction is tested once in block 3.
+Parameters uses that evidence and fixtures for repeated setup/cleanup, while
+retaining its distinct section-specific persistence and consumer checks.
+
+## 1. Baseline, filters and passive refresh
+
+1. Open **Metrics**. In **All**, record category names, counts, health labels
+   and timestamps. Codex captures the corresponding persisted baseline.
 2. Select **Watch**, **Domains**, **Delivery** and **Workers** in turn.
-   Each filter count matches its categories; Watch may be empty when healthy.
-3. Return to **All**. Filter changes create no work or counter increments;
-   Codex identifies any real background activity separately.
+   Each filter contains the correct categories and shows their category count.
+3. Verify Watch against actual category health. An empty Watch requires all
+   categories to be OK; unrelated existing failures must remain identifiable.
+4. Return to **All** and observe the normal refresh. Reading/filtering creates
+   no work or processing increments. Codex attributes genuine background changes
+   to their source instead of requiring a globally idle database.
 
 Report: `ADMIN-MONITORING-001 block 1 done`.
 
-## 2. One task’s counters
+## 2. Recompute, scheduler audit and domain result
 
-4. Stay on **Domains / Matching**. Codex prepares one named recompute task
-   with the existing fixture; do not repeat its originating user journey.
-5. Observe pending/running state and completion. Retained run history may
-   prove a short running transition. Codex correlates the same task.
-6. After completion, the test task is no longer pending/running; cumulative
-   processing history remains. Control changes require identified background work.
+5. Stay on **Domains / Matching**. Codex stages the named task with the existing
+   `affinity-recompute / isolated-user` fixture and records its starting state.
+6. Observe pending/running and terminal states. Codex compares the task identity,
+   queue counts, pending tracking and timestamps. A short running state may be
+   established from retained history rather than an extra run.
+7. At completion, the task is no longer pending/running; failed state and health
+   agree with the actual result. Live counts settle while cumulative totals remain.
+8. Inspect the named **Jobs → Refresh affinities → View process** result solely
+   for this run's data: start/end, outcome and affected count. Codex correlates
+   `runState`, history and scheduler/audit telemetry with that same real run.
+9. Codex independently verifies the changed affinity output, named control and
+   relevant discovery projection. Use a prepared graph and retained Bell evidence
+   for already proven graph presentation; a terminal task alone is not output proof.
+10. Codex checks the MON-013 evidence mapping for each applicable Admin Job:
+    job/run identity, scheduler start/terminal trace, history and its domain oracle.
+    Reuse complete prior evidence. For an uncovered job, prepare only its existing
+    non-empty fixture, process it through its normal execution path, and inspect
+    that run's missing result/telemetry. Record each covered or missing job by name;
+    do not infer all-job coverage from Refresh affinities or a zero-work run.
 
 Report: `ADMIN-MONITORING-001 block 2 done`.
 
-## 3. Exact configuration-change counts
+## 3. One parameter save, History and revert
 
-7. Codex resets the task fixture and captures the parameter baseline. Open
-   **Params → Jobs → Edit**, increase **User debounce** by one second and
-   save once, for example `300 s → 301 s`.
-8. Reopen Params: the new value persists. **History** shows one new version
-   with the correct author/time; Monitoring **Workers / Jobs** shows one
-   configuration change. Codex correlates the records.
-9. Restore the baseline values through **History**. The original value returns;
-   one further history entry and configuration-change increment appear.
-10. Reverting the already active version causes no further change. After the
-    related work completes, pending counters settle.
+11. Codex restores the task fixture and captures the active Jobs version, values,
+    counters, tasks, outbox and expected Admin recipients. Open **Params → Jobs**.
+12. Under **Edit**, increase **User debounce** by one second and save once,
+    for example `300 s → 301 s`. Codex states the actual value pair beforehand.
+13. Close and reopen Params. The new value persists. **History** shows one new
+    version with the correct section, value, author, time and change summary.
+14. In Monitoring **Workers / Jobs**, verify one configuration-change increment
+    for that version. Codex correlates the recompute task and Admin notification
+    outbox with this save, including expected recipient records and projections.
+    Do not replay the previously tested bell/read or push journey.
+15. Let the real related work complete. Compare pending/running/terminal counters,
+    job/audit result and unaffected controls. Distinguish cumulative events from
+    live queue counts; do not accept a successful Save as worker/delivery proof.
+16. In **History**, restore the baseline version's values. Reopen and verify the
+    original values, a new retained history entry and one further config increment.
+    Codex checks the corresponding task/outbox and their completed results.
+17. Revert the already active version again. No new version, configuration event,
+    recompute task or Admin notification is produced by this no-op.
+18. Confirm the changed and restored versions remain in History. Unrelated
+    parameter sections retain their baseline values; original Jobs values are active.
 
 Report: `ADMIN-MONITORING-001 block 3 done`.
 
 ## 4. Closure
 
-11. Codex compares exact counts and controls, retains the parameter lifecycle
-    evidence for Parameters, and restores the fixture.
+19. Codex records exact source-to-counter correlations, named job coverage and
+    every retained cross-domain proof. Any missing MON-013 job assertion remains
+    explicitly open; it cannot be replaced with synthetic history or a blanket PASS.
+20. Once fixture-owned work is terminal, Codex restores the retained fixture and
+    session state. Preserve real audit/version evidence as defined by the harness.
+
+Report: `ADMIN-MONITORING-001 done`.
+
+## Original matrix coverage
+
+| Source | Owning checks |
+| --- | --- |
+| BASE-MON | Block 1: categories, filter totals, health and passive refresh |
+| MON-011 | Block 2, steps 5–9: task lifecycle, correct output and controls |
+| MON-013 | Block 2, steps 8–10: per-job scheduler/history/domain proof, reused where complete |
+| MON-014 | Block 3: exact save/revert/no-op events, queue, audit and Admin notification |
 
 ## Preparation commands
 

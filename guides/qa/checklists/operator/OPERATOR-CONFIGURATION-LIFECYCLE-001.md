@@ -7,7 +7,7 @@ followed by fresh sign-in and exact restoration. These checkpoints belong to
 one existing matrix row; they are not new independently counted testcases.
 Execution evidence and PASS status belong in the QA pack and CSV/XLSX ledger.
 
-## Shared coverage: run once and reference both guides
+## Checkpoint ownership and fixture preparation
 
 | Checkpoint | Operator ownership | Reuse in the WebView / Push journey |
 | --- | --- | --- |
@@ -23,7 +23,11 @@ Execution evidence and PASS status belong in the QA pack and CSV/XLSX ledger.
 Sharing requires the same relevant build, configuration revision and identity.
 One desktop result does not prove the phone boundary. Auth Test does not prove
 consumer sign-in; Message Test does not prove background/closed-app delivery.
-If a relevant repair changes the behavior, replay that affected checkpoint.
+Codex records the exact previously passed assertions before startup and uses
+fixtures for their resulting configuration/identity/device state. Execute only
+a missing or behaviorally affected assertion in its owning test. A no-change
+Save or existing active revision does not prove a new changed-value save.
+Prepared credentials or sessions do not count as capability/sign-in evidence.
 
 ## Preparation
 
@@ -50,7 +54,8 @@ If a relevant repair changes the behavior, replay that affected checkpoint.
 ## C01 — capture the baseline
 
 1. Record the current public configuration, TLS state, payment provider and
-   masked Firebase state. Keep the original values available for restoration.
+   masked Firebase state, active revisions and existing operation IDs. Codex
+   snapshots their persisted records and unaffected blocks for comparison.
 2. Confirm the existing Operator can open Configuration. Fixture-prepared
    access is setup; count Operator login only if actually performed.
 
@@ -59,8 +64,11 @@ If a relevant repair changes the behavior, replay that affected checkpoint.
 1. Change one reversible public value, such as the displayed branding name,
    to the controlled value declared for this run. Save that block once.
 2. Close and reopen Configuration. The normalized saved value remains.
-3. Observe its public surface after an ordinary reload. Restore the original
-   value and verify the original public result in the same way.
+3. Observe its public surface after an ordinary reload. Codex correlates the
+   changed block with exactly one configuration revision and the displayed
+   result; unrelated blocks retain their values.
+4. Restore the original value and verify the original public result after
+   reload. Retain the changed/restored records separately from fixture cleanup.
 
 ## C03 — HTTPS
 
@@ -68,8 +76,12 @@ If a relevant repair changes the behavior, replay that affected checkpoint.
    configuration through its visible action.
 2. Observe progress and the resulting capability state. Reopen the block and
    compare the normalized saved configuration.
-3. Open the configured trusted HTTPS origin and confirm its actual certificate
-   and connection. Restore the prior configuration and fixture-owned TLS state.
+3. Codex correlates the changed TLS block with its configuration revision and,
+   where the visible action creates work, its actual operation/job result.
+   A saved value alone does not prove certificate provisioning or readiness.
+4. Open the configured trusted HTTPS origin and confirm its actual certificate
+   and connection. Restore the prior configuration and fixture-owned TLS state;
+   verify the restored capability and retained Operator access.
 
 ## C04 — payment configuration
 
@@ -77,10 +89,19 @@ If a relevant repair changes the behavior, replay that affected checkpoint.
    public URL. Register/update the payment block through its normal action.
 2. Reopen it: provider and normalized values persist, credentials stay masked,
    and the capability result agrees with the configured provider.
-3. Restore and reopen the prior configuration. Checkout, card callbacks and
-   captured payments belong to the existing Event/Asset tests, not this block.
+3. Codex correlates the changed payment block with one configuration revision
+   and the provider capability result. Other blocks remain unchanged; a UI
+   success message alone does not prove the saved provider configuration.
+4. Restore and reopen the prior configuration. Checkout, card callbacks and
+   captured payments belong to the existing Event/Asset tests; fixtures supply
+   their already-proven prerequisites here.
 
 ## C05 — Firebase save and capability tests
+
+Reuse exact prior changed-save/reopen/capability evidence for the relevant
+revision. If only a no-change Save was proven, retain the changed-save check
+below as unproven; do not relabel the no-change result as full coverage.
+
 
 1. Enter the project's public client configuration and the two service-account
    credential fields; choose **Save Firebase**.
@@ -93,12 +114,21 @@ If a relevant repair changes the behavior, replay that affected checkpoint.
    permission, use the native prompt. The browser obtains its own token.
 5. Require the actual successful result for that revision. Codex compares the
    masked harness oracle: both tested revisions match the saved revision.
+6. Codex verifies one revision for the controlled configuration change and
+   correlates capability outcomes with that revision. Credentials remain
+   masked and other configuration blocks remain unchanged.
 
 The extra token sends to an additional controlled destination once and is not
 saved. It is not required for the ordinary browser test. Neither credential
 field is a test-only field; both configure the application's Firebase service.
 
 ## C06 — activate and reuse the identity
+
+When the matching WebView registration branch already proves the assertions
+below, use its evidence and fixture-prepared resulting identity; do not repeat
+registration. A still-missing activation or identity-link assertion is tested
+once here and referenced by the consumer guide.
+
 
 1. Choose **Activate Firebase** after both capability tests pass. Require the
    active revision to match the saved/tested revision.
@@ -111,32 +141,31 @@ field is a test-only field; both configure the application's Firebase service.
 5. Reference this same evidence from WebView section 0 instead of repeating
    the same registration simply to satisfy a second document.
 
-## C07 — shared desktop and phone regression
+## C07 — consumer prerequisites from completed tests
 
-First reuse the recorded PASS evidence from
-[WebView section 0](../notifications/MOBILE-WEBVIEW-LIFECYCLE-001.md#0-repeat-the-complete-entry-journey)
-for each matching device/build/revision. Run only an unproven or affected boundary:
-Budapest and London eligible, Paris unavailable,
-location deny/retry, browser online/offline recovery, consent and session flow.
-The unavailable label and icon must fit the mobile button. Browser connectivity
-events must update entry without a reload; a backend-only outage is a separate
-transport failure and does not necessarily emit a browser offline event.
-
-Likewise reuse [Push lifecycle](../notifications/MOBILE-PUSH-LIFECYCLE-001.md)
-device registration and delivery evidence; run it only when that row has an
-unproven or affected boundary. Cache, clipboard,
-account isolation and application resume remain WebView-owned steps.
+1. Codex references the exact device/build/revision evidence from
+   [WebView section 0](../notifications/MOBILE-WEBVIEW-LIFECYCLE-001.md#0-repeat-the-complete-entry-journey)
+   and the [Push lifecycle](../notifications/MOBILE-PUSH-LIFECYCLE-001.md).
+   Fixtures supply their proven identity, configuration and device state.
+2. Do not repeat location, online/offline, consent, native permissions, cache,
+   clipboard, account isolation, resume or push delivery in Configuration.
+   Any unproven consumer boundary stays assigned to its owning guide for a
+   single execution; a Configuration capability test cannot pass it.
 
 ## C08 — restore and close
 
 1. Complete the shared active-Firebase branches before restoring the baseline.
-2. Restore changed public/TLS/payment settings through their normal controls,
-   verify their public effects and retained Operator access.
+2. Verify the public/TLS/payment restorations already performed in C02–C04;
+   restore only a block still changed. Confirm original public/capability
+   results and retained Operator recovery access without repeating completed work.
 3. Codex runs the retained Firebase fixture's `reset`, then `status`, and
    compares the exact original configuration and entry mode. Clean up only
    declared fixture identities, bootstrap settings and external overrides.
-4. Require separate evidence for C02, C03 and C04 before closing the whole
-   Operator row. A successful Firebase subset is only a partial result.
+4. Compare every block's original values, configuration revision history and
+   relevant operation result. Codex verifies no duplicate subject/user/profile
+   links and exact restoration of the declared local/external QA state.
+5. Require distinct public, TLS, payment and Firebase evidence before closing
+   the row. A successful Firebase subset remains a partial result.
 
 ## Outside this manual journey
 
@@ -144,3 +173,16 @@ Invalid-input, secret-leak, callback-security, TLS-worker failure, renewal and
 fault-injection tests remain automated regression coverage under the canonical
 QA pack. Operator Registry, Updates and Revenue retain their separate existing
 matrix rows; this guide neither removes nor passes them.
+
+## Original matrix coverage
+
+| Source requirement | Owning checks |
+| --- | --- |
+| Public configuration save/reopen/public read/restore | C02 |
+| TLS configuration, actual capability and restoration | C03 |
+| Payment configuration, masking and provider result | C04 |
+| Firebase changed revision, Auth/Message results and activation | C05–C06; exact prior assertions reused |
+| One honest result and one revision per changed block | C01 baseline; C02–C05 correlated records |
+| One Firebase subject/user/profile link and repeat identity reuse | C06; fixture replaces already-proven registration |
+| Consumer device boundaries | C07 references their owning WebView/Push tests |
+| Full restoration and retained recovery access | C08, including external state beyond the Mongo snapshot |

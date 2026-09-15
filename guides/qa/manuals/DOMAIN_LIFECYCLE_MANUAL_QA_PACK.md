@@ -10235,3 +10235,68 @@ Python oracle syntax, guide links and whitespace checks pass. The managed
 Monitoring Ava session passed the final existing-session authentication/realtime
 readiness gate. Ledger/workbook agree at95/104 complete, Notifications6/6.
 No Admin/Operator checklist was executed by this preparation review.
+
+### Administration coverage repair against the original matrix — 2026-09-15
+
+Compared the three Administration journeys with matrix commit334d4787, including
+all cross-surface columns and consolidated source IDs, rather than only the
+Scenario summary or top-level step count. Earlier compact guide claims are
+superseded by this documentation review; no new manual PASS is implied.
+
+- Monitoring now has20 explicit steps covering BASE-MON, MON-011, MON-013 and
+  MON-014. Per-job history/audit/domain evidence remains required; existing
+  business runs are reused only for exact recorded assertions. Missing job
+  correlations require a scoped normal run from its existing fixture, not a
+  replay of its originating user journey or synthetic audit evidence.
+- Graph now has23 steps covering overview/component/member data, depths1/2/3,
+  ranges, controls, isolated members, large/disconnected loading limits and
+  stored/header/reopened materialization counts. Bell and STAT-020 evidence
+  covers its actual changed-pair/scheduler/control/history assertions; it does
+  not silently pass untested loading or count comparisons.
+- Parameters now has25 steps covering all seven section consumers, real
+  section-specific persistence and side effects, numeric/strategy validation,
+  cancellation and baseline consumer restoration. Per user, shared editor/
+  History/revert interaction stays in Monitoring only; repeated preparation,
+  Jobs save and branch cleanup use fixtures. Section-specific version, task,
+  notification/projection and causal output checks remain requirements.
+
+Every guide is English and includes an Original matrix coverage table. The
+step numbers are navigation/reporting points, not an estimate of total clicks.
+Existing remaining-time estimates and test statuses are unchanged. Monitoring
+startup/capture/reset scripts already exist; other dedicated fixture orchestration
+remains deferred. The active boundary stays Monitoring block1 step1, preparation
+only. No browser action, fixture mutation or application-code change occurred.
+
+The requested Operator comparison was read-only in this revision. Its guides
+also omit some original matrix detail: per-changed-block Configuration revisions;
+Registry signed membership/claim receipts, provider availability and exact-once
+measurement totals; Updates one verified release/job and no duplicate work;
+Revenue authorized/dummy exclusions plus report revision/sync-job correlation.
+These gaps were reported and are not claimed fixed by the Administration edits.
+
+### Operator coverage repair against the original matrix — 2026-09-15
+
+User requested the same detailed coverage repair for all four Operator guides.
+The omissions identified in the preceding read-only comparison are now addressed
+in documentation against matrix334d4787, not claimed as newly tested behavior.
+
+- Configuration retains C01–C08 and adds exact changed-block revision/result
+  correlations, conditional real operation results, distinction between no-change
+  and changed-value Save, unique Firebase identity and full restoration. Proven
+  device/entry paths are fixture prerequisites linked to their owning evidence.
+- Registry18 steps explicitly cover signed membership and claim/group receipts,
+  provider availability, exact accepted measurement totals/receipt, no duplicate
+  binding/identity/group/report, member/Admin fail-closed checks and recovery.
+- Updates11 steps correlate one verified release and one durable job through
+  honest progress, controlled restart/reconnection, installed version and no
+  duplicate work from reopening.
+- Revenue11 steps include captured-once aggregation and authorized-only/released/
+  dummy exclusions, provider/currency/period boundaries, one job/report revision/
+  reconciliation and exact settlement/payment/booking identity.
+
+Each English guide includes an Original matrix coverage table. Existing source
+requirements, statuses and effort estimates remain unchanged; only documentation
+notes are added to the ledger and the workbook is regenerated. No fixture,
+browser, Registry, provider or update operation was executed. Dedicated Operator
+fixture orchestration is still prepared when its own checkpoint starts. The
+active preparation-only handoff remains ADMIN-MONITORING-001 block1 step1.
