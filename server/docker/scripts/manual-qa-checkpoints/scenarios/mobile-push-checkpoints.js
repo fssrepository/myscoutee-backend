@@ -83,8 +83,8 @@
   }
   function capture() {
     const saved = state(), name = Q.text(process.env.MANUAL_QA_SOURCE_CHECKPOINT_ID);
-    if (!/^(baseline|foreground|foreground-replay|background|background-settings|background-chrome|background-chrome-replay|cold-start|permission-denied|replacement-token)$/.test(name)) Q.fail('Invalid Push savepoint');
-    const phase = name === 'foreground-replay' ? 'foreground' : name === 'background-chrome-replay' ? 'background-chrome' : name;
+    if (!/^(baseline|foreground|foreground-replay|background|background-settings|background-chrome|background-chrome-replay|cold-start|cold-start-replay|permission-denied|replacement-token)$/.test(name)) Q.fail('Invalid Push savepoint');
+    const phase = name === 'foreground-replay' ? 'foreground' : name === 'background-chrome-replay' ? 'background-chrome' : name === 'cold-start-replay' ? 'cold-start' : name;
     const riley = Q.ensureUser(actors[2]);
     if (name === 'baseline' && ((riley.devices || []).filter(d => d.firebaseToken).length !== 1
         || Q.collection('chatMessages').countDocuments({ chatId }) !== 0)) Q.fail('Baseline needs one real Riley registration and zero messages');

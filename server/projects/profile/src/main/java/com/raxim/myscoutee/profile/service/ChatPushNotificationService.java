@@ -158,7 +158,10 @@ public class ChatPushNotificationService {
         if (!StringUtils.hasText(chatId)) {
             return DEFAULT_CLICK_URL;
         }
-        return DEFAULT_CLICK_URL + "?chatId=" + chatId;
+        return DEFAULT_CLICK_URL + "?chatId="
+                + java.net.URLEncoder.encode(chatId, java.nio.charset.StandardCharsets.UTF_8)
+                + "&messageId=" + java.net.URLEncoder.encode(
+                        safeText(event.id()), java.nio.charset.StandardCharsets.UTF_8);
     }
 
     private String buildNotificationTag(ChatStreamEvent event) {

@@ -95,8 +95,9 @@ public class ChatsController {
             @PathVariable("chatId") String chatId,
             @RequestParam("userId") String userId,
             @RequestParam(value = "cursor", required = false) String cursor,
-            @RequestParam(value = "limit", required = false) Integer limit) {
-        return chatService.queryMessagesPage(chatId, userId, limit, cursor);
+            @RequestParam(value = "limit", required = false) Integer limit,
+            @RequestParam(value = "targetMessageId", required = false) String targetMessageId) {
+        return chatService.queryMessagesPage(chatId, userId, limit, cursor, targetMessageId);
     }
 
     @GetMapping("/{chatId}/members/page")

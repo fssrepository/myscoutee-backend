@@ -15,6 +15,8 @@ public interface ChatMessagesRepository extends MongoRepository<ChatMessage, Str
 
     long countByChatId(String chatId);
 
+    long countByChatIdAndSentAtIsoGreaterThan(String chatId, String sentAtIso);
+
     @Query("{ 'chatId': ?0, 'id': ?1 }")
     Optional<ChatMessage> findByChatIdAndMessageId(String chatId, String messageId);
 

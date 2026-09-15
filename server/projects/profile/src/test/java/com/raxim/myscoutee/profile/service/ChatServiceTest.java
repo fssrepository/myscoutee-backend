@@ -475,6 +475,33 @@ class ChatServiceTest {
     }
 
     @Test
+    void notificationTargetReadsOnlyItsMessageAndKeepsOtherNotificationsUnread() {
+        Chat viewerChat = chat("chat-1", "viewer", 2, "2026-05-26T08:00:00Z", "groupSubEvent");
+        Chat senderChat = chat("chat-1", "sender", 0);
+        ChatMessage target = message("target", "sender", "someone-else", "2026-05-26T08:00:02Z");
+        ChatMessage previous = message("previous", "sender", "someone-else", "2026-05-26T08:00:01Z");
+        when(homeUserProfileService.resolveSelectedUserId("viewer")).thenReturn("viewer");
+        when(chatsRepository.findByChatId("chat-1")).thenReturn(List.of(viewerChat, senderChat));
+        when(chatMessagesRepository.findByChatIdAndMessageId("chat-1", "target")).thenReturn(Optional.of(target));
+        when(chatMessagesRepository.countByChatId("chat-1")).thenReturn(2L);
+        when(chatMessagesRepository.findByChatIdOrderBySentAtIsoDesc(anyString(), any(Pageable.class)))
+                .thenReturn(List.of(target, previous));
+        when(usersRepository.findByUserId("sender")).thenReturn(Optional.of(user("sender", "Sender User", "SU")));
+        when(usersRepository.findByUserId("viewer")).thenReturn(Optional.of(user("viewer", "Viewer User", "VU")));
+        when(mongoTemplate.updateFirst(any(Query.class), any(Update.class), eq(ChatMessage.class)))
+                .thenReturn(UpdateResult.acknowledged(1L, 1L, null));
+        when(chatsRepository.save(any(Chat.class))).thenAnswer(invocation -> invocation.getArgument(0));
+
+        var result = service.queryMessagesPage("chat-1", "viewer", 15, null, "target");
+
+        assertThat(result.read().messageIds()).containsExactly("target");
+        assertThat(result.read().unread()).isEqualTo(1);
+        verify(userNotificationService).markChatMessagesRead("viewer", "chat-1", List.of("target"));
+        verify(userNotificationService, never()).markChatRead(anyString(), anyString());
+        verify(mongoTemplate, never()).updateMulti(any(Query.class), any(Update.class), eq(ChatMessage.class));
+    }
+
+    @Test
     void openingOlderMessagePageAddsReaderWithAtomicMongoUpdate() {
         Chat viewerChat = chat("chat-1", "viewer", 1, "2026-05-26T08:00:00Z", "groupSubEvent");
         Chat senderChat = chat("chat-1", "sender", 0);
