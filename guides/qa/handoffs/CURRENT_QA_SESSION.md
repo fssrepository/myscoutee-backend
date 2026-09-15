@@ -102,17 +102,15 @@ repair an established product defect. Preserve the phone's tethering connection
 when shaping only its route to the QA application.
 
 ```yaml
-checkpoint: MOBILE-PUSH-LIFECYCLE-001 — IN PROGRESS / FOREGROUND PROVIDER REPAIR
+checkpoint: MOBILE-PUSH-LIFECYCLE-001 — SECTION 2 / CHROME BACKGROUND NEXT
 checklist: ../checklists/notifications/MOBILE-PUSH-LIFECYCLE-001.md
-substage: Fixture/device baseline ready. One user-sent foreground message persisted; provider batch HTTP404 repair underway. Retain WebView PASS/CLOSED.
-notification_order: MOBILE-PUSH-LIFECYCLE-001, NOTIFICATION-ADMIN-LIFECYCLE-001, JOB-MESSAGES, BELL-RATING-LIFECYCLE-001
-fixture_phase: mobile-push baseline; two foreground messages c0f060ab-c088-4e53-a538-63bb97bc5ce4 (haha) and 7dad4235-7427-42a8-ad15-1bf20356c094 (proba), two retrying outbox rows; Riley both unread, Nova first read by user. Do not send a duplicate.
-browser_control: Full Push checkpoint delegated to Codex. User also assists with clicks; announce checklist block number/title, step and action; inspect current state before doing it, especially before sending.
-desktop_geometry: Managed Casey and Nova side by side; configured Push launcher manifest retained.
-ledger_status: 91/104 passed; Notifications 2/6; Mobile WebView PASS/CLOSED
-required_resume: Verify existing owner build and Firebase SDK migration, then observe retry of the same foreground outbox with phone visible. Preserve message/inbox identities; no setup or WebView replay.
-runtime: Android original localhost WebAPK, lifecycle38 mobile-webview-lifecycle-1789464566357; reverse8080-to80, CDP36087. Riley Firebase UID650000000000000000000063, one real web-pwa registration. Casey CDP46477, Nova33347. Firebase revision1 restored from ignored local project files via fixture; prepared capability markers are not new Operator evidence. Versioned provider-user and keep-screen-awake snapshots require final cleanup.
-last_completed: Menu Permissions popup opens and closes while leaving side menu open; installed phone shows Permissions and no install body. Chat WS auth repair allows first persisted user message; Riley unread1-to2, Nova0-to1, Casey0.
+substage: Section1 foreground replay PASS; retain WebView PASS/CLOSED and foreground evidence.
+fixture_phase: mobile-push background-settings, five messages retained, counters Casey0/Nova3/Riley6.
+browser_control: Full Push delegated to Codex; user assists. Announce checklist block/title, step and immediate action; inspect before each send to skip user-completed actions.
+ledger_status: 91/104 passed; Notifications2/6; Push remains IN PROGRESS
+required_resume: Section2 Chrome background then cold start; Home/Settings passed. Prepare phone background before sender action; one new message per phase.
+runtime: lifecycle39 mobile-webview-lifecycle-1789465435253 active on original localhost WebAPK, Riley real Firebase user, one current device. CaseyCDP46477/Nova33347/phone36087. Firebase Admin9.10.0 loaded in restarted existing backend, API200, FCM delivery verified. Provider fixture account and saved screen settings need cleanup at closure.
+last_completed: Foreground message5e9f8221-f05e-4f7f-80e9-dd4b15f7b355 sent09:45:24Z retry0/success1/failure0; one unread inbox each recipient, Casey excluded, zero native system notifications. Phone New list marker once unread.
 last_evidence: ../manuals/DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md#mobile-push-device-preflight--2026-09-15
 ```
 

@@ -7898,6 +7898,51 @@ Frontend owner's existing build succeeded at 09:28:29Z. Foreground FCM and all
 later Push phases remain open. Provider-account cleanup, exact fixture/session
 reset and saved screen-setting restoration are required at closure.
 
+Foreground continuation at 09:42 UTC: user also sent `proba`, ID
+`7dad4235-7427-42a8-ad15-1bf20356c094`; both messages were explicitly adopted
+into the foreground fixture evidence/cleanup manifest. User clarified clicking
+the Chat channel badge, rather than the Notifications New row. Nova's two rows
+became read through that ordinary Chat path (09:36:06Z and 09:40:32Z); Riley's
+rows stayed unread. Phone Notifications New list visually showed both Chat
+rows once plus the pre-existing security row; unread total 3.
+
+Firebase Admin 9.10.0 / sendEach migration compiled through the existing owner
+at 09:38:43Z. The backend was restarted alone to load the new dependency and
+was ready at 09:40:15Z (public configuration HTTP200). The previous runtime's
+NoSuchMethodError left one outbox lease/rule running; the guarded fixture
+`recover-foreground-worker` captured and released only that stopped worker's
+state without changing message/inbox IDs, retry history or delivery outcomes.
+Both actual outboxes became sent at 09:41:53Z, each tokenSuccessCount=1 and
+tokenFailureCount=0; no duplicate inbox rows. This proves provider acceptance.
+
+Foreground native result is **FAIL**, despite persisted delivery savepoint
+`foreground`: the visible phone displayed a system notification for `proba`.
+The custom app-sw push handler unconditionally called showNotification and
+ignored visible clients. Scoped repair adds a visibility/scope guard and
+preserves the supplied notification tag. Four direct Node worker tests PASS
+(visible/background/closed/out-of-scope); no compiler was started for them.
+Existing frontend watcher synchronized at 09:43:16Z. Candidate lifecycle39
+`mobile-webview-lifecycle-1789465435253` is served; activation and one focused
+foreground replay remain next. The previous QA system notification was closed
+without marking its inbox row read. No background phase PASS is claimed.
+
+Foreground replay **PASS** at 09:46 UTC on active lifecycle39. User clicked
+Send after Codex prepared the exact marker; duplicate-send guard prevented a
+second action. Message `5e9f8221-f05e-4f7f-80e9-dd4b15f7b355`, outbox
+`6aa913b2f59d38d912af4208`, sent09:45:24.516Z, retry0, tokenSuccess1/failure0.
+Exactly one new unread inbox each Nova/Riley; Casey excluded. Counters 0/1/4,
+including the retained earlier messages and Riley security baseline. Phone
+visible, controlled Chat closed, worker getNotifications empty and Android
+notification records zero. Notifications New list shows marker exactly once,
+still unread. Nova visible with Chat closed and one new badge, no registered
+provider device. `foreground-replay` savepoint09:46:03.267Z retains the exact
+post-fix transaction. Next: section2 Home background; earlier failed native
+foreground evidence is superseded only by this focused replay.
+
+Home background PASS09:48Z: message5dfaba47-9347-4396-9429-e6f9945b66a9, outbox6aa9141df59d38d912af420b sent09:47:09.912Z retry0/success1/failure0. Phone hidden received exactly one worker notification with exact Chat tag/url; Android record1 before resume. Recents card return preserved timeOrigin1789465508440.1. New list row exactly once unread; counters Casey0/Nova2/Riley5. Background savepoint09:48:15.943Z. Settings variant next.
+
+Settings background PASS09:49Z: message6e4df2b0-9c9e-45cc-9125-e5fa721256e8, outbox6aa91489f59d38d912af420e sent09:49:00.318Z success1/failure0. Android Settings activity foreground, app hidden; one native/worker notification with exact background-settings body and Chat tag. Recents return preserved timeOrigin1789465508440.1; New list exact row once unread, counters Casey0/Nova3/Riley6. background-settings savepoint captured. Chrome variant next.
+
 ### `QA-EXPANSION-CP05` — registry, claims and operator network
 
 | Testcase | Controlled action | Decisive oracle |

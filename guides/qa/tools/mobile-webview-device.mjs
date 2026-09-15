@@ -77,6 +77,12 @@ const targets = await fetch(`http://127.0.0.1:${port}/json/list`).then(r => r.js
 const pages = targets.filter(p => p.type === 'page' && p.url.startsWith('http://localhost:8080/'));
 const target = args.includes('--target') ? pages.find(p => p.id === args[args.indexOf('--target') + 1]) : pages[0];
 if (!target) throw Error('No existing local QA page');
+if (action === 'close-qa-page') {
+  const response = await fetch(`http://127.0.0.1:${port}/json/close/${encodeURIComponent(target.id)}`);
+  if (!response.ok) throw Error('Chrome did not accept closing the selected QA page');
+  console.log('Closed the selected localhost QA page; installation and storage retained.');
+  process.exit(0);
+}
 const socket = new WebSocket(target.webSocketDebuggerUrl);
 let sequence = 0;
 const pending = new Map();
@@ -223,9 +229,6 @@ try {
       }
       console.log('Restored QA page and worker transport.');
     }
-  } else if (action === 'close-qa-page') {
-    await send('Target.closeTarget', { targetId: target.id });
-    console.log('Closed the selected localhost QA page; installation and storage retained.');
   } else if (action === 'close-other-qa-tabs') {
     const isPwa = await evaluate(`matchMedia('(display-mode: standalone)').matches`);
     if (!isPwa) throw Error('Launch the QA PWA before closing its browser controls');

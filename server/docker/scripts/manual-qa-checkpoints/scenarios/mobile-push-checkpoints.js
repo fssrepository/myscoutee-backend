@@ -83,18 +83,18 @@
   }
   function capture() {
     const saved = state(), name = Q.text(process.env.MANUAL_QA_SOURCE_CHECKPOINT_ID);
-    if (!/^(baseline|foreground|background|background-settings|background-chrome|cold-start|permission-denied|replacement-token)$/.test(name)) Q.fail('Invalid Push savepoint');
+    if (!/^(baseline|foreground|foreground-replay|background|background-settings|background-chrome|cold-start|permission-denied|replacement-token)$/.test(name)) Q.fail('Invalid Push savepoint');
     const riley = Q.ensureUser(actors[2]);
     if (name === 'baseline' && ((riley.devices || []).filter(d => d.firebaseToken).length !== 1
         || Q.collection('chatMessages').countDocuments({ chatId }) !== 0)) Q.fail('Baseline needs one real Riley registration and zero messages');
     if ((saved.savepoints || []).some(p => p.name === name)) Q.fail('Savepoint already exists');
     const order = ['baseline','foreground','background','background-settings','background-chrome','cold-start','permission-denied','replacement-token'];
     if (name !== 'baseline') {
-      if (saved.phase !== order[order.indexOf(name) - 1]) Q.fail('Capture phases in checklist order');
+      if (saved.phase !== (name === 'foreground-replay' ? 'foreground' : order[order.indexOf(name) - 1])) Q.fail('Capture phases in checklist order');
       // Capture validates persisted delivery; native UI observations remain
       // separately recorded evidence and are never inferred from this oracle.
       const messages = Q.collection('chatMessages').find({ chatId }).toArray();
-      const expectedText = `${checkpoint} ${name}`;
+      const expectedText = `${checkpoint} ${name === 'foreground-replay' ? 'foreground' : name}`;
       const current = name === 'foreground'
         ? messages.filter(m => (saved.foregroundMessageIds || []).includes(m.id))
         : messages.filter(m => m.text === expectedText);
@@ -109,7 +109,7 @@
             || outbox[0].tokenSuccessCount !== 1 || outbox[0].tokenFailureCount !== 0)) Q.fail('One successful provider-token delivery is not proven');
       }
     }
-    Q.collection(Q.STATE_COLLECTION).updateOne({ _id: saved._id }, { $set: { phase: name }, $push: {
+    Q.collection(Q.STATE_COLLECTION).updateOne({ _id: saved._id }, { $set: { phase: name === 'foreground-replay' ? 'foreground' : name }, $push: {
       savepoints: { name, capturedAt: Q.nowIso(), snapshots: Q.snapshotSpecs(specs) }
     } });
     status();
