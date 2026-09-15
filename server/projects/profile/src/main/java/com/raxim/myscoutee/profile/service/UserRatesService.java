@@ -659,13 +659,7 @@ public class UserRatesService {
         addIfText(affectedHomeProjectionOwnerIds, syncKeyRecord == null ? null : syncKeyRecord.getOwnerUserId());
         addIfText(affectedHomeProjectionOwnerIds, naturalKeyRecord == null ? null : naturalKeyRecord.getOwnerUserId());
         addIfText(affectedHomeProjectionOwnerIds, ownerUserId);
-        boolean syncKeyMatchesNaturalKey = syncKeyRecord != null
-                && Objects.equals(ownerUserId, normalizeOptionalId(syncKeyRecord.getOwnerUserId()))
-                && Objects.equals(mode, normalizeMode(syncKeyRecord.getMode()))
-                && Objects.equals(relatedUserId, normalizeOptionalId(syncKeyRecord.getRelatedUserId()))
-                && Objects.equals(secondaryRelatedUserId, normalizeOptionalId(syncKeyRecord.getSecondaryRelatedUserId()));
-        UserRate existing = naturalKeyRecord != null ? naturalKeyRecord
-                : syncKeyMatchesNaturalKey ? syncKeyRecord : null;
+        UserRate existing = naturalKeyRecord != null ? naturalKeyRecord : syncKeyRecord;
         int previousScoreGiven = normalizeScore(existing == null ? null : existing.getScoreGiven());
         boolean syncKeyBelongsToDifferentRecord = naturalKeyRecord != null
                 && syncKeyRecord != null
@@ -678,8 +672,7 @@ public class UserRatesService {
 
         UserRate document = existing != null ? existing : new UserRate();
         document.setId(existing != null ? existing.getId() : new ObjectId().toHexString());
-        document.setSyncKey(syncKeyBelongsToDifferentRecord ? naturalKeyRecord.getSyncKey()
-                : syncKeyRecord != null && !syncKeyMatchesNaturalKey ? document.getId() : syncKey);
+        document.setSyncKey(syncKeyBelongsToDifferentRecord ? naturalKeyRecord.getSyncKey() : syncKey);
         document.setMode(mode);
         document.setCreatedDate(existing != null
                 ? normalizeDate(existing.getCreatedDate(), nowIso)
@@ -815,10 +808,12 @@ public class UserRatesService {
         if ("met".equals(direction) && isFutureActivityDate(happenedAt)) {
             return null;
         }
-        int scoreGiven = isOwnerView ? normalizeScore(record.getScoreGiven()) : 0;
+        boolean isSingle = "single".equals(normalizeMode(record.getMode()));
+        int scoreGiven = isOwnerView ? normalizeScore(record.getScoreGiven())
+                : isSingle ? normalizeScore(record.getScoreReceived()) : 0;
         int scoreReceived = isOwnerView
                 ? normalizeScore(record.getScoreReceived())
-                : resolveParticipantIncomingScore(record);
+                : isSingle ? normalizeScore(record.getScoreGiven()) : resolveParticipantIncomingScore(record);
         String eventName = StringUtils.hasText(normalizeOptionalText(record.getEventName()))
                 ? normalizeOptionalText(record.getEventName())
                 : ("met".equals(direction) ? "Met" : "Rate");
@@ -1162,6 +1157,9 @@ public class UserRatesService {
         }
         if (Boolean.TRUE.equals(record.getMet())) {
             return "met";
+        }
+        if ("single".equals(normalizeMode(record.getMode())) && normalizeScore(record.getScoreReceived()) > 0) {
+            return normalizeScore(record.getScoreGiven()) > 0 ? "mutual" : "given";
         }
         if (normalizeScore(record.getScoreGiven()) > 0 || normalizeScore(record.getScoreReceived()) > 0) {
             return "received";

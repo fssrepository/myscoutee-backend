@@ -290,8 +290,8 @@
     const rates = rateSummary();
     const forward = rates.find(rate => rate.ownerUserId === state.context.actorUserId) || null;
     const reverse = rates.find(rate => rate.ownerUserId === state.context.targetUserId) || null;
-    const forwardSaved = Q.number(forward && forward.scoreGiven) > 0;
-    const reverseSaved = Q.number(reverse && reverse.scoreGiven) > 0;
+    const forwardSaved = Q.number(forward ? forward.scoreGiven : reverse && reverse.scoreReceived) > 0;
+    const reverseSaved = Q.number(reverse ? reverse.scoreGiven : forward && forward.scoreReceived) > 0;
     const reciprocalSaved = forwardSaved && reverseSaved;
     const directEdge = directEdgeSummary();
     const graphLayout = latestLayoutSummary();

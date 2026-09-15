@@ -180,41 +180,33 @@ class UserRatesServiceTest {
     }
 
     @Test
-    void reciprocalSaveUsingReceivedCardIdPreservesTheOriginalOwnersRating() {
-        UserRate original = singleRate("first-rating", "u1", "u2", 4);
-        original.setMet(true);
-        UserRatesService service = syncService(Map.of(
+    void sharedSingleRatingShowsBothScoresFromEachViewersPerspective() {
+        UserRate record = singleRate("shared-rating", "u2", "u1", 3);
+        record.setScoreReceived(4);
+        record.setMet(true);
+        UserRatesService service = queryService(Map.of(
                 "u1", user("u1", "First", List.of("music")),
-                "u2", user("u2", "Second", List.of("music"))), List.of(original));
-        when(userRatesRepository.findBySyncKey("first-rating")).thenReturn(Optional.of(original));
+                "u2", user("u2", "Second", List.of("music"))), List.of(record));
 
-        UserRateRecordDto request = new UserRateRecordDto(
-                "first-rating", "u2", "u1", 4, "single",
-                "2026-05-08T10:00:00Z", "2026-05-08T10:01:00Z", "u2", null,
-                "met", null, null, null, 4, 4, "Completed event",
-                "2026-05-08T10:00:00Z", null);
-        UserRatesSyncResponseDto response = service.sync(new UserRatesSyncRequestDto(List.of(request)));
-
-        UserRate saved = singleSavedRate();
-        assertThat(original.getOwnerUserId()).isEqualTo("u1");
-        assertThat(original.getScoreGiven()).isEqualTo(4);
-        assertThat(saved.getId()).isNotEqualTo(original.getId());
-        assertThat(saved.getSyncKey()).isNotEqualTo(original.getSyncKey());
-        assertThat(saved.getOwnerUserId()).isEqualTo("u2");
-        assertThat(saved.getScoreGiven()).isEqualTo(4);
-        assertThat(saved.getScoreReceived()).isEqualTo(4);
-        assertThat(saved.getMet()).isTrue();
-        assertThat(response.syncedRateIds()).containsExactly("first-rating");
-        verify(notificationOutboxService).enqueue(any(NotificationIntent.class));
-
-        // A retry still uses the incoming card ID, but resolves the caller's own record.
-        when(userRatesRepository.findByOwnerUserIdAndMode("u2", "single")).thenReturn(List.of(saved));
-        String savedId = saved.getId(), savedSyncKey = saved.getSyncKey();
-        service.sync(new UserRatesSyncRequestDto(List.of(request)));
-        assertThat(saved.getId()).isEqualTo(savedId);
-        assertThat(saved.getSyncKey()).isEqualTo(savedSyncKey);
-        assertThat(original.getOwnerUserId()).isEqualTo("u1");
-        verify(notificationOutboxService).enqueue(any(NotificationIntent.class));
+        assertThat(service.queryActivityRatePage("u1", "single", "met", "date", "desc",
+                null, false, null, 10, null, null).items()).singleElement().satisfies(item -> {
+            assertThat(item.scoreGiven()).isEqualTo(4);
+            assertThat(item.scoreReceived()).isEqualTo(3);
+            assertThat(item.direction()).isEqualTo("met");
+        });
+        assertThat(service.queryRateItemsByUser("u2")).singleElement().satisfies(item -> {
+            assertThat(item.scoreGiven()).isEqualTo(3);
+            assertThat(item.scoreReceived()).isEqualTo(4);
+        });
+        record.setMet(false);
+        assertThat(service.queryRateItemsByUser("u1")).singleElement()
+                .satisfies(item -> assertThat(item.direction()).isEqualTo("mutual"));
+        record.setScoreReceived(0);
+        assertThat(service.queryRateItemsByUser("u1")).singleElement().satisfies(item -> {
+            assertThat(item.scoreGiven()).isZero();
+            assertThat(item.scoreReceived()).isEqualTo(3);
+            assertThat(item.direction()).isEqualTo("received");
+        });
     }
 
     @Test

@@ -102,16 +102,16 @@ repair an established product defect. Preserve the phone's tethering connection
 when shaping only its route to the QA application.
 
 ```yaml
-checkpoint: BELL-RATING-LIFECYCLE-001 — SECTION 2 / STEP 12
+checkpoint: BELL-RATING-LIFECYCLE-001 — SECTION 2 / STEP 9 FOCUSED REPLAY
 checklist: ../checklists/notifications/BELL-RATING-LIFECYCLE-001.md
-substage: First rating/read steps1–8 and reciprocal bell/read9–10 passed; Stats11 shows Ratings0->2 and Matching342->344. Monitoring12 and graph13–15 next, then feedback16–20.
-fixture_phase: Original graph-rating baseline retained. Seeded Met pair now stores one row Nova3/received4/mutualtrue; both recompute tasks done. User cancelled proposed fixture correction; no fixture mutation/reset performed.
-browser_control: Full Notifications flow explicitly delegated. Casey Notifications New0; Nova Rates Met; Ava Stats open. Announce exact numbered block/step.
-required_resume: Inspect existing sessions and read-only oracle. Complete Monitoring12 and graph13–15. Investigate directional-row assumption before declaring reciprocal persistence PASS; preserve all existing evidence.
-runtime: Existing dev stack; original scheduled-message1800000ms poll. No extra builds or workers.
-ledger_status: 94/104 passed; Notifications5/6; BELL remains IN PROGRESS.
-last_completed: Section2 step11 Stats UI and persisted counters; both rating inbox rows read, no duplicates/self notifications.
-last_evidence: ../manuals/DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md#rating-bell-and-reciprocal-delivery--2026-09-15
+substage: User rejected two-record model change; reverted precisely my UserRatesService/Test changes including backed-up66bb5eaf to its parent, then user authorized proper fix. Original model retains one row3/4; actual defect participant scoreGiven always0. Final candidate only swaps displayed single scores/direction by viewer; original sync writes unchanged.
+fixture_phase: Erroneous two-record replay fully reset after workers done. Fresh original Met baseline13:48:17.058Z; Casey4 Save done about13:50Z, wait real batch then Nova3. User cancelled Met fixture changes; preserve Met.
+browser_control: Full flow delegated; Casey/Nova Rates Met open, Ava setup popup. Verify exactly one record and one card per viewer after reciprocal/reopen. No further model or queue changes.
+required_resume: Poll focused Gradle session and first-save oracle, perform Nova3, confirm one shared record3/4 and Casey4/Nova3 UI. Then continue Monitoring/graph13–15 and feedback16–20; no current full PASS.
+runtime: Existing frontend/backend watchers only. Narrow graph HTML service-worker fix verified7 tests. Backend final read-mapping compiled13:47:37. Focused12tests rerunning after correcting unused test helper stub.
+ledger_status:94/104, Notifications5/6; BELL IN PROGRESS. Earlier ownership diagnosis and two-row PASS claims explicitly superseded in pack.
+last_completed: Exact rollback of erroneous fixture; original prior notification/read/Stats/Monitoring evidence retained. Graph still old08:59 materialization; real Admin Rebuild pending after current affinity tasks done.
+last_evidence: ../manuals/DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md#rating-model-correction--2026-09-15
 ```
 
 ### Notifications takeover notes

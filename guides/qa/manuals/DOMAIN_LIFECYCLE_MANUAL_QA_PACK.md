@@ -10108,3 +10108,51 @@ fixture correction. No fixture change/reset occurred. The current test proves
 rating notifications on a prepared Met pair, not the event-completion-to-Met
 transition. Existing event-counter-expiry invokes EventFriendshipProjectionService
 after event end and writes userFriendships; it does not directly set userRates.met.
+
+### Rating investigation and Graph loading — 2026-09-15 (ownership diagnosis superseded)
+
+Step12 Monitoring Matching/Notifications Healthy; pending/running/failed0.
+Step13 reproduced Graph iframe showing admin shell: service worker intercepted
+all navigations. Static assets HTML now uses existing static-asset network/cache
+path. Seven focused navigation/push tests pass; existing frontend watcher
+deployed13:32:10, real Graph title/canvas verified (`graph-loaded.png`).
+The graph still uses the old08:59 materialization; real Rebuild is pending.
+
+Step9 reciprocal persistence FAIL confirmed by reopening Casey Rates/Met:
+Nova card showed RATE instead of Casey's4. Java sync reused another owner's
+sync-key record when no own natural-key row existed. Narrow identity guard
+keeps the original row and gives the reciprocal row an independent key;
+retry resolves that same own row. UserRatesServiceTest12/12 PASS, including
+equal-score reciprocal notification and retry idempotence; existing backend
+watcher compiled/reloaded successfully13:36:28. HTTP browser replay pending.
+Local adapter constructs participant-specific received IDs; local replay not run.
+
+Exact originalfixture reset passed and fresh original Met fixture staged
+13:38:02.382Z. Only affected4/3 saves are replayed; earlier no-save/read evidence
+is retained. The proposed Met-removal fixture change was cancelled and never
+implemented. New stage captures graph layouts/nodes/edges/forests and layout
+rule configuration solely for exact restoration after the existing Admin Run
+job. First4 saved in replay (`retest-first-save-oracle.json`), Nova3 just saved.
+
+### Rating model correction — 2026-09-15
+
+The preceding claim that the original paired-row persistence was faulty was
+incorrect. The original single row already retained both scores3/4. The actual
+UI defect was that participant mapping always returned scoreGiven0. The
+assistant mistakenly introduced a second record and then a duplicate-card
+filter. User rejected these changes. Both were removed, including the changes
+backed up in commit66bb5eaf, by restoring precisely those two rating files to
+66bb5eaf's parent (no commit-history rewrite). The rejected tests were removed.
+
+The final candidate keeps original writes/model and reads a single record from
+the viewer's perspective: participant given=stored received, participant
+received=stored given. Non-Met single direction follows those scores; Met and
+pair branches retain their existing priority/behavior. A one-record test covers
+both viewers and Met/Mutual/Received. Initial assertions passed but the test
+failed an unused shared-helper stub; switched first check to the actual paged
+query and rerunning. This is not yet final PASS.
+
+Bad replayfixture reset completed exactly after both workers drained. Current
+original Met baseline staged13:48:17.058Z; two affected real UI saves are being
+retested. Old read/bell/Statistics evidence remains historical, not proof of the
+rejected two-record implementation. Graph service-worker fix remains independent.
