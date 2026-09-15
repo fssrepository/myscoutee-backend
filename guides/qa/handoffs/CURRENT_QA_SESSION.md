@@ -102,15 +102,15 @@ repair an established product defect. Preserve the phone's tethering connection
 when shaping only its route to the QA application.
 
 ```yaml
-checkpoint: MOBILE-PUSH-LIFECYCLE-001 — SECTION 2 / CHROME PERMISSION-STATE REPAIR
+checkpoint: MOBILE-PUSH-LIFECYCLE-001 — SECTION 2 / STEP 12 REPAIR
 checklist: ../checklists/notifications/MOBILE-PUSH-LIFECYCLE-001.md
-substage: Foreground, Home and Settings PASS retained. Chrome variant provider accepted, but native notification absent with Chrome system permission denied; user requires enabling through shared popup and users-poll signal state.
-fixture_phase: mobile-push background-settings; six messages retained including failed Chrome marker957517eb-0600-4055-81a0-06eb3f205257. Riley unread7, Nova4 before any further user actions.
-browser_control: Full Push delegated; user assists. Announce block/title, step and action, inspect before sends. No manual OS permission bypass; user explicitly requires shared popup entry.
-required_resume: Users-poll signal popup verification PASS on lifecycle41: fixture flag false observed, then same open popup switched true at next normal poll; fixture flag restored, token preserved. Native Chrome background observation PASS: permission denied, signal denied, selected/effectivefalse. Now same shared popup in regular Chrome host context to determine actual native enabling path; original PWA page closed without data clearing. Do not claim Chrome PASS or replay prior sections.
-runtime: Original phone PWA native permission granted; Chrome host native permission denied USER_FIXED. PWA native API changes granted-to-denied when Chrome is foreground, old UI signal stayed granted. Chrome original permission snapshot saved but OS toggle was never changed. Device remains one real Riley registration; Firebase9.10.0 provider sends work.
+substage: Foreground and Home/Settings/Chrome background PASS retained. Cold-start native delivery blocked by Android LOW_MEMORY; resident-Chrome route diagnostic launched Riley on Home instead of Chat. Queue/inbox redesign and incomplete deep-link edits rolled back at user request; application code restored to pre-investigation baseline.
+fixture_phase: mobile-push background-chrome; nine messages retained. Casey0/Nova7/Riley10 before further actions. Cold-start660828b8-0eab-4f49-8579-90160b314511 and route diagnostic9590b1f9-804b-4a17-803a-2ff37dbd353c both persisted/provider-success but not full phase PASS.
+browser_control: Full Push delegated; user assists. Announce both block and list-step numbers before each action; inspect before sending.
+required_resume: User narrowed scope: preserve existing queue/inbox/WebSocket architecture; only prevent Firebase sends when unavailable (the original guard already exists). No refactor is authorized. Section2 step12 deep-link defect remains unresolved; do not restart edits automatically from the withdrawn design. Do not replay passed phases or count resident-host route test as stopped-host delivery proof.
+runtime: Original QA PWA lifecycle42 foreground at /game?chatId=manual-qa-checkpoint:v1:mobile-push:group-chat; timeOrigin1789467774147, Riley still authenticated, no Chat popup/read changes. One real registration. Chrome original denied USER_SET/USER_FIXED snapshot retained; temporary grant explicitly approved and enabled, restore during cleanup.
 ledger_status: 91/104 passed; Notifications2/6; Push IN PROGRESS
-last_completed: Settings background message6e4df2b0-9c9e-45cc-9125-e5fa721256e8 successful FCM1, native1, Recents same timeOrigin, unread row once. Shared popup must consume side menu users poll by signal, no lazy backend read; draft edits must survive poll.
+last_completed: Section2 step8 Chrome replay PASS. Section2 step12 observed defect; current route remained unconsumed.
 last_evidence: ../manuals/DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md#mobile-push-device-preflight--2026-09-15
 ```
 
