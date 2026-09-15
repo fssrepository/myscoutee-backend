@@ -29,6 +29,8 @@ must never overwrite the user-facing checklist.
   lifecycle guides.
 - [`notifications`](notifications/) — notification delivery, realtime and UI
   performance guides.
+- [`administration`](administration/) — Monitoring, Affinity Graph and Parameters.
+- [`operator`](operator/README.md) — Configuration, Registry, Updates and Revenue.
 
 ## Available user guides
 
@@ -70,3 +72,17 @@ must never overwrite the user-facing checklist.
   physical-device foreground/background/cold-start delivery and token rotation.
 - [`MOBILE-WEBVIEW-LIFECYCLE-001.md`](notifications/MOBILE-WEBVIEW-LIFECYCLE-001.md) —
   Android cache upgrade, resume, account isolation and offline recovery.
+
+## Administration sequence
+
+`BASE-STAT` is already closed. The remaining guides follow the existing ledger:
+
+1. [ADMIN-MONITORING-001](administration/ADMIN-MONITORING-001.md) — filters, one
+   recompute task, Jobs evidence and one parameter save/revert; startup harness available.
+2. [ADMIN-AFFINITY-GRAPH-001](administration/ADMIN-AFFINITY-GRAPH-001.md) — graph
+   navigation, depth/weight filters, scale, materialization and historical controls.
+3. [ADMIN-PARAMETERS-001](administration/ADMIN-PARAMETERS-001.md) — seven sections,
+   save/history/revert, consumer effects, validation and cancellation.
+
+The latter two currently provide the user-facing sequence; their dedicated
+fixture orchestration is prepared when their own checkpoint is requested.

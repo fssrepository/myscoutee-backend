@@ -41,14 +41,24 @@ rollback wrapper (the browser ID is a substage of this same testcase):
 ```bash
 bash server/docker/scripts/admin-job-fixtures/admin-job-fixtures.sh prepare bell-rating-feedback feedback
 bash server/docker/scripts/manual-qa-checkpoints/manual-qa-checkpoints-docker.sh stage bell-feedback BELL-RATING-FEEDBACK-001
+bash server/docker/scripts/manual-qa-checkpoints/manual-qa-checkpoints-docker.sh prepare-rating-baseline bell-feedback BELL-RATING-FEEDBACK-001
+# Wait for the normal worker's three baseline tasks to finish, then:
+bash server/docker/scripts/manual-qa-checkpoints/manual-qa-checkpoints-docker.sh capture-rating-baseline bell-feedback BELL-RATING-FEEDBACK-001
 node guides/qa/tools/open-checkpoint-browser-sessions.mjs BELL-RATING-FEEDBACK-001
 ```
 
 The configured seed actors are Lucas Lane, Nagy Eszter, Maya Stone and Kiss
 Balázs. Complete the three required cards, then submit once. The wrapper checks
-the prepared identities before startup. Use
+the prepared identities before startup. The normal worker settles existing seed
+rating projections before the feedback baseline is captured; the original
+documents remain retained for reset. The oracle keeps submitted rating inputs
+separate from the worker's calculated affinity/confidence fields. Use
 `python3 guides/qa/tools/bell-feedback-oracle.py <label> [previous-label]` for
-recipient/read isolation evidence. After observation, close the windows and
+recipient/read isolation evidence. After submission and its immediate oracle,
+use `make-recompute-due bell-feedback BELL-RATING-FEEDBACK-001` with the common
+Docker harness: only this fixture's newly created pending tasks become due,
+so the normal worker can process them without the five-minute debounce wait.
+After observation, close the windows and
 restore in this order:
 
 ```bash

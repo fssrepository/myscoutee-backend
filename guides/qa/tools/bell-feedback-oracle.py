@@ -11,11 +11,13 @@ const c=f.context, ids=[c.actorUserId,...c.targetUserIds];
 const byId=rows=>rows.sort((a,b)=>String(a._id).localeCompare(String(b._id)));
 const same=(a,b)=>JSON.stringify(byId(a))===JSON.stringify(byId(b));
 const rates=f.snapshots.find(s=>s.collection==='userRates');
+const wrapper=db.manualQaCheckpointSnapshots.findOne({scenario:'bell-feedback'});
+const rateBaseline=wrapper?.ratingBaseline || rates.documents;
 const selector={viewerUserId:c.actorUserId,eventId:c.eventId};
 print(JSON.stringify({at:new Date().toISOString(),context:c,
  answers:db.eventFeedbackAnswers.find(selector).toArray(),states:db.eventFeedbackStates.find(selector).toArray(),
- ratesUnchanged:same(db.userRates.find(rates.selector).toArray(),rates.documents),
- ratesBefore:rates.documents,ratesNow:db.userRates.find(rates.selector).toArray(),
+ ratesUnchanged:same(db.userRates.find(rates.selector).toArray(),rateBaseline),
+ ratesBefore:rateBaseline,ratesNow:db.userRates.find(rates.selector).toArray(),
  inbox:db.userNotifications.find({kind:'event-feedback-submitted',sourceId:c.eventId,senderUserId:c.actorUserId}).toArray(),
  outbox:db.notificationOutbox.find({notificationType:'event-feedback-submitted',entityId:c.eventId,'payload.senderUserId':c.actorUserId},{payload:0}).toArray(),
  tasks:db.affinityRecomputeTasks.find({targetId:{$in:ids}},{targetId:1,status:1,pendingCounterTracked:1}).toArray(),
@@ -29,7 +31,9 @@ p=folder/(label+'-oracle.json'); p.write_text(json.dumps(s,indent=2));p.chmod(0o
 old={str(r['_id']):r for r in s['ratesBefore']}; new={str(r['_id']):r for r in s['ratesNow']}
 diff={k:[f for f in set(old.get(k,{}))|set(new.get(k,{})) if old.get(k,{}).get(f)!=new.get(k,{}).get(f)] for k in old.keys()|new.keys() if old.get(k)!=new.get(k)}
 print(json.dumps({'changedRateFields':diff},indent=2))
-if label!='feedback-worker-diagnosis': assert s['ratesUnchanged'],'Feedback changed ratings'
+assert old.keys()==new.keys(),'Feedback created or removed a rating'
+assert all(set(fields)<= {'affinityScore','evidenceConfidence'} for fields in diff.values()),'Feedback changed rating inputs'
+print('Rating inputs unchanged; derived affinity fields reported separately.')
 assert all(x['stored']==x['actual'] for x in s['counters']),'Unread projection mismatch'
 assert len(s['outbox'])==1 and len(s['inbox'])==3,'Unexpected notification cardinality'
 assert set(x['recipientUserId'] for x in s['inbox'])==set(s['context']['targetUserIds']),'Unexpected recipients'

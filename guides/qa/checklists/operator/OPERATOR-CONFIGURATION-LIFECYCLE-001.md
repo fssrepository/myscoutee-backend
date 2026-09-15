@@ -1,5 +1,13 @@
 # OPERATOR-CONFIGURATION-LIFECYCLE-001 user test guide
 
+## Miről szól?
+
+Egy Operator Configuration folyamatban ellenőrizzük a nyilvános beállítások,
+HTTPS, fizetési szolgáltató és Firebase mentését, újranyitását, működését és
+visszaállítását. Az alábbi C01–C08 blokkok egyetlen teszthez tartoznak.
+A korábban már igazolt Firebase/WebView/Push részek bizonyítékát átvesszük;
+csak a hiányzó vagy azóta érintett részt kell futtatni.
+
 One Configuration journey: public configuration, HTTPS, payment and Firebase,
 followed by fresh sign-in and exact restoration. These checkpoints belong to
 one existing matrix row; they are not new independently counted testcases.
@@ -111,15 +119,18 @@ field is a test-only field; both configure the application's Firebase service.
 
 ## C07 — shared desktop and phone regression
 
-Continue [WebView section 0](../notifications/MOBILE-WEBVIEW-LIFECYCLE-001.md#0-repeat-the-complete-entry-journey)
-on each required device: Budapest and London eligible, Paris unavailable,
+First reuse the recorded PASS evidence from
+[WebView section 0](../notifications/MOBILE-WEBVIEW-LIFECYCLE-001.md#0-repeat-the-complete-entry-journey)
+for each matching device/build/revision. Run only an unproven or affected boundary:
+Budapest and London eligible, Paris unavailable,
 location deny/retry, browser online/offline recovery, consent and session flow.
 The unavailable label and icon must fit the mobile button. Browser connectivity
 events must update entry without a reload; a backend-only outage is a separate
 transport failure and does not necessarily emit a browser offline event.
 
-Continue [Push lifecycle](../notifications/MOBILE-PUSH-LIFECYCLE-001.md) for
-device registration and delivery when that row is active. Cache, clipboard,
+Likewise reuse [Push lifecycle](../notifications/MOBILE-PUSH-LIFECYCLE-001.md)
+device registration and delivery evidence; run it only when that row has an
+unproven or affected boundary. Cache, clipboard,
 account isolation and application resume remain WebView-owned steps.
 
 ## C08 — restore and close

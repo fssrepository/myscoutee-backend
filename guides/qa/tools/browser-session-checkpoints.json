@@ -1665,6 +1665,22 @@
           "autoDismissExplanationGuide": true
         }
       ]
+    },
+    "ADMIN-MONITORING-001": {
+      "layout": {
+        "columns": 1
+      },
+      "sessions": [
+        {
+          "actor": "Ava",
+          "sessionKind": "demo",
+          "userId": "admin-demo-ava",
+          "expectedName": "Ava Moderation",
+          "targetUrl": "http://localhost/admin",
+          "entryUrl": "http://localhost/entry?redirect=%2Fadmin",
+          "autoDismissExplanationGuide": true
+        }
+      ]
     }
   }
 }

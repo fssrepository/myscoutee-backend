@@ -102,16 +102,16 @@ repair an established product defect. Preserve the phone's tethering connection
 when shaping only its route to the QA application.
 
 ```yaml
-checkpoint: BELL-RATING-LIFECYCLE-001 — SECTION 3 / STEPS 16–20
+checkpoint: BELL-RATING-LIFECYCLE-001 — FEEDBACK WORKER FOLLOW-UP
 checklist: ../checklists/notifications/BELL-RATING-LIFECYCLE-001.md
-substage: Shared-record read fix verified 12/12 tests and real Casey4/Nova3 single-row replay; original writes unchanged. Graph steps13–15 passed after real scheduled layout14:02:02Z; UI Casey/Nova direct link50%, persisted .501429373752175, controls/history unchanged.
-fixture_phase: Rating fixture exact reset complete. Existing bell-rating-feedback feedback prepared14:05:15.986Z, wrapper bell-feedback staged; Lucas Lane submitting for Maya Stone at Harbor Warehouse Percussion Lab.
-browser_control: Full flow delegated; managed BELL-RATING-FEEDBACK-001 Lucas/Maya windows starting. Continue ordinary UI feedback submission once, target New/read/reopen.
-required_resume: Inspect current Lucas/Maya windows, complete steps17–20 with persisted cardinality/read evidence; wait workers, close windows, reset Admin fixture then wrapper with exact verification. No full PASS until finished.
-runtime: Existing watchers only; no new production code changes for continuation. Graph SW7 tests and final UserRatesService12 tests PASS.
-ledger_status: 94/104, Notifications5/6; BELL IN PROGRESS pending feedback.
-last_completed: Rating and reciprocal graph1–15; original model single row3/4; graph controls/history and exact fixture reset verified.
-last_evidence: ../manuals/DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md#rating-model-correction--2026-09-15
+substage: Steps1–20 UI/delivery/read passed and first feedback reset exact. Later worker oracle found full userRates document differences; initial oracle omitted changed fields. Focused feedback replay now captures entire before/after rates to classify fields; no application edits.
+fixture_phase: bell-rating-feedback feedback prepared14:17:09.167Z, wrapper bell-feedback active, Lucas resubmitted around14:20Z. Wait real five-minute debounce then worker; inspect feedback-worker-diagnosis full field diff before reset.
+browser_control: Bell full flow delegated. Four BELL-RATING-FEEDBACK-001 sessions open. User explicitly asks next Admin test prepared ONLY, no execution.
+required_resume: Resolve exact worker field differences, preserve evidence, wait terminal tasks then close and reset Admin fixture and wrapper. Mark Bell full PASS only when supported. Then stage/admin-monitoring baseline and use managed ADMIN-MONITORING-001 launcher; stop at Admin home before any checklist click.
+queued_work: User requested all three Admin guides, scripts only for Monitoring. Three guides plus Monitoring baseline/capture/reset script and launcher configuration written; syntax checks pass. BASE-STAT already PASS; Monitoring is domain second test.
+runtime: Existing watchers only. No production code changed during this continuation.
+ledger_status: Bell still IN PROGRESS until worker classification. Admin new tests not executed.
+last_evidence: ../manuals/DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md#reciprocal-graph-closure--2026-09-15
 ```
 
 ### Notifications takeover notes
