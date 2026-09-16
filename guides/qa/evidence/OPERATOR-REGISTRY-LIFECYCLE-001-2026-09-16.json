@@ -50,11 +50,27 @@
       "desktopAnd390pxMobileVerified": true,
       "mobileNoHorizontalOverflow": true,
       "frontendWatcherBuild": "2026-09-16T09:12:44.190Z"
+    },
+    "claimControls": {
+      "status": "PASS",
+      "linkInsideClientCodeTitleRow": true,
+      "mobileViewport": 390,
+      "mobileTitleCenterDeltaPx": 0,
+      "claimButtonWidthPx": 142.59375,
+      "sharedMenuActionSizing": "content",
+      "noHorizontalOverflow": true,
+      "deploymentHeader": "Company name as title, Operator deployments as subtitle",
+      "watcherBuild": "2026-09-16T09:27:25.740Z",
+      "screenshots": [
+        "client-code-title-row-desktop.png",
+        "claim-content-sized-mobile.png",
+        "deployment-header-after.png"
+      ]
     }
   },
-  "next": "User header review: Claim share popup open. Operator deployments header consistency observation pending. Block3 measurement not run.",
+  "next": "Block3 step10: snapshot measurement writes and prepare deterministic source totals before UI synchronization.",
   "block2": {
-    "status": "IN PROGRESS",
+    "status": "PASS",
     "claimAction": "opa_5d5803ac8a128a9d5ee1a3f33c9cb4c6",
     "group": "opg_30b5ddab1a1ea163c5f607aaa8c00c56",
     "legalName": "QA Registry Operator Ltd",
@@ -69,6 +85,7 @@
     "communityReopened": true,
     "communityProviderLinks": "Demo catalog links only; external Discord/Discourse participation not tested",
     "ledgerAfterRead": 45,
-    "reviewBoundary": "User requested return to Claim popup to review header; left open."
+    "reviewBoundary": "Approved claim/group verified; latest deployment-view reopen retained one owner, ledger45, audit7 and review3. Audit7 is the pre/post boundary for this reopen; earlier UI review began at audit5.",
+    "finalReadAuditIndex": 7
   }
 }

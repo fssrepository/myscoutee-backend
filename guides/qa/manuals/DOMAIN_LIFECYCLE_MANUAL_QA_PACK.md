@@ -7554,7 +7554,14 @@ The popup previously displayed success even for ERROR; it now requires enabled
 REGISTERED. Native failure and success replay passed. Focused directory tests
 and Registry packaging tests passed. Detailed evidence:
 `guides/qa/evidence/OPERATOR-REGISTRY-LIFECYCLE-001-2026-09-16.json`.
-Next: block 2 claim/approval and read-only projections.
+Block 2 steps 5–9 PASS: company claim observed pending, then approved through
+the normal Go reviewer CLI. Signed group projection and reopened UI agree on
+one approved owner deployment. Latest deployment-view reopen retained ledger45,
+audit7 and review3. Community was reopened; catalog links do not prove external
+Discord/Discourse participation. Claim percentage uses the shared popup header;
+creation link is inside the Client code title row. The mobile Claim action uses
+shared app-menu content sizing (390px viewport, no horizontal overflow).
+Next: block 3 measurement source fixture, exact totals and accepted receipts.
 
 ### `OPERATOR-UPDATE-LIFECYCLE-001` — signed update
 
