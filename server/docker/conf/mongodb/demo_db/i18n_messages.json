@@ -18195,7 +18195,7 @@
     "_id": "i18n-message-en-operator-claim-path-client-code",
     "key": "operator.claim.path.client.code",
     "lang": "en",
-    "value": "Client code"
+    "value": "Use client code"
   },
   {
     "_id": "i18n-message-en-operator-claim-path-client-code-description",
@@ -18382,6 +18382,12 @@
     "key": "operator.claim.client.code",
     "lang": "en",
     "value": "Client code"
+  },
+  {
+    "_id": "i18n-message-en-operator-claim-client-code-create",
+    "key": "operator.claim.client.code.create",
+    "lang": "en",
+    "value": "Create client code"
   },
   {
     "_id": "i18n-message-en-operator-claim-client-code-dialog-title",
@@ -38709,7 +38715,7 @@
     "_id": "i18n-message-hu-operator-claim-path-client-code",
     "key": "operator.claim.path.client.code",
     "lang": "hu",
-    "value": "Klienskód"
+    "value": "Klienskód használata"
   },
   {
     "_id": "i18n-message-hu-operator-claim-path-client-code-description",
@@ -38896,6 +38902,12 @@
     "key": "operator.claim.client.code",
     "lang": "hu",
     "value": "Klienskód"
+  },
+  {
+    "_id": "i18n-message-hu-operator-claim-client-code-create",
+    "key": "operator.claim.client.code.create",
+    "lang": "hu",
+    "value": "Klienskód létrehozása"
   },
   {
     "_id": "i18n-message-hu-operator-claim-client-code-dialog-title",

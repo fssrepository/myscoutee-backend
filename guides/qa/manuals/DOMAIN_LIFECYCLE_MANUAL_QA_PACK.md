@@ -7539,6 +7539,23 @@ cache and original build snapshots. Updated-device replay is not yet proven.
 - Protocol abuse, retry storms, token-security probes, announcement fan-out and
   worker failures belong to automated regression coverage.
 
+#### Registry execution — 2026-09-16
+
+Block 1 steps 1–4 PASS: normal UI registration reached the actual Go Registry,
+retained its signed registration and zero-count installation receipt (ledger 45),
+and reopened as REGISTERED without a second registration. Baseline Go counts:
+4 deployments / 44 ledger entries. Paired Go/local/Mongo snapshot remains retained.
+Two initial attempts failed before key creation because the dev runtime directory
+was root-owned. Compose now owns directory provisioning (application UID, 0700);
+the temporary fixture permission workaround was removed. Prod/E2E image demo
+folder modes were corrected to 0700; packaged real directories already use API
+UID10001/0700. No production deployment qualification is claimed.
+The popup previously displayed success even for ERROR; it now requires enabled
+REGISTERED. Native failure and success replay passed. Focused directory tests
+and Registry packaging tests passed. Detailed evidence:
+`guides/qa/evidence/OPERATOR-REGISTRY-LIFECYCLE-001-2026-09-16.json`.
+Next: block 2 claim/approval and read-only projections.
+
 ### `OPERATOR-UPDATE-LIFECYCLE-001` — signed update
 
 - Apply one prepared compatible QA release from Updates, observe honest

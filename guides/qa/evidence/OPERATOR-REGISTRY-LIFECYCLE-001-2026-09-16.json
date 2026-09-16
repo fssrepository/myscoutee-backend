@@ -1,0 +1,74 @@
+{
+  "checkpoint": "OPERATOR-REGISTRY-LIFECYCLE-001",
+  "status": "IN PROGRESS",
+  "date": "2026-09-16",
+  "environment": "Existing dev Compose; demo_db; actual Go Registry demo:myscoutee; managed Operator/Ava browsers",
+  "baseline": {
+    "goDeployments": 4,
+    "goLedgerEntries": 44,
+    "mongoSettings": 0,
+    "pairedPrivateSnapshotRetained": true
+  },
+  "block1": {
+    "status": "PASS",
+    "deployment": "dep_fa64b900a8f432517c3148b90634b46e",
+    "registrationAcceptedAt": "2026-09-16T09:03:50Z",
+    "signedRegistrationRetained": true,
+    "installationBatch": "batch_17ec84cf083e00d84303760143a94eaa",
+    "installationLedgerIndex": 45,
+    "signedInstallationReceiptRetained": true,
+    "reopenRegistered": true,
+    "registerDisabledAfterSuccess": true,
+    "failedAttemptsBeforePrerequisiteRepair": 2
+  },
+  "repairs": {
+    "falseSuccess": {
+      "fix": "Only enabled REGISTERED status displays registration success",
+      "frontendWatcherBuild": "2026-09-16T09:03:28.332Z",
+      "nativeFailureReplay": {
+        "errorVisible": true,
+        "falseSuccessVisible": false
+      },
+      "nativeSuccessReplay": true
+    },
+    "directoryOwnership": {
+      "cause": "Root-owned /workspace/data; Java UID1000 could not create Registry directories",
+      "fixtureWorkaroundRemoved": true,
+      "devOwner": "Compose runtime-directories prerequisite",
+      "devInitExitCode": 0,
+      "javaUid": 1000,
+      "directoryMode": "0700",
+      "apiOrWatcherRestarted": false,
+      "focusedShellTests": "PASS: ownership/mode, no key creation, repeat preservation, symlink and invalid owner rejection",
+      "production": "Package postinst already provisions real Registry dirs UID/GID10001 mode0700. Prod/E2E Dockerfiles corrected demo directories 0755 ->0700. Existing retained demo volumes need deployment-time permission verification; no production artifact rebuild/deploy performed.",
+      "packagingTests": "registry-packaging-test.sh PASS"
+    },
+    "claimShareBadge": {
+      "status": "PASS",
+      "sharedPopupHeaderBadge": true,
+      "oldBodyBadgeRemoved": true,
+      "desktopAnd390pxMobileVerified": true,
+      "mobileNoHorizontalOverflow": true,
+      "frontendWatcherBuild": "2026-09-16T09:12:44.190Z"
+    }
+  },
+  "next": "User header review: Claim share popup open. Operator deployments header consistency observation pending. Block3 measurement not run.",
+  "block2": {
+    "status": "IN PROGRESS",
+    "claimAction": "opa_5d5803ac8a128a9d5ee1a3f33c9cb4c6",
+    "group": "opg_30b5ddab1a1ea163c5f607aaa8c00c56",
+    "legalName": "QA Registry Operator Ltd",
+    "pendingObserved": true,
+    "approvedViaNormalRegistryCli": true,
+    "reviewIndex": 3,
+    "auditIndex": 5,
+    "signedGroupReadDeploymentCount": 1,
+    "deploymentMembership": "owner",
+    "claimState": "approved",
+    "eligibility": "active",
+    "communityReopened": true,
+    "communityProviderLinks": "Demo catalog links only; external Discord/Discourse participation not tested",
+    "ledgerAfterRead": 45,
+    "reviewBoundary": "User requested return to Claim popup to review header; left open."
+  }
+}

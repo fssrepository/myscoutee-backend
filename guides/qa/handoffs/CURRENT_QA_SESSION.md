@@ -104,15 +104,15 @@ when shaping only its route to the QA application.
 ```yaml
 checkpoint: OPERATOR-REGISTRY-LIFECYCLE-001
 checklist: ../checklists/operator/OPERATOR-REGISTRY-LIFECYCLE-001.md
-substage: Block1 step1, managed sessions launching after paired baseline. No registration yet. Configuration partial: C01/C02 and C04 configuration passed; HTTPS/live-provider assertions remain open.
+substage: Block1 PASS. Block2 claim submitted and approved via normal Go CLI; signed group read has one owner deployment. Claim share popup left open at user request for header review (0.0% badge and existing approval-dependent Client code button). Operator deployments header consistency observation pending; measurement not started.
 fixture_phase: operator-registry staged via guides/qa/tools/operator-registry-fixture.py; consistent Go SQLite/key archive plus local key/state and Mongo snapshots retained under private /tmp/myscoutee-qa-operator-registry. Use paired wrapper reset, never Mongo-only reset.
 browser_control: Full-flow delegated. Managed OPERATOR-REGISTRY-LIFECYCLE-001 Operator and Ava sessions; launcher owns startup.
 required_resume: Read-only paired fixture status, then current browser. Run registration via UI only. Preserve Go/Mongo/local-state baseline. Configuration blocked HTTPS/live-provider checks remain open; no need to rerun completed branches.
 queued_work: Four Operator journeys delegated. Two remaining Asset tests reserved for user-operated pair QA. VMware deployment qualification separate/not started.
 last_completed: Administration4/4 PASS including Parameters visual follow-up and exact fixture reset2026-09-16.
 runtime: Existing backend/frontend watchers running; no duplicate builds. mongodb-sync remains stopped because startup replaces collections.
-ledger_status: 98/104 PASS; Administration4/4; Operator0/4, Configuration IN PROGRESS.
-last_evidence: ../evidence/OPERATOR-CONFIGURATION-LIFECYCLE-001-2026-09-16.json
+ledger_status: 98/104 PASS; Administration4/4; Operator0/4, Configuration partial/open and Registry IN PROGRESS.
+last_evidence: ../evidence/OPERATOR-REGISTRY-LIFECYCLE-001-2026-09-16.json
 ```
 
 ### Current delegation boundary — 2026-09-16
