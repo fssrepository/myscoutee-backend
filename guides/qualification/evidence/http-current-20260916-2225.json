@@ -1,0 +1,71 @@
+{
+  "/app-version.json": [
+    {
+      "status": 200,
+      "elapsedMs": 6.5,
+      "bytes": 137,
+      "version": {
+        "version": "1.0.0-qa.3",
+        "buildId": "qa3-20260916-permission-sync-r4",
+        "builtAt": "2026-09-16T19:25:32.757Z",
+        "gitSha": null
+      }
+    },
+    {
+      "status": 200,
+      "elapsedMs": 4.1,
+      "bytes": 137,
+      "version": {
+        "version": "1.0.0-qa.3",
+        "buildId": "qa3-20260916-permission-sync-r4",
+        "builtAt": "2026-09-16T19:25:32.757Z",
+        "gitSha": null
+      }
+    },
+    {
+      "status": 200,
+      "elapsedMs": 6.4,
+      "bytes": 137,
+      "version": {
+        "version": "1.0.0-qa.3",
+        "buildId": "qa3-20260916-permission-sync-r4",
+        "builtAt": "2026-09-16T19:25:32.757Z",
+        "gitSha": null
+      }
+    }
+  ],
+  "/": [
+    {
+      "status": 200,
+      "elapsedMs": 9.9,
+      "bytes": 40015
+    },
+    {
+      "status": 200,
+      "elapsedMs": 14.2,
+      "bytes": 40015
+    },
+    {
+      "status": 200,
+      "elapsedMs": 10.3,
+      "bytes": 40015
+    }
+  ],
+  "/api/deployment/configuration": [
+    {
+      "status": 200,
+      "elapsedMs": 18.0,
+      "bytes": 292
+    },
+    {
+      "status": 200,
+      "elapsedMs": 14.6,
+      "bytes": 292
+    },
+    {
+      "status": 200,
+      "elapsedMs": 10.2,
+      "bytes": 292
+    }
+  ]
+}

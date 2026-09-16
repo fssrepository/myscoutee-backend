@@ -7,8 +7,8 @@
     ],
     [
       "App",
-      "QA2 monitor-r8",
-      "SHA256 29c404680876568dbd7d40fd4b85422acc8e59e4f2824feb24ff662eb4203444"
+      "1.0.0-qa.3 / permission-sync-r4",
+      "Verified live /app-version.json at 2026-09-16 22:24 local; no rebuild or restart in this review. Historical Runtime sheet retained as earlier QA2 baseline."
     ],
     [
       "Vantage",
@@ -236,9 +236,9 @@
     ],
     [
       "PERF-001",
-      "COMPONENT FIX VERIFIED / STACK RETEST PENDING",
+      "INSTALLED / STARTUP OBSERVED",
       "P2",
-      "MinIO seed process batching: 23.771s to 2.157s (90.9% faster), identical 879-object inventory and MIME types. Source fix only; installed image unchanged. Health start_interval source change also pending packaged qualification.",
+      "Batched MinIO seed is present in running QA3 r4. Current startup-to-seed-complete 4.793s includes waiting for MinIO; earlier isolated23.771s/2.157s comparison is a different benchmark. Full stack restart not replayed.",
       "minio-seed-20260916.json; full stack baseline remains 77.85s"
     ],
     [
@@ -271,10 +271,243 @@
     ],
     [
       "UI-001",
-      "SOURCE FIX / VM RETEST PENDING",
+      "SUPERSEDED SOURCE DESCRIPTION",
       "P2",
-      "When native permission is granted, save the browser preference immediately and register FCM in the background. Settings popup remains open after Update; login permission gate still closes on completion. Switch reflects saved preference, not token registration completion. Backend device writes capped at 3s; initial FCM token setup runs in the background with a 30s bound; native decision is not timed out. VM still runs older frontend. Granted geolocation is now synchronized in the background on Settings Update as well; a failed first save does not mark optimistic coordinates as persisted, allowing a later retry. r2 preloads the Messaging configuration before the explicit native-permission click and skips native/token work when unconfigured. Opt-out writes backend removal without waiting for Firebase.",
+      "Earlier background-save description is superseded by user corrections. Current source now waits for registration result; running r4 is unchanged. See permission evidence and current source tests; no new live notification PASS.",
       "57 focused tests PASS (13 messaging, 4 location, 40 HTTP Operator Registry); production r4 frontend and seed/i18n gates passed; signed QA3 r4 served on local HTTPS; VM catalog and streamed artifact hash verified; user-operated update pending. Runtime VAPID is loaded from server Operator configuration; missing runtime renders Notifications OFF/disabled. Real member notification delivery and installed QA3 behavior remain unproven."
+    ]
+  ],
+  "Current QA3": [
+    [
+      "Measurement",
+      "Value",
+      "Evidence / limit"
+    ],
+    [
+      "Identity",
+      "qa3-20260916-permission-sync-r4",
+      "http-current-20260916-2225.json"
+    ],
+    [
+      "VM available RAM",
+      "2.40 GiB of 5.24 GiB",
+      "3 samples; no swap; memory pressure avg10/60/300=0"
+    ],
+    [
+      "All 9 containers working set",
+      "1097.4–1098.2 MiB",
+      "Short observation, not a leak or load test"
+    ],
+    [
+      "Java API working set",
+      "644.5–644.6 MiB",
+      "Process RSS 641.49 MiB; 65 threads"
+    ],
+    [
+      "JVM heap",
+      "254 MiB used / 319 MiB committed",
+      "Maximum 1342 MiB is not actual RSS"
+    ],
+    [
+      "MongoDB",
+      "247.4–247.7 MiB",
+      "WiredTiger live cache 46.43 MiB / configured max 2168 MiB"
+    ],
+    [
+      "MinIO",
+      "145.5–145.7 MiB",
+      "Batched copy installed; startup-to-seed-complete 4.793s from existing logs"
+    ],
+    [
+      "Spring startup",
+      "11.527 s",
+      "Existing current-container log, not new full-stack restart"
+    ],
+    [
+      "HTTP public configuration",
+      "10.2–18.0 ms",
+      "3 workstation-to-localhost-tunnel requests, no browser rendering"
+    ],
+    [
+      "Health",
+      "9/9 healthy; 0 OOM / restarts reported",
+      "Current containers only, not historical host OOM proof"
+    ],
+    [
+      "Security probes",
+      "15 PASS + 3 LIMITED PASS",
+      "18 expected responses; unsigned Registry tests use empty bodies only"
+    ],
+    [
+      "External ports",
+      "22,80,443,18082,18444",
+      "18082 returns 308 redirect to Registry HTTPS; internal DB/cache/media/API unreachable from workstation"
+    ],
+    [
+      "Changes made to running stack",
+      "None",
+      "Read-only diagnostics; no runtime flags, restarts, installs or database changes"
+    ]
+  ],
+  "Current security": [
+    [
+      "Check",
+      "Result",
+      "Evidence / scope"
+    ],
+    [
+      "APP-ANON-configuration",
+      "PASS",
+      "HTTP 403; bounded negative probe"
+    ],
+    [
+      "APP-ANON-tls",
+      "PASS",
+      "HTTP 403; bounded negative probe"
+    ],
+    [
+      "APP-ANON-updates",
+      "PASS",
+      "HTTP 403; bounded negative probe"
+    ],
+    [
+      "APP-INVALID-TOKEN",
+      "PASS",
+      "HTTP 401; bounded negative probe"
+    ],
+    [
+      "APP-EXPOSURE-/.env",
+      "PASS",
+      "HTTP 200; No sensitive file returned; SPA shell200 is not file disclosure"
+    ],
+    [
+      "APP-EXPOSURE-/.git/config",
+      "PASS",
+      "HTTP 200; No sensitive file returned; SPA shell200 is not file disclosure"
+    ],
+    [
+      "APP-EXPOSURE-/actuator/env",
+      "PASS",
+      "HTTP 200; No sensitive file returned; SPA shell200 is not file disclosure"
+    ],
+    [
+      "APP-EXPOSURE-/actuator/heapdump",
+      "PASS",
+      "HTTP 200; No sensitive file returned; SPA shell200 is not file disclosure"
+    ],
+    [
+      "APP-EXPOSURE-/api/actuator/env",
+      "PASS",
+      "HTTP 403; No sensitive file returned; SPA shell200 is not file disclosure"
+    ],
+    [
+      "APP-EXPOSURE-/api/actuator/heapdump",
+      "PASS",
+      "HTTP 403; No sensitive file returned; SPA shell200 is not file disclosure"
+    ],
+    [
+      "REG-UNSIGNED-/v1/mau/batches",
+      "LIMITED PASS",
+      "HTTP 400; empty body rejection does not prove valid unsigned rejection"
+    ],
+    [
+      "REG-UNSIGNED-/v1/revenue/batches",
+      "LIMITED PASS",
+      "HTTP 400; empty body rejection does not prove valid unsigned rejection"
+    ],
+    [
+      "REG-UNSIGNED-/v1/deployments/register",
+      "LIMITED PASS",
+      "HTTP 400; empty body rejection does not prove valid unsigned rejection"
+    ],
+    [
+      "REG-CANONICAL-PATH",
+      "PASS",
+      "HTTP 400; bounded negative probe"
+    ],
+    [
+      "REG-EXPOSURE-/.env",
+      "PASS",
+      "HTTP 404; bounded negative probe"
+    ],
+    [
+      "REG-EXPOSURE-/.git/config",
+      "PASS",
+      "HTTP 404; bounded negative probe"
+    ],
+    [
+      "REG-EXPOSURE-/debug/pprof/",
+      "PASS",
+      "HTTP 404; bounded negative probe"
+    ],
+    [
+      "REG-EXPOSURE-/metrics",
+      "PASS",
+      "HTTP 404; bounded negative probe"
+    ],
+    [
+      "SPA response headers",
+      "GAP",
+      "HSTS present; CSP, X-Frame-Options, nosniff, Referrer-Policy absent on /. API headers do not cover frontend HTML."
+    ],
+    [
+      "Container isolation",
+      "PARTIAL",
+      "No privileged containers; API user 10001. API lacks no-new-privileges/read-only-root settings used by Registry and simulator."
+    ],
+    [
+      "App / external Registry networks",
+      "PASS",
+      "server_myscoutee separate from myscoutee-registry_internal/public (see runtime evidence for exact names)."
+    ],
+    [
+      "Not covered",
+      "NOT RUN",
+      "Cross-account/role flows, upload exploit paths, signed replay, dependency/container CVEs, Internet perimeter. No claim of complete security qualification."
+    ]
+  ],
+  "Reduction candidates": [
+    [
+      "Candidate",
+      "Decision",
+      "Measured basis / tradeoff",
+      "Primary source"
+    ],
+    [
+      "Java 25 AOT cache / extracted application",
+      "First candidate; not implemented",
+      "Targets startup/class loading and memory; actual savings not measured. Rebuild cache for changed app/JDK; controlled training needed.",
+      "https://docs.spring.io/spring-boot/reference/packaging/aot-cache.html"
+    ],
+    [
+      "Heap sizing / free-space ratios",
+      "Secondary; no arbitrary cap applied",
+      "Heap 254 used /319 committed; 1342 maximum is only limit. Smaller heap may increase GC work.",
+      "https://docs.oracle.com/en/java/javase/25/gctuning/factors-affecting-garbage-collection-performance.html"
+    ],
+    [
+      "Mongo cache cap",
+      "Not an immediate saving",
+      "Only46.43 MiB currently used. Limit is capacity protection, not equivalent RSS reduction.",
+      "https://www.mongodb.com/docs/v8.0/core/wiredtiger/"
+    ],
+    [
+      "Global Spring lazy initialization",
+      "Not selected",
+      "Moves initialization/failures to first request; does not establish durable memory savings.",
+      "https://docs.spring.io/spring-boot/reference/features/spring-application.html"
+    ],
+    [
+      "SPA security headers",
+      "Open hardening change",
+      "Add framing and nosniff/referrer protection; evaluate CSP in report-only mode first to preserve Firebase/media integration.",
+      "https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Content-Security-Policy"
+    ],
+    [
+      "API container hardening",
+      "Open candidate",
+      "Evaluate no-new-privileges and capability removal; verify required writable paths before read-only root.",
+      "https://docs.docker.com/engine/security/"
     ]
   ]
 }

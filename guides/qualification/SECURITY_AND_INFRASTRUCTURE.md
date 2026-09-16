@@ -7,7 +7,7 @@ Raw redacted measurements live in [evidence](evidence/).
 
 ## Current scope — 2026-09-16
 
-Target: VMware `192.168.153.129`, installed app QA2 monitor-r8, separate Go Registry.
+Target: VMware `192.168.153.129`, installed app QA3 `qa3-20260916-permission-sync-r4`, separate Go Registry.
 External client: workstation; app via localhost HTTPS tunnel, Registry via its
 published guest port. This does not prove public Internet perimeter protection.
 Do not upgrade dependencies as routine maintenance during this campaign.
@@ -97,3 +97,12 @@ fixes, retests and untested boundaries in the independent security ledger, outsi
 the pair-QA matrix. Do not describe a passing finite probe set as proof that no
 vulnerability exists. This campaign is explicitly authorized now against the designated VMware guest.
 
+
+
+## Current-stack short review — 2026-09-16 22:25
+
+See the **Current QA3**, **Current security**, and **Reduction candidates** Excel sheets. Three samples total about1.07 GiB container working set, with2.40 GiB VM memory available. API~645 MiB, Mongo~248 MiB, MinIO~146 MiB. All9 containers healthy, no current OOM flags/restarts or current memory pressure. This is not a sustained leak/load test. Spring's existing startup log is11.527s; a new full-stack restart was not performed. MinIO batching is already installed and seed completion was4.793s after container start.
+
+Finite security probes yielded15 PASS and3 limited empty-body rejection results. Registry HTTP18082 redirects to HTTPS18444. Internal API, Redis, Mongo and MinIO ports are not externally reachable from the workstation. App and external Registry Docker networks are separate. The frontend HTML response lacks CSP/framing protection, nosniff and Referrer-Policy, despite API protections; record this as an open hardening gap. Dependency CVEs, cross-account/role flows, signed replay and Internet perimeter remain untested.
+
+Official documentation supports evaluating Java25 AOT cache first for startup/class-loading memory reductions; no savings percentage is claimed without a candidate measurement. Heap sizing is secondary; reserved maximum is not resident usage. Mongo's live cache is only46 MiB, so lowering its maximum is not a substantial immediate saving. Global lazy initialization may defer failures and first-request work; it is not selected as a blanket optimization. Source links and decisions are in the Excel candidate sheet. No application/runtime configuration, database, service restart or build was changed during this review.
