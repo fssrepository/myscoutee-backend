@@ -292,6 +292,20 @@
   "dataPreservation": {
     "rule": "User-created persistent content and settings must survive; explicitly application-owned static data may be replaced. No schema migration in this test.",
     "inventory": "IN_PROGRESS",
-    "verification": "NOT RUN"
+    "verification": "NOT RUN",
+    "backup": {
+      "initialResult": "FAIL: complete backup incorrectly required a Registry keypair on a deployment whose Registry key and state directories were empty",
+      "fix": "Registry recovery components are required when either identity/state directory contains material; absent or empty optional Registry directories are allowed. Partial identities still fail.",
+      "sourceVerification": "PASS: packaging/tests/registry-packaging-test.sh; absent/empty directories, partial keypair, orphaned state, dangling key symlink and missing MinIO covered",
+      "vmVerification": "PASS: corrected backup script staged separately; installed package helper and running application unchanged",
+      "fixtureScript": "/var/lib/myscoutee/qa-fixtures/update/backup-production.sh",
+      "archive": "/var/backups/myscoutee/myscoutee-backup-20260916-125344.tar.gz",
+      "sha256": "0d7420a39f36756d137e244c807f801a09dceb96e786dbe65d821fc874aae4c0",
+      "manifestComplete": true,
+      "registryIdentityRequired": false,
+      "scope": "MongoDB, MinIO, production environment/Compose configuration, configuration master key and existing Registry state. This does not establish recovery coverage for every other host volume, TLS or external service.",
+      "installedVersion": "1.0.0",
+      "upgradeRollback": "NOT RUN"
+    }
   }
 }

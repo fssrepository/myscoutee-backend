@@ -24,6 +24,7 @@ mongo_complete=false
 config_complete=true
 registry_keys_complete=false
 registry_state_complete=false
+registry_identity_required=false
 configuration_key_complete=false
 minio_complete=false
 missing_components=()
@@ -160,6 +161,24 @@ else
   echo "Warning: operator configuration master key is missing or unsafe." >&2
 fi
 
+# Registry enrollment is optional. Require its recovery components as soon as
+# either directory contains identity/state material; never treat a partial
+# identity as an unconfigured deployment. Failed inspection must abort backup.
+for registry_dir in "${REGISTRY_KEY_DIR}" "${REGISTRY_STATE_DIR}"; do
+  if [[ -L "${registry_dir}" ]]; then
+    echo "Deployment registry backup paths must not be symbolic links." >&2
+    exit 1
+  elif [[ -d "${registry_dir}" ]]; then
+    registry_entry="$(find "${registry_dir}" -mindepth 1 -print -quit)"
+    if [[ -n "${registry_entry}" ]]; then
+      registry_identity_required=true
+    fi
+  elif [[ -e "${registry_dir}" ]]; then
+    echo "Deployment registry backup paths must be directories." >&2
+    exit 1
+  fi
+done
+
 if [[ -L "${REGISTRY_KEY_DIR}" \
   || -L "${REGISTRY_KEY_DIR}/deployment-private-key.pem" \
   || -L "${REGISTRY_KEY_DIR}/deployment-public-key.der" ]]; then
@@ -174,7 +193,7 @@ elif [[ -f "${REGISTRY_KEY_DIR}/deployment-private-key.pem" \
   mkdir -p "${WORK_DIR}/registry/keys"
   cp -a "${REGISTRY_KEY_DIR}/." "${WORK_DIR}/registry/keys/"
   registry_keys_complete=true
-else
+elif [[ "${registry_identity_required}" == "true" ]]; then
   missing_components+=("registry-keys")
   echo "Warning: deployment registry keypair was not found under ${REGISTRY_KEY_DIR}; identity backup skipped." >&2
 fi
@@ -190,7 +209,7 @@ elif [[ -d "${REGISTRY_STATE_DIR}" ]]; then
   mkdir -p "${WORK_DIR}/registry/state"
   cp -a "${REGISTRY_STATE_DIR}/." "${WORK_DIR}/registry/state/"
   registry_state_complete=true
-else
+elif [[ "${registry_identity_required}" == "true" ]]; then
   missing_components+=("registry-state")
   echo "Warning: deployment registry state was not found under ${REGISTRY_STATE_DIR}; registry state backup skipped." >&2
 fi
@@ -222,6 +241,7 @@ jq -n \
   --argjson complete "${complete}" \
   --argjson mongo "${mongo_complete}" \
   --argjson config "${config_complete}" \
+  --argjson registryIdentityRequired "${registry_identity_required}" \
   --argjson registryKeys "${registry_keys_complete}" \
   --argjson registryState "${registry_state_complete}" \
   --argjson configurationKey "${configuration_key_complete}" \
@@ -231,6 +251,7 @@ jq -n \
     schemaVersion: 1,
     createdAt: $createdAt,
     complete: $complete,
+    registryIdentityRequired: $registryIdentityRequired,
     components: {
       mongodb: $mongo,
       configuration: $config,
