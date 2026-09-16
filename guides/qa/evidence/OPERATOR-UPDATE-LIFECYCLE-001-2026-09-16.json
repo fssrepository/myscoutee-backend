@@ -78,12 +78,12 @@
   ],
   "progressUi": {
     "source": "phase, percent and progress bar exist",
-    "liveVerification": "NOT RUN"
+    "liveVerification": "PARTIAL: disabled actions and visible phases observed; restart tracking FAIL; exact download byte telemetry absent."
   },
   "execution": {
     "qa1Installed": true,
-    "uiUpgrade": "NOT RUN",
-    "uiRollback": "NOT RUN",
+    "uiUpgrade": "PARTIAL: real explicit UI Apply and backend installation PASS; restart progress tracking and post-update old QA2 discovery FAIL.",
+    "uiRollback": "BLOCKED: installed historical QA2 has no Rollback action; no CLI substitute performed.",
     "controlledFailure": "NOT RUN",
     "managedHttpsProvisioning": "NOT RUN",
     "smokeSecurityEfficiency": "NOT RUN",
@@ -141,7 +141,7 @@
       "fullTestCompilation": "Not passed: existing unrelated Java test compilation errors; focused source-set run used without altering those tests."
     },
     "candidate": "Corrected local QA1 baseline build authorized by user; does not replace the published GitHub QA1 identity.",
-    "liveResult": "PENDING"
+    "liveResult": "PASS on current-source QA1 r2: GitHub discovery and explicit Apply succeeded without Registry enrollment. Installed historical QA2 reintroduces its old Registry-dependent discovery."
   },
   "releasePreparation": {
     "status": "PUBLISHED_AND_GITHUB_DIGEST_VERIFIED",
@@ -308,7 +308,7 @@
   "dataPreservation": {
     "rule": "Production data and operator settings remain in place through upgrade and application rollback. No automatic database/media backup or restore. List package-owned static seed/media changes and any migration before release; qualify the exact candidate on the preproduction VMware target.",
     "inventory": "IN_PROGRESS",
-    "verification": "Pre-Apply PASS: actual production_db users1, deploymentConfigurations1, empty events/assets, one owned Mongo control and one MinIO object. Post-Apply pending; empty Event/Asset collections do not prove populated domain record preservation.",
+    "verification": "PASS after actual QA1 to QA2 Apply: production_db users1, deploymentConfigurations1 and one owned Mongo control unchanged; owned MinIO object hash matches; five configuration/key/TLS file hashes unchanged. Event/Asset collections are empty, so populated Event/Asset preservation is not proven. No application data restored.",
     "backup": {
       "initialResult": "FAIL: complete backup incorrectly required a Registry keypair on a deployment whose Registry key and state directories were empty",
       "fix": "Registry recovery components are required when either identity/state directory contains material; absent or empty optional Registry directories are allowed. Partial identities still fail.",
@@ -324,7 +324,8 @@
       "upgradeRollback": "NOT RUN",
       "disposition": "Historical preparation only; user subsequently rejected automatic backup as an update prerequisite. Retained archive is not used by the update or rollback workflow."
     },
-    "fixture": "guides/qa/tools/operator-update-preservation-fixture.py"
+    "fixture": "guides/qa/tools/operator-update-preservation-fixture.py",
+    "fixtureState": "STAGED: retain owned controls for the pending rollback comparison."
   },
   "packagingGate": {
     "definition": "guides/releases/PRERELEASE_DEPLOYMENT_QUALIFICATION.md#packaging-gate-before-release",
@@ -336,7 +337,7 @@
       "backend": "PASS: OperatorUpdateServiceTest 10 cases + OperatorUpdateReleaseServiceTest 3 cases",
       "releaseSigning": "PASS: signed no-backup metadata; required-backup input rejected"
     },
-    "liveUpdateRollback": "NOT RUN"
+    "liveUpdateRollback": "Actual forward installation and retained controls PASS; UI restart tracking FAIL; rollback NOT RUN."
   },
   "baselinePreparation": {
     "status": "PASS",
@@ -351,7 +352,7 @@
     "browser": "Managed existing Operator browser reloaded and Updates popup opened with retained real bootstrap session. Historical UI still shows the old default current-state presentation; no upgrade or rollback action executed."
   },
   "currentSourceQa1": {
-    "status": "UI_APPLY_RUNNING",
+    "status": "UPGRADED_TO_QA2",
     "instruction": "Build the full current codebase as 1.0.0-qa.1. Historical JAR backport explicitly rejected; no backport was installed.",
     "sourceCommit": "c95699b75dbdedaf0ac4612553327da9d278e757",
     "frontendCommit": "32df1630e7d037cd286552f2181945c750bace60",
@@ -376,11 +377,11 @@
     "retainedConfigurationControls": "PASS: five SHA-256 controls unchanged",
     "configurationFixture": "guides/qa/tools/operator-update-config-fixture.py, stage; normal QA prerelease discovery enabled and independently pinned Ed25519 public key provisioned",
     "qualification": "PASS: packaged deployment qualification, all seven application containers healthy, retained TLS origin and bootstrap access",
-    "uiDiscovery": "PASS: actual current QA1 and GitHub QA2 displayed with Registry uninitialized; no Apply performed",
+    "uiDiscovery": "PASS: current QA1 and signed GitHub QA2 displayed with Registry uninitialized; subsequent explicit Apply recorded below.",
     "uiActions": {
-      "status": "FAIL",
+      "status": "PASS",
       "cause": "Inline app-menu configured as list renders neither Refresh nor Apply. Source now uses supported row layout.",
-      "repair": "Full current-source QA1 r2 package building; no historical package patches.",
+      "repair": "Full current-source QA1 r2 installed through normal signed packaging; no historical binary patch.",
       "verification": "PASS: actual installed UI shows enabled Check for updates and Update deployment; native Refresh succeeds without creating a job"
     },
     "previousLocalBaseline": {
@@ -389,18 +390,35 @@
     }
   },
   "liveApply": {
-    "status": "RESTARTING",
+    "status": "COMPLETED",
     "jobId": "upd_ec17edbf732bdebb08d37b9b3e55dd6a",
     "source": "1.0.0-qa.1",
     "target": "1.0.0-qa.2",
     "targetSha256": "86a2de6f5d41ee7a55de69b51f6ff1ddd717e48dba22ad09a104fb605f4809b0",
     "trigger": "One native click on Update deployment at2026-09-16T13:53:44Z",
     "disabledActions": "PASS: both action buttons disabled during download and after native close/reopen",
-    "progress": "Observed DOWNLOADING15/30/40%, INSTALLING85%, worker RESTARTING92%; completion not yet proven. Displayed bytes are currently derived from phase percent; exact byte telemetry remains a limitation.",
+    "progress": "Observed DOWNLOADING15/30/40%, INSTALLING85%; durable worker completed100%. UI bytes are derived from phase percent rather than measured transfer bytes; limitation remains.",
     "screenshots": [
       "/tmp/myscoutee-qa-browser-sessions/evidence/operator-update-cdp/qa1-qa2-apply.png",
       "/tmp/myscoutee-qa-browser-sessions/evidence/operator-update-cdp/qa1-qa2-running-reopened.png"
     ],
-    "queuedSourceChange": "User requested no Apply loading ring when progress bar is shown. Removed ring from Apply item; disabled state retained. Not included in the already-running upgrade."
+    "queuedSourceChange": "Source retries transient read errors (0/502/503/504 and request timeout) for the same accepted job/cursor, never retries Apply POST, and uses i18n errors for permanent failures. Both controls remain disabled for running jobs; real terminal failure releases both. Apply has no loading ring. No automatic page reload. Not deployed to historical QA2.",
+    "completedAt": "2026-09-16T13:57:20Z",
+    "installedVersion": "1.0.0~qa.2",
+    "backendResult": "PASS: verified package and exact bundled images installed and healthy; one accepted job, no automatic backup.",
+    "uiResult": "FAIL: API restart interrupted event polling at INSTALLING85%; raw HTTP status0/URL displayed and UI stopped following the job despite actual completion."
+  },
+  "restartFixVerification": {
+    "command": "ng test --watch=false --ts-config <temporary relative-path config including the two specs> --include=src/app/shared/core/http/services/operator-registry.service.spec.ts --include=src/app/operator/components/operator-action-popup/operator-action-popup.component.spec.ts",
+    "result": "45/46 PASS; all eight new restart/permanent-error/button-state cases passed. One unrelated claimed-group deployment popup test expects the obsolete headerLabel/subtitle arrangement. Full suite not claimed.",
+    "log": "/tmp/myscoutee-update-ui-focused.log",
+    "deployed": false,
+    "automaticPageReload": false
+  },
+  "qa2Reopening": {
+    "access": "PASS: retained Operator access at https://localhost/operator",
+    "releaseDiscovery": "FAIL: historical frontend calls /api/operator/announcements?includeExpired=false&limit=100&kind=UPDATE and receives409 without Registry enrollment. Displayed current-version detail absent.",
+    "rollback": "No visible action. Source also lacks the requested rollback implementation.",
+    "artifactBoundary": "Current-source QA1 r2 is not published; published QA1 remains a different historical artifact. Do not silently use it as the exact previous recovery package."
   }
 }

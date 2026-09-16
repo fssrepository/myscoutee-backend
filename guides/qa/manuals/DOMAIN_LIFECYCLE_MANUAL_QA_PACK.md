@@ -7595,6 +7595,30 @@ installer (12–17), controlled failure/recovery (18–20), and managed HTTPS
 the earlier exclusion of those branches no longer applies. Disabled controls
 while work runs are the oracle; do not bypass them to simulate repeat clicks.
 
+**2026-09-16 — Actual QA1 r2 → QA2 Apply; restart tracking defect.**
+Full current-source QA1 r2 (SHA-256
+`6e693064bd2e08c5638cabaf9b87de7b4a560f171619dbf8d11aa71e91bdbcff`)
+resolved the missing actions. Block1 discovery and verification passed without
+Registry enrollment. One native Update deployment click started
+`upd_ec17edbf732bdebb08d37b9b3e55dd6a` at13:53:44Z; the worker completed at13:57:20Z
+with verified QA2 installed and healthy. Both controls were disabled during
+installation and after popup reopening. No second Apply or automatic backup.
+The API restart caused the UI to stop polling at85% and show a raw HTTP error:
+block2 tracking FAIL despite successful installation. Source now retains the
+job/cursor across transient read failures, never repeats Apply, localizes actual
+errors, disables both controls while running and releases them after terminal
+failure. No automatic page reload. The two focused spec files yielded45/46 PASS;
+all eight new regression cases passed. The unrelated failure concerns an obsolete
+claimed-group popup header expectation. Source fixes are not installed on old QA2.
+Retained users/configuration and owned Mongo/MinIO controls, plus five configuration,
+key and certificate hashes, all match after Apply. Event/Asset collections are
+empty; populated domain preservation is not proven. Fixture controls remain staged.
+Block3: retained Operator access works, but historical QA2 discovery calls Registry
+announcements and fails409. Block4: Rollback is absent; no CLI substitute executed.
+Current-source QA1 r2 is not published and differs from the old published QA1;
+exact previous-artifact identity must be preserved for recovery. The full row
+remains IN PROGRESS; controlled failure and managed HTTPS are also outstanding.
+
 **2026-09-16 — Current-source QA1 baseline and first live defect.**
 The user replaced the historical-backport plan with a complete normal production
 build of the current source as `1.0.0-qa.1`. That full package was signed,
