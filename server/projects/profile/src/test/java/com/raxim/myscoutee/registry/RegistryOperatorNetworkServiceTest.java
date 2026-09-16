@@ -934,6 +934,12 @@ class RegistryOperatorNetworkServiceTest {
             registry.withdrawnClaimStatus = true;
             registry.approvedClaimStatus = false;
 
+            service.activateReconnectedDeployment();
+            service.activateReconnectedDeployment();
+            assertThat(store.loadOperatorActionJournal()).hasSize(1);
+            assertThat(store.loadOperatorActionJournal().getFirst().action())
+                    .isEqualTo(RegistryProtocol.OPERATOR_ACTION_REACTIVATE_DEPLOYMENT);
+            assertThat(service.claimStatus().claimed()).isFalse();
             String freshClaimKey = service.apply(claim).idempotencyKey();
             assertThat(freshClaimKey).isNotEqualTo(originalClaimKey);
             var freshDeactivation = service.apply(deactivate);

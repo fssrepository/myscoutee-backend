@@ -144,6 +144,24 @@ public final class RegistryOperatorNetworkService {
         this.secureRandom = Objects.requireNonNull(secureRandom, "Secure random must not be null.");
     }
 
+    public void activateReconnectedDeployment() {
+        TrustedDeployment trusted = trustedDeployment();
+        if (!localStore.hasArchivedBinding(trusted.state())) {
+            return;
+        }
+        for (OperatorActionJournalEntry entry : localStore.loadOperatorActionJournal()) {
+            verifyJournalEntry(trusted, entry);
+            if (Set.of(RegistryProtocol.OPERATOR_ACTION_REACTIVATE_DEPLOYMENT,
+                    RegistryProtocol.OPERATOR_ACTION_DEACTIVATE_DEPLOYMENT).contains(entry.action())) {
+                return;
+            }
+        }
+        // Registration preserves the deployment identity. Explicitly activate
+        // this new connection without restoring its archived claim or link.
+        apply(new ActionCommand(RegistryProtocol.OPERATOR_ACTION_REACTIVATE_DEPLOYMENT,
+                null, null, null, null, null, null, null));
+    }
+
     public ActionOutcome apply(ActionCommand suppliedCommand) {
         ActionCommand command = normalizeAction(suppliedCommand);
         TrustedDeployment trusted = trustedDeployment();

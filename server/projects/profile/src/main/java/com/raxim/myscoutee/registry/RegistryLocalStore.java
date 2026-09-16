@@ -502,6 +502,28 @@ public final class RegistryLocalStore {
         return statePath;
     }
 
+    public synchronized boolean hasArchivedBinding(LocalState state) {
+        if (!Files.exists(bindingArchiveDirectory, LinkOption.NOFOLLOW_LINKS)) {
+            return false;
+        }
+        requirePrivateDirectory(bindingArchiveDirectory, "registry binding archives");
+        try (var entries = Files.newDirectoryStream(bindingArchiveDirectory, "binding-*")) {
+            for (Path entry : entries) {
+                requirePrivateDirectory(entry, "registry binding archive");
+                BindingArchiveManifest manifest = loadArchiveManifest(entry);
+                if (Objects.equals(state.deploymentId(), manifest.deploymentId())
+                        && Objects.equals(state.registryScope(), manifest.registryScope())
+                        && Objects.equals(state.trustedRegistryKeyFingerprint(),
+                                manifest.registryPublicKeyFingerprint())) {
+                    return true;
+                }
+            }
+            return false;
+        } catch (IOException exception) {
+            throw new IllegalStateException("Unable to inspect archived registry bindings.", exception);
+        }
+    }
+
     /**
      * Moves the active registry binding out of the enrollment path after a
      * signed deployment-deactivation receipt has been durably stored.

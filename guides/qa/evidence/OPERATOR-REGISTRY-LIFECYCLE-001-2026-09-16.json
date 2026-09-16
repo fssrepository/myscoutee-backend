@@ -101,6 +101,28 @@
         "popup-fullscreen-mobile-before-scroll.png",
         "popup-fullscreen-mobile-scrolled.png"
       ]
+    },
+    "reconnect": {
+      "cause": [
+        "Archived withdrawn claim rejected without active journal",
+        "Lifecycle and initial claim keys reused across fresh enrollments",
+        "Existing deployment remained centrally inactive after registration"
+      ],
+      "fix": [
+        "Verify signed WITHDRAWN/inactive historical status without restoring a claim",
+        "Scope initial claim/lifecycle generation to fresh registration idempotency key",
+        "Apply existing signed reactivation for matching archived deployment before Operator enrollment succeeds; persist receipt and avoid repeat activation"
+      ],
+      "liveActualGoReplay": "PASS: registration, signed reactivation, retained-source sync, second disconnect and archive",
+      "regressionTest": "reconnectDoesNotRestoreWithdrawnClaimOrReusePreviousDeactivation",
+      "unitTestRun": false,
+      "unitTestLimitation": "Not run separately; existing dev watcher owns compilation. Live Java/Go flow verified.",
+      "watcher": "BUILD SUCCESSFUL; Main started 2026-09-16T10:04:51Z"
+    },
+    "pairedReset": {
+      "cause": "Application-owned directories sit below root-owned Compose data parent",
+      "fix": "Remove fixture-owned contents as application user; remove only empty fixed directories with init authority; no permissions broadened",
+      "firstReset": "PASS: exact Go bytes, local state and Mongo/session restore; final reset pending"
     }
   },
   "next": "Block4 steps14\u201318, corrected to user contract: disconnect preserves local data/access; reconnect is a new connection; resynchronize retained sources and restore paired baseline.",
@@ -263,10 +285,18 @@
     "reviewAfterReopen": 3
   },
   "block4": {
-    "status": "IN PROGRESS",
+    "status": "PASS pending final reset",
     "firstDisconnect": "PASS: archived binding; retained local collection counts identical",
     "reconnect": "PASS: fresh registration, installation ledger 52; old claim remains withdrawn",
-    "retainedSourceResync": "PASS: identical six accepted periods, created/submitted/accepted 0; no duplicates",
-    "secondDisconnect": "FAIL: old lifecycle idempotency key reused across fresh registration; archive collision. Targeted clean replay pending."
+    "retainedSourceResync": "PASS: six exact reports and signed receipts identical before/after fresh connection, source fingerprint unchanged",
+    "secondDisconnect": "PASS: distinct signed operation and archive; UNCONFIGURED, disabled, settings v8",
+    "targetedReplayDeployment": "dep_57dfbce131b26640ca56aa9399ce6587",
+    "freshActivationReceipt": "opa_b350ad5dedf21adbb007674a90858bd4",
+    "firstDisconnectArchive": "opa_15303ea48732a2ef1c18d420965730f1",
+    "secondDisconnectArchive": "opa_14ccb5feccb90e4d67a5dff00c9eecab",
+    "memberAccess": "PASS while disconnected: Casey /game and Events opened with three retained cards",
+    "adminAccess": "PASS while disconnected: Ava /admin and Reported users opened with two retained reports",
+    "originalPrivateEvidence": "/tmp/myscoutee-qa-operator-registry-original-20260916",
+    "targetedReplayPrivateEvidence": "/tmp/myscoutee-qa-operator-registry"
   }
 }
