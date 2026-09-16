@@ -78,3 +78,14 @@ r2 package was built but not published. The user then requested that unconfigure
 - User must Check for updates again before Apply because the prepared QA3 artifact hash changed. Existing managed Operator session remains open. No browser action, app update, database mutation, Git action, or GitHub upload was performed in this finalization.
 
 Status: signed QA3 r4 ready on HTTPS. User-operated installation and subsequent before/after data comparison are pending; real member notification delivery and installed UI verification remain unproven.
+
+
+## User-installed r4 and follow-up correction, 21:36
+
+Read-only inspection confirmed the server now serves QA3 r4. The Firebase config endpoint returned200 with a nonempty VAPID key; no key/credential value was recorded. Therefore the reported screen is not evidence of a missing server configuration. The user still reported that the Update control had been affected by the requested notification-toggle gate.
+
+Source defect found: `AppSetupStore.allowDisabled` incorrectly included `notificationConfigurationPending`, blocking the unrelated settings Update action during Firebase configuration loading. It no longer does. The settings/login save flow snapshots notification availability and skips native permission and notification preference/registration writes while Messaging configuration is absent or pending. An OFF value on an unavailable control is not treated as an explicit opt-out; ordinary explicit opt-out when configured retains its existing behavior. Settings stays open.
+
+19 focused tests PASS (15 Messaging,4 location), including the two new regressions: Update remains available during a stalled config lookup and missing config does not unregister a retained device. These follow-up source changes are NOT included in the installed or HTTPS-served r4 artifact. No extra package rebuild or runtime patch was performed for this correction.
+
+Post-update evidence: `qa3-r4-after-update-20260916.json`, compared with the final r4 before-state. Version QA3,53 collections,7028 documents,911 media objects. No document removals, no changed indexes, no added/removed/changed media keys,size,ETag. Changes are limited to monitoring aggregates, scheduled/notification rule runtime state, translation bundle versions and four added translation documents, and one user's `devices` field. Concurrent user permission interactions prevent assigning that device-field change to the installer or the browser from these fingerprints alone. No broader claim of byte-identical user data or actual push delivery is made.
