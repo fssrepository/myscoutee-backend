@@ -83,8 +83,8 @@ resume pointer and reusable working method.
 
 ## Active resume point
 
-Campaign scheduling, confirmed 2026-09-16: finish Operator Update today, then
-prepare the two Asset journeys for user-controlled pair QA tomorrow. External
+Campaign scheduling, confirmed 2026-09-16: Operator Update is complete. The user
+selected Asset Pricing for tomorrow's user-controlled pair QA; Borrow stays parked. External
 security, UI/image smoke and other deployment qualification are deferred to the
 final stable application and Registry release campaign, including GitHub publication.
 Do not execute those deferred checks as part of today's Update work.
@@ -108,18 +108,42 @@ repair an established product defect. Preserve the phone's tethering connection
 when shaping only its route to the QA application.
 
 ```yaml
-checkpoint: OPERATOR-UPDATE-LIFECYCLE-001
-checklist: ../checklists/operator/OPERATOR-UPDATE-LIFECYCLE-001.md
-substage: PASS/CLOSED. r5 cache-miss voluntary rollback, r6 controlled failure/retry and native automatic reload both directions, r7 explicit migration004 preservation, r8 managed HTTPS save/reopen/trust/reset all recorded in evidence and matrix.
-fixture_phase: TLS and release-source fixtures reset; original five config/key/certificate hashes match. QA-owned Mongo/MinIO controls removed after verify-schema4 PASS. Local HTTPS release server stopped. No data backup/restore. Source overrides removed and API recreated.
-browser_control: Operator full-flow delegation completed. Asset Borrow/Pricing remain user-controlled pair QA; do not execute their checklist actions.
-required_resume: Do not replay Update or rollback. Next work is preparing remaining Asset journeys; Pricing has an explicit development gate in ASSET-PRICING-001.md and must not be staged as ready until implemented. Borrow fixtures/guide exist; validate dates against next session before startup. Keep dev and VMware sequential for memory. No automatic stable publication.
-queued_work: Final stable application/Registry release campaign owns GitHub publication, UI/image smoke, external security and measured memory/startup efficiency. Separate from today's closed Update QA.
-last_completed: All four Operator journeys and all Administration tests PASS/CLOSED.
-runtime: VMware healthy QA2 r8, package SHA29c404680876568dbd7d40fd4b85422acc8e59e4f2824feb24ff662eb4203444, frontend build monitor-qa2-20260916-r6. Dev containers stopped. Original localhost HTTPS and retained Operator access work. Green/orange version badges are committed source-only, not in this package.
-ledger_status: 102/104 PASS; Operator4/4. Only Asset Borrow/Pricing remain. Evidence qualification is local signed-source/manual QA-CA; public GitHub/ACME not claimed. No extra rollback after migration per user instruction.
+checkpoint: ASSET-PRICING-001
+checklist: ../checklists/asset/ASSET-PRICING-001.md
+substage: Selected by user for tomorrow (2026-09-17), ahead of Borrow. Guide reorganized into7 readable blocks, retaining original14 steps, amounts and report markers. Preparation only; no manual steps executed.
+fixture_phase: Versioned asset-pricing fixture and Casey/Nova/Riley browser configuration exist; not staged. Stage on the test day after the development gate passes: cutoff window starts staging+12h, so overnight staging would invalidate it. Dev database was not inspected while stopped; do not assume the parked Borrow fixture is reset.
+browser_control: Asset Pricing is user-controlled pair QA. Only versioned baseline preparation and managed launcher startup are authorized; user performs all checklist actions.
+required_resume: Open the linked Pricing guide and its development gate first. Complete audience/member/VIP/invite/promo wiring and refund-policy/payment-snapshot disclosure before staging; do not invent VIP eligibility. Use the existing dev pipeline for verification. Respect VMware/dev sequential memory boundary. Once ready, inspect fixture status; resolve the retained Borrow baseline through its guarded reset before staging Pricing. Require baseline-ready, then launch only ASSET-PRICING-001 managed sessions. Start at Block1 fixed price.
+queued_work: Borrow remains parked; not selected for tomorrow. Final stable app/Registry GitHub release, UI/image smoke, external security and measured infrastructure efficiency remain separate later work.
+last_completed: Operator Update PASS/CLOSED; all Operator and Administration rows complete. No further Update/rollback replay requested.
+runtime: VMware healthy QA2 r8; local dev stopped. Update TLS/source fixtures reset and QA-owned preservation controls removed. Existing Operator browser remains; no Asset browser launched. Green/orange version badges remain source-only.
+ledger_status: 102/104 PASS; Operator4/4. Asset Pricing remains HARNESS PREPARED / NOT STAGED with development prerequisites, not baseline-ready. Borrow remains parked.
 
 ```
+
+### Pricing preparation for 2026-09-17
+
+Use the existing `asset-pricing` scenario; do not replay completed payment or
+Borrow journeys to create prerequisites. It supplies the one editable Asset,
+three Event stages and active Barion cards with simulator3DS Off. The launcher
+configuration already maps Casey(owner), Nova(accepted member) and Riley(public
+control) to three isolated windows. Do not launch or stage before the guide's
+development gate is complete.
+
+| User report after block | Existing read-only fixture oracle |
+| --- | --- |
+| 1 — fixed saved | `verify-fixed` |
+| 2 — variable saved | `verify-variable` |
+| 3 — audience observed | `verify-audience` |
+| 4 — active-policy payment captured | `verify-active-payment` |
+| 5 — no-policy payment captured | `verify-no-policy-payment` |
+| 6 — cutoff payment captured | `verify-cutoff-payment` |
+| 7 — complete | `verify` |
+
+Run oracles through the existing Docker checkpoint harness with scenario
+`asset-pricing` and checkpoint `ASSET-PRICING-001`. Use `status` before mutation;
+never clear a foreign/parked fixture with an ad-hoc database write. Keep
+transactional results in the pack/matrix. This preparation is not a test PASS.
 
 ### Current delegation boundary — 2026-09-16
 

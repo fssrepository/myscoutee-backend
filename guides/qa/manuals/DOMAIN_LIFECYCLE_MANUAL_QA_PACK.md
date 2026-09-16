@@ -7019,6 +7019,12 @@ persisted `last-remove-verified` oracle is the closing result.
 
 Status: **HARNESS PREPARED / NOT STAGED / IMPLEMENTATION GAPS EXPECTED**.
 
+Preparation2026-09-16: user selected Pricing for tomorrow, ahead of parked Borrow.
+The stable guide now has7 blocks with the same14 steps and report markers.
+Existing fixture oracle commands and the three-role managed launcher are mapped
+in the handoff. No data staged or browser actions performed; stage on test day
+after the development gate, because the Cutoff stage starts staging+12h.
+
 Hard development gate: another session must not stage this checkpoint first.
 It starts by exposing and wiring Asset audience/member/VIP/invite/promo pricing
 through the Borrow calculation and promo entry point, with an explicit VIP

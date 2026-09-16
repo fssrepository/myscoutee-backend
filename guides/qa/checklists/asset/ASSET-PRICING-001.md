@@ -34,6 +34,8 @@ in this order:
 Only after these contracts are implemented and the running dev pipeline passes
 may the dedicated fixture be staged and the interactive steps below begin.
 
+## Baseline
+
 Begin only after the dedicated `asset-pricing` fixture reports
 `baseline-ready`. It provides:
 
@@ -45,73 +47,50 @@ Begin only after the dedicated `asset-pricing` fixture reports
 - active Nova and Riley Barion cards;
 - no staged Asset request, basket or payment.
 
-After each report, wait for Codex's guarded read-only oracle before editing the
-next pricing version.
+Stage the fixture on the day of the test: the `Cutoff` stage starts 12 hours after staging.
 
-## Interactive journey
+After each report, wait for Codex's guarded read-only oracle before editing the next pricing version.
 
-1. As Casey, edit the controlled Asset. Turn Pricing On and save only this
-   fixed configuration: HUF `1000` daily rate, `Per booking / day`, tax
-   included, no min/max, no rules, no audience pricing and no refund policy.
-   Reopen the editor and confirm the exact values persisted.
-2. Without reload, Nova opens the Asset for the fixture's two-day `Variable`
-   range. Quantity `1` and `2` both show HUF `2000`: duration is two billable
-   days, while `Per booking / day` does not multiply by item count. Riley sees
-   the same public amount. Report `ASSET-PRICING-001 fixed saved`.
-3. Casey changes the same Asset to `Hybrid`, HUF `999`, `Per item / day`,
-   quantity rule `2+ -> decrease HUF 49`, demand rule `>= 67% -> increase 10%`,
-   time rule `within 96 hours -> increase 10%`, minimum HUF `900`, maximum HUF
-   `1200`, whole-number rounding. Leave audience pricing and refund policy Off.
-4. Nova's already-open Borrow review updates to the new config. On the exact
-   two-day range, quantity `2` shows the ordered rule rows and HUF `4600`:
-   `999 - 49 + 10% + 10% -> 1150`, then two days and two items. Quantity `1`
-   removes the `2+` rule and final item multiplier; returning to `2` restores
-   HUF `4600` without duplicate rows. Report
-   `ASSET-PRICING-001 variable saved`.
-5. Casey now enables Advanced Audience Pricing on the same Asset and enters:
-   member price HUF `800`, VIP price HUF `600`, invite-only discount `20%`,
-   promo `QA10 -> decrease 10%`. Reopen the editor and confirm all four values
-   persist together.
-6. Compare Nova's accepted-member view with Riley's public non-member view and
-   inspect the Borrow flow for a promo-code entry point. Report exactly what
-   changed and what did not. This verifies the development gate above: the
-   member/VIP/invite/promo calculation and promo entry point must now be wired
-   end-to-end. Do not invent a VIP identity or silently pass unchanged prices.
-   Report
-   `ASSET-PRICING-001 audience observed`.
-7. Casey disables Audience Pricing again, keeps the exact HUF `4600` variable
-   configuration, and enables one refund rule: refund `50%` when at least `1`
-   day remains. Nova reopens the exact Variable-stage Borrow review.
-8. Confirm that both Confirm and the locked Payment screen show the same
-   ordered price breakdown, final HUF `4600`, and visible one-day/50% Refund
-   policy. Nova pays exactly once with Barion. Do not accept, reject, cancel or
-   refund the resulting Borrow. Report
-   `ASSET-PRICING-001 active-policy payment captured`.
-9. Casey changes the same live Asset to fixed HUF `800`, `Per booking / day`,
-   no dynamic rules, no audience pricing and refund policy Off. Riley borrows
-   it once for the separate `No policy` stage and pays exactly HUF `800` with
-   Barion. Confirm the pre-payment screens explicitly disclose that no refund
-   policy applies. Report `ASSET-PRICING-001 no-policy payment captured`.
-10. Casey changes the same live Asset once more to fixed HUF `900`, `Per
-    booking / day`, with the one-day/50% refund rule enabled. Nova borrows it
-    once for the separate `Cutoff` stage, whose start is less than 24 hours
-    away, and pays exactly HUF `900`. The policy is disclosed before payment,
-    but the refund window is already closed. Report
-    `ASSET-PRICING-001 cutoff payment captured`.
-11. Open Payment history. Nova's HUF `4600` Payment summary still contains the
-    original variable calculation rows and one-day/50% policy even though the
-    live Asset is now HUF `900`; its refundable amount is HUF `2300`.
-12. Riley's HUF `800` Payment summary explicitly records no refund policy and
-    refundable HUF `0`. The live Asset's later one-day/50% rule must not appear
-    on that payment and must not add `Request refund`.
-13. Nova's HUF `900` Payment summary records the one-day/50% payment-time rule,
-    but states that its cutoff has passed; refundable is HUF `0` and there is
-    no `Request refund` action.
-14. Close and reopen the three summaries once. Report:
+## Block 1 — Fixed price
 
-    `ASSET-PRICING-001 complete: interactive pricing and payment snapshots match`
+1. As Casey, edit the controlled Asset. Turn Pricing On and save only this fixed configuration: HUF `1000` daily rate, `Per booking / day`, tax included, no min/max, no rules, no audience pricing and no refund policy. Reopen the editor and confirm the exact values persisted.
 
-The final oracle must prove exactly three primary captured payments on the one
-Asset, three distinct stored calculation/policy snapshots, the final live
-pricing config, unchanged historical payments, no refund write and no
-duplicate payment.
+2. Without reload, Nova opens the Asset for the fixture's two-day `Variable` range. Quantity `1` and `2` both show HUF `2000`: duration is two billable days, while `Per booking / day` does not multiply by item count. Riley sees the same public amount. Report `ASSET-PRICING-001 fixed saved`.
+
+## Block 2 — Variable price
+
+3. Casey changes the same Asset to `Hybrid`, HUF `999`, `Per item / day`, quantity rule `2+ -> decrease HUF 49`, demand rule `>= 67% -> increase 10%`, time rule `within 96 hours -> increase 10%`, minimum HUF `900`, maximum HUF `1200`, whole-number rounding. Leave audience pricing and refund policy Off.
+
+4. Nova's already-open Borrow review updates to the new config. On the exact two-day range, quantity `2` shows the ordered rule rows and HUF `4600`: `999 - 49 + 10% + 10% -> 1150`, then two days and two items. Quantity `1` removes the `2+` rule and final item multiplier; returning to `2` restores HUF `4600` without duplicate rows. Report `ASSET-PRICING-001 variable saved`.
+
+## Block 3 — Audience pricing
+
+5. Casey now enables Advanced Audience Pricing on the same Asset and enters: member price HUF `800`, VIP price HUF `600`, invite-only discount `20%`, promo `QA10 -> decrease 10%`. Reopen the editor and confirm all four values persist together.
+
+6. Compare Nova's accepted-member view with Riley's public non-member view and inspect the Borrow flow for a promo-code entry point. Report exactly what changed and what did not. This verifies the development gate above: the member/VIP/invite/promo calculation and promo entry point must now be wired end-to-end. Do not invent a VIP identity or silently pass unchanged prices. Report `ASSET-PRICING-001 audience observed`.
+
+## Block 4 — Active refund policy
+
+7. Casey disables Audience Pricing again, keeps the exact HUF `4600` variable configuration, and enables one refund rule: refund `50%` when at least `1` day remains. Nova reopens the exact Variable-stage Borrow review.
+
+8. Confirm that both Confirm and the locked Payment screen show the same ordered price breakdown, final HUF `4600`, and visible one-day/50% Refund policy. Nova pays exactly once with Barion. Do not accept, reject, cancel or refund the resulting Borrow. Report `ASSET-PRICING-001 active-policy payment captured`.
+
+## Block 5 — No refund policy
+
+9. Casey changes the same live Asset to fixed HUF `800`, `Per booking / day`, no dynamic rules, no audience pricing and refund policy Off. Riley borrows it once for the separate `No policy` stage and pays exactly HUF `800` with Barion. Confirm the pre-payment screens explicitly disclose that no refund policy applies. Report `ASSET-PRICING-001 no-policy payment captured`.
+
+## Block 6 — Passed refund cutoff
+
+10. Casey changes the same live Asset once more to fixed HUF `900`, `Per booking / day`, with the one-day/50% refund rule enabled. Nova borrows it once for the separate `Cutoff` stage, whose start is less than 24 hours away, and pays exactly HUF `900`. The policy is disclosed before payment, but the refund window is already closed. Report `ASSET-PRICING-001 cutoff payment captured`.
+
+## Block 7 — Historical payment snapshots
+
+11. Open Payment history. Nova's HUF `4600` Payment summary still contains the original variable calculation rows and one-day/50% policy even though the live Asset is now HUF `900`; its refundable amount is HUF `2300`.
+
+12. Riley's HUF `800` Payment summary explicitly records no refund policy and refundable HUF `0`. The live Asset's later one-day/50% rule must not appear on that payment and must not add `Request refund`.
+
+13. Nova's HUF `900` Payment summary records the one-day/50% payment-time rule, but states that its cutoff has passed; refundable is HUF `0` and there is no `Request refund` action.
+
+14. Close and reopen the three summaries once. Report: `ASSET-PRICING-001 complete: interactive pricing and payment snapshots match`
+
+The final oracle must prove exactly three primary captured payments on the one Asset, three distinct stored calculation/policy snapshots, the final live pricing config, unchanged historical payments, no refund write and no duplicate payment.
