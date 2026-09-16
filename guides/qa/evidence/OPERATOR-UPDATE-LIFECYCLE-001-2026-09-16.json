@@ -28,6 +28,18 @@
       "method": "lvextend --resizefs --extents +100%FREE /dev/ubuntu-vg/ubuntu-lv",
       "result": "PASS",
       "virtualDiskSizeGiB": 20
+    },
+    "registryNetworkIsolation": {
+      "application": "server_myscoutee",
+      "realRegistry": "myscoutee-registry_internal",
+      "realRegistryProxy": [
+        "myscoutee-registry_internal",
+        "myscoutee-registry_public"
+      ],
+      "sharedApplicationRegistryNetwork": false,
+      "remoteEmulationEndpoint": "https://192.168.153.129:18444",
+      "internalExploreSimulator": "registry-demo on server_myscoutee; not the real Registry",
+      "registryCertificateExpired": "2026-08-29; found by read-only certificate inspection, remediation/verification queued with Registry security qualification"
     }
   },
   "artifacts": {
@@ -86,7 +98,7 @@
       "action": "One visible Check for updates click",
       "httpStatus": 409,
       "endpoint": "/api/operator/announcements?includeExpired=false&limit=100&kind=UPDATE",
-      "result": "BLOCKED: deployment is not registered with a Registry; valid release fixture not prepared",
+      "result": "FAIL product dependency: Updates required Registry enrollment. User clarified updates must work with no Registry deployed; independent GitHub source implemented, candidate live retest pending.",
       "ui": "Raw HTTP error/URL and still-disabled Deployment is current action"
     }
   },
@@ -118,5 +130,16 @@
     "i18nAudit": "BLOCKED by pre-existing landing loading key reference at entry-landing.component.html:383; verified also present in HEAD",
     "initialTestAttempt": "Default ng test include still typechecked unrelated existing specs and failed; focused tsconfig then passed. Temporary tsconfig removed.",
     "vmPatch": "None; published QA1 is preserved."
+  },
+  "registryIndependentUpdate": {
+    "requirement": "Release discovery and Apply must work without Registry selection, enrollment or a real Registry service.",
+    "implementation": "Java reads GitHub release assets and independently verifies the full update metadata and package signature with the pinned release key. Root worker verification/backup path unchanged.",
+    "sourceChecks": {
+      "backendFocused": "23/23 PASS including Python signer-to-Java verification, tampered compatibility and wrong/missing key rejection",
+      "frontendFocused": "24/24 PASS",
+      "fullTestCompilation": "Not passed: existing unrelated Java test compilation errors; focused source-set run used without altering those tests."
+    },
+    "candidate": "Corrected local QA1 baseline build authorized by user; does not replace the published GitHub QA1 identity.",
+    "liveResult": "PENDING"
   }
 }

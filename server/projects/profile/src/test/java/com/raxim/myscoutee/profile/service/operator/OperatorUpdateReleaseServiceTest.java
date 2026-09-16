@@ -48,10 +48,21 @@ class OperatorUpdateReleaseServiceTest {
         signature.update(RegistryProtocol.releasePackage(mapper.convertValue(manifest, UpdateManifest.class)));
         manifest.put("package_signature", Base64.getEncoder().encodeToString(signature.sign()));
         byte[] raw = mapper.writeValueAsBytes(manifest);
-        signature.initSign(key.getPrivate()); signature.update(OperatorUpdateReleaseService.signedMessage(raw));
-        byte[] envelope = mapper.writeValueAsBytes(Map.of("schemaVersion", 1,
-                "manifestBase64", Base64.getEncoder().encodeToString(raw),
-                "signature", Base64.getEncoder().encodeToString(signature.sign())));
+        Path privateKey = directory.resolve("private.pem");
+        Files.writeString(privateKey, "-----BEGIN PRIVATE KEY-----\n"
+                + Base64.getEncoder().encodeToString(key.getPrivate().getEncoded())
+                + "\n-----END PRIVATE KEY-----\n");
+        Path source = directory.resolve("manifest.json");
+        Path signed = directory.resolve("myscoutee-update.json");
+        Files.write(source, raw);
+        Path root = Path.of("").toAbsolutePath();
+        while (!Files.isDirectory(root.resolve("packaging"))) root = root.getParent();
+        var signing = new ProcessBuilder("python3", root.resolve("packaging/release/sign-update-manifest.py").toString(),
+                "--private-key", privateKey.toString(), "--manifest", source.toString(), "--output", signed.toString())
+                .redirectErrorStream(true).start();
+        String output = new String(signing.getInputStream().readAllBytes());
+        assertThat(signing.waitFor()).as(output).isZero();
+        byte[] envelope = Files.readAllBytes(signed);
         byte[] list = mapper.writeValueAsBytes(new Object[]{Map.of("draft", false, "prerelease", false,
                 "assets", new Object[]{Map.of("name", "myscoutee_1.2.3_amd64.deb", "size", 123, "browser_download_url", url),
                     Map.of("name", "myscoutee-update.json", "browser_download_url", metadataUrl)})});
@@ -89,7 +100,7 @@ class OperatorUpdateReleaseServiceTest {
         HttpResponse<java.io.InputStream> response = mock(HttpResponse.class);
         when(response.statusCode()).thenReturn(200);
         when(response.body()).thenReturn(new ByteArrayInputStream(
-                "[{\"assets\":[{\"name\":\"myscoutee_1.0.0_amd64.deb\"}]}]".getBytes()));
+                "[{\"draft\":false,\"prerelease\":false,\"assets\":[{\"name\":\"myscoutee_1.0.0_amd64.deb\"}]}]".getBytes()));
         when(client.send(any(), any(HttpResponse.BodyHandler.class))).thenReturn(response);
         var service = new OperatorUpdateReleaseService(new OperatorUpdateProperties(), mapper, client);
         assertThatThrownBy(service::releases).hasMessageContaining("412").hasMessageContaining("signed update metadata");

@@ -18,16 +18,17 @@ import com.raxim.myscoutee.profile.data.dto.operator.OperatorUpdateDtos.Operator
 import com.raxim.myscoutee.profile.data.dto.operator.OperatorUpdateDtos.OperatorUpdateJobDto;
 import com.raxim.myscoutee.profile.data.dto.operator.OperatorUpdateDtos.OperatorUpdateOverviewDto;
 import com.raxim.myscoutee.profile.service.operator.OperatorUpdateService;
+import com.raxim.myscoutee.profile.service.operator.OperatorUpdateReleaseService;
 
 @RestController
 @RequestMapping("/operator/updates")
 @PreAuthorize("hasAuthority('O')")
 public class OperatorUpdateController {
     private final OperatorUpdateService service;
-    private final com.raxim.myscoutee.profile.service.operator.OperatorUpdateReleaseService releases;
+    private final OperatorUpdateReleaseService releases;
 
     public OperatorUpdateController(OperatorUpdateService service,
-            com.raxim.myscoutee.profile.service.operator.OperatorUpdateReleaseService releases) {
+            OperatorUpdateReleaseService releases) {
         this.service = service;
         this.releases = releases;
     }
@@ -38,7 +39,7 @@ public class OperatorUpdateController {
     }
 
     @GetMapping("/releases")
-    public com.raxim.myscoutee.profile.service.operator.OperatorUpdateReleaseService.ReleasePage releases() {
+    public OperatorUpdateReleaseService.ReleasePage releases() {
         return releases.releases();
     }
 

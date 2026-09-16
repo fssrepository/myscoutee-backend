@@ -18108,12 +18108,6 @@
     "value": "Update failed"
   },
   {
-    "_id": "i18n-message-en-operator-update-error-registration-required",
-    "key": "operator.update.error.registration.required",
-    "lang": "en",
-    "value": "Connect to a Registry before checking for updates."
-  },
-  {
     "_id": "i18n-message-en-operator-update-error-check",
     "key": "operator.update.error.check",
     "lang": "en",
@@ -20530,6 +20524,24 @@
     "key": "landing.supported.countries.empty",
     "lang": "en",
     "value": "No countries are currently listed."
+  },
+  {
+    "_id": "i18n-message-en-operator-update-error-metadata",
+    "key": "operator.update.error.metadata",
+    "lang": "en",
+    "value": "This release has no signed update information yet."
+  },
+  {
+    "_id": "i18n-message-en-operator-update-error-key",
+    "key": "operator.update.error.key",
+    "lang": "en",
+    "value": "The trusted update signing key is not configured."
+  },
+  {
+    "_id": "i18n-message-en-loading",
+    "key": "loading",
+    "lang": "en",
+    "value": "Loading…"
   },
   {
     "_id": "i18n-message-hu-unavailable-here",
@@ -38640,12 +38652,6 @@
     "value": "A frissítés sikertelen"
   },
   {
-    "_id": "i18n-message-hu-operator-update-error-registration-required",
-    "key": "operator.update.error.registration.required",
-    "lang": "hu",
-    "value": "A frissítések kereséséhez előbb csatlakozz egy Registryhez."
-  },
-  {
     "_id": "i18n-message-hu-operator-update-error-check",
     "key": "operator.update.error.check",
     "lang": "hu",
@@ -41062,5 +41068,23 @@
     "key": "landing.supported.countries.empty",
     "lang": "hu",
     "value": "Jelenleg nincs felsorolt ország."
+  },
+  {
+    "_id": "i18n-message-hu-operator-update-error-metadata",
+    "key": "operator.update.error.metadata",
+    "lang": "hu",
+    "value": "Ehhez a kiadáshoz még nincs aláírt frissítési információ."
+  },
+  {
+    "_id": "i18n-message-hu-operator-update-error-key",
+    "key": "operator.update.error.key",
+    "lang": "hu",
+    "value": "A frissítések megbízható aláírókulcsa nincs beállítva."
+  },
+  {
+    "_id": "i18n-message-hu-loading",
+    "key": "loading",
+    "lang": "hu",
+    "value": "Betöltés…"
   }
 ]

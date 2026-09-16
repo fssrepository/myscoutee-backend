@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Sign standalone update metadata for the mysccoutee-update.json GitHub asset.
+"""Sign standalone update metadata for the myscoutee-update.json GitHub asset.
 
 The input uses the existing update_manifest fields (snake_case). Package
 version/channel/size/hash/signature must match sign-release-artifacts.sh output.

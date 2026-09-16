@@ -5,7 +5,7 @@ SCRIPT_DIR="$(CDPATH= cd "$(dirname "$0")" && pwd)"
 REPO_ROOT="$(CDPATH= cd "${SCRIPT_DIR}/../.." && pwd)"
 # The package builder is runtime-source packaging logic, not a release wrapper.
 PACKAGE_SCRIPT="${SCRIPT_DIR}/package-production.sh"
-DIST_DIR="${REPO_ROOT}/packaging/dist"
+DIST_DIR="${MYSCOUTEE_DIST_DIR:-${REPO_ROOT}/packaging/dist}"
 
 if [ ! -f "${PACKAGE_SCRIPT}" ]; then
   echo "Package script not found: ${PACKAGE_SCRIPT}" >&2
