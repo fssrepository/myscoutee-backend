@@ -1,0 +1,12 @@
+{
+  "installedAtUtc": "2026-09-16T20:59:54.672152+00:00",
+  "target": "VMware 192.168.153.129",
+  "version": "1.0.0-qa.3",
+  "buildId": "qa3-20260916-security-r6",
+  "packageSha256": "1a821a462a12c5ce4df651f173891e0b7b009e3ad47787d3af07b8a2b2b63c97",
+  "method": "same-version package reinstall through packaging/client-tools/install.sh",
+  "hostQualification": "PASS",
+  "publicVersionEndpoint": "https://localhost/app-version.json",
+  "healthyContainers": 9,
+  "deviceRegistrationTest": "not run; user handoff"
+}
