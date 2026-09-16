@@ -10,6 +10,17 @@
   const distanceUsers = new RegExp(`^${distancePrefix}`);
   const deliveryPrefix = 'manual-qa-parameters-delivery:';
   const deliveryChatId = `${deliveryPrefix}chat`;
+  function prepareDeliveryMembers(delivery) {
+    const now = Q.nowIso();
+    for (const userId of [actors[1], ...delivery.recipientIds]) {
+      const id = `${deliveryPrefix}member:${userId}`;
+      Q.collection('activityMembers').updateOne({_id: id}, {$setOnInsert: {
+        syncKey: id, ownerType: 'event', ownerId: delivery.eventId, userId,
+        role: userId === actors[1] ? 'Admin' : 'Member', status: 'accepted',
+        actionAtIso: now, createdDate: now, createdUser: 'manual-qa', updatedDate: now, updatedUser: 'manual-qa'
+      }}, {upsert: true});
+    }
+  }
   function removeDistanceInputs() {
     Q.collection('userRates').deleteMany({ownerUserId: distanceUsers});
     Q.collection('userAffinityEdges').deleteMany({$or: [{leftUserId: distanceUsers}, {rightUserId: distanceUsers}]});
@@ -95,7 +106,12 @@
       ownerUserId: id, memberIds: members, title: 'QA Parameters · two recipients', avatar: 'PQ',
       lastMessage: 'Notification strategy fixture', lastSenderId: actors[1], unread: 0, dateIso: now,
       channelType: 'mainEvent', ownerId: eventId, eventId, ownerStatus: 'A', revision: 1})));
+    prepareDeliveryMembers({eventId, recipientIds});
     Q.printObject({chatId: deliveryChatId, recipientIds, devices: 0, expectedThreshold2: 'multicast', expectedThreshold3: 'direct'});
+  } else if (command === 'prepare-delivery-members') {
+    const state = Q.activeState(scenario, true);
+    if (!state.delivery) Q.fail('Delivery fixture not prepared');
+    prepareDeliveryMembers(state.delivery);
   } else if (command === 'cleanup-delivery') {
     const state = Q.activeState(scenario, true), delivery = state.delivery;
     if (!delivery) Q.fail('Delivery fixture not prepared');
@@ -103,11 +119,35 @@
     if (Q.collection('chats').countDocuments({ownerUserId: actors[1], id: {$ne: delivery.chatId}})) Q.fail('New actor chats require scoped counter reconciliation');
     Q.collection('chats').deleteMany({id: delivery.chatId});
     Q.collection('chatMessages').deleteMany({chatId: delivery.chatId});
+    Q.collection('activityMembers').deleteMany({ownerType: 'event', ownerId: delivery.eventId});
     Q.collection('events').deleteOne({_id: delivery.eventId});
     Q.collection('users').deleteMany({userId: {$in: delivery.recipientIds}});
     Q.collection('userNotifications').deleteMany({recipientUserId: {$in: delivery.recipientIds}});
     Q.collection('users').updateOne({userId: actors[1]}, {$set: {'activities.chat': delivery.actorChatCounters, 'activities.chats': delivery.actorChats}});
     Q.collection(Q.STATE_COLLECTION).updateOne({_id: state._id}, {$unset: {delivery: ''}});
+  } else if (command === 'prepare-jobs') {
+    const state = Q.activeState(scenario, true), user = Q.ensureUser(actors[1]);
+    if (state.jobsProbe || pending() || !Q.sameJson(activeConfig(), state.originalConfig)) Q.fail('Restore the prior branch first');
+    Q.collection(Q.STATE_COLLECTION).updateOne({_id: state._id}, {$set: {jobsProbe: {
+      originalUser: user, userId: actors[1], height: user.height, hadHeight: Object.prototype.hasOwnProperty.call(user, 'height'),
+      originalAffinity: user.affinity, preparedAt: Q.nowIso()
+    }}});
+    Q.collection('affinityConfigs').updateOne({_id: state.originalConfig._id}, {$set: {'jobs.userChangedDebounceSeconds': 12}});
+    Q.printObject({userId: actors[1], originalHeight: user.height, testHeight: Number(user.height) + 1, debounceSeconds: 12});
+  } else if (command === 'cleanup-jobs') {
+    const state = Q.activeState(scenario, true), probe = state.jobsProbe;
+    if (!probe || pending()) Q.fail('Jobs probe missing or still pending');
+    const profileFields = ['email','name','age','birthday','city','height','physique','languages','horoscope',
+      'initials','gender','statusText','hostTier','traitLabel','completion','profileFormVersion','headline','about',
+      'locationCoordinates','partitionKey','images','profileDetails','impressions','status','profileStatus',
+      'previousProfileStatus','deletedAtIso'];
+    const set = {}, unset = {};
+    for (const field of profileFields) {
+      if (Object.prototype.hasOwnProperty.call(probe.originalUser, field)) set[field] = probe.originalUser[field];
+      else unset[field] = '';
+    }
+    Q.collection('users').updateOne({userId: probe.userId}, {$set: set, $unset: unset});
+    Q.collection(Q.STATE_COLLECTION).updateOne({_id: state._id}, {$unset: {jobsProbe: ''}});
   } else if (command === 'prepare-distance') {
     Q.activeState(scenario, true);
     if (pending() || Q.collection('users').countDocuments({userId: distanceUsers})) Q.fail('Distance fixture already present or recompute pending');
@@ -178,7 +218,7 @@
     Q.holdRule('affinity-graph-layout', 0, 'Parameters QA retains its completed materialization.');
   } else if (command === 'reset') {
     const state = Q.activeState(scenario, true);
-    if (state.delivery) Q.fail('Clean up the delivery branch before reset');
+    if (state.delivery || state.jobsProbe) Q.fail('Clean up the delivery/Jobs branch before reset');
     Q.assertRuleNotRunning('affinity-graph-layout');
     if (pending()) Q.fail('Wait for recompute before reset');
     if (Q.collection('notificationOutbox').countDocuments({notificationType: 'admin-params-changed',
@@ -207,5 +247,5 @@
   const state = Q.activeState(scenario), config = activeConfig();
   Q.printObject({checkpointId, phase: state?.phase || 'not-staged', configVersion: config?.version,
     fields: fields.map(field => ({...field, original: valueAt(state?.originalConfig || config, field.path), current: valueAt(config, field.path)})),
-    pendingRecompute: pending(), retainedSnapshots: backups.countDocuments({scenario}), captures: state?.captures.length || 0});
+    pendingRecompute: pending(), retainedSnapshots: backups.countDocuments({scenario}), captures: state?.captures?.length || 0});
 })();

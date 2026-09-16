@@ -102,16 +102,16 @@ repair an established product defect. Preserve the phone's tethering connection
 when shaping only its route to the QA application.
 
 ```yaml
-checkpoint: ADMIN-PARAMETERS-001 — DELEGATED EXECUTION / IN PROGRESS
+checkpoint: ADMIN-PARAMETERS-001 — CLOSED FUNCTIONAL TEST / REQUESTED VISUAL FOLLOW-UP
 checklist: ../checklists/administration/ADMIN-PARAMETERS-001.md
-substage: Blocks1–3 and Block4 Discovery13–14 verified/restored. Notifications15–17 two-recipient chat fixture prepared; threshold remains3, no message sent. Finish requested landing Supported countries UI verification, then resume Notifications.
-fixture_phase: admin-parameters baseline-ready with15 collection snapshots in manualQaParameterSnapshots plus original config/rule in common state; common Ava session baseline retained.
-browser_control: Full-flow execution explicitly delegated; announce block/step. Versioned Parameters Ava session open, Ava Params Discovery open; Casey landing Supported countries popup open for requested feature verification. Discovery restored; delivery fixture active.
-required_resume: Fixture already staged; read-only status before continuing, do not stage again. Reuse Monitoring shared editor/History/revert and Bell consumer prerequisites only for exact proven assertions.
-queued_work: Finish Parameters, then execute the four Operator journeys in delegated full-flow mode (explicit user authorization2026-09-16). The two remaining Asset tests are user-operated pair QA; never automate their checklist actions. Administration/Operator guides retain original coverage in English.
-last_completed: ADMIN-AFFINITY-GRAPH-001 all23 steps PASS/CLOSED2026-09-16; Graph and Statistics baseline restored, snapshot comparison passed, browser closed.
+substage: User requested shared app-menu contextual palettes and automatic desktop/mobile presentation. Visual follow-up only; functional25-step evidence closed. Desktop parent scroll area failed to fill popup; narrow flex fix rebuilding.
+fixture_phase: Parameters baseline re-staged solely for managed browser reauthentication/visual follow-up; no parameter saves or consumer replay. Reset after visual check.
+browser_control: Delegated. Versioned Parameters launcher reopened Ava/Casey. Ava Discovery editor/dropdown open; Casey game. Keep requested dropdown visible while inspecting.
+required_resume: Do not replay closed Parameters/Admin tests. Establish TLS/provider restoration prerequisites before those branches; reuse exact prior Firebase/WebView/Push assertions only.
+queued_work: Four Operator journeys delegated. Two remaining Asset tests reserved for user-operated pair QA. VMware deployment qualification separate/not started.
+last_completed: ADMIN-PARAMETERS-001 all25 steps accounted for/PASS2026-09-16; baseline restored,0 snapshots/pending/owned probes. Requested landing Supported countries popup implemented with shared app-popup, flags/checks,390px verification and no extra popup request.
 runtime: Existing backend/frontend watchers running; no duplicate builds. mongodb-sync remains stopped because startup replaces collections.
-ledger_status: 97/104 PASS; Notifications6/6, Administration3/4. Parameters IN PROGRESS, not passed.
+ledger_status: 98/104 PASS; Administration4/4; Operator0/4. Parameters closed.
 last_evidence: ../evidence/ADMIN-PARAMETERS-001-2026-09-16.json
 ```
 

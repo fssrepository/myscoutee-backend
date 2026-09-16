@@ -5,10 +5,13 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Optional;
 
 import org.springframework.stereotype.Service;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.server.ResponseStatusException;
 import org.springframework.util.StringUtils;
 
 import com.raxim.myscoutee.profile.data.document.AffinityConfig;
@@ -342,7 +345,9 @@ public class AdminParamsService {
     private void applyDiscovery(AffinityConfig config, Map<String, AdminParamFieldDto> fields) {
         setMultiplier(config.getDistance(), fields.get("distance.multiplier"));
         readInteger(fields.get("distance.maxMeters"), 0, 1_000_000).ifPresent(config.getDistance()::setMaxMeters);
-        config.getDistance().setStrategy(normalizeDistanceStrategy(fieldText(fields.get("distance.strategy"))));
+        if (fields.containsKey("distance.strategy")) {
+            config.getDistance().setStrategy(normalizeDistanceStrategy(fieldText(fields.get("distance.strategy"))));
+        }
     }
 
     private void applyNotifications(AffinityConfig config, Map<String, AdminParamFieldDto> fields) {
@@ -805,8 +810,11 @@ public class AdminParamsService {
     }
 
     private String normalizeDistanceStrategy(String value) {
-        String normalized = safeText(value).toLowerCase();
-        return DISTANCE_STRATEGIES.contains(normalized) ? normalized : "linear";
+        String normalized = safeText(value).toLowerCase(Locale.ROOT);
+        if (!DISTANCE_STRATEGIES.contains(normalized)) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid distance strategy");
+        }
+        return normalized;
     }
 
     private record SectionDefinition(String key, String label) {

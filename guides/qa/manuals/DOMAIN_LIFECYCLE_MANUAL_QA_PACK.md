@@ -10508,3 +10508,34 @@ Fixture restoredv4, original derived/graph snapshots and removed the owned
 Distance probes. Notifications15–17 fixture prepared with two chat recipients;
 no threshold save or chat message performed yet. Landing Supported countries
 feature requested during this branch uses the existing landing payload.
+
+Notifications15–17 PASS: v10 saved/reopened threshold3→2. Real Casey chat message
+with two recipients selected multicast and completed without retry; each recipient
+chat projection incremented unread. A second, prematurely sent message remains a
+multicast control and is excluded from restoration proof. After CONFIG completed
+08:10:08Z and fixture restoredv4/threshold3, the third message selected direct,
+completed and incremented the same two recipient projections. Firebase disabled
+in the immutable delivery plan because recipients have no devices; physical FCM
+is not claimed. Missing Event activityMembers were repaired in the fixture only.
+Cleanup removed owned chat/event/members/users; outbox audit remains attributable.
+Jobs18–19: fixture supplied12s debounce; actual Casey profile height181→182 save
+created a USER task08:15:09Z, due08:15:21Z. Normal worker result pending.
+
+Jobs18–19 PASS: real USER task had due time exactly12s after enqueue and
+completed08:16:00Z on the normal worker, one attempt, pendingCounterTracked=false.
+12s is the debounce boundary;60s polling can make completion later. Original
+profile fields and300s configuration restored. Block5 bounds verified in UI:
+-1→0 and1000001→1000000. Invalid strategy returned200: production validation
+repaired to reject unknown text before persistence; live400 replay pending.
+
+Parameters closure24–25 PASS/CLOSED2026-09-16: bounds normalize0/1000000;
+invalid strategy initially createdv13 (retained defect evidence), corrected
+request returns400 with unchanged configuration/version/task/outbox counts.
+Cancellation12345→close→reopen1000000 produced no save. The supported three
+strategies now use the shared app-menu pill without a custom select wrapper.
+Originalv4,50km,threshold3,300s debounce and all15 snapshots restored/compared;
+zero retained snapshots or fixture probes. Post-reset status formatting repaired
+and independently verified. Watcher build/live HTTP checks passed; added unit
+regression is not claimed as executed. Administration4/4; total98/104.
+Next: Operator Configuration C01–C08, with exact previous Firebase/WebView/Push
+assertions reused; missing TLS/provider prerequisites must remain explicit.
