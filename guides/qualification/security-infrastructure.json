@@ -90,21 +90,21 @@
     ],
     [
       "REG-UNSIGNED-/v1/mau/batches",
-      "PASS",
+      "LIMITED PASS",
       "https://192.168.153.129:18444",
-      "HTTP 400; /v1/mau/batches"
+      "HTTP 400; /v1/mau/batches; empty payload rejected; does not establish rejection of a structurally valid unsigned request"
     ],
     [
       "REG-UNSIGNED-/v1/revenue/batches",
-      "PASS",
+      "LIMITED PASS",
       "https://192.168.153.129:18444",
-      "HTTP 400; /v1/revenue/batches"
+      "HTTP 400; /v1/revenue/batches; empty payload rejected; does not establish rejection of a structurally valid unsigned request"
     ],
     [
       "REG-UNSIGNED-/v1/deployments/register",
-      "PASS",
+      "LIMITED PASS",
       "https://192.168.153.129:18444",
-      "HTTP 400; /v1/deployments/register"
+      "HTTP 400; /v1/deployments/register; empty payload rejected; does not establish rejection of a structurally valid unsigned request"
     ],
     [
       "REG-CANONICAL-PATH",
@@ -202,6 +202,21 @@
       "myscoutee-registry-nginx-1",
       "5.211MiB / 5.235GiB",
       "First idle Docker working-set sample, not exact heap/RSS"
+    ],
+    [
+      "MinIO seed before / after",
+      "23.771s / 2.157s",
+      "Isolated owned bucket; component benchmark, source fix not yet installed"
+    ],
+    [
+      "JVM periodic GC trial RSS",
+      "574.94MiB / 575.06MiB",
+      "85s experiment, original flag restored; no improvement"
+    ],
+    [
+      "JVM committed heap",
+      "271MiB",
+      "Reserved maximum ~1.31GiB is not actual resident usage"
     ]
   ],
   "Findings": [
@@ -221,10 +236,10 @@
     ],
     [
       "PERF-001",
-      "INVESTIGATE",
+      "COMPONENT FIX VERIFIED / STACK RETEST PENDING",
       "P2",
-      "Warm start 77.85s; isolate JVM initialization and health polling before changing runtime.",
-      "runtime-20260916.json"
+      "MinIO seed process batching: 23.771s to 2.157s (90.9% faster), identical 879-object inventory and MIME types. Source fix only; installed image unchanged. Health start_interval source change also pending packaged qualification.",
+      "minio-seed-20260916.json; full stack baseline remains 77.85s"
     ],
     [
       "PERF-002",
@@ -232,6 +247,34 @@
       "P2",
       "8s i18n sync every restart; consider package-content hash guard only after profiling. No speculative optimization deployed.",
       "runtime-20260916.json"
+    ],
+    [
+      "MEM-001",
+      "MEASURED / NO TUNING RETAINED",
+      "P2",
+      "G1 periodic concurrent collection trial (30s interval): committed heap stayed 271MiB; RSS 574.94 to 575.06MiB, no material reduction. Original interval 0 restored and verified. Do not ship this tuning as an optimization. Live browser activity was not controlled.",
+      "idle-heap-20260916.json"
+    ],
+    [
+      "MEM-002",
+      "ATTRIBUTED / LOAD TEST PENDING",
+      "P2",
+      "Post-seed API RSS 551.4MiB; Mongo live cache ~20.4MiB despite configured maximum ~2.1GiB. No measured justification for arbitrary heap/cache caps. No OOM observed; sustained load/leak behavior remains unproven.",
+      "memory-after-seed-20260916.json"
+    ],
+    [
+      "REL-001",
+      "OPEN",
+      "P2",
+      "Real Registry reports dev, not a stable release version. Qualify and stamp the actual Registry release before release evidence is final.",
+      "Registry version observed during qualification; independent from TLS retest"
+    ],
+    [
+      "UI-001",
+      "SOURCE FIX / VM RETEST PENDING",
+      "P2",
+      "When native permission is granted, save the browser preference immediately and register FCM in the background. Settings popup remains open after Update; login permission gate still closes on completion. Switch reflects saved preference, not token registration completion. Technical waits capped at 3s each; native decision is not timed out. VM still runs older frontend.",
+      "firebase-messaging.service.spec.ts; server Firebase configuration HTTP200 in37ms; live user browser flow not automated"
     ]
   ]
 }

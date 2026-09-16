@@ -1,0 +1,65 @@
+{
+  "at": "2026-09-16T18:32:09.778122+00:00",
+  "packageVersion": "1.0.0~qa.2",
+  "pid": 847590,
+  "originalIntervalMs": 0,
+  "trialIntervalMs": 30000,
+  "samples": [
+    {
+      "phase": "baseline",
+      "elapsedSeconds": 0.01,
+      "rssKiB": 588700,
+      "heapInfo": "garbage-first heap   total reserved 1374208K, committed 277504K, used 228682K [0x00000000ac200000, 0x0000000100000000)\n region size 1024K, 113 young (115712K), 12 survivors (12288K)"
+    },
+    {
+      "phase": "baseline",
+      "elapsedSeconds": 15.05,
+      "rssKiB": 588740,
+      "heapInfo": "garbage-first heap   total reserved 1374208K, committed 277504K, used 242688K [0x00000000ac200000, 0x0000000100000000)\n region size 1024K, 127 young (130048K), 12 survivors (12288K)"
+    },
+    {
+      "phase": "periodic-gc",
+      "elapsedSeconds": 25.12,
+      "rssKiB": 588800,
+      "heapInfo": "garbage-first heap   total reserved 1374208K, committed 277504K, used 132052K [0x00000000ac200000, 0x0000000100000000)\n region size 1024K, 16 young (16384K), 9 survivors (9216K)"
+    },
+    {
+      "phase": "periodic-gc",
+      "elapsedSeconds": 35.16,
+      "rssKiB": 588820,
+      "heapInfo": "garbage-first heap   total reserved 1374208K, committed 277504K, used 139470K [0x00000000ac200000, 0x0000000100000000)\n region size 1024K, 23 young (23552K), 9 survivors (9216K)"
+    },
+    {
+      "phase": "periodic-gc",
+      "elapsedSeconds": 45.19,
+      "rssKiB": 588820,
+      "heapInfo": "garbage-first heap   total reserved 1374208K, committed 277504K, used 146126K [0x00000000ac200000, 0x0000000100000000)\n region size 1024K, 30 young (30720K), 9 survivors (9216K)"
+    },
+    {
+      "phase": "periodic-gc",
+      "elapsedSeconds": 55.2,
+      "rssKiB": 588820,
+      "heapInfo": "garbage-first heap   total reserved 1374208K, committed 277504K, used 134862K [0x00000000ac200000, 0x0000000100000000)\n region size 1024K, 19 young (19456K), 9 survivors (9216K)"
+    },
+    {
+      "phase": "periodic-gc",
+      "elapsedSeconds": 65.22,
+      "rssKiB": 588824,
+      "heapInfo": "garbage-first heap   total reserved 1374208K, committed 277504K, used 142438K [0x00000000ac200000, 0x0000000100000000)\n region size 1024K, 26 young (26624K), 9 survivors (9216K)"
+    },
+    {
+      "phase": "periodic-gc",
+      "elapsedSeconds": 75.25,
+      "rssKiB": 588860,
+      "heapInfo": "garbage-first heap   total reserved 1374208K, committed 277504K, used 153806K [0x00000000ac200000, 0x0000000100000000)\n region size 1024K, 37 young (37888K), 9 survivors (9216K)"
+    },
+    {
+      "phase": "periodic-gc",
+      "elapsedSeconds": 85.28,
+      "rssKiB": 588864,
+      "heapInfo": "garbage-first heap   total reserved 1374208K, committed 277504K, used 130838K [0x00000000ac200000, 0x0000000100000000)\n region size 1024K, 16 young (16384K), 9 survivors (9216K)"
+    }
+  ],
+  "restored": true,
+  "scope": "Live user activity may vary; idle heap attribution, not a load or latency benchmark."
+}

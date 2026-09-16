@@ -41242,5 +41242,17 @@
     "key": "operator.update.phase.switching_ingress",
     "lang": "hu",
     "value": "Webszerver átváltása"
+  },
+  {
+    "_id": "i18n-message-en-entry-permissions-notifications-failed",
+    "key": "entry.permissions.notifications.failed",
+    "lang": "en",
+    "value": "Could not save notification settings. Check your connection and try again."
+  },
+  {
+    "_id": "i18n-message-hu-entry-permissions-notifications-failed",
+    "key": "entry.permissions.notifications.failed",
+    "lang": "hu",
+    "value": "Nem sikerült menteni az értesítési beállításokat. Ellenőrizd a kapcsolatot, majd próbáld újra."
   }
 ]
