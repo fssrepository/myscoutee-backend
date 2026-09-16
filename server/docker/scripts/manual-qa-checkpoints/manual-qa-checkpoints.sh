@@ -903,7 +903,7 @@ PY
   job-messages:stage|job-messages:ready|job-messages:status|job-messages:arm|job-messages:reset|\
   notification-admin:stage|notification-admin:status|notification-admin:reset|\
   mobile-push:stage|mobile-push:status|mobile-push:prepare-device-identity|mobile-push:adopt-foreground|mobile-push:recover-foreground-worker|mobile-push:popup-registration-off|mobile-push:popup-registration-restore|mobile-push:reset|\
-  operator-registry:stage|operator-registry:status|operator-registry:reset|\
+  operator-registry:stage|operator-registry:prepare-measurement|operator-registry:verify-measurement|operator-registry:status|operator-registry:reset|\
   operator-domain:stage|operator-domain:next|operator-domain:status|operator-domain:reset)
     [ "$#" -eq 3 ] || { usage >&2; exit 2; }
     if [ "${scenario}" = "asset-assignment" ] && [ "$3" != "ASSET-ASSIGNMENT-LIFECYCLE-001" ]; then

@@ -84,7 +84,7 @@ public class MongoQualifiedMauEvidenceRepository
                         "$userId",
                         ACTION_JOIN,
                         "$actionAtIso",
-                        source("event:", "$ownerId", ":", "$_id")))));
+                source("event:", "$ownerId", ":", new Document("$toString", "$_id"))))));
 
         pipeline.add(union("chatMessages", List.of(
                 match(new Document("sentAtIso", range(start, end))
