@@ -232,6 +232,12 @@
           "multiplier": 0.25
         }
       }
+    },
+    "jobs": {
+      "eventChangedDebounceSeconds": 15,
+      "eventMembersChangedDebounceSeconds": 15,
+      "assetChangedDebounceSeconds": 15,
+      "assetRequestsChangedDebounceSeconds": 15
     }
   }
 ]
