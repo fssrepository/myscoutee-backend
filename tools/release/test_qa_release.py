@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 """Disposable artifact tests; no Docker, deployment, network or retained keys."""
+import base64
 import hashlib
 import io
 import json
@@ -97,6 +98,16 @@ class QaReleaseTest(unittest.TestCase):
             record = json.loads((output / 'QA-RELEASE.json').read_text())
             self.assertTrue(record['artifactSignaturesVerified'])
             self.assertTrue(record['updateManifestSignatureVerified'])
+            envelope = json.loads((output / 'myscoutee-update.json').read_text())
+            metadata = json.loads(base64.b64decode(envelope['manifestBase64']))
+            self.assertIs(metadata['backup_required'], False)
+            metadata['backup_required'] = True
+            rejected_source = work / 'backup-required.json'
+            rejected_source.write_text(json.dumps(metadata))
+            call('python3', ROOT / 'packaging/release/sign-update-manifest.py',
+                 '--private-key', work / 'keys/qa-release-private.pem',
+                 '--manifest', rejected_source, '--output', work / 'rejected.json', success=False)
+            self.assertFalse((work / 'rejected.json').exists())
             self.assertFalse(any('private' in path.name for path in output.iterdir()))
             with new_deb.open('ab') as stream:
                 stream.write(b'tamper')

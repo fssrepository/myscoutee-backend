@@ -36,12 +36,15 @@ not pre-download or manually install it in place of the action under test.
 
 ### Persistent data preservation
 
-This scenario does not test a data-model migration. Inventory all persistent
+List any data-model migration found by the candidate change inventory and test
+its preservation, repeat execution and rollback compatibility before release.
+Do not assume that a changed seed has no migration effect. Inventory all persistent
 stores before installation, including MongoDB, MinIO, other mounted data/volumes,
 deployment identity, secrets, certificates and operator-managed settings.
 User-created records, uploaded objects and customized settings must survive
 upgrade and rollback. Compare retained controls and object hashes before/after;
-a recovery backup is not permission to delete or overwrite live data. Do not
+do not back up or restore production datasets as part of an update. The
+installer preserves data in place. Do not
 purge the deployment or reset production databases/volumes for this test.
 Application-owned static resources, such as bundled images, translations and
 explicitly package-managed reference data, may change with a release. Establish
@@ -49,10 +52,11 @@ ownership before replacing anything; sharing a database or bucket does not make
 user content package-owned. Future schema changes require explicit versioned
 migration scripts and separate migration tests.
 
-Before the failure branch, retain a verified recovery baseline and declare one
+Before the failure branch, record the exact previous package identity and declare one
 reproducible external failure trigger, its phase and its reset. Preserve user
 data and configuration controls for comparison. Remove only the fixture-owned
-cached previous installer for the cache-miss check; retain the recovery backup.
+cached previous installer for the cache-miss check. Package rollback reinstalls
+the previous application release without rolling user data back in time.
 
 For the user-designated VMware run, also follow the separate
 [deployment qualification](../../../releases/PRERELEASE_DEPLOYMENT_QUALIFICATION.md):
@@ -111,8 +115,8 @@ Report: `OPERATOR-UPDATE-LIFECYCLE-001 block 3 done`.
 12. On the successfully updated QA2 target, inspect the visible **Rollback**
     action and its QA1 recovery point. If no UI recovery action exists, record
     the missing capability; a command-line restore does not pass this UI check.
-13. Verify the retained backup and data controls. Remove only the fixture-owned
-    cached QA1 installer, preserving the backup. No release or recovery result
+13. Verify the previous package identity and retained data controls. Remove only
+    the fixture-owned cached QA1 installer, preserving live data. No release or recovery result
     may be manufactured in the database.
 14. Select **Rollback** to QA1 once. Its action remains disabled while recovery
     is pending/running, including after reopening. Require one recovery operation

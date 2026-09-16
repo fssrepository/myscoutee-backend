@@ -40,6 +40,12 @@ node "${SCRIPT_DIR}/mobile-qa-isolation-test.mjs" >/dev/null \
 
 bash "${SCRIPT_DIR}/numeric-ownership-policy-test.sh" >/dev/null \
   || fail "numeric host ownership policy regression"
+bash "${SCRIPT_DIR}/debian-removal-contract-test.sh" >/dev/null \
+  || fail "Debian lifecycle deleted retained deployment state"
+bash "${SCRIPT_DIR}/debian-tls-lifecycle-test.sh" >/dev/null \
+  || fail "Debian lifecycle replaced retained operator TLS material"
+bash "${SCRIPT_DIR}/update-worker-test.sh" >/dev/null \
+  || fail "signed update lifecycle or data-preservation contract regression"
 bash "${SCRIPT_DIR}/demo-reset-test.sh" >/dev/null \
   || fail "demo reset lifecycle or production boundary regression"
 bash "${SCRIPT_DIR}/i18n-runtime-seed-sync-test.sh" >/dev/null \

@@ -35,7 +35,10 @@ Publish `myscoutee-update.json` alongside the Debian asset. Prepare the existing
 `update_manifest` JSON fields with the real package version, channel, HTTPS asset
 URL, byte size, SHA-256, package signing key ID and package signature from
 `sign-release-artifacts.sh`; declare the actual minimum/maximum compatible
-versions and require a backup. The package version must be newer than the
+versions and set `backup_required: false`. Update and package rollback preserve
+production data in place; they do not copy or restore production datasets.
+List static seed/media changes and any data migration in the release gate
+before signing; qualify the actual candidate on the preproduction VMware host. The package version must be newer than the
 installed package. GitHub tag names do not substitute for package versions.
 
 ```sh

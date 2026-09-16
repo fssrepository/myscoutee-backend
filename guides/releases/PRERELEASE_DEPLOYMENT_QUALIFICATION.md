@@ -39,6 +39,46 @@ Use one immutable artifact set throughout the sequence:
 
 A local build or an installed candidate is not itself a release.
 
+## Packaging gate before release
+
+The local VMware deployment is the preproduction environment for these checks.
+Review every checkpoint against the exact candidate before publishing it for
+production use. Packaging success alone is not approval to release. Record
+PASS, FAIL, BLOCKED or NOT RUN with evidence; unresolved checkpoints stay open.
+
+Update and package rollback preserve live data in place. They do not take a
+full database/media backup or restore an earlier dataset. The optional standalone
+backup/restore tools are not an update prerequisite. Package-owned static data
+may change even when it lives in MongoDB or MinIO; storage location alone does
+not determine ownership.
+
+| Checkpoint | Required check | Evidence |
+| --- | --- | --- |
+| P01 — Candidate identity | Package version, source revision, image identities, checksums and signatures agree | Exact artifact manifest and signature verification |
+| P02 — Data change inventory | List every changed packaged seed, static media item and migration; compare with the source release | Completed change table below, including explicit `none` when no migrations exist |
+| P03 — Ownership boundary | Static updates affect only their declared package-owned records/fields/object keys; existing operator overrides and user data survive | Installer/seed review and focused boundary tests |
+| P04 — Install and upgrade | Apply the actual package on VMware; verify versions, services and retained record/media/settings controls | Installer logs and before/after assertions, without copying full user datasets |
+| P05 — Rollback and failure | Return to the actual previous application version; preserve user data created both before and after upgrade; verify interruption/progress behavior | Operator Update lifecycle evidence for this candidate |
+| P06 — Deployment qualification | Complete UI/image smoke, external security and measured resource checks | Deployment record below |
+
+### Candidate data change inventory
+
+Fill this table for the source-to-target package transition **before installation**.
+List exact collection + record/field identities or object paths, operation and
+ownership. If a script touches existing user data, indexes, schema or meaning,
+classify it as a migration, record its compatibility/rollback behavior and test
+it on VMware before release. Do not silently classify it as a seed refresh.
+An unexpected write or an unclassified change fails P02/P03 until reviewed.
+
+| Collection / file / object key | Source → target change | Ownership | Operation | Migration and rollback compatibility | VMware evidence |
+| --- | --- | --- | --- | --- | --- |
+| Fill from the exact two artifacts | Added / changed / removed | Package static / operator-managed / user-created | Insert / update specified fields / delete / schema change | None, or named versioned migration and tested recovery behavior | NOT RUN |
+
+Use the existing package-content, demo-reset, i18n seed-sync, Debian lifecycle
+and update-worker checks for their respective boundaries. Those source checks
+support P03; they do not replace P04/P05 on the installed candidate. A candidate
+change invalidates the affected evidence and requires those checkpoints again.
+
 ## Repeatable deployment record
 
 Deployment, UI smoke, external security and infrastructure efficiency belong to

@@ -28,8 +28,8 @@ def main():
     if len(manifest) > 128 * 1024:
         parser.error('Update manifest is too large')
     document = json.loads(manifest)
-    if document.get('manifest_version') != '1' or document.get('backup_required') is not True:
-        parser.error('Expected update manifest v1 with a required backup')
+    if document.get('manifest_version') != '1' or document.get('backup_required') is not False:
+        parser.error('Expected update manifest v1 without an automatic data backup')
     os.umask(0o077)
     with tempfile.TemporaryDirectory(prefix='myscoutee-update-sign-') as directory:
         work = Path(directory)

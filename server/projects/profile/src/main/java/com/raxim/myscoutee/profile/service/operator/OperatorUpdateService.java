@@ -74,7 +74,7 @@ public class OperatorUpdateService {
     private static final Pattern JOB_ID =
             Pattern.compile("^upd_[0-9a-f]{32}$");
     private static final Pattern RELEASE_VERSION =
-            Pattern.compile("^(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)$");
+            Pattern.compile("^(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)(-qa\\.[1-9][0-9]*)?$");
     private static final Pattern CHANNEL =
             Pattern.compile("^[a-z][a-z0-9._-]{0,31}$");
     private static final Set<String> TERMINAL_PHASES =

@@ -41,7 +41,7 @@ class OperatorUpdateReleaseServiceTest {
         manifest.put("artifact_url", url); manifest.put("artifact_size_bytes", 123);
         manifest.put("artifact_sha256", "sha256:" + "a".repeat(64));
         manifest.put("package_signing_key_id", RegistryProtocol.packageSigningKeyId(key.getPublic().getEncoded()));
-        manifest.put("backup_required", true); manifest.put("expected_downtime_seconds", 300);
+        manifest.put("backup_required", false); manifest.put("expected_downtime_seconds", 300);
         manifest.put("status", "AVAILABLE"); manifest.put("release_notes_url", "https://github.com/fssrepository/myscoutee/releases/tag/v1.2.3");
         var signature = Signature.getInstance("Ed25519");
         signature.initSign(key.getPrivate());
@@ -116,7 +116,7 @@ class OperatorUpdateReleaseServiceTest {
         manifest.put("artifact_url", "https://github.com/fssrepository/myscoutee/releases/download/v1.0.0-qa.10/myscoutee_1.0.0-qa.10_amd64.deb");
         manifest.put("artifact_size_bytes", 123); manifest.put("artifact_sha256", "sha256:" + "a".repeat(64));
         manifest.put("package_signing_key_id", RegistryProtocol.packageSigningKeyId(key.getPublic().getEncoded()));
-        manifest.put("backup_required", true); manifest.put("expected_downtime_seconds", 300); manifest.put("status", "AVAILABLE");
+        manifest.put("backup_required", false); manifest.put("expected_downtime_seconds", 300); manifest.put("status", "AVAILABLE");
         var signature = Signature.getInstance("Ed25519");
         signature.initSign(key.getPrivate());
         signature.update(RegistryProtocol.releasePackage(mapper.convertValue(manifest, UpdateManifest.class)));

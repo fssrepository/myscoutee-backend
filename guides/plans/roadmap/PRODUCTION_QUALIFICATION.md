@@ -82,12 +82,13 @@ running registries keep distinct scopes, signing identities, SQLite files,
 receipts, and ledger state. It does not prove public TLS routing.
 
 The packaging contract tests cover the update worker's signed request
-boundary, durable progress, interruption reconciliation, complete pre-update
-backup requirement, guarded Mongo/key/registry restore, and failure behavior.
+boundary, durable progress, interruption reconciliation, data-preserving
+installation without automatic backups, and failure behavior. Separate optional
+restore tests cover guarded Mongo/key/registry recovery.
 They use isolated fixtures; they are not a replacement for the candidate
 package drill.
 
-## Oldest-supported upgrade, interruption, and restore drill
+## Oldest-supported upgrade, interruption, and package rollback drill
 
 Perform this on a disposable host or VM that matches a supported production
 topology. Preserve console logs and files as evidence.
@@ -96,9 +97,9 @@ topology. Preserve console logs and files as evidence.
 2. Configure only synthetic operator/provider data. Register the deployment
    against a qualification registry and submit at least one signed QMAU and
    revenue record.
-3. Create a complete production backup. Verify its manifest, mode, checksum,
-   Mongo archive, MinIO data, configuration encryption key, and the matching
-   deployment key plus registry state/receipts.
+3. Complete the [packaging gate and data change inventory](../../releases/PRERELEASE_DEPLOYMENT_QUALIFICATION.md#packaging-gate-before-release).
+   Record retained synthetic data, object hashes and configuration controls.
+   Do not copy production datasets as an update prerequisite.
 4. Upgrade through the signed Operator update rail to the exact candidate.
    Verify package version, managed image IDs, health checks, preserved
    operator access, deployment identity, receipts, provider configuration,
@@ -109,10 +110,11 @@ topology. Preserve console logs and files as evidence.
    health confirmation. Restart the host. Every job must reconcile to an
    accurate terminal state; ambiguous partial installation must become
    `RECOVERY_REQUIRED`, never a false success.
-6. Restore the recorded pre-update backup to a clean host. Restore Mongo and
-   its operator-configuration key as one unit, and restore a deployment key
-   only with its matching registry state and receipts. Verify every signed
-   registry record before enabling outbound synchronization.
+6. Roll back to the actual previous application package, downloading and
+   verifying it again when its cached installer is absent. Preserve existing
+   Mongo/MinIO data, operator configuration and deployment identity in place,
+   including user-created controls added after the upgrade. Any declared
+   migration must have separately tested rollback compatibility.
 7. Re-run the upgrade without interruption and record the final PASS/FAIL.
 
 Do not use a developer database, personal provider credential, real customer

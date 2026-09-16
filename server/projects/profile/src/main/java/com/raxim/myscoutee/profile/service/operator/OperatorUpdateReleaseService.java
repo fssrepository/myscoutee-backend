@@ -157,7 +157,7 @@ public class OperatorUpdateReleaseService {
         }
         UpdateManifest manifest = mapper.readValue(manifestBytes, UpdateManifest.class);
         if (!"1".equals(manifest.manifestVersion()) || !"AVAILABLE".equals(manifest.status())
-                || !Boolean.TRUE.equals(manifest.backupRequired())
+                || !Boolean.FALSE.equals(manifest.backupRequired())
                 || manifest.expectedDowntimeSeconds() == null || manifest.expectedDowntimeSeconds() < 0
                 || manifest.artifactSizeBytes() == null || manifest.artifactSizeBytes() < 1
                 || manifest.artifactSizeBytes() > properties.getMaxArtifactBytes()

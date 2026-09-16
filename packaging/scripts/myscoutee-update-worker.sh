@@ -11,7 +11,6 @@ STATE_DIR="${MYSCOUTEE_UPDATE_STATE_DIR:-/var/lib/myscoutee/update}"
 CACHE_DIR="${MYSCOUTEE_UPDATE_CACHE_DIR:-/var/cache/myscoutee-update}"
 AUDIT_DIR="${MYSCOUTEE_UPDATE_AUDIT_DIR:-/var/log/myscoutee/update}"
 RELEASE_PUBLIC_KEY="${MYSCOUTEE_UPDATE_RELEASE_PUBLIC_KEY:-/etc/myscoutee/update/release-public-key.pem}"
-BACKUP_SCRIPT="${MYSCOUTEE_UPDATE_BACKUP_SCRIPT:-/opt/myscoutee/packaging/scripts/backup-production.sh}"
 SAFE_COPY_HELPER="${MYSCOUTEE_UPDATE_SAFE_COPY_HELPER:-${SCRIPT_DIR}/myscoutee-safe-copy.py}"
 IMAGE_CONTENT_FINGERPRINT_HELPER="${SCRIPT_DIR}/image-content-fingerprint.sh"
 INSTALLED_MANIFEST_PATH="${MYSCOUTEE_UPDATE_INSTALLED_MANIFEST_PATH:-/opt/myscoutee/packaging/IMAGE-MANIFEST.json}"
@@ -311,9 +310,9 @@ read_request() {
   [[ "${CURRENT_REQUESTED_BY}" != *$'\n'* && "${CURRENT_REQUESTED_BY}" != *$'\r'* ]] \
     || return 1
   [[ "${CURRENT_MANIFEST_HASH}" =~ ^sha256:[0-9a-f]{64}$ ]] || return 1
-  [[ "${CURRENT_RELEASE_VERSION}" =~ ^(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)$ ]] \
+  [[ "${CURRENT_RELEASE_VERSION}" =~ ^(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)(-qa\.[1-9][0-9]*)?$ ]] \
     || return 1
-  dpkg --validate-version "${CURRENT_RELEASE_VERSION}" >/dev/null 2>&1 || return 1
+  dpkg --validate-version "$(debian_version "${CURRENT_RELEASE_VERSION}")" >/dev/null 2>&1 || return 1
   [[ "${CURRENT_CHANNEL}" =~ ^[a-z][a-z0-9._-]{0,31}$ ]] || return 1
   [[ "${CURRENT_ARTIFACT_NAME}" == "myscoutee.deb" ]] || return 1
   [[ "${CURRENT_ARTIFACT_SIZE}" =~ ^[1-9][0-9]*$ ]] || return 1
@@ -572,7 +571,7 @@ verify_and_cache_artifact() {
     fail_job "The signed artifact is not the MyScoutee package."
     return 1
   }
-  [[ "${package_version}" == "${CURRENT_RELEASE_VERSION}" ]] || {
+  [[ "${package_version}" == "$(debian_version "${CURRENT_RELEASE_VERSION}")" ]] || {
     fail_job "The Debian package version does not match the signed manifest."
     return 1
   }
@@ -590,40 +589,15 @@ verify_and_cache_artifact() {
   CURRENT_CACHED_ARTIFACT="${cached_artifact}"
 }
 
-installed_version() {
-  dpkg-query -W -f='${Version}' "${PACKAGE_NAME}" 2>/dev/null || true
+# Display/signature versions use SemVer; dpkg orders prereleases with '~'.
+debian_version() {
+  printf '%s' "${1/-/\~}"
 }
 
-create_backup() {
-  local output manifest_tmp
-
-  if [[ ! -x "${BACKUP_SCRIPT}" || -L "${BACKUP_SCRIPT}" ]]; then
-    fail_job "The production backup helper is unavailable."
-    return 1
-  fi
-  if ! output="$(MYSCOUTEE_BACKUP_REQUIRE_COMPLETE=true \
-    "${BACKUP_SCRIPT}" 2>> "${CURRENT_LOG_FILE}")"; then
-    fail_job "The required complete pre-update production backup failed."
-    return 1
-  fi
-  printf '%s\n' "${output}" >> "${CURRENT_LOG_FILE}"
-  CURRENT_BACKUP_PATH="$(printf '%s\n' "${output}" \
-    | awk 'NF { value=$0 } END { print value }')"
-  if [[ -z "${CURRENT_BACKUP_PATH}" || ! -f "${CURRENT_BACKUP_PATH}" \
-    || -L "${CURRENT_BACKUP_PATH}" ]]; then
-    fail_job "The pre-update backup did not produce a safe archive."
-    return 1
-  fi
-  manifest_tmp="$(mktemp "${CURRENT_JOB_DIR}/.backup-manifest.XXXXXX")"
-  if ! tar -xOf "${CURRENT_BACKUP_PATH}" ./backup-manifest.json \
-    > "${manifest_tmp}" 2>/dev/null \
-    || ! jq -e '.schemaVersion == 1 and .complete == true' \
-      "${manifest_tmp}" >/dev/null 2>&1; then
-    rm -f -- "${manifest_tmp}"
-    fail_job "The pre-update backup does not certify complete recovery data."
-    return 1
-  fi
-  rm -f -- "${manifest_tmp}"
+installed_version() {
+  local version
+  version="$(dpkg-query -W -f='${Version}' "${PACKAGE_NAME}" 2>/dev/null || true)"
+  printf '%s' "${version/\~/-}"
 }
 
 install_package() {
@@ -633,7 +607,7 @@ install_package() {
   if ! env DEBIAN_FRONTEND=noninteractive \
     apt-get -o Dpkg::Use-Pty=0 install -y "${cached_artifact}" \
     >> "${CURRENT_LOG_FILE}" 2>&1; then
-    recovery_required "Package installation may be partial. Use the recorded backup and install log before retrying."
+    recovery_required "Package installation may be partial. Inspect the install log before retrying; preserve existing deployment data."
     return 1
   fi
   installed_after="$(installed_version)"
@@ -719,7 +693,7 @@ reconcile_existing_job() {
     return 0
   fi
   recovery_required \
-    "An earlier update attempt was interrupted and cannot be retried automatically. Inspect the install log and restore the recorded backup if needed."
+    "An earlier update attempt was interrupted and cannot be retried automatically. Inspect the install log before recovery; preserve existing deployment data."
 }
 
 process_job() {
@@ -741,7 +715,7 @@ process_job() {
     fail_job "MyScoutee is not installed through the Debian package."
     return 1
   fi
-  if ! dpkg --compare-versions "${CURRENT_RELEASE_VERSION}" gt "${CURRENT_VERSION}"; then
+  if ! dpkg --compare-versions "$(debian_version "${CURRENT_RELEASE_VERSION}")" gt "$(debian_version "${CURRENT_VERSION}")"; then
     fail_job "The requested release is not newer than the installed version."
     return 1
   fi
@@ -750,12 +724,6 @@ process_job() {
   write_status "VERIFYING" 72 \
     "Verifying the staged Debian package, release signature, and bundled-image manifest."
   if ! verify_and_cache_artifact; then
-    return 1
-  fi
-
-  write_status "BACKING_UP" 78 \
-    "Creating the complete production backup required before installation."
-  if ! create_backup; then
     return 1
   fi
 
@@ -768,7 +736,7 @@ process_job() {
     "Restarting and verifying the exact packaged Docker image identities."
   if ! restart_and_verify_release "${CURRENT_IMAGE_MANIFEST}"; then
     recovery_required \
-      "The requested package is installed, but its exact packaged images did not become healthy. Use the backup and install log for recovery."
+      "The requested package is installed, but its exact packaged images did not become healthy. Inspect the install log for recovery; preserve existing deployment data."
     return 1
   fi
 

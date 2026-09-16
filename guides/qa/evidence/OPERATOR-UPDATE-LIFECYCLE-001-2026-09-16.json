@@ -282,6 +282,22 @@
         ],
         "gitTagMoved": false
       }
+    ],
+    "noBackupMetadataPublication": [
+      {
+        "tag": "v1.0.0-qa.1",
+        "oldDigest": "sha256:2083a8cef1ee9ca5e3ef3877fb3f13a26a71bbb2984d8e85294fb12ce3e40993",
+        "newDigest": "sha256:4fe4382f1d6e02f8c51d14f3bc7661cc302debb1163d4dccb83d8e5a2520b642",
+        "backupRequired": false,
+        "packageBytesChanged": false
+      },
+      {
+        "tag": "v1.0.0-qa.2",
+        "oldDigest": "sha256:0a34748163f9c2ba7e7d5803ad0dc83330d2c618703efe579095078c896fd853",
+        "newDigest": "sha256:57a0e26045ad5e3aac4a48c9f699c764bacc25bdfe5c774e5c12a8b13927cbca",
+        "backupRequired": false,
+        "packageBytesChanged": false
+      }
     ]
   },
   "releaseSelection": {
@@ -290,7 +306,7 @@
     "rollbackTargetRule": "Actual installed previous release QA1, not skipped QA2"
   },
   "dataPreservation": {
-    "rule": "User-created persistent content and settings must survive; explicitly application-owned static data may be replaced. No schema migration in this test.",
+    "rule": "Production data and operator settings remain in place through upgrade and application rollback. No automatic database/media backup or restore. List package-owned static seed/media changes and any migration before release; qualify the exact candidate on the preproduction VMware target.",
     "inventory": "IN_PROGRESS",
     "verification": "NOT RUN",
     "backup": {
@@ -305,7 +321,32 @@
       "registryIdentityRequired": false,
       "scope": "MongoDB, MinIO, production environment/Compose configuration, configuration master key and existing Registry state. This does not establish recovery coverage for every other host volume, TLS or external service.",
       "installedVersion": "1.0.0",
-      "upgradeRollback": "NOT RUN"
+      "upgradeRollback": "NOT RUN",
+      "disposition": "Historical preparation only; user subsequently rejected automatic backup as an update prerequisite. Retained archive is not used by the update or rollback workflow."
     }
+  },
+  "packagingGate": {
+    "definition": "guides/releases/PRERELEASE_DEPLOYMENT_QUALIFICATION.md#packaging-gate-before-release",
+    "inventory": "guides/qa/evidence/OPERATOR-UPDATE-qa1-qa2-data-change-inventory.json",
+    "status": "IN_PROGRESS",
+    "sourceChecks": {
+      "packageContent": "PASS (includes removal, TLS preservation, demo reset, i18n sync and update worker checks)",
+      "qaWorker": "PASS: 999.0.0-qa.3 signed Debian fixture; canonical Debian/SemVer mapping",
+      "backend": "PASS: OperatorUpdateServiceTest 10 cases + OperatorUpdateReleaseServiceTest 3 cases",
+      "releaseSigning": "PASS: signed no-backup metadata; required-backup input rejected"
+    },
+    "liveUpdateRollback": "NOT RUN"
+  },
+  "baselinePreparation": {
+    "status": "PASS",
+    "candidate": "1.0.0-qa.1",
+    "debianVersion": "1.0.0~qa.1",
+    "method": "Signed published client-tools install.sh with explicit baseline downgrade; existing configuration/data kept in place",
+    "log": "/tmp/myscoutee-update-release-inspection/qa1-signed-install.log",
+    "dataControls": "/var/lib/myscoutee/qa-fixtures/update/qa1-preserved-{config.sha256,mongo.json}",
+    "installedVersion": "1.0.0~qa.1",
+    "qualification": "Signed client-tools installer exit 0; package-provided qualification PASS; mongodb/redis/minio/registry-demo/myscoutee/nginx healthy; trusted localhost HTTPS health 200",
+    "preservation": "Five configuration/key/TLS file hashes unchanged; production users(1), events(0), assets(0), deploymentConfigurations(1) counts and up-to-100-record sample hashes unchanged. Empty Event/Asset collections do not prove populated record preservation.",
+    "browser": "Managed existing Operator browser reloaded and Updates popup opened with retained real bootstrap session. Historical UI still shows the old default current-state presentation; no upgrade or rollback action executed."
   }
 }

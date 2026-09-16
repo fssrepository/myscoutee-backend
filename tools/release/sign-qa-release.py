@@ -82,7 +82,7 @@ def main():
         'package_signing_key_id': package_manifest['signingKeyId'],
         'package_signature': artifact['signature'],
         'release_notes_url': f'https://github.com/fssrepository/myscoutee/releases/tag/{args.tag}',
-        'backup_required': True, 'expected_downtime_seconds': 300, 'status': 'AVAILABLE',
+        'backup_required': False, 'expected_downtime_seconds': 300, 'status': 'AVAILABLE',
         'supersedes_version': args.maximum_version if version != args.maximum_version else '', 'superseded_by_version': '', 'revocation_reason': ''
     }
     source = output / 'update-manifest.source.json'

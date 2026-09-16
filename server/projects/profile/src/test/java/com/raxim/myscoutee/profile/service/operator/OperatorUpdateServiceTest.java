@@ -31,6 +31,8 @@ import java.util.function.LongConsumer;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.web.server.ResponseStatusException;
 
 import com.raxim.myscoutee.common.config.JsonConfig;
@@ -70,8 +72,9 @@ class OperatorUpdateServiceTest {
         MongoSessionModeContext.clear();
     }
 
-    @Test
-    void stagesVerifiedArtifactPublishesExactRequestAndPrefersWorkerStatus()
+    @ParameterizedTest
+    @ValueSource(strings = {"1.2.3", "1.0.0-qa.3"})
+    void stagesVerifiedArtifactPublishesExactRequestAndPrefersWorkerStatus(String targetVersion)
             throws Exception {
         byte[] artifact = "signed-debian-package".getBytes(StandardCharsets.UTF_8);
         String artifactHash = "sha256:" + java.util.HexFormat.of().formatHex(
@@ -82,8 +85,9 @@ class OperatorUpdateServiceTest {
                 mock(OperatorUpdateArtifactDownloader.class);
         OperatorUpdateProperties properties = updateProperties();
         RegistryProperties registryProperties = registryProperties(properties);
+        registryProperties.setSoftwareVersion("1.0.0-qa.1");
         OperatorAnnouncementPageDto announcements =
-                announcementPage(artifact.length, artifactHash, true);
+                announcementPage(artifact.length, artifactHash, true, targetVersion);
         when(networkService.find(ANNOUNCEMENT_ID))
                 .thenReturn(announcements.items().getFirst());
         doAnswer(invocation -> {
@@ -126,6 +130,7 @@ class OperatorUpdateServiceTest {
                     .untilAsserted(() -> assertThat(request).isRegularFile());
 
             JsonNode requestJson = objectMapper.readTree(request.toFile());
+            assertThat(requestJson.path("release_version").asText()).isEqualTo(targetVersion);
             assertThat(requestJson.path("schema_version").asInt()).isEqualTo(1);
             assertThat(requestJson.path("job_id").asText())
                     .isEqualTo(initial.jobId());
@@ -496,12 +501,17 @@ class OperatorUpdateServiceTest {
             long artifactSize,
             String artifactHash,
             boolean packageVerified) {
+        return announcementPage(artifactSize, artifactHash, packageVerified, "1.2.3");
+    }
+
+    private OperatorAnnouncementPageDto announcementPage(
+            long artifactSize, String artifactHash, boolean packageVerified, String version) {
         OperatorUpdateManifestDto manifest = new OperatorUpdateManifestDto(
                 RegistryProtocol.UPDATE_MANIFEST_VERSION,
-                "1.2.3",
+                version,
                 "stable.lts_1",
                 "2026-07-28T19:00:00Z",
-                "1.0.0",
+                "1.0.0-qa.1",
                 "2.0.0",
                 "https://downloads.example.test/myscoutee_1.2.3_amd64.deb",
                 artifactSize,
