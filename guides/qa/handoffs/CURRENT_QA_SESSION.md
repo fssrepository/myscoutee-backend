@@ -102,17 +102,17 @@ repair an established product defect. Preserve the phone's tethering connection
 when shaping only its route to the QA application.
 
 ```yaml
-checkpoint: OPERATOR-UPDATE-LIFECYCLE-001
-checklist: ../checklists/operator/OPERATOR-UPDATE-LIFECYCLE-001.md
-substage: Queued after Revenue PASS; user will open designated VMware target. Read-only gate shows zero running VMs. No deployment/update started.
-fixture_phase: Revenue paired reset complete; no active Revenue fixture or reports. Private recovery manifest restored under /tmp/myscoutee-qa-operator-revenue. Update fixture not staged.
-browser_control: Full-flow delegated for Operator; Revenue managed browser closed by versioned launcher. Update startup must use versioned launcher after target/baseline verification.
-required_resume: Inspect VMware runtime read-only after user opens it; identify designated target, actual initial/target release and recovery baseline before any deployment or update. Do not update the active dev checkout.
-queued_work: Execute Operator Update and separate deployment qualification tables (real-account UI/image smoke, repeatable external security, measured memory/startup efficiency, prioritized deferred improvements). Configuration HTTPS/live Firebase requirements remain open. Two Asset journeys reserved for user-operated pair QA.
-last_completed: Revenue all11 steps PASS and exact Go/local-state/Mongo/session restoration2026-09-16; Registry and Administration already closed.
-runtime: Existing backend/frontend watchers running; no duplicate builds. mongodb-sync intentionally stopped because startup replaces collections.
-ledger_status: 100/104 PASS; Administration4/4; Operator2/4 (Registry and Revenue PASS); Configuration partial/open; Update not run.
-last_evidence: ../evidence/OPERATOR-REVENUE-LIFECYCLE-001-2026-09-16.json
+checkpoint: OPERATOR-CONFIGURATION-LIFECYCLE-001
+checklist: ../checklists/operator/OPERATOR-CONFIGURATION-LIFECYCLE-001.md
+substage: C01 Firebase save/test preparation, before step1. Checklist renumbered to C01 Firebase, C02 activation, C03 restoration. Repeated flows removed; prerequisite state belongs to fixtures. HTTPS belongs to Update.
+fixture_phase: operator-domain OPERATOR-FIREBASE-001 staged at Firebase revision0/inactive; private runtime override retained under /tmp/myscoutee-qa-firebase-bootstrap. Two anonymous managed Operator/Public windows launched. Verify runtime reload and perform normal Operator login before C01 Save.
+browser_control: Full-flow delegated; OPERATOR-FIREBASE-001 managed Operator/Public windows ready through versioned launcher.
+required_resume: Finish normal Operator login, then C01 changed Save/reopen/Auth/Message tests, C02 activation/entry mode, C03 exact cleanup. Existing dev pipeline only. No demo restriction bypass.
+queued_work: User opens VMware later for Update including transferred HTTPS and separate deployment/smoke/security/efficiency tables. Stop dev stack before VMware; memory does not permit both. Two Asset journeys remain user-operated pair QA.
+last_completed: Registry and Revenue PASS, exact paired restoration complete; Administration4/4 PASS.
+runtime: Existing dev backend/frontend watchers own builds; no parallel builds or second stack. mongodb-sync intentionally stopped.
+ledger_status: 100/104 PASS; Operator2/4; Configuration in progress; Update including HTTPS not run. Moving assertions does not award PASS.
+last_evidence: ../evidence/OPERATOR-CONFIGURATION-LIFECYCLE-001-2026-09-16.json
 ```
 
 ### Current delegation boundary — 2026-09-16

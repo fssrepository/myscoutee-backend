@@ -1,9 +1,11 @@
-# OPERATOR-UPDATE-LIFECYCLE-001 — One verified release and durable update
+# OPERATOR-UPDATE-LIFECYCLE-001 — Verified update and managed HTTPS
 
 ## Purpose
 
 Apply one valid, compatible QA release. Correlate verification, visible progress,
 the durable update job, controlled restart and actually installed version.
+On the same VMware target, verify the managed HTTPS lifecycle. Both parts are
+required to close this Update row.
 **Actor:** Operator on the designated disposable update target.
 
 ## Fixture prerequisites
@@ -47,7 +49,7 @@ Report: `OPERATOR-UPDATE-LIFECYCLE-001 block 1 done`.
 
 Report: `OPERATOR-UPDATE-LIFECYCLE-001 block 2 done`.
 
-## 3. Reconnection, reopening and restoration
+## 3. Reconnection and reopening
 
 8. After the controlled restart, reopen Operator on the same target. Normal
    access works and the displayed active version matches the installed version.
@@ -55,9 +57,30 @@ Report: `OPERATOR-UPDATE-LIFECYCLE-001 block 2 done`.
    is now the current version.
 10. Codex checks that reconnection/reopening created no second Apply operation
     or update job. Release verification, durable result and active version agree.
-11. Retain UI and durable evidence, then restore the target through its declared
-    QA recovery procedure. Record successful update and fixture restoration
-    separately; neither result substitutes for the other.
+11. Retain UI and durable update evidence. Continue to the HTTPS block before
+    final target restoration; record update and TLS results separately.
+
+Report: `OPERATOR-UPDATE-LIFECYCLE-001 block 3 done`.
+
+## 4. Managed HTTPS on the VMware target
+
+Prepare the declared TLS/DNS/certificate prerequisites and their recovery
+baseline. Stop the development stack before running VMware on this workstation;
+run them sequentially because of its memory limit.
+
+12. In Configuration on the prepared target, apply the declared reversible HTTPS
+    configuration through its visible action.
+13. Observe progress and the resulting capability state. Reopen the block and
+    compare the normalized saved configuration.
+14. Correlate the changed TLS block with its configuration revision and, where
+    the visible action creates work, its actual operation/job result. A saved
+    value alone does not prove certificate provisioning or readiness.
+15. Open the configured trusted HTTPS origin and confirm its actual certificate
+    and connection. Restore the prior configuration and fixture-owned TLS state;
+    verify the restored capability and retained Operator access. Then restore
+    the target through its declared QA recovery procedure and verify cleanup.
+    Record successful update, HTTPS and restoration separately; none substitutes
+    for the others.
 
 Report: `OPERATOR-UPDATE-LIFECYCLE-001 done`.
 
@@ -69,7 +92,8 @@ Report: `OPERATOR-UPDATE-LIFECYCLE-001 done`.
 | One durable update job and honest progress | Block 2 |
 | Controlled restart, reconnect and correct active version | Block 2 step 6 and block 3 |
 | No duplicate work after one Apply or reopening | Steps 4, 7 and 10 |
-| Package/job/installed-version correlation and cleanup | Steps 7–11 |
+| Package/job/installed-version correlation and cleanup | Steps 7–11 and final restoration in step 15 |
+| Managed HTTPS save/reopen, actual certificate/capability and restoration | Block 4, steps 12–15 |
 
 ## Execution boundary
 

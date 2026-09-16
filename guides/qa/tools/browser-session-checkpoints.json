@@ -1730,10 +1730,9 @@
       "sessions": [
         {
           "actor": "Operator",
-          "sessionKind": "demo",
-          "userId": "operator@myscoutee.local",
-          "expectedName": "Demo Operator",
-          "targetUrl": "http://localhost/operator",
+          "sessionKind": "anonymous",
+          "expectedName": "Operator bootstrap sign-in",
+          "targetUrl": "http://localhost/entry?redirect=%2Foperator",
           "entryUrl": "http://localhost/entry?redirect=%2Foperator",
           "autoDismissExplanationGuide": false
         },

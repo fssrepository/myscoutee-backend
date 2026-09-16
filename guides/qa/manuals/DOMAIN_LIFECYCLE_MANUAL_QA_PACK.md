@@ -7596,6 +7596,13 @@ live happy-path Java/Go replay passed. Full checkpoint: PASS.
 
 ### `OPERATOR-UPDATE-LIFECYCLE-001` — signed update
 
+2026-09-16 user-directed ownership change: the complete Configuration C03 HTTPS
+block is now Update block4, steps12–15 (save/reopen, provisioning/job/revision,
+trusted certificate/connection, external restoration and retained access). It
+is NOT RUN; moving it does not award PASS. Finish Configuration C05–C06/C08 in
+dev first. Stop dev before starting VMware due to workstation memory limits.
+
+
 - Apply one prepared compatible QA release from Updates, observe honest
   progress, then reopen the Operator screen and verify the resulting version.
 - Invalid signatures, corrupt archives, downgrade rejection, interrupted-worker
