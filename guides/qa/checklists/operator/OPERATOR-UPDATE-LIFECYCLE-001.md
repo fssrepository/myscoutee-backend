@@ -14,6 +14,14 @@ instead of replaying deployment/registration. The real update path verifies and
 applies the release; fixture-written success or version state is not evidence.
 Use the designated QA target, not the active development checkout.
 
+For the user-designated VMware run, also follow the separate
+[deployment qualification](../../../releases/PRERELEASE_DEPLOYMENT_QUALIFICATION.md):
+its per-run table tracks deployment, automated normal-account UI/image smoke,
+external security probes, measured memory/startup efficiency and cleanup.
+Deferred optimizations have their own priority/evidence table. These results
+remain deployment evidence outside the pair-QA matrix; they do not substitute
+for this update checklist. Keep dependency upgrades in their separate workflow.
+
 ## 1. Current version and release verification
 
 1. Open **Updates**. Check deployment identity and the actual current version.

@@ -1,0 +1,281 @@
+{
+  "checkpoint": "OPERATOR-REVENUE-LIFECYCLE-001",
+  "date": "2026-09-16",
+  "status": "PASS",
+  "blocks": {
+    "1": "PASS \u2014 steps 1\u20132",
+    "2": "PASS \u2014 steps 3\u20137",
+    "3": "PASS \u2014 steps 8\u201311"
+  },
+  "environment": "Existing dev Compose Java backend and actual Go demo Registry; no live payment-provider claim",
+  "deploymentId": "dep_2cc8219f4914b03a179b459e4b904ec1",
+  "ui": {
+    "EUR": {
+      "capturedMinor": 4850,
+      "paymentCount": 4
+    },
+    "USD": {
+      "capturedMinor": 4000,
+      "paymentCount": 1
+    },
+    "monthlySettlement": {
+      "period": "2026-08",
+      "revision": 2,
+      "poolMinor": 150,
+      "basisMinor": 3000,
+      "operatorAllocationMinor": 0
+    },
+    "reopen": "same totals and settlement; exact report/source oracle unchanged"
+  },
+  "delivery": {
+    "verified": true,
+    "sourcesUnchanged": true,
+    "reports": [
+      {
+        "id": "6aaa6c5e2f4376e92506f347",
+        "period": "2026-08-31",
+        "revision": 1,
+        "status": "ACCEPTED",
+        "currencies": [
+          {
+            "currencyCode": "EUR",
+            "fractionDigits": 2,
+            "capturedMinor": 3000,
+            "refundedMinor": 0,
+            "netMinor": 3000,
+            "commissionBasisMinor": 3000,
+            "estimatedCommissionMinor": 150,
+            "paymentCount": 2
+          }
+        ],
+        "batchId": "revbatch_0daedb13c5f9ed10c8a7ae2c29f90ddd",
+        "ledgerIndex": 46,
+        "entryHash": "sha256:38104dc505e9d32d25a10af80bc08e5f211f404a1c5e6122ec13dd48920ded08",
+        "signaturePresent": true
+      },
+      {
+        "id": "6aaa6c5e2f4376e92506f348",
+        "period": "2026-09-01",
+        "revision": 1,
+        "status": "ACCEPTED",
+        "currencies": [],
+        "batchId": "revbatch_12fc1ff3bab9149285f621376351aa3d",
+        "ledgerIndex": 47,
+        "entryHash": "sha256:5e0c938f73e4fd53e5f21de0526104d51930bac89e17824c8644503b8af24811",
+        "signaturePresent": true
+      },
+      {
+        "id": "6aaa6c5e2f4376e92506f349",
+        "period": "2026-09-02",
+        "revision": 1,
+        "status": "ACCEPTED",
+        "currencies": [],
+        "batchId": "revbatch_a3128d14974b15ef99bcccfa7d5d1fa6",
+        "ledgerIndex": 48,
+        "entryHash": "sha256:847159bbe30a6a0b0f3d0173f7f3c4c20bfec8c18117b962e61c45d7c3d82821",
+        "signaturePresent": true
+      },
+      {
+        "id": "6aaa6c5e2f4376e92506f34a",
+        "period": "2026-09-03",
+        "revision": 1,
+        "status": "ACCEPTED",
+        "currencies": [],
+        "batchId": "revbatch_12fa2e77a5e321408ecf875d74daec13",
+        "ledgerIndex": 49,
+        "entryHash": "sha256:9e6e949017a11834fe6cbf5b19e6e0305c8e0af7c52efc30b52e7c25f0558501",
+        "signaturePresent": true
+      },
+      {
+        "id": "6aaa6c5e2f4376e92506f34b",
+        "period": "2026-09-04",
+        "revision": 1,
+        "status": "ACCEPTED",
+        "currencies": [],
+        "batchId": "revbatch_8ab784a8d0c3f46d5234a82dcf63f5e6",
+        "ledgerIndex": 50,
+        "entryHash": "sha256:53dd608cd39d276cb4ba87216c4e402f20c8fd9fc1b940a7901bb8c72ba933a4",
+        "signaturePresent": true
+      },
+      {
+        "id": "6aaa6c5e2f4376e92506f34c",
+        "period": "2026-09-05",
+        "revision": 1,
+        "status": "ACCEPTED",
+        "currencies": [],
+        "batchId": "revbatch_e249a7291d738a960e50ec41ad272d20",
+        "ledgerIndex": 51,
+        "entryHash": "sha256:1d5df3ac164d69da719c1f07e8edfdecb72e92a8c00c2fdf01b93e7df02eb339",
+        "signaturePresent": true
+      },
+      {
+        "id": "6aaa6c5e2f4376e92506f34d",
+        "period": "2026-09-06",
+        "revision": 1,
+        "status": "ACCEPTED",
+        "currencies": [],
+        "batchId": "revbatch_6d545b4424891fcb94df05944cbda62e",
+        "ledgerIndex": 52,
+        "entryHash": "sha256:f4957e5740deeb1bc298310190f1c019d1dfbeef7c1907547b4d448072b3e71f",
+        "signaturePresent": true
+      },
+      {
+        "id": "6aaa6c5e2f4376e92506f34e",
+        "period": "2026-09-07",
+        "revision": 1,
+        "status": "ACCEPTED",
+        "currencies": [],
+        "batchId": "revbatch_99f37369d6527969a036f13183072a4b",
+        "ledgerIndex": 53,
+        "entryHash": "sha256:76111d4a15342537b2380d1bac06571b4e5ceaee9aeaf64cd58b136f61f78f18",
+        "signaturePresent": true
+      },
+      {
+        "id": "6aaa6c5e2f4376e92506f34f",
+        "period": "2026-09-08",
+        "revision": 1,
+        "status": "ACCEPTED",
+        "currencies": [],
+        "batchId": "revbatch_ceb9585382e5ff279bd60d93f28358c2",
+        "ledgerIndex": 54,
+        "entryHash": "sha256:13d7192d3aebd64c81683551de7dd79de2a65a5e790893f2d7d4512eba798fe7",
+        "signaturePresent": true
+      },
+      {
+        "id": "6aaa6c5e2f4376e92506f350",
+        "period": "2026-09-09",
+        "revision": 1,
+        "status": "ACCEPTED",
+        "currencies": [],
+        "batchId": "revbatch_cf2a69493e5addd1bce884e99821cb81",
+        "ledgerIndex": 55,
+        "entryHash": "sha256:fe511b02ae2ac224698ac1b4ae90cd434d74ed6dca14d55d3b02bca25cc44f6b",
+        "signaturePresent": true
+      },
+      {
+        "id": "6aaa6c5e2f4376e92506f351",
+        "period": "2026-09-10",
+        "revision": 1,
+        "status": "ACCEPTED",
+        "currencies": [],
+        "batchId": "revbatch_9047ed8c4c5db5495d7023bb0fcb5a78",
+        "ledgerIndex": 56,
+        "entryHash": "sha256:baa1a6f8671f0911845fb467cd019dca6eb238c9b44fc767cc0400cd9b1d7950",
+        "signaturePresent": true
+      },
+      {
+        "id": "6aaa6c5e2f4376e92506f352",
+        "period": "2026-09-11",
+        "revision": 1,
+        "status": "ACCEPTED",
+        "currencies": [],
+        "batchId": "revbatch_c4d616ca4ecd7ab1612c25d503979ee8",
+        "ledgerIndex": 57,
+        "entryHash": "sha256:460a183b70f34b9f9976af037e0e3f1bb80e676833880497304c4e8b480dda6a",
+        "signaturePresent": true
+      },
+      {
+        "id": "6aaa6c5e2f4376e92506f353",
+        "period": "2026-09-12",
+        "revision": 1,
+        "status": "ACCEPTED",
+        "currencies": [],
+        "batchId": "revbatch_71a72e49c91e8bbb8c87470d842b10ca",
+        "ledgerIndex": 58,
+        "entryHash": "sha256:f660029d1e8d5c7393393f38cc1d68dbf3a87651edbfbff911a65f3ead6cb195",
+        "signaturePresent": true
+      },
+      {
+        "id": "6aaa6c5e2f4376e92506f354",
+        "period": "2026-09-13",
+        "revision": 1,
+        "status": "ACCEPTED",
+        "currencies": [],
+        "batchId": "revbatch_e7bf1d40215ee4e2c86b3f9b9bd014b6",
+        "ledgerIndex": 59,
+        "entryHash": "sha256:72616051b795448a5405ef21e2229cdf21828b112deec61579e9daede2c54183",
+        "signaturePresent": true
+      },
+      {
+        "id": "6aaa6c5e2f4376e92506f355",
+        "period": "2026-09-14",
+        "revision": 1,
+        "status": "ACCEPTED",
+        "currencies": [
+          {
+            "currencyCode": "EUR",
+            "fractionDigits": 2,
+            "capturedMinor": 750,
+            "refundedMinor": 0,
+            "netMinor": 750,
+            "commissionBasisMinor": 750,
+            "estimatedCommissionMinor": 37,
+            "paymentCount": 1
+          }
+        ],
+        "batchId": "revbatch_b14bb9675e3ca305c80f2159ff2ee1ad",
+        "ledgerIndex": 60,
+        "entryHash": "sha256:ad8a9d7b121f14ffe17f873b5902bfddfe6762c15e37ce1fdeba42d9e76086ae",
+        "signaturePresent": true
+      },
+      {
+        "id": "6aaa6c5e2f4376e92506f356",
+        "period": "2026-09-15",
+        "revision": 1,
+        "status": "ACCEPTED",
+        "currencies": [
+          {
+            "currencyCode": "USD",
+            "fractionDigits": 2,
+            "capturedMinor": 4000,
+            "refundedMinor": 0,
+            "netMinor": 4000,
+            "commissionBasisMinor": 4000,
+            "estimatedCommissionMinor": 200,
+            "paymentCount": 1
+          }
+        ],
+        "batchId": "revbatch_a4b1570d2c31fd38e0bc6b21495700ec",
+        "ledgerIndex": 61,
+        "entryHash": "sha256:a81fce84a23186dff79d644bbac8fa4c660e4910ebb417943cc3b266f39f11ae",
+        "signaturePresent": true
+      }
+    ]
+  },
+  "settlement": {
+    "settlementId": "stl_d61d1bcabe9281663156badfc2ae0eb6",
+    "sourceFingerprint": "sha256:e2e31f5b54415f2126cb35287654da037d3216f330fae05bd19c66dcfaa6cd93",
+    "settlementHash": "sha256:a01b6668adc7110883e13746f6de8dbaf74ffd8dfa08ca37f5c207a4bb1046b0",
+    "allocation": {
+      "beneficiary_type": "OPERATOR_GROUP",
+      "beneficiary_id": "opg_389c23c0d309daa5785aa9c8ef27aad7",
+      "label": "Revenue QA Operator s.r.o.",
+      "share_numerator": "642013",
+      "share_denominator": "37261632013",
+      "network_pool_allocation_minor": 0,
+      "indicative_value_allocation_minor": 0
+    },
+    "signaturePresent": true,
+    "revisionExplanation": "First calculation before claim preparation had no node allocation; after normal claim approval and measurements, revision 2 includes this group. Daily revenue reports remain revision 1."
+  },
+  "preparation": {
+    "claim": "normal backend API and Go approve-operator-claim; not repeated UI Registry test",
+    "measurements": {
+      "state": "READY",
+      "code": "SYNCHRONIZED",
+      "message": "Completed-period measurements are synchronized.",
+      "materialized": 6,
+      "submitted": 6,
+      "accepted": 6,
+      "pending": 0,
+      "blocked": 0,
+      "synchronizedAt": "2026-09-16T10:23:46.314087908Z"
+    },
+    "calculation": "Go calculate-settlement CLI; not a synthetic accepted fixture"
+  },
+  "oracleHash": "e48bbfafe21af4bf917672a958b9c0dd4919f2208bb9531000abbf5f4cecafe7",
+  "screenshots": "/tmp/myscoutee-qa-browser-sessions/evidence/operator-revenue-cdp/",
+  "privateRecovery": "/tmp/myscoutee-qa-operator-revenue",
+  "cleanup": "PASS: paired wrapper restored exact Go archive bytes, prior local key/state presence, Mongo snapshots and actor sessions. Follow-up status not-staged, ownedPayments=0, reportCount=0; managed browser closed.",
+  "productChanges": "None for this Revenue checkpoint. Corrected checklist delivery/settlement terminology to actual existing UI/protocol."
+}

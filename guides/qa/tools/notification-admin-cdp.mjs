@@ -9,12 +9,12 @@ import WebSocket from '../../../frontend/node_modules/ws/index.js';
 
 const [action, actor = 'Ava', ...args] = process.argv.slice(2);
 const checkpointId = process.env.QA_CHECKPOINT || 'NOTIFICATION-ADMIN-LIFECYCLE-001';
-if (!['NOTIFICATION-ADMIN-LIFECYCLE-001', 'JOB-MESSAGES', 'BELL-RATING-LIFECYCLE-001', 'BELL-RATING-FEEDBACK-001', 'ADMIN-MONITORING-001', 'ADMIN-AFFINITY-GRAPH-001', 'ADMIN-PARAMETERS-001', 'OPERATOR-FIREBASE-001', 'OPERATOR-REGISTRY-LIFECYCLE-001'].includes(checkpointId)) throw new Error('Unsupported delegated checkpoint');
+if (!['NOTIFICATION-ADMIN-LIFECYCLE-001', 'JOB-MESSAGES', 'BELL-RATING-LIFECYCLE-001', 'BELL-RATING-FEEDBACK-001', 'ADMIN-MONITORING-001', 'ADMIN-AFFINITY-GRAPH-001', 'ADMIN-PARAMETERS-001', 'OPERATOR-FIREBASE-001', 'OPERATOR-REGISTRY-LIFECYCLE-001', 'OPERATOR-REVENUE-LIFECYCLE-001'].includes(checkpointId)) throw new Error('Unsupported delegated checkpoint');
 const root = path.join(os.tmpdir(), 'myscoutee-qa-browser-sessions');
 const manifest = JSON.parse(readFileSync(path.join(root, checkpointId + '.json'), 'utf8'));
 const session = manifest.sessions.find(item => item.actor === actor);
 if (!session || manifest.checkpointId !== checkpointId) throw new Error('Missing managed checkpoint actor.');
-const evidence = path.join(root, 'evidence', checkpointId === 'OPERATOR-REGISTRY-LIFECYCLE-001' ? 'operator-registry-cdp' : checkpointId === 'OPERATOR-FIREBASE-001' ? 'operator-configuration-cdp' : checkpointId === 'ADMIN-PARAMETERS-001' ? 'admin-parameters-cdp' : checkpointId === 'ADMIN-AFFINITY-GRAPH-001' ? 'admin-affinity-graph-cdp' : checkpointId === 'ADMIN-MONITORING-001' ? 'admin-monitoring-cdp' : checkpointId === 'JOB-MESSAGES' ? 'job-messages-cdp' : checkpointId.startsWith('BELL-RATING-') ? 'bell-rating-cdp' : 'notification-admin-cdp');
+const evidence = path.join(root, 'evidence', checkpointId === 'OPERATOR-REVENUE-LIFECYCLE-001' ? 'operator-revenue-cdp' : checkpointId === 'OPERATOR-REGISTRY-LIFECYCLE-001' ? 'operator-registry-cdp' : checkpointId === 'OPERATOR-FIREBASE-001' ? 'operator-configuration-cdp' : checkpointId === 'ADMIN-PARAMETERS-001' ? 'admin-parameters-cdp' : checkpointId === 'ADMIN-AFFINITY-GRAPH-001' ? 'admin-affinity-graph-cdp' : checkpointId === 'ADMIN-MONITORING-001' ? 'admin-monitoring-cdp' : checkpointId === 'JOB-MESSAGES' ? 'job-messages-cdp' : checkpointId.startsWith('BELL-RATING-') ? 'bell-rating-cdp' : 'notification-admin-cdp');
 mkdirSync(evidence, { recursive: true, mode: 0o700 });
 const delay = ms => new Promise(resolve => setTimeout(resolve, ms));
 const digest = value => createHash('sha256').update(JSON.stringify(value)).digest('hex');

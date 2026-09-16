@@ -7609,6 +7609,39 @@ live happy-path Java/Go replay passed. Full checkpoint: PASS.
 - Failure injection, retry/idempotency and exclusion rules belong to automated
   regression coverage.
 
+**2026-09-16 — Revenue full-flow PASS, exact paired cleanup complete.**
+
+Evidence: `../evidence/OPERATOR-REVENUE-LIFECYCLE-001-2026-09-16.json`.
+The versioned Revenue fixture prepared nine payments and retained the original
+controls. One visible Synchronize accepted 16 completed-day reports, each at
+revision 1, with signed receipts and no pending/blocked delivery. Both eligible
+providers were included exactly once; authorized, released, dummy and non-payment
+audit controls were excluded. EUR overview: 4850 minor / four payments; USD:
+4000 / one. Completed daily reports: August 31 EUR3000/count2, September14
+EUR750/count1, September15 USD4000/count1; other completed days were empty.
+Current-day EUR1100 remained in the overview and was not delivered early.
+
+For block3, normal backend claim/measurement APIs and the Go review CLI prepared
+the already-tested eligibility prerequisite. The Go monthly calculation produced
+August EUR basis3000, pool150 and a signed revision2 settlement including this
+operator group. Its small share legitimately rounded to zero minor units; the UI
+matched the signed allocation. Revision1 had been calculated before eligibility
+setup; daily revenue report revisions remained1. Native close/reopen preserved
+the displayed totals/settlement, and exact pre/post report/source oracle bytes
+matched. Source payments and excluded controls remained unchanged.
+
+Checklist terminology was corrected to the existing contract: daily durable
+Revenue outbox delivery, not a separate Admin Jobs row; monthly signed network
+settlement, not per-booking settlement; local source identities stay local.
+No application behavior was changed for Revenue. Paired reset restored Go bytes,
+local node state, Mongo/session baseline; final status had no staged fixture,
+owned payments or Revenue reports. Managed browser closed.
+
+**Queued next:** Operator Update on the user's VMware target, after they open it.
+Read-only gate currently reports zero running VMs. Deployment, real-account UI
+image smoke, repeatable external security and measured infrastructure efficiency
+use the separate deployment qualification tables, not extra pair-QA rows.
+
 ## Consolidated executable journeys and source-oracle archive
 
 The matrix contains 103 executable journeys after provider behavior was moved

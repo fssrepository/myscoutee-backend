@@ -567,6 +567,7 @@ run_scenario() {
     content-admin) scenario_script="${SCRIPT_DIR}/scenarios/content-admin-lifecycle-checkpoints.js" ;;
     operator-domain) scenario_script="${SCRIPT_DIR}/scenarios/operator-domain-checkpoints.js" ;;
     operator-registry) scenario_script="${SCRIPT_DIR}/scenarios/operator-registry-checkpoints.js" ;;
+    operator-revenue) scenario_script="${SCRIPT_DIR}/scenarios/operator-revenue-checkpoints.js" ;;
     job-messages) scenario_script="${SCRIPT_DIR}/scenarios/job-messages-checkpoints.js" ;;
     bell-feedback) scenario_script="${SCRIPT_DIR}/scenarios/bell-feedback-checkpoints.js" ;;
     admin-parameters) scenario_script="${SCRIPT_DIR}/scenarios/admin-parameters-checkpoints.js" ;;
@@ -904,6 +905,7 @@ PY
   notification-admin:stage|notification-admin:status|notification-admin:reset|\
   mobile-push:stage|mobile-push:status|mobile-push:prepare-device-identity|mobile-push:adopt-foreground|mobile-push:recover-foreground-worker|mobile-push:popup-registration-off|mobile-push:popup-registration-restore|mobile-push:reset|\
   operator-registry:stage|operator-registry:prepare-measurement|operator-registry:verify-measurement|operator-registry:status|operator-registry:reset|\
+  operator-revenue:stage|operator-revenue:verify|operator-revenue:status|operator-revenue:reset|\
   operator-domain:stage|operator-domain:next|operator-domain:status|operator-domain:reset)
     [ "$#" -eq 3 ] || { usage >&2; exit 2; }
     if [ "${scenario}" = "asset-assignment" ] && [ "$3" != "ASSET-ASSIGNMENT-LIFECYCLE-001" ]; then

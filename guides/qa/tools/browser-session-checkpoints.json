@@ -1780,6 +1780,22 @@
           "autoDismissExplanationGuide": true
         }
       ]
+    },
+    "OPERATOR-REVENUE-LIFECYCLE-001": {
+      "layout": {
+        "columns": 1
+      },
+      "sessions": [
+        {
+          "actor": "Operator",
+          "sessionKind": "demo",
+          "userId": "operator@myscoutee.local",
+          "expectedName": "Demo Operator",
+          "targetUrl": "http://localhost/operator",
+          "entryUrl": "http://localhost/entry?redirect=%2Foperator",
+          "autoDismissExplanationGuide": false
+        }
+      ]
     }
   }
 }

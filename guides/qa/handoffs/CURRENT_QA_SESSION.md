@@ -102,17 +102,17 @@ repair an established product defect. Preserve the phone's tethering connection
 when shaping only its route to the QA application.
 
 ```yaml
-checkpoint: OPERATOR-REGISTRY-LIFECYCLE-001
-checklist: ../checklists/operator/OPERATOR-REGISTRY-LIFECYCLE-001.md
-substage: Registry all four blocks PASS; final exact paired reset complete. Next Operator Update prerequisite gate, then Revenue. Mobile Node registration fullscreen/native scrolling verified. New reconnect regression added but not separately run; actual Java/Go targeted replay PASS.
-fixture_phase: operator-registry not-staged; paired snapshot manifest restored under /tmp/myscoutee-qa-operator-registry; original evidence retained under /tmp/myscoutee-qa-operator-registry-original-20260916. Browser sessions restored; managed windows retain stale test display until next launcher.
-browser_control: Full-flow delegated. Managed OPERATOR-REGISTRY-LIFECYCLE-001 Operator and Ava sessions; launcher owns startup.
-required_resume: Read-only paired fixture status, then current browser. Run registration via UI only. Preserve Go/Mongo/local-state baseline. Configuration blocked HTTPS/live-provider checks remain open; no need to rerun completed branches.
-queued_work: Four Operator journeys delegated. Two remaining Asset tests reserved for user-operated pair QA. VMware deployment qualification separate/not started.
-last_completed: Administration4/4 PASS including Parameters visual follow-up and exact fixture reset2026-09-16.
-runtime: Existing backend/frontend watchers running; no duplicate builds. mongodb-sync remains stopped because startup replaces collections.
-ledger_status: 99/104 PASS; Administration4/4; Operator1/4, Registry PASS; Configuration partial/open; Update and Revenue pending.
-last_evidence: ../evidence/OPERATOR-REGISTRY-LIFECYCLE-001-2026-09-16.json
+checkpoint: OPERATOR-UPDATE-LIFECYCLE-001
+checklist: ../checklists/operator/OPERATOR-UPDATE-LIFECYCLE-001.md
+substage: Queued after Revenue PASS; user will open designated VMware target. Read-only gate shows zero running VMs. No deployment/update started.
+fixture_phase: Revenue paired reset complete; no active Revenue fixture or reports. Private recovery manifest restored under /tmp/myscoutee-qa-operator-revenue. Update fixture not staged.
+browser_control: Full-flow delegated for Operator; Revenue managed browser closed by versioned launcher. Update startup must use versioned launcher after target/baseline verification.
+required_resume: Inspect VMware runtime read-only after user opens it; identify designated target, actual initial/target release and recovery baseline before any deployment or update. Do not update the active dev checkout.
+queued_work: Execute Operator Update and separate deployment qualification tables (real-account UI/image smoke, repeatable external security, measured memory/startup efficiency, prioritized deferred improvements). Configuration HTTPS/live Firebase requirements remain open. Two Asset journeys reserved for user-operated pair QA.
+last_completed: Revenue all11 steps PASS and exact Go/local-state/Mongo/session restoration2026-09-16; Registry and Administration already closed.
+runtime: Existing backend/frontend watchers running; no duplicate builds. mongodb-sync intentionally stopped because startup replaces collections.
+ledger_status: 100/104 PASS; Administration4/4; Operator2/4 (Registry and Revenue PASS); Configuration partial/open; Update not run.
+last_evidence: ../evidence/OPERATOR-REVENUE-LIFECYCLE-001-2026-09-16.json
 ```
 
 ### Current delegation boundary — 2026-09-16
