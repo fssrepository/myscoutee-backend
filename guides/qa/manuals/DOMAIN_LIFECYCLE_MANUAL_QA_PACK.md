@@ -7595,6 +7595,23 @@ installer (12–17), controlled failure/recovery (18–20), and managed HTTPS
 the earlier exclusion of those branches no longer applies. Disabled controls
 while work runs are the oracle; do not bypass them to simulate repeat clicks.
 
+**2026-09-16 — Current-source QA1 baseline and first live defect.**
+The user replaced the historical-backport plan with a complete normal production
+build of the current source as `1.0.0-qa.1`. That full package was signed,
+installed and passed its packaged qualification. All seven application
+containers are healthy; five retained configuration/key/TLS hashes match.
+Actual installed build: `qa1-current-20260916`; package SHA-256
+`dccb73a9f62f56e533ffb58577776cd826dc399fbcd49f0a955a6fb0cd8be9d1`.
+The existing managed Operator browser shows QA1 and discovers GitHub QA2 with
+Registry uninitialized. No Apply request or update job was created.
+Live FAIL: the Updates popup omitted both action buttons because inline
+`app-menu` was configured as `list`, an unsupported inline layout. Corrected to
+`row`; a full current-source QA1 r2 package is being prepared for replay.
+The compact version badges and dim backdrop requested by the user accompany
+this build; no separate cosmetic test campaign is scheduled.
+The full update/rollback/failure/managed-HTTPS chain remains IN PROGRESS.
+Earlier preparation evidence below retains its original artifact identities.
+
 **2026-09-16 — Preparation only; functional steps NOT RUN.**
 Evidence: `../evidence/OPERATOR-UPDATE-LIFECYCLE-001-2026-09-16.json`.
 Dev is stopped. VMware SSH and authenticated guest sudo work. The versioned

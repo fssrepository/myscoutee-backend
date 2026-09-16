@@ -308,7 +308,7 @@
   "dataPreservation": {
     "rule": "Production data and operator settings remain in place through upgrade and application rollback. No automatic database/media backup or restore. List package-owned static seed/media changes and any migration before release; qualify the exact candidate on the preproduction VMware target.",
     "inventory": "IN_PROGRESS",
-    "verification": "NOT RUN",
+    "verification": "Pre-Apply PASS: actual production_db users1, deploymentConfigurations1, empty events/assets, one owned Mongo control and one MinIO object. Post-Apply pending; empty Event/Asset collections do not prove populated domain record preservation.",
     "backup": {
       "initialResult": "FAIL: complete backup incorrectly required a Registry keypair on a deployment whose Registry key and state directories were empty",
       "fix": "Registry recovery components are required when either identity/state directory contains material; absent or empty optional Registry directories are allowed. Partial identities still fail.",
@@ -323,7 +323,8 @@
       "installedVersion": "1.0.0",
       "upgradeRollback": "NOT RUN",
       "disposition": "Historical preparation only; user subsequently rejected automatic backup as an update prerequisite. Retained archive is not used by the update or rollback workflow."
-    }
+    },
+    "fixture": "guides/qa/tools/operator-update-preservation-fixture.py"
   },
   "packagingGate": {
     "definition": "guides/releases/PRERELEASE_DEPLOYMENT_QUALIFICATION.md#packaging-gate-before-release",
@@ -350,11 +351,11 @@
     "browser": "Managed existing Operator browser reloaded and Updates popup opened with retained real bootstrap session. Historical UI still shows the old default current-state presentation; no upgrade or rollback action executed."
   },
   "currentSourceQa1": {
-    "status": "INSTALLED_QUALIFICATION_RUNNING",
+    "status": "UI_APPLY_RUNNING",
     "instruction": "Build the full current codebase as 1.0.0-qa.1. Historical JAR backport explicitly rejected; no backport was installed.",
     "sourceCommit": "c95699b75dbdedaf0ac4612553327da9d278e757",
     "frontendCommit": "32df1630e7d037cd286552f2181945c750bace60",
-    "frontendBuild": "PASS: complete optimized production build; buildId qa1-current-20260916",
+    "frontendBuild": "PASS: optimized production build qa1-current-20260916-r2; visible Refresh/Update deployment, version badges and shared dim backdrop",
     "backendBuild": "PASS: complete bootJar, Java25, no-daemon/max-workers2",
     "imagesBuild": "PASS: six source-built manifest entries",
     "packageGate": "PASS: normal stable/QA packaging, data-preservation, TLS, worker and credential tests",
@@ -368,11 +369,38 @@
     "devNginxOutput": "Untouched; production image consumes frontend/prod directly",
     "installed": true,
     "published": false,
-    "artifactPath": "packaging/dist/current-qa1-20260916/myscoutee_1.0.0-qa.1_amd64.deb",
-    "sha256": "dccb73a9f62f56e533ffb58577776cd826dc399fbcd49f0a955a6fb0cd8be9d1",
+    "artifactPath": "packaging/dist/current-qa1-20260916-r2/myscoutee_1.0.0-qa.1_amd64.deb",
+    "sha256": "6e693064bd2e08c5638cabaf9b87de7b4a560f171619dbf8d11aa71e91bdbcff",
     "mongoMigrationScript": "Byte-identical to QA2 script already tested with five isolated migration cases; no new migration script in this baseline.",
-    "installationLog": "/tmp/myscoutee-current-qa1-install.log",
+    "installationLog": "/tmp/myscoutee-current-qa1-r2-install.log",
     "retainedConfigurationControls": "PASS: five SHA-256 controls unchanged",
-    "configurationFixture": "guides/qa/tools/operator-update-config-fixture.py, stage; normal QA prerelease discovery enabled and independently pinned Ed25519 public key provisioned"
+    "configurationFixture": "guides/qa/tools/operator-update-config-fixture.py, stage; normal QA prerelease discovery enabled and independently pinned Ed25519 public key provisioned",
+    "qualification": "PASS: packaged deployment qualification, all seven application containers healthy, retained TLS origin and bootstrap access",
+    "uiDiscovery": "PASS: actual current QA1 and GitHub QA2 displayed with Registry uninitialized; no Apply performed",
+    "uiActions": {
+      "status": "FAIL",
+      "cause": "Inline app-menu configured as list renders neither Refresh nor Apply. Source now uses supported row layout.",
+      "repair": "Full current-source QA1 r2 package building; no historical package patches.",
+      "verification": "PASS: actual installed UI shows enabled Check for updates and Update deployment; native Refresh succeeds without creating a job"
+    },
+    "previousLocalBaseline": {
+      "buildId": "qa1-current-20260916",
+      "sha256": "dccb73a9f62f56e533ffb58577776cd826dc399fbcd49f0a955a6fb0cd8be9d1"
+    }
+  },
+  "liveApply": {
+    "status": "RESTARTING",
+    "jobId": "upd_ec17edbf732bdebb08d37b9b3e55dd6a",
+    "source": "1.0.0-qa.1",
+    "target": "1.0.0-qa.2",
+    "targetSha256": "86a2de6f5d41ee7a55de69b51f6ff1ddd717e48dba22ad09a104fb605f4809b0",
+    "trigger": "One native click on Update deployment at2026-09-16T13:53:44Z",
+    "disabledActions": "PASS: both action buttons disabled during download and after native close/reopen",
+    "progress": "Observed DOWNLOADING15/30/40%, INSTALLING85%, worker RESTARTING92%; completion not yet proven. Displayed bytes are currently derived from phase percent; exact byte telemetry remains a limitation.",
+    "screenshots": [
+      "/tmp/myscoutee-qa-browser-sessions/evidence/operator-update-cdp/qa1-qa2-apply.png",
+      "/tmp/myscoutee-qa-browser-sessions/evidence/operator-update-cdp/qa1-qa2-running-reopened.png"
+    ],
+    "queuedSourceChange": "User requested no Apply loading ring when progress bar is shown. Removed ring from Apply item; disabled state retained. Not included in the already-running upgrade."
   }
 }

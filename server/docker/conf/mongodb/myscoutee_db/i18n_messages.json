@@ -18114,6 +18114,24 @@
     "value": "Could not check for updates. Please try again."
   },
   {
+    "_id": "i18n-message-en-operator-update-error-start",
+    "key": "operator.update.error.start",
+    "lang": "en",
+    "value": "Could not confirm the update request. Check its status before trying again."
+  },
+  {
+    "_id": "i18n-message-en-operator-update-error-status",
+    "key": "operator.update.error.status",
+    "lang": "en",
+    "value": "Could not read update progress. Check the deployment status before trying again."
+  },
+  {
+    "_id": "i18n-message-en-operator-update-error-status-timeout",
+    "key": "operator.update.error.status.timeout",
+    "lang": "en",
+    "value": "Timed out waiting for update progress. The update may still be running. Reopen Updates to check its status."
+  },
+  {
     "_id": "i18n-message-en-operator-update-error-failed",
     "key": "operator.update.error.failed",
     "lang": "en",
@@ -38656,6 +38674,24 @@
     "key": "operator.update.error.check",
     "lang": "hu",
     "value": "Nem sikerült ellenőrizni a frissítéseket. Próbáld újra."
+  },
+  {
+    "_id": "i18n-message-hu-operator-update-error-start",
+    "key": "operator.update.error.start",
+    "lang": "hu",
+    "value": "Nem sikerült megerősíteni a frissítési kérést. Újabb próbálkozás előtt ellenőrizd az állapotát."
+  },
+  {
+    "_id": "i18n-message-hu-operator-update-error-status",
+    "key": "operator.update.error.status",
+    "lang": "hu",
+    "value": "Nem sikerült lekérni a frissítés állapotát. Újabb próbálkozás előtt ellenőrizd a telepítés állapotát."
+  },
+  {
+    "_id": "i18n-message-hu-operator-update-error-status-timeout",
+    "key": "operator.update.error.status.timeout",
+    "lang": "hu",
+    "value": "A frissítés állapotára várva lejárt az idő. A frissítés még folyamatban lehet. Nyisd meg újra a Frissítések ablakot az állapot ellenőrzéséhez."
   },
   {
     "_id": "i18n-message-hu-operator-update-error-failed",
