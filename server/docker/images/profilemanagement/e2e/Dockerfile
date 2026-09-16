@@ -34,7 +34,8 @@ RUN apk add --no-cache imagemagick libwebp-tools tzdata && \
     adduser -S -D -H -u 10001 -G myscoutee myscoutee && \
     install -d -o myscoutee -g myscoutee \
       /app \
-      /etc/myscoutee/configuration \
+      /etc/myscoutee/configuration && \
+    install -d -m 0700 -o myscoutee -g myscoutee \
       /var/lib/myscoutee/registry-demo/keys \
       /var/lib/myscoutee/registry-demo/state
 

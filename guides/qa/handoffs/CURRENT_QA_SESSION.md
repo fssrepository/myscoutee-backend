@@ -102,17 +102,17 @@ repair an established product defect. Preserve the phone's tethering connection
 when shaping only its route to the QA application.
 
 ```yaml
-checkpoint: ADMIN-PARAMETERS-001 — CLOSED FUNCTIONAL TEST / REQUESTED VISUAL FOLLOW-UP
-checklist: ../checklists/administration/ADMIN-PARAMETERS-001.md
-substage: Discovery visual follow-up PASS at390px and916px. Shared app-menu standard tinted items remove pill underline/selected lift; form unit column aligns trigger and desktop panel to textbox right edge. Auto desktop downward placement and mobile sheet verified. Operator C01 read-only preparation next.
-fixture_phase: Parameters baseline re-staged solely for managed browser reauthentication/visual follow-up; no parameter saves or consumer replay. Reset after visual check.
-browser_control: Delegated. Versioned Parameters launcher reopened Ava/Casey. Ava Discovery editor/dropdown open; Casey game. Keep requested dropdown visible while inspecting.
-required_resume: Do not replay closed Parameters/Admin tests. Establish TLS/provider restoration prerequisites before those branches; reuse exact prior Firebase/WebView/Push assertions only.
+checkpoint: OPERATOR-REGISTRY-LIFECYCLE-001
+checklist: ../checklists/operator/OPERATOR-REGISTRY-LIFECYCLE-001.md
+substage: Block1 step1, managed sessions launching after paired baseline. No registration yet. Configuration partial: C01/C02 and C04 configuration passed; HTTPS/live-provider assertions remain open.
+fixture_phase: operator-registry staged via guides/qa/tools/operator-registry-fixture.py; consistent Go SQLite/key archive plus local key/state and Mongo snapshots retained under private /tmp/myscoutee-qa-operator-registry. Use paired wrapper reset, never Mongo-only reset.
+browser_control: Full-flow delegated. Managed OPERATOR-REGISTRY-LIFECYCLE-001 Operator and Ava sessions; launcher owns startup.
+required_resume: Read-only paired fixture status, then current browser. Run registration via UI only. Preserve Go/Mongo/local-state baseline. Configuration blocked HTTPS/live-provider checks remain open; no need to rerun completed branches.
 queued_work: Four Operator journeys delegated. Two remaining Asset tests reserved for user-operated pair QA. VMware deployment qualification separate/not started.
-last_completed: ADMIN-PARAMETERS-001 all25 steps accounted for/PASS2026-09-16; baseline restored,0 snapshots/pending/owned probes. Requested landing Supported countries popup implemented with shared app-popup, flags/checks,390px verification and no extra popup request.
+last_completed: Administration4/4 PASS including Parameters visual follow-up and exact fixture reset2026-09-16.
 runtime: Existing backend/frontend watchers running; no duplicate builds. mongodb-sync remains stopped because startup replaces collections.
-ledger_status: 98/104 PASS; Administration4/4; Operator0/4. Parameters closed.
-last_evidence: ../evidence/ADMIN-PARAMETERS-001-2026-09-16.json
+ledger_status: 98/104 PASS; Administration4/4; Operator0/4, Configuration IN PROGRESS.
+last_evidence: ../evidence/OPERATOR-CONFIGURATION-LIFECYCLE-001-2026-09-16.json
 ```
 
 ### Current delegation boundary — 2026-09-16

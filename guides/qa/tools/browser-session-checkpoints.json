@@ -1722,6 +1722,55 @@
           "autoDismissExplanationGuide": true
         }
       ]
+    },
+    "OPERATOR-FIREBASE-001": {
+      "layout": {
+        "columns": 2
+      },
+      "sessions": [
+        {
+          "actor": "Operator",
+          "sessionKind": "demo",
+          "userId": "operator@myscoutee.local",
+          "expectedName": "Demo Operator",
+          "targetUrl": "http://localhost/operator",
+          "entryUrl": "http://localhost/entry?redirect=%2Foperator",
+          "autoDismissExplanationGuide": false
+        },
+        {
+          "actor": "Public",
+          "sessionKind": "anonymous",
+          "expectedName": "Public configuration observer",
+          "targetUrl": "http://localhost/entry",
+          "entryUrl": "http://localhost/entry",
+          "autoDismissExplanationGuide": false
+        }
+      ]
+    },
+    "OPERATOR-REGISTRY-LIFECYCLE-001": {
+      "layout": {
+        "columns": 2
+      },
+      "sessions": [
+        {
+          "actor": "Operator",
+          "sessionKind": "demo",
+          "userId": "operator@myscoutee.local",
+          "expectedName": "Demo Operator",
+          "targetUrl": "http://localhost/operator",
+          "entryUrl": "http://localhost/entry?redirect=%2Foperator",
+          "autoDismissExplanationGuide": false
+        },
+        {
+          "actor": "Ava",
+          "sessionKind": "demo",
+          "userId": "admin-demo-ava",
+          "expectedName": "Ava Moderation",
+          "targetUrl": "http://localhost/admin",
+          "entryUrl": "http://localhost/entry?redirect=%2Fadmin",
+          "autoDismissExplanationGuide": false
+        }
+      ]
     }
   }
 }

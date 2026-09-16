@@ -1,0 +1,105 @@
+{
+  "checkpoint": "OPERATOR-CONFIGURATION-LIFECYCLE-001",
+  "date": "2026-09-16",
+  "status": "PARTIAL / OPEN",
+  "fixture": "operator-domain OPERATOR-FIREBASE-001",
+  "environment": "Existing dev stack, demo_db, managed Operator demo session and anonymous public entry",
+  "C01": {
+    "status": "PASS",
+    "baselineSnapshotRetained": true,
+    "firebaseRevision": 0,
+    "firebaseActive": false,
+    "operatorRoute": "/operator"
+  },
+  "C02": {
+    "status": "PASS",
+    "actions": "Native UI save, close/reopen, public ordinary reload, restore save, reopen and public reload",
+    "baselineName": "MyScoutee",
+    "changedName": "MyScoutee QA",
+    "brandingRevisions": [
+      0,
+      1,
+      2
+    ],
+    "publicTitles": [
+      "MyScoutee QA",
+      "MyScoutee"
+    ],
+    "unrelatedBlocks": "Recursive field comparison found no differences in socialLinks/privacyContact/payment/firebase; raw BSON serialization differed by object field ordering."
+  },
+  "C03": {
+    "status": "BLOCKED_ENVIRONMENT",
+    "visibleResult": "This deployment does not expose managed HTTPS controls.",
+    "toggleDisabled": true,
+    "trustedHttpsProvisioningExecuted": false
+  },
+  "C04": {
+    "status": "PASS_CONFIGURATION",
+    "provider": "stripe",
+    "environment": "Existing local payment simulator; repository dev test credential",
+    "nativeSaveAndReopen": true,
+    "publicBaseUrlInput": "http://localhost/",
+    "normalizedUrl": "http://localhost",
+    "passwordType": "password",
+    "passwordEmptyAfterSaveAndReopen": true,
+    "storedCredentialEncrypted": true,
+    "displayedMaskedSuffix": true,
+    "visibleResult": "Payment provider credentials registered.",
+    "documentVersions": [
+      3,
+      4
+    ],
+    "restoredVia": "Native Cash only selection and Remove payment",
+    "restoredProvider": "Cash only",
+    "restoredCredentialAbsent": true,
+    "providerTransactionExecuted": false,
+    "qualification": "This is configuration registration/masking evidence. No external Stripe transaction or checkout claim; those belong to prior payment journeys.",
+    "cashOnlyTokenFieldFix": {
+      "status": "PASS",
+      "build": "frontend-sync2026-09-16T08:46:26.941Z",
+      "browserSequence": [
+        "Cash only:0 password fields",
+        "Stripe:1 password field",
+        "Cash only:0 password fields"
+      ],
+      "scope": "Template condition only; no configuration write during this replay."
+    },
+    "redundantProviderLabelRemoved": {
+      "status": "PASS",
+      "ariaNameRetained": true,
+      "build": "frontend-sync2026-09-16T08:48:22.067Z"
+    },
+    "realStripeIntegration": {
+      "status": "NOT_EXECUTED",
+      "reason": "User confirms no actual Stripe account is registered. Configuration checks and simulator payment proofs do not establish real Stripe integration.",
+      "requiredLater": "Use an owned Stripe account in test mode to verify actual provider API and webhook integration before live use."
+    }
+  },
+  "C05_C06": {
+    "status": "NOT_EXECUTED",
+    "environmentConstraint": "OperatorConfigurationService rejects live Firebase capability tests in MongoSessionMode.DEMO. Current managed session is demo; prior real Firebase proofs remain historical."
+  },
+  "socialRemoveUserObservation": {
+    "removalSemanticsChanged": false,
+    "confirmationAdded": false,
+    "requestedFollowup": "Move existing Remove social site button to top right of each corresponding entry.",
+    "status": "PASS",
+    "desktopAnd390pxMobile": {
+      "allThreeButtonsAboveFields": true,
+      "rightInset": 10.265625,
+      "withinViewport": true
+    }
+  },
+  "next": "Restore retained baseline and continue Registry; retain HTTPS/live Firebase environment requirements as open Configuration assertions.",
+  "C08": {
+    "localSnapshotRestored": true,
+    "sessionSnapshotRestored": true,
+    "fixtureStatus": "not-staged",
+    "externalTlsNotExecuted": true
+  },
+  "providerRoutingSourceReview": {
+    "stripe": "StripeApiEndpointResolver returns no override outside DEMO; StripePaymentProcessor uses SDK default endpoint and resolved Operator credential. DEMO requires local simulator and a test key.",
+    "barion": "BarionApiEndpointResolver uses https://api.barion.com outside DEMO; DEMO uses guarded local simulator endpoint.",
+    "boundary": "Source review only. Prior simulator lifecycle coverage does not prove actual provider acceptance or live credentials for either provider. Barion real-provider verification remains NOT EXECUTED."
+  }
+}

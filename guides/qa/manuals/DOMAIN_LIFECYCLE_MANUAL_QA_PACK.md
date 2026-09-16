@@ -10539,3 +10539,43 @@ and independently verified. Watcher build/live HTTP checks passed; added unit
 regression is not claimed as executed. Administration4/4; total98/104.
 Next: Operator Configuration C01–C08, with exact previous Firebase/WebView/Push
 assertions reused; missing TLS/provider prerequisites must remain explicit.
+
+### 2026-09-16 — Parameters Discovery select visual follow-up
+
+Shared `app-menu` configuration uses contextual standard tinted radio items.
+The previous pill configuration underlined labels and shifted the selected
+first item one pixel above the mobile scroll container. At 390×800 the
+standard items have no underline/translation and fit the native shared sheet
+without scrolling. At 916×813 the panel automatically opens down without
+scrolling. The form reserves the unit column consistently: input, trigger
+and desktop panel right edges match (831.5px desktop; input/trigger321.5px
+mobile). Native Exponential selection updates the purple trigger and closes
+the menu; Cancel discards the draft and reopening shows Linear. No parameter
+configuration was saved. Existing frontend-sync build passed08:34:54Z;
+evidence is appended to `ADMIN-PARAMETERS-001-2026-09-16.json`.
+
+### 2026-09-16 — Operator Configuration C01/C02/C04
+
+C01 baseline snapshot and managed Operator/public sessions verified. C02 PASS:
+branding MyScoutee → MyScoutee QA → MyScoutee via native saves/reopen/public
+reload, branding revisions0→1→2, unrelated block fields unchanged. C04
+configuration registration/masking/restoration PASS against the existing local
+payment simulator: Stripe and loopback URL normalized on save, encrypted
+credential retained, empty password input with masked suffix on reopen; Cash
+only/Remove payment restored no provider or credential. No external payment
+transaction is claimed. C03 BLOCKED_ENVIRONMENT: HTTPS controls unavailable
+and disabled. C05/C06 not executed: managed demo sessions cannot perform live
+Firebase capability tests. Parent remains open; see the dated Configuration
+evidence JSON. Social-site removal UI unchanged after user withdrew the request.
+
+Operator clarification: no actual Stripe account is currently registered.
+Configuration registration and prior simulator checks are proven at their
+respective boundaries; actual Stripe API/webhook integration remains NOT
+EXECUTED and requires an owned Stripe test-mode account. Do not infer it from
+simulator PASS. Cash-only token visibility and the requested Configuration
+layout follow-ups passed through the existing frontend watcher and browser.
+
+Stripe/Barion routing source review: real sessions use the Stripe SDK default
+endpoint / https://api.barion.com; DEMO sessions use the guarded local
+simulator. Production Explore remains demo. Neither provider has live
+credential/actual-provider acceptance proof from this QA execution.

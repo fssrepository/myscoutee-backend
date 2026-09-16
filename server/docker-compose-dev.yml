@@ -158,6 +158,19 @@ services:
       timeout: 5s
       retries: 30
       start_period: 20s
+  runtime-directories:
+    # Runs once before the unprivileged API; contains no application process.
+    image: ${MYSCOUTEE_DEV_IMAGE:-myscoutee-api:1.0.0-dev}
+    user: "0:0"
+    network_mode: none
+    restart: "no"
+    entrypoint: ["/bin/sh", "/prepare-runtime-directories.sh"]
+    environment:
+      MYSCOUTEE_RUNTIME_UID: "${UID:-1000}"
+      MYSCOUTEE_RUNTIME_GID: "${GID:-1000}"
+    volumes:
+      - ./data:/workspace/data
+      - ./docker/scripts/prepare_dev_runtime_directories.sh:/prepare-runtime-directories.sh:ro
   profilemanagement:
     image: ${MYSCOUTEE_DEV_IMAGE:-myscoutee-api:1.0.0-dev}
     pull_policy: build
@@ -243,6 +256,8 @@ services:
       retries: 120
       start_period: 20s
     depends_on:
+      runtime-directories:
+        condition: service_completed_successfully
       mongodb:
         condition: service_started
       redis:
