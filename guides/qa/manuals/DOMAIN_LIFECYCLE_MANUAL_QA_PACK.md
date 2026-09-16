@@ -7586,21 +7586,51 @@ errors retain their icon size. Existing dev watchers compiled successfully.
 The focused reconnect/security regression was added but not separately run;
 live happy-path Java/Go replay passed. Full checkpoint: PASS.
 
-### `OPERATOR-UPDATE-LIFECYCLE-001` — signed update
+### `OPERATOR-UPDATE-LIFECYCLE-001` — signed update and recovery
 
-2026-09-16 user-directed ownership change: the complete Configuration C03 HTTPS
-block is now Update block4, steps12–15 (save/reopen, provisioning/job/revision,
-trusted certificate/connection, external restoration and retained access). It
-is NOT RUN; moving it does not award PASS. Finish Configuration C05–C06/C08 in
-dev first. Stop dev before starting VMware due to workstation memory limits.
+The stable checklist owns six blocks: release verification (1–3), Apply and
+progress (4–7), reconnect (8–11), QA2 → QA1 UI rollback with a missing cached
+installer (12–17), controlled failure/recovery (18–20), and managed HTTPS
+(21–24). The user explicitly added rollback and controlled failure coverage;
+the earlier exclusion of those branches no longer applies. Disabled controls
+while work runs are the oracle; do not bypass them to simulate repeat clicks.
 
+**2026-09-16 — Preparation only; functional steps NOT RUN.**
+Evidence: `../evidence/OPERATOR-UPDATE-LIFECYCLE-001-2026-09-16.json`.
+Dev is stopped. VMware SSH and authenticated guest sudo work. The versioned
+forwarder exposes workstation localhost ports 80/443 to the same VM ports;
+HTTPS health returns UP with the exported public bootstrap certificate trusted.
+VM baseline snapshot operator-update-baseline-20260916 completed at11:34:12Z.
+The root LV was expanded10→18.22GiB from existing free extents;8.8GiB free.
+Before baseline installation, the installed image-manifest bytes matched the
+published QA2 artifact's manifest.
 
-- Apply one prepared compatible QA release from Updates, observe honest
-  progress, then reopen the Operator screen and verify the resulting version.
-- Invalid signatures, corrupt archives, downgrade rejection, interrupted-worker
-  recovery and rollback belong to packaging/update automation, not extra manual
-  branches.
+The published QA1 baseline was downloaded and its digest verified. Both QA1 and
+QA2 DEBs internally declare version 1.0.0. The actual worker requires a newer
+version, plus signed release metadata matching the DEB; database version edits
+cannot replace that contract. Published assets lack signed manifests, and the
+VM lacks a pinned release key. The user explicitly requested installing the downloaded historical QA1
+baseline: digest-verified installation and package-provided qualification
+passed. The installed image manifest matches QA1 and certificate-verified
+HTTPS health is UP. No signed-release verification or UI Apply PASS is claimed. Source inspection finds phase/percentage UI, but no UI rollback
+action; live disabled/progress/error/recovery checks remain pending. Resolve
+release prerequisites and missing recovery capability before claiming the
+requested QA1 → QA2 → QA1 chain. Preserve all completed Operator evidence.
 
+**Block 1, step 1 — QA1 UI observations; fixes deferred as requested.**
+The existing deployment-local Operator credential successfully opened the real
+Operator workspace through `https://localhost`. The Updates popup is open.
+This is access/UI evidence, not a completed release-verification block.
+Collect defects for one later repair batch; do not change application code
+for each reported observation during this inspection.
+
+| Finding | Observed behavior | Required correction / retest | Status |
+| --- | --- | --- | --- |
+| UPDATE-UI-01 | On the narrow QA1 viewport, the two actions share one row and `Deployment is current` is truncated. The popup also reserves a large empty body below them. User screenshot: `Screenshot from 2026-09-16 13-43-55.png`. | Use two action rows when needed and/or size the popup body to its content, using shared component configuration. Verify readable action labels and proportionate empty-state height on the reported narrow viewport and desktop. | OPEN — deferred to the requested batch; QA1 observation, current candidate not yet checked. |
+| UPDATE-UI-02 | Block1 step2 Refresh returned409 on the unregistered QA1 deployment. The UI exposes a long raw HTTP error with the internal URL and `409 OK`; the user reports that the icon is covered. `Deployment is current` remains visible after the failed lookup. | Show a short localized registration prerequisite message without internal URL/raw diagnostics. Keep the icon unobscured and text within the popup; do not imply that release currency was verified after a failed lookup. | OPEN — deferred to the requested batch; no application edit. |
+
+Block1 step2 is blocked on Registry/release fixture preparation, not PASS. One
+visible Refresh was executed; the signed-release lookup and upgrade remain unproven.
 ### `OPERATOR-REVENUE-LIFECYCLE-001` — revenue
 
 - Open Revenue for one controlled captured/released payment set, synchronize

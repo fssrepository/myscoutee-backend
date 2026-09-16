@@ -104,14 +104,14 @@ when shaping only its route to the QA application.
 ```yaml
 checkpoint: OPERATOR-UPDATE-LIFECYCLE-001
 checklist: ../checklists/operator/OPERATOR-UPDATE-LIFECYCLE-001.md
-substage: Await user-opened VMware target. No Update/HTTPS/deployment execution yet.
+substage: Update block1 preparation; localhost80/443 tunnel works, certificate-verified HTTPS health UP. Installed manifest matches published QA2. Both published DEBs internally1.0.0; signed metadata/key prerequisites and UI rollback are unresolved. QA1 baseline installed: embedded manifest matches, packaged qualification PASS and trusted HTTPS health UP; no UI Update action executed.
 fixture_phase: Configuration Mongo fixture not-staged; original revision0/inactive restored, private runtime override byte-exact, temporary bootstrap records and credential removed. Managed browsers closed.
 browser_control: Operator full-flow delegation remains active. Asset journeys remain user-controlled pair QA.
-required_resume: Read-only target/runtime gate, stop existing dev stack before VMware due memory limits, verify designated disposable target and release/recovery fixtures, then execute Update in checklist order.
+required_resume: Reuse ignored packaging/client-tools/vmware.local.env; SSH and guest sudo verified. Baseline snapshot operator-update-baseline-20260916 completed; root LV extended10→18.22GiB using existing free extents. QA1 baseline installation and packaged qualification PASS; log /var/log/myscoutee/operator-qa1-baseline-20260916.log. Managed Update browser open on https://localhost/operator with real bootstrap login; Updates popup visible. User requests collecting defects before one later repair batch; UPDATE-UI-01/02 are recorded in the active pack/evidence. Block1 step2 Refresh returned409 because the deployment is unregistered; inspect the existing Registry fixture for VM preparation. No app fixes until the requested batch. Resolve real artifact version/signature prerequisites without DB-faked installed versions. Open managed VM browser for existing Update UI diagnosis; live lifecycle checks remain NOT RUN.
 queued_work: Update includes managed HTTPS. Separate deployment UI image smoke, repeatable external security probes and measured memory/startup efficiency qualification; no routine dependency upgrades. Two Asset journeys remain pair QA.
 last_completed: Configuration C01–C03 PASS, including actual Auth/Message tests and activation/entry-mode proof; real Firebase-user sign-in reuses physical WebView evidence2026-09-14 and was not repeated. Registry/Revenue and Administration complete.
-runtime: Existing dev Compose still running; backend restarted after exact configuration restore, health200. No second stack or compiler. mongodb-sync intentionally stopped. VMware not started by Codex.
-ledger_status: 101/104 PASS; Operator3/4; Update remains NOT RUN.
+runtime: User-opened VMware running; local Docker lists no containers, so dev is no longer running. Host has about10GiB available memory. No stack or compiler started by Codex. Use the canonical localhost forwards and retained public bootstrap-certificate trust for VM qualification.
+ledger_status: 101/104 PASS; Operator3/4; Update IN PROGRESS (preparation only, functional steps NOT RUN).
 ```
 
 ### Current delegation boundary — 2026-09-16

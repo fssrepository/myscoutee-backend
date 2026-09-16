@@ -1723,6 +1723,24 @@
         }
       ]
     },
+    "OPERATOR-UPDATE-LIFECYCLE-001": {
+      "layout": { "columns": 1 },
+      "sessions": [
+        {
+          "actor": "Operator",
+          "sessionKind": "anonymous",
+          "expectedName": "VMware Operator sign-in",
+          "targetUrl": "https://localhost/entry?redirect=%2Foperator",
+          "entryUrl": "https://localhost/entry?redirect=%2Foperator",
+          "autoDismissExplanationGuide": false,
+          "geolocation": {
+            "latitude": 47.4979,
+            "longitude": 19.0402,
+            "accuracy": 10
+          }
+        }
+      ]
+    },
     "OPERATOR-FIREBASE-001": {
       "layout": {
         "columns": 2

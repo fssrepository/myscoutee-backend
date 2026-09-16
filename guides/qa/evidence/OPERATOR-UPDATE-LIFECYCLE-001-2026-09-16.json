@@ -1,0 +1,114 @@
+{
+  "checkpoint": "OPERATOR-UPDATE-LIFECYCLE-001",
+  "date": "2026-09-16",
+  "status": "IN_PROGRESS",
+  "runtime": {
+    "devStopped": true,
+    "sshKeyAuthentication": "verified",
+    "guestSudo": "verified",
+    "tunnel": {
+      "origin": "https://localhost",
+      "ports": [
+        80,
+        443
+      ],
+      "health": "UP",
+      "certificateVerification": "curl using exported public bootstrap certificate; no insecure flag"
+    },
+    "snapshot": {
+      "name": "operator-update-baseline-20260916",
+      "listed": true,
+      "creationProcessCompleted": true,
+      "completedAt": "2026-09-16T11:34:12Z"
+    },
+    "diskPreparation": {
+      "rootLVBeforeGiB": 10,
+      "rootLVAfterGiB": 18.22,
+      "rootFreeAfterGiB": 8.8,
+      "method": "lvextend --resizefs --extents +100%FREE /dev/ubuntu-vg/ubuntu-lv",
+      "result": "PASS",
+      "virtualDiskSizeGiB": 20
+    }
+  },
+  "artifacts": {
+    "repository": "fssrepository/myscoutee",
+    "qa1": {
+      "tag": "v1.0.0-qa.1",
+      "debVersion": "1.0.0",
+      "sha256": "ae35b95bb3054eea5f6a2d7287d8838c98a5194a01854d9e367b64f60f03d164",
+      "downloadedForBaseline": true,
+      "imageManifestSha256": "b598cd91e2c778a91c477ad350afcb2c81d08f91c9eedebbe85c9de8be0bb987"
+    },
+    "qa2": {
+      "tag": "v1.0.0-qa.2",
+      "debVersion": "1.0.0",
+      "sha256": "9b7478c4cb4483c42b2ab57653a10dd876247dd648c61432d37702ec69ed74a4",
+      "source": "existing local artifact; digest matches published release",
+      "imageManifestSha256": "166ff605520b1c00861169f2bad459df6d09abcd9303674e3a97e4a2e1827057",
+      "installedManifestMatchesBeforeQa1Installation": true
+    },
+    "publishedAssets": "Both releases contain DEB/client-tools and SHA256 files; no signed release manifest/signatures."
+  },
+  "gaps": [
+    {
+      "boundary": "release preparation",
+      "finding": "Both DEBs declare 1.0.0; worker requires a strictly newer version and signed metadata matching the actual DEB. A database-only version fixture cannot satisfy this contract."
+    },
+    {
+      "boundary": "release trust",
+      "finding": "VM update directory has no pinned release public key; signed release metadata is absent from both published releases."
+    },
+    {
+      "boundary": "rollback capability",
+      "finding": "Source inspection found Refresh/Apply, but no UI rollback action. Current failure path exposes RECOVERY_REQUIRED and CLI backup restore; UI rollback and GitHub recovery download remain unproven/missing."
+    }
+  ],
+  "progressUi": {
+    "source": "phase, percent and progress bar exist",
+    "liveVerification": "NOT RUN"
+  },
+  "execution": {
+    "qa1Installed": true,
+    "uiUpgrade": "NOT RUN",
+    "uiRollback": "NOT RUN",
+    "controlledFailure": "NOT RUN",
+    "managedHttpsProvisioning": "NOT RUN",
+    "smokeSecurityEfficiency": "NOT RUN",
+    "qa1Installation": "PASS baseline preparation; historical artifact digest verified, no signature verification claimed",
+    "packagedQualification": "PASS",
+    "qa1InstalledManifestMatches": true,
+    "postInstallHttpsHealth": "UP with certificate verification",
+    "bootstrapLog": "/var/log/myscoutee/operator-qa1-baseline-20260916.log",
+    "operatorUiAccess": "PASS: existing deployment bootstrap credential, real Operator workspace on https://localhost; Updates popup opened",
+    "releaseRefresh": {
+      "block": 1,
+      "step": 2,
+      "action": "One visible Check for updates click",
+      "httpStatus": 409,
+      "endpoint": "/api/operator/announcements?includeExpired=false&limit=100&kind=UPDATE",
+      "result": "BLOCKED: deployment is not registered with a Registry; valid release fixture not prepared",
+      "ui": "Raw HTTP error/URL and still-disabled Deployment is current action"
+    }
+  },
+  "deferredDefects": [
+    {
+      "id": "UPDATE-UI-01",
+      "block": 1,
+      "step": 1,
+      "build": "published QA1",
+      "source": "User screenshot: Screenshot from 2026-09-16 13-43-55.png",
+      "observation": "Side-by-side action labels truncate on the narrow viewport; excessive empty space below actions.",
+      "requestedCorrection": "Two action rows when needed and/or content-sized popup body, using shared component configuration.",
+      "status": "OPEN; user requested recording defects for a later batch; no application edit or candidate retest."
+    },
+    {
+      "id": "UPDATE-UI-02",
+      "block": 1,
+      "step": 2,
+      "build": "published QA1",
+      "observation": "Refresh shows raw HTTP error including internal URL and 409 OK; user reports covered error icon and excessively long text. Deployment is current remains visible despite unsuccessful release discovery.",
+      "requestedCorrection": "Short localized actionable message for missing Registry registration; omit internal URL and raw HTTP diagnostics, preserve icon space and wrapping within the popup, and avoid implying a verified current release after failed discovery.",
+      "status": "OPEN; collect for later batch repair as requested; no application changes."
+    }
+  ]
+}

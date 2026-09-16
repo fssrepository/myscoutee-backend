@@ -1,11 +1,13 @@
-# OPERATOR-UPDATE-LIFECYCLE-001 — Verified update and managed HTTPS
+# OPERATOR-UPDATE-LIFECYCLE-001 — Verified update, rollback and managed HTTPS
 
 ## Purpose
 
 Apply one valid, compatible QA release. Correlate verification, visible progress,
 the durable update job, controlled restart and actually installed version.
-On the same VMware target, verify the managed HTTPS lifecycle. Both parts are
-required to close this Update row.
+Start from QA1, upgrade to QA2 through Updates, then roll back to QA1 through
+the UI with the previous installer absent locally. Also verify a controlled
+failed update and disabled actions while an operation is running. On the same VMware target, verify the
+managed HTTPS lifecycle. All three parts are required to close this Update row.
 **Actor:** Operator on the designated disposable update target.
 
 ## Fixture prerequisites
@@ -14,7 +16,22 @@ Codex names the initial/target versions, package identity and recovery baseline,
 and records existing release/job state. Fixtures prepare the target and access
 instead of replaying deployment/registration. The real update path verifies and
 applies the release; fixture-written success or version state is not evidence.
-Use the designated QA target, not the active development checkout.
+Use the designated QA target, not the active development checkout. Preserve its
+current state first. Install the verified GitHub QA1 artifact as fixture setup;
+this baseline install is separate from the tested application-owned QA2 download.
+
+Record each GitHub release tag, artifact digest, internal package version and
+installed build identity separately; a filename does not establish a version.
+Prepare required release/Registry/database records through the versioned fixture
+with an exact snapshot/reset. They must agree with the actual signed artifacts;
+do not write successful job state or falsify the installed package version.
+The application's normal update path downloads the GitHub artifact. Codex must
+not pre-download or manually install it in place of the action under test.
+
+Before the failure branch, retain a verified recovery baseline and declare one
+reproducible external failure trigger, its phase and its reset. Preserve user
+data and configuration controls for comparison. Remove only the fixture-owned
+cached previous installer for the cache-miss check; retain the recovery backup.
 
 For the user-designated VMware run, also follow the separate
 [deployment qualification](../../../releases/PRERELEASE_DEPLOYMENT_QUALIFICATION.md):
@@ -37,14 +54,18 @@ Report: `OPERATOR-UPDATE-LIFECYCLE-001 block 1 done`.
 
 ## 2. Apply and observe the durable job
 
-4. Select **Apply update** once. Codex records the one resulting durable update
-   job, target release and starting state against the baseline.
-5. Follow the displayed phases and timestamps. Progress agrees with the actual
-   task; the UI must not report completion before the task succeeds.
+4. Select **Apply update** for QA2 once. Codex records the one durable job,
+   target release and starting state. While the job is pending/running, **Apply
+   update** remains disabled, including after reopening the popup. Do not
+   bypass the disabled control to manufacture repeated submissions.
+5. Follow the visible phase, percentage, progress bar and timestamps. Download
+   byte counts, when available, agree with actual transfer progress. Phase-based
+   percentages must not imply measured byte progress. The UI remains busy and
+   must not show 100%/completed before the actual task succeeds.
 6. Allow the normal controlled restart required by the update. Its temporary
    connection loss is not a success result; record the subsequent recovery.
 7. At completion, Codex correlates job ID, start/end, outcome, verified release
-   and installed target version. The single Apply action has not created
+   and installed target version. The accepted action has not created
    duplicate update work or contradictory terminal results.
 
 Report: `OPERATOR-UPDATE-LIFECYCLE-001 block 2 done`.
@@ -57,29 +78,72 @@ Report: `OPERATOR-UPDATE-LIFECYCLE-001 block 2 done`.
    is now the current version.
 10. Codex checks that reconnection/reopening created no second Apply operation
     or update job. Release verification, durable result and active version agree.
-11. Retain UI and durable update evidence. Continue to the HTTPS block before
-    final target restoration; record update and TLS results separately.
+11. Retain UI and durable update evidence, then continue directly from installed
+    QA2 to rollback. Keep update, rollback, error and TLS results separate.
 
 Report: `OPERATOR-UPDATE-LIFECYCLE-001 block 3 done`.
 
-## 4. Managed HTTPS on the VMware target
+## 4. Roll back QA2 to QA1 without a cached installer
+
+12. On the successfully updated QA2 target, inspect the visible **Rollback**
+    action and its QA1 recovery point. If no UI recovery action exists, record
+    the missing capability; a command-line restore does not pass this UI check.
+13. Verify the retained backup and data controls. Remove only the fixture-owned
+    cached QA1 installer, preserving the backup. No release or recovery result
+    may be manufactured in the database.
+14. Select **Rollback** to QA1 once. Its action remains disabled while recovery
+    is pending/running, including after reopening. Require one recovery operation
+    and visible phase/progress; do not bypass the disabled control.
+15. Verify that the recovery process downloads the exact QA1 artifact from GitHub,
+    validates its identity, checksum and trusted signature, then restores it.
+    Observe the actual download; neither a local substitute nor an unchecked
+    same-name file satisfies this step.
+16. Follow the rollback operation through its actual phases and any controlled
+    restart. Correlate its terminal result with the QA2 update and QA1 recovery
+    point. Refreshing/reopening must not start another rollback operation.
+17. Reopen Operator and compare the displayed version, installed package/build,
+    health, retained access and fixture data/configuration controls with the QA1
+    recovery baseline. Successful package download alone is not rollback success.
+
+Report: `OPERATOR-UPDATE-LIFECYCLE-001 block 4 done`.
+
+## 5. Failed update and recovery
+
+18. Use the versioned fixture to prepare one declared failure scenario from the
+    retained baseline. Start the update through the UI and apply the controlled
+    external failure trigger. Observe the real failed/recovery-required phase
+    and job. The action stays disabled while work is running; a failure must not
+    appear as completed or leave a permanent misleading busy indicator.
+19. Reopen Updates when reachable. The failure and its explanation persist.
+    Verify the available retry/rollback action against the actual failed phase.
+    If the application is unavailable, use the retained recovery procedure and
+    record the limitation; do not claim UI recovery passed.
+20. Remove the trigger and use the supported explicit retry or rollback once.
+    Require a single operation, disabled action while running, an auditable link
+    to the failed attempt, an honest terminal result and intact data. A deliberate
+    retry may have a new job ID; it must not silently resume an unsafe partial
+    installation. Record missing actions or unsupported recovery as open gaps.
+
+Report: `OPERATOR-UPDATE-LIFECYCLE-001 block 5 done`.
+
+## 6. Managed HTTPS on the VMware target
 
 Prepare the declared TLS/DNS/certificate prerequisites and their recovery
 baseline. Stop the development stack before running VMware on this workstation;
 run them sequentially because of its memory limit.
 
-12. In Configuration on the prepared target, apply the declared reversible HTTPS
+21. In Configuration on the prepared target, apply the declared reversible HTTPS
     configuration through its visible action.
-13. Observe progress and the resulting capability state. Reopen the block and
+22. Observe progress and the resulting capability state. Reopen the block and
     compare the normalized saved configuration.
-14. Correlate the changed TLS block with its configuration revision and, where
+23. Correlate the changed TLS block with its configuration revision and, where
     the visible action creates work, its actual operation/job result. A saved
     value alone does not prove certificate provisioning or readiness.
-15. Open the configured trusted HTTPS origin and confirm its actual certificate
+24. Open the configured trusted HTTPS origin and confirm its actual certificate
     and connection. Restore the prior configuration and fixture-owned TLS state;
     verify the restored capability and retained Operator access. Then restore
     the target through its declared QA recovery procedure and verify cleanup.
-    Record successful update, HTTPS and restoration separately; none substitutes
+    Record successful update, rollback, HTTPS and cleanup separately; none substitutes
     for the others.
 
 Report: `OPERATOR-UPDATE-LIFECYCLE-001 done`.
@@ -92,11 +156,16 @@ Report: `OPERATOR-UPDATE-LIFECYCLE-001 done`.
 | One durable update job and honest progress | Block 2 |
 | Controlled restart, reconnect and correct active version | Block 2 step 6 and block 3 |
 | No duplicate work after one Apply or reopening | Steps 4, 7 and 10 |
-| Package/job/installed-version correlation and cleanup | Steps 7–11 and final restoration in step 15 |
-| Managed HTTPS save/reopen, actual certificate/capability and restoration | Block 4, steps 12–15 |
+| Package/job/installed-version correlation and cleanup | Steps 7–11 and final restoration in step 24 |
+| QA1 → QA2 → QA1, visible rollback and verified GitHub re-download on cache miss | Block 4, steps 12–17 |
+| Disabled Apply/Rollback, visible progress, controlled failure and recovery | Steps 4, 14 and block 5, steps 18–20 |
+| Managed HTTPS save/reopen, actual certificate/capability and restoration | Block 6, steps 21–24 |
 
 ## Execution boundary
 
-The package/target fixture is prepared when this checkpoint starts. Corruption,
-invalid signatures, downgrade, interrupted-worker and rollback failure branches
-remain packaging/update automated coverage; no fault-injection loop is added here.
+The package/target fixture is prepared when this checkpoint starts. Blocks 4–5 are
+explicit user-added acceptance coverage, not a statement that UI rollback or
+automatic prior-artifact download already exists. Missing capability is an open
+gap, never an inferred PASS. Prepare the versioned failure/cache-miss fixture
+before executing those blocks. Other corruption, invalid-signature, arbitrary
+downgrade and interruption permutations remain packaging regression coverage.
