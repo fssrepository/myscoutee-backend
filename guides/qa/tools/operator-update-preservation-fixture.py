@@ -58,7 +58,7 @@ def media(action, key, data=None):
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument('action', choices=['stage', 'verify', 'reset'])
+    parser.add_argument('action', choices=['stage', 'verify', 'plan-schema4', 'verify-schema4', 'reset'])
     args = parser.parse_args()
     os.umask(0o077)
     if os.geteuid() != 0 or STATE.is_symlink():
@@ -97,11 +97,27 @@ def main():
         key = f'qa/operator-update/{identity}/control.svg'
         if record['objectKey'] != key:
             parser.error('Unexpected fixture object path.')
-        if args.action == 'verify':
+        if args.action == 'plan-schema4':
+            if 'migration004' in record or snapshot() != record['collections']:
+                parser.error('Require unchanged baseline and no existing migration plan.')
+            record['migration004'] = mongo('''const crypto = require('crypto');
+const docs = db.deploymentConfigurations.aggregate([
+  {$set:{schemaVersion:4,version:{$add:['$version',1]}}}
+]).toArray();
+if (db.deploymentConfigurations.countDocuments({_id:'deployment-configuration',schemaVersion:3}) !== 1 || docs.length !== 1)
+  throw Error('Expected one retained schema3 configuration');
+const hash = crypto.createHash('sha256');
+for (const doc of docs) hash.update(EJSON.stringify(doc,{relaxed:false})+'\\n');
+print(JSON.stringify({count:docs.length,sha256:hash.digest('hex')}));''')
+            STATE.write_text(json.dumps(record, indent=2) + '\n')
+        elif args.action in ('verify', 'verify-schema4'):
             if record['phase'] != 'staged':
                 parser.error('Fixture staging incomplete; no preservation PASS possible.')
             actual = snapshot()
-            changed = [name for name in COLLECTIONS if actual[name] != record['collections'][name]]
+            expected = dict(record['collections'])
+            if args.action == 'verify-schema4':
+                expected['deploymentConfigurations'] = record['migration004']
+            changed = [name for name in COLLECTIONS if actual[name] != expected[name]]
             media_matches = hashlib.sha256(media('cat', key)).hexdigest() == record['objectSha256']
             print(json.dumps({'version': version, 'collections': actual,
                               'changedCollections': changed, 'mediaMatches': media_matches}))

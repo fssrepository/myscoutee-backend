@@ -29,7 +29,7 @@ export REGISTRY_DEMO_IMAGE=myscoutee-registry:1.0.0-qa.1-prod
 export PAYMENT_SIMULATOR_IMAGE=myscoutee-payment-simulator:1.0.0-qa.1-prod
 export PATH="$TEST_DIR/bin:$PATH"
 export MYSCOUTEE_COMPOSE_SCRIPT="$TEST_DIR/compose"
-for command in compose reset-demo-state.sh sync-i18n-seeds.sh; do
+for command in compose reset-demo-state.sh sync-i18n-seeds.sh migrate-production-data.sh; do
   cat > "$TEST_DIR/$command" <<'SH'
 #!/bin/sh
 set -eu
@@ -63,6 +63,7 @@ assert lines == [
     'compose stop profilemanagement',
     'reset-demo-state.sh ',
     'sync-i18n-seeds.sh ',
+    'migrate-production-data.sh ',
     'compose up -d --no-deps --wait --wait-timeout 300 mongodb redis minio registry payment-simulator',
     'compose up -d --no-deps profilemanagement',
     'compose up -d --no-deps nginx',

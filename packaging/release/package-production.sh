@@ -206,6 +206,7 @@ done < <(
 # Only deployment-host runtime scripts are installed. Everything in
 # packaging/release and repository developer helpers stays source-only.
 cp -a "${REPO_ROOT}/packaging/scripts" "${STAGING_DIR}/opt/myscoutee/packaging/"
+cp -a "${REPO_ROOT}/packaging/migrations" "${STAGING_DIR}/opt/myscoutee/packaging/"
 cp -a "${REPO_ROOT}/packaging/templates" "${STAGING_DIR}/opt/myscoutee/packaging/"
 for client_helper in \
   README.md \

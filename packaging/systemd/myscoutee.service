@@ -13,6 +13,7 @@ WorkingDirectory=/opt/myscoutee/server
 EnvironmentFile=-/etc/myscoutee/myscoutee.env
 ExecStartPre=/opt/myscoutee/packaging/scripts/reset-demo-state.sh
 ExecStartPre=/opt/myscoutee/packaging/scripts/sync-i18n-seeds.sh
+ExecStartPre=/opt/myscoutee/packaging/scripts/migrate-production-data.sh
 ExecStart=/opt/myscoutee/packaging/scripts/myscoutee-compose.sh up -d
 ExecStop=/opt/myscoutee/packaging/scripts/myscoutee-compose.sh down
 TimeoutStartSec=0

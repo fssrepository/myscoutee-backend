@@ -21,6 +21,7 @@ unset MYSCOUTEE_VERSION NGINX_BASE_IMAGE NGINX_PRODUCTION_IMAGE \
 printf '[myscoutee-update-phase] PREPARING_DATA\n'
 "${SCRIPT_DIR}/reset-demo-state.sh"
 "${SCRIPT_DIR}/sync-i18n-seeds.sh"
+"${SCRIPT_DIR}/migrate-production-data.sh"
 printf '[myscoutee-update-phase] STARTING_SERVICES\n'
 "$COMPOSE" up -d --no-deps --wait --wait-timeout "$TIMEOUT" mongodb redis minio registry payment-simulator
 "$COMPOSE" up -d --no-deps profilemanagement

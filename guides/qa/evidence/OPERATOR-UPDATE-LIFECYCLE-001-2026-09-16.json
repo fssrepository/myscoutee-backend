@@ -550,7 +550,7 @@
       }
     },
     "latestUiContract": "Success hides Update; Check finds a newer release to show Update again. Rollback remains enabled after success when a verified recovery point exists. No duplicate lower success notice. Surfaced failures release both actions.",
-    "next": "Verify new completed-operation PWA reload in normal packages; controlled download failure/retry and managed HTTPS remain incomplete.",
+    "next": "Native QA2 r7 migration and managed HTTPS; Update remains IN PROGRESS.",
     "r5": {
       "upgrade": {
         "jobId": "upd_4f5d2d90e610c3b270d9921cd27a3937",
@@ -578,10 +578,65 @@
       }
     },
     "completionReload": {
-      "status": "IMPLEMENTED_IN_SOURCE_NOT_DEPLOYED",
+      "status": "PASS_NATIVE_UPDATE_AND_ROLLBACK_R6",
       "contract": "Verified COMPLETED100% after locally initiated update or rollback refreshes/activates the PWA worker before reload. Historical job reads do not reload. Busy actions remain locked while refreshing. Rollback progress target badge follows recovery target.",
       "tests": "87/87 PASS across PWA, workspace, HTTP adapter and popup; /tmp/operator-completed-reload-tests.log",
-      "deployment": "Current VM still QA1 r4; neither QA1 r4 nor QA2 r5 contains this new reload feature."
+      "deployment": "QA1/QA2 r6 normal packages exercised both directions, with one automatic reload per operation."
+    },
+    "r6": {
+      "baseline": {
+        "version": "1.0.0-qa.1",
+        "sha256": "078d6d7209f5c37ada87916b51f72021e0b6576ca9aaf56c6db6590c330c54f5",
+        "buildId": "monitor-qa1-20260916-r6",
+        "qualification": "PASS normal signed installation"
+      },
+      "target": {
+        "version": "1.0.0-qa.2",
+        "sha256": "25d13bd7e4ab6885dfb56cf0ca5055970aa7a356feaf6a1756b7e6d10016214d",
+        "buildId": "monitor-qa2-20260916-r6"
+      },
+      "failure": {
+        "jobId": "upd_2f40f3c4eede3a9c4b3cf90bf03f3169",
+        "requestedAt": "2026-09-16T16:37:11Z",
+        "completedAt": "2026-09-16T16:37:12Z",
+        "phase": "FAILED",
+        "trigger": "Versioned HTTPS fixture truncates .deb after1048576bytes",
+        "ui": "Single localized error; Check/Update/Rollback enabled; close/reopen preserved error; no automatic reload on failure"
+      },
+      "retry": {
+        "jobId": "upd_8296003875315dd91f7120bc34064418",
+        "requestedAt": "2026-09-16T16:38:10Z",
+        "completedAt": "2026-09-16T16:40:48Z",
+        "phase": "COMPLETED",
+        "triggerReset": "Healthy HTTPS source restarted; explicit UI Update once; same signed target as failed job",
+        "trace": "monitor-r6-retry-upgrade.json",
+        "monitorResponses": 208,
+        "timeOrigins": [
+          1789576495705.3,
+          1789576849337.2
+        ],
+        "autoReload": "PASS actual QA2 r6 document loaded after100%; no manual reload; reopen leaves Rollback enabled/Update hidden"
+      },
+      "rollback": {
+        "jobId": "upd_a7e82b8179934136ba1cc9a8557729b3",
+        "requestedAt": "2026-09-16T16:42:14Z",
+        "completedAt": "2026-09-16T16:45:04Z",
+        "phase": "COMPLETED",
+        "trace": "monitor-r6-auto-rollback.json",
+        "monitorResponses": 224,
+        "timeOrigins": [
+          1789576849337.2,
+          1789577105174.4
+        ],
+        "autoReload": "PASS actual QA1 r6 document loaded after100%; no manual reload. Reopen required ordinary scrolling to retained tile position; no reload loop.",
+        "preservation": "PASS unchanged collections/object controls; no restore. Cache-miss proof belongs r5, r6 previous installer was retained because prior diagnostic command stopped before removal."
+      }
+    },
+    "configurationMigration": {
+      "defect": "Configuration503 because retained singleton schema3 while current API requires4. Not a TLS/authentication failure.",
+      "repair": "Packaged migration004 changes only schemaVersion and optimistic document version, before API startup in both systemd and update worker; preserves other fields.",
+      "tests": "PASS isolated real Mongo retained opaque values, idempotency, unsupported schema rejection and empty DB; restart order/image selection regression PASS.",
+      "native": "QA2 r7 packaging in progress; plan-schema4 preservation oracle recorded expected full-document hash before actual change."
     }
   }
 }
