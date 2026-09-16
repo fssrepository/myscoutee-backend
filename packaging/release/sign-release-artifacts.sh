@@ -344,7 +344,7 @@ jq -n \
 jq -e '
   (keys | sort) == (["artifacts", "channel", "schemaVersion", "signingKeyId", "version"] | sort)
   and .schemaVersion == 1
-  and (.version | test("^(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)$"))
+  and (.version | test("^(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)(-qa\\.(0|[1-9][0-9]*))?$"))
   and (.channel | test("^[a-z][a-z0-9._-]{0,31}$"))
   and (.signingKeyId | test("^pkey_[0-9a-f]{32}$"))
   and (.artifacts | length == 2)

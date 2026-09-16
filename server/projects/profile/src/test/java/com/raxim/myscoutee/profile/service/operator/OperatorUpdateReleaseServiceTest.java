@@ -63,7 +63,7 @@ class OperatorUpdateReleaseServiceTest {
         String output = new String(signing.getInputStream().readAllBytes());
         assertThat(signing.waitFor()).as(output).isZero();
         byte[] envelope = Files.readAllBytes(signed);
-        byte[] list = mapper.writeValueAsBytes(new Object[]{Map.of("draft", false, "prerelease", false,
+        byte[] list = mapper.writeValueAsBytes(new Object[]{Map.of("tag_name", "v1.2.3", "draft", false, "prerelease", false,
                 "assets", new Object[]{Map.of("name", "myscoutee_1.2.3_amd64.deb", "size", 123, "browser_download_url", url),
                     Map.of("name", "myscoutee-update.json", "browser_download_url", metadataUrl)})});
         HttpClient client = mock(HttpClient.class);
@@ -95,12 +95,60 @@ class OperatorUpdateReleaseServiceTest {
     }
 
     @Test
+    void postponedUpdateSelectsHighestQaVersionRatherThanPublicationOrder() throws Exception {
+        var properties = new OperatorUpdateProperties();
+        properties.setIncludePrereleases(true);
+        properties.setReleasePublicKeyPath(directory.resolve("qa-public.der"));
+        var key = KeyPairGenerator.getInstance("Ed25519").generateKeyPair();
+        Files.write(properties.getReleasePublicKeyPath(), key.getPublic().getEncoded());
+        var advertised = new java.util.ArrayList<Map<String, Object>>();
+        for (String version : java.util.List.of("1.0.0-qa.2", "1.0.0-qa.10", "1.0.0-qa.3")) {
+            String prefix = "https://github.com/fssrepository/myscoutee/releases/download/v" + version + "/";
+            advertised.add(Map.of("tag_name", "v" + version, "draft", false, "prerelease", true,
+                    "assets", new Object[]{Map.of("name", "myscoutee_" + version + "_amd64.deb",
+                            "size", 123, "browser_download_url", prefix + "myscoutee_" + version + "_amd64.deb"),
+                            Map.of("name", "myscoutee-update.json", "browser_download_url", prefix + "myscoutee-update.json")}));
+        }
+        var manifest = new java.util.LinkedHashMap<String, Object>();
+        manifest.put("manifest_version", "1"); manifest.put("release_version", "1.0.0-qa.10");
+        manifest.put("channel", "qa"); manifest.put("published_at", "2026-09-16T12:00:00Z");
+        manifest.put("minimum_compatible_version", "1.0.0-qa.1"); manifest.put("maximum_compatible_version", "1.0.0-qa.9");
+        manifest.put("artifact_url", "https://github.com/fssrepository/myscoutee/releases/download/v1.0.0-qa.10/myscoutee_1.0.0-qa.10_amd64.deb");
+        manifest.put("artifact_size_bytes", 123); manifest.put("artifact_sha256", "sha256:" + "a".repeat(64));
+        manifest.put("package_signing_key_id", RegistryProtocol.packageSigningKeyId(key.getPublic().getEncoded()));
+        manifest.put("backup_required", true); manifest.put("expected_downtime_seconds", 300); manifest.put("status", "AVAILABLE");
+        var signature = Signature.getInstance("Ed25519");
+        signature.initSign(key.getPrivate());
+        signature.update(RegistryProtocol.releasePackage(mapper.convertValue(manifest, UpdateManifest.class)));
+        manifest.put("package_signature", Base64.getEncoder().encodeToString(signature.sign()));
+        byte[] raw = mapper.writeValueAsBytes(manifest);
+        signature.initSign(key.getPrivate()); signature.update(OperatorUpdateReleaseService.signedMessage(raw));
+        byte[] envelope = mapper.writeValueAsBytes(Map.of("schemaVersion", 1,
+                "manifestBase64", Base64.getEncoder().encodeToString(raw),
+                "signature", Base64.getEncoder().encodeToString(signature.sign())));
+        HttpClient client = mock(HttpClient.class);
+        when(client.send(any(), any(HttpResponse.BodyHandler.class))).thenAnswer(invocation -> {
+            java.net.http.HttpRequest request = invocation.getArgument(0);
+            boolean listing = request.uri().getHost().equals("api.github.com");
+            if (!listing) assertThat(request.uri().getPath()).contains("/v1.0.0-qa.10/");
+            HttpResponse<java.io.InputStream> response = mock(HttpResponse.class);
+            when(response.statusCode()).thenReturn(200);
+            when(response.body()).thenReturn(new ByteArrayInputStream(listing ? mapper.writeValueAsBytes(advertised) : envelope));
+            return response;
+        });
+        var latest = new OperatorUpdateReleaseService(properties, mapper, client).releases().items().getFirst();
+        assertThat(latest.updateManifest().releaseVersion()).isEqualTo("1.0.0-qa.10");
+        assertThat(latest.updateManifest().minimumCompatibleVersion()).isEqualTo("1.0.0-qa.1");
+        verify(client, times(2)).send(any(), any(HttpResponse.BodyHandler.class));
+    }
+
+    @Test
     void unsignedPublishedPackageIsNotReportedAsCurrentOrInstallable() throws Exception {
         HttpClient client = mock(HttpClient.class);
         HttpResponse<java.io.InputStream> response = mock(HttpResponse.class);
         when(response.statusCode()).thenReturn(200);
         when(response.body()).thenReturn(new ByteArrayInputStream(
-                "[{\"draft\":false,\"prerelease\":false,\"assets\":[{\"name\":\"myscoutee_1.0.0_amd64.deb\"}]}]".getBytes()));
+                "[{\"tag_name\":\"v1.0.0\",\"draft\":false,\"prerelease\":false,\"assets\":[{\"name\":\"myscoutee_1.0.0_amd64.deb\"}]}]".getBytes()));
         when(client.send(any(), any(HttpResponse.BodyHandler.class))).thenReturn(response);
         var service = new OperatorUpdateReleaseService(new OperatorUpdateProperties(), mapper, client);
         assertThatThrownBy(service::releases).hasMessageContaining("412").hasMessageContaining("signed update metadata");

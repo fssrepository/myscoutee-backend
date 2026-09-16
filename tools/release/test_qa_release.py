@@ -42,6 +42,12 @@ class QaReleaseTest(unittest.TestCase):
             (packaging / 'templates').mkdir(parents=True)
             (package / 'DEBIAN/control').write_text('Package: myscoutee\nVersion: 1.0.0\nArchitecture: amd64\nMaintainer: QA <qa@example.invalid>\nDescription: QA fixture\n')
             (packaging / 'VERSION').write_text('1.0.0\n')
+            (packaging / 'scripts').mkdir()
+            guard = b"#!/bin/sh\nprintf '%s' x | grep -Eq '^(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)$'\n"
+            (packaging / 'scripts/qualify-deployment.sh').write_bytes(guard)
+            (packaging / 'scripts/start-production.sh').write_bytes(guard)
+            (package / 'DEBIAN/postinst').write_bytes(guard)
+            (package / 'DEBIAN/postinst').chmod(0o755)
             images = package / 'opt/myscoutee/images'
             images.mkdir()
             config = b'{"architecture":"amd64","rootfs":{"type":"layers","diff_ids":[]}}'
@@ -59,7 +65,7 @@ class QaReleaseTest(unittest.TestCase):
             client = work / 'myscoutee-client-tools_1.0.0.tar.gz'
             with tarfile.open(client, 'w:gz') as tar:
                 for name in ('README.md', 'install.env.example', 'install.sh', 'purge.sh', 'forward-localhost.sh', 'remote-transport.sh', 'verify-deployment/run.mjs'):
-                    tar_add(tar, './' + name, b'fixture\n')
+                    tar_add(tar, './' + name, guard if name == 'install.sh' else b'fixture\n')
                 tar_add(tar, './VERSION', b'1.0.0\n')
                 tar_add(tar, './verify-release.sh', (ROOT / 'packaging/client-tools/verify-release.sh').read_bytes())
             before = [sha(deb), sha(client)]

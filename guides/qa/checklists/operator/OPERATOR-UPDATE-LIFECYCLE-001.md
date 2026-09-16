@@ -34,6 +34,21 @@ do not write successful job state or falsify the installed package version.
 The application's normal update path downloads the GitHub artifact. Codex must
 not pre-download or manually install it in place of the action under test.
 
+### Persistent data preservation
+
+This scenario does not test a data-model migration. Inventory all persistent
+stores before installation, including MongoDB, MinIO, other mounted data/volumes,
+deployment identity, secrets, certificates and operator-managed settings.
+User-created records, uploaded objects and customized settings must survive
+upgrade and rollback. Compare retained controls and object hashes before/after;
+a recovery backup is not permission to delete or overwrite live data. Do not
+purge the deployment or reset production databases/volumes for this test.
+Application-owned static resources, such as bundled images, translations and
+explicitly package-managed reference data, may change with a release. Establish
+ownership before replacing anything; sharing a database or bucket does not make
+user content package-owned. Future schema changes require explicit versioned
+migration scripts and separate migration tests.
+
 Before the failure branch, retain a verified recovery baseline and declare one
 reproducible external failure trigger, its phase and its reset. Preserve user
 data and configuration controls for comparison. Remove only the fixture-owned
@@ -133,6 +148,18 @@ Report: `OPERATOR-UPDATE-LIFECYCLE-001 block 4 done`.
     installation. Record missing actions or unsupported recovery as open gaps.
 
 Report: `OPERATOR-UPDATE-LIFECYCLE-001 block 5 done`.
+
+## Deferred update variant: skip an intermediate release
+
+After a genuine signed QA3 release is published, repeat the update/rollback
+blocks with QA1 as the installed baseline and QA3 as the target. While QA2 is
+available, leave it unapplied. Refresh after QA3 appears: QA3 must replace QA2 as
+the offered target. QA3's signed compatibility range must include QA1.
+Apply once and verify one direct QA1 → QA3 job and download, with no QA2 install.
+Rollback must select the actual prior QA1 recovery point, not QA2 merely because
+it precedes QA3 in the release list. Keep the previous-installer cache-miss check.
+Do not mark this variant passed using a renamed QA2 artifact or a fixture-written
+successful job/version. Source tests of release ordering are separate evidence.
 
 ## 6. Managed HTTPS on the VMware target
 

@@ -39,6 +39,17 @@ def json_bytes(value):
     return (json.dumps(value, indent=2) + '\n').encode()
 
 
+def allow_qa_version(raw, debian=True):
+    """Narrow compatibility edit for the original installer/qualifier guard."""
+    text = raw.decode()
+    core = r'^(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)$'
+    if text.count(core) != 1:
+        raise ValueError('Expected exactly one original Debian version guard')
+    suffix = r'(~qa\.(0|[1-9][0-9]*))?$' if debian else r'(-qa\.(0|[1-9][0-9]*))?$'
+    return text.replace(core, core[:-1] + suffix).replace(
+        'plain SemVer core', 'SemVer core or <core>' + ('~' if debian else '-') + 'qa.<number>').encode()
+
+
 def rewrite_archive(source, target, replacements):
     """Copy archive entries, changing only explicitly named metadata entries."""
     remaining = set(replacements)
@@ -161,6 +172,10 @@ def main():
         manifest['releaseVersion'] = args.version
         manifest_path.write_bytes(json_bytes(manifest))
         (packaging / 'VERSION').write_text(args.version + '\n')
+        qualifier = packaging / 'scripts/qualify-deployment.sh'
+        qualifier.write_bytes(allow_qa_version(qualifier.read_bytes()))
+        for script in (package / 'DEBIAN/postinst', packaging / 'scripts/start-production.sh'):
+            script.write_bytes(allow_qa_version(script.read_bytes(), debian=False))
         control = package / 'DEBIAN/control'
         control.write_text(re.sub(r'^Version: .*$', 'Version: ' + args.version.replace('-', '~'), control.read_text(), flags=re.M))
         md5sums = package / 'DEBIAN/md5sums'
@@ -181,13 +196,15 @@ def main():
         rewrite_archive(args.client_tools, client_tools, {
             './VERSION': lambda _: (args.version + '\n').encode(),
             './verify-release.sh': lambda _: (ROOT / 'packaging/client-tools/verify-release.sh').read_bytes(),
+            './install.sh': allow_qa_version,
         })
         record = {'version': args.version, 'debianVersion': args.version.replace('-', '~'),
                   'originalDebSha256': args.deb_sha256, 'originalClientToolsSha256': args.client_tools_sha256,
                   'imagesBefore': retained_images, 'imagesAfter': manifest['images'],
                   'imagePayloadBytesPreserved': True,
                   'applicationCodeChanged': False,
-                  'clientToolsChange': 'VERSION and prerelease-aware verify-release.sh only',
+                  'packageScriptChange': 'QA version guards in postinst, start-production.sh and qualify-deployment.sh',
+                  'clientToolsChange': 'VERSION, prerelease-aware verify-release.sh and install.sh version guard',
                   'artifacts': {p.name: digest(p) for p in (deb, client_tools)}}
         (output / 'REVERSION.json').write_bytes(json_bytes(record))
         output.rename(args.output_dir)

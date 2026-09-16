@@ -66,12 +66,25 @@ public class OperatorUpdateReleaseService {
             if (!releases.isArray()) {
                 throw new IllegalArgumentException("Invalid release list.");
             }
-            // GitHub returns releases newest first. Resolve one candidate, not every historical artifact.
+            // Publication order can differ from version order when older releases are edited.
+            // Select the highest version; postponing an update does not create an upgrade queue.
+            List<JsonNode> candidates = new ArrayList<>();
             for (JsonNode release : releases) {
                 if (release.path("draft").asBoolean()
                         || (release.path("prerelease").asBoolean() && !properties.isIncludePrereleases())) {
                     continue;
                 }
+                for (JsonNode asset : release.path("assets")) {
+                    if (asset.path("name").asText().endsWith(".deb")) {
+                        releaseVersion(release); // Reject malformed version tags instead of hiding them.
+                        candidates.add(release);
+                        break;
+                    }
+                }
+            }
+            candidates.sort((left, right) -> RegistryProtocol.compareSemanticVersions(
+                    releaseVersion(right), releaseVersion(left)));
+            for (JsonNode release : candidates) {
                 JsonNode metadata = null;
                 boolean hasPackage = false;
                 for (JsonNode asset : release.path("assets")) {
@@ -93,6 +106,9 @@ public class OperatorUpdateReleaseService {
                     throw new IllegalArgumentException("Unexpected update metadata origin.");
                 }
                 OperatorAnnouncementDto candidate = verify(read(metadataUri, MAX_METADATA_BYTES));
+                if (!candidate.updateManifest().releaseVersion().equals(releaseTagVersion(release))) {
+                    throw new IllegalArgumentException("Signed version does not match the selected release tag.");
+                }
                 boolean artifactMatches = false;
                 for (JsonNode asset : release.path("assets")) {
                     artifactMatches |= candidate.updateManifest().artifactUrl().equals(asset.path("browser_download_url").asText())
@@ -112,6 +128,15 @@ public class OperatorUpdateReleaseService {
         } catch (Exception exception) {
             throw new ResponseStatusException(HttpStatus.BAD_GATEWAY, "Could not verify the published release.", exception);
         }
+    }
+
+    private static String releaseTagVersion(JsonNode release) {
+        String tag = release.path("tag_name").asText();
+        return tag.startsWith("v") ? tag.substring(1) : tag;
+    }
+
+    private static RegistryProtocol.SemanticVersion releaseVersion(JsonNode release) {
+        return RegistryProtocol.requireSemanticVersion(releaseTagVersion(release), "GitHub release tag");
     }
 
     public OperatorAnnouncementDto find(String id) {

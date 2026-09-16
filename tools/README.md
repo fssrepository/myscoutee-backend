@@ -9,6 +9,9 @@ in this directory:
   MinIO state. Use `--dry-run` before destructive use.
 - `seeds/` contains canonical static demo/E2E seed maintenance and generation
   tools; these do not connect to a running database.
+- `release/` contains [historical QA artifact preparation](release/README.md):
+  consistent prerelease versioning, retained-key signing and signature checks.
+  It does not build images, upload releases or install packages.
 - `smoke/` contains short-lived, replayable local smoke fixtures. They are
   separate from canonical seeds and from the versioned manual-QA checkpoints.
 - `trust/validate-trust-library.sh` validates the repository-local agent trust

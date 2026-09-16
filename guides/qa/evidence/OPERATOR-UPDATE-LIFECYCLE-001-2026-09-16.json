@@ -49,13 +49,14 @@
       "debVersion": "1.0.0",
       "sha256": "ae35b95bb3054eea5f6a2d7287d8838c98a5194a01854d9e367b64f60f03d164",
       "downloadedForBaseline": true,
-      "imageManifestSha256": "b598cd91e2c778a91c477ad350afcb2c81d08f91c9eedebbe85c9de8be0bb987"
+      "imageManifestSha256": "b598cd91e2c778a91c477ad350afcb2c81d08f91c9eedebbe85c9de8be0bb987",
+      "source": "Fresh GitHub download; size and digest verified against release API. Original artifact retained."
     },
     "qa2": {
       "tag": "v1.0.0-qa.2",
       "debVersion": "1.0.0",
       "sha256": "9b7478c4cb4483c42b2ab57653a10dd876247dd648c61432d37702ec69ed74a4",
-      "source": "existing local artifact; digest matches published release",
+      "source": "Fresh GitHub download; size and digest verified against release API. Original artifact retained.",
       "imageManifestSha256": "166ff605520b1c00861169f2bad459df6d09abcd9303674e3a97e4a2e1827057",
       "installedManifestMatchesBeforeQa1Installation": true
     },
@@ -141,5 +142,156 @@
     },
     "candidate": "Corrected local QA1 baseline build authorized by user; does not replace the published GitHub QA1 identity.",
     "liveResult": "PENDING"
+  },
+  "releasePreparation": {
+    "status": "PUBLISHED_AND_GITHUB_DIGEST_VERIFIED",
+    "versions": [
+      "1.0.0-qa.1",
+      "1.0.0-qa.2"
+    ],
+    "debianVersions": [
+      "1.0.0~qa.1",
+      "1.0.0~qa.2"
+    ],
+    "stableVersion": "1.0.0",
+    "tools": [
+      "tools/release/reversion-qa-artifacts.py",
+      "tools/release/sign-qa-release.py"
+    ],
+    "outputDirectory": "packaging/dist/signed-existing-qa-20260916/prepared",
+    "checks": [
+      "packaging/tests/release-signing-test.sh PASS",
+      "tools/release/test_qa_release.py PASS",
+      "All four artifact checksum sidecars verified",
+      "Bundled client verifier matches the tested version",
+      "Original image IDs/content fingerprints and payload bytes retained",
+      "GitHub API confirms six matching asset sizes/digests per release; original four assets retained locally before removal; tags unchanged"
+    ],
+    "githubMutated": true,
+    "vmMutatedDuringSigning": false,
+    "limitations": [
+      "Reversion and signatures retain historical application image payloads, including their original updater limitations. No Registry-independent UI upgrade or rollback PASS claimed.",
+      "Current source production builder calls sync_frontend_assets.sh prod. Do not invoke that path until production output is isolated from the dev nginx directory, as explicitly required by the user."
+    ],
+    "preparedReleases": [
+      {
+        "tag": "v1.0.0-qa.1",
+        "debianVersion": "1.0.0~qa.1",
+        "sha256": "sha256:4ade2b160a2a47098e9e8659cf368a680fd77eadff04644c78f3b0f0bb8c1b9c",
+        "signingKeyFingerprint": "sha256:cb936e5e3af21c7f3e72e569277ec00b4a5e18e13ddc083a08fc70f238ad2135",
+        "upload": [
+          "myscoutee_1.0.0-qa.1_amd64.deb",
+          "myscoutee-client-tools_1.0.0-qa.1.tar.gz",
+          "myscoutee-release_1.0.0-qa.1.json",
+          "myscoutee-update.json",
+          "myscoutee_1.0.0-qa.1_amd64.deb.sha256",
+          "myscoutee-client-tools_1.0.0-qa.1.tar.gz.sha256"
+        ],
+        "imagePayloadBytesPreserved": true
+      },
+      {
+        "tag": "v1.0.0-qa.2",
+        "debianVersion": "1.0.0~qa.2",
+        "sha256": "sha256:86a2de6f5d41ee7a55de69b51f6ff1ddd717e48dba22ad09a104fb605f4809b0",
+        "signingKeyFingerprint": "sha256:cb936e5e3af21c7f3e72e569277ec00b4a5e18e13ddc083a08fc70f238ad2135",
+        "upload": [
+          "myscoutee_1.0.0-qa.2_amd64.deb",
+          "myscoutee-client-tools_1.0.0-qa.2.tar.gz",
+          "myscoutee-release_1.0.0-qa.2.json",
+          "myscoutee-update.json",
+          "myscoutee_1.0.0-qa.2_amd64.deb.sha256",
+          "myscoutee-client-tools_1.0.0-qa.2.tar.gz.sha256"
+        ],
+        "imagePayloadBytesPreserved": true
+      }
+    ],
+    "publication": [
+      {
+        "tag": "v1.0.0-qa.1",
+        "releaseId": 370956129,
+        "url": "https://github.com/fssrepository/myscoutee/releases/tag/v1.0.0-qa.1",
+        "assets": [
+          {
+            "name": "myscoutee-client-tools_1.0.0-qa.1.tar.gz",
+            "size": 25200,
+            "digest": "sha256:8bd55d3b26820ad3829105e9650994af9c7aafb4972fd3048bb178a18b8d3ff4"
+          },
+          {
+            "name": "myscoutee-client-tools_1.0.0-qa.1.tar.gz.sha256",
+            "size": 107,
+            "digest": "sha256:b9f00240a317f77bddc1c91a823ca99e1d80793f3844e117c1e0f9078d649bd6"
+          },
+          {
+            "name": "myscoutee-release_1.0.0-qa.1.json",
+            "size": 817,
+            "digest": "sha256:cd0c14e1b74680918187d6e381a130fba0bb032710cda7581ce47ccd4c023515"
+          },
+          {
+            "name": "myscoutee-update.json",
+            "size": 1392,
+            "digest": "sha256:2083a8cef1ee9ca5e3ef3877fb3f13a26a71bbb2984d8e85294fb12ce3e40993"
+          },
+          {
+            "name": "myscoutee_1.0.0-qa.1_amd64.deb",
+            "size": 355952288,
+            "digest": "sha256:4ade2b160a2a47098e9e8659cf368a680fd77eadff04644c78f3b0f0bb8c1b9c"
+          },
+          {
+            "name": "myscoutee_1.0.0-qa.1_amd64.deb.sha256",
+            "size": 97,
+            "digest": "sha256:401f37fe9e2e162da5d1e1e5f2259cc5ff3e08ea4f8c3d5605f0fb5fea283039"
+          }
+        ],
+        "gitTagMoved": false
+      },
+      {
+        "tag": "v1.0.0-qa.2",
+        "releaseId": 383272706,
+        "url": "https://github.com/fssrepository/myscoutee/releases/tag/v1.0.0-qa.2",
+        "assets": [
+          {
+            "name": "myscoutee-client-tools_1.0.0-qa.2.tar.gz",
+            "size": 25200,
+            "digest": "sha256:0a50afc5073d6df52ea21b2b2bd7ddb32aded1ddd548cb6e29fcbb87927d4327"
+          },
+          {
+            "name": "myscoutee-client-tools_1.0.0-qa.2.tar.gz.sha256",
+            "size": 107,
+            "digest": "sha256:b8ecb97b281fbf01f6231a351beb541f78571921e715e2c3fc31e779ac50c6b0"
+          },
+          {
+            "name": "myscoutee-release_1.0.0-qa.2.json",
+            "size": 817,
+            "digest": "sha256:4a98629db73f612f0b0641dd4769034ec58ca55b3655ca8c61433ae4cac6a2bf"
+          },
+          {
+            "name": "myscoutee-update.json",
+            "size": 1408,
+            "digest": "sha256:0a34748163f9c2ba7e7d5803ad0dc83330d2c618703efe579095078c896fd853"
+          },
+          {
+            "name": "myscoutee_1.0.0-qa.2_amd64.deb",
+            "size": 362339928,
+            "digest": "sha256:86a2de6f5d41ee7a55de69b51f6ff1ddd717e48dba22ad09a104fb605f4809b0"
+          },
+          {
+            "name": "myscoutee_1.0.0-qa.2_amd64.deb.sha256",
+            "size": 97,
+            "digest": "sha256:72d9dceab9e110ab5177f9de57f305f8226b92f56049a0b8de4fda75c20b802b"
+          }
+        ],
+        "gitTagMoved": false
+      }
+    ]
+  },
+  "releaseSelection": {
+    "sourceTest": "PASS: highest SemVer QA release wins over API publication order; QA10 correctly ranks above QA3 and QA2; signed compatibility includes QA1",
+    "liveDeferredUpdate": "NOT RUN; requires real QA3 release",
+    "rollbackTargetRule": "Actual installed previous release QA1, not skipped QA2"
+  },
+  "dataPreservation": {
+    "rule": "User-created persistent content and settings must survive; explicitly application-owned static data may be replaced. No schema migration in this test.",
+    "inventory": "IN_PROGRESS",
+    "verification": "NOT RUN"
   }
 }

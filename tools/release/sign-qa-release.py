@@ -55,6 +55,8 @@ def main():
     if key_dir.stat().st_mode & 0o077:
         parser.error('QA key directory must have mode 0700')
     key = key_dir / 'qa-release-private.pem'
+    if key.is_symlink():
+        parser.error('QA private key must not be a symbolic link')
     if not key.exists():
         if not args.create_qa_key:
             parser.error('No retained QA key; explicitly use --create-qa-key for first preparation')
