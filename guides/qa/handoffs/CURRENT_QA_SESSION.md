@@ -85,9 +85,8 @@ resume pointer and reusable working method.
 
 Campaign scheduling, confirmed 2026-09-16: Operator Update is complete. Asset
 Pricing remains tomorrow's selected user-controlled pair-QA checkpoint; Borrow
-is parked. The user now explicitly delegates fixture-backed normal-account UI
-smoke on the installed VMware app, plus a separate security/startup/memory
-campaign with its own [Excel ledger](../../qualification/SECURITY_AND_INFRASTRUCTURE.xlsx).
+is parked. The user has taken over normal-account UI smoke on the installed
+VMware app; Codex continues the separate security/startup/memory campaign with its own [Excel ledger](../../qualification/SECURITY_AND_INFRASTRUCTURE.xlsx).
 These do not advance the pair-QA matrix. Retain smoke-created profile, Event,
 Asset and media as fixture-owned controls for the next release update. After
 Asset QA is complete, prepare/publish the stable application and Registry release
@@ -154,7 +153,7 @@ transactional results in the pack/matrix. This preparation is not a test PASS.
 
 The user explicitly delegates the remaining Administration test and then all four
 Operator journeys to Codex, with visible numbered progress and in-scope repairs.
-VMware deployment UI smoke is a separate automated, non-demo registration/profile/Event/Asset image journey, outside the QA matrix; see guides/releases/PRERELEASE_DEPLOYMENT_QUALIFICATION.md. Firebase prerequisites belong to its deploy smoke fixture. No deployment is started by this note.
+VMware deployment UI smoke is now user-operated: Codex must not navigate or submit its browser actions. It remains a non-demo registration/profile/Event/Asset image journey outside the QA matrix; see guides/releases/PRERELEASE_DEPLOYMENT_QUALIFICATION.md. Firebase prerequisites belong to its deploy smoke fixture. Production QA data was wiped and reloaded from corrected JSON at the user’s request on 2026-09-16. The QA-only firebase-smoke-fixture.py restores activation/readiness as fixture state, not evidence of the browser Message Test. Any future retained-data controls must be created after this reset. No deployment is started by this note.
 
 The two remaining Asset tests are explicitly reserved for pair QA: prepare their
 versioned fixtures/managed startup, then the user controls all checklist actions.

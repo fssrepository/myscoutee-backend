@@ -66,3 +66,9 @@ E2E has a separately scaled activity dataset. Event policies, nested slot pricin
 The explicitly authorized production test documents were cleared and the 19 allow-listed production JSON files imported through mongo_import.sh. Existing Mongo authentication and indexes were retained; demo/Registry databases and object storage were not reset. All 150 db_init.js index definitions were found after import, including the four saved-payment-method indexes. Firebase smoke setup is a separate authenticated runtime configuration, never embedded in seeds.
 
 The earlier image failure was missing media.read in the retained live database; the rule already existed in all three canonical policy JSON files. Its presence in the fresh import is verified; the user owns the browser smoke retest.
+
+## Index behavior verification
+
+On the existing VMware MongoDB, an isolated temporary database created all 150 indexes twice. Duplicate active resource assignments, payment registration IDs and user emails were rejected; repeated inactive resource history and missing optional payment registration IDs were accepted. The temporary database was dropped after the test. Live verification also checked index keys, uniqueness, sparsity, TTL, partial predicates and declared collation settings. See [index evidence](evidence/seed-indexes-20260916.json).
+
+The old non-unique users_email index was in the retained demo DB, not in the corrected production seed. Re-running the all-database initializer against that unrelated historical DB caused the earlier conflict; the production reload retains its initialized indexes and uses the existing scoped importer. No selector or conditional index repair was added to db_init.js.

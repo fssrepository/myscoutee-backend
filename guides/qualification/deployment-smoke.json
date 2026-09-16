@@ -7,13 +7,18 @@
     ],
     [
       "Fixture",
-      "PREPARING",
-      "Prepare Firebase prerequisites and four distinguishable images; preserve configuration snapshot privately."
+      "RESTORED AFTER AUTHORIZED WIPE",
+      "Production JSON baseline reloaded. Real Firebase Auth Test passed; firebase-smoke-fixture.py stages active Firebase/readiness as a smoke prerequisite. Browser Message Test is NOT RUN by this fixture."
+    ],
+    [
+      "Seed / indexes",
+      "PASS",
+      "All 40 seed baselines reviewed; 150 bootstrap index definitions verified on VMware. Fresh isolated Mongo index tests passed."
     ],
     [
       "Registration + photo",
-      "NOT RUN",
-      "Normal non-demo UI; retain profile."
+      "USER RETEST PENDING",
+      "Earlier production image failure: missing media.read in retained DB. Fresh seed contains all 50 policies. User controls browser; no UI PASS claimed."
     ],
     [
       "Profile update + new photo",
