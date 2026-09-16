@@ -21,7 +21,7 @@ Compare against the final handoff baseline, not the earlier source-restart basel
 
 Expected packaged static-seed differences from QA2 r8: `communityProviders.json` added; `affinityConfigs.json` and `i18n_messages.json` changed. Existing migration scripts are unchanged. This inventory alone does not prove what the installer actually changes.
 
-## Prepared release and browser
+## Initial release and browser (superseded by r4 below)
 
 - Package: `packaging/dist/qa3-20260916-permission-sync/myscoutee_1.0.0-qa.3_amd64.deb` (335253454 bytes).
 - SHA-256: `d8f8e32a5ce6852115448e3dd6e2603935b6a8b127ddb422ab06c9490414df05`.
@@ -31,7 +31,7 @@ Expected packaged static-seed differences from QA2 r8: `communityProviders.json`
 - Versioned launcher `OPERATOR-UPDATE-QA3-PRESERVATION` prepared one isolated Operator session and confirmed the Operator page. Other browser sessions preserved. No Check/Apply/Update action performed.
 - Final pre-update snapshot: `qa3-handoff-before-update-20260916.json` beside this document; guest copy `/var/lib/myscoutee/qa-fixtures/qa3-handoff-before-update-20260916.json`.
 
-Status: QA3 prepared and Operator browser handed to the user. Update and post-update comparison remain pending user action.
+Initial handoff: Operator browser handed to the user. Final served artifact and comparison baseline are now r4 below.
 
 ## Reported live save defect, 20:59
 
@@ -55,3 +55,26 @@ QA3 source removes both dependencies from settings Save/display, as documented a
 - Live Operator diagnostic: active service worker, browser Push subscription present; Firebase Installations and FCM registration requests both200; nginx recorded Operator device registration POST200. No exact timeout cause was captured from the separate user-owned member browser. Do not equate the Operator success with member/WebView proof.
 
 r2 package was built but not published. The user then requested that unconfigured Messaging also render Notifications OFF and disabled. This is implemented in the popup/store and included in the repeated54 passing tests. QA3 r3 is being built with all reported fixes. Existing QA3 was not installed by Codex.
+
+
+## Final source additions, 21:25
+
+- The user accepted the existing runtime-config gate after its source was traced: `FirebaseAppService.loadFirebaseConfig()` fetches `/api/deployment/configuration/firebase-config` with `cache: no-store`. The backend returns persisted, active Operator configuration; VAPID is not taken from a frontend build-time key. No duplicate server capability flag was added. Production notification controls remain OFF/disabled without a usable active runtime; local adapter behavior is unchanged.
+- Community defect confirmed through read-only authenticated GETs: announcements409 and Registry200 with `UNCONFIGURED`, `enabled=false`. The HTTP adapter now returns `operator.community.error.registration.required` for this confirmed prerequisite. Other failures retain translated generic/timeout messages. No registration or announcement data was mutated.
+- Removed the standalone Operator heading beside Community/avatar, including its unused style and computed label.
+- 57 focused tests PASS (13 Messaging,4 location,40 HTTP Operator Registry), including Community409 both with and without registered state and503. EN/HU bundles and all three Mongo translation seeds pass the i18n consistency audit.
+- r3 completed but was not published. r4 packages the additional Community message and heading removal; only the frontend changed since the already-built backend. Real notification delivery, live QA3 interaction, and post-update data preservation still require the user-operated update.
+
+
+## Final r4 handoff
+
+- Served release version: `1.0.0-qa.3`; UI build `qa3-20260916-permission-sync-r4`.
+- Artifact: `packaging/dist/qa3-20260916-permission-sync-r4/myscoutee_1.0.0-qa.3_amd64.deb`, 335252742 bytes.
+- SHA-256: `20fa173e8330676009006cc8d62ca64e323f6cc748ac485a8a0020458a725b57`.
+- Package/helper signatures and update manifest signature verified with the retained QA signing key. Full trusted-HTTPS download matched signed size and SHA-256.
+- VM successfully fetched the catalog using its configured CA. Catalog retains the actual installed QA2 r8 package for rollback.
+- Serving root `/tmp/myscoutee-local-release-qa3-r4-20260916`, PID1500176, origin unchanged: `https://192.168.153.1:18445`. Replaced only the previous fixture server after confirming no established download connection.
+- Final baseline `qa3-r4-before-update-20260916.json`: QA2, 53 production collections, 7024 documents, 911 media objects. Guest copy `/var/lib/myscoutee/qa-fixtures/qa3-r4-before-update-20260916.json`.
+- User must Check for updates again before Apply because the prepared QA3 artifact hash changed. Existing managed Operator session remains open. No browser action, app update, database mutation, Git action, or GitHub upload was performed in this finalization.
+
+Status: signed QA3 r4 ready on HTTPS. User-operated installation and subsequent before/after data comparison are pending; real member notification delivery and installed UI verification remain unproven.

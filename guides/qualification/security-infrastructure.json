@@ -274,7 +274,7 @@
       "SOURCE FIX / VM RETEST PENDING",
       "P2",
       "When native permission is granted, save the browser preference immediately and register FCM in the background. Settings popup remains open after Update; login permission gate still closes on completion. Switch reflects saved preference, not token registration completion. Backend device writes capped at 3s; initial FCM token setup runs in the background with a 30s bound; native decision is not timed out. VM still runs older frontend. Granted geolocation is now synchronized in the background on Settings Update as well; a failed first save does not mark optimistic coordinates as persisted, allowing a later retry. r2 preloads the Messaging configuration before the explicit native-permission click and skips native/token work when unconfigured. Opt-out writes backend removal without waiting for Firebase.",
-      "54 focused tests PASS (13 messaging, 4 location, 37 HTTP Operator Registry); production r2 frontend and seed/i18n gates passed; QA3 replacement packaging in progress; real member notification delivery remains unproven."
+      "57 focused tests PASS (13 messaging, 4 location, 40 HTTP Operator Registry); production r4 frontend and seed/i18n gates passed; signed QA3 r4 served on local HTTPS; VM catalog and streamed artifact hash verified; user-operated update pending. Runtime VAPID is loaded from server Operator configuration; missing runtime renders Notifications OFF/disabled. Real member notification delivery and installed QA3 behavior remain unproven."
     ]
   ]
 }
