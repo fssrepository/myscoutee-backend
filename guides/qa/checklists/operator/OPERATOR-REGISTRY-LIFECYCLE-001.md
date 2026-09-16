@@ -3,8 +3,8 @@
 ## Purpose
 
 Register one disposable QA binding, complete one claim/link path, compare
-community/leaderboard membership, synchronize one measurement period, then
-deactivate and restore the binding. Verify the corresponding local and
+community/leaderboard membership, synchronize measurements, then
+disconnect and establish a new connection. Verify the corresponding local and
 Registry records as well as the visible results.
 
 **Actors:** the prepared Operator, named claimant, and member/Admin used for
@@ -64,16 +64,21 @@ Report: `OPERATOR-REGISTRY-LIFECYCLE-001 block 2 done`.
 
 Report: `OPERATOR-REGISTRY-LIFECYCLE-001 block 3 done`.
 
-## 4. Deactivation, recovery and exact restoration
+## 4. Disconnect, reconnect and exact restoration
 
 14. Deactivate the named binding using its normal lifecycle action. Observe the
     resulting local and Registry state for that same connection.
-15. Check the prepared member and Admin clients: access fails closed according
-    to the inactive-binding contract. Operator recovery remains reachable.
-16. Reactivate the same binding. Permitted member/Admin access returns without
-    another identity, group or membership; the accepted measurement is not duplicated.
-17. Codex compares baseline/current binding, claim, membership and report counts,
-    their signed evidence/receipts and the visible results.
+15. Verify local user and activity data remain intact. Member/Admin local access
+    and Operator recovery remain available; Registry-dependent actions reflect
+    the disconnected state. Disconnecting is not deletion of the local application.
+16. Connect again through the normal registration action. This establishes a new
+    connection, not restoration of the old binding or claim. Identify the old
+    archived connection and the new accepted enrollment separately.
+17. Synchronize the retained local source data through the new connection. With
+    unchanged sources, the same period totals must result; additional qualifying
+    records must be reflected if present. Compare source totals, accepted reports
+    and signed receipts. Reopening must not create duplicates within the new
+    connection; do not mistake its legitimate new records for duplicates of the old one.
 18. Restore the declared local and Registry QA baselines exactly. Retain the
     execution evidence separately from fixture cleanup and verify control state.
 
@@ -87,8 +92,8 @@ Report: `OPERATOR-REGISTRY-LIFECYCLE-001 done`.
 | Claim/link and claim/group receipt | Block 2, steps 5–7 |
 | Community/leaderboard membership and provider availability | Block 2, steps 8–9 |
 | Measurement report, exact totals and accepted receipt | Block 3 |
-| Member/Admin fail-closed access and retained Operator recovery | Block 4, steps 14–16 |
-| No duplicate identity/group/report and exact restored state | Reopen checks and block 4 closure |
+| Local data/access retained; Registry disconnect and new connection | Block 4, steps 14–16 |
+| Retained-source resynchronization, no duplicates within a connection, exact restored state | Block 4, steps 17–18 and reopen checks |
 
 ## Execution boundary
 

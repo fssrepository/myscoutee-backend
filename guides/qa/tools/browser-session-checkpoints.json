@@ -1769,6 +1769,15 @@
           "targetUrl": "http://localhost/admin",
           "entryUrl": "http://localhost/entry?redirect=%2Fadmin",
           "autoDismissExplanationGuide": false
+        },
+        {
+          "actor": "Casey",
+          "sessionKind": "demo",
+          "userId": "650000000000000000000061",
+          "expectedName": "Casey Bridge",
+          "targetUrl": "http://localhost/game",
+          "entryUrl": "http://localhost/entry?redirect=%2Fgame",
+          "autoDismissExplanationGuide": true
         }
       ]
     }

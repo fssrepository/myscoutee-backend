@@ -66,9 +66,44 @@
         "claim-content-sized-mobile.png",
         "deployment-header-after.png"
       ]
+    },
+    "measurementSourceId": {
+      "cause": "Activity membership ObjectId passed directly to Mongo $concat",
+      "fix": "Convert only that _id to string",
+      "liveReplay": "PASS: all six monthly reports accepted with exact source totals",
+      "watcherBuild": "BUILD SUCCESSFUL; backend restart 2026-09-16T09:34:29Z"
+    },
+    "measurementErrorText": {
+      "fix": "Return existing i18n key operator.measurements.error.synchronize; detailed exception retained in server log",
+      "regressionTestAdded": true,
+      "unitTestRun": false,
+      "reason": "Existing dev watcher owns compilation; no second Gradle process started",
+      "newFailureUiReplay": false
+    },
+    "registrationPopup": {
+      "status": "PASS",
+      "sharedConfig": {
+        "mobilePresentation": "fullscreen",
+        "bodyLayout": "default"
+      },
+      "mobile390x500": "Panel fills viewport; all content fits",
+      "mobile390x350": {
+        "scrollTop": 100,
+        "bodyClientHeight": 291,
+        "bodyScrollHeight": 391,
+        "headerTop": 0,
+        "bottomActionVisible": true,
+        "horizontalOverflow": false
+      },
+      "desktop": "Content contained and scrollable at 916x544",
+      "errorText": "Existing localized short disconnect error; fixed 18px icon flex basis",
+      "screenshots": [
+        "popup-fullscreen-mobile-before-scroll.png",
+        "popup-fullscreen-mobile-scrolled.png"
+      ]
     }
   },
-  "next": "Block3 step10: snapshot measurement writes and prepare deterministic source totals before UI synchronization.",
+  "next": "Block4 steps14\u201318, corrected to user contract: disconnect preserves local data/access; reconnect is a new connection; resynchronize retained sources and restore paired baseline.",
   "block2": {
     "status": "PASS",
     "claimAction": "opa_5d5803ac8a128a9d5ee1a3f33c9cb4c6",
@@ -87,5 +122,151 @@
     "ledgerAfterRead": 45,
     "reviewBoundary": "Approved claim/group verified; latest deployment-view reopen retained one owner, ledger45, audit7 and review3. Audit7 is the pre/post boundary for this reopen; earlier UI review began at audit5.",
     "finalReadAuditIndex": 7
+  },
+  "block3": {
+    "status": "PASS",
+    "sourcesUnchanged": true,
+    "expected": [
+      {
+        "period": "2026-03",
+        "qualifiedMauCount": 5,
+        "actionCount": 15,
+        "actionCounts": {
+          "rate": 7,
+          "join": 4,
+          "verified-attendance": 4
+        }
+      },
+      {
+        "period": "2026-04",
+        "qualifiedMauCount": 1,
+        "actionCount": 9,
+        "actionCounts": {
+          "book": 9
+        }
+      },
+      {
+        "period": "2026-05",
+        "qualifiedMauCount": 3,
+        "actionCount": 7,
+        "actionCounts": {
+          "join": 4,
+          "verified-attendance": 3
+        }
+      },
+      {
+        "period": "2026-06",
+        "qualifiedMauCount": 0,
+        "actionCount": 0,
+        "actionCounts": {}
+      },
+      {
+        "period": "2026-07",
+        "qualifiedMauCount": 4,
+        "actionCount": 11,
+        "actionCounts": {
+          "join": 8,
+          "book": 1,
+          "verified-attendance": 2
+        }
+      },
+      {
+        "period": "2026-08",
+        "qualifiedMauCount": 0,
+        "actionCount": 0,
+        "actionCounts": {}
+      }
+    ],
+    "reports": [
+      {
+        "id": "6aaa62b92f4376e92506f323",
+        "period": "2026-03",
+        "status": "ACCEPTED",
+        "attempts": 1,
+        "receipt": {
+          "ledgerIndex": 46,
+          "period": "2026-03",
+          "qualifiedMauCount": 5,
+          "acceptedAt": "2026-09-16T09:34:49Z",
+          "signaturePresent": true
+        }
+      },
+      {
+        "id": "6aaa62b92f4376e92506f324",
+        "period": "2026-04",
+        "status": "ACCEPTED",
+        "attempts": 1,
+        "receipt": {
+          "ledgerIndex": 47,
+          "period": "2026-04",
+          "qualifiedMauCount": 1,
+          "acceptedAt": "2026-09-16T09:34:49Z",
+          "signaturePresent": true
+        }
+      },
+      {
+        "id": "6aaa62b92f4376e92506f325",
+        "period": "2026-05",
+        "status": "ACCEPTED",
+        "attempts": 1,
+        "receipt": {
+          "ledgerIndex": 48,
+          "period": "2026-05",
+          "qualifiedMauCount": 3,
+          "acceptedAt": "2026-09-16T09:34:49Z",
+          "signaturePresent": true
+        }
+      },
+      {
+        "id": "6aaa62b92f4376e92506f326",
+        "period": "2026-06",
+        "status": "ACCEPTED",
+        "attempts": 1,
+        "receipt": {
+          "ledgerIndex": 49,
+          "period": "2026-06",
+          "qualifiedMauCount": 0,
+          "acceptedAt": "2026-09-16T09:34:49Z",
+          "signaturePresent": true
+        }
+      },
+      {
+        "id": "6aaa62b92f4376e92506f327",
+        "period": "2026-07",
+        "status": "ACCEPTED",
+        "attempts": 1,
+        "receipt": {
+          "ledgerIndex": 50,
+          "period": "2026-07",
+          "qualifiedMauCount": 4,
+          "acceptedAt": "2026-09-16T09:34:49Z",
+          "signaturePresent": true
+        }
+      },
+      {
+        "id": "6aaa62b92f4376e92506f328",
+        "period": "2026-08",
+        "status": "ACCEPTED",
+        "attempts": 1,
+        "receipt": {
+          "ledgerIndex": 51,
+          "period": "2026-08",
+          "qualifiedMauCount": 0,
+          "acceptedAt": "2026-09-16T09:34:49Z",
+          "signaturePresent": true
+        }
+      }
+    ],
+    "reopenNoDuplicates": true,
+    "ledgerAfterReopen": 51,
+    "auditAfterReopen": 7,
+    "reviewAfterReopen": 3
+  },
+  "block4": {
+    "status": "IN PROGRESS",
+    "firstDisconnect": "PASS: archived binding; retained local collection counts identical",
+    "reconnect": "PASS: fresh registration, installation ledger 52; old claim remains withdrawn",
+    "retainedSourceResync": "PASS: identical six accepted periods, created/submitted/accepted 0; no duplicates",
+    "secondDisconnect": "FAIL: old lifecycle idempotency key reused across fresh registration; archive collision. Targeted clean replay pending."
   }
 }

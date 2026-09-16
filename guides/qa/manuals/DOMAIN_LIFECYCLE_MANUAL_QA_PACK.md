@@ -7534,8 +7534,9 @@ cache and original build snapshots. Updated-device replay is not yet proven.
 
 - Register one disposable local binding, complete one claim/link path, inspect
   its leaderboard/community projection and synchronize one measurement period.
-- Deactivate/reactivate once to verify member/admin fail-closed behavior and
-  retained Operator recovery, then restore the disposable binding.
+- Disconnect and reconnect through a new enrollment, preserving local data and
+  local member/Admin access. Resynchronize retained sources, then restore the
+  disposable QA baseline.
 - Protocol abuse, retry storms, token-security probes, announcement fan-out and
   worker failures belong to automated regression coverage.
 
@@ -7561,7 +7562,19 @@ audit7 and review3. Community was reopened; catalog links do not prove external
 Discord/Discourse participation. Claim percentage uses the shared popup header;
 creation link is inside the Client code title row. The mobile Claim action uses
 shared app-menu content sizing (390px viewport, no horizontal overflow).
-Next: block 3 measurement source fixture, exact totals and accepted receipts.
+Block 3 steps 10–13 PASS: six completed periods March–August produced QMAU
+counts 5/1/3/0/4/0 and action counts 15/9/7/0/11/0. All six reports were
+accepted on their first delivery with signed receipts at ledger46–51. The
+source fingerprint was unchanged and reopening created no additional reports.
+Fixed a real Mongo aggregation failure by converting the activity membership
+ObjectId to string before concatenation. Raw synchronization exceptions now
+map to an existing translated error key; technical detail stays in server logs.
+The new service regression test was added but not separately run during the
+active watcher. No fresh failure UI replay is claimed.
+User corrected block4: reconnect creates a new connection; local data persists
+and is resynchronized, including additional qualifying records if present.
+The former full local access denial/old-binding restoration assertions were
+incorrect QA expectations. Next: block4 disconnect/reconnect and exact cleanup.
 
 ### `OPERATOR-UPDATE-LIFECYCLE-001` — signed update
 

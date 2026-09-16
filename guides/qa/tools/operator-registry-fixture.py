@@ -139,9 +139,19 @@ def reset():
             destination = ROOT / 'server/data' / name
             local_hashes(destination)  # Reject symlinks before deleting fixture-owned state.
             if destination.exists():
-                shutil.rmtree(destination)
+                # The Compose init owns the parent directory. Application-owned
+                # contents are removable by the current user; only removing the
+                # now-empty provisioned directory needs the init's authority.
+                for child in destination.iterdir():
+                    if child.is_dir():
+                        shutil.rmtree(child)
+                    else:
+                        child.unlink()
+                if not baseline['exists']:
+                    run('docker', 'exec', '--user', '0', 'myscoutee',
+                        'rmdir', '--', '/workspace/data/' + name)
             if baseline['exists']:
-                shutil.copytree(RETAINED / name, destination)
+                shutil.copytree(RETAINED / name, destination, dirs_exist_ok=True)
             if local_hashes(destination) != baseline['hashes']:
                 raise RuntimeError('Local Registry restoration comparison failed')
         mongo('reset')

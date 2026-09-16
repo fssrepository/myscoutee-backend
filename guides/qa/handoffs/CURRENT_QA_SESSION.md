@@ -104,7 +104,7 @@ when shaping only its route to the QA application.
 ```yaml
 checkpoint: OPERATOR-REGISTRY-LIFECYCLE-001
 checklist: ../checklists/operator/OPERATOR-REGISTRY-LIFECYCLE-001.md
-substage: Blocks1-2 PASS. Claim/link controls verified desktop and390px; Client code creation icon inside title row and Claim action uses shared menu content sizing. Deployment header fixed and reopened; one owner, ledger45/audit7/review3 stable. Next block3 step10 source fixture and snapshots; no measurement synchronization yet.
+substage: Blocks1–3 PASS. Six completed-period reports accepted, receipts46–51, exact source totals and unchanged-source fingerprint. User corrected block4: disconnect preserves local data/access; reconnect is a new connection and resynchronizes sources. Next step14 disconnect via UI; paired baseline retained. Synchronize button behavior unchanged.
 fixture_phase: operator-registry staged via guides/qa/tools/operator-registry-fixture.py; consistent Go SQLite/key archive plus local key/state and Mongo snapshots retained under private /tmp/myscoutee-qa-operator-registry. Use paired wrapper reset, never Mongo-only reset.
 browser_control: Full-flow delegated. Managed OPERATOR-REGISTRY-LIFECYCLE-001 Operator and Ava sessions; launcher owns startup.
 required_resume: Read-only paired fixture status, then current browser. Run registration via UI only. Preserve Go/Mongo/local-state baseline. Configuration blocked HTTPS/live-provider checks remain open; no need to rerun completed branches.

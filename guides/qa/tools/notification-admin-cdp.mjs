@@ -132,7 +132,7 @@ try {
       await page.send('Emulation.setDeviceMetricsOverride', {width:Number(args[1] || 596),height:813,deviceScaleFactor:1,mobile:false});
       await page.send('Emulation.clearDeviceMetricsOverride');
     }
-    else await page.send('Emulation.setDeviceMetricsOverride', {width:Number(args[0]),height:800,deviceScaleFactor:1,mobile:false});
+    else await page.send('Emulation.setDeviceMetricsOverride', {width:Number(args[0]),height:Number(args[1] || 800),deviceScaleFactor:1,mobile:false});
     await delay(400); console.log('Updated the existing QA page viewport.');
   } else if (action === 'navigate') {
     const url = new URL(args[0], 'http://localhost');

@@ -113,7 +113,11 @@
       const matches = reports.filter(r => r.period === expected.period);
       if (matches.length !== 1) Q.fail(`Duplicate/missing period ${expected.period}`);
       const r = matches[0];
+      const receipt = r.acceptedResponse?.receipt;
       if (r.status !== 'ACCEPTED' || !r.acceptedResponse || !r.acceptedAt
+        || !receipt?.signature || receipt.period !== expected.period
+        || Number(receipt.qualifiedMauCount) !== expected.qualifiedMauCount
+        || receipt.commitmentHash !== r.commitmentHash
         || Number(r.qualifiedMauCount) !== expected.qualifiedMauCount
         || Number(r.actionCount) !== expected.actionCount
         || Object.keys({ ...r.actionCounts, ...expected.actionCounts }).some(k =>
@@ -123,7 +127,12 @@
     }
     Q.printObject({ verified: true, sourcesUnchanged: true, expected: current.expected,
       reports: reports.map(r => ({ id: String(r._id), period: r.period,
-        status: r.status, attempts: r.attemptCount, receipt: r.acceptedResponse.receipt })) });
+        status: r.status, attempts: r.attemptCount,
+        receipt: { ledgerIndex: r.acceptedResponse.receipt.ledgerIndex,
+          period: r.acceptedResponse.receipt.period,
+          qualifiedMauCount: r.acceptedResponse.receipt.qualifiedMauCount,
+          acceptedAt: r.acceptedResponse.receipt.acceptedAt,
+          signaturePresent: Boolean(r.acceptedResponse.receipt.signature) } })) });
   } else if (command === 'reset') {
     const state = Q.activeState(scenario, true);
     Q.restoreSnapshots(state.snapshots);
