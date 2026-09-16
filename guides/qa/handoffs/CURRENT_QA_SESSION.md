@@ -102,16 +102,16 @@ repair an established product defect. Preserve the phone's tethering connection
 when shaping only its route to the QA application.
 
 ```yaml
-checkpoint: ADMIN-AFFINITY-GRAPH-001 — DELEGATED EXECUTION / PREPARATION
+checkpoint: ADMIN-AFFINITY-GRAPH-001 — DELEGATED EXECUTION / IN PROGRESS
 checklist: ../checklists/administration/ADMIN-AFFINITY-GRAPH-001.md
-substage: Prepare exact versioned baseline and managed Ava browser, then blocks1–5 steps1–23. User authorized next full-flow test2026-09-16.
-fixture_phase: No active Monitoring or Admin job fixture; Graph orchestration not yet staged.
-browser_control: Full-flow execution explicitly delegated; announce exact block/step. Previous Monitoring managed Ava window closed and session state restored.
+substage: Blocks1–3 UI exercised; user-reported selection camera jump narrowly repaired and replayed. Block4 larger fixture scheduled; exact depth/filter/statistics oracles and block5 closure remain.
+fixture_phase: admin-affinity-graph staged; larger-scheduled. Original graph and Ava/session snapshots retained.
+browser_control: Full-flow execution explicitly delegated; announce exact block/step. Managed Graph Ava window active.
 required_resume: Read Graph guide and current fixture/runtime boundary; prepare with existing graph fixtures before versioned browser startup. Reuse Bell and historical Statistics assertions exactly where already proven.
 queued_work: All Administration and four Operator guides are English with original source coverage. Monitoring owns shared Params/History/revert/no-op once; later Parameters uses fixture preparation for repeated interactions. Dedicated Graph/Parameters/Operator orchestration is prepared when each starts.
 last_completed: ADMIN-MONITORING1–20 PASS/CLOSED2026-09-16, including four narrowly repaired backend defects, existing-palette Jobs icon colors and exact fixture/session cleanup.
 runtime: Existing backend/frontend watchers running; no duplicate builds. mongodb-sync deliberately stopped because startup replaces seeded collections. No temporary telemetry collector remains.
-ledger_status: 96/104 PASS; Notifications6/6, Administration2/4. Graph now delegated, not yet executed in this continuation.
+ledger_status: 96/104 PASS; Notifications6/6, Administration2/4. Graph IN PROGRESS; do not claim full PASS yet.
 last_evidence: ../manuals/DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md#monitoring-delegated-execution-and-closure--2026-09-16
 ```
 

@@ -25,16 +25,24 @@
     Q.holdRule(ruleKey,0,'Graph QA retains the materialized baseline until the larger fixture is ready.');
   } else if(command==='prepare-larger') {
     const s=Q.activeState(scenario,true);Q.assertRuleNotRunning(ruleKey);
-    if(s.phase!=='baseline-ready')Q.fail('Larger fixture already prepared');
+    if(!['baseline-ready','larger-scheduled'].includes(s.phase))Q.fail('Larger fixture already prepared');
     const users=[],edges=[],now=Q.nowIso();
     for(let c=0;c<20;c++)for(let n=0;n<5;n++){
       const id=`${prefix}${String(c).padStart(2,'0')}:${n}`;
-      users.push({_id:id,userId:id,syncKey:id,name:`Graph QA ${c+1} / ${n+1}`,initials:'GQ',gender:'woman',status:'A',profileStatus:'private',city:'Austin',age:30,activities:{},createdDate:now,createdUser:'manual-qa'});
+      users.push({_id:id,userId:id,syncKey:id,name:`Graph QA ${c+1} / ${n+1}`,initials:'GQ',gender:'woman',status:'A',profileStatus:'public',city:'Austin',age:30,activities:{},createdDate:now,createdUser:'manual-qa'});
       if(n){const left=`${prefix}${String(c).padStart(2,'0')}:${n-1}`,key=`${left}|${id}`;edges.push({_id:key,pairKey:key,leftUserId:left,rightUserId:id,edgeWeight:.25+.15*n,affinityScore:.5,evidence:{mutualSingleCount:1},updatedDate:now});}
     }
-    Q.collection('users').insertMany(users);Q.collection('userAffinityEdges').insertMany(edges);
-    const timing=Q.scheduleRule(ruleKey,2);
+    Q.collection('users').bulkWrite(users.map(document=>({replaceOne:{filter:{_id:document._id},replacement:document,upsert:true}})));
+    Q.collection('userAffinityEdges').bulkWrite(edges.map(document=>({replaceOne:{filter:{_id:document._id},replacement:document,upsert:true}})));
+    const timing=Q.scheduleRule(ruleKey,10);
     Q.collection(Q.STATE_COLLECTION).updateOne({_id:s._id},{$set:{phase:'larger-scheduled',larger:{users:100,edges:80,components:20,root:`${prefix}00:0`,distant:`${prefix}19:4`},...timing}});
+  } else if(command==='capture-larger') {
+    const s=Q.activeState(scenario,true);Q.assertRuleNotRunning(ruleKey);
+    const current=summary();
+    if(s.phase!=='larger-scheduled'||current.layoutVersion===s.baseline.layoutVersion)Q.fail('Normal larger materialization is not complete');
+    if(Q.collection('adminAffinityGraphNodes').countDocuments({layoutVersion:current.layoutVersion,userId:owned})!==100)Q.fail('Larger nodes missing');
+    Q.holdRule(ruleKey,0,'Graph QA retains its completed larger materialization.');
+    Q.collection(Q.STATE_COLLECTION).updateOne({_id:s._id},{$set:{phase:'larger-ready',largerResult:current}});
   } else if(command==='restore-baseline') {
     const s=Q.activeState(scenario,true);Q.assertRuleNotRunning(ruleKey);
     Q.holdRule(ruleKey,0,'Graph QA restores its original materialized baseline.');
