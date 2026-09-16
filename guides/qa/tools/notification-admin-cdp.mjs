@@ -9,12 +9,12 @@ import WebSocket from '../../../frontend/node_modules/ws/index.js';
 
 const [action, actor = 'Ava', ...args] = process.argv.slice(2);
 const checkpointId = process.env.QA_CHECKPOINT || 'NOTIFICATION-ADMIN-LIFECYCLE-001';
-if (!['NOTIFICATION-ADMIN-LIFECYCLE-001', 'JOB-MESSAGES', 'BELL-RATING-LIFECYCLE-001', 'BELL-RATING-FEEDBACK-001'].includes(checkpointId)) throw new Error('Unsupported delegated checkpoint');
+if (!['NOTIFICATION-ADMIN-LIFECYCLE-001', 'JOB-MESSAGES', 'BELL-RATING-LIFECYCLE-001', 'BELL-RATING-FEEDBACK-001', 'ADMIN-MONITORING-001'].includes(checkpointId)) throw new Error('Unsupported delegated checkpoint');
 const root = path.join(os.tmpdir(), 'myscoutee-qa-browser-sessions');
 const manifest = JSON.parse(readFileSync(path.join(root, checkpointId + '.json'), 'utf8'));
 const session = manifest.sessions.find(item => item.actor === actor);
 if (!session || manifest.checkpointId !== checkpointId) throw new Error('Missing managed checkpoint actor.');
-const evidence = path.join(root, 'evidence', checkpointId === 'JOB-MESSAGES' ? 'job-messages-cdp' : checkpointId.startsWith('BELL-RATING-') ? 'bell-rating-cdp' : 'notification-admin-cdp');
+const evidence = path.join(root, 'evidence', checkpointId === 'ADMIN-MONITORING-001' ? 'admin-monitoring-cdp' : checkpointId === 'JOB-MESSAGES' ? 'job-messages-cdp' : checkpointId.startsWith('BELL-RATING-') ? 'bell-rating-cdp' : 'notification-admin-cdp');
 mkdirSync(evidence, { recursive: true, mode: 0o700 });
 const delay = ms => new Promise(resolve => setTimeout(resolve, ms));
 const digest = value => createHash('sha256').update(JSON.stringify(value)).digest('hex');
@@ -106,6 +106,13 @@ try {
     await delay(400); console.log('Updated the existing QA page viewport.');
   } else if (action === 'reload') {
     await page.send('Page.reload'); await delay(1500); console.log('Reloaded the existing page after hot-deploy.');
+  } else if (action === 'key') {
+    const codes = {ArrowUp:38,ArrowDown:40,Tab:9,Enter:13,Escape:27};
+    const key = args[0], code = codes[key];
+    if (!code) throw new Error('Unsupported key');
+    await page.send('Input.dispatchKeyEvent',{type:'keyDown',key,code:key,windowsVirtualKeyCode:code});
+    await page.send('Input.dispatchKeyEvent',{type:'keyUp',key,code:key,windowsVirtualKeyCode:code});
+    console.log('Key sent to focused control.');
   } else if (action === 'text') {
     await page.send('Input.insertText', { text: args[0] }); console.log('Text inserted.');
   } else if (action === 'shot') {

@@ -68,7 +68,7 @@ class AdminParamsServiceTest {
     }
 
     @Test
-    void saveNotifiesConfiguredAdminAudienceForParameterRecompute() {
+    void saveNotifiesOtherConfiguredAdminsForParameterRecompute() {
         AffinityConfigsRepository repository = mock(AffinityConfigsRepository.class);
         NotificationOutboxService notificationOutboxService = mock(NotificationOutboxService.class);
         AdminAudienceService adminAudienceService = mock(AdminAudienceService.class);
@@ -96,7 +96,7 @@ class AdminParamsServiceTest {
         ArgumentCaptor<NotificationIntent> notification = ArgumentCaptor.forClass(NotificationIntent.class);
         verify(notificationOutboxService).enqueue(notification.capture());
         assertThat(notification.getValue().recipientUserIds())
-                .containsExactly("admin-demo-ava", "admin-demo-noel");
+                .containsExactly("admin-demo-noel");
         assertThat(notification.getValue().recipientScope()).isEqualTo("admins");
         assertThat(notification.getValue().payload())
                 .containsEntry("recomputeScope", "config")
@@ -166,6 +166,24 @@ class AdminParamsServiceTest {
                 noOpTelemetry)
                 .revert("matching", new AdminParamsRevertRequestDto("admin-demo-ava", null));
         verify(noOpTelemetry, never()).record(any(), any(), any(), any(), any(Long.class), any());
+    }
+
+    @Test
+    void revertingTheActiveSectionVersionHasNoSideEffectsEvenAfterAnotherSectionChanges() {
+        AffinityConfigsRepository repository = mock(AffinityConfigsRepository.class);
+        NotificationOutboxService outbox = mock(NotificationOutboxService.class);
+        AffinityRecomputeTaskService tasks = mock(AffinityRecomputeTaskService.class);
+        AdminTelemetryService telemetry = mock(AdminTelemetryService.class);
+        AffinityConfig jobs = config(2, false, "jobs", "Jobs update.");
+        AffinityConfig current = config(3, true, "matching", "Matching update.");
+        when(repository.findFirstByActiveTrueOrderByVersionDesc()).thenReturn(Optional.of(current));
+        when(repository.findByKeyOrderByVersionDesc("default")).thenReturn(List.of(current, jobs));
+
+        service(repository, outbox, mock(AdminAudienceService.class), tasks, telemetry)
+                .revert("jobs", new AdminParamsRevertRequestDto("admin-demo-ava", 2));
+
+        verify(repository, never()).save(any(AffinityConfig.class));
+        org.mockito.Mockito.verifyNoInteractions(outbox, tasks, telemetry);
     }
 
     @Test

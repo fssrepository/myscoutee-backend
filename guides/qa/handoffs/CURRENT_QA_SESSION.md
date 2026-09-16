@@ -1,6 +1,6 @@
 # Current manual QA session
 
-Updated: 2026-09-15
+Updated: 2026-09-16
 
 This is the context-saving entry point for continuing the manual QA campaign.
 It stores one minimal live resume pointer plus reusable pair-QA execution lessons. It
@@ -102,12 +102,12 @@ repair an established product defect. Preserve the phone's tethering connection
 when shaping only its route to the QA application.
 
 ```yaml
-checkpoint: ADMIN-MONITORING-001 — PREPARED / NOT RUN
+checkpoint: ADMIN-MONITORING-001 — DELEGATED EXECUTION / RESUME PREFLIGHT
 checklist: ../checklists/administration/ADMIN-MONITORING-001.md
-substage: Block1 step1 Metrics, awaiting user review/start. No Admin checklist actions performed.
+substage: Block1 step1 pending resumed runtime/fixture verification. User explicitly delegated full Monitoring execution2026-09-16; announce block/step and continue through fixes.
 fixture_phase: admin-monitoring baseline-ready-not-started; no test parameter save or job armed.
-browser_control: Managed Ava Admin session ready; existing-session authentication/realtime readiness verified. User explicitly requested preparation only; do not execute the checklist.
-required_resume: Read-only baseline/session readiness check if stale. Continue only when user starts the prepared test; do not replay completed Bell/Jobs flows.
+browser_control: User explicitly delegated Monitoring full-flow execution2026-09-16. Old browser manifest absent after restart; use versioned launcher after saved fixture verification.
+required_resume: Verify retained baseline and managed Ava startup, then execute Monitoring1–20. Preserve earlier Bell/Jobs proof and repair only in-scope defects.
 queued_work: All three Administration and four Operator guides written in English. Only Monitoring scripts prepared; other fixture orchestration deferred. Monitoring owns parameter save/history/revert once; other tests replace proven prerequisite actions with fixtures, not repeated clicks. No separate common testcase. Administration coverage restored against334d4787: Monitoring20, Graph23, Parameters25 explicit steps with source-ID mappings; evidence reuse is assertion-specific. Operator guide omissions now repaired against334d4787 at user request: Configuration C01–C08, Registry18, Updates11, Revenue11; per-guide requirement mapping retained. Documentation only; dedicated Operator fixtures deferred.
 last_completed: BELL-RATING all1–20 PASS, final consistent feedback worker oracle and exact fixture/session resets verified.
 runtime: Existing watchers only. No application code changed in this continuation.

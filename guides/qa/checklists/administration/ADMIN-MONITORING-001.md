@@ -22,15 +22,17 @@ The shared Params editor/History/revert interaction is tested once in block 3.
 Parameters uses that evidence and fixtures for repeated setup/cleanup, while
 retaining its distinct section-specific persistence and consumer checks.
 
-## 1. Baseline, filters and passive refresh
+## 1. Baseline, filters and read-only reload
 
 1. Open **Metrics**. In **All**, record category names, counts, health labels
    and timestamps. Codex captures the corresponding persisted baseline.
-2. Select **Watch**, **Domains**, **Delivery** and **Workers** in turn.
+2. Select **Watch**, **Domains**, **Notifications** (Delivery) and
+   **Background** (Workers) in turn.
    Each filter contains the correct categories and shows their category count.
 3. Verify Watch against actual category health. An empty Watch requires all
    categories to be OK; unrelated existing failures must remain identifiable.
-4. Return to **All** and observe the normal refresh. Reading/filtering creates
+4. Return to **All**, which reloads the current snapshot. The popup loads on
+   opening/filter change, not an automatic interval. Reading/filtering creates
    no work or processing increments. Codex attributes genuine background changes
    to their source instead of requiring a globally idle database.
 
@@ -38,7 +40,7 @@ Report: `ADMIN-MONITORING-001 block 1 done`.
 
 ## 2. Recompute, scheduler audit and domain result
 
-5. Stay on **Domains / Matching**. Codex stages the named task with the existing
+5. Select **Background / Matching**. Codex stages the named task with the existing
    `affinity-recompute / isolated-user` fixture and records its starting state.
 6. Observe pending/running and terminal states. Codex compares the task identity,
    queue counts, pending tracking and timestamps. A short running state may be
@@ -68,9 +70,10 @@ Report: `ADMIN-MONITORING-001 block 2 done`.
     for example `300 s → 301 s`. Codex states the actual value pair beforehand.
 13. Close and reopen Params. The new value persists. **History** shows one new
     version with the correct section, value, author, time and change summary.
-14. In Monitoring **Workers / Jobs**, verify one configuration-change increment
+14. In Monitoring **Background / Jobs**, verify one configuration-change increment
     for that version. Codex correlates the recompute task and Admin notification
     outbox with this save, including expected recipient records and projections.
+    Other Admins receive the notification; the Admin who made the change does not.
     Do not replay the previously tested bell/read or push journey.
 15. Let the real related work complete. Compare pending/running/terminal counters,
     job/audit result and unaffected controls. Distinguish cumulative events from
@@ -80,6 +83,8 @@ Report: `ADMIN-MONITORING-001 block 2 done`.
     Codex checks the corresponding task/outbox and their completed results.
 17. Revert the already active version again. No new version, configuration event,
     recompute task or Admin notification is produced by this no-op.
+    The active version's UI action is disabled; Codex also verifies the same-version
+    request through the authenticated HTTP route without changing browser state.
 18. Confirm the changed and restored versions remain in History. Unrelated
     parameter sections retain their baseline values; original Jobs values are active.
 
@@ -99,7 +104,7 @@ Report: `ADMIN-MONITORING-001 done`.
 
 | Source | Owning checks |
 | --- | --- |
-| BASE-MON | Block 1: categories, filter totals, health and passive refresh |
+| BASE-MON | Block 1: categories, filter totals, health and read-only reload |
 | MON-011 | Block 2, steps 5–9: task lifecycle, correct output and controls |
 | MON-013 | Block 2, steps 8–10: per-job scheduler/history/domain proof, reused where complete |
 | MON-014 | Block 3: exact save/revert/no-op events, queue, audit and Admin notification |
@@ -131,3 +136,10 @@ Docker harness arguments. These commands do not perform the UI actions.
 `reset` verifies original Jobs values and terminal work, then restores the
 retained browser-startup state. Real parameter versions, history and audit
 remain as evidence.
+
+After capturing the real parameter mutation and observing its pending state,
+`make-recompute-due` shortens only those captured CONFIG tasks' wait. Processing
+and terminal results still come from the normal worker. The guarded
+`guides/qa/tools/admin-monitoring-noop.py` oracle requires terminal work before
+issuing the same-version request and compares versions, configuration, tasks
+and notification outbox before and after.

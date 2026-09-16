@@ -112,6 +112,9 @@ public class AdminParamsService {
             return state(request == null ? null : request.adminUserId());
         }
         AffinityConfig current = activeConfig();
+        if (selectedVersion == activeSectionVersion(section.key(), configHistory(current.getKey()), current)) {
+            return state(request == null ? null : request.adminUserId());
+        }
         Optional<AffinityConfig> selected = affinityConfigsRepository.findByKeyAndVersion(current.getKey(), selectedVersion);
         if (selected.isEmpty()) {
             return state(request == null ? null : request.adminUserId());
@@ -452,8 +455,10 @@ public class AdminParamsService {
     private void notifyAdminParameterChange(AffinityConfig config, String sectionKey, String actorUserId, String summary) {
         String normalizedActorUserId = safeText(actorUserId);
         List<String> adminRecipientUserIds = adminAudienceService == null
-                ? (StringUtils.hasText(normalizedActorUserId) ? List.of(normalizedActorUserId) : List.of())
-                : adminAudienceService.adminNotificationRecipientUserIds(normalizedActorUserId);
+                ? List.of()
+                : adminAudienceService.adminNotificationRecipientUserIds(normalizedActorUserId).stream()
+                        .filter(recipient -> !normalizedActorUserId.equals(recipient))
+                        .toList();
         if (adminRecipientUserIds.isEmpty()) {
             return;
         }

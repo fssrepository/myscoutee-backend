@@ -1121,7 +1121,7 @@
           && messages[0].senderAvatar
           && messages[0].senderAvatar.gender === "system"
           && F.safeText(messages[0].text).includes(
-            "created this room automatically"
+            "matched you here by affinity and past interactions"
           );
       });
       const artifactCreationOrderValid = groups.every(group => {
@@ -1142,14 +1142,15 @@
         const messageCreatedAt = roomMessages.length === 1
           ? Date.parse(F.safeText(roomMessages[0].sentAtIso))
           : NaN;
-        const notificationTimes = outboxRows
+        const roomNotifications = outboxRows
           .filter(item => (
             item.entityId === group.ownerId
             || (
               item.payload
               && item.payload.eventId === group.ownerId
             )
-          ))
+          ));
+        const notificationTimes = roomNotifications
           .map(item => Date.parse(F.safeText(item.createdDate)));
         return Number.isFinite(eventCreatedAt)
           && membershipTimes.length === group.acceptedUserIds.length
@@ -1157,7 +1158,9 @@
           && membershipTimes.every(value => value >= eventCreatedAt)
           && Number.isFinite(messageCreatedAt)
           && membershipTimes.every(value => value <= messageCreatedAt)
-          && notificationTimes.length >= 2
+          && roomNotifications.length === 1
+          && JSON.stringify([...(roomNotifications[0].recipientUserIds || [])].sort())
+            === JSON.stringify([...group.acceptedUserIds].sort())
           && notificationTimes.every(Number.isFinite)
           && notificationTimes.every(value => value >= messageCreatedAt);
       });
