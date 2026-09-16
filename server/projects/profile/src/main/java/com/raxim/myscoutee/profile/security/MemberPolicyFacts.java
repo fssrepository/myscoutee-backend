@@ -253,7 +253,7 @@ public class MemberPolicyFacts {
         return toSortableDate(next == null ? null : next.getUpdatedDate()) >= toSortableDate(current == null ? null : current.getUpdatedDate());
     }
 
-    private boolean isAssetOwner(String assetId, String userId) {
+    public boolean isAssetOwner(String assetId, String userId) {
         String normalizedAssetId = normalizeId(assetId);
         String normalizedUserId = normalizeId(userId);
         if (!StringUtils.hasText(normalizedAssetId) || !StringUtils.hasText(normalizedUserId)) {
