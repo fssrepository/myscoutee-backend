@@ -238,10 +238,10 @@ are part of this WebView setup. This does not add the Operator restore workflow,
 public configuration, TLS or payment tests; those belong to the separate
 Operator journey. Retain fixture cleanup records independently of test coverage.
 
-Reuse the same Firebase configuration/test/activation and real fresh-sign-in
-evidence through [Operator checkpoints C05–C07](../operator/OPERATOR-CONFIGURATION-LIFECYCLE-001.md).
-That guide identifies the shared steps and the public configuration, TLS and
-payment steps that remain independently required for the Operator row.
+The [Operator Configuration journey](../operator/OPERATOR-CONFIGURATION-LIFECYCLE-001.md)
+reuses the real fresh-sign-in and same-identity evidence recorded here. Its
+C01–C03 cover changed Firebase save/tests, activation/entry mode and restoration.
+Managed HTTPS belongs to the separate Operator Update journey.
 
 ## 1. Coherent cold-start upgrade and popup layout
 

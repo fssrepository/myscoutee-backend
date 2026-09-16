@@ -7471,19 +7471,11 @@ publication evidence.
 
 Stable click guide and shared-coverage map:
 [`OPERATOR-CONFIGURATION-LIFECYCLE-001.md`](../checklists/operator/OPERATOR-CONFIGURATION-LIFECYCLE-001.md).
-Checkpoints C01–C08 belong to this one matrix row. C05–C07 share evidence with
-the active WebView/Push journey; C02–C04 and final restoration remain required.
-
-- Open Configuration once and use one reversible happy-path value in the
-  public configuration, TLS, payment and Firebase blocks.
-- After each Save/Test action, reopen the same block and compare the normalized
-  visible value; credentials may return only as configured/masked state.
-- After Firebase activation, complete one eligible fresh sign-in and verify
-  that reload/login reuses the same application identity.
-- Restore every changed block to its exact baseline before closing the row.
-- Invalid-input, callback-security, secret-leak, TLS-worker failure and other
-  fault-injection branches belong to automated regression coverage. Checkout and real-device push
-  effects stay in Event/Asset and Notifications.
+The current guide has C01 Firebase changed save/tests, C02 activation/entry
+mode and C03 exact restoration. Public configuration and payment evidence are
+retained from their completed runs. Actual Firebase sign-in/logout/re-login
+reuses [physical WebView evidence](#firebase-registration-and-desktop-login-footer--2026-09-14).
+Managed HTTPS is owned by Operator Update. Do not replay completed flows.
 
 #### Shared Firebase revision and entry repairs — 2026-09-14
 
@@ -10674,3 +10666,29 @@ Stripe/Barion routing source review: real sessions use the Stripe SDK default
 endpoint / https://api.barion.com; DEMO sessions use the guarded local
 simulator. Production Explore remains demo. Neither provider has live
 credential/actual-provider acceptance proof from this QA execution.
+
+### Operator Configuration closure — 2026-09-16
+
+Renumbered C01–C03 PASS. Normal Operator bootstrap session saved revision1
+through the UI; public values persisted and private fields returned blank with
+Registered indicators. Actual Authentication and browser Messaging tests both
+passed revision1; notification permission was granted natively. Activation
+preserved Operator access, and ordinary public Login opened the Firebase
+provider chooser from the eligible Budapest fixture location. No new actual
+Firebase-user login was performed: Google registration/logout/re-login and
+same-profile evidence is reused from September14 above.
+
+Branding/public/payment values stayed unchanged. The existing shared-save
+contract advanced the Branding revision0→1 despite unchanged values; no
+application behavior was altered for that observation. Exact fixture reset
+restored original revision0/inactive configuration, removed all temporary
+bootstrap user/session/audit/device records, and restored the private runtime
+override byte-for-byte. The existing backend was restarted to reload that
+configuration; health returned200 and fresh public Login opened the original
+demo selector. Managed browsers were closed. Evidence:
+`../evidence/OPERATOR-CONFIGURATION-LIFECYCLE-001-2026-09-16.json`,
+`firebaseContinuation` (older top-level block labels remain historical).
+
+Next is Operator Update with managed HTTPS on VMware; do not start it alongside
+the dev stack. Separate deployment/smoke/security/efficiency qualification is
+queued. No VMware update or deployment has run.

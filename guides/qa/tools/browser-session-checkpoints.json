@@ -1734,7 +1734,12 @@
           "expectedName": "Operator bootstrap sign-in",
           "targetUrl": "http://localhost/entry?redirect=%2Foperator",
           "entryUrl": "http://localhost/entry?redirect=%2Foperator",
-          "autoDismissExplanationGuide": false
+          "autoDismissExplanationGuide": false,
+          "geolocation": {
+            "latitude": 47.4979,
+            "longitude": 19.0402,
+            "accuracy": 10
+          }
         },
         {
           "actor": "Public",
@@ -1742,7 +1747,12 @@
           "expectedName": "Public configuration observer",
           "targetUrl": "http://localhost/entry",
           "entryUrl": "http://localhost/entry",
-          "autoDismissExplanationGuide": false
+          "autoDismissExplanationGuide": false,
+          "geolocation": {
+            "latitude": 47.4979,
+            "longitude": 19.0402,
+            "accuracy": 10
+          }
         }
       ]
     },

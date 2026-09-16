@@ -1,7 +1,7 @@
 {
   "checkpoint": "OPERATOR-CONFIGURATION-LIFECYCLE-001",
   "date": "2026-09-16",
-  "status": "PARTIAL / OPEN",
+  "status": "PASS / CLOSED",
   "fixture": "operator-domain OPERATOR-FIREBASE-001",
   "environment": "Existing dev stack, demo_db, managed Operator demo session and anonymous public entry",
   "C01": {
@@ -92,7 +92,7 @@
       "withinViewport": true
     }
   },
-  "next": "C05/C06 on normal non-demo dev Operator, then C08 restoration. HTTPS now owned by Update.",
+  "next": "OPERATOR-UPDATE-LIFECYCLE-001 on the user-opened VMware target; stop dev before VMware.",
   "C08": {
     "localSnapshotRestored": true,
     "sessionSnapshotRestored": true,
@@ -103,5 +103,68 @@
     "stripe": "StripeApiEndpointResolver returns no override outside DEMO; StripePaymentProcessor uses SDK default endpoint and resolved Operator credential. DEMO requires local simulator and a test key.",
     "barion": "BarionApiEndpointResolver uses https://api.barion.com outside DEMO; DEMO uses guarded local simulator endpoint.",
     "boundary": "Source review only. Prior simulator lifecycle coverage does not prove actual provider acceptance or live credentials for either provider. Barion real-provider verification remains NOT EXECUTED."
+  },
+  "firebaseContinuation": {
+    "checklistVersion": "Renumbered C01 Firebase, C02 activation, C03 restoration; top-level C01-C08 are historical labels.",
+    "environment": "Existing dev Compose, normal Operator bootstrap session, live project Firebase capability clients; Public browser in HU fixture location.",
+    "C01": {
+      "steps1to6": "PASS",
+      "saveAction": "Native UI Save Firebase once",
+      "reopen": "All eight public client fields retained; both service-account fields blank with Registered indicator",
+      "authenticationResult": "Firebase authentication and browser configuration tests succeeded.",
+      "messagingResult": "Firebase browser messaging readiness test succeeded.",
+      "notificationPermission": "Native permission granted; no extra destination token",
+      "maskedOracle": {
+        "schemaVersion": 4,
+        "revision": 1,
+        "active": true,
+        "projectIdPresent": true,
+        "authenticationTestedRevision": 1,
+        "authenticationTestedAtPresent": true,
+        "messagingTestedRevision": 1,
+        "messagingTestedAtPresent": true,
+        "activatedAtPresent": true,
+        "publicClientPresence": {
+          "apiKey": true,
+          "authDomain": true,
+          "storageBucket": true,
+          "messagingSenderId": true,
+          "appId": true,
+          "measurementId": true,
+          "vapidKey": true
+        },
+        "authenticationCredentialPresent": true,
+        "messagingCredentialPresent": true
+      },
+      "unrelatedConfiguration": "Branding/public/payment values unchanged. Existing common-save contract advances branding revision from 0 to 1 even for an unchanged branding payload; no behavior change made."
+    },
+    "C02": {
+      "status": "PASS",
+      "operatorRecovery": "Configuration closes and reopens after activation under retained bootstrap session",
+      "publicEntry": "Native Login opens Firebase Google/Facebook-coming-soon/email provider chooser after app Permissions Update",
+      "locationFixture": "HU/Budapest; initial default US was ineligible; no eligibility-rule change",
+      "actualFirebaseUserSignIn": "NOT_EXECUTED: capability tests and provider chooser were verified; Operator retained bootstrap authentication. No new Firebase-user login PASS claimed.",
+      "reusedActualSignInEvidence": "DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md#firebase-registration-and-desktop-login-footer--2026-09-14: physical Google registration, logout and repeat login reused one profile; not rerun."
+    },
+    "C03": {
+      "status": "PASS",
+      "firebaseRevision": 0,
+      "active": false,
+      "testedRevisions": null,
+      "credentialsAbsent": true,
+      "mongoFixture": "not-staged",
+      "temporaryUserSessionAuditDeviceCounts": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "secretOverrideByteExact": true,
+      "temporaryPasswordFileRemoved": true,
+      "existingBackendRestartedAfterRestore": true,
+      "healthHttpStatus": 200,
+      "freshPublicEntry": "Native Login opens Select demo user; Firebase chooser absent",
+      "managedBrowsersClosed": true
+    }
   }
 }

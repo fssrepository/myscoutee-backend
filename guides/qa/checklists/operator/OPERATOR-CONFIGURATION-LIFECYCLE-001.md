@@ -11,6 +11,10 @@ The versioned fixture prepares Operator access, public/payment configuration,
 required identity/device state and the rollback snapshot. Verify the fixture,
 then launch the managed browser. Keep credentials in ignored secret files.
 
+Real Firebase sign-in, logout and repeat sign-in to the same profile are already
+covered by the [WebView entry evidence](../../manuals/DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md#firebase-registration-and-desktop-login-footer--2026-09-14).
+Reuse that evidence; the fixture supplies the prerequisite state.
+
 ## C01 — Firebase save and capability tests
 
 1. Enter the project's public client configuration and the two service-account
@@ -32,12 +36,13 @@ The extra token sends to an additional controlled destination once and is not
 saved. It is not required for the ordinary browser test. Neither credential
 field is a test-only field; both configure the application's Firebase service.
 
-## C02 — activate and reuse the identity
+## C02 — activate and verify entry mode
 
 1. Choose **Activate Firebase** after both capability tests pass. Require the
    active revision to match the saved/tested revision.
 2. Keep the Operator recovery session usable. Check that ordinary `/entry`
    exposes Firebase sign-in for the activated configuration.
+
 ## C03 — restore and close
 
 1. Restore the changed Firebase configuration through the retained fixture,
