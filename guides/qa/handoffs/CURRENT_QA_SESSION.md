@@ -102,18 +102,28 @@ repair an established product defect. Preserve the phone's tethering connection
 when shaping only its route to the QA application.
 
 ```yaml
-checkpoint: ADMIN-AFFINITY-GRAPH-001 — DELEGATED EXECUTION / IN PROGRESS
-checklist: ../checklists/administration/ADMIN-AFFINITY-GRAPH-001.md
-substage: Blocks1–3 UI exercised; user-reported selection camera jump narrowly repaired and replayed. Block4 larger fixture scheduled; exact depth/filter/statistics oracles and block5 closure remain.
-fixture_phase: admin-affinity-graph staged; larger-scheduled. Original graph and Ava/session snapshots retained.
-browser_control: Full-flow execution explicitly delegated; announce exact block/step. Managed Graph Ava window active.
-required_resume: Read Graph guide and current fixture/runtime boundary; prepare with existing graph fixtures before versioned browser startup. Reuse Bell and historical Statistics assertions exactly where already proven.
-queued_work: All Administration and four Operator guides are English with original source coverage. Monitoring owns shared Params/History/revert/no-op once; later Parameters uses fixture preparation for repeated interactions. Dedicated Graph/Parameters/Operator orchestration is prepared when each starts.
-last_completed: ADMIN-MONITORING1–20 PASS/CLOSED2026-09-16, including four narrowly repaired backend defects, existing-palette Jobs icon colors and exact fixture/session cleanup.
-runtime: Existing backend/frontend watchers running; no duplicate builds. mongodb-sync deliberately stopped because startup replaces seeded collections. No temporary telemetry collector remains.
-ledger_status: 96/104 PASS; Notifications6/6, Administration2/4. Graph IN PROGRESS; do not claim full PASS yet.
-last_evidence: ../manuals/DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md#monitoring-delegated-execution-and-closure--2026-09-16
+checkpoint: ADMIN-PARAMETERS-001 — DELEGATED EXECUTION / IN PROGRESS
+checklist: ../checklists/administration/ADMIN-PARAMETERS-001.md
+substage: Blocks1–3 and Block4 Discovery13–14 verified/restored. Notifications15–17 two-recipient chat fixture prepared; threshold remains3, no message sent. Finish requested landing Supported countries UI verification, then resume Notifications.
+fixture_phase: admin-parameters baseline-ready with15 collection snapshots in manualQaParameterSnapshots plus original config/rule in common state; common Ava session baseline retained.
+browser_control: Full-flow execution explicitly delegated; announce block/step. Versioned Parameters Ava session open, Ava Params Discovery open; Casey landing Supported countries popup open for requested feature verification. Discovery restored; delivery fixture active.
+required_resume: Fixture already staged; read-only status before continuing, do not stage again. Reuse Monitoring shared editor/History/revert and Bell consumer prerequisites only for exact proven assertions.
+queued_work: Finish Parameters, then execute the four Operator journeys in delegated full-flow mode (explicit user authorization2026-09-16). The two remaining Asset tests are user-operated pair QA; never automate their checklist actions. Administration/Operator guides retain original coverage in English.
+last_completed: ADMIN-AFFINITY-GRAPH-001 all23 steps PASS/CLOSED2026-09-16; Graph and Statistics baseline restored, snapshot comparison passed, browser closed.
+runtime: Existing backend/frontend watchers running; no duplicate builds. mongodb-sync remains stopped because startup replaces collections.
+ledger_status: 97/104 PASS; Notifications6/6, Administration3/4. Parameters IN PROGRESS, not passed.
+last_evidence: ../evidence/ADMIN-PARAMETERS-001-2026-09-16.json
 ```
+
+### Current delegation boundary — 2026-09-16
+
+The user explicitly delegates the remaining Administration test and then all four
+Operator journeys to Codex, with visible numbered progress and in-scope repairs.
+VMware deployment UI smoke is a separate automated, non-demo registration/profile/Event/Asset image journey, outside the QA matrix; see guides/releases/PRERELEASE_DEPLOYMENT_QUALIFICATION.md. Firebase prerequisites belong to its deploy smoke fixture. No deployment is started by this note.
+
+The two remaining Asset tests are explicitly reserved for pair QA: prepare their
+versioned fixtures/managed startup, then the user controls all checklist actions.
+A defect report permits diagnosis and repair, not takeover of those Asset actions.
 
 ### Notifications takeover notes
 

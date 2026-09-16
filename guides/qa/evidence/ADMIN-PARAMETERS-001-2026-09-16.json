@@ -1,0 +1,1295 @@
+{
+  "checkpoint": "ADMIN-PARAMETERS-001",
+  "date": "2026-09-16",
+  "status": "IN PROGRESS",
+  "completedBlocks": [
+    1
+  ],
+  "matching": {
+    "version": 5,
+    "savedAndReopenedMetMultiplier": 1,
+    "edgeBefore": 0.29501735764321924,
+    "edgeAfter": 0.5900347152864385,
+    "worker": [
+      {
+        "_id": "6aaa2e5f2f4376e92506dfe7",
+        "version": {
+          "low": 2,
+          "high": 0,
+          "unsigned": false
+        },
+        "taskKey": "CONFIG:6aaa2e5f2f4376e92506dfe6",
+        "targetType": "CONFIG",
+        "targetId": "6aaa2e5f2f4376e92506dfe6",
+        "reasons": [
+          "AFFINITY_CONFIG_CHANGED"
+        ],
+        "status": "done",
+        "pendingCounterTracked": false,
+        "availableAtIso": "2026-09-16T05:53:40.446Z",
+        "rerunRequested": false,
+        "attemptCount": 1,
+        "completedAtIso": "2026-09-16T05:54:09.218938789Z",
+        "createdDate": "2026-09-16T05:51:27.576968292Z",
+        "updatedDate": "2026-09-16T05:54:09.218938789Z",
+        "updatedUser": "affinity-worker-9b1f3b0f-3510-45a2-9054-d1c3fef1c8c9",
+        "_class": "com.raxim.myscoutee.profile.data.document.AffinityRecomputeTask"
+      },
+      {
+        "_id": "6aaa2e5f2f4376e92506dfe8",
+        "version": {
+          "low": 14,
+          "high": 0,
+          "unsigned": false
+        },
+        "taskKey": "CONFIG:default",
+        "targetType": "CONFIG",
+        "targetId": "default",
+        "reasons": [
+          "AFFINITY_CONFIG_CHANGED"
+        ],
+        "status": "done",
+        "pendingCounterTracked": false,
+        "availableAtIso": "2026-09-16T07:21:24.715Z",
+        "rerunRequested": false,
+        "attemptCount": 4,
+        "completedAtIso": "2026-09-16T07:22:06.659667538Z",
+        "createdDate": "2026-09-16T05:51:27.585920921Z",
+        "updatedDate": "2026-09-16T07:22:06.659667538Z",
+        "updatedUser": "affinity-worker-1bb7438a-b772-4175-be46-e500d0a8bf2e",
+        "_class": "com.raxim.myscoutee.profile.data.document.AffinityRecomputeTask"
+      }
+    ],
+    "pair": {
+      "_id": "6aaa2f002f4376e92506dfef",
+      "pairKey": "650000000000000000000061:650000000000000000000062",
+      "leftUserId": "650000000000000000000061",
+      "rightUserId": "650000000000000000000062",
+      "affinityScore": 0.5900347152864385,
+      "edgeWeight": 0.5900347152864385,
+      "evidence": {
+        "mutualSingleCount": 0,
+        "singleOneSidedCount": 0,
+        "pairOutsideNetworkCount": 0,
+        "pairInsideNetworkCount": 0,
+        "metCount": 1,
+        "strongestAffinityScore": 0.5900347152864385,
+        "totalMultiplier": 1
+      },
+      "updatedDate": "2026-09-16T07:22:06.046373977Z",
+      "_class": "com.raxim.myscoutee.profile.data.document.UserAffinityEdge"
+    },
+    "control": {
+      "_id": "19418f5f4d1e2d628854b0f0",
+      "pairKey": "0216b1ceb256d6f2c89073b8:0b8e5df4ec85d858c304a350",
+      "leftUserId": "0216b1ceb256d6f2c89073b8",
+      "rightUserId": "0b8e5df4ec85d858c304a350",
+      "affinityScore": 0.44375,
+      "edgeWeight": 0.5103125,
+      "evidence": {
+        "mutualSingleCount": 2,
+        "singleOneSidedCount": 0,
+        "pairOutsideNetworkCount": 0,
+        "pairInsideNetworkCount": 0,
+        "metCount": 0,
+        "strongestAffinityScore": 0.44375,
+        "totalMultiplier": 2
+      },
+      "updatedDate": "2026-09-16T07:22:04.951976705Z",
+      "_class": "com.raxim.myscoutee.profile.data.document.UserAffinityEdge"
+    },
+    "materializedLayoutId": "layout-1789543451816",
+    "normalStatsRefresh": true,
+    "restoration": "Original configuration and edge restored; original materializations restored with Profile boundary."
+  },
+  "profile": {
+    "version": 6,
+    "savedAndReopenedAgeMultiplier": 18,
+    "verifiedDeltas": [
+      {
+        "userId": "bf057de7c586eede7e84bdc7",
+        "delta": 28,
+        "expected": 28
+      },
+      {
+        "userId": "178e8d0cbe164fa3fede5884",
+        "delta": 27,
+        "expected": 27
+      },
+      {
+        "userId": "f4b2ebd8f56628ab7df58221",
+        "delta": 26,
+        "expected": 26
+      },
+      {
+        "userId": "cdd937e0adcbd1a5e38f3ceb",
+        "delta": 30,
+        "expected": 30
+      },
+      {
+        "userId": "1d7d3545ba5e0f1d63918589",
+        "delta": 32,
+        "expected": 32
+      },
+      {
+        "userId": "7822c5f99eff99d63abe8933",
+        "delta": 25,
+        "expected": 25
+      },
+      {
+        "userId": "d182041b8a54132d5168034f",
+        "delta": 29,
+        "expected": 29
+      },
+      {
+        "userId": "d04cd419e735549e3f312977",
+        "delta": 33,
+        "expected": 33
+      },
+      {
+        "userId": "eb1ca0b761885bb0763e2929",
+        "delta": 27,
+        "expected": 27
+      },
+      {
+        "userId": "fcad6954169063f106a7a240",
+        "delta": 24,
+        "expected": 24
+      },
+      {
+        "userId": "2d520f3c98b0440c1556f4af",
+        "delta": 25,
+        "expected": 25
+      },
+      {
+        "userId": "eac11b0685f9799953a40dd4",
+        "delta": 27,
+        "expected": 27
+      },
+      {
+        "userId": "7313a9379f60200cba7b9f71",
+        "delta": 28,
+        "expected": 28
+      },
+      {
+        "userId": "f6f22ba0a6f14cfcf4585d47",
+        "delta": 29,
+        "expected": 29
+      },
+      {
+        "userId": "76da95a9109da485555c0d25",
+        "delta": 31,
+        "expected": 31
+      },
+      {
+        "userId": "4da20eb049179e73d4757808",
+        "delta": 33,
+        "expected": 33
+      },
+      {
+        "userId": "9184901a15076d32ea8b626f",
+        "delta": 34,
+        "expected": 34
+      },
+      {
+        "userId": "e1dccfc3443239865c6ac69a",
+        "delta": 35,
+        "expected": 35
+      },
+      {
+        "userId": "4b5bad1292fb6db05dc0e455",
+        "delta": 24,
+        "expected": 24
+      },
+      {
+        "userId": "ed4924c22a5240a54e48c0b5",
+        "delta": 25,
+        "expected": 25
+      },
+      {
+        "userId": "a0fb804ad6f347d6a9dab526",
+        "delta": 26,
+        "expected": 26
+      },
+      {
+        "userId": "9d3ba3d74edabe4695e6d3f9",
+        "delta": 28,
+        "expected": 28
+      },
+      {
+        "userId": "8f6ff3752a1f0912cd63e912",
+        "delta": 29,
+        "expected": 29
+      },
+      {
+        "userId": "b0971e779dbdb71f9327eabb",
+        "delta": 30,
+        "expected": 30
+      },
+      {
+        "userId": "af0436815ab38f4864dd1e24",
+        "delta": 31,
+        "expected": 31
+      },
+      {
+        "userId": "d94ebcdf7bf9c8f33bb3f32c",
+        "delta": 32,
+        "expected": 32
+      },
+      {
+        "userId": "904ee3c526298f6921cde3f3",
+        "delta": 33,
+        "expected": 33
+      },
+      {
+        "userId": "4a008502646a200488911f45",
+        "delta": 34,
+        "expected": 34
+      },
+      {
+        "userId": "e904dad402b47dd2cdaa8bec",
+        "delta": 35,
+        "expected": 35
+      },
+      {
+        "userId": "25f4744ead36d038064d62c3",
+        "delta": 24,
+        "expected": 24
+      },
+      {
+        "userId": "c100132b3ae88b47890def59",
+        "delta": 25,
+        "expected": 25
+      },
+      {
+        "userId": "c033e546ef7c928fb8cf073b",
+        "delta": 26,
+        "expected": 26
+      },
+      {
+        "userId": "ec342d9af3f2cfd6adfd4ee5",
+        "delta": 27,
+        "expected": 27
+      },
+      {
+        "userId": "931a01221376d8e28a068fe8",
+        "delta": 28,
+        "expected": 28
+      },
+      {
+        "userId": "63bae8417bd352e5013c2e93",
+        "delta": 30,
+        "expected": 30
+      },
+      {
+        "userId": "41f4659dbd75a03abc20cd6d",
+        "delta": 31,
+        "expected": 31
+      },
+      {
+        "userId": "af70e41dbe826cbd7d8b3500",
+        "delta": 32,
+        "expected": 32
+      },
+      {
+        "userId": "e76d63199eff33a6945cb797",
+        "delta": 34,
+        "expected": 34
+      },
+      {
+        "userId": "f01086c19a00a6f46b6d41a7",
+        "delta": 35,
+        "expected": 35
+      },
+      {
+        "userId": "f7bcd28c65ea349b4ee7aed2",
+        "delta": 24,
+        "expected": 24
+      },
+      {
+        "userId": "b5e2db6882d989d8532af12c",
+        "delta": 25,
+        "expected": 25
+      },
+      {
+        "userId": "admin-demo-noel",
+        "delta": 30,
+        "expected": 30
+      },
+      {
+        "userId": "operator@myscoutee.local",
+        "delta": 30,
+        "expected": 30
+      },
+      {
+        "userId": "650000000000000000000063",
+        "delta": 29,
+        "expected": 29
+      },
+      {
+        "userId": "650000000000000000000061",
+        "delta": 32,
+        "expected": 32
+      },
+      {
+        "userId": "650000000000000000000062",
+        "delta": 27,
+        "expected": 27
+      },
+      {
+        "userId": "23820c1e76d3bd843f61c799",
+        "delta": 29,
+        "expected": 29
+      },
+      {
+        "userId": "9f3b3f085e23af6c89dbc432",
+        "delta": 30,
+        "expected": 30
+      },
+      {
+        "userId": "b29df68956f3fe15e04558de",
+        "delta": 31,
+        "expected": 31
+      },
+      {
+        "userId": "0216b1ceb256d6f2c89073b8",
+        "delta": 26,
+        "expected": 26
+      },
+      {
+        "userId": "0b8e5df4ec85d858c304a350",
+        "delta": 32,
+        "expected": 32
+      },
+      {
+        "userId": "0c3ab5da9af33d4e688e809c",
+        "delta": 30,
+        "expected": 30
+      },
+      {
+        "userId": "0cc9990d08304ab26ee67784",
+        "delta": 33,
+        "expected": 33
+      },
+      {
+        "userId": "0f9350e50f1ffc3cf002b7ed",
+        "delta": 27,
+        "expected": 27
+      },
+      {
+        "userId": "1b1c70be2349b3359a8f6f94",
+        "delta": 29,
+        "expected": 29
+      }
+    ],
+    "control": "Pair affinity, evidence and edge unchanged",
+    "qualification": "Ava had no stored affinity at baseline; initial materialization is not a proven score delta.",
+    "outbox": [
+      {
+        "_id": "6aaa44a22f4376e92506ee59",
+        "recipientUserIds": [
+          "admin-demo-noel"
+        ],
+        "status": "sent"
+      }
+    ],
+    "restoration": {
+      "users": [
+        {
+          "_id": "650000000000000000000061",
+          "affinity": 1111767,
+          "age": 32,
+          "userId": "650000000000000000000061"
+        },
+        {
+          "_id": "650000000000000000000062",
+          "affinity": 1194246,
+          "age": 27,
+          "userId": "650000000000000000000062"
+        }
+      ],
+      "expected": [
+        {
+          "userId": "650000000000000000000061",
+          "affinity": 1111767
+        },
+        {
+          "userId": "650000000000000000000062",
+          "affinity": 1194246
+        }
+      ],
+      "graphCollections": [
+        {
+          "collection": "adminAffinityGraphLayouts",
+          "count": 17,
+          "expected": 17
+        },
+        {
+          "collection": "adminAffinityGraphNodes",
+          "count": 918,
+          "expected": 918
+        },
+        {
+          "collection": "adminAffinityGraphEdges",
+          "count": 19193,
+          "expected": 19193
+        },
+        {
+          "collection": "adminAffinityGraphForests",
+          "count": 85,
+          "expected": 85
+        }
+      ],
+      "config": {
+        "_id": "6aaa2f9b2f4376e92506dff5",
+        "version": 4,
+        "absolute": {
+          "user": {
+            "age": {
+              "multiplier": 17
+            }
+          }
+        }
+      },
+      "pending": 0
+    }
+  },
+  "next": "Block4 Discovery13–14 distance fixtures staged, saved/reopened25000; real CONFIG pending",
+  "events": {
+    "version": 7,
+    "before": [
+      {
+        "_id": "261512e744c1837cd7ba85f2",
+        "sourceId": "261512e744c1837cd7ba85f2",
+        "title": "Pour-Over Roastery Lab",
+        "acceptedMembers": 6,
+        "boost": 23233.25,
+        "affinity": 1968037.8333333333
+      },
+      {
+        "_id": "c66972829391ece30a38e9be",
+        "sourceId": "c66972829391ece30a38e9be",
+        "title": "Handmade Pasta Table",
+        "acceptedMembers": 1,
+        "boost": 19777.25,
+        "affinity": 2988045
+      }
+    ],
+    "after": [
+      {
+        "_id": "261512e744c1837cd7ba85f2",
+        "sourceId": "261512e744c1837cd7ba85f2",
+        "title": "Pour-Over Roastery Lab",
+        "acceptedMembers": 6,
+        "boost": 23239.25,
+        "affinity": 1968037.8333333333
+      },
+      {
+        "_id": "c66972829391ece30a38e9be",
+        "sourceId": "c66972829391ece30a38e9be",
+        "title": "Handmade Pasta Table",
+        "acceptedMembers": 1,
+        "boost": 19778.25,
+        "affinity": 2988045
+      }
+    ],
+    "reopened": {
+      "acceptedMemberMultiplier": "20"
+    },
+    "task": {
+      "_id": "6aaa2e5f2f4376e92506dfe8",
+      "version": {
+        "low": 22,
+        "high": 0,
+        "unsigned": false
+      },
+      "taskKey": "CONFIG:default",
+      "targetType": "CONFIG",
+      "targetId": "default",
+      "reasons": [
+        "AFFINITY_CONFIG_CHANGED"
+      ],
+      "status": "done",
+      "pendingCounterTracked": false,
+      "availableAtIso": "2026-09-16T07:37:56.776Z",
+      "rerunRequested": false,
+      "attemptCount": 6,
+      "completedAtIso": "2026-09-16T07:38:08.413295226Z",
+      "createdDate": "2026-09-16T05:51:27.585920921Z",
+      "updatedDate": "2026-09-16T07:38:08.413295226Z",
+      "updatedUser": "affinity-worker-1bb7438a-b772-4175-be46-e500d0a8bf2e",
+      "_class": "com.raxim.myscoutee.profile.data.document.AffinityRecomputeTask"
+    },
+    "notification": [
+      {
+        "_id": "6aaa47532f4376e92506ee5f",
+        "recipientUserIds": [
+          "admin-demo-noel"
+        ],
+        "payload": {
+          "recomputeScope": "config",
+          "sectionKey": "events",
+          "sectionLabel": "Events",
+          "summary": "Updated Events parameters.",
+          "version": "7",
+          "type": "admin-params-changed",
+          "entityType": "config",
+          "entityId": "default:events",
+          "recipientScope": "admins",
+          "notification_title_key": "notification.kind.admin-params-changed.title",
+          "notification_message_key": "notification.kind.admin-params-changed.message",
+          "productName": "MyScoutee",
+          "productLogoUrl": "assets/logo/heart.webp",
+          "productBrandingRevision": "0",
+          "title": "Platform parameters changed",
+          "body": "Events parameters saved by admin-demo-ava. Recompute tasks were queued.",
+          "url": "/admin",
+          "icon": "assets/logo/heart.webp",
+          "badge": "assets/logo/heart.webp",
+          "tag": "admin-params-events"
+        },
+        "status": "sent"
+      }
+    ],
+    "restoration": {
+      "config": {
+        "_id": "6aaa2f9b2f4376e92506dff5",
+        "version": 4,
+        "boost": {
+          "event": {
+            "acceptedMembers": {
+              "multiplier": 19
+            }
+          }
+        }
+      },
+      "events": [
+        {
+          "_id": "261512e744c1837cd7ba85f2",
+          "sourceId": "261512e744c1837cd7ba85f2",
+          "boost": 23233.25,
+          "affinity": 1968037.8333333333
+        },
+        {
+          "_id": "c66972829391ece30a38e9be",
+          "sourceId": "c66972829391ece30a38e9be",
+          "boost": 19777.25,
+          "affinity": 2988045
+        }
+      ],
+      "pending": 0
+    },
+    "uiOrderAfterFix": {
+      "ids": [
+        "0454c0ca2f6a4663401d76c6",
+        "0f1c8d357ea837c97b714eaf",
+        "fca394637db8afa4d522a396",
+        "09421edf5287f29df0b6939e",
+        "1a3e19a819b09e6bd9bd0a2c",
+        "1fb14e059cd3300d9fbdefc4",
+        "c2b9bb630a300a1da4d999a2",
+        "775d34ce5e1c0e707d43d5ad",
+        "0107df8b8686b8b986b6df51",
+        "51dd1b1c94a1835ce1060dd0",
+        "68c686d33510afdae064d8f5",
+        "6c9db589cceea886017ca9c9",
+        "4f86abc69e14e4f826eeefad",
+        "845052d5058691e8e54e1359",
+        "b647a3d709ad8d80ccaf2c5b",
+        "06b17361f07de1f83082b2a4",
+        "04734e210225001d020ca583",
+        "f557e743053605a8177c6fbd",
+        "34a70db00fdb17d4f104ee98",
+        "1f73c75edf8c6246a5ef2eaa",
+        "09d00e5b8349770d4bf4ee40",
+        "c66972829391ece30a38e9be",
+        "0fe7821a10e273d40bb2e88f",
+        "c19cdabbe2394454a065b137",
+        "c0175dddc71e8d3862fab588",
+        "9cff773a194eced322ce2f76",
+        "58aa9a000b4fe45f868f1cd5",
+        "d098654a2c917954137ec8f3",
+        "852539c51c59a0f9b587c51c",
+        "261512e744c1837cd7ba85f2",
+        "9018da9f33929fec90a0df70",
+        "52fe6150386c6e8efa61290d",
+        "23099224f1bc48899659ecd2",
+        "fdff37b9113cc968272678d0",
+        "demo-tournament-results",
+        "demo-tournament-start-review"
+      ],
+      "targets": [
+        {
+          "id": "c66972829391ece30a38e9be",
+          "text": "MS\n0.0\nstar\ngroups\n1 / 19\n1\npublic\nHandmade Pasta Table\n\nEvent · Public · 1576.6 km\n\nmore_vert\n\nPairs roll dough, shape filled pasta, and share the first cooked batch.\n\nSun Feb 22, 6:30 PM"
+        },
+        {
+          "id": "261512e744c1837cd7ba85f2",
+          "text": "MS\n0.0\nstar\ngroups\n6 / 50\npublic\nPour-Over Roastery Lab\n\nEvent · Public · 1859.1 km\n\nmore_vert\n\nA hands-on coffee session compares grind, Timing, and aroma without brand-led presentation.\n\nMar 31 · 1:30 PM - 3:30 PM"
+        }
+      ]
+    },
+    "sortContractCases": [
+      {
+        "view": "day",
+        "order": "upcoming",
+        "count": 36,
+        "pass": true
+      },
+      {
+        "view": "day",
+        "order": "past-events",
+        "count": 36,
+        "pass": true
+      },
+      {
+        "view": "day",
+        "order": "nearby",
+        "count": 36,
+        "pass": true
+      },
+      {
+        "view": "day",
+        "order": "most-relevant",
+        "count": 36,
+        "pass": true
+      },
+      {
+        "view": "day",
+        "order": "top-rated",
+        "count": 36,
+        "pass": true
+      },
+      {
+        "view": "distance",
+        "order": "upcoming",
+        "count": 36,
+        "pass": true
+      },
+      {
+        "view": "distance",
+        "order": "past-events",
+        "count": 36,
+        "pass": true
+      },
+      {
+        "view": "distance",
+        "order": "nearby",
+        "count": 36,
+        "pass": true
+      },
+      {
+        "view": "distance",
+        "order": "most-relevant",
+        "count": 36,
+        "pass": true
+      },
+      {
+        "view": "distance",
+        "order": "top-rated",
+        "count": 36,
+        "pass": true
+      }
+    ],
+    "defect": "Explore locally re-sorted by missing affinity, losing query ranking. Query supplies sort tuples and frontend preserves them, including reinsertion keys.",
+    "validation": "Existing backend/frontend watcher builds passed; 10 API sort/view combinations and UI 20→36 paginated rows agree; both target consumer boost values equal persistence. Local adapter now returns its existing query tuple; runtime local-adapter replay not run."
+  },
+  "assets": {
+    "version": 8,
+    "before": [
+      {
+        "_id": "72782ab8fc8635ee622b00be",
+        "assetId": "72782ab8fc8635ee622b00be",
+        "title": "Community Equipment Pickup",
+        "affinity": 1920259,
+        "boost": 86,
+        "quantity": 3
+      },
+      {
+        "_id": "d1344cc795e50601c2a3441a",
+        "assetId": "d1344cc795e50601c2a3441a",
+        "title": "Dinner District Electric Taxi",
+        "affinity": 1745647,
+        "boost": 97,
+        "quantity": 4
+      }
+    ],
+    "after": [
+      {
+        "_id": "72782ab8fc8635ee622b00be",
+        "assetId": "72782ab8fc8635ee622b00be",
+        "title": "Community Equipment Pickup",
+        "affinity": 1920259,
+        "boost": 89,
+        "quantity": 3
+      },
+      {
+        "_id": "d1344cc795e50601c2a3441a",
+        "assetId": "d1344cc795e50601c2a3441a",
+        "title": "Dinner District Electric Taxi",
+        "affinity": 1745647,
+        "boost": 101,
+        "quantity": 4
+      }
+    ],
+    "reopened": {
+      "quantityMultiplier": "12"
+    },
+    "task": {
+      "_id": "6aaa2e5f2f4376e92506dfe8",
+      "version": {
+        "low": 26,
+        "high": 0,
+        "unsigned": false
+      },
+      "taskKey": "CONFIG:default",
+      "targetType": "CONFIG",
+      "targetId": "default",
+      "reasons": [
+        "AFFINITY_CONFIG_CHANGED"
+      ],
+      "status": "done",
+      "pendingCounterTracked": false,
+      "availableAtIso": "2026-09-16T07:47:26.256Z",
+      "rerunRequested": false,
+      "attemptCount": 7,
+      "completedAtIso": "2026-09-16T07:48:07.508849431Z",
+      "createdDate": "2026-09-16T05:51:27.585920921Z",
+      "updatedDate": "2026-09-16T07:48:07.508849431Z",
+      "updatedUser": "affinity-worker-82f54c22-d816-4d07-b52f-88ee71a54511",
+      "_class": "com.raxim.myscoutee.profile.data.document.AffinityRecomputeTask"
+    },
+    "notification": [
+      {
+        "_id": "6aaa498c2f4376e92506ee6d",
+        "recipientUserIds": [
+          "admin-demo-noel"
+        ],
+        "payload": {
+          "recomputeScope": "config",
+          "sectionKey": "assets",
+          "sectionLabel": "Assets",
+          "summary": "Updated Assets parameters.",
+          "version": "8",
+          "type": "admin-params-changed",
+          "entityType": "config",
+          "entityId": "default:assets",
+          "recipientScope": "admins",
+          "notification_title_key": "notification.kind.admin-params-changed.title",
+          "notification_message_key": "notification.kind.admin-params-changed.message",
+          "productName": "MyScoutee",
+          "productLogoUrl": "assets/logo/heart.webp",
+          "productBrandingRevision": "0",
+          "title": "Platform parameters changed",
+          "body": "Assets parameters saved by admin-demo-ava. Recompute tasks were queued.",
+          "url": "/admin",
+          "icon": "assets/logo/heart.webp",
+          "badge": "assets/logo/heart.webp",
+          "tag": "admin-params-assets"
+        },
+        "status": "sent"
+      }
+    ],
+    "consumer": "12 public Transport assets from the affinity-based non-paged consumer endpoint matched descending boost minus viewer affinity gap. Paged Explorer has an independent availability/price/policy ordering; no claim of a new UI relevance mode.",
+    "restoration": {
+      "checkpointId": "ADMIN-PARAMETERS-001",
+      "phase": "baseline-ready",
+      "configVersion": 4,
+      "fields": [
+        {
+          "section": "matching",
+          "path": "evidence.met.multiplier",
+          "field": "evidence.met",
+          "value": 1,
+          "original": 0.5,
+          "current": 0.5
+        },
+        {
+          "section": "profile",
+          "path": "absolute.user.age.multiplier",
+          "field": "absolute.user.age",
+          "value": 18,
+          "original": 17,
+          "current": 17
+        },
+        {
+          "section": "events",
+          "path": "boost.event.acceptedMembers.multiplier",
+          "field": "boost.event.acceptedMembers",
+          "value": 20,
+          "original": 19,
+          "current": 19
+        },
+        {
+          "section": "assets",
+          "path": "boost.asset.quantity.multiplier",
+          "field": "boost.asset.quantity",
+          "value": 12,
+          "original": 11,
+          "current": 11
+        },
+        {
+          "section": "discovery",
+          "path": "distance.maxMeters",
+          "field": "distance.maxMeters",
+          "value": 25000,
+          "original": 50000,
+          "current": 50000
+        },
+        {
+          "section": "notifications",
+          "path": "notifications.multicastThreshold",
+          "field": "notifications.multicastThreshold",
+          "value": 2,
+          "original": 3,
+          "current": 3
+        },
+        {
+          "section": "jobs",
+          "path": "jobs.userChangedDebounceSeconds",
+          "field": "jobs.userChangedDebounceSeconds",
+          "value": 12,
+          "original": 300,
+          "current": 300
+        }
+      ],
+      "pendingRecompute": 0,
+      "retainedSnapshots": 15,
+      "captures": 4
+    }
+  },
+  "discovery": {
+    "status": "PASS",
+    "steps": "13–14",
+    "savedVersion": 9,
+    "maxMeters": {
+      "before": 50000,
+      "test": 25000
+    },
+    "distanceMetres": [
+      12500,
+      25000,
+      37500
+    ],
+    "affinity": [
+      0.5,
+      0,
+      0
+    ],
+    "edgeWeights": [
+      0.25,
+      0,
+      0
+    ],
+    "layoutVersion": "layout-1789545171154",
+    "evidence": {
+      "task": {
+        "_id": "6aaa2e5f2f4376e92506dfe8",
+        "version": {
+          "low": 30,
+          "high": 0,
+          "unsigned": false
+        },
+        "taskKey": "CONFIG:default",
+        "targetType": "CONFIG",
+        "targetId": "default",
+        "reasons": [
+          "AFFINITY_CONFIG_CHANGED"
+        ],
+        "status": "done",
+        "pendingCounterTracked": false,
+        "availableAtIso": "2026-09-16T07:51:15.464Z",
+        "rerunRequested": false,
+        "attemptCount": 8,
+        "completedAtIso": "2026-09-16T07:52:06.040756008Z",
+        "createdDate": "2026-09-16T05:51:27.585920921Z",
+        "updatedDate": "2026-09-16T07:52:06.040756008Z",
+        "updatedUser": "affinity-worker-82f54c22-d816-4d07-b52f-88ee71a54511",
+        "_class": "com.raxim.myscoutee.profile.data.document.AffinityRecomputeTask"
+      },
+      "config": {
+        "_id": "6aaa4a712f4376e92506ee6f",
+        "key": "default",
+        "active": true,
+        "version": 9,
+        "rating": {
+          "singleMutual": {
+            "multiplier": 10
+          },
+          "singleOneSided": {
+            "multiplier": 2
+          },
+          "pairOutsideNetwork": {
+            "multiplier": 2
+          },
+          "pairInsideNetwork": {
+            "multiplier": 5
+          }
+        },
+        "evidence": {
+          "mutualSingle": {
+            "multiplier": 1
+          },
+          "singleOneSided": {
+            "multiplier": 0
+          },
+          "pairOutsideNetwork": {
+            "multiplier": 0.3
+          },
+          "pairInsideNetwork": {
+            "multiplier": 0.7
+          },
+          "met": {
+            "multiplier": 0.5
+          }
+        },
+        "distance": {
+          "maxMeters": 25000,
+          "strategy": "linear",
+          "multiplier": 5
+        },
+        "ownerContext": {
+          "multiplier": 3
+        },
+        "profileRules": [
+          {
+            "group": "profile",
+            "field": "languages",
+            "strategy": "intersection",
+            "multiplier": 2
+          },
+          {
+            "group": "profile",
+            "field": "physique",
+            "strategy": "exact",
+            "multiplier": 3
+          },
+          {
+            "group": "profile",
+            "field": "profileDetails",
+            "labelKey": "profile.details.interest",
+            "strategy": "intersection",
+            "multiplier": 2
+          },
+          {
+            "group": "profile",
+            "field": "profileDetails",
+            "labelKey": "profile.details.values",
+            "strategy": "intersection",
+            "multiplier": 3
+          },
+          {
+            "group": "profile",
+            "field": "profileDetails",
+            "labelKey": "profile.details.workout",
+            "strategy": "exact",
+            "multiplier": 2
+          },
+          {
+            "group": "experience",
+            "field": "experience",
+            "labelKey": "profile.experience.workplace",
+            "strategy": "intersection",
+            "multiplier": 4
+          },
+          {
+            "group": "experience",
+            "field": "experience",
+            "labelKey": "profile.experience.profession",
+            "strategy": "intersection",
+            "multiplier": 3
+          },
+          {
+            "group": "experience",
+            "field": "experience",
+            "labelKey": "profile.experience.school",
+            "strategy": "intersection",
+            "multiplier": 4
+          },
+          {
+            "group": "experience",
+            "field": "experience",
+            "labelKey": "profile.experience.education",
+            "strategy": "intersection",
+            "multiplier": 2
+          }
+        ],
+        "impressionRules": [
+          {
+            "group": "traits",
+            "field": "member.personalityTraits",
+            "strategy": "trait-vector",
+            "multiplier": 4
+          },
+          {
+            "group": "traits",
+            "field": "member.vibeBadges",
+            "strategy": "intersection",
+            "multiplier": 2
+          },
+          {
+            "group": "traits",
+            "field": "member.categoryBadges",
+            "strategy": "intersection",
+            "multiplier": 2
+          }
+        ],
+        "absolute": {
+          "user": {
+            "profileTokens": {
+              "multiplier": 97
+            },
+            "profileDetailTokens": {
+              "multiplier": 97
+            },
+            "experienceTokens": {
+              "multiplier": 97
+            },
+            "impressionTokens": {
+              "multiplier": 97
+            },
+            "age": {
+              "multiplier": 17
+            },
+            "height": {
+              "multiplier": 11
+            },
+            "completion": {
+              "multiplier": 13
+            },
+            "impressionAverageRating": {
+              "multiplier": 29
+            },
+            "impressionPeopleMet": {
+              "multiplier": 43
+            },
+            "impressionTotalEvents": {
+              "multiplier": 37
+            },
+            "impressionRepeatCount": {
+              "multiplier": 53
+            },
+            "impressionNoShowPenalty": {
+              "multiplier": 71
+            },
+            "impressionTraitPercent": {
+              "multiplier": 7
+            },
+            "impressionTraitEvidenceCount": {
+              "multiplier": 23
+            }
+          },
+          "event": {
+            "contentTokens": {
+              "multiplier": 89
+            },
+            "participantAffinity": {
+              "multiplier": 1
+            }
+          },
+          "asset": {
+            "contentTokens": {
+              "multiplier": 83
+            },
+            "ownerAffinity": {
+              "multiplier": 1
+            }
+          }
+        },
+        "boost": {
+          "event": {
+            "rating": {
+              "multiplier": 29
+            },
+            "acceptedMembers": {
+              "multiplier": 19
+            },
+            "pendingMembers": {
+              "multiplier": 11
+            },
+            "capacityAvailable": {
+              "multiplier": 7
+            },
+            "freshness": {
+              "multiplier": 5
+            },
+            "hostConfidence": {
+              "multiplier": 0.25
+            }
+          },
+          "asset": {
+            "capacityAvailable": {
+              "multiplier": 7
+            },
+            "quantity": {
+              "multiplier": 11
+            },
+            "requestCount": {
+              "multiplier": 13
+            },
+            "freshness": {
+              "multiplier": 3
+            },
+            "ownerConfidence": {
+              "multiplier": 0.25
+            }
+          }
+        },
+        "notifications": {
+          "firebaseWindowStartHour": 8,
+          "firebaseWindowEndHour": 22,
+          "maxWorkers": 4,
+          "maxRetries": 5,
+          "initialBackoffSeconds": 30,
+          "collapseWindowSeconds": 300,
+          "multicastThreshold": 3,
+          "topicThreshold": 250
+        },
+        "jobs": {
+          "userChangedDebounceSeconds": 300,
+          "eventChangedDebounceSeconds": 15,
+          "eventMembersChangedDebounceSeconds": 15,
+          "assetChangedDebounceSeconds": 15,
+          "assetRequestsChangedDebounceSeconds": 15,
+          "configChangedDebounceSeconds": 900,
+          "workerPollDelayMs": 60000,
+          "batchSize": 50,
+          "leaseDurationSeconds": 600,
+          "eventSchedulerPollDelayMs": 1800000,
+          "autoInviterCadenceMs": 7200000,
+          "notificationOutboxPollDelayMs": 60000,
+          "accountPurgeWindowDays": 30
+        },
+        "changedDate": "2026-09-16T07:51:13.680355495Z",
+        "changedUser": "admin-demo-ava",
+        "changedSection": "discovery",
+        "changeSummary": "Updated Discovery parameters.",
+        "_class": "com.raxim.myscoutee.profile.data.document.AffinityConfig"
+      },
+      "rates": [
+        {
+          "_id": "manual-qa-parameters-distance:inside",
+          "relatedUserId": "manual-qa-parameters-distance:inside",
+          "affinityScore": 0.5,
+          "evidenceConfidence": 1
+        },
+        {
+          "_id": "manual-qa-parameters-distance:boundary",
+          "relatedUserId": "manual-qa-parameters-distance:boundary",
+          "affinityScore": 0,
+          "evidenceConfidence": 1
+        },
+        {
+          "_id": "manual-qa-parameters-distance:outside",
+          "relatedUserId": "manual-qa-parameters-distance:outside",
+          "affinityScore": 0,
+          "evidenceConfidence": 1
+        }
+      ],
+      "edges": [
+        {
+          "_id": "6aaa4aa52f4376e92506ee72",
+          "pairKey": "manual-qa-parameters-distance:anchor:manual-qa-parameters-distance:inside",
+          "edgeWeight": 0.25
+        }
+      ],
+      "outbox": [
+        {
+          "_id": "6aaa4a712f4376e92506ee70",
+          "recipientUserIds": [
+            "admin-demo-noel"
+          ],
+          "payload": {
+            "recomputeScope": "config",
+            "sectionKey": "discovery",
+            "sectionLabel": "Discovery",
+            "summary": "Updated Discovery parameters.",
+            "version": "9",
+            "type": "admin-params-changed",
+            "entityType": "config",
+            "entityId": "default:discovery",
+            "recipientScope": "admins",
+            "notification_title_key": "notification.kind.admin-params-changed.title",
+            "notification_message_key": "notification.kind.admin-params-changed.message",
+            "productName": "MyScoutee",
+            "productLogoUrl": "assets/logo/heart.webp",
+            "productBrandingRevision": "0",
+            "title": "Platform parameters changed",
+            "body": "Discovery parameters saved by admin-demo-ava. Recompute tasks were queued.",
+            "url": "/admin",
+            "icon": "assets/logo/heart.webp",
+            "badge": "assets/logo/heart.webp",
+            "tag": "admin-params-discovery"
+          },
+          "status": "sent"
+        }
+      ]
+    },
+    "restoration": {
+      "checkpointId": "ADMIN-PARAMETERS-001",
+      "phase": "baseline-ready",
+      "configVersion": 4,
+      "fields": [
+        {
+          "section": "matching",
+          "path": "evidence.met.multiplier",
+          "field": "evidence.met",
+          "value": 1,
+          "original": 0.5,
+          "current": 0.5
+        },
+        {
+          "section": "profile",
+          "path": "absolute.user.age.multiplier",
+          "field": "absolute.user.age",
+          "value": 18,
+          "original": 17,
+          "current": 17
+        },
+        {
+          "section": "events",
+          "path": "boost.event.acceptedMembers.multiplier",
+          "field": "boost.event.acceptedMembers",
+          "value": 20,
+          "original": 19,
+          "current": 19
+        },
+        {
+          "section": "assets",
+          "path": "boost.asset.quantity.multiplier",
+          "field": "boost.asset.quantity",
+          "value": 12,
+          "original": 11,
+          "current": 11
+        },
+        {
+          "section": "discovery",
+          "path": "distance.maxMeters",
+          "field": "distance.maxMeters",
+          "value": 25000,
+          "original": 50000,
+          "current": 50000
+        },
+        {
+          "section": "notifications",
+          "path": "notifications.multicastThreshold",
+          "field": "notifications.multicastThreshold",
+          "value": 2,
+          "original": 3,
+          "current": 3
+        },
+        {
+          "section": "jobs",
+          "path": "jobs.userChangedDebounceSeconds",
+          "field": "jobs.userChangedDebounceSeconds",
+          "value": 12,
+          "original": 300,
+          "current": 300
+        }
+      ],
+      "pendingRecompute": 0,
+      "retainedSnapshots": 15,
+      "captures": 5
+    }
+  }
+}

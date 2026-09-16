@@ -568,6 +568,7 @@ run_scenario() {
     operator-domain) scenario_script="${SCRIPT_DIR}/scenarios/operator-domain-checkpoints.js" ;;
     job-messages) scenario_script="${SCRIPT_DIR}/scenarios/job-messages-checkpoints.js" ;;
     bell-feedback) scenario_script="${SCRIPT_DIR}/scenarios/bell-feedback-checkpoints.js" ;;
+    admin-parameters) scenario_script="${SCRIPT_DIR}/scenarios/admin-parameters-checkpoints.js" ;;
     admin-affinity-graph) scenario_script="${SCRIPT_DIR}/scenarios/admin-affinity-graph-checkpoints.js" ;;
     admin-monitoring) scenario_script="${SCRIPT_DIR}/scenarios/admin-monitoring-checkpoints.js" ;;
     notification-admin) scenario_script="${SCRIPT_DIR}/scenarios/notification-admin-checkpoints.js" ;;
@@ -895,6 +896,7 @@ PY
   asset-assignment:stage|asset-assignment:status|asset-assignment:repair-normal-supplies-owner|asset-assignment:verify-normal-assignment|asset-assignment:verify-supply-contribution-delete|asset-assignment:restore-normal-assignment-branch|asset-assignment:repair-tournament-group-ids|asset-assignment:stage-step-10-boundary|asset-assignment:rollback-step-10-boundary|asset-assignment:verify-group-capacity-edit|asset-assignment:stage-step-16-boundary|asset-assignment:rollback-step-16-boundary|asset-assignment:verify-group-unassign|asset-assignment:stage-step-22-boundary|asset-assignment:rollback-step-22-boundary|asset-assignment:verify-group-reassign|asset-assignment:stage-step-29-boundary|asset-assignment:rollback-step-29-boundary|asset-assignment:verify-group-manager-removal|asset-assignment:reset|\
   content-admin:stage|content-admin:status|content-admin:verify-drafts-saved|content-admin:verify-privacy-active|content-admin:restage-step-32-boundary|content-admin:rollback-step-32-boundary|content-admin:verify-privacy-fallback|content-admin:verify-article-trashed|content-admin:verify-article-restored|content-admin:rollback-step-59-boundary|content-admin:verify-article-republished|content-admin:reset|\
   bell-feedback:stage|bell-feedback:status|bell-feedback:prepare-rating-baseline|bell-feedback:capture-rating-baseline|bell-feedback:make-recompute-due|bell-feedback:verify-reset-ready|bell-feedback:reset|\
+  admin-parameters:stage|admin-parameters:prepare-events|admin-parameters:prepare-distance|admin-parameters:prepare-delivery|admin-parameters:cleanup-delivery|admin-parameters:status|admin-parameters:capture|admin-parameters:make-recompute-due|admin-parameters:restore-config|admin-parameters:materialize|admin-parameters:hold-graph|admin-parameters:reset|\
   admin-affinity-graph:stage|admin-affinity-graph:status|admin-affinity-graph:prepare-larger|admin-affinity-graph:capture-larger|admin-affinity-graph:restore-baseline|admin-affinity-graph:reset|\
   admin-monitoring:stage|admin-monitoring:status|admin-monitoring:capture-before-params|admin-monitoring:capture-after-save|admin-monitoring:capture-after-revert|admin-monitoring:make-recompute-due|admin-monitoring:reset|\
   job-messages:stage|job-messages:ready|job-messages:status|job-messages:arm|job-messages:reset|\

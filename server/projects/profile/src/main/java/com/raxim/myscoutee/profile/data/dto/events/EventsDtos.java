@@ -575,7 +575,11 @@ public final class EventsDtos {
     public record EventsExplorePageDto(
             List<EventDto> records,
             Integer total,
-            String nextCursor) {
+            String nextCursor,
+            Map<String, List<Long>> sortKeys) {
+        public EventsExplorePageDto(List<EventDto> records, Integer total, String nextCursor) {
+            this(records, total, nextCursor, Map.of());
+        }
     }
 
     public record EventListPageDto(

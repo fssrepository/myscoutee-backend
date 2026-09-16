@@ -10380,3 +10380,131 @@ Machine evidence: [Monitoring evidence](../evidence/ADMIN-MONITORING-001-2026-09
 
 The user then authorized the next test in the same delegated mode:
 **ADMIN-AFFINITY-GRAPH-001**, beginning with versioned fixture preparation.
+
+### Graph delegated execution and closure — 2026-09-16
+
+**ADMIN-AFFINITY-GRAPH-001: PASS / CLOSED.** All23 steps are covered by
+new scoped observations and the explicitly reused Bell/STAT-020 assertions.
+[Machine evidence](../evidence/ADMIN-AFFINITY-GRAPH-001-2026-09-16.json).
+
+- Block1: original materialized header and stored counts54/1129/5/4 agreed.
+  Component/member identity, visible/collapsed counts and strongest weights
+  matched their data; isolated Riley remained reachable with zero connections.
+- Block2: controlled chain depths1/2/3 returned exact2/3/4 member IDs and1/2/3
+  links in UI and HTTP. Returning to depth1 produced no duplicate. Weight0.4
+  is inclusive: min0.4 includes, min0.41 excludes; max0.39 excludes, max0.4
+  includes. Restored bounds recovered the edge. Filters did not rewrite graph
+  Statistics or prior dates.
+- Block3: native left-pan, right-rotation, wheel, arrow-pan, Reset and panel
+  controls exercised. The reported click jump was reproduced: pan projection
+  reset before camera animation moved the clicked target outside the viewport.
+  Camera/pan now animate together; the panned-click, other-member, rotated,
+  distant and isolated checks passed. Compact2–4-member layouts reuse the
+  existing component layout; direction is relative to the layout center.
+  Camera fitting now considers projected node bounds including badge sizes.
+- User-requested presentation: symmetric, equal-depth Forest overview uses
+  available space; default framing does not lock rotation/zoom/pan. Desktop
+  graph fits beside its panel. Small member graphs, including the initial
+  five-member component, are larger and fit at360x800 and390x800. Mobile
+  Expand/Collapse overlays the graph and preserves **exact** camera and node
+  screen coordinates; the panel may cover nodes until closed. Actual viewport
+  resizing may refit. The implementation-facing “Mongo members” label is now
+  “members”. Latest existing frontend watcher build passed07:07:10Z and synced.
+- Block4: fixture supplied100public profiles and80edges in20disconnected chains.
+  A first materialization exposed private-profile fixture eligibility, corrected
+  in the fixture without changing product eligibility. Real scheduled run
+  `e179db42-fcf6-43ec-8f53-e257c40f7d0b`,06:34:50.208612998–50.347938024Z,
+ 139ms/count1173, produced `layout-1789540490226`:154nodes/1173edges/23forests/
+  2isolated. Stored/header/reopened totals agreed. Forest pages20+3 contained
+  23unique IDs; tile/node/edge limits and depth bounds passed. Final visible
+  zoom progression7→14→23 and counters agreed. Disconnected component20 and
+  member`manual-qa-graph:19:4` were reachable, with the expected85% connection;
+  loading settled without a duplicate/request loop.
+- Block5: reused the exact Bell changed Casey/Nova edge, upstream recompute,
+  real layout and unaffected-control assertions from the reciprocal graph
+  closure2026-09-15; no rating journey repeated. New larger-run correlation
+  independently proves this fixture materialization. Statistics' normal refresh
+  changed connected users52→152, edges1227→1307, communities2→22, exactly the
+  fixture's100/80/20 delta. Statistics combines affinity/rating/event evidence,
+  while layout counts eligible profiles/affinity edges including isolates; their
+  different-scope absolute counts are not asserted equal. Historical dates stayed
+  unchanged.
+- Cleanup: restored original54/1129/5/4 materialization, removed100owned users
+  and80owned edges, then used real Stats Refresh. Every graph metric returned
+  exactly to its pre-fixture value and earlier dates remained unchanged. Closed
+  the managed browser before versioned reset. Common session baseline restored;
+  reset compared every snapshotted selector/document and restored original rule
+  configuration. Final status`not-staged`; owned users/edges and checkpoint/
+  browser-session snapshots all zero. Real job audit remains attributable.
+
+Qualifications: viewport emulation and mouse/keyboard input, not physical phone
+ or pinch.154nodes/23components prove bounded loading here, not a1000-forest
+stress test. No separate build/unit runner duplicated the active watchers.
+Next **ADMIN-PARAMETERS-001** is explicitly delegated by the user.
+
+### Parameters delegated execution — 2026-09-16
+
+**ADMIN-PARAMETERS-001: IN PROGRESS.** Block1:15collection rollback snapshots
+retained separately to avoid a historical-graph snapshot exceeding Mongo's
+per-document limit. Original active configv4 and graph rule retained; normal
+CONFIG queue was empty. Versioned launcher opened Ava. All seven sections
+appeared. Planned fields: Matching met0.5→1, Profile age17→18, Events accepted
+members19→20, Assets quantity11→12, Discovery max distance50000→25000,
+Notifications multicast3→2, Jobs fixture debounce300→12seconds. Consumer
+fixtures and boundary assertions remain section-specific, not implied passed.
+
+Block2 step3: visible Matching save/reopen gave met1, exactly one newv5 with
+Ava/Matching author/section, other configuration sections unchanged. Correlated
+Admin notification reached sent for Noel only. CONFIG task was captured and
+made due through the versioned harness, preserving normal worker execution.
+Step4 consumer and control checks remain pending; expected existing met-only
+Casey/Nova edge0.29501735764321924→0.5900347152864385 with unchanged affinity.
+
+Block2 follow-up: Matching CONFIG completed07:22:06Z; Casey/Nova edge changed
+0.29501735764321924→0.5900347152864385 with unchanged base affinity. The no-met
+control remained unchanged. Real materialization `layout-1789543451816` and
+normal Statistics refresh were inspected. Original config/edge restored; the
+fixture now also restores the four original graph materialization collections
+between branches so the next branch does not inherit the changed layout.
+
+Profile steps6–8: visible save/reopen age17→18 producedv6. Normal CONFIG
+completed07:27:07Z. All55 profiles with an existing stored affinity changed by
+exactly their age contribution; Casey+32, Nova+27. Pair affinity/evidence/edge
+unchanged. Ava had no stored affinity in the fixture baseline, so its newly
+materialized value is not claimed as a verified delta. Correlated notification
+sent to Noel only. Fixture restoration verified Casey/Nova original scores,
+activev4/age17 and zero pending recompute. Original graph collection counts
+restored17/918/19193/85. Evidence: `ADMIN-PARAMETERS-001-2026-09-16.json`.
+Block3 Events consumer checks are next; checkpoint remains IN PROGRESS.
+
+Block3 Events steps9–10: Accepted members19→20 saved/reopenedv7. Pour-Over
+Roastery Lab (6members) boost23233.25→23239.25; Handmade Pasta Table
+(1member)19777.25→19778.25; affinity unchanged. Consumer HTTP boost matches
+persistence; CONFIG done and correlated notification sent to Noel only.
+Explore had overwritten the query order using an absent affinity field.
+Fixed by retaining the query's actual sort tuples in HTTP/local query results
+and the Explore presentation, including retained reinsertion positions.
+Existing watcher builds passed; all10 API sort/view combinations agree with
+their tuples; browser20→36rows across pages match HTTP order exactly, including
+both targets. Local adapter source updated; runtime local replay not executed.
+Configuration, target scores and fixture-only published flags restored.
+Next: Assets steps11–12. No unrelated Asset lifecycle was replayed.
+
+Assets steps11–12: quantity11→12 saved/reopenedv8. Community Equipment Pickup
+(quantity3) boost86→89; Dinner District Electric Taxi(quantity4)97→101.
+Affinity unchanged. Normal CONFIG completed07:48:07Z. All12 public Transport
+records from the affinity-based non-paged consumer endpoint match the expected
+boost-minus-affinity-gap order. Paged Explorer uses separate availability/price/
+policy ordering; this is not a claim of a UI relevance selector or an Asset
+lifecycle replay. Original configuration and derived outputs restored.
+Next: Discovery13–14. Four fixture-only profiles supply a distance-only signal
+at12.5/25/37.5km; saved/reopened maxMeters25000. CONFIG pending.
+
+Discovery steps13–14 PASS: v9 saved/reopened maxMeters50000→25000. Normal
+CONFIG completed07:52:06Z; distance-only12.5/25/37.5km probes yielded affinity
+0.5/0/0 and only the inside edge0.25. Normal materialization
+`layout-1789545171154` confirmed the four nodes and the one eligible edge.
+Fixture restoredv4, original derived/graph snapshots and removed the owned
+Distance probes. Notifications15–17 fixture prepared with two chat recipients;
+no threshold save or chat message performed yet. Landing Supported countries
+feature requested during this branch uses the existing landing payload.

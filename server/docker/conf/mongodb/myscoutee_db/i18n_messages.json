@@ -20502,6 +20502,18 @@
     "value": "Profile set to inactive."
   },
   {
+    "_id": "i18n-message-en-landing-supported-countries",
+    "key": "landing.supported.countries",
+    "lang": "en",
+    "value": "Supported countries"
+  },
+  {
+    "_id": "i18n-message-en-landing-supported-countries-empty",
+    "key": "landing.supported.countries.empty",
+    "lang": "en",
+    "value": "No countries are currently listed."
+  },
+  {
     "_id": "i18n-message-hu-unavailable-here",
     "key": "unavailable.here",
     "lang": "hu",
@@ -41002,5 +41014,17 @@
     "key": "Profile set to inactive.",
     "lang": "hu",
     "value": "A profil inaktívra állítva."
+  },
+  {
+    "_id": "i18n-message-hu-landing-supported-countries",
+    "key": "landing.supported.countries",
+    "lang": "hu",
+    "value": "Támogatott országok"
+  },
+  {
+    "_id": "i18n-message-hu-landing-supported-countries-empty",
+    "key": "landing.supported.countries.empty",
+    "lang": "hu",
+    "value": "Jelenleg nincs felsorolt ország."
   }
 ]
