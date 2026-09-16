@@ -41254,5 +41254,17 @@
     "key": "entry.permissions.notifications.failed",
     "lang": "hu",
     "value": "Nem sikerült menteni az értesítési beállításokat. Ellenőrizd a kapcsolatot, majd próbáld újra."
+  },
+  {
+    "_id": "i18n-message-en-operator-community-error-registration-required",
+    "key": "operator.community.error.registration.required",
+    "lang": "en",
+    "value": "Register this deployment to view community announcements."
+  },
+  {
+    "_id": "i18n-message-hu-operator-community-error-registration-required",
+    "key": "operator.community.error.registration.required",
+    "lang": "hu",
+    "value": "A közösségi közlemények megtekintéséhez regisztráld ezt a telepítést."
   }
 ]
