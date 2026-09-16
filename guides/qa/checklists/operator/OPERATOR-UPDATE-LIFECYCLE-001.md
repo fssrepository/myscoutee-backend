@@ -4,7 +4,7 @@
 
 Apply one valid, compatible QA release. Correlate verification, visible progress,
 the durable update job, controlled restart and actually installed version.
-Start from QA1, upgrade to QA3 through Updates, then roll back to QA1 through
+Start from QA1, upgrade to QA2 through Updates, then roll back to QA1 through
 the UI with the previous installer absent locally. Also verify a controlled
 failed update and disabled actions while an operation is running. On the same VMware target, verify the
 managed HTTPS lifecycle. All three parts are required to close this Update row.
@@ -17,11 +17,14 @@ and records existing release/job state. Fixtures prepare the target and access
 instead of replaying deployment/registration. The real update path verifies and
 applies the release; fixture-written success or version state is not evidence.
 Use the designated QA target, not the active development checkout. Preserve its
-current state first. Install the corrected local QA1 baseline (actual package version `1.0.0`) as
-fixture setup; retain its exact hash separately from the historic GitHub QA1.
-Publish QA3 as an actually newer package (`1.0.1`, tag `v1.0.1-qa.3`) with
-signed metadata. This baseline install is separate from the tested
-application-owned QA3 download. The historic QA2 is no longer the target.
+current state first. The intended sequence is `1.0.0-qa.1` to `1.0.0-qa.2`,
+then rollback to `1.0.0-qa.1`. Debian represents these prereleases as
+`1.0.0~qa.1` and `1.0.0~qa.2`; the final stable release stays `1.0.0`.
+Retain the original GitHub downloads and record the new hashes of any repackaged
+artifacts. Signing or correcting version metadata does not add current update
+code to historical binaries. Verify that the baseline actually implements the
+Registry-independent update path before executing the UI sequence; otherwise
+record that limitation and prepare a corrected baseline separately.
 
 Record each GitHub release tag, artifact digest, internal package version and
 installed build identity separately; a filename does not establish a version.
@@ -59,7 +62,7 @@ Report: `OPERATOR-UPDATE-LIFECYCLE-001 block 1 done`.
 
 ## 2. Apply and observe the durable job
 
-4. Select **Apply update** for QA3 once. Codex records the one durable job,
+4. Select **Apply update** for QA2 once. Codex records the one durable job,
    target release and starting state. While the job is pending/running, **Apply
    update** remains disabled, including after reopening the popup. Do not
    bypass the disabled control to manufacture repeated submissions.
@@ -84,13 +87,13 @@ Report: `OPERATOR-UPDATE-LIFECYCLE-001 block 2 done`.
 10. Codex checks that reconnection/reopening created no second Apply operation
     or update job. Release verification, durable result and active version agree.
 11. Retain UI and durable update evidence, then continue directly from installed
-    QA3 to rollback. Keep update, rollback, error and TLS results separate.
+    QA2 to rollback. Keep update, rollback, error and TLS results separate.
 
 Report: `OPERATOR-UPDATE-LIFECYCLE-001 block 3 done`.
 
-## 4. Roll back QA3 to QA1 without a cached installer
+## 4. Roll back QA2 to QA1 without a cached installer
 
-12. On the successfully updated QA3 target, inspect the visible **Rollback**
+12. On the successfully updated QA2 target, inspect the visible **Rollback**
     action and its QA1 recovery point. If no UI recovery action exists, record
     the missing capability; a command-line restore does not pass this UI check.
 13. Verify the retained backup and data controls. Remove only the fixture-owned
@@ -104,7 +107,7 @@ Report: `OPERATOR-UPDATE-LIFECYCLE-001 block 3 done`.
     Observe the actual download; neither a local substitute nor an unchecked
     same-name file satisfies this step.
 16. Follow the rollback operation through its actual phases and any controlled
-    restart. Correlate its terminal result with the QA3 update and QA1 recovery
+    restart. Correlate its terminal result with the QA2 update and QA1 recovery
     point. Refreshing/reopening must not start another rollback operation.
 17. Reopen Operator and compare the displayed version, installed package/build,
     health, retained access and fixture data/configuration controls with the QA1
@@ -162,7 +165,7 @@ Report: `OPERATOR-UPDATE-LIFECYCLE-001 done`.
 | Controlled restart, reconnect and correct active version | Block 2 step 6 and block 3 |
 | No duplicate work after one Apply or reopening | Steps 4, 7 and 10 |
 | Package/job/installed-version correlation and cleanup | Steps 7–11 and final restoration in step 24 |
-| QA1 → QA3 → QA1, visible rollback and verified GitHub re-download on cache miss | Block 4, steps 12–17 |
+| QA1 → QA2 → QA1, visible rollback and verified GitHub re-download on cache miss | Block 4, steps 12–17 |
 | Disabled Apply/Rollback, visible progress, controlled failure and recovery | Steps 4, 14 and block 5, steps 18–20 |
 | Managed HTTPS save/reopen, actual certificate/capability and restoration | Block 6, steps 21–24 |
 
