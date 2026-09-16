@@ -47,7 +47,7 @@ class CDP extends EventEmitter {
   close() { this.socket.close(); }
 }
 const targets = await fetch(`http://127.0.0.1:${session.devToolsPort}/json/list`).then(r => r.json());
-const target = targets.find(item => item.type === 'page' && (checkpointId === 'OPERATOR-UPDATE-LIFECYCLE-001' ? /^https:\/\/localhost(?:\/|$)/ : /^http:\/\/localhost(?:\/|$)/).test(item.url));
+const target = targets.find(item => item.type === 'page' && (checkpointId === 'OPERATOR-UPDATE-LIFECYCLE-001' ? /^https:\/\/(?:localhost|qa\.localhost)(?:\/|$)/ : /^http:\/\/localhost(?:\/|$)/).test(item.url));
 if (!target) throw new Error('Existing localhost page missing.');
 const page = await new CDP(target.webSocketDebuggerUrl).ready();
 try {

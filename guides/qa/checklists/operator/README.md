@@ -4,7 +4,7 @@ The existing four consolidated Operator tests, in QA matrix order:
 
 | Test | Scope | Blocks |
 | --- | --- | --- |
-| [Configuration](OPERATOR-CONFIGURATION-LIFECYCLE-001.md) | Public settings, HTTPS, payment provider, Firebase and restoration; reuse proven WebView/Push evidence | C01–C08 |
+| [Configuration](OPERATOR-CONFIGURATION-LIFECYCLE-001.md) | Firebase save/test/activation and restoration; reuse proven public/payment and sign-in evidence | C01–C03 |
 | [Registry](OPERATOR-REGISTRY-LIFECYCLE-001.md) | Registration, claim/link, community/leaderboard, measurements, deactivation and recovery | 1–4; 18 steps |
 | [Updates](OPERATOR-UPDATE-LIFECYCLE-001.md) | Verified update, cache-miss rollback, failed-update recovery and managed HTTPS | 1–6; 24 steps |
 | [Revenue](OPERATOR-REVENUE-LIFECYCLE-001.md) | Prepared payments, one synchronization and one settlement | 1–3; 11 steps |

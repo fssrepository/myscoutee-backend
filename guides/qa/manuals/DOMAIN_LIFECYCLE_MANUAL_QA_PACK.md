@@ -7595,6 +7595,51 @@ installer (12–17), controlled failure/recovery (18–20), and managed HTTPS
 the earlier exclusion of those branches no longer applies. Disabled controls
 while work runs are the oracle; do not bypass them to simulate repeat clicks.
 
+**2026-09-16 — PASS/CLOSED after migration and managed HTTPS qualification.**
+Native QA1 r6→QA2 r7 job `upd_bd07f08979361e1206785f1c95e7b5c7`
+completed16:58:47Z and automatically reloaded. Migration004 produced the exact
+predeclared configuration hash; other retained Mongo/MinIO and five file controls
+matched. Configuration now loads normally. The HTTPS worker then exposed a real
+permission defect: preparation changed its runtime mount0750 to0700, so the API
+could not read the successful job. Fixed in the worker with a persistent API-group
+read/traverse policy; TLS-worker and numeric-ownership regressions passed.
+
+Normal signed QA2 r8 installation/host qualification passed. Native HTTPS Apply
+`tls_95a2fb42967d1ca619fbcc7c2e8220d9` completed17:11:06Z; API returned200/100%,
+the popup retained Manual/qa.localhost on reopen and cleared private inputs.
+The actual browser loaded that HTTPS origin; curl/openssl independently verified
+its QA-CA chain and hostname. Original TLS/settings and Operator access were
+restored with the versioned fixture; data checks passed before removing only
+QA-owned Mongo/MinIO controls. Local release overrides were reset, the fixture
+server stopped and the API recreated; all services healthy. Final VM is QA2 r8.
+Earlier r5/r6 rollback evidence stands; no extra replay per user instruction.
+
+Scope: local signed release emulation and Manual TLS with explicit QA CA.
+Public GitHub/ACME, final security/smoke/performance and populated Event/Asset
+migration are not claimed. The green/orange badge correction remains source-only.
+Source QA1 accepts schema4; a new post-migration rollback was not executed.
+
+**2026-09-16 — r5/r6 recovery and automatic reload PASS; HTTPS still pending.**
+Voluntary rollback after successful installation was exercised through the UI in
+r5, including re-download of the exact missing QA1 installer. In r6, a controlled
+truncated download produced one localized error and enabled recovery actions;
+the explicit healthy retry completed as `upd_8296003875315dd91f7120bc34064418`.
+The subsequent voluntary rollback completed as
+`upd_a7e82b8179934136ba1cc9a8557729b3`. Both r6 operations reached verified100%
+and automatically refreshed/reloaded the frontend, without a reload loop.
+Retained Mongo/MinIO/configuration controls passed; Event/Asset collections were
+empty, so populated domain-record preservation is not claimed. QA1 has no older
+recovery point after this rollback; its absent Rollback button is correct.
+The user explicitly requested no further rollback replay. Current-version green
+and available-version orange badge styling is corrected in source only.
+
+The remaining Configuration/HTTPS block exposed an existing schema3 singleton
+against a schema4 API. Normal QA2 r7 packaging adds declared migration004, preserving
+all settings while advancing schemaVersion and optimistic version. Its isolated
+Mongo and restart-order tests passed. Native UI installation and exact planned
+post-migration hashes are being checked before the managed HTTPS flow. This row
+remains IN PROGRESS until HTTPS and fixture cleanup are proven.
+
 **2026-09-16 — Independent progress and exact-image upgrade PASS.**
 Normal monitor QA1/QA2 r4: job `upd_d1194357f035a4a47afcd280169e1995`
 completed16:00:12Z. The original popup reached100% without reload, with209

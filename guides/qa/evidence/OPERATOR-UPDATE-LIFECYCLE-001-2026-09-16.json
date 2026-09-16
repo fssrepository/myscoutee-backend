@@ -1,7 +1,7 @@
 {
   "checkpoint": "OPERATOR-UPDATE-LIFECYCLE-001",
   "date": "2026-09-16",
-  "status": "IN_PROGRESS",
+  "status": "PASS_CLOSED_LOCAL_SIGNED_SOURCE",
   "runtime": {
     "devStopped": true,
     "sshKeyAuthentication": "verified",
@@ -448,8 +448,8 @@
     },
     "baseline": "Signed QA1 install and packaged host qualification PASS; exact source package identity recorded by installer.",
     "remaining": [
-      "UI QA1 → QA2",
-      "UI QA2 → QA1 cache-miss rollback",
+      "UI QA1 \u2192 QA2",
+      "UI QA2 \u2192 QA1 cache-miss rollback",
       "Controlled download failure/retry",
       "Managed HTTPS"
     ],
@@ -481,7 +481,7 @@
     },
     "queuedUiFixes": [
       "Large Updates tile action-ring removed",
-      "EN/HU bundle revision109→110: rollback key existed remotely but cached109 lacked it and conditional fetch returned no data"
+      "EN/HU bundle revision109\u2192110: rollback key existed remotely but cached109 lacked it and conditional fetch returned no data"
     ],
     "buildDirectories": [
       "packaging/dist/monitor-qa1-20260916-r2",
@@ -550,7 +550,7 @@
       }
     },
     "latestUiContract": "Success hides Update; Check finds a newer release to show Update again. Rollback remains enabled after success when a verified recovery point exists. No duplicate lower success notice. Surfaced failures release both actions.",
-    "next": "Native QA2 r7 migration and managed HTTPS; Update remains IN PROGRESS.",
+    "next": "Operator Update closed. Asset Borrow/Pricing remain user-controlled pair QA; Pricing development gate remains unimplemented. Final release security/smoke/performance campaign deferred.",
     "r5": {
       "upgrade": {
         "jobId": "upd_4f5d2d90e610c3b270d9921cd27a3937",
@@ -636,7 +636,59 @@
       "defect": "Configuration503 because retained singleton schema3 while current API requires4. Not a TLS/authentication failure.",
       "repair": "Packaged migration004 changes only schemaVersion and optimistic document version, before API startup in both systemd and update worker; preserves other fields.",
       "tests": "PASS isolated real Mongo retained opaque values, idempotency, unsupported schema rejection and empty DB; restart order/image selection regression PASS.",
-      "native": "QA2 r7 packaging in progress; plan-schema4 preservation oracle recorded expected full-document hash before actual change."
+      "native": {
+        "status": "PASS",
+        "jobId": "upd_bd07f08979361e1206785f1c95e7b5c7",
+        "completedAt": "2026-09-16T16:58:47Z",
+        "artifactSha256": "a0c69058a2287ef018151cf01d2cccb3d2eb2c380af4cefe316e6822dcecad03",
+        "buildId": "monitor-qa2-20260916-r6",
+        "package": "monitor-qa2-20260916-r7",
+        "trace": "monitor-r7-migration-upgrade.json",
+        "monitorResponses": 210,
+        "autoReloadTimeOrigin": 1789577928648,
+        "preservation": "verify-schema4 PASS; exact planned configuration hash 65a85d134b80a38eb05dd1b0594e103fd6a1ff29eb0cb78cf9160c7a736cfe26; all other collection/object hashes and five file controls unchanged",
+        "configurationUI": "Loaded fully after normal Apply; prior503 resolved",
+        "rollback": "Not repeated per user instruction; prior r5/r6 proof retained"
+      }
+    },
+    "managedHttps": {
+      "status": "PASS_AFTER_PACKAGED_R8_FIX",
+      "firstJob": "tls_8aa85fb92b7cc010e40f56ba2a26d870",
+      "workerCompletedAt": "2026-09-16T17:00:36Z",
+      "transport": "PASS actual qa.localhost certificate verified via curl/openssl with explicit QA CA and hostname; browser ignores cert errors and is not trust evidence",
+      "certificateDerSha256": "8377352c6cb9f4a1b30a7cbf0603b544917cc02000115dccc88b06a1403b6ac6",
+      "defect": "prepare_directories reset runtime mount0750 to0700; API UID10001 could not traverse it, causing job404/default configuration despite worker completion",
+      "repair": "Runtime0750 owned worker:API group, private directories remain0700. Focused TLS worker suite PASS. QA2 r8 normal packaging in progress.",
+      "cleanup": "PASS second versioned TLS reset; original five configuration/TLS/key hashes restored; Operator access and GET TLS200 AVAILABLE enabledfalse domainempty. verify-schema4 passed before deleting only QA-owned Mongo/MinIO controls. Release-source fixture reset, source server stopped, API recreated with default GitHub settings; all containers healthy.",
+      "verifiedRepair": {
+        "package": "monitor-qa2-20260916-r8",
+        "artifactSha256": "29c404680876568dbd7d40fd4b85422acc8e59e4f2824feb24ff662eb4203444",
+        "installation": "Normal signed same-version package install and packaged host qualification PASS; no direct deployed-script patch",
+        "jobId": "tls_95a2fb42967d1ca619fbcc7c2e8220d9",
+        "completedAt": "2026-09-16T17:11:06Z",
+        "api": "GET job200 COMPLETED100; configuration AVAILABLE enabled MANUAL qa.localhost; runtime0750 root:10001 readable by API",
+        "ui": "Native Configure HTTPS once, successful result without timeout; close/reopen retains domain/manual mode/configured certificate; secret input lengths0/0",
+        "certificateDerSha256": "5d1fae1a06c9fd286375645eed55c288af16cf6f193b9d6dd4817e8b60dfc28b",
+        "transport": "curl and openssl verify-return-error passed with explicit CA and qa.localhost hostname. Actual managed browser opened https://qa.localhost landing/build. Browser ignores certificate errors; external validation is trust evidence."
+      }
     }
+  },
+  "closure": {
+    "date": "2026-09-16",
+    "coverage": "Blocks1\u20135 proven across current-source r5/r6; block6 and migration proven r7/r8. User prohibited further rollback replay.",
+    "finalRuntime": "Healthy QA2 r8, frontend build monitor-qa2-20260916-r6, dev stopped",
+    "limits": [
+      "Local signed release emulation; not new GitHub end-to-end qualification",
+      "Manual TLS with QA CA; not public ACME issuance",
+      "Empty Event/Asset collections; no populated domain migration claim",
+      "No additional rollback after migration004 per user instruction; current-source QA1 schema4 compatibility established from source, earlier rollback runtime proof retained",
+      "Green/orange version badge change is source-only, not included in r8 frontend"
+    ],
+    "tests": [
+      "TLS worker regression PASS",
+      "Numeric ownership policy PASS",
+      "Native TLS save/reopen/trusted transport/reset PASS",
+      "Native migration and planned preservation hashes PASS"
+    ]
   }
 }

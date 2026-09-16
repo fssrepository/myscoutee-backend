@@ -61,6 +61,13 @@ if validate_pair "${CERTIFICATE}" "${PRIVATE_KEY}" other.example.test \
 fi
 
 prepare_directories
+# The API traverses the runtime mount as a different user in production.
+# Running this suite as the worker owner must not hide a lost group-read bit.
+[[ "$(stat -c '%a:%g' "${STATE_DIR}/runtime")" == "750:${API_GID}" ]] \
+  || fail "the API group cannot traverse the TLS runtime mount"
+prepare_directories
+[[ "$(stat -c '%a:%g' "${STATE_DIR}/runtime")" == "750:${API_GID}" ]] \
+  || fail "worker preparation revoked API runtime access"
 JOB_ID="tls_0123456789abcdef0123456789abcdef"
 jq -n \
   --arg jobId "${JOB_ID}" \

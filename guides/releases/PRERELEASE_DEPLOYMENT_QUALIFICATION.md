@@ -72,7 +72,7 @@ An unexpected write or an unclassified change fails P02/P03 until reviewed.
 
 | Collection / file / object key | Source → target change | Ownership | Operation | Migration and rollback compatibility | VMware evidence |
 | --- | --- | --- | --- | --- | --- |
-| QA2 monitor-r7: `004-deployment-configuration.js` | Added | Operator-managed singleton | Only schemaVersion3→4 and optimistic document version+1; all values retained | Current-source QA1/QA2 both accept schema4; older schema3-only binaries excluded | Isolated real-Mongo preservation/idempotency/rejection PASS; native qualification pending |
+| QA2 monitor-r7: `004-deployment-configuration.js` | Added | Operator-managed singleton | Only schemaVersion3→4 and optimistic document version+1; all values retained | Current-source QA1/QA2 both accept schema4; older schema3-only binaries excluded | Isolated real-Mongo preservation/idempotency/rejection PASS; native QA1 r6→QA2 r7 migration and exact planned preservation hash PASS. No further rollback replay per user; source QA1 schema4 compatibility only after this migration |
 
 Use the existing package-content, demo-reset, i18n seed-sync, Debian lifecycle
 and update-worker checks for their respective boundaries. Those source checks

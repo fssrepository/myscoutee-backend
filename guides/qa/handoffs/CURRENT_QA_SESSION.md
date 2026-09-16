@@ -110,14 +110,15 @@ when shaping only its route to the QA application.
 ```yaml
 checkpoint: OPERATOR-UPDATE-LIFECYCLE-001
 checklist: ../checklists/operator/OPERATOR-UPDATE-LIFECYCLE-001.md
-substage: r6 truncated download FAILED upd_2f40f3c4eede3a9c4b3cf90bf03f3169 with single localized error and active actions; explicit healthy retry upd_8296003875315dd91f7120bc34064418 COMPLETED16:40:48Z and automatic reload to QA2 r6. Voluntary rollback upd_a7e82b8179934136ba1cc9a8557729b3 COMPLETED16:45:04Z and automatic reload to QA1 r6. Preservation PASS. Prior r5 proves installer-cache miss.
-fixture_phase: VM healthy QA1 r6. Local HTTPS source session49129 serves r6 packages from /tmp/myscoutee-local-release-monitor-r6-20260916 at192.168.153.1:18445. TLS fixture staged only; leaf/key inputs private /tmp/operator-qa-tls-leaf.*; original state retained by versioned operator-update-tls-fixture.py. Dev containers stopped.
-browser_control: Operator full-flow delegation active; Asset remains user-controlled pair QA. Auto-reload after verified100% success now proven both directions; historical jobs do not loop. Rollback survives successful update/reopen. Errors release Update/Rollback.
-required_resume: QA2 r7 packaging session12936 /tmp/operator-monitor-qa2-r7-build.log. Fixes newly found Configuration503: retained schema3 requires explicit migration004 to4, preserving all operator values. Real-Mongo isolated tests and restart regression PASS. Before mutation plan-schema4 oracle staged; verify-schema4 must match exact predicted config hash and unchanged other collections/media. Update via new local catalog QA1 r6→QA2 r7; then managed HTTPS UI and fixture reset, rollback to current-source QA1 r6 proving schema4 compatibility. GitHub unchanged; no data backups/historical patches.
-queued_work: Update includes managed HTTPS. Separate deployment UI image smoke, repeatable external security probes and measured memory/startup efficiency qualification; no routine dependency upgrades. Two Asset journeys remain pair QA.
-last_completed: Configuration C01–C03 PASS, including actual Auth/Message tests and activation/entry-mode proof; real Firebase-user sign-in reuses physical WebView evidence2026-09-14 and was not repeated. Registry/Revenue and Administration complete.
-runtime: VMware healthy QA1 r4 after native rollback; local dev Docker containers stopped. Managed Operator page retained. Production build output separate from dev nginx output.
-ledger_status: 101/104 PASS; Operator3/4; Update IN PROGRESS. Native upgrade, independent progress, exact running image/data verification and Check/reopen behavior PASS; voluntary UI rollback PASS; automatic reload and failure/retry PASS; native configuration migration and managed HTTPS incomplete.
+substage: PASS/CLOSED. r5 cache-miss voluntary rollback, r6 controlled failure/retry and native automatic reload both directions, r7 explicit migration004 preservation, r8 managed HTTPS save/reopen/trust/reset all recorded in evidence and matrix.
+fixture_phase: TLS and release-source fixtures reset; original five config/key/certificate hashes match. QA-owned Mongo/MinIO controls removed after verify-schema4 PASS. Local HTTPS release server stopped. No data backup/restore. Source overrides removed and API recreated.
+browser_control: Operator full-flow delegation completed. Asset Borrow/Pricing remain user-controlled pair QA; do not execute their checklist actions.
+required_resume: Do not replay Update or rollback. Next work is preparing remaining Asset journeys; Pricing has an explicit development gate in ASSET-PRICING-001.md and must not be staged as ready until implemented. Borrow fixtures/guide exist; validate dates against next session before startup. Keep dev and VMware sequential for memory. No automatic stable publication.
+queued_work: Final stable application/Registry release campaign owns GitHub publication, UI/image smoke, external security and measured memory/startup efficiency. Separate from today's closed Update QA.
+last_completed: All four Operator journeys and all Administration tests PASS/CLOSED.
+runtime: VMware healthy QA2 r8, package SHA29c404680876568dbd7d40fd4b85422acc8e59e4f2824feb24ff662eb4203444, frontend build monitor-qa2-20260916-r6. Dev containers stopped. Original localhost HTTPS and retained Operator access work. Green/orange version badges are committed source-only, not in this package.
+ledger_status: 102/104 PASS; Operator4/4. Only Asset Borrow/Pricing remain. Evidence qualification is local signed-source/manual QA-CA; public GitHub/ACME not claimed. No extra rollback after migration per user instruction.
+
 ```
 
 ### Current delegation boundary — 2026-09-16
