@@ -54,4 +54,4 @@ QA3 source removes both dependencies from settings Save/display, as documented a
 - 54 focused tests PASS:13 messaging,4 location,37 HTTP Operator Registry. Production build and seed/i18n gates passed. These tests do not prove real delivery in the user's regular browser.
 - Live Operator diagnostic: active service worker, browser Push subscription present; Firebase Installations and FCM registration requests both200; nginx recorded Operator device registration POST200. No exact timeout cause was captured from the separate user-owned member browser. Do not equate the Operator success with member/WebView proof.
 
-Replacement QA3 r2 package publication pending. Existing QA3 was not installed by Codex.
+r2 package was built but not published. The user then requested that unconfigured Messaging also render Notifications OFF and disabled. This is implemented in the popup/store and included in the repeated54 passing tests. QA3 r3 is being built with all reported fixes. Existing QA3 was not installed by Codex.
