@@ -346,7 +346,14 @@ public class AccessControlService implements AccessPolicyData {
     }
 
     private boolean canCurrentActorUseAssetPolicy(String policyKey, String subjectUserId, String resourceId) {
-        return canCurrentActorUsePolicy(policyKey, subjectUserId, resourceId);
+        if (!canCurrentActorUsePolicy(policyKey, subjectUserId, resourceId)) {
+            return false;
+        }
+        boolean existingOwnerAction = AccessPolicyKeys.ASSET_EDIT.equals(policyKey)
+                || AccessPolicyKeys.ASSET_DELETE.equals(policyKey)
+                || AccessPolicyKeys.ASSET_RESTORE.equals(policyKey);
+        return !requiresAuthenticatedActor() || !existingOwnerAction
+                || memberPolicyFacts.isAssetOwner(resourceId, subjectUserId);
     }
 
     private boolean canCurrentActorUsePolicy(String policyKey, String subjectUserId, String resourceId) {
@@ -584,7 +591,7 @@ public class AccessControlService implements AccessPolicyData {
     }
 
     public boolean requiresAuthenticatedActor() {
-        return configProperties.isFirebaseEnabled() && !isDemoSessionRequest();
+        return !configProperties.isMemberFallbackEnabled() && !isDemoSessionRequest();
     }
 
     private boolean isDemoSessionRequest() {

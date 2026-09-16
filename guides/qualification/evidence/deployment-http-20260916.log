@@ -1,0 +1,19 @@
+Verify deployment
+target: https://localhost/
+expected version: 1.0.0-qa.2
+checks: 13, request timeout: 5000ms, retries: 0
+- PASS transport/http-health 67ms
+- PASS transport/http-to-https 98ms
+- PASS transport/http-host-boundary 98ms
+- PASS transport/https-policy 86ms
+- PASS frontend/shell-assets 219ms
+- PASS frontend/routing 119ms
+- PASS frontend/build-pwa 275ms
+- PASS frontend/precache-assets 700ms
+- PASS backend/health 178ms
+- PASS backend/public-configuration 198ms
+- PASS backend/i18n 326ms
+- PASS backend/landing 327ms
+- PASS security/operator-boundary 492ms
+
+installed deployment verification: 13 passed, 0 failed, 0 skipped in 739ms

@@ -117,7 +117,7 @@ public class WebSecurityConfig {
                             "/user/groups/images/**",
                             "/history/events/*/members/*/images/**")
                             .permitAll();
-                    if (!configProperties.isFirebaseEnabled()
+                    if (configProperties.isMemberFallbackEnabled()
                             && !operatorBootstrapAuthenticationService
                                     .isConfigured()) {
                         authorizeRequests.anyRequest().permitAll();

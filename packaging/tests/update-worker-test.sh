@@ -39,7 +39,8 @@ PUBLIC_KEY="${TEST_ROOT}/release-public-key.pem"
 PUBLIC_DER="${TEST_ROOT}/release-public-key.der"
 PACKAGE_ROOT="${TEST_ROOT}/package-root"
 PACKAGE_PATH="${TEST_ROOT}/myscoutee_999.0.0_test.deb"
-PACKAGE_VERSION="999.0.0"
+PACKAGE_VERSION="${UPDATE_TEST_RELEASE_VERSION:-999.0.0}"
+DEBIAN_PACKAGE_VERSION="${PACKAGE_VERSION/-/\~}"
 PACKAGE_CHANNEL="stable"
 HOST_ARCH="$(dpkg --print-architecture)"
 IMAGE_INSPECT_DIR="${TEST_ROOT}/image-inspect"
@@ -74,6 +75,7 @@ printf '%s\n' \
 printf '%s\n' \
   '#!/usr/bin/env bash' \
   'set -euo pipefail' \
+  'printf "[myscoutee-update-phase] LOADING_IMAGES\n"' \
   'artifact="${*: -1}"' \
   'version="$(/usr/bin/dpkg-deb -f "${artifact}" Version)"' \
   'printf "%s\n" "${version}" > "${UPDATE_TEST_VERSION_FILE}"' \
@@ -108,11 +110,11 @@ printf '%s\n' \
   'case "${format}" in' \
   '  "{{.Config.Image}}")' \
   '    case "${container}" in' \
-  '      nginx) printf "%s\n" "myscoutee-nginx:999.0.0-prod" ;;' \
-  '      myscoutee) printf "%s\n" "myscoutee-api:999.0.0-prod" ;;' \
-  '      minio) printf "%s\n" "myscoutee-minio:999.0.0-prod" ;;' \
-  '      registry-demo) printf "%s\n" "myscoutee-registry:999.0.0-prod" ;;' \
-  '      payment-simulator) printf "%s\n" "myscoutee-payment-simulator:999.0.0-prod" ;;' \
+  '      nginx) printf "%s\n" "myscoutee-nginx:${UPDATE_TEST_RELEASE_VERSION:-999.0.0}-prod" ;;' \
+  '      myscoutee) printf "%s\n" "myscoutee-api:${UPDATE_TEST_RELEASE_VERSION:-999.0.0}-prod" ;;' \
+  '      minio) printf "%s\n" "myscoutee-minio:${UPDATE_TEST_RELEASE_VERSION:-999.0.0}-prod" ;;' \
+  '      registry-demo) printf "%s\n" "myscoutee-registry:${UPDATE_TEST_RELEASE_VERSION:-999.0.0}-prod" ;;' \
+  '      payment-simulator) printf "%s\n" "myscoutee-payment-simulator:${UPDATE_TEST_RELEASE_VERSION:-999.0.0}-prod" ;;' \
   '      *) exit 1 ;;' \
   '    esac' \
   '    ;;' \
@@ -136,12 +138,9 @@ printf '%s\n' \
 printf '%s\n' \
   '#!/usr/bin/env bash' \
   'set -euo pipefail' \
-  'work="$(mktemp -d)"' \
-  'trap '\''rm -rf "${work}"'\'' EXIT' \
-  'printf "%s\n" '\''{"schemaVersion":1,"complete":true}'\'' > "${work}/backup-manifest.json"' \
-  'tar -C "${work}" -czf "${UPDATE_TEST_BACKUP_FILE}" .' \
-  'chmod 0600 "${UPDATE_TEST_BACKUP_FILE}"' \
-  'printf "%s\n" "${UPDATE_TEST_BACKUP_FILE}"' \
+  'touch "${UPDATE_TEST_BACKUP_FILE}"' \
+  'echo "Unexpected automatic production backup" >&2' \
+  'exit 1' \
   > "${BACKUP_HELPER}"
 chmod 0755 \
   "${FAKE_BIN}/dpkg-query" \
@@ -355,7 +354,7 @@ jq -n \
 
 printf '%s\n' \
   "Package: myscoutee" \
-  "Version: ${PACKAGE_VERSION}" \
+  "Version: ${DEBIAN_PACKAGE_VERSION}" \
   "Section: web" \
   "Priority: optional" \
   "Architecture: ${HOST_ARCH}" \
@@ -374,6 +373,7 @@ export MYSCOUTEE_UPDATE_SAFE_COPY_HELPER="${SAFE_COPY_HELPER}"
 export MYSCOUTEE_UPDATE_INSTALLED_MANIFEST_PATH="${INSTALLED_MANIFEST}"
 export MYSCOUTEE_UPDATE_MIN_FREE_BYTES=1
 export MYSCOUTEE_UPDATE_HEALTH_TIMEOUT_SECONDS=1
+export MYSCOUTEE_UPDATE_RESTART_HELPER="${FAKE_BIN}/systemctl"
 export MYSCOUTEE_UPDATE_CACHE_RETENTION_JOBS=2
 export MYSCOUTEE_UPDATE_ENABLED=true
 export MYSCOUTEE_API_USER_ID
@@ -388,6 +388,11 @@ source "${WORKER_SCRIPT}"
 
 prepare_directories
 require_runtime
+
+dpkg --compare-versions "$(debian_version 1.0.0-qa.3)" gt "$(debian_version 1.0.0-qa.1)" \
+  || fail "skipped QA release versions are not ordered correctly"
+dpkg --compare-versions "$(debian_version 1.0.0)" gt "$(debian_version 1.0.0-qa.3)" \
+  || fail "stable release must be newer than its QA prerelease"
 
 CURRENT_RELEASE_VERSION="${PACKAGE_VERSION}"
 validate_image_manifest \
@@ -474,16 +479,23 @@ jq -e \
   '.phase == "COMPLETED"
     and .percent == 100
     and .targetVersion == $version
-    and (.backupPath | type == "string")' \
+    and .backupPath == null' \
   "${SUCCESS_STATUS}" >/dev/null \
   || fail "completed status is incomplete"
-[[ "$(cat "${VERSION_FILE}")" == "${PACKAGE_VERSION}" ]] \
+[[ ! -e "${BACKUP_FILE}" ]] \
+  || fail "update invoked a production backup instead of preserving data in place"
+if jq -e 'select(.phase == "BACKING_UP")' \
+  "${JOBS_DIR}/${SUCCESS_JOB}/events.ndjson" >/dev/null; then
+  fail "update emitted an automatic backup phase"
+fi
+[[ "$(cat "${VERSION_FILE}")" == "${DEBIAN_PACKAGE_VERSION}" ]] \
   || fail "verified package was not passed to apt"
 [[ "$(wc -l < "${APT_CALLS_FILE}")" == "1" ]] \
   || fail "valid update did not invoke apt exactly once"
 [[ -s "${AUDIT_ROOT}/${SUCCESS_JOB}/request.json" ]] \
   || fail "accepted request was not copied to the durable audit directory"
-[[ "$(wc -l < "${JOBS_DIR}/${SUCCESS_JOB}/events.ndjson")" -ge 5 ]] \
+jq -se '[.[].phase] == ["VERIFYING", "INSTALLING", "LOADING_IMAGES", "RESTARTING", "COMPLETED"]' \
+  "${JOBS_DIR}/${SUCCESS_JOB}/events.ndjson" >/dev/null \
   || fail "update progress was not written as reconnectable events"
 [[ "$(stat -c '%a' "${SUCCESS_STATUS}")" == "640" ]] \
   || fail "worker status is not group-readable"
@@ -561,7 +573,7 @@ read_request "${CRASH_REQUEST}" || fail "crash fixture request is invalid"
 prepare_job_context || fail "crash fixture job could not be prepared"
 CURRENT_VERSION="1.0.0"
 write_status "INSTALLING" 85 "Simulated interrupted install."
-printf '%s\n' "${PACKAGE_VERSION}" > "${VERSION_FILE}"
+printf '%s\n' "${DEBIAN_PACKAGE_VERSION}" > "${VERSION_FILE}"
 cp "${PACKAGE_ROOT}/opt/myscoutee/packaging/IMAGE-MANIFEST.json" \
   "${INSTALLED_MANIFEST}"
 if ! run_request "${CRASH_REQUEST}"; then
@@ -613,5 +625,35 @@ touch -d '2026-07-28 00:00:03Z' \
 prune_cache
 [[ "$(find "${CACHE_JOBS_DIR}" -mindepth 1 -maxdepth 1 -type d | wc -l)" == "2" ]] \
   || fail "cache retention did not enforce its configured bound"
+
+# A downgrade must bind the exact previous package to the installed source.
+printf '%s\n' '1000.0.0' > "${VERSION_FILE}"
+ROLLBACK_PARENT="upd_12345678901234567890123456789012"
+ROLLBACK_JOB="upd_12345678901234567890123456789013"
+ROLLBACK_REQUEST="$(stage_request "$ROLLBACK_JOB")"
+jq --arg job "$ROLLBACK_PARENT" '. + {rollback_job_id:$job}' "$ROLLBACK_REQUEST" > "$TEST_ROOT/rollback.json"
+mv "$TEST_ROOT/rollback.json" "$ROLLBACK_REQUEST"
+ROLLBACK_HASH="$(jq -r .artifact_sha256 "$ROLLBACK_REQUEST")"
+jq -n --arg job "$ROLLBACK_PARENT" --arg version "$PACKAGE_VERSION" --arg hash "$ROLLBACK_HASH" \
+  '{jobId:$job,fromVersion:"1000.0.0",targetVersion:$version,artifactSha256:$hash}' \
+  | write_root_receipt "$RUNTIME_DIR/recovery.json"
+CURRENT_ROLLBACK_JOB="$ROLLBACK_PARENT"
+CURRENT_VERSION='1000.0.0'
+CURRENT_RELEASE_VERSION="$PACKAGE_VERSION"
+CURRENT_ARTIFACT_SHA256='sha256:0000000000000000000000000000000000000000000000000000000000000000'
+if validate_rollback_target; then fail 'rollback accepted a different artifact hash'; fi
+CURRENT_ARTIFACT_SHA256="$ROLLBACK_HASH"
+CURRENT_VERSION='1001.0.0'
+if validate_rollback_target; then fail 'rollback accepted stale installed source version'; fi
+CURRENT_VERSION='1000.0.0'
+chmod 0660 "$RUNTIME_DIR/recovery.json"
+if validate_rollback_target; then fail 'rollback accepted a writable receipt'; fi
+chmod 0640 "$RUNTIME_DIR/recovery.json"
+validate_rollback_target || fail 'valid exact rollback point rejected'
+run_request "$ROLLBACK_REQUEST" || fail 'verified previous package rollback failed'
+jq -e '.phase == "COMPLETED"' "$JOBS_DIR/$ROLLBACK_JOB/status.json" >/dev/null || fail 'rollback not completed'
+[[ "$(tail -n1 "$APT_CALLS_FILE")" == *--allow-downgrades* ]] || fail 'explicit rollback did not permit downgrade'
+[[ ! -e "$RUNTIME_DIR/recovery.json" ]] || fail 'completed rollback retained a reusable recovery point'
+jq -e --arg hash "$ROLLBACK_HASH" '.artifactSha256 == $hash' "$RUNTIME_DIR/installed-package.json" >/dev/null || fail 'installed receipt did not follow rollback'
 
 echo "update worker tests passed"

@@ -5,7 +5,7 @@ SCRIPT_DIR="$(CDPATH= cd "$(dirname "$0")" && pwd)"
 REPO_ROOT="$(CDPATH= cd "${SCRIPT_DIR}/../.." && pwd)"
 # The package builder is runtime-source packaging logic, not a release wrapper.
 PACKAGE_SCRIPT="${SCRIPT_DIR}/package-production.sh"
-DIST_DIR="${REPO_ROOT}/packaging/dist"
+DIST_DIR="${MYSCOUTEE_DIST_DIR:-${REPO_ROOT}/packaging/dist}"
 
 if [ ! -f "${PACKAGE_SCRIPT}" ]; then
   echo "Package script not found: ${PACKAGE_SCRIPT}" >&2
@@ -24,7 +24,7 @@ if [ -z "${latest_deb}" ]; then
   exit 1
 fi
 
-package_version="$(dpkg-deb -f "${latest_deb}" Version)"
+package_version="$(dpkg-deb -f "${latest_deb}" Version | tr '~' '-')"
 client_tools="${DIST_DIR}/myscoutee-client-tools_${package_version}.tar.gz"
 if [ ! -f "${client_tools}" ]; then
   echo "Operator helper bundle was not found: ${client_tools}" >&2

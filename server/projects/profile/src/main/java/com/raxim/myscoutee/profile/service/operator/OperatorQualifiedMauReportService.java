@@ -322,7 +322,7 @@ public class OperatorQualifiedMauReportService {
             return status(
                     "ERROR",
                     "MEASUREMENT_SYNCHRONIZATION_FAILED",
-                    safeMessage(exception),
+                    "operator.measurements.error.synchronize",
                     0,
                     0,
                     0,

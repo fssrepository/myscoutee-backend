@@ -3,7 +3,7 @@
 import { spawn } from 'node:child_process';
 import { randomUUID } from 'node:crypto';
 import { chmod, readFile, writeFile, mkdir, mkdtemp, rm, readdir } from 'node:fs/promises';
-import { existsSync, readFileSync } from 'node:fs';
+import { existsSync, readFileSync, lstatSync } from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -79,7 +79,7 @@ if (dismissGuidesOnly) {
   }
   process.exit(0);
 }
-await closeOtherManagedCheckpointSessions(manifestPath);
+if (!checkpoint.preserveOtherSessions) await closeOtherManagedCheckpointSessions(manifestPath);
 await closePreviousCheckpointSessions(manifestPath);
 await prepareConfiguredDemoSessions();
 
@@ -173,6 +173,9 @@ try {
         await acceptEntryConsentOnCurrentEntry(port, storageScope);
       }
       await waitForAnonymousEntry(port, storageScope, entryUrl);
+    } else if (sessionKind === 'operator-bootstrap') {
+      await installOperatorSession(port, storageScope, session, targetUrl);
+      runtimeSession.authenticatedAt = new Date().toISOString();
     } else {
       runtimeSession.sessionId = await registerTrackedDemoSession(port, session.userId);
       runtimeSession.sessionOrigin = new URL(targetUrl).origin;
@@ -332,8 +335,8 @@ function normalizeMicrophonePermission(raw) {
 
 function validateSession(session) {
   const sessionKind = `${session?.sessionKind ?? 'demo'}`.trim().toLowerCase();
-  const validKind = sessionKind === 'demo' || sessionKind === 'anonymous';
-  const hasRequiredIdentity = sessionKind === 'anonymous'
+  const validKind = ['demo', 'anonymous', 'operator-bootstrap'].includes(sessionKind);
+  const hasRequiredIdentity = sessionKind === 'anonymous' || (sessionKind === 'operator-bootstrap' && !!process.env[session.credentialFileEnvironment])
     || Boolean(`${session?.userId ?? ''}`.trim());
   if (!session || !`${session.actor ?? ''}`.trim() || !validKind || !hasRequiredIdentity) {
     throw new Error(`Invalid browser-session entry in ${checkpointId}`);
@@ -509,6 +512,43 @@ async function waitForDevToolsPort(userDataDirectory) {
     throw new Error(`Chrome did not expose a DevTools port for ${userDataDirectory}`);
   }
   return port;
+}
+
+async function installOperatorSession(port, scope, session, destinationUrl) {
+  const credentialPath = process.env[session.credentialFileEnvironment];
+  const info = lstatSync(credentialPath);
+  if (!info.isFile() || (info.mode & 0o077) !== 0) {
+    throw new Error('Operator credential file must be a protected regular file (0600).');
+  }
+  const credential = JSON.parse(await readFile(credentialPath, 'utf8'));
+  if (typeof credential.email !== 'string' || typeof credential.password !== 'string') {
+    throw new Error('Operator credential file is incomplete.');
+  }
+  const prefix = `myscoutee.${scope}.operator-bootstrap`;
+  const result = await evaluateInOnlyPage(port, `(async () => {
+    const response = await fetch('/api/auth/operator-bootstrap', {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(${JSON.stringify({email: credential.email, password: credential.password})})
+    });
+    if (!response.ok) return { status: response.status, accepted: false };
+    const body = await response.json();
+    if (body.tokenType !== 'OperatorBootstrap' || !body.accessToken
+        || Date.parse(body.expiresAt) <= Date.now()) return { accepted: false };
+    sessionStorage.setItem(${JSON.stringify(prefix + '.session.v1')}, JSON.stringify({
+      kind: 'operator-bootstrap', email: body.email, expiresAt: body.expiresAt
+    }));
+    sessionStorage.setItem(${JSON.stringify(prefix + '.token.v1')}, body.accessToken);
+    return { accepted: true };
+  })()`);
+  if (!result?.accepted) throw new Error(`Operator startup login failed (HTTP ${result?.status ?? 0}).`);
+  await evaluateInOnlyPage(port, `window.location.replace(${JSON.stringify(destinationUrl)})`, true);
+  await waitUntil(async () => {
+    try {
+      return await evaluateInOnlyPage(port, `location.pathname === '/operator'
+        && !!document.querySelector('app-operator-page')
+        && !!sessionStorage.getItem(${JSON.stringify(prefix + '.token.v1')})`);
+    } catch { return false; }
+  }, 30000, 'Operator page ready');
 }
 
 async function registerTrackedDemoSession(port, userId) {

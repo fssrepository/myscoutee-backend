@@ -22,7 +22,7 @@ class OperatorUpdateControllerTest {
     @Test
     void approvalUsesOnlyAnnouncementReferenceAndAuthenticatedOperator() {
         OperatorUpdateService service = mock(OperatorUpdateService.class);
-        OperatorUpdateController controller = new OperatorUpdateController(service);
+        OperatorUpdateController controller = new OperatorUpdateController(service, mock(com.raxim.myscoutee.profile.service.operator.OperatorUpdateReleaseService.class));
         OperatorUpdateApprovalDto approval =
                 new OperatorUpdateApprovalDto(
                         "ann_0123456789abcdef0123456789abcdef");
@@ -40,7 +40,7 @@ class OperatorUpdateControllerTest {
     @Test
     void statusAndReconnectableEventCursorAreForwarded() {
         OperatorUpdateService service = mock(OperatorUpdateService.class);
-        OperatorUpdateController controller = new OperatorUpdateController(service);
+        OperatorUpdateController controller = new OperatorUpdateController(service, mock(com.raxim.myscoutee.profile.service.operator.OperatorUpdateReleaseService.class));
         String jobId = "upd_0123456789abcdef0123456789abcdef";
         OperatorUpdateJobDto expected = status(jobId);
         OperatorUpdateEventPageDto expectedEvents =
@@ -57,7 +57,7 @@ class OperatorUpdateControllerTest {
     @Test
     void overviewSupportsReloadWithoutAPreviouslyKnownJobId() {
         OperatorUpdateService service = mock(OperatorUpdateService.class);
-        OperatorUpdateController controller = new OperatorUpdateController(service);
+        OperatorUpdateController controller = new OperatorUpdateController(service, mock(com.raxim.myscoutee.profile.service.operator.OperatorUpdateReleaseService.class));
         OperatorUpdateJobDto job =
                 status("upd_0123456789abcdef0123456789abcdef");
         OperatorUpdateOverviewDto expected =

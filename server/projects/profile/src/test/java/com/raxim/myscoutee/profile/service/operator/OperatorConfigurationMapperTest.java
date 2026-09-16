@@ -104,7 +104,7 @@ class OperatorConfigurationMapperTest {
     }
 
     @Test
-    void publicConfigurationJsonContainsBrandingSocialAndPrivacyFieldsOnly()
+    void publicConfigurationJsonContainsOnlyPublicFieldsAndMessagingCapability()
             throws Exception {
         DeploymentConfiguration configuration = seededConfiguration();
         configuration.getBranding().setLogoUrl(
@@ -132,6 +132,7 @@ class OperatorConfigurationMapperTest {
                         "themePreset",
                         "revision",
                         "paymentProviderId",
+                        "firebaseMessagingConfigured",
                         "socialLinks",
                         "privacyContact");
         assertThat(json.path("paymentProviderId").isNull()).isTrue();
@@ -161,8 +162,27 @@ class OperatorConfigurationMapperTest {
         assertThat(json.toString())
                 .doesNotContain("adminEmails")
                 .doesNotContain("credential")
-                .doesNotContain("firebase")
+                .doesNotContain("\"firebase\"")
                 .doesNotContain("\"payment\":");
+    }
+
+    @Test
+    void notificationCapabilityTracksMessagingCredentialInsteadOfVapid() throws Exception {
+        DeploymentConfiguration configuration = seededConfiguration();
+        OperatorConfigurationMapper mapper = new OperatorConfigurationMapper();
+        configuration.getFirebase().setPublicClient(new DeploymentConfiguration.FirebasePublicClient());
+        configuration.getFirebase().getPublicClient().setVapidKey("public-vapid");
+        configuration.getFirebase().setMessagingCredentialEnvelope(null);
+        assertThat(mapper.toPublicConfiguration(configuration).firebaseMessagingConfigured()).isFalse();
+
+        DeploymentConfiguration.EncryptedSecret credential = new DeploymentConfiguration.EncryptedSecret();
+        credential.setCiphertext("private-messaging-credential");
+        configuration.getFirebase().setMessagingCredentialEnvelope(credential);
+        configuration.getFirebase().getPublicClient().setVapidKey(null);
+        var dto = mapper.toPublicConfiguration(configuration);
+        assertThat(dto.firebaseMessagingConfigured()).isTrue();
+        assertThat(objectMapper.writeValueAsString(dto))
+                .doesNotContain("private-messaging-credential", "ciphertext", "vapidKey");
     }
 
     @Test

@@ -87,6 +87,14 @@ public class CountryPartitionService {
         return partition == null ? null : partition.getPartitionKey();
     }
 
+    public List<CountryPartition> supportedCountries() {
+        Query query = Query.query(Criteria.where("geometry").ne(null)
+                .and("partitionKey").nin(null, ""));
+        query.fields().include("countryCode").include("countryName").exclude("_id");
+        query.with(Sort.by("countryCode"));
+        return mongoTemplate.find(query, CountryPartition.class);
+    }
+
     public CountryPartition ensureCountryImported(String countryName, String countryCode, String partitionKey) {
         String normalizedCountryName = safeText(countryName);
         String normalizedCountryCode = normalizeCountryCode(countryCode);

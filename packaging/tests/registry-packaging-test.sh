@@ -351,6 +351,57 @@ if PATH="${STUB_DIR}:${PATH}" \
   fail "required-complete backup accepted missing MongoDB, MinIO, or configuration"
 fi
 
+# An independent deployment has no Registry identity to back up. Exercise
+# absence separately from damaged/partial identity and from other missing data.
+INDEPENDENT_SERVER="${TEST_ROOT}/independent-server"
+INDEPENDENT_KEYS="${TEST_ROOT}/independent-keys"
+INDEPENDENT_STATE="${TEST_ROOT}/independent-state"
+mkdir -p "${INDEPENDENT_SERVER}/data/minio"
+printf 'services: {}\n' > "${INDEPENDENT_SERVER}/docker-compose-prod.yml"
+printf 'MONGO_DATABASE=test\n' > "${INDEPENDENT_SERVER}/.env"
+printf 'MONGO_APP_PASSWORD=test-only\n' > "${INDEPENDENT_SERVER}/.env.secrets"
+printf 'user-owned-image-control\n' > "${INDEPENDENT_SERVER}/data/minio/image"
+independent_backup() {
+  PATH="${STUB_DIR}:${PATH}" \
+  MYSCOUTEE_SERVER_DIR="${INDEPENDENT_SERVER}" \
+  MYSCOUTEE_BACKUP_DIR="${TEST_ROOT}/independent-backups" \
+  MYSCOUTEE_CONFIGURATION_KEY_DIR="${CONFIGURATION_KEY_DIR}" \
+  MYSCOUTEE_REGISTRY_KEY_DIR="${INDEPENDENT_KEYS}" \
+  MYSCOUTEE_REGISTRY_STATE_DIR="${INDEPENDENT_STATE}" \
+  MYSCOUTEE_BACKUP_REQUIRE_COMPLETE=true \
+    bash "${BACKUP_SCRIPT}"
+}
+for directory_state in absent empty; do
+  if [[ "${directory_state}" == empty ]]; then
+    mkdir -p "${INDEPENDENT_KEYS}" "${INDEPENDENT_STATE}"
+  fi
+  independent_path="$(independent_backup)"
+  tar -xOzf "${independent_path}" ./backup-manifest.json \
+    | jq -e '.complete == true and .registryIdentityRequired == false
+      and .components.registryKeys == false and .components.minio == true
+      and .missing == []' >/dev/null \
+    || fail "independent backup misreported ${directory_state} Registry identity"
+done
+printf 'partial-private-key\n' > "${INDEPENDENT_KEYS}/deployment-private-key.pem"
+if independent_backup >/dev/null 2>&1; then
+  fail "complete backup accepted a partial Registry keypair"
+fi
+rm "${INDEPENDENT_KEYS}/deployment-private-key.pem"
+printf '{}\n' > "${INDEPENDENT_STATE}/deployment-state.json"
+if independent_backup >/dev/null 2>&1; then
+  fail "complete backup accepted Registry state without its keys"
+fi
+rm "${INDEPENDENT_STATE}/deployment-state.json"
+ln -s "${TEST_ROOT}/missing-key" "${INDEPENDENT_KEYS}/deployment-private-key.pem"
+if independent_backup >/dev/null 2>&1; then
+  fail "independent backup accepted a dangling Registry key symlink"
+fi
+rm "${INDEPENDENT_KEYS}/deployment-private-key.pem"
+mv "${INDEPENDENT_SERVER}/data/minio" "${INDEPENDENT_SERVER}/data/minio-retained"
+if independent_backup >/dev/null 2>&1; then
+  fail "independent complete backup accepted missing MinIO data"
+fi
+
 EMBEDDED_NEWLINE_BACKUP_DIR="${TEST_ROOT}/embedded-newline-backup"
 EMBEDDED_NEWLINE_BACKUP_PATH="${TEST_ROOT}/embedded-newline-backup.tar.gz"
 mkdir -p "${EMBEDDED_NEWLINE_BACKUP_DIR}"

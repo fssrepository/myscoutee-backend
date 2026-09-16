@@ -2156,7 +2156,11 @@ public class ActivitiesEventsService {
             String nextCursor = endIndex < sorted.size() && !pageProjections.isEmpty()
                     ? serializeCursorId(projectionId(pageProjections.get(pageProjections.size() - 1)))
                     : null;
-            return new EventsExplorePageDto(records, sorted.size(), nextCursor);
+            Map<String, List<Long>> sortKeys = new LinkedHashMap<>();
+            for (EventProjection projection : pageProjections) {
+                sortKeys.put(projectionId(projection), buildExploreSortTuple(projection, order, view));
+            }
+            return new EventsExplorePageDto(records, sorted.size(), nextCursor, sortKeys);
         });
     }
 

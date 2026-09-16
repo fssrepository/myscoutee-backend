@@ -11,8 +11,8 @@ read_version() {
 
 VERSION="${MYSCOUTEE_VERSION:-$(read_version)}"
 VERSION="${VERSION:-1.0.0}"
-if [[ ! "${VERSION}" =~ ^(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)$ ]]; then
-  echo "MYSCOUTEE_VERSION must be a plain SemVer core such as 1.0.0." >&2
+if [[ ! "${VERSION}" =~ ^(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)(-qa\.[1-9][0-9]*)?$ ]]; then
+  echo "MYSCOUTEE_VERSION must be a SemVer core or QA prerelease such as 1.0.0-qa.1." >&2
   exit 1
 fi
 

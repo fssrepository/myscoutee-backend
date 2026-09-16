@@ -1,0 +1,304 @@
+{
+  "checkpoint": "OPERATOR-REGISTRY-LIFECYCLE-001",
+  "status": "PASS",
+  "date": "2026-09-16",
+  "environment": "Existing dev Compose; demo_db; actual Go Registry demo:myscoutee; managed Operator/Ava browsers",
+  "baseline": {
+    "goDeployments": 4,
+    "goLedgerEntries": 44,
+    "mongoSettings": 0,
+    "pairedPrivateSnapshotRetained": true
+  },
+  "block1": {
+    "status": "PASS",
+    "deployment": "dep_fa64b900a8f432517c3148b90634b46e",
+    "registrationAcceptedAt": "2026-09-16T09:03:50Z",
+    "signedRegistrationRetained": true,
+    "installationBatch": "batch_17ec84cf083e00d84303760143a94eaa",
+    "installationLedgerIndex": 45,
+    "signedInstallationReceiptRetained": true,
+    "reopenRegistered": true,
+    "registerDisabledAfterSuccess": true,
+    "failedAttemptsBeforePrerequisiteRepair": 2
+  },
+  "repairs": {
+    "falseSuccess": {
+      "fix": "Only enabled REGISTERED status displays registration success",
+      "frontendWatcherBuild": "2026-09-16T09:03:28.332Z",
+      "nativeFailureReplay": {
+        "errorVisible": true,
+        "falseSuccessVisible": false
+      },
+      "nativeSuccessReplay": true
+    },
+    "directoryOwnership": {
+      "cause": "Root-owned /workspace/data; Java UID1000 could not create Registry directories",
+      "fixtureWorkaroundRemoved": true,
+      "devOwner": "Compose runtime-directories prerequisite",
+      "devInitExitCode": 0,
+      "javaUid": 1000,
+      "directoryMode": "0700",
+      "apiOrWatcherRestarted": false,
+      "focusedShellTests": "PASS: ownership/mode, no key creation, repeat preservation, symlink and invalid owner rejection",
+      "production": "Package postinst already provisions real Registry dirs UID/GID10001 mode0700. Prod/E2E Dockerfiles corrected demo directories 0755 ->0700. Existing retained demo volumes need deployment-time permission verification; no production artifact rebuild/deploy performed.",
+      "packagingTests": "registry-packaging-test.sh PASS"
+    },
+    "claimShareBadge": {
+      "status": "PASS",
+      "sharedPopupHeaderBadge": true,
+      "oldBodyBadgeRemoved": true,
+      "desktopAnd390pxMobileVerified": true,
+      "mobileNoHorizontalOverflow": true,
+      "frontendWatcherBuild": "2026-09-16T09:12:44.190Z"
+    },
+    "claimControls": {
+      "status": "PASS",
+      "linkInsideClientCodeTitleRow": true,
+      "mobileViewport": 390,
+      "mobileTitleCenterDeltaPx": 0,
+      "claimButtonWidthPx": 142.59375,
+      "sharedMenuActionSizing": "content",
+      "noHorizontalOverflow": true,
+      "deploymentHeader": "Company name as title, Operator deployments as subtitle",
+      "watcherBuild": "2026-09-16T09:27:25.740Z",
+      "screenshots": [
+        "client-code-title-row-desktop.png",
+        "claim-content-sized-mobile.png",
+        "deployment-header-after.png"
+      ]
+    },
+    "measurementSourceId": {
+      "cause": "Activity membership ObjectId passed directly to Mongo $concat",
+      "fix": "Convert only that _id to string",
+      "liveReplay": "PASS: all six monthly reports accepted with exact source totals",
+      "watcherBuild": "BUILD SUCCESSFUL; backend restart 2026-09-16T09:34:29Z"
+    },
+    "measurementErrorText": {
+      "fix": "Return existing i18n key operator.measurements.error.synchronize; detailed exception retained in server log",
+      "regressionTestAdded": true,
+      "unitTestRun": false,
+      "reason": "Existing dev watcher owns compilation; no second Gradle process started",
+      "newFailureUiReplay": false
+    },
+    "registrationPopup": {
+      "status": "PASS",
+      "sharedConfig": {
+        "mobilePresentation": "fullscreen",
+        "bodyLayout": "default"
+      },
+      "mobile390x500": "Panel fills viewport; all content fits",
+      "mobile390x350": {
+        "scrollTop": 100,
+        "bodyClientHeight": 291,
+        "bodyScrollHeight": 391,
+        "headerTop": 0,
+        "bottomActionVisible": true,
+        "horizontalOverflow": false
+      },
+      "desktop": "Content contained and scrollable at 916x544",
+      "errorText": "Existing localized short disconnect error; fixed 18px icon flex basis",
+      "screenshots": [
+        "popup-fullscreen-mobile-before-scroll.png",
+        "popup-fullscreen-mobile-scrolled.png"
+      ]
+    },
+    "reconnect": {
+      "cause": [
+        "Archived withdrawn claim rejected without active journal",
+        "Lifecycle and initial claim keys reused across fresh enrollments",
+        "Existing deployment remained centrally inactive after registration"
+      ],
+      "fix": [
+        "Verify signed WITHDRAWN/inactive historical status without restoring a claim",
+        "Scope initial claim/lifecycle generation to fresh registration idempotency key",
+        "Apply existing signed reactivation for matching archived deployment before Operator enrollment succeeds; persist receipt and avoid repeat activation"
+      ],
+      "liveActualGoReplay": "PASS: registration, signed reactivation, retained-source sync, second disconnect and archive",
+      "regressionTest": "reconnectDoesNotRestoreWithdrawnClaimOrReusePreviousDeactivation",
+      "unitTestRun": false,
+      "unitTestLimitation": "Not run separately; existing dev watcher owns compilation. Live Java/Go flow verified.",
+      "watcher": "BUILD SUCCESSFUL; Main started 2026-09-16T10:04:51Z"
+    },
+    "pairedReset": {
+      "cause": "Application-owned directories sit below root-owned Compose data parent",
+      "fix": "Remove fixture-owned contents as application user; remove only empty fixed directories with init authority; no permissions broadened",
+      "firstReset": "PASS: exact Go bytes, local state and Mongo/session restore; final reset pending",
+      "finalReset": "PASS"
+    }
+  },
+  "next": "Block4 steps14\u201318, corrected to user contract: disconnect preserves local data/access; reconnect is a new connection; resynchronize retained sources and restore paired baseline.",
+  "block2": {
+    "status": "PASS",
+    "claimAction": "opa_5d5803ac8a128a9d5ee1a3f33c9cb4c6",
+    "group": "opg_30b5ddab1a1ea163c5f607aaa8c00c56",
+    "legalName": "QA Registry Operator Ltd",
+    "pendingObserved": true,
+    "approvedViaNormalRegistryCli": true,
+    "reviewIndex": 3,
+    "auditIndex": 5,
+    "signedGroupReadDeploymentCount": 1,
+    "deploymentMembership": "owner",
+    "claimState": "approved",
+    "eligibility": "active",
+    "communityReopened": true,
+    "communityProviderLinks": "Demo catalog links only; external Discord/Discourse participation not tested",
+    "ledgerAfterRead": 45,
+    "reviewBoundary": "Approved claim/group verified; latest deployment-view reopen retained one owner, ledger45, audit7 and review3. Audit7 is the pre/post boundary for this reopen; earlier UI review began at audit5.",
+    "finalReadAuditIndex": 7
+  },
+  "block3": {
+    "status": "PASS",
+    "sourcesUnchanged": true,
+    "expected": [
+      {
+        "period": "2026-03",
+        "qualifiedMauCount": 5,
+        "actionCount": 15,
+        "actionCounts": {
+          "rate": 7,
+          "join": 4,
+          "verified-attendance": 4
+        }
+      },
+      {
+        "period": "2026-04",
+        "qualifiedMauCount": 1,
+        "actionCount": 9,
+        "actionCounts": {
+          "book": 9
+        }
+      },
+      {
+        "period": "2026-05",
+        "qualifiedMauCount": 3,
+        "actionCount": 7,
+        "actionCounts": {
+          "join": 4,
+          "verified-attendance": 3
+        }
+      },
+      {
+        "period": "2026-06",
+        "qualifiedMauCount": 0,
+        "actionCount": 0,
+        "actionCounts": {}
+      },
+      {
+        "period": "2026-07",
+        "qualifiedMauCount": 4,
+        "actionCount": 11,
+        "actionCounts": {
+          "join": 8,
+          "book": 1,
+          "verified-attendance": 2
+        }
+      },
+      {
+        "period": "2026-08",
+        "qualifiedMauCount": 0,
+        "actionCount": 0,
+        "actionCounts": {}
+      }
+    ],
+    "reports": [
+      {
+        "id": "6aaa62b92f4376e92506f323",
+        "period": "2026-03",
+        "status": "ACCEPTED",
+        "attempts": 1,
+        "receipt": {
+          "ledgerIndex": 46,
+          "period": "2026-03",
+          "qualifiedMauCount": 5,
+          "acceptedAt": "2026-09-16T09:34:49Z",
+          "signaturePresent": true
+        }
+      },
+      {
+        "id": "6aaa62b92f4376e92506f324",
+        "period": "2026-04",
+        "status": "ACCEPTED",
+        "attempts": 1,
+        "receipt": {
+          "ledgerIndex": 47,
+          "period": "2026-04",
+          "qualifiedMauCount": 1,
+          "acceptedAt": "2026-09-16T09:34:49Z",
+          "signaturePresent": true
+        }
+      },
+      {
+        "id": "6aaa62b92f4376e92506f325",
+        "period": "2026-05",
+        "status": "ACCEPTED",
+        "attempts": 1,
+        "receipt": {
+          "ledgerIndex": 48,
+          "period": "2026-05",
+          "qualifiedMauCount": 3,
+          "acceptedAt": "2026-09-16T09:34:49Z",
+          "signaturePresent": true
+        }
+      },
+      {
+        "id": "6aaa62b92f4376e92506f326",
+        "period": "2026-06",
+        "status": "ACCEPTED",
+        "attempts": 1,
+        "receipt": {
+          "ledgerIndex": 49,
+          "period": "2026-06",
+          "qualifiedMauCount": 0,
+          "acceptedAt": "2026-09-16T09:34:49Z",
+          "signaturePresent": true
+        }
+      },
+      {
+        "id": "6aaa62b92f4376e92506f327",
+        "period": "2026-07",
+        "status": "ACCEPTED",
+        "attempts": 1,
+        "receipt": {
+          "ledgerIndex": 50,
+          "period": "2026-07",
+          "qualifiedMauCount": 4,
+          "acceptedAt": "2026-09-16T09:34:49Z",
+          "signaturePresent": true
+        }
+      },
+      {
+        "id": "6aaa62b92f4376e92506f328",
+        "period": "2026-08",
+        "status": "ACCEPTED",
+        "attempts": 1,
+        "receipt": {
+          "ledgerIndex": 51,
+          "period": "2026-08",
+          "qualifiedMauCount": 0,
+          "acceptedAt": "2026-09-16T09:34:49Z",
+          "signaturePresent": true
+        }
+      }
+    ],
+    "reopenNoDuplicates": true,
+    "ledgerAfterReopen": 51,
+    "auditAfterReopen": 7,
+    "reviewAfterReopen": 3
+  },
+  "block4": {
+    "status": "PASS",
+    "firstDisconnect": "PASS: archived binding; retained local collection counts identical",
+    "reconnect": "PASS: fresh registration, installation ledger 52; old claim remains withdrawn",
+    "retainedSourceResync": "PASS: six exact reports and signed receipts identical before/after fresh connection, source fingerprint unchanged",
+    "secondDisconnect": "PASS: distinct signed operation and archive; UNCONFIGURED, disabled, settings v8",
+    "targetedReplayDeployment": "dep_57dfbce131b26640ca56aa9399ce6587",
+    "freshActivationReceipt": "opa_b350ad5dedf21adbb007674a90858bd4",
+    "firstDisconnectArchive": "opa_15303ea48732a2ef1c18d420965730f1",
+    "secondDisconnectArchive": "opa_14ccb5feccb90e4d67a5dff00c9eecab",
+    "memberAccess": "PASS while disconnected: Casey /game and Events opened with three retained cards",
+    "adminAccess": "PASS while disconnected: Ava /admin and Reported users opened with two retained reports",
+    "originalPrivateEvidence": "/tmp/myscoutee-qa-operator-registry-original-20260916",
+    "targetedReplayPrivateEvidence": "/tmp/myscoutee-qa-operator-registry",
+    "cleanup": "PASS: exact paired Go bytes/local-state/Mongo and all three actor-session baselines restored"
+  }
+}

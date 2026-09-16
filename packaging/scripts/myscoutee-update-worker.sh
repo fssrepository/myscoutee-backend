@@ -11,8 +11,8 @@ STATE_DIR="${MYSCOUTEE_UPDATE_STATE_DIR:-/var/lib/myscoutee/update}"
 CACHE_DIR="${MYSCOUTEE_UPDATE_CACHE_DIR:-/var/cache/myscoutee-update}"
 AUDIT_DIR="${MYSCOUTEE_UPDATE_AUDIT_DIR:-/var/log/myscoutee/update}"
 RELEASE_PUBLIC_KEY="${MYSCOUTEE_UPDATE_RELEASE_PUBLIC_KEY:-/etc/myscoutee/update/release-public-key.pem}"
-BACKUP_SCRIPT="${MYSCOUTEE_UPDATE_BACKUP_SCRIPT:-/opt/myscoutee/packaging/scripts/backup-production.sh}"
 SAFE_COPY_HELPER="${MYSCOUTEE_UPDATE_SAFE_COPY_HELPER:-${SCRIPT_DIR}/myscoutee-safe-copy.py}"
+RESTART_HELPER="${MYSCOUTEE_UPDATE_RESTART_HELPER:-${SCRIPT_DIR}/restart-update-stack.sh}"
 IMAGE_CONTENT_FINGERPRINT_HELPER="${SCRIPT_DIR}/image-content-fingerprint.sh"
 INSTALLED_MANIFEST_PATH="${MYSCOUTEE_UPDATE_INSTALLED_MANIFEST_PATH:-/opt/myscoutee/packaging/IMAGE-MANIFEST.json}"
 PACKAGE_NAME="myscoutee"
@@ -44,6 +44,7 @@ RUNTIME_DIR="${STATE_DIR}/runtime"
 JOBS_DIR="${RUNTIME_DIR}/jobs"
 CACHE_JOBS_DIR="${CACHE_DIR}/jobs"
 
+CURRENT_ROLLBACK_JOB=""
 CURRENT_REQUEST=""
 CURRENT_CLAIM_DIR=""
 CURRENT_JOB_ID=""
@@ -120,8 +121,11 @@ write_status() {
   local phase="$1"
   local percent="$2"
   local message="$3"
-  local tmp
+  local tmp receipt rollback=null
 
+  if receipt="$(read_root_receipt "$RUNTIME_DIR/recovery.json")"; then
+    rollback="$(jq -c --arg current "$CURRENT_VERSION" 'if .fromVersion == $current then {jobId,fromVersion,targetVersion,artifactSha256} else null end' <<< "$receipt")"
+  fi
   tmp="$(mktemp "${CURRENT_JOB_DIR}/.status.XXXXXX")"
   jq -n \
     --arg schemaVersion "1" \
@@ -138,6 +142,7 @@ write_status() {
     --arg channel "${CURRENT_CHANNEL}" \
     --arg artifactSha256 "${CURRENT_ARTIFACT_SHA256}" \
     --arg backupPath "${CURRENT_BACKUP_PATH}" \
+    --argjson rollback "$rollback" \
     '{
       schemaVersion: ($schemaVersion | tonumber),
       jobId: $jobId,
@@ -152,6 +157,7 @@ write_status() {
       targetVersion: $targetVersion,
       channel: $channel,
       artifactSha256: $artifactSha256,
+      rollback: $rollback,
       backupPath: (if $backupPath == "" then null else $backupPath end)
     }' > "${tmp}"
   chmod 0640 "${tmp}"
@@ -257,7 +263,7 @@ prepare_directories() {
     0700 "${API_USER_ID}" "${API_GROUP_ID}" \
     "${STAGING_DIR}" "${REQUEST_DIR}"
   install_numeric_owned_directory \
-    2750 "${WORKER_USER_ID}" "${API_GROUP_ID}" "${JOBS_DIR}"
+    2750 "${WORKER_USER_ID}" "${API_GROUP_ID}" "${RUNTIME_DIR}" "${JOBS_DIR}"
 }
 
 read_request() {
@@ -279,13 +285,16 @@ read_request() {
       "artifact_size_bytes",
       "artifact_sha256",
       "package_signing_key_id",
-      "package_signature"
+      "package_signature",
+      "rollback_job_id"
     ]) | length == 0)
     and (.schema_version == 1)
     and (.artifact_size_bytes | type == "number")
   ' "${request_file}" 2>/dev/null || true)"
   [[ "${strict}" == "true" ]] || return 1
 
+  CURRENT_ROLLBACK_JOB="$(jq -r '.rollback_job_id // ""' "${request_file}")"
+  [[ -z "$CURRENT_ROLLBACK_JOB" || "$CURRENT_ROLLBACK_JOB" =~ ^upd_[0-9a-f]{32}$ ]] || return 1
   CURRENT_BACKUP_PATH=""
   CURRENT_IMAGE_MANIFEST=""
   CURRENT_CACHED_ARTIFACT=""
@@ -311,9 +320,9 @@ read_request() {
   [[ "${CURRENT_REQUESTED_BY}" != *$'\n'* && "${CURRENT_REQUESTED_BY}" != *$'\r'* ]] \
     || return 1
   [[ "${CURRENT_MANIFEST_HASH}" =~ ^sha256:[0-9a-f]{64}$ ]] || return 1
-  [[ "${CURRENT_RELEASE_VERSION}" =~ ^(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)$ ]] \
+  [[ "${CURRENT_RELEASE_VERSION}" =~ ^(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)(-qa\.[1-9][0-9]*)?$ ]] \
     || return 1
-  dpkg --validate-version "${CURRENT_RELEASE_VERSION}" >/dev/null 2>&1 || return 1
+  dpkg --validate-version "$(debian_version "${CURRENT_RELEASE_VERSION}")" >/dev/null 2>&1 || return 1
   [[ "${CURRENT_CHANNEL}" =~ ^[a-z][a-z0-9._-]{0,31}$ ]] || return 1
   [[ "${CURRENT_ARTIFACT_NAME}" == "myscoutee.deb" ]] || return 1
   [[ "${CURRENT_ARTIFACT_SIZE}" =~ ^[1-9][0-9]*$ ]] || return 1
@@ -572,7 +581,7 @@ verify_and_cache_artifact() {
     fail_job "The signed artifact is not the MyScoutee package."
     return 1
   }
-  [[ "${package_version}" == "${CURRENT_RELEASE_VERSION}" ]] || {
+  [[ "${package_version}" == "$(debian_version "${CURRENT_RELEASE_VERSION}")" ]] || {
     fail_job "The Debian package version does not match the signed manifest."
     return 1
   }
@@ -590,50 +599,43 @@ verify_and_cache_artifact() {
   CURRENT_CACHED_ARTIFACT="${cached_artifact}"
 }
 
-installed_version() {
-  dpkg-query -W -f='${Version}' "${PACKAGE_NAME}" 2>/dev/null || true
+# Display/signature versions use SemVer; dpkg orders prereleases with '~'.
+debian_version() {
+  printf '%s' "${1/-/\~}"
 }
 
-create_backup() {
-  local output manifest_tmp
+installed_version() {
+  local version
+  version="$(dpkg-query -W -f='${Version}' "${PACKAGE_NAME}" 2>/dev/null || true)"
+  printf '%s' "${version/\~/-}"
+}
 
-  if [[ ! -x "${BACKUP_SCRIPT}" || -L "${BACKUP_SCRIPT}" ]]; then
-    fail_job "The production backup helper is unavailable."
-    return 1
-  fi
-  if ! output="$(MYSCOUTEE_BACKUP_REQUIRE_COMPLETE=true \
-    "${BACKUP_SCRIPT}" 2>> "${CURRENT_LOG_FILE}")"; then
-    fail_job "The required complete pre-update production backup failed."
-    return 1
-  fi
-  printf '%s\n' "${output}" >> "${CURRENT_LOG_FILE}"
-  CURRENT_BACKUP_PATH="$(printf '%s\n' "${output}" \
-    | awk 'NF { value=$0 } END { print value }')"
-  if [[ -z "${CURRENT_BACKUP_PATH}" || ! -f "${CURRENT_BACKUP_PATH}" \
-    || -L "${CURRENT_BACKUP_PATH}" ]]; then
-    fail_job "The pre-update backup did not produce a safe archive."
-    return 1
-  fi
-  manifest_tmp="$(mktemp "${CURRENT_JOB_DIR}/.backup-manifest.XXXXXX")"
-  if ! tar -xOf "${CURRENT_BACKUP_PATH}" ./backup-manifest.json \
-    > "${manifest_tmp}" 2>/dev/null \
-    || ! jq -e '.schemaVersion == 1 and .complete == true' \
-      "${manifest_tmp}" >/dev/null 2>&1; then
-    rm -f -- "${manifest_tmp}"
-    fail_job "The pre-update backup does not certify complete recovery data."
-    return 1
-  fi
-  rm -f -- "${manifest_tmp}"
+# Only fixed installer milestones affect progress; arbitrary log lines stay logs.
+# The command's exit status is retained through pipefail. No marker can report success.
+run_with_progress() {
+  "$@" 2>&1 | while IFS= read -r line || [[ -n "$line" ]]; do
+    printf '%s\n' "$line" >> "${CURRENT_LOG_FILE}"
+    case "$line" in
+      '[myscoutee-update-phase] CONFIGURING_PACKAGE') write_status CONFIGURING_PACKAGE 86 "Configuring the package." ;;
+      '[myscoutee-update-phase] LOADING_IMAGES') write_status LOADING_IMAGES 87 "Loading packaged images." ;;
+      '[myscoutee-update-phase] VERIFYING_IMAGES') write_status VERIFYING_IMAGES 90 "Verifying packaged images." ;;
+      '[myscoutee-update-phase] PREPARING_DATA') write_status PREPARING_DATA 93 "Preparing package-owned data." ;;
+      '[myscoutee-update-phase] STARTING_SERVICES') write_status STARTING_SERVICES 94 "Starting services." ;;
+      '[myscoutee-update-phase] WAITING_FOR_HEALTH') write_status WAITING_FOR_HEALTH 96 "Waiting for application health." ;;
+      '[myscoutee-update-phase] SWITCHING_INGRESS') write_status SWITCHING_INGRESS 98 "Switching the web server." ;;
+    esac
+  done
 }
 
 install_package() {
   local cached_artifact="$1"
   local installed_after
 
-  if ! env DEBIAN_FRONTEND=noninteractive \
-    apt-get -o Dpkg::Use-Pty=0 install -y "${cached_artifact}" \
-    >> "${CURRENT_LOG_FILE}" 2>&1; then
-    recovery_required "Package installation may be partial. Use the recorded backup and install log before retrying."
+  local -a downgrade_options=()
+  [[ -z "$CURRENT_ROLLBACK_JOB" ]] || downgrade_options=(--allow-downgrades)
+  if ! run_with_progress env DEBIAN_FRONTEND=noninteractive \
+    apt-get -o Dpkg::Use-Pty=0 install -y "${downgrade_options[@]}" "${cached_artifact}"; then
+    recovery_required "Package installation may be partial. Inspect the install log before retrying; preserve existing deployment data."
     return 1
   fi
   installed_after="$(installed_version)"
@@ -685,7 +687,7 @@ restart_and_verify_release() {
   local manifest="$1"
   local deadline
 
-  if ! systemctl restart myscoutee.service >> "${CURRENT_LOG_FILE}" 2>&1; then
+  if ! run_with_progress "${RESTART_HELPER}"; then
     return 1
   fi
   deadline=$((SECONDS + HEALTH_TIMEOUT_SECONDS))
@@ -713,13 +715,66 @@ reconcile_existing_job() {
     && ! -L "${INSTALLED_MANIFEST_PATH}" ]] \
     && validate_image_manifest "${INSTALLED_MANIFEST_PATH}" \
     && restart_and_verify_release "${INSTALLED_MANIFEST_PATH}"; then
+    record_completed_package
     write_status "COMPLETED" 100 \
       "Recovered after interruption: the exact requested package and images are active and healthy."
     log_line "Recovered completed update ${CURRENT_JOB_ID} after interruption."
     return 0
   fi
   recovery_required \
-    "An earlier update attempt was interrupted and cannot be retried automatically. Inspect the install log and restore the recorded backup if needed."
+    "An earlier update attempt was interrupted and cannot be retried automatically. Inspect the install log before recovery; preserve existing deployment data."
+}
+
+# Only root-owned receipts can authorize a downgrade. A browser request cannot
+# nominate an arbitrary old version, and matching a version alone is insufficient.
+read_root_receipt() {
+  local receipt="$1"
+  [[ -f "$receipt" && ! -L "$receipt" && "$(stat -c %u "$receipt")" == "$WORKER_USER_ID" ]] || return 1
+  (( (8#$(stat -c %a "$receipt") & 8#022) == 0 )) || return 1
+  [[ $(stat -c %s "$receipt") -le 4096 ]] || return 1
+  cat "$receipt"
+}
+
+write_root_receipt() {
+  local destination="$1" temporary
+  temporary="$(mktemp "${RUNTIME_DIR}/.receipt.XXXXXX")"
+  cat > "$temporary"
+  chown "+${WORKER_USER_ID}:+${API_GROUP_ID}" "$temporary"
+  chmod 0640 "$temporary"
+  fsync_path "$temporary"
+  mv -T "$temporary" "$destination"
+  fsync_path "$RUNTIME_DIR"
+}
+
+validate_rollback_target() {
+  local receipt
+  receipt="$(read_root_receipt "$RUNTIME_DIR/recovery.json")" || return 1
+  jq -e --arg job "$CURRENT_ROLLBACK_JOB" --arg current "$CURRENT_VERSION" \
+    --arg version "$CURRENT_RELEASE_VERSION" --arg hash "$CURRENT_ARTIFACT_SHA256" \
+    '.jobId == $job and .fromVersion == $current and .targetVersion == $version and .artifactSha256 == $hash' \
+    <<< "$receipt" >/dev/null
+}
+
+retain_recovery_point() {
+  local receipt
+  # No recorded identity means no rollback claim for this legacy installation.
+  if receipt="$(read_root_receipt "$RUNTIME_DIR/installed-package.json")" && \
+    jq -e --arg current "$CURRENT_VERSION" '.version == $current and (.artifactSha256 | test("^sha256:[0-9a-f]{64}$"))' <<< "$receipt" >/dev/null; then
+    jq --arg job "$CURRENT_JOB_ID" --arg target "$CURRENT_RELEASE_VERSION" \
+      '{jobId:$job,fromVersion:$target,targetVersion:.version,artifactSha256:.artifactSha256}' \
+      <<< "$receipt" | write_root_receipt "$RUNTIME_DIR/recovery.json"
+  else
+    [[ ! -e "$RUNTIME_DIR/recovery.json" && ! -L "$RUNTIME_DIR/recovery.json" ]] || unlink "$RUNTIME_DIR/recovery.json"
+  fi
+}
+
+record_completed_package() {
+  jq -n --arg version "$CURRENT_RELEASE_VERSION" --arg hash "$CURRENT_ARTIFACT_SHA256" \
+    '{version:$version,artifactSha256:$hash}' | write_root_receipt "$RUNTIME_DIR/installed-package.json"
+  if [[ -n "$CURRENT_ROLLBACK_JOB" ]]; then
+    [[ ! -e "$RUNTIME_DIR/recovery.json" && ! -L "$RUNTIME_DIR/recovery.json" ]] || unlink "$RUNTIME_DIR/recovery.json"
+    fsync_path "$RUNTIME_DIR"
+  fi
 }
 
 process_job() {
@@ -741,7 +796,12 @@ process_job() {
     fail_job "MyScoutee is not installed through the Debian package."
     return 1
   fi
-  if ! dpkg --compare-versions "${CURRENT_RELEASE_VERSION}" gt "${CURRENT_VERSION}"; then
+  if [[ -n "$CURRENT_ROLLBACK_JOB" ]]; then
+    if ! validate_rollback_target; then
+      fail_job "The requested rollback does not match the retained previous package identity."
+      return 1
+    fi
+  elif ! dpkg --compare-versions "$(debian_version "${CURRENT_RELEASE_VERSION}")" gt "$(debian_version "${CURRENT_VERSION}")"; then
     fail_job "The requested release is not newer than the installed version."
     return 1
   fi
@@ -753,12 +813,7 @@ process_job() {
     return 1
   fi
 
-  write_status "BACKING_UP" 78 \
-    "Creating the complete production backup required before installation."
-  if ! create_backup; then
-    return 1
-  fi
-
+  [[ -n "$CURRENT_ROLLBACK_JOB" ]] || retain_recovery_point
   write_status "INSTALLING" 85 "Installing the verified Debian package."
   if ! install_package "${CURRENT_CACHED_ARTIFACT}"; then
     return 1
@@ -768,11 +823,12 @@ process_job() {
     "Restarting and verifying the exact packaged Docker image identities."
   if ! restart_and_verify_release "${CURRENT_IMAGE_MANIFEST}"; then
     recovery_required \
-      "The requested package is installed, but its exact packaged images did not become healthy. Use the backup and install log for recovery."
+      "The requested package is installed, but its exact packaged images did not become healthy. Inspect the install log for recovery; preserve existing deployment data."
     return 1
   fi
 
   CURRENT_VERSION="${CURRENT_RELEASE_VERSION}"
+  record_completed_package
   write_status "COMPLETED" 100 \
     "The verified package and exact bundled images are installed and healthy."
   log_line "Completed update ${CURRENT_JOB_ID}."

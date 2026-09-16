@@ -51,6 +51,7 @@ public class OperatorConfigurationMapper {
                 theme(branding.getThemePreset()),
                 branding.getRevision(),
                 blankToNull(configuration.getPayment().getProviderId()),
+                configuration.getFirebase().getMessagingCredentialEnvelope() != null,
                 toSocialLinks(configuration),
                 toPrivacyContact(configuration));
     }

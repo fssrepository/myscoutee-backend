@@ -1,6 +1,6 @@
 # Current manual QA session
 
-Updated: 2026-09-15
+Updated: 2026-09-16
 
 This is the context-saving entry point for continuing the manual QA campaign.
 It stores one minimal live resume pointer plus reusable pair-QA execution lessons. It
@@ -83,6 +83,16 @@ resume pointer and reusable working method.
 
 ## Active resume point
 
+Campaign scheduling, confirmed 2026-09-16: Operator Update is complete. Asset
+Pricing remains tomorrow's selected user-controlled pair-QA checkpoint; Borrow
+is parked. The user has taken over normal-account UI smoke on the installed
+VMware app; Codex continues the separate security/startup/memory campaign with its own [Excel ledger](../../qualification/SECURITY_AND_INFRASTRUCTURE.xlsx).
+These do not advance the pair-QA matrix. Retain smoke-created profile, Event,
+Asset and media as fixture-owned controls for the next release update. After
+Asset QA is complete, prepare/publish the stable application and Registry release
+and GitHub tags, update the stack, then verify the retained controls. An unrelated
+Borrow change alone does not require registration smoke to be replayed.
+
 Testing boundary confirmed by the user: use versioned fixtures for test data
 and external tunnels/proxies/network emulation for transport conditions. Do not
 add application test parameters or test-only production branches. Fixture-only
@@ -102,18 +112,54 @@ repair an established product defect. Preserve the phone's tethering connection
 when shaping only its route to the QA application.
 
 ```yaml
-checkpoint: ADMIN-MONITORING-001 — PREPARED / NOT RUN
-checklist: ../checklists/administration/ADMIN-MONITORING-001.md
-substage: Block1 step1 Metrics, awaiting user review/start. No Admin checklist actions performed.
-fixture_phase: admin-monitoring baseline-ready-not-started; no test parameter save or job armed.
-browser_control: Managed Ava Admin session ready; existing-session authentication/realtime readiness verified. User explicitly requested preparation only; do not execute the checklist.
-required_resume: Read-only baseline/session readiness check if stale. Continue only when user starts the prepared test; do not replay completed Bell/Jobs flows.
-queued_work: All three Administration and four Operator guides written in English. Only Monitoring scripts prepared; other fixture orchestration deferred. Monitoring owns parameter save/history/revert once; other tests replace proven prerequisite actions with fixtures, not repeated clicks. No separate common testcase. Administration coverage restored against334d4787: Monitoring20, Graph23, Parameters25 explicit steps with source-ID mappings; evidence reuse is assertion-specific. Operator guide omissions now repaired against334d4787 at user request: Configuration C01–C08, Registry18, Updates11, Revenue11; per-guide requirement mapping retained. Documentation only; dedicated Operator fixtures deferred.
-last_completed: BELL-RATING all1–20 PASS, final consistent feedback worker oracle and exact fixture/session resets verified.
-runtime: Existing watchers only. No application code changed in this continuation.
-ledger_status: 95/104 PASS; Notifications6/6. Admin Monitoring prepared, Graph/Parameters and Operator not newly executed.
-last_evidence: ../manuals/DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md#operator-coverage-repair-against-the-original-matrix--2026-09-15
+checkpoint: ASSET-PRICING-001
+checklist: ../checklists/asset/ASSET-PRICING-001.md
+substage: Selected by user for tomorrow (2026-09-17), ahead of Borrow. Guide reorganized into7 readable blocks, retaining original14 steps, amounts and report markers. Preparation only; no manual steps executed.
+fixture_phase: Versioned asset-pricing fixture and Casey/Nova/Riley browser configuration exist; not staged. Stage on the test day after the development gate passes: cutoff window starts staging+12h, so overnight staging would invalidate it. Dev database was not inspected while stopped; do not assume the parked Borrow fixture is reset.
+browser_control: Asset Pricing is user-controlled pair QA. Only versioned baseline preparation and managed launcher startup are authorized; user performs all checklist actions.
+required_resume: Open the linked Pricing guide and its development gate first. Complete audience/member/VIP/invite/promo wiring and refund-policy/payment-snapshot disclosure before staging; do not invent VIP eligibility. Use the existing dev pipeline for verification. Respect VMware/dev sequential memory boundary. Once ready, inspect fixture status; resolve the retained Borrow baseline through its guarded reset before staging Pricing. Require baseline-ready, then launch only ASSET-PRICING-001 managed sessions. Start at Block1 fixed price.
+queued_work: Borrow remains parked; not selected for tomorrow. Final stable app/Registry GitHub release, UI/image smoke, external security and measured infrastructure efficiency remain separate later work.
+last_completed: Operator Update PASS/CLOSED; all Operator and Administration rows complete. No further Update/rollback replay requested.
+runtime: VMware now serves user-installed QA3 r4; local dev stopped. Local HTTPS retains signed r4 and QA2 rollback artifact. Separate managed Operator window remains user-controlled. Before/after comparison recorded no document removals, no index changes and unchanged 911 media objects; one user devices field changed amid permission interactions. The user clarified the subsequent defect as missing visible save feedback. A one-second green success animation on Update is source-only, verified by 17 focused tests including a rendered-button click; it is not yet packaged. The later Messaging correction now gates the toggle and background registration on the server-side Messaging credential presence instead of VAPID; 26 frontend and 11 backend focused tests passed. Both corrections remain uninstalled. The r5 package finished before the user stopped further builds; it was not deployed. A subsequent source-only OFF fix now unsubscribes existing browser Push as well as removing backend registration, including cleanup of late token acquisition; 31 focused frontend tests pass. Build/deployment remain paused by user instruction. The user subsequently rejected background completion for settings Save: current source awaits token plus server device registration and reports failure without success feedback. Custom token/HTTP deadlines were removed and the original 10s worker-readiness bound restored. Updated 33 focused tests pass; live browser verification remains unproven. VAPID was temporarily removed at the user request and has been restored (public config HTTP200). See QA3_PERMISSION_SYNC_20260916.md for artifact/source evidence. No Asset browser launched.
+ledger_status: 102/104 PASS; Operator4/4. Asset Pricing remains HARNESS PREPARED / NOT STAGED with development prerequisites, not baseline-ready. Borrow remains parked.
+
 ```
+
+### Pricing preparation for 2026-09-17
+
+Use the existing `asset-pricing` scenario; do not replay completed payment or
+Borrow journeys to create prerequisites. It supplies the one editable Asset,
+three Event stages and active Barion cards with simulator3DS Off. The launcher
+configuration already maps Casey(owner), Nova(accepted member) and Riley(public
+control) to three isolated windows. Do not launch or stage before the guide's
+development gate is complete.
+
+| User report after block | Existing read-only fixture oracle |
+| --- | --- |
+| 1 — fixed saved | `verify-fixed` |
+| 2 — variable saved | `verify-variable` |
+| 3 — audience observed | `verify-audience` |
+| 4 — active-policy payment captured | `verify-active-payment` |
+| 5 — no-policy payment captured | `verify-no-policy-payment` |
+| 6 — cutoff payment captured | `verify-cutoff-payment` |
+| 7 — complete | `verify` |
+
+Run oracles through the existing Docker checkpoint harness with scenario
+`asset-pricing` and checkpoint `ASSET-PRICING-001`. Use `status` before mutation;
+never clear a foreign/parked fixture with an ad-hoc database write. Keep
+transactional results in the pack/matrix. This preparation is not a test PASS.
+
+### Current delegation boundary — 2026-09-16
+
+The user explicitly delegates the remaining Administration test and then all four
+Operator journeys to Codex, with visible numbered progress and in-scope repairs.
+VMware deployment UI smoke is now user-operated: Codex must not navigate or submit its browser actions. It remains a non-demo registration/profile/Event/Asset image journey outside the QA matrix; see guides/releases/PRERELEASE_DEPLOYMENT_QUALIFICATION.md. Firebase prerequisites belong to its deploy smoke fixture. Production QA data was wiped and reloaded from corrected JSON at the user’s request on 2026-09-16. The QA-only firebase-smoke-fixture.py restores activation/readiness as fixture state, not evidence of the browser Message Test. Any future retained-data controls must be created after this reset. No deployment is started by this note.
+
+The user-requested QA3 permission-sync build and local HTTPS update preparation are tracked in [QA3_PERMISSION_SYNC_20260916.md](../../qualification/evidence/QA3_PERMISSION_SYNC_20260916.md). Preserve the current smoke-created database/media. Codex prepares a separate Operator browser with the versioned launcher; the user starts the update. Compare the final pre-update fingerprints with the post-update state before claiming data preservation.
+
+The two remaining Asset tests are explicitly reserved for pair QA: prepare their
+versioned fixtures/managed startup, then the user controls all checklist actions.
+A defect report permits diagnosis and repair, not takeover of those Asset actions.
 
 ### Notifications takeover notes
 

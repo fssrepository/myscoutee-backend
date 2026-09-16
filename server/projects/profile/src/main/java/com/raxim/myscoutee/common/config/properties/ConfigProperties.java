@@ -122,6 +122,10 @@ public class ConfigProperties {
         this.memberUser = memberUser;
     }
 
+    public boolean isMemberFallbackEnabled() {
+        return !isFirebaseEnabled() && StringUtils.hasText(memberUser);
+    }
+
     public String getFacebookAppSecret() {
         return facebookAppSecret;
     }

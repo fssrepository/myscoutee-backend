@@ -1,6 +1,6 @@
 plugins {
 	id 'java'
-	id 'org.springframework.boot' version '4.0.3'
+	id 'org.springframework.boot' version '4.0.8'
 	id 'io.spring.dependency-management' version '1.1.7'
 	id 'jacoco'
 	id "org.sonarqube" version "4.2.1.3168"
@@ -60,11 +60,17 @@ configurations {
     e2eTestRuntimeOnly.extendsFrom testRuntimeOnly
 }
 
+// Security fixes not yet included in the Spring Boot 4.0.8 dependency BOM.
+ext['httpclient5.version'] = '5.6.3'
+ext['httpcore5.version'] = '5.4.3'
+ext['tomcat.version'] = '11.0.25'
+ext['opentelemetry.version'] = '1.62.0'
+
 dependencies {
 	implementation 'com.google.firebase:firebase-admin:9.10.0'
 	implementation 'org.bouncycastle:bcprov-jdk18on:1.84'
 	implementation 'org.apache.httpcomponents:httpasyncclient'
-	implementation 'org.jsoup:jsoup:1.18.1'
+	implementation 'org.jsoup:jsoup:1.23.1'
 	implementation 'software.amazon.awssdk:s3:2.32.20'
 	implementation 'software.amazon.awssdk:url-connection-client:2.32.20'
 	developmentOnly 'org.springframework.boot:spring-boot-devtools'
@@ -85,7 +91,7 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-websocket'
 	implementation 'com.stripe:stripe-java:24.0.0'
 
-	implementation 'com.itextpdf:itextpdf:5.5.13.2'
+	implementation 'com.itextpdf:itextpdf:5.5.13.3'
 	
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testImplementation 'org.springframework.security:spring-security-test'

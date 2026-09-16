@@ -144,6 +144,24 @@ public final class RegistryOperatorNetworkService {
         this.secureRandom = Objects.requireNonNull(secureRandom, "Secure random must not be null.");
     }
 
+    public void activateReconnectedDeployment() {
+        TrustedDeployment trusted = trustedDeployment();
+        if (!localStore.hasArchivedBinding(trusted.state())) {
+            return;
+        }
+        for (OperatorActionJournalEntry entry : localStore.loadOperatorActionJournal()) {
+            verifyJournalEntry(trusted, entry);
+            if (Set.of(RegistryProtocol.OPERATOR_ACTION_REACTIVATE_DEPLOYMENT,
+                    RegistryProtocol.OPERATOR_ACTION_DEACTIVATE_DEPLOYMENT).contains(entry.action())) {
+                return;
+            }
+        }
+        // Registration preserves the deployment identity. Explicitly activate
+        // this new connection without restoring its archived claim or link.
+        apply(new ActionCommand(RegistryProtocol.OPERATOR_ACTION_REACTIVATE_DEPLOYMENT,
+                null, null, null, null, null, null, null));
+    }
+
     public ActionOutcome apply(ActionCommand suppliedCommand) {
         ActionCommand command = normalizeAction(suppliedCommand);
         TrustedDeployment trusted = trustedDeployment();
@@ -268,7 +286,7 @@ public final class RegistryOperatorNetworkService {
     private String deterministicClaimIdempotencyKey(
             TrustedDeployment trusted,
             String payloadHash) {
-        String generationBoundary = RegistryProtocol.ZERO_HASH;
+        String generationBoundary = trusted.state().registrationIdempotencyKey();
         String activeMatchingKey = "";
         for (OperatorActionJournalEntry entry : localStore.loadOperatorActionJournal()) {
             verifyJournalEntry(trusted, entry);
@@ -360,7 +378,7 @@ public final class RegistryOperatorNetworkService {
             TrustedDeployment trusted,
             String action,
             String payloadHash) {
-        String generationBoundary = RegistryProtocol.ZERO_HASH;
+        String generationBoundary = trusted.state().registrationIdempotencyKey();
         String activeMatchingKey = "";
         for (OperatorActionJournalEntry entry :
                 localStore.loadOperatorActionJournal()) {
@@ -654,11 +672,14 @@ public final class RegistryOperatorNetworkService {
                 OperatorClaimStatusResponse unexpected =
                         httpClient.operatorClaimStatus(trusted.state().deploymentId());
                 if (unexpected != null && unexpected.status() != null) {
-                    throw new IllegalStateException(
-                            "Registry reports a structured claim without a durable local claim receipt.");
+                    // Reconnection retains the deployment key, while the old
+                    // claim journal is archived. A signed withdrawn claim is
+                    // historical evidence, not a claim on this new connection.
+                    verifyClaimStatus(trusted, null, unexpected);
+                } else {
+                    throw new RegistryProtocolException(
+                            "Registry returned an incomplete operator claim capability response.");
                 }
-                throw new RegistryProtocolException(
-                        "Registry returned an incomplete operator claim capability response.");
             } catch (RegistryHttpClient.RegistryHttpException exception) {
                 if (isUnsupportedClaimStatusEndpoint(exception)) {
                     verificationCapability = "BACKEND_UNAVAILABLE";
@@ -1227,25 +1248,39 @@ public final class RegistryOperatorNetworkService {
             throw new IllegalArgumentException(
                     "Pending operator claim status unexpectedly has a review boundary.");
         }
-        if (!isClaimVerificationBoundary(claim)) {
-            throw new IllegalArgumentException(
-                    "Registry operator claim status has no matching durable claim boundary.");
-        }
-        OperatorActionReceipt claimReceipt = claim.receipt();
-        boolean structuredClaim = isStructuredClaim(claim);
         if (!trusted.state().deploymentId().equals(status.deploymentId())
-                || !claimReceipt.actionId().equals(status.claimActionId())
+                || !trusted.state().registryScope().equals(status.registryScope())
+                || !trusted.registryKeyId().equals(status.registryKeyId())) {
+            throw new IllegalArgumentException(
+                    "Registry operator claim status does not match the registered deployment.");
+        }
+        if (claim == null) {
+            if (legacyEvidence
+                    || !RegistryProtocol.OPERATOR_VERIFICATION_STATUS_WITHDRAWN
+                            .equals(status.verificationStatus())
+                    || !RegistryProtocol.OPERATOR_ELIGIBILITY_STATUS_INACTIVE
+                            .equals(status.eligibilityStatus())) {
+                throw new IllegalArgumentException(
+                        "Registry reports a current claim without a durable local claim receipt.");
+            }
+        } else {
+            if (!isClaimVerificationBoundary(claim)) {
+                throw new IllegalArgumentException(
+                        "Registry operator claim status has no matching durable claim boundary.");
+            }
+            OperatorActionReceipt claimReceipt = claim.receipt();
+            boolean structuredClaim = isStructuredClaim(claim);
+            if (!claimReceipt.actionId().equals(status.claimActionId())
                 || !claimReceipt.auditIndex().equals(status.claimAuditIndex())
                 || !claimReceipt.auditHash().equals(status.claimAuditHash())
                 || !claimReceipt.groupId().equals(status.groupId())
                 || (structuredClaim
                         && !safeText(claim.legalName()).equals(
                                 status.legalName()))
-                || !claimReceipt.acceptedAt().equals(status.submittedAt())
-                || !trusted.state().registryScope().equals(status.registryScope())
-                || !trusted.registryKeyId().equals(status.registryKeyId())) {
-            throw new IllegalArgumentException(
-                    "Registry operator claim status does not match the durable claim receipt.");
+                || !claimReceipt.acceptedAt().equals(status.submittedAt())) {
+                throw new IllegalArgumentException(
+                        "Registry operator claim status does not match the durable claim receipt.");
+            }
         }
         if (legacyEvidence) {
             requireLegacyEligibilityBoundaryAbsent(status);

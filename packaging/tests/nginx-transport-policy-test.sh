@@ -104,6 +104,10 @@ prepare_config_dir() {
   mkdir -p "${config_dir}"
   cp "${NGINX_ROOT}/conf/nginx/conf/http/routing.conf" \
     "${config_dir}/routing.conf"
+  if [[ "${http_policy}" == "${PROD_HTTP_POLICY}" ]]; then
+    cp "${NGINX_ROOT}/conf/nginx/conf/http/update-status.prod.conf" "${config_dir}/update-status.prod.conf"
+    printf '\ninclude /etc/nginx/conf.d/update-status.prod.conf;\n' >> "${config_dir}/routing.conf"
+  fi
   cp "${http_policy}" "${config_dir}/http-transport-policy.conf"
   cp "${https_policy}" "${config_dir}/https-response-policy.conf"
   printf '%s' "${config_dir}"
@@ -221,6 +225,14 @@ assert_header \
   "${prod_manifest_headers}" \
   '^Content-Type: application/manifest\+json'
 assert_header "${prod_manifest_headers}" '^Cache-Control: no-cache'
+
+# Locations with their own Cache-Control must retain the production security policy.
+for headers in "${prod_root_headers}" "${prod_asset_headers}" "${prod_manifest_headers}"; do
+  assert_header "${headers}" '^X-Content-Type-Options: nosniff'
+  assert_header "${headers}" '^X-Frame-Options: DENY'
+  assert_header "${headers}" '^Referrer-Policy: strict-origin-when-cross-origin'
+  assert_header "${headers}" "^Content-Security-Policy: frame-ancestors 'none'; object-src 'none'; base-uri 'self'"
+done
 
 grep -Fq 'server_name transport.test;' "${prod_config_dir}/spring.conf" \
   || fail "DOMAIN was not rendered into production Nginx"

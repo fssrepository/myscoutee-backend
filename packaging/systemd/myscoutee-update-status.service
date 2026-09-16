@@ -1,0 +1,25 @@
+[Unit]
+Description=MyScoutee independent read-only update progress
+Requires=myscoutee-update-status.socket
+After=myscoutee-update-status.socket
+
+[Service]
+User=myscoutee-runtime
+Group=myscoutee-runtime
+ExecStart=/usr/bin/python3 -B /opt/myscoutee/packaging/scripts/update-status-server.py
+Restart=on-failure
+NoNewPrivileges=true
+ProtectSystem=strict
+BindReadOnlyPaths=/var/lib/myscoutee/update/inbox/staging:/run/myscoutee-update-reader/inbox/staging
+BindReadOnlyPaths=/var/lib/myscoutee/update/runtime/jobs:/run/myscoutee-update-reader/runtime/jobs
+ProtectHome=true
+PrivateTmp=true
+PrivateDevices=true
+ProtectKernelTunables=true
+ProtectKernelModules=true
+ProtectControlGroups=true
+RestrictAddressFamilies=AF_UNIX
+CapabilityBoundingSet=
+MemoryMax=64M
+TasksMax=8
+UMask=0077

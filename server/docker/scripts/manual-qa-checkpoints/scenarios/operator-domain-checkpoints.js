@@ -7,6 +7,7 @@
   const command = Q.text(process.env.MANUAL_QA_COMMAND);
   const checkpointId = Q.text(process.env.MANUAL_QA_CHECKPOINT_ID).toUpperCase();
   const CONFIG_ID = "deployment-configuration";
+  const bootstrapUserId = "4eab7142-bf4d-321e-9f57-2ad949915bc7";
 
   const CHECKPOINTS = {
     "OPERATOR-FIREBASE-001": {
@@ -70,7 +71,11 @@
       database: db.getName(),
       stagedAtIso,
       snapshots: Q.snapshotSpecs([
-        { collection: "deploymentConfigurations", selector: { _id: CONFIG_ID } }
+        { collection: "deploymentConfigurations", selector: { _id: CONFIG_ID } },
+        { collection: "users", selector: { userId: bootstrapUserId } },
+        { collection: "userSessionStates", selector: { userId: bootstrapUserId } },
+        { collection: "userLoginAudits", selector: { userId: bootstrapUserId } },
+        { collection: "registeredDevices", selector: { userId: bootstrapUserId } }
       ])
     };
     Q.collection(Q.STATE_COLLECTION).insertOne(state);

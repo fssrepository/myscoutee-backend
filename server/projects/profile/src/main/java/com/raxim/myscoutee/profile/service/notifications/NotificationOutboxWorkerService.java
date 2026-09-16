@@ -188,12 +188,11 @@ public class NotificationOutboxWorkerService {
     }
 
     private int processDueNotificationsNow() {
-        if (!isInsideDeliveryWindow()) {
-            return 0;
-        }
+        boolean insideDeliveryWindow = isInsideDeliveryWindow();
         String nowIso = Instant.now().toString();
         List<NotificationOutboxItem> leasedItems = new ArrayList<>();
         for (NotificationOutboxItem item : dueItems(nowIso, effectiveBatchSize())) {
+            if (!insideDeliveryWindow && !Boolean.FALSE.equals(item.getFirebaseDeliveryRequested())) continue;
             // Only pre-snapshot records retain the former live-config gate.
             if (item.getFirebaseDeliveryRequested() == null && !configProperties.isFirebaseEnabled()) continue;
             NotificationOutboxItem leased = lease(item, nowIso).orElse(null);

@@ -133,8 +133,8 @@ PACKAGE_VERSION="$(dpkg-deb -f "$DEB_PATH" Version)"
 [ "$PACKAGE_NAME" = "myscoutee" ] \
   || fail "expected package myscoutee, got ${PACKAGE_NAME:-missing}"
 printf '%s\n' "$PACKAGE_VERSION" \
-  | grep -Eq '^(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)$' \
-  || fail "package version must be a plain SemVer core"
+  | grep -Eq '^(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)(~qa\.[1-9][0-9]*)?$' \
+  || fail "package version must be a SemVer core or QA prerelease"
 dpkg --validate-version "$PACKAGE_VERSION" >/dev/null 2>&1 \
   || fail "invalid Debian package version: ${PACKAGE_VERSION}"
 
@@ -236,6 +236,8 @@ fi
 
 echo "Running package-provided deployment qualification..."
 remote_transport_run_root "$@"
+
+remote_transport_run_root /opt/myscoutee/packaging/scripts/record-installed-package.sh "$REMOTE_DEB_PATH"
 
 echo "Install and host qualification passed."
 if [ -n "$VERIFY_DEPLOYMENT_URL" ]; then

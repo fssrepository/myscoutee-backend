@@ -85,6 +85,8 @@ public class RegistryOperatorOperations {
             throw new IllegalStateException(
                     "Registry enrollment completed without an installation-test receipt.");
         }
+        new RegistryOperatorNetworkService(properties, objectMapper)
+                .activateReconnectedDeployment();
         MauReceipt receipt = state.installationBatch().receipt();
         return new EnrollmentOutcome(
                 result.deploymentId(),

@@ -7019,6 +7019,12 @@ persisted `last-remove-verified` oracle is the closing result.
 
 Status: **HARNESS PREPARED / NOT STAGED / IMPLEMENTATION GAPS EXPECTED**.
 
+Preparation2026-09-16: user selected Pricing for tomorrow, ahead of parked Borrow.
+The stable guide now has7 blocks with the same14 steps and report markers.
+Existing fixture oracle commands and the three-role managed launcher are mapped
+in the handoff. No data staged or browser actions performed; stage on test day
+after the development gate, because the Cutoff stage starts staging+12h.
+
 Hard development gate: another session must not stage this checkpoint first.
 It starts by exposing and wiring Asset audience/member/VIP/invite/promo pricing
 through the Borrow calculation and promo entry point, with an explicit VIP
@@ -7471,19 +7477,11 @@ publication evidence.
 
 Stable click guide and shared-coverage map:
 [`OPERATOR-CONFIGURATION-LIFECYCLE-001.md`](../checklists/operator/OPERATOR-CONFIGURATION-LIFECYCLE-001.md).
-Checkpoints C01–C08 belong to this one matrix row. C05–C07 share evidence with
-the active WebView/Push journey; C02–C04 and final restoration remain required.
-
-- Open Configuration once and use one reversible happy-path value in the
-  public configuration, TLS, payment and Firebase blocks.
-- After each Save/Test action, reopen the same block and compare the normalized
-  visible value; credentials may return only as configured/masked state.
-- After Firebase activation, complete one eligible fresh sign-in and verify
-  that reload/login reuses the same application identity.
-- Restore every changed block to its exact baseline before closing the row.
-- Invalid-input, callback-security, secret-leak, TLS-worker failure and other
-  fault-injection branches belong to automated regression coverage. Checkout and real-device push
-  effects stay in Event/Asset and Notifications.
+The current guide has C01 Firebase changed save/tests, C02 activation/entry
+mode and C03 exact restoration. Public configuration and payment evidence are
+retained from their completed runs. Actual Firebase sign-in/logout/re-login
+reuses [physical WebView evidence](#firebase-registration-and-desktop-login-footer--2026-09-14).
+Managed HTTPS is owned by Operator Update. Do not replay completed flows.
 
 #### Shared Firebase revision and entry repairs — 2026-09-14
 
@@ -7534,25 +7532,271 @@ cache and original build snapshots. Updated-device replay is not yet proven.
 
 - Register one disposable local binding, complete one claim/link path, inspect
   its leaderboard/community projection and synchronize one measurement period.
-- Deactivate/reactivate once to verify member/admin fail-closed behavior and
-  retained Operator recovery, then restore the disposable binding.
+- Disconnect and reconnect through a new enrollment, preserving local data and
+  local member/Admin access. Resynchronize retained sources, then restore the
+  disposable QA baseline.
 - Protocol abuse, retry storms, token-security probes, announcement fan-out and
   worker failures belong to automated regression coverage.
 
-### `OPERATOR-UPDATE-LIFECYCLE-001` — signed update
+#### Registry execution — 2026-09-16
 
-- Apply one prepared compatible QA release from Updates, observe honest
-  progress, then reopen the Operator screen and verify the resulting version.
-- Invalid signatures, corrupt archives, downgrade rejection, interrupted-worker
-  recovery and rollback belong to packaging/update automation, not extra manual
-  branches.
+Block 1 steps 1–4 PASS: normal UI registration reached the actual Go Registry,
+retained its signed registration and zero-count installation receipt (ledger 45),
+and reopened as REGISTERED without a second registration. Baseline Go counts:
+4 deployments / 44 ledger entries. Paired Go/local/Mongo snapshot remains retained.
+Two initial attempts failed before key creation because the dev runtime directory
+was root-owned. Compose now owns directory provisioning (application UID, 0700);
+the temporary fixture permission workaround was removed. Prod/E2E image demo
+folder modes were corrected to 0700; packaged real directories already use API
+UID10001/0700. No production deployment qualification is claimed.
+The popup previously displayed success even for ERROR; it now requires enabled
+REGISTERED. Native failure and success replay passed. Focused directory tests
+and Registry packaging tests passed. Detailed evidence:
+`guides/qa/evidence/OPERATOR-REGISTRY-LIFECYCLE-001-2026-09-16.json`.
+Block 2 steps 5–9 PASS: company claim observed pending, then approved through
+the normal Go reviewer CLI. Signed group projection and reopened UI agree on
+one approved owner deployment. Latest deployment-view reopen retained ledger45,
+audit7 and review3. Community was reopened; catalog links do not prove external
+Discord/Discourse participation. Claim percentage uses the shared popup header;
+creation link is inside the Client code title row. The mobile Claim action uses
+shared app-menu content sizing (390px viewport, no horizontal overflow).
+Block 3 steps 10–13 PASS: six completed periods March–August produced QMAU
+counts 5/1/3/0/4/0 and action counts 15/9/7/0/11/0. All six reports were
+accepted on their first delivery with signed receipts at ledger46–51. The
+source fingerprint was unchanged and reopening created no additional reports.
+Fixed a real Mongo aggregation failure by converting the activity membership
+ObjectId to string before concatenation. Raw synchronization exceptions now
+map to an existing translated error key; technical detail stays in server logs.
+The new service regression test was added but not separately run during the
+active watcher. No fresh failure UI replay is claimed.
+User corrected block4: reconnect creates a new connection; local data persists
+and is resynchronized, including additional qualifying records if present.
+The former full local access denial/old-binding restoration assertions were
+incorrect QA expectations. Next: block4 disconnect/reconnect and exact cleanup.
 
+Block 4 steps 14–18 PASS: fresh registration retains the deployment identity but
+uses a new enrollment and explicit signed reactivation; withdrawn claims remain
+archived. Initial claim/lifecycle idempotency generations now include the fresh
+registration key. A verified historical WITHDRAWN/inactive claim does not restore
+an active claim. The final targeted Java/Go replay used deployment
+`dep_57dfbce131b26640ca56aa9399ce6587`, reactivation receipt
+`opa_b350ad5dedf21adbb007674a90858bd4`, and two distinct disconnect archives.
+All six report identities/receipts and source totals were identical across
+reconnect/synchronize. Casey opened three retained Events and Ava opened two
+Reports while disconnected. Final paired reset verified exact Go archive bytes,
+local state, Mongo records and all three actors' pre-launch sessions.
+Mobile registration uses shared fullscreen/default-scroll configuration. At
+390x350, native scrolling reached the bottom action (scrollTop100), header/X
+stayed fixed and horizontal overflow was absent. Short translated disconnect
+errors retain their icon size. Existing dev watchers compiled successfully.
+The focused reconnect/security regression was added but not separately run;
+live happy-path Java/Go replay passed. Full checkpoint: PASS.
+
+### `OPERATOR-UPDATE-LIFECYCLE-001` — signed update and recovery
+
+The stable checklist owns six blocks: release verification (1–3), Apply and
+progress (4–7), reconnect (8–11), QA2 → QA1 UI rollback with a missing cached
+installer (12–17), controlled failure/recovery (18–20), and managed HTTPS
+(21–24). The user explicitly added rollback and controlled failure coverage;
+the earlier exclusion of those branches no longer applies. Disabled controls
+while work runs are the oracle; do not bypass them to simulate repeat clicks.
+
+**2026-09-16 — PASS/CLOSED after migration and managed HTTPS qualification.**
+Native QA1 r6→QA2 r7 job `upd_bd07f08979361e1206785f1c95e7b5c7`
+completed16:58:47Z and automatically reloaded. Migration004 produced the exact
+predeclared configuration hash; other retained Mongo/MinIO and five file controls
+matched. Configuration now loads normally. The HTTPS worker then exposed a real
+permission defect: preparation changed its runtime mount0750 to0700, so the API
+could not read the successful job. Fixed in the worker with a persistent API-group
+read/traverse policy; TLS-worker and numeric-ownership regressions passed.
+
+Normal signed QA2 r8 installation/host qualification passed. Native HTTPS Apply
+`tls_95a2fb42967d1ca619fbcc7c2e8220d9` completed17:11:06Z; API returned200/100%,
+the popup retained Manual/qa.localhost on reopen and cleared private inputs.
+The actual browser loaded that HTTPS origin; curl/openssl independently verified
+its QA-CA chain and hostname. Original TLS/settings and Operator access were
+restored with the versioned fixture; data checks passed before removing only
+QA-owned Mongo/MinIO controls. Local release overrides were reset, the fixture
+server stopped and the API recreated; all services healthy. Final VM is QA2 r8.
+Earlier r5/r6 rollback evidence stands; no extra replay per user instruction.
+
+Scope: local signed release emulation and Manual TLS with explicit QA CA.
+Public GitHub/ACME, final security/smoke/performance and populated Event/Asset
+migration are not claimed. The green/orange badge correction remains source-only.
+Source QA1 accepts schema4; a new post-migration rollback was not executed.
+
+**2026-09-16 — r5/r6 recovery and automatic reload PASS; HTTPS still pending.**
+Voluntary rollback after successful installation was exercised through the UI in
+r5, including re-download of the exact missing QA1 installer. In r6, a controlled
+truncated download produced one localized error and enabled recovery actions;
+the explicit healthy retry completed as `upd_8296003875315dd91f7120bc34064418`.
+The subsequent voluntary rollback completed as
+`upd_a7e82b8179934136ba1cc9a8557729b3`. Both r6 operations reached verified100%
+and automatically refreshed/reloaded the frontend, without a reload loop.
+Retained Mongo/MinIO/configuration controls passed; Event/Asset collections were
+empty, so populated domain-record preservation is not claimed. QA1 has no older
+recovery point after this rollback; its absent Rollback button is correct.
+The user explicitly requested no further rollback replay. Current-version green
+and available-version orange badge styling is corrected in source only.
+
+The remaining Configuration/HTTPS block exposed an existing schema3 singleton
+against a schema4 API. Normal QA2 r7 packaging adds declared migration004, preserving
+all settings while advancing schemaVersion and optimistic version. Its isolated
+Mongo and restart-order tests passed. Native UI installation and exact planned
+post-migration hashes are being checked before the managed HTTPS flow. This row
+remains IN PROGRESS until HTTPS and fixture cleanup are proven.
+
+**2026-09-16 — Independent progress and exact-image upgrade PASS.**
+Normal monitor QA1/QA2 r4: job `upd_d1194357f035a4a47afcd280169e1995`
+completed16:00:12Z. The original popup reached100% without reload, with209
+monitor responses and real installer phase feedback while the API was down.
+Actual QA2 image identities/health and retained Mongo/MinIO/configuration controls
+passed. Reopening the popup made no release request; only explicit Check fetched
+again and Update stayed hidden with no newer version. Prior r3 failed exact-image
+verification because the worker inherited pre-install image variables; the restart
+helper now reads the installed selection, with upgrade/rollback regression proof.
+User clarified that Rollback must remain available after successful installation,
+for later-discovered functional defects. That UI correction and removal of the
+lower duplicate success notice pass76 focused tests; QA2 r5 is being packaged.
+Voluntary success rollback is a distinct pending branch, not a failed-install test.
+
+**2026-09-16 — Local signed-source replay; popup recovery PASS.**
+The normal current-source QA1/QA2 packages in `local-rollback-qa{1,2}-20260916-r2`
+replaced the historical candidate for this run. Native Apply created exactly one
+job, `upd_e706a97a8ab99457775c37903b5cadab`, completed at14:42:46Z. The original
+popup recovered through API restart to100% without reload; both controls were
+locked while running. Update remained disabled after success and a new Check
+with no newer release. Signed installation, exact image health and retained
+Mongo/MinIO/configuration controls passed. Reopened QA2 exposes its exact QA1
+recovery point; rollback has not yet been invoked. The user then requested a
+host progress reader that remains available while the API is down. Source tests
+pass; corrected `monitor-qa{1,2}-20260916-r2` packages are being prepared and
+installed for that new live round. Earlier failure evidence below is historical.
+Rollback, controlled failure/retry and managed HTTPS remain unproven.
+
+**2026-09-16 — Actual QA1 r2 → QA2 Apply; restart tracking defect.**
+Full current-source QA1 r2 (SHA-256
+`6e693064bd2e08c5638cabaf9b87de7b4a560f171619dbf8d11aa71e91bdbcff`)
+resolved the missing actions. Block1 discovery and verification passed without
+Registry enrollment. One native Update deployment click started
+`upd_ec17edbf732bdebb08d37b9b3e55dd6a` at13:53:44Z; the worker completed at13:57:20Z
+with verified QA2 installed and healthy. Both controls were disabled during
+installation and after popup reopening. No second Apply or automatic backup.
+The API restart caused the UI to stop polling at85% and show a raw HTTP error:
+block2 tracking FAIL despite successful installation. Source now retains the
+job/cursor across transient read failures, never repeats Apply, localizes actual
+errors, disables both controls while running and releases them after terminal
+failure. No automatic page reload. The two focused spec files yielded45/46 PASS;
+all eight new regression cases passed. The unrelated failure concerns an obsolete
+claimed-group popup header expectation. Source fixes are not installed on old QA2.
+Retained users/configuration and owned Mongo/MinIO controls, plus five configuration,
+key and certificate hashes, all match after Apply. Event/Asset collections are
+empty; populated domain preservation is not proven. Fixture controls remain staged.
+Block3: retained Operator access works, but historical QA2 discovery calls Registry
+announcements and fails409. Block4: Rollback is absent; no CLI substitute executed.
+Current-source QA1 r2 is not published and differs from the old published QA1;
+exact previous-artifact identity must be preserved for recovery. The full row
+remains IN PROGRESS; controlled failure and managed HTTPS are also outstanding.
+
+**2026-09-16 — Current-source QA1 baseline and first live defect.**
+The user replaced the historical-backport plan with a complete normal production
+build of the current source as `1.0.0-qa.1`. That full package was signed,
+installed and passed its packaged qualification. All seven application
+containers are healthy; five retained configuration/key/TLS hashes match.
+Actual installed build: `qa1-current-20260916`; package SHA-256
+`dccb73a9f62f56e533ffb58577776cd826dc399fbcd49f0a955a6fb0cd8be9d1`.
+The existing managed Operator browser shows QA1 and discovers GitHub QA2 with
+Registry uninitialized. No Apply request or update job was created.
+Live FAIL: the Updates popup omitted both action buttons because inline
+`app-menu` was configured as `list`, an unsupported inline layout. Corrected to
+`row`; a full current-source QA1 r2 package is being prepared for replay.
+The compact version badges and dim backdrop requested by the user accompany
+this build; no separate cosmetic test campaign is scheduled.
+The full update/rollback/failure/managed-HTTPS chain remains IN PROGRESS.
+Earlier preparation evidence below retains its original artifact identities.
+
+**2026-09-16 — Preparation only; functional steps NOT RUN.**
+Evidence: `../evidence/OPERATOR-UPDATE-LIFECYCLE-001-2026-09-16.json`.
+Dev is stopped. VMware SSH and authenticated guest sudo work. The versioned
+forwarder exposes workstation localhost ports 80/443 to the same VM ports;
+HTTPS health returns UP with the exported public bootstrap certificate trusted.
+VM baseline snapshot operator-update-baseline-20260916 completed at11:34:12Z.
+The root LV was expanded10→18.22GiB from existing free extents;8.8GiB free.
+Before baseline installation, the installed image-manifest bytes matched the
+published QA2 artifact's manifest.
+
+The published QA1 baseline was downloaded and its digest verified. Both QA1 and
+QA2 DEBs internally declare version 1.0.0. The actual worker requires a newer
+version, plus signed release metadata matching the DEB; database version edits
+cannot replace that contract. Published assets lack signed manifests, and the
+VM lacks a pinned release key. The user explicitly requested installing the downloaded historical QA1
+baseline: digest-verified installation and package-provided qualification
+passed. The installed image manifest matches QA1 and certificate-verified
+HTTPS health is UP. No signed-release verification or UI Apply PASS is claimed. Source inspection finds phase/percentage UI, but no UI rollback
+action; live disabled/progress/error/recovery checks remain pending. Resolve
+release prerequisites and missing recovery capability before claiming the
+requested QA1 → QA2 → QA1 chain. Preserve all completed Operator evidence.
+
+**Block 1, step 1 — QA1 UI observations; fixes deferred as requested.**
+The existing deployment-local Operator credential successfully opened the real
+Operator workspace through `https://localhost`. The Updates popup is open.
+This is access/UI evidence, not a completed release-verification block.
+The user subsequently authorized fixing UPDATE-UI-01/02 in source while QA
+continues. Other findings remain queued; the published QA1 VM is unchanged.
+
+| Finding | Observed behavior | Required correction / retest | Status |
+| --- | --- | --- | --- |
+| UPDATE-UI-01 | On the narrow QA1 viewport, the two actions share one row and `Deployment is current` is truncated. The popup also reserves a large empty body below them. User screenshot: `Screenshot from 2026-09-16 13-43-55.png`. | Use two action rows when needed and/or size the popup body to its content, using shared component configuration. Verify readable action labels and proportionate empty-state height on the reported narrow viewport and desktop. | SOURCE FIXED — shared menu list layout and content-sized Updates body; live candidate retest pending. |
+| UPDATE-UI-02 | Block1 step2 Refresh returned409 on the unregistered QA1 deployment. The UI exposes a long raw HTTP error with the internal URL and `409 OK`; the user reports that the icon is covered. `Deployment is current` remains visible after the failed lookup. | Show a short localized registration prerequisite message without internal URL/raw diagnostics. Keep the icon unobscured and text within the popup; do not imply that release currency was verified after a failed lookup. | SOURCE FIXED — translated discovery errors, non-shrinking icon, bounded wrapping, and no current-release claim after a failed lookup; live candidate retest pending. |
+
+Source verification:22/22 Operator HTTP-service tests PASS; Angular template/type
+compilation (`ngc --noEmit`) PASS. EN/HU seeds regenerated. The full i18n audit
+remains blocked by the pre-existing landing `loading` key reference (line383);
+the initial broad spec compilation also encountered unrelated existing spec
+type errors, before the focused test compilation passed. No live UI retest of
+these source fixes has been claimed.
+
+Block1 step2 is blocked on Registry/release fixture preparation, not PASS. One
+visible Refresh was executed; the signed-release lookup and upgrade remain unproven.
 ### `OPERATOR-REVENUE-LIFECYCLE-001` — revenue
 
 - Open Revenue for one controlled captured/released payment set, synchronize
   once, compare totals and one settlement, then reopen the persisted result.
 - Failure injection, retry/idempotency and exclusion rules belong to automated
   regression coverage.
+
+**2026-09-16 — Revenue full-flow PASS, exact paired cleanup complete.**
+
+Evidence: `../evidence/OPERATOR-REVENUE-LIFECYCLE-001-2026-09-16.json`.
+The versioned Revenue fixture prepared nine payments and retained the original
+controls. One visible Synchronize accepted 16 completed-day reports, each at
+revision 1, with signed receipts and no pending/blocked delivery. Both eligible
+providers were included exactly once; authorized, released, dummy and non-payment
+audit controls were excluded. EUR overview: 4850 minor / four payments; USD:
+4000 / one. Completed daily reports: August 31 EUR3000/count2, September14
+EUR750/count1, September15 USD4000/count1; other completed days were empty.
+Current-day EUR1100 remained in the overview and was not delivered early.
+
+For block3, normal backend claim/measurement APIs and the Go review CLI prepared
+the already-tested eligibility prerequisite. The Go monthly calculation produced
+August EUR basis3000, pool150 and a signed revision2 settlement including this
+operator group. Its small share legitimately rounded to zero minor units; the UI
+matched the signed allocation. Revision1 had been calculated before eligibility
+setup; daily revenue report revisions remained1. Native close/reopen preserved
+the displayed totals/settlement, and exact pre/post report/source oracle bytes
+matched. Source payments and excluded controls remained unchanged.
+
+Checklist terminology was corrected to the existing contract: daily durable
+Revenue outbox delivery, not a separate Admin Jobs row; monthly signed network
+settlement, not per-booking settlement; local source identities stay local.
+No application behavior was changed for Revenue. Paired reset restored Go bytes,
+local node state, Mongo/session baseline; final status had no staged fixture,
+owned payments or Revenue reports. Managed browser closed.
+
+**Queued next:** Operator Update on the user's VMware target, after they open it.
+Read-only gate currently reports zero running VMs. Deployment, real-account UI
+image smoke, repeatable external security and measured infrastructure efficiency
+use the separate deployment qualification tables, not extra pair-QA rows.
 
 ## Consolidated executable journeys and source-oracle archive
 
@@ -10300,3 +10544,308 @@ notes are added to the ledger and the workbook is regenerated. No fixture,
 browser, Registry, provider or update operation was executed. Dedicated Operator
 fixture orchestration is still prepared when its own checkpoint starts. The
 active preparation-only handoff remains ADMIN-MONITORING-001 block1 step1.
+
+### Monitoring delegated execution and closure — 2026-09-16
+
+**ADMIN-MONITORING-001: PASS / CLOSED.** User delegated the full visible Ava
+journey and in-scope repairs. All20 numbered checks are covered by the new
+observations below and assertion-specific retained evidence. The original
+MON-013 scope names10 jobs; the additional payment-method-expiry row is outside
+that source list and is not claimed as a new payment lifecycle test.
+Machine evidence: [Monitoring evidence](../evidence/ADMIN-MONITORING-001-2026-09-16.json).
+
+- Block1: All8, Watch1 (pre-existing Users alert), Domains5, Notifications1,
+  Background2. Exact names/counts matched persisted health. Read/filter caused
+  no task/outbox/config mutation; unrelated scheduled runs were identified.
+  The popup loads on opening/filter changes, not an automatic interval. The
+  guide's earlier assumed passive polling wording was corrected without adding
+  a product polling feature.
+- Block2: isolated USER task completed first attempt; affinity0→53402,
+  no rate/edge rows for the isolated user. Run
+  `56224d3f-a124-4c38-8a24-1e6e1bfbcd60` at05:45:49Z completed125ms/count1.
+  Ava's Runner history showed the same run. The short processing state was
+  established from retained task/history; the real CONFIG work in block3
+  additionally proved pending/running/terminal queues and Watch→Healthy.
+  Existing Bell changed-pair, discovery/graph and unaffected-control proof is
+  reused for those previously proven output assertions.
+
+| MON-013 job | Exact new or retained scheduler/history/domain proof |
+| --- | --- |
+| event-random-groups | New `5664c68a-ca9e-42ae-81d4-a0252650fe12`,06:04:08.942–09.296Z,354ms/count6; exact start/completed telemetry; two3/3 rooms, six unique memberships/chat projections, two welcome messages, two logical outbox records with exact room recipients and six inbox rows. Ava Job Detail matched. |
+| event-auto-inviter | Retained JOB-AUTO2026-08-04,08:49: one Nova invitation; Job Detail, invitation/marker/outbox/bell, Monitoring and Statistics all agreed; guarded reset. No originating invite journey repeated. |
+| event-tournament-review | New `9903f1ef-8e41-4b7c-b7af-1487c090a3f0`,06:02:08.754–08.858Z,104ms/count1; exact telemetry and Ava detail; stageSR/reasonstage-ended. Existing advancement/DQ business branches remain retained. |
+| event-counter-expiry | New `08ff98ab-fecc-4592-a243-b9a70409f305`,06:00:08.606–08.658Z,52ms/count1; exact telemetry/detail; expired target, byte-identical future control and exact owner counters. |
+| event-checkout-basket-purge | Retained EVENT-SCHEDULERS2026-09-02,08:18:21Z,count1; Monitoring1186/1186→1187/1187, deleted basket with tracking cleared, future basket/Event controls unchanged and live Basket disappearance. |
+| notification-outbox | Retained Notification Admin2026-09-15 run `d66911ba-1a2f-4efc-aeed-1bd017e30e4c`,11:59:04Z,52ms/count1, corrected Monitoring/read/reset evidence; today's parameter outbox records also all reached sent. |
+| affinity-recompute | Today's isolated run above plus real CONFIG tasks; retained Bell changed/control projection evidence. |
+| affinity-graph-layout | Retained Bell2026-09-15 run `1c41e279-7e5e-4cdd-8ced-178dfafd38bf`,14:02:02Z,202ms,1131links/54members; real materialization, stored layout/header, selected Casey/Nova pair and unchanged historical/control proof. |
+| scheduled-messages | Retained JOB-MESSAGES run `d93e9054-4db7-4b8e-8870-326ff5a13f0d`,12:38:02Z,count1/19ms, Redis1789475882001-0 and1789475882009-0; exact rescheduled task/delivery and unchanged active user; both full-flow branches and final display closure retained. |
+| account-purge | New `0f3bf35c-1c60-4847-a6c1-03c0e4bd4044`,06:01:10.342–10.688Z,346ms/count1; exact telemetry/detail; target user/reference gone, completed purge record with cleared userId,retry0,errornull. |
+
+- Block3: one visible Save300→301 createdv2; reopen/History author/time/value
+  matched. Real History revert producedv3/300. Initial same-active-version HTTP
+  probe exposed unwantedv4; repaired probe returned200 with activev4 unchanged
+  and byte-identical config/version count/CONFIG tasks/parameter outbox. All
+  seven sections' current HTTP fields equalv1. Retained versions2/3/4 correspond
+  to exactlythree `admin.params.changed` events; Jobs config24→27. The extra
+  version4 is retained failure evidence, not a legitimate no-op result.
+- Repairs were limited to the proven boundaries: Params notifications exclude
+  the actor (v2 before fix Ava+Noel; v3/v4 after fix Noel only, exact inbox/outbox
+  recipients); the config listener uses the same stable key as the Params
+  producer, so a real revert queues one CONFIG task; a saved Firebase=false
+  decision can finish outside the Firebase delivery window; reverting the
+  active section version exits before persistence/side effects. All corrected
+  behaviors were checked against the running HTTP/worker flow.
+- The versioned `make-recompute-due` preparation shortens only captured CONFIG
+  waits; it does not manufacture execution. All resulting tasks became done,
+  all parameter outboxes sent, and live queue counts returned0/0/0.
+- Existing Random Rooms fixture assertions were stale: old welcome copy and
+  two outbox records per room. Updated assertions retain canonical message
+  identity/sender/avatar, current welcome copy, exact one logical outbox per
+  room with exactly its accepted members, and artifact ordering. The same
+  already-completed run then passed; no extra grouping replay was needed.
+- User-requested Jobs leading icons now use the existing application menu
+  palette colors/backgrounds; status failure/suspension overrides remain.
+  The existing frontend watcher compiled and the live screenshot/computed
+  colors were verified. No table layout or worker architecture was refactored.
+- Existing backend hot-deploy builds passed. Updated regression test source
+  covers actor exclusion and same active section across a later unrelated
+  section version. No separate Gradle/unit process was launched alongside the
+  running compiler; verification here is live HTTP/UI/worker plus syntax and
+  diff checks, not a claim that those unit tests were executed.
+- Block4: all four additional Admin job fixtures and the initial affinity
+  fixture reset exactly. Managed Ava closed after the visible checks; common
+  browser-session snapshot restored, Monitoring wrapper reset verified original
+  Jobs values/terminal work/exact retained startup snapshots and reported
+  `not-staged`. Real versions/audit/delivery records remain as specified.
+  Existing stopped containers were restarted, with no duplicate dev stack;
+  `mongodb-sync` remains stopped because its startup replaces seed collections.
+  The read-only temporary telemetry collector completed and exited.
+
+The user then authorized the next test in the same delegated mode:
+**ADMIN-AFFINITY-GRAPH-001**, beginning with versioned fixture preparation.
+
+### Graph delegated execution and closure — 2026-09-16
+
+**ADMIN-AFFINITY-GRAPH-001: PASS / CLOSED.** All23 steps are covered by
+new scoped observations and the explicitly reused Bell/STAT-020 assertions.
+[Machine evidence](../evidence/ADMIN-AFFINITY-GRAPH-001-2026-09-16.json).
+
+- Block1: original materialized header and stored counts54/1129/5/4 agreed.
+  Component/member identity, visible/collapsed counts and strongest weights
+  matched their data; isolated Riley remained reachable with zero connections.
+- Block2: controlled chain depths1/2/3 returned exact2/3/4 member IDs and1/2/3
+  links in UI and HTTP. Returning to depth1 produced no duplicate. Weight0.4
+  is inclusive: min0.4 includes, min0.41 excludes; max0.39 excludes, max0.4
+  includes. Restored bounds recovered the edge. Filters did not rewrite graph
+  Statistics or prior dates.
+- Block3: native left-pan, right-rotation, wheel, arrow-pan, Reset and panel
+  controls exercised. The reported click jump was reproduced: pan projection
+  reset before camera animation moved the clicked target outside the viewport.
+  Camera/pan now animate together; the panned-click, other-member, rotated,
+  distant and isolated checks passed. Compact2–4-member layouts reuse the
+  existing component layout; direction is relative to the layout center.
+  Camera fitting now considers projected node bounds including badge sizes.
+- User-requested presentation: symmetric, equal-depth Forest overview uses
+  available space; default framing does not lock rotation/zoom/pan. Desktop
+  graph fits beside its panel. Small member graphs, including the initial
+  five-member component, are larger and fit at360x800 and390x800. Mobile
+  Expand/Collapse overlays the graph and preserves **exact** camera and node
+  screen coordinates; the panel may cover nodes until closed. Actual viewport
+  resizing may refit. The implementation-facing “Mongo members” label is now
+  “members”. Latest existing frontend watcher build passed07:07:10Z and synced.
+- Block4: fixture supplied100public profiles and80edges in20disconnected chains.
+  A first materialization exposed private-profile fixture eligibility, corrected
+  in the fixture without changing product eligibility. Real scheduled run
+  `e179db42-fcf6-43ec-8f53-e257c40f7d0b`,06:34:50.208612998–50.347938024Z,
+ 139ms/count1173, produced `layout-1789540490226`:154nodes/1173edges/23forests/
+  2isolated. Stored/header/reopened totals agreed. Forest pages20+3 contained
+  23unique IDs; tile/node/edge limits and depth bounds passed. Final visible
+  zoom progression7→14→23 and counters agreed. Disconnected component20 and
+  member`manual-qa-graph:19:4` were reachable, with the expected85% connection;
+  loading settled without a duplicate/request loop.
+- Block5: reused the exact Bell changed Casey/Nova edge, upstream recompute,
+  real layout and unaffected-control assertions from the reciprocal graph
+  closure2026-09-15; no rating journey repeated. New larger-run correlation
+  independently proves this fixture materialization. Statistics' normal refresh
+  changed connected users52→152, edges1227→1307, communities2→22, exactly the
+  fixture's100/80/20 delta. Statistics combines affinity/rating/event evidence,
+  while layout counts eligible profiles/affinity edges including isolates; their
+  different-scope absolute counts are not asserted equal. Historical dates stayed
+  unchanged.
+- Cleanup: restored original54/1129/5/4 materialization, removed100owned users
+  and80owned edges, then used real Stats Refresh. Every graph metric returned
+  exactly to its pre-fixture value and earlier dates remained unchanged. Closed
+  the managed browser before versioned reset. Common session baseline restored;
+  reset compared every snapshotted selector/document and restored original rule
+  configuration. Final status`not-staged`; owned users/edges and checkpoint/
+  browser-session snapshots all zero. Real job audit remains attributable.
+
+Qualifications: viewport emulation and mouse/keyboard input, not physical phone
+ or pinch.154nodes/23components prove bounded loading here, not a1000-forest
+stress test. No separate build/unit runner duplicated the active watchers.
+Next **ADMIN-PARAMETERS-001** is explicitly delegated by the user.
+
+### Parameters delegated execution — 2026-09-16
+
+**ADMIN-PARAMETERS-001: IN PROGRESS.** Block1:15collection rollback snapshots
+retained separately to avoid a historical-graph snapshot exceeding Mongo's
+per-document limit. Original active configv4 and graph rule retained; normal
+CONFIG queue was empty. Versioned launcher opened Ava. All seven sections
+appeared. Planned fields: Matching met0.5→1, Profile age17→18, Events accepted
+members19→20, Assets quantity11→12, Discovery max distance50000→25000,
+Notifications multicast3→2, Jobs fixture debounce300→12seconds. Consumer
+fixtures and boundary assertions remain section-specific, not implied passed.
+
+Block2 step3: visible Matching save/reopen gave met1, exactly one newv5 with
+Ava/Matching author/section, other configuration sections unchanged. Correlated
+Admin notification reached sent for Noel only. CONFIG task was captured and
+made due through the versioned harness, preserving normal worker execution.
+Step4 consumer and control checks remain pending; expected existing met-only
+Casey/Nova edge0.29501735764321924→0.5900347152864385 with unchanged affinity.
+
+Block2 follow-up: Matching CONFIG completed07:22:06Z; Casey/Nova edge changed
+0.29501735764321924→0.5900347152864385 with unchanged base affinity. The no-met
+control remained unchanged. Real materialization `layout-1789543451816` and
+normal Statistics refresh were inspected. Original config/edge restored; the
+fixture now also restores the four original graph materialization collections
+between branches so the next branch does not inherit the changed layout.
+
+Profile steps6–8: visible save/reopen age17→18 producedv6. Normal CONFIG
+completed07:27:07Z. All55 profiles with an existing stored affinity changed by
+exactly their age contribution; Casey+32, Nova+27. Pair affinity/evidence/edge
+unchanged. Ava had no stored affinity in the fixture baseline, so its newly
+materialized value is not claimed as a verified delta. Correlated notification
+sent to Noel only. Fixture restoration verified Casey/Nova original scores,
+activev4/age17 and zero pending recompute. Original graph collection counts
+restored17/918/19193/85. Evidence: `ADMIN-PARAMETERS-001-2026-09-16.json`.
+Block3 Events consumer checks are next; checkpoint remains IN PROGRESS.
+
+Block3 Events steps9–10: Accepted members19→20 saved/reopenedv7. Pour-Over
+Roastery Lab (6members) boost23233.25→23239.25; Handmade Pasta Table
+(1member)19777.25→19778.25; affinity unchanged. Consumer HTTP boost matches
+persistence; CONFIG done and correlated notification sent to Noel only.
+Explore had overwritten the query order using an absent affinity field.
+Fixed by retaining the query's actual sort tuples in HTTP/local query results
+and the Explore presentation, including retained reinsertion positions.
+Existing watcher builds passed; all10 API sort/view combinations agree with
+their tuples; browser20→36rows across pages match HTTP order exactly, including
+both targets. Local adapter source updated; runtime local replay not executed.
+Configuration, target scores and fixture-only published flags restored.
+Next: Assets steps11–12. No unrelated Asset lifecycle was replayed.
+
+Assets steps11–12: quantity11→12 saved/reopenedv8. Community Equipment Pickup
+(quantity3) boost86→89; Dinner District Electric Taxi(quantity4)97→101.
+Affinity unchanged. Normal CONFIG completed07:48:07Z. All12 public Transport
+records from the affinity-based non-paged consumer endpoint match the expected
+boost-minus-affinity-gap order. Paged Explorer uses separate availability/price/
+policy ordering; this is not a claim of a UI relevance selector or an Asset
+lifecycle replay. Original configuration and derived outputs restored.
+Next: Discovery13–14. Four fixture-only profiles supply a distance-only signal
+at12.5/25/37.5km; saved/reopened maxMeters25000. CONFIG pending.
+
+Discovery steps13–14 PASS: v9 saved/reopened maxMeters50000→25000. Normal
+CONFIG completed07:52:06Z; distance-only12.5/25/37.5km probes yielded affinity
+0.5/0/0 and only the inside edge0.25. Normal materialization
+`layout-1789545171154` confirmed the four nodes and the one eligible edge.
+Fixture restoredv4, original derived/graph snapshots and removed the owned
+Distance probes. Notifications15–17 fixture prepared with two chat recipients;
+no threshold save or chat message performed yet. Landing Supported countries
+feature requested during this branch uses the existing landing payload.
+
+Notifications15–17 PASS: v10 saved/reopened threshold3→2. Real Casey chat message
+with two recipients selected multicast and completed without retry; each recipient
+chat projection incremented unread. A second, prematurely sent message remains a
+multicast control and is excluded from restoration proof. After CONFIG completed
+08:10:08Z and fixture restoredv4/threshold3, the third message selected direct,
+completed and incremented the same two recipient projections. Firebase disabled
+in the immutable delivery plan because recipients have no devices; physical FCM
+is not claimed. Missing Event activityMembers were repaired in the fixture only.
+Cleanup removed owned chat/event/members/users; outbox audit remains attributable.
+Jobs18–19: fixture supplied12s debounce; actual Casey profile height181→182 save
+created a USER task08:15:09Z, due08:15:21Z. Normal worker result pending.
+
+Jobs18–19 PASS: real USER task had due time exactly12s after enqueue and
+completed08:16:00Z on the normal worker, one attempt, pendingCounterTracked=false.
+12s is the debounce boundary;60s polling can make completion later. Original
+profile fields and300s configuration restored. Block5 bounds verified in UI:
+-1→0 and1000001→1000000. Invalid strategy returned200: production validation
+repaired to reject unknown text before persistence; live400 replay pending.
+
+Parameters closure24–25 PASS/CLOSED2026-09-16: bounds normalize0/1000000;
+invalid strategy initially createdv13 (retained defect evidence), corrected
+request returns400 with unchanged configuration/version/task/outbox counts.
+Cancellation12345→close→reopen1000000 produced no save. The supported three
+strategies now use the shared app-menu pill without a custom select wrapper.
+Originalv4,50km,threshold3,300s debounce and all15 snapshots restored/compared;
+zero retained snapshots or fixture probes. Post-reset status formatting repaired
+and independently verified. Watcher build/live HTTP checks passed; added unit
+regression is not claimed as executed. Administration4/4; total98/104.
+Next: Operator Configuration C01–C08, with exact previous Firebase/WebView/Push
+assertions reused; missing TLS/provider prerequisites must remain explicit.
+
+### 2026-09-16 — Parameters Discovery select visual follow-up
+
+Shared `app-menu` configuration uses contextual standard tinted radio items.
+The previous pill configuration underlined labels and shifted the selected
+first item one pixel above the mobile scroll container. At 390×800 the
+standard items have no underline/translation and fit the native shared sheet
+without scrolling. At 916×813 the panel automatically opens down without
+scrolling. The form reserves the unit column consistently: input, trigger
+and desktop panel right edges match (831.5px desktop; input/trigger321.5px
+mobile). Native Exponential selection updates the purple trigger and closes
+the menu; Cancel discards the draft and reopening shows Linear. No parameter
+configuration was saved. Existing frontend-sync build passed08:34:54Z;
+evidence is appended to `ADMIN-PARAMETERS-001-2026-09-16.json`.
+
+### 2026-09-16 — Operator Configuration C01/C02/C04
+
+C01 baseline snapshot and managed Operator/public sessions verified. C02 PASS:
+branding MyScoutee → MyScoutee QA → MyScoutee via native saves/reopen/public
+reload, branding revisions0→1→2, unrelated block fields unchanged. C04
+configuration registration/masking/restoration PASS against the existing local
+payment simulator: Stripe and loopback URL normalized on save, encrypted
+credential retained, empty password input with masked suffix on reopen; Cash
+only/Remove payment restored no provider or credential. No external payment
+transaction is claimed. C03 BLOCKED_ENVIRONMENT: HTTPS controls unavailable
+and disabled. C05/C06 not executed: managed demo sessions cannot perform live
+Firebase capability tests. Parent remains open; see the dated Configuration
+evidence JSON. Social-site removal UI unchanged after user withdrew the request.
+
+Operator clarification: no actual Stripe account is currently registered.
+Configuration registration and prior simulator checks are proven at their
+respective boundaries; actual Stripe API/webhook integration remains NOT
+EXECUTED and requires an owned Stripe test-mode account. Do not infer it from
+simulator PASS. Cash-only token visibility and the requested Configuration
+layout follow-ups passed through the existing frontend watcher and browser.
+
+Stripe/Barion routing source review: real sessions use the Stripe SDK default
+endpoint / https://api.barion.com; DEMO sessions use the guarded local
+simulator. Production Explore remains demo. Neither provider has live
+credential/actual-provider acceptance proof from this QA execution.
+
+### Operator Configuration closure — 2026-09-16
+
+Renumbered C01–C03 PASS. Normal Operator bootstrap session saved revision1
+through the UI; public values persisted and private fields returned blank with
+Registered indicators. Actual Authentication and browser Messaging tests both
+passed revision1; notification permission was granted natively. Activation
+preserved Operator access, and ordinary public Login opened the Firebase
+provider chooser from the eligible Budapest fixture location. No new actual
+Firebase-user login was performed: Google registration/logout/re-login and
+same-profile evidence is reused from September14 above.
+
+Branding/public/payment values stayed unchanged. The existing shared-save
+contract advanced the Branding revision0→1 despite unchanged values; no
+application behavior was altered for that observation. Exact fixture reset
+restored original revision0/inactive configuration, removed all temporary
+bootstrap user/session/audit/device records, and restored the private runtime
+override byte-for-byte. The existing backend was restarted to reload that
+configuration; health returned200 and fresh public Login opened the original
+demo selector. Managed browsers were closed. Evidence:
+`../evidence/OPERATOR-CONFIGURATION-LIFECYCLE-001-2026-09-16.json`,
+`firebaseContinuation` (older top-level block labels remain historical).
+
+Next is Operator Update with managed HTTPS on VMware; do not start it alongside
+the dev stack. Separate deployment/smoke/security/efficiency qualification is
+queued. No VMware update or deployment has run.

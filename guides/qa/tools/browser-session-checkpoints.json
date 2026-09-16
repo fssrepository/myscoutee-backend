@@ -1681,6 +1681,205 @@
           "autoDismissExplanationGuide": false
         }
       ]
+    },
+    "ADMIN-AFFINITY-GRAPH-001": {
+      "layout": {
+        "columns": 1
+      },
+      "sessions": [
+        {
+          "actor": "Ava",
+          "sessionKind": "demo",
+          "userId": "admin-demo-ava",
+          "expectedName": "Ava Moderation",
+          "targetUrl": "http://localhost/admin",
+          "entryUrl": "http://localhost/entry?redirect=%2Fadmin",
+          "autoDismissExplanationGuide": false
+        }
+      ]
+    },
+    "ADMIN-PARAMETERS-001": {
+      "layout": {
+        "columns": 2
+      },
+      "sessions": [
+        {
+          "actor": "Ava",
+          "sessionKind": "demo",
+          "userId": "admin-demo-ava",
+          "expectedName": "Ava Moderation",
+          "targetUrl": "http://localhost/admin",
+          "entryUrl": "http://localhost/entry?redirect=%2Fadmin",
+          "autoDismissExplanationGuide": false
+        },
+        {
+          "actor": "Casey",
+          "sessionKind": "demo",
+          "userId": "650000000000000000000061",
+          "expectedName": "Casey Bridge",
+          "targetUrl": "http://localhost/game",
+          "entryUrl": "http://localhost/entry?redirect=%2Fgame",
+          "autoDismissExplanationGuide": true
+        }
+      ]
+    },
+    "DEPLOYMENT-SMOKE-001": {
+      "layout": {
+        "columns": 2
+      },
+      "bootstrapEntryConsent": false,
+      "sessions": [
+        {
+          "actor": "Operator",
+          "sessionKind": "anonymous",
+          "expectedName": "Smoke prerequisite configuration",
+          "targetUrl": "https://localhost/entry?redirect=%2Foperator",
+          "entryUrl": "https://localhost/entry?redirect=%2Foperator",
+          "autoDismissExplanationGuide": false,
+          "geolocation": {
+            "latitude": 47.4979,
+            "longitude": 19.0402,
+            "accuracy": 10
+          }
+        },
+        {
+          "actor": "Smoke",
+          "sessionKind": "anonymous",
+          "expectedName": "Normal account registration smoke",
+          "targetUrl": "https://localhost/entry",
+          "entryUrl": "https://localhost/entry",
+          "autoDismissExplanationGuide": false,
+          "geolocation": {
+            "latitude": 47.4979,
+            "longitude": 19.0402,
+            "accuracy": 10
+          }
+        }
+      ]
+    },
+    "OPERATOR-UPDATE-LIFECYCLE-001": {
+      "layout": {
+        "columns": 1
+      },
+      "sessions": [
+        {
+          "actor": "Operator",
+          "sessionKind": "anonymous",
+          "expectedName": "VMware Operator sign-in",
+          "targetUrl": "https://localhost/entry?redirect=%2Foperator",
+          "entryUrl": "https://localhost/entry?redirect=%2Foperator",
+          "autoDismissExplanationGuide": false,
+          "geolocation": {
+            "latitude": 47.4979,
+            "longitude": 19.0402,
+            "accuracy": 10
+          }
+        }
+      ]
+    },
+    "OPERATOR-FIREBASE-001": {
+      "layout": {
+        "columns": 2
+      },
+      "sessions": [
+        {
+          "actor": "Operator",
+          "sessionKind": "anonymous",
+          "expectedName": "Operator bootstrap sign-in",
+          "targetUrl": "http://localhost/entry?redirect=%2Foperator",
+          "entryUrl": "http://localhost/entry?redirect=%2Foperator",
+          "autoDismissExplanationGuide": false,
+          "geolocation": {
+            "latitude": 47.4979,
+            "longitude": 19.0402,
+            "accuracy": 10
+          }
+        },
+        {
+          "actor": "Public",
+          "sessionKind": "anonymous",
+          "expectedName": "Public configuration observer",
+          "targetUrl": "http://localhost/entry",
+          "entryUrl": "http://localhost/entry",
+          "autoDismissExplanationGuide": false,
+          "geolocation": {
+            "latitude": 47.4979,
+            "longitude": 19.0402,
+            "accuracy": 10
+          }
+        }
+      ]
+    },
+    "OPERATOR-REGISTRY-LIFECYCLE-001": {
+      "layout": {
+        "columns": 2
+      },
+      "sessions": [
+        {
+          "actor": "Operator",
+          "sessionKind": "demo",
+          "userId": "operator@myscoutee.local",
+          "expectedName": "Demo Operator",
+          "targetUrl": "http://localhost/operator",
+          "entryUrl": "http://localhost/entry?redirect=%2Foperator",
+          "autoDismissExplanationGuide": false
+        },
+        {
+          "actor": "Ava",
+          "sessionKind": "demo",
+          "userId": "admin-demo-ava",
+          "expectedName": "Ava Moderation",
+          "targetUrl": "http://localhost/admin",
+          "entryUrl": "http://localhost/entry?redirect=%2Fadmin",
+          "autoDismissExplanationGuide": false
+        },
+        {
+          "actor": "Casey",
+          "sessionKind": "demo",
+          "userId": "650000000000000000000061",
+          "expectedName": "Casey Bridge",
+          "targetUrl": "http://localhost/game",
+          "entryUrl": "http://localhost/entry?redirect=%2Fgame",
+          "autoDismissExplanationGuide": true
+        }
+      ]
+    },
+    "OPERATOR-REVENUE-LIFECYCLE-001": {
+      "layout": {
+        "columns": 1
+      },
+      "sessions": [
+        {
+          "actor": "Operator",
+          "sessionKind": "demo",
+          "userId": "operator@myscoutee.local",
+          "expectedName": "Demo Operator",
+          "targetUrl": "http://localhost/operator",
+          "entryUrl": "http://localhost/entry?redirect=%2Foperator",
+          "autoDismissExplanationGuide": false
+        }
+      ]
+    },
+    "OPERATOR-UPDATE-QA3-PRESERVATION": {
+      "entryUrl": "https://localhost/entry",
+      "targetUrl": "https://localhost/operator",
+      "storageScope": "http",
+      "bootstrapEntryConsent": false,
+      "preserveOtherSessions": true,
+      "sessions": [
+        {
+          "actor": "Operator",
+          "expectedName": "Operator",
+          "sessionKind": "operator-bootstrap",
+          "credentialFileEnvironment": "QA_OPERATOR_CREDENTIAL_FILE",
+          "window": {
+            "x": 840,
+            "y": 40,
+            "width": 1000,
+            "height": 930
+          }
+        }
+      ]
     }
   }
 }

@@ -68,6 +68,8 @@ services:
       interval: 30s
       timeout: 5s
       retries: 5
+      # Probe promptly during startup; keep the steady-state interval unchanged.
+      start_interval: 2s
       start_period: 20s
   mongodb:
     image: ${MONGO_IMAGE}
@@ -97,6 +99,8 @@ services:
       interval: 30s
       timeout: 10s
       retries: 5
+      # Probe promptly during startup; keep the steady-state interval unchanged.
+      start_interval: 2s
       start_period: 30s
     #ports:
     #  - 127.0.0.1:27017:27017
@@ -117,6 +121,8 @@ services:
       interval: 30s
       timeout: 5s
       retries: 5
+      # Probe promptly during startup; keep the steady-state interval unchanged.
+      start_interval: 2s
       start_period: 10s
   minio:
     image: ${MINIO_PRODUCTION_IMAGE:-myscoutee-minio:1.0.0-prod}
@@ -147,6 +153,8 @@ services:
       interval: 30s
       timeout: 5s
       retries: 5
+      # Probe promptly during startup; keep the steady-state interval unchanged.
+      start_interval: 2s
       start_period: 20s
   profilemanagement:
     image: ${MYSCOUTEE_PRODUCTION_IMAGE:-myscoutee-api:1.0.0-prod}
@@ -258,6 +266,8 @@ services:
       interval: 30s
       timeout: 5s
       retries: 8
+      # Probe promptly during startup; keep the steady-state interval unchanged.
+      start_interval: 2s
       start_period: 60s
 
   # Explore-only registry. This service is never published on a host port and
@@ -296,6 +306,8 @@ services:
       interval: 10s
       timeout: 3s
       retries: 10
+      # Probe promptly during startup; keep the steady-state interval unchanged.
+      start_interval: 2s
       start_period: 5s
     stop_grace_period: 15s
 
@@ -337,6 +349,8 @@ services:
       interval: 10s
       timeout: 3s
       retries: 10
+      # Probe promptly during startup; keep the steady-state interval unchanged.
+      start_interval: 2s
       start_period: 5s
     stop_grace_period: 15s
 

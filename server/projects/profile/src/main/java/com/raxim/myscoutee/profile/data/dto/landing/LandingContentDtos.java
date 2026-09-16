@@ -15,6 +15,10 @@ public final class LandingContentDtos {
             HelpCenterStateDto terms,
             List<IdeaPostDto> ideas,
             Integer ideasTotal,
-            UserLocationEligibilityResponseDto loginAvailability) {
+            UserLocationEligibilityResponseDto loginAvailability,
+            List<SupportedCountryDto> supportedCountries) {
+    }
+
+    public record SupportedCountryDto(String countryCode, String countryName) {
     }
 }

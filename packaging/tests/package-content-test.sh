@@ -40,6 +40,16 @@ node "${SCRIPT_DIR}/mobile-qa-isolation-test.mjs" >/dev/null \
 
 bash "${SCRIPT_DIR}/numeric-ownership-policy-test.sh" >/dev/null \
   || fail "numeric host ownership policy regression"
+bash "${SCRIPT_DIR}/debian-removal-contract-test.sh" >/dev/null \
+  || fail "Debian lifecycle deleted retained deployment state"
+bash "${SCRIPT_DIR}/debian-tls-lifecycle-test.sh" >/dev/null \
+  || fail "Debian lifecycle replaced retained operator TLS material"
+bash "${SCRIPT_DIR}/update-worker-test.sh" >/dev/null \
+  || fail "signed update lifecycle or data-preservation contract regression"
+python3 "${SCRIPT_DIR}/update-status-server-test.py" >/dev/null \
+  || fail "independent update progress authorization or status regression"
+bash "${SCRIPT_DIR}/restart-update-stack-test.sh" >/dev/null \
+  || fail "update restart did not preserve progress ingress"
 bash "${SCRIPT_DIR}/demo-reset-test.sh" >/dev/null \
   || fail "demo reset lifecycle or production boundary regression"
 bash "${SCRIPT_DIR}/i18n-runtime-seed-sync-test.sh" >/dev/null \
@@ -404,8 +414,9 @@ jq -e '
       test("@[^@]+\\.(local|invalid)$"; "i")))
 ' "${PACKAGED_DEMO_SEED}/appSettings.json" >/dev/null \
   || fail "Explore app settings do not use isolated synthetic administrators"
-[[ ! -e "${PACKAGED_PRODUCTION_SEED}/communityProviders.json" ]] \
-  || fail "production social/community URLs were embedded instead of remaining operator-managed"
+jq -e 'length == 2 and all(.[]; .configured == false)' \
+  "${PACKAGED_PRODUCTION_SEED}/communityProviders.json" >/dev/null \
+  || fail "production built-in community catalog is missing or preconfigured"
 if grep -RIEiq \
     -- 'https?://([^/"[:space:]]+\.)?(facebook\.com|instagram\.com|linkedin\.com|x\.com|twitter\.com|tiktok\.com|youtube\.com|discord\.(com|gg)|discourse\.[^/"[:space:]]+)/[^/"[:space:]][^"[:space:]]*' \
     "${PACKAGED_PRODUCTION_SEED}"; then
@@ -737,6 +748,14 @@ fi
 
 rm -f "${IMAGE_LAYER_ROOT}/run/secrets/firebase-service-account.json"
 python3 -c \
+  'import sys, zipfile; z=zipfile.ZipFile(sys.argv[1],"w"); z.writestr("com/google/api/client/googleapis/google.p12", b"unreviewed-credential"); z.close()' \
+  "${IMAGE_LAYER_ROOT}/app/unreviewed-truststore.jar"
+if python3 "${REPO_ROOT}/packaging/release/audit-nested-archive.py" \
+    "${IMAGE_LAYER_ROOT}/app/unreviewed-truststore.jar" >/dev/null 2>&1; then
+  fail "credential audit trusted a PKCS12 filename without its reviewed digest"
+fi
+rm -f "${IMAGE_LAYER_ROOT}/app/unreviewed-truststore.jar"
+python3 -c \
   'import sys, zipfile; z=zipfile.ZipFile(sys.argv[1],"w"); z.writestr("BOOT-INF/classes/firebase-service-account.json", "{}"); z.close()' \
   "${IMAGE_LAYER_ROOT}/app/application.jar"
 tar -cf "${IMAGE_BUILD}/layer.tar" -C "${IMAGE_LAYER_ROOT}" .
@@ -855,13 +874,20 @@ if bash "${CREDENTIAL_AUDIT}" "${EXTRACTED}" >/dev/null 2>&1; then
 fi
 rm -f "${PACKAGED_PRODUCTION_SEED}/users.json"
 
+cp "${PACKAGED_PRODUCTION_SEED}/communityProviders.json" "${TEST_ROOT}/communityProviders.safe.json"
 printf '%s\n' \
   '[{"_id":"personal-social","url":"https://linkedin.com/in/private-owner"}]' \
   > "${PACKAGED_PRODUCTION_SEED}/communityProviders.json"
 if bash "${CREDENTIAL_AUDIT}" "${EXTRACTED}" >/dev/null 2>&1; then
   fail "credential audit accepted a personal production social-page seed"
 fi
-rm -f "${PACKAGED_PRODUCTION_SEED}/communityProviders.json"
+cp "${TEST_ROOT}/communityProviders.safe.json" "${PACKAGED_PRODUCTION_SEED}/communityProviders.json"
+jq '.[0].configured = true' "${TEST_ROOT}/communityProviders.safe.json" \
+  > "${PACKAGED_PRODUCTION_SEED}/communityProviders.json"
+if bash "${CREDENTIAL_AUDIT}" "${EXTRACTED}" >/dev/null 2>&1; then
+  fail "credential audit accepted a preconfigured production community provider"
+fi
+cp "${TEST_ROOT}/communityProviders.safe.json" "${PACKAGED_PRODUCTION_SEED}/communityProviders.json"
 
 if MYSCOUTEE_VERSION=1.0.0-prod \
   MYSCOUTEE_DIST_DIR="${TEST_ROOT}/invalid-dist" \
@@ -870,6 +896,27 @@ if MYSCOUTEE_VERSION=1.0.0-prod \
   ALLOW_UNBUNDLED_IMAGES_FOR_TESTS=true \
   bash "${PACKAGE_SCRIPT}" >/dev/null 2>&1; then
   fail "suffixed Debian package version was accepted"
+fi
+
+# QA releases use SemVer for application/image identity and Debian's tilde
+# ordering for the package manager. Exercise the normal builder, not repacking.
+qa_deb="$(
+  MYSCOUTEE_VERSION=1.0.0-qa.1 \
+  MYSCOUTEE_DIST_DIR="${TEST_ROOT}/qa-dist" \
+  BUILD_ARTIFACTS=false PACKAGE_IMAGES=false ALLOW_UNBUNDLED_IMAGES_FOR_TESTS=true \
+  bash "${PACKAGE_SCRIPT}" | tail -n 1
+)"
+[[ "$(dpkg-deb -f "${qa_deb}" Version)" == '1.0.0~qa.1' ]] \
+  || fail "QA package lacks Debian prerelease ordering"
+dpkg-deb -x "${qa_deb}" "${TEST_ROOT}/qa-package"
+grep -Fxq '1.0.0-qa.1' "${TEST_ROOT}/qa-package/opt/myscoutee/packaging/VERSION" \
+  || fail "QA application version marker does not match the release"
+[[ -f "${TEST_ROOT}/qa-dist/myscoutee-client-tools_1.0.0-qa.1.tar.gz" ]] \
+  || fail "QA client tools do not use the release version"
+dpkg --compare-versions 1.0.0~qa.1 lt 1.0.0 \
+  || fail "QA package must sort before stable 1.0.0"
+if grep -q 'sync_frontend_assets.sh' "${REPO_ROOT}/packaging/release/build-production.sh"; then
+  fail "production builder must not overwrite the dev nginx frontend"
 fi
 
 echo "package content tests passed"

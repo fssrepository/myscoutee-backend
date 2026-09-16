@@ -125,20 +125,21 @@ deb_architecture="$(dpkg-deb -f "${DEB_PATH}" Architecture 2>/dev/null)" \
 
 [[ "${deb_package}" == "myscoutee" ]] \
   || fail "The Debian Package field must be myscoutee."
-[[ "${deb_version}" =~ ^(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)$ ]] \
-  || fail "The Debian Version must be a plain SemVer core."
+[[ "${deb_version}" =~ ^(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)(~qa\.(0|[1-9][0-9]*))?$ ]] \
+  || fail "The Debian Version must be a SemVer core or <core>~qa.<number>."
 dpkg --validate-version "${deb_version}" >/dev/null 2>&1 \
   || fail "The Debian Version is invalid."
+release_version="${deb_version/\~/-}"
 [[ "${deb_architecture}" =~ ^[a-z0-9][a-z0-9-]{0,31}$ ]] \
   || fail "The Debian Architecture field is invalid."
 
 deb_filename="$(basename -- "${DEB_PATH}")"
-expected_deb_filename="myscoutee_${deb_version}_${deb_architecture}.deb"
+expected_deb_filename="myscoutee_${release_version}_${deb_architecture}.deb"
 [[ "${deb_filename}" == "${expected_deb_filename}" ]] \
   || fail "The Debian filename must be ${expected_deb_filename}."
 
 client_tools_filename="$(basename -- "${CLIENT_TOOLS_PATH}")"
-expected_client_tools_filename="myscoutee-client-tools_${deb_version}.tar.gz"
+expected_client_tools_filename="myscoutee-client-tools_${release_version}.tar.gz"
 [[ "${client_tools_filename}" == "${expected_client_tools_filename}" ]] \
   || fail "The client-tools filename must be ${expected_client_tools_filename}."
 
@@ -196,8 +197,8 @@ done
 
 client_tools_version="$(tar -xOzf "${CLIENT_TOOLS_PATH}" ./VERSION 2>/dev/null)" \
   || fail "The client-tools VERSION marker could not be read."
-[[ "${client_tools_version}" == "${deb_version}" ]] \
-  || fail "The client-tools VERSION marker must match Debian Version ${deb_version}."
+[[ "${client_tools_version}" == "${release_version}" ]] \
+  || fail "The client-tools VERSION marker must match Debian Version ${release_version}."
 
 [[ "$(stat -c '%s' "${DEB_PATH}")" == "${deb_size}" \
   && "sha256:$(sha256sum "${DEB_PATH}" | awk '{print $1}')" == "${deb_sha256}" ]] \
@@ -236,7 +237,7 @@ deb_message="${WORK_DIR}/debian-package.message"
 deb_signature_file="${WORK_DIR}/debian-package.signature"
 printf '%s\n' \
   "myscoutee-release-package-v1" \
-  "${deb_version}" \
+  "${release_version}" \
   "${RELEASE_CHANNEL}" \
   "${deb_size}" \
   "${deb_sha256}" > "${deb_message}"
@@ -253,7 +254,7 @@ client_tools_message="${WORK_DIR}/client-tools.message"
 client_tools_signature_file="${WORK_DIR}/client-tools.signature"
 printf '%s\n' \
   "myscoutee-release-client-tools-v1" \
-  "${deb_version}" \
+  "${release_version}" \
   "${RELEASE_CHANNEL}" \
   "${client_tools_size}" \
   "${client_tools_sha256}" > "${client_tools_message}"
@@ -300,13 +301,13 @@ if [[ -z "${OUTPUT_DIR}" ]]; then
 fi
 [[ -d "${OUTPUT_DIR}" && ! -L "${OUTPUT_DIR}" ]] \
   || fail "The output directory must be an existing, non-symbolic-link directory."
-manifest_path="${OUTPUT_DIR}/myscoutee-release_${deb_version}.json"
+manifest_path="${OUTPUT_DIR}/myscoutee-release_${release_version}.json"
 [[ ! -L "${manifest_path}" ]] \
   || fail "The release manifest path must not be a symbolic link."
-MANIFEST_TMP="$(mktemp "${OUTPUT_DIR}/.myscoutee-release_${deb_version}.XXXXXX")"
+MANIFEST_TMP="$(mktemp "${OUTPUT_DIR}/.myscoutee-release_${release_version}.XXXXXX")"
 
 jq -n \
-  --arg version "${deb_version}" \
+  --arg version "${release_version}" \
   --arg channel "${RELEASE_CHANNEL}" \
   --arg signingKeyId "${signing_key_id}" \
   --arg debFilename "${deb_filename}" \
@@ -343,7 +344,7 @@ jq -n \
 jq -e '
   (keys | sort) == (["artifacts", "channel", "schemaVersion", "signingKeyId", "version"] | sort)
   and .schemaVersion == 1
-  and (.version | test("^(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)$"))
+  and (.version | test("^(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)(-qa\\.(0|[1-9][0-9]*))?$"))
   and (.channel | test("^[a-z][a-z0-9._-]{0,31}$"))
   and (.signingKeyId | test("^pkey_[0-9a-f]{32}$"))
   and (.artifacts | length == 2)

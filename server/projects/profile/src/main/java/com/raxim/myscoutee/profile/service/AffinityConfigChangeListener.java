@@ -21,7 +21,7 @@ public class AffinityConfigChangeListener extends AbstractMongoEventListener<Aff
         if (config == null || !Boolean.TRUE.equals(config.getActive())) {
             return;
         }
-        String configId = StringUtils.hasText(config.getId()) ? config.getId() : config.getKey();
+        String configId = StringUtils.hasText(config.getKey()) ? config.getKey() : config.getId();
         affinityRecomputeTaskService.enqueueConfigChanged(configId, "system");
     }
 }

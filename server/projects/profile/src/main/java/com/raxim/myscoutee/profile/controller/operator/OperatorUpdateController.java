@@ -18,20 +18,35 @@ import com.raxim.myscoutee.profile.data.dto.operator.OperatorUpdateDtos.Operator
 import com.raxim.myscoutee.profile.data.dto.operator.OperatorUpdateDtos.OperatorUpdateJobDto;
 import com.raxim.myscoutee.profile.data.dto.operator.OperatorUpdateDtos.OperatorUpdateOverviewDto;
 import com.raxim.myscoutee.profile.service.operator.OperatorUpdateService;
+import com.raxim.myscoutee.profile.service.operator.OperatorUpdateReleaseService;
 
 @RestController
 @RequestMapping("/operator/updates")
 @PreAuthorize("hasAuthority('O')")
 public class OperatorUpdateController {
     private final OperatorUpdateService service;
+    private final OperatorUpdateReleaseService releases;
 
-    public OperatorUpdateController(OperatorUpdateService service) {
+    public OperatorUpdateController(OperatorUpdateService service,
+            OperatorUpdateReleaseService releases) {
         this.service = service;
+        this.releases = releases;
     }
 
     @GetMapping
     public OperatorUpdateOverviewDto overview() {
         return service.overview();
+    }
+
+    @GetMapping("/releases")
+    public OperatorUpdateReleaseService.ReleasePage releases() {
+        return releases.releases();
+    }
+
+    @GetMapping("/releases/{version}")
+    public com.raxim.myscoutee.profile.data.dto.operator.OperatorNetworkDtos.OperatorAnnouncementDto release(
+            @PathVariable String version) {
+        return releases.findVersion(version);
     }
 
     @PostMapping
@@ -40,6 +55,12 @@ public class OperatorUpdateController {
             @RequestBody OperatorUpdateApprovalDto approval,
             Authentication authentication) {
         return service.approve(approval, actorUserId(authentication));
+    }
+
+    @PostMapping("/jobs/{jobId}/rollback")
+    @ResponseStatus(HttpStatus.ACCEPTED)
+    public OperatorUpdateJobDto rollback(@PathVariable String jobId, Authentication authentication) {
+        return service.rollback(jobId, actorUserId(authentication));
     }
 
     @GetMapping("/jobs/{jobId}")

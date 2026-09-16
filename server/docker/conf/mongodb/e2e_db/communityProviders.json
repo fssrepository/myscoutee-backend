@@ -1,0 +1,22 @@
+[
+  {
+    "_id": "discord",
+    "name": "Discord",
+    "purpose": "operator.community.provider.discord.purpose",
+    "url": "https://discord.com/",
+    "configured": false,
+    "available": true,
+    "enabled": true,
+    "sortOrder": 10
+  },
+  {
+    "_id": "discourse",
+    "name": "Discourse",
+    "purpose": "operator.community.provider.discourse.purpose",
+    "url": "https://www.discourse.org/",
+    "configured": false,
+    "available": true,
+    "enabled": true,
+    "sortOrder": 20
+  }
+]

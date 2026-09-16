@@ -1325,6 +1325,9 @@ public class HomeUserProfileService {
             if (isUsableUserDocument(principalUser)) {
                 return principalUser;
             }
+            // An authenticated identity must never fall back to a different
+            // account selected through request data when its profile is missing.
+            return null;
         }
 
         String normalizedRequestedUserId = normalizeId(requestedUserId);

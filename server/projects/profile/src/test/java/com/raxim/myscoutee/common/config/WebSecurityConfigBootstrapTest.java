@@ -82,12 +82,33 @@ class WebSecurityConfigBootstrapTest {
     }
 
     private TestContext context(boolean bootstrapConfigured) {
+        return context(bootstrapConfigured, "member1@myscoutee.local");
+    }
+
+    @Test
+    void productionWithoutFirebaseRejectsCallerSelectedIdentity() throws Exception {
+        for (boolean bootstrapConfigured : List.of(false, true)) {
+            try (TestContext context = context(bootstrapConfigured, "")) {
+                FirebaseService firebase = context.applicationContext().getBean(FirebaseService.class);
+                when(firebase.loadUserById("victim")).thenReturn(new FirebasePrincipal(
+                        "victim", "victim@example.invalid", List.of("U", "A"), null));
+                context.mockMvc().perform(get("/auth/me").param("userId", "victim"))
+                        .andExpect(status().isForbidden());
+                context.mockMvc().perform(get("/admin/probe").param("userId", "victim"))
+                        .andExpect(status().isForbidden());
+                org.mockito.Mockito.verify(firebase, org.mockito.Mockito.never()).loadUserById("victim");
+            }
+        }
+    }
+
+    private TestContext context(boolean bootstrapConfigured, String memberUser) {
         GenericWebApplicationContext applicationContext =
                 new GenericWebApplicationContext();
         applicationContext.setServletContext(new MockServletContext());
 
         ConfigProperties properties = new ConfigProperties();
         properties.setFirebaseEnabled(false);
+        properties.setMemberUser(memberUser);
         OperatorBootstrapAuthenticationService bootstrapService =
                 mock(OperatorBootstrapAuthenticationService.class);
         when(bootstrapService.isConfigured())
@@ -112,6 +133,12 @@ class WebSecurityConfigBootstrapTest {
         applicationContext.registerBean(
                 FirebaseTokenVerifier.class,
                 () -> mock(FirebaseTokenVerifier.class));
+        applicationContext.registerBean(
+                com.raxim.myscoutee.profile.service.UserLoginSessionService.class,
+                () -> mock(com.raxim.myscoutee.profile.service.UserLoginSessionService.class));
+        applicationContext.registerBean(
+                com.raxim.myscoutee.profile.service.media.MediaSessionAccessService.class,
+                () -> mock(com.raxim.myscoutee.profile.service.media.MediaSessionAccessService.class));
         applicationContext.registerBean(
                 OperatorBootstrapAuthenticationService.class,
                 () -> bootstrapService);

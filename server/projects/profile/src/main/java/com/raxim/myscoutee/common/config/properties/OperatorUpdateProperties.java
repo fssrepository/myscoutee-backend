@@ -8,6 +8,27 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 @ConfigurationProperties("operator.update")
 public class OperatorUpdateProperties {
     private boolean enabled;
+    private boolean monitorEnabled;
+    public boolean isMonitorEnabled() { return monitorEnabled; }
+    public void setMonitorEnabled(boolean value) { monitorEnabled = value; }
+    private String githubRepository = "fssrepository/myscoutee";
+    private boolean includePrereleases;
+    private Path tlsCaCertificate;
+    public Path getTlsCaCertificate() { return tlsCaCertificate; }
+    public void setTlsCaCertificate(Path value) { tlsCaCertificate = value; }
+    private String releaseApiOrigin = "https://api.github.com";
+    private String releaseDownloadOrigin = "https://github.com";
+
+    public String getReleaseApiOrigin() { return releaseApiOrigin; }
+    public void setReleaseApiOrigin(String value) { releaseApiOrigin = value; }
+    public String getReleaseDownloadOrigin() { return releaseDownloadOrigin; }
+    public void setReleaseDownloadOrigin(String value) { releaseDownloadOrigin = value; }
+
+
+    public String getGithubRepository() { return githubRepository; }
+    public void setGithubRepository(String value) { githubRepository = value; }
+    public boolean isIncludePrereleases() { return includePrereleases; }
+    public void setIncludePrereleases(boolean value) { includePrereleases = value; }
     private Path stateDir = Path.of("/var/lib/myscoutee/update");
     private Path releasePublicKeyPath =
             Path.of("/etc/myscoutee/update/release-public-key.pem");

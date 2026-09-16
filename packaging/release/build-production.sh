@@ -13,8 +13,8 @@ read_version() {
 
 VERSION="${MYSCOUTEE_VERSION:-$(read_version)}"
 VERSION="${VERSION:-1.0.0}"
-if [[ ! "${VERSION}" =~ ^(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)$ ]]; then
-  echo "MYSCOUTEE_VERSION must be a plain SemVer core such as 1.0.0." >&2
+if [[ ! "${VERSION}" =~ ^(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)(-qa\.[1-9][0-9]*)?$ ]]; then
+  echo "MYSCOUTEE_VERSION must be a SemVer core or QA prerelease such as 1.0.0-qa.1." >&2
   exit 1
 fi
 
@@ -33,7 +33,8 @@ FRONTEND_BUILD_SCRIPT="${FRONTEND_BUILD_SCRIPT:-build:prod}"
 
 if [[ "${BUILD_FRONTEND}" == "true" ]]; then
   (cd "${FRONTEND_DIR}" && npm run "${FRONTEND_BUILD_SCRIPT}")
-  (cd "${REPO_ROOT}" && bash server/docker/scripts/sync_frontend_assets.sh prod)
+  # Production nginx consumes frontend/prod through its named build context.
+  # The dev nginx output is owned exclusively by the dev synchronizer.
 fi
 
 if [[ "${BUILD_BACKEND}" == "true" ]]; then

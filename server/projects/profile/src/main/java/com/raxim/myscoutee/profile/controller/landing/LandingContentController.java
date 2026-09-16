@@ -7,6 +7,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.raxim.myscoutee.profile.data.dto.landing.LandingContentDtos.LandingContentDto;
+import com.raxim.myscoutee.profile.data.dto.landing.LandingContentDtos.SupportedCountryDto;
+import com.raxim.myscoutee.profile.service.CountryPartitionService;
 import com.raxim.myscoutee.profile.data.dto.auth.AuthDtos.UserLocationEligibilityResponseDto;
 import com.raxim.myscoutee.profile.data.dto.idea.IdeaPostDtos.IdeaPostPublicPageDto;
 import com.raxim.myscoutee.profile.service.HelpCenterService;
@@ -19,14 +21,17 @@ public class LandingContentController {
     private final HelpCenterService helpCenterService;
     private final IdeaPostsService ideaPostsService;
     private final HomeUserProfileService homeUserProfileService;
+    private final CountryPartitionService countryPartitionService;
 
     public LandingContentController(
             HelpCenterService helpCenterService,
             IdeaPostsService ideaPostsService,
-            HomeUserProfileService homeUserProfileService) {
+            HomeUserProfileService homeUserProfileService,
+            CountryPartitionService countryPartitionService) {
         this.helpCenterService = helpCenterService;
         this.ideaPostsService = ideaPostsService;
         this.homeUserProfileService = homeUserProfileService;
+        this.countryPartitionService = countryPartitionService;
     }
 
     @GetMapping("/content")
@@ -44,7 +49,10 @@ public class LandingContentController {
                 helpCenterService.activeState("terms", lang, acceptLanguage),
                 ideaPreview.records(),
                 ideaPreview.total(),
-                loginAvailability);
+                loginAvailability,
+                countryPartitionService.supportedCountries().stream()
+                        .map(country -> new SupportedCountryDto(country.getCountryCode(), country.getCountryName()))
+                        .toList());
     }
 
     @GetMapping("/articles")

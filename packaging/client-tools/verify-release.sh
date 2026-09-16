@@ -81,7 +81,7 @@ if ! jq -e '
       == (["artifacts", "channel", "schemaVersion", "signingKeyId", "version"] | sort)
     and .schemaVersion == 1
     and (.version | type == "string"
-      and test("^(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)$"))
+      and test("^(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)(-qa\\.(0|[1-9][0-9]*))?$"))
     and (.channel | type == "string"
       and test("^[a-z][a-z0-9._-]{0,31}$"))
     and (.signingKeyId | type == "string"
@@ -173,7 +173,7 @@ case "${ARTIFACT_BASENAME}" in
     PACKAGE_ARCHITECTURE="$(dpkg-deb -f "${ARTIFACT_PATH}" Architecture)"
     [[ "${PACKAGE_NAME}" == "myscoutee" ]] \
       || fail "Debian artifact package name is not myscoutee"
-    [[ "${PACKAGE_VERSION}" == "${RELEASE_VERSION}" ]] \
+    [[ "${PACKAGE_VERSION}" == "${RELEASE_VERSION/-/\~}" ]] \
       || fail "Debian artifact version does not match the release manifest"
     [[ "${PACKAGE_ARCHITECTURE}" =~ ^[a-z0-9][a-z0-9-]{0,31}$ ]] \
       || fail "Debian artifact architecture is invalid"

@@ -1,0 +1,694 @@
+{
+  "checkpoint": "OPERATOR-UPDATE-LIFECYCLE-001",
+  "date": "2026-09-16",
+  "status": "PASS_CLOSED_LOCAL_SIGNED_SOURCE",
+  "runtime": {
+    "devStopped": true,
+    "sshKeyAuthentication": "verified",
+    "guestSudo": "verified",
+    "tunnel": {
+      "origin": "https://localhost",
+      "ports": [
+        80,
+        443
+      ],
+      "health": "UP",
+      "certificateVerification": "curl using exported public bootstrap certificate; no insecure flag"
+    },
+    "snapshot": {
+      "name": "operator-update-baseline-20260916",
+      "listed": true,
+      "creationProcessCompleted": true,
+      "completedAt": "2026-09-16T11:34:12Z"
+    },
+    "diskPreparation": {
+      "rootLVBeforeGiB": 10,
+      "rootLVAfterGiB": 18.22,
+      "rootFreeAfterGiB": 8.8,
+      "method": "lvextend --resizefs --extents +100%FREE /dev/ubuntu-vg/ubuntu-lv",
+      "result": "PASS",
+      "virtualDiskSizeGiB": 20
+    },
+    "registryNetworkIsolation": {
+      "application": "server_myscoutee",
+      "realRegistry": "myscoutee-registry_internal",
+      "realRegistryProxy": [
+        "myscoutee-registry_internal",
+        "myscoutee-registry_public"
+      ],
+      "sharedApplicationRegistryNetwork": false,
+      "remoteEmulationEndpoint": "https://192.168.153.129:18444",
+      "internalExploreSimulator": "registry-demo on server_myscoutee; not the real Registry",
+      "registryCertificateExpired": "2026-08-29; found by read-only certificate inspection, remediation/verification queued with Registry security qualification"
+    }
+  },
+  "artifacts": {
+    "repository": "fssrepository/myscoutee",
+    "qa1": {
+      "tag": "v1.0.0-qa.1",
+      "debVersion": "1.0.0",
+      "sha256": "ae35b95bb3054eea5f6a2d7287d8838c98a5194a01854d9e367b64f60f03d164",
+      "downloadedForBaseline": true,
+      "imageManifestSha256": "b598cd91e2c778a91c477ad350afcb2c81d08f91c9eedebbe85c9de8be0bb987",
+      "source": "Fresh GitHub download; size and digest verified against release API. Original artifact retained."
+    },
+    "qa2": {
+      "tag": "v1.0.0-qa.2",
+      "debVersion": "1.0.0",
+      "sha256": "9b7478c4cb4483c42b2ab57653a10dd876247dd648c61432d37702ec69ed74a4",
+      "source": "Fresh GitHub download; size and digest verified against release API. Original artifact retained.",
+      "imageManifestSha256": "166ff605520b1c00861169f2bad459df6d09abcd9303674e3a97e4a2e1827057",
+      "installedManifestMatchesBeforeQa1Installation": true
+    },
+    "publishedAssets": "Both releases contain DEB/client-tools and SHA256 files; no signed release manifest/signatures."
+  },
+  "gaps": [
+    {
+      "boundary": "release preparation",
+      "finding": "Both DEBs declare 1.0.0; worker requires a strictly newer version and signed metadata matching the actual DEB. A database-only version fixture cannot satisfy this contract."
+    },
+    {
+      "boundary": "release trust",
+      "finding": "VM update directory has no pinned release public key; signed release metadata is absent from both published releases."
+    },
+    {
+      "boundary": "rollback capability",
+      "finding": "Source inspection found Refresh/Apply, but no UI rollback action. Current failure path exposes RECOVERY_REQUIRED and CLI backup restore; UI rollback and GitHub recovery download remain unproven/missing."
+    }
+  ],
+  "progressUi": {
+    "source": "phase, percent and progress bar exist",
+    "liveVerification": "PARTIAL: disabled actions and visible phases observed; restart tracking FAIL; exact download byte telemetry absent."
+  },
+  "execution": {
+    "qa1Installed": true,
+    "uiUpgrade": "PARTIAL: real explicit UI Apply and backend installation PASS; restart progress tracking and post-update old QA2 discovery FAIL.",
+    "uiRollback": "BLOCKED: installed historical QA2 has no Rollback action; no CLI substitute performed.",
+    "controlledFailure": "NOT RUN",
+    "managedHttpsProvisioning": "NOT RUN",
+    "smokeSecurityEfficiency": "NOT RUN",
+    "qa1Installation": "PASS baseline preparation; historical artifact digest verified, no signature verification claimed",
+    "packagedQualification": "PASS",
+    "qa1InstalledManifestMatches": true,
+    "postInstallHttpsHealth": "UP with certificate verification",
+    "bootstrapLog": "/var/log/myscoutee/operator-qa1-baseline-20260916.log",
+    "operatorUiAccess": "PASS: existing deployment bootstrap credential, real Operator workspace on https://localhost; Updates popup opened",
+    "releaseRefresh": {
+      "block": 1,
+      "step": 2,
+      "action": "One visible Check for updates click",
+      "httpStatus": 409,
+      "endpoint": "/api/operator/announcements?includeExpired=false&limit=100&kind=UPDATE",
+      "result": "FAIL product dependency: Updates required Registry enrollment. User clarified updates must work with no Registry deployed; independent GitHub source implemented, candidate live retest pending.",
+      "ui": "Raw HTTP error/URL and still-disabled Deployment is current action"
+    }
+  },
+  "deferredDefects": [
+    {
+      "id": "UPDATE-UI-01",
+      "block": 1,
+      "step": 1,
+      "build": "published QA1",
+      "source": "User screenshot: Screenshot from 2026-09-16 13-43-55.png",
+      "observation": "Side-by-side action labels truncate on the narrow viewport; excessive empty space below actions.",
+      "requestedCorrection": "Two action rows when needed and/or content-sized popup body, using shared component configuration.",
+      "status": "SOURCE FIXED per subsequent user authorization; QA1 VM unchanged; live candidate visual retest pending."
+    },
+    {
+      "id": "UPDATE-UI-02",
+      "block": 1,
+      "step": 2,
+      "build": "published QA1",
+      "observation": "Refresh shows raw HTTP error including internal URL and 409 OK; user reports covered error icon and excessively long text. Deployment is current remains visible despite unsuccessful release discovery.",
+      "requestedCorrection": "Short localized actionable message for missing Registry registration; omit internal URL and raw HTTP diagnostics, preserve icon space and wrapping within the popup, and avoid implying a verified current release after failed discovery.",
+      "status": "SOURCE FIXED per subsequent user authorization; QA1 VM unchanged; live candidate visual retest pending."
+    }
+  ],
+  "sourceFixVerification": {
+    "operatorHttpService": "22/22 PASS, including HTTP409/502 redaction/localization cases",
+    "angularTemplatesAndTypes": "ngc -p tsconfig.app.json --noEmit PASS",
+    "i18nSeedGeneration": "PASS; EN/HU bundles and three Mongo seeds updated",
+    "i18nAudit": "BLOCKED by pre-existing landing loading key reference at entry-landing.component.html:383; verified also present in HEAD",
+    "initialTestAttempt": "Default ng test include still typechecked unrelated existing specs and failed; focused tsconfig then passed. Temporary tsconfig removed.",
+    "vmPatch": "None; published QA1 is preserved."
+  },
+  "registryIndependentUpdate": {
+    "requirement": "Release discovery and Apply must work without Registry selection, enrollment or a real Registry service.",
+    "implementation": "Java reads GitHub release assets and independently verifies the full update metadata and package signature with the pinned release key. Root worker verification/backup path unchanged.",
+    "sourceChecks": {
+      "backendFocused": "23/23 PASS including Python signer-to-Java verification, tampered compatibility and wrong/missing key rejection",
+      "frontendFocused": "24/24 PASS",
+      "fullTestCompilation": "Not passed: existing unrelated Java test compilation errors; focused source-set run used without altering those tests."
+    },
+    "candidate": "Corrected local QA1 baseline build authorized by user; does not replace the published GitHub QA1 identity.",
+    "liveResult": "PASS on current-source QA1 r2: GitHub discovery and explicit Apply succeeded without Registry enrollment. Installed historical QA2 reintroduces its old Registry-dependent discovery."
+  },
+  "releasePreparation": {
+    "status": "PUBLISHED_AND_GITHUB_DIGEST_VERIFIED",
+    "versions": [
+      "1.0.0-qa.1",
+      "1.0.0-qa.2"
+    ],
+    "debianVersions": [
+      "1.0.0~qa.1",
+      "1.0.0~qa.2"
+    ],
+    "stableVersion": "1.0.0",
+    "tools": [
+      "tools/release/reversion-qa-artifacts.py",
+      "tools/release/sign-qa-release.py"
+    ],
+    "outputDirectory": "packaging/dist/signed-existing-qa-20260916/prepared",
+    "checks": [
+      "packaging/tests/release-signing-test.sh PASS",
+      "tools/release/test_qa_release.py PASS",
+      "All four artifact checksum sidecars verified",
+      "Bundled client verifier matches the tested version",
+      "Original image IDs/content fingerprints and payload bytes retained",
+      "GitHub API confirms six matching asset sizes/digests per release; original four assets retained locally before removal; tags unchanged"
+    ],
+    "githubMutated": true,
+    "vmMutatedDuringSigning": false,
+    "limitations": [
+      "Reversion and signatures retain historical application image payloads, including their original updater limitations. No Registry-independent UI upgrade or rollback PASS claimed.",
+      "Current source production builder calls sync_frontend_assets.sh prod. Do not invoke that path until production output is isolated from the dev nginx directory, as explicitly required by the user."
+    ],
+    "preparedReleases": [
+      {
+        "tag": "v1.0.0-qa.1",
+        "debianVersion": "1.0.0~qa.1",
+        "sha256": "sha256:4ade2b160a2a47098e9e8659cf368a680fd77eadff04644c78f3b0f0bb8c1b9c",
+        "signingKeyFingerprint": "sha256:cb936e5e3af21c7f3e72e569277ec00b4a5e18e13ddc083a08fc70f238ad2135",
+        "upload": [
+          "myscoutee_1.0.0-qa.1_amd64.deb",
+          "myscoutee-client-tools_1.0.0-qa.1.tar.gz",
+          "myscoutee-release_1.0.0-qa.1.json",
+          "myscoutee-update.json",
+          "myscoutee_1.0.0-qa.1_amd64.deb.sha256",
+          "myscoutee-client-tools_1.0.0-qa.1.tar.gz.sha256"
+        ],
+        "imagePayloadBytesPreserved": true
+      },
+      {
+        "tag": "v1.0.0-qa.2",
+        "debianVersion": "1.0.0~qa.2",
+        "sha256": "sha256:86a2de6f5d41ee7a55de69b51f6ff1ddd717e48dba22ad09a104fb605f4809b0",
+        "signingKeyFingerprint": "sha256:cb936e5e3af21c7f3e72e569277ec00b4a5e18e13ddc083a08fc70f238ad2135",
+        "upload": [
+          "myscoutee_1.0.0-qa.2_amd64.deb",
+          "myscoutee-client-tools_1.0.0-qa.2.tar.gz",
+          "myscoutee-release_1.0.0-qa.2.json",
+          "myscoutee-update.json",
+          "myscoutee_1.0.0-qa.2_amd64.deb.sha256",
+          "myscoutee-client-tools_1.0.0-qa.2.tar.gz.sha256"
+        ],
+        "imagePayloadBytesPreserved": true
+      }
+    ],
+    "publication": [
+      {
+        "tag": "v1.0.0-qa.1",
+        "releaseId": 370956129,
+        "url": "https://github.com/fssrepository/myscoutee/releases/tag/v1.0.0-qa.1",
+        "assets": [
+          {
+            "name": "myscoutee-client-tools_1.0.0-qa.1.tar.gz",
+            "size": 25200,
+            "digest": "sha256:8bd55d3b26820ad3829105e9650994af9c7aafb4972fd3048bb178a18b8d3ff4"
+          },
+          {
+            "name": "myscoutee-client-tools_1.0.0-qa.1.tar.gz.sha256",
+            "size": 107,
+            "digest": "sha256:b9f00240a317f77bddc1c91a823ca99e1d80793f3844e117c1e0f9078d649bd6"
+          },
+          {
+            "name": "myscoutee-release_1.0.0-qa.1.json",
+            "size": 817,
+            "digest": "sha256:cd0c14e1b74680918187d6e381a130fba0bb032710cda7581ce47ccd4c023515"
+          },
+          {
+            "name": "myscoutee-update.json",
+            "size": 1392,
+            "digest": "sha256:2083a8cef1ee9ca5e3ef3877fb3f13a26a71bbb2984d8e85294fb12ce3e40993"
+          },
+          {
+            "name": "myscoutee_1.0.0-qa.1_amd64.deb",
+            "size": 355952288,
+            "digest": "sha256:4ade2b160a2a47098e9e8659cf368a680fd77eadff04644c78f3b0f0bb8c1b9c"
+          },
+          {
+            "name": "myscoutee_1.0.0-qa.1_amd64.deb.sha256",
+            "size": 97,
+            "digest": "sha256:401f37fe9e2e162da5d1e1e5f2259cc5ff3e08ea4f8c3d5605f0fb5fea283039"
+          }
+        ],
+        "gitTagMoved": false
+      },
+      {
+        "tag": "v1.0.0-qa.2",
+        "releaseId": 383272706,
+        "url": "https://github.com/fssrepository/myscoutee/releases/tag/v1.0.0-qa.2",
+        "assets": [
+          {
+            "name": "myscoutee-client-tools_1.0.0-qa.2.tar.gz",
+            "size": 25200,
+            "digest": "sha256:0a50afc5073d6df52ea21b2b2bd7ddb32aded1ddd548cb6e29fcbb87927d4327"
+          },
+          {
+            "name": "myscoutee-client-tools_1.0.0-qa.2.tar.gz.sha256",
+            "size": 107,
+            "digest": "sha256:b8ecb97b281fbf01f6231a351beb541f78571921e715e2c3fc31e779ac50c6b0"
+          },
+          {
+            "name": "myscoutee-release_1.0.0-qa.2.json",
+            "size": 817,
+            "digest": "sha256:4a98629db73f612f0b0641dd4769034ec58ca55b3655ca8c61433ae4cac6a2bf"
+          },
+          {
+            "name": "myscoutee-update.json",
+            "size": 1408,
+            "digest": "sha256:0a34748163f9c2ba7e7d5803ad0dc83330d2c618703efe579095078c896fd853"
+          },
+          {
+            "name": "myscoutee_1.0.0-qa.2_amd64.deb",
+            "size": 362339928,
+            "digest": "sha256:86a2de6f5d41ee7a55de69b51f6ff1ddd717e48dba22ad09a104fb605f4809b0"
+          },
+          {
+            "name": "myscoutee_1.0.0-qa.2_amd64.deb.sha256",
+            "size": 97,
+            "digest": "sha256:72d9dceab9e110ab5177f9de57f305f8226b92f56049a0b8de4fda75c20b802b"
+          }
+        ],
+        "gitTagMoved": false
+      }
+    ],
+    "noBackupMetadataPublication": [
+      {
+        "tag": "v1.0.0-qa.1",
+        "oldDigest": "sha256:2083a8cef1ee9ca5e3ef3877fb3f13a26a71bbb2984d8e85294fb12ce3e40993",
+        "newDigest": "sha256:4fe4382f1d6e02f8c51d14f3bc7661cc302debb1163d4dccb83d8e5a2520b642",
+        "backupRequired": false,
+        "packageBytesChanged": false
+      },
+      {
+        "tag": "v1.0.0-qa.2",
+        "oldDigest": "sha256:0a34748163f9c2ba7e7d5803ad0dc83330d2c618703efe579095078c896fd853",
+        "newDigest": "sha256:57a0e26045ad5e3aac4a48c9f699c764bacc25bdfe5c774e5c12a8b13927cbca",
+        "backupRequired": false,
+        "packageBytesChanged": false
+      }
+    ]
+  },
+  "releaseSelection": {
+    "sourceTest": "PASS: highest SemVer QA release wins over API publication order; QA10 correctly ranks above QA3 and QA2; signed compatibility includes QA1",
+    "liveDeferredUpdate": "NOT RUN; requires real QA3 release",
+    "rollbackTargetRule": "Actual installed previous release QA1, not skipped QA2"
+  },
+  "dataPreservation": {
+    "rule": "Production data and operator settings remain in place through upgrade and application rollback. No automatic database/media backup or restore. List package-owned static seed/media changes and any migration before release; qualify the exact candidate on the preproduction VMware target.",
+    "inventory": "IN_PROGRESS",
+    "verification": "PASS after actual QA1 to QA2 Apply: production_db users1, deploymentConfigurations1 and one owned Mongo control unchanged; owned MinIO object hash matches; five configuration/key/TLS file hashes unchanged. Event/Asset collections are empty, so populated Event/Asset preservation is not proven. No application data restored.",
+    "backup": {
+      "initialResult": "FAIL: complete backup incorrectly required a Registry keypair on a deployment whose Registry key and state directories were empty",
+      "fix": "Registry recovery components are required when either identity/state directory contains material; absent or empty optional Registry directories are allowed. Partial identities still fail.",
+      "sourceVerification": "PASS: packaging/tests/registry-packaging-test.sh; absent/empty directories, partial keypair, orphaned state, dangling key symlink and missing MinIO covered",
+      "vmVerification": "PASS: corrected backup script staged separately; installed package helper and running application unchanged",
+      "fixtureScript": "/var/lib/myscoutee/qa-fixtures/update/backup-production.sh",
+      "archive": "/var/backups/myscoutee/myscoutee-backup-20260916-125344.tar.gz",
+      "sha256": "0d7420a39f36756d137e244c807f801a09dceb96e786dbe65d821fc874aae4c0",
+      "manifestComplete": true,
+      "registryIdentityRequired": false,
+      "scope": "MongoDB, MinIO, production environment/Compose configuration, configuration master key and existing Registry state. This does not establish recovery coverage for every other host volume, TLS or external service.",
+      "installedVersion": "1.0.0",
+      "upgradeRollback": "NOT RUN",
+      "disposition": "Historical preparation only; user subsequently rejected automatic backup as an update prerequisite. Retained archive is not used by the update or rollback workflow."
+    },
+    "fixture": "guides/qa/tools/operator-update-preservation-fixture.py",
+    "fixtureState": "STAGED: retain owned controls for the pending rollback comparison."
+  },
+  "packagingGate": {
+    "definition": "guides/releases/PRERELEASE_DEPLOYMENT_QUALIFICATION.md#packaging-gate-before-release",
+    "inventory": "guides/qa/evidence/OPERATOR-UPDATE-qa1-qa2-data-change-inventory.json",
+    "status": "IN_PROGRESS",
+    "sourceChecks": {
+      "packageContent": "PASS (includes removal, TLS preservation, demo reset, i18n sync and update worker checks)",
+      "qaWorker": "PASS: 999.0.0-qa.3 signed Debian fixture; canonical Debian/SemVer mapping",
+      "backend": "PASS: OperatorUpdateServiceTest 10 cases + OperatorUpdateReleaseServiceTest 3 cases",
+      "releaseSigning": "PASS: signed no-backup metadata; required-backup input rejected"
+    },
+    "liveUpdateRollback": "Actual forward installation and retained controls PASS; UI restart tracking FAIL; rollback NOT RUN."
+  },
+  "baselinePreparation": {
+    "status": "PASS",
+    "candidate": "1.0.0-qa.1",
+    "debianVersion": "1.0.0~qa.1",
+    "method": "Signed published client-tools install.sh with explicit baseline downgrade; existing configuration/data kept in place",
+    "log": "/tmp/myscoutee-update-release-inspection/qa1-signed-install.log",
+    "dataControls": "/var/lib/myscoutee/qa-fixtures/update/qa1-preserved-{config.sha256,mongo.json}",
+    "installedVersion": "1.0.0~qa.1",
+    "qualification": "Signed client-tools installer exit 0; package-provided qualification PASS; mongodb/redis/minio/registry-demo/myscoutee/nginx healthy; trusted localhost HTTPS health 200",
+    "preservation": "Five configuration/key/TLS file hashes unchanged; production users(1), events(0), assets(0), deploymentConfigurations(1) counts and up-to-100-record sample hashes unchanged. Empty Event/Asset collections do not prove populated record preservation.",
+    "browser": "Managed existing Operator browser reloaded and Updates popup opened with retained real bootstrap session. Historical UI still shows the old default current-state presentation; no upgrade or rollback action executed."
+  },
+  "currentSourceQa1": {
+    "status": "UPGRADED_TO_QA2",
+    "instruction": "Build the full current codebase as 1.0.0-qa.1. Historical JAR backport explicitly rejected; no backport was installed.",
+    "sourceCommit": "c95699b75dbdedaf0ac4612553327da9d278e757",
+    "frontendCommit": "32df1630e7d037cd286552f2181945c750bace60",
+    "frontendBuild": "PASS: optimized production build qa1-current-20260916-r2; visible Refresh/Update deployment, version badges and shared dim backdrop",
+    "backendBuild": "PASS: complete bootJar, Java25, no-daemon/max-workers2",
+    "imagesBuild": "PASS: six source-built manifest entries",
+    "packageGate": "PASS: normal stable/QA packaging, data-preservation, TLS, worker and credential tests",
+    "publicTruststoreAudit": {
+      "googleApiClient": "2.7.2",
+      "entry": "com/google/api/client/googleapis/google.p12",
+      "sha256": "c98fba5f11f2f078ddf798fac0dcffa7e4a0ba1a9848e3e23f14210a506e827c",
+      "inspection": "70 trusted certificate entries, no private-key bags; exact digest accepted, modified bytes and other path rejected"
+    },
+    "releaseDtoRegression": "PASS: release discovery preserves signed backupRequired=false; 3 focused tests",
+    "devNginxOutput": "Untouched; production image consumes frontend/prod directly",
+    "installed": true,
+    "published": false,
+    "artifactPath": "packaging/dist/current-qa1-20260916-r2/myscoutee_1.0.0-qa.1_amd64.deb",
+    "sha256": "6e693064bd2e08c5638cabaf9b87de7b4a560f171619dbf8d11aa71e91bdbcff",
+    "mongoMigrationScript": "Byte-identical to QA2 script already tested with five isolated migration cases; no new migration script in this baseline.",
+    "installationLog": "/tmp/myscoutee-current-qa1-r2-install.log",
+    "retainedConfigurationControls": "PASS: five SHA-256 controls unchanged",
+    "configurationFixture": "guides/qa/tools/operator-update-config-fixture.py, stage; normal QA prerelease discovery enabled and independently pinned Ed25519 public key provisioned",
+    "qualification": "PASS: packaged deployment qualification, all seven application containers healthy, retained TLS origin and bootstrap access",
+    "uiDiscovery": "PASS: current QA1 and signed GitHub QA2 displayed with Registry uninitialized; subsequent explicit Apply recorded below.",
+    "uiActions": {
+      "status": "PASS",
+      "cause": "Inline app-menu configured as list renders neither Refresh nor Apply. Source now uses supported row layout.",
+      "repair": "Full current-source QA1 r2 installed through normal signed packaging; no historical binary patch.",
+      "verification": "PASS: actual installed UI shows enabled Check for updates and Update deployment; native Refresh succeeds without creating a job"
+    },
+    "previousLocalBaseline": {
+      "buildId": "qa1-current-20260916",
+      "sha256": "dccb73a9f62f56e533ffb58577776cd826dc399fbcd49f0a955a6fb0cd8be9d1"
+    }
+  },
+  "liveApply": {
+    "status": "COMPLETED",
+    "jobId": "upd_ec17edbf732bdebb08d37b9b3e55dd6a",
+    "source": "1.0.0-qa.1",
+    "target": "1.0.0-qa.2",
+    "targetSha256": "86a2de6f5d41ee7a55de69b51f6ff1ddd717e48dba22ad09a104fb605f4809b0",
+    "trigger": "One native click on Update deployment at2026-09-16T13:53:44Z",
+    "disabledActions": "PASS: both action buttons disabled during download and after native close/reopen",
+    "progress": "Observed DOWNLOADING15/30/40%, INSTALLING85%; durable worker completed100%. UI bytes are derived from phase percent rather than measured transfer bytes; limitation remains.",
+    "screenshots": [
+      "/tmp/myscoutee-qa-browser-sessions/evidence/operator-update-cdp/qa1-qa2-apply.png",
+      "/tmp/myscoutee-qa-browser-sessions/evidence/operator-update-cdp/qa1-qa2-running-reopened.png"
+    ],
+    "queuedSourceChange": "Source retries transient read errors (0/502/503/504 and request timeout) for the same accepted job/cursor, never retries Apply POST, and uses i18n errors for permanent failures. Both controls remain disabled for running jobs; real terminal failure releases both. Apply has no loading ring. No automatic page reload. Not deployed to historical QA2.",
+    "completedAt": "2026-09-16T13:57:20Z",
+    "installedVersion": "1.0.0~qa.2",
+    "backendResult": "PASS: verified package and exact bundled images installed and healthy; one accepted job, no automatic backup.",
+    "uiResult": "FAIL: API restart interrupted event polling at INSTALLING85%; raw HTTP status0/URL displayed and UI stopped following the job despite actual completion."
+  },
+  "restartFixVerification": {
+    "command": "ng test --watch=false --ts-config <temporary relative-path config including the two specs> --include=src/app/shared/core/http/services/operator-registry.service.spec.ts --include=src/app/operator/components/operator-action-popup/operator-action-popup.component.spec.ts",
+    "result": "45/46 PASS; all eight new restart/permanent-error/button-state cases passed. One unrelated claimed-group deployment popup test expects the obsolete headerLabel/subtitle arrangement. Full suite not claimed.",
+    "log": "/tmp/myscoutee-update-ui-focused.log",
+    "deployed": false,
+    "automaticPageReload": false
+  },
+  "qa2Reopening": {
+    "access": "PASS: retained Operator access at https://localhost/operator",
+    "releaseDiscovery": "FAIL: historical frontend calls /api/operator/announcements?includeExpired=false&limit=100&kind=UPDATE and receives409 without Registry enrollment. Displayed current-version detail absent.",
+    "rollback": "No visible action. Source also lacks the requested rollback implementation.",
+    "artifactBoundary": "Current-source QA1 r2 is not published; published QA1 remains a different historical artifact. Do not silently use it as the exact previous recovery package."
+  },
+  "localReleaseRound": {
+    "updatedAt": "2026-09-16T14:38:47.667307+00:00",
+    "source": "Current source, two normal production builds; no historical binary patching.",
+    "origin": "https://192.168.153.1:18445",
+    "githubModified": false,
+    "artifacts": [
+      {
+        "version": "1.0.0-qa.1",
+        "directory": "packaging/dist/local-rollback-qa1-20260916-r2",
+        "artifactSha256": "b75573f033ce54685cce70c0b921c646cc6fb2c65de08099005a95249a6156e0",
+        "size": 335123546
+      },
+      {
+        "version": "1.0.0-qa.2",
+        "directory": "packaging/dist/local-rollback-qa2-20260916-r2",
+        "artifactSha256": "7e97cba68703cf68e13052b63711d43be499f8d51d83077b53402744aebec2d9",
+        "size": 335121632
+      }
+    ],
+    "signatures": "Both package and update manifest signature verification PASS. Local URLs re-signed in metadata only; package bytes unchanged.",
+    "sourceTests": {
+      "backend": "34/34 OperatorUpdate focused tests PASS",
+      "frontendHttp": "33/33 PASS",
+      "worker": "PASS including exact retained-package downgrade, incorrect digest/current-version/receipt permissions rejection"
+    },
+    "baseline": "Signed QA1 install and packaged host qualification PASS; exact source package identity recorded by installer.",
+    "remaining": [
+      "UI QA1 \u2192 QA2",
+      "UI QA2 \u2192 QA1 cache-miss rollback",
+      "Controlled download failure/retry",
+      "Managed HTTPS"
+    ],
+    "upgrade": {
+      "jobId": "upd_e706a97a8ab99457775c37903b5cadab",
+      "requestedAt": "2026-09-16T14:40:06Z",
+      "completedAt": "2026-09-16T14:42:46Z",
+      "result": "PASS: one native Apply, signed local-source QA2 download/install and exact image health; original open popup recovered without reload and displayed100%.",
+      "controls": "Both disabled while running and after popup reopen. On success Update stayed disabled; explicit Check with no newer release kept it disabled.",
+      "data": "Retained users/configuration and owned Mongo/MinIO controls, plus five key/config/TLS digests all unchanged. Events/Assets empty.",
+      "screenshot": "/tmp/myscoutee-qa-browser-sessions/evidence/operator-update-cdp/local-qa1-qa2-completed-no-reload.png"
+    },
+    "rollback": "NOT RUN yet: visible enabled recovery action binds QA1 b75573f033ce54685cce70c0b921c646cc6fb2c65de08099005a95249a6156e0. User requested independent progress service before continuation."
+  },
+  "independentProgress": {
+    "status": "LIVE PASS: independent progress survives API outage; r4 exact-image upgrade completed100% without reload. Voluntary success rollback and failure retry remain pending.",
+    "reader": "Socket-activated non-root read-only host service behind same-origin nginx; short-lived job-scoped capability, hash-only grant, no public TCP port.",
+    "restart": "Retain current nginx while backend/dependencies update; replace bundled nginx after backend healthy. Same-job polling retries brief gateway replacement.",
+    "tests": {
+      "backend": "34/34 PASS",
+      "frontendHttp": "34/34 PASS",
+      "reader": "4/4 PASS, including public rollback identity filtering during API outage",
+      "worker": "PASS",
+      "restart": "PASS: healthy backend replaces ingress last; unhealthy backend retains it",
+      "nginx": "production transport/syntax tests PASS",
+      "debian": "remove and TLS lifecycle tests PASS",
+      "hostPermissions": "PASS: isolated sysusers creation/reconfiguration yields non-login UID/GID10001; actual VM read-only namespace probe reads staging/worker state without changing protected parent permissions.",
+      "frontend": "76/76 PASS, including completion without duplicate notice and enabled rollback after success with retained recovery point"
+    },
+    "queuedUiFixes": [
+      "Large Updates tile action-ring removed",
+      "EN/HU bundle revision109\u2192110: rollback key existed remotely but cached109 lacked it and conditional fetch returned no data"
+    ],
+    "buildDirectories": [
+      "packaging/dist/monitor-qa1-20260916-r2",
+      "packaging/dist/monitor-qa2-20260916-r2"
+    ],
+    "baseline": {
+      "version": "1.0.0-qa.1",
+      "sha256": "1cf2afc30aeb21666d46e6fb6ef41ebfb0e3d0c441c9565c30b0ac3772d7fb9d",
+      "qualification": "PASS; retained Mongo/MinIO and five configuration hashes unchanged"
+    },
+    "upgrade": {
+      "jobId": "upd_34d5682814378d3ed243087d55236dda",
+      "requestedAt": "2026-09-16T15:15:10Z",
+      "targetSha256": "85a59190dc2e9e90ccc894f8ccfc1d63140e25647c5b6db0c3c44811dd7363ad",
+      "apiDowntimeProof": {
+        "at": "2026-09-16T15:16:05Z",
+        "apiContainer": "exited unhealthy during intended restart",
+        "nginx": "running healthy",
+        "reader": "active, MemoryCurrent 12849152 bytes",
+        "browser": "same timeOrigin 1789571597434.2; monitored route HTTP200 at15:16:03.977Z; popup92%, both controls disabled",
+        "jobPhase": "RESTARTING"
+      },
+      "trace": "/tmp/myscoutee-qa-browser-sessions/evidence/operator-update-cdp/monitor-upgrade.json",
+      "result": "RECOVERY_REQUIRED at15:16:27Z: restart helper used container name registry-demo instead of Compose service registry. No rollback executed.",
+      "monitor": "104 HTTP200 monitor responses; same page timeOrigin throughout; actual terminal error delivered while API stopped."
+    },
+    "repair": "Use actual registry Compose service; validate restart service arguments against Compose model. Stream fixed actual installer milestones to durable status; localize UI phases, remove duplicated error and release controls after surfaced errors.",
+    "r3": {
+      "baseline": {
+        "version": "1.0.0-qa.1",
+        "sha256": "8fd0dcb922d6e4614c799613162132ec3496994631c58a8e6804ffc2383aa940",
+        "directory": "packaging/dist/monitor-qa1-20260916-r3",
+        "qualification": "PASS normal signed installation; API/nginx healthy, preserved Mongo/MinIO controls and five configuration hashes match",
+        "log": "/tmp/operator-monitor-qa1-r3-install.log"
+      },
+      "uiContract": "Success hides Update and Rollback. Only explicit Check finding a newer release brings Update back. Popup reopening uses cached state. Surfaced errors show enabled Update and Rollback; running actions are disabled.",
+      "upgrade": {
+        "jobId": "upd_26c8e0b5411f1ab4ee624ccf354f01e2",
+        "targetSha256": "aaa9fbf4aa532386f8ce8c1c1f5e8c62a237985da4b7791b1ad518d0dc83557b",
+        "result": "RECOVERY_REQUIRED: package/config QA2, worker inherited QA1 image variables so containers stayed QA1. Exact image verification refused completion.",
+        "progress": "Actual PREPARING_DATA 93% and SWITCHING_INGRESS 98% reached; reader continues during API downtime; retained same browser timeOrigin1789573292231.9",
+        "trace": "/tmp/myscoutee-qa-browser-sessions/evidence/operator-update-cdp/monitor-r3-upgrade.json",
+        "errorUi": "PASS: one localized upper error; Check, Update and Rollback visible and enabled without page reload",
+        "repair": "restart-update-stack clears inherited package-owned release variables so Compose uses freshly installed .env. Regression fails without fix; upgrade and rollback tests PASS. Normal r4 package build in progress."
+      }
+    },
+    "r4": {
+      "baseline": {
+        "version": "1.0.0-qa.1",
+        "sha256": "sha256:fd686415a7c3abc5ddea662b4b276286c5d3843cecde58dd8011d4fe821eba75",
+        "qualification": "PASS normal signed install",
+        "log": "/tmp/operator-monitor-qa1-r4-install.log"
+      },
+      "restartRegression": "PASS upgrade and rollback select installed .env images; negative control without fix reproduces stale image selection",
+      "upgrade": {
+        "jobId": "upd_d1194357f035a4a47afcd280169e1995",
+        "result": "COMPLETED",
+        "completedAt": "2026-09-16T16:00:12Z",
+        "targetSha256": "13ef69adc9e857470f478a61d6c11b20c0d302cf4e90c79fe6898d40fd8a2f50",
+        "timeOrigin": 1789574238626.1,
+        "trace": "/tmp/myscoutee-qa-browser-sessions/evidence/operator-update-cdp/monitor-r4-upgrade.json",
+        "monitorResponses": 209,
+        "runningImages": "QA2 nginx and API healthy; worker verified exact packaged images before100%",
+        "preservation": "PASS; Mongo/MinIO fixture and five retained configuration hashes unchanged",
+        "popupReopening": "PASS; release catalog request count4 before/after close/reopen; explicit Check increments to5, no newer version leaves Update hidden"
+      }
+    },
+    "latestUiContract": "Success hides Update; Check finds a newer release to show Update again. Rollback remains enabled after success when a verified recovery point exists. No duplicate lower success notice. Surfaced failures release both actions.",
+    "next": "Operator Update closed. Asset Borrow/Pricing remain user-controlled pair QA; Pricing development gate remains unimplemented. Final release security/smoke/performance campaign deferred.",
+    "r5": {
+      "upgrade": {
+        "jobId": "upd_4f5d2d90e610c3b270d9921cd27a3937",
+        "result": "COMPLETED",
+        "targetSha256": "44125a07674ab6a18f70c748b4c6b40c08f370b4036416b4960a1a1c34ae0ab0",
+        "trace": "/tmp/myscoutee-qa-browser-sessions/evidence/operator-update-cdp/monitor-r5-upgrade.json",
+        "monitorResponses": 208,
+        "reopenedUi": "QA2 r5: enabled Rollback after success without any injected error; Update hidden; no duplicate lower success notice. Manual reload after completion loaded r5 UI."
+      },
+      "voluntaryRollback": {
+        "jobId": "upd_9d3eb1b0140e81d53161167d015f2675",
+        "requestedAt": "2026-09-16T16:13:59Z",
+        "completedAt": "2026-09-16T16:16:38Z",
+        "result": "COMPLETED",
+        "targetSha256": "fd686415a7c3abc5ddea662b4b276286c5d3843cecde58dd8011d4fe821eba75",
+        "buildId": "monitor-qa1-20260916-r4",
+        "trace": "/tmp/myscoutee-qa-browser-sessions/evidence/operator-update-cdp/monitor-r5-success-rollback.json",
+        "samples": 120,
+        "monitorResponses": 210,
+        "timeOrigin": 1789575169754.7,
+        "cacheMiss": "Fixture-owned /tmp/myscoutee.deb was SHA-verified and removed. Remaining cached packages had other digests. HTTPS source logged QA1 manifest and .deb GET200 at18:13:59 local.",
+        "health": "All seven application containers healthy; QA1 image tags and worker exact bundled-image verification PASS. Public app-version.json reports QA1 r4.",
+        "preservation": "PASS: unchanged Mongo collection hashes, MinIO object hash and all five retained configuration hashes. Events/assets collections empty; not evidence for populated event/asset migration.",
+        "ui": "Actual Rollback click after successful healthy QA2; running controls disabled; same page reached100%. No triggered error or command-line restore used."
+      }
+    },
+    "completionReload": {
+      "status": "PASS_NATIVE_UPDATE_AND_ROLLBACK_R6",
+      "contract": "Verified COMPLETED100% after locally initiated update or rollback refreshes/activates the PWA worker before reload. Historical job reads do not reload. Busy actions remain locked while refreshing. Rollback progress target badge follows recovery target.",
+      "tests": "87/87 PASS across PWA, workspace, HTTP adapter and popup; /tmp/operator-completed-reload-tests.log",
+      "deployment": "QA1/QA2 r6 normal packages exercised both directions, with one automatic reload per operation."
+    },
+    "r6": {
+      "baseline": {
+        "version": "1.0.0-qa.1",
+        "sha256": "078d6d7209f5c37ada87916b51f72021e0b6576ca9aaf56c6db6590c330c54f5",
+        "buildId": "monitor-qa1-20260916-r6",
+        "qualification": "PASS normal signed installation"
+      },
+      "target": {
+        "version": "1.0.0-qa.2",
+        "sha256": "25d13bd7e4ab6885dfb56cf0ca5055970aa7a356feaf6a1756b7e6d10016214d",
+        "buildId": "monitor-qa2-20260916-r6"
+      },
+      "failure": {
+        "jobId": "upd_2f40f3c4eede3a9c4b3cf90bf03f3169",
+        "requestedAt": "2026-09-16T16:37:11Z",
+        "completedAt": "2026-09-16T16:37:12Z",
+        "phase": "FAILED",
+        "trigger": "Versioned HTTPS fixture truncates .deb after1048576bytes",
+        "ui": "Single localized error; Check/Update/Rollback enabled; close/reopen preserved error; no automatic reload on failure"
+      },
+      "retry": {
+        "jobId": "upd_8296003875315dd91f7120bc34064418",
+        "requestedAt": "2026-09-16T16:38:10Z",
+        "completedAt": "2026-09-16T16:40:48Z",
+        "phase": "COMPLETED",
+        "triggerReset": "Healthy HTTPS source restarted; explicit UI Update once; same signed target as failed job",
+        "trace": "monitor-r6-retry-upgrade.json",
+        "monitorResponses": 208,
+        "timeOrigins": [
+          1789576495705.3,
+          1789576849337.2
+        ],
+        "autoReload": "PASS actual QA2 r6 document loaded after100%; no manual reload; reopen leaves Rollback enabled/Update hidden"
+      },
+      "rollback": {
+        "jobId": "upd_a7e82b8179934136ba1cc9a8557729b3",
+        "requestedAt": "2026-09-16T16:42:14Z",
+        "completedAt": "2026-09-16T16:45:04Z",
+        "phase": "COMPLETED",
+        "trace": "monitor-r6-auto-rollback.json",
+        "monitorResponses": 224,
+        "timeOrigins": [
+          1789576849337.2,
+          1789577105174.4
+        ],
+        "autoReload": "PASS actual QA1 r6 document loaded after100%; no manual reload. Reopen required ordinary scrolling to retained tile position; no reload loop.",
+        "preservation": "PASS unchanged collections/object controls; no restore. Cache-miss proof belongs r5, r6 previous installer was retained because prior diagnostic command stopped before removal."
+      }
+    },
+    "configurationMigration": {
+      "defect": "Configuration503 because retained singleton schema3 while current API requires4. Not a TLS/authentication failure.",
+      "repair": "Packaged migration004 changes only schemaVersion and optimistic document version, before API startup in both systemd and update worker; preserves other fields.",
+      "tests": "PASS isolated real Mongo retained opaque values, idempotency, unsupported schema rejection and empty DB; restart order/image selection regression PASS.",
+      "native": {
+        "status": "PASS",
+        "jobId": "upd_bd07f08979361e1206785f1c95e7b5c7",
+        "completedAt": "2026-09-16T16:58:47Z",
+        "artifactSha256": "a0c69058a2287ef018151cf01d2cccb3d2eb2c380af4cefe316e6822dcecad03",
+        "buildId": "monitor-qa2-20260916-r6",
+        "package": "monitor-qa2-20260916-r7",
+        "trace": "monitor-r7-migration-upgrade.json",
+        "monitorResponses": 210,
+        "autoReloadTimeOrigin": 1789577928648,
+        "preservation": "verify-schema4 PASS; exact planned configuration hash 65a85d134b80a38eb05dd1b0594e103fd6a1ff29eb0cb78cf9160c7a736cfe26; all other collection/object hashes and five file controls unchanged",
+        "configurationUI": "Loaded fully after normal Apply; prior503 resolved",
+        "rollback": "Not repeated per user instruction; prior r5/r6 proof retained"
+      }
+    },
+    "managedHttps": {
+      "status": "PASS_AFTER_PACKAGED_R8_FIX",
+      "firstJob": "tls_8aa85fb92b7cc010e40f56ba2a26d870",
+      "workerCompletedAt": "2026-09-16T17:00:36Z",
+      "transport": "PASS actual qa.localhost certificate verified via curl/openssl with explicit QA CA and hostname; browser ignores cert errors and is not trust evidence",
+      "certificateDerSha256": "8377352c6cb9f4a1b30a7cbf0603b544917cc02000115dccc88b06a1403b6ac6",
+      "defect": "prepare_directories reset runtime mount0750 to0700; API UID10001 could not traverse it, causing job404/default configuration despite worker completion",
+      "repair": "Runtime0750 owned worker:API group, private directories remain0700. Focused TLS worker suite PASS. QA2 r8 normal packaging in progress.",
+      "cleanup": "PASS second versioned TLS reset; original five configuration/TLS/key hashes restored; Operator access and GET TLS200 AVAILABLE enabledfalse domainempty. verify-schema4 passed before deleting only QA-owned Mongo/MinIO controls. Release-source fixture reset, source server stopped, API recreated with default GitHub settings; all containers healthy.",
+      "verifiedRepair": {
+        "package": "monitor-qa2-20260916-r8",
+        "artifactSha256": "29c404680876568dbd7d40fd4b85422acc8e59e4f2824feb24ff662eb4203444",
+        "installation": "Normal signed same-version package install and packaged host qualification PASS; no direct deployed-script patch",
+        "jobId": "tls_95a2fb42967d1ca619fbcc7c2e8220d9",
+        "completedAt": "2026-09-16T17:11:06Z",
+        "api": "GET job200 COMPLETED100; configuration AVAILABLE enabled MANUAL qa.localhost; runtime0750 root:10001 readable by API",
+        "ui": "Native Configure HTTPS once, successful result without timeout; close/reopen retains domain/manual mode/configured certificate; secret input lengths0/0",
+        "certificateDerSha256": "5d1fae1a06c9fd286375645eed55c288af16cf6f193b9d6dd4817e8b60dfc28b",
+        "transport": "curl and openssl verify-return-error passed with explicit CA and qa.localhost hostname. Actual managed browser opened https://qa.localhost landing/build. Browser ignores certificate errors; external validation is trust evidence."
+      }
+    }
+  },
+  "closure": {
+    "date": "2026-09-16",
+    "coverage": "Blocks1\u20135 proven across current-source r5/r6; block6 and migration proven r7/r8. User prohibited further rollback replay.",
+    "finalRuntime": "Healthy QA2 r8, frontend build monitor-qa2-20260916-r6, dev stopped",
+    "limits": [
+      "Local signed release emulation; not new GitHub end-to-end qualification",
+      "Manual TLS with QA CA; not public ACME issuance",
+      "Empty Event/Asset collections; no populated domain migration claim",
+      "No additional rollback after migration004 per user instruction; current-source QA1 schema4 compatibility established from source, earlier rollback runtime proof retained",
+      "Green/orange version badge change is source-only, not included in r8 frontend"
+    ],
+    "tests": [
+      "TLS worker regression PASS",
+      "Numeric ownership policy PASS",
+      "Native TLS save/reopen/trusted transport/reset PASS",
+      "Native migration and planned preservation hashes PASS"
+    ]
+  }
+}

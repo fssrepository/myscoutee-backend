@@ -885,6 +885,73 @@ class RegistryOperatorNetworkServiceTest {
     }
 
     @Test
+    void reconnectDoesNotRestoreWithdrawnClaimOrReusePreviousDeactivation()
+            throws Exception {
+        ObjectMapper objectMapper = new JsonConfig().objectMapper();
+        try (TestOperatorRegistry registry = new TestOperatorRegistry(objectMapper)) {
+            RegistryProperties properties = registeredProperties(registry, objectMapper);
+            RegistryLocalStore store = new RegistryLocalStore(properties, objectMapper);
+            RegistryOperatorNetworkService service =
+                    new RegistryOperatorNetworkService(properties, objectMapper);
+            ActionCommand claim = structuredClaim("Reconnect Cooperative");
+            String originalClaimKey = service.apply(claim).idempotencyKey();
+            ActionCommand deactivate = new ActionCommand(
+                    RegistryProtocol.OPERATOR_ACTION_DEACTIVATE_DEPLOYMENT,
+                    null, null, null, null, null, null, null);
+            var previousDeactivation = service.apply(deactivate);
+            LocalState previous = store.load().orElseThrow();
+            var archive = store.archiveActiveBinding(
+                    new RegistryLocalStore.BindingArchiveRequest(
+                            properties.getBaseUrl(), SCOPE, registry.registryKeyId,
+                            registry.registryFingerprint, DEPLOYMENT_ID,
+                            previousDeactivation.response().receipt(),
+                            "2026-07-28T00:00:10Z", "qa-operator"));
+            Instant reconnectedAt = Instant.parse("2026-07-28T00:00:11Z");
+            LocalState fresh = store.createInitial(
+                    previous.publicKeyFingerprint(), SCOPE, "test-v1",
+                    new java.security.SecureRandom(), reconnectedAt);
+            store.save(fresh.withRegistration(previous.registration().receipt(),
+                    registry.registryFingerprint, reconnectedAt));
+            service = new RegistryOperatorNetworkService(properties, objectMapper);
+
+            var status = service.claimStatus();
+            assertThat(status.claimed()).isFalse();
+            assertThat(status.verificationStatus()).isEqualTo("NOT_SUBMITTED");
+            assertThat(store.loadOperatorActionJournal()).isEmpty();
+            assertThat(store.loadOperatorClaimStatusEvidence()).isEmpty();
+            assertThat(archive.archiveDirectory()).isDirectory();
+
+            registry.tamperClaimStatus = true;
+            RegistryOperatorNetworkService reconnected = service;
+            assertThatThrownBy(reconnected::claimStatus)
+                    .isInstanceOf(IllegalArgumentException.class);
+            registry.tamperClaimStatus = false;
+            registry.withdrawnClaimStatus = false;
+            registry.approvedClaimStatus = true;
+            assertThatThrownBy(reconnected::claimStatus)
+                    .isInstanceOf(IllegalArgumentException.class)
+                    .hasMessageContaining("without a durable local claim receipt");
+            registry.withdrawnClaimStatus = true;
+            registry.approvedClaimStatus = false;
+
+            service.activateReconnectedDeployment();
+            service.activateReconnectedDeployment();
+            assertThat(store.loadOperatorActionJournal()).hasSize(1);
+            assertThat(store.loadOperatorActionJournal().getFirst().action())
+                    .isEqualTo(RegistryProtocol.OPERATOR_ACTION_REACTIVATE_DEPLOYMENT);
+            assertThat(service.claimStatus().claimed()).isFalse();
+            String freshClaimKey = service.apply(claim).idempotencyKey();
+            assertThat(freshClaimKey).isNotEqualTo(originalClaimKey);
+            var freshDeactivation = service.apply(deactivate);
+            assertThat(freshDeactivation.idempotencyKey())
+                    .isNotEqualTo(previousDeactivation.idempotencyKey());
+            assertThat(service.apply(deactivate).idempotencyKey())
+                    .isEqualTo(freshDeactivation.idempotencyKey());
+            registry.assertHealthy();
+        }
+    }
+
+    @Test
     void sameClaimPayloadAfterWithdrawalStartsANewIdempotencyGeneration()
             throws Exception {
         ObjectMapper objectMapper = new JsonConfig().objectMapper();

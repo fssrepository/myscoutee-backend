@@ -53,6 +53,7 @@ public class DeploymentConfigurationController {
                 configuration.themePreset(),
                 configuration.revision(),
                 paymentProviderId,
+                configuration.firebaseMessagingConfigured(),
                 configuration.socialLinks(),
                 configuration.privacyContact());
     }

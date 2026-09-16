@@ -18042,6 +18042,24 @@
     "value": "Check for updates"
   },
   {
+    "_id": "i18n-message-en-operator-update-rollback",
+    "key": "operator.update.rollback",
+    "lang": "en",
+    "value": "Roll back deployment"
+  },
+  {
+    "_id": "i18n-message-en-operator-update-rollingback",
+    "key": "operator.update.rollingback",
+    "lang": "en",
+    "value": "Rolling back deployment…"
+  },
+  {
+    "_id": "i18n-message-en-operator-update-error-rollback-unavailable",
+    "key": "operator.update.error.rollback.unavailable",
+    "lang": "en",
+    "value": "The previous verified package is unavailable. Check the release source before retrying."
+  },
+  {
     "_id": "i18n-message-en-operator-update-apply",
     "key": "operator.update.apply",
     "lang": "en",
@@ -18106,6 +18124,30 @@
     "key": "operator.update.phase.failed",
     "lang": "en",
     "value": "Update failed"
+  },
+  {
+    "_id": "i18n-message-en-operator-update-error-check",
+    "key": "operator.update.error.check",
+    "lang": "en",
+    "value": "Could not check for updates. Please try again."
+  },
+  {
+    "_id": "i18n-message-en-operator-update-error-start",
+    "key": "operator.update.error.start",
+    "lang": "en",
+    "value": "Could not confirm the update request. Check its status before trying again."
+  },
+  {
+    "_id": "i18n-message-en-operator-update-error-status",
+    "key": "operator.update.error.status",
+    "lang": "en",
+    "value": "Could not read update progress. Check the deployment status before trying again."
+  },
+  {
+    "_id": "i18n-message-en-operator-update-error-status-timeout",
+    "key": "operator.update.error.status.timeout",
+    "lang": "en",
+    "value": "Timed out waiting for update progress. The update may still be running. Reopen Updates to check its status."
   },
   {
     "_id": "i18n-message-en-operator-update-error-failed",
@@ -18195,7 +18237,7 @@
     "_id": "i18n-message-en-operator-claim-path-client-code",
     "key": "operator.claim.path.client.code",
     "lang": "en",
-    "value": "Client code"
+    "value": "Use client code"
   },
   {
     "_id": "i18n-message-en-operator-claim-path-client-code-description",
@@ -18382,6 +18424,12 @@
     "key": "operator.claim.client.code",
     "lang": "en",
     "value": "Client code"
+  },
+  {
+    "_id": "i18n-message-en-operator-claim-client-code-create",
+    "key": "operator.claim.client.code.create",
+    "lang": "en",
+    "value": "Create client code"
   },
   {
     "_id": "i18n-message-en-operator-claim-client-code-dialog-title",
@@ -20500,6 +20548,78 @@
     "key": "Profile set to inactive.",
     "lang": "en",
     "value": "Profile set to inactive."
+  },
+  {
+    "_id": "i18n-message-en-landing-supported-countries",
+    "key": "landing.supported.countries",
+    "lang": "en",
+    "value": "Supported countries"
+  },
+  {
+    "_id": "i18n-message-en-landing-supported-countries-empty",
+    "key": "landing.supported.countries.empty",
+    "lang": "en",
+    "value": "No countries are currently listed."
+  },
+  {
+    "_id": "i18n-message-en-operator-update-error-metadata",
+    "key": "operator.update.error.metadata",
+    "lang": "en",
+    "value": "This release has no signed update information yet."
+  },
+  {
+    "_id": "i18n-message-en-operator-update-error-key",
+    "key": "operator.update.error.key",
+    "lang": "en",
+    "value": "The trusted update signing key is not configured."
+  },
+  {
+    "_id": "i18n-message-en-loading",
+    "key": "loading",
+    "lang": "en",
+    "value": "Loading…"
+  },
+  {
+    "_id": "i18n-message-en-operator-update-phase-configuring-package",
+    "key": "operator.update.phase.configuring_package",
+    "lang": "en",
+    "value": "Configuring package"
+  },
+  {
+    "_id": "i18n-message-en-operator-update-phase-loading-images",
+    "key": "operator.update.phase.loading_images",
+    "lang": "en",
+    "value": "Loading application images"
+  },
+  {
+    "_id": "i18n-message-en-operator-update-phase-verifying-images",
+    "key": "operator.update.phase.verifying_images",
+    "lang": "en",
+    "value": "Verifying application images"
+  },
+  {
+    "_id": "i18n-message-en-operator-update-phase-preparing-data",
+    "key": "operator.update.phase.preparing_data",
+    "lang": "en",
+    "value": "Preparing built-in data"
+  },
+  {
+    "_id": "i18n-message-en-operator-update-phase-starting-services",
+    "key": "operator.update.phase.starting_services",
+    "lang": "en",
+    "value": "Starting services"
+  },
+  {
+    "_id": "i18n-message-en-operator-update-phase-waiting-for-health",
+    "key": "operator.update.phase.waiting_for_health",
+    "lang": "en",
+    "value": "Waiting for application readiness"
+  },
+  {
+    "_id": "i18n-message-en-operator-update-phase-switching-ingress",
+    "key": "operator.update.phase.switching_ingress",
+    "lang": "en",
+    "value": "Switching web server"
   },
   {
     "_id": "i18n-message-hu-unavailable-here",
@@ -38544,6 +38664,24 @@
     "value": "Frissítések keresése"
   },
   {
+    "_id": "i18n-message-hu-operator-update-rollback",
+    "key": "operator.update.rollback",
+    "lang": "hu",
+    "value": "Előző verzió visszaállítása"
+  },
+  {
+    "_id": "i18n-message-hu-operator-update-rollingback",
+    "key": "operator.update.rollingback",
+    "lang": "hu",
+    "value": "Előző verzió visszaállítása…"
+  },
+  {
+    "_id": "i18n-message-hu-operator-update-error-rollback-unavailable",
+    "key": "operator.update.error.rollback.unavailable",
+    "lang": "hu",
+    "value": "A korábbi ellenőrzött csomag nem érhető el. Újrapróbálás előtt ellenőrizd a kiadások forrását."
+  },
+  {
     "_id": "i18n-message-hu-operator-update-apply",
     "key": "operator.update.apply",
     "lang": "hu",
@@ -38608,6 +38746,30 @@
     "key": "operator.update.phase.failed",
     "lang": "hu",
     "value": "A frissítés sikertelen"
+  },
+  {
+    "_id": "i18n-message-hu-operator-update-error-check",
+    "key": "operator.update.error.check",
+    "lang": "hu",
+    "value": "Nem sikerült ellenőrizni a frissítéseket. Próbáld újra."
+  },
+  {
+    "_id": "i18n-message-hu-operator-update-error-start",
+    "key": "operator.update.error.start",
+    "lang": "hu",
+    "value": "Nem sikerült megerősíteni a frissítési kérést. Újabb próbálkozás előtt ellenőrizd az állapotát."
+  },
+  {
+    "_id": "i18n-message-hu-operator-update-error-status",
+    "key": "operator.update.error.status",
+    "lang": "hu",
+    "value": "Nem sikerült lekérni a frissítés állapotát. Újabb próbálkozás előtt ellenőrizd a telepítés állapotát."
+  },
+  {
+    "_id": "i18n-message-hu-operator-update-error-status-timeout",
+    "key": "operator.update.error.status.timeout",
+    "lang": "hu",
+    "value": "A frissítés állapotára várva lejárt az idő. A frissítés még folyamatban lehet. Nyisd meg újra a Frissítések ablakot az állapot ellenőrzéséhez."
   },
   {
     "_id": "i18n-message-hu-operator-update-error-failed",
@@ -38697,7 +38859,7 @@
     "_id": "i18n-message-hu-operator-claim-path-client-code",
     "key": "operator.claim.path.client.code",
     "lang": "hu",
-    "value": "Klienskód"
+    "value": "Klienskód használata"
   },
   {
     "_id": "i18n-message-hu-operator-claim-path-client-code-description",
@@ -38884,6 +39046,12 @@
     "key": "operator.claim.client.code",
     "lang": "hu",
     "value": "Klienskód"
+  },
+  {
+    "_id": "i18n-message-hu-operator-claim-client-code-create",
+    "key": "operator.claim.client.code.create",
+    "lang": "hu",
+    "value": "Klienskód létrehozása"
   },
   {
     "_id": "i18n-message-hu-operator-claim-client-code-dialog-title",
@@ -41002,5 +41170,101 @@
     "key": "Profile set to inactive.",
     "lang": "hu",
     "value": "A profil inaktívra állítva."
+  },
+  {
+    "_id": "i18n-message-hu-landing-supported-countries",
+    "key": "landing.supported.countries",
+    "lang": "hu",
+    "value": "Támogatott országok"
+  },
+  {
+    "_id": "i18n-message-hu-landing-supported-countries-empty",
+    "key": "landing.supported.countries.empty",
+    "lang": "hu",
+    "value": "Jelenleg nincs felsorolt ország."
+  },
+  {
+    "_id": "i18n-message-hu-operator-update-error-metadata",
+    "key": "operator.update.error.metadata",
+    "lang": "hu",
+    "value": "Ehhez a kiadáshoz még nincs aláírt frissítési információ."
+  },
+  {
+    "_id": "i18n-message-hu-operator-update-error-key",
+    "key": "operator.update.error.key",
+    "lang": "hu",
+    "value": "A frissítések megbízható aláírókulcsa nincs beállítva."
+  },
+  {
+    "_id": "i18n-message-hu-loading",
+    "key": "loading",
+    "lang": "hu",
+    "value": "Betöltés…"
+  },
+  {
+    "_id": "i18n-message-hu-operator-update-phase-configuring-package",
+    "key": "operator.update.phase.configuring_package",
+    "lang": "hu",
+    "value": "Csomag beállítása"
+  },
+  {
+    "_id": "i18n-message-hu-operator-update-phase-loading-images",
+    "key": "operator.update.phase.loading_images",
+    "lang": "hu",
+    "value": "Alkalmazásképek betöltése"
+  },
+  {
+    "_id": "i18n-message-hu-operator-update-phase-verifying-images",
+    "key": "operator.update.phase.verifying_images",
+    "lang": "hu",
+    "value": "Alkalmazásképek ellenőrzése"
+  },
+  {
+    "_id": "i18n-message-hu-operator-update-phase-preparing-data",
+    "key": "operator.update.phase.preparing_data",
+    "lang": "hu",
+    "value": "Beépített adatok előkészítése"
+  },
+  {
+    "_id": "i18n-message-hu-operator-update-phase-starting-services",
+    "key": "operator.update.phase.starting_services",
+    "lang": "hu",
+    "value": "Szolgáltatások indítása"
+  },
+  {
+    "_id": "i18n-message-hu-operator-update-phase-waiting-for-health",
+    "key": "operator.update.phase.waiting_for_health",
+    "lang": "hu",
+    "value": "Várakozás az alkalmazás indulására"
+  },
+  {
+    "_id": "i18n-message-hu-operator-update-phase-switching-ingress",
+    "key": "operator.update.phase.switching_ingress",
+    "lang": "hu",
+    "value": "Webszerver átváltása"
+  },
+  {
+    "_id": "i18n-message-en-entry-permissions-notifications-failed",
+    "key": "entry.permissions.notifications.failed",
+    "lang": "en",
+    "value": "Could not save notification settings. Check your connection and try again."
+  },
+  {
+    "_id": "i18n-message-hu-entry-permissions-notifications-failed",
+    "key": "entry.permissions.notifications.failed",
+    "lang": "hu",
+    "value": "Nem sikerült menteni az értesítési beállításokat. Ellenőrizd a kapcsolatot, majd próbáld újra."
+  },
+  {
+    "_id": "i18n-message-en-operator-community-error-registration-required",
+    "key": "operator.community.error.registration.required",
+    "lang": "en",
+    "value": "Register this deployment to view community announcements."
+  },
+  {
+    "_id": "i18n-message-hu-operator-community-error-registration-required",
+    "key": "operator.community.error.registration.required",
+    "lang": "hu",
+    "value": "A közösségi közlemények megtekintéséhez regisztráld ezt a telepítést."
   }
 ]

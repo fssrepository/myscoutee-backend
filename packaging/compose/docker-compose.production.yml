@@ -28,6 +28,7 @@ services:
       - ./data/certbot/conf:/etc/letsencrypt
       - ./data/certbot/www:/var/www/certbot
       - /etc/localtime:/etc/localtime:ro
+      - /run/myscoutee-update-status:/run/myscoutee-update-status:ro
     networks:
       - myscoutee
     depends_on:
@@ -42,6 +43,8 @@ services:
       interval: 30s
       timeout: 5s
       retries: 5
+      # Probe promptly during startup; keep the steady-state interval unchanged.
+      start_interval: 2s
       start_period: 20s
 
   mongodb:
@@ -69,6 +72,8 @@ services:
       interval: 10s
       timeout: 10s
       retries: 30
+      # Probe promptly during startup; keep the steady-state interval unchanged.
+      start_interval: 2s
       start_period: 60s
 
   redis:
@@ -87,6 +92,8 @@ services:
       interval: 30s
       timeout: 5s
       retries: 5
+      # Probe promptly during startup; keep the steady-state interval unchanged.
+      start_interval: 2s
       start_period: 10s
 
   minio:
@@ -112,6 +119,8 @@ services:
       interval: 30s
       timeout: 5s
       retries: 5
+      # Probe promptly during startup; keep the steady-state interval unchanged.
+      start_interval: 2s
       start_period: 20s
 
   profilemanagement:
@@ -182,6 +191,12 @@ services:
       PAYMENT_BARION_TEST_GATEWAY_ENABLED: "true"
       OPERATOR_UPDATE_ENABLED: "${MYSCOUTEE_UPDATE_ENABLED:-false}"
       OPERATOR_UPDATE_STATE_DIR: "/var/lib/myscoutee/update"
+      OPERATOR_UPDATE_MONITOR_ENABLED: "true"
+      OPERATOR_UPDATE_TLS_CA_CERTIFICATE: "${MYSCOUTEE_UPDATE_TLS_CA_CERTIFICATE:-}"
+      OPERATOR_UPDATE_RELEASE_API_ORIGIN: "${MYSCOUTEE_UPDATE_RELEASE_API_ORIGIN:-https://api.github.com}"
+      OPERATOR_UPDATE_RELEASE_DOWNLOAD_ORIGIN: "${MYSCOUTEE_UPDATE_RELEASE_DOWNLOAD_ORIGIN:-https://github.com}"
+      OPERATOR_UPDATE_GITHUB_REPOSITORY: "${MYSCOUTEE_UPDATE_GITHUB_REPOSITORY:-fssrepository/myscoutee}"
+      OPERATOR_UPDATE_INCLUDE_PRERELEASES: "${MYSCOUTEE_UPDATE_INCLUDE_PRERELEASES:-false}"
       OPERATOR_UPDATE_RELEASE_PUBLIC_KEY_PATH: "${MYSCOUTEE_UPDATE_RELEASE_PUBLIC_KEY:-/etc/myscoutee/update/release-public-key.pem}"
       OPERATOR_UPDATE_MAX_ARTIFACT_BYTES: "${MYSCOUTEE_UPDATE_MAX_ARTIFACT_BYTES:-4294967296}"
       OPERATOR_UPDATE_STAGING_SAFETY_RESERVE_BYTES: "${MYSCOUTEE_UPDATE_STAGING_SAFETY_RESERVE_BYTES:-536870912}"
@@ -199,6 +214,7 @@ services:
       - registry-demo-client-data:/var/lib/myscoutee/registry-demo
       - /var/lib/myscoutee/update/inbox/staging:/var/lib/myscoutee/update/staging:rw
       - /var/lib/myscoutee/update/inbox/requests:/var/lib/myscoutee/update/requests:rw
+      - /var/lib/myscoutee/update/runtime:/var/lib/myscoutee/update/runtime:ro
       - /var/lib/myscoutee/update/runtime/jobs:/var/lib/myscoutee/update/jobs:ro
       - /etc/myscoutee/update:/etc/myscoutee/update:ro
       - /var/lib/myscoutee/tls/inbox/requests:/var/lib/myscoutee/tls/inbox/requests:rw
@@ -222,6 +238,8 @@ services:
       interval: 10s
       timeout: 5s
       retries: 30
+      # Probe promptly during startup; keep the steady-state interval unchanged.
+      start_interval: 2s
       start_period: 90s
 
   # Explore-only registry. It is an internal dependency, has a dedicated
@@ -257,6 +275,8 @@ services:
       interval: 10s
       timeout: 3s
       retries: 10
+      # Probe promptly during startup; keep the steady-state interval unchanged.
+      start_interval: 2s
       start_period: 5s
     stop_grace_period: 15s
 
@@ -295,6 +315,8 @@ services:
       interval: 10s
       timeout: 3s
       retries: 10
+      # Probe promptly during startup; keep the steady-state interval unchanged.
+      start_interval: 2s
       start_period: 5s
     stop_grace_period: 15s
 

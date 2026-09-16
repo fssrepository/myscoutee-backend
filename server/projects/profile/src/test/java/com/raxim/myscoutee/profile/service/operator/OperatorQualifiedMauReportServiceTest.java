@@ -65,6 +65,27 @@ class OperatorQualifiedMauReportServiceTest {
     }
 
     @Test
+    void synchronizationFailureDoesNotExposeInternalExceptionDetails() {
+        OperatorRevenueRegistryRuntimeResolver resolver =
+                mock(OperatorRevenueRegistryRuntimeResolver.class);
+        OperatorQualifiedMauCalculator calculator =
+                mock(OperatorQualifiedMauCalculator.class);
+        QualifiedMauReportOutboxRepository outbox =
+                mock(QualifiedMauReportOutboxRepository.class);
+        when(resolver.resolveMau(MongoSessionMode.REAL)).thenThrow(
+                new IllegalStateException(
+                        "MongoDB internal-host:27017: private database diagnostics"));
+        MongoSessionModeContext.set(MongoSessionMode.REAL);
+
+        var result = service(resolver, calculator, outbox).synchronizeNow();
+
+        assertThat(result.state()).isEqualTo("ERROR");
+        assertThat(result.code()).isEqualTo("MEASUREMENT_SYNCHRONIZATION_FAILED");
+        assertThat(result.message()).isEqualTo("operator.measurements.error.synchronize");
+        verifyNoInteractions(calculator, outbox);
+    }
+
+    @Test
     void demoSynchronizationUsesDemoRuntimeAndMaterializesSixCompletedMonths() {
         OperatorRevenueRegistryRuntimeResolver resolver =
                 mock(OperatorRevenueRegistryRuntimeResolver.class);

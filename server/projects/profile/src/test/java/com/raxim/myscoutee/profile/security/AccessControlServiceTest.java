@@ -100,6 +100,14 @@ class AccessControlServiceTest {
     }
 
     @Test
+    void productionWithoutFirebaseStillRequiresAnAuthenticatedActor() {
+        configProperties.setFirebaseEnabled(false);
+        configProperties.setMemberUser("");
+        assertThat(service.requiresAuthenticatedActor()).isTrue();
+        assertThat(service.canCurrentActorCreateChatMessage("victim", "chat-1")).isFalse();
+    }
+
+    @Test
     void allowsAuthenticatedParticipantToSubmitOwnEventResourceAssignment() {
         boolean allowed = service.canSubmitEventResourceAssignment(auth("u1"), request("event-1", "sub-1", "u1"));
 
@@ -534,6 +542,8 @@ class AccessControlServiceTest {
     @Test
     void assetOwnerPoliciesRequireCurrentActorToMatchRequestUser() {
         authenticateAs("u1");
+        when(assetsRepository.findByAssetId("asset-1"))
+                .thenReturn(Optional.of(asset("asset-1", "u1", "A")));
 
         assertThat(service.canCurrentActorCreateAsset("u1", "asset-1")).isTrue();
         assertThat(service.canCurrentActorReplaceAssets("u1")).isTrue();
@@ -541,6 +551,17 @@ class AccessControlServiceTest {
         assertThat(service.canCurrentActorDeleteAsset("u1", "asset-1")).isTrue();
         assertThat(service.canCurrentActorRestoreAsset("u1", "asset-1")).isTrue();
         assertThat(service.canCurrentActorDeleteAsset("u2", "asset-1")).isFalse();
+    }
+
+    @Test
+    void matchingCallerIdDoesNotAuthorizeMutatingAnotherUsersAsset() {
+        authenticateAs("u1");
+        when(assetsRepository.findByAssetId("asset-2"))
+                .thenReturn(Optional.of(asset("asset-2", "u2", "A")));
+
+        assertThat(service.canCurrentActorEditAsset("u1", "asset-2")).isFalse();
+        assertThat(service.canCurrentActorDeleteAsset("u1", "asset-2")).isFalse();
+        assertThat(service.canCurrentActorRestoreAsset("u1", "asset-2")).isFalse();
     }
 
     @Test

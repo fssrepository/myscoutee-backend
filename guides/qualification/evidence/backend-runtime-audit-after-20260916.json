@@ -1,0 +1,6 @@
+{
+  "scope": "resolved runtimeClasspath after security patches",
+  "scanned": 263,
+  "findings": [],
+  "checkedAtUtc": "2026-09-16T20:49:06.655930+00:00"
+}

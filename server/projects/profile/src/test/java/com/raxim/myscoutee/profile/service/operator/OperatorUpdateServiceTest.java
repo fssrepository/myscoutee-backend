@@ -31,6 +31,8 @@ import java.util.function.LongConsumer;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.web.server.ResponseStatusException;
 
 import com.raxim.myscoutee.common.config.JsonConfig;
@@ -70,28 +72,25 @@ class OperatorUpdateServiceTest {
         MongoSessionModeContext.clear();
     }
 
-    @Test
-    void stagesVerifiedArtifactPublishesExactRequestAndPrefersWorkerStatus()
+    @ParameterizedTest
+    @ValueSource(strings = {"1.2.3", "1.0.0-qa.3"})
+    void stagesVerifiedArtifactPublishesExactRequestAndPrefersWorkerStatus(String targetVersion)
             throws Exception {
         byte[] artifact = "signed-debian-package".getBytes(StandardCharsets.UTF_8);
         String artifactHash = "sha256:" + java.util.HexFormat.of().formatHex(
                 MessageDigest.getInstance("SHA-256").digest(artifact));
         ObjectMapper objectMapper = new JsonConfig().objectMapper();
-        OperatorNetworkService networkService = mock(OperatorNetworkService.class);
+        OperatorUpdateReleaseService networkService = mock(OperatorUpdateReleaseService.class);
         OperatorUpdateArtifactDownloader downloader =
                 mock(OperatorUpdateArtifactDownloader.class);
         OperatorUpdateProperties properties = updateProperties();
+        properties.setMonitorEnabled(true);
         RegistryProperties registryProperties = registryProperties(properties);
+        registryProperties.setSoftwareVersion("1.0.0-qa.1");
         OperatorAnnouncementPageDto announcements =
-                announcementPage(artifact.length, artifactHash, true);
-        when(networkService.announcements(
-                        "UPDATE",
-                        "",
-                        "",
-                        false,
-                        100,
-                        ""))
-                .thenReturn(announcements);
+                announcementPage(artifact.length, artifactHash, true, targetVersion);
+        when(networkService.find(ANNOUNCEMENT_ID))
+                .thenReturn(announcements.items().getFirst());
         doAnswer(invocation -> {
             Path target = invocation.getArgument(1);
             Files.write(
@@ -122,6 +121,14 @@ class OperatorUpdateServiceTest {
             OperatorUpdateJobDto initial = service.approve(
                     new OperatorUpdateApprovalDto(ANNOUNCEMENT_ID),
                     "operator-user-1");
+            assertThat(initial.monitorToken()).matches("[0-9a-f]{64}");
+            Path monitor = properties.getStateDir().resolve("staging").resolve(initial.jobId()).resolve("monitor.json");
+            JsonNode grant = objectMapper.readTree(monitor.toFile());
+            assertThat(grant.path("jobId").asText()).isEqualTo(initial.jobId());
+            assertThat(grant.path("tokenSha256").asText()).isEqualTo(java.util.HexFormat.of().formatHex(
+                    MessageDigest.getInstance("SHA-256").digest(initial.monitorToken().getBytes(StandardCharsets.US_ASCII))));
+            assertThat(grant.path("expiresAt").asLong()).isEqualTo(NOW.plusSeconds(3600).getEpochSecond());
+            assertThat(Files.readString(monitor)).doesNotContain(initial.monitorToken());
             assertThat(initial.phase()).isEqualTo("CHECKING");
             assertThat(initial.jobId()).matches("^upd_[0-9a-f]{32}$");
 
@@ -132,6 +139,7 @@ class OperatorUpdateServiceTest {
                     .untilAsserted(() -> assertThat(request).isRegularFile());
 
             JsonNode requestJson = objectMapper.readTree(request.toFile());
+            assertThat(requestJson.path("release_version").asText()).isEqualTo(targetVersion);
             assertThat(requestJson.path("schema_version").asInt()).isEqualTo(1);
             assertThat(requestJson.path("job_id").asText())
                     .isEqualTo(initial.jobId());
@@ -164,6 +172,7 @@ class OperatorUpdateServiceTest {
             await().atMost(Duration.ofSeconds(5)).untilAsserted(() ->
                     assertThat(service.status(initial.jobId()).phase())
                             .isEqualTo("AWAITING_HOST"));
+            assertThat(service.status(initial.jobId()).monitorToken()).isNull();
             assertThat(service.events(initial.jobId(), 0L, 100).items())
                     .extracting(event -> event.status().phase())
                     .containsSubsequence(
@@ -205,22 +214,16 @@ class OperatorUpdateServiceTest {
     @Test
     void refusesManifestWithoutPinnedPackageVerificationBeforeDownload() {
         ObjectMapper objectMapper = new JsonConfig().objectMapper();
-        OperatorNetworkService networkService = mock(OperatorNetworkService.class);
+        OperatorUpdateReleaseService networkService = mock(OperatorUpdateReleaseService.class);
         OperatorUpdateArtifactDownloader downloader =
                 mock(OperatorUpdateArtifactDownloader.class);
         OperatorUpdateProperties properties = updateProperties();
         RegistryProperties registryProperties = registryProperties(properties);
-        when(networkService.announcements(
-                        "UPDATE",
-                        "",
-                        "",
-                        false,
-                        100,
-                        ""))
+        when(networkService.find(ANNOUNCEMENT_ID))
                 .thenReturn(announcementPage(
                         10,
                         "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
-                        false));
+                        false).items().getFirst());
         ExecutorService executor = Executors.newSingleThreadExecutor();
         OperatorUpdateService service = new OperatorUpdateService(
                 networkService,
@@ -253,7 +256,7 @@ class OperatorUpdateServiceTest {
     @Test
     void exploreModeCannotStageHostPackageUpdate() {
         MongoSessionModeContext.set(MongoSessionMode.DEMO);
-        OperatorNetworkService networkService = mock(OperatorNetworkService.class);
+        OperatorUpdateReleaseService networkService = mock(OperatorUpdateReleaseService.class);
         OperatorUpdateArtifactDownloader downloader =
                 mock(OperatorUpdateArtifactDownloader.class);
         OperatorUpdateProperties properties = updateProperties();
@@ -270,13 +273,7 @@ class OperatorUpdateServiceTest {
                     "demo-operator"))
                     .isInstanceOf(ResponseStatusException.class)
                     .hasMessageContaining("Explore mode");
-            verify(networkService, never()).announcements(
-                    any(),
-                    any(),
-                    any(),
-                    anyBoolean(),
-                    anyInt(),
-                    any());
+            verify(networkService, never()).find(any());
         } finally {
             service.closeExecutor();
         }
@@ -285,23 +282,17 @@ class OperatorUpdateServiceTest {
     @Test
     void refusesIncompatibleInstalledVersionBeforeAllocatingJob() {
         ObjectMapper objectMapper = new JsonConfig().objectMapper();
-        OperatorNetworkService networkService = mock(OperatorNetworkService.class);
+        OperatorUpdateReleaseService networkService = mock(OperatorUpdateReleaseService.class);
         OperatorUpdateArtifactDownloader downloader =
                 mock(OperatorUpdateArtifactDownloader.class);
         OperatorUpdateProperties properties = updateProperties();
         RegistryProperties registryProperties = registryProperties(properties);
         registryProperties.setSoftwareVersion("3.0.0");
-        when(networkService.announcements(
-                        "UPDATE",
-                        "",
-                        "",
-                        false,
-                        100,
-                        ""))
+        when(networkService.find(ANNOUNCEMENT_ID))
                 .thenReturn(announcementPage(
                         10,
                         "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
-                        true));
+                        true).items().getFirst());
         OperatorUpdateService service = new OperatorUpdateService(
                 networkService,
                 downloader,
@@ -324,22 +315,16 @@ class OperatorUpdateServiceTest {
     void requiresSignedArtifactSizePlusConfiguredStagingReserve()
             throws Exception {
         ObjectMapper objectMapper = new JsonConfig().objectMapper();
-        OperatorNetworkService networkService = mock(OperatorNetworkService.class);
+        OperatorUpdateReleaseService networkService = mock(OperatorUpdateReleaseService.class);
         OperatorUpdateArtifactDownloader downloader =
                 mock(OperatorUpdateArtifactDownloader.class);
         OperatorUpdateProperties properties = updateProperties();
         RegistryProperties registryProperties = registryProperties(properties);
-        when(networkService.announcements(
-                        "UPDATE",
-                        "",
-                        "",
-                        false,
-                        100,
-                        ""))
+        when(networkService.find(ANNOUNCEMENT_ID))
                 .thenReturn(announcementPage(
                         10,
                         "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
-                        true));
+                        true).items().getFirst());
         Files.createDirectories(properties.getStateDir().resolve("staging"));
         properties.setStagingSafetyReserveBytes(
                 Files.getFileStore(properties.getStateDir())
@@ -366,7 +351,7 @@ class OperatorUpdateServiceTest {
         OperatorUpdateProperties properties = updateProperties();
         properties.setEnabled(false);
         OperatorUpdateService service = new OperatorUpdateService(
-                mock(OperatorNetworkService.class),
+                mock(OperatorUpdateReleaseService.class),
                 mock(OperatorUpdateArtifactDownloader.class),
                 properties,
                 registryProperties(properties),
@@ -409,7 +394,7 @@ class OperatorUpdateServiceTest {
                 worker.resolve("status.json"),
                 objectMapper.writeValueAsBytes(workerStatus));
         OperatorUpdateService service = new OperatorUpdateService(
-                mock(OperatorNetworkService.class),
+                mock(OperatorUpdateReleaseService.class),
                 mock(OperatorUpdateArtifactDownloader.class),
                 properties,
                 registryProperties,
@@ -446,7 +431,7 @@ class OperatorUpdateServiceTest {
                 worker.resolve("events.ndjson"),
                 objectMapper.writeValueAsString(recovery) + "\n");
         OperatorUpdateService service = new OperatorUpdateService(
-                mock(OperatorNetworkService.class),
+                mock(OperatorUpdateReleaseService.class),
                 mock(OperatorUpdateArtifactDownloader.class),
                 properties,
                 registryProperties(properties),
@@ -465,7 +450,7 @@ class OperatorUpdateServiceTest {
         OperatorUpdateProperties properties = updateProperties();
         properties.setEnabled(false);
         OperatorUpdateService service = new OperatorUpdateService(
-                mock(OperatorNetworkService.class),
+                mock(OperatorUpdateReleaseService.class),
                 mock(OperatorUpdateArtifactDownloader.class),
                 properties,
                 registryProperties(properties),
@@ -479,6 +464,40 @@ class OperatorUpdateServiceTest {
         } finally {
             service.closeExecutor();
         }
+    }
+
+    @Test
+    void rollbackStagesOnlyTheExactRetainedPackageAndBindsTheWorkerRequest() throws Exception {
+        byte[] artifact = "retained-package".getBytes(StandardCharsets.UTF_8);
+        String hash = "sha256:" + java.util.HexFormat.of().formatHex(MessageDigest.getInstance("SHA-256").digest(artifact));
+        var properties = updateProperties();
+        var registry = registryProperties(properties);
+        registry.setSoftwareVersion("1.2.4");
+        Path receipt = properties.getStateDir().resolve("runtime/recovery.json");
+        Files.createDirectories(receipt.getParent());
+        String previousJob = "upd_12345678901234567890123456789012";
+        var mapper = new JsonConfig().objectMapper();
+        Files.writeString(receipt, mapper.writeValueAsString(java.util.Map.of(
+                "jobId", previousJob, "fromVersion", "1.2.4", "targetVersion", "1.2.3", "artifactSha256", hash)));
+        var releases = mock(OperatorUpdateReleaseService.class);
+        when(releases.findVersion("1.2.3")).thenReturn(announcementPage(artifact.length, hash, true, "1.2.3").items().getFirst());
+        var downloader = mock(OperatorUpdateArtifactDownloader.class);
+        doAnswer(invocation -> { Files.write((Path) invocation.getArgument(1), artifact); return null; })
+                .when(downloader).download(any(), any(), anyLong(), anyLong(), any());
+        var service = new OperatorUpdateService(releases, downloader, properties, registry, mapper);
+        try {
+            assertThat(service.overview().rollback().targetVersion()).isEqualTo("1.2.3");
+            assertThatThrownBy(() -> service.rollback("upd_00000000000000000000000000000000", "operator"))
+                    .isInstanceOf(ResponseStatusException.class);
+            when(releases.findVersion("1.2.3")).thenReturn(announcementPage(artifact.length, "sha256:" + "b".repeat(64), true, "1.2.3").items().getFirst());
+            assertThatThrownBy(() -> service.rollback(previousJob, "operator")).hasMessageContaining("package has changed");
+            when(releases.findVersion("1.2.3")).thenReturn(announcementPage(artifact.length, hash, true, "1.2.3").items().getFirst());
+            var job = service.rollback(previousJob, "operator");
+            Path request = properties.getStateDir().resolve("requests").resolve(job.jobId() + ".json");
+            await().atMost(Duration.ofSeconds(5)).untilAsserted(() -> assertThat(request).isRegularFile());
+            assertThat(mapper.readTree(request.toFile()).path("rollback_job_id").asText()).isEqualTo(previousJob);
+            assertThat(mapper.readTree(request.toFile()).path("artifact_sha256").asText()).isEqualTo(hash);
+        } finally { service.closeExecutor(); }
     }
 
     private OperatorUpdateJobDto durableStatus(
@@ -526,12 +545,17 @@ class OperatorUpdateServiceTest {
             long artifactSize,
             String artifactHash,
             boolean packageVerified) {
+        return announcementPage(artifactSize, artifactHash, packageVerified, "1.2.3");
+    }
+
+    private OperatorAnnouncementPageDto announcementPage(
+            long artifactSize, String artifactHash, boolean packageVerified, String version) {
         OperatorUpdateManifestDto manifest = new OperatorUpdateManifestDto(
                 RegistryProtocol.UPDATE_MANIFEST_VERSION,
-                "1.2.3",
+                version,
                 "stable.lts_1",
                 "2026-07-28T19:00:00Z",
-                "1.0.0",
+                "1.0.0-qa.1",
                 "2.0.0",
                 "https://downloads.example.test/myscoutee_1.2.3_amd64.deb",
                 artifactSize,

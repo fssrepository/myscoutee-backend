@@ -5,6 +5,7 @@
 from __future__ import annotations
 
 import io
+import hashlib
 import re
 import sys
 import zipfile
@@ -72,6 +73,13 @@ TEXT_KEY_EXTENSIONS = {
 NESTED_EXTENSIONS = {".jar", ".war", ".zip"}
 PUBLIC_TRUSTSTORE_PATHS = {
     "com/google/api/client/googleapis/google.jks",
+}
+# google-api-client 2.7.2: verified PKCS12 containing 70 trusted certificate
+# entries and no private keys. Pin the reviewed bytes; the filename alone
+# must never exempt an arbitrary PKCS12 credential from the audit.
+PUBLIC_TRUSTSTORE_SHA256 = {
+    "com/google/api/client/googleapis/google.p12":
+        "c98fba5f11f2f078ddf798fac0dcffa7e4a0ba1a9848e3e23f14210a506e827c",
 }
 
 
@@ -182,7 +190,10 @@ def audit_zip(
             if info.is_dir():
                 continue
             if FORBIDDEN_PATH.search(name) and name not in PUBLIC_TRUSTSTORE_PATHS:
-                raise ValueError(f"forbidden credential path in nested archive: {label}!/{name}")
+                approved_digest = PUBLIC_TRUSTSTORE_SHA256.get(name)
+                if (approved_digest is None or info.file_size > 1024 * 1024
+                        or hashlib.sha256(archive.read(info)).hexdigest() != approved_digest):
+                    raise ValueError(f"forbidden credential path in nested archive: {label}!/{name}")
 
             suffix = PurePosixPath(name).suffix.lower()
             if suffix in TEXT_KEY_EXTENSIONS:

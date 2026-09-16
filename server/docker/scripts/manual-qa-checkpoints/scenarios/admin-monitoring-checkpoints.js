@@ -42,6 +42,16 @@
     const state = Q.activeState(scenario,true);
     if (command==='capture-before-params' && Q.collection('adminJobFixtureSnapshots').countDocuments({})) Q.fail('Reset the recompute fixture before the parameter block');
     Q.collection(Q.STATE_COLLECTION).updateOne({_id:state._id},{$set:{phase:command},$push:{captures:{name:command,evidence:evidence()}}});
+  } else if (command === 'make-recompute-due') {
+    const state = Q.activeState(scenario,true);
+    const capture = [...state.captures].reverse().find(c => c.name === 'capture-after-save' || c.name === 'capture-after-revert');
+    if (!capture) Q.fail('Capture the real parameter mutation before shortening its wait');
+    const ids = capture.evidence.tasks.filter(t => t.targetType === 'CONFIG' && t.status === 'pending').map(t => t._id);
+    const selector = {_id:{$in:ids},targetType:'CONFIG',status:'pending'};
+    const before = Q.collection('affinityRecomputeTasks').find(selector).toArray();
+    Q.collection(Q.STATE_COLLECTION).updateOne({_id:state._id},{$push:{duePreparations:{at:Q.nowIso(),tasks:before}}});
+    const result = Q.collection('affinityRecomputeTasks').updateMany(selector,{$set:{availableAtIso:Q.nowIso()}});
+    Q.printObject({madeDue:result.modifiedCount,detail:'Only captured CONFIG tasks made due; normal worker owns processing and terminal evidence.'});
   } else if (command === 'reset') {
     const state = Q.activeState(scenario,true);
     if (Q.collection('adminJobFixtureSnapshots').countDocuments({})) Q.fail('Reset the controlled Admin job fixture first');

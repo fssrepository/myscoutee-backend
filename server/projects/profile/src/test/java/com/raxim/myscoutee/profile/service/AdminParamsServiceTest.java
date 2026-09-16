@@ -7,6 +7,7 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
 
 import java.util.List;
@@ -68,7 +69,7 @@ class AdminParamsServiceTest {
     }
 
     @Test
-    void saveNotifiesConfiguredAdminAudienceForParameterRecompute() {
+    void saveNotifiesOtherConfiguredAdminsForParameterRecompute() {
         AffinityConfigsRepository repository = mock(AffinityConfigsRepository.class);
         NotificationOutboxService notificationOutboxService = mock(NotificationOutboxService.class);
         AdminAudienceService adminAudienceService = mock(AdminAudienceService.class);
@@ -96,7 +97,7 @@ class AdminParamsServiceTest {
         ArgumentCaptor<NotificationIntent> notification = ArgumentCaptor.forClass(NotificationIntent.class);
         verify(notificationOutboxService).enqueue(notification.capture());
         assertThat(notification.getValue().recipientUserIds())
-                .containsExactly("admin-demo-ava", "admin-demo-noel");
+                .containsExactly("admin-demo-noel");
         assertThat(notification.getValue().recipientScope()).isEqualTo("admins");
         assertThat(notification.getValue().payload())
                 .containsEntry("recomputeScope", "config")
@@ -169,6 +170,24 @@ class AdminParamsServiceTest {
     }
 
     @Test
+    void revertingTheActiveSectionVersionHasNoSideEffectsEvenAfterAnotherSectionChanges() {
+        AffinityConfigsRepository repository = mock(AffinityConfigsRepository.class);
+        NotificationOutboxService outbox = mock(NotificationOutboxService.class);
+        AffinityRecomputeTaskService tasks = mock(AffinityRecomputeTaskService.class);
+        AdminTelemetryService telemetry = mock(AdminTelemetryService.class);
+        AffinityConfig jobs = config(2, false, "jobs", "Jobs update.");
+        AffinityConfig current = config(3, true, "matching", "Matching update.");
+        when(repository.findFirstByActiveTrueOrderByVersionDesc()).thenReturn(Optional.of(current));
+        when(repository.findByKeyOrderByVersionDesc("default")).thenReturn(List.of(current, jobs));
+
+        service(repository, outbox, mock(AdminAudienceService.class), tasks, telemetry)
+                .revert("jobs", new AdminParamsRevertRequestDto("admin-demo-ava", 2));
+
+        verify(repository, never()).save(any(AffinityConfig.class));
+        org.mockito.Mockito.verifyNoInteractions(outbox, tasks, telemetry);
+    }
+
+    @Test
     void persistedVersionStillEmitsTelemetryWhenAQueuedSideEffectFails() {
         AffinityConfigsRepository repository = mock(AffinityConfigsRepository.class);
         AffinityRecomputeTaskService affinityRecomputeTaskService = mock(AffinityRecomputeTaskService.class);
@@ -226,6 +245,34 @@ class AdminParamsServiceTest {
                 .hasMessage("persist rejected");
 
         verify(adminTelemetryService, never()).record(any(), any(), any(), any(), any(Long.class), any());
+    }
+
+    @Test
+    void invalidDistanceStrategyRejectsOtherFieldChangesWithoutSideEffects() {
+        AffinityConfigsRepository repository = mock(AffinityConfigsRepository.class);
+        AffinityConfig current = config(1, true, "seed", "Initial parameter seed.");
+        int originalDistance = current.getDistance().getMaxMeters();
+        when(repository.findFirstByActiveTrueOrderByVersionDesc()).thenReturn(Optional.of(current));
+        NotificationOutboxService outbox = mock(NotificationOutboxService.class);
+        AffinityRecomputeTaskService tasks = mock(AffinityRecomputeTaskService.class);
+        AdminTelemetryService telemetry = mock(AdminTelemetryService.class);
+        AdminAudienceService audience = mock(AdminAudienceService.class);
+        AdminParamsService service = service(repository, outbox, audience, tasks, telemetry);
+        var distance = new com.raxim.myscoutee.profile.data.dto.admin.AdminDtos.AdminParamFieldDto(
+                "distance.maxMeters", null, null, null, null, "number", 12345.0,
+                null, null, List.of(), null, null, false);
+        var strategy = new com.raxim.myscoutee.profile.data.dto.admin.AdminDtos.AdminParamFieldDto(
+                "distance.strategy", null, null, null, null, "text", null,
+                "invalid-qa-strategy", null, List.of(), null, null, false);
+
+        assertThatThrownBy(() -> service.save(new AdminParamsSaveRequestDto(
+                "admin-demo-ava", "discovery", List.of(distance, strategy), null)))
+                .isInstanceOf(org.springframework.web.server.ResponseStatusException.class)
+                .satisfies(error -> assertThat(((org.springframework.web.server.ResponseStatusException) error)
+                        .getStatusCode().value()).isEqualTo(400));
+        assertThat(current.getDistance().getMaxMeters()).isEqualTo(originalDistance);
+        verify(repository, never()).save(any(AffinityConfig.class));
+        verifyNoInteractions(outbox, audience, tasks, telemetry);
     }
 
     private AdminParamsService service(AffinityConfigsRepository repository) {

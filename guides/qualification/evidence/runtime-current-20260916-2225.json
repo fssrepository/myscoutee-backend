@@ -1,0 +1,479 @@
+{
+  "startedAt": "2026-09-16T20:23:33.583744+00:00",
+  "packageVersion": "1.0.0~qa.3",
+  "cpuCount": "2",
+  "kernel": "7.0.0-29-generic",
+  "containers": [
+    {
+      "name": "/nginx",
+      "image": "myscoutee-nginx:1.0.0-qa.3-prod",
+      "imageId": "sha256:ed0b804f9b0f9ec9fd337861be20812137eedd6aab2064b5dd2a38fbda2be155",
+      "networks": [
+        "server_myscoutee"
+      ],
+      "ports": {
+        "27017/tcp": [
+          {
+            "HostIp": "127.0.0.1",
+            "HostPort": "27017"
+          }
+        ],
+        "443/tcp": [
+          {
+            "HostIp": "0.0.0.0",
+            "HostPort": "443"
+          },
+          {
+            "HostIp": "::",
+            "HostPort": "443"
+          }
+        ],
+        "80/tcp": [
+          {
+            "HostIp": "0.0.0.0",
+            "HostPort": "80"
+          },
+          {
+            "HostIp": "::",
+            "HostPort": "80"
+          }
+        ]
+      }
+    },
+    {
+      "name": "/myscoutee",
+      "image": "myscoutee-api:1.0.0-qa.3-prod",
+      "imageId": "sha256:b913198336be81304ac35cb1d64d7248366dfa12e643078ed436e59e2b7ba4d1",
+      "networks": [
+        "server_myscoutee"
+      ],
+      "ports": {
+        "8080/tcp": null
+      }
+    },
+    {
+      "name": "/redis",
+      "image": "redis:8.6.1-alpine",
+      "imageId": "sha256:2afba59292f25f5d1af200496db41bea2c6c816b059f57ae74703a50a03a27d0",
+      "networks": [
+        "server_myscoutee"
+      ],
+      "ports": {
+        "6379/tcp": null
+      }
+    },
+    {
+      "name": "/registry-demo",
+      "image": "myscoutee-registry:1.0.0-qa.3-prod",
+      "imageId": "sha256:0be569fff48fdcea223c34d8839b946407a4fbc549393a8ce42975ffaa24edd0",
+      "networks": [
+        "server_myscoutee"
+      ],
+      "ports": {
+        "8080/tcp": null
+      }
+    },
+    {
+      "name": "/payment-simulator",
+      "image": "myscoutee-payment-simulator:1.0.0-qa.3-prod",
+      "imageId": "sha256:fb95f521fcbf51dec87e00016e9fc8a18ec56c73303788cd0528c0c6ef5f7fc3",
+      "networks": [
+        "server_myscoutee"
+      ],
+      "ports": {
+        "18082/tcp": null
+      }
+    },
+    {
+      "name": "/minio",
+      "image": "myscoutee-minio:1.0.0-qa.3-prod",
+      "imageId": "sha256:491d43720c03ef9821cddffce78d17ef812e3711eb303f60a2b7bdec88789903",
+      "networks": [
+        "server_myscoutee"
+      ],
+      "ports": {
+        "9000/tcp": null
+      }
+    },
+    {
+      "name": "/mongodb",
+      "image": "mongo:8.0.4",
+      "imageId": "sha256:aaad67f2dca93148e5343c03210bcfc89a0107516a4756bfa018acd6579e5b18",
+      "networks": [
+        "server_myscoutee"
+      ],
+      "ports": {
+        "27017/tcp": null
+      }
+    },
+    {
+      "name": "/myscoutee-registry-registry-1",
+      "image": "myscoutee-registry:1.0.0-prod",
+      "imageId": "sha256:0be569fff48fdcea223c34d8839b946407a4fbc549393a8ce42975ffaa24edd0",
+      "networks": [
+        "myscoutee-registry_internal"
+      ],
+      "ports": {
+        "8080/tcp": null
+      }
+    },
+    {
+      "name": "/myscoutee-registry-nginx-1",
+      "image": "myscoutee-registry-nginx:1.0.0-prod",
+      "imageId": "sha256:9af91a0eafecef6e8613f42ffc8ce4b6c369495f0394369d7f59dada040b2889",
+      "networks": [
+        "myscoutee-registry_internal",
+        "myscoutee-registry_public"
+      ],
+      "ports": {
+        "80/tcp": null,
+        "8080/tcp": [
+          {
+            "HostIp": "0.0.0.0",
+            "HostPort": "18082"
+          }
+        ],
+        "8443/tcp": [
+          {
+            "HostIp": "0.0.0.0",
+            "HostPort": "18444"
+          }
+        ]
+      }
+    }
+  ],
+  "idleSamples": [
+    {
+      "at": "2026-09-16T20:23:35.713908+00:00",
+      "containers": [
+        {
+          "BlockIO": "4.17MB / 24.6kB",
+          "CPUPerc": "0.20%",
+          "Container": "1dec2198be91d1ea80b99d61aab7346dfb35a3027190662f68eb6be58d133dc8",
+          "ID": "1dec2198be91",
+          "MemPerc": "0.19%",
+          "MemUsage": "10.11MiB / 5.235GiB",
+          "Name": "nginx",
+          "NetIO": "12.2MB / 24.4MB",
+          "PIDs": "3"
+        },
+        {
+          "BlockIO": "277MB / 2.61MB",
+          "CPUPerc": "3.59%",
+          "Container": "792f742acd8740fde1dd7079cb78e9d31d51b8bd0fde4eb92d602eed7b09f138",
+          "ID": "792f742acd87",
+          "MemPerc": "12.03%",
+          "MemUsage": "644.6MiB / 5.235GiB",
+          "Name": "myscoutee",
+          "NetIO": "386MB / 40.3MB",
+          "PIDs": "65"
+        },
+        {
+          "BlockIO": "40.3MB / 81.9kB",
+          "CPUPerc": "1.21%",
+          "Container": "5d7e1691f0230d706a94ab93503d08476b99624bd28a4f4e04d7bf2dfb96d0e0",
+          "ID": "5d7e1691f023",
+          "MemPerc": "0.24%",
+          "MemUsage": "12.81MiB / 5.235GiB",
+          "Name": "redis",
+          "NetIO": "12.8MB / 18.5MB",
+          "PIDs": "6"
+        },
+        {
+          "BlockIO": "2.56MB / 65.5kB",
+          "CPUPerc": "0.00%",
+          "Container": "c4cb94a00f5c4c771934d057c2919c392bbc27cd3178542a1526dc7a0e288b8e",
+          "ID": "c4cb94a00f5c",
+          "MemPerc": "0.20%",
+          "MemUsage": "10.58MiB / 5.235GiB",
+          "Name": "registry-demo",
+          "NetIO": "2.13kB / 126B",
+          "PIDs": "8"
+        },
+        {
+          "BlockIO": "3.57MB / 0B",
+          "CPUPerc": "0.00%",
+          "Container": "b9d266307b115ab6bcf550df68187b0c2646f058bff7cbd4a9c00f1693fd9495",
+          "ID": "b9d266307b11",
+          "MemPerc": "0.10%",
+          "MemUsage": "5.469MiB / 5.235GiB",
+          "Name": "payment-simulator",
+          "NetIO": "7.23kB / 5.38kB",
+          "PIDs": "8"
+        },
+        {
+          "BlockIO": "307MB / 276MB",
+          "CPUPerc": "0.03%",
+          "Container": "94b2f2c8ed54fa69c3e03d7a422ac35ea939e511f786878b0459050dd50d2d47",
+          "ID": "94b2f2c8ed54",
+          "MemPerc": "2.71%",
+          "MemUsage": "145.5MiB / 5.235GiB",
+          "Name": "minio",
+          "NetIO": "319kB / 5.51MB",
+          "PIDs": "10"
+        },
+        {
+          "BlockIO": "128MB / 159MB",
+          "CPUPerc": "1.88%",
+          "Container": "4bb4284b2fceefd3a716a5ab0c07bee4a6adec21c52e438e195fe1059714daeb",
+          "ID": "4bb4284b2fce",
+          "MemPerc": "4.62%",
+          "MemUsage": "247.5MiB / 5.235GiB",
+          "Name": "mongodb",
+          "NetIO": "16.9MB / 361MB",
+          "PIDs": "58"
+        },
+        {
+          "BlockIO": "31.1MB / 62.9MB",
+          "CPUPerc": "1.81%",
+          "Container": "e94c9da9f5a5c9faeaf2ae8e3a213f4bef2c27c3f5dda25d686dc7eda568ed13",
+          "ID": "e94c9da9f5a5",
+          "MemPerc": "0.29%",
+          "MemUsage": "15.53MiB / 5.235GiB",
+          "Name": "myscoutee-registry-registry-1",
+          "NetIO": "1.4MB / 1.74MB",
+          "PIDs": "8"
+        },
+        {
+          "BlockIO": "15.9MB / 0B",
+          "CPUPerc": "0.00%",
+          "Container": "9b7666672bd08c7812c13b250e693a4224bb43d64b02b7d544518df23e9c40ab",
+          "ID": "9b7666672bd0",
+          "MemPerc": "0.11%",
+          "MemUsage": "5.629MiB / 5.235GiB",
+          "Name": "myscoutee-registry-nginx-1",
+          "NetIO": "1.77MB / 1.44MB",
+          "PIDs": "3"
+        }
+      ],
+      "hostMemory": {
+        "MemTotal": "5489252 kB",
+        "MemAvailable": "2518300 kB",
+        "SwapTotal": "0 kB",
+        "SwapFree": "0 kB"
+      }
+    },
+    {
+      "at": "2026-09-16T20:23:40.826295+00:00",
+      "containers": [
+        {
+          "BlockIO": "4.17MB / 24.6kB",
+          "CPUPerc": "0.00%",
+          "Container": "1dec2198be91d1ea80b99d61aab7346dfb35a3027190662f68eb6be58d133dc8",
+          "ID": "1dec2198be91",
+          "MemPerc": "0.19%",
+          "MemUsage": "10.09MiB / 5.235GiB",
+          "Name": "nginx",
+          "NetIO": "12.2MB / 24.4MB",
+          "PIDs": "3"
+        },
+        {
+          "BlockIO": "277MB / 2.61MB",
+          "CPUPerc": "4.76%",
+          "Container": "792f742acd8740fde1dd7079cb78e9d31d51b8bd0fde4eb92d602eed7b09f138",
+          "ID": "792f742acd87",
+          "MemPerc": "12.02%",
+          "MemUsage": "644.5MiB / 5.235GiB",
+          "Name": "myscoutee",
+          "NetIO": "386MB / 40.3MB",
+          "PIDs": "65"
+        },
+        {
+          "BlockIO": "40.3MB / 81.9kB",
+          "CPUPerc": "1.14%",
+          "Container": "5d7e1691f0230d706a94ab93503d08476b99624bd28a4f4e04d7bf2dfb96d0e0",
+          "ID": "5d7e1691f023",
+          "MemPerc": "0.24%",
+          "MemUsage": "12.81MiB / 5.235GiB",
+          "Name": "redis",
+          "NetIO": "12.9MB / 18.5MB",
+          "PIDs": "6"
+        },
+        {
+          "BlockIO": "2.56MB / 65.5kB",
+          "CPUPerc": "5.15%",
+          "Container": "c4cb94a00f5c4c771934d057c2919c392bbc27cd3178542a1526dc7a0e288b8e",
+          "ID": "c4cb94a00f5c",
+          "MemPerc": "0.20%",
+          "MemUsage": "10.63MiB / 5.235GiB",
+          "Name": "registry-demo",
+          "NetIO": "2.13kB / 126B",
+          "PIDs": "8"
+        },
+        {
+          "BlockIO": "3.57MB / 0B",
+          "CPUPerc": "0.00%",
+          "Container": "b9d266307b115ab6bcf550df68187b0c2646f058bff7cbd4a9c00f1693fd9495",
+          "ID": "b9d266307b11",
+          "MemPerc": "0.10%",
+          "MemUsage": "5.469MiB / 5.235GiB",
+          "Name": "payment-simulator",
+          "NetIO": "7.23kB / 5.38kB",
+          "PIDs": "8"
+        },
+        {
+          "BlockIO": "307MB / 276MB",
+          "CPUPerc": "0.00%",
+          "Container": "94b2f2c8ed54fa69c3e03d7a422ac35ea939e511f786878b0459050dd50d2d47",
+          "ID": "94b2f2c8ed54",
+          "MemPerc": "2.71%",
+          "MemUsage": "145.5MiB / 5.235GiB",
+          "Name": "minio",
+          "NetIO": "319kB / 5.51MB",
+          "PIDs": "10"
+        },
+        {
+          "BlockIO": "128MB / 159MB",
+          "CPUPerc": "1.65%",
+          "Container": "4bb4284b2fceefd3a716a5ab0c07bee4a6adec21c52e438e195fe1059714daeb",
+          "ID": "4bb4284b2fce",
+          "MemPerc": "4.62%",
+          "MemUsage": "247.4MiB / 5.235GiB",
+          "Name": "mongodb",
+          "NetIO": "16.9MB / 361MB",
+          "PIDs": "58"
+        },
+        {
+          "BlockIO": "31.1MB / 62.9MB",
+          "CPUPerc": "0.00%",
+          "Container": "e94c9da9f5a5c9faeaf2ae8e3a213f4bef2c27c3f5dda25d686dc7eda568ed13",
+          "ID": "e94c9da9f5a5",
+          "MemPerc": "0.29%",
+          "MemUsage": "15.3MiB / 5.235GiB",
+          "Name": "myscoutee-registry-registry-1",
+          "NetIO": "1.4MB / 1.74MB",
+          "PIDs": "8"
+        },
+        {
+          "BlockIO": "15.9MB / 0B",
+          "CPUPerc": "0.00%",
+          "Container": "9b7666672bd08c7812c13b250e693a4224bb43d64b02b7d544518df23e9c40ab",
+          "ID": "9b7666672bd0",
+          "MemPerc": "0.11%",
+          "MemUsage": "5.656MiB / 5.235GiB",
+          "Name": "myscoutee-registry-nginx-1",
+          "NetIO": "1.77MB / 1.44MB",
+          "PIDs": "3"
+        }
+      ],
+      "hostMemory": {
+        "MemTotal": "5489252 kB",
+        "MemAvailable": "2523896 kB",
+        "SwapTotal": "0 kB",
+        "SwapFree": "0 kB"
+      }
+    },
+    {
+      "at": "2026-09-16T20:23:45.975886+00:00",
+      "containers": [
+        {
+          "BlockIO": "4.17MB / 24.6kB",
+          "CPUPerc": "0.04%",
+          "Container": "1dec2198be91d1ea80b99d61aab7346dfb35a3027190662f68eb6be58d133dc8",
+          "ID": "1dec2198be91",
+          "MemPerc": "0.19%",
+          "MemUsage": "10.1MiB / 5.235GiB",
+          "Name": "nginx",
+          "NetIO": "12.2MB / 24.6MB",
+          "PIDs": "3"
+        },
+        {
+          "BlockIO": "277MB / 2.61MB",
+          "CPUPerc": "2.96%",
+          "Container": "792f742acd8740fde1dd7079cb78e9d31d51b8bd0fde4eb92d602eed7b09f138",
+          "ID": "792f742acd87",
+          "MemPerc": "12.02%",
+          "MemUsage": "644.6MiB / 5.235GiB",
+          "Name": "myscoutee",
+          "NetIO": "386MB / 40.3MB",
+          "PIDs": "65"
+        },
+        {
+          "BlockIO": "40.3MB / 81.9kB",
+          "CPUPerc": "1.18%",
+          "Container": "5d7e1691f0230d706a94ab93503d08476b99624bd28a4f4e04d7bf2dfb96d0e0",
+          "ID": "5d7e1691f023",
+          "MemPerc": "0.24%",
+          "MemUsage": "13.06MiB / 5.235GiB",
+          "Name": "redis",
+          "NetIO": "12.9MB / 18.5MB",
+          "PIDs": "6"
+        },
+        {
+          "BlockIO": "2.56MB / 65.5kB",
+          "CPUPerc": "3.23%",
+          "Container": "c4cb94a00f5c4c771934d057c2919c392bbc27cd3178542a1526dc7a0e288b8e",
+          "ID": "c4cb94a00f5c",
+          "MemPerc": "0.20%",
+          "MemUsage": "10.84MiB / 5.235GiB",
+          "Name": "registry-demo",
+          "NetIO": "2.13kB / 126B",
+          "PIDs": "8"
+        },
+        {
+          "BlockIO": "3.57MB / 0B",
+          "CPUPerc": "0.00%",
+          "Container": "b9d266307b115ab6bcf550df68187b0c2646f058bff7cbd4a9c00f1693fd9495",
+          "ID": "b9d266307b11",
+          "MemPerc": "0.10%",
+          "MemUsage": "5.469MiB / 5.235GiB",
+          "Name": "payment-simulator",
+          "NetIO": "7.23kB / 5.38kB",
+          "PIDs": "8"
+        },
+        {
+          "BlockIO": "307MB / 276MB",
+          "CPUPerc": "0.05%",
+          "Container": "94b2f2c8ed54fa69c3e03d7a422ac35ea939e511f786878b0459050dd50d2d47",
+          "ID": "94b2f2c8ed54",
+          "MemPerc": "2.72%",
+          "MemUsage": "145.7MiB / 5.235GiB",
+          "Name": "minio",
+          "NetIO": "319kB / 5.51MB",
+          "PIDs": "10"
+        },
+        {
+          "BlockIO": "128MB / 160MB",
+          "CPUPerc": "1.77%",
+          "Container": "4bb4284b2fceefd3a716a5ab0c07bee4a6adec21c52e438e195fe1059714daeb",
+          "ID": "4bb4284b2fce",
+          "MemPerc": "4.62%",
+          "MemUsage": "247.7MiB / 5.235GiB",
+          "Name": "mongodb",
+          "NetIO": "16.9MB / 361MB",
+          "PIDs": "58"
+        },
+        {
+          "BlockIO": "31.1MB / 62.9MB",
+          "CPUPerc": "0.00%",
+          "Container": "e94c9da9f5a5c9faeaf2ae8e3a213f4bef2c27c3f5dda25d686dc7eda568ed13",
+          "ID": "e94c9da9f5a5",
+          "MemPerc": "0.28%",
+          "MemUsage": "15.05MiB / 5.235GiB",
+          "Name": "myscoutee-registry-registry-1",
+          "NetIO": "1.4MB / 1.74MB",
+          "PIDs": "8"
+        },
+        {
+          "BlockIO": "15.9MB / 0B",
+          "CPUPerc": "0.00%",
+          "Container": "9b7666672bd08c7812c13b250e693a4224bb43d64b02b7d544518df23e9c40ab",
+          "ID": "9b7666672bd0",
+          "MemPerc": "0.11%",
+          "MemUsage": "5.648MiB / 5.235GiB",
+          "Name": "myscoutee-registry-nginx-1",
+          "NetIO": "1.79MB / 1.47MB",
+          "PIDs": "3"
+        }
+      ],
+      "hostMemory": {
+        "MemTotal": "5489252 kB",
+        "MemAvailable": "2525320 kB",
+        "SwapTotal": "0 kB",
+        "SwapFree": "0 kB"
+      }
+    }
+  ],
+  "restartSamples": [],
+  "note": "Docker working-set samples, not exact peak RSS or JVM heap; ordinary warm restart, not host cold boot."
+}

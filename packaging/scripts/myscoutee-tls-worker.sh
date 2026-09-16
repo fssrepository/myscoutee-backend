@@ -73,7 +73,11 @@ prepare_directories() {
   done
   install -d -m 0700 \
     "${STATE_DIR}" "${STATE_DIR}/inbox" "${STATE_DIR}/archive" \
-    "${PROCESSING_DIR}" "${STATE_DIR}/runtime" "${CERTBOT_CONF}"
+    "${PROCESSING_DIR}" "${CERTBOT_CONF}"
+  # This directory is bind-mounted read-only into the unprivileged API.
+  # Keep the reader group's traversal permission across every worker run.
+  install_numeric_owned_directory \
+    0750 "${WORKER_UID}" "${API_GID}" "${STATE_DIR}/runtime"
   install_numeric_owned_directory \
     0700 "${API_UID}" "${API_GID}" "${REQUEST_DIR}"
   install_numeric_owned_directory \

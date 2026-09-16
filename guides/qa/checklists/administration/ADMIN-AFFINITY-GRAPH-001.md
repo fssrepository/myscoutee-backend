@@ -58,7 +58,11 @@ Report: `ADMIN-AFFINITY-GRAPH-001 block 2 done`.
     Progress and visible detail follow zoom/loading; record the tested input mode.
 13. Use **Reset**. The view returns to its defined overview state.
 14. Use **Expand / Collapse**. The graph and member panel fit the popup/window;
-    controls and profile details remain accessible without clipping.
+    controls and profile details remain accessible. At mobile viewport sizes,
+    the panel may overlay the graph: opening/closing it must preserve camera,
+    zoom and node positions. At desktop sizes, the graph fits beside the panel.
+    Verify the initial small component is readable and fits at 360/390px widths;
+    actual viewport resizing may refit the default view without locking controls.
 15. Select the named isolated member. The correct profile and zero connections
     appear; the member is not lost because it has no edge.
 

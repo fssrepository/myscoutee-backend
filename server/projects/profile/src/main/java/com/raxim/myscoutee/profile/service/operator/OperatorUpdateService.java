@@ -46,9 +46,9 @@ import com.raxim.myscoutee.common.config.mongo.MongoSessionModeContext;
 import com.raxim.myscoutee.common.config.properties.OperatorUpdateProperties;
 import com.raxim.myscoutee.common.config.properties.RegistryProperties;
 import com.raxim.myscoutee.profile.data.dto.operator.OperatorNetworkDtos.OperatorAnnouncementDto;
-import com.raxim.myscoutee.profile.data.dto.operator.OperatorNetworkDtos.OperatorAnnouncementPageDto;
 import com.raxim.myscoutee.profile.data.dto.operator.OperatorNetworkDtos.OperatorUpdateManifestDto;
 import com.raxim.myscoutee.profile.data.dto.operator.OperatorUpdateDtos.OperatorUpdateApprovalDto;
+import com.raxim.myscoutee.profile.data.dto.operator.OperatorUpdateDtos.OperatorRollbackDto;
 import com.raxim.myscoutee.profile.data.dto.operator.OperatorUpdateDtos.OperatorUpdateEventDto;
 import com.raxim.myscoutee.profile.data.dto.operator.OperatorUpdateDtos.OperatorUpdateEventPageDto;
 import com.raxim.myscoutee.profile.data.dto.operator.OperatorUpdateDtos.OperatorUpdateJobDto;
@@ -59,11 +59,11 @@ import jakarta.annotation.PreDestroy;
 import tools.jackson.databind.ObjectMapper;
 
 /**
- * Stages one registry-signed update for the local privileged host helper.
+ * Stages one release-key-signed update for the local privileged host helper.
  *
  * <p>The browser supplies only an announcement ID. The manifest URL, digest,
  * size, version and detached package signature are taken from a freshly
- * verified registry response. Java downloads and stages the package but never
+ * verified GitHub release metadata. Java downloads and stages the package but never
  * invokes a package manager or accepts a command. Java phases are stored below
  * {@code staging/<jobId>}; after the atomic request handoff, status readers
  * prefer the root worker's separate {@code jobs/<jobId>} directory.</p>
@@ -75,7 +75,7 @@ public class OperatorUpdateService {
     private static final Pattern JOB_ID =
             Pattern.compile("^upd_[0-9a-f]{32}$");
     private static final Pattern RELEASE_VERSION =
-            Pattern.compile("^(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)$");
+            Pattern.compile("^(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)(-qa\\.[1-9][0-9]*)?$");
     private static final Pattern CHANNEL =
             Pattern.compile("^[a-z][a-z0-9._-]{0,31}$");
     private static final Set<String> TERMINAL_PHASES =
@@ -84,7 +84,7 @@ public class OperatorUpdateService {
     private static final int MAX_EVENT_LINES = 10_000;
     private static final int MAX_DISCOVERY_ENTRIES = 10_000;
 
-    private final OperatorNetworkService networkService;
+    private final OperatorUpdateReleaseService releaseService;
     private final OperatorUpdateArtifactDownloader downloader;
     private final OperatorUpdateProperties properties;
     private final RegistryProperties registryProperties;
@@ -97,13 +97,13 @@ public class OperatorUpdateService {
 
     @Autowired
     public OperatorUpdateService(
-            OperatorNetworkService networkService,
+            OperatorUpdateReleaseService releaseService,
             OperatorUpdateArtifactDownloader downloader,
             OperatorUpdateProperties properties,
             RegistryProperties registryProperties,
             ObjectMapper objectMapper) {
         this(
-                networkService,
+                releaseService,
                 downloader,
                 properties,
                 registryProperties,
@@ -114,7 +114,7 @@ public class OperatorUpdateService {
     }
 
     OperatorUpdateService(
-            OperatorNetworkService networkService,
+            OperatorUpdateReleaseService releaseService,
             OperatorUpdateArtifactDownloader downloader,
             OperatorUpdateProperties properties,
             RegistryProperties registryProperties,
@@ -122,7 +122,7 @@ public class OperatorUpdateService {
             ExecutorService executor,
             Clock clock,
             SecureRandom secureRandom) {
-        this.networkService = Objects.requireNonNull(networkService);
+        this.releaseService = Objects.requireNonNull(releaseService);
         this.downloader = Objects.requireNonNull(downloader);
         this.properties = Objects.requireNonNull(properties);
         this.registryProperties = Objects.requireNonNull(registryProperties);
@@ -174,7 +174,41 @@ public class OperatorUpdateService {
         return new OperatorUpdateOverviewDto(
                 properties.isEnabled(),
                 currentVersion,
-                latest == null ? null : latest.status());
+                latest == null ? null : latest.status(),
+                rollbackPoint(state, currentVersion));
+    }
+
+    private OperatorRollbackDto rollbackPoint(Path state, String currentVersion) {
+        Path receipt = state.resolve("runtime").resolve("recovery.json");
+        if (!isSafeRegularFile(receipt)) return null;
+        try {
+            if (Files.size(receipt) > 4096) return null;
+            var point = objectMapper.readValue(Files.readAllBytes(receipt), OperatorRollbackDto.class);
+            if (!JOB_ID.matcher(safeText(point.jobId())).matches()
+                    || !RELEASE_VERSION.matcher(safeText(point.targetVersion())).matches()
+                    || !safeText(point.artifactSha256()).matches("sha256:[0-9a-f]{64}")
+                    || !Objects.equals(currentVersion, point.fromVersion())) return null;
+            return point;
+        } catch (IOException | RuntimeException exception) {
+            return null;
+        }
+    }
+
+    public OperatorUpdateJobDto rollback(String previousJobId, String actorUserId) {
+        requireEnabledRealMode();
+        String jobId = requireJobId(previousJobId);
+        String actor = requireActor(actorUserId);
+        var point = rollbackPoint(existingStateDirectory(), safeText(registryProperties.getSoftwareVersion()));
+        if (point == null || !point.jobId().equals(jobId)) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "The retained rollback point is unavailable.");
+        }
+        var announcement = releaseService.findVersion(point.targetVersion());
+        var manifest = announcement.updateManifest();
+        if (manifest == null || !point.artifactSha256().equals(manifest.artifactSha256())) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "The previous release package has changed.");
+        }
+        VerifiedRelease verified = requireInstallableRelease(announcement, true);
+        return start(new VerifiedRelease(verified.announcementId(), verified.manifestHash(), verified.manifest(), jobId), actor);
     }
 
     public OperatorUpdateJobDto approve(
@@ -188,9 +222,13 @@ public class OperatorUpdateService {
                 RegistryProtocol.requireAnnouncementId(safeText(approval.announcementId()));
         String actor = requireActor(actorUserId);
 
-        // Resolve every security-sensitive field from a fresh signed registry
+        // Resolve every security-sensitive field from a fresh signed release
         // snapshot before allocating a local job.
         VerifiedRelease release = findVerifiedRelease(announcementId);
+        return start(release, actor);
+    }
+
+    private OperatorUpdateJobDto start(VerifiedRelease release, String actor) {
         synchronized (startLock) {
             Path state = requireStateDirectory();
             String busyJob = findBusyJob(state);
@@ -213,9 +251,20 @@ public class OperatorUpdateService {
                     actor,
                     release);
             writeStageStatus(stage, initial);
+            // Return the capability only to the approving Operator. Persist its digest,
+            // never the bearer, and never put the bearer in durable status/events.
+            String monitorToken = null;
+            if (properties.isMonitorEnabled()) {
+                monitorToken = randomHex(32);
+                atomicCreateJson(stage.resolve("monitor.json"), Map.of(
+                        "jobId", jobId,
+                        "tokenSha256", HexFormat.of().formatHex(sha256Digest().digest(
+                                monitorToken.getBytes(StandardCharsets.US_ASCII))),
+                        "expiresAt", clock.instant().plus(1, ChronoUnit.HOURS).getEpochSecond()));
+            }
             activeJavaJob.set(jobId);
             executor.submit(() -> stageUpdate(state, stage, initial, release));
-            return initial;
+            return initial.withMonitorToken(monitorToken);
         }
     }
 
@@ -283,32 +332,11 @@ public class OperatorUpdateService {
     }
 
     private VerifiedRelease findVerifiedRelease(String announcementId) {
-        String cursor = "";
-        for (int pageNumber = 0; pageNumber < 1_000; pageNumber++) {
-            OperatorAnnouncementPageDto page = networkService.announcements(
-                    "UPDATE",
-                    "",
-                    "",
-                    false,
-                    100,
-                    cursor);
-            for (OperatorAnnouncementDto announcement : page.items()) {
-                if (announcementId.equals(announcement.announcementId())) {
-                    return requireInstallableRelease(announcement);
-                }
-            }
-            cursor = safeText(page.nextCursor());
-            if (cursor.isEmpty()) {
-                break;
-            }
-        }
-        throw new ResponseStatusException(
-                HttpStatus.NOT_FOUND,
-                "The verified update announcement was not found.");
+        return requireInstallableRelease(releaseService.find(announcementId), false);
     }
 
     private VerifiedRelease requireInstallableRelease(
-            OperatorAnnouncementDto announcement) {
+            OperatorAnnouncementDto announcement, boolean rollback) {
         OperatorUpdateManifestDto manifest = announcement.updateManifest();
         if (!"UPDATE".equals(announcement.kind())
                 || manifest == null
@@ -358,17 +386,17 @@ public class OperatorUpdateService {
                     "The installed software version is unavailable for compatibility checking.",
                     exception);
         }
-        if (RegistryProtocol.compareSemanticVersions(
+        if (!rollback && (RegistryProtocol.compareSemanticVersions(
                         currentVersion,
                         minimumVersion) < 0
                 || RegistryProtocol.compareSemanticVersions(
                         currentVersion,
-                        maximumVersion) > 0) {
+                        maximumVersion) > 0)) {
             throw new ResponseStatusException(
                     HttpStatus.CONFLICT,
                     "The selected update is incompatible with the installed version.");
         }
-        if (RegistryProtocol.compareSemanticVersions(
+        if (!rollback && RegistryProtocol.compareSemanticVersions(
                 releaseVersion,
                 currentVersion) <= 0) {
             throw new ResponseStatusException(
@@ -382,17 +410,6 @@ public class OperatorUpdateService {
                     "The signed update artifact exceeds the configured download limit.");
         }
         OperatorUpdateArtifactDownloader.requireHttpsArtifactUri(manifest.artifactUrl());
-        Path registryPin = normalizeAbsolute(
-                registryProperties.getPackageSigningPublicKeyPath(),
-                "registry release key path");
-        Path updatePin = normalizeAbsolute(
-                properties.getReleasePublicKeyPath(),
-                "operator update release key path");
-        if (!registryPin.equals(updatePin)) {
-            throw new ResponseStatusException(
-                    HttpStatus.CONFLICT,
-                    "Announcement verification and update staging use different release keys.");
-        }
         return new VerifiedRelease(
                 announcement.announcementId(),
                 announcement.updateManifestHash(),
@@ -550,7 +567,8 @@ public class OperatorUpdateService {
                 release.manifest().artifactSizeBytes(),
                 release.manifest().artifactSha256(),
                 release.manifest().packageSigningKeyId(),
-                release.manifest().packageSignature());
+                release.manifest().packageSignature(),
+                release.rollbackJobId());
         Path requestFile = state.resolve("requests").resolve(job.jobId() + ".json");
         atomicCreateJson(requestFile, request);
     }
@@ -982,12 +1000,7 @@ public class OperatorUpdateService {
     }
 
     private static String sha256(Path file) throws IOException {
-        MessageDigest digest;
-        try {
-            digest = MessageDigest.getInstance("SHA-256");
-        } catch (NoSuchAlgorithmException exception) {
-            throw new IllegalStateException("SHA-256 is unavailable.", exception);
-        }
+        MessageDigest digest = sha256Digest();
         try (InputStream input = Files.newInputStream(file)) {
             byte[] buffer = new byte[64 * 1024];
             int read;
@@ -998,6 +1011,14 @@ public class OperatorUpdateService {
             }
         }
         return HexFormat.of().formatHex(digest.digest());
+    }
+
+    private static MessageDigest sha256Digest() {
+        try {
+            return MessageDigest.getInstance("SHA-256");
+        } catch (NoSuchAlgorithmException exception) {
+            throw new IllegalStateException("SHA-256 is unavailable.", exception);
+        }
     }
 
     private static void validateStatus(
@@ -1143,7 +1164,11 @@ public class OperatorUpdateService {
     private record VerifiedRelease(
             String announcementId,
             String manifestHash,
-            OperatorUpdateManifestDto manifest) {
+            OperatorUpdateManifestDto manifest,
+            String rollbackJobId) {
+        VerifiedRelease(String announcementId, String manifestHash, OperatorUpdateManifestDto manifest) {
+            this(announcementId, manifestHash, manifest, null);
+        }
     }
 
     private record DurableStatusCandidate(
@@ -1165,6 +1190,7 @@ public class OperatorUpdateService {
             @JsonProperty("artifact_size_bytes") long artifactSizeBytes,
             @JsonProperty("artifact_sha256") String artifactSha256,
             @JsonProperty("package_signing_key_id") String packageSigningKeyId,
-            @JsonProperty("package_signature") String packageSignature) {
+            @JsonProperty("package_signature") String packageSignature,
+            @JsonProperty("rollback_job_id") String rollbackJobId) {
     }
 }

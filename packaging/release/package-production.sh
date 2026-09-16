@@ -14,9 +14,10 @@ read_version() {
 VERSION="${MYSCOUTEE_VERSION:-$(read_version)}"
 VERSION="${VERSION:-1.0.0}"
 ARCHITECTURE="${DEB_ARCHITECTURE:-amd64}"
-if [[ ! "${VERSION}" =~ ^(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)$ ]] \
-  || ! dpkg --validate-version "${VERSION}" >/dev/null 2>&1; then
-  echo "MYSCOUTEE_VERSION must be a plain SemVer core such as 1.0.0." >&2
+DEBIAN_VERSION="${VERSION/-/\~}"
+if [[ ! "${VERSION}" =~ ^(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)(-qa\.[1-9][0-9]*)?$ ]] \
+  || ! dpkg --validate-version "${DEBIAN_VERSION}" >/dev/null 2>&1; then
+  echo "MYSCOUTEE_VERSION must be a SemVer core or QA prerelease such as 1.0.0-qa.1." >&2
   exit 1
 fi
 if [[ ! "${ARCHITECTURE}" =~ ^[a-z0-9][a-z0-9-]{0,31}$ ]]; then
@@ -63,7 +64,7 @@ install -d "${STAGING_DIR}/lib/systemd/system"
 install -d "${STAGING_DIR}/usr/share/myscoutee/client-tools/verify-deployment"
 
 sed \
-  -e "s/^Version:.*/Version: ${VERSION}/" \
+  -e "s/^Version:.*/Version: ${DEBIAN_VERSION}/" \
   -e "s/^Architecture:.*/Architecture: ${ARCHITECTURE}/" \
   "${REPO_ROOT}/packaging/debian/control" > "${STAGING_DIR}/DEBIAN/control"
 install -m 0755 "${REPO_ROOT}/packaging/debian/postinst" "${STAGING_DIR}/DEBIAN/postinst"
@@ -187,6 +188,7 @@ stage_mongo_configuration() {
   done
 }
 
+python3 "${REPO_ROOT}/tools/seeds/check-system-seed-parity.py"
 node "${REPO_ROOT}/frontend/scripts/audit-i18n-mongo-seed.js"
 stage_mongo_configuration
 while IFS= read -r runtime_script_path; do
@@ -205,6 +207,7 @@ done < <(
 # Only deployment-host runtime scripts are installed. Everything in
 # packaging/release and repository developer helpers stays source-only.
 cp -a "${REPO_ROOT}/packaging/scripts" "${STAGING_DIR}/opt/myscoutee/packaging/"
+cp -a "${REPO_ROOT}/packaging/migrations" "${STAGING_DIR}/opt/myscoutee/packaging/"
 cp -a "${REPO_ROOT}/packaging/templates" "${STAGING_DIR}/opt/myscoutee/packaging/"
 for client_helper in \
   README.md \
@@ -225,6 +228,10 @@ printf '%s\n' "${VERSION}" \
 install -m 0644 "${REPO_ROOT}/packaging/systemd/myscoutee.service" "${STAGING_DIR}/lib/systemd/system/myscoutee.service"
 install -m 0644 "${REPO_ROOT}/packaging/systemd/myscoutee-update.path" "${STAGING_DIR}/lib/systemd/system/myscoutee-update.path"
 install -m 0644 "${REPO_ROOT}/packaging/systemd/myscoutee-update.service" "${STAGING_DIR}/lib/systemd/system/myscoutee-update.service"
+install -m 0644 "${REPO_ROOT}/packaging/systemd/myscoutee-update-status.socket" "${STAGING_DIR}/lib/systemd/system/myscoutee-update-status.socket"
+install -m 0644 "${REPO_ROOT}/packaging/systemd/myscoutee-update-status.service" "${STAGING_DIR}/lib/systemd/system/myscoutee-update-status.service"
+install -d "${STAGING_DIR}/usr/lib/sysusers.d"
+install -m 0644 "${REPO_ROOT}/packaging/sysusers/myscoutee.conf" "${STAGING_DIR}/usr/lib/sysusers.d/myscoutee.conf"
 install -m 0644 "${REPO_ROOT}/packaging/systemd/myscoutee-tls.path" "${STAGING_DIR}/lib/systemd/system/myscoutee-tls.path"
 install -m 0644 "${REPO_ROOT}/packaging/systemd/myscoutee-tls.service" "${STAGING_DIR}/lib/systemd/system/myscoutee-tls.service"
 install -m 0644 "${REPO_ROOT}/packaging/systemd/myscoutee-tls-renew.service" "${STAGING_DIR}/lib/systemd/system/myscoutee-tls-renew.service"
