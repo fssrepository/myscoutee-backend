@@ -509,5 +509,49 @@
       "Evaluate no-new-privileges and capability removal; verify required writable paths before read-only root.",
       "https://docs.docker.com/engine/security/"
     ]
+  ],
+  "Security fixes": [
+    [
+      "Item",
+      "Source change",
+      "Verification",
+      "Deployment"
+    ],
+    [
+      "Production response headers",
+      "Added nosniff, DENY, strict-origin-when-cross-origin and CSP frame-ancestors/object-src/base-uri",
+      "packaging/tests/nginx-transport-policy-test.sh PASS, root + JS + manifest headers",
+      "Not deployed"
+    ],
+    [
+      "Frontend runtime dependencies",
+      "Angular 21.2.23, grpc-js 1.9.16, protobufjs 7.6.6, websocket-driver 0.7.5",
+      "npm audit --omit=dev: 9 to 0 findings; 22 focused Angular tests passed",
+      "Not deployed"
+    ],
+    [
+      "Firebase-disabled production identity",
+      "An empty production member-user disables userId-based identity fallback and retains authenticated policy checks",
+      "New MockMvc regression PASS with/without bootstrap; local/demo tests PASS",
+      "Not deployed"
+    ],
+    [
+      "Security regression suite",
+      "Selected filter, routing, policy, media and bootstrap tests",
+      "110/111 PASS; releasedFormerOwnerCannotRetakeOrMutateTheAssetAsOwner remains FAIL at delete assertion; no full security sign-off",
+      "Not deployed"
+    ],
+    [
+      "Backend dependencies",
+      "Inventory only: embedded Maven metadata from previously built local JAR",
+      "OSV findings still open; scan does not include JARs without Maven metadata or prove live exploitability",
+      "No backend dependency changes"
+    ],
+    [
+      "Notification save error",
+      "Keep user-selected toggle on save failure and show existing translated error; retry without toggling",
+      "22/22 focused tests PASS; waits for server acknowledgment before success",
+      "Not deployed"
+    ]
   ]
 }

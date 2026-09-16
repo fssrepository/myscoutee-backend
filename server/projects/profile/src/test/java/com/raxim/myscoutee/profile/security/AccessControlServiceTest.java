@@ -100,6 +100,14 @@ class AccessControlServiceTest {
     }
 
     @Test
+    void productionWithoutFirebaseStillRequiresAnAuthenticatedActor() {
+        configProperties.setFirebaseEnabled(false);
+        configProperties.setMemberUser("");
+        assertThat(service.requiresAuthenticatedActor()).isTrue();
+        assertThat(service.canCurrentActorCreateChatMessage("victim", "chat-1")).isFalse();
+    }
+
+    @Test
     void allowsAuthenticatedParticipantToSubmitOwnEventResourceAssignment() {
         boolean allowed = service.canSubmitEventResourceAssignment(auth("u1"), request("event-1", "sub-1", "u1"));
 

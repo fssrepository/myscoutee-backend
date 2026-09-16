@@ -118,6 +118,11 @@ public class FirebaseFilter extends OncePerRequestFilter {
     }
 
     private void authenticateWithoutFirebase(HttpServletRequest request) {
+        // Production leaves member-user empty. Disabling Firebase must not
+        // enable authentication by a caller-supplied userId in that deployment.
+        if (!configProperties.isMemberFallbackEnabled()) {
+            return;
+        }
         String requestedUserId = normalizeRequestUserId(request);
         UserDetails userDetails;
         if (StringUtils.hasText(requestedUserId)) {

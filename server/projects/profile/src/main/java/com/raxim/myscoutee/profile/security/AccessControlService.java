@@ -584,7 +584,7 @@ public class AccessControlService implements AccessPolicyData {
     }
 
     public boolean requiresAuthenticatedActor() {
-        return configProperties.isFirebaseEnabled() && !isDemoSessionRequest();
+        return !configProperties.isMemberFallbackEnabled() && !isDemoSessionRequest();
     }
 
     private boolean isDemoSessionRequest() {
