@@ -182,7 +182,7 @@ public class OperatorUpdateReleaseService {
                 manifest.manifestVersion(), manifest.releaseVersion(), manifest.channel(), manifest.publishedAt(),
                 manifest.minimumCompatibleVersion(), manifest.maximumCompatibleVersion(), manifest.artifactUrl(),
                 manifest.artifactSizeBytes(), manifest.artifactSha256(), manifest.packageSigningKeyId(),
-                manifest.packageSignature(), manifest.releaseNotesUrl(), true, manifest.expectedDowntimeSeconds(),
+                manifest.packageSignature(), manifest.releaseNotesUrl(), manifest.backupRequired(), manifest.expectedDowntimeSeconds(),
                 manifest.status(), manifest.supersedesVersion(), manifest.supersededByVersion(), manifest.revocationReason(),
                 true, true, true);
         // Retain the existing approval wire ID and durable job format. This is a content ID, not Registry enrollment.

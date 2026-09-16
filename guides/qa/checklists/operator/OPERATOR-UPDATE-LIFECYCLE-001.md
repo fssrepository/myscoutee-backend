@@ -20,11 +20,13 @@ Use the designated QA target, not the active development checkout. Preserve its
 current state first. The intended sequence is `1.0.0-qa.1` to `1.0.0-qa.2`,
 then rollback to `1.0.0-qa.1`. Debian represents these prereleases as
 `1.0.0~qa.1` and `1.0.0~qa.2`; the final stable release stays `1.0.0`.
-Retain the original GitHub downloads and record the new hashes of any repackaged
-artifacts. Signing or correcting version metadata does not add current update
-code to historical binaries. Verify that the baseline actually implements the
-Registry-independent update path before executing the UI sequence; otherwise
-record that limitation and prepare a corrected baseline separately.
+Build the complete current source through the normal production build and
+packaging process as `1.0.0-qa.1`. Do not patch historical application JARs or
+relabel old binaries as the current implementation. Keep the prior published
+artifact digest in the evidence when replacing this QA baseline. Verify the
+installed build identity and Registry-independent update path before the UI
+sequence. Verify the target package capabilities separately; a newer version
+label alone does not establish that it contains the required update/rollback code.
 
 Record each GitHub release tag, artifact digest, internal package version and
 installed build identity separately; a filename does not establish a version.

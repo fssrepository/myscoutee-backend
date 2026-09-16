@@ -334,7 +334,7 @@ normalize_packaged_image_values() {
 
   env_file="/etc/myscoutee/myscoutee.env"
   packaged_version="$(sed -n '1p' /opt/myscoutee/packaging/VERSION 2>/dev/null || true)"
-  if [[ ! "${packaged_version}" =~ ^(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)$ ]] \
+  if [[ ! "${packaged_version}" =~ ^(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)(-qa\.[1-9][0-9]*)?$ ]] \
     || ! dpkg --validate-version "${packaged_version}" >/dev/null 2>&1; then
     echo "The installed package version marker is missing or invalid." >&2
     exit 1

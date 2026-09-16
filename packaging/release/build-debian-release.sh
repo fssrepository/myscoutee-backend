@@ -24,7 +24,7 @@ if [ -z "${latest_deb}" ]; then
   exit 1
 fi
 
-package_version="$(dpkg-deb -f "${latest_deb}" Version)"
+package_version="$(dpkg-deb -f "${latest_deb}" Version | tr '~' '-')"
 client_tools="${DIST_DIR}/myscoutee-client-tools_${package_version}.tar.gz"
 if [ ! -f "${client_tools}" ]; then
   echo "Operator helper bundle was not found: ${client_tools}" >&2

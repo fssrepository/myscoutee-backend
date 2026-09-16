@@ -164,7 +164,7 @@ verify_installed_version() {
 
   [[ -n "${EXPECTED_VERSION}" ]] || return 0
   installed_version="$(dpkg-query -W -f='${Version}' myscoutee 2>/dev/null || true)"
-  [[ "${installed_version}" == "${EXPECTED_VERSION}" ]] \
+  [[ "${installed_version//\~/-}" == "${EXPECTED_VERSION//\~/-}" ]] \
     || fail "installed version ${installed_version:-missing} does not match ${EXPECTED_VERSION}"
   log "installed package version: ${installed_version}"
 }
@@ -290,8 +290,8 @@ esac
 [[ "${TIMEOUT_SECONDS}" =~ ^[1-9][0-9]{0,3}$ ]] \
   || fail "timeout must be an integer between 1 and 9999 seconds"
 if [[ -n "${EXPECTED_VERSION}" ]]; then
-  [[ "${EXPECTED_VERSION}" =~ ^(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)$ ]] \
-    || fail "expected version must be a plain SemVer core"
+  [[ "${EXPECTED_VERSION}" =~ ^(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)([-~]qa\.[1-9][0-9]*)?$ ]] \
+    || fail "expected version must be a SemVer core or QA prerelease"
 fi
 [[ "${COMPOSE_PROJECT}" =~ ^[a-zA-Z0-9_.-]+$ ]] \
   || fail "invalid Compose project name"

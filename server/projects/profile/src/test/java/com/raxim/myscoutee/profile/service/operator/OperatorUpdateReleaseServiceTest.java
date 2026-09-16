@@ -78,6 +78,7 @@ class OperatorUpdateReleaseServiceTest {
         var service = new OperatorUpdateReleaseService(properties, mapper, client);
         var release = service.releases().items().getFirst();
         assertThat(release.updateManifest().packageSignatureVerified()).isTrue();
+        assertThat(release.updateManifest().backupRequired()).isFalse();
         assertThat(service.find(release.announcementId())).isEqualTo(release);
         verify(client, times(4)).send(any(), any(HttpResponse.BodyHandler.class));
 

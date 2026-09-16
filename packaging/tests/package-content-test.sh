@@ -743,6 +743,14 @@ fi
 
 rm -f "${IMAGE_LAYER_ROOT}/run/secrets/firebase-service-account.json"
 python3 -c \
+  'import sys, zipfile; z=zipfile.ZipFile(sys.argv[1],"w"); z.writestr("com/google/api/client/googleapis/google.p12", b"unreviewed-credential"); z.close()' \
+  "${IMAGE_LAYER_ROOT}/app/unreviewed-truststore.jar"
+if python3 "${REPO_ROOT}/packaging/release/audit-nested-archive.py" \
+    "${IMAGE_LAYER_ROOT}/app/unreviewed-truststore.jar" >/dev/null 2>&1; then
+  fail "credential audit trusted a PKCS12 filename without its reviewed digest"
+fi
+rm -f "${IMAGE_LAYER_ROOT}/app/unreviewed-truststore.jar"
+python3 -c \
   'import sys, zipfile; z=zipfile.ZipFile(sys.argv[1],"w"); z.writestr("BOOT-INF/classes/firebase-service-account.json", "{}"); z.close()' \
   "${IMAGE_LAYER_ROOT}/app/application.jar"
 tar -cf "${IMAGE_BUILD}/layer.tar" -C "${IMAGE_LAYER_ROOT}" .
@@ -876,6 +884,27 @@ if MYSCOUTEE_VERSION=1.0.0-prod \
   ALLOW_UNBUNDLED_IMAGES_FOR_TESTS=true \
   bash "${PACKAGE_SCRIPT}" >/dev/null 2>&1; then
   fail "suffixed Debian package version was accepted"
+fi
+
+# QA releases use SemVer for application/image identity and Debian's tilde
+# ordering for the package manager. Exercise the normal builder, not repacking.
+qa_deb="$(
+  MYSCOUTEE_VERSION=1.0.0-qa.1 \
+  MYSCOUTEE_DIST_DIR="${TEST_ROOT}/qa-dist" \
+  BUILD_ARTIFACTS=false PACKAGE_IMAGES=false ALLOW_UNBUNDLED_IMAGES_FOR_TESTS=true \
+  bash "${PACKAGE_SCRIPT}" | tail -n 1
+)"
+[[ "$(dpkg-deb -f "${qa_deb}" Version)" == '1.0.0~qa.1' ]] \
+  || fail "QA package lacks Debian prerelease ordering"
+dpkg-deb -x "${qa_deb}" "${TEST_ROOT}/qa-package"
+grep -Fxq '1.0.0-qa.1' "${TEST_ROOT}/qa-package/opt/myscoutee/packaging/VERSION" \
+  || fail "QA application version marker does not match the release"
+[[ -f "${TEST_ROOT}/qa-dist/myscoutee-client-tools_1.0.0-qa.1.tar.gz" ]] \
+  || fail "QA client tools do not use the release version"
+dpkg --compare-versions 1.0.0~qa.1 lt 1.0.0 \
+  || fail "QA package must sort before stable 1.0.0"
+if grep -q 'sync_frontend_assets.sh' "${REPO_ROOT}/packaging/release/build-production.sh"; then
+  fail "production builder must not overwrite the dev nginx frontend"
 fi
 
 echo "package content tests passed"

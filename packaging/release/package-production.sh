@@ -14,9 +14,10 @@ read_version() {
 VERSION="${MYSCOUTEE_VERSION:-$(read_version)}"
 VERSION="${VERSION:-1.0.0}"
 ARCHITECTURE="${DEB_ARCHITECTURE:-amd64}"
-if [[ ! "${VERSION}" =~ ^(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)$ ]] \
-  || ! dpkg --validate-version "${VERSION}" >/dev/null 2>&1; then
-  echo "MYSCOUTEE_VERSION must be a plain SemVer core such as 1.0.0." >&2
+DEBIAN_VERSION="${VERSION/-/\~}"
+if [[ ! "${VERSION}" =~ ^(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)(-qa\.[1-9][0-9]*)?$ ]] \
+  || ! dpkg --validate-version "${DEBIAN_VERSION}" >/dev/null 2>&1; then
+  echo "MYSCOUTEE_VERSION must be a SemVer core or QA prerelease such as 1.0.0-qa.1." >&2
   exit 1
 fi
 if [[ ! "${ARCHITECTURE}" =~ ^[a-z0-9][a-z0-9-]{0,31}$ ]]; then
@@ -63,7 +64,7 @@ install -d "${STAGING_DIR}/lib/systemd/system"
 install -d "${STAGING_DIR}/usr/share/myscoutee/client-tools/verify-deployment"
 
 sed \
-  -e "s/^Version:.*/Version: ${VERSION}/" \
+  -e "s/^Version:.*/Version: ${DEBIAN_VERSION}/" \
   -e "s/^Architecture:.*/Architecture: ${ARCHITECTURE}/" \
   "${REPO_ROOT}/packaging/debian/control" > "${STAGING_DIR}/DEBIAN/control"
 install -m 0755 "${REPO_ROOT}/packaging/debian/postinst" "${STAGING_DIR}/DEBIAN/postinst"

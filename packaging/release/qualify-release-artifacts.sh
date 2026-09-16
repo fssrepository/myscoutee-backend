@@ -78,11 +78,13 @@ dpkg --compare-versions "${candidate_version}" gt "${oldest_version}" || {
   echo "Candidate version must be newer than the oldest-supported version." >&2
   exit 1
 }
-[[ "${candidate_version}" =~ ^(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)$ ]] || {
-  echo "Candidate package version must be a plain SemVer core." >&2
+[[ "${candidate_version}" =~ ^(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)(~qa\.[1-9][0-9]*)?$ ]] || {
+  echo "Candidate package version must be a SemVer core or QA prerelease." >&2
   exit 1
 }
 
+candidate_version="${candidate_version//\~/-}"
+oldest_version="${oldest_version//\~/-}"
 expected_registry_image="myscoutee-registry:${candidate_version}-prod"
 [[ "${REGISTRY_IMAGE}" == "${expected_registry_image}" ]] || {
   echo "Registry image must use the candidate-derived tag ${expected_registry_image}." >&2

@@ -24,6 +24,24 @@ They are deliberately outside `packaging/scripts`. Everything under
 Destructive local datastore reset remains under `tools/` and is not a packaging
 input.
 
+## Build a QA prerelease from current source
+
+Use the normal builder with `MYSCOUTEE_VERSION=1.0.0-qa.1`. It builds the complete
+current frontend/backend and managed images, then packages them. Application
+markers, image tags and filenames use `1.0.0-qa.1`; the Debian control version
+uses `1.0.0~qa.1` so it sorts before stable `1.0.0`. The final stable version
+remains unchanged. Do not patch old application binaries to make this baseline.
+
+Production nginx consumes `frontend/prod` through its named build context.
+Release builds must not copy output into the dev-owned
+`server/docker/conf/nginx/app/myscoutee` directory.
+
+The source-only `guides/qa/tools/operator-update-config-fixture.py` provisions
+the designated QA guest's normal update settings and independently pinned public
+key. Its `stage`, `status` and `reset` actions retain only those configuration
+inputs; restart the existing deployment after stage/reset. It never writes
+installed versions or successful update results.
+
 ## Standalone update discovery
 
 Operator Updates reads `fssrepository/myscoutee` GitHub releases through Java,
