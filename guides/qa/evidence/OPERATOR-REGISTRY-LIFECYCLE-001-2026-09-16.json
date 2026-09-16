@@ -1,6 +1,6 @@
 {
   "checkpoint": "OPERATOR-REGISTRY-LIFECYCLE-001",
-  "status": "IN PROGRESS",
+  "status": "PASS",
   "date": "2026-09-16",
   "environment": "Existing dev Compose; demo_db; actual Go Registry demo:myscoutee; managed Operator/Ava browsers",
   "baseline": {
@@ -122,7 +122,8 @@
     "pairedReset": {
       "cause": "Application-owned directories sit below root-owned Compose data parent",
       "fix": "Remove fixture-owned contents as application user; remove only empty fixed directories with init authority; no permissions broadened",
-      "firstReset": "PASS: exact Go bytes, local state and Mongo/session restore; final reset pending"
+      "firstReset": "PASS: exact Go bytes, local state and Mongo/session restore; final reset pending",
+      "finalReset": "PASS"
     }
   },
   "next": "Block4 steps14\u201318, corrected to user contract: disconnect preserves local data/access; reconnect is a new connection; resynchronize retained sources and restore paired baseline.",
@@ -285,7 +286,7 @@
     "reviewAfterReopen": 3
   },
   "block4": {
-    "status": "PASS pending final reset",
+    "status": "PASS",
     "firstDisconnect": "PASS: archived binding; retained local collection counts identical",
     "reconnect": "PASS: fresh registration, installation ledger 52; old claim remains withdrawn",
     "retainedSourceResync": "PASS: six exact reports and signed receipts identical before/after fresh connection, source fingerprint unchanged",
@@ -297,6 +298,7 @@
     "memberAccess": "PASS while disconnected: Casey /game and Events opened with three retained cards",
     "adminAccess": "PASS while disconnected: Ava /admin and Reported users opened with two retained reports",
     "originalPrivateEvidence": "/tmp/myscoutee-qa-operator-registry-original-20260916",
-    "targetedReplayPrivateEvidence": "/tmp/myscoutee-qa-operator-registry"
+    "targetedReplayPrivateEvidence": "/tmp/myscoutee-qa-operator-registry",
+    "cleanup": "PASS: exact paired Go bytes/local-state/Mongo and all three actor-session baselines restored"
   }
 }

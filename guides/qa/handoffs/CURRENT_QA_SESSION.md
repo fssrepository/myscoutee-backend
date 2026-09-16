@@ -104,14 +104,14 @@ when shaping only its route to the QA application.
 ```yaml
 checkpoint: OPERATOR-REGISTRY-LIFECYCLE-001
 checklist: ../checklists/operator/OPERATOR-REGISTRY-LIFECYCLE-001.md
-substage: Blocks1–3 PASS. Six completed-period reports accepted, receipts46–51, exact source totals and unchanged-source fingerprint. User corrected block4: disconnect preserves local data/access; reconnect is a new connection and resynchronizes sources. Next step14 disconnect via UI; paired baseline retained. Synchronize button behavior unchanged.
-fixture_phase: operator-registry staged via guides/qa/tools/operator-registry-fixture.py; consistent Go SQLite/key archive plus local key/state and Mongo snapshots retained under private /tmp/myscoutee-qa-operator-registry. Use paired wrapper reset, never Mongo-only reset.
+substage: Registry all four blocks PASS; final exact paired reset complete. Next Operator Update prerequisite gate, then Revenue. Mobile Node registration fullscreen/native scrolling verified. New reconnect regression added but not separately run; actual Java/Go targeted replay PASS.
+fixture_phase: operator-registry not-staged; paired snapshot manifest restored under /tmp/myscoutee-qa-operator-registry; original evidence retained under /tmp/myscoutee-qa-operator-registry-original-20260916. Browser sessions restored; managed windows retain stale test display until next launcher.
 browser_control: Full-flow delegated. Managed OPERATOR-REGISTRY-LIFECYCLE-001 Operator and Ava sessions; launcher owns startup.
 required_resume: Read-only paired fixture status, then current browser. Run registration via UI only. Preserve Go/Mongo/local-state baseline. Configuration blocked HTTPS/live-provider checks remain open; no need to rerun completed branches.
 queued_work: Four Operator journeys delegated. Two remaining Asset tests reserved for user-operated pair QA. VMware deployment qualification separate/not started.
 last_completed: Administration4/4 PASS including Parameters visual follow-up and exact fixture reset2026-09-16.
 runtime: Existing backend/frontend watchers running; no duplicate builds. mongodb-sync remains stopped because startup replaces collections.
-ledger_status: 98/104 PASS; Administration4/4; Operator0/4, Configuration partial/open and Registry IN PROGRESS.
+ledger_status: 99/104 PASS; Administration4/4; Operator1/4, Registry PASS; Configuration partial/open; Update and Revenue pending.
 last_evidence: ../evidence/OPERATOR-REGISTRY-LIFECYCLE-001-2026-09-16.json
 ```
 

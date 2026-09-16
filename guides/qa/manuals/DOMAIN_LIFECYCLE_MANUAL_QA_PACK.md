@@ -7576,6 +7576,24 @@ and is resynchronized, including additional qualifying records if present.
 The former full local access denial/old-binding restoration assertions were
 incorrect QA expectations. Next: block4 disconnect/reconnect and exact cleanup.
 
+Block 4 steps 14–18 PASS: fresh registration retains the deployment identity but
+uses a new enrollment and explicit signed reactivation; withdrawn claims remain
+archived. Initial claim/lifecycle idempotency generations now include the fresh
+registration key. A verified historical WITHDRAWN/inactive claim does not restore
+an active claim. The final targeted Java/Go replay used deployment
+`dep_57dfbce131b26640ca56aa9399ce6587`, reactivation receipt
+`opa_b350ad5dedf21adbb007674a90858bd4`, and two distinct disconnect archives.
+All six report identities/receipts and source totals were identical across
+reconnect/synchronize. Casey opened three retained Events and Ava opened two
+Reports while disconnected. Final paired reset verified exact Go archive bytes,
+local state, Mongo records and all three actors' pre-launch sessions.
+Mobile registration uses shared fullscreen/default-scroll configuration. At
+390x350, native scrolling reached the bottom action (scrollTop100), header/X
+stayed fixed and horizontal overflow was absent. Short translated disconnect
+errors retain their icon size. Existing dev watchers compiled successfully.
+The focused reconnect/security regression was added but not separately run;
+live happy-path Java/Go replay passed. Full checkpoint: PASS.
+
 ### `OPERATOR-UPDATE-LIFECYCLE-001` — signed update
 
 - Apply one prepared compatible QA release from Updates, observe honest
