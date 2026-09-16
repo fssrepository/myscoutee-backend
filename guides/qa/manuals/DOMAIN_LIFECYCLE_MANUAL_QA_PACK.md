@@ -10300,3 +10300,83 @@ notes are added to the ledger and the workbook is regenerated. No fixture,
 browser, Registry, provider or update operation was executed. Dedicated Operator
 fixture orchestration is still prepared when its own checkpoint starts. The
 active preparation-only handoff remains ADMIN-MONITORING-001 block1 step1.
+
+### Monitoring delegated execution and closure — 2026-09-16
+
+**ADMIN-MONITORING-001: PASS / CLOSED.** User delegated the full visible Ava
+journey and in-scope repairs. All20 numbered checks are covered by the new
+observations below and assertion-specific retained evidence. The original
+MON-013 scope names10 jobs; the additional payment-method-expiry row is outside
+that source list and is not claimed as a new payment lifecycle test.
+Machine evidence: [Monitoring evidence](../evidence/ADMIN-MONITORING-001-2026-09-16.json).
+
+- Block1: All8, Watch1 (pre-existing Users alert), Domains5, Notifications1,
+  Background2. Exact names/counts matched persisted health. Read/filter caused
+  no task/outbox/config mutation; unrelated scheduled runs were identified.
+  The popup loads on opening/filter changes, not an automatic interval. The
+  guide's earlier assumed passive polling wording was corrected without adding
+  a product polling feature.
+- Block2: isolated USER task completed first attempt; affinity0→53402,
+  no rate/edge rows for the isolated user. Run
+  `56224d3f-a124-4c38-8a24-1e6e1bfbcd60` at05:45:49Z completed125ms/count1.
+  Ava's Runner history showed the same run. The short processing state was
+  established from retained task/history; the real CONFIG work in block3
+  additionally proved pending/running/terminal queues and Watch→Healthy.
+  Existing Bell changed-pair, discovery/graph and unaffected-control proof is
+  reused for those previously proven output assertions.
+
+| MON-013 job | Exact new or retained scheduler/history/domain proof |
+| --- | --- |
+| event-random-groups | New `5664c68a-ca9e-42ae-81d4-a0252650fe12`,06:04:08.942–09.296Z,354ms/count6; exact start/completed telemetry; two3/3 rooms, six unique memberships/chat projections, two welcome messages, two logical outbox records with exact room recipients and six inbox rows. Ava Job Detail matched. |
+| event-auto-inviter | Retained JOB-AUTO2026-08-04,08:49: one Nova invitation; Job Detail, invitation/marker/outbox/bell, Monitoring and Statistics all agreed; guarded reset. No originating invite journey repeated. |
+| event-tournament-review | New `9903f1ef-8e41-4b7c-b7af-1487c090a3f0`,06:02:08.754–08.858Z,104ms/count1; exact telemetry and Ava detail; stageSR/reasonstage-ended. Existing advancement/DQ business branches remain retained. |
+| event-counter-expiry | New `08ff98ab-fecc-4592-a243-b9a70409f305`,06:00:08.606–08.658Z,52ms/count1; exact telemetry/detail; expired target, byte-identical future control and exact owner counters. |
+| event-checkout-basket-purge | Retained EVENT-SCHEDULERS2026-09-02,08:18:21Z,count1; Monitoring1186/1186→1187/1187, deleted basket with tracking cleared, future basket/Event controls unchanged and live Basket disappearance. |
+| notification-outbox | Retained Notification Admin2026-09-15 run `d66911ba-1a2f-4efc-aeed-1bd017e30e4c`,11:59:04Z,52ms/count1, corrected Monitoring/read/reset evidence; today's parameter outbox records also all reached sent. |
+| affinity-recompute | Today's isolated run above plus real CONFIG tasks; retained Bell changed/control projection evidence. |
+| affinity-graph-layout | Retained Bell2026-09-15 run `1c41e279-7e5e-4cdd-8ced-178dfafd38bf`,14:02:02Z,202ms,1131links/54members; real materialization, stored layout/header, selected Casey/Nova pair and unchanged historical/control proof. |
+| scheduled-messages | Retained JOB-MESSAGES run `d93e9054-4db7-4b8e-8870-326ff5a13f0d`,12:38:02Z,count1/19ms, Redis1789475882001-0 and1789475882009-0; exact rescheduled task/delivery and unchanged active user; both full-flow branches and final display closure retained. |
+| account-purge | New `0f3bf35c-1c60-4847-a6c1-03c0e4bd4044`,06:01:10.342–10.688Z,346ms/count1; exact telemetry/detail; target user/reference gone, completed purge record with cleared userId,retry0,errornull. |
+
+- Block3: one visible Save300→301 createdv2; reopen/History author/time/value
+  matched. Real History revert producedv3/300. Initial same-active-version HTTP
+  probe exposed unwantedv4; repaired probe returned200 with activev4 unchanged
+  and byte-identical config/version count/CONFIG tasks/parameter outbox. All
+  seven sections' current HTTP fields equalv1. Retained versions2/3/4 correspond
+  to exactlythree `admin.params.changed` events; Jobs config24→27. The extra
+  version4 is retained failure evidence, not a legitimate no-op result.
+- Repairs were limited to the proven boundaries: Params notifications exclude
+  the actor (v2 before fix Ava+Noel; v3/v4 after fix Noel only, exact inbox/outbox
+  recipients); the config listener uses the same stable key as the Params
+  producer, so a real revert queues one CONFIG task; a saved Firebase=false
+  decision can finish outside the Firebase delivery window; reverting the
+  active section version exits before persistence/side effects. All corrected
+  behaviors were checked against the running HTTP/worker flow.
+- The versioned `make-recompute-due` preparation shortens only captured CONFIG
+  waits; it does not manufacture execution. All resulting tasks became done,
+  all parameter outboxes sent, and live queue counts returned0/0/0.
+- Existing Random Rooms fixture assertions were stale: old welcome copy and
+  two outbox records per room. Updated assertions retain canonical message
+  identity/sender/avatar, current welcome copy, exact one logical outbox per
+  room with exactly its accepted members, and artifact ordering. The same
+  already-completed run then passed; no extra grouping replay was needed.
+- User-requested Jobs leading icons now use the existing application menu
+  palette colors/backgrounds; status failure/suspension overrides remain.
+  The existing frontend watcher compiled and the live screenshot/computed
+  colors were verified. No table layout or worker architecture was refactored.
+- Existing backend hot-deploy builds passed. Updated regression test source
+  covers actor exclusion and same active section across a later unrelated
+  section version. No separate Gradle/unit process was launched alongside the
+  running compiler; verification here is live HTTP/UI/worker plus syntax and
+  diff checks, not a claim that those unit tests were executed.
+- Block4: all four additional Admin job fixtures and the initial affinity
+  fixture reset exactly. Managed Ava closed after the visible checks; common
+  browser-session snapshot restored, Monitoring wrapper reset verified original
+  Jobs values/terminal work/exact retained startup snapshots and reported
+  `not-staged`. Real versions/audit/delivery records remain as specified.
+  Existing stopped containers were restarted, with no duplicate dev stack;
+  `mongodb-sync` remains stopped because its startup replaces seed collections.
+  The read-only temporary telemetry collector completed and exited.
+
+The user then authorized the next test in the same delegated mode:
+**ADMIN-AFFINITY-GRAPH-001**, beginning with versioned fixture preparation.

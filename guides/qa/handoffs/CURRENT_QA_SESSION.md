@@ -102,17 +102,17 @@ repair an established product defect. Preserve the phone's tethering connection
 when shaping only its route to the QA application.
 
 ```yaml
-checkpoint: ADMIN-MONITORING-001 — DELEGATED EXECUTION / RESUME PREFLIGHT
-checklist: ../checklists/administration/ADMIN-MONITORING-001.md
-substage: Block1 step1 pending resumed runtime/fixture verification. User explicitly delegated full Monitoring execution2026-09-16; announce block/step and continue through fixes.
-fixture_phase: admin-monitoring baseline-ready-not-started; no test parameter save or job armed.
-browser_control: User explicitly delegated Monitoring full-flow execution2026-09-16. Old browser manifest absent after restart; use versioned launcher after saved fixture verification.
-required_resume: Verify retained baseline and managed Ava startup, then execute Monitoring1–20. Preserve earlier Bell/Jobs proof and repair only in-scope defects.
-queued_work: All three Administration and four Operator guides written in English. Only Monitoring scripts prepared; other fixture orchestration deferred. Monitoring owns parameter save/history/revert once; other tests replace proven prerequisite actions with fixtures, not repeated clicks. No separate common testcase. Administration coverage restored against334d4787: Monitoring20, Graph23, Parameters25 explicit steps with source-ID mappings; evidence reuse is assertion-specific. Operator guide omissions now repaired against334d4787 at user request: Configuration C01–C08, Registry18, Updates11, Revenue11; per-guide requirement mapping retained. Documentation only; dedicated Operator fixtures deferred.
-last_completed: BELL-RATING all1–20 PASS, final consistent feedback worker oracle and exact fixture/session resets verified.
-runtime: Existing watchers only. No application code changed in this continuation.
-ledger_status: 95/104 PASS; Notifications6/6. Admin Monitoring prepared, Graph/Parameters and Operator not newly executed.
-last_evidence: ../manuals/DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md#operator-coverage-repair-against-the-original-matrix--2026-09-15
+checkpoint: ADMIN-AFFINITY-GRAPH-001 — DELEGATED EXECUTION / PREPARATION
+checklist: ../checklists/administration/ADMIN-AFFINITY-GRAPH-001.md
+substage: Prepare exact versioned baseline and managed Ava browser, then blocks1–5 steps1–23. User authorized next full-flow test2026-09-16.
+fixture_phase: No active Monitoring or Admin job fixture; Graph orchestration not yet staged.
+browser_control: Full-flow execution explicitly delegated; announce exact block/step. Previous Monitoring managed Ava window closed and session state restored.
+required_resume: Read Graph guide and current fixture/runtime boundary; prepare with existing graph fixtures before versioned browser startup. Reuse Bell and historical Statistics assertions exactly where already proven.
+queued_work: All Administration and four Operator guides are English with original source coverage. Monitoring owns shared Params/History/revert/no-op once; later Parameters uses fixture preparation for repeated interactions. Dedicated Graph/Parameters/Operator orchestration is prepared when each starts.
+last_completed: ADMIN-MONITORING1–20 PASS/CLOSED2026-09-16, including four narrowly repaired backend defects, existing-palette Jobs icon colors and exact fixture/session cleanup.
+runtime: Existing backend/frontend watchers running; no duplicate builds. mongodb-sync deliberately stopped because startup replaces seeded collections. No temporary telemetry collector remains.
+ledger_status: 96/104 PASS; Notifications6/6, Administration2/4. Graph now delegated, not yet executed in this continuation.
+last_evidence: ../manuals/DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md#monitoring-delegated-execution-and-closure--2026-09-16
 ```
 
 ### Notifications takeover notes
