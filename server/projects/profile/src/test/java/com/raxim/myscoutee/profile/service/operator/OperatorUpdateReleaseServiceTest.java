@@ -26,14 +26,20 @@ class OperatorUpdateReleaseServiceTest {
     @TempDir Path directory;
     private final ObjectMapper mapper = new JsonConfig().objectMapper();
 
-    @Test
-    void discoversAndRevalidatesSignedGithubReleaseWithoutAnyRegistry() throws Exception {
+    @org.junit.jupiter.params.ParameterizedTest
+    @org.junit.jupiter.params.provider.ValueSource(booleans = {false, true})
+    void discoversAndRevalidatesSignedGithubReleaseWithoutAnyRegistry(boolean local) throws Exception {
         var properties = new OperatorUpdateProperties();
+        String downloadOrigin = local ? "https://127.0.0.1:18445" : "https://github.com";
+        if (local) {
+            properties.setReleaseApiOrigin(downloadOrigin);
+            properties.setReleaseDownloadOrigin(downloadOrigin);
+        }
         properties.setReleasePublicKeyPath(directory.resolve("public.der"));
         var key = KeyPairGenerator.getInstance("Ed25519").generateKeyPair();
         Files.write(properties.getReleasePublicKeyPath(), key.getPublic().getEncoded());
-        String url = "https://github.com/fssrepository/myscoutee/releases/download/v1.2.3/myscoutee_1.2.3_amd64.deb";
-        String metadataUrl = "https://github.com/fssrepository/myscoutee/releases/download/v1.2.3/myscoutee-update.json";
+        String url = downloadOrigin + "/fssrepository/myscoutee/releases/download/v1.2.3/myscoutee_1.2.3_amd64.deb";
+        String metadataUrl = downloadOrigin + "/fssrepository/myscoutee/releases/download/v1.2.3/myscoutee-update.json";
         var manifest = new java.util.LinkedHashMap<String, Object>();
         manifest.put("manifest_version", "1"); manifest.put("release_version", "1.2.3");
         manifest.put("channel", "stable"); manifest.put("published_at", "2026-09-16T12:00:00Z");
@@ -72,7 +78,7 @@ class OperatorUpdateReleaseServiceTest {
             HttpResponse<java.io.InputStream> response = mock(HttpResponse.class);
             when(response.statusCode()).thenReturn(200);
             when(response.body()).thenReturn(new ByteArrayInputStream(
-                    request.uri().getHost().equals("api.github.com") ? list : envelope));
+                    request.uri().getPath().startsWith("/repos/") ? list : envelope));
             return response;
         });
         var service = new OperatorUpdateReleaseService(properties, mapper, client);
@@ -93,6 +99,20 @@ class OperatorUpdateReleaseServiceTest {
         assertThatThrownBy(() -> service.verify(envelope)).hasMessageContaining("metadata signature");
         Files.delete(properties.getReleasePublicKeyPath());
         assertThatThrownBy(() -> service.verify(envelope)).hasMessageContaining("release key");
+    }
+
+    @org.junit.jupiter.params.ParameterizedTest
+    @org.junit.jupiter.params.provider.ValueSource(strings = {
+        "http://localhost:18445", "https://user:secret@localhost", "https://localhost/path",
+        "https://localhost?redirect=other", "https://localhost#fragment"
+    })
+    void rejectsUnsafeConfiguredOriginsBeforeNetworkAccess(String origin) {
+        var properties = new OperatorUpdateProperties();
+        properties.setReleaseApiOrigin(origin);
+        HttpClient client = mock(HttpClient.class);
+        assertThatThrownBy(() -> new OperatorUpdateReleaseService(properties, mapper, client).releases())
+                .isInstanceOf(org.springframework.web.server.ResponseStatusException.class);
+        verifyNoInteractions(client);
     }
 
     @Test

@@ -55,7 +55,7 @@ install -d -m 0700 /var/lib/myscoutee/update/archive/processing
 install -d -m 0700 /var/lib/myscoutee/update/archive/completed
 install -d -m 0700 /var/lib/myscoutee/update/archive/failed
 install -d -m 0700 /var/lib/myscoutee/update/archive/rejected
-install -d -m 0700 /var/lib/myscoutee/update/runtime
+install_numeric_owned_directory 0750 0 "${MYSCOUTEE_API_GID}" /var/lib/myscoutee/update/runtime
 install_numeric_owned_directory \
   0750 0 "${MYSCOUTEE_API_GID}" \
   /var/lib/myscoutee/update/runtime/jobs \

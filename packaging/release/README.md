@@ -74,3 +74,22 @@ locally pinned release key. Apply reloads and revalidates the release before
 allocating a job. The root worker still independently verifies the actual DEB.
 Missing metadata, an invalid signature or an absent trusted key disables Apply;
 these conditions must not be reported as an up-to-date deployment.
+
+### Configurable release source
+
+`MYSCOUTEE_UPDATE_RELEASE_API_ORIGIN` defaults to `https://api.github.com`;
+`MYSCOUTEE_UPDATE_RELEASE_DOWNLOAD_ORIGIN` defaults to `https://github.com`.
+A configured mirror must expose the same repository release-list and asset-path
+format. Only HTTPS origins without paths or credentials are accepted. Metadata
+redirects are restricted to those origins (plus GitHub's asset CDN for the default
+GitHub source). An optional `MYSCOUTEE_UPDATE_TLS_CA_CERTIFICATE` points to a
+readable public CA bundle for these update clients; hostname verification and
+release signatures remain mandatory. Leave it empty for system TLS trust.
+
+The signed client installer records only the installed package version/hash
+following successful host qualification. The privileged worker retains that
+identity as the next update's recovery point. Explicit UI rollback resolves and
+verifies the previous release again, downloads it normally, and requires the
+exact retained artifact hash. It does not restore database or media data. An
+installation without a retained package identity cannot advertise a proven
+rollback target.

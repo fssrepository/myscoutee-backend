@@ -12,6 +12,14 @@ managed HTTPS lifecycle. All three parts are required to close this Update row.
 
 ## Fixture prerequisites
 
+For the current run, use the user-designated [local signed release source](../../tools/OPERATOR-UPDATE-LOCAL-RELEASE.md)
+instead of modifying GitHub. References below to GitHub downloads mean this
+configured HTTPS release source for this run. Keep the same signed package,
+checksum, explicit approval, cache-miss and data-preservation oracles. Build
+both QA1 and QA2 normally from the current source so the installed QA2 includes
+the rollback action. Record local-source qualification separately from real
+GitHub connectivity.
+
 Codex names the initial/target versions, package identity and recovery baseline,
 and records existing release/job state. Fixtures prepare the target and access
 instead of replaying deployment/registration. The real update path verifies and

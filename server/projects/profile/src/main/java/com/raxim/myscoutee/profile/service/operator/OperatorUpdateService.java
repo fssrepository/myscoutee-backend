@@ -48,6 +48,7 @@ import com.raxim.myscoutee.common.config.properties.RegistryProperties;
 import com.raxim.myscoutee.profile.data.dto.operator.OperatorNetworkDtos.OperatorAnnouncementDto;
 import com.raxim.myscoutee.profile.data.dto.operator.OperatorNetworkDtos.OperatorUpdateManifestDto;
 import com.raxim.myscoutee.profile.data.dto.operator.OperatorUpdateDtos.OperatorUpdateApprovalDto;
+import com.raxim.myscoutee.profile.data.dto.operator.OperatorUpdateDtos.OperatorRollbackDto;
 import com.raxim.myscoutee.profile.data.dto.operator.OperatorUpdateDtos.OperatorUpdateEventDto;
 import com.raxim.myscoutee.profile.data.dto.operator.OperatorUpdateDtos.OperatorUpdateEventPageDto;
 import com.raxim.myscoutee.profile.data.dto.operator.OperatorUpdateDtos.OperatorUpdateJobDto;
@@ -173,7 +174,41 @@ public class OperatorUpdateService {
         return new OperatorUpdateOverviewDto(
                 properties.isEnabled(),
                 currentVersion,
-                latest == null ? null : latest.status());
+                latest == null ? null : latest.status(),
+                rollbackPoint(state, currentVersion));
+    }
+
+    private OperatorRollbackDto rollbackPoint(Path state, String currentVersion) {
+        Path receipt = state.resolve("runtime").resolve("recovery.json");
+        if (!isSafeRegularFile(receipt)) return null;
+        try {
+            if (Files.size(receipt) > 4096) return null;
+            var point = objectMapper.readValue(Files.readAllBytes(receipt), OperatorRollbackDto.class);
+            if (!JOB_ID.matcher(safeText(point.jobId())).matches()
+                    || !RELEASE_VERSION.matcher(safeText(point.targetVersion())).matches()
+                    || !safeText(point.artifactSha256()).matches("sha256:[0-9a-f]{64}")
+                    || !Objects.equals(currentVersion, point.fromVersion())) return null;
+            return point;
+        } catch (IOException | RuntimeException exception) {
+            return null;
+        }
+    }
+
+    public OperatorUpdateJobDto rollback(String previousJobId, String actorUserId) {
+        requireEnabledRealMode();
+        String jobId = requireJobId(previousJobId);
+        String actor = requireActor(actorUserId);
+        var point = rollbackPoint(existingStateDirectory(), safeText(registryProperties.getSoftwareVersion()));
+        if (point == null || !point.jobId().equals(jobId)) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "The retained rollback point is unavailable.");
+        }
+        var announcement = releaseService.findVersion(point.targetVersion());
+        var manifest = announcement.updateManifest();
+        if (manifest == null || !point.artifactSha256().equals(manifest.artifactSha256())) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "The previous release package has changed.");
+        }
+        VerifiedRelease verified = requireInstallableRelease(announcement, true);
+        return start(new VerifiedRelease(verified.announcementId(), verified.manifestHash(), verified.manifest(), jobId), actor);
     }
 
     public OperatorUpdateJobDto approve(
@@ -190,6 +225,10 @@ public class OperatorUpdateService {
         // Resolve every security-sensitive field from a fresh signed release
         // snapshot before allocating a local job.
         VerifiedRelease release = findVerifiedRelease(announcementId);
+        return start(release, actor);
+    }
+
+    private OperatorUpdateJobDto start(VerifiedRelease release, String actor) {
         synchronized (startLock) {
             Path state = requireStateDirectory();
             String busyJob = findBusyJob(state);
@@ -282,11 +321,11 @@ public class OperatorUpdateService {
     }
 
     private VerifiedRelease findVerifiedRelease(String announcementId) {
-        return requireInstallableRelease(releaseService.find(announcementId));
+        return requireInstallableRelease(releaseService.find(announcementId), false);
     }
 
     private VerifiedRelease requireInstallableRelease(
-            OperatorAnnouncementDto announcement) {
+            OperatorAnnouncementDto announcement, boolean rollback) {
         OperatorUpdateManifestDto manifest = announcement.updateManifest();
         if (!"UPDATE".equals(announcement.kind())
                 || manifest == null
@@ -336,17 +375,17 @@ public class OperatorUpdateService {
                     "The installed software version is unavailable for compatibility checking.",
                     exception);
         }
-        if (RegistryProtocol.compareSemanticVersions(
+        if (!rollback && (RegistryProtocol.compareSemanticVersions(
                         currentVersion,
                         minimumVersion) < 0
                 || RegistryProtocol.compareSemanticVersions(
                         currentVersion,
-                        maximumVersion) > 0) {
+                        maximumVersion) > 0)) {
             throw new ResponseStatusException(
                     HttpStatus.CONFLICT,
                     "The selected update is incompatible with the installed version.");
         }
-        if (RegistryProtocol.compareSemanticVersions(
+        if (!rollback && RegistryProtocol.compareSemanticVersions(
                 releaseVersion,
                 currentVersion) <= 0) {
             throw new ResponseStatusException(
@@ -517,7 +556,8 @@ public class OperatorUpdateService {
                 release.manifest().artifactSizeBytes(),
                 release.manifest().artifactSha256(),
                 release.manifest().packageSigningKeyId(),
-                release.manifest().packageSignature());
+                release.manifest().packageSignature(),
+                release.rollbackJobId());
         Path requestFile = state.resolve("requests").resolve(job.jobId() + ".json");
         atomicCreateJson(requestFile, request);
     }
@@ -1110,7 +1150,11 @@ public class OperatorUpdateService {
     private record VerifiedRelease(
             String announcementId,
             String manifestHash,
-            OperatorUpdateManifestDto manifest) {
+            OperatorUpdateManifestDto manifest,
+            String rollbackJobId) {
+        VerifiedRelease(String announcementId, String manifestHash, OperatorUpdateManifestDto manifest) {
+            this(announcementId, manifestHash, manifest, null);
+        }
     }
 
     private record DurableStatusCandidate(
@@ -1132,6 +1176,7 @@ public class OperatorUpdateService {
             @JsonProperty("artifact_size_bytes") long artifactSizeBytes,
             @JsonProperty("artifact_sha256") String artifactSha256,
             @JsonProperty("package_signing_key_id") String packageSigningKeyId,
-            @JsonProperty("package_signature") String packageSignature) {
+            @JsonProperty("package_signature") String packageSignature,
+            @JsonProperty("rollback_job_id") String rollbackJobId) {
     }
 }

@@ -18042,6 +18042,24 @@
     "value": "Check for updates"
   },
   {
+    "_id": "i18n-message-en-operator-update-rollback",
+    "key": "operator.update.rollback",
+    "lang": "en",
+    "value": "Roll back deployment"
+  },
+  {
+    "_id": "i18n-message-en-operator-update-rollingback",
+    "key": "operator.update.rollingback",
+    "lang": "en",
+    "value": "Rolling back deployment…"
+  },
+  {
+    "_id": "i18n-message-en-operator-update-error-rollback-unavailable",
+    "key": "operator.update.error.rollback.unavailable",
+    "lang": "en",
+    "value": "The previous verified package is unavailable. Check the release source before retrying."
+  },
+  {
     "_id": "i18n-message-en-operator-update-apply",
     "key": "operator.update.apply",
     "lang": "en",
@@ -38602,6 +38620,24 @@
     "key": "operator.update.refresh",
     "lang": "hu",
     "value": "Frissítések keresése"
+  },
+  {
+    "_id": "i18n-message-hu-operator-update-rollback",
+    "key": "operator.update.rollback",
+    "lang": "hu",
+    "value": "Előző verzió visszaállítása"
+  },
+  {
+    "_id": "i18n-message-hu-operator-update-rollingback",
+    "key": "operator.update.rollingback",
+    "lang": "hu",
+    "value": "Előző verzió visszaállítása…"
+  },
+  {
+    "_id": "i18n-message-hu-operator-update-error-rollback-unavailable",
+    "key": "operator.update.error.rollback.unavailable",
+    "lang": "hu",
+    "value": "A korábbi ellenőrzött csomag nem érhető el. Újrapróbálás előtt ellenőrizd a kiadások forrását."
   },
   {
     "_id": "i18n-message-hu-operator-update-apply",

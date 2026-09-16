@@ -237,6 +237,8 @@ fi
 echo "Running package-provided deployment qualification..."
 remote_transport_run_root "$@"
 
+remote_transport_run_root /opt/myscoutee/packaging/scripts/record-installed-package.sh "$REMOTE_DEB_PATH"
+
 echo "Install and host qualification passed."
 if [ -n "$VERIFY_DEPLOYMENT_URL" ]; then
   echo "Run the separate external deployment verification from this client:"

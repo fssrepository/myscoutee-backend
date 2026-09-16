@@ -43,12 +43,24 @@ public class OperatorUpdateController {
         return releases.releases();
     }
 
+    @GetMapping("/releases/{version}")
+    public com.raxim.myscoutee.profile.data.dto.operator.OperatorNetworkDtos.OperatorAnnouncementDto release(
+            @PathVariable String version) {
+        return releases.findVersion(version);
+    }
+
     @PostMapping
     @ResponseStatus(HttpStatus.ACCEPTED)
     public OperatorUpdateJobDto approve(
             @RequestBody OperatorUpdateApprovalDto approval,
             Authentication authentication) {
         return service.approve(approval, actorUserId(authentication));
+    }
+
+    @PostMapping("/jobs/{jobId}/rollback")
+    @ResponseStatus(HttpStatus.ACCEPTED)
+    public OperatorUpdateJobDto rollback(@PathVariable String jobId, Authentication authentication) {
+        return service.rollback(jobId, actorUserId(authentication));
     }
 
     @GetMapping("/jobs/{jobId}")

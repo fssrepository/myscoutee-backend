@@ -43,6 +43,7 @@ RUNTIME_DIR="${STATE_DIR}/runtime"
 JOBS_DIR="${RUNTIME_DIR}/jobs"
 CACHE_JOBS_DIR="${CACHE_DIR}/jobs"
 
+CURRENT_ROLLBACK_JOB=""
 CURRENT_REQUEST=""
 CURRENT_CLAIM_DIR=""
 CURRENT_JOB_ID=""
@@ -256,7 +257,7 @@ prepare_directories() {
     0700 "${API_USER_ID}" "${API_GROUP_ID}" \
     "${STAGING_DIR}" "${REQUEST_DIR}"
   install_numeric_owned_directory \
-    2750 "${WORKER_USER_ID}" "${API_GROUP_ID}" "${JOBS_DIR}"
+    2750 "${WORKER_USER_ID}" "${API_GROUP_ID}" "${RUNTIME_DIR}" "${JOBS_DIR}"
 }
 
 read_request() {
@@ -278,13 +279,16 @@ read_request() {
       "artifact_size_bytes",
       "artifact_sha256",
       "package_signing_key_id",
-      "package_signature"
+      "package_signature",
+      "rollback_job_id"
     ]) | length == 0)
     and (.schema_version == 1)
     and (.artifact_size_bytes | type == "number")
   ' "${request_file}" 2>/dev/null || true)"
   [[ "${strict}" == "true" ]] || return 1
 
+  CURRENT_ROLLBACK_JOB="$(jq -r '.rollback_job_id // ""' "${request_file}")"
+  [[ -z "$CURRENT_ROLLBACK_JOB" || "$CURRENT_ROLLBACK_JOB" =~ ^upd_[0-9a-f]{32}$ ]] || return 1
   CURRENT_BACKUP_PATH=""
   CURRENT_IMAGE_MANIFEST=""
   CURRENT_CACHED_ARTIFACT=""
@@ -604,8 +608,10 @@ install_package() {
   local cached_artifact="$1"
   local installed_after
 
+  local -a downgrade_options=()
+  [[ -z "$CURRENT_ROLLBACK_JOB" ]] || downgrade_options=(--allow-downgrades)
   if ! env DEBIAN_FRONTEND=noninteractive \
-    apt-get -o Dpkg::Use-Pty=0 install -y "${cached_artifact}" \
+    apt-get -o Dpkg::Use-Pty=0 install -y "${downgrade_options[@]}" "${cached_artifact}" \
     >> "${CURRENT_LOG_FILE}" 2>&1; then
     recovery_required "Package installation may be partial. Inspect the install log before retrying; preserve existing deployment data."
     return 1
@@ -687,6 +693,7 @@ reconcile_existing_job() {
     && ! -L "${INSTALLED_MANIFEST_PATH}" ]] \
     && validate_image_manifest "${INSTALLED_MANIFEST_PATH}" \
     && restart_and_verify_release "${INSTALLED_MANIFEST_PATH}"; then
+    record_completed_package
     write_status "COMPLETED" 100 \
       "Recovered after interruption: the exact requested package and images are active and healthy."
     log_line "Recovered completed update ${CURRENT_JOB_ID} after interruption."
@@ -694,6 +701,58 @@ reconcile_existing_job() {
   fi
   recovery_required \
     "An earlier update attempt was interrupted and cannot be retried automatically. Inspect the install log before recovery; preserve existing deployment data."
+}
+
+# Only root-owned receipts can authorize a downgrade. A browser request cannot
+# nominate an arbitrary old version, and matching a version alone is insufficient.
+read_root_receipt() {
+  local receipt="$1"
+  [[ -f "$receipt" && ! -L "$receipt" && "$(stat -c %u "$receipt")" == "$WORKER_USER_ID" ]] || return 1
+  (( (8#$(stat -c %a "$receipt") & 8#022) == 0 )) || return 1
+  [[ $(stat -c %s "$receipt") -le 4096 ]] || return 1
+  cat "$receipt"
+}
+
+write_root_receipt() {
+  local destination="$1" temporary
+  temporary="$(mktemp "${RUNTIME_DIR}/.receipt.XXXXXX")"
+  cat > "$temporary"
+  chown "+${WORKER_USER_ID}:+${API_GROUP_ID}" "$temporary"
+  chmod 0640 "$temporary"
+  fsync_path "$temporary"
+  mv -T "$temporary" "$destination"
+  fsync_path "$RUNTIME_DIR"
+}
+
+validate_rollback_target() {
+  local receipt
+  receipt="$(read_root_receipt "$RUNTIME_DIR/recovery.json")" || return 1
+  jq -e --arg job "$CURRENT_ROLLBACK_JOB" --arg current "$CURRENT_VERSION" \
+    --arg version "$CURRENT_RELEASE_VERSION" --arg hash "$CURRENT_ARTIFACT_SHA256" \
+    '.jobId == $job and .fromVersion == $current and .targetVersion == $version and .artifactSha256 == $hash' \
+    <<< "$receipt" >/dev/null
+}
+
+retain_recovery_point() {
+  local receipt
+  # No recorded identity means no rollback claim for this legacy installation.
+  if receipt="$(read_root_receipt "$RUNTIME_DIR/installed-package.json")" && \
+    jq -e --arg current "$CURRENT_VERSION" '.version == $current and (.artifactSha256 | test("^sha256:[0-9a-f]{64}$"))' <<< "$receipt" >/dev/null; then
+    jq --arg job "$CURRENT_JOB_ID" --arg target "$CURRENT_RELEASE_VERSION" \
+      '{jobId:$job,fromVersion:$target,targetVersion:.version,artifactSha256:.artifactSha256}' \
+      <<< "$receipt" | write_root_receipt "$RUNTIME_DIR/recovery.json"
+  else
+    [[ ! -e "$RUNTIME_DIR/recovery.json" && ! -L "$RUNTIME_DIR/recovery.json" ]] || unlink "$RUNTIME_DIR/recovery.json"
+  fi
+}
+
+record_completed_package() {
+  jq -n --arg version "$CURRENT_RELEASE_VERSION" --arg hash "$CURRENT_ARTIFACT_SHA256" \
+    '{version:$version,artifactSha256:$hash}' | write_root_receipt "$RUNTIME_DIR/installed-package.json"
+  if [[ -n "$CURRENT_ROLLBACK_JOB" ]]; then
+    [[ ! -e "$RUNTIME_DIR/recovery.json" && ! -L "$RUNTIME_DIR/recovery.json" ]] || unlink "$RUNTIME_DIR/recovery.json"
+    fsync_path "$RUNTIME_DIR"
+  fi
 }
 
 process_job() {
@@ -715,7 +774,12 @@ process_job() {
     fail_job "MyScoutee is not installed through the Debian package."
     return 1
   fi
-  if ! dpkg --compare-versions "$(debian_version "${CURRENT_RELEASE_VERSION}")" gt "$(debian_version "${CURRENT_VERSION}")"; then
+  if [[ -n "$CURRENT_ROLLBACK_JOB" ]]; then
+    if ! validate_rollback_target; then
+      fail_job "The requested rollback does not match the retained previous package identity."
+      return 1
+    fi
+  elif ! dpkg --compare-versions "$(debian_version "${CURRENT_RELEASE_VERSION}")" gt "$(debian_version "${CURRENT_VERSION}")"; then
     fail_job "The requested release is not newer than the installed version."
     return 1
   fi
@@ -727,6 +791,7 @@ process_job() {
     return 1
   fi
 
+  [[ -n "$CURRENT_ROLLBACK_JOB" ]] || retain_recovery_point
   write_status "INSTALLING" 85 "Installing the verified Debian package."
   if ! install_package "${CURRENT_CACHED_ARTIFACT}"; then
     return 1
@@ -741,6 +806,7 @@ process_job() {
   fi
 
   CURRENT_VERSION="${CURRENT_RELEASE_VERSION}"
+  record_completed_package
   write_status "COMPLETED" 100 \
     "The verified package and exact bundled images are installed and healthy."
   log_line "Completed update ${CURRENT_JOB_ID}."

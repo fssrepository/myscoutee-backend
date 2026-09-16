@@ -624,4 +624,34 @@ prune_cache
 [[ "$(find "${CACHE_JOBS_DIR}" -mindepth 1 -maxdepth 1 -type d | wc -l)" == "2" ]] \
   || fail "cache retention did not enforce its configured bound"
 
+# A downgrade must bind the exact previous package to the installed source.
+printf '%s\n' '1000.0.0' > "${VERSION_FILE}"
+ROLLBACK_PARENT="upd_12345678901234567890123456789012"
+ROLLBACK_JOB="upd_12345678901234567890123456789013"
+ROLLBACK_REQUEST="$(stage_request "$ROLLBACK_JOB")"
+jq --arg job "$ROLLBACK_PARENT" '. + {rollback_job_id:$job}' "$ROLLBACK_REQUEST" > "$TEST_ROOT/rollback.json"
+mv "$TEST_ROOT/rollback.json" "$ROLLBACK_REQUEST"
+ROLLBACK_HASH="$(jq -r .artifact_sha256 "$ROLLBACK_REQUEST")"
+jq -n --arg job "$ROLLBACK_PARENT" --arg version "$PACKAGE_VERSION" --arg hash "$ROLLBACK_HASH" \
+  '{jobId:$job,fromVersion:"1000.0.0",targetVersion:$version,artifactSha256:$hash}' \
+  | write_root_receipt "$RUNTIME_DIR/recovery.json"
+CURRENT_ROLLBACK_JOB="$ROLLBACK_PARENT"
+CURRENT_VERSION='1000.0.0'
+CURRENT_RELEASE_VERSION="$PACKAGE_VERSION"
+CURRENT_ARTIFACT_SHA256='sha256:0000000000000000000000000000000000000000000000000000000000000000'
+if validate_rollback_target; then fail 'rollback accepted a different artifact hash'; fi
+CURRENT_ARTIFACT_SHA256="$ROLLBACK_HASH"
+CURRENT_VERSION='1001.0.0'
+if validate_rollback_target; then fail 'rollback accepted stale installed source version'; fi
+CURRENT_VERSION='1000.0.0'
+chmod 0660 "$RUNTIME_DIR/recovery.json"
+if validate_rollback_target; then fail 'rollback accepted a writable receipt'; fi
+chmod 0640 "$RUNTIME_DIR/recovery.json"
+validate_rollback_target || fail 'valid exact rollback point rejected'
+run_request "$ROLLBACK_REQUEST" || fail 'verified previous package rollback failed'
+jq -e '.phase == "COMPLETED"' "$JOBS_DIR/$ROLLBACK_JOB/status.json" >/dev/null || fail 'rollback not completed'
+[[ "$(tail -n1 "$APT_CALLS_FILE")" == *--allow-downgrades* ]] || fail 'explicit rollback did not permit downgrade'
+[[ ! -e "$RUNTIME_DIR/recovery.json" ]] || fail 'completed rollback retained a reusable recovery point'
+jq -e --arg hash "$ROLLBACK_HASH" '.artifactSha256 == $hash' "$RUNTIME_DIR/installed-package.json" >/dev/null || fail 'installed receipt did not follow rollback'
+
 echo "update worker tests passed"

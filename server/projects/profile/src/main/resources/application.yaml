@@ -39,6 +39,9 @@ operator:
   configuration:
     master-key-path: ${OPERATOR_CONFIGURATION_MASTER_KEY_PATH:/etc/myscoutee/configuration/deployment-master-key}
   update:
+    tls-ca-certificate: ${OPERATOR_UPDATE_TLS_CA_CERTIFICATE:}
+    release-api-origin: ${OPERATOR_UPDATE_RELEASE_API_ORIGIN:https://api.github.com}
+    release-download-origin: ${OPERATOR_UPDATE_RELEASE_DOWNLOAD_ORIGIN:https://github.com}
     github-repository: ${OPERATOR_UPDATE_GITHUB_REPOSITORY:fssrepository/myscoutee}
     include-prereleases: ${OPERATOR_UPDATE_INCLUDE_PRERELEASES:false}
     enabled: ${OPERATOR_UPDATE_ENABLED:false}

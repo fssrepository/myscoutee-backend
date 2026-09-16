@@ -27,10 +27,16 @@ public final class OperatorUpdateDtos {
             String backupPath) {
     }
 
+    public record OperatorRollbackDto(String jobId, String fromVersion, String targetVersion, String artifactSha256) {}
+
     public record OperatorUpdateOverviewDto(
             boolean enabled,
             String currentVersion,
-            OperatorUpdateJobDto latestJob) {
+            OperatorUpdateJobDto latestJob,
+            OperatorRollbackDto rollback) {
+        public OperatorUpdateOverviewDto(boolean enabled, String currentVersion, OperatorUpdateJobDto latestJob) {
+            this(enabled, currentVersion, latestJob, null);
+        }
     }
 
     public record OperatorUpdateEventDto(

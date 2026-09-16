@@ -42,9 +42,7 @@ public class OperatorUpdateReleaseService {
 
     @Autowired
     public OperatorUpdateReleaseService(OperatorUpdateProperties properties, ObjectMapper mapper) {
-        this(properties, mapper, HttpClient.newBuilder()
-                .connectTimeout(properties.getDownloadConnectTimeout())
-                .followRedirects(HttpClient.Redirect.NEVER).build());
+        this(properties, mapper, OperatorUpdateHttpClient.create(properties));
     }
 
     OperatorUpdateReleaseService(OperatorUpdateProperties properties, ObjectMapper mapper, HttpClient client) {
@@ -55,14 +53,22 @@ public class OperatorUpdateReleaseService {
 
     public record ReleasePage(String checkedAt, List<OperatorAnnouncementDto> items) {}
 
-    public ReleasePage releases() {
+    public ReleasePage releases() { return releases(null); }
+
+    public OperatorAnnouncementDto findVersion(String version) {
+        RegistryProtocol.requireSemanticVersion(version, "rollback version");
+        return releases(version).items().stream().findFirst().orElseThrow(() ->
+                new ResponseStatusException(HttpStatus.CONFLICT, "The previous release is unavailable."));
+    }
+
+    private ReleasePage releases(String exactVersion) {
         String repository = properties.getGithubRepository();
         if (repository == null || !repository.matches("[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+")) {
             throw new ResponseStatusException(HttpStatus.SERVICE_UNAVAILABLE, "The release repository is not configured.");
         }
         try {
             JsonNode releases = mapper.readTree(read(URI.create(
-                    "https://api.github.com/repos/" + repository + "/releases?per_page=100"), 2 * 1024 * 1024));
+                    configuredOrigin(properties.getReleaseApiOrigin()) + "/repos/" + repository + "/releases?per_page=100"), 2 * 1024 * 1024));
             if (!releases.isArray()) {
                 throw new IllegalArgumentException("Invalid release list.");
             }
@@ -70,6 +76,7 @@ public class OperatorUpdateReleaseService {
             // Select the highest version; postponing an update does not create an upgrade queue.
             List<JsonNode> candidates = new ArrayList<>();
             for (JsonNode release : releases) {
+                if (exactVersion != null && !exactVersion.equals(releaseTagVersion(release))) continue;
                 if (release.path("draft").asBoolean()
                         || (release.path("prerelease").asBoolean() && !properties.isIncludePrereleases())) {
                     continue;
@@ -99,7 +106,7 @@ public class OperatorUpdateReleaseService {
                     throw new ResponseStatusException(HttpStatus.PRECONDITION_FAILED,
                             "The published release has no signed update metadata.");
                 }
-                String prefix = "https://github.com/" + repository + "/releases/download/";
+                String prefix = configuredOrigin(properties.getReleaseDownloadOrigin()) + "/" + repository + "/releases/download/";
                 URI metadataUri = URI.create(metadata.path("browser_download_url").asText());
                 if (!metadataUri.toString().startsWith(prefix)
                         || !metadataUri.getPath().endsWith("/" + ASSET_NAME)) {
@@ -205,15 +212,37 @@ public class OperatorUpdateReleaseService {
         return RegistryCrypto.parsePublicKeyPemOrDer(Files.readAllBytes(path), "release public key");
     }
 
+    private static URI configuredOrigin(String value) {
+        URI origin = URI.create(value);
+        if (!"https".equals(origin.getScheme()) || origin.getHost() == null
+                || origin.getUserInfo() != null || origin.getQuery() != null || origin.getFragment() != null
+                || (origin.getPort() != -1 && (origin.getPort() < 1 || origin.getPort() > 65535))
+                || !(origin.getRawPath().isEmpty() || origin.getRawPath().equals("/"))) {
+            throw new IllegalArgumentException("Release origin must be an HTTPS origin without a path or credentials.");
+        }
+        return URI.create(origin.toString().replaceAll("/$", ""));
+    }
+
+    private static boolean sameOrigin(URI left, URI right) {
+        return Objects.equals(left.getScheme(), right.getScheme())
+                && Objects.equals(left.getHost(), right.getHost())
+                && (left.getPort() == -1 ? 443 : left.getPort()) == (right.getPort() == -1 ? 443 : right.getPort());
+    }
+
     private byte[] read(URI uri, int maximumBytes) throws Exception {
+        URI apiOrigin = configuredOrigin(properties.getReleaseApiOrigin());
+        URI downloadOrigin = configuredOrigin(properties.getReleaseDownloadOrigin());
         List<URI> visited = new ArrayList<>();
         for (int redirects = 0; redirects <= 5; redirects++) {
             String host = uri.getHost();
+            boolean allowed = sameOrigin(uri, apiOrigin) || sameOrigin(uri, downloadOrigin);
+            // GitHub asset redirects are needed only for the default GitHub source.
+            allowed |= downloadOrigin.equals(URI.create("https://github.com"))
+                    && (uri.getPort() == -1 || uri.getPort() == 443)
+                    && (Objects.equals(host, "release-assets.githubusercontent.com")
+                        || Objects.equals(host, "objects.githubusercontent.com"));
             if (!"https".equals(uri.getScheme()) || uri.getUserInfo() != null || uri.getFragment() != null
-                    || (uri.getPort() != -1 && uri.getPort() != 443)
-                    || !(Objects.equals(host, "api.github.com") || Objects.equals(host, "github.com")
-                        || Objects.equals(host, "release-assets.githubusercontent.com")
-                        || Objects.equals(host, "objects.githubusercontent.com")) || visited.contains(uri)) {
+                    || !allowed || visited.contains(uri)) {
                 throw new IllegalArgumentException("Invalid release metadata endpoint.");
             }
             visited.add(uri);

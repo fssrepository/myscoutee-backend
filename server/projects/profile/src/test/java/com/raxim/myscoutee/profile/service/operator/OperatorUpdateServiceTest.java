@@ -456,6 +456,40 @@ class OperatorUpdateServiceTest {
         }
     }
 
+    @Test
+    void rollbackStagesOnlyTheExactRetainedPackageAndBindsTheWorkerRequest() throws Exception {
+        byte[] artifact = "retained-package".getBytes(StandardCharsets.UTF_8);
+        String hash = "sha256:" + java.util.HexFormat.of().formatHex(MessageDigest.getInstance("SHA-256").digest(artifact));
+        var properties = updateProperties();
+        var registry = registryProperties(properties);
+        registry.setSoftwareVersion("1.2.4");
+        Path receipt = properties.getStateDir().resolve("runtime/recovery.json");
+        Files.createDirectories(receipt.getParent());
+        String previousJob = "upd_12345678901234567890123456789012";
+        var mapper = new JsonConfig().objectMapper();
+        Files.writeString(receipt, mapper.writeValueAsString(java.util.Map.of(
+                "jobId", previousJob, "fromVersion", "1.2.4", "targetVersion", "1.2.3", "artifactSha256", hash)));
+        var releases = mock(OperatorUpdateReleaseService.class);
+        when(releases.findVersion("1.2.3")).thenReturn(announcementPage(artifact.length, hash, true, "1.2.3").items().getFirst());
+        var downloader = mock(OperatorUpdateArtifactDownloader.class);
+        doAnswer(invocation -> { Files.write((Path) invocation.getArgument(1), artifact); return null; })
+                .when(downloader).download(any(), any(), anyLong(), anyLong(), any());
+        var service = new OperatorUpdateService(releases, downloader, properties, registry, mapper);
+        try {
+            assertThat(service.overview().rollback().targetVersion()).isEqualTo("1.2.3");
+            assertThatThrownBy(() -> service.rollback("upd_00000000000000000000000000000000", "operator"))
+                    .isInstanceOf(ResponseStatusException.class);
+            when(releases.findVersion("1.2.3")).thenReturn(announcementPage(artifact.length, "sha256:" + "b".repeat(64), true, "1.2.3").items().getFirst());
+            assertThatThrownBy(() -> service.rollback(previousJob, "operator")).hasMessageContaining("package has changed");
+            when(releases.findVersion("1.2.3")).thenReturn(announcementPage(artifact.length, hash, true, "1.2.3").items().getFirst());
+            var job = service.rollback(previousJob, "operator");
+            Path request = properties.getStateDir().resolve("requests").resolve(job.jobId() + ".json");
+            await().atMost(Duration.ofSeconds(5)).untilAsserted(() -> assertThat(request).isRegularFile());
+            assertThat(mapper.readTree(request.toFile()).path("rollback_job_id").asText()).isEqualTo(previousJob);
+            assertThat(mapper.readTree(request.toFile()).path("artifact_sha256").asText()).isEqualTo(hash);
+        } finally { service.closeExecutor(); }
+    }
+
     private OperatorUpdateJobDto durableStatus(
             String jobId,
             String phase,

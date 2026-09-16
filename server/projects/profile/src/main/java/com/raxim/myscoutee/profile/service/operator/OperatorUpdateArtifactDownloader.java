@@ -35,10 +35,7 @@ public class OperatorUpdateArtifactDownloader {
     @Autowired
     public OperatorUpdateArtifactDownloader(OperatorUpdateProperties properties) {
         this(
-                HttpClient.newBuilder()
-                        .connectTimeout(properties.getDownloadConnectTimeout())
-                        .followRedirects(HttpClient.Redirect.NEVER)
-                        .build(),
+                OperatorUpdateHttpClient.create(properties),
                 properties.getDownloadTimeout());
     }
 
