@@ -1,0 +1,17 @@
+{
+  "bucket": "qualification-seed-72f3bca88821",
+  "scope": "Isolated bucket only; existing container and packaged seed. No app restart.",
+  "timings": {
+    "before": 23.771,
+    "after": 2.157
+  },
+  "status": "PASS",
+  "objects": 879,
+  "contentTypes": {
+    ".webp": "image/webp",
+    ".svg": "image/svg+xml",
+    ".png": "image/png"
+  },
+  "inventorySha256": "27ddbcaac7f288c19f2010e56ab2bc0b7eb07d1e4bb048ef71d1ef16abbf2ab7",
+  "cleanup": "Owned bucket removed"
+}

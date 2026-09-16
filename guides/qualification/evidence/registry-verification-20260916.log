@@ -1,0 +1,14 @@
+Verify registry deployment
+target: https://192.168.153.129:18444
+expected version: 1.0.0
+checks: 4, request timeout: 5000ms, retries: 0
+- FAIL registry/version
+  /versionz version dev does not match expected 1.0.0
+  details: {"actual":"dev","expected":"1.0.0"}
+- PASS registry/identity 55ms
+- PASS registry/health 63ms
+- FAIL registry/cross-check
+  /versionz version dev does not match expected 1.0.0
+  details: {"actual":"dev","expected":"1.0.0"}
+
+registry deployment verification: 2 passed, 2 failed in 67ms

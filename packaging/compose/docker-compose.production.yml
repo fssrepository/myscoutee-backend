@@ -43,6 +43,8 @@ services:
       interval: 30s
       timeout: 5s
       retries: 5
+      # Probe promptly during startup; keep the steady-state interval unchanged.
+      start_interval: 2s
       start_period: 20s
 
   mongodb:
@@ -70,6 +72,8 @@ services:
       interval: 10s
       timeout: 10s
       retries: 30
+      # Probe promptly during startup; keep the steady-state interval unchanged.
+      start_interval: 2s
       start_period: 60s
 
   redis:
@@ -88,6 +92,8 @@ services:
       interval: 30s
       timeout: 5s
       retries: 5
+      # Probe promptly during startup; keep the steady-state interval unchanged.
+      start_interval: 2s
       start_period: 10s
 
   minio:
@@ -113,6 +119,8 @@ services:
       interval: 30s
       timeout: 5s
       retries: 5
+      # Probe promptly during startup; keep the steady-state interval unchanged.
+      start_interval: 2s
       start_period: 20s
 
   profilemanagement:
@@ -230,6 +238,8 @@ services:
       interval: 10s
       timeout: 5s
       retries: 30
+      # Probe promptly during startup; keep the steady-state interval unchanged.
+      start_interval: 2s
       start_period: 90s
 
   # Explore-only registry. It is an internal dependency, has a dedicated
@@ -265,6 +275,8 @@ services:
       interval: 10s
       timeout: 3s
       retries: 10
+      # Probe promptly during startup; keep the steady-state interval unchanged.
+      start_interval: 2s
       start_period: 5s
     stop_grace_period: 15s
 
@@ -303,6 +315,8 @@ services:
       interval: 10s
       timeout: 3s
       retries: 10
+      # Probe promptly during startup; keep the steady-state interval unchanged.
+      start_interval: 2s
       start_period: 5s
     stop_grace_period: 15s
 
