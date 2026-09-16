@@ -188,6 +188,7 @@ stage_mongo_configuration() {
   done
 }
 
+python3 "${REPO_ROOT}/tools/seeds/check-system-seed-parity.py"
 node "${REPO_ROOT}/frontend/scripts/audit-i18n-mongo-seed.js"
 stage_mongo_configuration
 while IFS= read -r runtime_script_path; do

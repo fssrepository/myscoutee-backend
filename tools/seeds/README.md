@@ -4,6 +4,9 @@ These source-checkout-only tools inspect or update canonical static demo/E2E
 seed data. They do not connect to a running server or database. Review their
 generated JSON/SVG diffs before committing.
 
+- `check-system-seed-parity.py` checks the shared catalogs in demo, production
+  and E2E JSON files and rejects synthetic production identities/activity.
+  Production packaging runs this check before staging artifacts.
 - `backfill-user-rate-seed-distances.mjs` deterministically updates demo and
   E2E `userRates.json` distances.
 - `normalize-chat-seed.mjs` checks chat/member/event JSON consistency; pass
