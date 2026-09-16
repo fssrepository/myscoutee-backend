@@ -573,7 +573,7 @@ db.getCollection('activityMembers').createIndex({ ownerType: 1, status: 1, actio
         --eval "
 db.getCollection('activityResources').createIndex({ syncKey: 1 }, { name: 'activity_resource_sync_key', unique: true, sparse: true });
 db.getCollection('activityResources').createIndex({ recordId: 1 }, { name: 'activity_resource_record_id', unique: true });
-db.getCollection('activityResources').createIndex({ ownerId: 1, subEventId: 1, assetOwnerUserId: 1 }, { name: 'activity_resource_owner_subevent_asset_owner' });
+db.getCollection('activityResources').createIndex({ ownerId: 1, subEventId: 1, assetOwnerUserId: 1 }, { name: 'activity_resource_active_owner_subevent_asset_owner', unique: true, partialFilterExpression: { status: 'A' } });
 db.getCollection('activityResources').createIndex({ assetOwnerUserId: 1, ownerId: 1 }, { name: 'activity_resource_owner_key' });
 " >/dev/null
       ;;
@@ -719,6 +719,22 @@ db.getCollection('paymentProviders').createIndex({ enabled: 1, sortOrder: 1, lab
         "${target_db}" \
         --eval "
 db.getCollection('communityProviders').createIndex({ enabled: 1, sortOrder: 1, name: 1, _id: 1 }, { name: 'community_provider_enabled_sort' });
+" >/dev/null
+      ;;
+    savedPaymentMethods)
+      mongosh \
+        --host "${mongo_host}" \
+        --port "${mongo_port}" \
+        --username "${mongo_username}" \
+        --password "${mongo_password}" \
+        --authenticationDatabase "${target_db}" \
+        --quiet \
+        "${target_db}" \
+        --eval "
+db.getCollection('savedPaymentMethods').createIndex({ userId: 1, status: 1, createdAtIso: -1 }, { name: 'saved_payment_method_user_status_created' });
+db.getCollection('savedPaymentMethods').createIndex({ status: 1, expiryKey: 1, expiredNotifiedAtIso: 1 }, { name: 'saved_payment_method_expiry_scan' });
+db.getCollection('savedPaymentMethods').createIndex({ userId: 1, artworkKey: 1, status: 1 }, { name: 'saved_payment_method_user_art_status' });
+db.getCollection('savedPaymentMethods').createIndex({ registrationId: 1 }, { name: 'saved_payment_method_registration', unique: true, sparse: true });
 " >/dev/null
       ;;
     payments)
@@ -969,6 +985,7 @@ ensure_runtime_indexes() {
   ensure_collection_indexes "${target_db}" "paymentProviders"
   ensure_collection_indexes "${target_db}" "communityProviders"
   ensure_collection_indexes "${target_db}" "payments"
+  ensure_collection_indexes "${target_db}" "savedPaymentMethods"
   ensure_collection_indexes "${target_db}" "revenueReportOutbox"
   ensure_collection_indexes "${target_db}" "qualifiedMauReportOutbox"
   ensure_collection_indexes "${target_db}" "adminAffinityGraphLayouts"

@@ -8,6 +8,7 @@ const requiredCollections = [
   'activityResources',
   'eventCheckoutBasketItems',
   'payments',
+  'savedPaymentMethods',
   'revenueReportOutbox',
   'qualifiedMauReportOutbox',
   'accessPolicyDefinitions',
@@ -403,7 +404,7 @@ Array.from(new Set(configuredDatabases)).forEach(databaseName => {
   );
   portalDb.activityResources.createIndex(
     { ownerId: 1, subEventId: 1, assetOwnerUserId: 1 },
-    { name: 'activity_resource_owner_subevent_asset_owner' }
+    { name: 'activity_resource_active_owner_subevent_asset_owner', unique: true, partialFilterExpression: { status: 'A' } }
   );
   portalDb.activityResources.createIndex(
     { assetOwnerUserId: 1, ownerId: 1 },
@@ -683,6 +684,23 @@ Array.from(new Set(configuredDatabases)).forEach(databaseName => {
     { enabled: 1, sortOrder: 1, label: 1, _id: 1 },
     { name: 'payment_provider_enabled_sort' }
   );
+  portalDb.savedPaymentMethods.createIndex(
+    { userId: 1, status: 1, createdAtIso: -1 },
+    { name: 'saved_payment_method_user_status_created' }
+  );
+  portalDb.savedPaymentMethods.createIndex(
+    { status: 1, expiryKey: 1, expiredNotifiedAtIso: 1 },
+    { name: 'saved_payment_method_expiry_scan' }
+  );
+  portalDb.savedPaymentMethods.createIndex(
+    { userId: 1, artworkKey: 1, status: 1 },
+    { name: 'saved_payment_method_user_art_status' }
+  );
+  portalDb.savedPaymentMethods.createIndex(
+    { registrationId: 1 },
+    { name: 'saved_payment_method_registration', unique: true, sparse: true }
+  );
+
   portalDb.communityProviders.createIndex(
     { enabled: 1, sortOrder: 1, name: 1, _id: 1 },
     { name: 'community_provider_enabled_sort' }
