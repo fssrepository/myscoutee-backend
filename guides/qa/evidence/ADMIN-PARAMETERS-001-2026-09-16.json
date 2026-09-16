@@ -454,7 +454,7 @@
       "pending": 0
     }
   },
-  "next": "Block4 Discovery13–14 distance fixtures staged, saved/reopened25000; real CONFIG pending",
+  "next": "Block4 Discovery13\u201314 distance fixtures staged, saved/reopened25000; real CONFIG pending",
   "events": {
     "version": 7,
     "before": [
@@ -621,11 +621,11 @@
       "targets": [
         {
           "id": "c66972829391ece30a38e9be",
-          "text": "MS\n0.0\nstar\ngroups\n1 / 19\n1\npublic\nHandmade Pasta Table\n\nEvent · Public · 1576.6 km\n\nmore_vert\n\nPairs roll dough, shape filled pasta, and share the first cooked batch.\n\nSun Feb 22, 6:30 PM"
+          "text": "MS\n0.0\nstar\ngroups\n1 / 19\n1\npublic\nHandmade Pasta Table\n\nEvent \u00b7 Public \u00b7 1576.6 km\n\nmore_vert\n\nPairs roll dough, shape filled pasta, and share the first cooked batch.\n\nSun Feb 22, 6:30 PM"
         },
         {
           "id": "261512e744c1837cd7ba85f2",
-          "text": "MS\n0.0\nstar\ngroups\n6 / 50\npublic\nPour-Over Roastery Lab\n\nEvent · Public · 1859.1 km\n\nmore_vert\n\nA hands-on coffee session compares grind, Timing, and aroma without brand-led presentation.\n\nMar 31 · 1:30 PM - 3:30 PM"
+          "text": "MS\n0.0\nstar\ngroups\n6 / 50\npublic\nPour-Over Roastery Lab\n\nEvent \u00b7 Public \u00b7 1859.1 km\n\nmore_vert\n\nA hands-on coffee session compares grind, Timing, and aroma without brand-led presentation.\n\nMar 31 \u00b7 1:30 PM - 3:30 PM"
         }
       ]
     },
@@ -692,7 +692,7 @@
       }
     ],
     "defect": "Explore locally re-sorted by missing affinity, losing query ranking. Query supplies sort tuples and frontend preserves them, including reinsertion keys.",
-    "validation": "Existing backend/frontend watcher builds passed; 10 API sort/view combinations and UI 20→36 paginated rows agree; both target consumer boost values equal persistence. Local adapter now returns its existing query tuple; runtime local-adapter replay not run."
+    "validation": "Existing backend/frontend watcher builds passed; 10 API sort/view combinations and UI 20\u219236 paginated rows agree; both target consumer boost values equal persistence. Local adapter now returns its existing query tuple; runtime local-adapter replay not run."
   },
   "assets": {
     "version": 8,
@@ -860,7 +860,7 @@
   },
   "discovery": {
     "status": "PASS",
-    "steps": "13–14",
+    "steps": "13\u201314",
     "savedVersion": 9,
     "maxMeters": {
       "before": 50000,
@@ -1294,7 +1294,7 @@
   },
   "notifications": {
     "status": "PASS",
-    "steps": "15–17",
+    "steps": "15\u201317",
     "savedVersion": 10,
     "threshold": {
       "original": 3,
@@ -1319,19 +1319,19 @@
             "manual-qa-parameters-delivery:b": {}
           },
           "deliveryStrategy": "multicast",
-          "title": "QA Parameters · two recipients",
-          "body": "Casey Bridge: QA Parameters multicast threshold 2 — two recipients",
+          "title": "QA Parameters \u00b7 two recipients",
+          "body": "Casey Bridge: QA Parameters multicast threshold 2 \u2014 two recipients",
           "clickUrl": "/game?chatId=manual-qa-parameters-delivery%3Achat&messageId=533c8ac6-7462-4f88-92e0-e35cff8018a4",
           "iconUrl": "/media/public?key=images/demo-profiles/650000000000000000000061/photo-01/large.webp",
           "badgeUrl": "assets/logo/heart.webp",
           "tag": "chat-manual-qa-parameters-delivery:chat",
           "payload": {
             "chatId": "manual-qa-parameters-delivery:chat",
-            "chatTitle": "QA Parameters · two recipients",
+            "chatTitle": "QA Parameters \u00b7 two recipients",
             "messageId": "533c8ac6-7462-4f88-92e0-e35cff8018a4",
             "senderId": "650000000000000000000061",
             "senderName": "Casey Bridge",
-            "text": "QA Parameters multicast threshold 2 — two recipients",
+            "text": "QA Parameters multicast threshold 2 \u2014 two recipients",
             "timestampMillis": "1789546131595",
             "type": "chat-message",
             "entityType": "chat",
@@ -1342,8 +1342,8 @@
             "productName": "MyScoutee",
             "productLogoUrl": "assets/logo/heart.webp",
             "productBrandingRevision": "0",
-            "title": "QA Parameters · two recipients",
-            "body": "Casey Bridge: QA Parameters multicast threshold 2 — two recipients",
+            "title": "QA Parameters \u00b7 two recipients",
+            "body": "Casey Bridge: QA Parameters multicast threshold 2 \u2014 two recipients",
             "url": "/game?chatId=manual-qa-parameters-delivery%3Achat&messageId=533c8ac6-7462-4f88-92e0-e35cff8018a4",
             "icon": "/media/public?key=images/demo-profiles/650000000000000000000061/photo-01/large.webp",
             "badge": "assets/logo/heart.webp",
@@ -1382,19 +1382,19 @@
             "manual-qa-parameters-delivery:b": {}
           },
           "deliveryStrategy": "multicast",
-          "title": "QA Parameters · two recipients",
-          "body": "Casey Bridge: QA Parameters restored threshold 3 — two recipientso",
+          "title": "QA Parameters \u00b7 two recipients",
+          "body": "Casey Bridge: QA Parameters restored threshold 3 \u2014 two recipientso",
           "clickUrl": "/game?chatId=manual-qa-parameters-delivery%3Achat&messageId=960610f3-9c5f-4be8-9eb3-ac5aefed4c9d",
           "iconUrl": "/media/public?key=images/demo-profiles/650000000000000000000061/photo-01/large.webp",
           "badgeUrl": "assets/logo/heart.webp",
           "tag": "chat-manual-qa-parameters-delivery:chat",
           "payload": {
             "chatId": "manual-qa-parameters-delivery:chat",
-            "chatTitle": "QA Parameters · two recipients",
+            "chatTitle": "QA Parameters \u00b7 two recipients",
             "messageId": "960610f3-9c5f-4be8-9eb3-ac5aefed4c9d",
             "senderId": "650000000000000000000061",
             "senderName": "Casey Bridge",
-            "text": "QA Parameters restored threshold 3 — two recipientso",
+            "text": "QA Parameters restored threshold 3 \u2014 two recipientso",
             "timestampMillis": "1789546197415",
             "type": "chat-message",
             "entityType": "chat",
@@ -1405,8 +1405,8 @@
             "productName": "MyScoutee",
             "productLogoUrl": "assets/logo/heart.webp",
             "productBrandingRevision": "0",
-            "title": "QA Parameters · two recipients",
-            "body": "Casey Bridge: QA Parameters restored threshold 3 — two recipientso",
+            "title": "QA Parameters \u00b7 two recipients",
+            "body": "Casey Bridge: QA Parameters restored threshold 3 \u2014 two recipientso",
             "url": "/game?chatId=manual-qa-parameters-delivery%3Achat&messageId=960610f3-9c5f-4be8-9eb3-ac5aefed4c9d",
             "icon": "/media/public?key=images/demo-profiles/650000000000000000000061/photo-01/large.webp",
             "badge": "assets/logo/heart.webp",
@@ -1445,19 +1445,19 @@
             "manual-qa-parameters-delivery:b": {}
           },
           "deliveryStrategy": "direct",
-          "title": "QA Parameters · two recipients",
-          "body": "Casey Bridge: QA Parameters direct after verified restore — two recipients",
+          "title": "QA Parameters \u00b7 two recipients",
+          "body": "Casey Bridge: QA Parameters direct after verified restore \u2014 two recipients",
           "clickUrl": "/game?chatId=manual-qa-parameters-delivery%3Achat&messageId=4e4bacb4-0ed7-4eba-8352-13772a4d5f39",
           "iconUrl": "/media/public?key=images/demo-profiles/650000000000000000000061/photo-01/large.webp",
           "badgeUrl": "assets/logo/heart.webp",
           "tag": "chat-manual-qa-parameters-delivery:chat",
           "payload": {
             "chatId": "manual-qa-parameters-delivery:chat",
-            "chatTitle": "QA Parameters · two recipients",
+            "chatTitle": "QA Parameters \u00b7 two recipients",
             "messageId": "4e4bacb4-0ed7-4eba-8352-13772a4d5f39",
             "senderId": "650000000000000000000061",
             "senderName": "Casey Bridge",
-            "text": "QA Parameters direct after verified restore — two recipients",
+            "text": "QA Parameters direct after verified restore \u2014 two recipients",
             "timestampMillis": "1789546376068",
             "type": "chat-message",
             "entityType": "chat",
@@ -1468,8 +1468,8 @@
             "productName": "MyScoutee",
             "productLogoUrl": "assets/logo/heart.webp",
             "productBrandingRevision": "0",
-            "title": "QA Parameters · two recipients",
-            "body": "Casey Bridge: QA Parameters direct after verified restore — two recipients",
+            "title": "QA Parameters \u00b7 two recipients",
+            "body": "Casey Bridge: QA Parameters direct after verified restore \u2014 two recipients",
             "url": "/game?chatId=manual-qa-parameters-delivery%3Achat&messageId=4e4bacb4-0ed7-4eba-8352-13772a4d5f39",
             "icon": "/media/public?key=images/demo-profiles/650000000000000000000061/photo-01/large.webp",
             "badge": "assets/logo/heart.webp",
@@ -1502,9 +1502,9 @@
             "manual-qa-parameters-delivery:a",
             "manual-qa-parameters-delivery:b"
           ],
-          "title": "QA Parameters · two recipients",
+          "title": "QA Parameters \u00b7 two recipients",
           "avatar": "PQ",
-          "lastMessage": "QA Parameters direct after verified restore — two recipients",
+          "lastMessage": "QA Parameters direct after verified restore \u2014 two recipients",
           "lastSenderId": "650000000000000000000061",
           "unread": 0,
           "dateIso": "2026-09-16T08:12:56.068610823Z",
@@ -1527,9 +1527,9 @@
             "manual-qa-parameters-delivery:a",
             "manual-qa-parameters-delivery:b"
           ],
-          "title": "QA Parameters · two recipients",
+          "title": "QA Parameters \u00b7 two recipients",
           "avatar": "PQ",
-          "lastMessage": "QA Parameters direct after verified restore — two recipients",
+          "lastMessage": "QA Parameters direct after verified restore \u2014 two recipients",
           "lastSenderId": "650000000000000000000061",
           "unread": 3,
           "dateIso": "2026-09-16T08:12:56.068610823Z",
@@ -1552,9 +1552,9 @@
             "manual-qa-parameters-delivery:a",
             "manual-qa-parameters-delivery:b"
           ],
-          "title": "QA Parameters · two recipients",
+          "title": "QA Parameters \u00b7 two recipients",
           "avatar": "PQ",
-          "lastMessage": "QA Parameters direct after verified restore — two recipients",
+          "lastMessage": "QA Parameters direct after verified restore \u2014 two recipients",
           "lastSenderId": "650000000000000000000061",
           "unread": 3,
           "dateIso": "2026-09-16T08:12:56.068610823Z",
@@ -1676,7 +1676,7 @@
   },
   "jobs": {
     "status": "PASS",
-    "steps": "18–19",
+    "steps": "18\u201319",
     "debounceSeconds": 12,
     "enqueued": {
       "observedAt": "2026-09-16T08:15:09.951Z",
@@ -1855,7 +1855,7 @@
   },
   "validation": {
     "status": "PASS",
-    "steps": "20–23",
+    "steps": "20\u201323",
     "lower": {
       "input": -1,
       "reopened": 0
@@ -2674,7 +2674,7 @@
   },
   "closure": {
     "status": "PASS",
-    "steps": "24–25",
+    "steps": "24\u201325",
     "statusAfterReset": {
       "checkpointId": "ADMIN-PARAMETERS-001",
       "phase": "not-staged",
@@ -2742,5 +2742,44 @@
       "captures": 0
     },
     "note": "Reset compared original15 snapshots before deletion. A post-reset status formatting error was fixed; independent status confirmed0 snapshots/0 pending/0 owned users or members and originalv4. Real configuration revisions/outboxes retained as audit."
+  },
+  "discoveryMenuVisualFollowup": {
+    "status": "PASS",
+    "date": "2026-09-16",
+    "build": "frontend-sync 2026-09-16T08:34:54.915Z",
+    "implementation": "Existing shared app-menu select, automatic desktop/mobile placement, contextual palettes with standard tinted items. Parameter form reserves a consistent unit column; trigger aligns to inputs. No shared menu code override.",
+    "before": "Pill item configuration underlined labels and translated the selected first item -1px above the mobile scroll container.",
+    "mobile": {
+      "viewport": [
+        390,
+        800
+      ],
+      "inputAndTriggerRight": 321.5,
+      "itemTextDecoration": "none",
+      "selectedTransform": "none",
+      "itemTopEqualsContainerTop": 673.921875,
+      "listClientAndScrollHeight": [
+        113,
+        113
+      ],
+      "sheetBottom": 793.609375
+    },
+    "desktop": {
+      "viewport": [
+        916,
+        813
+      ],
+      "inputTriggerAndPanelRight": 831.5,
+      "opensDown": true,
+      "panelClientAndScrollHeight": [
+        155,
+        155
+      ]
+    },
+    "screenshots": [
+      "/tmp/myscoutee-qa-browser-sessions/evidence/admin-parameters-cdp/parameters-menu-mobile-fixed.png",
+      "/tmp/myscoutee-qa-browser-sessions/evidence/admin-parameters-cdp/parameters-menu-desktop-fixed.png"
+    ],
+    "configurationSaved": false
   }
 }

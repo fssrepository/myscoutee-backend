@@ -104,7 +104,7 @@ when shaping only its route to the QA application.
 ```yaml
 checkpoint: ADMIN-PARAMETERS-001 — CLOSED FUNCTIONAL TEST / REQUESTED VISUAL FOLLOW-UP
 checklist: ../checklists/administration/ADMIN-PARAMETERS-001.md
-substage: User requested shared app-menu contextual palettes and automatic desktop/mobile presentation. Visual follow-up only; functional25-step evidence closed. Desktop parent scroll area failed to fill popup; narrow flex fix rebuilding.
+substage: Discovery visual follow-up PASS at390px and916px. Shared app-menu standard tinted items remove pill underline/selected lift; form unit column aligns trigger and desktop panel to textbox right edge. Auto desktop downward placement and mobile sheet verified. Operator C01 read-only preparation next.
 fixture_phase: Parameters baseline re-staged solely for managed browser reauthentication/visual follow-up; no parameter saves or consumer replay. Reset after visual check.
 browser_control: Delegated. Versioned Parameters launcher reopened Ava/Casey. Ava Discovery editor/dropdown open; Casey game. Keep requested dropdown visible while inspecting.
 required_resume: Do not replay closed Parameters/Admin tests. Establish TLS/provider restoration prerequisites before those branches; reuse exact prior Firebase/WebView/Push assertions only.
