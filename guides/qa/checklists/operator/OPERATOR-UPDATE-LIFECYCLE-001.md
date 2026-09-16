@@ -103,7 +103,9 @@ Report: `OPERATOR-UPDATE-LIFECYCLE-001 block 1 done`.
    connection loss is not a success result; record the subsequent recovery.
 7. At completion, Codex correlates job ID, start/end, outcome, verified release
    and installed target version. The accepted action has not created
-   duplicate update work or contradictory terminal results.
+   duplicate update work or contradictory terminal results. After success, **Apply
+   update** stays disabled. A new explicit **Refresh** may enable it only when
+   a newer installable release is found.
 
 Report: `OPERATOR-UPDATE-LIFECYCLE-001 block 2 done`.
 

@@ -46,6 +46,10 @@ bash "${SCRIPT_DIR}/debian-tls-lifecycle-test.sh" >/dev/null \
   || fail "Debian lifecycle replaced retained operator TLS material"
 bash "${SCRIPT_DIR}/update-worker-test.sh" >/dev/null \
   || fail "signed update lifecycle or data-preservation contract regression"
+python3 "${SCRIPT_DIR}/update-status-server-test.py" >/dev/null \
+  || fail "independent update progress authorization or status regression"
+bash "${SCRIPT_DIR}/restart-update-stack-test.sh" >/dev/null \
+  || fail "update restart did not preserve progress ingress"
 bash "${SCRIPT_DIR}/demo-reset-test.sh" >/dev/null \
   || fail "demo reset lifecycle or production boundary regression"
 bash "${SCRIPT_DIR}/i18n-runtime-seed-sync-test.sh" >/dev/null \

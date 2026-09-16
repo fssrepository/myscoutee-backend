@@ -4,6 +4,8 @@ FROM ${NGINX_BASE_IMAGE}
 COPY conf/nginx/nginx.conf /etc/nginx/nginx.conf
 COPY conf/nginx/conf/http/spring.conf /etc/nginx/myscoutee-templates/spring.conf
 COPY conf/nginx/conf/http/routing.conf /etc/nginx/conf.d/routing.conf
+COPY conf/nginx/conf/http/update-status.prod.conf /etc/nginx/conf.d/update-status.prod.conf
+RUN printf '\ninclude /etc/nginx/conf.d/update-status.prod.conf;\n' >> /etc/nginx/conf.d/routing.conf
 COPY conf/nginx/conf/http/http-transport-policy.prod.conf /etc/nginx/conf.d/http-transport-policy.conf
 COPY conf/nginx/conf/http/https-response-policy.prod.conf /etc/nginx/conf.d/https-response-policy.conf
 COPY conf/nginx/conf/stream/mongodb.conf /etc/nginx/stream_conf.d/mongodb.conf

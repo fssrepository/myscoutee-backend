@@ -3,6 +3,8 @@ Description=MyScoutee production stack
 Requires=docker.service
 After=docker.service network-online.target
 Wants=network-online.target
+Wants=myscoutee-update-status.socket
+After=myscoutee-update-status.socket
 
 [Service]
 Type=oneshot

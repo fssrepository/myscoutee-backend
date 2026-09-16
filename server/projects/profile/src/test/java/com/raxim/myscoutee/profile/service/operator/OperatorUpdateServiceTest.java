@@ -84,6 +84,7 @@ class OperatorUpdateServiceTest {
         OperatorUpdateArtifactDownloader downloader =
                 mock(OperatorUpdateArtifactDownloader.class);
         OperatorUpdateProperties properties = updateProperties();
+        properties.setMonitorEnabled(true);
         RegistryProperties registryProperties = registryProperties(properties);
         registryProperties.setSoftwareVersion("1.0.0-qa.1");
         OperatorAnnouncementPageDto announcements =
@@ -120,6 +121,14 @@ class OperatorUpdateServiceTest {
             OperatorUpdateJobDto initial = service.approve(
                     new OperatorUpdateApprovalDto(ANNOUNCEMENT_ID),
                     "operator-user-1");
+            assertThat(initial.monitorToken()).matches("[0-9a-f]{64}");
+            Path monitor = properties.getStateDir().resolve("staging").resolve(initial.jobId()).resolve("monitor.json");
+            JsonNode grant = objectMapper.readTree(monitor.toFile());
+            assertThat(grant.path("jobId").asText()).isEqualTo(initial.jobId());
+            assertThat(grant.path("tokenSha256").asText()).isEqualTo(java.util.HexFormat.of().formatHex(
+                    MessageDigest.getInstance("SHA-256").digest(initial.monitorToken().getBytes(StandardCharsets.US_ASCII))));
+            assertThat(grant.path("expiresAt").asLong()).isEqualTo(NOW.plusSeconds(3600).getEpochSecond());
+            assertThat(Files.readString(monitor)).doesNotContain(initial.monitorToken());
             assertThat(initial.phase()).isEqualTo("CHECKING");
             assertThat(initial.jobId()).matches("^upd_[0-9a-f]{32}$");
 
@@ -163,6 +172,7 @@ class OperatorUpdateServiceTest {
             await().atMost(Duration.ofSeconds(5)).untilAsserted(() ->
                     assertThat(service.status(initial.jobId()).phase())
                             .isEqualTo("AWAITING_HOST"));
+            assertThat(service.status(initial.jobId()).monitorToken()).isNull();
             assertThat(service.events(initial.jobId(), 0L, 100).items())
                     .extracting(event -> event.status().phase())
                     .containsSubsequence(

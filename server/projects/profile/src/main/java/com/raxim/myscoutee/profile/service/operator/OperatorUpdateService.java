@@ -251,9 +251,20 @@ public class OperatorUpdateService {
                     actor,
                     release);
             writeStageStatus(stage, initial);
+            // Return the capability only to the approving Operator. Persist its digest,
+            // never the bearer, and never put the bearer in durable status/events.
+            String monitorToken = null;
+            if (properties.isMonitorEnabled()) {
+                monitorToken = randomHex(32);
+                atomicCreateJson(stage.resolve("monitor.json"), Map.of(
+                        "jobId", jobId,
+                        "tokenSha256", HexFormat.of().formatHex(sha256Digest().digest(
+                                monitorToken.getBytes(StandardCharsets.US_ASCII))),
+                        "expiresAt", clock.instant().plus(1, ChronoUnit.HOURS).getEpochSecond()));
+            }
             activeJavaJob.set(jobId);
             executor.submit(() -> stageUpdate(state, stage, initial, release));
-            return initial;
+            return initial.withMonitorToken(monitorToken);
         }
     }
 
@@ -989,12 +1000,7 @@ public class OperatorUpdateService {
     }
 
     private static String sha256(Path file) throws IOException {
-        MessageDigest digest;
-        try {
-            digest = MessageDigest.getInstance("SHA-256");
-        } catch (NoSuchAlgorithmException exception) {
-            throw new IllegalStateException("SHA-256 is unavailable.", exception);
-        }
+        MessageDigest digest = sha256Digest();
         try (InputStream input = Files.newInputStream(file)) {
             byte[] buffer = new byte[64 * 1024];
             int read;
@@ -1005,6 +1011,14 @@ public class OperatorUpdateService {
             }
         }
         return HexFormat.of().formatHex(digest.digest());
+    }
+
+    private static MessageDigest sha256Digest() {
+        try {
+            return MessageDigest.getInstance("SHA-256");
+        } catch (NoSuchAlgorithmException exception) {
+            throw new IllegalStateException("SHA-256 is unavailable.", exception);
+        }
     }
 
     private static void validateStatus(

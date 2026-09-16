@@ -24,7 +24,21 @@ public final class OperatorUpdateDtos {
             String targetVersion,
             String channel,
             String artifactSha256,
-            String backupPath) {
+            String backupPath,
+            String monitorToken) {
+        public OperatorUpdateJobDto(int schemaVersion, String jobId, String phase, int percent,
+                String message, String updatedAt, String requestedAt, String requestedBy,
+                String manifestHash, String currentVersion, String targetVersion, String channel,
+                String artifactSha256, String backupPath) {
+            this(schemaVersion, jobId, phase, percent, message, updatedAt, requestedAt, requestedBy,
+                    manifestHash, currentVersion, targetVersion, channel, artifactSha256, backupPath, null);
+        }
+
+        public OperatorUpdateJobDto withMonitorToken(String token) {
+            return new OperatorUpdateJobDto(schemaVersion, jobId, phase, percent, message, updatedAt,
+                    requestedAt, requestedBy, manifestHash, currentVersion, targetVersion, channel,
+                    artifactSha256, backupPath, token);
+        }
     }
 
     public record OperatorRollbackDto(String jobId, String fromVersion, String targetVersion, String artifactSha256) {}

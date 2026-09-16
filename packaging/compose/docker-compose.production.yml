@@ -28,6 +28,7 @@ services:
       - ./data/certbot/conf:/etc/letsencrypt
       - ./data/certbot/www:/var/www/certbot
       - /etc/localtime:/etc/localtime:ro
+      - /run/myscoutee-update-status:/run/myscoutee-update-status:ro
     networks:
       - myscoutee
     depends_on:
@@ -182,6 +183,7 @@ services:
       PAYMENT_BARION_TEST_GATEWAY_ENABLED: "true"
       OPERATOR_UPDATE_ENABLED: "${MYSCOUTEE_UPDATE_ENABLED:-false}"
       OPERATOR_UPDATE_STATE_DIR: "/var/lib/myscoutee/update"
+      OPERATOR_UPDATE_MONITOR_ENABLED: "true"
       OPERATOR_UPDATE_TLS_CA_CERTIFICATE: "${MYSCOUTEE_UPDATE_TLS_CA_CERTIFICATE:-}"
       OPERATOR_UPDATE_RELEASE_API_ORIGIN: "${MYSCOUTEE_UPDATE_RELEASE_API_ORIGIN:-https://api.github.com}"
       OPERATOR_UPDATE_RELEASE_DOWNLOAD_ORIGIN: "${MYSCOUTEE_UPDATE_RELEASE_DOWNLOAD_ORIGIN:-https://github.com}"

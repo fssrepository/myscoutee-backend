@@ -420,5 +420,70 @@
     "releaseDiscovery": "FAIL: historical frontend calls /api/operator/announcements?includeExpired=false&limit=100&kind=UPDATE and receives409 without Registry enrollment. Displayed current-version detail absent.",
     "rollback": "No visible action. Source also lacks the requested rollback implementation.",
     "artifactBoundary": "Current-source QA1 r2 is not published; published QA1 remains a different historical artifact. Do not silently use it as the exact previous recovery package."
+  },
+  "localReleaseRound": {
+    "updatedAt": "2026-09-16T14:38:47.667307+00:00",
+    "source": "Current source, two normal production builds; no historical binary patching.",
+    "origin": "https://192.168.153.1:18445",
+    "githubModified": false,
+    "artifacts": [
+      {
+        "version": "1.0.0-qa.1",
+        "directory": "packaging/dist/local-rollback-qa1-20260916-r2",
+        "artifactSha256": "b75573f033ce54685cce70c0b921c646cc6fb2c65de08099005a95249a6156e0",
+        "size": 335123546
+      },
+      {
+        "version": "1.0.0-qa.2",
+        "directory": "packaging/dist/local-rollback-qa2-20260916-r2",
+        "artifactSha256": "7e97cba68703cf68e13052b63711d43be499f8d51d83077b53402744aebec2d9",
+        "size": 335121632
+      }
+    ],
+    "signatures": "Both package and update manifest signature verification PASS. Local URLs re-signed in metadata only; package bytes unchanged.",
+    "sourceTests": {
+      "backend": "34/34 OperatorUpdate focused tests PASS",
+      "frontendHttp": "33/33 PASS",
+      "worker": "PASS including exact retained-package downgrade, incorrect digest/current-version/receipt permissions rejection"
+    },
+    "baseline": "Signed QA1 install and packaged host qualification PASS; exact source package identity recorded by installer.",
+    "remaining": [
+      "UI QA1 → QA2",
+      "UI QA2 → QA1 cache-miss rollback",
+      "Controlled download failure/retry",
+      "Managed HTTPS"
+    ],
+    "upgrade": {
+      "jobId": "upd_e706a97a8ab99457775c37903b5cadab",
+      "requestedAt": "2026-09-16T14:40:06Z",
+      "completedAt": "2026-09-16T14:42:46Z",
+      "result": "PASS: one native Apply, signed local-source QA2 download/install and exact image health; original open popup recovered without reload and displayed100%.",
+      "controls": "Both disabled while running and after popup reopen. On success Update stayed disabled; explicit Check with no newer release kept it disabled.",
+      "data": "Retained users/configuration and owned Mongo/MinIO controls, plus five key/config/TLS digests all unchanged. Events/Assets empty.",
+      "screenshot": "/tmp/myscoutee-qa-browser-sessions/evidence/operator-update-cdp/local-qa1-qa2-completed-no-reload.png"
+    },
+    "rollback": "NOT RUN yet: visible enabled recovery action binds QA1 b75573f033ce54685cce70c0b921c646cc6fb2c65de08099005a95249a6156e0. User requested independent progress service before continuation."
+  },
+  "independentProgress": {
+    "status": "SOURCE TESTS PASS; new normal QA1/QA2 packages building; not yet installed",
+    "reader": "Socket-activated non-root read-only host service behind same-origin nginx; short-lived job-scoped capability, hash-only grant, no public TCP port.",
+    "restart": "Retain current nginx while backend/dependencies update; replace bundled nginx after backend healthy. Same-job polling retries brief gateway replacement.",
+    "tests": {
+      "backend": "34/34 PASS",
+      "frontendHttp": "34/34 PASS",
+      "reader": "3 tests PASS, including live Unix HTTP status changes without API, expiry/job scope, no mutation and symlink/size rejection",
+      "worker": "PASS",
+      "restart": "PASS: healthy backend replaces ingress last; unhealthy backend retains it",
+      "nginx": "production transport/syntax tests PASS",
+      "debian": "remove and TLS lifecycle tests PASS"
+    },
+    "queuedUiFixes": [
+      "Large Updates tile action-ring removed",
+      "EN/HU bundle revision109→110: rollback key existed remotely but cached109 lacked it and conditional fetch returned no data"
+    ],
+    "buildDirectories": [
+      "packaging/dist/monitor-qa1-20260916",
+      "packaging/dist/monitor-qa2-20260916"
+    ]
   }
 }

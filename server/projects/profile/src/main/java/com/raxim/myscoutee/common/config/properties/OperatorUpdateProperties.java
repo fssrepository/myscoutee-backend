@@ -8,6 +8,9 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 @ConfigurationProperties("operator.update")
 public class OperatorUpdateProperties {
     private boolean enabled;
+    private boolean monitorEnabled;
+    public boolean isMonitorEnabled() { return monitorEnabled; }
+    public void setMonitorEnabled(boolean value) { monitorEnabled = value; }
     private String githubRepository = "fssrepository/myscoutee";
     private boolean includePrereleases;
     private Path tlsCaCertificate;

@@ -83,6 +83,12 @@ resume pointer and reusable working method.
 
 ## Active resume point
 
+Campaign scheduling, confirmed 2026-09-16: finish Operator Update today, then
+prepare the two Asset journeys for user-controlled pair QA tomorrow. External
+security, UI/image smoke and other deployment qualification are deferred to the
+final stable application and Registry release campaign, including GitHub publication.
+Do not execute those deferred checks as part of today's Update work.
+
 Testing boundary confirmed by the user: use versioned fixtures for test data
 and external tunnels/proxies/network emulation for transport conditions. Do not
 add application test parameters or test-only production branches. Fixture-only
@@ -104,10 +110,10 @@ when shaping only its route to the QA application.
 ```yaml
 checkpoint: OPERATOR-UPDATE-LIFECYCLE-001
 checklist: ../checklists/operator/OPERATOR-UPDATE-LIFECYCLE-001.md
-substage: Actual current-source QA1 r2 to published QA2 Apply completed at 13:57:20Z, job upd_ec17edbf732bdebb08d37b9b3e55dd6a. Backend/package and retained controls PASS. UI stopped at85% on API restart; source repair regression cases pass, not deployed. Historical QA2 discovery409 and absent Rollback action remain open.
-fixture_phase: Update preservation fixture STAGED on VMware production_db: one owned Mongo control and one MinIO object; before/after verification PASS. Retain for rollback. Existing managed Operator browser is on QA2 Updates with historical discovery409.
+substage: Local-source QA1 → QA2 native Apply PASS, including original-popup recovery to100% without reload; job upd_e706a97a8ab99457775c37903b5cadab completed14:42:46Z. User requested independent progress during API downtime; source implementation/tests PASS and normal monitor-qa1/qa2 packages building. Rollback not yet started.
+fixture_phase: Preservation fixture and local release-source override remain STAGED; all retained Mongo/MinIO/configuration controls match after QA2. VM runs local-rollback-qa2-20260916-r2; managed Operator popup shows recovery action but cached i18n109 displays its key.
 browser_control: Operator full-flow delegation remains active. Asset journeys remain user-controlled pair QA.
-required_resume: Reuse ignored packaging/client-tools/vmware.local.env and canonical localhost HTTPS forwarding. Do not repeat Apply or create VM/database/media backups. Source restart-gap repair passed its new regression cases (two files45/46; unrelated leaderboard-header expectation failed). No automatic page reload. Complete rollback capability and qualify a normal full-source candidate; do not patch old QA2 binaries or substitute CLI install for UI rollback. Current-source QA1 r2 digest differs from published historical QA1 and is not published. Preserve exact recovery identity. Generated local nginx frontend output remains exclusively dev-owned.
+required_resume: Finish build pipeline /tmp/operator-monitor-qa{1,2}-{frontend,images,package,sign}.log. Signed packages target packaging/dist/monitor-qa{1,2}-20260916. Swap only local release fixture server to new signed catalog, then normal signed QA1 baseline install and native UI QA1 → QA2 → QA1. Independent socket status reader/retained-nginx restart are source-tested but NOT deployed. Ring removal and i18n110 are bundled. Reuse vmware.local.env, preservation/source fixtures and localhost HTTPS; no GitHub changes, binary patches, fake versions or dataset backups. After Update prepare Borrow/Pricing for tomorrow; security/smoke/final app+Registry release deferred.
 queued_work: Update includes managed HTTPS. Separate deployment UI image smoke, repeatable external security probes and measured memory/startup efficiency qualification; no routine dependency upgrades. Two Asset journeys remain pair QA.
 last_completed: Configuration C01–C03 PASS, including actual Auth/Message tests and activation/entry-mode proof; real Firebase-user sign-in reuses physical WebView evidence2026-09-14 and was not repeated. Registry/Revenue and Administration complete.
 runtime: VMware runs installed QA2 after actual UI upgrade; local dev Docker containers stopped. Host about9.5GiB available. No duplicate build/test process left. Managed Operator session retained. Production build output remains separate from dev nginx output.

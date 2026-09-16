@@ -104,6 +104,10 @@ prepare_config_dir() {
   mkdir -p "${config_dir}"
   cp "${NGINX_ROOT}/conf/nginx/conf/http/routing.conf" \
     "${config_dir}/routing.conf"
+  if [[ "${http_policy}" == "${PROD_HTTP_POLICY}" ]]; then
+    cp "${NGINX_ROOT}/conf/nginx/conf/http/update-status.prod.conf" "${config_dir}/update-status.prod.conf"
+    printf '\ninclude /etc/nginx/conf.d/update-status.prod.conf;\n' >> "${config_dir}/routing.conf"
+  fi
   cp "${http_policy}" "${config_dir}/http-transport-policy.conf"
   cp "${https_policy}" "${config_dir}/https-response-policy.conf"
   printf '%s' "${config_dir}"

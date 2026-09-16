@@ -595,6 +595,8 @@ if command -v systemctl >/dev/null 2>&1; then
     /opt/myscoutee/packaging/scripts/sync-i18n-seeds.sh
   fi
   systemctl enable myscoutee.service >/dev/null 2>&1 || true
+  systemctl enable --now myscoutee-update-status.socket
+  systemctl try-restart myscoutee-update-status.service
   systemctl enable --now myscoutee-update.path >/dev/null 2>&1 || true
   systemctl enable --now myscoutee-tls.path >/dev/null 2>&1 || true
   systemctl enable --now myscoutee-tls-renew.timer >/dev/null 2>&1 || true

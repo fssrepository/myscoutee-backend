@@ -12,6 +12,7 @@ CACHE_DIR="${MYSCOUTEE_UPDATE_CACHE_DIR:-/var/cache/myscoutee-update}"
 AUDIT_DIR="${MYSCOUTEE_UPDATE_AUDIT_DIR:-/var/log/myscoutee/update}"
 RELEASE_PUBLIC_KEY="${MYSCOUTEE_UPDATE_RELEASE_PUBLIC_KEY:-/etc/myscoutee/update/release-public-key.pem}"
 SAFE_COPY_HELPER="${MYSCOUTEE_UPDATE_SAFE_COPY_HELPER:-${SCRIPT_DIR}/myscoutee-safe-copy.py}"
+RESTART_HELPER="${MYSCOUTEE_UPDATE_RESTART_HELPER:-${SCRIPT_DIR}/restart-update-stack.sh}"
 IMAGE_CONTENT_FINGERPRINT_HELPER="${SCRIPT_DIR}/image-content-fingerprint.sh"
 INSTALLED_MANIFEST_PATH="${MYSCOUTEE_UPDATE_INSTALLED_MANIFEST_PATH:-/opt/myscoutee/packaging/IMAGE-MANIFEST.json}"
 PACKAGE_NAME="myscoutee"
@@ -665,7 +666,7 @@ restart_and_verify_release() {
   local manifest="$1"
   local deadline
 
-  if ! systemctl restart myscoutee.service >> "${CURRENT_LOG_FILE}" 2>&1; then
+  if ! "${RESTART_HELPER}" >> "${CURRENT_LOG_FILE}" 2>&1; then
     return 1
   fi
   deadline=$((SECONDS + HEALTH_TIMEOUT_SECONDS))
