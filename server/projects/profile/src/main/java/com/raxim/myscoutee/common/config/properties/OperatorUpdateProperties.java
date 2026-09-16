@@ -8,6 +8,13 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 @ConfigurationProperties("operator.update")
 public class OperatorUpdateProperties {
     private boolean enabled;
+    private String githubRepository = "fssrepository/myscoutee";
+    private boolean includePrereleases;
+
+    public String getGithubRepository() { return githubRepository; }
+    public void setGithubRepository(String value) { githubRepository = value; }
+    public boolean isIncludePrereleases() { return includePrereleases; }
+    public void setIncludePrereleases(boolean value) { includePrereleases = value; }
     private Path stateDir = Path.of("/var/lib/myscoutee/update");
     private Path releasePublicKeyPath =
             Path.of("/etc/myscoutee/update/release-public-key.pem");

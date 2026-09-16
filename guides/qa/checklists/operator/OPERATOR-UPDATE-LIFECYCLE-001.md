@@ -22,7 +22,7 @@ this baseline install is separate from the tested application-owned QA2 download
 
 Record each GitHub release tag, artifact digest, internal package version and
 installed build identity separately; a filename does not establish a version.
-Prepare required release/Registry/database records through the versioned fixture
+Prepare required signed GitHub release metadata through the versioned fixture
 with an exact snapshot/reset. They must agree with the actual signed artifacts;
 do not write successful job state or falsify the installed package version.
 The application's normal update path downloads the GitHub artifact. Codex must
@@ -43,8 +43,10 @@ for this update checklist. Keep dependency upgrades in their separate workflow.
 
 ## 1. Current version and release verification
 
-1. Open **Updates**. Check deployment identity and the actual current version.
-2. Use **Refresh** to retrieve the prepared release. Displayed target version
+1. Start with no Registry selection or enrollment; no real Registry service is
+   required. Open **Updates**. Check deployment identity and the actual current version.
+2. Use **Refresh** to retrieve the prepared release directly from GitHub through
+   the local backend. Confirm discovery and Apply do not call Registry endpoints. Displayed target version
    and compatibility match the designated package.
 3. Read the release information. Codex correlates the package identity and
    successful verification result with the one release accepted for this test.

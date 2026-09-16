@@ -77,21 +77,15 @@ class OperatorUpdateServiceTest {
         String artifactHash = "sha256:" + java.util.HexFormat.of().formatHex(
                 MessageDigest.getInstance("SHA-256").digest(artifact));
         ObjectMapper objectMapper = new JsonConfig().objectMapper();
-        OperatorNetworkService networkService = mock(OperatorNetworkService.class);
+        OperatorUpdateReleaseService networkService = mock(OperatorUpdateReleaseService.class);
         OperatorUpdateArtifactDownloader downloader =
                 mock(OperatorUpdateArtifactDownloader.class);
         OperatorUpdateProperties properties = updateProperties();
         RegistryProperties registryProperties = registryProperties(properties);
         OperatorAnnouncementPageDto announcements =
                 announcementPage(artifact.length, artifactHash, true);
-        when(networkService.announcements(
-                        "UPDATE",
-                        "",
-                        "",
-                        false,
-                        100,
-                        ""))
-                .thenReturn(announcements);
+        when(networkService.find(ANNOUNCEMENT_ID))
+                .thenReturn(announcements.items().getFirst());
         doAnswer(invocation -> {
             Path target = invocation.getArgument(1);
             Files.write(
@@ -205,22 +199,16 @@ class OperatorUpdateServiceTest {
     @Test
     void refusesManifestWithoutPinnedPackageVerificationBeforeDownload() {
         ObjectMapper objectMapper = new JsonConfig().objectMapper();
-        OperatorNetworkService networkService = mock(OperatorNetworkService.class);
+        OperatorUpdateReleaseService networkService = mock(OperatorUpdateReleaseService.class);
         OperatorUpdateArtifactDownloader downloader =
                 mock(OperatorUpdateArtifactDownloader.class);
         OperatorUpdateProperties properties = updateProperties();
         RegistryProperties registryProperties = registryProperties(properties);
-        when(networkService.announcements(
-                        "UPDATE",
-                        "",
-                        "",
-                        false,
-                        100,
-                        ""))
+        when(networkService.find(ANNOUNCEMENT_ID))
                 .thenReturn(announcementPage(
                         10,
                         "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
-                        false));
+                        false).items().getFirst());
         ExecutorService executor = Executors.newSingleThreadExecutor();
         OperatorUpdateService service = new OperatorUpdateService(
                 networkService,
@@ -253,7 +241,7 @@ class OperatorUpdateServiceTest {
     @Test
     void exploreModeCannotStageHostPackageUpdate() {
         MongoSessionModeContext.set(MongoSessionMode.DEMO);
-        OperatorNetworkService networkService = mock(OperatorNetworkService.class);
+        OperatorUpdateReleaseService networkService = mock(OperatorUpdateReleaseService.class);
         OperatorUpdateArtifactDownloader downloader =
                 mock(OperatorUpdateArtifactDownloader.class);
         OperatorUpdateProperties properties = updateProperties();
@@ -270,13 +258,7 @@ class OperatorUpdateServiceTest {
                     "demo-operator"))
                     .isInstanceOf(ResponseStatusException.class)
                     .hasMessageContaining("Explore mode");
-            verify(networkService, never()).announcements(
-                    any(),
-                    any(),
-                    any(),
-                    anyBoolean(),
-                    anyInt(),
-                    any());
+            verify(networkService, never()).find(any());
         } finally {
             service.closeExecutor();
         }
@@ -285,23 +267,17 @@ class OperatorUpdateServiceTest {
     @Test
     void refusesIncompatibleInstalledVersionBeforeAllocatingJob() {
         ObjectMapper objectMapper = new JsonConfig().objectMapper();
-        OperatorNetworkService networkService = mock(OperatorNetworkService.class);
+        OperatorUpdateReleaseService networkService = mock(OperatorUpdateReleaseService.class);
         OperatorUpdateArtifactDownloader downloader =
                 mock(OperatorUpdateArtifactDownloader.class);
         OperatorUpdateProperties properties = updateProperties();
         RegistryProperties registryProperties = registryProperties(properties);
         registryProperties.setSoftwareVersion("3.0.0");
-        when(networkService.announcements(
-                        "UPDATE",
-                        "",
-                        "",
-                        false,
-                        100,
-                        ""))
+        when(networkService.find(ANNOUNCEMENT_ID))
                 .thenReturn(announcementPage(
                         10,
                         "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
-                        true));
+                        true).items().getFirst());
         OperatorUpdateService service = new OperatorUpdateService(
                 networkService,
                 downloader,
@@ -324,22 +300,16 @@ class OperatorUpdateServiceTest {
     void requiresSignedArtifactSizePlusConfiguredStagingReserve()
             throws Exception {
         ObjectMapper objectMapper = new JsonConfig().objectMapper();
-        OperatorNetworkService networkService = mock(OperatorNetworkService.class);
+        OperatorUpdateReleaseService networkService = mock(OperatorUpdateReleaseService.class);
         OperatorUpdateArtifactDownloader downloader =
                 mock(OperatorUpdateArtifactDownloader.class);
         OperatorUpdateProperties properties = updateProperties();
         RegistryProperties registryProperties = registryProperties(properties);
-        when(networkService.announcements(
-                        "UPDATE",
-                        "",
-                        "",
-                        false,
-                        100,
-                        ""))
+        when(networkService.find(ANNOUNCEMENT_ID))
                 .thenReturn(announcementPage(
                         10,
                         "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
-                        true));
+                        true).items().getFirst());
         Files.createDirectories(properties.getStateDir().resolve("staging"));
         properties.setStagingSafetyReserveBytes(
                 Files.getFileStore(properties.getStateDir())
@@ -366,7 +336,7 @@ class OperatorUpdateServiceTest {
         OperatorUpdateProperties properties = updateProperties();
         properties.setEnabled(false);
         OperatorUpdateService service = new OperatorUpdateService(
-                mock(OperatorNetworkService.class),
+                mock(OperatorUpdateReleaseService.class),
                 mock(OperatorUpdateArtifactDownloader.class),
                 properties,
                 registryProperties(properties),
@@ -409,7 +379,7 @@ class OperatorUpdateServiceTest {
                 worker.resolve("status.json"),
                 objectMapper.writeValueAsBytes(workerStatus));
         OperatorUpdateService service = new OperatorUpdateService(
-                mock(OperatorNetworkService.class),
+                mock(OperatorUpdateReleaseService.class),
                 mock(OperatorUpdateArtifactDownloader.class),
                 properties,
                 registryProperties,
@@ -446,7 +416,7 @@ class OperatorUpdateServiceTest {
                 worker.resolve("events.ndjson"),
                 objectMapper.writeValueAsString(recovery) + "\n");
         OperatorUpdateService service = new OperatorUpdateService(
-                mock(OperatorNetworkService.class),
+                mock(OperatorUpdateReleaseService.class),
                 mock(OperatorUpdateArtifactDownloader.class),
                 properties,
                 registryProperties(properties),
@@ -465,7 +435,7 @@ class OperatorUpdateServiceTest {
         OperatorUpdateProperties properties = updateProperties();
         properties.setEnabled(false);
         OperatorUpdateService service = new OperatorUpdateService(
-                mock(OperatorNetworkService.class),
+                mock(OperatorUpdateReleaseService.class),
                 mock(OperatorUpdateArtifactDownloader.class),
                 properties,
                 registryProperties(properties),

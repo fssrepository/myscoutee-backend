@@ -24,14 +24,22 @@ import com.raxim.myscoutee.profile.service.operator.OperatorUpdateService;
 @PreAuthorize("hasAuthority('O')")
 public class OperatorUpdateController {
     private final OperatorUpdateService service;
+    private final com.raxim.myscoutee.profile.service.operator.OperatorUpdateReleaseService releases;
 
-    public OperatorUpdateController(OperatorUpdateService service) {
+    public OperatorUpdateController(OperatorUpdateService service,
+            com.raxim.myscoutee.profile.service.operator.OperatorUpdateReleaseService releases) {
         this.service = service;
+        this.releases = releases;
     }
 
     @GetMapping
     public OperatorUpdateOverviewDto overview() {
         return service.overview();
+    }
+
+    @GetMapping("/releases")
+    public com.raxim.myscoutee.profile.service.operator.OperatorUpdateReleaseService.ReleasePage releases() {
+        return releases.releases();
     }
 
     @PostMapping

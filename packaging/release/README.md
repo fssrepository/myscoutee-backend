@@ -13,7 +13,9 @@ sign production release artifacts:
 - `rebuild-production-services.sh` rebuilds project-owned production images and
   optionally reloads their Compose services;
 - `sign-release-artifacts.sh` validates and signs release artifacts with an
-  approved, pre-existing private key.
+  approved, pre-existing private key;
+- `sign-update-manifest.py` signs the complete standalone update manifest for
+  the `myscoutee-update.json` GitHub release asset.
 
 They are deliberately outside `packaging/scripts`. Everything under
 `packaging/scripts` is runtime material copied into the Debian package, while
@@ -21,3 +23,33 @@ They are deliberately outside `packaging/scripts`. Everything under
 
 Destructive local datastore reset remains under `tools/` and is not a packaging
 input.
+
+## Standalone update discovery
+
+Operator Updates reads `fssrepository/myscoutee` GitHub releases through Java,
+without a Registry connection. The repository and inclusion of prereleases are
+configured by `MYSCOUTEE_UPDATE_GITHUB_REPOSITORY` and
+`MYSCOUTEE_UPDATE_INCLUDE_PRERELEASES` (default false).
+
+Publish `myscoutee-update.json` alongside the Debian asset. Prepare the existing
+`update_manifest` JSON fields with the real package version, channel, HTTPS asset
+URL, byte size, SHA-256, package signing key ID and package signature from
+`sign-release-artifacts.sh`; declare the actual minimum/maximum compatible
+versions and require a backup. The package version must be newer than the
+installed package. GitHub tag names do not substitute for package versions.
+
+```sh
+python3 packaging/release/sign-update-manifest.py \
+  --private-key /secure/release-private-key.pem \
+  --manifest /path/to/update-manifest.json \
+  --output /path/to/myscoutee-update.json
+```
+
+The envelope contains `schemaVersion: 1`, `manifestBase64` (exact UTF-8 JSON
+bytes) and `signature` (padded base64 Ed25519). The signed message is the ASCII
+prefix `myscoutee-update-catalog-v1` followed by a newline and those exact bytes.
+Java verifies the full metadata and the existing package signature with the
+locally pinned release key. Apply reloads and revalidates the release before
+allocating a job. The root worker still independently verifies the actual DEB.
+Missing metadata, an invalid signature or an absent trusted key disables Apply;
+these conditions must not be reported as an up-to-date deployment.

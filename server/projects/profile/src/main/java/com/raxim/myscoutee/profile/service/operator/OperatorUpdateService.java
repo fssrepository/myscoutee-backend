@@ -46,7 +46,6 @@ import com.raxim.myscoutee.common.config.mongo.MongoSessionModeContext;
 import com.raxim.myscoutee.common.config.properties.OperatorUpdateProperties;
 import com.raxim.myscoutee.common.config.properties.RegistryProperties;
 import com.raxim.myscoutee.profile.data.dto.operator.OperatorNetworkDtos.OperatorAnnouncementDto;
-import com.raxim.myscoutee.profile.data.dto.operator.OperatorNetworkDtos.OperatorAnnouncementPageDto;
 import com.raxim.myscoutee.profile.data.dto.operator.OperatorNetworkDtos.OperatorUpdateManifestDto;
 import com.raxim.myscoutee.profile.data.dto.operator.OperatorUpdateDtos.OperatorUpdateApprovalDto;
 import com.raxim.myscoutee.profile.data.dto.operator.OperatorUpdateDtos.OperatorUpdateEventDto;
@@ -59,11 +58,11 @@ import jakarta.annotation.PreDestroy;
 import tools.jackson.databind.ObjectMapper;
 
 /**
- * Stages one registry-signed update for the local privileged host helper.
+ * Stages one release-key-signed update for the local privileged host helper.
  *
  * <p>The browser supplies only an announcement ID. The manifest URL, digest,
  * size, version and detached package signature are taken from a freshly
- * verified registry response. Java downloads and stages the package but never
+ * verified GitHub release metadata. Java downloads and stages the package but never
  * invokes a package manager or accepts a command. Java phases are stored below
  * {@code staging/<jobId>}; after the atomic request handoff, status readers
  * prefer the root worker's separate {@code jobs/<jobId>} directory.</p>
@@ -84,7 +83,7 @@ public class OperatorUpdateService {
     private static final int MAX_EVENT_LINES = 10_000;
     private static final int MAX_DISCOVERY_ENTRIES = 10_000;
 
-    private final OperatorNetworkService networkService;
+    private final OperatorUpdateReleaseService releaseService;
     private final OperatorUpdateArtifactDownloader downloader;
     private final OperatorUpdateProperties properties;
     private final RegistryProperties registryProperties;
@@ -97,13 +96,13 @@ public class OperatorUpdateService {
 
     @Autowired
     public OperatorUpdateService(
-            OperatorNetworkService networkService,
+            OperatorUpdateReleaseService releaseService,
             OperatorUpdateArtifactDownloader downloader,
             OperatorUpdateProperties properties,
             RegistryProperties registryProperties,
             ObjectMapper objectMapper) {
         this(
-                networkService,
+                releaseService,
                 downloader,
                 properties,
                 registryProperties,
@@ -114,7 +113,7 @@ public class OperatorUpdateService {
     }
 
     OperatorUpdateService(
-            OperatorNetworkService networkService,
+            OperatorUpdateReleaseService releaseService,
             OperatorUpdateArtifactDownloader downloader,
             OperatorUpdateProperties properties,
             RegistryProperties registryProperties,
@@ -122,7 +121,7 @@ public class OperatorUpdateService {
             ExecutorService executor,
             Clock clock,
             SecureRandom secureRandom) {
-        this.networkService = Objects.requireNonNull(networkService);
+        this.releaseService = Objects.requireNonNull(releaseService);
         this.downloader = Objects.requireNonNull(downloader);
         this.properties = Objects.requireNonNull(properties);
         this.registryProperties = Objects.requireNonNull(registryProperties);
@@ -188,7 +187,7 @@ public class OperatorUpdateService {
                 RegistryProtocol.requireAnnouncementId(safeText(approval.announcementId()));
         String actor = requireActor(actorUserId);
 
-        // Resolve every security-sensitive field from a fresh signed registry
+        // Resolve every security-sensitive field from a fresh signed release
         // snapshot before allocating a local job.
         VerifiedRelease release = findVerifiedRelease(announcementId);
         synchronized (startLock) {
@@ -283,28 +282,7 @@ public class OperatorUpdateService {
     }
 
     private VerifiedRelease findVerifiedRelease(String announcementId) {
-        String cursor = "";
-        for (int pageNumber = 0; pageNumber < 1_000; pageNumber++) {
-            OperatorAnnouncementPageDto page = networkService.announcements(
-                    "UPDATE",
-                    "",
-                    "",
-                    false,
-                    100,
-                    cursor);
-            for (OperatorAnnouncementDto announcement : page.items()) {
-                if (announcementId.equals(announcement.announcementId())) {
-                    return requireInstallableRelease(announcement);
-                }
-            }
-            cursor = safeText(page.nextCursor());
-            if (cursor.isEmpty()) {
-                break;
-            }
-        }
-        throw new ResponseStatusException(
-                HttpStatus.NOT_FOUND,
-                "The verified update announcement was not found.");
+        return requireInstallableRelease(releaseService.find(announcementId));
     }
 
     private VerifiedRelease requireInstallableRelease(
@@ -382,17 +360,6 @@ public class OperatorUpdateService {
                     "The signed update artifact exceeds the configured download limit.");
         }
         OperatorUpdateArtifactDownloader.requireHttpsArtifactUri(manifest.artifactUrl());
-        Path registryPin = normalizeAbsolute(
-                registryProperties.getPackageSigningPublicKeyPath(),
-                "registry release key path");
-        Path updatePin = normalizeAbsolute(
-                properties.getReleasePublicKeyPath(),
-                "operator update release key path");
-        if (!registryPin.equals(updatePin)) {
-            throw new ResponseStatusException(
-                    HttpStatus.CONFLICT,
-                    "Announcement verification and update staging use different release keys.");
-        }
         return new VerifiedRelease(
                 announcement.announcementId(),
                 announcement.updateManifestHash(),

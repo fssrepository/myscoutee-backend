@@ -39,6 +39,8 @@ operator:
   configuration:
     master-key-path: ${OPERATOR_CONFIGURATION_MASTER_KEY_PATH:/etc/myscoutee/configuration/deployment-master-key}
   update:
+    github-repository: ${OPERATOR_UPDATE_GITHUB_REPOSITORY:fssrepository/myscoutee}
+    include-prereleases: ${OPERATOR_UPDATE_INCLUDE_PRERELEASES:false}
     enabled: ${OPERATOR_UPDATE_ENABLED:false}
     state-dir: ${OPERATOR_UPDATE_STATE_DIR:/var/lib/myscoutee/update}
     release-public-key-path: ${OPERATOR_UPDATE_RELEASE_PUBLIC_KEY_PATH:/etc/myscoutee/update/release-public-key.pem}

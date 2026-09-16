@@ -161,6 +161,13 @@ the designated installed application origin and exposed services, using a
 separate client. Record the client/network vantage point; access through a
 workstation tunnel does not prove Internet-facing reachability or protection.
 
+Include the separately deployed Go Registry in the same security qualification.
+On VMware it emulates a remote service: the application and real Registry must
+not share a Docker network; access crosses the published HTTPS endpoint. Verify
+network membership, exposed ports, TLS trust/expiry, unauthenticated Registry
+access, signature/replay rejection and separation from the internal Explore
+`registry-demo`. Retain versioned fixtures and repeatable probes for both targets.
+
 Use the smoke-owned accounts and records to test unauthenticated access,
 cross-account object access, role/admin authorization, session boundaries,
 API input handling, upload/media access and file paths. Inspect exposed debug,
