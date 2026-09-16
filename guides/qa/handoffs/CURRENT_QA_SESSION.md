@@ -83,11 +83,16 @@ resume pointer and reusable working method.
 
 ## Active resume point
 
-Campaign scheduling, confirmed 2026-09-16: Operator Update is complete. The user
-selected Asset Pricing for tomorrow's user-controlled pair QA; Borrow stays parked. External
-security, UI/image smoke and other deployment qualification are deferred to the
-final stable application and Registry release campaign, including GitHub publication.
-Do not execute those deferred checks as part of today's Update work.
+Campaign scheduling, confirmed 2026-09-16: Operator Update is complete. Asset
+Pricing remains tomorrow's selected user-controlled pair-QA checkpoint; Borrow
+is parked. The user now explicitly delegates fixture-backed normal-account UI
+smoke on the installed VMware app, plus a separate security/startup/memory
+campaign with its own [Excel ledger](../../qualification/SECURITY_AND_INFRASTRUCTURE.xlsx).
+These do not advance the pair-QA matrix. Retain smoke-created profile, Event,
+Asset and media as fixture-owned controls for the next release update. After
+Asset QA is complete, prepare/publish the stable application and Registry release
+and GitHub tags, update the stack, then verify the retained controls. An unrelated
+Borrow change alone does not require registration smoke to be replayed.
 
 Testing boundary confirmed by the user: use versioned fixtures for test data
 and external tunnels/proxies/network emulation for transport conditions. Do not

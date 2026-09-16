@@ -1,0 +1,237 @@
+{
+  "Scope": [
+    [
+      "Item",
+      "Status",
+      "Evidence / limitation"
+    ],
+    [
+      "App",
+      "QA2 monitor-r8",
+      "SHA256 29c404680876568dbd7d40fd4b85422acc8e59e4f2824feb24ff662eb4203444"
+    ],
+    [
+      "Vantage",
+      "Workstation outside VMware",
+      "Workstation outside guest; app through localhost tunnel, Registry direct VM. Not public Internet."
+    ],
+    [
+      "Coverage",
+      "PARTIAL",
+      "Finite negative probes; authenticated cross-account, upload, replay and CVE checks not yet performed."
+    ]
+  ],
+  "Security": [
+    [
+      "Check",
+      "Status",
+      "Target",
+      "Evidence"
+    ],
+    [
+      "APP-ANON-configuration",
+      "PASS",
+      "https://localhost",
+      "HTTP 403; /api/operator/configuration"
+    ],
+    [
+      "APP-ANON-tls",
+      "PASS",
+      "https://localhost",
+      "HTTP 403; /api/operator/configuration/tls"
+    ],
+    [
+      "APP-ANON-updates",
+      "PASS",
+      "https://localhost",
+      "HTTP 403; /api/operator/updates"
+    ],
+    [
+      "APP-INVALID-TOKEN",
+      "PASS",
+      "https://localhost",
+      "HTTP 401; /api/operator/configuration"
+    ],
+    [
+      "APP-EXPOSURE-/.env",
+      "PASS",
+      "https://localhost",
+      "HTTP 200; /.env"
+    ],
+    [
+      "APP-EXPOSURE-/.git/config",
+      "PASS",
+      "https://localhost",
+      "HTTP 200; /.git/config"
+    ],
+    [
+      "APP-EXPOSURE-/actuator/env",
+      "PASS",
+      "https://localhost",
+      "HTTP 200; /actuator/env"
+    ],
+    [
+      "APP-EXPOSURE-/actuator/heapdump",
+      "PASS",
+      "https://localhost",
+      "HTTP 200; /actuator/heapdump"
+    ],
+    [
+      "APP-EXPOSURE-/api/actuator/env",
+      "PASS",
+      "https://localhost",
+      "HTTP 403; /api/actuator/env"
+    ],
+    [
+      "APP-EXPOSURE-/api/actuator/heapdump",
+      "PASS",
+      "https://localhost",
+      "HTTP 403; /api/actuator/heapdump"
+    ],
+    [
+      "REG-UNSIGNED-/v1/mau/batches",
+      "PASS",
+      "https://192.168.153.129:18444",
+      "HTTP 400; /v1/mau/batches"
+    ],
+    [
+      "REG-UNSIGNED-/v1/revenue/batches",
+      "PASS",
+      "https://192.168.153.129:18444",
+      "HTTP 400; /v1/revenue/batches"
+    ],
+    [
+      "REG-UNSIGNED-/v1/deployments/register",
+      "PASS",
+      "https://192.168.153.129:18444",
+      "HTTP 400; /v1/deployments/register"
+    ],
+    [
+      "REG-CANONICAL-PATH",
+      "PASS",
+      "https://192.168.153.129:18444",
+      "HTTP 400; /v1/deployments/%72egister"
+    ],
+    [
+      "REG-EXPOSURE-/.env",
+      "PASS",
+      "https://192.168.153.129:18444",
+      "HTTP 404; /.env"
+    ],
+    [
+      "REG-EXPOSURE-/.git/config",
+      "PASS",
+      "https://192.168.153.129:18444",
+      "HTTP 404; /.git/config"
+    ],
+    [
+      "REG-EXPOSURE-/debug/pprof/",
+      "PASS",
+      "https://192.168.153.129:18444",
+      "HTTP 404; /debug/pprof/"
+    ],
+    [
+      "REG-EXPOSURE-/metrics",
+      "PASS",
+      "https://192.168.153.129:18444",
+      "HTTP 404; /metrics"
+    ]
+  ],
+  "Runtime": [
+    [
+      "Measurement",
+      "Value",
+      "Scope"
+    ],
+    [
+      "Warm restart to API healthy",
+      77.85,
+      "seconds; includes sampling overhead; external rendered readiness separate"
+    ],
+    [
+      "Guest RAM",
+      "5489252 kB",
+      "No swap"
+    ],
+    [
+      "Prestart i18n sync",
+      "8 s",
+      "Observed systemd timestamps; migrations and demo marker skip <1s"
+    ],
+    [
+      "myscoutee",
+      "518.6MiB / 5.235GiB",
+      "First idle Docker working-set sample, not exact heap/RSS"
+    ],
+    [
+      "nginx",
+      "7.613MiB / 5.235GiB",
+      "First idle Docker working-set sample, not exact heap/RSS"
+    ],
+    [
+      "redis",
+      "9.566MiB / 5.235GiB",
+      "First idle Docker working-set sample, not exact heap/RSS"
+    ],
+    [
+      "registry-demo",
+      "10.46MiB / 5.235GiB",
+      "First idle Docker working-set sample, not exact heap/RSS"
+    ],
+    [
+      "payment-simulator",
+      "2.965MiB / 5.235GiB",
+      "First idle Docker working-set sample, not exact heap/RSS"
+    ],
+    [
+      "mongodb",
+      "215.2MiB / 5.235GiB",
+      "First idle Docker working-set sample, not exact heap/RSS"
+    ],
+    [
+      "minio",
+      "107.2MiB / 5.235GiB",
+      "First idle Docker working-set sample, not exact heap/RSS"
+    ],
+    [
+      "myscoutee-registry-registry-1",
+      "15.18MiB / 5.235GiB",
+      "First idle Docker working-set sample, not exact heap/RSS"
+    ],
+    [
+      "myscoutee-registry-nginx-1",
+      "5.211MiB / 5.235GiB",
+      "First idle Docker working-set sample, not exact heap/RSS"
+    ]
+  ],
+  "Findings": [
+    [
+      "ID",
+      "Status",
+      "Priority",
+      "Finding / decision",
+      "Evidence"
+    ],
+    [
+      "SEC-001",
+      "FIXED / RETEST PASS",
+      "P1",
+      "Registry self-signed QA certificate expired 2026-08-29; renewed existing TLS key to 2026-12-15. Registry signing key unchanged. Stable release requires managed certificate renewal.",
+      "security-20260916.json then security-20260916-retest.json"
+    ],
+    [
+      "PERF-001",
+      "INVESTIGATE",
+      "P2",
+      "Warm start 77.85s; isolate JVM initialization and health polling before changing runtime.",
+      "runtime-20260916.json"
+    ],
+    [
+      "PERF-002",
+      "DEFERRED",
+      "P2",
+      "8s i18n sync every restart; consider package-content hash guard only after profiling. No speculative optimization deployed.",
+      "runtime-20260916.json"
+    ]
+  ]
+}

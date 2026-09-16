@@ -9,7 +9,7 @@ import WebSocket from '../../../frontend/node_modules/ws/index.js';
 
 const [action, actor = 'Ava', ...args] = process.argv.slice(2);
 const checkpointId = process.env.QA_CHECKPOINT || 'NOTIFICATION-ADMIN-LIFECYCLE-001';
-if (!['NOTIFICATION-ADMIN-LIFECYCLE-001', 'JOB-MESSAGES', 'BELL-RATING-LIFECYCLE-001', 'BELL-RATING-FEEDBACK-001', 'ADMIN-MONITORING-001', 'ADMIN-AFFINITY-GRAPH-001', 'ADMIN-PARAMETERS-001', 'OPERATOR-FIREBASE-001', 'OPERATOR-REGISTRY-LIFECYCLE-001', 'OPERATOR-REVENUE-LIFECYCLE-001', 'OPERATOR-UPDATE-LIFECYCLE-001'].includes(checkpointId)) throw new Error('Unsupported delegated checkpoint');
+if (!['DEPLOYMENT-SMOKE-001', 'NOTIFICATION-ADMIN-LIFECYCLE-001', 'JOB-MESSAGES', 'BELL-RATING-LIFECYCLE-001', 'BELL-RATING-FEEDBACK-001', 'ADMIN-MONITORING-001', 'ADMIN-AFFINITY-GRAPH-001', 'ADMIN-PARAMETERS-001', 'OPERATOR-FIREBASE-001', 'OPERATOR-REGISTRY-LIFECYCLE-001', 'OPERATOR-REVENUE-LIFECYCLE-001', 'OPERATOR-UPDATE-LIFECYCLE-001'].includes(checkpointId)) throw new Error('Unsupported delegated checkpoint');
 const root = path.join(os.tmpdir(), 'myscoutee-qa-browser-sessions');
 const manifest = JSON.parse(readFileSync(path.join(root, checkpointId + '.json'), 'utf8'));
 const session = manifest.sessions.find(item => item.actor === actor);
@@ -47,11 +47,22 @@ class CDP extends EventEmitter {
   close() { this.socket.close(); }
 }
 const targets = await fetch(`http://127.0.0.1:${session.devToolsPort}/json/list`).then(r => r.json());
-const target = targets.find(item => item.type === 'page' && (checkpointId === 'OPERATOR-UPDATE-LIFECYCLE-001' ? /^https:\/\/(?:localhost|qa\.localhost)(?:\/|$)/ : /^http:\/\/localhost(?:\/|$)/).test(item.url));
+const target = targets.find(item => item.type === 'page' && (['DEPLOYMENT-SMOKE-001','OPERATOR-UPDATE-LIFECYCLE-001'].includes(checkpointId) ? /^https:\/\/(?:localhost|qa\.localhost)(?:\/|$)/ : /^http:\/\/localhost(?:\/|$)/).test(item.url));
 if (!target) throw new Error('Existing localhost page missing.');
 const page = await new CDP(target.webSocketDebuggerUrl).ready();
 try {
-  if (action === 'inspect') {
+  if (action === 'smoke-notification-permission') {
+    if(checkpointId !== 'DEPLOYMENT-SMOKE-001') throw Error('Smoke fixture scope required');
+    await page.send('Browser.setPermission', {origin:'https://localhost',permission:{name:'notifications'},setting:'granted'});
+    console.log('Browser notification prerequisite granted; delivery is not asserted.');
+  } else if (action === 'upload-file') {
+    if(checkpointId !== 'DEPLOYMENT-SMOKE-001') throw Error('Smoke scope required');
+    const doc=await page.send('DOM.getDocument');
+    const found=await page.send('DOM.querySelector',{nodeId:doc.root.nodeId,selector:args[0]});
+    if(!found.nodeId) throw Error('Existing file input missing');
+    await page.send('DOM.setFileInputFiles',{nodeId:found.nodeId,files:[path.resolve(args[1])]});
+    console.log('Selected fixture image through existing browser file input.');
+  } else if (action === 'inspect') {
     console.log(JSON.stringify(await page.evaluate(`({url: location.origin + location.pathname, text: document.body.innerText.slice(0,22000),
       controls: [...document.querySelectorAll('button,a,input,textarea,[role="button"]')].filter(e=>{const r=e.getBoundingClientRect();return r.width&&r.height&&r.left<innerWidth&&r.right>0&&r.top<innerHeight&&r.bottom>0})
         .map(e=>({tag:e.tagName,text:(e.innerText||e.getAttribute('aria-label')||e.getAttribute('placeholder')||'').slice(0,110),aria:e.getAttribute('aria-label'),title:e.getAttribute('title'),class:e.className}))})`),null,2));

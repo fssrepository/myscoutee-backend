@@ -59,7 +59,7 @@ not determine ownership.
 | P03 — Ownership boundary | Static updates affect only their declared package-owned records/fields/object keys; existing operator overrides and user data survive | Installer/seed review and focused boundary tests |
 | P04 — Install and upgrade | Apply the actual package on VMware; verify versions, services and retained record/media/settings controls | Installer logs and before/after assertions, without copying full user datasets |
 | P05 — Rollback and failure | Return to the actual previous application version; preserve user data created both before and after upgrade; verify interruption/progress behavior | Operator Update lifecycle evidence for this candidate |
-| P06 — Deployment qualification | Complete UI/image smoke, external security and measured resource checks | Deployment record below |
+| P06 — Deployment qualification | Complete readiness and UI/image smoke; preserve owned smoke records across upgrade | Deployment record below |
 
 ### Candidate data change inventory
 
@@ -81,8 +81,9 @@ change invalidates the affected evidence and requires those checkpoints again.
 
 ## Repeatable deployment record
 
-Deployment, UI smoke, external security and infrastructure efficiency belong to
-one deployment qualification run, separate from the pair-QA matrix. Copy this
+Deployment and UI smoke belong to one deployment qualification run, separate
+from the pair-QA matrix. Security, startup and memory efficiency belong to the
+independent [security and infrastructure campaign](../qualification/SECURITY_AND_INFRASTRUCTURE.md). Copy this
 small table into each candidate's release evidence and record the artifact
 digest, target, run time and versioned fixture/runner revision above it.
 
@@ -90,20 +91,21 @@ digest, target, run time and versioned fixture/runner revision above it.
 | --- | --- | --- | --- |
 | Deployment | Install/reinstall, retained production controls, service readiness and external HTTP/render checks | NOT RUN | Record installer and verifier results |
 | UI smoke | Normal-account registration and profile update with images; Event and Asset creation, list and detail images | NOT RUN | Record browser actions, rendered results and owned records |
-| External security | Versioned access/session/role/input/upload/exposure probes from outside the VM | NOT RUN | Record fixture identities, redacted assertions, findings and retests |
-| Infrastructure efficiency | Startup/readiness, peak and idle memory, smoke workload, CPU/I/O and startup-script overhead | NOT RUN | Compare with the retained baseline for the same resources/workload |
 | Cleanup | Restore fixture-owned configuration; remove only run-owned data and verify unrelated controls | NOT RUN | Record restoration and remaining retained evidence |
 
-Run these checks for every deployment qualification. Use PASS, FAIL, BLOCKED or
+Retain the smoke-owned profile, Event, Asset and media as upgrade controls. After
+the upcoming release update, verify their saved values and image content against
+the fixture baseline before cleanup. A later unrelated Borrow test does not
+invalidate a proven registration; rerun only affected smoke behavior.
+
+Run readiness and retained-data checks for each deployment qualification. Use PASS, FAIL, BLOCKED or
 NOT RUN with evidence; a previous candidate's result is not the current result.
 Keep versioned test definitions, fixture setup/status/reset and executable
 assertions in the repository. Create the required deployment-owned fixture and
 runner before the first execution; documenting this contract does not mean those
 scripts already exist. Fixtures use unique run ownership, controlled accounts,
 objects and uploads, explicit expected outcomes and cleanup. They prepare
-prerequisites without substituting for the UI actions being tested. Security
-checks are a repeatable suite, not only an ad hoc inspection; turn each confirmed
-new finding into a focused regression probe. Keep credentials and target-specific
+prerequisites without substituting for the UI actions being tested. Keep credentials and target-specific
 secrets outside version control, and redact retained evidence.
 
 ## Dependency maintenance boundary
@@ -143,86 +145,6 @@ and retain the original configuration for restoration; preserve unrelated users
 and uploads. Record the installed version, target, UI results, media rendering,
 owned records and cleanup in deployment evidence. A read-only render check or
 successful HTTP response alone does not prove this smoke journey.
-
-## Production infrastructure efficiency alongside smoke
-
-Alongside production-mode deployment smoke, investigate **resource efficiency**:
-smaller memory footprint and less unnecessary CPU, I/O and startup work. Reuse
-the already established E2E speedup evidence; this is not a repeat of that speed
-comparison or a separate application-latency campaign. Record the installed
-artifact, VM resources, Java runtime/version and service configuration so each
-comparison uses the same workload and readiness definition.
-
-- Measure time from service start to usable application readiness, including
-  health checks and a successful rendered application request. Separate this
-  from package installation time and identify slow startup phases/scripts.
-- Record per-service/container memory at startup peak, idle readiness and during
-  the UI smoke. Include JVM heap/non-heap and process/container memory where
-  available; an allocated heap limit alone is not measured memory consumption.
-- Inspect installation/startup scripts for repeated work, unnecessary waits,
-  serial independent work and avoidable process or I/O overhead.
-- Prefer changes that reduce resource waste while preserving the proven
-  behavior. Report resource tradeoffs explicitly; a faster start achieved by
-  substantially higher memory/CPU usage is not automatically more efficient.
-- Consider a different supported Java runtime or JVM configuration when measured
-  evidence justifies it. Compare startup, memory and smoke correctness against
-  the retained baseline; do not replace the runtime merely on an assumption.
-- Re-run readiness and the automated UI/media smoke after an optimization.
-  Report before/after measurements, compatibility constraints and any remaining
-  bottleneck in deployment qualification evidence, outside the pair-QA matrix.
-
-This is a scoped deployment investigation, not authorization to change the
-running QA stack or deploy a new runtime during an unrelated application test.
-
-Include server-side code when profiling identifies substantial avoidable work,
-such as repeated database reads, allocation pressure or redundant startup work.
-Implement high-impact improvements supported by measurements, then compare the
-same workload and verify affected behavior plus readiness/UI smoke. Keep each
-change scoped to the measured cause; routine dependency upgrades remain under
-the separate maintenance process above.
-
-Record smaller, uncertain or deferred improvements in the candidate's table:
-
-| Improvement / measured cause | Priority | Expected benefit and evidence | Effort / risk | Decision | Before / after |
-| --- | --- | --- | --- | --- | --- |
-| Populate from deployment measurements | Unassigned | Mark estimates separately from measurements | To assess | Pending investigation | NOT MEASURED |
-
-Use P1 for substantial measured waste worth addressing in this qualification,
-P2 for useful optional follow-up and P3 for low-impact work. Implement the P1
-items within the qualified scope; retain P2/P3 items for later work rather than
-expanding the release effort. A release-blocking correctness or security defect
-is tracked as a blocker, not deferred as an optional optimization.
-
-## External security investigation alongside deployment smoke
-
-The user explicitly requests an adversarial security investigation of the
-project's VMware production-mode deployment from outside the VM. Run against
-the designated installed application origin and exposed services, using a
-separate client. Record the client/network vantage point; access through a
-workstation tunnel does not prove Internet-facing reachability or protection.
-
-Include the separately deployed Go Registry in the same security qualification.
-On VMware it emulates a remote service: the application and real Registry must
-not share a Docker network; access crosses the published HTTPS endpoint. Verify
-network membership, exposed ports, TLS trust/expiry, unauthenticated Registry
-access, signature/replay rejection and separation from the internal Explore
-`registry-demo`. Retain versioned fixtures and repeatable probes for both targets.
-
-Use the smoke-owned accounts and records to test unauthenticated access,
-cross-account object access, role/admin authorization, session boundaries,
-API input handling, upload/media access and file paths. Inspect exposed debug,
-management and backup/configuration surfaces for unintended access or secret
-disclosure. Verify transport and cookie/header behavior on the actual deployed
-origin. Keep probes confined to the designated deployment and controlled data;
-preserve unrelated users/uploads and service availability.
-
-Retain reproducible requests and minimally necessary redacted evidence for each
-finding. Repair confirmed leaks at their owning boundary and replay the failing
-probe plus affected smoke steps. Record covered attack surfaces, findings,
-fixes, retests and untested boundaries in deployment security evidence, outside
-the pair-QA matrix. Do not describe a passing finite probe set as proof that no
-vulnerability exists. This authorization is queued for deployment qualification;
-it does not start a deployment or an external scan during application QA.
 
 ## Pair-QA boundary
 
