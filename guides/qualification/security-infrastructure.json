@@ -18,7 +18,7 @@
     [
       "Coverage",
       "PARTIAL",
-      "Finite negative probes; authenticated cross-account, upload, replay and CVE checks not yet performed."
+      "Finite live negative probes and source-level security regression checks. Runtime dependency audits have zero findings after source fixes. Live authenticated cross-account retest of the new artifact is not run."
     ]
   ],
   "Security": [
@@ -538,19 +538,25 @@
     [
       "Security regression suite",
       "Selected filter, routing, policy, media and bootstrap tests",
-      "110/111 PASS; releasedFormerOwnerCannotRetakeOrMutateTheAssetAsOwner remains FAIL at delete assertion; no full security sign-off",
+      "114/114 PASS: bootstrap/filter/routing/media/policy/identity checks. Includes cross-account asset mutation, released owner and missing authenticated profile. Mocked repositories; not a live full-application security certification.",
       "Not deployed"
     ],
     [
       "Backend dependencies",
-      "Inventory only: embedded Maven metadata from previously built local JAR",
-      "OSV findings still open; scan does not include JARs without Maven metadata or prove live exploitability",
-      "No backend dependency changes"
+      "Spring Boot 4.0.8; jsoup 1.23.1; iText 5.5.13.3; HttpClient5 5.6.3; HttpCore5 5.4.3; Tomcat 11.0.25; OpenTelemetry 1.62.0",
+      "OSV querybatch: 263 resolved runtimeClasspath coordinates, 0 findings. Focused backend compile/tests PASS. Earlier partial JAR inventory retained as historical evidence.",
+      "Not deployed"
     ],
     [
       "Notification save error",
       "Keep user-selected toggle on save failure and show existing translated error; retry without toggling",
       "22/22 focused tests PASS; waits for server acknowledgment before success",
+      "Not deployed"
+    ],
+    [
+      "Cross-account ownership",
+      "Existing asset edit/delete/restore checks stored, non-released ownership. Authenticated profile lookup cannot fall back to a caller-selected account.",
+      "New regression cases PASS; previous released-owner case now PASS. No live data mutated.",
       "Not deployed"
     ]
   ]

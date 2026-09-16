@@ -1,46 +1,44 @@
 [
   {
     "suite": "com.raxim.myscoutee.profile.security.AccessControlServiceTest",
-    "tests": 80,
-    "failures": 1,
-    "errors": 0,
-    "failedTests": [
-      "releasedFormerOwnerCannotRetakeOrMutateTheAssetAsOwner()"
-    ]
+    "tests": 81,
+    "failures": 0,
+    "errors": 0
+  },
+  {
+    "suite": "com.raxim.myscoutee.profile.service.HomeUserProfileIdentityTest",
+    "tests": 2,
+    "failures": 0,
+    "errors": 0
   },
   {
     "suite": "com.raxim.myscoutee.common.config.firebase.FirebaseFilterOperatorTest",
     "tests": 9,
     "failures": 0,
-    "errors": 0,
-    "failedTests": []
+    "errors": 0
   },
   {
     "suite": "com.raxim.myscoutee.common.config.WebSecurityConfigBootstrapTest",
     "tests": 3,
     "failures": 0,
-    "errors": 0,
-    "failedTests": []
+    "errors": 0
   },
   {
     "suite": "com.raxim.myscoutee.profile.service.media.MediaSessionAccessServiceTest",
     "tests": 6,
     "failures": 0,
-    "errors": 0,
-    "failedTests": []
+    "errors": 0
   },
   {
     "suite": "com.raxim.myscoutee.profile.security.RequiresPolicyMethodInterceptorTest",
     "tests": 9,
     "failures": 0,
-    "errors": 0,
-    "failedTests": []
+    "errors": 0
   },
   {
     "suite": "com.raxim.myscoutee.common.config.mongo.SessionMongoRoutingFilterTest",
     "tests": 4,
     "failures": 0,
-    "errors": 0,
-    "failedTests": []
+    "errors": 0
   }
 ]

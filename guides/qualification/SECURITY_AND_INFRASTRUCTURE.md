@@ -7,6 +7,36 @@ Raw redacted measurements live in [evidence](evidence/).
 
 ## Current scope — 2026-09-16
 
+### Security source fixes — 2026-09-16, not yet deployed
+
+- Production nginx now sends `X-Frame-Options: DENY`, `nosniff`,
+  `Referrer-Policy: strict-origin-when-cross-origin`, and an enforced CSP covering
+  `frame-ancestors`, `object-src` and `base-uri`. This is a limited CSP, not a
+  complete script/resource allowlist. The transport test passed for HTML,
+  JavaScript and the web manifest.
+- Frontend runtime dependency audit: **0 findings**, after updating the affected
+  Angular and transitive packages. Backend runtime dependency audit:
+  **0 findings across 263 resolved Maven coordinates**, after the Spring Boot
+  4.0.8 security patch update and the explicit patched library versions in
+  `server/projects/profile/build.gradle`.
+- **114 focused backend tests passed**. Production with no Firebase and an empty
+  `member-user` no longer accepts request-selected identities or skips policy
+  checks. Existing asset mutations check stored ownership and owner release;
+  a missing authenticated profile cannot fall back to another requested user.
+- Evidence: [dependency audit](evidence/backend-runtime-audit-after-20260916.json),
+  [resolved versions](evidence/backend-runtime-coordinates-20260916.json), and
+  [test results](evidence/security-focused-tests-20260916.json).
+  The focused Gradle source selection is retained in
+  [the test init script](evidence/security-focused-tests-20260916.gradle).
+  These tests use isolated/mock dependencies. No new release artifact has been
+  installed or tested on VMware, and these results are not a complete
+  application-wide security certification.
+
+Patch references: [Spring Boot 4.0.8](https://github.com/spring-projects/spring-boot/releases/tag/v4.0.8),
+[jsoup advisory](https://github.com/jhy/jsoup/security/advisories/GHSA-pmhh-3w7g-xqp8),
+[Tomcat fixes](https://tomcat.apache.org/security-11.html),
+[OpenTelemetry advisory](https://github.com/open-telemetry/opentelemetry-java/security/advisories/GHSA-rcgg-9c38-7xpx).
+
 Target: VMware `192.168.153.129`, installed app QA3 `qa3-20260916-permission-sync-r4`, separate Go Registry.
 External client: workstation; app via localhost HTTPS tunnel, Registry via its
 published guest port. This does not prove public Internet perimeter protection.
