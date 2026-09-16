@@ -60,6 +60,7 @@ public final class OperatorConfigurationDtos {
             DeploymentThemePreset themePreset,
             long revision,
             String paymentProviderId,
+            boolean firebaseMessagingConfigured,
             List<DeploymentSocialLinkDto> socialLinks,
             DeploymentPrivacyContactDto privacyContact) {
     }

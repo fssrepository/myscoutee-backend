@@ -100,3 +100,18 @@ The final correction is visual feedback: after settings save resolves, the exist
 17 focused tests PASS, including an Angular DOM test that clicks the rendered Update button, verifies the saved browser preference, green button/success-ring class/check icon and open popup, then checks return to the normal button after1000ms. Other regression cases cover immediate completion, save error and close/reopen. Firebase remains mocked in this component test; it is not a live-VM animation or push-delivery PASS. The first DOM-test run exposed an incomplete matchMedia test stub; adding its listener methods fixed the harness, with no product workaround.
 
 This animation is source-only. Installed and HTTPS-served QA3 r4 is unchanged.
+
+
+## User-requested missing-VAPID observation, 21:46
+
+On the QA3 guest, removed only `firebase.publicClient.vapidKey` from the persisted deployment configuration using a guarded QA-only fixture mutation. Previous key and document version retained root-only at `/var/lib/myscoutee/qa-fixtures/vapid-toggle-20260916/before.ejson`; no key value printed. Document version incremented for concurrency. User controls the browser observation. Public firebase-config now returns503 (not200); the exact503 cause has not been diagnosed. Restore only this saved VAPID field when requested; do not restore an entire configuration snapshot or replay activation.
+
+
+## Messaging credential clarification and VAPID restore
+
+At the user's request, restored the saved VAPID value using a guarded single-field mutation; public firebase-config returned200 again. The temporary missing-VAPID fixture is no longer active.
+
+The user clarified that the notification toggle must depend on the Operator's Messaging service-account credential, not the Web Push VAPID key. Source now exports only `firebaseMessagingConfigured` in the existing public deployment configuration, derived with the same stored-credential presence check as Operator `messagingCredentialConfigured`. The client reloads this public capability for popup preparation, uses it for OFF/disabled state, and blocks background Firebase/token/device registration when absent. The local adapter derives the same field from its Operator configuration. VAPID remains checked when performing actual Web Push registration; it is no longer the toggle capability gate. This correction is not yet packaged or installed.
+
+
+Messaging-capability verification:26 focused frontend tests PASS (20 Messaging/settings component,6 public deployment configuration),11 focused backend tests PASS (8 mapper,3 controller). Cases include VAPID present with Messaging credential absent => false; credential present with VAPID absent => true; the rendered notification toggle is OFF/disabled without Messaging credentials; no background Firebase/worker/token/device registration starts while absent. Public HTTP serialization exposes only the boolean. Production Java compilation succeeded. The normal filtered backend task initially hit76 unrelated test compilation errors; the two owning test sources were subsequently compiled/run with a temporary Gradle include filter using the existing cache, without altering unrelated test sources. The mapper test was adjusted for the intentional new public boolean and initialized its explicit public-client fixture. No deployment or live-VM capability test has been performed.

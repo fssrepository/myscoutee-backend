@@ -48,6 +48,7 @@ class DeploymentConfigurationControllerTest {
                         DeploymentThemePreset.FOREST,
                         7L,
                         "stripe",
+                        false,
                         List.of(),
                         new DeploymentPrivacyContactDto(false, "", "")));
         when(simulatorClient.isEnabled()).thenReturn(true);
@@ -76,6 +77,7 @@ class DeploymentConfigurationControllerTest {
                         DeploymentThemePreset.FOREST,
                         7L,
                         "stripe",
+                        true,
                         List.of(new DeploymentSocialLinkDto(
                                 "discord",
                                 "Discord",
@@ -102,6 +104,7 @@ class DeploymentConfigurationControllerTest {
                 .andExpect(jsonPath("$.themePreset").value("FOREST"))
                 .andExpect(jsonPath("$.revision").value(7))
                 .andExpect(jsonPath("$.paymentProviderId").value("stripe"))
+                .andExpect(jsonPath("$.firebaseMessagingConfigured").value(true))
                 .andExpect(jsonPath("$.socialLinks[0].provider")
                         .value("discord"))
                 .andExpect(jsonPath("$.socialLinks[0].label")
