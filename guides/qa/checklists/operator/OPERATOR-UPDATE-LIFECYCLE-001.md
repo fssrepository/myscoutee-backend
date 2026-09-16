@@ -103,9 +103,13 @@ Report: `OPERATOR-UPDATE-LIFECYCLE-001 block 1 done`.
    connection loss is not a success result; record the subsequent recovery.
 7. At completion, Codex correlates job ID, start/end, outcome, verified release
    and installed target version. The accepted action has not created
-   duplicate update work or contradictory terminal results. After success, **Apply
-   update** stays disabled. A new explicit **Refresh** may enable it only when
-   a newer installable release is found.
+   duplicate update work or contradictory terminal results. At verified 100% success,
+   refresh the PWA worker/cache and automatically reload the page to the installed
+   frontend. A historical completed job must not cause another reload. After success, **Apply
+   update** disappears. **Rollback** remains visible and enabled when a verified
+   previous-version recovery point exists, even though installation succeeded.
+   Only a new explicit **Check for updates** that finds a newer installable
+   release brings **Apply update** back.
 
 Report: `OPERATOR-UPDATE-LIFECYCLE-001 block 2 done`.
 
@@ -114,7 +118,9 @@ Report: `OPERATOR-UPDATE-LIFECYCLE-001 block 2 done`.
 8. After the controlled restart, reopen Operator on the same target. Normal
    access works and the displayed active version matches the installed version.
 9. Reopen Updates. The completed job remains visible and the prepared release
-   is now the current version.
+   is now the current version. Opening the popup uses the workspace snapshot; it
+   does not discover releases or submit an update. **Apply update** stays hidden.
+   An explicit check that finds no newer release also leaves it hidden.
 10. Codex checks that reconnection/reopening created no second Apply operation
     or update job. Release verification, durable result and active version agree.
 11. Retain UI and durable update evidence, then continue directly from installed
@@ -124,9 +130,11 @@ Report: `OPERATOR-UPDATE-LIFECYCLE-001 block 3 done`.
 
 ## 4. Roll back QA2 to QA1 without a cached installer
 
-12. On the successfully updated QA2 target, inspect the visible **Rollback**
-    action and its QA1 recovery point. If no UI recovery action exists, record
-    the missing capability; a command-line restore does not pass this UI check.
+12. On the successfully updated and healthy QA2 target, without provoking any
+    installation or connection error, inspect the visible, enabled **Rollback**
+    action and its verified QA1 recovery point. This tests voluntary recovery
+    when a functional problem is discovered after a successful deployment.
+    **Apply update** remains hidden. A command-line restore does not pass this UI check.
 13. Verify the previous package identity and retained data controls. Remove only
     the fixture-owned cached QA1 installer, preserving live data. No release or recovery result
     may be manufactured in the database.
@@ -139,7 +147,9 @@ Report: `OPERATOR-UPDATE-LIFECYCLE-001 block 3 done`.
     same-name file satisfies this step.
 16. Follow the rollback operation through its actual phases and any controlled
     restart. Correlate its terminal result with the QA2 update and QA1 recovery
-    point. Refreshing/reopening must not start another rollback operation.
+    point. At verified 100% success, refresh the PWA worker/cache and automatically
+    reload into the restored frontend, including when its build is older.
+    Refreshing/reopening must not start another rollback operation or reload loop.
 17. Reopen Operator and compare the displayed version, installed package/build,
     health, retained access and fixture data/configuration controls with the QA1
     recovery baseline. Successful package download alone is not rollback success.
@@ -154,7 +164,8 @@ Report: `OPERATOR-UPDATE-LIFECYCLE-001 block 4 done`.
     and job. The action stays disabled while work is running; a failure must not
     appear as completed or leave a permanent misleading busy indicator.
 19. Reopen Updates when reachable. The failure and its explanation persist.
-    Verify the available retry/rollback action against the actual failed phase.
+    Both **Apply update** and **Rollback** must be visible and enabled after
+    the surfaced error; the error itself must not lock either action.
     If the application is unavailable, use the retained recovery procedure and
     record the limitation; do not claim UI recovery passed.
 20. Remove the trigger and use the supported explicit retry or rollback once.

@@ -75,6 +75,7 @@ printf '%s\n' \
 printf '%s\n' \
   '#!/usr/bin/env bash' \
   'set -euo pipefail' \
+  'printf "[myscoutee-update-phase] LOADING_IMAGES\n"' \
   'artifact="${*: -1}"' \
   'version="$(/usr/bin/dpkg-deb -f "${artifact}" Version)"' \
   'printf "%s\n" "${version}" > "${UPDATE_TEST_VERSION_FILE}"' \
@@ -493,7 +494,7 @@ fi
   || fail "valid update did not invoke apt exactly once"
 [[ -s "${AUDIT_ROOT}/${SUCCESS_JOB}/request.json" ]] \
   || fail "accepted request was not copied to the durable audit directory"
-jq -se '[.[].phase] == ["VERIFYING", "INSTALLING", "RESTARTING", "COMPLETED"]' \
+jq -se '[.[].phase] == ["VERIFYING", "INSTALLING", "LOADING_IMAGES", "RESTARTING", "COMPLETED"]' \
   "${JOBS_DIR}/${SUCCESS_JOB}/events.ndjson" >/dev/null \
   || fail "update progress was not written as reconnectable events"
 [[ "$(stat -c '%a' "${SUCCESS_STATUS}")" == "640" ]] \

@@ -53,7 +53,11 @@ def status_for(root, job, token, now=None):
         status = read_json(root, "inbox", "staging", job, "status.json")
     if status.get("jobId") != job:
         raise ValueError("job mismatch")
-    return {key: status.get(key) for key in PUBLIC_FIELDS}
+    result = {key: status.get(key) for key in PUBLIC_FIELDS}
+    point = status.get("rollback")
+    result["rollback"] = ({key: point.get(key) for key in
+        ("jobId", "fromVersion", "targetVersion", "artifactSha256")} if isinstance(point, dict) else None)
+    return result
 
 
 class Handler(BaseHTTPRequestHandler):

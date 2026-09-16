@@ -110,4 +110,21 @@ done
 [[ "$(grep -Fxc $'chmod\t0700 -- /tmp/myscoutee-numeric-owner-fixture' "${COMMAND_LOG}")" == "3" ]] \
   || fail "numeric directory helpers did not restore the requested mode"
 
+# Exercise the packaged system identity without changing the host's accounts.
+IDENTITY_ROOT="${TEST_ROOT}/identity-root"
+mkdir -p "${IDENTITY_ROOT}/etc"
+printf 'root:x:0:0:root:/root:/bin/sh\n' > "${IDENTITY_ROOT}/etc/passwd"
+printf 'root:x:0:\n' > "${IDENTITY_ROOT}/etc/group"
+: > "${IDENTITY_ROOT}/etc/shadow"
+: > "${IDENTITY_ROOT}/etc/gshadow"
+systemd-sysusers --root="${IDENTITY_ROOT}" "${REPO_ROOT}/packaging/sysusers/myscoutee.conf"
+grep -Fq 'myscoutee-runtime:x:10001:10001:MyScoutee runtime:/nonexistent:/usr/sbin/nologin' "${IDENTITY_ROOT}/etc/passwd" \
+  || fail "the runtime reader account does not match the container UID/GID"
+grep -Fxq 'myscoutee-runtime:x:10001:' "${IDENTITY_ROOT}/etc/group" \
+  || fail "the runtime reader group does not match the container GID"
+cp "${IDENTITY_ROOT}/etc/passwd" "${TEST_ROOT}/retained-passwd"
+systemd-sysusers --root="${IDENTITY_ROOT}" "${REPO_ROOT}/packaging/sysusers/myscoutee.conf"
+cmp "${TEST_ROOT}/retained-passwd" "${IDENTITY_ROOT}/etc/passwd" \
+  || fail "reconfiguration changed the runtime identity"
+
 echo "Numeric ownership policy tests passed."

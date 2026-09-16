@@ -127,6 +127,30 @@ try {
     await browser.send('Browser.close');await delay(1000);browser.close();
     writeFileSync(path.join(evidence,'casey-b-close-network.json'),JSON.stringify({actor,closedAt:new Date().toISOString(),network},null,2),{mode:0o600});
     console.log('Gracefully closed the existing managed browser; no logout or launcher cleanup invoked.');
+  } else if (action === 'update-progress-trace') {
+    if (checkpointId !== 'OPERATOR-UPDATE-LIFECYCLE-001') throw new Error('Update checkpoint required');
+    const seconds = Number(args[0] || 240);
+    const name = args[1] || 'independent-progress';
+    if (!Number.isInteger(seconds) || seconds < 1 || seconds > 600 || !/^[a-z0-9-]+$/.test(name)) throw new Error('Invalid trace bounds');
+    const responses = [], samples = [];
+    // Passive network metadata only: never capture Authorization headers or Apply bodies.
+    await page.send('Network.enable');
+    page.on('Network.responseReceived', event => {
+      const url = new URL(event.response.url);
+      if (url.origin === 'https://localhost' && url.pathname.startsWith('/operator-update-status/')) {
+        responses.push({ at: new Date().toISOString(), path: url.pathname, status: event.response.status });
+      }
+    });
+    const file = path.join(evidence, `${name}.json`);
+    const end = Date.now() + seconds * 1000;
+    while (Date.now() < end) {
+      samples.push(await page.evaluate(`({at:new Date().toISOString(),timeOrigin:performance.timeOrigin,
+        text:document.querySelector('app-operator-action-popup')?.innerText,
+        buttons:[...document.querySelectorAll('app-operator-action-popup button')].map(e=>({label:e.getAttribute('aria-label'),disabled:e.disabled}))})`));
+      writeFileSync(file, JSON.stringify({responses,samples},null,2), {mode:0o600});
+      await delay(2000);
+    }
+    console.log(JSON.stringify({file,samples:samples.length,monitorResponses:responses.length}));
   } else if (action === 'viewport') {
     if (args[0] === 'reset') {
       await page.send('Emulation.setDeviceMetricsOverride', {width:Number(args[1] || 596),height:813,deviceScaleFactor:1,mobile:false});
@@ -148,11 +172,11 @@ try {
     await page.send('Input.dispatchKeyEvent',{type:'keyDown',key,code:key,windowsVirtualKeyCode:code});
     await page.send('Input.dispatchKeyEvent',{type:'keyUp',key,code:key,windowsVirtualKeyCode:code});
     console.log('Key sent to focused control.');
-  } else if (action === 'fill') {
+  } else if (action === 'fill' || action === 'fill-file') {
     const box = await page.evaluate(`(()=>{const e=document.querySelectorAll(${JSON.stringify(args[0])})[${Number(args[2]||0)}];if(!e||e.disabled)throw Error('Editable input missing');e.scrollIntoView({block:'nearest'});const r=e.getBoundingClientRect();return {x:r.x+r.width/2,y:r.y+r.height/2}})()`);
     for(const type of ['mousePressed','mouseReleased']) await page.send('Input.dispatchMouseEvent',{type,button:'left',clickCount:1,...box});
     for(const type of ['keyDown','keyUp']) await page.send('Input.dispatchKeyEvent',{type,key:'a',code:'KeyA',windowsVirtualKeyCode:65,modifiers:2});
-    await page.send('Input.insertText',{text:args[1]});
+    await page.send('Input.insertText',{text:action === 'fill-file' ? readFileSync(args[1], 'utf8') : args[1]});
     console.log('Replaced focused input through native keyboard input; no Save invoked.');
   } else if (action === 'text') {
     await page.send('Input.insertText', { text: args[0] }); console.log('Text inserted.');

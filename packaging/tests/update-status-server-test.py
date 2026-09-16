@@ -71,6 +71,19 @@ class StatusTest(unittest.TestCase):
             with self.assertRaises((OSError, ValueError)):
                 module.status_for(str(self.root), job, token, now)
 
+    def test_recovery_exposes_only_public_rollback_identity(self):
+        self.write_status(self.worker, "RECOVERY_REQUIRED", 94)
+        path = self.worker / "status.json"
+        status = json.loads(path.read_text())
+        rollback = {"jobId": self.job, "fromVersion": "1.0.0-qa.2",
+                    "targetVersion": "1.0.0-qa.1", "artifactSha256": "c" * 64}
+        status["rollback"] = {**rollback, "internalPath": "/private/package.deb",
+                              "monitorToken": "must-not-leak"}
+        path.write_text(json.dumps(status))
+        result = module.status_for(str(self.root), self.job, self.token)
+        self.assertEqual(result["rollback"], rollback)
+        self.assertNotIn("must-not-leak", json.dumps(result))
+
     def test_symlink_and_oversized_status_rejected(self):
         status = self.worker / "status.json"
         status.symlink_to(self.stage / "status.json")

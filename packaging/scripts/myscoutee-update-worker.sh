@@ -121,8 +121,11 @@ write_status() {
   local phase="$1"
   local percent="$2"
   local message="$3"
-  local tmp
+  local tmp receipt rollback=null
 
+  if receipt="$(read_root_receipt "$RUNTIME_DIR/recovery.json")"; then
+    rollback="$(jq -c --arg current "$CURRENT_VERSION" 'if .fromVersion == $current then {jobId,fromVersion,targetVersion,artifactSha256} else null end' <<< "$receipt")"
+  fi
   tmp="$(mktemp "${CURRENT_JOB_DIR}/.status.XXXXXX")"
   jq -n \
     --arg schemaVersion "1" \
@@ -139,6 +142,7 @@ write_status() {
     --arg channel "${CURRENT_CHANNEL}" \
     --arg artifactSha256 "${CURRENT_ARTIFACT_SHA256}" \
     --arg backupPath "${CURRENT_BACKUP_PATH}" \
+    --argjson rollback "$rollback" \
     '{
       schemaVersion: ($schemaVersion | tonumber),
       jobId: $jobId,
@@ -153,6 +157,7 @@ write_status() {
       targetVersion: $targetVersion,
       channel: $channel,
       artifactSha256: $artifactSha256,
+      rollback: $rollback,
       backupPath: (if $backupPath == "" then null else $backupPath end)
     }' > "${tmp}"
   chmod 0640 "${tmp}"
@@ -605,15 +610,31 @@ installed_version() {
   printf '%s' "${version/\~/-}"
 }
 
+# Only fixed installer milestones affect progress; arbitrary log lines stay logs.
+# The command's exit status is retained through pipefail. No marker can report success.
+run_with_progress() {
+  "$@" 2>&1 | while IFS= read -r line || [[ -n "$line" ]]; do
+    printf '%s\n' "$line" >> "${CURRENT_LOG_FILE}"
+    case "$line" in
+      '[myscoutee-update-phase] CONFIGURING_PACKAGE') write_status CONFIGURING_PACKAGE 86 "Configuring the package." ;;
+      '[myscoutee-update-phase] LOADING_IMAGES') write_status LOADING_IMAGES 87 "Loading packaged images." ;;
+      '[myscoutee-update-phase] VERIFYING_IMAGES') write_status VERIFYING_IMAGES 90 "Verifying packaged images." ;;
+      '[myscoutee-update-phase] PREPARING_DATA') write_status PREPARING_DATA 93 "Preparing package-owned data." ;;
+      '[myscoutee-update-phase] STARTING_SERVICES') write_status STARTING_SERVICES 94 "Starting services." ;;
+      '[myscoutee-update-phase] WAITING_FOR_HEALTH') write_status WAITING_FOR_HEALTH 96 "Waiting for application health." ;;
+      '[myscoutee-update-phase] SWITCHING_INGRESS') write_status SWITCHING_INGRESS 98 "Switching the web server." ;;
+    esac
+  done
+}
+
 install_package() {
   local cached_artifact="$1"
   local installed_after
 
   local -a downgrade_options=()
   [[ -z "$CURRENT_ROLLBACK_JOB" ]] || downgrade_options=(--allow-downgrades)
-  if ! env DEBIAN_FRONTEND=noninteractive \
-    apt-get -o Dpkg::Use-Pty=0 install -y "${downgrade_options[@]}" "${cached_artifact}" \
-    >> "${CURRENT_LOG_FILE}" 2>&1; then
+  if ! run_with_progress env DEBIAN_FRONTEND=noninteractive \
+    apt-get -o Dpkg::Use-Pty=0 install -y "${downgrade_options[@]}" "${cached_artifact}"; then
     recovery_required "Package installation may be partial. Inspect the install log before retrying; preserve existing deployment data."
     return 1
   fi
@@ -666,7 +687,7 @@ restart_and_verify_release() {
   local manifest="$1"
   local deadline
 
-  if ! "${RESTART_HELPER}" >> "${CURRENT_LOG_FILE}" 2>&1; then
+  if ! run_with_progress "${RESTART_HELPER}"; then
     return 1
   fi
   deadline=$((SECONDS + HEALTH_TIMEOUT_SECONDS))

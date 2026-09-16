@@ -465,25 +465,123 @@
     "rollback": "NOT RUN yet: visible enabled recovery action binds QA1 b75573f033ce54685cce70c0b921c646cc6fb2c65de08099005a95249a6156e0. User requested independent progress service before continuation."
   },
   "independentProgress": {
-    "status": "SOURCE TESTS PASS; new normal QA1/QA2 packages building; not yet installed",
+    "status": "LIVE PASS: independent progress survives API outage; r4 exact-image upgrade completed100% without reload. Voluntary success rollback and failure retry remain pending.",
     "reader": "Socket-activated non-root read-only host service behind same-origin nginx; short-lived job-scoped capability, hash-only grant, no public TCP port.",
     "restart": "Retain current nginx while backend/dependencies update; replace bundled nginx after backend healthy. Same-job polling retries brief gateway replacement.",
     "tests": {
       "backend": "34/34 PASS",
       "frontendHttp": "34/34 PASS",
-      "reader": "3 tests PASS, including live Unix HTTP status changes without API, expiry/job scope, no mutation and symlink/size rejection",
+      "reader": "4/4 PASS, including public rollback identity filtering during API outage",
       "worker": "PASS",
       "restart": "PASS: healthy backend replaces ingress last; unhealthy backend retains it",
       "nginx": "production transport/syntax tests PASS",
-      "debian": "remove and TLS lifecycle tests PASS"
+      "debian": "remove and TLS lifecycle tests PASS",
+      "hostPermissions": "PASS: isolated sysusers creation/reconfiguration yields non-login UID/GID10001; actual VM read-only namespace probe reads staging/worker state without changing protected parent permissions.",
+      "frontend": "76/76 PASS, including completion without duplicate notice and enabled rollback after success with retained recovery point"
     },
     "queuedUiFixes": [
       "Large Updates tile action-ring removed",
       "EN/HU bundle revision109→110: rollback key existed remotely but cached109 lacked it and conditional fetch returned no data"
     ],
     "buildDirectories": [
-      "packaging/dist/monitor-qa1-20260916",
-      "packaging/dist/monitor-qa2-20260916"
-    ]
+      "packaging/dist/monitor-qa1-20260916-r2",
+      "packaging/dist/monitor-qa2-20260916-r2"
+    ],
+    "baseline": {
+      "version": "1.0.0-qa.1",
+      "sha256": "1cf2afc30aeb21666d46e6fb6ef41ebfb0e3d0c441c9565c30b0ac3772d7fb9d",
+      "qualification": "PASS; retained Mongo/MinIO and five configuration hashes unchanged"
+    },
+    "upgrade": {
+      "jobId": "upd_34d5682814378d3ed243087d55236dda",
+      "requestedAt": "2026-09-16T15:15:10Z",
+      "targetSha256": "85a59190dc2e9e90ccc894f8ccfc1d63140e25647c5b6db0c3c44811dd7363ad",
+      "apiDowntimeProof": {
+        "at": "2026-09-16T15:16:05Z",
+        "apiContainer": "exited unhealthy during intended restart",
+        "nginx": "running healthy",
+        "reader": "active, MemoryCurrent 12849152 bytes",
+        "browser": "same timeOrigin 1789571597434.2; monitored route HTTP200 at15:16:03.977Z; popup92%, both controls disabled",
+        "jobPhase": "RESTARTING"
+      },
+      "trace": "/tmp/myscoutee-qa-browser-sessions/evidence/operator-update-cdp/monitor-upgrade.json",
+      "result": "RECOVERY_REQUIRED at15:16:27Z: restart helper used container name registry-demo instead of Compose service registry. No rollback executed.",
+      "monitor": "104 HTTP200 monitor responses; same page timeOrigin throughout; actual terminal error delivered while API stopped."
+    },
+    "repair": "Use actual registry Compose service; validate restart service arguments against Compose model. Stream fixed actual installer milestones to durable status; localize UI phases, remove duplicated error and release controls after surfaced errors.",
+    "r3": {
+      "baseline": {
+        "version": "1.0.0-qa.1",
+        "sha256": "8fd0dcb922d6e4614c799613162132ec3496994631c58a8e6804ffc2383aa940",
+        "directory": "packaging/dist/monitor-qa1-20260916-r3",
+        "qualification": "PASS normal signed installation; API/nginx healthy, preserved Mongo/MinIO controls and five configuration hashes match",
+        "log": "/tmp/operator-monitor-qa1-r3-install.log"
+      },
+      "uiContract": "Success hides Update and Rollback. Only explicit Check finding a newer release brings Update back. Popup reopening uses cached state. Surfaced errors show enabled Update and Rollback; running actions are disabled.",
+      "upgrade": {
+        "jobId": "upd_26c8e0b5411f1ab4ee624ccf354f01e2",
+        "targetSha256": "aaa9fbf4aa532386f8ce8c1c1f5e8c62a237985da4b7791b1ad518d0dc83557b",
+        "result": "RECOVERY_REQUIRED: package/config QA2, worker inherited QA1 image variables so containers stayed QA1. Exact image verification refused completion.",
+        "progress": "Actual PREPARING_DATA 93% and SWITCHING_INGRESS 98% reached; reader continues during API downtime; retained same browser timeOrigin1789573292231.9",
+        "trace": "/tmp/myscoutee-qa-browser-sessions/evidence/operator-update-cdp/monitor-r3-upgrade.json",
+        "errorUi": "PASS: one localized upper error; Check, Update and Rollback visible and enabled without page reload",
+        "repair": "restart-update-stack clears inherited package-owned release variables so Compose uses freshly installed .env. Regression fails without fix; upgrade and rollback tests PASS. Normal r4 package build in progress."
+      }
+    },
+    "r4": {
+      "baseline": {
+        "version": "1.0.0-qa.1",
+        "sha256": "sha256:fd686415a7c3abc5ddea662b4b276286c5d3843cecde58dd8011d4fe821eba75",
+        "qualification": "PASS normal signed install",
+        "log": "/tmp/operator-monitor-qa1-r4-install.log"
+      },
+      "restartRegression": "PASS upgrade and rollback select installed .env images; negative control without fix reproduces stale image selection",
+      "upgrade": {
+        "jobId": "upd_d1194357f035a4a47afcd280169e1995",
+        "result": "COMPLETED",
+        "completedAt": "2026-09-16T16:00:12Z",
+        "targetSha256": "13ef69adc9e857470f478a61d6c11b20c0d302cf4e90c79fe6898d40fd8a2f50",
+        "timeOrigin": 1789574238626.1,
+        "trace": "/tmp/myscoutee-qa-browser-sessions/evidence/operator-update-cdp/monitor-r4-upgrade.json",
+        "monitorResponses": 209,
+        "runningImages": "QA2 nginx and API healthy; worker verified exact packaged images before100%",
+        "preservation": "PASS; Mongo/MinIO fixture and five retained configuration hashes unchanged",
+        "popupReopening": "PASS; release catalog request count4 before/after close/reopen; explicit Check increments to5, no newer version leaves Update hidden"
+      }
+    },
+    "latestUiContract": "Success hides Update; Check finds a newer release to show Update again. Rollback remains enabled after success when a verified recovery point exists. No duplicate lower success notice. Surfaced failures release both actions.",
+    "next": "Verify new completed-operation PWA reload in normal packages; controlled download failure/retry and managed HTTPS remain incomplete.",
+    "r5": {
+      "upgrade": {
+        "jobId": "upd_4f5d2d90e610c3b270d9921cd27a3937",
+        "result": "COMPLETED",
+        "targetSha256": "44125a07674ab6a18f70c748b4c6b40c08f370b4036416b4960a1a1c34ae0ab0",
+        "trace": "/tmp/myscoutee-qa-browser-sessions/evidence/operator-update-cdp/monitor-r5-upgrade.json",
+        "monitorResponses": 208,
+        "reopenedUi": "QA2 r5: enabled Rollback after success without any injected error; Update hidden; no duplicate lower success notice. Manual reload after completion loaded r5 UI."
+      },
+      "voluntaryRollback": {
+        "jobId": "upd_9d3eb1b0140e81d53161167d015f2675",
+        "requestedAt": "2026-09-16T16:13:59Z",
+        "completedAt": "2026-09-16T16:16:38Z",
+        "result": "COMPLETED",
+        "targetSha256": "fd686415a7c3abc5ddea662b4b276286c5d3843cecde58dd8011d4fe821eba75",
+        "buildId": "monitor-qa1-20260916-r4",
+        "trace": "/tmp/myscoutee-qa-browser-sessions/evidence/operator-update-cdp/monitor-r5-success-rollback.json",
+        "samples": 120,
+        "monitorResponses": 210,
+        "timeOrigin": 1789575169754.7,
+        "cacheMiss": "Fixture-owned /tmp/myscoutee.deb was SHA-verified and removed. Remaining cached packages had other digests. HTTPS source logged QA1 manifest and .deb GET200 at18:13:59 local.",
+        "health": "All seven application containers healthy; QA1 image tags and worker exact bundled-image verification PASS. Public app-version.json reports QA1 r4.",
+        "preservation": "PASS: unchanged Mongo collection hashes, MinIO object hash and all five retained configuration hashes. Events/assets collections empty; not evidence for populated event/asset migration.",
+        "ui": "Actual Rollback click after successful healthy QA2; running controls disabled; same page reached100%. No triggered error or command-line restore used."
+      }
+    },
+    "completionReload": {
+      "status": "IMPLEMENTED_IN_SOURCE_NOT_DEPLOYED",
+      "contract": "Verified COMPLETED100% after locally initiated update or rollback refreshes/activates the PWA worker before reload. Historical job reads do not reload. Busy actions remain locked while refreshing. Rollback progress target badge follows recovery target.",
+      "tests": "87/87 PASS across PWA, workspace, HTTP adapter and popup; /tmp/operator-completed-reload-tests.log",
+      "deployment": "Current VM still QA1 r4; neither QA1 r4 nor QA2 r5 contains this new reload feature."
+    }
   }
 }

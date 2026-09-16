@@ -8,11 +8,17 @@ put in a URL, persistent browser storage, worker request, status or event log.
 
 Production nginx serves `/operator-update-status/{jobId}` through a Unix socket
 to `myscoutee-update-status.service`. This small Python standard-library service
-runs as UID/GID10001 under systemd filesystem/capability restrictions. It has no
+runs as the non-login `myscoutee-runtime` system account (UID/GID10001),
+created by the package through systemd-sysusers. Two read-only filesystem binds
+expose only staging and worker status directories inside its private namespace;
+the protected parent directories keep their original permissions. It runs under
+systemd filesystem/capability restrictions. It has no
 database, Docker, package-manager or application-API dependency. It verifies the
 capability and reads bounded regular JSON files, refusing symlink components.
 Worker status takes precedence over API staging status. Only progress/version
-fields are returned; actor identity, internal errors and install logs are omitted.
+fields and the public rollback identity are returned; actor identity, internal
+errors and install logs are omitted. The worker includes its retained recovery
+point so the popup can display recovery immediately even while the API is down.
 The service supports no mutation. Invalid/expired capabilities receive404.
 It opens no TCP port and does not create another public origin or TLS identity.
 
@@ -24,6 +30,11 @@ gap with the same job and capability; they never repeat Apply. A failed backend
 start leaves the previous ingress and independent progress route available.
 The worker declares100% only after exact bundled-image and health verification.
 No database/media backup or restore is introduced.
+
+The package and restart helper emit fixed milestones for configuration, image
+loading/verification, data preparation, service startup, health checks and the
+ingress switch. The worker records each milestone as durable progress; these
+percentages describe phases, not measured completion of each individual command.
 
 The capability is issued before staging starts, so an accepted action can be
 followed without requesting another credential from a restarting API. After a

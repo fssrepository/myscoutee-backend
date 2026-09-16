@@ -18,6 +18,17 @@ esac
 MYSCOUTEE_API_UID=10001
 MYSCOUTEE_API_GID=10001
 
+printf '[myscoutee-update-phase] CONFIGURING_PACKAGE\n'
+
+# The host reader uses the same numeric ownership as the application. Register
+# a real non-login system identity rather than relying on an unknown numeric user.
+systemd-sysusers /usr/lib/sysusers.d/myscoutee.conf
+if [[ "$(id -u myscoutee-runtime)" != "${MYSCOUTEE_API_UID}" \
+   || "$(id -g myscoutee-runtime)" != "${MYSCOUTEE_API_GID}" ]]; then
+  echo "MyScoutee runtime UID/GID10001 is already reserved by another account." >&2
+  exit 1
+fi
+
 install_numeric_owned_directory() {
   local mode="$1"
   local owner_uid="$2"
@@ -571,6 +582,7 @@ if ! docker info >/dev/null 2>&1; then
   exit 1
 fi
 
+printf '[myscoutee-update-phase] LOADING_IMAGES\n'
 if compgen -G "/opt/myscoutee/images/*.tar" >/dev/null; then
   for image_archive in /opt/myscoutee/images/*.tar; do
     echo "Loading bundled Docker image: ${image_archive}"
@@ -578,6 +590,7 @@ if compgen -G "/opt/myscoutee/images/*.tar" >/dev/null; then
   done
 fi
 
+printf '[myscoutee-update-phase] VERIFYING_IMAGES\n'
 verify_packaged_image_manifest
 ensure_service_images
 

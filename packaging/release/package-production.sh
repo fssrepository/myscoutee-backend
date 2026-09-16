@@ -228,6 +228,8 @@ install -m 0644 "${REPO_ROOT}/packaging/systemd/myscoutee-update.path" "${STAGIN
 install -m 0644 "${REPO_ROOT}/packaging/systemd/myscoutee-update.service" "${STAGING_DIR}/lib/systemd/system/myscoutee-update.service"
 install -m 0644 "${REPO_ROOT}/packaging/systemd/myscoutee-update-status.socket" "${STAGING_DIR}/lib/systemd/system/myscoutee-update-status.socket"
 install -m 0644 "${REPO_ROOT}/packaging/systemd/myscoutee-update-status.service" "${STAGING_DIR}/lib/systemd/system/myscoutee-update-status.service"
+install -d "${STAGING_DIR}/usr/lib/sysusers.d"
+install -m 0644 "${REPO_ROOT}/packaging/sysusers/myscoutee.conf" "${STAGING_DIR}/usr/lib/sysusers.d/myscoutee.conf"
 install -m 0644 "${REPO_ROOT}/packaging/systemd/myscoutee-tls.path" "${STAGING_DIR}/lib/systemd/system/myscoutee-tls.path"
 install -m 0644 "${REPO_ROOT}/packaging/systemd/myscoutee-tls.service" "${STAGING_DIR}/lib/systemd/system/myscoutee-tls.service"
 install -m 0644 "${REPO_ROOT}/packaging/systemd/myscoutee-tls-renew.service" "${STAGING_DIR}/lib/systemd/system/myscoutee-tls-renew.service"

@@ -7595,6 +7595,34 @@ installer (12–17), controlled failure/recovery (18–20), and managed HTTPS
 the earlier exclusion of those branches no longer applies. Disabled controls
 while work runs are the oracle; do not bypass them to simulate repeat clicks.
 
+**2026-09-16 — Independent progress and exact-image upgrade PASS.**
+Normal monitor QA1/QA2 r4: job `upd_d1194357f035a4a47afcd280169e1995`
+completed16:00:12Z. The original popup reached100% without reload, with209
+monitor responses and real installer phase feedback while the API was down.
+Actual QA2 image identities/health and retained Mongo/MinIO/configuration controls
+passed. Reopening the popup made no release request; only explicit Check fetched
+again and Update stayed hidden with no newer version. Prior r3 failed exact-image
+verification because the worker inherited pre-install image variables; the restart
+helper now reads the installed selection, with upgrade/rollback regression proof.
+User clarified that Rollback must remain available after successful installation,
+for later-discovered functional defects. That UI correction and removal of the
+lower duplicate success notice pass76 focused tests; QA2 r5 is being packaged.
+Voluntary success rollback is a distinct pending branch, not a failed-install test.
+
+**2026-09-16 — Local signed-source replay; popup recovery PASS.**
+The normal current-source QA1/QA2 packages in `local-rollback-qa{1,2}-20260916-r2`
+replaced the historical candidate for this run. Native Apply created exactly one
+job, `upd_e706a97a8ab99457775c37903b5cadab`, completed at14:42:46Z. The original
+popup recovered through API restart to100% without reload; both controls were
+locked while running. Update remained disabled after success and a new Check
+with no newer release. Signed installation, exact image health and retained
+Mongo/MinIO/configuration controls passed. Reopened QA2 exposes its exact QA1
+recovery point; rollback has not yet been invoked. The user then requested a
+host progress reader that remains available while the API is down. Source tests
+pass; corrected `monitor-qa{1,2}-20260916-r2` packages are being prepared and
+installed for that new live round. Earlier failure evidence below is historical.
+Rollback, controlled failure/retry and managed HTTPS remain unproven.
+
 **2026-09-16 — Actual QA1 r2 → QA2 Apply; restart tracking defect.**
 Full current-source QA1 r2 (SHA-256
 `6e693064bd2e08c5638cabaf9b87de7b4a560f171619dbf8d11aa71e91bdbcff`)

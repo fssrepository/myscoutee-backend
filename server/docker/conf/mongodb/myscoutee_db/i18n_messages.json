@@ -20580,6 +20580,48 @@
     "value": "Loading…"
   },
   {
+    "_id": "i18n-message-en-operator-update-phase-configuring-package",
+    "key": "operator.update.phase.configuring_package",
+    "lang": "en",
+    "value": "Configuring package"
+  },
+  {
+    "_id": "i18n-message-en-operator-update-phase-loading-images",
+    "key": "operator.update.phase.loading_images",
+    "lang": "en",
+    "value": "Loading application images"
+  },
+  {
+    "_id": "i18n-message-en-operator-update-phase-verifying-images",
+    "key": "operator.update.phase.verifying_images",
+    "lang": "en",
+    "value": "Verifying application images"
+  },
+  {
+    "_id": "i18n-message-en-operator-update-phase-preparing-data",
+    "key": "operator.update.phase.preparing_data",
+    "lang": "en",
+    "value": "Preparing built-in data"
+  },
+  {
+    "_id": "i18n-message-en-operator-update-phase-starting-services",
+    "key": "operator.update.phase.starting_services",
+    "lang": "en",
+    "value": "Starting services"
+  },
+  {
+    "_id": "i18n-message-en-operator-update-phase-waiting-for-health",
+    "key": "operator.update.phase.waiting_for_health",
+    "lang": "en",
+    "value": "Waiting for application readiness"
+  },
+  {
+    "_id": "i18n-message-en-operator-update-phase-switching-ingress",
+    "key": "operator.update.phase.switching_ingress",
+    "lang": "en",
+    "value": "Switching web server"
+  },
+  {
     "_id": "i18n-message-hu-unavailable-here",
     "key": "unavailable.here",
     "lang": "hu",
@@ -41158,5 +41200,47 @@
     "key": "loading",
     "lang": "hu",
     "value": "Betöltés…"
+  },
+  {
+    "_id": "i18n-message-hu-operator-update-phase-configuring-package",
+    "key": "operator.update.phase.configuring_package",
+    "lang": "hu",
+    "value": "Csomag beállítása"
+  },
+  {
+    "_id": "i18n-message-hu-operator-update-phase-loading-images",
+    "key": "operator.update.phase.loading_images",
+    "lang": "hu",
+    "value": "Alkalmazásképek betöltése"
+  },
+  {
+    "_id": "i18n-message-hu-operator-update-phase-verifying-images",
+    "key": "operator.update.phase.verifying_images",
+    "lang": "hu",
+    "value": "Alkalmazásképek ellenőrzése"
+  },
+  {
+    "_id": "i18n-message-hu-operator-update-phase-preparing-data",
+    "key": "operator.update.phase.preparing_data",
+    "lang": "hu",
+    "value": "Beépített adatok előkészítése"
+  },
+  {
+    "_id": "i18n-message-hu-operator-update-phase-starting-services",
+    "key": "operator.update.phase.starting_services",
+    "lang": "hu",
+    "value": "Szolgáltatások indítása"
+  },
+  {
+    "_id": "i18n-message-hu-operator-update-phase-waiting-for-health",
+    "key": "operator.update.phase.waiting_for_health",
+    "lang": "hu",
+    "value": "Várakozás az alkalmazás indulására"
+  },
+  {
+    "_id": "i18n-message-hu-operator-update-phase-switching-ingress",
+    "key": "operator.update.phase.switching_ingress",
+    "lang": "hu",
+    "value": "Webszerver átváltása"
   }
 ]

@@ -79,3 +79,27 @@ restored settings. Stop only the fixture server process that was started for thi
 run. Retain evidence separately; remove the fixture directory only after the
 campaign no longer needs its exact signed metadata. No user data backup/restore
 is part of this fixture.
+
+
+## Managed HTTPS fixture on the same disposable QA guest
+
+Run `operator-update-tls-fixture.py stage` as root on the QA guest. It requires
+an installed QA package and uses the existing bootstrap QA certificate as the
+local trust anchor. It creates a seven-day `qa.localhost` server certificate
+(with localhost SANs to retain the current tunnel), private input files and a
+TLS-only restoration record under `/var/lib/myscoutee/qa-fixtures/update/tls`.
+It does not apply TLS or create a successful job. Keep private inputs mode0600
+and outside evidence/screenshots; the delegated browser harness supports
+`fill-file` to enter them without putting key content in command arguments.
+
+Apply Manual HTTPS through the visible Operator Configuration controls.
+Correlate the real job, reopened settings and served certificate. Verify the
+configured hostname externally with the retained CA and `curl --resolve`;
+managed QA Chromium ignores certificate errors, so its page alone is not
+certificate-trust evidence. This local-CA case does not prove public ACME issuance.
+
+After the UI checks, use `operator-update-tls-fixture.py reset` on the guest.
+It refuses an unrelated changed certificate/key, restores only the recorded
+TLS files and six changed environment settings, and recreates nginx through
+the packaged Compose wrapper. It does not restore MongoDB, MinIO or user data.
+Verify the original HTTPS connection, Operator access and retained file hashes.
