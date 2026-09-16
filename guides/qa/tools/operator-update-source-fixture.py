@@ -54,9 +54,14 @@ def main():
         return
     if args.action == 'stage':
         uri = urlsplit(args.origin or '')
+        if STATE.exists():
+            previous = json.loads(STATE.read_text())
+            if previous.get('phase') != 'reset' or any(
+                    matches(text, key) != previous['previousLines'][key] for key in KEYS):
+                parser.error('Existing fixture is not reset or configuration changed since reset.')
         if (uri.scheme != 'https' or not uri.hostname or uri.username or uri.password or uri.query
-                or uri.fragment or uri.path not in ('', '/') or not args.certificate or STATE.exists() or CA.exists()):
-            parser.error('Require HTTPS origin, public CA certificate and unused fixture state.')
+                or uri.fragment or uri.path not in ('', '/') or not args.certificate or CA.exists()):
+            parser.error('Require HTTPS origin, public CA certificate and absent fixture certificate.')
         public = args.certificate.read_bytes()
         if b'PRIVATE' in public or len(public) > 65536:
             parser.error('Expected a public CA certificate only.')

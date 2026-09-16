@@ -273,8 +273,8 @@
       "UI-001",
       "SOURCE FIX / VM RETEST PENDING",
       "P2",
-      "When native permission is granted, save the browser preference immediately and register FCM in the background. Settings popup remains open after Update; login permission gate still closes on completion. Switch reflects saved preference, not token registration completion. Technical waits capped at 3s each; native decision is not timed out. VM still runs older frontend.",
-      "firebase-messaging.service.spec.ts; server Firebase configuration HTTP200 in37ms; live user browser flow not automated"
+      "When native permission is granted, save the browser preference immediately and register FCM in the background. Settings popup remains open after Update; login permission gate still closes on completion. Switch reflects saved preference, not token registration completion. Backend device writes capped at 3s; initial FCM token setup runs in the background with a 30s bound; native decision is not timed out. VM still runs older frontend. Granted geolocation is now synchronized in the background on Settings Update as well; a failed first save does not mark optimistic coordinates as persisted, allowing a later retry. r2 preloads the Messaging configuration before the explicit native-permission click and skips native/token work when unconfigured. Opt-out writes backend removal without waiting for Firebase.",
+      "54 focused tests PASS (13 messaging, 4 location, 37 HTTP Operator Registry); production r2 frontend and seed/i18n gates passed; QA3 replacement packaging in progress; real member notification delivery remains unproven."
     ]
   ]
 }

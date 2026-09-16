@@ -414,8 +414,9 @@ jq -e '
       test("@[^@]+\\.(local|invalid)$"; "i")))
 ' "${PACKAGED_DEMO_SEED}/appSettings.json" >/dev/null \
   || fail "Explore app settings do not use isolated synthetic administrators"
-[[ ! -e "${PACKAGED_PRODUCTION_SEED}/communityProviders.json" ]] \
-  || fail "production social/community URLs were embedded instead of remaining operator-managed"
+jq -e 'length == 2 and all(.[]; .configured == false)' \
+  "${PACKAGED_PRODUCTION_SEED}/communityProviders.json" >/dev/null \
+  || fail "production built-in community catalog is missing or preconfigured"
 if grep -RIEiq \
     -- 'https?://([^/"[:space:]]+\.)?(facebook\.com|instagram\.com|linkedin\.com|x\.com|twitter\.com|tiktok\.com|youtube\.com|discord\.(com|gg)|discourse\.[^/"[:space:]]+)/[^/"[:space:]][^"[:space:]]*' \
     "${PACKAGED_PRODUCTION_SEED}"; then
@@ -873,13 +874,20 @@ if bash "${CREDENTIAL_AUDIT}" "${EXTRACTED}" >/dev/null 2>&1; then
 fi
 rm -f "${PACKAGED_PRODUCTION_SEED}/users.json"
 
+cp "${PACKAGED_PRODUCTION_SEED}/communityProviders.json" "${TEST_ROOT}/communityProviders.safe.json"
 printf '%s\n' \
   '[{"_id":"personal-social","url":"https://linkedin.com/in/private-owner"}]' \
   > "${PACKAGED_PRODUCTION_SEED}/communityProviders.json"
 if bash "${CREDENTIAL_AUDIT}" "${EXTRACTED}" >/dev/null 2>&1; then
   fail "credential audit accepted a personal production social-page seed"
 fi
-rm -f "${PACKAGED_PRODUCTION_SEED}/communityProviders.json"
+cp "${TEST_ROOT}/communityProviders.safe.json" "${PACKAGED_PRODUCTION_SEED}/communityProviders.json"
+jq '.[0].configured = true' "${TEST_ROOT}/communityProviders.safe.json" \
+  > "${PACKAGED_PRODUCTION_SEED}/communityProviders.json"
+if bash "${CREDENTIAL_AUDIT}" "${EXTRACTED}" >/dev/null 2>&1; then
+  fail "credential audit accepted a preconfigured production community provider"
+fi
+cp "${TEST_ROOT}/communityProviders.safe.json" "${PACKAGED_PRODUCTION_SEED}/communityProviders.json"
 
 if MYSCOUTEE_VERSION=1.0.0-prod \
   MYSCOUTEE_DIST_DIR="${TEST_ROOT}/invalid-dist" \

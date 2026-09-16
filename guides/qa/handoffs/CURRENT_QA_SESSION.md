@@ -155,6 +155,8 @@ The user explicitly delegates the remaining Administration test and then all fou
 Operator journeys to Codex, with visible numbered progress and in-scope repairs.
 VMware deployment UI smoke is now user-operated: Codex must not navigate or submit its browser actions. It remains a non-demo registration/profile/Event/Asset image journey outside the QA matrix; see guides/releases/PRERELEASE_DEPLOYMENT_QUALIFICATION.md. Firebase prerequisites belong to its deploy smoke fixture. Production QA data was wiped and reloaded from corrected JSON at the user’s request on 2026-09-16. The QA-only firebase-smoke-fixture.py restores activation/readiness as fixture state, not evidence of the browser Message Test. Any future retained-data controls must be created after this reset. No deployment is started by this note.
 
+The user-requested QA3 permission-sync build and local HTTPS update preparation are tracked in [QA3_PERMISSION_SYNC_20260916.md](../../qualification/evidence/QA3_PERMISSION_SYNC_20260916.md). Preserve the current smoke-created database/media. Codex prepares a separate Operator browser with the versioned launcher; the user starts the update. Compare the final pre-update fingerprints with the post-update state before claiming data preservation.
+
 The two remaining Asset tests are explicitly reserved for pair QA: prepare their
 versioned fixtures/managed startup, then the user controls all checklist actions.
 A defect report permits diagnosis and repair, not takeover of those Asset actions.
