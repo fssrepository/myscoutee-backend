@@ -89,3 +89,14 @@ Source defect found: `AppSetupStore.allowDisabled` incorrectly included `notific
 19 focused tests PASS (15 Messaging,4 location), including the two new regressions: Update remains available during a stalled config lookup and missing config does not unregister a retained device. These follow-up source changes are NOT included in the installed or HTTPS-served r4 artifact. No extra package rebuild or runtime patch was performed for this correction.
 
 Post-update evidence: `qa3-r4-after-update-20260916.json`, compared with the final r4 before-state. Version QA3,53 collections,7028 documents,911 media objects. No document removals, no changed indexes, no added/removed/changed media keys,size,ETag. Changes are limited to monitoring aggregates, scheduled/notification rule runtime state, translation bundle versions and four added translation documents, and one user's `devices` field. Concurrent user permission interactions prevent assigning that device-field change to the installer or the browser from these fingerprints alone. No broader claim of byte-identical user data or actual push delivery is made.
+
+
+## Clarified defect: missing save feedback, 21:44
+
+The user clarified that Save returns too quickly to show visible feedback. Read-only diagnosis found notification preference=true in the managed Operator browser and matched its hashed user/device/token against the persisted production user device: notificationsEnabled=true,lastRegisteredAtIso=2026-09-16T19:40:27.258679044Z. Recent device requests returned200 in25–42ms. This establishes this observed saved state, not every earlier attempt or push delivery.
+
+The final correction is visual feedback: after settings save resolves, the existing Update action shows a green check-circle and shared success-ring animation for1000ms. It does not delay the write or close the popup. Editing, retrying, closing or destroying the store clears the feedback; save failures do not display success. The previous speculative pending-configuration save-path change is not part of this final implementation; the current save and registration flow is retained.
+
+17 focused tests PASS, including an Angular DOM test that clicks the rendered Update button, verifies the saved browser preference, green button/success-ring class/check icon and open popup, then checks return to the normal button after1000ms. Other regression cases cover immediate completion, save error and close/reopen. Firebase remains mocked in this component test; it is not a live-VM animation or push-delivery PASS. The first DOM-test run exposed an incomplete matchMedia test stub; adding its listener methods fixed the harness, with no product workaround.
+
+This animation is source-only. Installed and HTTPS-served QA3 r4 is unchanged.
