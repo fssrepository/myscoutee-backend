@@ -18108,6 +18108,18 @@
     "value": "Update failed"
   },
   {
+    "_id": "i18n-message-en-operator-update-error-registration-required",
+    "key": "operator.update.error.registration.required",
+    "lang": "en",
+    "value": "Connect to a Registry before checking for updates."
+  },
+  {
+    "_id": "i18n-message-en-operator-update-error-check",
+    "key": "operator.update.error.check",
+    "lang": "en",
+    "value": "Could not check for updates. Please try again."
+  },
+  {
     "_id": "i18n-message-en-operator-update-error-failed",
     "key": "operator.update.error.failed",
     "lang": "en",
@@ -38626,6 +38638,18 @@
     "key": "operator.update.phase.failed",
     "lang": "hu",
     "value": "A frissítés sikertelen"
+  },
+  {
+    "_id": "i18n-message-hu-operator-update-error-registration-required",
+    "key": "operator.update.error.registration.required",
+    "lang": "hu",
+    "value": "A frissítések kereséséhez előbb csatlakozz egy Registryhez."
+  },
+  {
+    "_id": "i18n-message-hu-operator-update-error-check",
+    "key": "operator.update.error.check",
+    "lang": "hu",
+    "value": "Nem sikerült ellenőrizni a frissítéseket. Próbáld újra."
   },
   {
     "_id": "i18n-message-hu-operator-update-error-failed",

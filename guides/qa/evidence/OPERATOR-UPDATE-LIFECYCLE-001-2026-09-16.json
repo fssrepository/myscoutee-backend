@@ -99,7 +99,7 @@
       "source": "User screenshot: Screenshot from 2026-09-16 13-43-55.png",
       "observation": "Side-by-side action labels truncate on the narrow viewport; excessive empty space below actions.",
       "requestedCorrection": "Two action rows when needed and/or content-sized popup body, using shared component configuration.",
-      "status": "OPEN; user requested recording defects for a later batch; no application edit or candidate retest."
+      "status": "SOURCE FIXED per subsequent user authorization; QA1 VM unchanged; live candidate visual retest pending."
     },
     {
       "id": "UPDATE-UI-02",
@@ -108,7 +108,15 @@
       "build": "published QA1",
       "observation": "Refresh shows raw HTTP error including internal URL and 409 OK; user reports covered error icon and excessively long text. Deployment is current remains visible despite unsuccessful release discovery.",
       "requestedCorrection": "Short localized actionable message for missing Registry registration; omit internal URL and raw HTTP diagnostics, preserve icon space and wrapping within the popup, and avoid implying a verified current release after failed discovery.",
-      "status": "OPEN; collect for later batch repair as requested; no application changes."
+      "status": "SOURCE FIXED per subsequent user authorization; QA1 VM unchanged; live candidate visual retest pending."
     }
-  ]
+  ],
+  "sourceFixVerification": {
+    "operatorHttpService": "22/22 PASS, including HTTP409/502 redaction/localization cases",
+    "angularTemplatesAndTypes": "ngc -p tsconfig.app.json --noEmit PASS",
+    "i18nSeedGeneration": "PASS; EN/HU bundles and three Mongo seeds updated",
+    "i18nAudit": "BLOCKED by pre-existing landing loading key reference at entry-landing.component.html:383; verified also present in HEAD",
+    "initialTestAttempt": "Default ng test include still typechecked unrelated existing specs and failed; focused tsconfig then passed. Temporary tsconfig removed.",
+    "vmPatch": "None; published QA1 is preserved."
+  }
 }

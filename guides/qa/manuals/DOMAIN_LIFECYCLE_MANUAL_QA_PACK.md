@@ -7621,13 +7621,20 @@ requested QA1 → QA2 → QA1 chain. Preserve all completed Operator evidence.
 The existing deployment-local Operator credential successfully opened the real
 Operator workspace through `https://localhost`. The Updates popup is open.
 This is access/UI evidence, not a completed release-verification block.
-Collect defects for one later repair batch; do not change application code
-for each reported observation during this inspection.
+The user subsequently authorized fixing UPDATE-UI-01/02 in source while QA
+continues. Other findings remain queued; the published QA1 VM is unchanged.
 
 | Finding | Observed behavior | Required correction / retest | Status |
 | --- | --- | --- | --- |
-| UPDATE-UI-01 | On the narrow QA1 viewport, the two actions share one row and `Deployment is current` is truncated. The popup also reserves a large empty body below them. User screenshot: `Screenshot from 2026-09-16 13-43-55.png`. | Use two action rows when needed and/or size the popup body to its content, using shared component configuration. Verify readable action labels and proportionate empty-state height on the reported narrow viewport and desktop. | OPEN — deferred to the requested batch; QA1 observation, current candidate not yet checked. |
-| UPDATE-UI-02 | Block1 step2 Refresh returned409 on the unregistered QA1 deployment. The UI exposes a long raw HTTP error with the internal URL and `409 OK`; the user reports that the icon is covered. `Deployment is current` remains visible after the failed lookup. | Show a short localized registration prerequisite message without internal URL/raw diagnostics. Keep the icon unobscured and text within the popup; do not imply that release currency was verified after a failed lookup. | OPEN — deferred to the requested batch; no application edit. |
+| UPDATE-UI-01 | On the narrow QA1 viewport, the two actions share one row and `Deployment is current` is truncated. The popup also reserves a large empty body below them. User screenshot: `Screenshot from 2026-09-16 13-43-55.png`. | Use two action rows when needed and/or size the popup body to its content, using shared component configuration. Verify readable action labels and proportionate empty-state height on the reported narrow viewport and desktop. | SOURCE FIXED — shared menu list layout and content-sized Updates body; live candidate retest pending. |
+| UPDATE-UI-02 | Block1 step2 Refresh returned409 on the unregistered QA1 deployment. The UI exposes a long raw HTTP error with the internal URL and `409 OK`; the user reports that the icon is covered. `Deployment is current` remains visible after the failed lookup. | Show a short localized registration prerequisite message without internal URL/raw diagnostics. Keep the icon unobscured and text within the popup; do not imply that release currency was verified after a failed lookup. | SOURCE FIXED — translated discovery errors, non-shrinking icon, bounded wrapping, and no current-release claim after a failed lookup; live candidate retest pending. |
+
+Source verification:22/22 Operator HTTP-service tests PASS; Angular template/type
+compilation (`ngc --noEmit`) PASS. EN/HU seeds regenerated. The full i18n audit
+remains blocked by the pre-existing landing `loading` key reference (line383);
+the initial broad spec compilation also encountered unrelated existing spec
+type errors, before the focused test compilation passed. No live UI retest of
+these source fixes has been claimed.
 
 Block1 step2 is blocked on Registry/release fixture preparation, not PASS. One
 visible Refresh was executed; the signed-release lookup and upgrade remain unproven.
