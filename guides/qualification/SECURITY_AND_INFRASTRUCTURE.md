@@ -5,6 +5,11 @@ repeatable runners, measurements, findings and Excel ledger:
 [SECURITY_AND_INFRASTRUCTURE.xlsx](SECURITY_AND_INFRASTRUCTURE.xlsx).
 Raw redacted measurements live in [evidence](evidence/).
 
+Browser environment note: [2026-09-16 VMware certificate trust update and
+notification registration](evidence/browser-tls-notification-20260916.md).
+This records the local Chrome trust-store change, browser restart, subsequent
+HTTP 200 device-registration response, and the unmeasured operation duration.
+
 ## Current scope — 2026-09-16
 
 ### Security source fixes — 2026-09-16, not yet deployed
