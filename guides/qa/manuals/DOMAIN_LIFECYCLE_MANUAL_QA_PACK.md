@@ -6599,6 +6599,17 @@ user starts Block 1, steps 1–3.
   summary. Separate assigned request cards remain visible on the fly and after
   reload, use `#1`/`#2` for repeated same-Asset requests, show their date range
   and retain Payment summary only when paid.
+- Block 1 read-only review on 2026-09-17 initially found a baseline mismatch. The versioned
+  `status asset-domain ASSET-BORROW-001` check fails only
+  `exactEventAndGeneratedGroupRoles`: Casey still has `organizerOnly: true`
+  in the Event and Group A, saved before the menu fix. Event count is 3,
+  Stage count is 4; Group A retains the reported 2-count/3-standings mismatch.
+  No Group A Borrow request, basket or payment exists. No reset or repair was
+  performed by this review. Block 2 now names both actors' exact entry paths.
+  Subsequent user decision: **main Event check accepted**; do not repeat the
+  removed Group `Organizer only` action. Continue at Block 2. The retained
+  pre-fix flags remain an evidence qualification, not a newly verified clean
+  baseline or a reason to replay Block 1.
 - `Organizer only` is exact-scope fine tuning on Event, Sub-event/Stage, Group
   and Asset memberships, including pending or accepted Asset requests. It
   changes only that scope's counted-participant state and live counter. It does

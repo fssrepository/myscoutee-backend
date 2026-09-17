@@ -64,23 +64,46 @@ tournament participation. The main Event's own setting remains independent.
    the Event count, Group count and standings remain unchanged.
 
 The inaccessible standalone Stage Members toggle check has been removed.
-If Group A already shows **2 members** while Standings still lists all three,
-report that retained mismatch before continuing; it is not a passing baseline.
+The removed Group toggle is not a replay requirement. Retained state from that
+earlier action is recorded separately in the QA pack; it does not require
+repeating this block in the current run.
 
 ## 2. Date range and free dialog
 
-4. **Nova — Explore, overlap dates.** Capacity must say `1 left` because Lina
+These availability checks assume no new Borrow request has been sent.
+Explore selects dates only; it keeps the existing start/end times.
+
+4. **Nova — open Group A's Transport Explore.** In Nova's browser, open
+   `Activities → Events → Active Events` → **QA ASSET-BORROW-001 Tournament**
+   card's **three-dot menu** → `View Event` → **QA Borrow Stage** card's
+   **three-dot menu** → `Groups` → **Group A** row's **three-dot menu** →
+   **Transport** under **Assets** → **+**. This opens **Explore** for Group A.
+   In Explore's date-range control, set Start **09/17/2026**, End
+   **09/24/2026**. **Capacity Transport** must say `1 left` because Lina
    already occupies two of its three items in Group B.
 
-5. Open `Capacity Transport → Borrow`. Expected: Quantity is read-only `1`,
+5. Keep the dates from step 4. Open `Capacity Transport → Borrow`.
+   Expected: Quantity is read-only `1`,
    availability is `1 item`, button is `Send borrow request`, and there is no
-   Payment/provider/card block. Close without sending.
+   Payment/provider/card block. **Do not click `Send borrow request`.**
+   Close the Borrow dialog with **X** to return to Explore.
 
-6. Set the non-overlap dates. Capacity must say `3 left`. Set the overlap
-   dates again. Reject and Cancel must each say `2 left`.
+6. **Nova — back in Explore**, change its date range to Start
+   **09/25/2026**, End **09/26/2026**. Check **Capacity Transport**
+   changes to `3 left`: Lina's two-item booking has ended by these dates.
+   Then restore Start **09/17/2026**, End **09/24/2026**.
+   **Capacity Transport** must return to `1 left`.
+   Select that same date range again. The list must stay visible with the same
+   availability; repeating the selection must not clear it.
+   The separate **Reject Transport** and **Cancel Transport** cards must each
+   show `2 left`; neither has an existing booking. Do not send a request yet.
 
-7. **Casey — Group B.** Lina's accepted Capacity request is still Quantity
-   `2`; Explore reads and date changes made no write.
+7. **Casey — Group B's Transport list.** In Casey's browser, open
+   `Activities → Events → Active Events` → Tournament card's **three-dot menu**
+   → `View Event` → **QA Borrow Stage** card's **three-dot menu** → `Groups`
+   → **Group B** row's **three-dot menu** → **Transport** under **Assets**.
+   Lina's accepted Capacity request must still have Quantity `2`; Nova's
+   Explore reads and date changes must not change it.
 
 ## 3. Free Cancel
 
