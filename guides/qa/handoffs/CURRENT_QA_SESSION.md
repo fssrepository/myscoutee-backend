@@ -116,9 +116,9 @@ when shaping only its route to the QA application.
 ```yaml
 checkpoint: ASSET-BORROW-001
 checklist: ../checklists/asset/ASSET-BORROW-001.md
-substage: Block 5 Free Accept/capacity PASS after the user report and verify-borrow-accepted. Continue Block 6, step 22.
-fixture_phase: borrow-accepted-verified/startBlock=4. Capacity has three independent accepted quantity-1 requests: Nova Group A 1, Lina Group B 2. Exact overlap dates and scoped assignment counters passed; no pending Capacity count or payment. Reject remains D, Cancel/Paid untouched. No reset.
-next_action: Nova starts Block 6 step 22: Group A Transport Explore, Paid Transport Borrow, Sep18 12:36–Sep20 12:36 local time, quantity 1, HUF 6400, Barion Mastercard 4444. Complete steps 22–25 including Organizer only and Payment history duration 2 days. Casey must not approve yet. Then run verify-borrow-paid-pending-organizer. Browser actions remain user-controlled.
+substage: Block 6 PASS after user report and verify-borrow-paid-pending-organizer. Continue Block 7, steps 26–27.
+fixture_phase: borrow-paid-pending-organizer-verified/startBlock=4. One pending one-item Paid request, one captured/fulfilled HUF 6400 Barion payment, Nova pending Manager with organizerOnly=true. Group A Transport accepted 1/pending 1 (Capacity plus Paid); Group B unchanged. Actual paid range Sep17 11:36–Sep18 12:36 local, 25 hours/two billable started days; use this SAME actual range for the second paid request in Block 8. No reset.
+next_action: Casey approves the existing Paid request (26), then Nova selects Count as participant on that accepted Paid Members row (27). Stop there for verify-borrow-paid-accepted-participant before step 28. Browser actions remain user-controlled.
 confirmed_rules: Every Borrow submits one independently identified item. Stage menus are member-only; main Event Members follows existing Open/Closed rules. Pricing has no Asset VIP. Restage uses normal reset then stage. The user explicitly requested a versioned Block 4 restart; earlier results are archived, not simulated or marked PASS.
 queued_work: Finish Borrow pair QA; then the previously requested stable app/Registry release and retained-control verification. Deployment smoke/security/infrastructure work remains separate.
 last_completed: ASSET-PRICING-001 PASS/CLOSED 2026-09-17. Final review found two distinct Cutoff USD 900 payments and one two-day Variable USD 1800 payment; per-request Members 1 and stage totals 2/1. Earlier Hybrid/policy observations retained in the QA pack. Exact fixture cleanup completed.

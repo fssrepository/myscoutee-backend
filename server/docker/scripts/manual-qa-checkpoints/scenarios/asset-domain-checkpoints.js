@@ -2039,7 +2039,12 @@
     });
   }
 
-  function assertBorrowAccepted(state, current, allowPaidEffects = false) {
+  function assertBorrowAccepted(state, current, paidMetric = null) {
+    const allowPaidEffects = paidMetric !== null;
+    // Transport metrics cover both Capacity and Paid in this same Group A row.
+    // Each paid checkpoint supplies its exact participant/pending contribution.
+    const expectedAccepted = 1 + (paidMetric ? paidMetric.accepted : 0);
+    const expectedPending = paidMetric ? paidMetric.pending : 0;
     assertBorrowImmutableScope(current, allowPaidEffects);
     assertBorrowCancelControl(state, current);
     assertBorrowDeletedBranch(current, SECONDARY_ASSET_ID, thirdUserId);
@@ -2072,9 +2077,9 @@
         || !groupAResource
         || Q.number(groupAResource.transportSettings[PRIMARY_ASSET_ID] && groupAResource.transportSettings[PRIMARY_ASSET_ID].quantity) !== 1
         || Q.text(groupAResource.transportSettings[PRIMARY_ASSET_ID] && groupAResource.transportSettings[PRIMARY_ASSET_ID].addedByUserId) !== participantUserId
-        || Q.number(groupAResource.transportMetric.accepted) !== 1
-        || Q.number(groupAResource.transportMetric.pending) !== 0
-        || Q.number(groupAMetric.accepted) !== 1 || Q.number(groupAMetric.pending) !== 0
+        || Q.number(groupAResource.transportMetric.accepted) !== expectedAccepted
+        || Q.number(groupAResource.transportMetric.pending) !== expectedPending
+        || Q.number(groupAMetric.accepted) !== expectedAccepted || Q.number(groupAMetric.pending) !== expectedPending
         || notifications.length !== (state.context.startBlock === 4 ? 4 : 5)
         || requestRows.length !== (state.context.startBlock === 4 ? 2 : 3)
         || acceptedRows.length !== 1 || rejectedRows.length !== 1
@@ -2164,7 +2169,7 @@
   function verifyBorrowPaidPendingOrganizer() {
     const state = requireBorrowPhase("borrow-accepted-verified");
     const current = oracle(state);
-    assertBorrowAccepted(state, current, true);
+    assertBorrowAccepted(state, current, { accepted: 0, pending: 1 });
     assertBorrowPaymentSimulator(current);
     const paid = paidBorrowState(current);
     const requestRows = borrowNotificationRows(state)
@@ -2194,7 +2199,7 @@
   function verifyBorrowPaidAcceptedParticipant() {
     const state = requireBorrowPhase("borrow-paid-pending-organizer-verified");
     const current = oracle(state);
-    assertBorrowAccepted(state, current, true);
+    assertBorrowAccepted(state, current, { accepted: 1, pending: 0 });
     assertBorrowPaymentSimulator(current);
     const paid = paidBorrowState(current);
     if (!paid.asset || paid.requests.length !== 1 || paid.projections.length !== 1 || paid.payments.length !== 1
@@ -2219,7 +2224,7 @@
 
   function verifyBorrowTerminal() {
     const state = requireBorrowPhase("borrow-paid-accepted-participant-verified");
-    const { current } = assertBorrowAccepted(state, oracle(state), true);
+    const { current } = assertBorrowAccepted(state, oracle(state), { accepted: 0, pending: 0 });
     assertBorrowPaymentSimulator(current);
     const paid = paidBorrowState(current);
     const requestIds = paid.requests.map(item => item.id);

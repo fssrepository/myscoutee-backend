@@ -6551,7 +6551,7 @@ Status: **PASS / CLOSED (2026-09-03)** together with
 
 ### `ASSET-BORROW-001` — scoped borrow lifecycle
 
-Status: **IN PROGRESS / BLOCK 5 PASS / BLOCK 6 NEXT — 2026-09-17**.
+Status: **IN PROGRESS / BLOCK 6 PASS / BLOCK 7 NEXT — 2026-09-17**.
 
 Stable user guide:
 [`ASSET-BORROW-001.md`](../checklists/asset/ASSET-BORROW-001.md).
@@ -6673,6 +6673,30 @@ and evidence are recorded below.
   `/tmp/borrow-accepted-verified-state.json`. No reset or code change.
   Continue Block 6, steps 22–25; Casey must not approve Paid Transport yet.
   Next oracle: `verify-borrow-paid-pending-organizer`.
+
+- **Block 6 PASS — 2026-09-17:** user reported the block working.
+  The first oracle failed because its retained free-branch check incorrectly
+  expected the aggregate Group A Transport metric to stay accepted 1/pending 0
+  after a Paid request. The harness now checks the exact additional paid
+  contribution for each phase: pending Organizer-only adds 0/1, accepted
+  participant adds 1/0, terminal Organizer-only adds 0/0. Both resource and
+  runtime totals remain strictly checked; nine in-memory guard cases passed,
+  including incorrect/mismatched counts and preservation of the free branch.
+  No application or fixture data changed. The corrected
+  `verify-borrow-paid-pending-organizer` passed and saved
+  `borrow-paid-pending-organizer-verified`: exactly one pending Quantity-1 Paid
+  request/projection, one captured and fulfilled Barion HUF 6400 payment, one
+  owner request notification, and Nova pending Manager with organizerOnly true.
+  Free branches and Event/Stage/Group memberships remain unchanged.
+  The actual user-selected paid range is September 17 11:36–September 18 12:36
+  local, 25 hours and two billable started days, rather than the guide's exact
+  48-hour range. Preserve this qualification and reuse the actual first-booking
+  range for Block 8's overlap check. Payment-history visual confirmation is
+  covered by the user's block report, not an independent browser inspection.
+  Evidence: `/tmp/borrow-paid-pending-verification.log` (old harness failure),
+  `/tmp/borrow-paid-pending-state.json`,
+  `/tmp/borrow-paid-pending-verification-after.log` (PASS).
+  Continue steps 26–27, then `verify-borrow-paid-accepted-participant`.
 
 - This checkpoint owns the free cancel/reject/accept and overlap-capacity
   branches plus one narrow paid parity branch. Every free and paid Borrow form

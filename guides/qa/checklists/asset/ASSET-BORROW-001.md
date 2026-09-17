@@ -229,7 +229,8 @@ Wait for `verify-borrow-paid-accepted-participant`.
 
 ## 8. Second independent paid request
 
-29. **Nova — Explore, the same two-day paid range → `Paid Transport → Borrow`.** Quantity is
+29. **Nova — Explore → `Paid Transport → Borrow`.** Use the exact Start and End
+    shown on your first Paid request, so both bookings overlap. Quantity is
     again read-only `1`, availability is `1 item`, total is `6400 HUF`. Pay and
     send once. Do not reload.
 
