@@ -7042,7 +7042,9 @@ were identical before and after this verification.
 User-authorized `restage-borrow-review` preserves those three rentals/payments
 and all stage dates, preparing only the next offer as Hybrid USD 1150/day with
 one-day/50% cancellation terms. Independent fixture status verified
-`borrow-review-ready`; Barion connected, 3DS Off. The focused checklist asks
+`borrow-review-ready`; Barion connected, 3DS Off. The versioned launcher
+handed off three identity-verified windows after the final frontend build.
+The focused checklist asks
 Nova to view Variable USD 2300 and make just one new Cutoff Borrow USD 1150,
 then Casey checks total pending 3 -> 4 while each rental badge and Members list
 stays at one. This new write/UI observation remains pending with the user.
