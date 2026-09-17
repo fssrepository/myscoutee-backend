@@ -115,6 +115,19 @@ account's login was blocked by the application's existing two-session limit;
 these figures do not demonstrate successful use of that account.
 Evidence: [timestamped browser-period memory samples](evidence/vmware-browser-memory-20260917.jsonl).
 
+After the user reported opening demo screens, another **12 samples from
+19:57:11 to 19:58:06** recorded **1.41 GiB** combined container memory and
+**1.55–1.62 GiB** whole-guest usage. Adding the separately reserved 512 MiB
+crash-kernel memory gives **2.05–2.12 GiB**, before other boot reservations.
+
+During the first 41 browser samples, combined container CPU usage averaged
+**9.4%** of the VM's two-vCPU capacity; the highest sampled value was **42.6%**.
+During the 12 demo follow-up samples, it averaged **4.5%**, with a highest
+sample of **7.3%**. These figures sum Docker CPU percentages and divide by two;
+they exclude host processes and differ from the whole-guest `/proc/stat`
+measurement above. Five-second samples do not establish instantaneous peaks
+or capacity under concurrent users.
+
 ## Aruba recommendation
 
 The **Aruba Cloud VPS OpenStack O2A4** plan provides **2 vCPU, 4 GB RAM,
