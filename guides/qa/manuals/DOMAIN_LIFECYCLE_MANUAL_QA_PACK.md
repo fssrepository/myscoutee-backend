@@ -7039,17 +7039,19 @@ and sync), three rows for the stage aggregate, and no rows for unknown request
 or mismatched stage. Retained requests, payment snapshots and request projections
 were identical before and after this verification.
 
-User-authorized `restage-borrow-review` preserves those three rentals/payments
-and all stage dates, preparing only the next offer as Hybrid USD 1150/day with
-one-day/50% cancellation terms. Independent fixture status verified
-`borrow-review-ready`; Barion connected, 3DS Off. The versioned launcher
-handed off three identity-verified windows after the final frontend build.
-The focused checklist asks
-Nova to view Variable USD 2300 and make just one new Cutoff Borrow USD 1150,
-then Casey checks total pending 3 -> 4 while each rental badge and Members list
-stays at one. This new write/UI observation remains pending with the user.
-Refund-request menu and approval coverage remains in ASSET-CHECKOUT-001 block 8.
-
+Preparation correction, 2026-09-17: the user explicitly clarified that
+restage means normal reset followed by stage, with all prior fixture effects
+removed. The initially prepared offer-only resume was incorrect. Its custom
+harness additions were withdrawn; use the existing versioned reset/stage and
+browser launcher. Reset verified zero scoped artifacts; normal stage at
+2026-09-17T08:28:14.933Z and independent status verified `baseline-ready`,
+Pricing Off, zero requests and zero payment documents.
+The earlier payment observations above remain historical
+evidence, not retained live fixture data. The focused counter check now uses
+the original Pricing Off baseline and one free Borrow: total pending 0 -> 1,
+one rental card with badge 1, and one Nova row in Members. That new write/UI
+observation remains pending with the user. Refund-request menu and approval
+coverage remains in ASSET-CHECKOUT-001 block 8.
 
 Preparation2026-09-17: the user explicitly clarified that fixture staging and
 managed browser launch are required now; the pre-stage development gate must

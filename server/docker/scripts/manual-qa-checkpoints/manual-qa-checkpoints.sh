@@ -294,7 +294,6 @@ Usage:
   bash manual-qa-checkpoints.sh stage asset-pricing ASSET-PRICING-001
   bash manual-qa-checkpoints.sh status asset-pricing ASSET-PRICING-001
   bash manual-qa-checkpoints.sh repair-stage-timing asset-pricing ASSET-PRICING-001
-  bash manual-qa-checkpoints.sh restage-borrow-review asset-pricing ASSET-PRICING-001
   bash manual-qa-checkpoints.sh verify-fixed asset-pricing ASSET-PRICING-001
   bash manual-qa-checkpoints.sh verify-variable asset-pricing ASSET-PRICING-001
   bash manual-qa-checkpoints.sh verify-audience asset-pricing ASSET-PRICING-001
@@ -1062,7 +1061,7 @@ PY
     set_payment_simulator_barion
     run_scenario "status" "${scenario}" 30 "$3"
     ;;
-  asset-pricing:status|asset-pricing:repair-stage-timing|asset-pricing:restage-borrow-review|asset-pricing:verify-fixed|asset-pricing:verify-variable|asset-pricing:verify-audience|asset-pricing:verify-active-payment|asset-pricing:verify-no-policy-payment|asset-pricing:verify-cutoff-payment|asset-pricing:verify)
+  asset-pricing:status|asset-pricing:repair-stage-timing|asset-pricing:verify-fixed|asset-pricing:verify-variable|asset-pricing:verify-audience|asset-pricing:verify-active-payment|asset-pricing:verify-no-policy-payment|asset-pricing:verify-cutoff-payment|asset-pricing:verify)
     [ "$#" -eq 3 ] || { usage >&2; exit 2; }
     [ "$3" = "ASSET-PRICING-001" ] || fail "${command} is restricted to ASSET-PRICING-001."
     run_scenario "${command}" "${scenario}" 30 "$3"

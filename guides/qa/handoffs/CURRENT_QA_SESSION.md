@@ -116,9 +116,9 @@ when shaping only its route to the QA application.
 ```yaml
 checkpoint: ASSET-PRICING-001
 checklist: ../checklists/asset/ASSET-PRICING-001.md
-substage: Focused Borrow aggregation recheck after the user-reported duplicate Nova rows. Three earlier payments are retained; no full Pricing replay requested.
-fixture_phase: borrow-review-ready after versioned restage-borrow-review on 2026-09-17. Original dates and three pending Cutoff rentals/payments unchanged. Hybrid USD 1150/day with the one-day 50% policy prepared for the next offer.
-next_action: Follow ASSET-PRICING-001 Focused Borrow recheck only. Nova views Variable USD 2300 without paying, then makes one Cutoff Borrow for USD 1150. Casey checks pending total 3 -> 4, each rental badge 1, and one Nova row in each Members screen. User owns all clicks. Check the new saved request after the report; do not reset or replay Blocks 1-7.
+substage: Focused Borrow aggregation recheck. Prior saved payment evidence was reviewed; no full Pricing replay requested.
+fixture_phase: Normal reset completed with zero scoped artifacts; normal stage at 2026-09-17T08:28:14.933Z and independent status verified baseline-ready, Pricing Off, zero rentals/payments. The custom offer-only resume scripts were withdrawn at the user's correction.
+next_action: Follow ASSET-PRICING-001 Focused Borrow recheck only. Nova makes one free Cutoff Borrow with the original fixture. Casey checks pending total 0 -> 1, one rental card with badge 1, and one Nova row in Members. User owns all clicks. Inspect the new saved request after the report; do not replay Blocks 1-7.
 confirmed_rules: Asset has no VIP field; Borrow remains quantity 1 and may use the organizer's Asset. Event invitation offer is frozen when sent; acceptance records current pricing separately; retries do not overwrite or duplicate audit. Pair QA establishes remaining rules, so do not replace it with automated behavior tests.
 queued_work: Borrow remains parked; not selected for tomorrow. Final stable app/Registry GitHub release, UI/image smoke, external security and measured infrastructure efficiency remain separate later work.
 last_completed: Operator Update PASS/CLOSED; all Operator and Administration rows complete. No further Update/rollback replay requested.
