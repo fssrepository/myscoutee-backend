@@ -1,6 +1,6 @@
 @charset "UTF-8";
 
-/* ../../workspace/frontend/node_modules/@fontsource/roboto/300.css */
+/* node_modules/@fontsource/roboto/300.css */
 @font-face {
   font-family: "Roboto";
   font-style: normal;
@@ -347,7 +347,7 @@
     U+FFFD;
 }
 
-/* ../../workspace/frontend/node_modules/@fontsource/roboto/400.css */
+/* node_modules/@fontsource/roboto/400.css */
 @font-face {
   font-family: "Roboto";
   font-style: normal;
@@ -694,7 +694,7 @@
     U+FFFD;
 }
 
-/* ../../workspace/frontend/node_modules/@fontsource/roboto/500.css */
+/* node_modules/@fontsource/roboto/500.css */
 @font-face {
   font-family: "Roboto";
   font-style: normal;
@@ -1041,7 +1041,7 @@
     U+FFFD;
 }
 
-/* ../../workspace/frontend/node_modules/material-icons/iconfont/material-icons.css */
+/* node_modules/material-icons/iconfont/material-icons.css */
 @font-face {
   font-family: "Material Icons";
   font-style: normal;

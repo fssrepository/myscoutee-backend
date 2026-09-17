@@ -1,0 +1,7 @@
+{
+  "version": 3,
+  "sources": ["src/app/shared/ui/components/app-setup-popup/app-setup-popup.component.scss"],
+  "sourcesContent": [":host { --app-popup-small-width: 340px; }\n\n.app-setup-content, .app-setup-section {\n  display: grid;\n  grid-template-columns: minmax(0, 1fr);\n  min-width: 0;\n  gap: 0.65rem;\n}\n.app-setup-content {\n  padding: 0.5rem;\n  color: #28415f;\n  line-height: 1.4;\n}\nh3, p { margin: 0; }\nh3 { font-size: 0.95rem; }\np { font-size: 0.9rem; overflow-wrap: anywhere; }\n.app-setup-install { border-top: 1px solid #dce3ed; padding-top: 0.8rem; margin-top: 0.3rem; }\n.app-setup-error { color: #a32035; }\napp-menu { max-width: 100%; }\n\n.app-setup-action { justify-self: end; }\n.app-setup-toggle {\n  --app-menu-row-item-width: 14rem;\n  --app-menu-row-item-justify: space-between;\n}\n"],
+  "mappings": ";AAAA;AAAQ,2BAAA;;AAER,CAAA;AAAA,CAAA;AACE,WAAA;AACA,yBAAA,OAAA,CAAA,EAAA;AACA,aAAA;AACA,OAAA;;AAEF,CANA;AAOE,WAAA;AACA,SAAA;AACA,eAAA;;AAEF;AAAA;AAAQ,UAAA;;AACR;AAAK,aAAA;;AACL;AAAI,aAAA;AAAmB,iBAAA;;AACvB,CAAA;AAAqB,cAAA,IAAA,MAAA;AAA+B,eAAA;AAAqB,cAAA;;AACzE,CAAA;AAAmB,SAAA;;AACnB;AAAW,aAAA;;AAEX,CAAA;AAAoB,gBAAA;;AACpB,CAAA;AACE,6BAAA;AACA,+BAAA;;",
+  "names": []
+}
