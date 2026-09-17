@@ -12,7 +12,7 @@ After each report, wait for Codex to check the saved data. If a control is missi
 
 1. **Casey — set the price.** In the side menu, open `Assets → Transport`. Find the Asset named above. Open its card menu → `Edit` → `Pricing`.
 
-   Set **Pricing On**, **Fixed**, **HUF 1000**, **Per booking / day**, **tax included**. Leave minimum/maximum price empty and rounding at **None**. Turn quantity, demand, time and refund rules **Off**.
+   Set **Pricing On**, **Fixed**, **Currency: USD**, **price: 1000**, **Per booking / day**, **tax included**. Leave minimum/maximum price empty and rounding at **None**. Turn quantity, demand, time and refund rules **Off**.
 
    Save Pricing, then save the Asset. Reopen `Edit → Pricing` and check the saved values.
 
@@ -20,7 +20,7 @@ After each report, wait for Codex to check the saved data. If a control is missi
 
    Open **QA Pricing Variable Stage** → `Transport → Explore`. Find **QA ASSET-PRICING-001 Interactive Transport**. Open its card menu → `Borrow`.
 
-   Keep the stage's full start/end range and **Quantity 1**. Check the final price: **HUF 2000** — HUF 1000 per day × two charged days. Do not refresh, confirm or pay.
+   Keep the stage's full start/end range and **Quantity 1**. Check the final price: **USD 2000** — USD 1000 per day × two charged days. Do not refresh, confirm or pay.
 
    **Riley:** find the same public Event through `Explore` → card menu → `View Event`. Find **QA Pricing Variable Stage**. Its three-dot menu must be absent: Transport, Accommodation, Supplies and stage Members are internal tools. Do not join the Event.
 
@@ -32,18 +32,20 @@ After each report, wait for Codex to check the saved data. If a control is missi
 
 3. **Casey — change the same Asset.** Open its card menu → `Edit → Pricing`. Set:
 
-   - Mode: **Hybrid**. Daily price: **HUF 999**. Charge: **Per item / day**. Tax: **included**.
-   - Quantity rule: **1 or more → decrease HUF 49**.
+   - Mode: **Hybrid**. Daily price: **USD 999**. Charge: **Per item / day**. Tax: **included**.
+   - Quantity rule: **1 or more → decrease USD 49**.
    - Demand rule: **33% or more → increase 10%**.
    - Time rule: **within 96 hours before start → increase 10%**.
-   - Minimum: **HUF 900**. Maximum: **HUF 1200**. Rounding: **whole number**.
+   - In the top pricing section, below **Charge basis**, set **Minimum daily rate: 900**, **Maximum daily rate: 1200**, then **Rounding → Whole number**.
    - Refund policy: **Off**.
+
+   When typing `1200` into Maximum daily rate, the partial values `1`, `12` and `120` must stay unchanged while the field has focus. Leaving a maximum below `900` raises it to `900`. If Save runs without a blur while maximum is below minimum, it must show an error and keep Pricing open. Finish with maximum `1200`.
 
    Save Pricing, then save the Asset.
 
 4. **Nova — watch the open Borrow screen.** Without refreshing, check that the price breakdown changes after Casey saves.
 
-   Keep **Quantity 1** and the same dates. Check **HUF 2300**: daily price `999 − 49 = 950`, demand adds `95`, time adds `104.50`, rounding gives `1150`; two charged days cost `2300`. Each adjustment appears once.
+   Keep **Quantity 1** and the same dates. Check **USD 2300**: daily price `999 − 49 = 950`, demand adds `95`, time adds `104.50`, rounding gives `1150`; two charged days cost `2300`. Each adjustment appears once.
 
    Report **`ASSET-PRICING-001 variable saved`** and the amount shown. Do not confirm or pay.
 
@@ -51,7 +53,7 @@ After each report, wait for Codex to check the saved data. If a control is missi
 
 5. **Casey:** reopen the Asset's `Edit → Pricing`. Check that Block 2's values were saved. Close without changing them. There is no Asset VIP or audience field to fill in.
 
-6. **Nova:** reopen the Asset's Borrow screen under **QA Pricing Variable Stage**, as in step 2. Use the same full date range and **Quantity 1**. Check **HUF 2300**. Event membership permits access to the stage's tools; it does not grant an Asset VIP price.
+6. **Nova:** reopen the Asset's Borrow screen under **QA Pricing Variable Stage**, as in step 2. Use the same full date range and **Quantity 1**. Check **USD 2300**. Event membership permits access to the stage's tools; it does not grant an Asset VIP price.
 
    **Riley:** reopen the Event's stage list through `Explore`. The stage's three-dot menu must still be absent.
 
@@ -65,47 +67,47 @@ After each report, wait for Codex to check the saved data. If a control is missi
 
    **Nova:** reopen the same Asset's Borrow screen under **QA Pricing Variable Stage**.
 
-8. **Nova:** check that the Borrow screen shows the price breakdown, **HUF 2300**, and the **1 day / 50%** refund rule.
+8. **Nova:** check that the Borrow screen shows the price breakdown, **USD 2300**, and the **1 day / 50%** refund rule.
 
-   Click **Confirm borrow**. Check that Payment shows the same **Cancellation & Reimbursement** block as Payment summary: the **1 day / 50%** rule and **HUF 1150** refundable, alongside the **HUF 2300** total and price breakdown. Select the active Barion card and click **Pay once**.
+   Click **Confirm borrow**. Check that Payment shows the same **Cancellation & Reimbursement** block as Payment summary: the **1 day / 50%** rule and **USD 1150** refundable, alongside the **USD 2300** total and price breakdown. Select the active Barion card and click **Pay once**.
 
    Leave the resulting request unchanged. Report **`ASSET-PRICING-001 active-policy payment captured`**.
 
 ## Block 5 — Payment without a refund policy
 
-9. **Casey:** open the Asset's `Edit → Pricing`. Set **Fixed**, **HUF 800**, **Per booking / day**, tax included. Clear minimum/maximum prices, use no rounding, and remove and disable all quantity, demand, time and refund rules. Save Pricing and the Asset.
+9. **Casey:** open the Asset's `Edit → Pricing`. Set **Fixed**, **USD 800**, **Per booking / day**, tax included. Clear minimum/maximum prices, use no rounding, and remove and disable all quantity, demand, time and refund rules. Save Pricing and the Asset.
 
    **Nova:** open `Activities → Events → Active Events` → **QA ASSET-PRICING-001 Event** → card menu → `View Event` → **QA Pricing No Policy Stage** → `Transport → Explore`. Find the test Asset → card menu → `Borrow`.
 
-   Use the stage's full date range. Check **HUF 800** and an explicit **no refund policy** message. Click **Confirm borrow** and check the same amount/message on Payment. Pay **once** with Barion.
+   Use the stage's full date range. Check **USD 800** and an explicit **no refund policy** message. Click **Confirm borrow** and check the same amount/message on Payment. Pay **once** with Barion.
 
    Report **`ASSET-PRICING-001 no-policy payment captured`**.
 
 ## Block 6 — Payment after the refund deadline
 
-10. **Casey:** reopen `Edit → Pricing`. Keep step 9's settings, change the daily price to **HUF 900**, and add the **1 day / 50%** refund rule again. Save Pricing and the Asset.
+10. **Casey:** reopen `Edit → Pricing`. Keep step 9's settings, change the daily price to **USD 900**, and add the **1 day / 50%** refund rule again. Save Pricing and the Asset.
 
     **Nova:** open **QA ASSET-PRICING-001 Event** → `View Event` → **QA Pricing Cutoff Stage** → `Transport → Explore`. Find the test Asset → card menu → `Borrow`.
 
-    Use the stage's full date range. Check **HUF 900**. The stage starts in less than 24 hours, so the screen must show the refund rule **and explain that its deadline has passed**. Click **Confirm borrow**, check the same information on Payment, and pay **once** with Barion.
+    Use the stage's full date range. Check **USD 900**. The stage starts in less than 24 hours, so the screen must show the refund rule **and explain that its deadline has passed**. Click **Confirm borrow**, check the same information on Payment, and pay **once** with Barion.
 
     Report **`ASSET-PRICING-001 cutoff payment captured`**.
 
 ## Block 7 — Earlier payments keep their original terms
 
-Leave the Asset at its final **HUF 900** price. Do not edit it during these checks.
+Leave the Asset at its final **USD 900** price. Do not edit it during these checks.
 
-11. **Nova:** side menu → `Payment history`. Find the **HUF 2300** payment from step 8 → card menu → `Payment summary`.
+11. **Nova:** side menu → `Payment history`. Find the **USD 2300** payment from step 8 → card menu → `Payment summary`.
 
-    Check the same **Cancellation & Reimbursement** block seen before Pay: the original Hybrid breakdown, the **1 day / 50%** rule, and refundable **HUF 1150**. The Asset's later HUF 900 price must not replace the old payment details.
+    Check the same **Cancellation & Reimbursement** block seen before Pay: the original Hybrid breakdown, the **1 day / 50%** rule, and refundable **USD 1150**. The Asset's later USD 900 price must not replace the old payment details.
 
-12. **Nova:** side menu → `Payment history`. Find the **HUF 800** payment from step 9 → card menu → `Payment summary`.
+12. **Nova:** side menu → `Payment history`. Find the **USD 800** payment from step 9 → card menu → `Payment summary`.
 
-    Check **no refund policy**, refundable **HUF 0**, and no **Request refund** action. The refund rule added later must not appear on this payment.
+    Check **no refund policy**, refundable **USD 0**, and no **Request refund** action. The refund rule added later must not appear on this payment.
 
-13. **Nova:** in `Payment history`, open `Payment summary` for the **HUF 900** payment from step 10.
+13. **Nova:** in `Payment history`, open `Payment summary` for the **USD 900** payment from step 10.
 
-    Check the **1 day / 50%** rule, a **refund deadline passed** message, refundable **HUF 0**, and no **Request refund** action.
+    Check the **1 day / 50%** rule, a **refund deadline passed** message, refundable **USD 0**, and no **Request refund** action.
 
 14. Close and reopen all three payment summaries once. Check that each keeps its own amount, breakdown and refund terms.
 

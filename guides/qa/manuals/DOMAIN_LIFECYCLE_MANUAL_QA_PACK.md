@@ -7081,12 +7081,17 @@ Stable guide: [`ASSET-PRICING-001.md`](../checklists/asset/ASSET-PRICING-001.md)
 Casey edits one Public Transport Asset; Nova checks its price and makes all
 three payments. Riley remains a non-member and checks that the stage's
 three-dot menu is absent. Hybrid uses quantity threshold 1 and demand threshold 33%,
-retaining the HUF 999 base, HUF 49 reduction, two 10% adjustments and whole-number
-rounding: HUF 1150 per day, HUF 2300 for two charged days and one item. The
-active-policy refund is HUF 1150. This replaces the incompatible old two-item
+retaining the USD 999 base, USD 49 reduction, two 10% adjustments and whole-number
+rounding: USD 1150 per day, USD 2300 for two charged days and one item. The
+active-policy refund is USD 1150. This replaces the incompatible old two-item
 HUF 4600/HUF 2300 assertions. `verify-audience` keeps its command name but now
 checks the unchanged Asset configuration; Nova's price and Riley's missing
 internal menu remain user-observed results, not proof supplied by the database check.
+
+Currency correction, 2026-09-17: the existing Pricing selector supports USD,
+EUR, GBP and CZK, not HUF. The checklist and versioned fixture now use USD
+with the same numeric amounts. Application currency options were not changed.
+The retained live fixture was not restaged; Casey selects USD in step 1.
 
 Access correction, 2026-09-17: the user's Riley session could see a Transport
 entry that the backend correctly refused. Stage menu visibility now uses the

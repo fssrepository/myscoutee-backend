@@ -136,7 +136,7 @@
       enabled: false,
       mode: "fixed",
       basePrice: 0,
-      currency: "HUF",
+      currency: "USD",
       taxMode: "included",
       chargeType: "per_booking",
       quantityRulesEnabled: false,
@@ -169,7 +169,7 @@
       enabled: true,
       mode: "hybrid",
       basePrice: 999,
-      currency: "HUF",
+      currency: "USD",
       taxMode: "included",
       chargeType: "per_attendee",
       quantityRulesEnabled: true,
@@ -751,7 +751,7 @@
         || view.status !== "captured"
         || view.provider !== "barion"
         || view.amount !== expected.amount
-        || view.currency !== "HUF"
+        || view.currency !== "USD"
         || view.bookingQuantity !== expected.quantity
         || !sameInstant(view.bookingStartAtIso, expected.startAtIso)
         || !sameInstant(view.bookingEndAtIso, expected.endAtIso)
@@ -964,7 +964,7 @@
       phase: "audience-observed",
       pricing,
       scope: "Asset has no VIP or audience form. The user checks Nova's price and that non-member Riley has no internal stage menu; this read only verifies the saved pricing configuration.",
-      next: "Enable the one-day/50% policy and capture Nova's HUF 2,300 payment."
+      next: "Enable the one-day/50% policy and capture Nova's USD 2,300 payment."
     });
   }
 
@@ -992,7 +992,7 @@
       activePaymentId: payment._id,
       activePaymentSnapshot: payment
     });
-    Q.printObject({ scenario: SCENARIO, checkpointId: CHECKPOINT, phase: "active-payment-verified", payment: view, next: "Set fixed HUF 800 with no policy, then Nova pays for the No policy stage." });
+    Q.printObject({ scenario: SCENARIO, checkpointId: CHECKPOINT, phase: "active-payment-verified", payment: view, next: "Set fixed USD 800 with no policy, then Nova pays for the No policy stage." });
   }
 
   function verifyNoPolicyPayment() {
@@ -1023,7 +1023,7 @@
       noPolicyPaymentId: payment._id,
       noPolicyPaymentSnapshot: payment
     });
-    Q.printObject({ scenario: SCENARIO, checkpointId: CHECKPOINT, phase: "no-policy-payment-verified", payment: view, next: "Set fixed HUF 900 with the one-day/50% policy, then Nova pays for the Cutoff stage." });
+    Q.printObject({ scenario: SCENARIO, checkpointId: CHECKPOINT, phase: "no-policy-payment-verified", payment: view, next: "Set fixed USD 900 with the one-day/50% policy, then Nova pays for the Cutoff stage." });
   }
 
   function verifyCutoffPayment() {
