@@ -116,13 +116,13 @@ when shaping only its route to the QA application.
 ```yaml
 checkpoint: ASSET-BORROW-001
 checklist: ../checklists/asset/ASSET-BORROW-001.md
-substage: Block 6 PASS after user report and verify-borrow-paid-pending-organizer. Continue Block 7, steps 26–27.
-fixture_phase: borrow-paid-pending-organizer-verified/startBlock=4. One pending one-item Paid request, one captured/fulfilled HUF 6400 Barion payment, Nova pending Manager with organizerOnly=true. Group A Transport accepted 1/pending 1 (Capacity plus Paid); Group B unchanged. Actual paid range Sep17 11:36–Sep18 12:36 local, 25 hours/two billable started days; use this SAME actual range for the second paid request in Block 8. No reset.
-next_action: Casey approves the existing Paid request (26), then Nova selects Count as participant on that accepted Paid Members row (27). Stop there for verify-borrow-paid-accepted-participant before step 28. Browser actions remain user-controlled.
+substage: Block 7 steps 26–27 PASS; verify-borrow-paid-accepted-participant passed. Step 28 and Block 8 remain.
+fixture_phase: borrow-paid-accepted-participant-verified/startBlock=4. One accepted one-item Paid request and captured HUF 6400 payment; Nova accepted Manager with organizerOnly=false. Group A Transport accepted 2/pending 0. Free branches and Group B unchanged. Actual paid range Sep17 11:36–Sep18 12:36 local; reuse this exact range for the second request. No reset.
+next_action: Nova chooses Organizer only on the same accepted Paid row (28), then submits the second Paid request using Sep17 11:36–Sep18 12:36 (29). Continue steps 30–33; Casey approves only the new request. Next oracle verify-borrow-terminal. Browser actions remain user-controlled.
 confirmed_rules: Every Borrow submits one independently identified item. Stage menus are member-only; main Event Members follows existing Open/Closed rules. Pricing has no Asset VIP. Restage uses normal reset then stage. The user explicitly requested a versioned Block 4 restart; earlier results are archived, not simulated or marked PASS.
 queued_work: Finish Borrow pair QA; then the previously requested stable app/Registry release and retained-control verification. Deployment smoke/security/infrastructure work remains separate.
 last_completed: ASSET-PRICING-001 PASS/CLOSED 2026-09-17. Final review found two distinct Cutoff USD 900 payments and one two-day Variable USD 1800 payment; per-request Members 1 and stage totals 2/1. Earlier Hybrid/policy observations retained in the QA pack. Exact fixture cleanup completed.
-runtime: Block 4 managed launcher handed off three identity-verified windows on 2026-09-17 at 12:36 CEST. Existing dev stack and watchers are running. Payment history duration label changed in the shared event-basket-input used by its Asset Payment summary; frontend watcher build passed at 2026-09-17T08:36:01Z. Label visual confirmation remains user-controlled during Borrow.
+runtime: Existing dev watchers running. Shared action-ring now measures untransformed fractional layout dimensions and caps corner radius to both axes; frontend watcher build/sync passed 2026-09-17T11:15:40Z. Visual ring confirmation after user reload remains pending; no browser actions or reset. Payment history duration check retained from Block 6 user report.
 ledger_status: 103/104 PASS. Borrow is the sole remaining journey; CSV/XLSX/README synchronized.
 
 ```

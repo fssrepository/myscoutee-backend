@@ -6551,7 +6551,7 @@ Status: **PASS / CLOSED (2026-09-03)** together with
 
 ### `ASSET-BORROW-001` — scoped borrow lifecycle
 
-Status: **IN PROGRESS / BLOCK 6 PASS / BLOCK 7 NEXT — 2026-09-17**.
+Status: **IN PROGRESS / BLOCK 7 STEPS 26–27 PASS / STEP 28 NEXT — 2026-09-17**.
 
 Stable user guide:
 [`ASSET-BORROW-001.md`](../checklists/asset/ASSET-BORROW-001.md).
@@ -6697,6 +6697,26 @@ and evidence are recorded below.
   `/tmp/borrow-paid-pending-state.json`,
   `/tmp/borrow-paid-pending-verification-after.log` (PASS).
   Continue steps 26–27, then `verify-borrow-paid-accepted-participant`.
+
+- **Block 7 steps 26–27 PASS — 2026-09-17:** user reported success;
+  `verify-borrow-paid-accepted-participant` passed and saved
+  `borrow-paid-accepted-participant-verified`. The existing one-item Paid request
+  is accepted, Nova remains Manager and organizerOnly is false. The single
+  captured HUF 6400 payment is unchanged. Shared Group A Transport is accepted
+  two/pending zero; earlier free branches and Group B controls remain intact.
+  Evidence: `/tmp/borrow-paid-accepted-verification.log` and
+  `/tmp/borrow-paid-accepted-state.json`. Step 28 is next, then Block 8 using
+  the actual first-request range September 17 11:36–September 18 12:36.
+  No reset or manual checklist action by Codex.
+- **Button-ring presentation follow-up:** user reported that resized loading
+  outlines stretch away from the button curve. The shared Indicator component
+  used rounded transformed getBoundingClientRect dimensions with a minimum of
+  24px. It now uses fractional layout dimensions from ResizeObserver (computed
+  layout size for initial measurement), ignores hidden zero-size measurements,
+  and caps arc radius by both width and height. The existing frontend watcher
+  built and synced successfully at 2026-09-17T11:15:40Z. Source/diff checks passed;
+  no separate build or automated QA clicks. Actual visual confirmation remains
+  pending after user refresh. Borrow state and backend behavior were unchanged.
 
 - This checkpoint owns the free cancel/reject/accept and overlap-capacity
   branches plus one narrow paid parity branch. Every free and paid Borrow form
