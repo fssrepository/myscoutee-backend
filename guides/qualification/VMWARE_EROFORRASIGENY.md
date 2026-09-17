@@ -87,6 +87,34 @@ packages, container images, application data, and logs. It excludes the separate
 `/boot` filesystem and is not an application-only disk requirement. Host-side
 VMware disk files and snapshots were not measured.
 
+## Browser observation — 17 September 2026
+
+A five-minute observation recorded 60 samples at five-second intervals from
+19:47:42 to 19:52:37 Europe/Bratislava. The standard SSH forwards on localhost
+ports 80 and 443 were restored at approximately 19:48:30; HTTPS returned 200
+with the previously trusted certificate. The temporary 18443 forward was
+stopped. Browser navigation remained under the user's control.
+
+The nginx log confirms browser requests from 19:49:17. The following figures
+use the **41 samples from 19:49:17 to 19:52:37**, covering login attempts and
+subsequent application requests:
+
+| Measurement | Observed range |
+| --- | ---: |
+| All containers, combined memory | 1.39–1.51 GiB |
+| Whole guest, `MemTotal - MemAvailable` | **1.52–1.59 GiB** |
+| Guest available memory | 3.64–3.71 GiB |
+| Java API | 644–652 MiB |
+| MongoDB | 434–551 MiB |
+| MinIO | approximately 208 MiB |
+
+The crash-kernel reservation is excluded from `MemTotal`, so its 512 MiB
+must be budgeted separately when enabled. This was a single user's short
+interactive observation, not a concurrency or peak-load test. One Google
+account's login was blocked by the application's existing two-session limit;
+these figures do not demonstrate successful use of that account.
+Evidence: [timestamped browser-period memory samples](evidence/vmware-browser-memory-20260917.jsonl).
+
 ## Aruba recommendation
 
 The **Aruba Cloud VPS OpenStack O2A4** plan provides **2 vCPU, 4 GB RAM,
