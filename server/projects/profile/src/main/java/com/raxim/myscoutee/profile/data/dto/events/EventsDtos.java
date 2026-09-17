@@ -716,9 +716,10 @@ public final class EventsDtos {
             String mode,
             List<EventSubEventsSlotDto> slots,
             Integer total,
-            String nextCursor) {
+            String nextCursor,
+            boolean canAccessResources) {
         public EventSubEventsResultDto(String mode, List<EventSubEventsSlotDto> slots) {
-            this(mode, slots, slots == null ? 0 : slots.size(), null);
+            this(mode, slots, slots == null ? 0 : slots.size(), null, false);
         }
     }
 

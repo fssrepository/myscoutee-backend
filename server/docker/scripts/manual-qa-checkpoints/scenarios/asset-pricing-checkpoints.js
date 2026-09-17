@@ -949,7 +949,7 @@
     assertNoPayments();
     const pricing = assertPricing(hybridPricing(), "variable");
     updatePhase("variable-verified");
-    Q.printObject({ scenario: SCENARIO, checkpointId: CHECKPOINT, phase: "variable-verified", pricing, expectedOneItemTotal: ACTIVE_PAYMENT_AMOUNT, next: "Compare the same one-item Asset price for Nova and Riley." });
+    Q.printObject({ scenario: SCENARIO, checkpointId: CHECKPOINT, phase: "variable-verified", pricing, expectedOneItemTotal: ACTIVE_PAYMENT_AMOUNT, next: "Check Nova's one-item price and Riley's missing internal stage menu." });
   }
 
   function verifyAudience() {
@@ -963,7 +963,7 @@
       checkpointId: CHECKPOINT,
       phase: "audience-observed",
       pricing,
-      scope: "Asset has no VIP or audience form. The user checks equal amounts for Nova and Riley; this read only verifies the saved public configuration.",
+      scope: "Asset has no VIP or audience form. The user checks Nova's price and that non-member Riley has no internal stage menu; this read only verifies the saved pricing configuration.",
       next: "Enable the one-day/50% policy and capture Nova's HUF 2,300 payment."
     });
   }
@@ -992,7 +992,7 @@
       activePaymentId: payment._id,
       activePaymentSnapshot: payment
     });
-    Q.printObject({ scenario: SCENARIO, checkpointId: CHECKPOINT, phase: "active-payment-verified", payment: view, next: "Set fixed HUF 800 with no policy, then Riley pays for the No policy stage." });
+    Q.printObject({ scenario: SCENARIO, checkpointId: CHECKPOINT, phase: "active-payment-verified", payment: view, next: "Set fixed HUF 800 with no policy, then Nova pays for the No policy stage." });
   }
 
   function verifyNoPolicyPayment() {
@@ -1007,10 +1007,10 @@
     if (!unchangedPayment(currentState.activePaymentSnapshot, active)) {
       Q.fail("the active-policy payment changed after the live Asset pricing edit.");
     }
-    const payment = paymentBy(RILEY_ID, NO_POLICY_PAYMENT_AMOUNT);
+    const payment = paymentBy(NOVA_ID, NO_POLICY_PAYMENT_AMOUNT);
     const view = assertPayment(payment, {
       label: "no-policy",
-      userId: RILEY_ID,
+      userId: NOVA_ID,
       amount: NO_POLICY_PAYMENT_AMOUNT,
       quantity: 1,
       startAtIso: currentState.context.noPolicyStartAtIso,
@@ -1035,7 +1035,7 @@
       Q.fail(`cutoff phase requires exactly three primary/payment documents, found ${payments.length}.`);
     }
     const active = paymentBy(NOVA_ID, ACTIVE_PAYMENT_AMOUNT);
-    const noPolicyPayment = paymentBy(RILEY_ID, NO_POLICY_PAYMENT_AMOUNT);
+    const noPolicyPayment = paymentBy(NOVA_ID, NO_POLICY_PAYMENT_AMOUNT);
     if (!unchangedPayment(currentState.activePaymentSnapshot, active)
         || !unchangedPayment(currentState.noPolicyPaymentSnapshot, noPolicyPayment)) {
       Q.fail("an earlier payment changed after the final live Asset pricing edit.");
@@ -1072,7 +1072,7 @@
       Q.fail("terminal pricing oracle requires exactly three primary captured payments and no revisions.");
     }
     const active = paymentBy(NOVA_ID, ACTIVE_PAYMENT_AMOUNT);
-    const noPolicyPayment = paymentBy(RILEY_ID, NO_POLICY_PAYMENT_AMOUNT);
+    const noPolicyPayment = paymentBy(NOVA_ID, NO_POLICY_PAYMENT_AMOUNT);
     const cutoff = paymentBy(NOVA_ID, CUTOFF_PAYMENT_AMOUNT);
     if (!unchangedPayment(currentState.activePaymentSnapshot, active)
         || !unchangedPayment(currentState.noPolicyPaymentSnapshot, noPolicyPayment)

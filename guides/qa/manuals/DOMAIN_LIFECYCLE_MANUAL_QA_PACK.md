@@ -7078,14 +7078,23 @@ one item per request, as recorded in `ASSET-BORROW-001`; borrowing an Asset from
 the Event organizer remains allowed.
 
 Stable guide: [`ASSET-PRICING-001.md`](../checklists/asset/ASSET-PRICING-001.md).
-Casey edits one Public Transport Asset; Nova and Riley compare its price for
-the same dates. Hybrid uses quantity threshold 1 and demand threshold 33%,
+Casey edits one Public Transport Asset; Nova checks its price and makes all
+three payments. Riley remains a non-member and checks that the stage's
+three-dot menu is absent. Hybrid uses quantity threshold 1 and demand threshold 33%,
 retaining the HUF 999 base, HUF 49 reduction, two 10% adjustments and whole-number
 rounding: HUF 1150 per day, HUF 2300 for two charged days and one item. The
 active-policy refund is HUF 1150. This replaces the incompatible old two-item
 HUF 4600/HUF 2300 assertions. `verify-audience` keeps its command name but now
-checks the unchanged public Asset configuration; equal viewer amounts remain
-a user-observed result, not proof supplied by the database check.
+checks the unchanged Asset configuration; Nova's price and Riley's missing
+internal menu remain user-observed results, not proof supplied by the database check.
+
+Access correction, 2026-09-17: the user's Riley session could see a Transport
+entry that the backend correctly refused. Stage menu visibility now uses the
+existing server resource-access policy. The user explicitly requested the same
+hidden three-dot menu for non-members on both Casual and Tournament stages,
+without a Groups/results exception. Read-only HTTP on the retained fixture
+returned access true for Casey and Nova and false for Riley. Browser verification
+is pending; no membership was added and no fixture was restaged for this fix.
 
 The other recorded development item remains: disclose the saved cancellation
 policy on Confirm borrow, Payment and Payment summary. Cover an active one-day/

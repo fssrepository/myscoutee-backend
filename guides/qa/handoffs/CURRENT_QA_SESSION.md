@@ -116,9 +116,9 @@ when shaping only its route to the QA application.
 ```yaml
 checkpoint: ASSET-PRICING-001
 checklist: ../checklists/asset/ASSET-PRICING-001.md
-substage: User requested a fresh restage. Implementation compiled through the existing dev watchers; manual verification starts at checklist step 1. No new manual PASS.
-fixture_phase: Versioned reset, stage and status completed at 2026-09-17T07:08:59.290Z; baseline-ready, pricing Off, no requests/resources/baskets/payments, Barion connected with 3DS Off. Managed launcher replaced all three Casey/Nova/Riley sessions successfully.
-next_action: User starts checklist step 1 in Casey's window. Check saved data only after the user's report; no automated checklist execution. Event VIP remains a separate manual check.
+substage: Pair QA block 1 is active. User reported non-member Riley cannot open Transport; backend already requires membership. Stage menus now follow that permission for both Casual and Tournament, with no Groups exception. No new manual PASS.
+fixture_phase: Restaged at 2026-09-17T07:08:59.290Z, then user edited pricing to HUF 1000. Preserve current fixture and managed sessions; no further restage performed. Read-only sub-events HTTP returned resource access true for Casey/Nova and false for Riley.
+next_action: User refreshes to load the menu fix, checks Riley has no stage three-dot menu, and continues Nova's fixed-price check on Variable. Nova performs all three payments in the revised guide; Riley stays a non-member. Run saved-data checks only after user reports. Event VIP remains separate.
 confirmed_rules: Asset has no VIP field; Borrow remains quantity 1 and may use the organizer's Asset. Event invitation offer is frozen when sent; acceptance records current pricing separately; retries do not overwrite or duplicate audit. Pair QA establishes remaining rules, so do not replace it with automated behavior tests.
 queued_work: Borrow remains parked; not selected for tomorrow. Final stable app/Registry GitHub release, UI/image smoke, external security and measured infrastructure efficiency remain separate later work.
 last_completed: Operator Update PASS/CLOSED; all Operator and Administration rows complete. No further Update/rollback replay requested.
