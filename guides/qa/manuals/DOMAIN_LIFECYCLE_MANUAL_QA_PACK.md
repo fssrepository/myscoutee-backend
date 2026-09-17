@@ -6610,6 +6610,21 @@ user starts Block 1, steps 1–3.
   removed Group `Organizer only` action. Continue at Block 2. The retained
   pre-fix flags remain an evidence qualification, not a newly verified clean
   baseline or a reason to replay Block 1.
+- 2026-09-17 Group B fixture/badge correction: Lina's single quantity-2
+  reservation was replaced by two independent quantity-1 requests/projections;
+  the versioned fixture and its count assertions now generate the same model.
+  Group A Borrow incorrectly saved the authorization Event ID as its booking
+  owner. The writer now saves the exact Group owner; server group filters no
+  longer include unrelated main-Event bookings. The existing Nova request was
+  repaired to its persisted Group A assignment without resubmission; unrelated
+  user state was retained. Backup/evidence: `/tmp/asset-borrow-badge-review/`.
+  Cold HTTP responses and the actual frontend card mapper verify Group A one
+  pending card and Group B two accepted cards with zero pending. Both existing
+  watchers built successfully. Browser confirmation remains pending.
+  User proceeds to Block 3 without replay. Retained Capacity request means the
+  aggregate pending total changes 1 → 2 → 1 during Cancel; inspect the Cancel
+  request's own lifecycle separately. This is a qualified run, not a clean
+  baseline or a strict harness PASS.
 - `Organizer only` is exact-scope fine tuning on Event, Sub-event/Stage, Group
   and Asset memberships, including pending or accepted Asset requests. It
   changes only that scope's counted-participant state and live counter. It does

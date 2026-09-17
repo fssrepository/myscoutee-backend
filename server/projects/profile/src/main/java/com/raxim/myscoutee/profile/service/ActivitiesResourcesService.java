@@ -2239,11 +2239,13 @@ public class ActivitiesResourcesService {
         String normalizedOwnerId = normalizeId(ownerId);
         String normalizedSubEventId = normalizeId(subEventId);
         String bookingOwnerId = normalizeId(request.booking().eventId());
+        boolean groupScoped = normalizedOwnerId.contains(":" + normalizedSubEventId + ":")
+                || bookingOwnerId.contains(":" + normalizedSubEventId + ":");
         return Objects.equals(normalizedSubEventId, normalizeId(request.booking().subEventId()))
                 && (Objects.equals(normalizedOwnerId, bookingOwnerId)
-                        || Objects.equals(
+                        || (!groupScoped && Objects.equals(
                                 authorizationEventId(normalizedOwnerId, normalizedSubEventId),
-                                bookingOwnerId));
+                                bookingOwnerId)));
     }
 
     private Map<String, SubEventResourceMetricDto> persistGroupRuntimeResourceMetrics(

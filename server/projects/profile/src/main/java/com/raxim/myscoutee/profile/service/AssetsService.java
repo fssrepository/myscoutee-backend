@@ -1540,9 +1540,14 @@ public class AssetsService {
             return Optional.empty();
         }
 
-        List<String> scopedEventIds = new ArrayList<>(new LinkedHashSet<>(List.of(
-                normalizedEventId,
-                authorizationEventId(normalizedEventId, normalizedSubEventId))));
+        List<String> scopedEventIds = new ArrayList<>();
+        scopedEventIds.add(normalizedEventId);
+        if (!normalizedEventId.contains(":" + normalizedSubEventId + ":")) {
+            String authorizationId = authorizationEventId(normalizedEventId, normalizedSubEventId);
+            if (!scopedEventIds.contains(authorizationId)) {
+                scopedEventIds.add(authorizationId);
+            }
+        }
         List<Document> requestConditions = new ArrayList<>();
         requestConditions.add(new Document("$in", List.of("$$request.booking.eventId", scopedEventIds)));
         requestConditions.add(new Document("$eq", List.of("$$request.booking.subEventId", normalizedSubEventId)));

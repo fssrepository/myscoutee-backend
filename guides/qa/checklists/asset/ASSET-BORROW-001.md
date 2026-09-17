@@ -102,8 +102,9 @@ Explore selects dates only; it keeps the existing start/end times.
    `Activities → Events → Active Events` → Tournament card's **three-dot menu**
    → `View Event` → **QA Borrow Stage** card's **three-dot menu** → `Groups`
    → **Group B** row's **three-dot menu** → **Transport** under **Assets**.
-   Lina's accepted Capacity request must still have Quantity `2`; Nova's
-   Explore reads and date changes must not change it.
+   Lina must have two separate accepted Capacity cards, **#1** and **#2**,
+   each with read-only **Assigned quantity = 1** and its own Members entry.
+   Nova's Explore reads and date changes must not change either request.
 
 ## 3. Free Cancel
 
