@@ -7017,7 +7017,28 @@ persisted `last-remove-verified` oracle is the closing result.
 
 ### `ASSET-PRICING-001` — interactive Asset pricing journey
 
-Status: **PAIR QA IN PROGRESS / NO NEW PASS**.
+Status: **PASS / CLOSED — 2026-09-17**.
+
+Closure: the user reported the repaired UI looked correct and authorized closing
+Pricing after the saved-data review. The final fresh run contains two independent
+Cutoff payments of USD 900 and one Variable payment of USD 1800 at a fixed daily
+rate of USD 900. All three are captured/fulfilled with separate request and
+payment-session identities. Variable retains the 26-hour range and a two-day
+duration row; Cutoff has one charged day. Native request-scoped HTTP queries
+return one pending Nova row per rental, while stage queries and persisted
+resource counters agree on Cutoff 2 and Variable 1. Request projections match
+the three embedded requests; no duplicate request/payment was found.
+
+This accepted pair-QA verdict combines the earlier Hybrid/rule/editor/history
+observations below with the final duration and repeated-Borrow regression. It
+is not a claim that the original 2300/800/900 phase-by-phase fixture oracle ran
+unchanged: the user intentionally varied the sequence and confirmed Variable
+was initially view-only. Active refund-request/approval coverage is reused from
+closed ASSET-CHECKOUT-001 block 8; no full replay was requested. Final captured
+payment IDs: `6aaba4fd392b9933eba0514d`, `6aaba512392b9933eba05153`,
+`6aaba52a392b9933eba05157`. Continue with ASSET-BORROW-001.
+
+The dated notes below retain the investigation and superseded preparation history.
 
 Focused review, 2026-09-17: the user clarified that Variable was a view-only
 check; the Hybrid payment was USD 1150 on the one-day Cutoff range. Persisted

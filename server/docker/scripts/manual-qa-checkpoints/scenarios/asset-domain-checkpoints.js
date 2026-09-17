@@ -2091,19 +2091,22 @@
   function assertPaidRequestAndPayment(request, projections, payments, expectedStatus) {
     const projection = projections.find(item => item.requestId === request.id);
     const payment = payments.find(item => item.checkoutSessionId === request.paymentSessionId);
+    const durationMs = Date.parse(request.endAtIso) - Date.parse(request.startAtIso);
+    const expectedAmount = 3200 * Math.max(1, Math.ceil(durationMs / 86400000));
     return request.status === expectedStatus
+      && Number.isFinite(durationMs) && durationMs > 0
       && request.requestKind === "borrow"
       && request.eventId === GROUP_A_RESOURCE_OWNER_ID
       && request.subEventId === SUB_EVENT_ID
       && request.quantity === 1
-      && request.totalAmount === 3200
+      && request.totalAmount === expectedAmount
       && request.currency === "HUF"
       && request.paymentSessionId.length > 0
       && !request.inventoryApplied
       && projection != null
       && projection.status === expectedStatus
       && projection.quantity === 1
-      && projection.totalAmount === 3200
+      && projection.totalAmount === expectedAmount
       && projection.currency === "HUF"
       && projection.paymentSessionId === request.paymentSessionId
       && payment != null
@@ -2113,7 +2116,7 @@
       && payment.status === "captured"
       && payment.fulfillmentStatus === "succeeded"
       && payment.bookingStatus === "joined"
-      && payment.amount === 3200
+      && payment.amount === expectedAmount
       && payment.currency === "HUF";
   }
 

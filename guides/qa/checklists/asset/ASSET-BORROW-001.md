@@ -12,8 +12,11 @@ Open as **Nova**:
 
 Use these exact date ranges:
 
-- overlap: Start `09/08/2026`, End `09/15/2026`
-- non-overlap: Start `09/16/2026`, End `09/17/2026`
+- overlap: Start `09/17/2026 09:32`, End `09/24/2026 10:32`
+- non-overlap: Start `09/25/2026 10:32`, End `09/26/2026 10:32`
+- paid checks (steps 22 and 29): Start `09/18/2026 10:32`, End `09/20/2026 10:32` — exactly two days.
+
+Times above use the prepared browser's local timezone (Europe/Bratislava).
 
 Explore must show each source Asset exactly once:
 
@@ -22,7 +25,7 @@ Explore must show each source Asset exactly once:
 | `QA ASSET-BORROW-001 Capacity Transport` | `3` | Free | `1 left` |
 | `QA ASSET-BORROW-001 Reject Transport` | `2` | Free | `2 left` |
 | `QA ASSET-BORROW-001 Cancel Transport` | `2` | Free | `2 left` |
-| `QA ASSET-BORROW-001 Paid Transport` | `2` | `3200 HUF` | `2 left` |
+| `QA ASSET-BORROW-001 Paid Transport` | `2` | `3200 HUF / day` | `2 left` |
 
 Every Borrow dialog must show `Quantity = 1` as read-only and must still show
 `Available for this time: X item(s)`. To request two items, submit Borrow twice.
@@ -75,7 +78,7 @@ one reload.
    Quantity `1`; press `Send borrow request` once.
 
 9. Expected without reload: one new pending card appears with date range
-   `09/08/2026 – 09/15/2026`; the red pending delta reaches Transport, Group A,
+   `09/17/2026 – 09/24/2026`; the red pending delta reaches Transport, Group A,
    Stage and Tournament. The header says `0 members · 1 pending`.
 
 10. **Casey.** Exactly one request notification identifies
@@ -138,18 +141,20 @@ Wait for `verify-borrow-accepted`.
 
 ## 6. First paid request and Organizer only before approval
 
-22. **Nova — overlap dates → `Paid Transport → Borrow`.** Expected: Quantity
-    is read-only `1`, availability is `2 items`, total is `3200 HUF`, provider
+22. **Nova — use the two-day paid range above → `Paid Transport → Borrow`.** Expected: Quantity
+    is read-only `1`, availability is `2 items`, total is `6400 HUF`, provider
     is Barion, and saved card is Mastercard `****4444`. Pay and send once.
 
 23. Expected without reload: exactly one pending Paid Transport card appears
-    with `09/08/2026 – 09/15/2026`; all pending badges increase by one. Explore
+    with `09/18/2026 – 09/20/2026`; all pending badges increase by one. Explore
     now says `1 left` for the overlap dates.
 
 24. **Nova — pending Paid Transport Members row → `Organizer only`.** Expected:
     the request remains pending, Nova remains Manager, only `Count as
     participant` replaces the menu action, and Event/Stage/Group memberships
     do not change.
+
+    **Nova — Payment history:** open this payment → card menu → `Payment summary`. The duration row must say **2 days**, matching Borrow, and the total must remain **HUF 6400**.
 
 25. **Casey.** Confirm there is exactly one pending Paid request and one owner
     notification identifying `QA ASSET-BORROW-001 Paid Transport`. Do not
@@ -177,8 +182,8 @@ Wait for `verify-borrow-paid-accepted-participant`.
 
 ## 8. Second independent paid request
 
-29. **Nova — Explore, overlap dates → `Paid Transport → Borrow`.** Quantity is
-    again read-only `1`, availability is `1 item`, total is `3200 HUF`. Pay and
+29. **Nova — Explore, the same two-day paid range → `Paid Transport → Borrow`.** Quantity is
+    again read-only `1`, availability is `1 item`, total is `6400 HUF`. Pay and
     send once. Do not reload.
 
 30. Expected immediately: the assigned list contains two separate cards,
@@ -191,7 +196,7 @@ Wait for `verify-borrow-paid-accepted-participant`.
     Transport says `0 left` for the overlap dates.
 
 32. Reload Casey and Nova once. Expected: two request IDs, two accepted cards,
-    two approvals and two independent `3200 HUF` Payment summaries remain.
+    two approvals and two independent `6400 HUF` Payment summaries remain.
     Nova is still Organizer only in this Asset scope, so its accepted
     participant count is `0`; its Manager role and both accepted requests stay.
 
