@@ -1,0 +1,18 @@
+Use case: ads-marketing.
+Create ONE finished premium static advertisement for MyScoutee, exact portrait 9:16 aspect ratio, ideally 1080x1920. This replaces a promotional video: a viewer should understand the distinctive product in 3 seconds. English typography.
+Reference image 1 is the existing landing-page illustration: use its sophisticated friendly colorful 3D illustrated adults, soft white rounded surfaces, blue/purple/pink gradients and small orange highlights; do NOT reproduce its four-panel screenshot or its garbled small text. Reference image 2 is the ACTUAL MyScoutee logo: faithfully retain its distinctive blue-violet folded M silhouette, white heart-shaped cutout, pink lower edges, golden five-point star. Use this logo prominently once in the upper brand lockup. The logo replaces the initial M and the adjacent text is exactly "yScoutee", forming the brand MyScoutee, as on the actual website. Do not invent a new logo.
+Core product difference, factual: users express interest on a 1–10 scale and maintain priorities, mutual interest brings people into a matched group chat; the group can meet through events. Landing thesis: 6 people, 6 priority lists, 1 shared group. NOT merely profile swiping or an individual romantic match. Depict exactly six distinct friendly adult people (three women, three men, diverse appearances, late 20s to late 30s) coherently as the same six throughout.
+Design: exceptionally clear high-end editorial ad, generous whitespace, strong navy rounded sans-serif type, luminous near-white lavender background. Strong readable hierarchy, no tiny UI. Keep all essential copy/logo within x=9%-85%, y=11%-79%, with decorative breathing room at top, right and bottom for Shorts overlays.
+Top: brand lockup.
+Below, large bold exact headline on three lines:
+"6 people."
+"6 priority lists."
+"1 shared group."
+Make the last line purple, emphatic.
+Central visual is a single integrated story, not a grid: six small portrait cards, each with three simple colored priority bars (no fake numeric scores), flowing via fine curved lavender connectors into ONE welcoming central group-chat motif. One simple clear interest scale labelled exactly "Interest 1–10" with 10 tidy ticks and a highlighted 8 suggests nuanced choice. Integrate the cards with a beautiful main illustration of those same six adults meeting around an outdoor cafe table, warm late afternoon, animated welcoming conversation, casual contemporary clothing. Their interaction and connection is the hero. Stylized premium 3D illustration matching the reference, not a photoreal stock photo, not childish.
+Place the exact concise explanatory copy in ample clear space:
+"Mutual interest. Group chat. Real plans."
+And a subtle bottom line:
+"Meet through events."
+Text must be large, exceptionally legible on a phone, precisely spelled, no extra prose. The image itself should explain the transition from personal priorities to one shared group and an in-person meetup. Maintain restrained composition with six discernible people and no crowded micro-interface.
+No fake phone screenshot, no app store badges, no invented website URL, no pricing, no downloads or user-count claims, no promises of guaranteed matches, no fake buttons, no watermark, no play icon, no confetti clutter. Render the final finished ad edge to edge, no device frame or outer border.
