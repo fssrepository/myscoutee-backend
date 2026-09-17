@@ -6551,7 +6551,7 @@ Status: **PASS / CLOSED (2026-09-03)** together with
 
 ### `ASSET-BORROW-001` — scoped borrow lifecycle
 
-Status: **IN PROGRESS / BLOCK 4 PASS / BLOCK 5 NEXT — 2026-09-17**.
+Status: **IN PROGRESS / BLOCK 5 PASS / BLOCK 6 NEXT — 2026-09-17**.
 
 Stable user guide:
 [`ASSET-BORROW-001.md`](../checklists/asset/ASSET-BORROW-001.md).
@@ -6658,6 +6658,21 @@ and evidence are recorded below.
   by Codex. Evidence: `/tmp/borrow-reject-verification.log` and
   `/tmp/borrow-reject-verified-state.json`. Continue Block 5, steps 17–21;
   next oracle is `verify-borrow-accepted`.
+
+- **Block 5 PASS — 2026-09-17:** user reported the free-accept/capacity
+  block working. `verify-borrow-accepted` passed and saved
+  `borrow-accepted-verified`. Capacity retains three distinct accepted
+  Quantity-1 requests: Nova Group A one, Lina Group B two, occupied quantity
+  three. Nova's September 17 11:36–September 24 12:36 booking matches the
+  overlap baseline at the UI's minute precision. Group A assignment/runtime
+  accepted is one and pending zero; Group B remains accepted two/pending zero.
+  Nova's assignment is scoped to Group A, with no Event/Stage/Group membership
+  changes. Exactly one Capacity request notification to Casey and one acceptance
+  notification to Nova exist; Reject remains deleted, Cancel/Paid unused, and
+  no payment exists. Evidence: `/tmp/borrow-accepted-verification.log` and
+  `/tmp/borrow-accepted-verified-state.json`. No reset or code change.
+  Continue Block 6, steps 22–25; Casey must not approve Paid Transport yet.
+  Next oracle: `verify-borrow-paid-pending-organizer`.
 
 - This checkpoint owns the free cancel/reject/accept and overlap-capacity
   branches plus one narrow paid parity branch. Every free and paid Borrow form
