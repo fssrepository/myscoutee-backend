@@ -84,9 +84,9 @@ resume pointer and reusable working method.
 ## Active resume point
 
 Campaign scheduling, confirmed 2026-09-17: Pricing is PASS/CLOSED after the
-user's confirmation and saved-data review. Borrow is the selected final pair-QA
-checkpoint. Pricing's normal reset completed; Borrow's normal stage and
-independent baseline status passed. Managed Casey/Nova/Riley windows are ready.
+user's confirmation and saved-data review. Borrow is also PASS/CLOSED by explicit
+user acceptance of the reviewed Organizer-only-off final state. All 104 pair-QA
+journeys are closed. The Borrow fixture and managed windows remain retained.
 The user has taken over normal-account UI smoke on the installed
 VMware app; Codex continues the separate security/startup/memory campaign with its own [Excel ledger](../../qualification/SECURITY_AND_INFRASTRUCTURE.xlsx).
 These do not advance the pair-QA matrix. Retain smoke-created profile, Event,
@@ -116,14 +116,14 @@ when shaping only its route to the QA application.
 ```yaml
 checkpoint: ASSET-BORROW-001
 checklist: ../checklists/asset/ASSET-BORROW-001.md
-substage: Block 7 steps 26–27 PASS; verify-borrow-paid-accepted-participant passed. Step 28 and Block 8 remain.
-fixture_phase: borrow-paid-accepted-participant-verified/startBlock=4. One accepted one-item Paid request and captured HUF 6400 payment; Nova accepted Manager with organizerOnly=false. Group A Transport accepted 2/pending 0. Free branches and Group B unchanged. Actual paid range Sep17 11:36–Sep18 12:36 local; reuse this exact range for the second request. No reset.
-next_action: Nova chooses Organizer only on the same accepted Paid row (28), then submits the second Paid request using Sep17 11:36–Sep18 12:36 (29). Continue steps 30–33; Casey approves only the new request. Next oracle verify-borrow-terminal. Browser actions remain user-controlled.
+substage: PASS/CLOSED 2026-09-17 by explicit user acceptance. Organizer-only-off final-state variation documented; no further toggle or replay required.
+fixture_phase: Retained server marker borrow-paid-accepted-participant-verified/startBlock=4. Two accepted one-item Paid requests and two captured HUF 6400 payments; Nova Manager/organizerOnly=false, Paid participants 2, Group A Transport accepted 3/pending 0. Free controls and Group B unchanged. The strict terminal-on oracle was not passed or forged; closure is recorded in the QA ledger.
+next_action: Pair QA is complete. No further Borrow actions or reset for this closure; retain evidence and live fixture. Previously requested release/deployment work remains separately queued.
 confirmed_rules: Every Borrow submits one independently identified item. Stage menus are member-only; main Event Members follows existing Open/Closed rules. Pricing has no Asset VIP. Restage uses normal reset then stage. The user explicitly requested a versioned Block 4 restart; earlier results are archived, not simulated or marked PASS.
-queued_work: Finish Borrow pair QA; then the previously requested stable app/Registry release and retained-control verification. Deployment smoke/security/infrastructure work remains separate.
-last_completed: ASSET-PRICING-001 PASS/CLOSED 2026-09-17. Final review found two distinct Cutoff USD 900 payments and one two-day Variable USD 1800 payment; per-request Members 1 and stage totals 2/1. Earlier Hybrid/policy observations retained in the QA pack. Exact fixture cleanup completed.
+queued_work: Previously requested stable app/Registry release and retained-control verification remain separate from this completed pair-QA campaign. No release action taken as part of marking Borrow PASS.
+last_completed: ASSET-BORROW-001 PASS/CLOSED 2026-09-17 by user acceptance after saved-state review, with final Organizer-only-off variation retained. Pricing also closed.
 runtime: Existing dev watchers running. Shared action-ring now measures untransformed fractional layout dimensions and caps corner radius to both axes; frontend watcher build/sync passed 2026-09-17T11:15:40Z. Visual ring confirmation after user reload remains pending; no browser actions or reset. Payment history duration check retained from Block 6 user report.
-ledger_status: 103/104 PASS. Borrow is the sole remaining journey; CSV/XLSX/README synchronized.
+ledger_status: 104/104 PASS. Pair-QA campaign complete; CSV/XLSX/README synchronized.
 
 ```
 

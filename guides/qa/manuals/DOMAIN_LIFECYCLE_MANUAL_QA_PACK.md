@@ -6551,7 +6551,18 @@ Status: **PASS / CLOSED (2026-09-03)** together with
 
 ### `ASSET-BORROW-001` — scoped borrow lifecycle
 
-Status: **IN PROGRESS / BLOCK 7 STEPS 26–27 PASS / STEP 28 NEXT — 2026-09-17**.
+Status: **PASS / CLOSED — 2026-09-17 (user-accepted final-state variation)**.
+
+The user explicitly accepted closure without switching Organizer only back on.
+The reviewed final state remains accepted Manager with organizerOnly false:
+two independent accepted one-item Paid requests, two captured HUF 6400 payments,
+Paid participants two and Group A Transport accepted three/pending zero.
+Earlier Organizer-only-on and participant transitions retain their recorded
+checks; free branches and Group B are unchanged. This is manual acceptance
+with the documented variation, not a claim that `verify-borrow-terminal` passed
+its Organizer-only-on assertion. No application, fixture, harness assertion or
+stable checklist was changed for this acceptance. Retain the live fixture and
+evidence; no reset or replay is required for this closure.
 
 Stable user guide:
 [`ASSET-BORROW-001.md`](../checklists/asset/ASSET-BORROW-001.md).
@@ -6717,6 +6728,24 @@ and evidence are recorded below.
   built and synced successfully at 2026-09-17T11:15:40Z. Source/diff checks passed;
   no separate build or automated QA clicks. Actual visual confirmation remains
   pending after user refresh. Borrow state and backend behavior were unchanged.
+
+- **Block 8 review after extra Organizer-only toggles — 2026-09-17:**
+  the user reported experimenting with the toggle in both directions. Read-only
+  review verifies two distinct accepted one-item Paid requests and projections,
+  two independent captured/fulfilled HUF 6400 payments, and identical booking
+  ranges (September 17 11:36–September 18 12:36). Nova remains accepted Manager
+  and currently has organizerOnly false: Paid participants two, shared Group A
+  Transport accepted three/pending zero, consistently in resource and runtime.
+  The three free Asset controls, Group B resource and Event/Stage/Group member
+  oracle entries are unchanged from the saved Block 5 snapshot. Exactly two
+  Paid request notifications to Casey and two acceptance notifications to Nova
+  exist; no extra notification/payment/request from the toggle experiments.
+  Evidence: `/tmp/borrow-terminal-review.json` and
+  `/tmp/borrow-terminal-review-result.json`. This is a consistent current-state
+  review, not the strict terminal Organizer-only-on checkpoint. No application,
+  fixture or acceptance-rule change. Only switch the existing Paid membership
+  back to Organizer only, then run `verify-borrow-terminal`; do not repeat
+  borrowing, payment or approval.
 
 - This checkpoint owns the free cancel/reject/accept and overlap-capacity
   branches plus one narrow paid parity branch. Every free and paid Borrow form
