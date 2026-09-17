@@ -6,7 +6,7 @@ an extra click, reload or manual data edit.
 
 ## Baseline
 
-Open as **Nova**:
+Start with **Casey in Block 1** below. For **Block 2**, open as **Nova**:
 
 `Activities → Events → Active Events → QA ASSET-BORROW-001 Tournament → View Event → QA Borrow Stage → Groups → Group A → Assets → Transport → + / Explore`
 
@@ -35,27 +35,37 @@ payment. Existing assigned cards are read-only.
 The Explore-card menu must not contain `Payment summary`. An assigned paid
 request card must contain it.
 
-## 1. Scope-local Organizer only
+## 1. Event Organizer only and started tournament Group
 
-Finish this block before sending a Borrow request. Always switch the tested row
-back to `Count as participant`, so all baseline counts are restored.
+The prepared tournament Stage is already active. Its Group participants cannot
+switch to `Organizer only`: leaving must use `Leave group`, which also handles
+tournament participation. The main Event's own setting remains independent.
 
-1. **Casey — Tournament Members → Casey.** Select `Organizer only`.
-   Expected immediately: Tournament accepted count `4 → 3`; Casey stays Admin;
-   QA Borrow Stage and Group A do not change. Reopen Casey's menu: only
-   `Count as participant` is shown. Select it and expect `3 → 4`.
+1. **Casey — Event Members.** Open `Activities → Events → Active Events`.
+   Find **QA ASSET-BORROW-001 Tournament** → **4 / 4 member badge** on its card
+   image → **Casey Bridge** → **three-dot menu** → `Organizer only`.
+   Check the Event count changes **4 → 3** and Casey stays **Admin**.
+   Leave this setting on and close Members with **X**.
 
-2. **Casey — QA Borrow Stage Members → Casey.** Select `Organizer only`.
-   Expected: only the Stage accepted count changes `4 → 3`; Tournament and
-   Group A do not change. Select `Count as participant` and expect `3 → 4`.
+2. **Casey — Group A Members.** On the Tournament card, open **three-dot menu**
+   → `View Event` → **QA Borrow Stage** → **three-dot menu** → `Groups`.
+   Check Group A still has **3 members**, with Casey, Nova and Riley in
+   **Standings**. On **Group A**, open **three-dot menu** → **Tagok** (Members)
+   → **Casey Bridge** → **three-dot menu**.
+   Neither `Organizer only` nor `Count as participant` may appear for this
+   started tournament Group. The Event setting must not change Casey's Group
+   membership, role or standings. Close Members. The Group menu's `Leave group`
+   is the withdrawal action; do not leave during this Borrow setup.
 
-3. **Casey — Group A Members → Casey.** Select `Organizer only`.
-   Expected: only Group A changes `3 → 2`; Tournament and Stage do not change.
-   Select `Count as participant` and expect `2 → 3`.
+3. **Casey — restore only the Event setting.** Return to
+   `Activities → Events → Active Events` → Tournament's **3 / 4 member badge**
+   → **Casey Bridge** → **three-dot menu** → `Count as participant`.
+   The Event returns **3 → 4**; Group A stays **3**. Check after one reload that
+   the Event count, Group count and standings remain unchanged.
 
-No action above removes a membership, changes a role or rewrites another
-scope. All counter/card changes must appear without reload and persist after
-one reload.
+The inaccessible standalone Stage Members toggle check has been removed.
+If Group A already shows **2 members** while Standings still lists all three,
+report that retained mismatch before continuing; it is not a passing baseline.
 
 ## 2. Date range and free dialog
 

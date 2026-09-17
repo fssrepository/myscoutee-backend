@@ -6551,20 +6551,31 @@ Status: **PASS / CLOSED (2026-09-03)** together with
 
 ### `ASSET-BORROW-001` — scoped borrow lifecycle
 
-Status: **STAGED / BASELINE READY / BROWSER RELAUNCH REQUIRED / USER ACTION NOT STARTED**.
+Status: **STAGED / BASELINE READY / USER ACTION NOT STARTED — 2026-09-17**.
 
 Stable user guide:
 [`ASSET-BORROW-001.md`](../checklists/asset/ASSET-BORROW-001.md).
 
-The revised fixture was restaged at `2026-09-08T09:24:00.778Z`. Its read-only
-status proves all ten baseline guards: exactly four Public Transport controls
-(three free plus one HUF 3200 Barion Asset), Lina's retained Quantity-`2`
-Group B reservation and scoped Manager assignment, the exact Event/Stage/Group
-memberships, Nova's saved Mastercard 4444, no Group A resource, and zero
-checkout basket/payment or premature notification. The current fixture remains
-`baseline-ready`. It was restaged after the previous managed windows were
-opened, so those windows are not valid evidence; the versioned launcher has not
-yet replaced them. No browser checklist action has started.
+After Pricing closure, its normal reset restored the pre-fixture baseline and
+verified zero scoped artifacts. The existing Borrow stage and independent
+status then passed all ten baseline checks: four Public Transport controls,
+Lina's accepted Quantity-2 Group B reservation, exact Event/Stage/Group roles,
+Nova's saved Barion Mastercard 4444, and no Group A checkout, payment or early
+notification. The overlap range is September 17 09:32 to September 24 10:32;
+non-overlap is September 25 10:32 to September 26 10:32, Europe/Bratislava.
+The old September 8 preparation is superseded by this fresh baseline.
+
+The user additionally reported that Payment history's Payment summary showed
+only the generic started-days label. The shared payment basket now displays
+the saved duration multiplier with the existing translated day/days unit;
+amounts and stored snapshots are unchanged. The existing frontend watcher build
+passed. The paid Borrow steps use September 18 10:32 to September 20 10:32,
+HUF 3200/day and HUF 6400 total, so the user can compare **2 days** on Borrow,
+Payment and Payment summary. This visual follow-up remains pending.
+The saved-data oracle's former flat HUF 3200 expectation was corrected to the
+existing daily-price contract; date comparisons for the accepted request now
+use the UI's minute precision. No fixture-generation or product-pricing rule
+was changed. User controls every checklist action after managed startup.
 
 Its versioned stage/status commands are:
 
@@ -6575,9 +6586,8 @@ bash server/docker/scripts/manual-qa-checkpoints/manual-qa-checkpoints-docker.sh
   status asset-domain ASSET-BORROW-001
 ```
 
-Do not restage this baseline. Run `prepare-browser`, replace the configured
-Casey/Nova/Riley windows once through the versioned launcher, then hand control
-to the user at step 1.
+Do not restage this baseline. Use the prepared Casey/Nova/Riley windows; the
+user starts Block 1, steps 1–3.
 
 - This checkpoint owns the free cancel/reject/accept and overlap-capacity
   branches plus one narrow paid parity branch. Every free and paid Borrow form
@@ -6594,7 +6604,12 @@ to the user at step 1.
   changes only that scope's counted-participant state and live counter. It does
   not cascade, alter the role, delete/reassign a member or block an already
   materialized tournament participant from later-stage progression. The
-  reverse menu action is `Count as participant`.
+  reverse menu action is `Count as participant`. User clarification on
+  2026-09-17: after a tournament Stage starts, both participation toggles are
+  hidden for that Stage and its Groups, and the write path rejects the toggle.
+  Withdrawal uses `Leave group` so tournament participation is updated through
+  its lifecycle. This restriction does not affect the main Event's own toggle
+  or scoped Asset memberships.
 - The accepted borrower becomes the scoped Manager represented by
   `addedByUserId` only for the exact generated-group resource assignment. This
   does not change their global Asset ownership, Event role or sibling group.

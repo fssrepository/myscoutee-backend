@@ -1185,6 +1185,31 @@ public class ActivitiesMembersService {
                 && (STATUS_ACCEPTED.equals(normalizeStatus(current.getStatus()))
                     || STATUS_PENDING.equals(normalizeStatus(current.getStatus())))
                 && (actorCanManageOwner || scopedAssetAction);
+        if (organizerParticipationAllowed
+                && (OWNER_TYPE_GROUP.equals(ownerType) || OWNER_TYPE_SUB_EVENT.equals(ownerType))) {
+            SubEventCounterScope scope = OWNER_TYPE_GROUP.equals(ownerType)
+                    ? groupCounterScope(ownerId) : subEventCounterScope(ownerId);
+            String eventId = StringUtils.hasText(scopedEventId) ? scopedEventId
+                    : scope == null ? "" : scope.eventId();
+            String stageId = StringUtils.hasText(scopedSubEventId) ? scopedSubEventId
+                    : scope == null ? "" : scope.subEventId();
+            ActivityEvent event = findPreferredEventRecord(eventId);
+            organizerParticipationAllowed = false;
+            if (event != null && event.getSubEvents() != null) {
+                organizerParticipationAllowed = event.getSubEvents().stream()
+                        .filter(Objects::nonNull)
+                        .filter(stage -> stageId.equals(stage.id()))
+                        .filter(stage -> OWNER_TYPE_SUB_EVENT.equals(ownerType)
+                                ? ownerId.equals(eventId + ":" + stage.id())
+                                : stage.groups() != null && stage.groups().stream()
+                                        .filter(Objects::nonNull)
+                                        .anyMatch(group -> ownerId.equals(eventId + ":" + stage.id() + ":" + group.id())))
+                        .anyMatch(stage -> !(isTournamentStage(stage)
+                                && Set.of(STAGE_STATUS_ACTIVE, STAGE_STATUS_SCORE_REVIEW,
+                                        STAGE_STATUS_FINALIZED, STAGE_STATUS_SUSPENDED)
+                                        .contains(safeText(stage.stageStatus()).toUpperCase(Locale.US))));
+            }
+        }
         if (organizerParticipationAction && !organizerParticipationAllowed) {
             return queryMembers(ownerType, ownerId, false, scopedEventId, scopedSubEventId, request.assetRequestId());
         }

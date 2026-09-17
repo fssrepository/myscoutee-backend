@@ -2024,8 +2024,10 @@
     if (!capacity || capacity.requests.length !== 2 || !novaRequest
         || novaRequest.status !== "accepted" || novaRequest.quantity !== 1
         || novaRequest.eventId !== GROUP_A_RESOURCE_OWNER_ID || novaRequest.subEventId !== SUB_EVENT_ID
-        || novaRequest.startAtIso !== Q.text(state.context.startAtIso)
-        || novaRequest.endAtIso !== Q.text(state.context.overlapEndAtIso)
+        || Math.floor(Date.parse(novaRequest.startAtIso) / 60000)
+          !== Math.floor(Date.parse(state.context.startAtIso) / 60000)
+        || Math.floor(Date.parse(novaRequest.endAtIso) / 60000)
+          !== Math.floor(Date.parse(state.context.overlapEndAtIso) / 60000)
         || novaRequest.inventoryApplied
         || !novaProjection || novaProjection.status !== "accepted" || novaProjection.quantity !== 1
         || novaProjection.eventId !== GROUP_A_RESOURCE_OWNER_ID || novaProjection.inventoryApplied

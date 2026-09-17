@@ -83,11 +83,11 @@ resume pointer and reusable working method.
 
 ## Active resume point
 
-Campaign scheduling, confirmed 2026-09-17: Operator Update is complete. Asset
-Pricing is the selected user-controlled pair-QA checkpoint; Borrow is parked.
-The user explicitly requested fixture staging and managed browser startup now,
-overriding the pre-stage development gate for this preparation. Outstanding
-pricing implementation work remains unproven; it must not block startup. The user has taken over normal-account UI smoke on the installed
+Campaign scheduling, confirmed 2026-09-17: Pricing is PASS/CLOSED after the
+user's confirmation and saved-data review. Borrow is the selected final pair-QA
+checkpoint. Pricing's normal reset completed; Borrow's normal stage and
+independent baseline status passed. Managed Casey/Nova/Riley windows are ready.
+The user has taken over normal-account UI smoke on the installed
 VMware app; Codex continues the separate security/startup/memory campaign with its own [Excel ledger](../../qualification/SECURITY_AND_INFRASTRUCTURE.xlsx).
 These do not advance the pair-QA matrix. Retain smoke-created profile, Event,
 Asset and media as fixture-owned controls for the next release update. After
@@ -114,20 +114,20 @@ repair an established product defect. Preserve the phone's tethering connection
 when shaping only its route to the QA application.
 
 ```yaml
-checkpoint: ASSET-PRICING-001
-checklist: ../checklists/asset/ASSET-PRICING-001.md
-substage: Focused Borrow aggregation recheck. Prior saved payment evidence was reviewed; no full Pricing replay requested.
-fixture_phase: Normal reset completed with zero scoped artifacts; normal stage at 2026-09-17T08:28:14.933Z and independent status verified baseline-ready, Pricing Off, zero rentals/payments. The custom offer-only resume scripts were withdrawn at the user's correction.
-next_action: Follow ASSET-PRICING-001 Focused Borrow recheck only. Nova makes one free Cutoff Borrow with the original fixture. Casey checks pending total 0 -> 1, one rental card with badge 1, and one Nova row in Members. User owns all clicks. Inspect the new saved request after the report; do not replay Blocks 1-7.
-confirmed_rules: Asset has no VIP field; Borrow remains quantity 1 and may use the organizer's Asset. Event invitation offer is frozen when sent; acceptance records current pricing separately; retries do not overwrite or duplicate audit. Pair QA establishes remaining rules, so do not replace it with automated behavior tests.
-queued_work: Borrow remains parked; not selected for tomorrow. Final stable app/Registry GitHub release, UI/image smoke, external security and measured infrastructure efficiency remain separate later work.
-last_completed: Operator Update PASS/CLOSED; all Operator and Administration rows complete. No further Update/rollback replay requested.
-runtime: On 2026-09-17 local dev started through existing Compose images; backend and frontend healthy, localhost/game HTTP200. Three managed Pricing sessions ready. Historical VMware/release context follows, separate from the current dev startup. VMware serves user-installed QA3 r4; local dev was previously stopped. Local HTTPS retains signed r4 and QA2 rollback artifact. Separate managed Operator window remains user-controlled. Before/after comparison recorded no document removals, no index changes and unchanged 911 media objects; one user devices field changed amid permission interactions. The user clarified the subsequent defect as missing visible save feedback. A one-second green success animation on Update is source-only, verified by 17 focused tests including a rendered-button click; it is not yet packaged. The later Messaging correction now gates the toggle and background registration on the server-side Messaging credential presence instead of VAPID; 26 frontend and 11 backend focused tests passed. Both corrections remain uninstalled. The r5 package finished before the user stopped further builds; it was not deployed. A subsequent source-only OFF fix now unsubscribes existing browser Push as well as removing backend registration, including cleanup of late token acquisition; 31 focused frontend tests pass. Build/deployment remain paused by user instruction. The user subsequently rejected background completion for settings Save: current source awaits token plus server device registration and reports failure without success feedback. Custom token/HTTP deadlines were removed and the original 10s worker-readiness bound restored. Updated 33 focused tests pass; live browser verification remains unproven. VAPID was temporarily removed at the user request and has been restored (public config HTTP200). See QA3_PERMISSION_SYNC_20260916.md for artifact/source evidence. No Asset browser launched.
-ledger_status: 102/104 PASS. Pricing pair QA in progress, no new verdict; Borrow parked and not-staged.
+checkpoint: ASSET-BORROW-001
+checklist: ../checklists/asset/ASSET-BORROW-001.md
+substage: Block 1 updated to the user's started-tournament rule. Standalone Stage toggle check removed. Main Event Organizer only stays scope-local; started tournament Group must hide both participation toggles and use Leave group for withdrawal. User reported Group A count 2 while standings retains Casey, Nova and Riley; this retained state is not a passing baseline. No fixture reset or browser action performed for this fix.
+fixture_phase: Existing asset-domain stage/status passed all ten baseline guards on 2026-09-17. Three free controls plus one HUF 3200/day paid Asset; Lina Group B quantity 2; Group A has no requests or payments; Nova Barion 4444 ready.
+next_action: User follows Borrow guide. First saved-data checkpoint is verify-borrow-cancel after step 12. Paid steps use Sep18 10:32-Sep20 10:32, total HUF 6400; check Payment history -> Payment summary duration reads 2 days. Do not operate browser actions or restage without a new request.
+confirmed_rules: Every Borrow submits one independently identified item. Stage menus are member-only; main Event Members follows existing Open/Closed rules. Pricing has no Asset VIP. Restage means normal reset followed by stage, not preserving prior test effects through a custom resume script.
+queued_work: Finish Borrow pair QA; then the previously requested stable app/Registry release and retained-control verification. Deployment smoke/security/infrastructure work remains separate.
+last_completed: ASSET-PRICING-001 PASS/CLOSED 2026-09-17. Final review found two distinct Cutoff USD 900 payments and one two-day Variable USD 1800 payment; per-request Members 1 and stage totals 2/1. Earlier Hybrid/policy observations retained in the QA pack. Exact fixture cleanup completed.
+runtime: Existing dev stack and watchers are running. Payment history duration label changed in the shared event-basket-input used by its Asset Payment summary; frontend watcher build passed at 2026-09-17T08:36:01Z. Versioned Borrow launcher handed off three identity-verified windows. Label visual confirmation remains user-controlled during Borrow.
+ledger_status: 103/104 PASS. Borrow is the sole remaining journey; CSV/XLSX/README synchronized.
 
 ```
 
-### Pricing preparation for 2026-09-17
+### Historical Pricing preparation for 2026-09-17 — closed; do not execute
 
 Use the existing `asset-pricing` scenario; do not replay completed payment or
 Borrow journeys to create prerequisites. It supplies the one editable Asset,
@@ -161,7 +161,7 @@ VMware deployment UI smoke is now user-operated: Codex must not navigate or subm
 
 The user-requested QA3 permission-sync build and local HTTPS update preparation are tracked in [QA3_PERMISSION_SYNC_20260916.md](../../qualification/evidence/QA3_PERMISSION_SYNC_20260916.md). Preserve the current smoke-created database/media. Codex prepares a separate Operator browser with the versioned launcher; the user starts the update. Compare the final pre-update fingerprints with the post-update state before claiming data preservation.
 
-The two remaining Asset tests are explicitly reserved for pair QA: prepare their
+The remaining Asset Borrow test is explicitly reserved for pair QA: prepare its
 versioned fixtures/managed startup, then the user controls all checklist actions.
 A defect report permits diagnosis and repair, not takeover of those Asset actions.
 
