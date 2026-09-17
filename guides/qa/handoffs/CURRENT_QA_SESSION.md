@@ -116,9 +116,9 @@ when shaping only its route to the QA application.
 ```yaml
 checkpoint: ASSET-BORROW-001
 checklist: ../checklists/asset/ASSET-BORROW-001.md
-substage: Block 4, step 14 retry. Riley sent Reject Transport; Casey encountered the missing pending-to-deleted audit policy branch. The three-line backend fix is deployed; 25 focused tests pass. No manual Reject PASS yet.
-fixture_phase: borrow-reject-ready/startBlock=4 with Riley request ending c0f142c6-9f63-41de-9d20-28ec5dc193e4 still pending. User selected the full Stage Sep17–Oct17 range; do not replace it. Fresh authenticated HTTP read after hot-deploy confirms the same request. No reset or database repair.
-next_action: Casey retries Reject on the currently open confirmation for the existing Riley request, then completes steps 15–16. Run verify-borrow-reject after the report. Do not send another request or replay Blocks 1–3.
+substage: Block 4 Free Reject PASS after the user report and verify-borrow-reject. Continue Block 5, step 17.
+fixture_phase: borrow-reject-verified/startBlock=4. Riley request is D with its deleted projection; no active Group A resource or resource metric. Exactly one owner request notification and one rejection notification to Riley. Group B retains Lina two accepted quantity-1 requests. No payments. No reset.
+next_action: Casey checks Capacity Transport Statistics in step 17 (two accepted requests, occupied quantity 2), then Nova performs step 18 using the documented Sep17 11:36–Sep24 12:36 overlap range. After steps 17–21, run verify-borrow-accepted. Browser actions remain user-controlled.
 confirmed_rules: Every Borrow submits one independently identified item. Stage menus are member-only; main Event Members follows existing Open/Closed rules. Pricing has no Asset VIP. Restage uses normal reset then stage. The user explicitly requested a versioned Block 4 restart; earlier results are archived, not simulated or marked PASS.
 queued_work: Finish Borrow pair QA; then the previously requested stable app/Registry release and retained-control verification. Deployment smoke/security/infrastructure work remains separate.
 last_completed: ASSET-PRICING-001 PASS/CLOSED 2026-09-17. Final review found two distinct Cutoff USD 900 payments and one two-day Variable USD 1800 payment; per-request Members 1 and stage totals 2/1. Earlier Hybrid/policy observations retained in the QA pack. Exact fixture cleanup completed.

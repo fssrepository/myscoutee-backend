@@ -6551,7 +6551,7 @@ Status: **PASS / CLOSED (2026-09-03)** together with
 
 ### `ASSET-BORROW-001` — scoped borrow lifecycle
 
-Status: **IN PROGRESS / BLOCK 4 READY — 2026-09-17**.
+Status: **IN PROGRESS / BLOCK 4 PASS / BLOCK 5 NEXT — 2026-09-17**.
 
 Stable user guide:
 [`ASSET-BORROW-001.md`](../checklists/asset/ASSET-BORROW-001.md).
@@ -6645,6 +6645,19 @@ and evidence are recorded below.
   request submission or rejection was performed by Codex. User retries step 14
   on the existing confirmation. Evidence: `/tmp/borrow-reject-before.log`,
   `/tmp/borrow-reject-after.log`, `/tmp/borrow-reject-read-after.json`.
+
+- **Block 4 PASS — 2026-09-17:** user reported the rejection working.
+  `verify-borrow-reject` passed and saved `borrow-reject-verified`. Exactly one
+  Riley Reject request and projection remain as deleted audits, with no active
+  Group A resource or Group A runtime resource metric. Outbox contains exactly
+  the original request notification to Casey and one rejection notification to
+  Riley. Lina's two accepted Quantity-1 Group B controls, Event/Stage/Group
+  memberships, unused Cancel/Paid controls and zero-payment state are unchanged.
+  The selected full-Stage range is retained as rejection evidence; the next
+  capacity branch uses the documented overlap range. No reset or browser action
+  by Codex. Evidence: `/tmp/borrow-reject-verification.log` and
+  `/tmp/borrow-reject-verified-state.json`. Continue Block 5, steps 17–21;
+  next oracle is `verify-borrow-accepted`.
 
 - This checkpoint owns the free cancel/reject/accept and overlap-capacity
   branches plus one narrow paid parity branch. Every free and paid Borrow form
