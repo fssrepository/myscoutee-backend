@@ -2206,6 +2206,9 @@ public class AssetsService {
 
         String previousStatus = normalizeRequestStatus(previous.status());
         String nextStatus = normalizeRequestStatus(next.status());
+        if ("pending".equals(previousStatus) && isDeletedAssetRequest(next)) {
+            return canApplyRemovedAssetRequestPolicy(assetId, previous, fullAssetWriteAllowed);
+        }
         if ("pending".equals(previousStatus) && MEMBER_STATUS_ACCEPTED.equals(nextStatus)) {
             return accessControlService.canCurrentActorApproveAssetBorrow(requesterUserId, assetId);
         }

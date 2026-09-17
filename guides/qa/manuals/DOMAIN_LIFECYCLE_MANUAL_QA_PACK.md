@@ -6626,6 +6626,26 @@ and evidence are recorded below.
   not manual lifecycle evidence. Syntax and diff checks passed.
   No application code changed during this review/restage.
 
+- **Block 4 Reject failure and fix — 2026-09-17 12:50 CEST:** Casey's
+  `/assets/upsert` returned HTTP 200 with an empty body. Riley's single request
+  remained pending. The service preserves removed requests as `D` audits before
+  policy evaluation, but its update-policy branch omitted pending-to-deleted.
+  Added that transition using the existing removal policy (Reject or Cancel
+  permission); full Asset edit alone remains insufficient. No fixture or date
+  validation change. Before the fix, three focused authorization cases failed;
+  after the existing watcher build/restart, all 25 focused policy, cancellation,
+  window and assignment regressions passed. The broader AssetsServiceTest could
+  not compile because of existing assetReadService helper signature mismatches;
+  it is not claimed as passing. Local adapter source review found no equivalent
+  Java policy gate; local execution was not repeated.
+  Fresh authenticated owner HTTP read returned the same pending Riley request
+  ending `c0f142c6-9f63-41de-9d20-28ec5dc193e4`. Its user-selected range is the
+  full Stage (September 17–October 17), valid for this rejection check; the
+  later Capacity check still uses its documented overlap range. No reset,
+  request submission or rejection was performed by Codex. User retries step 14
+  on the existing confirmation. Evidence: `/tmp/borrow-reject-before.log`,
+  `/tmp/borrow-reject-after.log`, `/tmp/borrow-reject-read-after.json`.
+
 - This checkpoint owns the free cancel/reject/accept and overlap-capacity
   branches plus one narrow paid parity branch. Every free and paid Borrow form
   exposes read-only Quantity `1`; requesting another item means submitting a

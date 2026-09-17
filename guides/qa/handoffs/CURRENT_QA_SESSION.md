@@ -116,9 +116,9 @@ when shaping only its route to the QA application.
 ```yaml
 checkpoint: ASSET-BORROW-001
 checklist: ../checklists/asset/ASSET-BORROW-001.md
-substage: Block 4 (Free Reject), step 13 ready. Step 12 persisted cancellation was reviewed before reset; Blocks 1–3 retain qualified evidence in the QA pack and are not replayed.
-fixture_phase: borrow-reject-ready, context.startBlock=4. User-requested versioned normal reset/stage completed at 2026-09-17 12:36 CEST; all ten baseline guards passed. Group A empty, Cancel/Reject/Paid unused, Group B two accepted quantity-1 Lina bookings. Archive and baseline: /tmp/asset-borrow-block4.QIP5RR/.
-next_action: Riley starts the exact Group A Transport Explore path in checklist step 13, uses September 17–24 overlap dates, and submits Reject Transport once. After steps 13–16, run verify-borrow-reject. Do not reset or replay Blocks 1–3. Browser checklist actions remain user-controlled.
+substage: Block 4, step 14 retry. Riley sent Reject Transport; Casey encountered the missing pending-to-deleted audit policy branch. The three-line backend fix is deployed; 25 focused tests pass. No manual Reject PASS yet.
+fixture_phase: borrow-reject-ready/startBlock=4 with Riley request ending c0f142c6-9f63-41de-9d20-28ec5dc193e4 still pending. User selected the full Stage Sep17–Oct17 range; do not replace it. Fresh authenticated HTTP read after hot-deploy confirms the same request. No reset or database repair.
+next_action: Casey retries Reject on the currently open confirmation for the existing Riley request, then completes steps 15–16. Run verify-borrow-reject after the report. Do not send another request or replay Blocks 1–3.
 confirmed_rules: Every Borrow submits one independently identified item. Stage menus are member-only; main Event Members follows existing Open/Closed rules. Pricing has no Asset VIP. Restage uses normal reset then stage. The user explicitly requested a versioned Block 4 restart; earlier results are archived, not simulated or marked PASS.
 queued_work: Finish Borrow pair QA; then the previously requested stable app/Registry release and retained-control verification. Deployment smoke/security/infrastructure work remains separate.
 last_completed: ASSET-PRICING-001 PASS/CLOSED 2026-09-17. Final review found two distinct Cutoff USD 900 payments and one two-day Variable USD 1800 payment; per-request Members 1 and stage totals 2/1. Earlier Hybrid/policy observations retained in the QA pack. Exact fixture cleanup completed.
