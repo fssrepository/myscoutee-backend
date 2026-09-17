@@ -43,8 +43,12 @@ def main():
     args = parser.parse_args()
     os.umask(0o077)
     version = subprocess.check_output(['dpkg-query', '-W', '-f=${Version}', 'myscoutee'], text=True)
-    if os.geteuid() != 0 or not re.fullmatch(r'\d+\.\d+\.\d+~qa\.[1-9]\d*', version):
-        parser.error('Run as root on a QA prerelease VM.')
+    qa_version = re.fullmatch(r'\d+\.\d+\.\d+~qa\.[1-9]\d*', version)
+    # A successful QA-to-stable upgrade must still be able to restore the
+    # original release source using the existing fixture ownership checks.
+    upgraded_stable = args.action in ('status', 'reset') and re.fullmatch(r'\d+\.\d+\.\d+', version)
+    if os.geteuid() != 0 or not (qa_version or upgraded_stable):
+        parser.error('Run as root on a QA prerelease VM, or reset/status after a stable upgrade.')
     if any(path.is_symlink() for path in [ENV, CA, STATE]) or not ENV.is_file():
         parser.error('Unsafe fixture path.')
     text = ENV.read_text()
