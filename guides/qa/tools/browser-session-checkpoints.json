@@ -1880,6 +1880,27 @@
           }
         }
       ]
+    },
+    "RELEASE-1.0.0-SMOKE": {
+      "entryUrl": "https://localhost/entry",
+      "targetUrl": "https://localhost/entry",
+      "storageScope": "http",
+      "bootstrapEntryConsent": false,
+      "preserveOtherSessions": true,
+      "sessions": [
+        {
+          "actor": "ReleaseSmoke",
+          "sessionKind": "anonymous",
+          "expectedName": "New demo registration release smoke",
+          "autoDismissExplanationGuide": false,
+          "window": {
+            "x": 0,
+            "y": 40,
+            "width": 1000,
+            "height": 930
+          }
+        }
+      ]
     }
   }
 }
