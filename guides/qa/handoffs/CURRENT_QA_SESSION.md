@@ -116,9 +116,9 @@ when shaping only its route to the QA application.
 ```yaml
 checkpoint: ASSET-PRICING-001
 checklist: ../checklists/asset/ASSET-PRICING-001.md
-substage: Pair QA block 1 is active. User reported non-member Riley cannot open Transport; backend already requires membership. Stage menus now follow that permission for both Casual and Tournament, with no Groups exception. No new manual PASS.
-fixture_phase: Restaged at 2026-09-17T07:08:59.290Z, then user edited pricing to HUF 1000. Preserve current fixture and managed sessions; no further restage performed. Read-only sub-events HTTP returned resource access true for Casey/Nova and false for Riley.
-next_action: Casey selects Currency USD in step 1; the checklist and versioned fixture now use this existing application option. No HUF option was added and the live fixture was not restaged. Check Riley has no stage three-dot menu and continue Nova's fixed-price check on Variable. Nova performs all three payments in the revised guide; Riley stays a non-member. Run saved-data checks only after user reports. Event VIP remains separate.
+substage: Focused Borrow aggregation recheck after the user-reported duplicate Nova rows. Three earlier payments are retained; no full Pricing replay requested.
+fixture_phase: borrow-review-ready after versioned restage-borrow-review on 2026-09-17. Original dates and three pending Cutoff rentals/payments unchanged. Hybrid USD 1150/day with the one-day 50% policy prepared for the next offer.
+next_action: Follow ASSET-PRICING-001 Focused Borrow recheck only. Nova views Variable USD 2300 without paying, then makes one Cutoff Borrow for USD 1150. Casey checks pending total 3 -> 4, each rental badge 1, and one Nova row in each Members screen. User owns all clicks. Check the new saved request after the report; do not reset or replay Blocks 1-7.
 confirmed_rules: Asset has no VIP field; Borrow remains quantity 1 and may use the organizer's Asset. Event invitation offer is frozen when sent; acceptance records current pricing separately; retries do not overwrite or duplicate audit. Pair QA establishes remaining rules, so do not replace it with automated behavior tests.
 queued_work: Borrow remains parked; not selected for tomorrow. Final stable app/Registry GitHub release, UI/image smoke, external security and measured infrastructure efficiency remain separate later work.
 last_completed: Operator Update PASS/CLOSED; all Operator and Administration rows complete. No further Update/rollback replay requested.

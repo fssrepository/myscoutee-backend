@@ -924,6 +924,7 @@
     }
     assertStageTiming(Q.collection("events").findOne(eventSelector));
     if (Q.text(currentState.phase) === "baseline-ready") assertBaseline();
+    if (Q.text(currentState.phase) === "borrow-review-ready") assertBorrowReviewBaseline(currentState);
     Q.printObject({
       scenario: SCENARIO,
       checkpointId: CHECKPOINT,
@@ -1113,6 +1114,62 @@
     });
   }
 
+  // Resume the reported duplicate-member regression without replaying or
+  // replacing the user's captured payments. Only the next offer is prepared.
+  function borrowReviewEvidence() {
+    return {
+      requests: Q.collection("assets").findOne(assetSelector)?.requests || [],
+      payments: Q.collection("payments").find(paymentSelector).sort({ _id: 1 }).toArray(),
+      requestRecords: Q.collection("assetRequests").find(requestSelector).sort({ _id: 1 }).toArray()
+    };
+  }
+
+  function assertBorrowReviewBaseline(current) {
+    const saved = current.borrowReview;
+    if (!saved || !samePersisted(saved.evidence, borrowReviewEvidence())) {
+      Q.fail("Borrow review baseline changed; inspect the new request instead of restaging again.");
+    }
+    assertPricing(hybridPricing(emptyAudience(), activePolicy()), "borrow-review");
+    assertStageTiming(Q.collection("events").findOne(eventSelector));
+  }
+
+  function restageBorrowReview() {
+    config();
+    const current = state();
+    if (current.phase === "borrow-review-ready") {
+      assertBorrowReviewBaseline(current);
+      status();
+      return;
+    }
+    const evidence = borrowReviewEvidence();
+    const context = current.context;
+    const now = Date.now();
+    if (evidence.requests.length !== 3 || evidence.payments.length !== 3
+        || evidence.requestRecords.length !== 3
+        || evidence.requests.some(request => request.userId !== NOVA_ID
+          || request.status !== "pending" || request.booking?.subEventId !== CUTOFF_SUB_EVENT_ID)
+        || evidence.payments.some(payment => payment.status !== "captured"
+          || payment.fulfillmentStatus !== "succeeded")
+        || Date.parse(context.cutoffStartAtIso) <= now
+        || Date.parse(context.variableStartAtIso) - now > 96 * 60 * 60 * 1000) {
+      Q.fail("Borrow review requires the three retained pending Cutoff rentals and usable original stage dates.");
+    }
+    assertStageTiming(Q.collection("events").findOne(eventSelector));
+    const asset = Q.collection("assets").findOne(assetSelector);
+    Q.collection(Q.STATE_COLLECTION).updateOne({ _id: current._id }, { $set: {
+      borrowReview: { evidence, previousPricing: asset.pricing, preparedAtIso: Q.nowIso() }
+    } });
+    Q.collection("assets").updateOne({ _id: asset._id }, { $set: {
+      pricing: hybridPricing(emptyAudience(), activePolicy()), updatedDate: Q.nowIso()
+    } });
+    updatePhase("borrow-review-ready");
+    assertBorrowReviewBaseline(state());
+    Q.printObject({ scenario: SCENARIO, checkpointId: CHECKPOINT, phase: "borrow-review-ready",
+      retainedRequests: 3, retainedPayments: 3, priorEvidenceUnchanged: true,
+      next: "View Variable: USD 2300. Borrow once on Cutoff: USD 1150. Cutoff pending total 3 -> 4; each rental badge and Members list stays 1."
+    });
+  }
+
   function repairStageTiming() {
     config();
     const currentState = state();
@@ -1172,5 +1229,6 @@
   else if (command === "verify") verify();
   else if (command === "reset") reset();
   else if (command === "repair-stage-timing") repairStageTiming();
+  else if (command === "restage-borrow-review") restageBorrowReview();
   else Q.fail(`unsupported asset-pricing command '${command}'.`);
 })();

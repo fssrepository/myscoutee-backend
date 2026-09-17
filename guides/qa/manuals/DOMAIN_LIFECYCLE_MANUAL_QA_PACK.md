@@ -7019,6 +7019,36 @@ persisted `last-remove-verified` oracle is the closing result.
 
 Status: **PAIR QA IN PROGRESS / NO NEW PASS**.
 
+Focused review, 2026-09-17: the user clarified that Variable was a view-only
+check; the Hybrid payment was USD 1150 on the one-day Cutoff range. Persisted
+payments USD 1150, 900 and 800 are all captured/fulfilled, with distinct Borrow
+request IDs. Their saved rows sum to their respective amounts. The first two
+retain the enabled one-day/50% policy; USD 800 retains its disabled policy.
+These records support the observed one-day pricing and saved-term cases; they
+do not prove a two-day captured payment or an active refund window. No full
+Pricing PASS is claimed, and the user does not need to repeat the full test.
+
+Duplicate-member defect: each rental card used the whole Asset's synchronized
+count and opened Members without its request ID. Cards now retain counts from
+their own persisted request. The Members query matches Asset, Event, stage and
+embedded request ID together in Mongo; local query, action responses and popup
+cache scope carry the same request ID. No user-based deduplication was added.
+Existing dev watchers compiled both sides successfully. Read-only HTTP checks
+returned one exact Nova row for each of the three requests (also pending-only
+and sync), three rows for the stage aggregate, and no rows for unknown request
+or mismatched stage. Retained requests, payment snapshots and request projections
+were identical before and after this verification.
+
+User-authorized `restage-borrow-review` preserves those three rentals/payments
+and all stage dates, preparing only the next offer as Hybrid USD 1150/day with
+one-day/50% cancellation terms. Independent fixture status verified
+`borrow-review-ready`; Barion connected, 3DS Off. The focused checklist asks
+Nova to view Variable USD 2300 and make just one new Cutoff Borrow USD 1150,
+then Casey checks total pending 3 -> 4 while each rental badge and Members list
+stays at one. This new write/UI observation remains pending with the user.
+Refund-request menu and approval coverage remains in ASSET-CHECKOUT-001 block 8.
+
+
 Preparation2026-09-17: the user explicitly clarified that fixture staging and
 managed browser launch are required now; the pre-stage development gate must
 not prevent this requested startup. Outstanding audience/refund implementation

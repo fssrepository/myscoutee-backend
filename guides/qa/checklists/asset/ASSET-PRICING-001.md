@@ -6,7 +6,9 @@ Use the prepared **Casey**, **Nova** and **Riley** windows. Casey changes the pr
 
 **Event:** `QA ASSET-PRICING-001 Event`
 
-After each report, wait for Codex to check the saved data. If a control is missing or a result differs, report that instead of continuing. Only pay in steps **8, 9 and 10**.
+For the prepared duplicate-member fix recheck, use [Focused Borrow recheck](#focused-borrow-recheck) below. Do not repeat Blocks 1–7.
+
+For the full journey below, after each report wait for Codex to check the saved data. If a control is missing or a result differs, report that instead of continuing. Only pay in steps **8, 9 and 10**.
 
 ## Block 1 — Fixed daily price
 
@@ -113,9 +115,19 @@ Leave the Asset at its final **USD 900** price. Do not edit it during these chec
 
     If every block passed, report **`ASSET-PRICING-001 complete: interactive pricing and payment snapshots match`**. Otherwise, report the remaining mismatch.
 
+## Focused Borrow recheck
+
+Use this only after Codex prepares `restage-borrow-review`. The three earlier Cutoff rentals and payments remain. Hybrid pricing is already set; Casey does not need to edit it.
+
+1. **Nova:** `Activities → Events → Active Events` → test Event → card menu → `View Event` → **QA Pricing Variable Stage** → `Transport → Explore` → test Asset → card menu → `Borrow`. Keep the full dates. Check **USD 2300** for two charged days, then close without confirming or paying.
+2. **Nova:** return to the stage list → **QA Pricing Cutoff Stage** → `Transport → Explore` → test Asset → card menu → `Borrow`. Keep the full dates. Check **USD 1150**, then `Confirm borrow` → Barion → `Pay once`. Make only this one new Borrow.
+3. **Casey:** open the same Event → `View Event` → **QA Pricing Cutoff Stage** → `Transport`. Check **4 pending** in total and **1 pending on each rental card**. Click each card's pending badge: its Members screen must contain **one Nova row**, including when switching between cards. Opening Members must not change the totals.
+
+Report the total, each card's badge count, and whether Nova appears once per Members screen. Leave the requests pending. Refund-request actions are covered in [ASSET-CHECKOUT-001, Block 8](ASSET-CHECKOUT-001.md#8-remove-the-runtime-association-contact-the-asset-owner-and-refund); no additional payment is needed here for that menu.
+
 ## Codex preparation notes
 
-- Use the versioned `asset-pricing` fixture and managed launcher. Require `baseline-ready`; stage on the test day because Cutoff starts staging + 12 hours. Follow the user's startup instruction separately from incomplete feature checks.
+- Use the versioned `asset-pricing` fixture and managed launcher. The focused recheck uses `restage-borrow-review` and verified `borrow-review-ready`, preserving the earlier rentals and payments. For the full journey, require `baseline-ready`; stage on the test day because Cutoff starts staging + 12 hours. Follow the user's startup instruction separately from incomplete feature checks.
 - Asset pricing has no VIP field. Keep Event invitation/VIP checks separate; do not expose the shared audience model in the Asset form for this test.
 - Riley stays a non-member and checks that the stage's three-dot menu is hidden. Nova makes all three payments. The same menu restriction applies to Tournament stages, including the Groups entry; there is no tournament exception.
 - This restriction is only for stage cards. The main Event's Members control keeps its existing Open/Closed access rules; do not hide it based on stage resource access.

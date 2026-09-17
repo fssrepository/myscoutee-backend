@@ -1521,6 +1521,15 @@ public class AssetsService {
             String eventId,
             String subEventId,
             String requestStatus) {
+        return findAssetByAssetIdWithScopedRequests(assetId, eventId, subEventId, requestStatus, null);
+    }
+
+    public Optional<Asset> findAssetByAssetIdWithScopedRequests(
+            String assetId,
+            String eventId,
+            String subEventId,
+            String requestStatus,
+            String assetRequestId) {
         String normalizedAssetId = normalizeId(assetId);
         String normalizedEventId = normalizeId(eventId);
         String normalizedSubEventId = normalizeId(subEventId);
@@ -1537,6 +1546,9 @@ public class AssetsService {
         List<Document> requestConditions = new ArrayList<>();
         requestConditions.add(new Document("$in", List.of("$$request.booking.eventId", scopedEventIds)));
         requestConditions.add(new Document("$eq", List.of("$$request.booking.subEventId", normalizedSubEventId)));
+        if (StringUtils.hasText(assetRequestId)) {
+            requestConditions.add(new Document("$eq", List.of("$$request._id", normalizeId(assetRequestId))));
+        }
         requestConditions.add(new Document("$ne", List.of("$$request.status", STATUS_DELETED)));
         requestConditions.add(new Document("$ne", List.of("$$request.status", "deleted")));
         if (StringUtils.hasText(normalizedRequestStatus)) {

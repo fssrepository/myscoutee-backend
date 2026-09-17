@@ -23,7 +23,12 @@ public final class ActivityMembersDtos {
             ActivityMemberOwnerRefDto owner,
             List<ActivityMemberSyncKnownItemDto> knownItems,
             String eventId,
-            String subEventId) {
+            String subEventId,
+            String assetRequestId) {
+        public ActivityMembersSyncRequestDto(ActivityMemberOwnerRefDto owner,
+                List<ActivityMemberSyncKnownItemDto> knownItems, String eventId, String subEventId) {
+            this(owner, knownItems, eventId, subEventId, null);
+        }
     }
 
     public record ActivityMembersSyncResponseDto(
@@ -79,7 +84,13 @@ public final class ActivityMembersDtos {
             String reason,
             String eventId,
             String subEventId,
-            String targetMemberId) {
+            String targetMemberId,
+            String assetRequestId) {
+        public ActivityMemberActionRequestDto(
+                ActivityMemberOwnerRefDto owner, String actorUserId, String targetUserId,
+                String action, String reason, String eventId, String subEventId, String targetMemberId) {
+            this(owner, actorUserId, targetUserId, action, reason, eventId, subEventId, targetMemberId, null);
+        }
         public ActivityMemberActionRequestDto(
                 ActivityMemberOwnerRefDto owner,
                 String actorUserId,
