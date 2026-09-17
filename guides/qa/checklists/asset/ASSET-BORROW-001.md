@@ -6,15 +6,21 @@ an extra click, reload or manual data edit.
 
 ## Baseline
 
-Start with **Casey in Block 1** below. For **Block 2**, open as **Nova**:
+For a prepared **Block 4 restart**, begin with **Riley at step 13**. Blocks 1–3
+are not repeated. The reset clears their requests and restores Lina's two
+Group B control bookings. The replayable preparation command is
+`bash guides/qa/tools/restage-asset-borrow-block-4.sh`; Codex runs it before
+handoff, not during your test.
+
+For a full run, start with **Casey in Block 1** below. For **Block 2**, open as **Nova**:
 
 `Activities → Events → Active Events → QA ASSET-BORROW-001 Tournament → View Event → QA Borrow Stage → Groups → Group A → Assets → Transport → + / Explore`
 
 Use these exact date ranges:
 
-- overlap: Start `09/17/2026 09:32`, End `09/24/2026 10:32`
-- non-overlap: Start `09/25/2026 10:32`, End `09/26/2026 10:32`
-- paid checks (steps 22 and 29): Start `09/18/2026 10:32`, End `09/20/2026 10:32` — exactly two days.
+- overlap: Start `09/17/2026 11:36`, End `09/24/2026 12:36`
+- non-overlap: Start `09/25/2026 12:36`, End `09/26/2026 12:36`
+- paid checks (steps 22 and 29): Start `09/18/2026 12:36`, End `09/20/2026 12:36` — exactly two days.
 
 Times above use the prepared browser's local timezone (Europe/Bratislava).
 
@@ -132,8 +138,15 @@ Wait for `verify-borrow-cancel`.
 
 ## 4. Free Reject
 
-13. **Riley — overlap dates → `Reject Transport → Borrow`.** Confirm Quantity
-    is read-only `1`; send once.
+13. **Riley — open Group A's Transport Explore.** Open
+    `Activities → Events → Active Events` → **QA ASSET-BORROW-001 Tournament**
+    card's **three-dot menu** → `View Event` → **QA Borrow Stage** card's
+    **three-dot menu** → `Groups` → **Group A** row's **three-dot menu** →
+    **Transport** under **Assets** → **+**.
+    In Explore's date range, select **09/17/2026 – 09/24/2026**.
+    Open **Reject Transport** card's **three-dot menu** → `Borrow`.
+    Check the overlap dates/times above and read-only **Quantity = 1**;
+    click `Send borrow request` once.
 
 14. **Casey.** Open the one pending Riley row for Reject Transport and select
     `Reject request` once.
@@ -151,8 +164,8 @@ Wait for `verify-borrow-reject`.
 
 ## 5. Free Accept and capacity
 
-17. **Casey — Capacity Transport Statistics.** Baseline is one accepted Borrow
-    request and occupied Quantity `2` (Lina in Group B).
+17. **Casey — Capacity Transport Statistics.** Baseline is two accepted Borrow
+    requests, each Quantity `1`, and occupied Quantity `2` (Lina in Group B).
 
 18. **Nova — overlap dates → `Capacity Transport → Borrow`.** Send the
     read-only Quantity `1` request once. Expected without reload: overlap
@@ -163,10 +176,10 @@ Wait for `verify-borrow-reject`.
     `0 left`—approval must not subtract it a second time.
 
 20. Group A contains Nova's Quantity `1` card and Group B contains Lina's
-    Quantity `2` card. Both show their booking date ranges. Nova is Manager only
+    two separate Quantity `1` cards. All show their booking date ranges. Nova is Manager only
     for the scoped Asset assignment; no Event or Group role changed.
 
-21. Capacity Statistics is now two accepted Borrow requests and occupied
+21. Capacity Statistics is now three accepted Borrow requests and occupied
     Quantity `3`. No payment exists for this free request. Report:
 
     `ASSET-BORROW-001 accepted: Group A quantity 1, Group B quantity 2, occupied 3`
@@ -234,8 +247,9 @@ Wait for `verify-borrow-paid-accepted-participant`.
     Nova is still Organizer only in this Asset scope, so its accepted
     participant count is `0`; its Manager role and both accepted requests stay.
 
-33. Confirm the three free branches and Lina's Group B Quantity `2` control are
-    unchanged. Report:
+33. Confirm the free branches and Lina's two Group B Quantity `1` control
+    bookings are unchanged. For a Block 4 restart, Cancel Transport remains
+    unused in this run. Report:
 
     `ASSET-BORROW-001 UI complete: free branches, two paid requests and scope-local organizer state persist`
 

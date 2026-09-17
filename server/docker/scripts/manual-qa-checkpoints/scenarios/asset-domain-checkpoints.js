@@ -1918,9 +1918,48 @@
     }));
   }
 
+  function inspectBorrow() {
+    if (checkpointId !== BORROW_CHECKPOINT) Q.fail("Borrow inspection requires ASSET-BORROW-001.");
+    const state = requireMatchingState();
+    Q.printObject({
+      scenario: SCENARIO, checkpointId, phase: state.phase, inspectedAtIso: Q.nowIso(),
+      context: state.context, oracle: oracle(state), notifications: borrowNotificationRows(state),
+      fixtureSnapshots: Q.snapshotSpecs(selectors())
+    });
+  }
+
+  function prepareBorrowReject() {
+    if (checkpointId !== BORROW_CHECKPOINT) Q.fail("Block 4 preparation requires ASSET-BORROW-001.");
+    const state = requireBorrowPhase("baseline-ready");
+    const current = oracle(state);
+    const checks = assertBorrowBaseline(state, current);
+    assertBorrowPaymentSimulator(current);
+    Q.collection(Q.STATE_COLLECTION).updateOne({ _id: state._id }, { $set: {
+      phase: "borrow-reject-ready", "context.startBlock": 4, preparedAtIso: Q.nowIso()
+    } });
+    Q.printObject({ scenario: SCENARIO, checkpointId, phase: "borrow-reject-ready",
+      baselineChecks: checks, identities: state.context,
+      next: "Block 4, step 13: Riley opens Group A Transport Explore and sends one Reject Transport request.",
+      evidence: "Blocks 1-3 belong to the archived prior run; this setup does not mark them PASS." });
+  }
+
+  function assertBorrowCancelControl(state, current) {
+    if (state.context.startBlock !== 4) {
+      assertBorrowDeletedBranch(current, TERTIARY_ASSET_ID, participantUserId);
+      return;
+    }
+    const cancel = current.assets.find(asset => asset.assetId === TERTIARY_ASSET_ID);
+    if (!cancel || cancel.requests.length !== 0
+        || current.requestProjections.some(row => row.assetId === TERTIARY_ASSET_ID)
+        || current.resources.some(resource => resource.status === "A"
+          && resource.transportAssetIds.includes(TERTIARY_ASSET_ID))) {
+      Q.fail("Block-4 baseline Cancel Transport must remain untouched.");
+    }
+  }
+
   function requireBorrowPhase(expected) {
     const state = requireMatchingState();
-    if (Q.text(state.phase) !== expected) {
+    if (!(Array.isArray(expected) ? expected : [expected]).includes(Q.text(state.phase))) {
       Q.fail(`${BORROW_CHECKPOINT} requires phase '${expected}', found '${Q.text(state.phase)}'.`);
     }
     return state;
@@ -1962,15 +2001,15 @@
       cancelledRequestAudits: 1,
       activeGroupAResources: 0,
       payments: 0,
-      next: "Continue at step 14 with Riley's Reject Transport request."
+      next: "Continue at step 13 with Riley's Reject Transport request."
     });
   }
 
   function verifyBorrowReject() {
-    const state = requireBorrowPhase("borrow-cancel-verified");
+    const state = requireBorrowPhase(["borrow-cancel-verified", "borrow-reject-ready"]);
     const current = oracle(state);
     assertBorrowImmutableScope(current);
-    assertBorrowDeletedBranch(current, TERTIARY_ASSET_ID, participantUserId);
+    assertBorrowCancelControl(state, current);
     assertBorrowDeletedBranch(current, SECONDARY_ASSET_ID, thirdUserId);
     const capacity = current.assets.find(asset => asset.assetId === PRIMARY_ASSET_ID);
     const runtimeGroups = current.runtime.groupResourceMetricsByAssetOwnerId || {};
@@ -1979,7 +2018,8 @@
     const rejectedRows = notifications.filter(item => item.type === "asset-member-request-declined");
     if (!capacity || capacity.requests.length !== 2
         || Object.prototype.hasOwnProperty.call(runtimeGroups, GROUP_A_ID)
-        || notifications.length !== 3 || requestRows.length !== 2 || rejectedRows.length !== 1
+        || notifications.length !== (state.context.startBlock === 4 ? 2 : 3)
+        || requestRows.length !== (state.context.startBlock === 4 ? 1 : 2) || rejectedRows.length !== 1
         || !rejectedRows[0] || rejectedRows[0].assetId !== SECONDARY_ASSET_ID
         || rejectedRows[0].memberUserId !== thirdUserId
         || !Q.sameJson(rejectedRows[0].recipients, [thirdUserId])) {
@@ -1992,16 +2032,16 @@
       checkpointId,
       phase: "borrow-reject-verified",
       result: "PASS",
-      deletedCancelAndRejectAudits: 2,
+      deletedCancelAndRejectAudits: state.context.startBlock === 4 ? 1 : 2,
       activeGroupAResources: 0,
       payments: 0,
-      next: "Continue at step 21 with Capacity Transport Statistics and Nova's free request."
+      next: "Continue at step 17 with Capacity Transport Statistics and Nova's free request."
     });
   }
 
   function assertBorrowAccepted(state, current, allowPaidEffects = false) {
     assertBorrowImmutableScope(current, allowPaidEffects);
-    assertBorrowDeletedBranch(current, TERTIARY_ASSET_ID, participantUserId);
+    assertBorrowCancelControl(state, current);
     assertBorrowDeletedBranch(current, SECONDARY_ASSET_ID, thirdUserId);
     const capacity = current.assets.find(asset => asset.assetId === PRIMARY_ASSET_ID);
     const novaRequest = capacity && capacity.requests.find(request => request.userId === participantUserId);
@@ -2012,7 +2052,10 @@
       && resource.transportAssetIds.includes(PRIMARY_ASSET_ID));
     const runtimeGroups = current.runtime.groupResourceMetricsByAssetOwnerId || {};
     const groupAMetric = (((runtimeGroups[GROUP_A_ID] || {})[participantUserId] || {}).Transport) || {};
-    const notifications = borrowNotificationRows(state);
+    // Paid branches have their own request/payment checks; keep this free-branch
+    // notification count stable when those later transactions are present.
+    const notifications = borrowNotificationRows(state)
+      .filter(item => !allowPaidEffects || item.assetId !== PAID_ASSET_ID);
     const requestRows = notifications.filter(item => item.type === "asset-admin-join-request");
     const acceptedRows = notifications.filter(item => item.type === "asset-member-request-accepted");
     const rejectedRows = notifications.filter(item => item.type === "asset-member-request-declined");
@@ -2032,7 +2075,8 @@
         || Q.number(groupAResource.transportMetric.accepted) !== 1
         || Q.number(groupAResource.transportMetric.pending) !== 0
         || Q.number(groupAMetric.accepted) !== 1 || Q.number(groupAMetric.pending) !== 0
-        || notifications.length !== 5 || requestRows.length !== 3
+        || notifications.length !== (state.context.startBlock === 4 ? 4 : 5)
+        || requestRows.length !== (state.context.startBlock === 4 ? 2 : 3)
         || acceptedRows.length !== 1 || rejectedRows.length !== 1
         || acceptedRows[0].assetId !== PRIMARY_ASSET_ID
         || acceptedRows[0].memberUserId !== participantUserId
@@ -2195,7 +2239,9 @@
       checkpointId,
       phase: "borrow-verified",
       result: "PASS",
-      freeCancelRejectAccept: true,
+      freeCancelRejectAccept: state.context.startBlock !== 4,
+      freeCancelEvidence: state.context.startBlock === 4 ? "Archived prior run; not replayed in this run." : "Verified in this run.",
+      freeRejectAccept: true,
       overlapCapacityAndStatistics: true,
       scopedManagerWithoutEventRole: true,
       oneUnitReadOnlyQuantity: true,
@@ -2907,7 +2953,7 @@
     if (checkpointId === BORROW_CHECKPOINT) {
       assertBorrowPaymentSimulator(current);
     }
-    const baselineChecks = checkpointId === BORROW_CHECKPOINT && Q.text(state.phase) === "baseline-ready"
+    const baselineChecks = checkpointId === BORROW_CHECKPOINT && ["baseline-ready", "borrow-reject-ready"].includes(Q.text(state.phase))
       ? assertBorrowBaseline(state, current)
       : null;
     Q.printObject({
@@ -2921,7 +2967,9 @@
       baselineChecks,
       expectedVisibleResult: selected.expected,
       next: checkpointId === BORROW_CHECKPOINT
-        ? "Baseline ready. Launch the configured managed sessions, then the user starts the deduplicated ASSET-BORROW-001 guide; Codex performs no browser checklist action."
+        ? (state.context.startBlock === 4
+          ? "Block 4 ready. Launch configured managed sessions; Riley starts step 13."
+          : "Baseline ready. Launch the configured managed sessions, then the user starts the deduplicated ASSET-BORROW-001 guide; Codex performs no browser checklist action.")
         : "Compare the UI screenshot with this identity-level oracle. Record PASS only when asset and event roles remain independently correct."
     });
   }
@@ -2970,6 +3018,8 @@
     case "verify-visibility-readonly": verifyVisibilityReadonly(); break;
     case "repair-visibility-fixture": repairVisibilityFixtureSchema(); break;
     case "verify-visibility-edited": verifyVisibilityEdited(); break;
+    case "inspect-borrow": inspectBorrow(); break;
+    case "prepare-borrow-reject": prepareBorrowReject(); break;
     case "verify-borrow-cancel": verifyBorrowCancel(); break;
     case "verify-borrow-reject": verifyBorrowReject(); break;
     case "verify-borrow-accepted": verifyBorrowAccepted(); break;

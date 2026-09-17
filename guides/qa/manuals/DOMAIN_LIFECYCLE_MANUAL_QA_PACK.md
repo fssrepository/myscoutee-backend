@@ -6551,7 +6551,7 @@ Status: **PASS / CLOSED (2026-09-03)** together with
 
 ### `ASSET-BORROW-001` — scoped borrow lifecycle
 
-Status: **STAGED / BASELINE READY / USER ACTION NOT STARTED — 2026-09-17**.
+Status: **IN PROGRESS / BLOCK 4 READY — 2026-09-17**.
 
 Stable user guide:
 [`ASSET-BORROW-001.md`](../checklists/asset/ASSET-BORROW-001.md).
@@ -6586,8 +6586,45 @@ bash server/docker/scripts/manual-qa-checkpoints/manual-qa-checkpoints-docker.sh
   status asset-domain ASSET-BORROW-001
 ```
 
-Do not restage this baseline. Use the prepared Casey/Nova/Riley windows; the
-user starts Block 1, steps 1–3.
+The initial preparation above is historical. The user requested a fresh restart
+at Block 4 after reviewing the mixed earlier attempts; the current preparation
+and evidence are recorded below.
+
+- **2026-09-17 step 12 and Blocks 1–3 review before reset:** all four Nova
+  Cancel requests and their projections were `D`. No active Group A assignment
+  or Group A runtime resource metric remained; Event activity and Stage
+  groupsPending were zero. Fresh authenticated Casey and Nova HTTP reads each
+  returned zero visible Group A resources and zero Cancel members. Lina's two
+  independent accepted Quantity-1 requests in Group B remained. No checkout or
+  payment existed. This verifies the persisted step-12 removal; it does not
+  independently verify the browser's no-reload rendering. Block 1 retains the
+  previously accepted main-Event observation and the pre-fix Organizer-only
+  qualification. Block 2's control bookings remain consistent, but its date
+  selection interactions cannot be reconstructed from storage. The four
+  attempts prevent an exactly-once clean-run claim for Block 3. No repeat of
+  Blocks 1–3 is required for the requested continuation.
+  Evidence: `/tmp/asset-borrow-block4/step12-http.json`,
+  `/tmp/asset-borrow-block4.QIP5RR/previous-run.json` (full scoped archive).
+- **Block 4 restage at 2026-09-17 12:36 CEST:**
+  [`restage-asset-borrow-block-4.sh`](../tools/restage-asset-borrow-block-4.sh)
+  archived the previous run, performed the normal snapshot-backed reset and
+  stage, and prepared `borrow-reject-ready` with `startBlock=4`. Independent
+  status passed all ten baseline checks. Group A is empty, Cancel/Reject/Paid
+  have no requests, and Group B has two accepted one-item controls. No earlier
+  successful lifecycle or notification was fabricated. Casey/Nova/Riley
+  windows were relaunched through the versioned launcher; the user starts
+  **Block 4, step 13 as Riley**. Current local ranges: overlap September 17
+  11:36–September 24 12:36; non-overlap September 25 12:36–September 26 12:36;
+  paid September 18 12:36–September 20 12:36 (HUF 6400 for two days).
+  Reset/stage/status evidence: `/tmp/asset-borrow-block4.QIP5RR/`.
+  Subsequent oracles require Cancel to remain unused for this restart and
+  count notifications from Block 4 onward. Paid notifications are checked by
+  their paid branch and excluded from the retained free-branch totals.
+  Ten in-memory checks of the harness guards passed, covering the new restart,
+  stale Cancel data, missing Reject action, phase guards, free/paid notification
+  separation and preservation of the full-run path. These are harness checks,
+  not manual lifecycle evidence. Syntax and diff checks passed.
+  No application code changed during this review/restage.
 
 - This checkpoint owns the free cancel/reject/accept and overlap-capacity
   branches plus one narrow paid parity branch. Every free and paid Borrow form
