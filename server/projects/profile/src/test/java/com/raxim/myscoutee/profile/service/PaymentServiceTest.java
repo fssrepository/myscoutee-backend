@@ -354,6 +354,7 @@ class PaymentServiceTest {
         when(eventsRepository.findBySourceId("asset-1")).thenReturn(List.of());
         EventCheckoutPricingService pricingService = new EventCheckoutPricingService(
                 eventsRepository,
+                org.mockito.Mockito.mock(com.raxim.myscoutee.profile.repository.ActivityMembersRepository.class),
                 org.mockito.Mockito.mock(TranslationService.class));
         PaymentService service = new PaymentService(
                 List.of(stripe),

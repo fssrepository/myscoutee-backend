@@ -255,9 +255,12 @@ public class AssetsService {
         if (!StringUtils.hasText(normalizedEventId) || !StringUtils.hasText(normalizedSubEventId)) {
             return null;
         }
+        int groupOwnerMarker = normalizedEventId.indexOf(":" + normalizedSubEventId + ":");
+        String runtimeEventId = groupOwnerMarker > 0
+                ? normalizedEventId.substring(0, groupOwnerMarker) : normalizedEventId;
         Query eventQuery = Query.query(new Criteria().orOperator(
-                Criteria.where("_id").is(normalizedEventId),
-                Criteria.where("sourceId").is(normalizedEventId)));
+                Criteria.where("_id").is(runtimeEventId),
+                Criteria.where("sourceId").is(runtimeEventId)));
         ActivityEvent event = mongoTemplate.findOne(eventQuery, ActivityEvent.class);
         if (event == null || !STATUS_ACTIVE.equals(safeText(event.getStatus()))) {
             return null;
@@ -1521,6 +1524,15 @@ public class AssetsService {
             String eventId,
             String subEventId,
             String requestStatus) {
+        return findAssetByAssetIdWithScopedRequests(assetId, eventId, subEventId, requestStatus, null);
+    }
+
+    public Optional<Asset> findAssetByAssetIdWithScopedRequests(
+            String assetId,
+            String eventId,
+            String subEventId,
+            String requestStatus,
+            String assetRequestId) {
         String normalizedAssetId = normalizeId(assetId);
         String normalizedEventId = normalizeId(eventId);
         String normalizedSubEventId = normalizeId(subEventId);
@@ -1531,12 +1543,20 @@ public class AssetsService {
             return Optional.empty();
         }
 
-        List<String> scopedEventIds = new ArrayList<>(new LinkedHashSet<>(List.of(
-                normalizedEventId,
-                authorizationEventId(normalizedEventId, normalizedSubEventId))));
+        List<String> scopedEventIds = new ArrayList<>();
+        scopedEventIds.add(normalizedEventId);
+        if (!normalizedEventId.contains(":" + normalizedSubEventId + ":")) {
+            String authorizationId = authorizationEventId(normalizedEventId, normalizedSubEventId);
+            if (!scopedEventIds.contains(authorizationId)) {
+                scopedEventIds.add(authorizationId);
+            }
+        }
         List<Document> requestConditions = new ArrayList<>();
         requestConditions.add(new Document("$in", List.of("$$request.booking.eventId", scopedEventIds)));
         requestConditions.add(new Document("$eq", List.of("$$request.booking.subEventId", normalizedSubEventId)));
+        if (StringUtils.hasText(assetRequestId)) {
+            requestConditions.add(new Document("$eq", List.of("$$request._id", normalizeId(assetRequestId))));
+        }
         requestConditions.add(new Document("$ne", List.of("$$request.status", STATUS_DELETED)));
         requestConditions.add(new Document("$ne", List.of("$$request.status", "deleted")));
         if (StringUtils.hasText(normalizedRequestStatus)) {
@@ -2038,7 +2058,42 @@ public class AssetsService {
                     .and("_id").in(removedProjectionIds));
             mongoTemplate.remove(staleQuery, AssetRequest.class);
         }
+        removeCancelledBorrowAssignments(existing, saved);
         refreshEventSubEventResourceCounters(existing, saved);
+    }
+
+    private void removeCancelledBorrowAssignments(Asset existing, Asset saved) {
+        ActivitiesResourcesService resources = activitiesResourcesServiceProvider == null
+                ? null : activitiesResourcesServiceProvider.getIfAvailable();
+        if (existing == null || saved == null || resources == null) {
+            return;
+        }
+        Map<String, AssetRequestRecord> nextById = requestsById(saved.getRequests());
+        Set<String> removedScopes = new LinkedHashSet<>();
+        for (AssetRequestRecord previous : safeRequests(existing.getRequests())) {
+            if (previous == null || previous.booking() == null
+                    || !"borrow".equals(previous.requestKind()) || !"pending".equals(previous.status())) {
+                continue;
+            }
+            AssetRequestRecord next = nextById.get(previous.id());
+            if (next != null && !isDeletedAssetRequest(next)) {
+                continue;
+            }
+            String ownerId = normalizeId(previous.booking().eventId());
+            String subEventId = normalizeId(previous.booking().subEventId());
+            String borrowerId = normalizeId(previous.userId());
+            if (ownerId == null || subEventId == null || borrowerId == null) {
+                continue;
+            }
+            boolean anotherRequestRemains = nextById.values().stream()
+                    .anyMatch(item -> !isDeletedAssetRequest(item)
+                            && borrowerId.equals(normalizeId(item.userId()))
+                            && isRequestInScope(item, ownerId, subEventId));
+            if (!anotherRequestRemains && removedScopes.add(ownerId + "\n" + subEventId + "\n" + borrowerId)) {
+                resources.removeCancelledBorrowAssignment(ownerId, subEventId,
+                        saved.getAssetId(), borrowerId, saved.getUpdatedUser());
+            }
+        }
     }
 
     private void refreshEventSubEventResourceCounters(Asset existing, Asset saved) {
@@ -2151,6 +2206,9 @@ public class AssetsService {
 
         String previousStatus = normalizeRequestStatus(previous.status());
         String nextStatus = normalizeRequestStatus(next.status());
+        if ("pending".equals(previousStatus) && isDeletedAssetRequest(next)) {
+            return canApplyRemovedAssetRequestPolicy(assetId, previous, fullAssetWriteAllowed);
+        }
         if ("pending".equals(previousStatus) && MEMBER_STATUS_ACCEPTED.equals(nextStatus)) {
             return accessControlService.canCurrentActorApproveAssetBorrow(requesterUserId, assetId);
         }

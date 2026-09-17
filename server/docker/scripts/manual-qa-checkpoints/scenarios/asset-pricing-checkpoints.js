@@ -18,7 +18,7 @@
     nova: `${PREFIX}:card:nova-barion-4444`,
     riley: `${PREFIX}:card:riley-barion-5555`
   };
-  const ACTIVE_PAYMENT_AMOUNT = 4600;
+  const ACTIVE_PAYMENT_AMOUNT = 2300;
   const NO_POLICY_PAYMENT_AMOUNT = 800;
   const CUTOFF_PAYMENT_AMOUNT = 900;
   const command = Q.text(process.env.MANUAL_QA_COMMAND);
@@ -136,7 +136,7 @@
       enabled: false,
       mode: "fixed",
       basePrice: 0,
-      currency: "HUF",
+      currency: "USD",
       taxMode: "included",
       chargeType: "per_booking",
       quantityRulesEnabled: false,
@@ -169,13 +169,13 @@
       enabled: true,
       mode: "hybrid",
       basePrice: 999,
-      currency: "HUF",
+      currency: "USD",
       taxMode: "included",
       chargeType: "per_attendee",
       quantityRulesEnabled: true,
       quantityRules: [{
-        id: "qa-pricing-quantity-two",
-        minQuantity: 2,
+        id: "qa-pricing-quantity-one",
+        minQuantity: 1,
         action: { kind: "decrease_amount", value: 49 }
       }],
       minPrice: 900,
@@ -183,9 +183,9 @@
       rounding: "whole",
       demandRulesEnabled: true,
       demandRules: [{
-        id: "qa-pricing-demand-67",
+        id: "qa-pricing-demand-33",
         operator: "gte",
-        capacityFilledPercent: 67,
+        capacityFilledPercent: 33,
         action: { kind: "increase_percent", value: 10 },
         appliesTo: "all_slots",
         slotIds: []
@@ -208,21 +208,6 @@
     };
   }
 
-  function audiencePricing() {
-    return {
-      enabled: true,
-      memberPrice: 800,
-      vipPrice: 600,
-      inviteOnlyDiscountPercent: 20,
-      promoCodes: [{
-        id: "qa-pricing-promo-10",
-        code: "QA10",
-        action: { kind: "decrease_percent", value: 10 }
-      }],
-      soldOutLabel: "Unavailable"
-    };
-  }
-
   function normalizedRules(items, mapper) {
     return (items || []).map(mapper);
   }
@@ -230,7 +215,7 @@
   function policyView(value) {
     return {
       enabled: value && value.enabled === true,
-      rules: normalizedRules(value && value.rules, item => ({
+      rules: normalizedRules(value && value.enabled === true ? value.rules : [], item => ({
         offsetUnit: Q.text(item && item.offsetUnit),
         offsetValue: Number(item && item.offsetValue),
         refundKind: Q.text(item && item.refundKind),
@@ -250,7 +235,7 @@
       taxMode: Q.text(pricing.taxMode),
       chargeType: Q.text(pricing.chargeType),
       quantityRulesEnabled: pricing.quantityRulesEnabled === true,
-      quantityRules: normalizedRules(pricing.quantityRules, item => ({
+      quantityRules: normalizedRules(pricing.quantityRulesEnabled === true ? pricing.quantityRules : [], item => ({
         minQuantity: Number(item && item.minQuantity),
         action: {
           kind: Q.text(item && item.action && item.action.kind),
@@ -261,7 +246,7 @@
       maxPrice: pricing.maxPrice == null ? null : Number(pricing.maxPrice),
       rounding: Q.text(pricing.rounding),
       demandRulesEnabled: pricing.demandRulesEnabled === true,
-      demandRules: normalizedRules(pricing.demandRules, item => ({
+      demandRules: normalizedRules(pricing.demandRulesEnabled === true ? pricing.demandRules : [], item => ({
         operator: Q.text(item && item.operator),
         capacityFilledPercent: Number(item && item.capacityFilledPercent),
         action: {
@@ -272,7 +257,7 @@
         slotIds: sorted(item && item.slotIds)
       })),
       timeRulesEnabled: pricing.timeRulesEnabled === true,
-      timeRules: normalizedRules(pricing.timeRules, item => ({
+      timeRules: normalizedRules(pricing.timeRulesEnabled === true ? pricing.timeRules : [], item => ({
         trigger: Q.text(item && item.trigger),
         offsetValue: Number(item && item.offsetValue),
         action: {
@@ -284,7 +269,7 @@
       })),
       cancellationPolicy: policyView(pricing.cancellationPolicy),
       slotPricingEnabled: pricing.slotPricingEnabled === true,
-      slotOverrides: normalizedRules(pricing.slotOverrides, item => item),
+      slotOverrides: normalizedRules(pricing.slotPricingEnabled === true ? pricing.slotOverrides : [], item => item),
       audience: {
         enabled: audience.enabled === true,
         memberPrice: audience.memberPrice == null ? null : Number(audience.memberPrice),
@@ -383,6 +368,41 @@
     return copy;
   }
 
+  function stageDefinitions(stages, eventStart) {
+    let previousStart = new Date(eventStart).getTime();
+    return [...stages].sort((a, b) => new Date(a.startAt) - new Date(b.startAt)).map(stage => {
+      const start = new Date(stage.startAt).getTime();
+      const definition = subEventDefinition(stage);
+      definition.timing = "During";
+      definition.offsetMinutes = (start - previousStart) / 60000;
+      definition.durationMinutes = (new Date(stage.endAt).getTime() - start) / 60000;
+      previousStart = start;
+      return definition;
+    });
+  }
+
+  function assertStageTiming(event) {
+    const stages = event && event.subEvents || [];
+    const definitions = event && event.subEventDefinitions || [];
+    if (stages.length !== 3 || definitions.length !== 3
+        || !Q.sameJson(sorted(stages.map(item => item.id)), sorted(definitions.map(item => item.id)))) {
+      Q.fail("Pricing stage definitions and runtime stages do not match.");
+    }
+    let start = new Date(event.startAtIso).getTime();
+    for (const definition of definitions) {
+      if (definition.timing !== "During" || !Number.isInteger(definition.offsetMinutes)
+          || definition.offsetMinutes < 0 || !Number.isInteger(definition.durationMinutes)
+          || definition.durationMinutes <= 0) Q.fail("Invalid Pricing stage timing definition.");
+      start += definition.offsetMinutes * 60000;
+      const end = start + definition.durationMinutes * 60000;
+      const stage = stages.find(item => item.id === definition.id);
+      if (start !== new Date(stage.startAt).getTime() || end !== new Date(stage.endAt).getTime()
+          || end > new Date(event.endAtIso).getTime()) {
+        Q.fail(`Pricing stage '${definition.name}' definition disagrees with its Borrow window.`);
+      }
+    }
+  }
+
   function eventDocument(nowIso, windows) {
     const variable = subEvent(
       VARIABLE_SUB_EVENT_ID,
@@ -440,7 +460,7 @@
       invitedMemberUserIds: [],
       pendingRequestMemberUserIds: [],
       subEventsEnabled: true,
-      subEventDefinitions: [variable, noPolicy, cutoff].map(subEventDefinition),
+      subEventDefinitions: stageDefinitions([variable, noPolicy, cutoff], windows.cutoff.start),
       subEvents: [variable, noPolicy, cutoff],
       pricing: pricingOff(),
       policiesEnabled: false,
@@ -664,6 +684,7 @@
 
   function assertBaseline(checkSimulator = true) {
     if (checkSimulator) assertSimulator();
+    assertStageTiming(Q.collection("events").findOne(eventSelector));
     const current = oracle();
     if (!current.asset
         || current.asset.assetId !== ASSET_ID
@@ -730,7 +751,7 @@
         || view.status !== "captured"
         || view.provider !== "barion"
         || view.amount !== expected.amount
-        || view.currency !== "HUF"
+        || view.currency !== "USD"
         || view.bookingQuantity !== expected.quantity
         || !sameInstant(view.bookingStartAtIso, expected.startAtIso)
         || !sameInstant(view.bookingEndAtIso, expected.endAtIso)
@@ -756,8 +777,7 @@
         { key: "demand", amount: 95, multiplier: 1 },
         { key: "time", amount: 104.5, multiplier: 1 },
         { key: "rounding", amount: 0.5, multiplier: 1 },
-        { key: "duration", amount: 1150, multiplier: 2 },
-        { key: "quantity", amount: 2300, multiplier: 2 }
+        { key: "duration", amount: 1150, multiplier: 2 }
       ];
     }
     return [{ key: "base", amount: kind === "no-policy" ? 800 : 900, multiplier: 1 }];
@@ -902,6 +922,7 @@
       });
       return;
     }
+    assertStageTiming(Q.collection("events").findOne(eventSelector));
     if (Q.text(currentState.phase) === "baseline-ready") assertBaseline();
     Q.printObject({
       scenario: SCENARIO,
@@ -928,22 +949,22 @@
     assertNoPayments();
     const pricing = assertPricing(hybridPricing(), "variable");
     updatePhase("variable-verified");
-    Q.printObject({ scenario: SCENARIO, checkpointId: CHECKPOINT, phase: "variable-verified", pricing, expectedQuantityTwoTotal: ACTIVE_PAYMENT_AMOUNT, next: "Continue with the Audience Pricing probe." });
+    Q.printObject({ scenario: SCENARIO, checkpointId: CHECKPOINT, phase: "variable-verified", pricing, expectedOneItemTotal: ACTIVE_PAYMENT_AMOUNT, next: "Check Nova's one-item price and Riley's missing internal stage menu." });
   }
 
   function verifyAudience() {
     config();
     phaseIs("variable-verified");
     assertNoPayments();
-    const pricing = assertPricing(hybridPricing(audiencePricing()), "audience");
+    const pricing = assertPricing(hybridPricing(), "same-public-asset-price");
     updatePhase("audience-observed");
     Q.printObject({
       scenario: SCENARIO,
       checkpointId: CHECKPOINT,
       phase: "audience-observed",
       pricing,
-      developmentGate: "This oracle may run only after Asset member/VIP/invite/promo pricing and promo entry/application are implemented end-to-end.",
-      next: "Disable Audience Pricing, enable the one-day/50% policy and capture Nova's HUF 4,600 payment."
+      scope: "Asset has no VIP or audience form. The user checks Nova's price and that non-member Riley has no internal stage menu; this read only verifies the saved pricing configuration.",
+      next: "Enable the one-day/50% policy and capture Nova's USD 2,300 payment."
     });
   }
 
@@ -960,7 +981,7 @@
       label: "active-policy",
       userId: NOVA_ID,
       amount: ACTIVE_PAYMENT_AMOUNT,
-      quantity: 2,
+      quantity: 1,
       startAtIso: currentState.context.variableStartAtIso,
       endAtIso: currentState.context.variableEndAtIso,
       subEventId: VARIABLE_SUB_EVENT_ID,
@@ -971,7 +992,7 @@
       activePaymentId: payment._id,
       activePaymentSnapshot: payment
     });
-    Q.printObject({ scenario: SCENARIO, checkpointId: CHECKPOINT, phase: "active-payment-verified", payment: view, next: "Set fixed HUF 800 with no policy, then Riley pays for the No policy stage." });
+    Q.printObject({ scenario: SCENARIO, checkpointId: CHECKPOINT, phase: "active-payment-verified", payment: view, next: "Set fixed USD 800 with no policy, then Nova pays for the No policy stage." });
   }
 
   function verifyNoPolicyPayment() {
@@ -986,10 +1007,10 @@
     if (!unchangedPayment(currentState.activePaymentSnapshot, active)) {
       Q.fail("the active-policy payment changed after the live Asset pricing edit.");
     }
-    const payment = paymentBy(RILEY_ID, NO_POLICY_PAYMENT_AMOUNT);
+    const payment = paymentBy(NOVA_ID, NO_POLICY_PAYMENT_AMOUNT);
     const view = assertPayment(payment, {
       label: "no-policy",
-      userId: RILEY_ID,
+      userId: NOVA_ID,
       amount: NO_POLICY_PAYMENT_AMOUNT,
       quantity: 1,
       startAtIso: currentState.context.noPolicyStartAtIso,
@@ -1002,7 +1023,7 @@
       noPolicyPaymentId: payment._id,
       noPolicyPaymentSnapshot: payment
     });
-    Q.printObject({ scenario: SCENARIO, checkpointId: CHECKPOINT, phase: "no-policy-payment-verified", payment: view, next: "Set fixed HUF 900 with the one-day/50% policy, then Nova pays for the Cutoff stage." });
+    Q.printObject({ scenario: SCENARIO, checkpointId: CHECKPOINT, phase: "no-policy-payment-verified", payment: view, next: "Set fixed USD 900 with the one-day/50% policy, then Nova pays for the Cutoff stage." });
   }
 
   function verifyCutoffPayment() {
@@ -1014,7 +1035,7 @@
       Q.fail(`cutoff phase requires exactly three primary/payment documents, found ${payments.length}.`);
     }
     const active = paymentBy(NOVA_ID, ACTIVE_PAYMENT_AMOUNT);
-    const noPolicyPayment = paymentBy(RILEY_ID, NO_POLICY_PAYMENT_AMOUNT);
+    const noPolicyPayment = paymentBy(NOVA_ID, NO_POLICY_PAYMENT_AMOUNT);
     if (!unchangedPayment(currentState.activePaymentSnapshot, active)
         || !unchangedPayment(currentState.noPolicyPaymentSnapshot, noPolicyPayment)) {
       Q.fail("an earlier payment changed after the final live Asset pricing edit.");
@@ -1051,7 +1072,7 @@
       Q.fail("terminal pricing oracle requires exactly three primary captured payments and no revisions.");
     }
     const active = paymentBy(NOVA_ID, ACTIVE_PAYMENT_AMOUNT);
-    const noPolicyPayment = paymentBy(RILEY_ID, NO_POLICY_PAYMENT_AMOUNT);
+    const noPolicyPayment = paymentBy(NOVA_ID, NO_POLICY_PAYMENT_AMOUNT);
     const cutoff = paymentBy(NOVA_ID, CUTOFF_PAYMENT_AMOUNT);
     if (!unchangedPayment(currentState.activePaymentSnapshot, active)
         || !unchangedPayment(currentState.noPolicyPaymentSnapshot, noPolicyPayment)
@@ -1092,6 +1113,53 @@
     });
   }
 
+  function repairStageTiming() {
+    config();
+    const currentState = state();
+    const event = Q.collection("events").findOne(eventSelector);
+    const context = currentState.context;
+    const expectedWindows = [
+      [CUTOFF_SUB_EVENT_ID, context.cutoffStartAtIso, context.cutoffEndAtIso],
+      [VARIABLE_SUB_EVENT_ID, context.variableStartAtIso, context.variableEndAtIso],
+      [NO_POLICY_SUB_EVENT_ID, context.noPolicyStartAtIso, context.noPolicyEndAtIso]
+    ];
+    if (!event || event.ownerUserId !== CASEY_ID || event.startAtIso !== context.cutoffStartAtIso
+        || event.endAtIso !== context.noPolicyEndAtIso || event.subEvents?.length !== 3
+        || event.subEventDefinitions?.length !== 3
+        || expectedWindows.some(([id, start, end]) => !event.subEvents.some(stage =>
+          stage.id === id && stage.startAt === start && stage.endAt === end))) {
+      Q.fail("Stage timing repair requires the original checkpoint-owned runtime windows.");
+    }
+    const ordered = stageDefinitions(event.subEvents, event.startAtIso);
+    const definitions = ordered.map(stage => {
+      const original = event.subEventDefinitions.find(item => item.id === stage.id);
+      if (!original || original.timing !== "During" || original.durationMinutes !== stage.durationMinutes
+          || ![0, stage.offsetMinutes].includes(original.offsetMinutes)) {
+        Q.fail("Stage timing repair found an unexpected definition; no writes performed.");
+      }
+      return { ...original, offsetMinutes: stage.offsetMinutes };
+    });
+    const corrected = { ...event, subEventDefinitions: definitions };
+    assertStageTiming(corrected);
+    const protectedSpecs = staticSpecs().filter(spec =>
+      ["assets", "activityMembers", "assetRequests", "activityResources", "eventCheckoutBasketItems", "payments", "savedPaymentMethods"].includes(spec.collection));
+    const before = Q.snapshotSpecs(protectedSpecs);
+    const result = Q.collection("events").updateOne(
+      { _id: event._id, subEventDefinitions: event.subEventDefinitions, subEvents: event.subEvents },
+      { $set: { subEventDefinitions: definitions } }
+    );
+    if (result.matchedCount !== 1) Q.fail("Event changed during stage timing repair.");
+    const after = Q.collection("events").findOne({ _id: event._id });
+    assertStageTiming(after);
+    if (!samePersisted(after, corrected) || !samePersisted(before, Q.snapshotSpecs(protectedSpecs))) {
+      Q.fail("State changed during stage timing repair; inspect before continuing.");
+    }
+    Q.printObject({ scenario: SCENARIO, checkpointId: CHECKPOINT, phase: "stage-timing-repaired",
+      stageTimingVerified: true, pricingAndTransactionsUnchanged: true,
+      stages: after.subEvents.map(item => ({ id: item.id, startAt: item.startAt, endAt: item.endAt })),
+      next: "User reloads once to replace the old stage dates, then reopens Variable-stage Explore and Borrow." });
+  }
+
   Q.assertDeploymentSafety();
   if (command === "stage") stage();
   else if (command === "status") status();
@@ -1103,5 +1171,6 @@
   else if (command === "verify-cutoff-payment") verifyCutoffPayment();
   else if (command === "verify") verify();
   else if (command === "reset") reset();
+  else if (command === "repair-stage-timing") repairStageTiming();
   else Q.fail(`unsupported asset-pricing command '${command}'.`);
 })();

@@ -11,7 +11,7 @@ a=p.parse_args()
 if a.output.exists():p.error('Use a new output path')
 def run(*args,data=None):return subprocess.check_output(args,input=data,timeout=90)
 version=run('dpkg-query','-W','-f=${Version}','myscoutee').decode().strip()
-if not re.fullmatch(r'\d+\.\d+\.\d+~qa\.[1-9]\d*',version):p.error('QA guest package required')
+if not re.fullmatch(r'\d+\.\d+\.\d+(~qa\.[1-9]\d*)?',version):p.error('Stable or QA guest package required')
 js=r'''
 const crypto=require('crypto');
 function canonical(v) {

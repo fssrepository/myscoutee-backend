@@ -6551,20 +6551,42 @@ Status: **PASS / CLOSED (2026-09-03)** together with
 
 ### `ASSET-BORROW-001` — scoped borrow lifecycle
 
-Status: **STAGED / BASELINE READY / BROWSER RELAUNCH REQUIRED / USER ACTION NOT STARTED**.
+Status: **PASS / CLOSED — 2026-09-17 (user-accepted final-state variation)**.
+
+The user explicitly accepted closure without switching Organizer only back on.
+The reviewed final state remains accepted Manager with organizerOnly false:
+two independent accepted one-item Paid requests, two captured HUF 6400 payments,
+Paid participants two and Group A Transport accepted three/pending zero.
+Earlier Organizer-only-on and participant transitions retain their recorded
+checks; free branches and Group B are unchanged. This is manual acceptance
+with the documented variation, not a claim that `verify-borrow-terminal` passed
+its Organizer-only-on assertion. No application, fixture, harness assertion or
+stable checklist was changed for this acceptance. Retain the live fixture and
+evidence; no reset or replay is required for this closure.
 
 Stable user guide:
 [`ASSET-BORROW-001.md`](../checklists/asset/ASSET-BORROW-001.md).
 
-The revised fixture was restaged at `2026-09-08T09:24:00.778Z`. Its read-only
-status proves all ten baseline guards: exactly four Public Transport controls
-(three free plus one HUF 3200 Barion Asset), Lina's retained Quantity-`2`
-Group B reservation and scoped Manager assignment, the exact Event/Stage/Group
-memberships, Nova's saved Mastercard 4444, no Group A resource, and zero
-checkout basket/payment or premature notification. The current fixture remains
-`baseline-ready`. It was restaged after the previous managed windows were
-opened, so those windows are not valid evidence; the versioned launcher has not
-yet replaced them. No browser checklist action has started.
+After Pricing closure, its normal reset restored the pre-fixture baseline and
+verified zero scoped artifacts. The existing Borrow stage and independent
+status then passed all ten baseline checks: four Public Transport controls,
+Lina's accepted Quantity-2 Group B reservation, exact Event/Stage/Group roles,
+Nova's saved Barion Mastercard 4444, and no Group A checkout, payment or early
+notification. The overlap range is September 17 09:32 to September 24 10:32;
+non-overlap is September 25 10:32 to September 26 10:32, Europe/Bratislava.
+The old September 8 preparation is superseded by this fresh baseline.
+
+The user additionally reported that Payment history's Payment summary showed
+only the generic started-days label. The shared payment basket now displays
+the saved duration multiplier with the existing translated day/days unit;
+amounts and stored snapshots are unchanged. The existing frontend watcher build
+passed. The paid Borrow steps use September 18 10:32 to September 20 10:32,
+HUF 3200/day and HUF 6400 total, so the user can compare **2 days** on Borrow,
+Payment and Payment summary. This visual follow-up remains pending.
+The saved-data oracle's former flat HUF 3200 expectation was corrected to the
+existing daily-price contract; date comparisons for the accepted request now
+use the UI's minute precision. No fixture-generation or product-pricing rule
+was changed. User controls every checklist action after managed startup.
 
 Its versioned stage/status commands are:
 
@@ -6575,9 +6597,155 @@ bash server/docker/scripts/manual-qa-checkpoints/manual-qa-checkpoints-docker.sh
   status asset-domain ASSET-BORROW-001
 ```
 
-Do not restage this baseline. Run `prepare-browser`, replace the configured
-Casey/Nova/Riley windows once through the versioned launcher, then hand control
-to the user at step 1.
+The initial preparation above is historical. The user requested a fresh restart
+at Block 4 after reviewing the mixed earlier attempts; the current preparation
+and evidence are recorded below.
+
+- **2026-09-17 step 12 and Blocks 1–3 review before reset:** all four Nova
+  Cancel requests and their projections were `D`. No active Group A assignment
+  or Group A runtime resource metric remained; Event activity and Stage
+  groupsPending were zero. Fresh authenticated Casey and Nova HTTP reads each
+  returned zero visible Group A resources and zero Cancel members. Lina's two
+  independent accepted Quantity-1 requests in Group B remained. No checkout or
+  payment existed. This verifies the persisted step-12 removal; it does not
+  independently verify the browser's no-reload rendering. Block 1 retains the
+  previously accepted main-Event observation and the pre-fix Organizer-only
+  qualification. Block 2's control bookings remain consistent, but its date
+  selection interactions cannot be reconstructed from storage. The four
+  attempts prevent an exactly-once clean-run claim for Block 3. No repeat of
+  Blocks 1–3 is required for the requested continuation.
+  Evidence: `/tmp/asset-borrow-block4/step12-http.json`,
+  `/tmp/asset-borrow-block4.QIP5RR/previous-run.json` (full scoped archive).
+- **Block 4 restage at 2026-09-17 12:36 CEST:**
+  [`restage-asset-borrow-block-4.sh`](../tools/restage-asset-borrow-block-4.sh)
+  archived the previous run, performed the normal snapshot-backed reset and
+  stage, and prepared `borrow-reject-ready` with `startBlock=4`. Independent
+  status passed all ten baseline checks. Group A is empty, Cancel/Reject/Paid
+  have no requests, and Group B has two accepted one-item controls. No earlier
+  successful lifecycle or notification was fabricated. Casey/Nova/Riley
+  windows were relaunched through the versioned launcher; the user starts
+  **Block 4, step 13 as Riley**. Current local ranges: overlap September 17
+  11:36–September 24 12:36; non-overlap September 25 12:36–September 26 12:36;
+  paid September 18 12:36–September 20 12:36 (HUF 6400 for two days).
+  Reset/stage/status evidence: `/tmp/asset-borrow-block4.QIP5RR/`.
+  Subsequent oracles require Cancel to remain unused for this restart and
+  count notifications from Block 4 onward. Paid notifications are checked by
+  their paid branch and excluded from the retained free-branch totals.
+  Ten in-memory checks of the harness guards passed, covering the new restart,
+  stale Cancel data, missing Reject action, phase guards, free/paid notification
+  separation and preservation of the full-run path. These are harness checks,
+  not manual lifecycle evidence. Syntax and diff checks passed.
+  No application code changed during this review/restage.
+
+- **Block 4 Reject failure and fix — 2026-09-17 12:50 CEST:** Casey's
+  `/assets/upsert` returned HTTP 200 with an empty body. Riley's single request
+  remained pending. The service preserves removed requests as `D` audits before
+  policy evaluation, but its update-policy branch omitted pending-to-deleted.
+  Added that transition using the existing removal policy (Reject or Cancel
+  permission); full Asset edit alone remains insufficient. No fixture or date
+  validation change. Before the fix, three focused authorization cases failed;
+  after the existing watcher build/restart, all 25 focused policy, cancellation,
+  window and assignment regressions passed. The broader AssetsServiceTest could
+  not compile because of existing assetReadService helper signature mismatches;
+  it is not claimed as passing. Local adapter source review found no equivalent
+  Java policy gate; local execution was not repeated.
+  Fresh authenticated owner HTTP read returned the same pending Riley request
+  ending `c0f142c6-9f63-41de-9d20-28ec5dc193e4`. Its user-selected range is the
+  full Stage (September 17–October 17), valid for this rejection check; the
+  later Capacity check still uses its documented overlap range. No reset,
+  request submission or rejection was performed by Codex. User retries step 14
+  on the existing confirmation. Evidence: `/tmp/borrow-reject-before.log`,
+  `/tmp/borrow-reject-after.log`, `/tmp/borrow-reject-read-after.json`.
+
+- **Block 4 PASS — 2026-09-17:** user reported the rejection working.
+  `verify-borrow-reject` passed and saved `borrow-reject-verified`. Exactly one
+  Riley Reject request and projection remain as deleted audits, with no active
+  Group A resource or Group A runtime resource metric. Outbox contains exactly
+  the original request notification to Casey and one rejection notification to
+  Riley. Lina's two accepted Quantity-1 Group B controls, Event/Stage/Group
+  memberships, unused Cancel/Paid controls and zero-payment state are unchanged.
+  The selected full-Stage range is retained as rejection evidence; the next
+  capacity branch uses the documented overlap range. No reset or browser action
+  by Codex. Evidence: `/tmp/borrow-reject-verification.log` and
+  `/tmp/borrow-reject-verified-state.json`. Continue Block 5, steps 17–21;
+  next oracle is `verify-borrow-accepted`.
+
+- **Block 5 PASS — 2026-09-17:** user reported the free-accept/capacity
+  block working. `verify-borrow-accepted` passed and saved
+  `borrow-accepted-verified`. Capacity retains three distinct accepted
+  Quantity-1 requests: Nova Group A one, Lina Group B two, occupied quantity
+  three. Nova's September 17 11:36–September 24 12:36 booking matches the
+  overlap baseline at the UI's minute precision. Group A assignment/runtime
+  accepted is one and pending zero; Group B remains accepted two/pending zero.
+  Nova's assignment is scoped to Group A, with no Event/Stage/Group membership
+  changes. Exactly one Capacity request notification to Casey and one acceptance
+  notification to Nova exist; Reject remains deleted, Cancel/Paid unused, and
+  no payment exists. Evidence: `/tmp/borrow-accepted-verification.log` and
+  `/tmp/borrow-accepted-verified-state.json`. No reset or code change.
+  Continue Block 6, steps 22–25; Casey must not approve Paid Transport yet.
+  Next oracle: `verify-borrow-paid-pending-organizer`.
+
+- **Block 6 PASS — 2026-09-17:** user reported the block working.
+  The first oracle failed because its retained free-branch check incorrectly
+  expected the aggregate Group A Transport metric to stay accepted 1/pending 0
+  after a Paid request. The harness now checks the exact additional paid
+  contribution for each phase: pending Organizer-only adds 0/1, accepted
+  participant adds 1/0, terminal Organizer-only adds 0/0. Both resource and
+  runtime totals remain strictly checked; nine in-memory guard cases passed,
+  including incorrect/mismatched counts and preservation of the free branch.
+  No application or fixture data changed. The corrected
+  `verify-borrow-paid-pending-organizer` passed and saved
+  `borrow-paid-pending-organizer-verified`: exactly one pending Quantity-1 Paid
+  request/projection, one captured and fulfilled Barion HUF 6400 payment, one
+  owner request notification, and Nova pending Manager with organizerOnly true.
+  Free branches and Event/Stage/Group memberships remain unchanged.
+  The actual user-selected paid range is September 17 11:36–September 18 12:36
+  local, 25 hours and two billable started days, rather than the guide's exact
+  48-hour range. Preserve this qualification and reuse the actual first-booking
+  range for Block 8's overlap check. Payment-history visual confirmation is
+  covered by the user's block report, not an independent browser inspection.
+  Evidence: `/tmp/borrow-paid-pending-verification.log` (old harness failure),
+  `/tmp/borrow-paid-pending-state.json`,
+  `/tmp/borrow-paid-pending-verification-after.log` (PASS).
+  Continue steps 26–27, then `verify-borrow-paid-accepted-participant`.
+
+- **Block 7 steps 26–27 PASS — 2026-09-17:** user reported success;
+  `verify-borrow-paid-accepted-participant` passed and saved
+  `borrow-paid-accepted-participant-verified`. The existing one-item Paid request
+  is accepted, Nova remains Manager and organizerOnly is false. The single
+  captured HUF 6400 payment is unchanged. Shared Group A Transport is accepted
+  two/pending zero; earlier free branches and Group B controls remain intact.
+  Evidence: `/tmp/borrow-paid-accepted-verification.log` and
+  `/tmp/borrow-paid-accepted-state.json`. Step 28 is next, then Block 8 using
+  the actual first-request range September 17 11:36–September 18 12:36.
+  No reset or manual checklist action by Codex.
+- **Button-ring presentation follow-up:** user reported that resized loading
+  outlines stretch away from the button curve. The shared Indicator component
+  used rounded transformed getBoundingClientRect dimensions with a minimum of
+  24px. It now uses fractional layout dimensions from ResizeObserver (computed
+  layout size for initial measurement), ignores hidden zero-size measurements,
+  and caps arc radius by both width and height. The existing frontend watcher
+  built and synced successfully at 2026-09-17T11:15:40Z. Source/diff checks passed;
+  no separate build or automated QA clicks. Actual visual confirmation remains
+  pending after user refresh. Borrow state and backend behavior were unchanged.
+
+- **Block 8 review after extra Organizer-only toggles — 2026-09-17:**
+  the user reported experimenting with the toggle in both directions. Read-only
+  review verifies two distinct accepted one-item Paid requests and projections,
+  two independent captured/fulfilled HUF 6400 payments, and identical booking
+  ranges (September 17 11:36–September 18 12:36). Nova remains accepted Manager
+  and currently has organizerOnly false: Paid participants two, shared Group A
+  Transport accepted three/pending zero, consistently in resource and runtime.
+  The three free Asset controls, Group B resource and Event/Stage/Group member
+  oracle entries are unchanged from the saved Block 5 snapshot. Exactly two
+  Paid request notifications to Casey and two acceptance notifications to Nova
+  exist; no extra notification/payment/request from the toggle experiments.
+  Evidence: `/tmp/borrow-terminal-review.json` and
+  `/tmp/borrow-terminal-review-result.json`. This is a consistent current-state
+  review, not the strict terminal Organizer-only-on checkpoint. No application,
+  fixture or acceptance-rule change. Only switch the existing Paid membership
+  back to Organizer only, then run `verify-borrow-terminal`; do not repeat
+  borrowing, payment or approval.
 
 - This checkpoint owns the free cancel/reject/accept and overlap-capacity
   branches plus one narrow paid parity branch. Every free and paid Borrow form
@@ -6589,12 +6757,68 @@ to the user at step 1.
   summary. Separate assigned request cards remain visible on the fly and after
   reload, use `#1`/`#2` for repeated same-Asset requests, show their date range
   and retain Payment summary only when paid.
+- Block 1 read-only review on 2026-09-17 initially found a baseline mismatch. The versioned
+  `status asset-domain ASSET-BORROW-001` check fails only
+  `exactEventAndGeneratedGroupRoles`: Casey still has `organizerOnly: true`
+  in the Event and Group A, saved before the menu fix. Event count is 3,
+  Stage count is 4; Group A retains the reported 2-count/3-standings mismatch.
+  No Group A Borrow request, basket or payment exists. No reset or repair was
+  performed by this review. Block 2 now names both actors' exact entry paths.
+  Subsequent user decision: **main Event check accepted**; do not repeat the
+  removed Group `Organizer only` action. Continue at Block 2. The retained
+  pre-fix flags remain an evidence qualification, not a newly verified clean
+  baseline or a reason to replay Block 1.
+- 2026-09-17 Group B fixture/badge correction: Lina's single quantity-2
+  reservation was replaced by two independent quantity-1 requests/projections;
+  the versioned fixture and its count assertions now generate the same model.
+  Group A Borrow incorrectly saved the authorization Event ID as its booking
+  owner. The writer now saves the exact Group owner; server group filters no
+  longer include unrelated main-Event bookings. The existing Nova request was
+  repaired to its persisted Group A assignment without resubmission; unrelated
+  user state was retained. Backup/evidence: `/tmp/asset-borrow-badge-review/`.
+  Cold HTTP responses and the actual frontend card mapper verify Group A one
+  pending card and Group B two accepted cards with zero pending. Both existing
+  watchers built successfully. Browser confirmation remains pending.
+  User proceeds to Block 3 without replay. Retained Capacity request means the
+  aggregate pending total changes 1 → 2 → 1 during Cancel; inspect the Cancel
+  request's own lifecycle separately. This is a qualified run, not a clean
+  baseline or a strict harness PASS.
+- 2026-09-17 post-revert Borrow review: a clean worktree still contained the
+  committed exact-Group booking change. Focused tests reproduced Group window
+  lookup failure and empty Group/slot assignment persistence (3 failures;
+  ordinary Event assignment and invalid-date rejection passed). The narrow
+  backend correction keeps booking scope exact and resolves the runtime Event
+  only for existing Stage date bounds. Last-pending cancellation removes only
+  that borrower's assignment when no live request remains in the same scope.
+  Eighteen focused JVM tests pass against watcher-built production classes:
+  Event/Group/slot windows, invalid dates, assignment persistence, membership
+  denial, cancellation, retained pending/accepted requests, other borrowers,
+  other scopes, unrelated Assets, approval and accepted-manager leave guard.
+  Existing backend watcher passed. No frontend edits or browser actions.
+  The attempted broader existing resource-test compilation was blocked by four
+  pre-existing OwnerMembersSnapshot constructor mismatches; that suite is not
+  claimed as passing. Focused tests compile separately without rebuilding the
+  running application or starting another Gradle/compiler watcher.
+  The user's Cancel request ending e2bd5a34-53bd-464a-90a9-f51d265c86e8 had
+  persisted before assignment failed. Its empty resource was backed up and
+  restored via the normal resource write; no new Borrow request was created.
+  Fresh HTTP reads prove Group A one pending and Group B two accepted requests;
+  persisted Event/Stage pending is 1. Evidence: `/tmp/borrow-review-before.log`,
+  `/tmp/borrow-review-after.log`, `/tmp/asset-borrow-badge-review/`.
+  User continues with the existing request after closing the failed dialog and
+  reloading once. Its full-Stage September 17–October 17 range and deleted prior
+  requests remain qualifications; do not mark Block 3 or the full flow PASS.
 - `Organizer only` is exact-scope fine tuning on Event, Sub-event/Stage, Group
   and Asset memberships, including pending or accepted Asset requests. It
   changes only that scope's counted-participant state and live counter. It does
   not cascade, alter the role, delete/reassign a member or block an already
   materialized tournament participant from later-stage progression. The
-  reverse menu action is `Count as participant`.
+  reverse menu action is `Count as participant`. User clarification on
+  2026-09-17: after a tournament Stage starts, both participation toggles are
+  hidden for that Stage and its Groups, and the write path rejects the toggle.
+  Withdrawal uses `Leave group` so tournament participation is updated through
+  its lifecycle. This restriction does not affect the main Event's own toggle
+  or scoped Asset memberships.
 - The accepted borrower becomes the scoped Manager represented by
   `addedByUserId` only for the exact generated-group resource assignment. This
   does not change their global Asset ownership, Event role or sibling group.
@@ -7017,49 +7241,177 @@ persisted `last-remove-verified` oracle is the closing result.
 
 ### `ASSET-PRICING-001` — interactive Asset pricing journey
 
-Status: **HARNESS PREPARED / NOT STAGED / IMPLEMENTATION GAPS EXPECTED**.
+Status: **PASS / CLOSED — 2026-09-17**.
+
+Closure: the user reported the repaired UI looked correct and authorized closing
+Pricing after the saved-data review. The final fresh run contains two independent
+Cutoff payments of USD 900 and one Variable payment of USD 1800 at a fixed daily
+rate of USD 900. All three are captured/fulfilled with separate request and
+payment-session identities. Variable retains the 26-hour range and a two-day
+duration row; Cutoff has one charged day. Native request-scoped HTTP queries
+return one pending Nova row per rental, while stage queries and persisted
+resource counters agree on Cutoff 2 and Variable 1. Request projections match
+the three embedded requests; no duplicate request/payment was found.
+
+This accepted pair-QA verdict combines the earlier Hybrid/rule/editor/history
+observations below with the final duration and repeated-Borrow regression. It
+is not a claim that the original 2300/800/900 phase-by-phase fixture oracle ran
+unchanged: the user intentionally varied the sequence and confirmed Variable
+was initially view-only. Active refund-request/approval coverage is reused from
+closed ASSET-CHECKOUT-001 block 8; no full replay was requested. Final captured
+payment IDs: `6aaba4fd392b9933eba0514d`, `6aaba512392b9933eba05153`,
+`6aaba52a392b9933eba05157`. Continue with ASSET-BORROW-001.
+
+The dated notes below retain the investigation and superseded preparation history.
+
+Focused review, 2026-09-17: the user clarified that Variable was a view-only
+check; the Hybrid payment was USD 1150 on the one-day Cutoff range. Persisted
+payments USD 1150, 900 and 800 are all captured/fulfilled, with distinct Borrow
+request IDs. Their saved rows sum to their respective amounts. The first two
+retain the enabled one-day/50% policy; USD 800 retains its disabled policy.
+These records support the observed one-day pricing and saved-term cases; they
+do not prove a two-day captured payment or an active refund window. No full
+Pricing PASS is claimed, and the user does not need to repeat the full test.
+
+Duplicate-member defect: each rental card used the whole Asset's synchronized
+count and opened Members without its request ID. Cards now retain counts from
+their own persisted request. The Members query matches Asset, Event, stage and
+embedded request ID together in Mongo; local query, action responses and popup
+cache scope carry the same request ID. No user-based deduplication was added.
+Existing dev watchers compiled both sides successfully. Read-only HTTP checks
+returned one exact Nova row for each of the three requests (also pending-only
+and sync), three rows for the stage aggregate, and no rows for unknown request
+or mismatched stage. Retained requests, payment snapshots and request projections
+were identical before and after this verification.
+
+Preparation correction, 2026-09-17: the user explicitly clarified that
+restage means normal reset followed by stage, with all prior fixture effects
+removed. The initially prepared offer-only resume was incorrect. Its custom
+harness additions were withdrawn; use the existing versioned reset/stage and
+browser launcher. Reset verified zero scoped artifacts; normal stage at
+2026-09-17T08:28:14.933Z and independent status verified `baseline-ready`,
+Pricing Off, zero requests and zero payment documents.
+The earlier payment observations above remain historical
+evidence, not retained live fixture data. The focused counter check now uses
+the original Pricing Off baseline and one free Borrow: total pending 0 -> 1,
+one rental card with badge 1, and one Nova row in Members. That new write/UI
+observation remains pending with the user. Refund-request menu and approval
+coverage remains in ASSET-CHECKOUT-001 block 8.
+
+Preparation2026-09-17: the user explicitly clarified that fixture staging and
+managed browser launch are required now; the pre-stage development gate must
+not prevent this requested startup. Outstanding audience/refund implementation
+findings remain unproven and are not a manual PASS. Trust standard; no product
+code changed. Existing dev Compose images started through the versioned dev
+configuration, without rebuilding images or touching the VMware deployment.
+After the initial seed import completed, versioned Borrow and Pricing status
+both reported `not-staged`; no Borrow reset was necessary. Pricing stage and
+its independent status reached `baseline-ready` at2026-09-17T06:09:10.357Z:
+one Public Transport Asset, quantity3, Pricing Off, Casey owner, Nova accepted
+Event member, Riley public control; request/resource/basket/payment counts0.
+Barion connected, 3DS Off. Cutoff start2026-09-17T18:09:10.357Z. The versioned launcher completed snapshot-protected session cleanup
+(Casey2→0, Nova2→0, Riley1→0) and handed off three identity-verified ready
+windows in one horizontal row. Backend/frontend healthy; localhost/game
+HTTP200. No checklist actions have been performed.
+
+Mobile Pricing defect2026-09-17: user reported a clipped desktop-style Time
+Rules row in the narrow Pricing popup. Read-only inspection of the reported
+Casey popup confirmed that its host has `display: contents` with
+`container-type: inline-size` but no box, while the Time Rules grid retains
+four columns. The shared Pricing stylesheet now places inline-size containment
+on the actual wizard body and gives the narrow non-slot Time Rules selector
+the same specificity as its desktop rule. Fixture and browser state were not
+changed; visual replay remains user-controlled.
 
 Preparation2026-09-16: user selected Pricing for tomorrow, ahead of parked Borrow.
 The stable guide now has7 blocks with the same14 steps and report markers.
 Existing fixture oracle commands and the three-role managed launcher are mapped
 in the handoff. No data staged or browser actions performed; stage on test day
-after the development gate, because the Cutoff stage starts staging+12h.
+on the test day because the Cutoff stage starts staging+12h. The old Asset
+VIP development gate below was subsequently withdrawn.
 
-Hard development gate: another session must not stage this checkpoint first.
-It starts by exposing and wiring Asset audience/member/VIP/invite/promo pricing
-through the Borrow calculation and promo entry point, with an explicit VIP
-identity contract rather than a fixture-only role. It then adds the Refund
-policy block to Confirm borrow, locked Payment and Payment summary, including
-active, no-policy and passed-cutoff states rendered from the immutable
-payment-time calculation/policy snapshot. Only a passing dev-pipeline boundary
-unlocks fixture staging and the interactive journey.
+Original development note, 2026-09-16 — **retained verbatim as history,
+superseded by the 2026-09-17 correction below; not a current execution gate**:
 
-Stable guide:
-[`ASSET-PRICING-001.md`](../checklists/asset/ASSET-PRICING-001.md).
+> Hard development gate: another session must not stage this checkpoint first.
+> It starts by exposing and wiring Asset audience/member/VIP/invite/promo pricing
+> through the Borrow calculation and promo entry point, with an explicit VIP
+> identity contract rather than a fixture-only role. It then adds the Refund
+> policy block to Confirm borrow, locked Payment and Payment summary, including
+> active, no-policy and passed-cutoff states rendered from the immutable
+> payment-time calculation/policy snapshot. Only a passing dev-pipeline boundary
+> unlocks fixture staging and the interactive journey.
 
-This is a separate interactive journey rather than a set of pre-baked pricing
-controls. Casey repeatedly edits one Public Transport Asset; Nova and Riley
-observe the live Explore/Borrow projection after each save. The sequence covers
-fixed per-booking daily price, hybrid per-item quantity/demand/time rules,
-min/max and rounding, then the audience configuration, and finally three
-captured payment-time variants on separate Event stages: active one-day/50%
-refund policy, explicit no policy and an already-passed cutoff.
+| Original requirement | 2026-09-17 correction | Reason |
+| --- | --- | --- |
+| Implement Asset member/VIP/invite/promo pricing and expose its controls. | Withdraw the Asset requirement; implement organizer-invitation VIP pricing for Event separately. | User confirmed Asset has no VIP; its editor already deliberately hid the shared audience section. |
+| Compare quantities 1 and 2; Hybrid payment HUF 4600, refund HUF 2300. | Keep one-item Borrow; use threshold 1/33%, payment HUF 2300, refund HUF 1150. | The earlier Borrow contract already fixed one item per request. |
+| Add the refund-policy block to Confirm borrow, Payment and Payment summary using payment-time snapshots. | Retained; user requested reuse of the existing history presentation on Payment. | This was a separate development item and was not withdrawn with Asset VIP. |
+| Require completed implementation before staging or launching browsers. | Withdrawn for this explicitly requested startup. | User authorized fixture preparation and window launch despite unfinished implementation. |
 
-The versioned `asset-pricing` harness owns stage/status, exact fixed/variable/
-audience config checks, three payment-snapshot checks, the final oracle and
-snapshot reset. It starts with Pricing Off and no request/basket/payment, so all
-changes remain user-driven and observable on the fly.
+Scope correction, 2026-09-17 (user-confirmed): Asset has never exposed a VIP
+field. `showAudienceSection: false` is intentional; the common pricing DTO is
+not an Asset feature contract. The earlier requirement to implement Asset
+member/VIP/invitation/promo pricing was wrong and is withdrawn. Borrow remains
+one item per request, as recorded in `ASSET-BORROW-001`; borrowing an Asset from
+the Event organizer remains allowed.
 
-The code audit found two real pre-run gaps rather than assigning invented
-manual rules. Asset editor currently sets `showAudienceSection: false`, and the
-Asset Borrow calculator has no VIP identity or Asset promo-code application
-input. Implementing and defining the Asset-specific member/VIP/invite/promo
-behavior is therefore the first task of the next session, not a manual step in
-the current product. Separately, the payment already persists effective
-pricing rows plus its cancellation-policy snapshot; the next implementation
-task adds the complete disclosure UI to Confirm, Payment and Payment summary,
-including explicit no-policy and payment-time passed-cutoff states. Only then
-does the audience step become executable acceptance evidence.
+Stable guide: [`ASSET-PRICING-001.md`](../checklists/asset/ASSET-PRICING-001.md).
+Casey edits one Public Transport Asset; Nova checks its price and makes all
+three payments. Riley remains a non-member and checks that the stage's
+three-dot menu is absent. Hybrid uses quantity threshold 1 and demand threshold 33%,
+retaining the USD 999 base, USD 49 reduction, two 10% adjustments and whole-number
+rounding: USD 1150 per day, USD 2300 for two charged days and one item. The
+active-policy refund is USD 1150. This replaces the incompatible old two-item
+HUF 4600/HUF 2300 assertions. `verify-audience` keeps its command name but now
+checks the unchanged Asset configuration; Nova's price and Riley's missing
+internal menu remain user-observed results, not proof supplied by the database check.
+
+Currency correction, 2026-09-17: the existing Pricing selector supports USD,
+EUR, GBP and CZK, not HUF. The checklist and versioned fixture now use USD
+with the same numeric amounts. Application currency options were not changed.
+The retained live fixture was not restaged; Casey selects USD in step 1.
+
+Access correction, 2026-09-17: the user's Riley session could see a Transport
+entry that the backend correctly refused. Stage menu visibility now uses the
+existing server resource-access policy. The user explicitly requested the same
+hidden three-dot menu for non-members on both Casual and Tournament stages,
+without a Groups/results exception. Read-only HTTP on the retained fixture
+returned access true for Casey and Nova and false for Riley. Browser verification
+is pending; no membership was added and no fixture was restaged for this fix.
+
+The other recorded development item remains: disclose the saved cancellation
+policy on Confirm borrow, Payment and Payment summary. Cover an active one-day/
+50% rule, explicit no policy and a passed deadline. Historical summaries must
+use the payment-time rows and policy, not later Asset edits. These are pair-QA
+checks; repair concrete discrepancies as observed and do not mark them passed
+from compilation or automated tests.
+
+Date defect, 2026-09-17: the fixture stored correct absolute stage windows but
+all relative stage-definition offsets were zero. Explore derived the wrong
+range; Borrow then clamped it to the real window plus one hour. The versioned
+`repair-stage-timing` command sorted definitions and wrote only their relative
+offsets. It verified that Asset pricing, memberships, requests, resources,
+baskets, cards and payments were unchanged. Read-only HTTP comparison then
+matched stage start/end with the Asset borrow window for all three stages.
+Variable is 2026-09-20T06:09:10.357Z–2026-09-21T08:09:10.357Z (26 hours). The user
+must reload once to replace the stale stage data; no browser actions were
+automated. The current fixture includes the user's fixed-price edit and one
+request/resource; it is no longer the pristine baseline. Do not reset it or
+claim the old baseline status still describes the live data.
+
+Event VIP extension (manual verification pending, separate from Asset pricing).
+The user clarified that organizer invitation pricing is a write-side,
+idempotent audit, not a role join during reads. Capture the pricing form values
+when the organizer sends the invitation; opening/closing it and subsequent
+Event edits must not replace the offered VIP amount. On acceptance, record the
+then-current Event pricing separately without rewriting the original offer.
+Retry must not append another offered/accepted audit entry. Payment uses the
+original offer. The current implementation stores the offer and audit with the
+membership; the server and checkout preview read that stored offer. Asset
+pricing and organizer-to-borrower ownership rules are unchanged. No new browser
+flow or automated behavior test has been executed; the rules and observations
+are being established in pair QA.
 
 ### `ASSET-AVAIL-001` — overlap and finite capacity
 

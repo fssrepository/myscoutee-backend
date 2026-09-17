@@ -36,8 +36,9 @@ public class ActivitiesMembersController {
             @RequestParam("ownerId") String ownerId,
             @RequestParam(value = "pendingOnly", required = false) Boolean pendingOnly,
             @RequestParam(value = "eventId", required = false) String eventId,
-            @RequestParam(value = "subEventId", required = false) String subEventId) {
-        return activitiesMembersService.queryMembers(ownerType, ownerId, pendingOnly, eventId, subEventId);
+            @RequestParam(value = "subEventId", required = false) String subEventId,
+            @RequestParam(value = "assetRequestId", required = false) String assetRequestId) {
+        return activitiesMembersService.queryMembers(ownerType, ownerId, pendingOnly, eventId, subEventId, assetRequestId);
     }
 
     @PostMapping("/summaries")

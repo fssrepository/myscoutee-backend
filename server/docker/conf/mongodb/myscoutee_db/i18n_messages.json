@@ -14238,6 +14238,12 @@
     "value": "No maximum"
   },
   {
+    "_id": "i18n-message-en-pricing-maximum-below-minimum",
+    "key": "pricing.maximum.below.minimum",
+    "lang": "en",
+    "value": "Maximum price must be greater than or equal to minimum price."
+  },
+  {
     "_id": "i18n-message-en-pricing-rounding",
     "key": "pricing.rounding",
     "lang": "en",
@@ -18210,6 +18216,12 @@
     "value": "Share claimed"
   },
   {
+    "_id": "i18n-message-en-operator-community-error-registration-required",
+    "key": "operator.community.error.registration.required",
+    "lang": "en",
+    "value": "Register this deployment to view community announcements."
+  },
+  {
     "_id": "i18n-message-en-operator-claim-error-registration-required",
     "key": "operator.claim.error.registration.required",
     "lang": "en",
@@ -20620,6 +20632,12 @@
     "key": "operator.update.phase.switching_ingress",
     "lang": "en",
     "value": "Switching web server"
+  },
+  {
+    "_id": "i18n-message-en-entry-permissions-notifications-failed",
+    "key": "entry.permissions.notifications.failed",
+    "lang": "en",
+    "value": "Could not save notification settings. Check your connection and try again."
   },
   {
     "_id": "i18n-message-hu-unavailable-here",
@@ -34860,6 +34878,12 @@
     "value": "Nincs maximum"
   },
   {
+    "_id": "i18n-message-hu-pricing-maximum-below-minimum",
+    "key": "pricing.maximum.below.minimum",
+    "lang": "hu",
+    "value": "A maximális ár nem lehet kisebb a minimális árnál."
+  },
+  {
     "_id": "i18n-message-hu-pricing-rounding",
     "key": "pricing.rounding",
     "lang": "hu",
@@ -38832,6 +38856,12 @@
     "value": "Részesedés igényelve"
   },
   {
+    "_id": "i18n-message-hu-operator-community-error-registration-required",
+    "key": "operator.community.error.registration.required",
+    "lang": "hu",
+    "value": "A közösségi közlemények megtekintéséhez regisztráld ezt a telepítést."
+  },
+  {
     "_id": "i18n-message-hu-operator-claim-error-registration-required",
     "key": "operator.claim.error.registration.required",
     "lang": "hu",
@@ -41244,27 +41274,9 @@
     "value": "Webszerver átváltása"
   },
   {
-    "_id": "i18n-message-en-entry-permissions-notifications-failed",
-    "key": "entry.permissions.notifications.failed",
-    "lang": "en",
-    "value": "Could not save notification settings. Check your connection and try again."
-  },
-  {
     "_id": "i18n-message-hu-entry-permissions-notifications-failed",
     "key": "entry.permissions.notifications.failed",
     "lang": "hu",
     "value": "Nem sikerült menteni az értesítési beállításokat. Ellenőrizd a kapcsolatot, majd próbáld újra."
-  },
-  {
-    "_id": "i18n-message-en-operator-community-error-registration-required",
-    "key": "operator.community.error.registration.required",
-    "lang": "en",
-    "value": "Register this deployment to view community announcements."
-  },
-  {
-    "_id": "i18n-message-hu-operator-community-error-registration-required",
-    "key": "operator.community.error.registration.required",
-    "lang": "hu",
-    "value": "A közösségi közlemények megtekintéséhez regisztráld ezt a telepítést."
   }
 ]

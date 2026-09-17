@@ -1463,13 +1463,13 @@
           "actor": "Nova accepted pricing member",
           "sessionKind": "demo",
           "userId": "650000000000000000000062",
-          "expectedName": "Nova Social · member pricing and two payment snapshots"
+          "expectedName": "Nova Social · member pricing and three payment snapshots"
         },
         {
           "actor": "Riley public pricing control",
           "sessionKind": "demo",
           "userId": "650000000000000000000063",
-          "expectedName": "Riley Outside · public price and no-policy payment snapshot"
+          "expectedName": "Riley Outside · non-member stage access control"
         }
       ]
     },
@@ -1874,6 +1874,27 @@
           "credentialFileEnvironment": "QA_OPERATOR_CREDENTIAL_FILE",
           "window": {
             "x": 840,
+            "y": 40,
+            "width": 1000,
+            "height": 930
+          }
+        }
+      ]
+    },
+    "RELEASE-1.0.0-SMOKE": {
+      "entryUrl": "https://localhost/entry",
+      "targetUrl": "https://localhost/entry",
+      "storageScope": "http",
+      "bootstrapEntryConsent": false,
+      "preserveOtherSessions": true,
+      "sessions": [
+        {
+          "actor": "ReleaseSmoke",
+          "sessionKind": "anonymous",
+          "expectedName": "New demo registration release smoke",
+          "autoDismissExplanationGuide": false,
+          "window": {
+            "x": 0,
             "y": 40,
             "width": 1000,
             "height": 930

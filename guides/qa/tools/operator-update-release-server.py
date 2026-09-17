@@ -52,8 +52,8 @@ def prepare(args):
         envelope = json.loads((directory / 'myscoutee-update.json').read_text())
         manifest = json.loads(base64.b64decode(envelope['manifestBase64'], validate=True))
         version = manifest['release_version']
-        if not re.fullmatch(r'\d+\.\d+\.\d+-qa\.[1-9]\d*', version):
-            raise ValueError('Only canonical QA releases may be served.')
+        if not re.fullmatch(r'(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)(-qa\.[1-9]\d*)?', version):
+            raise ValueError('Expected a canonical stable or QA release version.')
         tag = 'v' + version
         prefix = f'/{args.repository}/releases/download/{tag}/'
         if any(release['tag_name'] == tag for release in releases):
@@ -82,7 +82,7 @@ def prepare(args):
             paths[route] = {'path': str(path), 'size': path.stat().st_size, 'sha256': digest(path)}
             assets.append({'name': path.name, 'size': path.stat().st_size,
                            'browser_download_url': base + route})
-        releases.append({'tag_name': tag, 'draft': False, 'prerelease': True, 'assets': assets})
+        releases.append({'tag_name': tag, 'draft': False, 'prerelease': '-qa.' in version, 'assets': assets})
     (output / 'index.json').write_text(json.dumps({'origin': base, 'repository': args.repository,
                                                 'paths': paths, 'releases': releases}, indent=2) + '\n')
     print(json.dumps({'origin': base, 'releases': [r['tag_name'] for r in releases],

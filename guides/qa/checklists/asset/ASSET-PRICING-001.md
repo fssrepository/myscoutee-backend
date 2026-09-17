@@ -1,96 +1,135 @@
-# ASSET-PRICING-001 user test guide
+# ASSET-PRICING-001 — Pricing
 
-This is an interactive Asset-pricing journey. Casey repeatedly edits one
-controlled Public Transport Asset and Nova/Riley immediately check what that
-single change does in Explore, Borrow review, Payment and Payment history.
-Refund policy is one field group inside pricing; it is not a separate Asset
-testcase.
+Use the prepared **Casey**, **Nova** and **Riley** windows. Casey changes the price; Nova checks and pays. Riley checks that a non-member cannot open the stage's internal tools.
 
-Do not repeat Take Over, Leave, Remove, refund approval or the generic free
-Borrow lifecycle already owned by `ASSET-CHECKOUT-001` and
-`ASSET-BORROW-001`.
+**Asset:** `QA ASSET-PRICING-001 Interactive Transport`
 
-## Development gate — complete before staging
+**Event:** `QA ASSET-PRICING-001 Event`
 
-Do **not** stage or execute this journey against the current implementation.
-A new session must start by implementing these missing Asset-pricing contracts
-in this order:
+For the prepared duplicate-member fix recheck, use [Focused Borrow recheck](#focused-borrow-recheck) below. Do not repeat Blocks 1–7.
 
-1. Expose and persist Asset Advanced Audience Pricing, then connect the Asset
-   Borrow calculation to accepted-member price, a deliberately defined VIP
-   identity source, invite-only discount and promo-code entry/application. The
-   current Asset editor hides the audience section and the current Asset Borrow
-   calculation consumes none of those actor/promo inputs. Do not invent a VIP
-   fixture merely to make the oracle pass.
-2. Add a Refund policy disclosure block to Asset Confirm borrow, the locked
-   Payment screen and Payment summary. It must explicitly distinguish an active
-   policy, no payment-time policy, and a payment-time policy whose cutoff has
-   passed.
-3. Render Payment summary from the payment's immutable effective pricing rows
-   and cancellation-policy snapshot. A later edit of the live Asset must never
-   rewrite an earlier payer's price breakdown, policy, refundable amount or
-   refund-action eligibility.
+For the full journey below, after each report wait for Codex to check the saved data. If a control is missing or a result differs, report that instead of continuing. Only pay in steps **8, 9 and 10**.
 
-Only after these contracts are implemented and the running dev pipeline passes
-may the dedicated fixture be staged and the interactive steps below begin.
+## Block 1 — Fixed daily price
 
-## Baseline
+1. **Casey — set the price.** In the side menu, open `Assets → Transport`. Find the Asset named above. Open its card menu → `Edit` → `Pricing`.
 
-Begin only after the dedicated `asset-pricing` fixture reports
-`baseline-ready`. It provides:
+   Set **Pricing On**, **Fixed**, **Currency: USD**, **price: 1000**, **Per booking / day**, **tax included**. Leave minimum/maximum price empty and rounding at **None**. Turn quantity, demand, time and refund rules **Off**.
 
-- one `QA ASSET-PRICING-001 Interactive Transport`, quantity `3`, with Pricing
-  initially Off;
-- one Public Event with separate `Variable`, `No policy` and `Cutoff` stages;
-- Casey as Asset owner, Nova as accepted Event member and Riley as the public
-  non-member control;
-- active Nova and Riley Barion cards;
-- no staged Asset request, basket or payment.
+   Save Pricing, then save the Asset. Reopen `Edit → Pricing` and check the saved values.
 
-Stage the fixture on the day of the test: the `Cutoff` stage starts 12 hours after staging.
+2. **Nova — check the price.** In the side menu, open `Activities → Events → Active Events`. Find **QA ASSET-PRICING-001 Event**. Open its card menu → `View Event`.
 
-After each report, wait for Codex's guarded read-only oracle before editing the next pricing version.
+   Open **QA Pricing Variable Stage** → `Transport → Explore`. Find **QA ASSET-PRICING-001 Interactive Transport**. Open its card menu → `Borrow`.
 
-## Block 1 — Fixed price
+   Keep the stage's full start/end range and **Quantity 1**. Check the final price: **USD 2000** — USD 1000 per day × two charged days. Do not refresh, confirm or pay.
 
-1. As Casey, edit the controlled Asset. Turn Pricing On and save only this fixed configuration: HUF `1000` daily rate, `Per booking / day`, tax included, no min/max, no rules, no audience pricing and no refund policy. Reopen the editor and confirm the exact values persisted.
+   **Riley:** find the same public Event through `Explore` → card menu → `View Event`. Find **QA Pricing Variable Stage**. Its three-dot menu must be absent: Transport, Accommodation, Supplies and stage Members are internal tools. Do not join the Event.
 
-2. Without reload, Nova opens the Asset for the fixture's two-day `Variable` range. Quantity `1` and `2` both show HUF `2000`: duration is two billable days, while `Per booking / day` does not multiply by item count. Riley sees the same public amount. Report `ASSET-PRICING-001 fixed saved`.
+   Report **`ASSET-PRICING-001 fixed saved`**. Leave Nova's Borrow screen open.
 
-## Block 2 — Variable price
+   **Quantity is read-only 1.** One Borrow request is one item throughout this guide.
 
-3. Casey changes the same Asset to `Hybrid`, HUF `999`, `Per item / day`, quantity rule `2+ -> decrease HUF 49`, demand rule `>= 67% -> increase 10%`, time rule `within 96 hours -> increase 10%`, minimum HUF `900`, maximum HUF `1200`, whole-number rounding. Leave audience pricing and refund policy Off.
+## Block 2 — Price rules
 
-4. Nova's already-open Borrow review updates to the new config. On the exact two-day range, quantity `2` shows the ordered rule rows and HUF `4600`: `999 - 49 + 10% + 10% -> 1150`, then two days and two items. Quantity `1` removes the `2+` rule and final item multiplier; returning to `2` restores HUF `4600` without duplicate rows. Report `ASSET-PRICING-001 variable saved`.
+3. **Casey — change the same Asset.** Open its card menu → `Edit → Pricing`. Set:
 
-## Block 3 — Audience pricing
+   - Mode: **Hybrid**. Daily price: **USD 999**. Charge: **Per item / day**. Tax: **included**.
+   - Quantity rule: **1 or more → decrease USD 49**.
+   - Demand rule: **33% or more → increase 10%**.
+   - Time rule: **within 96 hours before start → increase 10%**.
+   - In the top pricing section, below **Charge basis**, set **Minimum daily rate: 900**, **Maximum daily rate: 1200**, then **Rounding → Whole number**.
+   - Refund policy: **Off**.
 
-5. Casey now enables Advanced Audience Pricing on the same Asset and enters: member price HUF `800`, VIP price HUF `600`, invite-only discount `20%`, promo `QA10 -> decrease 10%`. Reopen the editor and confirm all four values persist together.
+   When typing `1200` into Maximum daily rate, the partial values `1`, `12` and `120` must stay unchanged while the field has focus. Leaving a maximum below `900` raises it to `900`. If Save runs without a blur while maximum is below minimum, it must show an error and keep Pricing open. Finish with maximum `1200`.
 
-6. Compare Nova's accepted-member view with Riley's public non-member view and inspect the Borrow flow for a promo-code entry point. Report exactly what changed and what did not. This verifies the development gate above: the member/VIP/invite/promo calculation and promo entry point must now be wired end-to-end. Do not invent a VIP identity or silently pass unchanged prices. Report `ASSET-PRICING-001 audience observed`.
+   Save Pricing, then save the Asset.
 
-## Block 4 — Active refund policy
+4. **Nova — watch the open Borrow screen.** Without refreshing, check that the price breakdown changes after Casey saves.
 
-7. Casey disables Audience Pricing again, keeps the exact HUF `4600` variable configuration, and enables one refund rule: refund `50%` when at least `1` day remains. Nova reopens the exact Variable-stage Borrow review.
+   Keep **Quantity 1** and the same dates. Check **USD 2300**: daily price `999 − 49 = 950`, demand adds `95`, time adds `104.50`, rounding gives `1150`; two charged days cost `2300`. Each adjustment appears once.
 
-8. Confirm that both Confirm and the locked Payment screen show the same ordered price breakdown, final HUF `4600`, and visible one-day/50% Refund policy. Nova pays exactly once with Barion. Do not accept, reject, cancel or refund the resulting Borrow. Report `ASSET-PRICING-001 active-policy payment captured`.
+   Report **`ASSET-PRICING-001 variable saved`** and the amount shown. Do not confirm or pay.
 
-## Block 5 — No refund policy
+## Block 3 — Asset pricing and non-member access
 
-9. Casey changes the same live Asset to fixed HUF `800`, `Per booking / day`, no dynamic rules, no audience pricing and refund policy Off. Riley borrows it once for the separate `No policy` stage and pays exactly HUF `800` with Barion. Confirm the pre-payment screens explicitly disclose that no refund policy applies. Report `ASSET-PRICING-001 no-policy payment captured`.
+5. **Casey:** reopen the Asset's `Edit → Pricing`. Check that Block 2's values were saved. Close without changing them. There is no Asset VIP or audience field to fill in.
 
-## Block 6 — Passed refund cutoff
+6. **Nova:** reopen the Asset's Borrow screen under **QA Pricing Variable Stage**, as in step 2. Use the same full date range and **Quantity 1**. Check **USD 2300**. Event membership permits access to the stage's tools; it does not grant an Asset VIP price.
 
-10. Casey changes the same live Asset once more to fixed HUF `900`, `Per booking / day`, with the one-day/50% refund rule enabled. Nova borrows it once for the separate `Cutoff` stage, whose start is less than 24 hours away, and pays exactly HUF `900`. The policy is disclosed before payment, but the refund window is already closed. Report `ASSET-PRICING-001 cutoff payment captured`.
+   **Riley:** reopen the Event's stage list through `Explore`. The stage's three-dot menu must still be absent.
 
-## Block 7 — Historical payment snapshots
+   Report **`ASSET-PRICING-001 audience observed`**, Nova's amount, and whether Riley sees any internal stage menu. This report name is retained for the saved-data checkpoint. Do not confirm or pay. Event invitation pricing is a separate check.
 
-11. Open Payment history. Nova's HUF `4600` Payment summary still contains the original variable calculation rows and one-day/50% policy even though the live Asset is now HUF `900`; its refundable amount is HUF `2300`.
+## Block 4 — Payment with a refund policy
 
-12. Riley's HUF `800` Payment summary explicitly records no refund policy and refundable HUF `0`. The live Asset's later one-day/50% rule must not appear on that payment and must not add `Request refund`.
+7. **Casey:** open the Asset's `Edit → Pricing`. Keep Block 2's Hybrid settings.
 
-13. Nova's HUF `900` Payment summary records the one-day/50% payment-time rule, but states that its cutoff has passed; refundable is HUF `0` and there is no `Request refund` action.
+   Under **Cancellation & Reimbursement**, enable one rule: **50% refund when at least 1 day remains before the booking starts**. Save Pricing and the Asset.
 
-14. Close and reopen the three summaries once. Report: `ASSET-PRICING-001 complete: interactive pricing and payment snapshots match`
+   **Nova:** reopen the same Asset's Borrow screen under **QA Pricing Variable Stage**.
 
-The final oracle must prove exactly three primary captured payments on the one Asset, three distinct stored calculation/policy snapshots, the final live pricing config, unchanged historical payments, no refund write and no duplicate payment.
+8. **Nova:** check that the Borrow screen shows the price breakdown, **USD 2300**, and the **1 day / 50%** refund rule.
+
+   Click **Confirm borrow**. Check that Payment shows the same **Cancellation & Reimbursement** block as Payment summary: the **1 day / 50%** rule and **USD 1150** refundable, alongside the **USD 2300** total and price breakdown. Select the active Barion card and click **Pay once**.
+
+   Leave the resulting request unchanged. Report **`ASSET-PRICING-001 active-policy payment captured`**.
+
+## Block 5 — Payment without a refund policy
+
+9. **Casey:** open the Asset's `Edit → Pricing`. Set **Fixed**, **USD 800**, **Per booking / day**, tax included. Clear minimum/maximum prices, use no rounding, and remove and disable all quantity, demand, time and refund rules. Save Pricing and the Asset.
+
+   **Nova:** open `Activities → Events → Active Events` → **QA ASSET-PRICING-001 Event** → card menu → `View Event` → **QA Pricing No Policy Stage** → `Transport → Explore`. Find the test Asset → card menu → `Borrow`.
+
+   Use the stage's full date range. Check **USD 800** and an explicit **no refund policy** message. Click **Confirm borrow** and check the same amount/message on Payment. Pay **once** with Barion.
+
+   Report **`ASSET-PRICING-001 no-policy payment captured`**.
+
+## Block 6 — Payment after the refund deadline
+
+10. **Casey:** reopen `Edit → Pricing`. Keep step 9's settings, change the daily price to **USD 900**, and add the **1 day / 50%** refund rule again. Save Pricing and the Asset.
+
+    **Nova:** open **QA ASSET-PRICING-001 Event** → `View Event` → **QA Pricing Cutoff Stage** → `Transport → Explore`. Find the test Asset → card menu → `Borrow`.
+
+    Use the stage's full date range. Check **USD 900**. The stage starts in less than 24 hours, so the screen must show the refund rule **and explain that its deadline has passed**. Click **Confirm borrow**, check the same information on Payment, and pay **once** with Barion.
+
+    Report **`ASSET-PRICING-001 cutoff payment captured`**.
+
+## Block 7 — Earlier payments keep their original terms
+
+Leave the Asset at its final **USD 900** price. Do not edit it during these checks.
+
+11. **Nova:** side menu → `Payment history`. Find the **USD 2300** payment from step 8 → card menu → `Payment summary`.
+
+    Check the same **Cancellation & Reimbursement** block seen before Pay: the original Hybrid breakdown, the **1 day / 50%** rule, and refundable **USD 1150**. The Asset's later USD 900 price must not replace the old payment details.
+
+12. **Nova:** side menu → `Payment history`. Find the **USD 800** payment from step 9 → card menu → `Payment summary`.
+
+    Check **no refund policy**, refundable **USD 0**, and no **Request refund** action. The refund rule added later must not appear on this payment.
+
+13. **Nova:** in `Payment history`, open `Payment summary` for the **USD 900** payment from step 10.
+
+    Check the **1 day / 50%** rule, a **refund deadline passed** message, refundable **USD 0**, and no **Request refund** action.
+
+14. Close and reopen all three payment summaries once. Check that each keeps its own amount, breakdown and refund terms.
+
+    If every block passed, report **`ASSET-PRICING-001 complete: interactive pricing and payment snapshots match`**. Otherwise, report the remaining mismatch.
+
+## Focused Borrow recheck
+
+Use the normal fresh fixture: no earlier rentals or payments, Pricing Off. Do not repeat Blocks 1–7 or edit Pricing for this counter check.
+
+1. **Nova:** `Activities → Events → Active Events` → test Event → card menu → `View Event` → **QA Pricing Cutoff Stage** → `Transport → Explore` → test Asset → card menu → `Borrow`. Keep the full dates and quantity 1. Click **Confirm borrow** once. This fresh fixture is free; there is no payment step.
+2. **Casey:** open the same Event → `View Event` → **QA Pricing Cutoff Stage** → `Transport`. Check **1 pending** in total and **one rental card with badge 1**. Click its pending badge: Members must contain **one Nova row**. Close and reopen it once; the counts must stay unchanged.
+
+Report the total, the card's badge count and the number of Nova rows. Leave the request pending. Refund-request actions are covered in [ASSET-CHECKOUT-001, Block 8](ASSET-CHECKOUT-001.md#8-remove-the-runtime-association-contact-the-asset-owner-and-refund).
+
+## Codex preparation notes
+
+- Use the versioned `asset-pricing` fixture and managed launcher. Require `baseline-ready`; stage on the test day because Cutoff starts staging + 12 hours. Follow the user's startup instruction separately from incomplete feature checks.
+- Asset pricing has no VIP field. Keep Event invitation/VIP checks separate; do not expose the shared audience model in the Asset form for this test.
+- Riley stays a non-member and checks that the stage's three-dot menu is hidden. Nova makes all three payments. The same menu restriction applies to Tournament stages, including the Groups entry; there is no tournament exception.
+- This restriction is only for stage cards. The main Event's Members control keeps its existing Open/Closed access rules; do not hide it based on stage resource access.
+- Retain refund disclosure on Borrow, Payment and Payment summary. Historical summaries must use the price rows and policy saved with each payment, including no-policy and passed-deadline cases.
+- Borrow is one item per request. This guide uses quantity threshold 1 and demand threshold 33% so both rules can be checked without changing that contract. The full Variable stage lasts 26 hours, charged as two days.
+- Run the matching saved-data check after each report. The final check requires exactly three captured payments with distinct saved pricing/policy details, unchanged earlier payments, and no duplicate payment or refund transaction. Do not replay Take Over, Leave, Remove or refund approval here.

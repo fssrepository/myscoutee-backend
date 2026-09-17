@@ -896,7 +896,8 @@ public class ActivitiesEventsService {
         return new EventInvitationContextDto(
                 record,
                 activitiesMembersService.queryMembers(OWNER_TYPE_EVENT, record.id(), false),
-                eventCheckoutBasketService.loadBasketByEvent(requestedUserId, record.id()));
+                eventCheckoutBasketService.loadBasketByEvent(requestedUserId, record.id()),
+                eventCheckoutPricingService.vipPricingOffer(record.id(), requestedUserId));
     }
 
     public EventCheckoutSlotsResultDto loadCheckoutSlots(EventCheckoutSlotsQueryDto request) {
@@ -1458,7 +1459,8 @@ public class ActivitiesEventsService {
                 resourceRecordsByKey,
                 stageRuntimeByKey,
                 viewer.userId());
-        return new EventSubEventsResultDto(parent.getMode(), slots, page.total(), page.nextCursor());
+        return new EventSubEventsResultDto(parent.getMode(), slots, page.total(), page.nextCursor(),
+                accessControlService.canAssignEventResourcesForSubject(parentEventId, viewer.userId()));
     }
 
     private Map<String, ActivitySubEventResourceStateDto> resourceRecordsByKey(

@@ -67,7 +67,7 @@ class PaymentRestControllerTest {
                         java.util.List.of(),
                         java.util.List.of(),
                         "2026-07-23T18:02:06Z",
-                        "2026-07-23T18:02:05Z"));
+                        "2026-07-23T18:02:05Z", null, null, null, null));
 
         mockMvc.perform(get("/activities/events/checkout/payment-audit")
                         .param("userId", "borrower-1")
