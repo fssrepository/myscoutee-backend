@@ -583,7 +583,7 @@ public class ActivitiesResourcesService {
         String nowIso = Instant.now().toString();
         Map<String, AssetDetailDto> eligibleAssets = assetsService.queryAssignableAssetDetails(
                 assetOwnerUserId,
-                authorizationEventId,
+                ownerId,
                 subEventId,
                 referencedAssetIds(request));
         Set<String> eligibleAssetIds = eligibleAssets == null ? Set.of() : eligibleAssets.keySet();
@@ -1410,6 +1410,35 @@ public class ActivitiesResourcesService {
             }
         }
         return false;
+    }
+
+    void removeCancelledBorrowAssignment(
+            String ownerId, String subEventId, String assetId, String borrowerId, String actorUserId) {
+        String nowIso = Instant.now().toString();
+        for (ActivitySubEventResource record : activitySubEventResourcesRepository
+                .findByOwnerIdAndSubEventIdAndStatusNot(ownerId, subEventId, STATUS_DELETED)) {
+            if (record == null || record.getAssetSettingsByType() == null) {
+                continue;
+            }
+            boolean managedByBorrower = record.getAssetSettingsByType().values().stream()
+                    .filter(Objects::nonNull)
+                    .map(settings -> settings.get(assetId))
+                    .filter(Objects::nonNull)
+                    .anyMatch(settings -> borrowerId.equals(normalizeId(settings.addedByUserId())));
+            if (!managedByBorrower) {
+                continue;
+            }
+            Set<String> retainedIds = new LinkedHashSet<>(referencedAssetIds(record));
+            retainedIds.remove(assetId);
+            ActivitySubEventResource next = filterToAssignableAssets(record, retainedIds);
+            if (retainedIds.isEmpty()) {
+                next.setStatus(STATUS_DELETED);
+            }
+            persistResourceMetricSnapshot(next, actorUserId, nowIso, false);
+            if (retainedIds.isEmpty()) {
+                removeGroupRuntimeResourceMetrics(next, actorUserId, nowIso);
+            }
+        }
     }
 
     public boolean removeScopedAssetAssignment(

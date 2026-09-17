@@ -255,9 +255,12 @@ public class AssetsService {
         if (!StringUtils.hasText(normalizedEventId) || !StringUtils.hasText(normalizedSubEventId)) {
             return null;
         }
+        int groupOwnerMarker = normalizedEventId.indexOf(":" + normalizedSubEventId + ":");
+        String runtimeEventId = groupOwnerMarker > 0
+                ? normalizedEventId.substring(0, groupOwnerMarker) : normalizedEventId;
         Query eventQuery = Query.query(new Criteria().orOperator(
-                Criteria.where("_id").is(normalizedEventId),
-                Criteria.where("sourceId").is(normalizedEventId)));
+                Criteria.where("_id").is(runtimeEventId),
+                Criteria.where("sourceId").is(runtimeEventId)));
         ActivityEvent event = mongoTemplate.findOne(eventQuery, ActivityEvent.class);
         if (event == null || !STATUS_ACTIVE.equals(safeText(event.getStatus()))) {
             return null;
@@ -2055,7 +2058,42 @@ public class AssetsService {
                     .and("_id").in(removedProjectionIds));
             mongoTemplate.remove(staleQuery, AssetRequest.class);
         }
+        removeCancelledBorrowAssignments(existing, saved);
         refreshEventSubEventResourceCounters(existing, saved);
+    }
+
+    private void removeCancelledBorrowAssignments(Asset existing, Asset saved) {
+        ActivitiesResourcesService resources = activitiesResourcesServiceProvider == null
+                ? null : activitiesResourcesServiceProvider.getIfAvailable();
+        if (existing == null || saved == null || resources == null) {
+            return;
+        }
+        Map<String, AssetRequestRecord> nextById = requestsById(saved.getRequests());
+        Set<String> removedScopes = new LinkedHashSet<>();
+        for (AssetRequestRecord previous : safeRequests(existing.getRequests())) {
+            if (previous == null || previous.booking() == null
+                    || !"borrow".equals(previous.requestKind()) || !"pending".equals(previous.status())) {
+                continue;
+            }
+            AssetRequestRecord next = nextById.get(previous.id());
+            if (next != null && !isDeletedAssetRequest(next)) {
+                continue;
+            }
+            String ownerId = normalizeId(previous.booking().eventId());
+            String subEventId = normalizeId(previous.booking().subEventId());
+            String borrowerId = normalizeId(previous.userId());
+            if (ownerId == null || subEventId == null || borrowerId == null) {
+                continue;
+            }
+            boolean anotherRequestRemains = nextById.values().stream()
+                    .anyMatch(item -> !isDeletedAssetRequest(item)
+                            && borrowerId.equals(normalizeId(item.userId()))
+                            && isRequestInScope(item, ownerId, subEventId));
+            if (!anotherRequestRemains && removedScopes.add(ownerId + "\n" + subEventId + "\n" + borrowerId)) {
+                resources.removeCancelledBorrowAssignment(ownerId, subEventId,
+                        saved.getAssetId(), borrowerId, saved.getUpdatedUser());
+            }
+        }
     }
 
     private void refreshEventSubEventResourceCounters(Asset existing, Asset saved) {

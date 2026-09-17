@@ -6625,6 +6625,31 @@ user starts Block 1, steps 1–3.
   aggregate pending total changes 1 → 2 → 1 during Cancel; inspect the Cancel
   request's own lifecycle separately. This is a qualified run, not a clean
   baseline or a strict harness PASS.
+- 2026-09-17 post-revert Borrow review: a clean worktree still contained the
+  committed exact-Group booking change. Focused tests reproduced Group window
+  lookup failure and empty Group/slot assignment persistence (3 failures;
+  ordinary Event assignment and invalid-date rejection passed). The narrow
+  backend correction keeps booking scope exact and resolves the runtime Event
+  only for existing Stage date bounds. Last-pending cancellation removes only
+  that borrower's assignment when no live request remains in the same scope.
+  Eighteen focused JVM tests pass against watcher-built production classes:
+  Event/Group/slot windows, invalid dates, assignment persistence, membership
+  denial, cancellation, retained pending/accepted requests, other borrowers,
+  other scopes, unrelated Assets, approval and accepted-manager leave guard.
+  Existing backend watcher passed. No frontend edits or browser actions.
+  The attempted broader existing resource-test compilation was blocked by four
+  pre-existing OwnerMembersSnapshot constructor mismatches; that suite is not
+  claimed as passing. Focused tests compile separately without rebuilding the
+  running application or starting another Gradle/compiler watcher.
+  The user's Cancel request ending e2bd5a34-53bd-464a-90a9-f51d265c86e8 had
+  persisted before assignment failed. Its empty resource was backed up and
+  restored via the normal resource write; no new Borrow request was created.
+  Fresh HTTP reads prove Group A one pending and Group B two accepted requests;
+  persisted Event/Stage pending is 1. Evidence: `/tmp/borrow-review-before.log`,
+  `/tmp/borrow-review-after.log`, `/tmp/asset-borrow-badge-review/`.
+  User continues with the existing request after closing the failed dialog and
+  reloading once. Its full-Stage September 17–October 17 range and deleted prior
+  requests remain qualifications; do not mark Block 3 or the full flow PASS.
 - `Organizer only` is exact-scope fine tuning on Event, Sub-event/Stage, Group
   and Asset memberships, including pending or accepted Asset requests. It
   changes only that scope's counted-participant state and live counter. It does
