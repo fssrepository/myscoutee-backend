@@ -10,6 +10,8 @@ import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.ActivityMemberEntr
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.LocationCoordinatesDto;
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.PolicyItemDto;
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.PricingConfigDto;
+import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.PricingCancellationPolicyDto;
+import com.raxim.myscoutee.profile.data.dto.payment.PaymentDtos.PaymentRefundPreviewDto;
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.PricingPromoCodeDto;
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.SubEventDefinitionDto;
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.SubEventItemDto;
@@ -669,7 +671,8 @@ public final class EventsDtos {
     public record EventInvitationContextDto(
             EventDetailDto record,
             List<ActivityMemberEntryDto> members,
-            EventCheckoutBasketDto checkoutBasket) {
+            EventCheckoutBasketDto checkoutBasket,
+            PricingConfigDto vipPricingOffer) {
     }
 
     public record EventSubEventsQueryDto(
@@ -1045,6 +1048,10 @@ public final class EventsDtos {
             List<EventCheckoutPricingSummaryRowDto> pricingSummaryRows,
             List<EventCheckoutLineItemDto> lineItems,
             String joinedAtIso,
-            String createdAtIso) {
+            String createdAtIso,
+            String bookingStartAtIso,
+            String bookingEndAtIso,
+            PricingCancellationPolicyDto cancellationPolicy,
+            PaymentRefundPreviewDto refundPreview) {
     }
 }

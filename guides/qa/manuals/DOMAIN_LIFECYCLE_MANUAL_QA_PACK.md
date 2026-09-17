@@ -7017,7 +7017,7 @@ persisted `last-remove-verified` oracle is the closing result.
 
 ### `ASSET-PRICING-001` — interactive Asset pricing journey
 
-Status: **BASELINE READY / MANUAL NOT EXECUTED / IMPLEMENTATION GAPS RETAINED**.
+Status: **PAIR QA IN PROGRESS / NO NEW PASS**.
 
 Preparation2026-09-17: the user explicitly clarified that fixture staging and
 managed browser launch are required now; the pre-stage development gate must
@@ -7048,43 +7048,77 @@ Preparation2026-09-16: user selected Pricing for tomorrow, ahead of parked Borro
 The stable guide now has7 blocks with the same14 steps and report markers.
 Existing fixture oracle commands and the three-role managed launcher are mapped
 in the handoff. No data staged or browser actions performed; stage on test day
-after the development gate, because the Cutoff stage starts staging+12h.
+on the test day because the Cutoff stage starts staging+12h. The old Asset
+VIP development gate below was subsequently withdrawn.
 
-Hard development gate: another session must not stage this checkpoint first.
-It starts by exposing and wiring Asset audience/member/VIP/invite/promo pricing
-through the Borrow calculation and promo entry point, with an explicit VIP
-identity contract rather than a fixture-only role. It then adds the Refund
-policy block to Confirm borrow, locked Payment and Payment summary, including
-active, no-policy and passed-cutoff states rendered from the immutable
-payment-time calculation/policy snapshot. Only a passing dev-pipeline boundary
-unlocks fixture staging and the interactive journey.
+Original development note, 2026-09-16 — **retained verbatim as history,
+superseded by the 2026-09-17 correction below; not a current execution gate**:
 
-Stable guide:
-[`ASSET-PRICING-001.md`](../checklists/asset/ASSET-PRICING-001.md).
+> Hard development gate: another session must not stage this checkpoint first.
+> It starts by exposing and wiring Asset audience/member/VIP/invite/promo pricing
+> through the Borrow calculation and promo entry point, with an explicit VIP
+> identity contract rather than a fixture-only role. It then adds the Refund
+> policy block to Confirm borrow, locked Payment and Payment summary, including
+> active, no-policy and passed-cutoff states rendered from the immutable
+> payment-time calculation/policy snapshot. Only a passing dev-pipeline boundary
+> unlocks fixture staging and the interactive journey.
 
-This is a separate interactive journey rather than a set of pre-baked pricing
-controls. Casey repeatedly edits one Public Transport Asset; Nova and Riley
-observe the live Explore/Borrow projection after each save. The sequence covers
-fixed per-booking daily price, hybrid per-item quantity/demand/time rules,
-min/max and rounding, then the audience configuration, and finally three
-captured payment-time variants on separate Event stages: active one-day/50%
-refund policy, explicit no policy and an already-passed cutoff.
+| Original requirement | 2026-09-17 correction | Reason |
+| --- | --- | --- |
+| Implement Asset member/VIP/invite/promo pricing and expose its controls. | Withdraw the Asset requirement; implement organizer-invitation VIP pricing for Event separately. | User confirmed Asset has no VIP; its editor already deliberately hid the shared audience section. |
+| Compare quantities 1 and 2; Hybrid payment HUF 4600, refund HUF 2300. | Keep one-item Borrow; use threshold 1/33%, payment HUF 2300, refund HUF 1150. | The earlier Borrow contract already fixed one item per request. |
+| Add the refund-policy block to Confirm borrow, Payment and Payment summary using payment-time snapshots. | Retained; user requested reuse of the existing history presentation on Payment. | This was a separate development item and was not withdrawn with Asset VIP. |
+| Require completed implementation before staging or launching browsers. | Withdrawn for this explicitly requested startup. | User authorized fixture preparation and window launch despite unfinished implementation. |
 
-The versioned `asset-pricing` harness owns stage/status, exact fixed/variable/
-audience config checks, three payment-snapshot checks, the final oracle and
-snapshot reset. It starts with Pricing Off and no request/basket/payment, so all
-changes remain user-driven and observable on the fly.
+Scope correction, 2026-09-17 (user-confirmed): Asset has never exposed a VIP
+field. `showAudienceSection: false` is intentional; the common pricing DTO is
+not an Asset feature contract. The earlier requirement to implement Asset
+member/VIP/invitation/promo pricing was wrong and is withdrawn. Borrow remains
+one item per request, as recorded in `ASSET-BORROW-001`; borrowing an Asset from
+the Event organizer remains allowed.
 
-The code audit found two real pre-run gaps rather than assigning invented
-manual rules. Asset editor currently sets `showAudienceSection: false`, and the
-Asset Borrow calculator has no VIP identity or Asset promo-code application
-input. Implementing and defining the Asset-specific member/VIP/invite/promo
-behavior is therefore the first task of the next session, not a manual step in
-the current product. Separately, the payment already persists effective
-pricing rows plus its cancellation-policy snapshot; the next implementation
-task adds the complete disclosure UI to Confirm, Payment and Payment summary,
-including explicit no-policy and payment-time passed-cutoff states. Only then
-does the audience step become executable acceptance evidence.
+Stable guide: [`ASSET-PRICING-001.md`](../checklists/asset/ASSET-PRICING-001.md).
+Casey edits one Public Transport Asset; Nova and Riley compare its price for
+the same dates. Hybrid uses quantity threshold 1 and demand threshold 33%,
+retaining the HUF 999 base, HUF 49 reduction, two 10% adjustments and whole-number
+rounding: HUF 1150 per day, HUF 2300 for two charged days and one item. The
+active-policy refund is HUF 1150. This replaces the incompatible old two-item
+HUF 4600/HUF 2300 assertions. `verify-audience` keeps its command name but now
+checks the unchanged public Asset configuration; equal viewer amounts remain
+a user-observed result, not proof supplied by the database check.
+
+The other recorded development item remains: disclose the saved cancellation
+policy on Confirm borrow, Payment and Payment summary. Cover an active one-day/
+50% rule, explicit no policy and a passed deadline. Historical summaries must
+use the payment-time rows and policy, not later Asset edits. These are pair-QA
+checks; repair concrete discrepancies as observed and do not mark them passed
+from compilation or automated tests.
+
+Date defect, 2026-09-17: the fixture stored correct absolute stage windows but
+all relative stage-definition offsets were zero. Explore derived the wrong
+range; Borrow then clamped it to the real window plus one hour. The versioned
+`repair-stage-timing` command sorted definitions and wrote only their relative
+offsets. It verified that Asset pricing, memberships, requests, resources,
+baskets, cards and payments were unchanged. Read-only HTTP comparison then
+matched stage start/end with the Asset borrow window for all three stages.
+Variable is 2026-09-20T06:09:10.357Z–2026-09-21T08:09:10.357Z (26 hours). The user
+must reload once to replace the stale stage data; no browser actions were
+automated. The current fixture includes the user's fixed-price edit and one
+request/resource; it is no longer the pristine baseline. Do not reset it or
+claim the old baseline status still describes the live data.
+
+Event VIP extension (manual verification pending, separate from Asset pricing).
+The user clarified that organizer invitation pricing is a write-side,
+idempotent audit, not a role join during reads. Capture the pricing form values
+when the organizer sends the invitation; opening/closing it and subsequent
+Event edits must not replace the offered VIP amount. On acceptance, record the
+then-current Event pricing separately without rewriting the original offer.
+Retry must not append another offered/accepted audit entry. Payment uses the
+original offer. The current implementation stores the offer and audit with the
+membership; the server and checkout preview read that stored offer. Asset
+pricing and organizer-to-borrower ownership rules are unchanged. No new browser
+flow or automated behavior test has been executed; the rules and observations
+are being established in pair QA.
 
 ### `ASSET-AVAIL-001` — overlap and finite capacity
 

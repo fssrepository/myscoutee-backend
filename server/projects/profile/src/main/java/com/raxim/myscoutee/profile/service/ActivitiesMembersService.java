@@ -976,6 +976,9 @@ public class ActivitiesMembersService {
                     existingByUserId);
         }
 
+        ActivityEvent invitationEvent = OWNER_TYPE_EVENT.equals(ownerType) ? findPreferredEventRecord(ownerId) : null;
+        boolean organizerInvitation = invitationEvent != null
+                && canManageOwnerMembers(ownerType, ownerId, actorUserId);
         List<ActivityMember> nextDocuments = new ArrayList<>();
         for (ActivityMemberEntryDto entry : safeMembers(request.members())) {
             String memberUserId = normalizeId(entry.userId());
@@ -1003,6 +1006,11 @@ public class ActivitiesMembersService {
             next.setPendingSource(resolvePendingSource(entry.pendingSource(), next.getStatus()));
             next.setRequestKind(resolveRequestKind(entry.requestKind(), next.getStatus(), next.getPendingSource()));
             next.setInvitedByUserId(resolveInvitedByUserId(entry, current, actorUserId));
+            if (OWNER_TYPE_EVENT.equals(ownerType) && REQUEST_KIND_INVITE.equals(next.getRequestKind())
+                    && (current == null || !isInvitationMembership(current))) {
+                EventVipInvitation.issue(next, organizerInvitation,
+                        invitationEvent == null ? null : invitationEvent.getPricing(), nowIso);
+            }
             next.setOrganizerOnly(Boolean.TRUE.equals(entry.organizerOnly()));
             String actionAtIso = normalizeDateTime(entry.actionAtIso(), nowIso);
             next.setActionAtIso(actionAtIso);
@@ -1644,11 +1652,19 @@ public class ActivitiesMembersService {
         }
         if (accepted || newMember || !ACCEPTED_STATUSES.contains(normalizeStatus(current.getStatus()))) {
             String nowIso = Instant.now().toString();
+            if (resolvingInvitation) {
+                EventVipInvitation.accept(current,
+                        eventRecord == null ? null : eventRecord.getPricing(), nowIso);
+            } else if (newMember || !STATUS_PENDING.equals(current.getStatus())) {
+                EventVipInvitation.issue(current, false, null, nowIso);
+            }
             current.setRole(normalizeRole(current.getRole(), viewerUserId, OWNER_TYPE_EVENT, normalizedEventId));
             current.setStatus(accepted ? STATUS_ACCEPTED : "pending");
             current.setPendingSource(accepted ? null : "member");
             current.setRequestKind(accepted ? null : pendingJoinRequestKind(waitingList, approvalRequested));
-            current.setInvitedByUserId(null);
+            if (!Boolean.TRUE.equals(current.getEventVipInvitation())) {
+                current.setInvitedByUserId(null);
+            }
             current.setStatusBeforeSuppression(null);
             current.setSuppressionRootOwnerId(null);
             current.setSuppressedAtIso(null);
@@ -2773,6 +2789,7 @@ public class ActivitiesMembersService {
             ActivityEvent eventRecord) {
         String nowIso = Instant.now().toString();
         String metWhere = safeText(eventRecord == null ? null : eventRecord.getLocation());
+        boolean organizerInvitation = canManageOwnerMembers(OWNER_TYPE_EVENT, eventId, actorUserId);
 
         List<ActivityMember> existing = loadOwnerDocuments(OWNER_TYPE_EVENT, eventId);
         Map<String, ActivityMember> existingByUserId = new LinkedHashMap<>();
@@ -2811,6 +2828,8 @@ public class ActivitiesMembersService {
             next.setPendingSource("admin");
             next.setRequestKind("invite");
             next.setInvitedByUserId(StringUtils.hasText(actorUserId) ? actorUserId : null);
+            EventVipInvitation.issue(next, organizerInvitation,
+                    eventRecord == null ? null : eventRecord.getPricing(), nowIso);
             next.setActionAtIso(nowIso);
             next.setMetAtIso(current == null ? nowIso : normalizeDateTime(current.getMetAtIso(), nowIso));
             next.setMetWhere(StringUtils.hasText(safeText(next.getMetWhere())) ? safeText(next.getMetWhere()) : metWhere);
@@ -5497,6 +5516,11 @@ public class ActivitiesMembersService {
         clone.setPendingSource(source.getPendingSource());
         clone.setRequestKind(source.getRequestKind());
         clone.setInvitedByUserId(source.getInvitedByUserId());
+        clone.setEventVipInvitation(source.getEventVipInvitation());
+        clone.setEventVipAcceptedAtIso(source.getEventVipAcceptedAtIso());
+        clone.setEventVipOfferedAtIso(source.getEventVipOfferedAtIso());
+        clone.setEventVipOfferedPricing(source.getEventVipOfferedPricing());
+        clone.setEventVipPriceAudit(source.getEventVipPriceAudit());
         clone.setManagerGrantedByUserId(source.getManagerGrantedByUserId());
         clone.setOrganizerOnly(source.getOrganizerOnly());
         clone.setMetAtIso(source.getMetAtIso());

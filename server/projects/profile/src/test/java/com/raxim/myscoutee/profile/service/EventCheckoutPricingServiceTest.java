@@ -35,14 +35,16 @@ import com.raxim.myscoutee.profile.repository.ActivityEventsRepository;
 class EventCheckoutPricingServiceTest {
     private ActivityEventsRepository eventsRepository;
     private EventCheckoutPricingService service;
+    private com.raxim.myscoutee.profile.repository.ActivityMembersRepository membersRepository;
 
     @BeforeEach
     void setUp() {
         eventsRepository = mock(ActivityEventsRepository.class);
+        membersRepository = mock(com.raxim.myscoutee.profile.repository.ActivityMembersRepository.class);
         ReloadableResourceBundleMessageSource messageSource = new ReloadableResourceBundleMessageSource();
         messageSource.setBasename("classpath:i18n/messages");
         messageSource.setDefaultEncoding("UTF-8");
-        service = new EventCheckoutPricingService(eventsRepository, new TranslationService(messageSource));
+        service = new EventCheckoutPricingService(eventsRepository, membersRepository, new TranslationService(messageSource));
         LocaleContextHolder.setLocale(Locale.ENGLISH);
     }
 

@@ -1280,6 +1280,7 @@ public class PaymentService {
     }
 
     private EventCheckoutPaymentAuditDto toPaymentAudit(Payment payment) {
+        PaymentRefundCalculator.Preview refund = PaymentRefundCalculator.storedOrCurrentPreview(payment, Instant.now().toString());
         return new EventCheckoutPaymentAuditDto(
                 payment.getId(),
                 payment.getUserId(),
@@ -1299,7 +1300,14 @@ public class PaymentService {
                 copyNonNull(payment.getPricingSummaryRows()),
                 copyNonNull(payment.getLineItems()),
                 payment.getJoinedAtIso(),
-                payment.getCreatedDate());
+                payment.getCreatedDate(),
+                payment.getBookingStartAtIso(),
+                payment.getBookingEndAtIso(),
+                payment.getCancellationPolicy(),
+                new com.raxim.myscoutee.profile.data.dto.payment.PaymentDtos.PaymentRefundPreviewDto(
+                        refund.paidAmount(), refund.refundableAmount(), refund.retainedAmount(), refund.currency(),
+                        refund.status(), refund.ruleId(), refund.ruleOffsetUnit(), refund.ruleOffsetValue(),
+                        refund.refundKind(), refund.refundValue(), refund.ruleDescription()));
     }
 
     private Payment latestPaymentRevision(Payment anchor) {

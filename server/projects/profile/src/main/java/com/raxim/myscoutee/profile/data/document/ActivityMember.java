@@ -1,5 +1,7 @@
 package com.raxim.myscoutee.profile.data.document;
 
+import java.util.List;
+import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.PricingConfigDto;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.CompoundIndex;
 import org.springframework.data.mongodb.core.index.CompoundIndexes;
@@ -34,6 +36,15 @@ public class ActivityMember {
     private String pendingSource;
     private String requestKind;
     private String invitedByUserId;
+    // Written by the invitation command; never accepted from member update DTOs.
+    private Boolean eventVipInvitation;
+    private String eventVipAcceptedAtIso;
+    private String eventVipOfferedAtIso;
+    private PricingConfigDto eventVipOfferedPricing;
+    private List<EventVipPriceAudit> eventVipPriceAudit;
+
+    public record EventVipPriceAudit(String invitationId, String action, String actorUserId,
+            String atIso, PricingConfigDto pricing) { }
     private String managerGrantedByUserId;
     private Boolean organizerOnly = false;
     private String metAtIso;
@@ -151,6 +162,21 @@ public class ActivityMember {
     public void setInvitedByUserId(String invitedByUserId) {
         this.invitedByUserId = invitedByUserId;
     }
+
+    public String getEventVipOfferedAtIso() { return eventVipOfferedAtIso; }
+    public void setEventVipOfferedAtIso(String value) { eventVipOfferedAtIso = value; }
+    public PricingConfigDto getEventVipOfferedPricing() { return eventVipOfferedPricing; }
+    public void setEventVipOfferedPricing(PricingConfigDto value) { eventVipOfferedPricing = value; }
+    public List<EventVipPriceAudit> getEventVipPriceAudit() { return eventVipPriceAudit; }
+    public void setEventVipPriceAudit(List<EventVipPriceAudit> value) { eventVipPriceAudit = value; }
+
+    public Boolean getEventVipInvitation() { return eventVipInvitation; }
+
+    public void setEventVipInvitation(Boolean value) { eventVipInvitation = value; }
+
+    public String getEventVipAcceptedAtIso() { return eventVipAcceptedAtIso; }
+
+    public void setEventVipAcceptedAtIso(String value) { eventVipAcceptedAtIso = value; }
 
     public String getManagerGrantedByUserId() {
         return managerGrantedByUserId;

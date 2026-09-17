@@ -116,14 +116,14 @@ when shaping only its route to the QA application.
 ```yaml
 checkpoint: ASSET-PRICING-001
 checklist: ../checklists/asset/ASSET-PRICING-001.md
-substage: User explicitly clarified fixture preparation and browser launch as the immediate task. No VIP clarification is required for startup. Pricing baseline staged; versioned launcher handed off three ready Casey/Nova/Riley sessions in one horizontal row. No manual steps executed.
-fixture_phase: baseline-ready at 2026-09-17T06:09:10.357Z, confirmed by versioned stage/status. Barion connected with 3DS Off; no requests, resources, baskets or payments. Borrow status was not-staged, so no reset was needed. Cutoff starts 2026-09-17T18:09:10.357Z.
-browser_control: Asset Pricing is user-controlled pair QA. Only versioned baseline preparation and managed launcher startup are authorized; user performs all checklist actions.
-required_resume: ASSET-PRICING-001 managed launcher handoff is complete. User controls all checklist actions, starting at Block1 fixed price. Preserve outstanding audience/refund implementation findings without inventing eligibility or treating them as a prerequisite for the explicitly requested startup.
+substage: Pair QA is active. Asset VIP requirement withdrawn; one-item pricing guide reconciled with Borrow. Event VIP write-side offer/audit implementation is being checked; its manual guide is separate. No new manual PASS.
+fixture_phase: Harness marker remains baseline-ready, but live data has Casey's HUF 1000 edit and one request/resource. Do not treat it as pristine. Versioned repair-stage-timing corrected only stage offsets; all three stage/borrow bounds now agree via read-only HTTP. User reload required for stale stage data.
+next_action: Finish the code/build review, then user resumes Asset fixed-price check using the full Variable stage range. Check saved data only after the user's report; no automated checklist execution. Event VIP follows separately after preserving Asset payment evidence.
+confirmed_rules: Asset has no VIP field; Borrow remains quantity 1 and may use the organizer's Asset. Event invitation offer is frozen when sent; acceptance records current pricing separately; retries do not overwrite or duplicate audit. Pair QA establishes remaining rules, so do not replace it with automated behavior tests.
 queued_work: Borrow remains parked; not selected for tomorrow. Final stable app/Registry GitHub release, UI/image smoke, external security and measured infrastructure efficiency remain separate later work.
 last_completed: Operator Update PASS/CLOSED; all Operator and Administration rows complete. No further Update/rollback replay requested.
 runtime: On 2026-09-17 local dev started through existing Compose images; backend and frontend healthy, localhost/game HTTP200. Three managed Pricing sessions ready. Historical VMware/release context follows, separate from the current dev startup. VMware serves user-installed QA3 r4; local dev was previously stopped. Local HTTPS retains signed r4 and QA2 rollback artifact. Separate managed Operator window remains user-controlled. Before/after comparison recorded no document removals, no index changes and unchanged 911 media objects; one user devices field changed amid permission interactions. The user clarified the subsequent defect as missing visible save feedback. A one-second green success animation on Update is source-only, verified by 17 focused tests including a rendered-button click; it is not yet packaged. The later Messaging correction now gates the toggle and background registration on the server-side Messaging credential presence instead of VAPID; 26 frontend and 11 backend focused tests passed. Both corrections remain uninstalled. The r5 package finished before the user stopped further builds; it was not deployed. A subsequent source-only OFF fix now unsubscribes existing browser Push as well as removing backend registration, including cleanup of late token acquisition; 31 focused frontend tests pass. Build/deployment remain paused by user instruction. The user subsequently rejected background completion for settings Save: current source awaits token plus server device registration and reports failure without success feedback. Custom token/HTTP deadlines were removed and the original 10s worker-readiness bound restored. Updated 33 focused tests pass; live browser verification remains unproven. VAPID was temporarily removed at the user request and has been restored (public config HTTP200). See QA3_PERMISSION_SYNC_20260916.md for artifact/source evidence. No Asset browser launched.
-ledger_status: 102/104 PASS. Pricing baseline-ready, no manual steps executed; Borrow parked and not-staged.
+ledger_status: 102/104 PASS. Pricing pair QA in progress, no new verdict; Borrow parked and not-staged.
 
 ```
 
@@ -133,8 +133,9 @@ Use the existing `asset-pricing` scenario; do not replay completed payment or
 Borrow journeys to create prerequisites. It supplies the one editable Asset,
 three Event stages and active Barion cards with simulator3DS Off. The launcher
 configuration already maps Casey(owner), Nova(accepted member) and Riley(public
-control) to three isolated windows. Do not launch or stage before the guide's
-development gate is complete.
+control) to three isolated windows. The earlier Asset VIP development gate is
+withdrawn: VIP belongs only to Event invitations. Keep the user-controlled
+windows and live fixture; do not restage the user's current edits.
 
 | User report after block | Existing read-only fixture oracle |
 | --- | --- |

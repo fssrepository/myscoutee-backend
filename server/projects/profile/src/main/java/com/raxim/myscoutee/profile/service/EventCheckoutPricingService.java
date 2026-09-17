@@ -36,6 +36,7 @@ import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.PricingSlotOverrid
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.PricingTimeRuleDto;
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.SubEventDefinitionDto;
 import com.raxim.myscoutee.profile.repository.ActivityEventsRepository;
+import com.raxim.myscoutee.profile.repository.ActivityMembersRepository;
 
 /**
  * Rebuilds event checkout prices from the current event definition. Client
@@ -48,12 +49,30 @@ public class EventCheckoutPricingService {
 
     private final ActivityEventsRepository activityEventsRepository;
     private final TranslationService translationService;
+    private final ActivityMembersRepository activityMembersRepository;
 
     public EventCheckoutPricingService(
             ActivityEventsRepository activityEventsRepository,
+            ActivityMembersRepository activityMembersRepository,
             TranslationService translationService) {
         this.activityEventsRepository = activityEventsRepository;
+        this.activityMembersRepository = activityMembersRepository;
         this.translationService = translationService;
+    }
+
+    public PricingConfigDto vipPricingOffer(String sourceId, String userId) {
+        ActivityEvent parent = resolveParentEvent(sourceId);
+        return parent == null ? null : storedVipOffer(parent.getSourceId(), userId);
+    }
+
+    private PricingConfigDto storedVipOffer(String sourceId, String userId) {
+        return activityMembersRepository.findByOwnerTypeAndOwnerIdAndUserId(
+                "event", normalizeId(sourceId), normalizeId(userId))
+                .filter(EventVipInvitation::eligible)
+                .map(com.raxim.myscoutee.profile.data.document.ActivityMember::getEventVipOfferedPricing)
+                .filter(pricing -> !Boolean.FALSE.equals(pricing.enabled()) && pricing.audience() != null
+                        && Boolean.TRUE.equals(pricing.audience().enabled()) && pricing.audience().vipPrice() != null)
+                .orElse(null);
     }
 
     /**
@@ -121,6 +140,7 @@ public class EventCheckoutPricingService {
         List<EventCheckoutBasketItemDto> incomingMainItems = incomingItems.stream()
                 .filter(item -> "event".equals(safeText(item.kind())))
                 .toList();
+        PricingConfigDto vipOffer = storedVipOffer(parent.getSourceId(), request.userId());
         List<String> appliedPromoCodes = normalizePromoCodes(request.appliedPromoCodes());
         List<MainQuote> mainQuotes = new ArrayList<>();
         for (EventCheckoutBasketItemDto incomingMain : incomingMainItems) {
@@ -133,7 +153,7 @@ public class EventCheckoutPricingService {
                     parent,
                     incomingMain,
                     requestedSlotSourceId,
-                    appliedPromoCodes));
+                    appliedPromoCodes, vipOffer));
         }
         if (mainQuotes.isEmpty()) {
             LinkedHashSet<String> derivedSlotSourceIds = new LinkedHashSet<>();
@@ -152,7 +172,7 @@ public class EventCheckoutPricingService {
                         parent,
                         null,
                         derivedSlotSourceId,
-                        appliedPromoCodes));
+                        appliedPromoCodes, vipOffer));
             }
         }
 
@@ -261,18 +281,20 @@ public class EventCheckoutPricingService {
             ActivityEvent parent,
             EventCheckoutBasketItemDto incoming,
             String requestedSlotSourceId,
-            List<String> appliedPromoCodes) {
+            List<String> appliedPromoCodes,
+            PricingConfigDto vipOffer) {
         EventSlotOccurrenceDto slot = resolveSlot(parent, requestedSlotSourceId);
         String slotSourceId = firstText(slot == null ? null : slot.id(), requestedSlotSourceId);
         String slotTemplateId = normalizeId(slot == null ? null : slot.slotTemplateId());
+        PricingConfigDto offeredPricing = vipOffer == null ? parent.getPricing() : vipOffer;
         PricingSnapshot pricing = calculatePricing(
-                parent.getPricing(),
+                offeredPricing,
                 parent,
                 slot,
                 slotTemplateId,
                 StringUtils.hasText(slotTemplateId) ? "base:" + slotTemplateId : "base",
-                StringUtils.hasText(slotTemplateId) ? "pricing.slot.base.price" : "pricing.base.price");
-        pricing = applyPromoCodes(pricing, parent.getPricing(), appliedPromoCodes);
+                StringUtils.hasText(slotTemplateId) ? "pricing.slot.base.price" : "pricing.base.price", vipOffer != null);
+        pricing = applyPromoCodes(pricing, parent.getPricing(), appliedPromoCodes, offeredPricing);
         EventCheckoutBasketItemDto item = canonicalMainItem(
                 request,
                 parent,
@@ -302,7 +324,7 @@ public class EventCheckoutPricingService {
                 mainQuote.slot(),
                 null,
                 "subevent:" + optionalId + ":base",
-                firstText(definition.name(), "event.checkout.optional.sub.event"));
+                firstText(definition.name(), "event.checkout.optional.sub.event"), false);
         pricing = finishRounding(pricing, definition.pricing(), "rounding");
         if (definition.pricing() == null) {
             pricing = new PricingSnapshot(pricing.amount(), fallbackCurrency, pricing.rows());
@@ -414,7 +436,8 @@ public class EventCheckoutPricingService {
             EventSlotOccurrenceDto slot,
             String requestedSlotTemplateId,
             String baseKey,
-            String baseLabel) {
+            String baseLabel,
+            boolean vipEligible) {
         String currency = pricingCurrency(pricing);
         if (pricing == null || Boolean.FALSE.equals(pricing.enabled())) {
             return new PricingSnapshot(0d, currency, List.of());
@@ -435,6 +458,12 @@ public class EventCheckoutPricingService {
                     .orElse(basePrice);
         }
 
+        boolean vipAudience = vipEligible && pricing.audience() != null
+                && Boolean.TRUE.equals(pricing.audience().enabled());
+        if (vipAudience && pricing.audience().vipPrice() != null) {
+            basePrice = Math.max(0d, safeDouble(pricing.audience().vipPrice()));
+            baseLabel = "pricing.vip.price";
+        }
         List<EventCheckoutPricingSummaryRowDto> rows = new ArrayList<>();
         rows.add(new EventCheckoutPricingSummaryRowDto(
                 firstText(baseKey, "base"),
@@ -452,7 +481,7 @@ public class EventCheckoutPricingService {
         String startsAt = firstText(slot == null ? null : slot.startAtIso(), parent.getStartAtIso());
         double hoursUntilStart = hoursUntilStart(startsAt);
 
-        if (pricingModeMatches(pricing.mode(), "demand-based", "hybrid")
+        if (!vipAudience && pricingModeMatches(pricing.mode(), "demand-based", "hybrid")
                 && Boolean.TRUE.equals(pricing.demandRulesEnabled())) {
             for (PricingDemandRuleDto rule : pricing.demandRules() == null
                     ? List.<PricingDemandRuleDto>of()
@@ -471,7 +500,7 @@ public class EventCheckoutPricingService {
                         1));
             }
         }
-        if (pricingModeMatches(pricing.mode(), "time-based", "hybrid")
+        if (!vipAudience && pricingModeMatches(pricing.mode(), "time-based", "hybrid")
                 && Boolean.TRUE.equals(pricing.timeRulesEnabled())) {
             for (PricingTimeRuleDto rule : pricing.timeRules() == null
                     ? List.<PricingTimeRuleDto>of()
@@ -488,6 +517,16 @@ public class EventCheckoutPricingService {
                         roundMoney(nextPrice - previous),
                         currency,
                         1));
+            }
+        }
+        if (vipAudience && pricing.audience().inviteOnlyDiscountPercent() != null) {
+            double previous = nextPrice;
+            int percent = Math.max(0, Math.min(100, pricing.audience().inviteOnlyDiscountPercent()));
+            nextPrice *= 1d - percent / 100d;
+            if (percent > 0) {
+                rows.add(new EventCheckoutPricingSummaryRowDto(
+                        "invitation", "pricing.invite.discount.percent", "-" + percent + "%",
+                        roundMoney(nextPrice - previous), currency, 1));
             }
         }
         if (pricing.minPrice() != null) {
@@ -513,9 +552,10 @@ public class EventCheckoutPricingService {
     private PricingSnapshot applyPromoCodes(
             PricingSnapshot pricing,
             PricingConfigDto pricingConfig,
-            List<String> appliedPromoCodes) {
+            List<String> appliedPromoCodes,
+            PricingConfigDto roundingConfig) {
         if (appliedPromoCodes.isEmpty()) {
-            return finishRounding(pricing, pricingConfig, "rounding");
+            return finishRounding(pricing, roundingConfig, "rounding");
         }
         if (!promoCodesEnabled(pricingConfig)) {
             throw invalidPromoCode();
@@ -541,7 +581,7 @@ public class EventCheckoutPricingService {
         }
         return finishRounding(
                 new PricingSnapshot(Math.max(0d, nextPrice), pricing.currency(), List.copyOf(rows)),
-                pricingConfig,
+                roundingConfig,
                 "rounding");
     }
 
