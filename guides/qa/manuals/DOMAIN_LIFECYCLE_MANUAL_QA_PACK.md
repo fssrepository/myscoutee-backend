@@ -7017,7 +7017,32 @@ persisted `last-remove-verified` oracle is the closing result.
 
 ### `ASSET-PRICING-001` — interactive Asset pricing journey
 
-Status: **HARNESS PREPARED / NOT STAGED / IMPLEMENTATION GAPS EXPECTED**.
+Status: **BASELINE READY / MANUAL NOT EXECUTED / IMPLEMENTATION GAPS RETAINED**.
+
+Preparation2026-09-17: the user explicitly clarified that fixture staging and
+managed browser launch are required now; the pre-stage development gate must
+not prevent this requested startup. Outstanding audience/refund implementation
+findings remain unproven and are not a manual PASS. Trust standard; no product
+code changed. Existing dev Compose images started through the versioned dev
+configuration, without rebuilding images or touching the VMware deployment.
+After the initial seed import completed, versioned Borrow and Pricing status
+both reported `not-staged`; no Borrow reset was necessary. Pricing stage and
+its independent status reached `baseline-ready` at2026-09-17T06:09:10.357Z:
+one Public Transport Asset, quantity3, Pricing Off, Casey owner, Nova accepted
+Event member, Riley public control; request/resource/basket/payment counts0.
+Barion connected, 3DS Off. Cutoff start2026-09-17T18:09:10.357Z. The versioned launcher completed snapshot-protected session cleanup
+(Casey2→0, Nova2→0, Riley1→0) and handed off three identity-verified ready
+windows in one horizontal row. Backend/frontend healthy; localhost/game
+HTTP200. No checklist actions have been performed.
+
+Mobile Pricing defect2026-09-17: user reported a clipped desktop-style Time
+Rules row in the narrow Pricing popup. Read-only inspection of the reported
+Casey popup confirmed that its host has `display: contents` with
+`container-type: inline-size` but no box, while the Time Rules grid retains
+four columns. The shared Pricing stylesheet now places inline-size containment
+on the actual wizard body and gives the narrow non-slot Time Rules selector
+the same specificity as its desktop rule. Fixture and browser state were not
+changed; visual replay remains user-controlled.
 
 Preparation2026-09-16: user selected Pricing for tomorrow, ahead of parked Borrow.
 The stable guide now has7 blocks with the same14 steps and report markers.

@@ -45,3 +45,5 @@ Editable manual sources and PDF build instructions are in
 |---|---:|---|---|
 | MyScoutee Network | 1.0.0 | [PDF](guides/pitches/network-output/MyScoutee_Network_Pitch_v1.0.0_EN.pdf) | [PPTX](guides/pitches/network-output/MyScoutee_Network_Pitch_v1.0.0_EN.pptx) |
 | MyScoutee Product | 1.0.0 | [PDF](guides/pitches/product-output/MyScoutee_Product_Pitch_v1.0.0_EN.pdf) | [PPTX](guides/pitches/product-output/MyScoutee_Product_Pitch_v1.0.0_EN.pptx) |
+
+**2026-09-17 preparation:** `ASSET-PRICING-001` fixture is baseline-ready for the user-requested pair-QA startup: Casey/Nova/Riley, Pricing Off, Barion connected with 3DS Off, no requests or payments. No manual steps have passed; totals remain 102/104. Outstanding audience/refund implementation findings are retained.
