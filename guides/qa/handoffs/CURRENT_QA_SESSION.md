@@ -116,9 +116,9 @@ when shaping only its route to the QA application.
 ```yaml
 checkpoint: ASSET-PRICING-001
 checklist: ../checklists/asset/ASSET-PRICING-001.md
-substage: Pair QA is active. Asset VIP requirement withdrawn; one-item pricing guide reconciled with Borrow. Event VIP write-side offer/audit implementation is being checked; its manual guide is separate. No new manual PASS.
-fixture_phase: Harness marker remains baseline-ready, but live data has Casey's HUF 1000 edit and one request/resource. Do not treat it as pristine. Versioned repair-stage-timing corrected only stage offsets; all three stage/borrow bounds now agree via read-only HTTP. User reload required for stale stage data.
-next_action: Finish the code/build review, then user resumes Asset fixed-price check using the full Variable stage range. Check saved data only after the user's report; no automated checklist execution. Event VIP follows separately after preserving Asset payment evidence.
+substage: User requested a fresh restage. Implementation compiled through the existing dev watchers; manual verification starts at checklist step 1. No new manual PASS.
+fixture_phase: Versioned reset, stage and status completed at 2026-09-17T07:08:59.290Z; baseline-ready, pricing Off, no requests/resources/baskets/payments, Barion connected with 3DS Off. Managed launcher replaced all three Casey/Nova/Riley sessions successfully.
+next_action: User starts checklist step 1 in Casey's window. Check saved data only after the user's report; no automated checklist execution. Event VIP remains a separate manual check.
 confirmed_rules: Asset has no VIP field; Borrow remains quantity 1 and may use the organizer's Asset. Event invitation offer is frozen when sent; acceptance records current pricing separately; retries do not overwrite or duplicate audit. Pair QA establishes remaining rules, so do not replace it with automated behavior tests.
 queued_work: Borrow remains parked; not selected for tomorrow. Final stable app/Registry GitHub release, UI/image smoke, external security and measured infrastructure efficiency remain separate later work.
 last_completed: Operator Update PASS/CLOSED; all Operator and Administration rows complete. No further Update/rollback replay requested.
@@ -135,7 +135,8 @@ three Event stages and active Barion cards with simulator3DS Off. The launcher
 configuration already maps Casey(owner), Nova(accepted member) and Riley(public
 control) to three isolated windows. The earlier Asset VIP development gate is
 withdrawn: VIP belongs only to Event invitations. Keep the user-controlled
-windows and live fixture; do not restage the user's current edits.
+windows and live fixture after the user-authorized fresh restage at 09:08 CEST;
+do not restage again without a new request.
 
 | User report after block | Existing read-only fixture oracle |
 | --- | --- |
