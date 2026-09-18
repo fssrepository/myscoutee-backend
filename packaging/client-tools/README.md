@@ -15,6 +15,38 @@ Set `REMOTE_HOST`, `REMOTE_USER`, and either `REMOTE_KEY_FILE` or
 `REMOTE_PASSWORD`. `install.env` is local secret input and must never be
 committed or included in a release.
 
+## Prepare a Debian 13 minimal host
+
+Run the separate `prepare-debian13-minimal.sh` before installing the application
+DEB on a fresh Debian 13 AMD64 server. Copy it to the target and execute it there
+as root (replace `SERVER_IP` with the verified SSH target):
+
+```bash
+scp prepare-debian13-minimal.sh root@SERVER_IP:/root/
+ssh root@SERVER_IP 'bash /root/prepare-debian13-minimal.sh'
+```
+
+This explicit preparation step installs the required system packages and Docker
+CE with its Compose plugin from Docker's official Debian repository. It checks
+the OS and architecture, refuses conflicting container-runtime packages without
+removing them, and can be rerun after completion. It does not install MyScoutee,
+configure its domain, alter SSH access, or enable a firewall. With a non-root
+SSH user, copy the script to that user's home directory and run it with `sudo`.
+
+The regular `install.sh` and DEB hooks never invoke this preparation script.
+After it succeeds, continue with the normal installation below.
+
+From a source checkout, rebuild only this small helper archive with:
+
+```bash
+MYSCOUTEE_VERSION=1.0.0 bash packaging/release/package-client-tools.sh
+```
+
+This does not build or modify a DEB or any container image. A helper-only
+release may be newer than the client-tools copy embedded in an existing DEB;
+use the separately downloaded, signed helper archive for the latest host
+preparation script.
+
 ## Install or reinstall
 
 ```bash

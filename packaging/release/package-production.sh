@@ -28,7 +28,6 @@ PACKAGE_NAME="myscoutee_${VERSION}_${ARCHITECTURE}"
 DEB_PATH="${DIST_DIR}/${PACKAGE_NAME}.deb"
 DEB_PARTIAL_PATH="${DIST_DIR}/${PACKAGE_NAME}.partial.deb"
 CLIENT_TOOLS_ARCHIVE="${DIST_DIR}/myscoutee-client-tools_${VERSION}.tar.gz"
-CLIENT_TOOLS_PARTIAL="${DIST_DIR}/myscoutee-client-tools_${VERSION}.partial.tar.gz"
 IMAGE_FINGERPRINT_HELPER="${REPO_ROOT}/packaging/scripts/image-content-fingerprint.sh"
 
 export MYSCOUTEE_VERSION="${VERSION}"
@@ -52,7 +51,7 @@ if [[ "${BUILD_ARTIFACTS:-true}" == "true" ]]; then
   bash "${SCRIPT_DIR}/build-production.sh"
 fi
 
-rm -rf "${STAGING_DIR}" "${DEB_PARTIAL_PATH}" "${CLIENT_TOOLS_PARTIAL}"
+rm -rf "${STAGING_DIR}" "${DEB_PARTIAL_PATH}"
 install -d "${STAGING_DIR}/DEBIAN"
 install -d "${STAGING_DIR}/opt/myscoutee/server/docker/conf"
 install -d "${STAGING_DIR}/opt/myscoutee/server/docker/scripts"
@@ -61,7 +60,7 @@ install -d "${STAGING_DIR}/opt/myscoutee/packaging"
 install -d "${STAGING_DIR}/opt/myscoutee/packaging/update"
 install -d "${STAGING_DIR}/opt/myscoutee/images"
 install -d "${STAGING_DIR}/lib/systemd/system"
-install -d "${STAGING_DIR}/usr/share/myscoutee/client-tools/verify-deployment"
+install -d "${STAGING_DIR}/usr/share/myscoutee"
 
 sed \
   -e "s/^Version:.*/Version: ${DEBIAN_VERSION}/" \
@@ -209,22 +208,6 @@ done < <(
 cp -a "${REPO_ROOT}/packaging/scripts" "${STAGING_DIR}/opt/myscoutee/packaging/"
 cp -a "${REPO_ROOT}/packaging/migrations" "${STAGING_DIR}/opt/myscoutee/packaging/"
 cp -a "${REPO_ROOT}/packaging/templates" "${STAGING_DIR}/opt/myscoutee/packaging/"
-for client_helper in \
-  README.md \
-  install.env.example \
-  install.sh \
-  purge.sh \
-  forward-localhost.sh \
-  remote-transport.sh \
-  verify-release.sh; do
-  install -m 0644 \
-    "${REPO_ROOT}/packaging/client-tools/${client_helper}" \
-    "${STAGING_DIR}/usr/share/myscoutee/client-tools/${client_helper}"
-done
-cp -a "${REPO_ROOT}/packaging/verify-deployment/." \
-  "${STAGING_DIR}/usr/share/myscoutee/client-tools/verify-deployment/"
-printf '%s\n' "${VERSION}" \
-  > "${STAGING_DIR}/usr/share/myscoutee/client-tools/VERSION"
 install -m 0644 "${REPO_ROOT}/packaging/systemd/myscoutee.service" "${STAGING_DIR}/lib/systemd/system/myscoutee.service"
 install -m 0644 "${REPO_ROOT}/packaging/systemd/myscoutee-update.path" "${STAGING_DIR}/lib/systemd/system/myscoutee-update.path"
 install -m 0644 "${REPO_ROOT}/packaging/systemd/myscoutee-update.service" "${STAGING_DIR}/lib/systemd/system/myscoutee-update.service"
@@ -404,27 +387,10 @@ find "${STAGING_DIR}/opt/myscoutee/packaging/scripts" \
   -type f \( -name "*.sh" -o -name "*.py" \) -exec chmod 0755 {} +
 find "${STAGING_DIR}/opt/myscoutee/server/docker" \
   -type f -name "*.sh" -exec chmod 0755 {} +
-find "${STAGING_DIR}/usr/share/myscoutee/client-tools" \
-  -type f -name "*.sh" -exec chmod 0755 {} +
-chmod 0755 \
-  "${STAGING_DIR}/usr/share/myscoutee/client-tools/verify-deployment/run.mjs"
+# The same standalone builder is used for helper-only releases and full DEBs.
+MYSCOUTEE_VERSION="${VERSION}" MYSCOUTEE_DIST_DIR="${DIST_DIR}" \
+  bash "${SCRIPT_DIR}/package-client-tools.sh"
 
-tar \
-  --sort=name \
-  --mtime="@${SOURCE_DATE_EPOCH:-0}" \
-  --owner=0 \
-  --group=0 \
-  --numeric-owner \
-  -C "${STAGING_DIR}/usr/share/myscoutee/client-tools" \
-  -cf - . \
-  | gzip -n > "${CLIENT_TOOLS_PARTIAL}"
-mv -f "${CLIENT_TOOLS_PARTIAL}" "${CLIENT_TOOLS_ARCHIVE}"
-chmod 0644 "${CLIENT_TOOLS_ARCHIVE}"
-
-# Client tools execute on the Operator workstation, not on the deployment
-# host. Keep the Debian payload as one directly transferable archive instead
-# of installing an unusable unpacked copy of the client-side scripts.
-rm -rf -- "${STAGING_DIR}/usr/share/myscoutee/client-tools"
 install -m 0644 \
   "${CLIENT_TOOLS_ARCHIVE}" \
   "${STAGING_DIR}/usr/share/myscoutee/$(basename "${CLIENT_TOOLS_ARCHIVE}")"

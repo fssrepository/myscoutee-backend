@@ -317,6 +317,11 @@ for verifier_member in \
 done
 grep -Fxq './install.env.example' "${CLIENT_TOOLS_CONTENTS}" \
   || fail "standalone Operator archive omits safe configuration example"
+grep -Fxq './prepare-debian13-minimal.sh' "${CLIENT_TOOLS_CONTENTS}" \
+  || fail "standalone Operator archive omits Debian 13 host preparation"
+tar -xOzf "${CLIENT_TOOLS_ARCHIVE}" ./prepare-debian13-minimal.sh \
+  | cmp - "${REPO_ROOT}/packaging/client-tools/prepare-debian13-minimal.sh" \
+  || fail "archived Debian 13 preparation differs from its source"
 if grep -Fxq './install.env' "${CLIENT_TOOLS_CONTENTS}"; then
   fail "local Operator target credentials were embedded in the client-tools archive"
 fi

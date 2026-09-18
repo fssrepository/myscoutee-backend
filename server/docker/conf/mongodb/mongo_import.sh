@@ -1069,7 +1069,7 @@ import_single_file() {
 
   if [ ! -f "${jsonfile}" ]; then
     echo "Seed file ${jsonfile} does not exist, skipping mongoimport."
-    exit 0
+    return 0
   fi
 
   import_json_file "${target_db}" "${jsonfile}"
@@ -1077,15 +1077,13 @@ import_single_file() {
 
 if [ -n "${single_file}" ]; then
   import_single_file "${db_name}" "${single_file}"
-  exit 0
-fi
-
-if [ "${MONGO_IMPORT_ALL_SEED_DATABASES:-false}" = "true" ]; then
+elif [ "${MONGO_IMPORT_ALL_SEED_DATABASES:-false}" = "true" ]; then
   import_seed_directory "demo_db" "demo_db"
   if [ "${db_name}" != "demo_db" ]; then
     import_seed_directory "${db_name}" "${seed_dir_name}"
   fi
-  exit 0
+else
+  import_seed_directory "${db_name}" "${seed_dir_name}"
 fi
-
-import_seed_directory "${db_name}" "${seed_dir_name}"
+# The official Mongo entrypoint sources this file. Return control to it so it
+# can stop the temporary daemon and exec the final mongod; never exit its shell.

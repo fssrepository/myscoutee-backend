@@ -23,6 +23,13 @@ if [ "${1:-}" = inspect ]; then
   printf '%s\n' healthy
   exit 0
 fi
+if [ "${1:-}" = exec ]; then
+  count=$(cat "${DEMO_RESET_READY_COUNT:?}" 2>/dev/null || printf 0)
+  count=$((count + 1))
+  printf '%s\n' "$count" > "$DEMO_RESET_READY_COUNT"
+  [ "${DEMO_RESET_NEVER_READY:-false}" != true ] && [ "$count" -ge 2 ]
+  exit $?
+fi
 exit 64
 EOF
 chmod 0755 "${TEST_ROOT}/bin/docker"
@@ -30,6 +37,10 @@ chmod 0755 "${TEST_ROOT}/bin/docker"
 cat > "${TEST_ROOT}/compose" <<'EOF'
 #!/usr/bin/env sh
 printf '%s\n' "$*" >> "${DEMO_RESET_COMMAND_LOG:?}"
+if [ "${1:-}" = exec ] && [ "$(cat "${DEMO_RESET_READY_COUNT:?}")" -lt 2 ]; then
+  echo "Reset started while MongoDB was still initializing" >&2
+  exit 90
+fi
 exit 0
 EOF
 chmod 0755 "${TEST_ROOT}/compose"
@@ -42,15 +53,18 @@ printf '%s\n' 1.0.0 > "${TEST_ROOT}/marker"
 
 PATH="${TEST_ROOT}/bin:${PATH}" \
 DEMO_RESET_COMMAND_LOG="${TEST_ROOT}/commands.log" \
+DEMO_RESET_READY_COUNT="${TEST_ROOT}/ready-count" \
 MYSCOUTEE_COMPOSE_SCRIPT="${TEST_ROOT}/compose" \
 MYSCOUTEE_ENV_FILE="${TEST_ROOT}/myscoutee.env" \
 MYSCOUTEE_DEMO_RESET_MARKER="${TEST_ROOT}/marker" \
-MYSCOUTEE_DEMO_RESET_WAIT_SECONDS=1 \
+MYSCOUTEE_DEMO_RESET_WAIT_SECONDS=3 \
 MYSCOUTEE_DEMO_RESET_ALLOW_NON_ROOT_FOR_TESTS=true \
   bash "${RESET_SCRIPT}" >/dev/null
 
 [[ ! -e "${TEST_ROOT}/marker" ]] \
   || fail "successful reset did not consume the install marker"
+[[ "$(cat "${TEST_ROOT}/ready-count")" -ge 2 ]] \
+  || fail "reset did not wait for the final MongoDB process"
 grep -Fxq 'up -d mongodb minio' "${TEST_ROOT}/commands.log" \
   || fail "reset did not start only the MongoDB and MinIO prerequisites"
 grep -Fq 'MONGO_RESET_DATABASE=demo_db' "${TEST_ROOT}/commands.log" \
@@ -64,6 +78,23 @@ grep -Fq 'MONGO_SEED_DIRECTORY=demo_db' "${TEST_ROOT}/commands.log" \
 grep -Fq 'images/demo-assets images/demo-events images/demo-profiles' \
   "${TEST_ROOT}/commands.log" \
   || fail "reset did not restrict MinIO cleanup to package-owned demo prefixes"
+
+printf '%s\n' 1.0.0 > "${TEST_ROOT}/marker"
+if PATH="${TEST_ROOT}/bin:${PATH}" \
+    DEMO_RESET_COMMAND_LOG="${TEST_ROOT}/timeout.log" \
+    DEMO_RESET_READY_COUNT="${TEST_ROOT}/timeout-count" \
+    DEMO_RESET_NEVER_READY=true \
+    MYSCOUTEE_COMPOSE_SCRIPT="${TEST_ROOT}/compose" \
+    MYSCOUTEE_ENV_FILE="${TEST_ROOT}/myscoutee.env" \
+    MYSCOUTEE_DEMO_RESET_MARKER="${TEST_ROOT}/marker" \
+    MYSCOUTEE_DEMO_RESET_WAIT_SECONDS=1 \
+    MYSCOUTEE_DEMO_RESET_ALLOW_NON_ROOT_FOR_TESTS=true \
+      bash "${RESET_SCRIPT}" >/dev/null 2>&1; then
+  fail "reset accepted an unfinished MongoDB initialization"
+fi
+[[ -f "${TEST_ROOT}/marker" ]] || fail "timeout consumed the retry marker"
+[[ "$(cat "${TEST_ROOT}/timeout.log")" == 'up -d mongodb minio' ]] \
+  || fail "initialization timeout mutated seed data"
 
 cat > "${TEST_ROOT}/myscoutee.env" <<'EOF'
 MONGO_DEMO_DATABASE=production_db
