@@ -133,6 +133,10 @@ upsert_env() {
   chmod --reference="${ENV_FILE}" "${tmp}"
   chown --reference="${ENV_FILE}" "${tmp}"
   mv -f -- "${tmp}" "${ENV_FILE}"
+  # systemd loaded the old EnvironmentFile when this worker started. Compose
+  # gives inherited variables precedence over the updated file, so keep the
+  # worker's child-process environment in sync with each committed setting.
+  export "${key}=${value}"
 }
 
 test_domain() {

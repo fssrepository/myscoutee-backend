@@ -68,9 +68,13 @@ This builds the helper archive and its checksum only. It does not build the
 application, Docker images, or the DEB. The full DEB packager calls this same
 builder when a new application package is intentionally produced.
 
-The user requested that the next DEB build and GitHub release replacement wait
-until the corrected application is running on the domain and they have seen it.
-No release replacement has been performed during this deployment work.
+After the domain deployment and visible demo smoke test have been checked,
+produce one final build, still version `1.0.0`. Install and verify that DEB on
+the Netcup server first. Then upload the five smaller release assets to the
+existing GitHub release; the owner uploads the large DEB through GitHub's web
+interface. Keep all checksums and signed manifests matched to that exact DEB.
+No new version or patch release is intended. No release replacement has been
+performed during this deployment work.
 
 ## Domain and HTTPS
 
@@ -157,6 +161,50 @@ journalctl -u myscoutee-tls-renew.service -n 50 --no-pager
 The installed timer checks daily with up to two hours of randomized delay.
 Automatic renewal also requires the saved TLS configuration to remain enabled,
 with Automatic mode and automatic renewal enabled.
+
+To test certificate renewal without replacing the live certificate, on the server:
+
+```bash
+docker run --rm \
+  -v /opt/myscoutee/server/data/certbot/conf:/etc/letsencrypt \
+  -v /opt/myscoutee/server/data/certbot/www:/var/www/certbot \
+  certbot/certbot:v5.4.0 renew --dry-run \
+  --webroot --webroot-path /var/www/certbot
+```
+
+Certbot may wait several minutes before starting its renewal attempt. Do not
+run another certificate operation concurrently.
+
+## Visible demo smoke session
+
+After host qualification, open the dedicated browser from the local checkout:
+
+```bash
+node guides/qa/tools/open-checkpoint-browser-sessions.mjs NETCUP-DEMO-SMOKE
+```
+
+This opens a visible, isolated Chrome window at `https://myscoutee.com/entry`.
+It starts anonymously, preserves other managed sessions, and does not disable
+certificate validation. For this deployment checkpoint only, Chrome resolves
+`myscoutee.com` to `62.83.35.187`, avoiding the workstation's stale upstream DNS
+cache. It does not change system DNS or `/etc/hosts`.
+
+The launcher prepares the window; it does not execute the smoke journey.
+The owner has authorized visible CDP operation for this demo smoke test.
+
+## Verified deployment state
+
+On 2026-09-18, the fresh-start and ordinary service-restart qualification passed.
+The final domain stack passed host qualification, and its Nginx, application,
+MongoDB and payment simulator were healthy with no automatic restarts.
+
+The Let's Encrypt certificate covers `myscoutee.com` and currently expires on
+2026-12-17. Automatic renewal is enabled, its systemd timer is active, and the
+Certbot renewal dry run passed. All 13 public deployment checks passed,
+including normal certificate trust, redirects, frontend assets and precache,
+backend content and the anonymous Operator access boundary. This verification
+used the current public A record explicitly because the workstation's upstream
+DNS cache still returned the previous parking address.
 
 ## Important server paths
 
