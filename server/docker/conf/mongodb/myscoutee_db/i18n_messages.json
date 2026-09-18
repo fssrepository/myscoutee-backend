@@ -41278,5 +41278,65 @@
     "key": "entry.permissions.notifications.failed",
     "lang": "hu",
     "value": "Nem sikerült menteni az értesítési beállításokat. Ellenőrizd a kapcsolatot, majd próbáld újra."
+  },
+  {
+    "_id": "i18n-message-en-firebase-auth-link-required",
+    "key": "firebase.auth.link.required",
+    "lang": "en",
+    "value": "This email already has an account. To link the selected login method, sign in once with the Google, Facebook or email/password method you used before. Then both methods will open the same profile."
+  },
+  {
+    "_id": "i18n-message-en-firebase-auth-link-email-mismatch",
+    "key": "firebase.auth.link.email.mismatch",
+    "lang": "en",
+    "value": "Choose the same email address as in your first login attempt to link the accounts."
+  },
+  {
+    "_id": "i18n-message-en-firebase-auth-link-expired",
+    "key": "firebase.auth.link.expired",
+    "lang": "en",
+    "value": "The account-linking request expired. Start again with the login method you want to add."
+  },
+  {
+    "_id": "i18n-message-en-firebase-auth-link-failed",
+    "key": "firebase.auth.link.failed",
+    "lang": "en",
+    "value": "The login methods could not be linked. Please start again. Your existing profile has not been merged with another account."
+  },
+  {
+    "_id": "i18n-message-en-firebase-auth-provider-disabled",
+    "key": "firebase.auth.provider.disabled",
+    "lang": "en",
+    "value": "This login method is not enabled in Firebase."
+  },
+  {
+    "_id": "i18n-message-hu-firebase-auth-link-required",
+    "key": "firebase.auth.link.required",
+    "lang": "hu",
+    "value": "Ehhez az e-mail-címhez már tartozik fiók. A választott belépési mód összekapcsolásához lépj be egyszer a korábban használt Google-, Facebook- vagy e-mail/jelszavas móddal. Ezután mindkét mód ugyanazt a profilt nyitja meg."
+  },
+  {
+    "_id": "i18n-message-hu-firebase-auth-link-email-mismatch",
+    "key": "firebase.auth.link.email.mismatch",
+    "lang": "hu",
+    "value": "Az összekapcsoláshoz ugyanazt az e-mail-címet válaszd, mint az első belépési kísérletnél."
+  },
+  {
+    "_id": "i18n-message-hu-firebase-auth-link-expired",
+    "key": "firebase.auth.link.expired",
+    "lang": "hu",
+    "value": "A fiókok összekapcsolási kérése lejárt. Kezdd újra a hozzáadni kívánt belépési móddal."
+  },
+  {
+    "_id": "i18n-message-hu-firebase-auth-link-failed",
+    "key": "firebase.auth.link.failed",
+    "lang": "hu",
+    "value": "A belépési módokat nem sikerült összekapcsolni. Kérjük, kezdd újra. Meglévő profilodat nem vontuk össze másik fiókkal."
+  },
+  {
+    "_id": "i18n-message-hu-firebase-auth-provider-disabled",
+    "key": "firebase.auth.provider.disabled",
+    "lang": "hu",
+    "value": "Ez a belépési mód nincs engedélyezve a Firebase-ben."
   }
 ]
