@@ -18,6 +18,9 @@ archive="${TEST_ROOT}/dist/myscoutee-client-tools_1.0.0.tar.gz"
 [[ "$(tar -xOzf "${archive}" ./VERSION)" == 1.0.0 ]]
 tar -xOzf "${archive}" ./prepare-debian13-minimal.sh \
   | cmp - "${REPO_ROOT}/packaging/client-tools/prepare-debian13-minimal.sh"
+for helper in install-temporary-frontend.sh install-temporary-image.sh; do
+  tar -xOzf "${archive}" "./${helper}" | cmp - "${REPO_ROOT}/packaging/client-tools/${helper}"
+done
 if tar -tzf "${archive}" | grep -Fxq './install.env'; then
   echo "Local credentials must not be packaged" >&2
   exit 1

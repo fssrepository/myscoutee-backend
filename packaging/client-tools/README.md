@@ -1,8 +1,9 @@
 # MyScoutee Operator client tools
 
-These release-packaged client-side wrappers manage a Debian deployment. They do not contain
-application installation policy: host qualification and diagnostics are
-commands shipped by the installed package.
+These release-packaged tools manage a Debian deployment. The normal DEB
+wrappers delegate installation policy, host qualification and diagnostics to
+the installed package. The optional temporary frontend helper below is a
+separate, explicitly invoked runtime override.
 
 ## Configure
 
@@ -46,6 +47,93 @@ This does not build or modify a DEB or any container image. A helper-only
 release may be newer than the client-tools copy embedded in an existing DEB;
 use the separately downloaded, signed helper archive for the latest host
 preparation script.
+
+## Partial update from GHCR, run on the server
+
+`install-temporary-image.sh` is an opt-in temporary image update for an existing
+running DEB deployment. Run it **on the deployment server**, from the separately
+downloaded and signature-verified client-tools archive. It does not replace the
+normal `install.sh` or DEB lifecycle, modify installed configuration, reset demo
+data, or record a different installed DEB. Do not run it concurrently with a
+normal package installation or HTTPS configuration operation.
+
+First authenticate Docker on the server for private images:
+
+```bash
+sudo docker login ghcr.io -u YOUR_GITHUB_USERNAME
+```
+
+Paste a GitHub classic token with `read:packages` at the password prompt. The
+account must have access to the selected Package, including any required
+organization authorization. Keep the token in a password manager, outside this
+archive, shell command arguments, Git and logs. If no Docker credential helper
+is configured, Docker stores the login in the invoking user's Docker config;
+use a dedicated read-only token on the server. Publishing uses a different
+credential with `write:packages`. Public GHCR images do not require login.
+
+Select one compatible service image and its exact digest from the trusted
+publisher. For example, on the server:
+
+```bash
+sudo bash install-temporary-image.sh install nginx   ghcr.io/fssrepository/myscoutee-nginx@sha256:REPLACE_WITH_VERIFIED_DIGEST
+sudo bash install-temporary-image.sh status nginx
+sudo bash install-temporary-image.sh rollback nginx
+
+# Separate backend update, using its own verified digest:
+sudo bash install-temporary-image.sh install profilemanagement   ghcr.io/fssrepository/myscoutee-api@sha256:REPLACE_WITH_VERIFIED_DIGEST
+```
+
+| Service argument | Container image | GitHub repository association |
+| --- | --- | --- |
+| `nginx` | `ghcr.io/fssrepository/myscoutee-nginx` | `fssrepository/myscoutee` |
+| `profilemanagement` | `ghcr.io/fssrepository/myscoutee-api` | private `fssrepository/myscoutee-backend` |
+| `registry` | `ghcr.io/fssrepository/myscoutee-registry` | private `fssrepository/myscoutee-registry` |
+| `payment-simulator` | `ghcr.io/fssrepository/myscoutee-payment-simulator` | See the Package's repository association |
+| `minio` | `ghcr.io/fssrepository/myscoutee-minio` | See the Package's repository association |
+| `mongodb` | `ghcr.io/fssrepository/myscoutee-mongodb` | See the Package's repository association |
+| `redis` | `ghcr.io/fssrepository/myscoutee-redis` | See the Package's repository association |
+
+The separately published `myscoutee-nginx-base` is a build dependency, not a
+running service; it has no standalone container to restart. The Registry in
+this table is the MyScoutee Registry application. GHCR is the image registry.
+Images are GitHub Packages associated with repositories, not Git files or DEB
+Release attachments. Repository association and Package visibility are separate.
+
+The helper pulls before replacing anything, checks the current Compose owner,
+platform, publisher service/package-version labels, and frontend content version
+when applicable. For MongoDB and Redis it also requires the installed upstream
+image version: this command is not a database migration tool. Keep application
+and database changes compatible with the existing configuration and data; health
+checks do not prove schema compatibility. A single invocation updates exactly
+one service using the existing Compose files and replica-set overlay, with
+`--no-deps --no-build --pull never`, then waits for health.
+
+Mutable tags are refused: even when the tag stays `1.0.0`, a new digest selects
+new content and Compose recreates the container. No force-version switch is
+needed. On failure the helper attempts to restore the previous local image.
+State is root-only at `/var/lib/myscoutee/temporary-images/SERVICE/state.json`;
+nginx retains `/var/lib/myscoutee/temporary-frontend/state.json`. Inspect `status`
+and use `rollback` before applying another temporary image to that service.
+Rollback refuses to overwrite a container replaced by another deployment. Keep
+the previous image locally; do not prune it. If an interrupted Docker operation
+leaves the container absent, use the normal deployment recovery procedure.
+
+`install-temporary-frontend.sh` is a convenience wrapper selecting `nginx`;
+keep it beside `install-temporary-image.sh` when copying the helpers.
+
+A normal MyScoutee service restart or DEB reinstall returns to the images defined
+by the installed package. Temporary changes leave the recorded DEB hash and
+bundled-image manifest unchanged. Verify public HTTPS after the update:
+
+```bash
+node verify-deployment/run.mjs \
+  --url https://YOUR_DOMAIN --expected-version 1.0.0 --demo-session
+```
+
+For a frontend replacement, reload the browser after its service worker has
+received the new bundle. An open tab may still show the previous UI even though
+the server already runs the new digest. Check `/app-version.json` and the loaded
+UI, not just the unchanged `1.0.0` version string.
 
 ## Install or reinstall
 

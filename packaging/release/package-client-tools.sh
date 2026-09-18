@@ -15,7 +15,8 @@ WORK_DIR="$(mktemp -d "${DIST_DIR}/.client-tools.XXXXXX")"
 trap 'rm -rf -- "${WORK_DIR}"' EXIT
 install -d "${WORK_DIR}/payload/verify-deployment"
 for helper in README.md install.env.example install.sh prepare-debian13-minimal.sh \
-  purge.sh forward-localhost.sh remote-transport.sh verify-release.sh; do
+  purge.sh forward-localhost.sh remote-transport.sh verify-release.sh \
+  install-temporary-frontend.sh install-temporary-image.sh; do
   install -m 0644 "${REPO_ROOT}/packaging/client-tools/${helper}" "${WORK_DIR}/payload/${helper}"
 done
 cp -a "${REPO_ROOT}/packaging/verify-deployment/." "${WORK_DIR}/payload/verify-deployment/"

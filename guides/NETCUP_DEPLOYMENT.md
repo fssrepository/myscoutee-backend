@@ -78,69 +78,89 @@ This builds the helper archive and its checksum only. It does not build the
 application, Docker images, or the DEB. The full DEB packager calls this same
 builder when a new application package is intentionally produced.
 
-After the domain deployment and visible demo smoke test have been checked,
-produce one final build, still version `1.0.0`. Install and verify that DEB on
-the Netcup server first, then configure and verify Firebase. GitHub publication
-must wait until that Firebase setup is complete. Then upload the five smaller release assets to the
-existing GitHub release; the owner uploads the large DEB through GitHub's web
-interface. Keep all checksums and signed manifests matched to that exact DEB.
-No new version or patch release is intended. No release replacement has been
-performed during this deployment work.
+The release stays at `1.0.0` / `v1.0.0`. The owner uploads the large DEB through
+GitHub's web interface; the five smaller assets are its checksum, client-tools
+archive/checksum, signed release manifest and signed update catalog. All must
+match the same final candidate.
 
-The final local candidate is:
+The final release candidate is:
 
 ```text
-packaging/dist/stable-1.0.0-netcup-firebase-20260918/myscoutee_1.0.0_amd64.deb
-SHA-256: 2916abc901d6fe2ec9506575cafa06a2835c1c0f8effe4b315fa8c83f5ee5a2c
+packaging/dist/stable-1.0.0-netcup-operator-layout-20260918/myscoutee_1.0.0_amd64.deb
+SHA-256: 6ce3e76370b133d504df9e55acc565f4aadc980791ca8dd0e34b1059d1bad4b7
+Frontend build: stable-20260918-operator-layout
 ```
 
-Its matching client-tools archive, checksums, signed release manifest and signed
-update catalog are in the same directory. The frontend build is
-`stable-20260918-netcup-operator`; this candidate includes the compact Operator
-action menus and current installation scripts/client tools. Other application
-images retain their previously verified identities.
+The currently installed full DEB has SHA-256
+`2916abc901d6fe2ec9506575cafa06a2835c1c0f8effe4b315fa8c83f5ee5a2c`.
+The latest frontend was applied separately from GHCR, as described below; this
+does not claim installation of the entire newer DEB. The independently built
+client-tools archive includes the new partial-update helper; the embedded copy
+in the already built DEB predates that helper. Use the standalone signed archive.
 
-For a deliberate same-version reinstall, verify and upload from the local
-repository after verifying the SSH host identity in the access guide:
+For normal fresh installation or complete replacement, use the signed DEB with
+[the normal client-tools installer](../packaging/client-tools/README.md#install-or-reinstall).
+That installer owns package qualification and the deliberate same-version
+unpack/configure sequence. A full reinstall refreshes disposable demo data and
+preserves production data, deployment credentials and TLS configuration. A
+normal `apt install` can skip an already installed version; do not mistake that
+for replacement of the payload.
+
+## Partial service update from GHCR
+
+Run the helper **on the Netcup server**, after a normal DEB deployment exists.
+It is an optional temporary path; it does not replace the DEB installer. Full
+instructions, supported services and failure handling are in
+[the client-tools guide](../packaging/client-tools/README.md#partial-update-from-ghcr-run-on-the-server).
+
+1. Download and signature-verify the standalone `myscoutee-client-tools_1.0.0.tar.gz`
+   using `verify-release.sh`, the matching release manifest and the independently
+   trusted release public key. Copy/extract the archive on the server.
+2. For private Packages, log in there with `sudo docker login ghcr.io -u fssrepository`.
+   Enter a classic token with `read:packages` at the password prompt. Do not put
+   the token into this guide, Git, a command-line argument or the helper archive.
+3. Select the exact digest of the intended service image from the trusted
+   publisher. Use one service per command; do not use a mutable `:1.0.0` tag.
+4. Wait for the helper's health result, then verify public HTTPS and the changed
+   application behavior. Use `status` to inspect the retained operation or
+   `rollback` to restore its previous local image.
+
+The verified frontend command for this build is:
 
 ```bash
-netcup_release_dir=packaging/dist/stable-1.0.0-netcup-firebase-20260918
-bash packaging/client-tools/verify-release.sh \
-  "$netcup_release_dir/myscoutee_1.0.0_amd64.deb" \
-  "$netcup_release_dir/myscoutee-release_1.0.0.json" \
-  "$netcup_release_dir/release-public-key.pem" \
-  sha256:cb936e5e3af21c7f3e72e569277ec00b4a5e18e13ddc083a08fc70f238ad2135
-ssh root@62.83.35.187 'mkdir -p /root/myscoutee-install-20260918/firebase-final'
-scp "$netcup_release_dir/myscoutee_1.0.0_amd64.deb" \
-  "$netcup_release_dir/myscoutee_1.0.0_amd64.deb.sha256" \
-  root@62.83.35.187:/root/myscoutee-install-20260918/firebase-final/
+sudo bash install-temporary-image.sh install nginx \
+  ghcr.io/fssrepository/myscoutee-nginx@sha256:ad3abebbe54fb3ec6906b2562441735b764cb88bf5d8853d41201b90f84ea773
+sudo bash install-temporary-image.sh status nginx
+# Only when a rollback is wanted:
+sudo bash install-temporary-image.sh rollback nginx
 ```
 
-On the server, verify transfer integrity and take a complete backup:
+For the backend use service `profilemanagement` and image
+`ghcr.io/fssrepository/myscoutee-api@sha256:VERIFIED_DIGEST`; for the Registry use
+service `registry` and `ghcr.io/fssrepository/myscoutee-registry@sha256:VERIFIED_DIGEST`.
+Those Packages are associated with the private `myscoutee-backend` and
+`myscoutee-registry` repositories respectively. The payment simulator Package
+is associated with the private `myscoutee-payment-simulator` repository. The Docker pull uses GHCR and
+the account's Package access; no Git clone or source-repository checkout is needed.
 
-```bash
-cd /root/myscoutee-install-20260918/firebase-final
-sha256sum -c myscoutee_1.0.0_amd64.deb.sha256
-MYSCOUTEE_BACKUP_REQUIRE_COMPLETE=true MONGO_DATABASE=production_db \
-  /opt/myscoutee/packaging/scripts/backup-production.sh
-```
+The helper preserves the existing Compose overlays and restarts only the
+selected service. It leaves the installed package identity, configuration and
+volumes in place and does not invoke demo reset hooks. A database image swap
+must retain the installed upstream version; database migrations and new package
+versions use the normal deployment process. Run updates serially and never
+concurrently with package installation or HTTPS configuration.
 
-Run the following as root on the server, using the verified uploaded package:
+This path is intentionally temporary: the normal service startup/reinstall
+uses the package-configured image again. Keep the previous image locally for
+rollback. A container that disappears during an interrupted Docker operation
+requires normal deployment recovery rather than an assumed successful rollback.
 
-```bash
-systemctl stop myscoutee
-dpkg --unpack /root/myscoutee-install-20260918/firebase-final/myscoutee_1.0.0_amd64.deb
-DEBIAN_FRONTEND=noninteractive apt-get -f install -y --no-remove
-/opt/myscoutee/packaging/scripts/qualify-deployment.sh restart-and-check \
-  --expected-version 1.0.0 --timeout-seconds 300 --leave-running-on-failure
-/opt/myscoutee/packaging/scripts/record-installed-package.sh \
-  /root/myscoutee-install-20260918/firebase-final/myscoutee_1.0.0_amd64.deb
-```
-
-The normal reinstall refreshes disposable demo data from the packaged seed.
-It preserves production data, deployment credentials and configured TLS.
-An ordinary `apt install` may skip a package whose version is already installed;
-the explicit unpack/configure sequence above refreshes the same-version payload.
+On this host, frontend installation from private GHCR, explicit rollback and
+reapplication all succeeded. All seven containers were healthy afterward; the
+six other containers retained their IDs. Environment/secret files and the TLS
+certificate retained their hashes. The server-side publishing credential used
+for this one-time verification was stored in a temporary root-only Docker
+configuration and removed afterward; later private pulls require server login.
 
 ## Domain and HTTPS
 
@@ -305,8 +325,8 @@ the registration step or replace this journey.
 
 ## Verified deployment state
 
-The final same-version `1.0.0` package documented above was installed on
-2026-09-18. Host qualification and all 13 public deployment checks passed
+The preceding full `1.0.0` DEB (SHA-256 `2916abc…e5a2c`) was installed on
+2026-09-18; the final frontend was then applied using the GHCR helper above. Host qualification and all 13 public deployment checks passed
 after installation, with all seven containers healthy. The deployment
 configuration, secret configuration and live TLS certificate remained
 unchanged. Operator login using the local Git-ignored credential file was
