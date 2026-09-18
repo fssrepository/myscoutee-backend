@@ -191,6 +191,10 @@ cache. It does not change system DNS or `/etc/hosts`.
 
 The launcher prepares the window; it does not execute the smoke journey.
 The owner has authorized visible CDP operation for this demo smoke test.
+Follow [the Netcup demo smoke checklist](qualification/NETCUP_DEMO_SMOKE.md):
+create a new demo profile through the UI, then use that same new profile for
+the remaining steps. Logging into a pre-existing seeded user does not satisfy
+the registration step or replace this journey.
 
 ## Verified deployment state
 
