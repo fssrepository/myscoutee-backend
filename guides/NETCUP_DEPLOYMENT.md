@@ -448,6 +448,10 @@ ghcr.io/fssrepository/myscoutee-nginx@sha256:495ba3b1d95825b925a6850e3912bd0e069
 The production build and 17 focused frontend tests passed. Only nginx was
 recreated; all seven containers were healthy, with the other six container IDs
 and unrelated environment/secret configuration unchanged. No DEB was built.
+The public build ID and authentication chunk hash matched the local artifact.
+The deployment verifier passed 12 of 13 checks; complete precache verification
+remained inconclusive because repeated requests encountered timeouts and
+connection resets, including a separate check with reduced concurrency.
 
 ## Important server paths
 
