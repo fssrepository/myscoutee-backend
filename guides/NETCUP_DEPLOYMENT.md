@@ -401,6 +401,38 @@ backend content and the anonymous Operator access boundary. This verification
 used the current public A record explicitly because the workstation's upstream
 DNS cache still returned the previous parking address.
 
+## Firebase login partial update — 2026-09-18
+
+The account-linking frontend is deployed as build
+`stable-20260918-firebase-link`, retaining application version `1.0.0`:
+
+```text
+ghcr.io/fssrepository/myscoutee-nginx@sha256:cd61c0af93d9cc76891ab756c2bcc666e964954f1603620fe9215d25f08e2ab2
+```
+
+It was installed with `install-temporary-image.sh install nginx <digest>`.
+The updater verified the persistent `NGINX_PRODUCTION_IMAGE` selection and
+health. All seven containers are healthy; the other six container IDs and
+unrelated environment/secret configuration remained unchanged. The backend
+continues running the previous session-limit image with default `-1`.
+
+Ten EN/HU login messages were added to the production and demo catalogs, with
+bundle versions `2026.09.18.en.114` and `2026.09.18.hu.114`. The same scoped
+changes were persisted in the installed seed files so a later seed sync will
+retain them. Other catalog messages were verified unchanged. Canonical source
+bundles and all three repository seed sets are synchronized for future builds.
+
+Verification: 17 focused frontend tests, 22 focused backend tests, the i18n
+seed audit and the production frontend build passed. Public checks verified
+the exact new authentication JavaScript hash, both live translation bundles,
+and all 13 deployment checks. These checks do not prove personal Google or
+Facebook OAuth consent; follow [the account-linking guide](FIREBASE_ACCOUNT_LINKING.md)
+for the remaining normal-browser check and required Firebase provider settings.
+
+No DEB was built or installed, and no release assets were replaced. Continue
+using GHCR and persistent partial updates for subsequent fixes; build another
+DEB only when explicitly requested by the owner.
+
 ## Important server paths
 
 | Purpose | Path |
