@@ -125,12 +125,12 @@ instructions, supported services and failure handling are in
    application behavior. Use `status` to inspect the retained operation or
    `rollback` to restore its previous local image.
 
-The currently deployed frontend build is `stable-20260919-webview-reload`
+The currently deployed frontend build is `stable-20260919-form-popup`
 (application version remains `1.0.0`). The verified command for this image is:
 
 ```bash
 sudo bash install-temporary-image.sh install nginx \
-  ghcr.io/fssrepository/myscoutee-nginx@sha256:2ea5614d349b6e7eb810041db3adfc7f5eb024b33322c8cf89459e399d07d6ba
+  ghcr.io/fssrepository/myscoutee-nginx@sha256:a2cd875712e678d5c66d6910b61b8ed0ed71150aa08c7a6153ee5ece67d91d3a
 sudo bash install-temporary-image.sh status nginx
 # Only when a rollback is wanted:
 sudo bash install-temporary-image.sh rollback nginx
@@ -195,6 +195,22 @@ per-request timeout. The focused source regression/cache checks passed 22/22.
 Physical-device WebView behavior was not exercised. No DEB was rebuilt or
 installed. Publication and deployment receipts are retained under
 `packaging/dist/partial-1.0.0-webview-reload-20260919/` (gitignored).
+
+The `stable-20260919-form-popup` frontend update adds a painted loading ring
+before shared form construction, an immediate loading shell for the lazy
+profile editor, retained current-user profile views, and pencil-button press
+feedback. Profile saves still use `POST /api/auth/me/profile-ext`; the retained
+view is a UI cache, not a replacement for backend persistence. Nine focused
+tests passed, covering paint ordering, retained popup visibility, unchanged
+profile reuse, discarded edits, confirmed saves, logout and identity changes.
+The default test compilation encounters pre-existing errors in unrelated specs;
+the focused run used a scoped TypeScript configuration. The production build
+passed and all 332 frontend files were matched against the packaged image.
+The persistent nginx-only update left all seven containers healthy and the
+other six container IDs/configuration unchanged. Public files matched the build
+and deployment checks passed 13/13. Device-specific rendering latency has not
+been measured. Receipts and the complete source patch are retained under
+`packaging/dist/partial-1.0.0-form-popup-20260919/` (gitignored).
 
 ## Concurrent-session setting
 
