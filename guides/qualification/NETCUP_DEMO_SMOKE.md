@@ -32,6 +32,8 @@ Use the versioned `NETCUP-DEMO-SMOKE` browser launcher documented in
 owner. Record actual observed results; HTTP health checks alone do not prove
 these UI steps.
 
-Firebase login and push delivery are outside this demo journey and remain
-unverified until Firebase is configured. This checklist is separate from the
+Firebase login and push delivery are outside this demo journey. Firebase was
+subsequently activated after its Authentication and browser Messaging readiness
+tests passed; personal Google login and ordinary application push delivery
+are not claimed by this demo checklist. This checklist is separate from the
 VMware normal-account deployment smoke and the manual-QA campaign.

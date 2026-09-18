@@ -46,8 +46,9 @@ PAYMENT_SIMULATOR_PUBLIC_BASE_URL=https://62.83.35.187
 PAYMENT_SIMULATOR_APPLICATION_BASE_URL=https://62.83.35.187
 ```
 
-Firebase, external Registry participation, and application updates are not yet
-configured. See the domain procedure below for HTTPS.
+Firebase Authentication and Messaging are configured through Operator as
+described below. External Registry participation and application updates are
+not configured. See the domain procedure below for HTTPS.
 
 The current Operator username and password are available locally in:
 
@@ -89,35 +90,36 @@ performed during this deployment work.
 The final local candidate is:
 
 ```text
-packaging/dist/stable-1.0.0-netcup-20260918/myscoutee_1.0.0_amd64.deb
-SHA-256: 9e029e251d4f92b508308b4eec32a6531d4a8430aae1d2bf323dae0d280bf319
+packaging/dist/stable-1.0.0-netcup-firebase-20260918/myscoutee_1.0.0_amd64.deb
+SHA-256: 2916abc901d6fe2ec9506575cafa06a2835c1c0f8effe4b315fa8c83f5ee5a2c
 ```
 
 Its matching client-tools archive, checksums, signed release manifest and signed
-update catalog are in the same directory. The application image build remains
-`stable-20260917-login-feedback-r6`; this candidate packages the current host
-installation scripts and client tools with those verified existing images.
+update catalog are in the same directory. The frontend build is
+`stable-20260918-netcup-operator`; this candidate includes the compact Operator
+action menus and current installation scripts/client tools. Other application
+images retain their previously verified identities.
 
 For a deliberate same-version reinstall, verify and upload from the local
 repository after verifying the SSH host identity in the access guide:
 
 ```bash
-netcup_release_dir=packaging/dist/stable-1.0.0-netcup-20260918
+netcup_release_dir=packaging/dist/stable-1.0.0-netcup-firebase-20260918
 bash packaging/client-tools/verify-release.sh \
   "$netcup_release_dir/myscoutee_1.0.0_amd64.deb" \
   "$netcup_release_dir/myscoutee-release_1.0.0.json" \
   "$netcup_release_dir/release-public-key.pem" \
   sha256:cb936e5e3af21c7f3e72e569277ec00b4a5e18e13ddc083a08fc70f238ad2135
-ssh root@62.83.35.187 'mkdir -p /root/myscoutee-install-20260918/final'
+ssh root@62.83.35.187 'mkdir -p /root/myscoutee-install-20260918/firebase-final'
 scp "$netcup_release_dir/myscoutee_1.0.0_amd64.deb" \
   "$netcup_release_dir/myscoutee_1.0.0_amd64.deb.sha256" \
-  root@62.83.35.187:/root/myscoutee-install-20260918/final/
+  root@62.83.35.187:/root/myscoutee-install-20260918/firebase-final/
 ```
 
 On the server, verify transfer integrity and take a complete backup:
 
 ```bash
-cd /root/myscoutee-install-20260918/final
+cd /root/myscoutee-install-20260918/firebase-final
 sha256sum -c myscoutee_1.0.0_amd64.deb.sha256
 MYSCOUTEE_BACKUP_REQUIRE_COMPLETE=true MONGO_DATABASE=production_db \
   /opt/myscoutee/packaging/scripts/backup-production.sh
@@ -127,12 +129,12 @@ Run the following as root on the server, using the verified uploaded package:
 
 ```bash
 systemctl stop myscoutee
-dpkg --unpack /root/myscoutee-install-20260918/final/myscoutee_1.0.0_amd64.deb
+dpkg --unpack /root/myscoutee-install-20260918/firebase-final/myscoutee_1.0.0_amd64.deb
 DEBIAN_FRONTEND=noninteractive apt-get -f install -y --no-remove
 /opt/myscoutee/packaging/scripts/qualify-deployment.sh restart-and-check \
   --expected-version 1.0.0 --timeout-seconds 300 --leave-running-on-failure
 /opt/myscoutee/packaging/scripts/record-installed-package.sh \
-  /root/myscoutee-install-20260918/final/myscoutee_1.0.0_amd64.deb
+  /root/myscoutee-install-20260918/firebase-final/myscoutee_1.0.0_amd64.deb
 ```
 
 The normal reinstall refreshes disposable demo data from the packaged seed.
@@ -180,6 +182,47 @@ intended final Operator account is `raxim.uk@gmail.com`. Until Firebase has
 been configured and that login is ready, use the existing generated bootstrap
 Operator credential. Changing `OPERATOR_USER` away from the generated address
 disables bootstrap login, so do that only as part of the Firebase handover.
+
+## Firebase Authentication and Messaging
+
+Sign in using **For Partners → Operator access → Continue with email**, using
+`packaging/client-tools/netcup-operator.credentials.env`. Open **Configuration**.
+The same popup contains HTTPS, branding, privacy contact, administrator access,
+social links, payments, and Firebase. Configure only the required sections.
+
+The deployed Firebase project is `myscoutee-8e57b`. The approved local inputs are:
+
+- `server/projects/profile/secrets/firebase-web-config.json`: browser project
+  identifiers, API key and Web Push VAPID public key.
+- `server/projects/profile/secrets/firebase-service-account.json`: service-account
+  JSON used in the write-only Authentication credential and Messaging credential
+  fields. Keep this file out of Git, release assets, screenshots and logs.
+
+To configure or replace Firebase:
+
+1. In Firebase Authentication settings, ensure Google and email/password sign-in
+   are enabled and `myscoutee.com` is an authorized domain. Preserve other
+   authorized domains. The deployed auth domain remains
+   `myscoutee-8e57b.firebaseapp.com`.
+2. Populate the Firebase fields in Operator from the approved files, then select
+   **Save Firebase**. A changed revision requires new tests before activation.
+3. Select **Auth Test** and require success.
+4. Select **Message Test** in the HTTPS browser. Allow browser notifications
+   when prompted. The application generates its own temporary browser readiness
+   token; the optional extra-device token can remain blank.
+5. After both tests pass, select **Activate Firebase**. Reopen Configuration and
+   confirm **Firebase active** and configured credentials without re-entering
+   the private JSON.
+
+Both provider tests and activation passed on 2026-09-18. The authorized domain
+was added without removing existing entries. This proves the provider and
+browser Messaging readiness checks; a personal Google sign-in and delivery of
+ordinary application notifications are separate end-to-end checks.
+
+Keep using the generated Operator login until the owner's Google sign-in is
+verified and the Operator identity is deliberately handed over. Activation is
+stored in the encrypted deployment configuration; the installation environment
+flag alone does not describe the active Operator-managed Firebase revision.
 
 ## Routine checks and restart
 
@@ -269,9 +312,9 @@ configuration, secret configuration and live TLS certificate remained
 unchanged. Operator login using the local Git-ignored credential file was
 verified over HTTPS.
 
-Firebase remains disabled. GitHub release assets have not been updated;
-publication waits until Firebase is configured. The owner will upload the
-DEB, and Codex will upload the five accompanying small assets.
+Firebase Authentication and Messaging have passed their Operator tests and
+are active. The owner uploads the DEB; Codex uploads its five accompanying
+small assets after the installed candidate is verified.
 
 On 2026-09-18, the fresh-start and ordinary service-restart qualification passed.
 The final domain stack passed host qualification, and its Nginx, application,
