@@ -125,12 +125,12 @@ instructions, supported services and failure handling are in
    application behavior. Use `status` to inspect the retained operation or
    `rollback` to restore its previous local image.
 
-The currently deployed frontend build is `stable-20260918-landing-cache`
+The currently deployed frontend build is `stable-20260919-webview-reload`
 (application version remains `1.0.0`). The verified command for this image is:
 
 ```bash
 sudo bash install-temporary-image.sh install nginx \
-  ghcr.io/fssrepository/myscoutee-nginx@sha256:8e922eb398b9f443f9ca0e8f4ed633cd861f62f6d87ceeafce0036a2a525cb76
+  ghcr.io/fssrepository/myscoutee-nginx@sha256:2ea5614d349b6e7eb810041db3adfc7f5eb024b33322c8cf89459e399d07d6ba
 sudo bash install-temporary-image.sh status nginx
 # Only when a rollback is wanted:
 sudo bash install-temporary-image.sh rollback nginx
@@ -183,6 +183,18 @@ Public HTTPS served the expected build and service worker, and the deployment
 verifier passed all 13 checks. No DEB was rebuilt or installed for this update.
 Its local publication and deployment receipts are under
 `packaging/dist/partial-1.0.0-landing-cache-20260918/` (gitignored).
+
+The subsequent `stable-20260919-webview-reload` frontend update prevents
+bootstrap resource-error recovery from restarting an already running session
+or looping offline. The production build and packaged files were verified,
+and the published GHCR digest was applied with the same persistent updater.
+All seven containers were healthy; the six other container IDs and unrelated
+configuration remained unchanged. Public HTTPS served byte-identical index,
+worker and version files, and all 13 deployment checks passed with a 15-second
+per-request timeout. The focused source regression/cache checks passed 22/22.
+Physical-device WebView behavior was not exercised. No DEB was rebuilt or
+installed. Publication and deployment receipts are retained under
+`packaging/dist/partial-1.0.0-webview-reload-20260919/` (gitignored).
 
 ## Concurrent-session setting
 
