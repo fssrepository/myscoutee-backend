@@ -109,7 +109,7 @@ for replacement of the payload.
 ## Partial service update from GHCR
 
 Run the helper **on the Netcup server**, after a normal DEB deployment exists.
-It is an optional temporary path; it does not replace the DEB installer. Full
+It persists a partial image selection; it does not replace the DEB installer. Full
 instructions, supported services and failure handling are in
 [the client-tools guide](../packaging/client-tools/README.md#partial-update-from-ghcr-run-on-the-server).
 
@@ -143,24 +143,35 @@ Those Packages are associated with the private `myscoutee-backend` and
 is associated with the private `myscoutee-payment-simulator` repository. The Docker pull uses GHCR and
 the account's Package access; no Git clone or source-repository checkout is needed.
 
-The helper preserves the existing Compose overlays and restarts only the
-selected service. It leaves the installed package identity, configuration and
-volumes in place and does not invoke demo reset hooks. A database image swap
+The helper atomically updates only the selected service image key in
+`/etc/myscoutee/myscoutee.env`, preserves its owner/mode and `.env` symlink,
+keeps the existing Compose overlays, and restarts only the selected service.
+It leaves the installed package identity, unrelated configuration and volumes in place and does not invoke demo reset hooks. A database image swap
 must retain the installed upstream version; database migrations and new package
 versions use the normal deployment process. Run updates serially and never
 concurrently with package installation or HTTPS configuration.
 
-This path is intentionally temporary: the normal service startup/reinstall
-uses the package-configured image again. Keep the previous image locally for
-rollback. A container that disappears during an interrupted Docker operation
+The image selection survives normal service restarts and server reboots, even
+when application version `1.0.0` is unchanged. The script retains its historical
+`install-temporary-image.sh` filename for compatibility. A later patch can be
+applied directly; rollback restores the immediately preceding image and its
+persistent setting. A normal DEB installation is a separate operation and can
+replace that selection with its packaged image. Keep the previous image locally
+for rollback. A container that disappears during an interrupted Docker operation
 requires normal deployment recovery rather than an assumed successful rollback.
 
 On this host, frontend installation from private GHCR, explicit rollback and
 reapplication all succeeded. All seven containers were healthy afterward; the
-six other containers retained their IDs. Environment/secret files and the TLS
-certificate retained their hashes. The server-side publishing credential used
+six other containers retained their IDs during the partial update. The image
+key was then made persistent; all unrelated environment keys, the secret file
+and the TLS certificate retained their contents. The server-side publishing credential used
 for this one-time verification was stored in a temporary root-only Docker
 configuration and removed afterward; later private pulls require server login.
+
+After persisting the nginx selection, `systemctl restart myscoutee.service`
+was exercised successfully: the exact GHCR digest was retained and all seven
+containers became healthy. This verifies the normal boot service startup path;
+a full host reboot was not performed for this check.
 
 ## Domain and HTTPS
 
@@ -327,8 +338,8 @@ the registration step or replace this journey.
 
 The preceding full `1.0.0` DEB (SHA-256 `2916abc…e5a2c`) was installed on
 2026-09-18; the final frontend was then applied using the GHCR helper above. Host qualification and all 13 public deployment checks passed
-after installation, with all seven containers healthy. The deployment
-configuration, secret configuration and live TLS certificate remained
+after installation, with all seven containers healthy. The partial updater now persists the nginx image key. Other deployment
+configuration, secret configuration and the live TLS certificate remained
 unchanged. Operator login using the local Git-ignored credential file was
 verified over HTTPS.
 

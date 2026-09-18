@@ -2,8 +2,8 @@
 
 These release-packaged tools manage a Debian deployment. The normal DEB
 wrappers delegate installation policy, host qualification and diagnostics to
-the installed package. The optional temporary frontend helper below is a
-separate, explicitly invoked runtime override.
+the installed package. The partial image helper below separately persists a
+service image selection, without rebuilding or reinstalling the DEB.
 
 ## Configure
 
@@ -50,11 +50,12 @@ preparation script.
 
 ## Partial update from GHCR, run on the server
 
-`install-temporary-image.sh` is an opt-in temporary image update for an existing
+`install-temporary-image.sh` is an opt-in persistent partial image update for an existing
 running DEB deployment. Run it **on the deployment server**, from the separately
 downloaded and signature-verified client-tools archive. It does not replace the
-normal `install.sh` or DEB lifecycle, modify installed configuration, reset demo
-data, or record a different installed DEB. Do not run it concurrently with a
+normal `install.sh` or DEB lifecycle, reset demo data, or record a different
+installed DEB. It changes only the selected service image key in the existing
+deployment environment (`/etc/myscoutee/myscoutee.env` on a packaged host). Do not run it concurrently with a
 normal package installation or HTTPS configuration operation.
 
 First authenticate Docker on the server for private images:
@@ -108,22 +109,33 @@ checks do not prove schema compatibility. A single invocation updates exactly
 one service using the existing Compose files and replica-set overlay, with
 `--no-deps --no-build --pull never`, then waits for health.
 
-Mutable tags are refused: even when the tag stays `1.0.0`, a new digest selects
-new content and Compose recreates the container. No force-version switch is
-needed. On failure the helper attempts to restore the previous local image.
+Mutable tags are refused: even when the application stays `1.0.0`, a new digest
+selects new content. The helper atomically saves that digest in the canonical
+environment file before Compose recreates the container. It retains the file
+owner, mode and `.env` symlink, and leaves unrelated keys unchanged. No
+force-version switch is needed. On failure it attempts to restore both the
+previous image setting and the previous local image.
 State is root-only at `/var/lib/myscoutee/temporary-images/SERVICE/state.json`;
 nginx retains `/var/lib/myscoutee/temporary-frontend/state.json`. Inspect `status`
-and use `rollback` before applying another temporary image to that service.
-Rollback refuses to overwrite a container replaced by another deployment. Keep
-the previous image locally; do not prune it. If an interrupted Docker operation
+to check both the running image and its persistent selection.
+A later patch can be installed directly without first rolling back; explicit
+`rollback` restores the immediately preceding selection. Reapplying the same
+healthy digest is a no-op. Rollback refuses to overwrite a container or image
+setting replaced by another deployment. Keep the previous image locally; do not prune it. If an interrupted Docker operation
 leaves the container absent, use the normal deployment recovery procedure.
 
 `install-temporary-frontend.sh` is a convenience wrapper selecting `nginx`;
 keep it beside `install-temporary-image.sh` when copying the helpers.
 
-A normal MyScoutee service restart or DEB reinstall returns to the images defined
-by the installed package. Temporary changes leave the recorded DEB hash and
-bundled-image manifest unchanged. Verify public HTTPS after the update:
+The selected image survives normal MyScoutee service restarts and host reboots,
+including patches that retain application version `1.0.0`. The historical
+`install-temporary-*.sh` filenames are retained for compatibility; successful
+updates are now persistent. For an update made with the earlier runtime-only
+helper, run `install` again with the currently running digest to persist it.
+
+A subsequent normal DEB installation may intentionally replace the image
+selection with its packaged version. Partial updates leave the recorded DEB
+hash and bundled-image manifest unchanged. Verify public HTTPS after the update:
 
 ```bash
 node verify-deployment/run.mjs \
