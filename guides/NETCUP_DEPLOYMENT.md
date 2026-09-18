@@ -125,12 +125,12 @@ instructions, supported services and failure handling are in
    application behavior. Use `status` to inspect the retained operation or
    `rollback` to restore its previous local image.
 
-The currently deployed frontend build is `stable-20260919-form-popup`
+The currently deployed frontend build is `stable-20260919-startup-auth`
 (application version remains `1.0.0`). The verified command for this image is:
 
 ```bash
 sudo bash install-temporary-image.sh install nginx \
-  ghcr.io/fssrepository/myscoutee-nginx@sha256:a2cd875712e678d5c66d6910b61b8ed0ed71150aa08c7a6153ee5ece67d91d3a
+  ghcr.io/fssrepository/myscoutee-nginx@sha256:6263b0d8b67fe0248d4eaeae093c3e81af8ced076359e4518f0945ad4670c031
 sudo bash install-temporary-image.sh status nginx
 # Only when a rollback is wanted:
 sudo bash install-temporary-image.sh rollback nginx
@@ -211,6 +211,22 @@ other six container IDs/configuration unchanged. Public files matched the build
 and deployment checks passed 13/13. Device-specific rendering latency has not
 been measured. Receipts and the complete source patch are retained under
 `packaging/dist/partial-1.0.0-form-popup-20260919/` (gitignored).
+
+The `stable-20260919-startup-auth` frontend update removes the redundant
+Firebase session restoration from the public root redirect. Stored session
+and role data only choose a destination; its protected guard still verifies
+authentication and the server user before activation. Normal root-to-game,
+admin and operator startup paths now restore the session once rather than
+twice. Later protected navigations still revalidate; no authentication cache
+or expiry window was added. Ten focused routing tests passed, including
+invalid sessions, stale admin hints, onboarding, pending authentication and
+failed server lookups. The pre-change run reproduced the duplicate calls.
+Production build and image checks passed (332 matching frontend files).
+The nginx-only deployment left seven containers healthy, the other six IDs
+and unrelated configuration unchanged. Public artifact files matched the
+build and all 13 deployment checks passed. Physical-device startup duration
+was not measured. Receipts and source patch are retained under
+`packaging/dist/partial-1.0.0-startup-auth-20260919/` (gitignored).
 
 ## Concurrent-session setting
 
