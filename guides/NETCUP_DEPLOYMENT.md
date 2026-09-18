@@ -49,7 +49,16 @@ PAYMENT_SIMULATOR_APPLICATION_BASE_URL=https://62.83.35.187
 Firebase, external Registry participation, and application updates are not yet
 configured. See the domain procedure below for HTTPS.
 
-The initial Operator credential was retained outside Git, with mode `0600`, at:
+The current Operator username and password are available locally in:
+
+```text
+packaging/client-tools/netcup-operator.credentials.env
+```
+
+The file has mode `0600` and is excluded by the versioned
+`/packaging/client-tools/*.env` ignore rule. It is not a release artifact.
+Open it locally when signing in; do not paste its contents into Git or logs.
+The initial credential is also retained outside the repository at:
 
 ```text
 /home/raxim/.local/share/myscoutee/netcup/operator-bootstrap-20260918.txt
@@ -70,11 +79,66 @@ builder when a new application package is intentionally produced.
 
 After the domain deployment and visible demo smoke test have been checked,
 produce one final build, still version `1.0.0`. Install and verify that DEB on
-the Netcup server first. Then upload the five smaller release assets to the
+the Netcup server first, then configure and verify Firebase. GitHub publication
+must wait until that Firebase setup is complete. Then upload the five smaller release assets to the
 existing GitHub release; the owner uploads the large DEB through GitHub's web
 interface. Keep all checksums and signed manifests matched to that exact DEB.
 No new version or patch release is intended. No release replacement has been
 performed during this deployment work.
+
+The final local candidate is:
+
+```text
+packaging/dist/stable-1.0.0-netcup-20260918/myscoutee_1.0.0_amd64.deb
+SHA-256: 9e029e251d4f92b508308b4eec32a6531d4a8430aae1d2bf323dae0d280bf319
+```
+
+Its matching client-tools archive, checksums, signed release manifest and signed
+update catalog are in the same directory. The application image build remains
+`stable-20260917-login-feedback-r6`; this candidate packages the current host
+installation scripts and client tools with those verified existing images.
+
+For a deliberate same-version reinstall, verify and upload from the local
+repository after verifying the SSH host identity in the access guide:
+
+```bash
+netcup_release_dir=packaging/dist/stable-1.0.0-netcup-20260918
+bash packaging/client-tools/verify-release.sh \
+  "$netcup_release_dir/myscoutee_1.0.0_amd64.deb" \
+  "$netcup_release_dir/myscoutee-release_1.0.0.json" \
+  "$netcup_release_dir/release-public-key.pem" \
+  sha256:cb936e5e3af21c7f3e72e569277ec00b4a5e18e13ddc083a08fc70f238ad2135
+ssh root@62.83.35.187 'mkdir -p /root/myscoutee-install-20260918/final'
+scp "$netcup_release_dir/myscoutee_1.0.0_amd64.deb" \
+  "$netcup_release_dir/myscoutee_1.0.0_amd64.deb.sha256" \
+  root@62.83.35.187:/root/myscoutee-install-20260918/final/
+```
+
+On the server, verify transfer integrity and take a complete backup:
+
+```bash
+cd /root/myscoutee-install-20260918/final
+sha256sum -c myscoutee_1.0.0_amd64.deb.sha256
+MYSCOUTEE_BACKUP_REQUIRE_COMPLETE=true MONGO_DATABASE=production_db \
+  /opt/myscoutee/packaging/scripts/backup-production.sh
+```
+
+Run the following as root on the server, using the verified uploaded package:
+
+```bash
+systemctl stop myscoutee
+dpkg --unpack /root/myscoutee-install-20260918/final/myscoutee_1.0.0_amd64.deb
+DEBIAN_FRONTEND=noninteractive apt-get -f install -y --no-remove
+/opt/myscoutee/packaging/scripts/qualify-deployment.sh restart-and-check \
+  --expected-version 1.0.0 --timeout-seconds 300 --leave-running-on-failure
+/opt/myscoutee/packaging/scripts/record-installed-package.sh \
+  /root/myscoutee-install-20260918/final/myscoutee_1.0.0_amd64.deb
+```
+
+The normal reinstall refreshes disposable demo data from the packaged seed.
+It preserves production data, deployment credentials and configured TLS.
+An ordinary `apt install` may skip a package whose version is already installed;
+the explicit unpack/configure sequence above refreshes the same-version payload.
 
 ## Domain and HTTPS
 
@@ -198,6 +262,17 @@ the registration step or replace this journey.
 
 ## Verified deployment state
 
+The final same-version `1.0.0` package documented above was installed on
+2026-09-18. Host qualification and all 13 public deployment checks passed
+after installation, with all seven containers healthy. The deployment
+configuration, secret configuration and live TLS certificate remained
+unchanged. Operator login using the local Git-ignored credential file was
+verified over HTTPS.
+
+Firebase remains disabled. GitHub release assets have not been updated;
+publication waits until Firebase is configured. The owner will upload the
+DEB, and Codex will upload the five accompanying small assets.
+
 On 2026-09-18, the fresh-start and ordinary service-restart qualification passed.
 The final domain stack passed host qualification, and its Nginx, application,
 MongoDB and payment simulator were healthy with no automatic restarts.
@@ -219,7 +294,7 @@ DNS cache still returned the previous parking address.
 | Persistent application data | `/var/lib/myscoutee/data` |
 | TLS configuration and job status | `/var/lib/myscoutee/tls/runtime` |
 | Let's Encrypt certificate state | `/var/lib/myscoutee/data/certbot/conf` |
-| Initial Operator credential on the local computer | `/home/raxim/.local/share/myscoutee/netcup/operator-bootstrap-20260918.txt` |
+| Operator login, local Git-ignored file | `packaging/client-tools/netcup-operator.credentials.env` |
 
 Keep passwords, private keys, secret configuration files and unreviewed logs
 outside Git. This guide records commands and locations, not their secret values.

@@ -12,12 +12,20 @@ inject a completed profile, Event or Asset through an API or database fixture.
 
 | Step | Required check | Status |
 | --- | --- | --- |
-| New demo profile | Open Explore, choose new demo profile, complete registration and upload a profile image; verify the saved profile | Pending |
-| Profile update | Edit the new profile, replace its image, save, reopen and verify persisted values and image | Pending |
-| Event | Create an Event with an image as the new profile; verify its list and detail views and reopen it | Pending |
-| Asset | Create an Asset with an image as the same profile; verify its list and detail views and reopen it | Pending |
-| Retention | Keep the UI-created profile, Event, Asset and media for the final package reinstall check | Pending |
-| Package reinstall | After the single final `1.0.0` build is installed on Netcup, check the retained records and images before publishing release metadata | Pending |
+| New demo profile | Open Explore and create a new demo profile through registration | Completed by owner; `csyy` was observed signed in |
+| Profile update | Edit the new profile, replace its image, save, reopen and verify persisted values and image | Not independently verified; owner ended the smoke test |
+| Event | Create an Event as the new profile; check its saved details and image | Creation confirmed by owner; image persistence not independently verified |
+| Asset | Create an Asset as the same profile; check its saved details and image | Creation confirmed by owner; the `vcx` transport asset was also observed in the UI |
+| Package reinstall | After the single final `1.0.0` build is installed on Netcup, check host qualification and public HTTPS before publishing release metadata | Passed on 2026-09-18: host qualification, seven healthy containers and 13/13 public checks; normal TLS trust with the current server IP explicitly selected because local DNS was stale |
+
+The owner declared this smoke test complete on 2026-09-18. No further browser
+actions were performed after that instruction. This is user-confirmed smoke
+completion, not a claim that Codex independently verified every image workflow.
+
+The package's existing reinstall contract refreshes the demo database from its
+packaged seed. Demo test records are not production upgrade-preservation
+controls. Back up the current state before reinstalling; do not change the
+installer's demo reset contract to retain this test profile.
 
 Use the versioned `NETCUP-DEMO-SMOKE` browser launcher documented in
 [the deployment guide](../NETCUP_DEPLOYMENT.md). Keep the browser visible to the
