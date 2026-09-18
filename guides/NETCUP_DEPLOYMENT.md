@@ -125,12 +125,12 @@ instructions, supported services and failure handling are in
    application behavior. Use `status` to inspect the retained operation or
    `rollback` to restore its previous local image.
 
-The currently deployed frontend build is `stable-20260919-startup-auth`
+The currently deployed frontend build is `stable-20260919-startup-shell`
 (application version remains `1.0.0`). The verified command for this image is:
 
 ```bash
 sudo bash install-temporary-image.sh install nginx \
-  ghcr.io/fssrepository/myscoutee-nginx@sha256:6263b0d8b67fe0248d4eaeae093c3e81af8ced076359e4518f0945ad4670c031
+  ghcr.io/fssrepository/myscoutee-nginx@sha256:3acc41d738b8b664b1d083ff9c83de4c6371d0503c0a0a49ba0a37fdddbbed11
 sudo bash install-temporary-image.sh status nginx
 # Only when a rollback is wanted:
 sudo bash install-temporary-image.sh rollback nginx
@@ -227,6 +227,21 @@ and unrelated configuration unchanged. Public artifact files matched the
 build and all 13 deployment checks passed. Physical-device startup duration
 was not measured. Receipts and source patch are retained under
 `packaging/dist/partial-1.0.0-startup-auth-20260919/` (gitignored).
+
+The `stable-20260919-startup-shell` frontend update keeps the existing
+application-level logo visible through the first route's redirects, guards
+and lazy component loading. Focus/resume, the watchdog and early outlet
+activation no longer hide it while navigation is pending. It is dismissed
+after navigation completes, or on a terminal navigation failure. Individual
+page loaders, Home and SmartList are unchanged. Eight shell regression tests
+and the ten authentication routing tests passed; the production build and
+332-file image comparison passed. Frontend source commit:
+`d71322e9` (includes the previous authentication fix in `f8b43eca`).
+The nginx-only persistent update left all seven containers healthy and the
+other six container IDs/configuration unchanged. Public index, worker and
+version matched the artifact, and all 13 deployment checks passed. No
+physical-device timing or full browser flow was measured. Receipts are under
+`packaging/dist/partial-1.0.0-startup-shell-20260919/` (gitignored).
 
 ## Concurrent-session setting
 
