@@ -4934,6 +4934,13 @@ Execution 2026-08-13 (in progress):
 
 ### `AUTH-SESSION-001` — two-session limit, new-login warning and audit
 
+Configuration note (2026-09-18): the concurrent-session cap now defaults to
+disabled (`AUTH_MAX_ACTIVE_SESSIONS=-1`) in every profile. The two-session
+admission assertions below apply only when the checkpoint explicitly enables
+`AUTH_MAX_ACTIVE_SESSIONS=2`. With the default, A, B and C must all be accepted;
+session registration, revocation, audit and new-login warnings still apply.
+Earlier evidence below records the policy that was enabled at the time.
+
 - Run this as a separate security checkpoint after the active Ticket campaign;
   it must not reuse the Casey/Nova/Riley role-isolation windows as evidence.
   Use three isolated browser profiles to authenticate the **same** controlled

@@ -1,6 +1,7 @@
 package com.raxim.myscoutee.common.config.firebase;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
@@ -24,6 +25,63 @@ import com.raxim.myscoutee.profile.repository.UsersRepository;
 import com.raxim.myscoutee.profile.service.AppSettingsService;
 
 class FirebaseServiceTest {
+    @Test
+    void linkedGoogleAndFacebookCredentialsKeepTheExistingProfile() {
+        UsersRepository repository = mock(UsersRepository.class);
+        AppSettingsService settings = mock(AppSettingsService.class);
+        Users existing = new Users();
+        existing.setId("existing-profile");
+        existing.setUserId("existing-profile");
+        existing.setEmail("person@example.test");
+        existing.setFirebaseUid("linked-firebase-uid");
+        existing.setGoogleId("google-subject");
+        when(repository.findFirstByEmail("person@example.test")).thenReturn(Optional.of(existing));
+        when(repository.findFirstByFirebaseUid("linked-firebase-uid")).thenReturn(Optional.of(existing));
+        when(repository.findFirstByGoogleId("google-subject")).thenReturn(Optional.of(existing));
+        when(repository.save(any(Users.class))).thenAnswer(invocation -> invocation.getArgument(0));
+        FirebaseService service = new FirebaseService(new ConfigProperties(), repository, settings);
+        FirebaseCredential google = mock(FirebaseCredential.class);
+        when(google.getEmail()).thenReturn("Person@Example.Test");
+        when(google.getUid()).thenReturn("linked-firebase-uid");
+        when(google.getGoogleId()).thenReturn("google-subject");
+        when(google.isEmailVerified()).thenReturn(true);
+        FirebaseCredential facebook = mock(FirebaseCredential.class);
+        when(facebook.getEmail()).thenReturn("person@example.test");
+        when(facebook.getUid()).thenReturn("linked-firebase-uid");
+        when(facebook.getFacebookId()).thenReturn("facebook-subject");
+        when(facebook.isEmailVerified()).thenReturn(true);
+
+        FirebasePrincipal first = (FirebasePrincipal) service.loadUserByCredential(google, null, "/auth/me");
+        FirebasePrincipal second = (FirebasePrincipal) service.loadUserByCredential(facebook, null, "/auth/me");
+
+        assertThat(first.getUserId()).isEqualTo("existing-profile");
+        assertThat(second.getUserId()).isEqualTo(first.getUserId());
+        assertThat(second.getUser()).isSameAs(existing);
+        assertThat(existing.getGoogleId()).isEqualTo("google-subject");
+        assertThat(existing.getFacebookId()).isEqualTo("facebook-subject");
+        verify(repository).save(existing);
+    }
+
+    @Test
+    void refusesConflictingEmailAndProviderProfilesInsteadOfMergingThem() {
+        UsersRepository repository = mock(UsersRepository.class);
+        Users emailProfile = new Users();
+        emailProfile.setId("email-profile");
+        Users providerProfile = new Users();
+        providerProfile.setId("other-profile");
+        FirebaseCredential credential = mock(FirebaseCredential.class);
+        when(credential.getEmail()).thenReturn("person@example.test");
+        when(credential.getGoogleId()).thenReturn("google-subject");
+        when(credential.isEmailVerified()).thenReturn(true);
+        when(repository.findFirstByEmail("person@example.test")).thenReturn(Optional.of(emailProfile));
+        when(repository.findFirstByGoogleId("google-subject")).thenReturn(Optional.of(providerProfile));
+        FirebaseService service = new FirebaseService(new ConfigProperties(), repository, mock(AppSettingsService.class));
+
+        assertThatThrownBy(() -> service.loadUserByCredential(credential, null, "/auth/me"))
+                .isInstanceOf(com.raxim.myscoutee.common.config.firebase.exception.FirebaseTokenInvalidException.class);
+        verify(repository, never()).save(any(Users.class));
+    }
+
     @Test
     void createsOnboardingUserForNewNormalFirebaseLogin() {
         ConfigProperties configProperties = mock(ConfigProperties.class);

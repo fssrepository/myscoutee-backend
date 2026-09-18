@@ -1,8 +1,9 @@
 # MyScoutee Operator client tools
 
-These release-packaged client-side wrappers manage a Debian deployment. They do not contain
-application installation policy: host qualification and diagnostics are
-commands shipped by the installed package.
+These release-packaged tools manage a Debian deployment. The normal DEB
+wrappers delegate installation policy, host qualification and diagnostics to
+the installed package. The partial image helper below separately persists a
+service image selection, without rebuilding or reinstalling the DEB.
 
 ## Configure
 
@@ -14,6 +15,137 @@ chmod 0600 install.env
 Set `REMOTE_HOST`, `REMOTE_USER`, and either `REMOTE_KEY_FILE` or
 `REMOTE_PASSWORD`. `install.env` is local secret input and must never be
 committed or included in a release.
+
+## Prepare a Debian 13 minimal host
+
+Run the separate `prepare-debian13-minimal.sh` before installing the application
+DEB on a fresh Debian 13 AMD64 server. Copy it to the target and execute it there
+as root (replace `SERVER_IP` with the verified SSH target):
+
+```bash
+scp prepare-debian13-minimal.sh root@SERVER_IP:/root/
+ssh root@SERVER_IP 'bash /root/prepare-debian13-minimal.sh'
+```
+
+This explicit preparation step installs the required system packages and Docker
+CE with its Compose plugin from Docker's official Debian repository. It checks
+the OS and architecture, refuses conflicting container-runtime packages without
+removing them, and can be rerun after completion. It does not install MyScoutee,
+configure its domain, alter SSH access, or enable a firewall. With a non-root
+SSH user, copy the script to that user's home directory and run it with `sudo`.
+
+The regular `install.sh` and DEB hooks never invoke this preparation script.
+After it succeeds, continue with the normal installation below.
+
+From a source checkout, rebuild only this small helper archive with:
+
+```bash
+MYSCOUTEE_VERSION=1.0.0 bash packaging/release/package-client-tools.sh
+```
+
+This does not build or modify a DEB or any container image. A helper-only
+release may be newer than the client-tools copy embedded in an existing DEB;
+use the separately downloaded, signed helper archive for the latest host
+preparation script.
+
+## Partial update from GHCR, run on the server
+
+`install-temporary-image.sh` is an opt-in persistent partial image update for an existing
+running DEB deployment. Run it **on the deployment server**, from the separately
+downloaded and signature-verified client-tools archive. It does not replace the
+normal `install.sh` or DEB lifecycle, reset demo data, or record a different
+installed DEB. It changes only the selected service image key in the existing
+deployment environment (`/etc/myscoutee/myscoutee.env` on a packaged host). Do not run it concurrently with a
+normal package installation or HTTPS configuration operation.
+
+First authenticate Docker on the server for private images:
+
+```bash
+sudo docker login ghcr.io -u YOUR_GITHUB_USERNAME
+```
+
+Paste a GitHub classic token with `read:packages` at the password prompt. The
+account must have access to the selected Package, including any required
+organization authorization. Keep the token in a password manager, outside this
+archive, shell command arguments, Git and logs. If no Docker credential helper
+is configured, Docker stores the login in the invoking user's Docker config;
+use a dedicated read-only token on the server. Publishing uses a different
+credential with `write:packages`. Public GHCR images do not require login.
+
+Select one compatible service image and its exact digest from the trusted
+publisher. For example, on the server:
+
+```bash
+sudo bash install-temporary-image.sh install nginx   ghcr.io/fssrepository/myscoutee-nginx@sha256:REPLACE_WITH_VERIFIED_DIGEST
+sudo bash install-temporary-image.sh status nginx
+sudo bash install-temporary-image.sh rollback nginx
+
+# Separate backend update, using its own verified digest:
+sudo bash install-temporary-image.sh install profilemanagement   ghcr.io/fssrepository/myscoutee-api@sha256:REPLACE_WITH_VERIFIED_DIGEST
+```
+
+| Service argument | Container image | GitHub repository association |
+| --- | --- | --- |
+| `nginx` | `ghcr.io/fssrepository/myscoutee-nginx` | `fssrepository/myscoutee` |
+| `profilemanagement` | `ghcr.io/fssrepository/myscoutee-api` | private `fssrepository/myscoutee-backend` |
+| `registry` | `ghcr.io/fssrepository/myscoutee-registry` | private `fssrepository/myscoutee-registry` |
+| `payment-simulator` | `ghcr.io/fssrepository/myscoutee-payment-simulator` | See the Package's repository association |
+| `minio` | `ghcr.io/fssrepository/myscoutee-minio` | See the Package's repository association |
+| `mongodb` | `ghcr.io/fssrepository/myscoutee-mongodb` | See the Package's repository association |
+| `redis` | `ghcr.io/fssrepository/myscoutee-redis` | See the Package's repository association |
+
+The separately published `myscoutee-nginx-base` is a build dependency, not a
+running service; it has no standalone container to restart. The Registry in
+this table is the MyScoutee Registry application. GHCR is the image registry.
+Images are GitHub Packages associated with repositories, not Git files or DEB
+Release attachments. Repository association and Package visibility are separate.
+
+The helper pulls before replacing anything, checks the current Compose owner,
+platform, publisher service/package-version labels, and frontend content version
+when applicable. For MongoDB and Redis it also requires the installed upstream
+image version: this command is not a database migration tool. Keep application
+and database changes compatible with the existing configuration and data; health
+checks do not prove schema compatibility. A single invocation updates exactly
+one service using the existing Compose files and replica-set overlay, with
+`--no-deps --no-build --pull never`, then waits for health.
+
+Mutable tags are refused: even when the application stays `1.0.0`, a new digest
+selects new content. The helper atomically saves that digest in the canonical
+environment file before Compose recreates the container. It retains the file
+owner, mode and `.env` symlink, and leaves unrelated keys unchanged. No
+force-version switch is needed. On failure it attempts to restore both the
+previous image setting and the previous local image.
+State is root-only at `/var/lib/myscoutee/temporary-images/SERVICE/state.json`;
+nginx retains `/var/lib/myscoutee/temporary-frontend/state.json`. Inspect `status`
+to check both the running image and its persistent selection.
+A later patch can be installed directly without first rolling back; explicit
+`rollback` restores the immediately preceding selection. Reapplying the same
+healthy digest is a no-op. Rollback refuses to overwrite a container or image
+setting replaced by another deployment. Keep the previous image locally; do not prune it. If an interrupted Docker operation
+leaves the container absent, use the normal deployment recovery procedure.
+
+`install-temporary-frontend.sh` is a convenience wrapper selecting `nginx`;
+keep it beside `install-temporary-image.sh` when copying the helpers.
+
+The selected image survives normal MyScoutee service restarts and host reboots,
+including patches that retain application version `1.0.0`. The historical
+`install-temporary-*.sh` filenames are retained for compatibility; successful
+updates are now persistent. For an update made with the earlier runtime-only
+helper, run `install` again with the currently running digest to persist it.
+
+A subsequent normal DEB installation may intentionally replace the image
+selection with its packaged version. Partial updates leave the recorded DEB
+hash and bundled-image manifest unchanged. Verify public HTTPS after the update:
+
+```bash
+node verify-deployment/run.mjs \
+  --url https://YOUR_DOMAIN --expected-version 1.0.0 --demo-session
+```
+
+For a frontend replacement, reload the browser after its service worker has
+received the new bundle. An open tab may still show the previous UI even though
+the server already runs the new digest. Check `/app-version.json` and the loaded
+UI, not just the unchanged `1.0.0` version string.
 
 ## Install or reinstall
 

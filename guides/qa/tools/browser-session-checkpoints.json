@@ -1881,6 +1881,24 @@
         }
       ]
     },
+    "NETCUP-DEMO-SMOKE": {
+      "entryUrl": "https://myscoutee.com/entry",
+      "targetUrl": "https://myscoutee.com/entry",
+      "ignoreCertificateErrors": false,
+      "hostResolverRules": "MAP myscoutee.com 62.83.35.187",
+      "storageScope": "http",
+      "bootstrapEntryConsent": false,
+      "preserveOtherSessions": true,
+      "sessions": [
+        {
+          "actor": "NetcupDemoSmoke",
+          "sessionKind": "anonymous",
+          "expectedName": "Netcup public-domain demo smoke",
+          "autoDismissExplanationGuide": false,
+          "window": { "x": 0, "y": 40, "width": 1200, "height": 930 }
+        }
+      ]
+    },
     "RELEASE-1.0.0-SMOKE": {
       "entryUrl": "https://localhost/entry",
       "targetUrl": "https://localhost/entry",

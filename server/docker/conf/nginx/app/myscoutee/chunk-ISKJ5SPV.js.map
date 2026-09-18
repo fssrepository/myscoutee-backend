@@ -1,0 +1,7 @@
+{
+  "version": 3,
+  "sources": ["src/app/shared/core/common/backend-connectivity.ts"],
+  "sourcesContent": ["import { signal } from '@angular/core';\n\nconst unavailable = signal(false);\nexport const backendUnavailable = unavailable.asReadonly();\n\n// Connectivity indication only: business/auth failures still mean a reachable\n// server. This never disables actions, retries writes or changes sessions.\nexport function reportBackendStatus(status: number): void {\n  unavailable.set([0, 502, 503, 504].includes(status));\n}\n"],
+  "mappings": ";;;;;AAEA,IAAM,cAAc,OAAO,OAAK,GAAA,YAAA,CAAA,EAAA,WAAA,cAAA,CAAA;;EAAA,CAAA;CAAA;AACzB,IAAM,qBAAqB,YAAY,WAAU;AAIlD,SAAU,oBAAoB,QAAc;AAChD,cAAY,IAAI,CAAC,GAAG,KAAK,KAAK,GAAG,EAAE,SAAS,MAAM,CAAC;AACrD;",
+  "names": []
+}

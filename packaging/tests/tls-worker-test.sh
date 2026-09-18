@@ -25,6 +25,10 @@ printf '%s\n' \
   '#!/usr/bin/env bash' \
   'set -euo pipefail' \
   'printf "%s\n" "$*" >> "${MYSCOUTEE_TLS_COMPOSE_LOG:?}"' \
+  'for key in DOMAIN LETSENCRYPT_ENABLED WEBSOCKET_ALLOWED_ORIGIN_PATTERNS EMAIL_BASE_URL PAYMENT_SIMULATOR_PUBLIC_BASE_URL PAYMENT_SIMULATOR_APPLICATION_BASE_URL; do' \
+  '  expected="$(sed -n "s/^${key}=//p" "${MYSCOUTEE_TLS_ENV_FILE}")"' \
+  '  [[ "${!key-}" == "${expected}" ]] || { echo "Stale inherited TLS setting: ${key}" >&2; exit 1; }' \
+  'done' \
   > "${MYSCOUTEE_TLS_COMPOSE_WRAPPER}"
 chmod 0755 "${MYSCOUTEE_TLS_COMPOSE_WRAPPER}"
 printf '%s\n' \
@@ -35,6 +39,12 @@ printf '%s\n' \
   'PAYMENT_SIMULATOR_PUBLIC_BASE_URL=https://localhost' \
   'PAYMENT_SIMULATOR_APPLICATION_BASE_URL=https://localhost' \
   > "${MYSCOUTEE_TLS_ENV_FILE}"
+
+# Match systemd's EnvironmentFile behavior: child-process variables retain
+# their old values unless the worker updates them after persisting a setting.
+set -a
+source "${MYSCOUTEE_TLS_ENV_FILE}"
+set +a
 
 # shellcheck source=../scripts/myscoutee-tls-worker.sh
 source "$(dirname -- "${BASH_SOURCE[0]}")/../scripts/myscoutee-tls-worker.sh"

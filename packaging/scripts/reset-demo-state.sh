@@ -69,6 +69,16 @@ wait_for_container_health() {
     )"
     case "${status}" in
       healthy)
+        # The official Mongo image starts a temporary daemon while its entrypoint
+        # imports the initial datasets. That daemon already answers health probes.
+        # Resetting demo_db then invalidates the importer's credentials and leaves
+        # production seeds incomplete. Only the final mongod replaces PID 1.
+        if [[ "${container}" == "${MONGO_CONTAINER}" ]] \
+          && ! docker exec "${container}" sh -c \
+            'test "$(cat /proc/1/comm)" = mongod' >/dev/null 2>&1; then
+          sleep 1
+          continue
+        fi
         return 0
         ;;
       unhealthy|exited|dead)

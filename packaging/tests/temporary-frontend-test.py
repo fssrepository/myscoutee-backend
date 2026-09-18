@@ -1,0 +1,141 @@
+#!/usr/bin/env python3
+"""Exercise the partial image helper without contacting Docker or a server."""
+import json,os,subprocess,tempfile,unittest
+from pathlib import Path
+ROOT=Path(__file__).resolve().parents[2]
+HELPER=ROOT/'packaging/client-tools/install-temporary-frontend.sh'
+OLD='sha256:'+'1'*64
+NEW='sha256:'+'2'*64
+REF='ghcr.io/fssrepository/myscoutee-nginx@sha256:'+'3'*64
+DOCKER=r'''#!/usr/bin/env python3
+import io,json,os,sys,tarfile
+from pathlib import Path
+p=Path(os.environ['MOCK_DOCKER_STATE']);c=json.loads(p.read_text());a=sys.argv[1:]
+with open(os.environ['MOCK_DOCKER_LOG'],'a') as f:f.write(json.dumps(a)+'\n')
+old='sha256:'+'1'*64;new='sha256:'+'2'*64
+if a[:2]==['compose','version']:print('Docker Compose v2.39.0')
+elif a[0]=='inspect':print(json.dumps([{'Image':c['current'],'State':{'Health':{'Status':'healthy'}},'Config':{'Labels':{'com.docker.compose.project':'server','com.docker.compose.service':os.environ.get('MOCK_COMPOSE_SERVICE','nginx'),'com.docker.compose.project.working_dir':os.environ['MYSCOUTEE_SERVER_DIR'],'com.docker.compose.project.config_files':os.environ['MYSCOUTEE_SERVER_DIR']+'/docker-compose-prod.yml'+os.environ.get('MOCK_OVERLAY','')}}}]))
+elif a[:2]==['image','inspect']:
+ image=old if a[2]==old else new
+ print(json.dumps([{'Id':image,'Os':'linux','Architecture':'amd64','Config':{'Labels':{'io.myscoutee.service':os.environ.get('MOCK_SERVICE','nginx'),'io.myscoutee.package-version':os.environ.get('MOCK_VERSION','1.0.0'),'io.myscoutee.upstream-reference':(os.environ.get('MOCK_UPSTREAM','mongo:8.0.4') if image==new else 'mongo:8.0.4')}}}]))
+elif a[0]=='pull':print('Pulled trusted digest')
+elif a[0]=='create':print('probe-container')
+elif a[0]=='rm':pass
+elif a[0]=='cp':
+ payload=json.dumps({'version':os.environ.get('MOCK_VERSION','1.0.0')}).encode()
+ with tarfile.open(fileobj=sys.stdout.buffer,mode='w|') as t:
+  info=tarfile.TarInfo('app-version.json');info.size=len(payload);t.addfile(info,io.BytesIO(payload))
+elif a[0]=='compose' and 'config' in a:print(json.dumps({'services':{os.environ.get('MOCK_COMPOSE_SERVICE','nginx'):{'image':os.environ.get('MOCK_INSTALLED_UPSTREAM','mongo:8.0.4')}}}))
+elif a[0]=='compose' and 'up' in a:
+ key=os.environ.get('MOCK_IMAGE_VAR','NGINX_PRODUCTION_IMAGE')
+ configured=next((line.split('=',1)[1] for line in (Path(os.environ['MYSCOUTEE_SERVER_DIR'])/'.env').read_text().splitlines() if line.startswith(key+'=')),'myscoutee-nginx:1.0.0-prod')
+ image=os.environ.get(key,configured);c['current']=old if image in (old,'myscoutee-nginx:1.0.0-prod') else new;p.write_text(json.dumps(c))
+ if c['current']==new and os.environ.get('MOCK_FAIL')=='1':sys.exit(1)
+else:raise SystemExit('Unexpected docker invocation '+repr(a))
+'''
+class TemporaryFrontendTest(unittest.TestCase):
+ def setUp(self):
+  self.tmp=tempfile.TemporaryDirectory();self.addCleanup(self.tmp.cleanup);self.root=Path(self.tmp.name)
+  self.bin=self.root/'bin';self.bin.mkdir();self.server=self.root/'server';self.server.mkdir()
+  for n in ['docker-compose-prod.yml','.env','.env.secrets']:(self.server/n).write_text('unchanged\n')
+  for n,body in [('docker',DOCKER),('id','#!/bin/sh\nprintf "0\\n"\n'),('dpkg-query','#!/bin/sh\nprintf "1.0.0"\n')]:
+   p=self.bin/n;p.write_text(body);p.chmod(0o755)
+  self.mock=self.root/'docker.json';self.mock.write_text(json.dumps({'current':OLD}));self.log=self.root/'calls';self.log.touch()
+  self.env={**os.environ,'PATH':str(self.bin)+':'+os.environ['PATH'],'MYSCOUTEE_SERVER_DIR':str(self.server),'MYSCOUTEE_TEMP_FRONTEND_STATE_DIR':str(self.root/'state'),'MOCK_DOCKER_STATE':str(self.mock),'MOCK_DOCKER_LOG':str(self.log)}
+ def run_helper(self,*args,ok=True,**env):
+  r=subprocess.run(['bash',str(HELPER),*args],env={**self.env,**env},capture_output=True,text=True)
+  self.assertEqual(r.returncode==0,ok,r.stdout+'\n'+r.stderr)
+  return r
+ def test_apply_and_explicit_rollback_preserve_configuration(self):
+  self.run_helper('install',REF)
+  self.assertEqual(json.loads(self.mock.read_text())['current'],NEW)
+  state=json.loads((self.root/'state/state.json').read_text());self.assertEqual(state['phase'],'applied');self.assertEqual(state['previousId'],OLD)
+  self.assertTrue(json.loads(self.run_helper('status').stdout)['matchesSelectedImage'])
+  self.run_helper('rollback');self.assertEqual(json.loads(self.mock.read_text())['current'],OLD)
+  for n in ['docker-compose-prod.yml','.env','.env.secrets']:self.assertEqual((self.server/n).read_text(),'unchanged\n')
+  operations=[json.loads(l) for l in self.log.read_text().splitlines()]
+  for op in operations:
+   if op[0]=='compose' and 'up' in op:
+    self.assertIn('--no-deps',op);self.assertIn('--pull',op);self.assertEqual(op[-1],'nginx');self.assertNotIn('down',op)
+ def test_failure_rolls_back_and_still_reports_failure(self):
+  self.run_helper('install',REF,ok=False,MOCK_FAIL='1')
+  self.assertEqual(json.loads(self.mock.read_text())['current'],OLD)
+  self.assertEqual(json.loads((self.root/'state/state.json').read_text())['phase'],'rolled-back')
+ def test_mutable_tag_is_rejected_before_docker_access(self):
+  self.run_helper('install','ghcr.io/fssrepository/myscoutee-nginx:1.0.0',ok=False)
+  self.assertEqual(self.log.read_text(),'')
+ def test_version_change_is_rejected_before_recreation(self):
+  self.run_helper('install',REF,ok=False,MOCK_VERSION='2.0.0')
+  self.assertEqual(json.loads(self.mock.read_text())['current'],OLD)
+  self.assertFalse((self.root/'state/state.json').exists())
+ def test_rollback_does_not_overwrite_a_later_deployment(self):
+  self.run_helper('install',REF)
+  self.mock.write_text(json.dumps({'current':'sha256:'+'4'*64}))
+  self.run_helper('rollback',ok=False)
+  self.assertEqual(json.loads(self.mock.read_text())['current'],'sha256:'+'4'*64)
+ def test_interrupted_operation_can_be_rolled_back(self):
+  self.run_helper('install',REF)
+  p=self.root/'state/state.json';c=json.loads(p.read_text());c['phase']='applying';p.write_text(json.dumps(c))
+  self.run_helper('rollback');self.assertEqual(json.loads(self.mock.read_text())['current'],OLD)
+ def test_each_runtime_service_is_scoped_and_preserves_overlays(self):
+  generic=HELPER.with_name('install-temporary-image.sh')
+  cases=[('profilemanagement','MYSCOUTEE_PRODUCTION_IMAGE','profilemanagement'),('mongodb','MONGO_IMAGE','mongodb'),('redis','REDIS_IMAGE','redis'),('minio','MINIO_PRODUCTION_IMAGE','minio'),('registry','REGISTRY_DEMO_IMAGE','registry-demo'),('payment-simulator','PAYMENT_SIMULATOR_IMAGE','payment-simulator')]
+  overlay=self.server/'docker-compose.replicaset.yml';overlay.write_text('existing overlay')
+  for service,var,label in cases:
+   with self.subTest(service=service):
+    env={**self.env,'MOCK_COMPOSE_SERVICE':service,'MOCK_SERVICE':label,'MOCK_IMAGE_VAR':var,'MOCK_OVERLAY':','+str(overlay),'MYSCOUTEE_TEMP_IMAGE_STATE_DIR':str(self.root/service)}
+    self.mock.write_text(json.dumps({'current':OLD}))
+    r=subprocess.run(['bash',str(generic),'install',service,REF],env=env,capture_output=True,text=True)
+    self.assertEqual(r.returncode,0,r.stderr)
+    op=next(json.loads(l) for l in reversed(self.log.read_text().splitlines()) if '"up"' in l)
+    self.assertEqual(op[-1],service);self.assertIn(str(overlay),op);self.assertIn('--no-deps',op);self.assertIn('--no-build',op)
+ def test_wrong_service_image_is_rejected(self):
+  self.run_helper('install',REF,ok=False,MOCK_SERVICE='registry-demo')
+  self.assertEqual(json.loads(self.mock.read_text())['current'],OLD)
+ def test_database_version_change_is_rejected(self):
+  env={**self.env,'MOCK_COMPOSE_SERVICE':'mongodb','MOCK_SERVICE':'mongodb','MOCK_IMAGE_VAR':'MONGO_IMAGE','MOCK_UPSTREAM':'mongo:9.0.0','MYSCOUTEE_TEMP_IMAGE_STATE_DIR':str(self.root/'db-state')}
+  r=subprocess.run(['bash',str(HELPER.with_name('install-temporary-image.sh')),'install','mongodb',REF],env=env,capture_output=True,text=True)
+  self.assertNotEqual(r.returncode,0);self.assertEqual(json.loads(self.mock.read_text())['current'],OLD)
+ def test_service_restart_reads_persisted_same_version_digest(self):
+  self.run_helper('install',REF)
+  self.assertIn('NGINX_PRODUCTION_IMAGE='+REF,(self.server/'.env').read_text())
+  # Normal startup has no one-shot image environment override.
+  subprocess.run(['docker','compose','up','-d','nginx'],env=self.env,check=True)
+  self.assertEqual(json.loads(self.mock.read_text())['current'],NEW)
+  self.assertTrue(json.loads(self.run_helper('status').stdout)['persistentSelectionMatches'])
+ def test_repeated_same_digest_is_idempotent(self):
+  self.run_helper('install',REF)
+  old=(self.root/'state/state.json').read_text();calls=self.log.read_text().count('"up"')
+  self.run_helper('install',REF)
+  self.assertEqual((self.root/'state/state.json').read_text(),old)
+  self.assertEqual(self.log.read_text().count('"up"'),calls)
+ def test_next_patch_rolls_back_to_previous_patch_and_setting(self):
+  self.run_helper('install',REF)
+  next_ref=REF[:-64]+'5'*64
+  self.run_helper('install',next_ref)
+  self.assertIn(next_ref,(self.server/'.env').read_text())
+  self.run_helper('rollback')
+  self.assertIn(REF,(self.server/'.env').read_text())
+  self.assertNotIn(next_ref,(self.server/'.env').read_text())
+ def test_canonical_environment_symlink_mode_and_other_keys_preserved(self):
+  target=self.root/'canonical.env';target.write_text('DOMAIN=example.test\nNGINX_PRODUCTION_IMAGE=myscoutee-nginx:1.0.0-prod\nOTHER=value\n');target.chmod(0o640)
+  link=self.server/'.env';link.unlink();link.symlink_to(target)
+  self.run_helper('install',REF)
+  self.assertTrue(link.is_symlink());self.assertEqual(target.stat().st_mode & 0o777,0o640)
+  self.assertIn('DOMAIN=example.test\n',target.read_text());self.assertIn('OTHER=value\n',target.read_text())
+  self.run_helper('rollback')
+  self.assertEqual(target.read_text(),'DOMAIN=example.test\nNGINX_PRODUCTION_IMAGE=myscoutee-nginx:1.0.0-prod\nOTHER=value\n')
+ def test_rollback_does_not_overwrite_later_configuration(self):
+  self.run_helper('install',REF)
+  (self.server/'.env').write_text('NGINX_PRODUCTION_IMAGE=myscoutee-nginx:1.0.1-prod\n')
+  self.run_helper('rollback',ok=False)
+  self.assertIn('1.0.1-prod',(self.server/'.env').read_text());self.assertEqual(json.loads(self.mock.read_text())['current'],NEW)
+ def test_legacy_runtime_only_update_is_adopted_and_remains_rollbackable(self):
+  state=self.root/'state';state.mkdir()
+  (state/'state.json').write_text(json.dumps({'phase':'applied','version':'1.0.0','project':'server','reference':REF,'previousId':OLD,'targetId':NEW}))
+  self.mock.write_text(json.dumps({'current':NEW}))
+  self.run_helper('install',REF)
+  self.assertTrue(json.loads(self.run_helper('status').stdout)['persistentSelectionMatches'])
+  self.run_helper('rollback');self.assertEqual(json.loads(self.mock.read_text())['current'],OLD)
+  self.assertEqual((self.server/'.env').read_text(),'unchanged\n')
+if __name__=='__main__':unittest.main()

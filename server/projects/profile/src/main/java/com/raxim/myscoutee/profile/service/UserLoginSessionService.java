@@ -9,6 +9,7 @@ import java.util.Locale;
 
 import org.bson.Document;
 import org.bson.types.ObjectId;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.data.mongodb.core.FindAndModifyOptions;
 import org.springframework.data.mongodb.core.MongoTemplate;
@@ -38,7 +39,6 @@ import jakarta.servlet.http.HttpServletRequest;
 @Service
 public class UserLoginSessionService {
     public static final String SESSION_ID_HEADER = "X-App-Session-Id";
-    public static final int MAX_ACTIVE_SESSIONS = 2;
 
     private static final int MAX_OPAQUE_ID_LENGTH = 128;
     private static final String SECURITY_NOTIFICATION_TITLE_KEY =
@@ -51,14 +51,20 @@ public class UserLoginSessionService {
     private final MongoTemplate mongoTemplate;
     private final UserLoginAuditsRepository userLoginAuditsRepository;
     private final NotificationOutboxService notificationOutboxService;
+    private final int maxActiveSessions;
 
     public UserLoginSessionService(
             MongoTemplate mongoTemplate,
             UserLoginAuditsRepository userLoginAuditsRepository,
-            NotificationOutboxService notificationOutboxService) {
+            NotificationOutboxService notificationOutboxService,
+            @Value("${auth.max-active-sessions:-1}") int maxActiveSessions) {
         this.mongoTemplate = mongoTemplate;
         this.userLoginAuditsRepository = userLoginAuditsRepository;
         this.notificationOutboxService = notificationOutboxService;
+        if (maxActiveSessions != -1 && maxActiveSessions < 1) {
+            throw new IllegalArgumentException("auth.max-active-sessions must be -1 or a positive number.");
+        }
+        this.maxActiveSessions = maxActiveSessions;
     }
 
     public UserSessionLoginResponseDto registerLogin(
@@ -102,11 +108,15 @@ public class UserLoginSessionService {
             next.setProvider(provider);
             next.setCreatedAtIso(nowIso);
             next.setLastSeenAtIso(nowIso);
+            Criteria admission = new Criteria().andOperator(
+                    Criteria.where("_id").is(userId),
+                    Criteria.where("activeSessions.sessionId").ne(sessionId));
+            Query admissionQuery = Query.query(admission);
+            if (maxActiveSessions > 0) {
+                admissionQuery.addCriteria(Criteria.where("activeSessions." + (maxActiveSessions - 1)).exists(false));
+            }
             after = mongoTemplate.findAndModify(
-                    Query.query(new Criteria().andOperator(
-                            Criteria.where("_id").is(userId),
-                            Criteria.where("activeSessions.sessionId").ne(sessionId),
-                            Criteria.where("activeSessions.1").exists(false))),
+                    admissionQuery,
                     new Update()
                             .push("activeSessions", next)
                             .set("updatedDate", nowIso),
@@ -118,6 +128,11 @@ public class UserLoginSessionService {
                 existingSession = findActiveSession(after, sessionId) != null;
                 accepted = existingSession;
             }
+        }
+
+        if (!accepted && maxActiveSessions == -1) {
+            throw new ResponseStatusException(
+                    HttpStatus.SERVICE_UNAVAILABLE, "Unable to register the session.");
         }
 
         String outcome = accepted
@@ -240,7 +255,7 @@ public class UserLoginSessionService {
                 : SECURITY_BLOCKED_LOGIN_MESSAGE_KEY;
         String fallback = accepted
                 ? "New login from " + clientLabel + "."
-                : "Blocked login attempt from " + clientLabel + " because two sessions are already active.";
+                : "Blocked login attempt from " + clientLabel + " because the active-session limit has been reached.";
         LinkedHashMap<String, String> payload = new LinkedHashMap<>();
         payload.put("notification_title_key", SECURITY_NOTIFICATION_TITLE_KEY);
         payload.put("notification_message_key", messageKey);
@@ -274,8 +289,8 @@ public class UserLoginSessionService {
                 existingSession,
                 audit.getOutcome(),
                 activeCount,
-                MAX_ACTIVE_SESSIONS,
-                accepted ? null : "Two active sessions are already in use.");
+                maxActiveSessions,
+                accepted ? null : "The active-session limit has been reached.");
     }
 
     private UserSessionState findState(String userId) {

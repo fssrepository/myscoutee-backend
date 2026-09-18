@@ -40,6 +40,15 @@ if (!checkpoint || !Array.isArray(checkpoint.sessions) || checkpoint.sessions.le
 const defaults = configuration.defaults ?? {};
 const defaultTargetUrl = `${checkpoint.targetUrl || defaults.targetUrl || 'http://localhost/game'}`;
 const defaultEntryUrl = `${checkpoint.entryUrl || defaults.entryUrl || 'http://localhost/entry?redirect=%2Fgame'}`;
+const configuredAppOrigins = new Set([
+  defaultEntryUrl, defaultTargetUrl,
+  ...checkpoint.sessions.flatMap(session => [
+    session.entryUrl || defaultEntryUrl, session.targetUrl || defaultTargetUrl
+  ])
+].flatMap(url => {
+  const origin = new URL(url).origin;
+  return [origin, origin.replace('http:', 'https:')];
+}));
 const storageScope = `${checkpoint.storageScope || defaults.storageScope || 'http'}`.trim();
 const bootstrapEntryConsent = checkpoint.bootstrapEntryConsent
   ?? defaults.bootstrapEntryConsent
@@ -128,7 +137,10 @@ try {
       '--no-default-browser-check',
       '--disable-session-crashed-bubble',
       '--hide-crash-restore-bubble',
-      '--ignore-certificate-errors',
+      ...((checkpoint.ignoreCertificateErrors ?? defaults.ignoreCertificateErrors ?? true)
+        ? ['--ignore-certificate-errors'] : []),
+      ...(checkpoint.hostResolverRules
+        ? [`--host-resolver-rules=${checkpoint.hostResolverRules}`] : []),
       '--ozone-platform=x11',
       `--window-position=${position.x},${position.y}`,
       `--window-size=${position.width},${position.height}`,
@@ -914,7 +926,7 @@ async function waitForAppPageTarget(port) {
       page = targets.find(target =>
         target.type === 'page'
         && target.webSocketDebuggerUrl
-        && /^https?:\/\/(localhost|127\.0\.0\.1)(?::[0-9]+)?\//.test(`${target.url ?? ''}`)
+        && configuredAppOrigins.has(new URL(target.url).origin)
       );
       return Boolean(page);
     } catch {

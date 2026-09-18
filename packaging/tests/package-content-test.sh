@@ -52,6 +52,8 @@ bash "${SCRIPT_DIR}/restart-update-stack-test.sh" >/dev/null \
   || fail "update restart did not preserve progress ingress"
 bash "${SCRIPT_DIR}/demo-reset-test.sh" >/dev/null \
   || fail "demo reset lifecycle or production boundary regression"
+bash "${SCRIPT_DIR}/mongo-import-entrypoint-test.sh" >/dev/null \
+  || fail "Mongo initialization hook terminated its parent entrypoint"
 bash "${SCRIPT_DIR}/i18n-runtime-seed-sync-test.sh" >/dev/null \
   || fail "production i18n runtime seed synchronization regression"
 bash "${REPO_ROOT}/server/docker/images/mongodb-sync/dev/mongodb-seed-sync-test.sh" >/dev/null \
@@ -317,6 +319,11 @@ for verifier_member in \
 done
 grep -Fxq './install.env.example' "${CLIENT_TOOLS_CONTENTS}" \
   || fail "standalone Operator archive omits safe configuration example"
+grep -Fxq './prepare-debian13-minimal.sh' "${CLIENT_TOOLS_CONTENTS}" \
+  || fail "standalone Operator archive omits Debian 13 host preparation"
+tar -xOzf "${CLIENT_TOOLS_ARCHIVE}" ./prepare-debian13-minimal.sh \
+  | cmp - "${REPO_ROOT}/packaging/client-tools/prepare-debian13-minimal.sh" \
+  || fail "archived Debian 13 preparation differs from its source"
 if grep -Fxq './install.env' "${CLIENT_TOOLS_CONTENTS}"; then
   fail "local Operator target credentials were embedded in the client-tools archive"
 fi
