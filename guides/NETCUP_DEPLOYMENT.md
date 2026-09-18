@@ -433,6 +433,22 @@ No DEB was built or installed, and no release assets were replaced. Continue
 using GHCR and persistent partial updates for subsequent fixes; build another
 DEB only when explicitly requested by the owner.
 
+### Facebook button correction
+
+The later `stable-20260918-facebook-disabled` frontend patch restores the
+original disabled Facebook button and **Coming soon** badge. Facebook setup
+is incomplete; activating this button was outside the requested account-linking
+change. The underlying linking support remains available for later activation.
+The persistent nginx selection is now:
+
+```text
+ghcr.io/fssrepository/myscoutee-nginx@sha256:495ba3b1d95825b925a6850e3912bd0e0695eb03fd375641638277f51d785312
+```
+
+The production build and 17 focused frontend tests passed. Only nginx was
+recreated; all seven containers were healthy, with the other six container IDs
+and unrelated environment/secret configuration unchanged. No DEB was built.
+
 ## Important server paths
 
 | Purpose | Path |
