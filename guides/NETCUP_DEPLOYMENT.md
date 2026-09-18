@@ -125,11 +125,12 @@ instructions, supported services and failure handling are in
    application behavior. Use `status` to inspect the retained operation or
    `rollback` to restore its previous local image.
 
-The verified frontend command for this build is:
+The currently deployed frontend build is `stable-20260918-landing-cache`
+(application version remains `1.0.0`). The verified command for this image is:
 
 ```bash
 sudo bash install-temporary-image.sh install nginx \
-  ghcr.io/fssrepository/myscoutee-nginx@sha256:ad3abebbe54fb3ec6906b2562441735b764cb88bf5d8853d41201b90f84ea773
+  ghcr.io/fssrepository/myscoutee-nginx@sha256:8e922eb398b9f443f9ca0e8f4ed633cd861f62f6d87ceeafce0036a2a525cb76
 sudo bash install-temporary-image.sh status nginx
 # Only when a rollback is wanted:
 sudo bash install-temporary-image.sh rollback nginx
@@ -172,6 +173,16 @@ After persisting the nginx selection, `systemctl restart myscoutee.service`
 was exercised successfully: the exact GHCR digest was retained and all seven
 containers became healthy. This verifies the normal boot service startup path;
 a full host reboot was not performed for this check.
+
+The subsequent `stable-20260918-landing-cache` update used the same persistent
+helper, replacing nginx only. All seven containers were healthy afterward;
+the other six container IDs, unrelated environment settings and secret
+environment file were unchanged. The helper reported both
+`matchesSelectedImage: true` and `persistentSelectionMatches: true`.
+Public HTTPS served the expected build and service worker, and the deployment
+verifier passed all 13 checks. No DEB was rebuilt or installed for this update.
+Its local publication and deployment receipts are under
+`packaging/dist/partial-1.0.0-landing-cache-20260918/` (gitignored).
 
 ## Domain and HTTPS
 
