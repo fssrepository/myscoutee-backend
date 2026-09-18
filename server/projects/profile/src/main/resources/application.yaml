@@ -7,6 +7,10 @@ spring:
   main:
     allow-bean-definition-overriding: true
 
+auth:
+  # -1 disables the concurrent-session cap; positive values set the maximum.
+  max-active-sessions: ${AUTH_MAX_ACTIVE_SESSIONS:-1}
+
 registry:
   enabled: ${REGISTRY_ENABLED:false}
   outbound-allowed: ${REGISTRY_OUTBOUND_ALLOWED:false}

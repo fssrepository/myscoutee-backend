@@ -184,6 +184,37 @@ verifier passed all 13 checks. No DEB was rebuilt or installed for this update.
 Its local publication and deployment receipts are under
 `packaging/dist/partial-1.0.0-landing-cache-20260918/` (gitignored).
 
+## Concurrent-session setting
+
+`AUTH_MAX_ACTIVE_SESSIONS=-1` disables the per-user concurrent-session cap.
+This is the default in the shared Spring configuration, dev/prod/E2E Compose
+profiles and the installation environment template. A positive number sets the
+maximum; zero and values below `-1` are rejected at application startup.
+The Spring property is `auth.max-active-sessions`.
+
+Session registration, logout/revocation, login audit and new-login security
+notifications remain active. The response reports `maxActiveSessions: -1`
+when the cap is disabled. Existing active sessions do not need to be cleared.
+For an existing deployment, changes to a container environment setting require
+recreating the backend container; changing only a host shell variable does not
+change an already running container. The current backend image defaults to
+`-1` even with the older installed Compose file.
+
+The deployed backend image for this setting is:
+
+```text
+ghcr.io/fssrepository/myscoutee-api@sha256:2d87f54333e7e8f7df06c978c13ba4b298b2354f3e099a0c167a05876cebf3d8
+```
+
+It was applied with `install-temporary-image.sh install profilemanagement`;
+the selected image is persistent. The running JAR checksum matched the built
+artifact, all seven containers were healthy, and the other six container IDs
+and unrelated configuration were unchanged. Three simultaneous HTTP logins
+under an isolated demo identity were accepted with `maxActiveSessions: -1`;
+reusing the third session retained a count of three. All three verification
+sessions were then logged out. The public deployment checks passed 13/13.
+Receipts are in `packaging/dist/partial-1.0.0-session-limit-20260918/` (gitignored).
+
 ## Domain and HTTPS
 
 In **Netcup Customer Control Panel → Domains → myscoutee.com → CloudDNS**,

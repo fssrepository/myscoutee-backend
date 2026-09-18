@@ -20427,7 +20427,7 @@
     "_id": "i18n-message-en-auth-session-limit-reached",
     "key": "auth.session.limit.reached",
     "lang": "en",
-    "value": "Two sessions are already active. Sign out from one of them, then try again."
+    "value": "The active-session limit has been reached. Sign out from another session, then try again."
   },
   {
     "_id": "i18n-message-en-auth-session-registration-failed",
@@ -20451,7 +20451,7 @@
     "_id": "i18n-message-en-notification-security-login-blocked-message",
     "key": "notification.security.login.blocked.message",
     "lang": "en",
-    "value": "Blocked login attempt from {clientLabel}: two sessions are already active."
+    "value": "Blocked login attempt from {clientLabel}: the active-session limit has been reached."
   },
   {
     "_id": "i18n-message-en-operator-request-failed",
@@ -41067,7 +41067,7 @@
     "_id": "i18n-message-hu-auth-session-limit-reached",
     "key": "auth.session.limit.reached",
     "lang": "hu",
-    "value": "Már két aktív munkamenet van használatban. Jelentkezz ki az egyikből, majd próbáld újra."
+    "value": "Elérted az aktív munkamenetek megengedett számát. Jelentkezz ki egy másik munkamenetből, majd próbáld újra."
   },
   {
     "_id": "i18n-message-hu-auth-session-registration-failed",
@@ -41091,7 +41091,7 @@
     "_id": "i18n-message-hu-notification-security-login-blocked-message",
     "key": "notification.security.login.blocked.message",
     "lang": "hu",
-    "value": "Blokkolt bejelentkezési kísérlet innen: {clientLabel}. Már két aktív munkamenet van használatban."
+    "value": "Blokkolt bejelentkezési kísérlet innen: {clientLabel}. Az aktív munkamenetek száma elérte a megengedett határt."
   },
   {
     "_id": "i18n-message-hu-operator-request-failed",

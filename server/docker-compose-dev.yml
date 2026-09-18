@@ -206,6 +206,7 @@ services:
       CHAT_STREAM_BLOCK_MS: "${CHAT_STREAM_BLOCK_MS:-100}"
       USERS_DELETED_ACCOUNT_PURGE_DELAY_MS: "${USERS_DELETED_ACCOUNT_PURGE_DELAY_MS:-60000}"
       FIREBASE_ENABLED: "false"
+      AUTH_MAX_ACTIVE_SESSIONS: "${AUTH_MAX_ACTIVE_SESSIONS:--1}"
       MEMBER_USER: "${MEMBER_USER:-member1@myscoutee.local}"
       OPERATOR_USER: "${OPERATOR_USER:-operator1@myscoutee.local}"
       OPERATOR_CONFIGURATION_MASTER_KEY_PATH: "/workspace/data/configuration/deployment-master-key"
