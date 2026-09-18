@@ -1,9 +1,10 @@
 # Firebase login methods and account linking
 
-Google, Facebook and email/password are offered in the entry login dialog.
-The Firebase project must enable each provider being used and authorize the
-application domain. Enabling the Facebook button in MyScoutee does not create
-or configure a Meta application or enable the provider in Firebase Console.
+Google and email/password are available in the entry login dialog. Facebook
+retains its disabled **Coming soon** button until its external setup is ready
+and activation is explicitly requested. The account-linking implementation
+supports Facebook, but does not activate that button. The Firebase project
+must enable each provider being used and authorize the application domain.
 
 An already linked Google or Facebook account signs in directly. With Firebase's
 one-account-per-email setting, a provider collision can require one initial
@@ -39,10 +40,11 @@ Reference: [Firebase account linking](https://firebase.google.com/docs/auth/web/
 The focused frontend suite covers direct sign-in, both social linking
 directions, password confirmation, duplicate registration, wrong passwords,
 wrong-email rejection, cancellation, expiry, unverified email and linking
-failure. Component tests cover Google and Facebook button requests and login
-feedback. Backend tests verify that linked provider identities reuse the same
+failure. Component tests cover Google login requests, the disabled Facebook
+button and login feedback. Backend tests verify that linked provider identities reuse the same
 profile and that conflicting profiles are rejected.
 
-Live Google/Facebook consent, provider enablement and subsequent sign-in with
+After Facebook is configured and explicitly enabled, live Google/Facebook
+consent, provider enablement and subsequent sign-in with
 both real accounts must be checked in a normal user-controlled browser.
 Automated SDK-mocked tests are not proof of those external provider settings.
