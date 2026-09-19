@@ -71,6 +71,12 @@ Thumbs.db
 /**/CMakeCache.txt
 /**/cmake_install.cmake
 
+# Generated dev frontend copied by server/docker/scripts/sync_frontend_assets.sh.
+# Keep the exclusion here, not in .git/info/exclude or local index flags.
+# Already tracked files remain visible to Git even with this rule enabled.
+/server/docker/conf/nginx/app/myscoutee/**
+/server/docker/conf/nginx/app/myscoutee/.frontend-ready
+
 # local secrets
 *-firebase-adminsdk-*.json
 /server/.env.secret
