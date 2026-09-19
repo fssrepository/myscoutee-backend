@@ -125,12 +125,12 @@ instructions, supported services and failure handling are in
    application behavior. Use `status` to inspect the retained operation or
    `rollback` to restore its previous local image.
 
-The currently deployed frontend build is `stable-20260919-startup-avatar-2`
+The currently deployed frontend build is `stable-20260919-startup-avatar-4`
 (application version remains `1.0.0`). The verified command for this image is:
 
 ```bash
 sudo bash install-temporary-image.sh install nginx \
-  ghcr.io/fssrepository/myscoutee-nginx@sha256:60c0980f483081e11c999022553de5bdde6060cace0cac97e7f79c6b1aa1d63c
+  ghcr.io/fssrepository/myscoutee-nginx@sha256:a7b56fca423593e5a780dea604e7d20eafe2adc07cbe91769a3eeed49ba23f34
 sudo bash install-temporary-image.sh status nginx
 # Only when a rollback is wanted:
 sudo bash install-temporary-image.sh rollback nginx
@@ -276,6 +276,28 @@ Android launches or full popup/provider-login qualification. Source patch,
 image/server receipts, CPU profiles and measurements are retained under
 `packaging/dist/startup-optimization-20260919/` (gitignored), with details in
 `REPORT.md` and `comparison.json`.
+
+The `stable-20260919-startup-avatar-4` nginx-only update paints the shared
+Home header and disabled avatar/photo before the protected route is ready,
+keeps identical mobile avatar geometry during handoff, and selects the small
+managed image in legacy, private and public image namespaces. The preview uses
+the server profile image tied to the current Firebase session, because the
+Firebase UID and application profile ID differ; it does not use the provider's
+monogram image. The loading sidebar retains that same preview until ready.
+Authentication and role guards remain unchanged, including `/auth/me` and its
+private-media session cookie. A trial removing that request caused a device
+401 and was reverted. No database repair or image regeneration was needed:
+all three existing variants returned 200. The displayed small photo is 128×66,
+448 bytes, compared with the previous 1280×656, 23780-byte avatar source.
+Production build, 65 focused tests, 371-file image comparison and all 13 public
+checks passed. The final device check confirmed the small photo remains visible
+under the loading ring and through handoff, with unchanged avatar geometry.
+Seven containers are healthy; only nginx changed. Repeated earlier native
+launches still needed 4.3–5.2 seconds for full readiness; this work does not
+establish full native startup below three seconds. The final image/geometry
+check and exact registry/server receipts, along with failed/update-transition
+measurement exclusions, are recorded in
+`packaging/dist/startup-shell-20260919/REPORT.md` (gitignored).
 
 ## Concurrent-session setting
 
