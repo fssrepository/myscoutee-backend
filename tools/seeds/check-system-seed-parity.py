@@ -70,7 +70,10 @@ def audit(seeds=SEEDS):
                 if mode == 'myscoutee_db':
                     if actual[0]['socialLinks']:
                         errors.append('production social links must not contain demo destinations')
+                    if actual[0].get('integration', {}).get('publicBaseUrl') is not None:
+                        errors.append('production integration URL must be operator-configured')
                     reference[0]['socialLinks'] = []
+                    reference[0]['integration'] = {'publicBaseUrl': None}
             if name == 'notificationRuleConfigs' and mode == 'e2e_db':
                 for row in reference:
                     if row['_id'] == 'notification-rule-event-counter-expiry':
