@@ -518,6 +518,7 @@ public final class AuthDtos {
     public record UserRealtimeLongPollResponseDto(
             String userId,
             String profileStatus,
+            LocationCoordinatesDto locationCoordinates,
             UserRealtimeCountersDto counters,
             UserImpressionsDto impressions,
             AssetTicketsPageDto offlineTicketSnapshot,

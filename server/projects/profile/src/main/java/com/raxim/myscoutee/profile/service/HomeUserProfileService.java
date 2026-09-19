@@ -517,6 +517,7 @@ public class HomeUserProfileService {
         return new UserRealtimeLongPollResponseDto(
                 resolvedUserId,
                 safeText(user.getProfileStatus()),
+                toLocationCoordinatesDto(user.getLocationCoordinates()),
                 counters,
                 impressions,
                 offlineTicketSnapshot,

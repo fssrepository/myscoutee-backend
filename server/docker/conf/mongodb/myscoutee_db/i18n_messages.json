@@ -20688,6 +20688,24 @@
     "value": "This login method is not enabled in Firebase."
   },
   {
+    "_id": "i18n-message-en-location-change-title",
+    "key": "location.change.title",
+    "lang": "en",
+    "value": "Your location has changed"
+  },
+  {
+    "_id": "i18n-message-en-location-change-confirm",
+    "key": "location.change.confirm",
+    "lang": "en",
+    "value": "Your current location is significantly different from your saved location. Update it? Choose Cancel to keep your saved location."
+  },
+  {
+    "_id": "i18n-message-en-location-change-warning",
+    "key": "location.change.warning",
+    "lang": "en",
+    "value": "Your current location is significantly different from your saved location. Use Update to switch to this new location."
+  },
+  {
     "_id": "i18n-message-hu-unavailable-here",
     "key": "unavailable.here",
     "lang": "hu",
@@ -41374,5 +41392,23 @@
     "key": "firebase.auth.provider.disabled",
     "lang": "hu",
     "value": "Ez a belépési mód nincs engedélyezve a Firebase-ben."
+  },
+  {
+    "_id": "i18n-message-hu-location-change-title",
+    "key": "location.change.title",
+    "lang": "hu",
+    "value": "Megváltozott a helyzeted"
+  },
+  {
+    "_id": "i18n-message-hu-location-change-confirm",
+    "key": "location.change.confirm",
+    "lang": "hu",
+    "value": "Az új helyzeted jelentősen eltér a mentett helyedtől. Frissíted? Ha a Mégsem gombot választod, a korábbi helyed marad meg."
+  },
+  {
+    "_id": "i18n-message-hu-location-change-warning",
+    "key": "location.change.warning",
+    "lang": "hu",
+    "value": "A jelenlegi helyzeted jelentősen eltér a mentett helyedtől. A Frissítés gombbal erre az új helyre válthatsz."
   }
 ]
