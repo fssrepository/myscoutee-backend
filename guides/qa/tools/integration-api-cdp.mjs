@@ -131,8 +131,27 @@ try {
       contentType: response.headers.get('content-type'),
       length: (await response.arrayBuffer()).byteLength
     }))`));
+  } else if (command === 'download') {
+    const url = option('--url');
+    const path = option('--path');
+    if (!url) fail('--url is required for download.');
+    if (!path) fail('--path is required for download.');
+    const result = await evaluate(`fetch(${JSON.stringify(url)}, { credentials: 'include' }).then(async response => {
+      if (!response.ok) throw new Error('Download failed with HTTP ' + response.status + '.');
+      const bytes = new Uint8Array(await response.arrayBuffer());
+      let binary = '';
+      for (let offset = 0; offset < bytes.length; offset += 32768) {
+        binary += String.fromCharCode(...bytes.subarray(offset, offset + 32768));
+      }
+      return {
+        contentType: response.headers.get('content-type'),
+        data: btoa(binary)
+      };
+    })`);
+    await writeFile(path, Buffer.from(result.data, 'base64'));
+    print({ downloaded: path, contentType: result.contentType });
   } else {
-    fail('Usage: integration-api-cdp.mjs inspect|click|fill|screenshot|reload|fetch --port PORT [options]');
+    fail('Usage: integration-api-cdp.mjs inspect|click|fill|screenshot|reload|fetch|download --port PORT [options]');
   }
 } finally {
   socket.close();

@@ -21,7 +21,7 @@
     <div class="cover-title-block">
       <div class="cover-kicker">External Integration</div>
       <h1 id="document-title">MyScoutee Integration API Guide</h1>
-      <p class="cover-lead">A compact write API for creating asset and event batches, attaching optional image bytes, and correlating external records with MyScoutee resource IDs.</p>
+      <p class="cover-lead">A compact write API for creating asset and event batches, attaching optional image bytes, correlating external records, and receiving scoped change callbacks.</p>
     </div>
 
     <div class="cover-meta" aria-label="Document metadata">
@@ -29,7 +29,7 @@
       <div><strong>Document version</strong><span>1.0.1</span></div>
       <div><strong>Applicable software version</strong><span>MyScoutee 1.0.1</span></div>
       <div><strong>Status</strong><span class="cover-status"><span class="status-dot" aria-hidden="true"></span>Released</span></div>
-      <div><strong>Release date</strong><time datetime="2026-09-19">2026-09-19</time></div>
+      <div><strong>Release date</strong><time datetime="2026-09-20">2026-09-20</time></div>
       <div><strong>Language</strong><span>EN</span></div>
     </div>
   </section>
@@ -49,7 +49,7 @@
     <h3>Version History</h3>
     <table>
       <thead><tr><th scope="col">Version</th><th scope="col">Date</th><th scope="col">Status</th><th scope="col">Change</th></tr></thead>
-      <tbody><tr><td>1.0.1</td><td>2026-09-19</td><td>Released</td><td>Initial public batch API and Java client guide.</td></tr></tbody>
+      <tbody><tr><td>1.0.1</td><td>2026-09-20</td><td>Released</td><td>Initial public batch API, scoped callback watch, and Java client guide.</td></tr></tbody>
     </table>
 
     <aside class="callout note">
@@ -68,6 +68,7 @@
       <li><a href="#assets">Asset Batch</a></li>
       <li><a href="#events">Event Batch</a></li>
       <li><a href="#images">Optional Image Upload</a></li>
+      <li><a href="#watch">Change Callback</a></li>
       <li><a href="#responses">Responses and Errors</a></li>
       <li><a href="#client">Java Client and CLI</a></li>
       <li><a href="#security">Security and Operational Rules</a></li>
@@ -129,6 +130,7 @@
         <tr><td><code>POST</code></td><td><code>/connect</code></td><td>Claim and validate a client key</td><td><code>200</code></td></tr>
         <tr><td><code>POST</code></td><td><code>/assets</code></td><td>Create 1–1000 assets, optionally with images</td><td><code>200</code></td></tr>
         <tr><td><code>POST</code></td><td><code>/events</code></td><td>Create 1–1000 events, optionally with images</td><td><code>200</code></td></tr>
+        <tr><td><code>POST</code></td><td><code>/watch</code></td><td>Register or disable this client's scoped callback</td><td><code>200</code></td></tr>
       </tbody>
     </table>
     <p>There is no separate image endpoint and no booking query endpoint in this API version.</p>
@@ -231,8 +233,54 @@
     </aside>
   </section>
 
+  <section id="watch" class="page-break" aria-labelledby="watch-title">
+    <h2 id="watch-title">8. Change Callback</h2>
+    <p><code>POST /watch</code> registers one callback URL for the current token/client pair. It is a push notification mechanism, not a polling or general read endpoint. MyScoutee sends only <code>event.changed</code> for events managed by the token owner and <code>asset.changed</code> for assets owned by that user.</p>
+    <pre><code>{
+  "callbackUrl": "https://integration.example.test/hooks/myscoutee",
+  "events": ["event.changed", "asset.changed"],
+  "enabled": true
+}</code></pre>
+    <p>An empty or omitted <code>events</code> list selects both supported types. Disable the registration with <code>{"enabled": false}</code>. Revoking or expiring the client key also disables delivery.</p>
+    <h3>Delivered message</h3>
+    <pre><code>{
+  "deliveryId": "ad01bce2-70ac-4a60-8703-8f03bf105af6",
+  "type": "event.changed",
+  "occurredAt": "2026-09-19T22:28:46.947Z",
+  "resource": {
+    "id": "1066b61b-c0ac-43d5-ab28-f588f5a162f6",
+    "externalId": "55fe8563-f360-48cf-af0e-7cfb0404ee84",
+    "title": "Hotel evening",
+    "status": "A",
+    "change": {
+      "kind": "participant",
+      "status": "accepted",
+      "role": "Member",
+      "actionAt": "2026-09-19T22:28:46.919Z",
+      "participant": {
+        "name": "Peter",
+        "age": 27,
+        "gender": "man",
+        "profileImage": "/media/public?key=…/large.webp"
+      }
+    }
+  }
+}</code></pre>
+    <p>A normal participant Join and its later membership-state change trigger <code>event.changed</code>. The optional participant projection contains only name, age, gender, and first profile image; it contains no e-mail address or internal user ID. Resource snapshots may also carry event times and accepted/pending counts or asset type, quantity, and capacity.</p>
+    <table class="keep-together">
+      <thead><tr><th scope="col">Delivery rule</th><th scope="col">Contract</th></tr></thead>
+      <tbody>
+        <tr><td>Success</td><td>Any HTTP 2xx response</td></tr>
+        <tr><td>Identity</td><td><code>deliveryId</code> equals the <code>X-MyScoutee-Webhook-Id</code> header; receivers must deduplicate it</td></tr>
+        <tr><td>Retry</td><td>Approximately 5 seconds, 30 seconds, 2 minutes, and 10 minutes after a failed attempt</td></tr>
+        <tr><td>Redirect</td><td>Not followed</td></tr>
+        <tr><td>Production URL</td><td>HTTPS with a publicly resolvable destination; localhost/private HTTP is development-only</td></tr>
+      </tbody>
+    </table>
+  </section>
+
   <section id="responses" aria-labelledby="responses-title">
-    <h2 id="responses-title">8. Responses and Errors</h2>
+    <h2 id="responses-title">9. Responses and Errors</h2>
     <table>
       <thead><tr><th scope="col">HTTP/result</th><th scope="col">Meaning</th></tr></thead>
       <tbody>
@@ -247,7 +295,7 @@
   </section>
 
   <section id="client" class="page-break" aria-labelledby="client-title">
-    <h2 id="client-title">9. Java Client and CLI</h2>
+    <h2 id="client-title">10. Java Client and CLI</h2>
     <pre><code>./gradlew installDist
 
 myscoutee-client configure \
@@ -256,7 +304,9 @@ myscoutee-client configure \
 
 myscoutee-client assets assets.json
 myscoutee-client events events.json \
-  1066b61b-c0ac-43d5-ab28-f588f5a162f6=event.webp</code></pre>
+  1066b61b-c0ac-43d5-ab28-f588f5a162f6=event.webp
+myscoutee-client watch https://integration.example.test/hooks/myscoutee
+myscoutee-client unwatch</code></pre>
     <table>
       <thead><tr><th scope="col">SDK method</th><th scope="col">Use</th></tr></thead>
       <tbody>
@@ -265,13 +315,15 @@ myscoutee-client events events.json \
         <tr><td><code>createAssets(items, images)</code></td><td>Send assets and a map from item UUID to local image path.</td></tr>
         <tr><td><code>createEvents(items)</code></td><td>Send a JSON-only event batch.</td></tr>
         <tr><td><code>createEvents(items, images)</code></td><td>Send events and optional local images.</td></tr>
+        <tr><td><code>watch(callbackUrl, events)</code></td><td>Register the callback and selected event types for this client.</td></tr>
+        <tr><td><code>unwatch()</code></td><td>Disable the current client's callback.</td></tr>
       </tbody>
     </table>
     <p>The CLI stores the Base URL, token, and stable client UUID in <code>~/.myscoutee/client.properties</code>. The token is masked by <code>show-config</code>.</p>
   </section>
 
   <section id="security" aria-labelledby="security-title">
-    <h2 id="security-title">10. Security and Operational Rules</h2>
+    <h2 id="security-title">11. Security and Operational Rules</h2>
     <ul class="checklist">
       <li>Use HTTPS outside localhost development.</li>
       <li>Keep the complete key secret and use a distinct key for every connected client.</li>
@@ -280,6 +332,8 @@ myscoutee-client events events.json \
       <li>Split imports into batches of no more than 1000 items.</li>
       <li>Do not infer access to another user's records: the token fixes the resource owner.</li>
       <li>Do not include participant personal data in asset or event create requests.</li>
+      <li>Return a fast 2xx from the callback and process asynchronously; deduplicate every delivery ID.</li>
+      <li>Expose callback endpoints over public HTTPS in production and reject unexpected payload types.</li>
     </ul>
     <p class="source-note">Normative machine-readable contract: <code>myscoutee-client/openapi.yaml</code>. Reference client and versioned fixtures: <code>myscoutee-client/src/</code>.</p>
   </section>

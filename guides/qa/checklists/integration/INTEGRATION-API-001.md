@@ -35,3 +35,25 @@ seeded or written directly to MongoDB.
 PASS requires the UI ownership/presentation checks, the persisted id mapping,
 the real Join mutation and the delivered callback. API-only creation without
 the two UI views is not sufficient.
+
+## Result — 2026-09-20
+
+PASS / CLOSED on the assembled development stack through nginx.
+
+- Casey generated a fresh key in the Profile API panel; no token fixture was
+  used. The Java client connected through the displayed public Base URL.
+- One image-bearing Asset and one image-bearing Event were accepted. The
+  response preserved each caller UUID as `id` and returned a distinct
+  MyScoutee UUID as `externalId`; the server produced all three image sizes.
+- Casey's owned Asset/Event views and Nova's public Explore view displayed the
+  submitted data and image. The missing public Event image found during the
+  run was repaired in `MediaPolicyFacts` and replayed successfully.
+- Nova joined through the normal UI and Casey approved the request. Casey then
+  showed `2 members`; the callback delivered the same caller/MyScoutee ID pair,
+  `accepted`, `Member`, and only name, age, gender and profile image for Nova.
+- Watch was disabled, the test key was revoked through the confirmation dialog,
+  the Profile API panel returned to `0 / 3 active`, and the same client then
+  received HTTP 401. No pre-existing/user-provided key was revoked.
+
+Machine-readable evidence is stored in
+`guides/qa/evidence/INTEGRATION-API-001-2026-09-20.json`.

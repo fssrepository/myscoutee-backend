@@ -62,6 +62,7 @@ COMPACT_VISIBLE_COLUMN_WIDTHS = (
 # the normalized domain on every testcase row; the workbook shows the mapping
 # in a separate priority table and uses it to keep domains contiguous.
 DOMAIN_METADATA = (
+    ("API test", 15, "FFD9EAF7", "API"),
     ("QA infrastructure", 14, "FFE7E6E6", "CLEANUP"),
     ("Identity & access", 13, "FFE4DFEC", "ENTRY"),
     ("Event", 12, "FFFCE4D6", "EVENT"),
@@ -123,6 +124,7 @@ def expected_domain(identifier: str) -> str:
     if normalized in EXACT_DOMAIN_OVERRIDES:
         return EXACT_DOMAIN_OVERRIDES[normalized]
     domain_prefixes = (
+        ("API test", ("INTEGRATION-API",)),
         ("QA infrastructure", ("CLEANUP", "QA-RESET")),
         ("Identity & access", ("ENTRY", "AUTH", "ROLE", "LANDING-ELIGIBILITY")),
         ("Event", ("EVENT", "MEDIA")),
