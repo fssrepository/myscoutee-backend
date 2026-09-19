@@ -7377,7 +7377,7 @@
     "_id": "i18n-message-en-landing-hero-graph",
     "key": "landing.hero.graph",
     "lang": "en",
-    "value": "6 people · 6 priority lists → 1 shared group"
+    "value": "6 people · 6 priority lists → 1 team"
   },
   {
     "_id": "i18n-message-en-landing-preview-open-guide",
@@ -28083,7 +28083,7 @@
     "_id": "i18n-message-hu-landing-hero-graph",
     "key": "landing.hero.graph",
     "lang": "hu",
-    "value": "6 ember · 6 prioritáslista → 1 közös csoport"
+    "value": "6 ember · 6 prioritáslista → 1 csapat"
   },
   {
     "_id": "i18n-message-hu-landing-preview-open-guide",
