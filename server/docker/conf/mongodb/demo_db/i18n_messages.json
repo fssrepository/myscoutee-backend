@@ -20490,6 +20490,24 @@
     "value": "Notifications are blocked. Enable them in notification settings, then try again."
   },
   {
+    "_id": "i18n-message-en-entry-permissions-location-blocked",
+    "key": "entry.permissions.location.blocked",
+    "lang": "en",
+    "value": "Location access is blocked. Enable location access, then try again."
+  },
+  {
+    "_id": "i18n-message-en-entry-permissions-location-required",
+    "key": "entry.permissions.location.required",
+    "lang": "en",
+    "value": "Select location access to continue."
+  },
+  {
+    "_id": "i18n-message-en-entry-permissions-location-unavailable",
+    "key": "entry.permissions.location.unavailable",
+    "lang": "en",
+    "value": "Your location could not be determined. Please try again."
+  },
+  {
     "_id": "i18n-message-en-app-setup-title",
     "key": "app.setup.title",
     "lang": "en",
@@ -20638,6 +20656,36 @@
     "key": "entry.permissions.notifications.failed",
     "lang": "en",
     "value": "Could not save notification settings. Check your connection and try again."
+  },
+  {
+    "_id": "i18n-message-en-firebase-auth-link-required",
+    "key": "firebase.auth.link.required",
+    "lang": "en",
+    "value": "This email already has an account. To link the selected login method, sign in once with the Google, Facebook or email/password method you used before. Then both methods will open the same profile."
+  },
+  {
+    "_id": "i18n-message-en-firebase-auth-link-email-mismatch",
+    "key": "firebase.auth.link.email.mismatch",
+    "lang": "en",
+    "value": "Choose the same email address as in your first login attempt to link the accounts."
+  },
+  {
+    "_id": "i18n-message-en-firebase-auth-link-expired",
+    "key": "firebase.auth.link.expired",
+    "lang": "en",
+    "value": "The account-linking request expired. Start again with the login method you want to add."
+  },
+  {
+    "_id": "i18n-message-en-firebase-auth-link-failed",
+    "key": "firebase.auth.link.failed",
+    "lang": "en",
+    "value": "The login methods could not be linked. Please start again. Your existing profile has not been merged with another account."
+  },
+  {
+    "_id": "i18n-message-en-firebase-auth-provider-disabled",
+    "key": "firebase.auth.provider.disabled",
+    "lang": "en",
+    "value": "This login method is not enabled in Firebase."
   },
   {
     "_id": "i18n-message-hu-unavailable-here",
@@ -41130,6 +41178,24 @@
     "value": "Az értesítések tiltva vannak. Engedélyezd őket az értesítési beállításokban, majd próbáld újra."
   },
   {
+    "_id": "i18n-message-hu-entry-permissions-location-blocked",
+    "key": "entry.permissions.location.blocked",
+    "lang": "hu",
+    "value": "A helyhozzáférés tiltva van. Engedélyezd, majd próbáld újra."
+  },
+  {
+    "_id": "i18n-message-hu-entry-permissions-location-required",
+    "key": "entry.permissions.location.required",
+    "lang": "hu",
+    "value": "A folytatáshoz kapcsold be a helyhozzáférést."
+  },
+  {
+    "_id": "i18n-message-hu-entry-permissions-location-unavailable",
+    "key": "entry.permissions.location.unavailable",
+    "lang": "hu",
+    "value": "Nem sikerült meghatározni a helyzetedet. Próbáld újra."
+  },
+  {
     "_id": "i18n-message-hu-app-setup-title",
     "key": "app.setup.title",
     "lang": "hu",
@@ -41278,36 +41344,6 @@
     "key": "entry.permissions.notifications.failed",
     "lang": "hu",
     "value": "Nem sikerült menteni az értesítési beállításokat. Ellenőrizd a kapcsolatot, majd próbáld újra."
-  },
-  {
-    "_id": "i18n-message-en-firebase-auth-link-required",
-    "key": "firebase.auth.link.required",
-    "lang": "en",
-    "value": "This email already has an account. To link the selected login method, sign in once with the Google, Facebook or email/password method you used before. Then both methods will open the same profile."
-  },
-  {
-    "_id": "i18n-message-en-firebase-auth-link-email-mismatch",
-    "key": "firebase.auth.link.email.mismatch",
-    "lang": "en",
-    "value": "Choose the same email address as in your first login attempt to link the accounts."
-  },
-  {
-    "_id": "i18n-message-en-firebase-auth-link-expired",
-    "key": "firebase.auth.link.expired",
-    "lang": "en",
-    "value": "The account-linking request expired. Start again with the login method you want to add."
-  },
-  {
-    "_id": "i18n-message-en-firebase-auth-link-failed",
-    "key": "firebase.auth.link.failed",
-    "lang": "en",
-    "value": "The login methods could not be linked. Please start again. Your existing profile has not been merged with another account."
-  },
-  {
-    "_id": "i18n-message-en-firebase-auth-provider-disabled",
-    "key": "firebase.auth.provider.disabled",
-    "lang": "en",
-    "value": "This login method is not enabled in Firebase."
   },
   {
     "_id": "i18n-message-hu-firebase-auth-link-required",
