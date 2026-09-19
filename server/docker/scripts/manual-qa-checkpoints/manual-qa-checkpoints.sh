@@ -13,6 +13,7 @@ Usage:
   bash manual-qa-checkpoints.sh capture mobile-push MOBILE-PUSH-LIFECYCLE-001 <savepoint>
   bash manual-qa-checkpoints.sh stage|stage-demo|status|verify-media-boundary|profile-batch-timing|background-settings|background-settings-resident|reset-background-settings-resident|background-chrome|reset mobile-webview MOBILE-WEBVIEW-LIFECYCLE-001
   bash manual-qa-checkpoints.sh prepare browser-sessions <checkpoint-id>
+  bash manual-qa-checkpoints.sh stage|status|reset integration-api INTEGRATION-API-001
   bash manual-qa-checkpoints.sh stage base-stat
   bash manual-qa-checkpoints.sh status base-stat
   bash manual-qa-checkpoints.sh reset base-stat
@@ -526,6 +527,7 @@ run_scenario() {
 
   case "${scenario}" in
     browser-sessions) scenario_script="${SCRIPT_DIR}/scenarios/browser-session-checkpoints.js" ;;
+    integration-api) scenario_script="${SCRIPT_DIR}/scenarios/integration-api-checkpoints.js" ;;
     base-stat) scenario_script="${SCRIPT_DIR}/scenarios/base-stat.js" ;;
     stat-010) scenario_script="${SCRIPT_DIR}/scenarios/stat-010-rating.js" ;;
     graph-rating) scenario_script="${SCRIPT_DIR}/scenarios/graph-rating.js" ;;
@@ -765,6 +767,11 @@ PY
     ;;
   ui-poll:stage|ui-poll:status|ui-poll:reset|ui-poll:session-status)
     [ "$#" -eq 3 ] && [ "$3" = "UI-POLL-JANK-001" ] || { usage >&2; exit 2; }
+    run_scenario "${command}" "${scenario}" 30 "$3"
+    ;;
+  integration-api:stage|integration-api:status|integration-api:reset)
+    [ "$#" -eq 3 ] || { usage >&2; exit 2; }
+    [ "$3" = "INTEGRATION-API-001" ] || fail "${command} is restricted to INTEGRATION-API-001."
     run_scenario "${command}" "${scenario}" 30 "$3"
     ;;
   browser-sessions:prepare)

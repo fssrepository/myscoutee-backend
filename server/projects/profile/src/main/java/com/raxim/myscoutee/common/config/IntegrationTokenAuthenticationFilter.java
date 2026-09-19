@@ -12,6 +12,7 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import com.raxim.myscoutee.profile.service.IntegrationTokenService;
+import com.raxim.myscoutee.profile.service.IntegrationTokenService.AuthenticatedIntegrationClient;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -44,11 +45,11 @@ public class IntegrationTokenAuthenticationFilter extends OncePerRequestFilter {
         String rawToken = StringUtils.hasText(authorization) && authorization.startsWith(BEARER_PREFIX)
                 ? authorization.substring(BEARER_PREFIX.length()).trim()
                 : null;
-        String ownerUserId = tokenService.authenticate(
+        AuthenticatedIntegrationClient client = tokenService.authenticateClient(
                 rawToken,
                 request.getHeader(CLIENT_ID_HEADER),
                 resolveClientAddress(request));
-        if (!StringUtils.hasText(ownerUserId)) {
+        if (client == null || !StringUtils.hasText(client.ownerUserId())) {
             SecurityContextHolder.clearContext();
             response.setHeader("Cache-Control", "no-store");
             response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "A valid integration token is required.");
@@ -56,9 +57,10 @@ public class IntegrationTokenAuthenticationFilter extends OncePerRequestFilter {
         }
 
         UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
-                ownerUserId,
+                client.ownerUserId(),
                 null,
                 List.of(new SimpleGrantedAuthority("INTEGRATION")));
+        authentication.setDetails(client);
         SecurityContextHolder.getContext().setAuthentication(authentication);
         filterChain.doFilter(request, response);
     }

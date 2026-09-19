@@ -15,6 +15,7 @@ import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.security.core.context.SecurityContextHolder;
 
 import com.raxim.myscoutee.profile.service.IntegrationTokenService;
+import com.raxim.myscoutee.profile.service.IntegrationTokenService.AuthenticatedIntegrationClient;
 
 class IntegrationTokenAuthenticationFilterTest {
     private final IntegrationTokenService tokenService = org.mockito.Mockito.mock(IntegrationTokenService.class);
@@ -46,14 +47,17 @@ class IntegrationTokenAuthenticationFilterTest {
         request.setRemoteAddr("203.0.113.8");
         MockHttpServletResponse response = new MockHttpServletResponse();
         MockFilterChain chain = new MockFilterChain();
-        when(tokenService.authenticate("msc_test", clientId, "203.0.113.8")).thenReturn("owner-1");
+        when(tokenService.authenticateClient("msc_test", clientId, "203.0.113.8"))
+                .thenReturn(new AuthenticatedIntegrationClient("owner-1", "token-1", clientId));
 
         filter.doFilter(request, response, chain);
 
         assertThat(response.getStatus()).isEqualTo(200);
         assertThat(chain.getRequest()).isSameAs(request);
         assertThat(SecurityContextHolder.getContext().getAuthentication().getName()).isEqualTo("owner-1");
-        verify(tokenService).authenticate("msc_test", clientId, "203.0.113.8");
+        assertThat(SecurityContextHolder.getContext().getAuthentication().getDetails())
+                .isEqualTo(new AuthenticatedIntegrationClient("owner-1", "token-1", clientId));
+        verify(tokenService).authenticateClient("msc_test", clientId, "203.0.113.8");
     }
 
     @Test

@@ -238,12 +238,14 @@ audit_mongo_seed_privacy() {
       type == "array"
       and length == 1
       and .[0]._id == "deployment-configuration"
-      and .[0].schemaVersion == 4
+      and .[0].schemaVersion == 5
       and (.[0].privacyContact | type == "object")
       and .[0].privacyContact.dataControllerName == ""
       and .[0].privacyContact.privacyContactEmail == ""
+      and (.[0].integration | type == "object")
+      and .[0].integration.publicBaseUrl == null
     ' "${production_seed}/deploymentConfigurations.json" >/dev/null; then
-    echo "Production deployment privacy contact must be schema v4 and unconfigured." >&2
+    echo "Production deployment configuration must be schema v5 with privacy and Integration URL unconfigured." >&2
     exit 1
   fi
   if ! jq -e '

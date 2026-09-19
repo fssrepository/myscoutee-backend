@@ -39,6 +39,18 @@ public final class IntegrationDtos {
             Integer maxBatchSize) {
     }
 
+    public record IntegrationWatchRequestDto(
+            String callbackUrl,
+            List<String> events,
+            Boolean enabled) {
+    }
+
+    public record IntegrationWatchResponseDto(
+            Boolean enabled,
+            String callbackUrl,
+            List<String> events) {
+    }
+
     public record IntegrationAssetSyncItemDto(
             String id,
             String type,

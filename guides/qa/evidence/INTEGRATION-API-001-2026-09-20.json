@@ -1,0 +1,75 @@
+{
+  "checkpoint": "INTEGRATION-API-001",
+  "date": "2026-09-20",
+  "status": "PASS / CLOSED",
+  "environment": "assembled development stack through nginx; managed Casey and Nova browser sessions; MyScoutee Java client",
+  "token": {
+    "source": "generated through Casey Profile API UI during this run",
+    "fixtureUsed": false,
+    "listedAfterGeneration": true,
+    "occupiedAfterClientConnect": true,
+    "watchDisabledBeforeRevoke": true,
+    "revokedThroughUiConfirmation": true,
+    "activeCountAfterRevoke": 0,
+    "connectAfterRevoke": {
+      "httpStatus": 401,
+      "clientExitCode": 2
+    },
+    "secretRecorded": false
+  },
+  "resources": {
+    "asset": {
+      "id": "1f2f24d2-d14c-43ce-a27f-67270ae93d4a",
+      "externalId": "1dd7cf24-aca0-4f54-8ab3-6af7872e19a3",
+      "title": "API QA welcome projector",
+      "ownerUiVisible": true,
+      "imageVisible": true,
+      "serverImageVariants": 3
+    },
+    "event": {
+      "id": "a3b891c2-1a45-4fe8-b8c2-c217c22466b4",
+      "externalId": "a06e0ab2-8703-4480-bbc0-5379fde23d1e",
+      "title": "API QA Austin meetup",
+      "ownerUiVisible": true,
+      "publicExploreVisible": true,
+      "ownerImageVisible": true,
+      "publicImageVisibleAfterPolicyRepair": true,
+      "serverImageVariants": 3,
+      "acceptedParticipantsAfterApproval": 2,
+      "pendingParticipantsAfterApproval": 0
+    }
+  },
+  "callback": {
+    "registeredEvents": [
+      "event.changed",
+      "asset.changed"
+    ],
+    "delivered": true,
+    "joinRequestObserved": true,
+    "approvalDeliveryId": "ad01bce2-70ac-4a60-8703-8f03bf105af6",
+    "callerIdMatches": true,
+    "externalIdMatches": true,
+    "change": {
+      "kind": "participant",
+      "status": "accepted",
+      "role": "Member",
+      "participant": {
+        "name": "Nova Social",
+        "age": 27,
+        "gender": "woman",
+        "profileImagePresent": true
+      }
+    },
+    "excludedSensitiveParticipantFields": [
+      "email",
+      "internalUserId"
+    ],
+    "finalCountDeliveryId": "d2d9a63c-029c-489f-b2f2-0f8b636d7a11"
+  },
+  "qualifications": [
+    "The public Event image initially rendered as No image; the canonical active/public media policy was fixed and the Nova view replay passed.",
+    "The participant lookup initially used a computed non-persisted isAdmin field; the listener query was corrected to the persisted source ID and the real approval callback replay passed.",
+    "The running development watcher compiled and restarted the changed backend successfully.",
+    "Focused backend test execution remains blocked by pre-existing unrelated compileTestJava errors; this run did not hide or reclassify that repository-wide test-source condition."
+  ]
+}

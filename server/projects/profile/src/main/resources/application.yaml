@@ -14,6 +14,14 @@ auth:
 integration:
   # Deployment configuration may override this fallback without a new build.
   public-base-url: ${INTEGRATION_PUBLIC_BASE_URL:http://localhost/api/integrations/v1}
+  webhook:
+    # Production remains HTTPS/public-only. Dev and E2E opt in explicitly.
+    allow-http: ${INTEGRATION_WEBHOOK_ALLOW_HTTP:false}
+    allow-private-addresses: ${INTEGRATION_WEBHOOK_ALLOW_PRIVATE_ADDRESSES:false}
+    delivery-interval-ms: ${INTEGRATION_WEBHOOK_DELIVERY_INTERVAL_MS:1000}
+    # Scale from zero idle threads to at most 100 parallel callback deliveries.
+    max-worker-count: ${INTEGRATION_WEBHOOK_MAX_WORKER_COUNT:100}
+    delivery-batch-size: ${INTEGRATION_WEBHOOK_DELIVERY_BATCH_SIZE:100}
 
 registry:
   enabled: ${REGISTRY_ENABLED:false}

@@ -48,7 +48,9 @@ public class MediaPolicyFacts {
             if (viewer.equals(event.getString("creatorUserId")) || viewer.equals(event.getString("organizerUserId"))
                     || contains(event, "admins", viewer) || contains(event, "acceptedMemberUserIds", viewer)
                     || contains(event, "invitedMemberUserIds", viewer) || contains(event, "pendingRequestMemberUserIds", viewer)) return true;
-            return active(event) && Boolean.TRUE.equals(event.getBoolean("published"))
+            // Event publication is represented by the canonical lifecycle status. The
+            // legacy `published` field is no longer stored on newly created events.
+            return active(event)
                     && visible(event.getString("visibility"), event.getString("creatorUserId"), viewer);
         }
         Query messageQuery = Query.query(new Criteria().orOperator(

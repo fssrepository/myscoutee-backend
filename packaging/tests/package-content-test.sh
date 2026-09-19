@@ -382,11 +382,12 @@ jq -e '
   type == "array"
   and length == 1
   and .[0]._id == "deployment-configuration"
-  and .[0].schemaVersion == 4
+  and .[0].schemaVersion == 5
   and .[0].privacyContact.dataControllerName == ""
   and .[0].privacyContact.privacyContactEmail == ""
+  and .[0].integration.publicBaseUrl == null
 ' "${PACKAGED_PRODUCTION_SEED}/deploymentConfigurations.json" >/dev/null \
-  || fail "production deployment privacy contact is not schema v4 and empty"
+  || fail "production deployment configuration is not schema v5 with privacy and Integration URL empty"
 jq -e '
   [
     .[]

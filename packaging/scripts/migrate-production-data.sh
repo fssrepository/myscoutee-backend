@@ -8,3 +8,8 @@ docker exec -i mongodb sh -c '
     --password "$MONGO_INITDB_ROOT_PASSWORD" --authenticationDatabase admin \
     production_db --file /dev/stdin
 ' < "${SCRIPT_DIR}/../migrations/004-deployment-configuration.js"
+docker exec -i mongodb sh -c '
+  exec mongosh --quiet --username "$MONGO_INITDB_ROOT_USERNAME" \
+    --password "$MONGO_INITDB_ROOT_PASSWORD" --authenticationDatabase admin \
+    production_db --file /dev/stdin
+' < "${SCRIPT_DIR}/../migrations/005-deployment-configuration-integration.js"
