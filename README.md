@@ -13,12 +13,12 @@ match or a message.
 
 ### Installer
 
-The **MyScoutee 1.0.0** Debian installer for **amd64**, client tools,
+The **MyScoutee 1.0.1** Debian installer for **amd64**, client tools,
 SHA-256 checksums, and signed release metadata are available from
-[GitHub Releases](https://github.com/fssrepository/myscoutee/releases/tag/v1.0.0).
+[GitHub Releases](https://github.com/fssrepository/myscoutee/releases/tag/v1.0.1).
 
 See the [installation guide](packaging/README.md) for deployment instructions
-and the [release notes](guides/releases/v1.0.0.md) for changes and compatibility.
+and the [release notes](guides/releases/v1.0.1.md) for changes and compatibility.
 
 ### Documentation PDFs
 
@@ -27,6 +27,7 @@ and the [release notes](guides/releases/v1.0.0.md) for changes and compatibility
 | Operations Manual | 1.0.0 | MyScoutee 1.0.0 | [PDF](guides/manuals/MyScoutee_Operations_Manual_v1.0.0_EN.pdf) |
 | Administrator Manual | 1.0.0 | MyScoutee 1.0.0 | [PDF](guides/manuals/MyScoutee_Administrator_Manual_v1.0.0_EN.pdf) |
 | User Manual | 1.0.0 | MyScoutee 1.0.0 | [PDF](guides/manuals/MyScoutee_User_Manual_v1.0.0_EN.pdf) |
+| Integration API Guide | 1.0.1 | MyScoutee 1.0.1 | [PDF](guides/manuals/MyScoutee_Integration_API_Guide_v1.0.1_EN.pdf) |
 
 Editable manual sources and PDF build instructions are in
 [`guides/manuals`](guides/manuals/README.md).

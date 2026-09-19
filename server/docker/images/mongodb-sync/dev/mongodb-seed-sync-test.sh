@@ -28,6 +28,8 @@ trap cleanup EXIT
 
 mkdir -p "${TEST_ROOT}/seed/demo_db" "${TEST_ROOT}/bin"
 printf '[{"version":"v1"}]\n' > "${TEST_ROOT}/seed/demo_db/chats.json"
+printf '[{"version":"v1"}]\n' > "${TEST_ROOT}/seed/demo_db/i18n_messages.json"
+printf '[{"version":"v1"}]\n' > "${TEST_ROOT}/seed/demo_db/i18n_bundles.json"
 
 cat > "${TEST_ROOT}/bin/mongosh" <<'EOF'
 #!/usr/bin/env bash
@@ -42,6 +44,7 @@ if [[ -z "${MONGO_IMPORT_SINGLE_FILE:-}" ]]; then
   return 0 2>/dev/null || exit 0
 fi
 version="$(sed -n 's/.*"version":"\([^"]*\)".*/\1/p' "${MONGO_IMPORT_SINGLE_FILE}")"
+printf 'file:%s:%s\n' "$(basename "${MONGO_IMPORT_SINGLE_FILE}")" "${version}" >> "${TEST_IMPORT_LOG}"
 printf 'start:%s\n' "${version}" >> "${TEST_IMPORT_LOG}"
 touch "${TEST_ROOT}/single-import-started-${version}"
 sleep 1
@@ -68,6 +71,8 @@ for _ in $(seq 1 50); do
 done
 grep -Fxq 'initial' "${TEST_IMPORT_LOG}"
 
+printf '[{"version":"v2"}]\n' > "${TEST_ROOT}/seed/demo_db/i18n_messages.json"
+printf '[{"version":"v2"}]\n' > "${TEST_ROOT}/seed/demo_db/i18n_bundles.json"
 printf '[{"version":"v2"}]\n' > "${TEST_ROOT}/seed/demo_db/chats.json"
 for _ in $(seq 1 50); do
   [[ -f "${TEST_ROOT}/single-import-started-v2" ]] && break
@@ -85,5 +90,10 @@ WATCHER_PID=""
 grep -Fxq 'finish:v2' "${TEST_IMPORT_LOG}"
 grep -Fxq 'finish:v3' "${TEST_IMPORT_LOG}"
 grep -Fq 'Seed changed during import; importing the newer version next' "${TEST_ROOT}/watcher.log"
+
+messages_line="$(grep -n -F 'file:i18n_messages.json:v2' "${TEST_IMPORT_LOG}" | cut -d: -f1)"
+bundles_line="$(grep -n -F 'file:i18n_bundles.json:v2' "${TEST_IMPORT_LOG}" | cut -d: -f1)"
+[[ -n "${messages_line}" && -n "${bundles_line}" ]]
+(( messages_line < bundles_line ))
 
 printf 'mongodb seed sync tests passed\n'

@@ -94,6 +94,11 @@ public final class OperatorConfigurationDtos {
     }
 
     @JsonInclude(JsonInclude.Include.ALWAYS)
+    public record IntegrationConfigurationDto(
+            String publicBaseUrl) {
+    }
+
+    @JsonInclude(JsonInclude.Include.ALWAYS)
     public record FirebasePublicConfigurationDto(
             long revision,
             String apiKey,
@@ -127,9 +132,33 @@ public final class OperatorConfigurationDtos {
             DeploymentPrivacyContactDto privacyContact,
             List<DeploymentSocialLinkDto> socialLinks,
             DeploymentBrandingDto branding,
+            IntegrationConfigurationDto integration,
             PaymentConfigurationDto payment,
             FirebaseConfigurationDto firebase,
             String updatedAt) {
+        public OperatorConfigurationDto(
+                String capability,
+                String unavailableReason,
+                List<String> adminEmails,
+                DeploymentPrivacyContactDto privacyContact,
+                List<DeploymentSocialLinkDto> socialLinks,
+                DeploymentBrandingDto branding,
+                PaymentConfigurationDto payment,
+                FirebaseConfigurationDto firebase,
+                String updatedAt) {
+            this(
+                    capability,
+                    unavailableReason,
+                    adminEmails,
+                    privacyContact,
+                    socialLinks,
+                    branding,
+                    null,
+                    payment,
+                    firebase,
+                    updatedAt);
+        }
+
         public OperatorConfigurationDto(
                 String capability,
                 String unavailableReason,
@@ -146,6 +175,7 @@ public final class OperatorConfigurationDtos {
                     null,
                     socialLinks,
                     branding,
+                    null,
                     payment,
                     firebase,
                     updatedAt);
@@ -184,6 +214,10 @@ public final class OperatorConfigurationDtos {
                 String credential) {
             this(providerId, null, null, credential);
         }
+    }
+
+    public record IntegrationUpdateDto(
+            @Size(max = 2048) String publicBaseUrl) {
     }
 
     public record PrivacyContactUpdateDto(
@@ -253,8 +287,26 @@ public final class OperatorConfigurationDtos {
             @NotNull @Size(max = 12)
             List<@NotNull @Valid DeploymentSocialLinkDto> socialLinks,
             @NotNull @Valid BrandingUpdateDto branding,
+            @Valid IntegrationUpdateDto integration,
             @Valid PaymentUpdateDto payment,
             @Valid FirebaseUpdateDto firebase) {
+        public OperatorConfigurationUpdateDto(
+                List<String> adminEmails,
+                PrivacyContactUpdateDto privacyContact,
+                List<DeploymentSocialLinkDto> socialLinks,
+                BrandingUpdateDto branding,
+                PaymentUpdateDto payment,
+                FirebaseUpdateDto firebase) {
+            this(
+                    adminEmails,
+                    privacyContact,
+                    socialLinks,
+                    branding,
+                    null,
+                    payment,
+                    firebase);
+        }
+
         public OperatorConfigurationUpdateDto(
                 List<String> adminEmails,
                 List<DeploymentSocialLinkDto> socialLinks,
@@ -266,6 +318,7 @@ public final class OperatorConfigurationDtos {
                     null,
                     socialLinks,
                     branding,
+                    null,
                     payment,
                     firebase);
         }

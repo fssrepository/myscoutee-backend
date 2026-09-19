@@ -7377,7 +7377,7 @@
     "_id": "i18n-message-en-landing-hero-graph",
     "key": "landing.hero.graph",
     "lang": "en",
-    "value": "6 people · 6 priority lists → 1 shared group"
+    "value": "6 people · 6 priority lists → 1 team"
   },
   {
     "_id": "i18n-message-en-landing-preview-open-guide",
@@ -19248,6 +19248,246 @@
     "value": "Clear social-site address"
   },
   {
+    "_id": "i18n-message-en-operator-configuration-integration-eyebrow",
+    "key": "operator.configuration.integration.eyebrow",
+    "lang": "en",
+    "value": "External clients"
+  },
+  {
+    "_id": "i18n-message-en-operator-configuration-integration",
+    "key": "operator.configuration.integration",
+    "lang": "en",
+    "value": "API integration"
+  },
+  {
+    "_id": "i18n-message-en-operator-configuration-integration-public-url",
+    "key": "operator.configuration.integration.public.url",
+    "lang": "en",
+    "value": "Public API base URL"
+  },
+  {
+    "_id": "i18n-message-en-operator-configuration-integration-public-url-placeholder",
+    "key": "operator.configuration.integration.public.url.placeholder",
+    "lang": "en",
+    "value": "https://your-deployment.example/api/integrations/v1"
+  },
+  {
+    "_id": "i18n-message-en-operator-configuration-integration-public-url-paste-aria",
+    "key": "operator.configuration.integration.public.url.paste.aria",
+    "lang": "en",
+    "value": "Paste public API base URL"
+  },
+  {
+    "_id": "i18n-message-en-operator-configuration-integration-public-url-open-aria",
+    "key": "operator.configuration.integration.public.url.open.aria",
+    "lang": "en",
+    "value": "Open public API base URL"
+  },
+  {
+    "_id": "i18n-message-en-operator-configuration-integration-public-url-clear-aria",
+    "key": "operator.configuration.integration.public.url.clear.aria",
+    "lang": "en",
+    "value": "Clear public API base URL"
+  },
+  {
+    "_id": "i18n-message-en-operator-configuration-integration-public-url-required",
+    "key": "operator.configuration.integration.public.url.required",
+    "lang": "en",
+    "value": "A public API base URL is required."
+  },
+  {
+    "_id": "i18n-message-en-operator-configuration-integration-public-url-invalid",
+    "key": "operator.configuration.integration.public.url.invalid",
+    "lang": "en",
+    "value": "Enter an absolute HTTPS API base URL. HTTP is accepted only for localhost development."
+  },
+  {
+    "_id": "i18n-message-en-operator-configuration-integration-save",
+    "key": "operator.configuration.integration.save",
+    "lang": "en",
+    "value": "Save API URL"
+  },
+  {
+    "_id": "i18n-message-en-operator-configuration-integration-saved",
+    "key": "operator.configuration.integration.saved",
+    "lang": "en",
+    "value": "Public API base URL saved."
+  },
+  {
+    "_id": "i18n-message-en-integration-title",
+    "key": "integration.title",
+    "lang": "en",
+    "value": "API integration"
+  },
+  {
+    "_id": "i18n-message-en-integration-subtitle",
+    "key": "integration.subtitle",
+    "lang": "en",
+    "value": "Create one expiring key for each connected client."
+  },
+  {
+    "_id": "i18n-message-en-integration-aria",
+    "key": "integration.aria",
+    "lang": "en",
+    "value": "API integration settings"
+  },
+  {
+    "_id": "i18n-message-en-integration-loading",
+    "key": "integration.loading",
+    "lang": "en",
+    "value": "Loading API settings…"
+  },
+  {
+    "_id": "i18n-message-en-integration-load-failed",
+    "key": "integration.load.failed",
+    "lang": "en",
+    "value": "Unable to load API integration settings."
+  },
+  {
+    "_id": "i18n-message-en-integration-base-url",
+    "key": "integration.base.url",
+    "lang": "en",
+    "value": "Base URL"
+  },
+  {
+    "_id": "i18n-message-en-integration-base-url-copy-aria",
+    "key": "integration.base.url.copy.aria",
+    "lang": "en",
+    "value": "Copy Base URL"
+  },
+  {
+    "_id": "i18n-message-en-integration-batch-maximum",
+    "key": "integration.batch.maximum",
+    "lang": "en",
+    "value": "Maximum assets or events per request:"
+  },
+  {
+    "_id": "i18n-message-en-integration-client-keys",
+    "key": "integration.client.keys",
+    "lang": "en",
+    "value": "Client keys"
+  },
+  {
+    "_id": "i18n-message-en-integration-token-active",
+    "key": "integration.token.active",
+    "lang": "en",
+    "value": "active"
+  },
+  {
+    "_id": "i18n-message-en-integration-token-empty",
+    "key": "integration.token.empty",
+    "lang": "en",
+    "value": "No active client keys."
+  },
+  {
+    "_id": "i18n-message-en-integration-token-client-name",
+    "key": "integration.token.client.name",
+    "lang": "en",
+    "value": "Client {index}"
+  },
+  {
+    "_id": "i18n-message-en-integration-token-generate",
+    "key": "integration.token.generate",
+    "lang": "en",
+    "value": "Generate token"
+  },
+  {
+    "_id": "i18n-message-en-integration-token-generate-aria",
+    "key": "integration.token.generate.aria",
+    "lang": "en",
+    "value": "Generate API token"
+  },
+  {
+    "_id": "i18n-message-en-integration-token-generate-confirm-title",
+    "key": "integration.token.generate.confirm.title",
+    "lang": "en",
+    "value": "Generate API key?"
+  },
+  {
+    "_id": "i18n-message-en-integration-token-generate-confirm-message",
+    "key": "integration.token.generate.confirm.message",
+    "lang": "en",
+    "value": "This key will belong to “{name}” and expire after {days} days."
+  },
+  {
+    "_id": "i18n-message-en-integration-token-generate-confirm",
+    "key": "integration.token.generate.confirm",
+    "lang": "en",
+    "value": "Generate"
+  },
+  {
+    "_id": "i18n-message-en-integration-token-generating",
+    "key": "integration.token.generating",
+    "lang": "en",
+    "value": "Generating…"
+  },
+  {
+    "_id": "i18n-message-en-integration-token-generate-failed",
+    "key": "integration.token.generate.failed",
+    "lang": "en",
+    "value": "Unable to generate the API key."
+  },
+  {
+    "_id": "i18n-message-en-integration-token-revoke-confirm-title",
+    "key": "integration.token.revoke.confirm.title",
+    "lang": "en",
+    "value": "Revoke API key?"
+  },
+  {
+    "_id": "i18n-message-en-integration-token-revoke-confirm-message",
+    "key": "integration.token.revoke.confirm.message",
+    "lang": "en",
+    "value": "“{name}” will immediately lose API access."
+  },
+  {
+    "_id": "i18n-message-en-integration-token-revoke-warning",
+    "key": "integration.token.revoke.warning",
+    "lang": "en",
+    "value": "This action cannot be undone."
+  },
+  {
+    "_id": "i18n-message-en-integration-token-revoke",
+    "key": "integration.token.revoke",
+    "lang": "en",
+    "value": "Revoke"
+  },
+  {
+    "_id": "i18n-message-en-integration-token-revoking",
+    "key": "integration.token.revoking",
+    "lang": "en",
+    "value": "Revoking…"
+  },
+  {
+    "_id": "i18n-message-en-integration-token-revoke-failed",
+    "key": "integration.token.revoke.failed",
+    "lang": "en",
+    "value": "Unable to revoke the API key."
+  },
+  {
+    "_id": "i18n-message-en-integration-token-revoke-aria",
+    "key": "integration.token.revoke.aria",
+    "lang": "en",
+    "value": "Revoke {name}"
+  },
+  {
+    "_id": "i18n-message-en-integration-token-copy-aria",
+    "key": "integration.token.copy.aria",
+    "lang": "en",
+    "value": "Copy API token"
+  },
+  {
+    "_id": "i18n-message-en-integration-token-copy-now",
+    "key": "integration.token.copy.now",
+    "lang": "en",
+    "value": "Copy it now. The full token will not be shown again."
+  },
+  {
+    "_id": "i18n-message-en-integration-token-expires",
+    "key": "integration.token.expires",
+    "lang": "en",
+    "value": "Expires"
+  },
+  {
     "_id": "i18n-message-en-operator-configuration-payment-eyebrow",
     "key": "operator.configuration.payment.eyebrow",
     "lang": "en",
@@ -20487,7 +20727,25 @@
     "_id": "i18n-message-en-entry-permissions-notifications-blocked",
     "key": "entry.permissions.notifications.blocked",
     "lang": "en",
-    "value": "Notifications are blocked. Enable them in notification settings, then try again."
+    "value": "The system did not grant notification permission. If no permission prompt appeared, you can enable notifications in the notification settings for MyScoutee. Then try again, or turn notifications off to continue."
+  },
+  {
+    "_id": "i18n-message-en-entry-permissions-location-blocked",
+    "key": "entry.permissions.location.blocked",
+    "lang": "en",
+    "value": "Location access is blocked. Enable location access, then try again."
+  },
+  {
+    "_id": "i18n-message-en-entry-permissions-location-required",
+    "key": "entry.permissions.location.required",
+    "lang": "en",
+    "value": "Select location access to continue."
+  },
+  {
+    "_id": "i18n-message-en-entry-permissions-location-unavailable",
+    "key": "entry.permissions.location.unavailable",
+    "lang": "en",
+    "value": "Your location could not be determined. Please try again."
   },
   {
     "_id": "i18n-message-en-app-setup-title",
@@ -20638,6 +20896,54 @@
     "key": "entry.permissions.notifications.failed",
     "lang": "en",
     "value": "Could not save notification settings. Check your connection and try again."
+  },
+  {
+    "_id": "i18n-message-en-firebase-auth-link-required",
+    "key": "firebase.auth.link.required",
+    "lang": "en",
+    "value": "This email already has an account. To link the selected login method, sign in once with the Google, Facebook or email/password method you used before. Then both methods will open the same profile."
+  },
+  {
+    "_id": "i18n-message-en-firebase-auth-link-email-mismatch",
+    "key": "firebase.auth.link.email.mismatch",
+    "lang": "en",
+    "value": "Choose the same email address as in your first login attempt to link the accounts."
+  },
+  {
+    "_id": "i18n-message-en-firebase-auth-link-expired",
+    "key": "firebase.auth.link.expired",
+    "lang": "en",
+    "value": "The account-linking request expired. Start again with the login method you want to add."
+  },
+  {
+    "_id": "i18n-message-en-firebase-auth-link-failed",
+    "key": "firebase.auth.link.failed",
+    "lang": "en",
+    "value": "The login methods could not be linked. Please start again. Your existing profile has not been merged with another account."
+  },
+  {
+    "_id": "i18n-message-en-firebase-auth-provider-disabled",
+    "key": "firebase.auth.provider.disabled",
+    "lang": "en",
+    "value": "This login method is not enabled in Firebase."
+  },
+  {
+    "_id": "i18n-message-en-location-change-title",
+    "key": "location.change.title",
+    "lang": "en",
+    "value": "Your location has changed"
+  },
+  {
+    "_id": "i18n-message-en-location-change-confirm",
+    "key": "location.change.confirm",
+    "lang": "en",
+    "value": "Your current location is significantly different from your saved location. Update it? Choose Cancel to keep your saved location."
+  },
+  {
+    "_id": "i18n-message-en-location-change-warning",
+    "key": "location.change.warning",
+    "lang": "en",
+    "value": "Your current location is significantly different from your saved location. Use Update to switch to this new location."
   },
   {
     "_id": "i18n-message-hu-unavailable-here",
@@ -28017,7 +28323,7 @@
     "_id": "i18n-message-hu-landing-hero-graph",
     "key": "landing.hero.graph",
     "lang": "hu",
-    "value": "6 ember · 6 prioritáslista → 1 közös csoport"
+    "value": "6 ember · 6 prioritáslista → 1 csapat"
   },
   {
     "_id": "i18n-message-hu-landing-preview-open-guide",
@@ -39888,6 +40194,246 @@
     "value": "Közösségi oldal címének törlése"
   },
   {
+    "_id": "i18n-message-hu-operator-configuration-integration-eyebrow",
+    "key": "operator.configuration.integration.eyebrow",
+    "lang": "hu",
+    "value": "Külső kliensek"
+  },
+  {
+    "_id": "i18n-message-hu-operator-configuration-integration",
+    "key": "operator.configuration.integration",
+    "lang": "hu",
+    "value": "API-integráció"
+  },
+  {
+    "_id": "i18n-message-hu-operator-configuration-integration-public-url",
+    "key": "operator.configuration.integration.public.url",
+    "lang": "hu",
+    "value": "Nyilvános API-alap URL"
+  },
+  {
+    "_id": "i18n-message-hu-operator-configuration-integration-public-url-placeholder",
+    "key": "operator.configuration.integration.public.url.placeholder",
+    "lang": "hu",
+    "value": "https://sajat-telepites.example/api/integrations/v1"
+  },
+  {
+    "_id": "i18n-message-hu-operator-configuration-integration-public-url-paste-aria",
+    "key": "operator.configuration.integration.public.url.paste.aria",
+    "lang": "hu",
+    "value": "Nyilvános API-alap URL beillesztése"
+  },
+  {
+    "_id": "i18n-message-hu-operator-configuration-integration-public-url-open-aria",
+    "key": "operator.configuration.integration.public.url.open.aria",
+    "lang": "hu",
+    "value": "Nyilvános API-alap URL megnyitása"
+  },
+  {
+    "_id": "i18n-message-hu-operator-configuration-integration-public-url-clear-aria",
+    "key": "operator.configuration.integration.public.url.clear.aria",
+    "lang": "hu",
+    "value": "Nyilvános API-alap URL törlése"
+  },
+  {
+    "_id": "i18n-message-hu-operator-configuration-integration-public-url-required",
+    "key": "operator.configuration.integration.public.url.required",
+    "lang": "hu",
+    "value": "A nyilvános API-alap URL megadása kötelező."
+  },
+  {
+    "_id": "i18n-message-hu-operator-configuration-integration-public-url-invalid",
+    "key": "operator.configuration.integration.public.url.invalid",
+    "lang": "hu",
+    "value": "Abszolút HTTPS API-alap URL-t adj meg. A HTTP csak helyi fejlesztésnél használható."
+  },
+  {
+    "_id": "i18n-message-hu-operator-configuration-integration-save",
+    "key": "operator.configuration.integration.save",
+    "lang": "hu",
+    "value": "API URL mentése"
+  },
+  {
+    "_id": "i18n-message-hu-operator-configuration-integration-saved",
+    "key": "operator.configuration.integration.saved",
+    "lang": "hu",
+    "value": "A nyilvános API-alap URL elmentve."
+  },
+  {
+    "_id": "i18n-message-hu-integration-title",
+    "key": "integration.title",
+    "lang": "hu",
+    "value": "API-integráció"
+  },
+  {
+    "_id": "i18n-message-hu-integration-subtitle",
+    "key": "integration.subtitle",
+    "lang": "hu",
+    "value": "Minden csatlakozó klienshez külön lejáró kulcsot hozz létre."
+  },
+  {
+    "_id": "i18n-message-hu-integration-aria",
+    "key": "integration.aria",
+    "lang": "hu",
+    "value": "API-integráció beállításai"
+  },
+  {
+    "_id": "i18n-message-hu-integration-loading",
+    "key": "integration.loading",
+    "lang": "hu",
+    "value": "API-beállítások betöltése…"
+  },
+  {
+    "_id": "i18n-message-hu-integration-load-failed",
+    "key": "integration.load.failed",
+    "lang": "hu",
+    "value": "Az API-integráció beállításai nem tölthetők be."
+  },
+  {
+    "_id": "i18n-message-hu-integration-base-url",
+    "key": "integration.base.url",
+    "lang": "hu",
+    "value": "Alap URL"
+  },
+  {
+    "_id": "i18n-message-hu-integration-base-url-copy-aria",
+    "key": "integration.base.url.copy.aria",
+    "lang": "hu",
+    "value": "Alap URL másolása"
+  },
+  {
+    "_id": "i18n-message-hu-integration-batch-maximum",
+    "key": "integration.batch.maximum",
+    "lang": "hu",
+    "value": "Kérésenként legfeljebb ennyi asset vagy esemény küldhető:"
+  },
+  {
+    "_id": "i18n-message-hu-integration-client-keys",
+    "key": "integration.client.keys",
+    "lang": "hu",
+    "value": "Klienskulcsok"
+  },
+  {
+    "_id": "i18n-message-hu-integration-token-active",
+    "key": "integration.token.active",
+    "lang": "hu",
+    "value": "aktív"
+  },
+  {
+    "_id": "i18n-message-hu-integration-token-empty",
+    "key": "integration.token.empty",
+    "lang": "hu",
+    "value": "Nincs aktív klienskulcs."
+  },
+  {
+    "_id": "i18n-message-hu-integration-token-client-name",
+    "key": "integration.token.client.name",
+    "lang": "hu",
+    "value": "Kliens {index}"
+  },
+  {
+    "_id": "i18n-message-hu-integration-token-generate",
+    "key": "integration.token.generate",
+    "lang": "hu",
+    "value": "Kulcs létrehozása"
+  },
+  {
+    "_id": "i18n-message-hu-integration-token-generate-aria",
+    "key": "integration.token.generate.aria",
+    "lang": "hu",
+    "value": "API-kulcs létrehozása"
+  },
+  {
+    "_id": "i18n-message-hu-integration-token-generate-confirm-title",
+    "key": "integration.token.generate.confirm.title",
+    "lang": "hu",
+    "value": "Létrehozod az API-kulcsot?"
+  },
+  {
+    "_id": "i18n-message-hu-integration-token-generate-confirm-message",
+    "key": "integration.token.generate.confirm.message",
+    "lang": "hu",
+    "value": "A kulcs a(z) „{name}” klienshez tartozik majd, és {days} nap múlva lejár."
+  },
+  {
+    "_id": "i18n-message-hu-integration-token-generate-confirm",
+    "key": "integration.token.generate.confirm",
+    "lang": "hu",
+    "value": "Létrehozás"
+  },
+  {
+    "_id": "i18n-message-hu-integration-token-generating",
+    "key": "integration.token.generating",
+    "lang": "hu",
+    "value": "Létrehozás…"
+  },
+  {
+    "_id": "i18n-message-hu-integration-token-generate-failed",
+    "key": "integration.token.generate.failed",
+    "lang": "hu",
+    "value": "Az API-kulcs nem hozható létre."
+  },
+  {
+    "_id": "i18n-message-hu-integration-token-revoke-confirm-title",
+    "key": "integration.token.revoke.confirm.title",
+    "lang": "hu",
+    "value": "Visszavonod az API-kulcsot?"
+  },
+  {
+    "_id": "i18n-message-hu-integration-token-revoke-confirm-message",
+    "key": "integration.token.revoke.confirm.message",
+    "lang": "hu",
+    "value": "A(z) „{name}” azonnal elveszíti az API-hozzáférést."
+  },
+  {
+    "_id": "i18n-message-hu-integration-token-revoke-warning",
+    "key": "integration.token.revoke.warning",
+    "lang": "hu",
+    "value": "Ez a művelet nem vonható vissza."
+  },
+  {
+    "_id": "i18n-message-hu-integration-token-revoke",
+    "key": "integration.token.revoke",
+    "lang": "hu",
+    "value": "Visszavonás"
+  },
+  {
+    "_id": "i18n-message-hu-integration-token-revoking",
+    "key": "integration.token.revoking",
+    "lang": "hu",
+    "value": "Visszavonás…"
+  },
+  {
+    "_id": "i18n-message-hu-integration-token-revoke-failed",
+    "key": "integration.token.revoke.failed",
+    "lang": "hu",
+    "value": "Az API-kulcs nem vonható vissza."
+  },
+  {
+    "_id": "i18n-message-hu-integration-token-revoke-aria",
+    "key": "integration.token.revoke.aria",
+    "lang": "hu",
+    "value": "{name} visszavonása"
+  },
+  {
+    "_id": "i18n-message-hu-integration-token-copy-aria",
+    "key": "integration.token.copy.aria",
+    "lang": "hu",
+    "value": "API-token másolása"
+  },
+  {
+    "_id": "i18n-message-hu-integration-token-copy-now",
+    "key": "integration.token.copy.now",
+    "lang": "hu",
+    "value": "Másold ki most; a teljes token később nem jelenik meg újra."
+  },
+  {
+    "_id": "i18n-message-hu-integration-token-expires",
+    "key": "integration.token.expires",
+    "lang": "hu",
+    "value": "Lejár"
+  },
+  {
     "_id": "i18n-message-hu-operator-configuration-payment-eyebrow",
     "key": "operator.configuration.payment.eyebrow",
     "lang": "hu",
@@ -41127,7 +41673,25 @@
     "_id": "i18n-message-hu-entry-permissions-notifications-blocked",
     "key": "entry.permissions.notifications.blocked",
     "lang": "hu",
-    "value": "Az értesítések tiltva vannak. Engedélyezd őket az értesítési beállításokban, majd próbáld újra."
+    "value": "A rendszer nem adta meg az értesítési engedélyt. Ha nem jelent meg az engedélykérő ablak, a MyScoutee értesítési beállításaiban tudod engedélyezni. Ezután próbáld újra, vagy kapcsold ki az értesítéseket a folytatáshoz."
+  },
+  {
+    "_id": "i18n-message-hu-entry-permissions-location-blocked",
+    "key": "entry.permissions.location.blocked",
+    "lang": "hu",
+    "value": "A helyhozzáférés tiltva van. Engedélyezd, majd próbáld újra."
+  },
+  {
+    "_id": "i18n-message-hu-entry-permissions-location-required",
+    "key": "entry.permissions.location.required",
+    "lang": "hu",
+    "value": "A folytatáshoz kapcsold be a helyhozzáférést."
+  },
+  {
+    "_id": "i18n-message-hu-entry-permissions-location-unavailable",
+    "key": "entry.permissions.location.unavailable",
+    "lang": "hu",
+    "value": "Nem sikerült meghatározni a helyzetedet. Próbáld újra."
   },
   {
     "_id": "i18n-message-hu-app-setup-title",
@@ -41280,36 +41844,6 @@
     "value": "Nem sikerült menteni az értesítési beállításokat. Ellenőrizd a kapcsolatot, majd próbáld újra."
   },
   {
-    "_id": "i18n-message-en-firebase-auth-link-required",
-    "key": "firebase.auth.link.required",
-    "lang": "en",
-    "value": "This email already has an account. To link the selected login method, sign in once with the Google, Facebook or email/password method you used before. Then both methods will open the same profile."
-  },
-  {
-    "_id": "i18n-message-en-firebase-auth-link-email-mismatch",
-    "key": "firebase.auth.link.email.mismatch",
-    "lang": "en",
-    "value": "Choose the same email address as in your first login attempt to link the accounts."
-  },
-  {
-    "_id": "i18n-message-en-firebase-auth-link-expired",
-    "key": "firebase.auth.link.expired",
-    "lang": "en",
-    "value": "The account-linking request expired. Start again with the login method you want to add."
-  },
-  {
-    "_id": "i18n-message-en-firebase-auth-link-failed",
-    "key": "firebase.auth.link.failed",
-    "lang": "en",
-    "value": "The login methods could not be linked. Please start again. Your existing profile has not been merged with another account."
-  },
-  {
-    "_id": "i18n-message-en-firebase-auth-provider-disabled",
-    "key": "firebase.auth.provider.disabled",
-    "lang": "en",
-    "value": "This login method is not enabled in Firebase."
-  },
-  {
     "_id": "i18n-message-hu-firebase-auth-link-required",
     "key": "firebase.auth.link.required",
     "lang": "hu",
@@ -41338,5 +41872,23 @@
     "key": "firebase.auth.provider.disabled",
     "lang": "hu",
     "value": "Ez a belépési mód nincs engedélyezve a Firebase-ben."
+  },
+  {
+    "_id": "i18n-message-hu-location-change-title",
+    "key": "location.change.title",
+    "lang": "hu",
+    "value": "Megváltozott a helyzeted"
+  },
+  {
+    "_id": "i18n-message-hu-location-change-confirm",
+    "key": "location.change.confirm",
+    "lang": "hu",
+    "value": "Az új helyzeted jelentősen eltér a mentett helyedtől. Frissíted? Ha a Mégsem gombot választod, a korábbi helyed marad meg."
+  },
+  {
+    "_id": "i18n-message-hu-location-change-warning",
+    "key": "location.change.warning",
+    "lang": "hu",
+    "value": "A jelenlegi helyzeted jelentősen eltér a mentett helyedtől. A Frissítés gombbal erre az új helyre válthatsz."
   }
 ]

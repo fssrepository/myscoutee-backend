@@ -39,6 +39,7 @@ public class WebSecurityConfig {
     private final ConfigProperties configProperties;
     private final UserLoginSessionService userLoginSessionService;
     private final MediaSessionAccessService mediaSessionAccess;
+    private final IntegrationTokenAuthenticationFilter integrationTokenAuthenticationFilter;
 
     public WebSecurityConfig(FirebaseService firebaseService,
             FirebaseAuthenticationProvider firebaseProvider,
@@ -47,7 +48,8 @@ public class WebSecurityConfig {
                     operatorBootstrapAuthenticationService,
             ConfigProperties configProperties,
             UserLoginSessionService userLoginSessionService,
-            MediaSessionAccessService mediaSessionAccess) {
+            MediaSessionAccessService mediaSessionAccess,
+            IntegrationTokenAuthenticationFilter integrationTokenAuthenticationFilter) {
         this.firebaseService = firebaseService;
         this.firebaseProvider = firebaseProvider;
         this.firebaseTokenVerifier = firebaseTokenVerifier;
@@ -56,6 +58,7 @@ public class WebSecurityConfig {
         this.configProperties = configProperties;
         this.userLoginSessionService = userLoginSessionService;
         this.mediaSessionAccess = mediaSessionAccess;
+        this.integrationTokenAuthenticationFilter = integrationTokenAuthenticationFilter;
     }
 
     @Autowired
@@ -70,10 +73,15 @@ public class WebSecurityConfig {
                         operatorBootstrapAuthenticationFilter(),
                         SessionMongoRoutingFilter.class)
                 .addFilterAfter(
-                        tokenAuthorizationFilter(),
+                        integrationTokenAuthenticationFilter,
                         OperatorBootstrapAuthenticationFilter.class)
+                .addFilterAfter(
+                        tokenAuthorizationFilter(),
+                        IntegrationTokenAuthenticationFilter.class)
                 .authorizeHttpRequests(authorizeRequests -> {
                     authorizeRequests.requestMatchers("/shutdown").denyAll();
+                    authorizeRequests.requestMatchers("/integrations/v1/**", "/api/integrations/v1/**")
+                            .hasAuthority("INTEGRATION");
                     authorizeRequests.requestMatchers("/media/private", "/api/media/private").hasAuthority("MEDIA");
                     authorizeRequests.requestMatchers("/metrics").hasAuthority("A");
                     authorizeRequests.requestMatchers("/operator/**", "/api/operator/**").hasAuthority("O");

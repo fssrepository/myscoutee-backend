@@ -67,7 +67,7 @@
     }
     const marker = collection("deploymentConfigurations").findOne({
       _id: "deployment-configuration",
-      schemaVersion: 4
+      schemaVersion: 5
     });
     const contact = marker && marker.privacyContact ? marker.privacyContact : {};
     if (!marker

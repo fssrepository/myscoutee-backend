@@ -11,6 +11,10 @@ auth:
   # -1 disables the concurrent-session cap; positive values set the maximum.
   max-active-sessions: ${AUTH_MAX_ACTIVE_SESSIONS:-1}
 
+integration:
+  # Deployment configuration may override this fallback without a new build.
+  public-base-url: ${INTEGRATION_PUBLIC_BASE_URL:http://localhost/api/integrations/v1}
+
 registry:
   enabled: ${REGISTRY_ENABLED:false}
   outbound-allowed: ${REGISTRY_OUTBOUND_ALLOWED:false}

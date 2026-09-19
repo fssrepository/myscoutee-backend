@@ -733,6 +733,27 @@ class HomeUserProfileServiceTest {
     }
 
     @Test
+    void realtimeSnapshotReportsSavedServerLocationWithoutUpdatingIt() {
+        Users active = user("saved-location", 0d);
+        active.setLocationCoordinates(new Users.LocationCoordinatesRecord(47.4979d, 19.0402d));
+        when(usersRepository.findByUserId("saved-location")).thenReturn(Optional.of(active));
+        var snapshot = service.queryRealtimeSnapshot(new UserRealtimeLongPollRequestDto("saved-location", null));
+        assertThat(snapshot.locationCoordinates()).isEqualTo(new LocationCoordinatesDto(47.4979d, 19.0402d));
+        verify(usersRepository, never()).save(any(Users.class));
+    }
+
+    @Test
+    void realtimeSnapshotReportsMissingServerLocationWithoutQueryingTheDevice() {
+        Users active = user("missing-location", 0d);
+        active.setLocationCoordinates(null);
+        when(usersRepository.findByUserId("missing-location")).thenReturn(Optional.of(active));
+        var snapshot = service.queryRealtimeSnapshot(new UserRealtimeLongPollRequestDto("missing-location", null));
+        assertThat(snapshot.locationCoordinates()).isNull();
+        assertThat(snapshot.offlineTicketSnapshot()).isEqualTo(new AssetTicketsPageDto(List.of(), 0));
+        verify(usersRepository, never()).save(any(Users.class));
+    }
+
+    @Test
     void realtimeSnapshotAlwaysIncludesImpressionsObject() {
         Users active = user("realtime-empty-impressions", 0d);
         when(usersRepository.findByUserId("realtime-empty-impressions")).thenReturn(Optional.of(active));

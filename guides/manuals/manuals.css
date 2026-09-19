@@ -132,6 +132,12 @@ code {
   overflow-wrap: anywhere;
 }
 
+code.nowrap {
+  overflow-wrap: normal;
+  white-space: nowrap;
+  word-break: normal;
+}
+
 pre {
   background: #172330;
   border-left: 4px solid var(--blue);

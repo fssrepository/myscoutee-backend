@@ -64,7 +64,12 @@ recorded_file_fingerprint() {
 }
 
 seed_files() {
-  find "${watch_root}" -maxdepth 1 \( -type f -o -type l \) -name '*.json' -print0 \
+  find "${watch_root}" -maxdepth 1 \( -type f -o -type l \) -name '*.json' \
+    ! -name 'i18n_bundles.json' -print0 | sort -z
+  # Publish the i18n version only after every changed message document has
+  # been imported. Otherwise the API may cache a new version while the
+  # replacement i18n_messages collection is still empty or incomplete.
+  find "${watch_root}" -maxdepth 1 \( -type f -o -type l \) -name 'i18n_bundles.json' -print0 \
     | sort -z
 }
 

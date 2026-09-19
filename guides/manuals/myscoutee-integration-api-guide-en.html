@@ -1,0 +1,288 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="MyScoutee 1.0.1 Integration API Guide">
+  <title>MyScoutee Integration API Guide · MSC-API-001</title>
+  <link rel="stylesheet" href="manuals.css">
+</head>
+<body>
+<article class="manual">
+  <section class="cover" aria-labelledby="document-title">
+    <div class="cover-brand">
+      <div class="cover-brand-name" aria-label="MyScoutee">
+        <img src="../../frontend/src/assets/logo/heart.png" alt="" aria-hidden="true">
+        <span>yScoutee</span>
+      </div>
+      <div class="cover-brand-subtitle">Official Product Documentation</div>
+    </div>
+
+    <div class="cover-title-block">
+      <div class="cover-kicker">External Integration</div>
+      <h1 id="document-title">MyScoutee Integration API Guide</h1>
+      <p class="cover-lead">A compact write API for creating asset and event batches, attaching optional image bytes, and correlating external records with MyScoutee resource IDs.</p>
+    </div>
+
+    <div class="cover-meta" aria-label="Document metadata">
+      <div><strong>Document ID</strong><span>MSC-API-001</span></div>
+      <div><strong>Document version</strong><span>1.0.1</span></div>
+      <div><strong>Applicable software version</strong><span>MyScoutee 1.0.1</span></div>
+      <div><strong>Status</strong><span class="cover-status"><span class="status-dot" aria-hidden="true"></span>Released</span></div>
+      <div><strong>Release date</strong><time datetime="2026-09-19">2026-09-19</time></div>
+      <div><strong>Language</strong><span>EN</span></div>
+    </div>
+  </section>
+
+  <section class="document-control" id="document-control" aria-labelledby="document-control-title">
+    <h2 id="document-control-title">Document Control</h2>
+    <table>
+      <caption>Document status and applicability</caption>
+      <tbody>
+        <tr><th scope="row">Document owner</th><td>MyScoutee project — integration documentation</td></tr>
+        <tr><th scope="row">Intended audience</th><td>External system developers, integration operators, and maintainers of the MyScoutee Java client</td></tr>
+        <tr><th scope="row">Normative API prefix</th><td>The deployment-specific Base URL shown in the profile API popup; its usual path is <code>/api/integrations/v1</code></td></tr>
+        <tr><th scope="row">Reference implementation</th><td><code>myscoutee-client</code> version 1.0.1, Java 17</td></tr>
+      </tbody>
+    </table>
+
+    <h3>Version History</h3>
+    <table>
+      <thead><tr><th scope="col">Version</th><th scope="col">Date</th><th scope="col">Status</th><th scope="col">Change</th></tr></thead>
+      <tbody><tr><td>1.0.1</td><td>2026-09-19</td><td>Released</td><td>Initial public batch API and Java client guide.</td></tr></tbody>
+    </table>
+
+    <aside class="callout note">
+      <strong class="callout-title">Small by design</strong>
+      This is not a general-purpose read API. It creates assets and events owned by the token owner and returns stable MyScoutee IDs for external correlation.
+    </aside>
+  </section>
+
+  <nav class="toc page-break" aria-labelledby="contents-title">
+    <h2 id="contents-title">Table of Contents</h2>
+    <ol>
+      <li><a href="#model">Integration Model</a></li>
+      <li><a href="#authentication">Base URL and Authentication</a></li>
+      <li><a href="#endpoints">Endpoint Reference</a></li>
+      <li><a href="#correlation">ID Correlation and Retry Behaviour</a></li>
+      <li><a href="#assets">Asset Batch</a></li>
+      <li><a href="#events">Event Batch</a></li>
+      <li><a href="#images">Optional Image Upload</a></li>
+      <li><a href="#responses">Responses and Errors</a></li>
+      <li><a href="#client">Java Client and CLI</a></li>
+      <li><a href="#security">Security and Operational Rules</a></li>
+    </ol>
+  </nav>
+
+  <section id="model" aria-labelledby="model-title">
+    <h2 id="model-title">1. Integration Model</h2>
+    <div class="architecture flow-3" aria-label="Integration data flow">
+      <div class="node"><strong>External system</strong><span>Own UUID in <code>id</code></span></div>
+      <div class="arrow" aria-hidden="true">→</div>
+      <div class="node"><strong>MyScoutee API</strong><span>Authenticated batch POST</span></div>
+      <div class="arrow" aria-hidden="true">→</div>
+      <div class="node"><strong>Response</strong><span><code>id</code> + <code>externalId</code></span></div>
+    </div>
+    <table>
+      <thead><tr><th scope="col">Concept</th><th scope="col">Meaning</th></tr></thead>
+      <tbody>
+        <tr><td><code>id</code></td><td>The caller-owned UUID sent in the request. It identifies the source-system record.</td></tr>
+        <tr><td><code class="nowrap">externalId</code></td><td>The stable MyScoutee asset or event UUID returned for that request item.</td></tr>
+        <tr><td>Ownership</td><td>Every created resource belongs only to the user who owns the integration token.</td></tr>
+        <tr><td>Batch</td><td>One request contains 1–1000 items. Further batches may be sent later.</td></tr>
+        <tr><td>Image</td><td>Optional local file bytes sent with the same POST. No remote image URL is accepted or downloaded.</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <section id="authentication" aria-labelledby="authentication-title">
+    <h2 id="authentication-title">2. Base URL and Authentication</h2>
+    <div class="procedure">
+      <h3>Connect one external client</h3>
+      <ol>
+        <li>Open the API popup from the lower-right corner of the profile identity header.</li>
+        <li>Copy the full Base URL, including scheme, domain, and <code>/api/integrations/v1</code> path.</li>
+        <li>Generate an expiring client key. The complete token is shown only once.</li>
+        <li>Configure one stable client UUID and call <code>POST /connect</code>.</li>
+      </ol>
+    </div>
+    <table>
+      <thead><tr><th scope="col">Header</th><th scope="col">Value</th><th scope="col">Required</th></tr></thead>
+      <tbody>
+        <tr><td><code>Authorization</code></td><td><code>Bearer msc_…</code></td><td>Yes</td></tr>
+        <tr><td><code class="nowrap">X-MyScoutee-Client-Id</code></td><td>A stable UUID generated once by the external client</td><td>Yes</td></tr>
+        <tr><td><code>Accept</code></td><td><code>application/json</code></td><td>Recommended</td></tr>
+        <tr><td><code>Content-Type</code></td><td><code>application/json</code> or <code>multipart/form-data</code></td><td>Yes for batch POSTs</td></tr>
+      </tbody>
+    </table>
+    <aside class="callout warning">
+      <strong class="callout-title">One key, one client</strong>
+      The first successful client UUID claims the key. Another client UUID cannot use it. A user may keep at most three active keys, and revocation blocks a key immediately.
+    </aside>
+  </section>
+
+  <section id="endpoints" class="page-break" aria-labelledby="endpoints-title">
+    <h2 id="endpoints-title">3. Endpoint Reference</h2>
+    <table class="keep-together">
+      <thead><tr><th scope="col">Method</th><th scope="col">Path</th><th scope="col">Purpose</th><th scope="col">Success</th></tr></thead>
+      <tbody>
+        <tr><td><code>POST</code></td><td><code>/connect</code></td><td>Claim and validate a client key</td><td><code>200</code></td></tr>
+        <tr><td><code>POST</code></td><td><code>/assets</code></td><td>Create 1–1000 assets, optionally with images</td><td><code>200</code></td></tr>
+        <tr><td><code>POST</code></td><td><code>/events</code></td><td>Create 1–1000 events, optionally with images</td><td><code>200</code></td></tr>
+      </tbody>
+    </table>
+    <p>There is no separate image endpoint and no booking query endpoint in this API version.</p>
+  </section>
+
+  <section id="correlation" aria-labelledby="correlation-title">
+    <h2 id="correlation-title">4. ID Correlation and Retry Behaviour</h2>
+    <pre><code>{
+  "items": [
+    {
+      "id": "1066b61b-c0ac-43d5-ab28-f588f5a162f6",
+      "externalId": "55fe8563-f360-48cf-af0e-7cfb0404ee84",
+      "result": "created",
+      "error": null
+    }
+  ]
+}</code></pre>
+    <p>The caller stores the pair above. Repeating the same resource type and caller <code>id</code> for the same token owner returns the same <code>externalId</code> with <code>result: "existing"</code>. It does not create or update a second resource.</p>
+    <aside class="callout success">
+      <strong class="callout-title">Safe request retry</strong>
+      If a client times out before receiving the response, it may repeat the POST with the same item IDs and recover the same MyScoutee IDs.
+    </aside>
+  </section>
+
+  <section id="assets" class="page-break" aria-labelledby="assets-title">
+    <h2 id="assets-title">5. Asset Batch</h2>
+    <table class="keep-together">
+      <thead><tr><th scope="col">Field</th><th scope="col">Type</th><th scope="col">Required</th><th scope="col">Rule</th></tr></thead>
+      <tbody>
+        <tr><td><code>id</code></td><td>UUID</td><td>Yes</td><td>Unique within the batch and stable in the caller system</td></tr>
+        <tr><td><code>type</code></td><td>string</td><td>Yes</td><td><code>Transport</code>, <code>Accommodation</code>, or <code>Supplies</code></td></tr>
+        <tr><td><code>title</code></td><td>string</td><td>Yes</td><td>Non-blank</td></tr>
+        <tr><td><code>capacityTotal</code></td><td>integer</td><td>Yes</td><td>At least 1</td></tr>
+        <tr><td><code>quantity</code></td><td>integer</td><td>Yes</td><td>At least 1</td></tr>
+        <tr><td><code>routes</code></td><td>string array</td><td>Accommodation only</td><td>At least one non-blank location for accommodation</td></tr>
+        <tr><td><code>subtitle</code>, <code>category</code>, <code>city</code>, <code>details</code></td><td>string</td><td>No</td><td>Asset description fields</td></tr>
+        <tr><td><code>sourceLink</code></td><td>URI string</td><td>No</td><td>Optional source reference; it is not used to download an image</td></tr>
+        <tr><td><code>visibility</code></td><td>string</td><td>No</td><td>Defaults through the ordinary asset model when omitted</td></tr>
+      </tbody>
+    </table>
+    <pre><code>{
+  "items": [{
+    "id": "7d857d7f-8d48-4cf1-95cc-cbf257640afa",
+    "type": "Accommodation",
+    "title": "Hotel room 101",
+    "capacityTotal": 2,
+    "quantity": 1,
+    "routes": ["Bratislava"],
+    "visibility": "Private"
+  }]
+}</code></pre>
+  </section>
+
+  <section id="events" class="page-break" aria-labelledby="events-title">
+    <h2 id="events-title">6. Event Batch</h2>
+    <table class="keep-together">
+      <thead><tr><th scope="col">Field</th><th scope="col">Type</th><th scope="col">Required</th><th scope="col">Rule</th></tr></thead>
+      <tbody>
+        <tr><td><code>id</code></td><td>UUID</td><td>Yes</td><td>Unique within the batch and stable in the caller system</td></tr>
+        <tr><td><code>title</code></td><td>string</td><td>Yes</td><td>Non-blank</td></tr>
+        <tr><td><code>subtitle</code></td><td>string</td><td>Yes</td><td>Non-blank, matching the event editor requirement</td></tr>
+        <tr><td><code>startAt</code>, <code>endAt</code></td><td>ISO-8601 instant</td><td>Yes</td><td><code>endAt</code> must be after <code>startAt</code></td></tr>
+        <tr><td><code>capacityMin</code></td><td>integer</td><td>Yes</td><td>Zero or greater</td></tr>
+        <tr><td><code>capacityMax</code></td><td>integer</td><td>Yes</td><td>At least <code>capacityMin</code></td></tr>
+        <tr><td><code>location</code>, <code>sourceLink</code></td><td>string</td><td>No</td><td>Optional display and source-reference fields</td></tr>
+        <tr><td><code>visibility</code></td><td>string</td><td>No</td><td>Ordinary event visibility; defaults when omitted</td></tr>
+        <tr><td><code>status</code></td><td>string</td><td>No</td><td><code>draft</code> or <code>active</code>; defaults to active</td></tr>
+        <tr><td><code>topics</code></td><td>string array</td><td>No</td><td>Optional event topics</td></tr>
+      </tbody>
+    </table>
+    <pre><code>{
+  "items": [{
+    "id": "1066b61b-c0ac-43d5-ab28-f588f5a162f6",
+    "title": "Hotel evening",
+    "subtitle": "Welcome event for hotel guests",
+    "startAt": "2026-10-10T18:00:00Z",
+    "endAt": "2026-10-10T20:00:00Z",
+    "capacityMin": 1,
+    "capacityMax": 30,
+    "status": "draft"
+  }]
+}</code></pre>
+  </section>
+
+  <section id="images" class="page-break" aria-labelledby="images-title">
+    <h2 id="images-title">7. Optional Image Upload</h2>
+    <p>Use the same <code>POST /assets</code> or <code>POST /events</code> URL with <code>multipart/form-data</code>.</p>
+    <table>
+      <thead><tr><th scope="col">Part</th><th scope="col">Content type</th><th scope="col">Content</th></tr></thead>
+      <tbody>
+        <tr><td><code>request</code></td><td><code>application/json</code></td><td>The complete batch object with its <code>items</code> array</td></tr>
+        <tr><td>Item UUID, for example <code>1066b61b-…</code></td><td><code>image/jpeg</code>, <code>image/png</code>, <code>image/webp</code>, or <code>image/gif</code></td><td>One optional local image file for that item</td></tr>
+      </tbody>
+    </table>
+    <p>Every file-part name must match an <code>id</code> in the JSON batch. At most one image may be attached to an item.</p>
+    <p>The server stores the original bytes and creates WebP variants whose maximum dimensions are 128 px, 640 px, and 1280 px. The resource points to the large variant.</p>
+    <aside class="callout danger">
+      <strong class="callout-title">No remote retrieval</strong>
+      Do not send an image URL. The client and this API never retrieve an image from another server; either send the file bytes in this request or omit the image.
+    </aside>
+  </section>
+
+  <section id="responses" aria-labelledby="responses-title">
+    <h2 id="responses-title">8. Responses and Errors</h2>
+    <table>
+      <thead><tr><th scope="col">HTTP/result</th><th scope="col">Meaning</th></tr></thead>
+      <tbody>
+        <tr><td><code>200 / created</code></td><td>The resource was created; <code>externalId</code> contains its MyScoutee UUID.</td></tr>
+        <tr><td><code>200 / existing</code></td><td>The caller <code>id</code> was already mapped; the same <code>externalId</code> is returned.</td></tr>
+        <tr><td><code>200 / rejected</code></td><td>That item failed validation or creation; <code>error</code> contains a stable reason and <code>externalId</code> is null.</td></tr>
+        <tr><td><code>400</code></td><td>The batch envelope or multipart relationship is invalid.</td></tr>
+        <tr><td><code>401</code></td><td>The key is missing, invalid, expired, revoked, or claimed by another client UUID.</td></tr>
+      </tbody>
+    </table>
+    <p>Common item errors include <code>id_must_be_uuid</code>, <code>duplicate_id_in_batch</code>, <code>title_required</code>, <code>subtitle_required</code>, <code>valid_start_and_end_required</code>, and the capacity-specific validation codes.</p>
+  </section>
+
+  <section id="client" class="page-break" aria-labelledby="client-title">
+    <h2 id="client-title">9. Java Client and CLI</h2>
+    <pre><code>./gradlew installDist
+
+myscoutee-client configure \
+  https://example.com/api/integrations/v1 \
+  'msc_your_token'
+
+myscoutee-client assets assets.json
+myscoutee-client events events.json \
+  1066b61b-c0ac-43d5-ab28-f588f5a162f6=event.webp</code></pre>
+    <table>
+      <thead><tr><th scope="col">SDK method</th><th scope="col">Use</th></tr></thead>
+      <tbody>
+        <tr><td><code>connect()</code></td><td>Validate and claim the configured key.</td></tr>
+        <tr><td><code>createAssets(items)</code></td><td>Send a JSON-only asset batch.</td></tr>
+        <tr><td><code>createAssets(items, images)</code></td><td>Send assets and a map from item UUID to local image path.</td></tr>
+        <tr><td><code>createEvents(items)</code></td><td>Send a JSON-only event batch.</td></tr>
+        <tr><td><code>createEvents(items, images)</code></td><td>Send events and optional local images.</td></tr>
+      </tbody>
+    </table>
+    <p>The CLI stores the Base URL, token, and stable client UUID in <code>~/.myscoutee/client.properties</code>. The token is masked by <code>show-config</code>.</p>
+  </section>
+
+  <section id="security" aria-labelledby="security-title">
+    <h2 id="security-title">10. Security and Operational Rules</h2>
+    <ul class="checklist">
+      <li>Use HTTPS outside localhost development.</li>
+      <li>Keep the complete key secret and use a distinct key for every connected client.</li>
+      <li>Revoke a lost or retired key from the profile popup immediately.</li>
+      <li>Retain both <code>id</code> and <code>externalId</code> in the external system.</li>
+      <li>Split imports into batches of no more than 1000 items.</li>
+      <li>Do not infer access to another user's records: the token fixes the resource owner.</li>
+      <li>Do not include participant personal data in asset or event create requests.</li>
+    </ul>
+    <p class="source-note">Normative machine-readable contract: <code>myscoutee-client/openapi.yaml</code>. Reference client and versioned fixtures: <code>myscoutee-client/src/</code>.</p>
+  </section>
+</article>
+</body>
+</html>

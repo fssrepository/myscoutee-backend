@@ -125,12 +125,12 @@ instructions, supported services and failure handling are in
    application behavior. Use `status` to inspect the retained operation or
    `rollback` to restore its previous local image.
 
-The currently deployed frontend build is `stable-20260918-landing-cache`
+The currently deployed frontend build is `stable-20260919-avatar-session-preview`
 (application version remains `1.0.0`). The verified command for this image is:
 
 ```bash
 sudo bash install-temporary-image.sh install nginx \
-  ghcr.io/fssrepository/myscoutee-nginx@sha256:8e922eb398b9f443f9ca0e8f4ed633cd861f62f6d87ceeafce0036a2a525cb76
+  ghcr.io/fssrepository/myscoutee-nginx@sha256:75a61fff6efa733fa7af72fb4e7992431a2a042673e3f345a6efb34b2199edf1
 sudo bash install-temporary-image.sh status nginx
 # Only when a rollback is wanted:
 sudo bash install-temporary-image.sh rollback nginx
@@ -183,6 +183,141 @@ Public HTTPS served the expected build and service worker, and the deployment
 verifier passed all 13 checks. No DEB was rebuilt or installed for this update.
 Its local publication and deployment receipts are under
 `packaging/dist/partial-1.0.0-landing-cache-20260918/` (gitignored).
+
+The subsequent `stable-20260919-webview-reload` frontend update prevents
+bootstrap resource-error recovery from restarting an already running session
+or looping offline. The production build and packaged files were verified,
+and the published GHCR digest was applied with the same persistent updater.
+All seven containers were healthy; the six other container IDs and unrelated
+configuration remained unchanged. Public HTTPS served byte-identical index,
+worker and version files, and all 13 deployment checks passed with a 15-second
+per-request timeout. The focused source regression/cache checks passed 22/22.
+Physical-device WebView behavior was not exercised. No DEB was rebuilt or
+installed. Publication and deployment receipts are retained under
+`packaging/dist/partial-1.0.0-webview-reload-20260919/` (gitignored).
+
+The `stable-20260919-form-popup` frontend update adds a painted loading ring
+before shared form construction, an immediate loading shell for the lazy
+profile editor, retained current-user profile views, and pencil-button press
+feedback. Profile saves still use `POST /api/auth/me/profile-ext`; the retained
+view is a UI cache, not a replacement for backend persistence. Nine focused
+tests passed, covering paint ordering, retained popup visibility, unchanged
+profile reuse, discarded edits, confirmed saves, logout and identity changes.
+The default test compilation encounters pre-existing errors in unrelated specs;
+the focused run used a scoped TypeScript configuration. The production build
+passed and all 332 frontend files were matched against the packaged image.
+The persistent nginx-only update left all seven containers healthy and the
+other six container IDs/configuration unchanged. Public files matched the build
+and deployment checks passed 13/13. Device-specific rendering latency has not
+been measured. Receipts and the complete source patch are retained under
+`packaging/dist/partial-1.0.0-form-popup-20260919/` (gitignored).
+
+The `stable-20260919-startup-auth` frontend update removes the redundant
+Firebase session restoration from the public root redirect. Stored session
+and role data only choose a destination; its protected guard still verifies
+authentication and the server user before activation. Normal root-to-game,
+admin and operator startup paths now restore the session once rather than
+twice. Later protected navigations still revalidate; no authentication cache
+or expiry window was added. Ten focused routing tests passed, including
+invalid sessions, stale admin hints, onboarding, pending authentication and
+failed server lookups. The pre-change run reproduced the duplicate calls.
+Production build and image checks passed (332 matching frontend files).
+The nginx-only deployment left seven containers healthy, the other six IDs
+and unrelated configuration unchanged. Public artifact files matched the
+build and all 13 deployment checks passed. Physical-device startup duration
+was not measured. Receipts and source patch are retained under
+`packaging/dist/partial-1.0.0-startup-auth-20260919/` (gitignored).
+
+The `stable-20260919-startup-shell` frontend update keeps the existing
+application-level logo visible through the first route's redirects, guards
+and lazy component loading. Focus/resume, the watchdog and early outlet
+activation no longer hide it while navigation is pending. It is dismissed
+after navigation completes, or on a terminal navigation failure. Individual
+page loaders, Home and SmartList are unchanged. Eight shell regression tests
+and the ten authentication routing tests passed; the production build and
+332-file image comparison passed. Frontend source commit:
+`d71322e9` (includes the previous authentication fix in `f8b43eca`).
+The nginx-only persistent update left all seven containers healthy and the
+other six container IDs/configuration unchanged. Public index, worker and
+version matched the artifact, and all 13 deployment checks passed. No
+physical-device timing or full browser flow was measured. Receipts are under
+`packaging/dist/partial-1.0.0-startup-shell-20260919/` (gitignored).
+
+The subsequent `stable-20260919-game-startup` partial update makes the existing
+game header controls visible while profile data loads, keeping dependent actions
+disabled until ready. It releases the startup overlay on route activation,
+without the additional navigation-end wait or 120 ms delay. This supersedes
+the overlay handoff described for `startup-shell` above. The 19 focused tests,
+production build, 332-file image comparison and all 13 public deployment checks
+passed. Only nginx was replaced; the other six container IDs and unrelated
+configuration were unchanged, and all seven containers remained healthy.
+The persistent image selection and public index, worker and version were
+verified against the published artifact. Source is frontend base `d71322e9`
+plus the recorded patch; receipts and patch are retained under
+`packaging/dist/partial-1.0.0-game-startup-20260919/` (gitignored).
+Physical-device WebView behavior has not been verified.
+
+The `stable-20260919-startup-performance-2` nginx-only update reduces eager
+shared-component imports, defers closed popup components, avoids proactive
+Firebase popup/iframe initialization, and limits demo seed prewarming to demo
+sessions. Translation case matching also avoids repeated locale setup. The
+user reverted the preceding header/overlay changes; this build retains that
+revert and reduces the work before the existing startup logo ends.
+Production build, 34 focused tests, 367-file image comparison and 13 public
+checks passed. Exact registry image identity and persistent server selection
+were verified; all seven containers are healthy and the other six IDs and
+unrelated configuration are unchanged. Three repeated starts of the installed
+Chrome WebAPK over ADB, with the existing session/cache, showed median logo
+removal at 2.682 s (previously 3.380 s), and enabled buttons/avatar at 2.786 s
+(previously 3.626 s, a 23.2% reduction). Observed decoded JavaScript fell from
+4.50 MB to 2.84 MB. No demo seed or Home-filter component loaded during these
+starts. These are repeated browser-navigation measurements, not fully cold
+Android launches or full popup/provider-login qualification. Source patch,
+image/server receipts, CPU profiles and measurements are retained under
+`packaging/dist/startup-optimization-20260919/` (gitignored), with details in
+`REPORT.md` and `comparison.json`.
+
+The `stable-20260919-startup-avatar-4` nginx-only update paints the shared
+Home header and disabled avatar/photo before the protected route is ready,
+keeps identical mobile avatar geometry during handoff, and selects the small
+managed image in legacy, private and public image namespaces. The preview uses
+the server profile image tied to the current Firebase session, because the
+Firebase UID and application profile ID differ; it does not use the provider's
+monogram image. The loading sidebar retains that same preview until ready.
+Authentication and role guards remain unchanged, including `/auth/me` and its
+private-media session cookie. A trial removing that request caused a device
+401 and was reverted. No database repair or image regeneration was needed:
+all three existing variants returned 200. The displayed small photo is 128×66,
+448 bytes, compared with the previous 1280×656, 23780-byte avatar source.
+Production build, 65 focused tests, 371-file image comparison and all 13 public
+checks passed. The final device check confirmed the small photo remains visible
+under the loading ring and through handoff, with unchanged avatar geometry.
+Seven containers are healthy; only nginx changed. Repeated earlier native
+launches still needed 4.3–5.2 seconds for full readiness; this work does not
+establish full native startup below three seconds. The final image/geometry
+check and exact registry/server receipts, along with failed/update-transition
+measurement exclusions, are recorded in
+`packaging/dist/startup-shell-20260919/REPORT.md` (gitignored).
+
+The `stable-20260919-avatar-session-preview` nginx-only update fixes the
+intermittently empty startup avatar. Device evidence reproduced the problem on
+the preceding current build: the saved login survived, but without the
+session-lifetime media cookie the early private-image request correctly returned
+401. `/auth/me` later restored that cookie. The frontend now retains the small
+bitmap within the matching application session after authenticated loading and
+uses those bytes during startup, avoiding that premature private-media request.
+The preview is limited to 64 KiB and raster formats, invalidated on source changes
+or logout, and cannot enable actions or bypass authentication. Successful image
+loads also clear the hidden state left by an earlier failed load.
+Production build, 85 focused tests and a 371-file image comparison passed. Two
+device reloads with only the derived media cookie removed showed the photo inside
+the disabled loading ring, unchanged geometry through handoff, normal cookie
+restoration and no early avatar HTTP request. These are browser reload regression
+checks, not full native launch measurements. The exact registry digest and
+persistent server selection match; all seven containers are healthy, with the
+other six container IDs and unrelated configuration unchanged. Evidence and
+public verification results are retained under
+`packaging/dist/avatar-consistency-20260919/REPORT.md` (gitignored).
 
 ## Concurrent-session setting
 
