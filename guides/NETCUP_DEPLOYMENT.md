@@ -125,12 +125,12 @@ instructions, supported services and failure handling are in
    application behavior. Use `status` to inspect the retained operation or
    `rollback` to restore its previous local image.
 
-The currently deployed frontend build is `stable-20260919-game-startup`
+The currently deployed frontend build is `stable-20260919-startup-avatar-2`
 (application version remains `1.0.0`). The verified command for this image is:
 
 ```bash
 sudo bash install-temporary-image.sh install nginx \
-  ghcr.io/fssrepository/myscoutee-nginx@sha256:954c44b9c8bbbabd090774fb58f8b5720a13104515adf1aa7f8fa925d8ade25c
+  ghcr.io/fssrepository/myscoutee-nginx@sha256:60c0980f483081e11c999022553de5bdde6060cace0cac97e7f79c6b1aa1d63c
 sudo bash install-temporary-image.sh status nginx
 # Only when a rollback is wanted:
 sudo bash install-temporary-image.sh rollback nginx
@@ -256,6 +256,26 @@ verified against the published artifact. Source is frontend base `d71322e9`
 plus the recorded patch; receipts and patch are retained under
 `packaging/dist/partial-1.0.0-game-startup-20260919/` (gitignored).
 Physical-device WebView behavior has not been verified.
+
+The `stable-20260919-startup-performance-2` nginx-only update reduces eager
+shared-component imports, defers closed popup components, avoids proactive
+Firebase popup/iframe initialization, and limits demo seed prewarming to demo
+sessions. Translation case matching also avoids repeated locale setup. The
+user reverted the preceding header/overlay changes; this build retains that
+revert and reduces the work before the existing startup logo ends.
+Production build, 34 focused tests, 367-file image comparison and 13 public
+checks passed. Exact registry image identity and persistent server selection
+were verified; all seven containers are healthy and the other six IDs and
+unrelated configuration are unchanged. Three repeated starts of the installed
+Chrome WebAPK over ADB, with the existing session/cache, showed median logo
+removal at 2.682 s (previously 3.380 s), and enabled buttons/avatar at 2.786 s
+(previously 3.626 s, a 23.2% reduction). Observed decoded JavaScript fell from
+4.50 MB to 2.84 MB. No demo seed or Home-filter component loaded during these
+starts. These are repeated browser-navigation measurements, not fully cold
+Android launches or full popup/provider-login qualification. Source patch,
+image/server receipts, CPU profiles and measurements are retained under
+`packaging/dist/startup-optimization-20260919/` (gitignored), with details in
+`REPORT.md` and `comparison.json`.
 
 ## Concurrent-session setting
 
