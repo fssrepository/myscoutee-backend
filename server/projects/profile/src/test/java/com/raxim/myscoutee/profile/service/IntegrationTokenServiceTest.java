@@ -26,11 +26,14 @@ import org.springframework.web.server.ResponseStatusException;
 import com.raxim.myscoutee.profile.data.document.IntegrationToken;
 import com.raxim.myscoutee.profile.data.dto.integration.IntegrationDtos.IntegrationTokenCreateRequestDto;
 import com.raxim.myscoutee.profile.repository.IntegrationTokensRepository;
+import com.raxim.myscoutee.profile.repository.IntegrationWebhookSubscriptionsRepository;
 
 @ExtendWith(MockitoExtension.class)
 class IntegrationTokenServiceTest {
     @Mock
     private IntegrationTokensRepository tokensRepository;
+    @Mock
+    private IntegrationWebhookSubscriptionsRepository webhookSubscriptionsRepository;
     @Mock
     private MongoTemplate mongoTemplate;
 
@@ -38,7 +41,7 @@ class IntegrationTokenServiceTest {
 
     @BeforeEach
     void setUp() {
-        service = new IntegrationTokenService(tokensRepository, mongoTemplate);
+        service = new IntegrationTokenService(tokensRepository, webhookSubscriptionsRepository, mongoTemplate);
     }
 
     @Test

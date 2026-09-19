@@ -19,26 +19,46 @@ import com.raxim.myscoutee.profile.data.dto.integration.IntegrationDtos.Integrat
 import com.raxim.myscoutee.profile.data.dto.integration.IntegrationDtos.IntegrationConnectDto;
 import com.raxim.myscoutee.profile.data.dto.integration.IntegrationDtos.IntegrationEventSyncRequestDto;
 import com.raxim.myscoutee.profile.data.dto.integration.IntegrationDtos.IntegrationSyncResponseDto;
+import com.raxim.myscoutee.profile.data.dto.integration.IntegrationDtos.IntegrationWatchRequestDto;
+import com.raxim.myscoutee.profile.data.dto.integration.IntegrationDtos.IntegrationWatchResponseDto;
 import com.raxim.myscoutee.profile.security.AccessControlService;
 import com.raxim.myscoutee.profile.service.IntegrationSyncService;
 import com.raxim.myscoutee.profile.service.IntegrationTokenService;
+import com.raxim.myscoutee.profile.service.IntegrationTokenService.AuthenticatedIntegrationClient;
+import com.raxim.myscoutee.profile.service.IntegrationWebhookService;
 
 @RestController
 @RequestMapping("/integrations/v1")
 public class IntegrationApiController {
     private final IntegrationSyncService syncService;
     private final AccessControlService accessControlService;
+    private final IntegrationWebhookService webhookService;
 
     public IntegrationApiController(
             IntegrationSyncService syncService,
-            AccessControlService accessControlService) {
+            AccessControlService accessControlService,
+            IntegrationWebhookService webhookService) {
         this.syncService = syncService;
         this.accessControlService = accessControlService;
+        this.webhookService = webhookService;
     }
 
     @PostMapping("/connect")
     public IntegrationConnectDto connect() {
         return new IntegrationConnectDto(true, IntegrationTokenService.MAX_BATCH_SIZE);
+    }
+
+    @PostMapping(path = "/watch", consumes = MediaType.APPLICATION_JSON_VALUE)
+    public IntegrationWatchResponseDto watch(
+            Authentication authentication,
+            @RequestBody IntegrationWatchRequestDto request) {
+        String actorUserId = actorUserId(authentication);
+        Object details = authentication == null ? null : authentication.getDetails();
+        if (!(details instanceof AuthenticatedIntegrationClient client)
+                || !actorUserId.equals(client.ownerUserId())) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "An authenticated integration client is required.");
+        }
+        return webhookService.configure(client, request);
     }
 
     @PostMapping(path = "/assets", consumes = MediaType.APPLICATION_JSON_VALUE)

@@ -26,6 +26,7 @@ import com.raxim.myscoutee.profile.data.dto.integration.IntegrationDtos.Integrat
 import com.raxim.myscoutee.profile.data.dto.integration.IntegrationDtos.IntegrationTokenCreatedDto;
 import com.raxim.myscoutee.profile.data.dto.integration.IntegrationDtos.IntegrationTokenDto;
 import com.raxim.myscoutee.profile.repository.IntegrationTokensRepository;
+import com.raxim.myscoutee.profile.repository.IntegrationWebhookSubscriptionsRepository;
 
 @Service
 public class IntegrationTokenService {
@@ -36,13 +37,16 @@ public class IntegrationTokenService {
     private static final String TOKEN_PREFIX = "msc_";
 
     private final IntegrationTokensRepository tokensRepository;
+    private final IntegrationWebhookSubscriptionsRepository webhookSubscriptionsRepository;
     private final MongoTemplate mongoTemplate;
     private final SecureRandom secureRandom = new SecureRandom();
 
     public IntegrationTokenService(
             IntegrationTokensRepository tokensRepository,
+            IntegrationWebhookSubscriptionsRepository webhookSubscriptionsRepository,
             MongoTemplate mongoTemplate) {
         this.tokensRepository = tokensRepository;
+        this.webhookSubscriptionsRepository = webhookSubscriptionsRepository;
         this.mongoTemplate = mongoTemplate;
     }
 
@@ -105,9 +109,22 @@ public class IntegrationTokenService {
             token.setRevokedAtIso(Instant.now().toString());
             tokensRepository.save(token);
         }
+        webhookSubscriptionsRepository.findByTokenId(token.getId()).forEach(subscription -> {
+            subscription.setEnabled(false);
+            subscription.setUpdatedAtIso(Instant.now().toString());
+            webhookSubscriptionsRepository.save(subscription);
+        });
     }
 
     public String authenticate(String rawToken, String clientId, String clientAddress) {
+        AuthenticatedIntegrationClient client = authenticateClient(rawToken, clientId, clientAddress);
+        return client == null ? null : client.ownerUserId();
+    }
+
+    public AuthenticatedIntegrationClient authenticateClient(
+            String rawToken,
+            String clientId,
+            String clientAddress) {
         String value = normalize(rawToken);
         String normalizedClientId = normalizeClientId(clientId);
         if (!StringUtils.hasText(value)
@@ -146,7 +163,18 @@ public class IntegrationTokenService {
                             .set("claimedAddress", normalizeAddress(clientAddress)),
                     IntegrationToken.class);
         }
-        return normalize(token.getOwnerUserId());
+        return new AuthenticatedIntegrationClient(
+                normalize(token.getOwnerUserId()),
+                token.getId(),
+                normalizedClientId);
+    }
+
+    public boolean isActiveForOwner(String ownerUserId, String tokenId) {
+        String owner = normalize(ownerUserId);
+        String id = normalize(tokenId);
+        return StringUtils.hasText(owner)
+                && StringUtils.hasText(id)
+                && tokensRepository.findByIdAndOwnerUserId(id, owner).filter(this::isActive).isPresent();
     }
 
     private boolean isActive(IntegrationToken token) {
@@ -223,5 +251,11 @@ public class IntegrationTokenService {
             return null;
         }
         return normalized.length() <= 64 ? normalized : normalized.substring(0, 64);
+    }
+
+    public record AuthenticatedIntegrationClient(
+            String ownerUserId,
+            String tokenId,
+            String clientId) {
     }
 }

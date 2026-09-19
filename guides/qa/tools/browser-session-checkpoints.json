@@ -14,6 +14,27 @@
     "screenHeight": 1000
   },
   "checkpoints": {
+    "INTEGRATION-API-001": {
+      "layout": {
+        "columns": 2
+      },
+      "sessions": [
+        {
+          "actor": "Casey API resource owner",
+          "sessionKind": "demo",
+          "userId": "650000000000000000000061",
+          "expectedName": "Casey Bridge",
+          "autoDismissExplanationGuide": true
+        },
+        {
+          "actor": "Nova event participant",
+          "sessionKind": "demo",
+          "userId": "650000000000000000000062",
+          "expectedName": "Nova Social",
+          "autoDismissExplanationGuide": true
+        }
+      ]
+    },
     "NOTIFICATION-ADMIN-LIFECYCLE-001": {
       "layout": {
         "columns": 3
