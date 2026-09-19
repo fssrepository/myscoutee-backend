@@ -241,7 +241,7 @@
   "events": ["event.changed", "asset.changed"],
   "enabled": true
 }</code></pre>
-    <p>An empty or omitted <code>events</code> list selects both supported types. Disable the registration with <code>{"enabled": false}</code>. Revoking or expiring the client key also disables delivery.</p>
+    <p>An empty or omitted <code>events</code> list selects both supported types. Disable the registration with <code>{"enabled": false}</code>. Revoking or expiring the client key also disables delivery. Change capture only writes a durable queue record on the application request path; an elastic worker pool grows from zero idle workers to at most 100 parallel deliveries, performs callback HTTP requests independently, and can deliver to multiple client destinations in parallel.</p>
     <h3>Delivered message</h3>
     <pre><code>{
   "deliveryId": "ad01bce2-70ac-4a60-8703-8f03bf105af6",

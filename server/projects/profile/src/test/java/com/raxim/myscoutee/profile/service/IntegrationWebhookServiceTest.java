@@ -64,7 +64,9 @@ class IntegrationWebhookServiceTest {
                 mongoTemplate,
                 new ObjectMapper(),
                 true,
-                true);
+                true,
+                100,
+                100);
     }
 
     @Test

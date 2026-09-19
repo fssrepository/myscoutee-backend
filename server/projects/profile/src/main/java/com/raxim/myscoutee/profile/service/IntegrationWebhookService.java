@@ -14,9 +14,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
+import java.util.concurrent.RejectedExecutionException;
+import java.util.concurrent.SynchronousQueue;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.FindAndModifyOptions;
@@ -51,6 +54,7 @@ import tools.jackson.core.JacksonException;
 import tools.jackson.databind.ObjectMapper;
 
 import jakarta.annotation.PostConstruct;
+import jakarta.annotation.PreDestroy;
 
 @Service
 public class IntegrationWebhookService {
@@ -75,6 +79,8 @@ public class IntegrationWebhookService {
     private final HttpClient httpClient;
     private final boolean allowHttp;
     private final boolean allowPrivateAddresses;
+    private final ThreadPoolExecutor deliveryExecutor;
+    private final int deliveryBatchSize;
 
     public IntegrationWebhookService(
             IntegrationWebhookSubscriptionsRepository subscriptionsRepository,
@@ -85,7 +91,9 @@ public class IntegrationWebhookService {
             MongoTemplate mongoTemplate,
             ObjectMapper objectMapper,
             @Value("${integration.webhook.allow-http:false}") boolean allowHttp,
-            @Value("${integration.webhook.allow-private-addresses:false}") boolean allowPrivateAddresses) {
+            @Value("${integration.webhook.allow-private-addresses:false}") boolean allowPrivateAddresses,
+            @Value("${integration.webhook.max-worker-count:100}") int maxWorkerCount,
+            @Value("${integration.webhook.delivery-batch-size:100}") int deliveryBatchSize) {
         this.subscriptionsRepository = subscriptionsRepository;
         this.deliveriesRepository = deliveriesRepository;
         this.externalIdsRepository = externalIdsRepository;
@@ -95,10 +103,32 @@ public class IntegrationWebhookService {
         this.objectMapper = objectMapper;
         this.allowHttp = allowHttp;
         this.allowPrivateAddresses = allowPrivateAddresses;
+        int effectiveMaxWorkerCount = Math.max(1, Math.min(maxWorkerCount, 100));
+        this.deliveryBatchSize = Math.max(1, Math.min(deliveryBatchSize, 1_000));
+        AtomicInteger threadSequence = new AtomicInteger();
+        this.deliveryExecutor = new ThreadPoolExecutor(
+                0,
+                effectiveMaxWorkerCount,
+                60L,
+                TimeUnit.SECONDS,
+                new SynchronousQueue<>(),
+                runnable -> {
+                    Thread thread = new Thread(
+                            runnable,
+                            "integration-webhook-worker-" + threadSequence.incrementAndGet());
+                    thread.setDaemon(true);
+                    return thread;
+                },
+                new ThreadPoolExecutor.AbortPolicy());
         this.httpClient = HttpClient.newBuilder()
                 .connectTimeout(Duration.ofSeconds(5))
                 .followRedirects(HttpClient.Redirect.NEVER)
                 .build();
+    }
+
+    @PreDestroy
+    void shutdownDeliveryWorkers() {
+        deliveryExecutor.shutdownNow();
     }
 
     @PostConstruct
@@ -285,12 +315,16 @@ public class IntegrationWebhookService {
 
     @Scheduled(fixedDelayString = "${integration.webhook.delivery-interval-ms:1000}")
     public void deliverPending() {
+        int availableSlots = deliveryExecutor.getMaximumPoolSize() - deliveryExecutor.getActiveCount();
+        if (availableSlots <= 0) {
+            return;
+        }
         String now = Instant.now().toString();
         Query due = Query.query(new Criteria().andOperator(
                 Criteria.where("status").in(STATUS_PENDING, STATUS_RETRY),
                 Criteria.where("nextAttemptAtIso").lte(now)));
         due.with(Sort.by(Sort.Order.asc("createdAtIso")));
-        due.limit(20);
+        due.limit(Math.min(deliveryBatchSize, availableSlots));
         for (IntegrationWebhookDelivery candidate : mongoTemplate.find(due, IntegrationWebhookDelivery.class)) {
             IntegrationWebhookDelivery claimed = mongoTemplate.findAndModify(
                     Query.query(new Criteria().andOperator(
@@ -301,7 +335,15 @@ public class IntegrationWebhookService {
                     FindAndModifyOptions.options().returnNew(true),
                     IntegrationWebhookDelivery.class);
             if (claimed != null) {
-                deliver(claimed);
+                try {
+                    deliveryExecutor.execute(() -> deliver(claimed));
+                } catch (RejectedExecutionException exception) {
+                    claimed.setStatus(STATUS_RETRY);
+                    claimed.setNextAttemptAtIso(Instant.now().toString());
+                    claimed.setLastError("worker_pool_busy");
+                    deliveriesRepository.save(claimed);
+                    break;
+                }
             }
         }
     }
