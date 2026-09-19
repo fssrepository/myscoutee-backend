@@ -125,12 +125,12 @@ instructions, supported services and failure handling are in
    application behavior. Use `status` to inspect the retained operation or
    `rollback` to restore its previous local image.
 
-The currently deployed frontend build is `stable-20260919-startup-avatar-4`
+The currently deployed frontend build is `stable-20260919-avatar-session-preview`
 (application version remains `1.0.0`). The verified command for this image is:
 
 ```bash
 sudo bash install-temporary-image.sh install nginx \
-  ghcr.io/fssrepository/myscoutee-nginx@sha256:a7b56fca423593e5a780dea604e7d20eafe2adc07cbe91769a3eeed49ba23f34
+  ghcr.io/fssrepository/myscoutee-nginx@sha256:75a61fff6efa733fa7af72fb4e7992431a2a042673e3f345a6efb34b2199edf1
 sudo bash install-temporary-image.sh status nginx
 # Only when a rollback is wanted:
 sudo bash install-temporary-image.sh rollback nginx
@@ -298,6 +298,26 @@ establish full native startup below three seconds. The final image/geometry
 check and exact registry/server receipts, along with failed/update-transition
 measurement exclusions, are recorded in
 `packaging/dist/startup-shell-20260919/REPORT.md` (gitignored).
+
+The `stable-20260919-avatar-session-preview` nginx-only update fixes the
+intermittently empty startup avatar. Device evidence reproduced the problem on
+the preceding current build: the saved login survived, but without the
+session-lifetime media cookie the early private-image request correctly returned
+401. `/auth/me` later restored that cookie. The frontend now retains the small
+bitmap within the matching application session after authenticated loading and
+uses those bytes during startup, avoiding that premature private-media request.
+The preview is limited to 64 KiB and raster formats, invalidated on source changes
+or logout, and cannot enable actions or bypass authentication. Successful image
+loads also clear the hidden state left by an earlier failed load.
+Production build, 85 focused tests and a 371-file image comparison passed. Two
+device reloads with only the derived media cookie removed showed the photo inside
+the disabled loading ring, unchanged geometry through handoff, normal cookie
+restoration and no early avatar HTTP request. These are browser reload regression
+checks, not full native launch measurements. The exact registry digest and
+persistent server selection match; all seven containers are healthy, with the
+other six container IDs and unrelated configuration unchanged. Evidence and
+public verification results are retained under
+`packaging/dist/avatar-consistency-20260919/REPORT.md` (gitignored).
 
 ## Concurrent-session setting
 
