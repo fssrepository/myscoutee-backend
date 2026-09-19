@@ -1,0 +1,7 @@
+{
+  "version": 3,
+  "sources": ["src/app/shared/core/local/source/services/route-delay.service.ts"],
+  "sourcesContent": ["import { inject } from '@angular/core';\n\nimport { RouteDelayService } from '../../../base/services/route-delay.service';\n\nexport abstract class LocalRouteDelayService {\n  private readonly routeDelayService = inject(RouteDelayService);\n\n  protected async waitForRouteDelay(\n    route: string,\n    signal?: AbortSignal,\n    abortMessage = 'Request aborted.'\n  ): Promise<void> {\n    await this.routeDelayService.waitForRouteDelay(route, signal, abortMessage);\n  }\n\n  protected waitForDelay(\n    delayMs: number,\n    signal?: AbortSignal,\n    abortMessage = 'Request aborted.'\n  ): Promise<void> {\n    return this.routeDelayService.waitForDelay(delayMs, signal, abortMessage);\n  }\n\n  protected createAbortError(message = 'Request aborted.'): Error {\n    return this.routeDelayService.createAbortError(message);\n  }\n}\n"],
+  "mappings": ";;;;;;;;AAIM,IAAgB,yBAAhB,MAAsC;EACzB,oBAAoB,OAAO,iBAAiB;EAEnD,MAAM,kBACd,OACA,QACA,eAAe,oBAAkB;AAEjC,UAAM,KAAK,kBAAkB,kBAAkB,OAAO,QAAQ,YAAY;EAC5E;EAEU,aACR,SACA,QACA,eAAe,oBAAkB;AAEjC,WAAO,KAAK,kBAAkB,aAAa,SAAS,QAAQ,YAAY;EAC1E;EAEU,iBAAiB,UAAU,oBAAkB;AACrD,WAAO,KAAK,kBAAkB,iBAAiB,OAAO;EACxD;;",
+  "names": []
+}

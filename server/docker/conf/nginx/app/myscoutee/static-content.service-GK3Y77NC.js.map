@@ -1,0 +1,7 @@
+{
+  "version": 3,
+  "sources": ["src/app/shared/core/local/seed/services/static-content.service.ts"],
+  "sourcesContent": ["import { Injectable, inject } from '@angular/core';\n\nimport { SeedHelpCenterRepository } from '../repositories/help-center-seed.repository';\nimport { SeedIdeaPostsRepository } from '../repositories/idea-posts-seed.repository';\n\n@Injectable({\n  providedIn: 'root'\n})\nexport class SeedStaticContentService {\n  private readonly helpCenter = inject(SeedHelpCenterRepository);\n  private readonly ideaPosts = inject(SeedIdeaPostsRepository);\n\n  async ensureReady(): Promise<void> {\n    await this.helpCenter.seedDefaults();\n    await this.ideaPosts.seedDefaults();\n  }\n}\n"],
+  "mappings": ";;;;;;;;;;;;;;;;;;;;;AAQM,IAAO,2BAAP,MAAO,0BAAwB;EAClB,aAAa,OAAO,wBAAwB;EAC5C,YAAY,OAAO,uBAAuB;EAE3D,MAAM,cAAW;AACf,UAAM,KAAK,WAAW,aAAY;AAClC,UAAM,KAAK,UAAU,aAAY;EACnC;;qCAPW,2BAAwB;EAAA;4EAAxB,2BAAwB,SAAxB,0BAAwB,WAAA,YAFvB,OAAM,CAAA;;;sEAEP,0BAAwB,CAAA;UAHpC;WAAW;MACV,YAAY;KACb;;;",
+  "names": []
+}
