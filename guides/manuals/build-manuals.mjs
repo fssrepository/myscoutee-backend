@@ -29,8 +29,23 @@ const manuals = [
     output: 'MyScoutee_User_Manual_v1.0.0_EN.pdf',
     title: 'User Manual',
     documentId: 'MSC-UM-001'
+  },
+  {
+    source: 'myscoutee-integration-api-guide-en.html',
+    output: 'MyScoutee_Integration_API_Guide_v1.0.1_EN.pdf',
+    title: 'Integration API Guide',
+    documentId: 'MSC-API-001',
+    documentVersion: '1.0.1',
+    releaseDate: '2026-09-19'
   }
 ];
+const selectedDocumentId = process.argv[2]?.trim();
+const manualsToBuild = selectedDocumentId
+  ? manuals.filter(manual => manual.documentId === selectedDocumentId)
+  : manuals;
+if (manualsToBuild.length === 0) {
+  throw new Error(`Unknown document ID: ${selectedDocumentId}`);
+}
 
 let chromium;
 try {
@@ -65,7 +80,7 @@ if (process.getuid?.() === 0) {
 const browser = await chromium.launch(launchOptions);
 const generatedManuals = [];
 try {
-  for (const manual of manuals) {
+  for (const manual of manualsToBuild) {
     const sourcePath = path.join(scriptDirectory, manual.source);
     const outputPath = path.join(scriptDirectory, manual.output);
     await fs.access(sourcePath);
@@ -88,7 +103,7 @@ try {
         }
       }
     });
-    const sourceErrors = await page.evaluate(({ documentId }) => {
+    const sourceErrors = await page.evaluate(({ documentId, documentVersion, releaseDate }) => {
       const errors = [];
       const ids = [...document.querySelectorAll('[id]')].map(element => element.id);
       const duplicateIds = [...new Set(ids.filter((id, index) => ids.indexOf(id) !== index))];
@@ -111,9 +126,9 @@ try {
       for (const requiredText of [
         documentId,
         'Document version',
-        '1.0.0',
+        documentVersion ?? '1.0.0',
         'Released',
-        '2026-07-30'
+        releaseDate ?? '2026-07-30'
       ]) {
         if (!bodyText.includes(requiredText)) {
           errors.push(`required document metadata is missing: ${requiredText}`);
@@ -143,12 +158,12 @@ try {
         <div style="box-sizing:border-box;color:#5b6773;font-family:Arial,sans-serif;
                     font-size:7.5px;padding:0 16mm;width:100%;">
           <span style="float:left;">MyScoutee · ${escapeHtml(manual.title)}</span>
-          <span style="float:right;">${manual.documentId} · document version 1.0.0</span>
+          <span style="float:right;">${manual.documentId} · document version ${manual.documentVersion ?? '1.0.0'}</span>
         </div>`,
       footerTemplate: `
         <div style="box-sizing:border-box;color:#5b6773;font-family:Arial,sans-serif;
                     font-size:7.5px;padding:0 16mm;width:100%;">
-          <span style="float:left;">Released · 2026-07-30 · EN</span>
+          <span style="float:left;">Released · ${manual.releaseDate ?? '2026-07-30'} · EN</span>
           <span style="float:right;">Page <span class="pageNumber"></span> of <span class="totalPages"></span></span>
         </div>`
     });

@@ -15,6 +15,7 @@ import java.util.Objects;
 import java.util.regex.Pattern;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.dao.OptimisticLockingFailureException;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -34,6 +35,7 @@ import com.raxim.myscoutee.profile.data.dto.operator.OperatorConfigurationDtos.D
 import com.raxim.myscoutee.profile.data.dto.operator.OperatorConfigurationDtos.DeploymentThemePreset;
 import com.raxim.myscoutee.profile.data.dto.operator.OperatorConfigurationDtos.FirebasePublicConfigurationDto;
 import com.raxim.myscoutee.profile.data.dto.operator.OperatorConfigurationDtos.FirebaseUpdateDto;
+import com.raxim.myscoutee.profile.data.dto.operator.OperatorConfigurationDtos.IntegrationUpdateDto;
 import com.raxim.myscoutee.profile.data.dto.operator.OperatorConfigurationDtos.OperatorConfigurationDto;
 import com.raxim.myscoutee.profile.data.dto.operator.OperatorConfigurationDtos.OperatorConfigurationUpdateDto;
 import com.raxim.myscoutee.profile.data.dto.operator.OperatorConfigurationDtos.PaymentProviderDto;
@@ -55,7 +57,7 @@ public class OperatorConfigurationService {
     private static final int PRODUCT_NAME_MAX = 80;
     private static final int LOGO_URL_MAX = 2048;
     private static final int PROVIDER_ID_MAX = 64;
-    private static final int PAYMENT_PUBLIC_BASE_URL_MAX = 2048;
+    private static final int PUBLIC_BASE_URL_MAX = 2048;
     private static final int PAYMENT_MERCHANT_ACCOUNT_MAX = 254;
     private static final int PAYMENT_CREDENTIAL_MAX = 16384;
     private static final int FIREBASE_PROJECT_ID_MAX = 160;
@@ -243,6 +245,7 @@ public class OperatorConfigurationService {
         }
     }
 
+    @CacheEvict(value = "deployment_integration", allEntries = true)
     public OperatorConfigurationDto update(OperatorConfigurationUpdateDto request) {
         MongoSessionMode mode = MongoSessionModeContext.currentMode();
         synchronized (modeLocks.get(mode)) {
@@ -273,6 +276,7 @@ public class OperatorConfigurationService {
             applyBranding(configuration, request.branding());
             applyPrivacyContact(configuration, request.privacyContact());
             applySocialLinks(configuration, socialLinks);
+            applyIntegration(configuration, request.integration());
             applyPayment(configuration, request.payment(), providers);
             applyFirebase(configuration, request.firebase());
             configuration.setSchemaVersion(DeploymentConfiguration.SCHEMA_VERSION);
@@ -609,6 +613,7 @@ public class OperatorConfigurationService {
                 || configuration.getBranding() == null
                 || configuration.getSocialLinks() == null
                 || configuration.getPrivacyContact() == null
+                || configuration.getIntegration() == null
                 || configuration.getPayment() == null
                 || configuration.getFirebase() == null) {
             throw unavailable(
@@ -772,8 +777,10 @@ public class OperatorConfigurationService {
                 ? optionalTrimmed(
                         payment.getPublicBaseUrl(),
                         "Payment public base URL",
-                        PAYMENT_PUBLIC_BASE_URL_MAX)
-                : paymentPublicBaseUrl(request.publicBaseUrl());
+                        PUBLIC_BASE_URL_MAX)
+                : publicBaseUrl(
+                        request.publicBaseUrl(),
+                        "Payment public base URL");
         String merchantAccount = request.merchantAccount() == null
                 ? optionalTrimmed(
                         payment.getMerchantAccount(),
@@ -831,11 +838,23 @@ public class OperatorConfigurationService {
         }
     }
 
-    private String paymentPublicBaseUrl(String value) {
+    private void applyIntegration(
+            DeploymentConfiguration configuration,
+            IntegrationUpdateDto request) {
+        if (request == null) {
+            return;
+        }
+        configuration.getIntegration().setPublicBaseUrl(
+                publicBaseUrl(
+                        request.publicBaseUrl(),
+                        "Integration public base URL"));
+    }
+
+    private String publicBaseUrl(String value, String fieldName) {
         String normalized = optionalTrimmed(
                 value,
-                "Payment public base URL",
-                PAYMENT_PUBLIC_BASE_URL_MAX);
+                fieldName,
+                PUBLIC_BASE_URL_MAX);
         if (!StringUtils.hasText(normalized)) {
             return normalized;
         }
@@ -853,7 +872,7 @@ public class OperatorConfigurationService {
                     || uri.getQuery() != null
                     || uri.getFragment() != null) {
                 throw badRequest(
-                        "Payment public base URL must be an absolute HTTPS URL "
+                        fieldName + " must be an absolute HTTPS URL "
                                 + "(HTTP is accepted only for loopback development).");
             }
             String path = uri.getPath();
@@ -865,11 +884,11 @@ public class OperatorConfigurationService {
             }
             if (path != null && path.contains("..")) {
                 throw badRequest(
-                        "Payment public base URL contains an invalid path.");
+                        fieldName + " contains an invalid path.");
             }
             return withoutTrailingSlash;
         } catch (URISyntaxException exception) {
-            throw badRequest("Payment public base URL is invalid.");
+            throw badRequest(fieldName + " is invalid.");
         }
     }
 

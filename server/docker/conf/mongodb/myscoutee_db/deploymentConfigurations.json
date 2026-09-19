@@ -2,7 +2,7 @@
   {
     "_id": "deployment-configuration",
     "version": 0,
-    "schemaVersion": 4,
+    "schemaVersion": 5,
     "branding": {
       "productName": "MyScoutee",
       "logoCharacterIndex": 0,
@@ -15,6 +15,9 @@
     "privacyContact": {
       "dataControllerName": "",
       "privacyContactEmail": ""
+    },
+    "integration": {
+      "publicBaseUrl": null
     },
     "payment": {
       "providerId": null,

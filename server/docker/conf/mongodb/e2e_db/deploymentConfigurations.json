@@ -2,7 +2,7 @@
   {
     "_id": "deployment-configuration",
     "version": 0,
-    "schemaVersion": 4,
+    "schemaVersion": 5,
     "branding": {
       "productName": "MyScoutee",
       "logoCharacterIndex": 0,
@@ -37,6 +37,9 @@
     "privacyContact": {
       "dataControllerName": "MyScoutee E2E Operator",
       "privacyContactEmail": "privacy@e2e.myscoutee.test"
+    },
+    "integration": {
+      "publicBaseUrl": "http://localhost/api/integrations/v1"
     },
     "payment": {
       "providerId": null,

@@ -19,6 +19,7 @@ import com.raxim.myscoutee.profile.data.dto.operator.OperatorConfigurationDtos.D
 import com.raxim.myscoutee.profile.data.dto.operator.OperatorConfigurationDtos.DeploymentThemePreset;
 import com.raxim.myscoutee.profile.data.dto.operator.OperatorConfigurationDtos.FirebaseConfigurationDto;
 import com.raxim.myscoutee.profile.data.dto.operator.OperatorConfigurationDtos.FirebasePublicConfigurationDto;
+import com.raxim.myscoutee.profile.data.dto.operator.OperatorConfigurationDtos.IntegrationConfigurationDto;
 import com.raxim.myscoutee.profile.data.dto.operator.OperatorConfigurationDtos.OperatorConfigurationDto;
 import com.raxim.myscoutee.profile.data.dto.operator.OperatorConfigurationDtos.PaymentConfigurationDto;
 import com.raxim.myscoutee.profile.data.dto.operator.OperatorConfigurationDtos.PaymentProviderDto;
@@ -83,6 +84,8 @@ public class OperatorConfigurationMapper {
             List<String> adminEmails,
             String unavailableReason) {
         DeploymentConfiguration.Payment payment = configuration.getPayment();
+        DeploymentConfiguration.Integration integration =
+                configuration.getIntegration();
         boolean credentialConfigured = payment.getCredentialEnvelope() != null;
         return new OperatorConfigurationDto(
                 StringUtils.hasText(unavailableReason)
@@ -93,6 +96,8 @@ public class OperatorConfigurationMapper {
                 toPrivacyContact(configuration),
                 toSocialLinks(configuration),
                 toBranding(configuration),
+                new IntegrationConfigurationDto(
+                        blankToNull(integration.getPublicBaseUrl())),
                 new PaymentConfigurationDto(
                         availableProviders == null ? List.of() : List.copyOf(availableProviders),
                         blankToNull(payment.getProviderId()),

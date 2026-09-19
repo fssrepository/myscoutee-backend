@@ -1,21 +1,21 @@
 import {
-  demoFailoverEnabled,
   demoFailoverLocalUser,
+  demoFailoverSeedWarmupNeeded,
   prepareDemoFailover,
   startDemoFailover
-} from "./chunk-HZBHYHDP.js";
-import "./chunk-ISKJ5SPV.js";
+} from "./chunk-DYS6H2DW.js";
+import "./chunk-4PHST73L.js";
 import {
   bootstrapApplication
-} from "./chunk-6RAUJLMB.js";
-import "./chunk-JMCIB2VE.js";
-import "./chunk-ZBAABSP3.js";
-import "./chunk-ON23DQAQ.js";
+} from "./chunk-JFEZ3BSQ.js";
+import "./chunk-DVMAPFVK.js";
+import "./chunk-Y6O6FOP6.js";
+import "./chunk-NVTXJNEV.js";
 import {
   Injector,
   inject,
   provideAppInitializer
-} from "./chunk-FMXFYYCS.js";
+} from "./chunk-FDDWEAC7.js";
 
 // src/main.ts
 var BOOTSTRAPPED_CLASS = "app-bootstrapped";
@@ -82,12 +82,12 @@ function markBootstrapFailed(err) {
 silenceBrowserConsoleLogs();
 bindBootstrapResumeRecovery();
 prepareDemoFailover().then(async () => {
-  const [{ App }, { appConfig }] = await Promise.all([import("./app-KEYKHD4A.js"), import("./app.config-5DCOKPHO.js")]);
+  const [{ App }, { appConfig }] = await Promise.all([import("./app-7IDDTZAD.js"), import("./app.config-TGXZBL3Z.js")]);
   const localUserId = demoFailoverLocalUser();
   if (localUserId) {
     appConfig.providers.push(provideAppInitializer(() => {
       const injector = inject(Injector);
-      return import("./demo-bootstrap.service-O2AGLVHI.js").then(async (module) => {
+      return import("./demo-bootstrap.service-LSXNEG22.js").then(async (module) => {
         const seed = injector.get(module.SeedDemoBootstrapService);
         await seed.ensureDemoSelectorReady("member");
         await seed.ensureUserReady(localUserId, "member");
@@ -95,8 +95,8 @@ prepareDemoFailover().then(async () => {
     }));
   }
   const app = await bootstrapApplication(App, appConfig);
-  if (demoFailoverEnabled()) {
-    void import("./demo-bootstrap.service-O2AGLVHI.js").catch(() => void 0);
+  if (demoFailoverSeedWarmupNeeded()) {
+    void import("./demo-bootstrap.service-LSXNEG22.js").catch(() => void 0);
   }
   return app;
 }).then(() => {

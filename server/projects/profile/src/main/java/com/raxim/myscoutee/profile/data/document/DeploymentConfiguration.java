@@ -9,7 +9,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @Document(collection = "deploymentConfigurations")
 public class DeploymentConfiguration {
     public static final String SINGLETON_ID = "deployment-configuration";
-    public static final int SCHEMA_VERSION = 4;
+    public static final int SCHEMA_VERSION = 5;
 
     @Id
     private String id;
@@ -19,6 +19,7 @@ public class DeploymentConfiguration {
     private Branding branding;
     private List<SocialLink> socialLinks;
     private PrivacyContact privacyContact;
+    private Integration integration;
     private Payment payment;
     private Firebase firebase;
     private String updatedAt;
@@ -73,6 +74,14 @@ public class DeploymentConfiguration {
 
     public void setPrivacyContact(PrivacyContact privacyContact) {
         this.privacyContact = privacyContact;
+    }
+
+    public Integration getIntegration() {
+        return integration;
+    }
+
+    public void setIntegration(Integration integration) {
+        this.integration = integration;
     }
 
     public void setPayment(Payment payment) {
@@ -266,6 +275,18 @@ public class DeploymentConfiguration {
 
         public void setPrivacyContactEmail(String privacyContactEmail) {
             this.privacyContactEmail = privacyContactEmail;
+        }
+    }
+
+    public static class Integration {
+        private String publicBaseUrl;
+
+        public String getPublicBaseUrl() {
+            return publicBaseUrl;
+        }
+
+        public void setPublicBaseUrl(String publicBaseUrl) {
+            this.publicBaseUrl = publicBaseUrl;
         }
     }
 

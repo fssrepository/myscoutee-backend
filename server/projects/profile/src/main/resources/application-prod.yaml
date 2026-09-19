@@ -27,6 +27,9 @@ auth:
     # Fail closed in production unless the operator deliberately opts out.
     enabled: ${AUTH_REGION_SECURITY_ENABLED:true}
 
+integration:
+  public-base-url: ${INTEGRATION_PUBLIC_BASE_URL:https://localhost/api/integrations/v1}
+
 media:
   enabled: ${MEDIA_ENABLED:true}
   endpoint: ${MEDIA_OBJECT_STORE_ENDPOINT:http://minio:9000}
