@@ -309,14 +309,36 @@ candidate_compose="${candidate_root}/opt/myscoutee/server/docker-compose-prod.ym
   echo "Candidate package omits the production Compose definition." >&2
   exit 1
 }
-grep -Fq "myscoutee-registry:${candidate_version}-prod" "${candidate_compose}" || {
-  echo "Candidate package does not bind Explore to the matching registry image." >&2
+candidate_environment="${candidate_root}/opt/myscoutee/packaging/templates/myscoutee.env"
+[[ -f "${candidate_environment}" ]] || {
+  echo "Candidate package omits the production environment template." >&2
   exit 1
 }
-grep -Fq "myscoutee-payment-simulator:${candidate_version}-prod" "${candidate_compose}" || {
-  echo "Candidate package does not bind Explore payments to the matching simulator image." >&2
-  exit 1
+
+assert_packaged_image_binding() {
+  local variable_name="$1"
+  local expected_reference="$2"
+
+  grep -Fqx "${variable_name}=${expected_reference}" "${candidate_environment}" || {
+    echo "Candidate environment does not bind ${variable_name} to ${expected_reference}." >&2
+    exit 1
+  }
+  grep -Fq "image: \${${variable_name}:-" "${candidate_compose}" || {
+    echo "Candidate Compose does not consume ${variable_name}." >&2
+    exit 1
+  }
 }
+
+assert_packaged_image_binding \
+  NGINX_PRODUCTION_IMAGE "myscoutee-nginx:${candidate_version}-prod"
+assert_packaged_image_binding \
+  MINIO_PRODUCTION_IMAGE "myscoutee-minio:${candidate_version}-prod"
+assert_packaged_image_binding \
+  MYSCOUTEE_PRODUCTION_IMAGE "myscoutee-api:${candidate_version}-prod"
+assert_packaged_image_binding \
+  REGISTRY_DEMO_IMAGE "myscoutee-registry:${candidate_version}-prod"
+assert_packaged_image_binding \
+  PAYMENT_SIMULATOR_IMAGE "myscoutee-payment-simulator:${candidate_version}-prod"
 if awk '
     /^  registry:/ { in_registry = 1; next }
     /^  [[:alnum:]_-]+:/ { in_registry = 0 }
