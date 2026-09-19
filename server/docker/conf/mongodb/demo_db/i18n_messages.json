@@ -20487,7 +20487,7 @@
     "_id": "i18n-message-en-entry-permissions-notifications-blocked",
     "key": "entry.permissions.notifications.blocked",
     "lang": "en",
-    "value": "Notifications are blocked. Enable them in notification settings, then try again."
+    "value": "The system did not grant notification permission. If no permission prompt appeared, you can enable notifications in the notification settings for MyScoutee. Then try again, or turn notifications off to continue."
   },
   {
     "_id": "i18n-message-en-entry-permissions-location-blocked",
@@ -41193,7 +41193,7 @@
     "_id": "i18n-message-hu-entry-permissions-notifications-blocked",
     "key": "entry.permissions.notifications.blocked",
     "lang": "hu",
-    "value": "Az értesítések tiltva vannak. Engedélyezd őket az értesítési beállításokban, majd próbáld újra."
+    "value": "A rendszer nem adta meg az értesítési engedélyt. Ha nem jelent meg az engedélykérő ablak, a MyScoutee értesítési beállításaiban tudod engedélyezni. Ezután próbáld újra, vagy kapcsold ki az értesítéseket a folytatáshoz."
   },
   {
     "_id": "i18n-message-hu-entry-permissions-location-blocked",
