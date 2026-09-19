@@ -125,12 +125,12 @@ instructions, supported services and failure handling are in
    application behavior. Use `status` to inspect the retained operation or
    `rollback` to restore its previous local image.
 
-The currently deployed frontend build is `stable-20260919-startup-shell`
+The currently deployed frontend build is `stable-20260919-game-startup`
 (application version remains `1.0.0`). The verified command for this image is:
 
 ```bash
 sudo bash install-temporary-image.sh install nginx \
-  ghcr.io/fssrepository/myscoutee-nginx@sha256:3acc41d738b8b664b1d083ff9c83de4c6371d0503c0a0a49ba0a37fdddbbed11
+  ghcr.io/fssrepository/myscoutee-nginx@sha256:954c44b9c8bbbabd090774fb58f8b5720a13104515adf1aa7f8fa925d8ade25c
 sudo bash install-temporary-image.sh status nginx
 # Only when a rollback is wanted:
 sudo bash install-temporary-image.sh rollback nginx
@@ -242,6 +242,20 @@ other six container IDs/configuration unchanged. Public index, worker and
 version matched the artifact, and all 13 deployment checks passed. No
 physical-device timing or full browser flow was measured. Receipts are under
 `packaging/dist/partial-1.0.0-startup-shell-20260919/` (gitignored).
+
+The subsequent `stable-20260919-game-startup` partial update makes the existing
+game header controls visible while profile data loads, keeping dependent actions
+disabled until ready. It releases the startup overlay on route activation,
+without the additional navigation-end wait or 120 ms delay. This supersedes
+the overlay handoff described for `startup-shell` above. The 19 focused tests,
+production build, 332-file image comparison and all 13 public deployment checks
+passed. Only nginx was replaced; the other six container IDs and unrelated
+configuration were unchanged, and all seven containers remained healthy.
+The persistent image selection and public index, worker and version were
+verified against the published artifact. Source is frontend base `d71322e9`
+plus the recorded patch; receipts and patch are retained under
+`packaging/dist/partial-1.0.0-game-startup-20260919/` (gitignored).
+Physical-device WebView behavior has not been verified.
 
 ## Concurrent-session setting
 
