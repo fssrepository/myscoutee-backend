@@ -20,13 +20,13 @@ services:
   nginx:
     container_name: nginx
     hostname: nginx
-    image: ${NGINX_IMAGE:-myscoutee-nginx:1.0.0-dev}
+    image: ${NGINX_IMAGE:-myscoutee-nginx:1.0.1-dev}
     pull_policy: build
     build:
       context: docker
       dockerfile: images/nginx/dev/Dockerfile
       args:
-        NGINX_BASE_IMAGE: ${NGINX_BASE_IMAGE:-myscoutee-nginx:1.0.0-base}
+        NGINX_BASE_IMAGE: ${NGINX_BASE_IMAGE:-myscoutee-nginx:1.0.1-base}
         TZ: ${CONTAINER_TIMEZONE:-Europe/Brussels}
     environment:
       TZ: ${CONTAINER_TIMEZONE:-Europe/Brussels}
@@ -129,7 +129,7 @@ services:
     networks:
       - myscoutee
   minio:
-    image: ${MINIO_DEV_IMAGE:-myscoutee-minio:1.0.0-dev}
+    image: ${MINIO_DEV_IMAGE:-myscoutee-minio:1.0.1-dev}
     pull_policy: build
     build:
       context: .
@@ -160,7 +160,7 @@ services:
       start_period: 20s
   runtime-directories:
     # Runs once before the unprivileged API; contains no application process.
-    image: ${MYSCOUTEE_DEV_IMAGE:-myscoutee-api:1.0.0-dev}
+    image: ${MYSCOUTEE_DEV_IMAGE:-myscoutee-api:1.0.1-dev}
     user: "0:0"
     network_mode: none
     restart: "no"
@@ -172,7 +172,7 @@ services:
       - ./data:/workspace/data
       - ./docker/scripts/prepare_dev_runtime_directories.sh:/prepare-runtime-directories.sh:ro
   profilemanagement:
-    image: ${MYSCOUTEE_DEV_IMAGE:-myscoutee-api:1.0.0-dev}
+    image: ${MYSCOUTEE_DEV_IMAGE:-myscoutee-api:1.0.1-dev}
     pull_policy: build
     build:
       context: .
@@ -271,7 +271,7 @@ services:
       payment-simulator:
         condition: service_healthy
   frontend-sync:
-    image: ${FRONTEND_SYNC_IMAGE:-myscoutee-frontend-sync:1.0.0-dev}
+    image: ${FRONTEND_SYNC_IMAGE:-myscoutee-frontend-sync:1.0.1-dev}
     pull_policy: build
     build:
       context: .
@@ -313,7 +313,7 @@ services:
       retries: 90
   registry:
     container_name: registry
-    image: ${LOCAL_REGISTRY_IMAGE:-myscoutee-registry:1.0.0-dev}
+    image: ${LOCAL_REGISTRY_IMAGE:-myscoutee-registry:1.0.1-dev}
     pull_policy: build
     build:
       context: ../../myscoutee-registry
@@ -352,7 +352,7 @@ services:
   payment-simulator:
     container_name: payment-simulator
     hostname: payment-simulator
-    image: ${PAYMENT_SIMULATOR_IMAGE:-myscoutee-payment-simulator:1.0.0-dev}
+    image: ${PAYMENT_SIMULATOR_IMAGE:-myscoutee-payment-simulator:1.0.1-dev}
     pull_policy: build
     build:
       context: ../../myscoutee-payment-simulator

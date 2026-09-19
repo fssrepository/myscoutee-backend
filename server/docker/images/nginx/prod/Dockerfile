@@ -1,4 +1,4 @@
-ARG NGINX_BASE_IMAGE=myscoutee-nginx:1.0.0-base
+ARG NGINX_BASE_IMAGE=myscoutee-nginx:1.0.1-base
 FROM ${NGINX_BASE_IMAGE}
 
 COPY conf/nginx/nginx.conf /etc/nginx/nginx.conf
