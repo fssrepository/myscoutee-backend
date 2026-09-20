@@ -226,6 +226,8 @@ export function buildChecks(ctx) {
         'index.html and app-version.json should identify the same frontend build',
         { indexBuildId: extractBuildId(root.text), versionBuildId: buildId }
       );
+      assertFrontendEntryRevalidates(root, 'index.html');
+      assertFrontendEntryRevalidates(versionResult, 'app-version.json');
       if (ctx.expectedVersion) {
         assert(
           version.version === ctx.expectedVersion,
@@ -241,6 +243,7 @@ export function buildChecks(ctx) {
         'app-sw.js should be stamped with the same frontend build ID',
         { buildId }
       );
+      assertFrontendEntryRevalidates(serviceWorkerResult, 'app-sw.js');
 
       expectStatus(manifestResult, 200, 'manifest.webmanifest');
       expectContentType(manifestResult, ['json', 'manifest'], 'manifest.webmanifest');
@@ -701,6 +704,16 @@ function assertImmutableAsset(result, label) {
   assert(
     cacheControl.includes('max-age=31536000') && cacheControl.includes('immutable'),
     `${label} should use the immutable one-year build-asset cache policy`,
+    { cacheControl }
+  );
+}
+
+function assertFrontendEntryRevalidates(result, label) {
+  const cacheControl = `${result.headers['cache-control'] ?? ''}`.toLowerCase();
+  assert(
+    cacheControl.includes('no-cache') && cacheControl.includes('no-store')
+      && cacheControl.includes('must-revalidate') && !cacheControl.includes('immutable'),
+    `${label} should always revalidate and must never use immutable caching`,
     { cacheControl }
   );
 }

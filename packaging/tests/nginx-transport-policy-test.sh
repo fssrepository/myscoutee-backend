@@ -69,6 +69,9 @@ cp "${TEST_ROOT}/keys/custom.key" \
   "${TEST_ROOT}/letsencrypt/live/transport.test/privkey.pem"
 printf 'console.log("transport-policy");\n' > "${TEST_ROOT}/html/app-TRANSPORT.js"
 printf 'transport-policy\n' > "${TEST_ROOT}/html/index.html"
+printf 'console.log("service-worker");\n' > "${TEST_ROOT}/html/app-sw.js"
+printf '%s\n' '{"version":"1.0.0","buildId":"transport-policy"}' \
+  > "${TEST_ROOT}/html/app-version.json"
 printf '%s\n' '{"name":"transport-policy","start_url":"/","scope":"/"}' \
   > "${TEST_ROOT}/html/manifest.webmanifest"
 printf 'acme-token\n' \
@@ -216,6 +219,27 @@ curl -skS -o /dev/null -D "${prod_root_headers}" \
   -H 'Host: transport.test' \
   "https://127.0.0.1:${prod_https_port}/"
 assert_header "${prod_root_headers}" '^Strict-Transport-Security: max-age=31536000'
+assert_header "${prod_root_headers}" '^Cache-Control: no-cache, no-store, must-revalidate'
+
+prod_deep_link_headers="${TEST_ROOT}/prod-deep-link.headers"
+curl -skS -o /dev/null -D "${prod_deep_link_headers}" \
+  -H 'Host: transport.test' \
+  "https://127.0.0.1:${prod_https_port}/game"
+assert_header "${prod_deep_link_headers}" '^Cache-Control: no-cache, no-store, must-revalidate'
+
+prod_worker_headers="${TEST_ROOT}/prod-worker.headers"
+curl -skS -o /dev/null -D "${prod_worker_headers}" \
+  -H 'Host: transport.test' \
+  "https://127.0.0.1:${prod_https_port}/app-sw.js"
+assert_header "${prod_worker_headers}" '^Cache-Control: no-cache, no-store, must-revalidate'
+assert_no_header "${prod_worker_headers}" 'immutable'
+
+prod_version_headers="${TEST_ROOT}/prod-version.headers"
+curl -skS -o /dev/null -D "${prod_version_headers}" \
+  -H 'Host: transport.test' \
+  "https://127.0.0.1:${prod_https_port}/app-version.json"
+assert_header "${prod_version_headers}" '^Cache-Control: no-cache, no-store, must-revalidate'
+assert_no_header "${prod_version_headers}" 'immutable'
 
 prod_manifest_headers="${TEST_ROOT}/prod-manifest.headers"
 curl -skS -o /dev/null -D "${prod_manifest_headers}" \
@@ -227,7 +251,8 @@ assert_header \
 assert_header "${prod_manifest_headers}" '^Cache-Control: no-cache'
 
 # Locations with their own Cache-Control must retain the production security policy.
-for headers in "${prod_root_headers}" "${prod_asset_headers}" "${prod_manifest_headers}"; do
+for headers in "${prod_root_headers}" "${prod_deep_link_headers}" "${prod_worker_headers}" \
+  "${prod_version_headers}" "${prod_asset_headers}" "${prod_manifest_headers}"; do
   assert_header "${headers}" '^X-Content-Type-Options: nosniff'
   assert_header "${headers}" '^X-Frame-Options: DENY'
   assert_header "${headers}" '^Referrer-Policy: strict-origin-when-cross-origin'
