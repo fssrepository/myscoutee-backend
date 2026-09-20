@@ -7440,6 +7440,96 @@
     "value": "Fresh articles will show here."
   },
   {
+    "_id": "i18n-message-en-landing-about-open-aria",
+    "key": "landing.about.open.aria",
+    "lang": "en",
+    "value": "Open the MyScoutee overview"
+  },
+  {
+    "_id": "i18n-message-en-landing-about-header-badge",
+    "key": "landing.about.header.badge",
+    "lang": "en",
+    "value": "Independent project"
+  },
+  {
+    "_id": "i18n-message-en-landing-about-title",
+    "key": "landing.about.title",
+    "lang": "en",
+    "value": "About MyScoutee"
+  },
+  {
+    "_id": "i18n-message-en-landing-about-subtitle",
+    "key": "landing.about.subtitle",
+    "lang": "en",
+    "value": "Who built it, what it does, and why it is free to join."
+  },
+  {
+    "_id": "i18n-message-en-landing-about-aria",
+    "key": "landing.about.aria",
+    "lang": "en",
+    "value": "About MyScoutee"
+  },
+  {
+    "_id": "i18n-message-en-landing-about-close-aria",
+    "key": "landing.about.close.aria",
+    "lang": "en",
+    "value": "Close the MyScoutee overview"
+  },
+  {
+    "_id": "i18n-message-en-landing-about-founder-label",
+    "key": "landing.about.founder.label",
+    "lang": "en",
+    "value": "Who I am"
+  },
+  {
+    "_id": "i18n-message-en-landing-about-founder-title",
+    "key": "landing.about.founder.title",
+    "lang": "en",
+    "value": "Peter Szabo · Independent founder and software developer"
+  },
+  {
+    "_id": "i18n-message-en-landing-about-founder-description",
+    "key": "landing.about.founder.description",
+    "lang": "en",
+    "value": "I built MyScoutee after years of organizing my own journeys and looking for a more human path from online introductions to meeting in real life."
+  },
+  {
+    "_id": "i18n-message-en-landing-about-product-label",
+    "key": "landing.about.product.label",
+    "lang": "en",
+    "value": "What it is"
+  },
+  {
+    "_id": "i18n-message-en-landing-about-product-title",
+    "key": "landing.about.product.title",
+    "lang": "en",
+    "value": "A platform behind meetings, not swipes"
+  },
+  {
+    "_id": "i18n-message-en-landing-about-product-description",
+    "key": "landing.about.product.description",
+    "lang": "en",
+    "value": "Private, editable priorities help form balanced group proposals. People choose whether to join, continue in chat, and meet through real events."
+  },
+  {
+    "_id": "i18n-message-en-landing-about-free-label",
+    "key": "landing.about.free.label",
+    "lang": "en",
+    "value": "Why it is free"
+  },
+  {
+    "_id": "i18n-message-en-landing-about-free-title",
+    "key": "landing.about.free.title",
+    "lang": "en",
+    "value": "Free to join"
+  },
+  {
+    "_id": "i18n-message-en-landing-about-free-description",
+    "key": "landing.about.free.description",
+    "lang": "en",
+    "value": "Creating an account and using the core matching and community features is free. The planned model keeps optional event, ticket, venue, travel, and partner services separate; those may still have their own prices."
+  },
+  {
     "_id": "i18n-message-en-landing-partners-open-aria",
     "key": "landing.partners.open.aria",
     "lang": "en",
@@ -28384,6 +28474,96 @@
     "key": "landing.articles.empty.description",
     "lang": "hu",
     "value": "Itt jelennek meg a friss cikkek."
+  },
+  {
+    "_id": "i18n-message-hu-landing-about-open-aria",
+    "key": "landing.about.open.aria",
+    "lang": "hu",
+    "value": "MyScoutee bemutatkozás megnyitása"
+  },
+  {
+    "_id": "i18n-message-hu-landing-about-header-badge",
+    "key": "landing.about.header.badge",
+    "lang": "hu",
+    "value": "Független projekt"
+  },
+  {
+    "_id": "i18n-message-hu-landing-about-title",
+    "key": "landing.about.title",
+    "lang": "hu",
+    "value": "A MyScoutee-ról"
+  },
+  {
+    "_id": "i18n-message-hu-landing-about-subtitle",
+    "key": "landing.about.subtitle",
+    "lang": "hu",
+    "value": "Ki készítette, mit csinál, és miért ingyenes a csatlakozás."
+  },
+  {
+    "_id": "i18n-message-hu-landing-about-aria",
+    "key": "landing.about.aria",
+    "lang": "hu",
+    "value": "A MyScoutee bemutatása"
+  },
+  {
+    "_id": "i18n-message-hu-landing-about-close-aria",
+    "key": "landing.about.close.aria",
+    "lang": "hu",
+    "value": "MyScoutee bemutatkozás bezárása"
+  },
+  {
+    "_id": "i18n-message-hu-landing-about-founder-label",
+    "key": "landing.about.founder.label",
+    "lang": "hu",
+    "value": "Ki vagyok"
+  },
+  {
+    "_id": "i18n-message-hu-landing-about-founder-title",
+    "key": "landing.about.founder.title",
+    "lang": "hu",
+    "value": "Peter Szabo · független alapító és szoftverfejlesztő"
+  },
+  {
+    "_id": "i18n-message-hu-landing-about-founder-description",
+    "key": "landing.about.founder.description",
+    "lang": "hu",
+    "value": "A MyScoutee-t több évnyi önálló utazásszervezés és egy emberibb, az online bemutatkozástól a valós találkozásig vezető út keresése után építettem fel."
+  },
+  {
+    "_id": "i18n-message-hu-landing-about-product-label",
+    "key": "landing.about.product.label",
+    "lang": "hu",
+    "value": "Mi ez"
+  },
+  {
+    "_id": "i18n-message-hu-landing-about-product-title",
+    "key": "landing.about.product.title",
+    "lang": "hu",
+    "value": "A találkozások mögötti platform, nem swipe-alkalmazás"
+  },
+  {
+    "_id": "i18n-message-hu-landing-about-product-description",
+    "key": "landing.about.product.description",
+    "lang": "hu",
+    "value": "A privát, szerkeszthető prioritások kiegyensúlyozott csoportjavaslatokat segítenek létrehozni. Mindenki maga dönt a csatlakozásról, majd csevegésben folytathatják és valódi eseményeken találkozhatnak."
+  },
+  {
+    "_id": "i18n-message-hu-landing-about-free-label",
+    "key": "landing.about.free.label",
+    "lang": "hu",
+    "value": "Miért ingyenes"
+  },
+  {
+    "_id": "i18n-message-hu-landing-about-free-title",
+    "key": "landing.about.free.title",
+    "lang": "hu",
+    "value": "A csatlakozás ingyenes"
+  },
+  {
+    "_id": "i18n-message-hu-landing-about-free-description",
+    "key": "landing.about.free.description",
+    "lang": "hu",
+    "value": "A regisztráció, valamint az alapvető párosítási és közösségi funkciók használata ingyenes. A tervezett modell külön kezeli az opcionális eseményeket, jegyeket, helyszíneket, utazást és partneri szolgáltatásokat; ezeknek továbbra is lehet saját áruk."
   },
   {
     "_id": "i18n-message-hu-landing-partners-open-aria",

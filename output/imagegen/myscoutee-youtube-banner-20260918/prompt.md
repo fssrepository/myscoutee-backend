@@ -4,6 +4,10 @@ Tool: built-in `image_gen`.
 
 Final source image: `banner.png`, the accepted final generation with the corrected logo and central layout. Final upload file: `youtube-banner-2560x1440.jpg`, resized from that same final generation to 2560×1440 with ImageMagick and exported as quality-95 JPEG.
 
+Free-to-join source variant: `banner-free-to-join.png`. Matching upload file:
+`youtube-banner-free-to-join-2560x1440.jpg`, resized to 2560×1440 and exported
+as quality-95 JPEG. The accepted originals remain unchanged.
+
 ## Production correction
 
 Edit image 1, the full scenic MyScoutee banner. Image 2 is the exact original logo and must be reproduced faithfully, not simplified into a generic rounded M.
@@ -30,3 +34,14 @@ CRITICAL YOUTUBE CROP COMPOSITION: all branding and all text must fit in the cen
 Under the wordmark inside the safe zone, use the exact one-line tagline in smaller elegant white type: "Shared experiences. Real connections."
 Under that, still inside the safe zone, small clear white text: "myscoutee.com"
 Keep all essential type centered and comfortably away from cropping boundaries, without a panel or dark rectangular box. No additional words, no launch badges, no calls to subscribe, no watermark. Fully opaque rectangular finished banner.
+
+## Free-to-join variant prompt
+
+Use case: precise marketing-text addition to `banner.png`. Preserve the scenic
+background, café, all people and faces, flowers, lake, mountains, clouds,
+lighting, colors, emblem, wordmark, tagline, URL, aspect ratio and composition.
+Add one small premium rounded pill reading exactly `FREE TO JOIN` on the same
+horizontal row as `myscoutee.com`, immediately to its right with a modest gap.
+Keep the combined row centered and wholly inside the central YouTube safe crop.
+Use a subtle luminous lavender/violet fill with legible white uppercase text.
+Add no other text and do not alter or duplicate the logo.

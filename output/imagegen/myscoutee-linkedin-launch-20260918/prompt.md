@@ -4,6 +4,9 @@ User preference: LinkedIn articles and cover copy must always be English.
 
 Tool: built-in `image_gen`, edit mode. Final image: `cover.png`.
 
+Free-to-join marketing variant: `cover-free-to-join.png`. The accepted launch
+cover remains unchanged.
+
 Logo source: `frontend/src/assets/logo/heart.png`. The logo replaces the capital M in the wordmark.
 
 ## Logo insertion prompt
@@ -23,3 +26,14 @@ Use case: precise-object-edit. Image 1 is the cover to repair; image 2 is its or
 Restore ONLY the missing/transparent/black irregular outer corners and edges of image 1 to the full background shown in image 2. The final output must be a FULLY OPAQUE rectangular LinkedIn cover, every pixel filled, no transparent pixels, no alpha cutouts, no vignette holes, no torn or feathered border. Top left is pale ivory/lavender, top right is the continuous cafe awning, bottom left is pale lavender and blurred foliage, bottom right is the cafe scene.
 CRITICAL: preserve the [colorful M-shaped star-and-heart logo]yScoutee wordmark of image 1 exactly, all its English text, people, faces and composition. Do NOT restore the plain typed M from image 2. Image 2 is ONLY a reference for filling the outer background.
 Keep exact text "NOW LIVE", logo followed by "yScoutee", "Shared experiences.", "Real connections.", "myscoutee.com". Full-bleed approximately 16:9 landscape.
+
+## Free-to-join variant prompt
+
+Use case: precise text edit for an existing English LinkedIn launch
+advertisement. Edit `cover.png` and preserve its composition, people, faces,
+café, Budapest background, lighting, emblem, wordmark, typography, colors, URL
+and all other copy. Change only the small rounded lavender status pill at the
+upper left from `NOW LIVE` to the exact one-line text `FREE TO JOIN`, widening
+the same pill just enough for the phrase. Keep the same uppercase navy styling
+and add no other text or visual change. Output a fully opaque image at the same
+aspect ratio and resolution.
