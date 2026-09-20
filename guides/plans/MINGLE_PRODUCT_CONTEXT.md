@@ -105,17 +105,21 @@ or seated is usually a venue or policy detail.
 
 ## Event editor integration
 
-The current Tournament on/off-style control should become a format selector
-similar to the adjacent category selector. The intended choices are
-approximately:
+The existing format menu should receive one additional choice:
 
-- Standard;
+- Casual;
 - Tournament;
 - Mingle.
 
-The final name of Standard may change. Selecting Mingle keeps the normal event
-form and shows one compact Mingle configuration block, possibly where the
-strict Subevents configuration is otherwise shown.
+Selecting Mingle keeps the normal event form and the existing panel/list shell.
+The panel does not need a parallel Mingle-specific layout. Its `+` action is
+context-sensitive: Tournament opens the existing Create Stage popup, while
+Mingle opens a small Mingle-specific creation/configuration popup and returns
+the result to the same panel.
+
+This UI reuse does not turn Mingle rounds into Tournament stages. The Mingle
+popup exposes only the loose values needed by the Mingle operation, and actual
+rounds can still be started or added at runtime.
 
 The block should remain an editable list or a small set of inputs. The useful
 parameters are expected to be limited to values such as:
@@ -129,6 +133,11 @@ parameters are expected to be limited to values such as:
 
 The exact first-release fields remain an implementation decision. The model
 must not grow a separate workflow language or a list of named Mingle modes.
+
+QR-code admission, advance signup, and on-site joining remain flexible uses of
+the existing event membership, ticket, and check-in flow. They do not change
+the panel shape and must not become separate Mingle modes or required Mingle
+configuration fields.
 
 ### Relationship to Tournament
 
@@ -278,12 +287,17 @@ flow can create a two-person event; its existing chat behavior then applies.
 
 ### Navigation
 
-The Table shortcut must be easy to reach and may display a red indicator when a
-new/current assignment is available.
-
-The current installation shortcut can move into the Settings/gear menu or into
-a small icon near the notification bell. The exact placement remains a UI
+The current prominent installation shortcut should be freed for the Table
+action. Installation can move into the Settings/gear menu or become a small
+icon in the top button bar, approximately immediately before the notification
+bell. The exact one of those two installation placements remains a minor UI
 decision.
+
+The replacement Table action is contextual rather than permanently visible. It
+appears only while the participant has a currently running Mingle event and
+opens that event's current Table screen directly. It may display a red indicator
+when a new/current assignment needs attention. The five-second Mingle-state poll
+and the optional Firebase notification both update this same contextual action.
 
 ## Minimal persisted shape
 
@@ -414,7 +428,7 @@ changing this Mingle runtime.
 Existing MyScoutee Event
 |- category, Explore, location, time, capacity
 |- policy, membership, ticket/check-in, payment
-|- operating format: Standard | Tournament | Mingle
+|- operating format: Casual | Tournament | Mingle
 `- Mingle block when selected
    |- small editable configuration
    |- organizer starts the timed sequence
