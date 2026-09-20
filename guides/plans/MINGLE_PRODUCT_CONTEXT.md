@@ -1,649 +1,422 @@
-# MyScoutee Mingle — Recovered Product Context
+# MyScoutee Mingle — Current Product Context
 
-## Document purpose
+## Purpose
 
-This document preserves the complete Mingle product direction developed in the shared ChatGPT conversation titled **“Klikkmentes platformfejlesztés”**, together with the authoritative corrections made in the follow-up discussion on 20 September 2026.
+This document records the current, simplified Mingle product decision. It is a
+product-context document, not a detailed implementation specification.
 
-It is a product-context and decision-recovery document, not an implementation specification. It records both the current direction and the earlier branches that led to it, so future work can recover the reasoning without reopening or decoding the shared conversation.
-
-- Shared conversation: <https://chatgpt.com/share/6ab04d7f-3bec-83ed-b51b-d4af55a9c351>
-- Primary discussion dates: 19–20 September 2026
+- Source discussion: <https://chatgpt.com/share/6ab04d7f-3bec-83ed-b51b-d4af55a9c351>
+- Updated from the follow-up discussion on 20–21 September 2026
 - Language: English reconstruction of the original Hungarian discussion
-- Scope: Mingle, its MyScoutee integration, event configuration, live operation, encounters, discovery, and partner API
 
-## Read this first: authoritative corrections
+## Product decision
 
-The following points supersede several overcomplicated interpretations made during the conversation:
+Mingle is not a separate application. It is one optional block on an existing
+MyScoutee event.
 
-1. **Mingle is part of MyScoutee.** It is not currently planned as a separate Mingeva or Mingleva application, user base, social graph, or infrastructure stack.
-2. **World Café is not a separate system type.** It is one possible real-world use of Mingle.
-3. **The event category already exists.** Mingle must not duplicate or replace event categories.
-4. **There is no hard-coded `mingleVariant` enum.** The four tabs shown in the generated concept image were visual invention, not an established taxonomy or a set of product requirements. Do not derive the domain model from them.
-5. **Human-readable operating rules and machine parameters are separate.** Rules can be explained through the event policy. Algorithm parameters belong in a dedicated Mingle configuration panel, similar in spirit to the Tournament configuration.
-6. **A Mingle plan is intentionally soft.** A planned four rounds does not mean a maximum of four rounds. The organizer may start a fifth or later round.
-7. **Event and round times are guidance, not a rigid scheduler.** The advertised event start, location, and approximate end remain important, but live social events are commonly delayed or interrupted. The system must not forcibly end the event or create transitions merely because an estimated time elapsed.
-8. **Rounds are normally created at runtime by an organizer action.** They should not have to be authored in advance as ordinary subevents.
-9. **Runtime rounds may still be listed on the existing Subevents screen.** That is a presentation and navigation reuse, not a requirement to force Mingle rounds through the full normal subevent lifecycle.
-10. **Do not automatically create matches or chats from a table assignment.** A Mingle round establishes a real encounter signal. MyScoutee’s existing relationship, rating, two-person event, and chat behavior remains separate.
+MyScoutee already provides:
 
-## Core product idea
+- event creation and Event Explore;
+- category, location, start time, approximate end time, and capacity;
+- event policy;
+- membership, tickets, and ticket check-in;
+- profiles and priority signals;
+- chat and notifications;
+- payment or an external payment-provider link;
+- API and webhook infrastructure.
 
-The original trigger was the “clique-free” event format used by HaverVagy: people are placed into small groups, talk for a period, and are redistributed into new groups. The goal was to generalize the useful mechanism without copying a single organizer’s event product.
+Mingle adds only the missing live operation:
 
-The broader product idea became:
+> Run timed rounds over the currently eligible participants, assign them to
+> numbered tables or groups, and show each participant the current destination.
 
-> MyScoutee should be able to orchestrate lightweight, real-world introductions inside an event, while retaining the resulting encounter signals in the same event and relationship system that already powers discovery and priority.
+The value comes from embedding this small operation into the existing event and
+priority system, not from creating another consumer product.
 
-The participant experience should remain extremely simple:
+### What is actually missing
+
+Compared with narrow mixer applications, MyScoutee does not need another
+discovery page, profile, registration flow, ticket, check-in, chat, payment
+flow, or event-membership system. Those already exist.
+
+The actual product gap is limited to:
+
+- generating the next live table/group assignment;
+- running that assignment as a timed round with a table-change break;
+- showing the result to each participant;
+- retaining the actual assignment history;
+- optionally exposing the same event entry through a small partner API.
+
+## Mingle is an event operation, not an event category
+
+The event category continues to describe what the event is about. Mingle
+describes how participants are distributed while the event is running.
+
+These are ordinary MyScoutee event concepts:
+
+- rapid dating;
+- a lock-and-key party;
+- networking;
+- a social dinner;
+- a World Café;
+- a discussion evening.
+
+They do not require Mingle merely because of their theme. They use Mingle only
+when MyScoutee must assign or reassign people during the live event.
+
+Examples:
 
 ```text
-discover or receive an invite
-→ join the event
-→ arrive / check in
-→ receive the current table or group
-→ meet people
-→ receive the next assignment
-→ optionally rate or reconnect later through normal MyScoutee flows
+advertised rapid-dating event             -> normal MyScoutee event
+system-generated pair changes by round    -> event with Mingle enabled
+
+advertised lock-and-key party             -> normal MyScoutee event and policy
+system-generated group/table changes      -> event with Mingle enabled
 ```
 
-The complexity belongs in the event configuration, assignment engine, organizer controls, and existing MyScoutee infrastructure—not in a second consumer application.
+A World Café with managed table rotation is a direct Mingle use case, not a
+separate World Café mode. A World Café that does not require MyScoutee to move
+people remains an ordinary event.
 
-### Product boundary: mixing versus ordinary events
+A Timeleft-style dinner is not another mode either. If the organizer simply
+accepts a fixed table of participants, it is an ordinary event. A compulsory
+system-generated physical table can be represented as a single-round Mingle
+assignment, but it does not imply live rotation during the dinner.
 
-Mingle is needed when MyScoutee must actively assign or reassign participants into smaller groups during a live event. The meaningful structural choices are things such as a pair, a table-sized group, or a standing group, followed by zero or more organizer-triggered redistributions.
+Timeleft packages one specific format: a pre-composed small group, a dinner,
+and a coordinated venue. MyScoutee generalizes the underlying parts instead:
 
-An event that simply gathers people, seats one fixed group for the whole occasion, or leaves participants to socialize freely is not automatically a Mingle format. MyScoutee already covers ordinary non-mixing events. Competitor labels such as social dining, networking, or dinner matching do not create new Mingle modes by themselves.
+- the event category and policy describe the purpose and real-world format;
+- the existing event handles discovery, place, time, membership, and payment;
+- the existing priority flow organizes the wider participant set into ordered
+  chat-room choices, after which users choose what they want;
+- Mingle is used only when MyScoutee must produce one or more group
+  assignments for the physical event instead of leaving that choice to users.
 
-This boundary is more useful than trying to explain or reproduce every tab from a generated mockup:
+A Timeleft-like dinner is therefore one possible configuration of MyScoutee,
+not a separate feature family or a template that defines the Mingle model.
+Timeleft makes one central group choice for the participant; MyScoutee normally
+generalizes this into priority-organized choices with user selection.
 
-```text
-ordinary event: MyScoutee manages the event and its members
-Mingle event: MyScoutee additionally performs live subgroup assignment or rotation
-```
+There is no `mingleVariant` enum. The generated mockup labels such as Table
+swap, Rapid pairs, Standing mixer, and Networking are not four product types.
+Pairing is simply a group size of two. Networking is an event purpose. Standing
+or seated is usually a venue or policy detail.
 
-## Product evolution and discarded branches
+## Event editor integration
 
-### Initial generalization of table swapping
+The current Tournament on/off-style control should become a format selector
+similar to the adjacent category selector. The intended choices are
+approximately:
 
-The first idea was a generalized table-rotation product usable by bars, cafés, coworking spaces, conferences, universities, festivals, private organizers, and networking events. Instead of fixing the format to four people for thirty minutes, the organizer could configure group size, timing, and how people are redistributed.
+- Standard;
+- Tournament;
+- Mingle.
 
-The discussion quickly expanded beyond literal tables:
+The final name of Standard may change. Selecting Mingle keeps the normal event
+form and shows one compact Mingle configuration block, possibly where the
+strict Subevents configuration is otherwise shown.
 
-- real numbered tables;
-- two-person conversations;
-- standing groups or zones;
-- assigned standing or open groups;
-- repeated rotations designed to reduce repeated encounters;
-- combinations of these patterns during one event.
+The block should remain an editable list or a small set of inputs. The useful
+parameters are expected to be limited to values such as:
 
-The term “table” remains valuable in the user experience because many events use real physical tables. The underlying grouping must nevertheless tolerate pairs and standing groups.
-
-### City discovery and spontaneous attendance
-
-Another explored direction was a city-level list of events or active opportunities. A person might be walking nearby, see that something is happening, enter the venue, and join without weeks of planning.
-
-This introduced three attendance patterns:
-
-- **Pre-booked:** participants join in advance and capacity may be reserved.
-- **Walk-in:** participants can arrive while the event is running and become eligible for a later round.
-- **Hybrid:** advance registration and walk-in capacity coexist.
-
-These must be configuration dimensions, not separate products. “Venue mode” and “event mode” were explored as separate concepts but should not become a rigid top-level split. A normal MyScoutee event can express a scheduled, walk-in, or hybrid Mingle policy.
-
-### Separate lightweight application and brand
-
-The conversation temporarily explored a separate lightweight product under names such as Mingeva or Mingleva, potentially with a Go backend and a separate frontend served through the existing Nginx host. The attraction was a minimal profile and an extremely small interface.
-
-This branch was later superseded. The current direction is to embed Mingle into MyScoutee because most of the difficult infrastructure already exists:
-
-- users and authentication;
-- event creation and discovery;
-- location;
-- membership and approval;
-- QR/check-in capabilities;
-- notifications;
-- chat and relationship handling;
-- ratings;
-- priority and discovery signals;
-- partner API infrastructure;
-- deployment and operations.
-
-The lightweight quality should come from the Mingle participant flow, not from maintaining a second platform.
-
-### “Match as a Service” wording
-
-The partner API led to the phrase “Match as a Service.” It described how a partner could submit an external user identifier, receive an invite link, and let MyScoutee handle registration, event membership, assignments, and later relationship signals.
-
-The useful architectural idea remains, but “match” can be misleading. A Mingle assignment is not automatically a romantic or mutual match. The more precise product behavior is **event participation and encounter orchestration as a service**.
-
-## Relationship to the existing event model
-
-The event remains the main container. It already supplies the information Mingle does not need to reinvent:
-
-- title and description;
-- category;
-- location;
-- advertised start and approximate end;
-- visibility and discovery behavior;
-- capacity and membership;
-- organizer;
-- participant-facing policies;
-- payment or external payment link where applicable.
-
-The event editor should expose a format or operating-mode selector with approximately these user-facing choices:
-
-- Standard
-- Tournament
-- Mingle
-
-The exact label may change, but this must not be presented as a simple Tournament on/off or Rule on/off switch.
-
-Selecting Mingle exposes a compact Mingle configuration block. It does not replace the entire event form. It changes the part of the form that currently describes strict subevent or tournament structure.
-
-## Policy versus configuration
-
-Two different concepts must not be conflated.
-
-### Event policy
-
-The event policy communicates human-readable rules and expectations to participants. Examples include:
-
-- whether people move between tables or remain seated;
-- whether a host remains at each table;
-- how walk-ins are handled;
-- whether a participant may skip a round;
-- what information participants will see about one another;
-- whether ratings become available after the event;
-- expected conduct or venue-specific instructions.
-
-These rules can remain editable and descriptive. The system does not need to infer every runtime parameter from prose.
-
-### Mingle configuration panel
-
-The configuration panel stores the structured values used by the assignment algorithm and the live organizer console. It is analogous to Tournament configuration, but its semantics are deliberately looser.
-
-Likely dimensions include:
-
+- normal group size;
 - planned number of rounds;
 - approximate round duration;
-- target or allowed group size;
-- the physical grouping form required for a configured step, such as table, pair, standing group, or zone;
-- available group/table identifiers and capacities where the venue has real numbered tables;
-- assignment and redistribution constraints;
-- repeat-avoidance strength;
-- treatment of newly arrived participants;
-- whether a configured role remains fixed, such as a table host;
-- which participant attributes, if any, may influence assignment;
-- whether an organizer starts every round manually;
-- optional defaults used when the organizer creates an additional round.
+- table-change/break duration;
+- available table/group numbers or count;
+- simple assignment priority and repeat avoidance.
 
-The panel should be editable as a compact configuration/list block. It should not force the organizer to choose one hard-coded Mingle variant. The labels shown in the generated product image—Table swap, Rapid pairs, Standing mixer, and Networking—must not be treated as a reliable taxonomy. “Pair” versus “table/group” can describe a real algorithmic difference; “standing” can describe a physical layout; generic “networking” says nothing precise about assignment or rotation. Only concrete algorithm parameters should enter the model.
+The exact first-release fields remain an implementation decision. The model
+must not grow a separate workflow language or a list of named Mingle modes.
 
-## Planned structure versus live structure
+### Relationship to Tournament
 
-This distinction is central to the product.
+Tournament configuration is a useful UI precedent, but Mingle is not a
+tournament without scores.
 
-### Planned configuration
+- Tournament stages normally progress toward later stages.
+- Mingle rounds repeat horizontally over the same live participant pool.
+- Several tables/groups exist in parallel in each round.
+- There is no score, winner, elimination, or stage advancement.
 
-The organizer may say:
+This is why Mingle can reuse the idea of an event configuration block without
+copying the Tournament stage model. It can also reuse the Tournament-style
+timed progression with manual organizer controls for live exceptions.
 
-- four rounds are expected;
-- approximately twenty minutes per round;
-- four people should normally be placed at a table;
-- repeated pairings should be minimized.
+## No special stationary-person model
 
-These values explain the expected event and provide sensible algorithm defaults.
+There is no separate table-host, fixed-person, moving-side, or stationary-side
+domain concept.
 
-### Live runtime
-
-The organizer controls what actually happens:
-
-- the first round starts when the room is ready;
-- a round may last longer or shorter than planned;
-- a break or interruption may occur;
-- late arrivals may be held for the next assignment;
-- the organizer may close the current round manually;
-- the organizer may start a fifth round even if only four were planned;
-- configuration may be adjusted for future rounds if the actual attendance differs from the plan.
-
-Therefore:
+If someone should remain at the same table in the next round, the next
+assignment simply gives that person the same table number while other people
+receive new table numbers.
 
 ```text
-plannedRoundCount != maximumRoundCount
-estimatedRoundDuration != automaticCloseDeadline
-eventEnd != forcedRuntimeTermination
+round 1: Alex -> Table 3
+round 2: Alex -> Table 3
 ```
 
-An event may still display an approximate end time for discovery, calendar use, and participant expectations. It must not silently destroy or close the live session when that time passes.
+This is an ordinary assignment result, not a special participant role.
 
-## Runtime domain shape
+## Policy and configuration
 
-A minimal conceptual structure is:
+The existing event policy remains the human-readable place for flexible
+operating information, for example:
+
+- participants may arrive while the event is running;
+- the normal round and table-change flow;
+- rounds may be shorter or longer than planned;
+- the advertised end time is approximate;
+- venue-specific instructions and expected conduct.
+
+The Mingle block contains only the structured values needed to create an
+assignment. The application does not need to convert every real-world detail
+into a switch.
+
+There is no separate walk-in mode. If an ongoing event is still visible, has
+space, and its policy allows joining, a person can join, use the existing ticket
+and check-in flow, and become available for a later round.
+
+The event is past only after its end time. An ongoing event remains available
+to the existing Explore ranking and filters, including location-based
+filtering.
+
+Explore may later show a compact Mingle badge or filter if it fits the existing
+surface. If the current filter row has no space, it can be placed in the
+existing extended filter form. This is an extension of Event Explore, not a
+separate Mingle discovery screen.
+
+## Flexible rounds
+
+Round planning is advisory:
+
+```text
+planned round count != maximum round count
+configured round and break durations = default automatic cadence
+timer transition != irreversible transition
+event end time != forced Mingle shutdown
+```
+
+The organizer starts the live sequence. After that, the normal flow may be
+automatic: a conversation round ends, a configurable table-change break runs
+for approximately five to ten minutes, the next assignment is displayed, and
+the next round begins.
+
+The organizer can pause, delay, extend, or manually advance this flow when
+something happens in the room. Automation provides the normal cadence; manual
+control handles exceptions, similarly to the existing Tournament flow.
+
+A planned four-round event may receive a fifth round. The organizer should not
+have to edit the main event or pre-create normal subevents to do this.
+
+Actual rounds may appear in the existing Subevents list as event-scoped
+history, but they are lightweight runtime rounds rather than pre-authored
+subevents with a strict lifecycle.
+
+## Minimal live operation
+
+The live flow is deliberately small:
+
+```text
+organizer starts the Mingle sequence
+-> assign currently eligible/check-in participants
+-> run the conversation round
+-> enter the configured table-change break
+-> generate and show the next table numbers
+-> start the next round automatically
+-> organizer intervenes only when needed
+```
+
+Ticket check-in is existing MyScoutee functionality and is not a missing
+Mingle feature. Mingle only consumes the resulting eligible participant set.
+
+A late arrival waits for the next round. The system does not need to disrupt an
+active table assignment.
+
+For later rounds, the assignment can avoid repeated co-participants. It may use
+signals already available to the priority system, but it must not confuse this
+with the existing priority flow itself: that flow organizes chat-room choices
+and lets users choose, while Mingle produces a physical table assignment.
+
+If a participant receives the same table again, that is valid. The assignment
+engine decides which table number each participant gets; the data model does
+not need to describe who physically moves.
+
+## Organizer and participant surfaces
+
+### Organizer
+
+The Table surface acts as a small control desk:
+
+- show the current round;
+- show participants grouped by table number;
+- show people waiting for the next round;
+- start the Mingle sequence;
+- pause, delay, extend, or manually advance the current phase;
+- start an extra round beyond the plan;
+- retain the actual round history.
+
+### Participant
+
+The participant surface should show only:
+
+- current round or waiting state;
+- current table/group number;
+- basic information and profile pictures for the people at that table;
+- approximate remaining time;
+- a table-change countdown before the next round.
+
+General movement and conduct instructions belong in the event policy. Runtime
+UI only needs to show the current fact, such as `Go to Table 7` or `Next round
+starts in 06:20`; it is not another instruction or policy subsystem.
+
+An assignment does not automatically create a match, pair chat, group chat, or
+new event. If two people want to continue separately, the existing MyScoutee
+flow can create a two-person event; its existing chat behavior then applies.
+
+### Navigation
+
+The Table shortcut must be easy to reach and may display a red indicator when a
+new/current assignment is available.
+
+The current installation shortcut can move into the Settings/gear menu or into
+a small icon near the notification bell. The exact placement remains a UI
+decision.
+
+## Minimal persisted shape
+
+The product needs only:
 
 ```text
 Event
-├── Event policies                  participant-facing rules
-├── Mingle configuration            editable algorithm parameters
-└── Mingle runtime
-    ├── actual round 1
-    │   ├── table/group 1
-    │   ├── table/group 2
-    │   └── participant assignments
-    ├── actual round 2
-    └── ...additional manually opened rounds
+|- existing event data and policy
+|- optional Mingle configuration
+`- actual Mingle rounds
+   `- table number -> participant IDs
 ```
 
-The precise class and collection names remain an implementation decision. The required semantics are more important:
+Actual saved round assignments provide the history of who was placed together.
+Completed co-assignment may later feed the existing priority and rating logic.
+This does not require a separate matching product or an automatically created
+relationship.
 
-- an actual round is created when it is started, not merely because it was planned;
-- each actual round has a stable sequence, status, timestamps, and assignments;
-- each group may represent a real table, pair, standing group, or another organizer-defined physical destination;
-- assignments are retained as history;
-- a round should retain a snapshot of the configuration used to generate it, so later edits do not rewrite history;
-- an organizer can create another round beyond the plan;
-- the event is not required to materialize planned rounds as ordinary subevents in advance.
+Ordinary event membership or a broad event activity value must not be treated
+as proof that every participant met every other participant. For Mingle, the
+relevant signal comes from the actual completed table/group assignment.
 
-## Relationship to subevents
+## Partner API
 
-Tournament stages fit the existing subevent model more naturally because they are usually planned and progress from one stage to another under stricter rules.
+The external API is a small additional entry path into the same MyScoutee
+event, not a separate Mingle platform.
 
-Mingle is different:
-
-- rounds are horizontal repetitions rather than advancement stages;
-- many groups/tables exist in parallel inside each round;
-- there is normally no score or advancement;
-- actual timing depends on the room and organizer;
-- the next round is commonly created by an explicit live action;
-- extra rounds are normal rather than exceptional data repair.
-
-For that reason, the Mingle editor may use a dedicated configuration panel where the normal subevent editor currently appears. Runtime rounds should not be forced to behave like fully authored subevents.
-
-The existing Subevents screen can still list actual rounds because it already provides a useful event-scoped list and navigation surface. It can show, for example:
+The core invite flow is:
 
 ```text
-Round 1 — closed — 8 tables
-Round 2 — active — your assignment: Table 7
-Round 3 — closed — 9 groups
-Round 4 — active or waiting
-Round 5 — added by organizer
+partner event + partner external user ID
+-> MyScoutee returns a unique claimable URL/token
+-> partner sends the URL
+-> person registers or signs in
+-> MyScoutee attaches the person to the event
 ```
 
-This is a read-model and navigation decision. It does not mean Mingle rounds must inherit every validation, scheduling rule, or authoring requirement of normal subevents.
+Batch invite creation is useful when a partner already has a participant list.
+An optional later API may import previous encounter information or expose
+results through the existing watch/webhook mechanism. That is not required for
+the first simple Mingle runtime.
 
-## Organizer experience
+This capability may be described commercially as matching as a service, but it
+is still the same small event assignment capability exposed to partners. It
+must not turn the first implementation into a general-purpose orchestration
+platform.
 
-The organizer needs a lightweight live control desk, reachable through the Table area. It should make the next operational action obvious and avoid requiring edits to the main event form while people are waiting.
+### Profile API popup
 
-Core capabilities discussed include:
+The existing API popup in Profile needs a question-mark/help icon next to its
+close control.
 
-- see expected, joined, checked-in, waiting, and currently assigned participants;
-- see active groups/tables and occupancy;
-- start the first or next round manually;
-- close the current round manually;
-- add an extra round beyond the plan;
-- include walk-ins or late arrivals in a future round;
-- handle no-shows and changing attendance without rebuilding the event;
-- view the generated assignments before or as they are published;
-- retain actual round and table history;
-- optionally adjust parameters used by subsequent rounds.
+The help icon opens the GitHub repository README location where the
+documentation table links to the Integration API documentation. The popup does
+not need to reproduce the full API manual.
 
-The organizer’s manual action is the normal trigger. Automation or scheduled starts may be added later, but the data model must not assume they are required.
+## External payment provider
 
-## Participant experience
+An external payment provider is needed independently of Mingle. Mingle must
+reuse the event's normal payment or external-payment path rather than introduce
+its own payment flow.
 
-The participant should not have to understand the configuration model.
-
-The active Table screen should show only what helps the person move and recognize the group:
-
-- current round;
-- current table number, pair, or zone;
-- basic information about the people assigned to the same group;
-- profile pictures;
-- the remaining or expected time, if useful;
-- a clear waiting state when no assignment is active;
-- the next instruction when the organizer opens another round.
-
-The tables are real physical tables when the event uses tables. The table screen can behave like a temporary member screen: basic identity and profile image, without turning the assignment into a chat room or match.
-
-An earlier standalone-product branch proposed a deliberately tiny profile: display name, image, gender, and age only when required by the organizer. Inside MyScoutee, there should not be a second Mingle profile. The Mingle surface should simply reveal the minimum appropriate subset of the existing profile.
-
-## Navigation and UI integration
-
-The intended integration is incremental rather than a parallel application shell.
-
-### Event editor
-
-- Replace the current binary Tournament-style control with a format selector comparable to the adjacent category selector.
-- Standard, Tournament, and Mingle are the main operating choices.
-- When Mingle is selected, display the dedicated Mingle configuration block.
-- Keep normal event fields and category selection intact.
-- Keep participant-facing operating rules in the event policy.
-
-### Table shortcut
-
-The current side-menu/header installation shortcut can move into the existing Settings/gear area. The freed location can become the Table shortcut.
-
-The Table shortcut should take a participant directly to the current assignment or take an organizer to the live console. A red badge can signal an active/new table assignment. If a number is displayed, the UI must make clear whether it is a table number or a notification count.
-
-### Subevents list
-
-The existing Subevents screen can list actual Mingle rounds and open their details. This gives users a familiar route to history while the Table shortcut remains optimized for the current live assignment.
-
-### Explore
-
-Mingle events should remain discoverable through the existing event system. The existing event category remains the category. Mingle is an operating format and may be shown as a compact badge or filter where space permits; it does not require a second marketplace.
-
-The original discussion included city browsing, nearby events, “active now,” tonight/this week views, and spontaneous entry. These remain valuable discovery use cases, but they should extend the existing Explore model rather than create a separate Mingle home screen by default.
-
-## Attendance and check-in
-
-Registration, membership, and physical presence are distinct.
-
-- A person may be an accepted event member but not yet present.
-- A walk-in may arrive after one or more rounds have already started.
-- The assignment engine should use the currently eligible/present participant set rather than every accepted member.
-- A late arrival can wait for the next organizer-started round instead of forcing a rebalance of an active conversation.
-
-The shared discussion explored an event or entrance QR code. A person scans it, authenticates or registers, and becomes checked in for the event. Optional table QR codes were discussed but considered likely to create unnecessary interaction and should not be mandatory.
-
-MyScoutee already has QR and identity-verification concepts. Mingle should reuse the appropriate existing path instead of creating a second registration system.
-
-The attendance policy must be configurable broadly enough to support:
-
-- advance-only participation;
-- walk-in participation;
-- hybrid participation;
-- auto-approved partner invitations;
-- organizer-controlled approval where required;
-- late arrival entering a later round;
-- a participant temporarily waiting instead of being assigned.
-
-## Assignment engine
-
-The engine receives the current eligible participant set, the current Mingle configuration, actual venue/group capacity, and encounter history. It produces assignments for one newly started round.
-
-The most durable core constraint is repeat avoidance: where possible, a participant should meet people they have not already met, including encounters from earlier rounds and potentially earlier events.
-
-Other dimensions explored in the conversation include:
-
-- random distribution;
-- maximum number of new encounters;
-- similarity or shared interests;
-- deliberate diversity;
-- language;
-- age bands when the event requires them;
-- gender-aware pairing where the policy requires it;
-- professional or event-specific attributes;
-- fixed host with rotating participants;
-- one side moving while another remains;
-- everyone moving;
-- uneven group sizes caused by actual attendance;
-- pairs, small tables, larger tables, standing groups, and zones;
-- imported encounter history from an external organizer.
-
-These are configuration dimensions or constraints, not reasons to create a hard-coded event-type hierarchy. The first implementation may expose only a safe subset, while the stored configuration should be evolvable and versioned.
-
-The engine must degrade gracefully. If every constraint cannot be satisfied, it should produce a usable assignment and record or surface the relaxation rather than block the live event.
-
-## Encounters, ratings, relationships, and chat
-
-Mingle is valuable to MyScoutee because a real-world event produces new relationship signals.
-
-The important distinction is:
-
-```text
-assignment != encounter != rating != match != chat
-```
-
-- An assignment says where someone was placed for a round.
-- A completed/confirmed round can establish that co-assigned people encountered one another.
-- A rating is optional and may become available later.
-- A mutual relationship or “match” follows its own MyScoutee rules.
-- Chat is not automatically created for every table or encounter.
-
-Mingle events should not create the normal event group chat merely because the event has members. The user explicitly preferred preventing group-chat behavior for Mingle.
-
-MyScoutee can already support a later two-person event. If both people accept that event, the existing chat behavior can apply. This avoids forcing a swipe-style mutual-like flow into Mingle.
-
-The encounter history can feed MyScoutee’s existing priority/noise-filter logic:
-
-```text
-Mingle participation
-→ real encounters
-→ relationship signals
-→ priority filtering
-→ more relevant future events
-→ possible repeated real-world interaction
-```
-
-This is a major differentiator from a standalone table-rotation utility. The event is not the end of the data flow; it can improve future discovery while remaining privacy-conscious.
-
-## Current activity/rating concern
-
-The current MyScoutee event behavior should not be assumed to model Mingle encounters correctly. Ordinary accepted event membership may imply a broad event-level relationship, while Mingle needs the narrower fact that two people were assigned to the same group in an actual round.
-
-Mingle therefore needs a canonical encounter record derived from actual runtime groups, not from every accepted event member. The exact point at which an encounter becomes durable—round close, organizer confirmation, or another explicit event—must be chosen during implementation. It must not be inferred merely from a planned assignment that never ran.
-
-Ratings can be unlocked after a round or event according to product policy, but they remain downstream of encounters rather than defining whether an encounter occurred.
-
-## Partner integration API
-
-The strongest external integration discussed is intentionally small.
-
-### Invite flow
-
-A partner that already manages its audience sends its own internal participant identifier for a specific event:
-
-```text
-partner external_user_id
-→ MyScoutee integration API
-→ unique invitation URL/token
-→ partner sends the URL
-→ person registers or signs in to MyScoutee
-→ invitation is claimed
-→ MyScoutee user is attached to the event
-→ event membership is automatically approved when the integration policy allows it
-```
-
-The partner does not need to send a name, email address, profile image, or other personal data. Until redemption, MyScoutee only needs the event, integration owner, partner-scoped external identifier, token state, and expiration.
-
-Batch creation is important because an organizer may upload many identifiers and receive one URL per participant. The external identifier must be scoped to the authenticated integration client or tenant rather than treated as a global user identifier.
-
-Tokens should be opaque, high entropy, scoped, expiring, and single-use or otherwise protected against unintended reassignment. Raw bearer credentials and internal IDs must not appear in public URLs or logs.
-
-### Encounter and history integration
-
-The discussion also considered external systems importing historical “who met whom” data. This can help repeat avoidance when an organizer used a previous system. If supported, it should be an explicit idempotent encounter-import operation with event/round provenance, not an ambiguous user update.
-
-For events run by MyScoutee, the preferred direction is for MyScoutee to remain the source of truth and expose results outward. Existing webhook/watch infrastructure can notify partners about privacy-safe events such as:
-
-- invitation claimed;
-- participant joined or checked in;
-- round opened or closed;
-- assignment or encounter recorded;
-- event completed.
-
-The API may also expose query endpoints for durable state. Webhooks should deliver changes; they should not be the only way to recover current state.
-
-### Existing integration UI
-
-The API settings popup should include a question-mark/help control next to the close control. It should open the GitHub repository documentation location where the README table links to the Integration API documentation.
-
-## Payments and external organizers
-
-The initial Mingle scope does not require MyScoutee to replace a partner’s payment system. An organizer may continue to sell tickets or collect payment externally and link participants into MyScoutee for the live experience.
-
-Affiliate commission and deeper payment integration were discussed as possible later commercial models. They are not prerequisites for the Mingle runtime.
+An external payment URL must be validated before it is stored or opened. The
+exact validation and provider rules belong to the payment implementation, not
+to the Mingle configuration.
 
 ## Realtime delivery
 
-The live table assignment must be easy to reach and must recover correctly after delays or reconnects.
+The implementation may reuse the existing notification and realtime
+infrastructure. Firebase notification versus WebSocket delivery does not need
+to be settled in the product model.
 
-The durable source of truth is server-side runtime state. A foreground client can receive immediate changes through a realtime channel such as WebSocket. Firebase push notifications can wake or alert a device when the app is backgrounded, but push delivery alone should not define the active assignment because it may be delayed, duplicated, or disabled.
+The durable fact is the current saved round assignment. A notification only
+tells the client to display or reload it.
 
-On resume or reconnect, the client should query the current event/round assignment and render the authoritative state. The notification is a prompt to refresh, not the state itself.
+## Explicit non-goals
 
-## Discovery and priority
+Do not add the following to the initial model:
 
-The original standalone idea emphasized a city list: nearby sessions, active-now opportunities, upcoming events, available places, language, and approximate format. When brought into MyScoutee, this becomes an extension of Event Explore rather than a second discovery product.
+- a separate Mingle/Mingeva/Mingleva application;
+- a second profile, event marketplace, category, or social graph;
+- four named Mingle variants based on the concept image;
+- separate rapid-dating, lock-party, networking, or World Café types;
+- table hosts, stationary participant roles, or movement modes;
+- a separate walk-in or Mingle check-in system;
+- mandatory table QR codes;
+- pre-created rigid rounds;
+- timer transitions that cannot be paused or corrected by the organizer;
+- automatic matches or chats;
+- printed badges or agendas;
+- a Mingle-specific payment system;
+- a universal constraint/workflow engine;
+- a large standalone partner platform.
 
-The existing category remains the participant-facing subject or context of the event. Mingle describes how people are orchestrated once they attend.
+## Small implementation boundary
 
-Priority can use Mingle encounters as signals, but Mingle events must remain joinable even for users who are not participating in a more personalized priority mode. Discovery eligibility, event visibility, and priority ranking must remain separate concerns.
+The first coherent product slice is:
 
-## Flexibility requirements
+1. add Mingle to the event format selector;
+2. show one compact editable Mingle configuration block;
+3. add the Table shortcut and the small organizer/participant surfaces;
+4. start a timed Mingle sequence from checked-in participants;
+5. run round and table-change timers with manual organizer controls;
+6. store and display table-number assignments;
+7. allow additional rounds beyond the plan;
+8. preserve completed round assignments for priority/history use;
+9. add the Profile API-popup help link;
+10. reuse the event's validated external-payment URL flow.
 
-The Mingle configuration must be broad enough to support the explored cases without exposing a complex universal workflow language to ordinary organizers.
+The partner invite API can use the same event and participant model without
+changing this Mingle runtime.
 
-It should support, or be able to evolve toward:
-
-- a scheduled event with advance registration;
-- a spontaneous walk-in event;
-- a hybrid event;
-- a single table rotation format;
-- rapid two-person conversations;
-- standing groups;
-- assigned networking groups without scores, when the system actually performs grouping or regrouping;
-- a World Café-style rotation, without making World Café a separate product type;
-- fixed table hosts with rotating guests;
-- multiple group sizes;
-- approximate timed rounds;
-- organizer-paced untimed rounds;
-- late arrivals joining only future rounds;
-- extra rounds added during the event;
-- repeat avoidance across the same event;
-- repeat avoidance across previous events;
-- partner-provided encounter history;
-- rules using a small set of event-specific participant attributes;
-- external participants entering through unique invitation URLs.
-
-Flexibility should come from editable parameters, rules, and runtime control—not from continually adding top-level event types.
-
-## Simplicity requirements
-
-Broad configuration must not make the default path heavy.
-
-- The event form should still require only a small number of fields for a common Mingle event.
-- Advanced constraints should remain optional.
-- Human policy text and algorithm parameters must remain visibly separate.
-- Participants should never see the assignment configuration.
-- Participants should see only their current instruction, table/group members, and relevant timing.
-- Organizers should control the live event from one compact console.
-- The system should choose sensible defaults and tolerate real-world deviations.
-- Creating an extra round should be a normal action, not an error recovery workflow.
-
-## Suggested implementation boundary
-
-This section records the current conceptual boundary without fixing names prematurely.
-
-### Persisted event configuration
-
-- Mingle enabled through the event operating mode.
-- Structured, versioned Mingle configuration.
-- Participant-facing event policies remain separate.
-- Planned round count and durations are advisory.
-
-### Persisted runtime
-
-- Mingle runtime/session state for the event.
-- Actual manually started rounds.
-- Groups/tables within each actual round.
-- Participant assignments.
-- Snapshot of the configuration used for each generated round.
-- Durable encounter records when the chosen confirmation condition is met.
-
-### Derived/read models
-
-- current participant assignment;
-- organizer console counts and table state;
-- red Table indicator/current assignment shortcut;
-- runtime round history presented in the Subevents list;
-- partner-facing event/assignment/encounter history where authorized;
-- priority signals derived from confirmed encounters.
-
-## Current repository fit observed during the follow-up discussion
-
-These are repository observations, not claims from the original shared chat:
-
-- The frontend currently defines `EventMode` as `Casual | Tournament`.
-- The frontend currently separates subevent enablement from its mode selector.
-- Tournament-specific configuration, stages, group views, and a subevent list already exist and provide useful UI patterns.
-- Existing event policy items contain a title, description, and required flag; those remain suited to human-readable policies, not algorithm configuration.
-- The side menu currently has an installation/setup shortcut and an existing Settings path that can host that setup action.
-- The notification area already supports alert-style counters.
-- MyScoutee already has an authenticated integration API with event/asset batch synchronization and outbound watch/webhook infrastructure.
-- The existing integration API does not yet provide the proposed partner participant-invite or encounter endpoints.
-- Existing event feedback and relationship projection must not be assumed to represent table-level encounters accurately.
-- Existing WebSocket and Firebase-related infrastructure can inform the live delivery design, but server-side round/assignment state must remain authoritative.
-
-## Non-goals and traps
-
-Avoid the following unless later requirements explicitly change:
-
-- a separate Mingle application or second MyScoutee user profile;
-- a World Café event type;
-- a closed `mingleVariant` enum;
-- treating the four visual examples as an authoritative taxonomy or as exclusive tabs that define the data model;
-- pulling ordinary non-mixing social events into Mingle when the existing event model already covers them;
-- duplicating the existing event category inside Mingle;
-- requiring every planned round to be authored as a normal subevent;
-- automatically starting or ending rounds solely from estimated timestamps;
-- preventing an organizer from adding rounds beyond the plan;
-- treating every accepted event member as having met every other member;
-- automatically creating a group chat, pair chat, or match for an assignment;
-- using push notification delivery as the source of truth;
-- requiring partners to transmit personal participant data when an external ID and claimable invitation are sufficient;
-- building payment replacement, affiliate accounting, or a second marketplace as a prerequisite for the first Mingle runtime.
-
-## Open implementation decisions
-
-The conversation intentionally leaves several details open:
-
-- the final user-facing name of the Standard/Casual mode and the selector itself;
-- the exact structure of the editable Mingle configuration list;
-- which assignment constraints belong in the first release;
-- whether mixed grouping patterns can change per round in the first release or only later;
-- how real tables/zones are entered and reused by an organizer;
-- the precise encounter confirmation event;
-- when ratings become available;
-- whether an active table badge displays a table identifier or an attention count;
-- whether foreground updates use a dedicated event WebSocket channel or another existing realtime abstraction;
-- how much Mingle filtering is added to Explore when horizontal space is limited;
-- whether encounter import is part of the initial partner API or a later compatibility endpoint.
-
-These decisions should be resolved from the simplest coherent vertical slice, without narrowing the persisted model so much that walk-in, hybrid, standing, pair, and extra-round use cases become impossible.
-
-## Compact final model
-
-The current direction can be summarized as follows:
+## Compact model
 
 ```text
 Existing MyScoutee Event
-├── existing category, location, discovery, membership, payment link, etc.
-├── operating mode: Standard | Tournament | Mingle
-├── participant-facing event policies
-└── Mingle configuration panel
-    ├── editable algorithm parameters and grouping rules
-    ├── planned counts and approximate timing
-    └── defaults for organizer-created rounds
+|- category, Explore, location, time, capacity
+|- policy, membership, ticket/check-in, payment
+|- operating format: Standard | Tournament | Mingle
+`- Mingle block when selected
+   |- small editable configuration
+   |- organizer starts the timed sequence
+   |- rounds and table-change breaks advance automatically
+   |- organizer can pause or manually advance when needed
+   |- participant receives a table number
+   |- same number again means the participant stays there
+   `- saved rounds can inform priority
 
-Live operation
-├── organizer starts a round
-├── engine assigns currently eligible participants
-├── participant receives table/pair/group instruction
-├── organizer closes or advances when reality permits
-├── actual round appears in runtime history/Subevents list
-├── organizer may create additional rounds
-└── confirmed co-participation produces encounter signals
-
-External integration
-├── partner external user ID
-├── unique claimable invite URL
-├── MyScoutee registration/login and automatic event attachment
-├── MyScoutee runs the Mingle experience
-└── authorized state/history can flow back through API and webhooks
+Optional partner entry
+`- external user ID -> claimable URL -> existing event membership
 ```
 
-The central design principle is:
+The central decision is:
 
-> Configure broadly, plan softly, run manually, record what actually happened, and reuse those real encounters inside MyScoutee.
+> Keep Mingle small: one configurable block on an event, one timed live
+> sequence with manual assistance, and one table number per participant.
