@@ -350,14 +350,26 @@ An external payment URL must be validated before it is stored or opened. The
 exact validation and provider rules belong to the payment implementation, not
 to the Mingle configuration.
 
-## Realtime delivery
+## Live-state polling
 
-The implementation may reuse the existing notification and realtime
-infrastructure. Firebase notification versus WebSocket delivery does not need
-to be settled in the product model.
+Mingle does not require a WebSocket connection. For a participant in an event
+with an active Mingle sequence, the client may poll the event's compact current
+Mingle state approximately every five seconds. The same returned state can
+update the Table surface and its side-menu indicator; they must not run separate
+polling loops.
 
-The durable fact is the current saved round assignment. A notification only
-tells the client to display or reload it.
+The durable fact remains the current saved round assignment. Polling only tells
+the client when to display the newer saved state. The poll is needed only while
+the user participates in a currently running Mingle event; after returning from
+a hidden/background state, the client can perform an immediate check.
+
+Firebase may additionally send an immediate notification when a new table
+assignment becomes available. The notification can carry the event/Mingle
+identifier and a deep link to the existing Table screen. Opening it navigates
+directly to that screen, which then reads the authoritative current assignment
+from the backend. The notification payload itself is not the assignment record,
+and polling remains the fallback when a notification is delayed, suppressed, or
+not permitted.
 
 ## Explicit non-goals
 
