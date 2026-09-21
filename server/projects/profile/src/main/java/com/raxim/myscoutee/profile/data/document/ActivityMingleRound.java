@@ -10,6 +10,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 
 @Document(collection = "activityMingleRounds")
 @CompoundIndexes({
+        @CompoundIndex(name = "mingle_round_meetings_due", def = "{'status': 1, 'meetingsProjected': 1, 'completedAtIso': 1}"),
         @CompoundIndex(name = "mingle_round_event_number", def = "{'eventId': 1, 'roundNumber': 1}", unique = true),
         @CompoundIndex(name = "mingle_round_event_status", def = "{'eventId': 1, 'status': 1}")
 })
@@ -19,6 +20,7 @@ public class ActivityMingleRound {
     private String eventId;
     private Integer roundNumber;
     private String status;
+    private Boolean meetingsProjected;
     private List<TableAssignment> tables = new ArrayList<>();
     private String assignmentCreatedAtIso;
     private String startedAtIso;
@@ -31,6 +33,8 @@ public class ActivityMingleRound {
     public void setEventId(String eventId) { this.eventId = eventId; }
     public Integer getRoundNumber() { return roundNumber; }
     public void setRoundNumber(Integer roundNumber) { this.roundNumber = roundNumber; }
+    public Boolean getMeetingsProjected() { return meetingsProjected; }
+    public void setMeetingsProjected(Boolean value) { meetingsProjected = value; }
     public String getStatus() { return status; }
     public void setStatus(String status) { this.status = status; }
     public List<TableAssignment> getTables() { return tables; }

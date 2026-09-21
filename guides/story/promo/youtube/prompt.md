@@ -4,9 +4,8 @@ Tool: built-in `image_gen`.
 
 Final source image: `banner.png`, the accepted final generation with the corrected logo and central layout. Final upload file: `youtube-banner-2560x1440.jpg`, resized from that same final generation to 2560×1440 with ImageMagick and exported as quality-95 JPEG.
 
-Free-to-join source variant: `banner-free-to-join.png`. Matching upload file:
-`youtube-banner-free-to-join-2560x1440.jpg`, resized to 2560×1440 and exported
-as quality-95 JPEG. The accepted originals remain unchanged.
+The accepted `banner.png` and upload file `youtube-banner-2560x1440.jpg` now
+include FREE TO JOIN and replace the previous versions.
 
 ## Production correction
 

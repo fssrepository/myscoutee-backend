@@ -46,7 +46,8 @@ public final class EventsDtos {
             String topic,
             Integer limit,
             String cursor,
-            List<String> excludedSourceIds) {
+            List<String> excludedSourceIds,
+            String mode) {
     }
 
     public record EventActionRequestDto(

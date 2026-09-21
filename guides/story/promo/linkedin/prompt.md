@@ -4,8 +4,7 @@ User preference: LinkedIn articles and cover copy must always be English.
 
 Tool: built-in `image_gen`, edit mode. Final image: `cover.png`.
 
-Free-to-join marketing variant: `cover-free-to-join.png`. The accepted launch
-cover remains unchanged.
+The accepted `cover.png` now includes FREE TO JOIN. It replaces the earlier NOW LIVE cover.
 
 Logo source: `frontend/src/assets/logo/heart.png`. The logo replaces the capital M in the wordmark.
 

@@ -143,7 +143,8 @@ class ActivitiesEventLeaderboardServiceTest {
         ActivityEvent record = eventRecord("event-1", "canonical");
         record.setMode("Mingle");
         record.setSubEvents(List.of());
-        record.setMingleConfiguration(new MingleConfigurationDto(4, 3, 20, 5, 2, true));
+        record.setMingleConfiguration(new MingleConfigurationDto(4, 3, 20, 5, true));
+        record.setCapacityMax(8);
         ActivityMingleRound firstRound = new ActivityMingleRound();
         firstRound.setEventId("event-1");
         firstRound.setRoundNumber(1);

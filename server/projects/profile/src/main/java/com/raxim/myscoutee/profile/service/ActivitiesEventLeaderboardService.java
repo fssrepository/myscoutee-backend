@@ -1399,8 +1399,7 @@ public class ActivitiesEventLeaderboardService {
             int groupSize = Math.max(2, safeCount(config == null ? null : config.groupSize()));
             int roundDuration = Math.max(1, safeCount(config == null ? null : config.roundDurationMinutes()));
             int breakDuration = Math.max(0, safeCount(config == null ? null : config.breakDurationMinutes()));
-            int tableCount = Math.max(0, safeCount(config == null ? null : config.tableCount()));
-            int configuredCapacity = tableCount > 0 ? tableCount * groupSize : safeCount(event.getCapacityMax());
+            int configuredCapacity = safeCount(event.getCapacityMax());
             List<SubEventItem> rounds = new ArrayList<>();
             for (int index = 0; index < plannedRounds; index += 1) {
                 rounds.add(new SubEventItem(

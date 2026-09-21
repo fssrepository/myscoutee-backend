@@ -725,6 +725,7 @@ public class DeletedAccountPurgeService {
         deleteDocumentsByAnyField("userFriendships", List.of("leftUserId", "rightUserId"), userId);
         deleteDocumentsByAnyField("userExperienceProfiles", List.of("userId"), userId);
         deleteDocumentsByAnyField("userFilterPreferences", List.of("userId", "createdUser", "updatedUser"), userId);
+        deleteDocumentsByAnyField("userPageFilterPreferences", List.of("userId"), userId);
         deleteDocumentsByAnyField("privacyConsents", List.of("userId"), userId);
         deleteDocumentsByAnyField("userFeedback", List.of("userId", "createdUser", "updatedUser"), userId);
         deleteDocumentsByAnyField("userReports", List.of("userId", "targetUserId", "createdUser", "updatedUser"), userId);

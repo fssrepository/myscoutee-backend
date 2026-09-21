@@ -9,6 +9,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 
 @Document(collection = "activityMingleSessions")
 @CompoundIndexes({
+        @CompoundIndex(name = "mingle_session_encounters_due", def = "{'status': 1, 'encountersPublished': 1, 'updatedAtIso': 1}"),
         @CompoundIndex(name = "mingle_session_status_due", def = "{'status': 1, 'phaseEndsAtIso': 1}")
 })
 public class ActivityMingleSession {
@@ -23,6 +24,7 @@ public class ActivityMingleSession {
     private String pausedFromStatus;
     private Long pausedRemainingSeconds;
     private Integer revision;
+    private Boolean encountersPublished;
     private String createdAtIso;
     private String createdByUserId;
     private String updatedAtIso;
@@ -46,6 +48,8 @@ public class ActivityMingleSession {
     public void setPausedFromStatus(String pausedFromStatus) { this.pausedFromStatus = pausedFromStatus; }
     public Long getPausedRemainingSeconds() { return pausedRemainingSeconds; }
     public void setPausedRemainingSeconds(Long pausedRemainingSeconds) { this.pausedRemainingSeconds = pausedRemainingSeconds; }
+    public Boolean getEncountersPublished() { return encountersPublished; }
+    public void setEncountersPublished(Boolean value) { encountersPublished = value; }
     public Integer getRevision() { return revision; }
     public void setRevision(Integer revision) { this.revision = revision; }
     public String getCreatedAtIso() { return createdAtIso; }

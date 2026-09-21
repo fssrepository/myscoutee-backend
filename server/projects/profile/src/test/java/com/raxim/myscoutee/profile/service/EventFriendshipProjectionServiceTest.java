@@ -91,19 +91,18 @@ class EventFriendshipProjectionServiceTest {
     void completedMingleProjectsOnlyActualTablePairsAsEmptyMetRates() {
         ActivityEvent event = event();
         event.setMode("Mingle");
+        event.setFriendshipsProjected(true);
         ActivityMingleRound round = new ActivityMingleRound();
         round.setEventId("event-1");
         round.setRoundNumber(1);
         round.setStatus("COMPLETED");
+        round.setId("round-2");
+        round.setCompletedAtIso(now.minusSeconds(10).toString());
         round.setTables(List.of(
                 new ActivityMingleRound.TableAssignment(1, List.of("c", "a", "b")),
                 new ActivityMingleRound.TableAssignment(2, List.of("a", "d"))));
         when(mongo.find(any(Query.class), eq(ActivityEvent.class))).thenReturn(List.of(event));
         when(mongo.find(any(Query.class), eq(ActivityMingleRound.class))).thenReturn(List.of(round));
-        when(members.findByOwnerTypeAndOwnerIdIn("event", Set.of("event-1")))
-                .thenReturn(List.of(member("a", "accepted", false), member("b", "accepted", false),
-                        member("c", "accepted", false), member("d", "accepted", false),
-                        member("not-seated", "accepted", false)));
         when(mongo.getCollection("userRates")).thenReturn(rateCollection);
         List<WriteModel<Document>> rateWrites = new ArrayList<>();
         when(rateCollection.bulkWrite(anyList(), any(BulkWriteOptions.class))).thenAnswer(invocation -> {
@@ -111,7 +110,7 @@ class EventFriendshipProjectionServiceTest {
             return null;
         });
 
-        assertThat(service.projectCompletedEvents(now, 20)).isEqualTo(1);
+        assertThat(service.projectCompletedMingleRounds(now, 20)).isEqualTo(1);
         assertThat(rateWrites).hasSize(4);
         UpdateOneModel<Document> firstRate = (UpdateOneModel<Document>) rateWrites.get(0);
         Document inserted = ((Document) firstRate.getUpdate()).get("$setOnInsert", Document.class);
@@ -128,7 +127,8 @@ class EventFriendshipProjectionServiceTest {
         var order = inOrder(rateCollection, rates, mongo);
         order.verify(rateCollection).bulkWrite(anyList(), any(BulkWriteOptions.class));
         order.verify(rates).projectRecordedMeetings(anySet());
-        order.verify(mongo).updateMulti(any(Query.class), any(Update.class), eq(ActivityEvent.class));
+        order.verify(mongo).updateFirst(any(Query.class), any(Update.class), eq(ActivityMingleRound.class));
+        verifyNoInteractions(members);
         verify(mongo, never()).getCollection("userFriendships");
     }
 

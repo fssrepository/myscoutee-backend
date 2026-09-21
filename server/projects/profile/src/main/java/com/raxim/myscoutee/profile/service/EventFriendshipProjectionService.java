@@ -42,7 +42,9 @@ public class EventFriendshipProjectionService {
     }
 
     public int projectCompletedEvents(Instant now, int batchSize) {
+        int projectedRounds = projectCompletedMingleRounds(now, batchSize);
         Query due = Query.query(new Criteria().andOperator(
+                Criteria.where("mode").ne(MINGLE_MODE),
                 Criteria.where("friendshipsProjected").ne(true),
                 Criteria.where("status").is(ActivityEvent.STATUS_ACTIVE),
                 Criteria.where("published").ne(false),
@@ -53,7 +55,7 @@ public class EventFriendshipProjectionService {
         for (ActivityEvent event : mongo.find(due, ActivityEvent.class)) {
             events.putIfAbsent(event.getSourceId(), event);
         }
-        if (events.isEmpty()) return 0;
+        if (events.isEmpty()) return projectedRounds;
         Map<String, LinkedHashSet<String>> participants = new LinkedHashMap<>();
         for (ActivityMember member : members.findByOwnerTypeAndOwnerIdIn("event", events.keySet())) {
             if ("accepted".equals(member.getStatus()) && !Boolean.TRUE.equals(member.getOrganizerOnly())
@@ -65,10 +67,7 @@ public class EventFriendshipProjectionService {
             Instant endedAt = Instant.parse(event.getEndAtIso());
             List<String> userIds = new ArrayList<>(participants.getOrDefault(event.getSourceId(), new LinkedHashSet<>()));
             userIds.sort(String::compareTo);
-            boolean mingle = MINGLE_MODE.equalsIgnoreCase(event.getMode());
-            LinkedHashSet<UserPair> pairs = mingle
-                    ? completedMinglePairs(event.getSourceId())
-                    : allPairs(userIds);
+            LinkedHashSet<UserPair> pairs = allPairs(userIds);
             List<WriteModel<Document>> metWrites = new ArrayList<>();
             for (UserPair pair : pairs) {
                 metWrites.add(metWrite(pair.left(), pair.right(), event, endedAt));
@@ -89,7 +88,7 @@ public class EventFriendshipProjectionService {
                             .and("endAtIso").is(event.getEndAtIso())),
                     new Update().set("friendshipsProjected", true), ActivityEvent.class);
         }
-        return events.size();
+        return events.size() + projectedRounds;
     }
 
     private LinkedHashSet<UserPair> allPairs(List<String> userIds) {
@@ -102,26 +101,44 @@ public class EventFriendshipProjectionService {
         return pairs;
     }
 
-    private LinkedHashSet<UserPair> completedMinglePairs(String eventId) {
-        Query query = Query.query(new Criteria().andOperator(
-                Criteria.where("eventId").is(eventId),
-                Criteria.where("status").is(MINGLE_ROUND_COMPLETED)));
-        query.with(Sort.by("roundNumber"));
-        LinkedHashSet<UserPair> pairs = new LinkedHashSet<>();
-        for (ActivityMingleRound round : mongo.find(query, ActivityMingleRound.class)) {
-            for (ActivityMingleRound.TableAssignment table : round.getTables()) {
-                List<String> tableUserIds = table == null || table.memberUserIds() == null
-                        ? new ArrayList<>()
-                        : table.memberUserIds().stream()
-                                .filter(StringUtils::hasText)
-                                .map(String::trim)
-                                .distinct()
-                                .sorted()
-                                .toList();
-                pairs.addAll(allPairs(tableUserIds));
-            }
+    int projectCompletedMingleRounds(Instant now, int batchSize) {
+        Query due = Query.query(Criteria.where("status").is(MINGLE_ROUND_COMPLETED)
+                .and("meetingsProjected").ne(true).and("completedAtIso").lte(now.toString()));
+        due.with(Sort.by("completedAtIso", "eventId", "roundNumber")).limit(batchSize);
+        List<ActivityMingleRound> rounds = mongo.find(due, ActivityMingleRound.class);
+        if (rounds.isEmpty()) return 0;
+        List<String> eventIds = rounds.stream().map(ActivityMingleRound::getEventId).distinct().toList();
+        Map<String, ActivityEvent> events = new LinkedHashMap<>();
+        for (ActivityEvent event : mongo.find(Query.query(Criteria.where("sourceId").in(eventIds)
+                .and("mode").is(MINGLE_MODE)), ActivityEvent.class)) {
+            if (event.getSourceId() != null) events.putIfAbsent(event.getSourceId(), event);
         }
-        return pairs;
+        int projected = 0;
+        for (ActivityMingleRound round : rounds) {
+            ActivityEvent event = events.get(round.getEventId());
+            if (event == null) continue;
+            LinkedHashSet<UserPair> pairs = new LinkedHashSet<>();
+            for (ActivityMingleRound.TableAssignment table : round.getTables()) {
+                pairs.addAll(allPairs(table.memberUserIds().stream().filter(StringUtils::hasText)
+                        .map(String::trim).distinct().sorted().toList()));
+            }
+            Instant completedAt = Instant.parse(round.getCompletedAtIso());
+            List<WriteModel<Document>> writes = new ArrayList<>();
+            LinkedHashSet<String> participantIds = new LinkedHashSet<>();
+            for (UserPair pair : pairs) {
+                writes.add(metWrite(pair.left(), pair.right(), event, completedAt));
+                participantIds.add(pair.left());
+                participantIds.add(pair.right());
+                if (writes.size() == 500) flush("userRates", writes);
+            }
+            flush("userRates", writes);
+            userRatesService.projectRecordedMeetings(participantIds);
+            mongo.updateFirst(Query.query(Criteria.where("_id").is(round.getId())
+                            .and("completedAtIso").is(round.getCompletedAtIso())),
+                    new Update().set("meetingsProjected", true), ActivityMingleRound.class);
+            projected++;
+        }
+        return projected;
     }
 
     private void flush(String collectionName, List<WriteModel<Document>> writes) {

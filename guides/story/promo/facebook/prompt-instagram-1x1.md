@@ -3,7 +3,7 @@
 Mode: built-in image_gen, edit.
 Source: guides/story/promo/facebook/myscoutee-promo-feed-v1.png
 
-Accepted free-to-join variant: `instagram-square-free-to-join.png`.
+Accepted final artwork: `myscoutee-promo-instagram-1x1-v1.png`, including the FREE TO JOIN badge.
 
 Use case: compositing / ads-marketing.
 Edit target: the supplied MyScoutee feed artwork. Create ONE finished square 1:1 Instagram image, 1080x1080 if supported, otherwise a high resolution exact square. Recompose the entire artwork to FIT a SQUARE rather than cropping or stretching the portrait image. Preserve existing premium friendly 3D illustration style, colors, six distinct adults, cafe meetup, profile priorities, interest scale, group chat story and the exact existing brand mark. The source logo replaces the initial M, with adjacent "yScoutee"; do not duplicate M or invent a logo.

@@ -184,7 +184,6 @@ public final class SharedDtos {
             Integer plannedRounds,
             Integer roundDurationMinutes,
             Integer breakDurationMinutes,
-            Integer tableCount,
             Boolean requireGenderBalance) {
     }
 

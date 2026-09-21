@@ -2,6 +2,10 @@ package com.raxim.myscoutee.profile.service;
 
 import java.net.InetAddress;
 import java.net.URI;
+import java.nio.charset.StandardCharsets;
+import java.util.function.Supplier;
+import org.springframework.dao.DuplicateKeyException;
+import com.raxim.myscoutee.profile.data.dto.integration.IntegrationDtos.IntegrationEncountersDto;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
@@ -59,9 +63,10 @@ import jakarta.annotation.PreDestroy;
 @Service
 public class IntegrationWebhookService {
     public static final String EVENT_CHANGED = "event.changed";
+    public static final String EVENT_ENCOUNTERS = "event.encounters";
     public static final String ASSET_CHANGED = "asset.changed";
 
-    private static final Set<String> SUPPORTED_EVENTS = Set.of(EVENT_CHANGED, ASSET_CHANGED);
+    private static final Set<String> SUPPORTED_EVENTS = Set.of(EVENT_CHANGED, ASSET_CHANGED, EVENT_ENCOUNTERS);
     private static final List<Long> RETRY_SECONDS = List.of(5L, 30L, 120L, 600L);
     private static final String STATUS_PENDING = "PENDING";
     private static final String STATUS_RETRY = "RETRY";
@@ -195,6 +200,9 @@ public class IntegrationWebhookService {
         resource.put("status", nullable(event.getStatus()));
         resource.put("startAt", nullable(event.getStartAtIso()));
         resource.put("endAt", nullable(event.getEndAtIso()));
+        resource.put("sourceLink", nullable(event.getSourceLink()));
+        resource.put("mode", event.getMode() == null ? "Casual" : event.getMode());
+        resource.put("mingleConfiguration", event.getMingleConfiguration());
         resource.put("acceptedParticipants", safeNumber(event.getAcceptedMembers()));
         resource.put("pendingParticipants", safeNumber(event.getPendingMembers()));
         enqueue(ownerUserId, EVENT_CHANGED, "event", externalId, resource);
@@ -264,6 +272,9 @@ public class IntegrationWebhookService {
         resource.put("status", nullable(event.getStatus()));
         resource.put("startAt", nullable(event.getStartAtIso()));
         resource.put("endAt", nullable(event.getEndAtIso()));
+        resource.put("sourceLink", nullable(event.getSourceLink()));
+        resource.put("mode", event.getMode() == null ? "Casual" : event.getMode());
+        resource.put("mingleConfiguration", event.getMingleConfiguration());
         resource.put("acceptedParticipants", safeNumber(event.getAcceptedMembers()));
         resource.put("pendingParticipants", safeNumber(event.getPendingMembers()));
         if (change != null && !change.isEmpty()) {
@@ -354,14 +365,41 @@ public class IntegrationWebhookService {
             String resourceType,
             String externalId,
             Map<String, Object> resource) {
-        for (IntegrationWebhookSubscription subscription : subscriptionsRepository
-                .findByOwnerUserIdAndEnabledTrue(ownerUserId)) {
-            if (subscription.getEventTypes() == null
-                    || !subscription.getEventTypes().contains(eventType)
-                    || !tokenIsActive(subscription.getTokenId(), ownerUserId)) {
-                continue;
-            }
-            String deliveryId = UUID.randomUUID().toString();
+        enqueue(ownerUserId, eventType, resourceType, externalId, resource, null,
+                activeSubscriptions(ownerUserId, eventType));
+    }
+
+    private List<IntegrationWebhookSubscription> activeSubscriptions(String ownerUserId, String eventType) {
+        return subscriptionsRepository.findByOwnerUserIdAndEnabledTrue(ownerUserId).stream()
+                .filter(subscription -> subscription.getEventTypes() != null && subscription.getEventTypes().contains(eventType))
+                .filter(subscription -> tokenIsActive(subscription.getTokenId(), ownerUserId)).toList();
+    }
+
+    public void enqueueEncounters(String ownerUserId, Supplier<IntegrationEncountersDto> result) {
+        List<IntegrationWebhookSubscription> subscriptions = activeSubscriptions(ownerUserId, EVENT_ENCOUNTERS);
+        if (subscriptions.isEmpty()) return;
+        IntegrationEncountersDto all = result.get();
+        for (int offset = 0; offset < Math.max(1, all.total()); offset += 1000) {
+            IntegrationEncountersDto page = IntegrationEventQueryService.page(all, offset, 1000);
+            LinkedHashMap<String, Object> resource = new LinkedHashMap<>();
+            resource.put("id", page.id());
+            resource.put("externalId", page.externalId());
+            resource.put("revision", page.revision());
+            resource.put("pairs", page.pairs());
+            resource.put("total", page.total());
+            resource.put("offset", offset);
+            resource.put("nextOffset", page.nextOffset());
+            enqueue(ownerUserId, EVENT_ENCOUNTERS, "event", all.externalId(), resource,
+                    all.externalId() + ":" + all.revision() + ":" + offset, subscriptions);
+        }
+    }
+
+    private void enqueue(String ownerUserId, String eventType, String resourceType, String externalId,
+            Map<String, Object> resource, String idempotencyKey, List<IntegrationWebhookSubscription> subscriptions) {
+        for (IntegrationWebhookSubscription subscription : subscriptions) {
+            String deliveryId = idempotencyKey == null ? UUID.randomUUID().toString()
+                    : UUID.nameUUIDFromBytes((eventType + ":" + subscription.getId() + ":" + idempotencyKey)
+                            .getBytes(StandardCharsets.UTF_8)).toString();
             String occurredAt = Instant.now().toString();
             LinkedHashMap<String, Object> payload = new LinkedHashMap<>();
             payload.put("deliveryId", deliveryId);
@@ -381,7 +419,15 @@ public class IntegrationWebhookService {
             delivery.setAttemptCount(0);
             delivery.setNextAttemptAtIso(occurredAt);
             delivery.setCreatedAtIso(occurredAt);
-            deliveriesRepository.save(delivery);
+            if (idempotencyKey == null) {
+                deliveriesRepository.save(delivery);
+            } else {
+                try {
+                    deliveriesRepository.insert(delivery);
+                } catch (DuplicateKeyException alreadyQueued) {
+                    // A retry after a producer restart must not overwrite a sent or pending delivery.
+                }
+            }
         }
     }
 

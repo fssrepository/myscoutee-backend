@@ -436,11 +436,11 @@ public class IntegrationSyncService {
                 List.of(),
                 null,
                 item.topics() == null ? List.of() : item.topics(),
-                false,
+                "Mingle".equals(item.mode()),
                 List.of(),
                 List.of(),
-                "Casual",
-                null,
+                StringUtils.hasText(item.mode()) ? item.mode() : "Casual",
+                item.mingleConfiguration(),
                 null,
                 0d,
                 0d,
@@ -501,6 +501,18 @@ public class IntegrationSyncService {
         }
         if (item.capacityMax() == null || item.capacityMax() < item.capacityMin()) {
             return "capacity_max_must_not_be_less_than_min";
+        }
+        if (StringUtils.hasText(item.mode()) && !List.of("Casual", "Tournament", "Mingle").contains(item.mode())) {
+            return "invalid_event_mode";
+        }
+        var config = item.mingleConfiguration();
+        if (config != null && (!"Mingle".equals(item.mode())
+                || config.groupSize() == null || config.groupSize() < 2 || config.groupSize() > 20
+                || config.plannedRounds() == null || config.plannedRounds() < 1 || config.plannedRounds() > 100
+                || config.roundDurationMinutes() == null || config.roundDurationMinutes() < 1 || config.roundDurationMinutes() > 240
+                || config.breakDurationMinutes() == null || config.breakDurationMinutes() < 0 || config.breakDurationMinutes() > 60
+                || config.requireGenderBalance() == null)) {
+            return "invalid_mingle_configuration";
         }
         return null;
     }

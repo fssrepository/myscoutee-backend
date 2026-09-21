@@ -22,7 +22,7 @@ MyScoutee already provides:
 - membership, tickets, and ticket check-in;
 - profiles and priority signals;
 - chat and notifications;
-- payment or an external payment-provider link;
+- payment;
 - API and webhook infrastructure.
 
 Mingle adds only the missing live operation:
@@ -387,7 +387,7 @@ for Mingle; submitting attendee feedback outside that source is rejected.
 
 ## Partner API
 
-The external API is a small additional entry path into the same MyScoutee
+The external API provides entry and encounter results for the same MyScoutee
 event, not a separate Mingle platform.
 
 The core invite flow is:
@@ -401,9 +401,22 @@ partner event + partner external user ID
 ```
 
 Batch invite creation is useful when a partner already has a participant list.
-An optional later API may import previous encounter information or expose
-results through the existing watch/webhook mechanism. That is not required for
-the first simple Mingle runtime.
+
+The partner API scope also includes the event's final encounter results: who
+shared a table with whom across the completed Mingle rounds. Partners must be
+able to obtain these results in both ways:
+
+- through a dedicated API query for the event's encounter results;
+- through the existing watch/webhook mechanism when those results become
+  available or change.
+
+Both paths use the same saved, completed table assignments and the partner's
+participant identifiers. The event-wide encounter list includes each pair
+once, even when they shared a table in several rounds. These results describe
+shared tables independently of ratings or friendship qualification. They are
+part of the requested partner API work, not an optional later extension.
+
+Importing previous encounter information remains an optional later capability.
 
 This capability may be described commercially as matching as a service, but it
 is still the same small event assignment capability exposed to partners. It
@@ -419,15 +432,16 @@ The help icon opens the GitHub repository README location where the
 documentation table links to the Integration API documentation. The popup does
 not need to reproduce the full API manual.
 
-## External payment provider
+## External event link
 
-An external payment provider is needed independently of Mingle. Mingle must
-reuse the event's normal payment or external-payment path rather than introduce
-its own payment flow.
+Events should offer an external link to the organizer's own event page, following
+the existing Asset external-link pattern. Reuse the event's existing `sourceLink`
+field and the shared URL validation and opening behavior used by Assets.
 
-An external payment URL must be validated before it is stored or opened. The
-exact validation and provider rules belong to the payment implementation, not
-to the Mingle configuration.
+This is a normal event capability, also available to Mingle events. The link is
+editable in the event form and opens the organizer's event page from the event
+surface. It is not a dedicated payment-provider URL or a new payment integration;
+the existing MyScoutee payment flow remains independent.
 
 ## Live-state polling
 
@@ -484,7 +498,8 @@ The first coherent product slice is:
    additional configured rounds;
 8. preserve completed round assignments for priority/history use;
 9. add the Profile API-popup help link;
-10. reuse the event's validated external-payment URL flow.
+10. expose the organizer's external event-page link using the Asset pattern and
+    the event's existing `sourceLink` field.
 
 The partner invite API can use the same event and participant model without
 changing this Mingle runtime.
@@ -505,11 +520,31 @@ Existing MyScoutee Event
    |- same number again means the participant stays there
    `- saved rounds can inform priority
 
-Optional partner entry
-`- external user ID -> claimable URL -> existing event membership
+Partner API
+|- external user ID -> claimable URL -> existing event membership
+`- final shared-table encounters -> API query and watch/webhook
 ```
 
 The central decision is:
 
 > Keep Mingle small: one configurable block on an event, one timed live
 > sequence with manual assistance, and one table number per participant.
+
+## Explore filters and landing follow-up — 21 September 2026
+
+Event Explore uses one filter button beside sorting. It is icon-only on mobile
+and includes its label on desktop. Its red badge counts applied conditions.
+The button opens a separate, extensible filter popup; the header tick persists
+and applies the draft, while closing discards it. The existing friends, open
+spots and topic conditions are joined by an event-format selector that shares
+icons and labels with the editor. Standard is the display label for the existing
+`Casual` wire value; Tournament and Mingle retain their wire values.
+
+Explore preferences are stored per authenticated user and `pageKey=event-explore`
+through `/auth/me/page-filter-preferences`. They do not overwrite home-rating
+preferences. HTTP and local adapters both retain them. Format filtering happens
+before totals and pagination. Failed saves leave the editable popup open.
+
+The landing hero includes one localized Standard · Tournament · Mingle line
+below the six-person/six-priority-list statement. The existing About menu item
+in the footer already opens the localized founder/product/free-access popup.

@@ -44,6 +44,7 @@ public final class MingleDtos {
             Integer tableNumber,
             List<MingleTableDto> tables,
             Boolean canManage,
+            Boolean waitingForTable,
             Integer revision) {
     }
 }

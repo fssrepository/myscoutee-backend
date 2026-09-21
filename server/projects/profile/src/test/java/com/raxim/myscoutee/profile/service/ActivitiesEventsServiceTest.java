@@ -228,12 +228,35 @@ class ActivitiesEventsServiceTest {
                 null,
                 10,
                 null,
-                List.of()));
+                List.of(),
+                null));
 
         assertThat(page.records()).extracting(record -> record.id())
                 .containsExactly("known-event", "cold-event");
         verify(activityEventsRepository, never()).findAll();
         verify(userAffinityEdgesRepository).findRelevantByUserIds(anyList());
+    }
+
+    @Test
+    void exploreModeFilterRunsBeforeTotalAndPaginationAndRecognizesStandardEvents() {
+        Users viewer = new Users();
+        viewer.setId("viewer");
+        ActivityEvent standard = event("standard", "host", 0d);
+        ActivityEvent mingle = event("mingle", "host", 0d);
+        mingle.setMode("Mingle");
+        ActivityEvent tournament = event("tournament", "host", 0d);
+        tournament.setMode("Tournament");
+        when(homeUserProfileService.resolveCurrentUser("viewer")).thenReturn(viewer);
+        when(mongoTemplate.find(any(Query.class), eq(ActivityEvent.class))).thenReturn(List.of(standard, mingle, tournament));
+        when(activitiesMembersService.findTrackedEventMembershipStatusesForUser("viewer", false)).thenReturn(Map.of());
+        for (String mode : List.of("Casual", "Tournament", "Mingle")) {
+            EventsExplorePageDto page = service.queryEventExplorePage(new EventsExploreQueryDto(
+                    "viewer", "upcoming", "day", false, false, null, 1, null, List.of(), mode));
+            assertThat(page.total()).isEqualTo(1);
+            assertThat(page.records()).extracting(item -> item.id())
+                    .containsExactly(mode.equals("Casual") ? "standard" : mode.toLowerCase());
+            assertThat(page.nextCursor()).isNull();
+        }
     }
 
     @Test
@@ -1905,7 +1928,7 @@ class ActivitiesEventsServiceTest {
         existing.setCapacityTotal(8);
         existing.setTicketing(false);
         existing.setMode("Mingle");
-        existing.setMingleConfiguration(new MingleConfigurationDto(4, 4, 20, 5, 6, true));
+        existing.setMingleConfiguration(new MingleConfigurationDto(4, 4, 20, 5, true));
 
         ActivityMingleSession session = new ActivityMingleSession();
         session.setEventId("event-1");
@@ -1928,7 +1951,7 @@ class ActivitiesEventsServiceTest {
                 false,
                 true,
                 "Mingle",
-                new MingleConfigurationDto(4, 1, 20, 5, 6, true)));
+                new MingleConfigurationDto(4, 1, 20, 5, true)));
 
         assertThat(result).isNotNull();
         @SuppressWarnings("unchecked")

@@ -102,7 +102,7 @@ public class ActivitiesMingleService {
         for (ActivityMingleSession session : activityMingleSessionsRepository
                 .findByStatusInOrderByUpdatedAtIsoDesc(LIVE_STATUSES)) {
             MingleStateDto state = visibleState(actorUserId, session, null);
-            if (state != null && (Boolean.TRUE.equals(state.canManage()) || state.tableNumber() != null)) {
+            if (state != null) {
                 return state;
             }
         }
@@ -246,10 +246,13 @@ public class ActivitiesMingleService {
     }
 
     private ActivityMingleSession complete(ActivityMingleSession session, String actorUserId, Instant now) {
-        if (STATUS_ROUND.equals(safeText(session.getStatus()))) {
+        if (STATUS_COMPLETED.equals(session.getStatus())) return session;
+        if (STATUS_ROUND.equals(safeText(session.getStatus()))
+                || (STATUS_PAUSED.equals(session.getStatus()) && STATUS_ROUND.equals(session.getPausedFromStatus()))) {
             completeRound(session.getEventId(), session.getCurrentRoundNumber(), now);
         }
         session.setStatus(STATUS_COMPLETED);
+        session.setEncountersPublished(false);
         session.setPhaseStartedAtIso(now.toString());
         session.setPhaseEndsAtIso(null);
         session.setPausedFromStatus(null);
@@ -273,15 +276,12 @@ public class ActivitiesMingleService {
                     Map.of("accepted", eligibleUserIds.size(), "required", 2));
         }
         MingleConfigurationDto config = mingleConfiguration(event);
-        List<Integer> tableNumbers = config.tableCount() > 0
-                ? java.util.stream.IntStream.rangeClosed(1, config.tableCount()).boxed().toList()
-                : List.of();
         MingleRoundPlan plan = generator.generate(new MingleGeneratorRequest(
                 buildPriorityGraph(eligibleUserIds),
                 eligibleUserIds,
                 config.groupSize(),
                 roundNumber,
-                tableNumbers,
+                List.of(),
                 previousTables(eventId),
                 userGenders(eligibleUserIds),
                 config.requireGenderBalance()));
@@ -309,6 +309,8 @@ public class ActivitiesMingleService {
 
     private void completeRound(String eventId, Integer roundNumber, Instant now) {
         activityMingleRoundsRepository.findByEventIdAndRoundNumber(eventId, roundNumber).ifPresent(round -> {
+            if (ROUND_COMPLETED.equals(round.getStatus())) return;
+            round.setTables(effectiveTables(round));
             round.setStatus(ROUND_COMPLETED);
             round.setCompletedAtIso(now.toString());
             activityMingleRoundsRepository.save(round);
@@ -325,8 +327,7 @@ public class ActivitiesMingleService {
         }
         boolean manager = accessControlService.canManageEvent(session.getEventId(), actorUserId);
         ActivityMingleRound round = requestedRound(session, requestedRoundNumber);
-        boolean assigned = findTable(round, actorUserId) != null;
-        if (!manager && !assigned) {
+        if (!manager && !acceptedParticipantIds(event).contains(actorUserId)) {
             return null;
         }
         return toState(actorUserId, event, session, round);
@@ -342,12 +343,14 @@ public class ActivitiesMingleService {
             ActivityMingleSession session,
             ActivityMingleRound round) {
         boolean manager = accessControlService.canManageEvent(session.getEventId(), actorUserId);
-        TableAssignment ownTable = findTable(round, actorUserId);
+        List<TableAssignment> roundTables = effectiveTables(round);
+        TableAssignment ownTable = roundTables.stream()
+                .filter(table -> table.memberUserIds().contains(actorUserId)).findFirst().orElse(null);
         List<TableAssignment> visibleTables = manager
-                ? safeTables(round)
+                ? roundTables
                 : ownTable == null ? List.of() : List.of(ownTable);
         Set<String> visibleUserIds = visibleTables.stream()
-                .flatMap(table -> effectiveTableMemberUserIds(round, table).stream())
+                .flatMap(table -> table.memberUserIds().stream())
                 .collect(java.util.stream.Collectors.toCollection(LinkedHashSet::new));
         Map<String, Users> usersById = usersRepository.findByUserIdIn(visibleUserIds).stream()
                 .filter(Objects::nonNull)
@@ -362,7 +365,7 @@ public class ActivitiesMingleService {
                         table.tableNumber(),
                         mingleSubEventId(round.getRoundNumber()),
                         mingleGroupId(session.getEventId(), round.getRoundNumber(), table.tableNumber()),
-                        effectiveTableMemberUserIds(round, table).stream()
+                        table.memberUserIds().stream()
                                 .map(userId -> participant(userId, usersById.get(userId)))
                                 .toList()))
                 .toList();
@@ -380,6 +383,7 @@ public class ActivitiesMingleService {
                 ownTable == null ? null : ownTable.tableNumber(),
                 tables,
                 manager,
+                ownTable == null && acceptedParticipantIds(event).contains(actorUserId),
                 count(session.getRevision()));
     }
 
@@ -411,28 +415,16 @@ public class ActivitiesMingleService {
                 .orElse(null);
     }
 
-    private TableAssignment findTable(ActivityMingleRound round, String userId) {
-        String normalizedUserId = normalizeId(userId);
-        return safeTables(round).stream()
-                .filter(table -> effectiveTableMemberUserIds(round, table).stream()
-                        .map(this::normalizeId)
-                        .anyMatch(normalizedUserId::equals))
-                .findFirst()
-                .orElse(null);
-    }
-
-    private List<String> effectiveTableMemberUserIds(ActivityMingleRound round, TableAssignment table) {
-        String groupId = mingleGroupId(
-                round == null ? null : round.getEventId(),
-                round == null ? null : round.getRoundNumber(),
-                table == null ? null : table.tableNumber());
-        ActivitiesMembersService.OwnerMembersSnapshot snapshot = StringUtils.hasText(groupId)
-                ? activitiesMembersService.queryOwnerSnapshot("group", groupId)
-                : null;
-        if (snapshot != null && !snapshot.acceptedMemberUserIds().isEmpty()) {
-            return snapshot.acceptedMemberUserIds();
-        }
-        return table == null || table.memberUserIds() == null ? List.of() : table.memberUserIds();
+    private List<TableAssignment> effectiveTables(ActivityMingleRound round) {
+        if (round == null || ROUND_COMPLETED.equals(round.getStatus())) return safeTables(round);
+        List<String> groupIds = safeTables(round).stream()
+                .map(table -> mingleGroupId(round.getEventId(), round.getRoundNumber(), table.tableNumber())).toList();
+        Map<String, ActivitiesMembersService.OwnerMembersSnapshot> snapshots =
+                activitiesMembersService.buildBatchOwnerSnapshots("group", groupIds);
+        return safeTables(round).stream().map(table -> {
+            var snapshot = snapshots.get(mingleGroupId(round.getEventId(), round.getRoundNumber(), table.tableNumber()));
+            return new TableAssignment(table.tableNumber(), snapshot == null ? List.of() : snapshot.acceptedMemberUserIds());
+        }).toList();
     }
 
     private void syncRoundGroupMembers(ActivityMingleRound round, String actorUserId) {
@@ -557,6 +549,18 @@ public class ActivitiesMingleService {
                     payload,
                     actorUserId));
         }
+        Set<String> waiting = new LinkedHashSet<>(acceptedParticipantIds(event));
+        for (TableAssignment table : safeTables(round)) waiting.removeAll(table.memberUserIds());
+        if (!waiting.isEmpty()) {
+            notificationOutboxService.enqueue(new NotificationIntent(
+                    "mingle-table-waiting", "event", event.getSourceId(), "mingle-table", List.copyOf(waiting),
+                    "Mingle round started", "Waiting for a table assignment.",
+                    "/game?mingleEventId=" + normalizeId(event.getSourceId()),
+                    firstNonBlank(event.getImageUrl(), "/assets/logo/heart.webp"), "/assets/logo/heart.webp",
+                    "mingle-waiting-" + event.getSourceId() + "-" + round.getRoundNumber(),
+                    Map.of("eventId", event.getSourceId(), "roundNumber", round.getRoundNumber().toString(), "mingle", "true"),
+                    actorUserId));
+        }
     }
 
     private ActivityEvent requireMingleEvent(String eventId) {
@@ -615,7 +619,6 @@ public class ActivitiesMingleService {
                 clamp(source.plannedRounds(), 1, 100, 4),
                 clamp(source.roundDurationMinutes(), 1, 240, 20),
                 clamp(source.breakDurationMinutes(), 0, 60, 5),
-                clamp(source.tableCount(), 0, 500, 0),
                 source.requireGenderBalance() == null || source.requireGenderBalance());
     }
 

@@ -35,6 +35,8 @@ import org.springframework.data.mongodb.core.geo.GeoJsonPoint;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.server.ResponseStatusException;
 import com.raxim.myscoutee.profile.security.FriendshipFacts;
 import org.springframework.util.StringUtils;
 
@@ -680,6 +682,7 @@ public class ActivitiesEventsService {
                         || request.friendsOnly() != null
                         || request.openSpotsOnly() != null
                         || StringUtils.hasText(request.topic())
+                        || StringUtils.hasText(request.mode())
                         || (request.excludedSourceIds() != null && !request.excludedSourceIds().isEmpty()));
     }
 
@@ -2132,6 +2135,10 @@ public class ActivitiesEventsService {
         String order = normalizeExploreOrder(request == null ? null : request.order());
         String view = normalizeExploreView(request == null ? null : request.view());
         String topic = normalizeTopic(request == null ? null : request.topic());
+        String mode = request == null ? "" : safeText(request.mode());
+        if (StringUtils.hasText(mode) && !List.of("Casual", "Tournament", "Mingle").contains(mode)) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid event mode.");
+        }
         Boolean requestedFriendsOnly = request == null ? null : request.friendsOnly();
         Boolean requestedOpenSpotsOnly = request == null ? null : request.openSpotsOnly();
         Integer requestedLimit = request == null ? null : request.limit();
@@ -2144,6 +2151,7 @@ public class ActivitiesEventsService {
         return withEventQueryContext(buildExplorePageQueryContext(viewer, "most-relevant".equals(order)), () -> {
             List<EventProjection> sorted = computeExploreRecords(viewer).stream()
                     .filter(record -> !excludedSourceIds.contains(normalizeId(record.getSourceId())))
+                    .filter(record -> !StringUtils.hasText(mode) || mode.equals(normalizeEventMode(record.getMode())))
                     .map(record -> toSortProjection(record, viewer))
                     .filter(Objects::nonNull)
                     .filter(projection -> !hasTrackedUserParticipation(projection.record(), viewer.userId())
@@ -6744,7 +6752,8 @@ public class ActivitiesEventsService {
         document.setImageUrl(request.imageUrl() == null
                 ? safeText(existing == null ? null : existing.getImageUrl())
                 : request.imageUrl().trim());
-        document.setSourceLink(StringUtils.hasText(request.sourceLink()) ? request.sourceLink().trim() : safeText(existing == null ? null : existing.getSourceLink()));
+        document.setSourceLink(request.sourceLink() == null
+                ? safeText(existing == null ? null : existing.getSourceLink()) : request.sourceLink().trim());
         document.setLocation(StringUtils.hasText(request.location()) ? request.location().trim() : safeText(existing == null ? null : existing.getLocation()));
         document.setLocationCoordinates(request.locationCoordinates() != null
                 ? cloneLocation(request.locationCoordinates())
@@ -8248,7 +8257,6 @@ public class ActivitiesEventsService {
                 clampInteger(source.plannedRounds(), 1, 100, 4),
                 clampInteger(source.roundDurationMinutes(), 1, 240, 20),
                 clampInteger(source.breakDurationMinutes(), 0, 60, 5),
-                clampInteger(source.tableCount(), 0, 500, 0),
                 source.requireGenderBalance() == null || source.requireGenderBalance());
     }
 
@@ -8269,7 +8277,6 @@ public class ActivitiesEventsService {
                 Math.max(minimumMinglePlannedRounds(eventId), candidate.plannedRounds()),
                 current.roundDurationMinutes(),
                 current.breakDurationMinutes(),
-                current.tableCount(),
                 current.requireGenderBalance());
     }
 

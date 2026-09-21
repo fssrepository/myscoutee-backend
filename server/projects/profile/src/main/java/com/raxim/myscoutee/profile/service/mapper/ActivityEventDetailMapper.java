@@ -111,7 +111,6 @@ public class ActivityEventDetailMapper {
                 value.plannedRounds(),
                 value.roundDurationMinutes(),
                 value.breakDurationMinutes(),
-                value.tableCount(),
                 value.requireGenderBalance());
     }
 
