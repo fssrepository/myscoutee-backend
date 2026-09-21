@@ -113,8 +113,9 @@ The existing format menu should receive one additional choice:
 
 Selecting Mingle keeps the normal event form and the existing panel/list shell.
 The panel does not need a parallel Mingle-specific layout. Mingle configuration
-is shown directly in the form; it does not overload the existing `+` action or
-require another configuration popup.
+is opened from the panel's existing `+` action in a compact popup based on the
+shared popup component. This keeps the event form readable while preserving the
+same panel and list structure.
 
 This UI reuse does not turn Mingle rounds into Tournament stages. The Mingle
 popup exposes only the loose values needed by the Mingle operation, and actual
@@ -438,7 +439,7 @@ Do not add the following to the initial model:
 The first coherent product slice is:
 
 1. add Mingle to the event format selector;
-2. show one compact editable Mingle configuration block;
+2. open one compact editable Mingle configuration popup from the panel `+` action;
 3. add the Table shortcut and the small organizer/participant surfaces;
 4. start a timed Mingle sequence from checked-in participants;
 5. run round and table-change timers with manual organizer controls;
@@ -459,7 +460,7 @@ Existing MyScoutee Event
 |- policy, membership, ticket/check-in, payment
 |- operating format: Casual | Tournament | Mingle
 `- Mingle block when selected
-   |- small editable configuration
+   |- `+` opens the small editable configuration popup
    |- organizer starts the timed sequence
    |- rounds and table-change breaks advance automatically
    |- organizer can pause or manually advance when needed

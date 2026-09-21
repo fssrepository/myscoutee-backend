@@ -14046,6 +14046,144 @@
     "value": "Unable to delete sub event definition."
   },
   {
+    "_id": "i18n-message-en-event-editor-mingle-title",
+    "key": "event.editor.mingle.title",
+    "lang": "en",
+    "value": "Mingle configuration"
+  },
+  {
+    "_id": "i18n-message-en-event-editor-mingle-aria",
+    "key": "event.editor.mingle.aria",
+    "lang": "en",
+    "value": "Edit Mingle configuration"
+  },
+  {
+    "_id": "i18n-message-en-event-editor-mingle-open-aria",
+    "key": "event.editor.mingle.open.aria",
+    "lang": "en",
+    "value": "Open Mingle configuration"
+  },
+  {
+    "_id": "i18n-message-en-event-editor-mingle-close-aria",
+    "key": "event.editor.mingle.close.aria",
+    "lang": "en",
+    "value": "Close Mingle configuration"
+  },
+  {
+    "_id": "i18n-message-en-event-editor-mingle-save-aria",
+    "key": "event.editor.mingle.save.aria",
+    "lang": "en",
+    "value": "Save Mingle configuration"
+  },
+  {
+    "_id": "i18n-message-en-event-editor-mingle-panel-description",
+    "key": "event.editor.mingle.panel.description",
+    "lang": "en",
+    "value": "Configure the live table assignment flow."
+  },
+  {
+    "_id": "i18n-message-en-event-editor-mingle-description",
+    "key": "event.editor.mingle.description",
+    "lang": "en",
+    "value": "Defaults for live table assignments. The organizer can adjust the flow while the event is running."
+  },
+  {
+    "_id": "i18n-message-en-event-editor-mingle-group-size",
+    "key": "event.editor.mingle.group.size",
+    "lang": "en",
+    "value": "People per table"
+  },
+  {
+    "_id": "i18n-message-en-event-editor-mingle-planned-rounds",
+    "key": "event.editor.mingle.planned.rounds",
+    "lang": "en",
+    "value": "Planned rounds"
+  },
+  {
+    "_id": "i18n-message-en-event-editor-mingle-round",
+    "key": "event.editor.mingle.round",
+    "lang": "en",
+    "value": "Round"
+  },
+  {
+    "_id": "i18n-message-en-event-editor-mingle-round-number",
+    "key": "event.editor.mingle.round.number",
+    "lang": "en",
+    "value": "Round {{number}}"
+  },
+  {
+    "_id": "i18n-message-en-event-editor-mingle-round-description",
+    "key": "event.editor.mingle.round.description",
+    "lang": "en",
+    "value": "Table assignment round"
+  },
+  {
+    "_id": "i18n-message-en-event-editor-mingle-round-duration",
+    "key": "event.editor.mingle.round.duration",
+    "lang": "en",
+    "value": "Round duration"
+  },
+  {
+    "_id": "i18n-message-en-event-editor-mingle-break-duration",
+    "key": "event.editor.mingle.break.duration",
+    "lang": "en",
+    "value": "Table-change break"
+  },
+  {
+    "_id": "i18n-message-en-event-editor-mingle-table-count",
+    "key": "event.editor.mingle.table.count",
+    "lang": "en",
+    "value": "Available tables"
+  },
+  {
+    "_id": "i18n-message-en-event-editor-mingle-table-count-hint",
+    "key": "event.editor.mingle.table.count.hint",
+    "lang": "en",
+    "value": "Use 0 to calculate the required number from checked-in participants."
+  },
+  {
+    "_id": "i18n-message-en-event-editor-mingle-table-size",
+    "key": "event.editor.mingle.table.size",
+    "lang": "en",
+    "value": "{{count}} people per table"
+  },
+  {
+    "_id": "i18n-message-en-event-editor-mingle-require-gender-balance",
+    "key": "event.editor.mingle.require.gender.balance",
+    "lang": "en",
+    "value": "Require gender balance"
+  },
+  {
+    "_id": "i18n-message-en-event-editor-mingle-require-gender-balance-hint",
+    "key": "event.editor.mingle.require.gender.balance.hint",
+    "lang": "en",
+    "value": "Only complete tables with a balanced known gender distribution are assigned."
+  },
+  {
+    "_id": "i18n-message-en-event-editor-mingle-projection-aria",
+    "key": "event.editor.mingle.projection.aria",
+    "lang": "en",
+    "value": "{{round}} planned Mingle round"
+  },
+  {
+    "_id": "i18n-message-en-mingle-tables",
+    "key": "mingle.tables",
+    "lang": "en",
+    "value": "Tables"
+  },
+  {
+    "_id": "i18n-message-en-mingle-table-number",
+    "key": "mingle.table.number",
+    "lang": "en",
+    "value": "Table {{number}}"
+  },
+  {
+    "_id": "i18n-message-en-event-editor-mingle-flexible-rounds-note",
+    "key": "event.editor.mingle.flexible.rounds.note",
+    "lang": "en",
+    "value": "The planned round count is a guide, not a maximum. Additional rounds can be started during the event."
+  },
+  {
     "_id": "i18n-message-en-frequency",
     "key": "frequency",
     "lang": "en",
@@ -19420,6 +19558,30 @@
     "key": "integration.aria",
     "lang": "en",
     "value": "API integration settings"
+  },
+  {
+    "_id": "i18n-message-en-integration-help-aria",
+    "key": "integration.help.aria",
+    "lang": "en",
+    "value": "Open API documentation help"
+  },
+  {
+    "_id": "i18n-message-en-integration-help-title",
+    "key": "integration.help.title",
+    "lang": "en",
+    "value": "API documentation"
+  },
+  {
+    "_id": "i18n-message-en-integration-help-description",
+    "key": "integration.help.description",
+    "lang": "en",
+    "value": "The public GitHub README contains the documentation table and the current Integration API Guide."
+  },
+  {
+    "_id": "i18n-message-en-integration-help-open-documentation",
+    "key": "integration.help.open.documentation",
+    "lang": "en",
+    "value": "Open the documentation on GitHub"
   },
   {
     "_id": "i18n-message-en-integration-loading",
@@ -35082,6 +35244,144 @@
     "value": "Nem sikerült törölni az alesemény-definíciót."
   },
   {
+    "_id": "i18n-message-hu-event-editor-mingle-title",
+    "key": "event.editor.mingle.title",
+    "lang": "hu",
+    "value": "Mingle beállítás"
+  },
+  {
+    "_id": "i18n-message-hu-event-editor-mingle-aria",
+    "key": "event.editor.mingle.aria",
+    "lang": "hu",
+    "value": "Mingle beállítás szerkesztése"
+  },
+  {
+    "_id": "i18n-message-hu-event-editor-mingle-open-aria",
+    "key": "event.editor.mingle.open.aria",
+    "lang": "hu",
+    "value": "Mingle beállítás megnyitása"
+  },
+  {
+    "_id": "i18n-message-hu-event-editor-mingle-close-aria",
+    "key": "event.editor.mingle.close.aria",
+    "lang": "hu",
+    "value": "Mingle beállítás bezárása"
+  },
+  {
+    "_id": "i18n-message-hu-event-editor-mingle-save-aria",
+    "key": "event.editor.mingle.save.aria",
+    "lang": "hu",
+    "value": "Mingle beállítás mentése"
+  },
+  {
+    "_id": "i18n-message-hu-event-editor-mingle-panel-description",
+    "key": "event.editor.mingle.panel.description",
+    "lang": "hu",
+    "value": "Az élő asztalkiosztás menetének beállítása."
+  },
+  {
+    "_id": "i18n-message-hu-event-editor-mingle-description",
+    "key": "event.editor.mingle.description",
+    "lang": "hu",
+    "value": "Az élő asztalkiosztás alapértékei. A szervező az esemény közben módosíthatja a menetet."
+  },
+  {
+    "_id": "i18n-message-hu-event-editor-mingle-group-size",
+    "key": "event.editor.mingle.group.size",
+    "lang": "hu",
+    "value": "Létszám asztalonként"
+  },
+  {
+    "_id": "i18n-message-hu-event-editor-mingle-planned-rounds",
+    "key": "event.editor.mingle.planned.rounds",
+    "lang": "hu",
+    "value": "Tervezett körök"
+  },
+  {
+    "_id": "i18n-message-hu-event-editor-mingle-round",
+    "key": "event.editor.mingle.round",
+    "lang": "hu",
+    "value": "Kör"
+  },
+  {
+    "_id": "i18n-message-hu-event-editor-mingle-round-number",
+    "key": "event.editor.mingle.round.number",
+    "lang": "hu",
+    "value": "{{number}}. kör"
+  },
+  {
+    "_id": "i18n-message-hu-event-editor-mingle-round-description",
+    "key": "event.editor.mingle.round.description",
+    "lang": "hu",
+    "value": "Asztalkiosztási kör"
+  },
+  {
+    "_id": "i18n-message-hu-event-editor-mingle-round-duration",
+    "key": "event.editor.mingle.round.duration",
+    "lang": "hu",
+    "value": "Kör időtartama"
+  },
+  {
+    "_id": "i18n-message-hu-event-editor-mingle-break-duration",
+    "key": "event.editor.mingle.break.duration",
+    "lang": "hu",
+    "value": "Asztalcsere szünete"
+  },
+  {
+    "_id": "i18n-message-hu-event-editor-mingle-table-count",
+    "key": "event.editor.mingle.table.count",
+    "lang": "hu",
+    "value": "Elérhető asztalok"
+  },
+  {
+    "_id": "i18n-message-hu-event-editor-mingle-table-count-hint",
+    "key": "event.editor.mingle.table.count.hint",
+    "lang": "hu",
+    "value": "A 0 érték a bejelentkezett résztvevőkből számítja ki a szükséges asztalszámot."
+  },
+  {
+    "_id": "i18n-message-hu-event-editor-mingle-table-size",
+    "key": "event.editor.mingle.table.size",
+    "lang": "hu",
+    "value": "{{count}} fő asztalonként"
+  },
+  {
+    "_id": "i18n-message-hu-event-editor-mingle-require-gender-balance",
+    "key": "event.editor.mingle.require.gender.balance",
+    "lang": "hu",
+    "value": "Nemi egyensúly megkövetelése"
+  },
+  {
+    "_id": "i18n-message-hu-event-editor-mingle-require-gender-balance-hint",
+    "key": "event.editor.mingle.require.gender.balance.hint",
+    "lang": "hu",
+    "value": "Csak teljes, az ismert nemek alapján kiegyensúlyozott asztalok kapnak kiosztást."
+  },
+  {
+    "_id": "i18n-message-hu-event-editor-mingle-projection-aria",
+    "key": "event.editor.mingle.projection.aria",
+    "lang": "hu",
+    "value": "{{round}} tervezett Mingle-kör"
+  },
+  {
+    "_id": "i18n-message-hu-mingle-tables",
+    "key": "mingle.tables",
+    "lang": "hu",
+    "value": "Asztalok"
+  },
+  {
+    "_id": "i18n-message-hu-mingle-table-number",
+    "key": "mingle.table.number",
+    "lang": "hu",
+    "value": "{{number}}. asztal"
+  },
+  {
+    "_id": "i18n-message-hu-event-editor-mingle-flexible-rounds-note",
+    "key": "event.editor.mingle.flexible.rounds.note",
+    "lang": "hu",
+    "value": "A tervezett körszám tájékoztató érték, nem maximum. Az esemény közben további kör indítható."
+  },
+  {
     "_id": "i18n-message-hu-frequency",
     "key": "frequency",
     "lang": "hu",
@@ -40456,6 +40756,30 @@
     "key": "integration.aria",
     "lang": "hu",
     "value": "API-integráció beállításai"
+  },
+  {
+    "_id": "i18n-message-hu-integration-help-aria",
+    "key": "integration.help.aria",
+    "lang": "hu",
+    "value": "API-dokumentációs súgó megnyitása"
+  },
+  {
+    "_id": "i18n-message-hu-integration-help-title",
+    "key": "integration.help.title",
+    "lang": "hu",
+    "value": "API-dokumentáció"
+  },
+  {
+    "_id": "i18n-message-hu-integration-help-description",
+    "key": "integration.help.description",
+    "lang": "hu",
+    "value": "A nyilvános GitHub README dokumentációs táblája tartalmazza az aktuális Integrációs API útmutatót."
+  },
+  {
+    "_id": "i18n-message-hu-integration-help-open-documentation",
+    "key": "integration.help.open.documentation",
+    "lang": "hu",
+    "value": "Dokumentáció megnyitása a GitHubon"
   },
   {
     "_id": "i18n-message-hu-integration-loading",
