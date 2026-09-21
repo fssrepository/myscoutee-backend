@@ -44,6 +44,7 @@ import tools.jackson.databind.ObjectMapper;
 import com.raxim.myscoutee.profile.data.document.ActivityEvent;
 import com.raxim.myscoutee.profile.data.document.ActivityMainEventRuntime;
 import com.raxim.myscoutee.profile.data.document.ActivityMember;
+import com.raxim.myscoutee.profile.data.document.ActivityMingleSession;
 import com.raxim.myscoutee.profile.data.document.ActivitySubEventGroup;
 import com.raxim.myscoutee.profile.data.document.ActivitySubEventResource;
 import com.raxim.myscoutee.profile.data.document.ActivitySubEventStageRuntime;
@@ -102,6 +103,7 @@ import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.SubEventDefinition
 import com.raxim.myscoutee.profile.data.document.SubEventItem;
 import com.raxim.myscoutee.profile.repository.ActivityMembersRepository;
 import com.raxim.myscoutee.profile.repository.ActivityEventsRepository;
+import com.raxim.myscoutee.profile.repository.ActivityMingleSessionsRepository;
 import com.raxim.myscoutee.profile.repository.ActivitySubEventGroupsRepository;
 import com.raxim.myscoutee.profile.repository.ActivitySubEventResourcesRepository;
 import com.raxim.myscoutee.profile.repository.ActivitySubEventStageRuntimeRepository;
@@ -158,6 +160,7 @@ public class ActivitiesEventsService {
     private final ActivitySubEventResourcesRepository activitySubEventResourcesRepository;
     private final ActivitySubEventStageRuntimeRepository activitySubEventStageRuntimeRepository;
     private final ActivityMembersRepository activityMembersRepository;
+    private final ActivityMingleSessionsRepository activityMingleSessionsRepository;
     private final UsersRepository usersRepository;
     private final FriendshipFacts friendshipFacts;
     private final UserAffinityEdgesRepository userAffinityEdgesRepository;
@@ -195,6 +198,7 @@ public class ActivitiesEventsService {
             ActivitySubEventResourcesRepository activitySubEventResourcesRepository,
             ActivitySubEventStageRuntimeRepository activitySubEventStageRuntimeRepository,
             ActivityMembersRepository activityMembersRepository,
+            ActivityMingleSessionsRepository activityMingleSessionsRepository,
             UsersRepository usersRepository,
             FriendshipFacts friendshipFacts,
             UserAffinityEdgesRepository userAffinityEdgesRepository,
@@ -230,6 +234,7 @@ public class ActivitiesEventsService {
         this.activitySubEventResourcesRepository = activitySubEventResourcesRepository;
         this.activitySubEventStageRuntimeRepository = activitySubEventStageRuntimeRepository;
         this.activityMembersRepository = activityMembersRepository;
+        this.activityMingleSessionsRepository = activityMingleSessionsRepository;
         this.usersRepository = usersRepository;
         this.friendshipFacts = friendshipFacts;
         this.userAffinityEdgesRepository = userAffinityEdgesRepository;
@@ -4970,6 +4975,9 @@ public class ActivitiesEventsService {
         signature.put("slotsEnabled", Boolean.TRUE.equals(event.getSlotsEnabled()));
         signature.put("slotTemplates", event.getSlotTemplates() == null ? List.of() : event.getSlotTemplates());
         signature.put("mode", normalizeEventMode(event.getMode()));
+        signature.put("mingleConfiguration", "Mingle".equals(normalizeEventMode(event.getMode()))
+                ? normalizeMingleConfiguration(event.getMingleConfiguration())
+                : null);
         try {
             return OBJECT_MAPPER.writeValueAsString(signature);
         } catch (Exception ignored) {
@@ -6687,6 +6695,12 @@ public class ActivitiesEventsService {
             document.setAdmins(syncedMembersSnapshot == null
                     ? normalizeIds(existing == null ? null : existing.getAdmins())
                     : new ArrayList<>(syncedMembersSnapshot.adminUserIds()));
+            if ("Mingle".equals(normalizeEventMode(existing == null ? null : existing.getMode()))) {
+                document.setMingleConfiguration(mergePublishedMingleConfiguration(
+                        sourceId,
+                        existing == null ? null : existing.getMingleConfiguration(),
+                        request.mingleConfiguration()));
+            }
             document.setFull(directRecordFull(document));
             document.setUpdatedDate(nowIso);
             document.setUpdatedUser(actorUserId);
@@ -6796,6 +6810,7 @@ public class ActivitiesEventsService {
         MingleConfigurationDto nextMingleConfiguration = "Mingle".equals(nextMode)
                 ? publishedManageMode
                         ? mergePublishedMingleConfiguration(
+                                sourceId,
                                 existing == null ? null : existing.getMingleConfiguration(),
                                 request.mingleConfiguration())
                         : normalizeMingleConfiguration(request.mingleConfiguration())
@@ -6906,7 +6921,8 @@ public class ActivitiesEventsService {
         return isPublishedEventManageUpdate(existing)
                 && next != null
                 && normalizeCount(existing.getCapacityMax()) == normalizeCount(next.getCapacityMax())
-                && Boolean.TRUE.equals(existing.getTicketing()) == Boolean.TRUE.equals(next.getTicketing());
+                && Boolean.TRUE.equals(existing.getTicketing()) == Boolean.TRUE.equals(next.getTicketing())
+                && Objects.equals(existing.getMingleConfiguration(), next.getMingleConfiguration());
     }
 
     private Integer resolvePublishedCapacityMax(ActivityEvent existing, Integer requestedCapacityMax, int acceptedMembers) {
@@ -8236,17 +8252,27 @@ public class ActivitiesEventsService {
     }
 
     private MingleConfigurationDto mergePublishedMingleConfiguration(
+            String eventId,
             MingleConfigurationDto existing,
             MingleConfigurationDto requested) {
         MingleConfigurationDto current = normalizeMingleConfiguration(existing);
         MingleConfigurationDto candidate = normalizeMingleConfiguration(requested == null ? current : requested);
         return new MingleConfigurationDto(
                 current.groupSize(),
-                Math.max(current.plannedRounds(), candidate.plannedRounds()),
+                Math.max(minimumMinglePlannedRounds(eventId), candidate.plannedRounds()),
                 current.roundDurationMinutes(),
                 current.breakDurationMinutes(),
                 current.tableCount(),
                 current.requireGenderBalance());
+    }
+
+    private int minimumMinglePlannedRounds(String eventId) {
+        ActivityMingleSession session = activityMingleSessionsRepository
+                .findByEventId(normalizeId(eventId))
+                .orElse(null);
+        return session == null
+                ? 1
+                : clampInteger(session.getCurrentRoundNumber(), 1, 100, 1);
     }
 
     private int clampInteger(Integer value, int min, int max, int fallback) {

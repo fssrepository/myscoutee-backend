@@ -36,6 +36,7 @@ import org.springframework.data.mongodb.core.query.Query;
 import com.raxim.myscoutee.profile.data.document.ActivityEvent;
 import com.raxim.myscoutee.profile.data.document.ActivityMainEventRuntime;
 import com.raxim.myscoutee.profile.data.document.ActivityMember;
+import com.raxim.myscoutee.profile.data.document.ActivityMingleSession;
 import com.raxim.myscoutee.profile.data.document.ActivitySubEventResource;
 import com.raxim.myscoutee.profile.data.document.ActivitySubEventResource.SubEventResourceMetricRecord;
 import com.raxim.myscoutee.profile.data.document.EventWatchSubscription;
@@ -58,9 +59,11 @@ import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventsExploreQuery
 import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventDto;
 import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventsFilterRequestDto;
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.EventSlotOccurrenceDto;
+import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.MingleConfigurationDto;
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.SubEventDefinitionDto;
 import com.raxim.myscoutee.profile.repository.ActivityMembersRepository;
 import com.raxim.myscoutee.profile.repository.ActivityEventsRepository;
+import com.raxim.myscoutee.profile.repository.ActivityMingleSessionsRepository;
 import com.raxim.myscoutee.profile.repository.ActivitySubEventGroupsRepository;
 import com.raxim.myscoutee.profile.repository.ActivitySubEventResourcesRepository;
 import com.raxim.myscoutee.profile.repository.ActivitySubEventStageRuntimeRepository;
@@ -88,6 +91,8 @@ class ActivitiesEventsServiceTest {
     private ActivitySubEventStageRuntimeRepository activitySubEventStageRuntimeRepository;
     @Mock
     private ActivityMembersRepository activityMembersRepository;
+    @Mock
+    private ActivityMingleSessionsRepository activityMingleSessionsRepository;
     @Mock
     private UsersRepository usersRepository;
     @Mock
@@ -155,6 +160,7 @@ class ActivitiesEventsServiceTest {
                 activitySubEventResourcesRepository,
                 activitySubEventStageRuntimeRepository,
                 activityMembersRepository,
+                activityMingleSessionsRepository,
                 usersRepository,
                 friendshipFacts,
                 userAffinityEdgesRepository,
@@ -1888,6 +1894,51 @@ class ActivitiesEventsServiceTest {
     }
 
     @Test
+    void publishedMingleRoundCountCanDecreaseOnlyToTheStartedRound() {
+        Users host = new Users();
+        host.setId("host");
+        host.setName("Host User");
+        ActivityEvent existing = event("event-1", "host", 0d);
+        existing.setTitle("Draft Event");
+        existing.setCapacityMin(1);
+        existing.setCapacityMax(8);
+        existing.setCapacityTotal(8);
+        existing.setTicketing(false);
+        existing.setMode("Mingle");
+        existing.setMingleConfiguration(new MingleConfigurationDto(4, 4, 20, 5, 6, true));
+
+        ActivityMingleSession session = new ActivityMingleSession();
+        session.setEventId("event-1");
+        session.setCurrentRoundNumber(2);
+
+        when(homeUserProfileService.resolveCurrentUser("host")).thenReturn(host);
+        when(activityEventsRepository.findByOwnerUserIdAndSourceId("host", "event-1"))
+                .thenReturn(Optional.of(existing));
+        when(activityMingleSessionsRepository.findByEventId("event-1")).thenReturn(Optional.of(session));
+        when(activityEventsRepository.saveAll(anyList())).thenAnswer(invocation -> invocation.getArgument(0));
+
+        EventDto result = service.sync(eventPayload(
+                "sync-event-1",
+                "event-1",
+                "host",
+                true,
+                false,
+                "Public",
+                8,
+                false,
+                true,
+                "Mingle",
+                new MingleConfigurationDto(4, 1, 20, 5, 6, true)));
+
+        assertThat(result).isNotNull();
+        @SuppressWarnings("unchecked")
+        ArgumentCaptor<List<ActivityEvent>> savedCaptor = ArgumentCaptor.forClass(List.class);
+        verify(activityEventsRepository).saveAll(savedCaptor.capture());
+        assertThat(savedCaptor.getValue()).singleElement().satisfies(saved ->
+                assertThat(saved.getMingleConfiguration().plannedRounds()).isEqualTo(2));
+    }
+
+    @Test
     void firstCompleteEventSaveMaterializesAndLoadsMainEventRuntime() {
         Users host = new Users();
         host.setId("host");
@@ -2817,6 +2868,32 @@ class ActivitiesEventsServiceTest {
             Integer capacityMax,
             Boolean slotsEnabled,
             Boolean subEventsEnabled) {
+        return eventPayload(
+                syncKey,
+                id,
+                creatorUserId,
+                published,
+                ticketing,
+                visibility,
+                capacityMax,
+                slotsEnabled,
+                subEventsEnabled,
+                "",
+                null);
+    }
+
+    private EventDetailDto eventPayload(
+            String syncKey,
+            String id,
+            String creatorUserId,
+            Boolean published,
+            Boolean ticketing,
+            String visibility,
+            Integer capacityMax,
+            Boolean slotsEnabled,
+            Boolean subEventsEnabled,
+            String mode,
+            MingleConfigurationDto mingleConfiguration) {
         return new EventDetailDto(
                 syncKey,
                 id,
@@ -2845,8 +2922,8 @@ class ActivitiesEventsServiceTest {
                 0d,
                 "",
                 "",
-                "",
-                null,
+                mode,
+                mingleConfiguration,
                 1,
                 capacityMax,
                 1,
