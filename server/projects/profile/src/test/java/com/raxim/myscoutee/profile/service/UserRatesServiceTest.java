@@ -291,6 +291,99 @@ class UserRatesServiceTest {
         assertThat(saved.getMetEventId()).isEqualTo("event-1");
     }
 
+    @org.junit.jupiter.params.ParameterizedTest
+    @org.junit.jupiter.params.provider.CsvSource({"true,7,0", "true,0,8", "true,0,0", "false,7,8"})
+    void meetingProjectionRequiresBothMetAndTwoRatings(boolean met, int given, int received) {
+        UserRate record = singleRate("meeting", "u1", "u2", given);
+        record.setMet(met);
+        record.setScoreReceived(received);
+        UserRatesService service = new UserRatesService(userRatesRepository, usersRepository,
+                homeUserProfileService, org.mockito.Mockito.mock(AffinityCalculationService.class),
+                userAffinityEdgeService, mongoTemplate, adminTelemetryService);
+        when(userRatesRepository.findRelevantByUserIds(anyList())).thenReturn(List.of(record));
+        service.projectRecordedMeetings(java.util.Set.of("u1", "u2"));
+        verify(mongoTemplate, never()).getCollection("userFriendships");
+    }
+
+    @Test
+    void meetingRecordedAfterMutualRatingsAlsoProjectsFriendship() {
+        UserRate record = singleRate("meeting", "u1", "u2", 7);
+        record.setMet(true);
+        record.setScoreReceived(8);
+        // Qualification comes from the ratings, not a potentially stale derived flag.
+        record.setMutuallyRated(false);
+        UserRatesService service = new UserRatesService(userRatesRepository, usersRepository,
+                homeUserProfileService, org.mockito.Mockito.mock(AffinityCalculationService.class),
+                userAffinityEdgeService, mongoTemplate, adminTelemetryService);
+        when(userRatesRepository.findRelevantByUserIds(anyList())).thenReturn(List.of(record));
+        when(mongoTemplate.getCollection("userFriendships")).thenReturn(friendshipCollection);
+        service.projectRecordedMeetings(java.util.Set.of("u1", "u2"));
+        verify(friendshipCollection).bulkWrite(anyList(), any(BulkWriteOptions.class));
+    }
+
+    @Test
+    void meetingProjectionResolvesRatingsRecordedSeparatelyBeforeTheMeeting() {
+        Users first = user("u1", "First", List.of("music"));
+        Users second = user("u2", "Second", List.of("music"));
+        UserRate meeting = singleRate("meeting", "u1", "u2", 7);
+        meeting.setMet(true);
+        meeting.setScoreReceived(0);
+        UserRate reciprocal = singleRate("reciprocal", "u2", "u1", 8);
+        when(affinityConfigsRepository.findFirstByActiveTrueOrderByVersionDesc())
+                .thenReturn(Optional.of(AffinityConfig.defaults()));
+        when(userRatesRepository.findRelevantByUserIds(anyList())).thenReturn(List.of(meeting, reciprocal));
+        when(usersRepository.findByUserIdIn(anyCollection())).thenReturn(List.of(first, second));
+        when(userExperienceProfilesRepository.findByUserIdIn(anyCollection())).thenReturn(List.of());
+        AffinityCalculationService affinity = new AffinityCalculationService(affinityConfigsRepository,
+                usersRepository, userRatesRepository, userExperienceProfilesRepository);
+        UserRatesService service = new UserRatesService(userRatesRepository, usersRepository,
+                homeUserProfileService, affinity, userAffinityEdgeService, mongoTemplate, adminTelemetryService);
+        when(mongoTemplate.getCollection("userFriendships")).thenReturn(friendshipCollection);
+        service.projectRecordedMeetings(java.util.Set.of("u1", "u2"));
+        UserRate saved = singleSavedRate();
+        assertThat(saved.getScoreReceived()).isEqualTo(8);
+        assertThat(saved.getMutuallyRated()).isTrue();
+        verify(friendshipCollection).bulkWrite(anyList(), any(BulkWriteOptions.class));
+    }
+
+    @Test
+    void staleMetRatingPreservesCounterpartyScoreAndReturnsToMetForBothViewers() {
+        Users first = user("u1", "First", List.of("music"));
+        Users second = user("u2", "Second", List.of("music"));
+        UserRate existing = singleRate("meeting", "u1", "u2", 8);
+        existing.setSyncKey("meeting");
+        existing.setScoreReceived(0);
+        existing.setMet(true);
+        existing.setMetEventId("event-1");
+        UserRatesService service = syncService(Map.of("u1", first, "u2", second), List.of(existing));
+        when(userRatesRepository.findBySyncKey("meeting")).thenReturn(Optional.of(existing));
+        when(mongoTemplate.getCollection("userFriendships")).thenReturn(friendshipCollection);
+        // The second viewer submits an old, empty Met card after the first has rated.
+        service.sync(new UserRatesSyncRequestDto(List.of(new UserRateRecordDto(
+                "meeting", "u2", "u1", 7, "single", "2026-05-08T10:00:00Z",
+                "2026-05-08T10:01:00Z", "u2", "meeting", "given", null, null, null,
+                7, 0, "Mingle", "2026-05-08T10:00:00Z", null))));
+        UserRate saved = singleSavedRate();
+        assertThat(saved.getId()).isEqualTo("meeting");
+        assertThat(saved.getOwnerUserId()).isEqualTo("u2");
+        assertThat(saved.getScoreGiven()).isEqualTo(7);
+        assertThat(saved.getScoreReceived()).isEqualTo(8);
+        assertThat(saved.getMet()).isTrue();
+        assertThat(saved.getMutuallyRated()).isTrue();
+        verify(friendshipCollection).bulkWrite(anyList(), any(BulkWriteOptions.class));
+        UserRatesService reader = queryService(Map.of("u1", first, "u2", second), List.of(saved));
+        assertThat(reader.queryRateItemsByUser("u1")).singleElement().satisfies(item -> {
+            assertThat(item.direction()).isEqualTo("met");
+            assertThat(item.scoreGiven()).isEqualTo(8);
+            assertThat(item.scoreReceived()).isEqualTo(7);
+        });
+        assertThat(reader.queryRateItemsByUser("u2")).singleElement().satisfies(item -> {
+            assertThat(item.direction()).isEqualTo("met");
+            assertThat(item.scoreGiven()).isEqualTo(7);
+            assertThat(item.scoreReceived()).isEqualTo(8);
+        });
+    }
+
     @Test
     void syncCalculatesBackendOwnedAffinityBeforeSaveAndRecomputesEdges() {
         Users owner = user("u1", "Owner", List.of("music"));
@@ -714,7 +807,6 @@ class UserRatesServiceTest {
 
     private UserRatesService queryService(Map<String, Users> usersById, List<UserRate> records) {
         when(userRatesRepository.findRelevantByUserIds(anyList())).thenReturn(records);
-        when(homeUserProfileService.queryUsersByIds(anyCollection())).thenReturn(List.of());
         when(homeUserProfileService.isActivityRateVisibleUser(any(Users.class))).thenAnswer(invocation -> {
             Users user = invocation.getArgument(0);
             return user != null && !"blocked".equals(user.getProfileStatus()) && !"inactive".equals(user.getProfileStatus());

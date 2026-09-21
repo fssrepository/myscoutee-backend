@@ -357,16 +357,33 @@ Event
    `- table number -> participant IDs
 ```
 
-Actual saved round assignments provide the history of who was placed together.
-After a table is completed, its participants may already appear in the existing
-Met list with feedback pending. The assignment itself is not yet a normal
-feedback-backed Met/rating/priority signal. That existing signal is persisted
-only after the relevant feedback is submitted. This does not require a separate
-matching product, relationship graph, or automatically created chat.
+Actual saved round assignments provide Mingle meeting evidence. Completed
+shared tables can establish `met` before either participant has rated. This is
+consumed by the existing event/rate flow.
 
-Ordinary event membership or a broad event activity value must not be treated
-as proof that every participant met every other participant. For Mingle, the
-relevant signal comes from the actual completed table/group assignment.
+`met` is a lasting meeting fact, not a friendship or a bucket override:
+
+- no ratings: Met;
+- one rating: Given for the rater and Received for the other participant;
+- both ratings: Met when `met` is true, otherwise the existing Mutual bucket.
+
+Friendship requires both a meeting fact and mutual ratings, regardless of event
+type. Neither event completion nor `met` alone creates a friendship. Rating and
+meeting writes must maintain the existing projections for both participants,
+including when ratings existed before the meeting was recorded. Editing a
+mutually rated Met must preserve its bucket and the other participant's score.
+
+Mingle assignment history supplies evidence to this shared flow; rate queries
+and friendship qualification must not depend on a Mingle-specific lookup or
+origin flag. No automatic chat is created.
+
+After a Mingle event ends, the existing feedback flow lists the unique people
+with whom the viewer shared a table in any completed round. It uses the saved
+round assignments, not the full event membership, and does not truncate this
+list to five people. Someone encountered in several rounds appears once.
+There is no separate feedback entity per table: event feedback, its availability
+rules and the organizer card remain unchanged. Only the attendee source changes
+for Mingle; submitting attendee feedback outside that source is rejected.
 
 ## Partner API
 

@@ -32,10 +32,13 @@ public class EventFriendshipProjectionService {
 
     private final MongoTemplate mongo;
     private final ActivityMembersRepository members;
+    private final UserRatesService userRatesService;
 
-    public EventFriendshipProjectionService(MongoTemplate mongo, ActivityMembersRepository members) {
+    public EventFriendshipProjectionService(MongoTemplate mongo, ActivityMembersRepository members,
+            UserRatesService userRatesService) {
         this.mongo = mongo;
         this.members = members;
+        this.userRatesService = userRatesService;
     }
 
     public int projectCompletedEvents(Instant now, int batchSize) {
@@ -72,6 +75,14 @@ public class EventFriendshipProjectionService {
                 if (metWrites.size() == 500) flush("userRates", metWrites);
             }
             flush("userRates", metWrites);
+            LinkedHashSet<String> metParticipantIds = new LinkedHashSet<>();
+            for (UserPair pair : pairs) {
+                metParticipantIds.add(pair.left());
+                metParticipantIds.add(pair.right());
+            }
+            // Meeting evidence can arrive after ratings. Apply the same friendship
+            // gate and write-side projections as a rating arriving after a meeting.
+            userRatesService.projectRecordedMeetings(metParticipantIds);
             // Publish completion only after every pair is durable. Pair upserts are atomic and
             // idempotent; an interrupted event retries without duplicate edges or changed dates.
             mongo.updateMulti(Query.query(Criteria.where("sourceId").is(event.getSourceId())

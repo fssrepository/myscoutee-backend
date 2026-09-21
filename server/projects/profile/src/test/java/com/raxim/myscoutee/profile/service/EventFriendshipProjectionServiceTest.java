@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyList;
+import static org.mockito.ArgumentMatchers.anySet;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
 import java.time.Instant;
@@ -30,7 +31,8 @@ class EventFriendshipProjectionServiceTest {
     private final ActivityMembersRepository members = mock(ActivityMembersRepository.class);
     private final MongoCollection<Document> collection = mock(MongoCollection.class);
     private final MongoCollection<Document> rateCollection = mock(MongoCollection.class);
-    private final EventFriendshipProjectionService service = new EventFriendshipProjectionService(mongo, members);
+    private final UserRatesService rates = mock(UserRatesService.class);
+    private final EventFriendshipProjectionService service = new EventFriendshipProjectionService(mongo, members, rates);
     private final Instant now = Instant.parse("2026-09-14T12:00:00Z");
 
     @Test
@@ -55,8 +57,9 @@ class EventFriendshipProjectionServiceTest {
         assertThat(inserted.getString("ownerUserId")).isEqualTo("a");
         assertThat(inserted.getString("relatedUserId")).isEqualTo("b");
         assertThat(((Document) pair.getUpdate()).get("$set", Document.class).getBoolean("met")).isTrue();
-        var order = inOrder(rateCollection, mongo);
+        var order = inOrder(rateCollection, rates, mongo);
         order.verify(rateCollection).bulkWrite(anyList(), any(BulkWriteOptions.class));
+        order.verify(rates).projectRecordedMeetings(anySet());
         order.verify(mongo).updateMulti(any(Query.class), any(Update.class), eq(ActivityEvent.class));
         verify(mongo, never()).getCollection("userFriendships");
         verify(members).findByOwnerTypeAndOwnerIdIn("event", Set.of("event-1"));
@@ -69,6 +72,17 @@ class EventFriendshipProjectionServiceTest {
                 .thenReturn(List.of(member("a", "accepted", false), member("b", "accepted", false)));
         when(mongo.getCollection("userRates")).thenReturn(rateCollection);
         when(rateCollection.bulkWrite(anyList(), any(BulkWriteOptions.class))).thenThrow(new IllegalStateException("write failed"));
+        assertThatThrownBy(() -> service.projectCompletedEvents(now, 20)).isInstanceOf(IllegalStateException.class);
+        verify(mongo, never()).updateMulti(any(Query.class), any(Update.class), eq(ActivityEvent.class));
+    }
+
+    @Test
+    void failedMeetingProjectionsLeaveTheEventPendingForRetry() {
+        when(mongo.find(any(Query.class), eq(ActivityEvent.class))).thenReturn(List.of(event()));
+        when(members.findByOwnerTypeAndOwnerIdIn("event", Set.of("event-1")))
+                .thenReturn(List.of(member("a", "accepted", false), member("b", "accepted", false)));
+        when(mongo.getCollection("userRates")).thenReturn(rateCollection);
+        doThrow(new IllegalStateException("projection failed")).when(rates).projectRecordedMeetings(Set.of("a", "b"));
         assertThatThrownBy(() -> service.projectCompletedEvents(now, 20)).isInstanceOf(IllegalStateException.class);
         verify(mongo, never()).updateMulti(any(Query.class), any(Update.class), eq(ActivityEvent.class));
     }
@@ -109,10 +123,11 @@ class EventFriendshipProjectionServiceTest {
         assertThat(inserted.getInteger("scoreReceived")).isZero();
         assertThat(inserted.getString("ownerUserId")).isEqualTo("a");
         assertThat(inserted.getString("relatedUserId")).isEqualTo("b");
-        assertThat(rateWrites.stream().map(write -> ((UpdateOneModel<Document>) write).getFilter().toJson()))
+        assertThat(rateWrites.stream().map(write -> ((UpdateOneModel<Document>) write).getFilter().toBsonDocument().toJson()))
                 .noneMatch(filter -> filter.contains("not-seated"));
-        var order = inOrder(rateCollection, mongo);
+        var order = inOrder(rateCollection, rates, mongo);
         order.verify(rateCollection).bulkWrite(anyList(), any(BulkWriteOptions.class));
+        order.verify(rates).projectRecordedMeetings(anySet());
         order.verify(mongo).updateMulti(any(Query.class), any(Update.class), eq(ActivityEvent.class));
         verify(mongo, never()).getCollection("userFriendships");
     }
@@ -125,7 +140,7 @@ class EventFriendshipProjectionServiceTest {
         verify(mongo).find(query.capture(), eq(ActivityEvent.class));
         assertThat(query.getValue().getLimit()).isEqualTo(20);
         assertThat(query.getValue().getQueryObject().toJson()).contains("friendshipsProjected", "endAtIso", "status", "published", now.toString());
-        verifyNoInteractions(members, collection, rateCollection);
+        verifyNoInteractions(members, collection, rateCollection, rates);
     }
 
     private ActivityEvent event() {

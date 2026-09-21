@@ -226,6 +226,23 @@ public class UserRatesService {
         return new UserRatesSyncResponseDto(syncedRateIds, failedRateIds);
     }
 
+    void projectRecordedMeetings(Collection<String> participantIds) {
+        if (participantIds == null || participantIds.isEmpty()) return;
+        List<UserRate> meetings = userRatesRepository.findRelevantByUserIds(new ArrayList<>(participantIds)).stream()
+                .filter(rate -> Boolean.TRUE.equals(rate.getMet()))
+                .filter(rate -> participantIds.contains(rate.getOwnerUserId())
+                        && participantIds.contains(rate.getRelatedUserId()))
+                .toList();
+        if (!meetings.isEmpty()) {
+            affinityCalculationService.applyAffinity(meetings);
+            userRatesRepository.saveAll(meetings);
+            projectMutualMetFriendships(meetings);
+            userAffinityEdgeService.recomputeForRates(meetings);
+        }
+        refreshHomeGameRateProjections(new LinkedHashSet<>(participantIds), meetings);
+        enqueueRateRecomputeTasks(meetings);
+    }
+
     private void projectMutualMetFriendships(Collection<UserRate> persistedRates) {
         if (persistedRates == null || persistedRates.isEmpty()) {
             return;
@@ -235,7 +252,8 @@ public class UserRatesService {
             if (rate == null
                     || !"single".equals(normalizeMode(rate.getMode()))
                     || !Boolean.TRUE.equals(rate.getMet())
-                    || !Boolean.TRUE.equals(rate.getMutuallyRated())) {
+                    || normalizeScore(rate.getScoreGiven()) <= 0
+                    || normalizeScore(rate.getScoreReceived()) <= 0) {
                 continue;
             }
             String ownerUserId = normalizeOptionalId(rate.getOwnerUserId());
@@ -745,6 +763,13 @@ public class UserRatesService {
                 : resolveCreatedUser(rate, ownerUserId, fromUserId, toUserId, updatedUserId);
         String nowIso = Instant.now().toString();
 
+        // A Met record is shared by both viewers. Preserve the other person's
+        // authoritative score when a stale client submits a rating or edits its own.
+        Integer metCounterpartyScore = existing != null && Boolean.TRUE.equals(existing.getMet())
+                && "single".equals(mode)
+                ? (ownerUserId.equals(existing.getOwnerUserId())
+                        ? existing.getScoreReceived() : existing.getScoreGiven())
+                : null;
         UserRate document = existing != null ? existing : new UserRate();
         document.setId(existing != null ? existing.getId() : new ObjectId().toHexString());
         document.setSyncKey(syncKeyBelongsToDifferentRecord ? naturalKeyRecord.getSyncKey() : syncKey);
@@ -759,6 +784,9 @@ public class UserRatesService {
         document.setOwnerLocation(resolveLocationSnapshot(ownerUserId));
 
         UserRate normalized = normalizeRateRecord(document, rate, mode, ownerUserId, fromUserId, toUserId);
+        if (normalized != null && metCounterpartyScore != null) {
+            normalized.setScoreReceived(normalizeScore(metCounterpartyScore));
+        }
         return normalized == null ? null : new NormalizedRate(normalized, previousScoreGiven);
     }
 

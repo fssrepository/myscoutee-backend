@@ -27,6 +27,15 @@ import com.raxim.myscoutee.profile.repository.ActivityMembersRepository;
 import com.raxim.myscoutee.profile.service.EventFriendshipProjectionService;
 import com.raxim.myscoutee.profile.service.media.S3CompatibleMediaObjectStoreClient;
 
+import com.raxim.myscoutee.profile.repository.UserRatesRepository;
+import com.raxim.myscoutee.profile.repository.UsersRepository;
+import com.raxim.myscoutee.profile.service.UserRatesService;
+import com.raxim.myscoutee.profile.service.HomeUserProfileService;
+import com.raxim.myscoutee.profile.service.AffinityCalculationService;
+import com.raxim.myscoutee.profile.service.UserAffinityEdgeService;
+import com.raxim.myscoutee.profile.service.AdminTelemetryService;
+import static org.mockito.Mockito.mock;
+
 /** Opt-in disposable fixture against the existing dev Mongo/MinIO/API; starts no server.
  * Session cookies are fixture-issued. This does not prove external Firebase sign-in. */
 @Tag("qualification")
@@ -112,7 +121,11 @@ class MediaFriendshipQualificationTest {
             var db = client.getDatabase("demo_db");
             MongoTemplate mongo = new MongoTemplate(client, "demo_db");
             var members = new MongoRepositoryFactory(mongo).getRepository(ActivityMembersRepository.class);
-            var projector = new EventFriendshipProjectionService(mongo, members);
+            var ratesRepository = new MongoRepositoryFactory(mongo).getRepository(UserRatesRepository.class);
+            var rates = new UserRatesService(ratesRepository, mock(UsersRepository.class),
+                    mock(HomeUserProfileService.class), mock(AffinityCalculationService.class),
+                    mock(UserAffinityEdgeService.class), mongo, mock(AdminTelemetryService.class), null, null);
+            var projector = new EventFriendshipProjectionService(mongo, members, rates);
             // Never let the test clock expire an unrelated fixture/seed event.
             assertThat(db.getCollection("events").countDocuments(new Document("status", "A")
                     .append("published", new Document("$ne", false))

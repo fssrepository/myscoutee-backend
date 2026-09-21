@@ -22,6 +22,7 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.server.ResponseStatusException;
 
 import com.raxim.myscoutee.profile.data.document.ActivityEvent;
+import com.raxim.myscoutee.profile.data.document.ActivityMingleRound;
 import com.raxim.myscoutee.profile.data.document.EventFeedbackAnswer;
 import com.raxim.myscoutee.profile.data.document.EventFeedbackState;
 import com.raxim.myscoutee.profile.data.document.Users;
@@ -43,6 +44,7 @@ import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventFeedbackStatQ
 import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventFeedbackSubmitRequestDto;
 import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventFeedbackToggleRequestDto;
 import com.raxim.myscoutee.profile.repository.ActivityEventsRepository;
+import com.raxim.myscoutee.profile.repository.ActivityMingleRoundsRepository;
 import com.raxim.myscoutee.profile.repository.EventFeedbackAnswersRepository;
 import com.raxim.myscoutee.profile.repository.EventFeedbackStatesRepository;
 import com.raxim.myscoutee.profile.repository.UsersRepository;
@@ -61,6 +63,7 @@ public class ActivitiesEventFeedbackService {
 
     private final HomeUserProfileService homeUserProfileService;
     private final ActivityEventsRepository activityEventsRepository;
+    private final ActivityMingleRoundsRepository mingleRoundsRepository;
     private final EventFeedbackStatesRepository eventFeedbackStatesRepository;
     private final EventFeedbackAnswersRepository eventFeedbackAnswersRepository;
     private final UsersRepository usersRepository;
@@ -74,6 +77,7 @@ public class ActivitiesEventFeedbackService {
     public ActivitiesEventFeedbackService(
             HomeUserProfileService homeUserProfileService,
             ActivityEventsRepository activityEventsRepository,
+            ActivityMingleRoundsRepository mingleRoundsRepository,
             EventFeedbackStatesRepository eventFeedbackStatesRepository,
             EventFeedbackAnswersRepository eventFeedbackAnswersRepository,
             UsersRepository usersRepository,
@@ -85,6 +89,7 @@ public class ActivitiesEventFeedbackService {
             NotificationOutboxService notificationOutboxService) {
         this.homeUserProfileService = homeUserProfileService;
         this.activityEventsRepository = activityEventsRepository;
+        this.mingleRoundsRepository = mingleRoundsRepository;
         this.eventFeedbackStatesRepository = eventFeedbackStatesRepository;
         this.eventFeedbackAnswersRepository = eventFeedbackAnswersRepository;
         this.usersRepository = usersRepository;
@@ -122,11 +127,12 @@ public class ActivitiesEventFeedbackService {
 
         List<ActivityEvent> feedbackEvents = queryFeedbackCandidateEvents(userId);
         List<ActivityEvent> organizerEvents = queryOrganizerFeedbackEvents(userId);
-        Map<String, Users> usersById = buildFeedbackUsersById(activeUser, feedbackEvents, organizerEvents);
+        Map<String, Set<String>> minglePeers = completedMinglePeers(userId, feedbackEvents);
+        Map<String, Users> usersById = buildFeedbackUsersById(activeUser, feedbackEvents, organizerEvents, minglePeers);
         EventFeedbackPageStateSnapshotDto state = pageStateSnapshot(queryStateDtos(userId));
         List<EventFeedbackReceivedEventDto> receivedEvents = queryReceivedEventsByOwnedEventIds(userId, eventSourceIds(organizerEvents));
         Map<String, List<EventFeedbackReceivedEntryDto>> receivedByEventId = receivedEntriesByEventId(receivedEvents);
-        Map<String, List<EventFeedbackCardDto>> cardsByEventId = feedbackCardsByEventId(feedbackEvents, usersById, activeUser);
+        Map<String, List<EventFeedbackCardDto>> cardsByEventId = feedbackCardsByEventId(feedbackEvents, usersById, activeUser, minglePeers);
         List<EventFeedbackDto> allItems = buildFeedbackPageItems(feedbackEvents, cardsByEventId, state, userId);
         List<EventFeedbackDto> organizerItems = buildOrganizerPageItems(organizerEvents, receivedByEventId);
         List<EventFeedbackDto> filteredItems = filterPageItems(filter, allItems, organizerItems);
@@ -174,7 +180,8 @@ public class ActivitiesEventFeedbackService {
         if (record == null) {
             return emptyDetailResult(eventId);
         }
-        Map<String, Users> usersById = buildFeedbackUsersById(activeUser, List.of(record), List.of());
+        Map<String, Set<String>> minglePeers = completedMinglePeers(userId, List.of(record));
+        Map<String, Users> usersById = buildFeedbackUsersById(activeUser, List.of(record), List.of(), minglePeers);
         EventFeedbackState state = eventFeedbackStatesRepository
                 .findByViewerUserIdAndEventId(userId, eventId)
                 .orElse(null);
@@ -192,7 +199,7 @@ public class ActivitiesEventFeedbackService {
                 safeText(record.getTitle()),
                 safeText(state == null ? null : state.getSubmittedAtIso()),
                 safeText(state == null ? null : state.getOrganizerNote()),
-                buildFeedbackCards(record, usersById, activeUser).stream()
+                buildFeedbackCards(record, usersById, activeUser, minglePeers).stream()
                         .map(card -> mergeFeedbackAnswer(
                                 card,
                                 findFeedbackAnswer(card, answersByCardId, persistedAnswers)))
@@ -214,10 +221,23 @@ public class ActivitiesEventFeedbackService {
         if (activeUser == null || feedbackEvent == null) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "The feedback event is not available for this user.");
         }
-        Set<String> allowedTargetUserIds = buildFeedbackCards(
+        Map<String, Set<String>> minglePeers = completedMinglePeers(userId, List.of(feedbackEvent));
+        List<EventFeedbackCardDto> allowedCards = buildFeedbackCards(
                 feedbackEvent,
-                buildFeedbackUsersById(activeUser, List.of(feedbackEvent), List.of()),
-                activeUser).stream()
+                buildFeedbackUsersById(activeUser, List.of(feedbackEvent), List.of(), minglePeers),
+                activeUser, minglePeers);
+        if (isMingleEvent(feedbackEvent)) {
+            Map<String, EventFeedbackCardDto> cardsById = new LinkedHashMap<>();
+            allowedCards.forEach(card -> cardsById.put(card.id(), card));
+            for (EventFeedbackCardDto submitted : safeDetailCards(feedback.cards())) {
+                EventFeedbackCardDto allowed = submitted == null ? null : cardsById.get(normalizeId(submitted.id()));
+                if (allowed == null || !Objects.equals(allowed.kind(), submitted.kind())
+                        || !Objects.equals(normalizeId(allowed.targetUserId()), normalizeId(submitted.targetUserId()))) {
+                    throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid feedback target for this event.");
+                }
+            }
+        }
+        Set<String> allowedTargetUserIds = allowedCards.stream()
                         .map(EventFeedbackCardDto::targetUserId)
                         .map(this::normalizeId)
                         .filter(StringUtils::hasText)
@@ -618,10 +638,37 @@ public class ActivitiesEventFeedbackService {
                 && creatorUserId.equals(normalizeId(record.getOwnerUserId()));
     }
 
+    private boolean isMingleEvent(ActivityEvent event) {
+        return event != null && "Mingle".equalsIgnoreCase(event.getMode());
+    }
+
+    private Map<String, Set<String>> completedMinglePeers(String viewerId, Collection<ActivityEvent> events) {
+        Set<String> eventIds = new LinkedHashSet<>();
+        for (ActivityEvent event : events) {
+            if (isMingleEvent(event)) addNormalizedId(eventIds, event.getSourceId());
+        }
+        Map<String, Set<String>> peers = new LinkedHashMap<>();
+        if (eventIds.isEmpty()) return peers;
+        for (ActivityMingleRound round : mingleRoundsRepository
+                .findByEventIdInAndStatusOrderByRoundNumberAsc(eventIds, "COMPLETED")) {
+            for (ActivityMingleRound.TableAssignment table : round.getTables()) {
+                if (table == null || table.memberUserIds() == null) continue;
+                Set<String> participants = new LinkedHashSet<>();
+                table.memberUserIds().forEach(id -> addNormalizedId(participants, id));
+                if (participants.remove(viewerId)) {
+                    peers.computeIfAbsent(normalizeId(round.getEventId()), ignored -> new LinkedHashSet<>())
+                            .addAll(participants);
+                }
+            }
+        }
+        return peers;
+    }
+
     private Map<String, Users> buildFeedbackUsersById(
             Users activeUser,
             Collection<ActivityEvent> feedbackEvents,
-            Collection<ActivityEvent> organizerEvents) {
+            Collection<ActivityEvent> organizerEvents,
+            Map<String, Set<String>> minglePeers) {
         LinkedHashSet<String> userIds = new LinkedHashSet<>();
         String activeUserId = normalizeId(activeUser == null ? null : activeUser.getUserId());
         if (StringUtils.hasText(activeUserId)) {
@@ -629,6 +676,7 @@ public class ActivitiesEventFeedbackService {
         }
         collectEventUserIds(userIds, feedbackEvents);
         collectEventUserIds(userIds, organizerEvents);
+        minglePeers.values().forEach(userIds::addAll);
         Map<String, Users> usersById = new LinkedHashMap<>();
         if (!userIds.isEmpty()) {
             for (Users user : usersRepository.findByUserIdIn(userIds)) {
@@ -648,6 +696,9 @@ public class ActivitiesEventFeedbackService {
         for (ActivityEvent record : records == null ? List.<ActivityEvent>of() : records) {
             addNormalizedId(userIds, record == null ? null : record.getCreatorUserId());
             addNormalizedId(userIds, record == null ? null : record.getOwnerUserId());
+            if (isMingleEvent(record)) {
+                continue;
+            }
             for (String userId : record == null ? List.<String>of() : record.getAcceptedMemberUserIds()) {
                 addNormalizedId(userIds, userId);
             }
@@ -667,10 +718,11 @@ public class ActivitiesEventFeedbackService {
     private Map<String, List<EventFeedbackCardDto>> feedbackCardsByEventId(
             Collection<ActivityEvent> records,
             Map<String, Users> usersById,
-            Users activeUser) {
+            Users activeUser,
+            Map<String, Set<String>> minglePeers) {
         Map<String, List<EventFeedbackCardDto>> cardsByEventId = new LinkedHashMap<>();
         for (ActivityEvent record : records == null ? List.<ActivityEvent>of() : records) {
-            for (EventFeedbackCardDto card : buildFeedbackCards(record, usersById, activeUser)) {
+            for (EventFeedbackCardDto card : buildFeedbackCards(record, usersById, activeUser, minglePeers)) {
                 cardsByEventId.computeIfAbsent(card.eventId(), ignored -> new ArrayList<>()).add(card);
             }
         }
@@ -680,7 +732,8 @@ public class ActivitiesEventFeedbackService {
     private List<EventFeedbackCardDto> buildFeedbackCards(
             ActivityEvent record,
             Map<String, Users> usersById,
-            Users activeUser) {
+            Users activeUser,
+            Map<String, Set<String>> minglePeers) {
         String eventId = normalizeId(record == null ? null : record.getSourceId());
         if (!StringUtils.hasText(eventId) || !isFeedbackUnlocked(record)) {
             return List.of();
@@ -717,7 +770,7 @@ public class ActivitiesEventFeedbackService {
                 "",
                 List.of()));
 
-        for (Users attendee : feedbackAttendeesForEvent(record, usersById, activeUserId, hostId)) {
+        for (Users attendee : feedbackAttendeesForEvent(record, usersById, activeUserId, hostId, minglePeers)) {
             String attendeeUserId = normalizeId(attendee.getUserId());
             if (!StringUtils.hasText(attendeeUserId)) {
                 continue;
@@ -765,13 +818,19 @@ public class ActivitiesEventFeedbackService {
             ActivityEvent record,
             Map<String, Users> usersById,
             String activeUserId,
-            String hostId) {
+            String hostId,
+            Map<String, Set<String>> minglePeers) {
         LinkedHashSet<String> attendeeIds = new LinkedHashSet<>();
-        for (String userId : record == null ? List.<String>of() : record.getAcceptedMemberUserIds()) {
-            addNormalizedId(attendeeIds, userId);
-        }
-        for (String userId : record == null ? List.<String>of() : record.getPendingMemberUserIds()) {
-            addNormalizedId(attendeeIds, userId);
+        boolean mingle = isMingleEvent(record);
+        if (mingle) {
+            attendeeIds.addAll(minglePeers.getOrDefault(normalizeId(record.getSourceId()), Set.of()));
+        } else {
+            for (String userId : record == null ? List.<String>of() : record.getAcceptedMemberUserIds()) {
+                addNormalizedId(attendeeIds, userId);
+            }
+            for (String userId : record == null ? List.<String>of() : record.getPendingMemberUserIds()) {
+                addNormalizedId(attendeeIds, userId);
+            }
         }
         attendeeIds.remove(activeUserId);
         attendeeIds.remove(hostId);
@@ -781,7 +840,7 @@ public class ActivitiesEventFeedbackService {
             if (attendee != null) {
                 attendees.add(attendee);
             }
-            if (attendees.size() >= 5) {
+            if (!mingle && attendees.size() >= 5) {
                 break;
             }
         }

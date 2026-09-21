@@ -13,6 +13,7 @@ import static org.mockito.Mockito.when;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.concurrent.atomic.AtomicReference;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -23,6 +24,7 @@ import org.mockito.InOrder;
 import org.mockito.ArgumentCaptor;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventFeedbackQueryDto;
 import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventFeedbackCardDto;
 import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventFeedbackDetailDto;
 import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventFeedbackNoteRequestDto;
@@ -35,6 +37,8 @@ import com.raxim.myscoutee.profile.data.document.EventFeedbackAnswer;
 import com.raxim.myscoutee.profile.data.document.EventFeedbackState;
 import com.raxim.myscoutee.profile.data.document.Users;
 import com.raxim.myscoutee.profile.repository.ActivityEventsRepository;
+import com.raxim.myscoutee.profile.repository.ActivityMingleRoundsRepository;
+import com.raxim.myscoutee.profile.data.document.ActivityMingleRound;
 import com.raxim.myscoutee.profile.repository.EventFeedbackAnswersRepository;
 import com.raxim.myscoutee.profile.repository.EventFeedbackStatesRepository;
 import com.raxim.myscoutee.profile.repository.UsersRepository;
@@ -49,6 +53,8 @@ class ActivitiesEventFeedbackServiceTest {
     private HomeUserProfileService homeUserProfileService;
     @Mock
     private ActivityEventsRepository activityEventsRepository;
+    @Mock
+    private ActivityMingleRoundsRepository mingleRoundsRepository;
     @Mock
     private EventFeedbackStatesRepository eventFeedbackStatesRepository;
     @Mock
@@ -75,6 +81,7 @@ class ActivitiesEventFeedbackServiceTest {
         service = new ActivitiesEventFeedbackService(
                 homeUserProfileService,
                 activityEventsRepository,
+                mingleRoundsRepository,
                 eventFeedbackStatesRepository,
                 eventFeedbackAnswersRepository,
                 usersRepository,
@@ -84,6 +91,151 @@ class ActivitiesEventFeedbackServiceTest {
                 userActivityCountersService,
                 eventFeedbackStatMapper,
                 notificationOutboxService);
+    }
+
+    @Test
+    void mingleFeedbackUnionsSharedTablesAcrossRoundsWithoutDuplicatesOrFivePersonLimit() {
+        ActivityEvent event = finishedFeedbackEvent("Mingle");
+        Users viewer = feedbackUser("viewer");
+        when(homeUserProfileService.resolveCurrentUser("viewer")).thenReturn(viewer);
+        when(activityEventsRepository.findBySourceId("event-1")).thenReturn(List.of(event));
+        when(activityEventsRepository.findAcceptedMembershipEvents("viewer")).thenReturn(List.of(event));
+        when(usersRepository.findByUserIdIn(anyCollection())).thenAnswer(invocation -> {
+            java.util.Collection<String> ids = invocation.getArgument(0);
+            return ids.stream().map(this::feedbackUser).toList();
+        });
+        when(mingleRoundsRepository.findByEventIdInAndStatusOrderByRoundNumberAsc(Set.of("event-1"), "COMPLETED"))
+                .thenReturn(List.of(
+                        feedbackRound(1, List.of("viewer", "peer-1", "peer-2"), List.of("outsider")),
+                        feedbackRound(2, List.of("peer-2", "viewer", "peer-3", "peer-4")),
+                        feedbackRound(3, List.of("peer-5", "peer-6", "viewer", "peer-1"))));
+
+        EventFeedbackDetailDto detail = service.loadDetail(new EventFeedbackQueryDto("viewer", "event-1"));
+        EventFeedbackPageResultDto page = service.loadPage(new EventFeedbackPageQueryDto("viewer", "pending", 0, 20));
+
+        assertThat(detail.cards()).filteredOn(card -> "attendee".equals(card.kind()))
+                .extracting(EventFeedbackCardDto::targetUserId)
+                .containsExactly("peer-1", "peer-2", "peer-3", "peer-4", "peer-5", "peer-6");
+        assertThat(page.items()).singleElement().satisfies(item -> {
+            assertThat(item.totalCards()).isEqualTo(detail.cards().size());
+            assertThat(item.pendingCards()).isEqualTo(7);
+        });
+    }
+
+    @Test
+    void mingleWithoutSharedCompletedTablesDoesNotFallBackToEventMembers() {
+        when(homeUserProfileService.resolveCurrentUser("viewer")).thenReturn(feedbackUser("viewer"));
+        when(activityEventsRepository.findBySourceId("event-1")).thenReturn(List.of(finishedFeedbackEvent("Mingle")));
+        when(usersRepository.findByUserIdIn(anyCollection())).thenReturn(List.of(
+                feedbackUser("viewer"), feedbackUser("host"), feedbackUser("outsider")));
+
+        EventFeedbackDetailDto detail = service.loadDetail(new EventFeedbackQueryDto("viewer", "event-1"));
+
+        assertThat(detail.cards()).extracting(EventFeedbackCardDto::targetUserId).containsExactly("host");
+        verify(mingleRoundsRepository).findByEventIdInAndStatusOrderByRoundNumberAsc(Set.of("event-1"), "COMPLETED");
+    }
+
+    @Test
+    void ordinaryEventFeedbackStillUsesItsMembers() {
+        when(homeUserProfileService.resolveCurrentUser("viewer")).thenReturn(feedbackUser("viewer"));
+        when(activityEventsRepository.findBySourceId("event-1")).thenReturn(List.of(finishedFeedbackEvent("Casual")));
+        when(usersRepository.findByUserIdIn(anyCollection())).thenReturn(List.of(
+                feedbackUser("viewer"), feedbackUser("host"), feedbackUser("outsider")));
+
+        EventFeedbackDetailDto detail = service.loadDetail(new EventFeedbackQueryDto("viewer", "event-1"));
+
+        assertThat(detail.cards()).extracting(EventFeedbackCardDto::targetUserId).containsExactly("host", "outsider");
+        verifyNoInteractions(mingleRoundsRepository);
+    }
+
+    @Test
+    void mingleRejectsSubmittedFeedbackForAnotherTableBeforeSaving() {
+        when(homeUserProfileService.resolveSelectedUserId("viewer")).thenReturn("viewer");
+        when(homeUserProfileService.resolveCurrentUser("viewer")).thenReturn(feedbackUser("viewer"));
+        when(accessControlService.canCurrentActorSubmitEventFeedback("viewer", "event-1")).thenReturn(true);
+        when(activityEventsRepository.findBySourceId("event-1")).thenReturn(List.of(finishedFeedbackEvent("Mingle")));
+        when(usersRepository.findByUserIdIn(anyCollection())).thenReturn(List.of(
+                feedbackUser("viewer"), feedbackUser("host"), feedbackUser("outsider"), feedbackUser("peer")));
+        when(mingleRoundsRepository.findByEventIdInAndStatusOrderByRoundNumberAsc(Set.of("event-1"), "COMPLETED"))
+                .thenReturn(List.of(feedbackRound(1, List.of("viewer", "peer"), List.of("outsider"))));
+
+        assertThatThrownBy(() -> service.submit(new EventFeedbackSubmitRequestDto("viewer",
+                new EventFeedbackDetailDto("event-1", "Finished Event", "", "", List.of(attendeeFeedback("outsider"))))))
+                .hasMessageContaining("Invalid feedback target");
+
+        verifyNoInteractions(eventFeedbackAnswersRepository, eventFeedbackStatesRepository,
+                userActivityCountersService, affinityRecomputeTaskService, notificationOutboxService);
+    }
+
+    @Test
+    void mingleSharedTableFeedbackUsesExistingAnswerPersistenceAndReload() {
+        when(homeUserProfileService.resolveSelectedUserId("viewer")).thenReturn("viewer");
+        when(homeUserProfileService.resolveCurrentUser("viewer")).thenReturn(feedbackUser("viewer"));
+        when(accessControlService.canCurrentActorSubmitEventFeedback("viewer", "event-1")).thenReturn(true);
+        when(activityEventsRepository.findBySourceId("event-1")).thenReturn(List.of(finishedFeedbackEvent("Mingle")));
+        when(usersRepository.findByUserIdIn(anyCollection())).thenReturn(List.of(
+                feedbackUser("viewer"), feedbackUser("host"), feedbackUser("peer")));
+        when(mingleRoundsRepository.findByEventIdInAndStatusOrderByRoundNumberAsc(Set.of("event-1"), "COMPLETED"))
+                .thenReturn(List.of(feedbackRound(1, List.of("viewer", "peer"))));
+        AtomicReference<List<EventFeedbackAnswer>> saved = new AtomicReference<>(List.of());
+        when(eventFeedbackAnswersRepository.saveAll(anyList())).thenAnswer(invocation -> {
+            List<EventFeedbackAnswer> answers = List.copyOf(invocation.getArgument(0));
+            saved.set(answers);
+            return answers;
+        });
+        when(eventFeedbackAnswersRepository.findByViewerUserIdAndEventId("viewer", "event-1"))
+                .thenAnswer(ignored -> saved.get());
+
+        EventFeedbackDetailDto reloaded = service.submit(new EventFeedbackSubmitRequestDto("viewer",
+                new EventFeedbackDetailDto("event-1", "Finished Event", "", "", List.of(attendeeFeedback("peer")))));
+
+        assertThat(reloaded.cards()).filteredOn(card -> "attendee".equals(card.kind())).singleElement()
+                .satisfies(card -> {
+                    assertThat(card.targetUserId()).isEqualTo("peer");
+                    assertThat(card.answerPrimary()).isEqualTo("great");
+                    assertThat(card.selectedTraitIds()).containsExactly("reliable-one");
+                });
+        assertThat(saved.get()).singleElement().satisfies(answer -> {
+            assertThat(answer.getEventId()).isEqualTo("event-1");
+            assertThat(answer.getTargetUserId()).isEqualTo("peer");
+        });
+    }
+
+    private ActivityEvent finishedFeedbackEvent(String mode) {
+        ActivityEvent event = new ActivityEvent();
+        event.setSourceId("event-1");
+        event.setTitle("Finished Event");
+        event.setMode(mode);
+        event.setCreatorUserId("host");
+        event.setOwnerUserId("host");
+        event.setAcceptedMemberUserIds(List.of("viewer", "outsider"));
+        event.setStartAtIso("2020-01-01T10:00:00Z");
+        event.setEndAtIso("2020-01-01T12:00:00Z");
+        return event;
+    }
+
+    private Users feedbackUser(String id) {
+        Users user = new Users();
+        user.setUserId(id);
+        user.setName(id);
+        return user;
+    }
+
+    @SafeVarargs
+    private ActivityMingleRound feedbackRound(int number, List<String>... tables) {
+        ActivityMingleRound round = new ActivityMingleRound();
+        round.setEventId("event-1");
+        round.setRoundNumber(number);
+        round.setStatus("COMPLETED");
+        round.setTables(java.util.stream.IntStream.range(0, tables.length)
+                .mapToObj(index -> new ActivityMingleRound.TableAssignment(index + 1, tables[index])).toList());
+        return round;
+    }
+
+    private EventFeedbackCardDto attendeeFeedback(String userId) {
+        return new EventFeedbackCardDto("feedback-attendee-event-1-" + userId, "event-1", "attendee", userId,
+                userId, "Member", "Finished Event", "", "", "", "", "", userId, null, "", "", "", "",
+                "great", "clear", "", List.of("reliable-one"));
     }
 
     @Test
