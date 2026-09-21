@@ -120,7 +120,7 @@ same panel and list structure.
 Selecting Mingle alone does not create a configuration and does not project any
 rounds. A new event remains unconfigured until the organizer confirms the
 Mingle popup. Only the stored popup values are the source of the projected
-round list. While the event is unconfigured, all five numeric fields in that
+round list. While the event is unconfigured, all four numeric fields in that
 popup start at zero; changing one field does not populate any of the others.
 
 This UI reuse does not turn Mingle rounds into Tournament stages. The Mingle
@@ -133,8 +133,11 @@ The block remains a small set of inputs. The useful parameters are limited to:
 - planned number of rounds;
 - approximate round duration;
 - table-change/break duration;
-- available table/group numbers or count;
 - whether gender balance is a required assignment constraint.
+
+There is no separate available-table setting. The usable table count follows
+from the event capacity, the configured group size, and the participants who
+are eligible for the active round.
 
 Repeat avoidance and affinity are not configuration switches. They are normal,
 soft optimization goals of the assignment algorithm. A repeated table partner
