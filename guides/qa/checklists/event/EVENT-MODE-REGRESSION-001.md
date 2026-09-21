@@ -15,6 +15,9 @@ is permitted when the user delegates this flow. Do not seed passing results.
 3. At 320/390 px confirm filter, order and view are compact and appear in that
    order. The small filter popup fits the viewport and has a dim backdrop.
 4. Verify landing About, readable format line, and Free to join beside Explore.
+   About copy, headings and accessibility labels must switch with the language.
+   The founder name comes from `i18n_bundles.founderName` in the existing
+   `/api/i18n/bundle` response and survives cache reload, with no separate request.
    API help and close controls must have equal dimensions and an uncircled `?`.
 
 ## Standard and Tournament isolation

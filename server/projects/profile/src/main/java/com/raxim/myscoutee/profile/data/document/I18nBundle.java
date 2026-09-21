@@ -14,6 +14,15 @@ public class I18nBundle {
     
     private String version;
     private Long updatedAt;
+    private String founderName;
+
+    public String getFounderName() {
+        return founderName;
+    }
+
+    public void setFounderName(String founderName) {
+        this.founderName = founderName;
+    }
 
     public String getId() {
         return id;

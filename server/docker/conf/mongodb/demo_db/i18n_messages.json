@@ -7485,7 +7485,7 @@
     "_id": "i18n-message-en-landing-about-founder-title",
     "key": "landing.about.founder.title",
     "lang": "en",
-    "value": "Peter Szabo · Independent founder and software developer"
+    "value": "Independent founder and software developer"
   },
   {
     "_id": "i18n-message-en-landing-about-founder-description",
@@ -29067,7 +29067,7 @@
     "_id": "i18n-message-hu-landing-about-founder-title",
     "key": "landing.about.founder.title",
     "lang": "hu",
-    "value": "Peter Szabo · független alapító és szoftverfejlesztő"
+    "value": "Független alapító és szoftverfejlesztő"
   },
   {
     "_id": "i18n-message-hu-landing-about-founder-description",
