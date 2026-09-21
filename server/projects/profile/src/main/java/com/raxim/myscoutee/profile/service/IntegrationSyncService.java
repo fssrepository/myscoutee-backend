@@ -145,12 +145,12 @@ public class IntegrationSyncService {
             Map<String, MultipartFile> requestedImages) {
         List<IntegrationEventSyncItemDto> items = requireBatch(request == null ? null : request.items());
         Map<String, MultipartFile> images = requireImageFiles(
-                items.stream().map(IntegrationEventSyncItemDto::id).toList(),
+                items.stream().map(item -> item == null ? null : item.id()).toList(),
                 requestedImages);
         Map<String, IntegrationExternalId> existing = existingMappings(
                 ownerUserId,
                 RESOURCE_EVENT,
-                items.stream().map(IntegrationEventSyncItemDto::id).toList());
+                items.stream().map(item -> item == null ? null : item.id()).toList());
         Set<String> seen = new HashSet<>();
         List<IntegrationSyncResultDto> results = new ArrayList<>(items.size());
 

@@ -44,3 +44,23 @@ horizontal row as `myscoutee.com`, immediately to its right with a modest gap.
 Keep the combined row centered and wholly inside the central YouTube safe crop.
 Use a subtle luminous lavender/violet fill with legible white uppercase text.
 Add no other text and do not alter or duplicate the logo.
+
+
+## Landing-copy update — 2026-09-21
+
+Tool: built-in image_gen, edit mode. Saved over existing asset `banner.png` at the user's request; no separate output directory.
+Current exact copy:
+- 6 people · 6 priority lists → 1 team
+- Standard · Tournament · Mingle
+
+Final generation prompt:
+
+Use case: text-localization. Edit the supplied scenic MyScoutee YouTube banner. Preserve the exact 16:9 landscape composition and all landscape artwork, people, cafe, flowers, lake, mountains, sky, colors and lighting. Add two exact English text lines to the central branding group: "6 people · 6 priority lists → 1 team" and beneath it "Standard · Tournament · Mingle". Keep all original branding and copy: exact emblem+yScoutee wordmark, "Shared experiences. Real connections.", "myscoutee.com" and "FREE TO JOIN". CRITICAL: all logo and lettering including star and badge must fit inside the CENTERED crop-safe rectangle spanning x=22% to 78% and y=39% to 61% of the image. Arrange a compact central lockup: smaller faithful logo+wordmark at top, original tagline below, the two new lines below that, URL and free badge on bottom row. Use readable white type with subtle contrast, each new text line unbroken. Reduce wordmark size to create room, but do not shrink text to illegibility. Keep complete logo star and heart, no duplication or redesign. Restore any vacated background seamlessly. Do not add other text, panels, borders or crop guides. Fully opaque image.
+
+Layout correction prompts:
+
+Use case: precise-object-edit. Correct ONLY central branding layout in the supplied banner. Current full image is 1672x941. Its logo star starts around y=286 and WILL BE CROPPED. ALL branding must lie within x=400..1272, y=370..570. Re-layout the entire branding stack in this exact 200-pixel-high region. Logo+wordmark top row y=373..435, make emblem including star only 62 pixels high; original tagline baseline y=459; new first line baseline y=489; new second line baseline y=519; URL and FREE TO JOIN badge row y=535..564. These are hard pixel-position limits. Center all rows around x=836. Exact copy: emblem followed by "yScoutee"; "Shared experiences. Real connections."; "6 people · 6 priority lists → 1 team"; "Standard · Tournament · Mingle"; "myscoutee.com"; "FREE TO JOIN". Preserve white type, exact colorful star/heart emblem, purple badge, all existing scenic background and people. Erase the former oversized high branding and restore blue sky seamlessly. Do not add words, shapes or guides. Output same 1672x941 opaque image.
+
+Edit ONLY the placement of the central logo and text group. Move the ENTIRE branding group DOWN by exactly 90 pixels on this 1672x941 image. Current top of golden star is y=276; new top MUST be y=366. Current bottom of FREE TO JOIN badge is y=502; new bottom MUST be y=592. Do not resize, redesign or rearrange anything. Translate all six elements together DOWN: emblem and yScoutee; Shared experiences. Real connections.; 6 people · 6 priority lists → 1 team; Standard · Tournament · Mingle; myscoutee.com; FREE TO JOIN. The wordmark should appear at the vertical middle of the full image, above the lake, NOT in the upper sky. Fill the old position with seamless blue sky. Preserve entire landscape and all people exactly. This is a pure DOWNWARD translation, crucial for crop safety.
+
+Final upload export: youtube-banner-2560x1440.jpg, ImageMagick resize to 2560x1440, JPEG quality 95. Text and logo visually reviewed in the central crop; no platform upload performed.

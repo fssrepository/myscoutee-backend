@@ -21552,6 +21552,12 @@
     "value": "Standard · Tournament · Mingle"
   },
   {
+    "_id": "i18n-message-en-landing-hero-free-to-join",
+    "key": "landing.hero.free.to.join",
+    "lang": "en",
+    "value": "Free to join"
+  },
+  {
     "_id": "i18n-message-hu-unavailable-here",
     "key": "unavailable.here",
     "lang": "hu",
@@ -43102,5 +43108,11 @@
     "key": "landing.hero.event.formats",
     "lang": "hu",
     "value": "Standard · Verseny · Mingle"
+  },
+  {
+    "_id": "i18n-message-hu-landing-hero-free-to-join",
+    "key": "landing.hero.free.to.join",
+    "lang": "hu",
+    "value": "Ingyenes csatlakozás"
   }
 ]

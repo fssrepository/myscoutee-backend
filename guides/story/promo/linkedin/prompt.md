@@ -36,3 +36,15 @@ upper left from `NOW LIVE` to the exact one-line text `FREE TO JOIN`, widening
 the same pill just enough for the phrase. Keep the same uppercase navy styling
 and add no other text or visual change. Output a fully opaque image at the same
 aspect ratio and resolution.
+
+
+## Landing-copy update — 2026-09-21
+
+Tool: built-in image_gen, edit mode. Saved over existing asset `cover.png` at the user's request; no separate output directory.
+Current exact copy:
+- 6 people · 6 priority lists → 1 team
+- Standard · Tournament · Mingle
+
+Final generation prompt:
+
+Use case: text-localization. Edit this existing English MyScoutee LinkedIn cover, preserving its exact landscape 16:9 composition, six cafe friends, faces, Budapest backdrop, beautiful lighting, logo emblem+yScoutee, pale left background and FREE TO JOIN badge. Add these two exact English lines to the left text area below the existing "Shared experiences. Real connections." tagline and above "myscoutee.com": line 1 "6 people · 6 priority lists → 1 team"; line 2 "Standard · Tournament · Mingle". Make the added lines clear, legible and visually integrated in navy rounded sans-serif, slightly emphasize "1 team" in purple. Adjust only left-side typography size and vertical spacing as necessary so each of the two added lines is unbroken, comfortable and never over faces. Preserve all original copy including "FREE TO JOIN", "Shared experiences.", "Real connections.", "myscoutee.com". Exact faithful logo without duplicated M. No other changes. Fully opaque rectangular finished cover.

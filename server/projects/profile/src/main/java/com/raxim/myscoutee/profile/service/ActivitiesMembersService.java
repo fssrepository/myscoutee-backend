@@ -2828,6 +2828,20 @@ public class ActivitiesMembersService {
                 .invitedUserIds();
     }
 
+    /** Called only after a stored partner invitation has been bound to the signed-in recipient. */
+    void claimIntegrationInvite(com.raxim.myscoutee.profile.data.document.IntegrationParticipantInvite invite,
+            ActivityEvent event, String actorUserId) {
+        if (!actorUserId.equals(invite.claimedUserId()) || !invite.eventId().equals(event.getSourceId())
+                || !invite.ownerUserId().equals(event.getOwnerUserId())
+                || !accessControlService.canInviteEventMembers(invite.eventId(), invite.ownerUserId())) {
+            throw new org.springframework.web.server.ResponseStatusException(org.springframework.http.HttpStatus.FORBIDDEN);
+        }
+        var result = persistEventInvites(invite.eventId(), invite.ownerUserId(), List.of(actorUserId), event);
+        if (result.rejections().stream().anyMatch(rejection -> !"already-member".equals(rejection.reason()))) {
+            throw new org.springframework.web.server.ResponseStatusException(org.springframework.http.HttpStatus.CONFLICT, "Event invitation could not be created.");
+        }
+    }
+
     private EventInvitePersistenceResult persistEventInvites(
             String eventId,
             String actorUserId,

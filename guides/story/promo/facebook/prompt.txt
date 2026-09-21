@@ -16,3 +16,15 @@ And a subtle bottom line:
 "Meet through events."
 Text must be large, exceptionally legible on a phone, precisely spelled, no extra prose. The image itself should explain the transition from personal priorities to one shared group and an in-person meetup. Maintain restrained composition with six discernible people and no crowded micro-interface.
 No fake phone screenshot, no app store badges, no invented website URL, no pricing, no downloads or user-count claims, no promises of guaranteed matches, no fake buttons, no watermark, no play icon, no confetti clutter. Render the final finished ad edge to edge, no device frame or outer border.
+
+
+## Landing-copy update — 2026-09-21
+
+Tool: built-in image_gen, edit mode. Saved over existing asset `myscoutee-promo-9x16.png` at the user's request; no separate output directory.
+Current exact copy:
+- 6 people · 6 priority lists → 1 team
+- Standard · Tournament · Mingle
+
+Final generation prompt:
+
+Use case: text-localization. Edit the supplied MyScoutee promotional image. Keep the exact portrait 9:16 aspect ratio and all existing artwork, six portrait cards, six cafe friends, faces, logo, color palette, interest slider and chat icon. Replace the existing headline "6 people. 6 priority lists. 1 shared group." with the exact single line "6 people · 6 priority lists → 1 team", in legible navy text with "1 team" purple, centered below the logo. Immediately below add a second readable line "Standard · Tournament · Mingle". These two lines should form an elegant clear typographic pair, using width intelligently without overlapping portraits. Restore the background where old text is removed. Retain all remaining existing text exactly: "Interest 1–10", "8", "Mutual interest.", "Group chat. Real plans.", "Meet through events." Preserve the logo as emblem+yScoutee. No other copy, no extra characters. Output one complete opaque full-bleed finished image with the same composition and aspect ratio.

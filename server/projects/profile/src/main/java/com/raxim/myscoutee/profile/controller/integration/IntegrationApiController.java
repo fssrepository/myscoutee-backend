@@ -38,16 +38,19 @@ import com.raxim.myscoutee.profile.service.IntegrationWebhookService;
 public class IntegrationApiController {
     private final IntegrationSyncService syncService;
     private final IntegrationEventQueryService eventQueries;
+    private final com.raxim.myscoutee.profile.service.IntegrationParticipantInviteService invites;
     private final AccessControlService accessControlService;
     private final IntegrationWebhookService webhookService;
 
     public IntegrationApiController(
             IntegrationSyncService syncService,
             IntegrationEventQueryService eventQueries,
+            com.raxim.myscoutee.profile.service.IntegrationParticipantInviteService invites,
             AccessControlService accessControlService,
             IntegrationWebhookService webhookService) {
         this.syncService = syncService;
         this.eventQueries = eventQueries;
+        this.invites = invites;
         this.accessControlService = accessControlService;
         this.webhookService = webhookService;
     }
@@ -104,6 +107,13 @@ public class IntegrationApiController {
                 actorUserId(authentication),
                 request,
                 imageFiles(multipartRequest));
+    }
+
+    @PostMapping("/events/{eventId}/invites")
+    public com.raxim.myscoutee.profile.data.dto.integration.IntegrationDtos.IntegrationParticipantInvitesDto inviteParticipants(
+            Authentication authentication, @PathVariable String eventId,
+            @RequestBody com.raxim.myscoutee.profile.data.dto.integration.IntegrationDtos.IntegrationParticipantInviteRequestDto request) {
+        return invites.create(actorUserId(authentication), eventId, request);
     }
 
     @GetMapping("/events/{eventId}")
