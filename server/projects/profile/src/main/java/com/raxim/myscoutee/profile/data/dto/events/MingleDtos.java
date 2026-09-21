@@ -27,6 +27,7 @@ public final class MingleDtos {
 
     public record MingleTableDto(
             Integer tableNumber,
+            String subEventId,
             String memberOwnerId,
             List<MingleParticipantDto> participants) {
     }

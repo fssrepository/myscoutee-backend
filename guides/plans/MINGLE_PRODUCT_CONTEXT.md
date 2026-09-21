@@ -124,8 +124,9 @@ round list. While the event is unconfigured, all four numeric fields in that
 popup start at zero; changing one field does not populate any of the others.
 
 This UI reuse does not turn Mingle rounds into Tournament stages. The Mingle
-popup exposes only the loose values needed by the Mingle operation, and actual
-rounds can still be started or added at runtime.
+popup exposes only the loose values needed by the Mingle operation. Additional
+rounds are added by increasing the planned round count in the event definition;
+the event has no other round-creation mechanism.
 
 The block remains a small set of inputs. The useful parameters are limited to:
 
@@ -150,9 +151,9 @@ be inferred.
 When gender balance is required, only complete tables whose known profile
 genders can be balanced are assigned. Remaining participants wait for a later
 round instead of receiving an unbalanced table. For a group size of two this
-means a mixed-gender pair when the checked-in pool permits it. When the option
-is disabled, every checked-in participant may be assigned regardless of the
-round's gender distribution.
+means a mixed-gender pair when the eligible accepted-participant pool permits
+it. When the option is disabled, every eligible accepted participant may be
+assigned regardless of the round's gender distribution.
 
 The configured round count is projected on the fly through the same horizontal
 panel/list machinery used by the Tournament editor. The Mingle panels use a
@@ -166,11 +167,11 @@ remain available, including the existing member-management behavior, while
 leaderboards, score entry, advancement, and asset controls are absent.
 
 After publication, the planned round count remains editable. Increasing it
-extends the derived list and permits ad hoc additional rounds. Decreasing it
-removes only rounds that have not started: the value cannot be reduced below
-the current/highest started round. Neither direction rewrites completed or
-active rounds. The model must not grow a separate workflow language or a list
-of named Mingle modes.
+extends the derived list and makes those additional rounds available to start.
+Decreasing it removes only rounds that have not started: the value cannot be
+reduced below the current/highest started round. Neither direction rewrites
+completed or active rounds. The model must not grow a separate workflow
+language or a list of named Mingle modes.
 
 QR-code admission, advance signup, and on-site joining remain flexible uses of
 the existing event membership, ticket, and check-in flow. They do not change
@@ -224,8 +225,10 @@ assignment. The application does not need to convert every real-world detail
 into a switch.
 
 There is no separate walk-in mode. If an ongoing event is still visible, has
-space, and its policy allows joining, a person can join, use the existing ticket
-and check-in flow, and become available for a later round.
+space, and its policy allows joining, a person can join through the existing
+event-membership flow and become available for a later round after acceptance.
+Ticket and check-in remain independent event-level operations and do not gate
+Mingle assignment.
 
 The event is past only after its end time. An ongoing event remains available
 to the existing Explore ranking and filters, including location-based
@@ -238,10 +241,11 @@ separate Mingle discovery screen.
 
 ## Flexible rounds
 
-Round planning is advisory:
+Round timing is advisory, while the editable planned count determines how many
+rounds are currently available to start:
 
 ```text
-planned round count != maximum round count
+increase planned round count = make further rounds available
 configured round and break durations = default automatic cadence
 timer transition != irreversible transition
 event end time != forced Mingle shutdown
@@ -256,8 +260,9 @@ The organizer can pause, delay, extend, or manually advance this flow when
 something happens in the room. Automation provides the normal cadence; manual
 control handles exceptions, similarly to the existing Tournament flow.
 
-A planned four-round event may receive a fifth round. The organizer should not
-have to edit the main event or pre-create normal subevents to do this.
+A planned four-round event may receive a fifth round by increasing the planned
+round count in the event definition. This extends the derived Mingle list; it
+does not pre-create normal subevents or require a separate runtime action.
 
 Actual started rounds may appear in the existing Subevents list as event-scoped
 history, but they are lightweight runtime rounds rather than pre-authored
@@ -270,7 +275,7 @@ The live flow is deliberately small:
 
 ```text
 organizer starts the Mingle sequence
--> assign currently eligible/check-in participants
+-> assign currently eligible accepted participants
 -> run the conversation round
 -> enter the configured table-change break
 -> generate and show the next table numbers
@@ -278,8 +283,10 @@ organizer starts the Mingle sequence
 -> organizer intervenes only when needed
 ```
 
-Ticket check-in is existing MyScoutee functionality and is not a missing
-Mingle feature. Mingle only consumes the resulting eligible participant set.
+Ticket check-in is existing MyScoutee event functionality and is not a Mingle
+start requirement. Mingle uses accepted event participants who are eligible to
+participate; an `organizerOnly` member is excluded, while an organizer who is
+also a participating member follows the same rule as in Tournament.
 
 A late arrival waits for the next round. The system does not need to disrupt an
 active table assignment.
@@ -299,8 +306,9 @@ not need to describe who physically moves.
 
 There is no separate organizer control desk. The existing Subevents surface is
 the organizer entry point. In a Mingle event it exposes a compact action for
-starting or advancing the next round, including an extra round beyond the
-configured plan. Actual rounds appear there as lightweight runtime history.
+starting or advancing the next configured round. Extra rounds are first added
+by increasing the planned count in the event definition. Actual rounds appear
+there as lightweight runtime history.
 
 The contextual Table surface remains the current-assignment view for organizers
 and participants alike; it is not a second management subsystem.
@@ -451,10 +459,12 @@ The first coherent product slice is:
 1. add Mingle to the event format selector;
 2. open one compact editable Mingle configuration popup from the panel `+` action;
 3. add the Table shortcut and the small organizer/participant surfaces;
-4. start a timed Mingle sequence from checked-in participants;
+4. start a timed Mingle sequence from eligible accepted event participants,
+   excluding `organizerOnly` members;
 5. run round and table-change timers with manual organizer controls;
 6. store and display table-number assignments;
-7. allow additional rounds beyond the plan;
+7. allow the plan to be increased in the event definition and then start the
+   additional configured rounds;
 8. preserve completed round assignments for priority/history use;
 9. add the Profile API-popup help link;
 10. reuse the event's validated external-payment URL flow.

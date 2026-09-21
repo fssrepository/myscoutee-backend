@@ -360,6 +360,7 @@ public class ActivitiesMingleService {
         List<MingleTableDto> tables = visibleTables.stream()
                 .map(table -> new MingleTableDto(
                         table.tableNumber(),
+                        mingleSubEventId(round.getRoundNumber()),
                         mingleGroupId(session.getEventId(), round.getRoundNumber(), table.tableNumber()),
                         effectiveTableMemberUserIds(round, table).stream()
                                 .map(userId -> participant(userId, usersById.get(userId)))
@@ -448,11 +449,16 @@ public class ActivitiesMingleService {
 
     private String mingleGroupId(String eventId, Integer roundNumber, Integer tableNumber) {
         String normalizedEventId = normalizeId(eventId);
-        int normalizedRoundNumber = count(roundNumber);
+        String normalizedSubEventId = mingleSubEventId(roundNumber);
         int normalizedTableNumber = count(tableNumber);
-        return !StringUtils.hasText(normalizedEventId) || normalizedRoundNumber <= 0 || normalizedTableNumber <= 0
+        return !StringUtils.hasText(normalizedEventId) || !StringUtils.hasText(normalizedSubEventId) || normalizedTableNumber <= 0
                 ? ""
-                : normalizedEventId + ":mingle-round-" + normalizedRoundNumber + ":table:" + normalizedTableNumber;
+                : normalizedEventId + ":" + normalizedSubEventId + ":table:" + normalizedTableNumber;
+    }
+
+    private String mingleSubEventId(Integer roundNumber) {
+        int normalizedRoundNumber = count(roundNumber);
+        return normalizedRoundNumber <= 0 ? "" : "mingle-round-" + normalizedRoundNumber;
     }
 
     private List<TableAssignment> safeTables(ActivityMingleRound round) {

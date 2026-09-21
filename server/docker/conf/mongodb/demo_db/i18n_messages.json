@@ -14181,7 +14181,7 @@
     "_id": "i18n-message-en-event-editor-mingle-flexible-rounds-note",
     "key": "event.editor.mingle.flexible.rounds.note",
     "lang": "en",
-    "value": "The planned round count is a guide, not a maximum. Additional rounds can be started during the event."
+    "value": "Increase the planned round count to make additional rounds available during the event."
   },
   {
     "_id": "i18n-message-en-frequency",
@@ -35379,7 +35379,7 @@
     "_id": "i18n-message-hu-event-editor-mingle-flexible-rounds-note",
     "key": "event.editor.mingle.flexible.rounds.note",
     "lang": "hu",
-    "value": "A tervezett körszám tájékoztató érték, nem maximum. Az esemény közben további kör indítható."
+    "value": "Az esemény közben a tervezett körszám növelésével tehetsz elérhetővé további köröket."
   },
   {
     "_id": "i18n-message-hu-frequency",
