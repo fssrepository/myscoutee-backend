@@ -21444,6 +21444,12 @@
     "value": "Create and start the next table assignment?"
   },
   {
+    "_id": "i18n-message-en-mingle-status-break",
+    "key": "mingle.status.break",
+    "lang": "en",
+    "value": "Break"
+  },
+  {
     "_id": "i18n-message-en-mingle-live-round",
     "key": "mingle.live.round",
     "lang": "en",
@@ -43024,6 +43030,12 @@
     "key": "mingle.action.next.restart.description",
     "lang": "hu",
     "value": "Elkészíted és elindítod a következő asztalkiosztást?"
+  },
+  {
+    "_id": "i18n-message-hu-mingle-status-break",
+    "key": "mingle.status.break",
+    "lang": "hu",
+    "value": "Szünet"
   },
   {
     "_id": "i18n-message-hu-mingle-live-round",

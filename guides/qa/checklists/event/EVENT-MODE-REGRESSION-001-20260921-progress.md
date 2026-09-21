@@ -71,6 +71,19 @@ Private evidence/scripts: `frontend/.agent/mode-qa/`, including
   saves canonical stage runtime before generation, and reads runtime overlays
   in the assignment planner. Browser start now returns A; group/scoring
   verification is still ongoing. Do not mark the whole Tournament flow passed.
+- Follow-up evidence: the focused ActivitiesEventsService (62), EventScheduler
+  (30) and ActivityEventSubEventsMapper (7) tests passed: 99 total. The scheduler
+  case covers both embedded stages and definition-only stages with canonical
+  runtime. Existing watchers compiled production; the test command excluded
+  production compile/classes/resources tasks.
+- New disposable Tournament `h1790031368189` (`QA MODE 20260922 Tournament retry`)
+  passed UI create/publish/request/approval/start. Its single Group A contains
+  both Casey and Nova, with ordinary standings and participant menus. Evidence:
+  tournament-retry-created.json, tournament-retry-members-approved.txt and
+  tournament-retry-groups.txt. Scoring is correctly hidden while stage status is
+  A; score-write/reload verification remains unproven until SR. Scheduled end:
+  2026-09-21T23:56:00Z. The earlier empty-group fixture has four groups with only
+  two participants and must not be used as proof of a valid full assignment.
 - Stage runtime reads in the command path are batched per owner instead of one
   query per stage. The two-slot mapper test also needed a deterministic same-day
   anchor: its old relative timestamps crossed UTC midnight outside its day query.
