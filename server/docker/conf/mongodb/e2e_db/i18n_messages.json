@@ -8307,25 +8307,25 @@
     "_id": "i18n-message-en-public-1krc8z",
     "key": "public.1krc8z",
     "lang": "en",
-    "value": "public"
+    "value": "Public"
   },
   {
     "_id": "i18n-message-en-friends-only-10o064",
     "key": "friends.only.10o064",
     "lang": "en",
-    "value": "friends only"
+    "value": "Friends only"
   },
   {
     "_id": "i18n-message-en-host-only-nfiqdr",
     "key": "host.only.nfiqdr",
     "lang": "en",
-    "value": "host only"
+    "value": "Host only"
   },
   {
     "_id": "i18n-message-en-inactive-1ubdbo",
     "key": "inactive.1ubdbo",
     "lang": "en",
-    "value": "inactive"
+    "value": "Inactive"
   },
   {
     "_id": "i18n-message-en-gender",
@@ -29505,25 +29505,25 @@
     "_id": "i18n-message-hu-public-1krc8z",
     "key": "public.1krc8z",
     "lang": "hu",
-    "value": "nyilvános"
+    "value": "Nyilvános"
   },
   {
     "_id": "i18n-message-hu-friends-only-10o064",
     "key": "friends.only.10o064",
     "lang": "hu",
-    "value": "csak barátok"
+    "value": "Csak barátok"
   },
   {
     "_id": "i18n-message-hu-host-only-nfiqdr",
     "key": "host.only.nfiqdr",
     "lang": "hu",
-    "value": "csak szervezők"
+    "value": "Csak szervezők"
   },
   {
     "_id": "i18n-message-hu-inactive-1ubdbo",
     "key": "inactive.1ubdbo",
     "lang": "hu",
-    "value": "inaktív"
+    "value": "Inaktív"
   },
   {
     "_id": "i18n-message-hu-gender",
