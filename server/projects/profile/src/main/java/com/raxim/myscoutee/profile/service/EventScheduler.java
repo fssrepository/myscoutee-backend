@@ -436,7 +436,10 @@ public class EventScheduler {
         List<ActivityEvent> changedRecords = new ArrayList<>();
         Set<String> changedStageKeys = new LinkedHashSet<>();
 
-        for (ActivityEvent event : activityEventsRepository.findAll()) {
+        List<ActivityEvent> events = activityEventsRepository.findAll().stream().filter(Objects::nonNull).toList();
+        Map<String, Map<String, ActivitySubEventStageRuntime>> runtimes = stageRuntimesByOwner(events);
+        Set<ActivitySubEventStageRuntime> changedRuntimes = new LinkedHashSet<>();
+        for (ActivityEvent event : events) {
             if (!shouldReviewTournamentStages(event)) {
                 continue;
             }
@@ -446,7 +449,11 @@ public class EventScheduler {
             }
             List<SubEventItem> updatedSubEvents = new ArrayList<>(currentSubEvents.size());
             boolean changed = false;
-            for (SubEventItem subEvent : currentSubEvents) {
+            Map<String, ActivitySubEventStageRuntime> eventRuntimes =
+                    runtimes.getOrDefault(normalizeId(event.getSourceId()), Map.of());
+            for (SubEventItem original : currentSubEvents) {
+                ActivitySubEventStageRuntime runtime = eventRuntimes.get(normalizeId(original == null ? null : original.id()));
+                SubEventItem subEvent = withStageRuntime(original, runtime);
                 SubEventItem updated;
                 try {
                     updated = closeStageForReviewIfDue(subEvent, effectiveNow, nowIso);
@@ -461,10 +468,18 @@ public class EventScheduler {
                 updatedSubEvents.add(updated);
                 if (updated != subEvent) {
                     changed = true;
+                    if (runtime != null) {
+                        runtime.setStageStatus(updated.stageStatus());
+                        runtime.setStageStatusReason(updated.stageStatusReason());
+                        runtime.setStageStatusUpdatedAt(updated.stageStatusUpdatedAt());
+                        runtime.setUpdatedDate(nowIso);
+                        runtime.setUpdatedUser(MARKER_UPDATED_BY);
+                        changedRuntimes.add(runtime);
+                    }
                     changedStageKeys.add(normalizeId(event.getSourceId()) + ":" + normalizeId(subEvent == null ? null : subEvent.id()));
                 }
             }
-            if (changed) {
+            if (changed && event.getSubEvents() != null && !event.getSubEvents().isEmpty()) {
                 event.setSubEvents(updatedSubEvents);
                 event.refreshTournamentCurrentStage();
                 event.setUpdatedDate(nowIso);
@@ -473,6 +488,9 @@ public class EventScheduler {
             }
         }
 
+        if (!changedRuntimes.isEmpty()) {
+            activitySubEventStageRuntimeRepository.saveAll(changedRuntimes);
+        }
         if (!changedRecords.isEmpty()) {
             activityEventsRepository.saveAll(changedRecords);
         }
@@ -1505,13 +1523,9 @@ public class EventScheduler {
                 && !StringUtils.hasText(safeText(stage.stageFinalizedAt()));
     }
 
-    private List<ActivityEvent> applyStageRuntimeOverlays(List<ActivityEvent> events) {
-        List<ActivityEvent> safeEvents = events == null
-                ? List.of()
-                : events.stream().filter(Objects::nonNull).toList();
-        if (safeEvents.isEmpty() || activitySubEventStageRuntimeRepository == null) {
-            return safeEvents;
-        }
+    private Map<String, Map<String, ActivitySubEventStageRuntime>> stageRuntimesByOwner(
+            List<ActivityEvent> safeEvents) {
+        if (safeEvents.isEmpty() || activitySubEventStageRuntimeRepository == null) return Map.of();
         List<String> ownerIds = safeEvents.stream()
                 .map(ActivityEvent::getSourceId)
                 .map(this::normalizeId)
@@ -1519,7 +1533,7 @@ public class EventScheduler {
                 .distinct()
                 .toList();
         if (ownerIds.isEmpty()) {
-            return safeEvents;
+            return Map.of();
         }
         List<ActivitySubEventStageRuntime> runtimes =
                 activitySubEventStageRuntimeRepository.findByOwnerIdIn(ownerIds);
@@ -1538,32 +1552,29 @@ public class EventScheduler {
                     .computeIfAbsent(ownerId, ignored -> new LinkedHashMap<>())
                     .put(stageId, runtime);
         }
+        return runtimesByOwnerAndStage;
+    }
+
+    private SubEventItem withStageRuntime(SubEventItem stage, ActivitySubEventStageRuntime runtime) {
+        return stage == null || runtime == null ? stage : copySubEventWithStageStatus(
+                stage,
+                firstNonBlank(runtime.getStageStatus(), stage.stageStatus()),
+                firstNonBlank(runtime.getStageStatusReason(), stage.stageStatusReason()),
+                firstNonBlank(runtime.getStageStatusUpdatedAt(), stage.stageStatusUpdatedAt()),
+                firstNonBlank(runtime.getStageFinalizedAt(), stage.stageFinalizedAt()),
+                firstNonBlank(runtime.getStageFinalizedByUserId(), stage.stageFinalizedByUserId()),
+                runtime.getStageResultRevision() == null ? stage.stageResultRevision() : runtime.getStageResultRevision());
+    }
+
+    private List<ActivityEvent> applyStageRuntimeOverlays(List<ActivityEvent> events) {
+        List<ActivityEvent> safeEvents = events == null ? List.of() : events.stream().filter(Objects::nonNull).toList();
+        Map<String, Map<String, ActivitySubEventStageRuntime>> runtimes = stageRuntimesByOwner(safeEvents);
         for (ActivityEvent event : safeEvents) {
-            Map<String, ActivitySubEventStageRuntime> stageRuntimes =
-                    runtimesByOwnerAndStage.get(normalizeId(event.getSourceId()));
-            if (stageRuntimes == null || stageRuntimes.isEmpty()) {
-                continue;
-            }
-            List<SubEventItem> effectiveStages = new ArrayList<>();
-            for (SubEventItem stage : safeSubEvents(event)) {
-                ActivitySubEventStageRuntime runtime =
-                        stageRuntimes.get(normalizeId(stage == null ? null : stage.id()));
-                effectiveStages.add(runtime == null
-                        ? stage
-                        : copySubEventWithStageStatus(
-                                stage,
-                                firstNonBlank(runtime.getStageStatus(), stage.stageStatus()),
-                                firstNonBlank(runtime.getStageStatusReason(), stage.stageStatusReason()),
-                                firstNonBlank(runtime.getStageStatusUpdatedAt(), stage.stageStatusUpdatedAt()),
-                                firstNonBlank(runtime.getStageFinalizedAt(), stage.stageFinalizedAt()),
-                                firstNonBlank(
-                                        runtime.getStageFinalizedByUserId(),
-                                        stage.stageFinalizedByUserId()),
-                                runtime.getStageResultRevision() == null
-                                        ? stage.stageResultRevision()
-                                        : runtime.getStageResultRevision()));
-            }
-            event.setSubEvents(effectiveStages);
+            Map<String, ActivitySubEventStageRuntime> stages = runtimes.get(normalizeId(event.getSourceId()));
+            if (stages == null || stages.isEmpty()) continue;
+            event.setSubEvents(safeSubEvents(event).stream()
+                    .map(stage -> withStageRuntime(stage, stages.get(normalizeId(stage == null ? null : stage.id()))))
+                    .toList());
         }
         return safeEvents;
     }

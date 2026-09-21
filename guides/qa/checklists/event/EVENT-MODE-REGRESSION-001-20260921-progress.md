@@ -124,3 +124,46 @@ Read current ports from it. Before any relaunch, verify the fixture baseline and
 use `guides/qa/tools/open-checkpoint-browser-sessions.mjs`; preserve current native
 viewport. The callback receiver uses port 18090; inspect its owner before starting
 another process. Existing Docker frontend/backend watchers own compilation.
+
+## Continuation at 01:35 CEST
+
+- Hungarian About/CTA/format labels passed; original browser language restored.
+- Foreign-owner API reads, encounters and invitations each returned 404. Repeated
+  event creation is idempotent (`existing`), not an update endpoint; do not claim
+  sourceLink updates through POST /events.
+- Speed meeting cards now use the shared contextual status overlay; existing
+  polling scopes its state to the viewed event. Main-event controls remain
+  available after round one. 23 focused frontend tests passed. Browser observed
+  Started -> automatic Completed; stale End round correctly returned 409.
+- Context-menu pill sizing now honors existing content sizing instead of its
+  unconditional 220 px minimum; long anchored titles wrap. Final geometry after
+  the second CSS correction remains to be measured.
+- Past-dated disposable event f4b67368-7232-485e-81b1-7517f1a9b230 completed two
+  actual rounds. Nova submitted its organizer feedback through the UI (200).
+  Two actors, one of them the organizer, do not prove a multi-attendee feedback
+  list; the six-unique-peer / unrelated-attendee cases need separate evidence.
+- A new failing scheduler test reproduced definition-only Tournament stages not
+  closing: canonical runtime A was ignored in favor of the derived RS default.
+  The repair reads runtimes in one batch and persists SR to existing canonical
+  records without embedding definitions. All EventScheduler tests passed after
+  the existing watcher compiled production.
+- API PDF text already contains sourceLink, event read, encounters pagination and
+  event.encounters callbacks at document version 1.0.1. No PDF regeneration was
+  needed for these existing additions.
+- Dev landing version: /app-version.json returned 404 and the component displayed
+  a hardcoded v1.0.0 fallback. The fallback is removed; the existing dev asset
+  sync now writes MYSCOUTEE_VERSION. A focused sync check passed 1.0.1 -> 1.0.2;
+  only frontend-sync was stopped and recreated without rebuilding its image.
+  HTTP now returns version 1.0.1; browser rendering still to verify.
+
+## Queued release work — after QA, not completed by the dev fix
+
+The user clarified the version requirement concerns **Netcup production partial
+Docker Registry updates**, not only the dev stack. Installed application release
+identity must follow a partial content update even when the Debian package is
+not replaced. Inspect the production image/update/version source and preserve
+signature/compatibility checks; the current temporary-image helper explicitly
+requires the installed package version, so do not claim cross-version partial
+release support from the dev sync test. Keep release Git tags and the user's
+pending deb upload to the release tag in the release checklist. Do not publish
+or deploy a release while this QA run is unfinished.
