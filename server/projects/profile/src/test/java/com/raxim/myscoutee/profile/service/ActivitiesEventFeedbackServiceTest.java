@@ -204,7 +204,7 @@ class ActivitiesEventFeedbackServiceTest {
             assertThat(item.totalCards()).isZero();
             assertThat(item.isOwnEvent()).isTrue();
         });
-        assertThat(page.counts().ownEvents()).isEqualTo(1);
+        assertThat(page.counts().ownEvents()).isZero();
     }
 
     @Test
