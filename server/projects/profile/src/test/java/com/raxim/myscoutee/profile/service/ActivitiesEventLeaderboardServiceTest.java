@@ -170,6 +170,12 @@ class ActivitiesEventLeaderboardServiceTest {
                 accessControlService);
         ActivityEvent record = eventRecord("event-1", "canonical");
         when(activityEventsRepository.findBySourceId("event-1")).thenReturn(List.of(record));
+        when(activitiesMembersService.buildBatchOwnerSnapshots(
+                "event",
+                List.of(
+                        "random-room:event-1:sub-1:sub-1:group:1",
+                        "random-room:event-1:sub-1:sub-1:group:2")))
+                .thenReturn(Map.of());
         String groupOwnerId = "event-1:sub-1:sub-1:group:1";
         when(activitiesMembersService.buildBatchOwnerSnapshots(
                 "group",
@@ -268,7 +274,7 @@ class ActivitiesEventLeaderboardServiceTest {
     }
 
     @Test
-    void tournamentStageGroupsHideOnlyTypesReadByTheQueryingUser() {
+    void tournamentStageGroupsKeepResourceMetricsIndependentOfReadMarkers() {
         ActivitiesEventLeaderboardService service = new ActivitiesEventLeaderboardService(
                 activityEventsRepository,
                 activitySubEventGroupsRepository,
@@ -296,7 +302,7 @@ class ActivitiesEventLeaderboardServiceTest {
         var u2Groups = service.queryTournamentStageGroups("event-1", null, "sub-1", "u2");
 
         assertThat(u1Groups.getFirst().resourceMetricsByType().get("Transport").pending()).isEqualTo(2);
-        assertThat(u1Groups.getFirst().resourceMetricsByType().get("Accommodation").pending()).isZero();
+        assertThat(u1Groups.getFirst().resourceMetricsByType().get("Accommodation").pending()).isEqualTo(1);
         assertThat(u2Groups.getFirst().resourceMetricsByType().get("Accommodation").pending()).isEqualTo(1);
     }
 
@@ -383,7 +389,9 @@ class ActivitiesEventLeaderboardServiceTest {
         when(activityEventsRepository.findBySourceId("event-1")).thenReturn(List.of(parent));
         when(eventLeaderboardEntriesRepository.findByEventIdAndSubEventId(slotId, "sub-1"))
                 .thenReturn(List.of(existingEntry));
-        when(activitiesMembersService.queryMembers(anyString(), anyString())).thenReturn(List.of());
+        when(activitiesMembersService.queryMembers(
+                anyString(), anyString(), any(Boolean.class), anyString(), anyString()))
+                .thenReturn(List.of());
 
         var state = service.queryState(slotId, "sub-1");
 
@@ -410,7 +418,7 @@ class ActivitiesEventLeaderboardServiceTest {
                 activitiesMembersService,
                 accessControlService);
         ActivityEvent event = eventRecord("event-1", "canonical");
-        String groupOwnerId = "event-1:sub-1:sub-1:group:1";
+        String roomOwnerId = "random-room:event-1:sub-1:sub-1:group:1";
         EventLeaderboardEntry placeholderScore = new EventLeaderboardEntry();
         placeholderScore.setId("placeholder-score");
         placeholderScore.setEventId("event-1");
@@ -423,7 +431,7 @@ class ActivitiesEventLeaderboardServiceTest {
         when(activityEventsRepository.findBySourceId("event-1")).thenReturn(List.of(event));
         when(eventLeaderboardEntriesRepository.findByEventIdAndSubEventId("event-1", "sub-1"))
                 .thenReturn(List.of(placeholderScore));
-        when(activitiesMembersService.queryMembers("group", groupOwnerId))
+        when(activitiesMembersService.queryMembers("event", roomOwnerId, false, "event-1", "sub-1"))
                 .thenReturn(List.of(activityMember("accepted-user", "accepted")));
 
         var state = service.queryState("event-1", "sub-1");
@@ -448,13 +456,13 @@ class ActivitiesEventLeaderboardServiceTest {
                 activitiesMembersService,
                 accessControlService);
         ActivityEvent event = eventRecord("event-1", "canonical");
-        String groupOwnerId = "event-1:sub-1:sub-1:group:1";
+        String roomOwnerId = "random-room:event-1:sub-1:sub-1:group:1";
         EventLeaderboardEntry outsiderScore = scoreEntry("outsider-score", "outsider", 100);
         EventLeaderboardEntry acceptedScore = scoreEntry("accepted-score", "accepted-user", 1);
         when(activityEventsRepository.findBySourceId("event-1")).thenReturn(List.of(event));
         when(eventLeaderboardEntriesRepository.findByEventIdAndSubEventId("event-1", "sub-1"))
                 .thenReturn(List.of(outsiderScore, acceptedScore));
-        when(activitiesMembersService.queryMembers("group", groupOwnerId))
+        when(activitiesMembersService.queryMembers("event", roomOwnerId, false, "event-1", "sub-1"))
                 .thenReturn(List.of(activityMember("accepted-user", "accepted")));
 
         var state = service.queryState("event-1", "sub-1");
@@ -478,11 +486,14 @@ class ActivitiesEventLeaderboardServiceTest {
                 accessControlService);
         ActivityEvent event = eventRecord("event-1", "canonical");
         String canonicalOwnerId = "event-1:sub-1:sub-1:group:1";
+        String roomOwnerId = "random-room:event-1:sub-1:sub-1:group:1";
         EventLeaderboardEntry legacyMemberScore = scoreEntry("legacy-score", "legacy-member", 7);
         EventLeaderboardEntry outsiderScore = scoreEntry("outsider-score", "outsider", 100);
         when(activityEventsRepository.findBySourceId("event-1")).thenReturn(List.of(event));
         when(eventLeaderboardEntriesRepository.findByEventIdAndSubEventId("event-1", "sub-1"))
                 .thenReturn(List.of(outsiderScore, legacyMemberScore));
+        when(activitiesMembersService.queryMembers("event", roomOwnerId, false, "event-1", "sub-1"))
+                .thenReturn(List.of());
         when(activitiesMembersService.queryMembers("group", canonicalOwnerId)).thenReturn(List.of());
         when(activitiesMembersService.queryMembers("group", "sub-1:group:1"))
                 .thenReturn(List.of(activityMember("legacy-member", "accepted")));
@@ -508,12 +519,18 @@ class ActivitiesEventLeaderboardServiceTest {
                 accessControlService);
         ActivityEvent event = eventRecord("event-1", "canonical");
         String canonicalOwnerId = "event-1:sub-1:sub-1:group:1";
+        String roomOwnerId = "random-room:event-1:sub-1:sub-1:group:1";
         EventLeaderboardEntry legacyMemberScore = scoreEntry("legacy-score", "legacy-member", 7);
         when(activityEventsRepository.findBySourceId("event-1")).thenReturn(List.of(event));
         when(eventLeaderboardEntriesRepository.findByEventIdAndSubEventId("event-1", "sub-1"))
                 .thenReturn(List.of(legacyMemberScore));
-        when(activitiesMembersService.queryMembers("group", canonicalOwnerId)).thenReturn(List.of());
-        when(activitiesMembersService.hasStoredOwnerMembers("group", canonicalOwnerId)).thenReturn(true);
+        when(activitiesMembersService.queryMembers(
+                anyString(), anyString(), any(Boolean.class), anyString(), anyString()))
+                .thenReturn(List.of());
+        when(activitiesMembersService.queryMembers(anyString(), anyString())).thenReturn(List.of());
+        when(activitiesMembersService.hasStoredOwnerMembers(anyString(), anyString()))
+                .thenAnswer(invocation -> "group".equals(invocation.getArgument(0))
+                        && canonicalOwnerId.equals(invocation.getArgument(1)));
 
         var state = service.queryState("event-1", "sub-1");
 
@@ -542,13 +559,18 @@ class ActivitiesEventLeaderboardServiceTest {
         when(eventLeaderboardEntriesRepository.findByEventIdAndSubEventId("event-1", "sub-1"))
                 .thenReturn(List.of(removedScore));
         when(activitiesMembersService.queryMembers(
-                "event", roomOwnerId, false, "event-1", "sub-1"))
-                .thenReturn(List.of(activityMember("casey-id", "accepted")));
+                anyString(), anyString(), any(Boolean.class), anyString(), anyString()))
+                .thenAnswer(invocation -> roomOwnerId.equals(invocation.getArgument(1))
+                        ? List.of(activityMember("casey-id", "accepted"))
+                        : List.of());
+        when(activitiesMembersService.queryMembers(anyString(), anyString())).thenReturn(List.of());
         when(activitiesMembersService.queryStoredMemberStates("event", roomOwnerId))
                 .thenReturn(Map.of(
                         "casey-id", new StoredMemberState("accepted", "Casey Bridge"),
                         "nova-id", new StoredMemberState("removed", "Nova Social")));
-        when(activitiesMembersService.hasStoredOwnerMembers("event", roomOwnerId)).thenReturn(true);
+        when(activitiesMembersService.hasStoredOwnerMembers(anyString(), anyString()))
+                .thenAnswer(invocation -> "event".equals(invocation.getArgument(0))
+                        && roomOwnerId.equals(invocation.getArgument(1)));
 
         var state = service.queryState("event-1", "sub-1");
 
@@ -576,7 +598,9 @@ class ActivitiesEventLeaderboardServiceTest {
         when(accessControlService.canCurrentActorSubmitLeaderboardEntry("member-1", "event-1")).thenReturn(true);
         when(activityEventsRepository.findBySourceId("event-1")).thenReturn(List.of(parent));
         when(eventLeaderboardEntriesRepository.findByEventIdAndSubEventId(slotId, "sub-1")).thenReturn(List.of());
-        when(activitiesMembersService.queryMembers(anyString(), anyString())).thenReturn(List.of());
+        when(activitiesMembersService.queryMembers(
+                anyString(), anyString(), any(Boolean.class), anyString(), anyString()))
+                .thenReturn(List.of());
 
         service.upsertEntry(new EventLeaderboardEntryUpsertRequestDto(
                 "member-1",

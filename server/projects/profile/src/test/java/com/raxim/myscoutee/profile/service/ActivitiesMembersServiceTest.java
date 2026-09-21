@@ -689,7 +689,8 @@ class ActivitiesMembersServiceTest {
                 "asset-1",
                 "event-1",
                 "subevent-1",
-                "pending"))
+                "pending",
+                null))
                 .thenReturn(Optional.of(scopedAsset));
 
         List<ActivityMemberEntryDto> result = service.queryMembers(
@@ -701,7 +702,7 @@ class ActivitiesMembersServiceTest {
 
         assertThat(result).isEmpty();
         verify(activityMembersRepository, never()).findByOwnerTypeAndOwnerIdAndStatus(anyString(), anyString(), anyString());
-        verify(activityMembersRepository, never()).findByOwnerTypeAndOwnerId(anyString(), anyString());
+        verify(activityMembersRepository).findByOwnerTypeAndOwnerId("asset", "asset-1");
     }
 
     @Test
@@ -747,6 +748,7 @@ class ActivitiesMembersServiceTest {
                 "asset-1",
                 "event-1",
                 "subevent-1",
+                null,
                 null))
                 .thenReturn(Optional.of(scopedAsset));
         when(usersRepository.findByUserIdIn(any())).thenReturn(List.of(invitee));
@@ -810,6 +812,7 @@ class ActivitiesMembersServiceTest {
                 "asset-1",
                 "event-1",
                 "subevent-1",
+                null,
                 null))
                 .thenReturn(Optional.of(scopedAsset));
         when(activityMembersRepository.findByOwnerTypeAndOwnerId("asset", "asset-1"))
@@ -866,6 +869,7 @@ class ActivitiesMembersServiceTest {
                 "asset-1",
                 "event-1",
                 "subevent-1",
+                null,
                 null))
                 .thenReturn(Optional.of(scopedAsset));
         when(activityMembersRepository.findByOwnerTypeAndOwnerId("asset", "asset-1"))
@@ -898,6 +902,7 @@ class ActivitiesMembersServiceTest {
                 "asset-1",
                 "event-1",
                 "subevent-1",
+                null,
                 null))
                 .thenReturn(Optional.of(scopedAsset));
         when(activitySubEventResourcesRepository.findByOwnerIdAndSubEventIdAndStatusNot(
@@ -944,6 +949,7 @@ class ActivitiesMembersServiceTest {
                 "asset-1",
                 "event-1",
                 "subevent-1",
+                null,
                 null))
                 .thenReturn(Optional.of(scopedAsset));
         when(activitySubEventResourcesRepository.findByOwnerIdAndSubEventIdAndStatusNot(
@@ -1005,6 +1011,7 @@ class ActivitiesMembersServiceTest {
                 "asset-1",
                 "event-1:slot:slot-1:2026-07-23T06:30:00Z",
                 "subevent-1",
+                null,
                 null))
                 .thenReturn(Optional.of(scopedAsset));
         ActivitySubEventResource borrowedAssignment = new ActivitySubEventResource();
@@ -1116,7 +1123,7 @@ class ActivitiesMembersServiceTest {
         when(homeUserProfileService.resolveSelectedUserId("asset-owner")).thenReturn("asset-owner");
         when(homeUserProfileService.resolveSelectedUserId(null)).thenReturn("asset-owner");
         when(assetsService.findAssetByAssetId("asset-1")).thenReturn(Optional.of(pendingAsset));
-        when(assetsService.findAssetByAssetIdWithScopedRequests("asset-1", eventId, subEventId, null))
+        when(assetsService.findAssetByAssetIdWithScopedRequests("asset-1", eventId, subEventId, null, null))
                 .thenReturn(Optional.of(pendingAsset), Optional.of(acceptedAsset));
         when(assetsService.syncScopedRequestsFromMemberEntries(
                 eq("asset-1"),
@@ -1266,7 +1273,7 @@ class ActivitiesMembersServiceTest {
         when(homeUserProfileService.resolveSelectedUserId("asset-owner")).thenReturn("asset-owner");
         when(homeUserProfileService.resolveSelectedUserId(null)).thenReturn("asset-owner");
         when(assetsService.findAssetByAssetId("asset-1")).thenReturn(Optional.of(scopedAsset));
-        when(assetsService.findAssetByAssetIdWithScopedRequests("asset-1", eventId, subEventId, null))
+        when(assetsService.findAssetByAssetIdWithScopedRequests("asset-1", eventId, subEventId, null, null))
                 .thenReturn(Optional.of(scopedAsset), Optional.of(clearedAsset));
         when(assetsService.syncScopedRequestsFromMemberEntries(
                 eq("asset-1"),
@@ -1347,12 +1354,14 @@ class ActivitiesMembersServiceTest {
         when(homeUserProfileService.resolveSelectedUserId("asset-owner")).thenReturn("asset-owner");
         when(homeUserProfileService.resolveSelectedUserId(null)).thenReturn("asset-owner");
         when(assetsService.findAssetByAssetId("asset-1")).thenReturn(Optional.of(scopedAsset));
-        when(assetsService.findAssetByAssetIdWithScopedRequests("asset-1", eventId, subEventId, null))
+        when(assetsService.findAssetByAssetIdWithScopedRequests("asset-1", eventId, subEventId, null, null))
                 .thenReturn(Optional.of(scopedAsset), Optional.of(clearedAsset));
         when(activityMembersRepository.findByOwnerTypeAndOwnerId("asset", "asset-1"))
                 .thenReturn(List.of(storedManager));
         when(activityMembersRepository.findByOwnerTypeAndOwnerIdAndUserId("asset", "asset-1", "manager-1"))
                 .thenReturn(Optional.of(storedManager));
+        when(activityMembersRepository.findByOwnerTypeAndOwnerIdAndUserId("event", eventId, "asset-owner"))
+                .thenReturn(Optional.empty());
         when(assetsService.syncScopedRequestsFromMemberEntries(
                 eq("asset-1"),
                 eq(eventId),
@@ -1440,7 +1449,7 @@ class ActivitiesMembersServiceTest {
         when(homeUserProfileService.resolveSelectedUserId("invitee")).thenReturn("invitee");
         when(homeUserProfileService.resolveSelectedUserId(null)).thenReturn("invitee");
         when(assetsService.findAssetByAssetId("asset-1")).thenReturn(Optional.of(pendingAsset));
-        when(assetsService.findAssetByAssetIdWithScopedRequests("asset-1", eventId, subEventId, null))
+        when(assetsService.findAssetByAssetIdWithScopedRequests("asset-1", eventId, subEventId, null, null))
                 .thenReturn(Optional.of(pendingAsset), Optional.of(acceptedAsset));
         when(assetsService.syncScopedRequestsFromMemberEntries(
                 eq("asset-1"),
@@ -1518,7 +1527,7 @@ class ActivitiesMembersServiceTest {
 
         when(homeUserProfileService.resolveSelectedUserId("member-1")).thenReturn("member-1");
         when(assetsService.findAssetByAssetId("asset-1")).thenReturn(Optional.of(acceptedAsset));
-        when(assetsService.findAssetByAssetIdWithScopedRequests("asset-1", eventId, subEventId, null))
+        when(assetsService.findAssetByAssetIdWithScopedRequests("asset-1", eventId, subEventId, null, null))
                 .thenReturn(Optional.of(acceptedAsset));
 
         var result = service.applyAction(new ActivityMemberActionRequestDto(

@@ -194,7 +194,7 @@ class UserNotificationPageRepositoryTest {
         assertThat((Document) updateDocument.get("$setOnInsert"))
                 .doesNotContainKey("revision");
         assertThat((Document) updateDocument.get("$inc"))
-                .containsEntry("occurrenceCount", 1L)
+                .containsEntry("occurrenceCount", 1)
                 .containsEntry("revision", 1L);
     }
 

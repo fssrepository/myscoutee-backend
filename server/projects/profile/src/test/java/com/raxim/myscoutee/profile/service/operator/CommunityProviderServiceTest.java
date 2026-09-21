@@ -80,8 +80,9 @@ class CommunityProviderServiceTest {
             assertThat(record.path("available").asBoolean()).isTrue();
             assertThat(record.path("url").asText()).startsWith("https://");
         });
-        assertThat(seedRoot.resolve("myscoutee_db")
-                .resolve("communityProviders.json")).doesNotExist();
+        JsonNode productionSeed = objectMapper.readTree(Files.readString(
+                seedRoot.resolve("myscoutee_db").resolve("communityProviders.json")));
+        assertThat(productionSeed).isEqualTo(seed);
     }
 
     @Test
