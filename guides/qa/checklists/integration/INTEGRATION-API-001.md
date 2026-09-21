@@ -36,6 +36,32 @@ PASS requires the UI ownership/presentation checks, the persisted id mapping,
 the real Join mutation and the delivered callback. API-only creation without
 the two UI views is not sufficient.
 
+## Extension — organizer link, invitations and completed encounters
+
+The historical result below does not prove this extension. Record a separate
+dated execution result. Use fresh disposable resources and a UI-generated key;
+retain the existing managed browser launcher and client identity rules.
+
+1. Register `event.encounters` in addition to the existing watch types before
+   completion. Create a Speed meeting event with `sourceLink` and configuration.
+   Verify the API read, owner editor and public external-link action agree.
+2. Create invitation links for partner participant IDs. Open Nova's claim URL
+   through the managed browser, complete the normal claim/join flow, and verify
+   the participant mapping and membership. Reopening must not duplicate either.
+3. Run and complete two rounds through organizer controls. Include repeated
+   co-participants so the expected export contains each unordered pair once.
+4. Before completion, encounter reads must report the documented conflict.
+   After completion, read all pages and compare the partner identifiers with
+   actual saved completed-table assignments, independently of ratings.
+5. Receive `event.encounters` at the real callback receiver and compare its
+   event, revision, pair set and page offsets with the dedicated API response.
+   Verify no internal user IDs or e-mail addresses are exposed.
+6. Verify another owner's event cannot be read through this key. Disable watch,
+   revoke only the newly generated key in the UI and verify subsequent rejection.
+
+PASS requires actual browser claim/runtime actions, persisted reads and delivered
+callbacks; mocked SDK responses are supporting tests only.
+
 ## Result — 2026-09-20
 
 PASS / CLOSED on the assembled development stack through nginx.

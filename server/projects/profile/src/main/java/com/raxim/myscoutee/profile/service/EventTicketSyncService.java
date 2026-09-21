@@ -278,6 +278,7 @@ public class EventTicketSyncService {
             next.setTopics(canonical.getTopics() == null ? List.of() : new ArrayList<>(canonical.getTopics()));
             next.setSubEvents(canonical.getSubEvents() == null ? List.of() : new ArrayList<>(canonical.getSubEvents()));
             next.setMode(safeText(canonical.getMode()));
+            next.setMingleConfiguration(canonical.getMingleConfiguration());
             next.setRating(safeDouble(canonical.getRating()));
             next.setBoost(safeDouble(canonical.getBoost()));
             next.setAffinity(safeDouble(canonical.getAffinity()));
@@ -357,6 +358,7 @@ public class EventTicketSyncService {
         clone.setTopics(source.getTopics() == null ? List.of() : new ArrayList<>(source.getTopics()));
         clone.setSubEvents(source.getSubEvents() == null ? List.of() : new ArrayList<>(source.getSubEvents()));
         clone.setMode(source.getMode());
+        clone.setMingleConfiguration(source.getMingleConfiguration());
         clone.setRating(source.getRating());
         clone.setBoost(source.getBoost());
         clone.setAffinity(source.getAffinity());

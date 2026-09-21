@@ -1026,6 +1026,7 @@ class OperatorConfigurationServiceTest {
         privacyContact.setDataControllerName("");
         privacyContact.setPrivacyContactEmail("");
         configuration.setPrivacyContact(privacyContact);
+        configuration.setIntegration(new DeploymentConfiguration.Integration());
         configuration.setPayment(new DeploymentConfiguration.Payment());
         DeploymentConfiguration.Firebase firebase =
                 new DeploymentConfiguration.Firebase();

@@ -12,6 +12,7 @@ import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventDetailDto;
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.EventSlotOccurrenceDto;
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.EventSlotTemplateDto;
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.LocationCoordinatesDto;
+import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.MingleConfigurationDto;
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.PolicyItemDto;
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.PricingConfigDto;
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.SubEventDefinitionDto;
@@ -93,11 +94,24 @@ public class ActivityEventDetailMapper {
                 cloneSubEventDefinitions(record.getSubEventDefinitions()),
                 cloneSubEvents(record.getSubEvents()),
                 safeText(record.getMode()),
+                cloneMingleConfiguration(record.getMingleConfiguration()),
                 record.getCurrentStage(),
                 safeDouble(record.getRating()),
                 safeDouble(record.getBoost()),
                 safeDouble(record.getAffinity()),
                 null);
+    }
+
+    private MingleConfigurationDto cloneMingleConfiguration(MingleConfigurationDto value) {
+        if (value == null) {
+            return null;
+        }
+        return new MingleConfigurationDto(
+                value.groupSize(),
+                value.plannedRounds(),
+                value.roundDurationMinutes(),
+                value.breakDurationMinutes(),
+                value.requireGenderBalance());
     }
 
     private int aggregateRuntimeActivity(ActivityEvent record) {

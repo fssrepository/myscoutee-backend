@@ -17,6 +17,9 @@ import com.raxim.myscoutee.algo.gen.GeneratorModels.FifaMatch;
 import com.raxim.myscoutee.algo.gen.GeneratorModels.GeneratedEventPlan;
 import com.raxim.myscoutee.algo.gen.GeneratorModels.InviteBatchPlan;
 import com.raxim.myscoutee.algo.gen.GeneratorModels.LeaderboardMember;
+import com.raxim.myscoutee.algo.gen.GeneratorModels.MingleGeneratorRequest;
+import com.raxim.myscoutee.algo.gen.GeneratorModels.MinglePreviousTable;
+import com.raxim.myscoutee.algo.gen.GeneratorModels.MingleRoundPlan;
 import com.raxim.myscoutee.algo.gen.GeneratorModels.PriorityGeneratorRequest;
 import com.raxim.myscoutee.algo.gen.GeneratorModels.RandomGroupTarget;
 import com.raxim.myscoutee.algo.gen.GeneratorModels.RandomGeneratorRequest;
@@ -26,6 +29,163 @@ import com.raxim.myscoutee.algo.gen.GeneratorModels.ScoreGeneratorResult;
 import com.raxim.myscoutee.algo.gen.GeneratorModels.ScoreLeaderboardEntry;
 
 class EventGeneratorsTest {
+
+    @Test
+    void mingleGeneratorProjectsOneRoundWithoutMaterializingEventRecords() {
+        EventGeneratorByMingle generator = new EventGeneratorByMingle();
+
+        MingleRoundPlan plan = generator.generate(new MingleGeneratorRequest(
+                new FGraph(),
+                Set.of("u1", "u2", "u3", "u4", "u5", "u6", "u7", "u8"),
+                4,
+                1,
+                List.of(1, 2),
+                List.of(),
+                Map.of(),
+                false));
+
+        assertThat(plan.roundNumber()).isEqualTo(1);
+        assertThat(plan.tables()).hasSize(2);
+        assertThat(plan.tables()).flatExtracting(table -> table.memberUserIds())
+                .containsExactlyInAnyOrder("u1", "u2", "u3", "u4", "u5", "u6", "u7", "u8");
+    }
+
+    @Test
+    void mingleGeneratorAvoidsPreviousPartnersWhenAnotherTableIsAvailable() {
+        EventGeneratorByMingle generator = new EventGeneratorByMingle();
+
+        MingleRoundPlan plan = generator.generate(new MingleGeneratorRequest(
+                new FGraph(),
+                Set.of("u1", "u2", "u3", "u4"),
+                2,
+                2,
+                List.of(1, 2),
+                List.of(
+                        new MinglePreviousTable(1, 1, List.of("u1", "u2")),
+                        new MinglePreviousTable(1, 2, List.of("u3", "u4"))),
+                Map.of(),
+                false));
+
+        assertThat(plan.tables()).allSatisfy(table -> {
+            assertThat(table.memberUserIds()).doesNotContainSequence("u1", "u2");
+            assertThat(table.memberUserIds()).doesNotContainSequence("u3", "u4");
+        });
+    }
+
+    @Test
+    void mingleGeneratorRequiresBalancedPairsWhenConfigured() {
+        EventGeneratorByMingle generator = new EventGeneratorByMingle();
+        Map<String, String> genders = Map.of(
+                "m1", "man",
+                "m2", "man",
+                "w1", "woman",
+                "w2", "woman");
+
+        MingleRoundPlan plan = generator.generate(new MingleGeneratorRequest(
+                new FGraph(),
+                genders.keySet(),
+                2,
+                1,
+                List.of(1, 2),
+                List.of(),
+                genders,
+                true));
+
+        assertThat(plan.tables()).hasSize(2).allSatisfy(table -> {
+            assertThat(table.memberUserIds()).hasSize(2);
+            assertThat(table.memberUserIds().stream().map(genders::get))
+                    .containsExactlyInAnyOrder("man", "woman");
+        });
+    }
+
+    @Test
+    void mingleGeneratorLeavesUnbalancedPairingOverflowWithoutATable() {
+        EventGeneratorByMingle generator = new EventGeneratorByMingle();
+        Map<String, String> genders = Map.of(
+                "m1", "man",
+                "m2", "man",
+                "m3", "man",
+                "w1", "woman");
+
+        MingleRoundPlan plan = generator.generate(new MingleGeneratorRequest(
+                new FGraph(),
+                genders.keySet(),
+                2,
+                1,
+                List.of(),
+                List.of(),
+                genders,
+                true));
+
+        assertThat(plan.tables()).singleElement().satisfies(table ->
+                assertThat(table.memberUserIds().stream().map(genders::get))
+                        .containsExactlyInAnyOrder("man", "woman"));
+        assertThat(plan.tables()).flatExtracting(table -> table.memberUserIds()).hasSize(2);
+    }
+
+    @Test
+    void mingleGeneratorNeverWaitlistsBecauseEveryPossiblePartnerIsARepeat() {
+        EventGeneratorByMingle generator = new EventGeneratorByMingle();
+
+        MingleRoundPlan plan = generator.generate(new MingleGeneratorRequest(
+                new FGraph(),
+                Set.of("u1", "u2", "u3", "u4"),
+                2,
+                3,
+                List.of(1, 2),
+                List.of(
+                        new MinglePreviousTable(1, 1, List.of("u1", "u2", "u3", "u4")),
+                        new MinglePreviousTable(2, 1, List.of("u1", "u2", "u3", "u4"))),
+                Map.of(),
+                false));
+
+        assertThat(plan.tables()).flatExtracting(table -> table.memberUserIds())
+                .containsExactlyInAnyOrder("u1", "u2", "u3", "u4");
+    }
+
+    @Test
+    void mingleGeneratorKeepsBalancedParticipantsAssignedWhenRepeatsAreUnavoidable() {
+        EventGeneratorByMingle generator = new EventGeneratorByMingle();
+        Map<String, String> genders = Map.of(
+                "m1", "man",
+                "m2", "man",
+                "w1", "woman",
+                "w2", "woman");
+
+        MingleRoundPlan plan = generator.generate(new MingleGeneratorRequest(
+                new FGraph(),
+                genders.keySet(),
+                2,
+                3,
+                List.of(1, 2),
+                List.of(new MinglePreviousTable(2, 1, List.of("m1", "m2", "w1", "w2"))),
+                genders,
+                true));
+
+        assertThat(plan.tables()).hasSize(2).allSatisfy(table ->
+                assertThat(table.memberUserIds().stream().map(genders::get))
+                        .containsExactlyInAnyOrder("man", "woman"));
+        assertThat(plan.tables()).flatExtracting(table -> table.memberUserIds())
+                .containsExactlyInAnyOrder("m1", "m2", "w1", "w2");
+    }
+
+    @Test
+    void mingleGeneratorWaitlistsOnlyPhysicalTableOverflow() {
+        EventGeneratorByMingle generator = new EventGeneratorByMingle();
+
+        MingleRoundPlan plan = generator.generate(new MingleGeneratorRequest(
+                new FGraph(),
+                Set.of("u1", "u2", "u3", "u4", "u5"),
+                2,
+                1,
+                List.of(1, 2),
+                List.of(),
+                Map.of(),
+                false));
+
+        assertThat(plan.tables()).hasSize(2);
+        assertThat(plan.tables()).flatExtracting(table -> table.memberUserIds()).hasSize(4);
+    }
 
     @Test
     void randomGeneratorBuildsEventPlanFromStandaloneGraph() {

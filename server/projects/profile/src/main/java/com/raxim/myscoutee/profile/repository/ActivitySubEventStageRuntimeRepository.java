@@ -23,4 +23,9 @@ public interface ActivitySubEventStageRuntimeRepository extends MongoRepository<
             String ownerIdPattern,
             String subEventId,
             String status);
+
+    @Query("{ 'ownerId': { '$regex': ?0 }, 'status': { '$ne': ?1 } }")
+    List<ActivitySubEventStageRuntime> findByOwnerPatternAndStatusNot(
+            String ownerIdPattern,
+            String status);
 }

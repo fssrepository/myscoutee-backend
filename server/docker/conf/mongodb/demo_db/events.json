@@ -23419,5 +23419,106 @@
       }
     ],
     "policiesEnabled": false
+  },
+  {
+    "_id": {
+      "$oid": "6d1e00000000000000000001"
+    },
+    "syncKey": "6d1e0000-0000-5000-8000-000000000001",
+    "sourceId": "6d1e00000000000000000001",
+    "ownerUserId": "9f3b3f085e23af6c89dbc432",
+    "status": "A",
+    "admins": [
+      "9f3b3f085e23af6c89dbc432"
+    ],
+    "avatar": "NE",
+    "title": "Mingle Demo · Table Rotation Social",
+    "subtitle": "A live social mixer with four planned rounds and table assignments for eligible event participants.",
+    "timeframe": "Sep 21 · 6:00 PM - 9:00 PM",
+    "inviter": null,
+    "unread": 0,
+    "activity": 0,
+    "trashedAtIso": null,
+    "creatorUserId": "9f3b3f085e23af6c89dbc432",
+    "creatorName": "Nagy Eszter",
+    "creatorInitials": "NE",
+    "creatorGender": "woman",
+    "creatorCity": "Seattle",
+    "visibility": "Public",
+    "blindMode": "Open Event",
+    "startAtIso": "2026-09-21T16:00:00.000Z",
+    "endAtIso": "2026-09-21T19:00:00.000Z",
+    "distanceKm": 0,
+    "imageUrl": "/media/public?key=images/demo-events/event-100/v1/large.webp",
+    "sourceLink": "https://example.com/events/6d1e00000000000000000001",
+    "location": "Seattle · Mingle Demo Hall",
+    "locationCoordinates": {
+      "latitude": 47.6182,
+      "longitude": -122.3369
+    },
+    "locationGeo": {
+      "type": "Point",
+      "coordinates": [
+        -122.3369,
+        47.6182
+      ]
+    },
+    "capacityMin": 8,
+    "capacityMax": 24,
+    "capacityTotal": 24,
+    "autoInviter": false,
+    "frequency": "One-time",
+    "ticketing": true,
+    "approvalRequired": false,
+    "slotsEnabled": false,
+    "eventType": "main",
+    "acceptedMembers": 9,
+    "pendingMembers": 0,
+    "topics": [
+      "#Mingle",
+      "#Social",
+      "#Networking"
+    ],
+    "subEvents": [],
+    "mode": "Mingle",
+    "mingleConfiguration": {
+      "groupSize": 4,
+      "plannedRounds": 4,
+      "roundDurationMinutes": 20,
+      "breakDurationMinutes": 5,
+      "requireGenderBalance": true
+    },
+    "rating": 9.5,
+    "boost": 100,
+    "affinity": 581523,
+    "createdDate": "2026-09-21T12:00:00.000Z",
+    "createdUser": "9f3b3f085e23af6c89dbc432",
+    "updatedDate": "2026-09-21T12:00:00.000Z",
+    "updatedUser": "9f3b3f085e23af6c89dbc432",
+    "acceptedMemberUserIds": [
+      "9f3b3f085e23af6c89dbc432",
+      "bf057de7c586eede7e84bdc7",
+      "af0436815ab38f4864dd1e24",
+      "1b1c70be2349b3359a8f6f94",
+      "76da95a9109da485555c0d25",
+      "4da20eb049179e73d4757808",
+      "0b8e5df4ec85d858c304a350",
+      "4b5bad1292fb6db05dc0e455",
+      "7822c5f99eff99d63abe8933"
+    ],
+    "pendingMemberUserIds": [],
+    "invitedMemberUserIds": [],
+    "pendingRequestMemberUserIds": [],
+    "subEventsEnabled": true,
+    "subEventDefinitions": [],
+    "policiesEnabled": true,
+    "policies": [
+      {
+        "id": "mingle-demo-flow",
+        "title": "Live table flow",
+        "description": "Follow the current table assignment. Round timing may change while the event is running.",
+        "required": true
+      }
+    ]
   }
 ]

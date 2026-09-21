@@ -142,6 +142,10 @@ class WebSecurityConfigBootstrapTest {
         applicationContext.registerBean(
                 OperatorBootstrapAuthenticationService.class,
                 () -> bootstrapService);
+        applicationContext.registerBean(
+                IntegrationTokenAuthenticationFilter.class,
+                () -> new IntegrationTokenAuthenticationFilter(mock(
+                        com.raxim.myscoutee.profile.service.IntegrationTokenService.class)));
         new AnnotatedBeanDefinitionReader(applicationContext).register(
                 TestMvcConfiguration.class,
                 WebSecurityConfig.class);

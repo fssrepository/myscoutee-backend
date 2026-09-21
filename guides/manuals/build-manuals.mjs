@@ -36,7 +36,7 @@ const manuals = [
     title: 'Integration API Guide',
     documentId: 'MSC-API-001',
     documentVersion: '1.0.1',
-    releaseDate: '2026-09-19'
+    releaseDate: '2026-09-20'
   }
 ];
 const selectedDocumentId = process.argv[2]?.trim();

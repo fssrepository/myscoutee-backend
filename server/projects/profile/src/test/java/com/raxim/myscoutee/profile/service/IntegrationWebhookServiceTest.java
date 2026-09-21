@@ -85,6 +85,27 @@ class IntegrationWebhookServiceTest {
     }
 
     @Test
+    void encounterPublicationUsesStableDeliveryIdsAcrossProducerRetries() {
+        var subscription = new IntegrationWebhookSubscription();
+        subscription.setId("watch"); subscription.setTokenId("token"); subscription.setEventTypes(List.of("event.encounters"));
+        when(subscriptionsRepository.findByOwnerUserIdAndEnabledTrue("owner")).thenReturn(List.of(subscription));
+        var token = new IntegrationToken(); token.setOwnerUserId("owner"); token.setExpiresAtIso(Instant.now().plus(1, ChronoUnit.DAYS).toString());
+        when(tokensRepository.findByIdAndOwnerUserId("token", "owner")).thenReturn(Optional.of(token));
+        var result = new com.raxim.myscoutee.profile.data.dto.integration.IntegrationDtos.IntegrationEncountersDto(
+                "partner-event", "event", 9, List.of(), 0, null);
+        when(deliveriesRepository.insert(any(IntegrationWebhookDelivery.class)))
+                .thenAnswer(call -> call.getArgument(0))
+                .thenThrow(new org.springframework.dao.DuplicateKeyException("already queued"));
+        service.enqueueEncounters("owner", () -> result);
+        service.enqueueEncounters("owner", () -> result);
+        var captor = ArgumentCaptor.forClass(IntegrationWebhookDelivery.class);
+        org.mockito.Mockito.verify(deliveriesRepository, org.mockito.Mockito.times(2)).insert(captor.capture());
+        assertThat(captor.getAllValues().get(0).getId()).isEqualTo(captor.getAllValues().get(1).getId());
+        assertThat(captor.getValue().getPayloadJson()).contains("event.encounters", "partner-event", "nextOffset", "revision");
+        org.mockito.Mockito.verify(deliveriesRepository, org.mockito.Mockito.never()).save(any(IntegrationWebhookDelivery.class));
+    }
+
+    @Test
     void participantChangeUsesMappedIdsAndOmitsEmailAndInternalUserId() {
         ActivityEvent event = new ActivityEvent();
         event.setId("event-record-1");

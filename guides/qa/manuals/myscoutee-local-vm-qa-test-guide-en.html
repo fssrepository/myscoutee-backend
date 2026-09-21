@@ -372,7 +372,10 @@ bash server/docker/scripts/manual-qa-checkpoints/manual-qa-checkpoints-docker.sh
     <h1 id="cdp-and-device-title">6. CDP and Android USB Debugging</h1>
 
     <h2>Chrome DevTools Protocol (CDP)</h2>
-    <p>The managed launcher assigns a loopback-only ephemeral DevTools port and records it in the checkpoint manifest. After the paired human reports a discrepancy, Codex Pro 20 may use targeted CDP inspection when logs, API state and persistence are insufficient to localize it. Checkpoint-specific network/geolocation controls remain permitted only where the checklist requires them. CDP must never click through the test, manufacture visual evidence, or replace the paired human's verdict.</p>
+    <p>The managed launcher assigns a loopback-only ephemeral DevTools port and records it in the checkpoint manifest. In default manual QA, the human controls navigation and checklist actions; after a reported defect, Codex may perform targeted read-only diagnosis.</p>
+    <p>When the user explicitly delegates a specified full flow or checkpoint, Codex may operate those managed sessions through CDP, perform the checklist, repair defects and replay the affected steps. That authorization remains active for the delegated scope until completion or revocation. Fixture baselines, the versioned launcher, resource limits and independent persistence oracles still apply. Record automated observations as such; never invent a human verdict or manufacture passing runtime state.</p>
+    <h2>Event-format and partner API follow-up</h2>
+    <p><code>EVENT-MODE-REGRESSION-001</code> covers Standard/Tournament isolation, Speed meeting runtime, Explore preferences, external event links and local persistence. Its stable guide is <code>guides/qa/checklists/event/EVENT-MODE-REGRESSION-001.md</code>. The extension in <code>guides/qa/checklists/integration/INTEGRATION-API-001.md</code> covers participant invitation claims and completed encounter reads/webhooks. The earlier API PASS does not establish the new extension; record a separate dated result.</p>
     <pre><code>QA_CDP_PORT=$(jq -r '.sessions[0].devToolsPort' \
   /tmp/myscoutee-qa-browser-sessions/CHAT-LIST-001.json)
 

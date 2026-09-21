@@ -610,6 +610,7 @@ class ChatServiceTest {
         Chat viewerChat = chat("chat-1", "viewer", 0);
 
         when(homeUserProfileService.resolveSelectedUserId("viewer")).thenReturn("viewer");
+        stubEmptyMenuCounters("viewer");
         when(mongoTemplate.count(any(Query.class), eq(Chat.class))).thenReturn(1L);
         when(mongoTemplate.find(any(Query.class), eq(Chat.class))).thenReturn(List.of(viewerChat));
 
@@ -630,6 +631,7 @@ class ChatServiceTest {
         Chat midChat = chat("mm-mid", "viewer", 0, "2026-02-28T17:48:00");
 
         when(homeUserProfileService.resolveSelectedUserId("viewer")).thenReturn("viewer");
+        stubEmptyMenuCounters("viewer");
         when(mongoTemplate.count(any(Query.class), eq(Chat.class))).thenReturn(3L);
         when(mongoTemplate.find(any(Query.class), eq(Chat.class))).thenReturn(List.of(newChat, oldChat, midChat));
 
@@ -659,6 +661,7 @@ class ChatServiceTest {
         Chat serviceChat = chat("chat-service", "viewer", 0, "2026-03-01T10:48:00", "serviceEvent");
 
         when(homeUserProfileService.resolveSelectedUserId("viewer")).thenReturn("viewer");
+        stubEmptyMenuCounters("viewer");
         when(mongoTemplate.count(any(Query.class), eq(Chat.class))).thenReturn(4L, 1L, 1L);
         when(mongoTemplate.find(any(Query.class), eq(Chat.class))).thenReturn(
                 List.of(serviceChat, groupChat, subEventChat, eventChat),
@@ -733,6 +736,7 @@ class ChatServiceTest {
         event.setSubEvents(List.of(subEvent("stage-1", "Qualifiers")));
 
         when(homeUserProfileService.resolveSelectedUserId("viewer")).thenReturn("viewer");
+        stubEmptyMenuCounters("viewer");
         when(mongoTemplate.count(any(Query.class), eq(Chat.class))).thenReturn(1L);
         when(mongoTemplate.find(any(Query.class), eq(Chat.class))).thenReturn(List.of(groupChat));
         when(mongoTemplate.find(any(Query.class), eq(ActivityEvent.class))).thenReturn(List.of(event));
@@ -868,6 +872,13 @@ class ChatServiceTest {
 
     private Chat chat(String chatId, String ownerUserId, int unread) {
         return chat(chatId, ownerUserId, unread, "2026-05-26T08:00:00Z");
+    }
+
+    private void stubEmptyMenuCounters(String userId) {
+        when(homeUserProfileService.queryMenuCounters(userId)).thenReturn(new UserMenuCountersDto(
+                0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+                new UserChatCountersDto(0, 0, 0, 0, 0, 0),
+                null, null, null, 0, 0, 0));
     }
 
     private Chat chat(String chatId, String ownerUserId, int unread, String dateIso) {

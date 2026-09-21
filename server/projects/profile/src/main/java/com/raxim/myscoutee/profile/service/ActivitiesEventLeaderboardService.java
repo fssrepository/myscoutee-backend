@@ -20,6 +20,7 @@ import org.springframework.web.server.ResponseStatusException;
 import com.raxim.myscoutee.algo.gen.EventGeneratorByScore;
 import com.raxim.myscoutee.algo.gen.GeneratorModels;
 import com.raxim.myscoutee.profile.data.document.ActivityEvent;
+import com.raxim.myscoutee.profile.data.document.ActivityMingleRound;
 import com.raxim.myscoutee.profile.data.document.ActivitySubEventGroup;
 import com.raxim.myscoutee.profile.data.document.ActivitySubEventStageRuntime;
 import com.raxim.myscoutee.profile.data.document.ActivitySubEventStageRuntime.GroupResourceMetricRecord;
@@ -39,10 +40,12 @@ import com.raxim.myscoutee.profile.data.dto.events.EventLeaderboardDtos.EventTou
 import com.raxim.myscoutee.profile.data.dto.events.EventLeaderboardDtos.EventTournamentResourceMetricDto;
 import com.raxim.myscoutee.profile.data.dto.events.EventLeaderboardDtos.EventTournamentStageDto;
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.ActivityMemberEntryDto;
+import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.MingleConfigurationDto;
 import com.raxim.myscoutee.profile.data.document.SubEventItem;
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.SubEventDefinitionDto;
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.SubEventGroupItemDto;
 import com.raxim.myscoutee.profile.repository.ActivityEventsRepository;
+import com.raxim.myscoutee.profile.repository.ActivityMingleRoundsRepository;
 import com.raxim.myscoutee.profile.repository.ActivitySubEventGroupsRepository;
 import com.raxim.myscoutee.profile.repository.ActivitySubEventStageRuntimeRepository;
 import com.raxim.myscoutee.profile.repository.EventLeaderboardEntriesRepository;
@@ -70,6 +73,7 @@ public class ActivitiesEventLeaderboardService {
     private final ActivitiesMembersService activitiesMembersService;
     private final AccessControlService accessControlService;
     private AffinityRecomputeTaskService affinityRecomputeTaskService;
+    private ActivityMingleRoundsRepository activityMingleRoundsRepository;
     private final EventGeneratorByScore scoreGenerator = new EventGeneratorByScore();
 
     public ActivitiesEventLeaderboardService(
@@ -90,6 +94,11 @@ public class ActivitiesEventLeaderboardService {
     @org.springframework.beans.factory.annotation.Autowired(required = false)
     void setAffinityRecomputeTaskService(AffinityRecomputeTaskService affinityRecomputeTaskService) {
         this.affinityRecomputeTaskService = affinityRecomputeTaskService;
+    }
+
+    @org.springframework.beans.factory.annotation.Autowired
+    void setActivityMingleRoundsRepository(ActivityMingleRoundsRepository activityMingleRoundsRepository) {
+        this.activityMingleRoundsRepository = activityMingleRoundsRepository;
     }
 
     public EventLeaderboardStateDto queryState(String eventId, String subEventId) {
@@ -949,7 +958,11 @@ public class ActivitiesEventLeaderboardService {
             if (!StringUtils.hasText(memberId)) {
                 continue;
             }
-            members.add(new EventLeaderboardMemberDto(memberId, safeText(entry.name())));
+            members.add(new EventLeaderboardMemberDto(
+                    memberId,
+                    safeText(entry.name()),
+                    safeText(entry.initials()),
+                    StringUtils.hasText(safeText(entry.avatarUrl())) ? safeText(entry.avatarUrl()) : null));
         }
         return members;
     }
@@ -1178,6 +1191,31 @@ public class ActivitiesEventLeaderboardService {
         if (subEvent == null) {
             return List.of();
         }
+        if (isMingleEvent(event)) {
+            int roundNumber = mingleRoundNumber(subEvent.id());
+            ActivityMingleRound round = activityMingleRoundsRepository == null || roundNumber <= 0
+                    ? null
+                    : activityMingleRoundsRepository
+                            .findByEventIdAndRoundNumber(normalizeId(event.getSourceId()), roundNumber)
+                            .orElse(null);
+            if (round == null || round.getTables() == null) {
+                return List.of();
+            }
+            return round.getTables().stream()
+                    .filter(Objects::nonNull)
+                    .sorted(Comparator.comparingInt(table -> safeCount(table.tableNumber())))
+                    .map(table -> {
+                        int tableNumber = Math.max(1, safeCount(table.tableNumber()));
+                        int memberCount = table.memberUserIds() == null ? 0 : table.memberUserIds().size();
+                        return new SubEventGroupItemDto(
+                                mingleGroupId(event.getSourceId(), roundNumber, tableNumber),
+                                "Table " + tableNumber,
+                                memberCount,
+                                memberCount,
+                                "generated");
+                    })
+                    .toList();
+        }
         int groupCount = autoTournamentGroupCount(event, subEvent);
         List<SubEventGroupItemDto> groups = new ArrayList<>();
         for (int index = 0; index < groupCount; index += 1) {
@@ -1355,6 +1393,50 @@ public class ActivitiesEventLeaderboardService {
         if (event == null) {
             return List.of();
         }
+        if (isMingleEvent(event)) {
+            MingleConfigurationDto config = event.getMingleConfiguration();
+            int plannedRounds = Math.max(1, safeCount(config == null ? null : config.plannedRounds()));
+            int groupSize = Math.max(2, safeCount(config == null ? null : config.groupSize()));
+            int roundDuration = Math.max(1, safeCount(config == null ? null : config.roundDurationMinutes()));
+            int breakDuration = Math.max(0, safeCount(config == null ? null : config.breakDurationMinutes()));
+            int configuredCapacity = safeCount(event.getCapacityMax());
+            List<SubEventItem> rounds = new ArrayList<>();
+            for (int index = 0; index < plannedRounds; index += 1) {
+                rounds.add(new SubEventItem(
+                        "mingle-round-" + (index + 1),
+                        "Round " + (index + 1),
+                        "Table assignment round",
+                        null,
+                        null,
+                        safeText(event.getLocation()),
+                        normalizeId(event.getCreatorUserId()),
+                        groupSize,
+                        groupSize,
+                        null,
+                        null,
+                        false,
+                        null,
+                        groupSize,
+                        configuredCapacity,
+                        null,
+                        null,
+                        null,
+                        null,
+                        null,
+                        null,
+                        null,
+                        null,
+                        null,
+                        null,
+                        null,
+                        null,
+                        null,
+                        null,
+                        index == 0 ? 0 : breakDuration,
+                        roundDuration));
+            }
+            return rounds;
+        }
         List<SubEventItem> subEvents = event.getSubEvents();
         if (subEvents != null && !subEvents.isEmpty()) {
             return subEvents;
@@ -1403,6 +1485,27 @@ public class ActivitiesEventLeaderboardService {
                     safeCount(definition.durationMinutes())));
         }
         return stages;
+    }
+
+    private boolean isMingleEvent(ActivityEvent event) {
+        return event != null && "Mingle".equalsIgnoreCase(safeText(event.getMode()));
+    }
+
+    private int mingleRoundNumber(String subEventId) {
+        String value = normalizeId(subEventId);
+        String prefix = "mingle-round-";
+        if (!value.startsWith(prefix)) {
+            return 0;
+        }
+        try {
+            return Math.max(0, Integer.parseInt(value.substring(prefix.length())));
+        } catch (NumberFormatException ignored) {
+            return 0;
+        }
+    }
+
+    private String mingleGroupId(String eventId, int roundNumber, int tableNumber) {
+        return normalizeId(eventId) + ":mingle-round-" + roundNumber + ":table:" + tableNumber;
     }
 
     private String fallbackSubEventId(int index) {

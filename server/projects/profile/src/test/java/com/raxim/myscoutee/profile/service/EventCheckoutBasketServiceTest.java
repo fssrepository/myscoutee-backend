@@ -113,7 +113,7 @@ class EventCheckoutBasketServiceTest {
         deleted.setResultState("deleted");
         when(repository.findByUserIdAndSourceIdInAndStatusInAndVisibleResultState(
                 eq("user-1"),
-                eq(List.of("event-1", "event-2")),
+                eq(List.of("event-1", "event-2", "event-3")),
                 anyList(),
                 anyList()))
                 .thenReturn(List.of(pending, failed, deletedBeforeSuccess, succeeded, deleted));

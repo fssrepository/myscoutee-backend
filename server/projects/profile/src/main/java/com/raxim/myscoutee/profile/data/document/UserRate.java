@@ -37,6 +37,7 @@ public class UserRate {
     private String bridgeUserId;
     private Integer bridgeCount;
     private Boolean met;
+    private String metEventId;
     private String eventName;
     private Integer distanceMetersExact;
     private LocationSnapshot ownerLocation;
@@ -79,6 +80,8 @@ public class UserRate {
     public void setBridgeCount(Integer bridgeCount) { this.bridgeCount = bridgeCount; }
     public Boolean getMet() { return met; }
     public void setMet(Boolean met) { this.met = met; }
+    public String getMetEventId() { return metEventId; }
+    public void setMetEventId(String metEventId) { this.metEventId = metEventId; }
     public String getEventName() { return eventName; }
     public void setEventName(String eventName) { this.eventName = eventName; }
     public Integer getDistanceMetersExact() { return distanceMetersExact; }

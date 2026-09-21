@@ -73,6 +73,7 @@ class AccessPolicySeedTest {
             AccessPolicyKeys.USER_PROFILE_DELETE,
             AccessPolicyKeys.USER_MEDIA_UPLOAD,
             AccessPolicyKeys.USER_MEDIA_IMPORT,
+            AccessPolicyKeys.MEDIA_READ,
             AccessPolicyKeys.PRIVACY_CONSENT_SUBMIT);
 
     private final ObjectMapper objectMapper = JsonMapper.builder()

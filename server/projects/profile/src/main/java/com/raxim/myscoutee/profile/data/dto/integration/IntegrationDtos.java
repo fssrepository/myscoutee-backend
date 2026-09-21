@@ -1,6 +1,7 @@
 package com.raxim.myscoutee.profile.data.dto.integration;
 
 import java.util.List;
+import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.MingleConfigurationDto;
 
 public final class IntegrationDtos {
     private IntegrationDtos() {
@@ -82,8 +83,23 @@ public final class IntegrationDtos {
             String visibility,
             String status,
             String sourceLink,
-            List<String> topics) {
+            List<String> topics,
+            String mode,
+            MingleConfigurationDto mingleConfiguration) {
     }
+
+    public record IntegrationParticipantInviteRequestDto(List<String> participantIds) { }
+    public record IntegrationParticipantInviteDto(String id, String inviteUrl, boolean claimed) { }
+    public record IntegrationParticipantInvitesDto(List<IntegrationParticipantInviteDto> items) { }
+    public record IntegrationParticipantClaimDto(String eventId) { }
+
+    public record IntegrationEventDto(String id, String externalId, String title, String status,
+            String sourceLink, String mode, MingleConfigurationDto mingleConfiguration) { }
+
+    public record IntegrationEncounterParticipantDto(String id, String externalId) { }
+    public record IntegrationEncounterPairDto(IntegrationEncounterParticipantDto first, IntegrationEncounterParticipantDto second) { }
+    public record IntegrationEncountersDto(String id, String externalId, int revision,
+            List<IntegrationEncounterPairDto> pairs, int total, Integer nextOffset) { }
 
     public record IntegrationEventSyncRequestDto(
             List<IntegrationEventSyncItemDto> items) {

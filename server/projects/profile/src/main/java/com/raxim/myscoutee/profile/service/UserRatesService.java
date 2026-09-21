@@ -8,6 +8,7 @@ import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -16,6 +17,7 @@ import java.util.Objects;
 import java.util.Set;
 
 import org.bson.types.ObjectId;
+import org.bson.Document;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.BulkOperations;
@@ -27,6 +29,11 @@ import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
+
+import com.mongodb.client.model.BulkWriteOptions;
+import com.mongodb.client.model.UpdateOneModel;
+import com.mongodb.client.model.UpdateOptions;
+import com.mongodb.client.model.WriteModel;
 
 import jakarta.annotation.PostConstruct;
 
@@ -209,6 +216,7 @@ public class UserRatesService {
             List<UserRate> savedRates = new ArrayList<>();
             userRatesRepository.saveAll(normalizedRates).forEach(savedRates::add);
             List<UserRate> persistedRates = savedRates.isEmpty() ? normalizedRates : savedRates;
+            projectMutualMetFriendships(persistedRates);
             enqueueRatingNotifications(persistedRates, previousScoresByNaturalKey);
             userAffinityEdgeService.recomputeForRates(persistedRates);
             refreshHomeGameRateProjections(affectedHomeProjectionOwnerIds, persistedRates);
@@ -216,6 +224,91 @@ public class UserRatesService {
             adminTelemetryService.record("rates.synced", "matching", "", normalizedRates.get(0).getOwnerUserId(), normalizedRates.size());
         }
         return new UserRatesSyncResponseDto(syncedRateIds, failedRateIds);
+    }
+
+    void projectRecordedMeetings(Collection<String> participantIds) {
+        if (participantIds == null || participantIds.isEmpty()) return;
+        List<UserRate> meetings = userRatesRepository.findRelevantByUserIds(new ArrayList<>(participantIds)).stream()
+                .filter(rate -> Boolean.TRUE.equals(rate.getMet()))
+                .filter(rate -> participantIds.contains(rate.getOwnerUserId())
+                        && participantIds.contains(rate.getRelatedUserId()))
+                .toList();
+        if (!meetings.isEmpty()) {
+            affinityCalculationService.applyAffinity(meetings);
+            userRatesRepository.saveAll(meetings);
+            projectMutualMetFriendships(meetings);
+            userAffinityEdgeService.recomputeForRates(meetings);
+        }
+        refreshHomeGameRateProjections(new LinkedHashSet<>(participantIds), meetings);
+        enqueueRateRecomputeTasks(meetings);
+    }
+
+    private void projectMutualMetFriendships(Collection<UserRate> persistedRates) {
+        if (persistedRates == null || persistedRates.isEmpty()) {
+            return;
+        }
+        Map<String, WriteModel<Document>> writesByPair = new LinkedHashMap<>();
+        for (UserRate rate : persistedRates) {
+            if (rate == null
+                    || !"single".equals(normalizeMode(rate.getMode()))
+                    || !Boolean.TRUE.equals(rate.getMet())
+                    || normalizeScore(rate.getScoreGiven()) <= 0
+                    || normalizeScore(rate.getScoreReceived()) <= 0) {
+                continue;
+            }
+            String ownerUserId = normalizeOptionalId(rate.getOwnerUserId());
+            String relatedUserId = normalizeOptionalId(rate.getRelatedUserId());
+            if (!StringUtils.hasText(ownerUserId)
+                    || !StringUtils.hasText(relatedUserId)
+                    || ownerUserId.equals(relatedUserId)) {
+                continue;
+            }
+            String left = ownerUserId.compareTo(relatedUserId) <= 0 ? ownerUserId : relatedUserId;
+            String right = ownerUserId.compareTo(relatedUserId) <= 0 ? relatedUserId : ownerUserId;
+            writesByPair.put(left.length() + ":" + left + right, mutualMetFriendshipWrite(left, right, rate));
+        }
+        if (writesByPair.isEmpty()) {
+            return;
+        }
+        mongoTemplate.getCollection("userFriendships").bulkWrite(
+                new ArrayList<>(writesByPair.values()),
+                new BulkWriteOptions().ordered(false));
+    }
+
+    private WriteModel<Document> mutualMetFriendshipWrite(
+            String left,
+            String right,
+            UserRate rate) {
+        long projectedAtMs = parseIsoMillis(
+                firstNonBlank(rate.getUpdatedDate(), rate.getCreatedDate()),
+                Instant.now().toEpochMilli());
+        Date projectedAt = new Date(projectedAtMs);
+        String eventId = safeText(rate.getMetEventId());
+        String eventName = safeText(rate.getEventName());
+        Object earlier = new Document("$or", List.of(
+                new Document("$eq", List.of(new Document("$ifNull", List.of("$friendsSince", false)), false)),
+                new Document("$lt", List.of(projectedAt, "$friendsSince"))));
+        Object later = new Document("$or", List.of(
+                new Document("$eq", List.of(new Document("$ifNull", List.of("$lastMetAt", false)), false)),
+                new Document("$gt", List.of(projectedAt, "$lastMetAt"))));
+        Document values = new Document("leftUserId", literal(left))
+                .append("rightUserId", literal(right))
+                .append("friendsSince", conditional(earlier, projectedAt, "$friendsSince"))
+                .append("firstEventId", conditional(earlier, literal(eventId), "$firstEventId"))
+                .append("lastMetAt", conditional(later, projectedAt, "$lastMetAt"))
+                .append("lastEventId", conditional(later, literal(eventId), "$lastEventId"))
+                .append("lastEventName", conditional(later, literal(eventName), "$lastEventName"));
+        return new UpdateOneModel<>(new Document("_id", left.length() + ":" + left + right),
+                List.of(new Document("$set", values)),
+                new UpdateOptions().upsert(true));
+    }
+
+    private Object conditional(Object condition, Object value, String existing) {
+        return new Document("$cond", List.of(condition, value, existing));
+    }
+
+    private Object literal(String value) {
+        return new Document("$literal", value);
     }
 
     private void enqueueRatingNotifications(
@@ -670,6 +763,13 @@ public class UserRatesService {
                 : resolveCreatedUser(rate, ownerUserId, fromUserId, toUserId, updatedUserId);
         String nowIso = Instant.now().toString();
 
+        // A Met record is shared by both viewers. Preserve the other person's
+        // authoritative score when a stale client submits a rating or edits its own.
+        Integer metCounterpartyScore = existing != null && Boolean.TRUE.equals(existing.getMet())
+                && "single".equals(mode)
+                ? (ownerUserId.equals(existing.getOwnerUserId())
+                        ? existing.getScoreReceived() : existing.getScoreGiven())
+                : null;
         UserRate document = existing != null ? existing : new UserRate();
         document.setId(existing != null ? existing.getId() : new ObjectId().toHexString());
         document.setSyncKey(syncKeyBelongsToDifferentRecord ? naturalKeyRecord.getSyncKey() : syncKey);
@@ -684,6 +784,9 @@ public class UserRatesService {
         document.setOwnerLocation(resolveLocationSnapshot(ownerUserId));
 
         UserRate normalized = normalizeRateRecord(document, rate, mode, ownerUserId, fromUserId, toUserId);
+        if (normalized != null && metCounterpartyScore != null) {
+            normalized.setScoreReceived(normalizeScore(metCounterpartyScore));
+        }
         return normalized == null ? null : new NormalizedRate(normalized, previousScoreGiven);
     }
 
@@ -747,7 +850,7 @@ public class UserRatesService {
             return null;
         }
 
-        boolean met = isMetRequest(rate);
+        boolean met = Boolean.TRUE.equals(document.getMet()) || isMetRequest(rate);
         String preservedEventName = normalizeOptionalText(document.getEventName());
         String requestedEventName = normalizeOptionalText(rate.eventName());
 
@@ -837,11 +940,13 @@ public class UserRatesService {
                 }
                 return new RateMenuItemDto(displayId, participantOtherUserId, resolvedCurrentUserId, "pair", direction,
                         socialContext, bridgeUserId, bridgeCount,
-                        scoreGiven, scoreReceived, eventName, happenedAt, distance.metersExact());
+                        scoreGiven, scoreReceived, eventName, happenedAt, distance.metersExact(),
+                        Boolean.TRUE.equals(record.getMet()));
             }
             return new RateMenuItemDto(displayId, primaryUserId, secondaryUserId, "pair", direction,
                     socialContext, bridgeUserId, bridgeCount,
-                    scoreGiven, scoreReceived, eventName, happenedAt, distance.metersExact());
+                    scoreGiven, scoreReceived, eventName, happenedAt, distance.metersExact(),
+                    Boolean.TRUE.equals(record.getMet()));
         }
 
         String relatedUserId = isOwnerView
@@ -855,7 +960,8 @@ public class UserRatesService {
                 individualSocialContext,
                 resolveIndividualBridgeUserId(record, resolvedCurrentUserId, relatedUserId, individualSocialContext),
                 resolveIndividualBridgeCount(record, individualSocialContext),
-                scoreGiven, scoreReceived, eventName, happenedAt, distance.metersExact());
+                scoreGiven, scoreReceived, eventName, happenedAt, distance.metersExact(),
+                Boolean.TRUE.equals(record.getMet()));
     }
 
     private RatePageProjection toRatePageProjection(RateMenuItemDto item) {
@@ -1127,12 +1233,13 @@ public class UserRatesService {
         if (record == null || !StringUtils.hasText(ownerUserId)) {
             return null;
         }
-        if (Boolean.TRUE.equals(record.getMet())) {
-            return "met";
-        }
         String mode = normalizeMode(record.getMode());
         int scoreGiven = normalizeScore(record.getScoreGiven());
         int scoreReceived = normalizeScore(record.getScoreReceived());
+        if (Boolean.TRUE.equals(record.getMet())
+                && ((scoreGiven <= 0 && scoreReceived <= 0) || (scoreGiven > 0 && scoreReceived > 0))) {
+            return "met";
+        }
         if ("pair".equals(mode)) {
             if (matchesActivityParticipant(record, ownerUserId) && scoreGiven <= 0 && scoreReceived > 0) {
                 return "received";
@@ -1155,13 +1262,16 @@ public class UserRatesService {
         if (record == null || !StringUtils.hasText(currentUserId) || !matchesActivityParticipant(record, currentUserId)) {
             return null;
         }
-        if (Boolean.TRUE.equals(record.getMet())) {
+        int scoreGiven = normalizeScore(record.getScoreGiven());
+        int scoreReceived = normalizeScore(record.getScoreReceived());
+        if (Boolean.TRUE.equals(record.getMet())
+                && ((scoreGiven <= 0 && scoreReceived <= 0) || (scoreGiven > 0 && scoreReceived > 0))) {
             return "met";
         }
-        if ("single".equals(normalizeMode(record.getMode())) && normalizeScore(record.getScoreReceived()) > 0) {
-            return normalizeScore(record.getScoreGiven()) > 0 ? "mutual" : "given";
+        if ("single".equals(normalizeMode(record.getMode())) && scoreReceived > 0) {
+            return scoreGiven > 0 ? "mutual" : "given";
         }
-        if (normalizeScore(record.getScoreGiven()) > 0 || normalizeScore(record.getScoreReceived()) > 0) {
+        if (scoreGiven > 0 || scoreReceived > 0) {
             return "received";
         }
         return null;

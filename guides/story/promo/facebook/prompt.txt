@@ -16,3 +16,38 @@ And a subtle bottom line:
 "Meet through events."
 Text must be large, exceptionally legible on a phone, precisely spelled, no extra prose. The image itself should explain the transition from personal priorities to one shared group and an in-person meetup. Maintain restrained composition with six discernible people and no crowded micro-interface.
 No fake phone screenshot, no app store badges, no invented website URL, no pricing, no downloads or user-count claims, no promises of guaranteed matches, no fake buttons, no watermark, no play icon, no confetti clutter. Render the final finished ad edge to edge, no device frame or outer border.
+
+
+## Landing-copy update — 2026-09-21
+
+Tool: built-in image_gen, edit mode. Saved over existing asset `myscoutee-promo-9x16.png` at the user's request; no separate output directory.
+Current exact copy:
+- 6 people · 6 priority lists → 1 team
+- Standard · Tournament · Speed dating
+
+Final generation prompt:
+
+Use case: text-localization. Edit the supplied MyScoutee promotional image. Keep the exact portrait 9:16 aspect ratio and all existing artwork, six portrait cards, six cafe friends, faces, logo, color palette, interest slider and chat icon. Replace the existing headline "6 people. 6 priority lists. 1 shared group." with the exact single line "6 people · 6 priority lists → 1 team", in legible navy text with "1 team" purple, centered below the logo. Immediately below add a second readable line "Standard · Tournament · Speed dating". These two lines should form an elegant clear typographic pair, using width intelligently without overlapping portraits. Restore the background where old text is removed. Retain all remaining existing text exactly: "Interest 1–10", "8", "Mutual interest.", "Group chat. Real plans.", "Meet through events." Preserve the logo as emblem+yScoutee. No other copy, no extra characters. Output one complete opaque full-bleed finished image with the same composition and aspect ratio.
+
+
+## Speed dating label update — 2026-09-21
+
+Tool: built-in `image_gen`, edit mode. Replaced the existing asset.
+
+Final edit prompt:
+
+Use case: text-localization. Input image is the EDIT TARGET. Replace ONLY the word "Mingle" with exactly "Speed dating" (capital S, lowercase d). The complete corrected line must read verbatim "Standard · Tournament · Speed dating". Facebook 9:16 portrait image. Retain 941x1672 dimensions and exact framing. Keep edited line centered below the first headline. Match the existing typography, weight and color. Preserve EVERYTHING ELSE: all artwork, people, faces, profile cards, logo emblem and wordmark, backgrounds, lighting, icons, slider, every other text and badge, layout and aspect ratio. Do not add or remove anything else. Deliver one complete opaque edited image.
+
+
+## Current asset correction — 2026-09-21
+
+The current image replaces the prior version at the same tracked path.
+Public format name: **Speed meeting**, matching the app and API manual.
+Earlier prompts above are production history, not the current naming contract.
+Tool: built-in `image_gen`, text-localization edit.
+
+Final prompt: Replace only “Speed dating” with “Speed meeting”; the line reads
+“Standard · Tournament · Speed meeting”. Preserve the original composition,
+faces, logo, artwork, other text, framing and aspect ratio. Keep FREE TO JOIN;
+for the Facebook portrait/feed assets add the missing purple FREE TO JOIN pill
+in the bottom margin. Do not redesign.

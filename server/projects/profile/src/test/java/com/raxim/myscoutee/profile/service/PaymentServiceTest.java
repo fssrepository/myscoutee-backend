@@ -68,6 +68,7 @@ class PaymentServiceTest {
         method.setProviderPaymentMethodRef("pm-race");
         method.setStatus("active");
         when(savedPaymentMethodsService.requireActive("user-race", "card-race", null)).thenReturn(method);
+        when(savedPaymentMethodsService.resolvePaymentProvider("stripe")).thenReturn("stripe");
 
         PaymentProcessor stripe = new PaymentProcessor() {
             @Override

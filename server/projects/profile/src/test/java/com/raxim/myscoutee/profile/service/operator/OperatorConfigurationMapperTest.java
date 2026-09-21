@@ -58,6 +58,7 @@ class OperatorConfigurationMapperTest {
         assertThat(empty.getBranding()).isNull();
         assertThat(empty.getSocialLinks()).isNull();
         assertThat(empty.getPrivacyContact()).isNull();
+        assertThat(empty.getIntegration()).isNull();
         assertThat(empty.getPayment()).isNull();
         assertThat(empty.getFirebase()).isNull();
 
@@ -259,6 +260,7 @@ class OperatorConfigurationMapperTest {
                 "privacyContact",
                 "socialLinks",
                 "branding",
+                "integration",
                 "payment",
                 "firebase",
                 "updatedAt");
@@ -318,6 +320,7 @@ class OperatorConfigurationMapperTest {
         privacyContact.setDataControllerName("MyScoutee Test Controller");
         privacyContact.setPrivacyContactEmail("privacy@example.test");
         configuration.setPrivacyContact(privacyContact);
+        configuration.setIntegration(new DeploymentConfiguration.Integration());
         configuration.setPayment(new DeploymentConfiguration.Payment());
         DeploymentConfiguration.Firebase firebase =
                 new DeploymentConfiguration.Firebase();

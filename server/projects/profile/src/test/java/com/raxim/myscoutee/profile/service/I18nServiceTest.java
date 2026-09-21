@@ -143,6 +143,30 @@ class I18nServiceTest {
         verify(messageRepository, times(4)).findAll();
     }
 
+    @Test
+    void cachesConfiguredFounderAlongsideTranslationsIncludingVersionOnlyResponses() {
+        I18nMessageRepository messages = org.mockito.Mockito.mock(I18nMessageRepository.class);
+        I18nBundleRepository bundles = org.mockito.Mockito.mock(I18nBundleRepository.class);
+        I18nBundle initial = bundle("en", "v1");
+        initial.setFounderName("Configured Founder");
+        when(bundles.findAll()).thenReturn(List.of(initial));
+        when(messages.findAll()).thenReturn(List.of(message("en", "role", "Founder")));
+        I18nService service = new I18nService(messages, bundles);
+
+        assertThat(service.getBundle("en", null, null).founderName()).isEqualTo("Configured Founder");
+        I18nBundleResponseDto unchanged = service.getBundle("en", null, "v1");
+        assertThat(unchanged.data()).isNull();
+        assertThat(unchanged.founderName()).isEqualTo("Configured Founder");
+        verify(bundles).findAll();
+        verify(messages).findAll();
+
+        I18nBundle updated = bundle("en", "v2");
+        updated.setFounderName("Updated Founder");
+        when(bundles.findAll()).thenReturn(List.of(updated));
+        service.refreshCache();
+        assertThat(service.getBundle("en", null, "v1").founderName()).isEqualTo("Updated Founder");
+    }
+
     private static I18nBundle bundle(String lang, String version) {
         I18nBundle bundle = new I18nBundle();
         bundle.setLang(lang);

@@ -7440,6 +7440,96 @@
     "value": "Fresh articles will show here."
   },
   {
+    "_id": "i18n-message-en-landing-about-open-aria",
+    "key": "landing.about.open.aria",
+    "lang": "en",
+    "value": "Open the MyScoutee overview"
+  },
+  {
+    "_id": "i18n-message-en-landing-about-header-badge",
+    "key": "landing.about.header.badge",
+    "lang": "en",
+    "value": "Independent project"
+  },
+  {
+    "_id": "i18n-message-en-landing-about-title",
+    "key": "landing.about.title",
+    "lang": "en",
+    "value": "About MyScoutee"
+  },
+  {
+    "_id": "i18n-message-en-landing-about-subtitle",
+    "key": "landing.about.subtitle",
+    "lang": "en",
+    "value": "Who built it, what it does, and why it is free to join."
+  },
+  {
+    "_id": "i18n-message-en-landing-about-aria",
+    "key": "landing.about.aria",
+    "lang": "en",
+    "value": "About MyScoutee"
+  },
+  {
+    "_id": "i18n-message-en-landing-about-close-aria",
+    "key": "landing.about.close.aria",
+    "lang": "en",
+    "value": "Close the MyScoutee overview"
+  },
+  {
+    "_id": "i18n-message-en-landing-about-founder-label",
+    "key": "landing.about.founder.label",
+    "lang": "en",
+    "value": "Who I am"
+  },
+  {
+    "_id": "i18n-message-en-landing-about-founder-title",
+    "key": "landing.about.founder.title",
+    "lang": "en",
+    "value": "Independent founder and software developer"
+  },
+  {
+    "_id": "i18n-message-en-landing-about-founder-description",
+    "key": "landing.about.founder.description",
+    "lang": "en",
+    "value": "I built MyScoutee after years of organizing my own journeys and looking for a more human path from online introductions to meeting in real life."
+  },
+  {
+    "_id": "i18n-message-en-landing-about-product-label",
+    "key": "landing.about.product.label",
+    "lang": "en",
+    "value": "What it is"
+  },
+  {
+    "_id": "i18n-message-en-landing-about-product-title",
+    "key": "landing.about.product.title",
+    "lang": "en",
+    "value": "A platform behind meetings, not swipes"
+  },
+  {
+    "_id": "i18n-message-en-landing-about-product-description",
+    "key": "landing.about.product.description",
+    "lang": "en",
+    "value": "Private, editable priorities help form balanced group proposals. People choose whether to join, continue in chat, and meet through real events."
+  },
+  {
+    "_id": "i18n-message-en-landing-about-free-label",
+    "key": "landing.about.free.label",
+    "lang": "en",
+    "value": "Why it is free"
+  },
+  {
+    "_id": "i18n-message-en-landing-about-free-title",
+    "key": "landing.about.free.title",
+    "lang": "en",
+    "value": "Free to join"
+  },
+  {
+    "_id": "i18n-message-en-landing-about-free-description",
+    "key": "landing.about.free.description",
+    "lang": "en",
+    "value": "Creating an account and using the core matching and community features is free. The planned model keeps optional event, ticket, venue, travel, and partner services separate; those may still have their own prices."
+  },
+  {
     "_id": "i18n-message-en-landing-partners-open-aria",
     "key": "landing.partners.open.aria",
     "lang": "en",
@@ -8217,25 +8307,25 @@
     "_id": "i18n-message-en-public-1krc8z",
     "key": "public.1krc8z",
     "lang": "en",
-    "value": "public"
+    "value": "Public"
   },
   {
     "_id": "i18n-message-en-friends-only-10o064",
     "key": "friends.only.10o064",
     "lang": "en",
-    "value": "friends only"
+    "value": "Friends only"
   },
   {
     "_id": "i18n-message-en-host-only-nfiqdr",
     "key": "host.only.nfiqdr",
     "lang": "en",
-    "value": "host only"
+    "value": "Host only"
   },
   {
     "_id": "i18n-message-en-inactive-1ubdbo",
     "key": "inactive.1ubdbo",
     "lang": "en",
-    "value": "inactive"
+    "value": "Inactive"
   },
   {
     "_id": "i18n-message-en-gender",
@@ -13956,6 +14046,222 @@
     "value": "Unable to delete sub event definition."
   },
   {
+    "_id": "i18n-message-en-event-editor-mingle-title",
+    "key": "event.editor.mingle.title",
+    "lang": "en",
+    "value": "Speed meeting configuration"
+  },
+  {
+    "_id": "i18n-message-en-event-editor-mingle-aria",
+    "key": "event.editor.mingle.aria",
+    "lang": "en",
+    "value": "Edit Speed meeting configuration"
+  },
+  {
+    "_id": "i18n-message-en-event-editor-mingle-open-aria",
+    "key": "event.editor.mingle.open.aria",
+    "lang": "en",
+    "value": "Open Speed meeting configuration"
+  },
+  {
+    "_id": "i18n-message-en-event-editor-mingle-close-aria",
+    "key": "event.editor.mingle.close.aria",
+    "lang": "en",
+    "value": "Close Speed meeting configuration"
+  },
+  {
+    "_id": "i18n-message-en-event-editor-mingle-save-aria",
+    "key": "event.editor.mingle.save.aria",
+    "lang": "en",
+    "value": "Save Speed meeting configuration"
+  },
+  {
+    "_id": "i18n-message-en-event-editor-mingle-panel-description",
+    "key": "event.editor.mingle.panel.description",
+    "lang": "en",
+    "value": "Configure the live table assignment flow."
+  },
+  {
+    "_id": "i18n-message-en-event-editor-mingle-description",
+    "key": "event.editor.mingle.description",
+    "lang": "en",
+    "value": "Defaults for live table assignments. The organizer can adjust the flow while the event is running."
+  },
+  {
+    "_id": "i18n-message-en-event-editor-mingle-group-size",
+    "key": "event.editor.mingle.group.size",
+    "lang": "en",
+    "value": "People per table"
+  },
+  {
+    "_id": "i18n-message-en-event-editor-mingle-planned-rounds",
+    "key": "event.editor.mingle.planned.rounds",
+    "lang": "en",
+    "value": "Planned rounds"
+  },
+  {
+    "_id": "i18n-message-en-event-editor-mingle-round",
+    "key": "event.editor.mingle.round",
+    "lang": "en",
+    "value": "Round"
+  },
+  {
+    "_id": "i18n-message-en-event-editor-mingle-round-number",
+    "key": "event.editor.mingle.round.number",
+    "lang": "en",
+    "value": "Round {{number}}"
+  },
+  {
+    "_id": "i18n-message-en-event-editor-mingle-round-description",
+    "key": "event.editor.mingle.round.description",
+    "lang": "en",
+    "value": "Table assignment round"
+  },
+  {
+    "_id": "i18n-message-en-event-editor-mingle-round-duration",
+    "key": "event.editor.mingle.round.duration",
+    "lang": "en",
+    "value": "Round duration"
+  },
+  {
+    "_id": "i18n-message-en-event-editor-mingle-break-duration",
+    "key": "event.editor.mingle.break.duration",
+    "lang": "en",
+    "value": "Table-change break"
+  },
+  {
+    "_id": "i18n-message-en-event-editor-mingle-table-count",
+    "key": "event.editor.mingle.table.count",
+    "lang": "en",
+    "value": "Available tables"
+  },
+  {
+    "_id": "i18n-message-en-event-editor-mingle-table-count-hint",
+    "key": "event.editor.mingle.table.count.hint",
+    "lang": "en",
+    "value": "Use 0 to calculate the required number from event members."
+  },
+  {
+    "_id": "i18n-message-en-event-editor-mingle-table-size",
+    "key": "event.editor.mingle.table.size",
+    "lang": "en",
+    "value": "{{count}} people per table"
+  },
+  {
+    "_id": "i18n-message-en-event-editor-mingle-require-gender-balance",
+    "key": "event.editor.mingle.require.gender.balance",
+    "lang": "en",
+    "value": "Require gender balance"
+  },
+  {
+    "_id": "i18n-message-en-event-editor-mingle-require-gender-balance-hint",
+    "key": "event.editor.mingle.require.gender.balance.hint",
+    "lang": "en",
+    "value": "Only complete tables with a balanced known gender distribution are assigned."
+  },
+  {
+    "_id": "i18n-message-en-event-editor-mingle-projection-aria",
+    "key": "event.editor.mingle.projection.aria",
+    "lang": "en",
+    "value": "{{round}} planned Speed meeting round"
+  },
+  {
+    "_id": "i18n-message-en-mingle-tables",
+    "key": "mingle.tables",
+    "lang": "en",
+    "value": "Tables"
+  },
+  {
+    "_id": "i18n-message-en-mingle-table-number",
+    "key": "mingle.table.number",
+    "lang": "en",
+    "value": "Table {{number}}"
+  },
+  {
+    "_id": "i18n-message-en-mingle-error-action-failed",
+    "key": "mingle.error.action.failed",
+    "lang": "en",
+    "value": "The Speed meeting action could not be completed because of a technical error."
+  },
+  {
+    "_id": "i18n-message-en-mingle-error-state-changed",
+    "key": "mingle.error.state.changed",
+    "lang": "en",
+    "value": "The round changed while this action was open. Close this dialog and choose the action again."
+  },
+  {
+    "_id": "i18n-message-en-mingle-error-service-unavailable",
+    "key": "mingle.error.service.unavailable",
+    "lang": "en",
+    "value": "The server was temporarily unavailable. Please try starting Speed meeting again."
+  },
+  {
+    "_id": "i18n-message-en-mingle-error-action-unsupported",
+    "key": "mingle.error.action.unsupported",
+    "lang": "en",
+    "value": "This Speed meeting action is not supported."
+  },
+  {
+    "_id": "i18n-message-en-mingle-error-round-limit-reached",
+    "key": "mingle.error.round.limit.reached",
+    "lang": "en",
+    "value": "Increase the planned number of Speed meeting rounds before starting another round."
+  },
+  {
+    "_id": "i18n-message-en-mingle-error-state-cannot-advance",
+    "key": "mingle.error.state.cannot.advance",
+    "lang": "en",
+    "value": "The Speed meeting session cannot continue from its current state."
+  },
+  {
+    "_id": "i18n-message-en-mingle-error-members-insufficient",
+    "key": "mingle.error.members.insufficient",
+    "lang": "en",
+    "value": "At least {{required}} event members are required to start Speed meeting. Current members: {{accepted}}."
+  },
+  {
+    "_id": "i18n-message-en-mingle-error-table-assignment-unavailable",
+    "key": "mingle.error.table.assignment.unavailable",
+    "lang": "en",
+    "value": "No complete table can be created from {{accepted}} event members with {{groupSize}} people per table."
+  },
+  {
+    "_id": "i18n-message-en-mingle-error-table-assignment-unavailable-gender-balance",
+    "key": "mingle.error.table.assignment.unavailable.gender.balance",
+    "lang": "en",
+    "value": "No complete, gender-balanced table can be created from {{accepted}} event members with {{groupSize}} people per table."
+  },
+  {
+    "_id": "i18n-message-en-mingle-error-event-not-found",
+    "key": "mingle.error.event.not.found",
+    "lang": "en",
+    "value": "The Speed meeting event could not be found."
+  },
+  {
+    "_id": "i18n-message-en-mingle-error-manage-forbidden",
+    "key": "mingle.error.manage.forbidden",
+    "lang": "en",
+    "value": "You do not have permission to manage this Speed meeting event."
+  },
+  {
+    "_id": "i18n-message-en-mingle-error-session-not-started",
+    "key": "mingle.error.session.not.started",
+    "lang": "en",
+    "value": "The Speed meeting session has not started yet."
+  },
+  {
+    "_id": "i18n-message-en-mingle-error-configuration-required",
+    "key": "mingle.error.configuration.required",
+    "lang": "en",
+    "value": "Configure Speed meeting before starting it."
+  },
+  {
+    "_id": "i18n-message-en-event-editor-mingle-flexible-rounds-note",
+    "key": "event.editor.mingle.flexible.rounds.note",
+    "lang": "en",
+    "value": "Increase the planned round count to make additional rounds available during the event."
+  },
+  {
     "_id": "i18n-message-en-frequency",
     "key": "frequency",
     "lang": "en",
@@ -19332,6 +19638,30 @@
     "value": "API integration settings"
   },
   {
+    "_id": "i18n-message-en-integration-help-aria",
+    "key": "integration.help.aria",
+    "lang": "en",
+    "value": "Open API documentation help"
+  },
+  {
+    "_id": "i18n-message-en-integration-help-title",
+    "key": "integration.help.title",
+    "lang": "en",
+    "value": "API documentation"
+  },
+  {
+    "_id": "i18n-message-en-integration-help-description",
+    "key": "integration.help.description",
+    "lang": "en",
+    "value": "The public GitHub README contains the documentation table and the current Integration API Guide."
+  },
+  {
+    "_id": "i18n-message-en-integration-help-open-documentation",
+    "key": "integration.help.open.documentation",
+    "lang": "en",
+    "value": "Open the documentation on GitHub"
+  },
+  {
     "_id": "i18n-message-en-integration-loading",
     "key": "integration.loading",
     "lang": "en",
@@ -20944,6 +21274,312 @@
     "key": "location.change.warning",
     "lang": "en",
     "value": "Your current location is significantly different from your saved location. Use Update to switch to this new location."
+  },
+  {
+    "_id": "i18n-message-en-event-external-link",
+    "key": "event.external.link",
+    "lang": "en",
+    "value": "External event page"
+  },
+  {
+    "_id": "i18n-message-en-mingle-action-tables",
+    "key": "mingle.action.tables",
+    "lang": "en",
+    "value": "Tables"
+  },
+  {
+    "_id": "i18n-message-en-mingle-action-start",
+    "key": "mingle.action.start",
+    "lang": "en",
+    "value": "Start Speed meeting"
+  },
+  {
+    "_id": "i18n-message-en-mingle-action-start-description",
+    "key": "mingle.action.start.description",
+    "lang": "en",
+    "value": "Create and start the first table assignment?"
+  },
+  {
+    "_id": "i18n-message-en-mingle-action-start-confirm",
+    "key": "mingle.action.start.confirm",
+    "lang": "en",
+    "value": "Start"
+  },
+  {
+    "_id": "i18n-message-en-mingle-action-starting",
+    "key": "mingle.action.starting",
+    "lang": "en",
+    "value": "Starting..."
+  },
+  {
+    "_id": "i18n-message-en-mingle-action-pause",
+    "key": "mingle.action.pause",
+    "lang": "en",
+    "value": "Pause timer"
+  },
+  {
+    "_id": "i18n-message-en-mingle-action-pause-title",
+    "key": "mingle.action.pause.title",
+    "lang": "en",
+    "value": "Pause Speed meeting"
+  },
+  {
+    "_id": "i18n-message-en-mingle-action-pause-description",
+    "key": "mingle.action.pause.description",
+    "lang": "en",
+    "value": "Pause the current round timer?"
+  },
+  {
+    "_id": "i18n-message-en-mingle-action-pause-confirm",
+    "key": "mingle.action.pause.confirm",
+    "lang": "en",
+    "value": "Pause"
+  },
+  {
+    "_id": "i18n-message-en-mingle-action-pausing",
+    "key": "mingle.action.pausing",
+    "lang": "en",
+    "value": "Pausing..."
+  },
+  {
+    "_id": "i18n-message-en-mingle-action-end",
+    "key": "mingle.action.end",
+    "lang": "en",
+    "value": "End round"
+  },
+  {
+    "_id": "i18n-message-en-mingle-action-end-description",
+    "key": "mingle.action.end.description",
+    "lang": "en",
+    "value": "End this round and begin the table-change break?"
+  },
+  {
+    "_id": "i18n-message-en-mingle-action-ending",
+    "key": "mingle.action.ending",
+    "lang": "en",
+    "value": "Ending..."
+  },
+  {
+    "_id": "i18n-message-en-mingle-action-complete",
+    "key": "mingle.action.complete",
+    "lang": "en",
+    "value": "Complete Speed meeting"
+  },
+  {
+    "_id": "i18n-message-en-mingle-action-complete-description",
+    "key": "mingle.action.complete.description",
+    "lang": "en",
+    "value": "Stop the live Speed meeting sequence?"
+  },
+  {
+    "_id": "i18n-message-en-mingle-action-complete-confirm",
+    "key": "mingle.action.complete.confirm",
+    "lang": "en",
+    "value": "Complete"
+  },
+  {
+    "_id": "i18n-message-en-mingle-action-completing",
+    "key": "mingle.action.completing",
+    "lang": "en",
+    "value": "Completing..."
+  },
+  {
+    "_id": "i18n-message-en-mingle-action-resume",
+    "key": "mingle.action.resume",
+    "lang": "en",
+    "value": "Resume timer"
+  },
+  {
+    "_id": "i18n-message-en-mingle-action-resume-title",
+    "key": "mingle.action.resume.title",
+    "lang": "en",
+    "value": "Resume Speed meeting"
+  },
+  {
+    "_id": "i18n-message-en-mingle-action-resume-description",
+    "key": "mingle.action.resume.description",
+    "lang": "en",
+    "value": "Resume the paused Speed meeting timer?"
+  },
+  {
+    "_id": "i18n-message-en-mingle-action-resume-confirm",
+    "key": "mingle.action.resume.confirm",
+    "lang": "en",
+    "value": "Resume"
+  },
+  {
+    "_id": "i18n-message-en-mingle-action-resuming",
+    "key": "mingle.action.resuming",
+    "lang": "en",
+    "value": "Resuming..."
+  },
+  {
+    "_id": "i18n-message-en-mingle-action-next-now",
+    "key": "mingle.action.next.now",
+    "lang": "en",
+    "value": "Start round now"
+  },
+  {
+    "_id": "i18n-message-en-mingle-action-next",
+    "key": "mingle.action.next",
+    "lang": "en",
+    "value": "Start next round"
+  },
+  {
+    "_id": "i18n-message-en-mingle-action-next-description",
+    "key": "mingle.action.next.description",
+    "lang": "en",
+    "value": "End the table-change break and create the next assignment now?"
+  },
+  {
+    "_id": "i18n-message-en-mingle-action-next-confirm",
+    "key": "mingle.action.next.confirm",
+    "lang": "en",
+    "value": "Start round"
+  },
+  {
+    "_id": "i18n-message-en-mingle-action-next-restart-description",
+    "key": "mingle.action.next.restart.description",
+    "lang": "en",
+    "value": "Create and start the next table assignment?"
+  },
+  {
+    "_id": "i18n-message-en-mingle-live-round",
+    "key": "mingle.live.round",
+    "lang": "en",
+    "value": "Round {round} of {total}"
+  },
+  {
+    "_id": "i18n-message-en-mingle-live-round-17i0hzb",
+    "key": "mingle.live.ROUND",
+    "lang": "en",
+    "value": "Round ends in {time}"
+  },
+  {
+    "_id": "i18n-message-en-mingle-live-break",
+    "key": "mingle.live.BREAK",
+    "lang": "en",
+    "value": "Next round starts in {time}"
+  },
+  {
+    "_id": "i18n-message-en-mingle-live-paused",
+    "key": "mingle.live.PAUSED",
+    "lang": "en",
+    "value": "Paused · {time} remaining"
+  },
+  {
+    "_id": "i18n-message-en-mingle-live-completed",
+    "key": "mingle.live.COMPLETED",
+    "lang": "en",
+    "value": "Speed meeting completed"
+  },
+  {
+    "_id": "i18n-message-en-mingle-live-waiting",
+    "key": "mingle.live.waiting",
+    "lang": "en",
+    "value": "Waiting for a table assignment"
+  },
+  {
+    "_id": "i18n-message-en-notification-kind-mingle-table-assignment-title",
+    "key": "notification.kind.mingle-table-assignment.title",
+    "lang": "en",
+    "value": "Your Speed meeting table is ready"
+  },
+  {
+    "_id": "i18n-message-en-notification-kind-mingle-table-assignment-message",
+    "key": "notification.kind.mingle-table-assignment.message",
+    "lang": "en",
+    "value": "Go to Table {tableNumber} for round {roundNumber}."
+  },
+  {
+    "_id": "i18n-message-en-notification-kind-mingle-table-waiting-title",
+    "key": "notification.kind.mingle-table-waiting.title",
+    "lang": "en",
+    "value": "Speed meeting round started"
+  },
+  {
+    "_id": "i18n-message-en-notification-kind-mingle-table-waiting-message",
+    "key": "notification.kind.mingle-table-waiting.message",
+    "lang": "en",
+    "value": "Waiting for a table assignment."
+  },
+  {
+    "_id": "i18n-message-en-event-explore-filters",
+    "key": "event.explore.filters",
+    "lang": "en",
+    "value": "Event filters"
+  },
+  {
+    "_id": "i18n-message-en-event-filters-apply",
+    "key": "event.filters.apply",
+    "lang": "en",
+    "value": "Save filters"
+  },
+  {
+    "_id": "i18n-message-en-event-filters-save-failed",
+    "key": "event.filters.save.failed",
+    "lang": "en",
+    "value": "Could not save filters. Please try again."
+  },
+  {
+    "_id": "i18n-message-en-event-filters-load-failed",
+    "key": "event.filters.load.failed",
+    "lang": "en",
+    "value": "Could not load your filters. Please open Explore again."
+  },
+  {
+    "_id": "i18n-message-en-event-mode",
+    "key": "event.mode",
+    "lang": "en",
+    "value": "Event format"
+  },
+  {
+    "_id": "i18n-message-en-event-mode-standard",
+    "key": "event.mode.standard",
+    "lang": "en",
+    "value": "Standard"
+  },
+  {
+    "_id": "i18n-message-en-event-mode-tournament",
+    "key": "event.mode.tournament",
+    "lang": "en",
+    "value": "Tournament"
+  },
+  {
+    "_id": "i18n-message-en-event-mode-mingle",
+    "key": "event.mode.mingle",
+    "lang": "en",
+    "value": "Speed meeting"
+  },
+  {
+    "_id": "i18n-message-en-landing-hero-event-formats",
+    "key": "landing.hero.event.formats",
+    "lang": "en",
+    "value": "Standard · Tournament · Speed meeting"
+  },
+  {
+    "_id": "i18n-message-en-landing-hero-free-to-join",
+    "key": "landing.hero.free.to.join",
+    "lang": "en",
+    "value": "Free to join"
+  },
+  {
+    "_id": "i18n-message-en-event-partner-invite",
+    "key": "event.partner.invite",
+    "lang": "en",
+    "value": "Event invitation"
+  },
+  {
+    "_id": "i18n-message-en-event-partner-invite-failed",
+    "key": "event.partner.invite.failed",
+    "lang": "en",
+    "value": "The event invitation could not be opened."
+  },
+  {
+    "_id": "i18n-message-en-mingle-tables-close-aria",
+    "key": "mingle.tables.close.aria",
+    "lang": "en",
+    "value": "Close Speed meeting tables"
   },
   {
     "_id": "i18n-message-hu-unavailable-here",
@@ -28386,6 +29022,96 @@
     "value": "Itt jelennek meg a friss cikkek."
   },
   {
+    "_id": "i18n-message-hu-landing-about-open-aria",
+    "key": "landing.about.open.aria",
+    "lang": "hu",
+    "value": "MyScoutee bemutatkozás megnyitása"
+  },
+  {
+    "_id": "i18n-message-hu-landing-about-header-badge",
+    "key": "landing.about.header.badge",
+    "lang": "hu",
+    "value": "Független projekt"
+  },
+  {
+    "_id": "i18n-message-hu-landing-about-title",
+    "key": "landing.about.title",
+    "lang": "hu",
+    "value": "A MyScoutee-ról"
+  },
+  {
+    "_id": "i18n-message-hu-landing-about-subtitle",
+    "key": "landing.about.subtitle",
+    "lang": "hu",
+    "value": "Ki készítette, mit csinál, és miért ingyenes a csatlakozás."
+  },
+  {
+    "_id": "i18n-message-hu-landing-about-aria",
+    "key": "landing.about.aria",
+    "lang": "hu",
+    "value": "A MyScoutee bemutatása"
+  },
+  {
+    "_id": "i18n-message-hu-landing-about-close-aria",
+    "key": "landing.about.close.aria",
+    "lang": "hu",
+    "value": "MyScoutee bemutatkozás bezárása"
+  },
+  {
+    "_id": "i18n-message-hu-landing-about-founder-label",
+    "key": "landing.about.founder.label",
+    "lang": "hu",
+    "value": "Ki vagyok"
+  },
+  {
+    "_id": "i18n-message-hu-landing-about-founder-title",
+    "key": "landing.about.founder.title",
+    "lang": "hu",
+    "value": "Független alapító és szoftverfejlesztő"
+  },
+  {
+    "_id": "i18n-message-hu-landing-about-founder-description",
+    "key": "landing.about.founder.description",
+    "lang": "hu",
+    "value": "A MyScoutee-t több évnyi önálló utazásszervezés és egy emberibb, az online bemutatkozástól a valós találkozásig vezető út keresése után építettem fel."
+  },
+  {
+    "_id": "i18n-message-hu-landing-about-product-label",
+    "key": "landing.about.product.label",
+    "lang": "hu",
+    "value": "Mi ez"
+  },
+  {
+    "_id": "i18n-message-hu-landing-about-product-title",
+    "key": "landing.about.product.title",
+    "lang": "hu",
+    "value": "A találkozások mögötti platform, nem swipe-alkalmazás"
+  },
+  {
+    "_id": "i18n-message-hu-landing-about-product-description",
+    "key": "landing.about.product.description",
+    "lang": "hu",
+    "value": "A privát, szerkeszthető prioritások kiegyensúlyozott csoportjavaslatokat segítenek létrehozni. Mindenki maga dönt a csatlakozásról, majd csevegésben folytathatják és valódi eseményeken találkozhatnak."
+  },
+  {
+    "_id": "i18n-message-hu-landing-about-free-label",
+    "key": "landing.about.free.label",
+    "lang": "hu",
+    "value": "Miért ingyenes"
+  },
+  {
+    "_id": "i18n-message-hu-landing-about-free-title",
+    "key": "landing.about.free.title",
+    "lang": "hu",
+    "value": "A csatlakozás ingyenes"
+  },
+  {
+    "_id": "i18n-message-hu-landing-about-free-description",
+    "key": "landing.about.free.description",
+    "lang": "hu",
+    "value": "A regisztráció, valamint az alapvető párosítási és közösségi funkciók használata ingyenes. A tervezett modell külön kezeli az opcionális eseményeket, jegyeket, helyszíneket, utazást és partneri szolgáltatásokat; ezeknek továbbra is lehet saját áruk."
+  },
+  {
     "_id": "i18n-message-hu-landing-partners-open-aria",
     "key": "landing.partners.open.aria",
     "lang": "hu",
@@ -29163,25 +29889,25 @@
     "_id": "i18n-message-hu-public-1krc8z",
     "key": "public.1krc8z",
     "lang": "hu",
-    "value": "nyilvános"
+    "value": "Nyilvános"
   },
   {
     "_id": "i18n-message-hu-friends-only-10o064",
     "key": "friends.only.10o064",
     "lang": "hu",
-    "value": "csak barátok"
+    "value": "Csak barátok"
   },
   {
     "_id": "i18n-message-hu-host-only-nfiqdr",
     "key": "host.only.nfiqdr",
     "lang": "hu",
-    "value": "csak szervezők"
+    "value": "Csak szervezők"
   },
   {
     "_id": "i18n-message-hu-inactive-1ubdbo",
     "key": "inactive.1ubdbo",
     "lang": "hu",
-    "value": "inaktív"
+    "value": "Inaktív"
   },
   {
     "_id": "i18n-message-hu-gender",
@@ -34902,6 +35628,222 @@
     "value": "Nem sikerült törölni az alesemény-definíciót."
   },
   {
+    "_id": "i18n-message-hu-event-editor-mingle-title",
+    "key": "event.editor.mingle.title",
+    "lang": "hu",
+    "value": "Villámtalálkozók beállításai"
+  },
+  {
+    "_id": "i18n-message-hu-event-editor-mingle-aria",
+    "key": "event.editor.mingle.aria",
+    "lang": "hu",
+    "value": "Villámtalálkozók beállításainak szerkesztése"
+  },
+  {
+    "_id": "i18n-message-hu-event-editor-mingle-open-aria",
+    "key": "event.editor.mingle.open.aria",
+    "lang": "hu",
+    "value": "Villámtalálkozók beállításainak megnyitása"
+  },
+  {
+    "_id": "i18n-message-hu-event-editor-mingle-close-aria",
+    "key": "event.editor.mingle.close.aria",
+    "lang": "hu",
+    "value": "Villámtalálkozók beállításainak bezárása"
+  },
+  {
+    "_id": "i18n-message-hu-event-editor-mingle-save-aria",
+    "key": "event.editor.mingle.save.aria",
+    "lang": "hu",
+    "value": "Villámtalálkozók beállításainak mentése"
+  },
+  {
+    "_id": "i18n-message-hu-event-editor-mingle-panel-description",
+    "key": "event.editor.mingle.panel.description",
+    "lang": "hu",
+    "value": "Az élő asztalkiosztás menetének beállítása."
+  },
+  {
+    "_id": "i18n-message-hu-event-editor-mingle-description",
+    "key": "event.editor.mingle.description",
+    "lang": "hu",
+    "value": "Az élő asztalkiosztás alapértékei. A szervező az esemény közben módosíthatja a menetet."
+  },
+  {
+    "_id": "i18n-message-hu-event-editor-mingle-group-size",
+    "key": "event.editor.mingle.group.size",
+    "lang": "hu",
+    "value": "Létszám asztalonként"
+  },
+  {
+    "_id": "i18n-message-hu-event-editor-mingle-planned-rounds",
+    "key": "event.editor.mingle.planned.rounds",
+    "lang": "hu",
+    "value": "Tervezett körök"
+  },
+  {
+    "_id": "i18n-message-hu-event-editor-mingle-round",
+    "key": "event.editor.mingle.round",
+    "lang": "hu",
+    "value": "Kör"
+  },
+  {
+    "_id": "i18n-message-hu-event-editor-mingle-round-number",
+    "key": "event.editor.mingle.round.number",
+    "lang": "hu",
+    "value": "{{number}}. kör"
+  },
+  {
+    "_id": "i18n-message-hu-event-editor-mingle-round-description",
+    "key": "event.editor.mingle.round.description",
+    "lang": "hu",
+    "value": "Asztalkiosztási kör"
+  },
+  {
+    "_id": "i18n-message-hu-event-editor-mingle-round-duration",
+    "key": "event.editor.mingle.round.duration",
+    "lang": "hu",
+    "value": "Kör időtartama"
+  },
+  {
+    "_id": "i18n-message-hu-event-editor-mingle-break-duration",
+    "key": "event.editor.mingle.break.duration",
+    "lang": "hu",
+    "value": "Asztalcsere szünete"
+  },
+  {
+    "_id": "i18n-message-hu-event-editor-mingle-table-count",
+    "key": "event.editor.mingle.table.count",
+    "lang": "hu",
+    "value": "Elérhető asztalok"
+  },
+  {
+    "_id": "i18n-message-hu-event-editor-mingle-table-count-hint",
+    "key": "event.editor.mingle.table.count.hint",
+    "lang": "hu",
+    "value": "A 0 érték az eseménytagokból számítja ki a szükséges asztalszámot."
+  },
+  {
+    "_id": "i18n-message-hu-event-editor-mingle-table-size",
+    "key": "event.editor.mingle.table.size",
+    "lang": "hu",
+    "value": "{{count}} fő asztalonként"
+  },
+  {
+    "_id": "i18n-message-hu-event-editor-mingle-require-gender-balance",
+    "key": "event.editor.mingle.require.gender.balance",
+    "lang": "hu",
+    "value": "Nemi egyensúly megkövetelése"
+  },
+  {
+    "_id": "i18n-message-hu-event-editor-mingle-require-gender-balance-hint",
+    "key": "event.editor.mingle.require.gender.balance.hint",
+    "lang": "hu",
+    "value": "Csak teljes, az ismert nemek alapján kiegyensúlyozott asztalok kapnak kiosztást."
+  },
+  {
+    "_id": "i18n-message-hu-event-editor-mingle-projection-aria",
+    "key": "event.editor.mingle.projection.aria",
+    "lang": "hu",
+    "value": "{{round}} tervezett villámtalálkozó-kör"
+  },
+  {
+    "_id": "i18n-message-hu-mingle-tables",
+    "key": "mingle.tables",
+    "lang": "hu",
+    "value": "Asztalok"
+  },
+  {
+    "_id": "i18n-message-hu-mingle-table-number",
+    "key": "mingle.table.number",
+    "lang": "hu",
+    "value": "{{number}}. asztal"
+  },
+  {
+    "_id": "i18n-message-hu-mingle-error-action-failed",
+    "key": "mingle.error.action.failed",
+    "lang": "hu",
+    "value": "A villámtalálkozók műveletét technikai hiba miatt nem sikerült végrehajtani."
+  },
+  {
+    "_id": "i18n-message-hu-mingle-error-state-changed",
+    "key": "mingle.error.state.changed",
+    "lang": "hu",
+    "value": "A kör állapota közben megváltozott. Zárd be ezt az ablakot, és válaszd ki újra a műveletet."
+  },
+  {
+    "_id": "i18n-message-hu-mingle-error-service-unavailable",
+    "key": "mingle.error.service.unavailable",
+    "lang": "hu",
+    "value": "A szerver átmenetileg nem volt elérhető. Próbáld újra elindítani a villámtalálkozókat."
+  },
+  {
+    "_id": "i18n-message-hu-mingle-error-action-unsupported",
+    "key": "mingle.error.action.unsupported",
+    "lang": "hu",
+    "value": "Ez a művelet nem támogatott a villámtalálkozóknál."
+  },
+  {
+    "_id": "i18n-message-hu-mingle-error-round-limit-reached",
+    "key": "mingle.error.round.limit.reached",
+    "lang": "hu",
+    "value": "Új kör indítása előtt növeld a villámtalálkozók tervezett körszámát."
+  },
+  {
+    "_id": "i18n-message-hu-mingle-error-state-cannot-advance",
+    "key": "mingle.error.state.cannot.advance",
+    "lang": "hu",
+    "value": "A villámtalálkozók a jelenlegi állapotból nem folytathatók."
+  },
+  {
+    "_id": "i18n-message-hu-mingle-error-members-insufficient",
+    "key": "mingle.error.members.insufficient",
+    "lang": "hu",
+    "value": "A villámtalálkozók indításához legalább {{required}} eseménytag szükséges. Jelenlegi létszám: {{accepted}}."
+  },
+  {
+    "_id": "i18n-message-hu-mingle-error-table-assignment-unavailable",
+    "key": "mingle.error.table.assignment.unavailable",
+    "lang": "hu",
+    "value": "{{accepted}} eseménytagból nem alakítható ki teljes, {{groupSize}} fős asztal."
+  },
+  {
+    "_id": "i18n-message-hu-mingle-error-table-assignment-unavailable-gender-balance",
+    "key": "mingle.error.table.assignment.unavailable.gender.balance",
+    "lang": "hu",
+    "value": "{{accepted}} eseménytagból nem alakítható ki teljes, nemileg kiegyensúlyozott, {{groupSize}} fős asztal."
+  },
+  {
+    "_id": "i18n-message-hu-mingle-error-event-not-found",
+    "key": "mingle.error.event.not.found",
+    "lang": "hu",
+    "value": "A villámtalálkozókat tartalmazó esemény nem található."
+  },
+  {
+    "_id": "i18n-message-hu-mingle-error-manage-forbidden",
+    "key": "mingle.error.manage.forbidden",
+    "lang": "hu",
+    "value": "Nincs jogosultságod ezeknek a villámtalálkozóknak a kezeléséhez."
+  },
+  {
+    "_id": "i18n-message-hu-mingle-error-session-not-started",
+    "key": "mingle.error.session.not.started",
+    "lang": "hu",
+    "value": "A villámtalálkozók még nem indultak el."
+  },
+  {
+    "_id": "i18n-message-hu-mingle-error-configuration-required",
+    "key": "mingle.error.configuration.required",
+    "lang": "hu",
+    "value": "Indítás előtt állítsd be a villámtalálkozókat."
+  },
+  {
+    "_id": "i18n-message-hu-event-editor-mingle-flexible-rounds-note",
+    "key": "event.editor.mingle.flexible.rounds.note",
+    "lang": "hu",
+    "value": "Az esemény közben a tervezett körszám növelésével tehetsz elérhetővé további köröket."
+  },
+  {
     "_id": "i18n-message-hu-frequency",
     "key": "frequency",
     "lang": "hu",
@@ -40278,6 +41220,30 @@
     "value": "API-integráció beállításai"
   },
   {
+    "_id": "i18n-message-hu-integration-help-aria",
+    "key": "integration.help.aria",
+    "lang": "hu",
+    "value": "API-dokumentációs súgó megnyitása"
+  },
+  {
+    "_id": "i18n-message-hu-integration-help-title",
+    "key": "integration.help.title",
+    "lang": "hu",
+    "value": "API-dokumentáció"
+  },
+  {
+    "_id": "i18n-message-hu-integration-help-description",
+    "key": "integration.help.description",
+    "lang": "hu",
+    "value": "A nyilvános GitHub README dokumentációs táblája tartalmazza az aktuális Integrációs API útmutatót."
+  },
+  {
+    "_id": "i18n-message-hu-integration-help-open-documentation",
+    "key": "integration.help.open.documentation",
+    "lang": "hu",
+    "value": "Dokumentáció megnyitása a GitHubon"
+  },
+  {
     "_id": "i18n-message-hu-integration-loading",
     "key": "integration.loading",
     "lang": "hu",
@@ -41890,5 +42856,311 @@
     "key": "location.change.warning",
     "lang": "hu",
     "value": "A jelenlegi helyzeted jelentősen eltér a mentett helyedtől. A Frissítés gombbal erre az új helyre válthatsz."
+  },
+  {
+    "_id": "i18n-message-hu-event-external-link",
+    "key": "event.external.link",
+    "lang": "hu",
+    "value": "Külső eseményoldal"
+  },
+  {
+    "_id": "i18n-message-hu-mingle-action-tables",
+    "key": "mingle.action.tables",
+    "lang": "hu",
+    "value": "Asztalok"
+  },
+  {
+    "_id": "i18n-message-hu-mingle-action-start",
+    "key": "mingle.action.start",
+    "lang": "hu",
+    "value": "Villámtalálkozók indítása"
+  },
+  {
+    "_id": "i18n-message-hu-mingle-action-start-description",
+    "key": "mingle.action.start.description",
+    "lang": "hu",
+    "value": "Elkészíted és elindítod az első asztalkiosztást?"
+  },
+  {
+    "_id": "i18n-message-hu-mingle-action-start-confirm",
+    "key": "mingle.action.start.confirm",
+    "lang": "hu",
+    "value": "Indítás"
+  },
+  {
+    "_id": "i18n-message-hu-mingle-action-starting",
+    "key": "mingle.action.starting",
+    "lang": "hu",
+    "value": "Indítás..."
+  },
+  {
+    "_id": "i18n-message-hu-mingle-action-pause",
+    "key": "mingle.action.pause",
+    "lang": "hu",
+    "value": "Időzítő szüneteltetése"
+  },
+  {
+    "_id": "i18n-message-hu-mingle-action-pause-title",
+    "key": "mingle.action.pause.title",
+    "lang": "hu",
+    "value": "Villámtalálkozók szüneteltetése"
+  },
+  {
+    "_id": "i18n-message-hu-mingle-action-pause-description",
+    "key": "mingle.action.pause.description",
+    "lang": "hu",
+    "value": "Szünetelteted az aktuális kör időzítőjét?"
+  },
+  {
+    "_id": "i18n-message-hu-mingle-action-pause-confirm",
+    "key": "mingle.action.pause.confirm",
+    "lang": "hu",
+    "value": "Szüneteltetés"
+  },
+  {
+    "_id": "i18n-message-hu-mingle-action-pausing",
+    "key": "mingle.action.pausing",
+    "lang": "hu",
+    "value": "Szüneteltetés..."
+  },
+  {
+    "_id": "i18n-message-hu-mingle-action-end",
+    "key": "mingle.action.end",
+    "lang": "hu",
+    "value": "Kör lezárása"
+  },
+  {
+    "_id": "i18n-message-hu-mingle-action-end-description",
+    "key": "mingle.action.end.description",
+    "lang": "hu",
+    "value": "Lezárod ezt a kört és elindítod az asztalváltási szünetet?"
+  },
+  {
+    "_id": "i18n-message-hu-mingle-action-ending",
+    "key": "mingle.action.ending",
+    "lang": "hu",
+    "value": "Lezárás..."
+  },
+  {
+    "_id": "i18n-message-hu-mingle-action-complete",
+    "key": "mingle.action.complete",
+    "lang": "hu",
+    "value": "Villámtalálkozók befejezése"
+  },
+  {
+    "_id": "i18n-message-hu-mingle-action-complete-description",
+    "key": "mingle.action.complete.description",
+    "lang": "hu",
+    "value": "Befejezed az élő villámtalálkozókat?"
+  },
+  {
+    "_id": "i18n-message-hu-mingle-action-complete-confirm",
+    "key": "mingle.action.complete.confirm",
+    "lang": "hu",
+    "value": "Befejezés"
+  },
+  {
+    "_id": "i18n-message-hu-mingle-action-completing",
+    "key": "mingle.action.completing",
+    "lang": "hu",
+    "value": "Befejezés..."
+  },
+  {
+    "_id": "i18n-message-hu-mingle-action-resume",
+    "key": "mingle.action.resume",
+    "lang": "hu",
+    "value": "Időzítő folytatása"
+  },
+  {
+    "_id": "i18n-message-hu-mingle-action-resume-title",
+    "key": "mingle.action.resume.title",
+    "lang": "hu",
+    "value": "Villámtalálkozók folytatása"
+  },
+  {
+    "_id": "i18n-message-hu-mingle-action-resume-description",
+    "key": "mingle.action.resume.description",
+    "lang": "hu",
+    "value": "Folytatod a villámtalálkozók szüneteltetett időzítőjét?"
+  },
+  {
+    "_id": "i18n-message-hu-mingle-action-resume-confirm",
+    "key": "mingle.action.resume.confirm",
+    "lang": "hu",
+    "value": "Folytatás"
+  },
+  {
+    "_id": "i18n-message-hu-mingle-action-resuming",
+    "key": "mingle.action.resuming",
+    "lang": "hu",
+    "value": "Folytatás..."
+  },
+  {
+    "_id": "i18n-message-hu-mingle-action-next-now",
+    "key": "mingle.action.next.now",
+    "lang": "hu",
+    "value": "Kör indítása most"
+  },
+  {
+    "_id": "i18n-message-hu-mingle-action-next",
+    "key": "mingle.action.next",
+    "lang": "hu",
+    "value": "Következő kör indítása"
+  },
+  {
+    "_id": "i18n-message-hu-mingle-action-next-description",
+    "key": "mingle.action.next.description",
+    "lang": "hu",
+    "value": "Befejezed a szünetet és elkészíted a következő kiosztást?"
+  },
+  {
+    "_id": "i18n-message-hu-mingle-action-next-confirm",
+    "key": "mingle.action.next.confirm",
+    "lang": "hu",
+    "value": "Kör indítása"
+  },
+  {
+    "_id": "i18n-message-hu-mingle-action-next-restart-description",
+    "key": "mingle.action.next.restart.description",
+    "lang": "hu",
+    "value": "Elkészíted és elindítod a következő asztalkiosztást?"
+  },
+  {
+    "_id": "i18n-message-hu-mingle-live-round",
+    "key": "mingle.live.round",
+    "lang": "hu",
+    "value": "{round}. kör / {total}"
+  },
+  {
+    "_id": "i18n-message-hu-mingle-live-round-17i0hzb",
+    "key": "mingle.live.ROUND",
+    "lang": "hu",
+    "value": "Kör vége: {time}"
+  },
+  {
+    "_id": "i18n-message-hu-mingle-live-break",
+    "key": "mingle.live.BREAK",
+    "lang": "hu",
+    "value": "Következő kör: {time}"
+  },
+  {
+    "_id": "i18n-message-hu-mingle-live-paused",
+    "key": "mingle.live.PAUSED",
+    "lang": "hu",
+    "value": "Szüneteltetve · hátralévő idő: {time}"
+  },
+  {
+    "_id": "i18n-message-hu-mingle-live-completed",
+    "key": "mingle.live.COMPLETED",
+    "lang": "hu",
+    "value": "A villámtalálkozók befejeződtek"
+  },
+  {
+    "_id": "i18n-message-hu-mingle-live-waiting",
+    "key": "mingle.live.waiting",
+    "lang": "hu",
+    "value": "Várakozás az asztalkiosztásra"
+  },
+  {
+    "_id": "i18n-message-hu-notification-kind-mingle-table-assignment-title",
+    "key": "notification.kind.mingle-table-assignment.title",
+    "lang": "hu",
+    "value": "Elkészült az asztalkiosztásod"
+  },
+  {
+    "_id": "i18n-message-hu-notification-kind-mingle-table-assignment-message",
+    "key": "notification.kind.mingle-table-assignment.message",
+    "lang": "hu",
+    "value": "A(z) {roundNumber}. körben a(z) {tableNumber}. asztalhoz kerültél."
+  },
+  {
+    "_id": "i18n-message-hu-notification-kind-mingle-table-waiting-title",
+    "key": "notification.kind.mingle-table-waiting.title",
+    "lang": "hu",
+    "value": "Elindult a villámtalálkozók következő köre"
+  },
+  {
+    "_id": "i18n-message-hu-notification-kind-mingle-table-waiting-message",
+    "key": "notification.kind.mingle-table-waiting.message",
+    "lang": "hu",
+    "value": "Várakozás az asztalkiosztásra."
+  },
+  {
+    "_id": "i18n-message-hu-event-explore-filters",
+    "key": "event.explore.filters",
+    "lang": "hu",
+    "value": "Eseményszűrők"
+  },
+  {
+    "_id": "i18n-message-hu-event-filters-apply",
+    "key": "event.filters.apply",
+    "lang": "hu",
+    "value": "Szűrők mentése"
+  },
+  {
+    "_id": "i18n-message-hu-event-filters-save-failed",
+    "key": "event.filters.save.failed",
+    "lang": "hu",
+    "value": "Nem sikerült menteni a szűrőket. Próbáld újra."
+  },
+  {
+    "_id": "i18n-message-hu-event-filters-load-failed",
+    "key": "event.filters.load.failed",
+    "lang": "hu",
+    "value": "Nem sikerült betölteni a szűrőidet. Nyisd meg újra a Felfedezést."
+  },
+  {
+    "_id": "i18n-message-hu-event-mode",
+    "key": "event.mode",
+    "lang": "hu",
+    "value": "Esemény típusa"
+  },
+  {
+    "_id": "i18n-message-hu-event-mode-standard",
+    "key": "event.mode.standard",
+    "lang": "hu",
+    "value": "Standard"
+  },
+  {
+    "_id": "i18n-message-hu-event-mode-tournament",
+    "key": "event.mode.tournament",
+    "lang": "hu",
+    "value": "Verseny"
+  },
+  {
+    "_id": "i18n-message-hu-event-mode-mingle",
+    "key": "event.mode.mingle",
+    "lang": "hu",
+    "value": "Villámtalálkozók"
+  },
+  {
+    "_id": "i18n-message-hu-landing-hero-event-formats",
+    "key": "landing.hero.event.formats",
+    "lang": "hu",
+    "value": "Standard · Verseny · Villámtalálkozók"
+  },
+  {
+    "_id": "i18n-message-hu-landing-hero-free-to-join",
+    "key": "landing.hero.free.to.join",
+    "lang": "hu",
+    "value": "Ingyenes csatlakozás"
+  },
+  {
+    "_id": "i18n-message-hu-event-partner-invite",
+    "key": "event.partner.invite",
+    "lang": "hu",
+    "value": "Eseménymeghívó"
+  },
+  {
+    "_id": "i18n-message-hu-event-partner-invite-failed",
+    "key": "event.partner.invite.failed",
+    "lang": "hu",
+    "value": "Az eseménymeghívót nem sikerült megnyitni."
+  },
+  {
+    "_id": "i18n-message-hu-mingle-tables-close-aria",
+    "key": "mingle.tables.close.aria",
+    "lang": "hu",
+    "value": "Villámtalálkozók asztalainak bezárása"
   }
 ]

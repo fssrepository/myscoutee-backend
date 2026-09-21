@@ -5281,7 +5281,10 @@ public class AssetsService {
     }
 
     private String normalizeMode(String value) {
-        return "tournament".equalsIgnoreCase(safeText(value)) ? "Tournament" : "Casual";
+        if ("tournament".equalsIgnoreCase(safeText(value))) {
+            return "Tournament";
+        }
+        return "mingle".equalsIgnoreCase(safeText(value)) ? "Mingle" : "Casual";
     }
 
     private String normalizeGender(String value) {

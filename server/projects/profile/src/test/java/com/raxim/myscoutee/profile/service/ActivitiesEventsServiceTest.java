@@ -36,6 +36,7 @@ import org.springframework.data.mongodb.core.query.Query;
 import com.raxim.myscoutee.profile.data.document.ActivityEvent;
 import com.raxim.myscoutee.profile.data.document.ActivityMainEventRuntime;
 import com.raxim.myscoutee.profile.data.document.ActivityMember;
+import com.raxim.myscoutee.profile.data.document.ActivityMingleSession;
 import com.raxim.myscoutee.profile.data.document.ActivitySubEventResource;
 import com.raxim.myscoutee.profile.data.document.ActivitySubEventResource.SubEventResourceMetricRecord;
 import com.raxim.myscoutee.profile.data.document.EventWatchSubscription;
@@ -58,9 +59,11 @@ import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventsExploreQuery
 import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventDto;
 import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventsFilterRequestDto;
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.EventSlotOccurrenceDto;
+import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.MingleConfigurationDto;
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.SubEventDefinitionDto;
 import com.raxim.myscoutee.profile.repository.ActivityMembersRepository;
 import com.raxim.myscoutee.profile.repository.ActivityEventsRepository;
+import com.raxim.myscoutee.profile.repository.ActivityMingleSessionsRepository;
 import com.raxim.myscoutee.profile.repository.ActivitySubEventGroupsRepository;
 import com.raxim.myscoutee.profile.repository.ActivitySubEventResourcesRepository;
 import com.raxim.myscoutee.profile.repository.ActivitySubEventStageRuntimeRepository;
@@ -89,7 +92,11 @@ class ActivitiesEventsServiceTest {
     @Mock
     private ActivityMembersRepository activityMembersRepository;
     @Mock
+    private ActivityMingleSessionsRepository activityMingleSessionsRepository;
+    @Mock
     private UsersRepository usersRepository;
+    @Mock
+    private FriendshipFacts friendshipFacts;
     @Mock
     private UserAffinityEdgesRepository userAffinityEdgesRepository;
     @Mock
@@ -153,8 +160,9 @@ class ActivitiesEventsServiceTest {
                 activitySubEventResourcesRepository,
                 activitySubEventStageRuntimeRepository,
                 activityMembersRepository,
+                activityMingleSessionsRepository,
                 usersRepository,
-                org.mockito.Mockito.mock(FriendshipFacts.class),
+                friendshipFacts,
                 userAffinityEdgesRepository,
                 homeUserProfileService,
                 activitiesMembersService,
@@ -220,12 +228,35 @@ class ActivitiesEventsServiceTest {
                 null,
                 10,
                 null,
-                List.of()));
+                List.of(),
+                null));
 
         assertThat(page.records()).extracting(record -> record.id())
                 .containsExactly("known-event", "cold-event");
         verify(activityEventsRepository, never()).findAll();
         verify(userAffinityEdgesRepository).findRelevantByUserIds(anyList());
+    }
+
+    @Test
+    void exploreModeFilterRunsBeforeTotalAndPaginationAndRecognizesStandardEvents() {
+        Users viewer = new Users();
+        viewer.setId("viewer");
+        ActivityEvent standard = event("standard", "host", 0d);
+        ActivityEvent mingle = event("mingle", "host", 0d);
+        mingle.setMode("Mingle");
+        ActivityEvent tournament = event("tournament", "host", 0d);
+        tournament.setMode("Tournament");
+        when(homeUserProfileService.resolveCurrentUser("viewer")).thenReturn(viewer);
+        when(mongoTemplate.find(any(Query.class), eq(ActivityEvent.class))).thenReturn(List.of(standard, mingle, tournament));
+        when(activitiesMembersService.findTrackedEventMembershipStatusesForUser("viewer", false)).thenReturn(Map.of());
+        for (String mode : List.of("Casual", "Tournament", "Mingle")) {
+            EventsExplorePageDto page = service.queryEventExplorePage(new EventsExploreQueryDto(
+                    "viewer", "upcoming", "day", false, false, null, 1, null, List.of(), mode));
+            assertThat(page.total()).isEqualTo(1);
+            assertThat(page.records()).extracting(item -> item.id())
+                    .containsExactly(mode.equals("Casual") ? "standard" : mode.toLowerCase());
+            assertThat(page.nextCursor()).isNull();
+        }
     }
 
     @Test
@@ -391,6 +422,7 @@ class ActivitiesEventsServiceTest {
                         "event-1",
                         List.of(),
                         List.of("host"),
+                        List.of("host"),
                         List.of("pending-invitee"),
                         List.of("pending-invitee"),
                         List.of(),
@@ -461,6 +493,9 @@ class ActivitiesEventsServiceTest {
 
     @Test
     void republishNotifiesOtherParticipantsAsModifiedWithoutDuplicatingTheInviteOrChatDelta() {
+        Users host = new Users();
+        host.setId("host");
+        host.setName("Host User");
         ActivityEvent event = event("event-1", "host", 0d);
         event.setStatus(ActivityEvent.STATUS_DRAFT);
         AtomicReference<ActivityEvent> currentEvent = new AtomicReference<>(event);
@@ -470,12 +505,14 @@ class ActivitiesEventsServiceTest {
                         "event-1",
                         List.of(),
                         List.of("host"),
+                        List.of("host"),
                         List.of("pending-invitee"),
                         List.of("pending-invitee"),
                         List.of(),
                         Set.of("host"),
                         8);
 
+        when(homeUserProfileService.resolveCurrentUser("host")).thenReturn(host);
         when(activityEventsRepository.findBySourceIdIn(List.of("event-1")))
                 .thenAnswer(invocation -> List.of(currentEvent.get()));
         when(activityEventsRepository.findBySourceId("event-1"))
@@ -520,6 +557,9 @@ class ActivitiesEventsServiceTest {
 
     @Test
     void republishWithRecreatedActorChatStillNotifiesAcceptedParticipantsAsAvailableAgain() {
+        Users host = new Users();
+        host.setId("host");
+        host.setName("Host User");
         ActivityEvent event = event("event-1", "host", 0d);
         event.setStatus(ActivityEvent.STATUS_DRAFT);
         AtomicReference<ActivityEvent> currentEvent = new AtomicReference<>(event);
@@ -529,12 +569,14 @@ class ActivitiesEventsServiceTest {
                         "event-1",
                         List.of(),
                         List.of("host", "accepted-member"),
+                        List.of("host", "accepted-member"),
                         List.of(),
                         List.of(),
                         List.of(),
                         Set.of("host"),
                         8);
 
+        when(homeUserProfileService.resolveCurrentUser("host")).thenReturn(host);
         when(activityEventsRepository.findBySourceIdIn(List.of("event-1")))
                 .thenAnswer(invocation -> List.of(currentEvent.get()));
         when(activityEventsRepository.findBySourceId("event-1"))
@@ -577,6 +619,9 @@ class ActivitiesEventsServiceTest {
 
     @Test
     void republishNotifiesOnlyOutsideWatchersWhenTheEventIsPublicAgain() {
+        Users host = new Users();
+        host.setId("host");
+        host.setName("Host User");
         ActivityEvent event = event("event-1", "host", 0d);
         event.setStatus(ActivityEvent.STATUS_DRAFT);
         AtomicReference<ActivityEvent> currentEvent = new AtomicReference<>(event);
@@ -585,6 +630,7 @@ class ActivitiesEventsServiceTest {
                         "event",
                         "event-1",
                         List.of(),
+                        List.of("host", "accepted-member"),
                         List.of("host", "accepted-member"),
                         List.of(),
                         List.of(),
@@ -598,6 +644,7 @@ class ActivitiesEventsServiceTest {
         staleMemberWatcher.setEventId("event-1");
         staleMemberWatcher.setUserId("accepted-member");
 
+        when(homeUserProfileService.resolveCurrentUser("host")).thenReturn(host);
         when(activityEventsRepository.findBySourceIdIn(List.of("event-1")))
                 .thenAnswer(invocation -> List.of(currentEvent.get()));
         when(activityEventsRepository.findBySourceId("event-1"))
@@ -682,6 +729,9 @@ class ActivitiesEventsServiceTest {
 
     @Test
     void unpublishExcludesTheActorFromLifecycleNotificationAudience() {
+        Users host = new Users();
+        host.setId("host");
+        host.setName("Host User");
         ActivityEvent event = event("event-1", "host", 0d);
         AtomicReference<ActivityEvent> currentEvent = new AtomicReference<>(event);
         ActivitiesMembersService.OwnerMembersSnapshot membersSnapshot =
@@ -690,12 +740,14 @@ class ActivitiesEventsServiceTest {
                         "event-1",
                         List.of(),
                         List.of("host", "accepted-member"),
+                        List.of("host", "accepted-member"),
                         List.of("pending-invitee"),
                         List.of("pending-invitee"),
                         List.of(),
                         Set.of("host"),
                         8);
 
+        when(homeUserProfileService.resolveCurrentUser("host")).thenReturn(host);
         when(activityEventsRepository.findBySourceIdIn(List.of("event-1")))
                 .thenAnswer(invocation -> List.of(currentEvent.get()));
         when(activityEventsRepository.findBySourceId("event-1"))
@@ -777,6 +829,7 @@ class ActivitiesEventsServiceTest {
                         "event-1",
                         List.of(),
                         List.of("host"),
+                        List.of("host"),
                         List.of(),
                         List.of(),
                         List.of(),
@@ -831,6 +884,7 @@ class ActivitiesEventsServiceTest {
                         "event",
                         "event-1",
                         List.of(),
+                        List.of("host"),
                         List.of("host"),
                         List.of(),
                         List.of(),
@@ -988,6 +1042,7 @@ class ActivitiesEventsServiceTest {
                         List.of(),
                         List.of(),
                         List.of(),
+                        List.of(),
                         Set.of(),
                         10);
         ActivitiesMembersService.OwnerMembersSnapshot after =
@@ -995,6 +1050,7 @@ class ActivitiesEventsServiceTest {
                         "event",
                         "event-1",
                         List.of(),
+                        List.of("viewer"),
                         List.of("viewer"),
                         List.of(),
                         List.of(),
@@ -1058,22 +1114,22 @@ class ActivitiesEventsServiceTest {
         trashedSlot.setStatus(ActivityEvent.STATUS_TRASHED);
         ActivitiesMembersService.OwnerMembersSnapshot before =
                 new ActivitiesMembersService.OwnerMembersSnapshot(
-                        "event", "event-1", List.of(), List.of("host"), List.of(), List.of(), List.of(), Set.of("host"), 10);
+                        "event", "event-1", List.of(), List.of("host"), List.of("host"), List.of(), List.of(), List.of(), Set.of("host"), 10);
         ActivitiesMembersService.OwnerMembersSnapshot rootAfter =
                 new ActivitiesMembersService.OwnerMembersSnapshot(
-                        "event", "event-1", List.of(), List.of("host", "viewer"), List.of(), List.of(), List.of(), Set.of("host"), 10, true);
+                        "event", "event-1", List.of(), List.of("host", "viewer"), List.of("host", "viewer"), List.of(), List.of(), List.of(), Set.of("host"), 10, true);
         ActivitiesMembersService.OwnerMembersSnapshot slotAfter =
                 new ActivitiesMembersService.OwnerMembersSnapshot(
-                        "event", "slot-1", List.of(), List.of("host", "viewer"), List.of(), List.of(), List.of(), Set.of("host"), 10, true);
+                        "event", "slot-1", List.of(), List.of("host", "viewer"), List.of("host", "viewer"), List.of(), List.of(), List.of(), Set.of("host"), 10, true);
 
         when(homeUserProfileService.resolveCurrentUser("viewer")).thenReturn(viewer);
         when(activityEventsRepository.findBySourceIdIn(List.of("event-1"))).thenReturn(List.of(root));
         when(activityEventsRepository.findBySourceIdIn(List.of("slot-1")))
                 .thenReturn(List.of(trashedSlot, activeSlot));
         when(activitiesMembersService.queryOwnerSnapshot("event", "event-1")).thenReturn(before);
-        when(activitiesMembersService.requestJoin("event-1", viewer, root, true, false, false))
+        when(activitiesMembersService.requestJoin(eq("event-1"), eq(viewer), any(ActivityEvent.class), eq(true), eq(false), eq(false)))
                 .thenReturn(rootAfter);
-        when(activitiesMembersService.requestJoin("slot-1", viewer, activeSlot, true, false, false))
+        when(activitiesMembersService.requestJoin(eq("slot-1"), eq(viewer), any(ActivityEvent.class), eq(true), eq(false), eq(false)))
                 .thenReturn(slotAfter);
 
         EventParticipationActionResultDto result = service.requestJoin(new EventActionRequestDto(
@@ -1089,8 +1145,11 @@ class ActivitiesEventsServiceTest {
 
         assertThat(result).isNotNull();
         assertThat(result.membershipStatus()).isEqualTo("accepted");
-        verify(activitiesMembersService).requestJoin("slot-1", viewer, activeSlot, true, false, false);
-        verify(activitiesMembersService, never()).requestJoin("slot-1", viewer, trashedSlot, true, false, false);
+        ArgumentCaptor<ActivityEvent> joinedSlot = ArgumentCaptor.forClass(ActivityEvent.class);
+        verify(activitiesMembersService).requestJoin(
+                eq("slot-1"), eq(viewer), joinedSlot.capture(), eq(true), eq(false), eq(false));
+        assertThat(joinedSlot.getValue().getId()).isEqualTo("slot-active-document");
+        assertThat(joinedSlot.getValue().getStatus()).isEqualTo(ActivityEvent.STATUS_ACTIVE);
     }
 
     @Test
@@ -1104,6 +1163,7 @@ class ActivitiesEventsServiceTest {
                         "event",
                         "event-1",
                         List.of(),
+                        List.of("host", "viewer"),
                         List.of("host", "viewer"),
                         List.of(),
                         List.of(),
@@ -1154,6 +1214,7 @@ class ActivitiesEventsServiceTest {
                         "event-1",
                         List.of(),
                         List.of("host"),
+                        List.of("host"),
                         List.of("viewer"),
                         List.of("viewer"),
                         List.of(),
@@ -1164,6 +1225,7 @@ class ActivitiesEventsServiceTest {
                         "event",
                         "event-1",
                         List.of(),
+                        List.of("host"),
                         List.of("host"),
                         List.of("viewer"),
                         List.of(),
@@ -1179,12 +1241,12 @@ class ActivitiesEventsServiceTest {
         when(activitiesMembersService.pendingInvitationRequiresAdminApproval("event-1", "viewer"))
                 .thenReturn(true);
         when(activitiesMembersService.requestJoin(
-                "event-1",
-                viewer,
-                event,
-                false,
-                false,
-                true)).thenReturn(after);
+                eq("event-1"),
+                eq(viewer),
+                any(ActivityEvent.class),
+                eq(false),
+                eq(false),
+                eq(true))).thenReturn(after);
 
         EventParticipationActionResultDto result = service.requestJoin(new EventActionRequestDto(
                 "viewer",
@@ -1652,7 +1714,7 @@ class ActivitiesEventsServiceTest {
     }
 
     @Test
-    void visibilityOnlyDraftSaveDoesNotNotifyForEquivalentLegacyDefaults() {
+    void draftSaveNormalizesLegacySubEventFlagAndReportsTheDefinitionChange() {
         Users host = new Users();
         host.setId("host");
         host.setName("Host User");
@@ -1680,7 +1742,10 @@ class ActivitiesEventsServiceTest {
                 "host",
                 false,
                 false,
-                "Friends only"));
+                "Friends only",
+                1,
+                false,
+                true));
 
         assertThat(result).isNotNull();
         @SuppressWarnings("unchecked")
@@ -1690,18 +1755,18 @@ class ActivitiesEventsServiceTest {
             assertThat(saved.getVisibility()).isEqualTo("Friends only");
             assertThat(saved.getFrequency()).isEqualTo("One-time");
             assertThat(saved.getSlotsEnabled()).isFalse();
-            assertThat(saved.getSubEventsEnabled()).isTrue();
+            assertThat(saved.getSubEventsEnabled()).isFalse();
         });
-        verify(scheduledMessageTaskService, never()).scheduleEventDefinitionChanged(
-                anyString(),
-                anyString(),
-                anyCollection(),
-                anyCollection(),
-                anyString());
+        verify(scheduledMessageTaskService).scheduleEventDefinitionChanged(
+                "draft-1",
+                "Draft Event",
+                Set.of(),
+                List.of("sub-events"),
+                "host");
     }
 
     @Test
-    void publishedPublicDetailsChangeNotifiesParticipantsAndOutsideWatchers() {
+    void publishedCapacityChangeNotifiesParticipantsButNotOutsideWatchers() {
         Users host = new Users();
         host.setId("host");
         host.setName("Host User");
@@ -1716,26 +1781,17 @@ class ActivitiesEventsServiceTest {
                         "event-1",
                         List.of(),
                         List.of("host", "member-1"),
+                        List.of("host", "member-1"),
                         List.of(),
                         List.of(),
                         List.of(),
                         Set.of("host"),
                         8);
-        EventWatchSubscription outsideWatcher = new EventWatchSubscription();
-        outsideWatcher.setEventId("event-1");
-        outsideWatcher.setUserId("outside-watcher");
-        EventWatchSubscription staleMemberWatcher = new EventWatchSubscription();
-        staleMemberWatcher.setEventId("event-1");
-        staleMemberWatcher.setUserId("member-1");
-
         when(homeUserProfileService.resolveCurrentUser("host")).thenReturn(host);
         when(activitiesMembersService.queryOwnerSnapshot("event", "event-1")).thenReturn(members);
         when(activityEventsRepository.findByOwnerUserIdAndSourceId("host", "event-1"))
                 .thenReturn(Optional.of(existing));
         when(activityEventsRepository.saveAll(anyList())).thenAnswer(invocation -> invocation.getArgument(0));
-        when(eventWatchSubscriptionsRepository.findByEventId("event-1"))
-                .thenReturn(List.of(outsideWatcher, staleMemberWatcher));
-
         EventDto result = service.sync(eventPayload(
                 "sync-event-1",
                 "event-1",
@@ -1760,21 +1816,14 @@ class ActivitiesEventsServiceTest {
         ArgumentCaptor<Collection<String>> reasonsCaptor = ArgumentCaptor.forClass(Collection.class);
         verify(scheduledMessageTaskService).scheduleEventDefinitionChanged(
                 eq("event-1"),
-                eq("Draft Event"),
+                eq("Old Event"),
                 audienceCaptor.capture(),
                 reasonsCaptor.capture(),
                 eq("host"));
         assertThat(audienceCaptor.getValue()).containsExactly("member-1");
         assertThat(reasonsCaptor.getValue()).containsExactly("details");
-        @SuppressWarnings("unchecked")
-        ArgumentCaptor<Collection<String>> watcherAudienceCaptor = ArgumentCaptor.forClass(Collection.class);
-        verify(scheduledMessageTaskService).scheduleEventWatchlistDefinitionChanged(
-                eq("event-1"),
-                eq("Draft Event"),
-                watcherAudienceCaptor.capture(),
-                eq(List.of("details")),
-                eq("host"));
-        assertThat(watcherAudienceCaptor.getValue()).containsExactly("outside-watcher");
+        verify(scheduledMessageTaskService, never()).scheduleEventWatchlistDefinitionChanged(
+                anyString(), anyString(), anyCollection(), anyCollection(), anyString());
         verify(eventParticipationTicketService, never()).syncParticipationTicketsForEvent(anyString());
         verify(userActivityCountersService, never()).refreshEventCountersForDocuments(anyList());
     }
@@ -1794,6 +1843,7 @@ class ActivitiesEventsServiceTest {
                         "event",
                         "event-1",
                         List.of(),
+                        List.of("host", "member-1"),
                         List.of("host", "member-1"),
                         List.of("invitee"),
                         List.of("invitee"),
@@ -1864,6 +1914,51 @@ class ActivitiesEventsServiceTest {
                 anyString());
         verify(eventParticipationTicketService, never()).syncParticipationTicketsForEvent(anyString());
         verify(userActivityCountersService, never()).refreshEventCountersForDocuments(anyList());
+    }
+
+    @Test
+    void publishedMingleRoundCountCanDecreaseOnlyToTheStartedRound() {
+        Users host = new Users();
+        host.setId("host");
+        host.setName("Host User");
+        ActivityEvent existing = event("event-1", "host", 0d);
+        existing.setTitle("Draft Event");
+        existing.setCapacityMin(1);
+        existing.setCapacityMax(8);
+        existing.setCapacityTotal(8);
+        existing.setTicketing(false);
+        existing.setMode("Mingle");
+        existing.setMingleConfiguration(new MingleConfigurationDto(4, 4, 20, 5, true));
+
+        ActivityMingleSession session = new ActivityMingleSession();
+        session.setEventId("event-1");
+        session.setCurrentRoundNumber(2);
+
+        when(homeUserProfileService.resolveCurrentUser("host")).thenReturn(host);
+        when(activityEventsRepository.findByOwnerUserIdAndSourceId("host", "event-1"))
+                .thenReturn(Optional.of(existing));
+        when(activityMingleSessionsRepository.findByEventId("event-1")).thenReturn(Optional.of(session));
+        when(activityEventsRepository.saveAll(anyList())).thenAnswer(invocation -> invocation.getArgument(0));
+
+        EventDto result = service.sync(eventPayload(
+                "sync-event-1",
+                "event-1",
+                "host",
+                true,
+                false,
+                "Public",
+                8,
+                false,
+                true,
+                "Mingle",
+                new MingleConfigurationDto(4, 1, 20, 5, true)));
+
+        assertThat(result).isNotNull();
+        @SuppressWarnings("unchecked")
+        ArgumentCaptor<List<ActivityEvent>> savedCaptor = ArgumentCaptor.forClass(List.class);
+        verify(activityEventsRepository).saveAll(savedCaptor.capture());
+        assertThat(savedCaptor.getValue()).singleElement().satisfies(saved ->
+                assertThat(saved.getMingleConfiguration().plannedRounds()).isEqualTo(2));
     }
 
     @Test
@@ -2000,7 +2095,7 @@ class ActivitiesEventsServiceTest {
     }
 
     @Test
-    void eventEditPersistsExplicitlyClearedImage() {
+    void publishedEventManageEditPreservesExistingImage() {
         Users host = new Users();
         host.setId("host");
         host.setName("Host User");
@@ -2018,9 +2113,9 @@ class ActivitiesEventsServiceTest {
         ArgumentCaptor<List<ActivityEvent>> savedCaptor = ArgumentCaptor.forClass(List.class);
         verify(activityEventsRepository).saveAll(savedCaptor.capture());
         assertThat(savedCaptor.getValue()).singleElement().satisfies(record ->
-                assertThat(record.getImageUrl()).isEmpty());
+                assertThat(record.getImageUrl()).isEqualTo("https://example.test/old-event-image.jpg"));
         assertThat(result).isNotNull();
-        assertThat(result.imageUrl()).isEmpty();
+        assertThat(result.imageUrl()).isEqualTo("https://example.test/old-event-image.jpg");
     }
 
     @Test
@@ -2035,6 +2130,7 @@ class ActivitiesEventsServiceTest {
                         "event",
                         "event-1",
                         List.of(),
+                        List.of("host", "member-1"),
                         List.of("host", "member-1"),
                         List.of(),
                         List.of(),
@@ -2116,6 +2212,8 @@ class ActivitiesEventsServiceTest {
         nonFriend.setId(nonFriendUserId);
         when(homeUserProfileService.resolveCurrentUser(friendUserId)).thenReturn(friend);
         when(homeUserProfileService.resolveCurrentUser(nonFriendUserId)).thenReturn(nonFriend);
+        when(friendshipFacts.areFriends(hostUserId, friendUserId)).thenReturn(true);
+        when(friendshipFacts.areFriends(hostUserId, nonFriendUserId)).thenReturn(false);
         when(activityEventsRepository.findBySourceIdIn(List.of("event-1")))
                 .thenReturn(List.of(friendsOnly));
 
@@ -2134,6 +2232,7 @@ class ActivitiesEventsServiceTest {
                         "event",
                         "event-1",
                         List.of(),
+                        List.of("host", "member-1"),
                         List.of("host", "member-1"),
                         List.of(),
                         List.of(),
@@ -2523,11 +2622,6 @@ class ActivitiesEventsServiceTest {
                 .thenReturn(List.of(subscription));
         when(mongoTemplate.find(any(Query.class), eq(ActivityEvent.class)))
                 .thenReturn(List.of(hidden));
-        when(activityEventsRepository.findBySourceIdIn(List.of("watched-event")))
-                .thenReturn(List.of(hidden));
-        when(eventCheckoutBasketService.loadResultStatesByEvent("viewer", List.of("watched-event")))
-                .thenReturn(Map.of());
-
         EventListPageDto page = service.queryActivitiesEventListPage(new EventsFilterRequestDto(
                 "viewer", "watchlist", "all", "recent", "date", "day", 10, null, null, null, null));
 
@@ -2577,7 +2671,7 @@ class ActivitiesEventsServiceTest {
     }
 
     @Test
-    void tournamentRoomOrganizerProfileDoesNotTurnAcceptedHostIntoRoomAdmin() {
+    void tournamentRoomIsExcludedFromTheGeneralActiveEventList() {
         Users casey = new Users();
         casey.setId("casey");
         casey.setName("Casey Bridge");
@@ -2600,14 +2694,9 @@ class ActivitiesEventsServiceTest {
         EventListPageDto page = service.queryActivitiesEventListPage(new EventsFilterRequestDto(
                 "casey", "active-events", "all", "recent", "date", "day", 10, null, null, null, null));
 
-        assertThat(page.total()).isEqualTo(1);
-        assertThat(page.items()).singleElement().satisfies(record -> {
-            assertThat(record.id()).isEqualTo("tournament-room-1");
-            assertThat(record.userId()).isEqualTo("casey");
-            assertThat(record.creatorUserId()).isEmpty();
-            assertThat(record.organizerUserId()).isEqualTo("casey");
-            assertThat(record.adminIds()).isEmpty();
-        });
+        assertThat(page.total()).isZero();
+        assertThat(page.records()).isEmpty();
+        assertThat(page.items()).isEmpty();
     }
 
     @Test
@@ -2802,6 +2891,32 @@ class ActivitiesEventsServiceTest {
             Integer capacityMax,
             Boolean slotsEnabled,
             Boolean subEventsEnabled) {
+        return eventPayload(
+                syncKey,
+                id,
+                creatorUserId,
+                published,
+                ticketing,
+                visibility,
+                capacityMax,
+                slotsEnabled,
+                subEventsEnabled,
+                "",
+                null);
+    }
+
+    private EventDetailDto eventPayload(
+            String syncKey,
+            String id,
+            String creatorUserId,
+            Boolean published,
+            Boolean ticketing,
+            String visibility,
+            Integer capacityMax,
+            Boolean slotsEnabled,
+            Boolean subEventsEnabled,
+            String mode,
+            MingleConfigurationDto mingleConfiguration) {
         return new EventDetailDto(
                 syncKey,
                 id,
@@ -2863,7 +2978,8 @@ class ActivitiesEventsServiceTest {
                 subEventsEnabled,
                 List.of(),
                 List.of(),
-                "",
+                mode,
+                mingleConfiguration,
                 null,
                 0d,
                 0d,

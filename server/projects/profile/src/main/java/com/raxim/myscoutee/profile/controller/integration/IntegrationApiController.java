@@ -7,6 +7,12 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestParam;
+import com.raxim.myscoutee.profile.service.IntegrationEventQueryService;
+import com.raxim.myscoutee.profile.data.dto.integration.IntegrationDtos.IntegrationEventDto;
+import com.raxim.myscoutee.profile.data.dto.integration.IntegrationDtos.IntegrationEncountersDto;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestPart;
@@ -31,14 +37,20 @@ import com.raxim.myscoutee.profile.service.IntegrationWebhookService;
 @RequestMapping("/integrations/v1")
 public class IntegrationApiController {
     private final IntegrationSyncService syncService;
+    private final IntegrationEventQueryService eventQueries;
+    private final com.raxim.myscoutee.profile.service.IntegrationParticipantInviteService invites;
     private final AccessControlService accessControlService;
     private final IntegrationWebhookService webhookService;
 
     public IntegrationApiController(
             IntegrationSyncService syncService,
+            IntegrationEventQueryService eventQueries,
+            com.raxim.myscoutee.profile.service.IntegrationParticipantInviteService invites,
             AccessControlService accessControlService,
             IntegrationWebhookService webhookService) {
         this.syncService = syncService;
+        this.eventQueries = eventQueries;
+        this.invites = invites;
         this.accessControlService = accessControlService;
         this.webhookService = webhookService;
     }
@@ -95,6 +107,24 @@ public class IntegrationApiController {
                 actorUserId(authentication),
                 request,
                 imageFiles(multipartRequest));
+    }
+
+    @PostMapping("/events/{eventId}/invites")
+    public com.raxim.myscoutee.profile.data.dto.integration.IntegrationDtos.IntegrationParticipantInvitesDto inviteParticipants(
+            Authentication authentication, @PathVariable String eventId,
+            @RequestBody com.raxim.myscoutee.profile.data.dto.integration.IntegrationDtos.IntegrationParticipantInviteRequestDto request) {
+        return invites.create(actorUserId(authentication), eventId, request);
+    }
+
+    @GetMapping("/events/{eventId}")
+    public IntegrationEventDto event(Authentication authentication, @PathVariable String eventId) {
+        return eventQueries.event(actorUserId(authentication), eventId);
+    }
+
+    @GetMapping("/events/{eventId}/encounters")
+    public IntegrationEncountersDto encounters(Authentication authentication, @PathVariable String eventId,
+            @RequestParam(defaultValue = "0") int offset, @RequestParam(defaultValue = "1000") int limit) {
+        return eventQueries.encounters(actorUserId(authentication), eventId, offset, limit);
     }
 
     private Map<String, MultipartFile> imageFiles(MultipartHttpServletRequest request) {

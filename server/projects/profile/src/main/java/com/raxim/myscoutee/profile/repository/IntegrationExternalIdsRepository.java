@@ -19,6 +19,9 @@ public interface IntegrationExternalIdsRepository extends MongoRepository<Integr
             String resourceType,
             Collection<String> externalIds);
 
+    List<IntegrationExternalId> findByOwnerUserIdAndResourceTypeAndInternalIdIn(
+            String ownerUserId, String resourceType, Collection<String> internalIds);
+
     Optional<IntegrationExternalId> findByOwnerUserIdAndResourceTypeAndInternalId(
             String ownerUserId,
             String resourceType,

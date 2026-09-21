@@ -96,7 +96,12 @@ public final class EventLeaderboardDtos {
 
     public record EventLeaderboardMemberDto(
             String memberId,
-            String memberName) {
+            String memberName,
+            String initials,
+            String avatarUrl) {
+        public EventLeaderboardMemberDto(String memberId, String memberName) {
+            this(memberId, memberName, "", null);
+        }
     }
 
     public record EventLeaderboardScoreEntryDto(

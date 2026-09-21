@@ -27,6 +27,15 @@ import com.raxim.myscoutee.profile.repository.ActivityMembersRepository;
 import com.raxim.myscoutee.profile.service.EventFriendshipProjectionService;
 import com.raxim.myscoutee.profile.service.media.S3CompatibleMediaObjectStoreClient;
 
+import com.raxim.myscoutee.profile.repository.UserRatesRepository;
+import com.raxim.myscoutee.profile.repository.UsersRepository;
+import com.raxim.myscoutee.profile.service.UserRatesService;
+import com.raxim.myscoutee.profile.service.HomeUserProfileService;
+import com.raxim.myscoutee.profile.service.AffinityCalculationService;
+import com.raxim.myscoutee.profile.service.UserAffinityEdgeService;
+import com.raxim.myscoutee.profile.service.AdminTelemetryService;
+import static org.mockito.Mockito.mock;
+
 /** Opt-in disposable fixture against the existing dev Mongo/MinIO/API; starts no server.
  * Session cookies are fixture-issued. This does not prove external Firebase sign-in. */
 @Tag("qualification")
@@ -112,7 +121,11 @@ class MediaFriendshipQualificationTest {
             var db = client.getDatabase("demo_db");
             MongoTemplate mongo = new MongoTemplate(client, "demo_db");
             var members = new MongoRepositoryFactory(mongo).getRepository(ActivityMembersRepository.class);
-            var projector = new EventFriendshipProjectionService(mongo, members);
+            var ratesRepository = new MongoRepositoryFactory(mongo).getRepository(UserRatesRepository.class);
+            var rates = new UserRatesService(ratesRepository, mock(UsersRepository.class),
+                    mock(HomeUserProfileService.class), mock(AffinityCalculationService.class),
+                    mock(UserAffinityEdgeService.class), mongo, mock(AdminTelemetryService.class), null, null);
+            var projector = new EventFriendshipProjectionService(mongo, members, rates);
             // Never let the test clock expire an unrelated fixture/seed event.
             assertThat(db.getCollection("events").countDocuments(new Document("status", "A")
                     .append("published", new Document("$ne", false))
@@ -141,7 +154,17 @@ class MediaFriendshipQualificationTest {
                 assertStatus(key, viewerCookie, 403);
                 assertThat(projector.projectCompletedEvents(firstEnd.plusSeconds(1), 20)).isEqualTo(1);
                 var pairFilter = new Document("$or", List.of(new Document("leftUserId", owner), new Document("rightUserId", owner)));
-                assertThat(db.getCollection("userFriendships").countDocuments(pairFilter)).isEqualTo(1);
+                assertThat(db.getCollection("userFriendships").countDocuments(pairFilter)).isZero();
+                Document metRate = db.getCollection("userRates").find(new Document("met", true)
+                        .append("ownerUserId", owner).append("relatedUserId", viewer)).first();
+                assertThat(metRate).isNotNull();
+                assertThat(metRate.getInteger("scoreGiven")).isZero();
+                assertThat(metRate.getInteger("scoreReceived")).isZero();
+                db.getCollection("userFriendships").insertOne(new Document("_id", owner.length() + ":" + owner + viewer)
+                        .append("leftUserId", owner).append("rightUserId", viewer)
+                        .append("friendsSince", Date.from(firstEnd)).append("firstEventId", eventId)
+                        .append("lastMetAt", Date.from(firstEnd)).append("lastEventId", eventId)
+                        .append("lastEventName", "Media friendship fixture"));
                 Document original = db.getCollection("userFriendships").find(pairFilter).first();
                 assertThat(original.getDate("friendsSince")).isEqualTo(Date.from(firstEnd));
                 assertThat(original.getString("firstEventId")).isEqualTo(eventId);
@@ -159,10 +182,7 @@ class MediaFriendshipQualificationTest {
                 }
                 assertThat(projector.projectCompletedEvents(laterEnd.plusSeconds(1), 20)).isEqualTo(1);
                 Document updated = db.getCollection("userFriendships").find(pairFilter).first();
-                assertThat(updated.getDate("friendsSince")).isEqualTo(original.getDate("friendsSince"));
-                assertThat(updated.getString("firstEventId")).isEqualTo(eventId);
-                assertThat(updated.getDate("lastMetAt")).isEqualTo(Date.from(laterEnd));
-                assertThat(updated.getString("lastEventId")).isEqualTo(laterEvent);
+                assertThat(updated).isEqualTo(original);
                 assertBytes(key, viewerCookie, png);
                 assertStatus(key, outsiderCookie, 403);
                 db.getCollection("users").updateOne(new Document("_id", owner), new Document("$set", new Document("profileStatus", "blocked")));
@@ -212,6 +232,9 @@ class MediaFriendshipQualificationTest {
                 db.getCollection("userFriendships").deleteMany(new Document("$or", List.of(
                         new Document("leftUserId", new Document("$regex", "^" + prefix)),
                         new Document("rightUserId", new Document("$regex", "^" + prefix)))));
+                db.getCollection("userRates").deleteMany(new Document("$or", List.of(
+                        new Document("ownerUserId", new Document("$regex", "^" + prefix)),
+                        new Document("relatedUserId", new Document("$regex", "^" + prefix)))));
                 for (String stored : keys) objects.deleteObject(storage.getBucket(), stored);
             }
         }

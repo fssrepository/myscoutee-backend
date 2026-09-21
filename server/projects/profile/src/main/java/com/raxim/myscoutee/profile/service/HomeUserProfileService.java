@@ -2610,6 +2610,8 @@ public class HomeUserProfileService {
         int cursorPartCount = cursorPartCount(requestCursor);
         int fingerprintOffset = cursorPartCount >= 44
                 ? 42
+                : cursorPartCount >= 43
+                ? 41
                 : cursorPartCount >= 42
                 ? 40
                 : cursorPartCount >= 39

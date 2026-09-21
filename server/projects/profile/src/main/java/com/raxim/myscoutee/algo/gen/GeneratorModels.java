@@ -1,6 +1,7 @@
 package com.raxim.myscoutee.algo.gen;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import com.raxim.myscoutee.algo.dto.FGraph;
@@ -48,6 +49,33 @@ public final class GeneratorModels {
     public record InviteBatchPlan(
             String ownerId,
             List<String> invitedUserIds) {
+    }
+
+    public record MingleGeneratorRequest(
+            FGraph graph,
+            Set<String> eligibleUserIds,
+            int groupSize,
+            int roundNumber,
+            List<Integer> tableNumbers,
+            List<MinglePreviousTable> previousTables,
+            Map<String, String> userGenders,
+            boolean requireGenderBalance) {
+    }
+
+    public record MinglePreviousTable(
+            int roundNumber,
+            int tableNumber,
+            List<String> memberUserIds) {
+    }
+
+    public record MingleTablePlan(
+            int tableNumber,
+            List<String> memberUserIds) {
+    }
+
+    public record MingleRoundPlan(
+            int roundNumber,
+            List<MingleTablePlan> tables) {
     }
 
     public record LeaderboardMember(

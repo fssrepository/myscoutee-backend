@@ -32,6 +32,9 @@ class NotificationOutboxServiceTest {
         existing.setStatus(NotificationOutboxItem.STATUS_PENDING);
         existing.setRecipientUserIds(List.of("u1"));
         existing.setNextRetryAt("2026-05-11T12:00:00Z");
+        existing.setPayload(Map.of(
+                "notification_title_key", "notification.kind.asset-review.title",
+                "notification_message_key", "notification.kind.asset-review.message"));
         when(repository.findFirstByCollapseKeyAndStatusInAndCreatedDateGreaterThanEqualOrderByCreatedDateAsc(anyString(), anyCollection(), anyString()))
                 .thenReturn(Optional.of(existing));
         when(repository.save(any(NotificationOutboxItem.class))).thenAnswer(invocation -> invocation.getArgument(0));

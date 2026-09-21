@@ -34,3 +34,38 @@ Source artwork and original prompt remain unchanged. Facebook preview has not be
 Final targeted correction prompt:
 Edit ONLY the tick dots inside the central white "Interest 1–10" scale. Preserve every other pixel/content as closely as possible, including canvas aspect ratio and framing. There are currently nine dots and the selected blue dot is the seventh. Replace the dot row with exactly TEN evenly spaced circular ticks, with the EIGHTH dot blue and highlighted. There must be SEVEN small lavender dots to the LEFT of the selected blue dot and TWO small lavender dots to its RIGHT. Keep the blue "8" bubble directly above the selected eighth dot. Do not add numerical labels. All existing text, logo, people, portraits, colors, illustration, margins and dimensions stay unchanged. Output ONE finished approximately 4:5 portrait advertisement.
 Visual check: final scale has ten visible dots, with the eighth highlighted; full brand lockup, headline and bottom copy are visible, with six portraits and six cafe participants retained.
+
+
+## Landing-copy update — 2026-09-21
+
+Tool: built-in image_gen, edit mode. Saved over existing asset `myscoutee-promo-feed-v1.png` at the user's request; no separate output directory.
+Current exact copy:
+- 6 people · 6 priority lists → 1 team
+- Standard · Tournament · Speed dating
+
+Final generation prompt:
+
+Use case: text-localization. Edit the supplied MyScoutee Facebook feed promotional image. Preserve the 4:5 portrait aspect ratio, exact brand emblem and wordmark, all six profile cards, all six cafe friends, faces, sunset background, slider, chat icon, palette and existing composition. Replace the three-line headline "6 people. 6 priority lists. 1 shared group." with exactly two lines: first line "6 people · 6 priority lists → 1 team"; second line "Standard · Tournament · Speed dating". Position the readable navy text below the wordmark, highlighting "1 team" purple. To accommodate the full first line, use a wider clear headline area below the logo and slightly lower side cards if necessary; keep all six cards complete. Keep remaining copy "Interest 1–10", "8", "Mutual interest.", "Group chat. Real plans.", "Meet through events." unchanged. Change only the headline region and necessary adjacent spacing. Fully opaque full-bleed finished image.
+
+
+## Speed dating label update — 2026-09-21
+
+Tool: built-in `image_gen`, edit mode. Replaced the existing asset.
+
+Final edit prompt:
+
+Use case: text-localization. Input image is the EDIT TARGET. Replace ONLY the word "Mingle" with exactly "Speed dating" (capital S, lowercase d). The complete corrected line must read verbatim "Standard · Tournament · Speed dating". Facebook 4:5 portrait feed image. Retain 1122x1402 dimensions and exact framing. Keep edited line centered below first headline between the portrait cards; reduce only that line's font size slightly if necessary to fit. Match the existing typography, weight and color. Preserve EVERYTHING ELSE: all artwork, people, faces, profile cards, logo emblem and wordmark, backgrounds, lighting, icons, slider, every other text and badge, layout and aspect ratio. Do not add or remove anything else. Deliver one complete opaque edited image.
+
+
+## Current asset correction — 2026-09-21
+
+The current image replaces the prior version at the same tracked path.
+Public format name: **Speed meeting**, matching the app and API manual.
+Earlier prompts above are production history, not the current naming contract.
+Tool: built-in `image_gen`, text-localization edit.
+
+Final prompt: Replace only “Speed dating” with “Speed meeting”; the line reads
+“Standard · Tournament · Speed meeting”. Preserve the original composition,
+faces, logo, artwork, other text, framing and aspect ratio. Keep FREE TO JOIN;
+for the Facebook portrait/feed assets add the missing purple FREE TO JOIN pill
+in the bottom margin. Do not redesign.

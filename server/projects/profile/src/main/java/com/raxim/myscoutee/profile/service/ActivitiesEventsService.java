@@ -35,6 +35,8 @@ import org.springframework.data.mongodb.core.geo.GeoJsonPoint;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.server.ResponseStatusException;
 import com.raxim.myscoutee.profile.security.FriendshipFacts;
 import org.springframework.util.StringUtils;
 
@@ -44,6 +46,7 @@ import tools.jackson.databind.ObjectMapper;
 import com.raxim.myscoutee.profile.data.document.ActivityEvent;
 import com.raxim.myscoutee.profile.data.document.ActivityMainEventRuntime;
 import com.raxim.myscoutee.profile.data.document.ActivityMember;
+import com.raxim.myscoutee.profile.data.document.ActivityMingleSession;
 import com.raxim.myscoutee.profile.data.document.ActivitySubEventGroup;
 import com.raxim.myscoutee.profile.data.document.ActivitySubEventResource;
 import com.raxim.myscoutee.profile.data.document.ActivitySubEventStageRuntime;
@@ -91,6 +94,7 @@ import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.EventSlotTemplateD
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.ActivitySubEventResourceStateDto;
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.ActivitySubEventStageRuntimeStateDto;
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.LocationCoordinatesDto;
+import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.MingleConfigurationDto;
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.PolicyItemDto;
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.PricingActionDto;
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.PricingConfigDto;
@@ -101,6 +105,7 @@ import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.SubEventDefinition
 import com.raxim.myscoutee.profile.data.document.SubEventItem;
 import com.raxim.myscoutee.profile.repository.ActivityMembersRepository;
 import com.raxim.myscoutee.profile.repository.ActivityEventsRepository;
+import com.raxim.myscoutee.profile.repository.ActivityMingleSessionsRepository;
 import com.raxim.myscoutee.profile.repository.ActivitySubEventGroupsRepository;
 import com.raxim.myscoutee.profile.repository.ActivitySubEventResourcesRepository;
 import com.raxim.myscoutee.profile.repository.ActivitySubEventStageRuntimeRepository;
@@ -157,6 +162,7 @@ public class ActivitiesEventsService {
     private final ActivitySubEventResourcesRepository activitySubEventResourcesRepository;
     private final ActivitySubEventStageRuntimeRepository activitySubEventStageRuntimeRepository;
     private final ActivityMembersRepository activityMembersRepository;
+    private final ActivityMingleSessionsRepository activityMingleSessionsRepository;
     private final UsersRepository usersRepository;
     private final FriendshipFacts friendshipFacts;
     private final UserAffinityEdgesRepository userAffinityEdgesRepository;
@@ -194,6 +200,7 @@ public class ActivitiesEventsService {
             ActivitySubEventResourcesRepository activitySubEventResourcesRepository,
             ActivitySubEventStageRuntimeRepository activitySubEventStageRuntimeRepository,
             ActivityMembersRepository activityMembersRepository,
+            ActivityMingleSessionsRepository activityMingleSessionsRepository,
             UsersRepository usersRepository,
             FriendshipFacts friendshipFacts,
             UserAffinityEdgesRepository userAffinityEdgesRepository,
@@ -229,6 +236,7 @@ public class ActivitiesEventsService {
         this.activitySubEventResourcesRepository = activitySubEventResourcesRepository;
         this.activitySubEventStageRuntimeRepository = activitySubEventStageRuntimeRepository;
         this.activityMembersRepository = activityMembersRepository;
+        this.activityMingleSessionsRepository = activityMingleSessionsRepository;
         this.usersRepository = usersRepository;
         this.friendshipFacts = friendshipFacts;
         this.userAffinityEdgesRepository = userAffinityEdgesRepository;
@@ -674,6 +682,7 @@ public class ActivitiesEventsService {
                         || request.friendsOnly() != null
                         || request.openSpotsOnly() != null
                         || StringUtils.hasText(request.topic())
+                        || StringUtils.hasText(request.mode())
                         || (request.excludedSourceIds() != null && !request.excludedSourceIds().isEmpty()));
     }
 
@@ -2126,6 +2135,10 @@ public class ActivitiesEventsService {
         String order = normalizeExploreOrder(request == null ? null : request.order());
         String view = normalizeExploreView(request == null ? null : request.view());
         String topic = normalizeTopic(request == null ? null : request.topic());
+        String mode = request == null ? "" : safeText(request.mode());
+        if (StringUtils.hasText(mode) && !List.of("Casual", "Tournament", "Mingle").contains(mode)) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid event mode.");
+        }
         Boolean requestedFriendsOnly = request == null ? null : request.friendsOnly();
         Boolean requestedOpenSpotsOnly = request == null ? null : request.openSpotsOnly();
         Integer requestedLimit = request == null ? null : request.limit();
@@ -2138,6 +2151,7 @@ public class ActivitiesEventsService {
         return withEventQueryContext(buildExplorePageQueryContext(viewer, "most-relevant".equals(order)), () -> {
             List<EventProjection> sorted = computeExploreRecords(viewer).stream()
                     .filter(record -> !excludedSourceIds.contains(normalizeId(record.getSourceId())))
+                    .filter(record -> !StringUtils.hasText(mode) || mode.equals(normalizeEventMode(record.getMode())))
                     .map(record -> toSortProjection(record, viewer))
                     .filter(Objects::nonNull)
                     .filter(projection -> !hasTrackedUserParticipation(projection.record(), viewer.userId())
@@ -4969,6 +4983,9 @@ public class ActivitiesEventsService {
         signature.put("slotsEnabled", Boolean.TRUE.equals(event.getSlotsEnabled()));
         signature.put("slotTemplates", event.getSlotTemplates() == null ? List.of() : event.getSlotTemplates());
         signature.put("mode", normalizeEventMode(event.getMode()));
+        signature.put("mingleConfiguration", "Mingle".equals(normalizeEventMode(event.getMode()))
+                ? normalizeMingleConfiguration(event.getMingleConfiguration())
+                : null);
         try {
             return OBJECT_MAPPER.writeValueAsString(signature);
         } catch (Exception ignored) {
@@ -6686,6 +6703,12 @@ public class ActivitiesEventsService {
             document.setAdmins(syncedMembersSnapshot == null
                     ? normalizeIds(existing == null ? null : existing.getAdmins())
                     : new ArrayList<>(syncedMembersSnapshot.adminUserIds()));
+            if ("Mingle".equals(normalizeEventMode(existing == null ? null : existing.getMode()))) {
+                document.setMingleConfiguration(mergePublishedMingleConfiguration(
+                        sourceId,
+                        existing == null ? null : existing.getMingleConfiguration(),
+                        request.mingleConfiguration()));
+            }
             document.setFull(directRecordFull(document));
             document.setUpdatedDate(nowIso);
             document.setUpdatedUser(actorUserId);
@@ -6729,7 +6752,8 @@ public class ActivitiesEventsService {
         document.setImageUrl(request.imageUrl() == null
                 ? safeText(existing == null ? null : existing.getImageUrl())
                 : request.imageUrl().trim());
-        document.setSourceLink(StringUtils.hasText(request.sourceLink()) ? request.sourceLink().trim() : safeText(existing == null ? null : existing.getSourceLink()));
+        document.setSourceLink(request.sourceLink() == null
+                ? safeText(existing == null ? null : existing.getSourceLink()) : request.sourceLink().trim());
         document.setLocation(StringUtils.hasText(request.location()) ? request.location().trim() : safeText(existing == null ? null : existing.getLocation()));
         document.setLocationCoordinates(request.locationCoordinates() != null
                 ? cloneLocation(request.locationCoordinates())
@@ -6789,19 +6813,30 @@ public class ActivitiesEventsService {
         document.setPendingRequestMemberUserIds(pendingRequestMemberUserIds);
         document.setFull(directRecordFull(document));
         document.setTopics(normalizeStrings(request.topics()));
+        String nextMode = normalizeEventMode(publishedManageMode
+                ? safeText(existing == null ? null : existing.getMode())
+                : safeText(request.mode()));
+        MingleConfigurationDto nextMingleConfiguration = "Mingle".equals(nextMode)
+                ? publishedManageMode
+                        ? mergePublishedMingleConfiguration(
+                                sourceId,
+                                existing == null ? null : existing.getMingleConfiguration(),
+                                request.mingleConfiguration())
+                        : normalizeMingleConfiguration(request.mingleConfiguration())
+                : null;
         List<SubEventDefinitionDto> nextSubEventDefinitions = publishedManageMode
                 ? cloneSubEventDefinitions(existing == null ? null : existing.getSubEventDefinitions())
                 : cloneSubEventDefinitions(request.subEventDefinitions());
         boolean subEventsRequested = publishedManageMode
                 ? existing == null || existing.getSubEventsEnabled() == null || Boolean.TRUE.equals(existing.getSubEventsEnabled())
                 : request.subEventsEnabled() == null || Boolean.TRUE.equals(request.subEventsEnabled());
-        boolean subEventsEnabled = subEventsRequested && !nextSubEventDefinitions.isEmpty();
+        boolean subEventsEnabled = subEventsRequested
+                && ("Mingle".equals(nextMode) || !nextSubEventDefinitions.isEmpty());
         document.setSubEventsEnabled(subEventsEnabled);
         document.setSubEventDefinitions(nextSubEventDefinitions);
         document.setSubEvents(List.of());
-        document.setMode(normalizeEventMode(publishedManageMode
-                ? safeText(existing == null ? null : existing.getMode())
-                : safeText(request.mode())));
+        document.setMode(nextMode);
+        document.setMingleConfiguration(nextMingleConfiguration);
         document.setRating(existing == null ? 0d : safeDouble(existing.getRating()));
         document.setAffinity(resolveAffinity(document, creator, acceptedMemberUserIds));
         document.setBoost(resolveBoost(document, creator, acceptedMemberUserIds));
@@ -6895,7 +6930,8 @@ public class ActivitiesEventsService {
         return isPublishedEventManageUpdate(existing)
                 && next != null
                 && normalizeCount(existing.getCapacityMax()) == normalizeCount(next.getCapacityMax())
-                && Boolean.TRUE.equals(existing.getTicketing()) == Boolean.TRUE.equals(next.getTicketing());
+                && Boolean.TRUE.equals(existing.getTicketing()) == Boolean.TRUE.equals(next.getTicketing())
+                && Objects.equals(existing.getMingleConfiguration(), next.getMingleConfiguration());
     }
 
     private Integer resolvePublishedCapacityMax(ActivityEvent existing, Integer requestedCapacityMax, int acceptedMembers) {
@@ -8205,7 +8241,57 @@ public class ActivitiesEventsService {
     }
 
     private String normalizeEventMode(String value) {
-        return "tournament".equalsIgnoreCase(safeText(value)) ? "Tournament" : "Casual";
+        if ("tournament".equalsIgnoreCase(safeText(value))) {
+            return "Tournament";
+        }
+        return "mingle".equalsIgnoreCase(safeText(value)) ? "Mingle" : "Casual";
+    }
+
+    private MingleConfigurationDto normalizeMingleConfiguration(MingleConfigurationDto value) {
+        if (value == null) {
+            return null;
+        }
+        MingleConfigurationDto source = value;
+        return new MingleConfigurationDto(
+                clampInteger(source.groupSize(), 2, 20, 4),
+                clampInteger(source.plannedRounds(), 1, 100, 4),
+                clampInteger(source.roundDurationMinutes(), 1, 240, 20),
+                clampInteger(source.breakDurationMinutes(), 0, 60, 5),
+                source.requireGenderBalance() == null || source.requireGenderBalance());
+    }
+
+    private MingleConfigurationDto mergePublishedMingleConfiguration(
+            String eventId,
+            MingleConfigurationDto existing,
+            MingleConfigurationDto requested) {
+        MingleConfigurationDto current = normalizeMingleConfiguration(existing);
+        MingleConfigurationDto candidate = normalizeMingleConfiguration(requested);
+        if (current == null) {
+            return candidate;
+        }
+        if (candidate == null) {
+            return current;
+        }
+        return new MingleConfigurationDto(
+                current.groupSize(),
+                Math.max(minimumMinglePlannedRounds(eventId), candidate.plannedRounds()),
+                current.roundDurationMinutes(),
+                current.breakDurationMinutes(),
+                current.requireGenderBalance());
+    }
+
+    private int minimumMinglePlannedRounds(String eventId) {
+        ActivityMingleSession session = activityMingleSessionsRepository
+                .findByEventId(normalizeId(eventId))
+                .orElse(null);
+        return session == null
+                ? 1
+                : clampInteger(session.getCurrentRoundNumber(), 1, 100, 1);
+    }
+
+    private int clampInteger(Integer value, int min, int max, int fallback) {
+        int normalized = value == null ? fallback : value;
+        return Math.max(min, Math.min(max, normalized));
     }
 
     private String resolveCreatorName(String requestedName, Users creator) {

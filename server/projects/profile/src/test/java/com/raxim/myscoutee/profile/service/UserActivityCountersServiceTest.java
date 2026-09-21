@@ -3,6 +3,7 @@ package com.raxim.myscoutee.profile.service;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.when;
@@ -199,11 +200,7 @@ class UserActivityCountersServiceTest {
 
         service.refreshEventCountersForUsers(List.of("viewer"));
 
-        Document fields = updatedFields();
-        assertThat(fields.getInteger("activities.event.trash")).isZero();
-        assertThat(fields.getInteger("activities.event.all")).isZero();
-        assertThat(fields.getInteger("activities.events")).isZero();
-        assertThat(fields.getInteger("activities.hosting")).isZero();
+        verify(mongoTemplate, never()).updateFirst(any(Query.class), any(Update.class), eq(Users.class));
     }
 
     @Test
@@ -242,7 +239,7 @@ class UserActivityCountersServiceTest {
     }
 
     @Test
-    void refreshEventCountersDoesNotTreatSuppressedMembershipAsTrashWithoutPersonalOverlay() {
+    void refreshEventCountersUsesCanonicalActiveEventWithoutPersonalTrashOverlay() {
         Users user = user("viewer", activitiesWithAssetAndFeedback(0, 0, 0, 0, 0, 0, 0, 0));
         ActivityEvent canonical = event("event-suppressed", "host", "A");
         canonical.setOwnerUserId("host");
@@ -265,8 +262,8 @@ class UserActivityCountersServiceTest {
 
         Document fields = updatedFields();
         assertThat(fields.getInteger("activities.event.trash")).isZero();
-        assertThat(fields.getInteger("activities.event.all")).isZero();
-        assertThat(fields.getInteger("activities.events")).isZero();
+        assertThat(fields.getInteger("activities.event.all")).isEqualTo(1);
+        assertThat(fields.getInteger("activities.events")).isEqualTo(1);
     }
 
     @Test
