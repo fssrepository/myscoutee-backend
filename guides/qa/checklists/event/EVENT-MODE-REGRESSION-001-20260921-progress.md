@@ -1,76 +1,79 @@
-> Current correction (2026-09-22): the 23:49 frontend/backend commits were
-> reverted in cd8189f1 / dad8ee6c. About identity now reuses the existing landing
-> branding, exactly like its logo. Separate founder metadata has been removed;
-> earlier founder notes below describe superseded work. QA is paused while the
-> requested correction is reviewed. No broad browser testing was resumed.
+# Event mode QA — in progress, 2026-09-22
 
-# Event mode QA — paused 2026-09-21
+The user resumed and delegated browser/API execution. This is the separate
+EVENT-MODE-REGRESSION-001 feature check, not the general manual-QA campaign.
+Use the stable event and INTEGRATION-API-001 checklists; do not mark the full
+campaign complete from the partial evidence below.
 
-User requested a pause before closing the laptop. Do not resume browser actions
-until requested. This is a separate delegated feature check, not the ongoing
-manual-QA campaign pointer.
+## Corrections retained
 
-## Development complete
+- Reverted the unwanted 23:49 frontend/backend commits in cd8189f1 / dad8ee6c.
+  About identity reuses the existing operator branding used by the landing logo.
+  Separate founder metadata was removed. Earlier founder-field verification is
+  superseded and does not describe current code.
+- Desktop document consent actions use the existing AppMenu content sizing.
+  Browser measurements: Cancel 67.2 px, Accept 148.94 px, menu 221.58 px.
+- Live table members use the shared header countdown badge beside Close, with
+  neutral/blue running and warning/amber paused/break tones. Table subtitle is
+  unchanged. The round/status block has been removed from the SmartList body.
+  Eight focused member-popup/store tests pass, including local ticking, frozen
+  paused time, no HTTP on repeated countdown reads and ordinary mode isolation.
+  The existing frontend watcher compiled and synced the change successfully.
 
-Earlier feature work, promotional images at their original paths, QA checklists
-and generated PDF are present. The stale round-action revision guard is
-implemented; its focused frontend/backend tests passed. The About founder is
-now database metadata (`i18n_bundles.founderName`), returned and cached alongside
-translations; no frontend name literal or additional endpoint is used. About
-copy and accessibility text remain i18n. When editing founder metadata, increment
-the corresponding bundle version, as for translation edits. Canonical real,
-demo and E2E seeds contain the field. Local-only bundles have no configured name
-and display the translated role without inventing a person.
+## Verified in this resumed run
 
-Founder verification: 23 focused frontend tests passed; the existing frontend
-watcher built and synced successfully, and backend hot-deploy compiled successfully.
-The running HTTP bundle returned Hungarian role text and the configured founder
-with version `2026.09.21.hu.132`. The i18n audit passed for both languages and
-all three Mongo seeds. All 5 focused `I18nServiceTest` backend tests passed. The storage test also
-passed after adding a fresh repository-instance read of the configured name.
+- About displayed MyScoutee through four open/close cycles: one exact
+  `/api/deployment/configuration` request on load, no additional request on About
+  interaction. The current landing/i18n/repository suite passed 21 tests.
+- Explore opened in 166 ms while its real preference response was withheld.
+  No explore query ran before preferences arrived. Apply, cancel and reload
+  persistence passed; Open spots + Mingle produced badge 2.
+- At 320/390 px filter/order/view controls measured 36 px in that order. Filter
+  popup fit both widths with a dim backdrop; desktop popup width was 380 px.
+  Device metrics overrides were subsequently cleared on both managed browsers.
+- Disposable event `aea04117-bd92-4442-8ada-46746f1a86b8` completed two rounds
+  with Casey/Nova. Pause, resume, manual end and automatic advance were exercised.
+- A held Start round confirmation raced automatic advance; submission returned
+  409 MINGLE_STATE_CHANGED and retained round 2. Actual live Table 1 listed both
+  participants. Completion returned revision 6.
+- Encounters before completion returned 409. Completed SDK encounters and the
+  event.encounters webhook had identical pairs and revision 6: one unique pair,
+  using qa-casey / qa-nova partner IDs. Offset 1 returned an empty page and null
+  nextOffset. Encounter payload assertions excluded internal user IDs/emails.
+- Reopening Nova's claimed invitation retained membership without duplication.
 
-## Browser/API evidence already obtained
+Private evidence/scripts: `frontend/.agent/mode-qa/`, including
+`landing-branding.json`, `explore-responsive.json`, `stale-round-result.json`,
+`runtime-phases.json`, `completed-resume.json`, `encounters-resume.json` and
+`countdown-vitest.log`. Do not publish private invitation URLs or SDK credentials.
 
-- API help/close controls both measured 34 × 34 pixels.
-- SDK connection, external event link create/read and invitation acceptance worked.
-- Disposable event `QA MODE 20260921 Speed meeting`, ID
-  `aaf92156-8ec7-46d3-a8ca-6e5fb9d0b9a6`, completed with Casey and Nova.
-- Pause/resume/manual round transition exercised. An old confirmation raced
-  with automatic round advance; this caused the revision-guard fix above.
-- Encounters before completion returned 409. After completion, SDK returned one
-  unique pair across two rounds; an `event.encounters` webhook arrived at revision 6.
-  Full payload parity/privacy assertions remain outstanding.
+## Still to finish / not proven
 
-## Remaining checklist (not yet proven)
+1. Timer badge browser assertions passed: ticking running time, frozen paused
+   time, blue/amber phase colors, placement beside Close, retained Table 1 and
+   SmartList using the full body width. Evidence: timer-header.json/png.
+   Current disposable verification event: `7754188d-9eef-4979-9cfe-2cdfa4a8ad61`,
+   title `QA MODE 20260922 Timer`, two accepted participants.
+2. Landing/About Hungarian rendering, join CTA and admin help geometry. Earlier
+   API help/close measurement was 34 × 34 px; do not infer admin coverage from it.
+3. Standard and Tournament complete create/edit/publish/join/approval journeys,
+   external-link update/clear/reload and public action, Tournament stage/scoring,
+   ordinary feedback and absence of Mingle interference.
+4. Unique completed-table feedback and Met + mutual positive friendship,
+   including positive ratings recorded before Met; persisted round history.
+5. Local adapter IndexedDB reload/restart for preferences/link/rounds. Do not
+   start a duplicate development build or stack to exercise it.
+6. API other-owner authorization and remaining external-link/invitation edges.
+7. Restore original preferences (saved in preferences-before.json), unwatch and
+   revoke only the test key, remove disposable resources, stop the test callback
+   receiver, restore managed-session snapshot through the versioned harness,
+   and update sanitized evidence/checklists/CSV/XLSX ledgers.
 
-1. Replay stale confirmation vs automatic round advance in CDP; require 409 and
-   unchanged current round. Verify table popup and persisted round history.
-2. Explore first-click immediate opening with delayed preferences, apply/cancel,
-   reload persistence, badge count, mobile 320/390 px controls and compact popup.
-3. Landing/About EN/HU rendering, database founder display/cache reload, join CTA,
-   and admin help button geometry.
-4. Standard and Tournament create/edit/publish/join/approval flows, external-link
-   update/clear/reload, Tournament stage/group/scoring, ordinary feedback.
-5. Speed meeting unique completed-table feedback and Met + mutual positive
-   friendship, including ratings recorded before Met.
-6. Local adapter IndexedDB persistence across reload/restart (preferences,
-   external link and rounds). No duplicate dev build/server may be started.
-7. API invitation re-claim idempotency, encounters/webhook exact pair parity,
-   pagination/privacy and other-owner authorization. Preserve original API PASS
-   as historical evidence, not a PASS for this extension.
-8. Restore changed preferences; revoke only the new test key, disable its watch,
-   remove only disposable resources, restore managed session snapshot via the
-   versioned harness, then update checklists, CSV/XLSX ledger and review evidence.
+## Runtime continuation
 
-Any defect discovered in those checks still requires repair and retest.
-
-## Resume resources
-
-Use `EVENT-MODE-REGRESSION-001.md` and integration `INTEGRATION-API-001.md`.
-Managed browser manifest: `/tmp/myscoutee-qa-browser-sessions/INTEGRATION-API-001.json`.
-Ports at pause: Casey 41225, Nova 40657. Recheck process/container state after wake;
-if relaunch is required, verify the fixture baseline and use the versioned launcher.
-Private temporary scripts, SDK config, responses and logs are in
-`frontend/.agent/mode-qa/`; do not publish API credentials or invitation tokens.
-Webhook receiver used port 18090. Confirm its process before restarting anything.
-Do not reset unrelated data or overwrite the campaign's CURRENT_QA_SESSION file.
+Managed browser manifest:
+`/tmp/myscoutee-qa-browser-sessions/INTEGRATION-API-001.json`.
+Read current ports from it. Before any relaunch, verify the fixture baseline and
+use `guides/qa/tools/open-checkpoint-browser-sessions.mjs`; preserve current native
+viewport. The callback receiver uses port 18090; inspect its owner before starting
+another process. Existing Docker frontend/backend watchers own compilation.
