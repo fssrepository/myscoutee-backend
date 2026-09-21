@@ -41,8 +41,17 @@ Visual check: final scale has ten visible dots, with the eighth highlighted; ful
 Tool: built-in image_gen, edit mode. Saved over existing asset `myscoutee-promo-feed-v1.png` at the user's request; no separate output directory.
 Current exact copy:
 - 6 people · 6 priority lists → 1 team
-- Standard · Tournament · Mingle
+- Standard · Tournament · Speed dating
 
 Final generation prompt:
 
-Use case: text-localization. Edit the supplied MyScoutee Facebook feed promotional image. Preserve the 4:5 portrait aspect ratio, exact brand emblem and wordmark, all six profile cards, all six cafe friends, faces, sunset background, slider, chat icon, palette and existing composition. Replace the three-line headline "6 people. 6 priority lists. 1 shared group." with exactly two lines: first line "6 people · 6 priority lists → 1 team"; second line "Standard · Tournament · Mingle". Position the readable navy text below the wordmark, highlighting "1 team" purple. To accommodate the full first line, use a wider clear headline area below the logo and slightly lower side cards if necessary; keep all six cards complete. Keep remaining copy "Interest 1–10", "8", "Mutual interest.", "Group chat. Real plans.", "Meet through events." unchanged. Change only the headline region and necessary adjacent spacing. Fully opaque full-bleed finished image.
+Use case: text-localization. Edit the supplied MyScoutee Facebook feed promotional image. Preserve the 4:5 portrait aspect ratio, exact brand emblem and wordmark, all six profile cards, all six cafe friends, faces, sunset background, slider, chat icon, palette and existing composition. Replace the three-line headline "6 people. 6 priority lists. 1 shared group." with exactly two lines: first line "6 people · 6 priority lists → 1 team"; second line "Standard · Tournament · Speed dating". Position the readable navy text below the wordmark, highlighting "1 team" purple. To accommodate the full first line, use a wider clear headline area below the logo and slightly lower side cards if necessary; keep all six cards complete. Keep remaining copy "Interest 1–10", "8", "Mutual interest.", "Group chat. Real plans.", "Meet through events." unchanged. Change only the headline region and necessary adjacent spacing. Fully opaque full-bleed finished image.
+
+
+## Speed dating label update — 2026-09-21
+
+Tool: built-in `image_gen`, edit mode. Replaced the existing asset.
+
+Final edit prompt:
+
+Use case: text-localization. Input image is the EDIT TARGET. Replace ONLY the word "Mingle" with exactly "Speed dating" (capital S, lowercase d). The complete corrected line must read verbatim "Standard · Tournament · Speed dating". Facebook 4:5 portrait feed image. Retain 1122x1402 dimensions and exact framing. Keep edited line centered below first headline between the portrait cards; reduce only that line's font size slightly if necessary to fit. Match the existing typography, weight and color. Preserve EVERYTHING ELSE: all artwork, people, faces, profile cards, logo emblem and wordmark, backgrounds, lighting, icons, slider, every other text and badge, layout and aspect ratio. Do not add or remove anything else. Deliver one complete opaque edited image.

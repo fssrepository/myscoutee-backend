@@ -14049,31 +14049,31 @@
     "_id": "i18n-message-en-event-editor-mingle-title",
     "key": "event.editor.mingle.title",
     "lang": "en",
-    "value": "Mingle configuration"
+    "value": "Speed meeting configuration"
   },
   {
     "_id": "i18n-message-en-event-editor-mingle-aria",
     "key": "event.editor.mingle.aria",
     "lang": "en",
-    "value": "Edit Mingle configuration"
+    "value": "Edit Speed meeting configuration"
   },
   {
     "_id": "i18n-message-en-event-editor-mingle-open-aria",
     "key": "event.editor.mingle.open.aria",
     "lang": "en",
-    "value": "Open Mingle configuration"
+    "value": "Open Speed meeting configuration"
   },
   {
     "_id": "i18n-message-en-event-editor-mingle-close-aria",
     "key": "event.editor.mingle.close.aria",
     "lang": "en",
-    "value": "Close Mingle configuration"
+    "value": "Close Speed meeting configuration"
   },
   {
     "_id": "i18n-message-en-event-editor-mingle-save-aria",
     "key": "event.editor.mingle.save.aria",
     "lang": "en",
-    "value": "Save Mingle configuration"
+    "value": "Save Speed meeting configuration"
   },
   {
     "_id": "i18n-message-en-event-editor-mingle-panel-description",
@@ -14163,7 +14163,7 @@
     "_id": "i18n-message-en-event-editor-mingle-projection-aria",
     "key": "event.editor.mingle.projection.aria",
     "lang": "en",
-    "value": "{{round}} planned Mingle round"
+    "value": "{{round}} planned Speed meeting round"
   },
   {
     "_id": "i18n-message-en-mingle-tables",
@@ -14181,37 +14181,37 @@
     "_id": "i18n-message-en-mingle-error-action-failed",
     "key": "mingle.error.action.failed",
     "lang": "en",
-    "value": "The Mingle action could not be completed because of a technical error."
+    "value": "The Speed meeting action could not be completed because of a technical error."
   },
   {
     "_id": "i18n-message-en-mingle-error-service-unavailable",
     "key": "mingle.error.service.unavailable",
     "lang": "en",
-    "value": "The server was temporarily unavailable. Please try starting Mingle again."
+    "value": "The server was temporarily unavailable. Please try starting Speed meeting again."
   },
   {
     "_id": "i18n-message-en-mingle-error-action-unsupported",
     "key": "mingle.error.action.unsupported",
     "lang": "en",
-    "value": "This Mingle action is not supported."
+    "value": "This Speed meeting action is not supported."
   },
   {
     "_id": "i18n-message-en-mingle-error-round-limit-reached",
     "key": "mingle.error.round.limit.reached",
     "lang": "en",
-    "value": "Increase the planned number of Mingle rounds before starting another round."
+    "value": "Increase the planned number of Speed meeting rounds before starting another round."
   },
   {
     "_id": "i18n-message-en-mingle-error-state-cannot-advance",
     "key": "mingle.error.state.cannot.advance",
     "lang": "en",
-    "value": "The Mingle session cannot continue from its current state."
+    "value": "The Speed meeting session cannot continue from its current state."
   },
   {
     "_id": "i18n-message-en-mingle-error-members-insufficient",
     "key": "mingle.error.members.insufficient",
     "lang": "en",
-    "value": "At least {{required}} event members are required to start Mingle. Current members: {{accepted}}."
+    "value": "At least {{required}} event members are required to start Speed meeting. Current members: {{accepted}}."
   },
   {
     "_id": "i18n-message-en-mingle-error-table-assignment-unavailable",
@@ -14229,25 +14229,25 @@
     "_id": "i18n-message-en-mingle-error-event-not-found",
     "key": "mingle.error.event.not.found",
     "lang": "en",
-    "value": "The Mingle event could not be found."
+    "value": "The Speed meeting event could not be found."
   },
   {
     "_id": "i18n-message-en-mingle-error-manage-forbidden",
     "key": "mingle.error.manage.forbidden",
     "lang": "en",
-    "value": "You do not have permission to manage this Mingle event."
+    "value": "You do not have permission to manage this Speed meeting event."
   },
   {
     "_id": "i18n-message-en-mingle-error-session-not-started",
     "key": "mingle.error.session.not.started",
     "lang": "en",
-    "value": "The Mingle session has not started yet."
+    "value": "The Speed meeting session has not started yet."
   },
   {
     "_id": "i18n-message-en-mingle-error-configuration-required",
     "key": "mingle.error.configuration.required",
     "lang": "en",
-    "value": "Configure Mingle before starting it."
+    "value": "Configure Speed meeting before starting it."
   },
   {
     "_id": "i18n-message-en-event-editor-mingle-flexible-rounds-note",
@@ -21285,7 +21285,7 @@
     "_id": "i18n-message-en-mingle-action-start",
     "key": "mingle.action.start",
     "lang": "en",
-    "value": "Start Mingle"
+    "value": "Start Speed meeting"
   },
   {
     "_id": "i18n-message-en-mingle-action-start-description",
@@ -21315,7 +21315,7 @@
     "_id": "i18n-message-en-mingle-action-pause-title",
     "key": "mingle.action.pause.title",
     "lang": "en",
-    "value": "Pause Mingle"
+    "value": "Pause Speed meeting"
   },
   {
     "_id": "i18n-message-en-mingle-action-pause-description",
@@ -21357,13 +21357,13 @@
     "_id": "i18n-message-en-mingle-action-complete",
     "key": "mingle.action.complete",
     "lang": "en",
-    "value": "Complete Mingle"
+    "value": "Complete Speed meeting"
   },
   {
     "_id": "i18n-message-en-mingle-action-complete-description",
     "key": "mingle.action.complete.description",
     "lang": "en",
-    "value": "Stop the live Mingle sequence?"
+    "value": "Stop the live Speed meeting sequence?"
   },
   {
     "_id": "i18n-message-en-mingle-action-complete-confirm",
@@ -21387,13 +21387,13 @@
     "_id": "i18n-message-en-mingle-action-resume-title",
     "key": "mingle.action.resume.title",
     "lang": "en",
-    "value": "Resume Mingle"
+    "value": "Resume Speed meeting"
   },
   {
     "_id": "i18n-message-en-mingle-action-resume-description",
     "key": "mingle.action.resume.description",
     "lang": "en",
-    "value": "Resume the paused Mingle timer?"
+    "value": "Resume the paused Speed meeting timer?"
   },
   {
     "_id": "i18n-message-en-mingle-action-resume-confirm",
@@ -21465,7 +21465,7 @@
     "_id": "i18n-message-en-mingle-live-completed",
     "key": "mingle.live.COMPLETED",
     "lang": "en",
-    "value": "Mingle completed"
+    "value": "Speed meeting completed"
   },
   {
     "_id": "i18n-message-en-mingle-live-waiting",
@@ -21477,7 +21477,7 @@
     "_id": "i18n-message-en-notification-kind-mingle-table-assignment-title",
     "key": "notification.kind.mingle-table-assignment.title",
     "lang": "en",
-    "value": "Your Mingle table is ready"
+    "value": "Your Speed meeting table is ready"
   },
   {
     "_id": "i18n-message-en-notification-kind-mingle-table-assignment-message",
@@ -21489,7 +21489,7 @@
     "_id": "i18n-message-en-notification-kind-mingle-table-waiting-title",
     "key": "notification.kind.mingle-table-waiting.title",
     "lang": "en",
-    "value": "Mingle round started"
+    "value": "Speed meeting round started"
   },
   {
     "_id": "i18n-message-en-notification-kind-mingle-table-waiting-message",
@@ -21543,19 +21543,37 @@
     "_id": "i18n-message-en-event-mode-mingle",
     "key": "event.mode.mingle",
     "lang": "en",
-    "value": "Mingle"
+    "value": "Speed meeting"
   },
   {
     "_id": "i18n-message-en-landing-hero-event-formats",
     "key": "landing.hero.event.formats",
     "lang": "en",
-    "value": "Standard · Tournament · Mingle"
+    "value": "Standard · Tournament · Speed meeting"
   },
   {
     "_id": "i18n-message-en-landing-hero-free-to-join",
     "key": "landing.hero.free.to.join",
     "lang": "en",
     "value": "Free to join"
+  },
+  {
+    "_id": "i18n-message-en-event-partner-invite",
+    "key": "event.partner.invite",
+    "lang": "en",
+    "value": "Event invitation"
+  },
+  {
+    "_id": "i18n-message-en-event-partner-invite-failed",
+    "key": "event.partner.invite.failed",
+    "lang": "en",
+    "value": "The event invitation could not be opened."
+  },
+  {
+    "_id": "i18n-message-en-mingle-tables-close-aria",
+    "key": "mingle.tables.close.aria",
+    "lang": "en",
+    "value": "Close Speed meeting tables"
   },
   {
     "_id": "i18n-message-hu-unavailable-here",
@@ -35607,31 +35625,31 @@
     "_id": "i18n-message-hu-event-editor-mingle-title",
     "key": "event.editor.mingle.title",
     "lang": "hu",
-    "value": "Mingle beállítás"
+    "value": "Villámtalálkozók beállításai"
   },
   {
     "_id": "i18n-message-hu-event-editor-mingle-aria",
     "key": "event.editor.mingle.aria",
     "lang": "hu",
-    "value": "Mingle beállítás szerkesztése"
+    "value": "Villámtalálkozók beállításainak szerkesztése"
   },
   {
     "_id": "i18n-message-hu-event-editor-mingle-open-aria",
     "key": "event.editor.mingle.open.aria",
     "lang": "hu",
-    "value": "Mingle beállítás megnyitása"
+    "value": "Villámtalálkozók beállításainak megnyitása"
   },
   {
     "_id": "i18n-message-hu-event-editor-mingle-close-aria",
     "key": "event.editor.mingle.close.aria",
     "lang": "hu",
-    "value": "Mingle beállítás bezárása"
+    "value": "Villámtalálkozók beállításainak bezárása"
   },
   {
     "_id": "i18n-message-hu-event-editor-mingle-save-aria",
     "key": "event.editor.mingle.save.aria",
     "lang": "hu",
-    "value": "Mingle beállítás mentése"
+    "value": "Villámtalálkozók beállításainak mentése"
   },
   {
     "_id": "i18n-message-hu-event-editor-mingle-panel-description",
@@ -35721,7 +35739,7 @@
     "_id": "i18n-message-hu-event-editor-mingle-projection-aria",
     "key": "event.editor.mingle.projection.aria",
     "lang": "hu",
-    "value": "{{round}} tervezett Mingle-kör"
+    "value": "{{round}} tervezett villámtalálkozó-kör"
   },
   {
     "_id": "i18n-message-hu-mingle-tables",
@@ -35739,37 +35757,37 @@
     "_id": "i18n-message-hu-mingle-error-action-failed",
     "key": "mingle.error.action.failed",
     "lang": "hu",
-    "value": "A Mingle-művelet technikai hiba miatt nem hajtható végre."
+    "value": "A villámtalálkozók műveletét technikai hiba miatt nem sikerült végrehajtani."
   },
   {
     "_id": "i18n-message-hu-mingle-error-service-unavailable",
     "key": "mingle.error.service.unavailable",
     "lang": "hu",
-    "value": "A szerver átmenetileg nem volt elérhető. Próbáld meg újra elindítani a Mingle-t."
+    "value": "A szerver átmenetileg nem volt elérhető. Próbáld újra elindítani a villámtalálkozókat."
   },
   {
     "_id": "i18n-message-hu-mingle-error-action-unsupported",
     "key": "mingle.error.action.unsupported",
     "lang": "hu",
-    "value": "Ez a Mingle-művelet nem támogatott."
+    "value": "Ez a művelet nem támogatott a villámtalálkozóknál."
   },
   {
     "_id": "i18n-message-hu-mingle-error-round-limit-reached",
     "key": "mingle.error.round.limit.reached",
     "lang": "hu",
-    "value": "Új kör indítása előtt növeld a tervezett Mingle-körök számát."
+    "value": "Új kör indítása előtt növeld a villámtalálkozók tervezett körszámát."
   },
   {
     "_id": "i18n-message-hu-mingle-error-state-cannot-advance",
     "key": "mingle.error.state.cannot.advance",
     "lang": "hu",
-    "value": "A Mingle-folyamat a jelenlegi állapotából nem folytatható."
+    "value": "A villámtalálkozók a jelenlegi állapotból nem folytathatók."
   },
   {
     "_id": "i18n-message-hu-mingle-error-members-insufficient",
     "key": "mingle.error.members.insufficient",
     "lang": "hu",
-    "value": "A Mingle indításához legalább {{required}} eseménytag szükséges. Jelenlegi létszám: {{accepted}}."
+    "value": "A villámtalálkozók indításához legalább {{required}} eseménytag szükséges. Jelenlegi létszám: {{accepted}}."
   },
   {
     "_id": "i18n-message-hu-mingle-error-table-assignment-unavailable",
@@ -35787,25 +35805,25 @@
     "_id": "i18n-message-hu-mingle-error-event-not-found",
     "key": "mingle.error.event.not.found",
     "lang": "hu",
-    "value": "A Mingle-esemény nem található."
+    "value": "A villámtalálkozókat tartalmazó esemény nem található."
   },
   {
     "_id": "i18n-message-hu-mingle-error-manage-forbidden",
     "key": "mingle.error.manage.forbidden",
     "lang": "hu",
-    "value": "Nincs jogosultságod ennek a Mingle-eseménynek a kezeléséhez."
+    "value": "Nincs jogosultságod ezeknek a villámtalálkozóknak a kezeléséhez."
   },
   {
     "_id": "i18n-message-hu-mingle-error-session-not-started",
     "key": "mingle.error.session.not.started",
     "lang": "hu",
-    "value": "A Mingle még nem indult el."
+    "value": "A villámtalálkozók még nem indultak el."
   },
   {
     "_id": "i18n-message-hu-mingle-error-configuration-required",
     "key": "mingle.error.configuration.required",
     "lang": "hu",
-    "value": "Indítás előtt állítsd be a Mingle-t."
+    "value": "Indítás előtt állítsd be a villámtalálkozókat."
   },
   {
     "_id": "i18n-message-hu-event-editor-mingle-flexible-rounds-note",
@@ -42843,7 +42861,7 @@
     "_id": "i18n-message-hu-mingle-action-start",
     "key": "mingle.action.start",
     "lang": "hu",
-    "value": "Mingle indítása"
+    "value": "Villámtalálkozók indítása"
   },
   {
     "_id": "i18n-message-hu-mingle-action-start-description",
@@ -42873,7 +42891,7 @@
     "_id": "i18n-message-hu-mingle-action-pause-title",
     "key": "mingle.action.pause.title",
     "lang": "hu",
-    "value": "Mingle szüneteltetése"
+    "value": "Villámtalálkozók szüneteltetése"
   },
   {
     "_id": "i18n-message-hu-mingle-action-pause-description",
@@ -42915,13 +42933,13 @@
     "_id": "i18n-message-hu-mingle-action-complete",
     "key": "mingle.action.complete",
     "lang": "hu",
-    "value": "Mingle befejezése"
+    "value": "Villámtalálkozók befejezése"
   },
   {
     "_id": "i18n-message-hu-mingle-action-complete-description",
     "key": "mingle.action.complete.description",
     "lang": "hu",
-    "value": "Befejezed az élő Mingle-t?"
+    "value": "Befejezed az élő villámtalálkozókat?"
   },
   {
     "_id": "i18n-message-hu-mingle-action-complete-confirm",
@@ -42945,13 +42963,13 @@
     "_id": "i18n-message-hu-mingle-action-resume-title",
     "key": "mingle.action.resume.title",
     "lang": "hu",
-    "value": "Mingle folytatása"
+    "value": "Villámtalálkozók folytatása"
   },
   {
     "_id": "i18n-message-hu-mingle-action-resume-description",
     "key": "mingle.action.resume.description",
     "lang": "hu",
-    "value": "Folytatod a szüneteltetett Mingle időzítőt?"
+    "value": "Folytatod a villámtalálkozók szüneteltetett időzítőjét?"
   },
   {
     "_id": "i18n-message-hu-mingle-action-resume-confirm",
@@ -43023,7 +43041,7 @@
     "_id": "i18n-message-hu-mingle-live-completed",
     "key": "mingle.live.COMPLETED",
     "lang": "hu",
-    "value": "A Mingle befejeződött"
+    "value": "A villámtalálkozók befejeződtek"
   },
   {
     "_id": "i18n-message-hu-mingle-live-waiting",
@@ -43035,7 +43053,7 @@
     "_id": "i18n-message-hu-notification-kind-mingle-table-assignment-title",
     "key": "notification.kind.mingle-table-assignment.title",
     "lang": "hu",
-    "value": "Elkészült a Mingle-asztalod"
+    "value": "Elkészült az asztalkiosztásod"
   },
   {
     "_id": "i18n-message-hu-notification-kind-mingle-table-assignment-message",
@@ -43047,7 +43065,7 @@
     "_id": "i18n-message-hu-notification-kind-mingle-table-waiting-title",
     "key": "notification.kind.mingle-table-waiting.title",
     "lang": "hu",
-    "value": "Elindult a Mingle-kör"
+    "value": "Elindult a villámtalálkozók következő köre"
   },
   {
     "_id": "i18n-message-hu-notification-kind-mingle-table-waiting-message",
@@ -43101,18 +43119,36 @@
     "_id": "i18n-message-hu-event-mode-mingle",
     "key": "event.mode.mingle",
     "lang": "hu",
-    "value": "Mingle"
+    "value": "Villámtalálkozók"
   },
   {
     "_id": "i18n-message-hu-landing-hero-event-formats",
     "key": "landing.hero.event.formats",
     "lang": "hu",
-    "value": "Standard · Verseny · Mingle"
+    "value": "Standard · Verseny · Villámtalálkozók"
   },
   {
     "_id": "i18n-message-hu-landing-hero-free-to-join",
     "key": "landing.hero.free.to.join",
     "lang": "hu",
     "value": "Ingyenes csatlakozás"
+  },
+  {
+    "_id": "i18n-message-hu-event-partner-invite",
+    "key": "event.partner.invite",
+    "lang": "hu",
+    "value": "Eseménymeghívó"
+  },
+  {
+    "_id": "i18n-message-hu-event-partner-invite-failed",
+    "key": "event.partner.invite.failed",
+    "lang": "hu",
+    "value": "Az eseménymeghívót nem sikerült megnyitni."
+  },
+  {
+    "_id": "i18n-message-hu-mingle-tables-close-aria",
+    "key": "mingle.tables.close.aria",
+    "lang": "hu",
+    "value": "Villámtalálkozók asztalainak bezárása"
   }
 ]

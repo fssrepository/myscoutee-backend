@@ -37,8 +37,17 @@ same resolution.
 Tool: built-in image_gen, edit mode. Saved over existing asset `myscoutee-promo-instagram-1x1-v1.png` at the user's request; no separate output directory.
 Current exact copy:
 - 6 people · 6 priority lists → 1 team
-- Standard · Tournament · Mingle
+- Standard · Tournament · Speed dating
 
 Final generation prompt:
 
-Use case: text-localization. Edit the supplied square MyScoutee Instagram image. Preserve exact 1:1 square aspect ratio, logo emblem+yScoutee, six profile cards, six cafe friends, faces, background, interest slider, chat icon, colors, and FREE TO JOIN badge. Replace the existing three-line headline "6 people. 6 priority lists. 1 shared group." with a crisp two-line headline: "6 people · 6 priority lists → 1 team" on the first line and "Standard · Tournament · Mingle" on the second. Center beneath logo with navy type and purple "1 team", balanced readable typography. If necessary provide a full-width light headline strip below the wordmark, moving side portrait cards slightly downward while preserving all six cards and people. Keep other text exactly "Interest 1–10", "8", "Mutual interest.", "Group chat. Real plans.", "Meet through events.", "FREE TO JOIN". No new claims or decorative labels. Output full-bleed opaque square image.
+Use case: text-localization. Edit the supplied square MyScoutee Instagram image. Preserve exact 1:1 square aspect ratio, logo emblem+yScoutee, six profile cards, six cafe friends, faces, background, interest slider, chat icon, colors, and FREE TO JOIN badge. Replace the existing three-line headline "6 people. 6 priority lists. 1 shared group." with a crisp two-line headline: "6 people · 6 priority lists → 1 team" on the first line and "Standard · Tournament · Speed dating" on the second. Center beneath logo with navy type and purple "1 team", balanced readable typography. If necessary provide a full-width light headline strip below the wordmark, moving side portrait cards slightly downward while preserving all six cards and people. Keep other text exactly "Interest 1–10", "8", "Mutual interest.", "Group chat. Real plans.", "Meet through events.", "FREE TO JOIN". No new claims or decorative labels. Output full-bleed opaque square image.
+
+
+## Speed dating label update — 2026-09-21
+
+Tool: built-in `image_gen`, edit mode. Replaced the existing asset.
+
+Final edit prompt:
+
+Use case: text-localization. Input image is the EDIT TARGET. Replace ONLY the word "Mingle" with exactly "Speed dating" (capital S, lowercase d). The complete corrected line must read verbatim "Standard · Tournament · Speed dating". Instagram 1:1 square image. Retain 1254x1254 dimensions and exact framing. Keep edited line centered below first headline inside its existing pale panel between the portrait cards; reduce only that line's font size slightly if necessary to fit. Match the existing typography, weight and color. Preserve EVERYTHING ELSE: all artwork, people, faces, profile cards, logo emblem and wordmark, backgrounds, lighting, icons, slider, every other text and badge, layout and aspect ratio. Do not add or remove anything else. Deliver one complete opaque edited image.

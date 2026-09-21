@@ -21,7 +21,7 @@
     <div class="cover-title-block">
       <div class="cover-kicker">External Integration</div>
       <h1 id="document-title">MyScoutee Integration API Guide</h1>
-      <p class="cover-lead">A compact write API for creating asset and event batches, attaching optional image bytes, correlating external records, and receiving scoped change callbacks.</p>
+      <p class="cover-lead">A compact API for asset and event batches, organizer event links, participant invitations, completed Speed meeting encounters, and scoped change callbacks.</p>
     </div>
 
     <div class="cover-meta" aria-label="Document metadata">
@@ -30,6 +30,7 @@
       <div><strong>Applicable software version</strong><span>MyScoutee 1.0.1</span></div>
       <div><strong>Status</strong><span class="cover-status"><span class="status-dot" aria-hidden="true"></span>Released</span></div>
       <div><strong>Release date</strong><time datetime="2026-09-20">2026-09-20</time></div>
+      <div><strong>Source revision</strong><span>2026-09-21</span></div>
       <div><strong>Language</strong><span>EN</span></div>
     </div>
   </section>
@@ -49,12 +50,13 @@
     <h3>Version History</h3>
     <table>
       <thead><tr><th scope="col">Version</th><th scope="col">Date</th><th scope="col">Status</th><th scope="col">Change</th></tr></thead>
-      <tbody><tr><td>1.0.1</td><td>2026-09-20</td><td>Released</td><td>Initial public batch API, scoped callback watch, and Java client guide.</td></tr></tbody>
+      <tbody><tr><td>1.0.1</td><td>2026-09-20</td><td>Released</td><td>Initial public batch API, scoped callback watch, and Java client guide.</td></tr>
+        <tr><td>1.0.1 + source extensions</td><td>2026-09-21</td><td>Implementation revision</td><td>Organizer event links, Speed meeting configuration, participant links, event reads and completed encounter export/watch. New commands require a client built from this source revision.</td></tr></tbody>
     </table>
 
     <aside class="callout note">
       <strong class="callout-title">Small by design</strong>
-      This is not a general-purpose read API. It creates assets and events owned by the token owner and returns stable MyScoutee IDs for external correlation.
+      The token fixes the owner for batch writes, managed-event reads, participant invitation links and encounter exports. This guide includes the current source extensions; their presence in a deployment depends on its installed server and client revision.
     </aside>
   </section>
 
@@ -130,6 +132,9 @@
         <tr><td><code>POST</code></td><td><code>/connect</code></td><td>Claim and validate a client key</td><td><code>200</code></td></tr>
         <tr><td><code>POST</code></td><td><code>/assets</code></td><td>Create 1–1000 assets, optionally with images</td><td><code>200</code></td></tr>
         <tr><td><code>POST</code></td><td><code>/events</code></td><td>Create 1–1000 events, optionally with images</td><td><code>200</code></td></tr>
+        <tr><td><code>GET</code></td><td><code>/events/{externalId}</code></td><td>Read a managed event, including its external link and format</td><td><code>200</code></td></tr>
+        <tr><td><code>POST</code></td><td><code>/events/{externalId}/invites</code></td><td>Create links for 1–1000 participant IDs</td><td><code>200</code></td></tr>
+        <tr><td><code>GET</code></td><td><code>/events/{externalId}/encounters</code></td><td>Read completed, unique encounter pairs; offset/limit pagination</td><td><code>200</code></td></tr>
         <tr><td><code>POST</code></td><td><code>/watch</code></td><td>Register or disable this client's scoped callback</td><td><code>200</code></td></tr>
       </tbody>
     </table>
@@ -195,7 +200,10 @@
         <tr><td><code>startAt</code>, <code>endAt</code></td><td>ISO-8601 instant</td><td>Yes</td><td><code>endAt</code> must be after <code>startAt</code></td></tr>
         <tr><td><code>capacityMin</code></td><td>integer</td><td>Yes</td><td>Zero or greater</td></tr>
         <tr><td><code>capacityMax</code></td><td>integer</td><td>Yes</td><td>At least <code>capacityMin</code></td></tr>
-        <tr><td><code>location</code>, <code>sourceLink</code></td><td>string</td><td>No</td><td>Optional display and source-reference fields</td></tr>
+        <tr><td><code>location</code></td><td>string</td><td>No</td><td>Optional location text</td></tr>
+        <tr><td><code>sourceLink</code></td><td>string</td><td>No</td><td>External organizer event-page link, following the asset link model. Returned in event reads and change callbacks; not a separate payment URL.</td></tr>
+        <tr><td><code>mode</code></td><td>string</td><td>No</td><td><code>Casual</code> (default), <code>Tournament</code> or <code>Mingle</code>. UI labels are Standard, Tournament and Speed meeting.</td></tr>
+        <tr><td><code>mingleConfiguration</code></td><td>object</td><td>No</td><td>Allowed only with <code>mode: Mingle</code>. If present, all five fields below are required. No configuration is invented when omitted.</td></tr>
         <tr><td><code>visibility</code></td><td>string</td><td>No</td><td>Ordinary event visibility; defaults when omitted</td></tr>
         <tr><td><code>status</code></td><td>string</td><td>No</td><td><code>draft</code> or <code>active</code>; defaults to active</td></tr>
         <tr><td><code>topics</code></td><td>string array</td><td>No</td><td>Optional event topics</td></tr>
@@ -210,9 +218,50 @@
     "endAt": "2026-10-10T20:00:00Z",
     "capacityMin": 1,
     "capacityMax": 30,
-    "status": "draft"
+    "status": "draft",
+    "sourceLink": "https://organizer.example.test/events/hotel-evening",
+    "mode": "Mingle",
+    "mingleConfiguration": {
+      "groupSize": 4,
+      "plannedRounds": 3,
+      "roundDurationMinutes": 10,
+      "breakDurationMinutes": 2,
+      "requireGenderBalance": false
+    }
   }]
 }</code></pre>
+    <p>Configuration limits: <code>groupSize</code> 2–20, <code>plannedRounds</code> 1–100, <code>roundDurationMinutes</code> 1–240, <code>breakDurationMinutes</code> 0–60 and boolean <code>requireGenderBalance</code>. The app displays Speed meeting (Hungarian: Villámtalálkozók); the wire identifier stays <code>Mingle</code>.</p>
+    <h3 id="event-read">6.1 Read a managed event</h3>
+    <p><code>GET /events/{externalId}</code> returns <code>id</code>, <code>externalId</code>, <code>title</code>, <code>status</code>, <code>sourceLink</code>, <code>mode</code> and <code>mingleConfiguration</code>. Use the MyScoutee event ID in the path. The caller-owned <code>id</code> can be null for events created in the app. Another owner's event returns 404.</p>
+    <h3 id="participant-links">6.2 Create participant links</h3>
+    <p><code>POST /events/{externalId}/invites</code> accepts 1–1000 distinct caller-owned participant IDs. IDs are trimmed, nonblank strings of at most 200 characters; they need not be UUIDs.</p>
+    <pre><code>{"participantIds": ["guest-001", "guest-002"]}</code></pre>
+    <pre><code>{
+  "items": [{
+    "id": "guest-001",
+    "inviteUrl": "https://example.com/game?partnerInvite=opaque-private-token",
+    "claimed": false
+  }, {
+    "id": "guest-002",
+    "inviteUrl": "https://example.com/game?partnerInvite=another-private-token",
+    "claimed": false
+  }]
+}</code></pre>
+    <p>Repeating the same owner/event/participant tuple returns the same link. Send each private link to its intended participant. The link survives sign-in or registration, binds the external participant ID to the authenticated account, and creates an ordinary pending event invitation. It does not automatically accept participation or bypass checkout. A claimed link cannot be transferred to a different account. Claiming also rechecks the organizer's authority to invite.</p>
+    <h3 id="encounters">6.3 Read completed encounters</h3>
+    <p><code>GET /events/{externalId}/encounters?offset=0&amp;limit=1000</code> requires a completed Speed meeting session. Each unordered pair appears once across the frozen, actual memberships of completed table rounds. A shared event alone is insufficient; ratings and friendship status do not affect this export.</p>
+    <pre><code>{
+  "id": "1066b61b-c0ac-43d5-ab28-f588f5a162f6",
+  "externalId": "55fe8563-f360-48cf-af0e-7cfb0404ee84",
+  "revision": 8,
+  "pairs": [{
+    "first": {"id": "guest-001", "externalId": "a5886430-3035-3f6a-a7b2-03b04c3f5911"},
+    "second": {"id": "guest-002", "externalId": "4ce757f6-aec7-3cf2-aed5-9eec40bbb0fc"}
+  }],
+  "total": 1,
+  "nextOffset": null
+}</code></pre>
+    <p>A participant's <code>id</code> is the caller's linked participant ID or null. Their <code>externalId</code> is an opaque organizer-scoped identifier, not an internal user ID. No contact information is exported. Use nonnegative <code>offset</code> and <code>limit</code> 1–1000; continue with <code>nextOffset</code> until null. Keep pages from the same session <code>revision</code> together. An incomplete session returns 409; an inaccessible event returns 404.</p>
   </section>
 
   <section id="images" class="page-break" aria-labelledby="images-title">
@@ -235,13 +284,13 @@
 
   <section id="watch" class="page-break" aria-labelledby="watch-title">
     <h2 id="watch-title">8. Change Callback</h2>
-    <p><code>POST /watch</code> registers one callback URL for the current token/client pair. It is a push notification mechanism, not a polling or general read endpoint. MyScoutee sends only <code>event.changed</code> for events managed by the token owner and <code>asset.changed</code> for assets owned by that user.</p>
+    <p><code>POST /watch</code> registers one callback URL for the current token/client pair. It is a push notification mechanism, not a polling or general read endpoint. MyScoutee sends <code>event.changed</code> for managed events, <code>asset.changed</code> for owned assets, and explicitly selected <code>event.encounters</code> when Speed meeting completes.</p>
     <pre><code>{
   "callbackUrl": "https://integration.example.test/hooks/myscoutee",
   "events": ["event.changed", "asset.changed"],
   "enabled": true
 }</code></pre>
-    <p>An empty or omitted <code>events</code> list selects both supported types. Disable the registration with <code>{"enabled": false}</code>. Revoking or expiring the client key also disables delivery. Change capture only writes a durable queue record on the application request path; an elastic worker pool grows from zero idle workers to at most 100 parallel deliveries, performs callback HTTP requests independently, and can deliver to multiple client destinations in parallel.</p>
+    <p>An empty or omitted <code>events</code> list selects <code>event.changed</code> and <code>asset.changed</code>. Add <code>event.encounters</code> explicitly before session completion to receive encounter results. Disable the registration with <code>{"enabled": false}</code>. Revoking or expiring the client key also disables delivery. Change capture only writes a durable queue record on the application request path; an elastic worker pool grows from zero idle workers to at most 100 parallel deliveries, performs callback HTTP requests independently, and can deliver to multiple client destinations in parallel.</p>
     <h3>Delivered message</h3>
     <pre><code>{
   "deliveryId": "ad01bce2-70ac-4a60-8703-8f03bf105af6",
@@ -266,7 +315,10 @@
     }
   }
 }</code></pre>
-    <p>A normal participant Join and its later membership-state change trigger <code>event.changed</code>. The optional participant projection contains only name, age, gender, and first profile image; it contains no e-mail address or internal user ID. Resource snapshots may also carry event times and accepted/pending counts or asset type, quantity, and capacity.</p>
+    <p>A normal participant Join and its later membership-state change trigger <code>event.changed</code>. The optional participant projection contains only name, age, gender, and first profile image; it contains no e-mail address or internal user ID. Event snapshots also carry <code>sourceLink</code>, <code>mode</code> and <code>mingleConfiguration</code>; snapshots may additionally include event times and accepted/pending counts or asset type, quantity and capacity.</p>
+    <h3>Completed encounter callback</h3>
+    <p>The <code>event.encounters</code> envelope uses the same <code>deliveryId</code>, <code>type</code>, <code>occurredAt</code> and <code>resource</code> structure. Its resource contains the encounter response above plus <code>offset</code>. Results are split into messages of at most 1000 pairs; even an empty result produces a final page. Group pages by event and revision and use offsets to assemble them, since callback delivery order is not guaranteed.</p>
+    <p>Completion is saved before publication to the durable delivery queue. Pending publication is retried after a restart, with stable delivery IDs per subscription, event, revision and offset. Receiver-side deduplication is still required for delivery retries. Register before completion; previously completed sessions remain available from the read endpoint.</p>
     <table class="keep-together">
       <thead><tr><th scope="col">Delivery rule</th><th scope="col">Contract</th></tr></thead>
       <tbody>
@@ -288,6 +340,8 @@
         <tr><td><code>200 / existing</code></td><td>The caller <code>id</code> was already mapped; the same <code>externalId</code> is returned.</td></tr>
         <tr><td><code>200 / rejected</code></td><td>That item failed validation or creation; <code>error</code> contains a stable reason and <code>externalId</code> is null.</td></tr>
         <tr><td><code>400</code></td><td>The batch envelope or multipart relationship is invalid.</td></tr>
+        <tr><td><code>403 / 404</code></td><td>Invitation is forbidden, or the requested event is unavailable to this owner.</td></tr>
+        <tr><td><code>409</code></td><td>The encounter session is not complete, or the event has the wrong mode.</td></tr>
         <tr><td><code>401</code></td><td>The key is missing, invalid, expired, revoked, or claimed by another client UUID.</td></tr>
       </tbody>
     </table>
@@ -302,6 +356,9 @@ myscoutee-client configure \
   https://example.com/api/integrations/v1 \
   'msc_your_token'
 
+myscoutee-client event &lt;myscoutee-event-id&gt;
+myscoutee-client invites &lt;myscoutee-event-id&gt; guest-001 guest-002
+myscoutee-client encounters &lt;myscoutee-event-id&gt; 0 1000
 myscoutee-client assets assets.json
 myscoutee-client events events.json \
   1066b61b-c0ac-43d5-ab28-f588f5a162f6=event.webp
@@ -316,6 +373,9 @@ myscoutee-client unwatch</code></pre>
         <tr><td><code>createEvents(items)</code></td><td>Send a JSON-only event batch.</td></tr>
         <tr><td><code>createEvents(items, images)</code></td><td>Send events and optional local images.</td></tr>
         <tr><td><code>watch(callbackUrl, events)</code></td><td>Register the callback and selected event types for this client.</td></tr>
+        <tr><td><code>event(externalId)</code></td><td>Read the organizer link and format configuration for a managed event.</td></tr>
+        <tr><td><code>inviteParticipants(externalId, participantIds)</code></td><td>Create or retrieve participant links.</td></tr>
+        <tr><td><code>encounters(externalId, offset, limit)</code></td><td>Read one completed encounter page.</td></tr>
         <tr><td><code>unwatch()</code></td><td>Disable the current client's callback.</td></tr>
       </tbody>
     </table>
@@ -332,6 +392,7 @@ myscoutee-client unwatch</code></pre>
       <li>Split imports into batches of no more than 1000 items.</li>
       <li>Do not infer access to another user's records: the token fixes the resource owner.</li>
       <li>Do not include participant personal data in asset or event create requests.</li>
+      <li>Treat invitation URLs as private bearer links. Do not place them in public logs or share one participant's link with another.</li>
       <li>Return a fast 2xx from the callback and process asynchronously; deduplicate every delivery ID.</li>
       <li>Expose callback endpoints over public HTTPS in production and reject unexpected payload types.</li>
     </ul>

@@ -540,7 +540,7 @@ public class ActivitiesMingleService {
                     normalizeId(event.getSourceId()),
                     "mingle-table",
                     table.memberUserIds(),
-                    "Your Mingle table is ready",
+                    "Your Speed meeting table is ready",
                     "Go to Table " + count(table.tableNumber()) + " for round " + count(round.getRoundNumber()) + ".",
                     "/game?mingleEventId=" + normalizeId(event.getSourceId()),
                     firstNonBlank(event.getImageUrl(), "/assets/logo/heart.webp"),
@@ -554,7 +554,7 @@ public class ActivitiesMingleService {
         if (!waiting.isEmpty()) {
             notificationOutboxService.enqueue(new NotificationIntent(
                     "mingle-table-waiting", "event", event.getSourceId(), "mingle-table", List.copyOf(waiting),
-                    "Mingle round started", "Waiting for a table assignment.",
+                    "Speed meeting round started", "Waiting for a table assignment.",
                     "/game?mingleEventId=" + normalizeId(event.getSourceId()),
                     firstNonBlank(event.getImageUrl(), "/assets/logo/heart.webp"), "/assets/logo/heart.webp",
                     "mingle-waiting-" + event.getSourceId() + "-" + round.getRoundNumber(),

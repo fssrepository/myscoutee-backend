@@ -545,6 +545,22 @@ through `/auth/me/page-filter-preferences`. They do not overwrite home-rating
 preferences. HTTP and local adapters both retain them. Format filtering happens
 before totals and pagination. Failed saves leave the editable popup open.
 
-The landing hero includes one localized Standard · Tournament · Mingle line
+The landing hero includes one localized Standard · Tournament · Speed meeting line
 below the six-person/six-priority-list statement. The existing About menu item
 in the footer already opens the localized founder/product/free-access popup.
+
+### Display name and landing actions (2026-09-21)
+
+The user-selected public format name is **Speed meeting** in English and
+**Villámtalálkozók** in Hungarian. `Mingle`, `mingleConfiguration`, stored IDs
+and translation keys remain technical identifiers. Menu labels, configuration,
+actions, errors, live state and notification labels use the public name.
+
+The landing's format line uses the same typography as the six-person statement.
+Free to join is a button beside Start exploring, invoking the existing header
+sign-in flow. Both actions stay side by side on mobile; their labels can wrap
+inside the buttons, while the format line fits a 320 px viewport. About remains
+in the footer. The integration guide source and PDF document the organizer's
+`sourceLink`, invitations, owner-scoped event reads and completed encounter
+read/watch contracts; current-source additions are distinguished from the
+original published release.

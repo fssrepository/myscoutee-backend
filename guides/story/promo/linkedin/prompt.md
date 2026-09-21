@@ -43,8 +43,17 @@ aspect ratio and resolution.
 Tool: built-in image_gen, edit mode. Saved over existing asset `cover.png` at the user's request; no separate output directory.
 Current exact copy:
 - 6 people · 6 priority lists → 1 team
-- Standard · Tournament · Mingle
+- Standard · Tournament · Speed dating
 
 Final generation prompt:
 
-Use case: text-localization. Edit this existing English MyScoutee LinkedIn cover, preserving its exact landscape 16:9 composition, six cafe friends, faces, Budapest backdrop, beautiful lighting, logo emblem+yScoutee, pale left background and FREE TO JOIN badge. Add these two exact English lines to the left text area below the existing "Shared experiences. Real connections." tagline and above "myscoutee.com": line 1 "6 people · 6 priority lists → 1 team"; line 2 "Standard · Tournament · Mingle". Make the added lines clear, legible and visually integrated in navy rounded sans-serif, slightly emphasize "1 team" in purple. Adjust only left-side typography size and vertical spacing as necessary so each of the two added lines is unbroken, comfortable and never over faces. Preserve all original copy including "FREE TO JOIN", "Shared experiences.", "Real connections.", "myscoutee.com". Exact faithful logo without duplicated M. No other changes. Fully opaque rectangular finished cover.
+Use case: text-localization. Edit this existing English MyScoutee LinkedIn cover, preserving its exact landscape 16:9 composition, six cafe friends, faces, Budapest backdrop, beautiful lighting, logo emblem+yScoutee, pale left background and FREE TO JOIN badge. Add these two exact English lines to the left text area below the existing "Shared experiences. Real connections." tagline and above "myscoutee.com": line 1 "6 people · 6 priority lists → 1 team"; line 2 "Standard · Tournament · Speed dating". Make the added lines clear, legible and visually integrated in navy rounded sans-serif, slightly emphasize "1 team" in purple. Adjust only left-side typography size and vertical spacing as necessary so each of the two added lines is unbroken, comfortable and never over faces. Preserve all original copy including "FREE TO JOIN", "Shared experiences.", "Real connections.", "myscoutee.com". Exact faithful logo without duplicated M. No other changes. Fully opaque rectangular finished cover.
+
+
+## Speed dating label update — 2026-09-21
+
+Tool: built-in `image_gen`, edit mode. Replaced the existing asset.
+
+Final edit prompt:
+
+Use case: text-localization. Input image is the EDIT TARGET. Replace ONLY the word "Mingle" with exactly "Speed dating" (capital S, lowercase d). The complete corrected line must read verbatim "Standard · Tournament · Speed dating". LinkedIn landscape cover. Retain 1672x941 dimensions and exact framing. Keep edited line left aligned where it is now; modestly reduce only that line's type if necessary to fit before the people. Match the existing typography, weight and color. Preserve EVERYTHING ELSE: all artwork, people, faces, profile cards, logo emblem and wordmark, backgrounds, lighting, icons, slider, every other text and badge, layout and aspect ratio. Do not add or remove anything else. Deliver one complete opaque edited image.
