@@ -43,6 +43,7 @@ import com.raxim.myscoutee.profile.data.document.Asset.AssetRequestBookingRecord
 import com.raxim.myscoutee.profile.data.document.Asset.AssetRequestRecord;
 import com.raxim.myscoutee.profile.data.document.AssetRequest;
 import com.raxim.myscoutee.profile.data.document.EventTicket;
+import com.raxim.myscoutee.profile.data.document.SubEventItem;
 import com.raxim.myscoutee.profile.data.document.Users;
 import com.raxim.myscoutee.profile.data.dto.assets.AssetsDtos.AssetDeleteRequestDto;
 import com.raxim.myscoutee.profile.data.dto.assets.AssetsDtos.AssetDetailDto;
@@ -380,6 +381,7 @@ class AssetsServiceTest {
                 .thenReturn(Optional.of(manager));
         when(activityMembersRepository.findByOwnerTypeAndOwnerId("asset", "asset-1"))
                 .thenReturn(List.of(manager));
+        when(usersRepository.findByUserId("u2")).thenReturn(Optional.of(user("u2", "Manager Two", "MT")));
         when(usersRepository.findByUserIdIn(List.of("u1"))).thenReturn(List.of(owner));
 
         AssetsService service = new AssetsService(
@@ -778,6 +780,7 @@ class AssetsServiceTest {
         NotificationOutboxService notificationOutboxService = mock(NotificationOutboxService.class);
         MongoTemplate mongoTemplate = mock(MongoTemplate.class);
         Asset asset = asset();
+        asset.setRequests(List.of());
         asset.setPoliciesEnabled(true);
         asset.setPolicies(List.of(new AssetPolicyRecord(
                 "policy-1",
@@ -799,6 +802,7 @@ class AssetsServiceTest {
         var authentication = new TestingAuthenticationToken("firebase-principal", null);
         when(accessControlService.resolveActorUserId(authentication)).thenReturn("firebase-principal");
         when(mongoTemplate.find(any(), eq(AssetRequest.class))).thenReturn(List.of());
+        stubBorrowWindow(mongoTemplate);
 
         AssetsService service = new AssetsService(
                 assetsRepository,
@@ -1106,7 +1110,11 @@ class AssetsServiceTest {
                 "event-1", "subevent-1", "asset-1", "u2", "u3"))
                 .thenReturn(true);
         when(usersRepository.findByUserId("u2")).thenReturn(Optional.of(user("u2", "Manager Two", "MT")));
-        when(usersRepository.findByUserId("u3")).thenReturn(Optional.of(user("u3", "Successor Three", "ST")));
+        Users successor = user("u3", "Successor Three", "ST");
+        successor.setPaymentSpentTotals(Map.of("HUF", 3200d));
+        successor.setPaymentIncomeTotals(Map.of());
+        successor.setPaymentAllTotals(Map.of("HUF", 3200d));
+        when(usersRepository.findByUserId("u3")).thenReturn(Optional.of(successor));
         when(usersRepository.findByUserId("u4")).thenReturn(Optional.of(user("u4", "Remaining Four", "RF")));
         PaymentService.AssetPaymentReplacement replacement =
                 new PaymentService.AssetPaymentReplacement("old-payment", "new-payment", true);
@@ -1215,6 +1223,9 @@ class AssetsServiceTest {
         when(activityMembersRepository.findByOwnerTypeAndOwnerId("asset", "asset-1"))
                 .thenReturn(List.of());
         when(mongoTemplate.find(any(), eq(AssetRequest.class))).thenReturn(List.of());
+        AccessControlService accessControlService = mock(AccessControlService.class);
+        when(accessControlService.canCurrentActorRequestAssetBorrow("u1", "event-1")).thenReturn(true);
+        stubBorrowWindow(mongoTemplate);
 
         AssetsService service = new AssetsService(
                 assetsRepository,
@@ -1229,7 +1240,7 @@ class AssetsServiceTest {
                 mock(AdminTelemetryService.class),
                 mock(NotificationOutboxService.class),
                 mock(ChatAttachmentLifecycleService.class),
-                mock(AccessControlService.class),
+                accessControlService,
                 mock(UserActivityCountersService.class));
 
         var joined = service.applyMemberStatusChange(new AssetMemberStatusChangeRequestDto(
@@ -1436,8 +1447,11 @@ class AssetsServiceTest {
         verify(assetsRepository).save(savedAsset.capture());
         assertThat(savedAsset.getValue().getRequests())
                 .extracting(AssetRequestRecord::id)
-                .contains("group-a-owner", "group-b-kept")
-                .doesNotContain("group-a-old");
+                .contains("group-a-owner", "group-a-old", "group-b-kept");
+        assertThat(savedAsset.getValue().getRequests())
+                .filteredOn(request -> "group-a-old".equals(request.id()))
+                .singleElement()
+                .satisfies(request -> assertThat(request.status()).isEqualTo("D"));
         assertThat(savedAsset.getValue().getRequests())
                 .filteredOn(request -> "u4".equals(request.userId()))
                 .singleElement()
@@ -1578,10 +1592,15 @@ class AssetsServiceTest {
         AssetDto card = service.makeManager(new AssetMakeManagerRequestDto("u1", "asset-1", "u2"));
 
         assertThat(card).isNotNull();
-        assertThat(card.requests()).hasSize(1);
-        assertThat(card.requests().get(0).status()).isEqualTo("accepted");
-        assertThat(card.requests().get(0).note()).isEqualTo("Promoted to asset manager.");
-        assertThat(card.requests().get(0).menuActions()).isEmpty();
+        assertThat(card.requests()).hasSize(2);
+        assertThat(card.requests())
+                .filteredOn(request -> "request-1".equals(request.id()))
+                .singleElement()
+                .satisfies(request -> {
+                    assertThat(request.status()).isEqualTo("accepted");
+                    assertThat(request.note()).isEqualTo("Promoted to asset manager.");
+                    assertThat(request.menuActions()).isEmpty();
+                });
 
         ArgumentCaptor<ActivityMember> savedMember = ArgumentCaptor.forClass(ActivityMember.class);
         verify(activityMembersRepository).save(savedMember.capture());
@@ -2245,7 +2264,7 @@ class AssetsServiceTest {
         assertThat(card).isNotNull();
         assertThat(card.status()).isEqualTo("A");
         assertThat(card.ownerUserId()).isEqualTo("u2");
-        assertThat(card.ownerReleasedAtIso()).isNull();
+        assertThat(card.ownerReleasedAtIso()).isEmpty();
         assertThat(card.menuActions()).contains("edit", "delete");
         verify(mongoTemplate).updateFirst(any(), any(), eq(Asset.class));
         verify(activitiesResourcesService, never()).refreshResourceMetricsForScope(any(), any(), any());
@@ -2803,7 +2822,9 @@ class AssetsServiceTest {
         when(usersRepository.findByUserId("u1")).thenReturn(Optional.of(user("u1", "Owner One", "OO")));
         when(activityMembersRepository.findByOwnerTypeAndOwnerId("asset", "asset-1")).thenReturn(List.of());
         when(accessControlService.canCurrentActorRequestAssetBorrow("u2", "event-1")).thenReturn(true);
+        when(accessControlService.canCurrentActorCancelAssetBorrow("u2", "asset-1")).thenReturn(true);
         when(accessControlService.resolveActorUserId(authentication)).thenReturn("u2");
+        stubBorrowWindow(mongoTemplate);
 
         AssetsService service = new AssetsService(
                 assetsRepository,
@@ -2855,17 +2876,21 @@ class AssetsServiceTest {
         verify(accessControlService).canCurrentActorEditAsset("u1", "asset-1");
         verify(accessControlService).canCurrentActorRequestAssetBorrow("u2", "event-1");
         ArgumentCaptor<NotificationIntent> notification = ArgumentCaptor.forClass(NotificationIntent.class);
-        verify(notificationOutboxService).enqueue(notification.capture());
-        assertThat(notification.getValue().type()).isEqualTo("asset-admin-join-request");
-        assertThat(notification.getValue().recipientUserIds()).containsExactly("u1");
-        assertThat(notification.getValue().payload())
-                .containsEntry("assetId", "asset-1")
-                .containsEntry("eventId", "event-1")
-                .containsEntry("subEventId", "subevent-1")
-                .containsEntry("requestId", "request-2")
-                .containsEntry("memberUserId", "u2")
-                .containsEntry("requestKind", "borrow")
-                .containsEntry("senderUserId", "u2");
+        verify(notificationOutboxService, times(2)).enqueue(notification.capture());
+        assertThat(notification.getAllValues())
+                .filteredOn(item -> "asset-admin-join-request".equals(item.type()))
+                .singleElement()
+                .satisfies(item -> {
+                    assertThat(item.recipientUserIds()).containsExactly("u1");
+                    assertThat(item.payload())
+                            .containsEntry("assetId", "asset-1")
+                            .containsEntry("eventId", "event-1")
+                            .containsEntry("subEventId", "subevent-1")
+                            .containsEntry("requestId", "request-2")
+                            .containsEntry("memberUserId", "u2")
+                            .containsEntry("requestKind", "borrow")
+                            .containsEntry("senderUserId", "u2");
+                });
     }
 
     @Test
@@ -3686,6 +3711,18 @@ class AssetsServiceTest {
                         null,
                         null),
                 List.of());
+    }
+
+    private void stubBorrowWindow(MongoTemplate mongoTemplate) {
+        SubEventItem subEvent = mock(SubEventItem.class);
+        when(subEvent.id()).thenReturn("subevent-1");
+        when(subEvent.startAt()).thenReturn("2026-05-12T08:00:00Z");
+        when(subEvent.endAt()).thenReturn("2026-05-12T12:00:00Z");
+        ActivityEvent event = new ActivityEvent();
+        event.setSourceId("event-1");
+        event.setStatus(ActivityEvent.STATUS_ACTIVE);
+        event.setSubEvents(List.of(subEvent));
+        when(mongoTemplate.findOne(any(Query.class), eq(ActivityEvent.class))).thenReturn(event);
     }
 
     private Users user(String userId, String name, String initials) {

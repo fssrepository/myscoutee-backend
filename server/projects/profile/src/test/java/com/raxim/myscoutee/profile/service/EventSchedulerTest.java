@@ -447,13 +447,13 @@ class EventSchedulerTest {
                 anyList());
         verify(activitiesMembersService).syncMaterializedSystemEventMembers(
                 argThat(room -> room1Id.equals(room.getSourceId())),
-                "scheduler",
-                List.of("u1", "u2"),
+                eq("scheduler"),
+                eq(List.of("u1", "u2")),
                 anyList());
         verify(activitiesMembersService).syncMaterializedSystemEventMembers(
                 argThat(room -> room2Id.equals(room.getSourceId())),
-                "scheduler",
-                List.of("u3", "u4"),
+                eq("scheduler"),
+                eq(List.of("u3", "u4")),
                 anyList());
         ArgumentCaptor<ActivityEvent> roomCaptor = ArgumentCaptor.forClass(ActivityEvent.class);
         verify(activitiesMembersService, times(2)).syncMaterializedSystemEventMembers(
@@ -498,8 +498,8 @@ class EventSchedulerTest {
                 notificationOutboxService);
         creationOrder.verify(activitiesMembersService).syncMaterializedSystemEventMembers(
                 argThat(room -> room1Id.equals(room.getSourceId())),
-                "scheduler",
-                List.of("u1", "u2"),
+                eq("scheduler"),
+                eq(List.of("u1", "u2")),
                 anyList());
         creationOrder.verify(activityMainEventRuntimeRepository).save(
                 argThat(runtime -> room1Id.equals(runtime.getEventId())));
@@ -510,8 +510,8 @@ class EventSchedulerTest {
                 eq(ChatService.RANDOM_ROOM_WELCOME_MESSAGE_TYPE));
         creationOrder.verify(activitiesMembersService).syncMaterializedSystemEventMembers(
                 argThat(room -> room2Id.equals(room.getSourceId())),
-                "scheduler",
-                List.of("u3", "u4"),
+                eq("scheduler"),
+                eq(List.of("u3", "u4")),
                 anyList());
         creationOrder.verify(activityMainEventRuntimeRepository).save(
                 argThat(runtime -> room2Id.equals(runtime.getEventId())));
@@ -643,8 +643,8 @@ class EventSchedulerTest {
                 eq("stage-start"),
                 anyList()))
                 .thenReturn(List.of(
-                        group("stage-start:group:1", "Group A"),
-                        group("stage-start:group:2", "Group B")));
+                        new SubEventGroupItemDto("stage-start:group:1", "Group A", 1, 2, "generated"),
+                        new SubEventGroupItemDto("stage-start:group:2", "Group B", 1, 2, "generated")));
 
         List<String> notificationOrder = new ArrayList<>();
         doAnswer(invocation -> {
@@ -723,7 +723,6 @@ class EventSchedulerTest {
         unrelated.setSourceId("unrelated-event");
         unrelated.setStatus("A");
         unrelated.setSubEvents(List.of(subEvent("unrelated-stage", 1, 2, 2)));
-        when(activityEventsRepository.findAll()).thenReturn(List.of(unrelated));
         when(activitiesMembersService.buildBatchEventSnapshots(any())).thenReturn(Map.of());
 
         List<GeneratedEventPlan> plans = scheduler.generateRandomPlans();
@@ -806,7 +805,7 @@ class EventSchedulerTest {
     }
 
     @Test
-    void generateScorePlansMaterializesGeneratedGroupsBeforeQueryingState() {
+    void generateScorePlansQueriesStateAgainAfterMaterializingGeneratedGroups() {
         EventScheduler scheduler = createScheduler();
 
         ActivityEvent event = new ActivityEvent();
@@ -839,8 +838,10 @@ class EventSchedulerTest {
         List<EventLeaderboardStateDto> states = scheduler.generateScorePlans();
 
         assertThat(states).containsExactly(state);
-        verify(activitiesEventLeaderboardService).materializeGeneratedGroups("event-1", "sub-1");
-        verify(activitiesEventLeaderboardService).queryState("event-1", "sub-1");
+        InOrder leaderboardOrder = inOrder(activitiesEventLeaderboardService);
+        leaderboardOrder.verify(activitiesEventLeaderboardService).queryState("event-1", "sub-1");
+        leaderboardOrder.verify(activitiesEventLeaderboardService).materializeGeneratedGroups("event-1", "sub-1");
+        leaderboardOrder.verify(activitiesEventLeaderboardService).queryState("event-1", "sub-1");
     }
 
     @Test
@@ -918,13 +919,13 @@ class EventSchedulerTest {
                 .containsExactly(List.of("u1", "u2"), List.of("u3", "u4"));
         verify(activitiesMembersService).syncMaterializedSystemEventMembers(
                 argThat(room -> roomAId.equals(room.getSourceId())),
-                "scheduler",
-                List.of("u1", "u2"),
+                eq("scheduler"),
+                eq(List.of("u1", "u2")),
                 anyList());
         verify(activitiesMembersService).syncMaterializedSystemEventMembers(
                 argThat(room -> roomBId.equals(room.getSourceId())),
-                "scheduler",
-                List.of("u3", "u4"),
+                eq("scheduler"),
+                eq(List.of("u3", "u4")),
                 anyList());
         verify(schedulerPlanMarkersRepository, atLeastOnce()).save(any(SchedulerPlanMarker.class));
     }
@@ -938,7 +939,7 @@ class EventSchedulerTest {
         event.setStatus("A");
         event.setCreatorUserId("creator-1");
         event.setSubEvents(List.of(
-                withStageStatus(explicitSubEvent("sub-1"), "F"),
+                withStageResultRevision(withStageStatus(explicitSubEvent("sub-1"), "F"), 1),
                 singleGroupSubEvent("sub-2", "next-group")));
 
         EventLeaderboardStateDto currentState = new EventLeaderboardStateDto(
@@ -952,7 +953,9 @@ class EventSchedulerTest {
                         2,
                         1,
                         List.of("u1"),
-                        List.of(),
+                        List.of(
+                                new EventLeaderboardMemberDto("u1", "u1"),
+                                new EventLeaderboardMemberDto("u3", "u3")),
                         List.of(),
                         List.of(),
                         List.of(),
@@ -1030,8 +1033,8 @@ class EventSchedulerTest {
             assertThat(notification.payload())
                     .containsEntry("notification_title_key", "notification.event.stage.advanced.title")
                     .containsEntry("notification_message_key", "notification.event.stage.advanced.message")
-                    .containsEntry("stageTitle", "sub-1")
-                    .containsEntry("nextStageTitle", "sub-2")
+                    .containsEntry("stageTitle", "Round 2")
+                    .containsEntry("nextStageTitle", "Final")
                     .containsEntry("notification_avatar_tone", "stage")
                     .containsEntry("notification_avatar_icon", "emoji_events")
                     .containsEntry("stageIndex", "2")
@@ -1045,8 +1048,8 @@ class EventSchedulerTest {
             assertThat(notification.payload())
                     .containsEntry("notification_title_key", "notification.event.stage.not-advanced.title")
                     .containsEntry("notification_message_key", "notification.event.stage.not-advanced.message")
-                    .containsEntry("stageTitle", "sub-1")
-                    .containsEntry("nextStageTitle", "sub-2")
+                    .containsEntry("stageTitle", "Round 2")
+                    .containsEntry("nextStageTitle", "Final")
                     .containsEntry("notification_avatar_tone", "stage")
                     .containsEntry("notification_avatar_icon", "emoji_events")
                     .containsEntry("stageIndex", "1")
@@ -1656,8 +1659,8 @@ class EventSchedulerTest {
         });
         verify(activitiesMembersService).syncMaterializedSystemEventMembers(
                 argThat(room -> "random-room:event-advancement:final:final-group".equals(room.getSourceId())),
-                "scheduler",
-                List.of("u1", "u2"),
+                eq("scheduler"),
+                eq(List.of("u1", "u2")),
                 anyList());
     }
 
@@ -2055,6 +2058,14 @@ class EventSchedulerTest {
     }
 
     private SubEventItem withStageStatus(SubEventItem item, String stageStatus) {
+        return copyStage(item, stageStatus, item.stageResultRevision());
+    }
+
+    private SubEventItem withStageResultRevision(SubEventItem item, Integer stageResultRevision) {
+        return copyStage(item, item.stageStatus(), stageResultRevision);
+    }
+
+    private SubEventItem copyStage(SubEventItem item, String stageStatus, Integer stageResultRevision) {
         return new SubEventItem(
                 item.id(),
                 item.name(),
@@ -2073,6 +2084,7 @@ class EventSchedulerTest {
                 item.capacityMax(),
                 item.membersAccepted(),
                 item.membersPending(),
+                item.groupsPending(),
                 item.carsPending(),
                 item.accommodationPending(),
                 item.suppliesPending(),
@@ -2091,6 +2103,8 @@ class EventSchedulerTest {
                 item.stageStatusReason(),
                 item.stageStatusUpdatedAt(),
                 item.stageFinalizedAt(),
-                item.stageFinalizedByUserId());
+                item.stageFinalizedByUserId(),
+                stageResultRevision,
+                item.groups());
     }
 }

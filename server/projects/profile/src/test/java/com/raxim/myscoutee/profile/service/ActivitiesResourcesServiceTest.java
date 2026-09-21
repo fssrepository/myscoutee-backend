@@ -349,7 +349,7 @@ class ActivitiesResourcesServiceTest {
         assertThat(saved.ownerId()).isEqualTo("event-1");
         assertThat(saved.assetOwnerUserId()).isEqualTo("u1");
         verify(activitySubEventResourcesRepository).save(any(ActivitySubEventResource.class));
-        verify(activitySubEventResourcesRepository)
+        verify(activitySubEventResourcesRepository, times(2))
                 .findByOwnerIdAndSubEventIdAndStatusNot("event-1", "sub-1", "D");
         verify(activitiesMembersService)
                 .refreshSubEventParticipationProjection("event-1", "sub-1");
@@ -371,7 +371,7 @@ class ActivitiesResourcesServiceTest {
 
         assertThat(saved).isNotNull();
         assertThat(saved.ownerId()).isEqualTo(slotOwnerId);
-        verify(assetsService).queryAssignableAssetDetails("u1", "event-1", "sub-1", Set.of());
+        verify(assetsService).queryAssignableAssetDetails("u1", slotOwnerId, "sub-1", Set.of());
         verify(activitiesMembersService).refreshEventParticipationProjection(slotOwnerId);
     }
 
@@ -392,7 +392,7 @@ class ActivitiesResourcesServiceTest {
 
         assertThat(saved).isNotNull();
         assertThat(saved.ownerId()).isEqualTo(groupOwnerId);
-        verify(assetsService).queryAssignableAssetDetails("u1", "event-1", "sub-1", Set.of());
+        verify(assetsService).queryAssignableAssetDetails("u1", groupOwnerId, "sub-1", Set.of());
         verify(activitiesMembersService).refreshEventParticipationProjection(groupOwnerId);
     }
 
@@ -438,7 +438,7 @@ class ActivitiesResourcesServiceTest {
                 groupOwnerId, "sub-1", "u1", "D")).thenReturn(Optional.empty());
         AssetDetailDto ownedAsset = assetDetail("owned-asset", "Transport", "u1");
         when(assetsService.queryAssignableAssetDetails(
-                "u1", "event-1", "sub-1", Set.of("owned-asset")))
+                "u1", groupOwnerId, "sub-1", Set.of("owned-asset")))
                 .thenReturn(Map.of("owned-asset", ownedAsset));
         when(activitySubEventResourcesRepository.save(any(ActivitySubEventResource.class)))
                 .thenAnswer(invocation -> invocation.getArgument(0));
@@ -724,7 +724,7 @@ class ActivitiesResourcesServiceTest {
         verify(notificationOutboxService).enqueue(notificationCaptor.capture());
         NotificationIntent notification = notificationCaptor.getValue();
         assertThat(notification.type()).isEqualTo("event-asset-assignment-removed");
-        assertThat(notification.recipientUserIds()).containsExactly("u2", "u3");
+        assertThat(notification.recipientUserIds()).containsExactly("u2", "u3", "u4");
         assertThat(notification.title()).isEqualTo("Asset assignment removed");
         assertThat(notification.body()).isEqualTo("Assignment ended · Borrowed asset");
         assertThat(notification.payload())
@@ -869,7 +869,7 @@ class ActivitiesResourcesServiceTest {
         when(activitySubEventResourcesRepository.findByOwnerIdAndSubEventIdAndAssetOwnerUserIdAndStatusNot(
                 groupOwnerId, "sub-1", "u1", "D")).thenReturn(Optional.of(resource));
         AssetRequestBookingDto booking = new AssetRequestBookingDto(
-                "event-1",
+                groupOwnerId,
                 "Group A",
                 "sub-1",
                 "Kickoff",
@@ -1069,7 +1069,7 @@ class ActivitiesResourcesServiceTest {
                     assertThat(savedSubEvent.carsAccepted()).isEqualTo(3);
                     assertThat(savedSubEvent.carsPending()).isEqualTo(3);
                     assertThat(savedSubEvent.carsCapacityMin()).isZero();
-                    assertThat(savedSubEvent.carsCapacityMax()).isEqualTo(28);
+                    assertThat(savedSubEvent.carsCapacityMax()).isEqualTo(24);
                     assertThat(savedSubEvent.suppliesAccepted()).isEqualTo(5);
                     assertThat(savedSubEvent.suppliesPending()).isZero();
                     assertThat(savedSubEvent.suppliesCapacityMax()).isEqualTo(6);
@@ -1207,11 +1207,11 @@ class ActivitiesResourcesServiceTest {
     }
 
     private void allowGroupMember(String ownerId, String userId) {
-        ActivityMember groupMember = member(ownerId, userId, "accepted");
-        groupMember.setOwnerType("group");
+        String randomRoomOwnerId = "random-room:" + ownerId;
+        ActivityMember groupMember = member(randomRoomOwnerId, userId, "accepted");
         when(activitiesMembersServiceProvider.getIfAvailable()).thenReturn(activitiesMembersService);
-        when(activitiesMembersService.hasStoredOwnerMembers("group", ownerId)).thenReturn(true);
-        when(activityMembersRepository.findByOwnerTypeAndOwnerIdAndUserId("group", ownerId, userId))
+        when(activitiesMembersService.hasStoredOwnerMembers("event", randomRoomOwnerId)).thenReturn(true);
+        when(activityMembersRepository.findByOwnerTypeAndOwnerIdAndUserId("event", randomRoomOwnerId, userId))
                 .thenReturn(Optional.of(groupMember));
     }
 
