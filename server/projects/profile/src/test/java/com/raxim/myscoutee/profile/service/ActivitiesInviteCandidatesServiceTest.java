@@ -71,6 +71,7 @@ class ActivitiesInviteCandidatesServiceTest {
                         List.of(),
                         List.of(),
                         List.of(),
+                        List.of(),
                         Set.of(),
                         10));
         when(navigatorContactsProfilesRepository.findByUserId("active")).thenReturn(Optional.of(contactProfile(
@@ -105,6 +106,7 @@ class ActivitiesInviteCandidatesServiceTest {
                         "asset",
                         "asset-1",
                         List.of(),
+                        List.of("already-assigned"),
                         List.of("already-assigned"),
                         List.of("pending-child"),
                         List.of(),
@@ -154,6 +156,7 @@ class ActivitiesInviteCandidatesServiceTest {
                         "asset",
                         "asset-1",
                         List.of(),
+                        List.of("global-other-group-member"),
                         List.of("global-other-group-member"),
                         List.of(),
                         List.of(),
@@ -209,6 +212,7 @@ class ActivitiesInviteCandidatesServiceTest {
                         "asset",
                         "asset-1",
                         List.of(pendingMember),
+                        List.of("already-assigned"),
                         List.of("already-assigned"),
                         List.of("pending-child"),
                         List.of("pending-child"),

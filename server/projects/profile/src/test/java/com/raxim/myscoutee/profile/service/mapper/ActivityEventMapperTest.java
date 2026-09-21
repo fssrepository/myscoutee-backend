@@ -157,6 +157,7 @@ class ActivityEventMapperTest {
                         "event-1",
                         List.of(creatorMembership),
                         List.of("host"),
+                        List.of("host"),
                         List.of(),
                         List.of(),
                         List.of(),

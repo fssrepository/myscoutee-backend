@@ -391,6 +391,7 @@ class ActivitiesEventsServiceTest {
                         "event-1",
                         List.of(),
                         List.of("host"),
+                        List.of("host"),
                         List.of("pending-invitee"),
                         List.of("pending-invitee"),
                         List.of(),
@@ -470,6 +471,7 @@ class ActivitiesEventsServiceTest {
                         "event-1",
                         List.of(),
                         List.of("host"),
+                        List.of("host"),
                         List.of("pending-invitee"),
                         List.of("pending-invitee"),
                         List.of(),
@@ -529,6 +531,7 @@ class ActivitiesEventsServiceTest {
                         "event-1",
                         List.of(),
                         List.of("host", "accepted-member"),
+                        List.of("host", "accepted-member"),
                         List.of(),
                         List.of(),
                         List.of(),
@@ -585,6 +588,7 @@ class ActivitiesEventsServiceTest {
                         "event",
                         "event-1",
                         List.of(),
+                        List.of("host", "accepted-member"),
                         List.of("host", "accepted-member"),
                         List.of(),
                         List.of(),
@@ -690,6 +694,7 @@ class ActivitiesEventsServiceTest {
                         "event-1",
                         List.of(),
                         List.of("host", "accepted-member"),
+                        List.of("host", "accepted-member"),
                         List.of("pending-invitee"),
                         List.of("pending-invitee"),
                         List.of(),
@@ -777,6 +782,7 @@ class ActivitiesEventsServiceTest {
                         "event-1",
                         List.of(),
                         List.of("host"),
+                        List.of("host"),
                         List.of(),
                         List.of(),
                         List.of(),
@@ -831,6 +837,7 @@ class ActivitiesEventsServiceTest {
                         "event",
                         "event-1",
                         List.of(),
+                        List.of("host"),
                         List.of("host"),
                         List.of(),
                         List.of(),
@@ -988,6 +995,7 @@ class ActivitiesEventsServiceTest {
                         List.of(),
                         List.of(),
                         List.of(),
+                        List.of(),
                         Set.of(),
                         10);
         ActivitiesMembersService.OwnerMembersSnapshot after =
@@ -995,6 +1003,7 @@ class ActivitiesEventsServiceTest {
                         "event",
                         "event-1",
                         List.of(),
+                        List.of("viewer"),
                         List.of("viewer"),
                         List.of(),
                         List.of(),
@@ -1058,13 +1067,13 @@ class ActivitiesEventsServiceTest {
         trashedSlot.setStatus(ActivityEvent.STATUS_TRASHED);
         ActivitiesMembersService.OwnerMembersSnapshot before =
                 new ActivitiesMembersService.OwnerMembersSnapshot(
-                        "event", "event-1", List.of(), List.of("host"), List.of(), List.of(), List.of(), Set.of("host"), 10);
+                        "event", "event-1", List.of(), List.of("host"), List.of("host"), List.of(), List.of(), List.of(), Set.of("host"), 10);
         ActivitiesMembersService.OwnerMembersSnapshot rootAfter =
                 new ActivitiesMembersService.OwnerMembersSnapshot(
-                        "event", "event-1", List.of(), List.of("host", "viewer"), List.of(), List.of(), List.of(), Set.of("host"), 10, true);
+                        "event", "event-1", List.of(), List.of("host", "viewer"), List.of("host", "viewer"), List.of(), List.of(), List.of(), Set.of("host"), 10, true);
         ActivitiesMembersService.OwnerMembersSnapshot slotAfter =
                 new ActivitiesMembersService.OwnerMembersSnapshot(
-                        "event", "slot-1", List.of(), List.of("host", "viewer"), List.of(), List.of(), List.of(), Set.of("host"), 10, true);
+                        "event", "slot-1", List.of(), List.of("host", "viewer"), List.of("host", "viewer"), List.of(), List.of(), List.of(), Set.of("host"), 10, true);
 
         when(homeUserProfileService.resolveCurrentUser("viewer")).thenReturn(viewer);
         when(activityEventsRepository.findBySourceIdIn(List.of("event-1"))).thenReturn(List.of(root));
@@ -1104,6 +1113,7 @@ class ActivitiesEventsServiceTest {
                         "event",
                         "event-1",
                         List.of(),
+                        List.of("host", "viewer"),
                         List.of("host", "viewer"),
                         List.of(),
                         List.of(),
@@ -1154,6 +1164,7 @@ class ActivitiesEventsServiceTest {
                         "event-1",
                         List.of(),
                         List.of("host"),
+                        List.of("host"),
                         List.of("viewer"),
                         List.of("viewer"),
                         List.of(),
@@ -1164,6 +1175,7 @@ class ActivitiesEventsServiceTest {
                         "event",
                         "event-1",
                         List.of(),
+                        List.of("host"),
                         List.of("host"),
                         List.of("viewer"),
                         List.of(),
@@ -1716,6 +1728,7 @@ class ActivitiesEventsServiceTest {
                         "event-1",
                         List.of(),
                         List.of("host", "member-1"),
+                        List.of("host", "member-1"),
                         List.of(),
                         List.of(),
                         List.of(),
@@ -1794,6 +1807,7 @@ class ActivitiesEventsServiceTest {
                         "event",
                         "event-1",
                         List.of(),
+                        List.of("host", "member-1"),
                         List.of("host", "member-1"),
                         List.of("invitee"),
                         List.of("invitee"),
@@ -2036,6 +2050,7 @@ class ActivitiesEventsServiceTest {
                         "event-1",
                         List.of(),
                         List.of("host", "member-1"),
+                        List.of("host", "member-1"),
                         List.of(),
                         List.of(),
                         List.of(),
@@ -2134,6 +2149,7 @@ class ActivitiesEventsServiceTest {
                         "event",
                         "event-1",
                         List.of(),
+                        List.of("host", "member-1"),
                         List.of("host", "member-1"),
                         List.of(),
                         List.of(),

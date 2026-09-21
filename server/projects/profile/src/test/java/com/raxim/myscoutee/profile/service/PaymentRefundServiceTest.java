@@ -56,7 +56,7 @@ class PaymentRefundServiceTest {
 
         ArgumentCaptor<NotificationIntent> notification = ArgumentCaptor.forClass(NotificationIntent.class);
         verify(fixture.outbox).enqueue(notification.capture());
-        assertThat(notification.getValue().notificationType()).isEqualTo("payment-refund-requested");
+        assertThat(notification.getValue().type()).isEqualTo("payment-refund-requested");
         assertThat(notification.getValue().recipientUserIds()).containsExactly("casey");
     }
 
@@ -114,7 +114,7 @@ class PaymentRefundServiceTest {
 
         ArgumentCaptor<NotificationIntent> notification = ArgumentCaptor.forClass(NotificationIntent.class);
         verify(fixture.outbox).enqueue(notification.capture());
-        assertThat(notification.getValue().notificationType()).isEqualTo("payment-refund-approved");
+        assertThat(notification.getValue().type()).isEqualTo("payment-refund-approved");
         assertThat(notification.getValue().recipientUserIds()).containsExactly("nova");
     }
 

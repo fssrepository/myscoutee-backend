@@ -3701,6 +3701,7 @@ class AssetsServiceTest {
 
     private AssetsService ticketValidationService(
             UsersRepository usersRepository,
+            FriendshipFacts friendshipFacts,
             ActivityMembersRepository activityMembersRepository,
             EventParticipationTicketService ticketService,
             NotificationOutboxService notificationOutboxService,
@@ -3708,7 +3709,7 @@ class AssetsServiceTest {
         return new AssetsService(
                 mock(AssetsRepository.class),
                 usersRepository,
-                mock(FriendshipFacts.class),
+                friendshipFacts,
                 activityMembersRepository,
                 ticketService,
                 mock(PaymentService.class),
@@ -3725,12 +3726,13 @@ class AssetsServiceTest {
     private AssetsService assetReadService(
             AssetsRepository assetsRepository,
             UsersRepository usersRepository,
+            FriendshipFacts friendshipFacts,
             MongoTemplate mongoTemplate,
             AccessControlService accessControlService) {
         return new AssetsService(
                 assetsRepository,
                 usersRepository,
-                mock(FriendshipFacts.class),
+                friendshipFacts,
                 mock(ActivityMembersRepository.class),
                 mock(EventParticipationTicketService.class),
                 mock(PaymentService.class),
