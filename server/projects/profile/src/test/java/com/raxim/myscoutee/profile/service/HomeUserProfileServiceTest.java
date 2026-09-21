@@ -723,7 +723,7 @@ class HomeUserProfileServiceTest {
 
         var snapshot = service.queryRealtimeSnapshot(new UserRealtimeLongPollRequestDto("active", null));
 
-        assertThat(snapshot.profileStatus()).isEqualTo(active.getProfileStatus());
+        assertThat(snapshot.profileStatus()).isEmpty();
         assertFlatCounters(snapshot.counters());
         assertNestedCounters(snapshot.counters());
         assertThat(snapshot.offlineTicketSnapshot()).isEqualTo(new AssetTicketsPageDto(List.of(), 0));

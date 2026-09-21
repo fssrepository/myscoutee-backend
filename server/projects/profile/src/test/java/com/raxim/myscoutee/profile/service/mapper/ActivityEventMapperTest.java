@@ -79,7 +79,7 @@ class ActivityEventMapperTest {
     }
 
     @Test
-    void tournamentActivitySubtractsOnlyTheQueryingUsersPersistedResourceReads() {
+    void activityKeepsThePersistedCounterIndependentOfViewerResourceReads() {
         ActivityEvent event = new ActivityEvent();
         event.setSourceId("event-1");
         event.setActivity(2);
@@ -95,7 +95,7 @@ class ActivityEventMapperTest {
                         "user-1",
                         Map.of("event-1", 1)));
 
-        assertThat(dto.activity()).isEqualTo(1);
+        assertThat(dto.activity()).isEqualTo(2);
     }
 
     @Test

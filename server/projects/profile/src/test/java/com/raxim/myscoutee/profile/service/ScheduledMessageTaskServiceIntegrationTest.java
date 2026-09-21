@@ -195,8 +195,9 @@ class ScheduledMessageTaskServiceIntegrationTest {
 
     @Test
     void completedStageReminderIsNotRescheduledForTheSameOccurrence() {
-        Instant stageStartAt = Instant.now().plusSeconds(60);
-        ActivityEvent event = publishedStageEvent("event-stage-completed", stageStartAt);
+        Instant reminderDueAt = Instant.now().plusSeconds(60);
+        Instant stageStartAt = reminderDueAt.plus(120, ChronoUnit.MINUTES);
+        ActivityEvent event = publishedStageEvent("event-stage-completed", reminderDueAt);
         String taskKey = "event-stage-reminder:event-stage-completed:stage-one";
 
         scheduledMessageTaskService.scheduleEventStageReminders(event, "admin-user");

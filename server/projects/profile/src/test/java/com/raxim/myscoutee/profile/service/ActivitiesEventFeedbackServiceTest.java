@@ -147,6 +147,7 @@ class ActivitiesEventFeedbackServiceTest {
         event.setOwnerUserId("host");
         event.setAcceptedMemberUserIds(List.of("viewer"));
         event.setStartAtIso("2020-01-01T10:00:00Z");
+        event.setEndAtIso("2020-01-01T12:00:00Z");
         event.setImageUrl("");
 
         when(homeUserProfileService.resolveCurrentUser("viewer")).thenReturn(viewer);
@@ -177,6 +178,7 @@ class ActivitiesEventFeedbackServiceTest {
         event.setOwnerUserId("host");
         event.setAdmins(List.of("host"));
         event.setStartAtIso("2020-01-01T10:00:00Z");
+        event.setEndAtIso("2020-01-01T12:00:00Z");
         event.setImageUrl("/media/event-own.webp");
 
         when(homeUserProfileService.resolveCurrentUser("host")).thenReturn(host);
@@ -221,6 +223,7 @@ class ActivitiesEventFeedbackServiceTest {
         canonical.setOwnerUserId("host");
         canonical.setAcceptedMemberUserIds(List.of("viewer"));
         canonical.setStartAtIso("2020-01-01T10:00:00Z");
+        canonical.setEndAtIso("2020-01-01T12:00:00Z");
 
         ActivityEvent memberScoped = new ActivityEvent();
         memberScoped.setSourceId("event-1");
@@ -229,6 +232,7 @@ class ActivitiesEventFeedbackServiceTest {
         memberScoped.setOwnerUserId("viewer");
         memberScoped.setAcceptedMemberUserIds(List.of("viewer", "participant-2", "participant-3"));
         memberScoped.setStartAtIso("2020-01-01T10:00:00Z");
+        memberScoped.setEndAtIso("2020-01-01T12:00:00Z");
 
         when(homeUserProfileService.resolveCurrentUser("viewer")).thenReturn(viewer);
         when(activityEventsRepository.findBySourceId("event-1"))
@@ -265,6 +269,7 @@ class ActivitiesEventFeedbackServiceTest {
         event.setOwnerUserId("host");
         event.setAcceptedMemberUserIds(List.of("viewer"));
         event.setStartAtIso("2020-01-01T10:00:00Z");
+        event.setEndAtIso("2020-01-01T12:00:00Z");
 
         EventFeedbackState state = new EventFeedbackState();
         state.setViewerUserId("viewer");
@@ -317,6 +322,7 @@ class ActivitiesEventFeedbackServiceTest {
         source.setOwnerUserId("host");
         source.setAcceptedMemberUserIds(List.of("viewer"));
         source.setStartAtIso("2020-01-01T10:00:00Z");
+        source.setEndAtIso("2020-01-01T12:00:00Z");
 
         EventFeedbackCardDto card = new EventFeedbackCardDto(
                 "feedback-event-event-1",
@@ -426,6 +432,7 @@ class ActivitiesEventFeedbackServiceTest {
         source.setOwnerUserId("host");
         source.setAcceptedMemberUserIds(List.of("viewer"));
         source.setStartAtIso("2020-01-01T10:00:00Z");
+        source.setEndAtIso("2020-01-01T12:00:00Z");
 
         EventFeedbackState existingState = new EventFeedbackState();
         existingState.setViewerUserId("viewer");

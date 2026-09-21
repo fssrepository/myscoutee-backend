@@ -98,13 +98,6 @@ class ScheduledMessageTaskServiceTest {
         emailProperties.setEnabled(true);
         emailProperties.setBaseUrl("https://myscoutee.test");
         configProperties.setFirebaseEnabled(false);
-        when(activitiesMembersServiceProvider.getIfAvailable()).thenReturn(activitiesMembersService);
-        when(scheduledNotificationDeliveryServiceProvider.getIfAvailable())
-                .thenReturn(scheduledNotificationDeliveryService);
-        when(emailTemplateRendererProvider.getIfAvailable()).thenReturn(emailTemplateRenderer);
-        when(emailPropertiesProvider.getIfAvailable()).thenReturn(emailProperties);
-        when(configPropertiesProvider.getIfAvailable()).thenReturn(configProperties);
-
         service = new ScheduledMessageTaskService(
                 mongoTemplate,
                 scheduledMessageTasksRepository,
@@ -141,17 +134,6 @@ class ScheduledMessageTaskServiceTest {
         recipient.setName("Ada Member");
         recipient.setEmail("ada@example.test");
 
-        when(notificationTemplatesRepository.findByTemplateKey("notification-template"))
-                .thenReturn(Optional.of(notificationTemplate));
-        when(emailTemplatesRepository.findByTemplateKey("email-template"))
-                .thenReturn(Optional.of(emailTemplate));
-        when(usersRepository.findByUserIdIn(anyCollection())).thenReturn(List.of(recipient));
-        when(scheduledNotificationDeliveryService.send(
-                eq(recipient),
-                eq(notificationTemplate),
-                anyMap(),
-                anyString()))
-                .thenReturn(true);
     }
 
     @AfterEach
@@ -161,6 +143,7 @@ class ScheduledMessageTaskServiceTest {
 
     @Test
     void scheduledEventNotificationsReachOutboxWithoutFirebaseAndRetainEmailFallback() {
+        prepareNotificationDelivery();
         when(activitiesMembersService.queryOwnerSnapshot("event", "event-1"))
                 .thenReturn(new ActivitiesMembersService.OwnerMembersSnapshot(
                         "event",
@@ -197,6 +180,7 @@ class ScheduledMessageTaskServiceTest {
 
     @Test
     void firebaseAcceptedNotificationDoesNotAlsoQueueEmailFallback() {
+        prepareNotificationDelivery();
         configProperties.setFirebaseEnabled(true);
         when(activitiesMembersService.queryOwnerSnapshot("event", "event-1"))
                 .thenReturn(new ActivitiesMembersService.OwnerMembersSnapshot(
@@ -295,6 +279,7 @@ class ScheduledMessageTaskServiceTest {
 
     @Test
     void stageReminderResolvesBrandingOnceAndSnapshotsItForPushAndEmail() {
+        prepareNotificationDelivery();
         DeploymentBrandingResolver brandingResolver =
                 org.mockito.Mockito.mock(DeploymentBrandingResolver.class);
         when(brandingResolver.resolve()).thenReturn(
@@ -371,6 +356,26 @@ class ScheduledMessageTaskServiceTest {
                 "eventTitle", "Board Game Night",
                 "stageName", "Round 1"));
         return task;
+    }
+
+    private void prepareNotificationDelivery() {
+        when(activitiesMembersServiceProvider.getIfAvailable()).thenReturn(activitiesMembersService);
+        when(scheduledNotificationDeliveryServiceProvider.getIfAvailable())
+                .thenReturn(scheduledNotificationDeliveryService);
+        when(emailTemplateRendererProvider.getIfAvailable()).thenReturn(emailTemplateRenderer);
+        when(emailPropertiesProvider.getIfAvailable()).thenReturn(emailProperties);
+        when(configPropertiesProvider.getIfAvailable()).thenReturn(configProperties);
+        when(notificationTemplatesRepository.findByTemplateKey("notification-template"))
+                .thenReturn(Optional.of(notificationTemplate));
+        when(emailTemplatesRepository.findByTemplateKey("email-template"))
+                .thenReturn(Optional.of(emailTemplate));
+        when(usersRepository.findByUserIdIn(anyCollection())).thenReturn(List.of(recipient));
+        when(scheduledNotificationDeliveryService.send(
+                eq(recipient),
+                eq(notificationTemplate),
+                anyMap(),
+                anyString()))
+                .thenReturn(true);
     }
 
     private ScheduledMessageTask eventChangeTask() {
