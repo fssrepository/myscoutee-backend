@@ -27,6 +27,7 @@ import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventSubEventsSlot
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.EventSlotTemplateDto;
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.ActivitySubEventResourceStateDto;
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.ActivitySubEventStageRuntimeStateDto;
+import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.MingleConfigurationDto;
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.SubEventAssignedAssetSettingsDto;
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.SubEventDefinitionDto;
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.SubEventItemDto;
@@ -637,7 +638,7 @@ public class ActivityEventSubEventsMapper {
         if (Boolean.FALSE.equals(parentRecord.getSubEventsEnabled())) {
             return List.of();
         }
-        List<SubEventDefinitionDto> definitions = cloneSubEventDefinitions(parentRecord.getSubEventDefinitions());
+        List<SubEventDefinitionDto> definitions = eventSubEventDefinitions(parentRecord);
         if (definitions.isEmpty()) {
             return List.of();
         }
@@ -783,10 +784,58 @@ public class ActivityEventSubEventsMapper {
         if (parentRecord == null || Boolean.FALSE.equals(parentRecord.getSubEventsEnabled())) {
             return List.of();
         }
+        if (isMingle(parentRecord)) {
+            return mingleRoundDefinitions(parentRecord);
+        }
         List<SubEventDefinitionDto> overrideDefinitions = cloneSubEventDefinitions(template == null ? null : template.subEventDefinitions());
         return overrideDefinitions.isEmpty()
                 ? cloneSubEventDefinitions(parentRecord.getSubEventDefinitions())
                 : overrideDefinitions;
+    }
+
+    private List<SubEventDefinitionDto> eventSubEventDefinitions(ActivityEvent event) {
+        return isMingle(event)
+                ? mingleRoundDefinitions(event)
+                : cloneSubEventDefinitions(event == null ? null : event.getSubEventDefinitions());
+    }
+
+    private List<SubEventDefinitionDto> mingleRoundDefinitions(ActivityEvent event) {
+        MingleConfigurationDto source = event == null ? null : event.getMingleConfiguration();
+        int groupSize = boundedInteger(source == null ? null : source.groupSize(), 2, 20, 4);
+        int plannedRounds = boundedInteger(source == null ? null : source.plannedRounds(), 1, 100, 4);
+        int roundDuration = boundedInteger(source == null ? null : source.roundDurationMinutes(), 1, 240, 20);
+        int breakDuration = boundedInteger(source == null ? null : source.breakDurationMinutes(), 0, 60, 5);
+        List<SubEventDefinitionDto> rounds = new ArrayList<>(plannedRounds);
+        for (int index = 0; index < plannedRounds; index += 1) {
+            int roundNumber = index + 1;
+            rounds.add(new SubEventDefinitionDto(
+                    "mingle-round-" + roundNumber,
+                    "Round " + roundNumber,
+                    "Table assignment round",
+                    "After",
+                    index == 0 ? 0 : breakDuration,
+                    roundDuration,
+                    "",
+                    groupSize,
+                    groupSize,
+                    null,
+                    null,
+                    false,
+                    null,
+                    0,
+                    0,
+                    "table_restaurant"));
+        }
+        return rounds;
+    }
+
+    private boolean isMingle(ActivityEvent event) {
+        return event != null && "Mingle".equalsIgnoreCase(safeText(event.getMode()));
+    }
+
+    private int boundedInteger(Integer value, int minimum, int maximum, int fallback) {
+        int normalized = value == null ? fallback : value;
+        return Math.max(minimum, Math.min(maximum, normalized));
     }
 
     private long slotDurationMinutes(

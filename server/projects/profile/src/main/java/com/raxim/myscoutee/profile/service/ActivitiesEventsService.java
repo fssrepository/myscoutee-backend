@@ -91,6 +91,7 @@ import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.EventSlotTemplateD
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.ActivitySubEventResourceStateDto;
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.ActivitySubEventStageRuntimeStateDto;
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.LocationCoordinatesDto;
+import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.MingleConfigurationDto;
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.PolicyItemDto;
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.PricingActionDto;
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.PricingConfigDto;
@@ -6789,19 +6790,29 @@ public class ActivitiesEventsService {
         document.setPendingRequestMemberUserIds(pendingRequestMemberUserIds);
         document.setFull(directRecordFull(document));
         document.setTopics(normalizeStrings(request.topics()));
+        String nextMode = normalizeEventMode(publishedManageMode
+                ? safeText(existing == null ? null : existing.getMode())
+                : safeText(request.mode()));
+        MingleConfigurationDto nextMingleConfiguration = "Mingle".equals(nextMode)
+                ? publishedManageMode
+                        ? mergePublishedMingleConfiguration(
+                                existing == null ? null : existing.getMingleConfiguration(),
+                                request.mingleConfiguration())
+                        : normalizeMingleConfiguration(request.mingleConfiguration())
+                : null;
         List<SubEventDefinitionDto> nextSubEventDefinitions = publishedManageMode
                 ? cloneSubEventDefinitions(existing == null ? null : existing.getSubEventDefinitions())
                 : cloneSubEventDefinitions(request.subEventDefinitions());
         boolean subEventsRequested = publishedManageMode
                 ? existing == null || existing.getSubEventsEnabled() == null || Boolean.TRUE.equals(existing.getSubEventsEnabled())
                 : request.subEventsEnabled() == null || Boolean.TRUE.equals(request.subEventsEnabled());
-        boolean subEventsEnabled = subEventsRequested && !nextSubEventDefinitions.isEmpty();
+        boolean subEventsEnabled = subEventsRequested
+                && ("Mingle".equals(nextMode) || !nextSubEventDefinitions.isEmpty());
         document.setSubEventsEnabled(subEventsEnabled);
         document.setSubEventDefinitions(nextSubEventDefinitions);
         document.setSubEvents(List.of());
-        document.setMode(normalizeEventMode(publishedManageMode
-                ? safeText(existing == null ? null : existing.getMode())
-                : safeText(request.mode())));
+        document.setMode(nextMode);
+        document.setMingleConfiguration(nextMingleConfiguration);
         document.setRating(existing == null ? 0d : safeDouble(existing.getRating()));
         document.setAffinity(resolveAffinity(document, creator, acceptedMemberUserIds));
         document.setBoost(resolveBoost(document, creator, acceptedMemberUserIds));
@@ -8205,7 +8216,42 @@ public class ActivitiesEventsService {
     }
 
     private String normalizeEventMode(String value) {
-        return "tournament".equalsIgnoreCase(safeText(value)) ? "Tournament" : "Casual";
+        if ("tournament".equalsIgnoreCase(safeText(value))) {
+            return "Tournament";
+        }
+        return "mingle".equalsIgnoreCase(safeText(value)) ? "Mingle" : "Casual";
+    }
+
+    private MingleConfigurationDto normalizeMingleConfiguration(MingleConfigurationDto value) {
+        MingleConfigurationDto source = value == null
+                ? new MingleConfigurationDto(4, 4, 20, 5, 0, true)
+                : value;
+        return new MingleConfigurationDto(
+                clampInteger(source.groupSize(), 2, 20, 4),
+                clampInteger(source.plannedRounds(), 1, 100, 4),
+                clampInteger(source.roundDurationMinutes(), 1, 240, 20),
+                clampInteger(source.breakDurationMinutes(), 0, 60, 5),
+                clampInteger(source.tableCount(), 0, 500, 0),
+                source.requireGenderBalance() == null || source.requireGenderBalance());
+    }
+
+    private MingleConfigurationDto mergePublishedMingleConfiguration(
+            MingleConfigurationDto existing,
+            MingleConfigurationDto requested) {
+        MingleConfigurationDto current = normalizeMingleConfiguration(existing);
+        MingleConfigurationDto candidate = normalizeMingleConfiguration(requested == null ? current : requested);
+        return new MingleConfigurationDto(
+                current.groupSize(),
+                Math.max(current.plannedRounds(), candidate.plannedRounds()),
+                current.roundDurationMinutes(),
+                current.breakDurationMinutes(),
+                current.tableCount(),
+                current.requireGenderBalance());
+    }
+
+    private int clampInteger(Integer value, int min, int max, int fallback) {
+        int normalized = value == null ? fallback : value;
+        return Math.max(min, Math.min(max, normalized));
     }
 
     private String resolveCreatorName(String requestedName, Users creator) {

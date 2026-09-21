@@ -2880,6 +2880,7 @@ class ActivitiesEventsServiceTest {
                 List.of(),
                 "",
                 null,
+                null,
                 0d,
                 0d,
                 0d,

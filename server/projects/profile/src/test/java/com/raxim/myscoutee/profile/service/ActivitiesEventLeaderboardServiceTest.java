@@ -10,6 +10,7 @@ import static org.mockito.Mockito.when;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 
 import org.mockito.ArgumentCaptor;
@@ -19,6 +20,8 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.raxim.myscoutee.profile.data.document.ActivityEvent;
+import com.raxim.myscoutee.profile.data.document.ActivityMingleRound;
+import com.raxim.myscoutee.profile.data.document.ActivityMingleRound.TableAssignment;
 import com.raxim.myscoutee.profile.data.document.ActivitySubEventGroup;
 import com.raxim.myscoutee.profile.data.document.ActivitySubEventStageRuntime;
 import com.raxim.myscoutee.profile.data.document.ActivitySubEventStageRuntime.GroupResourceMetricRecord;
@@ -27,9 +30,11 @@ import com.raxim.myscoutee.profile.data.dto.events.EventLeaderboardDtos.EventLea
 import com.raxim.myscoutee.profile.data.dto.events.EventLeaderboardDtos.EventTournamentGroupsStateDto;
 import com.raxim.myscoutee.profile.data.document.SubEventItem;
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.ActivityMemberEntryDto;
+import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.MingleConfigurationDto;
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.SubEventGroupItemDto;
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.SubEventDefinitionDto;
 import com.raxim.myscoutee.profile.repository.ActivityEventsRepository;
+import com.raxim.myscoutee.profile.repository.ActivityMingleRoundsRepository;
 import com.raxim.myscoutee.profile.repository.ActivitySubEventGroupsRepository;
 import com.raxim.myscoutee.profile.repository.ActivitySubEventStageRuntimeRepository;
 import com.raxim.myscoutee.profile.repository.EventLeaderboardEntriesRepository;
@@ -44,6 +49,8 @@ class ActivitiesEventLeaderboardServiceTest {
     private ActivitySubEventGroupsRepository activitySubEventGroupsRepository;
     @Mock
     private ActivitySubEventStageRuntimeRepository activitySubEventStageRuntimeRepository;
+    @Mock
+    private ActivityMingleRoundsRepository activityMingleRoundsRepository;
     @Mock
     private EventLeaderboardEntriesRepository eventLeaderboardEntriesRepository;
     @Mock
@@ -120,6 +127,43 @@ class ActivitiesEventLeaderboardServiceTest {
             assertThat(stage.subEventId()).isEqualTo("stage-1");
             assertThat(stage.groups()).hasSize(2);
         });
+    }
+
+    @Test
+    void mingleGroupsProjectPlannedRoundsAndOnlyExposeTablesForStartedRounds() {
+        ActivitiesEventLeaderboardService service = new ActivitiesEventLeaderboardService(
+                activityEventsRepository,
+                activitySubEventGroupsRepository,
+                activitySubEventStageRuntimeRepository,
+                eventLeaderboardEntriesRepository,
+                activitiesMembersService,
+                accessControlService);
+        service.setActivityMingleRoundsRepository(activityMingleRoundsRepository);
+
+        ActivityEvent record = eventRecord("event-1", "canonical");
+        record.setMode("Mingle");
+        record.setSubEvents(List.of());
+        record.setMingleConfiguration(new MingleConfigurationDto(4, 3, 20, 5, 2, true));
+        ActivityMingleRound firstRound = new ActivityMingleRound();
+        firstRound.setEventId("event-1");
+        firstRound.setRoundNumber(1);
+        firstRound.setTables(List.of(
+                new TableAssignment(1, List.of("u1", "u2", "u3", "u4")),
+                new TableAssignment(2, List.of("u5", "u6", "u7", "u8"))));
+        when(activityEventsRepository.findBySourceId("event-1")).thenReturn(List.of(record));
+        when(activityMingleRoundsRepository.findByEventIdAndRoundNumber("event-1", 1))
+                .thenReturn(Optional.of(firstRound));
+
+        EventTournamentGroupsStateDto state = service.queryTournamentGroups("host", "event-1");
+
+        assertThat(state.stages()).hasSize(3);
+        assertThat(state.stages().getFirst()).satisfies(round -> {
+            assertThat(round.subEventId()).isEqualTo("mingle-round-1");
+            assertThat(round.groups()).extracting(group -> group.name())
+                    .containsExactly("Table 1", "Table 2");
+        });
+        assertThat(state.stages().get(1).groups()).isEmpty();
+        assertThat(state.stages().get(2).groups()).isEmpty();
     }
 
     @Test

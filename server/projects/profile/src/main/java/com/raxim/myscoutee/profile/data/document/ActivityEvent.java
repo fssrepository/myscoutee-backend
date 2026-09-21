@@ -16,6 +16,7 @@ import org.springframework.data.mongodb.core.mapping.Field;
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.EventSlotTemplateDto;
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.EventSlotOccurrenceDto;
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.LocationCoordinatesDto;
+import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.MingleConfigurationDto;
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.PolicyItemDto;
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.PricingConfigDto;
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.SubEventDefinitionDto;
@@ -125,6 +126,7 @@ public class ActivityEvent {
     private List<SubEventItem> subEvents = new ArrayList<>();
     private TournamentCurrentStageDto currentStage;
     private String mode = "Casual";
+    private MingleConfigurationDto mingleConfiguration;
     private Double rating;
     private Double boost;
     private Double affinity;
@@ -316,6 +318,8 @@ public class ActivityEvent {
     public void setCurrentStage(TournamentCurrentStageDto currentStage) { this.currentStage = currentStage; }
     public String getMode() { return normalizeMode(mode); }
     public void setMode(String mode) { this.mode = normalizeMode(mode); }
+    public MingleConfigurationDto getMingleConfiguration() { return mingleConfiguration; }
+    public void setMingleConfiguration(MingleConfigurationDto mingleConfiguration) { this.mingleConfiguration = mingleConfiguration; }
     public Double getRating() { return rating; }
     public void setRating(Double rating) { this.rating = rating; }
     public Double getBoost() { return boost; }
@@ -375,7 +379,10 @@ public class ActivityEvent {
     }
 
     private static String normalizeMode(String value) {
-        return hasText(value) && "Tournament".equalsIgnoreCase(value.trim()) ? "Tournament" : "Casual";
+        if (hasText(value) && "Tournament".equalsIgnoreCase(value.trim())) {
+            return "Tournament";
+        }
+        return hasText(value) && "Mingle".equalsIgnoreCase(value.trim()) ? "Mingle" : "Casual";
     }
 
     private static boolean isTournamentStage(SubEventItem stage) {

@@ -179,6 +179,15 @@ public final class SharedDtos {
             String status) {
     }
 
+    public record MingleConfigurationDto(
+            Integer groupSize,
+            Integer plannedRounds,
+            Integer roundDurationMinutes,
+            Integer breakDurationMinutes,
+            Integer tableCount,
+            Boolean requireGenderBalance) {
+    }
+
     public record SubEventDefinitionDto(
             @Field("id")
             String id,

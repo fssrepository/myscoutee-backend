@@ -8,6 +8,7 @@ import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.EventSlotOccurrenc
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.EventSlotTemplateDto;
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.ActivityMemberEntryDto;
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.LocationCoordinatesDto;
+import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.MingleConfigurationDto;
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.PolicyItemDto;
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.PricingConfigDto;
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.PricingCancellationPolicyDto;
@@ -661,6 +662,7 @@ public final class EventsDtos {
             List<SubEventDefinitionDto> subEventDefinitions,
             List<SubEventItemDto> subEvents,
             String mode,
+            MingleConfigurationDto mingleConfiguration,
             TournamentCurrentStageDto currentStage,
             Double rating,
             Double boost,

@@ -112,27 +112,54 @@ The existing format menu should receive one additional choice:
 - Mingle.
 
 Selecting Mingle keeps the normal event form and the existing panel/list shell.
-The panel does not need a parallel Mingle-specific layout. Its `+` action is
-context-sensitive: Tournament opens the existing Create Stage popup, while
-Mingle opens a small Mingle-specific creation/configuration popup and returns
-the result to the same panel.
+The panel does not need a parallel Mingle-specific layout. Mingle configuration
+is shown directly in the form; it does not overload the existing `+` action or
+require another configuration popup.
 
 This UI reuse does not turn Mingle rounds into Tournament stages. The Mingle
 popup exposes only the loose values needed by the Mingle operation, and actual
 rounds can still be started or added at runtime.
 
-The block should remain an editable list or a small set of inputs. The useful
-parameters are expected to be limited to values such as:
+The block remains a small set of inputs. The useful parameters are limited to:
 
 - normal group size;
 - planned number of rounds;
 - approximate round duration;
 - table-change/break duration;
 - available table/group numbers or count;
-- simple assignment priority and repeat avoidance.
+- whether gender balance is a required assignment constraint.
 
-The exact first-release fields remain an implementation decision. The model
-must not grow a separate workflow language or a list of named Mingle modes.
+Repeat avoidance and affinity are not configuration switches. They are normal,
+soft optimization goals of the assignment algorithm. A repeated table partner
+never puts somebody on a waiting list: when a repeat cannot reasonably be
+avoided, the participant is still assigned. `Require gender balance` is
+different because it is an explicit hard constraint, and because the event
+form has no gender-ratio target from which this organizer intent could safely
+be inferred.
+
+When gender balance is required, only complete tables whose known profile
+genders can be balanced are assigned. Remaining participants wait for a later
+round instead of receiving an unbalanced table. For a group size of two this
+means a mixed-gender pair when the checked-in pool permits it. When the option
+is disabled, every checked-in participant may be assigned regardless of the
+round's gender distribution.
+
+The configured round count is projected on the fly through the same horizontal
+panel/list machinery used by the Tournament editor. The Mingle panels use a
+different contextual color, but they are not a custom parallel component.
+These planned list entries are not persisted subevents or round documents. A
+durable round and its assignments exist only after that round actually starts.
+
+The runtime three-dot action opens the same group surface used by Tournament.
+Mingle uses that surface in a reduced mode: groups/tables and their members
+remain available, including the existing member-management behavior, while
+leaderboards, score entry, advancement, and asset controls are absent.
+
+After publication, existing Mingle configuration remains stable, but the
+planned round count may be increased. Increasing it simply extends the derived
+list and permits ad hoc additional rounds; it does not rewrite completed or
+active rounds. The model must not grow a separate workflow language or a list
+of named Mingle modes.
 
 QR-code admission, advance signup, and on-site joining remain flexible uses of
 the existing event membership, ticket, and check-in flow. They do not change
@@ -149,9 +176,10 @@ tournament without scores.
 - Several tables/groups exist in parallel in each round.
 - There is no score, winner, elimination, or stage advancement.
 
-This is why Mingle can reuse the idea of an event configuration block without
-copying the Tournament stage model. It can also reuse the Tournament-style
-timed progression with manual organizer controls for live exceptions.
+This is why Mingle reuses the Tournament panel, signal, popup, and group
+infrastructure without adopting its scoring model. It can also reuse the
+Tournament-style timed progression with manual organizer controls for live
+exceptions.
 
 ## No special stationary-person model
 
@@ -220,9 +248,10 @@ control handles exceptions, similarly to the existing Tournament flow.
 A planned four-round event may receive a fifth round. The organizer should not
 have to edit the main event or pre-create normal subevents to do this.
 
-Actual rounds may appear in the existing Subevents list as event-scoped
+Actual started rounds may appear in the existing Subevents list as event-scoped
 history, but they are lightweight runtime rounds rather than pre-authored
-subevents with a strict lifecycle.
+subevents with a strict lifecycle. The pre-start list remains a UI projection
+of the configured count.
 
 ## Minimal live operation
 

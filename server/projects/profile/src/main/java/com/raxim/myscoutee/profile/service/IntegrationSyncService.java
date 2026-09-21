@@ -441,6 +441,7 @@ public class IntegrationSyncService {
                 List.of(),
                 "Casual",
                 null,
+                null,
                 0d,
                 0d,
                 0d,

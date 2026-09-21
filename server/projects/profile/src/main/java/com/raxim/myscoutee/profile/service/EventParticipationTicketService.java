@@ -379,6 +379,7 @@ public class EventParticipationTicketService {
         next.setTopics(new ArrayList<>(normalizeStrings(preferred.getTopics())));
         next.setSubEvents(cloneSubEvents(preferred.getSubEvents()));
         next.setMode(safeText(preferred.getMode()));
+        next.setMingleConfiguration(preferred.getMingleConfiguration());
         next.setRating(preferred.getRating());
         next.setBoost(preferred.getBoost());
         next.setAffinity(preferred.getAffinity());
