@@ -1,3 +1,9 @@
+> Current correction (2026-09-22): the 23:49 frontend/backend commits were
+> reverted in cd8189f1 / dad8ee6c. About identity now reuses the existing landing
+> branding, exactly like its logo. Separate founder metadata has been removed;
+> earlier founder notes below describe superseded work. QA is paused while the
+> requested correction is reviewed. No broad browser testing was resumed.
+
 # Event mode QA — paused 2026-09-21
 
 User requested a pause before closing the laptop. Do not resume browser actions
