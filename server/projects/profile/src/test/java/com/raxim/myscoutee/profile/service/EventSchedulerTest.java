@@ -601,8 +601,9 @@ class EventSchedulerTest {
                 anyList());
     }
 
-    @Test
-    void tournamentStageStartAssignsEveryAcceptedMemberAcrossAllConfiguredGroups() {
+    @org.junit.jupiter.params.ParameterizedTest
+    @org.junit.jupiter.params.provider.ValueSource(booleans = {false, true})
+    void tournamentStageStartAssignsEveryAcceptedMemberAcrossAllConfiguredGroups(boolean definitionOnly) {
         EventScheduler scheduler = createScheduler();
 
         ActivityEvent event = new ActivityEvent();
@@ -612,6 +613,22 @@ class EventSchedulerTest {
         event.setTitle("Tournament stage start");
         event.setMode("Tournament");
         event.setSubEvents(List.of(subEvent("stage-start", 2, 1, 2)));
+        if (definitionOnly) {
+            event.setSubEvents(List.of());
+            event.setSubEventsEnabled(true);
+            event.setStartAtIso(Instant.now().minusSeconds(60).toString());
+            event.setEndAtIso(Instant.now().plusSeconds(3600).toString());
+            event.setSubEventDefinitions(List.of(
+                    new com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.SubEventDefinitionDto(
+                            "stage-start", "Opening round", "", "After", 0, 60, "Arena",
+                            1, 2, "Score", 1, false, null, 1, 4, null)));
+            ActivitySubEventStageRuntime runtime = new ActivitySubEventStageRuntime();
+            runtime.setOwnerId("event-stage-start");
+            runtime.setSubEventId("stage-start");
+            runtime.setStageStatus("A");
+            when(activitySubEventStageRuntimeRepository.findByOwnerIdIn(List.of("event-stage-start")))
+                    .thenReturn(List.of(runtime));
+        }
 
         Users nonPublicAcceptedUser = user("casey");
         nonPublicAcceptedUser.setProfileStatus("friends only");

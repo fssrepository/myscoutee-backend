@@ -62,6 +62,25 @@ Private evidence/scripts: `frontend/.agent/mode-qa/`, including
 `runtime-phases.json`, `completed-resume.json`, `encounters-resume.json` and
 `countdown-vitest.log`. Do not publish private invitation URLs or SDK credentials.
 
+## Current investigation — Tournament and assignment notifications
+
+- Tournament UI create/publish/request/approve passed for disposable event
+  `h1790030034508`. Start initially returned an unchanged RS state: command
+  projection omitted the definition timeline and skipped group generation for
+  definition-only events. The repair reuses the visible-list timeline mapper,
+  saves canonical stage runtime before generation, and reads runtime overlays
+  in the assignment planner. Browser start now returns A; group/scoring
+  verification is still ongoing. Do not mark the whole Tournament flow passed.
+- Stage runtime reads in the command path are batched per owner instead of one
+  query per stage. The two-slot mapper test also needed a deterministic same-day
+  anchor: its old relative timestamps crossed UTC midnight outside its day query.
+- Drawing Speed meeting tables already enqueues targeted notification intents
+  with eventId, roundNumber and tableNumber through the common Firebase outbox.
+  Actual device delivery has not been proven in this run. The user explicitly
+  requires push notifications and polling to remain independent. The attempted
+  push-triggered refresh and its tests were removed; no frontend push/poll change
+  remains. Do not treat those discarded tests as final implementation evidence.
+
 ## Still to finish / not proven
 
 1. Timer badge browser assertions passed: ticking running time, frozen paused

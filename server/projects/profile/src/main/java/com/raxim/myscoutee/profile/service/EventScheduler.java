@@ -788,7 +788,7 @@ public class EventScheduler {
         List<ActivityEvent> eventRecords = sourceIdFilter.isEmpty()
                 ? activityEventsRepository.findAll()
                 : activityEventsRepository.findBySourceIdIn(sourceIdFilter);
-        List<ActivityEvent> events = resolveCanonicalEvents(eventRecords);
+        List<ActivityEvent> events = applyStageRuntimeOverlays(resolveCanonicalEvents(eventRecords));
         Map<String, List<ActivityEvent>> eventDocumentsById = eventDocumentsBySourceId(eventRecords);
         AtomicInteger observedQueries = new AtomicInteger(1);
         publishRandomProgress(progressConsumer, 0, 0, events.size(), 0, observedQueries.get(), "Loaded " + events.size() + " event record(s).");
