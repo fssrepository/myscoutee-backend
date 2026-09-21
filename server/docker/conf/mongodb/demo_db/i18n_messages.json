@@ -14184,6 +14184,12 @@
     "value": "The Speed meeting action could not be completed because of a technical error."
   },
   {
+    "_id": "i18n-message-en-mingle-error-state-changed",
+    "key": "mingle.error.state.changed",
+    "lang": "en",
+    "value": "The round changed while this action was open. Close this dialog and choose the action again."
+  },
+  {
     "_id": "i18n-message-en-mingle-error-service-unavailable",
     "key": "mingle.error.service.unavailable",
     "lang": "en",
@@ -35758,6 +35764,12 @@
     "key": "mingle.error.action.failed",
     "lang": "hu",
     "value": "A villámtalálkozók műveletét technikai hiba miatt nem sikerült végrehajtani."
+  },
+  {
+    "_id": "i18n-message-hu-mingle-error-state-changed",
+    "key": "mingle.error.state.changed",
+    "lang": "hu",
+    "value": "A kör állapota közben megváltozott. Zárd be ezt az ablakot, és válaszd ki újra a műveletet."
   },
   {
     "_id": "i18n-message-hu-mingle-error-service-unavailable",

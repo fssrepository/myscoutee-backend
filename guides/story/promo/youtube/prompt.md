@@ -82,3 +82,17 @@ Current accepted version: a closely fitted, rounded, translucent dark-indigo pan
 Final edit prompt:
 
 Use case: precise-object-edit. Input image is the EDIT TARGET: existing MyScoutee YouTube banner, 1672x941. Make exactly one change: add ONE closely fitted rounded rectangle backdrop behind the entire central logo and text block to improve contrast. Panel bounds approximately x=616 to 1056, y=322 to 578 on this 1672x941 canvas, with modest 16–20px padding around existing content and 20px corner radius. The panel must be only as large as this existing content block, never a wide horizontal band, never extending across scenery. Use deep dark plum/indigo (#21163F) with approximately 60% opacity: the original sky and mountains remain visibly translucent through it. Clean flat tinted translucent panel, no ornamental border, no heavy shadow or glow. All logo and text stay ABOVE this panel, sharp, bright and fully opaque. Preserve EXACTLY their current positions, sizes, typography and wording: original colorful heart-and-star emblem followed by "yScoutee", "Shared experiences. Real connections.", "6 people · 6 priority lists → 1 team", "Standard · Tournament · Speed dating", "myscoutee.com", purple "FREE TO JOIN" badge. Do not shift, resize, reflow or redesign any content. Preserve entire scenic background, people, cafe, flowers, sky, mountains, lake, framing and colors outside the small panel. Output same 1672x941 full-bleed opaque image; only the panel appears translucent over the artwork, not the image canvas.
+
+
+## Current asset correction — 2026-09-21
+
+The current image replaces the prior version at the same tracked path.
+Public format name: **Speed meeting**, matching the app and API manual.
+Earlier prompts above are production history, not the current naming contract.
+Tool: built-in `image_gen`, text-localization edit.
+
+Final prompt: Replace only “Speed dating” with “Speed meeting”; the line reads
+“Standard · Tournament · Speed meeting”. Preserve the original composition,
+faces, logo, artwork, other text, framing and aspect ratio. Keep FREE TO JOIN;
+for the Facebook portrait/feed assets add the missing purple FREE TO JOIN pill
+in the bottom margin. Do not redesign.

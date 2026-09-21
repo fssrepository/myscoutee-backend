@@ -106,6 +106,25 @@ class ActivitiesMingleServiceTest {
         verifyNoInteractions(rounds, sessions, notifications);
     }
 
+    @Test void staleBreakConfirmationCannotEndTheAutomaticallyStartedRound() {
+        when(events.findBySourceId("event-1")).thenReturn(List.of(event()));
+        when(access.canManageEvent("event-1", "viewer")).thenReturn(true);
+        var session = new ActivityMingleSession();
+        session.setEventId("event-1");
+        session.setStatus("ROUND");
+        session.setCurrentRoundNumber(2);
+        session.setRevision(5);
+        when(sessions.findByEventId("event-1")).thenReturn(Optional.of(session));
+
+        assertThatThrownBy(() -> service.applyAction(new MingleActionRequestDto("event-1", "viewer", "next", 4)))
+                .isInstanceOf(MingleActionException.class)
+                .satisfies(error -> assertThat(((MingleActionException) error).getCode()).isEqualTo("MINGLE_STATE_CHANGED"));
+        assertThat(session.getStatus()).isEqualTo("ROUND");
+        assertThat(session.getRevision()).isEqualTo(5);
+        verify(sessions, never()).save(any());
+        verifyNoInteractions(rounds, notifications);
+    }
+
     private ActivityMingleSession fixture(String status, String roundStatus) {
         when(events.findBySourceId("event-1")).thenReturn(List.of(event()));
         var session = new ActivityMingleSession();

@@ -51,3 +51,17 @@ Tool: built-in `image_gen`, edit mode. Replaced the existing asset.
 Final edit prompt:
 
 Use case: text-localization. Input image is the EDIT TARGET. Replace ONLY the word "Mingle" with exactly "Speed dating" (capital S, lowercase d). The complete corrected line must read verbatim "Standard · Tournament · Speed dating". Instagram 1:1 square image. Retain 1254x1254 dimensions and exact framing. Keep edited line centered below first headline inside its existing pale panel between the portrait cards; reduce only that line's font size slightly if necessary to fit. Match the existing typography, weight and color. Preserve EVERYTHING ELSE: all artwork, people, faces, profile cards, logo emblem and wordmark, backgrounds, lighting, icons, slider, every other text and badge, layout and aspect ratio. Do not add or remove anything else. Deliver one complete opaque edited image.
+
+
+## Current asset correction — 2026-09-21
+
+The current image replaces the prior version at the same tracked path.
+Public format name: **Speed meeting**, matching the app and API manual.
+Earlier prompts above are production history, not the current naming contract.
+Tool: built-in `image_gen`, text-localization edit.
+
+Final prompt: Replace only “Speed dating” with “Speed meeting”; the line reads
+“Standard · Tournament · Speed meeting”. Preserve the original composition,
+faces, logo, artwork, other text, framing and aspect ratio. Keep FREE TO JOIN;
+for the Facebook portrait/feed assets add the missing purple FREE TO JOIN pill
+in the bottom margin. Do not redesign.

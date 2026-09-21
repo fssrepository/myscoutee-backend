@@ -118,6 +118,10 @@ public class ActivitiesMingleService {
         Instant now = Instant.now();
 
         ActivityMingleSession session = activityMingleSessionsRepository.findByEventId(eventId).orElse(null);
+        if (request.expectedRevision() != null
+                && request.expectedRevision() != (session == null ? 0 : count(session.getRevision()))) {
+            throw new MingleActionException(HttpStatus.CONFLICT, "MINGLE_STATE_CHANGED");
+        }
         session = switch (action) {
             case "start" -> startOrContinue(event, session, actorUserId, now);
             case "next", "advance" -> advance(event, requireSession(session), actorUserId, now, false);

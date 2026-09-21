@@ -10,7 +10,11 @@ public final class MingleDtos {
     public record MingleActionRequestDto(
             String eventId,
             String actorUserId,
-            String action) {
+            String action,
+            Integer expectedRevision) {
+        public MingleActionRequestDto(String eventId, String actorUserId, String action) {
+            this(eventId, actorUserId, action, null);
+        }
     }
 
     public record MingleActionErrorDto(
