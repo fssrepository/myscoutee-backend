@@ -360,6 +360,7 @@ public class ActivitiesMingleService {
         List<MingleTableDto> tables = visibleTables.stream()
                 .map(table -> new MingleTableDto(
                         table.tableNumber(),
+                        mingleGroupId(session.getEventId(), round.getRoundNumber(), table.tableNumber()),
                         effectiveTableMemberUserIds(round, table).stream()
                                 .map(userId -> participant(userId, usersById.get(userId)))
                                 .toList()))
