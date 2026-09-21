@@ -68,6 +68,42 @@ class ActivityTournamentGroupCounterServiceTest {
         assertThat(result.getActivity()).isEqualTo(9);
     }
 
+    @Test
+    void writesMingleTablePendingToParentEventWithoutPersistedSubEvents() {
+        ActivityEvent event = new ActivityEvent();
+        event.setSourceId("event-1");
+        event.setMode("Mingle");
+        event.setSubEvents(List.of());
+
+        when(activityMembersRepository.countByOwnerPatternAndStatus(
+                "group",
+                "^\\Qevent-1\\E:(?:\\Qmingle-round-2\\E:|slot:.*:\\Qmingle-round-2\\E:)",
+                "pending")).thenReturn(1L);
+        when(activitySubEventStageRuntimeRepository.findByOwnerPatternAndSubEventIdAndStatusNot(
+                "^\\Qevent-1\\E(?:$|:slot:)",
+                "mingle-round-2",
+                "D")).thenReturn(List.of());
+        when(activityEventsRepository.findBySourceId("event-1")).thenReturn(List.of(event));
+        when(activityMembersRepository.countByOwnerPatternAndStatus(
+                "group",
+                "^\\Qevent-1\\E:mingle-round-[^:]+:table:",
+                "pending")).thenReturn(3L);
+        when(activitySubEventStageRuntimeRepository.findByOwnerPatternAndStatusNot(
+                "^\\Qevent-1\\E(?:$|:slot:)",
+                "D")).thenReturn(List.of());
+
+        new ActivityTournamentGroupCounterService(
+                activityMembersRepository,
+                activitySubEventStageRuntimeRepository,
+                activityEventsRepository)
+                .syncParent("event-1", "mingle-round-2");
+
+        @SuppressWarnings("unchecked")
+        ArgumentCaptor<List<ActivityEvent>> saved = ArgumentCaptor.forClass(List.class);
+        verify(activityEventsRepository).saveAll(saved.capture());
+        assertThat(saved.getValue().getFirst().getActivity()).isEqualTo(3);
+    }
+
     private SubEventItem subEvent(String id, int groupsPending) {
         return new SubEventItem(
                 id,

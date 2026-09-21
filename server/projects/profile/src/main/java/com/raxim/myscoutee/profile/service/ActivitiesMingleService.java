@@ -9,7 +9,6 @@ import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Set;
 
 import org.bson.types.ObjectId;
@@ -17,7 +16,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
-import org.springframework.web.server.ResponseStatusException;
 
 import com.raxim.myscoutee.algo.dto.Edge;
 import com.raxim.myscoutee.algo.dto.FGraph;
@@ -30,7 +28,6 @@ import com.raxim.myscoutee.profile.data.document.ActivityEvent;
 import com.raxim.myscoutee.profile.data.document.ActivityMingleRound;
 import com.raxim.myscoutee.profile.data.document.ActivityMingleRound.TableAssignment;
 import com.raxim.myscoutee.profile.data.document.ActivityMingleSession;
-import com.raxim.myscoutee.profile.data.document.EventTicket;
 import com.raxim.myscoutee.profile.data.document.UserAffinityEdge;
 import com.raxim.myscoutee.profile.data.document.Users;
 import com.raxim.myscoutee.profile.data.dto.events.MingleDtos.MingleActionRequestDto;
@@ -41,7 +38,6 @@ import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.MingleConfiguratio
 import com.raxim.myscoutee.profile.repository.ActivityEventsRepository;
 import com.raxim.myscoutee.profile.repository.ActivityMingleRoundsRepository;
 import com.raxim.myscoutee.profile.repository.ActivityMingleSessionsRepository;
-import com.raxim.myscoutee.profile.repository.EventTicketsRepository;
 import com.raxim.myscoutee.profile.repository.UserAffinityEdgesRepository;
 import com.raxim.myscoutee.profile.repository.UsersRepository;
 import com.raxim.myscoutee.profile.security.AccessControlService;
@@ -62,7 +58,6 @@ public class ActivitiesMingleService {
     private final ActivityEventsRepository activityEventsRepository;
     private final ActivityMingleSessionsRepository activityMingleSessionsRepository;
     private final ActivityMingleRoundsRepository activityMingleRoundsRepository;
-    private final EventTicketsRepository eventTicketsRepository;
     private final UsersRepository usersRepository;
     private final UserAffinityEdgesRepository userAffinityEdgesRepository;
     private final ActivitiesMembersService activitiesMembersService;
@@ -74,7 +69,6 @@ public class ActivitiesMingleService {
             ActivityEventsRepository activityEventsRepository,
             ActivityMingleSessionsRepository activityMingleSessionsRepository,
             ActivityMingleRoundsRepository activityMingleRoundsRepository,
-            EventTicketsRepository eventTicketsRepository,
             UsersRepository usersRepository,
             UserAffinityEdgesRepository userAffinityEdgesRepository,
             ActivitiesMembersService activitiesMembersService,
@@ -83,7 +77,6 @@ public class ActivitiesMingleService {
         this.activityEventsRepository = activityEventsRepository;
         this.activityMingleSessionsRepository = activityMingleSessionsRepository;
         this.activityMingleRoundsRepository = activityMingleRoundsRepository;
-        this.eventTicketsRepository = eventTicketsRepository;
         this.usersRepository = usersRepository;
         this.userAffinityEdgesRepository = userAffinityEdgesRepository;
         this.activitiesMembersService = activitiesMembersService;
@@ -130,7 +123,7 @@ public class ActivitiesMingleService {
             case "pause" -> pause(requireSession(session), actorUserId, now);
             case "resume" -> resume(requireSession(session), actorUserId, now);
             case "complete", "stop" -> complete(requireSession(session), actorUserId, now);
-            default -> throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Unsupported Mingle action.");
+            default -> throw new MingleActionException(HttpStatus.BAD_REQUEST, "MINGLE_ACTION_UNSUPPORTED");
         };
         return toState(actorUserId, event, session);
     }
@@ -160,7 +153,7 @@ public class ActivitiesMingleService {
         int nextRound = existing == null ? 1 : Math.max(1, count(existing.getCurrentRoundNumber()) + 1);
         MingleConfigurationDto config = mingleConfiguration(event);
         if (nextRound > config.plannedRounds()) {
-            throw new ResponseStatusException(HttpStatus.CONFLICT, "Increase the planned Mingle round count before starting another round.");
+            throw new MingleActionException(HttpStatus.CONFLICT, "MINGLE_ROUND_LIMIT_REACHED");
         }
         ActivityMingleRound round = createRound(event, nextRound, actorUserId, now, ROUND_ACTIVE);
         round.setStartedAtIso(now.toString());
@@ -220,7 +213,7 @@ public class ActivitiesMingleService {
         if (STATUS_COMPLETED.equals(status) && !automatic) {
             return startOrContinue(event, session, actorUserId, now);
         }
-        throw new ResponseStatusException(HttpStatus.CONFLICT, "The Mingle session cannot advance from its current state.");
+        throw new MingleActionException(HttpStatus.CONFLICT, "MINGLE_STATE_CANNOT_ADVANCE");
     }
 
     private ActivityMingleSession pause(ActivityMingleSession session, String actorUserId, Instant now) {
@@ -271,9 +264,12 @@ public class ActivitiesMingleService {
             Instant now,
             String status) {
         String eventId = normalizeId(event.getSourceId());
-        Set<String> eligibleUserIds = checkedInParticipantIds(eventId);
+        Set<String> eligibleUserIds = acceptedParticipantIds(event);
         if (eligibleUserIds.size() < 2) {
-            throw new ResponseStatusException(HttpStatus.CONFLICT, "At least two checked-in participants are required.");
+            throw new MingleActionException(
+                    HttpStatus.CONFLICT,
+                    "MINGLE_MEMBERS_INSUFFICIENT",
+                    Map.of("accepted", eligibleUserIds.size(), "required", 2));
         }
         MingleConfigurationDto config = mingleConfiguration(event);
         List<Integer> tableNumbers = config.tableCount() > 0
@@ -289,9 +285,12 @@ public class ActivitiesMingleService {
                 userGenders(eligibleUserIds),
                 config.requireGenderBalance()));
         if (plan.tables().isEmpty()) {
-            throw new ResponseStatusException(
+            throw new MingleActionException(
                     HttpStatus.CONFLICT,
-                    "No complete table satisfies the current Mingle assignment requirements.");
+                    config.requireGenderBalance()
+                            ? "MINGLE_TABLE_ASSIGNMENT_UNAVAILABLE_GENDER_BALANCE"
+                            : "MINGLE_TABLE_ASSIGNMENT_UNAVAILABLE",
+                    Map.of("accepted", eligibleUserIds.size(), "groupSize", config.groupSize()));
         }
 
         ActivityMingleRound round = new ActivityMingleRound();
@@ -458,15 +457,25 @@ public class ActivitiesMingleService {
         return round == null || round.getTables() == null ? List.of() : round.getTables();
     }
 
-    private Set<String> checkedInParticipantIds(String eventId) {
-        return eventTicketsRepository.findByEventId(eventId).stream()
-                .filter(Objects::nonNull)
-                .filter(ticket -> EventTicket.STATUS_ACTIVE.equals(safeText(ticket.getStatus())))
-                .filter(ticket -> StringUtils.hasText(ticket.getUsedAtIso()))
-                .map(EventTicket::getHolderUserId)
-                .map(this::normalizeId)
-                .filter(StringUtils::hasText)
-                .collect(java.util.stream.Collectors.toCollection(LinkedHashSet::new));
+    private Set<String> acceptedParticipantIds(ActivityEvent event) {
+        String eventId = normalizeId(event == null ? null : event.getSourceId());
+        LinkedHashSet<String> acceptedUserIds = new LinkedHashSet<>();
+        if (event != null && event.getAcceptedMemberUserIds() != null) {
+            event.getAcceptedMemberUserIds().stream()
+                    .map(this::normalizeId)
+                    .filter(StringUtils::hasText)
+                    .forEach(acceptedUserIds::add);
+        }
+        ActivitiesMembersService.OwnerMembersSnapshot snapshot = StringUtils.hasText(eventId)
+                ? activitiesMembersService.queryOwnerSnapshot("event", eventId)
+                : null;
+        if (snapshot != null) {
+            snapshot.acceptedMemberUserIds().stream()
+                    .map(this::normalizeId)
+                    .filter(StringUtils::hasText)
+                    .forEach(acceptedUserIds::add);
+        }
+        return acceptedUserIds;
     }
 
     private List<MinglePreviousTable> previousTables(String eventId) {
@@ -548,7 +557,7 @@ public class ActivitiesMingleService {
     private ActivityEvent requireMingleEvent(String eventId) {
         ActivityEvent event = resolveMingleEvent(eventId);
         if (event == null) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Mingle event not found.");
+            throw new MingleActionException(HttpStatus.NOT_FOUND, "MINGLE_EVENT_NOT_FOUND");
         }
         return event;
     }
@@ -572,7 +581,7 @@ public class ActivitiesMingleService {
 
     private void requireManager(String eventId, String actorUserId) {
         if (!accessControlService.canManageEvent(eventId, actorUserId)) {
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Authenticated user cannot manage this Mingle event.");
+            throw new MingleActionException(HttpStatus.FORBIDDEN, "MINGLE_MANAGE_FORBIDDEN");
         }
     }
 
@@ -586,7 +595,7 @@ public class ActivitiesMingleService {
 
     private ActivityMingleSession requireSession(ActivityMingleSession session) {
         if (session == null) {
-            throw new ResponseStatusException(HttpStatus.CONFLICT, "The Mingle session has not started.");
+            throw new MingleActionException(HttpStatus.CONFLICT, "MINGLE_SESSION_NOT_STARTED");
         }
         return session;
     }
@@ -594,7 +603,7 @@ public class ActivitiesMingleService {
     private MingleConfigurationDto mingleConfiguration(ActivityEvent event) {
         MingleConfigurationDto source = event == null ? null : event.getMingleConfiguration();
         if (source == null) {
-            throw new ResponseStatusException(HttpStatus.CONFLICT, "Configure Mingle before starting it.");
+            throw new MingleActionException(HttpStatus.CONFLICT, "MINGLE_CONFIGURATION_REQUIRED");
         }
         return new MingleConfigurationDto(
                 clamp(source.groupSize(), 2, 20, 4),

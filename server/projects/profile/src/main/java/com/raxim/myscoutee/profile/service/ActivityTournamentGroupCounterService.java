@@ -65,13 +65,15 @@ public class ActivityTournamentGroupCounterService {
         int stagePending = Math.addExact(membersPending, resourcesPending);
 
         List<ActivityEvent> changed = new ArrayList<>();
+        Integer minglePending = null;
         for (ActivityEvent event : activityEventsRepository.findBySourceId(parentEventId)) {
-            if (event == null || event.getSubEvents() == null) {
+            if (event == null) {
                 continue;
             }
             boolean stageFound = false;
-            List<SubEventItem> subEvents = new ArrayList<>(event.getSubEvents().size());
-            for (SubEventItem item : event.getSubEvents()) {
+            List<SubEventItem> currentSubEvents = event.getSubEvents() == null ? List.of() : event.getSubEvents();
+            List<SubEventItem> subEvents = new ArrayList<>(currentSubEvents.size());
+            for (SubEventItem item : currentSubEvents) {
                 if (item != null && normalizedSubEventId.equals(normalizeId(item.id()))) {
                     subEvents.add(item.withGroupsPending(stagePending));
                     stageFound = true;
@@ -80,6 +82,13 @@ public class ActivityTournamentGroupCounterService {
                 }
             }
             if (!stageFound) {
+                if (isMingleRound(event, normalizedSubEventId)) {
+                    if (minglePending == null) {
+                        minglePending = minglePending(parentEventId);
+                    }
+                    event.setActivity(minglePending);
+                    changed.add(event);
+                }
                 continue;
             }
             event.setSubEvents(subEvents);
@@ -93,6 +102,27 @@ public class ActivityTournamentGroupCounterService {
         if (!changed.isEmpty()) {
             activityEventsRepository.saveAll(changed);
         }
+    }
+
+    private int minglePending(String eventId) {
+        String quotedEventId = Pattern.quote(normalizeId(eventId));
+        String groupOwnerPattern = "^" + quotedEventId + ":mingle-round-[^:]+:table:";
+        int membersPending = Math.toIntExact(activityMembersRepository
+                .countByOwnerPatternAndStatus(OWNER_TYPE_GROUP, groupOwnerPattern, MEMBER_STATUS_PENDING));
+        String runtimeOwnerPattern = "^" + quotedEventId + "(?:$|:slot:)";
+        int resourcesPending = activitySubEventStageRuntimeRepository
+                .findByOwnerPatternAndStatusNot(runtimeOwnerPattern, STATUS_DELETED)
+                .stream()
+                .filter(runtime -> normalizeId(runtime == null ? null : runtime.getSubEventId())
+                        .startsWith("mingle-round-"))
+                .mapToInt(this::resourcePending)
+                .sum();
+        return Math.addExact(membersPending, resourcesPending);
+    }
+
+    private boolean isMingleRound(ActivityEvent event, String subEventId) {
+        return "Mingle".equalsIgnoreCase(normalizeId(event == null ? null : event.getMode()))
+                && normalizeId(subEventId).startsWith("mingle-round-");
     }
 
     private int resourcePending(ActivitySubEventStageRuntime runtime) {

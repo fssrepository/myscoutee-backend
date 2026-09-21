@@ -2483,6 +2483,15 @@ public class ActivitiesMembersService {
 
     private SubEventCounterScope groupCounterScope(String ownerId) {
         String normalizedOwnerId = normalizeId(ownerId);
+        int mingleRoundMarker = normalizedOwnerId.indexOf(":mingle-round-");
+        int mingleTableMarker = normalizedOwnerId.indexOf(":table:", mingleRoundMarker + 1);
+        if (mingleRoundMarker > 0 && mingleTableMarker > mingleRoundMarker) {
+            String eventId = normalizedOwnerId.substring(0, mingleRoundMarker);
+            String subEventId = normalizedOwnerId.substring(mingleRoundMarker + 1, mingleTableMarker);
+            return StringUtils.hasText(eventId) && StringUtils.hasText(subEventId)
+                    ? new SubEventCounterScope(eventId, subEventId)
+                    : null;
+        }
         int groupMarker = normalizedOwnerId.indexOf(":group:");
         if (groupMarker <= 0) {
             return null;

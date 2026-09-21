@@ -1,6 +1,7 @@
 package com.raxim.myscoutee.profile.data.dto.events;
 
 import java.util.List;
+import java.util.Map;
 
 public final class MingleDtos {
     private MingleDtos() {
@@ -10,6 +11,11 @@ public final class MingleDtos {
             String eventId,
             String actorUserId,
             String action) {
+    }
+
+    public record MingleActionErrorDto(
+            String code,
+            Map<String, Object> parameters) {
     }
 
     public record MingleParticipantDto(

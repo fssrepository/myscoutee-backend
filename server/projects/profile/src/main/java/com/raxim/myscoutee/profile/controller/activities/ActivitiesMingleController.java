@@ -1,15 +1,22 @@
 package com.raxim.myscoutee.profile.controller.activities;
 
+import java.util.Map;
+
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.server.ResponseStatusException;
 
 import com.raxim.myscoutee.profile.data.dto.events.MingleDtos.MingleActionRequestDto;
+import com.raxim.myscoutee.profile.data.dto.events.MingleDtos.MingleActionErrorDto;
 import com.raxim.myscoutee.profile.data.dto.events.MingleDtos.MingleStateDto;
 import com.raxim.myscoutee.profile.service.ActivitiesMingleService;
+import com.raxim.myscoutee.profile.service.MingleActionException;
 
 @RestController
 @RequestMapping("/activities/events/mingle")
@@ -31,5 +38,19 @@ public class ActivitiesMingleController {
     @PostMapping("/action")
     public MingleStateDto applyAction(@RequestBody MingleActionRequestDto request) {
         return activitiesMingleService.applyAction(request);
+    }
+
+    @ExceptionHandler(MingleActionException.class)
+    public ResponseEntity<MingleActionErrorDto> handleActionFailure(MingleActionException exception) {
+        return ResponseEntity
+                .status(exception.getStatusCode())
+                .body(new MingleActionErrorDto(exception.getCode(), exception.getParameters()));
+    }
+
+    @ExceptionHandler(ResponseStatusException.class)
+    public ResponseEntity<MingleActionErrorDto> handleUnexpectedActionFailure(ResponseStatusException exception) {
+        return ResponseEntity
+                .status(exception.getStatusCode())
+                .body(new MingleActionErrorDto("MINGLE_ACTION_FAILED", Map.of()));
     }
 }
