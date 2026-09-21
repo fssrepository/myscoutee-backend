@@ -9,6 +9,7 @@ import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 
 import org.bson.types.ObjectId;
@@ -460,17 +461,14 @@ public class ActivitiesMingleService {
     private Set<String> acceptedParticipantIds(ActivityEvent event) {
         String eventId = normalizeId(event == null ? null : event.getSourceId());
         LinkedHashSet<String> acceptedUserIds = new LinkedHashSet<>();
-        if (event != null && event.getAcceptedMemberUserIds() != null) {
-            event.getAcceptedMemberUserIds().stream()
-                    .map(this::normalizeId)
-                    .filter(StringUtils::hasText)
-                    .forEach(acceptedUserIds::add);
-        }
         ActivitiesMembersService.OwnerMembersSnapshot snapshot = StringUtils.hasText(eventId)
                 ? activitiesMembersService.queryOwnerSnapshot("event", eventId)
                 : null;
-        if (snapshot != null) {
-            snapshot.acceptedMemberUserIds().stream()
+        List<String> participantUserIds = snapshot != null
+                ? snapshot.acceptedMemberUserIds()
+                : event == null ? List.of() : event.getAcceptedMemberUserIds();
+        if (participantUserIds != null) {
+            participantUserIds.stream()
                     .map(this::normalizeId)
                     .filter(StringUtils::hasText)
                     .forEach(acceptedUserIds::add);
