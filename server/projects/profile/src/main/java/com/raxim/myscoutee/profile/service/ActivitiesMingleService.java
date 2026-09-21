@@ -594,7 +594,7 @@ public class ActivitiesMingleService {
     private MingleConfigurationDto mingleConfiguration(ActivityEvent event) {
         MingleConfigurationDto source = event == null ? null : event.getMingleConfiguration();
         if (source == null) {
-            return new MingleConfigurationDto(4, 4, 20, 5, 0, true);
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "Configure Mingle before starting it.");
         }
         return new MingleConfigurationDto(
                 clamp(source.groupSize(), 2, 20, 4),

@@ -117,6 +117,12 @@ is opened from the panel's existing `+` action in a compact popup based on the
 shared popup component. This keeps the event form readable while preserving the
 same panel and list structure.
 
+Selecting Mingle alone does not create a configuration and does not project any
+rounds. A new event remains unconfigured until the organizer confirms the
+Mingle popup. Only the stored popup values are the source of the projected
+round list. While the event is unconfigured, all five numeric fields in that
+popup start at zero; changing one field does not populate any of the others.
+
 This UI reuse does not turn Mingle rounds into Tournament stages. The Mingle
 popup exposes only the loose values needed by the Mingle operation, and actual
 rounds can still be started or added at runtime.
@@ -156,9 +162,10 @@ Mingle uses that surface in a reduced mode: groups/tables and their members
 remain available, including the existing member-management behavior, while
 leaderboards, score entry, advancement, and asset controls are absent.
 
-After publication, existing Mingle configuration remains stable, but the
-planned round count may be increased. Increasing it simply extends the derived
-list and permits ad hoc additional rounds; it does not rewrite completed or
+After publication, the planned round count remains editable. Increasing it
+extends the derived list and permits ad hoc additional rounds. Decreasing it
+removes only rounds that have not started: the value cannot be reduced below
+the current/highest started round. Neither direction rewrites completed or
 active rounds. The model must not grow a separate workflow language or a list
 of named Mingle modes.
 

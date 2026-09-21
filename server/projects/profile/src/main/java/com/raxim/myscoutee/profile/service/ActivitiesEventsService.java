@@ -8239,9 +8239,10 @@ public class ActivitiesEventsService {
     }
 
     private MingleConfigurationDto normalizeMingleConfiguration(MingleConfigurationDto value) {
-        MingleConfigurationDto source = value == null
-                ? new MingleConfigurationDto(4, 4, 20, 5, 0, true)
-                : value;
+        if (value == null) {
+            return null;
+        }
+        MingleConfigurationDto source = value;
         return new MingleConfigurationDto(
                 clampInteger(source.groupSize(), 2, 20, 4),
                 clampInteger(source.plannedRounds(), 1, 100, 4),
@@ -8256,7 +8257,13 @@ public class ActivitiesEventsService {
             MingleConfigurationDto existing,
             MingleConfigurationDto requested) {
         MingleConfigurationDto current = normalizeMingleConfiguration(existing);
-        MingleConfigurationDto candidate = normalizeMingleConfiguration(requested == null ? current : requested);
+        MingleConfigurationDto candidate = normalizeMingleConfiguration(requested);
+        if (current == null) {
+            return candidate;
+        }
+        if (candidate == null) {
+            return current;
+        }
         return new MingleConfigurationDto(
                 current.groupSize(),
                 Math.max(minimumMinglePlannedRounds(eventId), candidate.plannedRounds()),
