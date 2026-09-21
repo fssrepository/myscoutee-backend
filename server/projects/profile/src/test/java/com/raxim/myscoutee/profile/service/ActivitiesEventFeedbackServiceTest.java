@@ -18,6 +18,8 @@ import java.util.concurrent.atomic.AtomicReference;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.InOrder;
@@ -135,10 +137,11 @@ class ActivitiesEventFeedbackServiceTest {
         verify(mingleRoundsRepository).findByEventIdInAndStatusOrderByRoundNumberAsc(Set.of("event-1"), "COMPLETED");
     }
 
-    @Test
-    void ordinaryEventFeedbackStillUsesItsMembers() {
+    @ParameterizedTest
+    @ValueSource(strings = {"Casual", "Tournament"})
+    void ordinaryEventFeedbackStillUsesItsMembers(String mode) {
         when(homeUserProfileService.resolveCurrentUser("viewer")).thenReturn(feedbackUser("viewer"));
-        when(activityEventsRepository.findBySourceId("event-1")).thenReturn(List.of(finishedFeedbackEvent("Casual")));
+        when(activityEventsRepository.findBySourceId("event-1")).thenReturn(List.of(finishedFeedbackEvent(mode)));
         when(usersRepository.findByUserIdIn(anyCollection())).thenReturn(List.of(
                 feedbackUser("viewer"), feedbackUser("host"), feedbackUser("outsider")));
 

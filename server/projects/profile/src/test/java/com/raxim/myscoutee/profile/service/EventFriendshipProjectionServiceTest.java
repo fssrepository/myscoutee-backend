@@ -13,6 +13,8 @@ import java.util.List;
 import java.util.Set;
 import org.bson.Document;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.ArgumentCaptor;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Query;
@@ -35,9 +37,11 @@ class EventFriendshipProjectionServiceTest {
     private final EventFriendshipProjectionService service = new EventFriendshipProjectionService(mongo, members, rates);
     private final Instant now = Instant.parse("2026-09-14T12:00:00Z");
 
-    @Test
-    void completedEventBatchesParticipantsAndWritesEachEligibleMetPairOnceBeforeCompletion() {
+    @ParameterizedTest
+    @ValueSource(strings = {"Casual", "Tournament"})
+    void completedEventBatchesParticipantsAndWritesEachEligibleMetPairOnceBeforeCompletion(String mode) {
         ActivityEvent event = event();
+        event.setMode(mode);
         when(mongo.find(any(Query.class), eq(ActivityEvent.class))).thenReturn(List.of(event));
         when(members.findByOwnerTypeAndOwnerIdIn("event", Set.of("event-1")))
                 .thenReturn(List.of(member("a", "accepted", false), member("b", "accepted", false),
