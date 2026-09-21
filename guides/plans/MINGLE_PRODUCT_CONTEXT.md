@@ -257,15 +257,13 @@ not need to describe who physically moves.
 
 ### Organizer
 
-The Table surface acts as a small control desk:
+There is no separate organizer control desk. The existing Subevents surface is
+the organizer entry point. In a Mingle event it exposes a compact action for
+starting or advancing the next round, including an extra round beyond the
+configured plan. Actual rounds appear there as lightweight runtime history.
 
-- show the current round;
-- show participants grouped by table number;
-- show people waiting for the next round;
-- start the Mingle sequence;
-- pause, delay, extend, or manually advance the current phase;
-- start an extra round beyond the plan;
-- retain the actual round history.
+The contextual Table surface remains the current-assignment view for organizers
+and participants alike; it is not a second management subsystem.
 
 ### Participant
 
@@ -312,9 +310,11 @@ Event
 ```
 
 Actual saved round assignments provide the history of who was placed together.
-Completed co-assignment may later feed the existing priority and rating logic.
-This does not require a separate matching product or an automatically created
-relationship.
+After a table is completed, its participants may already appear in the existing
+Met list with feedback pending. The assignment itself is not yet a normal
+feedback-backed Met/rating/priority signal. That existing signal is persisted
+only after the relevant feedback is submitted. This does not require a separate
+matching product, relationship graph, or automatically created chat.
 
 Ordinary event membership or a broad event activity value must not be treated
 as proof that every participant met every other participant. For Mingle, the
