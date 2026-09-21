@@ -1829,7 +1829,8 @@ class EventSchedulerTest {
                 chatService,
                 notificationRuleRegistryService,
                 platformParametersService,
-                notificationOutboxService);
+                notificationOutboxService,
+                new com.raxim.myscoutee.profile.service.mapper.ActivityEventSubEventsMapper());
         scheduler.setActivitySubEventStageRuntimeRepository(activitySubEventStageRuntimeRepository);
         return scheduler;
     }

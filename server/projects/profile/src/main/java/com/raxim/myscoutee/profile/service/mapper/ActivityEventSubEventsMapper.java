@@ -37,6 +37,23 @@ import com.raxim.myscoutee.profile.service.TournamentGroupCountPolicy;
 
 @Component
 public class ActivityEventSubEventsMapper {
+    public List<SubEventItem> runtimeStages(ActivityEvent event) {
+        if (event == null) {
+            return List.of();
+        }
+        if (event.getSubEvents() != null && !event.getSubEvents().isEmpty()) {
+            return event.getSubEvents();
+        }
+        if (Boolean.FALSE.equals(event.getSubEventsEnabled())
+                || event.getSubEventDefinitions() == null || event.getSubEventDefinitions().isEmpty()) {
+            return List.of();
+        }
+        // Commands and scheduling use the same definition timeline as the visible list.
+        // This is an in-memory projection; definitions remain the persisted source.
+        return SubEventItemMapper.toRecordList(toSlotDto(
+                recordSlotSource(event.getSourceId(), event), event).subEventItems());
+    }
+
     public List<EventSubEventsSlotDto> toSlotDtos(
             String parentEventId,
             ActivityEvent parentRecord,

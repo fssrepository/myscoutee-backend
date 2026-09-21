@@ -42,6 +42,7 @@ import com.raxim.myscoutee.algo.gen.GeneratorModels.RandomTargetedGeneratorReque
 import com.raxim.myscoutee.common.config.mongo.MongoSessionMode;
 import com.raxim.myscoutee.common.config.mongo.MongoSessionModeContext;
 import com.raxim.myscoutee.common.config.mongo.ScheduledMongoSessionRunner;
+import com.raxim.myscoutee.profile.service.mapper.ActivityEventSubEventsMapper;
 import com.raxim.myscoutee.profile.data.document.ActivityEvent;
 import com.raxim.myscoutee.profile.data.document.ActivityMainEventRuntime;
 import com.raxim.myscoutee.profile.data.document.ActivityMember;
@@ -111,6 +112,7 @@ public class EventScheduler {
     private final NotificationOutboxService notificationOutboxService;
     private ScheduledMongoSessionRunner scheduledMongoSessionRunner;
     private ActivitySubEventStageRuntimeRepository activitySubEventStageRuntimeRepository;
+    private final ActivityEventSubEventsMapper subEventsMapper;
     private final Algo algo = new Algo();
     private final EventGeneratorByRandom eventGeneratorByRandom = new EventGeneratorByRandom();
     private final EventGeneratorByPriority eventGeneratorByPriority = new EventGeneratorByPriority();
@@ -138,7 +140,8 @@ public class EventScheduler {
             ChatService chatService,
             NotificationRuleRegistryService notificationRuleRegistryService,
             PlatformParametersService platformParametersService,
-            NotificationOutboxService notificationOutboxService) {
+            NotificationOutboxService notificationOutboxService,
+            ActivityEventSubEventsMapper subEventsMapper) {
         this.usersRepository = usersRepository;
         this.userAffinityEdgesRepository = userAffinityEdgesRepository;
         this.activityEventsRepository = activityEventsRepository;
@@ -154,6 +157,7 @@ public class EventScheduler {
         this.notificationRuleRegistryService = notificationRuleRegistryService;
         this.platformParametersService = platformParametersService;
         this.notificationOutboxService = notificationOutboxService;
+        this.subEventsMapper = subEventsMapper;
     }
 
     @org.springframework.beans.factory.annotation.Autowired(required = false)
@@ -2825,7 +2829,7 @@ public class EventScheduler {
     }
 
     private List<SubEventItem> safeSubEvents(ActivityEvent event) {
-        return event == null || event.getSubEvents() == null ? List.of() : event.getSubEvents();
+        return subEventsMapper.runtimeStages(event);
     }
 
     private record GroupAssignmentTarget(

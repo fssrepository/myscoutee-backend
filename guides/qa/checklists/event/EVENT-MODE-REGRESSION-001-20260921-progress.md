@@ -20,6 +20,14 @@ campaign complete from the partial evidence below.
   paused time, no HTTP on repeated countdown reads and ordinary mode isolation.
   The existing frontend watcher compiled and synced the change successfully.
 
+- Table shortcut uses the same rose palette as the Speed meeting mode selector;
+  the browser confirmed its rose foreground/gradient.
+- AppMenu labelled actions now default to existing content sizing; explicit
+  `actionSizing: 'fill'` retains full-width behavior. No per-popup CSS workaround.
+  All 12 AppMenu tests passed; real Join review footer measured a 138 px button
+  in a 795.22 px footer. Both managed windows use native viewport sizing;
+  previous responsive-test overrides were explicitly reset and rechecked.
+
 ## Verified in this resumed run
 
 - About displayed MyScoutee through four open/close cycles: one exact
@@ -41,6 +49,13 @@ campaign complete from the partial evidence below.
   using qa-casey / qa-nova partner IDs. Offset 1 returned an empty page and null
   nextOffset. Encounter payload assertions excluded internal user IDs/emails.
 - Reopening Nova's claimed invitation retained membership without duplication.
+- Standard event `h1790029353341` was created in the UI, link updated/cleared/
+  restored and reopened, published, requested by Nova, then approved by Casey.
+  The ordinary member header changed from 1 member + 1 pending to 2 members,
+  retaining normal admin/member actions. Proof: standard-created.json,
+  standard-links.json and standard-members-approved.txt. A transient cleared
+  input read as `https://n/`; explicit clear/blur/save and full sequence repeat
+  passed without a code change; do not attribute an unproven cause.
 
 Private evidence/scripts: `frontend/.agent/mode-qa/`, including
 `landing-branding.json`, `explore-responsive.json`, `stale-round-result.json`,

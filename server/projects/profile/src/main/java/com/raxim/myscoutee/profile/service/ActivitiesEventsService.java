@@ -2539,7 +2539,7 @@ public class ActivitiesEventsService {
 
         List<SubEventItem> preferredSubEvents = StringUtils.hasText(slotSourceId)
                 ? stageActionSlotSubEvents(sourceId, slotSourceId, preferred, request)
-                : cloneSubEvents(runtimeStageSequence(preferred));
+                : withStageRuntimeStates(sourceId, cloneSubEvents(runtimeStageSequence(preferred)));
         int preferredStageIndex = resolveStageIndex(preferredSubEvents, request.subEventId(), request.subEventIndex());
         if (preferredStageIndex < 0 || preferredStageIndex >= preferredSubEvents.size()) {
             return null;
@@ -2550,10 +2550,11 @@ public class ActivitiesEventsService {
         }
         actionTarget = effectiveStageActionTarget(actionTarget, preferredStage);
 
-        if (StringUtils.hasText(slotSourceId)) {
+        if (StringUtils.hasText(slotSourceId)
+                || preferred.getSubEvents() == null || preferred.getSubEvents().isEmpty()) {
             return applyGeneratedSlotStageAction(
                     sourceId,
-                    slotSourceId,
+                    runtimeOwnerId,
                     documents,
                     preferred,
                     preferredSubEvents,
@@ -2693,6 +2694,8 @@ public class ActivitiesEventsService {
                 STAGE_STATUS_FINALIZED.equals(actionTarget.nextStatus()) ? nowIso : null,
                 STAGE_STATUS_FINALIZED.equals(actionTarget.nextStatus()) ? actorUserId : null);
 
+        saveSubEventStageRuntime(slotSourceId, preferredParent, savedStage, actorUserId);
+
         List<ActivityEvent> savedParentDocuments = parentDocuments == null ? List.of() : parentDocuments;
         ActivityEvent savedPreferredParent = preferredParent;
         boolean startNotificationEnqueuedBeforeRoomNotifications = false;
@@ -2701,6 +2704,9 @@ public class ActivitiesEventsService {
             for (ActivityEvent document : savedParentDocuments) {
                 ActivityEvent next = cloneDocument(document);
                 next.setAutoInviter(false);
+                if (stageIndex == 0 && normalizeId(parentEventId).equals(normalizeId(slotSourceId))) {
+                    next.setVisibility("Invitation only");
+                }
                 next.setUpdatedDate(nowIso);
                 next.setUpdatedUser(actorUserId);
                 next.setAdmins(resolveAdminUserIds(next.getSourceId(), next.getCreatorUserId()));
@@ -2729,7 +2735,6 @@ public class ActivitiesEventsService {
 
         boolean finalStage = stageIndex == slotStages.size() - 1;
         TournamentResultSummary resultSummary = resolveTournamentResultSummary(savedPreferredParent, savedStage, finalStage);
-        saveSubEventStageRuntime(slotSourceId, savedPreferredParent, savedStage, actorUserId);
         affinityRecomputeTaskService.enqueueEventChanged(parentEventId, actorUserId);
         if (!startNotificationEnqueuedBeforeRoomNotifications) {
             enqueueStageStatusNotifications(savedPreferredParent, savedStage, actionTarget.action(), actionTarget.nextStatus(), actorUserId, finalStage, resultSummary);
@@ -2797,6 +2802,12 @@ public class ActivitiesEventsService {
         if (!StringUtils.hasText(normalizedOwnerId) || stages == null || stages.isEmpty()) {
             return stages == null ? List.of() : stages;
         }
+        Map<String, ActivitySubEventStageRuntimeStateDto> runtimeByStageId = new LinkedHashMap<>();
+        for (ActivitySubEventStageRuntime record : activitySubEventStageRuntimeRepository
+                .findByOwnerIdIn(List.of(normalizedOwnerId))) {
+            ActivitySubEventStageRuntimeStateDto runtime = activitySubEventStageRuntimeMapper.toDto(record);
+            if (runtime != null) runtimeByStageId.put(normalizeId(runtime.subEventId()), runtime);
+        }
         List<SubEventItem> updated = new ArrayList<>();
         for (SubEventItem stage : stages) {
             String subEventId = normalizeId(stage == null ? null : stage.id());
@@ -2804,10 +2815,7 @@ public class ActivitiesEventsService {
                 updated.add(stage);
                 continue;
             }
-            ActivitySubEventStageRuntimeStateDto runtime = activitySubEventStageRuntimeRepository
-                    .findByOwnerIdAndSubEventId(normalizedOwnerId, subEventId)
-                    .map(activitySubEventStageRuntimeMapper::toDto)
-                    .orElse(null);
+            ActivitySubEventStageRuntimeStateDto runtime = runtimeByStageId.get(subEventId);
             if (runtime == null) {
                 updated.add(stage);
                 continue;
@@ -7881,57 +7889,7 @@ public class ActivitiesEventsService {
     }
 
     private List<SubEventItem> runtimeStageSequence(ActivityEvent event) {
-        if (event == null) {
-            return List.of();
-        }
-        List<SubEventItem> subEvents = event.getSubEvents();
-        if (subEvents != null && !subEvents.isEmpty()) {
-            return subEvents;
-        }
-        List<SubEventDefinitionDto> definitions = event.getSubEventDefinitions();
-        if (definitions == null || definitions.isEmpty()) {
-            return List.of();
-        }
-        List<SubEventItem> stages = new ArrayList<>();
-        for (int index = 0; index < definitions.size(); index += 1) {
-            SubEventDefinitionDto definition = definitions.get(index);
-            if (definition == null) {
-                continue;
-            }
-            stages.add(new SubEventItem(
-                    firstNonBlank(definition.id(), fallbackSubEventId(index)),
-                    firstNonBlank(definition.name(), "Sub Event " + (index + 1)),
-                    safeText(definition.description()),
-                    null,
-                    null,
-                    safeText(definition.location()),
-                    null,
-                    definition.tournamentGroupCapacityMin(),
-                    definition.tournamentGroupCapacityMax(),
-                    definition.tournamentLeaderboardType(),
-                    definition.tournamentAdvancePerGroup(),
-                    definition.optional(),
-                    clonePricing(definition.pricing()),
-                    definition.capacityMin(),
-                    definition.capacityMax(),
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    Math.max(0, definition.offsetMinutes() == null ? 0 : definition.offsetMinutes()),
-                    Math.max(0, definition.durationMinutes() == null ? 0 : definition.durationMinutes())));
-        }
-        return stages;
+        return activityEventSubEventsMapper.runtimeStages(event);
     }
 
     private String normalizeSubEventDefinitionTiming(String value) {

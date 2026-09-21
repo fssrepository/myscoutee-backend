@@ -163,7 +163,9 @@ class ActivityEventSubEventsMapperTest {
 
     @Test
     void slotsWithoutSubEventDefinitionsEachExposeTheirOwnMainEventRuntime() {
-        Instant eventStart = Instant.now().plus(1, ChronoUnit.HOURS).truncatedTo(ChronoUnit.SECONDS);
+        // Both slots belong to the queried UTC day, including when this test runs near midnight.
+        Instant eventStart = Instant.now().plus(1, ChronoUnit.DAYS).truncatedTo(ChronoUnit.DAYS)
+                .plus(10, ChronoUnit.HOURS);
         ActivityEvent parent = parentEvent(eventStart, List.of(
                 emptySlotTemplate("slot-1", eventStart),
                 emptySlotTemplate("slot-2", eventStart.plus(1, ChronoUnit.HOURS))));
