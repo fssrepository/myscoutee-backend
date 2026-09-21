@@ -141,7 +141,17 @@ class MediaFriendshipQualificationTest {
                 assertStatus(key, viewerCookie, 403);
                 assertThat(projector.projectCompletedEvents(firstEnd.plusSeconds(1), 20)).isEqualTo(1);
                 var pairFilter = new Document("$or", List.of(new Document("leftUserId", owner), new Document("rightUserId", owner)));
-                assertThat(db.getCollection("userFriendships").countDocuments(pairFilter)).isEqualTo(1);
+                assertThat(db.getCollection("userFriendships").countDocuments(pairFilter)).isZero();
+                Document metRate = db.getCollection("userRates").find(new Document("met", true)
+                        .append("ownerUserId", owner).append("relatedUserId", viewer)).first();
+                assertThat(metRate).isNotNull();
+                assertThat(metRate.getInteger("scoreGiven")).isZero();
+                assertThat(metRate.getInteger("scoreReceived")).isZero();
+                db.getCollection("userFriendships").insertOne(new Document("_id", owner.length() + ":" + owner + viewer)
+                        .append("leftUserId", owner).append("rightUserId", viewer)
+                        .append("friendsSince", Date.from(firstEnd)).append("firstEventId", eventId)
+                        .append("lastMetAt", Date.from(firstEnd)).append("lastEventId", eventId)
+                        .append("lastEventName", "Media friendship fixture"));
                 Document original = db.getCollection("userFriendships").find(pairFilter).first();
                 assertThat(original.getDate("friendsSince")).isEqualTo(Date.from(firstEnd));
                 assertThat(original.getString("firstEventId")).isEqualTo(eventId);
@@ -159,10 +169,7 @@ class MediaFriendshipQualificationTest {
                 }
                 assertThat(projector.projectCompletedEvents(laterEnd.plusSeconds(1), 20)).isEqualTo(1);
                 Document updated = db.getCollection("userFriendships").find(pairFilter).first();
-                assertThat(updated.getDate("friendsSince")).isEqualTo(original.getDate("friendsSince"));
-                assertThat(updated.getString("firstEventId")).isEqualTo(eventId);
-                assertThat(updated.getDate("lastMetAt")).isEqualTo(Date.from(laterEnd));
-                assertThat(updated.getString("lastEventId")).isEqualTo(laterEvent);
+                assertThat(updated).isEqualTo(original);
                 assertBytes(key, viewerCookie, png);
                 assertStatus(key, outsiderCookie, 403);
                 db.getCollection("users").updateOne(new Document("_id", owner), new Document("$set", new Document("profileStatus", "blocked")));
@@ -212,6 +219,9 @@ class MediaFriendshipQualificationTest {
                 db.getCollection("userFriendships").deleteMany(new Document("$or", List.of(
                         new Document("leftUserId", new Document("$regex", "^" + prefix)),
                         new Document("rightUserId", new Document("$regex", "^" + prefix)))));
+                db.getCollection("userRates").deleteMany(new Document("$or", List.of(
+                        new Document("ownerUserId", new Document("$regex", "^" + prefix)),
+                        new Document("relatedUserId", new Document("$regex", "^" + prefix)))));
                 for (String stored : keys) objects.deleteObject(storage.getBucket(), stored);
             }
         }

@@ -2,7 +2,6 @@ package com.raxim.myscoutee.profile.service;
 
 import java.time.Instant;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -20,12 +19,17 @@ import com.mongodb.client.model.UpdateOneModel;
 import com.mongodb.client.model.UpdateOptions;
 import com.mongodb.client.model.WriteModel;
 import com.raxim.myscoutee.profile.data.document.ActivityEvent;
+import com.raxim.myscoutee.profile.data.document.ActivityMingleRound;
 import com.raxim.myscoutee.profile.data.document.ActivityMember;
 import com.raxim.myscoutee.profile.repository.ActivityMembersRepository;
 
 /** Write-side projection owned by the existing expiry job; never called by card reads. */
 @Service
 public class EventFriendshipProjectionService {
+    private static final String MINGLE_MODE = "Mingle";
+    private static final String MINGLE_ROUND_COMPLETED = "COMPLETED";
+    private static final String SYSTEM_USER = "event-friendship-projection";
+
     private final MongoTemplate mongo;
     private final ActivityMembersRepository members;
 
@@ -58,14 +62,16 @@ public class EventFriendshipProjectionService {
             Instant endedAt = Instant.parse(event.getEndAtIso());
             List<String> userIds = new ArrayList<>(participants.getOrDefault(event.getSourceId(), new LinkedHashSet<>()));
             userIds.sort(String::compareTo);
-            List<WriteModel<Document>> writes = new ArrayList<>();
-            for (int left = 0; left < userIds.size(); left++) {
-                for (int right = left + 1; right < userIds.size(); right++) {
-                    writes.add(friendshipWrite(userIds.get(left), userIds.get(right), event, endedAt));
-                    if (writes.size() == 500) flush(writes);
-                }
+            boolean mingle = MINGLE_MODE.equalsIgnoreCase(event.getMode());
+            LinkedHashSet<UserPair> pairs = mingle
+                    ? completedMinglePairs(event.getSourceId())
+                    : allPairs(userIds);
+            List<WriteModel<Document>> metWrites = new ArrayList<>();
+            for (UserPair pair : pairs) {
+                metWrites.add(metWrite(pair.left(), pair.right(), event, endedAt));
+                if (metWrites.size() == 500) flush("userRates", metWrites);
             }
-            flush(writes);
+            flush("userRates", metWrites);
             // Publish completion only after every pair is durable. Pair upserts are atomic and
             // idempotent; an interrupted event retries without duplicate edges or changed dates.
             mongo.updateMulti(Query.query(Criteria.where("sourceId").is(event.getSourceId())
@@ -75,35 +81,76 @@ public class EventFriendshipProjectionService {
         return events.size();
     }
 
-    private void flush(List<WriteModel<Document>> writes) {
+    private LinkedHashSet<UserPair> allPairs(List<String> userIds) {
+        LinkedHashSet<UserPair> pairs = new LinkedHashSet<>();
+        for (int left = 0; left < userIds.size(); left++) {
+            for (int right = left + 1; right < userIds.size(); right++) {
+                pairs.add(new UserPair(userIds.get(left), userIds.get(right)));
+            }
+        }
+        return pairs;
+    }
+
+    private LinkedHashSet<UserPair> completedMinglePairs(String eventId) {
+        Query query = Query.query(new Criteria().andOperator(
+                Criteria.where("eventId").is(eventId),
+                Criteria.where("status").is(MINGLE_ROUND_COMPLETED)));
+        query.with(Sort.by("roundNumber"));
+        LinkedHashSet<UserPair> pairs = new LinkedHashSet<>();
+        for (ActivityMingleRound round : mongo.find(query, ActivityMingleRound.class)) {
+            for (ActivityMingleRound.TableAssignment table : round.getTables()) {
+                List<String> tableUserIds = table == null || table.memberUserIds() == null
+                        ? new ArrayList<>()
+                        : table.memberUserIds().stream()
+                                .filter(StringUtils::hasText)
+                                .map(String::trim)
+                                .distinct()
+                                .sorted()
+                                .toList();
+                pairs.addAll(allPairs(tableUserIds));
+            }
+        }
+        return pairs;
+    }
+
+    private void flush(String collectionName, List<WriteModel<Document>> writes) {
         if (writes.isEmpty()) return;
-        mongo.getCollection("userFriendships").bulkWrite(writes, new BulkWriteOptions().ordered(false));
+        mongo.getCollection(collectionName).bulkWrite(writes, new BulkWriteOptions().ordered(false));
         writes.clear();
     }
 
-    private WriteModel<Document> friendshipWrite(String left, String right, ActivityEvent event, Instant endedAt) {
-        Date date = Date.from(endedAt);
-        Object earlier = new Document("$or", List.of(
-                new Document("$eq", List.of(new Document("$ifNull", List.of("$friendsSince", false)), false)),
-                new Document("$lt", List.of(date, "$friendsSince"))));
-        Object later = new Document("$or", List.of(
-                new Document("$eq", List.of(new Document("$ifNull", List.of("$lastMetAt", false)), false)),
-                new Document("$gt", List.of(date, "$lastMetAt"))));
-        Document values = new Document("leftUserId", literal(left)).append("rightUserId", literal(right))
-                .append("friendsSince", conditional(earlier, date, "$friendsSince"))
-                .append("firstEventId", conditional(earlier, literal(event.getSourceId()), "$firstEventId"))
-                .append("lastMetAt", conditional(later, date, "$lastMetAt"))
-                .append("lastEventId", conditional(later, literal(event.getSourceId()), "$lastEventId"))
-                .append("lastEventName", conditional(later, literal(event.getTitle() == null ? "" : event.getTitle()), "$lastEventName"));
-        return new UpdateOneModel<>(new Document("_id", left.length() + ":" + left + right),
-                List.of(new Document("$set", values)), new UpdateOptions().upsert(true));
+    private WriteModel<Document> metWrite(String left, String right, ActivityEvent event, Instant endedAt) {
+        String syncKey = metSyncKey(event.getSourceId(), left, right);
+        String happenedAt = endedAt.toString();
+        Document identity = new Document("_id", syncKey)
+                .append("syncKey", syncKey)
+                .append("mode", "single")
+                .append("createdDate", happenedAt)
+                .append("createdUser", SYSTEM_USER)
+                .append("ownerUserId", left)
+                .append("relatedUserId", right)
+                .append("scoreGiven", 0)
+                .append("scoreReceived", 0)
+                .append("mutuallyRated", false);
+        Document meeting = new Document("updatedDate", happenedAt)
+                .append("updatedUser", SYSTEM_USER)
+                .append("met", true)
+                .append("metEventId", event.getSourceId())
+                .append("eventName", event.getTitle() == null ? "" : event.getTitle());
+        Document pairFilter = new Document("mode", "single").append("$or", List.of(
+                new Document("ownerUserId", left).append("relatedUserId", right),
+                new Document("ownerUserId", right).append("relatedUserId", left),
+                new Document("syncKey", syncKey)));
+        return new UpdateOneModel<>(pairFilter,
+                new Document("$set", meeting).append("$setOnInsert", identity),
+                new UpdateOptions().upsert(true));
     }
 
-    private Object conditional(Object condition, Object value, String existing) {
-        return new Document("$cond", List.of(condition, value, existing));
+    private String metSyncKey(String eventId, String left, String right) {
+        return "event-met:" + eventId.length() + ":" + eventId
+                + ":" + left.length() + ":" + left
+                + ":" + right;
     }
 
-    private Object literal(String value) {
-        return new Document("$literal", value);
-    }
+    private record UserPair(String left, String right) {}
 }

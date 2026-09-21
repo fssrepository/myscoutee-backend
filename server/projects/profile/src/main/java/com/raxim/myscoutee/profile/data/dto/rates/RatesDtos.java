@@ -21,7 +21,8 @@ public final class RatesDtos {
             Integer scoreReceived,
             String eventName,
             String happenedAt,
-            Integer distanceMetersExact) {
+            Integer distanceMetersExact,
+            Boolean met) {
     }
 
     public record ActivityRatePageResponseDto(

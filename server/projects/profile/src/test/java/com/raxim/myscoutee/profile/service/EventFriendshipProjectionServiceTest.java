@@ -21,6 +21,7 @@ import com.mongodb.client.model.BulkWriteOptions;
 import com.mongodb.client.model.UpdateOneModel;
 import com.mongodb.client.model.WriteModel;
 import com.raxim.myscoutee.profile.data.document.ActivityEvent;
+import com.raxim.myscoutee.profile.data.document.ActivityMingleRound;
 import com.raxim.myscoutee.profile.data.document.ActivityMember;
 import com.raxim.myscoutee.profile.repository.ActivityMembersRepository;
 
@@ -28,32 +29,36 @@ class EventFriendshipProjectionServiceTest {
     private final MongoTemplate mongo = mock(MongoTemplate.class);
     private final ActivityMembersRepository members = mock(ActivityMembersRepository.class);
     private final MongoCollection<Document> collection = mock(MongoCollection.class);
+    private final MongoCollection<Document> rateCollection = mock(MongoCollection.class);
     private final EventFriendshipProjectionService service = new EventFriendshipProjectionService(mongo, members);
     private final Instant now = Instant.parse("2026-09-14T12:00:00Z");
 
     @Test
-    void completedEventBatchesParticipantsAndWritesEachEligiblePairOnceBeforeCompletion() {
+    void completedEventBatchesParticipantsAndWritesEachEligibleMetPairOnceBeforeCompletion() {
         ActivityEvent event = event();
         when(mongo.find(any(Query.class), eq(ActivityEvent.class))).thenReturn(List.of(event));
         when(members.findByOwnerTypeAndOwnerIdIn("event", Set.of("event-1")))
                 .thenReturn(List.of(member("a", "accepted", false), member("b", "accepted", false),
                         member("a", "accepted", false), member("pending", "pending", false),
                         member("organizer", "accepted", true)));
-        when(mongo.getCollection("userFriendships")).thenReturn(collection);
+        when(mongo.getCollection("userRates")).thenReturn(rateCollection);
         List<WriteModel<Document>> written = new ArrayList<>();
-        when(collection.bulkWrite(anyList(), any(BulkWriteOptions.class))).thenAnswer(invocation -> {
+        when(rateCollection.bulkWrite(anyList(), any(BulkWriteOptions.class))).thenAnswer(invocation -> {
             written.addAll(invocation.getArgument(0));
             return null;
         });
         assertThat(service.projectCompletedEvents(now, 20)).isEqualTo(1);
         assertThat(written).hasSize(1);
         UpdateOneModel<Document> pair = (UpdateOneModel<Document>) written.get(0);
-        assertThat(pair.getFilter()).isEqualTo(new Document("_id", "1:ab"));
         assertThat(pair.getOptions().isUpsert()).isTrue();
-        assertThat(pair.getUpdatePipeline()).hasSize(1);
-        var order = inOrder(collection, mongo);
-        order.verify(collection).bulkWrite(anyList(), any(BulkWriteOptions.class));
+        Document inserted = ((Document) pair.getUpdate()).get("$setOnInsert", Document.class);
+        assertThat(inserted.getString("ownerUserId")).isEqualTo("a");
+        assertThat(inserted.getString("relatedUserId")).isEqualTo("b");
+        assertThat(((Document) pair.getUpdate()).get("$set", Document.class).getBoolean("met")).isTrue();
+        var order = inOrder(rateCollection, mongo);
+        order.verify(rateCollection).bulkWrite(anyList(), any(BulkWriteOptions.class));
         order.verify(mongo).updateMulti(any(Query.class), any(Update.class), eq(ActivityEvent.class));
+        verify(mongo, never()).getCollection("userFriendships");
         verify(members).findByOwnerTypeAndOwnerIdIn("event", Set.of("event-1"));
     }
 
@@ -62,10 +67,54 @@ class EventFriendshipProjectionServiceTest {
         when(mongo.find(any(Query.class), eq(ActivityEvent.class))).thenReturn(List.of(event()));
         when(members.findByOwnerTypeAndOwnerIdIn("event", Set.of("event-1")))
                 .thenReturn(List.of(member("a", "accepted", false), member("b", "accepted", false)));
-        when(mongo.getCollection("userFriendships")).thenReturn(collection);
-        when(collection.bulkWrite(anyList(), any(BulkWriteOptions.class))).thenThrow(new IllegalStateException("write failed"));
+        when(mongo.getCollection("userRates")).thenReturn(rateCollection);
+        when(rateCollection.bulkWrite(anyList(), any(BulkWriteOptions.class))).thenThrow(new IllegalStateException("write failed"));
         assertThatThrownBy(() -> service.projectCompletedEvents(now, 20)).isInstanceOf(IllegalStateException.class);
         verify(mongo, never()).updateMulti(any(Query.class), any(Update.class), eq(ActivityEvent.class));
+    }
+
+    @Test
+    void completedMingleProjectsOnlyActualTablePairsAsEmptyMetRates() {
+        ActivityEvent event = event();
+        event.setMode("Mingle");
+        ActivityMingleRound round = new ActivityMingleRound();
+        round.setEventId("event-1");
+        round.setRoundNumber(1);
+        round.setStatus("COMPLETED");
+        round.setTables(List.of(
+                new ActivityMingleRound.TableAssignment(1, List.of("c", "a", "b")),
+                new ActivityMingleRound.TableAssignment(2, List.of("a", "d"))));
+        when(mongo.find(any(Query.class), eq(ActivityEvent.class))).thenReturn(List.of(event));
+        when(mongo.find(any(Query.class), eq(ActivityMingleRound.class))).thenReturn(List.of(round));
+        when(members.findByOwnerTypeAndOwnerIdIn("event", Set.of("event-1")))
+                .thenReturn(List.of(member("a", "accepted", false), member("b", "accepted", false),
+                        member("c", "accepted", false), member("d", "accepted", false),
+                        member("not-seated", "accepted", false)));
+        when(mongo.getCollection("userRates")).thenReturn(rateCollection);
+        List<WriteModel<Document>> rateWrites = new ArrayList<>();
+        when(rateCollection.bulkWrite(anyList(), any(BulkWriteOptions.class))).thenAnswer(invocation -> {
+            rateWrites.addAll(invocation.getArgument(0));
+            return null;
+        });
+
+        assertThat(service.projectCompletedEvents(now, 20)).isEqualTo(1);
+        assertThat(rateWrites).hasSize(4);
+        UpdateOneModel<Document> firstRate = (UpdateOneModel<Document>) rateWrites.get(0);
+        Document inserted = ((Document) firstRate.getUpdate()).get("$setOnInsert", Document.class);
+        Document meeting = ((Document) firstRate.getUpdate()).get("$set", Document.class);
+        assertThat(inserted.getString("mode")).isEqualTo("single");
+        assertThat(meeting.getBoolean("met")).isTrue();
+        assertThat(meeting.getString("metEventId")).isEqualTo("event-1");
+        assertThat(inserted.getInteger("scoreGiven")).isZero();
+        assertThat(inserted.getInteger("scoreReceived")).isZero();
+        assertThat(inserted.getString("ownerUserId")).isEqualTo("a");
+        assertThat(inserted.getString("relatedUserId")).isEqualTo("b");
+        assertThat(rateWrites.stream().map(write -> ((UpdateOneModel<Document>) write).getFilter().toJson()))
+                .noneMatch(filter -> filter.contains("not-seated"));
+        var order = inOrder(rateCollection, mongo);
+        order.verify(rateCollection).bulkWrite(anyList(), any(BulkWriteOptions.class));
+        order.verify(mongo).updateMulti(any(Query.class), any(Update.class), eq(ActivityEvent.class));
+        verify(mongo, never()).getCollection("userFriendships");
     }
 
     @Test
@@ -76,7 +125,7 @@ class EventFriendshipProjectionServiceTest {
         verify(mongo).find(query.capture(), eq(ActivityEvent.class));
         assertThat(query.getValue().getLimit()).isEqualTo(20);
         assertThat(query.getValue().getQueryObject().toJson()).contains("friendshipsProjected", "endAtIso", "status", "published", now.toString());
-        verifyNoInteractions(members, collection);
+        verifyNoInteractions(members, collection, rateCollection);
     }
 
     private ActivityEvent event() {
