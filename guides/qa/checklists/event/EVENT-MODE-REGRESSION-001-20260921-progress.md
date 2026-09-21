@@ -68,3 +68,16 @@ Private temporary scripts, SDK config, responses and logs are in
 `frontend/.agent/mode-qa/`; do not publish API credentials or invitation tokens.
 Webhook receiver used port 18090. Confirm its process before restarting anything.
 Do not reset unrelated data or overwrite the campaign's CURRENT_QA_SESSION file.
+
+## Later corrections on 2026-09-21
+
+About product references now interpolate the operator-configured branding name
+in the menu, popup title, description and accessibility labels. The configured
+founder spelling is Peter Szabó. The separate founder metadata source is retained;
+clarification was requested on whether the user also intended to replace that
+source with operator identity. Eleven landing tests and the i18n seed audit passed;
+the existing frontend watcher built successfully.
+
+The open chat group header menu now stacks above the composer within the chat
+popup, below the independent notification overlay. Verify the reported mobile
+overlap in the next browser session. Browser QA remains paused.
