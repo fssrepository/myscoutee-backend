@@ -7443,7 +7443,7 @@
     "_id": "i18n-message-en-landing-about-open-aria",
     "key": "landing.about.open.aria",
     "lang": "en",
-    "value": "Open the {productName} overview"
+    "value": "Open the MyScoutee overview"
   },
   {
     "_id": "i18n-message-en-landing-about-header-badge",
@@ -7455,7 +7455,7 @@
     "_id": "i18n-message-en-landing-about-title",
     "key": "landing.about.title",
     "lang": "en",
-    "value": "About {productName}"
+    "value": "About MyScoutee"
   },
   {
     "_id": "i18n-message-en-landing-about-subtitle",
@@ -7467,13 +7467,13 @@
     "_id": "i18n-message-en-landing-about-aria",
     "key": "landing.about.aria",
     "lang": "en",
-    "value": "About {productName}"
+    "value": "About MyScoutee"
   },
   {
     "_id": "i18n-message-en-landing-about-close-aria",
     "key": "landing.about.close.aria",
     "lang": "en",
-    "value": "Close the {productName} overview"
+    "value": "Close the MyScoutee overview"
   },
   {
     "_id": "i18n-message-en-landing-about-founder-label",
@@ -7491,7 +7491,7 @@
     "_id": "i18n-message-en-landing-about-founder-description",
     "key": "landing.about.founder.description",
     "lang": "en",
-    "value": "I built {productName} after years of organizing my own journeys and looking for a more human path from online introductions to meeting in real life."
+    "value": "I built MyScoutee after years of organizing my own journeys and looking for a more human path from online introductions to meeting in real life."
   },
   {
     "_id": "i18n-message-en-landing-about-product-label",
@@ -29025,7 +29025,7 @@
     "_id": "i18n-message-hu-landing-about-open-aria",
     "key": "landing.about.open.aria",
     "lang": "hu",
-    "value": "{productName} bemutatkozás megnyitása"
+    "value": "MyScoutee bemutatkozás megnyitása"
   },
   {
     "_id": "i18n-message-hu-landing-about-header-badge",
@@ -29037,7 +29037,7 @@
     "_id": "i18n-message-hu-landing-about-title",
     "key": "landing.about.title",
     "lang": "hu",
-    "value": "{productName} – Rólunk"
+    "value": "A MyScoutee-ról"
   },
   {
     "_id": "i18n-message-hu-landing-about-subtitle",
@@ -29049,13 +29049,13 @@
     "_id": "i18n-message-hu-landing-about-aria",
     "key": "landing.about.aria",
     "lang": "hu",
-    "value": "A {productName} bemutatása"
+    "value": "A MyScoutee bemutatása"
   },
   {
     "_id": "i18n-message-hu-landing-about-close-aria",
     "key": "landing.about.close.aria",
     "lang": "hu",
-    "value": "{productName} bemutatkozás bezárása"
+    "value": "MyScoutee bemutatkozás bezárása"
   },
   {
     "_id": "i18n-message-hu-landing-about-founder-label",
@@ -29073,7 +29073,7 @@
     "_id": "i18n-message-hu-landing-about-founder-description",
     "key": "landing.about.founder.description",
     "lang": "hu",
-    "value": "Ezt a platformot ({productName}) több évnyi önálló utazásszervezés és egy emberibb, az online bemutatkozástól a valós találkozásig vezető út keresése után építettem fel."
+    "value": "A MyScoutee-t több évnyi önálló utazásszervezés és egy emberibb, az online bemutatkozástól a valós találkozásig vezető út keresése után építettem fel."
   },
   {
     "_id": "i18n-message-hu-landing-about-product-label",

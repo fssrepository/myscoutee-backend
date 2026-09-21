@@ -2,15 +2,15 @@
   {
     "_id": "i18n-bundle-en",
     "lang": "en",
-    "version": "2026.09.21.en.133",
-    "founderName": "Peter Szabó",
+    "version": "2026.09.21.en.132",
+    "founderName": "Peter Szabo",
     "updatedAt": 1789948800000
   },
   {
     "_id": "i18n-bundle-hu",
     "lang": "hu",
-    "version": "2026.09.21.hu.133",
-    "founderName": "Peter Szabó",
+    "version": "2026.09.21.hu.132",
+    "founderName": "Peter Szabo",
     "updatedAt": 1789948800000
   }
 ]
