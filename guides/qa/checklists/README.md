@@ -91,3 +91,7 @@ fixture orchestration is prepared when their own checkpoint is requested.
 
 - [EVENT-GALLERY-FEED-001](event/EVENT-GALLERY-FEED-001.md): shared galleries, Feed, profile info scrolling and content moderation.
 - [OPERATOR-EMAIL-WARNING-001](operator/OPERATOR-EMAIL-WARNING-001.md): operator email provider and fixed five-day warning Job, using a non-delivering stub.
+
+- [ADMIN-CLIENT-API-001](api/ADMIN-CLIENT-API-001.md): private admin API and Linux monitor, v1.0.2; runtime pending.
+
+- [AFFILIATE-REVENUE-001](api/AFFILIATE-REVENUE-001.md): per-currency referral turnover/refunds, mutation-time counters and mobile header controls.

@@ -23,6 +23,7 @@ public class UserFeedbackSubmission {
     private String details;
     private String createdDate;
     private String createdUser;
+    @org.springframework.data.mongodb.core.index.Indexed(name = "user_feedback_resolved")
     private String resolvedAtIso;
     private String resolvedByAdminUserId;
     private String updatedDate;

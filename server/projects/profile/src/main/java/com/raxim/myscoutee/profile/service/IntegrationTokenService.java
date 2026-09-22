@@ -193,7 +193,7 @@ public class IntegrationTokenService {
         String id = normalize(tokenId);
         return StringUtils.hasText(owner)
                 && StringUtils.hasText(id)
-                && tokensRepository.findByIdAndOwnerUserId(id, owner).filter(this::isActive).isPresent();
+                && tokensRepository.findByIdAndOwnerUserId(id, owner).filter(this::isActive).filter(token -> matchesScope(token, INTEGRATION_SCOPE)).isPresent();
     }
 
     private boolean matchesScope(IntegrationToken token, String scope) {

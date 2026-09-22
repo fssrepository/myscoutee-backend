@@ -22044,6 +22044,96 @@
     "value": "Some account deletion warnings could not be delivered."
   },
   {
+    "_id": "i18n-message-en-admin-api-title",
+    "key": "admin.api.title",
+    "lang": "en",
+    "value": "API"
+  },
+  {
+    "_id": "i18n-message-en-admin-api-subtitle",
+    "key": "admin.api.subtitle",
+    "lang": "en",
+    "value": "Private admin monitoring client."
+  },
+  {
+    "_id": "i18n-message-en-admin-api-help",
+    "key": "admin.api.help",
+    "lang": "en",
+    "value": "Connect the standalone admin client with this URL and an API key. It shows aggregate statistics and alerts; open the application to handle cases."
+  },
+  {
+    "_id": "i18n-message-en-admin-api-denied",
+    "key": "admin.api.denied",
+    "lang": "en",
+    "value": "An administrator account is required."
+  },
+  {
+    "_id": "i18n-message-en-admin-api-client-download",
+    "key": "admin.api.client.download",
+    "lang": "en",
+    "value": "Admin client · installer and documentation"
+  },
+  {
+    "_id": "i18n-message-en-affiliate-revenue-title",
+    "key": "affiliate.revenue.title",
+    "lang": "en",
+    "value": "Referral revenue"
+  },
+  {
+    "_id": "i18n-message-en-affiliate-revenue-open",
+    "key": "affiliate.revenue.open",
+    "lang": "en",
+    "value": "Open referral revenue summary"
+  },
+  {
+    "_id": "i18n-message-en-affiliate-revenue-description",
+    "key": "affiliate.revenue.description",
+    "lang": "en",
+    "value": "Purchases made by people you invited. Amounts are kept separately by currency."
+  },
+  {
+    "_id": "i18n-message-en-affiliate-revenue-purchases",
+    "key": "affiliate.revenue.purchases",
+    "lang": "en",
+    "value": "Paid purchases"
+  },
+  {
+    "_id": "i18n-message-en-affiliate-revenue-bookings",
+    "key": "affiliate.revenue.bookings",
+    "lang": "en",
+    "value": "Paid event bookings"
+  },
+  {
+    "_id": "i18n-message-en-affiliate-revenue-gross",
+    "key": "affiliate.revenue.gross",
+    "lang": "en",
+    "value": "Purchases total"
+  },
+  {
+    "_id": "i18n-message-en-affiliate-revenue-refunds",
+    "key": "affiliate.revenue.refunds",
+    "lang": "en",
+    "value": "Refunded"
+  },
+  {
+    "_id": "i18n-message-en-affiliate-revenue-net",
+    "key": "affiliate.revenue.net",
+    "lang": "en",
+    "value": "After refunds"
+  },
+  {
+    "_id": "i18n-message-en-affiliate-revenue-commission-pending",
+    "key": "affiliate.revenue.commission.pending",
+    "lang": "en",
+    "value": "A percentage-based affiliate commission is planned. Its rate and eligibility rules have not been set; these amounts are referral revenue, not earned commission."
+  },
+  {
+    "_id": "i18n-message-en-affiliate-revenue-button",
+    "key": "affiliate.revenue.button",
+    "lang": "en",
+    "value": "Revenue"
+  },
+  {
     "_id": "i18n-message-hu-integration-token-ip",
     "key": "integration.token.ip",
     "lang": "hu",
@@ -44086,5 +44176,95 @@
     "key": "account.deletion.warning.failed",
     "lang": "hu",
     "value": "Egyes fióktörlési figyelmeztetések kézbesítése sikertelen."
+  },
+  {
+    "_id": "i18n-message-hu-admin-api-title",
+    "key": "admin.api.title",
+    "lang": "hu",
+    "value": "API"
+  },
+  {
+    "_id": "i18n-message-hu-admin-api-subtitle",
+    "key": "admin.api.subtitle",
+    "lang": "hu",
+    "value": "Privát adminfigyelő kliens."
+  },
+  {
+    "_id": "i18n-message-hu-admin-api-help",
+    "key": "admin.api.help",
+    "lang": "hu",
+    "value": "Az önálló adminkliensben add meg ezt az URL-t és egy API-kulcsot. Összesített statisztikát és jelzéseket mutat; az ügyek intézéséhez nyisd meg az alkalmazást."
+  },
+  {
+    "_id": "i18n-message-hu-admin-api-denied",
+    "key": "admin.api.denied",
+    "lang": "hu",
+    "value": "Adminisztrátori fiók szükséges."
+  },
+  {
+    "_id": "i18n-message-hu-admin-api-client-download",
+    "key": "admin.api.client.download",
+    "lang": "hu",
+    "value": "Adminkliens · telepítő és dokumentáció"
+  },
+  {
+    "_id": "i18n-message-hu-affiliate-revenue-title",
+    "key": "affiliate.revenue.title",
+    "lang": "hu",
+    "value": "Meghívásokból származó forgalom"
+  },
+  {
+    "_id": "i18n-message-hu-affiliate-revenue-open",
+    "key": "affiliate.revenue.open",
+    "lang": "hu",
+    "value": "Meghívások forgalmi összesítőjének megnyitása"
+  },
+  {
+    "_id": "i18n-message-hu-affiliate-revenue-description",
+    "key": "affiliate.revenue.description",
+    "lang": "hu",
+    "value": "Az általad meghívottak vásárlásai. Az összegek pénznemenként külön szerepelnek."
+  },
+  {
+    "_id": "i18n-message-hu-affiliate-revenue-purchases",
+    "key": "affiliate.revenue.purchases",
+    "lang": "hu",
+    "value": "Fizetett vásárlások"
+  },
+  {
+    "_id": "i18n-message-hu-affiliate-revenue-bookings",
+    "key": "affiliate.revenue.bookings",
+    "lang": "hu",
+    "value": "Fizetett eseményfoglalások"
+  },
+  {
+    "_id": "i18n-message-hu-affiliate-revenue-gross",
+    "key": "affiliate.revenue.gross",
+    "lang": "hu",
+    "value": "Vásárlások összege"
+  },
+  {
+    "_id": "i18n-message-hu-affiliate-revenue-refunds",
+    "key": "affiliate.revenue.refunds",
+    "lang": "hu",
+    "value": "Visszatérítések"
+  },
+  {
+    "_id": "i18n-message-hu-affiliate-revenue-net",
+    "key": "affiliate.revenue.net",
+    "lang": "hu",
+    "value": "Visszatérítések után"
+  },
+  {
+    "_id": "i18n-message-hu-affiliate-revenue-commission-pending",
+    "key": "affiliate.revenue.commission.pending",
+    "lang": "hu",
+    "value": "Százalékos affiliate jutalékot tervezünk. A mértéke és a jogosultsági szabályai még nincsenek meghatározva; ezek forgalmi összegek, nem megkeresett jutalék."
+  },
+  {
+    "_id": "i18n-message-hu-affiliate-revenue-button",
+    "key": "affiliate.revenue.button",
+    "lang": "hu",
+    "value": "Forgalom"
   }
 ]

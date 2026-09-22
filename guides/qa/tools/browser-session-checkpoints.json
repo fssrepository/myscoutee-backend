@@ -2107,6 +2107,29 @@
           "autoDismissExplanationGuide": false
         }
       ]
+    },
+    "ADMIN-CLIENT-API-001": {
+      "layout": {
+        "columns": 2
+      },
+      "sessions": [
+        {
+          "actor": "Moderation admin Ava",
+          "sessionKind": "demo",
+          "userId": "admin-demo-ava",
+          "expectedName": "Ava Moderation",
+          "targetUrl": "http://localhost/admin",
+          "entryUrl": "http://localhost/entry?redirect=%2Fadmin",
+          "autoDismissExplanationGuide": true
+        },
+        {
+          "actor": "Admin API QA user",
+          "sessionKind": "demo",
+          "userId": "6ac102000000000000000001",
+          "expectedName": "Admin API QA 1",
+          "autoDismissExplanationGuide": true
+        }
+      ]
     }
   }
 }

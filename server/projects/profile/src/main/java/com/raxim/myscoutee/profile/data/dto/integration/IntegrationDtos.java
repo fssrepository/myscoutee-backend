@@ -31,7 +31,12 @@ public final class IntegrationDtos {
         }
     }
 
-    public record AffiliateSummaryDto(String url, long registered) { }
+    public record AffiliateCurrencyRevenueDto(double gross, double refunded, double net) { }
+    public record AffiliateRevenueDto(java.util.Map<String, AffiliateCurrencyRevenueDto> currencies,
+            long purchases, long eventBookings) { }
+    public record AffiliateSummaryDto(String url, long registered, AffiliateRevenueDto revenue) {
+        public AffiliateSummaryDto(String url, long registered) { this(url, registered, null); }
+    }
     public record IntegrationParticipantSummaryDto(long registered, long imported) { }
 
     public record IntegrationTokenCreateRequestDto(

@@ -53,3 +53,20 @@ Implementation continuation record, 2026-09-22. This records the user's requeste
 - Added canonical item + snapshot decision response, confirmed-save SmartList patch/remove, and Unblock → Under review. Added a status/ID index for the bounded All-category query.
 - Verification: 12 focused backend tests passed (service, repository query, scheduled worker); 10 focused frontend tests passed (local repository, popup dual-filter/mutation handling). The frontend build passed after correcting the SmartList filter parameter type; backend compilation passed including the new index. i18n audit passed for 7,348 EN/HU messages across all three Mongo seeds.
 - Logs: `/tmp/moderation-filters-backend.log`, `/tmp/moderation-filters-frontend.log`, `/tmp/moderation-filters-build.log`, `/tmp/moderation-filters-compile.log`, `/tmp/moderation-filters-i18n.log`. Runtime browser QA remains NOT RUN; checklist steps 12–13 include the corrected two-filter behavior.
+
+## Queued additions: payment header and affiliate revenue
+
+- Payment history All/Cards header triggers use the common menu's mobile `collapsible` configuration.
+- Ordinary-user **Affiliate** popup gains a green **Revenue / Forgalom** icon button, compact on mobile. It opens basic aggregate metrics, with one set of gross/refund/net rows per currency, plus paid purchase and paid event-booking counts. No currency conversion, transaction table or monetary header badge. Admin **API** popup has no affiliate contents.
+- Percentage commission is a future rule. **5% is illustrative, not configured or calculated.** Current amounts are referred purchase turnover after refunds, not commission or payout entitlement.
+- A payment snapshots its referral owner from the saved registration. Settled primary payments contribute; authorization holds alone do not. Completed partial/full refunds reduce net amounts. Counts represent settled purchase/event-checkout records (historical counts stay after refunds), not unique event titles or open reservations. Audit refund/revision rows are not separately counted.
+- Backend maintains `affiliatePartners` counters synchronously at payment save, with a separate per-payment versioned contribution ledger and one recoverable pending operation per partner. A pending flag persisted with the payment supports bounded retry after an interrupted write; summary load reads only partner totals and never projects payment rows. Counter acknowledgements preserve the payment domain version. API-key revocation does not touch attribution or revenue.
+- Local adapter updates the owner's persisted summary on simulated approved checkout/refund writes. Public profile DTOs exclude private contribution/summary fields; normal profile save preserves them. Existing seeded local payment-history examples are not real financial ledger entries and do not fabricate referred revenue.
+- Added new API-domain revenue QA, separate from old PASS cases. Live persistence/concurrency/mobile checks remain NOT RUN until the user starts the dev stack.
+
+### Affiliate/payment-header focused checks (2026-09-22)
+
+1. `./gradlew --no-daemon --max-workers=2 :projects:profile:test --tests '*AffiliateRevenue*Test' --tests '*PaymentService*Test' --tests '*IntegrationTokenServiceTest'` from `server`: **31 PASS**, no failures/skips (`/tmp/affiliate-revenue-backend-tests.log`). Includes authorization vs capture, completed refund amount, asset/event counts, durable pending acknowledgement/version and refund delta commit fencing; existing payment service cases still pass.
+2. Focused local affiliate repository suite: **3 PASS** (`/tmp/affiliate-revenue-frontend-tests.log`). Repeated payment/refund, separate EUR/HUF totals, key revocation independence, public DTO privacy and clone preservation covered.
+3. Angular local build: PASS (`/tmp/affiliate-revenue-frontend-build.log`). i18n audit: **7,378 messages**, EN/HU and all three Mongo seeds synchronized.
+4. Cross-process Mongo atomicity, real gateway/simulator callback flow, persisted reload and mobile appearance remain NOT RUN in `AFFILIATE-REVENUE-001`. Unit tests do not establish those claims.

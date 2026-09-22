@@ -19,6 +19,8 @@ import com.raxim.myscoutee.profile.data.dto.integration.IntegrationDtos.Integrat
 @Service
 public class AffiliateService {
     private final MongoTemplate mongo;
+    @org.springframework.beans.factory.annotation.Autowired
+    private AffiliateRevenueService revenue;
 
     public AffiliateService(MongoTemplate mongo) { this.mongo = mongo; }
 
@@ -28,7 +30,7 @@ public class AffiliateService {
                 .setOnInsert("createdAtIso", Instant.now().toString()),
                 FindAndModifyOptions.options().upsert(true).returnNew(true), AffiliateLink.class);
         long registered = mongo.count(Query.query(Criteria.where("referrerUserId").is(owner)), AffiliateRegistration.class);
-        return new AffiliateSummaryDto("/entry?affiliate=" + link.code(), registered);
+        return new AffiliateSummaryDto("/entry?affiliate=" + link.code(), registered, revenue == null ? null : revenue.summary(owner));
     }
 
     public IntegrationParticipantSummaryDto participantSummary(String owner) {
