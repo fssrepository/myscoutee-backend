@@ -38,3 +38,29 @@ Verification on 2026-09-22:
   Budapest/London preservation; landing `DE`; `de-DE` → `en`; seed parity.
 - `country-partitions.repository.spec.ts`: 10 focused local tests pass.
 - Existing frontend watcher build successful; no separate application build.
+
+
+## Spain — 2026-09-22
+
+Spain (`ES`, `country:es`) uses OpenStreetMap relation **1311341**, with the
+same Nominatim GeoJSON settings as Germany, substituting `country=Spain` and
+`countrycodes=es`. The mainland, Balearic and Canary island geometries are
+preserved. The landing list continues to come from the shared country catalog.
+No Spanish language bundle is added: `es-ES` falls back to English.
+
+```bash
+node server/docker/scripts/country-partitions/import-nominatim-country.mjs \
+  --input /tmp/myscoutee-country-es.json \
+  --object-id 6ab2000000000000000000e5 \
+  --partition-key country:es --country-code ES --country-name Spain \
+  --imported-at 2026-09-22T03:23:33.356443Z
+node server/docker/scripts/country-partitions/export-local-country.mjs ES
+python3 server/docker/scripts/country-partitions/verify-spain.py
+```
+
+Verification passed against the running stack: Madrid, Barcelona, Seville,
+Palma and Santa Cruz de Tenerife resolve to `country:es`; Lisbon, Andorra la
+Vella and Marseille remain ineligible. Berlin, Budapest and London retain
+their partitions. The landing response lists Spain once and a Spanish
+Accept-Language header returns `en`. All 19 local country tests pass, and the
+existing frontend watcher compiled the change successfully.
