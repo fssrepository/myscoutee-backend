@@ -1978,6 +1978,27 @@
           }
         }
       ]
+    },
+    "AFFILIATE-INVITATION-001": {
+      "preserveOtherSessions": true,
+      "layout": {
+        "columns": 2
+      },
+      "sessions": [
+        {
+          "actor": "Affiliate QA owner",
+          "sessionKind": "demo",
+          "userId": "6aff10000000000000000001",
+          "expectedName": "Affiliate QA Owner",
+          "autoDismissExplanationGuide": true
+        },
+        {
+          "actor": "Affiliate new registrant",
+          "sessionKind": "anonymous",
+          "entryUrl": "http://localhost/entry",
+          "targetUrl": "http://localhost/entry"
+        }
+      ]
     }
   }
 }

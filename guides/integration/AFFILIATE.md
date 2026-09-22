@@ -71,8 +71,12 @@ ratio is 0 / 0.
   after duplicate imports, and independent personal referral count. The script
   creates reserved prerequisite records and cleans them up; it does not claim
   a real Firebase registration journey.
-- Full fresh-user Firebase onboarding and visual browser/clipboard checks have
-  not been executed for this new feature. Earlier rating QA remains separate.
+- The independent `AFFILIATE-INVITATION-001` CDP case passed real new-demo-user
+  onboarding, personal count 0→1, API participant count 0/0→0/2→1/2, replay, full
+  reload and key revocation without losing either counter. Evidence is in
+  `guides/qa/evidence/AFFILIATE-INVITATION-001-2026-09-22.json`.
+- Firebase external-provider onboarding and clipboard interaction were not
+  exercised. Earlier rating and API PASS records remain unchanged.
 
 Focused frontend command (from `frontend`, no application build):
 

@@ -12,7 +12,7 @@ Usage:
   bash manual-qa-checkpoints.sh stage|status|reset mobile-push MOBILE-PUSH-LIFECYCLE-001
   bash manual-qa-checkpoints.sh capture mobile-push MOBILE-PUSH-LIFECYCLE-001 <savepoint>
   bash manual-qa-checkpoints.sh stage|stage-demo|status|verify-media-boundary|profile-batch-timing|background-settings|background-settings-resident|reset-background-settings-resident|background-chrome|reset mobile-webview MOBILE-WEBVIEW-LIFECYCLE-001
-  bash manual-qa-checkpoints.sh prepare browser-sessions <checkpoint-id>
+  bash manual-qa-checkpoints.sh prepare|restore browser-sessions <checkpoint-id>
   bash manual-qa-checkpoints.sh stage|status|ready|repair-rate-counters|reset event-rating EVENT-ACTIVITY-RATING-001 [before-meeting|all|standard|tournament|speed-meeting]
   bash manual-qa-checkpoints.sh stage|status|reset integration-api INTEGRATION-API-001
   bash manual-qa-checkpoints.sh stage base-stat
@@ -790,7 +790,7 @@ PY
     [ "$3" = "INTEGRATION-API-001" ] || fail "${command} is restricted to INTEGRATION-API-001."
     run_scenario "${command}" "${scenario}" 30 "$3"
     ;;
-  browser-sessions:prepare)
+  browser-sessions:prepare|browser-sessions:restore)
     [ "$#" -eq 3 ] || { usage >&2; exit 2; }
     run_scenario "${command}" "${scenario}" 30 "$3"
     ;;
