@@ -19,6 +19,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 import com.raxim.myscoutee.profile.data.document.IntegrationExternalId;
 import com.raxim.myscoutee.profile.data.document.IntegrationParticipantInvite;
+import com.raxim.myscoutee.profile.data.document.ActivityEvent;
+import com.raxim.myscoutee.profile.data.document.ActivityMingleSession;
 import com.raxim.myscoutee.profile.data.dto.integration.IntegrationDtos.*;
 import com.raxim.myscoutee.profile.repository.ActivityEventsRepository;
 import com.raxim.myscoutee.profile.security.AccessControlService;
@@ -83,7 +85,9 @@ public class IntegrationParticipantInviteService {
         }
         var invite = mongo.findOne(Query.query(Criteria.where("tokenHash").is(digest(token))), IntegrationParticipantInvite.class);
         if (invite == null) throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Invitation not found.");
-        var event = requireEvent(invite.ownerUserId(), invite.eventId());
+        var event = requireOwnedEvent(invite.ownerUserId(), invite.eventId());
+        boolean invitationAvailable = !hasEnded(event);
+        if (invitationAvailable) requireInvitePermission(invite.ownerUserId(), invite.eventId());
         if (invite.claimedUserId() != null && !actor.equals(invite.claimedUserId())) {
             throw new ResponseStatusException(HttpStatus.CONFLICT, "This invitation belongs to another account.");
         }
@@ -106,18 +110,35 @@ public class IntegrationParticipantInviteService {
                 new Update().set("claimedUserId", actor).set("claimedAtIso", Instant.now().toString()),
                 FindAndModifyOptions.options().returnNew(true), IntegrationParticipantInvite.class);
         if (claimed == null) throw new ResponseStatusException(HttpStatus.CONFLICT, "Invitation already claimed.");
-        members.claimIntegrationInvite(claimed, event, actor);
-        return new IntegrationParticipantClaimDto(invite.eventId());
+        if (invitationAvailable) members.claimIntegrationInvite(claimed, event, actor);
+        return new IntegrationParticipantClaimDto(invite.eventId(), invitationAvailable);
     }
 
-    private com.raxim.myscoutee.profile.data.document.ActivityEvent requireEvent(String ownerUserId, String eventId) {
-        var event = events.findByOwnerUserIdAndSourceId(ownerUserId, eventId)
+    private ActivityEvent requireEvent(String ownerUserId, String eventId) {
+        var event = requireOwnedEvent(ownerUserId, eventId);
+        requireInvitePermission(ownerUserId, eventId);
+        return event;
+    }
+
+    private ActivityEvent requireOwnedEvent(String ownerUserId, String eventId) {
+        return events.findByOwnerUserIdAndSourceId(ownerUserId, eventId)
                 .filter(value -> Boolean.TRUE.equals(value.getIsAdmin()))
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Event not found."));
+    }
+
+    private void requireInvitePermission(String ownerUserId, String eventId) {
         if (!access.canInviteEventMembers(eventId, ownerUserId)) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Event invitations are not allowed.");
         }
-        return event;
+    }
+
+    private boolean hasEnded(ActivityEvent event) {
+        if (Boolean.TRUE.equals(event.getIsExpired())) return true;
+        if (event.getEndAtIso() != null && !event.getEndAtIso().isBlank()
+                && !Instant.parse(event.getEndAtIso()).isAfter(Instant.now())) return true;
+        return "Mingle".equals(event.getMode()) && mongo.exists(Query.query(
+                Criteria.where("eventId").is(event.getSourceId()).and("status").is("COMPLETED")),
+                ActivityMingleSession.class);
     }
 
     private static String digest(String value) {

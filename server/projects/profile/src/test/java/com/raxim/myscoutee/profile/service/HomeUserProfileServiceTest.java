@@ -126,6 +126,9 @@ class HomeUserProfileServiceTest {
     @Mock
     private UserFriendshipsRepository userFriendshipsRepository;
 
+    @Mock
+    private AffiliateService affiliateService;
+
     private HomeUserProfileService service;
     private final AbsoluteAffinityService absoluteAffinityService = new AbsoluteAffinityService(null, null);
 
@@ -167,10 +170,46 @@ class HomeUserProfileServiceTest {
                 adminTelemetryService,
                 adminMenuCounterService,
                 accessControlService,
-                assetsService);
+                assetsService, affiliateService);
         service.setUserNotificationPageRepository(userNotificationPageRepository);
         lenient().when(userNotificationPageRepository.countUnread("active"))
                 .thenReturn(17L);
+    }
+
+
+    @Test
+    void newProfileCarriesReferralIntoSavedProfileAndAudit() {
+        var referral = new com.raxim.myscoutee.profile.data.document.AffiliateRegistration(
+                "new-member", "referrer", "code", "2026-09-22T00:00:00Z");
+        when(usersRepository.findByUserId("new-member")).thenReturn(Optional.empty());
+        when(usersRepository.save(any(Users.class))).thenAnswer(invocation -> invocation.getArgument(0));
+        when(affiliateService.resolveRegistration("code", "new-member")).thenReturn(referral);
+        service.saveUserProfileExt(new ProfileExtDto(service.toGameCardUserDto(projectedUser("new-member", 0d)), List.of(), "code"));
+        verify(usersRepository).save(org.mockito.ArgumentMatchers.argThat(user -> referral.equals(user.getAffiliateRegistration())));
+        verify(affiliateService).recordRegistration(referral);
+    }
+
+    @Test
+    void existingProfileCannotBeAttributedByPostingAnotherReferral() {
+        Users existing = projectedUser("active", 0d);
+        when(usersRepository.findByUserId("active")).thenReturn(Optional.of(existing));
+        when(usersRepository.save(any(Users.class))).thenAnswer(invocation -> invocation.getArgument(0));
+        service.saveUserProfileExt(new ProfileExtDto(service.toGameCardUserDto(existing), List.of(), "another-code"));
+        verify(affiliateService, org.mockito.Mockito.never()).resolveRegistration(any(), any());
+        assertThat(existing.getAffiliateRegistration()).isNull();
+    }
+
+    @Test
+    void retryAfterAuditFailureKeepsOriginalAttribution() {
+        Users existing = projectedUser("active", 0d);
+        var referral = new com.raxim.myscoutee.profile.data.document.AffiliateRegistration(
+                "active", "original-referrer", "original-code", "2026-09-22T00:00:00Z");
+        existing.setAffiliateRegistration(referral);
+        when(usersRepository.findByUserId("active")).thenReturn(Optional.of(existing));
+        when(usersRepository.save(any(Users.class))).thenAnswer(invocation -> invocation.getArgument(0));
+        service.saveUserProfileExt(new ProfileExtDto(service.toGameCardUserDto(existing), List.of(), "another-code"));
+        verify(affiliateService, org.mockito.Mockito.never()).resolveRegistration(any(), any());
+        verify(affiliateService).recordRegistration(referral);
     }
 
     @Test

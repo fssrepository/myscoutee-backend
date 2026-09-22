@@ -116,4 +116,23 @@ class IntegrationTokenServiceTest {
         token.setExpiresAtIso(Instant.now().plus(30, ChronoUnit.DAYS).toString());
         return token;
     }
+    @Test void adminScopeIsSeparateForCreationListingAuthenticationAndRevocation() {
+        IntegrationToken ordinary = activeToken("ordinary");
+        IntegrationToken admin = activeToken("admin"); admin.setScope("admin-client");
+        when(tokensRepository.findByOwnerUserIdOrderByCreatedAtIsoDesc("owner-1")).thenReturn(List.of(ordinary, admin));
+        assertThat(service.settings("owner-1", "/api/admin-client/v1", "admin-client").tokens()).hasSize(1);
+        assertThat(service.settings("owner-1", "/api/integrations/v1").tokens()).hasSize(1);
+        when(tokensRepository.save(any())).thenAnswer(call -> call.getArgument(0));
+        service.create("owner-1", new IntegrationTokenCreateRequestDto("Admin", 90), "admin-client");
+        var saved = org.mockito.ArgumentCaptor.forClass(IntegrationToken.class); verify(tokensRepository).save(saved.capture());
+        assertThat(saved.getValue().getScope()).isEqualTo("admin-client");
+        when(mongoTemplate.findAndModify(any(Query.class), any(Update.class), any(FindAndModifyOptions.class), eq(IntegrationToken.class))).thenReturn(ordinary);
+        assertThat(service.authenticateClient("msc_test", "45a87d78-4fe4-4bbb-8cb4-5fb8d423f5e8", "127.0.0.1", "admin-client")).isNull();
+        var query = org.mockito.ArgumentCaptor.forClass(Query.class);
+        verify(mongoTemplate).findAndModify(query.capture(), any(Update.class), any(FindAndModifyOptions.class), eq(IntegrationToken.class));
+        assertThat(query.getValue().getQueryObject().toJson()).contains("admin-client", "scope");
+        when(tokensRepository.findByIdAndOwnerUserId("ordinary", "owner-1")).thenReturn(java.util.Optional.of(ordinary));
+        assertThatThrownBy(() -> service.revoke("owner-1", "ordinary", "admin-client")).isInstanceOf(ResponseStatusException.class);
+    }
+
 }

@@ -63,6 +63,7 @@ public class UserRatesService {
     private final AdminTelemetryService adminTelemetryService;
     private final AffinityRecomputeTaskService affinityRecomputeTaskService;
     private final NotificationOutboxService notificationOutboxService;
+    private final OrganizerFollowingService organizerFollowingService;
 
     @Autowired
     public UserRatesService(
@@ -74,7 +75,8 @@ public class UserRatesService {
             MongoTemplate mongoTemplate,
             AdminTelemetryService adminTelemetryService,
             AffinityRecomputeTaskService affinityRecomputeTaskService,
-            NotificationOutboxService notificationOutboxService) {
+            NotificationOutboxService notificationOutboxService,
+            OrganizerFollowingService organizerFollowingService) {
         this.userRatesRepository = userRatesRepository;
         this.usersRepository = usersRepository;
         this.homeUserProfileService = homeUserProfileService;
@@ -84,6 +86,7 @@ public class UserRatesService {
         this.adminTelemetryService = adminTelemetryService;
         this.affinityRecomputeTaskService = affinityRecomputeTaskService;
         this.notificationOutboxService = notificationOutboxService;
+        this.organizerFollowingService = organizerFollowingService;
     }
 
     UserRatesService(
@@ -93,7 +96,8 @@ public class UserRatesService {
             AffinityCalculationService affinityCalculationService,
             UserAffinityEdgeService userAffinityEdgeService,
             MongoTemplate mongoTemplate,
-            AdminTelemetryService adminTelemetryService) {
+            AdminTelemetryService adminTelemetryService,
+            OrganizerFollowingService organizerFollowingService) {
         this(
                 userRatesRepository,
                 usersRepository,
@@ -103,7 +107,8 @@ public class UserRatesService {
                 mongoTemplate,
                 adminTelemetryService,
                 null,
-                null);
+                null,
+                organizerFollowingService);
     }
 
     @PostConstruct
@@ -248,6 +253,7 @@ public class UserRatesService {
             return;
         }
         Map<String, WriteModel<Document>> writesByPair = new LinkedHashMap<>();
+        Set<String> affectedUsers = new LinkedHashSet<>();
         for (UserRate rate : persistedRates) {
             if (rate == null
                     || !"single".equals(normalizeMode(rate.getMode()))
@@ -266,6 +272,8 @@ public class UserRatesService {
             String left = ownerUserId.compareTo(relatedUserId) <= 0 ? ownerUserId : relatedUserId;
             String right = ownerUserId.compareTo(relatedUserId) <= 0 ? relatedUserId : ownerUserId;
             writesByPair.put(left.length() + ":" + left + right, mutualMetFriendshipWrite(left, right, rate));
+            affectedUsers.add(left);
+            affectedUsers.add(right);
         }
         if (writesByPair.isEmpty()) {
             return;
@@ -273,6 +281,7 @@ public class UserRatesService {
         mongoTemplate.getCollection("userFriendships").bulkWrite(
                 new ArrayList<>(writesByPair.values()),
                 new BulkWriteOptions().ordered(false));
+        organizerFollowingService.refreshForViewers(affectedUsers);
     }
 
     private WriteModel<Document> mutualMetFriendshipWrite(

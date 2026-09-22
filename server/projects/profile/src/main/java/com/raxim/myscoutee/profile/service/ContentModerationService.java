@@ -1,0 +1,168 @@
+package com.raxim.myscoutee.profile.service;
+
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
+import java.util.*;
+import org.bson.Document;
+import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.mongodb.core.query.Query;
+import org.springframework.data.mongodb.core.query.Update;
+import org.springframework.http.HttpStatus;
+import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
+import com.raxim.myscoutee.profile.data.dto.admin.ContentModerationDtos.*;
+import com.raxim.myscoutee.profile.data.dto.admin.AdminDtos.AdminUserDto;
+import com.raxim.myscoutee.profile.repository.ContentModerationRepository;
+import static com.raxim.myscoutee.profile.data.dto.admin.ContentModerationDtos.*;
+
+/** Global write-side counters and durable mutation intents. Reads never rebuild counts from rows. */
+@Service
+public class ContentModerationService {
+    private final ContentModerationRepository repository;
+    private final MongoTemplate mongo;
+    private final ChatService chats;
+    private final UserActivityCountersService counters;
+    public ContentModerationService(ContentModerationRepository repository, MongoTemplate mongo, ChatService chats, UserActivityCountersService counters) {
+        this.repository = repository; this.mongo = mongo; this.chats = chats; this.counters = counters;
+    }
+    public Snapshot snapshot() { return snapshot(repository.state()); }
+    static Snapshot snapshot(State state) {
+        long pending = state.counts().values().stream().mapToLong(c -> c.getOrDefault("under-review", 0L)).sum();
+        return new Snapshot(state.revision(), state.settings(), state.counts(), pending);
+    }
+    public Page page(String category, String status, String cursor, int pageSize) {
+        if (!"all".equals(category)) validate(category, status);
+        else if (!STATUSES.contains(status)) throw invalid();
+        int limit = Math.max(1, Math.min(50, pageSize));
+        var rows = repository.page(category, status, cursor, limit + 1);
+        var items = rows.stream().limit(limit).toList();
+        var state = snapshot();
+        long total = ("all".equals(category) ? CATEGORIES : List.of(category)).stream()
+                .mapToLong(key -> state.counts().getOrDefault(key, Map.of()).getOrDefault(status, 0L)).sum();
+        return new Page(items, total,
+                rows.size() > limit ? items.getLast().id() : null, state);
+    }
+    public Snapshot settings(SaveSettings request) {
+        Settings next = request.settings();
+        if (next == null || next.delayMinutes() < 0 || next.delayMinutes() > 43200 || next.categories() == null
+                || !CATEGORIES.containsAll(next.categories())) throw invalid();
+        next = new Settings(next.autoApprove(), next.delayMinutes(), next.categories().stream().distinct().toList());
+        State current = repository.state();
+        if (current.revision() != request.expectedRevision() || !repository.compareAndSet(current, next, current.counts(), current.pending())) throw conflict();
+        return snapshot();
+    }
+    public Item register(String category, String sourceId, String ownerId, String title, String imageUrl) {
+        validate(category, "under-review");
+        String id = category + ":" + sourceId;
+        Item existing = repository.item(id);
+        if (existing != null) { applyResource(existing); return existing; }
+        // Approval is owned by the scheduled Job, including a zero-minute delay.
+        String status = "under-review";
+        Item proposed = new Item(id, category, sourceId, ownerId, title, imageUrl, Instant.now().toString(), status, 1,
+                "submit:" + id, "", "");
+        return enlist(null, proposed, "", "", "");
+    }
+    public Item decide(String id, Decision request, AdminUserDto actor) {
+        Item before = repository.item(id);
+        if (before == null) throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+        validate(before.category(), request.status());
+        if (request.commandId() == null || request.commandId().isBlank() || request.commandId().length() > 100) throw invalid();
+        String message = request.message() == null ? "" : request.message().trim();
+        if (message.length() > 1000) throw invalid();
+        if (request.commandId().equals(before.commandId())) { drainPending(); return repository.item(id); }
+        if (request.expectedVersion() != before.version()) throw conflict();
+        Item next = new Item(before.id(), before.category(), before.sourceId(), before.ownerUserId(), before.title(), before.imageUrl(),
+                before.submittedAtIso(), request.status(), before.version() + 1, request.commandId(), actor.id(), Instant.now().toString());
+        return enlist(before, next, actor.name(), actor.initials(), message);
+    }
+    private Item enlist(Item previous, Item next, String adminName, String adminInitials, String message) {
+        for (int attempt = 0; attempt < 10; attempt++) {
+            var current = repository.state();
+            var pending = current.pending().stream().filter(m -> m.item().id().equals(next.id())).findFirst().orElse(null);
+            if (pending != null) {
+                if (!pending.commandId().equals(next.commandId())) throw conflict();
+                apply(pending); acknowledge(pending.commandId()); return repository.item(next.id());
+            }
+            var actual = repository.item(next.id());
+            if (actual != null && next.commandId().equals(actual.commandId())) return actual;
+            if (previous == null ? actual != null : actual == null || actual.version() != previous.version()) throw conflict();
+            if (current.pending().size() >= 100) throw new ResponseStatusException(HttpStatus.SERVICE_UNAVAILABLE);
+            Map<String, Map<String, Long>> counts = new LinkedHashMap<>(current.counts());
+            Map<String, Long> category = new LinkedHashMap<>(counts.getOrDefault(next.category(), Map.of()));
+            if (previous != null) category.merge(previous.status(), -1L, Long::sum);
+            category.merge(next.status(), 1L, Long::sum); counts.put(next.category(), category);
+            var mutation = new Mutation(next.commandId(), next, adminName, adminInitials,
+                    List.of("rejected", "blocked").contains(next.status()) ? message : "");
+            var queue = new ArrayList<>(current.pending()); queue.add(mutation);
+            // Intent and counter delta commit in one Mongo document. Retrying delivery cannot count twice.
+            if (!repository.compareAndSet(current, current.settings(), counts, queue)) continue;
+            apply(mutation); acknowledge(mutation.commandId()); return next;
+        }
+        throw conflict();
+    }
+    public void drainPending() {
+        for (Mutation mutation : repository.state().pending()) { apply(mutation); acknowledge(mutation.commandId()); }
+    }
+    private void acknowledge(String commandId) {
+        for (int attempt = 0; attempt < 10; attempt++) {
+            var state = repository.state();
+            var remaining = state.pending().stream().filter(p -> !p.commandId().equals(commandId)).toList();
+            if (remaining.size() == state.pending().size() || repository.compareAndSet(state, state.settings(), state.counts(), remaining)) return;
+        }
+        throw conflict();
+    }
+    private void apply(Mutation mutation) {
+        var item = mutation.item();
+        repository.saveItem(item);
+        applyResource(item);
+        if (!mutation.message().isBlank()) chats.sendAdminSupportMessage(item.ownerUserId(), item.reviewedBy(),
+                mutation.adminName(), mutation.adminInitials(), mutation.message(), "warned", "content-moderation:" + mutation.commandId());
+    }
+    private void applyResource(Item item) {
+        String collection = switch (item.category()) { case "event" -> "events"; case "asset" -> "assets"; default -> "photoFeedPosts"; };
+        String key = switch (item.category()) { case "event" -> "sourceId"; case "asset" -> "assetId"; default -> "_id"; };
+        var query = Query.query(Criteria.where(key).is(item.sourceId()).andOperator(new Criteria().orOperator(
+                Criteria.where("moderationVersion").lte(item.version()), Criteria.where("moderationVersion").exists(false))));
+        if (item.category().equals("feed")) {
+            mongo.updateMulti(query, new Update().set("moderationStatus", item.status()).set("moderationVersion", item.version()), collection); return;
+        }
+        var records = mongo.find(query, Document.class, collection);
+        for (Document record : records) {
+            String current = record.getString("status");
+            String original = record.getString("moderationPreviousStatus");
+            var update = new Update().set("moderationStatus", item.status()).set("moderationVersion", item.version());
+            if (item.status().equals("accepted")) {
+                if (original != null) {
+                    if ("B".equals(current)) update.set("status", original);
+                    update.unset("moderationPreviousStatus");
+                }
+            } else if (!List.of("DR", "T", "D").contains(current == null ? "" : current)) {
+                if (original == null) update.set("moderationPreviousStatus", current == null ? "A" : current);
+                update.set("status", "B");
+            }
+            mongo.updateFirst(Query.query(Criteria.where("_id").is(record.get("_id")).andOperator(new Criteria().orOperator(
+                    Criteria.where("moderationVersion").lte(item.version()), Criteria.where("moderationVersion").exists(false)))), update, collection);
+        }
+        if (item.category().equals("event")) counters.refreshEventCountersForSourceIds(List.of(item.sourceId()));
+        else counters.refreshAssetCountersForUser(item.ownerUserId());
+    }
+    public int approveDue() {
+        drainPending();
+        Settings settings = repository.state().settings();
+        if (!settings.autoApprove() || settings.categories().isEmpty()) return 0;
+        var due = repository.due(settings, Instant.now().minus(settings.delayMinutes(), ChronoUnit.MINUTES).toString(), 100);
+        int changed = 0;
+        for (Item item : due) {
+            try {
+                decide(item.id(), new Decision("", "auto:" + item.id() + ":" + item.version(), item.version(), "accepted", ""),
+                        new AdminUserDto("content-auto-approve", "", "", "", "", "", List.of()));
+                changed++;
+            } catch (ResponseStatusException ex) { if (ex.getStatusCode() != HttpStatus.CONFLICT) throw ex; }
+        }
+        return changed;
+    }
+    private static void validate(String category, String status) { if (!CATEGORIES.contains(category) || !STATUSES.contains(status)) throw invalid(); }
+    private static ResponseStatusException invalid() { return new ResponseStatusException(HttpStatus.BAD_REQUEST); }
+    private static ResponseStatusException conflict() { return new ResponseStatusException(HttpStatus.CONFLICT, "Content moderation changed. Reload and retry."); }
+}

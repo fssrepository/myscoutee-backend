@@ -1916,7 +1916,12 @@
           "sessionKind": "anonymous",
           "expectedName": "Netcup public-domain demo smoke",
           "autoDismissExplanationGuide": false,
-          "window": { "x": 0, "y": 40, "width": 1200, "height": 930 }
+          "window": {
+            "x": 0,
+            "y": 40,
+            "width": 1200,
+            "height": 930
+          }
         }
       ]
     },
@@ -1938,6 +1943,191 @@
             "width": 1000,
             "height": 930
           }
+        }
+      ]
+    },
+    "EVENT-ACTIVITY-RATING-001": {
+      "layout": {
+        "columns": 2
+      },
+      "sessions": [
+        {
+          "actor": "Casey reciprocal rating",
+          "sessionKind": "demo",
+          "userId": "6a00000000000000000000a1",
+          "expectedName": "Casey Rating QA",
+          "autoDismissExplanationGuide": true,
+          "window": {
+            "x": 0,
+            "y": 30,
+            "width": 900,
+            "height": 900
+          }
+        },
+        {
+          "actor": "Nova reciprocal rating",
+          "sessionKind": "demo",
+          "userId": "6a00000000000000000000a2",
+          "expectedName": "Nova Rating QA",
+          "autoDismissExplanationGuide": true,
+          "window": {
+            "x": 920,
+            "y": 30,
+            "width": 900,
+            "height": 900
+          }
+        }
+      ]
+    },
+    "AFFILIATE-INVITATION-001": {
+      "preserveOtherSessions": true,
+      "layout": {
+        "columns": 2
+      },
+      "sessions": [
+        {
+          "actor": "Affiliate QA owner",
+          "sessionKind": "demo",
+          "userId": "6aff10000000000000000001",
+          "expectedName": "Affiliate QA Owner",
+          "autoDismissExplanationGuide": true
+        },
+        {
+          "actor": "Affiliate new registrant",
+          "sessionKind": "anonymous",
+          "entryUrl": "http://localhost/entry",
+          "targetUrl": "http://localhost/entry"
+        }
+      ]
+    },
+    "EVENT-FOLLOWING-001": {
+      "preserveOtherSessions": true,
+      "layout": {
+        "columns": 2
+      },
+      "sessions": [
+        {
+          "actor": "Following QA Viewer",
+          "sessionKind": "demo",
+          "userId": "6af011000000000000000001",
+          "expectedName": "Following QA Viewer",
+          "autoDismissExplanationGuide": true
+        },
+        {
+          "actor": "Following QA Organizer",
+          "sessionKind": "demo",
+          "userId": "6af011000000000000000002",
+          "expectedName": "Following QA Organizer",
+          "autoDismissExplanationGuide": true
+        }
+      ]
+    },
+    "EVENT-FOLLOWING-002": {
+      "preserveOtherSessions": true,
+      "layout": {
+        "columns": 2
+      },
+      "sessions": [
+        {
+          "actor": "Following QA Viewer",
+          "sessionKind": "demo",
+          "userId": "6af011000000000000000001",
+          "expectedName": "Following QA Viewer",
+          "autoDismissExplanationGuide": true
+        },
+        {
+          "actor": "Following QA Organizer",
+          "sessionKind": "demo",
+          "userId": "6af011000000000000000002",
+          "expectedName": "Following QA Organizer",
+          "autoDismissExplanationGuide": true
+        }
+      ]
+    },
+    "EVENT-GALLERY-FEED-001": {
+      "layout": {
+        "columns": 2
+      },
+      "sessions": [
+        {
+          "actor": "Gallery creator",
+          "sessionKind": "demo",
+          "userId": "6a1100000000000000000001",
+          "expectedName": "Gallery QA Creator",
+          "autoDismissExplanationGuide": true
+        },
+        {
+          "actor": "Gallery viewer",
+          "sessionKind": "demo",
+          "userId": "6a1100000000000000000002",
+          "expectedName": "Gallery QA Viewer",
+          "autoDismissExplanationGuide": true
+        },
+        {
+          "actor": "Moderation admin Ava",
+          "sessionKind": "demo",
+          "userId": "admin-demo-ava",
+          "expectedName": "Ava Moderation",
+          "targetUrl": "http://localhost/admin",
+          "entryUrl": "http://localhost/entry?redirect=%2Fadmin",
+          "autoDismissExplanationGuide": true
+        },
+        {
+          "actor": "Moderation admin Noel",
+          "sessionKind": "demo",
+          "userId": "admin-demo-noel",
+          "expectedName": "Noel Safety",
+          "targetUrl": "http://localhost/admin",
+          "entryUrl": "http://localhost/entry?redirect=%2Fadmin",
+          "autoDismissExplanationGuide": true
+        }
+      ]
+    },
+    "OPERATOR-EMAIL-WARNING-001": {
+      "layout": {
+        "columns": 2
+      },
+      "sessions": [
+        {
+          "actor": "Operator",
+          "sessionKind": "demo",
+          "userId": "operator@myscoutee.local",
+          "expectedName": "Demo Operator",
+          "targetUrl": "http://localhost/operator",
+          "entryUrl": "http://localhost/entry?redirect=%2Foperator",
+          "autoDismissExplanationGuide": false
+        },
+        {
+          "actor": "Ava",
+          "sessionKind": "demo",
+          "userId": "admin-demo-ava",
+          "expectedName": "Ava Moderation",
+          "targetUrl": "http://localhost/admin",
+          "entryUrl": "http://localhost/entry?redirect=%2Fadmin",
+          "autoDismissExplanationGuide": false
+        }
+      ]
+    },
+    "ADMIN-CLIENT-API-001": {
+      "layout": {
+        "columns": 2
+      },
+      "sessions": [
+        {
+          "actor": "Moderation admin Ava",
+          "sessionKind": "demo",
+          "userId": "admin-demo-ava",
+          "expectedName": "Ava Moderation",
+          "targetUrl": "http://localhost/admin",
+          "entryUrl": "http://localhost/entry?redirect=%2Fadmin",
+          "autoDismissExplanationGuide": true
+        },
+        {
+          "actor": "Admin API QA user",
+          "sessionKind": "demo",
+          "userId": "6ac102000000000000000001",
+          "expectedName": "Admin API QA 1",
+          "autoDismissExplanationGuide": true
         }
       ]
     }

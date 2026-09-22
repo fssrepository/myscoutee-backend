@@ -1,0 +1,154 @@
+{
+  "preparation": "PASS",
+  "manualReplay": "PENDING",
+  "before": {
+    "checkpointId": "EVENT-ACTIVITY-RATING-001",
+    "phase": "awaiting-real-projection",
+    "selectedFormat": "standard",
+    "users": [
+      {
+        "userId": "6a00000000000000000000a1",
+        "name": "Casey Rating QA",
+        "city": "Austin",
+        "profileStatus": "friends only"
+      },
+      {
+        "userId": "6a00000000000000000000a2",
+        "name": "Nova Rating QA",
+        "city": "Austin",
+        "profileStatus": "friends only"
+      }
+    ],
+    "priorRate": {
+      "_id": "qa-rating-001-existing-rate",
+      "syncKey": "qa-rating-001-existing-rate",
+      "mode": "single",
+      "ownerUserId": "6a00000000000000000000a1",
+      "relatedUserId": "6a00000000000000000000a2",
+      "scoreGiven": 9,
+      "scoreReceived": 4,
+      "mutuallyRated": true,
+      "met": false,
+      "createdDate": "2026-09-21T01:27:31.467Z",
+      "updatedDate": "2026-09-21T01:27:31.467Z",
+      "createdUser": "manual-qa-checkpoint:v1:actor",
+      "updatedUser": "manual-qa-checkpoint:v1:actor"
+    },
+    "events": [
+      {
+        "sourceId": "qa-rating-001-speed-meeting",
+        "title": "QA RATING · Speed meeting",
+        "mode": "Mingle",
+        "endAtIso": "2026-09-24T02:27:31.467Z",
+        "friendshipsProjected": false
+      },
+      {
+        "sourceId": "qa-rating-001-standard",
+        "title": "QA RATING · Standard",
+        "mode": "Casual",
+        "endAtIso": "2026-09-21T20:27:31.467Z",
+        "friendshipsProjected": false
+      },
+      {
+        "sourceId": "qa-rating-001-tournament",
+        "title": "QA RATING · Tournament",
+        "mode": "Tournament",
+        "endAtIso": "2026-09-24T02:27:31.467Z",
+        "friendshipsProjected": false
+      }
+    ],
+    "rounds": [],
+    "rates": [
+      {
+        "_id": "qa-rating-001-existing-rate",
+        "syncKey": "qa-rating-001-existing-rate",
+        "ownerUserId": "6a00000000000000000000a1",
+        "relatedUserId": "6a00000000000000000000a2",
+        "scoreGiven": 9,
+        "scoreReceived": 4,
+        "met": false,
+        "createdDate": "2026-09-21T01:27:31.467Z"
+      }
+    ],
+    "friendships": 0,
+    "feedbackAnswers": 0,
+    "timingRestored": false,
+    "baselineCaptured": false
+  },
+  "after": {
+    "checkpointId": "EVENT-ACTIVITY-RATING-001",
+    "phase": "ready-for-manual-rating",
+    "selectedFormat": "standard",
+    "users": [
+      {
+        "userId": "6a00000000000000000000a1",
+        "name": "Casey Rating QA",
+        "city": "Austin",
+        "profileStatus": "friends only"
+      },
+      {
+        "userId": "6a00000000000000000000a2",
+        "name": "Nova Rating QA",
+        "city": "Austin",
+        "profileStatus": "friends only"
+      }
+    ],
+    "priorRate": {
+      "_id": "qa-rating-001-existing-rate",
+      "syncKey": "qa-rating-001-existing-rate",
+      "mode": "single",
+      "ownerUserId": "6a00000000000000000000a1",
+      "relatedUserId": "6a00000000000000000000a2",
+      "scoreGiven": 9,
+      "scoreReceived": 4,
+      "mutuallyRated": true,
+      "met": false,
+      "createdDate": "2026-09-21T01:27:31.467Z",
+      "updatedDate": "2026-09-21T01:27:31.467Z",
+      "createdUser": "manual-qa-checkpoint:v1:actor",
+      "updatedUser": "manual-qa-checkpoint:v1:actor"
+    },
+    "events": [
+      {
+        "sourceId": "qa-rating-001-speed-meeting",
+        "title": "QA RATING · Speed meeting",
+        "mode": "Mingle",
+        "endAtIso": "2026-09-24T02:27:31.467Z",
+        "friendshipsProjected": false
+      },
+      {
+        "sourceId": "qa-rating-001-standard",
+        "title": "QA RATING · Standard",
+        "mode": "Casual",
+        "endAtIso": "2026-09-21T20:27:31.467Z",
+        "friendshipsProjected": true
+      },
+      {
+        "sourceId": "qa-rating-001-tournament",
+        "title": "QA RATING · Tournament",
+        "mode": "Tournament",
+        "endAtIso": "2026-09-24T02:27:31.467Z",
+        "friendshipsProjected": false
+      }
+    ],
+    "rounds": [],
+    "rates": [
+      {
+        "_id": "qa-rating-001-existing-rate",
+        "syncKey": "qa-rating-001-existing-rate",
+        "createdDate": "2026-09-21T01:27:31.467Z",
+        "ownerUserId": "6a00000000000000000000a1",
+        "relatedUserId": "6a00000000000000000000a2",
+        "scoreGiven": 9,
+        "scoreReceived": 4,
+        "met": true,
+        "metEventId": "qa-rating-001-standard",
+        "eventName": "QA RATING · Standard"
+      }
+    ],
+    "friendships": 1,
+    "feedbackAnswers": 0,
+    "timingRestored": true,
+    "baselineCaptured": true
+  }
+}

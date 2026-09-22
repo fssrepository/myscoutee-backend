@@ -30,6 +30,16 @@ public class Payment {
     private String id;
     @Version
     private Long version;
+    private String affiliateOwnerUserId;
+    private boolean affiliateAttributionResolved;
+    @Indexed(name = "payment_affiliate_pending", partialFilter = "{'affiliateRevenuePending':true}")
+    private boolean affiliateRevenuePending;
+    public String getAffiliateOwnerUserId() { return affiliateOwnerUserId; }
+    public void setAffiliateOwnerUserId(String value) { affiliateOwnerUserId = value; }
+    public boolean isAffiliateAttributionResolved() { return affiliateAttributionResolved; }
+    public void setAffiliateAttributionResolved(boolean value) { affiliateAttributionResolved = value; }
+    public boolean isAffiliateRevenuePending() { return affiliateRevenuePending; }
+    public void setAffiliateRevenuePending(boolean value) { affiliateRevenuePending = value; }
     private String userId;
     private String recipientUserId;
     private String sourceId;

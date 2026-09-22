@@ -1,5 +1,11 @@
 [
   {
+    "_id": "i18n-message-en-integration-token-ip",
+    "key": "integration.token.ip",
+    "lang": "en",
+    "value": "IP:"
+  },
+  {
     "_id": "i18n-message-en-unavailable-here",
     "key": "unavailable.here",
     "lang": "en",
@@ -21444,6 +21450,12 @@
     "value": "Create and start the next table assignment?"
   },
   {
+    "_id": "i18n-message-en-mingle-status-break",
+    "key": "mingle.status.break",
+    "lang": "en",
+    "value": "Break"
+  },
+  {
     "_id": "i18n-message-en-mingle-live-round",
     "key": "mingle.live.round",
     "lang": "en",
@@ -21580,6 +21592,552 @@
     "key": "mingle.tables.close.aria",
     "lang": "en",
     "value": "Close Speed meeting tables"
+  },
+  {
+    "_id": "i18n-message-en-affiliate-title",
+    "key": "affiliate.title",
+    "lang": "en",
+    "value": "Affiliate"
+  },
+  {
+    "_id": "i18n-message-en-affiliate-open",
+    "key": "affiliate.open",
+    "lang": "en",
+    "value": "Open affiliate settings"
+  },
+  {
+    "_id": "i18n-message-en-affiliate-subtitle",
+    "key": "affiliate.subtitle",
+    "lang": "en",
+    "value": "Share your personal invitation link or connect an API client."
+  },
+  {
+    "_id": "i18n-message-en-affiliate-personal-link",
+    "key": "affiliate.personal.link",
+    "lang": "en",
+    "value": "Personal invitation link"
+  },
+  {
+    "_id": "i18n-message-en-affiliate-copy",
+    "key": "affiliate.copy",
+    "lang": "en",
+    "value": "Copy personal invitation link"
+  },
+  {
+    "_id": "i18n-message-en-affiliate-registered",
+    "key": "affiliate.registered",
+    "lang": "en",
+    "value": "People registered through your personal invitation link"
+  },
+  {
+    "_id": "i18n-message-en-affiliate-clients-ratio",
+    "key": "affiliate.clients.ratio",
+    "lang": "en",
+    "value": "Registered accounts linked / distinct API participants imported"
+  },
+  {
+    "_id": "i18n-message-en-affiliate-help",
+    "key": "affiliate.help",
+    "lang": "en",
+    "value": "Your personal link records who invited a newly registered member. Existing accounts do not count as new referrals. The client ratio counts distinct imported participant IDs linked to registered accounts; repeat imports do not increase it."
+  },
+  {
+    "_id": "i18n-message-en-landing-partners-role-affiliate-label",
+    "key": "landing.partners.role.affiliate.label",
+    "lang": "en",
+    "value": "Invite people"
+  },
+  {
+    "_id": "i18n-message-en-landing-partners-role-affiliate-title",
+    "key": "landing.partners.role.affiliate.title",
+    "lang": "en",
+    "value": "Affiliate partner"
+  },
+  {
+    "_id": "i18n-message-en-landing-partners-role-affiliate-description",
+    "key": "landing.partners.role.affiliate.description",
+    "lang": "en",
+    "value": "Any member can share a personal invitation link from Profile → Affiliate and see how many people registered through it. API clients can also invite participants and track how many connected to registered accounts."
+  },
+  {
+    "_id": "i18n-message-en-event-following",
+    "key": "event.following",
+    "lang": "en",
+    "value": "Followed"
+  },
+  {
+    "_id": "i18n-message-en-event-following-only",
+    "key": "event.following.only",
+    "lang": "en",
+    "value": "Only followed"
+  },
+  {
+    "_id": "i18n-message-en-event-following-members",
+    "key": "event.following.members",
+    "lang": "en",
+    "value": "Followed organizers"
+  },
+  {
+    "_id": "i18n-message-en-event-following-follow",
+    "key": "event.following.follow",
+    "lang": "en",
+    "value": "Follow organizer"
+  },
+  {
+    "_id": "i18n-message-en-event-following-unfollow",
+    "key": "event.following.unfollow",
+    "lang": "en",
+    "value": "Unfollow"
+  },
+  {
+    "_id": "i18n-message-en-event-following-failed",
+    "key": "event.following.failed",
+    "lang": "en",
+    "value": "Could not update following. Please try again."
+  },
+  {
+    "_id": "i18n-message-en-event-external-info",
+    "key": "event.external.info",
+    "lang": "en",
+    "value": "External info"
+  },
+  {
+    "_id": "i18n-message-en-image-carousel-images",
+    "key": "image.carousel.images",
+    "lang": "en",
+    "value": "Images"
+  },
+  {
+    "_id": "i18n-message-en-image-carousel-expand",
+    "key": "image.carousel.expand",
+    "lang": "en",
+    "value": "Open gallery"
+  },
+  {
+    "_id": "i18n-message-en-image-carousel-previous",
+    "key": "image.carousel.previous",
+    "lang": "en",
+    "value": "Previous image"
+  },
+  {
+    "_id": "i18n-message-en-image-carousel-next",
+    "key": "image.carousel.next",
+    "lang": "en",
+    "value": "Next image"
+  },
+  {
+    "_id": "i18n-message-en-image-carousel-pages",
+    "key": "image.carousel.pages",
+    "lang": "en",
+    "value": "Image pages"
+  },
+  {
+    "_id": "i18n-message-en-image-details-title",
+    "key": "image.details.title",
+    "lang": "en",
+    "value": "Image details"
+  },
+  {
+    "_id": "i18n-message-en-image-details-caption",
+    "key": "image.details.caption",
+    "lang": "en",
+    "value": "Short image description"
+  },
+  {
+    "_id": "i18n-message-en-feed-title",
+    "key": "feed.title",
+    "lang": "en",
+    "value": "Feed"
+  },
+  {
+    "_id": "i18n-message-en-feed-create",
+    "key": "feed.create",
+    "lang": "en",
+    "value": "Share photos"
+  },
+  {
+    "_id": "i18n-message-en-feed-empty",
+    "key": "feed.empty",
+    "lang": "en",
+    "value": "No shared photos yet"
+  },
+  {
+    "_id": "i18n-message-en-feed-locationrequired",
+    "key": "feed.locationRequired",
+    "lang": "en",
+    "value": "Set your profile location to see and share nearby photos."
+  },
+  {
+    "_id": "i18n-message-en-profile-view-showdetails",
+    "key": "profile.view.showDetails",
+    "lang": "en",
+    "value": "Show profile details"
+  },
+  {
+    "_id": "i18n-message-en-image-gallery-savefailed",
+    "key": "image.gallery.saveFailed",
+    "lang": "en",
+    "value": "Unable to save. Please try again."
+  },
+  {
+    "_id": "i18n-message-en-moderation-title",
+    "key": "moderation.title",
+    "lang": "en",
+    "value": "Content moderation"
+  },
+  {
+    "_id": "i18n-message-en-moderation-empty",
+    "key": "moderation.empty",
+    "lang": "en",
+    "value": "No items in this category and status."
+  },
+  {
+    "_id": "i18n-message-en-moderation-settings",
+    "key": "moderation.settings",
+    "lang": "en",
+    "value": "Moderation settings"
+  },
+  {
+    "_id": "i18n-message-en-moderation-categories",
+    "key": "moderation.categories",
+    "lang": "en",
+    "value": "Categories"
+  },
+  {
+    "_id": "i18n-message-en-moderation-category-all",
+    "key": "moderation.category.all",
+    "lang": "en",
+    "value": "All"
+  },
+  {
+    "_id": "i18n-message-en-moderation-unblock",
+    "key": "moderation.unblock",
+    "lang": "en",
+    "value": "Unblock"
+  },
+  {
+    "_id": "i18n-message-en-moderation-category-asset",
+    "key": "moderation.category.asset",
+    "lang": "en",
+    "value": "Asset"
+  },
+  {
+    "_id": "i18n-message-en-moderation-category-event",
+    "key": "moderation.category.event",
+    "lang": "en",
+    "value": "Event"
+  },
+  {
+    "_id": "i18n-message-en-moderation-category-feed",
+    "key": "moderation.category.feed",
+    "lang": "en",
+    "value": "Photo Feed"
+  },
+  {
+    "_id": "i18n-message-en-moderation-status-under-review",
+    "key": "moderation.status.under-review",
+    "lang": "en",
+    "value": "Under review"
+  },
+  {
+    "_id": "i18n-message-en-moderation-status-accepted",
+    "key": "moderation.status.accepted",
+    "lang": "en",
+    "value": "Accepted"
+  },
+  {
+    "_id": "i18n-message-en-moderation-status-rejected",
+    "key": "moderation.status.rejected",
+    "lang": "en",
+    "value": "Rejected"
+  },
+  {
+    "_id": "i18n-message-en-moderation-status-blocked",
+    "key": "moderation.status.blocked",
+    "lang": "en",
+    "value": "Blocked"
+  },
+  {
+    "_id": "i18n-message-en-moderation-message",
+    "key": "moderation.message",
+    "lang": "en",
+    "value": "Optional message to the owner via App Support"
+  },
+  {
+    "_id": "i18n-message-en-moderation-autoapprove",
+    "key": "moderation.autoApprove",
+    "lang": "en",
+    "value": "Auto approve"
+  },
+  {
+    "_id": "i18n-message-en-moderation-delayminutes",
+    "key": "moderation.delayMinutes",
+    "lang": "en",
+    "value": "Delay (minutes)"
+  },
+  {
+    "_id": "i18n-message-en-moderation-failed",
+    "key": "moderation.failed",
+    "lang": "en",
+    "value": "Unable to save or load moderation. Reload and retry."
+  },
+  {
+    "_id": "i18n-message-en-moderation-changed",
+    "key": "moderation.changed",
+    "lang": "en",
+    "value": "Another admin changed this item. Reload and retry."
+  },
+  {
+    "_id": "i18n-message-en-moderation-invalidsettings",
+    "key": "moderation.invalidSettings",
+    "lang": "en",
+    "value": "Enter a whole number from 0 to 43200 minutes."
+  },
+  {
+    "_id": "i18n-message-en-admin-jobs-rule-content-autoapprove",
+    "key": "admin.jobs.rule.content.autoApprove",
+    "lang": "en",
+    "value": "Content auto approval"
+  },
+  {
+    "_id": "i18n-message-en-admin-jobs-rule-content-autoapprove-description",
+    "key": "admin.jobs.rule.content.autoApprove.description",
+    "lang": "en",
+    "value": "Approves content in the globally selected categories after the configured delay."
+  },
+  {
+    "_id": "i18n-message-en-admin-jobs-rule-content-autoapprove-completed",
+    "key": "admin.jobs.rule.content.autoApprove.completed",
+    "lang": "en",
+    "value": "Scheduled content approval completed."
+  },
+  {
+    "_id": "i18n-message-en-operator-email-title",
+    "key": "operator.email.title",
+    "lang": "en",
+    "value": "Email delivery"
+  },
+  {
+    "_id": "i18n-message-en-operator-email-provider",
+    "key": "operator.email.provider",
+    "lang": "en",
+    "value": "Email provider"
+  },
+  {
+    "_id": "i18n-message-en-operator-email-enabled",
+    "key": "operator.email.enabled",
+    "lang": "en",
+    "value": "Email enabled"
+  },
+  {
+    "_id": "i18n-message-en-operator-email-fromemail",
+    "key": "operator.email.fromEmail",
+    "lang": "en",
+    "value": "Verified sender email"
+  },
+  {
+    "_id": "i18n-message-en-operator-email-fromname",
+    "key": "operator.email.fromName",
+    "lang": "en",
+    "value": "Sender name"
+  },
+  {
+    "_id": "i18n-message-en-operator-email-credential",
+    "key": "operator.email.credential",
+    "lang": "en",
+    "value": "API key"
+  },
+  {
+    "_id": "i18n-message-en-operator-email-credentialkept",
+    "key": "operator.email.credentialKept",
+    "lang": "en",
+    "value": "Configured — leave blank to keep the saved key"
+  },
+  {
+    "_id": "i18n-message-en-operator-email-selectprovider",
+    "key": "operator.email.selectProvider",
+    "lang": "en",
+    "value": "Select provider"
+  },
+  {
+    "_id": "i18n-message-en-operator-email-purpose",
+    "key": "operator.email.purpose",
+    "lang": "en",
+    "value": "Warns deleted-account owners five days before permanent deletion. The lead time is fixed."
+  },
+  {
+    "_id": "i18n-message-en-operator-email-backendrequired",
+    "key": "operator.email.backendRequired",
+    "lang": "en",
+    "value": "Email configuration requires the connected backend. No credentials are stored in the browser demo."
+  },
+  {
+    "_id": "i18n-message-en-operator-email-notconfigured",
+    "key": "operator.email.notConfigured",
+    "lang": "en",
+    "value": "Email provider is not configured or is disabled."
+  },
+  {
+    "_id": "i18n-message-en-operator-email-failed",
+    "key": "operator.email.failed",
+    "lang": "en",
+    "value": "Unable to load or save email configuration. Check the fields or reload after another operator’s change."
+  },
+  {
+    "_id": "i18n-message-en-operator-email-saved",
+    "key": "operator.email.saved",
+    "lang": "en",
+    "value": "Email configuration saved."
+  },
+  {
+    "_id": "i18n-message-en-operator-email-invalid",
+    "key": "operator.email.invalid",
+    "lang": "en",
+    "value": "Check the provider, sender email and API key."
+  },
+  {
+    "_id": "i18n-message-en-operator-email-changed",
+    "key": "operator.email.changed",
+    "lang": "en",
+    "value": "Email configuration changed. Reload and retry."
+  },
+  {
+    "_id": "i18n-message-en-admin-jobs-rule-account-deletion-warning",
+    "key": "admin.jobs.rule.account.deletion.warning",
+    "lang": "en",
+    "value": "Account deletion warning"
+  },
+  {
+    "_id": "i18n-message-en-admin-jobs-rule-account-deletion-warning-description",
+    "key": "admin.jobs.rule.account.deletion.warning.description",
+    "lang": "en",
+    "value": "Emails deleted-account owners five days before permanent deletion using the operator’s email provider."
+  },
+  {
+    "_id": "i18n-message-en-account-deletion-warning-subject",
+    "key": "account.deletion.warning.subject",
+    "lang": "en",
+    "value": "Your account is approaching permanent deletion"
+  },
+  {
+    "_id": "i18n-message-en-account-deletion-warning-body",
+    "key": "account.deletion.warning.body",
+    "lang": "en",
+    "value": "Hello {{name}},\n\nYour deleted account is scheduled for permanent deletion on {{purgeAt}}. This is your five-day reminder. If you want to keep your account, restore it in the application before that date."
+  },
+  {
+    "_id": "i18n-message-en-account-deletion-warning-started",
+    "key": "account.deletion.warning.started",
+    "lang": "en",
+    "value": "Account deletion warning Job started."
+  },
+  {
+    "_id": "i18n-message-en-account-deletion-warning-completed",
+    "key": "account.deletion.warning.completed",
+    "lang": "en",
+    "value": "Account deletion warnings processed."
+  },
+  {
+    "_id": "i18n-message-en-account-deletion-warning-failed",
+    "key": "account.deletion.warning.failed",
+    "lang": "en",
+    "value": "Some account deletion warnings could not be delivered."
+  },
+  {
+    "_id": "i18n-message-en-admin-api-title",
+    "key": "admin.api.title",
+    "lang": "en",
+    "value": "API"
+  },
+  {
+    "_id": "i18n-message-en-admin-api-subtitle",
+    "key": "admin.api.subtitle",
+    "lang": "en",
+    "value": "Private admin monitoring client."
+  },
+  {
+    "_id": "i18n-message-en-admin-api-help",
+    "key": "admin.api.help",
+    "lang": "en",
+    "value": "Connect the standalone admin client with this URL and an API key. It shows aggregate statistics and alerts; open the application to handle cases."
+  },
+  {
+    "_id": "i18n-message-en-admin-api-denied",
+    "key": "admin.api.denied",
+    "lang": "en",
+    "value": "An administrator account is required."
+  },
+  {
+    "_id": "i18n-message-en-admin-api-client-download",
+    "key": "admin.api.client.download",
+    "lang": "en",
+    "value": "Admin client · installer and documentation"
+  },
+  {
+    "_id": "i18n-message-en-affiliate-revenue-title",
+    "key": "affiliate.revenue.title",
+    "lang": "en",
+    "value": "Referral revenue"
+  },
+  {
+    "_id": "i18n-message-en-affiliate-revenue-open",
+    "key": "affiliate.revenue.open",
+    "lang": "en",
+    "value": "Open referral revenue summary"
+  },
+  {
+    "_id": "i18n-message-en-affiliate-revenue-description",
+    "key": "affiliate.revenue.description",
+    "lang": "en",
+    "value": "Purchases made by people you invited. Amounts are kept separately by currency."
+  },
+  {
+    "_id": "i18n-message-en-affiliate-revenue-purchases",
+    "key": "affiliate.revenue.purchases",
+    "lang": "en",
+    "value": "Paid purchases"
+  },
+  {
+    "_id": "i18n-message-en-affiliate-revenue-bookings",
+    "key": "affiliate.revenue.bookings",
+    "lang": "en",
+    "value": "Paid event bookings"
+  },
+  {
+    "_id": "i18n-message-en-affiliate-revenue-gross",
+    "key": "affiliate.revenue.gross",
+    "lang": "en",
+    "value": "Purchases total"
+  },
+  {
+    "_id": "i18n-message-en-affiliate-revenue-refunds",
+    "key": "affiliate.revenue.refunds",
+    "lang": "en",
+    "value": "Refunded"
+  },
+  {
+    "_id": "i18n-message-en-affiliate-revenue-net",
+    "key": "affiliate.revenue.net",
+    "lang": "en",
+    "value": "After refunds"
+  },
+  {
+    "_id": "i18n-message-en-affiliate-revenue-commission-pending",
+    "key": "affiliate.revenue.commission.pending",
+    "lang": "en",
+    "value": "A percentage-based affiliate commission is planned. Its rate and eligibility rules have not been set; these amounts are referral revenue, not earned commission."
+  },
+  {
+    "_id": "i18n-message-en-affiliate-revenue-button",
+    "key": "affiliate.revenue.button",
+    "lang": "en",
+    "value": "Revenue"
+  },
+  {
+    "_id": "i18n-message-hu-integration-token-ip",
+    "key": "integration.token.ip",
+    "lang": "hu",
+    "value": "IP:"
   },
   {
     "_id": "i18n-message-hu-unavailable-here",
@@ -43026,6 +43584,12 @@
     "value": "Elkészíted és elindítod a következő asztalkiosztást?"
   },
   {
+    "_id": "i18n-message-hu-mingle-status-break",
+    "key": "mingle.status.break",
+    "lang": "hu",
+    "value": "Szünet"
+  },
+  {
     "_id": "i18n-message-hu-mingle-live-round",
     "key": "mingle.live.round",
     "lang": "hu",
@@ -43162,5 +43726,545 @@
     "key": "mingle.tables.close.aria",
     "lang": "hu",
     "value": "Villámtalálkozók asztalainak bezárása"
+  },
+  {
+    "_id": "i18n-message-hu-affiliate-title",
+    "key": "affiliate.title",
+    "lang": "hu",
+    "value": "Affiliate"
+  },
+  {
+    "_id": "i18n-message-hu-affiliate-open",
+    "key": "affiliate.open",
+    "lang": "hu",
+    "value": "Affiliate beállítások megnyitása"
+  },
+  {
+    "_id": "i18n-message-hu-affiliate-subtitle",
+    "key": "affiliate.subtitle",
+    "lang": "hu",
+    "value": "Oszd meg a személyes meghívólinkedet, vagy csatlakoztass API-klienst."
+  },
+  {
+    "_id": "i18n-message-hu-affiliate-personal-link",
+    "key": "affiliate.personal.link",
+    "lang": "hu",
+    "value": "Személyes meghívólink"
+  },
+  {
+    "_id": "i18n-message-hu-affiliate-copy",
+    "key": "affiliate.copy",
+    "lang": "hu",
+    "value": "Személyes meghívólink másolása"
+  },
+  {
+    "_id": "i18n-message-hu-affiliate-registered",
+    "key": "affiliate.registered",
+    "lang": "hu",
+    "value": "A személyes meghívólinkeddel regisztrált emberek"
+  },
+  {
+    "_id": "i18n-message-hu-affiliate-clients-ratio",
+    "key": "affiliate.clients.ratio",
+    "lang": "hu",
+    "value": "Regisztrált fiókhoz kapcsolt / API-n betöltött különböző résztvevők"
+  },
+  {
+    "_id": "i18n-message-hu-affiliate-help",
+    "key": "affiliate.help",
+    "lang": "hu",
+    "value": "A személyes linked rögzíti, ki hívta meg az újonnan regisztrált tagot. Meglévő fiók nem számít új meghívásnak. A kliens aránya a regisztrált fiókhoz kapcsolt, különböző külső résztvevőazonosítókat mutatja; az ismételt betöltés nem növeli."
+  },
+  {
+    "_id": "i18n-message-hu-landing-partners-role-affiliate-label",
+    "key": "landing.partners.role.affiliate.label",
+    "lang": "hu",
+    "value": "Hívj meg embereket"
+  },
+  {
+    "_id": "i18n-message-hu-landing-partners-role-affiliate-title",
+    "key": "landing.partners.role.affiliate.title",
+    "lang": "hu",
+    "value": "Affiliate partner"
+  },
+  {
+    "_id": "i18n-message-hu-landing-partners-role-affiliate-description",
+    "key": "landing.partners.role.affiliate.description",
+    "lang": "hu",
+    "value": "Bármelyik tag megoszthatja személyes meghívólinkjét a Profil → Affiliate menüből, és láthatja, hányan regisztráltak vele. API-kliensekkel is meghívhat résztvevőket, és követheti, hányan kapcsolódtak regisztrált fiókhoz."
+  },
+  {
+    "_id": "i18n-message-hu-event-following",
+    "key": "event.following",
+    "lang": "hu",
+    "value": "Követett"
+  },
+  {
+    "_id": "i18n-message-hu-event-following-only",
+    "key": "event.following.only",
+    "lang": "hu",
+    "value": "Csak követettek"
+  },
+  {
+    "_id": "i18n-message-hu-event-following-members",
+    "key": "event.following.members",
+    "lang": "hu",
+    "value": "Követett szervezők"
+  },
+  {
+    "_id": "i18n-message-hu-event-following-follow",
+    "key": "event.following.follow",
+    "lang": "hu",
+    "value": "Szervező követése"
+  },
+  {
+    "_id": "i18n-message-hu-event-following-unfollow",
+    "key": "event.following.unfollow",
+    "lang": "hu",
+    "value": "Kikövetés"
+  },
+  {
+    "_id": "i18n-message-hu-event-following-failed",
+    "key": "event.following.failed",
+    "lang": "hu",
+    "value": "Nem sikerült módosítani a követést. Próbáld újra."
+  },
+  {
+    "_id": "i18n-message-hu-event-external-info",
+    "key": "event.external.info",
+    "lang": "hu",
+    "value": "Külső információ"
+  },
+  {
+    "_id": "i18n-message-hu-image-carousel-images",
+    "key": "image.carousel.images",
+    "lang": "hu",
+    "value": "Képek"
+  },
+  {
+    "_id": "i18n-message-hu-image-carousel-expand",
+    "key": "image.carousel.expand",
+    "lang": "hu",
+    "value": "Galéria megnyitása"
+  },
+  {
+    "_id": "i18n-message-hu-image-carousel-previous",
+    "key": "image.carousel.previous",
+    "lang": "hu",
+    "value": "Előző kép"
+  },
+  {
+    "_id": "i18n-message-hu-image-carousel-next",
+    "key": "image.carousel.next",
+    "lang": "hu",
+    "value": "Következő kép"
+  },
+  {
+    "_id": "i18n-message-hu-image-carousel-pages",
+    "key": "image.carousel.pages",
+    "lang": "hu",
+    "value": "Képlapok"
+  },
+  {
+    "_id": "i18n-message-hu-image-details-title",
+    "key": "image.details.title",
+    "lang": "hu",
+    "value": "Képadatok"
+  },
+  {
+    "_id": "i18n-message-hu-image-details-caption",
+    "key": "image.details.caption",
+    "lang": "hu",
+    "value": "Rövid képleírás"
+  },
+  {
+    "_id": "i18n-message-hu-feed-title",
+    "key": "feed.title",
+    "lang": "hu",
+    "value": "Feed"
+  },
+  {
+    "_id": "i18n-message-hu-feed-create",
+    "key": "feed.create",
+    "lang": "hu",
+    "value": "Fotók megosztása"
+  },
+  {
+    "_id": "i18n-message-hu-feed-empty",
+    "key": "feed.empty",
+    "lang": "hu",
+    "value": "Még nincsenek megosztott fotók"
+  },
+  {
+    "_id": "i18n-message-hu-feed-locationrequired",
+    "key": "feed.locationRequired",
+    "lang": "hu",
+    "value": "Állítsd be a profilod helyét a közeli fotók megtekintéséhez és megosztásához."
+  },
+  {
+    "_id": "i18n-message-hu-profile-view-showdetails",
+    "key": "profile.view.showDetails",
+    "lang": "hu",
+    "value": "Profiladatok megtekintése"
+  },
+  {
+    "_id": "i18n-message-hu-image-gallery-savefailed",
+    "key": "image.gallery.saveFailed",
+    "lang": "hu",
+    "value": "Nem sikerült menteni. Próbáld újra."
+  },
+  {
+    "_id": "i18n-message-hu-moderation-title",
+    "key": "moderation.title",
+    "lang": "hu",
+    "value": "Tartalommoderáció"
+  },
+  {
+    "_id": "i18n-message-hu-moderation-empty",
+    "key": "moderation.empty",
+    "lang": "hu",
+    "value": "Nincs ilyen kategóriájú és állapotú elem."
+  },
+  {
+    "_id": "i18n-message-hu-moderation-settings",
+    "key": "moderation.settings",
+    "lang": "hu",
+    "value": "Moderációs beállítások"
+  },
+  {
+    "_id": "i18n-message-hu-moderation-categories",
+    "key": "moderation.categories",
+    "lang": "hu",
+    "value": "Kategóriák"
+  },
+  {
+    "_id": "i18n-message-hu-moderation-category-all",
+    "key": "moderation.category.all",
+    "lang": "hu",
+    "value": "Összes"
+  },
+  {
+    "_id": "i18n-message-hu-moderation-unblock",
+    "key": "moderation.unblock",
+    "lang": "hu",
+    "value": "Feloldás"
+  },
+  {
+    "_id": "i18n-message-hu-moderation-category-asset",
+    "key": "moderation.category.asset",
+    "lang": "hu",
+    "value": "Eszköz"
+  },
+  {
+    "_id": "i18n-message-hu-moderation-category-event",
+    "key": "moderation.category.event",
+    "lang": "hu",
+    "value": "Esemény"
+  },
+  {
+    "_id": "i18n-message-hu-moderation-category-feed",
+    "key": "moderation.category.feed",
+    "lang": "hu",
+    "value": "Fotófolyam"
+  },
+  {
+    "_id": "i18n-message-hu-moderation-status-under-review",
+    "key": "moderation.status.under-review",
+    "lang": "hu",
+    "value": "Ellenőrzés alatt"
+  },
+  {
+    "_id": "i18n-message-hu-moderation-status-accepted",
+    "key": "moderation.status.accepted",
+    "lang": "hu",
+    "value": "Elfogadva"
+  },
+  {
+    "_id": "i18n-message-hu-moderation-status-rejected",
+    "key": "moderation.status.rejected",
+    "lang": "hu",
+    "value": "Elutasítva"
+  },
+  {
+    "_id": "i18n-message-hu-moderation-status-blocked",
+    "key": "moderation.status.blocked",
+    "lang": "hu",
+    "value": "Letiltva"
+  },
+  {
+    "_id": "i18n-message-hu-moderation-message",
+    "key": "moderation.message",
+    "lang": "hu",
+    "value": "Opcionális üzenet a tulajdonosnak az alkalmazástámogatási chaten"
+  },
+  {
+    "_id": "i18n-message-hu-moderation-autoapprove",
+    "key": "moderation.autoApprove",
+    "lang": "hu",
+    "value": "Automatikus jóváhagyás"
+  },
+  {
+    "_id": "i18n-message-hu-moderation-delayminutes",
+    "key": "moderation.delayMinutes",
+    "lang": "hu",
+    "value": "Késleltetés (perc)"
+  },
+  {
+    "_id": "i18n-message-hu-moderation-failed",
+    "key": "moderation.failed",
+    "lang": "hu",
+    "value": "A moderáció betöltése vagy mentése sikertelen. Töltsd újra és próbáld ismét."
+  },
+  {
+    "_id": "i18n-message-hu-moderation-changed",
+    "key": "moderation.changed",
+    "lang": "hu",
+    "value": "Egy másik admin módosította az elemet. Töltsd újra és próbáld ismét."
+  },
+  {
+    "_id": "i18n-message-hu-moderation-invalidsettings",
+    "key": "moderation.invalidSettings",
+    "lang": "hu",
+    "value": "Adj meg 0 és 43200 közötti egész percszámot."
+  },
+  {
+    "_id": "i18n-message-hu-admin-jobs-rule-content-autoapprove",
+    "key": "admin.jobs.rule.content.autoApprove",
+    "lang": "hu",
+    "value": "Tartalmak automatikus jóváhagyása"
+  },
+  {
+    "_id": "i18n-message-hu-admin-jobs-rule-content-autoapprove-description",
+    "key": "admin.jobs.rule.content.autoApprove.description",
+    "lang": "hu",
+    "value": "A globálisan kiválasztott kategóriák tartalmait a beállított késleltetés után jóváhagyja."
+  },
+  {
+    "_id": "i18n-message-hu-admin-jobs-rule-content-autoapprove-completed",
+    "key": "admin.jobs.rule.content.autoApprove.completed",
+    "lang": "hu",
+    "value": "Az ütemezett tartalomjóváhagyás befejeződött."
+  },
+  {
+    "_id": "i18n-message-hu-operator-email-title",
+    "key": "operator.email.title",
+    "lang": "hu",
+    "value": "Email-küldés"
+  },
+  {
+    "_id": "i18n-message-hu-operator-email-provider",
+    "key": "operator.email.provider",
+    "lang": "hu",
+    "value": "Email-szolgáltató"
+  },
+  {
+    "_id": "i18n-message-hu-operator-email-enabled",
+    "key": "operator.email.enabled",
+    "lang": "hu",
+    "value": "Email-küldés engedélyezve"
+  },
+  {
+    "_id": "i18n-message-hu-operator-email-fromemail",
+    "key": "operator.email.fromEmail",
+    "lang": "hu",
+    "value": "Hitelesített feladói email"
+  },
+  {
+    "_id": "i18n-message-hu-operator-email-fromname",
+    "key": "operator.email.fromName",
+    "lang": "hu",
+    "value": "Feladó neve"
+  },
+  {
+    "_id": "i18n-message-hu-operator-email-credential",
+    "key": "operator.email.credential",
+    "lang": "hu",
+    "value": "API-kulcs"
+  },
+  {
+    "_id": "i18n-message-hu-operator-email-credentialkept",
+    "key": "operator.email.credentialKept",
+    "lang": "hu",
+    "value": "Beállítva – üresen hagyva megmarad a mentett kulcs"
+  },
+  {
+    "_id": "i18n-message-hu-operator-email-selectprovider",
+    "key": "operator.email.selectProvider",
+    "lang": "hu",
+    "value": "Szolgáltató kiválasztása"
+  },
+  {
+    "_id": "i18n-message-hu-operator-email-purpose",
+    "key": "operator.email.purpose",
+    "lang": "hu",
+    "value": "Öt nappal a végleges törlés előtt figyelmezteti a törölt fiókok tulajdonosait. Ez az időtartam rögzített."
+  },
+  {
+    "_id": "i18n-message-hu-operator-email-backendrequired",
+    "key": "operator.email.backendRequired",
+    "lang": "hu",
+    "value": "Az email beállításához csatlakoztatott backend szükséges. A böngészős demó nem tárol hitelesítő adatokat."
+  },
+  {
+    "_id": "i18n-message-hu-operator-email-notconfigured",
+    "key": "operator.email.notConfigured",
+    "lang": "hu",
+    "value": "Az email-szolgáltató nincs beállítva vagy ki van kapcsolva."
+  },
+  {
+    "_id": "i18n-message-hu-operator-email-failed",
+    "key": "operator.email.failed",
+    "lang": "hu",
+    "value": "Az email-beállítás betöltése vagy mentése sikertelen. Ellenőrizd a mezőket, vagy töltsd újra másik operator módosítása után."
+  },
+  {
+    "_id": "i18n-message-hu-operator-email-saved",
+    "key": "operator.email.saved",
+    "lang": "hu",
+    "value": "Email-beállítások mentve."
+  },
+  {
+    "_id": "i18n-message-hu-operator-email-invalid",
+    "key": "operator.email.invalid",
+    "lang": "hu",
+    "value": "Ellenőrizd a szolgáltatót, a feladói emailt és az API-kulcsot."
+  },
+  {
+    "_id": "i18n-message-hu-operator-email-changed",
+    "key": "operator.email.changed",
+    "lang": "hu",
+    "value": "Az email-beállítás módosult. Töltsd újra és próbáld ismét."
+  },
+  {
+    "_id": "i18n-message-hu-admin-jobs-rule-account-deletion-warning",
+    "key": "admin.jobs.rule.account.deletion.warning",
+    "lang": "hu",
+    "value": "Figyelmeztetés fióktörlés előtt"
+  },
+  {
+    "_id": "i18n-message-hu-admin-jobs-rule-account-deletion-warning-description",
+    "key": "admin.jobs.rule.account.deletion.warning.description",
+    "lang": "hu",
+    "value": "Az operator email-szolgáltatóján keresztül értesíti a törölt fiókok tulajdonosait öt nappal a végleges törlés előtt."
+  },
+  {
+    "_id": "i18n-message-hu-account-deletion-warning-subject",
+    "key": "account.deletion.warning.subject",
+    "lang": "hu",
+    "value": "Közeleg a fiókod végleges törlése"
+  },
+  {
+    "_id": "i18n-message-hu-account-deletion-warning-body",
+    "key": "account.deletion.warning.body",
+    "lang": "hu",
+    "value": "Kedves {{name}}!\n\nTörölt fiókod végleges törlésének időpontja: {{purgeAt}}. Ez az öt nappal korábbi emlékeztető. Ha meg szeretnéd tartani fiókodat, állítsd vissza az alkalmazásban a megadott időpont előtt."
+  },
+  {
+    "_id": "i18n-message-hu-account-deletion-warning-started",
+    "key": "account.deletion.warning.started",
+    "lang": "hu",
+    "value": "A fióktörlési figyelmeztetés Job elindult."
+  },
+  {
+    "_id": "i18n-message-hu-account-deletion-warning-completed",
+    "key": "account.deletion.warning.completed",
+    "lang": "hu",
+    "value": "A fióktörlési figyelmeztetések feldolgozása befejeződött."
+  },
+  {
+    "_id": "i18n-message-hu-account-deletion-warning-failed",
+    "key": "account.deletion.warning.failed",
+    "lang": "hu",
+    "value": "Egyes fióktörlési figyelmeztetések kézbesítése sikertelen."
+  },
+  {
+    "_id": "i18n-message-hu-admin-api-title",
+    "key": "admin.api.title",
+    "lang": "hu",
+    "value": "API"
+  },
+  {
+    "_id": "i18n-message-hu-admin-api-subtitle",
+    "key": "admin.api.subtitle",
+    "lang": "hu",
+    "value": "Privát adminfigyelő kliens."
+  },
+  {
+    "_id": "i18n-message-hu-admin-api-help",
+    "key": "admin.api.help",
+    "lang": "hu",
+    "value": "Az önálló adminkliensben add meg ezt az URL-t és egy API-kulcsot. Összesített statisztikát és jelzéseket mutat; az ügyek intézéséhez nyisd meg az alkalmazást."
+  },
+  {
+    "_id": "i18n-message-hu-admin-api-denied",
+    "key": "admin.api.denied",
+    "lang": "hu",
+    "value": "Adminisztrátori fiók szükséges."
+  },
+  {
+    "_id": "i18n-message-hu-admin-api-client-download",
+    "key": "admin.api.client.download",
+    "lang": "hu",
+    "value": "Adminkliens · telepítő és dokumentáció"
+  },
+  {
+    "_id": "i18n-message-hu-affiliate-revenue-title",
+    "key": "affiliate.revenue.title",
+    "lang": "hu",
+    "value": "Meghívásokból származó forgalom"
+  },
+  {
+    "_id": "i18n-message-hu-affiliate-revenue-open",
+    "key": "affiliate.revenue.open",
+    "lang": "hu",
+    "value": "Meghívások forgalmi összesítőjének megnyitása"
+  },
+  {
+    "_id": "i18n-message-hu-affiliate-revenue-description",
+    "key": "affiliate.revenue.description",
+    "lang": "hu",
+    "value": "Az általad meghívottak vásárlásai. Az összegek pénznemenként külön szerepelnek."
+  },
+  {
+    "_id": "i18n-message-hu-affiliate-revenue-purchases",
+    "key": "affiliate.revenue.purchases",
+    "lang": "hu",
+    "value": "Fizetett vásárlások"
+  },
+  {
+    "_id": "i18n-message-hu-affiliate-revenue-bookings",
+    "key": "affiliate.revenue.bookings",
+    "lang": "hu",
+    "value": "Fizetett eseményfoglalások"
+  },
+  {
+    "_id": "i18n-message-hu-affiliate-revenue-gross",
+    "key": "affiliate.revenue.gross",
+    "lang": "hu",
+    "value": "Vásárlások összege"
+  },
+  {
+    "_id": "i18n-message-hu-affiliate-revenue-refunds",
+    "key": "affiliate.revenue.refunds",
+    "lang": "hu",
+    "value": "Visszatérítések"
+  },
+  {
+    "_id": "i18n-message-hu-affiliate-revenue-net",
+    "key": "affiliate.revenue.net",
+    "lang": "hu",
+    "value": "Visszatérítések után"
+  },
+  {
+    "_id": "i18n-message-hu-affiliate-revenue-commission-pending",
+    "key": "affiliate.revenue.commission.pending",
+    "lang": "hu",
+    "value": "Százalékos affiliate jutalékot tervezünk. A mértéke és a jogosultsági szabályai még nincsenek meghatározva; ezek forgalmi összegek, nem megkeresett jutalék."
+  },
+  {
+    "_id": "i18n-message-hu-affiliate-revenue-button",
+    "key": "affiliate.revenue.button",
+    "lang": "hu",
+    "value": "Forgalom"
   }
 ]

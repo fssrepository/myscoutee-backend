@@ -37,6 +37,7 @@ public class UserReportSubmission {
     private String createdUser;
     private String warnedAtIso;
     private String warnedByAdminUserId;
+    @org.springframework.data.mongodb.core.index.Indexed(name = "user_report_resolved")
     private String resolvedAtIso;
     private String resolvedByAdminUserId;
     private String updatedDate;

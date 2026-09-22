@@ -1,4 +1,7 @@
 package com.raxim.myscoutee.profile.service;
+import java.util.Map;
+import com.raxim.myscoutee.profile.data.dto.media.MediaDtos.ImageDetailsDto;
+import static com.raxim.myscoutee.profile.data.dto.media.MediaDtos.normalizeImageDetails;
 
 import java.text.Normalizer;
 import java.time.Instant;
@@ -156,6 +159,10 @@ public class ActivitiesEventsService {
     private static final double AFFINITY_DISTANCE_BOOST_SCALE = 10_000d;
     private static final AtomicBoolean MISSING_EVENT_GEO_INDEX_WARNING_LOGGED = new AtomicBoolean(false);
     private static final ThreadLocal<EventQueryContext> ACTIVE_CONTEXT = new ThreadLocal<>();
+
+    @org.springframework.beans.factory.annotation.Autowired
+    @org.springframework.context.annotation.Lazy
+    private ContentModerationService contentModeration;
 
     private final ActivityEventsRepository activityEventsRepository;
     private final ActivitySubEventGroupsRepository activitySubEventGroupsRepository;
@@ -2148,13 +2155,20 @@ public class ActivitiesEventsService {
         String cursor = request == null ? null : request.cursor();
         Set<String> excludedSourceIds = new LinkedHashSet<>(normalizeIds(request == null ? null : request.excludedSourceIds()));
 
+        boolean followedOnly = request != null && Boolean.TRUE.equals(request.followedOnly());
+        Set<String> followedIds = followedOnly
+                ? Set.copyOf(OrganizerFollowingService.state(homeUserProfileService.resolveCurrentUser(viewer.userId())).organizerIds())
+                : Set.of();
         return withEventQueryContext(buildExplorePageQueryContext(viewer, "most-relevant".equals(order)), () -> {
-            List<EventProjection> sorted = computeExploreRecords(viewer).stream()
+            List<EventProjection> sorted = computeExploreRecords(viewer, followedOnly).stream()
+                    .filter(record -> !followedOnly || followedIds.contains(record.getCreatorUserId()))
+                    .filter(record -> !followedOnly || OrganizerFollowingService.eligible(record, viewer.userId(),
+                            friendshipFacts.friendIds(viewer.userId()), Instant.now()))
                     .filter(record -> !excludedSourceIds.contains(normalizeId(record.getSourceId())))
                     .filter(record -> !StringUtils.hasText(mode) || mode.equals(normalizeEventMode(record.getMode())))
                     .map(record -> toSortProjection(record, viewer))
                     .filter(Objects::nonNull)
-                    .filter(projection -> !hasTrackedUserParticipation(projection.record(), viewer.userId())
+                    .filter(projection -> followedOnly || !hasTrackedUserParticipation(projection.record(), viewer.userId())
                             || hasVisibleCheckoutBasket(projection.record()))
                     .filter(projection -> !friendsOnly || exploreHasFriendGoing(projection.record(), viewer.userId()))
                     .filter(projection -> !openSpotsOnly || exploreHasOpenSpots(projection.record()))
@@ -2306,6 +2320,10 @@ public class ActivitiesEventsService {
             current.refreshTournamentCurrentStage();
         });
         List<ActivityEvent> publishedDocuments = ensurePublishedEventDocuments(updated, request == null ? null : request.userId());
+        if (contentModeration != null && preferred != null && !Boolean.TRUE.equals(preferred.getGenerated())) {
+            contentModeration.register("event", sourceId, preferred.getCreatorUserId(), preferred.getTitle(), preferred.getImageUrl());
+            publishedDocuments = activityEventsRepository.findBySourceId(sourceId);
+        }
         boolean eventChatAdded = false;
         if (changed) {
             eventChatAdded = materializePublishedMainEventChats(publishedDocuments, userId);
@@ -2539,7 +2557,7 @@ public class ActivitiesEventsService {
 
         List<SubEventItem> preferredSubEvents = StringUtils.hasText(slotSourceId)
                 ? stageActionSlotSubEvents(sourceId, slotSourceId, preferred, request)
-                : cloneSubEvents(runtimeStageSequence(preferred));
+                : withStageRuntimeStates(sourceId, cloneSubEvents(runtimeStageSequence(preferred)));
         int preferredStageIndex = resolveStageIndex(preferredSubEvents, request.subEventId(), request.subEventIndex());
         if (preferredStageIndex < 0 || preferredStageIndex >= preferredSubEvents.size()) {
             return null;
@@ -2550,10 +2568,11 @@ public class ActivitiesEventsService {
         }
         actionTarget = effectiveStageActionTarget(actionTarget, preferredStage);
 
-        if (StringUtils.hasText(slotSourceId)) {
+        if (StringUtils.hasText(slotSourceId)
+                || preferred.getSubEvents() == null || preferred.getSubEvents().isEmpty()) {
             return applyGeneratedSlotStageAction(
                     sourceId,
-                    slotSourceId,
+                    runtimeOwnerId,
                     documents,
                     preferred,
                     preferredSubEvents,
@@ -2693,6 +2712,8 @@ public class ActivitiesEventsService {
                 STAGE_STATUS_FINALIZED.equals(actionTarget.nextStatus()) ? nowIso : null,
                 STAGE_STATUS_FINALIZED.equals(actionTarget.nextStatus()) ? actorUserId : null);
 
+        saveSubEventStageRuntime(slotSourceId, preferredParent, savedStage, actorUserId);
+
         List<ActivityEvent> savedParentDocuments = parentDocuments == null ? List.of() : parentDocuments;
         ActivityEvent savedPreferredParent = preferredParent;
         boolean startNotificationEnqueuedBeforeRoomNotifications = false;
@@ -2701,6 +2722,9 @@ public class ActivitiesEventsService {
             for (ActivityEvent document : savedParentDocuments) {
                 ActivityEvent next = cloneDocument(document);
                 next.setAutoInviter(false);
+                if (stageIndex == 0 && normalizeId(parentEventId).equals(normalizeId(slotSourceId))) {
+                    next.setVisibility("Invitation only");
+                }
                 next.setUpdatedDate(nowIso);
                 next.setUpdatedUser(actorUserId);
                 next.setAdmins(resolveAdminUserIds(next.getSourceId(), next.getCreatorUserId()));
@@ -2729,7 +2753,6 @@ public class ActivitiesEventsService {
 
         boolean finalStage = stageIndex == slotStages.size() - 1;
         TournamentResultSummary resultSummary = resolveTournamentResultSummary(savedPreferredParent, savedStage, finalStage);
-        saveSubEventStageRuntime(slotSourceId, savedPreferredParent, savedStage, actorUserId);
         affinityRecomputeTaskService.enqueueEventChanged(parentEventId, actorUserId);
         if (!startNotificationEnqueuedBeforeRoomNotifications) {
             enqueueStageStatusNotifications(savedPreferredParent, savedStage, actionTarget.action(), actionTarget.nextStatus(), actorUserId, finalStage, resultSummary);
@@ -2797,6 +2820,12 @@ public class ActivitiesEventsService {
         if (!StringUtils.hasText(normalizedOwnerId) || stages == null || stages.isEmpty()) {
             return stages == null ? List.of() : stages;
         }
+        Map<String, ActivitySubEventStageRuntimeStateDto> runtimeByStageId = new LinkedHashMap<>();
+        for (ActivitySubEventStageRuntime record : activitySubEventStageRuntimeRepository
+                .findByOwnerIdIn(List.of(normalizedOwnerId))) {
+            ActivitySubEventStageRuntimeStateDto runtime = activitySubEventStageRuntimeMapper.toDto(record);
+            if (runtime != null) runtimeByStageId.put(normalizeId(runtime.subEventId()), runtime);
+        }
         List<SubEventItem> updated = new ArrayList<>();
         for (SubEventItem stage : stages) {
             String subEventId = normalizeId(stage == null ? null : stage.id());
@@ -2804,10 +2833,7 @@ public class ActivitiesEventsService {
                 updated.add(stage);
                 continue;
             }
-            ActivitySubEventStageRuntimeStateDto runtime = activitySubEventStageRuntimeRepository
-                    .findByOwnerIdAndSubEventId(normalizedOwnerId, subEventId)
-                    .map(activitySubEventStageRuntimeMapper::toDto)
-                    .orElse(null);
+            ActivitySubEventStageRuntimeStateDto runtime = runtimeByStageId.get(subEventId);
             if (runtime == null) {
                 updated.add(stage);
                 continue;
@@ -4820,6 +4846,9 @@ public class ActivitiesEventsService {
                 ? activeSubEventResourceAudienceUserIds(sourceId)
                 : Set.of();
         List<ActivityEvent> savedDocuments = activityEventsRepository.saveAll(List.of(baseRecord));
+        if (contentModeration != null && !"DR".equals(baseRecord.getStatus()) && !Boolean.TRUE.equals(baseRecord.getGenerated())) {
+            contentModeration.register("event", sourceId, baseRecord.getCreatorUserId(), baseRecord.getTitle(), baseRecord.getImageUrl());
+        }
         ActivitiesMembersService.OwnerMembersSnapshot canonicalMembersSnapshot =
                 activitiesMembersService.ensureEventCreatorAdminMembership(sourceId, actorUserId);
         List<ActivityEvent> canonicalDocuments = activityEventsRepository.findBySourceId(sourceId).stream()
@@ -6036,9 +6065,13 @@ public class ActivitiesEventsService {
     }
 
     private List<ActivityEvent> computeExploreRecords(ViewerContext viewer) {
+        return computeExploreRecords(viewer, false);
+    }
+
+    private List<ActivityEvent> computeExploreRecords(ViewerContext viewer, boolean includeTracked) {
         Map<String, ActivityEvent> preferredByEventId = new LinkedHashMap<>();
         for (ActivityEvent record : allEventDocuments(viewer)) {
-            if (!shouldIncludeExploreRecord(record, viewer.userId())) {
+            if (!shouldIncludeExploreRecord(record, viewer.userId(), includeTracked)) {
                 continue;
             }
             String sourceId = normalizeId(record.getSourceId());
@@ -6053,6 +6086,10 @@ public class ActivitiesEventsService {
     }
 
     private boolean shouldIncludeExploreRecord(ActivityEvent record, String activeUserId) {
+        return shouldIncludeExploreRecord(record, activeUserId, false);
+    }
+
+    private boolean shouldIncludeExploreRecord(ActivityEvent record, String activeUserId, boolean includeTracked) {
         if (record == null || !isCanonicalExploreRecord(record)) {
             return false;
         }
@@ -6062,7 +6099,7 @@ public class ActivitiesEventsService {
         if (activeUserId.equals(normalizeId(record.getCreatorUserId()))) {
             return false;
         }
-        if (hasTrackedUserParticipation(record, activeUserId) && !hasVisibleCheckoutBasket(record)) {
+        if (!includeTracked && hasTrackedUserParticipation(record, activeUserId) && !hasVisibleCheckoutBasket(record)) {
             return false;
         }
         return isVisibleToUntrackedViewer(record, activeUserId);
@@ -6749,9 +6786,12 @@ public class ActivitiesEventsService {
                 : normalizeDateTime(request.endAtIso(), document.getStartAtIso()));
         resetExpiredOnBoundaryChange(document, existing);
         document.setDistanceKm(null);
-        document.setImageUrl(request.imageUrl() == null
-                ? safeText(existing == null ? null : existing.getImageUrl())
-                : request.imageUrl().trim());
+        List<String> gallery = resolveEventImages(request, existing, publishedManageMode);
+        document.setImageUrls(gallery);
+        document.setImageDetails(normalizeImageDetails(
+                publishedManageMode || request.imageDetails() == null
+                        ? (existing == null ? null : existing.getImageDetails()) : request.imageDetails(), gallery));
+        document.setImageUrl(gallery.isEmpty() ? "" : gallery.get(0));
         document.setSourceLink(request.sourceLink() == null
                 ? safeText(existing == null ? null : existing.getSourceLink()) : request.sourceLink().trim());
         document.setLocation(StringUtils.hasText(request.location()) ? request.location().trim() : safeText(existing == null ? null : existing.getLocation()));
@@ -7507,9 +7547,27 @@ public class ActivitiesEventsService {
                 .toList();
     }
 
+    static List<String> resolveEventImages(EventDetailDto request, ActivityEvent existing, boolean published) {
+        List<String> previous = existing == null ? List.of() : existing.getImageUrls() != null
+                ? existing.getImageUrls() : StringUtils.hasText(existing.getImageUrl())
+                ? List.of(existing.getImageUrl().trim()) : List.of();
+        if (published) return List.copyOf(previous);
+        List<String> requested = request.imageUrls();
+        if (requested == null) {
+            if (request.imageUrl() == null) return List.copyOf(previous);
+            requested = new ArrayList<>();
+            if (StringUtils.hasText(request.imageUrl())) requested.add(request.imageUrl());
+            if (previous.size() > 1) requested.addAll(previous.subList(1, previous.size()));
+        }
+        List<String> images = requested.stream().filter(StringUtils::hasText).map(String::trim).distinct().toList();
+        if (images.size() > 5) throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "At most five event images are allowed");
+        return images;
+    }
+
     private ActivityEvent cloneDocument(ActivityEvent source) {
         ActivityEvent clone = new ActivityEvent();
         BeanUtils.copyProperties(source, clone);
+        clone.setImageUrls(source.getImageUrls() == null ? null : new ArrayList<>(source.getImageUrls()));
         clone.setAdmins(new ArrayList<>(normalizeIds(source.getAdmins())));
         clone.setAcceptedMemberUserIds(new ArrayList<>(normalizeIds(source.getAcceptedMemberUserIds())));
         clone.setPendingMemberUserIds(new ArrayList<>(normalizeIds(source.getPendingMemberUserIds())));
@@ -7881,57 +7939,7 @@ public class ActivitiesEventsService {
     }
 
     private List<SubEventItem> runtimeStageSequence(ActivityEvent event) {
-        if (event == null) {
-            return List.of();
-        }
-        List<SubEventItem> subEvents = event.getSubEvents();
-        if (subEvents != null && !subEvents.isEmpty()) {
-            return subEvents;
-        }
-        List<SubEventDefinitionDto> definitions = event.getSubEventDefinitions();
-        if (definitions == null || definitions.isEmpty()) {
-            return List.of();
-        }
-        List<SubEventItem> stages = new ArrayList<>();
-        for (int index = 0; index < definitions.size(); index += 1) {
-            SubEventDefinitionDto definition = definitions.get(index);
-            if (definition == null) {
-                continue;
-            }
-            stages.add(new SubEventItem(
-                    firstNonBlank(definition.id(), fallbackSubEventId(index)),
-                    firstNonBlank(definition.name(), "Sub Event " + (index + 1)),
-                    safeText(definition.description()),
-                    null,
-                    null,
-                    safeText(definition.location()),
-                    null,
-                    definition.tournamentGroupCapacityMin(),
-                    definition.tournamentGroupCapacityMax(),
-                    definition.tournamentLeaderboardType(),
-                    definition.tournamentAdvancePerGroup(),
-                    definition.optional(),
-                    clonePricing(definition.pricing()),
-                    definition.capacityMin(),
-                    definition.capacityMax(),
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    Math.max(0, definition.offsetMinutes() == null ? 0 : definition.offsetMinutes()),
-                    Math.max(0, definition.durationMinutes() == null ? 0 : definition.durationMinutes())));
-        }
-        return stages;
+        return activityEventSubEventsMapper.runtimeStages(event);
     }
 
     private String normalizeSubEventDefinitionTiming(String value) {

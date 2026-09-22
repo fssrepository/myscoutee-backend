@@ -65,6 +65,9 @@ public class PaymentService {
     public static final String FULFILLMENT_KIND_EVENT_JOIN = "event_join";
     public static final String FULFILLMENT_KIND_CLIENT = "client";
 
+    @Autowired
+    private AffiliateRevenueService affiliateRevenueService;
+
     private final Map<String, PaymentProcessor> processors;
     private final PaymentsRepository paymentsRepository;
     private final EventCheckoutBasketService eventCheckoutBasketService;
@@ -1328,12 +1331,21 @@ public class PaymentService {
     }
 
     private Payment saveAndProjectSpending(Payment payment) {
+        if (affiliateRevenueService != null) affiliateRevenueService.prepare(payment);
         double previousAccounted = roundMoney(safeAmount(payment == null ? null : payment.getAccountedSpentAmount()));
         double nextAccounted = accountedSpentAmount(payment);
         if (payment != null) {
             payment.setAccountedSpentAmount(nextAccounted);
         }
         Payment saved = paymentsRepository.save(payment);
+        if (affiliateRevenueService != null) {
+            // Payment is authoritative; an interrupted counter write has a durable pending marker.
+            try { affiliateRevenueService.record(saved); }
+            catch (RuntimeException error) {
+                org.slf4j.LoggerFactory.getLogger(PaymentService.class)
+                        .warn("Affiliate counter write remains pending: {}", error.getClass().getSimpleName());
+            }
+        }
         double delta = roundSignedMoney(nextAccounted - previousAccounted);
         String userId = normalizeId(saved.getUserId());
         String recipientUserId = normalizeId(saved.getRecipientUserId());

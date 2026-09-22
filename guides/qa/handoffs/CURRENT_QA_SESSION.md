@@ -1,6 +1,6 @@
 # Current manual QA session
 
-Updated: 2026-09-17
+Updated: 2026-09-22
 
 This is the context-saving entry point for continuing the manual QA campaign.
 It stores one minimal live resume pointer plus reusable pair-QA execution lessons. It
@@ -82,6 +82,21 @@ dates, next oracle and aggregate counts. This handoff owns only the active
 resume pointer and reusable working method.
 
 ## Active resume point
+
+Earlier Event Mode, Integration API, Activity Rating and EVENT-FOLLOWING-001 remain closed.
+
+```yaml
+checkpoint: EVENT-FOLLOWING-002
+checklist: ../checklists/event/EVENT-FOLLOWING-002.md
+execution_log: ../evidence/EVENT-FOLLOWING-002-20260922-progress.md
+substage: PASS / CLOSED; numbered checks 1-8 completed in dev HTTP scope.
+fixture_phase: reset; managed windows closed; actors/events/members absent.
+next_action: No remaining work in this checkpoint. Do not replay completed tests.
+resume_gate: Inspect event-following-fixture.py status EVENT-FOLLOWING-002 and managed browser manifest before changes. Do not replay closed cases.
+runtime: Existing dev watchers; browser control explicitly delegated for this checkpoint. Preserve other browser sessions and their viewports.
+```
+
+## Archived pair-QA resume point — 2026-09-17
 
 Campaign scheduling, confirmed 2026-09-17: Pricing is PASS/CLOSED after the
 user's confirmation and saved-data review. Borrow is also PASS/CLOSED by explicit

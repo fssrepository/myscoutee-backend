@@ -17,6 +17,22 @@ class ActivityEventMapperTest {
     private final ActivityEventMapper mapper = new ActivityEventMapper();
 
     @Test
+    void listResponsePreservesExternalEventLinkForEveryMode() {
+        for (String mode : List.of("Casual", "Tournament", "Mingle")) {
+            ActivityEvent event = new ActivityEvent();
+            event.setSourceId("external-event");
+            event.setMode(mode);
+            event.setSourceLink("https://example.org/events/external");
+
+            assertThat(mapper.toDto(event, null).sourceLink())
+                    .isEqualTo("https://example.org/events/external");
+
+            event.setSourceLink("");
+            assertThat(mapper.toDto(event, null).sourceLink()).isEmpty();
+        }
+    }
+
+    @Test
     void activityContainsRuntimeChangesButNotEventMemberInvitations() {
         ActivityEvent event = new ActivityEvent();
         event.setSourceId("event-1");

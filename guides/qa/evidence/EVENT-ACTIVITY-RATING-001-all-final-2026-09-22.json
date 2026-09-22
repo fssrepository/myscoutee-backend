@@ -1,0 +1,69 @@
+{
+  "checkpointId": "EVENT-ACTIVITY-RATING-001",
+  "phase": "ready-for-manual-rating",
+  "selectedFormat": "all",
+  "users": [
+    {
+      "userId": "6a00000000000000000000a1",
+      "name": "Casey Rating QA",
+      "city": "Austin",
+      "profileStatus": "friends only"
+    },
+    {
+      "userId": "6a00000000000000000000a2",
+      "name": "Nova Rating QA",
+      "city": "Austin",
+      "profileStatus": "friends only"
+    }
+  ],
+  "events": [
+    {
+      "sourceId": "qa-rating-001-speed-meeting",
+      "title": "QA RATING · Speed meeting",
+      "mode": "Mingle",
+      "endAtIso": "2026-09-21T20:55:38.513Z",
+      "friendshipsProjected": false
+    },
+    {
+      "sourceId": "qa-rating-001-standard",
+      "title": "QA RATING · Standard",
+      "mode": "Casual",
+      "endAtIso": "2026-09-21T20:15:38.513Z",
+      "friendshipsProjected": true
+    },
+    {
+      "sourceId": "qa-rating-001-tournament",
+      "title": "QA RATING · Tournament",
+      "mode": "Tournament",
+      "endAtIso": "2026-09-21T20:35:38.513Z",
+      "friendshipsProjected": true
+    }
+  ],
+  "rounds": [
+    {
+      "roundNumber": 1,
+      "status": "COMPLETED",
+      "meetingsProjected": true
+    },
+    {
+      "roundNumber": 2,
+      "status": "COMPLETED",
+      "meetingsProjected": true
+    }
+  ],
+  "rates": [
+    {
+      "_id": "event-met:27:qa-rating-001-speed-meeting:24:6a00000000000000000000a1:6a00000000000000000000a2",
+      "ownerUserId": "6a00000000000000000000a1",
+      "relatedUserId": "6a00000000000000000000a2",
+      "scoreGiven": 9,
+      "scoreReceived": 4,
+      "met": true,
+      "eventName": "QA RATING · Tournament"
+    }
+  ],
+  "friendships": 1,
+  "feedbackAnswers": 0,
+  "timingRestored": true,
+  "baselineCaptured": true
+}

@@ -101,6 +101,10 @@ public class AssetsService {
     private static final String ROLE_MANAGER = "Manager";
     private static final String MEMBER_STATUS_ACCEPTED = "accepted";
 
+    @org.springframework.beans.factory.annotation.Autowired
+    @org.springframework.context.annotation.Lazy
+    private ContentModerationService contentModeration;
+
     private final AssetsRepository assetsRepository;
     private final UsersRepository usersRepository;
     private final FriendshipFacts friendshipFacts;
@@ -199,6 +203,11 @@ public class AssetsService {
                 .map(asset -> toAssetDto(asset, ownersByUserId, normalizedUserId, metricsByAssetId.get(normalizeId(asset.getAssetId()))))
                 .filter(Objects::nonNull)
                 .toList();
+    }
+
+    public AssetDetailDto queryModerationAssetDetail(String assetId) {
+        Asset asset = assetsRepository.findByAssetId(assetId).stream().findFirst().orElse(null);
+        return asset == null ? null : toAssetDetailDto(asset, Map.of(), asset.getOwnerUserId());
     }
 
     public AssetDetailDto queryAssetDetail(String userId, String assetId) {
@@ -1924,6 +1933,10 @@ public class AssetsService {
             }
         }
         assetsRepository.save(saved);
+        if (fullAssetWriteAllowed && contentModeration != null) {
+            contentModeration.register("asset", saved.getAssetId(), saved.getOwnerUserId(), saved.getTitle(), saved.getImageUrl());
+            saved = assetsRepository.findByOwnerUserIdAndAssetId(ownerUserId, saved.getAssetId()).orElse(saved);
+        }
         syncAssetRequestProjection(existing, saved);
         String actorUserId = currentActorUserId();
         enqueueNewScopedAssetPendingRequestNotifications(existing, saved, actorUserId);
@@ -2500,6 +2513,9 @@ public class AssetsService {
         clone.setRequests(new ArrayList<>(deduplicateRequests(source.getRequests())));
         clone.setVisibility(source.getVisibility());
         clone.setStatus(source.getStatus());
+        clone.setModerationStatus(source.getModerationStatus());
+        clone.setModerationPreviousStatus(source.getModerationPreviousStatus());
+        clone.setModerationVersion(source.getModerationVersion());
         clone.setStatusBeforeSuppression(source.getStatusBeforeSuppression());
         clone.setOwnerReleasedAtIso(source.getOwnerReleasedAtIso());
         clone.setTrashedAtIso(source.getTrashedAtIso());

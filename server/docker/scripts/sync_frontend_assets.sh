@@ -88,6 +88,14 @@ sync_once() {
   while true; do
     : > "${rsync_log}"
     if rsync -a "${delete_args[@]}" "${SOURCE_DIR}/" "${TARGET_DIR}/" 2>"${rsync_log}"; then
+      # Development uses the stack release from Compose; production keeps the
+      # metadata stamped into its signed frontend artifact.
+      if [[ "${MODE}" == "dev" && -n "${MYSCOUTEE_VERSION:-}" ]]; then
+        node - "${TARGET_DIR}/app-version.json" <<'NODE'
+const fs = require('node:fs');
+fs.writeFileSync(process.argv[2], JSON.stringify({ version: process.env.MYSCOUTEE_VERSION }) + '\n');
+NODE
+      fi
       : > "${TARGET_DIR}/.frontend-ready"
       rm -f "${rsync_log}"
       echo "Synced ${SOURCE_DIR} -> ${TARGET_DIR} at $(date '+%Y-%m-%d %H:%M:%S')"

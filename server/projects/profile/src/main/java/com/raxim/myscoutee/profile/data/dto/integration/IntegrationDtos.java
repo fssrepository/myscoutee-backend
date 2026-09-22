@@ -22,8 +22,22 @@ public final class IntegrationDtos {
             String baseUrl,
             Integer maxActiveTokens,
             Integer maxBatchSize,
-            List<IntegrationTokenDto> tokens) {
+            List<IntegrationTokenDto> tokens,
+            AffiliateSummaryDto affiliate,
+            IntegrationParticipantSummaryDto participants) {
+        public IntegrationSettingsDto(String baseUrl, Integer maxActiveTokens, Integer maxBatchSize,
+                List<IntegrationTokenDto> tokens) {
+            this(baseUrl, maxActiveTokens, maxBatchSize, tokens, null, null);
+        }
     }
+
+    public record AffiliateCurrencyRevenueDto(double gross, double refunded, double net) { }
+    public record AffiliateRevenueDto(java.util.Map<String, AffiliateCurrencyRevenueDto> currencies,
+            long purchases, long eventBookings) { }
+    public record AffiliateSummaryDto(String url, long registered, AffiliateRevenueDto revenue) {
+        public AffiliateSummaryDto(String url, long registered) { this(url, registered, null); }
+    }
+    public record IntegrationParticipantSummaryDto(long registered, long imported) { }
 
     public record IntegrationTokenCreateRequestDto(
             String name,
@@ -91,7 +105,7 @@ public final class IntegrationDtos {
     public record IntegrationParticipantInviteRequestDto(List<String> participantIds) { }
     public record IntegrationParticipantInviteDto(String id, String inviteUrl, boolean claimed) { }
     public record IntegrationParticipantInvitesDto(List<IntegrationParticipantInviteDto> items) { }
-    public record IntegrationParticipantClaimDto(String eventId) { }
+    public record IntegrationParticipantClaimDto(String eventId, boolean invitationAvailable) { }
 
     public record IntegrationEventDto(String id, String externalId, String title, String status,
             String sourceLink, String mode, MingleConfigurationDto mingleConfiguration) { }

@@ -157,7 +157,8 @@ public class ActivityEventMapper {
                 Boolean.TRUE.equals(record.getApprovalRequired()),
                 resolveCheckoutResultState(record, context),
                 safeDouble(record.getBoost()),
-                context != null && context.watchedEventSourceIds().contains(normalizeId(record.getSourceId())));
+                context != null && context.watchedEventSourceIds().contains(normalizeId(record.getSourceId())),
+                safeText(record.getSourceLink()));
     }
 
     private String resolveCurrentUserMembershipStatus(

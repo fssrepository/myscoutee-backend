@@ -15,28 +15,32 @@ import com.raxim.myscoutee.profile.data.dto.integration.IntegrationDtos.Integrat
 import com.raxim.myscoutee.profile.security.AccessControlService;
 import com.raxim.myscoutee.profile.service.IntegrationPublicEndpointResolver;
 import com.raxim.myscoutee.profile.service.IntegrationTokenService;
+import com.raxim.myscoutee.profile.service.AffiliateService;
 
 @RestController
 @RequestMapping("/integrations")
 public class IntegrationSettingsController {
     private final IntegrationTokenService tokenService;
+    private final AffiliateService affiliates;
     private final AccessControlService accessControlService;
     private final IntegrationPublicEndpointResolver publicEndpointResolver;
 
     public IntegrationSettingsController(
             IntegrationTokenService tokenService,
             AccessControlService accessControlService,
-            IntegrationPublicEndpointResolver publicEndpointResolver) {
+            IntegrationPublicEndpointResolver publicEndpointResolver, AffiliateService affiliates) {
         this.tokenService = tokenService;
+        this.affiliates = affiliates;
         this.accessControlService = accessControlService;
         this.publicEndpointResolver = publicEndpointResolver;
     }
 
     @GetMapping("/settings")
     public IntegrationSettingsDto settings(Authentication authentication) {
-        return tokenService.settings(
-                actorUserId(authentication),
-                publicEndpointResolver.resolve());
+        String actor = actorUserId(authentication);
+        var settings = tokenService.settings(actor, publicEndpointResolver.resolve());
+        return new IntegrationSettingsDto(settings.baseUrl(), settings.maxActiveTokens(), settings.maxBatchSize(),
+                settings.tokens(), affiliates.summary(actor), affiliates.participantSummary(actor));
     }
 
     @PostMapping("/tokens")

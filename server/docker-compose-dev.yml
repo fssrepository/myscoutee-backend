@@ -288,6 +288,7 @@ services:
       bash -c "rm -f /workspace/nginx-html/.frontend-ready;
       exec bash /scripts/frontend_auto_watch.sh"
     environment:
+      MYSCOUTEE_VERSION: "${MYSCOUTEE_VERSION:-1.0.1}"
       FRONTEND_ROOT: /workspace/frontend
       FRONTEND_SOURCE_DIR: /workspace/frontend/dev
       FRONTEND_BUILD_CONFIGURATION: dev

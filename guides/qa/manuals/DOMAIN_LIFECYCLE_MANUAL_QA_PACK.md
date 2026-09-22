@@ -11208,3 +11208,64 @@ demo selector. Managed browsers were closed. Evidence:
 Next is Operator Update with managed HTTPS on VMware; do not start it alongside
 the dev stack. Separate deployment/smoke/security/efficiency qualification is
 queued. No VMware update or deployment has run.
+
+
+## Event activity rating preparation — 2026-09-22
+
+`EVENT-ACTIVITY-RATING-001`: fixture preparation verified; manual step 1 pending.
+Two dedicated actors, all three event sources and real-worker Met 0/0 baseline
+are prepared. The standardized managed browser launcher has handed control to
+the user. No rating/feedback checklist action was performed automatically.
+See the [numbered guide](../checklists/event/EVENT-ACTIVITY-RATING-001.md),
+[dated execution log](../checklists/event/EVENT-ACTIVITY-RATING-001-20260922-progress.md)
+and [persisted preparation evidence](../evidence/EVENT-ACTIVITY-RATING-001-2026-09-22.json).
+Prior Event Mode/API closure is retained; this is a separate manual journey.
+
+Follow-up: user accepted combined-source exploration. Persisted Casey/Nova
+scores9/4, friendship1, feedback0 were archived before authorized fixture reset.
+Standard-only 0/0 Met baseline now ready; next user action is step1 for
+QA RATING · Standard. See the same dated execution log for exact evidence.
+
+Correction: the accepted previous case proves meeting before first rating,
+not Standard/Tournament with prior rates. Corrected Standard fixture now seeds
+only prior9/4 scores with Met=false. The real worker preserves identity/date/
+scores and adds Met plus one friendship. Manual observation of this corrected
+baseline remains pending; see the existing-rate before/after evidence linked
+from the dated log. Tournament still requires its isolated replay.
+
+Latest user clarification supersedes the Standard handoff: the active baseline
+is now **before-meeting**, only Casey has rated9, Nova0, Met=false, no events,
+rounds or friendship. The user inspects all buckets before reciprocating;
+without meeting evidence that later reciprocal state is Mutual. See the dated
+log and before-meeting evidence. Automatic later room creation is not verified.
+
+
+### Activity rating corrected closure — 2026-09-22
+
+**EVENT-ACTIVITY-RATING-001 PASS / CLOSED after numbered coverage review.**
+The earlier core-only closure was premature. The user requested expectations
+updated from the discussion and automatic completion of remaining checklist
+steps. Existing manual acceptance and core replay evidence remain valid.
+
+The [dated log](../checklists/event/EVENT-ACTIVITY-RATING-001-20260922-progress.md)
+now records all ten numbered dispositions. New continuation verified normal UI
+Saves to 4/9, reopen and full reload in both windows, one stored friendship with
+zero feedback answers, and one event/host feedback flow for two completed rounds.
+The host is not duplicated as a separate attendee. Prior Standard score/identity
+preservation evidence was reviewed; a fresh isolated Tournament run is not
+claimed. The nonexistent All/Friends Rates-list expectations were corrected,
+while the four actual buckets and total side-menu badge retain their semantics.
+
+Evidence was saved before the versioned launcher closed the two managed windows
+and the versioned fixture reset restored its snapshots; final status not-staged.
+No production-code change, extra app build, viewport override, feedback
+submission or release occurred. Future room creation remains outside this QA.
+See [closure evidence](../evidence/EVENT-ACTIVITY-RATING-001-closure-2026-09-22.json).
+
+## EVENT-FOLLOWING-002 — 2026-09-22 follow-up
+
+PASS / CLOSED in delegated dev HTTP scope. See the separate
+[numbered checklist](../checklists/event/EVENT-FOLLOWING-002.md) and
+[execution evidence](../evidence/EVENT-FOLLOWING-002-20260922-progress.md)
+for all eight checks, saved-state oracles, transport failure/retry, and scoped cleanup.
+Historical PASS records remain unchanged.

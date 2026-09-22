@@ -51,6 +51,15 @@ public class Asset {
     private List<AssetRequestRecord> requests = new ArrayList<>();
     private String visibility;
     private String status;
+    private String moderationStatus;
+    private String moderationPreviousStatus;
+    private Long moderationVersion;
+    public String getModerationStatus() { return moderationStatus; }
+    public void setModerationStatus(String value) { moderationStatus = value; }
+    public String getModerationPreviousStatus() { return moderationPreviousStatus; }
+    public void setModerationPreviousStatus(String value) { moderationPreviousStatus = value; }
+    public Long getModerationVersion() { return moderationVersion; }
+    public void setModerationVersion(Long value) { moderationVersion = value; }
     private String statusBeforeSuppression;
     private String ownerReleasedAtIso;
     private String trashedAtIso;

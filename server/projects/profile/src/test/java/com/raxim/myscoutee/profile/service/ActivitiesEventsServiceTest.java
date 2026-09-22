@@ -14,6 +14,7 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import java.time.Instant;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -1505,6 +1506,36 @@ class ActivitiesEventsServiceTest {
     }
 
     @Test
+    void definitionOnlyStageStartsWithItsVisibleTimelineBeforeGeneratingGroups() {
+        Users host = new Users();
+        host.setId("host");
+        ActivityEvent parent = event("event-1", "host", 0d);
+        parent.setMode("Tournament");
+        parent.setStartAtIso(Instant.now().minusSeconds(120).toString());
+        parent.setEndAtIso(Instant.now().plusSeconds(3600).toString());
+        parent.setSubEventsEnabled(true);
+        parent.setSubEvents(List.of());
+        parent.setSubEventDefinitions(List.of(new SubEventDefinitionDto(
+                "stage-1", "Opening round", "Saved definition", "After",
+                0, 60, "Arena", 1, 2, "Score", 1, false, null, 1, 8, null)));
+        when(homeUserProfileService.resolveCurrentUser("host")).thenReturn(host);
+        when(activityEventsRepository.findBySourceId("event-1")).thenReturn(List.of(parent));
+        when(activityEventsRepository.saveAll(anyList())).thenAnswer(invocation -> invocation.getArgument(0));
+        when(eventSchedulerProvider.getIfAvailable()).thenReturn(eventScheduler);
+
+        EventStageActionResultDto result = service.applyStageAction(
+                new com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventStageActionRequestDto(
+                        "host", "event-1", null, "stage-1", 0, "start-tournament", null));
+
+        assertThat(result.stageStatus()).isEqualTo("A");
+        var order = org.mockito.Mockito.inOrder(activitySubEventStageRuntimeRepository, eventScheduler);
+        order.verify(activitySubEventStageRuntimeRepository).save(any());
+        order.verify(eventScheduler).generateTournamentStagePlansForEvents(eq(List.of("event-1")), any(Runnable.class));
+        assertThat(parent.getSubEvents()).isEmpty();
+        assertThat(parent.getSubEventDefinitions()).hasSize(1);
+    }
+
+    @Test
     void manualParentStageStartNotifiesOtherParticipantsBeforeRoomNotifications() {
         Users host = new Users();
         host.setId("host");
@@ -2984,6 +3015,8 @@ class ActivitiesEventsServiceTest {
                 0d,
                 0d,
                 0d,
+                null,
+                null,
                 null);
     }
 

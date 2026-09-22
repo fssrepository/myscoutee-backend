@@ -124,7 +124,7 @@ class MediaFriendshipQualificationTest {
             var ratesRepository = new MongoRepositoryFactory(mongo).getRepository(UserRatesRepository.class);
             var rates = new UserRatesService(ratesRepository, mock(UsersRepository.class),
                     mock(HomeUserProfileService.class), mock(AffinityCalculationService.class),
-                    mock(UserAffinityEdgeService.class), mongo, mock(AdminTelemetryService.class), null, null);
+                    mock(UserAffinityEdgeService.class), mongo, mock(AdminTelemetryService.class), null, null, org.mockito.Mockito.mock(com.raxim.myscoutee.profile.service.OrganizerFollowingService.class));
             var projector = new EventFriendshipProjectionService(mongo, members, rates);
             // Never let the test clock expire an unrelated fixture/seed event.
             assertThat(db.getCollection("events").countDocuments(new Document("status", "A")

@@ -39,7 +39,7 @@ public class UserPageFilterPreferencesService {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid event filters.");
         }
         mongoTemplate.upsert(query, new Update()
-                .set("filters", new EventExploreFilters(filters.friendsOnly(), filters.openSpotsOnly(), topic, mode))
+                .set("filters", new EventExploreFilters(filters.friendsOnly(), filters.openSpotsOnly(), topic, mode, filters.followedOnly()))
                 .set("updatedAt", Instant.now().toString()), UserPageFilterPreferences.class);
     }
 

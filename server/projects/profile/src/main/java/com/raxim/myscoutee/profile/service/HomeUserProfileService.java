@@ -203,6 +203,10 @@ public class HomeUserProfileService {
             Map.entry("attendee risk", "ambitious-go-getter"),
             Map.entry("attendee role-fit", "deep-thinker"));
 
+    @org.springframework.beans.factory.annotation.Autowired
+    @org.springframework.context.annotation.Lazy
+    private ContentModerationService contentModeration;
+
     private final UsersRepository usersRepository;
     private final UserFilterPreferencesRepository userFilterPreferencesRepository;
     private final UserExperienceProfilesRepository userExperienceProfilesRepository;
@@ -229,6 +233,7 @@ public class HomeUserProfileService {
     private final AdminMenuCounterService adminMenuCounterService;
     private final AccessControlService accessControlService;
     private final AssetsService assetsService;
+    private final AffiliateService affiliateService;
     private NotificationRuleRegistryService notificationRuleRegistryService;
     private UserNotificationPageRepository userNotificationPageRepository;
     private final Map<String, CacheEntry<UserImpressionsDto>> userImpressionsCacheByUserId = new ConcurrentHashMap<>();
@@ -263,7 +268,8 @@ public class HomeUserProfileService {
             AdminTelemetryService adminTelemetryService,
             AdminMenuCounterService adminMenuCounterService,
             AccessControlService accessControlService,
-            AssetsService assetsService) {
+            AssetsService assetsService,
+            AffiliateService affiliateService) {
         this.usersRepository = usersRepository;
         this.userFilterPreferencesRepository = userFilterPreferencesRepository;
         this.userExperienceProfilesRepository = userExperienceProfilesRepository;
@@ -290,6 +296,7 @@ public class HomeUserProfileService {
         this.adminMenuCounterService = adminMenuCounterService;
         this.accessControlService = accessControlService;
         this.assetsService = assetsService;
+        this.affiliateService = affiliateService;
     }
 
     @Autowired(required = false)
@@ -528,7 +535,9 @@ public class HomeUserProfileService {
                                 device.getDeviceId(), Boolean.TRUE.equals(device.getNotificationsEnabled())))
                         .toList(),
                 buildRealtimeCursor(user, counters),
-                Instant.now().toString());
+                Instant.now().toString(),
+                OrganizerFollowingService.state(user),
+                contentModeration != null && adminMenuCounterService.isAdminUser(user) ? contentModeration.snapshot() : null);
     }
 
     public UserLocationEligibilityResponseDto queryLocationEligibility(Double latitude, Double longitude) {
@@ -581,6 +590,10 @@ public class HomeUserProfileService {
 
     @CacheEvict(value = "demo_users", allEntries = true)
     public UserDto saveUserProfile(UserDto user) {
+        return saveUserProfile(user, null);
+    }
+
+    private UserDto saveUserProfile(UserDto user, String affiliateCode) {
         if (user == null || !StringUtils.hasText(user.id())) {
             return null;
         }
@@ -593,6 +606,9 @@ public class HomeUserProfileService {
         boolean wasTrackedForAccountPurge = existing != null
                 && Boolean.TRUE.equals(existing.getAccountPurgePendingCounterTracked());
         Users merged = mergeUserDocument(existing, user);
+        if (existing == null) {
+            merged.setAffiliateRegistration(affiliateService.resolveRegistration(affiliateCode, normalizedUserId));
+        }
         requireUniqueEmailOwner(merged);
         boolean shouldTrackForAccountPurge = isAccountPurgeCandidate(merged);
         merged.setAccountPurgePendingCounterTracked(shouldTrackForAccountPurge);
@@ -603,6 +619,7 @@ public class HomeUserProfileService {
             throwEmailConflictIfPresent(merged, exception);
             throw exception;
         }
+        affiliateService.recordRegistration(saved.getAffiliateRegistration());
         if (wasTrackedForAccountPurge != shouldTrackForAccountPurge) {
             adjustAccountPurgePendingCount(shouldTrackForAccountPurge ? 1 : -1);
         }
@@ -626,7 +643,7 @@ public class HomeUserProfileService {
             return null;
         }
 
-        UserDto savedUser = saveUserProfile(request.profile());
+        UserDto savedUser = saveUserProfile(request.profile(), request.affiliateCode());
         String resolvedUserId = normalizeId(savedUser == null ? null : savedUser.id());
         if (StringUtils.hasText(resolvedUserId)) {
             saveUserExperienceProfile(resolvedUserId, request.experienceEntries());

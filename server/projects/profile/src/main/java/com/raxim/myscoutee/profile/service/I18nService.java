@@ -70,10 +70,10 @@ public class I18nService {
         String latestVersion = bundle.version();
 
         if (latestVersion.equals(safeText(currentVersion, ""))) {
-            return new I18nBundleResponseDto(selectedLang, latestVersion, null, bundle.founderName());
+            return new I18nBundleResponseDto(selectedLang, latestVersion, null);
         }
 
-        return new I18nBundleResponseDto(selectedLang, latestVersion, bundle.messages(), bundle.founderName());
+        return new I18nBundleResponseDto(selectedLang, latestVersion, bundle.messages());
     }
 
     private String selectLanguage(
@@ -122,12 +122,10 @@ public class I18nService {
 
     private CachedBundles loadBundles(CachedBundles current) {
         Map<String, String> versions = new HashMap<>();
-        Map<String, String> founderNames = new HashMap<>();
         for (I18nBundle bundle : i18nBundleRepository.findAll()) {
             String lang = normalizeLang(bundle.getLang());
             if (!lang.isBlank()) {
                 versions.put(lang, safeText(bundle.getVersion(), "0"));
-                founderNames.put(lang, safeText(bundle.getFounderName(), ""));
             }
         }
         Map<String, String> immutableVersions = Map.copyOf(versions);
@@ -152,8 +150,7 @@ public class I18nService {
                 lang,
                 new CachedBundle(
                         version,
-                        Map.copyOf(messagesByLanguage.getOrDefault(lang, Map.of())),
-                        founderNames.getOrDefault(lang, ""))));
+                        Map.copyOf(messagesByLanguage.getOrDefault(lang, Map.of())))));
         return new CachedBundles(true, immutableVersions, Map.copyOf(byLanguage));
     }
 
@@ -248,7 +245,7 @@ public class I18nService {
     private record LanguagePreference(String lang, double quality, int index) {
     }
 
-    private record CachedBundle(String version, Map<String, String> messages, String founderName) {
+    private record CachedBundle(String version, Map<String, String> messages) {
     }
 
     private record CachedBundles(

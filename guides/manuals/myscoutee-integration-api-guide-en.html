@@ -247,7 +247,9 @@
     "claimed": false
   }]
 }</code></pre>
-    <p>Repeating the same owner/event/participant tuple returns the same link. Send each private link to its intended participant. The link survives sign-in or registration, binds the external participant ID to the authenticated account, and creates an ordinary pending event invitation. It does not automatically accept participation or bypass checkout. A claimed link cannot be transferred to a different account. Claiming also rechecks the organizer's authority to invite.</p>
+    <p>Repeating the same owner/event/participant tuple returns the same link. Send each private link to its intended participant. The link survives sign-in or registration and binds the external participant ID to the authenticated account. These links have no time-based expiry. A claimed link cannot be transferred to a different account; event ownership and participant-account conflicts are still checked.</p>
+    <p>Before the event ends, claiming also creates an ordinary pending event invitation after rechecking the organizer's authority to invite. An event that has already started may still be invited to under these ordinary rules. The link does not automatically accept participation or bypass checkout.</p>
+    <p>At or after the event's end time, or once a Speed meeting session is completed, claiming only links the external participant ID to the account. Registration can finish normally, with no new invitation or event-membership change. Existing memberships are retained. The account-linking result remains available to the integration even though the event has ended.</p>
     <h3 id="encounters">6.3 Read completed encounters</h3>
     <p><code>GET /events/{externalId}/encounters?offset=0&amp;limit=1000</code> requires a completed Speed meeting session. Each unordered pair appears once across the frozen, actual memberships of completed table rounds. A shared event alone is insufficient; ratings and friendship status do not affect this export.</p>
     <pre><code>{
@@ -324,7 +326,8 @@
       <tbody>
         <tr><td>Success</td><td>Any HTTP 2xx response</td></tr>
         <tr><td>Identity</td><td><code>deliveryId</code> equals the <code>X-MyScoutee-Webhook-Id</code> header; receivers must deduplicate it</td></tr>
-        <tr><td>Retry</td><td>Approximately 5 seconds, 30 seconds, 2 minutes, and 10 minutes after a failed attempt</td></tr>
+        <tr><td>Retry</td><td>At most three delivery attempts in total: the initial request and two retries, approximately 5 and 30 seconds after failure. After the third failure, delivery is marked failed. Retries resend the notification; they do not repeat the event operation. Completed encounters remain available through the read endpoint.</td></tr>
+        <tr><td>Timeout</td><td>Connection timeout: 5 seconds. Each HTTP exchange has a 10-second deadline covering the complete response, including its body. A stalled request is cancelled and counted as a failed attempt.</td></tr>
         <tr><td>Redirect</td><td>Not followed</td></tr>
         <tr><td>Production URL</td><td>HTTPS with a publicly resolvable destination; localhost/private HTTP is development-only</td></tr>
       </tbody>

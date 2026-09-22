@@ -86,6 +86,17 @@ every isolated rule's exact timing control.
 
 ## Event-domain checkpoint runner
 
+`EVENT-MODE-REGRESSION-001` uses the separate
+`scenarios/event-mode-regression-checkpoints.js` helper for development timing
+and named runtime replay boundaries. The exact commands and scope are in
+[`EVENT-MODE-REGRESSION-001.md`](../../../../guides/qa/checklists/event/EVENT-MODE-REGRESSION-001.md#reversible-development-timing-and-runtime-checkpoints).
+`arm-tournament-review` temporarily sets the existing job to 60 seconds;
+`reset` restores its original configuration, retaining real execution history.
+`capture-runtime-checkpoint` / `restore-runtime-checkpoint` capture one explicit
+Casey-owned disposable event at score review or completed meeting history.
+They do not reset feedback, account state or external deliveries. These helpers
+continue an existing run; they do not create a new browser or stage a fresh campaign.
+
 The event-domain runner implements executable setup and machine oracles for the
 checkpoint graph in
 [`DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md`](../../../../guides/qa/manuals/DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md).
@@ -776,3 +787,21 @@ and a reusable operator prompt.
 The Statistics tests already completed in this QA session are preserved as
 retrospective, non-rerun workflows under
 [`completed-runs`](completed-runs/README.md).
+
+## Event activity rating
+
+`event-rating / EVENT-ACTIVITY-RATING-001` prepares two isolated users and
+Standard, Tournament and Speed meeting sources. Use `stage ... all` for the
+parallel comparison or `standard`, `tournament`, `speed-meeting` for isolation.
+`status` is read-only; `ready` checks real Met projection (preserved one-sided 9/0 prior
+rate for Standard/Tournament; new 0/0 for Speed meeting) and restores
+the temporarily shortened worker schedule; `reset` restores scoped fixture and
+session state. Reset/restage is the supported replay.
+See [the numbered manual guide](../../../../guides/qa/checklists/event/EVENT-ACTIVITY-RATING-001.md)
+for full commands, boundaries and cleanup. Startup uses the common versioned
+browser launcher; subsequent rating actions belong to the tester.
+
+`before-meeting` is the one-sided bucket-inspection baseline: Casey9/Nova0,
+Met=false, zero events and friendships. No worker schedule is changed. The tester
+inspects all buckets before reciprocating; without meeting evidence the result
+is Mutual. Event-history variants are separate optional visibility checks.

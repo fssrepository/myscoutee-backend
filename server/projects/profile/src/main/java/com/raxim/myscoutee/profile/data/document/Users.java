@@ -13,6 +13,8 @@ import org.springframework.data.mongodb.core.mapping.Document;
 
 @Document(collection = "users")
 @CompoundIndexes({
+        @CompoundIndex(name = "users_following_organizers", def = "{'following.organizerIds': 1}"),
+        @CompoundIndex(name = "users_following_expiry", def = "{'following.nextExpiryAtIso': 1}"),
         @CompoundIndex(name = "users_profile_status", def = "{'profileStatus': 1}"),
         @CompoundIndex(name = "users_profile_status_deleted", def = "{'profileStatus': 1, 'deletedAtIso': 1}"),
         @CompoundIndex(name = "users_host_tier", def = "{'hostTier': 1}"),
@@ -22,6 +24,13 @@ import org.springframework.data.mongodb.core.mapping.Document;
                 collation = "{ 'locale': 'en', 'strength': 2 }")
 })
 public class Users {
+    private FollowingRecord following;
+
+    public FollowingRecord getFollowing() { return following; }
+    public void setFollowing(FollowingRecord following) { this.following = following; }
+
+    public record FollowingRecord(List<String> organizerIds, Integer eventCount, String nextExpiryAtIso) {}
+
     @Id
     private String mongoId;
 
@@ -33,6 +42,9 @@ public class Users {
 
     @Indexed(name = "users_email", unique = true, sparse = true)
     private String email;
+    private String deletionWarningFor;
+    public String getDeletionWarningFor() { return deletionWarningFor; }
+    public void setDeletionWarningFor(String value) { deletionWarningFor = value; }
 
     @Indexed(name = "users_firebase_uid", sparse = true)
     private String firebaseUid;
@@ -42,6 +54,11 @@ public class Users {
 
     @Indexed(name = "users_facebook_id", sparse = true)
     private String facebookId;
+
+    private AffiliateRegistration affiliateRegistration;
+
+    public AffiliateRegistration getAffiliateRegistration() { return affiliateRegistration; }
+    public void setAffiliateRegistration(AffiliateRegistration value) { affiliateRegistration = value; }
 
     private String name;
     private Integer age;

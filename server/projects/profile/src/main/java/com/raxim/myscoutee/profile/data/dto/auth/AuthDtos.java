@@ -438,7 +438,11 @@ public final class AuthDtos {
 
     public record ProfileExtDto(
             UserDto profile,
-            List<ExperienceEntryDto> experienceEntries) {
+            List<ExperienceEntryDto> experienceEntries,
+            String affiliateCode) {
+        public ProfileExtDto(UserDto profile, List<ExperienceEntryDto> experienceEntries) {
+            this(profile, experienceEntries, null);
+        }
     }
 
     public record ProfileExtByIdResponseDto(
@@ -525,7 +529,9 @@ public final class AuthDtos {
             UserPaymentTotalsDto paymentTotals,
             List<UserNotificationDeviceDto> notificationDevices,
             String cursor,
-            String serverTsIso) {
+            String serverTsIso,
+            com.raxim.myscoutee.profile.data.document.Users.FollowingRecord following,
+            com.raxim.myscoutee.profile.data.dto.admin.ContentModerationDtos.Snapshot contentModeration) {
     }
 
     public record UserFilterPreferencesRequestDto(

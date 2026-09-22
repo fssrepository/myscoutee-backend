@@ -1,0 +1,16 @@
+{
+  "badge": "rss_feed\nFollowed\n2",
+  "state": {
+    "organizerIds": [
+      "6af011000000000000000002"
+    ],
+    "eventCount": 2,
+    "nextExpiryAtIso": "2026-09-22T05:54:56.157Z"
+  },
+  "requests": [
+    {
+      "url": "http://localhost/api/auth/me/realtime/long-poll",
+      "duration": 29.300000000745058
+    }
+  ]
+}

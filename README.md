@@ -38,3 +38,23 @@ Editable manual sources and PDF build instructions are in
 |---|---:|---|---|
 | MyScoutee Network | 1.0.0 | [PDF](guides/pitches/network-output/MyScoutee_Network_Pitch_v1.0.0_EN.pdf) | [PPTX](guides/pitches/network-output/MyScoutee_Network_Pitch_v1.0.0_EN.pptx) |
 | MyScoutee Product | 1.0.0 | [PDF](guides/pitches/product-output/MyScoutee_Product_Pitch_v1.0.0_EN.pdf) | [PPTX](guides/pitches/product-output/MyScoutee_Product_Pitch_v1.0.0_EN.pptx) |
+
+
+## QA status
+
+The delegated [Event Mode regression](guides/qa/checklists/event/EVENT-MODE-REGRESSION-001-20260921-progress.md)
+and [Integration API extension](guides/qa/checklists/integration/INTEGRATION-API-001.md#extension-result--2026-09-22)
+are closed on 2026-09-22, with evidence boundaries recorded in their results.
+The separate [activity-rating comparison](guides/qa/checklists/event/EVENT-ACTIVITY-RATING-001.md)
+is also closed on 2026-09-22: corrected numbered expectations, retained user observations, automatic continuation through save/reload and feedback checks, and scoped cleanup. The [QA matrix](guides/qa/matrices/ADMIN_DYNAMIC_SURFACES_QA_MATRIX.xlsx)
+and its [CSV source](guides/qa/matrices/ADMIN_DYNAMIC_SURFACES_QA_MATRIX.csv) own current status.
+
+[Followed organizers QA](guides/qa/evidence/EVENT-FOLLOWING-001-20260922-progress.md)
+is closed on 2026-09-22 in the dev HTTP scope: follow/unfollow, independent
+counters, filters, lifecycle/expiry, and compact desktop layout verified;
+fixture and managed windows cleaned. Platform limits are recorded in the evidence.
+
+The separate [following menu and confirmation QA](guides/qa/evidence/EVENT-FOLLOWING-002-20260922-progress.md)
+is closed on 2026-09-22: all 8 numbered dev HTTP checks passed, including
+committed deltas, failed-save retry, immediate list removal and stored-state poll.
+Its isolated fixture and browser sessions are cleaned.

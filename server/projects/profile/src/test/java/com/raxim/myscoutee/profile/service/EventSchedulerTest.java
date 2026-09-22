@@ -601,8 +601,9 @@ class EventSchedulerTest {
                 anyList());
     }
 
-    @Test
-    void tournamentStageStartAssignsEveryAcceptedMemberAcrossAllConfiguredGroups() {
+    @org.junit.jupiter.params.ParameterizedTest
+    @org.junit.jupiter.params.provider.ValueSource(booleans = {false, true})
+    void tournamentStageStartAssignsEveryAcceptedMemberAcrossAllConfiguredGroups(boolean definitionOnly) {
         EventScheduler scheduler = createScheduler();
 
         ActivityEvent event = new ActivityEvent();
@@ -612,6 +613,22 @@ class EventSchedulerTest {
         event.setTitle("Tournament stage start");
         event.setMode("Tournament");
         event.setSubEvents(List.of(subEvent("stage-start", 2, 1, 2)));
+        if (definitionOnly) {
+            event.setSubEvents(List.of());
+            event.setSubEventsEnabled(true);
+            event.setStartAtIso(Instant.now().minusSeconds(60).toString());
+            event.setEndAtIso(Instant.now().plusSeconds(3600).toString());
+            event.setSubEventDefinitions(List.of(
+                    new com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.SubEventDefinitionDto(
+                            "stage-start", "Opening round", "", "After", 0, 60, "Arena",
+                            1, 2, "Score", 1, false, null, 1, 4, null)));
+            ActivitySubEventStageRuntime runtime = new ActivitySubEventStageRuntime();
+            runtime.setOwnerId("event-stage-start");
+            runtime.setSubEventId("stage-start");
+            runtime.setStageStatus("A");
+            when(activitySubEventStageRuntimeRepository.findByOwnerIdIn(List.of("event-stage-start")))
+                    .thenReturn(List.of(runtime));
+        }
 
         Users nonPublicAcceptedUser = user("casey");
         nonPublicAcceptedUser.setProfileStatus("friends only");
@@ -1794,6 +1811,39 @@ class EventSchedulerTest {
         verify(activityEventsRepository).saveAll(List.of(event));
     }
 
+    @Test
+    void closesDefinitionOnlyStageInCanonicalRuntimeWithoutEmbeddingItsDefinition() {
+        EventScheduler scheduler = createScheduler();
+        ActivityEvent event = new ActivityEvent();
+        event.setSourceId("definition-review");
+        event.setStatus("A");
+        event.setMode("Tournament");
+        event.setSubEventsEnabled(true);
+        event.setSubEvents(List.of());
+        event.setStartAtIso("2026-05-12T09:00:00Z");
+        event.setEndAtIso("2026-05-12T10:00:00Z");
+        event.setSubEventDefinitions(List.of(
+                new com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.SubEventDefinitionDto(
+                        "opening", "Opening", "", "After", 0, 60, "Arena",
+                        1, 2, "Score", 1, false, null, 1, 4, null)));
+        ActivitySubEventStageRuntime runtime = new ActivitySubEventStageRuntime();
+        runtime.setOwnerId("definition-review");
+        runtime.setSubEventId("opening");
+        runtime.setStageStatus("A");
+        runtime.setStageStatusUpdatedAt("2026-05-12T09:00:00Z");
+        when(activityEventsRepository.findAll()).thenReturn(List.of(event));
+        when(activitySubEventStageRuntimeRepository.findByOwnerIdIn(List.of("definition-review")))
+                .thenReturn(List.of(runtime));
+
+        assertThat(scheduler.closeEndedTournamentStagesForReview(Instant.parse("2026-05-12T12:00:00Z")))
+                .isEqualTo(1);
+        assertThat(runtime.getStageStatus()).isEqualTo("SR");
+        assertThat(runtime.getStageStatusReason()).isEqualTo("stage-ended");
+        assertThat(event.getSubEvents()).isEmpty();
+        verify(activitySubEventStageRuntimeRepository).saveAll(java.util.Set.of(runtime));
+        verify(activityEventsRepository, never()).saveAll(any());
+    }
+
     private EventScheduler createScheduler() {
         lenient().when(usersRepository.findByUserIdIn(anyCollection()))
                 .thenAnswer(invocation -> ((java.util.Collection<String>) invocation.getArgument(0))
@@ -1829,7 +1879,8 @@ class EventSchedulerTest {
                 chatService,
                 notificationRuleRegistryService,
                 platformParametersService,
-                notificationOutboxService);
+                notificationOutboxService,
+                new com.raxim.myscoutee.profile.service.mapper.ActivityEventSubEventsMapper());
         scheduler.setActivitySubEventStageRuntimeRepository(activitySubEventStageRuntimeRepository);
         return scheduler;
     }
