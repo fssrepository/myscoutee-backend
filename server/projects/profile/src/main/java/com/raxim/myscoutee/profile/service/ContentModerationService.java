@@ -32,12 +32,15 @@ public class ContentModerationService {
         return new Snapshot(state.revision(), state.settings(), state.counts(), pending);
     }
     public Page page(String category, String status, String cursor, int pageSize) {
-        validate(category, status);
+        if (!"all".equals(category)) validate(category, status);
+        else if (!STATUSES.contains(status)) throw invalid();
         int limit = Math.max(1, Math.min(50, pageSize));
         var rows = repository.page(category, status, cursor, limit + 1);
         var items = rows.stream().limit(limit).toList();
         var state = snapshot();
-        return new Page(items, state.counts().getOrDefault(category, Map.of()).getOrDefault(status, 0L),
+        long total = ("all".equals(category) ? CATEGORIES : List.of(category)).stream()
+                .mapToLong(key -> state.counts().getOrDefault(key, Map.of()).getOrDefault(status, 0L)).sum();
+        return new Page(items, total,
                 rows.size() > limit ? items.getLast().id() : null, state);
     }
     public Snapshot settings(SaveSettings request) {

@@ -40,6 +40,7 @@ public class WebSecurityConfig {
     private final UserLoginSessionService userLoginSessionService;
     private final MediaSessionAccessService mediaSessionAccess;
     private final IntegrationTokenAuthenticationFilter integrationTokenAuthenticationFilter;
+    @Autowired private AdminClientAuthenticationFilter adminClientAuthenticationFilter;
 
     public WebSecurityConfig(FirebaseService firebaseService,
             FirebaseAuthenticationProvider firebaseProvider,
@@ -75,10 +76,12 @@ public class WebSecurityConfig {
                 .addFilterAfter(
                         integrationTokenAuthenticationFilter,
                         OperatorBootstrapAuthenticationFilter.class)
+                .addFilterAfter(adminClientAuthenticationFilter, IntegrationTokenAuthenticationFilter.class)
                 .addFilterAfter(
                         tokenAuthorizationFilter(),
-                        IntegrationTokenAuthenticationFilter.class)
+                        AdminClientAuthenticationFilter.class)
                 .authorizeHttpRequests(authorizeRequests -> {
+                    authorizeRequests.requestMatchers("/admin-client/v1/**", "/api/admin-client/v1/**").hasAuthority("ADMIN_CLIENT");
                     authorizeRequests.requestMatchers("/shutdown").denyAll();
                     authorizeRequests.requestMatchers("/integrations/v1/**", "/api/integrations/v1/**")
                             .hasAuthority("INTEGRATION");

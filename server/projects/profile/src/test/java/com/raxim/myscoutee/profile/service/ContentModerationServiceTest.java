@@ -83,4 +83,26 @@ class ContentModerationServiceTest {
         assertEquals(0, service.snapshot().pendingCount());
         verifyNoInteractions(chat);
     }
+    @Test void allCategoryUsesStoredBucketTotalIndependentOfPageSizeAndMovesOnDecisions() {
+        Item feed = submit();
+        service.register("event", "party", "owner", "Event", "");
+        service.register("asset", "car", "owner", "Asset", "");
+        when(repository.page(eq("all"), eq("under-review"), isNull(), eq(2)))
+                .thenReturn(List.of(feed, items.get("event:party")));
+        Page page = service.page("all", "under-review", null, 1);
+        assertEquals(3, page.total());
+        assertEquals(1, page.items().size());
+        assertEquals(feed.id(), page.nextCursor());
+        service.decide(feed.id(), new Decision("admin", "accept", 1, "accepted", ""), admin);
+        assertEquals(2, service.page("all", "under-review", null, 1).total());
+        when(repository.page(eq("feed"), eq("accepted"), isNull(), anyInt())).thenReturn(List.of(items.get(feed.id())));
+        assertEquals(1, service.page("feed", "accepted", null, 20).total());
+        service.decide(feed.id(), new Decision("admin", "block", 2, "blocked", ""), admin);
+        service.decide(feed.id(), new Decision("admin", "unblock", 3, "under-review", ""), admin);
+        assertEquals(3, service.page("all", "under-review", null, 1).total());
+        assertEquals(0L, service.snapshot().counts().get("feed").get("blocked"));
+        assertThrows(ResponseStatusException.class, () -> service.register("all", "invalid", "owner", "", ""));
+        assertThrows(ResponseStatusException.class, () -> service.page("all", "invalid", null, 10));
+    }
+
 }

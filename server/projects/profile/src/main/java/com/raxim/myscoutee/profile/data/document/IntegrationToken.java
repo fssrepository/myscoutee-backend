@@ -16,6 +16,9 @@ public class IntegrationToken {
 
     private String ownerUserId;
     private String name;
+    private String scope;
+    public String getScope() { return scope; }
+    public void setScope(String scope) { this.scope = scope; }
 
     @Indexed(name = "integration_token_hash", unique = true)
     private String tokenHash;

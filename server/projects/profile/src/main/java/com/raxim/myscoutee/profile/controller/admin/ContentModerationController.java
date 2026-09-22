@@ -25,7 +25,7 @@ public class ContentModerationController {
             MongoTemplate mongo, AssetsService assets, ActivityEventDetailMapper events) {
         this.admins = admins; this.moderation = moderation; this.mongo = mongo; this.assets = assets; this.events = events;
     }
-    @GetMapping public Page page(@RequestParam String adminUserId, @RequestParam(defaultValue="asset") String category,
+    @GetMapping public Page page(@RequestParam String adminUserId, @RequestParam(defaultValue="all") String category,
             @RequestParam(defaultValue="under-review") String status, @RequestParam(required=false) String cursor,
             @RequestParam(defaultValue="10") int pageSize) {
         admins.resolveAdminActor(adminUserId); return moderation.page(category, status, cursor, pageSize);
@@ -36,8 +36,10 @@ public class ContentModerationController {
     @PostMapping("/settings") public Snapshot settings(@RequestBody SaveSettings request) {
         admins.resolveAdminActor(request.adminUserId()); return moderation.settings(request);
     }
-    @PostMapping("/{id}/decision") public Snapshot decision(@PathVariable String id, @RequestBody Decision request) {
-        var actor = admins.resolveAdminActor(request.adminUserId()); moderation.decide(id, request, actor); return moderation.snapshot();
+    @PostMapping("/{id}/decision") public DecisionResult decision(@PathVariable String id, @RequestBody Decision request) {
+        var actor = admins.resolveAdminActor(request.adminUserId());
+        Item item = moderation.decide(id, request, actor);
+        return new DecisionResult(moderation.snapshot(), item);
     }
     @GetMapping("/{id}/detail") public Object detail(@PathVariable String id, @RequestParam String adminUserId) {
         admins.resolveAdminActor(adminUserId);

@@ -22,6 +22,7 @@ public final class ContentModerationDtos {
             Map<String, Map<String, Long>> counts, List<Mutation> pending) {}
     public record Snapshot(long revision, Settings settings, Map<String, Map<String, Long>> counts, long pendingCount) {}
     public record Page(List<Item> items, long total, String nextCursor, Snapshot snapshot) {}
+    public record DecisionResult(Snapshot snapshot, Item item) {}
     public record Decision(String adminUserId, String commandId, long expectedVersion, String status, String message) {}
     public record SaveSettings(String adminUserId, long expectedRevision, Settings settings) {}
 }

@@ -86,3 +86,8 @@ must never overwrite the user-facing checklist.
 
 The latter two currently provide the user-facing sequence; their dedicated
 fixture orchestration is prepared when their own checkpoint is requested.
+
+## New gallery and email cases (runtime pending)
+
+- [EVENT-GALLERY-FEED-001](event/EVENT-GALLERY-FEED-001.md): shared galleries, Feed, profile info scrolling and content moderation.
+- [OPERATOR-EMAIL-WARNING-001](operator/OPERATOR-EMAIL-WARNING-001.md): operator email provider and fixed five-day warning Job, using a non-delivering stub.

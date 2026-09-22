@@ -555,6 +555,7 @@ public class AdminStatsService {
         Map<String, Long> statusCounts = new LinkedHashMap<>();
         Map<String, Long> visibilityCounts = new LinkedHashMap<>();
         Map<String, String> activeProfileUsers = new LinkedHashMap<>();
+        Map<String, Long> activeGenders = new LinkedHashMap<>();
         for (Users user : usersRepository.findAll()) {
             if (user == null || isAdminSeedUser(user)) {
                 continue;
@@ -566,6 +567,12 @@ public class AdminStatsService {
             increment(statusCounts, profileStatus, 1L);
             if (ACTIVE_PROFILE_STATUSES.contains(profileStatus)) {
                 increment(visibilityCounts, profileStatus, 1L);
+                if (!Set.of("admin", "operator").contains(safeText(user.getHostTier()).toLowerCase(Locale.ROOT))) {
+                    String gender = safeText(user.getGender()).toLowerCase(Locale.ROOT);
+                    increment(activeGenders, switch (gender) {
+                        case "woman", "female" -> "female"; case "man", "male" -> "male"; default -> "other";
+                    }, 1L);
+                }
                 String userId = firstNonBlank(user.getUserId(), user.getId());
                 if (StringUtils.hasText(userId)) {
                     activeProfileUsers.put(userId, profileStatus);
@@ -575,6 +582,7 @@ public class AdminStatsService {
         snapshot.setProfileStatusCounts(statusCounts);
         snapshot.setProfileVisibilityCounts(visibilityCounts);
         snapshot.setActiveProfileUsers(activeProfileUsers);
+        snapshot.setActiveProfileGenders(activeGenders);
     }
 
     private boolean isAdminSeedUser(Users user) {

@@ -18,6 +18,9 @@ public class AdminStatsSnapshot {
     private String statsKey;
 
     private String generatedAtIso;
+    private Map<String, Long> activeProfileGenders;
+    public Map<String, Long> getActiveProfileGenders() { return activeProfileGenders; }
+    public void setActiveProfileGenders(Map<String, Long> value) { activeProfileGenders = value; }
     private String source;
     private Integer healthScore;
     private String healthLabelKey;

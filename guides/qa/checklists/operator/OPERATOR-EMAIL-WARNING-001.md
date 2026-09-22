@@ -1,0 +1,28 @@
+# OPERATOR-EMAIL-WARNING-001 — Email provider configuration and deletion-warning Job
+
+Status: **NOT RUN — waiting for user-started dev stack.** New case; do not modify previous PASS evidence.
+The user authorized automatic full-flow execution using a local email stub, without real provider credentials or real mail delivery.
+
+## Baseline and stub
+
+1. Before the user starts the dev backend, set its existing `EMAIL_SENDGRID_ENDPOINT` environment value to the reachable local stub URL ending `/v3/mail/send`. The default production URL must not be used for this case. Record the exact dev-only endpoint override. The operator UI cannot change this endpoint.
+2. Start `python3 guides/qa/tools/email-provider-stub.py --host 0.0.0.0 --port 18991 --output /tmp/myscoutee-email-qa.jsonl` only for this authorized case. Use the host address reachable from the existing backend network. The stub validates the SendGrid envelope, returns 202 and an `X-Message-Id`, writes no Authorization headers and never forwards mail.
+3. Run `python3 guides/qa/tools/account-email-fixture.py stage`, then `status`. The fixture snapshots configuration and both related Job rows, disables permanent purge during the case, and creates Due / Too early / Already expired / Restored actors relative to the actual configured purge window. Only Due is eligible; the five-day lead time is fixed. Email delivery remains disabled until the operator saves the stub configuration.
+4. Launch `node guides/qa/tools/open-checkpoint-browser-sessions.mjs OPERATOR-EMAIL-WARNING-001`. Use the checkpoint’s Operator and Ava windows. Do not create an extra unmanaged browser/session.
+
+## Reproducible checks
+
+5. Operator Configuration: the Email block loads provider choices from the backend. Choose SendGrid, enter a stub-only key, a sender email ending `@example.invalid` and a sender name, enable and save. Reopen: sender/provider/enabled state persist, the secret input is empty and reports that a saved key exists. Inspect responses and stored configuration: no plaintext key in DTOs; persistence uses the existing AES-GCM envelope.
+6. Save with the credential field empty: the previous credential remains. Unknown provider, malformed sender, enabling without a credential, and stale revision must be rejected. Disabling leaves the saved credential intact and prevents sending. Browser-only local demo reports that the connected backend is required; it must not pretend to send or store credentials in IndexedDB.
+7. Admin Jobs contains Account deletion warning as a periodic, suspendable process. There is no configurable five-day lead-time field. Its interval may be shortened by the fixture; do not wait for the normal hourly interval. Allow the ordinary worker to run after enabling the stub configuration.
+8. Exactly one stub request addresses `email-qa-0@example.invalid`. Its body contains the computed permanent-deletion date and warning text. Too early, Already expired and Restored receive none. The Job history records one provider acceptance; this does not prove real inbox delivery.
+9. Allow the next Job run: no duplicate request for the same deletion episode. Inspect `accountDeletionWarnings` and the matching user’s `deletionWarningFor`; the persisted delivery outcome survives another run/restart. A restored account is rechecked immediately before sending.
+10. Reset and restage only this fixture for the failure checkpoint. Restart only the stub with `--status 401`, using a separate evidence output file. After the ordinary Job runs, verify failure is recorded rather than success. The same episode is not blindly resent. A request interrupted after possible provider acceptance is recorded as unknown; automatic duplicate sending is suppressed. Preserve evidence of the limitation: no claim of exactly-once inbox delivery.
+11. Verify EN/HU UI text and ordinary operator/admin authorization: a normal user cannot read/save email configuration. Verify configured secrets are not exposed in browser storage, responses or evidence.
+12. Close only these checkpoint windows; run `python3 guides/qa/tools/account-email-fixture.py reset`; stop only the stub and remove the dev endpoint override for the next backend start. Confirm the previous email configuration, warning Job and purge Job were restored.
+
+## Protocol and evidence
+
+The existing SendGrid adapter uses the [Mail Send API](https://www.twilio.com/docs/sendgrid/api-reference/mail-send/mail-send), Bearer API key authentication and a verified sender for a real deployment. The stub tests request formation/provider acceptance only. No real email delivery is authorized by this case.
+
+Save numbered PASS/FAIL/NOT RUN evidence under `guides/qa/evidence/`. Do not substitute mocked tests for the operator UI/Job run.

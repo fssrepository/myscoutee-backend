@@ -30,6 +30,8 @@ import com.raxim.myscoutee.profile.repository.IntegrationWebhookSubscriptionsRep
 
 @Service
 public class IntegrationTokenService {
+    public static final String ADMIN_SCOPE = "admin-client";
+    public static final String INTEGRATION_SCOPE = "integration";
     public static final int MAX_ACTIVE_TOKENS = 3;
     public static final int MAX_BATCH_SIZE = 1000;
     private static final int DEFAULT_EXPIRY_DAYS = 90;
@@ -51,10 +53,14 @@ public class IntegrationTokenService {
     }
 
     public IntegrationSettingsDto settings(String ownerUserId, String baseUrl) {
+        return settings(ownerUserId, baseUrl, INTEGRATION_SCOPE);
+    }
+
+    public IntegrationSettingsDto settings(String ownerUserId, String baseUrl, String scope) {
         String owner = requireOwner(ownerUserId);
         List<IntegrationTokenDto> activeTokens = tokensRepository
                 .findByOwnerUserIdOrderByCreatedAtIsoDesc(owner).stream()
-                .filter(this::isActive)
+                .filter(this::isActive).filter(token -> matchesScope(token, scope))
                 .map(this::toDto)
                 .toList();
         return new IntegrationSettingsDto(
@@ -67,9 +73,13 @@ public class IntegrationTokenService {
     public synchronized IntegrationTokenCreatedDto create(
             String ownerUserId,
             IntegrationTokenCreateRequestDto request) {
+        return create(ownerUserId, request, INTEGRATION_SCOPE);
+    }
+
+    public synchronized IntegrationTokenCreatedDto create(String ownerUserId, IntegrationTokenCreateRequestDto request, String scope) {
         String owner = requireOwner(ownerUserId);
         long activeCount = tokensRepository.findByOwnerUserIdOrderByCreatedAtIsoDesc(owner).stream()
-                .filter(this::isActive)
+                .filter(this::isActive).filter(token -> matchesScope(token, scope))
                 .count();
         if (activeCount >= MAX_ACTIVE_TOKENS) {
             throw new ResponseStatusException(
@@ -91,6 +101,7 @@ public class IntegrationTokenService {
         IntegrationToken token = new IntegrationToken();
         token.setId(UUID.randomUUID().toString());
         token.setOwnerUserId(owner);
+        token.setScope(scope);
         token.setName(normalizeName(request == null ? null : request.name(), activeCount + 1));
         token.setTokenHash(hash(value));
         token.setTokenPrefix(value.substring(0, Math.min(value.length(), 12)));
@@ -100,10 +111,12 @@ public class IntegrationTokenService {
         return new IntegrationTokenCreatedDto(toDto(saved), value);
     }
 
-    public void revoke(String ownerUserId, String tokenId) {
+    public void revoke(String ownerUserId, String tokenId) { revoke(ownerUserId, tokenId, INTEGRATION_SCOPE); }
+
+    public void revoke(String ownerUserId, String tokenId, String scope) {
         String owner = requireOwner(ownerUserId);
         String id = normalize(tokenId);
-        IntegrationToken token = tokensRepository.findByIdAndOwnerUserId(id, owner)
+        IntegrationToken token = tokensRepository.findByIdAndOwnerUserId(id, owner).filter(value -> matchesScope(value, scope))
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Integration key not found."));
         if (!StringUtils.hasText(token.getRevokedAtIso())) {
             token.setRevokedAtIso(Instant.now().toString());
@@ -125,6 +138,10 @@ public class IntegrationTokenService {
             String rawToken,
             String clientId,
             String clientAddress) {
+        return authenticateClient(rawToken, clientId, clientAddress, INTEGRATION_SCOPE);
+    }
+
+    public AuthenticatedIntegrationClient authenticateClient(String rawToken, String clientId, String clientAddress, String scope) {
         String value = normalize(rawToken);
         String normalizedClientId = normalizeClientId(clientId);
         if (!StringUtils.hasText(value)
@@ -143,7 +160,9 @@ public class IntegrationTokenService {
                 Criteria.where("tokenHash").is(hash(value)),
                 Criteria.where("revokedAtIso").in(null, ""),
                 Criteria.where("expiresAtIso").gt(now),
-                claimableClient);
+                claimableClient, INTEGRATION_SCOPE.equals(scope)
+                        ? Criteria.where("scope").in(null, "", INTEGRATION_SCOPE)
+                        : Criteria.where("scope").is(scope));
         IntegrationToken token = mongoTemplate.findAndModify(
                 Query.query(activeToken),
                 new Update()
@@ -151,7 +170,7 @@ public class IntegrationTokenService {
                         .set("lastUsedAtIso", now),
                 FindAndModifyOptions.options().returnNew(true),
                 IntegrationToken.class);
-        if (!isActive(token)) {
+        if (!isActive(token) || !matchesScope(token, scope)) {
             return null;
         }
         if (!StringUtils.hasText(token.getClaimedAtIso())) {
@@ -175,6 +194,10 @@ public class IntegrationTokenService {
         return StringUtils.hasText(owner)
                 && StringUtils.hasText(id)
                 && tokensRepository.findByIdAndOwnerUserId(id, owner).filter(this::isActive).isPresent();
+    }
+
+    private boolean matchesScope(IntegrationToken token, String scope) {
+        return scope.equals(StringUtils.hasText(token.getScope()) ? token.getScope() : INTEGRATION_SCOPE);
     }
 
     private boolean isActive(IntegrationToken token) {

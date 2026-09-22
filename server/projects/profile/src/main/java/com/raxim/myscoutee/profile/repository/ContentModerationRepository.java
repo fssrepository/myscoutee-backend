@@ -36,7 +36,8 @@ public class ContentModerationRepository {
         } catch (DuplicateKeyException ex) { return false; }
     }
     public List<Item> page(String category, String status, String cursor, int limit) {
-        var criteria = Criteria.where("category").is(category).and("status").is(status);
+        var criteria = Criteria.where("status").is(status);
+        if (!"all".equals(category)) criteria.and("category").is(category);
         if (cursor != null && !cursor.isBlank()) criteria.and("_id").gt(cursor);
         return mongo.find(Query.query(criteria).with(Sort.by("_id")).limit(limit), Item.class);
     }
