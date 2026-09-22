@@ -1,6 +1,6 @@
 # Current manual QA session
 
-Updated: 2026-09-17
+Updated: 2026-09-22
 
 This is the context-saving entry point for continuing the manual QA campaign.
 It stores one minimal live resume pointer plus reusable pair-QA execution lessons. It
@@ -82,6 +82,23 @@ dates, next oracle and aggregate counts. This handoff owns only the active
 resume pointer and reusable working method.
 
 ## Active resume point
+
+The separately delegated Event Mode/API feature verification is closed. The
+older pair-QA campaign state below remains historical evidence and must not be
+replayed when resuming this work.
+
+```yaml
+checkpoint: EVENT-MODE-REGRESSION-001 + INTEGRATION-API-001
+checklist: ../checklists/event/EVENT-MODE-REGRESSION-001.md
+execution_log: ../checklists/event/EVENT-MODE-REGRESSION-001-20260921-progress.md
+substage: PASS/CLOSED 2026-09-22; API extension and bounded webhook timeout verified.
+fixture_phase: Original integration/session snapshots reset; 11 disposable events soft-trashed. Named runtime checkpoints retained for explicit replay only. Supplemental normal UI logins logged out.
+next_action: Do not replay closed QA. EVENT-ACTIVITY-RATING-001 is registered only, under Event; await user resumption before fixture implementation or manual startup.
+queued_work: Separate release work includes Netcup partial-update version identity, Git release tags and the pending deb release attachment. No release/deploy performed here.
+runtime: Existing watchers retained; native browser dimensions untouched; owned webhook receiver stopped. No active test command remains.
+```
+
+## Archived pair-QA resume point — 2026-09-17
 
 Campaign scheduling, confirmed 2026-09-17: Pricing is PASS/CLOSED after the
 user's confirmation and saved-data review. Borrow is also PASS/CLOSED by explicit

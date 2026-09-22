@@ -83,3 +83,51 @@ PASS / CLOSED on the assembled development stack through nginx.
 
 Machine-readable evidence is stored in
 `guides/qa/evidence/INTEGRATION-API-001-2026-09-20.json`.
+
+
+## Extension result — 2026-09-22
+
+PASS / CLOSED. The original 2026-09-20 base result remains valid; the extension
+was executed through the existing managed Casey/Nova browsers and public SDK.
+
+1. **Link/read PASS:** the Speed meeting `sourceLink` agreed between SDK event
+   read, owner editor and Nova's public External Info action. The public mapper
+   omission was repaired and replayed. An intercepted destination proves exact
+   new-tab navigation only. Standard public navigation was separately completed
+   under EVENT-MODE-REGRESSION-001 step 5.5.
+2. **Invitation PASS:** Nova claimed the generated invitation through the browser
+   and completed the normal membership flow. Reopening retained one membership;
+   mapped partner identifiers were preserved.
+3. **Runtime PASS:** organizer controls and the real scheduler completed two
+   rounds, including repeated co-participants; pause/resume and stale command
+   rejection preserved the current state. Fixture membership inputs did not seed
+   completed rounds or encounters.
+4. **Read/privacy PASS:** pre-completion encounters returned 409; completed reads
+   returned the distinct unordered pair union. The two-person case returned
+   `qa-casey`/`qa-nova`, revision 6, and empty offset-1 terminal page. The eight-person
+   case returned 28 pairs over pages 10/10/8, revision 4. Payload assertions excluded
+   internal user IDs and email addresses. Public opaque IDs remain valid for peers
+   without a partner mapping.
+5. **Watch PASS:** the actual `event.encounters` callback matched event, revision,
+   offset and combined API pair set. The eight-person callback matched all 28 pairs.
+6. **Authorization/cleanup PASS:** another owner's event read, encounters and
+   invitation creation each returned 404. Unwatch disabled the subscription;
+   normal UI key revocation returned 200 and subsequent connect returned 401.
+   Only disposable resources were soft-trashed; the owned receiver was stopped,
+   preferences restored and versioned fixture/session cleanup completed.
+7. **Timeout regression PASS:** a real loopback server reproduced the missing
+   response-body deadline (original code exceeded a 20-second test limit after
+   headers). Delivery now cancels unfinished HTTP responses after 10 seconds.
+   Silent headers and partial bodies passed at 10.121/10.025 seconds, each followed
+   by a successful healthy delivery. A refused connection persists RETRY after
+   failures 1/2, delays 5/30 seconds, then FAILED with no next attempt after failure
+   3. All six IntegrationWebhookService tests passed. These are real HTTP/service
+   tests with mocked repositories, not a claim of a live-stack failure replay.
+
+The existing backend watcher compiled production successfully. Focused Gradle
+execution excluded production compile/resources/classes, avoiding a duplicate
+production build. The API HTML, generated PDF and frontend-published PDF now
+state the three-attempt limit and complete-response timeout.
+
+Sanitized machine evidence:
+`guides/qa/evidence/INTEGRATION-API-001-2026-09-22.json`.
