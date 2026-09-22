@@ -547,7 +547,9 @@ run_scenario() {
       fi
       ;;
     event-domain)
-      if [ "${checkpoint_id}" = "TOURNAMENT-ADMISSION-001" ]; then
+      if [ "${checkpoint_id}" = "EVENT-MODE-REGRESSION-001" ]; then
+        scenario_script="${SCRIPT_DIR}/scenarios/event-mode-regression-checkpoints.js"
+      elif [ "${checkpoint_id}" = "TOURNAMENT-ADMISSION-001" ]; then
         scenario_script="${SCRIPT_DIR}/scenarios/tournament-admission-checkpoints.js"
       elif [ "${checkpoint_id}" = "TOURNAMENT-MEMBER-003" ]; then
         scenario_script="${SCRIPT_DIR}/scenarios/tournament-member-notification-checkpoints.js"
@@ -701,6 +703,10 @@ command="$1"
 scenario="$2"
 
 case "${scenario}:${command}" in
+  event-domain:capture-runtime-checkpoint|event-domain:restore-runtime-checkpoint)
+    [ "$#" -eq 4 ] && [ "$3" = "EVENT-MODE-REGRESSION-001" ] || { usage >&2; exit 2; }
+    run_scenario "${command}" "${scenario}" 30 "$3" "$4"
+    ;;
   mobile-push:capture|notification-admin:capture)
     [ "$#" -eq 4 ] || { usage >&2; exit 2; }
     run_scenario "${command}" "${scenario}" 30 "$3" "$4"

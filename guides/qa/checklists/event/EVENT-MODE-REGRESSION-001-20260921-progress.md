@@ -5,6 +5,35 @@ EVENT-MODE-REGRESSION-001 feature check, not the general manual-QA campaign.
 Use the stable event and INTEGRATION-API-001 checklists; do not mark the full
 campaign complete from the partial evidence below.
 
+## Numbered execution status — 01:55 CEST
+
+Step numbers refer to the stable EVENT-MODE-REGRESSION-001 checklist. Supporting
+unit/adapter evidence is distinguished from visible browser journeys.
+
+| Step | Result | Evidence / remaining boundary |
+| --- | --- | --- |
+| 1. First Explore open | PASS | 166 ms, held real preference response; no premature event query. |
+| 2. Filter apply/cancel/reload | PASS | Open spots + Mingle, badge 2; persisted settings. |
+| 3. Compact mobile controls | PASS | Earlier 320/390 px measurements; native viewport restored. Do not reintroduce emulation. |
+| 4. Landing/About/API help | PASS | EN/HU rendering; About reused branding, API controls 34 px; landing version 1.0.1. Admin geometry is not covered. |
+| 5. Standard external link | PARTIAL | Create/update/clear/restore/reopen passed; public action pending. |
+| 6. Standard membership | PASS | UI publish, Nova request, Casey approval, 2 accepted members. |
+| 7. Tournament | IN PROGRESS | Create/publish/approve/start/group assignment passed. Retry stage scheduled to enter score review at 01:56 CEST; score write/reopen pending. |
+| 8. Ordinary feedback/friendship | SUPPORTING TESTS PASS | 43 backend tests: feedback 16, rates 21, friendship projection 6. Full ordinary feedback browser journey not yet proven. |
+| 9. Speed meeting rounds | PASS | Two actual rounds, pause/resume/manual advance/automatic transition; saved history reopened. Select Past to inspect past round cards. |
+| 10. Unique feedback peers | SUPPORTING TESTS PASS | Actual organizer feedback submitted in HTTP UI; isolated local adapter restored seven unique attendee cards, excluding pending outsider. Two HTTP actors do not prove the larger visible peer list. |
+| 11. Local restart | PASS — adapter/IndexedDB | Real Chromium reload restores preferences, link, paused state and two completed rounds; not a full local-app UI journey. |
+| Cleanup | NOT RUN | Restore preferences; unwatch/revoke test key; disposable resources and managed-session restoration. |
+
+Menu correction: the rejected dock request was reverted by the user and is not
+reintroduced. Runtime menu items use the same default tinted item configuration
+as ActivityEventInfoCardMenuConverter; the earlier title/min-width CSS overrides
+are removed. Native browser measurement: item width equals menu content width
+249.64 px, height 36 px, no underline, anchored placement. Actual Tables action
+opens saved Round 1 / Table 1 with two members when Past is selected. Evidence:
+`final-menu-version.json`, `menu-standard-layout.png`, `menu-tables-navigation.txt`.
+The earlier menu narrowing claims below are superseded by this correction.
+
 ## Corrections retained
 
 - Reverted the unwanted 23:49 frontend/backend commits in cd8189f1 / dad8ee6c.

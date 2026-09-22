@@ -573,7 +573,8 @@ public final class EventsDtos {
             Boolean approvalRequired,
             String checkoutResultState,
             Double boost,
-            Boolean watched) {
+            Boolean watched,
+            String sourceLink) {
     }
 
     public record EventsExplorePageDto(
