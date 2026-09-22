@@ -90,12 +90,12 @@ the separate two-person manual rating checkpoint. Do not replay the earlier QA.
 checkpoint: EVENT-ACTIVITY-RATING-001
 checklist: ../checklists/event/EVENT-ACTIVITY-RATING-001.md
 execution_log: ../checklists/event/EVENT-ACTIVITY-RATING-001-20260922-progress.md
-substage: Fixture preparation verified; manual steps 1–10 NOT RUN.
-fixture_phase: event-rating / ready-for-manual-rating / all. Two isolated users, three ended event sources, one real-worker Met row at 0/0, no friendship or submitted feedback. Worker schedule restored.
+substage: User accepted no-prior-rate plus meeting case. Prior all/empty-Standard fixtures do not qualify Standard/Tournament. Corrected Standard existing-rate preparation PASS; manual step 1 pending.
+fixture_phase: event-rating / ready-for-manual-rating / standard. Prior rate9/4 met=false seeded as INPUT; real worker preserved identity/date/scores and added Met/Standard context plus one friendship. Zero feedback answers. Other formats future. Worker schedule restored.
 next_action: User opens Activities -> Rates -> Met in the Casey Rating QA and Nova Rating QA windows, then follows numbered step 1. Browser control belongs to the user; no automated checklist actions authorized for this checkpoint.
 resume_gate: Read the linked progress log, use the versioned event-rating status command, and check the existing launcher manifest/processes before any mutation. Do not reset or relaunch retained sessions merely because a new Codex turn started.
 queued_work: Separate Netcup partial-update version identity, Git release tags and deb release attachment. No deployment performed. Late participant claim uses event end; fresh-registration browser journey remains unproven.
-runtime: Both managed browser sessions launched 2026-09-22T01:16:22Z; native windows, no viewport emulation. Existing dev watchers retained. Reset/restage commands are in the stable guide.
+runtime: Managed sessions replaced for the Standard variant through the versioned launcher; native windows, no viewport emulation. Existing dev watchers retained. Reset/restage commands are in the stable guide.
 ```
 
 ## Archived pair-QA resume point — 2026-09-17

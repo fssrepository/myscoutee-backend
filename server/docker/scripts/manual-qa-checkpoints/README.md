@@ -793,7 +793,8 @@ retrospective, non-rerun workflows under
 `event-rating / EVENT-ACTIVITY-RATING-001` prepares two isolated users and
 Standard, Tournament and Speed meeting sources. Use `stage ... all` for the
 parallel comparison or `standard`, `tournament`, `speed-meeting` for isolation.
-`status` is read-only; `ready` checks real zero-score Met projection and restores
+`status` is read-only; `ready` checks real Met projection (preserved 9/4 prior
+rate for Standard/Tournament; new 0/0 for Speed meeting) and restores
 the temporarily shortened worker schedule; `reset` restores scoped fixture and
 session state. Reset/restage is the supported replay.
 See [the numbered manual guide](../../../../guides/qa/checklists/event/EVENT-ACTIVITY-RATING-001.md)

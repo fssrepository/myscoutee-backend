@@ -22,9 +22,12 @@ accepted participants, including Casey as organizer, in these events:
 
 The fixture supplies membership and completed history. It does not exercise
 Tournament scoring/group generation or real-time Speed meeting transitions;
-those belong to EVENT-MODE-REGRESSION-001. No rating, Met row, friendship or
-submitted feedback is seeded. The existing event-counter-expiry worker projects
-Met from that history. Its schedule is temporarily shortened to ten seconds and
+those belong to EVENT-MODE-REGRESSION-001. For Standard/Tournament (and `all`), a pre-existing **9/4** reciprocal rate is
+seeded as a prerequisite with `met: false`, an earlier creation date and a fixed
+record identity. Speed meeting starts without a rate. Neither variant seeds a
+Met result, friendship or submitted feedback. The existing event-counter-expiry
+worker must add Met while preserving prior scores/identity, or create the new
+0/0 row when there was no prior rate. Its schedule is temporarily shortened to ten seconds and
 restored by `ready` or `reset`.
 
 There is one shared rating relationship for the same two people, even when
@@ -37,16 +40,22 @@ context; use the isolated format variants below to compare each source.
 1. Verify the prepared windows identify Casey Rating QA and Nova Rating QA.
    Open Activities → Rates → Met in each. If a retained filter hides the card,
    clear the filter through the normal UI. Record the filter and visible counts.
-2. Confirm each sees the other once, with zero given/received scores. Record
-   the event caption. The fixture `status` must show exactly one Met row, 0/0,
-   no friendship and no submitted feedback before the first rating.
+2. Confirm each sees the other once and record the event caption. For Standard
+   or Tournament, Casey must see given **9** / received **4**, and Nova **4/9**.
+   Compare `priorRate` with the projected row: same ID, sync key, creation date,
+   users and scores; only meeting context is added by the worker. One friendship
+   is expected after the real worker processes these reciprocal positive scores.
+   For Speed meeting without a prior rate, expect a new Met row at **0/0**, with
+   no friendship. Both variants start without submitted feedback.
 3. In Casey's counterpart card, open the normal rating action, select **8**,
    and press **Save once**. Selection alone is not submission. Allow the normal
    rating sync cycle to finish; do not repeatedly submit to force synchronization.
-4. Inspect Casey's Given and Nova's Received buckets, including their counters.
-   Reopen the card and check Casey's given score and Nova's received score are
-   both 8. Capture the actual bucket membership, then request a fixture `status`
-   read to verify one shared row with 8/0 in Casey's orientation.
+4. For the Speed meeting 0/0 baseline, inspect Casey's Given and Nova's Received
+   buckets and counters: after Casey saves, the shared row is **8/0**.
+   For Standard/Tournament's pre-existing 9/4 baseline, changing Casey to 8
+   leaves **8/4**, still in Met. Reopen both views, record bucket membership and
+   request a fixture `status` read. Do not erase Nova's prior score to manufacture
+   the one-sided branch.
 5. In Nova's counterpart card, give Casey **6** and save once. After sync,
    inspect Met, Given, Received and Mutual in both windows. Reopen the card:
    Casey's perspective is given 8 / received 6; Nova's is given 6 / received 8.
@@ -79,6 +88,7 @@ be reported and resolved rather than silently marking the test PASS.
 | Casey gives | Nova gives | Casey bucket | Nova bucket |
 | --- | --- | --- | --- |
 | 0 | 0 | Met | Met |
+| 9 (pre-existing) | 4 (pre-existing) | Met after meeting | Met after meeting |
 | 8 | 0 | Given | Received |
 | 8 | 6 | Met | Met |
 
@@ -100,8 +110,9 @@ bash server/docker/scripts/manual-qa-checkpoints/manual-qa-checkpoints-docker.sh
 node guides/qa/tools/open-checkpoint-browser-sessions.mjs EVENT-ACTIVITY-RATING-001
 ```
 
-`ready` refuses to proceed until the real worker has produced the zero-score
-Met baseline and the relevant source projection flags. If not ready, inspect
+`ready` refuses to proceed until the real worker has produced the relevant
+source flags and Met result: preserved pre-existing identity/scores for
+Standard/Tournament, or a new zero-score row for Speed meeting. If not ready, inspect
 the existing worker and repeat the readiness check; do not seed its output.
 After startup, the tester owns navigation, clicks, rating and form submission.
 

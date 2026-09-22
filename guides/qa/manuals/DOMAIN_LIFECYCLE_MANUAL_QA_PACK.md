@@ -11220,3 +11220,15 @@ See the [numbered guide](../checklists/event/EVENT-ACTIVITY-RATING-001.md),
 [dated execution log](../checklists/event/EVENT-ACTIVITY-RATING-001-20260922-progress.md)
 and [persisted preparation evidence](../evidence/EVENT-ACTIVITY-RATING-001-2026-09-22.json).
 Prior Event Mode/API closure is retained; this is a separate manual journey.
+
+Follow-up: user accepted combined-source exploration. Persisted Casey/Nova
+scores9/4, friendship1, feedback0 were archived before authorized fixture reset.
+Standard-only 0/0 Met baseline now ready; next user action is step1 for
+QA RATING · Standard. See the same dated execution log for exact evidence.
+
+Correction: the accepted previous case proves meeting before first rating,
+not Standard/Tournament with prior rates. Corrected Standard fixture now seeds
+only prior9/4 scores with Met=false. The real worker preserves identity/date/
+scores and adds Met plus one friendship. Manual observation of this corrected
+baseline remains pending; see the existing-rate before/after evidence linked
+from the dated log. Tournament still requires its isolated replay.

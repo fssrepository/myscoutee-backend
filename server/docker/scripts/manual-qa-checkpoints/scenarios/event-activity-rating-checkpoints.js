@@ -45,10 +45,10 @@
     const state = Q.activeState(scenario);
     if (!state) return Q.printObject({checkpointId, phase: "not-staged"});
     Q.printObject({checkpointId, phase: state.phase, selectedFormat: state.selectedFormat,
-      users: users.map(id => Q.user(id)),
+      users: users.map(id => Q.user(id)), priorRate: state.priorRate || null,
       events: Q.collection("events").find({sourceId: inEvents}, {_id: 0, sourceId: 1, title: 1, mode: 1, friendshipsProjected: 1, endAtIso: 1}).toArray(),
       rounds: Q.collection("activityMingleRounds").find({eventId: inEvents}, {_id: 0, roundNumber: 1, status: 1, meetingsProjected: 1}).toArray(),
-      rates: Q.collection("userRates").find(pairSelector, {_id: 1, ownerUserId: 1, relatedUserId: 1, met: 1, eventName: 1, scoreGiven: 1, scoreReceived: 1}).toArray(),
+      rates: Q.collection("userRates").find(pairSelector, {_id: 1, syncKey: 1, createdDate: 1, ownerUserId: 1, relatedUserId: 1, met: 1, metEventId: 1, eventName: 1, scoreGiven: 1, scoreReceived: 1}).toArray(),
       friendships: Q.collection("userFriendships").countDocuments(specs.find(s => s.collection === "userFriendships").selector),
       feedbackAnswers: Q.collection("eventFeedbackAnswers").countDocuments({eventId: inEvents}),
       timingRestored: state.timingRestored === true, baselineCaptured: !!state.baseline});
@@ -78,6 +78,16 @@
       });
       const now = Date.now();
       const stamp = hours => new Date(now + hours * 3600000).toISOString();
+      // Standard/Tournament participants already have a rating relationship.
+      // Seed only that prior input; the real worker must preserve it and add Met.
+      if (selected !== "speed-meeting") {
+        const priorRate = {_id: "qa-rating-001-existing-rate", syncKey: "qa-rating-001-existing-rate",
+          mode: "single", ownerUserId: users[0], relatedUserId: users[1],
+          scoreGiven: 9, scoreReceived: 4, mutuallyRated: true, met: false,
+          createdDate: stamp(-24), updatedDate: stamp(-24), createdUser: Q.ACTOR, updatedUser: Q.ACTOR};
+        Q.collection("userRates").insertOne(priorRate);
+        states.updateOne({_id: state._id}, {$set: {priorRate}});
+      }
       formats.forEach((format, index) => {
         const active = selected === "all" || selected === format;
         const startAtIso = active ? stamp(-6 + index / 3) : stamp(48);
@@ -116,7 +126,7 @@
             startedAtIso: startAtIso, completedAtIso: endAtIso, createdByUserId: users[0], meetingsProjected: false});
         }
       });
-      // Shorten only the existing worker's schedule; no rating/Met/Friend outcome is seeded.
+      // Shorten only the existing worker's schedule; no Met/Friend outcome is seeded.
       Q.collection("notificationRuleConfigs").updateOne({_id: rule._id}, {$set: {
         timing: {...rule.timing, mode: "interval", intervalSeconds: 10, intervalMinutes: null, intervalAmount: 10, intervalUnit: "seconds"}, scheduleSlots: []}});
       states.updateOne({_id: state._id}, {$set: {phase: "awaiting-real-projection"}});
@@ -130,11 +140,17 @@
     const expectedOrdinary = state.selectedFormat === "all" ? 2 : state.selectedFormat === "speed-meeting" ? 0 : 1;
     const expectedRounds = ["all", "speed-meeting"].includes(state.selectedFormat) ? 2 : 0;
     const rates = Q.collection("userRates").find(pairSelector).toArray();
+    const prior = state.priorRate;
+    const expectedGiven = prior ? prior.scoreGiven : 0;
+    const expectedReceived = prior ? prior.scoreReceived : 0;
+    const preserved = !prior || (rates.length === 1
+        && ["_id", "syncKey", "createdDate", "ownerUserId", "relatedUserId"].every(key => rates[0][key] === prior[key]));
     if (Q.collection("events").countDocuments({sourceId: inEvents, mode: {$ne: "Mingle"}, friendshipsProjected: true}) !== expectedOrdinary
         || Q.collection("activityMingleRounds").countDocuments({eventId: inEvents, meetingsProjected: true}) !== expectedRounds
-        || rates.length !== 1 || rates[0].met !== true || Number(rates[0].scoreGiven) !== 0 || Number(rates[0].scoreReceived) !== 0
-        || Q.collection("userFriendships").countDocuments(specs.find(s => s.collection === "userFriendships").selector)) {
-      Q.fail("Real zero-score meeting projection is not ready; inspect status and the existing worker.");
+        || rates.length !== 1 || rates[0].met !== true || Number(rates[0].scoreGiven) !== expectedGiven
+        || Number(rates[0].scoreReceived) !== expectedReceived || !preserved
+        || Q.collection("userFriendships").countDocuments(specs.find(s => s.collection === "userFriendships").selector) !== (prior ? 1 : 0)) {
+      Q.fail("Real meeting projection is not ready or changed the prior rating; inspect status and the existing worker.");
     }
     restoreTiming(state);
     if (!state.baseline) {
