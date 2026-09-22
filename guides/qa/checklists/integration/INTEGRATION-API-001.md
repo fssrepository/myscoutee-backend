@@ -131,3 +131,28 @@ state the three-attempt limit and complete-response timeout.
 
 Sanitized machine evidence:
 `guides/qa/evidence/INTEGRATION-API-001-2026-09-22.json`.
+
+## Late participant claim follow-up — 2026-09-22
+
+The agreed cutoff is the event **end**, not its start. Links have no time-based
+expiry. Before that cutoff, normal invitation permission still applies. After
+expiry/end, or a completed Speed meeting session, claim retains the external-ID
+mapping and returns `invitationAvailable: false`; it creates no invitation and
+changes no existing membership. The UI clears the claim URL and remains on the
+normal screen. Ownership and conflicting-account checks remain enforced.
+
+Eight focused service tests PASS, including an already-started ongoing event,
+all three expired formats, replay, an early-completed Speed meeting, and account
+conflicts. Production compilation used the existing watchers; the focused test
+excluded their compile/classes/resource tasks. API HTML/PDF regenerated.
+Evidence: [late-claim service result](../../evidence/INTEGRATION-API-001-late-claim-2026-09-22.json).
+This supplements the earlier closed API run; it does not claim a new browser
+PASS. Fresh registration plus claim and the new late branch through assembled
+HTTP remain unproven.
+
+For a future explicit full-flow replay, use disposable participant IDs: claim
+one link while the event is ongoing and verify one ordinary pending invitation;
+claim another after its end and verify only the external identity mapping,
+without invitation or event popup. Repeat with an already-completed Speed
+meeting before its scheduled end. Reopen each link under the same account and
+verify no duplicates; a different account must remain rejected.

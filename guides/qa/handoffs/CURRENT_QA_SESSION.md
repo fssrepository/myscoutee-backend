@@ -83,19 +83,19 @@ resume pointer and reusable working method.
 
 ## Active resume point
 
-The separately delegated Event Mode/API feature verification is closed. The
-older pair-QA campaign state below remains historical evidence and must not be
-replayed when resuming this work.
+The delegated Event Mode/API verification is closed. The user has now started
+the separate two-person manual rating checkpoint. Do not replay the earlier QA.
 
 ```yaml
-checkpoint: EVENT-MODE-REGRESSION-001 + INTEGRATION-API-001
-checklist: ../checklists/event/EVENT-MODE-REGRESSION-001.md
-execution_log: ../checklists/event/EVENT-MODE-REGRESSION-001-20260921-progress.md
-substage: PASS/CLOSED 2026-09-22; API extension and bounded webhook timeout verified.
-fixture_phase: Original integration/session snapshots reset; 11 disposable events soft-trashed. Named runtime checkpoints retained for explicit replay only. Supplemental normal UI logins logged out.
-next_action: Do not replay closed QA. EVENT-ACTIVITY-RATING-001 is registered only, under Event; await user resumption before fixture implementation or manual startup.
-queued_work: Separate release work includes Netcup partial-update version identity, Git release tags and the pending deb release attachment. No release/deploy performed here.
-runtime: Existing watchers retained; native browser dimensions untouched; owned webhook receiver stopped. No active test command remains.
+checkpoint: EVENT-ACTIVITY-RATING-001
+checklist: ../checklists/event/EVENT-ACTIVITY-RATING-001.md
+execution_log: ../checklists/event/EVENT-ACTIVITY-RATING-001-20260922-progress.md
+substage: Fixture preparation verified; manual steps 1–10 NOT RUN.
+fixture_phase: event-rating / ready-for-manual-rating / all. Two isolated users, three ended event sources, one real-worker Met row at 0/0, no friendship or submitted feedback. Worker schedule restored.
+next_action: User opens Activities -> Rates -> Met in the Casey Rating QA and Nova Rating QA windows, then follows numbered step 1. Browser control belongs to the user; no automated checklist actions authorized for this checkpoint.
+resume_gate: Read the linked progress log, use the versioned event-rating status command, and check the existing launcher manifest/processes before any mutation. Do not reset or relaunch retained sessions merely because a new Codex turn started.
+queued_work: Separate Netcup partial-update version identity, Git release tags and deb release attachment. No deployment performed. Late participant claim uses event end; fresh-registration browser journey remains unproven.
+runtime: Both managed browser sessions launched 2026-09-22T01:16:22Z; native windows, no viewport emulation. Existing dev watchers retained. Reset/restage commands are in the stable guide.
 ```
 
 ## Archived pair-QA resume point — 2026-09-17

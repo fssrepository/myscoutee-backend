@@ -787,3 +787,15 @@ and a reusable operator prompt.
 The Statistics tests already completed in this QA session are preserved as
 retrospective, non-rerun workflows under
 [`completed-runs`](completed-runs/README.md).
+
+## Event activity rating
+
+`event-rating / EVENT-ACTIVITY-RATING-001` prepares two isolated users and
+Standard, Tournament and Speed meeting sources. Use `stage ... all` for the
+parallel comparison or `standard`, `tournament`, `speed-meeting` for isolation.
+`status` is read-only; `ready` checks real zero-score Met projection and restores
+the temporarily shortened worker schedule; `reset` restores scoped fixture and
+session state. Reset/restage is the supported replay.
+See [the numbered manual guide](../../../../guides/qa/checklists/event/EVENT-ACTIVITY-RATING-001.md)
+for full commands, boundaries and cleanup. Startup uses the common versioned
+browser launcher; subsequent rating actions belong to the tester.

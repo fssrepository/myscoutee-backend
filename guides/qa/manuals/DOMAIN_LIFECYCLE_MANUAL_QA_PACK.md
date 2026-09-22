@@ -11208,3 +11208,15 @@ demo selector. Managed browsers were closed. Evidence:
 Next is Operator Update with managed HTTPS on VMware; do not start it alongside
 the dev stack. Separate deployment/smoke/security/efficiency qualification is
 queued. No VMware update or deployment has run.
+
+
+## Event activity rating preparation — 2026-09-22
+
+`EVENT-ACTIVITY-RATING-001`: fixture preparation verified; manual step 1 pending.
+Two dedicated actors, all three event sources and real-worker Met 0/0 baseline
+are prepared. The standardized managed browser launcher has handed control to
+the user. No rating/feedback checklist action was performed automatically.
+See the [numbered guide](../checklists/event/EVENT-ACTIVITY-RATING-001.md),
+[dated execution log](../checklists/event/EVENT-ACTIVITY-RATING-001-20260922-progress.md)
+and [persisted preparation evidence](../evidence/EVENT-ACTIVITY-RATING-001-2026-09-22.json).
+Prior Event Mode/API closure is retained; this is a separate manual journey.

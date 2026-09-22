@@ -46,5 +46,5 @@ The delegated [Event Mode regression](guides/qa/checklists/event/EVENT-MODE-REGR
 and [Integration API extension](guides/qa/checklists/integration/INTEGRATION-API-001.md#extension-result--2026-09-22)
 are closed on 2026-09-22, with evidence boundaries recorded in their results.
 The separate [activity-rating comparison](guides/qa/checklists/event/EVENT-ACTIVITY-RATING-001.md)
-is queued only. The [QA matrix](guides/qa/matrices/ADMIN_DYNAMIC_SURFACES_QA_MATRIX.xlsx)
+has its two-user fixture and managed windows prepared; manual rating actions remain pending. The [QA matrix](guides/qa/matrices/ADMIN_DYNAMIC_SURFACES_QA_MATRIX.xlsx)
 and its [CSV source](guides/qa/matrices/ADMIN_DYNAMIC_SURFACES_QA_MATRIX.csv) own current status.

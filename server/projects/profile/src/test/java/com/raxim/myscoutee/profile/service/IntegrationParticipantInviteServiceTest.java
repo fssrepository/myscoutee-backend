@@ -31,8 +31,10 @@ class IntegrationParticipantInviteServiceTest {
 
     @BeforeEach void setup() { service = new IntegrationParticipantInviteService(mongo, events, access, members, endpoint, profiles); }
 
-    @Test void claimBindsTheAuthenticatedActorAndCreatesOnlyAnInvitation() {
+    @Test void ongoingEventClaimBindsTheAuthenticatedActorAndCreatesOnlyAnInvitation() {
         var event = event();
+        event.setStartAtIso(java.time.Instant.now().minusSeconds(3600).toString());
+        event.setEndAtIso(java.time.Instant.now().plusSeconds(3600).toString());
         when(profiles.resolveSelectedUserId("spoofed")).thenReturn("actual-user");
         var open = invite(null);
         when(mongo.findOne(any(Query.class), eq(IntegrationParticipantInvite.class))).thenReturn(open);
