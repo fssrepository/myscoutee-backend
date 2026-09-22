@@ -11261,3 +11261,11 @@ and the versioned fixture reset restored its snapshots; final status not-staged.
 No production-code change, extra app build, viewport override, feedback
 submission or release occurred. Future room creation remains outside this QA.
 See [closure evidence](../evidence/EVENT-ACTIVITY-RATING-001-closure-2026-09-22.json).
+
+## EVENT-FOLLOWING-002 — 2026-09-22 follow-up
+
+PASS / CLOSED in delegated dev HTTP scope. See the separate
+[numbered checklist](../checklists/event/EVENT-FOLLOWING-002.md) and
+[execution evidence](../evidence/EVENT-FOLLOWING-002-20260922-progress.md)
+for all eight checks, saved-state oracles, transport failure/retry, and scoped cleanup.
+Historical PASS records remain unchanged.

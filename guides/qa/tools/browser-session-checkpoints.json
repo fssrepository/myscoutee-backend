@@ -2021,6 +2021,28 @@
           "autoDismissExplanationGuide": true
         }
       ]
+    },
+    "EVENT-FOLLOWING-002": {
+      "preserveOtherSessions": true,
+      "layout": {
+        "columns": 2
+      },
+      "sessions": [
+        {
+          "actor": "Following QA Viewer",
+          "sessionKind": "demo",
+          "userId": "6af011000000000000000001",
+          "expectedName": "Following QA Viewer",
+          "autoDismissExplanationGuide": true
+        },
+        {
+          "actor": "Following QA Organizer",
+          "sessionKind": "demo",
+          "userId": "6af011000000000000000002",
+          "expectedName": "Following QA Organizer",
+          "autoDismissExplanationGuide": true
+        }
+      ]
     }
   }
 }

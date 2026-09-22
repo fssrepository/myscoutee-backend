@@ -3,7 +3,9 @@
 import { readFile } from 'node:fs/promises';
 import WebSocket from '../../../frontend/node_modules/ws/index.js';
 const [actor = '0', script] = process.argv.slice(2);
-const manifest = JSON.parse(await readFile('/tmp/myscoutee-qa-browser-sessions/EVENT-FOLLOWING-001.json', 'utf8'));
+const checkpoint = process.env.QA_CHECKPOINT || 'EVENT-FOLLOWING-001';
+if (!['EVENT-FOLLOWING-001', 'EVENT-FOLLOWING-002'].includes(checkpoint)) throw Error('Unknown checkpoint');
+const manifest = JSON.parse(await readFile(`/tmp/myscoutee-qa-browser-sessions/${checkpoint}.json`, 'utf8'));
 const port = manifest.sessions[Number(actor)].devToolsPort;
 const pages = await fetch(`http://127.0.0.1:${port}/json/list`).then(r => r.json());
 const page = pages.find(p => p.type === 'page' && p.url.startsWith('http://localhost'));

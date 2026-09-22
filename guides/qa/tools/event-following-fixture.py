@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
 """Isolated EVENT-FOLLOWING-001 actors/events; follow relationships are created through the UI."""
 import json, subprocess, sys
-KEY='EVENT-FOLLOWING-001'
+KEY=sys.argv[2] if len(sys.argv)>2 else 'EVENT-FOLLOWING-001'
+if KEY not in ('EVENT-FOLLOWING-001','EVENT-FOLLOWING-002'): raise ValueError('Unknown following checkpoint')
 IDS=['6af011000000000000000001','6af011000000000000000002','6af011000000000000000003']
 def mongo(code):
  return subprocess.check_output(['docker','exec','mongodb','sh','-c',
@@ -19,6 +20,16 @@ if command=='stage':
  const events=specs.map(([suffix,start,end,status,visibility,owner])=>({_id:'qa-following-'+suffix,syncKey:'qa-following-'+suffix,sourceId:'qa-following-'+suffix,ownerUserId:owner,creatorUserId:owner,creatorName:names[ids.indexOf(owner)],creatorInitials:'FQ',creatorGender:source.gender,creatorCity:source.city,title:'QA FOLLOWING '+suffix,subtitle:'Disposable organizer following regression',status,visibility,mode:'Casual',startAtIso:iso(start),endAtIso:iso(end),admins:[owner],topics:[],capacityMin:1,capacityMax:10,capacityTotal:10,acceptedMembers:0,pendingMembers:0,location:'Austin',locationCoordinates:source.locationCoordinates,subEvents:[],acceptedMemberUserIds:[],pendingRequestMemberUserIds:[],invitedMemberUserIds:[],generated:false}));
  db.manualQaCheckpointSnapshots.insertOne({_id:key,checkpointId:key,scenario:'event-following',phase:'ready',users:ids,eventIds:events.map(e=>e.sourceId),stagedAtIso:new Date().toISOString()});
  db.users.insertMany(users);db.events.insertMany(events);print(JSON.stringify({phase:'ready',actors:ids,events:events.map(e=>e.sourceId),seededFollowing:false}));'''
+elif command=='menu-invitation':
+ code="""if(!db.manualQaCheckpointSnapshots.findOne({_id:key}))throw Error('Not staged');
+ for(const sourceId of ['qa-following-current','qa-following-future']) {
+ const sourceLink=sourceId==='qa-following-current'?'http://localhost/entry?qa=event-following-menu':'';
+ db.events.updateOne({sourceId,ownerUserId:ids[1]},{$set:{sourceLink,invitedMemberUserIds:[ids[0]],pendingMembers:1}});
+ const copy=db.events.findOne({sourceId,ownerUserId:ids[1]});copy._id=sourceId+'-invitation';copy.syncKey=copy._id;copy.ownerUserId=ids[0];copy.status='I';
+ db.events.replaceOne({_id:copy._id},copy,{upsert:true});
+ db.activityMembers.replaceOne({_id:sourceId+'-member'},{_id:sourceId+'-member',ownerType:'event',ownerId:sourceId,userId:ids[0],name:'Following QA Viewer',role:'Member',status:'I',requestKind:'invite',pendingSource:'admin',invitedByUserId:ids[1],actionAtIso:new Date().toISOString()},{upsert:true});
+ }
+ print(JSON.stringify({invitations:2,externalLinks:1,seededFollowing:false}));"""
 elif command=='shorten-current':
  # Setup only: application follow action arms the stored expiry; worker must remove it.
  code="""if(!db.manualQaCheckpointSnapshots.findOne({_id:key}))throw Error('Not staged');

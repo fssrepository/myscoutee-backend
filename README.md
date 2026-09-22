@@ -53,3 +53,8 @@ and its [CSV source](guides/qa/matrices/ADMIN_DYNAMIC_SURFACES_QA_MATRIX.csv) ow
 is closed on 2026-09-22 in the dev HTTP scope: follow/unfollow, independent
 counters, filters, lifecycle/expiry, and compact desktop layout verified;
 fixture and managed windows cleaned. Platform limits are recorded in the evidence.
+
+The separate [following menu and confirmation QA](guides/qa/evidence/EVENT-FOLLOWING-002-20260922-progress.md)
+is closed on 2026-09-22: all 8 numbered dev HTTP checks passed, including
+committed deltas, failed-save retry, immediate list removal and stored-state poll.
+Its isolated fixture and browser sessions are cleaned.

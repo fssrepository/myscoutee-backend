@@ -83,17 +83,17 @@ resume pointer and reusable working method.
 
 ## Active resume point
 
-Earlier Event Mode, Integration API and Activity Rating cases remain closed.
+Earlier Event Mode, Integration API, Activity Rating and EVENT-FOLLOWING-001 remain closed.
 
 ```yaml
-checkpoint: EVENT-FOLLOWING-001
-checklist: ../checklists/event/EVENT-FOLLOWING-001.md
-execution_log: ../evidence/EVENT-FOLLOWING-001-20260922-progress.md
-substage: PASS/CLOSED in dev HTTP scope; numbered 1-10 evidence and platform limits recorded.
-fixture_phase: reset; managed windows closed, session snapshots restored, fixture actors/events removed.
-next_action: No remaining Followed QA action in this scope. Do not restage or replay automatically.
-resume_gate: Read linked evidence. Closed fixture status is state=null and users=[]. No retained browser checkpoint.
-runtime: Existing frontend-sync and backend watcher only. Explicit full-flow testing authorization applies to this checkpoint. User windows must remain unchanged.
+checkpoint: EVENT-FOLLOWING-002
+checklist: ../checklists/event/EVENT-FOLLOWING-002.md
+execution_log: ../evidence/EVENT-FOLLOWING-002-20260922-progress.md
+substage: PASS / CLOSED; numbered checks 1-8 completed in dev HTTP scope.
+fixture_phase: reset; managed windows closed; actors/events/members absent.
+next_action: No remaining work in this checkpoint. Do not replay completed tests.
+resume_gate: Inspect event-following-fixture.py status EVENT-FOLLOWING-002 and managed browser manifest before changes. Do not replay closed cases.
+runtime: Existing dev watchers; browser control explicitly delegated for this checkpoint. Preserve other browser sessions and their viewports.
 ```
 
 ## Archived pair-QA resume point — 2026-09-17
