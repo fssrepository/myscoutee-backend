@@ -90,6 +90,22 @@ context; use the isolated format variants below to compare each source.
 10. When finished, request scoped cleanup using the commands below. Preserve
     evidence before reset. Do not reset a live manual exploration automatically.
 
+## Side-menu badge baseline
+
+The Rates side-menu badge retains its existing **total rate-list item count**
+meaning. It is not a Received-only attention counter. This two-person fixture
+has one shared visible rate per viewer, so `activities.game` is **1 for both**,
+including after reciprocity moves the item to Mutual. Bucket badges retain their
+own list totals. Stage initializes the counter for a pre-existing rate; ready
+sets it after verifying a real projected meeting row in event-history variants.
+
+For an already-active fixture with missing counters, repair only these two
+profiles without resetting ratings or browser sessions:
+
+```bash
+bash server/docker/scripts/manual-qa-checkpoints/manual-qa-checkpoints-docker.sh repair-rate-counters event-rating EVENT-ACTIVITY-RATING-001
+```
+
 ## Bucket comparison reference
 
 This table describes the current service mapping to inspect, not a replacement

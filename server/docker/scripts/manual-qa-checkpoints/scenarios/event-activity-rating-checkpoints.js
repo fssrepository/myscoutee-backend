@@ -46,6 +46,7 @@
     if (!state) return Q.printObject({checkpointId, phase: "not-staged"});
     Q.printObject({checkpointId, phase: state.phase, selectedFormat: state.selectedFormat,
       users: users.map(id => Q.user(id)), priorRate: state.priorRate || null,
+      rateCounters: Q.collection("users").find({userId: inUsers}, {_id: 0, userId: 1, "activities.game": 1}).toArray(),
       events: Q.collection("events").find({sourceId: inEvents}, {_id: 0, sourceId: 1, title: 1, mode: 1, friendshipsProjected: 1, endAtIso: 1}).toArray(),
       rounds: Q.collection("activityMingleRounds").find({eventId: inEvents}, {_id: 0, roundNumber: 1, status: 1, meetingsProjected: 1}).toArray(),
       rates: Q.collection("userRates").find(pairSelector, {_id: 1, syncKey: 1, createdDate: 1, ownerUserId: 1, relatedUserId: 1, met: 1, metEventId: 1, eventName: 1, scoreGiven: 1, scoreReceived: 1}).toArray(),
@@ -88,6 +89,7 @@
           scoreGiven: 9, scoreReceived: 0, mutuallyRated: false, met: false,
           createdDate: stamp(-24), updatedDate: stamp(-24), createdUser: Q.ACTOR, updatedUser: Q.ACTOR};
         Q.collection("userRates").insertOne(priorRate);
+        Q.collection("users").updateMany({userId: inUsers}, {$set: {"activities.game": 1}});
         states.updateOne({_id: state._id}, {$set: {priorRate}});
       }
       (beforeMeeting ? [] : formats).forEach((format, index) => {
@@ -138,6 +140,16 @@
   if (command === "stage") return stage();
   if (command === "status") return status();
   const state = Q.activeState(scenario, true);
+  if (command === "repair-rate-counters") {
+    // Repair only the two fixture profiles' derived input; preserve every rating.
+    const rates = Q.collection("userRates").find(pairSelector).toArray();
+    if (rates.length !== 1 || rates[0].mode !== "single"
+        || !users.includes(rates[0].ownerUserId) || !users.includes(rates[0].relatedUserId)
+        || rates[0].ownerUserId === rates[0].relatedUserId) Q.fail("Unexpected fixture pair; refusing counter repair.");
+    const visible = rates[0].met === true || Number(rates[0].scoreGiven) > 0 || Number(rates[0].scoreReceived) > 0;
+    Q.collection("users").updateMany({userId: inUsers}, {$set: {"activities.game": visible ? 1 : 0}});
+    return status();
+  }
   if (command === "ready") {
     const beforeMeeting = state.selectedFormat === "before-meeting";
     const expectedOrdinary = state.selectedFormat === "all" ? 2 : beforeMeeting || state.selectedFormat === "speed-meeting" ? 0 : 1;
@@ -156,6 +168,8 @@
         || Q.collection("userFriendships").countDocuments(specs.find(s => s.collection === "userFriendships").selector) !== 0) {
       Q.fail("Real meeting projection is not ready or changed the prior rating; inspect status and the existing worker.");
     }
+    // The verified fixture contains one visible rate for each actor, in any bucket.
+    Q.collection("users").updateMany({userId: inUsers}, {$set: {"activities.game": 1}});
     restoreTiming(state);
     if (!state.baseline) {
       const baselineSpecs = specs.filter(s => !["users", "userSessionStates", "userSessionActions"].includes(s.collection));

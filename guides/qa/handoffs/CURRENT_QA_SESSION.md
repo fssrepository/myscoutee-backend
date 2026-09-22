@@ -90,9 +90,9 @@ the separate two-person manual rating checkpoint. Do not replay the earlier QA.
 checkpoint: EVENT-ACTIVITY-RATING-001
 checklist: ../checklists/event/EVENT-ACTIVITY-RATING-001.md
 execution_log: ../checklists/event/EVENT-ACTIVITY-RATING-001-20260922-progress.md
-substage: User clarified one-sided rating BEFORE any event. Previous Standard meeting-bearing baseline superseded for this step; manual bucket inspection pending.
-fixture_phase: event-rating / ready-for-manual-rating / before-meeting. Casey9/Nova0, Met=false; zero events, rounds, friendships and feedback. No worker timing change.
-next_action: User inspects every Rates bucket in both prepared windows BEFORE saving. Given for Casey, Received for Nova; later user-owned reciprocal rating should reach Mutual while Met=false. No automatic clicks or submissions.
+substage: User accepted before-meeting reciprocal transition to Mutual. Rates side-menu badge keeps total-rate semantics; fixture-only counter repair verified.
+fixture_phase: User-requested reset completed: before-meeting, Casey9/Nova0, Met=false, no events or friendship, both activities.game counters1. Managed sessions relaunched through versioned launcher.
+next_action: User checks Rates side-menu badge1 in both reset windows; Casey Given and Nova Received. Do not navigate or rate automatically. Application changes remain reverted.
 resume_gate: Read the linked progress log, use the versioned event-rating status command, and check the existing launcher manifest/processes before any mutation. Do not reset or relaunch retained sessions merely because a new Codex turn started.
 queued_work: Separate Netcup partial-update version identity, Git release tags and deb release attachment. No deployment performed. Late participant claim uses event end; fresh-registration browser journey remains unproven.
 runtime: Two managed native windows prepared through versioned launcher for before-meeting. Existing dev watchers retained. No application code change.

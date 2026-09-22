@@ -1,10 +1,9 @@
 # EVENT-ACTIVITY-RATING-001 — execution log, 2026-09-22
 
-Current: **before-meeting** one-sided baseline ready. Casey9/Nova0, Met=false,
-no events and no friendship. Next: the tester inspects every Rates bucket in
-both windows **before saving anything**. Reciprocal rating is the user's next
-step only after they finish inspection; without a meeting it leads to Mutual.
-Earlier Standard preparations below are historical and superseded for this step.
+Current: user-requested reset completed for a quick badge check. Before-meeting
+baseline Casey9/Nova0, Met=false, both side-menu counters1, no events or
+friendship. Earlier Mutual acceptance remains archived below. The two managed
+windows are handed back to the user; no rating or navigation is automated.
 
 ## Prepared and independently read
 
@@ -110,3 +109,27 @@ The user accepted earlier meeting/rating visibility; neither this nor fixture
 preparation proves later automatic room/event creation. No reciprocal rating or
 bucket navigation was performed by Codex. Managed launcher prepares the two
 windows; the user inspects Given/Received/All/Mutual/Met and decides when to rate.
+
+## Mutual accepted; side-menu fixture count repaired
+
+User observed and accepted the transition to Mutual. Independent read retained
+one row with Nova as owner, given8/received9, Met=false, zero events and
+friendships. Owner orientation reflects the last rating writer; it is the same
+shared record. The side-menu badge was discussed separately. Final instruction:
+retain total-rate count semantics; populate the fixture baseline accordingly.
+
+`stage` now supplies activities.game=1 to both profiles for a pre-existing rate.
+`ready` supplies1 after the real worker creates the meeting row. The versioned
+`repair-rate-counters` command repaired the live fixture without reset or browser
+relaunch. Before/after comparison preserved rates, events, rounds, friendships,
+feedback and prior input. Both counters are1. JS/shell syntax and diff checks
+passed. No application code or bucket calculation was changed for this repair.
+[Scoped evidence](../../evidence/EVENT-ACTIVITY-RATING-001-badge-fixture-2026-09-22.json).
+
+## Requested quick reset for badge inspection
+
+Versioned close/reset/stage-before-meeting/ready/launcher sequence completed.
+Readiness verified one rate9/0, Met=false, no events/rounds/friendship, and both
+activities.game counters1. [Reset evidence](../../evidence/EVENT-ACTIVITY-RATING-001-badge-reset-2026-09-22.json).
+Next user observation: side-menu Rates1 on both profiles; Given for Casey,
+Received for Nova. Prior Mutual test acceptance is retained, not replayed by Codex.
