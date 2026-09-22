@@ -11240,28 +11240,24 @@ without meeting evidence that later reciprocal state is Mutual. See the dated
 log and before-meeting evidence. Automatic later room creation is not verified.
 
 
-### Activity rating closure — 2026-09-22
+### Activity rating corrected closure — 2026-09-22
 
-**EVENT-ACTIVITY-RATING-001 PASS / CLOSED**, explicitly accepted by the user.
-The detailed stable guide retains actors, fixtures and additional checks; its
-core scope covers meeting-before-rating, one-sided rating
-without meeting followed by Mutual, and the side-menu total-rate badge.
-The final reset/badge check was accepted. Separate format replays, additional
-save/reload and feedback checks are outside the agreed closure scope and are
-not marked executed. Later automatic room creation is not proven here.
-See [closure evidence](../evidence/EVENT-ACTIVITY-RATING-001-closure-2026-09-22.json)
-and the dated rating log. Fixture/windows retained; no automatic replay or
-cleanup required. This supersedes the earlier pending rating notes above.
+**EVENT-ACTIVITY-RATING-001 PASS / CLOSED after numbered coverage review.**
+The earlier core-only closure was premature. The user requested expectations
+updated from the discussion and automatic completion of remaining checklist
+steps. Existing manual acceptance and core replay evidence remain valid.
 
+The [dated log](../checklists/event/EVENT-ACTIVITY-RATING-001-20260922-progress.md)
+now records all ten numbered dispositions. New continuation verified normal UI
+Saves to 4/9, reopen and full reload in both windows, one stored friendship with
+zero feedback answers, and one event/host feedback flow for two completed rounds.
+The host is not duplicated as a separate attendee. Prior Standard score/identity
+preservation evidence was reviewed; a fresh isolated Tournament run is not
+claimed. The nonexistent All/Friends Rates-list expectations were corrected,
+while the four actual buckets and total side-menu badge retain their semantics.
 
-### Delegated rating replay — 2026-09-22
-
-Both automatic core cases PASS after explicit user delegation: no-meeting9/0
-Given/Received ->9/6 Mutual; meeting0/0 Met ->9/0 Given/Received ->9/6 Met.
-All four single-rate bucket lists in both windows and side-menu badge1 were
-verified; UI Save reached persisted state through normal sync. Detailed guide,
-fixtures and extra steps are retained, not deleted. Evidence is linked from the
-rating progress log and closure JSON. Final speed-meeting9/6 fixture/windows
-remain retained, job timing restored. No application changes or new broader
-lifecycle claims. This supplements the user's manual acceptance and closes the
-delegated replay.
+Evidence was saved before the versioned launcher closed the two managed windows
+and the versioned fixture reset restored its snapshots; final status not-staged.
+No production-code change, extra app build, viewport override, feedback
+submission or release occurred. Future room creation remains outside this QA.
+See [closure evidence](../evidence/EVENT-ACTIVITY-RATING-001-closure-2026-09-22.json).

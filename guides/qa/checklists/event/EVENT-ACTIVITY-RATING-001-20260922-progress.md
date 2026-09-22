@@ -1,38 +1,50 @@
 # EVENT-ACTIVITY-RATING-001 — execution log, 2026-09-22
 
-**PASS / CLOSED — 2026-09-22: manual acceptance and delegated automatic core replay.**
+**PASS / CLOSED — corrected expectations and numbered coverage completed.**
 
-The detailed checklist is retained: actors, fixture variants, ten numbered
-steps, bucket expectations, side-menu badge contract and reset commands.
-Its two core cases were replayed automatically through ordinary UI actions:
+The earlier closure after only two core replays was premature. The user asked
+to update the checklist from the conversation and automatically check its
+remaining steps. Accepted manual observations and existing proof were retained;
+the continuation did not reset or repeat the accepted rating transitions.
+No application code was changed.
 
-| Case | Initial | One-sided | Reciprocal | Side-menu badge |
-| --- | --- | --- | --- | --- |
-| No meeting | Casey Given / Nova Received at9/0 | Inspected before Save | Both Mutual at9/6, Met=false | 1 for both throughout |
-| Meeting before first rating | Both Met at0/0 | Casey Given / Nova Received at9/0 | Both Met at9/6, Met=true | 1 for both throughout |
+## Numbered coverage
 
-All four single-rate bucket lists were inspected in both windows at each
-applicable state; only the expected bucket contained the one counterpart.
-Normal frontend sync persisted each UI Save. No synthetic rating write was used.
-No feedback was submitted. User acceptance remains recorded separately from
-this additional automated evidence:
+| Step | Result | Evidence and boundary |
+| --- | --- | --- |
+| 1 | PASS | Both dedicated actors; all four actual Preferences buckets and each side-menu total 1 checked in the two core run records. There is no separate Rates All bucket. |
+| 2 | PASS | No-meeting input 9/0, Given/Received, Met=false, no events/friendship. Existing Standard score/identity preservation is separately retained under step 9. |
+| 3 | PASS | Speed meeting worker-created 0/0 Met, then UI Save 9/0 and Given/Received. |
+| 4 | PASS | One-sided bucket observations recorded before Nova's reciprocal Save; user's prior manual exploration retained. |
+| 5 | PASS | No meeting: 9/6 Mutual with no friendship; meeting: 9/6 Met with one friendship. Both viewer buckets and persisted score orientation checked. |
+| 6 | PASS — new automatic continuation | Normal UI changes to Casey 4 / Nova 9 persisted. Both sliders reopened and checked, then both pages reloaded normally and sliders checked again: own scores 4 and 9. Shared stored row proves reciprocal perspectives 4/9 and 9/4. |
+| 7 | PASS — new automatic continuation | Independent stored friendship count 1, submitted feedback count 0 after rating changes. No nonexistent Friends menu or unrelated Contacts list is required. |
+| 8 | PASS — corrected two-user expectation | Nova opened the normal event feedback entry. One pending event/host card for Casey, one event step plus Overview, no per-table flow and no submission. Casey is the host, so no duplicate attendee card is expected. Independent non-host peer deduplication remains covered by Event Mode regression, not newly claimed here. |
+| 9 | PASS — retained evidence reviewed | Historical Standard projection preserved prior 9/4 scores, record ID, sync key, creation time and actors while adding Met. This is prior projection evidence, not a fresh 9/0 or isolated Tournament UI replay. Separate Standard/Tournament bucket systems are not required by the agreed expectations. |
+| 10 | PASS | Evidence saved; versioned launcher closed only the two managed sessions and restored session snapshots; versioned reset restored scoped fixture snapshots. Status is now not-staged. |
 
-- [Before-meeting automatic replay](../../evidence/EVENT-ACTIVITY-RATING-001-auto-before-meeting-2026-09-22.json)
-- [Speed meeting automatic replay](../../evidence/EVENT-ACTIVITY-RATING-001-auto-speed-meeting-2026-09-22.json)
-- [Combined closure record](../../evidence/EVENT-ACTIVITY-RATING-001-closure-2026-09-22.json)
+## Evidence
 
-The first historical manual meeting trial used combined event sources. The new
-replay uses the isolated speed-meeting fixture. That fixture supplies completed
-table history; this is not a fresh scheduler/table-allocation lifecycle proof.
-Additional numbered steps6–9 remain available in the guide, without claiming
-new save/reload, feedback or isolated Standard/Tournament execution here.
-Future automatic room creation is not proven by either core case.
+- [No-meeting core run](../../evidence/EVENT-ACTIVITY-RATING-001-auto-before-meeting-2026-09-22.json)
+- [Meeting core run](../../evidence/EVENT-ACTIVITY-RATING-001-auto-speed-meeting-2026-09-22.json)
+- [Step 6 persisted Saves before runner selector correction](../../evidence/EVENT-ACTIVITY-RATING-001-step6-saved-before-runner-selector-fix-2026-09-22.json)
+- [Step 6 reopen and reload continuation](../../evidence/EVENT-ACTIVITY-RATING-001-auto-speed-meeting-remaining-2026-09-22.json)
+- [Steps 7–9 outcome checks](../../evidence/EVENT-ACTIVITY-RATING-001-auto-speed-meeting-outcomes-2026-09-22.json)
+- [Pre-cleanup state](../../evidence/EVENT-ACTIVITY-RATING-001-before-cleanup-2026-09-22.json)
+- [Cleanup status](../../evidence/EVENT-ACTIVITY-RATING-001-cleanup-2026-09-22.json)
+- [Closure record](../../evidence/EVENT-ACTIVITY-RATING-001-closure-2026-09-22.json)
 
-Final retained state: speed-meeting, Casey9/Nova6, Met=true, one friendship,
-zero feedback answers, both Rates counters1. Both native managed windows remain
-on Met. Job timing restored. No application code change, viewport override,
-browser cleanup or release action was performed for this replay. Earlier pending
-notes below are historical and superseded by this closure.
+Runner-only corrections: rating is an anchored menu with Escape dismissal,
+not a Cancel-button dialog; reload must wait for the menu launcher; feedback
+close must wait for the previous popup transition. The 4/9 Saves already
+succeeded, so verification resumed from that stored state without re-rating.
+These runner issues were not application failures. Evidence of the initial
+selector failure is retained, with the successful continuation separate.
+
+No viewport override, application build/server, feedback submission or release
+was performed. Worker timing was restored before continuation. Future automatic
+room creation and a fresh isolated Tournament rating run are not claimed.
+Earlier pending/closure notes below are historical and superseded by this table.
 
 ## Historical execution and corrections
 

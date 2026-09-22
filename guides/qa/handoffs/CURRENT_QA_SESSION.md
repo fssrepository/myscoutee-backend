@@ -83,19 +83,19 @@ resume pointer and reusable working method.
 
 ## Active resume point
 
-Event Mode, Integration API and the scoped two-person activity-rating QA are
-closed. Do not replay them on continuation.
+Event Mode, Integration API and the corrected numbered activity-rating checklist
+are closed. Do not replay them on continuation.
 
 ```yaml
 checkpoint: EVENT-ACTIVITY-RATING-001
 checklist: ../checklists/event/EVENT-ACTIVITY-RATING-001.md
 execution_log: ../checklists/event/EVENT-ACTIVITY-RATING-001-20260922-progress.md
-substage: PASS/CLOSED; user accepted both core cases and badge, then delegated automatic replay. Both before-meeting and speed-meeting browser replays PASS on2026-09-22.
-fixture_phase: speed-meeting retained, Casey9/Nova6, Met=true, friendship1, feedback0, both Rates counters1; worker timing restored. Two managed windows remain on Met.
-next_action: No remaining core QA action. Detailed guide and additional checks preserved. Do not replay/reset/close windows or deploy automatically.
-resume_gate: Read the linked progress log, use the versioned event-rating status command, and check the existing launcher manifest/processes before any mutation. Do not reset or relaunch retained sessions merely because a new Codex turn started.
+substage: PASS/CLOSED; numbered 1–10 coverage recorded after correcting premature core-only closure. Expectations updated from user discussion.
+fixture_phase: not-staged; evidence retained, managed windows closed through launcher, session and fixture snapshots restored.
+next_action: No remaining activity-rating QA action. Do not restage/replay automatically.
+resume_gate: Read linked progress log for numbered evidence and exact limits. The previous retained browser/fixture pointer is superseded by cleanup.
 queued_work: Separate Netcup partial-update version identity, Git release tags and deb release attachment. No deployment performed. Late participant claim uses event end; fresh-registration browser journey remains unproven.
-runtime: Versioned fixture/launcher and delegated browser runner complete. Native window dimensions retained; no application changes or additional compiler/server. Test runner exited.
+runtime: Existing dev watchers untouched. No application changes, extra compiler/server or viewport override; delegated runners exited.
 ```
 
 ## Archived pair-QA resume point — 2026-09-17

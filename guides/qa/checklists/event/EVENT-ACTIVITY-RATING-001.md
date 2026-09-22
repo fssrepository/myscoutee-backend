@@ -6,7 +6,7 @@ not in this reusable checklist. The tester controls both browser windows unless 
 checkpoint to Codex; that delegation permits the same numbered UI sequence
 automatically, with the same versioned fixture and launcher.
 
-## Agreed core cases and retained additional checks
+## Agreed expectations
 
 The two core cases below describe different starting states, not three separate
 rating systems:
@@ -21,10 +21,10 @@ For both, inspect all bucket lists before and after each change. The side-menu
 Rates badge remains **1 on both profiles**, because it counts all rate items;
 it is not a Received-only badge. Do not alter bucket counts to change that badge.
 
-The delegated quick replay covers these two cases, corresponding to numbered
-steps1–5 plus the badge check below. Steps6–9 retain additional reproducible
-checks and format diagnostics; they are not silently deleted or reported as
-executed by this quick replay. Record actual coverage in the dated execution log.
+Automatic execution follows the numbered checklist below, incorporating already
+recorded user observations instead of repeating them. Every numbered step must
+have an explicit result or an explained prerequisite/conditional status. A pass
+for the two initial transitions alone does not close this checklist.
 
 ## Actors and fixture boundary
 
@@ -70,11 +70,12 @@ context; use the isolated format variants below to compare each source.
 
 1. Verify the prepared windows identify Casey Rating QA and Nova Rating QA.
    Open Activities → Rates. **Before saving any rating**, inspect every bucket
-   and its counter in both windows: All, Given, Received, Mutual and Met.
+   and its counter in both windows: Given, Received, Mutual and Met (Preferences).
+   There is no separate All bucket; the side-menu badge is the total.
    Record the existing filters; clear them normally if they hide the counterpart.
 2. In `before-meeting` and Standard/Tournament, only Casey has rated: **Casey gives 9; Nova has
    not rated (0)**. Casey's counterpart should be in Given, Nova's in Received.
-   Inspect All, Mutual and Met too, before changing anything. There is one
+   Inspect Mutual and Met too, before changing anything. There is one
    shared relationship and no friendship. Compare `priorRate` with the projected
    row: same ID, sync key, creation date, users and9/0 scores. In `before-meeting`,
    Met remains false and there are no events. Only the event-history variants
@@ -85,32 +86,40 @@ context; use the isolated format variants below to compare each source.
    ordinary sync cycle and inspect all buckets again: Given for Casey, Received
    for Nova. Skip this first save for all pre-existing-rate variants, which already start9/0.
 4. Keep Nova unrated while exploring the one-sided bucket lists. Reopen cards,
-   inspect scores and counters, and reload if desired. No automatic action may
-   submit Nova's rating or advance past this observation point.
+   inspect scores and counters, and reload if desired. During a manual run, wait for the tester before advancing. During explicitly
+   delegated automation, record this state before advancing.
 5. **When the tester finishes that inspection**, they may give Casey6 from
    Nova and save once. After sync, inspect all buckets again. Expected views:
    Casey given9 / received6; Nova given6 / received9. The single shared
    relationship moves to **Mutual when no meeting has occurred**, or Met in
    the completed-event variants. Inspect the full bucket list, not just the target
-   bucket. Do not submit this reciprocal rating automatically.
-6. **Additional save/reopen check:** change Casey's score to **4**, save, then change Nova's to **9** and save.
+   bucket. Automatic submission is permitted only during explicitly delegated execution.
+6. **Save/reopen check:** change Casey's score to **4**, save, then change Nova's to **9** and save.
    Reopen both cards after sync and then reload normally. Check the saved
    perspectives are 4/9 and 9/4. Further free rating changes may now be made;
    record the chosen numbers before comparing persisted state.
-7. **Additional outcome check:** inspect Friends and the event feedback entry independently. A rating save
+7. **Outcome check:** inspect the stored friendship and the event feedback entry independently.
+   There is no separate Friends list in this Rates surface; Contacts is unrelated. A rating save
    must not fabricate a submitted event feedback answer. Record the friendship
    outcome after reciprocal positive ratings. Do not infer a friendship-removal
    rule from subsequently lowering a score; that is outside this checklist.
-8. **Additional feedback check:** for Speed meeting feedback, open the normal event-level feedback entry.
-   The same co-participant from two rounds must appear once, within the single
-   event feedback flow. Do not expect a separate wizard for each table. Leave
+8. **Feedback check:** for Speed meeting feedback, open the normal event-level feedback entry.
+   With these two actors, Casey is also the host: Nova sees one event/host
+   feedback card, not an extra duplicate attendee card for Casey. Two rounds
+   must not produce two event feedback entries. The independent multi-attendee
+   deduplication test remains in EVENT-MODE-REGRESSION-001; this two-user fixture
+   does not replace it. Do not expect a separate wizard for each table. Leave
    it unsubmitted unless deliberately testing feedback; record any submission.
-9. **Optional format diagnostics:** to isolate each event source, explicitly finish the current exploration,
-   request reset/restage with `standard`, `tournament`, then `speed-meeting`,
-   and repeat steps 1–6. Only the selected source is ended in each variant;
-   other events remain future prerequisites. Record each run separately.
-10. When finished, request scoped cleanup using the commands below. Preserve
-    evidence before reset. Do not reset a live manual exploration automatically.
+9. **Existing-rate and event-source expectations:** Standard/Tournament normally
+   have a prior rating; meeting projection must preserve it. They do not define
+   another bucket progression. Retain the user's accepted visibility and Mutual
+   observations, and verify the existing-rate preservation oracle from recorded
+   fixture evidence. An isolated format replay is needed only when that source
+   has not been verified or its implementation changed; record that distinction.
+10. Preserve the evidence and close the checklist only after every preceding
+    point has a recorded disposition. At the end of a delegated run, use the
+    versioned scoped cleanup below. During user-controlled exploration, wait
+    for the tester to finish before resetting.
 
 ## Side-menu badge baseline
 
@@ -192,11 +201,20 @@ commands above and use the versioned runner against those managed sessions:
 node guides/qa/tools/run-event-activity-rating.mjs before-meeting --delegated
 # After close/reset/stage speed-meeting/ready/launcher:
 node guides/qa/tools/run-event-activity-rating.mjs speed-meeting --delegated
+# Continue from reciprocal 9/6 without repeating the core:
+node guides/qa/tools/run-event-activity-rating.mjs speed-meeting --remaining --delegated
+# Independent friendship, feedback and historical prior-rate evidence checks:
+node guides/qa/tools/run-event-activity-rating.mjs speed-meeting --outcomes --delegated
+# Preserve evidence, then perform step 10 with the close/reset commands above.
 ```
 
 The runner performs ordinary menu clicks, slider changes and Save actions;
 checks Given/Received/Mutual/Met card counts in both views and the side-menu
 badge; and reads the fixture after the normal sync to verify persisted scores.
-It does not synthesize rating writes, change viewport emulation, or execute the
-additional checks outside the delegated core scope. Evidence is written under
-`guides/qa/evidence/EVENT-ACTIVITY-RATING-001-auto-<variant>-<date>.json`.
+The remaining mode changes scores to 4/9 and checks reopen/reload in both
+windows. If those Saves already succeeded but the runner was interrupted,
+`--remaining --verify-saved --delegated` asserts the saved 4/9 baseline and
+resumes readback without repeating the Saves. The outcomes mode records
+steps 7–9 separately. It does not synthesize rating writes or change viewport
+emulation. Evidence is written under
+`guides/qa/evidence/EVENT-ACTIVITY-RATING-001-auto-<variant>[-remaining|-outcomes]-<date>.json`.

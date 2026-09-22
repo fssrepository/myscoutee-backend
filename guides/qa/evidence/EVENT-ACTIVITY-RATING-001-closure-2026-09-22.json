@@ -2,8 +2,41 @@
   "checkpoint": "EVENT-ACTIVITY-RATING-001",
   "result": "PASS / CLOSED",
   "date": "2026-09-22",
-  "basis": "User accepted meeting-before-rating, no-meeting reciprocal Mutual, and final fixture badge check; explicitly requested closure.",
-  "retainedState": {
+  "basis": "Updated checklist expectations from user discussion; retained accepted core observations and prior projection evidence, automatically completed save/reload and independent outcome/feedback checks, then scoped cleanup.",
+  "scope": [
+    "Meeting-before-first-rating bucket flow",
+    "One-sided rating without meeting -> Mutual",
+    "Side-menu total-rate badge1 for both actors",
+    "Saved score update, reopen and full reload in both viewers",
+    "Independent friendship and unsubmitted event feedback checks",
+    "Historical existing-rate preservation evidence review",
+    "Versioned scoped session/fixture cleanup"
+  ],
+  "notClaimed": [
+    "New isolated Tournament rating replay",
+    "Non-host attendee deduplication from this host/attendee fixture",
+    "Feedback submission",
+    "Future automatic room creation"
+  ],
+  "cleanup": {
+    "checkpointId": "EVENT-ACTIVITY-RATING-001",
+    "phase": "not-staged"
+  },
+  "automaticReplay": {
+    "before-meeting": {
+      "status": "PASS",
+      "startedAt": "2026-09-22T01:59:01.108Z",
+      "finishedAt": "2026-09-22T01:59:37.968Z",
+      "evidence": "EVENT-ACTIVITY-RATING-001-auto-before-meeting-2026-09-22.json"
+    },
+    "speed-meeting": {
+      "status": "PASS",
+      "startedAt": "2026-09-22T02:01:08.749Z",
+      "finishedAt": "2026-09-22T02:02:25.443Z",
+      "evidence": "EVENT-ACTIVITY-RATING-001-auto-speed-meeting-2026-09-22.json"
+    }
+  },
+  "stateBeforeCleanup": {
     "checkpointId": "EVENT-ACTIVITY-RATING-001",
     "phase": "ready-for-manual-rating",
     "selectedFormat": "speed-meeting",
@@ -39,21 +72,21 @@
     "events": [
       {
         "sourceId": "qa-rating-001-speed-meeting",
-        "title": "QA RATING · Speed meeting",
+        "title": "QA RATING \u00b7 Speed meeting",
         "mode": "Mingle",
         "endAtIso": "2026-09-21T21:40:05.556Z",
         "friendshipsProjected": false
       },
       {
         "sourceId": "qa-rating-001-standard",
-        "title": "QA RATING · Standard",
+        "title": "QA RATING \u00b7 Standard",
         "mode": "Casual",
         "endAtIso": "2026-09-24T03:00:05.556Z",
         "friendshipsProjected": false
       },
       {
         "sourceId": "qa-rating-001-tournament",
-        "title": "QA RATING · Tournament",
+        "title": "QA RATING \u00b7 Tournament",
         "mode": "Tournament",
         "endAtIso": "2026-09-24T03:00:05.556Z",
         "friendshipsProjected": false
@@ -78,11 +111,11 @@
         "createdDate": "2026-09-21T21:40:05.556Z",
         "ownerUserId": "6a00000000000000000000a2",
         "relatedUserId": "6a00000000000000000000a1",
-        "scoreGiven": 6,
-        "scoreReceived": 9,
+        "scoreGiven": 9,
+        "scoreReceived": 4,
         "met": true,
         "metEventId": "qa-rating-001-speed-meeting",
-        "eventName": "QA RATING · Speed meeting"
+        "eventName": "QA RATING \u00b7 Speed meeting"
       }
     ],
     "friendships": 1,
@@ -90,30 +123,16 @@
     "timingRestored": true,
     "baselineCaptured": true
   },
-  "scope": [
-    "Meeting-before-first-rating bucket flow",
-    "One-sided rating without meeting -> Mutual",
-    "Side-menu total-rate badge1 for both actors"
-  ],
-  "notClaimed": [
-    "Separate isolated Standard/Tournament manual replay",
-    "New save/reload campaign",
-    "Feedback submission",
-    "Automatic future event/room creation"
-  ],
-  "cleanup": "Final speed-meeting9/6 Met fixture and managed windows retained after delegated replay; job timing restored.",
-  "automaticReplay": {
-    "before-meeting": {
-      "status": "PASS",
-      "startedAt": "2026-09-22T01:59:01.108Z",
-      "finishedAt": "2026-09-22T01:59:37.968Z",
-      "evidence": "EVENT-ACTIVITY-RATING-001-auto-before-meeting-2026-09-22.json"
-    },
-    "speed-meeting": {
-      "status": "PASS",
-      "startedAt": "2026-09-22T02:01:08.749Z",
-      "finishedAt": "2026-09-22T02:02:25.443Z",
-      "evidence": "EVENT-ACTIVITY-RATING-001-auto-speed-meeting-2026-09-22.json"
-    }
-  }
+  "numberedCoverage": {
+    "1-5": "PASS: retained user observations and two recorded automatic core runs",
+    "6": "PASS: persisted UI Saves 4/9; reopened and reloaded both viewers",
+    "7": "PASS: independent friendship 1 / feedback answers 0",
+    "8": "PASS: single event/host feedback flow in two-user host/attendee fixture, no submission",
+    "9": "PASS: retained Standard prior-rating preservation evidence reviewed; no new isolated Tournament replay",
+    "10": "PASS: managed sessions closed, scoped fixture reset, not-staged status"
+  },
+  "continuationEvidence": [
+    "EVENT-ACTIVITY-RATING-001-auto-speed-meeting-remaining-2026-09-22.json",
+    "EVENT-ACTIVITY-RATING-001-auto-speed-meeting-outcomes-2026-09-22.json"
+  ]
 }
