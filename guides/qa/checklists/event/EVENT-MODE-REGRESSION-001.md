@@ -12,9 +12,72 @@ separate dated progress document; do not mark this guide complete during a run.
 - Preserve the original page-filter preferences and native browser viewport.
 - Prefix new titles with `QA MODE <run date>` and record each returned event ID.
 - Prepare source data only. Do not write completed rounds, scores, friendships,
-  scheduler results or acceptance outcomes directly to the database.
+  scheduler results or the acceptance outcome under test directly to the database.
+  The peer-list fixture below seeds membership prerequisites; it does not prove Join.
 - Automatic browser actions require explicit delegated testing. Otherwise the
   tester performs the following UI steps after standardized browser startup.
+
+### Reversible development timing and runtime checkpoints
+
+Use the versioned harness against the existing development MongoDB container.
+After the short test stage's scheduled end, shorten the existing review job:
+
+```bash
+bash server/docker/scripts/manual-qa-checkpoints/manual-qa-checkpoints-docker.sh \
+  arm-tournament-review event-domain EVENT-MODE-REGRESSION-001
+bash server/docker/scripts/manual-qa-checkpoints/manual-qa-checkpoints-docker.sh \
+  status event-domain EVENT-MODE-REGRESSION-001
+# After observing the real worker run and SR, restore its original schedule:
+bash server/docker/scripts/manual-qa-checkpoints/manual-qa-checkpoints-docker.sh \
+  reset event-domain EVENT-MODE-REGRESSION-001
+```
+
+The temporary interval is 60 seconds. The harness preserves the original timing
+and restores it without rewinding actual run history or setting stage results.
+Always reset this timing override, including after a failed assertion.
+
+Capture a replay boundary at Tournament score review before scoring, or after
+Speed meeting completion. Replace the event ID with the actual disposable
+Casey-owned `QA MODE ` event; use a fresh label for each capture:
+
+```bash
+MANUAL_QA_EVENT_ID='<actual event ID>' \
+  bash server/docker/scripts/manual-qa-checkpoints/manual-qa-checkpoints-docker.sh \
+  capture-runtime-checkpoint event-domain EVENT-MODE-REGRESSION-001 tournament-before-scores
+# Only when replaying that boundary:
+bash server/docker/scripts/manual-qa-checkpoints/manual-qa-checkpoints-docker.sh \
+  restore-runtime-checkpoint event-domain EVENT-MODE-REGRESSION-001 tournament-before-scores
+```
+
+Use `mingle-completed-history` for the completed meeting boundary. Restore checks
+the captured runtime/score documents for equality. These checkpoints do not
+rewind feedback, user preferences, logins or delivered notifications/webhooks;
+they are not a whole-journey reset. Record every restore in the dated run log.
+
+### More-than-five-peer prerequisite
+
+For step 10, create a fresh Casey-owned `QA MODE <date> Peer feedback` event
+through the API: Mingle, capacity 1–9, group size 8, two rounds, no gender-balance
+requirement. Set its source interval at least two hours in the past so feedback
+can be tested without a long wait. Record both the caller `id` and returned
+MyScoutee `externalId`; use the latter in `MANUAL_QA_EVENT_ID`.
+
+```bash
+MANUAL_QA_EVENT_ID='<MyScoutee externalId>' \
+  bash server/docker/scripts/manual-qa-checkpoints/manual-qa-checkpoints-docker.sh \
+  stage-feedback-peers event-domain EVENT-MODE-REGRESSION-001
+# To undo preparation before starting runtime:
+MANUAL_QA_EVENT_ID='<same MyScoutee externalId>' \
+  bash server/docker/scripts/manual-qa-checkpoints/manual-qa-checkpoints-docker.sh \
+  reset-feedback-peers event-domain EVENT-MODE-REGRESSION-001
+```
+
+The fixture supplies Casey, Nova and six existing demo peers as accepted inputs;
+Riley is pending. It creates no rounds, feedback or rating outcomes. Start and
+complete two actual rounds through Casey's UI, then compare Nova's six attendee
+cards plus the organizer card against the saved tables. The pending Riley must
+be absent. After runtime starts, use normal application cleanup; the input reset
+deliberately refuses to overwrite a used runtime.
 
 ## 1. First Explore open
 
@@ -88,9 +151,11 @@ that can be reached during the test. Record the exact scheduled boundary.
 7.2. Repeat publication, Nova's request and Casey's approval from section 6.
 7.3. Open Manage Event, the stage card menu, then Start Stage and confirm.
 Open Groups and confirm Group A contains Casey and Nova.
-7.4. Wait for the real scheduled end. Reopen Manage Event and select Past when
-needed to inspect ended stages. Confirm the stage enters score review naturally;
-do not write SR to the database or substitute a manual close for this assertion.
+7.4. Use a short development stage interval and the reversible 60-second review
+job fixture above. Reopen Manage Event and select Past when needed. Confirm the
+real scheduler moves the stage into score review, restore its original schedule,
+then capture `tournament-before-scores`. Do not write SR to the database or
+substitute a manual close for this assertion.
 7.5. Open Groups, expand Group A, open its actions and add an ordinary score for
 a named participant. Save and record the accepted response and standings.
 7.6. Close and reopen Groups. Confirm that participant's saved score persists.
@@ -119,7 +184,7 @@ and confirm both assigned participants are visible while the round is running.
 9.4. End the round manually, then observe automatic next-round start or use the
 existing assistance control as specified by the run. Record which path ran.
 9.5. Inspect round 2's Tables and participants, then complete the event.
-9.6. Close/reopen Manage Event. Select Past for past rounds, open each round's
+9.6. Capture `mingle-completed-history`, then close/reopen Manage Event. Select Past for past rounds, open each round's
 Tables and compare the saved round/table identities and members with earlier
 observations. Do not mistake the Upcoming filter's main-event fallback for a
 completed round's table list.

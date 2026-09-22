@@ -13,6 +13,66 @@
     Q.fail("Unexpected event mode checkpoint.");
   }
 
+  // Only participant inputs are staged here. Rounds, assignments and feedback
+  // must be produced by the application after this preparation.
+  if (["stage-feedback-peers", "reset-feedback-peers"].includes(command)) {
+    const eventId = Q.text(process.env.MANUAL_QA_EVENT_ID);
+    const stateId = `${Q.stateId(scenario)}:peers:${eventId}`;
+    if (!eventId) Q.fail("MANUAL_QA_EVENT_ID is required.");
+    if (Q.collection("activityMingleSessions").countDocuments({eventId})
+        || Q.collection("activityMingleRounds").countDocuments({eventId})) {
+      Q.fail("Peer preparation/reset is only allowed before runtime starts; clean up a used event through the application.");
+    }
+    if (command === "reset-feedback-peers") {
+      const saved = states.findOne({_id: stateId});
+      if (!saved) Q.fail("Peer inputs are not staged.");
+      Q.restoreSnapshots(saved.snapshots);
+      states.deleteOne({_id: stateId});
+      Q.printObject({eventId, peerInputsStaged: false});
+      return;
+    }
+    const host = "650000000000000000000061";
+    const viewer = "650000000000000000000062";
+    const outsider = "650000000000000000000063";
+    const peers = ["0216b1ceb256d6f2c89073b8", "0b8e5df4ec85d858c304a350",
+      "0c3ab5da9af33d4e688e809c", "0cc9990d08304ab26ee67784",
+      "0f9350e50f1ffc3cf002b7ed", "178e8d0cbe164fa3fede5884"];
+    const accepted = [host, viewer, ...peers];
+    for (const userId of [...accepted, outsider]) Q.ensureUser(userId);
+    const event = Q.collection("events").findOne({sourceId: eventId, creatorUserId: host,
+      title: {$regex: "^QA MODE "}, mode: "Mingle"});
+    if (!event || event.mingleConfiguration?.groupSize !== 8 || event.capacityMax < 9) {
+      Q.fail("Use a fresh Casey-owned QA MODE Mingle event with group size 8 and capacity at least 9.");
+    }
+    if (states.findOne({_id: stateId}) || Q.collection("activityMembers").countDocuments({
+      ownerType: "event", ownerId: eventId, userId: {$ne: host}})) {
+      Q.fail("Peer inputs require a fresh event with only its organizer membership.");
+    }
+    const snapshots = Q.snapshotSpecs([
+      {collection: "events", selector: {sourceId: eventId}},
+      {collection: "activityMembers", selector: {ownerType: "event", ownerId: eventId}}
+    ]);
+    states.insertOne({_id: stateId, scenario, eventId, scope: "participant-inputs",
+      stagedAtIso: Q.nowIso(), snapshots});
+    const now = Q.nowIso();
+    Q.collection("activityMembers").insertMany([viewer, ...peers, outsider].map(userId => ({
+      syncKey: `${stateId}:${userId}`, ownerType: "event", ownerId: eventId,
+      userId, role: "Member", status: userId === outsider ? "pending" : "accepted",
+      pendingSource: userId === outsider ? "admin" : null,
+      requestKind: userId === outsider ? "invite" : null,
+      organizerOnly: false, actionAtIso: now,
+      createdDate: now, createdUser: Q.ACTOR, updatedDate: now, updatedUser: Q.ACTOR
+    })));
+    Q.collection("events").updateOne({_id: event._id}, {$set: {
+      acceptedMemberUserIds: accepted, acceptedMembers: accepted.length,
+      pendingMemberUserIds: [outsider], pendingMembers: 1,
+      invitedMemberUserIds: [outsider], pendingRequestMemberUserIds: [], full: false
+    }});
+    Q.printObject({eventId, peerInputsStaged: true, accepted, pendingOutsider: outsider,
+      expectedAttendeePeersForNova: peers, roundsSeeded: 0, feedbackSeeded: 0});
+    return;
+  }
+
   function runtimeCheckpoint() {
     const label = Q.text(process.env.MANUAL_QA_SOURCE_CHECKPOINT_ID);
     if (!/^[a-z0-9-]{1,64}$/.test(label)) Q.fail("A lowercase checkpoint label is required.");

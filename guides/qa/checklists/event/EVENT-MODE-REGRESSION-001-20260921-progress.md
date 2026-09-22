@@ -5,7 +5,7 @@ EVENT-MODE-REGRESSION-001 feature check, not the general manual-QA campaign.
 Use the stable event and INTEGRATION-API-001 checklists; do not mark the full
 campaign complete from the partial evidence below.
 
-## Numbered execution status — 01:55 CEST
+## Numbered execution status — 02:35 CEST
 
 Step numbers refer to the stable EVENT-MODE-REGRESSION-001 checklist. Supporting
 unit/adapter evidence is distinguished from visible browser journeys.
@@ -18,10 +18,10 @@ unit/adapter evidence is distinguished from visible browser journeys.
 | 4. Landing/About/API help | PASS | EN/HU rendering; About reused branding, API controls 34 px; landing version 1.0.1. Admin geometry is not covered. |
 | 5. Standard external link | PARTIAL | Create/update/clear/restore/reopen passed; public action pending. |
 | 6. Standard membership | PASS | UI publish, Nova request, Casey approval, 2 accepted members. |
-| 7. Tournament | IN PROGRESS | Create/publish/approve/start/group assignment passed. Retry stage scheduled to enter score review at 01:56 CEST; score write/reopen pending. |
-| 8. Ordinary feedback/friendship | SUPPORTING TESTS PASS | 43 backend tests: feedback 16, rates 21, friendship projection 6. Full ordinary feedback browser journey not yet proven. |
+| 7. Tournament | PASS | Real review worker ran at 02:05:51 with the reversible 60-second fixture; UI Add Score saved Casey +3. Reopened Groups: Casey 3 points / 1 update, Nova 0 / 0. |
+| 8. Ordinary feedback/friendship | PASS with scoped evidence | Standard organizer feedback submitted (200) and reopened with saved answers. Met/mutual branches: 43 supporting backend tests, not a browser friendship journey. |
 | 9. Speed meeting rounds | PASS | Two actual rounds, pause/resume/manual advance/automatic transition; saved history reopened. Select Past to inspect past round cards. |
-| 10. Unique feedback peers | SUPPORTING TESTS PASS | Actual organizer feedback submitted in HTTP UI; isolated local adapter restored seven unique attendee cards, excluding pending outsider. Two HTTP actors do not prove the larger visible peer list. |
+| 10. Unique feedback peers | PASS; readback scrollbar repair in progress | HTTP fixture: 8 accepted + 1 pending, two actual rounds; Nova gets 6 distinct attendee cards + organizer. All 7 submitted (200). API 28 pairs across 10/10/8 pages match delivered webhook revision 4. |
 | 11. Local restart | PASS — adapter/IndexedDB | Real Chromium reload restores preferences, link, paused state and two completed rounds; not a full local-app UI journey. |
 | Cleanup | NOT RUN | Restore preferences; unwatch/revoke test key; disposable resources and managed-session restoration. |
 
@@ -33,6 +33,62 @@ are removed. Native browser measurement: item width equals menu content width
 opens saved Round 1 / Table 1 with two members when Past is selected. Evidence:
 `final-menu-version.json`, `menu-standard-layout.png`, `menu-tables-navigation.txt`.
 The earlier menu narrowing claims below are superseded by this correction.
+
+## Continuation after 02:05 CEST
+
+- Chat textbox overlap: removed only the two `z-index: 70` overrides from
+  `.chat-compose-box`. Existing watcher compiled; native browser reported
+  composer `auto`, open menu `40`, and the composer tools opened normally.
+  The user subsequently confirmed the chat is correct. No group-menu styling,
+  shared-menu appearance or viewport change was made for this correction.
+- Step 7.4: versioned timing fixture armed at 02:05:11, actual review worker
+  completed at 02:05:51. Its original 1800-second interval was restored;
+  real run history was retained. Evidence: `tournament-timing-result.json`.
+- Steps 7.5–7.6: Casey opened Groups → Group A → Add Score, entered +3 and
+  `QA MODE score persistence`, saved, closed Groups, reopened and expanded it.
+  Persisted standings show Casey 3 / 1 update and Nova 0 / 0. Evidence:
+  `tournament-score-write.json`, `tournament-score-reopened.txt`.
+- Runtime checkpoints: `tournament-before-scores` captures event
+  `h1790031368189`; `mingle-completed-history` captures
+  `f4b67368-7232-485e-81b1-7517f1a9b230`. The latter was restored at
+  02:15:57; captured collection documents matched exactly. This was an
+  idempotent runtime restore, not a claim that feedback/delivery state rewinds.
+  The stable guide now contains exact timing/capture/restore commands.
+- API/public external-link boundary: the public list DTO omitted `sourceLink`
+  while persistence already contained it. Mapper/DTO corrected; focused mapper
+  suite passed 7 tests. Nova's real External Info action opened the saved URL
+  from event `711e22ee-60ca-407c-8221-72fa6476be51`. Target response interception
+  proves URL navigation only. Evidence: `public-external-link.json`.
+- Step 8 uses disposable Standard event
+  `0252a93a-21e4-4c78-a2ee-2dc1282cb5f9` (caller ID
+  `8718f4f9-34de-491c-a5eb-fa7d602f3782`), created through the SDK with a past
+  source interval. Nova claimed the link, opened Invitations → Past and accepted
+  normally. Feedback submission returned 200 at 02:23:44; Feedbacked → View my
+  feedback retained Excellent / No major change / Reliable One. Evidence:
+  `standard-feedback-submitted.json`, `standard-feedback-reopened.txt`.
+- Step 10: created `d357a203-7f8d-4c64-b5dc-31be16c4edef` (caller ID
+  `d9d7d34c-dd78-4a25-8d7c-f65bedcdfd5b`) with group size 8. Versioned
+  `stage-feedback-peers` prepared 8 accepted memberships and pending Riley;
+  its pre-runtime reset/restage was exercised. Casey started round 1 normally,
+  opened Tables (8 visible members), ended the round, observed automatic round 2,
+  opened its Tables (same 8), then completed through the normal UI. No rounds,
+  scores, feedback or outcome records were staged.
+- Nova's one event feedback wizard contained the organizer plus exactly Sophia
+  Lane, Lina Stone, Mia Grant, Elijah Grant, Leo Reed and Lina Park; Riley was
+  absent, repeated table peers were deduplicated. All 7 cards were submitted
+  successfully at 02:31:58. A completed checkpoint
+  `mingle-six-peers-completed` was captured before submission. Evidence:
+  `peer-table-1.txt`, `peer-table-2.txt`, `peer-feedback-detail.json`,
+  `peer-feedback-submitted.json`.
+- API encounters returned 28 unique pairs of 8 opaque participants over three
+  pages (10/10/8), revision 4. The delivered `event.encounters` callback matched
+  the combined pair list exactly. Evidence: `peer-encounter-pages.json`,
+  `peer-encounter-parity.json`. The same external-link event now has matching
+  owner-editor and API reads as well as the earlier public navigation proof.
+- User reported saved-feedback body clipping. Browser diagnosis: body client
+  height 678 px, scroll height 2119 px, `overflow: hidden` from `bodyLayout: fill`.
+  Changed only that popup model to the shared scrollable `default` body layout.
+  Watcher/browser verification follows; no shared popup CSS was changed.
 
 ## Corrections retained
 

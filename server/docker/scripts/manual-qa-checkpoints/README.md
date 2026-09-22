@@ -86,6 +86,17 @@ every isolated rule's exact timing control.
 
 ## Event-domain checkpoint runner
 
+`EVENT-MODE-REGRESSION-001` uses the separate
+`scenarios/event-mode-regression-checkpoints.js` helper for development timing
+and named runtime replay boundaries. The exact commands and scope are in
+[`EVENT-MODE-REGRESSION-001.md`](../../../../guides/qa/checklists/event/EVENT-MODE-REGRESSION-001.md#reversible-development-timing-and-runtime-checkpoints).
+`arm-tournament-review` temporarily sets the existing job to 60 seconds;
+`reset` restores its original configuration, retaining real execution history.
+`capture-runtime-checkpoint` / `restore-runtime-checkpoint` capture one explicit
+Casey-owned disposable event at score review or completed meeting history.
+They do not reset feedback, account state or external deliveries. These helpers
+continue an existing run; they do not create a new browser or stage a fresh campaign.
+
 The event-domain runner implements executable setup and machine oracles for the
 checkpoint graph in
 [`DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md`](../../../../guides/qa/manuals/DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md).
