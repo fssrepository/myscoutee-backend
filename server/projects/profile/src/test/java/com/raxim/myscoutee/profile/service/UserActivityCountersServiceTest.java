@@ -66,7 +66,7 @@ class UserActivityCountersServiceTest {
                 eventFeedbackStatesRepository,
                 eventWatchSubscriptionsRepository,
                 eventParticipationTicketService,
-                mongoTemplate);
+                mongoTemplate, org.mockito.Mockito.mock(OrganizerFollowingService.class));
     }
 
     @Test

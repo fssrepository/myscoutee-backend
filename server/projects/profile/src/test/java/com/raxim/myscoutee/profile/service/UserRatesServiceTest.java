@@ -299,7 +299,7 @@ class UserRatesServiceTest {
         record.setScoreReceived(received);
         UserRatesService service = new UserRatesService(userRatesRepository, usersRepository,
                 homeUserProfileService, org.mockito.Mockito.mock(AffinityCalculationService.class),
-                userAffinityEdgeService, mongoTemplate, adminTelemetryService);
+                userAffinityEdgeService, mongoTemplate, adminTelemetryService, org.mockito.Mockito.mock(com.raxim.myscoutee.profile.service.OrganizerFollowingService.class));
         when(userRatesRepository.findRelevantByUserIds(anyList())).thenReturn(List.of(record));
         service.projectRecordedMeetings(java.util.Set.of("u1", "u2"));
         verify(mongoTemplate, never()).getCollection("userFriendships");
@@ -314,7 +314,7 @@ class UserRatesServiceTest {
         record.setMutuallyRated(false);
         UserRatesService service = new UserRatesService(userRatesRepository, usersRepository,
                 homeUserProfileService, org.mockito.Mockito.mock(AffinityCalculationService.class),
-                userAffinityEdgeService, mongoTemplate, adminTelemetryService);
+                userAffinityEdgeService, mongoTemplate, adminTelemetryService, org.mockito.Mockito.mock(com.raxim.myscoutee.profile.service.OrganizerFollowingService.class));
         when(userRatesRepository.findRelevantByUserIds(anyList())).thenReturn(List.of(record));
         when(mongoTemplate.getCollection("userFriendships")).thenReturn(friendshipCollection);
         service.projectRecordedMeetings(java.util.Set.of("u1", "u2"));
@@ -337,7 +337,7 @@ class UserRatesServiceTest {
         AffinityCalculationService affinity = new AffinityCalculationService(affinityConfigsRepository,
                 usersRepository, userRatesRepository, userExperienceProfilesRepository);
         UserRatesService service = new UserRatesService(userRatesRepository, usersRepository,
-                homeUserProfileService, affinity, userAffinityEdgeService, mongoTemplate, adminTelemetryService);
+                homeUserProfileService, affinity, userAffinityEdgeService, mongoTemplate, adminTelemetryService, org.mockito.Mockito.mock(com.raxim.myscoutee.profile.service.OrganizerFollowingService.class));
         when(mongoTemplate.getCollection("userFriendships")).thenReturn(friendshipCollection);
         service.projectRecordedMeetings(java.util.Set.of("u1", "u2"));
         UserRate saved = singleSavedRate();
@@ -802,7 +802,7 @@ class UserRatesServiceTest {
                 mongoTemplate,
                 adminTelemetryService,
                 null,
-                notificationOutboxService);
+                notificationOutboxService, org.mockito.Mockito.mock(com.raxim.myscoutee.profile.service.OrganizerFollowingService.class));
     }
 
     private UserRatesService queryService(Map<String, Users> usersById, List<UserRate> records) {
@@ -823,7 +823,7 @@ class UserRatesServiceTest {
                 userExperienceProfilesRepository),
                 userAffinityEdgeService,
                 mongoTemplate,
-                adminTelemetryService);
+                adminTelemetryService, org.mockito.Mockito.mock(com.raxim.myscoutee.profile.service.OrganizerFollowingService.class));
     }
 
     private void stubUsers(Map<String, Users> usersById) {

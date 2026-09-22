@@ -529,7 +529,8 @@ public final class AuthDtos {
             UserPaymentTotalsDto paymentTotals,
             List<UserNotificationDeviceDto> notificationDevices,
             String cursor,
-            String serverTsIso) {
+            String serverTsIso,
+            com.raxim.myscoutee.profile.data.document.Users.FollowingRecord following) {
     }
 
     public record UserFilterPreferencesRequestDto(

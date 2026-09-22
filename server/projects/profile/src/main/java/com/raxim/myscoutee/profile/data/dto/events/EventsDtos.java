@@ -47,7 +47,13 @@ public final class EventsDtos {
             Integer limit,
             String cursor,
             List<String> excludedSourceIds,
-            String mode) {
+            String mode,
+            Boolean followedOnly) {
+        public EventsExploreQueryDto(String userId, String order, String view, Boolean friendsOnly,
+                Boolean openSpotsOnly, String topic, Integer limit, String cursor,
+                List<String> excludedSourceIds, String mode) {
+            this(userId, order, view, friendsOnly, openSpotsOnly, topic, limit, cursor, excludedSourceIds, mode, false);
+        }
     }
 
     public record EventActionRequestDto(

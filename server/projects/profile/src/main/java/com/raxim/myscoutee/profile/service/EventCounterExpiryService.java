@@ -173,6 +173,7 @@ public class EventCounterExpiryService {
     }
 
     private ExpiryRunResult processDueEvents(Instant now) {
+        userActivityCountersService.expireFollowingCounters(now);
         int friendshipProjectionSources = eventFriendshipProjectionService.projectCompletedEvents(now, batchSize);
         String nowIso = (now == null ? Instant.now() : now).toString();
         List<ActivityEvent> dueDocuments = dueEventDocuments(nowIso);

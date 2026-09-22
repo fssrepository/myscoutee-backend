@@ -21660,6 +21660,42 @@
     "value": "Any member can share a personal invitation link from Profile → Affiliate and see how many people registered through it. API clients can also invite participants and track how many connected to registered accounts."
   },
   {
+    "_id": "i18n-message-en-event-following",
+    "key": "event.following",
+    "lang": "en",
+    "value": "Followed"
+  },
+  {
+    "_id": "i18n-message-en-event-following-only",
+    "key": "event.following.only",
+    "lang": "en",
+    "value": "Only followed"
+  },
+  {
+    "_id": "i18n-message-en-event-following-members",
+    "key": "event.following.members",
+    "lang": "en",
+    "value": "Followed organizers"
+  },
+  {
+    "_id": "i18n-message-en-event-following-follow",
+    "key": "event.following.follow",
+    "lang": "en",
+    "value": "Follow organizer"
+  },
+  {
+    "_id": "i18n-message-en-event-following-unfollow",
+    "key": "event.following.unfollow",
+    "lang": "en",
+    "value": "Unfollow"
+  },
+  {
+    "_id": "i18n-message-en-event-following-failed",
+    "key": "event.following.failed",
+    "lang": "en",
+    "value": "Could not update following. Please try again."
+  },
+  {
     "_id": "i18n-message-hu-integration-token-ip",
     "key": "integration.token.ip",
     "lang": "hu",
@@ -43318,5 +43354,41 @@
     "key": "landing.partners.role.affiliate.description",
     "lang": "hu",
     "value": "Bármelyik tag megoszthatja személyes meghívólinkjét a Profil → Affiliate menüből, és láthatja, hányan regisztráltak vele. API-kliensekkel is meghívhat résztvevőket, és követheti, hányan kapcsolódtak regisztrált fiókhoz."
+  },
+  {
+    "_id": "i18n-message-hu-event-following",
+    "key": "event.following",
+    "lang": "hu",
+    "value": "Követett"
+  },
+  {
+    "_id": "i18n-message-hu-event-following-only",
+    "key": "event.following.only",
+    "lang": "hu",
+    "value": "Csak követettek"
+  },
+  {
+    "_id": "i18n-message-hu-event-following-members",
+    "key": "event.following.members",
+    "lang": "hu",
+    "value": "Követett szervezők"
+  },
+  {
+    "_id": "i18n-message-hu-event-following-follow",
+    "key": "event.following.follow",
+    "lang": "hu",
+    "value": "Szervező követése"
+  },
+  {
+    "_id": "i18n-message-hu-event-following-unfollow",
+    "key": "event.following.unfollow",
+    "lang": "hu",
+    "value": "Kikövetés"
+  },
+  {
+    "_id": "i18n-message-hu-event-following-failed",
+    "key": "event.following.failed",
+    "lang": "hu",
+    "value": "Nem sikerült módosítani a követést. Próbáld újra."
   }
 ]

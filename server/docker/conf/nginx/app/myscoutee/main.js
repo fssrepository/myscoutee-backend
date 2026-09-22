@@ -82,12 +82,12 @@ function markBootstrapFailed(err) {
 silenceBrowserConsoleLogs();
 bindBootstrapResumeRecovery();
 prepareDemoFailover().then(async () => {
-  const [{ App }, { appConfig }] = await Promise.all([import("./app-ZW5G7MZ6.js"), import("./app.config-AOD346GZ.js")]);
+  const [{ App }, { appConfig }] = await Promise.all([import("./app-T3VVCF6R.js"), import("./app.config-MDCCMVWV.js")]);
   const localUserId = demoFailoverLocalUser();
   if (localUserId) {
     appConfig.providers.push(provideAppInitializer(() => {
       const injector = inject(Injector);
-      return import("./demo-bootstrap.service-ELK6N3ON.js").then(async (module) => {
+      return import("./demo-bootstrap.service-XSPMZWNN.js").then(async (module) => {
         const seed = injector.get(module.SeedDemoBootstrapService);
         await seed.ensureDemoSelectorReady("member");
         await seed.ensureUserReady(localUserId, "member");
@@ -96,7 +96,7 @@ prepareDemoFailover().then(async () => {
   }
   const app = await bootstrapApplication(App, appConfig);
   if (demoFailoverSeedWarmupNeeded()) {
-    void import("./demo-bootstrap.service-ELK6N3ON.js").catch(() => void 0);
+    void import("./demo-bootstrap.service-XSPMZWNN.js").catch(() => void 0);
   }
   return app;
 }).then(() => {

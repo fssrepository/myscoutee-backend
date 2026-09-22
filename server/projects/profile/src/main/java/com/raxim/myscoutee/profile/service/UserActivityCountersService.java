@@ -38,6 +38,12 @@ import com.raxim.myscoutee.profile.repository.UsersRepository;
 
 @Service
 public class UserActivityCountersService {
+    private final OrganizerFollowingService organizerFollowingService;
+
+    public void expireFollowingCounters(Instant now) {
+        organizerFollowingService.expire(now);
+    }
+
     private static final String OWNER_TYPE_EVENT = "event";
     private static final List<String> DEMO_ADMIN_IDS = List.of("admin-demo-ava", "admin-demo-noel");
     private static final List<String> SUPPORT_CASE_STATUSES = List.of(
@@ -62,7 +68,8 @@ public class UserActivityCountersService {
             EventFeedbackStatesRepository eventFeedbackStatesRepository,
             EventWatchSubscriptionsRepository eventWatchSubscriptionsRepository,
             EventParticipationTicketService eventParticipationTicketService,
-            MongoTemplate mongoTemplate) {
+            MongoTemplate mongoTemplate,
+            OrganizerFollowingService organizerFollowingService) {
         this.usersRepository = usersRepository;
         this.activityEventsRepository = activityEventsRepository;
         this.activityMembersRepository = activityMembersRepository;
@@ -71,6 +78,7 @@ public class UserActivityCountersService {
         this.eventWatchSubscriptionsRepository = eventWatchSubscriptionsRepository;
         this.eventParticipationTicketService = eventParticipationTicketService;
         this.mongoTemplate = mongoTemplate;
+        this.organizerFollowingService = organizerFollowingService;
     }
 
     public void refreshEventCountersForDocuments(Collection<ActivityEvent> events) {
@@ -99,6 +107,7 @@ public class UserActivityCountersService {
         }
         refreshEventCountersForUsers(userIds);
         syncFeedbackEligibilityForSourceIds(normalizedSourceIds, Instant.now());
+        organizerFollowingService.refreshForSources(normalizedSourceIds);
     }
 
     public void refreshEventCountersForUsers(Collection<String> userIds) {

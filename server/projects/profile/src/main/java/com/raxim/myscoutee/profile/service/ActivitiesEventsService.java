@@ -2148,13 +2148,20 @@ public class ActivitiesEventsService {
         String cursor = request == null ? null : request.cursor();
         Set<String> excludedSourceIds = new LinkedHashSet<>(normalizeIds(request == null ? null : request.excludedSourceIds()));
 
+        boolean followedOnly = request != null && Boolean.TRUE.equals(request.followedOnly());
+        Set<String> followedIds = followedOnly
+                ? Set.copyOf(OrganizerFollowingService.state(homeUserProfileService.resolveCurrentUser(viewer.userId())).organizerIds())
+                : Set.of();
         return withEventQueryContext(buildExplorePageQueryContext(viewer, "most-relevant".equals(order)), () -> {
-            List<EventProjection> sorted = computeExploreRecords(viewer).stream()
+            List<EventProjection> sorted = computeExploreRecords(viewer, followedOnly).stream()
+                    .filter(record -> !followedOnly || followedIds.contains(record.getCreatorUserId()))
+                    .filter(record -> !followedOnly || OrganizerFollowingService.eligible(record, viewer.userId(),
+                            friendshipFacts.friendIds(viewer.userId()), Instant.now()))
                     .filter(record -> !excludedSourceIds.contains(normalizeId(record.getSourceId())))
                     .filter(record -> !StringUtils.hasText(mode) || mode.equals(normalizeEventMode(record.getMode())))
                     .map(record -> toSortProjection(record, viewer))
                     .filter(Objects::nonNull)
-                    .filter(projection -> !hasTrackedUserParticipation(projection.record(), viewer.userId())
+                    .filter(projection -> followedOnly || !hasTrackedUserParticipation(projection.record(), viewer.userId())
                             || hasVisibleCheckoutBasket(projection.record()))
                     .filter(projection -> !friendsOnly || exploreHasFriendGoing(projection.record(), viewer.userId()))
                     .filter(projection -> !openSpotsOnly || exploreHasOpenSpots(projection.record()))
@@ -6044,9 +6051,13 @@ public class ActivitiesEventsService {
     }
 
     private List<ActivityEvent> computeExploreRecords(ViewerContext viewer) {
+        return computeExploreRecords(viewer, false);
+    }
+
+    private List<ActivityEvent> computeExploreRecords(ViewerContext viewer, boolean includeTracked) {
         Map<String, ActivityEvent> preferredByEventId = new LinkedHashMap<>();
         for (ActivityEvent record : allEventDocuments(viewer)) {
-            if (!shouldIncludeExploreRecord(record, viewer.userId())) {
+            if (!shouldIncludeExploreRecord(record, viewer.userId(), includeTracked)) {
                 continue;
             }
             String sourceId = normalizeId(record.getSourceId());
@@ -6061,6 +6072,10 @@ public class ActivitiesEventsService {
     }
 
     private boolean shouldIncludeExploreRecord(ActivityEvent record, String activeUserId) {
+        return shouldIncludeExploreRecord(record, activeUserId, false);
+    }
+
+    private boolean shouldIncludeExploreRecord(ActivityEvent record, String activeUserId, boolean includeTracked) {
         if (record == null || !isCanonicalExploreRecord(record)) {
             return false;
         }
@@ -6070,7 +6085,7 @@ public class ActivitiesEventsService {
         if (activeUserId.equals(normalizeId(record.getCreatorUserId()))) {
             return false;
         }
-        if (hasTrackedUserParticipation(record, activeUserId) && !hasVisibleCheckoutBasket(record)) {
+        if (!includeTracked && hasTrackedUserParticipation(record, activeUserId) && !hasVisibleCheckoutBasket(record)) {
             return false;
         }
         return isVisibleToUntrackedViewer(record, activeUserId);

@@ -531,7 +531,8 @@ public class HomeUserProfileService {
                                 device.getDeviceId(), Boolean.TRUE.equals(device.getNotificationsEnabled())))
                         .toList(),
                 buildRealtimeCursor(user, counters),
-                Instant.now().toString());
+                Instant.now().toString(),
+                OrganizerFollowingService.state(user));
     }
 
     public UserLocationEligibilityResponseDto queryLocationEligibility(Double latitude, Double longitude) {
