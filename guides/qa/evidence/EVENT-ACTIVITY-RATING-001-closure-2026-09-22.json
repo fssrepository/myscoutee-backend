@@ -1,0 +1,84 @@
+{
+  "checkpoint": "EVENT-ACTIVITY-RATING-001",
+  "result": "PASS / CLOSED",
+  "date": "2026-09-22",
+  "basis": "User accepted meeting-before-rating, no-meeting reciprocal Mutual, and final fixture badge check; explicitly requested closure.",
+  "retainedState": {
+    "checkpointId": "EVENT-ACTIVITY-RATING-001",
+    "phase": "ready-for-manual-rating",
+    "selectedFormat": "before-meeting",
+    "users": [
+      {
+        "userId": "6a00000000000000000000a1",
+        "name": "Casey Rating QA",
+        "city": "Austin",
+        "profileStatus": "friends only"
+      },
+      {
+        "userId": "6a00000000000000000000a2",
+        "name": "Nova Rating QA",
+        "city": "Austin",
+        "profileStatus": "friends only"
+      }
+    ],
+    "priorRate": {
+      "_id": "qa-rating-001-existing-rate",
+      "syncKey": "qa-rating-001-existing-rate",
+      "mode": "single",
+      "ownerUserId": "6a00000000000000000000a1",
+      "relatedUserId": "6a00000000000000000000a2",
+      "scoreGiven": 9,
+      "scoreReceived": 0,
+      "mutuallyRated": false,
+      "met": false,
+      "createdDate": "2026-09-21T01:47:16.188Z",
+      "updatedDate": "2026-09-21T01:47:16.188Z",
+      "createdUser": "manual-qa-checkpoint:v1:actor",
+      "updatedUser": "manual-qa-checkpoint:v1:actor"
+    },
+    "rateCounters": [
+      {
+        "userId": "6a00000000000000000000a1",
+        "activities": {
+          "game": 1
+        }
+      },
+      {
+        "userId": "6a00000000000000000000a2",
+        "activities": {
+          "game": 1
+        }
+      }
+    ],
+    "events": [],
+    "rounds": [],
+    "rates": [
+      {
+        "_id": "qa-rating-001-existing-rate",
+        "syncKey": "qa-rating-001-existing-rate",
+        "createdDate": "2026-09-21T01:47:16.188Z",
+        "ownerUserId": "6a00000000000000000000a2",
+        "relatedUserId": "6a00000000000000000000a1",
+        "scoreGiven": 4,
+        "scoreReceived": 9,
+        "met": false
+      }
+    ],
+    "friendships": 0,
+    "feedbackAnswers": 0,
+    "timingRestored": true,
+    "baselineCaptured": true
+  },
+  "scope": [
+    "Meeting-before-first-rating bucket flow",
+    "One-sided rating without meeting -> Mutual",
+    "Side-menu total-rate badge1 for both actors"
+  ],
+  "notClaimed": [
+    "Separate isolated Standard/Tournament manual replay",
+    "New save/reload campaign",
+    "Feedback submission",
+    "Automatic future event/room creation"
+  ],
+  "cleanup": "No reset or browser close on closure; user windows and fixture retained."
+}

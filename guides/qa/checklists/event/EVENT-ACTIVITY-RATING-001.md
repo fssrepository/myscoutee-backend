@@ -2,7 +2,29 @@
 
 This is a manual Event-domain comparison of Standard, Tournament and Speed
 meeting rating sources. Execution evidence belongs in the dated progress log,
-not in this reusable checklist. The tester controls both browser windows.
+not in this reusable checklist. The tester controls both browser windows unless they explicitly delegate this
+checkpoint to Codex; that delegation permits the same numbered UI sequence
+automatically, with the same versioned fixture and launcher.
+
+## Agreed core cases and retained additional checks
+
+The two core cases below describe different starting states, not three separate
+rating systems:
+
+- **Meeting before a first rating** (`speed-meeting`): 0/0 in Met → one-sided
+  Given/Received → reciprocal Met. The worker creates the relationship from
+  completed history; do not seed the outcome.
+- **Rating before any meeting** (`before-meeting`): pre-existing9/0 in
+  Given/Received → reciprocal Mutual, with Met=false and no event.
+
+For both, inspect all bucket lists before and after each change. The side-menu
+Rates badge remains **1 on both profiles**, because it counts all rate items;
+it is not a Received-only badge. Do not alter bucket counts to change that badge.
+
+The delegated quick replay covers these two cases, corresponding to numbered
+steps1–5 plus the badge check below. Steps6–9 retain additional reproducible
+checks and format diagnostics; they are not silently deleted or reported as
+executed by this quick replay. Record actual coverage in the dated execution log.
 
 ## Actors and fixture boundary
 
@@ -71,19 +93,19 @@ context; use the isolated format variants below to compare each source.
    relationship moves to **Mutual when no meeting has occurred**, or Met in
    the completed-event variants. Inspect the full bucket list, not just the target
    bucket. Do not submit this reciprocal rating automatically.
-6. Change Casey's score to **4**, save, then change Nova's to **9** and save.
+6. **Additional save/reopen check:** change Casey's score to **4**, save, then change Nova's to **9** and save.
    Reopen both cards after sync and then reload normally. Check the saved
    perspectives are 4/9 and 9/4. Further free rating changes may now be made;
    record the chosen numbers before comparing persisted state.
-7. Inspect Friends and the event feedback entry independently. A rating save
+7. **Additional outcome check:** inspect Friends and the event feedback entry independently. A rating save
    must not fabricate a submitted event feedback answer. Record the friendship
    outcome after reciprocal positive ratings. Do not infer a friendship-removal
    rule from subsequently lowering a score; that is outside this checklist.
-8. For Speed meeting feedback, open the normal event-level feedback entry.
+8. **Additional feedback check:** for Speed meeting feedback, open the normal event-level feedback entry.
    The same co-participant from two rounds must appear once, within the single
    event feedback flow. Do not expect a separate wizard for each table. Leave
    it unsubmitted unless deliberately testing feedback; record any submission.
-9. To isolate each event source, explicitly finish the current exploration,
+9. **Optional format diagnostics:** to isolate each event source, explicitly finish the current exploration,
    request reset/restage with `standard`, `tournament`, then `speed-meeting`,
    and repeat steps 1–6. Only the selected source is ended in each variant;
    other events remain future prerequisites. Record each run separately.

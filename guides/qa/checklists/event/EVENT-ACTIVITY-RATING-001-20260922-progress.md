@@ -1,9 +1,26 @@
 # EVENT-ACTIVITY-RATING-001 — execution log, 2026-09-22
 
-Current: user-requested reset completed for a quick badge check. Before-meeting
-baseline Casey9/Nova0, Met=false, both side-menu counters1, no events or
-friendship. Earlier Mutual acceptance remains archived below. The two managed
-windows are handed back to the user; no rating or navigation is automated.
+**PASS / CLOSED — 2026-09-22, by explicit user acceptance.**
+
+Accepted scope: meeting before first rating; one-sided rating without a meeting
+followed by Mutual; and the final side-menu badge check. The stable guide is now
+six numbered actions across those two cases. Separate Standard/Tournament
+replays, extra save/reload checks and feedback submission are removed from this
+checkpoint's mandatory scope, not marked as executed. Future automatic room
+creation is not claimed.
+
+The first accepted meeting flow used the earlier combined-source fixture;
+its evidence proves that rating state, not isolated format lifecycle behavior.
+The reusable guide uses `speed-meeting` to reproduce that prerequisite directly.
+Prior persisted results: meeting case Casey9/Nova4 and friendship1; no-meeting
+case Casey9/Nova8, Met=false and friendship0. User accepted badge1 after the
+requested reset. See [closure evidence](../../evidence/EVENT-ACTIVITY-RATING-001-closure-2026-09-22.json).
+
+Fixture and managed windows are retained. No new test, reset, release or browser
+action follows this closure automatically. Earlier pending notes below are
+historical and superseded by this closure.
+
+## Historical execution and corrections
 
 ## Prepared and independently read
 

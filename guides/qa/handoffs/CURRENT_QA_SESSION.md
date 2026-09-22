@@ -83,16 +83,16 @@ resume pointer and reusable working method.
 
 ## Active resume point
 
-The delegated Event Mode/API verification is closed. The user has now started
-the separate two-person manual rating checkpoint. Do not replay the earlier QA.
+Event Mode, Integration API and the scoped two-person activity-rating QA are
+closed. Do not replay them on continuation.
 
 ```yaml
 checkpoint: EVENT-ACTIVITY-RATING-001
 checklist: ../checklists/event/EVENT-ACTIVITY-RATING-001.md
 execution_log: ../checklists/event/EVENT-ACTIVITY-RATING-001-20260922-progress.md
-substage: User accepted before-meeting reciprocal transition to Mutual. Rates side-menu badge keeps total-rate semantics; fixture-only counter repair verified.
-fixture_phase: User-requested reset completed: before-meeting, Casey9/Nova0, Met=false, no events or friendship, both activities.game counters1. Managed sessions relaunched through versioned launcher.
-next_action: User checks Rates side-menu badge1 in both reset windows; Casey Given and Nova Received. Do not navigate or rate automatically. Application changes remain reverted.
+substage: PASS/CLOSED 2026-09-22 by explicit user acceptance; two rating starting states and final side-menu badge check.
+fixture_phase: before-meeting fixture and managed windows retained after badge reset. Current persisted snapshot is in EVENT-ACTIVITY-RATING-001-closure-2026-09-22.json.
+next_action: No remaining actions in this scoped QA. Do not replay, reset, close windows or launch release work automatically. Additional diagnostic variants are not mandatory.
 resume_gate: Read the linked progress log, use the versioned event-rating status command, and check the existing launcher manifest/processes before any mutation. Do not reset or relaunch retained sessions merely because a new Codex turn started.
 queued_work: Separate Netcup partial-update version identity, Git release tags and deb release attachment. No deployment performed. Late participant claim uses event end; fresh-registration browser journey remains unproven.
 runtime: Two managed native windows prepared through versioned launcher for before-meeting. Existing dev watchers retained. No application code change.

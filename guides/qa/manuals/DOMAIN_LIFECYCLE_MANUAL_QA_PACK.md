@@ -11238,3 +11238,16 @@ is now **before-meeting**, only Casey has rated9, Nova0, Met=false, no events,
 rounds or friendship. The user inspects all buckets before reciprocating;
 without meeting evidence that later reciprocal state is Mutual. See the dated
 log and before-meeting evidence. Automatic later room creation is not verified.
+
+
+### Activity rating closure — 2026-09-22
+
+**EVENT-ACTIVITY-RATING-001 PASS / CLOSED**, explicitly accepted by the user.
+The simplified stable guide covers meeting-before-rating, one-sided rating
+without meeting followed by Mutual, and the side-menu total-rate badge.
+The final reset/badge check was accepted. Separate format replays, additional
+save/reload and feedback checks are outside the agreed closure scope and are
+not marked executed. Later automatic room creation is not proven here.
+See [closure evidence](../evidence/EVENT-ACTIVITY-RATING-001-closure-2026-09-22.json)
+and the dated rating log. Fixture/windows retained; no automatic replay or
+cleanup required. This supersedes the earlier pending rating notes above.
