@@ -181,3 +181,22 @@ bash server/docker/scripts/manual-qa-checkpoints/manual-qa-checkpoints-docker.sh
 Then stage again using `before-meeting`, `all`, `standard`, `tournament` or `speed-meeting`, run
 `ready`, and launch. Reset/restage is the supported baseline replay. The stored
 baseline snapshot is evidence; there is no separate rollback-to-baseline command.
+
+
+## Explicitly delegated automatic replay
+
+Only after explicit user authorization, prepare either core fixture with the
+commands above and use the versioned runner against those managed sessions:
+
+```bash
+node guides/qa/tools/run-event-activity-rating.mjs before-meeting --delegated
+# After close/reset/stage speed-meeting/ready/launcher:
+node guides/qa/tools/run-event-activity-rating.mjs speed-meeting --delegated
+```
+
+The runner performs ordinary menu clicks, slider changes and Save actions;
+checks Given/Received/Mutual/Met card counts in both views and the side-menu
+badge; and reads the fixture after the normal sync to verify persisted scores.
+It does not synthesize rating writes, change viewport emulation, or execute the
+additional checks outside the delegated core scope. Evidence is written under
+`guides/qa/evidence/EVENT-ACTIVITY-RATING-001-auto-<variant>-<date>.json`.

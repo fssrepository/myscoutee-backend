@@ -1,24 +1,38 @@
 # EVENT-ACTIVITY-RATING-001 — execution log, 2026-09-22
 
-**PASS / CLOSED — 2026-09-22, by explicit user acceptance.**
+**PASS / CLOSED — 2026-09-22: manual acceptance and delegated automatic core replay.**
 
-Accepted scope: meeting before first rating; one-sided rating without a meeting
-followed by Mutual; and the final side-menu badge check. The stable guide is now
-six numbered actions across those two cases. Separate Standard/Tournament
-replays, extra save/reload checks and feedback submission are removed from this
-checkpoint's mandatory scope, not marked as executed. Future automatic room
-creation is not claimed.
+The detailed checklist is retained: actors, fixture variants, ten numbered
+steps, bucket expectations, side-menu badge contract and reset commands.
+Its two core cases were replayed automatically through ordinary UI actions:
 
-The first accepted meeting flow used the earlier combined-source fixture;
-its evidence proves that rating state, not isolated format lifecycle behavior.
-The reusable guide uses `speed-meeting` to reproduce that prerequisite directly.
-Prior persisted results: meeting case Casey9/Nova4 and friendship1; no-meeting
-case Casey9/Nova8, Met=false and friendship0. User accepted badge1 after the
-requested reset. See [closure evidence](../../evidence/EVENT-ACTIVITY-RATING-001-closure-2026-09-22.json).
+| Case | Initial | One-sided | Reciprocal | Side-menu badge |
+| --- | --- | --- | --- | --- |
+| No meeting | Casey Given / Nova Received at9/0 | Inspected before Save | Both Mutual at9/6, Met=false | 1 for both throughout |
+| Meeting before first rating | Both Met at0/0 | Casey Given / Nova Received at9/0 | Both Met at9/6, Met=true | 1 for both throughout |
 
-Fixture and managed windows are retained. No new test, reset, release or browser
-action follows this closure automatically. Earlier pending notes below are
-historical and superseded by this closure.
+All four single-rate bucket lists were inspected in both windows at each
+applicable state; only the expected bucket contained the one counterpart.
+Normal frontend sync persisted each UI Save. No synthetic rating write was used.
+No feedback was submitted. User acceptance remains recorded separately from
+this additional automated evidence:
+
+- [Before-meeting automatic replay](../../evidence/EVENT-ACTIVITY-RATING-001-auto-before-meeting-2026-09-22.json)
+- [Speed meeting automatic replay](../../evidence/EVENT-ACTIVITY-RATING-001-auto-speed-meeting-2026-09-22.json)
+- [Combined closure record](../../evidence/EVENT-ACTIVITY-RATING-001-closure-2026-09-22.json)
+
+The first historical manual meeting trial used combined event sources. The new
+replay uses the isolated speed-meeting fixture. That fixture supplies completed
+table history; this is not a fresh scheduler/table-allocation lifecycle proof.
+Additional numbered steps6–9 remain available in the guide, without claiming
+new save/reload, feedback or isolated Standard/Tournament execution here.
+Future automatic room creation is not proven by either core case.
+
+Final retained state: speed-meeting, Casey9/Nova6, Met=true, one friendship,
+zero feedback answers, both Rates counters1. Both native managed windows remain
+on Met. Job timing restored. No application code change, viewport override,
+browser cleanup or release action was performed for this replay. Earlier pending
+notes below are historical and superseded by this closure.
 
 ## Historical execution and corrections
 
@@ -150,3 +164,21 @@ Readiness verified one rate9/0, Met=false, no events/rounds/friendship, and both
 activities.game counters1. [Reset evidence](../../evidence/EVENT-ACTIVITY-RATING-001-badge-reset-2026-09-22.json).
 Next user observation: side-menu Rates1 on both profiles; Given for Casey,
 Received for Nova. Prior Mutual test acceptance is retained, not replayed by Codex.
+
+## Delegated automatic confirmation
+
+After manual acceptance the user authorized a quick automatic replay of the
+same two core cases. The detailed QA guide has been restored; no actors,
+fixture commands or extra checks were deleted. Additional steps remain clearly
+separated from this delegated replay. Versioned runner:
+`guides/qa/tools/run-event-activity-rating.mjs`, requiring `--delegated`.
+Use only with explicit browser-flow authorization and a verified baseline.
+Execution results will be recorded separately from the prior manual PASS.
+
+The before-meeting automated core replay passed through normal browser actions:
+initial Casey Given/Nova Received, other single-rate buckets empty; Nova saved6;
+normal sync persisted Casey9/Nova6 with Met=false; both then showed Mutual and
+side-menu badge1. Evidence:
+[automatic before-meeting replay](../../evidence/EVENT-ACTIVITY-RATING-001-auto-before-meeting-2026-09-22.json).
+Initial runner-only selector/guide-dismissal issues were corrected before the
+successful run; they required no application changes or rating-data injection.

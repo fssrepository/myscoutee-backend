@@ -90,12 +90,12 @@ closed. Do not replay them on continuation.
 checkpoint: EVENT-ACTIVITY-RATING-001
 checklist: ../checklists/event/EVENT-ACTIVITY-RATING-001.md
 execution_log: ../checklists/event/EVENT-ACTIVITY-RATING-001-20260922-progress.md
-substage: PASS/CLOSED 2026-09-22 by explicit user acceptance; two rating starting states and final side-menu badge check.
-fixture_phase: before-meeting fixture and managed windows retained after badge reset. Current persisted snapshot is in EVENT-ACTIVITY-RATING-001-closure-2026-09-22.json.
-next_action: No remaining actions in this scoped QA. Do not replay, reset, close windows or launch release work automatically. Additional diagnostic variants are not mandatory.
+substage: PASS/CLOSED; user accepted both core cases and badge, then delegated automatic replay. Both before-meeting and speed-meeting browser replays PASS on2026-09-22.
+fixture_phase: speed-meeting retained, Casey9/Nova6, Met=true, friendship1, feedback0, both Rates counters1; worker timing restored. Two managed windows remain on Met.
+next_action: No remaining core QA action. Detailed guide and additional checks preserved. Do not replay/reset/close windows or deploy automatically.
 resume_gate: Read the linked progress log, use the versioned event-rating status command, and check the existing launcher manifest/processes before any mutation. Do not reset or relaunch retained sessions merely because a new Codex turn started.
 queued_work: Separate Netcup partial-update version identity, Git release tags and deb release attachment. No deployment performed. Late participant claim uses event end; fresh-registration browser journey remains unproven.
-runtime: Two managed native windows prepared through versioned launcher for before-meeting. Existing dev watchers retained. No application code change.
+runtime: Versioned fixture/launcher and delegated browser runner complete. Native window dimensions retained; no application changes or additional compiler/server. Test runner exited.
 ```
 
 ## Archived pair-QA resume point — 2026-09-17

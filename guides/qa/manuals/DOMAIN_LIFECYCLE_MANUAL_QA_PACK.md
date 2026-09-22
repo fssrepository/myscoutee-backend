@@ -11243,7 +11243,8 @@ log and before-meeting evidence. Automatic later room creation is not verified.
 ### Activity rating closure — 2026-09-22
 
 **EVENT-ACTIVITY-RATING-001 PASS / CLOSED**, explicitly accepted by the user.
-The simplified stable guide covers meeting-before-rating, one-sided rating
+The detailed stable guide retains actors, fixtures and additional checks; its
+core scope covers meeting-before-rating, one-sided rating
 without meeting followed by Mutual, and the side-menu total-rate badge.
 The final reset/badge check was accepted. Separate format replays, additional
 save/reload and feedback checks are outside the agreed closure scope and are
@@ -11251,3 +11252,16 @@ not marked executed. Later automatic room creation is not proven here.
 See [closure evidence](../evidence/EVENT-ACTIVITY-RATING-001-closure-2026-09-22.json)
 and the dated rating log. Fixture/windows retained; no automatic replay or
 cleanup required. This supersedes the earlier pending rating notes above.
+
+
+### Delegated rating replay — 2026-09-22
+
+Both automatic core cases PASS after explicit user delegation: no-meeting9/0
+Given/Received ->9/6 Mutual; meeting0/0 Met ->9/0 Given/Received ->9/6 Met.
+All four single-rate bucket lists in both windows and side-menu badge1 were
+verified; UI Save reached persisted state through normal sync. Detailed guide,
+fixtures and extra steps are retained, not deleted. Evidence is linked from the
+rating progress log and closure JSON. Final speed-meeting9/6 fixture/windows
+remain retained, job timing restored. No application changes or new broader
+lifecycle claims. This supplements the user's manual acceptance and closes the
+delegated replay.
