@@ -54,15 +54,17 @@
       timingRestored: state.timingRestored === true, baselineCaptured: !!state.baseline});
   }
   function stage() {
-    if (!(["all", ...formats].includes(selected))) Q.fail("Use all, standard, tournament or speed-meeting.");
+    if (!(["before-meeting", "all", ...formats].includes(selected))) Q.fail("Use before-meeting, all, standard, tournament or speed-meeting.");
+    const beforeMeeting = selected === "before-meeting";
     Q.assertNotStaged(scenario);
     const snapshots = Q.snapshotSpecs(specs);
     if (snapshots.some(s => s.documents.length)) Q.fail("Reserved fixture identities already exist; refusing to overwrite them.");
-    const rule = Q.assertRuleNotRunning("event-counter-expiry");
-    if (!rule.enabled) Q.fail("Existing event-counter-expiry worker must be enabled.");
+    const rule = beforeMeeting ? null : Q.assertRuleNotRunning("event-counter-expiry");
+    if (rule && !rule.enabled) Q.fail("Existing event-counter-expiry worker must be enabled.");
     const state = {_id: Q.stateId(scenario), scenario, checkpointId, selectedFormat: selected,
-      phase: "staging", stagedAtIso: Q.nowIso(), snapshots, ruleId: rule._id,
-      ruleFields: {timing: rule.timing, scheduleSlots: rule.scheduleSlots, updatedDate: rule.updatedDate, updatedUser: rule.updatedUser}};
+      phase: "staging", stagedAtIso: Q.nowIso(), snapshots, ruleId: rule ? rule._id : null,
+      timingRestored: beforeMeeting,
+      ruleFields: rule ? {timing: rule.timing, scheduleSlots: rule.scheduleSlots, updatedDate: rule.updatedDate, updatedUser: rule.updatedUser} : null};
     states.insertOne(state);
     try {
       const profileFields = ["age", "birthday", "city", "height", "physique", "languages", "horoscope", "gender", "hostTier", "completion", "profileFormVersion", "locationCoordinates", "partitionKey", "images", "profileDetails"];
@@ -83,12 +85,12 @@
       if (selected !== "speed-meeting") {
         const priorRate = {_id: "qa-rating-001-existing-rate", syncKey: "qa-rating-001-existing-rate",
           mode: "single", ownerUserId: users[0], relatedUserId: users[1],
-          scoreGiven: 9, scoreReceived: 4, mutuallyRated: true, met: false,
+          scoreGiven: 9, scoreReceived: 0, mutuallyRated: false, met: false,
           createdDate: stamp(-24), updatedDate: stamp(-24), createdUser: Q.ACTOR, updatedUser: Q.ACTOR};
         Q.collection("userRates").insertOne(priorRate);
         states.updateOne({_id: state._id}, {$set: {priorRate}});
       }
-      formats.forEach((format, index) => {
+      (beforeMeeting ? [] : formats).forEach((format, index) => {
         const active = selected === "all" || selected === format;
         const startAtIso = active ? stamp(-6 + index / 3) : stamp(48);
         const endAtIso = active ? stamp(-5 + index / 3) : stamp(49);
@@ -127,9 +129,9 @@
         }
       });
       // Shorten only the existing worker's schedule; no Met/Friend outcome is seeded.
-      Q.collection("notificationRuleConfigs").updateOne({_id: rule._id}, {$set: {
+      if (rule) Q.collection("notificationRuleConfigs").updateOne({_id: rule._id}, {$set: {
         timing: {...rule.timing, mode: "interval", intervalSeconds: 10, intervalMinutes: null, intervalAmount: 10, intervalUnit: "seconds"}, scheduleSlots: []}});
-      states.updateOne({_id: state._id}, {$set: {phase: "awaiting-real-projection"}});
+      states.updateOne({_id: state._id}, {$set: {phase: beforeMeeting ? "awaiting-baseline-check" : "awaiting-real-projection"}});
     } catch (error) { Q.restoreSnapshots(snapshots); restoreTiming(state); states.deleteOne({_id: state._id}); throw error; }
     status();
   }
@@ -137,7 +139,8 @@
   if (command === "status") return status();
   const state = Q.activeState(scenario, true);
   if (command === "ready") {
-    const expectedOrdinary = state.selectedFormat === "all" ? 2 : state.selectedFormat === "speed-meeting" ? 0 : 1;
+    const beforeMeeting = state.selectedFormat === "before-meeting";
+    const expectedOrdinary = state.selectedFormat === "all" ? 2 : beforeMeeting || state.selectedFormat === "speed-meeting" ? 0 : 1;
     const expectedRounds = ["all", "speed-meeting"].includes(state.selectedFormat) ? 2 : 0;
     const rates = Q.collection("userRates").find(pairSelector).toArray();
     const prior = state.priorRate;
@@ -147,9 +150,10 @@
         && ["_id", "syncKey", "createdDate", "ownerUserId", "relatedUserId"].every(key => rates[0][key] === prior[key]));
     if (Q.collection("events").countDocuments({sourceId: inEvents, mode: {$ne: "Mingle"}, friendshipsProjected: true}) !== expectedOrdinary
         || Q.collection("activityMingleRounds").countDocuments({eventId: inEvents, meetingsProjected: true}) !== expectedRounds
-        || rates.length !== 1 || rates[0].met !== true || Number(rates[0].scoreGiven) !== expectedGiven
+        || (beforeMeeting && Q.collection("events").countDocuments({sourceId: inEvents}) !== 0)
+        || rates.length !== 1 || rates[0].met !== !beforeMeeting || Number(rates[0].scoreGiven) !== expectedGiven
         || Number(rates[0].scoreReceived) !== expectedReceived || !preserved
-        || Q.collection("userFriendships").countDocuments(specs.find(s => s.collection === "userFriendships").selector) !== (prior ? 1 : 0)) {
+        || Q.collection("userFriendships").countDocuments(specs.find(s => s.collection === "userFriendships").selector) !== 0) {
       Q.fail("Real meeting projection is not ready or changed the prior rating; inspect status and the existing worker.");
     }
     restoreTiming(state);

@@ -11232,3 +11232,9 @@ only prior9/4 scores with Met=false. The real worker preserves identity/date/
 scores and adds Met plus one friendship. Manual observation of this corrected
 baseline remains pending; see the existing-rate before/after evidence linked
 from the dated log. Tournament still requires its isolated replay.
+
+Latest user clarification supersedes the Standard handoff: the active baseline
+is now **before-meeting**, only Casey has rated9, Nova0, Met=false, no events,
+rounds or friendship. The user inspects all buckets before reciprocating;
+without meeting evidence that later reciprocal state is Mutual. See the dated
+log and before-meeting evidence. Automatic later room creation is not verified.

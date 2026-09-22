@@ -11,7 +11,16 @@ not in this reusable checklist. The tester controls both browser windows.
 | Left | Casey Rating QA | `6a00000000000000000000a1` |
 | Right | Nova Rating QA | `6a00000000000000000000a2` |
 
-The profiles are isolated from the original Casey/Nova demo users. Both are
+The profiles are isolated from the original Casey/Nova demo users.
+
+The `before-meeting` variant creates **no events, memberships or completed
+rounds**. Only Casey has rated Nova: **9/0**, `met:false`, no friendship.
+The tester first inspects all bucket lists, then may reciprocate from Nova.
+Without a meeting, reciprocal ratings belong to **Mutual**, not Met. Later
+automatic event/room creation is outside this prepared checkpoint and is not
+claimed as verified. No worker timing is changed for this variant.
+
+In the optional event-history variants, both are
 accepted participants, including Casey as organizer, in these events:
 
 | Title | Event ID | Prepared history |
@@ -22,7 +31,7 @@ accepted participants, including Casey as organizer, in these events:
 
 The fixture supplies membership and completed history. It does not exercise
 Tournament scoring/group generation or real-time Speed meeting transitions;
-those belong to EVENT-MODE-REGRESSION-001. For Standard/Tournament (and `all`), a pre-existing **9/4** reciprocal rate is
+those belong to EVENT-MODE-REGRESSION-001. For Standard/Tournament (and `all`), a pre-existing **9/0** one-sided rate is
 seeded as a prerequisite with `met: false`, an earlier creation date and a fixed
 record identity. Speed meeting starts without a rate. Neither variant seeds a
 Met result, friendship or submitted feedback. The existing event-counter-expiry
@@ -38,28 +47,30 @@ context; use the isolated format variants below to compare each source.
 ## Numbered manual sequence
 
 1. Verify the prepared windows identify Casey Rating QA and Nova Rating QA.
-   Open Activities → Rates → Met in each. If a retained filter hides the card,
-   clear the filter through the normal UI. Record the filter and visible counts.
-2. Confirm each sees the other once and record the event caption. For Standard
-   or Tournament, Casey must see given **9** / received **4**, and Nova **4/9**.
-   Compare `priorRate` with the projected row: same ID, sync key, creation date,
-   users and scores; only meeting context is added by the worker. One friendship
-   is expected after the real worker processes these reciprocal positive scores.
-   For Speed meeting without a prior rate, expect a new Met row at **0/0**, with
-   no friendship. Both variants start without submitted feedback.
-3. In Casey's counterpart card, open the normal rating action, select **8**,
-   and press **Save once**. Selection alone is not submission. Allow the normal
-   rating sync cycle to finish; do not repeatedly submit to force synchronization.
-4. For the Speed meeting 0/0 baseline, inspect Casey's Given and Nova's Received
-   buckets and counters: after Casey saves, the shared row is **8/0**.
-   For Standard/Tournament's pre-existing 9/4 baseline, changing Casey to 8
-   leaves **8/4**, still in Met. Reopen both views, record bucket membership and
-   request a fixture `status` read. Do not erase Nova's prior score to manufacture
-   the one-sided branch.
-5. In Nova's counterpart card, give Casey **6** and save once. After sync,
-   inspect Met, Given, Received and Mutual in both windows. Reopen the card:
-   Casey's perspective is given 8 / received 6; Nova's is given 6 / received 8.
-   There must still be one relationship, with no duplicated counterpart.
+   Open Activities → Rates. **Before saving any rating**, inspect every bucket
+   and its counter in both windows: All, Given, Received, Mutual and Met.
+   Record the existing filters; clear them normally if they hide the counterpart.
+2. In `before-meeting` and Standard/Tournament, only Casey has rated: **Casey gives 9; Nova has
+   not rated (0)**. Casey's counterpart should be in Given, Nova's in Received.
+   Inspect All, Mutual and Met too, before changing anything. There is one
+   shared relationship and no friendship. Compare `priorRate` with the projected
+   row: same ID, sync key, creation date, users and9/0 scores. In `before-meeting`,
+   Met remains false and there are no events. Only the event-history variants
+   add meeting evidence through the worker. Do not confuse the stored Met flag
+   with the bucket chosen for a one-sided rating.
+3. For Speed meeting's separate no-prior-rate variant, first inspect the0/0
+   counterpart in Met. Only then give9 from Casey and save once. Wait for the
+   ordinary sync cycle and inspect all buckets again: Given for Casey, Received
+   for Nova. Skip this first save for all pre-existing-rate variants, which already start9/0.
+4. Keep Nova unrated while exploring the one-sided bucket lists. Reopen cards,
+   inspect scores and counters, and reload if desired. No automatic action may
+   submit Nova's rating or advance past this observation point.
+5. **When the tester finishes that inspection**, they may give Casey6 from
+   Nova and save once. After sync, inspect all buckets again. Expected views:
+   Casey given9 / received6; Nova given6 / received9. The single shared
+   relationship moves to **Mutual when no meeting has occurred**, or Met in
+   the completed-event variants. Inspect the full bucket list, not just the target
+   bucket. Do not submit this reciprocal rating automatically.
 6. Change Casey's score to **4**, save, then change Nova's to **9** and save.
    Reopen both cards after sync and then reload normally. Check the saved
    perspectives are 4/9 and 9/4. Further free rating changes may now be made;
@@ -85,14 +96,15 @@ This table describes the current service mapping to inspect, not a replacement
 for the user's agreed acceptance rules. Any discrepancy with those rules must
 be reported and resolved rather than silently marking the test PASS.
 
-| Casey gives | Nova gives | Casey bucket | Nova bucket |
-| --- | --- | --- | --- |
-| 0 | 0 | Met | Met |
-| 9 (pre-existing) | 4 (pre-existing) | Met after meeting | Met after meeting |
-| 8 | 0 | Given | Received |
-| 8 | 6 | Met | Met |
+| Meeting evidence | Casey gives | Nova gives | Casey bucket | Nova bucket |
+| --- | --- | --- | --- | --- |
+| No | 9 | 0 | Given | Received |
+| No | 9 | 6 | Mutual | Mutual |
+| Yes | 0 | 0 | Met | Met |
+| Yes | 9 | 0 | Given | Received |
+| Yes | 9 | 6 | Met | Met |
 
-The Met flag remains on the same record throughout. A relationship with meeting
+The Met flag remains false in `before-meeting` and true in event-history variants. A relationship with meeting
 evidence and two positive ratings is currently mapped to Met, not Mutual.
 The normal frontend batch can take one 30-second cycle. Persisted verification
 must distinguish a pending local edit from a completed server write.
@@ -104,12 +116,14 @@ Run from the repository root against the already-running development MongoDB.
 `status` reads it. Do not start another stack or compiler.
 
 ```bash
-bash server/docker/scripts/manual-qa-checkpoints/manual-qa-checkpoints-docker.sh stage event-rating EVENT-ACTIVITY-RATING-001 all
+bash server/docker/scripts/manual-qa-checkpoints/manual-qa-checkpoints-docker.sh stage event-rating EVENT-ACTIVITY-RATING-001 before-meeting
 bash server/docker/scripts/manual-qa-checkpoints/manual-qa-checkpoints-docker.sh status event-rating EVENT-ACTIVITY-RATING-001
 bash server/docker/scripts/manual-qa-checkpoints/manual-qa-checkpoints-docker.sh ready event-rating EVENT-ACTIVITY-RATING-001
 node guides/qa/tools/open-checkpoint-browser-sessions.mjs EVENT-ACTIVITY-RATING-001
 ```
 
+For `before-meeting`, `ready` checks one-sided9/0, Met=false, zero events and
+zero friendships; it neither waits for nor changes a worker. For event variants,
 `ready` refuses to proceed until the real worker has produced the relevant
 source flags and Met result: preserved pre-existing identity/scores for
 Standard/Tournament, or a new zero-score row for Speed meeting. If not ready, inspect
@@ -126,6 +140,6 @@ node guides/qa/tools/open-checkpoint-browser-sessions.mjs EVENT-ACTIVITY-RATING-
 bash server/docker/scripts/manual-qa-checkpoints/manual-qa-checkpoints-docker.sh reset event-rating EVENT-ACTIVITY-RATING-001
 ```
 
-Then stage again using `all`, `standard`, `tournament` or `speed-meeting`, run
+Then stage again using `before-meeting`, `all`, `standard`, `tournament` or `speed-meeting`, run
 `ready`, and launch. Reset/restage is the supported baseline replay. The stored
 baseline snapshot is evidence; there is no separate rollback-to-baseline command.

@@ -793,10 +793,15 @@ retrospective, non-rerun workflows under
 `event-rating / EVENT-ACTIVITY-RATING-001` prepares two isolated users and
 Standard, Tournament and Speed meeting sources. Use `stage ... all` for the
 parallel comparison or `standard`, `tournament`, `speed-meeting` for isolation.
-`status` is read-only; `ready` checks real Met projection (preserved 9/4 prior
+`status` is read-only; `ready` checks real Met projection (preserved one-sided 9/0 prior
 rate for Standard/Tournament; new 0/0 for Speed meeting) and restores
 the temporarily shortened worker schedule; `reset` restores scoped fixture and
 session state. Reset/restage is the supported replay.
 See [the numbered manual guide](../../../../guides/qa/checklists/event/EVENT-ACTIVITY-RATING-001.md)
 for full commands, boundaries and cleanup. Startup uses the common versioned
 browser launcher; subsequent rating actions belong to the tester.
+
+`before-meeting` is the one-sided bucket-inspection baseline: Casey9/Nova0,
+Met=false, zero events and friendships. No worker schedule is changed. The tester
+inspects all buckets before reciprocating; without meeting evidence the result
+is Mutual. Event-history variants are separate optional visibility checks.

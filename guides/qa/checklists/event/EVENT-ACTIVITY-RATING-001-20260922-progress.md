@@ -1,9 +1,10 @@
 # EVENT-ACTIVITY-RATING-001 — execution log, 2026-09-22
 
-Current: combined-source exploration accepted by the user; isolated Standard
-fixture ready with the pre-existing-rate prerequisite. Next: the tester opens
-Activities → Rates → Met in the two prepared windows and starts step 1 of the
-[stable numbered guide](EVENT-ACTIVITY-RATING-001.md).
+Current: **before-meeting** one-sided baseline ready. Casey9/Nova0, Met=false,
+no events and no friendship. Next: the tester inspects every Rates bucket in
+both windows **before saving anything**. Reciprocal rating is the user's next
+step only after they finish inspection; without a meeting it leads to Mutual.
+Earlier Standard preparations below are historical and superseded for this step.
 
 ## Prepared and independently read
 
@@ -81,3 +82,31 @@ and projected one friendship. Zero feedback answers. Job timing restored.
 [Before/after evidence](../../evidence/EVENT-ACTIVITY-RATING-001-standard-existing-rate-2026-09-22.json).
 Two managed sessions prepared for manual replay. Next: guide steps1–2, Casey9/4
 and Nova4/9 in Met. Tournament's existing-rate variant remains unexecuted.
+
+## One-sided prerequisite correction
+
+The user explicitly requires only one actor pre-rated, so they can inspect the
+bucket lists before reciprocating. The previous9/4 preparation bypassed that
+observation and is superseded. It is not a manual pass. The fixture now starts
+**Casey9 / Nova0**, mutuallyRated=false, Met=false before the worker. No prior
+friendship is seeded. Readiness requires preserved9/0 plus real meeting evidence
+and zero friendships. The user owns the later reciprocal rating.
+
+Next: inspect **all rate buckets in both windows before any save**. Given should
+contain Nova for Casey; Received should contain Casey for Nova. Record All,
+Mutual and Met too. Do not automatically progress to reciprocal rating.
+
+## Current correction: no event has occurred
+
+The user clarified the intended chain: one-sided rate, then mutual rate, then a
+possible later system-arranged meeting. Event formats are not the distinction
+for this initial bucket inspection. The previous meeting-bearing baseline is
+superseded. Added the versioned `before-meeting` variant and reset/restaged only
+the isolated fixture. Readiness verified Casey9/Nova0, Met=false, exactly one
+rate, **zero events/rounds/friendships/feedback answers**. No worker timing change.
+[Persisted baseline](../../evidence/EVENT-ACTIVITY-RATING-001-before-meeting-2026-09-22.json).
+
+The user accepted earlier meeting/rating visibility; neither this nor fixture
+preparation proves later automatic room/event creation. No reciprocal rating or
+bucket navigation was performed by Codex. Managed launcher prepares the two
+windows; the user inspects Given/Received/All/Mutual/Met and decides when to rate.
