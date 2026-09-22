@@ -1,4 +1,7 @@
 package com.raxim.myscoutee.profile.data.document;
+import java.util.Map;
+import com.raxim.myscoutee.profile.data.dto.media.MediaDtos.ImageDetailsDto;
+import static com.raxim.myscoutee.profile.data.dto.media.MediaDtos.normalizeImageDetails;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -61,6 +64,15 @@ public class ActivityEvent {
     private String sourceId;
     private String ownerUserId;
     private String status;
+    private String moderationStatus;
+    private String moderationPreviousStatus;
+    private Long moderationVersion;
+    public String getModerationStatus() { return moderationStatus; }
+    public void setModerationStatus(String value) { moderationStatus = value; }
+    public String getModerationPreviousStatus() { return moderationPreviousStatus; }
+    public void setModerationPreviousStatus(String value) { moderationPreviousStatus = value; }
+    public Long getModerationVersion() { return moderationVersion; }
+    public void setModerationVersion(Long value) { moderationVersion = value; }
     private String statusBeforeSuppression;
     private List<String> admins = new ArrayList<>();
     private String avatar;
@@ -88,7 +100,11 @@ public class ActivityEvent {
     private String startAtIso;
     private String endAtIso;
     private Double distanceKm;
+    private Map<String, ImageDetailsDto> imageDetails;
+    public Map<String, ImageDetailsDto> getImageDetails() { return imageDetails; }
+    public void setImageDetails(Map<String, ImageDetailsDto> value) { imageDetails = value; }
     private String imageUrl;
+    private List<String> imageUrls;
     private String sourceLink;
     private String location;
     private LocationCoordinatesDto locationCoordinates;
@@ -228,6 +244,9 @@ public class ActivityEvent {
     public void setEndAtIso(String endAtIso) { this.endAtIso = endAtIso; }
     public Double getDistanceKm() { return distanceKm; }
     public void setDistanceKm(Double distanceKm) { this.distanceKm = distanceKm; }
+    public List<String> getImageUrls() { return imageUrls; }
+    public void setImageUrls(List<String> imageUrls) { this.imageUrls = imageUrls; }
+
     public String getImageUrl() { return imageUrl; }
     public void setImageUrl(String imageUrl) { this.imageUrl = imageUrl; }
     public String getSourceLink() { return sourceLink; }

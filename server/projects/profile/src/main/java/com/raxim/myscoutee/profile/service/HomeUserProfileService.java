@@ -203,6 +203,10 @@ public class HomeUserProfileService {
             Map.entry("attendee risk", "ambitious-go-getter"),
             Map.entry("attendee role-fit", "deep-thinker"));
 
+    @org.springframework.beans.factory.annotation.Autowired
+    @org.springframework.context.annotation.Lazy
+    private ContentModerationService contentModeration;
+
     private final UsersRepository usersRepository;
     private final UserFilterPreferencesRepository userFilterPreferencesRepository;
     private final UserExperienceProfilesRepository userExperienceProfilesRepository;
@@ -532,7 +536,8 @@ public class HomeUserProfileService {
                         .toList(),
                 buildRealtimeCursor(user, counters),
                 Instant.now().toString(),
-                OrganizerFollowingService.state(user));
+                OrganizerFollowingService.state(user),
+                contentModeration != null && adminMenuCounterService.isAdminUser(user) ? contentModeration.snapshot() : null);
     }
 
     public UserLocationEligibilityResponseDto queryLocationEligibility(Double latitude, Double longitude) {

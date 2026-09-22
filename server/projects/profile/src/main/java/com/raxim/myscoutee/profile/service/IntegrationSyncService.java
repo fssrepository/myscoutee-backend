@@ -445,6 +445,8 @@ public class IntegrationSyncService {
                 0d,
                 0d,
                 0d,
+                null,
+                null,
                 null);
     }
 

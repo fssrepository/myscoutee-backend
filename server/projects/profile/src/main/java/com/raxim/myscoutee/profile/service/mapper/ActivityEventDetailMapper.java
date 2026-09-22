@@ -99,7 +99,11 @@ public class ActivityEventDetailMapper {
                 safeDouble(record.getRating()),
                 safeDouble(record.getBoost()),
                 safeDouble(record.getAffinity()),
-                null);
+                null,
+                record.getImageUrls() == null
+                        ? (StringUtils.hasText(record.getImageUrl()) ? List.of(record.getImageUrl().trim()) : List.of())
+                        : List.copyOf(record.getImageUrls()),
+                record.getImageDetails());
     }
 
     private MingleConfigurationDto cloneMingleConfiguration(MingleConfigurationDto value) {

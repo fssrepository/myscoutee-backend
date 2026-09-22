@@ -1,4 +1,7 @@
 package com.raxim.myscoutee.profile.data.dto.idea;
+import java.util.Map;
+import com.raxim.myscoutee.profile.data.dto.media.MediaDtos.ImageDetailsDto;
+import static com.raxim.myscoutee.profile.data.dto.media.MediaDtos.normalizeImageDetails;
 
 import java.util.List;
 
@@ -25,7 +28,8 @@ public final class IdeaPostDtos {
             String createdAtIso,
             String createdByUserId,
             String updatedAtIso,
-            String updatedByUserId) {
+            String updatedByUserId,
+            Map<String, ImageDetailsDto> imageDetails) {
     }
 
     public record IdeaPostAdminCountsDto(
@@ -62,7 +66,8 @@ public final class IdeaPostDtos {
             List<String> removedImageUrls,
             Boolean featured,
             Boolean published,
-            String submittedAtIso) {
+            String submittedAtIso,
+            Map<String, ImageDetailsDto> imageDetails) {
     }
 
     public record IdeaPostAdminActionRequestDto(String actorUserId) {

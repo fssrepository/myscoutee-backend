@@ -38,7 +38,8 @@ public class IdeaPostMapper {
                 normalize(post.getCreatedDate()),
                 normalize(post.getCreatedUser()),
                 normalize(post.getUpdatedDate()),
-                normalize(post.getUpdatedUser()));
+                normalize(post.getUpdatedUser()),
+                post.getImageDetails());
     }
 
     private String contentLang(String value) {

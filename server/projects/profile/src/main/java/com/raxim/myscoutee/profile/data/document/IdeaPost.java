@@ -1,4 +1,7 @@
 package com.raxim.myscoutee.profile.data.document;
+import java.util.Map;
+import com.raxim.myscoutee.profile.data.dto.media.MediaDtos.ImageDetailsDto;
+import static com.raxim.myscoutee.profile.data.dto.media.MediaDtos.normalizeImageDetails;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -36,6 +39,9 @@ public class IdeaPost {
     private String title;
     private String excerpt;
     private String contentHtml;
+    private Map<String, ImageDetailsDto> imageDetails;
+    public Map<String, ImageDetailsDto> getImageDetails() { return imageDetails; }
+    public void setImageDetails(Map<String, ImageDetailsDto> value) { imageDetails = value; }
     private String imageUrl;
     private List<String> imageUrls = new ArrayList<>();
     private Boolean featured;

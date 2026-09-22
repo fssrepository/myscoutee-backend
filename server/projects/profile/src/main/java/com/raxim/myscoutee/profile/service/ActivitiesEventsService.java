@@ -1,4 +1,7 @@
 package com.raxim.myscoutee.profile.service;
+import java.util.Map;
+import com.raxim.myscoutee.profile.data.dto.media.MediaDtos.ImageDetailsDto;
+import static com.raxim.myscoutee.profile.data.dto.media.MediaDtos.normalizeImageDetails;
 
 import java.text.Normalizer;
 import java.time.Instant;
@@ -156,6 +159,10 @@ public class ActivitiesEventsService {
     private static final double AFFINITY_DISTANCE_BOOST_SCALE = 10_000d;
     private static final AtomicBoolean MISSING_EVENT_GEO_INDEX_WARNING_LOGGED = new AtomicBoolean(false);
     private static final ThreadLocal<EventQueryContext> ACTIVE_CONTEXT = new ThreadLocal<>();
+
+    @org.springframework.beans.factory.annotation.Autowired
+    @org.springframework.context.annotation.Lazy
+    private ContentModerationService contentModeration;
 
     private final ActivityEventsRepository activityEventsRepository;
     private final ActivitySubEventGroupsRepository activitySubEventGroupsRepository;
@@ -2313,6 +2320,10 @@ public class ActivitiesEventsService {
             current.refreshTournamentCurrentStage();
         });
         List<ActivityEvent> publishedDocuments = ensurePublishedEventDocuments(updated, request == null ? null : request.userId());
+        if (contentModeration != null && preferred != null && !Boolean.TRUE.equals(preferred.getGenerated())) {
+            contentModeration.register("event", sourceId, preferred.getCreatorUserId(), preferred.getTitle(), preferred.getImageUrl());
+            publishedDocuments = activityEventsRepository.findBySourceId(sourceId);
+        }
         boolean eventChatAdded = false;
         if (changed) {
             eventChatAdded = materializePublishedMainEventChats(publishedDocuments, userId);
@@ -4835,6 +4846,9 @@ public class ActivitiesEventsService {
                 ? activeSubEventResourceAudienceUserIds(sourceId)
                 : Set.of();
         List<ActivityEvent> savedDocuments = activityEventsRepository.saveAll(List.of(baseRecord));
+        if (contentModeration != null && !"DR".equals(baseRecord.getStatus()) && !Boolean.TRUE.equals(baseRecord.getGenerated())) {
+            contentModeration.register("event", sourceId, baseRecord.getCreatorUserId(), baseRecord.getTitle(), baseRecord.getImageUrl());
+        }
         ActivitiesMembersService.OwnerMembersSnapshot canonicalMembersSnapshot =
                 activitiesMembersService.ensureEventCreatorAdminMembership(sourceId, actorUserId);
         List<ActivityEvent> canonicalDocuments = activityEventsRepository.findBySourceId(sourceId).stream()
@@ -6772,9 +6786,12 @@ public class ActivitiesEventsService {
                 : normalizeDateTime(request.endAtIso(), document.getStartAtIso()));
         resetExpiredOnBoundaryChange(document, existing);
         document.setDistanceKm(null);
-        document.setImageUrl(request.imageUrl() == null
-                ? safeText(existing == null ? null : existing.getImageUrl())
-                : request.imageUrl().trim());
+        List<String> gallery = resolveEventImages(request, existing, publishedManageMode);
+        document.setImageUrls(gallery);
+        document.setImageDetails(normalizeImageDetails(
+                publishedManageMode || request.imageDetails() == null
+                        ? (existing == null ? null : existing.getImageDetails()) : request.imageDetails(), gallery));
+        document.setImageUrl(gallery.isEmpty() ? "" : gallery.get(0));
         document.setSourceLink(request.sourceLink() == null
                 ? safeText(existing == null ? null : existing.getSourceLink()) : request.sourceLink().trim());
         document.setLocation(StringUtils.hasText(request.location()) ? request.location().trim() : safeText(existing == null ? null : existing.getLocation()));
@@ -7530,9 +7547,27 @@ public class ActivitiesEventsService {
                 .toList();
     }
 
+    static List<String> resolveEventImages(EventDetailDto request, ActivityEvent existing, boolean published) {
+        List<String> previous = existing == null ? List.of() : existing.getImageUrls() != null
+                ? existing.getImageUrls() : StringUtils.hasText(existing.getImageUrl())
+                ? List.of(existing.getImageUrl().trim()) : List.of();
+        if (published) return List.copyOf(previous);
+        List<String> requested = request.imageUrls();
+        if (requested == null) {
+            if (request.imageUrl() == null) return List.copyOf(previous);
+            requested = new ArrayList<>();
+            if (StringUtils.hasText(request.imageUrl())) requested.add(request.imageUrl());
+            if (previous.size() > 1) requested.addAll(previous.subList(1, previous.size()));
+        }
+        List<String> images = requested.stream().filter(StringUtils::hasText).map(String::trim).distinct().toList();
+        if (images.size() > 5) throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "At most five event images are allowed");
+        return images;
+    }
+
     private ActivityEvent cloneDocument(ActivityEvent source) {
         ActivityEvent clone = new ActivityEvent();
         BeanUtils.copyProperties(source, clone);
+        clone.setImageUrls(source.getImageUrls() == null ? null : new ArrayList<>(source.getImageUrls()));
         clone.setAdmins(new ArrayList<>(normalizeIds(source.getAdmins())));
         clone.setAcceptedMemberUserIds(new ArrayList<>(normalizeIds(source.getAcceptedMemberUserIds())));
         clone.setPendingMemberUserIds(new ArrayList<>(normalizeIds(source.getPendingMemberUserIds())));

@@ -1,6 +1,6 @@
 {
   "lang": "hu",
-  "version": "2026.09.22.hu.141",
+  "version": "2026.09.22.hu.142",
   "messages": {
     "integration.token.ip": "IP:",
     "unavailable.here": "Itt nem elérhető",
@@ -3618,6 +3618,13 @@
     "event.following.follow": "Szervező követése",
     "event.following.unfollow": "Kikövetés",
     "event.following.failed": "Nem sikerült módosítani a követést. Próbáld újra.",
-    "event.external.info": "Külső információ"
+    "event.external.info": "Külső információ",
+    "image.carousel.images": "Képek",
+    "image.carousel.expand": "Galéria megnyitása",
+    "image.carousel.previous": "Előző kép",
+    "image.carousel.next": "Következő kép",
+    "image.carousel.pages": "Képlapok",
+    "image.details.title": "Képadatok",
+    "image.details.caption": "Rövid képleírás"
   }
 }

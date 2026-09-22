@@ -21702,6 +21702,204 @@
     "value": "External info"
   },
   {
+    "_id": "i18n-message-en-image-carousel-images",
+    "key": "image.carousel.images",
+    "lang": "en",
+    "value": "Images"
+  },
+  {
+    "_id": "i18n-message-en-image-carousel-expand",
+    "key": "image.carousel.expand",
+    "lang": "en",
+    "value": "Open gallery"
+  },
+  {
+    "_id": "i18n-message-en-image-carousel-previous",
+    "key": "image.carousel.previous",
+    "lang": "en",
+    "value": "Previous image"
+  },
+  {
+    "_id": "i18n-message-en-image-carousel-next",
+    "key": "image.carousel.next",
+    "lang": "en",
+    "value": "Next image"
+  },
+  {
+    "_id": "i18n-message-en-image-carousel-pages",
+    "key": "image.carousel.pages",
+    "lang": "en",
+    "value": "Image pages"
+  },
+  {
+    "_id": "i18n-message-en-image-details-title",
+    "key": "image.details.title",
+    "lang": "en",
+    "value": "Image details"
+  },
+  {
+    "_id": "i18n-message-en-image-details-caption",
+    "key": "image.details.caption",
+    "lang": "en",
+    "value": "Short image description"
+  },
+  {
+    "_id": "i18n-message-en-feed-title",
+    "key": "feed.title",
+    "lang": "en",
+    "value": "Feed"
+  },
+  {
+    "_id": "i18n-message-en-feed-create",
+    "key": "feed.create",
+    "lang": "en",
+    "value": "Share photos"
+  },
+  {
+    "_id": "i18n-message-en-feed-empty",
+    "key": "feed.empty",
+    "lang": "en",
+    "value": "No shared photos yet"
+  },
+  {
+    "_id": "i18n-message-en-feed-locationrequired",
+    "key": "feed.locationRequired",
+    "lang": "en",
+    "value": "Set your profile location to see and share nearby photos."
+  },
+  {
+    "_id": "i18n-message-en-profile-view-showdetails",
+    "key": "profile.view.showDetails",
+    "lang": "en",
+    "value": "Show profile details"
+  },
+  {
+    "_id": "i18n-message-en-image-gallery-savefailed",
+    "key": "image.gallery.saveFailed",
+    "lang": "en",
+    "value": "Unable to save. Please try again."
+  },
+  {
+    "_id": "i18n-message-en-moderation-title",
+    "key": "moderation.title",
+    "lang": "en",
+    "value": "Content moderation"
+  },
+  {
+    "_id": "i18n-message-en-moderation-empty",
+    "key": "moderation.empty",
+    "lang": "en",
+    "value": "No items in this category and status."
+  },
+  {
+    "_id": "i18n-message-en-moderation-settings",
+    "key": "moderation.settings",
+    "lang": "en",
+    "value": "Moderation settings"
+  },
+  {
+    "_id": "i18n-message-en-moderation-categories",
+    "key": "moderation.categories",
+    "lang": "en",
+    "value": "Categories"
+  },
+  {
+    "_id": "i18n-message-en-moderation-category-asset",
+    "key": "moderation.category.asset",
+    "lang": "en",
+    "value": "Asset"
+  },
+  {
+    "_id": "i18n-message-en-moderation-category-event",
+    "key": "moderation.category.event",
+    "lang": "en",
+    "value": "Event"
+  },
+  {
+    "_id": "i18n-message-en-moderation-category-feed",
+    "key": "moderation.category.feed",
+    "lang": "en",
+    "value": "Photo Feed"
+  },
+  {
+    "_id": "i18n-message-en-moderation-status-under-review",
+    "key": "moderation.status.under-review",
+    "lang": "en",
+    "value": "Under review"
+  },
+  {
+    "_id": "i18n-message-en-moderation-status-accepted",
+    "key": "moderation.status.accepted",
+    "lang": "en",
+    "value": "Accepted"
+  },
+  {
+    "_id": "i18n-message-en-moderation-status-rejected",
+    "key": "moderation.status.rejected",
+    "lang": "en",
+    "value": "Rejected"
+  },
+  {
+    "_id": "i18n-message-en-moderation-status-blocked",
+    "key": "moderation.status.blocked",
+    "lang": "en",
+    "value": "Blocked"
+  },
+  {
+    "_id": "i18n-message-en-moderation-message",
+    "key": "moderation.message",
+    "lang": "en",
+    "value": "Optional message to the owner via App Support"
+  },
+  {
+    "_id": "i18n-message-en-moderation-autoapprove",
+    "key": "moderation.autoApprove",
+    "lang": "en",
+    "value": "Auto approve"
+  },
+  {
+    "_id": "i18n-message-en-moderation-delayminutes",
+    "key": "moderation.delayMinutes",
+    "lang": "en",
+    "value": "Delay (minutes)"
+  },
+  {
+    "_id": "i18n-message-en-moderation-failed",
+    "key": "moderation.failed",
+    "lang": "en",
+    "value": "Unable to save or load moderation. Reload and retry."
+  },
+  {
+    "_id": "i18n-message-en-moderation-changed",
+    "key": "moderation.changed",
+    "lang": "en",
+    "value": "Another admin changed this item. Reload and retry."
+  },
+  {
+    "_id": "i18n-message-en-moderation-invalidsettings",
+    "key": "moderation.invalidSettings",
+    "lang": "en",
+    "value": "Enter a whole number from 0 to 43200 minutes."
+  },
+  {
+    "_id": "i18n-message-en-admin-jobs-rule-content-autoapprove",
+    "key": "admin.jobs.rule.content.autoApprove",
+    "lang": "en",
+    "value": "Content auto approval"
+  },
+  {
+    "_id": "i18n-message-en-admin-jobs-rule-content-autoapprove-description",
+    "key": "admin.jobs.rule.content.autoApprove.description",
+    "lang": "en",
+    "value": "Approves content in the globally selected categories after the configured delay."
+  },
+  {
+    "_id": "i18n-message-en-admin-jobs-rule-content-autoapprove-completed",
+    "key": "admin.jobs.rule.content.autoApprove.completed",
+    "lang": "en",
+    "value": "Scheduled content approval completed."
+  },
+  {
     "_id": "i18n-message-hu-integration-token-ip",
     "key": "integration.token.ip",
     "lang": "hu",
@@ -43402,5 +43600,203 @@
     "key": "event.external.info",
     "lang": "hu",
     "value": "Külső információ"
+  },
+  {
+    "_id": "i18n-message-hu-image-carousel-images",
+    "key": "image.carousel.images",
+    "lang": "hu",
+    "value": "Képek"
+  },
+  {
+    "_id": "i18n-message-hu-image-carousel-expand",
+    "key": "image.carousel.expand",
+    "lang": "hu",
+    "value": "Galéria megnyitása"
+  },
+  {
+    "_id": "i18n-message-hu-image-carousel-previous",
+    "key": "image.carousel.previous",
+    "lang": "hu",
+    "value": "Előző kép"
+  },
+  {
+    "_id": "i18n-message-hu-image-carousel-next",
+    "key": "image.carousel.next",
+    "lang": "hu",
+    "value": "Következő kép"
+  },
+  {
+    "_id": "i18n-message-hu-image-carousel-pages",
+    "key": "image.carousel.pages",
+    "lang": "hu",
+    "value": "Képlapok"
+  },
+  {
+    "_id": "i18n-message-hu-image-details-title",
+    "key": "image.details.title",
+    "lang": "hu",
+    "value": "Képadatok"
+  },
+  {
+    "_id": "i18n-message-hu-image-details-caption",
+    "key": "image.details.caption",
+    "lang": "hu",
+    "value": "Rövid képleírás"
+  },
+  {
+    "_id": "i18n-message-hu-feed-title",
+    "key": "feed.title",
+    "lang": "hu",
+    "value": "Feed"
+  },
+  {
+    "_id": "i18n-message-hu-feed-create",
+    "key": "feed.create",
+    "lang": "hu",
+    "value": "Fotók megosztása"
+  },
+  {
+    "_id": "i18n-message-hu-feed-empty",
+    "key": "feed.empty",
+    "lang": "hu",
+    "value": "Még nincsenek megosztott fotók"
+  },
+  {
+    "_id": "i18n-message-hu-feed-locationrequired",
+    "key": "feed.locationRequired",
+    "lang": "hu",
+    "value": "Állítsd be a profilod helyét a közeli fotók megtekintéséhez és megosztásához."
+  },
+  {
+    "_id": "i18n-message-hu-profile-view-showdetails",
+    "key": "profile.view.showDetails",
+    "lang": "hu",
+    "value": "Profiladatok megtekintése"
+  },
+  {
+    "_id": "i18n-message-hu-image-gallery-savefailed",
+    "key": "image.gallery.saveFailed",
+    "lang": "hu",
+    "value": "Nem sikerült menteni. Próbáld újra."
+  },
+  {
+    "_id": "i18n-message-hu-moderation-title",
+    "key": "moderation.title",
+    "lang": "hu",
+    "value": "Tartalommoderáció"
+  },
+  {
+    "_id": "i18n-message-hu-moderation-empty",
+    "key": "moderation.empty",
+    "lang": "hu",
+    "value": "Nincs ilyen kategóriájú és állapotú elem."
+  },
+  {
+    "_id": "i18n-message-hu-moderation-settings",
+    "key": "moderation.settings",
+    "lang": "hu",
+    "value": "Moderációs beállítások"
+  },
+  {
+    "_id": "i18n-message-hu-moderation-categories",
+    "key": "moderation.categories",
+    "lang": "hu",
+    "value": "Kategóriák"
+  },
+  {
+    "_id": "i18n-message-hu-moderation-category-asset",
+    "key": "moderation.category.asset",
+    "lang": "hu",
+    "value": "Eszköz"
+  },
+  {
+    "_id": "i18n-message-hu-moderation-category-event",
+    "key": "moderation.category.event",
+    "lang": "hu",
+    "value": "Esemény"
+  },
+  {
+    "_id": "i18n-message-hu-moderation-category-feed",
+    "key": "moderation.category.feed",
+    "lang": "hu",
+    "value": "Fotófolyam"
+  },
+  {
+    "_id": "i18n-message-hu-moderation-status-under-review",
+    "key": "moderation.status.under-review",
+    "lang": "hu",
+    "value": "Ellenőrzés alatt"
+  },
+  {
+    "_id": "i18n-message-hu-moderation-status-accepted",
+    "key": "moderation.status.accepted",
+    "lang": "hu",
+    "value": "Elfogadva"
+  },
+  {
+    "_id": "i18n-message-hu-moderation-status-rejected",
+    "key": "moderation.status.rejected",
+    "lang": "hu",
+    "value": "Elutasítva"
+  },
+  {
+    "_id": "i18n-message-hu-moderation-status-blocked",
+    "key": "moderation.status.blocked",
+    "lang": "hu",
+    "value": "Letiltva"
+  },
+  {
+    "_id": "i18n-message-hu-moderation-message",
+    "key": "moderation.message",
+    "lang": "hu",
+    "value": "Opcionális üzenet a tulajdonosnak az alkalmazástámogatási chaten"
+  },
+  {
+    "_id": "i18n-message-hu-moderation-autoapprove",
+    "key": "moderation.autoApprove",
+    "lang": "hu",
+    "value": "Automatikus jóváhagyás"
+  },
+  {
+    "_id": "i18n-message-hu-moderation-delayminutes",
+    "key": "moderation.delayMinutes",
+    "lang": "hu",
+    "value": "Késleltetés (perc)"
+  },
+  {
+    "_id": "i18n-message-hu-moderation-failed",
+    "key": "moderation.failed",
+    "lang": "hu",
+    "value": "A moderáció betöltése vagy mentése sikertelen. Töltsd újra és próbáld ismét."
+  },
+  {
+    "_id": "i18n-message-hu-moderation-changed",
+    "key": "moderation.changed",
+    "lang": "hu",
+    "value": "Egy másik admin módosította az elemet. Töltsd újra és próbáld ismét."
+  },
+  {
+    "_id": "i18n-message-hu-moderation-invalidsettings",
+    "key": "moderation.invalidSettings",
+    "lang": "hu",
+    "value": "Adj meg 0 és 43200 közötti egész percszámot."
+  },
+  {
+    "_id": "i18n-message-hu-admin-jobs-rule-content-autoapprove",
+    "key": "admin.jobs.rule.content.autoApprove",
+    "lang": "hu",
+    "value": "Tartalmak automatikus jóváhagyása"
+  },
+  {
+    "_id": "i18n-message-hu-admin-jobs-rule-content-autoapprove-description",
+    "key": "admin.jobs.rule.content.autoApprove.description",
+    "lang": "hu",
+    "value": "A globálisan kiválasztott kategóriák tartalmait a beállított késleltetés után jóváhagyja."
+  },
+  {
+    "_id": "i18n-message-hu-admin-jobs-rule-content-autoapprove-completed",
+    "key": "admin.jobs.rule.content.autoApprove.completed",
+    "lang": "hu",
+    "value": "Az ütemezett tartalomjóváhagyás befejeződött."
   }
 ]

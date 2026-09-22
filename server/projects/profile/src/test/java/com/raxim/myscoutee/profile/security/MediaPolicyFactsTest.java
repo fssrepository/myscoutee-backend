@@ -44,4 +44,19 @@ class MediaPolicyFactsTest {
 
         assertThat(policy.canRead("viewer", key)).isTrue();
     }
+    @Test void galleryImagesUseTheSameVisibilityRulesAsTheCover() {
+        MongoTemplate mongo = mock(MongoTemplate.class);
+        MediaPolicyFacts policy = new MediaPolicyFacts(mongo, mock(FriendshipFacts.class), mock(ChatPolicyFacts.class));
+        Document event = new Document("creatorUserId", "owner").append("visibility", "Public").append("status", "A");
+        when(mongo.findOne(any(Query.class), eq(Document.class), eq("events"))).thenReturn(event);
+        assertThat(policy.canRead("viewer", "private/images/owner/event/second/large.webp")).isTrue();
+        var query = org.mockito.ArgumentCaptor.forClass(Query.class);
+        verify(mongo).findOne(query.capture(), eq(Document.class), eq("events"));
+        assertThat(query.getValue().getQueryObject().toJson()).contains("imageUrls");
+        event.put("visibility", "Invitation only");
+        assertThat(policy.canRead("viewer", "private/images/owner/event/second/large.webp")).isFalse();
+        event.put("invitedMemberUserIds", java.util.List.of("viewer"));
+        assertThat(policy.canRead("viewer", "private/images/owner/event/second/large.webp")).isTrue();
+    }
+
 }

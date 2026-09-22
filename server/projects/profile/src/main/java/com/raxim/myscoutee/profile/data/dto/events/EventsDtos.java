@@ -1,4 +1,7 @@
 package com.raxim.myscoutee.profile.data.dto.events;
+import java.util.Map;
+import com.raxim.myscoutee.profile.data.dto.media.MediaDtos.ImageDetailsDto;
+import static com.raxim.myscoutee.profile.data.dto.media.MediaDtos.normalizeImageDetails;
 
 import java.util.List;
 import java.util.Map;
@@ -675,7 +678,9 @@ public final class EventsDtos {
             Double rating,
             Double boost,
             Double affinity,
-            String paymentSessionId) {
+            String paymentSessionId,
+            List<String> imageUrls,
+            Map<String, ImageDetailsDto> imageDetails) {
     }
 
     public record EventInvitationContextDto(

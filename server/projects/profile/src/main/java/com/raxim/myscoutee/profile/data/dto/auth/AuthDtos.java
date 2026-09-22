@@ -530,7 +530,8 @@ public final class AuthDtos {
             List<UserNotificationDeviceDto> notificationDevices,
             String cursor,
             String serverTsIso,
-            com.raxim.myscoutee.profile.data.document.Users.FollowingRecord following) {
+            com.raxim.myscoutee.profile.data.document.Users.FollowingRecord following,
+            com.raxim.myscoutee.profile.data.dto.admin.ContentModerationDtos.Snapshot contentModeration) {
     }
 
     public record UserFilterPreferencesRequestDto(

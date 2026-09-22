@@ -42,11 +42,17 @@ public class SendGridEmailProvider implements EmailProvider {
     }
 
     @Override
-    public EmailSendResult send(EmailSendRequest request) {
+    public com.raxim.myscoutee.profile.service.operator.OperatorEmailConfigurationService.Provider configurationDescriptor() {
+        return new com.raxim.myscoutee.profile.service.operator.OperatorEmailConfigurationService.Provider("sendgrid", "SendGrid", "mail", "blue");
+    }
+    @Override
+    public EmailSendResult send(EmailSendRequest request) { return sendConfigured(request, emailProperties.getSendgrid().getApiKey()); }
+    @Override
+    public EmailSendResult sendConfigured(EmailSendRequest request, String credential) {
         if (request == null || !StringUtils.hasText(request.toEmail())) {
             return new EmailSendResult(false, null, "Missing recipient email.");
         }
-        if (!StringUtils.hasText(emailProperties.getSendgrid().getApiKey())) {
+        if (!StringUtils.hasText(credential)) {
             return new EmailSendResult(false, null, "Missing SendGrid API key.");
         }
         if (!StringUtils.hasText(emailProperties.getSendgrid().getEndpoint())) {
@@ -58,7 +64,7 @@ public class SendGridEmailProvider implements EmailProvider {
             HttpRequest httpRequest = HttpRequest.newBuilder()
                     .uri(URI.create(emailProperties.getSendgrid().getEndpoint().trim()))
                     .timeout(Duration.ofSeconds(20))
-                    .header("Authorization", "Bearer " + emailProperties.getSendgrid().getApiKey().trim())
+                    .header("Authorization", "Bearer " + credential.trim())
                     .header("Content-Type", "application/json")
                     .POST(HttpRequest.BodyPublishers.ofString(payload))
                     .build();
@@ -70,6 +76,9 @@ public class SendGridEmailProvider implements EmailProvider {
             String errorBody = previewBody(response.body());
             LOGGER.warn("SendGrid email failed with status {} and body {}.", response.statusCode(), errorBody);
             return new EmailSendResult(false, null, "SendGrid status " + response.statusCode() + ": " + errorBody);
+        } catch (InterruptedException exception) {
+            Thread.currentThread().interrupt();
+            return new EmailSendResult(false, null, "Email request interrupted.");
         } catch (Exception exception) {
             LOGGER.warn("Unable to send email via SendGrid.", exception);
             return new EmailSendResult(false, null, exception.getMessage());

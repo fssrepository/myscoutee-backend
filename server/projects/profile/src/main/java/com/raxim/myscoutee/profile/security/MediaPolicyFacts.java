@@ -15,6 +15,9 @@ import com.raxim.myscoutee.profile.service.media.MediaAccessPaths;
 /** Current resource visibility; only small indexed metadata reads, never event graph reconstruction. */
 @Component
 public class MediaPolicyFacts {
+    @org.springframework.beans.factory.annotation.Autowired
+    @org.springframework.context.annotation.Lazy
+    private com.raxim.myscoutee.profile.service.AdminMenuCounterService adminCounters;
     private final MongoTemplate mongo;
     private final FriendshipFacts friendships;
     private final ChatPolicyFacts chats;
@@ -40,11 +43,12 @@ public class MediaPolicyFacts {
             return profile != null && profile.getString("profileStatus") != null
                     && !profile.getString("profileStatus").isBlank() && visible(profile.getString("profileStatus"), owner, viewer);
         }
-        Document asset = find("assets", Criteria.where("imageUrl").in(urls), "ownerUserId", "visibility", "status");
-        if (asset != null) return active(asset) && visible(asset.getString("visibility"), asset.getString("ownerUserId"), viewer);
-        Document event = find("events", Criteria.where("imageUrl").in(urls), "creatorUserId", "organizerUserId", "admins",
-                "visibility", "status", "published", "acceptedMemberUserIds", "invitedMemberUserIds", "pendingRequestMemberUserIds");
+        Document asset = find("assets", Criteria.where("imageUrl").in(urls), "ownerUserId", "visibility", "status", "moderationStatus");
+        if (asset != null) return canModerate(viewer, asset) || active(asset) && visible(asset.getString("visibility"), asset.getString("ownerUserId"), viewer);
+        Document event = find("events", new Criteria().orOperator(Criteria.where("imageUrl").in(urls), Criteria.where("imageUrls").in(urls)), "creatorUserId", "organizerUserId", "admins",
+                "moderationStatus", "visibility", "status", "published", "acceptedMemberUserIds", "invitedMemberUserIds", "pendingRequestMemberUserIds");
         if (event != null) {
+            if (canModerate(viewer, event)) return true;
             if (viewer.equals(event.getString("creatorUserId")) || viewer.equals(event.getString("organizerUserId"))
                     || contains(event, "admins", viewer) || contains(event, "acceptedMemberUserIds", viewer)
                     || contains(event, "invitedMemberUserIds", viewer) || contains(event, "pendingRequestMemberUserIds", viewer)) return true;
@@ -53,6 +57,8 @@ public class MediaPolicyFacts {
             return active(event)
                     && visible(event.getString("visibility"), event.getString("creatorUserId"), viewer);
         }
+        Document feed = find("photoFeedPosts", Criteria.where("imageUrls").in(urls), "moderationStatus");
+        if (feed != null && ("accepted".equals(feed.getString("moderationStatus")) || canModerate(viewer, feed))) return true;
         Query messageQuery = Query.query(new Criteria().orOperator(
                 Criteria.where("attachments.url").in(urls), Criteria.where("attachments.previewUrl").in(urls)));
         messageQuery.fields().include("chatId").include("deletedAtIso");
@@ -62,6 +68,12 @@ public class MediaPolicyFacts {
                     && chats.canAccessChat(message.getString("chatId"), viewer)) return true;
         }
         return false;
+    }
+
+    private boolean canModerate(String viewer, Document resource) {
+        if (adminCounters == null || resource.getString("moderationStatus") == null) return false;
+        var user = mongo.findOne(Query.query(Criteria.where("userId").is(viewer)), com.raxim.myscoutee.profile.data.document.Users.class);
+        return adminCounters.isAdminUser(user);
     }
 
     private Document find(String collection, Criteria criteria, String... fields) {

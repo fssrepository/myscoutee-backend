@@ -1,6 +1,26 @@
 package com.raxim.myscoutee.profile.data.dto.media;
 
 public final class MediaDtos {
+    public record ImageDetailsDto(String location, String caption) {}
+
+    public static java.util.Map<String, ImageDetailsDto> normalizeImageDetails(
+            java.util.Map<String, ImageDetailsDto> details, java.util.List<String> urls) {
+        var result = new java.util.LinkedHashMap<String, ImageDetailsDto>();
+        if (details == null || urls == null) return result;
+        for (String url : urls) {
+            var detail = details.get(url);
+            if (detail == null) continue;
+            String location = detail.location() == null ? "" : detail.location().trim();
+            String caption = detail.caption() == null ? "" : detail.caption().replaceAll("\\s+", " ").trim();
+            if (location.length() > 240 || caption.length() > 40) {
+                throw new org.springframework.web.server.ResponseStatusException(
+                        org.springframework.http.HttpStatus.BAD_REQUEST, "Image details exceed the allowed length");
+            }
+            result.put(url, new ImageDetailsDto(location, caption));
+        }
+        return result;
+    }
+
     private MediaDtos() {
     }
 

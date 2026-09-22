@@ -42,6 +42,9 @@ public class Users {
 
     @Indexed(name = "users_email", unique = true, sparse = true)
     private String email;
+    private String deletionWarningFor;
+    public String getDeletionWarningFor() { return deletionWarningFor; }
+    public void setDeletionWarningFor(String value) { deletionWarningFor = value; }
 
     @Indexed(name = "users_firebase_uid", sparse = true)
     private String firebaseUid;

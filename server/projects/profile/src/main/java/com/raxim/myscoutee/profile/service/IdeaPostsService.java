@@ -1,4 +1,7 @@
 package com.raxim.myscoutee.profile.service;
+import java.util.Map;
+import com.raxim.myscoutee.profile.data.dto.media.MediaDtos.ImageDetailsDto;
+import static com.raxim.myscoutee.profile.data.dto.media.MediaDtos.normalizeImageDetails;
 
 import java.nio.charset.StandardCharsets;
 import java.time.Instant;
@@ -267,6 +270,8 @@ public class IdeaPostsService {
         post.setTitle(title);
         post.setContentHtml(html);
         post.setExcerpt(excerpt(request == null ? null : request.excerpt(), html));
+        post.setImageDetails(normalizeImageDetails(
+                request == null || request.imageDetails() == null ? post.getImageDetails() : request.imageDetails(), requestedImageUrls));
         post.setImageUrls(requestedImageUrls);
         post.setImageUrl(primaryImageUrl(request == null ? null : request.imageUrl(), post.getImageUrls()));
         post.setFeatured(request != null && Boolean.TRUE.equals(request.featured()));

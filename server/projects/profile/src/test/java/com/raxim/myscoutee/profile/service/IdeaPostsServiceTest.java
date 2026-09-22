@@ -279,7 +279,7 @@ class IdeaPostsServiceTest {
                 List.of(),
                 false,
                 false,
-                existing.getSubmittedAtIso()));
+                existing.getSubmittedAtIso(), null));
 
         assertThat(result.contentKey()).isEqualTo("stable-content-key");
         assertThat(result.contentHtml()).isEqualTo(html);
@@ -338,7 +338,7 @@ class IdeaPostsServiceTest {
                 removedImageUrls,
                 false,
                 false,
-                "2026-07-20T10:00:00Z");
+                "2026-07-20T10:00:00Z", null);
     }
 
     private IdeaPost post(String id, String lang, String submittedAtIso) {

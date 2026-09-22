@@ -1,6 +1,6 @@
 {
   "lang": "en",
-  "version": "2026.09.22.en.141",
+  "version": "2026.09.22.en.142",
   "messages": {
     "integration.token.ip": "IP:",
     "unavailable.here": "Unavailable here",
@@ -3618,6 +3618,13 @@
     "event.following.follow": "Follow organizer",
     "event.following.unfollow": "Unfollow",
     "event.following.failed": "Could not update following. Please try again.",
-    "event.external.info": "External info"
+    "event.external.info": "External info",
+    "image.carousel.images": "Images",
+    "image.carousel.expand": "Open gallery",
+    "image.carousel.previous": "Previous image",
+    "image.carousel.next": "Next image",
+    "image.carousel.pages": "Image pages",
+    "image.details.title": "Image details",
+    "image.details.caption": "Short image description"
   }
 }

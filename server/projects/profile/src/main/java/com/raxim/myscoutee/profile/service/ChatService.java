@@ -1040,6 +1040,11 @@ public class ChatService {
             String adminInitials,
             String text,
             String supportStatus) {
+        return sendAdminSupportMessage(targetUserId, adminUserId, adminName, adminInitials, text, supportStatus, null);
+    }
+
+    ChatMessageDto sendAdminSupportMessage(String targetUserId, String adminUserId, String adminName,
+            String adminInitials, String text, String supportStatus, String stableMessageId) {
         String normalizedTargetUserId = normalizeId(targetUserId);
         String normalizedAdminUserId = normalizeId(adminUserId);
         String normalizedText = normalizeText(text);
@@ -1048,6 +1053,10 @@ public class ChatService {
                 || !StringUtils.hasText(normalizedAdminUserId)
                 || !StringUtils.hasText(normalizedText)) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Support target, admin and message are required.");
+        }
+        if (stableMessageId != null) {
+            var delivered = chatMessagesRepository.findByChatIdAndMessageId(chatId, stableMessageId).orElse(null);
+            if (delivered != null) return chatMessageMapper.toDto(delivered, normalizedAdminUserId);
         }
         Users targetUser = findUser(normalizedTargetUserId);
         if (targetUser == null) {
@@ -1094,6 +1103,21 @@ public class ChatService {
         ChatAvatarRecord senderAvatar = message.getSenderAvatar();
         if (senderAvatar != null) {
             senderAvatar.setInitials(resolvedAdminInitials);
+        }
+        if (stableMessageId != null) {
+            message.setId(stableMessageId);
+            message.setChatId(chatId);
+            message.setMongoId(ChatMessage.buildMongoId(chatId, stableMessageId));
+            message.refreshMessageSearchFields();
+            try { chatMessagesRepository.insert(message); }
+            catch (DuplicateKeyException duplicate) {
+                return chatMessageMapper.toDto(chatMessagesRepository.findByChatIdAndMessageId(chatId, stableMessageId).orElseThrow(), normalizedAdminUserId);
+            }
+            var updated = updateChatSummaries(chatDocuments, message, normalizedAdminUserId, true);
+            var streamEvent = chatMessageMapper.toStreamEvent(chatId, message);
+            observeChatEventPublish(publishChatEventAsync(streamEvent), streamEvent);
+            chatPushNotificationService.notifyRecipients(updated, streamEvent);
+            return chatMessageMapper.toDto(message, normalizedAdminUserId);
         }
         return persistChatMessage(
                 new ChatDocumentsSnapshot(chatId, adminChat, chatDocuments),
