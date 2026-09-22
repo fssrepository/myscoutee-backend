@@ -40,8 +40,50 @@ class IntegrationParticipantInviteServiceTest {
         when(mongo.findAndModify(any(), any(), any(), eq(IntegrationExternalId.class))).thenReturn(mapping);
         var claimed = invite("actual-user");
         when(mongo.findAndModify(any(), any(), any(), eq(IntegrationParticipantInvite.class))).thenReturn(claimed);
-        assertThat(service.claim("spoofed", token).eventId()).isEqualTo("event");
+        var result = service.claim("spoofed", token);
+        assertThat(result.eventId()).isEqualTo("event");
+        assertThat(result.invitationAvailable()).isTrue();
         verify(members).claimIntegrationInvite(claimed, event, "actual-user");
+    }
+
+    @org.junit.jupiter.params.ParameterizedTest
+    @org.junit.jupiter.params.provider.ValueSource(strings = {"Casual", "Tournament", "Mingle"})
+    void lateClaimBindsIdentityWithoutInvitingOrChangingExistingMembership(String mode) {
+        var event = event();
+        event.setMode(mode);
+        event.setEndAtIso(java.time.Instant.now().minusSeconds(60).toString());
+        // Expired events need no new invitation permission; ownership is still required.
+        clearInvocations(access);
+        lenient().when(access.canInviteEventMembers("event", "owner")).thenReturn(false);
+        when(profiles.resolveSelectedUserId("actual-user")).thenReturn("actual-user");
+        when(mongo.findOne(any(Query.class), eq(IntegrationParticipantInvite.class)))
+                .thenReturn(invite(null), invite("actual-user"));
+        var mapping = new IntegrationExternalId(); mapping.setInternalId("actual-user");
+        when(mongo.findAndModify(any(), any(), any(), eq(IntegrationExternalId.class))).thenReturn(mapping);
+        when(mongo.findAndModify(any(), any(), any(), eq(IntegrationParticipantInvite.class)))
+                .thenReturn(invite("actual-user"));
+        for (int replay = 0; replay < 2; replay++) {
+            var result = service.claim("actual-user", token);
+            assertThat(result.eventId()).isEqualTo("event");
+            assertThat(result.invitationAvailable()).isFalse();
+        }
+        verify(mongo, times(2)).findAndModify(any(), any(), any(), eq(IntegrationExternalId.class));
+        verifyNoInteractions(members, access);
+    }
+
+    @Test void completedMeetingDoesNotInviteEvenBeforeItsScheduledEnd() {
+        var event = event(); event.setMode("Mingle");
+        event.setEndAtIso(java.time.Instant.now().plusSeconds(3600).toString());
+        lenient().when(access.canInviteEventMembers("event", "owner")).thenReturn(false);
+        when(mongo.exists(any(Query.class), eq(ActivityMingleSession.class))).thenReturn(true);
+        when(profiles.resolveSelectedUserId("actual-user")).thenReturn("actual-user");
+        when(mongo.findOne(any(Query.class), eq(IntegrationParticipantInvite.class))).thenReturn(invite(null));
+        var mapping = new IntegrationExternalId(); mapping.setInternalId("actual-user");
+        when(mongo.findAndModify(any(), any(), any(), eq(IntegrationExternalId.class))).thenReturn(mapping);
+        when(mongo.findAndModify(any(), any(), any(), eq(IntegrationParticipantInvite.class)))
+                .thenReturn(invite("actual-user"));
+        assertThat(service.claim("actual-user", token).invitationAvailable()).isFalse();
+        verifyNoInteractions(members);
     }
 
     @Test void aClaimedLinkCannotBeTransferredToAnotherAccount() {

@@ -13,6 +13,7 @@ Usage:
   bash manual-qa-checkpoints.sh capture mobile-push MOBILE-PUSH-LIFECYCLE-001 <savepoint>
   bash manual-qa-checkpoints.sh stage|stage-demo|status|verify-media-boundary|profile-batch-timing|background-settings|background-settings-resident|reset-background-settings-resident|background-chrome|reset mobile-webview MOBILE-WEBVIEW-LIFECYCLE-001
   bash manual-qa-checkpoints.sh prepare browser-sessions <checkpoint-id>
+  bash manual-qa-checkpoints.sh stage|status|ready|reset event-rating EVENT-ACTIVITY-RATING-001 [all|standard|tournament|speed-meeting]
   bash manual-qa-checkpoints.sh stage|status|reset integration-api INTEGRATION-API-001
   bash manual-qa-checkpoints.sh stage base-stat
   bash manual-qa-checkpoints.sh status base-stat
@@ -527,6 +528,7 @@ run_scenario() {
 
   case "${scenario}" in
     browser-sessions) scenario_script="${SCRIPT_DIR}/scenarios/browser-session-checkpoints.js" ;;
+    event-rating) scenario_script="${SCRIPT_DIR}/scenarios/event-activity-rating-checkpoints.js" ;;
     integration-api) scenario_script="${SCRIPT_DIR}/scenarios/integration-api-checkpoints.js" ;;
     base-stat) scenario_script="${SCRIPT_DIR}/scenarios/base-stat.js" ;;
     stat-010) scenario_script="${SCRIPT_DIR}/scenarios/stat-010-rating.js" ;;
@@ -778,6 +780,10 @@ PY
   ui-poll:stage|ui-poll:status|ui-poll:reset|ui-poll:session-status)
     [ "$#" -eq 3 ] && [ "$3" = "UI-POLL-JANK-001" ] || { usage >&2; exit 2; }
     run_scenario "${command}" "${scenario}" 30 "$3"
+    ;;
+  event-rating:stage|event-rating:status|event-rating:ready|event-rating:reset)
+    { [ "$#" -eq 3 ] || [ "$#" -eq 4 ]; } && [ "$3" = "EVENT-ACTIVITY-RATING-001" ] || { usage >&2; exit 2; }
+    run_scenario "${command}" "${scenario}" 30 "$3" "${4:-all}"
     ;;
   integration-api:stage|integration-api:status|integration-api:reset)
     [ "$#" -eq 3 ] || { usage >&2; exit 2; }
