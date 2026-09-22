@@ -1,11 +1,12 @@
-# Event mode QA — in progress, 2026-09-22
+# Event mode QA — PASS / CLOSED, 2026-09-22
 
 The user resumed and delegated browser/API execution. This is the separate
 EVENT-MODE-REGRESSION-001 feature check, not the general manual-QA campaign.
 Use the stable event and INTEGRATION-API-001 checklists; do not mark the full
-campaign complete from the partial evidence below.
+campaign complete from this feature-specific evidence. The numbered scope below is closed;
+explicit adapter/service evidence limits remain recorded.
 
-## Numbered execution status — 02:35 CEST
+## Final numbered execution status — 03:00 CEST
 
 Step numbers refer to the stable EVENT-MODE-REGRESSION-001 checklist. Supporting
 unit/adapter evidence is distinguished from visible browser journeys.
@@ -16,14 +17,14 @@ unit/adapter evidence is distinguished from visible browser journeys.
 | 2. Filter apply/cancel/reload | PASS | Open spots + Mingle, badge 2; persisted settings. |
 | 3. Compact mobile controls | PASS | Earlier 320/390 px measurements; native viewport restored. Do not reintroduce emulation. |
 | 4. Landing/About/API help | PASS | EN/HU rendering; About reused branding, API controls 34 px; landing version 1.0.1. Admin geometry is not covered. |
-| 5. Standard external link | PARTIAL | Create/update/clear/restore/reopen passed; public action pending. |
+| 5. Standard external link | PASS | Create/update/clear/restore/reopen passed. Nova, before joining fresh Standard h1790038436581, opened External Info in a new tab at the exact stored URL (02:56:46 CEST). |
 | 6. Standard membership | PASS | UI publish, Nova request, Casey approval, 2 accepted members. |
 | 7. Tournament | PASS | Real review worker ran at 02:05:51 with the reversible 60-second fixture; UI Add Score saved Casey +3. Reopened Groups: Casey 3 points / 1 update, Nova 0 / 0. |
 | 8. Ordinary feedback/friendship | PASS with scoped evidence | Standard organizer feedback submitted (200) and reopened with saved answers. Met/mutual branches: 43 supporting backend tests, not a browser friendship journey. |
 | 9. Speed meeting rounds | PASS | Two actual rounds, pause/resume/manual advance/automatic transition; saved history reopened. Select Past to inspect past round cards. |
-| 10. Unique feedback peers | PASS; readback scrollbar repair in progress | HTTP fixture: 8 accepted + 1 pending, two actual rounds; Nova gets 6 distinct attendee cards + organizer. All 7 submitted (200). API 28 pairs across 10/10/8 pages match delivered webhook revision 4. |
+| 10. Unique feedback peers | PASS | HTTP fixture: 8 accepted + 1 pending, two actual rounds; Nova gets 6 distinct attendee cards + organizer. All 7 submitted (200). API 28 pairs across 10/10/8 pages match delivered webhook revision 4. |
 | 11. Local restart | PASS — adapter/IndexedDB | Real Chromium reload restores preferences, link, paused state and two completed rounds; not a full local-app UI journey. |
-| Cleanup | NOT RUN | Restore preferences; unwatch/revoke test key; disposable resources and managed-session restoration. |
+| Cleanup | PASS | Original preferences restored; watch disabled; UI key revoked; subsequent connect 401. All 11 disposable QA events are in Trash (T), receiver stopped, integration/session snapshots reset; final supplemental logins ended through normal Logout. Native viewports preserved. |
 
 Menu correction: the rejected dock request was reverted by the user and is not
 reintroduced. Runtime menu items use the same default tinted item configuration
@@ -88,7 +89,9 @@ The earlier menu narrowing claims below are superseded by this correction.
 - User reported saved-feedback body clipping. Browser diagnosis: body client
   height 678 px, scroll height 2119 px, `overflow: hidden` from `bodyLayout: fill`.
   Changed only that popup model to the shared scrollable `default` body layout.
-  Watcher/browser verification follows; no shared popup CSS was changed.
+  Existing watcher compiled. Mouse wheel reached scrollTop 1441; last card bottom
+  755.59 was within body bottom 755.80, header stayed at y=16, native viewport
+  remained 840×759. Evidence: feedback-body-scroll.json. No shared popup CSS changed.
 
 ## Corrections retained
 
@@ -147,7 +150,7 @@ Private evidence/scripts: `frontend/.agent/mode-qa/`, including
 `runtime-phases.json`, `completed-resume.json`, `encounters-resume.json` and
 `countdown-vitest.log`. Do not publish private invitation URLs or SDK credentials.
 
-## Current investigation — Tournament and assignment notifications
+## Historical investigation — superseded by final status above
 
 - Tournament UI create/publish/request/approve passed for disposable event
   `h1790030034508`. Start initially returned an unchanged RS state: command
@@ -179,29 +182,20 @@ Private evidence/scripts: `frontend/.agent/mode-qa/`, including
   push-triggered refresh and its tests were removed; no frontend push/poll change
   remains. Do not treat those discarded tests as final implementation evidence.
 
-## Still to finish / not proven
+## Explicit evidence limits
 
-1. Timer badge browser assertions passed: ticking running time, frozen paused
-   time, blue/amber phase colors, placement beside Close, retained Table 1 and
-   SmartList using the full body width. Evidence: timer-header.json/png.
-   Current disposable verification event: `7754188d-9eef-4979-9cfe-2cdfa4a8ad61`,
-   title `QA MODE 20260922 Timer`, two accepted participants.
-2. Landing/About Hungarian rendering, join CTA and admin help geometry. Earlier
-   API help/close measurement was 34 × 34 px; do not infer admin coverage from it.
-3. Standard and Tournament complete create/edit/publish/join/approval journeys,
-   external-link update/clear/reload and public action, Tournament stage/scoring,
-   ordinary feedback and absence of Mingle interference.
-4. Unique completed-table feedback and Met + mutual positive friendship,
-   including positive ratings recorded before Met; persisted round history.
-5. Local adapter IndexedDB reload/restart for preferences/link/rounds. Do not
-   start a duplicate development build or stack to exercise it.
-6. API other-owner authorization and remaining external-link/invitation edges.
-7. Restore original preferences (saved in preferences-before.json), unwatch and
-   revoke only the test key, remove disposable resources, stop the test callback
-   receiver, restore managed-session snapshot through the versioned harness,
-   and update sanitized evidence/checklists/CSV/XLSX ledgers.
+- Met/mutual-positive friendship branches use the 43 supporting backend tests;
+  this is not a completed browser friendship journey (per checklist 8.3).
+- Local restart is compiled adapter plus real IndexedDB/browser reload coverage,
+  not a complete visible local-app journey (per checklist 11.4).
+- API help geometry was measured; separate Admin help geometry was not tested.
+- Targeted Firebase outbox enqueue was inspected. Actual device push delivery and
+  automatic refresh of an already-open Group popup were not proven in this run.
+- External destination responses were intercepted: the tests prove exact URL/new-tab
+  navigation, not availability of example.org.
+- These limits remain distinct from the newly requested, queued rating comparison.
 
-## Runtime continuation
+## Historical runtime continuation (sessions now logged out)
 
 Managed browser manifest:
 `/tmp/myscoutee-qa-browser-sessions/INTEGRATION-API-001.json`.
@@ -210,7 +204,7 @@ use `guides/qa/tools/open-checkpoint-browser-sessions.mjs`; preserve current nat
 viewport. The callback receiver uses port 18090; inspect its owner before starting
 another process. Existing Docker frontend/backend watchers own compilation.
 
-## Continuation at 01:35 CEST
+## Historical continuation at 01:35 CEST (superseded by final status)
 
 - Hungarian About/CTA/format labels passed; original browser language restored.
 - Foreign-owner API reads, encounters and invitations each returned 404. Repeated
@@ -252,3 +246,36 @@ requires the installed package version, so do not claim cross-version partial
 release support from the dev sync test. Keep release Git tags and the user's
 pending deb upload to the release tag in the release checklist. Do not publish
 or deploy a release while this QA run is unfinished.
+
+## Final closure — 2026-09-22
+
+1. **Event Mode step 5.5 PASS:** normal UI created/published fresh Standard event
+   `h1790038436581`, public, capacity 1–8, sourceLink
+   `https://example.org/events/standard`. Nova's public Explore → External Info,
+   before joining, opened exactly that address in a separate tab; only that tab
+   was closed. Normal Delete Event returned 200. The earlier Standard edit and
+   membership evidence was retained, not replayed.
+2. **Feedback readback PASS:** saved organizer + six peer cards all persisted;
+   native mouse-wheel scrolling reached the final card with a stationary header.
+   The fix is the existing popup `bodyLayout: default` setting.
+3. **Filter menus PASS:** existing Admin Jobs-style `bodyLayout: overflow` allows
+   both format/topic menus beyond the compact filter popup. Measured menu bottom
+   643.67 exceeded popup bottom 583.65, all four mode options fit (163 px client
+   and scroll height). The user then confirmed both dropdowns. No shared-menu CSS.
+4. **Invitations diagnosis:** the badge's three invitations were Upcoming;
+   selecting Past explained the empty list. Upcoming displayed all three.
+   No counter semantics or eligibility rule was changed.
+5. **Cleanup PASS:** unwatch disabled the callback, UI revoke returned 200 and
+   the same client connect returned 401. Original Explore preferences are
+   false/false/empty/empty. Ten prior QA events and the supplemental Standard
+   event are status T, verified directly in Mongo. Only the owned callback
+   receiver was stopped. The versioned integration reset restored the retained
+   session snapshot. Supplemental Casey/Nova UI logins were logged out normally;
+   windows remain at native 916×869 and 840×759.
+6. **Documentation:** stable fixture/reset/checkpoint instructions are retained.
+   Sanitized evidence: `guides/qa/evidence/EVENT-MODE-REGRESSION-001-2026-09-22.json`.
+   CSV/XLSX status is closed for this scope. New EVENT-ACTIVITY-RATING-001 is only
+   queued in Event, without fixture implementation or execution.
+
+The remaining release work is the separate Netcup partial-update/version/tag/deb
+work above. No release or deployment was performed by closing this QA.

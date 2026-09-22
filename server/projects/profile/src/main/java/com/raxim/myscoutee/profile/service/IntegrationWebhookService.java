@@ -9,6 +9,7 @@ import com.raxim.myscoutee.profile.data.dto.integration.IntegrationDtos.Integrat
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.net.http.HttpTimeoutException;
 import java.time.Duration;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
@@ -19,6 +20,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.RejectedExecutionException;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeoutException;
 import java.util.concurrent.SynchronousQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
@@ -67,7 +70,7 @@ public class IntegrationWebhookService {
     public static final String ASSET_CHANGED = "asset.changed";
 
     private static final Set<String> SUPPORTED_EVENTS = Set.of(EVENT_CHANGED, ASSET_CHANGED, EVENT_ENCOUNTERS);
-    private static final List<Long> RETRY_SECONDS = List.of(5L, 30L, 120L, 600L);
+    private static final List<Long> RETRY_SECONDS = List.of(5L, 30L);
     private static final String STATUS_PENDING = "PENDING";
     private static final String STATUS_RETRY = "RETRY";
     private static final String STATUS_SENDING = "SENDING";
@@ -464,7 +467,7 @@ public class IntegrationWebhookService {
                     .header("X-MyScoutee-Webhook-Id", delivery.getId())
                     .POST(HttpRequest.BodyPublishers.ofString(delivery.getPayloadJson()))
                     .build();
-            HttpResponse<Void> response = httpClient.send(request, HttpResponse.BodyHandlers.discarding());
+            HttpResponse<Void> response = sendWithResponseDeadline(request);
             if (response.statusCode() >= 200 && response.statusCode() < 300) {
                 delivery.setStatus(STATUS_SENT);
                 delivery.setSentAtIso(Instant.now().toString());
@@ -478,6 +481,29 @@ public class IntegrationWebhookService {
             scheduleRetry(delivery, "interrupted");
         } catch (RuntimeException | java.io.IOException exception) {
             scheduleRetry(delivery, exception.getClass().getSimpleName());
+        }
+    }
+
+    private HttpResponse<Void> sendWithResponseDeadline(HttpRequest request)
+            throws java.io.IOException, InterruptedException {
+        var response = httpClient.sendAsync(request, HttpResponse.BodyHandlers.discarding());
+        try {
+            // HttpRequest.timeout alone does not bound a body that stalls after its headers.
+            return response.get(10, TimeUnit.SECONDS);
+        } catch (TimeoutException exception) {
+            throw new HttpTimeoutException("Webhook response exceeded 10 seconds");
+        } catch (ExecutionException exception) {
+            if (exception.getCause() instanceof java.io.IOException cause) {
+                throw cause;
+            }
+            if (exception.getCause() instanceof RuntimeException cause) {
+                throw cause;
+            }
+            throw new java.io.IOException("Webhook delivery failed", exception.getCause());
+        } finally {
+            if (!response.isDone()) {
+                response.cancel(true);
+            }
         }
     }
 

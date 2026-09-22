@@ -53,6 +53,106 @@ class IntegrationWebhookServiceTest {
 
     private IntegrationWebhookService service;
 
+    @org.junit.jupiter.api.AfterEach
+    void stopWorkers() {
+        service.shutdownDeliveryWorkers();
+    }
+
+    @org.junit.jupiter.params.ParameterizedTest
+    @org.junit.jupiter.params.provider.ValueSource(booleans = {false, true})
+    @org.junit.jupiter.api.Timeout(20)
+    void unresponsiveCallbackTimesOutAndFollowingDeliveryCanSucceed(boolean headersSent) throws Exception {
+        var server = com.sun.net.httpserver.HttpServer.create(new java.net.InetSocketAddress("127.0.0.1", 0), 0);
+        server.createContext("/silent", exchange -> {
+            if (headersSent) {
+                exchange.sendResponseHeaders(200, 100);
+                exchange.getResponseBody().write(1);
+                exchange.getResponseBody().flush();
+            }
+            // Keep the response open: either no headers, or an unfinished response body.
+        });
+        server.createContext("/healthy", exchange -> {
+            exchange.sendResponseHeaders(204, -1);
+            exchange.close();
+        });
+        server.start();
+        try {
+            var subscription = deliverySubscription("http://127.0.0.1:" + server.getAddress().getPort() + "/silent");
+            var delivery = pendingDelivery();
+            long started = System.nanoTime();
+            org.springframework.test.util.ReflectionTestUtils.invokeMethod(service, "deliver", delivery);
+            long elapsedMillis = java.util.concurrent.TimeUnit.NANOSECONDS.toMillis(System.nanoTime() - started);
+            assertThat(elapsedMillis).isBetween(9000L, 15000L);
+            assertThat(delivery.getStatus()).isEqualTo("RETRY");
+            assertThat(delivery.getAttemptCount()).isEqualTo(1);
+            assertThat(delivery.getLastError()).isEqualTo("HttpTimeoutException");
+            assertThat(delivery.getNextAttemptAtIso()).isNotBlank();
+            org.mockito.Mockito.verify(deliveriesRepository).save(delivery);
+
+            subscription.setCallbackUrl("http://127.0.0.1:" + server.getAddress().getPort() + "/healthy");
+            var following = pendingDelivery();
+            following.setId("following");
+            org.springframework.test.util.ReflectionTestUtils.invokeMethod(service, "deliver", following);
+            assertThat(following.getStatus()).isEqualTo("SENT");
+            assertThat(following.getSentAtIso()).isNotBlank();
+            org.mockito.Mockito.verify(deliveriesRepository).save(following);
+        } finally {
+            server.stop(0);
+        }
+    }
+
+    @Test
+    @org.junit.jupiter.api.Timeout(15)
+    void refusedCallbackHasBoundedRetriesAndTerminalFailure() throws Exception {
+        int port;
+        try (var socket = new java.net.ServerSocket(0, 1, java.net.InetAddress.getLoopbackAddress())) {
+            port = socket.getLocalPort();
+        }
+        deliverySubscription("http://127.0.0.1:" + port + "/callback");
+        var delivery = pendingDelivery();
+        long[] delays = {5, 30};
+        for (int attempt = 1; attempt <= 3; attempt++) {
+            var before = Instant.now();
+            // Exercise each delivery attempt directly; no production wait or fabricated HTTP response.
+            org.springframework.test.util.ReflectionTestUtils.invokeMethod(service, "deliver", delivery);
+            assertThat(delivery.getAttemptCount()).isEqualTo(attempt);
+            assertThat(delivery.getLastError()).isEqualTo("ConnectException");
+            if (attempt <= delays.length) {
+                assertThat(delivery.getStatus()).isEqualTo("RETRY");
+                assertThat(Instant.parse(delivery.getNextAttemptAtIso()))
+                        .isBetween(before.plusSeconds(delays[attempt - 1]), Instant.now().plusSeconds(delays[attempt - 1]));
+            } else {
+                assertThat(delivery.getStatus()).isEqualTo("FAILED");
+                assertThat(delivery.getNextAttemptAtIso()).isNull();
+            }
+        }
+        org.mockito.Mockito.verify(deliveriesRepository, org.mockito.Mockito.times(3)).save(delivery);
+    }
+
+    private IntegrationWebhookSubscription deliverySubscription(String callback) {
+        var subscription = new IntegrationWebhookSubscription();
+        subscription.setId("watch-timeout");
+        subscription.setTokenId("token-timeout");
+        subscription.setEnabled(true);
+        subscription.setCallbackUrl(callback);
+        when(subscriptionsRepository.findById("watch-timeout")).thenReturn(Optional.of(subscription));
+        var token = new IntegrationToken();
+        token.setExpiresAtIso(Instant.now().plusSeconds(3600).toString());
+        when(tokensRepository.findByIdAndOwnerUserId("token-timeout", "owner-timeout"))
+                .thenReturn(Optional.of(token));
+        return subscription;
+    }
+
+    private IntegrationWebhookDelivery pendingDelivery() {
+        var delivery = new IntegrationWebhookDelivery();
+        delivery.setId("delivery-timeout");
+        delivery.setSubscriptionId("watch-timeout");
+        delivery.setOwnerUserId("owner-timeout");
+        delivery.setPayloadJson("{}");
+        delivery.setStatus("SENDING");
+        return delivery;
+    }
+
     @BeforeEach
     void setUp() {
         service = new IntegrationWebhookService(
