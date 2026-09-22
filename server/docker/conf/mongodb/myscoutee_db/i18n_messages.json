@@ -22134,6 +22134,24 @@
     "value": "Revenue"
   },
   {
+    "_id": "i18n-message-en-calendar-sync",
+    "key": "calendar.sync",
+    "lang": "en",
+    "value": "Sync calendar"
+  },
+  {
+    "_id": "i18n-message-en-calendar-export-help",
+    "key": "calendar.export.help",
+    "lang": "en",
+    "value": "Sync calendar: download your upcoming events as an ICS file, then import it in your calendar app. Refresh manually; no background sync."
+  },
+  {
+    "_id": "i18n-message-en-calendar-export-error",
+    "key": "calendar.export.error",
+    "lang": "en",
+    "value": "The calendar file could not be downloaded. Please try again."
+  },
+  {
     "_id": "i18n-message-hu-integration-token-ip",
     "key": "integration.token.ip",
     "lang": "hu",
@@ -44266,5 +44284,23 @@
     "key": "affiliate.revenue.button",
     "lang": "hu",
     "value": "Forgalom"
+  },
+  {
+    "_id": "i18n-message-hu-calendar-sync",
+    "key": "calendar.sync",
+    "lang": "hu",
+    "value": "Naptár szinkronizálása"
+  },
+  {
+    "_id": "i18n-message-hu-calendar-export-help",
+    "key": "calendar.export.help",
+    "lang": "hu",
+    "value": "Naptár szinkronizálása: töltsd le a közelgő eseményeidet ICS-fájlként, majd importáld a naptáradba. Kézi frissítés, háttérszinkron nélkül."
+  },
+  {
+    "_id": "i18n-message-hu-calendar-export-error",
+    "key": "calendar.export.error",
+    "lang": "hu",
+    "value": "Nem sikerült letölteni a naptárfájlt. Próbáld újra."
   }
 ]

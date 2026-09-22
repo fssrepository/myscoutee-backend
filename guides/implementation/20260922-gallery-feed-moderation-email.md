@@ -2,6 +2,8 @@
 
 Implementation continuation record, 2026-09-22. This records the user's requested sequence; it is not a QA PASS report or release approval.
 
+Calendar addition (2026-09-23): manual ICS download is implemented separately in `20260922-calendar-subscription.md`, with new `EVENT-CALENDAR-EXPORT-001` QA. Five backend and seven frontend focused checks and Angular build passed. Runtime/physical Android import remains NOT RUN pending user-started dev stack and device; this is a fifth new runtime case, not an extension of earlier PASS evidence.
+
 ## 1. Shared gallery and Photo Feed — implemented; browser QA pending
 
 - One signal-opened configurable gallery popup: editable/read-only, arbitrary caller URLs, image limit and metadata.

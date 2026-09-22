@@ -1,8 +1,26 @@
 # Personal calendar subscription — 2026-09-22
 
-Status: feasibility research and proposed design; not implemented. This is a new addition after the completed implementation work, not a PASS or a blocker retroactively added to the existing QA cases.
+Status (2026-09-23): manual ICS export implemented; focused checks passed; live QA NOT RUN. The research below is superseded and retained as decision history.
 
-## User request
+## Accepted implementation — manual download
+
+- User selected **Sync calendar / Naptár szinkronizálása** beside ordinary-user Affiliate. One click downloads `myscoutee-calendar.ics`, with the existing AppMenu ring. No provider/setup popup, background sync, subscription token, native app or email sending. Desktop users can send the downloaded file themselves.
+- Authenticated `GET /activities/events/calendar/export` resolves the actor from the session, with no caller-selected user ID. UTF-8 text/calendar attachment, private/no-store. Reuses the existing personal activity query; local adapter uses a batched canonical membership lookup.
+- Export active/published root events owned/organized by the actor or with accepted membership, with valid timezone-aware start/end and end in the future (includes ongoing). Exclude drafts, invitations, pending membership, watch-only, moderation-suppressed, deleted and past events. No separate round/sub-event expansion.
+- Stable event-derived UID, export DTSTAMP, UTC start/end, title, location and DISPLAY reminder at event start. No participants, credentials or payments. RFC 5545 text escaping and 75-octet UTF-8-safe folding. No invented revision sequence or scheduling METHOD.
+- Local and HTTP paths preserve the same contract. The download store prevents duplicate clicks, bounds the HTTP wait, discards results after account change and reports errors through the shared dialog. It does not claim that download proves import/sync.
+- Mobile may offer an import dialog immediately or only when opening the downloaded file. Stable UID does not guarantee a particular importer's duplicate/update handling. Omitting a cancelled/left event does not remove its older imported entry.
+- New QA: `guides/qa/checklists/event/EVENT-CALENDAR-EXPORT-001.md`, including physical Android import UI, repeated/changed import and offline calendar reminder. Earlier ADB package inspection is not proof of import. Reuses the versioned gallery fixture/launcher after reset, with separate calendar evidence.
+- References reused: IntegrationSettingsController actor resolution, ActivitiesEventsService personal query, EventsService adapter dispatch, profile-editor AppMenu progress configuration and DialogStore. No new database/model or external API registration.
+
+## Verification of the implementation (2026-09-23)
+
+- Backend: `./gradlew --no-daemon --max-workers=2 :projects:profile:test --tests '*CalendarExport*Test'` — 5 tests PASS; `/tmp/calendar-backend-tests.log` and JUnit XML.
+- Frontend: `node_modules/.bin/vitest run src/app/shared/core/common/calendar-export.spec.ts src/app/shared/ui/context/stores/calendar-export.store.spec.ts --environment node --maxWorkers 1` — 7 tests PASS; `/tmp/calendar-frontend-tests.log`. Covers snapshot selection/serialization, stable UID after time change, duplicate request guard, wrong-account response, invalid response/retry and timeout.
+- Angular local build with two workers passed; output `/tmp/myscoutee-calendar-build`, log `/tmp/calendar-frontend-build.log`. EN/HU seed audit passed: 7,384 messages, three Mongo seeds. Diffs whitespace-clean.
+- No dev stack running or started. `adb devices -l` returned no devices; physical import/duplicate handling/offline reminder NOT RUN. UI/HTTP full-flow awaits the user's stack and phone; no test calendar entries were created.
+
+## Superseded research: original user request
 
 - Calendar action next to the ordinary user's Affiliate action.
 - Reusable setup from another device: do not replace the action with a global Sync/Unsync toggle.
@@ -11,13 +29,13 @@ Status: feasibility research and proposed design; not implemented. This is a new
 - Reuse the existing common menu/progress-ring conventions and i18n.
 - User referenced the end of a ChatGPT conversation titled “Firebase értesítés”. Its contents are not available through the current tools or repository, so no requirements from that missing conversation have been assumed.
 
-## Recommended transport
+## Superseded transport proposal
 
 A personal read-only iCalendar subscription over HTTPS, with a webcal handoff where supported. This is a live subscription URL, not a one-time imported ICS file. It requires no application-specific Google OAuth client. The URL is an access credential for the exported calendar, so it must be unguessable, scoped, recoverable for the authenticated owner and revocable; app login/API keys must not appear in it. A public production URL is needed for server-side calendar fetches; localhost is insufficient for Google/Outlook cloud polling.
 
 CalDAV is a standardized calendar access/edit protocol, not a universal browser “sync now” mechanism. Connecting to Google's CalDAV server still requires a registered OAuth client. Running our own CalDAV server is a different and larger feature, with client-specific setup and authentication.
 
-## Proposed UI and truthful status
+## Superseded popup proposal and status constraints
 
 A compact Calendar popup is useful because provider setup differs: subscription handoff plus copyable personal URL and short provider-specific help. The action remains available on every device; reopening reuses the same subscription identity. Already subscribed users of the same calendar account should not be encouraged to add duplicates.
 
