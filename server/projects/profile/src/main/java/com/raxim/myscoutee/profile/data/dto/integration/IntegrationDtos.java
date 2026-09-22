@@ -22,8 +22,17 @@ public final class IntegrationDtos {
             String baseUrl,
             Integer maxActiveTokens,
             Integer maxBatchSize,
-            List<IntegrationTokenDto> tokens) {
+            List<IntegrationTokenDto> tokens,
+            AffiliateSummaryDto affiliate,
+            IntegrationParticipantSummaryDto participants) {
+        public IntegrationSettingsDto(String baseUrl, Integer maxActiveTokens, Integer maxBatchSize,
+                List<IntegrationTokenDto> tokens) {
+            this(baseUrl, maxActiveTokens, maxBatchSize, tokens, null, null);
+        }
     }
+
+    public record AffiliateSummaryDto(String url, long registered) { }
+    public record IntegrationParticipantSummaryDto(long registered, long imported) { }
 
     public record IntegrationTokenCreateRequestDto(
             String name,

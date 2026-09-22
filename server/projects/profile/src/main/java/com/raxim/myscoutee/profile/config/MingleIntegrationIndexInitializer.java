@@ -18,6 +18,9 @@ public class MingleIntegrationIndexInitializer {
     public void initialize() {
         for (var factory : databases) {
             var db = factory.getMongoDatabase();
+            db.getCollection("affiliateLinks").createIndex(new Document("code", 1), new IndexOptions().unique(true).name("affiliate_code"));
+            db.getCollection("affiliateRegistrations").createIndex(new Document("referrerUserId", 1), new IndexOptions().name("affiliate_referrer"));
+            db.getCollection("integrationParticipantInvites").createIndex(new Document("ownerUserId", 1).append("participantId", 1), new IndexOptions().name("participant_owner"));
             db.getCollection("integrationParticipantInvites").createIndex(new Document("tokenHash", 1), new IndexOptions().name("tokenHash").unique(true));
             db.getCollection("integrationExternalIds").createIndex(new Document("ownerUserId", 1).append("resourceType", 1).append("externalId", 1),
                     new IndexOptions().name("integration_external_id_owner_resource_external").unique(true));

@@ -43,6 +43,11 @@ public class Users {
     @Indexed(name = "users_facebook_id", sparse = true)
     private String facebookId;
 
+    private AffiliateRegistration affiliateRegistration;
+
+    public AffiliateRegistration getAffiliateRegistration() { return affiliateRegistration; }
+    public void setAffiliateRegistration(AffiliateRegistration value) { affiliateRegistration = value; }
+
     private String name;
     private Integer age;
     private String birthday;

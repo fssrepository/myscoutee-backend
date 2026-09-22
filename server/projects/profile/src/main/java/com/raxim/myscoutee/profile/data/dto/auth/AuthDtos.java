@@ -438,7 +438,11 @@ public final class AuthDtos {
 
     public record ProfileExtDto(
             UserDto profile,
-            List<ExperienceEntryDto> experienceEntries) {
+            List<ExperienceEntryDto> experienceEntries,
+            String affiliateCode) {
+        public ProfileExtDto(UserDto profile, List<ExperienceEntryDto> experienceEntries) {
+            this(profile, experienceEntries, null);
+        }
     }
 
     public record ProfileExtByIdResponseDto(

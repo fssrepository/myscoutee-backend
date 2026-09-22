@@ -21588,6 +21588,72 @@
     "value": "Close Speed meeting tables"
   },
   {
+    "_id": "i18n-message-en-affiliate-title",
+    "key": "affiliate.title",
+    "lang": "en",
+    "value": "Affiliate"
+  },
+  {
+    "_id": "i18n-message-en-affiliate-open",
+    "key": "affiliate.open",
+    "lang": "en",
+    "value": "Open affiliate settings"
+  },
+  {
+    "_id": "i18n-message-en-affiliate-subtitle",
+    "key": "affiliate.subtitle",
+    "lang": "en",
+    "value": "Share your personal invitation link or connect an API client."
+  },
+  {
+    "_id": "i18n-message-en-affiliate-personal-link",
+    "key": "affiliate.personal.link",
+    "lang": "en",
+    "value": "Personal invitation link"
+  },
+  {
+    "_id": "i18n-message-en-affiliate-copy",
+    "key": "affiliate.copy",
+    "lang": "en",
+    "value": "Copy personal invitation link"
+  },
+  {
+    "_id": "i18n-message-en-affiliate-registered",
+    "key": "affiliate.registered",
+    "lang": "en",
+    "value": "People registered through your personal invitation link"
+  },
+  {
+    "_id": "i18n-message-en-affiliate-clients-ratio",
+    "key": "affiliate.clients.ratio",
+    "lang": "en",
+    "value": "Registered accounts linked / distinct API participants imported"
+  },
+  {
+    "_id": "i18n-message-en-affiliate-help",
+    "key": "affiliate.help",
+    "lang": "en",
+    "value": "Your personal link records who invited a newly registered member. Existing accounts do not count as new referrals. The client ratio counts distinct imported participant IDs linked to registered accounts; repeat imports do not increase it."
+  },
+  {
+    "_id": "i18n-message-en-landing-partners-role-affiliate-label",
+    "key": "landing.partners.role.affiliate.label",
+    "lang": "en",
+    "value": "Invite people"
+  },
+  {
+    "_id": "i18n-message-en-landing-partners-role-affiliate-title",
+    "key": "landing.partners.role.affiliate.title",
+    "lang": "en",
+    "value": "Affiliate partner"
+  },
+  {
+    "_id": "i18n-message-en-landing-partners-role-affiliate-description",
+    "key": "landing.partners.role.affiliate.description",
+    "lang": "en",
+    "value": "Any member can share a personal invitation link from Profile → Affiliate and see how many people registered through it. API clients can also invite participants and track how many connected to registered accounts."
+  },
+  {
     "_id": "i18n-message-hu-unavailable-here",
     "key": "unavailable.here",
     "lang": "hu",
@@ -43174,5 +43240,71 @@
     "key": "mingle.tables.close.aria",
     "lang": "hu",
     "value": "Villámtalálkozók asztalainak bezárása"
+  },
+  {
+    "_id": "i18n-message-hu-affiliate-title",
+    "key": "affiliate.title",
+    "lang": "hu",
+    "value": "Affiliate"
+  },
+  {
+    "_id": "i18n-message-hu-affiliate-open",
+    "key": "affiliate.open",
+    "lang": "hu",
+    "value": "Affiliate beállítások megnyitása"
+  },
+  {
+    "_id": "i18n-message-hu-affiliate-subtitle",
+    "key": "affiliate.subtitle",
+    "lang": "hu",
+    "value": "Oszd meg a személyes meghívólinkedet, vagy csatlakoztass API-klienst."
+  },
+  {
+    "_id": "i18n-message-hu-affiliate-personal-link",
+    "key": "affiliate.personal.link",
+    "lang": "hu",
+    "value": "Személyes meghívólink"
+  },
+  {
+    "_id": "i18n-message-hu-affiliate-copy",
+    "key": "affiliate.copy",
+    "lang": "hu",
+    "value": "Személyes meghívólink másolása"
+  },
+  {
+    "_id": "i18n-message-hu-affiliate-registered",
+    "key": "affiliate.registered",
+    "lang": "hu",
+    "value": "A személyes meghívólinkeddel regisztrált emberek"
+  },
+  {
+    "_id": "i18n-message-hu-affiliate-clients-ratio",
+    "key": "affiliate.clients.ratio",
+    "lang": "hu",
+    "value": "Regisztrált fiókhoz kapcsolt / API-n betöltött különböző résztvevők"
+  },
+  {
+    "_id": "i18n-message-hu-affiliate-help",
+    "key": "affiliate.help",
+    "lang": "hu",
+    "value": "A személyes linked rögzíti, ki hívta meg az újonnan regisztrált tagot. Meglévő fiók nem számít új meghívásnak. A kliens aránya a regisztrált fiókhoz kapcsolt, különböző külső résztvevőazonosítókat mutatja; az ismételt betöltés nem növeli."
+  },
+  {
+    "_id": "i18n-message-hu-landing-partners-role-affiliate-label",
+    "key": "landing.partners.role.affiliate.label",
+    "lang": "hu",
+    "value": "Hívj meg embereket"
+  },
+  {
+    "_id": "i18n-message-hu-landing-partners-role-affiliate-title",
+    "key": "landing.partners.role.affiliate.title",
+    "lang": "hu",
+    "value": "Affiliate partner"
+  },
+  {
+    "_id": "i18n-message-hu-landing-partners-role-affiliate-description",
+    "key": "landing.partners.role.affiliate.description",
+    "lang": "hu",
+    "value": "Bármelyik tag megoszthatja személyes meghívólinkjét a Profil → Affiliate menüből, és láthatja, hányan regisztráltak vele. API-kliensekkel is meghívhat résztvevőket, és követheti, hányan kapcsolódtak regisztrált fiókhoz."
   }
 ]
