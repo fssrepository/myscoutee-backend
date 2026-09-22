@@ -1,5 +1,11 @@
 [
   {
+    "_id": "i18n-message-en-integration-token-ip",
+    "key": "integration.token.ip",
+    "lang": "en",
+    "value": "IP:"
+  },
+  {
     "_id": "i18n-message-en-unavailable-here",
     "key": "unavailable.here",
     "lang": "en",
@@ -21652,6 +21658,12 @@
     "key": "landing.partners.role.affiliate.description",
     "lang": "en",
     "value": "Any member can share a personal invitation link from Profile → Affiliate and see how many people registered through it. API clients can also invite participants and track how many connected to registered accounts."
+  },
+  {
+    "_id": "i18n-message-hu-integration-token-ip",
+    "key": "integration.token.ip",
+    "lang": "hu",
+    "value": "IP:"
   },
   {
     "_id": "i18n-message-hu-unavailable-here",
