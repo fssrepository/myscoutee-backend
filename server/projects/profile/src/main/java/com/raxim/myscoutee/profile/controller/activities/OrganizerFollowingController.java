@@ -23,7 +23,7 @@ public class OrganizerFollowingController {
         return user;
     }
     @PostMapping
-    public Users.FollowingRecord change(@RequestBody FollowRequest request) {
+    public OrganizerFollowingService.FollowingChangeResult change(@RequestBody FollowRequest request) {
         return following.change(actor(request.userId()).getUserId(), request.organizerId(), request.followed());
     }
     @GetMapping("/members")

@@ -21696,6 +21696,12 @@
     "value": "Could not update following. Please try again."
   },
   {
+    "_id": "i18n-message-en-event-external-info",
+    "key": "event.external.info",
+    "lang": "en",
+    "value": "External info"
+  },
+  {
     "_id": "i18n-message-hu-integration-token-ip",
     "key": "integration.token.ip",
     "lang": "hu",
@@ -43390,5 +43396,11 @@
     "key": "event.following.failed",
     "lang": "hu",
     "value": "Nem sikerült módosítani a követést. Próbáld újra."
+  },
+  {
+    "_id": "i18n-message-hu-event-external-info",
+    "key": "event.external.info",
+    "lang": "hu",
+    "value": "Külső információ"
   }
 ]

@@ -66,4 +66,35 @@ class OrganizerFollowingServiceTest {
         verify(mongo).updateFirst(any(Query.class), argThat((Update update) ->
                 update.getUpdateObject().get("$set", org.bson.Document.class).keySet().equals(Set.of("following"))), eq(Users.class));
     }
+    @Test void committedFollowReturnsPositiveDeltaAndRetryReturnsZero() {
+        MongoTemplate mongo = mock(MongoTemplate.class); FriendshipFacts friends = mock(FriendshipFacts.class);
+        Users user = new Users(); user.setUserId("viewer");
+        when(mongo.exists(any(Query.class), eq(Users.class))).thenReturn(true);
+        when(mongo.findOne(any(Query.class), eq(Users.class))).thenReturn(user);
+        ActivityEvent one = event("one"), two = event("two");
+        one.setEndAtIso("2099-09-22T13:00:00Z"); two.setEndAtIso("2099-09-22T13:00:00Z");
+        when(mongo.find(any(Query.class), eq(ActivityEvent.class))).thenReturn(List.of(one, two));
+        when(friends.friendIds("viewer")).thenReturn(Set.of());
+        when(mongo.updateFirst(any(Query.class), any(Update.class), eq(Users.class)))
+                .thenReturn(UpdateResult.acknowledged(1, 1L, null));
+        var service = new OrganizerFollowingService(mongo, friends);
+        var result = service.change("viewer", "organizer", true);
+        assertEquals(2, result.eventCountDelta()); assertEquals(2, result.eventCount());
+        user.setFollowing(new Users.FollowingRecord(result.organizerIds(), result.eventCount(), result.nextExpiryAtIso()));
+        assertEquals(0, service.change("viewer", "organizer", true).eventCountDelta());
+    }
+    @Test void committedUnfollowReturnsNegativeDeltaAndPersistsTheAbsoluteState() {
+        MongoTemplate mongo = mock(MongoTemplate.class); FriendshipFacts friends = mock(FriendshipFacts.class);
+        Users user = new Users(); user.setUserId("viewer");
+        user.setFollowing(new Users.FollowingRecord(List.of("organizer"), 3, "2099-09-22T13:00:00Z"));
+        when(mongo.findOne(any(Query.class), eq(Users.class))).thenReturn(user);
+        when(mongo.updateFirst(any(Query.class), any(Update.class), eq(Users.class)))
+                .thenReturn(UpdateResult.acknowledged(1, 1L, null));
+        var result = new OrganizerFollowingService(mongo, friends).change("viewer", "organizer", false);
+        assertEquals(-3, result.eventCountDelta()); assertEquals(0, result.eventCount());
+        verify(mongo).updateFirst(any(Query.class), argThat((Update update) ->
+                new Users.FollowingRecord(List.of(), 0, null).equals(
+                    update.getUpdateObject().get("$set", org.bson.Document.class).get("following"))), eq(Users.class));
+    }
+
 }

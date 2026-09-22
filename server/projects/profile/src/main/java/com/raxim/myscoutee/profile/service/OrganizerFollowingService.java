@@ -30,7 +30,7 @@ public class OrganizerFollowingService {
                 ? new FollowingRecord(List.of(), 0, null) : user.getFollowing();
     }
 
-    public FollowingRecord change(String userId, String organizerId, boolean followed) {
+    public FollowingChangeResult change(String userId, String organizerId, boolean followed) {
         if (organizerId == null || organizerId.isBlank() || userId.equals(organizerId))
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid organizer.");
         if (followed && !mongo.exists(Query.query(Criteria.where("userId").is(organizerId)
@@ -39,7 +39,7 @@ public class OrganizerFollowingService {
         return update(userId, organizerId, followed);
     }
 
-    private FollowingRecord update(String userId, String organizerId, boolean followed) {
+    private FollowingChangeResult update(String userId, String organizerId, boolean followed) {
         // Compare-and-set avoids overwriting a concurrent follow/unfollow or event update.
         for (int attempt = 0; attempt < 5; attempt++) {
             Users user = mongo.findOne(Query.query(Criteria.where("userId").is(userId)), Users.class);
@@ -51,7 +51,11 @@ public class OrganizerFollowingService {
             FollowingRecord next = calculate(userId, ids, Instant.now());
             var result = mongo.updateFirst(Query.query(Criteria.where("userId").is(userId)
                     .and("following").is(user.getFollowing())), new Update().set("following", next), Users.class);
-            if (result.getMatchedCount() > 0) return next;
+            if (result.getMatchedCount() > 0) {
+                int previousCount = state(user).eventCount() == null ? 0 : state(user).eventCount();
+                return new FollowingChangeResult(next.organizerIds(), next.eventCount(), next.nextExpiryAtIso(),
+                        next.eventCount() - previousCount);
+            }
         }
         throw new ResponseStatusException(HttpStatus.CONFLICT, "Following changed concurrently. Retry the action.");
     }
@@ -125,6 +129,9 @@ public class OrganizerFollowingService {
                         user.getInitials(), user.getGender(), user.getCity(), (user.getImages() == null || user.getImages().isEmpty() ? null : user.getImages().get(0)), "Member", "accepted"))
                 .toList();
     }
+    public record FollowingChangeResult(List<String> organizerIds, int eventCount,
+            String nextExpiryAtIso, int eventCountDelta) {}
+
     public record FollowedMember(String id, String userId, String name, String initials,
             String gender, String city, String avatarUrl, String role, String status) {}
 }
