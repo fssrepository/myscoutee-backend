@@ -5,12 +5,15 @@ referrals and API participant counts arrive in its one authenticated
 `GET /integrations/settings` response. No separate stats request or polling was
 added. The landing Partners popup describes the same feature. All new UI copy,
 including titles, tooltips and accessibility labels, uses EN/HU i18n keys.
+The landing Affiliate role and the profile entry action use the same pink
+palette and `group_add` icon, distinct from the other partner roles.
 
 ## Personal link
 
 - `affiliate.url`: public, opaque `/entry?affiliate=<code>` link, stable per owner.
 - `affiliate.registered`: number of attributed profile registrations.
-- The copy action uses the shared menu counter, including zero.
+- A separate badge in the block's top-right heading shows the count, including
+  zero. The copy action has no counter.
 - Entry retains the first valid code in session storage across authentication.
   Onboarding sends it with the existing profile save request and clears it on
   success. No request is made merely to capture the code.
@@ -24,8 +27,8 @@ including titles, tooltips and accessibility labels, uses EN/HU i18n keys.
 
 ## API participant ratio
 
-The Client keys heading shows `registered / imported` as compact text, without
-an additional badge. It counts distinct external `participantId` values scoped
+The Client keys heading shows `registered / imported` in one background-filled
+badge before the key creation action. It counts distinct external `participantId` values scoped
 to the authenticated API owner across event invite imports. Reimporting the
 same person or inviting them to another event does not increase the total.
 The numerator counts imported IDs linked to registered accounts through the
