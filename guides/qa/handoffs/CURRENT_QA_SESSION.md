@@ -83,19 +83,17 @@ resume pointer and reusable working method.
 
 ## Active resume point
 
-Event Mode, Integration API and the corrected numbered activity-rating checklist
-are closed. Do not replay them on continuation.
+Earlier Event Mode, Integration API and Activity Rating cases remain closed.
 
 ```yaml
-checkpoint: EVENT-ACTIVITY-RATING-001
-checklist: ../checklists/event/EVENT-ACTIVITY-RATING-001.md
-execution_log: ../checklists/event/EVENT-ACTIVITY-RATING-001-20260922-progress.md
-substage: PASS/CLOSED; numbered 1–10 coverage recorded after correcting premature core-only closure. Expectations updated from user discussion.
-fixture_phase: not-staged; evidence retained, managed windows closed through launcher, session and fixture snapshots restored.
-next_action: No remaining activity-rating QA action. Do not restage/replay automatically.
-resume_gate: Read linked progress log for numbered evidence and exact limits. The previous retained browser/fixture pointer is superseded by cleanup.
-queued_work: Separate Netcup partial-update version identity, Git release tags and deb release attachment. No deployment performed. Late participant claim uses event end; fresh-registration browser journey remains unproven.
-runtime: Existing dev watchers untouched. No application changes, extra compiler/server or viewport override; delegated runners exited.
+checkpoint: EVENT-FOLLOWING-001
+checklist: ../checklists/event/EVENT-FOLLOWING-001.md
+execution_log: ../evidence/EVENT-FOLLOWING-001-20260922-progress.md
+substage: PASS/CLOSED in dev HTTP scope; numbered 1-10 evidence and platform limits recorded.
+fixture_phase: reset; managed windows closed, session snapshots restored, fixture actors/events removed.
+next_action: No remaining Followed QA action in this scope. Do not restage or replay automatically.
+resume_gate: Read linked evidence. Closed fixture status is state=null and users=[]. No retained browser checkpoint.
+runtime: Existing frontend-sync and backend watcher only. Explicit full-flow testing authorization applies to this checkpoint. User windows must remain unchanged.
 ```
 
 ## Archived pair-QA resume point — 2026-09-17

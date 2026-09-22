@@ -48,3 +48,8 @@ are closed on 2026-09-22, with evidence boundaries recorded in their results.
 The separate [activity-rating comparison](guides/qa/checklists/event/EVENT-ACTIVITY-RATING-001.md)
 is also closed on 2026-09-22: corrected numbered expectations, retained user observations, automatic continuation through save/reload and feedback checks, and scoped cleanup. The [QA matrix](guides/qa/matrices/ADMIN_DYNAMIC_SURFACES_QA_MATRIX.xlsx)
 and its [CSV source](guides/qa/matrices/ADMIN_DYNAMIC_SURFACES_QA_MATRIX.csv) own current status.
+
+[Followed organizers QA](guides/qa/evidence/EVENT-FOLLOWING-001-20260922-progress.md)
+is closed on 2026-09-22 in the dev HTTP scope: follow/unfollow, independent
+counters, filters, lifecycle/expiry, and compact desktop layout verified;
+fixture and managed windows cleaned. Platform limits are recorded in the evidence.
