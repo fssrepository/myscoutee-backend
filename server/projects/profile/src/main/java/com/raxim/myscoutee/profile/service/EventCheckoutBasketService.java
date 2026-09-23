@@ -1,7 +1,6 @@
 package com.raxim.myscoutee.profile.service;
 
 import java.time.Instant;
-import java.time.temporal.ChronoUnit;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
@@ -47,12 +46,18 @@ public class EventCheckoutBasketService {
     private final EventCheckoutBasketItemsRepository repository;
     private final MongoTemplate mongoTemplate;
     private final NotificationRuleRegistryService notificationRuleRegistryService;
+    private final org.springframework.beans.factory.ObjectProvider<ActivitiesMembersService> membersService;
+    private final EventCheckoutPricingService checkoutPricing;
     private final AtomicBoolean processing = new AtomicBoolean(false);
 
     public EventCheckoutBasketService(
             EventCheckoutBasketItemsRepository repository,
             MongoTemplate mongoTemplate,
-            NotificationRuleRegistryService notificationRuleRegistryService) {
+            NotificationRuleRegistryService notificationRuleRegistryService,
+            org.springframework.beans.factory.ObjectProvider<ActivitiesMembersService> membersService,
+            EventCheckoutPricingService checkoutPricing) {
+        this.membersService = membersService;
+        this.checkoutPricing = checkoutPricing;
         this.repository = repository;
         this.mongoTemplate = mongoTemplate;
         this.notificationRuleRegistryService = notificationRuleRegistryService;
@@ -125,11 +130,17 @@ public class EventCheckoutBasketService {
                         .toList()));
     }
 
+    public record CheckoutCardStates(Map<String, String> resultStates, Map<String, String> pendingReasons) {}
+
     public Map<String, String> loadResultStatesByEvent(String userId, Collection<String> sourceIds) {
+        return loadCardStatesByEvent(userId, sourceIds).resultStates();
+    }
+
+    public CheckoutCardStates loadCardStatesByEvent(String userId, Collection<String> sourceIds) {
         String normalizedUserId = normalizeId(userId);
         List<String> normalizedSourceIds = normalizeIds(sourceIds);
         if (!StringUtils.hasText(normalizedUserId) || normalizedSourceIds.isEmpty()) {
-            return Map.of();
+            return new CheckoutCardStates(Map.of(), Map.of());
         }
         Map<String, List<EventCheckoutBasketItem>> itemsBySourceId = repository
                 .findByUserIdAndSourceIdInAndStatusInAndVisibleResultState(
@@ -147,11 +158,25 @@ public class EventCheckoutBasketService {
                                 .add(item),
                         Map::putAll);
         if (itemsBySourceId.isEmpty()) {
-            return Map.of();
+            return new CheckoutCardStates(Map.of(), Map.of());
         }
         Map<String, String> result = new LinkedHashMap<>();
         itemsBySourceId.forEach((sourceId, items) -> result.put(sourceId, checkoutResultState(items)));
-        return result;
+        Map<String, String> pendingReasons = new LinkedHashMap<>();
+        itemsBySourceId.forEach((sourceId, items) -> {
+            if (!"pending".equals(result.get(sourceId)) && !"failed".equals(result.get(sourceId))) return;
+            List<EventCheckoutBasketItem> active = items.stream()
+                    .filter(item -> !RESULT_STATE_DELETED.equals(item.getResultState())).toList();
+            if (active.stream().anyMatch(item -> "waiting".equals(item.getStatus()))) {
+                pendingReasons.put(sourceId, "waitlist");
+            } else if (active.stream().anyMatch(item -> "approval-pending".equals(item.getStatus()))) {
+                pendingReasons.put(sourceId, "approval");
+            } else if (active.stream().anyMatch(item -> "approved".equals(item.getStatus())
+                    || "confirmed".equals(item.getStatus()) || "pay".equals(item.getStatus()))) {
+                pendingReasons.put(sourceId, "payment");
+            }
+        });
+        return new CheckoutCardStates(result, pendingReasons);
     }
 
     private String checkoutResultState(List<EventCheckoutBasketItem> items) {
@@ -225,6 +250,14 @@ public class EventCheckoutBasketService {
                 : request.basketItems().stream().filter(Objects::nonNull).toList();
         String nowIso = Instant.now().toString();
         String requestStatus = normalizeStatus(request.checkoutState());
+        boolean eventCheckout = incomingItems.stream()
+                .anyMatch(item -> "event".equals(item.kind()) || "sub_event".equals(item.kind()));
+        String deadline = eventCheckout ? checkoutPricing.checkoutDeadline(request) : null;
+        if (deadline != null && !Instant.parse(deadline).isAfter(Instant.now())
+                && !"pay".equals(requestStatus)) {
+            throw new org.springframework.web.server.ResponseStatusException(
+                    org.springframework.http.HttpStatus.CONFLICT, "event.checkout.payment.deadline.passed");
+        }
         List<String> appliedPromoCodes = normalizePromoCodes(request.appliedPromoCodes());
         Query staleQuery = new Query(new Criteria().andOperator(
                 Criteria.where("userId").is(normalizedUserId),
@@ -253,10 +286,9 @@ public class EventCheckoutBasketService {
             if (!StringUtils.hasText(itemId)) {
                 continue;
             }
-            String expiresAtIso = firstText(item.expiresAtIso(), Instant.now()
-                    .plus(10, ChronoUnit.MINUTES)
-                    .toString());
             String status = normalizeStatus(firstText(item.status(), requestStatus));
+            String expiresAtIso = eventCheckout ? deadline : firstText(item.expiresAtIso(), Instant.now()
+                    .plus(10, java.time.temporal.ChronoUnit.MINUTES).toString());
             String resultState = normalizeResultState(item.resultState());
             boolean reservationActive = isReservationActive(status, resultState);
             boolean shouldTrack = isPurgeCandidate(status, resultState, expiresAtIso);
@@ -385,6 +417,15 @@ public class EventCheckoutBasketService {
             return;
         }
 
+        EventCheckoutBasketDto basket = loadBasketByEvent(normalizedUserId, normalizedSourceId);
+        if (basket != null && basket.totalAmount() != null && basket.totalAmount() > 0
+                && !StringUtils.hasText(basket.checkoutSessionId())) {
+            // Acceptance unlocks an unpaid checkout, including a repeated Join after approval.
+            updateBasketState(new EventCheckoutStateChangeRequestDto(
+                    normalizedUserId, normalizedSourceId, "approved", "pending", null, null));
+            return;
+        }
+
         String nowIso = Instant.now().toString();
         Update terminalUpdate = new Update()
                 .set("status", "approved")
@@ -405,6 +446,14 @@ public class EventCheckoutBasketService {
                 Criteria.where("sourceId").is(normalizedSourceId),
                 Criteria.where("reservationActive").is(true)));
         mongoTemplate.updateMulti(remainingActiveQuery, terminalUpdate, EventCheckoutBasketItem.class);
+    }
+
+    public boolean wasCheckoutExpired(String userId, String sourceId, String requestAtIso) {
+        return mongoTemplate.exists(new Query(new Criteria().andOperator(
+                Criteria.where("userId").is(userId), Criteria.where("sourceId").is(sourceId),
+                Criteria.where("resultState").is(RESULT_STATE_DELETED),
+                Criteria.where("expiresAtIso").gt(safeText(requestAtIso)).lte(Instant.now().toString()))),
+                EventCheckoutBasketItem.class);
     }
 
     public int purgeExpiredDraftBasketsNow() {
@@ -448,6 +497,13 @@ public class EventCheckoutBasketService {
                     reservationResultStateCriteria(),
                     Criteria.where("expiresAtIso").exists(true).nin("", null),
                     Criteria.where("expiresAtIso").lte(nowIso)));
+            List<EventCheckoutBasketItem> dueItems = mongoTemplate.find(query, EventCheckoutBasketItem.class);
+            var expiredOwners = new java.util.HashSet<String>();
+            for (EventCheckoutBasketItem item : dueItems) {
+                if (expiredOwners.add(item.getUserId() + ":" + item.getSourceId())) {
+                    membersService.getObject().expirePendingCheckoutMembership(item.getUserId(), item.getSourceId(), nowIso);
+                }
+            }
             Update update = new Update()
                     .set("resultState", RESULT_STATE_DELETED)
                     .set("pendingCounterTracked", false)

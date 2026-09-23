@@ -17,11 +17,13 @@ class ContentModerationServiceTest {
     final ChatService chat = mock(ChatService.class);
     final ContentModerationService service = new ContentModerationService(repository, mongo, chat, mock(UserActivityCountersService.class));
     final Map<String, Item> items = new HashMap<>();
-    State state = new State("global", 0, Settings.defaults(), Map.of(), List.of());
+    State state = new State("global", 0, new Settings(true, false, 0, List.of("asset", "event", "feed")), Map.of(), List.of());
     final AdminUserDto admin = new AdminUserDto("admin", "Admin", "", "", "", "", List.of());
     @BeforeEach void persistence() {
         when(repository.state()).thenAnswer(call -> state);
         when(repository.item(anyString())).thenAnswer(call -> items.get(call.getArgument(0)));
+        when(repository.withheld(anyInt())).thenAnswer(call -> items.values().stream()
+                .filter(item -> !"accepted".equals(item.status())).limit(call.getArgument(0, Integer.class)).toList());
         doAnswer(call -> { Item item = call.getArgument(0); items.put(item.id(), item); return null; }).when(repository).saveItem(any());
         when(repository.compareAndSet(any(), any(), any(), any())).thenAnswer(call -> {
             State before = call.getArgument(0);
@@ -30,7 +32,63 @@ class ContentModerationServiceTest {
         });
     }
     Item submit() { return service.register("feed", "post", "owner", "Photo", "photo.jpg"); }
-    @Test void zeroDelayStillWaitsForScheduledJobAndCountsOnlyOnce() {
+    @Test void disabledModerationJobReleasesEveryCategoryAndBucketWithoutAutoApprovalOrDelay() {
+        service.register("event", "pending", "owner", "Event", "");
+        Item asset = service.register("asset", "rejected", "owner", "Asset", "");
+        service.decide(asset.id(), new Decision("admin", "reject", 1, "rejected", ""), admin);
+        Item feed = submit();
+        service.decide(feed.id(), new Decision("admin", "accept", 1, "accepted", ""), admin);
+        service.decide(feed.id(), new Decision("admin", "block", 2, "blocked", ""), admin);
+        Snapshot disabled = service.settings(new SaveSettings("admin", state.revision(), new Settings(false, false, 43200, List.of("feed"))));
+        assertEquals(1, disabled.pendingCount());
+        assertEquals("rejected", items.get(asset.id()).status());
+        assertEquals("blocked", items.get(feed.id()).status());
+        assertEquals(3, service.approveDue());
+        disabled = service.snapshot();
+        assertEquals(0, disabled.pendingCount());
+        for (String category : List.of("asset", "event", "feed")) {
+            assertEquals(1L, disabled.counts().get(category).get("accepted"));
+            assertEquals(0L, disabled.counts().get(category).getOrDefault("under-review", 0L));
+            assertEquals(0L, disabled.counts().get(category).getOrDefault("rejected", 0L));
+            assertEquals(0L, disabled.counts().get(category).getOrDefault("blocked", 0L));
+        }
+        var versions = items.values().stream().map(Item::version).sorted().toList();
+        service.settings(new SaveSettings("admin", state.revision(), disabled.settings()));
+        assertEquals(0, service.approveDue());
+        assertEquals(versions, items.values().stream().map(Item::version).sorted().toList());
+        assertEquals(disabled.counts(), service.snapshot().counts());
+        Item released = items.get(feed.id());
+        assertThrows(ResponseStatusException.class, () -> service.decide(feed.id(),
+                new Decision("admin", "stale-block", released.version(), "blocked", ""), admin));
+        verifyNoInteractions(chat);
+    }
+    @Test void interruptedDisableResumesCommittedReleaseWithoutCountingTwice() {
+        Item item = submit();
+        doThrow(new IllegalStateException("storage interrupted")).doAnswer(call -> {
+            Item saved = call.getArgument(0); items.put(saved.id(), saved); return null;
+        }).when(repository).saveItem(any());
+        service.settings(new SaveSettings("admin", state.revision(), Settings.defaults()));
+        assertThrows(IllegalStateException.class, service::approveDue);
+        assertFalse(state.settings().enabled());
+        assertFalse(state.pending().isEmpty());
+        service.approveDue();
+        assertEquals("accepted", items.get(item.id()).status());
+        assertTrue(state.pending().isEmpty());
+        assertEquals(1L, service.snapshot().counts().get("feed").get("accepted"));
+        assertEquals(0, service.snapshot().pendingCount());
+    }
+    @Test void defaultModerationIsOffAndDoesNotHoldBackAnyCategoryOrRunAutoApproval() {
+        service.settings(new SaveSettings("admin", state.revision(), Settings.defaults()));
+        assertFalse(service.snapshot().settings().enabled());
+        assertFalse(service.snapshot().settings().autoApprove());
+        for (String category : List.of("asset", "event", "feed")) {
+            assertEquals("accepted", service.register(category, "default", "owner", "Content", "").status());
+        }
+        assertEquals(0, service.snapshot().pendingCount());
+        assertEquals(0, service.approveDue());
+        verify(repository, never()).due(any(), anyString(), anyInt());
+    }
+    @Test void disabledAutoApprovalWaitsForReviewAndCountsOnlyOnce() {
         assertEquals("under-review", submit().status());
         submit();
         assertEquals(1, service.snapshot().pendingCount());
@@ -54,23 +112,23 @@ class ContentModerationServiceTest {
     @Test void deliveryFailureKeepsIntentAndRetryDoesNotApplyCounterTwice() {
         Item item = submit();
         doThrow(new IllegalStateException("unavailable")).doReturn(null).when(chat).sendAdminSupportMessage(anyString(), anyString(), anyString(), anyString(), anyString(), anyString(), anyString());
-        Decision request = new Decision("admin", "block", 1, "blocked", "Contact support.");
+        Decision request = new Decision("admin", "reject", 1, "rejected", "Contact support.");
         assertThrows(IllegalStateException.class, () -> service.decide(item.id(), request, admin));
         assertEquals(1, state.pending().size());
         service.decide(item.id(), request, admin);
         assertTrue(state.pending().isEmpty());
-        assertEquals(1L, service.snapshot().counts().get("feed").get("blocked"));
+        assertEquals(1L, service.snapshot().counts().get("feed").get("rejected"));
         assertEquals(0, service.snapshot().pendingCount());
     }
     @Test void globalSettingsUseRevisionAndDisabledApprovalDoesNotQueryCandidates() {
-        service.settings(new SaveSettings("admin", 0, new Settings(false, 5, List.of("feed"))));
+        service.settings(new SaveSettings("admin", 0, new Settings(true, false, 5, List.of("feed"))));
         assertThrows(ResponseStatusException.class, () -> service.settings(new SaveSettings("other-admin", 0, Settings.defaults())));
         assertEquals(0, service.approveDue());
         verify(repository, never()).due(any(), anyString(), anyInt());
     }
     @Test void scheduledApprovalUsesConfiguredCategoriesDelayAndWritesDecision() {
         Item item = submit();
-        service.settings(new SaveSettings("admin", state.revision(), new Settings(true, 10, List.of("feed"))));
+        service.settings(new SaveSettings("admin", state.revision(), new Settings(true, true, 10, List.of("feed"))));
         when(repository.due(any(), anyString(), eq(100))).thenAnswer(call -> {
             Settings configured = call.getArgument(0);
             assertEquals(List.of("feed"), configured.categories());
@@ -103,6 +161,50 @@ class ContentModerationServiceTest {
         assertEquals(0L, service.snapshot().counts().get("feed").get("blocked"));
         assertThrows(ResponseStatusException.class, () -> service.register("all", "invalid", "owner", "", ""));
         assertThrows(ResponseStatusException.class, () -> service.page("all", "invalid", null, 10));
+    }
+
+    @Test void zeroMinuteAutoApprovalImmediatelyApprovesEverySelectedCategory() {
+        service.settings(new SaveSettings("admin", state.revision(), new Settings(true, true, 0, List.of("asset", "event", "feed"))));
+        for (String category : List.of("asset", "event", "feed")) {
+            Item item = service.register(category, "immediate-" + category, "owner", "Content", "");
+            assertEquals("accepted", item.status());
+            assertTrue(item.hasBeenPublic());
+            service.register(category, item.sourceId(), "owner", "Content", "");
+            assertEquals(1L, service.snapshot().counts().get(category).get("accepted"));
+        }
+        assertEquals(0, service.snapshot().pendingCount());
+    }
+    @Test void persistedItemsWithoutPublicHistoryRemainReadable() {
+        var context = new org.springframework.data.mongodb.core.mapping.MongoMappingContext();
+        var converter = new org.springframework.data.mongodb.core.convert.MappingMongoConverter(
+                org.springframework.data.mongodb.core.convert.NoOpDbRefResolver.INSTANCE, context);
+        converter.afterPropertiesSet();
+        for (String status : List.of("under-review", "accepted", "blocked")) {
+            var document = new org.bson.Document();
+            converter.write(new Item("feed:old", "feed", "old", "owner", "Photo", "", "2026-09-22T10:00:00Z",
+                    status, 1, "submit", "", ""), document);
+            document.remove("publiclyVisibleOnce");
+            Item read = converter.read(Item.class, document);
+            assertEquals(status, read.status());
+            assertEquals(!"under-review".equals(status), read.hasBeenPublic());
+        }
+    }
+    @Test void zeroMinutesDoesNotApproveExcludedCategories() {
+        service.settings(new SaveSettings("admin", state.revision(), new Settings(true, true, 0, List.of("feed"))));
+        assertEquals("under-review", service.register("event", "event", "owner", "Event", "").status());
+        assertEquals("under-review", service.register("asset", "asset", "owner", "Asset", "").status());
+        assertEquals("accepted", submit().status());
+    }
+    @Test void rejectIsBeforePublicApprovalAndBlockIsAfterItIncludingAfterUnblock() {
+        Item item = submit();
+        assertThrows(ResponseStatusException.class, () -> service.decide(item.id(), new Decision("admin", "invalid-block", 1, "blocked", ""), admin));
+        Item accepted = service.decide(item.id(), new Decision("admin", "accept", 1, "accepted", ""), admin);
+        assertTrue(accepted.hasBeenPublic());
+        assertThrows(ResponseStatusException.class, () -> service.decide(item.id(), new Decision("admin", "invalid-reject", 2, "rejected", ""), admin));
+        service.decide(item.id(), new Decision("admin", "block", 2, "blocked", ""), admin);
+        Item unblocked = service.decide(item.id(), new Decision("admin", "unblock", 3, "under-review", ""), admin);
+        assertTrue(unblocked.publiclyVisibleOnce());
+        assertThrows(ResponseStatusException.class, () -> service.decide(item.id(), new Decision("admin", "still-invalid-reject", 4, "rejected", ""), admin));
     }
 
 }

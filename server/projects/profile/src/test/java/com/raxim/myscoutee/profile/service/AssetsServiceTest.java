@@ -79,6 +79,25 @@ import com.raxim.myscoutee.profile.service.notifications.NotificationOutboxServi
 
 class AssetsServiceTest {
     @Test
+    void ownerCanSeeContentReviewBadgeWhileAccountSuppressionStaysHidden() {
+        AssetsRepository assetsRepository = mock(AssetsRepository.class);
+        UsersRepository usersRepository = mock(UsersRepository.class);
+        MongoTemplate mongoTemplate = mock(MongoTemplate.class);
+        Asset reviewedAsset = asset();
+        reviewedAsset.setStatus("B");
+        reviewedAsset.setModerationStatus("under-review");
+        when(assetsRepository.findByOwnerUserIdOrderByUpdatedDateDesc("u1")).thenReturn(List.of(reviewedAsset));
+        when(mongoTemplate.find(any(Query.class), eq(Asset.class))).thenReturn(List.of());
+        when(mongoTemplate.find(any(Query.class), eq(AssetRequest.class))).thenReturn(List.of());
+        when(usersRepository.findByUserIdIn(List.of("u1"))).thenReturn(List.of(user("u1", "Owner One", "OO")));
+        AssetsService service = assetReadService(assetsRepository, usersRepository, mock(FriendshipFacts.class),
+                mongoTemplate, mock(AccessControlService.class));
+        assertThat(service.queryAssets("u1")).singleElement().extracting(AssetDto::moderationStatus).isEqualTo("under-review");
+        reviewedAsset.setModerationStatus(null);
+        assertThat(service.queryAssets("u1")).isEmpty();
+    }
+
+    @Test
     void assetReadModelKeepsDistinctRequestsFromTheSameBorrowerAndScope() {
         AssetsRepository assetsRepository = mock(AssetsRepository.class);
         UsersRepository usersRepository = mock(UsersRepository.class);

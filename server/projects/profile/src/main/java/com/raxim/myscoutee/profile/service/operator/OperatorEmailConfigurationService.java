@@ -30,8 +30,9 @@ public class OperatorEmailConfigurationService {
     private final MongoTemplate mongo;
     private final DeploymentConfigurationCrypto crypto;
     private final List<EmailProvider> providers;
-    public OperatorEmailConfigurationService(MongoTemplate mongo, DeploymentConfigurationCrypto crypto, List<EmailProvider> providers) {
-        this.mongo = mongo; this.crypto = crypto; this.providers = providers;
+    private final EmailProviderGateway gateway;
+    public OperatorEmailConfigurationService(MongoTemplate mongo, DeploymentConfigurationCrypto crypto, List<EmailProvider> providers, EmailProviderGateway gateway) {
+        this.mongo = mongo; this.crypto = crypto; this.providers = providers; this.gateway = gateway;
     }
     private Configuration configuration() {
         var saved = mongo.findById("global", Configuration.class);
@@ -68,7 +69,7 @@ public class OperatorEmailConfigurationService {
         if (!state.enabled() || state.credential() == null) return new EmailSendResult(false, null, "Email provider is not configured.");
         var provider = providers.stream().filter(p -> p.providerKey().equals(state.providerId()) && p.configurationDescriptor() != null).findFirst().orElse(null);
         if (provider == null) return new EmailSendResult(false, null, "Email provider is unavailable.");
-        return provider.sendConfigured(new EmailSendRequest(content.toEmail(), content.toName(), content.subject(), content.htmlBody(), content.textBody(),
+        return gateway.sendConfigured(state.providerId(), new EmailSendRequest(content.toEmail(), content.toName(), content.subject(), content.htmlBody(), content.textBody(),
                 state.fromEmail(), state.fromName(), state.fromEmail(), content.category(), content.metadata()), crypto.decrypt(PURPOSE, state.credential()));
     }
     private static String text(String value) { return value == null ? "" : value.trim(); }

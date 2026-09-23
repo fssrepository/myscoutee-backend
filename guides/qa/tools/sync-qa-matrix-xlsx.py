@@ -90,6 +90,8 @@ ROW_FILL_COLORS.update({
 # manual-QA domain and uses the same domain-priority table as every other row.
 EXACT_DOMAIN_OVERRIDES = {
     "AFFILIATE-INVITATION-001": "API test",
+    "AFFILIATE-REVENUE-001": "API test",
+    "ADMIN-CLIENT-API-001": "API test",
     "BASE-STAT": "Administration",
     "CONTENT-ADMIN-LIFECYCLE-001": "Content",
     "NOTIFICATION-ADMIN-LIFECYCLE-001": "Notifications",

@@ -47,7 +47,7 @@ public class ContentModerationService {
         Settings next = request.settings();
         if (next == null || next.delayMinutes() < 0 || next.delayMinutes() > 43200 || next.categories() == null
                 || !CATEGORIES.containsAll(next.categories())) throw invalid();
-        next = new Settings(next.autoApprove(), next.delayMinutes(), next.categories().stream().distinct().toList());
+        next = new Settings(next.enabled(), next.autoApprove(), next.delayMinutes(), next.categories().stream().distinct().toList());
         State current = repository.state();
         if (current.revision() != request.expectedRevision() || !repository.compareAndSet(current, next, current.counts(), current.pending())) throw conflict();
         return snapshot();
@@ -56,30 +56,54 @@ public class ContentModerationService {
         validate(category, "under-review");
         String id = category + ":" + sourceId;
         Item existing = repository.item(id);
-        if (existing != null) { applyResource(existing); return existing; }
-        // Approval is owned by the scheduled Job, including a zero-minute delay.
-        String status = "under-review";
+        if (existing != null) {
+            if (existing.deleted()) throw new ResponseStatusException(HttpStatus.GONE);
+            applyResource(existing); return existing;
+        }
+        Settings settings = repository.state().settings();
+        String status = !Boolean.TRUE.equals(settings.enabled()) || (settings.autoApprove() && settings.delayMinutes() == 0 && settings.categories().contains(category))
+                ? "accepted" : "under-review";
         Item proposed = new Item(id, category, sourceId, ownerId, title, imageUrl, Instant.now().toString(), status, 1,
                 "submit:" + id, "", "");
         return enlist(null, proposed, "", "", "");
     }
     public Item decide(String id, Decision request, AdminUserDto actor) {
         Item before = repository.item(id);
-        if (before == null) throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+        if (before == null || before.deleted()) throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         validate(before.category(), request.status());
         if (request.commandId() == null || request.commandId().isBlank() || request.commandId().length() > 100) throw invalid();
         String message = request.message() == null ? "" : request.message().trim();
         if (message.length() > 1000) throw invalid();
         if (request.commandId().equals(before.commandId())) { drainPending(); return repository.item(id); }
         if (request.expectedVersion() != before.version()) throw conflict();
+        if (("rejected".equals(request.status()) && before.hasBeenPublic())
+                || ("blocked".equals(request.status()) && !before.hasBeenPublic())) throw invalid();
         Item next = new Item(before.id(), before.category(), before.sourceId(), before.ownerUserId(), before.title(), before.imageUrl(),
-                before.submittedAtIso(), request.status(), before.version() + 1, request.commandId(), actor.id(), Instant.now().toString());
+                before.submittedAtIso(), request.status(), before.version() + 1, request.commandId(), actor.id(), Instant.now().toString(),
+                before.hasBeenPublic() || "accepted".equals(request.status()));
         return enlist(before, next, actor.name(), actor.initials(), message);
+    }
+    public void removeFeed(String sourceId, String ownerId) {
+        Item before = repository.item("feed:" + sourceId);
+        if (before == null) throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+        if (!ownerId.equals(before.ownerUserId())) throw new ResponseStatusException(HttpStatus.FORBIDDEN);
+        if (before.deleted()) { drainPending(); return; }
+        Item next = new Item(before.id(), before.category(), before.sourceId(), before.ownerUserId(), before.title(), before.imageUrl(),
+                before.submittedAtIso(), before.status(), before.version() + 1, "remove:" + before.id(), ownerId,
+                Instant.now().toString(), before.publiclyVisibleOnce(), true);
+        enlist(before, next, "", "", "");
     }
     private Item enlist(Item previous, Item next, String adminName, String adminInitials, String message) {
         for (int attempt = 0; attempt < 10; attempt++) {
             var current = repository.state();
-            var pending = current.pending().stream().filter(m -> m.item().id().equals(next.id())).findFirst().orElse(null);
+            if (!next.deleted() && !Boolean.TRUE.equals(current.settings().enabled()) && !"accepted".equals(next.status())) {
+                // A publication racing with disable must not reintroduce a moderation hold.
+                if (previous != null) throw conflict();
+                next = new Item(next.id(), next.category(), next.sourceId(), next.ownerUserId(), next.title(), next.imageUrl(),
+                        next.submittedAtIso(), "accepted", next.version(), next.commandId(), next.reviewedBy(), next.reviewedAtIso(), true);
+            }
+            String itemId = next.id();
+            var pending = current.pending().stream().filter(m -> m.item().id().equals(itemId)).findFirst().orElse(null);
             if (pending != null) {
                 if (!pending.commandId().equals(next.commandId())) throw conflict();
                 apply(pending); acknowledge(pending.commandId()); return repository.item(next.id());
@@ -91,7 +115,8 @@ public class ContentModerationService {
             Map<String, Map<String, Long>> counts = new LinkedHashMap<>(current.counts());
             Map<String, Long> category = new LinkedHashMap<>(counts.getOrDefault(next.category(), Map.of()));
             if (previous != null) category.merge(previous.status(), -1L, Long::sum);
-            category.merge(next.status(), 1L, Long::sum); counts.put(next.category(), category);
+            if (!next.deleted()) category.merge(next.status(), 1L, Long::sum);
+            counts.put(next.category(), category);
             var mutation = new Mutation(next.commandId(), next, adminName, adminInitials,
                     List.of("rejected", "blocked").contains(next.status()) ? message : "");
             var queue = new ArrayList<>(current.pending()); queue.add(mutation);
@@ -103,6 +128,19 @@ public class ContentModerationService {
     }
     public void drainPending() {
         for (Mutation mutation : repository.state().pending()) { apply(mutation); acknowledge(mutation.commandId()); }
+    }
+    private int releaseWithheld() {
+        int changed = 0;
+        // Use the same bounded Job batch as delayed approval; the next run continues the release.
+        for (Item item : repository.withheld(100)) {
+            if (Boolean.TRUE.equals(repository.state().settings().enabled())) break;
+            try {
+                decide(item.id(), new Decision("", "disable:" + item.id() + ":" + item.version(), item.version(), "accepted", ""),
+                        new AdminUserDto("content-moderation-disabled", "", "", "", "", "", List.of()));
+                changed++;
+            } catch (ResponseStatusException ex) { if (ex.getStatusCode() != HttpStatus.CONFLICT) throw ex; }
+        }
+        return changed;
     }
     private void acknowledge(String commandId) {
         for (int attempt = 0; attempt < 10; attempt++) {
@@ -125,7 +163,10 @@ public class ContentModerationService {
         var query = Query.query(Criteria.where(key).is(item.sourceId()).andOperator(new Criteria().orOperator(
                 Criteria.where("moderationVersion").lte(item.version()), Criteria.where("moderationVersion").exists(false))));
         if (item.category().equals("feed")) {
-            mongo.updateMulti(query, new Update().set("moderationStatus", item.status()).set("moderationVersion", item.version()), collection); return;
+            mongo.updateMulti(query, new Update().set("moderationStatus", item.status()).set("moderationVersion", item.version())
+                    .set("deleted", item.deleted()), collection);
+            counters.refreshFeedCountersForUser(item.ownerUserId());
+            return;
         }
         var records = mongo.find(query, Document.class, collection);
         for (Document record : records) {
@@ -150,6 +191,7 @@ public class ContentModerationService {
     public int approveDue() {
         drainPending();
         Settings settings = repository.state().settings();
+        if (!Boolean.TRUE.equals(settings.enabled())) return releaseWithheld();
         if (!settings.autoApprove() || settings.categories().isEmpty()) return 0;
         var due = repository.due(settings, Instant.now().minus(settings.delayMinutes(), ChronoUnit.MINUTES).toString(), 100);
         int changed = 0;

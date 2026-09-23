@@ -9,13 +9,30 @@ public final class ContentModerationDtos {
     private ContentModerationDtos() {}
     public static final List<String> CATEGORIES = List.of("asset", "event", "feed");
     public static final List<String> STATUSES = List.of("under-review", "accepted", "rejected", "blocked");
-    public record Settings(boolean autoApprove, int delayMinutes, List<String> categories) {
-        public static Settings defaults() { return new Settings(true, 0, CATEGORIES); }
+    public record Settings(Boolean enabled, boolean autoApprove, int delayMinutes, List<String> categories) {
+        public static Settings defaults() { return new Settings(false, false, 0, CATEGORIES); }
     }
     @Document("contentModerationItems")
     public record Item(@Id String id, String category, String sourceId, String ownerUserId, String title,
             String imageUrl, String submittedAtIso, String status, long version, String commandId,
-            String reviewedBy, String reviewedAtIso) {}
+            String reviewedBy, String reviewedAtIso, Boolean publiclyVisibleOnce, Boolean deleted) {
+        public Item { deleted = Boolean.TRUE.equals(deleted); }
+        public Item(String id, String category, String sourceId, String ownerUserId, String title,
+                String imageUrl, String submittedAtIso, String status, long version, String commandId,
+                String reviewedBy, String reviewedAtIso, Boolean publiclyVisibleOnce) {
+            this(id, category, sourceId, ownerUserId, title, imageUrl, submittedAtIso, status, version,
+                    commandId, reviewedBy, reviewedAtIso, publiclyVisibleOnce, false);
+        }
+        public Item(String id, String category, String sourceId, String ownerUserId, String title,
+                String imageUrl, String submittedAtIso, String status, long version, String commandId,
+                String reviewedBy, String reviewedAtIso) {
+            this(id, category, sourceId, ownerUserId, title, imageUrl, submittedAtIso, status, version,
+                    commandId, reviewedBy, reviewedAtIso, "accepted".equals(status) || "blocked".equals(status));
+        }
+        public boolean hasBeenPublic() {
+            return Boolean.TRUE.equals(publiclyVisibleOnce) || "accepted".equals(status) || "blocked".equals(status);
+        }
+    }
     public record Mutation(String commandId, Item item, String adminName, String adminInitials, String message) {}
     @Document("contentModerationState")
     public record State(@Id String id, long revision, Settings settings,

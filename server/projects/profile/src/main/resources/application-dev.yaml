@@ -65,7 +65,7 @@ email:
   from-email: ${EMAIL_FROM_EMAIL:no-reply@myscoutee.local}
   from-name: ${EMAIL_FROM_NAME:MyScoutee}
   reply-to: ${EMAIL_REPLY_TO:support@myscoutee.local}
-  base-url: ${EMAIL_BASE_URL:http://localhost:4200}
+  base-url: ${EMAIL_BASE_URL:http://localhost}
   sendgrid:
     api-key: ${EMAIL_SENDGRID_API_KEY:}
     endpoint: ${EMAIL_SENDGRID_ENDPOINT:https://api.sendgrid.com/v3/mail/send}

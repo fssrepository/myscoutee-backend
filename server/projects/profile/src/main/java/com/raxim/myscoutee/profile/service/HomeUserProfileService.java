@@ -206,6 +206,9 @@ public class HomeUserProfileService {
     @org.springframework.beans.factory.annotation.Autowired
     @org.springframework.context.annotation.Lazy
     private ContentModerationService contentModeration;
+    @org.springframework.beans.factory.annotation.Autowired
+    @org.springframework.context.annotation.Lazy
+    private SavedPaymentMethodsService savedPaymentMethods;
 
     private final UsersRepository usersRepository;
     private final UserFilterPreferencesRepository userFilterPreferencesRepository;
@@ -537,7 +540,9 @@ public class HomeUserProfileService {
                 buildRealtimeCursor(user, counters),
                 Instant.now().toString(),
                 OrganizerFollowingService.state(user),
-                contentModeration != null && adminMenuCounterService.isAdminUser(user) ? contentModeration.snapshot() : null);
+                contentModeration != null && adminMenuCounterService.isAdminUser(user) ? contentModeration.snapshot() : null,
+                user.getFeedCounters() == null ? Users.FeedCountersRecord.empty() : user.getFeedCounters(),
+                savedPaymentMethods != null && savedPaymentMethods.cardsAvailable());
     }
 
     public UserLocationEligibilityResponseDto queryLocationEligibility(Double latitude, Double longitude) {
@@ -3066,7 +3071,8 @@ public class HomeUserProfileService {
                                 return new ProfileDetailRowDto(
                                         labelKey,
                                         safeText(row.value()),
-                                        safeText(row.privacy()),
+                                        "profile.gender".equals(labelKey) ? "Public"
+                                                : "Hosts".equals(row.privacy()) ? "Private" : safeText(row.privacy()),
                                         normalizeStrings(row.options()));
                             })
                             .filter(Objects::nonNull)
@@ -3098,7 +3104,8 @@ public class HomeUserProfileService {
                                 return new Users.ProfileDetailRowRecord(
                                         labelKey,
                                         safeText(row.value()),
-                                        safeText(row.privacy()),
+                                        "profile.gender".equals(labelKey) ? "Public"
+                                                : "Hosts".equals(row.privacy()) ? "Private" : safeText(row.privacy()),
                                         normalizeStrings(row.options()));
                             })
                             .filter(Objects::nonNull)

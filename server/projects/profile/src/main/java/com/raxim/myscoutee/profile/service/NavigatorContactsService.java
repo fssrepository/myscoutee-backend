@@ -10,12 +10,15 @@ import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
 
 import org.springframework.stereotype.Service;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.util.StringUtils;
 
 import com.raxim.myscoutee.profile.data.document.NavigatorContactsProfile;
@@ -24,9 +27,13 @@ import com.raxim.myscoutee.profile.data.dto.auth.AuthDtos.UserDto;
 import com.raxim.myscoutee.profile.data.dto.experience.ExperienceDtos.ExperienceEntryDto;
 import com.raxim.myscoutee.profile.repository.NavigatorContactsProfilesRepository;
 import com.raxim.myscoutee.profile.repository.UsersRepository;
+import com.raxim.myscoutee.profile.security.AccessControlService;
+import com.raxim.myscoutee.profile.security.FriendshipFacts;
 
 @Service
 public class NavigatorContactsService {
+    private static final Set<String> SELECTABLE_BASIC_FIELDS = Set.of(
+            "profile.profession", "profile.experience.workplace", "profile.experience.school");
     private static final Set<String> METHOD_TYPES = Set.of(
             "phone",
             "sms",
@@ -42,16 +49,22 @@ public class NavigatorContactsService {
     private final HomeUserProfileService homeUserProfileService;
     private final UserExperienceProfilesService userExperienceProfilesService;
     private final UsersRepository usersRepository;
+    private final AccessControlService accessControlService;
+    private final FriendshipFacts friendshipFacts;
 
     public NavigatorContactsService(
             NavigatorContactsProfilesRepository navigatorContactsProfilesRepository,
             HomeUserProfileService homeUserProfileService,
             UserExperienceProfilesService userExperienceProfilesService,
-            UsersRepository usersRepository) {
+            UsersRepository usersRepository,
+            AccessControlService accessControlService,
+            FriendshipFacts friendshipFacts) {
         this.navigatorContactsProfilesRepository = navigatorContactsProfilesRepository;
         this.homeUserProfileService = homeUserProfileService;
         this.userExperienceProfilesService = userExperienceProfilesService;
         this.usersRepository = usersRepository;
+        this.accessControlService = accessControlService;
+        this.friendshipFacts = friendshipFacts;
     }
 
     public List<NavigatorContactDto> loadContacts(String requestedUserId) {
@@ -68,16 +81,34 @@ public class NavigatorContactsService {
     public NavigatorContactProfileDto loadContactProfile(String userId) {
         String targetUserId = safeText(userId);
         if (!StringUtils.hasText(targetUserId)) {
-            return new NavigatorContactProfileDto(null, List.of());
+            return new NavigatorContactProfileDto(null, List.of(), List.of());
         }
-        UserDto user = usersRepository.findByUserId(targetUserId)
-                .map(homeUserProfileService::toUserDto)
-                .orElse(null);
-        if (user == null) {
-            return new NavigatorContactProfileDto(null, List.of());
+        Users record = usersRepository.findByUserId(targetUserId).orElse(null);
+        if (record == null) {
+            return new NavigatorContactProfileDto(null, List.of(), List.of());
         }
-        List<ExperienceEntryDto> experiences = userExperienceProfilesService.queryEntriesByUserId(targetUserId);
-        return new NavigatorContactProfileDto(user, experiences);
+        String viewer = accessControlService.resolveActorUserId(SecurityContextHolder.getContext().getAuthentication());
+        boolean owner = targetUserId.equals(viewer);
+        boolean friend = !owner && friendshipFacts.areFriends(targetUserId, viewer);
+        Set<String> hidden = new LinkedHashSet<>();
+        // Sanitize the response before mapping it. Never save this viewer-specific projection.
+        record.setProfileDetails((record.getProfileDetails() == null ? List.<Users.ProfileDetailGroupRecord>of()
+                : record.getProfileDetails()).stream().filter(Objects::nonNull).map(group -> new Users.ProfileDetailGroupRecord(
+                        group.title(), (group.rows() == null ? List.<Users.ProfileDetailRowRecord>of() : group.rows())
+                        .stream().filter(Objects::nonNull).filter(row -> {
+                            String key = safeText(row.labelKey());
+                            boolean selectable = key.startsWith("profile.details.") || SELECTABLE_BASIC_FIELDS.contains(key);
+                            boolean visible = !selectable || owner || "Public".equals(row.privacy())
+                                    || (friend && "Friends".equals(row.privacy()));
+                            if (!visible) hidden.add(key);
+                            return visible;
+                        }).toList())).toList());
+        UserDto user = homeUserProfileService.toUserDto(record);
+        List<ExperienceEntryDto> experiences = userExperienceProfilesService.queryEntriesByUserId(targetUserId).stream()
+                .filter(entry -> !("Workspace".equals(entry.type()) && hidden.contains("profile.experience.workplace")))
+                .filter(entry -> !("School".equals(entry.type()) && hidden.contains("profile.experience.school")))
+                .toList();
+        return new NavigatorContactProfileDto(user, experiences, List.copyOf(hidden));
     }
 
     public List<NavigatorContactDto> saveContacts(NavigatorContactsSaveRequestDto request) {

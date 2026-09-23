@@ -44,7 +44,7 @@ public class ContentModerationController {
     @GetMapping("/{id}/detail") public Object detail(@PathVariable String id, @RequestParam String adminUserId) {
         admins.resolveAdminActor(adminUserId);
         Item item = mongo.findById(id, Item.class);
-        if (item == null) throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+        if (item == null || item.deleted()) throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         return switch (item.category()) {
             case "asset" -> assets.queryModerationAssetDetail(item.sourceId());
             case "event" -> {

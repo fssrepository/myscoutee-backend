@@ -1,10 +1,16 @@
 package com.raxim.myscoutee.profile.service.email;
 
+import java.io.IOException;
+import java.net.ConnectException;
 import java.net.URI;
 import java.net.http.HttpClient;
+import java.net.http.HttpConnectTimeoutException;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.time.Duration;
+import java.time.Instant;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -68,20 +74,45 @@ public class SendGridEmailProvider implements EmailProvider {
                     .header("Content-Type", "application/json")
                     .POST(HttpRequest.BodyPublishers.ofString(payload))
                     .build();
-            HttpResponse<String> response = httpClient.send(httpRequest, HttpResponse.BodyHandlers.ofString());
+            HttpResponse<String> response;
+            try {
+                response = httpClient.send(httpRequest, HttpResponse.BodyHandlers.ofString());
+            } catch (ConnectException | HttpConnectTimeoutException exception) {
+                return EmailSendResult.retryable("Unable to connect to the email provider.", 0);
+            } catch (IOException exception) {
+                // The provider may have accepted the message before its response was lost.
+                return EmailSendResult.unknown("Email provider response was not received; delivery outcome is unknown.");
+            } catch (InterruptedException exception) {
+                Thread.currentThread().interrupt();
+                return EmailSendResult.unknown("Email request interrupted; delivery outcome is unknown.");
+            }
             if (response.statusCode() >= 200 && response.statusCode() < 300) {
                 String messageId = response.headers().firstValue("X-Message-Id").orElse(null);
                 return new EmailSendResult(true, safeText(messageId), null);
             }
             String errorBody = previewBody(response.body());
             LOGGER.warn("SendGrid email failed with status {} and body {}.", response.statusCode(), errorBody);
+            if (response.statusCode() == 429 || response.statusCode() >= 500) {
+                return EmailSendResult.retryable("SendGrid temporarily unavailable (" + response.statusCode() + ").",
+                        retryAfterSeconds(response.headers().firstValue("Retry-After").orElse("")));
+            }
             return new EmailSendResult(false, null, "SendGrid status " + response.statusCode() + ": " + errorBody);
-        } catch (InterruptedException exception) {
-            Thread.currentThread().interrupt();
-            return new EmailSendResult(false, null, "Email request interrupted.");
         } catch (Exception exception) {
             LOGGER.warn("Unable to send email via SendGrid.", exception);
             return new EmailSendResult(false, null, exception.getMessage());
+        }
+    }
+
+    private long retryAfterSeconds(String value) {
+        try {
+            return Math.max(0, Long.parseLong(value.trim()));
+        } catch (NumberFormatException ignored) {
+            try {
+                return Math.max(0, Duration.between(Instant.now(),
+                        ZonedDateTime.parse(value.trim(), DateTimeFormatter.RFC_1123_DATE_TIME).toInstant()).toSeconds());
+            } catch (java.time.format.DateTimeParseException invalid) {
+                return 0;
+            }
         }
     }
 

@@ -509,9 +509,8 @@ public class ActivitiesEventsService {
                     .filter(StringUtils::hasText)
                     .forEach(trackedSourceIds::add);
         }
-        Map<String, String> checkoutResultStatesBySourceId = viewer == null
-                ? Map.of()
-                : checkoutResultStatesBySourceId(viewer.userId(), scopedEvents);
+        EventCheckoutBasketService.CheckoutCardStates checkoutStates = checkoutCardStates(viewer == null ? null : viewer.userId(), scopedEvents);
+        Map<String, String> checkoutResultStatesBySourceId = checkoutStates.resultStates();
         return new EventQueryContext(
                 scopedEvents,
                 scopedEvents,
@@ -521,7 +520,8 @@ public class ActivitiesEventsService {
                 checkoutResultStatesBySourceId,
                 Set.of(),
                 includeEdgeWeights ? queryEventOwnerEdgeWeights(viewer, scopedEvents) : Map.of(),
-                viewer == null ? Set.of() : watchedEventSourceIds(viewer.userId()));
+                viewer == null ? Set.of() : watchedEventSourceIds(viewer.userId()))
+                .withCheckoutPendingReasons(checkoutStates.pendingReasons());
     }
 
     private Map<String, String> trackedEventMembershipStatuses(String userId) {
@@ -2134,6 +2134,30 @@ public class ActivitiesEventsService {
         }
     }
 
+    /** Feed images may link to published events the uploader can already view, including their own/attended events. */
+    public List<com.raxim.myscoutee.profile.data.dto.feed.PhotoFeedDtos.EventOption> queryFeedEventOptions(String requestedUserId) {
+        ViewerContext viewer = resolveViewer(requestedUserId);
+        if (viewer == null) return List.of();
+        return withEventQueryContext(buildExplorePageQueryContext(viewer, false), () -> {
+            Map<String, ActivityEvent> preferred = new LinkedHashMap<>();
+            for (ActivityEvent record : allEventDocuments(viewer)) {
+                if (!isCanonicalExploreRecord(record) || !canViewerLoadEventDetail(record, viewer.userId())) continue;
+                String id = normalizeId(record.getSourceId());
+                ActivityEvent previous = preferred.get(id);
+                if (previous == null || shouldPreferExploreRecord(record, previous)) preferred.put(id, record);
+            }
+            return preferred.values().stream().map(record -> toEventDto(record, viewer))
+                    .filter(Objects::nonNull)
+                    .sorted(Comparator.comparing((EventDto event) -> safeText(event.startAtIso())).reversed()
+                            .thenComparing(EventDto::id))
+                    .map(event -> new com.raxim.myscoutee.profile.data.dto.feed.PhotoFeedDtos.EventOption(
+                            new com.raxim.myscoutee.profile.data.dto.media.MediaDtos.ImageEventReference(
+                                    event.id(), event.title(), event.creatorUserId(), event.creatorName(), event.location()),
+                            event.imageUrl(), event.startAtIso()))
+                    .toList();
+        });
+    }
+
     public EventsExplorePageDto queryEventExplorePage(EventsExploreQueryDto request) {
         ViewerContext viewer = resolveViewer(request == null ? null : request.userId());
         if (viewer == null) {
@@ -2977,12 +3001,20 @@ public class ActivitiesEventsService {
                     null);
         }
         boolean checkoutBasketUpdateRequested = isPendingCheckoutBasketUpdateRequest(request, viewer.userId(), requestedSourceId);
+        boolean paymentAwaitingMember = beforeSnapshot.members().stream().anyMatch(member ->
+                viewer.userId().equals(member.getUserId()) && "pending".equals(member.getStatus())
+                        && "payment".equals(member.getRequestKind()));
+        if (paymentAwaitingMember) {
+            var priorBasket = eventCheckoutBasketService.loadBasketByEvent(viewer.userId(), sourceId);
+            paymentAwaitingMember = priorBasket != null && StringUtils.hasText(priorBasket.expiresAtIso())
+                    && Instant.parse(priorBasket.expiresAtIso()).isAfter(Instant.now());
+        }
         syncCheckoutBasketForJoin(request);
         boolean acceptingInvitation = activitiesMembersService.hasPendingInvitation(sourceId, viewer.userId());
-        boolean approvalRequested = acceptingInvitation
+        boolean approvalRequested = !paymentAwaitingMember && (acceptingInvitation
                 ? activitiesMembersService.pendingInvitationRequiresAdminApproval(sourceId, viewer.userId())
                 : isApprovalRequested(request)
-                        || (Boolean.TRUE.equals(preferred.getApprovalRequired()) && !alreadyAccepted);
+                        || (Boolean.TRUE.equals(preferred.getApprovalRequired()) && !alreadyAccepted));
         boolean waitingList = isWaitlistRequested(request) || isRecordFull(preferred);
         boolean accepted = !waitingList && !approvalRequested && isConfirmedBooking(request, preferred);
 
@@ -3248,7 +3280,7 @@ public class ActivitiesEventsService {
                         .map(item -> new EventCheckoutAssetSelectionDto(item.subEventId(), item.resourceType()))
                         .distinct()
                         .toList();
-        return requestJoin(new EventActionRequestDto(
+        EventParticipationActionResultDto result = requestJoin(new EventActionRequestDto(
                 payment.getUserId(),
                 payment.getSourceId(),
                 payment.getSlotSourceId(),
@@ -3265,6 +3297,15 @@ public class ActivitiesEventsService {
                 payment.getAmount(),
                 payment.getCurrency(),
                 payment.getAppliedPromoCodes()));
+        if (result != null && "accepted".equals(result.membershipStatus())) {
+            // The saved payment can contain pre-payment basket items without a session.
+            // Complete the callback's basket using the verified payment session, just as
+            // the synchronous checkout path does after membership acceptance.
+            eventCheckoutBasketService.updateBasketState(new EventCheckoutStateChangeRequestDto(
+                    payment.getUserId(), payment.getSourceId(), payment.getSlotSourceId(),
+                    "pay", "succeeded", null, payment.getCheckoutSessionId()));
+        }
+        return result;
     }
 
     private EventCheckoutBasketDto saveSubmittedPaymentBasket(EventCheckoutStateChangeRequestDto request) {
@@ -5579,13 +5620,13 @@ public class ActivitiesEventsService {
             return List.of();
         }
         EventQueryContext current = ACTIVE_CONTEXT.get();
-        Map<String, String> checkoutResultStatesBySourceId = current != null
+        EventCheckoutBasketService.CheckoutCardStates checkoutStates = current != null
                 && current.checkoutResultStatesBySourceId() != null
                 && !current.checkoutResultStatesBySourceId().isEmpty()
-                        ? current.checkoutResultStatesBySourceId()
-                        : checkoutResultStatesBySourceId(
-                                viewer == null ? null : viewer.userId(),
-                                hydratedRecords);
+                        ? new EventCheckoutBasketService.CheckoutCardStates(current.checkoutResultStatesBySourceId(),
+                                current.checkoutPendingReasonsBySourceId())
+                        : checkoutCardStates(viewer == null ? null : viewer.userId(), hydratedRecords);
+        Map<String, String> checkoutResultStatesBySourceId = checkoutStates.resultStates();
         EventQueryContext pageContext = new EventQueryContext(
                 hydratedRecords,
                 hydratedRecords,
@@ -5597,7 +5638,8 @@ public class ActivitiesEventsService {
                 current == null ? Map.of() : current.edgeWeightsByPairKey(),
                 creatorAvatarUrlsByUserId(hydratedRecords),
                 resourcePendingReadBySourceId(hydratedRecords, viewer == null ? null : viewer.userId()),
-                current == null ? Set.of() : current.watchedEventSourceIds());
+                current == null ? Set.of() : current.watchedEventSourceIds())
+                .withCheckoutPendingReasons(checkoutStates.pendingReasons());
         return withEventQueryContext(pageContext, () -> hydratedRecords.stream()
                 .map(record -> toEventDto(record, viewer, checkoutResultStatesBySourceId))
                 .filter(Objects::nonNull)
@@ -5637,12 +5679,12 @@ public class ActivitiesEventsService {
                 .orElse("");
     }
 
-    private Map<String, String> checkoutResultStatesBySourceId(
+    private EventCheckoutBasketService.CheckoutCardStates checkoutCardStates(
             String userId,
             List<ActivityEvent> records) {
         String normalizedUserId = normalizeId(userId);
         if (!StringUtils.hasText(normalizedUserId) || records == null || records.isEmpty()) {
-            return Map.of();
+            return new EventCheckoutBasketService.CheckoutCardStates(Map.of(), Map.of());
         }
         List<String> sourceIds = records.stream()
                 .map(ActivityEvent::getSourceId)
@@ -5650,7 +5692,7 @@ public class ActivitiesEventsService {
                 .filter(StringUtils::hasText)
                 .distinct()
                 .toList();
-        return eventCheckoutBasketService.loadResultStatesByEvent(normalizedUserId, sourceIds);
+        return eventCheckoutBasketService.loadCardStatesByEvent(normalizedUserId, sourceIds);
     }
 
     private Map<String, ActivitiesMembersService.OwnerMembersSnapshot> resolveHydratedPageSnapshots(
@@ -5739,15 +5781,13 @@ public class ActivitiesEventsService {
             List<ActivityEvent> pageSourceRecords = sorted.stream()
                     .map(EventProjection::record)
                     .toList();
-            List<EventDto> pageRecords = pageSourceRecords.stream()
-                    .map(record -> toEventDto(record, viewer))
-                    .filter(Objects::nonNull)
-                    .toList();
+            List<EventDto> details = toHydratedEventDtos(viewer, pageSourceRecords);
+            List<EventDto> pageRecords = toEventListCards(viewer, pageSourceRecords, details);
             return new EventListPageDto(
                     pageRecords,
                     sorted.size(),
                     null,
-                    toHydratedEventDtos(viewer, pageSourceRecords));
+                    details);
         }
 
         String cursor = request == null ? null : request.cursor();
@@ -5757,10 +5797,8 @@ public class ActivitiesEventsService {
         List<ActivityEvent> pageSourceRecords = pageProjections.stream()
                 .map(EventProjection::record)
                 .toList();
-        List<EventDto> pageRecords = pageSourceRecords.stream()
-                .map(record -> toEventDto(record, viewer))
-                .filter(Objects::nonNull)
-                .toList();
+        List<EventDto> details = toHydratedEventDtos(viewer, pageSourceRecords);
+        List<EventDto> pageRecords = toEventListCards(viewer, pageSourceRecords, details);
         String nextCursor = endIndex < sorted.size() && !pageProjections.isEmpty()
                 ? serializeCursorId(pageProjections.get(pageProjections.size() - 1).record().getSourceId())
                 : null;
@@ -5768,7 +5806,17 @@ public class ActivitiesEventsService {
                 pageRecords,
                 sorted.size(),
                 nextCursor,
-                toHydratedEventDtos(viewer, pageSourceRecords));
+                details);
+    }
+
+    private List<EventDto> toEventListCards(ViewerContext viewer, List<ActivityEvent> records, List<EventDto> details) {
+        Map<String, String> pendingReasons = new LinkedHashMap<>();
+        for (EventDto detail : details) {
+            if (StringUtils.hasText(detail.pendingReason())) pendingReasons.put(detail.id(), detail.pendingReason());
+        }
+        return records.stream().map(record -> activityEventMapper.toDto(record,
+                eventDtoMappingContext(viewer, record).withCheckoutPendingReasons(pendingReasons)))
+                .filter(Objects::nonNull).toList();
     }
 
     private boolean needsActivitiesAffinityEdges(EventsFilterRequestDto request) {
@@ -6275,7 +6323,8 @@ public class ActivitiesEventsService {
                 ctx == null ? Map.of() : ctx.trackedEventStatusesBySourceId(),
                 viewer == null ? null : viewer.userId(),
                 ctx == null ? Map.of() : ctx.resourcePendingReadBySourceId(),
-                ctx == null ? Set.of() : ctx.watchedEventSourceIds());
+                ctx == null ? Set.of() : ctx.watchedEventSourceIds(),
+                ctx == null ? Map.of() : ctx.checkoutPendingReasonsBySourceId());
     }
 
     private Map<String, Integer> resourcePendingReadBySourceId(
@@ -6819,6 +6868,14 @@ public class ActivitiesEventsService {
         document.setApprovalRequired(publishedManageMode
                 ? existing != null && Boolean.TRUE.equals(existing.getApprovalRequired())
                 : request.approvalRequired() != null ? request.approvalRequired() : existing != null && Boolean.TRUE.equals(existing.getApprovalRequired()));
+        Integer paymentDeadlineHours = request.paymentDeadlineHours() != null
+                ? request.paymentDeadlineHours() : existing == null ? 4 : existing.getPaymentDeadlineHours();
+        if (paymentDeadlineHours != null && paymentDeadlineHours < 0) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Payment deadline hours must not be negative.");
+        }
+        document.setPaymentDeadlineHours(paymentDeadlineHours == null ? 4 : paymentDeadlineHours);
+        document.setPaymentDeadlineEnabled(request.paymentDeadlineEnabled() != null
+                ? request.paymentDeadlineEnabled() : existing == null || !Boolean.FALSE.equals(existing.getPaymentDeadlineEnabled()));
         document.setPricing(publishedManageMode
                 ? existing == null ? null : clonePricing(existing.getPricing())
                 : request.pricing() != null ? clonePricing(request.pricing()) : existing == null ? null : clonePricing(existing.getPricing()));
@@ -7351,6 +7408,8 @@ public class ActivitiesEventsService {
                 .include("full")
                 .include("ticketing")
                 .include("approvalRequired")
+                .include("paymentDeadlineHours")
+                .include("paymentDeadlineEnabled")
                 .include("pricing")
                 .include("policiesEnabled")
                 .include("policies")
@@ -8506,7 +8565,27 @@ public class ActivitiesEventsService {
             Map<String, Double> edgeWeightsByPairKey,
             Map<String, String> creatorAvatarUrlsByUserId,
             Map<String, Integer> resourcePendingReadBySourceId,
-            Set<String> watchedEventSourceIds) {
+            Set<String> watchedEventSourceIds,
+            Map<String, String> checkoutPendingReasonsBySourceId) {
+        private EventQueryContext(
+                List<ActivityEvent> allEvents, List<ActivityEvent> mergedEvents,
+                Map<String, ActivitiesMembersService.OwnerMembersSnapshot> snapshotsBySourceId,
+                Set<String> trackedEventSourceIds, Map<String, String> trackedEventStatusesBySourceId,
+                Map<String, String> checkoutResultStatesBySourceId, Set<String> pendingPaymentEventSourceIds,
+                Map<String, Double> edgeWeightsByPairKey, Map<String, String> creatorAvatarUrlsByUserId,
+                Map<String, Integer> resourcePendingReadBySourceId, Set<String> watchedEventSourceIds) {
+            this(allEvents, mergedEvents, snapshotsBySourceId, trackedEventSourceIds, trackedEventStatusesBySourceId,
+                    checkoutResultStatesBySourceId, pendingPaymentEventSourceIds, edgeWeightsByPairKey,
+                    creatorAvatarUrlsByUserId, resourcePendingReadBySourceId, watchedEventSourceIds, Map.of());
+        }
+
+        private EventQueryContext withCheckoutPendingReasons(Map<String, String> reasons) {
+            return new EventQueryContext(allEvents, mergedEvents, snapshotsBySourceId, trackedEventSourceIds,
+                    trackedEventStatusesBySourceId, checkoutResultStatesBySourceId, pendingPaymentEventSourceIds,
+                    edgeWeightsByPairKey, creatorAvatarUrlsByUserId, resourcePendingReadBySourceId,
+                    watchedEventSourceIds, reasons);
+        }
+
         private EventQueryContext(
                 List<ActivityEvent> allEvents,
                 List<ActivityEvent> mergedEvents,

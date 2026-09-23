@@ -27,10 +27,10 @@ check_directory_path() {
 
 # Check all paths before changing permissions. Never recursively chown data,
 # follow links, generate keys or start a server from this init service.
-for name in configuration registry-demo-keys registry-demo-state; do
+for name in configuration registry-demo-keys registry-demo-state release-simulator; do
   check_directory_path "$runtime_root/$name"
 done
-for name in configuration registry-demo-keys registry-demo-state; do
+for name in configuration registry-demo-keys registry-demo-state release-simulator; do
   directory="$runtime_root/$name"
   mkdir -p -- "$directory"
   chown "$owner_uid:$owner_gid" -- "$directory"

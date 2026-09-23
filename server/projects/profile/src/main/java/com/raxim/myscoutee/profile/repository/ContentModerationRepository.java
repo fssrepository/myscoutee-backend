@@ -36,13 +36,17 @@ public class ContentModerationRepository {
         } catch (DuplicateKeyException ex) { return false; }
     }
     public List<Item> page(String category, String status, String cursor, int limit) {
-        var criteria = Criteria.where("status").is(status);
+        var criteria = Criteria.where("status").is(status).and("deleted").ne(true);
         if (!"all".equals(category)) criteria.and("category").is(category);
         if (cursor != null && !cursor.isBlank()) criteria.and("_id").gt(cursor);
         return mongo.find(Query.query(criteria).with(Sort.by("_id")).limit(limit), Item.class);
     }
     public List<Item> due(Settings settings, String before, int limit) {
         return mongo.find(Query.query(Criteria.where("status").is("under-review").and("category").in(settings.categories())
-                .and("submittedAtIso").lte(before)).with(Sort.by("submittedAtIso")).limit(limit), Item.class);
+                .and("submittedAtIso").lte(before).and("deleted").ne(true)).with(Sort.by("submittedAtIso")).limit(limit), Item.class);
+    }
+    public List<Item> withheld(int limit) {
+        return mongo.find(Query.query(Criteria.where("status").in("under-review", "rejected", "blocked").and("deleted").ne(true))
+                .with(Sort.by("_id")).limit(limit), Item.class);
     }
 }

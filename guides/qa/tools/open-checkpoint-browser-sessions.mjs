@@ -21,6 +21,7 @@ const argumentsList = process.argv.slice(2);
 const closeOnly = argumentsList.includes('--close-only');
 const dismissGuidesOnly = argumentsList.includes('--dismiss-guides');
 const verifyExistingOnly = argumentsList.includes('--verify-existing');
+const reopenActor = argumentsList.find(argument => argument.startsWith('--reopen-actor='))?.split('=')[1];
 const checkpointId = `${argumentsList.find(argument => !argument.startsWith('--')) || process.env.QA_CHECKPOINT || ''}`.trim();
 const runtimeRoot = path.join(os.tmpdir(), 'myscoutee-qa-browser-sessions');
 
@@ -72,6 +73,10 @@ const manifestPath = path.join(runtimeRoot, `${safeCheckpointId}.json`);
 
 await mkdir(runtimeRoot, { recursive: true, mode: 0o700 });
 await chmod(runtimeRoot, 0o700);
+if (reopenActor !== undefined) {
+  await reopenManagedActor(reopenActor);
+  process.exit(0);
+}
 if (closeOnly) {
   await closePreviousCheckpointSessions(manifestPath);
   process.exit(0);
@@ -145,7 +150,7 @@ try {
       `--window-position=${position.x},${position.y}`,
       `--window-size=${position.width},${position.height}`,
       ...(session.fakeMediaStream === true ? ['--use-fake-device-for-media-stream'] : []),
-      'about:blank'
+      ...(checkpoint.layout?.appWindows === true ? [`--app=${session.entryUrl || defaultEntryUrl}`] : ['about:blank'])
     ];
     const browser = spawn(chromeBinary, browserArguments, {
       detached: true,
@@ -295,6 +300,54 @@ async function runAttachedCommand(executable, args, env) {
   });
 }
 
+async function reopenManagedActor(actor) {
+  const existing = JSON.parse(await readFile(manifestPath, 'utf8'));
+  const index = /^\d+$/.test(actor) ? Number(actor) : checkpoint.sessions.findIndex(item => item.actor === actor);
+  const configured = checkpoint.sessions[index];
+  const retained = existing.sessions?.[index];
+  if (existing.checkpointId !== checkpointId || !configured || !retained
+      || retained.userId !== configured.userId || retained.sessionKind !== 'demo' || !retained.sessionId
+      || !existsSync(retained.userDataDirectory)) throw new Error('No retained demo actor matches the reopen request.');
+  if (ownsRuntimeDirectory(retained.pid, retained.userDataDirectory)) throw new Error('This managed browser is still running.');
+  if (ownsGeolocationHolder(retained.geolocationHolderPid)) {
+    process.kill(retained.geolocationHolderPid, 'SIGTERM');
+  }
+  // Reuse this profile and its tracked login; do not reset actors or register another session.
+  await rm(path.join(retained.userDataDirectory, 'DevToolsActivePort'), { force: true });
+  const entryUrl = `${configured.entryUrl || defaultEntryUrl}`;
+  const targetUrl = `${configured.targetUrl || defaultTargetUrl}`;
+  const position = retained.position;
+  const browser = spawn(chromeBinary, [
+    `--user-data-dir=${retained.userDataDirectory}`, '--remote-debugging-port=0', '--no-first-run',
+    '--no-default-browser-check', '--disable-session-crashed-bubble', '--hide-crash-restore-bubble',
+    ...((checkpoint.ignoreCertificateErrors ?? defaults.ignoreCertificateErrors ?? true) ? ['--ignore-certificate-errors'] : []),
+    ...(checkpoint.hostResolverRules ? [`--host-resolver-rules=${checkpoint.hostResolverRules}`] : []),
+    '--ozone-platform=x11', `--window-position=${position.x},${position.y}`, `--window-size=${position.width},${position.height}`,
+    ...(configured.fakeMediaStream === true ? ['--use-fake-device-for-media-stream'] : []),
+    ...(checkpoint.layout?.appWindows === true ? [`--app=${entryUrl}`] : ['about:blank'])
+  ], { detached: true, stdio: 'ignore' });
+  browser.unref();
+  retained.pid = browser.pid;
+  const save = async () => writeFile(manifestPath, `${JSON.stringify(existing, null, 2)}\n`, { mode: 0o600 });
+  await save();
+  const port = await waitForDevToolsPort(retained.userDataDirectory);
+  retained.devToolsPort = port;
+  await save();
+  retained.geolocationHolderPid = await prepareBrowserLocation(port, entryUrl, retained.geolocation,
+    retained.geolocationPermission, retained.userDataDirectory);
+  await save();
+  await prepareBrowserMicrophone(port, entryUrl, retained.microphonePermission);
+  await installDemoSession(port, storageScope, retained.userId, retained.sessionId, targetUrl, configured.localStorage);
+  if (bootstrapEntryConsent) await acceptEntryConsent(port, storageScope, targetUrl);
+  await waitForConfiguredSession(port, storageScope, retained.userId, retained.sessionId, targetUrl);
+  if (configured.autoDismissExplanationGuide ?? checkpoint.autoDismissExplanationGuide ?? true) {
+    await dismissExplanationGuide(port, storageScope);
+  }
+  retained.readinessVerifiedAt = new Date().toISOString();
+  await save();
+  process.stdout.write(`${retained.actor}: retained session reopened at its configured window position.\n`);
+}
+
 async function verifyExistingManagedSessions(filePath) {
   if (!existsSync(filePath)) {
     throw new Error(`No managed browser-session manifest exists for ${checkpointId}.`);
@@ -315,6 +368,13 @@ async function verifyExistingManagedSessions(filePath) {
       throw new Error(`Managed browser-session state for ${userId || 'unknown user'} is incomplete.`);
     }
     await waitForConfiguredSession(port, storageScope, userId, sessionId, targetUrl);
+    const holderPath = path.join(session.userDataDirectory, 'GeolocationHolderReady.json');
+    if (existsSync(holderPath)) {
+      const holder = JSON.parse(await readFile(holderPath, 'utf8'));
+      if (holder.status === 'ready' && Number(holder.port) === port && ownsGeolocationHolder(holder.pid)) {
+        session.geolocationHolderPid = holder.pid;
+      }
+    }
     session.readinessVerifiedAt = new Date().toISOString();
     process.stdout.write(`${session.actor}: /auth/me and realtime ready.\n`);
   }
@@ -691,6 +751,7 @@ async function prepareBrowserLocation(port, entryPageUrl, location, permission, 
   // reverted when that DevTools connection closes, so a tiny holder keeps the
   // target session alive for exactly as long as this managed Chrome process.
   const readyFile = path.join(userDataDirectory, 'GeolocationHolderReady.json');
+  await rm(readyFile, { force: true });
   const holder = spawn(process.execPath, [
     geolocationHolderPath,
     '--port', `${port}`,

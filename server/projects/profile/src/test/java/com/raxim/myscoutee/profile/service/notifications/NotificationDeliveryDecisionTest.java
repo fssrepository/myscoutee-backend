@@ -63,6 +63,41 @@ class NotificationDeliveryDecisionTest {
     }
 
     @Test
+    void missingLocationSkipsPushSnapshotWithoutAnAdditionalRecipientQuery() {
+        config.setFirebaseEnabled(true);
+        Users missing = user("missing", device("phone", "missing-token", true));
+        missing.setLocationCoordinates(null);
+        Users located = user("located", device("phone", "located-token", true));
+        when(users.findByUserIdIn(List.of("missing", "located"))).thenReturn(List.of(missing, located));
+
+        NotificationOutboxItem item = producer().enqueue(intent(List.of("missing", "located"))).orElseThrow();
+
+        assertThat(item.getFirebaseDevices().get("missing")).isEmpty();
+        assertThat(item.getFirebaseDevices().get("located")).containsKey("phone");
+        verify(users).findByUserIdIn(List.of("missing", "located"));
+        verifyNoMoreInteractions(users);
+    }
+
+    @Test
+    void workerDoesNotSendQueuedPushAfterLocationIsRemoved() {
+        NotificationOutboxItem item = queued(true,
+                Map.of("viewer", Map.of("phone", NotificationOutboxService.sha256("test-token"))));
+        Users viewer = user("viewer", device("phone", "test-token", true));
+        viewer.setLocationCoordinates(null);
+        when(users.findByUserIdIn(List.of("viewer"))).thenReturn(List.of(viewer));
+
+        worker(item).processDueNotifications();
+
+        verifyNoInteractions(gateway);
+        verify(users).findByUserIdIn(List.of("viewer"));
+        verifyNoMoreInteractions(users);
+        assertThat(completionUpdates()).anySatisfy(update -> {
+            assertThat(update.getString("status")).isEqualTo("sent");
+            assertThat(update.getInteger("tokenSuccessCount")).isZero();
+        });
+    }
+
+    @Test
     void unavailableFirebaseDecisionSurvivesActivationAndRecipientMerge() {
         NotificationOutboxService producer = producer();
         NotificationOutboxItem first = producer.enqueue(intent(List.of("viewer"))).orElseThrow();
@@ -253,7 +288,9 @@ class NotificationDeliveryDecisionTest {
     }
 
     private Users user(String id, Users.UserDeviceRecord... devices) {
-        Users user = new Users(); user.setUserId(id); user.setDevices(List.of(devices)); return user;
+        Users user = new Users(); user.setUserId(id); user.setDevices(List.of(devices));
+        user.setLocationCoordinates(new Users.LocationCoordinatesRecord(30.2672, -97.7431));
+        return user;
     }
 
     private Users.UserDeviceRecord device(String id, String token, boolean enabled) {

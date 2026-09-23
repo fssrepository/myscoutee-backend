@@ -15,7 +15,7 @@ class OperatorEmailConfigurationServiceTest {
     final MongoTemplate mongo = mock(MongoTemplate.class);
     final DeploymentConfigurationCrypto crypto = mock(DeploymentConfigurationCrypto.class);
     final EmailProvider provider = mock(EmailProvider.class);
-    final OperatorEmailConfigurationService service = new OperatorEmailConfigurationService(mongo, crypto, List.of(provider));
+    final OperatorEmailConfigurationService service = new OperatorEmailConfigurationService(mongo, crypto, List.of(provider), mock(com.raxim.myscoutee.profile.service.email.EmailProviderGateway.class));
     void provider() { when(provider.providerKey()).thenReturn("sendgrid"); when(provider.configurationDescriptor()).thenReturn(new Provider("sendgrid", "SendGrid", "mail", "blue")); }
     @Test void catalogComesFromRegisteredProviderAndSnapshotNeverContainsSecret() {
         provider(); var secret = new EncryptedSecret();

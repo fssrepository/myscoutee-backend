@@ -18,6 +18,8 @@ import java.util.Map;
 import org.bson.Document;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.ArgumentCaptor;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Query;
@@ -36,22 +38,43 @@ class EventCheckoutBasketServiceTest {
     private MongoTemplate mongoTemplate;
     private NotificationRuleRegistryService notificationRuleRegistryService;
     private EventCheckoutBasketService service;
+    private EventCheckoutPricingService checkoutPricing;
 
     @BeforeEach
     void setUp() {
         repository = mock(EventCheckoutBasketItemsRepository.class);
         mongoTemplate = mock(MongoTemplate.class);
         notificationRuleRegistryService = mock(NotificationRuleRegistryService.class);
+        checkoutPricing = mock(EventCheckoutPricingService.class);
         service = new EventCheckoutBasketService(
                 repository,
                 mongoTemplate,
-                notificationRuleRegistryService);
+                notificationRuleRegistryService,
+                mock(org.springframework.beans.factory.ObjectProvider.class),
+                checkoutPricing);
         when(repository.findByUserIdAndSourceIdAndStatusInAndVisibleResultState(
                 any(String.class),
                 any(String.class),
                 anyList(),
                 anyList()))
                 .thenReturn(List.of());
+    }
+
+    @Test
+    void resourceBasketPreservesBorrowExpiryWithoutLookingUpAnEvent() {
+        String expiry = Instant.now().plusSeconds(600).toString();
+        var item = new EventCheckoutBasketItemDto(
+                "resource:asset-1", "resource", "asset-1", null, null, null,
+                "stage-1", "Transport", "Borrow", "Tomorrow", 20d, "EUR", 1,
+                "confirmed", "pending", List.of(), null, null, null, expiry);
+
+        service.saveBasket(request(item));
+
+        verify(checkoutPricing, never()).checkoutDeadline(any());
+        ArgumentCaptor<Update> updates = ArgumentCaptor.forClass(Update.class);
+        verify(mongoTemplate).upsert(any(Query.class), updates.capture(), eq(EventCheckoutBasketItem.class));
+        Document values = (Document) updates.getValue().getUpdateObject().get("$set");
+        assertThat(values.get("expiresAtIso")).isEqualTo(expiry);
     }
 
     @Test
@@ -134,6 +157,28 @@ class EventCheckoutBasketServiceTest {
     }
 
     @Test
+    void cardReasonsDistinguishApprovalFromPaymentWithoutAnotherQuery() {
+        EventCheckoutBasketItem manual = persistedItem();
+        manual.setSourceId("manual"); manual.setStatus("approval-pending"); manual.setResultState("pending");
+        EventCheckoutBasketItem approved = persistedItem();
+        approved.setSourceId("approved"); approved.setStatus("approved"); approved.setResultState("pending");
+        EventCheckoutBasketItem automatic = persistedItem();
+        automatic.setSourceId("automatic"); automatic.setStatus("confirmed"); automatic.setResultState("pending");
+        EventCheckoutBasketItem oldApproval = persistedItem();
+        oldApproval.setSourceId("approved"); oldApproval.setStatus("approval-pending"); oldApproval.setResultState("deleted");
+        when(repository.findByUserIdAndSourceIdInAndStatusInAndVisibleResultState(
+                eq("user-1"), anyList(), anyList(), anyList()))
+                .thenReturn(List.of(manual, approved, automatic, oldApproval));
+
+        var states = service.loadCardStatesByEvent("user-1", List.of("manual", "approved", "automatic"));
+
+        assertThat(states.pendingReasons()).containsExactlyInAnyOrderEntriesOf(Map.of(
+                "manual", "approval", "approved", "payment", "automatic", "payment"));
+        verify(repository).findByUserIdAndSourceIdInAndStatusInAndVisibleResultState(
+                eq("user-1"), anyList(), anyList(), anyList());
+    }
+
+    @Test
     void everySaveCreatesANewPhysicalAuditRecord() {
         service.saveBasket(request(itemDto(
                 "approval-pending",
@@ -202,6 +247,51 @@ class EventCheckoutBasketServiceTest {
                     Document setValues = (Document) update.getUpdateObject().get("$set");
                     assertThat(setValues.getBoolean("reservationActive")).isFalse();
                 });
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {"approval-pending", "waiting", "approved", "confirmed"})
+    void acceptanceKeepsUnpaidBasketAvailableUntilPayment(String status) {
+        EventCheckoutBasketItem item = persistedItem();
+        item.setStatus(status);
+        item.setResultState("pending");
+        item.setAmount(100d);
+        item.setCheckoutSessionId(null);
+        when(repository.findByUserIdAndSourceIdAndStatusInAndVisibleResultState(
+                eq("user-1"), eq("event-1"), anyList(), anyList())).thenReturn(List.of(item));
+
+        service.finalizeAcceptedReservation("user-1", "event-1");
+
+        ArgumentCaptor<Update> updates = ArgumentCaptor.forClass(Update.class);
+        verify(mongoTemplate, atLeastOnce()).updateMulti(any(Query.class), updates.capture(), eq(EventCheckoutBasketItem.class));
+        assertThat(updates.getAllValues()).allSatisfy(update -> {
+            Document values = (Document) update.getUpdateObject().get("$set");
+            assertThat(values.getString("status")).isEqualTo("approved");
+            assertThat(values.getString("resultState")).isEqualTo("pending");
+            assertThat(values.getBoolean("reservationActive")).isTrue();
+        });
+    }
+
+    @ParameterizedTest
+    @ValueSource(booleans = {false, true})
+    void freeOrPaymentBackedAcceptanceStillClosesReservation(boolean paymentBacked) {
+        EventCheckoutBasketItem item = persistedItem();
+        item.setStatus("approved");
+        item.setResultState("pending");
+        item.setAmount(paymentBacked ? 100d : 0d);
+        item.setCheckoutSessionId(paymentBacked ? "payment-1" : null);
+        when(repository.findByUserIdAndSourceIdAndStatusInAndVisibleResultState(
+                eq("user-1"), eq("event-1"), anyList(), anyList())).thenReturn(List.of(item));
+
+        service.finalizeAcceptedReservation("user-1", "event-1");
+
+        ArgumentCaptor<Update> updates = ArgumentCaptor.forClass(Update.class);
+        verify(mongoTemplate, times(2)).updateMulti(any(Query.class), updates.capture(), eq(EventCheckoutBasketItem.class));
+        assertThat(updates.getAllValues()).allSatisfy(update -> {
+            Document values = (Document) update.getUpdateObject().get("$set");
+            assertThat(values.getString("resultState")).isEqualTo("succeeded");
+            assertThat(values.getBoolean("reservationActive")).isFalse();
+        });
     }
 
     @Test

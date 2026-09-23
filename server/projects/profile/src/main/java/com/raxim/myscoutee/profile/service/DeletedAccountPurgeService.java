@@ -733,6 +733,7 @@ public class DeletedAccountPurgeService {
         deleteDocumentsByAnyField("userFeedback", List.of("userId", "createdUser", "updatedUser"), userId);
         deleteDocumentsByAnyField("userReports", List.of("userId", "targetUserId", "createdUser", "updatedUser"), userId);
         deleteDocumentsByAnyField("userSessionActions", List.of("userId", "createdUser", "updatedUser"), userId);
+        deleteDocumentsByAnyField("photoFeedViews", List.of("userId"), userId);
         deleteDocumentsByAnyField("payments", List.of("userId"), userId);
         deleteDocumentsByAnyField("scheduledMessageTasks", List.of("userId", "createdUser", "updatedUser"), userId);
         deleteDocumentsByAnyField("scheduledMessageDeliveries", List.of("userId", "createdUser"), userId);

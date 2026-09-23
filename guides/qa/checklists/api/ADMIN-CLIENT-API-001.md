@@ -1,6 +1,6 @@
 # ADMIN-CLIENT-API-001 — Private admin API and Linux monitor
 
-Status: **NOT RUN — implementation checks only; waiting for user-started dev stack.**
+Status: **IN PROGRESS — user-started dev stack, 2026-09-23.**
 New API-domain case, version **1.0.2**. Codex is explicitly authorized to perform this entire flow automatically; user observations during the run are corrections, not a pause. Existing PASS cases stay unchanged.
 
 ## Baseline

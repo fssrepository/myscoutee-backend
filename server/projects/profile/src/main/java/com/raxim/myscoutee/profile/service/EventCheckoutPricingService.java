@@ -118,6 +118,35 @@ public class EventCheckoutPricingService {
                 null);
     }
 
+    /** Canonical payment cutoff; neither client deadlines nor approval time extend it. */
+    public String checkoutDeadline(EventCheckoutRequestDto request) {
+        ActivityEvent parent = resolveParentEvent(normalizeId(request.sourceId()));
+        if (parent == null) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Checkout event was not found.");
+        }
+        var slotIds = new LinkedHashSet<String>();
+        for (var item : incomingItems(request)) {
+            String slotId = normalizeId(firstText(item.slotSourceId(), request.slotSourceId()));
+            slotIds.add(slotId == null ? "" : slotId);
+        }
+        if (slotIds.isEmpty()) slotIds.add("");
+        Instant earliest = null;
+        for (String slotId : slotIds) {
+            var slot = resolveSlot(parent, slotId);
+            String startAt = slot == null ? parent.getStartAtIso() : slot.startAtIso();
+            long startMillis = sortableDate(startAt);
+            if (startMillis <= 0) {
+                throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY, "Checkout event start time is required.");
+            }
+            Instant start = Instant.ofEpochMilli(startMillis);
+            if (earliest == null || start.isBefore(earliest)) earliest = start;
+        }
+        int leadHours = parent.getPricing() != null && !Boolean.FALSE.equals(parent.getPricing().enabled())
+                && !Boolean.FALSE.equals(parent.getPaymentDeadlineEnabled())
+                ? Math.max(0, parent.getPaymentDeadlineHours() == null ? 4 : parent.getPaymentDeadlineHours()) : 0;
+        return earliest.minus(java.time.Duration.ofHours(leadHours)).toString();
+    }
+
     public EventCheckoutRequestDto reprice(EventCheckoutRequestDto request) {
         if (request == null) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Checkout request is required.");

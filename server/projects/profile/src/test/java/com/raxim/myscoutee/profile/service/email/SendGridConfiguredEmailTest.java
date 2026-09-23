@@ -37,4 +37,46 @@ class SendGridConfiguredEmailTest {
             assertFalse(provider.sendConfigured(new EmailSendRequest("recipient@example.test", "", "Subject", "", "Body", "sender@example.test", "", "sender@example.test", "warning", Map.of()), "bad-key").accepted());
         } finally { server.stop(0); }
     }
+    @Test void lostResponseAfterProviderReadIsUnknown() throws Exception {
+        var server = HttpServer.create(new InetSocketAddress("127.0.0.1", 0), 0);
+        var received = new java.util.concurrent.atomic.AtomicInteger();
+        server.createContext("/", exchange -> {
+            exchange.getRequestBody().readAllBytes();
+            received.incrementAndGet();
+            exchange.close();
+        });
+        server.start();
+        try {
+            var config = new EmailProperties();
+            config.getSendgrid().setEndpoint("http://127.0.0.1:" + server.getAddress().getPort());
+            var provider = new SendGridEmailProvider(config, new ObjectMapper());
+            var result = provider.sendConfigured(new EmailSendRequest("recipient@example.test", "", "Subject", "", "Body",
+                    "sender@example.test", "", "sender@example.test", "warning", Map.of()), "stub-key");
+            assertFalse(result.accepted());
+            assertTrue(result.outcomeUnknown());
+            assertNull(result.providerMessageId());
+            assertEquals(1, received.get());
+        } finally { server.stop(0); }
+    }
+    @Test void rateLimitIsRetryableAndPreservesProviderDelay() throws Exception {
+        var server = HttpServer.create(new InetSocketAddress("127.0.0.1", 0), 0);
+        server.createContext("/", exchange -> {
+            exchange.getRequestBody().readAllBytes();
+            exchange.getResponseHeaders().set("Retry-After", "120");
+            exchange.sendResponseHeaders(429, -1);
+            exchange.close();
+        });
+        server.start();
+        try {
+            var config = new EmailProperties();
+            config.getSendgrid().setEndpoint("http://127.0.0.1:" + server.getAddress().getPort());
+            var result = new SendGridEmailProvider(config, new ObjectMapper()).sendConfigured(
+                    new EmailSendRequest("recipient@example.test", "", "Subject", "", "Body", "sender@example.test", "",
+                            "sender@example.test", "warning", Map.of()), "stub-key");
+            assertFalse(result.accepted());
+            assertFalse(result.outcomeUnknown());
+            assertTrue(result.retryable());
+            assertEquals(120, result.retryAfterSeconds());
+        } finally { server.stop(0); }
+    }
 }

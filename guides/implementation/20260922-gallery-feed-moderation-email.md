@@ -2,6 +2,8 @@
 
 Implementation continuation record, 2026-09-22. This records the user's requested sequence; it is not a QA PASS report or release approval.
 
+Calendar addition (2026-09-23): manual ICS download is implemented separately in `20260922-calendar-subscription.md`, with new `EVENT-CALENDAR-EXPORT-001` QA. Five backend and seven frontend focused checks and Angular build passed. Runtime/physical Android import remains NOT RUN pending user-started dev stack and device; this is a fifth new runtime case, not an extension of earlier PASS evidence.
+
 ## 1. Shared gallery and Photo Feed — implemented; browser QA pending
 
 - One signal-opened configurable gallery popup: editable/read-only, arbitrary caller URLs, image limit and metadata.
@@ -18,13 +20,13 @@ Implementation continuation record, 2026-09-22. This records the user's requeste
 ## 2. Shared admin content moderation — implemented; browser QA pending
 
 - Separate moderation menu, visually consistent with reported users, not a user-report workflow.
-- Two intersecting filters: state bucket on the left (Under review / Accepted / Rejected / Blocked), category on the right (All / Event / Asset / Feed, default All), following the chat pattern and contextual icons/colors. All is a query choice, never a resource category. Totals are sums of the three stored write-side counters, not row counts.
+- Two intersecting filters: state bucket on the left (Under moderation / Accepted / Rejected / Blocked), category on the right (All / Event / Asset / Feed, default All), following the chat pattern and contextual icons/colors. All is a query choice, never a resource category. Totals are sums of the three stored write-side counters, not row counts.
 - Shared global settings/state across admins. No take/assignment action. No admin notification.
 - Write-side stored category/status counts, not counting rendered rows or constructing counts on reads. Admin moderation badge updates through polling and reflects effective moderation rules.
 - Rows have three-dot actions; click opens the actual read-only Event editor / Asset editor / gallery, never a subevent view.
-- Every moderation decision uses confirmation. Unblock returns Blocked to Under review. The save response carries the canonical item and stored-counter snapshot; only after success, the active state AND category determine SmartList membership (`patchVisibleItem` for matches, `removeVisibleItems` otherwise), without a full reload. Reject/Block can include a message, delivered through existing App Support chat, following the user-block/review conversation pattern.
+- Every moderation decision uses confirmation. Unblock returns Blocked to Under moderation. The save response carries the canonical item and stored-counter snapshot; only after success, the active state AND category determine SmartList membership (`patchVisibleItem` for matches, `removeVisibleItems` otherwise), without a full reload. Reject/Block can include a message, delivered through existing App Support chat, following the user-block/review conversation pattern.
 - Settings button beside Close: automatic approval is a common AppMenu toggle with a visible switch, matching Event Explore; the delay input sits beside it. Applicable categories use the common multi-select AppMenu. Global settings, visible identically to other admins.
-- Automatic approval runs periodically as a separate `content-auto-approve` admin Job. Even zero-delay submissions enter Under review until that Job runs. Suspension, due time, run history and failures use the existing Jobs registry. The global moderation settings control eligible categories and item age. Backend worker, Mongo/local Job catalog, UI, local worker and focused tests are implemented. Nonaccepted items are hidden using the existing blocked lifecycle state, preserving the previous state for acceptance; pending moderation never uses the owner-release state.
+- Automatic approval runs periodically as a separate `content-auto-approve` admin Job. Moderation is disabled by default in production and local seeds, independently of auto approval (also off by default); new publications are not held back. When moderation is explicitly enabled, manual review holds submissions. Enabled auto approval at zero minutes accepts selected categories immediately on publication; positive delays wait for the periodic Job. Suspension, due time, run history and failures use the existing Jobs registry. The global moderation settings control eligible categories and item age. Backend worker, Mongo/local Job catalog, UI, local worker and focused tests are implemented. Nonaccepted items are hidden using the existing blocked lifecycle state, preserving the previous state for acceptance; pending moderation never uses the owner-release state.
 
 ## 3. Operator email configuration — implemented; stub QA pending
 
@@ -49,8 +51,8 @@ Implementation continuation record, 2026-09-22. This records the user's requeste
 
 ## Moderation dual-filter correction — 2026-09-22
 
-- Implemented state bucket on the left and All / Event / Asset / Feed on the right in local and HTTP paths. The default is All + Under review. Filter changes do not mutate content; moderation decisions move stored state counts independently of the currently selected category.
-- Added canonical item + snapshot decision response, confirmed-save SmartList patch/remove, and Unblock → Under review. Added a status/ID index for the bounded All-category query.
+- Implemented state bucket on the left and All / Event / Asset / Feed on the right in local and HTTP paths. The default is All + Under moderation. Filter changes do not mutate content; moderation decisions move stored state counts independently of the currently selected category.
+- Added canonical item + snapshot decision response, confirmed-save SmartList patch/remove, and Unblock → Under moderation. Added a status/ID index for the bounded All-category query.
 - Verification: 12 focused backend tests passed (service, repository query, scheduled worker); 10 focused frontend tests passed (local repository, popup dual-filter/mutation handling). The frontend build passed after correcting the SmartList filter parameter type; backend compilation passed including the new index. i18n audit passed for 7,348 EN/HU messages across all three Mongo seeds.
 - Logs: `/tmp/moderation-filters-backend.log`, `/tmp/moderation-filters-frontend.log`, `/tmp/moderation-filters-build.log`, `/tmp/moderation-filters-compile.log`, `/tmp/moderation-filters-i18n.log`. Runtime browser QA remains NOT RUN; checklist steps 12–13 include the corrected two-filter behavior.
 
@@ -70,3 +72,7 @@ Implementation continuation record, 2026-09-22. This records the user's requeste
 2. Focused local affiliate repository suite: **3 PASS** (`/tmp/affiliate-revenue-frontend-tests.log`). Repeated payment/refund, separate EUR/HUF totals, key revocation independence, public DTO privacy and clone preservation covered.
 3. Angular local build: PASS (`/tmp/affiliate-revenue-frontend-build.log`). i18n audit: **7,378 messages**, EN/HU and all three Mongo seeds synchronized.
 4. Cross-process Mongo atomicity, real gateway/simulator callback flow, persisted reload and mobile appearance remain NOT RUN in `AFFILIATE-REVENUE-001`. Unit tests do not establish those claims.
+
+- Content moderation uses the distinct `moderationStatus` field. The display label is Under moderation / Moderálás alatt with a teal fact_check badge. Legacy lifecycle UR/Under review stays separate. The existing content bucket storage key `under-review` is unchanged; it is not lifecycle UR. Moderation changes only the badge color, not the card surface.
+
+- Moderation OFF transition: saving the global switch only persists configuration. The existing periodic Content auto approval Job releases all content-moderation holds (pending, rejected and blocked) in bounded batches of 100, regardless of retained auto-approve, categories or delay. Each release uses the durable decision/counter/resource write path. New publications while OFF are accepted immediately; stale hold commands cannot reintroduce moderation while OFF. Seed defaults remain OFF; this does not dictate the active QA configuration.

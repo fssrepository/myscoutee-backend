@@ -6054,6 +6054,12 @@
     "value": "Gender"
   },
   {
+    "_id": "i18n-message-en-profile-profession",
+    "key": "profile.profession",
+    "lang": "en",
+    "value": "Profession"
+  },
+  {
     "_id": "i18n-message-en-profile-height",
     "key": "profile.height",
     "lang": "en",
@@ -21837,7 +21843,7 @@
     "_id": "i18n-message-en-moderation-status-under-review",
     "key": "moderation.status.under-review",
     "lang": "en",
-    "value": "Under review"
+    "value": "Under moderation"
   },
   {
     "_id": "i18n-message-en-moderation-status-accepted",
@@ -22132,6 +22138,216 @@
     "key": "affiliate.revenue.button",
     "lang": "en",
     "value": "Revenue"
+  },
+  {
+    "_id": "i18n-message-en-calendar-sync",
+    "key": "calendar.sync",
+    "lang": "en",
+    "value": "Sync calendar"
+  },
+  {
+    "_id": "i18n-message-en-calendar-export-help",
+    "key": "calendar.export.help",
+    "lang": "en",
+    "value": "Sync calendar: download your upcoming events as an ICS file, then import it in your calendar app. Refresh manually; no background sync."
+  },
+  {
+    "_id": "i18n-message-en-calendar-export-error",
+    "key": "calendar.export.error",
+    "lang": "en",
+    "value": "The calendar file could not be downloaded. Please try again."
+  },
+  {
+    "_id": "i18n-message-en-confirm",
+    "key": "confirm",
+    "lang": "en",
+    "value": "Confirm"
+  },
+  {
+    "_id": "i18n-message-en-feed-event-label",
+    "key": "feed.event.label",
+    "lang": "en",
+    "value": "Event"
+  },
+  {
+    "_id": "i18n-message-en-feed-event-select",
+    "key": "feed.event.select",
+    "lang": "en",
+    "value": "Select event"
+  },
+  {
+    "_id": "i18n-message-en-feed-event-selected",
+    "key": "feed.event.selected",
+    "lang": "en",
+    "value": "Selected event"
+  },
+  {
+    "_id": "i18n-message-en-feed-event-confirm",
+    "key": "feed.event.confirm",
+    "lang": "en",
+    "value": "Use selected event"
+  },
+  {
+    "_id": "i18n-message-en-feed-event-empty",
+    "key": "feed.event.empty",
+    "lang": "en",
+    "value": "No events available."
+  },
+  {
+    "_id": "i18n-message-en-feed-eventrequired",
+    "key": "feed.eventRequired",
+    "lang": "en",
+    "value": "Select an event for every photo."
+  },
+  {
+    "_id": "i18n-message-en-feed-public",
+    "key": "feed.public",
+    "lang": "en",
+    "value": "Public feed"
+  },
+  {
+    "_id": "i18n-message-en-feed-remove",
+    "key": "feed.remove",
+    "lang": "en",
+    "value": "Remove"
+  },
+  {
+    "_id": "i18n-message-en-feed-removeconfirm",
+    "key": "feed.removeConfirm",
+    "lang": "en",
+    "value": "Remove this photo post?"
+  },
+  {
+    "_id": "i18n-message-en-feed-removefailed",
+    "key": "feed.removeFailed",
+    "lang": "en",
+    "value": "Unable to remove this post. Please retry."
+  },
+  {
+    "_id": "i18n-message-en-feed-seen",
+    "key": "feed.seen",
+    "lang": "en",
+    "value": "Seen"
+  },
+  {
+    "_id": "i18n-message-en-email-sender",
+    "key": "email.sender",
+    "lang": "en",
+    "value": "Sent by"
+  },
+  {
+    "_id": "i18n-message-en-email-unsubscribe-title",
+    "key": "email.unsubscribe.title",
+    "lang": "en",
+    "value": "Email preferences"
+  },
+  {
+    "_id": "i18n-message-en-email-unsubscribe-confirm",
+    "key": "email.unsubscribe.confirm",
+    "lang": "en",
+    "value": "Would you like to stop receiving emails from this MyScoutee service?"
+  },
+  {
+    "_id": "i18n-message-en-email-unsubscribe-success",
+    "key": "email.unsubscribe.success",
+    "lang": "en",
+    "value": "You have unsubscribed. You will no longer receive emails from this service."
+  },
+  {
+    "_id": "i18n-message-en-email-unsubscribe-invalid",
+    "key": "email.unsubscribe.invalid",
+    "lang": "en",
+    "value": "This unsubscribe link is invalid. Please use the link in your email."
+  },
+  {
+    "_id": "i18n-message-en-email-unsubscribe-error",
+    "key": "email.unsubscribe.error",
+    "lang": "en",
+    "value": "We could not update your email preferences. Please try again."
+  },
+  {
+    "_id": "i18n-message-en-email-unsubscribe-loading",
+    "key": "email.unsubscribe.loading",
+    "lang": "en",
+    "value": "Checking your email preferences…"
+  },
+  {
+    "_id": "i18n-message-en-email-unsubscribe-action",
+    "key": "email.unsubscribe.action",
+    "lang": "en",
+    "value": "Unsubscribe"
+  },
+  {
+    "_id": "i18n-message-en-email-unsubscribe-pending",
+    "key": "email.unsubscribe.pending",
+    "lang": "en",
+    "value": "Please wait…"
+  },
+  {
+    "_id": "i18n-message-en-email-unsubscribe-retry",
+    "key": "email.unsubscribe.retry",
+    "lang": "en",
+    "value": "Try again"
+  },
+  {
+    "_id": "i18n-message-en-email-unsubscribe-landing",
+    "key": "email.unsubscribe.landing",
+    "lang": "en",
+    "value": "Visit MyScoutee"
+  },
+  {
+    "_id": "i18n-message-en-email-unsubscribe-javascript",
+    "key": "email.unsubscribe.javascript",
+    "lang": "en",
+    "value": "Please enable JavaScript to confirm your email preferences."
+  },
+  {
+    "_id": "i18n-message-en-game-location-required-title",
+    "key": "game.location.required.title",
+    "lang": "en",
+    "value": "Location required"
+  },
+  {
+    "_id": "i18n-message-en-game-location-required-description",
+    "key": "game.location.required.description",
+    "lang": "en",
+    "value": "To see profiles, open Settings → Install, enable location access, then press Update."
+  },
+  {
+    "_id": "i18n-message-en-event-member-payment-pending",
+    "key": "event.member.payment.pending",
+    "lang": "en",
+    "value": "Waiting for payment"
+  },
+  {
+    "_id": "i18n-message-en-event-checkout-payment-deadline-passed",
+    "key": "event.checkout.payment.deadline.passed",
+    "lang": "en",
+    "value": "The payment deadline for this event has passed."
+  },
+  {
+    "_id": "i18n-message-en-event-payment-deadline-title",
+    "key": "event.payment.deadline.title",
+    "lang": "en",
+    "value": "Payment grace period"
+  },
+  {
+    "_id": "i18n-message-en-event-approval-settings",
+    "key": "event.approval.settings",
+    "lang": "en",
+    "value": "Join approval"
+  },
+  {
+    "_id": "i18n-message-en-event-approval-deadline-hours",
+    "key": "event.approval.deadline.hours",
+    "lang": "en",
+    "value": "Payment deadline before the event"
+  },
+  {
+    "_id": "i18n-message-en-event-approval-hours-unit",
+    "key": "event.approval.hours.unit",
+    "lang": "en",
+    "value": "in hours"
   },
   {
     "_id": "i18n-message-hu-integration-token-ip",
@@ -28186,6 +28402,12 @@
     "key": "profile.gender",
     "lang": "hu",
     "value": "Nem"
+  },
+  {
+    "_id": "i18n-message-hu-profile-profession",
+    "key": "profile.profession",
+    "lang": "hu",
+    "value": "Foglalkozás"
   },
   {
     "_id": "i18n-message-hu-profile-height",
@@ -43971,7 +44193,7 @@
     "_id": "i18n-message-hu-moderation-status-under-review",
     "key": "moderation.status.under-review",
     "lang": "hu",
-    "value": "Ellenőrzés alatt"
+    "value": "Moderálás alatt"
   },
   {
     "_id": "i18n-message-hu-moderation-status-accepted",
@@ -44266,5 +44488,215 @@
     "key": "affiliate.revenue.button",
     "lang": "hu",
     "value": "Forgalom"
+  },
+  {
+    "_id": "i18n-message-hu-calendar-sync",
+    "key": "calendar.sync",
+    "lang": "hu",
+    "value": "Naptár szinkronizálása"
+  },
+  {
+    "_id": "i18n-message-hu-calendar-export-help",
+    "key": "calendar.export.help",
+    "lang": "hu",
+    "value": "Naptár szinkronizálása: töltsd le a közelgő eseményeidet ICS-fájlként, majd importáld a naptáradba. Kézi frissítés, háttérszinkron nélkül."
+  },
+  {
+    "_id": "i18n-message-hu-calendar-export-error",
+    "key": "calendar.export.error",
+    "lang": "hu",
+    "value": "Nem sikerült letölteni a naptárfájlt. Próbáld újra."
+  },
+  {
+    "_id": "i18n-message-hu-confirm",
+    "key": "confirm",
+    "lang": "hu",
+    "value": "Megerősítés"
+  },
+  {
+    "_id": "i18n-message-hu-feed-event-label",
+    "key": "feed.event.label",
+    "lang": "hu",
+    "value": "Esemény"
+  },
+  {
+    "_id": "i18n-message-hu-feed-event-select",
+    "key": "feed.event.select",
+    "lang": "hu",
+    "value": "Esemény kiválasztása"
+  },
+  {
+    "_id": "i18n-message-hu-feed-event-selected",
+    "key": "feed.event.selected",
+    "lang": "hu",
+    "value": "Kiválasztott esemény"
+  },
+  {
+    "_id": "i18n-message-hu-feed-event-confirm",
+    "key": "feed.event.confirm",
+    "lang": "hu",
+    "value": "Kiválasztott esemény használata"
+  },
+  {
+    "_id": "i18n-message-hu-feed-event-empty",
+    "key": "feed.event.empty",
+    "lang": "hu",
+    "value": "Nincs elérhető esemény."
+  },
+  {
+    "_id": "i18n-message-hu-feed-eventrequired",
+    "key": "feed.eventRequired",
+    "lang": "hu",
+    "value": "Minden képhez válassz egy eseményt."
+  },
+  {
+    "_id": "i18n-message-hu-feed-public",
+    "key": "feed.public",
+    "lang": "hu",
+    "value": "Nyilvános feed"
+  },
+  {
+    "_id": "i18n-message-hu-feed-remove",
+    "key": "feed.remove",
+    "lang": "hu",
+    "value": "Eltávolítás"
+  },
+  {
+    "_id": "i18n-message-hu-feed-removeconfirm",
+    "key": "feed.removeConfirm",
+    "lang": "hu",
+    "value": "Eltávolítod ezt a fotóbejegyzést?"
+  },
+  {
+    "_id": "i18n-message-hu-feed-removefailed",
+    "key": "feed.removeFailed",
+    "lang": "hu",
+    "value": "A bejegyzés eltávolítása nem sikerült. Próbáld újra."
+  },
+  {
+    "_id": "i18n-message-hu-feed-seen",
+    "key": "feed.seen",
+    "lang": "hu",
+    "value": "Látott"
+  },
+  {
+    "_id": "i18n-message-hu-email-sender",
+    "key": "email.sender",
+    "lang": "hu",
+    "value": "Küldő"
+  },
+  {
+    "_id": "i18n-message-hu-email-unsubscribe-title",
+    "key": "email.unsubscribe.title",
+    "lang": "hu",
+    "value": "Email-beállítások"
+  },
+  {
+    "_id": "i18n-message-hu-email-unsubscribe-confirm",
+    "key": "email.unsubscribe.confirm",
+    "lang": "hu",
+    "value": "Szeretnél leiratkozni ennek a MyScoutee szolgáltatásnak az emailjeiről?"
+  },
+  {
+    "_id": "i18n-message-hu-email-unsubscribe-success",
+    "key": "email.unsubscribe.success",
+    "lang": "hu",
+    "value": "Sikeresen leiratkoztál. Ettől a szolgáltatástól nem kapsz több emailt."
+  },
+  {
+    "_id": "i18n-message-hu-email-unsubscribe-invalid",
+    "key": "email.unsubscribe.invalid",
+    "lang": "hu",
+    "value": "Ez a leiratkozási hivatkozás érvénytelen. Használd az emailben kapott linket."
+  },
+  {
+    "_id": "i18n-message-hu-email-unsubscribe-error",
+    "key": "email.unsubscribe.error",
+    "lang": "hu",
+    "value": "Nem sikerült módosítani az email-beállításokat. Próbáld újra."
+  },
+  {
+    "_id": "i18n-message-hu-email-unsubscribe-loading",
+    "key": "email.unsubscribe.loading",
+    "lang": "hu",
+    "value": "Email-beállítások ellenőrzése…"
+  },
+  {
+    "_id": "i18n-message-hu-email-unsubscribe-action",
+    "key": "email.unsubscribe.action",
+    "lang": "hu",
+    "value": "Leiratkozás"
+  },
+  {
+    "_id": "i18n-message-hu-email-unsubscribe-pending",
+    "key": "email.unsubscribe.pending",
+    "lang": "hu",
+    "value": "Kérjük, várj…"
+  },
+  {
+    "_id": "i18n-message-hu-email-unsubscribe-retry",
+    "key": "email.unsubscribe.retry",
+    "lang": "hu",
+    "value": "Újrapróbálás"
+  },
+  {
+    "_id": "i18n-message-hu-email-unsubscribe-landing",
+    "key": "email.unsubscribe.landing",
+    "lang": "hu",
+    "value": "MyScoutee weboldal"
+  },
+  {
+    "_id": "i18n-message-hu-email-unsubscribe-javascript",
+    "key": "email.unsubscribe.javascript",
+    "lang": "hu",
+    "value": "Az email-beállítások megerősítéséhez engedélyezd a JavaScriptet."
+  },
+  {
+    "_id": "i18n-message-hu-game-location-required-title",
+    "key": "game.location.required.title",
+    "lang": "hu",
+    "value": "Hiányzó helyadat"
+  },
+  {
+    "_id": "i18n-message-hu-game-location-required-description",
+    "key": "game.location.required.description",
+    "lang": "hu",
+    "value": "A profilok megjelenítéséhez nyisd meg a Beállítások → Telepítés menüpontot, engedélyezd a helyadatok használatát, majd nyomd meg a Frissítés gombot."
+  },
+  {
+    "_id": "i18n-message-hu-event-member-payment-pending",
+    "key": "event.member.payment.pending",
+    "lang": "hu",
+    "value": "Fizetésre vár"
+  },
+  {
+    "_id": "i18n-message-hu-event-checkout-payment-deadline-passed",
+    "key": "event.checkout.payment.deadline.passed",
+    "lang": "hu",
+    "value": "Az esemény fizetési határideje lejárt."
+  },
+  {
+    "_id": "i18n-message-hu-event-payment-deadline-title",
+    "key": "event.payment.deadline.title",
+    "lang": "hu",
+    "value": "Fizetési türelmi idő"
+  },
+  {
+    "_id": "i18n-message-hu-event-approval-settings",
+    "key": "event.approval.settings",
+    "lang": "hu",
+    "value": "Jelentkezés jóváhagyása"
+  },
+  {
+    "_id": "i18n-message-hu-event-approval-deadline-hours",
+    "key": "event.approval.deadline.hours",
+    "lang": "hu",
+    "value": "Fizetési határidő az esemény előtt"
+  },
+  {
+    "_id": "i18n-message-hu-event-approval-hours-unit",
+    "key": "event.approval.hours.unit",
+    "lang": "hu",
+    "value": "órában"
   }
 ]

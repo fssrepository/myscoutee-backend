@@ -21,7 +21,25 @@ public class PhotoFeedController {
     }
     @GetMapping
     public Page page(@RequestParam String userId, @RequestParam(defaultValue = "10") int pageSize,
-            @RequestParam(required = false) String cursor) { return feed.page(actor(userId), pageSize, cursor); }
+            @RequestParam(required = false) String cursor, @RequestParam(defaultValue = "public") String status) {
+        return feed.page(actor(userId), pageSize, cursor, status);
+    }
     @PostMapping
     public Post create(@RequestBody Create request) { return feed.create(actor(request.userId()), request); }
+    @PostMapping("/page")
+    public Page syncPage(@RequestBody PageSync request) {
+        return feed.syncPage(actor(request.userId()), request);
+    }
+    @DeleteMapping("/{id}")
+    public Users.FeedCountersRecord remove(@PathVariable String id, @RequestParam String userId) {
+        return feed.remove(actor(userId), id);
+    }
+    public record SeenRequest(String userId, java.util.List<String> postIds) {}
+    @PostMapping("/seen")
+    public java.util.List<String> seen(@RequestBody SeenRequest request) {
+        return feed.seen(actor(request.userId()), request.postIds());
+    }
+    @GetMapping("/events")
+    public EventPage events(@RequestParam String userId, @RequestParam(defaultValue = "10") int pageSize,
+            @RequestParam(required = false) String cursor) { return feed.eventPage(actor(userId), pageSize, cursor); }
 }

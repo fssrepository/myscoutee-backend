@@ -155,6 +155,8 @@ class ActivitiesEventsServiceTest {
 
     @BeforeEach
     void setUp() {
+        lenient().when(eventCheckoutBasketService.loadCardStatesByEvent(anyString(), anyList()))
+                .thenReturn(new EventCheckoutBasketService.CheckoutCardStates(Map.of(), Map.of()));
         service = new ActivitiesEventsService(
                 activityEventsRepository,
                 activitySubEventGroupsRepository,
@@ -202,6 +204,40 @@ class ActivitiesEventsServiceTest {
         lenient().when(accessControlService.canCurrentActorTakeOverEvent(anyString())).thenReturn(true);
         lenient().when(accessControlService.canCurrentActorJoinEvent(anyString(), anyString())).thenReturn(true);
         lenient().when(accessControlService.canCurrentActorApplyEventStageAction(anyString())).thenReturn(true);
+    }
+
+    @Test
+    void authorizedPaymentCallbackClosesRebuiltBasketUsingVerifiedSession() {
+        ActivitiesEventsService callbackService = org.mockito.Mockito.spy(service);
+        var payment = new com.raxim.myscoutee.profile.data.document.Payment();
+        payment.setUserId("visitor");
+        payment.setSourceId("event");
+        payment.setCheckoutSessionId("verified-session");
+        var accepted = new EventParticipationActionResultDto(
+                "event", null, "join", "accepted", null, 2, 0, 10,
+                false, "verified-session", true, null, null);
+        org.mockito.Mockito.doReturn(accepted).when(callbackService).requestJoin(any());
+
+        assertThat(callbackService.finalizeAuthorizedPayment(payment)).isSameAs(accepted);
+
+        verify(eventCheckoutBasketService).updateBasketState(
+                new com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventCheckoutStateChangeRequestDto(
+                        "visitor", "event", null, "pay", "succeeded", null, "verified-session"));
+    }
+
+    @Test
+    void authorizedPaymentCallbackDoesNotClosePendingMembershipBasket() {
+        ActivitiesEventsService callbackService = org.mockito.Mockito.spy(service);
+        var payment = new com.raxim.myscoutee.profile.data.document.Payment();
+        payment.setCheckoutSessionId("verified-session");
+        var pending = new EventParticipationActionResultDto(
+                "event", null, "join", "pending", "approval", 1, 1, 10,
+                false, "verified-session", true, null, null);
+        org.mockito.Mockito.doReturn(pending).when(callbackService).requestJoin(any());
+
+        assertThat(callbackService.finalizeAuthorizedPayment(payment)).isSameAs(pending);
+
+        verify(eventCheckoutBasketService, never()).updateBasketState(any());
     }
 
     @Test
@@ -2621,8 +2657,8 @@ class ActivitiesEventsServiceTest {
                         : List.of(canonical, suppressed));
         when(activityEventsRepository.findBySourceIdIn(List.of("watched-event")))
                 .thenReturn(List.of(canonical, suppressed));
-        when(eventCheckoutBasketService.loadResultStatesByEvent("viewer", List.of("watched-event")))
-                .thenReturn(Map.of());
+        when(eventCheckoutBasketService.loadCardStatesByEvent("viewer", List.of("watched-event")))
+                .thenReturn(new EventCheckoutBasketService.CheckoutCardStates(Map.of(), Map.of()));
 
         EventListPageDto page = service.queryActivitiesEventListPage(new EventsFilterRequestDto(
                 "viewer", "watchlist", "all", "recent", "date", "day", 10, null, null, null, null));
@@ -2687,8 +2723,8 @@ class ActivitiesEventsServiceTest {
                         : List.of(canonical, otherMemberTrash));
         when(activityEventsRepository.findBySourceIdIn(List.of("shared-event")))
                 .thenReturn(List.of(canonical, otherMemberTrash));
-        when(eventCheckoutBasketService.loadResultStatesByEvent("riley", List.of("shared-event")))
-                .thenReturn(Map.of());
+        when(eventCheckoutBasketService.loadCardStatesByEvent("riley", List.of("shared-event")))
+                .thenReturn(new EventCheckoutBasketService.CheckoutCardStates(Map.of(), Map.of()));
 
         EventListPageDto page = service.queryActivitiesEventListPage(new EventsFilterRequestDto(
                 "riley", "active-events", "all", "recent", "date", "day", 10, null, null, null, null));
@@ -3015,6 +3051,8 @@ class ActivitiesEventsServiceTest {
                 0d,
                 0d,
                 0d,
+                null,
+                null,
                 null,
                 null,
                 null);

@@ -6,7 +6,7 @@ import sys
 KEY = 'ADMIN-CLIENT-API-001'
 IDS = [f'6ac102{i:018x}' for i in range(1, 6)]
 command = sys.argv[1] if len(sys.argv) > 1 else 'status'
-if command not in ('stage', 'status', 'reset'):
+if command not in ('stage', 'status', 'reset', 'stage-support'):
     raise SystemExit('Use stage, status or reset')
 base = 'const key=' + json.dumps(KEY) + ',ids=' + json.dumps(IDS) + ';'
 code = {
@@ -16,7 +16,7 @@ if(db.manualQaCheckpointSnapshots.findOne({_id:key})||db.users.findOne({userId:{
 const source=db.users.findOne({userId:'650000000000000000000061'});if(!source)throw Error('Demo source missing');
 const stats=db.adminStats.findOne({statsKey:'global'},{activeProfileGenders:1,generatedAtIso:1,dailyActivity:1});
 if(!stats?.activeProfileGenders)throw Error('Wait for the ordinary statistics worker before staging');
-db.manualQaCheckpointSnapshots.insertOne({_id:key,scenario:'admin-client',users:ids,statsBefore:stats,stagedAtIso:new Date().toISOString()});
+db.manualQaCheckpointSnapshots.insertOne({_id:key,checkpointId:key,phase:'staging',scenario:'admin-client',users:ids,statsBefore:stats,stagedAtIso:new Date().toISOString()});
 const statuses=['public','friends only','inactive','blocked','deleted'];
 for(let i=0;i<ids.length;i++){
  const user={_id:ObjectId(ids[i]),userId:ids[i],syncKey:ids[i],name:'Admin API QA '+(i+1),initials:'AQ',email:'admin-api-qa-'+i+'@example.invalid',profileStatus:statuses[i],gender:i%2?'man':'woman',activities:{},devices:[]};
@@ -24,12 +24,19 @@ for(let i=0;i<ids.length;i++){
  if(i===4)user.deletedAtIso=new Date().toISOString();
  db.users.insertOne(user);
 }
+db.manualQaCheckpointSnapshots.updateOne({_id:key},{$set:{phase:'ready'}});
 print(JSON.stringify({phase:'ready',actors:ids,expectedActiveDelta:2,expectedGenderDelta:{female:1,male:1},registrationTelemetrySeeded:false}));
+''',
+'stage-support': '''
+if(!db.manualQaCheckpointSnapshots.findOne({_id:key}))throw Error('Not staged');
+const id='6ac102000000000000000101';if(db.userReports.findOne({_id:ObjectId(id)}))throw Error('Support precondition already exists');
+db.userReports.insertOne({_id:ObjectId(id),syncKey:'admin-client-qa-support',userId:ids[1],targetUserId:ids[0],handle:'Admin API QA 1',reason:'QA support notification',details:'Disposable admin-client support test precondition.',sourceType:'profile',createdDate:new Date().toISOString(),createdUser:ids[1]});
+print(JSON.stringify({supportPrecondition:true}));
 ''',
 'status': '''print(JSON.stringify({checkpoint:db.manualQaCheckpointSnapshots.findOne({_id:key}),current:db.adminStats.findOne({statsKey:'global'},{activeProfileGenders:1,generatedAtIso:1,dailyActivity:1})}));''',
 'reset': '''
 if(!db.manualQaCheckpointSnapshots.findOne({_id:key}))throw Error('Not staged');
-for(const collection of ['privacyConsents','userSessionStates','userPageFilterPreferences','userLoginSessions','userLoginAudits','userSessionActions'])db.getCollection(collection).deleteMany({userId:{$in:ids}});
+for(const collection of ['userExperienceProfiles','privacyConsents','userSessionStates','userPageFilterPreferences','userLoginSessions','userLoginAudits','userSessionActions'])db.getCollection(collection).deleteMany({userId:{$in:ids}});
 db.users.deleteMany({userId:{$in:ids}});db.manualQaCheckpointSnapshots.deleteOne({_id:key});
 print(JSON.stringify({reset:true,statsRefresh:'ordinary worker',auditMessagesRetained:true}));
 '''

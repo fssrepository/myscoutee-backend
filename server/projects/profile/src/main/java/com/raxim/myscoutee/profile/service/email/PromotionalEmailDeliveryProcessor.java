@@ -98,7 +98,10 @@ public class PromotionalEmailDeliveryProcessor {
             item.setAttemptCount(normalizeCount(item.getAttemptCount()) + 1);
             item.setUpdatedDate(finishedAtIso);
             item.setUpdatedUser(UPDATED_BY);
-            if (sendResult.accepted()) {
+            if (sendResult.suppressed()) {
+                item.setStatus(EmailOutboxStatus.UNSUBSCRIBED);
+                item.setErrorMessage("");
+            } else if (sendResult.accepted()) {
                 item.setStatus(EmailOutboxStatus.SENT);
                 item.setSentDate(finishedAtIso);
                 item.setProviderMessageId(safeText(sendResult.providerMessageId()));

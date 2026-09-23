@@ -30,6 +30,10 @@ public class MediaPolicyIndexInitializer {
                     new IndexOptions().name("feed_location"));
             database.getCollection("photoFeedPosts").createIndex(new Document("imageUrls", 1),
                     new IndexOptions().name("feed_media"));
+            database.getCollection("photoFeedPosts").createIndex(new Document("creatorUserId", 1).append("deleted", 1).append("moderationStatus", 1),
+                    new IndexOptions().name("feed_owner_buckets"));
+            database.getCollection("photoFeedViews").createIndex(new Document("postId", 1).append("userId", 1),
+                    new IndexOptions().name("feed_viewer_post").unique(true));
             database.getCollection("contentModerationItems").createIndex(new Document("category", 1).append("status", 1).append("_id", 1), new IndexOptions().name("moderation_page"));
             database.getCollection("contentModerationItems").createIndex(new Document("status", 1).append("_id", 1), new IndexOptions().name("moderation_all_page"));
             database.getCollection("contentModerationItems").createIndex(new Document("status", 1).append("submittedAtIso", 1), new IndexOptions().name("moderation_due"));

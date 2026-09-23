@@ -1,6 +1,6 @@
 # Current manual QA session
 
-Updated: 2026-09-22
+Updated: 2026-09-23
 
 This is the context-saving entry point for continuing the manual QA campaign.
 It stores one minimal live resume pointer plus reusable pair-QA execution lessons. It
@@ -86,14 +86,17 @@ resume pointer and reusable working method.
 Earlier Event Mode, Integration API, Activity Rating and EVENT-FOLLOWING-001 remain closed.
 
 ```yaml
-checkpoint: EVENT-FOLLOWING-002
-checklist: ../checklists/event/EVENT-FOLLOWING-002.md
-execution_log: ../evidence/EVENT-FOLLOWING-002-20260922-progress.md
-substage: PASS / CLOSED; numbered checks 1-8 completed in dev HTTP scope.
-fixture_phase: reset; managed windows closed; actors/events/members absent.
-next_action: No remaining work in this checkpoint. Do not replay completed tests.
-resume_gate: Inspect event-following-fixture.py status EVENT-FOLLOWING-002 and managed browser manifest before changes. Do not replay closed cases.
-runtime: Existing dev watchers; browser control explicitly delegated for this checkpoint. Preserve other browser sessions and their viewports.
+checkpoint: AFFILIATE-REVENUE-001
+checklist: ../checklists/api/AFFILIATE-REVENUE-001.md
+substage: Affiliate revenue and paid approval/deadline extension; gallery UI corrections verified, resume financial QA.
+fixture_phase: Financial results through 22:30 CEST. EUR100 partial refund25; HUF5000 captured; EUR10 callback-control capture; EUR20 asset capture; EUR2 full refund. Partner purchases5/eventBookings4; EUR gross132/refunded27/net105, HUF5000. Grace controls remain unpaid; prior expiry/fresh Join/OFF checks PASS. No active fault validator or harness marker.
+execution_log: ../evidence/AFFILIATE-REVENUE-001-20260923-progress.md
+next_action: No-hover one-row currency-strip visual retest PASS22:32CEST (shared frontend watcher PASS). Continue remaining affiliate checks. Asset-only purchase and normal retry reusing same payment PASS after resource-deadline regression and fixture BSON id correction. Cross-user settings/public profile DTO privacy PASS. Recovery fault tests BLOCKED: app Mongo user lacks collMod, configured container root authentication fails; no validator installed. Recovery ...009/010/011 controls remain unpaid. EUR2 ...008 completed normal full refund (NOT a fault PASS). Remaining75 partial-to-full refund unsupported by current UI; hold-only and two-referee concurrency/lower-version runtime NOT RUN. Retained HUF pre-fix stale basket is a defect artifact. Both browsers Payment history, owner360px. Full-flow delegation remains active; calendar LAST; do not charge grace controls.
+queue: EVENT-CALENDAR-EXPORT-001
+calendar_boundary: Calendar LAST; test actual Ubuntu ICS opening/import behavior as well as Android. Android connected/authorized earlier, recheck at calendar boundary.
+resume_gate: Read-only fixture status and existing dev stack before mutation; preserve unrelated Borrow/Event Mode snapshots. Gallery/Email/Admin remain closed; do not replay.
+runtime: Existing frontend-sync and backend continuous/DevTools watchers own compilation; no separate builds. Persistent dev release simulator remains intended.
+last_completed: ADMIN-CLIENT-API-001 dev PASS; OS notification-center visual icon, actual desktop login/reboot and separate REAL/DEMO database isolation NOT RUN. See its dated evidence for precise boundaries.
 ```
 
 ## Archived pair-QA resume point — 2026-09-17

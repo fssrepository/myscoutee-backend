@@ -44,6 +44,7 @@ import com.raxim.myscoutee.profile.data.dto.activities.ActivityMembersDtos.Activ
 import com.raxim.myscoutee.profile.data.dto.activities.ActivityMembersDtos.ActivityMemberSyncKnownItemDto;
 import com.raxim.myscoutee.profile.data.dto.activities.ActivityMembersDtos.ActivityMembersSyncRequestDto;
 import com.raxim.myscoutee.profile.data.dto.activities.ActivityMembersDtos.ActivityMembersSyncResponseDto;
+import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventCheckoutStateChangeRequestDto;
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.ActivityMemberEntryDto;
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.ActivityMemberInvolvementDto;
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.ActivityMemberOwnerRefDto;
@@ -86,6 +87,7 @@ public class ActivitiesMembersService {
     private static final String REQUEST_KIND_JOIN = "join";
     private static final String REQUEST_KIND_INVITE = "invite";
     private static final String REQUEST_KIND_APPROVAL = "approval";
+    private static final String REQUEST_KIND_PAYMENT = "payment";
     private static final String REQUEST_KIND_WAITLIST = "waitlist";
     private static final String REQUEST_KIND_WAITLIST_INVITE = "waitlist-invite";
     private static final Set<String> OWNER_TYPES = Set.of("event", "subEvent", "group", "asset");
@@ -1336,6 +1338,19 @@ public class ActivitiesMembersService {
                     HttpStatus.CONFLICT,
                     "tournament-registration-closed");
         }
+        var approvalBasket = approvingEventJoinRequest
+                ? eventCheckoutBasketService.loadBasketByEvent(targetUserId, ownerId) : null;
+        if (approvingEventJoinRequest && ((approvalBasket != null
+                && StringUtils.hasText(approvalBasket.expiresAtIso())
+                && Instant.parse(approvalBasket.expiresAtIso()).isBefore(Instant.now()))
+                || (approvalBasket == null && eventCheckoutBasketService.wasCheckoutExpired(
+                        targetUserId, ownerId, current.getActionAtIso())))) {
+            expirePendingCheckoutMembership(targetUserId, ownerId, Instant.now().toString());
+            return queryMembers(ownerType, ownerId, false, scopedEventId, scopedSubEventId, request.assetRequestId());
+        }
+        boolean awaitingPayment = approvalBasket != null && approvalBasket.totalAmount() != null
+                && approvalBasket.totalAmount() > 0
+                && !StringUtils.hasText(approvalBasket.checkoutSessionId());
         String nextStatus;
         boolean requiresManagerApproval = acceptingOwnManagedInvitation
                 && !scopedAssetAction
@@ -1349,7 +1364,7 @@ public class ActivitiesMembersService {
                     || (!acceptingOwnManagedInvitation && !isAdminApprovalMembership(current))) {
                 return queryMembers(ownerType, ownerId, false, scopedEventId, scopedSubEventId, request.assetRequestId());
             }
-            nextStatus = requiresManagerApproval ? STATUS_PENDING : STATUS_ACCEPTED;
+            nextStatus = requiresManagerApproval || awaitingPayment ? STATUS_PENDING : STATUS_ACCEPTED;
         } else if (ACTION_REMOVE.equals(action)) {
             nextStatus = STATUS_DELETED;
         } else if (ACTION_DISQUALIFY.equals(action)) {
@@ -1382,8 +1397,8 @@ public class ActivitiesMembersService {
                 : cloneMember(current);
         if (!STATUS_DELETED.equals(nextStatus)) {
             next.setStatus(nextStatus);
-            next.setPendingSource(requiresManagerApproval ? "member" : null);
-            next.setRequestKind(requiresManagerApproval ? REQUEST_KIND_APPROVAL : null);
+            next.setPendingSource(requiresManagerApproval || awaitingPayment ? "member" : null);
+            next.setRequestKind(awaitingPayment ? REQUEST_KIND_PAYMENT : requiresManagerApproval ? REQUEST_KIND_APPROVAL : null);
             if (!requiresManagerApproval) {
                 next.setInvitedByUserId(null);
             }
@@ -1415,7 +1430,7 @@ public class ActivitiesMembersService {
                         .ifPresent(activityMembersRepository::save);
             }
         } else if (OWNER_TYPE_EVENT.equals(ownerType)
-                && STATUS_ACCEPTED.equals(nextStatus)
+                && (awaitingPayment || STATUS_ACCEPTED.equals(nextStatus))
                 && !STATUS_ACCEPTED.equals(currentStatus)) {
             synchronized (eventJoinLock(ownerId)) {
                 List<ActivityMember> latestMembers =
@@ -1429,10 +1444,11 @@ public class ActivitiesMembersService {
                 if (latestCurrent == null
                         || !currentStatus.equals(
                                 normalizeStatus(latestCurrent.getStatus()))
-                        || isCapacityFullForJoin(
+                        || (awaitingPayment && !isAdminApprovalMembership(latestCurrent))
+                        || (!awaitingPayment && isCapacityFullForJoin(
                                 findPreferredEventRecord(ownerId),
                                 latestMembers,
-                                targetUserId)) {
+                                targetUserId))) {
                     return queryMembers(
                             ownerType,
                             ownerId,
@@ -1503,19 +1519,24 @@ public class ActivitiesMembersService {
                 clearRemovedManagedAssetMembers(removedManagedAssetIds, actorUserId, nowIso);
                 processEventWaitlist(ownerId, findPreferredEventRecord(ownerId), true);
             }
+            if (awaitingPayment) {
+                eventCheckoutBasketService.updateBasketState(
+                        new EventCheckoutStateChangeRequestDto(
+                                targetUserId, ownerId, "approved", "pending", null, null));
+            }
             if (STATUS_ACCEPTED.equals(nextStatus) && !STATUS_ACCEPTED.equals(currentStatus)) {
                 finalizeAcceptedEventReservations(ownerId, List.of(next));
             }
             eventParticipationTicketService.syncParticipationTicketsForEvent(ownerId);
             refreshEmbeddedEventMembers(ownerId);
-            if (approvingEventJoinRequest && STATUS_ACCEPTED.equals(nextStatus)) {
+            if (approvingEventJoinRequest && (awaitingPayment || STATUS_ACCEPTED.equals(nextStatus))) {
                 eventInviteNotificationService.notifyMemberApproved(
                         findPreferredEventRecord(ownerId),
                         targetUserId,
                         next.getActionAtIso(),
                         actorUserId);
             }
-            if (ACTION_ACCEPT.equals(action)) {
+            if (ACTION_ACCEPT.equals(action) && STATUS_ACCEPTED.equals(nextStatus)) {
                 postEventMembershipChangeMessages(ownerId, List.of(next), List.of(), actorUserId);
                 ActivityEvent notificationEvent = findPreferredEventRecord(ownerId);
                 if (isRootEventRecord(notificationEvent)) {
@@ -1712,7 +1733,9 @@ public class ActivitiesMembersService {
             current.setRole(normalizeRole(current.getRole(), viewerUserId, OWNER_TYPE_EVENT, normalizedEventId));
             current.setStatus(accepted ? STATUS_ACCEPTED : "pending");
             current.setPendingSource(accepted ? null : "member");
-            current.setRequestKind(accepted ? null : pendingJoinRequestKind(waitingList, approvalRequested));
+            current.setRequestKind(accepted ? null
+                    : REQUEST_KIND_PAYMENT.equals(current.getRequestKind()) && !waitingList && !approvalRequested
+                            ? REQUEST_KIND_PAYMENT : pendingJoinRequestKind(waitingList, approvalRequested));
             if (!Boolean.TRUE.equals(current.getEventVipInvitation())) {
                 current.setInvitedByUserId(null);
             }
@@ -2761,6 +2784,26 @@ public class ActivitiesMembersService {
         return ACCEPTED_STATUSES.contains(status)
                 || STATUS_INVITED.equals(status)
                 || (STATUS_PENDING.equals(status) && isInvitationMembership(member));
+    }
+
+    public void expirePendingCheckoutMembership(String userId, String eventId, String nowIso) {
+        synchronized (eventJoinLock(eventId)) {
+            var basket = eventCheckoutBasketService.loadBasketByEvent(userId, eventId);
+            if (basket != null && basket.items().stream().anyMatch(item ->
+                    "pay".equals(item.status())
+                            || (StringUtils.hasText(item.expiresAtIso()) && item.expiresAtIso().compareTo(nowIso) > 0))) {
+                return;
+            }
+            var current = activityMembersRepository.findByOwnerTypeAndOwnerIdAndUserId(OWNER_TYPE_EVENT, eventId, userId)
+                    .orElse(null);
+            if (current == null || !STATUS_PENDING.equals(current.getStatus()) || isInvitationMembership(current)) {
+                return;
+            }
+            activityMembersRepository.save(toDeletedMember(current, "checkout-basket-purge", nowIso));
+            refreshEmbeddedEventMembers(eventId);
+            userActivityCountersService.refreshEventCountersForUsers(List.of(userId));
+            enqueueOwnerMembersChanged(OWNER_TYPE_EVENT, eventId, userId);
+        }
     }
 
     private String pendingJoinRequestKind(boolean waitingList, boolean approvalRequested) {
@@ -5437,7 +5480,7 @@ public class ActivitiesMembersService {
         if (member == null || !STATUS_PENDING.equals(normalizeStatus(member.getStatus()))) {
             return false;
         }
-        return !isInvitationMembership(member);
+        return !isInvitationMembership(member) && !REQUEST_KIND_PAYMENT.equals(member.getRequestKind());
     }
 
     private String normalizeMemberAction(String action) {
@@ -5492,6 +5535,9 @@ public class ActivitiesMembersService {
             return null;
         }
         String normalizedRequestKind = safeText(requestKind);
+        if (REQUEST_KIND_PAYMENT.equals(normalizedRequestKind)) {
+            return REQUEST_KIND_PAYMENT;
+        }
         if (REQUEST_KIND_JOIN.equals(normalizedRequestKind)) {
             return REQUEST_KIND_JOIN;
         }
@@ -5681,6 +5727,9 @@ public class ActivitiesMembersService {
         }
         if (STATUS_DISQUALIFIED.equals(status)) {
             return "Disqualified from this event.";
+        }
+        if (REQUEST_KIND_PAYMENT.equals(requestKind)) {
+            return "Waiting for payment.";
         }
         if (REQUEST_KIND_WAITLIST.equals(requestKind)) {
             return "Waiting for a spot.";

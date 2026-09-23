@@ -24,6 +24,9 @@ public class PhotoFeedService {
     @org.springframework.beans.factory.annotation.Autowired
     @org.springframework.context.annotation.Lazy
     private ContentModerationService contentModeration;
+    @org.springframework.beans.factory.annotation.Autowired
+    @org.springframework.context.annotation.Lazy
+    private ActivitiesEventsService events;
     private final PhotoFeedRepository posts;
     public PhotoFeedService(PhotoFeedRepository posts) { this.posts = posts; }
     public Post create(Users actor, Create request) {
@@ -31,39 +34,95 @@ public class PhotoFeedService {
         var coordinates = coordinates(actor);
         var existing = posts.find(request.id());
         if (existing != null) {
-            Post result = ownExisting(actor, existing);
-            register(existing); return result;
+            return ownExisting(actor, existing);
         }
         List<String> images = request.imageUrls();
         if (images == null || images.isEmpty() || images.size() > 5 || images.stream().distinct().count() != images.size()) throw badRequest();
         for (String image : images) validateImage(image, actor.getUserId());
         var details = normalizeImageDetails(request.imageDetails(), images);
+        var options = events.queryFeedEventOptions(actor.getUserId()).stream()
+                .collect(java.util.stream.Collectors.toMap(option -> option.event().id(), EventOption::event));
+        for (String image : images) {
+            var detail = details.get(image);
+            var linked = detail == null || detail.event() == null ? null : options.get(detail.event().id());
+            if (linked == null) throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "feed.eventRequired");
+            // Never trust a supplied organizer or location: the event is authoritative.
+            details.put(image, new com.raxim.myscoutee.profile.data.dto.media.MediaDtos.ImageDetailsDto(
+                    linked.location(), detail.caption(), linked));
+        }
         var avatar = actor.getImages() == null || actor.getImages().isEmpty() ? "" : actor.getImages().getFirst();
         var post = new PhotoFeedPost(request.id(), actor.getUserId(), actor.getName(), avatar, Instant.now().toString(),
                 List.copyOf(images), details, new GeoJsonPoint(coordinates.longitude(), coordinates.latitude()));
-        try { var saved = posts.insert(post); register(saved); return PhotoFeedMapper.toDto(saved, 0); }
+        try { return ownExisting(actor, posts.insert(post)); }
         catch (DuplicateKeyException ex) { return ownExisting(actor, posts.find(request.id())); }
     }
-    private void register(PhotoFeedPost post) {
-        if (contentModeration != null) contentModeration.register("feed", post.id(), post.creatorUserId(),
-                post.imageDetails().getOrDefault(post.imageUrls().getFirst(), new com.raxim.myscoutee.profile.data.dto.media.MediaDtos.ImageDetailsDto("", "")).caption(), post.imageUrls().getFirst());
+    private String register(PhotoFeedPost post) {
+        if (contentModeration != null) return contentModeration.register("feed", post.id(), post.creatorUserId(),
+                post.imageDetails().getOrDefault(post.imageUrls().getFirst(), new com.raxim.myscoutee.profile.data.dto.media.MediaDtos.ImageDetailsDto("", "")).caption(), post.imageUrls().getFirst()).status();
+        return post.moderationStatus();
     }
     private Post ownExisting(Users actor, PhotoFeedPost post) {
         if (post == null || !actor.getUserId().equals(post.creatorUserId())) throw new ResponseStatusException(HttpStatus.CONFLICT);
-        return PhotoFeedMapper.toDto(post, 0);
+        String status = register(post);
+        return PhotoFeedMapper.toDto(post, 0, status, posts.counters(actor.getUserId()));
+    }
+    public Users.FeedCountersRecord remove(Users actor, String id) {
+        var post = posts.find(id);
+        if (post == null) throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+        if (!actor.getUserId().equals(post.creatorUserId())) throw new ResponseStatusException(HttpStatus.FORBIDDEN);
+        contentModeration.removeFeed(id, actor.getUserId());
+        return posts.counters(actor.getUserId());
     }
     public Page page(Users actor, int pageSize, String cursorValue) {
+        return page(actor, pageSize, cursorValue, "public");
+    }
+    public Page page(Users actor, int pageSize, String cursorValue, String status) {
+        if (!List.of("public", "seen", "accepted", "under-review", "rejected", "blocked").contains(status)) throw badRequest();
         var coordinates = coordinates(actor);
         int limit = Math.max(1, Math.min(50, pageSize));
         Cursor cursor = parseCursor(cursorValue);
-        var located = posts.page(actor.getUserId(), coordinates.latitude(), coordinates.longitude(), cursor, limit + 1);
+        var located = posts.page(actor.getUserId(), status, coordinates.latitude(), coordinates.longitude(), cursor, limit + 1);
         var page = located.stream().limit(limit).map(p -> PhotoFeedMapper.toDto(p.post(), p.distanceKm())).toList();
         String next = null;
         if (located.size() > limit && !page.isEmpty()) {
             var last = page.getLast();
             next = ((int) Math.floor(last.distanceKm() / 5)) + "|" + last.createdAtIso() + "|" + last.id();
         }
-        return new Page(page, posts.count(actor.getUserId()), next);
+        var counts = posts.counters(actor.getUserId());
+        long total = List.of("public", "seen").contains(status) ? posts.count(actor.getUserId(), status) : counts.counts().getOrDefault(status, 0L);
+        return new Page(page, total, next, counts);
+    }
+    public List<String> seen(Users actor, List<String> ids) {
+        return saveSeen(actor, ids, 50);
+    }
+    public Page syncPage(Users actor, PageSync request) {
+        // Validate the read before writing. Opening Public feed can acknowledge
+        // its retained outbox and obtain the already-filtered first page at once.
+        if (!"public".equals(request.status())) throw badRequest();
+        coordinates(actor);
+        parseCursor(request.cursor());
+        saveSeen(actor, request.seenPostIds(), 5000);
+        return page(actor, request.pageSize(), request.cursor(), request.status());
+    }
+    private List<String> saveSeen(Users actor, List<String> ids, int limit) {
+        if (ids == null || ids.isEmpty() || ids.size() > limit) throw badRequest();
+        for (String id : ids) try { UUID.fromString(id); } catch (RuntimeException ex) { throw badRequest(); }
+        var unique = ids.stream().distinct().toList();
+        posts.markSeen(actor.getUserId(), unique);
+        // Inaccessible/removed posts are terminal too; do not retain an impossible outbox retry.
+        return unique;
+    }
+    public EventPage eventPage(Users actor, int pageSize, String cursor) {
+        var options = events.queryFeedEventOptions(actor.getUserId());
+        int start = 0;
+        if (cursor != null && !cursor.isBlank()) {
+            start = java.util.stream.IntStream.range(0, options.size())
+                    .filter(index -> options.get(index).event().id().equals(cursor)).findFirst()
+                    .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid event cursor.")) + 1;
+        }
+        int end = Math.min(options.size(), start + Math.max(1, Math.min(50, pageSize)));
+        var page = options.subList(start, end);
+        return new EventPage(page, options.size(), end < options.size() ? page.getLast().event().id() : null);
     }
     static Cursor parseCursor(String value) {
         if (value == null || value.isBlank()) return null;

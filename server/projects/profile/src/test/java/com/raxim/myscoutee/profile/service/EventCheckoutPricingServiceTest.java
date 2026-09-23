@@ -54,6 +54,25 @@ class EventCheckoutPricingServiceTest {
     }
 
     @Test
+    void paymentDeadlineUsesConfiguredHoursForBothApprovalModes() {
+        ActivityEvent event = eventWithPricing(pricing(100d, false, List.of()));
+        event.setStartAtIso("2026-09-25T18:00:00Z");
+        event.setApprovalRequired(true);
+        when(eventsRepository.findBySourceId("event-1")).thenReturn(List.of(event));
+        var checkout = request(List.of(item("main", "event", null, 100d)), List.of(), List.of(), 100d);
+        assertThat(service.checkoutDeadline(checkout)).isEqualTo("2026-09-25T14:00:00Z");
+        event.setPaymentDeadlineHours(5);
+        assertThat(service.checkoutDeadline(checkout)).isEqualTo("2026-09-25T13:00:00Z");
+        event.setApprovalRequired(false);
+        assertThat(service.checkoutDeadline(checkout)).isEqualTo("2026-09-25T13:00:00Z");
+        event.setPaymentDeadlineEnabled(false);
+        assertThat(service.checkoutDeadline(checkout)).isEqualTo("2026-09-25T18:00:00Z");
+        event.setPaymentDeadlineEnabled(true);
+        event.setPricing(pricing(0d, false, List.of(), false));
+        assertThat(service.checkoutDeadline(checkout)).isEqualTo("2026-09-25T18:00:00Z");
+    }
+
+    @Test
     void validatesAndCanonicalizesPromoCodeWithoutConsumingIt() {
         ActivityEvent event = eventWithPricing(pricing(
                 100d,

@@ -24,6 +24,12 @@ import org.springframework.data.mongodb.core.mapping.Document;
                 collation = "{ 'locale': 'en', 'strength': 2 }")
 })
 public class Users {
+    private FeedCountersRecord feedCounters;
+    public FeedCountersRecord getFeedCounters() { return feedCounters; }
+    public void setFeedCounters(FeedCountersRecord value) { feedCounters = value; }
+    public record FeedCountersRecord(long revision, Map<String, Long> counts) {
+        public static FeedCountersRecord empty() { return new FeedCountersRecord(0, Map.of()); }
+    }
     private FollowingRecord following;
 
     public FollowingRecord getFollowing() { return following; }
