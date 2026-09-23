@@ -21837,7 +21837,7 @@
     "_id": "i18n-message-en-moderation-status-under-review",
     "key": "moderation.status.under-review",
     "lang": "en",
-    "value": "Under review"
+    "value": "Under moderation"
   },
   {
     "_id": "i18n-message-en-moderation-status-accepted",
@@ -43995,7 +43995,7 @@
     "_id": "i18n-message-hu-moderation-status-under-review",
     "key": "moderation.status.under-review",
     "lang": "hu",
-    "value": "Ellenőrzés alatt"
+    "value": "Moderálás alatt"
   },
   {
     "_id": "i18n-message-hu-moderation-status-accepted",
