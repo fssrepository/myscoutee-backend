@@ -1,6 +1,6 @@
 # Current manual QA session
 
-Updated: 2026-09-22
+Updated: 2026-09-23
 
 This is the context-saving entry point for continuing the manual QA campaign.
 It stores one minimal live resume pointer plus reusable pair-QA execution lessons. It
@@ -86,14 +86,16 @@ resume pointer and reusable working method.
 Earlier Event Mode, Integration API, Activity Rating and EVENT-FOLLOWING-001 remain closed.
 
 ```yaml
-checkpoint: EVENT-FOLLOWING-002
-checklist: ../checklists/event/EVENT-FOLLOWING-002.md
-execution_log: ../evidence/EVENT-FOLLOWING-002-20260922-progress.md
-substage: PASS / CLOSED; numbered checks 1-8 completed in dev HTTP scope.
-fixture_phase: reset; managed windows closed; actors/events/members absent.
-next_action: No remaining work in this checkpoint. Do not replay completed tests.
-resume_gate: Inspect event-following-fixture.py status EVENT-FOLLOWING-002 and managed browser manifest before changes. Do not replay closed cases.
-runtime: Existing dev watchers; browser control explicitly delegated for this checkpoint. Preserve other browser sessions and their viewports.
+checkpoint: EVENT-GALLERY-FEED-001
+checklist: ../checklists/event/EVENT-GALLERY-FEED-001.md
+execution_log: ../evidence/EVENT-GALLERY-FEED-001-20260923-progress.md
+substage: Runtime preflight and fixture/browser startup; full-flow delegated by user.
+fixture_phase: gallery fixture ready; four isolated sessions passed readiness; arranging tall app windows.
+next_action: Verify managed sessions ready, then execute checklist from step 4. Fix/retest defects and continue.
+queue: OPERATOR-EMAIL-WARNING-001, ADMIN-CLIENT-API-001, AFFILIATE-REVENUE-001, EVENT-CALENDAR-EXPORT-001
+calendar_boundary: Calendar LAST; Android connected and authorized through ADB 2026-09-23; recheck when reaching calendar.
+resume_gate: Read evidence and gallery fixture status; inspect managed manifest and existing pages before any reset/relaunch. No replay of closed earlier cases.
+runtime: User started dev Compose stack; backend continuous compiler and frontend-sync own builds. No parallel build processes.
 ```
 
 ## Archived pair-QA resume point — 2026-09-17

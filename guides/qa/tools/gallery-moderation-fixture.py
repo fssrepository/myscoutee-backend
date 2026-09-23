@@ -17,13 +17,14 @@ if(db.manualQaCheckpointSnapshots.findOne({_id:key}) || db.users.findOne({userId
 const source=db.users.findOne({userId:'650000000000000000000061'});if(!source)throw Error('Demo source missing');
 const moderation=db.contentModerationState.findOne({_id:'global'});
 if(moderation?.pending?.length)throw Error('Wait for outstanding moderation writes');
-db.manualQaCheckpointSnapshots.insertOne({_id:key,scenario:'gallery-feed',users:ids,approvalJob:db.notificationRuleConfigs.findOne({ruleKey:'content-auto-approve'}),settings:moderation?.settings??{autoApprove:true,delayMinutes:0,categories:['asset','event','feed']},stagedAtIso:new Date().toISOString()});
+db.manualQaCheckpointSnapshots.insertOne({_id:key,checkpointId:key,phase:'staging',scenario:'gallery-feed',users:ids,approvalJob:db.notificationRuleConfigs.findOne({ruleKey:'content-auto-approve'}),settings:moderation?.settings??{autoApprove:true,delayMinutes:0,categories:['asset','event','feed']},stagedAtIso:new Date().toISOString()});
 for(let i=0;i<ids.length;i++) {
  const id=ids[i],user={_id:ObjectId(id),userId:id,syncKey:id,name:i?'Gallery QA Viewer':'Gallery QA Creator',initials:'GQ',email:'gallery-qa-'+i+'@example.invalid',profileStatus:'public',activities:{},devices:[],about:'Disposable gallery/feed QA',headline:'Gallery QA'};
  for(const field of ['age','birthday','city','height','physique','languages','horoscope','gender','hostTier','completion','profileFormVersion','locationCoordinates','partitionKey','images','profileDetails'])if(source[field]!==undefined)user[field]=source[field];
  db.users.insertOne(user);
 }
 db.contentModerationState.updateOne({_id:'global'},{$inc:{revision:1},$set:{settings:{autoApprove:false,delayMinutes:0,categories:['asset','event','feed']}},$setOnInsert:{counts:{},pending:[]}},{upsert:true});
+db.manualQaCheckpointSnapshots.updateOne({_id:key},{$set:{phase:'ready'}});
 print(JSON.stringify({phase:'ready',actors:ids,moderation:'manual',publishedItems:0}));
 ''',
 'due': '''

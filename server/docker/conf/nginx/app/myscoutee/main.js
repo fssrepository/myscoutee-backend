@@ -3,19 +3,19 @@ import {
   demoFailoverSeedWarmupNeeded,
   prepareDemoFailover,
   startDemoFailover
-} from "./chunk-DYS6H2DW.js";
-import "./chunk-4PHST73L.js";
+} from "./chunk-TQN7MSAV.js";
+import "./chunk-T3U233UL.js";
 import {
   bootstrapApplication
-} from "./chunk-JFEZ3BSQ.js";
-import "./chunk-DVMAPFVK.js";
-import "./chunk-Y6O6FOP6.js";
-import "./chunk-NVTXJNEV.js";
+} from "./chunk-HFU3254I.js";
+import "./chunk-3TF4ZRLM.js";
+import "./chunk-JLKDNV7T.js";
+import "./chunk-L64JVHGQ.js";
 import {
   Injector,
   inject,
   provideAppInitializer
-} from "./chunk-FDDWEAC7.js";
+} from "./chunk-6ULTXWAU.js";
 
 // src/main.ts
 var BOOTSTRAPPED_CLASS = "app-bootstrapped";
@@ -82,12 +82,12 @@ function markBootstrapFailed(err) {
 silenceBrowserConsoleLogs();
 bindBootstrapResumeRecovery();
 prepareDemoFailover().then(async () => {
-  const [{ App }, { appConfig }] = await Promise.all([import("./app-GOJQVP77.js"), import("./app.config-7DWRRII7.js")]);
+  const [{ App }, { appConfig }] = await Promise.all([import("./app-LCJ4F7D3.js"), import("./app.config-WJXFEUJH.js")]);
   const localUserId = demoFailoverLocalUser();
   if (localUserId) {
     appConfig.providers.push(provideAppInitializer(() => {
       const injector = inject(Injector);
-      return import("./demo-bootstrap.service-W3ZJ5D6T.js").then(async (module) => {
+      return import("./demo-bootstrap.service-JUGCQ4ZZ.js").then(async (module) => {
         const seed = injector.get(module.SeedDemoBootstrapService);
         await seed.ensureDemoSelectorReady("member");
         await seed.ensureUserReady(localUserId, "member");
@@ -96,7 +96,7 @@ prepareDemoFailover().then(async () => {
   }
   const app = await bootstrapApplication(App, appConfig);
   if (demoFailoverSeedWarmupNeeded()) {
-    void import("./demo-bootstrap.service-W3ZJ5D6T.js").catch(() => void 0);
+    void import("./demo-bootstrap.service-JUGCQ4ZZ.js").catch(() => void 0);
   }
   return app;
 }).then(() => {

@@ -16,7 +16,7 @@ if(db.manualQaCheckpointSnapshots.findOne({_id:key})||db.users.findOne({userId:{
 const source=db.users.findOne({userId:'650000000000000000000061'});if(!source)throw Error('Demo source missing');
 const stats=db.adminStats.findOne({statsKey:'global'},{activeProfileGenders:1,generatedAtIso:1,dailyActivity:1});
 if(!stats?.activeProfileGenders)throw Error('Wait for the ordinary statistics worker before staging');
-db.manualQaCheckpointSnapshots.insertOne({_id:key,scenario:'admin-client',users:ids,statsBefore:stats,stagedAtIso:new Date().toISOString()});
+db.manualQaCheckpointSnapshots.insertOne({_id:key,checkpointId:key,phase:'staging',scenario:'admin-client',users:ids,statsBefore:stats,stagedAtIso:new Date().toISOString()});
 const statuses=['public','friends only','inactive','blocked','deleted'];
 for(let i=0;i<ids.length;i++){
  const user={_id:ObjectId(ids[i]),userId:ids[i],syncKey:ids[i],name:'Admin API QA '+(i+1),initials:'AQ',email:'admin-api-qa-'+i+'@example.invalid',profileStatus:statuses[i],gender:i%2?'man':'woman',activities:{},devices:[]};
@@ -24,6 +24,7 @@ for(let i=0;i<ids.length;i++){
  if(i===4)user.deletedAtIso=new Date().toISOString();
  db.users.insertOne(user);
 }
+db.manualQaCheckpointSnapshots.updateOne({_id:key},{$set:{phase:'ready'}});
 print(JSON.stringify({phase:'ready',actors:ids,expectedActiveDelta:2,expectedGenderDelta:{female:1,male:1},registrationTelemetrySeeded:false}));
 ''',
 'status': '''print(JSON.stringify({checkpoint:db.manualQaCheckpointSnapshots.findOne({_id:key}),current:db.adminStats.findOne({statsKey:'global'},{activeProfileGenders:1,generatedAtIso:1,dailyActivity:1})}));''',

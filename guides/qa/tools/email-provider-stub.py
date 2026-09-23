@@ -33,5 +33,6 @@ class Handler(BaseHTTPRequestHandler):
         self.send_response(args.status); self.send_header('X-Message-Id', message_id); self.send_header('Content-Length', '0'); self.end_headers()
     def log_message(self, *_):
         pass
-print(json.dumps({'ready': True, 'host': args.host, 'port': args.port}), flush=True)
-ThreadingHTTPServer((args.host, args.port), Handler).serve_forever()
+server = ThreadingHTTPServer((args.host, args.port), Handler)
+print(json.dumps({'ready': True, 'host': args.host, 'port': server.server_address[1]}), flush=True)
+server.serve_forever()

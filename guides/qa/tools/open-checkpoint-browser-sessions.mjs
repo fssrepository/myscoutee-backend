@@ -145,7 +145,7 @@ try {
       `--window-position=${position.x},${position.y}`,
       `--window-size=${position.width},${position.height}`,
       ...(session.fakeMediaStream === true ? ['--use-fake-device-for-media-stream'] : []),
-      'about:blank'
+      ...(checkpoint.layout?.appWindows === true ? [`--app=${session.entryUrl || defaultEntryUrl}`] : ['about:blank'])
     ];
     const browser = spawn(chromeBinary, browserArguments, {
       detached: true,

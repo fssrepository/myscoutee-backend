@@ -22152,6 +22152,12 @@
     "value": "The calendar file could not be downloaded. Please try again."
   },
   {
+    "_id": "i18n-message-en-confirm",
+    "key": "confirm",
+    "lang": "en",
+    "value": "Confirm"
+  },
+  {
     "_id": "i18n-message-hu-integration-token-ip",
     "key": "integration.token.ip",
     "lang": "hu",
@@ -44302,5 +44308,11 @@
     "key": "calendar.export.error",
     "lang": "hu",
     "value": "Nem sikerült letölteni a naptárfájlt. Próbáld újra."
+  },
+  {
+    "_id": "i18n-message-hu-confirm",
+    "key": "confirm",
+    "lang": "hu",
+    "value": "Megerősítés"
   }
 ]
