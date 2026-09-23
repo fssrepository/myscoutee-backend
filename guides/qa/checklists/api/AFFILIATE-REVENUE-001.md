@@ -23,3 +23,11 @@ Focused unit/build checks support this case but do not mark its runtime steps PA
 - Reopen the approved basket directly in the existing payment view. Back/Continue must not ask to Join again or show a second confirmation. Capture must not require a second admin approval.
 - Persist the deadline from the event/selected occurrence start minus the configured hours, independently of browser-provided expiration or approval time. Waiting for admin does not consume a ten-minute timeout. ON has no configured pre-event grace offset.
 - At the actual payment deadline, the purge must expire the unpaid reservation and pending membership together, clear the old approval, and keep completed payments/memberships intact. A fresh eligible Join requires fresh approval; the expired approval cannot authorize it. Advance isolated fixture timing only, never seed the membership/payment outcome.
+
+- Gallery presentation alongside editor QA: show a compact Activity-card-style
+  uploaded-count / capacity badge (for example `2 / 5`) in place of the magnifier,
+  without an additional red counter or duplicate bottom-left cover index. The
+  badge opens the gallery in editable and read-only views, including feed and
+  Article gallery entry points. Check empty, single and multiple image states,
+  save/reload, and mobile/desktop sizing. The event editor cover has no remove X;
+  delete images inside the gallery, where normal upload/remove actions remain.

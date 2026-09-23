@@ -35,3 +35,35 @@ User clarified that post-approval continuation must use the existing Continue pa
 Focused real UI replay: ordinary owner Remove, visitor Join and confirmation, owner Approve and confirmation. Before approval: membership pending/member/approval; basket `6ab414b9de5ce0e8f4b54e49` approval-pending/pending active, amount EUR100, no session, zero payments; reopening shows Waiting for approval/Cancel request. After owner approval: same basket approved/pending active, membership accepted, zero payments. Full reload resolves accepted membership despite the stale approval-pending local draft. An intermediate pre-final-UI-fix continuation produced active basket `6ab41545de5ce0e8f4b54e50`, approved/pending, no payment.
 
 After the final three-line UI change and existing watcher build (18:10:22Z), full reload and basket open go directly to Review Booking & Pay / Items to pay for, with no Join or confirmation. Back to details shows the existing Continue. Clicking Continue returns directly to payment with no confirmation and zero `/events/join` resource requests before/after. Mongo basket ID, update timestamp (18:07:01.804241216Z), accepted membership and zero payment count remain unchanged. This proves this transition only; payment capture, refund, free/payment-backed runtime regression and the full affiliate checkpoint are NOT COMPLETE. No charge was submitted. The visitor window remains at payment selection; expired simulator card-registration frames were closed by reload. Frontend and backend watcher builds passed; focused diffs pass whitespace checks.
+
+## In-scope UI corrections during approval QA — 21:14 CEST
+
+Latest gallery rule supersedes the intermediate magnifier/red-counter designs:
+use the existing Activity event-card badge style, showing uploaded image count /
+gallery capacity (for example `2 / 5`), with no magnifier, no extra red counter
+and no duplicate bottom-left index on the cover. Apply in editable/read-only
+gallery covers, feed cards and the Article gallery action. The carousel and
+InfoCard now share the original 25px badge surface styling; the feed only supplies
+the label/data. Article header actions support the same badge surface.
+
+Actual managed owner browser: reopened fixture-owned `QA Approval Popup 20260923`;
+its approval settings retain OFF and 5 hours after save/reload. The Capacity-styled
+10px-radius field is on its own row with `in hours`; mobile screenshot
+`/tmp/gallery-approval-current.png`. Uploaded two repository logo images through
+normal file inputs into this disposable event and saved through the normal editor.
+Fresh reload shows `2 / 5`, no red counter and no duplicate cover index. At 360px
+and 900px viewport the badge measures 34.5625 x 25px; desktop has no page overflow.
+Clicking opens the real gallery with 2 filled slots / 5 available slots.
+Screenshots: `/tmp/gallery-badge-final-mobile.png` and
+`/tmp/gallery-badge-final-desktop.png` (local runtime evidence).
+
+The visitor Public feed was empty; its populated-card visual and Article viewer
+visual are NOT RUN in this correction. Existing frontend-sync build passed at
+19:11:03Z; focused frontend diff whitespace check passed. No separate compiler or
+test process started. Financial QA remains IN PROGRESS; this UI correction does
+not assert completion of the outstanding approval/payment/refund checks above.
+
+Follow-up 21:15 CEST: removed the cover-level X as requested. Fresh managed
+owner reload: cover shows `2 / 5` and Copy, zero remove buttons. Opening the
+gallery shows two filled images and two remove buttons. Closed the gallery
+without deleting either image. Existing frontend-sync build passed 19:14:32Z.
