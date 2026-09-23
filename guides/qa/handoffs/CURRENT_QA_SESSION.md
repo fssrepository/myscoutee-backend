@@ -88,10 +88,10 @@ Earlier Event Mode, Integration API, Activity Rating and EVENT-FOLLOWING-001 rem
 ```yaml
 checkpoint: AFFILIATE-REVENUE-001
 checklist: ../checklists/api/AFFILIATE-REVENUE-001.md
-substage: Admin client lifecycle closed in dev scope; user accepted installer app-menu side correction. Begin Affiliate revenue.
-fixture_phase: Affiliate revenue-ready fixture retained; owner and referred visitor registered, valid location restored. EUR membership accepted, unpaid approved/pending basket retained; visitor payment selection open. No payments or revenue outcomes yet. See dated evidence for interrupted attempts and final continuation replay.
+substage: Affiliate revenue and paid approval/deadline extension; gallery UI corrections verified, resume financial QA.
+fixture_phase: Read-only baseline plus actual UI/job results through 21:49 CEST. EUR100 captured/fulfilled/member accepted; HUF5000 approved/pending unpaid. Manual and auto unpaid grace expiry PASS via real scheduled purge; fresh normal joins created ...4e92 approval-pending and ...4e95 confirmed/pending. Grace OFF control ...005 joined, active until event start; zero payments for all grace controls. Retained partner EUR gross/net100, purchase/eventBooking1.
 execution_log: ../evidence/AFFILIATE-REVENUE-001-20260923-progress.md
-next_action: Post-approval reopening goes directly to existing payment view; Back/Continue has no confirmation or Join request (focused UI/Mongo replay verified). User objected to speculative checkout rewrites; inspect the recorded final diff before further changes. Continue from retained unpaid EUR basket only when resuming financial QA; capture/refund/replay and free/payment-backed runtime controls remain unproven. Scoped refund policy already staged. Full-flow delegation remains active; no broad reset/replay. See dated Affiliate progress evidence.
+next_action: Resume remaining affiliate financial checklist (HUF5000 capture, asset non-event control, refunds/replay/recovery/concurrency/privacy/mobile). Unpaid grace expiry, fresh manual approval requirement and automatic rejoin, OFF offset control, payment card labels verified; see dated evidence for boundaries. Grace fixtures remain active unpaid controls; do not charge them. Owner shows new manual Approve menu; visitor is Grace OFF payment review with no card/payment submitted. Full-flow delegation remains active.
 queue: EVENT-CALENDAR-EXPORT-001
 calendar_boundary: Calendar LAST; test actual Ubuntu ICS opening/import behavior as well as Android. Android connected/authorized earlier, recheck at calendar boundary.
 resume_gate: Read-only fixture status and existing dev stack before mutation; preserve unrelated Borrow/Event Mode snapshots. Gallery/Email/Admin remain closed; do not replay.

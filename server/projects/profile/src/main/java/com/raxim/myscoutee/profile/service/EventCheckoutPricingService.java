@@ -141,7 +141,8 @@ public class EventCheckoutPricingService {
             Instant start = Instant.ofEpochMilli(startMillis);
             if (earliest == null || start.isBefore(earliest)) earliest = start;
         }
-        int leadHours = Boolean.TRUE.equals(parent.getApprovalRequired())
+        int leadHours = parent.getPricing() != null && !Boolean.FALSE.equals(parent.getPricing().enabled())
+                && !Boolean.FALSE.equals(parent.getPaymentDeadlineEnabled())
                 ? Math.max(0, parent.getPaymentDeadlineHours() == null ? 4 : parent.getPaymentDeadlineHours()) : 0;
         return earliest.minus(java.time.Duration.ofHours(leadHours)).toString();
     }

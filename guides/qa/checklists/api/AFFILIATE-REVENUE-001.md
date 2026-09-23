@@ -1,6 +1,6 @@
 # AFFILIATE-REVENUE-001 — referral turnover and refunds
 
-Status: NOT RUN (new case; no previous PASS case modified). Extension of the new API checks for the queued affiliate requirement. Use `python3 guides/qa/tools/affiliate-invitation-fixture.py stage`, then `status`, and the versioned `node guides/qa/tools/open-checkpoint-browser-sessions.mjs AFFILIATE-INVITATION-001` launcher for the disposable referrer/new invitee. Track the new identity with `affiliate-invitation-fixture.py track USER_ID` before onboarding save. Reset through `affiliate-invitation-fixture.py reset`; partner records are scoped by the disposable owner ID and contribution rows by `ownerUserId`, so the existing actor-scoped reset removes them. Never replace a currently staged baseline without its recorded reset;
+Execution status and dated results are maintained in the QA matrix and evidence log. This case extends the API checks with affiliate revenue and payment lifecycle coverage. Use `python3 guides/qa/tools/affiliate-invitation-fixture.py stage`, then `status`, and the versioned `node guides/qa/tools/open-checkpoint-browser-sessions.mjs AFFILIATE-INVITATION-001` launcher for the disposable referrer/new invitee. Track the new identity with `affiliate-invitation-fixture.py track USER_ID` before onboarding save. Reset through `affiliate-invitation-fixture.py reset`; partner records are scoped by the disposable owner ID and contribution rows by `ownerUserId`, so the existing actor-scoped reset removes them. Never replace a currently staged baseline without its recorded reset;
  do not fabricate revenue on popup load. Record fixture ID, currency, checkout IDs and gateway callback IDs in dated evidence, excluding credentials.
 
 1. Open the normal user's Affiliate popup at desktop and 360px width. Green Revenue/Forgalom button opens the summary; mobile compact icon keeps title/help/close visible. Admin API popup has no such button, referral link or imported counter.
@@ -18,11 +18,39 @@ Focused unit/build checks support this case but do not mark its runtime steps PA
 
 ## Paid approval and payment deadline extension — 2026-09-23
 
-- In the event editor, the large Auto approve action opens a compact popup. Use the same pill ON/OFF control as Content moderation. Place the Capacity-styled number input on the next row with an inline in-hours unit suffix. OFF enables nonnegative whole hours (default 4 before the event); ON disables the input and applies no grace offset. Header tick applies label/color changes to the large action; closing without the tick discards popup edits. Verify saved event reload and both desktop/mobile EN/HU.
-- With Auto approve OFF, Join enters admin approval. Admin approves once: membership remains pending, the amber status icon remains, a localized Waiting for payment badge sits above the profile-eye action without covering the name, and Approve disappears. The pending count remains until successful payment; paid membership becomes accepted with the normal green icon.
-- Reopen the approved basket directly in the existing payment view. Back/Continue must not ask to Join again or show a second confirmation. Capture must not require a second admin approval.
-- Persist the deadline from the event/selected occurrence start minus the configured hours, independently of browser-provided expiration or approval time. Waiting for admin does not consume a ten-minute timeout. ON has no configured pre-event grace offset.
-- At the actual payment deadline, the purge must expire the unpaid reservation and pending membership together, clear the old approval, and keep completed payments/memberships intact. A fresh eligible Join requires fresh approval; the expired approval cannot authorize it. Advance isolated fixture timing only, never seed the membership/payment outcome.
+The final user correction separates payment grace from approval. The earlier
+Auto approve settings popup and the rule “Auto approve ON has no grace” are
+superseded.
+
+- Auto approve stays a direct toggle; it does not open a popup. The payment block
+  contains a clock action opening the existing compact form style, with a separate
+  Payment grace period ON/OFF pill and a Capacity-styled whole-hour input on the
+  next row with its unit. Default configured lead time is 4 hours before the event.
+  OFF disables the hours input, retains its value, and applies no pre-event lead
+  offset. The event start remains the checkout boundary. Changing Auto approve
+  must not change the payment grace setting.
+- Verify popup close discards draft changes; header tick applies them; event Save
+  persists enabled/disabled plus hours. Reopen/reload both settings with Auto
+  approve ON and OFF. Verify EN/HU and desktop/mobile, including input validation.
+- Manual approval: normal Join waits for the admin. After one approval, membership
+  stays pending, with the amber icon and localized Waiting for payment badge above
+  the profile-eye action. Approve disappears; pending count remains until payment.
+  Reopen directly into payment; Back/Continue has no new Join or confirmation.
+- Automatic approval: no admin action is needed, but the same enabled payment
+  grace deadline applies. Approval does not replace a required payment.
+- Separately for manual and automatic approval, leave the booking UNPAID. Advance
+  only isolated versioned fixture timing past event start minus configured hours;
+  run the real scheduled purge. Confirm inactive/deleted basket, deleted pending
+  membership, released reservation/counters, and no payment, charge or affiliate
+  revenue contribution. Do not seed those outcomes or use a successful-payment
+  control for this test.
+- An expired approval cannot authorize a fresh checkout. Once fixture timing makes
+  a new Join eligible again, manual mode requires a new admin approval; automatic
+  mode still follows its normal approval rule. Neither may reuse the expired basket.
+- A successfully paid control remains accepted and financially unchanged when the
+  purge runs. Verify the disabled-grace control does not expire at the configured
+  hours offset, and verify canonical server deadlines instead of trusting a client
+  expiration value.
 
 - Gallery presentation alongside editor QA: show a compact Activity-card-style
   uploaded-count / capacity badge (for example `2 / 5`) in place of the magnifier,

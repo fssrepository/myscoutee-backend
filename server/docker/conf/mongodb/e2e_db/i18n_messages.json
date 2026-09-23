@@ -22326,6 +22326,12 @@
     "value": "The payment deadline for this event has passed."
   },
   {
+    "_id": "i18n-message-en-event-payment-deadline-title",
+    "key": "event.payment.deadline.title",
+    "lang": "en",
+    "value": "Payment grace period"
+  },
+  {
     "_id": "i18n-message-en-event-approval-settings",
     "key": "event.approval.settings",
     "lang": "en",
@@ -44668,6 +44674,12 @@
     "key": "event.checkout.payment.deadline.passed",
     "lang": "hu",
     "value": "Az esemény fizetési határideje lejárt."
+  },
+  {
+    "_id": "i18n-message-hu-event-payment-deadline-title",
+    "key": "event.payment.deadline.title",
+    "lang": "hu",
+    "value": "Fizetési türelmi idő"
   },
   {
     "_id": "i18n-message-hu-event-approval-settings",

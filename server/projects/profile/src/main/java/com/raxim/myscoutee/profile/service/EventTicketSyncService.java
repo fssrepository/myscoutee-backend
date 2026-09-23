@@ -269,6 +269,7 @@ public class EventTicketSyncService {
             next.setFrequency(safeText(canonical.getFrequency()));
             next.setApprovalRequired(Boolean.TRUE.equals(canonical.getApprovalRequired()));
         next.setPaymentDeadlineHours(canonical.getPaymentDeadlineHours());
+        next.setPaymentDeadlineEnabled(canonical.getPaymentDeadlineEnabled());
             next.setPricing(canonical.getPricing());
             next.setAcceptedMembers(normalizeCount(canonical.getAcceptedMembers()));
             next.setPendingMembers(normalizeCount(canonical.getPendingMembers()));
@@ -350,6 +351,7 @@ public class EventTicketSyncService {
         clone.setTicketing(source.getTicketing());
         clone.setApprovalRequired(source.getApprovalRequired());
         clone.setPaymentDeadlineHours(source.getPaymentDeadlineHours());
+        clone.setPaymentDeadlineEnabled(source.getPaymentDeadlineEnabled());
         clone.setPricing(source.getPricing());
         clone.setAcceptedMembers(source.getAcceptedMembers());
         clone.setPendingMembers(source.getPendingMembers());

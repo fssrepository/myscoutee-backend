@@ -138,6 +138,28 @@ class EventCheckoutBasketServiceTest {
     }
 
     @Test
+    void cardReasonsDistinguishApprovalFromPaymentWithoutAnotherQuery() {
+        EventCheckoutBasketItem manual = persistedItem();
+        manual.setSourceId("manual"); manual.setStatus("approval-pending"); manual.setResultState("pending");
+        EventCheckoutBasketItem approved = persistedItem();
+        approved.setSourceId("approved"); approved.setStatus("approved"); approved.setResultState("pending");
+        EventCheckoutBasketItem automatic = persistedItem();
+        automatic.setSourceId("automatic"); automatic.setStatus("confirmed"); automatic.setResultState("pending");
+        EventCheckoutBasketItem oldApproval = persistedItem();
+        oldApproval.setSourceId("approved"); oldApproval.setStatus("approval-pending"); oldApproval.setResultState("deleted");
+        when(repository.findByUserIdAndSourceIdInAndStatusInAndVisibleResultState(
+                eq("user-1"), anyList(), anyList(), anyList()))
+                .thenReturn(List.of(manual, approved, automatic, oldApproval));
+
+        var states = service.loadCardStatesByEvent("user-1", List.of("manual", "approved", "automatic"));
+
+        assertThat(states.pendingReasons()).containsExactlyInAnyOrderEntriesOf(Map.of(
+                "manual", "approval", "approved", "payment", "automatic", "payment"));
+        verify(repository).findByUserIdAndSourceIdInAndStatusInAndVisibleResultState(
+                eq("user-1"), anyList(), anyList(), anyList());
+    }
+
+    @Test
     void everySaveCreatesANewPhysicalAuditRecord() {
         service.saveBasket(request(itemDto(
                 "approval-pending",

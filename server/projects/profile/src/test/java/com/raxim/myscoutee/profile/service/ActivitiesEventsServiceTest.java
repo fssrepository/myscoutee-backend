@@ -155,6 +155,8 @@ class ActivitiesEventsServiceTest {
 
     @BeforeEach
     void setUp() {
+        lenient().when(eventCheckoutBasketService.loadCardStatesByEvent(anyString(), anyList()))
+                .thenReturn(new EventCheckoutBasketService.CheckoutCardStates(Map.of(), Map.of()));
         service = new ActivitiesEventsService(
                 activityEventsRepository,
                 activitySubEventGroupsRepository,
@@ -2621,8 +2623,8 @@ class ActivitiesEventsServiceTest {
                         : List.of(canonical, suppressed));
         when(activityEventsRepository.findBySourceIdIn(List.of("watched-event")))
                 .thenReturn(List.of(canonical, suppressed));
-        when(eventCheckoutBasketService.loadResultStatesByEvent("viewer", List.of("watched-event")))
-                .thenReturn(Map.of());
+        when(eventCheckoutBasketService.loadCardStatesByEvent("viewer", List.of("watched-event")))
+                .thenReturn(new EventCheckoutBasketService.CheckoutCardStates(Map.of(), Map.of()));
 
         EventListPageDto page = service.queryActivitiesEventListPage(new EventsFilterRequestDto(
                 "viewer", "watchlist", "all", "recent", "date", "day", 10, null, null, null, null));
@@ -2687,8 +2689,8 @@ class ActivitiesEventsServiceTest {
                         : List.of(canonical, otherMemberTrash));
         when(activityEventsRepository.findBySourceIdIn(List.of("shared-event")))
                 .thenReturn(List.of(canonical, otherMemberTrash));
-        when(eventCheckoutBasketService.loadResultStatesByEvent("riley", List.of("shared-event")))
-                .thenReturn(Map.of());
+        when(eventCheckoutBasketService.loadCardStatesByEvent("riley", List.of("shared-event")))
+                .thenReturn(new EventCheckoutBasketService.CheckoutCardStates(Map.of(), Map.of()));
 
         EventListPageDto page = service.queryActivitiesEventListPage(new EventsFilterRequestDto(
                 "riley", "active-events", "all", "recent", "date", "day", 10, null, null, null, null));
@@ -3015,6 +3017,7 @@ class ActivitiesEventsServiceTest {
                 0d,
                 0d,
                 0d,
+                null,
                 null,
                 null,
                 null,

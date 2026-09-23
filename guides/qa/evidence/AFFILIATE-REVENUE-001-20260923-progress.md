@@ -67,3 +67,96 @@ Follow-up 21:15 CEST: removed the cover-level X as requested. Fresh managed
 owner reload: cover shows `2 / 5` and Copy, zero remove buttons. Opening the
 gallery shows two filled images and two remove buttons. Closed the gallery
 without deleting either image. Existing frontend-sync build passed 19:14:32Z.
+
+## Read-only financial resume gate — 21:16 CEST
+
+Versioned fixture status remains revenue-ready with hufApprovalControl=true;
+live application, frontend watcher and local payment simulator are healthy.
+Mongo confirms EUR payment 6ab41748de5ce0e8f4b54e52 captured EUR100, fulfillment
+succeeded, affiliateRevenuePending=false; EUR membership accepted. HUF basket
+6ab41e32de5ce0e8f4b54e6b is approved/pending, reservationActive=true, amount HUF5000,
+expires 2026-09-25T13:15:59.529Z, exactly 4 hours before event start. HUF membership
+is pending, pendingSource=member, requestKind=payment. No HUF payment exists.
+This supersedes the earlier retained-EUR-unpaid/no-payments resume pointer.
+
+## Payment-grace correction and preparation — 21:30 CEST
+
+Final user rule: independent payment grace enabled flag/hours, configured through
+clock action in the payment block; Auto approve is again a direct toggle. The
+old Auto approve popup and ON-means-no-grace interpretation are superseded.
+Frontend/local/HTTP mapping, Java event persistence, event cloning and canonical
+checkout deadline now carry paymentDeadlineEnabled independently of approval.
+Default remains enabled/4h; disabled pricing or disabled grace applies zero lead
+offset, retaining the event-start boundary. Existing watcher builds passed;
+i18n audit passed (7450 messages, 2 bundles, 3 seeds). Updated service regression
+source covers both approval modes plus grace OFF/free pricing; tests NOT RUN.
+
+Actual managed owner UI: changed Auto approve from OFF to ON without any popup,
+enabled Pricing, opened the clock form, set grace OFF and saved the event.
+Reload verified hours=5, disabled input, Auto approve ON. Re-enabled grace and
+saved; Mongo confirms approvalRequired=false, pricing.enabled=true,
+paymentDeadlineEnabled=true, paymentDeadlineHours=5. The final number input is
+37.5px high; an intermediate textarea-style height error was found and corrected.
+
+Visitor retained HUF5000 control: Continue booking opens payment directly. Back
+shows Continue, and Continue returns to payment without a confirmation. No HUF
+payment was submitted. The event card incorrectly said Waiting for approval;
+DTO/card mapping now distinguishes payment pending without extra DB queries.
+Runtime retest of that label is still pending.
+
+Versioned `stage-grace-cases` creates only event/admin prerequisites: manual
+6aff20000000000000000003 and automatic 6aff20000000000000000004, each EUR10,
+grace enabled/4h. No visitor memberships, baskets, payments or revenue were seeded.
+Both events appear in visitor Explore. Their unpaid scheduled-expiry and fresh
+Join checks are NOT YET RUN. `expire-grace-case manual|auto` advances only their
+event/basket timestamps after real unpaid Join; `reopen-grace-case` requires actual
+expiry completion before making another normal Join eligible.
+
+## Unpaid grace expiry and fresh Join — 21:49 CEST
+
+Actual managed UI on the retained fixture, no payment submitted for any grace
+control. Manual Join created basket 6ab429bdde5ce0e8f4b54e80; owner Approve once
+kept membership pending/requestKind=payment, showed Waiting for payment above the
+eye, and removed Approve from the member menu. Auto Join created confirmed/pending
+basket 6ab42a01de5ce0e8f4b54e87 and opened payment without admin approval.
+Both server deadlines were 19:58:13.947Z, event start minus four hours.
+
+The versioned timing-only expire commands advanced these two events/baskets.
+The REAL scheduled event-checkout-basket-purge run at 19:36:10.575706108Z processed
+two items: both memberships became deleted, both reservations inactive and basket
+resultState deleted. No payment existed. EUR100 control stayed accepted; affiliate
+revision 5, EUR gross/net 10000 minor units, refunded 0, purchases/eventBookings 1
+were unchanged. No outcome or counter was seeded.
+
+Reopening eligibility exposed a client reconciliation defect: a terminal server
+basket did not clear its cached draft until the later cached browser deadline.
+The shared draft store now clears authoritative deleted results regardless of
+that stale timestamp, preserving pending drafts. Normal Explore then offered
+Book Event/Join instead of the expired approval. Fresh manual Join created basket
+6ab42c1ede5ce0e8f4b54e92 (approval-pending); the owner UI again showed Waiting For
+Admin Approval and Approve/Reject. Fresh auto Join created 6ab42c33de5ce0e8f4b54e95
+(confirmed/pending), opened payment normally, and reused neither expired basket.
+Old tombstones remained retained. Zero payments in both cases.
+
+The event-list label defect was also reproduced and fixed: lightweight card DTOs
+had no member snapshot/pending reason. The existing batch basket projection now
+includes status and carries the pending reason through both detail and card
+mapping, with no extra DB request. Fresh UI verifies manual is Waiting for
+approval; Auto and retained HUF5000 approved control are Waiting for payment.
+Membership remains pending; the change does not perform approval or Join.
+
+Disabled-grace control 6aff20000000000000000005 was staged with prerequisites only
+via stage-grace-off (Auto ON, grace OFF, retained hours=4, event start two hours
+away, so its configured four-hour offset was already in the past). Normal UI Join
+created 6ab42ce6de5ce0e8f4b54e9a, confirmed/pending, expiry exactly event start
+21:47:36.013Z. Scheduled purge completed at 19:48:20.679826113Z with zero expired
+items; that basket stayed active. No payment or affiliate contribution arose.
+This proves OFF does not enforce the retained four-hour offset.
+
+Build verification uses existing owners only: frontend bundle/sync PASS
+19:41:11.396Z; backend continuous BUILD SUCCESSFUL after final source change and
+DevTools restart 19:48:20Z. Focused regression sources cover stale local deadline
+reconciliation, pending/payment card reason and a single repository query;
+Java/TS test suites NOT RUN separately. Whitespace checks pass with the existing
+CRLF CSV convention. Full affiliate financial/refund/recovery journey remains
+IN PROGRESS; these results only close the exercised expiry/fresh-Join controls.

@@ -27,8 +27,10 @@ public class ActivityEventMapper {
             Map<String, String> currentUserMembershipStatusesBySourceId,
             String viewerUserId,
             Map<String, Integer> resourcePendingReadBySourceId,
-            Set<String> watchedEventSourceIds) {
+            Set<String> watchedEventSourceIds,
+            Map<String, String> checkoutPendingReasonsBySourceId) {
         public MappingContext {
+            checkoutPendingReasonsBySourceId = checkoutPendingReasonsBySourceId == null ? Map.of() : checkoutPendingReasonsBySourceId;
             snapshotsBySourceId = snapshotsBySourceId == null ? Map.of() : snapshotsBySourceId;
             checkoutResultStatesBySourceId = checkoutResultStatesBySourceId == null ? Map.of() : checkoutResultStatesBySourceId;
             creatorAvatarUrlsByUserId = creatorAvatarUrlsByUserId == null ? Map.of() : creatorAvatarUrlsByUserId;
@@ -39,6 +41,24 @@ public class ActivityEventMapper {
                     ? Map.of()
                     : resourcePendingReadBySourceId;
             watchedEventSourceIds = watchedEventSourceIds == null ? Set.of() : Set.copyOf(watchedEventSourceIds);
+        }
+
+        public MappingContext withCheckoutPendingReasons(Map<String, String> reasons) {
+            return new MappingContext(viewerCoordinates, snapshotsBySourceId, checkoutResultStatesBySourceId,
+                    creatorAvatarUrlsByUserId, currentUserMembershipStatusesBySourceId, viewerUserId,
+                    resourcePendingReadBySourceId, watchedEventSourceIds, reasons);
+        }
+
+        public MappingContext(LocationCoordinatesDto viewerCoordinates,
+                Map<String, ActivitiesMembersService.OwnerMembersSnapshot> snapshotsBySourceId,
+                Map<String, String> checkoutResultStatesBySourceId,
+                Map<String, String> creatorAvatarUrlsByUserId,
+                Map<String, String> currentUserMembershipStatusesBySourceId,
+                String viewerUserId, Map<String, Integer> resourcePendingReadBySourceId,
+                Set<String> watchedEventSourceIds) {
+            this(viewerCoordinates, snapshotsBySourceId, checkoutResultStatesBySourceId,
+                    creatorAvatarUrlsByUserId, currentUserMembershipStatusesBySourceId, viewerUserId,
+                    resourcePendingReadBySourceId, watchedEventSourceIds, Map.of());
         }
 
         public MappingContext(
@@ -152,7 +172,7 @@ public class ActivityEventMapper {
                 pendingMemberUserIds,
                 invitedMemberUserIds,
                 pendingRequestMemberUserIds,
-                null,
+                resolvePendingReason(record, context, membersSnapshot),
                 resolveCurrentUserMembershipStatus(record, context, membersSnapshot),
                 Boolean.TRUE.equals(record.getApprovalRequired()),
                 resolveCheckoutResultState(record, context),
@@ -160,7 +180,26 @@ public class ActivityEventMapper {
                 context != null && context.watchedEventSourceIds().contains(normalizeId(record.getSourceId())),
                 safeText(record.getSourceLink()),
                 record.getModerationStatus(),
-                record.getPaymentDeadlineHours() == null ? 4 : record.getPaymentDeadlineHours());
+                record.getPaymentDeadlineHours() == null ? 4 : record.getPaymentDeadlineHours(),
+                !Boolean.FALSE.equals(record.getPaymentDeadlineEnabled()));
+    }
+
+    private String resolvePendingReason(ActivityEvent record, MappingContext context,
+            ActivitiesMembersService.OwnerMembersSnapshot snapshot) {
+        String checkoutReason = context == null ? null
+                : context.checkoutPendingReasonsBySourceId().get(normalizeId(record.getSourceId()));
+        if (StringUtils.hasText(checkoutReason)) return checkoutReason;
+        String viewer = context == null ? null : context.viewerUserId();
+        if (!StringUtils.hasText(viewer) || snapshot == null || snapshot.members() == null) return null;
+        var member = snapshot.members().stream()
+                .filter(item -> viewer.equals(item.getUserId()) && "pending".equals(item.getStatus()))
+                .findFirst().orElse(null);
+        if (member == null) return null;
+        String kind = member.getRequestKind();
+        if ("payment".equals(kind)
+                || ("join".equals(kind) && record.getPricing() != null
+                    && !Boolean.FALSE.equals(record.getPricing().enabled()))) return "payment";
+        return "approval".equals(kind) || "waitlist".equals(kind) ? kind : null;
     }
 
     private String resolveCurrentUserMembershipStatus(

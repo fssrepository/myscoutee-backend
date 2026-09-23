@@ -130,11 +130,17 @@ public class EventCheckoutBasketService {
                         .toList()));
     }
 
+    public record CheckoutCardStates(Map<String, String> resultStates, Map<String, String> pendingReasons) {}
+
     public Map<String, String> loadResultStatesByEvent(String userId, Collection<String> sourceIds) {
+        return loadCardStatesByEvent(userId, sourceIds).resultStates();
+    }
+
+    public CheckoutCardStates loadCardStatesByEvent(String userId, Collection<String> sourceIds) {
         String normalizedUserId = normalizeId(userId);
         List<String> normalizedSourceIds = normalizeIds(sourceIds);
         if (!StringUtils.hasText(normalizedUserId) || normalizedSourceIds.isEmpty()) {
-            return Map.of();
+            return new CheckoutCardStates(Map.of(), Map.of());
         }
         Map<String, List<EventCheckoutBasketItem>> itemsBySourceId = repository
                 .findByUserIdAndSourceIdInAndStatusInAndVisibleResultState(
@@ -152,11 +158,25 @@ public class EventCheckoutBasketService {
                                 .add(item),
                         Map::putAll);
         if (itemsBySourceId.isEmpty()) {
-            return Map.of();
+            return new CheckoutCardStates(Map.of(), Map.of());
         }
         Map<String, String> result = new LinkedHashMap<>();
         itemsBySourceId.forEach((sourceId, items) -> result.put(sourceId, checkoutResultState(items)));
-        return result;
+        Map<String, String> pendingReasons = new LinkedHashMap<>();
+        itemsBySourceId.forEach((sourceId, items) -> {
+            if (!"pending".equals(result.get(sourceId)) && !"failed".equals(result.get(sourceId))) return;
+            List<EventCheckoutBasketItem> active = items.stream()
+                    .filter(item -> !RESULT_STATE_DELETED.equals(item.getResultState())).toList();
+            if (active.stream().anyMatch(item -> "waiting".equals(item.getStatus()))) {
+                pendingReasons.put(sourceId, "waitlist");
+            } else if (active.stream().anyMatch(item -> "approval-pending".equals(item.getStatus()))) {
+                pendingReasons.put(sourceId, "approval");
+            } else if (active.stream().anyMatch(item -> "approved".equals(item.getStatus())
+                    || "confirmed".equals(item.getStatus()) || "pay".equals(item.getStatus()))) {
+                pendingReasons.put(sourceId, "payment");
+            }
+        });
+        return new CheckoutCardStates(result, pendingReasons);
     }
 
     private String checkoutResultState(List<EventCheckoutBasketItem> items) {

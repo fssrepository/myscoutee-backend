@@ -585,7 +585,8 @@ public final class EventsDtos {
             Boolean watched,
             String sourceLink,
             String moderationStatus,
-            Integer paymentDeadlineHours) {
+            Integer paymentDeadlineHours,
+            Boolean paymentDeadlineEnabled) {
     }
 
     public record EventsExplorePageDto(
@@ -683,7 +684,8 @@ public final class EventsDtos {
             String paymentSessionId,
             List<String> imageUrls,
             Map<String, ImageDetailsDto> imageDetails,
-            Integer paymentDeadlineHours) {
+            Integer paymentDeadlineHours,
+            Boolean paymentDeadlineEnabled) {
     }
 
     public record EventInvitationContextDto(

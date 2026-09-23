@@ -62,6 +62,63 @@ elif command=='stage-huf-approval':
     db.events.updateMany({sourceId:id},{$set:{approvalRequired:true}});
     states.updateOne({_id:key},{$set:{hufApprovalControl:true}});
     print(JSON.stringify({eventId:id,approvalRequired:true,seededOutcomes:false}));'''
+elif command=='stage-grace-cases':
+    code='''const state=states.findOne({_id:key});
+    if(state?.phase!=='revenue-ready' || state.graceEventIds)throw Error('Unstaged grace cases on retained revenue baseline required');
+    const template=db.events.findOne({sourceId:state.revenueEventIds[0],ownerUserId:owner});
+    if(!template)throw Error('Owned event prerequisite missing');
+    const ids=['6aff20000000000000000003','6aff20000000000000000004'];
+    if(db.events.countDocuments({sourceId:{$in:ids}}))throw Error('Grace event IDs already exist');
+    const now=new Date().toISOString(), start=new Date(Date.now()+4.5*3600000).toISOString(), end=new Date(Date.parse(start)+3600000).toISOString();
+    for(const [index,id] of ids.entries()) {
+      const event={...template,_id:ObjectId(id),sourceId:id,syncKey:id,
+        title:index===0?'QA Grace Manual':'QA Grace Auto',subtitle:'Disposable unpaid payment deadline control',
+        startAtIso:start,endAtIso:end,timeframe:start+' – '+end,
+        approvalRequired:index===0,paymentDeadlineEnabled:true,paymentDeadlineHours:4,
+        acceptedMembers:1,pendingMembers:0,acceptedMemberUserIds:[owner],pendingMemberUserIds:[],
+        invitedMemberUserIds:[],pendingRequestMemberUserIds:[],activity:0,unread:0,paymentSessionId:null,
+        createdDate:now,updatedDate:now,
+        pricing:{...template.pricing,basePrice:10,currency:'EUR',cancellationPolicy:{enabled:false,rules:[]}}};
+      db.events.insertOne(event);
+      db.activityMembers.insertOne({_id:'qa-affiliate-member-'+id,ownerType:'event',ownerId:id,userId:owner,role:'Admin',status:'accepted',actionAtIso:now});
+    }
+    states.updateOne({_id:key},{$set:{graceEventIds:ids}});
+    print(JSON.stringify({events:ids,deadline:new Date(Date.parse(start)-4*3600000).toISOString(),seededCheckoutOutcomes:false}));'''
+elif command=='stage-grace-off':
+    code='''const state=states.findOne({_id:key});
+    if(state?.phase!=='revenue-ready')throw Error('Revenue prerequisite required');
+    const id='6aff20000000000000000005';
+    if(db.events.countDocuments({sourceId:id}))throw Error('Grace OFF control already staged');
+    const template=db.events.findOne({sourceId:'6aff20000000000000000001',ownerUserId:owner});
+    if(!template)throw Error('Fixture event template missing');
+    const now=new Date().toISOString(), start=new Date(Date.now()+2*3600000).toISOString(), end=new Date(Date.parse(start)+3600000).toISOString();
+    db.events.insertOne({...template,_id:ObjectId(id),sourceId:id,syncKey:id,title:'QA Grace Off',
+      subtitle:'Disposable disabled payment deadline control',startAtIso:start,endAtIso:end,timeframe:start+' – '+end,
+      approvalRequired:false,paymentDeadlineEnabled:false,paymentDeadlineHours:4,
+      acceptedMembers:1,pendingMembers:0,acceptedMemberUserIds:[owner],pendingMemberUserIds:[],
+      invitedMemberUserIds:[],pendingRequestMemberUserIds:[],activity:0,unread:0,paymentSessionId:null,
+      createdDate:now,updatedDate:now,
+      pricing:{...template.pricing,basePrice:10,currency:'EUR',cancellationPolicy:{enabled:false,rules:[]}}});
+    db.activityMembers.insertOne({_id:'qa-affiliate-member-'+id,ownerType:'event',ownerId:id,userId:owner,role:'Admin',status:'accepted',actionAtIso:now});
+    states.updateOne({_id:key},{$set:{graceOffEventId:id}});
+    print(JSON.stringify({eventId:id,startAtIso:start,seededCheckoutOutcomes:false}));'''
+elif command in ('expire-grace-case','reopen-grace-case'):
+    mode=sys.argv[2] if len(sys.argv)>2 else ''
+    if mode not in ('manual','auto'):raise SystemExit('Specify manual or auto')
+    code='''const state=states.findOne({_id:key});
+    if(!state?.graceEventIds)throw Error('Grace cases not staged');
+    const id=state.graceEventIds[MODE], payer=state.users.find(x=>x!==owner);
+    if(db.payments.countDocuments({userId:payer,sourceId:id}))throw Error('Unpaid-only control: payment found');
+    const member=db.activityMembers.findOne({ownerType:'event',ownerId:id,userId:payer});
+    const active=db.eventCheckoutBasketItems.find({userId:payer,sourceId:id,reservationActive:true}).toArray();
+    if(EXPIRE && (member?.status!=='pending' || !active.length || active.some(x=>x.checkoutSessionId || x.status==='pay')))
+      throw Error('Normal pending unpaid join must precede timing change');
+    if(!EXPIRE && (member?.status!=='deleted' || active.length))throw Error('Real scheduled expiry must finish before reopening eligibility');
+    const deadline=new Date(Date.now()+(EXPIRE?-60000:1800000)).toISOString();
+    const start=new Date(Date.parse(deadline)+4*3600000).toISOString(), end=new Date(Date.parse(start)+3600000).toISOString();
+    db.events.updateMany({sourceId:id},{$set:{startAtIso:start,endAtIso:end,timeframe:start+' – '+end}});
+    if(EXPIRE)db.eventCheckoutBasketItems.updateMany({_id:{$in:active.map(x=>x._id)}},{$set:{expiresAtIso:deadline}});
+    print(JSON.stringify({eventId:id,deadline,timingOnly:true,paymentCount:0}));'''.replace('MODE','0' if mode=='manual' else '1').replace('EXPIRE','true' if command=='expire-grace-case' else 'false')
 elif command=='refresh-revenue-labels':
     code='''const state=states.findOne({_id:key});
     if(state?.phase!=='revenue-ready'||db.payments.countDocuments({userId:{$in:state.users}}))throw Error('Unpaid fixture required');
