@@ -141,13 +141,13 @@
           "actor": "Casey A",
           "sessionKind": "demo",
           "userId": "650000000000000000000061",
-          "expectedName": "Casey Bridge · first session"
+          "expectedName": "Casey Bridge \u00b7 first session"
         },
         {
           "actor": "Casey B",
           "sessionKind": "demo",
           "userId": "650000000000000000000061",
-          "expectedName": "Casey Bridge · second session"
+          "expectedName": "Casey Bridge \u00b7 second session"
         }
       ]
     },
@@ -176,7 +176,7 @@
           "sessionKind": "demo",
           "userId": "admin-demo-ava",
           "autoDismissExplanationGuide": false,
-          "expectedName": "Ava Moderation · scheduled account-purge observer"
+          "expectedName": "Ava Moderation \u00b7 scheduled account-purge observer"
         }
       ]
     },
@@ -192,7 +192,7 @@
           "sessionKind": "demo",
           "userId": "admin-demo-ava",
           "autoDismissExplanationGuide": false,
-          "expectedName": "Ava Moderation · Event scheduler observer"
+          "expectedName": "Ava Moderation \u00b7 Event scheduler observer"
         },
         {
           "actor": "Sophia random-room participant",
@@ -200,7 +200,7 @@
           "userId": "0216b1ceb256d6f2c89073b8",
           "targetUrl": "http://localhost/game",
           "entryUrl": "http://localhost/entry?redirect=%2Fgame",
-          "expectedName": "Sophia Lane · random-room Event and Chat observer"
+          "expectedName": "Sophia Lane \u00b7 random-room Event and Chat observer"
         }
       ]
     },
@@ -216,7 +216,7 @@
           "sessionKind": "demo",
           "userId": "admin-demo-ava",
           "autoDismissExplanationGuide": false,
-          "expectedName": "Ava Moderation · Close past events observer"
+          "expectedName": "Ava Moderation \u00b7 Close past events observer"
         },
         {
           "actor": "Nova counter-expiry participant",
@@ -225,7 +225,7 @@
           "autoDismissExplanationGuide": false,
           "targetUrl": "http://localhost/game",
           "entryUrl": "http://localhost/entry?redirect=%2Fgame",
-          "expectedName": "Nova Social · expiring Event participant observer"
+          "expectedName": "Nova Social \u00b7 expiring Event participant observer"
         }
       ]
     },
@@ -241,7 +241,7 @@
           "sessionKind": "demo",
           "userId": "admin-demo-ava",
           "autoDismissExplanationGuide": false,
-          "expectedName": "Ava Moderation · Delete expired baskets observer"
+          "expectedName": "Ava Moderation \u00b7 Delete expired baskets observer"
         },
         {
           "actor": "Nova basket-purge participant",
@@ -250,14 +250,14 @@
           "autoDismissExplanationGuide": false,
           "targetUrl": "http://localhost/game",
           "entryUrl": "http://localhost/entry?redirect=%2Fgame",
-          "expectedName": "Nova Social · expiring checkout basket observer",
+          "expectedName": "Nova Social \u00b7 expiring checkout basket observer",
           "localStorage": {
             "myscoutee.http.event.checkout.drafts.v1": {
               "650000000000000000000062::manual-qa-checkpoint:v1:event-schedulers:basket-purge:event": {
                 "userId": "650000000000000000000062",
                 "sourceId": "manual-qa-checkpoint:v1:event-schedulers:basket-purge:event",
                 "eventTitle": "Manual QA expiring checkout basket",
-                "eventTimeframe": "Manual QA · upcoming",
+                "eventTimeframe": "Manual QA \u00b7 upcoming",
                 "slotSourceId": null,
                 "selectedDateKey": null,
                 "optionalSubEventIds": [],
@@ -323,21 +323,21 @@
           "actor": "Kai controlled member",
           "sessionKind": "demo",
           "userId": "7822c5f99eff99d63abe8933",
-          "expectedName": "Kai Morgan · member authorization and moderation target"
+          "expectedName": "Kai Morgan \u00b7 member authorization and moderation target"
         },
         {
           "actor": "Ava moderation admin",
           "sessionKind": "demo",
           "userId": "admin-demo-ava",
           "autoDismissExplanationGuide": false,
-          "expectedName": "Ava Moderation · admin moderation actor"
+          "expectedName": "Ava Moderation \u00b7 admin moderation actor"
         },
         {
           "actor": "Deployment operator",
           "sessionKind": "demo",
           "userId": "operator@myscoutee.local",
           "autoDismissExplanationGuide": false,
-          "expectedName": "Demo Operator · operator-only branding actor"
+          "expectedName": "Demo Operator \u00b7 operator-only branding actor"
         }
       ]
     },
@@ -458,7 +458,7 @@
           "actor": "Casey controlled chat-list reader",
           "sessionKind": "demo",
           "userId": "650000000000000000000061",
-          "expectedName": "Casey Bridge · four controlled Chat contexts"
+          "expectedName": "Casey Bridge \u00b7 four controlled Chat contexts"
         }
       ]
     },
@@ -473,19 +473,19 @@
           "actor": "Casey chat-flow sender",
           "sessionKind": "demo",
           "userId": "650000000000000000000061",
-          "expectedName": "Casey Bridge · controlled Group sender"
+          "expectedName": "Casey Bridge \u00b7 controlled Group sender"
         },
         {
           "actor": "Nova chat-flow live reader",
           "sessionKind": "demo",
           "userId": "650000000000000000000062",
-          "expectedName": "Nova Social · open live reader"
+          "expectedName": "Nova Social \u00b7 open live reader"
         },
         {
           "actor": "Riley chat-flow recovery reader",
           "sessionKind": "demo",
           "userId": "650000000000000000000063",
-          "expectedName": "Riley Outside · closed/reload reader"
+          "expectedName": "Riley Outside \u00b7 closed/reload reader"
         }
       ]
     },
@@ -500,19 +500,19 @@
           "actor": "Casey chat-actions message owner",
           "sessionKind": "demo",
           "userId": "650000000000000000000061",
-          "expectedName": "Casey Bridge · reply/edit/pin/unsend owner"
+          "expectedName": "Casey Bridge \u00b7 reply/edit/pin/unsend owner"
         },
         {
           "actor": "Nova chat-actions participant",
           "sessionKind": "demo",
           "userId": "650000000000000000000062",
-          "expectedName": "Nova Social · reaction and non-owner denial actor"
+          "expectedName": "Nova Social \u00b7 reaction and non-owner denial actor"
         },
         {
           "actor": "Riley chat-actions participant",
           "sessionKind": "demo",
           "userId": "650000000000000000000063",
-          "expectedName": "Riley Outside · reaction add/remove actor"
+          "expectedName": "Riley Outside \u00b7 reaction add/remove actor"
         }
       ]
     },
@@ -527,7 +527,7 @@
           "actor": "Casey chat-content sender",
           "sessionKind": "demo",
           "userId": "650000000000000000000061",
-          "expectedName": "Casey Bridge · image, voice, poll and share-card sender",
+          "expectedName": "Casey Bridge \u00b7 image, voice, poll and share-card sender",
           "microphonePermission": "granted",
           "fakeMediaStream": true
         },
@@ -535,14 +535,14 @@
           "actor": "Nova chat-content live participant",
           "sessionKind": "demo",
           "userId": "650000000000000000000062",
-          "expectedName": "Nova Social · live reader, denied-recorder control and voter",
+          "expectedName": "Nova Social \u00b7 live reader, denied-recorder control and voter",
           "microphonePermission": "denied"
         },
         {
           "actor": "Riley chat-content recovery participant",
           "sessionKind": "demo",
           "userId": "650000000000000000000063",
-          "expectedName": "Riley Outside · closed unread/reconnect reader and voter"
+          "expectedName": "Riley Outside \u00b7 closed unread/reconnect reader and voter"
         }
       ]
     },
@@ -558,19 +558,19 @@
           "sessionKind": "demo",
           "userId": "650000000000000000000061",
           "autoDismissExplanationGuide": false,
-          "expectedName": "Casey Bridge · Event/Group member inspection and Admin report review"
+          "expectedName": "Casey Bridge \u00b7 Event/Group member inspection and Admin report review"
         },
         {
           "actor": "Nova governance reporter",
           "sessionKind": "demo",
           "userId": "650000000000000000000062",
-          "expectedName": "Nova Social · accepted member and idempotent report submitter"
+          "expectedName": "Nova Social \u00b7 accepted member and idempotent report submitter"
         },
         {
           "actor": "Riley governance report target",
           "sessionKind": "demo",
           "userId": "650000000000000000000063",
-          "expectedName": "Riley Outside · accepted member and reported message author"
+          "expectedName": "Riley Outside \u00b7 accepted member and reported message author"
         }
       ]
     },
@@ -600,19 +600,19 @@
           "actor": "Casey tournament host",
           "sessionKind": "demo",
           "userId": "650000000000000000000061",
-          "expectedName": "Casey Bridge · grouping actor"
+          "expectedName": "Casey Bridge \u00b7 grouping actor"
         },
         {
           "actor": "Nova tournament participant",
           "sessionKind": "demo",
           "userId": "650000000000000000000062",
-          "expectedName": "Nova Social · accepted participant"
+          "expectedName": "Nova Social \u00b7 accepted participant"
         },
         {
           "actor": "Riley tournament participant",
           "sessionKind": "demo",
           "userId": "650000000000000000000063",
-          "expectedName": "Riley Outside · accepted participant"
+          "expectedName": "Riley Outside \u00b7 accepted participant"
         }
       ]
     },
@@ -627,19 +627,19 @@
           "actor": "Casey tournament reviewer",
           "sessionKind": "demo",
           "userId": "650000000000000000000061",
-          "expectedName": "Casey Bridge · stage finalizer"
+          "expectedName": "Casey Bridge \u00b7 stage finalizer"
         },
         {
           "actor": "Nova tournament participant",
           "sessionKind": "demo",
           "userId": "650000000000000000000062",
-          "expectedName": "Nova Social · qualifier non-advancer"
+          "expectedName": "Nova Social \u00b7 qualifier non-advancer"
         },
         {
           "actor": "Riley tournament participant",
           "sessionKind": "demo",
           "userId": "650000000000000000000063",
-          "expectedName": "Riley Outside · qualifier advancer"
+          "expectedName": "Riley Outside \u00b7 qualifier advancer"
         }
       ]
     },
@@ -654,19 +654,19 @@
           "actor": "Casey tournament host",
           "sessionKind": "demo",
           "userId": "650000000000000000000061",
-          "expectedName": "Casey Bridge · Final start actor"
+          "expectedName": "Casey Bridge \u00b7 Final start actor"
         },
         {
           "actor": "Nova tournament control",
           "sessionKind": "demo",
           "userId": "650000000000000000000062",
-          "expectedName": "Nova Social · excluded participant control"
+          "expectedName": "Nova Social \u00b7 excluded participant control"
         },
         {
           "actor": "Riley tournament finalist",
           "sessionKind": "demo",
           "userId": "650000000000000000000063",
-          "expectedName": "Riley Outside · Final participant"
+          "expectedName": "Riley Outside \u00b7 Final participant"
         }
       ]
     },
@@ -681,19 +681,19 @@
           "actor": "Casey corrected-score reviewer",
           "sessionKind": "demo",
           "userId": "650000000000000000000061",
-          "expectedName": "Casey Bridge · score correction actor"
+          "expectedName": "Casey Bridge \u00b7 score correction actor"
         },
         {
           "actor": "Nova corrected advancer",
           "sessionKind": "demo",
           "userId": "650000000000000000000062",
-          "expectedName": "Nova Social · revision 1 non-advancer, revision 2 advancer"
+          "expectedName": "Nova Social \u00b7 revision 1 non-advancer, revision 2 advancer"
         },
         {
           "actor": "Riley stable advancer",
           "sessionKind": "demo",
           "userId": "650000000000000000000063",
-          "expectedName": "Riley Outside · unchanged advancer control"
+          "expectedName": "Riley Outside \u00b7 unchanged advancer control"
         }
       ]
     },
@@ -708,19 +708,19 @@
           "actor": "Casey late-correction guard reviewer",
           "sessionKind": "demo",
           "userId": "650000000000000000000061",
-          "expectedName": "Casey Bridge · late Reopen guard actor"
+          "expectedName": "Casey Bridge \u00b7 late Reopen guard actor"
         },
         {
           "actor": "Nova corrected advancer control",
           "sessionKind": "demo",
           "userId": "650000000000000000000062",
-          "expectedName": "Nova Social · corrected Final member control"
+          "expectedName": "Nova Social \u00b7 corrected Final member control"
         },
         {
           "actor": "Riley stable advancer control",
           "sessionKind": "demo",
           "userId": "650000000000000000000063",
-          "expectedName": "Riley Outside · stable Final member control"
+          "expectedName": "Riley Outside \u00b7 stable Final member control"
         }
       ]
     },
@@ -735,19 +735,19 @@
           "actor": "Casey nested tournament reader",
           "sessionKind": "demo",
           "userId": "650000000000000000000061",
-          "expectedName": "Casey Bridge · parent Admin and accepted-group reader"
+          "expectedName": "Casey Bridge \u00b7 parent Admin and accepted-group reader"
         },
         {
           "actor": "Nova Group A accepted control",
           "sessionKind": "demo",
           "userId": "650000000000000000000062",
-          "expectedName": "Nova Social · unchanged Group A member/chat control"
+          "expectedName": "Nova Social \u00b7 unchanged Group A member/chat control"
         },
         {
           "actor": "Riley Group B control",
           "sessionKind": "demo",
           "userId": "650000000000000000000063",
-          "expectedName": "Riley Outside · unchanged R2 control"
+          "expectedName": "Riley Outside \u00b7 unchanged R2 control"
         }
       ]
     },
@@ -762,19 +762,19 @@
           "actor": "Casey tournament-card Admin",
           "sessionKind": "demo",
           "userId": "650000000000000000000061",
-          "expectedName": "Casey Bridge · Qualifiers Finalize actor"
+          "expectedName": "Casey Bridge \u00b7 Qualifiers Finalize actor"
         },
         {
           "actor": "Nova tournament-card observer",
           "sessionKind": "demo",
           "userId": "650000000000000000000062",
-          "expectedName": "Nova Social · parent-card transition observer"
+          "expectedName": "Nova Social \u00b7 parent-card transition observer"
         },
         {
           "actor": "Riley tournament-card observer",
           "sessionKind": "demo",
           "userId": "650000000000000000000063",
-          "expectedName": "Riley Outside · reload persistence observer"
+          "expectedName": "Riley Outside \u00b7 reload persistence observer"
         }
       ]
     },
@@ -789,19 +789,19 @@
           "actor": "Casey admission Admin",
           "sessionKind": "demo",
           "userId": "650000000000000000000061",
-          "expectedName": "Casey Bridge · unchanged tournament Admin control"
+          "expectedName": "Casey Bridge \u00b7 unchanged tournament Admin control"
         },
         {
           "actor": "Nova admitted participant",
           "sessionKind": "demo",
           "userId": "650000000000000000000062",
-          "expectedName": "Nova Social · accepted before first-stage Start"
+          "expectedName": "Nova Social \u00b7 accepted before first-stage Start"
         },
         {
           "actor": "Riley late admission actor",
           "sessionKind": "demo",
           "userId": "650000000000000000000063",
-          "expectedName": "Riley Outside · post-Start join/invitation/approval actor"
+          "expectedName": "Riley Outside \u00b7 post-Start join/invitation/approval actor"
         }
       ]
     },
@@ -816,19 +816,19 @@
           "actor": "Casey Tournament host",
           "sessionKind": "demo",
           "userId": "650000000000000000000061",
-          "expectedName": "Casey Bridge · first-stage Start actor"
+          "expectedName": "Casey Bridge \u00b7 first-stage Start actor"
         },
         {
           "actor": "Nova accepted-before-Start participant",
           "sessionKind": "demo",
           "userId": "650000000000000000000062",
-          "expectedName": "Nova Social · accepts the controlled parent invitation"
+          "expectedName": "Nova Social \u00b7 accepts the controlled parent invitation"
         },
         {
           "actor": "Riley pending parent control",
           "sessionKind": "demo",
           "userId": "650000000000000000000063",
-          "expectedName": "Riley Outside · invitation stays pending"
+          "expectedName": "Riley Outside \u00b7 invitation stays pending"
         }
       ]
     },
@@ -843,19 +843,19 @@
           "actor": "Casey Tournament host",
           "sessionKind": "demo",
           "userId": "650000000000000000000061",
-          "expectedName": "Casey Bridge · removes Nova once"
+          "expectedName": "Casey Bridge \u00b7 removes Nova once"
         },
         {
           "actor": "Nova removed active participant",
           "sessionKind": "demo",
           "userId": "650000000000000000000062",
-          "expectedName": "Nova Social · active Group A member before Remove"
+          "expectedName": "Nova Social \u00b7 active Group A member before Remove"
         },
         {
           "actor": "Riley unchanged room control",
           "sessionKind": "demo",
           "userId": "650000000000000000000063",
-          "expectedName": "Riley Outside · Group B remains active and receives the parent-event notice"
+          "expectedName": "Riley Outside \u00b7 Group B remains active and receives the parent-event notice"
         }
       ]
     },
@@ -870,19 +870,19 @@
           "actor": "Casey Tournament host",
           "sessionKind": "demo",
           "userId": "650000000000000000000061",
-          "expectedName": "Casey Bridge · removes Nova and receives no notification"
+          "expectedName": "Casey Bridge \u00b7 removes Nova and receives no notification"
         },
         {
           "actor": "Nova removed room member",
           "sessionKind": "demo",
           "userId": "650000000000000000000062",
-          "expectedName": "Nova Social · receives the self-removal notification"
+          "expectedName": "Nova Social \u00b7 receives the self-removal notification"
         },
         {
           "actor": "Riley event participant",
           "sessionKind": "demo",
           "userId": "650000000000000000000063",
-          "expectedName": "Riley Outside · receives the event-participant notification; Lina is verified by the persisted oracle"
+          "expectedName": "Riley Outside \u00b7 receives the event-participant notification; Lina is verified by the persisted oracle"
         }
       ]
     },
@@ -897,19 +897,19 @@
           "actor": "Casey Tournament host",
           "sessionKind": "demo",
           "userId": "650000000000000000000061",
-          "expectedName": "Casey Bridge · disqualifies and reinstates Nova"
+          "expectedName": "Casey Bridge \u00b7 disqualifies and reinstates Nova"
         },
         {
           "actor": "Nova affected participant",
           "sessionKind": "demo",
           "userId": "650000000000000000000062",
-          "expectedName": "Nova Social · keeps membership, score and chat access while DQ"
+          "expectedName": "Nova Social \u00b7 keeps membership, score and chat access while DQ"
         },
         {
           "actor": "Riley active participant",
           "sessionKind": "demo",
           "userId": "650000000000000000000063",
-          "expectedName": "Riley Outside · active-order and participant-notification control; Lina is persisted-oracle only"
+          "expectedName": "Riley Outside \u00b7 active-order and participant-notification control; Lina is persisted-oracle only"
         }
       ]
     },
@@ -924,19 +924,19 @@
           "actor": "Casey Transport owner",
           "sessionKind": "demo",
           "userId": "650000000000000000000061",
-          "expectedName": "Casey Bridge · assigns Casey Group Shuttle"
+          "expectedName": "Casey Bridge \u00b7 assigns Casey Group Shuttle"
         },
         {
           "actor": "Nova Accommodation owner",
           "sessionKind": "demo",
           "userId": "650000000000000000000062",
-          "expectedName": "Nova Social · assigns Nova Group Lodge"
+          "expectedName": "Nova Social \u00b7 assigns Nova Group Lodge"
         },
         {
           "actor": "Riley Supplies owner",
           "sessionKind": "demo",
           "userId": "650000000000000000000063",
-          "expectedName": "Riley Outside · assigns Riley Group Supplies"
+          "expectedName": "Riley Outside \u00b7 assigns Riley Group Supplies"
         }
       ]
     },
@@ -1079,17 +1079,17 @@
         {
           "actor": "Casey",
           "userId": "650000000000000000000061",
-          "expectedName": "Casey Bridge · Admin approver"
+          "expectedName": "Casey Bridge \u00b7 Admin approver"
         },
         {
           "actor": "Nova",
           "userId": "650000000000000000000062",
-          "expectedName": "Nova Social · accepted ordinary inviter"
+          "expectedName": "Nova Social \u00b7 accepted ordinary inviter"
         },
         {
           "actor": "Riley",
           "userId": "650000000000000000000063",
-          "expectedName": "Riley Outside · pending invitation target"
+          "expectedName": "Riley Outside \u00b7 pending invitation target"
         }
       ]
     },
@@ -1298,7 +1298,7 @@
           "actor": "Casey Asset lifecycle owner",
           "sessionKind": "demo",
           "userId": "650000000000000000000061",
-          "expectedName": "Casey Bridge · Asset create, edit and delete owner"
+          "expectedName": "Casey Bridge \u00b7 Asset create, edit and delete owner"
         }
       ]
     },
@@ -1313,19 +1313,19 @@
           "actor": "Casey Asset visibility owner",
           "sessionKind": "demo",
           "userId": "650000000000000000000061",
-          "expectedName": "Casey Bridge · owner control"
+          "expectedName": "Casey Bridge \u00b7 owner control"
         },
         {
           "actor": "Lina Asset visibility friend",
           "sessionKind": "demo",
           "userId": "178e8d0cbe164fa3fede5884",
-          "expectedName": "Lina Park · deterministic friend control"
+          "expectedName": "Lina Park \u00b7 deterministic friend control"
         },
         {
           "actor": "Liam Asset visibility unrelated",
           "sessionKind": "demo",
           "userId": "2d520f3c98b0440c1556f4af",
-          "expectedName": "Liam Parker · non-friend control"
+          "expectedName": "Liam Parker \u00b7 non-friend control"
         }
       ]
     },
@@ -1340,19 +1340,19 @@
           "actor": "Casey Asset owner",
           "sessionKind": "demo",
           "userId": "650000000000000000000061",
-          "expectedName": "Casey Bridge · Group A Asset owner and inviter"
+          "expectedName": "Casey Bridge \u00b7 Group A Asset owner and inviter"
         },
         {
           "actor": "Nova invited member",
           "sessionKind": "demo",
           "userId": "650000000000000000000062",
-          "expectedName": "Nova Social · Group A invitation recipient"
+          "expectedName": "Nova Social \u00b7 Group A invitation recipient"
         },
         {
           "actor": "Riley join requester",
           "sessionKind": "demo",
           "userId": "650000000000000000000063",
-          "expectedName": "Riley Outside · Group A Join requester"
+          "expectedName": "Riley Outside \u00b7 Group A Join requester"
         }
       ]
     },
@@ -1370,13 +1370,13 @@
           "targetUrl": "http://localhost/admin",
           "entryUrl": "http://localhost/entry?redirect=%2Fadmin",
           "autoDismissExplanationGuide": false,
-          "expectedName": "Ava Moderation · demo provider configuration"
+          "expectedName": "Ava Moderation \u00b7 demo provider configuration"
         },
         {
           "actor": "Alex payment member",
           "sessionKind": "demo",
           "userId": "af0436815ab38f4864dd1e24",
-          "expectedName": "Alex Turner · Payment history and Cards"
+          "expectedName": "Alex Turner \u00b7 Payment history and Cards"
         }
       ]
     },
@@ -1391,13 +1391,13 @@
           "actor": "Casey Event checkout owner",
           "sessionKind": "demo",
           "userId": "650000000000000000000061",
-          "expectedName": "Casey Bridge · Event membership oracle"
+          "expectedName": "Casey Bridge \u00b7 Event membership oracle"
         },
         {
           "actor": "Nova Event checkout member",
           "sessionKind": "demo",
           "userId": "650000000000000000000062",
-          "expectedName": "Nova Social · Stripe and Cash-only checkout"
+          "expectedName": "Nova Social \u00b7 Stripe and Cash-only checkout"
         },
         {
           "actor": "Ava demo payment configuration",
@@ -1406,7 +1406,7 @@
           "targetUrl": "http://localhost/admin",
           "entryUrl": "http://localhost/entry?redirect=%2Fadmin",
           "autoDismissExplanationGuide": false,
-          "expectedName": "Ava Moderation · Stripe and Cash-only configuration"
+          "expectedName": "Ava Moderation \u00b7 Stripe and Cash-only configuration"
         }
       ]
     },
@@ -1421,13 +1421,13 @@
           "actor": "Casey Asset checkout owner",
           "sessionKind": "demo",
           "userId": "650000000000000000000061",
-          "expectedName": "Casey Bridge · paid Asset request owner"
+          "expectedName": "Casey Bridge \u00b7 paid Asset request owner"
         },
         {
           "actor": "Nova Asset checkout member",
           "sessionKind": "demo",
           "userId": "650000000000000000000062",
-          "expectedName": "Nova Social · Barion and 3DS checkout"
+          "expectedName": "Nova Social \u00b7 Barion and 3DS checkout"
         },
         {
           "actor": "Ava demo payment configuration",
@@ -1436,7 +1436,7 @@
           "targetUrl": "http://localhost/admin",
           "entryUrl": "http://localhost/entry?redirect=%2Fadmin",
           "autoDismissExplanationGuide": false,
-          "expectedName": "Ava Moderation · Barion and 3DS configuration"
+          "expectedName": "Ava Moderation \u00b7 Barion and 3DS configuration"
         }
       ]
     },
@@ -1451,19 +1451,19 @@
           "actor": "Casey Asset owner",
           "sessionKind": "demo",
           "userId": "650000000000000000000061",
-          "expectedName": "Casey Bridge · free and paid request approvals"
+          "expectedName": "Casey Bridge \u00b7 free and paid request approvals"
         },
         {
           "actor": "Nova Borrow requester",
           "sessionKind": "demo",
           "userId": "650000000000000000000062",
-          "expectedName": "Nova Social · free, paid and organizer-only branches"
+          "expectedName": "Nova Social \u00b7 free, paid and organizer-only branches"
         },
         {
           "actor": "Riley Borrow requester",
           "sessionKind": "demo",
           "userId": "650000000000000000000063",
-          "expectedName": "Riley Outside · owner-reject branch"
+          "expectedName": "Riley Outside \u00b7 owner-reject branch"
         }
       ]
     },
@@ -1478,19 +1478,19 @@
           "actor": "Casey Asset pricing owner",
           "sessionKind": "demo",
           "userId": "650000000000000000000061",
-          "expectedName": "Casey Bridge · interactive Asset pricing edits"
+          "expectedName": "Casey Bridge \u00b7 interactive Asset pricing edits"
         },
         {
           "actor": "Nova accepted pricing member",
           "sessionKind": "demo",
           "userId": "650000000000000000000062",
-          "expectedName": "Nova Social · member pricing and three payment snapshots"
+          "expectedName": "Nova Social \u00b7 member pricing and three payment snapshots"
         },
         {
           "actor": "Riley public pricing control",
           "sessionKind": "demo",
           "userId": "650000000000000000000063",
-          "expectedName": "Riley Outside · non-member stage access control"
+          "expectedName": "Riley Outside \u00b7 non-member stage access control"
         }
       ]
     },
@@ -1505,19 +1505,19 @@
           "actor": "Casey Event Admin",
           "sessionKind": "demo",
           "userId": "650000000000000000000061",
-          "expectedName": "Casey Bridge · normal and Tournament Event administration"
+          "expectedName": "Casey Bridge \u00b7 normal and Tournament Event administration"
         },
         {
           "actor": "Nova Asset owner",
           "sessionKind": "demo",
           "userId": "650000000000000000000062",
-          "expectedName": "Nova Social · Transport/Accommodation owner and Group A mutation"
+          "expectedName": "Nova Social \u00b7 Transport/Accommodation owner and Group A mutation"
         },
         {
           "actor": "Riley Asset owner",
           "sessionKind": "demo",
           "userId": "650000000000000000000063",
-          "expectedName": "Riley Outside · Supplies/Accommodation owner and cleanup target"
+          "expectedName": "Riley Outside \u00b7 Supplies/Accommodation owner and cleanup target"
         }
       ]
     },
@@ -1533,7 +1533,7 @@
           "targetUrl": "http://localhost/admin",
           "entryUrl": "http://localhost/entry?redirect=%2Fadmin",
           "autoDismissExplanationGuide": false,
-          "expectedName": "Ava Moderation · governed revisions and Article lifecycle"
+          "expectedName": "Ava Moderation \u00b7 governed revisions and Article lifecycle"
         },
         {
           "actor": "Kai retained Content client",
@@ -1541,7 +1541,7 @@
           "userId": "7822c5f99eff99d63abe8933",
           "targetUrl": "http://localhost/game",
           "entryUrl": "http://localhost/entry?redirect=%2Fgame",
-          "expectedName": "Kai Morgan · retained public snapshot and Privacy approval"
+          "expectedName": "Kai Morgan \u00b7 retained public snapshot and Privacy approval"
         },
         {
           "actor": "Riley fresh Content control",
@@ -1549,7 +1549,7 @@
           "userId": "650000000000000000000063",
           "targetUrl": "http://localhost/game",
           "entryUrl": "http://localhost/entry?redirect=%2Fgame",
-          "expectedName": "Riley Outside · fresh public and unapproved Privacy control"
+          "expectedName": "Riley Outside \u00b7 fresh public and unapproved Privacy control"
         }
       ]
     },
@@ -1679,10 +1679,10 @@
           "autoDismissExplanationGuide": true
         },
         {
-          "actor": "Balázs",
+          "actor": "Bal\u00e1zs",
           "sessionKind": "demo",
           "userId": "b29df68956f3fe15e04558de",
-          "expectedName": "Kiss Balázs",
+          "expectedName": "Kiss Bal\u00e1zs",
           "autoDismissExplanationGuide": true
         }
       ]
@@ -2179,6 +2179,45 @@
         }
       ],
       "preserveOtherSessions": true
+    },
+    "AFFILIATE-REFUND-CONCURRENCY-001": {
+      "preserveOtherSessions": true,
+      "layout": {
+        "columns": 2
+      },
+      "sessions": [
+        {
+          "actor": "Affiliate owner refund 1",
+          "sessionKind": "demo",
+          "userId": "6aff10000000000000000001",
+          "expectedName": "Affiliate QA Owner",
+          "autoDismissExplanationGuide": true
+        },
+        {
+          "actor": "Affiliate owner refund 2",
+          "sessionKind": "demo",
+          "userId": "6aff10000000000000000001",
+          "expectedName": "Affiliate QA Owner",
+          "autoDismissExplanationGuide": true
+        }
+      ]
+    },
+    "AFFILIATE-EXCHANGE-OPERATOR-001": {
+      "preserveOtherSessions": true,
+      "layout": {
+        "columns": 1
+      },
+      "sessions": [
+        {
+          "actor": "FX configuration operator",
+          "sessionKind": "demo",
+          "userId": "operator@myscoutee.local",
+          "expectedName": "Demo Operator",
+          "targetUrl": "http://localhost/operator",
+          "entryUrl": "http://localhost/entry?redirect=%2Foperator",
+          "autoDismissExplanationGuide": false
+        }
+      ]
     }
   }
 }

@@ -141,6 +141,11 @@ elif command=='prepare-exchange-browser':
     const checkpointId='AFFILIATE-EXCHANGE-RATES-001';
     states.updateOne({_id:checkpointId},{$setOnInsert:{checkpointId,scenario:'affiliate-exchange-rates',phase:'ready',parentCheckpoint:key,stagedAtIso:new Date().toISOString()}},{upsert:true});
     print(JSON.stringify({checkpointId,prerequisitesVerified:true}));'''
+elif command=='prepare-exchange-operator-browser':
+    code='''if(!states.findOne({_id:key}) || !db.users.findOne({userId:'operator@myscoutee.local'}))throw Error('FX operator prerequisites missing');
+    const checkpointId='AFFILIATE-EXCHANGE-OPERATOR-001';
+    states.updateOne({_id:checkpointId},{$setOnInsert:{checkpointId,scenario:'affiliate-exchange-operator',phase:'ready',parentCheckpoint:key,stagedAtIso:new Date().toISOString()}},{upsert:true});
+    print(JSON.stringify({checkpointId,prerequisitesVerified:true}));'''
 elif command=='stage-exchange-source':
     code='''const state=states.findOne({_id:key}); if(!state)throw Error('Not staged');
     const config=db.deploymentConfigurations.findOne({_id:'deployment-configuration'});
@@ -199,6 +204,12 @@ elif command=='stage-concurrency-retest':
     db.activityMembers.insertOne({_id:'qa-concurrent-retest-admin',ownerType:'event',ownerId:eventId,userId:owner,role:'Admin',status:'accepted',actionAtIso:now});
     states.updateOne({_id:key},{$set:{'concurrencyControl.retestEventId':eventId,'concurrencyControl.retestBaseline':db.affiliatePartners.findOne({_id:owner})}});
     print(JSON.stringify({eventId,seededPayments:0,seededRevenue:0}));'''
+elif command=='prepare-refund-concurrency-browser':
+    code='''const state=states.findOne({_id:key}), eventId=state?.concurrencyControl?.retestEventId;
+    if(!eventId || db.payments.countDocuments({sourceId:eventId,auditKind:'refund',refundRequestStatus:'pending'})!==2 || db.payments.countDocuments({sourceId:eventId,auditKind:'payment',affiliateOwnerUserId:owner})!==2)throw Error('Two real pending attributed refund requests required');
+    const checkpointId='AFFILIATE-REFUND-CONCURRENCY-001';
+    states.updateOne({_id:checkpointId},{$setOnInsert:{checkpointId,scenario:'affiliate-refund-concurrency',phase:'ready',parentCheckpoint:key,stagedAtIso:new Date().toISOString()}},{upsert:true});
+    print(JSON.stringify({checkpointId,pendingRequestsVerified:true}));'''
 elif command=='prepare-concurrency-browser':
     code='''const state=states.findOne({_id:key}), checkpointId='AFFILIATE-REVENUE-CONCURRENCY-001';
     if(!state?.concurrencyControl)throw Error('Concurrency prerequisite missing');
@@ -360,8 +371,10 @@ elif command=='reset':
     subprocess.run(['bash','server/docker/scripts/manual-qa-checkpoints/manual-qa-checkpoints-docker.sh','restore','browser-sessions',STATE],check=True)
     if state.get('exchangeSourceBaseline'):
         subprocess.run(['bash','server/docker/scripts/manual-qa-checkpoints/manual-qa-checkpoints-docker.sh','restore','browser-sessions','AFFILIATE-EXCHANGE-RATES-001'],check=True)
+        subprocess.run(['bash','server/docker/scripts/manual-qa-checkpoints/manual-qa-checkpoints-docker.sh','restore','browser-sessions','AFFILIATE-EXCHANGE-OPERATOR-001'],check=True)
     if state.get('concurrencyControl'):
         subprocess.run(['bash','server/docker/scripts/manual-qa-checkpoints/manual-qa-checkpoints-docker.sh','restore','browser-sessions','AFFILIATE-REVENUE-CONCURRENCY-001'],check=True)
+        subprocess.run(['bash','server/docker/scripts/manual-qa-checkpoints/manual-qa-checkpoints-docker.sh','restore','browser-sessions','AFFILIATE-REFUND-CONCURRENCY-001'],check=True)
     code='''const state=states.findOne({_id:key}); if(!state)throw Error('Not staged');
     if(state.exchangeSourceBaseline) {
       const baseline=state.exchangeSourceBaseline;

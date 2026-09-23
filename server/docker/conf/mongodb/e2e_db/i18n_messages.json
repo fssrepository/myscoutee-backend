@@ -44878,5 +44878,29 @@
     "key": "error.str_max_length",
     "lang": "hu",
     "value": "A hossznak 1 és 255 között kell lennie"
+  },
+  {
+    "_id": "i18n-message-en-operator-configuration-payment-exchange-save",
+    "key": "operator.configuration.payment.exchange.save",
+    "lang": "en",
+    "value": "Save exchange-rate source"
+  },
+  {
+    "_id": "i18n-message-en-operator-configuration-payment-exchange-saved",
+    "key": "operator.configuration.payment.exchange.saved",
+    "lang": "en",
+    "value": "Exchange-rate source saved."
+  },
+  {
+    "_id": "i18n-message-hu-operator-configuration-payment-exchange-save",
+    "key": "operator.configuration.payment.exchange.save",
+    "lang": "hu",
+    "value": "Árfolyamforrás mentése"
+  },
+  {
+    "_id": "i18n-message-hu-operator-configuration-payment-exchange-saved",
+    "key": "operator.configuration.payment.exchange.saved",
+    "lang": "hu",
+    "value": "Árfolyamforrás mentve."
   }
 ]
