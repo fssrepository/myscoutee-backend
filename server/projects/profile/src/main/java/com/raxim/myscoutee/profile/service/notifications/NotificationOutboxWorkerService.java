@@ -578,7 +578,7 @@ public class NotificationOutboxWorkerService {
     private List<TokenRegistration> tokenRegistrations(NotificationOutboxItem item, List<Users> users) {
         LinkedHashMap<String, TokenRegistration> byToken = new LinkedHashMap<>();
         for (Users user : users == null ? List.<Users>of() : users) {
-            if (user == null) {
+            if (!NotificationOutboxService.hasDeliveryLocation(user)) {
                 continue;
             }
             String userId = normalizeId(user.getUserId());

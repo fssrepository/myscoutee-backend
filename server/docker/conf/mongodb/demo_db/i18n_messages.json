@@ -22311,7 +22311,7 @@
     "_id": "i18n-message-en-game-location-required-description",
     "key": "game.location.required.description",
     "lang": "en",
-    "value": "Your location is missing. Update location access in Permissions and installation to load profiles."
+    "value": "To see profiles, open Settings → Install, enable location access, then press Update."
   },
   {
     "_id": "i18n-message-hu-integration-token-ip",
@@ -44625,6 +44625,6 @@
     "_id": "i18n-message-hu-game-location-required-description",
     "key": "game.location.required.description",
     "lang": "hu",
-    "value": "A helyadatod még nincs elmentve. A profilok betöltéséhez frissítsd a helyadatot az Engedélyek és telepítés ablakban."
+    "value": "A profilok megjelenítéséhez nyisd meg a Beállítások → Telepítés menüpontot, engedélyezd a helyadatok használatát, majd nyomd meg a Frissítés gombot."
   }
 ]

@@ -348,6 +348,7 @@ public class NotificationOutboxService {
             return result;
         }
         for (Users user : usersRepository.findByUserIdIn(recipients)) {
+            if (!hasDeliveryLocation(user)) continue;
             Map<String, String> devices = result.get(safeText(user.getUserId()));
             if (devices == null || user.getDevices() == null) continue;
             if ("chat-message".equals(item.getNotificationType()) && chatWebSocketSessionRegistry != null
@@ -360,6 +361,12 @@ public class NotificationOutboxService {
             }
         }
         return result;
+    }
+
+    static boolean hasDeliveryLocation(Users user) {
+        Users.LocationCoordinatesRecord location = user == null ? null : user.getLocationCoordinates();
+        return location != null && location.latitude() != null && location.longitude() != null
+                && Double.isFinite(location.latitude()) && Double.isFinite(location.longitude());
     }
 
     private String resolveStableTopicName(NotificationIntent intent, Map<String, String> payload, int recipientCount) {
