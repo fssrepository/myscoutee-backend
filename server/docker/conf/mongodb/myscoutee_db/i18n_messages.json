@@ -22302,6 +22302,18 @@
     "value": "Please enable JavaScript to confirm your email preferences."
   },
   {
+    "_id": "i18n-message-en-game-location-required-title",
+    "key": "game.location.required.title",
+    "lang": "en",
+    "value": "Location required"
+  },
+  {
+    "_id": "i18n-message-en-game-location-required-description",
+    "key": "game.location.required.description",
+    "lang": "en",
+    "value": "Your location is missing. Update location access in Permissions and installation to load profiles."
+  },
+  {
     "_id": "i18n-message-hu-integration-token-ip",
     "key": "integration.token.ip",
     "lang": "hu",
@@ -44602,5 +44614,17 @@
     "key": "email.unsubscribe.javascript",
     "lang": "hu",
     "value": "Az email-beállítások megerősítéséhez engedélyezd a JavaScriptet."
+  },
+  {
+    "_id": "i18n-message-hu-game-location-required-title",
+    "key": "game.location.required.title",
+    "lang": "hu",
+    "value": "Hiányzó helyadat"
+  },
+  {
+    "_id": "i18n-message-hu-game-location-required-description",
+    "key": "game.location.required.description",
+    "lang": "hu",
+    "value": "A helyadatod még nincs elmentve. A profilok betöltéséhez frissítsd a helyadatot az Engedélyek és telepítés ablakban."
   }
 ]

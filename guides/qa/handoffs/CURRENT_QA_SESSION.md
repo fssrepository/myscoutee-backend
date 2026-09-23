@@ -89,11 +89,11 @@ Earlier Event Mode, Integration API, Activity Rating and EVENT-FOLLOWING-001 rem
 checkpoint: AFFILIATE-REVENUE-001
 checklist: ../checklists/api/AFFILIATE-REVENUE-001.md
 substage: Admin client lifecycle closed in dev scope; user accepted installer app-menu side correction. Begin Affiliate revenue.
-fixture_phase: Admin client reset including fresh UI-only baseline; client/stubs/notification monitor stopped. Affiliate invitation fixture not yet staged.
+fixture_phase: Admin client reset including fresh UI-only baseline; client/stubs/notification monitor stopped. Affiliate invitation fixture staged; owner and one normally registered referred user ready. Demo Cards configuration correction in progress.
 execution_log: ../evidence/AFFILIATE-REVENUE-001-20260923-progress.md
-next_action: Stage versioned affiliate-invitation baseline, launch its managed browsers, prove zero revenue and register disposable referred user before simulator payment lifecycle. Full-flow delegation remains active.
+next_action: Zero-revenue UI and normal referral registration done. New invitee location missing, setup Update incorrectly hidden when permission already granted: fix in watcher, retest normal Update before event payments. Demo Cards smoke closed; fresh simulator seed test blocked by dependency download (test container stopped). Full-flow delegation remains active.
 queue: EVENT-CALENDAR-EXPORT-001
-calendar_boundary: Calendar LAST; Android connected/authorized earlier, recheck at calendar boundary.
+calendar_boundary: Calendar LAST; test actual Ubuntu ICS opening/import behavior as well as Android. Android connected/authorized earlier, recheck at calendar boundary.
 resume_gate: Read-only fixture status and existing dev stack before mutation; preserve unrelated Borrow/Event Mode snapshots. Gallery/Email/Admin remain closed; do not replay.
 runtime: Existing frontend-sync and backend continuous/DevTools watchers own compilation; no separate builds. Persistent dev release simulator remains intended.
 last_completed: ADMIN-CLIENT-API-001 dev PASS; OS notification-center visual icon, actual desktop login/reboot and separate REAL/DEMO database isolation NOT RUN. See its dated evidence for precise boundaries.
