@@ -22,6 +22,8 @@ class ContentModerationServiceTest {
     @BeforeEach void persistence() {
         when(repository.state()).thenAnswer(call -> state);
         when(repository.item(anyString())).thenAnswer(call -> items.get(call.getArgument(0)));
+        when(repository.withheld(anyInt())).thenAnswer(call -> items.values().stream()
+                .filter(item -> !"accepted".equals(item.status())).limit(call.getArgument(0, Integer.class)).toList());
         doAnswer(call -> { Item item = call.getArgument(0); items.put(item.id(), item); return null; }).when(repository).saveItem(any());
         when(repository.compareAndSet(any(), any(), any(), any())).thenAnswer(call -> {
             State before = call.getArgument(0);
@@ -30,6 +32,51 @@ class ContentModerationServiceTest {
         });
     }
     Item submit() { return service.register("feed", "post", "owner", "Photo", "photo.jpg"); }
+    @Test void disabledModerationJobReleasesEveryCategoryAndBucketWithoutAutoApprovalOrDelay() {
+        service.register("event", "pending", "owner", "Event", "");
+        Item asset = service.register("asset", "rejected", "owner", "Asset", "");
+        service.decide(asset.id(), new Decision("admin", "reject", 1, "rejected", ""), admin);
+        Item feed = submit();
+        service.decide(feed.id(), new Decision("admin", "accept", 1, "accepted", ""), admin);
+        service.decide(feed.id(), new Decision("admin", "block", 2, "blocked", ""), admin);
+        Snapshot disabled = service.settings(new SaveSettings("admin", state.revision(), new Settings(false, false, 43200, List.of("feed"))));
+        assertEquals(1, disabled.pendingCount());
+        assertEquals("rejected", items.get(asset.id()).status());
+        assertEquals("blocked", items.get(feed.id()).status());
+        assertEquals(3, service.approveDue());
+        disabled = service.snapshot();
+        assertEquals(0, disabled.pendingCount());
+        for (String category : List.of("asset", "event", "feed")) {
+            assertEquals(1L, disabled.counts().get(category).get("accepted"));
+            assertEquals(0L, disabled.counts().get(category).getOrDefault("under-review", 0L));
+            assertEquals(0L, disabled.counts().get(category).getOrDefault("rejected", 0L));
+            assertEquals(0L, disabled.counts().get(category).getOrDefault("blocked", 0L));
+        }
+        var versions = items.values().stream().map(Item::version).sorted().toList();
+        service.settings(new SaveSettings("admin", state.revision(), disabled.settings()));
+        assertEquals(0, service.approveDue());
+        assertEquals(versions, items.values().stream().map(Item::version).sorted().toList());
+        assertEquals(disabled.counts(), service.snapshot().counts());
+        Item released = items.get(feed.id());
+        assertThrows(ResponseStatusException.class, () -> service.decide(feed.id(),
+                new Decision("admin", "stale-block", released.version(), "blocked", ""), admin));
+        verifyNoInteractions(chat);
+    }
+    @Test void interruptedDisableResumesCommittedReleaseWithoutCountingTwice() {
+        Item item = submit();
+        doThrow(new IllegalStateException("storage interrupted")).doAnswer(call -> {
+            Item saved = call.getArgument(0); items.put(saved.id(), saved); return null;
+        }).when(repository).saveItem(any());
+        service.settings(new SaveSettings("admin", state.revision(), Settings.defaults()));
+        assertThrows(IllegalStateException.class, service::approveDue);
+        assertFalse(state.settings().enabled());
+        assertFalse(state.pending().isEmpty());
+        service.approveDue();
+        assertEquals("accepted", items.get(item.id()).status());
+        assertTrue(state.pending().isEmpty());
+        assertEquals(1L, service.snapshot().counts().get("feed").get("accepted"));
+        assertEquals(0, service.snapshot().pendingCount());
+    }
     @Test void defaultModerationIsOffAndDoesNotHoldBackAnyCategoryOrRunAutoApproval() {
         service.settings(new SaveSettings("admin", state.revision(), Settings.defaults()));
         assertFalse(service.snapshot().settings().enabled());

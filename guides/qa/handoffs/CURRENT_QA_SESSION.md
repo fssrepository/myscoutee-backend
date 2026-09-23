@@ -90,8 +90,8 @@ checkpoint: EVENT-GALLERY-FEED-001
 checklist: ../checklists/event/EVENT-GALLERY-FEED-001.md
 execution_log: ../evidence/EVENT-GALLERY-FEED-001-20260923-progress.md
 substage: Gallery/Feed runtime and moderation checks; full-flow delegated by user.
-fixture_phase: four retained sessions; Event and Asset under review, fixture Feed accepted; moderation and auto approval OFF, delay 43200/feed selection retained; auto-approval Job suspended.
-next_action: Continue Event/Feed badge verification and clarified moderation transitions, zero-minute/default-off publication and suspended Job checks; then distance paging/cleanup and queued cases. Settings disabled-state UI and Asset badge verified; see dated evidence. Leave carousel arrows unchanged.
+fixture_phase: four retained sessions; all existing moderation items accepted after OFF release QA; moderation OFF, auto approval OFF, delay 43200/Asset selection retained; auto-approval Job enabled at one minute.
+next_action: Moderation OFF branch PASS including scheduled release, counters, live SmartList, no badges and fresh Event publication. Continue remaining gallery/read-only, distance paging and cleanup, then queued cases. New unit regressions not run. See dated evidence; leave carousel arrows unchanged.
 queue: OPERATOR-EMAIL-WARNING-001, ADMIN-CLIENT-API-001, AFFILIATE-REVENUE-001, EVENT-CALENDAR-EXPORT-001
 calendar_boundary: Calendar LAST; Android connected and authorized through ADB 2026-09-23; recheck when reaching calendar.
 resume_gate: Read evidence and gallery fixture status; inspect managed manifest and existing pages before any reset/relaunch. No replay of closed earlier cases.

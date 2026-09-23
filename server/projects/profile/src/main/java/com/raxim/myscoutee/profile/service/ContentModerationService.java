@@ -83,7 +83,14 @@ public class ContentModerationService {
     private Item enlist(Item previous, Item next, String adminName, String adminInitials, String message) {
         for (int attempt = 0; attempt < 10; attempt++) {
             var current = repository.state();
-            var pending = current.pending().stream().filter(m -> m.item().id().equals(next.id())).findFirst().orElse(null);
+            if (!Boolean.TRUE.equals(current.settings().enabled()) && !"accepted".equals(next.status())) {
+                // A publication racing with disable must not reintroduce a moderation hold.
+                if (previous != null) throw conflict();
+                next = new Item(next.id(), next.category(), next.sourceId(), next.ownerUserId(), next.title(), next.imageUrl(),
+                        next.submittedAtIso(), "accepted", next.version(), next.commandId(), next.reviewedBy(), next.reviewedAtIso(), true);
+            }
+            String itemId = next.id();
+            var pending = current.pending().stream().filter(m -> m.item().id().equals(itemId)).findFirst().orElse(null);
             if (pending != null) {
                 if (!pending.commandId().equals(next.commandId())) throw conflict();
                 apply(pending); acknowledge(pending.commandId()); return repository.item(next.id());
@@ -107,6 +114,19 @@ public class ContentModerationService {
     }
     public void drainPending() {
         for (Mutation mutation : repository.state().pending()) { apply(mutation); acknowledge(mutation.commandId()); }
+    }
+    private int releaseWithheld() {
+        int changed = 0;
+        // Use the same bounded Job batch as delayed approval; the next run continues the release.
+        for (Item item : repository.withheld(100)) {
+            if (Boolean.TRUE.equals(repository.state().settings().enabled())) break;
+            try {
+                decide(item.id(), new Decision("", "disable:" + item.id() + ":" + item.version(), item.version(), "accepted", ""),
+                        new AdminUserDto("content-moderation-disabled", "", "", "", "", "", List.of()));
+                changed++;
+            } catch (ResponseStatusException ex) { if (ex.getStatusCode() != HttpStatus.CONFLICT) throw ex; }
+        }
+        return changed;
     }
     private void acknowledge(String commandId) {
         for (int attempt = 0; attempt < 10; attempt++) {
@@ -154,7 +174,8 @@ public class ContentModerationService {
     public int approveDue() {
         drainPending();
         Settings settings = repository.state().settings();
-        if (!Boolean.TRUE.equals(settings.enabled()) || !settings.autoApprove() || settings.categories().isEmpty()) return 0;
+        if (!Boolean.TRUE.equals(settings.enabled())) return releaseWithheld();
+        if (!settings.autoApprove() || settings.categories().isEmpty()) return 0;
         var due = repository.due(settings, Instant.now().minus(settings.delayMinutes(), ChronoUnit.MINUTES).toString(), 100);
         int changed = 0;
         for (Item item : due) {

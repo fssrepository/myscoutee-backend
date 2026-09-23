@@ -82,7 +82,7 @@ function markBootstrapFailed(err) {
 silenceBrowserConsoleLogs();
 bindBootstrapResumeRecovery();
 prepareDemoFailover().then(async () => {
-  const [{ App }, { appConfig }] = await Promise.all([import("./app-KAFOARG7.js"), import("./app.config-GOJJMS55.js")]);
+  const [{ App }, { appConfig }] = await Promise.all([import("./app-DWG7UW52.js"), import("./app.config-X5OZGYJY.js")]);
   const localUserId = demoFailoverLocalUser();
   if (localUserId) {
     appConfig.providers.push(provideAppInitializer(() => {

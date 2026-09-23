@@ -45,4 +45,8 @@ public class ContentModerationRepository {
         return mongo.find(Query.query(Criteria.where("status").is("under-review").and("category").in(settings.categories())
                 .and("submittedAtIso").lte(before)).with(Sort.by("submittedAtIso")).limit(limit), Item.class);
     }
+    public List<Item> withheld(int limit) {
+        return mongo.find(Query.query(Criteria.where("status").in("under-review", "rejected", "blocked"))
+                .with(Sort.by("_id")).limit(limit), Item.class);
+    }
 }
