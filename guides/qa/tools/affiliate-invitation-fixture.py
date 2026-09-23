@@ -160,7 +160,7 @@ elif command=='stage-revenue-concurrency':
     for(const field of ['age','birthday','city','height','physique','languages','horoscope','gender','hostTier','completion','profileFormVersion','locationCoordinates','partitionKey','images','profileDetails'])
       if(source[field]!==undefined)user[field]=source[field];
     db.users.insertOne(user);
-    db.affiliateRegistrations.insertOne({...registration,_id:second,registeredAtIso:now});
+    db.affiliateRegistrations.insertOne({...registration,_id:ObjectId(second),registeredAtIso:now});
     db.savedPaymentMethods.insertOne({...method,_id:ObjectId('6aff40000000000000000002'),version:NumberLong("0"),userId:second,registrationId:'qa-concurrency-prerequisite',createdAtIso:now,updatedAtIso:now});
     const template=db.events.findOne({sourceId:state.callbackControlId,ownerUserId:owner});
     db.events.insertOne({...template,_id:ObjectId(eventId),sourceId:eventId,syncKey:eventId,title:'QA Affiliate Concurrent Purchases',
@@ -170,6 +170,35 @@ elif command=='stage-revenue-concurrency':
     db.activityMembers.insertOne({_id:'qa-concurrent-admin',ownerType:'event',ownerId:eventId,userId:owner,role:'Admin',status:'accepted',actionAtIso:now});
     states.updateOne({_id:key},{$addToSet:{users:second},$set:{concurrencyControl:{first,second,eventId,baseline:db.affiliatePartners.findOne({_id:owner})}}});
     print(JSON.stringify({second,eventId,amountPerPurchase:7,seededPayments:0,seededRevenue:0,preparedReferralAndSimulatorMethod:true}));'''
+elif command=='repair-concurrency-registration':
+    code='''const state=states.findOne({_id:key}), control=state?.concurrencyControl;
+    if(!control || control.replayEventId)throw Error('Unrepaired concurrency prerequisite required');
+    const registration=db.affiliateRegistrations.findOne({_id:control.second,referrerUserId:owner});
+    const eventId='6aff20000000000000000013';
+    if(!registration || db.affiliateRegistrations.findOne({_id:ObjectId(control.second)}) || db.events.findOne({sourceId:eventId}))throw Error('Malformed isolated registration required');
+    const template=db.events.findOne({sourceId:control.eventId,ownerUserId:owner});
+    const now=new Date().toISOString(), start=new Date(Date.now()+48*3600000).toISOString(), end=new Date(Date.parse(start)+3600000).toISOString();
+    states.updateOne({_id:key},{$set:{'concurrencyControl.originalRegistration':registration,'concurrencyControl.replayBaseline':db.affiliatePartners.findOne({_id:owner}),'concurrencyControl.replayEventId':eventId}});
+    db.affiliateRegistrations.deleteOne({_id:control.second,referrerUserId:owner});
+    db.affiliateRegistrations.insertOne({...registration,_id:ObjectId(control.second)});
+    db.events.insertOne({...template,_id:ObjectId(eventId),sourceId:eventId,syncKey:eventId,title:'QA Affiliate Concurrent Replay',
+      startAtIso:start,endAtIso:end,timeframe:start+' – '+end,acceptedMembers:1,pendingMembers:0,acceptedMemberUserIds:[owner],pendingMemberUserIds:[],
+      invitedMemberUserIds:[],pendingRequestMemberUserIds:[],activity:0,unread:0,paymentSessionId:null,createdDate:now,updatedDate:now});
+    db.activityMembers.insertOne({_id:'qa-concurrent-replay-admin',ownerType:'event',ownerId:eventId,userId:owner,role:'Admin',status:'accepted',actionAtIso:now});
+    print(JSON.stringify({eventId,repairedRegistrationIdType:'ObjectId',changedPaymentOutcomes:false}));'''
+elif command=='stage-concurrency-retest':
+    code='''const state=states.findOne({_id:key}), control=state?.concurrencyControl;
+    if(!control?.replayEventId || control.retestEventId || !db.affiliateRegistrations.findOne({_id:ObjectId(control.second),referrerUserId:owner}))throw Error('Corrected attribution prerequisite required');
+    const eventId='6aff20000000000000000014';
+    if(db.events.findOne({sourceId:eventId}))throw Error('Retest already staged');
+    const template=db.events.findOne({sourceId:control.replayEventId,ownerUserId:owner});
+    const now=new Date().toISOString(), start=new Date(Date.now()+48*3600000).toISOString(), end=new Date(Date.parse(start)+3600000).toISOString();
+    db.events.insertOne({...template,_id:ObjectId(eventId),sourceId:eventId,syncKey:eventId,title:'QA Affiliate Concurrent Verified',
+      startAtIso:start,endAtIso:end,timeframe:start+' – '+end,acceptedMembers:1,pendingMembers:0,acceptedMemberUserIds:[owner],pendingMemberUserIds:[],
+      invitedMemberUserIds:[],pendingRequestMemberUserIds:[],activity:0,unread:0,paymentSessionId:null,createdDate:now,updatedDate:now});
+    db.activityMembers.insertOne({_id:'qa-concurrent-retest-admin',ownerType:'event',ownerId:eventId,userId:owner,role:'Admin',status:'accepted',actionAtIso:now});
+    states.updateOne({_id:key},{$set:{'concurrencyControl.retestEventId':eventId,'concurrencyControl.retestBaseline':db.affiliatePartners.findOne({_id:owner})}});
+    print(JSON.stringify({eventId,seededPayments:0,seededRevenue:0}));'''
 elif command=='prepare-concurrency-browser':
     code='''const state=states.findOne({_id:key}), checkpointId='AFFILIATE-REVENUE-CONCURRENCY-001';
     if(!state?.concurrencyControl)throw Error('Concurrency prerequisite missing');

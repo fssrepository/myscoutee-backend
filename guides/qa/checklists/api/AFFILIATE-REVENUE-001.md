@@ -3,11 +3,11 @@
 Execution status and dated results are maintained in the QA matrix and evidence log. This case extends the API checks with affiliate revenue and payment lifecycle coverage. Use `python3 guides/qa/tools/affiliate-invitation-fixture.py stage`, then `status`, and the versioned `node guides/qa/tools/open-checkpoint-browser-sessions.mjs AFFILIATE-INVITATION-001` launcher for the disposable referrer/new invitee. Track the new identity with `affiliate-invitation-fixture.py track USER_ID` before onboarding save. Reset through `affiliate-invitation-fixture.py reset`; partner records are scoped by the disposable owner ID and contribution rows by `ownerUserId`, so the existing actor-scoped reset removes them. Never replace a currently staged baseline without its recorded reset;
  do not fabricate revenue on popup load. Record fixture ID, currency, checkout IDs and gateway callback IDs in dated evidence, excluding credentials.
 
-1. Open the normal user's Affiliate popup at desktop and 360px width. Green Revenue/Forgalom button opens the summary; mobile compact icon keeps title/help/close visible. Admin API popup has no such button, referral link or imported counter. With content taller than the viewport (many currency rows or a short mobile viewport), the body scrolls to the last row while the header/close remain visible; no horizontal overflow.
+1. Open the normal user's Affiliate popup at desktop and 360px width. Green Revenue/Forgalom button opens the summary; mobile compact icon keeps title/help/close visible. Admin API popup has no such button, referral link or imported counter. With content taller than the viewport (for example a short mobile viewport), the body scrolls to the last row while the header/close remain visible; no horizontal overflow.
 2. With no settled payments, metrics are zero. Close/reopen must not mutate revenue. Merely registering a referral or revoking an API key must not alter financial totals.
 3. Refer/register the second actor using the personal link. Save a EUR 100 event checkout through the existing payment simulator. An authorization hold alone contributes zero; successful capture contributes gross/net EUR 100, one purchase and one event checkout.
 4. Replay the exact successful gateway callback and reopen the popup: amounts/counts unchanged. Check stored partner counters, contribution version and cleared payment pending marker.
-5. Complete a second payment in HUF 5000. It appears in separate HUF rows. EUR remains 100; no cross-currency sum or conversion. An asset/client payment adds a purchase but no event-booking count.
+5. Complete a second payment in HUF 5000. Its payment row retains HUF; the native ledger keeps HUF separate from EUR. The popup converts through persisted payment-day observations into the selected summary currency. An asset/client payment adds a purchase but no event-booking count.
 6. Request a EUR 25 refund: request/pending/failure alone leaves totals unchanged. Complete it: EUR gross 100, refunded 25, net 75. Replay its completion: unchanged. Complete the remaining refund through supported payment rules: net zero, historical paid count remains one.
 7. Use an isolated harness fault at (a) payment save before counter write, (b) persisted partner pending intent, (c) contribution save before counter commit, (d) counter commit before payment acknowledgement. Resume the pending write: each case converges once, with no duplicate amount and no advanced payment domain version caused by the acknowledgement. Do not terminate the user's entire stack.
 8. Concurrent purchases/refunds by two referred users converge to their exact currency totals. A delayed lower payment version cannot overwrite a newer contribution. Reload from a new authenticated browser session confirms persistence.
@@ -60,7 +60,7 @@ superseded.
   save/reload, and mobile/desktop sizing. The event editor cover has no remove X;
   delete images inside the gallery, where normal upload/remove actions remain.
 
-### Daily exchange rates and summary currency (2026-09-23 addition — NOT RUN)
+### Daily exchange rates and summary currency (2026-09-23 addition)
 
 User acceptance supersedes the earlier per-currency summary layout: payment rows retain their original currencies; Payment history header and referral revenue show one selected summary currency, EUR by default.
 
@@ -71,4 +71,4 @@ User acceptance supersedes the earlier per-currency summary layout: payment rows
 - [ ] Both header amount badges have a `>` affordance and open the shared currency popup. Confirm with the header tick uses the standard route delay and changes the summary currency.
 - [ ] Cancel/close leaves the previous currency intact. Confirmed selection persists after popup reopening and browser reload, scoped to the current user and shared by both surfaces.
 - [ ] The affiliate revenue surface provides the same selection/confirmation behavior. Original payment rows are unchanged. Unsupported/missing historical currency rates show an incomplete state instead of a misleading total.
-- [ ] Mobile and desktop: compact badges, existing app menu/select/popup styling, no hover lift of the amount strip, no clipped popup content.
+- [ ] Mobile and desktop: compact badges, existing app menu/select/popup styling, hover/press animations on each amount button while the strip stays still, blurred backdrop, dropdown extending beyond the popup like Event Frequency, no clipped popup content. Affiliate selector belongs in the header and monetary zero values include the selected currency.
