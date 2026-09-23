@@ -47,7 +47,7 @@
       "merchantAccount": null,
       "credentialEnvelope": null,
       "credentialMask": null,
-      "exchangeRateUrl": "http://exchange-rate-simulator:18083/eurofxref.xml"
+      "exchangeRateUrl": "http://payment-simulator:18082/exchange-rates/eurofxref.xml"
     },
     "firebase": {
       "projectId": "",

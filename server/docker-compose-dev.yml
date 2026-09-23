@@ -236,7 +236,7 @@ services:
       PAYMENT_ENABLE_PAY: "${PAYMENT_ENABLE_PAY:-true}"
       PAYMENT_REGISTRATION_TTL: "${PAYMENT_REGISTRATION_TTL:-PT1M}"
       PAYMENT_SIMULATOR_ENABLED: "true"
-      PAYMENT_EXCHANGE_RATE_DEVELOPMENT_HOSTS: "exchange-rate-simulator"
+      PAYMENT_EXCHANGE_RATE_DEVELOPMENT_HOSTS: "payment-simulator"
       PAYMENT_SIMULATOR_BASE_URL: "http://payment-simulator:18082"
       PAYMENT_SIMULATOR_API_KEY: "${PAYMENT_STRIPE_API_KEY:-sk_test_myscoutee}"
       PAYMENT_SIMULATOR_REGISTRATION_CALLBACK_URL: "http://profilemanagement:8080/payment-methods/registrations/callback"
@@ -279,8 +279,6 @@ services:
         condition: service_started
       payment-simulator:
         condition: service_healthy
-      exchange-rate-simulator:
-        condition: service_started
       release-simulator:
         condition: service_healthy
   frontend-sync:
@@ -363,23 +361,6 @@ services:
       retries: 30
       start_period: 2s
     stop_grace_period: 15s
-  exchange-rate-simulator:
-    container_name: exchange-rate-simulator
-    image: myscoutee-release-simulator:1.0.1-dev
-    command: ["python3", "/simulator.py"]
-    restart: unless-stopped
-    user: "1000:1000"
-    volumes:
-      - ./docker/scripts/exchange_rate_simulator.py:/simulator.py:ro
-    networks:
-      - myscoutee
-    read_only: true
-    security_opt:
-      - no-new-privileges:true
-    cap_drop:
-      - ALL
-
-
   release-simulator:
     container_name: release-simulator
     hostname: release-simulator

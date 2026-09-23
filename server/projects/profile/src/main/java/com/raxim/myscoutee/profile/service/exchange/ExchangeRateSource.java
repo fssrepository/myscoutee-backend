@@ -2,7 +2,8 @@ package com.raxim.myscoutee.profile.service.exchange;
 
 import java.net.URI;
 import java.net.InetAddress;
-import java.net.http.*;
+import com.raxim.myscoutee.common.config.mongo.MongoSessionMode;
+import com.raxim.myscoutee.common.config.mongo.MongoSessionModeContext;
 import java.time.*;
 import java.util.*;
 import java.math.BigDecimal;
@@ -15,13 +16,24 @@ import org.springframework.stereotype.Service;
 @Service
 public class ExchangeRateSource {
     private final Set<String> developmentHosts;
-    public ExchangeRateSource(@Value("${payment.exchange-rates.development-hosts:}") String hosts) {
-        developmentHosts = new HashSet<>(Arrays.asList(hosts.split(",")));
+    private final URI simulatorOrigin;
+    public ExchangeRateSource(@Value("${payment.exchange-rates.development-hosts:}") String hosts,
+            @Value("${payment.simulator.baseUrl:}") String simulatorBaseUrl) {
+        developmentHosts = new HashSet<>();
+        Arrays.stream(hosts.split(",")).map(String::trim).filter(host -> !host.isEmpty())
+                .map(host -> host.toLowerCase(Locale.ROOT)).forEach(developmentHosts::add);
+        simulatorOrigin = simulatorBaseUrl.isBlank() ? null : URI.create(simulatorBaseUrl.trim());
+    }
+    private boolean isSimulator(URI uri) {
+        return MongoSessionModeContext.currentMode() == MongoSessionMode.DEMO && simulatorOrigin != null
+                && Objects.equals(uri.getScheme(), simulatorOrigin.getScheme())
+                && Objects.equals(uri.getHost(), simulatorOrigin.getHost())
+                && uri.getPort() == simulatorOrigin.getPort();
     }
     public String validate(String value) {
         if (value == null || value.isBlank()) return "";
         URI uri = URI.create(value.trim());
-        boolean development = developmentHosts.contains(uri.getHost());
+        boolean development = developmentHosts.contains(uri.getHost()) || isSimulator(uri);
         if (uri.getHost() == null || uri.getUserInfo() != null || uri.getFragment() != null
                 || !("https".equals(uri.getScheme()) || development && "http".equals(uri.getScheme())))
             throw new IllegalArgumentException("Exchange-rate source requires an HTTPS URL.");
@@ -32,7 +44,7 @@ public class ExchangeRateSource {
     }
     public List<Document> fetch(String source) throws Exception {
         URI uri = URI.create(validate(source));
-        if (!developmentHosts.contains(uri.getHost())) {
+        if (!developmentHosts.contains(uri.getHost()) && !isSimulator(uri)) {
             for (InetAddress address : InetAddress.getAllByName(uri.getHost()))
                 if (address.isAnyLocalAddress() || address.isLoopbackAddress() || address.isLinkLocalAddress()
                         || address.isSiteLocalAddress() || address.isMulticastAddress())

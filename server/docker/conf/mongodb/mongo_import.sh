@@ -313,6 +313,32 @@ deploymentConfigurations.updateOne(
 " >/dev/null
 }
 
+migrate_deployment_exchange_rate_source() {
+  local target_db="$1"
+  local jsonfile="$2"
+
+  # Apply the same additive seed migration in dev and packaged installations.
+  # Explicit operator values (including an empty/disabled source) stay intact.
+  MONGO_EXCHANGE_SEED_PATH="${jsonfile}" mongosh \
+    --host "${mongo_host}" --port "${mongo_port}" \
+    --username "${mongo_username}" --password "${mongo_password}" \
+    --authenticationDatabase "${target_db}" --quiet "${target_db}" --eval '
+const seed = EJSON.parse(require("fs").readFileSync(process.env.MONGO_EXCHANGE_SEED_PATH, "utf8"))[0];
+const source = seed?.payment?.exchangeRateUrl;
+if (typeof source === "string") {
+  const conditions = [{ "payment.exchangeRateUrl": { $exists: false } }];
+  // Replace only the retired, exact demo default; never a custom URL.
+  if (source === "http://payment-simulator:18082/exchange-rates/eurofxref.xml") {
+    conditions.push({ "payment.exchangeRateUrl": "http://exchange-rate-simulator:18083/eurofxref.xml" });
+  }
+  db.getCollection("deploymentConfigurations").updateOne(
+    { _id: "deployment-configuration", $or: conditions },
+    { $set: { "payment.exchangeRateUrl": source }, $inc: { version: 1 } }
+  );
+}
+' >/dev/null
+}
+
 import_deployment_configuration_seed() {
   local target_db="$1"
   local jsonfile="$2"
@@ -324,6 +350,7 @@ import_deployment_configuration_seed() {
   migrate_deployment_configuration_v3 "${target_db}"
   migrate_deployment_configuration_v4 "${target_db}"
   migrate_deployment_configuration_v5 "${target_db}"
+  migrate_deployment_exchange_rate_source "${target_db}" "${jsonfile}"
 
   if deployment_configuration_exists "${target_db}"; then
     echo "Preserving existing ${target_db}.deploymentConfigurations singleton."

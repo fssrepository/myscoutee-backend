@@ -44,10 +44,22 @@ class ExchangeRateTest {
         assertThat(payment.getEuro()).isNull(); assertThat(payment.getStatus()).isEqualTo("captured");
     }
     @Test void developmentRejectsExternalSourcesAndEmbeddedCredentials() {
-        var source = new ExchangeRateSource("exchange-rate-simulator");
-        assertThat(source.validate("http://exchange-rate-simulator:18083/eurofxref.xml")).contains("exchange-rate-simulator");
+        var source = new ExchangeRateSource(" payment-simulator, ", "http://payment-simulator:18082");
+        assertThat(source.validate("http://payment-simulator:18082/exchange-rates/eurofxref.xml")).contains("payment-simulator");
         assertThatThrownBy(() -> source.validate("https://example.com/rates")).isInstanceOf(IllegalArgumentException.class);
-        assertThatThrownBy(() -> source.validate("http://secret@exchange-rate-simulator/rates")).isInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(() -> source.validate("http://secret@payment-simulator/rates")).isInstanceOf(IllegalArgumentException.class);
+    }
+    @Test void productionAllowsPublicHttpsAndOnlyDemoCanUseTheConfiguredSimulatorOrigin() {
+        var source = new ExchangeRateSource(" , ", "http://payment-simulator:18082");
+        assertThat(source.validate("https://www.ecb.europa.eu/stats/eurofxref/eurofxref-hist-90d.xml")).startsWith("https://");
+        assertThatThrownBy(() -> source.validate("http://payment-simulator:18082/exchange-rates/eurofxref.xml"))
+                .isInstanceOf(IllegalArgumentException.class);
+        com.raxim.myscoutee.common.config.mongo.MongoSessionModeContext.set(com.raxim.myscoutee.common.config.mongo.MongoSessionMode.DEMO);
+        try {
+            assertThat(source.validate("http://payment-simulator:18082/exchange-rates/eurofxref.xml")).startsWith("http://payment-simulator:");
+            assertThatThrownBy(() -> source.validate("http://payment-simulator:9999/rates")).isInstanceOf(IllegalArgumentException.class);
+            assertThatThrownBy(() -> source.validate("http://other-internal-service:18082/rates")).isInstanceOf(IllegalArgumentException.class);
+        } finally { com.raxim.myscoutee.common.config.mongo.MongoSessionModeContext.clear(); }
     }
     @Test void parserRejectsExternalEntitiesAndNonPositiveRates() {
         assertThatThrownBy(() -> ExchangeRateSource.parse("<!DOCTYPE x [<!ENTITY e SYSTEM 'file:///etc/passwd'>]><Cube/>".getBytes(StandardCharsets.UTF_8), "test"))

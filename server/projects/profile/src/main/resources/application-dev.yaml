@@ -120,4 +120,4 @@ logging:
 
 payment:
   exchange-rates:
-    development-hosts: ${PAYMENT_EXCHANGE_RATE_DEVELOPMENT_HOSTS:exchange-rate-simulator}
+    development-hosts: ${PAYMENT_EXCHANGE_RATE_DEVELOPMENT_HOSTS:payment-simulator}
