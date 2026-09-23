@@ -14,7 +14,8 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.context.i18n.LocaleContextHolder;
-import org.springframework.context.support.ReloadableResourceBundleMessageSource;
+import com.raxim.myscoutee.profile.repository.I18nMessageRepository;
+import com.raxim.myscoutee.profile.data.document.I18nMessage;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -41,9 +42,15 @@ class EventCheckoutPricingServiceTest {
     void setUp() {
         eventsRepository = mock(ActivityEventsRepository.class);
         membersRepository = mock(com.raxim.myscoutee.profile.repository.ActivityMembersRepository.class);
-        ReloadableResourceBundleMessageSource messageSource = new ReloadableResourceBundleMessageSource();
-        messageSource.setBasename("classpath:i18n/messages");
-        messageSource.setDefaultEncoding("UTF-8");
+        I18nMessageRepository messages = mock(I18nMessageRepository.class);
+        for (String language : List.of("en", "hu")) {
+            I18nMessage message = new I18nMessage();
+            message.setKey("event.checkout.promo.invalid"); message.setLang(language);
+            message.setValue("hu".equals(language) ? "Ez a promóciós kód nem érvényes ehhez az eseményhez."
+                    : "This promo code is not valid for this event.");
+            when(messages.findByLang(language)).thenReturn(List.of(message));
+        }
+        DBMessageSource messageSource = new DBMessageSource(messages);
         service = new EventCheckoutPricingService(eventsRepository, membersRepository, new TranslationService(messageSource));
         LocaleContextHolder.setLocale(Locale.ENGLISH);
     }

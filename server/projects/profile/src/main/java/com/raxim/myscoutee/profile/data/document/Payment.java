@@ -17,6 +17,7 @@ import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.PricingCancellatio
 
 @Document(collection = "payments")
 @CompoundIndexes({
+    @CompoundIndex(name = "payment_euro_pending", def = "{'euroCheckedAt': 1}", partialFilter = "{'euro': null, 'auditKind': 'payment', 'accountedSpentAmount': {'$gt': 0}}"),
     @CompoundIndex(name = "payment_user_source", def = "{'userId': 1, 'sourceId': 1, 'createdDate': -1}"),
     @CompoundIndex(name = "payment_recipient_created", def = "{'recipientUserId': 1, 'createdDate': -1}"),
     @CompoundIndex(name = "payment_user_source_booking", def = "{'userId': 1, 'sourceId': 1, 'bookingStatus': 1, 'createdDate': -1}"),
@@ -30,6 +31,10 @@ public class Payment {
     private String id;
     @Version
     private Long version;
+    private com.raxim.myscoutee.profile.data.dto.payment.ExchangeRateDtos.Snapshot euro;
+    public com.raxim.myscoutee.profile.data.dto.payment.ExchangeRateDtos.Snapshot getEuro() { return euro; }
+    public void setEuro(com.raxim.myscoutee.profile.data.dto.payment.ExchangeRateDtos.Snapshot value) { euro = value; }
+    @Indexed(name = "payment_affiliate_owner")
     private String affiliateOwnerUserId;
     private boolean affiliateAttributionResolved;
     @Indexed(name = "payment_affiliate_pending", partialFilter = "{'affiliateRevenuePending':true}")

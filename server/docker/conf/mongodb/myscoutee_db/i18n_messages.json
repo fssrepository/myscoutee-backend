@@ -44698,5 +44698,185 @@
     "key": "event.approval.hours.unit",
     "lang": "hu",
     "value": "órában"
+  },
+  {
+    "_id": "i18n-message-en-operator-configuration-payment-exchange-url",
+    "key": "operator.configuration.payment.exchange.url",
+    "lang": "en",
+    "value": "Exchange-rate source URL"
+  },
+  {
+    "_id": "i18n-message-en-operator-configuration-payment-exchange-help",
+    "key": "operator.configuration.payment.exchange.help",
+    "lang": "en",
+    "value": "Daily reference rates (ECB XML). Refreshed by the exchange-rate job."
+  },
+  {
+    "_id": "i18n-message-en-admin-jobs-rule-payment-exchange-rates",
+    "key": "admin.jobs.rule.payment.exchange.rates",
+    "lang": "en",
+    "value": "Refresh exchange rates"
+  },
+  {
+    "_id": "i18n-message-en-admin-jobs-rule-payment-exchange-rates-description",
+    "key": "admin.jobs.rule.payment.exchange.rates.description",
+    "lang": "en",
+    "value": "Store daily reference rates for payment summaries."
+  },
+  {
+    "_id": "i18n-message-en-payment-euro-pending",
+    "key": "payment.euro.pending",
+    "lang": "en",
+    "value": "Summary unavailable: some payments are waiting for an exchange rate."
+  },
+  {
+    "_id": "i18n-message-en-payment-euro-reference",
+    "key": "payment.euro.reference",
+    "lang": "en",
+    "value": "Approximate total at payment-day reference rates"
+  },
+  {
+    "_id": "i18n-message-en-payment-euro-description",
+    "key": "payment.euro.description",
+    "lang": "en",
+    "value": "Purchases by people you invited, at payment-day reference rates."
+  },
+  {
+    "_id": "i18n-message-en-payment-currency-title",
+    "key": "payment.currency.title",
+    "lang": "en",
+    "value": "Summary currency"
+  },
+  {
+    "_id": "i18n-message-en-payment-currency-save-error",
+    "key": "payment.currency.save.error",
+    "lang": "en",
+    "value": "Could not save the currency. Please try again."
+  },
+  {
+    "_id": "i18n-message-hu-operator-configuration-payment-exchange-url",
+    "key": "operator.configuration.payment.exchange.url",
+    "lang": "hu",
+    "value": "Árfolyamforrás URL"
+  },
+  {
+    "_id": "i18n-message-hu-operator-configuration-payment-exchange-help",
+    "key": "operator.configuration.payment.exchange.help",
+    "lang": "hu",
+    "value": "Napi referenciaárfolyamok (ECB XML). Az árfolyamfrissítő feladat tölti le."
+  },
+  {
+    "_id": "i18n-message-hu-admin-jobs-rule-payment-exchange-rates",
+    "key": "admin.jobs.rule.payment.exchange.rates",
+    "lang": "hu",
+    "value": "Árfolyamok frissítése"
+  },
+  {
+    "_id": "i18n-message-hu-admin-jobs-rule-payment-exchange-rates-description",
+    "key": "admin.jobs.rule.payment.exchange.rates.description",
+    "lang": "hu",
+    "value": "Napi referenciaárfolyamok mentése a fizetési összesítőkhöz."
+  },
+  {
+    "_id": "i18n-message-hu-payment-euro-pending",
+    "key": "payment.euro.pending",
+    "lang": "hu",
+    "value": "Az összesítő még nem elérhető: néhány tétel árfolyamra vár."
+  },
+  {
+    "_id": "i18n-message-hu-payment-euro-reference",
+    "key": "payment.euro.reference",
+    "lang": "hu",
+    "value": "Tájékoztató összeg a fizetéskori referenciaárfolyamokon"
+  },
+  {
+    "_id": "i18n-message-hu-payment-euro-description",
+    "key": "payment.euro.description",
+    "lang": "hu",
+    "value": "A meghívottaid vásárlásai, a fizetéskori referenciaárfolyamokon."
+  },
+  {
+    "_id": "i18n-message-hu-payment-currency-title",
+    "key": "payment.currency.title",
+    "lang": "hu",
+    "value": "Összesítő pénzneme"
+  },
+  {
+    "_id": "i18n-message-hu-payment-currency-save-error",
+    "key": "payment.currency.save.error",
+    "lang": "hu",
+    "value": "A pénznem mentése nem sikerült. Próbáld újra."
+  },
+  {
+    "_id": "i18n-message-en-payments-exchange-rates",
+    "key": "payments.exchange-rates",
+    "lang": "en",
+    "value": "Daily reference rates"
+  },
+  {
+    "_id": "i18n-message-en-admin-jobs-exchange-refreshing",
+    "key": "admin.jobs.exchange.refreshing",
+    "lang": "en",
+    "value": "Refreshing daily exchange rates."
+  },
+  {
+    "_id": "i18n-message-en-admin-jobs-exchange-completed",
+    "key": "admin.jobs.exchange.completed",
+    "lang": "en",
+    "value": "Daily exchange rates stored."
+  },
+  {
+    "_id": "i18n-message-en-admin-jobs-exchange-unconfigured",
+    "key": "admin.jobs.exchange.unconfigured",
+    "lang": "en",
+    "value": "Exchange-rate source is not configured."
+  },
+  {
+    "_id": "i18n-message-en-admin-jobs-exchange-failed",
+    "key": "admin.jobs.exchange.failed",
+    "lang": "en",
+    "value": "Exchange-rate refresh failed. Check the configured source."
+  },
+  {
+    "_id": "i18n-message-hu-payments-exchange-rates",
+    "key": "payments.exchange-rates",
+    "lang": "hu",
+    "value": "Napi referenciaárfolyamok"
+  },
+  {
+    "_id": "i18n-message-hu-admin-jobs-exchange-refreshing",
+    "key": "admin.jobs.exchange.refreshing",
+    "lang": "hu",
+    "value": "Napi árfolyamok frissítése."
+  },
+  {
+    "_id": "i18n-message-hu-admin-jobs-exchange-completed",
+    "key": "admin.jobs.exchange.completed",
+    "lang": "hu",
+    "value": "A napi árfolyamok mentve."
+  },
+  {
+    "_id": "i18n-message-hu-admin-jobs-exchange-unconfigured",
+    "key": "admin.jobs.exchange.unconfigured",
+    "lang": "hu",
+    "value": "Az árfolyamforrás nincs beállítva."
+  },
+  {
+    "_id": "i18n-message-hu-admin-jobs-exchange-failed",
+    "key": "admin.jobs.exchange.failed",
+    "lang": "hu",
+    "value": "Az árfolyamfrissítés sikertelen. Ellenőrizd a beállított forrást."
+  },
+  {
+    "_id": "i18n-message-en-error-str_max_length",
+    "key": "error.str_max_length",
+    "lang": "en",
+    "value": "Length should between 1 and 255"
+  },
+  {
+    "_id": "i18n-message-hu-error-str_max_length",
+    "key": "error.str_max_length",
+    "lang": "hu",
+    "value": "A hossznak 1 és 255 között kell lennie"
   }
 ]

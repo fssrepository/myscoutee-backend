@@ -47,6 +47,8 @@ import com.raxim.myscoutee.profile.service.operator.OperatorFirebaseCapabilityCl
 
 @Service
 public class OperatorConfigurationService {
+    @org.springframework.beans.factory.annotation.Autowired
+    private com.raxim.myscoutee.profile.service.exchange.ExchangeRateSource exchangeRateSource;
     static final String FIREBASE_AUTHENTICATION_PURPOSE =
             "firebase-authentication-credential";
     static final String FIREBASE_MESSAGING_PURPOSE =
@@ -759,6 +761,10 @@ public class OperatorConfigurationService {
             throw badRequest("Payment provider id is too long.");
         }
         DeploymentConfiguration.Payment payment = configuration.getPayment();
+        if (request.exchangeRateUrl() != null) {
+            try { payment.setExchangeRateUrl(exchangeRateSource.validate(request.exchangeRateUrl())); }
+            catch (IllegalArgumentException error) { throw badRequest(error.getMessage()); }
+        }
         String previousProvider = normalizeProvider(payment.getProviderId());
         String provider;
         try {

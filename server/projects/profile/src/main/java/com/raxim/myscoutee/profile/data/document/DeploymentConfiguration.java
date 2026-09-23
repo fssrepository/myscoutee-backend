@@ -162,6 +162,9 @@ public class DeploymentConfiguration {
     }
 
     public static class Payment {
+        private String exchangeRateUrl;
+        public String getExchangeRateUrl() { return exchangeRateUrl; }
+        public void setExchangeRateUrl(String value) { exchangeRateUrl = value; }
         private String providerId;
         private String publicBaseUrl;
         private String merchantAccount;

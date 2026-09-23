@@ -91,11 +91,21 @@ public final class PaymentDtos {
             String nextCursor,
             Map<String, Double> spendingTotals,
             Map<String, Double> incomeTotals,
-            Integer pendingRefundCount) {}
+            Integer pendingRefundCount,
+            com.raxim.myscoutee.profile.data.dto.payment.ExchangeRateDtos.Summary euroSummary) {
+        public PaymentHistoryPageDto(List<PaymentHistoryItemDto> items, long total, String nextCursor, Map<String, Double> spendingTotals, Map<String, Double> incomeTotals, Integer pendingRefundCount) {
+            this(items, total, nextCursor, spendingTotals, incomeTotals, pendingRefundCount, null);
+        }
+    }
 
     public record PaymentHistoryMutationDto(
             PaymentHistoryItemDto item,
             Map<String, Double> spendingTotals,
             Map<String, Double> incomeTotals,
-            Integer pendingRefundCount) {}
+            Integer pendingRefundCount,
+            com.raxim.myscoutee.profile.data.dto.payment.ExchangeRateDtos.Summary euroSummary) {
+        public PaymentHistoryMutationDto(PaymentHistoryItemDto item, Map<String, Double> spendingTotals, Map<String, Double> incomeTotals, Integer pendingRefundCount) {
+            this(item, spendingTotals, incomeTotals, pendingRefundCount, null);
+        }
+    }
 }

@@ -33,7 +33,12 @@ public final class IntegrationDtos {
 
     public record AffiliateCurrencyRevenueDto(double gross, double refunded, double net) { }
     public record AffiliateRevenueDto(java.util.Map<String, AffiliateCurrencyRevenueDto> currencies,
-            long purchases, long eventBookings) { }
+            long purchases, long eventBookings,
+            com.raxim.myscoutee.profile.data.dto.payment.ExchangeRateDtos.Summary euroSummary) {
+        public AffiliateRevenueDto(java.util.Map<String, AffiliateCurrencyRevenueDto> currencies, long purchases, long eventBookings) {
+            this(currencies, purchases, eventBookings, null);
+        }
+    }
     public record AffiliateSummaryDto(String url, long registered, AffiliateRevenueDto revenue) {
         public AffiliateSummaryDto(String url, long registered) { this(url, registered, null); }
     }

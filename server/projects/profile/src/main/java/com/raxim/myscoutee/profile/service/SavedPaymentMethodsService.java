@@ -39,6 +39,8 @@ import com.raxim.myscoutee.common.config.mongo.MongoSessionModeContext;
 
 @Service
 public class SavedPaymentMethodsService {
+    @org.springframework.beans.factory.annotation.Autowired
+    private com.raxim.myscoutee.profile.service.exchange.PaymentEuroService euroService;
     private static final Logger LOG = LoggerFactory.getLogger(SavedPaymentMethodsService.class);
     public static final int MAX_ACTIVE_PAYMENT_METHODS = 6;
     private static final Duration DEFAULT_REGISTRATION_TTL = Duration.ofMinutes(10);
@@ -307,7 +309,7 @@ public class SavedPaymentMethodsService {
                 to < all.size() ? Integer.toString(pageIndex + 1) : null,
                 spendingTotals(ownerId),
                 incomeTotals(ownerId),
-                pendingRefundCount(ownerId));
+                pendingRefundCount(ownerId), euroService == null ? null : euroService.summary(ownerId, false));
     }
 
     public PaymentHistoryPageDto queryHistory(String userId, Integer page, Integer size) {
@@ -342,7 +344,7 @@ public class SavedPaymentMethodsService {
                 to < all.size() ? Integer.toString(pageIndex + 1) : null,
                 spendingTotals(ownerId),
                 incomeTotals(ownerId),
-                pendingRefundCount(ownerId));
+                pendingRefundCount(ownerId), euroService == null ? null : euroService.summary(ownerId, false));
     }
 
     public synchronized void delete(String userId, String paymentMethodId) {
@@ -608,7 +610,7 @@ public class SavedPaymentMethodsService {
                 toHistoryDto(payment, ownerId),
                 spendingTotals(ownerId),
                 incomeTotals(ownerId),
-                pendingRefundCount(ownerId));
+                pendingRefundCount(ownerId), euroService == null ? null : euroService.summary(ownerId, false));
     }
 
     public int pendingRefundCount(String userId) {

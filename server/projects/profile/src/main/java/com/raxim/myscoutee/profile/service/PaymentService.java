@@ -1330,7 +1330,16 @@ public class PaymentService {
                 .orElse(anchor);
     }
 
+    @Autowired
+    private com.raxim.myscoutee.profile.service.exchange.PaymentEuroService euroService;
+
     private Payment saveAndProjectSpending(Payment payment) {
+        if (euroService != null) {
+            try { euroService.prepare(payment); }
+            catch (RuntimeException error) {
+                org.slf4j.LoggerFactory.getLogger(PaymentService.class).warn("EUR snapshot remains pending: {}", error.getClass().getSimpleName());
+            }
+        }
         if (affiliateRevenueService != null) affiliateRevenueService.prepare(payment);
         double previousAccounted = roundMoney(safeAmount(payment == null ? null : payment.getAccountedSpentAmount()));
         double nextAccounted = accountedSpentAmount(payment);

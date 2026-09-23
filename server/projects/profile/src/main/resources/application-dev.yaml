@@ -117,3 +117,7 @@ logging:
   level:
     org.springframework.data.mongodb.core.MongoTemplate: DEBUG
     org.springframework.integration: WARN
+
+payment:
+  exchange-rates:
+    development-hosts: ${PAYMENT_EXCHANGE_RATE_DEVELOPMENT_HOSTS:exchange-rate-simulator}

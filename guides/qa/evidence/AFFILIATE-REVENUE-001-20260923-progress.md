@@ -272,3 +272,26 @@ At360px, mouse moved to y650 and focus cleared; after1.7s idle, hover=false,
 focus=false, overflow-x=scroll. Screenshot /tmp/qa-payment-history-no-hover.png
 visually confirms track/thumb remain visible. All four pills on same y64.97;
 strip51px high including10px scrollbar. No hover-only behavior.
+
+## Correction: hover means movement, not scrollbar visibility — 22:36 CEST
+
+User clarified the complaint: hovering a total pill lifted/scaled the ENTIRE
+strip. The previous permanent-scrollbar interpretation was incorrect and is
+superseded. Reproduced on desktop: transform matrix(1.01,0,0,1.01,0,-1), strip top
+84.156 -> 82.900. Cause: newly added tabindex=0 matches the global interactive
+hover selector. Added the existing motion-static opt-out to this strip only;
+kept keyboard scrolling. Removed only the mistaken overflow-x:scroll and custom
+permanent track/thumb rules, restoring overflow-x:auto. One-row layout remains.
+No financial, checkout, fixture or other feature changes were reverted.
+
+Existing frontend-sync build PASS20:35:34Z, sync20:35:37Z. Actual pointer hover
+on EACH of four desktop pills: hover=true, transform=none, top84.156 unchanged.
+Desktop content955px fits container955px; mobile347px/content374px still scrolls,
+all pill tops64.969, transform none. This supersedes the previous no-hover-bar
+acceptance interpretation, not the previously verified financial QA results.
+
+### 22:55 — exchange-rate feature and currency-selection scope added (IN PROGRESS)
+
+User requested persisted daily FX observations behind `@Cacheable`, a scheduled/manual admin job, configurable operator Payments source, local-only dev simulation, and per-payment conversion snapshots. Summary layout now uses EUR by default rather than currency-by-currency breakdown; payment rows retain original currency. Follow-up adds clickable `>` amount badges, shared currency picker with header confirmation tick/standard route delay, and persistent per-user selection shared by both surfaces. Added acceptance checks above; implementation and runtime verification remain in progress, not PASS.
+
+Concurrency prerequisites have been staged without manufacturing payment results: second payer `6aff10000000000000000002`, event `6aff20000000000000000012`, EUR 7 each. Versioned launcher prepared `AFFILIATE-REVENUE-CONCURRENCY-001` while preserving the original owner/visitor sessions. Neither concurrent purchase has been performed yet. Existing financial baseline remains purchases 5 / event bookings 4, EUR gross 132 / refunded 27 / net 105 plus HUF 5000. Injected validator failures remain unproven because runtime Mongo admin credentials are unavailable; no fault validator is active.

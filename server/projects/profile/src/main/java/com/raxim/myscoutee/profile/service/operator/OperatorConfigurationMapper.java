@@ -106,7 +106,8 @@ public class OperatorConfigurationMapper {
                         credentialConfigured,
                         credentialConfigured
                                 ? payment.getCredentialMask().trim()
-                                : null),
+                                : null,
+                        payment.getExchangeRateUrl()),
                 toFirebaseConfiguration(configuration),
                 blankToNull(configuration.getUpdatedAt()));
     }
