@@ -207,6 +207,40 @@ class ActivitiesEventsServiceTest {
     }
 
     @Test
+    void authorizedPaymentCallbackClosesRebuiltBasketUsingVerifiedSession() {
+        ActivitiesEventsService callbackService = org.mockito.Mockito.spy(service);
+        var payment = new com.raxim.myscoutee.profile.data.document.Payment();
+        payment.setUserId("visitor");
+        payment.setSourceId("event");
+        payment.setCheckoutSessionId("verified-session");
+        var accepted = new EventParticipationActionResultDto(
+                "event", null, "join", "accepted", null, 2, 0, 10,
+                false, "verified-session", true, null, null);
+        org.mockito.Mockito.doReturn(accepted).when(callbackService).requestJoin(any());
+
+        assertThat(callbackService.finalizeAuthorizedPayment(payment)).isSameAs(accepted);
+
+        verify(eventCheckoutBasketService).updateBasketState(
+                new com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventCheckoutStateChangeRequestDto(
+                        "visitor", "event", null, "pay", "succeeded", null, "verified-session"));
+    }
+
+    @Test
+    void authorizedPaymentCallbackDoesNotClosePendingMembershipBasket() {
+        ActivitiesEventsService callbackService = org.mockito.Mockito.spy(service);
+        var payment = new com.raxim.myscoutee.profile.data.document.Payment();
+        payment.setCheckoutSessionId("verified-session");
+        var pending = new EventParticipationActionResultDto(
+                "event", null, "join", "pending", "approval", 1, 1, 10,
+                false, "verified-session", true, null, null);
+        org.mockito.Mockito.doReturn(pending).when(callbackService).requestJoin(any());
+
+        assertThat(callbackService.finalizeAuthorizedPayment(payment)).isSameAs(pending);
+
+        verify(eventCheckoutBasketService, never()).updateBasketState(any());
+    }
+
+    @Test
     void mostRelevantExploreUsesKnownViewerHostEdgeBeforeColdStartAffinityGap() {
         Users viewer = new Users();
         viewer.setId("viewer");

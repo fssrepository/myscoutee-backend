@@ -4,8 +4,12 @@ import json, re, subprocess, sys
 OWNER = '6aff10000000000000000001'
 STATE = 'AFFILIATE-INVITATION-001'
 def mongo(code):
-    return subprocess.check_output(['docker','exec','mongodb','sh','-c',
-        'exec mongosh --quiet --username "$MONGO_APP_USERNAME" --password "$MONGO_APP_PASSWORD" --authenticationDatabase demo_db demo_db --eval "$1"',
+    # collMod faults need the dev container's existing admin credential; ordinary
+    # fixture operations retain the application account. Never print either secret.
+    admin = len(sys.argv) > 1 and sys.argv[1] in ('arm-revenue-fault', 'disarm-revenue-fault')
+    shell = ('exec mongosh --quiet --username "$MONGO_INITDB_ROOT_USERNAME" --password "$MONGO_INITDB_ROOT_PASSWORD" --authenticationDatabase admin demo_db --eval "$1"'
+             if admin else 'exec mongosh --quiet --username "$MONGO_APP_USERNAME" --password "$MONGO_APP_PASSWORD" --authenticationDatabase demo_db demo_db --eval "$1"')
+    return subprocess.check_output(['docker','exec','mongodb','sh','-c',shell,
         'affiliate-fixture',code], text=True)
 base = f'const owner={json.dumps(OWNER)}, key={json.dumps(STATE)}, states=db.manualQaCheckpointSnapshots; '
 command=sys.argv[1] if len(sys.argv)>1 else 'status'
@@ -84,6 +88,106 @@ elif command=='stage-grace-cases':
     }
     states.updateOne({_id:key},{$set:{graceEventIds:ids}});
     print(JSON.stringify({events:ids,deadline:new Date(Date.parse(start)-4*3600000).toISOString(),seededCheckoutOutcomes:false}));'''
+elif command=='stage-callback-control':
+    code='''const state=states.findOne({_id:key});
+    if(state?.phase!=='revenue-ready')throw Error('Revenue prerequisite required');
+    const id='6aff20000000000000000006';
+    if(db.events.countDocuments({sourceId:id}))throw Error('Callback control already staged');
+    const template=db.events.findOne({sourceId:state.revenueEventIds[0],ownerUserId:owner});
+    const now=new Date().toISOString(), start=new Date(Date.now()+48*3600000).toISOString(), end=new Date(Date.parse(start)+3600000).toISOString();
+    db.events.insertOne({...template,_id:ObjectId(id),sourceId:id,syncKey:id,title:'QA Affiliate Callback Control',
+      startAtIso:start,endAtIso:end,timeframe:start+' – '+end,approvalRequired:false,paymentDeadlineEnabled:true,paymentDeadlineHours:4,
+      acceptedMembers:1,pendingMembers:0,acceptedMemberUserIds:[owner],pendingMemberUserIds:[],invitedMemberUserIds:[],pendingRequestMemberUserIds:[],activity:0,unread:0,
+      pricing:{...template.pricing,basePrice:10,currency:'EUR',cancellationPolicy:{enabled:false,rules:[]}},createdDate:now,updatedDate:now});
+    db.activityMembers.insertOne({_id:'qa-affiliate-callback-admin',ownerType:'event',ownerId:id,userId:owner,role:'Admin',status:'accepted',actionAtIso:now});
+    states.updateOne({_id:key},{$set:{callbackControlId:id}});
+    print(JSON.stringify({eventId:id,seededCheckoutOutcomes:false}));'''
+elif command=='stage-revenue-asset':
+    code='''const state=states.findOne({_id:key});
+    if(state?.phase!=='revenue-ready')throw Error('Revenue prerequisite required');
+    const payer=state.users.find(x=>x!==owner), eventId='6aff20000000000000000007', assetId='6aff30000000000000000001', stageId='qa-affiliate-borrow-stage';
+    if(db.events.countDocuments({sourceId:eventId}) || db.assets.countDocuments({assetId}))throw Error('Asset control already staged');
+    const template=db.events.findOne({sourceId:state.revenueEventIds[0],ownerUserId:owner});
+    if(!template)throw Error('Fixture template missing');
+    const now=new Date().toISOString(), start=new Date(Date.now()+48*3600000).toISOString(), end=new Date(Date.parse(start)+2*3600000).toISOString();
+    const stage={id:stageId,name:'QA Revenue Borrow Stage',description:'Isolated affiliate non-event purchase scope',timing:'During',offsetMinutes:0,durationMinutes:120,optional:false,capacityMin:1,capacityMax:4,startAt:start,endAt:end,stageStatus:'A',stageStatusReason:'stage-started',membersAccepted:2,membersPending:0,carsAccepted:0,carsPending:0,carsCapacityMin:0,carsCapacityMax:0};
+    const definition={...stage};for(const k of ['stageStatus','stageStatusReason','membersAccepted','membersPending','carsAccepted','carsPending','carsCapacityMin','carsCapacityMax'])delete definition[k];
+    db.events.insertOne({...template,_id:ObjectId(eventId),sourceId:eventId,syncKey:eventId,title:'QA Affiliate Asset Context',
+      subtitle:'Disposable accepted event prerequisite for non-event purchase',startAtIso:start,endAtIso:end,timeframe:start+' – '+end,
+      approvalRequired:false,paymentDeadlineEnabled:false,acceptedMembers:2,pendingMembers:0,acceptedMemberUserIds:[owner,payer],
+      pendingMemberUserIds:[],invitedMemberUserIds:[],pendingRequestMemberUserIds:[],activity:0,unread:0,
+      subEventsEnabled:true,subEventDefinitions:[definition],subEvents:[stage],
+      pricing:{...template.pricing,enabled:false,mode:'free',basePrice:0,cancellationPolicy:{enabled:false,rules:[]}},createdDate:now,updatedDate:now});
+    for(const user of [owner,payer]) db.activityMembers.insertOne({_id:'qa-affiliate-asset-member-'+user,ownerType:'event',ownerId:eventId,userId:user,role:user===owner?'Admin':'Member',status:'accepted',actionAtIso:now});
+    db.assets.insertOne({_id:ObjectId(assetId),assetId,syncKey:assetId,ownerUserId:owner,type:'Transport',title:'QA Affiliate Paid Transport',
+      subtitle:'Disposable non-event purchase control',category:'Sedan',city:'Austin',capacityTotal:3,quantity:3,
+      details:'Affiliate purchase and event-booking counter distinction',imageUrl:template.imageUrl,routes:['Austin'],
+      policiesEnabled:false,policies:[],pricing:{...template.pricing,enabled:true,basePrice:20,currency:'EUR',cancellationPolicy:{enabled:false,rules:[]}},
+      requests:[],visibility:'Public',status:'A',affinity:0,boost:0,createdDate:now,createdUser:owner,updatedDate:now,updatedUser:owner});
+    states.updateOne({_id:key},{$set:{revenueAssetControl:{eventId,stageId,assetId}}});
+    print(JSON.stringify({eventId,stageId,assetId,seededBorrowOrPayment:false}));'''
+elif command=='repair-revenue-asset-id':
+    code='''const state=states.findOne({_id:key});
+    const id=state?.revenueAssetControl?.assetId;
+    if(!id)throw Error('Asset prerequisite missing');
+    const asset=db.assets.findOne({_id:id,ownerUserId:owner,assetId:id});
+    if(!asset || asset.requests?.length || db.assets.findOne({_id:ObjectId(id)}))throw Error('Untouched malformed fixture asset required');
+    states.updateOne({_id:key},{$set:{assetIdTypeRepairOriginal:asset}});
+    db.assets.deleteOne({_id:id,ownerUserId:owner,assetId:id});
+    db.assets.insertOne({...asset,_id:ObjectId(id)});
+    print(JSON.stringify({assetId:id,idType:'ObjectId',changedBusinessFields:false}));'''
+elif command=='stage-revenue-recovery':
+    code='''const state=states.findOne({_id:key});
+    if(state?.phase!=='revenue-ready' || state.recoveryControls)throw Error('Unstaged recovery controls required');
+    const template=db.events.findOne({sourceId:state.callbackControlId,ownerUserId:owner});
+    if(!template)throw Error('Callback control prerequisite missing');
+    const now=new Date().toISOString(), start=new Date(Date.now()+48*3600000).toISOString(), end=new Date(Date.parse(start)+3600000).toISOString();
+    const controls=['intent','ledger','commit','ack'].map((mode,i)=>({mode,eventId:'6aff200000000000000000'+String(i+8).padStart(2,'0'),amount:i+2}));
+    for(const c of controls) {
+      if(db.events.findOne({sourceId:c.eventId}))throw Error('Control collision');
+      db.events.insertOne({...template,_id:ObjectId(c.eventId),sourceId:c.eventId,syncKey:c.eventId,title:'QA Revenue Recovery '+c.mode,
+        startAtIso:start,endAtIso:end,timeframe:start+' – '+end,acceptedMembers:1,pendingMembers:0,acceptedMemberUserIds:[owner],pendingMemberUserIds:[],
+        invitedMemberUserIds:[],pendingRequestMemberUserIds:[],activity:0,unread:0,paymentSessionId:null,
+        pricing:{...template.pricing,basePrice:c.amount,cancellationPolicy:{enabled:true,rules:[{id:'qa-full-refund',offsetUnit:'days',offsetValue:0,refundKind:'full',refundValue:100}]}},createdDate:now,updatedDate:now});
+      db.activityMembers.insertOne({_id:'qa-recovery-admin-'+c.mode,ownerType:'event',ownerId:c.eventId,userId:owner,role:'Admin',status:'accepted',actionAtIso:now});
+    }
+    states.updateOne({_id:key},{$set:{recoveryControls:controls}});
+    print(JSON.stringify({controls,seededOutcomes:false}));'''
+elif command=='arm-revenue-fault':
+    mode=sys.argv[2] if len(sys.argv)>2 else ''
+    if mode not in ('intent','ledger','commit','ack'):raise SystemExit('Use intent, ledger, commit, or ack')
+    code='''const state=states.findOne({_id:key}), mode=MODE;
+    if(state?.activeRevenueFault)throw Error('Restore existing fault first');
+    const control=(state.recoveryControls || []).find(x=>x.mode===mode);
+    if(!control)throw Error('Recovery prerequisite required');
+    const partner=db.affiliatePartners.findOne({_id:owner});
+    if(partner?.pending)throw Error('Pending partner operation must finish first');
+    let name, guard;
+    if(mode==='intent') {name='affiliatePartners';guard={$or:[{_id:{$ne:owner}},{'pending.next.gross':{$ne:control.amount*100}}]};}
+    if(mode==='ledger') {name='affiliatePaymentContributions';guard={$or:[{ownerUserId:{$ne:owner}},{gross:{$ne:control.amount*100}}]};}
+    if(mode==='commit') {name='affiliatePartners';guard={$or:[{_id:{$ne:owner}},{pending:{$exists:true}},{'totals.EUR.grossMinor':{$lte:partner.totals.EUR.grossMinor}}]};}
+    if(mode==='ack') {name='payments';guard={$or:[{sourceId:{$ne:control.eventId}},{affiliateRevenuePending:{$ne:false}},{status:{$ne:'captured'}}]};}
+    const original=db.getCollectionInfos({name})[0].options;
+    const validator=Object.keys(original.validator??{}).length?{$and:[original.validator,guard]}:guard;
+    states.updateOne({_id:key},{$set:{activeRevenueFault:{mode,name,original,control,baseline:partner,armedAtIso:new Date().toISOString()}}});
+    const result=db.runCommand({collMod:name,validator,validationLevel:'strict',validationAction:'error'});
+    if(!result.ok)throw Error(JSON.stringify(result));
+    print(JSON.stringify({mode,collection:name,scope:'disposable affiliate only',eventId:control.eventId}));'''.replace('MODE',json.dumps(mode))
+elif command=='clear-unarmed-revenue-fault':
+    code='''const state=states.findOne({_id:key}), fault=state?.activeRevenueFault;
+    if(!fault)throw Error('No recorded fault');
+    const current=db.getCollectionInfos({name:fault.name})[0].options;
+    if(JSON.stringify(current.validator??{})!==JSON.stringify(fault.original.validator??{}))throw Error('Validator differs: use disarm with authorized admin');
+    states.updateOne({_id:key},{$push:{revenueFaultHistory:{...fault,status:'NOT ARMED',reason:'collMod access unavailable'}},$unset:{activeRevenueFault:''}});
+    print(JSON.stringify({mode:fault.mode,validatorUnchanged:true,status:'NOT ARMED'}));'''
+elif command=='disarm-revenue-fault':
+    code='''const state=states.findOne({_id:key}), fault=state?.activeRevenueFault;
+    if(!fault)throw Error('No armed fault');
+    const original=fault.original;
+    const result=db.runCommand({collMod:fault.name,validator:original.validator??{},validationLevel:original.validationLevel??'strict',validationAction:original.validationAction??'error'});
+    if(!result.ok)throw Error(JSON.stringify(result));
+    states.updateOne({_id:key},{$push:{revenueFaultHistory:{...fault,restoredAtIso:new Date().toISOString()}},$unset:{activeRevenueFault:''}});
+    print(JSON.stringify({restored:fault.name,mode:fault.mode}));'''
 elif command=='stage-grace-off':
     code='''const state=states.findOne({_id:key});
     if(state?.phase!=='revenue-ready')throw Error('Revenue prerequisite required');
@@ -178,6 +282,7 @@ elif command=='track':
 elif command=='reset':
     state=json.loads(mongo(base+'print(JSON.stringify(states.findOne({_id:key})));'))
     if not state:raise SystemExit('Not staged')
+    if state.get('activeRevenueFault'):raise SystemExit('Run disarm-revenue-fault before reset')
     for user in state['users']:
         if user==OWNER:continue
         if not re.fullmatch(r'demo-profile-[a-f0-9-]{36}',user):raise SystemExit('Invalid tracked media owner')
@@ -187,12 +292,13 @@ elif command=='reset':
     subprocess.run(['bash','server/docker/scripts/manual-qa-checkpoints/manual-qa-checkpoints-docker.sh','restore','browser-sessions',STATE],check=True)
     code='''const state=states.findOne({_id:key}); if(!state)throw Error('Not staged');
     const ids=state.users, events=[...new Set(db.events.find({ownerUserId:owner},{_id:1,sourceId:1}).toArray().flatMap(x=>[String(x._id),x.sourceId]).filter(Boolean))];
+    const assets=db.assets.find({ownerUserId:owner},{assetId:1}).toArray().map(x=>x.assetId);
     if(state.locationPushBaseline?.outboxId)db.notificationOutbox.deleteOne({_id:state.locationPushBaseline.outboxId});
     for(const name of db.getCollectionNames()) {
       if(name==='manualQaCheckpointSnapshots')continue;
       db.getCollection(name).deleteMany({$or:[{_id:{$in:ids}},{userId:{$in:ids}},{ownerUserId:{$in:ids}}, {referrerUserId:owner},
         {recipientUserId:{$in:ids}},{actorUserId:{$in:ids}}, {relatedUserId:{$in:ids}}, {leftUserId:{$in:ids}}, {rightUserId:{$in:ids}},
-        {eventId:{$in:events}},{ownerId:{$in:events}}, {targetId:{$in:ids}}]});
+        {eventId:{$in:events}},{ownerId:{$in:[...events,...assets]}},{assetId:{$in:assets}}, {targetId:{$in:ids}}]});
     }
     db.affiliateLinks.deleteMany({_id:{$in:ids}}); db.affiliateRegistrations.deleteMany({_id:{$in:ids}});
     states.deleteOne({_id:key}); print(JSON.stringify({phase:'reset',users:ids.length,events:events.length}));'''

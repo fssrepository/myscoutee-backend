@@ -38,24 +38,43 @@ class EventCheckoutBasketServiceTest {
     private MongoTemplate mongoTemplate;
     private NotificationRuleRegistryService notificationRuleRegistryService;
     private EventCheckoutBasketService service;
+    private EventCheckoutPricingService checkoutPricing;
 
     @BeforeEach
     void setUp() {
         repository = mock(EventCheckoutBasketItemsRepository.class);
         mongoTemplate = mock(MongoTemplate.class);
         notificationRuleRegistryService = mock(NotificationRuleRegistryService.class);
+        checkoutPricing = mock(EventCheckoutPricingService.class);
         service = new EventCheckoutBasketService(
                 repository,
                 mongoTemplate,
                 notificationRuleRegistryService,
                 mock(org.springframework.beans.factory.ObjectProvider.class),
-                mock(EventCheckoutPricingService.class));
+                checkoutPricing);
         when(repository.findByUserIdAndSourceIdAndStatusInAndVisibleResultState(
                 any(String.class),
                 any(String.class),
                 anyList(),
                 anyList()))
                 .thenReturn(List.of());
+    }
+
+    @Test
+    void resourceBasketPreservesBorrowExpiryWithoutLookingUpAnEvent() {
+        String expiry = Instant.now().plusSeconds(600).toString();
+        var item = new EventCheckoutBasketItemDto(
+                "resource:asset-1", "resource", "asset-1", null, null, null,
+                "stage-1", "Transport", "Borrow", "Tomorrow", 20d, "EUR", 1,
+                "confirmed", "pending", List.of(), null, null, null, expiry);
+
+        service.saveBasket(request(item));
+
+        verify(checkoutPricing, never()).checkoutDeadline(any());
+        ArgumentCaptor<Update> updates = ArgumentCaptor.forClass(Update.class);
+        verify(mongoTemplate).upsert(any(Query.class), updates.capture(), eq(EventCheckoutBasketItem.class));
+        Document values = (Document) updates.getValue().getUpdateObject().get("$set");
+        assertThat(values.get("expiresAtIso")).isEqualTo(expiry);
     }
 
     @Test

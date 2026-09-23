@@ -250,7 +250,9 @@ public class EventCheckoutBasketService {
                 : request.basketItems().stream().filter(Objects::nonNull).toList();
         String nowIso = Instant.now().toString();
         String requestStatus = normalizeStatus(request.checkoutState());
-        String deadline = incomingItems.isEmpty() ? null : checkoutPricing.checkoutDeadline(request);
+        boolean eventCheckout = incomingItems.stream()
+                .anyMatch(item -> "event".equals(item.kind()) || "sub_event".equals(item.kind()));
+        String deadline = eventCheckout ? checkoutPricing.checkoutDeadline(request) : null;
         if (deadline != null && !Instant.parse(deadline).isAfter(Instant.now())
                 && !"pay".equals(requestStatus)) {
             throw new org.springframework.web.server.ResponseStatusException(
@@ -285,7 +287,8 @@ public class EventCheckoutBasketService {
                 continue;
             }
             String status = normalizeStatus(firstText(item.status(), requestStatus));
-            String expiresAtIso = deadline;
+            String expiresAtIso = eventCheckout ? deadline : firstText(item.expiresAtIso(), Instant.now()
+                    .plus(10, java.time.temporal.ChronoUnit.MINUTES).toString());
             String resultState = normalizeResultState(item.resultState());
             boolean reservationActive = isReservationActive(status, resultState);
             boolean shouldTrack = isPurgeCandidate(status, resultState, expiresAtIso);

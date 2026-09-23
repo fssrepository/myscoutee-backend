@@ -3280,7 +3280,7 @@ public class ActivitiesEventsService {
                         .map(item -> new EventCheckoutAssetSelectionDto(item.subEventId(), item.resourceType()))
                         .distinct()
                         .toList();
-        return requestJoin(new EventActionRequestDto(
+        EventParticipationActionResultDto result = requestJoin(new EventActionRequestDto(
                 payment.getUserId(),
                 payment.getSourceId(),
                 payment.getSlotSourceId(),
@@ -3297,6 +3297,15 @@ public class ActivitiesEventsService {
                 payment.getAmount(),
                 payment.getCurrency(),
                 payment.getAppliedPromoCodes()));
+        if (result != null && "accepted".equals(result.membershipStatus())) {
+            // The saved payment can contain pre-payment basket items without a session.
+            // Complete the callback's basket using the verified payment session, just as
+            // the synchronous checkout path does after membership acceptance.
+            eventCheckoutBasketService.updateBasketState(new EventCheckoutStateChangeRequestDto(
+                    payment.getUserId(), payment.getSourceId(), payment.getSlotSourceId(),
+                    "pay", "succeeded", null, payment.getCheckoutSessionId()));
+        }
+        return result;
     }
 
     private EventCheckoutBasketDto saveSubmittedPaymentBasket(EventCheckoutStateChangeRequestDto request) {

@@ -160,3 +160,115 @@ reconciliation, pending/payment card reason and a single repository query;
 Java/TS test suites NOT RUN separately. Whitespace checks pass with the existing
 CRLF CSV convention. Full affiliate financial/refund/recovery journey remains
 IN PROGRESS; these results only close the exercised expiry/fresh-Join controls.
+
+## Financial continuation and callback correction — 22:15 CEST
+
+Normal visitor UI captured HUF5000: payment 6ab42e95de5ce0e8f4b54ea2,
+gateway b6d1fa42-ee97-46b3-8e2c-95cc4abbc278. Owner revenue then showed two paid
+purchases/bookings, EUR100 and HUF5000 separately. Original EUR100 payment
+6ab41748de5ce0e8f4b54e52: visitor requested refund, with no aggregate effect;
+owner approved the configured EUR25 refund through Payment history. Provider
+succeeded, payment refundStatus=partial, refundedAmount=25. Totals became
+EUR100 gross/25 refunded/75 net; HUF stayed5000. Successful callback replay
+returned HTTP200 without duplicate money/counts. The normal menu no longer
+provides a second refund request after the partial refund, so the remaining75
+refund branch is NOT RUN/unsupported by that current UI; no outcome was seeded.
+
+Owner saved About through the normal profile editor, generated and revoked a
+Client1 integration key, then reopened Revenue: amounts unchanged. Visitor's
+own summary remained zero. No credentials were recorded. Payment history at
+360px fitted without horizontal overflow; EN/HU compact All/Cards header controls
+and card picker were inspected. Broader public DTO/privacy and fault/concurrency
+steps remain pending.
+
+Callback replay exposed a lifecycle defect: a saved payment contains pre-payment
+basket items without its session, and callback Join reconstruction could retain
+an approved/pending active basket even though membership was accepted. HUF stale
+basket 6ab42ec4de5ce0e8f4b54ea5 records the pre-fix failure. The callback finalizer
+now closes an accepted result with the verified payment session, matching the
+existing synchronous pay path; pending membership is not closed. Focused Java
+regression sources added, NOT RUN separately. Existing backend watcher build PASS.
+
+Versioned stage-callback-control created only event/admin prerequisites for
+6aff20000000000000000006, EUR10/Auto ON/grace4h. Actual normal Join, card selection
+and Payment captured payment6ab432f4de5ce0e8f4b54eb6. Replaying gateway
+9daf2008-f178-4d4f-8d3a-61240079af86 returned200; fulfillment succeeded, membership
+accepted, reconstructed basket6ab43305de5ce0e8f4b54eb9 pay/succeeded/inactive, older
+baskets deleted/inactive. A second replay returned200 with totals unchanged:
+purchases3, eventBookings3, EUR110 gross/25 refunded/85 net; HUF5000 unchanged.
+Reloaded Activities card has no Waiting for payment label. Existing HUF pre-fix
+basket remains a retained defect artifact, not a successful retest.
+
+Versioned stage-revenue-asset created only a free accepted event prerequisite
+6aff20000000000000000007, stage qa-affiliate-borrow-stage and public EUR20 transport
+6aff30000000000000000001. No borrow/payment outcome seeded. Normal visitor UI is
+continuing through stage Transport -> Explore for purchase-only accounting.
+
+User asked about many currencies overflowing. Revenue uses the shared popup's
+bounded body with overflow-y:auto. Actual360x430 viewport: popup340.8x410.8 stays
+inside viewport; body360px, scrollHeight415px, scrollTop55 reaches bottom while
+header/close remain fixed. Restored360x780 afterwards. This proves overflow
+behavior with the real two-currency data at reduced height; a many-currency
+financial dataset was not fabricated. Add this overflow control to the checklist.
+
+## Asset capture, full-refund control and privacy — 22:28 CEST
+
+Asset checkout first failed404 because saveBasket applied the new canonical EVENT
+cutoff to resource-only baskets. Narrowed that branch to event/sub_event baskets;
+resource baskets preserve the prior supplied expiry/10-minute fallback. Existing
+backend watcher BUILD SUCCESSFUL. Focused resource-expiry regression source added,
+NOT RUN separately. Retrying normal Confirm borrow now opened Payment.
+
+The asset fixture had a hex-string Mongo _id; Spring save converted it to ObjectId
+and collided with the original syncKey after capture. This is a fixture defect.
+Versioned repair-revenue-asset-id preserved all fields, snapshotted the original,
+and changed only the untouched prerequisite document's BSON id type. Seed now
+uses ObjectId from the start. Normal Pay retry reused the SAME captured payment
+6ab43464de5ce0e8f4b54ebd/gateway0974ba21-019f-4caf-8d88-044af69c688a, persisted the
+pending borrow request and assignment, and marked fulfillment/basket succeeded.
+Exactly one EUR20 payment exists; purchases4/bookings3. Resource basket expiry
+remained exactly10 minutes, active reservation false after success. Callback
+replay200 left totals/counts unchanged. This route captures immediately; an
+independent authorization-hold-only oracle remains NOT RUN.
+
+Recovery prerequisites ...008 through ...011 were staged (EUR2/3/4/5), with no
+payments/outcomes. Fault arming was NOT successful: first mongosh optional-array
+call failed (corrected); the application DB account then denied collMod, and the
+container's configured root credentials failed authentication. No validator was
+installed. Read-only comparison confirmed all three collections' validators{};
+clear-unarmed-revenue-fault removed only the unused harness marker. Runtime fault
+steps(a)-(d) are BLOCKED by unavailable authorized collMod access, not PASS.
+Normal UI capture of ...008 occurred after the first failed arming; it is NOT
+fault-test evidence. ...009/010/011 remain unpaid, with no attempt made.
+
+The EUR2 control ...008 was instead used for a supported FULL refund. Normal
+visitor Request refund and owner Approve refund produced gateway success and
+refundStatus=full, refundedAmount2. Primary payment6ab43550de5ce0e8f4b54ec8;
+gateway1e385ba2-4202-422e-8e12-1f80e11b53a0. Replay returned200 without duplicate
+amount/counts. Partner now purchases5/eventBookings4, EUR gross132/refunded27/net105,
+HUF gross/net5000/refunded0. Full refund retains historical counts. This does not
+substitute for the still-unsupported remaining75 refund on the partial control.
+
+Read-only authenticated API checks using the managed VISITOR session:
+/integrations/settings?userId=OWNER still returns visitor revenue0, not owner
+aggregates. /auth/me?userId=OWNER and /auth/me/profile-ext?userId=OWNER both200;
+recursive response-key inspection finds no revenue, contribution, ledger,
+purchaser or affiliateOwner fields. No session credential was printed.
+
+## Payment-history currency strip correction — 22:30 CEST
+
+User reported the four total pills wrapping. Shared payment-history strip now
+keeps nowrap, nonshrinking pills and horizontal scrolling; first-pill auto margin
+retains right alignment only when they fit. Keyboard-focusable named region.
+Actual360px UI: container347px/content374px, all four pills share y64.97, page has
+no horizontal overflow. Native ArrowRight scrolls the strip. At1000px all pills
+fit on one right-aligned row. Existing frontend-sync build PASS20:28:54Z.
+User clarified scrollbar must not require hover: use scroll overflow plus visible
+track/thumb colors and the established shared scrollbar styling. Final no-hover
+visual retest follows. No extra build/test runner started.
+
+Final currency-strip retest22:32CEST: frontend-sync PASS20:32:00Z, sync20:32:02Z.
+At360px, mouse moved to y650 and focus cleared; after1.7s idle, hover=false,
+focus=false, overflow-x=scroll. Screenshot /tmp/qa-payment-history-no-hover.png
+visually confirms track/thumb remain visible. All four pills on same y64.97;
+strip51px high including10px scrollbar. No hover-only behavior.
