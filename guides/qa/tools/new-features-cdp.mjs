@@ -2,11 +2,11 @@
 // Explicitly delegated 2026-09-23 QA only. Attaches to versioned-launcher sessions; never creates logins.
 import { readFile, writeFile } from 'node:fs/promises';
 const [checkpoint, actor = '0', command = 'inspect', input = '', output = ''] = process.argv.slice(2);
-if (!['EVENT-GALLERY-FEED-001', 'OPERATOR-EMAIL-WARNING-001', 'ADMIN-CLIENT-API-001', 'AFFILIATE-INVITATION-001'].includes(checkpoint)) throw Error('Unsupported checkpoint');
+if (!['EVENT-GALLERY-FEED-001', 'OPERATOR-EMAIL-WARNING-001', 'ADMIN-CLIENT-API-001', 'ADMIN-CLIENT-MONITOR-001', 'AFFILIATE-INVITATION-001'].includes(checkpoint)) throw Error('Unsupported checkpoint');
 const manifest = JSON.parse(await readFile(`/tmp/myscoutee-qa-browser-sessions/${checkpoint}.json`, 'utf8'));
 const session = manifest.sessions[Number(actor)];
 const targets = await fetch(`http://127.0.0.1:${session.devToolsPort}/json/list`).then(r => r.json());
-const page = targets.find(t => t.type === 'page' && new URL(t.url).hostname === 'localhost');
+const page = targets.find(t => t.type === 'page' && ['localhost', '127.0.0.1'].includes(new URL(t.url).hostname));
 if (!page) throw Error('Managed page missing');
 const ws = new WebSocket(page.webSocketDebuggerUrl);
 await new Promise((resolve, reject) => { ws.addEventListener('open', resolve, { once: true }); ws.addEventListener('error', reject, { once: true }); });
@@ -95,7 +95,7 @@ try {
     await send('Browser.setWindowBounds', { windowId: info.windowId, bounds: { left, top, width, height } });
     result = await send('Browser.getWindowBounds', { windowId: info.windowId });
   } else {
-    const expression = command === 'eval' ? await readFile(input, 'utf8') : command === 'inspect' ? `({url:location.href,text:document.body.innerText,buttons:[...document.querySelectorAll('button')].filter(e=>e.getBoundingClientRect().height>0).map(e=>({text:e.innerText,aria:e.getAttribute('aria-label'),disabled:e.disabled})),inputs:[...document.querySelectorAll('input,textarea')].map(e=>({type:e.type,placeholder:e.placeholder,aria:e.getAttribute('aria-label')}))})` : null;
+    const expression = command === 'eval' ? await readFile(input, 'utf8') : command === 'inspect' ? `({url:location.origin+location.pathname,text:document.body.innerText,buttons:[...document.querySelectorAll('button')].filter(e=>e.getBoundingClientRect().height>0).map(e=>({text:e.innerText,aria:e.getAttribute('aria-label'),disabled:e.disabled})),inputs:[...document.querySelectorAll('input,textarea')].map(e=>({type:e.type,placeholder:e.placeholder,aria:e.getAttribute('aria-label')}))})` : null;
     if (!expression) throw Error('Unsupported command');
     result = (await send('Runtime.evaluate', { expression, awaitPromise: true, returnByValue: true })).result.value;
   }

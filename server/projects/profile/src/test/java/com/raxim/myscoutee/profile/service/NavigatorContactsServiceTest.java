@@ -7,6 +7,7 @@ import static com.raxim.myscoutee.profile.data.dto.navigator.NavigatorContactsDt
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.when;
 
 import java.util.List;
@@ -23,6 +24,9 @@ import com.raxim.myscoutee.profile.data.document.NavigatorContactsProfile;
 import com.raxim.myscoutee.profile.data.document.Users;
 import com.raxim.myscoutee.profile.repository.NavigatorContactsProfilesRepository;
 import com.raxim.myscoutee.profile.repository.UsersRepository;
+import com.raxim.myscoutee.profile.security.AccessControlService;
+import com.raxim.myscoutee.profile.security.FriendshipFacts;
+import com.raxim.myscoutee.profile.data.dto.experience.ExperienceDtos.ExperienceEntryDto;
 
 @ExtendWith(MockitoExtension.class)
 class NavigatorContactsServiceTest {
@@ -34,6 +38,10 @@ class NavigatorContactsServiceTest {
     private UserExperienceProfilesService userExperienceProfilesService;
     @Mock
     private UsersRepository usersRepository;
+    @Mock
+    private AccessControlService accessControlService;
+    @Mock
+    private FriendshipFacts friendshipFacts;
 
     private NavigatorContactsService service;
 
@@ -43,7 +51,73 @@ class NavigatorContactsServiceTest {
                 navigatorContactsProfilesRepository,
                 homeUserProfileService,
                 userExperienceProfilesService,
-                usersRepository);
+                usersRepository, accessControlService, friendshipFacts);
+    }
+
+    @Test
+    void profileViewDoesNotExposePrivateExperiencesOrLegacyHostFieldsToFriends() {
+        Users target = visibilityProfile();
+        when(usersRepository.findByUserId("target")).thenReturn(Optional.of(target));
+        when(accessControlService.resolveActorUserId(any())).thenReturn("friend");
+        when(friendshipFacts.areFriends("target", "friend")).thenReturn(true);
+        when(userExperienceProfilesService.queryEntriesByUserId("target")).thenReturn(visibilityExperiences());
+
+        var result = service.loadContactProfile("target");
+
+        assertThat(result.hiddenFields()).containsExactly("profile.experience.workplace", "profile.details.loveStyle");
+        assertThat(result.experiences()).extracting(ExperienceEntryDto::type).containsExactly("School");
+        assertThat(target.getProfileDetails().get(0).rows()).extracting(Users.ProfileDetailRowRecord::labelKey)
+                .containsExactly("profile.gender", "profile.profession", "profile.experience.school");
+        verify(usersRepository, never()).save(any());
+    }
+
+    @Test
+    void unrelatedViewerDoesNotReceiveFriendsOnlyFieldValues() {
+        Users target = visibilityProfile();
+        when(usersRepository.findByUserId("target")).thenReturn(Optional.of(target));
+        when(accessControlService.resolveActorUserId(any())).thenReturn("other");
+        when(userExperienceProfilesService.queryEntriesByUserId("target")).thenReturn(visibilityExperiences());
+
+        var result = service.loadContactProfile("target");
+
+        assertThat(result.hiddenFields()).contains("profile.experience.school", "profile.profession");
+        assertThat(result.experiences()).isEmpty();
+        assertThat(target.getProfileDetails().get(0).rows()).extracting(Users.ProfileDetailRowRecord::labelKey)
+                .containsExactly("profile.gender");
+    }
+
+    @Test
+    void ownerRetainsAllProfileFieldsAndExperiences() {
+        Users target = visibilityProfile();
+        when(usersRepository.findByUserId("target")).thenReturn(Optional.of(target));
+        when(accessControlService.resolveActorUserId(any())).thenReturn("target");
+        when(userExperienceProfilesService.queryEntriesByUserId("target")).thenReturn(visibilityExperiences());
+
+        var result = service.loadContactProfile("target");
+
+        assertThat(result.hiddenFields()).isEmpty();
+        assertThat(result.experiences()).hasSize(2);
+        assertThat(target.getProfileDetails().get(0).rows()).hasSize(5);
+        verify(friendshipFacts, never()).areFriends(any(), any());
+        verify(usersRepository, never()).save(any());
+    }
+
+    private Users visibilityProfile() {
+        Users target = new Users();
+        target.setUserId("target");
+        target.setProfileDetails(List.of(new Users.ProfileDetailGroupRecord("Basics", List.of(
+                new Users.ProfileDetailRowRecord("profile.gender", "Woman", "Private", List.of()),
+                new Users.ProfileDetailRowRecord("profile.profession", "Engineer", "Friends", List.of()),
+                new Users.ProfileDetailRowRecord("profile.experience.workplace", "", "Private", List.of()),
+                new Users.ProfileDetailRowRecord("profile.experience.school", "", "Friends", List.of()),
+                new Users.ProfileDetailRowRecord("profile.details.loveStyle", "Hidden legacy value", "Hosts", List.of())))));
+        return target;
+    }
+
+    private List<ExperienceEntryDto> visibilityExperiences() {
+        return List.of(
+                new ExperienceEntryDto("work", "Workspace", "Engineer", "Private workplace", "", "2024-01-01", "Present", ""),
+                new ExperienceEntryDto("school", "School", "Student", "Friends school", "", "2020-01-01", "2024-01-01", ""));
     }
 
     @Test

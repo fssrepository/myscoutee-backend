@@ -3071,7 +3071,8 @@ public class HomeUserProfileService {
                                 return new ProfileDetailRowDto(
                                         labelKey,
                                         safeText(row.value()),
-                                        safeText(row.privacy()),
+                                        "profile.gender".equals(labelKey) ? "Public"
+                                                : "Hosts".equals(row.privacy()) ? "Private" : safeText(row.privacy()),
                                         normalizeStrings(row.options()));
                             })
                             .filter(Objects::nonNull)
@@ -3103,7 +3104,8 @@ public class HomeUserProfileService {
                                 return new Users.ProfileDetailRowRecord(
                                         labelKey,
                                         safeText(row.value()),
-                                        safeText(row.privacy()),
+                                        "profile.gender".equals(labelKey) ? "Public"
+                                                : "Hosts".equals(row.privacy()) ? "Private" : safeText(row.privacy()),
                                         normalizeStrings(row.options()));
                             })
                             .filter(Objects::nonNull)

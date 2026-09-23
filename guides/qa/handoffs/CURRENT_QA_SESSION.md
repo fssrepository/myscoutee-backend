@@ -88,9 +88,10 @@ Earlier Event Mode, Integration API, Activity Rating and EVENT-FOLLOWING-001 rem
 ```yaml
 checkpoint: ADMIN-CLIENT-API-001
 checklist: ../checklists/api/ADMIN-CLIENT-API-001.md
-substage: Next queued checkpoint; not staged yet. Gallery and Email closed PASS on dev stack.
-fixture_phase: No Email fixture or managed windows retained; exact config/Job restoration PASS.
-next_action: Read-only runtime/package/client readiness, then versioned admin-client fixture and managed browser launcher. Prior full-flow delegation remains active.
+substage: Visible packaged client connected in demo mode; profile editor/view/privacy and masked-key side corrections verified. Continue remaining private admin API/client lifecycle.
+fixture_phase: admin-client staged. Email closed/reset; exact config/Job restoration PASS. Retained unrelated Borrow/Event Mode snapshots preserved.
+execution_log: ../evidence/ADMIN-CLIENT-API-001-20260923-progress.md
+next_action: Continue admin-client checklist at normal Affiliate popup, poll cadence and native notification lifecycle. Profile side correction complete; field Hosts removed (legacy Private), no pending question. Ava retains one revealed test key (never generic-inspect or screenshot that popup). Visible ADMIN-CLIENT-MONITOR-001 is connected; read current port from private instance file under /tmp/myscoutee-admin-client-qa-20260923. Never print keys/control token. Native notification monitor log is /tmp/qa-admin-native-notifications.log. Prior full-flow delegation remains active.
 queue: AFFILIATE-REVENUE-001, EVENT-CALENDAR-EXPORT-001
 calendar_boundary: Calendar LAST; Android connected/authorized earlier, recheck at calendar boundary.
 resume_gate: Verify no foreign active fixture and running dev stack before staging. Gallery/Email remain closed; do not replay them.

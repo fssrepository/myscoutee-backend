@@ -40,6 +40,7 @@ public final class NavigatorContactsDtos {
 
     public record NavigatorContactProfileDto(
             UserDto user,
-            List<ExperienceEntryDto> experiences) {
+            List<ExperienceEntryDto> experiences,
+            List<String> hiddenFields) {
     }
 }

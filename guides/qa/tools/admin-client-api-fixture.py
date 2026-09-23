@@ -30,7 +30,7 @@ print(JSON.stringify({phase:'ready',actors:ids,expectedActiveDelta:2,expectedGen
 'status': '''print(JSON.stringify({checkpoint:db.manualQaCheckpointSnapshots.findOne({_id:key}),current:db.adminStats.findOne({statsKey:'global'},{activeProfileGenders:1,generatedAtIso:1,dailyActivity:1})}));''',
 'reset': '''
 if(!db.manualQaCheckpointSnapshots.findOne({_id:key}))throw Error('Not staged');
-for(const collection of ['privacyConsents','userSessionStates','userPageFilterPreferences','userLoginSessions','userLoginAudits','userSessionActions'])db.getCollection(collection).deleteMany({userId:{$in:ids}});
+for(const collection of ['userExperienceProfiles','privacyConsents','userSessionStates','userPageFilterPreferences','userLoginSessions','userLoginAudits','userSessionActions'])db.getCollection(collection).deleteMany({userId:{$in:ids}});
 db.users.deleteMany({userId:{$in:ids}});db.manualQaCheckpointSnapshots.deleteOne({_id:key});
 print(JSON.stringify({reset:true,statsRefresh:'ordinary worker',auditMessagesRetained:true}));
 '''
