@@ -61,7 +61,7 @@ try {
   const overview = await response.json();
   assert.deepEqual(Object.keys(overview).sort(), ['attention', 'statistics']);
   assert.equal(typeof overview.statistics.generatedAtIso, 'string');
-  const wrongClient = await fetch('http://localhost/api/admin-client/v1/overview', { headers: { ...headers, 'X-MyScoutee-Client-Id': 'qa-other-client' } });
+  const wrongClient = await fetch('http://localhost/api/admin-client/v1/overview', { headers: { ...headers, 'X-MyScoutee-Client-Id': 'fbefb315-457a-4b77-8e43-bf573f327552' } });
   assert.ok([401, 403].includes(wrongClient.status));
   console.log(JSON.stringify({ connectedViaVisibleUI: true, passwordCleared: true, maskedPreviewMatches: true, keyAbsentFromPreferences: true,
     wrongClientStatus: wrongClient.status, overview }));

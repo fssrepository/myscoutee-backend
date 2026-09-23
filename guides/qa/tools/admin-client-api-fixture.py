@@ -6,7 +6,7 @@ import sys
 KEY = 'ADMIN-CLIENT-API-001'
 IDS = [f'6ac102{i:018x}' for i in range(1, 6)]
 command = sys.argv[1] if len(sys.argv) > 1 else 'status'
-if command not in ('stage', 'status', 'reset'):
+if command not in ('stage', 'status', 'reset', 'stage-support'):
     raise SystemExit('Use stage, status or reset')
 base = 'const key=' + json.dumps(KEY) + ',ids=' + json.dumps(IDS) + ';'
 code = {
@@ -26,6 +26,12 @@ for(let i=0;i<ids.length;i++){
 }
 db.manualQaCheckpointSnapshots.updateOne({_id:key},{$set:{phase:'ready'}});
 print(JSON.stringify({phase:'ready',actors:ids,expectedActiveDelta:2,expectedGenderDelta:{female:1,male:1},registrationTelemetrySeeded:false}));
+''',
+'stage-support': '''
+if(!db.manualQaCheckpointSnapshots.findOne({_id:key}))throw Error('Not staged');
+const id='6ac102000000000000000101';if(db.userReports.findOne({_id:ObjectId(id)}))throw Error('Support precondition already exists');
+db.userReports.insertOne({_id:ObjectId(id),syncKey:'admin-client-qa-support',userId:ids[1],targetUserId:ids[0],handle:'Admin API QA 1',reason:'QA support notification',details:'Disposable admin-client support test precondition.',sourceType:'profile',createdDate:new Date().toISOString(),createdUser:ids[1]});
+print(JSON.stringify({supportPrecondition:true}));
 ''',
 'status': '''print(JSON.stringify({checkpoint:db.manualQaCheckpointSnapshots.findOne({_id:key}),current:db.adminStats.findOne({statsKey:'global'},{activeProfileGenders:1,generatedAtIso:1,dailyActivity:1})}));''',
 'reset': '''
