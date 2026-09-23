@@ -2086,7 +2086,8 @@
     },
     "OPERATOR-EMAIL-WARNING-001": {
       "layout": {
-        "columns": 2
+        "columns": 2,
+        "appWindows": true
       },
       "sessions": [
         {
@@ -2106,6 +2107,13 @@
           "targetUrl": "http://localhost/admin",
           "entryUrl": "http://localhost/entry?redirect=%2Fadmin",
           "autoDismissExplanationGuide": false
+        },
+        {
+          "actor": "Normal user",
+          "sessionKind": "demo",
+          "userId": "650000000000000000000061",
+          "expectedName": "Casey Bridge",
+          "autoDismissExplanationGuide": true
         }
       ]
     },

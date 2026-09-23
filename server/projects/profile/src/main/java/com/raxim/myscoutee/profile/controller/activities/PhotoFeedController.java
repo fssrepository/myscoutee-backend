@@ -26,6 +26,10 @@ public class PhotoFeedController {
     }
     @PostMapping
     public Post create(@RequestBody Create request) { return feed.create(actor(request.userId()), request); }
+    @PostMapping("/page")
+    public Page syncPage(@RequestBody PageSync request) {
+        return feed.syncPage(actor(request.userId()), request);
+    }
     @DeleteMapping("/{id}")
     public Users.FeedCountersRecord remove(@PathVariable String id, @RequestParam String userId) {
         return feed.remove(actor(userId), id);

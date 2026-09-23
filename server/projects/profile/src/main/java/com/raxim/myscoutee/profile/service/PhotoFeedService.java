@@ -93,7 +93,19 @@ public class PhotoFeedService {
         return new Page(page, total, next, counts);
     }
     public List<String> seen(Users actor, List<String> ids) {
-        if (ids == null || ids.isEmpty() || ids.size() > 50) throw badRequest();
+        return saveSeen(actor, ids, 50);
+    }
+    public Page syncPage(Users actor, PageSync request) {
+        // Validate the read before writing. Opening Public feed can acknowledge
+        // its retained outbox and obtain the already-filtered first page at once.
+        if (!"public".equals(request.status())) throw badRequest();
+        coordinates(actor);
+        parseCursor(request.cursor());
+        saveSeen(actor, request.seenPostIds(), 5000);
+        return page(actor, request.pageSize(), request.cursor(), request.status());
+    }
+    private List<String> saveSeen(Users actor, List<String> ids, int limit) {
+        if (ids == null || ids.isEmpty() || ids.size() > limit) throw badRequest();
         for (String id : ids) try { UUID.fromString(id); } catch (RuntimeException ex) { throw badRequest(); }
         var unique = ids.stream().distinct().toList();
         posts.markSeen(actor.getUserId(), unique);

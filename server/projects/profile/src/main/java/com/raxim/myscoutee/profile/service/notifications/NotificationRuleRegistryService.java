@@ -198,6 +198,16 @@ public class NotificationRuleRegistryService {
         return beginRunAtomic(ruleKey, detail, actorUserId, effectiveStartedAt, expectedLastRunAtIso);
     }
 
+    /** Acquire due durable work without delaying it until the rule's next periodic scan. */
+    public synchronized NotificationRuleConfig beginQueuedRun(
+            String ruleKey, String detail, String actorUserId, Instant startedAt) {
+        NotificationRuleConfig candidate = findRule(ruleKey).orElse(null);
+        if (candidate == null || !Boolean.TRUE.equals(candidate.getEnabled())) return null;
+        String expectedLastRunAtIso = candidate.getRunState() == null
+                ? "" : safeText(candidate.getRunState().getLastRunAtIso());
+        return beginRunAtomic(ruleKey, detail, actorUserId, startedAt, expectedLastRunAtIso);
+    }
+
     private NotificationRuleConfig beginRunAtomic(
             String ruleKey,
             String detail,

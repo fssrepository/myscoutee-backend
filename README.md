@@ -40,9 +40,16 @@ Editable manual sources and PDF build instructions are in
 | MyScoutee Product | 1.0.0 | [PDF](guides/pitches/product-output/MyScoutee_Product_Pitch_v1.0.0_EN.pdf) | [PPTX](guides/pitches/product-output/MyScoutee_Product_Pitch_v1.0.0_EN.pptx) |
 
 
+## Development release source
+
+The dev Compose stack includes a local HTTPS `release-simulator` for release
+discovery and actual package downloads. Existing configuration selects it in
+development; production keeps GitHub. See the [local release fixture guide](guides/qa/tools/OPERATOR-UPDATE-LOCAL-RELEASE.md#persistent-dev-compose-service)
+for adding signed local packages and simulating interrupted downloads.
+
 ## QA status
 
-The five new delegated cases are tracked in the matrix. [Gallery/Feed/Moderation](guides/qa/evidence/EVENT-GALLERY-FEED-001-20260923-progress.md) is IN PROGRESS on the user-started dev stack (2026-09-23); Email, Admin client, Affiliate revenue and Calendar are queued, with Calendar last. Earlier closed cases remain unchanged.
+The five new delegated cases are tracked in the matrix. [Gallery/Feed/Moderation](guides/qa/evidence/EVENT-GALLERY-FEED-001-20260923-progress.md) is PASS on the user-started dev stack (2026-09-23), with fixture reset complete. [Email QA](guides/qa/evidence/OPERATOR-EMAIL-WARNING-001-20260923-progress.md), including durable retries, is PASS on the dev stack with cleanup complete. Admin client, Affiliate revenue and Calendar are queued, with Calendar last. Earlier closed cases remain unchanged.
 
 The delegated [Event Mode regression](guides/qa/checklists/event/EVENT-MODE-REGRESSION-001-20260921-progress.md)
 and [Integration API extension](guides/qa/checklists/integration/INTEGRATION-API-001.md#extension-result--2026-09-22)

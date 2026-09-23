@@ -12,6 +12,7 @@ import json
 import os
 from pathlib import Path
 import re
+import shutil
 import ssl
 import subprocess
 from urllib.parse import urlsplit
@@ -75,11 +76,16 @@ def prepare(args):
         signed = target / 'myscoutee-update.json'
         subprocess.run(['python3', str(ROOT / 'packaging/release/sign-update-manifest.py'),
                         '--private-key', str(key), '--manifest', str(source), '--output', str(signed)], check=True)
+        if args.copy_assets:
+            copied = target / package.name
+            shutil.copyfile(package, copied)
+            package = copied
         # Package signature remains bound to the unchanged package bytes/version.
         assets = []
         for path in (package, signed):
             route = prefix + path.name
-            paths[route] = {'path': str(path), 'size': path.stat().st_size, 'sha256': digest(path)}
+            stored_path = path.relative_to(output) if args.copy_assets else path
+            paths[route] = {'path': str(stored_path), 'size': path.stat().st_size, 'sha256': digest(path)}
             assets.append({'name': path.name, 'size': path.stat().st_size,
                            'browser_download_url': base + route})
         releases.append({'tag_name': tag, 'draft': False, 'prerelease': '-qa.' in version, 'assets': assets})
@@ -93,8 +99,11 @@ def serve(args):
     index = json.loads((args.root / 'index.json').read_text())
     for record in index['paths'].values():
         path = Path(record['path'])
+        if not path.is_absolute():
+            path = args.root / path
         if path.is_symlink() or digest(path) != record['sha256']:
             raise ValueError('Fixture asset changed since preparation.')
+        record['path'] = str(path)
     catalog = json.dumps(index['releases']).encode()
     list_path = f"/repos/{index['repository']}/releases"
 
@@ -159,6 +168,7 @@ def main():
     prepare_parser.add_argument('--repository', default='fssrepository/myscoutee')
     prepare_parser.add_argument('--release', type=Path, action='append', required=True)
     prepare_parser.add_argument('--key', type=Path, required=True)
+    prepare_parser.add_argument('--copy-assets', action='store_true', help='Copy packages into the fixture and use portable relative asset paths.')
     serve_parser = commands.add_parser('serve')
     serve_parser.add_argument('--root', type=Path, required=True)
     serve_parser.add_argument('--bind', default='127.0.0.1')

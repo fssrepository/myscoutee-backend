@@ -86,16 +86,16 @@ resume pointer and reusable working method.
 Earlier Event Mode, Integration API, Activity Rating and EVENT-FOLLOWING-001 remain closed.
 
 ```yaml
-checkpoint: EVENT-GALLERY-FEED-001
-checklist: ../checklists/event/EVENT-GALLERY-FEED-001.md
-execution_log: ../evidence/EVENT-GALLERY-FEED-001-20260923-progress.md
-substage: Gallery/Feed runtime and moderation checks; full-flow delegated by user.
-fixture_phase: four retained sessions; moderation ON, auto approval OFF, delay 43200/Asset selection; Job enabled at one minute. Feed event linking and owner removal/counters passed runtime checks. Seen/outbox supplement and exclusion of own posts are now under runtime test; one Viewer pending control remains.
-next_action: Finish Seen viewport/outbox/offline/reopen checks with other uploader; confirm own posts excluded from Public/Seen; verify purple/rejected and danger/blocked badge bindings, then complete remaining Gallery case and cleanup before queued cases. OFF branch and distance paging already exercised. New regressions not run separately; use existing watchers. Leave carousel arrows unchanged.
-queue: OPERATOR-EMAIL-WARNING-001, ADMIN-CLIENT-API-001, AFFILIATE-REVENUE-001, EVENT-CALENDAR-EXPORT-001
-calendar_boundary: Calendar LAST; Android connected and authorized through ADB 2026-09-23; recheck when reaching calendar.
-resume_gate: Read evidence and gallery fixture status; inspect managed manifest and existing pages before any reset/relaunch. No replay of closed earlier cases.
-runtime: User started dev Compose stack; backend continuous compiler and frontend-sync own builds. No parallel build processes.
+checkpoint: ADMIN-CLIENT-API-001
+checklist: ../checklists/api/ADMIN-CLIENT-API-001.md
+substage: Next queued checkpoint; not staged yet. Gallery and Email closed PASS on dev stack.
+fixture_phase: No Email fixture or managed windows retained; exact config/Job restoration PASS.
+next_action: Read-only runtime/package/client readiness, then versioned admin-client fixture and managed browser launcher. Prior full-flow delegation remains active.
+queue: AFFILIATE-REVENUE-001, EVENT-CALENDAR-EXPORT-001
+calendar_boundary: Calendar LAST; Android connected/authorized earlier, recheck at calendar boundary.
+resume_gate: Verify no foreign active fixture and running dev stack before staging. Gallery/Email remain closed; do not replay them.
+runtime: Existing frontend-sync and backend continuous/DevTools watchers own compilation. No separate builds. Email stub stopped and all temporary email overrides removed. Persistent dev release simulator remains healthy/intended.
+last_completed: Email three-retry supplement PASS (normal 1/2/4 minutes, shortened dev 5/10/20 seconds); suspension/restart/resume, terminal outcomes and disabled/restored/expired guards proved. Latest standalone Java regression tests and local adapter runtime NOT RUN.
 ```
 
 ## Archived pair-QA resume point — 2026-09-17

@@ -103,3 +103,37 @@ It refuses an unrelated changed certificate/key, restores only the recorded
 TLS files and six changed environment settings, and recreates nginx through
 the packaged Compose wrapper. It does not restore MongoDB, MinIO or user data.
 Verify the original HTTPS connection, Operator access and retained file hashes.
+
+
+## Persistent dev Compose service
+
+`server/docker-compose-dev.yml` starts `release-simulator` on the dev network,
+with its host port restricted to `127.0.0.1:18445`. It runs this same HTTPS
+catalog and package server. The existing `OPERATOR_UPDATE_RELEASE_API_ORIGIN`,
+`OPERATOR_UPDATE_RELEASE_DOWNLOAD_ORIGIN`, `OPERATOR_UPDATE_TLS_CA_CERTIFICATE`
+and `OPERATOR_UPDATE_RELEASE_PUBLIC_KEY_PATH` settings select the local source.
+Production Compose and production defaults remain unchanged. No development
+branch bypasses TLS, signed metadata or package-signature verification.
+
+The development TLS certificate is generated once under the gitignored
+`server/data/release-simulator/tls`. The catalog is persistent under
+`server/data/release-simulator/catalog`. A new checkout starts with an empty
+catalog, so development never falls back to GitHub when no local package exists.
+
+To add actual locally built packages, stop only `release-simulator`, prepare a
+new catalog directory with the existing tool's `prepare --copy-assets`, then
+replace the previous local catalog after retaining any needed QA evidence.
+Use `https://release-simulator:18445` as its origin. `--copy-assets` copies the
+unchanged package bytes into the fixture and stores relative paths so the same
+catalog works inside Docker. Supply the same external signing key that signed
+the packages, and export only its public key to
+`server/data/release-simulator/release-public-key.pem`. Never mount the release
+signing private key into the service. Restart only `release-simulator` afterward.
+
+For interrupted-download QA, set `RELEASE_SIMULATOR_FAIL_PACKAGE_AFTER_BYTES`
+in the dev Compose environment and recreate only this service. The existing
+fixture cuts the package response after that byte count while keeping metadata
+available. Unset it and recreate that service to restore normal downloads.
+
+The dev runtime does not install production packages on the development host.
+Full install/rollback testing still uses the dedicated packaged QA guest.

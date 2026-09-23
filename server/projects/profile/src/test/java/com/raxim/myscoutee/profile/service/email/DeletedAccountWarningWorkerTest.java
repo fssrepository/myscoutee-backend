@@ -63,4 +63,59 @@ class DeletedAccountWarningWorkerTest {
         assertThrows(IllegalStateException.class, () -> worker.deliver(now));
         verify(email, times(1)).send(any());
     }
+    @Test void unknownDeliveryIsPersistedAndNeverAutomaticallyResent() {
+        when(email.send(any())).thenReturn(EmailSendResult.unknown("Response lost"));
+        assertThrows(IllegalStateException.class, () -> worker.deliver(now));
+        var update = ArgumentCaptor.forClass(org.springframework.data.mongodb.core.query.Update.class);
+        verify(mongo).updateFirst(any(Query.class), update.capture(), eq("accountDeletionWarnings"));
+        assertEquals("unknown", ((Document) update.getValue().getUpdateObject().get("$set")).getString("status"));
+        when(mongo.findById(anyString(), eq(Document.class), eq("accountDeletionWarnings")))
+                .thenReturn(new Document("status", "unknown"));
+        assertEquals(0, worker.deliver(now.plusSeconds(60)));
+        verify(email, times(1)).send(any());
+    }
+    @Test void transientFailureSchedulesRetryAndMarksEpisodeClaimed() {
+        Instant current = Instant.now();
+        user.setDeletedAtIso(current.minus(25, java.time.temporal.ChronoUnit.DAYS).toString());
+        when(email.send(any())).thenReturn(EmailSendResult.retryable("unavailable", 90));
+        assertThrows(IllegalStateException.class, () -> worker.deliver(current));
+        var update = ArgumentCaptor.forClass(org.springframework.data.mongodb.core.query.Update.class);
+        verify(mongo).updateFirst(any(Query.class), update.capture(), eq("accountDeletionWarnings"));
+        Document fields = (Document) update.getValue().getUpdateObject().get("$set");
+        assertEquals("retry", fields.getString("status"));
+        assertTrue(Instant.parse(fields.getString("nextAttemptAtIso")).isAfter(current.plusSeconds(89)));
+        verify(mongo).updateFirst(any(Query.class), any(org.springframework.data.mongodb.core.query.Update.class), eq(Users.class));
+    }
+    @Test void threeRetriesIncreaseDelayThenStopPermanently() {
+        Instant current = Instant.now();
+        user.setDeletedAtIso(current.minus(25, java.time.temporal.ChronoUnit.DAYS).toString());
+        when(mongo.find(any(Query.class), eq(Users.class))).thenReturn(List.of());
+        when(email.send(any())).thenReturn(EmailSendResult.retryable("unavailable", 0));
+        for (int attempt = 2; attempt <= 4; attempt++) {
+            var retry = new Document("_id", "episode").append("userId", user.getUserId())
+                    .append("deletedAtIso", user.getDeletedAtIso()).append("attemptCount", attempt - 1);
+            var claim = new Document(retry).append("attemptCount", attempt);
+            when(mongo.find(any(Query.class), eq(Document.class), eq("accountDeletionWarnings"))).thenReturn(List.of(retry));
+            when(mongo.findAndModify(any(Query.class), any(org.springframework.data.mongodb.core.query.Update.class),
+                    any(org.springframework.data.mongodb.core.FindAndModifyOptions.class), eq(Document.class), eq("accountDeletionWarnings")))
+                    .thenReturn(claim);
+            assertThrows(IllegalStateException.class, () -> worker.deliver(current));
+            var update = ArgumentCaptor.forClass(org.springframework.data.mongodb.core.query.Update.class);
+            verify(mongo).updateFirst(any(Query.class), update.capture(), eq("accountDeletionWarnings"));
+            Document fields = (Document) update.getValue().getUpdateObject().get("$set");
+            assertEquals(attempt < 4 ? "retry" : "failed", fields.getString("status"));
+            if (attempt < 4) assertTrue(Instant.parse(fields.getString("nextAttemptAtIso"))
+                    .isAfter(current.plusSeconds((60L << (attempt - 1)) - 1)));
+            else assertTrue(((Document) update.getValue().getUpdateObject().get("$unset")).containsKey("nextAttemptAtIso"));
+            clearInvocations(mongo);
+        }
+        verify(email, times(3)).send(any());
+    }
+    @Test void retryClaimLostToAnotherWorkerDoesNotSend() {
+        when(mongo.find(any(Query.class), eq(Users.class))).thenReturn(List.of());
+        when(mongo.find(any(Query.class), eq(Document.class), eq("accountDeletionWarnings")))
+                .thenReturn(List.of(new Document("_id", "episode").append("attemptCount", 1)));
+        assertEquals(0, worker.deliver(now));
+        verify(email, never()).send(any());
+    }
 }

@@ -13,6 +13,7 @@ public final class PhotoFeedDtos {
             String createdAtIso, List<String> imageUrls, Map<String, ImageDetailsDto> imageDetails, double distanceKm,
             String moderationStatus, FeedCountersRecord feedCounters) {}
     public record Page(List<Post> items, long total, String nextCursor, FeedCountersRecord context) {}
+    public record PageSync(String userId, int pageSize, String cursor, String status, List<String> seenPostIds) {}
     public record Cursor(int bucket, String createdAtIso, String id) {}
     public record EventOption(ImageEventReference event, String imageUrl, String startAtIso) {}
     public record EventPage(List<EventOption> items, long total, String nextCursor) {}

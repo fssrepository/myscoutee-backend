@@ -26,6 +26,25 @@ import com.raxim.myscoutee.profile.service.AdminTelemetryService;
 
 class NotificationRuleRegistryServiceTest {
     @Test
+    void dueQueuedWorkHonorsSuspensionAndClaimsTheEnabledRuleAtomically() {
+        var repository = mock(NotificationRuleConfigsRepository.class);
+        var mongo = mock(MongoTemplate.class);
+        var service = new NotificationRuleRegistryService(repository,
+                mock(AdminNotificationSocketSessionRegistry.class), mongo, mock(AdminTelemetryService.class));
+        var rule = new NotificationRuleConfig();
+        rule.setRuleKey("account-deletion-warning");
+        rule.setEnabled(false);
+        when(repository.findByRuleKey(rule.getRuleKey())).thenReturn(Optional.of(rule));
+        assertThat(service.beginQueuedRun(rule.getRuleKey(), "retry", rule.getRuleKey(), Instant.now())).isNull();
+        verifyNoInteractions(mongo);
+        rule.setEnabled(true);
+        service.beginQueuedRun(rule.getRuleKey(), "retry", rule.getRuleKey(), Instant.now());
+        var query = ArgumentCaptor.forClass(Query.class);
+        verify(mongo).findAndModify(query.capture(), any(Update.class), any(FindAndModifyOptions.class), eq(NotificationRuleConfig.class));
+        assertThat(query.getValue().getQueryObject().toJson()).contains("\"enabled\": true", "runState.currentStatus", "runState.lastRunAtIso");
+    }
+
+    @Test
     void nonManualWorkersAreRecordedAsScheduledRegardlessOfTheirRunnerId() {
         assertThat(runHistoryTrigger(
                 NotificationRuleRegistryService.RULE_AFFINITY_RECOMPUTE,
