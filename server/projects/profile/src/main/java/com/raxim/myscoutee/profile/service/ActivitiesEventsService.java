@@ -3001,12 +3001,20 @@ public class ActivitiesEventsService {
                     null);
         }
         boolean checkoutBasketUpdateRequested = isPendingCheckoutBasketUpdateRequest(request, viewer.userId(), requestedSourceId);
+        boolean paymentAwaitingMember = beforeSnapshot.members().stream().anyMatch(member ->
+                viewer.userId().equals(member.getUserId()) && "pending".equals(member.getStatus())
+                        && "payment".equals(member.getRequestKind()));
+        if (paymentAwaitingMember) {
+            var priorBasket = eventCheckoutBasketService.loadBasketByEvent(viewer.userId(), sourceId);
+            paymentAwaitingMember = priorBasket != null && StringUtils.hasText(priorBasket.expiresAtIso())
+                    && Instant.parse(priorBasket.expiresAtIso()).isAfter(Instant.now());
+        }
         syncCheckoutBasketForJoin(request);
         boolean acceptingInvitation = activitiesMembersService.hasPendingInvitation(sourceId, viewer.userId());
-        boolean approvalRequested = acceptingInvitation
+        boolean approvalRequested = !paymentAwaitingMember && (acceptingInvitation
                 ? activitiesMembersService.pendingInvitationRequiresAdminApproval(sourceId, viewer.userId())
                 : isApprovalRequested(request)
-                        || (Boolean.TRUE.equals(preferred.getApprovalRequired()) && !alreadyAccepted);
+                        || (Boolean.TRUE.equals(preferred.getApprovalRequired()) && !alreadyAccepted));
         boolean waitingList = isWaitlistRequested(request) || isRecordFull(preferred);
         boolean accepted = !waitingList && !approvalRequested && isConfirmedBooking(request, preferred);
 
@@ -6843,6 +6851,12 @@ public class ActivitiesEventsService {
         document.setApprovalRequired(publishedManageMode
                 ? existing != null && Boolean.TRUE.equals(existing.getApprovalRequired())
                 : request.approvalRequired() != null ? request.approvalRequired() : existing != null && Boolean.TRUE.equals(existing.getApprovalRequired()));
+        Integer paymentDeadlineHours = request.paymentDeadlineHours() != null
+                ? request.paymentDeadlineHours() : existing == null ? 4 : existing.getPaymentDeadlineHours();
+        if (paymentDeadlineHours != null && paymentDeadlineHours < 0) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Payment deadline hours must not be negative.");
+        }
+        document.setPaymentDeadlineHours(paymentDeadlineHours == null ? 4 : paymentDeadlineHours);
         document.setPricing(publishedManageMode
                 ? existing == null ? null : clonePricing(existing.getPricing())
                 : request.pricing() != null ? clonePricing(request.pricing()) : existing == null ? null : clonePricing(existing.getPricing()));
@@ -7375,6 +7389,7 @@ public class ActivitiesEventsService {
                 .include("full")
                 .include("ticketing")
                 .include("approvalRequired")
+                .include("paymentDeadlineHours")
                 .include("pricing")
                 .include("policiesEnabled")
                 .include("policies")

@@ -584,7 +584,8 @@ public final class EventsDtos {
             Double boost,
             Boolean watched,
             String sourceLink,
-            String moderationStatus) {
+            String moderationStatus,
+            Integer paymentDeadlineHours) {
     }
 
     public record EventsExplorePageDto(
@@ -681,7 +682,8 @@ public final class EventsDtos {
             Double affinity,
             String paymentSessionId,
             List<String> imageUrls,
-            Map<String, ImageDetailsDto> imageDetails) {
+            Map<String, ImageDetailsDto> imageDetails,
+            Integer paymentDeadlineHours) {
     }
 
     public record EventInvitationContextDto(

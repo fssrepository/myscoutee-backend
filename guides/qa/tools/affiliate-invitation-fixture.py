@@ -26,11 +26,14 @@ elif command=='stage-revenue':
     const ids=['6aff20000000000000000001','6aff20000000000000000002'];
     if(db.events.countDocuments({sourceId:{$in:ids}}))throw Error('Revenue prerequisites already staged');
     const template=db.events.findOne({status:'A',eventType:'main'});if(!template)throw Error('Event template missing');
+    const organizer=db.users.findOne({userId:owner});
     const now=new Date(), start=new Date(now.getTime()+2*86400000), end=new Date(start.getTime()+3600000);
     for(const [index,id] of ids.entries()) {
       const event={...template,_id:ObjectId(id),sourceId:id,syncKey:id,ownerUserId:owner,organizerUserId:owner,
         creatorUserId:owner,creatorName:'Affiliate QA Owner',admins:[owner],status:'A',moderationStatus:'approved',
         title:'QA Affiliate '+(index===0?'EUR 100':'HUF 5000'),subtitle:'Disposable revenue prerequisite',
+        creatorInitials:organizer.initials,creatorGender:organizer.gender,creatorCity:organizer.city,avatar:organizer.images?.[0]??'',
+        timeframe:start.toISOString()+' – '+end.toISOString(),unread:0,feedbackOwnEventCounterUserIds:[],
         visibility:'Public',blindMode:'Visible Event',isTrashed:false,trashedAtIso:null,expired:false,
         startAtIso:start.toISOString(),endAtIso:end.toISOString(),location:'Austin · QA revenue',sourceLink:'',
         locationCoordinates:{latitude:30.2672,longitude:-97.7431},locationGeo:{type:'Point',coordinates:[-97.7431,30.2672]},
@@ -48,6 +51,34 @@ elif command=='stage-revenue':
     }
     states.updateOne({_id:key},{$set:{revenueEventIds:ids,phase:'revenue-ready'}});
     print(JSON.stringify({events:ids,payer,seededPayments:0,seededRevenue:0}));'''
+elif command=='stage-huf-approval':
+    code='''const state=states.findOne({_id:key});
+    if(state?.phase!=='revenue-ready')throw Error('Revenue baseline required');
+    const id=state.revenueEventIds[1], payer=state.users.find(id=>id!==owner);
+    if(db.payments.countDocuments({userId:payer,eventId:id}) ||
+       db.eventCheckoutBasketItems.countDocuments({sourceId:id,reservationActive:true}) ||
+       db.activityMembers.countDocuments({ownerId:id,userId:payer,status:{$in:['accepted','pending']}}))
+      throw Error('Remove the unpaid expired trial through the UI before staging');
+    db.events.updateMany({sourceId:id},{$set:{approvalRequired:true}});
+    states.updateOne({_id:key},{$set:{hufApprovalControl:true}});
+    print(JSON.stringify({eventId:id,approvalRequired:true,seededOutcomes:false}));'''
+elif command=='refresh-revenue-labels':
+    code='''const state=states.findOne({_id:key});
+    if(state?.phase!=='revenue-ready'||db.payments.countDocuments({userId:{$in:state.users}}))throw Error('Unpaid fixture required');
+    if(db.eventCheckoutBasketItems.countDocuments({userId:{$in:state.users},reservationActive:true}))throw Error('Cancel the request through UI first');
+    const organizer=db.users.findOne({userId:owner});
+    for(const id of state.revenueEventIds){const event=db.events.findOne({sourceId:id,ownerUserId:owner});
+      db.events.updateOne({_id:event._id},{$set:{creatorInitials:organizer.initials,creatorGender:organizer.gender,creatorCity:organizer.city,
+        avatar:organizer.images?.[0]??'',timeframe:event.startAtIso+' – '+event.endAtIso,unread:0,feedbackOwnEventCounterUserIds:[]}});}
+    print(JSON.stringify({fixtureLabels:'corrected',financialOutcomes:0}));'''
+elif command=='stage-refund-policy':
+    code='''const state=states.findOne({_id:key});
+    if(state?.phase!=='revenue-ready')throw Error('Revenue prerequisites required');
+    if(db.payments.countDocuments({userId:{$in:state.users}}))throw Error('Configure refund prerequisite before payments');
+    const result=db.events.updateOne({sourceId:state.revenueEventIds[0],ownerUserId:owner},
+      {$set:{'pricing.cancellationPolicy':{enabled:true,rules:[{id:'qa-refund-25',offsetUnit:'days',offsetValue:0,refundKind:'percent',refundValue:25}]}}});
+    if(result.matchedCount!==1)throw Error('Scoped event missing');
+    print(JSON.stringify({refundPolicy:25,seededOutcomes:false}));'''
 elif command=='stage-location-gap':
     code='''const state=states.findOne({_id:key});
     if(!state || state.users.length!==2 || state.locationGapBaseline)throw Error('Exactly one registered invitee and no active location gap required');
@@ -56,6 +87,33 @@ elif command=='stage-location-gap':
     states.updateOne({_id:key},{$set:{locationGapBaseline:{userId:payer,locationCoordinates:user.locationCoordinates??null}}});
     db.users.updateOne({userId:payer},{$set:{locationCoordinates:null}});
     print(JSON.stringify({userId:payer,locationCoordinates:null,purpose:'User-requested missing-location UI branch prerequisite'}));'''
+elif command=='stage-location-push':
+    code='''const state=states.findOne({_id:key});
+    if(!state?.locationGapBaseline || state.locationPushBaseline)throw Error('Active location gap required');
+    const id=state.locationGapBaseline.userId, user=db.users.findOne({userId:id});
+    if(user.locationCoordinates!=null)throw Error('Missing-location recipient required');
+    const item='qa-affiliate-location-push', token='qa-invalid-location-token', now=new Date().toISOString();
+    if(db.notificationOutbox.findOne({_id:item}))throw Error('Existing delivery evidence must be inspected');
+    states.updateOne({_id:key},{$set:{locationPushBaseline:{userId:id,devices:user.devices??[],outboxId:item}}});
+    db.users.updateOne({userId:id},{$set:{devices:[{deviceId:'qa-location-device',firebaseToken:token,notificationsEnabled:true}]}});
+    db.notificationOutbox.insertOne({_id:item,syncKey:item,notificationType:'chat-message',entityType:'qa',entityId:item,
+      recipientScope:'users',recipientUserIds:[id],firebaseDeliveryRequested:true,
+      firebaseDevices:{[id]:{'qa-location-device':require('crypto').createHash('sha256').update(token).digest('hex')}},
+      deliveryStrategy:'direct',status:'pending',pendingCounterTracked:false,retryCount:0,nextRetryAt:now,
+      createdDate:now,updatedDate:now,title:'QA missing-location guard',body:'Controlled queued delivery',payload:{}});
+    print(JSON.stringify({queued:item,location:null,realProviderToken:false}));'''
+elif command=='finish-location-gap':
+    code='''const state=states.findOne({_id:key});
+    if(!state?.locationPushBaseline)throw Error('Missing queued-delivery test');
+    const baseline=state.locationPushBaseline, item=db.notificationOutbox.findOne({_id:baseline.outboxId});
+    if(item?.status!=='sent'||item.tokenSuccessCount!==0||item.tokenFailureCount!==0||item.retryCount!==0)
+      throw Error('Missing-location delivery guard has not passed');
+    const coordinates=db.users.findOne({userId:owner})?.locationCoordinates;
+    if(!Number.isFinite(coordinates?.latitude)||!Number.isFinite(coordinates?.longitude))throw Error('Fixture source location missing');
+    db.users.updateOne({userId:baseline.userId},{$set:{devices:baseline.devices,locationCoordinates:coordinates}});
+    states.updateOne({_id:key},{$set:{locationGuardEvidence:{status:item.status,tokenSuccessCount:0,tokenFailureCount:0,retryCount:0},locationGapCompleted:true}});
+    db.notificationOutbox.deleteOne({_id:baseline.outboxId});
+    print(JSON.stringify({locationGuard:'PASS',fixtureCoordinatesRestored:true,providerSends:0}));'''
 elif command=='track':
     user=sys.argv[2]
     if not re.fullmatch(r'demo-profile-[a-f0-9-]{36}',user):raise SystemExit('Only new demo-profile UUID identities can be tracked')
@@ -72,6 +130,7 @@ elif command=='reset':
     subprocess.run(['bash','server/docker/scripts/manual-qa-checkpoints/manual-qa-checkpoints-docker.sh','restore','browser-sessions',STATE],check=True)
     code='''const state=states.findOne({_id:key}); if(!state)throw Error('Not staged');
     const ids=state.users, events=[...new Set(db.events.find({ownerUserId:owner},{_id:1,sourceId:1}).toArray().flatMap(x=>[String(x._id),x.sourceId]).filter(Boolean))];
+    if(state.locationPushBaseline?.outboxId)db.notificationOutbox.deleteOne({_id:state.locationPushBaseline.outboxId});
     for(const name of db.getCollectionNames()) {
       if(name==='manualQaCheckpointSnapshots')continue;
       db.getCollection(name).deleteMany({$or:[{_id:{$in:ids}},{userId:{$in:ids}},{ownerUserId:{$in:ids}}, {referrerUserId:owner},

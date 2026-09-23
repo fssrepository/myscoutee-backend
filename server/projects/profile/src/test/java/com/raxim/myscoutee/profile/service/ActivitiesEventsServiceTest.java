@@ -3017,6 +3017,7 @@ class ActivitiesEventsServiceTest {
                 0d,
                 null,
                 null,
+                null,
                 null);
     }
 

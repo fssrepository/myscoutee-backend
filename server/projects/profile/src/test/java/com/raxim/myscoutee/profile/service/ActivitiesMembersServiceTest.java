@@ -1612,6 +1612,57 @@ class ActivitiesMembersServiceTest {
     }
 
     @Test
+    void paidApprovalKeepsMemberPendingAndCannotBeApprovedTwice() {
+        ActivityEvent event = event("event-1", "host", "admin");
+        ActivityMember member = member("member-sync", "event-1", "target", "Member", "pending");
+        AtomicReference<ActivityMember> storedMember = new AtomicReference<>(member);
+        Users targetUser = new Users();
+        targetUser.setId("target");
+        targetUser.setName("Target User");
+
+        when(homeUserProfileService.resolveSelectedUserId("admin")).thenReturn("admin");
+        when(accessControlService.canAcceptEventMember("event-1", "admin", "target")).thenReturn(true);
+        when(activityEventsRepository.findBySourceId("event-1")).thenReturn(List.of(event));
+        when(activityEventsRepository.saveAll(anyList())).thenAnswer(invocation -> invocation.getArgument(0));
+        when(activityMembersRepository.findByOwnerTypeAndOwnerId("event", "event-1"))
+                .thenAnswer(invocation -> List.of(storedMember.get()));
+        when(activityMembersRepository.findManagementOrderedByOwner("event", "event-1"))
+                .thenAnswer(invocation -> List.of(storedMember.get()));
+        when(activityMembersRepository.save(any(ActivityMember.class))).thenAnswer(invocation -> {
+            ActivityMember saved = invocation.getArgument(0);
+            storedMember.set(saved);
+            return saved;
+        });
+        when(usersRepository.findByUserId("target")).thenReturn(Optional.of(targetUser));
+
+        var basket = org.mockito.Mockito.mock(
+                com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventCheckoutBasketDto.class);
+        when(basket.totalAmount()).thenReturn(100.0);
+        when(eventCheckoutBasketService.loadBasketByEvent("target", "event-1")).thenReturn(basket);
+        var result = service.applyAction(new ActivityMemberActionRequestDto(
+                new ActivityMemberOwnerRefDto("event", "event-1"),
+                "admin",
+                "target",
+                "accept",
+                null));
+
+        assertThat(result).filteredOn(entry -> "target".equals(entry.userId())).singleElement()
+                .satisfies(entry -> {
+                    assertThat(entry.status()).isEqualTo("pending");
+                    assertThat(entry.requestKind()).isEqualTo("payment");
+                });
+        service.applyAction(new ActivityMemberActionRequestDto(
+                new ActivityMemberOwnerRefDto("event", "event-1"), "admin", "target", "accept", null));
+        verify(activityMembersRepository).save(any(ActivityMember.class));
+        verify(eventCheckoutBasketService).updateBasketState(argThat(patch ->
+                "approved".equals(patch.checkoutState()) && "pending".equals(patch.resultState())));
+        verify(eventCheckoutBasketService, never()).finalizeAcceptedReservation(anyString(), anyString());
+        verify(paymentService, never()).finalizePendingEventJoin(anyString(), anyString());
+        verify(chatService, never()).postSystemMessage(anyString(), anyString(), eq("member-joined"));
+        verify(eventInviteNotificationService).notifyMemberApproved(eq(event), eq("target"), anyString(), eq("admin"));
+    }
+
+    @Test
     void acceptPendingSubEventMemberUpdatesEmbeddedCountersOnTheMutation() {
         String ownerId = "event-1:sub-1";
         ActivityMember admin = member("admin-sync", ownerId, "admin", "Admin", "accepted");

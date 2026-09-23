@@ -118,6 +118,7 @@ public class ActivityEvent {
     private String frequency;
     private Boolean ticketing;
     private Boolean approvalRequired;
+    private Integer paymentDeadlineHours;
     private PricingConfigDto pricing;
     private Boolean policiesEnabled;
     private List<PolicyItemDto> policies = new ArrayList<>();
@@ -271,6 +272,9 @@ public class ActivityEvent {
     public void setFrequency(String frequency) { this.frequency = frequency; }
     public Boolean getTicketing() { return ticketing; }
     public void setTicketing(Boolean ticketing) { this.ticketing = ticketing; }
+    public Integer getPaymentDeadlineHours() { return paymentDeadlineHours; }
+    public void setPaymentDeadlineHours(Integer value) { this.paymentDeadlineHours = value; }
+
     public Boolean getApprovalRequired() { return approvalRequired; }
     public void setApprovalRequired(Boolean approvalRequired) { this.approvalRequired = approvalRequired; }
     public PricingConfigDto getPricing() { return pricing; }

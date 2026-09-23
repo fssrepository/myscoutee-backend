@@ -15,3 +15,11 @@ Status: NOT RUN (new case; no previous PASS case modified). Extension of the new
 10. Open Payment history at 360px: All and Cards collapse to their existing icons, remain accessible and functional, and allow the title space. Verify EN/HU labels. Retain payment audit evidence and clean only disposable fixture records according to its reset contract.
 
 Focused unit/build checks support this case but do not mark its runtime steps PASS. Actual provider acceptance/refunds, Mongo journal atomicity and mobile layout require full-flow evidence.
+
+## Paid approval and payment deadline extension — 2026-09-23
+
+- In the event editor, the large Auto approve action opens a compact popup. Use the same pill ON/OFF control as Content moderation. Place the Capacity-styled number input on the next row with an inline in-hours unit suffix. OFF enables nonnegative whole hours (default 4 before the event); ON disables the input and applies no grace offset. Header tick applies label/color changes to the large action; closing without the tick discards popup edits. Verify saved event reload and both desktop/mobile EN/HU.
+- With Auto approve OFF, Join enters admin approval. Admin approves once: membership remains pending, the amber status icon remains, a localized Waiting for payment badge sits above the profile-eye action without covering the name, and Approve disappears. The pending count remains until successful payment; paid membership becomes accepted with the normal green icon.
+- Reopen the approved basket directly in the existing payment view. Back/Continue must not ask to Join again or show a second confirmation. Capture must not require a second admin approval.
+- Persist the deadline from the event/selected occurrence start minus the configured hours, independently of browser-provided expiration or approval time. Waiting for admin does not consume a ten-minute timeout. ON has no configured pre-event grace offset.
+- At the actual payment deadline, the purge must expire the unpaid reservation and pending membership together, clear the old approval, and keep completed payments/memberships intact. A fresh eligible Join requires fresh approval; the expired approval cannot authorize it. Advance isolated fixture timing only, never seed the membership/payment outcome.

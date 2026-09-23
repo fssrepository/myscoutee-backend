@@ -22314,6 +22314,36 @@
     "value": "To see profiles, open Settings → Install, enable location access, then press Update."
   },
   {
+    "_id": "i18n-message-en-event-member-payment-pending",
+    "key": "event.member.payment.pending",
+    "lang": "en",
+    "value": "Waiting for payment"
+  },
+  {
+    "_id": "i18n-message-en-event-checkout-payment-deadline-passed",
+    "key": "event.checkout.payment.deadline.passed",
+    "lang": "en",
+    "value": "The payment deadline for this event has passed."
+  },
+  {
+    "_id": "i18n-message-en-event-approval-settings",
+    "key": "event.approval.settings",
+    "lang": "en",
+    "value": "Join approval"
+  },
+  {
+    "_id": "i18n-message-en-event-approval-deadline-hours",
+    "key": "event.approval.deadline.hours",
+    "lang": "en",
+    "value": "Payment deadline before the event"
+  },
+  {
+    "_id": "i18n-message-en-event-approval-hours-unit",
+    "key": "event.approval.hours.unit",
+    "lang": "en",
+    "value": "in hours"
+  },
+  {
     "_id": "i18n-message-hu-integration-token-ip",
     "key": "integration.token.ip",
     "lang": "hu",
@@ -44626,5 +44656,35 @@
     "key": "game.location.required.description",
     "lang": "hu",
     "value": "A profilok megjelenítéséhez nyisd meg a Beállítások → Telepítés menüpontot, engedélyezd a helyadatok használatát, majd nyomd meg a Frissítés gombot."
+  },
+  {
+    "_id": "i18n-message-hu-event-member-payment-pending",
+    "key": "event.member.payment.pending",
+    "lang": "hu",
+    "value": "Fizetésre vár"
+  },
+  {
+    "_id": "i18n-message-hu-event-checkout-payment-deadline-passed",
+    "key": "event.checkout.payment.deadline.passed",
+    "lang": "hu",
+    "value": "Az esemény fizetési határideje lejárt."
+  },
+  {
+    "_id": "i18n-message-hu-event-approval-settings",
+    "key": "event.approval.settings",
+    "lang": "hu",
+    "value": "Jelentkezés jóváhagyása"
+  },
+  {
+    "_id": "i18n-message-hu-event-approval-deadline-hours",
+    "key": "event.approval.deadline.hours",
+    "lang": "hu",
+    "value": "Fizetési határidő az esemény előtt"
+  },
+  {
+    "_id": "i18n-message-hu-event-approval-hours-unit",
+    "key": "event.approval.hours.unit",
+    "lang": "hu",
+    "value": "órában"
   }
 ]

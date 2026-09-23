@@ -159,7 +159,8 @@ public class ActivityEventMapper {
                 safeDouble(record.getBoost()),
                 context != null && context.watchedEventSourceIds().contains(normalizeId(record.getSourceId())),
                 safeText(record.getSourceLink()),
-                record.getModerationStatus());
+                record.getModerationStatus(),
+                record.getPaymentDeadlineHours() == null ? 4 : record.getPaymentDeadlineHours());
     }
 
     private String resolveCurrentUserMembershipStatus(

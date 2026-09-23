@@ -89,9 +89,9 @@ Earlier Event Mode, Integration API, Activity Rating and EVENT-FOLLOWING-001 rem
 checkpoint: AFFILIATE-REVENUE-001
 checklist: ../checklists/api/AFFILIATE-REVENUE-001.md
 substage: Admin client lifecycle closed in dev scope; user accepted installer app-menu side correction. Begin Affiliate revenue.
-fixture_phase: Admin client reset including fresh UI-only baseline; client/stubs/notification monitor stopped. Affiliate invitation fixture staged; owner and one normally registered referred user ready. Demo Cards configuration correction in progress.
+fixture_phase: Affiliate revenue-ready fixture retained; owner and referred visitor registered, valid location restored. EUR membership accepted, unpaid approved/pending basket retained; visitor payment selection open. No payments or revenue outcomes yet. See dated evidence for interrupted attempts and final continuation replay.
 execution_log: ../evidence/AFFILIATE-REVENUE-001-20260923-progress.md
-next_action: Zero-revenue UI and normal referral registration done. New invitee location missing, setup Update incorrectly hidden when permission already granted: fix in watcher, retest normal Update before event payments. Demo Cards smoke closed; fresh simulator seed test blocked by dependency download (test container stopped). Full-flow delegation remains active.
+next_action: Post-approval reopening goes directly to existing payment view; Back/Continue has no confirmation or Join request (focused UI/Mongo replay verified). User objected to speculative checkout rewrites; inspect the recorded final diff before further changes. Continue from retained unpaid EUR basket only when resuming financial QA; capture/refund/replay and free/payment-backed runtime controls remain unproven. Scoped refund policy already staged. Full-flow delegation remains active; no broad reset/replay. See dated Affiliate progress evidence.
 queue: EVENT-CALENDAR-EXPORT-001
 calendar_boundary: Calendar LAST; test actual Ubuntu ICS opening/import behavior as well as Android. Android connected/authorized earlier, recheck at calendar boundary.
 resume_gate: Read-only fixture status and existing dev stack before mutation; preserve unrelated Borrow/Event Mode snapshots. Gallery/Email/Admin remain closed; do not replay.

@@ -373,6 +373,7 @@ public class EventParticipationTicketService {
         next.setFrequency(safeText(preferred.getFrequency()));
         next.setTicketing(Boolean.TRUE.equals(preferred.getTicketing()));
         next.setApprovalRequired(Boolean.TRUE.equals(preferred.getApprovalRequired()));
+        next.setPaymentDeadlineHours(preferred.getPaymentDeadlineHours());
         next.setPricing(preferred.getPricing());
         next.setAcceptedMembers(Math.max(normalizeCount(preferred.getAcceptedMembers()), snapshot.acceptedMemberUserIds().size()));
         next.setPendingMembers(Math.max(normalizeCount(preferred.getPendingMembers()), snapshot.pendingMemberUserIds().size()));

@@ -18,6 +18,8 @@ import java.util.Map;
 import org.bson.Document;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.ArgumentCaptor;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Query;
@@ -45,7 +47,9 @@ class EventCheckoutBasketServiceTest {
         service = new EventCheckoutBasketService(
                 repository,
                 mongoTemplate,
-                notificationRuleRegistryService);
+                notificationRuleRegistryService,
+                mock(org.springframework.beans.factory.ObjectProvider.class),
+                mock(EventCheckoutPricingService.class));
         when(repository.findByUserIdAndSourceIdAndStatusInAndVisibleResultState(
                 any(String.class),
                 any(String.class),
@@ -202,6 +206,51 @@ class EventCheckoutBasketServiceTest {
                     Document setValues = (Document) update.getUpdateObject().get("$set");
                     assertThat(setValues.getBoolean("reservationActive")).isFalse();
                 });
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {"approval-pending", "waiting", "approved", "confirmed"})
+    void acceptanceKeepsUnpaidBasketAvailableUntilPayment(String status) {
+        EventCheckoutBasketItem item = persistedItem();
+        item.setStatus(status);
+        item.setResultState("pending");
+        item.setAmount(100d);
+        item.setCheckoutSessionId(null);
+        when(repository.findByUserIdAndSourceIdAndStatusInAndVisibleResultState(
+                eq("user-1"), eq("event-1"), anyList(), anyList())).thenReturn(List.of(item));
+
+        service.finalizeAcceptedReservation("user-1", "event-1");
+
+        ArgumentCaptor<Update> updates = ArgumentCaptor.forClass(Update.class);
+        verify(mongoTemplate, atLeastOnce()).updateMulti(any(Query.class), updates.capture(), eq(EventCheckoutBasketItem.class));
+        assertThat(updates.getAllValues()).allSatisfy(update -> {
+            Document values = (Document) update.getUpdateObject().get("$set");
+            assertThat(values.getString("status")).isEqualTo("approved");
+            assertThat(values.getString("resultState")).isEqualTo("pending");
+            assertThat(values.getBoolean("reservationActive")).isTrue();
+        });
+    }
+
+    @ParameterizedTest
+    @ValueSource(booleans = {false, true})
+    void freeOrPaymentBackedAcceptanceStillClosesReservation(boolean paymentBacked) {
+        EventCheckoutBasketItem item = persistedItem();
+        item.setStatus("approved");
+        item.setResultState("pending");
+        item.setAmount(paymentBacked ? 100d : 0d);
+        item.setCheckoutSessionId(paymentBacked ? "payment-1" : null);
+        when(repository.findByUserIdAndSourceIdAndStatusInAndVisibleResultState(
+                eq("user-1"), eq("event-1"), anyList(), anyList())).thenReturn(List.of(item));
+
+        service.finalizeAcceptedReservation("user-1", "event-1");
+
+        ArgumentCaptor<Update> updates = ArgumentCaptor.forClass(Update.class);
+        verify(mongoTemplate, times(2)).updateMulti(any(Query.class), updates.capture(), eq(EventCheckoutBasketItem.class));
+        assertThat(updates.getAllValues()).allSatisfy(update -> {
+            Document values = (Document) update.getUpdateObject().get("$set");
+            assertThat(values.getString("resultState")).isEqualTo("succeeded");
+            assertThat(values.getBoolean("reservationActive")).isFalse();
+        });
     }
 
     @Test
