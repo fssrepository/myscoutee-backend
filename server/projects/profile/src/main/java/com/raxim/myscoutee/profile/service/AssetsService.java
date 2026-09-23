@@ -184,7 +184,7 @@ public class AssetsService {
 
         Map<String, Asset> assetsById = new LinkedHashMap<>();
         queryOwnerAssets(normalizedUserId).stream()
-                .filter(asset -> asset != null && !isSuppressedLifecycleStatus(asset.getStatus()))
+                .filter(asset -> asset != null && (!isSuppressedLifecycleStatus(asset.getStatus()) || isContentModerated(asset)))
                 .forEach(asset -> assetsById.put(normalizeId(asset.getAssetId()), asset));
         mongoTemplate.find(
                         Query.query(Criteria.where("status").is(STATUS_UNDER_REVIEW)),
@@ -231,7 +231,8 @@ public class AssetsService {
         }
         AssetBorrowWindowDto resolvedBorrowWindow = borrowWindow;
         return assetsRepository.findByAssetId(normalizedAssetId)
-                .filter(asset -> asset != null && !isSuppressedLifecycleStatus(asset.getStatus()))
+                .filter(asset -> asset != null && (!isSuppressedLifecycleStatus(asset.getStatus())
+                        || (!scopedBorrowRequest && normalizedUserId.equals(normalizeId(asset.getOwnerUserId())) && isContentModerated(asset))))
                 .filter(asset -> canViewAssetDetail(asset, normalizedUserId))
                 .map(asset -> toAssetDetailDto(
                         asset,
@@ -3081,7 +3082,8 @@ public class AssetsService {
                 normalizeAssetRequestMetrics(metrics),
                 resolveAssetMenuActions(asset, viewerUserId),
                 safeText(asset.getOwnerReleasedAtIso()),
-                resolveOwnerAvatarUrl(asset.getOwnerUserId(), ownersByUserId));
+                resolveOwnerAvatarUrl(asset.getOwnerUserId(), ownersByUserId),
+                asset.getModerationStatus());
     }
 
     private AssetDetailDto toAssetDetailDto(Asset asset, Map<String, AssetOwnerSummary> ownersByUserId, String viewerUserId) {
@@ -3137,7 +3139,8 @@ public class AssetsService {
                 resolveAssetMenuActions(asset, viewerUserId),
                 safeText(asset.getOwnerReleasedAtIso()),
                 borrowWindow,
-                resolveOwnerAvatarUrl(asset.getOwnerUserId(), ownersByUserId));
+                resolveOwnerAvatarUrl(asset.getOwnerUserId(), ownersByUserId),
+                asset.getModerationStatus());
     }
 
     private String assetLocationLabel(Asset asset, String type) {
@@ -3630,6 +3633,11 @@ public class AssetsService {
             actions.add("delete");
         }
         return new ArrayList<>(actions);
+    }
+
+    private boolean isContentModerated(Asset asset) {
+        return STATUS_BLOCKED.equals(asset.getStatus())
+                && List.of("under-review", "rejected", "blocked").contains(safeText(asset.getModerationStatus()));
     }
 
     private boolean isSuppressedLifecycleStatus(String status) {

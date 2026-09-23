@@ -158,7 +158,8 @@ public class ActivityEventMapper {
                 resolveCheckoutResultState(record, context),
                 safeDouble(record.getBoost()),
                 context != null && context.watchedEventSourceIds().contains(normalizeId(record.getSourceId())),
-                safeText(record.getSourceLink()));
+                safeText(record.getSourceLink()),
+                record.getModerationStatus());
     }
 
     private String resolveCurrentUserMembershipStatus(

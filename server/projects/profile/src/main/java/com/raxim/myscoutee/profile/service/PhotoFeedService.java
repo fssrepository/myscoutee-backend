@@ -31,8 +31,7 @@ public class PhotoFeedService {
         var coordinates = coordinates(actor);
         var existing = posts.find(request.id());
         if (existing != null) {
-            Post result = ownExisting(actor, existing);
-            register(existing); return result;
+            return ownExisting(actor, existing);
         }
         List<String> images = request.imageUrls();
         if (images == null || images.isEmpty() || images.size() > 5 || images.stream().distinct().count() != images.size()) throw badRequest();
@@ -41,16 +40,17 @@ public class PhotoFeedService {
         var avatar = actor.getImages() == null || actor.getImages().isEmpty() ? "" : actor.getImages().getFirst();
         var post = new PhotoFeedPost(request.id(), actor.getUserId(), actor.getName(), avatar, Instant.now().toString(),
                 List.copyOf(images), details, new GeoJsonPoint(coordinates.longitude(), coordinates.latitude()));
-        try { var saved = posts.insert(post); register(saved); return PhotoFeedMapper.toDto(saved, 0); }
+        try { return ownExisting(actor, posts.insert(post)); }
         catch (DuplicateKeyException ex) { return ownExisting(actor, posts.find(request.id())); }
     }
-    private void register(PhotoFeedPost post) {
-        if (contentModeration != null) contentModeration.register("feed", post.id(), post.creatorUserId(),
-                post.imageDetails().getOrDefault(post.imageUrls().getFirst(), new com.raxim.myscoutee.profile.data.dto.media.MediaDtos.ImageDetailsDto("", "")).caption(), post.imageUrls().getFirst());
+    private String register(PhotoFeedPost post) {
+        if (contentModeration != null) return contentModeration.register("feed", post.id(), post.creatorUserId(),
+                post.imageDetails().getOrDefault(post.imageUrls().getFirst(), new com.raxim.myscoutee.profile.data.dto.media.MediaDtos.ImageDetailsDto("", "")).caption(), post.imageUrls().getFirst()).status();
+        return post.moderationStatus();
     }
     private Post ownExisting(Users actor, PhotoFeedPost post) {
         if (post == null || !actor.getUserId().equals(post.creatorUserId())) throw new ResponseStatusException(HttpStatus.CONFLICT);
-        return PhotoFeedMapper.toDto(post, 0);
+        return PhotoFeedMapper.toDto(post, 0, register(post));
     }
     public Page page(Users actor, int pageSize, String cursorValue) {
         var coordinates = coordinates(actor);

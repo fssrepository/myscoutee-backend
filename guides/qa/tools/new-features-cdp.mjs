@@ -26,7 +26,7 @@ const send = (method, params = {}) => new Promise((resolve, reject) => {
 const timeout = setTimeout(() => { ws.close(); process.exitCode = 1; for (const task of pending.values()) task.reject(Error('CDP timeout')); }, 30_000);
 try {
   let result;
-  if (['eval', 'upload', 'screenshot', 'viewport', 'fail-request', 'pointer-check'].includes(command)) await send('Page.bringToFront');
+  if (['eval', 'upload', 'screenshot', 'viewport', 'viewport-eval', 'fail-request', 'pointer-check'].includes(command)) await send('Page.bringToFront');
   if (command === 'pointer-check') {
     const expression = `(()=>{const e=document.querySelector(${JSON.stringify(input)});if(!e)throw Error('Card missing');const r=e.getBoundingClientRect(),s=getComputedStyle(e);return {x:r.x+r.width/2,y:r.y+Math.min(r.height/2,70),transform:s.transform,filter:s.filter,shadow:s.boxShadow,after:getComputedStyle(e,'::after').animationName,image:e.querySelector('.ui-info-card__media')?.style.backgroundImage};})()`;
     const state = async () => (await send('Runtime.evaluate', { expression, returnByValue: true })).result.value;
@@ -78,6 +78,12 @@ try {
     const { nodeId } = await send('DOM.querySelector', { nodeId: tree.root.nodeId, selector });
     if (!nodeId) throw Error('Upload input missing');
     await send('DOM.setFileInputFiles', { nodeId, files }); result = { uploaded: files.length };
+  } else if (command === 'viewport-eval') {
+    const { width, height, script } = JSON.parse(await readFile(input, 'utf8'));
+    await send('Emulation.setDeviceMetricsOverride', { width, height, deviceScaleFactor: 1, mobile: false });
+    try {
+      result = (await send('Runtime.evaluate', { expression: await readFile(script, 'utf8'), awaitPromise: true, returnByValue: true })).result.value;
+    } finally { await send('Emulation.clearDeviceMetricsOverride'); }
   } else if (command === 'viewport') {
     const size = JSON.parse(input);
     result = size ? await send('Emulation.setDeviceMetricsOverride', { ...size, deviceScaleFactor: 1, mobile: false })

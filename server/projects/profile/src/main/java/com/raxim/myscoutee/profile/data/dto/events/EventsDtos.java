@@ -583,7 +583,8 @@ public final class EventsDtos {
             String checkoutResultState,
             Double boost,
             Boolean watched,
-            String sourceLink) {
+            String sourceLink,
+            String moderationStatus) {
     }
 
     public record EventsExplorePageDto(

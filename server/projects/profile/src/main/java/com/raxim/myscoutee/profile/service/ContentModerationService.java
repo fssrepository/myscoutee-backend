@@ -47,7 +47,7 @@ public class ContentModerationService {
         Settings next = request.settings();
         if (next == null || next.delayMinutes() < 0 || next.delayMinutes() > 43200 || next.categories() == null
                 || !CATEGORIES.containsAll(next.categories())) throw invalid();
-        next = new Settings(next.autoApprove(), next.delayMinutes(), next.categories().stream().distinct().toList());
+        next = new Settings(next.enabled(), next.autoApprove(), next.delayMinutes(), next.categories().stream().distinct().toList());
         State current = repository.state();
         if (current.revision() != request.expectedRevision() || !repository.compareAndSet(current, next, current.counts(), current.pending())) throw conflict();
         return snapshot();
@@ -57,8 +57,9 @@ public class ContentModerationService {
         String id = category + ":" + sourceId;
         Item existing = repository.item(id);
         if (existing != null) { applyResource(existing); return existing; }
-        // Approval is owned by the scheduled Job, including a zero-minute delay.
-        String status = "under-review";
+        Settings settings = repository.state().settings();
+        String status = !Boolean.TRUE.equals(settings.enabled()) || (settings.autoApprove() && settings.delayMinutes() == 0 && settings.categories().contains(category))
+                ? "accepted" : "under-review";
         Item proposed = new Item(id, category, sourceId, ownerId, title, imageUrl, Instant.now().toString(), status, 1,
                 "submit:" + id, "", "");
         return enlist(null, proposed, "", "", "");
@@ -72,8 +73,11 @@ public class ContentModerationService {
         if (message.length() > 1000) throw invalid();
         if (request.commandId().equals(before.commandId())) { drainPending(); return repository.item(id); }
         if (request.expectedVersion() != before.version()) throw conflict();
+        if (("rejected".equals(request.status()) && before.hasBeenPublic())
+                || ("blocked".equals(request.status()) && !before.hasBeenPublic())) throw invalid();
         Item next = new Item(before.id(), before.category(), before.sourceId(), before.ownerUserId(), before.title(), before.imageUrl(),
-                before.submittedAtIso(), request.status(), before.version() + 1, request.commandId(), actor.id(), Instant.now().toString());
+                before.submittedAtIso(), request.status(), before.version() + 1, request.commandId(), actor.id(), Instant.now().toString(),
+                before.hasBeenPublic() || "accepted".equals(request.status()));
         return enlist(before, next, actor.name(), actor.initials(), message);
     }
     private Item enlist(Item previous, Item next, String adminName, String adminInitials, String message) {
@@ -150,7 +154,7 @@ public class ContentModerationService {
     public int approveDue() {
         drainPending();
         Settings settings = repository.state().settings();
-        if (!settings.autoApprove() || settings.categories().isEmpty()) return 0;
+        if (!Boolean.TRUE.equals(settings.enabled()) || !settings.autoApprove() || settings.categories().isEmpty()) return 0;
         var due = repository.due(settings, Instant.now().minus(settings.delayMinutes(), ChronoUnit.MINUTES).toString(), 100);
         int changed = 0;
         for (Item item : due) {
