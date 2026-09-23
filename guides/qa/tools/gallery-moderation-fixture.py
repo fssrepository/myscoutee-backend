@@ -7,8 +7,8 @@ import sys
 KEY = 'EVENT-GALLERY-FEED-001'
 IDS = ['6a1100000000000000000001', '6a1100000000000000000002']
 command = sys.argv[1] if len(sys.argv) > 1 else 'status'
-if command not in ('stage', 'status', 'reset', 'due'):
-    raise SystemExit('Use stage, status, due or reset')
+if command not in ('stage', 'status', 'reset', 'due', 'near', 'far', 'home'):
+    raise SystemExit('Use stage, status, due, near, far, home or reset')
 base = 'const key=' + json.dumps(KEY) + ',ids=' + json.dumps(IDS) + ';'
 code = {
 'stage': '''
@@ -34,14 +34,25 @@ const before=new Date(Date.now()-(Math.max(10,delayMinutes+1))*60*1000).toISOStr
 const result=db.contentModerationItems.updateMany({ownerUserId:{$in:ids},status:'under-review'},{$set:{submittedAtIso:before}});
 print(JSON.stringify({shortenedFixtureItems:result.modifiedCount,approvalWritten:false}));
 ''',
+**{position: """
+const snapshot=db.manualQaCheckpointSnapshots.findOne({_id:key});if(!snapshot)throw Error('Not staged');
+const owner=db.users.findOne({userId:ids[0]}),viewer=db.users.findOne({userId:ids[1]});
+if(!owner||!viewer?.locationCoordinates)throw Error('Fixture actors missing');
+if(!snapshot.creatorOriginalCoordinates)db.manualQaCheckpointSnapshots.updateOne({_id:key},{$set:{creatorOriginalCoordinates:owner.locationCoordinates}});
+const origin=viewer.locationCoordinates;
+const target=POSITION==='home'?(snapshot.creatorOriginalCoordinates??owner.locationCoordinates):{latitude:origin.latitude+(POSITION==='near'?0.009:0.063),longitude:origin.longitude};
+db.users.updateOne({userId:ids[0]},{$set:{locationCoordinates:target}});
+print(JSON.stringify({actor:ids[0],position:POSITION,coordinates:target,outcomeSeeded:false}));
+""".replace('POSITION', json.dumps(position)) for position in ('near','far','home')},
 'reset': '''
 const snapshot=db.manualQaCheckpointSnapshots.findOne({_id:key});if(!snapshot)throw Error('Not staged');
 if(snapshot.approvalJob)db.notificationRuleConfigs.replaceOne({_id:snapshot.approvalJob._id},snapshot.approvalJob);
 const items=db.contentModerationItems.find({ownerUserId:{$in:ids}}).toArray();
-const increments={revision:1};for(const item of items){const field='counts.'+item.category+'.'+item.status;increments[field]=(increments[field]||0)-1;}
+const increments={revision:1};for(const item of items){if(item.deleted)continue;const field='counts.'+item.category+'.'+item.status;increments[field]=(increments[field]||0)-1;}
 db.contentModerationState.updateOne({_id:'global'},{$inc:increments,$set:{settings:snapshot.settings},$pull:{pending:{'item.ownerUserId':{$in:ids}}}});
 const events=db.events.distinct('sourceId',{creatorUserId:{$in:ids}}),assets=db.assets.distinct('assetId',{ownerUserId:{$in:ids}});
 db.contentModerationItems.deleteMany({ownerUserId:{$in:ids}});db.photoFeedPosts.deleteMany({creatorUserId:{$in:ids}});
+db.photoFeedViews.deleteMany({$or:[{userId:{$in:ids}},{postId:{$in:items.filter(i=>i.category==='feed').map(i=>i.sourceId)}}]});
 db.events.deleteMany({sourceId:{$in:events}});db.assets.deleteMany({ownerUserId:{$in:ids}});
 for(const collection of ['activityMingleSessions','activityMingleRounds','eventWatchSubscriptions'])db.getCollection(collection).deleteMany({$or:[{userId:{$in:ids}},{sourceId:{$in:events}},{ownerId:{$in:events}},{eventId:{$in:events}}]});
 db.activityMembers.deleteMany({$or:[{userId:{$in:ids}},{ownerId:{$in:[...events,...assets]}}]});

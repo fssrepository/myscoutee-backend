@@ -492,6 +492,11 @@ public class SavedPaymentMethodsService {
                 && configuration.connected()
                 && Set.of("stripe", "barion").contains(provider);
     }
+    public boolean cardsAvailable() {
+        if (isDemoSimulatorMode()) return activeDemoProviderAllowsRegistration(currentDemoGatewayConfiguration());
+        try { return StringUtils.hasText(normalizeProvider(paymentProviderResolver.resolveActiveProvider(null))); }
+        catch (ResponseStatusException unavailable) { return false; }
+    }
 
     private String currentDemoProvider(
             PaymentSimulatorRegistrationClient.GatewayConfiguration configuration) {

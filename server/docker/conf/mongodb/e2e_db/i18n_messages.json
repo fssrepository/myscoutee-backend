@@ -44314,5 +44314,137 @@
     "key": "confirm",
     "lang": "hu",
     "value": "Megerősítés"
+  },
+  {
+    "_id": "i18n-message-en-feed-event-label",
+    "key": "feed.event.label",
+    "lang": "en",
+    "value": "Event"
+  },
+  {
+    "_id": "i18n-message-en-feed-event-select",
+    "key": "feed.event.select",
+    "lang": "en",
+    "value": "Select event"
+  },
+  {
+    "_id": "i18n-message-en-feed-event-selected",
+    "key": "feed.event.selected",
+    "lang": "en",
+    "value": "Selected event"
+  },
+  {
+    "_id": "i18n-message-en-feed-event-confirm",
+    "key": "feed.event.confirm",
+    "lang": "en",
+    "value": "Use selected event"
+  },
+  {
+    "_id": "i18n-message-en-feed-event-empty",
+    "key": "feed.event.empty",
+    "lang": "en",
+    "value": "No events available."
+  },
+  {
+    "_id": "i18n-message-en-feed-eventRequired",
+    "key": "feed.eventRequired",
+    "lang": "en",
+    "value": "Select an event for every photo."
+  },
+  {
+    "_id": "i18n-message-hu-feed-event-label",
+    "key": "feed.event.label",
+    "lang": "hu",
+    "value": "Esemény"
+  },
+  {
+    "_id": "i18n-message-hu-feed-event-select",
+    "key": "feed.event.select",
+    "lang": "hu",
+    "value": "Esemény kiválasztása"
+  },
+  {
+    "_id": "i18n-message-hu-feed-event-selected",
+    "key": "feed.event.selected",
+    "lang": "hu",
+    "value": "Kiválasztott esemény"
+  },
+  {
+    "_id": "i18n-message-hu-feed-event-confirm",
+    "key": "feed.event.confirm",
+    "lang": "hu",
+    "value": "Kiválasztott esemény használata"
+  },
+  {
+    "_id": "i18n-message-hu-feed-event-empty",
+    "key": "feed.event.empty",
+    "lang": "hu",
+    "value": "Nincs elérhető esemény."
+  },
+  {
+    "_id": "i18n-message-hu-feed-eventRequired",
+    "key": "feed.eventRequired",
+    "lang": "hu",
+    "value": "Minden képhez válassz egy eseményt."
+  },
+  {
+    "_id": "i18n-message-en-feed-public",
+    "key": "feed.public",
+    "lang": "en",
+    "value": "Public feed"
+  },
+  {
+    "_id": "i18n-message-hu-feed-public",
+    "key": "feed.public",
+    "lang": "hu",
+    "value": "Nyilvános feed"
+  },
+  {
+    "_id": "i18n-message-en-feed-remove",
+    "key": "feed.remove",
+    "lang": "en",
+    "value": "Remove"
+  },
+  {
+    "_id": "i18n-message-en-feed-removeConfirm",
+    "key": "feed.removeConfirm",
+    "lang": "en",
+    "value": "Remove this photo post?"
+  },
+  {
+    "_id": "i18n-message-en-feed-removeFailed",
+    "key": "feed.removeFailed",
+    "lang": "en",
+    "value": "Unable to remove this post. Please retry."
+  },
+  {
+    "_id": "i18n-message-hu-feed-remove",
+    "key": "feed.remove",
+    "lang": "hu",
+    "value": "Eltávolítás"
+  },
+  {
+    "_id": "i18n-message-hu-feed-removeConfirm",
+    "key": "feed.removeConfirm",
+    "lang": "hu",
+    "value": "Eltávolítod ezt a fotóbejegyzést?"
+  },
+  {
+    "_id": "i18n-message-hu-feed-removeFailed",
+    "key": "feed.removeFailed",
+    "lang": "hu",
+    "value": "A bejegyzés eltávolítása nem sikerült. Próbáld újra."
+  },
+  {
+    "_id": "i18n-message-en-feed-seen",
+    "key": "feed.seen",
+    "lang": "en",
+    "value": "Seen"
+  },
+  {
+    "_id": "i18n-message-hu-feed-seen",
+    "key": "feed.seen",
+    "lang": "hu",
+    "value": "Látott"
   }
 ]

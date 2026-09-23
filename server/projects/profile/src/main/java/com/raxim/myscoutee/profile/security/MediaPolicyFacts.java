@@ -57,7 +57,7 @@ public class MediaPolicyFacts {
             return active(event)
                     && visible(event.getString("visibility"), event.getString("creatorUserId"), viewer);
         }
-        Document feed = find("photoFeedPosts", Criteria.where("imageUrls").in(urls), "moderationStatus");
+        Document feed = find("photoFeedPosts", Criteria.where("imageUrls").in(urls).and("deleted").ne(true), "moderationStatus");
         if (feed != null && ("accepted".equals(feed.getString("moderationStatus")) || canModerate(viewer, feed))) return true;
         Query messageQuery = Query.query(new Criteria().orOperator(
                 Criteria.where("attachments.url").in(urls), Criteria.where("attachments.previewUrl").in(urls)));

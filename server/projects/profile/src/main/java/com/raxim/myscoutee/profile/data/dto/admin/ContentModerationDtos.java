@@ -15,7 +15,14 @@ public final class ContentModerationDtos {
     @Document("contentModerationItems")
     public record Item(@Id String id, String category, String sourceId, String ownerUserId, String title,
             String imageUrl, String submittedAtIso, String status, long version, String commandId,
-            String reviewedBy, String reviewedAtIso, Boolean publiclyVisibleOnce) {
+            String reviewedBy, String reviewedAtIso, Boolean publiclyVisibleOnce, Boolean deleted) {
+        public Item { deleted = Boolean.TRUE.equals(deleted); }
+        public Item(String id, String category, String sourceId, String ownerUserId, String title,
+                String imageUrl, String submittedAtIso, String status, long version, String commandId,
+                String reviewedBy, String reviewedAtIso, Boolean publiclyVisibleOnce) {
+            this(id, category, sourceId, ownerUserId, title, imageUrl, submittedAtIso, status, version,
+                    commandId, reviewedBy, reviewedAtIso, publiclyVisibleOnce, false);
+        }
         public Item(String id, String category, String sourceId, String ownerUserId, String title,
                 String imageUrl, String submittedAtIso, String status, long version, String commandId,
                 String reviewedBy, String reviewedAtIso) {

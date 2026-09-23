@@ -2134,6 +2134,30 @@ public class ActivitiesEventsService {
         }
     }
 
+    /** Feed images may link to published events the uploader can already view, including their own/attended events. */
+    public List<com.raxim.myscoutee.profile.data.dto.feed.PhotoFeedDtos.EventOption> queryFeedEventOptions(String requestedUserId) {
+        ViewerContext viewer = resolveViewer(requestedUserId);
+        if (viewer == null) return List.of();
+        return withEventQueryContext(buildExplorePageQueryContext(viewer, false), () -> {
+            Map<String, ActivityEvent> preferred = new LinkedHashMap<>();
+            for (ActivityEvent record : allEventDocuments(viewer)) {
+                if (!isCanonicalExploreRecord(record) || !canViewerLoadEventDetail(record, viewer.userId())) continue;
+                String id = normalizeId(record.getSourceId());
+                ActivityEvent previous = preferred.get(id);
+                if (previous == null || shouldPreferExploreRecord(record, previous)) preferred.put(id, record);
+            }
+            return preferred.values().stream().map(record -> toEventDto(record, viewer))
+                    .filter(Objects::nonNull)
+                    .sorted(Comparator.comparing((EventDto event) -> safeText(event.startAtIso())).reversed()
+                            .thenComparing(EventDto::id))
+                    .map(event -> new com.raxim.myscoutee.profile.data.dto.feed.PhotoFeedDtos.EventOption(
+                            new com.raxim.myscoutee.profile.data.dto.media.MediaDtos.ImageEventReference(
+                                    event.id(), event.title(), event.creatorUserId(), event.creatorName(), event.location()),
+                            event.imageUrl(), event.startAtIso()))
+                    .toList();
+        });
+    }
+
     public EventsExplorePageDto queryEventExplorePage(EventsExploreQueryDto request) {
         ViewerContext viewer = resolveViewer(request == null ? null : request.userId());
         if (viewer == null) {

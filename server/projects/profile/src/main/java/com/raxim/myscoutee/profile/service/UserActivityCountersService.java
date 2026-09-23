@@ -44,6 +44,29 @@ public class UserActivityCountersService {
         organizerFollowingService.expire(now);
     }
 
+    /** Write-side refresh only. The durable moderation intent retries a failed delivery. */
+    public void refreshFeedCountersForUser(String userId) {
+        for (int attempt = 0; attempt < 8; attempt++) {
+            var userQuery = Query.query(Criteria.where("userId").is(userId));
+            userQuery.fields().include("feedCounters");
+            Users user = mongoTemplate.findOne(userQuery, Users.class);
+            if (user == null) return;
+            var before = user.getFeedCounters();
+            Map<String, Long> counts = new LinkedHashMap<>();
+            for (String status : List.of("accepted", "under-review", "rejected", "blocked")) counts.put(status, 0L);
+            var rows = mongoTemplate.aggregate(Aggregation.newAggregation(
+                    Aggregation.match(Criteria.where("creatorUserId").is(userId).and("deleted").ne(true)),
+                    Aggregation.group("moderationStatus").count().as("count")), "photoFeedPosts", Document.class);
+            for (Document row : rows) if (counts.containsKey(row.getString("_id")))
+                counts.put(row.getString("_id"), ((Number) row.get("count")).longValue());
+            if (before != null && counts.equals(before.counts())) return;
+            var next = new Users.FeedCountersRecord(before == null ? 1 : before.revision() + 1, counts);
+            if (mongoTemplate.updateFirst(Query.query(Criteria.where("userId").is(userId).and("feedCounters").is(before)),
+                    new Update().set("feedCounters", next), Users.class).getMatchedCount() > 0) return;
+        }
+        throw new IllegalStateException("Feed counters changed concurrently; retry moderation delivery.");
+    }
+
     private static final String OWNER_TYPE_EVENT = "event";
     private static final List<String> DEMO_ADMIN_IDS = List.of("admin-demo-ava", "admin-demo-noel");
     private static final List<String> SUPPORT_CASE_STATUSES = List.of(
