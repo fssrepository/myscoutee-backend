@@ -88,8 +88,8 @@ Earlier Event Mode, Integration API, Activity Rating and EVENT-FOLLOWING-001 rem
 ```yaml
 checkpoint: ADMIN-CLIENT-API-001
 checklist: ../checklists/api/ADMIN-CLIENT-API-001.md
-substage: Visible packaged client connected in demo mode; profile editor/view/privacy and masked-key side corrections verified. Continue remaining private admin API/client lifecycle.
-fixture_phase: admin-client staged. Email closed/reset; exact config/Job restoration PASS. Retained unrelated Borrow/Event Mode snapshots preserved.
+substage: Email unsubscribe/branding supplement PASS and reset (../evidence/EMAIL-UNSUBSCRIBE-001-20260923.md). Visible packaged client connected in demo mode; profile editor/view/privacy and masked-key side corrections verified. Continue remaining private admin API/client lifecycle.
+fixture_phase: admin-client staged. Email including unsubscribe supplement closed/reset; stub and temporary overrides removed. Retained unrelated Borrow/Event Mode snapshots preserved.
 execution_log: ../evidence/ADMIN-CLIENT-API-001-20260923-progress.md
 next_action: Continue admin-client checklist at normal Affiliate popup, poll cadence and native notification lifecycle. Profile side correction complete; field Hosts removed (legacy Private), no pending question. Ava retains one revealed test key (never generic-inspect or screenshot that popup). Visible ADMIN-CLIENT-MONITOR-001 is connected; read current port from private instance file under /tmp/myscoutee-admin-client-qa-20260923. Never print keys/control token. Native notification monitor log is /tmp/qa-admin-native-notifications.log. Prior full-flow delegation remains active.
 queue: AFFILIATE-REVENUE-001, EVENT-CALENDAR-EXPORT-001

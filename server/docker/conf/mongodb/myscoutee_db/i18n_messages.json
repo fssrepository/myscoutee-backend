@@ -22230,6 +22230,78 @@
     "value": "Seen"
   },
   {
+    "_id": "i18n-message-en-email-sender",
+    "key": "email.sender",
+    "lang": "en",
+    "value": "Sent by"
+  },
+  {
+    "_id": "i18n-message-en-email-unsubscribe-title",
+    "key": "email.unsubscribe.title",
+    "lang": "en",
+    "value": "Email preferences"
+  },
+  {
+    "_id": "i18n-message-en-email-unsubscribe-confirm",
+    "key": "email.unsubscribe.confirm",
+    "lang": "en",
+    "value": "Would you like to stop receiving emails from this MyScoutee service?"
+  },
+  {
+    "_id": "i18n-message-en-email-unsubscribe-success",
+    "key": "email.unsubscribe.success",
+    "lang": "en",
+    "value": "You have unsubscribed. You will no longer receive emails from this service."
+  },
+  {
+    "_id": "i18n-message-en-email-unsubscribe-invalid",
+    "key": "email.unsubscribe.invalid",
+    "lang": "en",
+    "value": "This unsubscribe link is invalid. Please use the link in your email."
+  },
+  {
+    "_id": "i18n-message-en-email-unsubscribe-error",
+    "key": "email.unsubscribe.error",
+    "lang": "en",
+    "value": "We could not update your email preferences. Please try again."
+  },
+  {
+    "_id": "i18n-message-en-email-unsubscribe-loading",
+    "key": "email.unsubscribe.loading",
+    "lang": "en",
+    "value": "Checking your email preferences…"
+  },
+  {
+    "_id": "i18n-message-en-email-unsubscribe-action",
+    "key": "email.unsubscribe.action",
+    "lang": "en",
+    "value": "Unsubscribe"
+  },
+  {
+    "_id": "i18n-message-en-email-unsubscribe-pending",
+    "key": "email.unsubscribe.pending",
+    "lang": "en",
+    "value": "Please wait…"
+  },
+  {
+    "_id": "i18n-message-en-email-unsubscribe-retry",
+    "key": "email.unsubscribe.retry",
+    "lang": "en",
+    "value": "Try again"
+  },
+  {
+    "_id": "i18n-message-en-email-unsubscribe-landing",
+    "key": "email.unsubscribe.landing",
+    "lang": "en",
+    "value": "Visit MyScoutee"
+  },
+  {
+    "_id": "i18n-message-en-email-unsubscribe-javascript",
+    "key": "email.unsubscribe.javascript",
+    "lang": "en",
+    "value": "Please enable JavaScript to confirm your email preferences."
+  },
+  {
     "_id": "i18n-message-hu-integration-token-ip",
     "key": "integration.token.ip",
     "lang": "hu",
@@ -44458,5 +44530,77 @@
     "key": "feed.seen",
     "lang": "hu",
     "value": "Látott"
+  },
+  {
+    "_id": "i18n-message-hu-email-sender",
+    "key": "email.sender",
+    "lang": "hu",
+    "value": "Küldő"
+  },
+  {
+    "_id": "i18n-message-hu-email-unsubscribe-title",
+    "key": "email.unsubscribe.title",
+    "lang": "hu",
+    "value": "Email-beállítások"
+  },
+  {
+    "_id": "i18n-message-hu-email-unsubscribe-confirm",
+    "key": "email.unsubscribe.confirm",
+    "lang": "hu",
+    "value": "Szeretnél leiratkozni ennek a MyScoutee szolgáltatásnak az emailjeiről?"
+  },
+  {
+    "_id": "i18n-message-hu-email-unsubscribe-success",
+    "key": "email.unsubscribe.success",
+    "lang": "hu",
+    "value": "Sikeresen leiratkoztál. Ettől a szolgáltatástól nem kapsz több emailt."
+  },
+  {
+    "_id": "i18n-message-hu-email-unsubscribe-invalid",
+    "key": "email.unsubscribe.invalid",
+    "lang": "hu",
+    "value": "Ez a leiratkozási hivatkozás érvénytelen. Használd az emailben kapott linket."
+  },
+  {
+    "_id": "i18n-message-hu-email-unsubscribe-error",
+    "key": "email.unsubscribe.error",
+    "lang": "hu",
+    "value": "Nem sikerült módosítani az email-beállításokat. Próbáld újra."
+  },
+  {
+    "_id": "i18n-message-hu-email-unsubscribe-loading",
+    "key": "email.unsubscribe.loading",
+    "lang": "hu",
+    "value": "Email-beállítások ellenőrzése…"
+  },
+  {
+    "_id": "i18n-message-hu-email-unsubscribe-action",
+    "key": "email.unsubscribe.action",
+    "lang": "hu",
+    "value": "Leiratkozás"
+  },
+  {
+    "_id": "i18n-message-hu-email-unsubscribe-pending",
+    "key": "email.unsubscribe.pending",
+    "lang": "hu",
+    "value": "Kérjük, várj…"
+  },
+  {
+    "_id": "i18n-message-hu-email-unsubscribe-retry",
+    "key": "email.unsubscribe.retry",
+    "lang": "hu",
+    "value": "Újrapróbálás"
+  },
+  {
+    "_id": "i18n-message-hu-email-unsubscribe-landing",
+    "key": "email.unsubscribe.landing",
+    "lang": "hu",
+    "value": "MyScoutee weboldal"
+  },
+  {
+    "_id": "i18n-message-hu-email-unsubscribe-javascript",
+    "key": "email.unsubscribe.javascript",
+    "lang": "hu",
+    "value": "Az email-beállítások megerősítéséhez engedélyezd a JavaScriptet."
   }
 ]

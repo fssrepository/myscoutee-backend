@@ -47,7 +47,7 @@ public class EmailUnsubscribeService {
         Ticket ticket = new Ticket(recipientHash(email), MongoSessionModeContext.currentMode().name());
         EncryptedSecret encrypted = crypto.encrypt(PURPOSE, mapper.writeValueAsString(ticket));
         String token = Base64.getUrlEncoder().withoutPadding().encodeToString(mapper.writeValueAsBytes(encrypted));
-        return publicBaseUrl() + "/api/public/email/unsubscribe?token=" + token;
+        return publicBaseUrl() + "/api/public/email/unsubscribe#token=" + token;
     }
 
     public String publicBaseUrl() {

@@ -138,9 +138,9 @@ public class DeletedAccountWarningWorker {
             } catch (RuntimeException error) {
                 result = EmailSendResult.unknown("Email delivery outcome is unknown.");
             }
-            status = result.accepted() ? "sent" : result.outcomeUnknown() ? "unknown" : "failed";
+            status = result.suppressed() ? "unsubscribed" : result.accepted() ? "sent" : result.outcomeUnknown() ? "unknown" : "failed";
             providerId = result.providerMessageId();
-            outcome = result.accepted() ? 1 : -1;
+            outcome = result.suppressed() ? 0 : result.accepted() ? 1 : -1;
             int attempts = claim.getInteger("attemptCount");
             if (result.retryable() && attempts < MAX_ATTEMPTS) {
                 // One, two and four minute minimum delays, or longer when the provider requests it.

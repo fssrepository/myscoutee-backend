@@ -58,6 +58,14 @@ class DeletedAccountWarningWorkerTest {
     @Test void disabledProviderLeavesCandidatesUntouched() {
         when(email.enabled()).thenReturn(false); assertEquals(0, worker.deliver(now)); verifyNoInteractions(mongo);
     }
+    @Test void unsubscribeIsTerminalWithoutCountingDeliveryOrFailure() {
+        when(email.send(any())).thenReturn(EmailSendResult.unsubscribed());
+        assertEquals(0, worker.deliver(now));
+        var update = ArgumentCaptor.forClass(org.springframework.data.mongodb.core.query.Update.class);
+        verify(mongo).updateFirst(any(Query.class), update.capture(), eq("accountDeletionWarnings"));
+        assertEquals("unsubscribed", ((Document) update.getValue().getUpdateObject().get("$set")).getString("status"));
+        assertTrue(((Document) update.getValue().getUpdateObject().get("$unset")).containsKey("nextAttemptAtIso"));
+    }
     @Test void failedDeliveryFailsJobRatherThanRecordingSuccess() {
         when(email.send(any())).thenReturn(new EmailSendResult(false, null, "unauthorized"));
         assertThrows(IllegalStateException.class, () -> worker.deliver(now));

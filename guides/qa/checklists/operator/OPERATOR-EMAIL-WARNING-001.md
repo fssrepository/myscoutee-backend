@@ -29,3 +29,44 @@ The user authorized automatic full-flow execution using a local email stub, with
 The existing SendGrid adapter uses the [Mail Send API](https://www.twilio.com/docs/sendgrid/api-reference/mail-send/mail-send), Bearer API key authentication and a verified sender for a real deployment. The stub tests request formation/provider acceptance only. No real email delivery is authorized by this case.
 
 Save numbered PASS/FAIL/NOT RUN evidence under `guides/qa/evidence/`. Do not substitute mocked tests for the operator UI/Job run.
+
+## Public unsubscribe and branded emails — supplement
+
+This user-requested branch is additional to the completed provider/retry checks.
+Use the same reversible email fixture and local provider stub; preserve the active
+Admin-client checkpoint and its sessions. Never send real email.
+
+1. Stage the email fixture and launch its Operator-only managed configuration
+   with `node guides/qa/tools/open-email-unsubscribe-browser.mjs operator`.
+   Configure the synthetic sender/key through the Email block. Use a 503 stub
+   response to leave the first outgoing message pending retry; hold the Job with
+   `account-email-fixture.py hold-unsubscribe` before the next attempt.
+2. Inspect the captured HTML and text alternatives. Both identify the sender and
+   offer unsubscribe; HTML includes the configured MyScoutee logo and usable
+   formatting. The landing link targets `https://myscoutee.com`.
+3. Launch the captured link with `open-email-unsubscribe-browser.mjs public`.
+   The anonymous, standalone page must load without the application or login.
+   Check logo, confirmation text, button, landing link and layout at desktop and
+   mobile width. EN/HU labels must resolve. GET/status must not unsubscribe.
+4. Confirm using the visible button. While the request is pending, show busy
+   feedback and disable duplicate submission. Success survives reload; repeated
+   confirmation is idempotent. No account/session is required. Tampered/missing
+   capability shows an invalid-link message and cannot change subscriptions.
+5. Resume the owned retry using `account-email-fixture.py resume-unsubscribe`.
+   It becomes terminal `unsubscribed`, removes its next-attempt timestamp and
+   makes no additional provider request. Later newly queued messages to the same
+   normalized recipient are suppressed too. Suppression is independent of the
+   continued existence of the original profile; DEMO cannot change REAL state.
+   Run `stage-unsubscribe-new` to prepare a new episode for the suppressed
+   recipient (padded uppercase address) and one message to a second recipient.
+   After the second recipient's first request, `detach-unsubscribe-owner` removes
+   that owned profile and suspends the Job. Launch its captured link with
+   `QA_EMAIL_RECORD_INDEX=1 node guides/qa/tools/open-email-unsubscribe-browser.mjs public`.
+   Repeat the browser oracle, then `verify-email-unsubscribe-state.py`. Record
+   separate-database isolation as NOT RUN if dev maps both modes to one database.
+6. A transient request failure leaves a retry action available. Reload after an
+   ambiguous response reports persisted success rather than sending another
+   email. No raw recipient/token is rendered in the page or copied to evidence.
+7. Reset the versioned email fixture, close only its windows, stop its local
+   stub, restore the dev endpoint/poll defaults. Preserve existing suppression
+   records outside the fixture. Record actual PASS/FAIL/NOT RUN evidence.

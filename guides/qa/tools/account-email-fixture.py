@@ -13,11 +13,13 @@ if command in ('stage', 'stage-retry', 'stage-retry-guards'):
 if(db.getName()!=='demo_db')throw Error('Only demo_db is allowed');
 if(db.manualQaCheckpointSnapshots.findOne({_id:key})||db.users.findOne({userId:{$in:ids}}))throw Error('Already staged');
 const source=db.users.findOne({userId:'650000000000000000000061'});if(!source)throw Error('Demo source missing');
+const recipientHashes=Array.from({length:4},(_,i)=>require('crypto').createHash('sha256').update('email-qa-'+i+'@example.invalid').digest('hex'));
+if(db.emailUnsubscriptions.findOne({_id:{$in:recipientHashes}}))throw Error('QA recipient already suppressed; preserve existing state');
 const jobs=db.notificationRuleConfigs.find({ruleKey:{$in:['account-purge','account-deletion-warning']}}).toArray();
 if(jobs.length!==2)throw Error('Both Job seeds must be installed');
 const config=db.affinityConfigs.find({active:true}).sort({version:-1}).limit(1).toArray()[0]??db.affinityConfigs.find({key:'default'}).sort({version:-1}).limit(1).toArray()[0];
 const grace=config?.jobs?.accountPurgeWindowDays??30;if(grace<=5)throw Error('QA needs a grace period longer than five days');
-db.manualQaCheckpointSnapshots.insertOne({_id:key,checkpointId:key,phase:'staging',scenario:'account-email',users:ids,jobs,emailConfiguration:db.operatorEmailConfigurations.findOne({_id:'global'}),stagedAtIso:new Date().toISOString()});
+db.manualQaCheckpointSnapshots.insertOne({_id:key,checkpointId:key,phase:'staging',scenario:'account-email',users:ids,jobs,recipientHashes,emailConfiguration:db.operatorEmailConfigurations.findOne({_id:'global'}),stagedAtIso:new Date().toISOString()});
 const ages=[grace-4.99,retryPhase?grace-4.99:grace-6,grace+1,grace-4.99],names=retryPhase?['Retry succeeds','Retry exhausted','Already expired','Restored']:['Due','Too early','Already expired','Restored'];
 if(retryGuards)ages[1]=grace+1;
 for(let i=0;i<ids.length;i++){
@@ -41,7 +43,27 @@ elif command=='reset':
  code='''const state=db.manualQaCheckpointSnapshots.findOne({_id:key});if(!state)throw Error('Not staged');
 for(const job of state.jobs)db.notificationRuleConfigs.replaceOne({_id:job._id},job,{upsert:true});
 if(state.emailConfiguration)db.operatorEmailConfigurations.replaceOne({_id:'global'},state.emailConfiguration,{upsert:true});else db.operatorEmailConfigurations.deleteOne({_id:'global'});
-db.accountDeletionWarnings.deleteMany({userId:{$in:ids}});db.users.deleteMany({userId:{$in:ids}});db.manualQaCheckpointSnapshots.deleteOne({_id:key});print(JSON.stringify({reset:true}));'''
+db.emailUnsubscriptions.deleteMany({_id:{$in:state.recipientHashes??[]}});db.accountDeletionWarnings.deleteMany({userId:{$in:ids}});db.users.deleteMany({userId:{$in:ids}});db.manualQaCheckpointSnapshots.deleteOne({_id:key});print(JSON.stringify({reset:true}));'''
+elif command=='stage-unsubscribe-new':
+ code='''const state=db.manualQaCheckpointSnapshots.findOne({_id:key});if(!state)throw Error('Not staged');
+ if(!db.accountDeletionWarnings.findOne({userId:ids[0],status:'unsubscribed'}))throw Error('Retry suppression must be proven first');
+ const episode=new Date(Date.now()-25*86400000).toISOString();
+ db.users.updateOne({userId:ids[0]},{$set:{deletedAtIso:episode,email:' EMAIL-QA-0@EXAMPLE.INVALID '},$unset:{deletionWarningFor:''}});
+ db.users.updateOne({userId:ids[1]},{$set:{deletedAtIso:episode}});
+ print(JSON.stringify({newEpisodesPrepared:true}));'''
+elif command=='detach-unsubscribe-owner':
+ code='''const state=db.manualQaCheckpointSnapshots.findOne({_id:key});if(!state)throw Error('Not staged');
+ if(!db.accountDeletionWarnings.findOne({userId:ids[1],status:'retry'}))throw Error('Second recipient email required');
+ db.notificationRuleConfigs.updateOne({ruleKey:'account-deletion-warning'},{$set:{enabled:false}});
+ db.users.deleteOne({userId:ids[1]});print(JSON.stringify({detached:true}));'''
+elif command in ('hold-unsubscribe','resume-unsubscribe'):
+ code='''const state=db.manualQaCheckpointSnapshots.findOne({_id:key});if(!state)throw Error('Not staged');
+ const claim=db.accountDeletionWarnings.findOne({userId:ids[0]});if(!claim||claim.status!=='retry')throw Error('Expected pending retry');
+ '''
+ if command=='hold-unsubscribe':
+  code+="db.notificationRuleConfigs.updateOne({ruleKey:'account-deletion-warning'},{$set:{enabled:false}});print(JSON.stringify({held:true}));"
+ else:
+  code+="db.accountDeletionWarnings.updateOne({_id:claim._id},{$set:{nextAttemptAtIso:new Date(Date.now()-1000).toISOString()}});db.notificationRuleConfigs.updateOne({ruleKey:'account-deletion-warning'},{$set:{enabled:true}});print(JSON.stringify({resumed:true}));"
 elif command=='status':
  code='''const config=db.operatorEmailConfigurations.findOne({_id:'global'});print(JSON.stringify({staged:!!db.manualQaCheckpointSnapshots.findOne({_id:key}),configuration:config?{enabled:config.enabled,providerId:config.providerId,credentialConfigured:!!config.credential}:null,users:db.users.find({userId:{$in:ids}},{userId:1,profileStatus:1,deletedAtIso:1,deletionWarningFor:1}).toArray(),deliveries:db.accountDeletionWarnings.find({userId:{$in:ids}}).toArray()}));'''
 else: raise SystemExit('Use stage, stage-retry, stage-retry-guards, status or reset')
