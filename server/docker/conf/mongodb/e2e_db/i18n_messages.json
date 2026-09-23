@@ -44902,5 +44902,29 @@
     "key": "operator.configuration.payment.exchange.saved",
     "lang": "hu",
     "value": "Árfolyamforrás mentve."
+  },
+  {
+    "_id": "i18n-message-en-event-checkout-payment-confirm-title",
+    "key": "event.checkout.payment.confirm.title",
+    "lang": "en",
+    "value": "Would you like to proceed with payment?"
+  },
+  {
+    "_id": "i18n-message-en-event-checkout-payment-confirm-message",
+    "key": "event.checkout.payment.confirm.message",
+    "lang": "en",
+    "value": "You will pay for the selected item."
+  },
+  {
+    "_id": "i18n-message-hu-event-checkout-payment-confirm-title",
+    "key": "event.checkout.payment.confirm.title",
+    "lang": "hu",
+    "value": "Szeretnéd elindítani a fizetést?"
+  },
+  {
+    "_id": "i18n-message-hu-event-checkout-payment-confirm-message",
+    "key": "event.checkout.payment.confirm.message",
+    "lang": "hu",
+    "value": "A kiválasztott tételt fogod kifizetni."
   }
 ]

@@ -1,12 +1,30 @@
 #!/usr/bin/env python3
 """Disposable demo baseline for AFFILIATE-INVITATION-001; never seeds outcomes."""
-import json, re, subprocess, sys
+import json, os, re, shlex, subprocess, sys
+from pathlib import Path
 OWNER = '6aff10000000000000000001'
 STATE = 'AFFILIATE-INVITATION-001'
 def mongo(code):
     # collMod faults need the dev container's existing admin credential; ordinary
     # fixture operations retain the application account. Never print either secret.
     admin = len(sys.argv) > 1 and sys.argv[1] in ('arm-revenue-fault', 'disarm-revenue-fault')
+    admin_env_file = os.environ.get('QA_MONGO_ADMIN_ENV_FILE')
+    if admin and admin_env_file:
+        credentials = {}
+        for line in Path(admin_env_file).read_text().splitlines():
+            if '=' not in line or line.lstrip().startswith('#'):
+                continue
+            key, value = line.split('=', 1)
+            if key.strip() in ('MONGO_INITDB_ROOT_USERNAME', 'MONGO_INITDB_ROOT_PASSWORD'):
+                parsed = shlex.split(value)
+                credentials[key.strip()] = parsed[0] if parsed else ''
+        user, password = (credentials.get(key) for key in ('MONGO_INITDB_ROOT_USERNAME', 'MONGO_INITDB_ROOT_PASSWORD'))
+        if not user or not password:
+            raise SystemExit('Configured QA admin credential is incomplete')
+        # Credentials go through stdin, never process arguments or evidence output.
+        auth = 'if(!db.getSiblingDB("admin").auth(' + json.dumps(user) + ',' + json.dumps(password) + ').ok)throw Error("QA admin authentication failed");db=db.getSiblingDB("demo_db");'
+        return subprocess.check_output(['docker', 'exec', '-i', 'mongodb', 'mongosh', '--quiet', '--file', '/dev/stdin'],
+                                       input=auth + code, text=True)
     shell = ('exec mongosh --quiet --username "$MONGO_INITDB_ROOT_USERNAME" --password "$MONGO_INITDB_ROOT_PASSWORD" --authenticationDatabase admin demo_db --eval "$1"'
              if admin else 'exec mongosh --quiet --username "$MONGO_APP_USERNAME" --password "$MONGO_APP_PASSWORD" --authenticationDatabase demo_db demo_db --eval "$1"')
     return subprocess.check_output(['docker','exec','mongodb','sh','-c',shell,
