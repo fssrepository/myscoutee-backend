@@ -86,17 +86,17 @@ resume pointer and reusable working method.
 Earlier Event Mode, Integration API, Activity Rating and EVENT-FOLLOWING-001 remain closed.
 
 ```yaml
-checkpoint: ADMIN-CLIENT-API-001
-checklist: ../checklists/api/ADMIN-CLIENT-API-001.md
-substage: Email unsubscribe/branding supplement PASS and reset (../evidence/EMAIL-UNSUBSCRIBE-001-20260923.md). Visible packaged client connected in demo mode; profile editor/view/privacy and masked-key side corrections verified. Continue remaining private admin API/client lifecycle.
-fixture_phase: admin-client staged. Email including unsubscribe supplement closed/reset; stub and temporary overrides removed. Retained unrelated Borrow/Event Mode snapshots preserved.
-execution_log: ../evidence/ADMIN-CLIENT-API-001-20260923-progress.md
-next_action: Continue admin-client checklist at normal Affiliate popup, poll cadence and native notification lifecycle. Profile side correction complete; field Hosts removed (legacy Private), no pending question. Ava retains one revealed test key (never generic-inspect or screenshot that popup). Visible ADMIN-CLIENT-MONITOR-001 is connected; read current port from private instance file under /tmp/myscoutee-admin-client-qa-20260923. Never print keys/control token. Native notification monitor log is /tmp/qa-admin-native-notifications.log. Prior full-flow delegation remains active.
-queue: AFFILIATE-REVENUE-001, EVENT-CALENDAR-EXPORT-001
+checkpoint: AFFILIATE-REVENUE-001
+checklist: ../checklists/api/AFFILIATE-REVENUE-001.md
+substage: Admin client lifecycle closed in dev scope; user accepted installer app-menu side correction. Begin Affiliate revenue.
+fixture_phase: Admin client reset including fresh UI-only baseline; client/stubs/notification monitor stopped. Affiliate invitation fixture not yet staged.
+execution_log: ../evidence/AFFILIATE-REVENUE-001-20260923-progress.md
+next_action: Stage versioned affiliate-invitation baseline, launch its managed browsers, prove zero revenue and register disposable referred user before simulator payment lifecycle. Full-flow delegation remains active.
+queue: EVENT-CALENDAR-EXPORT-001
 calendar_boundary: Calendar LAST; Android connected/authorized earlier, recheck at calendar boundary.
-resume_gate: Verify no foreign active fixture and running dev stack before staging. Gallery/Email remain closed; do not replay them.
-runtime: Existing frontend-sync and backend continuous/DevTools watchers own compilation. No separate builds. Email stub stopped and all temporary email overrides removed. Persistent dev release simulator remains healthy/intended.
-last_completed: Email three-retry supplement PASS (normal 1/2/4 minutes, shortened dev 5/10/20 seconds); suspension/restart/resume, terminal outcomes and disabled/restored/expired guards proved. Latest standalone Java regression tests and local adapter runtime NOT RUN.
+resume_gate: Read-only fixture status and existing dev stack before mutation; preserve unrelated Borrow/Event Mode snapshots. Gallery/Email/Admin remain closed; do not replay.
+runtime: Existing frontend-sync and backend continuous/DevTools watchers own compilation; no separate builds. Persistent dev release simulator remains intended.
+last_completed: ADMIN-CLIENT-API-001 dev PASS; OS notification-center visual icon, actual desktop login/reboot and separate REAL/DEMO database isolation NOT RUN. See its dated evidence for precise boundaries.
 ```
 
 ## Archived pair-QA resume point — 2026-09-17

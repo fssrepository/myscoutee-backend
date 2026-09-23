@@ -98,3 +98,7 @@ Next: managed Ava/normal startup, API UI and key creation, monitor connection; n
   the same fixture for UI-only verification (no replay of completed lifecycle).
   Replaced native link with a right-aligned blue tinted pill `app-menu` action,
   retaining EN/HU label, repository destination and safe external-link handling.
+
+## Closure and installer side correction
+
+Installer/documentation anchor replaced by right-aligned blue tinted pill using shared app-menu; existing external documentation URL retained. Existing frontend watcher build/sync passed. User accepted the displayed result and asked to move on. The fresh UI-only fixture and managed sessions were reset again; no key was created in this final baseline. Dev scope PASS, with the explicit NOT RUN boundaries above retained. Continue AFFILIATE-REVENUE-001, Calendar last.
