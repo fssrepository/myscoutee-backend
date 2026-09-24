@@ -26,10 +26,39 @@ class IntegrationParticipantInviteServiceTest {
     @Mock ActivitiesMembersService members;
     @Mock IntegrationPublicEndpointResolver endpoint;
     @Mock HomeUserProfileService profiles;
+    @Mock CommunityGroupsService groups;
+    @Mock com.raxim.myscoutee.profile.repository.UsersRepository users;
     IntegrationParticipantInviteService service;
     final String token = "a".repeat(43);
 
-    @BeforeEach void setup() { service = new IntegrationParticipantInviteService(mongo, events, access, members, endpoint, profiles); }
+    @BeforeEach void setup() {
+        service = new IntegrationParticipantInviteService(mongo, events, access, members, endpoint, profiles);
+        org.springframework.test.util.ReflectionTestUtils.setField(service, "groups", groups);
+        org.springframework.test.util.ReflectionTestUtils.setField(service, "users", users);
+    }
+
+    @Test void groupClaimUsesTheSameIdentityBindingAndAdmitsTheBoundRecipient() {
+        when(profiles.resolveSelectedUserId("actual-user")).thenReturn("actual-user");
+        var owner = new Users(); owner.setId("owner"); owner.setUserId("owner");
+        when(users.findByUserId("owner")).thenReturn(Optional.of(owner));
+        var open = new IntegrationParticipantInvite("invite", "owner", "group", "guest", token,
+                "hash", null, "now", null, "community");
+        var claimed = new IntegrationParticipantInvite("invite", "owner", "group", "guest", token,
+                "hash", "actual-user", "now", "now", "community");
+        when(mongo.findOne(any(Query.class), eq(IntegrationParticipantInvite.class))).thenReturn(open);
+        var mapping = new IntegrationExternalId(); mapping.setInternalId("actual-user");
+        when(mongo.findAndModify(any(), any(), any(), eq(IntegrationExternalId.class))).thenReturn(mapping);
+        when(mongo.findAndModify(any(), any(), any(), eq(IntegrationParticipantInvite.class))).thenReturn(claimed);
+
+        var result = service.claim("actual-user", token);
+
+        assertThat(result.groupId()).isEqualTo("group");
+        assertThat(result.eventId()).isNull();
+        assertThat(result.invitationAvailable()).isTrue();
+        verify(groups).requireAdmin(owner, "group");
+        verify(groups).claimIntegrationInvite(claimed, "actual-user");
+        verifyNoInteractions(members, events);
+    }
 
     @Test void ongoingEventClaimBindsTheAuthenticatedActorAndCreatesOnlyAnInvitation() {
         var event = event();

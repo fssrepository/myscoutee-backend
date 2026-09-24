@@ -51,6 +51,13 @@ for adding signed local packages and simulating interrupted downloads.
 
 ## QA status
 
+Group QA is prepared and **NOT RUN**: [group lifecycle](guides/qa/checklists/group/GROUP-LIFECYCLE-001.md),
+[workspace isolation samples](guides/qa/checklists/group/GROUP-ISOLATION-001.md)
+and [shared participant-link API](guides/qa/checklists/integration/INTEGRATION-API-GROUP-001.md).
+The matrix has 118 cases: 115 closed and 3 not started. Group follows Asset in
+domain order; participant-link coverage belongs to API test. Existing PASS
+evidence does not cover these new journeys.
+
 The five new delegated cases are tracked in the matrix. [Gallery/Feed/Moderation](guides/qa/evidence/EVENT-GALLERY-FEED-001-20260923-progress.md) is PASS on the user-started dev stack (2026-09-23), with fixture reset complete. [Email QA](guides/qa/evidence/OPERATOR-EMAIL-WARNING-001-20260923-progress.md), including durable retries and the [public unsubscribe/branding supplement](guides/qa/evidence/EMAIL-UNSUBSCRIBE-001-20260923.md), is PASS on the dev stack with cleanup complete. [Admin client QA](guides/qa/evidence/ADMIN-CLIENT-API-001-20260923-progress.md) is PASS in the recorded dev scope, with platform boundaries explicitly NOT RUN and fixture reset. [Affiliate revenue](guides/qa/evidence/AFFILIATE-REVENUE-001-20260923-progress.md) is PASS in the recorded dev HTTP/simulator and frontend-local scope (2026-09-24); production-installation and provider hold-only UI boundaries remain explicit in the evidence. [Calendar export QA](guides/qa/evidence/EVENT-CALENDAR-EXPORT-001-20260924.md) is PASS/CLOSED (2026-09-24), including One-time/Daily/Weekly occurrences, physical imports and an offline native reminder. Importer update/deletion/alarm limitations are recorded; fixture cleanup is complete. Earlier closed cases remain unchanged.
 
 The delegated [Event Mode regression](guides/qa/checklists/event/EVENT-MODE-REGRESSION-001-20260921-progress.md)

@@ -578,7 +578,10 @@ public class HomeUserProfileService {
         if (!StringUtils.hasText(resolvedUserId) || preferences == null) {
             return;
         }
+        persistUserFilterPreferences(resolvedUserId, preferences);
+    }
 
+    private void persistUserFilterPreferences(String resolvedUserId, UserGameFilterPreferencesDto preferences) {
         String nowIso = Instant.now().toString();
         UserFilterPreferences document = userFilterPreferencesRepository.findByUserId(resolvedUserId)
                 .orElseGet(UserFilterPreferences::new);
@@ -625,6 +628,9 @@ public class HomeUserProfileService {
             throw exception;
         }
         affiliateService.recordRegistration(saved.getAffiliateRegistration());
+        if (existing == null && userFilterPreferencesRepository.findByUserId(normalizedUserId).isEmpty()) {
+            persistUserFilterPreferences(normalizedUserId, buildDefaultFilterPreferences(saved));
+        }
         if (wasTrackedForAccountPurge != shouldTrackForAccountPurge) {
             adjustAccountPurgePendingCount(shouldTrackForAccountPurge ? 1 : -1);
         }
@@ -2058,6 +2064,12 @@ public class HomeUserProfileService {
     }
 
     private UserGameFilterPreferencesDto buildDefaultFilterPreferences(Users user) {
+        String gender = user == null ? "" : safeText(user.getGender());
+        List<String> genders = switch (gender) {
+            case "man" -> List.of("woman");
+            case "woman" -> List.of("man");
+            default -> List.of();
+        };
         return new UserGameFilterPreferencesDto(
                 18,
                 120,
@@ -2067,7 +2079,7 @@ public class HomeUserProfileService {
                 List.of(),
                 List.of(),
                 List.of(),
-                List.of(),
+                genders,
                 List.of(),
                 List.of(),
                 List.of(),

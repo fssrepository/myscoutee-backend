@@ -125,7 +125,7 @@ public class IntegrationParticipantInviteService {
                 FindAndModifyOptions.options().returnNew(true), IntegrationParticipantInvite.class);
         if (claimed == null) throw new ResponseStatusException(HttpStatus.CONFLICT, "Invitation already claimed.");
         if (community) {
-            groups.invite(owner, invite.eventId(), List.of(actor));
+            groups.claimIntegrationInvite(claimed, actor);
             return new IntegrationParticipantClaimDto(null, true, invite.eventId());
         }
         if (invitationAvailable) members.claimIntegrationInvite(claimed, event, actor);

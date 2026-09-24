@@ -207,6 +207,23 @@ public class CommunityGroupsService {
         memberships.saveAll(invited.stream().map(uid -> newMember(group, uid, "Member", "pending", "invite", actor.getUserId())).toList());
         return new ActivityMembersInviteResponseDto(roster(actor, id, false), invited, List.of(), dto(actor, group, members(id)));
     }
+    /** Called after the shared partner-link flow has bound the invitation to its recipient. */
+    void claimIntegrationInvite(IntegrationParticipantInvite invite, String actorUserId) {
+        if (!OWNER_TYPE.equals(invite.ownerType()) || !actorUserId.equals(invite.claimedUserId())) {
+            throw error(HttpStatus.FORBIDDEN);
+        }
+        var owner = users.findByUserId(invite.ownerUserId()).orElseThrow(() -> error(HttpStatus.NOT_FOUND));
+        var recipient = users.findByUserId(actorUserId).orElseThrow(() -> error(HttpStatus.NOT_FOUND));
+        if (recipient.getWorkspaceGroupId() != null) throw error(HttpStatus.FORBIDDEN);
+        invite(owner, invite.eventId(), List.of(actorUserId));
+        var member = membership(invite.eventId(), actorUserId);
+        if (member == null) throw error(HttpStatus.CONFLICT);
+        if ("accepted".equals(member.getStatus())) return;
+        var acceptingActor = "invite".equals(member.getRequestKind()) ? recipient : owner;
+        action(acceptingActor, new ActivityMemberActionRequestDto(
+                new ActivityMemberOwnerRefDto(OWNER_TYPE, invite.eventId()),
+                acceptingActor.getUserId(), actorUserId, "accept", null));
+    }
     public ActivityMemberActionResponseDto action(Users actor, ActivityMemberActionRequestDto request) {
         String id = request.owner().ownerId(); var group = visible(actor, id);
         var target = membership(id, request.targetUserId());

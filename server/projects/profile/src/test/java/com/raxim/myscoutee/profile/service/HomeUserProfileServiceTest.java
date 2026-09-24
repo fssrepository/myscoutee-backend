@@ -620,6 +620,36 @@ class HomeUserProfileServiceTest {
         verify(usersRepository, times(2)).findByProfileStatusIn(List.of("public", "friends only"));
     }
 
+    @org.junit.jupiter.params.ParameterizedTest
+    @org.junit.jupiter.params.provider.CsvSource({"man,woman", "woman,man"})
+    void registrationPersistsOppositeGenderHomeFilter(String gender, String expectedGender) {
+        Users candidate = projectedUser("new-member", 0d);
+        candidate.setGender(gender);
+        when(usersRepository.save(any(Users.class))).thenAnswer(invocation -> invocation.getArgument(0));
+
+        service.saveUserProfile(service.toGameCardUserDto(candidate));
+
+        var captor = ArgumentCaptor.forClass(com.raxim.myscoutee.profile.data.document.UserFilterPreferences.class);
+        verify(userFilterPreferencesRepository).save(captor.capture());
+        assertThat(captor.getValue().getUserId()).isEqualTo("new-member");
+        assertThat(captor.getValue().getGenders()).containsExactly(expectedGender);
+    }
+
+    @Test
+    void profileEditPreservesAnExplicitlyClearedGenderFilter() {
+        Users existing = projectedUser("active", 0d);
+        when(usersRepository.findByUserId("active")).thenReturn(Optional.of(existing));
+        when(usersRepository.save(any(Users.class))).thenAnswer(invocation -> invocation.getArgument(0));
+        var cleared = new com.raxim.myscoutee.profile.data.document.UserFilterPreferences();
+        cleared.setUserId("active");
+        when(userFilterPreferencesRepository.findByUserId("active")).thenReturn(Optional.of(cleared));
+
+        service.saveUserProfile(service.toGameCardUserDto(existing));
+
+        verify(userFilterPreferencesRepository, never()).save(any());
+        assertThat(service.resolveFilterPreferences("active").genders()).isEmpty();
+    }
+
     @Test
     void profileExtSaveSplitsProfileAndExperienceEntries() {
         Users active = user("active", 0d);
