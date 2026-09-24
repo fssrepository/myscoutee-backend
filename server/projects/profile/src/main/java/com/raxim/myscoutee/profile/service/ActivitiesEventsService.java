@@ -2364,9 +2364,6 @@ public class ActivitiesEventsService {
         String sourceId = request == null ? null : normalizeId(request.sourceId());
         String userId = request == null ? null : request.userId();
         ActivityEvent preferred = findPreferredEventRecord(sourceId);
-        if (preferred != null && StringUtils.hasText(preferred.getCancelledAtIso())) {
-            return toLifecycleActionResult(sourceId, "publish", preferred, false, "event-cancelled");
-        }
         ActivitiesMembersService.OwnerMembersSnapshot beforeSnapshot =
                 activitiesMembersService.queryOwnerSnapshot(OWNER_TYPE_EVENT, sourceId);
         UserEventActivityState beforeState = eventActivityState(preferred, beforeSnapshot, userId);
@@ -2375,10 +2372,25 @@ public class ActivitiesEventsService {
                     toLifecycleActionResult(sourceId, "publish", preferred, false, "forbidden"),
                     null);
         }
+        boolean reopeningCancellation = preferred != null && StringUtils.hasText(preferred.getCancelledAtIso());
+        if (reopeningCancellation) {
+            if (!ActivityEvent.STATUS_DRAFT.equals(preferred.getStatus())
+                    || !Boolean.TRUE.equals(preferred.getCancellationRefundsComplete())) {
+                return toLifecycleActionResult(sourceId, "publish", preferred, false, "event-cancellation-pending");
+            }
+            activitiesMembersService.retireCancelledEventParticipation(sourceId, userId);
+        }
         boolean changed = preferred != null && !ActivityEvent.STATUS_ACTIVE.equals(safeText(preferred.getStatus()));
         String nowIso = Instant.now().toString();
         List<ActivityEvent> updated = updateItemState(request, current -> {
             current.setStatus(ActivityEvent.STATUS_ACTIVE);
+            if (reopeningCancellation) {
+                current.setCancelledAtIso(null);
+                current.setCancelledByUserId(null);
+                current.setCancellationSessionMode(null);
+                current.setCancellationRefundsComplete(false);
+                current.setRefundEligibleUserIds(List.of());
+            }
             current.setSubEvents(ensureTournamentStartReviewStage(current.getSubEvents(), nowIso));
             current.refreshTournamentCurrentStage();
         });

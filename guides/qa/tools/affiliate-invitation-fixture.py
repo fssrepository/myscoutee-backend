@@ -250,6 +250,36 @@ elif command=='stage-revenue-recovery':
     }
     states.updateOne({_id:key},{$set:{recoveryControls:controls}});
     print(JSON.stringify({controls,seededOutcomes:false}));'''
+elif command=='arm-cancellation-provider-fault':
+    code='''const state=states.findOne({_id:key});
+    if(state?.phase!=='revenue-ready'||state.activeCancellationProviderFault||state.activeRevenueFault)
+      throw Error('Retained revenue baseline required, with no active fault');
+    const sourceId='6aff20000000000000000006';
+    const event=db.events.findOne({sourceId,ownerUserId:owner,status:'A'});
+    if(!event||event.cancelledAtIso)throw Error('Active disposable control required');
+    const candidates=db.payments.find({sourceId,auditKind:'payment',status:'captured',provider:'barion',
+      userId:{$in:state.users},refundedAmount:{$in:[null,0]}}).toArray();
+    if(candidates.length!==2)throw Error('Two actual unrefunded captures required');
+    const payment=candidates.find(x=>x.userId===state.concurrencyControl?.second);
+    if(!payment?.gatewayAuthorizationId)throw Error('Second buyer provider reference missing');
+    const fault={paymentId:payment._id,sourceId,originalReference:payment.gatewayAuthorizationId,
+      failedReference:'00000000-0000-4000-8000-000000000006',armedAtIso:new Date().toISOString()};
+    states.updateOne({_id:key},{$set:{activeCancellationProviderFault:fault}});
+    const changed=db.payments.updateOne({_id:payment._id,gatewayAuthorizationId:fault.originalReference},
+      {$set:{gatewayAuthorizationId:fault.failedReference},$inc:{version:NumberLong('1')}});
+    if(changed.modifiedCount!==1)throw Error('Payment reference changed concurrently; inspect recorded fault');
+    print(JSON.stringify({sourceId,paymentId:String(payment._id),fault:'provider payment lookup returns404',seededOutcomes:false}));'''
+elif command=='disarm-cancellation-provider-fault':
+    code='''const state=states.findOne({_id:key}), fault=state?.activeCancellationProviderFault;
+    if(!fault)throw Error('No recorded cancellation provider fault');
+    const current=db.payments.findOne({_id:fault.paymentId});
+    if(!current||![fault.failedReference,fault.originalReference].includes(current.gatewayAuthorizationId))
+      throw Error('Provider reference differs from both recorded values');
+    db.payments.updateOne({_id:fault.paymentId,gatewayAuthorizationId:fault.failedReference},
+      {$set:{gatewayAuthorizationId:fault.originalReference},$inc:{version:NumberLong('1')}});
+    states.updateOne({_id:key},{$push:{cancellationProviderFaultHistory:{...fault,restoredAtIso:new Date().toISOString()}},
+      $unset:{activeCancellationProviderFault:''}});
+    print(JSON.stringify({restored:String(fault.paymentId),seededOutcomes:false}));'''
 elif command=='arm-revenue-fault':
     mode=sys.argv[2] if len(sys.argv)>2 else ''
     if mode not in ('intent','ledger','commit','ack'):raise SystemExit('Use intent, ledger, commit, or ack')
@@ -380,6 +410,7 @@ elif command=='reset':
     state=json.loads(mongo(base+'print(JSON.stringify(states.findOne({_id:key})));'))
     if not state:raise SystemExit('Not staged')
     if state.get('activeRevenueFault'):raise SystemExit('Run disarm-revenue-fault before reset')
+    if state.get('activeCancellationProviderFault'):raise SystemExit('Run disarm-cancellation-provider-fault before reset')
     for user in state['users']:
         if user==OWNER or user==state.get('concurrencyControl',{}).get('second'):continue
         if not re.fullmatch(r'demo-profile-[a-f0-9-]{36}',user):raise SystemExit('Invalid tracked media owner')

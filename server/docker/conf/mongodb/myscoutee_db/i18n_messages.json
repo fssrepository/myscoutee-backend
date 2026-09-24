@@ -1,5 +1,11 @@
 [
   {
+    "_id": "i18n-message-en-payment-history-refund-preview-changed-terms",
+    "key": "payment.history.refund.preview.changed.terms",
+    "lang": "en",
+    "value": "Full remaining refund because the event terms changed."
+  },
+  {
     "_id": "i18n-message-en-integration-token-ip",
     "key": "integration.token.ip",
     "lang": "en",
@@ -13569,7 +13575,7 @@
     "_id": "i18n-message-en-event-editor-publish-question",
     "key": "event.editor.publish.question",
     "lang": "en",
-    "value": "Publish event?"
+    "value": "Do you want to publish this event?"
   },
   {
     "_id": "i18n-message-en-event-editor-publish-warning",
@@ -13587,7 +13593,7 @@
     "_id": "i18n-message-en-event-editor-unpublish-question",
     "key": "event.editor.unpublish.question",
     "lang": "en",
-    "value": "Unpublish event?"
+    "value": "Do you want to unpublish this event?"
   },
   {
     "_id": "i18n-message-en-event-editor-unpublish-warning",
@@ -22546,6 +22552,12 @@
     "key": "notification.kind.event-booking-cancelled.message",
     "lang": "en",
     "value": "Your booking has been cancelled and the remaining paid amount has been refunded."
+  },
+  {
+    "_id": "i18n-message-hu-payment-history-refund-preview-changed-terms",
+    "key": "payment.history.refund.preview.changed.terms",
+    "lang": "hu",
+    "value": "A módosult eseményfeltételek miatt a teljes fennmaradó összeg visszajár."
   },
   {
     "_id": "i18n-message-hu-integration-token-ip",

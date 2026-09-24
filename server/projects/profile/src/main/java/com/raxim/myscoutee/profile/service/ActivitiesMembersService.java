@@ -1832,6 +1832,39 @@ public class ActivitiesMembersService {
         return event != null && !StringUtils.hasText(normalizeId(event.getParentEventId()));
     }
 
+    /** A republished cancelled event is a new admission cycle, never a restore of old bookings. */
+    public void retireCancelledEventParticipation(String eventId, String actorUserId) {
+        synchronized (eventJoinLock(eventId)) {
+            List<ActivityMember> roots = loadOwnerDocuments(OWNER_TYPE_EVENT, eventId);
+            Set<String> participants = roots.stream()
+                    .filter(member -> !ADMIN_ROLES.contains(member.getRole()))
+                    .map(ActivityMember::getUserId).collect(java.util.stream.Collectors.toSet());
+            if (participants.isEmpty()) return;
+            List<ActivityMember> tree = activityMembersRepository.findInvolvementRecordsByUserIdsAndOwnerScope(
+                    participants, List.of(), OWNER_TYPE_EVENT, eventId, "^" + Pattern.quote(eventId) + ":");
+            String now = Instant.now().toString();
+            List<ActivityMember> removed = tree.stream().filter(member -> isInEventParticipationTree(member, eventId))
+                    .map(member -> toRemovedMember(member, actorUserId, now)).toList();
+            if (!removed.isEmpty()) activityMembersRepository.saveAll(removed);
+            // Also repair projections on a retry after the membership write.
+            Set<String> sourceIds = eventSourceIds(tree);
+            sourceIds.add(eventId);
+            cascadeRemovedEventMembersFromAssignedAssets(eventId, roots.stream()
+                    .filter(member -> participants.contains(member.getUserId())).toList(), actorUserId, now);
+            Set<String> assets = activitiesResourcesService.removeManagedResourcesForRemovedEventMembers(
+                    eventId, roots.stream().filter(member -> participants.contains(member.getUserId())).toList(), actorUserId, now);
+            clearRemovedManagedAssetMembers(assets, actorUserId, now);
+            refreshEmbeddedEventMembersBatch(sourceIds);
+            refreshManagedChildParticipationProjections(tree);
+            for (String sourceId : sourceIds) {
+                eventCheckoutBasketService.retireCancelledEventReservations(sourceId, participants);
+                eventParticipationTicketService.syncParticipationTicketsForEvent(sourceId);
+            }
+            userActivityCountersService.refreshEventCountersForUsers(List.copyOf(participants));
+            enqueueOwnerMembersChanged(OWNER_TYPE_EVENT, eventId, actorUserId);
+        }
+    }
+
     public OwnerMembersSnapshot removeEventParticipation(String eventId, String userId, String actorUserId) {
         return suppressEventParticipationTree(eventId, userId, actorUserId);
     }

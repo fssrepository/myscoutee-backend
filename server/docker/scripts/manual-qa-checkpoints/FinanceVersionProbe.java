@@ -214,6 +214,15 @@ class FinanceVersionProbe {
             var summary = service.summary(prefix, false);
             if (summary.outgoing() != 312.5 || summary.incoming() != 78.12 || summary.missingRates() != 0)
                 throw new AssertionError("Default snapshot summary conversion failed: " + summary);
+            isolated.getCollection("payments").updateMany(new Document("userId", prefix),
+                    new Document("$set", new Document("euro.rateDate", "2026-09-20")));
+            var missingDayBefore = isolated.getCollection("payments").find(new Document("userId", prefix)).first();
+            var fallbackSummary = service.summary(prefix, false);
+            if (fallbackSummary.outgoing() != 312.5 || fallbackSummary.incoming() != 78.12
+                    || fallbackSummary.missingRates() != 0
+                    || !missingDayBefore.equals(isolated.getCollection("payments").find(new Document("userId", prefix)).first()))
+                throw new AssertionError("Absent daily observation must use default without rewriting payment snapshot: " + fallbackSummary);
+            System.out.println("PASS summary with absent daily observation uses persisted default; payment snapshot unchanged.");
             System.out.println("PASS compiled default FX + Mongo: first payment 5000 HUF = 12.50 EUR; cold persisted read; daily priority; outage default; refund retains seed basis; CZK summary uses immutable default; no external HTTP.");
         } finally {
             for (String name : List.of("exchangeRates", "users", "payments")) isolated.getCollection(name).drop();

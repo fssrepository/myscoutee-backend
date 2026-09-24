@@ -21,6 +21,8 @@ import com.raxim.myscoutee.profile.service.notifications.NotificationOutboxServi
 public class EventCancellationService {
     @org.springframework.beans.factory.annotation.Autowired
     private EventParticipationTicketService tickets;
+    @org.springframework.beans.factory.annotation.Autowired
+    private org.springframework.beans.factory.ObjectProvider<PaymentRefundService> refunds;
     private final MongoTemplate mongo;
     private final PaymentService payments;
     private final ScheduledMongoSessionRunner sessions;
@@ -40,7 +42,7 @@ public class EventCancellationService {
         if (eligible.isEmpty()) {
             throw new ResponseStatusException(HttpStatus.CONFLICT, "No changed-terms cancellation is available for this booking.");
         }
-        enqueueRefunds(eligible, userId, "event-terms-changed");
+        for (Payment payment : eligible) refunds.getObject().requestChangedTermsRefund(payment.getId(), userId);
     }
 
     /** Invoked only after the membership service has authorized an organizer removal. */

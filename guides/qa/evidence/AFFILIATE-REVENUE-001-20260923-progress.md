@@ -462,3 +462,40 @@ because dev policy bypass entered the organizer branch. Added explicit event-adm
 role check before that branch; replay now409. This is a domain-role check in the
 shared implementation, not production-auth qualification; the dev stack does not
 prove protection against caller identity spoofing under production security.
+
+
+### 2026-09-24 02:57 CEST — explicit rule corrections, implementation in progress
+
+- Participant **Cancel with full refund** must create a pending refund request for the organizer; only approval may call the provider. The earlier 02:44 automatic participant-refund test is **SUPERSEDED**, not proof of this corrected flow. Retain its already-completed financial records; no rollback or seeded replacement.
+- Organizer Cancel → Unpublish → Publish reactivates the event, with fresh Join required for prior participants. Old payment/refund audit remains unchanged; old approvals/tickets must not restore admission. Repeated Publish must preserve newly joined participants.
+- Implementing and verifying these two branches. Previously recorded FX, aggregation, recovery and organizer/admin refund evidence remains valid. Overall checkpoint remains **IN PROGRESS**.
+
+
+### 2026-09-24 03:12 CEST — targeted revised branches
+
+- **PASS, organizer UI Cancelled → Unpublish → Publish** on retained EUR100 event `...000001`: active status A, cancellation marker cleared, only organizer remains accepted; previous visitor membership is `removed`. The original100 payment and separate25/75 refund documents/provider IDs remain unchanged. Fresh Join and replay preservation still under test.
+- **PASS, participant request → organizer approval**, actual browser actions on `QA Revenue Recovery ledger` (`...000009`), second attendee. Owner unpublishes/changes description/saves/republishes; second chooses Cancel with full refund. Primary `6ab45dd3de5ce0e8f4b553fa` remains captured3, no refunded amount, provider refund list empty; one pending refund history, organizer counter1, participant suppressed. Owner Payment history Approve refund creates exactly one provider refund3 (`799f825a-575f-3dd5-9221-f474ed532def`), primary cancelled/refunded3, request approved, counter0. Authenticated approval replay200 retains approved/counter0. Independent provider snapshots retained privately under `/tmp/affiliate-approval-{before,after}-provider.json`.
+- Frontend-local focused unit suite **4/4 PASS**, direct Vitest single worker (existing watcher does not run unit tests; resource checked; no second application build). New case persists partial25 + pending75 through serialized state, rejects unrelated approver, approves once, retains separate25/75 and unchanged other payment.
+- Payment history showed missing CZK conversion because retained primary snapshots referenced daily2026-09-23 but only default-v1 observation was present. Corrected summary lookup to use the persisted default when the dated observation is absent; no payment snapshot or historical amounts were rewritten. Approval replay summary now missingRates0 and CZK outgoing3987.50/incoming5012.50. Removed unsolicited header explanation. Browser reload check pending.
+- Publish/Unpublish titles now use existing EN/HU i18n keys with full questions; browser Publish dialog verified `Do you want to publish this event?`. Source/Mongo i18n audit passed. Overall **IN PROGRESS**, not complete.
+
+
+### 2026-09-24 03:23 CEST — header and fresh admission replay
+
+- **PASS, two payment summary badges** in the existing managed browser: normal/hover/press have identical bounds and `transform:none`; hover brightness0.96/shadow and press brightness0.90/inset shadow provide feedback. Container width487=scrollWidth487 at desktop, and347=347 at360px; no horizontal scrollbar or page overflow. Both badges stay on one line; no explanatory header line. Existing frontend watcher compiled/synced03:15:50; no separate application build.
+- **PASS, fresh admission after Cancel → Unpublish → Publish**, event `...000012`. Found and fixed stale paid baskets restoring Continue: republish retires old reservation results; Explore clears their saved continuation. Actual second-buyer browser now opens Book Event → Join → confirmation → fresh EUR7 payment review. New basket `6ab47b5bde5ce0e8f4b554cc` is confirmed/pending with an active reservation and no old checkout session. Membership is pending; prior visitor stays removed. Four old baskets retain their history/status/session IDs but have result deleted and inactive reservations. No new payment was submitted.
+- Repeated authenticated organizer Publish returns200/changedfalse, accepted1/pending1; new basket/reservation and member pending state remain unchanged. Both old7 primary payments remain fully refunded and their two separate audit records remain.
+- Default-FX compiled Java/Mongo probe **PASS**, including an absent historical daily observation: CZK conversion uses the persisted default with missingRates0 while preserving the primary snapshot. Overall checkpoint remains **IN PROGRESS**; partial25→pending75→approval backend/provider branch and remaining checklist boundaries are not claimed complete.
+
+03:29 user-directed visual adjustment: Waiting for payment badge bottom offset5.2rem→3.6rem (25.6px lower, closer to profile-eye). No new visual test or QA replay for this cosmetic adjustment, as explicitly requested. Existing refund flow continues.
+
+
+### 2026-09-24 03:34 CEST — partial refund then changed-terms approval PASS
+
+Actual owner/second-buyer browser flow on republished EUR100 event `...000001`: new Join requires a fresh admin approval. After approval membership remains pending/Waiting for payment; Continue opens payment directly without a new Join confirmation. Real simulator-backed payment `6ab47c96de5ce0e8f4b554d6`, gateway `803fed66-0e24-4ff7-86d7-85eeb94b8038`, captures100 and then admits the member. Ordinary Request refund → owner Approve refunds25 under the stored25% policy.
+
+Owner Unpublish → edit description/programme → Save → Publish grants changed-terms eligibility without a further refund. Participant Cancel with full refund creates pending audit `refund:6ab47c96de5ce0e8f4b554d6:10000` for75, owner pending counter1. Primary remains refunded25; independent provider audit still contains exactly one25 operation. Owner confirmation displays Refund75/Retained0 and changed-terms basis. Owner Approve refunds75, primary cumulative100, request approved, counter0. Separate operation IDs:25 `02115b14-7139-3932-99a3-acb37f31259d`,75 `ae1df272-0cb6-333e-9243-4c2c60c4bb34`. Authenticated approval replay200 adds no operation. Exact JSON comparison proves the first25 audit and provider receipt unchanged. Private before/after evidence `/tmp/affiliate-partial25-audit-{before,after}.json`, `/tmp/affiliate-partial75-{pending,approved}-provider.json`. The old visitor100 and its separate25/75 records were retained, never reset.
+
+Final independent provider oracle for prior organizer batch Cancel12 and Delete13: all four primary payments `6ab44f46de5ce0e8f4b553a1`, `...3a2`, `6ab450b4de5ce0e8f4b553b2`, `6ab450e9de5ce0e8f4b553b6` have cumulative7 and exactly one successful7 provider refund each. Event12 is republishedA with the new unpaid second-buyer reservation; event13 remainsTrashT. No duplicate from the repeat Cancel/republication boundary.
+
+Remaining checklist boundaries are still tracked separately: interrupted cancellation batch/provider failure, member-list replacement and local/browser parity; Calendar remains last. No full-checkpoint PASS claimed.

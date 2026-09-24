@@ -99,8 +99,14 @@ public class PaymentEuroService {
                 List.of("approved", "captured", "partially_refunded", "refunded")));
         else match.append("$or", List.of(new Document("userId", userId), new Document("recipientUserId", userId)))
                 .append("accountedSpentAmount", new Document("$gt", 0));
+        String defaultRate = rates.observations().stream()
+                .filter(row -> Boolean.TRUE.equals(row.getBoolean("default")))
+                .map(row -> row.get("rates", Document.class))
+                .filter(Objects::nonNull).map(row -> row.getString(currency)).filter(Objects::nonNull)
+                .findFirst().orElse(null);
         Object conversion = "EUR".equals(currency) ? 1 : new Document("$convert", new Document("input",
-                new Document("$arrayElemAt", List.of("$observation.rates." + currency, 0)))
+                new Document("$ifNull", Arrays.asList(
+                        new Document("$arrayElemAt", List.of("$observation.rates." + currency, 0)), defaultRate)))
                 .append("to", "decimal").append("onError", null).append("onNull", null));
         Object available = new Document("$and", List.of(new Document("$ne", Arrays.asList("$euro", null)),
                 new Document("$ne", Arrays.asList(conversion, null))));
