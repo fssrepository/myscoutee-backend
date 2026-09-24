@@ -68,7 +68,7 @@ public class CommunityGroupsService {
         var own = memberships.findByOwnerTypeAndUserId(OWNER_TYPE, actor.getUserId()).stream()
                 .filter(m -> Set.of("accepted", "pending").contains(m.getStatus())).toList();
         var ownById = own.stream().collect(Collectors.toMap(ActivityMember::getOwnerId, m -> m));
-        var records = bucket.equals("explore") ? groups.findDiscoverable(ownById.keySet())
+        var records = bucket.equals("explore") ? groups.findDiscoverable(ownById.keySet(), actor.getUserId())
                 : groups.findByIdIn(own.stream().filter(m -> bucket.equals("hosting")
                     ? "accepted".equals(m.getStatus()) && "Admin".equals(m.getRole())
                     : !("accepted".equals(m.getStatus()) && "Admin".equals(m.getRole())))
@@ -79,7 +79,7 @@ public class CommunityGroupsService {
         var owners = users.findByUserIdIn(records.stream().map(CommunityGroup::ownerUserId).distinct().toList()).stream()
                 .collect(Collectors.toMap(Users::getUserId, u -> u));
         var profileByGroup = groupProfiles.profilesByGroup(actor.getUserId());
-        var rows = records.stream().filter(g -> !bucket.equals("explore") || g.moderationVisible() || isAdmin(ownById.get(g.id())))
+        var rows = records.stream().filter(g -> !bucket.equals("explore") || g.moderationVisible())
                 .filter(g -> category == null || category.isBlank() || category.equals(g.category()))
                 .filter(g -> owners.containsKey(g.ownerUserId()))
                 .map(g -> CommunityGroupMapper.toDto(g, owners.get(g.ownerUserId()), actor,

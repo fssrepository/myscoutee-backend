@@ -7,7 +7,7 @@ import org.springframework.data.mongodb.repository.Query;
 import com.raxim.myscoutee.profile.data.document.CommunityGroup;
 
 public interface CommunityGroupsRepository extends MongoRepository<CommunityGroup, String> {
-    @Query("{ '$or': [ { 'visibility': { '$in': ['public', 'private'] } }, { '_id': { '$in': ?0 } } ] }")
-    List<CommunityGroup> findDiscoverable(Collection<String> memberGroupIds);
+    @Query("{ 'ownerUserId': { '$ne': ?1 }, 'visibility': { '$in': ['public', 'private'] }, '_id': { '$nin': ?0 } }")
+    List<CommunityGroup> findDiscoverable(Collection<String> memberGroupIds, String userId);
     List<CommunityGroup> findByIdIn(Collection<String> ids);
 }
