@@ -245,6 +245,7 @@ public class CommunityGroupsService {
         var group = groups.findById(id).orElseThrow(() -> error(HttpStatus.NOT_FOUND));
         var own = membership(id, actor.getUserId());
         if ("invitation".equals(group.visibility()) && (own == null || !Set.of("pending", "accepted").contains(own.getStatus()))) throw error(HttpStatus.NOT_FOUND);
+        if (!group.moderationVisible() && (own == null || !Set.of("pending", "accepted").contains(own.getStatus()))) throw error(HttpStatus.NOT_FOUND);
         return group;
     }
     private Group dto(Users actor, CommunityGroup group, List<ActivityMember> members) {
