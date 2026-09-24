@@ -2675,7 +2675,7 @@ public class HomeUserProfileService {
     private int resolveRealtimeNotificationCount(
             Users user,
             Integer storedNotificationCount) {
-        String userId = normalizeId(user == null ? null : user.getId());
+        String userId = normalizeId(user == null ? null : StringUtils.hasText(user.getAccountUserId()) ? user.getAccountUserId() : user.getUserId());
         if (userNotificationPageRepository == null || !StringUtils.hasText(userId)) {
             return normalizeCount(storedNotificationCount);
         }

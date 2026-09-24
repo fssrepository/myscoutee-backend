@@ -18,8 +18,8 @@ public class GroupWorkspaceFilter extends OncePerRequestFilter {
     @Override protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain)
             throws ServletException, IOException {
         String path = request.getServletPath();
-        if (path.matches("/(?:api/)?(?:groups|notifications|i18n|admin|operator|integrations)(?:/.*)?")
-                || path.endsWith("/auth/me/partner-invite/claim")) { chain.doFilter(request, response); return; }
+        if (path.matches("/(?:api/)?(?:groups|notifications|i18n|admin|operator|integrations|privacy|help|terms|explanations)(?:/.*)?")
+                || path.matches("/(?:api/)?auth/me/(?:partner-invite/claim|logout|delete|feedback)")) { chain.doFilter(request, response); return; }
         String groupId = request.getHeader(HEADER);
         if (groupId == null || groupId.isBlank()) { chain.doFilter(request, response); return; }
         var original = SecurityContextHolder.getContext().getAuthentication();

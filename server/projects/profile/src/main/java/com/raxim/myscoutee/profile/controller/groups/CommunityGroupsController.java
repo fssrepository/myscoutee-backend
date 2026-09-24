@@ -15,6 +15,8 @@ public class CommunityGroupsController {
             @RequestParam(required=false) String cursor) {
         return groups.page(groups.actor(userId), bucket, category, pageSize, cursor);
     }
+    @PostMapping("/sync")
+    public SyncResponse sync(@RequestBody SyncRequest request) { return groups.sync(groups.actor(request.userId()), request); }
     @GetMapping("/workspaces")
     public java.util.List<Workspace> workspaces(@RequestParam String userId) { return groups.workspaces(groups.actor(userId)); }
     @PostMapping("/workspaces/select")

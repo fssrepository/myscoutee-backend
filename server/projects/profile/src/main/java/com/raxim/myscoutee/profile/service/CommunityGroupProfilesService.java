@@ -10,6 +10,8 @@ import com.raxim.myscoutee.profile.service.mapper.CommunityGroupProfileMapper;
 
 @Service
 public class CommunityGroupProfilesService {
+    @org.springframework.beans.factory.annotation.Autowired
+    private org.springframework.data.mongodb.core.MongoTemplate mongo;
     private final UsersRepository users;
     private final CommunityGroupsRepository groups;
     private final ActivityMembersRepository members;
@@ -22,6 +24,20 @@ public class CommunityGroupProfilesService {
         if (existing.isPresent()) return existing.get();
         var account = users.findByUserId(accountId).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
         return users.save(CommunityGroupProfileMapper.copy(account, group.id()));
+    }
+    public void applyPolicy(CommunityGroup group) {
+        if (!group.policy().workspace()) return;
+        var accepted = members.findByOwnerTypeAndOwnerId("community", group.id()).stream()
+                .filter(m -> "accepted".equals(m.getStatus())).map(ActivityMember::getUserId).collect(java.util.stream.Collectors.toSet());
+        var existing = users.findByWorkspaceGroupId(group.id());
+        existing.forEach(profile -> accepted.remove(profile.getAccountUserId()));
+        if (!accepted.isEmpty()) users.saveAll(users.findByUserIdIn(accepted).stream().map(account -> CommunityGroupProfileMapper.copy(account, group.id())).toList());
+        if (group.policy().enabled() && !group.policy().requiredFields().isEmpty()) {
+            mongo.updateMulti(org.springframework.data.mongodb.core.query.Query.query(
+                    org.springframework.data.mongodb.core.query.Criteria.where("workspaceGroupId").is(group.id()).and("profileDetails.0").exists(true)),
+                    new org.springframework.data.mongodb.core.query.Update().set("profileDetails.$[].rows.$[required].privacy", "Public")
+                        .filterArray(org.springframework.data.mongodb.core.query.Criteria.where("required.labelKey").in(group.policy().requiredFields())), Users.class);
+        }
     }
     public Users select(String accountId, String groupId) {
         var group = groups.findById(groupId).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));

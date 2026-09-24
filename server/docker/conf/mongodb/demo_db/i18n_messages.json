@@ -22722,6 +22722,66 @@
     "value": "The action failed."
   },
   {
+    "_id": "i18n-message-en-groups-workspace-main",
+    "key": "groups.workspace.main",
+    "lang": "en",
+    "value": "Main profile"
+  },
+  {
+    "_id": "i18n-message-en-groups-workspace-select",
+    "key": "groups.workspace.select",
+    "lang": "en",
+    "value": "Choose workspace"
+  },
+  {
+    "_id": "i18n-message-en-groups-switch-failed",
+    "key": "groups.switch.failed",
+    "lang": "en",
+    "value": "Unable to switch workspace."
+  },
+  {
+    "_id": "i18n-message-en-groups-confirm-join",
+    "key": "groups.confirm.join",
+    "lang": "en",
+    "value": "Request to join “{name}”?"
+  },
+  {
+    "_id": "i18n-message-en-groups-confirm-accept",
+    "key": "groups.confirm.accept",
+    "lang": "en",
+    "value": "Accept the invitation to “{name}”?"
+  },
+  {
+    "_id": "i18n-message-en-groups-confirm-set-participant",
+    "key": "groups.confirm.set-participant",
+    "lang": "en",
+    "value": "Participate in ratings in “{name}”?"
+  },
+  {
+    "_id": "i18n-message-en-groups-confirm-set-organizer-only",
+    "key": "groups.confirm.set-organizer-only",
+    "lang": "en",
+    "value": "Stop participating in ratings in “{name}” and continue as an administrator?"
+  },
+  {
+    "_id": "i18n-message-en-groups-name-too-long",
+    "key": "groups.name.too.long",
+    "lang": "en",
+    "value": "The group name can contain at most 20 characters."
+  },
+  {
+    "_id": "i18n-message-en-groups-hide-members-description",
+    "key": "groups.hide.members.description",
+    "lang": "en",
+    "value": "Only administrators are visible in the member list."
+  },
+  {
+    "_id": "i18n-message-en-groups-workspace-description",
+    "key": "groups.workspace.description",
+    "lang": "en",
+    "value": "Separate group profiles, ratings and activities."
+  },
+  {
     "_id": "i18n-message-hu-payment-history-refund-preview-changed-terms",
     "key": "payment.history.refund.preview.changed.terms",
     "lang": "hu",
@@ -45442,5 +45502,65 @@
     "key": "groups.error",
     "lang": "hu",
     "value": "A művelet nem sikerült."
+  },
+  {
+    "_id": "i18n-message-hu-groups-workspace-main",
+    "key": "groups.workspace.main",
+    "lang": "hu",
+    "value": "Alapprofil"
+  },
+  {
+    "_id": "i18n-message-hu-groups-workspace-select",
+    "key": "groups.workspace.select",
+    "lang": "hu",
+    "value": "Munkatér kiválasztása"
+  },
+  {
+    "_id": "i18n-message-hu-groups-switch-failed",
+    "key": "groups.switch.failed",
+    "lang": "hu",
+    "value": "Nem sikerült munkateret váltani."
+  },
+  {
+    "_id": "i18n-message-hu-groups-confirm-join",
+    "key": "groups.confirm.join",
+    "lang": "hu",
+    "value": "Jelentkezel a(z) „{name}” csoportba?"
+  },
+  {
+    "_id": "i18n-message-hu-groups-confirm-accept",
+    "key": "groups.confirm.accept",
+    "lang": "hu",
+    "value": "Elfogadod a(z) „{name}” csoport meghívását?"
+  },
+  {
+    "_id": "i18n-message-hu-groups-confirm-set-participant",
+    "key": "groups.confirm.set-participant",
+    "lang": "hu",
+    "value": "Részt veszel a(z) „{name}” csoport értékeléseiben?"
+  },
+  {
+    "_id": "i18n-message-hu-groups-confirm-set-organizer-only",
+    "key": "groups.confirm.set-organizer-only",
+    "lang": "hu",
+    "value": "Befejezed a részvételt a(z) „{name}” csoport értékeléseiben, és adminisztrátorként folytatod?"
+  },
+  {
+    "_id": "i18n-message-hu-groups-name-too-long",
+    "key": "groups.name.too.long",
+    "lang": "hu",
+    "value": "A csoportnév legfeljebb 20 karakter hosszú lehet."
+  },
+  {
+    "_id": "i18n-message-hu-groups-hide-members-description",
+    "key": "groups.hide.members.description",
+    "lang": "hu",
+    "value": "A taglistában csak az adminok láthatók."
+  },
+  {
+    "_id": "i18n-message-hu-groups-workspace-description",
+    "key": "groups.workspace.description",
+    "lang": "hu",
+    "value": "Külön csoportprofilok, értékelések és tevékenységek."
   }
 ]
