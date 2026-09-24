@@ -7587,7 +7587,7 @@
     "_id": "i18n-message-en-landing-partners-subtitle",
     "key": "landing.partners.subtitle",
     "lang": "en",
-    "value": "Four ways to participate. Every operator stays independent."
+    "value": "Six ways to participate. Every operator stays independent."
   },
   {
     "_id": "i18n-message-en-landing-partners-aria",
@@ -22836,6 +22836,24 @@
     "value": "Groups"
   },
   {
+    "_id": "i18n-message-en-landing-partners-role-workplace-label",
+    "key": "landing.partners.role.workplace.label",
+    "lang": "en",
+    "value": "Bring your team"
+  },
+  {
+    "_id": "i18n-message-en-landing-partners-role-workplace-title",
+    "key": "landing.partners.role.workplace.title",
+    "lang": "en",
+    "value": "Private workplace community"
+  },
+  {
+    "_id": "i18n-message-en-landing-partners-role-workplace-description",
+    "key": "landing.partners.role.workplace.description",
+    "lang": "en",
+    "value": "Bring colleagues together in your own invitation-only group. Shared activities, chats and feedback can support team building and workplace wellbeing."
+  },
+  {
     "_id": "i18n-message-hu-navigator-community",
     "key": "navigator.community",
     "lang": "hu",
@@ -30423,7 +30441,7 @@
     "_id": "i18n-message-hu-landing-partners-subtitle",
     "key": "landing.partners.subtitle",
     "lang": "hu",
-    "value": "Négy részvételi forma. Minden operátor független marad."
+    "value": "Hat részvételi forma. Minden operátor független marad."
   },
   {
     "_id": "i18n-message-hu-landing-partners-aria",
@@ -45670,5 +45688,23 @@
     "key": "moderation.category.group",
     "lang": "hu",
     "value": "Csoportok"
+  },
+  {
+    "_id": "i18n-message-hu-landing-partners-role-workplace-label",
+    "key": "landing.partners.role.workplace.label",
+    "lang": "hu",
+    "value": "Hozd a csapatod"
+  },
+  {
+    "_id": "i18n-message-hu-landing-partners-role-workplace-title",
+    "key": "landing.partners.role.workplace.title",
+    "lang": "hu",
+    "value": "Zárt vállalati közösség"
+  },
+  {
+    "_id": "i18n-message-hu-landing-partners-role-workplace-description",
+    "key": "landing.partners.role.workplace.description",
+    "lang": "hu",
+    "value": "Hozd össze munkatársaidat egy saját, meghívásos csoportban. Közös programok, csevegések és visszajelzések segíthetik a csapatépítést és a munkahelyi jóllétet."
   }
 ]
