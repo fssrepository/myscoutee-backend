@@ -12429,7 +12429,7 @@
     "_id": "i18n-message-en-logout-question",
     "key": "logout.question",
     "lang": "en",
-    "value": "Logout?"
+    "value": "Are you sure you want to log out?"
   },
   {
     "_id": "i18n-message-en-min",
@@ -12891,7 +12891,7 @@
     "_id": "i18n-message-en-payment-history-refund-approve-title",
     "key": "payment.history.refund.approve.title",
     "lang": "en",
-    "value": "Approve refund?"
+    "value": "Would you like to approve this refund request?"
   },
   {
     "_id": "i18n-message-en-payment-history-refund-approved",
@@ -34983,7 +34983,7 @@
     "_id": "i18n-message-hu-logout-question",
     "key": "logout.question",
     "lang": "hu",
-    "value": "Biztosan kilép?"
+    "value": "Biztosan ki szeretnél jelentkezni?"
   },
   {
     "_id": "i18n-message-hu-min",
@@ -35445,7 +35445,7 @@
     "_id": "i18n-message-hu-payment-history-refund-approve-title",
     "key": "payment.history.refund.approve.title",
     "lang": "hu",
-    "value": "Jóváhagyod a visszatérítést?"
+    "value": "Jóváhagyod ezt a visszatérítési kérelmet?"
   },
   {
     "_id": "i18n-message-hu-payment-history-refund-approved",
@@ -45106,5 +45106,17 @@
     "key": "notification.kind.event-booking-cancelled.message",
     "lang": "hu",
     "value": "A foglalásodat lemondtuk, és a még vissza nem térített befizetésed visszajárt."
+  },
+  {
+    "_id": "i18n-message-en-event-checkout-join-confirm-title",
+    "key": "event.checkout.join.confirm.title",
+    "lang": "en",
+    "value": "Would you like to join this event?"
+  },
+  {
+    "_id": "i18n-message-hu-event-checkout-join-confirm-title",
+    "key": "event.checkout.join.confirm.title",
+    "lang": "hu",
+    "value": "Szeretnél csatlakozni ehhez az eseményhez?"
   }
 ]
