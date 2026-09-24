@@ -204,14 +204,22 @@ target_platform="$(docker image inspect "$target_id" | jq -er '.[0] | .Os+"/"+.A
 # Publisher labels bind the exact digest to the selected service/package line.
 candidate_labels="$(docker image inspect "$target_id" | jq -er '.[0].Config.Labels')"
 [[ "$(jq -er '."io.myscoutee.service"' <<< "$candidate_labels")" == "$label_service" ]] || fail 'Image belongs to another service.'
-[[ "$(jq -er '."io.myscoutee.package-version"' <<< "$candidate_labels")" == "${version/\~/-}" ]] || fail 'Image is for a different package version.'
+image_version="$(jq -er '."io.myscoutee.package-version"' <<< "$candidate_labels")"
+[[ "$image_version" =~ ^[0-9]+\.[0-9]+\.[0-9]+(-qa\.[0-9]+)?$ ]] || fail 'Invalid image release version.'
+if [[ "$image_version" != "${version/\~/-}" ]]; then
+  # Cross-version image updates require the publisher to explicitly qualify
+  # the installed host package. This does not run migrations or replace DEB files.
+  compatible_versions="$(jq -r '."io.myscoutee.compatible-package-versions" // ""' <<< "$candidate_labels")"
+  [[ "$compatible_versions" =~ ^[0-9]+\.[0-9]+\.[0-9]+(-qa\.[0-9]+)?(,[0-9]+\.[0-9]+\.[0-9]+(-qa\.[0-9]+)?)*$ ]] || fail 'Image is for a different package version without explicit compatibility.'
+  [[ ",$compatible_versions," == *",${version/\~/-},"* ]] || fail 'Installed package is not in the image compatibility list.'
+fi
 if [[ "$service" == nginx ]]; then
   probe_container="$(docker create --entrypoint /bin/true "$target_id")"
   trap 'docker rm "$probe_container" >/dev/null 2>&1 || true' EXIT
   candidate_version="$(docker cp "$probe_container:/usr/share/nginx/html/app-version.json" - | tar -xO | jq -er '.version')"
   docker rm "$probe_container" >/dev/null
   trap - EXIT
-  [[ "$candidate_version" == "${version/\~/-}" ]] || fail 'Frontend content version does not match the installed package.'
+  [[ "$candidate_version" == "$image_version" ]] || fail 'Frontend content version does not match the image release.'
 fi
 if [[ "$service" == mongodb || "$service" == redis ]]; then
   # An image swap is not a database migration. Require the installed upstream version.

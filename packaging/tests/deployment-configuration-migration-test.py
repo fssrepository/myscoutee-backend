@@ -7,7 +7,7 @@ sources = [
     (Path(__file__).resolve().parents[1] / 'migrations/004-deployment-configuration.js').read_text(),
     (Path(__file__).resolve().parents[1] / 'migrations/005-deployment-configuration-integration.js').read_text(),
 ]
-source = '\n'.join(sources)
+source = '\n'.join('{\n' + item + '\n}' for item in sources)
 source_for_test = source.replace("db.getCollection(", "testDb.getCollection(")
 source_005_for_test = sources[1].replace("db.getCollection(", "testDb.getCollection(")
 script = '''

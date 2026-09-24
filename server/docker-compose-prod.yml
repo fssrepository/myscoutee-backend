@@ -28,7 +28,7 @@ services:
   nginx:
     container_name: nginx
     hostname: nginx
-    image: ${NGINX_PRODUCTION_IMAGE:-myscoutee-nginx:1.0.1-prod}
+    image: ${NGINX_PRODUCTION_IMAGE:-myscoutee-nginx:1.0.2-prod}
     pull_policy: build
     restart: unless-stopped
     build:
@@ -37,7 +37,7 @@ services:
       additional_contexts:
         frontend-prod: ../frontend/prod
       args:
-        NGINX_BASE_IMAGE: ${NGINX_BASE_IMAGE:-myscoutee-nginx:1.0.1-base}
+        NGINX_BASE_IMAGE: ${NGINX_BASE_IMAGE:-myscoutee-nginx:1.0.2-base}
         TZ: ${CONTAINER_TIMEZONE:-Europe/Brussels}
     environment:
       TZ: ${CONTAINER_TIMEZONE:-Europe/Brussels}
@@ -125,7 +125,7 @@ services:
       start_interval: 2s
       start_period: 10s
   minio:
-    image: ${MINIO_PRODUCTION_IMAGE:-myscoutee-minio:1.0.1-prod}
+    image: ${MINIO_PRODUCTION_IMAGE:-myscoutee-minio:1.0.2-prod}
     pull_policy: build
     build:
       context: .
@@ -157,7 +157,7 @@ services:
       start_interval: 2s
       start_period: 20s
   profilemanagement:
-    image: ${MYSCOUTEE_PRODUCTION_IMAGE:-myscoutee-api:1.0.1-prod}
+    image: ${MYSCOUTEE_PRODUCTION_IMAGE:-myscoutee-api:1.0.2-prod}
     pull_policy: build
     restart: unless-stopped
     build:
@@ -175,7 +175,7 @@ services:
       - .env.secrets
     environment:
       SPRING_PROFILES_ACTIVE: "prod"
-      MYSCOUTEE_VERSION: "${MYSCOUTEE_VERSION:-1.0.1}"
+      MYSCOUTEE_VERSION: "${MYSCOUTEE_VERSION:-1.0.2}"
       MONGODB_HOST: "mongodb"
       MONGODB_DATABASE: "${MONGO_REAL_DATABASE}"
       MONGODB_DEMO_DATABASE: "${MONGO_DEMO_DATABASE}"
@@ -277,7 +277,7 @@ services:
   registry:
     container_name: registry-demo
     hostname: registry
-    image: ${REGISTRY_DEMO_IMAGE:-myscoutee-registry:1.0.1-prod}
+    image: ${REGISTRY_DEMO_IMAGE:-myscoutee-registry:1.0.2-prod}
     pull_policy: build
     build:
       context: ../../myscoutee-registry
@@ -319,7 +319,7 @@ services:
   payment-simulator:
     container_name: payment-simulator
     hostname: payment-simulator
-    image: ${PAYMENT_SIMULATOR_IMAGE:-myscoutee-payment-simulator:1.0.1-prod}
+    image: ${PAYMENT_SIMULATOR_IMAGE:-myscoutee-payment-simulator:1.0.2-prod}
     pull_policy: build
     build:
       context: ../../myscoutee-payment-simulator

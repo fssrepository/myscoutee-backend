@@ -259,3 +259,13 @@ The main entry points are:
 
 The package `postinst` never runs deployment qualification or public smoke
 automatically.
+
+### Cross-version container-only updates
+
+An image from a newer application release is accepted only when its publisher
+labels explicitly list the installed host package in
+`io.myscoutee.compatible-package-versions` (comma-separated exact versions).
+`io.myscoutee.package-version` and frontend `app-version.json` must describe the
+new image release. The installed DEB version remains unchanged. Complete and
+verify that release's documented data migrations/system-seed synchronization
+before applying images; this helper performs neither operation automatically.

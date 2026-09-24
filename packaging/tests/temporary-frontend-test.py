@@ -17,12 +17,12 @@ if a[:2]==['compose','version']:print('Docker Compose v2.39.0')
 elif a[0]=='inspect':print(json.dumps([{'Image':c['current'],'State':{'Health':{'Status':'healthy'}},'Config':{'Labels':{'com.docker.compose.project':'server','com.docker.compose.service':os.environ.get('MOCK_COMPOSE_SERVICE','nginx'),'com.docker.compose.project.working_dir':os.environ['MYSCOUTEE_SERVER_DIR'],'com.docker.compose.project.config_files':os.environ['MYSCOUTEE_SERVER_DIR']+'/docker-compose-prod.yml'+os.environ.get('MOCK_OVERLAY','')}}}]))
 elif a[:2]==['image','inspect']:
  image=old if a[2]==old else new
- print(json.dumps([{'Id':image,'Os':'linux','Architecture':'amd64','Config':{'Labels':{'io.myscoutee.service':os.environ.get('MOCK_SERVICE','nginx'),'io.myscoutee.package-version':os.environ.get('MOCK_VERSION','1.0.0'),'io.myscoutee.upstream-reference':(os.environ.get('MOCK_UPSTREAM','mongo:8.0.4') if image==new else 'mongo:8.0.4')}}}]))
+ print(json.dumps([{'Id':image,'Os':'linux','Architecture':'amd64','Config':{'Labels':{'io.myscoutee.service':os.environ.get('MOCK_SERVICE','nginx'),'io.myscoutee.package-version':os.environ.get('MOCK_VERSION','1.0.0'),'io.myscoutee.compatible-package-versions':os.environ.get('MOCK_COMPATIBLE',''),'io.myscoutee.upstream-reference':(os.environ.get('MOCK_UPSTREAM','mongo:8.0.4') if image==new else 'mongo:8.0.4')}}}]))
 elif a[0]=='pull':print('Pulled trusted digest')
 elif a[0]=='create':print('probe-container')
 elif a[0]=='rm':pass
 elif a[0]=='cp':
- payload=json.dumps({'version':os.environ.get('MOCK_VERSION','1.0.0')}).encode()
+ payload=json.dumps({'version':os.environ.get('MOCK_CONTENT_VERSION',os.environ.get('MOCK_VERSION','1.0.0'))}).encode()
  with tarfile.open(fileobj=sys.stdout.buffer,mode='w|') as t:
   info=tarfile.TarInfo('app-version.json');info.size=len(payload);t.addfile(info,io.BytesIO(payload))
 elif a[0]=='compose' and 'config' in a:print(json.dumps({'services':{os.environ.get('MOCK_COMPOSE_SERVICE','nginx'):{'image':os.environ.get('MOCK_INSTALLED_UPSTREAM','mongo:8.0.4')}}}))
@@ -68,6 +68,18 @@ class TemporaryFrontendTest(unittest.TestCase):
   self.run_helper('install',REF,ok=False,MOCK_VERSION='2.0.0')
   self.assertEqual(json.loads(self.mock.read_text())['current'],OLD)
   self.assertFalse((self.root/'state/state.json').exists())
+ def test_explicit_cross_version_compatibility_keeps_host_package_and_supports_rollback(self):
+  self.run_helper('install',REF,MOCK_VERSION='1.0.2',MOCK_COMPATIBLE='1.0.0,1.0.1')
+  self.assertEqual(json.loads(self.mock.read_text())['current'],NEW)
+  self.assertEqual(json.loads((self.root/'state/state.json').read_text())['version'],'1.0.0')
+  self.run_helper('rollback');self.assertEqual(json.loads(self.mock.read_text())['current'],OLD)
+ def test_cross_version_compatibility_requires_exact_valid_version(self):
+  for allowed in ['1.0.01','1.0.1','1.0.0,*']:
+   self.run_helper('install',REF,ok=False,MOCK_VERSION='1.0.2',MOCK_COMPATIBLE=allowed)
+   self.assertEqual(json.loads(self.mock.read_text())['current'],OLD)
+ def test_cross_version_frontend_must_match_its_release(self):
+  self.run_helper('install',REF,ok=False,MOCK_VERSION='1.0.2',MOCK_COMPATIBLE='1.0.0',MOCK_CONTENT_VERSION='1.0.0')
+  self.assertEqual(json.loads(self.mock.read_text())['current'],OLD)
  def test_rollback_does_not_overwrite_a_later_deployment(self):
   self.run_helper('install',REF)
   self.mock.write_text(json.dumps({'current':'sha256:'+'4'*64}))

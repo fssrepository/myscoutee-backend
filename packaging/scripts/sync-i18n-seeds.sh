@@ -64,6 +64,12 @@ if [[ "${mongo_status}" != "healthy" ]]; then
   fail "MongoDB did not become healthy within ${WAIT_SECONDS} seconds."
 fi
 
+# Startup may prepare Mongo first; schema migration then owns the seed load.
+if [[ "${1:-}" == --prepare-only ]]; then
+  echo "MongoDB ready for schema migration."
+  exit 0
+fi
+
 for seed_name in i18n_messages i18n_bundles; do
   "${COMPOSE_SCRIPT}" exec -T \
     -e "MONGO_IMPORT_SINGLE_FILE=${SEED_DIR_CONTAINER}/${seed_name}.json" \
