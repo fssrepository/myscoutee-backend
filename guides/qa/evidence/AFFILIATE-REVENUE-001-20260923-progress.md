@@ -1,6 +1,6 @@
 # AFFILIATE-REVENUE-001 — 2026-09-23
 
-Status: IN PROGRESS. Full-flow user delegation active. Admin client fixture reset before entry; invitation fixture status returned no active state, no owned users/referrals/tokens. Use existing dev watchers only. Stable checklist: ../checklists/api/AFFILIATE-REVENUE-001.md.
+Status: PASS in the recorded dev HTTP/simulator and frontend-local runtime scope (2026-09-24). Calendar is explicitly deferred. Production installation and provider hold-only UI are not claimed as tested; see final boundaries. Full-flow user delegation completed. Admin client fixture reset before entry; invitation fixture status returned no active state, no owned users/referrals/tokens. Use existing dev watchers only. Stable checklist: ../checklists/api/AFFILIATE-REVENUE-001.md.
 
 ## Initial UI and registration
 
@@ -584,3 +584,24 @@ First wrong boundary: shared ImageGallery bound `images.slice(0, 1)` directly to
 - Untouched100 checkout-1790222395519 captured03:59:55Z, programme changed through actual Unpublish/Manage/Edit/Save. Participant full-refund request at04:06:25Z remained pending100 with refunded0 and unchanged revenue. Owner approval at04:06:49Z returned exactly100. In-place history observer again reports removed0/loaders0/same list/all previous rows retained.
 - Final local native totals EUR317/317/0,HUF5000/5000/0,purchases6/bookings6. Actual Revenue popup6/6 and EUR329.50/329.50/0.00 matches fixed HUF400/EUR rate. Retains previous25 and75 separate operations, organizer10/delete7/adminHUF5000 and untouched100 outcomes. No local backend FX/payment request was needed. Local financial lifecycle branches closed; retained failed old-version100 record remains explicitly distinguished from corrected-path evidence.
 - Calendar remains deferred. Restore the existing frontend-sync owner to dev configuration for the remaining HTTP in-place-history verification; preserve both local IndexedDB and dev Mongo evidence.
+
+### 2026-09-24 06:15 — dev live-history and authorization accounting verification
+
+- Restored the existing frontend-sync owner to dev; build/sync06:09. Verified retained fixture before versioned managed-browser launch. Actual second buyer requested EUR2 refund on payment6ab45d96de5ce0e8f4b553f0; request left finances unchanged. Actual organizer approval reconciled Payment history in place: removed rows0, loaders0, same list and all existing row elements retained.
+- Simulator recorded one succeeded EUR2 refund, transaction176805cd-ab7a-4f4e-8188-06ad6ed25064. Exact gateway callback replay returned200/delivery200 with no extra refund. Final Mongo revision138, purchases16/eventBookings15, EUR291/282/9 and HUF5000/5000/0; payment version10, pendingfalse, no active financial fault. Actual Revenue popup CZK7587.50/7362.50/225 matches.
+- Compiled production AffiliateRevenueService/Repository against isolated real Mongo collections: authorization-only EUR7 contributes zero; captured transition contributes700 minor units and counts1/1; replay unchanged. FinanceVersionProbe authorization-revenue PASS; isolated collections removed and absence verified. This proves the accounting boundary, not a provider hold-only UI: the configured checkout providers use immediate capture.
+
+### 2026-09-24 06:20 — final local asset-purchase audit found a remaining defect
+
+- Local client authorization incorrectly passed eventBooking=true and resolved only Event recipients; Java CLIENT fulfillment already distinguishes asset purchases. Local service now records client purchases without an event booking and resolves the asset owner through the existing asset repository when the source is an asset. Event checkout paths remain unchanged.
+- Focused real local revenue-repository regression PASS1: purchase1/eventBookings0, persisted buyer contribution and actual asset-owner income20. This does not replace the actual UI check.
+- Versioned stage-asset adds only a free event/membership context and unpaid EUR20 transport. No borrow, payment or revenue outcome is seeded. Existing local and dev financial evidence retained. Affiliate remains IN PROGRESS pending actual local asset purchase and final record reconciliation.
+
+### 2026-09-24 06:30 — final local asset purchase and checkpoint closure
+
+- Existing frontend-sync local build/sync06:23:18/20 loaded main-6RWZHH7M.js. Actual Lucas UI: Event → View Event → Borrow Stage → Transport → Explore → Borrow → Confirm borrow → Visa4242 → Pay. Payment payment-1790224002359 recorded20EUR at04:26:42Z; one pending owner-confirmation borrow request references that payment. No financial outcome was inserted by the fixture.
+- Independent persisted oracle: purchases7/eventBookings6, EUR337/317/20 and HUF5000/5000/0, asset recipientu41. Actual identity switch to Lina and normal Affiliate → Revenue opening shows7 purchases,6 bookings,349.50EUR gross,329.50EUR refunded,20.00EUR net. This closes the client/asset purchase-only counter regression; the focused service/repository test also passed1/1.
+- Final dev read-only audit still revision138,16/15,EUR291/282/9,HUF5000/5000/0; pending contributions0, active injected faults0, temporary finance probe collections0. Dev and local audit histories, including explicitly identified earlier failed-version controls, remain retained; no broad reset or replay.
+- **AFFILIATE-REVENUE-001 PASS for the recorded dev and frontend-local financial journeys.** Earlier capture/refund recovery, concurrency, FX configuration/defaults, privacy and UI evidence remains valid; the local lifecycle and final dev in-place-history checks above close the outstanding runtime work. Calendar is **DEFERRED by user**, not executed or included in this PASS.
+- Verification boundaries remain explicit: no newly installed production artifact or REAL production authentication qualification; packaging/source/import parity is the evidence for that configuration. No provider hold-only UI flow exists in the configured immediate-capture checkout; zero contribution before capture was verified with the compiled production service/repository and real Mongo probe. Historical standalone tests marked NOT RUN remain NOT RUN; focused tests and actual runtime evidence are identified individually, not a claim that every repository test ran.
+- Privacy double-scrollbar report was withdrawn by the user; no CSS modification. The existing frontend-sync owner is restored serially to normal dev configuration after local completion; normal dev build and asset sync completed06:29:37/39. No duplicate build process was started.

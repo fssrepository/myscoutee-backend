@@ -88,15 +88,15 @@ Earlier Event Mode, Integration API, Activity Rating and EVENT-FOLLOWING-001 rem
 ```yaml
 checkpoint: AFFILIATE-REVENUE-001
 checklist: ../checklists/api/AFFILIATE-REVENUE-001.md
-substage: Complete remaining affiliate financial checks; Calendar explicitly deferred by user.
-fixture_phase: 2026-09-24 01:37 CEST. All validators restored and no activeRevenueFault. Four callback replays200/delivery200, unchanged amounts/counts; partner revision86, payment versions6/pendingfalse. Partner purchases14/bookings13, EUR181/41/140 + HUF5000; converted EUR193.50/41/152.50, selected CZK4837.50/1025/3812.50. All earlier paid outcomes retained.
+substage: PASS/CLOSED in recorded dev HTTP/simulator and frontend-local financial scope.
+fixture_phase: 2026-09-24 06:30 CEST. Financial evidence retained. Dev revision138, purchases16/bookings15, EUR291/282/9 and HUF5000/5000/0; no pending contributions or injected faults. Local purchases7/bookings6, EUR337/317/20 and HUF5000/5000/0; last actual asset payment20 counted as purchase only. Detailed history and earlier failed-version controls stay in evidence.
 execution_log: ../evidence/AFFILIATE-REVENUE-001-20260923-progress.md
-next_action: Frontend-local IN PROGRESS. Actual25+75 separate refunds/live history, HUF full admin-removal refund, organizer Cancel10/Delete7 and Unpublish/Publish clearing prior membership PASS. Manual12 approved once, waiting unpaid; no repeat Approve. Canonical deadline/purge repair built and focused checks PASS; next actual scheduled unpaid manual/auto expiry, grace-OFF/paid controls and fresh rejoin. Preserve IndexedDB and retained dev finances. Finish local then dev final audit. User explicitly deferred Calendar; do not execute it.
+next_action: No remaining affiliate action in the completed runtime scope. Calendar explicitly deferred by user; do not launch or execute it. Preserve local IndexedDB and dev Mongo audit records. Existing frontend-sync restored to normal dev configuration.
 queue: EVENT-CALENDAR-EXPORT-001
-calendar_boundary: DEFERRED by user on 2026-09-24; do not execute during affiliate completion.
-resume_gate: Read-only fixture status and existing dev stack before mutation; preserve unrelated Borrow/Event Mode snapshots. Gallery/Email/Admin remain closed; do not replay.
-runtime: Existing frontend-sync and backend continuous/DevTools watchers own compilation; no separate builds. Persistent dev release simulator remains intended.
-last_completed: ADMIN-CLIENT-API-001 dev PASS; OS notification-center visual icon, actual desktop login/reboot and separate REAL/DEMO database isolation NOT RUN. See its dated evidence for precise boundaries.
+calendar_boundary: DEFERRED by user on 2026-09-24; not part of affiliate PASS.
+resume_gate: Read-only fixture/runtime status before any later continuation. Preserve retained paid evidence and unrelated snapshots; no broad replay/reset.
+runtime: Existing frontend-sync and backend continuous/DevTools watchers own compilation; no separate builds. Normal dev HTTP configuration restored after local run.
+last_completed: AFFILIATE-REVENUE-001 dev and frontend-local PASS. Provider hold-only UI unavailable under immediate-capture configuration; accounting boundary verified with compiled production service and real Mongo. Installed production artifact/REAL auth qualification NOT RUN; see evidence.
 ```
 
 ## Archived pair-QA resume point — 2026-09-17

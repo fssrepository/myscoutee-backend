@@ -63,6 +63,26 @@ try{
   }
   await c.evaluate(`(async()=>{const data=${JSON.stringify({events:data.events,activityMembers:data.activityMembers})};const d=await new Promise(r=>{const q=indexedDB.open('myscoutee_demo_db');q.onsuccess=()=>r(q.result)});await new Promise((r,j)=>{const t=d.transaction('tables','readwrite');for(const [k,v]of Object.entries(data))t.objectStore('tables').put(v,k);t.oncomplete=r;t.onerror=()=>j(t.error)});d.close()})()`);
   await c.send('Page.reload',{ignoreCache:true});console.log('Prepared unpaid controls with canonical organizer membership; paid controls and all financial records retained.');
+ }else if(action==='stage-asset'){
+  const data=await c.evaluate(`(async()=>{${read};const data=await read();const d=await new Promise(r=>{const q=indexedDB.open('myscoutee_demo_db');q.onsuccess=()=>r(q.result)});data.assets=await new Promise(r=>{const q=d.transaction('tables').objectStore('tables').get('assets');q.onsuccess=()=>r(q.result)});d.close();return data})()`);
+  const id='qa-local-affiliate-asset-context',assetId='u41:qa-affiliate-transport',stageId='qa-affiliate-asset-stage';
+  if(data.events.byId['u41:events:'+id]||data.assets.byId[assetId])throw Error('Asset prerequisite already exists');
+  const source=Object.values(data.events.byId).find(e=>e.id==='qa-local-affiliate-cancel'&&e.userId==='u41');
+  const event={...structuredClone(source),id,title:'QA Local Asset Context',status:'A',cancelled:false,approvalRequired:false,paymentDeadlineEnabled:false,acceptedMembers:2,pendingMembers:0,acceptedMemberUserIds:['u41','u42'],pendingMemberUserIds:[],pendingRequestMemberUserIds:[],checkoutBasket:null,checkoutResultState:null,subEventsEnabled:true};
+  event.pricing={...event.pricing,enabled:false,basePrice:0};
+  const stage={id:stageId,name:'QA Local Borrow Stage',description:'Affiliate asset-only purchase',timing:'During',offsetMinutes:0,durationMinutes:120,optional:false,capacityMin:1,capacityMax:4,startAt:event.startAtIso,endAt:event.endAtIso,membersAccepted:2,membersPending:0,carsAccepted:0,carsPending:0,carsCapacityMin:0,carsCapacityMax:4,stageStatus:'A'};
+  event.subEvents=[stage];event.subEventDefinitions=[{...stage}];
+  data.events.byId['u41:events:'+id]=event;data.events.ids.push('u41:events:'+id);
+  const template=data.activityMembers.byId[data.activityMembers.ids[0]],ownerKey='event:'+id;
+  data.activityMembers.idsByOwnerKey[ownerKey]=[];
+  for(const userId of ['u41','u42']){const u=data.users.byId[userId],mid=ownerKey+':'+userId;data.activityMembers.ids.push(mid);data.activityMembers.idsByOwnerKey[ownerKey].push(mid);data.activityMembers.byId[mid]={...structuredClone(template),id:mid,ownerKey,ownerType:'event',ownerId:id,userId,name:u.name,initials:u.initials,gender:u.gender,city:u.city,profile:u,avatarUrl:u.images[0],role:userId==='u41'?'Admin':'Member',status:'accepted',requestKind:null};}
+  const sample=Object.values(data.assets.byId).find(a=>a.type==='Transport');
+  const asset={...structuredClone(sample),id:assetId,ownerUserId:'u41',ownerName:data.users.byId.u41.name,title:'QA Local Paid Transport',subtitle:'Affiliate asset purchase only',city:'Austin',visibility:'Public',status:'A',quantity:3,capacityTotal:3,requests:[],policies:[],policiesEnabled:false,affinity:0,boost:0};
+  asset.pricing={...structuredClone(source.pricing),enabled:true,basePrice:20,currency:'EUR',chargeType:'per_booking',cancellationPolicy:{enabled:false,rules:[]}};
+  data.assets.byId[assetId]=asset;data.assets.ids.push(assetId);data.assets.idsByOwnerUserId.u41=[...(data.assets.idsByOwnerUserId.u41??[]),assetId];
+  const writes={events:data.events,activityMembers:data.activityMembers,assets:data.assets};
+  await c.evaluate(`(async()=>{const data=${JSON.stringify(writes)},d=await new Promise(r=>{const q=indexedDB.open('myscoutee_demo_db');q.onsuccess=()=>r(q.result)});await new Promise((r,j)=>{const t=d.transaction('tables','readwrite');for(const [k,v]of Object.entries(data))t.objectStore('tables').put(v,k);t.oncomplete=r;t.onerror=()=>j(t.error)});d.close()})()`);
+  console.log('Added free event/membership context and unpaid asset prerequisite; no borrow or payment outcome seeded.');
  }else if(action==='arm-deadlines' || action==='reopen-deadlines'){
   const tableNames=['events','eventCheckoutBaskets','users','activityMembers'];
   const data=await c.evaluate(`(async()=>{const d=await new Promise(r=>{const q=indexedDB.open('myscoutee_demo_db');q.onsuccess=()=>r(q.result)});const out={};for(const k of ${JSON.stringify(tableNames)})out[k]=await new Promise(r=>{const q=d.transaction('tables').objectStore('tables').get(k);q.onsuccess=()=>r(q.result)});d.close();return out})()`);
