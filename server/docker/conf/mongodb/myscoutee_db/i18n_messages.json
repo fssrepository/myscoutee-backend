@@ -22782,6 +22782,24 @@
     "value": "Separate group profiles, ratings and activities."
   },
   {
+    "_id": "i18n-message-en-groups-show-members",
+    "key": "groups.show.members",
+    "lang": "en",
+    "value": "Members visible"
+  },
+  {
+    "_id": "i18n-message-en-groups-show-members-description",
+    "key": "groups.show.members.description",
+    "lang": "en",
+    "value": "Members can see each other in the member list."
+  },
+  {
+    "_id": "i18n-message-en-groups-member-list",
+    "key": "groups.member.list",
+    "lang": "en",
+    "value": "Member list visible"
+  },
+  {
     "_id": "i18n-message-hu-payment-history-refund-preview-changed-terms",
     "key": "payment.history.refund.preview.changed.terms",
     "lang": "hu",
@@ -45562,5 +45580,23 @@
     "key": "groups.workspace.description",
     "lang": "hu",
     "value": "Külön csoportprofilok, értékelések és tevékenységek."
+  },
+  {
+    "_id": "i18n-message-hu-groups-show-members",
+    "key": "groups.show.members",
+    "lang": "hu",
+    "value": "Tagok láthatók"
+  },
+  {
+    "_id": "i18n-message-hu-groups-show-members-description",
+    "key": "groups.show.members.description",
+    "lang": "hu",
+    "value": "A tagok láthatják egymást a taglistában."
+  },
+  {
+    "_id": "i18n-message-hu-groups-member-list",
+    "key": "groups.member.list",
+    "lang": "hu",
+    "value": "Taglista látható"
   }
 ]

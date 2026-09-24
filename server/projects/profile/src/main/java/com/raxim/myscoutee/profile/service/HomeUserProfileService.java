@@ -2161,7 +2161,8 @@ public class HomeUserProfileService {
         document.setMongoId(current != null && StringUtils.hasText(current.getMongoId()) ? current.getMongoId() : new ObjectId().toHexString());
         document.setSyncKey(current != null && StringUtils.hasText(current.getSyncKey()) ? current.getSyncKey() : UUID.randomUUID().toString());
         document.setUserId(normalizeId(user.id()));
-        document.setEmail(resolveStoredEmail(normalizeId(user.id()), current == null ? null : current.getEmail()));
+        document.setEmail(current != null && StringUtils.hasText(current.getWorkspaceGroupId())
+                ? null : resolveStoredEmail(normalizeId(user.id()), current == null ? null : current.getEmail()));
         document.setName(nullToEmpty(user.name()));
         document.setAge(normalizeCount(user.age()));
         document.setBirthday(nullToEmpty(user.birthday()));
@@ -2303,6 +2304,8 @@ public class HomeUserProfileService {
         if (user == null) {
             return null;
         }
+        // A workspace profile belongs to the account and never owns its login email.
+        if (StringUtils.hasText(user.getWorkspaceGroupId())) return user;
         String resolvedEmail = resolveAuthenticatedEmailForUser(normalizeId(user.getId()));
         if (!StringUtils.hasText(resolvedEmail) || Objects.equals(safeText(user.getEmail()), resolvedEmail)) {
             return user;
