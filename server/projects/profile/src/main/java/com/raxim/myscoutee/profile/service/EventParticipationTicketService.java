@@ -67,6 +67,7 @@ public class EventParticipationTicketService {
         for (ActivityEvent record : activityEventsRepository.findDirectOwnerEvents(normalizedUserId)) {
             if (record == null
                     || !record.hasStoredStatus(ActivityEvent.STATUS_ACTIVE)
+                    || StringUtils.hasText(record.getCancelledAtIso())
                     || !Boolean.TRUE.equals(record.getTicketing())
                     || Boolean.TRUE.equals(record.getIsTrashed())
                     || isEventAdmin(record, normalizedUserId)) {
@@ -254,7 +255,8 @@ public class EventParticipationTicketService {
         }
 
         boolean ticketingEnabled = Boolean.TRUE.equals(preferred.getTicketing())
-                && preferred.hasStoredStatus(ActivityEvent.STATUS_ACTIVE);
+                && preferred.hasStoredStatus(ActivityEvent.STATUS_ACTIVE)
+                && !StringUtils.hasText(preferred.getCancelledAtIso());
         if (existing == null && !ticketingEnabled) {
             return;
         }

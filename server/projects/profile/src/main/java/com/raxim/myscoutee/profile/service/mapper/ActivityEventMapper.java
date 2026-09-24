@@ -181,7 +181,11 @@ public class ActivityEventMapper {
                 safeText(record.getSourceLink()),
                 record.getModerationStatus(),
                 record.getPaymentDeadlineHours() == null ? 4 : record.getPaymentDeadlineHours(),
-                !Boolean.FALSE.equals(record.getPaymentDeadlineEnabled()));
+                !Boolean.FALSE.equals(record.getPaymentDeadlineEnabled()),
+                StringUtils.hasText(record.getCancelledAtIso()),
+                StringUtils.hasText(record.getCancelledAtIso()) && !Boolean.TRUE.equals(record.getCancellationRefundsComplete()),
+                context != null && record.getRefundEligibleUserIds() != null
+                        && record.getRefundEligibleUserIds().contains(context.viewerUserId()));
     }
 
     private String resolvePendingReason(ActivityEvent record, MappingContext context,

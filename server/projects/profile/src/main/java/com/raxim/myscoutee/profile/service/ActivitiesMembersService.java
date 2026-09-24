@@ -936,6 +936,9 @@ public class ActivitiesMembersService {
         }
     }
 
+    @org.springframework.beans.factory.annotation.Autowired
+    private org.springframework.beans.factory.ObjectProvider<EventCancellationService> cancellationService;
+
     private void replaceResolved(
             ActivityMembersReplaceRequestDto request,
             String ownerType,
@@ -1087,6 +1090,12 @@ public class ActivitiesMembersService {
                 .toList();
         List<ActivityMember> membersToSave = new ArrayList<>(nextDocuments);
         membersToSave.addAll(removedMembers);
+        if (OWNER_TYPE_EVENT.equals(ownerType) && !removedVisibleMembers.isEmpty()
+                && accessControlService.canManageEventMembers(ownerId, actorUserId)) {
+            cancellationService.getObject().requestAdminRemovals(ownerId,
+                    removedVisibleMembers.stream().map(ActivityMember::getUserId)
+                            .filter(id -> !actorUserId.equals(id)).toList(), actorUserId);
+        }
         if (!membersToSave.isEmpty()) {
             activityMembersRepository.saveAll(membersToSave);
             enqueueOwnerMembersChanged(ownerType, ownerId, actorUserId);
@@ -1391,6 +1400,10 @@ public class ActivitiesMembersService {
             return queryMembers(ownerType, ownerId, false, scopedEventId, scopedSubEventId, request.assetRequestId());
         }
 
+        if (OWNER_TYPE_EVENT.equals(ownerType) && ACTION_REMOVE.equals(action)
+                && !actorUserId.equals(targetUserId) && actorCanManageOwner) {
+            cancellationService.getObject().requestAdminRemovals(ownerId, List.of(targetUserId), actorUserId);
+        }
         String nowIso = Instant.now().toString();
         ActivityMember next = STATUS_DELETED.equals(nextStatus)
                 ? toDeletedMember(current, actorUserId, nowIso)
@@ -4027,6 +4040,7 @@ public class ActivitiesMembersService {
             ActivityEvent eventRecord,
             boolean promoteSingle) {
         ActivityEvent preferredEventRecord = eventRecord == null ? findPreferredEventRecord(normalizedEventId) : eventRecord;
+        if (preferredEventRecord != null && StringUtils.hasText(preferredEventRecord.getCancelledAtIso())) return 0;
         OwnerMembersSnapshot snapshot = queryOwnerSnapshot(OWNER_TYPE_EVENT, normalizedEventId);
         int capacityTotal = snapshot == null || snapshot.capacityTotal() == null
                 ? Math.max(0, preferredEventRecord == null || preferredEventRecord.getCapacityTotal() == null ? 0 : preferredEventRecord.getCapacityTotal())

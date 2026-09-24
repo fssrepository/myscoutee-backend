@@ -2218,6 +2218,36 @@ public class ActivitiesEventsService {
         });
     }
 
+    @org.springframework.beans.factory.annotation.Autowired
+    private EventCancellationService eventCancellationService;
+
+    public EventParticipationActionResultDto cancel(EventActionRequestDto request) {
+        ViewerContext viewer = resolveViewer(request == null ? null : request.userId());
+        String sourceId = request == null ? null : normalizeId(request.sourceId());
+        ActivityEvent preferred = findPreferredEventRecord(sourceId);
+        if (viewer == null || preferred == null) return null;
+        if (isViewerAdmin(preferred, viewer.userId())
+                && accessControlService.canCurrentActorDeleteEvent(sourceId)) {
+            boolean changed = !StringUtils.hasText(preferred.getCancelledAtIso());
+            String now = Instant.now().toString();
+            List<ActivityEvent> cancelledDocuments = updateItemState(request, current -> {
+                current.setCancellationSessionMode(com.raxim.myscoutee.common.config.mongo.MongoSessionModeContext.currentMode().name());
+                if (!StringUtils.hasText(current.getCancelledAtIso())) {
+                    current.setCancelledAtIso(now);
+                    current.setCancelledByUserId(viewer.userId());
+                    current.setCancellationRefundsComplete(false);
+                }
+            });
+            syncStageReminderTasksForSavedEvents(cancelledDocuments, viewer.userId());
+            return toLifecycleActionResult(sourceId, "cancel", findPreferredEventRecord(sourceId), true,
+                    changed ? null : "already-applied");
+        }
+        eventCancellationService.requestParticipantCancellation(sourceId, viewer.userId());
+        EventParticipationActionResultDto result = removeCheckoutMembershipOnlyWithCounterDelta(request, sourceId);
+        return result != null && result.changed() ? result
+                : toLifecycleActionResult(sourceId, "cancel", findPreferredEventRecord(sourceId), true, null);
+    }
+
     public EventParticipationActionResultDto trash(EventActionRequestDto request) {
         String sourceId = request == null ? null : normalizeId(request.sourceId());
         String userId = request == null ? null : request.userId();
@@ -2244,6 +2274,12 @@ public class ActivitiesEventsService {
             String currentStatus = safeText(current.getStatus());
             if (!ActivityEvent.STATUS_TRASHED.equals(currentStatus)) {
                 current.setStatusBeforeSuppression(currentStatus);
+            }
+            if (!StringUtils.hasText(current.getCancelledAtIso())) {
+                current.setCancelledAtIso(Instant.now().toString());
+                current.setCancelledByUserId(resolveViewer(request.userId()).userId());
+                current.setCancellationSessionMode(com.raxim.myscoutee.common.config.mongo.MongoSessionModeContext.currentMode().name());
+                current.setCancellationRefundsComplete(false);
             }
             current.setStatus(ActivityEvent.STATUS_TRASHED);
             current.setTrashedAtIso(Instant.now().toString());
@@ -2328,6 +2364,9 @@ public class ActivitiesEventsService {
         String sourceId = request == null ? null : normalizeId(request.sourceId());
         String userId = request == null ? null : request.userId();
         ActivityEvent preferred = findPreferredEventRecord(sourceId);
+        if (preferred != null && StringUtils.hasText(preferred.getCancelledAtIso())) {
+            return toLifecycleActionResult(sourceId, "publish", preferred, false, "event-cancelled");
+        }
         ActivitiesMembersService.OwnerMembersSnapshot beforeSnapshot =
                 activitiesMembersService.queryOwnerSnapshot(OWNER_TYPE_EVENT, sourceId);
         UserEventActivityState beforeState = eventActivityState(preferred, beforeSnapshot, userId);
@@ -2972,6 +3011,10 @@ public class ActivitiesEventsService {
         ActivityEvent preferred = findPreferredEventRecord(requestedSourceId);
         if (preferred == null) {
             return null;
+        }
+        if (StringUtils.hasText(preferred.getCancelledAtIso())) {
+            throw new org.springframework.web.server.ResponseStatusException(
+                    org.springframework.http.HttpStatus.CONFLICT, "This event has been cancelled.");
         }
         if (viewer.userId().equals(normalizeId(preferred.getCreatorUserId()))) {
             return withCounterDelta(
@@ -4882,6 +4925,11 @@ public class ActivitiesEventsService {
         if (isPublishedEventManageNoOp(existing, baseRecord)) {
             return toEventDto(existing, actor);
         }
+        if (!publishedManageUpdate && EventCancellationService.paidTermsChanged(existing, baseRecord)) {
+            baseRecord.setPaidTermsChangedAtIso(Instant.now().toString());
+            baseRecord.setPaidTermsRefundsPending(true);
+            baseRecord.setPaidTermsChangedBy(actorUserId);
+        }
         EventDefinitionChangeSummary definitionChange = eventDefinitionChangeSummary(existing, baseRecord);
         Set<String> preChangeAssignedAudienceUserIds = definitionChange.changed()
                 ? activeSubEventResourceAudienceUserIds(sourceId)
@@ -6574,7 +6622,8 @@ public class ActivitiesEventsService {
             if (!StringUtils.hasText(sourceId)) {
                 continue;
             }
-            if (Boolean.FALSE.equals(event.getPublished()) || Boolean.TRUE.equals(event.getIsTrashed())) {
+            if (Boolean.FALSE.equals(event.getPublished()) || Boolean.TRUE.equals(event.getIsTrashed())
+                    || StringUtils.hasText(event.getCancelledAtIso())) {
                 scheduledMessageTaskService.suspendEventStageReminders(sourceId, actorUserId);
             } else {
                 scheduledMessageTaskService.scheduleEventStageReminders(event, actorUserId);

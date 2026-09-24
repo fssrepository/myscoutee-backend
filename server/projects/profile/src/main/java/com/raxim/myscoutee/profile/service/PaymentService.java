@@ -490,6 +490,20 @@ public class PaymentService {
                 hasText(reason) ? reason : "The paid checkout could not be fulfilled.");
     }
 
+    /** Complete one authorized cancellation; the original payment retains cumulative totals. */
+    public Payment completeEventCancellation(Payment payment, String reason) {
+        Payment refunded = approvePolicyRefund(payment, nowIso(), safeAmount(payment.getAmount()),
+                payment.getCurrency(), reason, "Event booking cancelled; full remaining amount returned.");
+        if (!BOOKING_STATUS_CANCELLED.equals(refunded.getBookingStatus())
+                || refunded.getRefundRequestedTargetAmount() != null || refunded.isEventChangeRefundEligible()) {
+            refunded.setBookingStatus(BOOKING_STATUS_CANCELLED);
+            refunded.setCancelledAtIso(nowIso());
+            refunded.setEventChangeRefundEligible(false);
+            refunded = saveAndProjectSpending(refunded);
+        }
+        return refunded;
+    }
+
     public Payment approvePolicyRefund(
             Payment payment,
             String reviewedAtIso,

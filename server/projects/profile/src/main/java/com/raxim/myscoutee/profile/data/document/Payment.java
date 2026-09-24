@@ -17,6 +17,7 @@ import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.PricingCancellatio
 
 @Document(collection = "payments")
 @CompoundIndexes({
+    @CompoundIndex(name = "payment_cancellation_pending", def = "{'auditKind': 1, 'refundRequestedTargetAmount': 1}"),
     @CompoundIndex(name = "payment_euro_pending", def = "{'euroCheckedAt': 1}", partialFilter = "{'euro': null, 'auditKind': 'payment', 'accountedSpentAmount': {'$gt': 0}}"),
     @CompoundIndex(name = "payment_user_source", def = "{'userId': 1, 'sourceId': 1, 'createdDate': -1}"),
     @CompoundIndex(name = "payment_recipient_created", def = "{'recipientUserId': 1, 'createdDate': -1}"),
@@ -69,6 +70,11 @@ public class Payment {
     private Double gatewayRefundTargetAmount;
     private boolean eventChangeRefundEligible;
     private Double refundRequestedTargetAmount;
+    private String cancellationRequestedBy;
+    private String cancellationReason;
+    private String cancellationSessionMode;
+    public String getCancellationSessionMode() { return cancellationSessionMode; }
+    public void setCancellationSessionMode(String value) { cancellationSessionMode = value; }
     private String authorizationExpiresAtIso;
     private String capturedAtIso;
     private String releasedAtIso;
@@ -176,6 +182,10 @@ public class Payment {
     public void setEventChangeRefundEligible(boolean value) { eventChangeRefundEligible = value; }
     public Double getRefundRequestedTargetAmount() { return refundRequestedTargetAmount; }
     public void setRefundRequestedTargetAmount(Double value) { refundRequestedTargetAmount = value; }
+    public String getCancellationRequestedBy() { return cancellationRequestedBy; }
+    public void setCancellationRequestedBy(String value) { cancellationRequestedBy = value; }
+    public String getCancellationReason() { return cancellationReason; }
+    public void setCancellationReason(String value) { cancellationReason = value; }
 
     public String getAuthorizationExpiresAtIso() { return authorizationExpiresAtIso; }
     public void setAuthorizationExpiresAtIso(String authorizationExpiresAtIso) { this.authorizationExpiresAtIso = authorizationExpiresAtIso; }

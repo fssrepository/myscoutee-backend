@@ -187,6 +187,34 @@ public class NotificationOutboxService {
         return Optional.of(saved);
     }
 
+    /** Durable operation identity; retries do not create another inbox/provider delivery. */
+    public Optional<NotificationOutboxItem> enqueueOnce(String operationId, NotificationIntent intent) {
+        String id = "operation:" + sha256(operationId);
+        NotificationOutboxItem saved = notificationOutboxRepository.findById(id).orElse(null);
+        if (saved == null) {
+            List<String> recipients = compactIds(intent.recipientUserIds());
+            if (recipients.isEmpty()) return Optional.empty();
+            Map<String, String> payload = normalizedPayload(intent, deploymentBranding(intent));
+            String topic = resolveStableTopicName(intent, payload, recipients.size());
+            NotificationOutboxItem item = newItem(intent, recipients, payload,
+                    sha256(canonicalPayload(payload)), id,
+                    StringUtils.hasText(topic) ? DELIVERY_STRATEGY_TOPIC : knownUserDeliveryStrategy(payload, recipients.size()),
+                    topic, Instant.now().toString());
+            item.setId(id);
+            item.setSyncKey(id);
+            item.setPendingCounterTracked(true);
+            try {
+                saved = notificationOutboxRepository.insert(item);
+                adjustPendingCount(1);
+            } catch (org.springframework.dao.DuplicateKeyException concurrentInsert) {
+                saved = notificationOutboxRepository.findById(id).orElseThrow();
+            }
+        }
+        publishWakeup(saved);
+        materializeInbox(saved);
+        return Optional.of(saved);
+    }
+
     private TrackedOutboxSave mergeExistingItemAtomic(
             NotificationOutboxItem existing,
             List<String> recipientUserIds,

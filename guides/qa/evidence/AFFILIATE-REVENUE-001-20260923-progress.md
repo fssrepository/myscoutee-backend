@@ -408,3 +408,57 @@ User explicitly confirmed each refund operation is a separate payment record. Co
 Existing watcher build/restart PASS at02:01:31. `run-finance-version-probe.sh refund-intent` PASS against actual compiled PaymentService + Spring Data versioned repository/Mongo, with an explicitly modeled provider double: normal25->100, lost response after provider commit plus fresh service instance, and delayed25 receipt concurrent with another service completing100. All produce exactly two provider operations25+75 and two refund rows25+75; stale/full replay makes no additional provider call. Temporary probe collections removed; retained campaign payments unchanged. Initial probe attempted a package-private test constructor; changed to public production constructor before successful execution. This is focused concurrency/recovery proof, not the outstanding organizer/participant browser/provider cancellation journey.
 
 Follow-up at02:04: added legacy partial refunds without the new intent fields and cash-path cases. All five compiled service/Mongo scenarios PASS. For already completed first refunds, the probe additionally compares the entire stored first audit document before/after cancellation: it remains identical. Cash operations also create separate25/75 rows. No additional normal refund entitlement or arbitrary second refund was introduced; the full-refund caller still belongs to the pending cancellation implementation.
+
+### 2026-09-24 02:33 CEST — cancellation partial-to-full provider boundary
+
+Owner used the normal event-card Cancel event action and confirmation on retained
+`6aff20000000000000000001` (EUR100, prior policy refund25). Initial scheduled work
+persisted the75 intent but failed provider lookup: dev shares REAL/DEMO database,
+and scheduler mode had selected REAL. Fixed by persisting the authenticated
+request's session mode on the cancellation intent; retries retain that provider
+context. After existing watcher rebuild, replayed the same authorized Cancel HTTP
+request (200/already-applied), without resetting fixture or fabricating a receipt.
+
+Independent Mongo and simulator audit: provider refunds25+75, primary cumulative100,
+booking cancelled, two separate refund history records. Prior25 document is exactly
+unchanged; event title/subtitle/dates/location/pricing/policies/images/capacity/status
+are unchanged, status A (not Trash), cancellationRefundsComplete=true. HUF and two
+concurrency control payments remain unchanged. One cancellation outbox operation
+sent. Provider-double checks are not used as substitutes for this result.
+
+This proves the financial boundary only; membership/ticket projections, participant
+terms-change choice, organizer multi-booking/Delete, admin removal, authority,
+replay and frontend-local checks remain in progress. Admin removal full remaining
+refund is now an explicit checklist case per user instruction.
+
+### 2026-09-24 02:35 CEST — admin removes paid member, provider/UI boundary
+
+Owner opened QA Affiliate HUF5000 -> Members -> Affiliate QA Visitor -> Remove
+member -> Remove. UI count2->1 and Visitor removed, owner remains. Mongo membership
+status deleted; primary `6ab42e95de5ce0e8f4b54ea2` booking cancelled/refunded5000,
+no pending refund request marker. Simulator payment
+`b6d1fa42-ee97-46b3-8e2c-95cc4abbc278` has one successful HUF5000 refund
+`bc1a33f9-1f2b-3001-b4f3-afef1f79b769`. Separate history amount5000. This exercises
+the actual menu/confirmation, Java queue, background processor and provider;
+member-list replacement and fault/retry/local variations remain unverified.
+
+### 2026-09-24 02:44 CEST — changed programme and individual cancellation
+
+Owner Unpublish -> Drafts -> Manage Event -> Edit changed the description of
+`6aff20000000000000000013` to an updated acoustic programme and saved/republished.
+Both existing7EUR payers received eligibility and a sent changed-terms notification;
+no refund occurred from editing alone. The modifying owner is absent from recipients;
+producer now explicitly excludes the modifier even if they also have a payment.
+
+The real list menu initially omitted the refund entitlement (outer popup menu
+subject omitted the DTO field). Fixed that mapping and rebuilt via frontend-sync.
+Second buyer then used Cancel with full refund -> confirm. Own payment
+`6ab450e9de5ce0e8f4b553b6`: refunded7, booking cancelled, separate7 history, queue
+cleared, membership suppressed. Other buyer payment `6ab450b4de5ce0e8f4b553b2`
+remains joined/unrefunded and membership accepted. Dialog closed successfully.
+
+A noneligible cancellation on event12 initially returned misleading200/no mutation
+because dev policy bypass entered the organizer branch. Added explicit event-admin
+role check before that branch; replay now409. This is a domain-role check in the
+shared implementation, not production-auth qualification; the dev stack does not
+prove protection against caller identity spoofing under production security.

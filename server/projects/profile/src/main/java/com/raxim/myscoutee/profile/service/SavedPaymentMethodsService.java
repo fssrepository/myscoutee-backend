@@ -588,7 +588,7 @@ public class SavedPaymentMethodsService {
                 requestStatus, payment.getRefundRequestedAtIso(),
                 "expense".equals(direction) && paymentAudit && refundableStatus && !refundAlreadyRecorded
                         && "none".equals(requestStatus)
-                        && refund.refundableAmount() > 0,
+                        && payment.getRefundRequestedTargetAmount() == null && refund.refundableAmount() > 0,
                 "expense".equals(direction) && refundAudit && "pending".equals(requestStatus),
                 refund == null ? null : new PaymentRefundPreviewDto(
                         refund.paidAmount(), refund.refundableAmount(), refund.retainedAmount(), refund.currency(),
