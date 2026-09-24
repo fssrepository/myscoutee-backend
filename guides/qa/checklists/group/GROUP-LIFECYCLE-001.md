@@ -66,11 +66,30 @@ or claim that a fixture or browser session has already been prepared.
 12. Compare group profile details with the base profile. Required fields follow
     the saved policy. Organizer/member role actions use their normal authority;
     an ordinary member cannot approve others or edit group policy.
-13. Submit a report from a non-owner, inspect its group identity and moderation
-    preview using the authorized moderator, and exercise the configured normal
-    moderation lifecycle. Rejected/hidden discovery must not become a different
-    group's card. Record the deployment's actual moderation configuration.
-14. Leave/remove the test membership and check the remaining group lists and
+13. Report a group as a non-owner. In **app-admin** content moderation, verify
+    the **Group** dropdown category, preview and configured review lifecycle.
+    With app moderation enabled, group creation follows that configuration;
+    with it disabled, no review hold is added. Check the group card's status
+    badge at the **bottom left of the image frame** in each applicable state.
+    Record the deployment's actual settings and restore them afterward.
+14. As an accepted **group administrator**, open Moderation from the group
+    card menu. The same moderation popup exposes this group's Asset/Event/Feed
+    content and its own settings; **Group** is absent from its categories.
+    Submit pending content, decide it, and repeat the same command/reload.
+    Verify the stored moderation count, the red Moderation menu badge, the
+    three-dot badge, workspace dropdown and sidebar Groups aggregate. Approval,
+    rejection, unblocking and configured worker approval update the count only
+    once. A decision updates the existing SmartList card and an open dropdown
+    through the signal store immediately: no page reload, list restart or
+    full-list detail fetch, and no scroll/filter loss. A late older poll must
+    not restore the old count. An ordinary member sees no admin queue count.
+15. Reject/block group content with a message. Confirm one **Group support**
+    conversation between the group's profiles, with its own channel filter
+    and unread counter. Reading and replying update that counter and the
+    ordinary Chats total. The app-admin Support queue, App support filter and
+    base-profile support counter remain unchanged. Retry delivery: no second
+    message or unread increment. Check the new HU/EN labels after reload.
+16. Leave/remove the test membership and check the remaining group lists and
     workspace choices after reload. An owner cannot be removed through an
     ordinary member action. Restore only the checkpoint's exact snapshots.
 

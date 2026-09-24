@@ -11287,3 +11287,13 @@ browser session or full-flow execution is claimed by this planning update.
 Before launch, prepare the scenario through the versioned checkpoint harness
 and common managed-browser launcher. Local and HTTP lifecycle/isolation
 evidence remain distinct; integration invitation links are server-owned.
+
+2026-09-25 implementation review: group moderation has independent settings,
+write-side persisted pending counts and group-admin authority. App-admin's
+Group category and configurable creation review remain separate. Red queue
+badges propagate through the signal store into the SmartList card, dropdown
+and Groups aggregate without a reload. Group support uses a separate chat
+channel/filter and unread counter. These are explicit checklist oracles, not
+manual PASS claims. Supporting verification: 31 focused backend moderation,
+chat and counter tests passed; existing dev watchers compiled frontend/backend.
+The earlier 15 filter/invitation tests remain supporting evidence only.

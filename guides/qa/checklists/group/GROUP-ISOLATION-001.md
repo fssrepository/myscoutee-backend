@@ -53,10 +53,21 @@ separate local and dev HTTP evidence. No live fixture is implied by this guide.
     and account/device menu behavior remains at its defined global scope.
     Body activity and asset menus follow the active profile. Do not treat the
     deliberately aggregated bell or device setting as a data leak.
-11. Remove the actor's A membership as its administrator. Ordinary refresh
+11. Enable moderation in A and use different settings in B and app-admin.
+    As A's admin, inspect A's queue/settings/counts, then attempt B/global
+    state, list, settings, decision and preview routes with the same identity.
+    Foreign private IDs and missing admin roles are rejected without writes.
+    App-admin's Group category controls the group itself; group admins cannot
+    use it to moderate group creation. Exercise one A decision and configured
+    worker approval: A's stored red badges change, B/global counts do not.
+    Switch groups while a queue/preview request is pending: the old response
+    must not overwrite the new popup or badges. A warning appears only under
+    A's **Group support** channel; Base/B and app-admin support queues cannot
+    read its chat or receive its unread counter.
+12. Remove the actor's A membership as its administrator. Ordinary refresh
     removes A from available workspaces; old A links and saved request IDs no
     longer grant member/private access. Base and B remain usable and unchanged.
-12. Restore the checkpoint snapshots, then compare counts and records with
+13. Restore the checkpoint snapshots, then compare counts and records with
     the initial state. Record exact successful and rejected requests, and close
     only this checkpoint's managed sessions.
 
