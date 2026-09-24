@@ -41,7 +41,7 @@ if(ACTION==='stage') {
    creatorUserId:creator,organizerUserId:creator,admins:[creator],creatorName:creator===owner?'Gallery QA Creator':'Gallery QA Viewer',
    title:'QA Calendar '+name,subtitle:'Disposable calendar export input',status,mode,
    startAtIso:start,endAtIso:end,timeframe:start+' – '+end,frequency:'One-time',
-   cancelled:false,cancellationRefundsComplete:false,paidTermsRefundsPending:false,
+   cancelledAtIso:null,cancelledByUserId:null,cancellationRefundsComplete:false,paidTermsRefundsPending:false,
    refundEligibleUserIds:[],paidTermsChangedBy:null,paidTermsChangedAtIso:null,
    generated:false,eventType:'main',parentEventId:null,subEventsEnabled:false,subEvents:[],subEventDefinitions:[],
    slotsEnabled:false,slotTemplates:[],upcomingSlots:[],expired:false,
@@ -63,7 +63,7 @@ if(ACTION==='stage') {
 }
 if(ACTION==='normalize-invited-control'){const control=(snapshot.calendarControls??[]).filter(x=>x.name==='invited')[0];if(!control)throw Error('Missing isolated invitation control');db.activityMembers.updateOne({_id:'qa-calendar:'+control.id+':'+viewer,status:'invited'},{$set:{status:'I'}});}
 const current=db.manualQaCheckpointSnapshots.findOne({_id:key});
-print(JSON.stringify({controls:current.calendarControls??[],events:db.events.find({sourceId:{$in:(current.calendarControls??[]).map(x=>x.id)}},{sourceId:1,status:1,cancelled:1,startAtIso:1,endAtIso:1}).toArray()}));
+print(JSON.stringify({controls:current.calendarControls??[],events:db.events.find({sourceId:{$in:(current.calendarControls??[]).map(x=>x.id)}},{sourceId:1,status:1,moderationStatus:1,cancelledAtIso:1,startAtIso:1,endAtIso:1}).toArray()}));
 '''.replace('ACTION', json.dumps(action))
 print(subprocess.check_output(['docker', 'exec', 'mongodb', 'sh', '-c',
     'exec mongosh --quiet --username "$MONGO_APP_USERNAME" --password "$MONGO_APP_PASSWORD" --authenticationDatabase demo_db demo_db --eval "$1"',
