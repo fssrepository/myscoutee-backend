@@ -2218,6 +2218,21 @@
           "autoDismissExplanationGuide": false
         }
       ]
+    },
+    "AFFILIATE-LOCAL-001": {
+      "preserveOtherSessions": true,
+      "storageScope": "demo",
+      "entryUrl": "http://localhost/entry",
+      "targetUrl": "http://localhost/entry",
+      "bootstrapEntryConsent": true,
+      "sessions": [
+        {
+          "actor": "Frontend local affiliate browser",
+          "sessionKind": "anonymous",
+          "expectedName": "Clean frontend-local demo baseline",
+          "autoDismissExplanationGuide": true
+        }
+      ]
     }
   }
 }

@@ -1,0 +1,10 @@
+# Use only for the frontend-local browser QA boundary, with the existing
+# docker-compose-dev.yml. Stop frontend-sync before recreating it with this
+# override; restore the dev-only Compose configuration after the checkpoint.
+# Backend services and their retained financial fixtures are unchanged.
+services:
+  frontend-sync:
+    environment:
+      FRONTEND_BUILD_CONFIGURATION: github
+      FRONTEND_SOURCE_DIR: /workspace/frontend/docs
+      NG_BUILD_MAX_WORKERS: "2"
