@@ -6,9 +6,13 @@ import { fileURLToPath } from 'node:url';
 const scriptDirectory = dirname(fileURLToPath(import.meta.url));
 const repoRoot = resolve(scriptDirectory, '../..');
 const frontendRoot = join(repoRoot, 'frontend', 'src', 'assets', 'help-center', 'explanations');
-const serverRoot = join(repoRoot, 'server', 'projects', 'profile', 'src', 'main', 'resources', 'mongo-seed', 'profile', 'help-center-media');
+// Both local and HTTP help revisions resolve seeded images from frontend assets.
+const selectedContexts = new Set(process.argv.slice(2));
 
 const contexts = {
+  'profile-editor': ['profile-editor-basics', 'profile-editor-media', 'profile-editor-details', 'profile-editor-save'],
+  'profile-view': ['profile-view-overview', 'profile-view-photos', 'profile-view-actions'],
+  'event-feedback': ['event-feedback-entry', 'event-feedback-categories', 'event-feedback-save'],
   'home-game': ['affinity', 'affinity-network', 'profile', 'filters', 'history'],
   'activities-rates': ['activity-rate-filter', 'activity-header-controls', 'activity-score-badge', 'activity-fullscreen'],
   chats: ['activity-chat-list', 'activity-chat-card', 'activity-chat-channels', 'activity-chat-message-window', 'activity-chat-tools'],
@@ -153,6 +157,12 @@ function themeFor(section, context) {
 }
 
 function visualBody(lang, context, section, theme) {
+  if (context === 'profile-editor' || context === 'profile-view') {
+    return profileGuideVisual(lang, section);
+  }
+  if (context === 'event-feedback') {
+    return feedbackGuideVisual(lang, section);
+  }
   switch (section) {
     case 'affinity':
       return sliderVisual(theme, lang === 'hu' ? 'Mehet ->' : 'Go ->');
@@ -227,6 +237,43 @@ function visualBody(lang, context, section, theme) {
     default:
       return genericVisual(section, theme);
   }
+}
+
+function profileGuideVisual(lang, section) {
+  const hu = lang === 'hu';
+  if (section.endsWith('-media') || section.endsWith('-photos')) {
+    return `<rect x="140" y="132" width="680" height="316" rx="22" fill="#fff" stroke="#c7dbed" stroke-width="3"/>
+      ${pill(160, 150, 220, 46, hu ? 'Képek' : 'Images', '#edf6ff')}
+      ${[0, 1, 2].map(i => `<rect x="${170 + i * 210}" y="222" width="190" height="176" rx="16" fill="#eaf4ff" stroke="#b9d1ee" stroke-width="3"/>${i < 2 ? personIcon(265 + i * 210, 296, 1.5) : '<text x="685" y="328" text-anchor="middle" font-family="Arial" font-size="60" fill="#245c9c">+</text>'}`).join('')}`;
+  }
+  if (section.endsWith('-details')) {
+    return `${compactRows(160, 160, 620, hu ? ['Érdeklődés', 'Életmód', 'Tapasztalat'] : ['Interests', 'Lifestyle', 'Experience'], ['#fff', '#fff', '#fff'])}
+      ${pill(170, 410, 150, 44, hu ? 'Nyilvános' : 'Public', '#e8f8ef')}${pill(335, 410, 150, 44, hu ? 'Barátok' : 'Friends', '#edf6ff')}${pill(500, 410, 150, 44, hu ? 'Szervezők' : 'Hosts', '#fff4e8')}${pill(665, 410, 130, 44, hu ? 'Privát' : 'Private', '#f0eafa')}`;
+  }
+  if (section.endsWith('-save') || section.endsWith('-actions')) {
+    const saving = section.endsWith('-save');
+    return `<rect x="160" y="152" width="640" height="286" rx="22" fill="#fff" stroke="#c7dbed" stroke-width="3"/>
+      ${pill(180, 172, 300, 52, hu ? (saving ? 'Profil szerkesztése' : 'Profil') : (saving ? 'Edit profile' : 'Profile'), '#edf6ff')}
+      ${saving ? '<circle cx="684" cy="198" r="26" fill="#e8f8ef" stroke="#9ad5b0" stroke-width="3"/><path d="M671 198l9 9 17-19" fill="none" stroke="#17633b" stroke-width="4"/>' : ''}
+      <circle cx="752" cy="198" r="26" fill="#f8fbff" stroke="#c7dbed" stroke-width="3"/><path d="M742 188l20 20m0-20l-20 20" stroke="#245c9c" stroke-width="3"/>
+      ${lines(200, 280, 540, [1, .7, .9])}`;
+  }
+  return `<rect x="140" y="140" width="680" height="304" rx="22" fill="#fff" stroke="#c7dbed" stroke-width="3"/>
+    ${field(170, 172, hu ? 'Név *' : 'Name *', 'Lina')}${field(390, 172, hu ? 'Város *' : 'City *', 'Austin')}${field(610, 172, hu ? 'Magasság *' : 'Height *', '172 cm')}
+    ${field(170, 284, hu ? 'Születésnap *' : 'Birthday *', '1994 / 06 / 12')}${field(390, 284, hu ? 'Nyelvek *' : 'Languages *', hu ? 'Angol' : 'English')}${field(610, 284, hu ? 'Munkahely' : 'Work', 'Designer')}`;
+}
+
+function feedbackGuideVisual(lang, section) {
+  const hu = lang === 'hu';
+  if (section.endsWith('-entry')) {
+    return menuRows(180, 150, 600, hu ? ['Függőben', 'Visszajelezve', 'Eltávolítva', 'Saját események'] : ['Pending', 'Feedbacked', 'Removed', 'Own Events'], ['#fff4e8', '#e8f8ef', '#edf6ff', '#f0eafa']);
+  }
+  if (section.endsWith('-categories')) {
+    return `${compactRows(180, 150, 600, hu ? ['Esemény értékelése', 'Résztvevők értékelése'] : ['Event feedback', 'Participant feedback'], ['#fff', '#fff'])}
+      ${[0, 1, 2].map(i => starIcon(320 + i * 160, 370, 36, '#d99b23')).join('')}`;
+  }
+  return `${pill(210, 160, 540, 60, hu ? 'Visszajelzés beküldése' : 'Submit feedback', '#e8f8ef', '#9ad5b0', '#17633b')}
+    ${compactRows(180, 270, 600, hu ? ['Visszajelezve', 'Összesítés'] : ['Feedbacked', 'Summary'], ['#fff', '#edf6ff'])}`;
 }
 
 function pill(x, y, w, h, text, fill, stroke = '#bed2eb', color = '#1f4778') {
@@ -689,7 +736,7 @@ function flowStep(x, text, w = 190, h = 112) {
 
 function writeSvg(lang, context, section) {
   const svg = svgFor(lang, context, section);
-  for (const root of [frontendRoot, serverRoot]) {
+  for (const root of [frontendRoot]) {
     const dir = join(root, lang, context);
     mkdirSync(dir, { recursive: true });
     const svgPath = join(dir, `${section}.svg`);
@@ -699,6 +746,7 @@ function writeSvg(lang, context, section) {
 
 for (const lang of ['en', 'hu']) {
   for (const [context, sections] of Object.entries(contexts)) {
+    if (selectedContexts.size && !selectedContexts.has(context)) continue;
     for (const section of sections) {
       writeSvg(lang, context, section);
     }
