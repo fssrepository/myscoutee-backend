@@ -1,5 +1,11 @@
 [
   {
+    "_id": "i18n-message-en-navigator-community",
+    "key": "navigator.community",
+    "lang": "en",
+    "value": "Community"
+  },
+  {
     "_id": "i18n-message-en-payment-history-refund-preview-changed-terms",
     "key": "payment.history.refund.preview.changed.terms",
     "lang": "en",
@@ -22822,6 +22828,12 @@
     "key": "moderation.category.group",
     "lang": "en",
     "value": "Groups"
+  },
+  {
+    "_id": "i18n-message-hu-navigator-community",
+    "key": "navigator.community",
+    "lang": "hu",
+    "value": "Közösség"
   },
   {
     "_id": "i18n-message-hu-payment-history-refund-preview-changed-terms",
