@@ -10,6 +10,14 @@ import org.springframework.data.mongodb.repository.Query;
 import com.raxim.myscoutee.profile.data.document.Users;
 
 public interface UsersRepository extends MongoRepository<Users, String> {
+    @Query("{ 'userId': ?0, 'workspaceGroupId': null }")
+    @org.springframework.data.mongodb.repository.Update("{ '$set': { 'activeWorkspaceGroupId': ?1 } }")
+    long updateActiveWorkspace(String accountId, String groupId);
+
+    @Query("{ 'userId': ?0, 'activeWorkspaceGroupId': ?1 }")
+    @org.springframework.data.mongodb.repository.Update("{ '$unset': { 'activeWorkspaceGroupId': '' } }")
+    long clearActiveWorkspace(String accountId, String groupId);
+
     Optional<Users> findByWorkspaceGroupIdAndAccountUserId(String workspaceGroupId, String accountUserId);
     List<Users> findByAccountUserId(String accountUserId);
     List<Users> findByWorkspaceGroupId(String workspaceGroupId);

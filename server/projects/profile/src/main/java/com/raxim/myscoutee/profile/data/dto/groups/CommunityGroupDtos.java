@@ -37,8 +37,7 @@ public final class CommunityGroupDtos {
     public record Page(List<Summary> items, long total, String nextCursor, Map<String, Long> context) {}
     public record Workspace(String groupId, String profileId, String name, String role, long activity, Policy policy,
             long moderationPending, long moderationQueueRevision) {}
-    public record WorkspaceSelection(Workspace workspace, com.raxim.myscoutee.profile.data.dto.auth.AuthDtos.UserDto profile) {}
-    public record SelectWorkspace(String userId, String groupId) {}
+    public record WorkspaceSelection(Workspace workspace, com.raxim.myscoutee.profile.data.dto.auth.AuthDtos.UserDto profile, com.raxim.myscoutee.profile.data.dto.auth.AuthDtos.UserDto accountProfile) {}
     public record KnownGroup(String id, String revision) {}
     public record SyncRequest(String userId, String bucket, String category, int limit, List<KnownGroup> knownItems, String tailId) {}
     public record SyncResponse(List<Summary> upserts, List<String> removedIds, long total) {}

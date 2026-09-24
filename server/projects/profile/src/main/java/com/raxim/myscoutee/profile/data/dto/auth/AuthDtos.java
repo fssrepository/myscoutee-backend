@@ -454,7 +454,13 @@ public final class AuthDtos {
             ProfileExtDto profileExt,
             Integer filterCount,
             UserGameFilterPreferencesDto filterPreferences,
-            UserMenuCountersDto counterOverrides) {
+            UserMenuCountersDto counterOverrides,
+            com.raxim.myscoutee.profile.data.dto.groups.CommunityGroupDtos.Workspace workspace,
+            UserDto accountProfile) {
+        public ProfileExtByIdResponseDto(ProfileExtDto profileExt, Integer filterCount,
+                UserGameFilterPreferencesDto filterPreferences, UserMenuCountersDto counterOverrides) {
+            this(profileExt, filterCount, filterPreferences, counterOverrides, null, null);
+        }
     }
 
     public record UserByIdResponseDto(

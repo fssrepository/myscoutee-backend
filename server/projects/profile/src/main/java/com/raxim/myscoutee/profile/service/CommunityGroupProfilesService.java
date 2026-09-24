@@ -47,6 +47,17 @@ public class CommunityGroupProfilesService {
         return users.findByWorkspaceGroupIdAndAccountUserId(groupId, accountId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.CONFLICT));
     }
+    public Users activate(Users account, String groupId) {
+        String selectedId = groupId == null || groupId.isBlank() ? null : groupId;
+        Users selected = selectedId == null ? account : select(account.getUserId(), selectedId);
+        users.updateActiveWorkspace(account.getUserId(), selectedId);
+        account.setActiveWorkspaceGroupId(selectedId);
+        return selected;
+    }
+    public Users current(Users account) {
+        String groupId = account.getActiveWorkspaceGroupId();
+        return groupId == null || groupId.isBlank() ? account : select(account.getUserId(), groupId);
+    }
     public Map<String, Users> profilesByGroup(String accountId) {
         var result = new HashMap<String, Users>();
         users.findByAccountUserId(accountId).forEach(user -> result.put(user.getWorkspaceGroupId(), user));

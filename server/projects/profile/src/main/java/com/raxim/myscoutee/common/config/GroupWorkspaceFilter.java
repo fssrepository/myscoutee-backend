@@ -12,22 +12,31 @@ import jakarta.servlet.*;
 import jakarta.servlet.http.*;
 
 public class GroupWorkspaceFilter extends OncePerRequestFilter {
-    public static final String HEADER = "X-MyScoutee-Group-Id";
     private final ObjectProvider<CommunityGroupProfilesService> profiles;
     public GroupWorkspaceFilter(ObjectProvider<CommunityGroupProfilesService> profiles) { this.profiles = profiles; }
     @Override protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain)
             throws ServletException, IOException {
         String path = request.getServletPath();
         if (path.matches("/(?:api/)?(?:groups|notifications|i18n|admin|operator|integrations|privacy|help|terms|explanations)(?:/.*)?")
-                || path.matches("/(?:api/)?auth/me/(?:partner-invite/claim|logout|delete|feedback)")) { chain.doFilter(request, response); return; }
-        String groupId = request.getHeader(HEADER);
-        if (groupId == null || groupId.isBlank()) { chain.doFilter(request, response); return; }
+                || path.matches("/(?:api/)?auth/me/(?:partner-invite/claim|logout|delete|feedback)")
+                || path.matches("/(?:api/)?auth/(?!me(?:/|$)).*")) { chain.doFilter(request, response); return; }
         var original = SecurityContextHolder.getContext().getAuthentication();
         if (original == null || !(original.getPrincipal() instanceof FirebasePrincipal account)) {
-            response.sendError(401); return;
+            chain.doFilter(request, response); return;
         }
         try {
-            var profile = profiles.getObject().select(account.getUserId(), groupId);
+            if (account.getUser() == null) { chain.doFilter(request, response); return; }
+            // Only the full profile load may change the saved selection. Absence is read-only;
+            // an explicitly empty parameter returns to the account's base profile.
+            boolean selecting = "GET".equals(request.getMethod())
+                    && path.matches("/(?:api/)?auth/me/profile-ext")
+                    && request.getParameterMap().containsKey("groupId");
+            String requestedGroup = selecting ? request.getParameter("groupId") : null;
+            var profile = selecting
+                    ? (requestedGroup == null || requestedGroup.isBlank() ? account.getUser()
+                        : profiles.getObject().select(account.getUserId(), requestedGroup))
+                    : profiles.getObject().current(account.getUser());
+            if (profile == account.getUser()) { chain.doFilter(request, response); return; }
             var principal = new FirebasePrincipal(profile.getUserId(), account.getEmail(),
                     original.getAuthorities().stream().map(a -> a.getAuthority()).toList(), profile, account.isEmailVerified());
             SecurityContextHolder.getContext().setAuthentication(new FirebaseAuthenticationToken(principal,

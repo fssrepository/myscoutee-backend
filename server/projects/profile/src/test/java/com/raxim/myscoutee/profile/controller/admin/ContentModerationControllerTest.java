@@ -29,7 +29,7 @@ class ContentModerationControllerTest {
         var profile = mock(UserDto.class);
         when(profile.id()).thenReturn("profile"); when(profile.name()).thenReturn("Moderator");
         when(profile.initials()).thenReturn("MO"); when(profile.images()).thenReturn(List.of());
-        when(groups.select(account, groupId)).thenReturn(new WorkspaceSelection(null, profile));
+        when(groups.select(account, groupId)).thenReturn(new WorkspaceSelection(null, profile, null));
     }
     @Test void groupModeratorUsesGroupAuthorityAndScopedStateInsteadOfAppAdminPrivileges() {
         member("A");

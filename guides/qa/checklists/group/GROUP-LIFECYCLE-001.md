@@ -63,6 +63,14 @@ or claim that a fixture or browser session has already been prepared.
     choices use their contextual colors. Verify avatar/name/location spacing
     below the toolbar and spacing between body menu sections; smoke normal,
     admin and operator layouts where those roles expose the menu.
+    Selection uses `GET /auth/me/profile-ext?groupId=<id>`; an explicit empty
+    `groupId` selects Base. The server/local repository stores the choice.
+    Reload without the parameter restores it without writing a new selection.
+    While the shared profile load is pending, the selector is disabled and the
+    home page follows that same load state. On error or the configured 3-second
+    HTTP timeout, the previous selection/profile stays displayed, the selector
+    re-enables, and selecting the same target again retries. Confirm that a late
+    response from the failed attempt cannot replace a newer successful choice.
 12. Compare group profile details with the base profile. Required fields follow
     the saved policy. Organizer/member role actions use their normal authority;
     an ordinary member cannot approve others or edit group policy.

@@ -30,8 +30,11 @@ separate local and dev HTTP evidence. No live fixture is implied by this guide.
 4. Read and mutate the recorded A asset/event/member/chat IDs through the real
    HTTP routes while selecting B or using the non-member account. Existing
    authority rules must reject cross-workspace private access (403/404 as
-   applicable), with no state change. Repeat with a forged workspace header;
-   pending membership alone grants no workspace access. A permitted public
+   applicable), with no state change. Normal requests use the saved account
+   selection; a forged `X-MyScoutee-Group-Id` header or a `groupId` parameter on
+   other routes cannot override it. On the profile-load route, attempt selecting
+   a pending-only or unrelated group: reject it without changing the saved
+   selection. Pending membership alone grants no workspace access. A permitted public
    projection is not permission to read private data or mutate the owner.
 5. Rate the A control using the home cards, then inspect the stored rating and
    A card stack/counter. Base and B retain their own ratings, exclusions,

@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 import com.raxim.myscoutee.profile.data.document.*;
 import com.raxim.myscoutee.profile.data.dto.groups.CommunityGroupDtos.*;
+import com.raxim.myscoutee.profile.data.dto.auth.AuthDtos.ProfileExtByIdResponseDto;
 import com.raxim.myscoutee.profile.data.dto.activities.ActivityMembersDtos.*;
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.*;
 import com.raxim.myscoutee.profile.repository.*;
@@ -55,11 +56,23 @@ public class CommunityGroupsService {
                     isAdmin(memberships.get(g.id())) && g.moderationQueueRevision() != null ? g.moderationQueueRevision() : 0))
                 .sorted(Comparator.comparing(Workspace::name).thenComparing(Workspace::groupId)).toList();
     }
+    public ProfileExtByIdResponseDto completeProfileLoad(
+            Users account, ProfileExtByIdResponseDto response,
+            String requestedGroup) {
+        var context = select(account, CommunityGroupProfilesService.currentGroupId());
+        var result = new ProfileExtByIdResponseDto(
+                response.profileExt(), response.filterCount(), response.filterPreferences(), response.counterOverrides(),
+                context.workspace(), context.accountProfile());
+        // A failed profile load must not replace the saved selection.
+        if (requestedGroup != null) groupProfiles.activate(account, requestedGroup);
+        return result;
+    }
+    /** Read-only profile resolution, also used by group moderation. */
     public WorkspaceSelection select(Users actor, String id) {
-        if (id == null || id.isBlank()) return new WorkspaceSelection(null, profiles.toUserDto(actor));
+        if (id == null || id.isBlank()) return new WorkspaceSelection(null, profiles.toUserDto(actor), null);
         var selected = groupProfiles.select(actor.getUserId(), id);
         var descriptor = workspaces(actor).stream().filter(w -> w.groupId().equals(id)).findFirst().orElseThrow(() -> error(HttpStatus.FORBIDDEN));
-        return new WorkspaceSelection(descriptor, profiles.toUserDto(selected));
+        return new WorkspaceSelection(descriptor, profiles.toUserDto(selected), profiles.toUserDto(actor));
     }
     public Group detail(Users actor, String id) {
         var group = visible(actor, id);
@@ -223,11 +236,15 @@ public class CommunityGroupsService {
         invite(owner, invite.eventId(), List.of(actorUserId));
         var member = membership(invite.eventId(), actorUserId);
         if (member == null) throw error(HttpStatus.CONFLICT);
-        if ("accepted".equals(member.getStatus())) return;
+        if ("accepted".equals(member.getStatus())) {
+            groupProfiles.activate(recipient, invite.eventId());
+            return;
+        }
         var acceptingActor = "invite".equals(member.getRequestKind()) ? recipient : owner;
         action(acceptingActor, new ActivityMemberActionRequestDto(
                 new ActivityMemberOwnerRefDto(OWNER_TYPE, invite.eventId()),
                 acceptingActor.getUserId(), actorUserId, "accept", null));
+        groupProfiles.activate(recipient, invite.eventId());
     }
     public ActivityMemberActionResponseDto action(Users actor, ActivityMemberActionRequestDto request) {
         String id = request.owner().ownerId(); var group = visible(actor, id);
@@ -262,6 +279,7 @@ public class CommunityGroupsService {
         }
         target.setUpdatedDate(Instant.now().toString()); target.setActionAtIso(target.getUpdatedDate());
         memberships.save(target);
+        if ("deleted".equals(target.getStatus())) users.clearActiveWorkspace(target.getUserId(), id);
         return new ActivityMemberActionResponseDto(self && "deleted".equals(target.getStatus()) ? List.of() : roster(actor, id, false), null, dto(actor, group, members(id)));
     }
     private CommunityGroup visible(Users actor, String id) {

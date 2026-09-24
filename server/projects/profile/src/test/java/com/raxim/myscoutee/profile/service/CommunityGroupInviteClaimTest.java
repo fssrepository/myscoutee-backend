@@ -61,6 +61,7 @@ class CommunityGroupInviteClaimTest {
         assertThat(rows.get("recipient").getRole()).isEqualTo("Member");
         assertThat(rows.get("recipient").getRequestKind()).isNull();
         verify(profiles).admit(group, "recipient");
+        verify(profiles, atLeastOnce()).activate(argThat(user -> "recipient".equals(user.getUserId())), eq("group"));
     }
 
     @Test void anExistingJoinRequestIsApprovedUsingTheInvitingAdministratorsAuthority() {
@@ -70,6 +71,7 @@ class CommunityGroupInviteClaimTest {
 
         assertThat(rows.get("recipient").getStatus()).isEqualTo("accepted");
         verify(profiles).admit(group, "recipient");
+        verify(profiles, atLeastOnce()).activate(argThat(user -> "recipient".equals(user.getUserId())), eq("group"));
     }
 
     @Test void unclaimedOrOtherAccountLinksCannotAdmitAnyone() {
@@ -79,6 +81,34 @@ class CommunityGroupInviteClaimTest {
         }
         assertThat(rows).containsOnlyKeys("owner");
         verify(profiles, never()).admit(any(), anyString());
+    }
+
+    @Test void leavingTheActiveGroupClearsOnlyThatSavedSelection() {
+        service.claimIntegrationInvite(invite("recipient"), "recipient");
+        var recipient = users.findByUserId("recipient").orElseThrow();
+        service.action(recipient, new com.raxim.myscoutee.profile.data.dto.activities.ActivityMembersDtos.ActivityMemberActionRequestDto(
+                new com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.ActivityMemberOwnerRefDto("community", "group"),
+                "recipient", "recipient", "remove", null));
+        verify(users).clearActiveWorkspace("recipient", "group");
+    }
+
+    @Test void ordinaryProfileLoadDoesNotWriteButExplicitBaseSelectionDoes() {
+        var account = users.findByUserId("recipient").orElseThrow();
+        var response = new com.raxim.myscoutee.profile.data.dto.auth.AuthDtos.ProfileExtByIdResponseDto(null, 0, null, null);
+        service.completeProfileLoad(account, response, null);
+        verify(profiles, never()).activate(any(), any());
+        service.completeProfileLoad(account, response, "");
+        verify(profiles).activate(account, "");
+    }
+
+    @Test void failedProfileContextDoesNotCommitSelection() {
+        var account = users.findByUserId("recipient").orElseThrow();
+        var response = new com.raxim.myscoutee.profile.data.dto.auth.AuthDtos.ProfileExtByIdResponseDto(null, 0, null, null);
+        var failing = spy(service);
+        doThrow(new IllegalStateException("profile load failed")).when(failing).select(account, null);
+        assertThatThrownBy(() -> failing.completeProfileLoad(account, response, "group"))
+                .isInstanceOf(IllegalStateException.class);
+        verify(profiles, never()).activate(any(), any());
     }
 
     private IntegrationParticipantInvite invite(String claimed) {

@@ -19,8 +19,6 @@ public class CommunityGroupsController {
     public SyncResponse sync(@RequestBody SyncRequest request) { return groups.sync(groups.actor(request.userId()), request); }
     @GetMapping("/workspaces")
     public java.util.List<Workspace> workspaces(@RequestParam String userId) { return groups.workspaces(groups.actor(userId)); }
-    @PostMapping("/workspaces/select")
-    public WorkspaceSelection select(@RequestBody SelectWorkspace request) { return groups.select(groups.actor(request.userId()), request.groupId()); }
     @GetMapping("/{id}")
     public Group detail(@RequestParam String userId, @PathVariable String id) { return groups.detail(groups.actor(userId), id); }
     @PostMapping

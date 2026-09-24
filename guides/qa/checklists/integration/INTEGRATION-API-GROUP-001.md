@@ -25,7 +25,10 @@ the links directly and sends no unsolicited messages.
    onboarding flow. The return URL retains the invitation through every gate.
 4. After registration, verify that the external participant ID is bound to that
    account, its `activityMembers` community membership is accepted, and exactly
-   one workspace profile exists. The group is selected automatically in the
+   one workspace profile exists. The claim persists `activeWorkspaceGroupId`
+   on the base account. A subsequent full profile load without a selection
+   parameter, including after reload/login, returns that workspace. The group
+   is selected automatically in the
    header and its profile/body menus are active.
 5. Reopen the same URL as that account: membership/profile/participant binding
    are not duplicated. An explicitly cleared home gender filter is preserved.
