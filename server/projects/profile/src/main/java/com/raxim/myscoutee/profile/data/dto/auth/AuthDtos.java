@@ -135,7 +135,12 @@ public final class AuthDtos {
             Integer group,
             Integer service,
             Integer appSupport,
-            UserSupportCaseCountersDto supportCases) {
+            UserSupportCaseCountersDto supportCases,
+            Integer groupSupport) {
+        public UserChatCountersDto(Integer all, Integer event, Integer subEvent, Integer group, Integer service,
+                Integer appSupport, UserSupportCaseCountersDto supportCases) {
+            this(all, event, subEvent, group, service, appSupport, supportCases, 0);
+        }
         public UserChatCountersDto(
                 Integer all,
                 Integer event,

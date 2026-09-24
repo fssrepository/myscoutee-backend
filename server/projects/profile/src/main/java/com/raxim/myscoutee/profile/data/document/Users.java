@@ -623,7 +623,12 @@ public class Users {
             Integer group,
             Integer service,
             Integer appSupport,
-            UserSupportCaseCountersRecord supportCases) {
+            UserSupportCaseCountersRecord supportCases,
+            Integer groupSupport) {
+        public UserChatCountersRecord(Integer all, Integer event, Integer subEvent, Integer group, Integer service,
+                Integer appSupport, UserSupportCaseCountersRecord supportCases) {
+            this(all, event, subEvent, group, service, appSupport, supportCases, 0);
+        }
         public UserChatCountersRecord(
                 Integer all,
                 Integer event,

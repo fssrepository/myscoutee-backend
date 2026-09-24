@@ -717,6 +717,16 @@ class ChatServiceTest {
     }
 
     @Test
+    void groupSupportFilterQueriesOnlyTheSelectedProfilesGroupSupportChannel() {
+        when(homeUserProfileService.resolveSelectedUserId("viewer")).thenReturn("viewer");
+        stubEmptyMenuCounters("viewer");
+        service.queryChatPage("viewer", "groupSupport", "date", "desc", null, null, 10, null, null, false, null);
+        ArgumentCaptor<Query> query = ArgumentCaptor.forClass(Query.class);
+        verify(mongoTemplate).find(query.capture(), eq(Chat.class));
+        assertThat(query.getValue().getQueryObject().toJson()).contains("groupSupport", "viewer").doesNotContain("appSupport");
+    }
+
+    @Test
     void queryChatPageReturnsMongoNavigationContextForGroupedChat() {
         Chat groupChat = chat("chat-group", "viewer", 0, "2026-03-01T09:48:00", "groupSubEvent");
         groupChat.setTitle("Group B · Group Channel");
@@ -844,6 +854,51 @@ class ChatServiceTest {
                         && chatId.equals(event.chatId())
                         && "admin".equals(event.senderId())));
         verify(homeUserProfileService).evictUserReadCaches(java.util.Set.of("target", "admin"));
+    }
+
+    @Test
+    void groupModerationWarningUsesWorkspaceProfilesWithoutAppSupportAccessOrCounters() {
+        String chatId = "c-moderation-group-target";
+        Users target = user("target", "Target", "TA"), moderator = user("moderator", "Moderator", "MO");
+        target.setWorkspaceGroupId("A"); moderator.setWorkspaceGroupId("A");
+        when(usersRepository.findByUserId("target")).thenReturn(Optional.of(target));
+        when(usersRepository.findByUserId("moderator")).thenReturn(Optional.of(moderator));
+        when(chatsRepository.saveAll(anyList())).thenAnswer(call -> call.getArgument(0));
+        when(chatMessagesRepository.save(any(ChatMessage.class))).thenAnswer(call -> call.getArgument(0));
+        when(mongoTemplate.bulkOps(BulkOperations.BulkMode.UNORDERED, Chat.class)).thenReturn(bulkOperations);
+        when(mongoTemplate.bulkOps(BulkOperations.BulkMode.UNORDERED, Users.class)).thenReturn(userCounterBulkOperations);
+        service.sendAdminSupportMessage("target", "moderator", "Moderator", "MO", "Please replace this image.", "warned");
+        ArgumentCaptor<List<Chat>> definitions = ArgumentCaptor.forClass(List.class);
+        verify(chatsRepository).saveAll(definitions.capture());
+        assertThat(definitions.getValue()).allSatisfy(chat -> {
+            assertThat(chat.getChatId()).isEqualTo(chatId);
+            assertThat(chat.getChannelType()).isEqualTo("groupSupport");
+            assertThat(chat.getSupportCase()).isNull();
+            assertThat(chat.getOwnerId()).isNull();
+            assertThat(chat.getMemberIds()).containsExactly("target", "moderator");
+        });
+        var access = new com.raxim.myscoutee.profile.security.ChatPolicyFacts(chatsRepository, usersRepository, adminMenuCounterService);
+        when(chatsRepository.findByChatId(chatId)).thenReturn(definitions.getValue());
+        assertThat(access.canAccessChat(chatId, "app-admin")).isFalse();
+        assertThat(access.canAccessChat(chatId, "other-group-profile")).isFalse();
+        assertThat(access.canAccessChat(chatId, "target")).isTrue();
+        ArgumentCaptor<Update> updates = ArgumentCaptor.forClass(Update.class);
+        verify(userCounterBulkOperations).updateOne(any(Query.class), updates.capture());
+        assertThat(updates.getValue().getUpdateObject().get("$inc", Document.class))
+                .containsKey("activities.chat.all").containsEntry("activities.chat.groupSupport", 1).doesNotContainKey("activities.chat.appSupport");
+        verify(userActivityCountersService, never()).refreshSupportCaseCountersForAdmins();
+    }
+
+    @Test
+    void groupModerationWarningRejectsModeratorFromAnotherWorkspaceBeforeWriting() {
+        Users target = user("target", "Target", "TA"), moderator = user("moderator", "Moderator", "MO");
+        target.setWorkspaceGroupId("A"); moderator.setWorkspaceGroupId("B");
+        when(usersRepository.findByUserId("target")).thenReturn(Optional.of(target));
+        when(usersRepository.findByUserId("moderator")).thenReturn(Optional.of(moderator));
+        assertThatThrownBy(() -> service.sendAdminSupportMessage("target", "moderator", "Moderator", "MO", "Warning", "warned"))
+                .isInstanceOf(org.springframework.web.server.ResponseStatusException.class);
+        verify(chatsRepository, never()).saveAll(anyList());
+        verify(chatMessagesRepository, never()).save(any(ChatMessage.class));
     }
 
     @Test

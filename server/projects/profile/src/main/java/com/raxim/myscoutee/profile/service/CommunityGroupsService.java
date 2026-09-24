@@ -49,7 +49,10 @@ public class CommunityGroupsService {
         var profiles = groupProfiles.profilesByGroup(actor.getUserId());
         return groups.findByIdIn(memberships.keySet()).stream().filter(g -> g.policy().workspace() && profiles.containsKey(g.id()))
                 .map(g -> new Workspace(g.id(), profiles.get(g.id()).getUserId(), g.name(), memberships.get(g.id()).getRole(),
-                    com.raxim.myscoutee.profile.service.mapper.CommunityGroupProfileMapper.attention(profiles.get(g.id())), g.policy()))
+                    com.raxim.myscoutee.profile.service.mapper.CommunityGroupProfileMapper.attention(profiles.get(g.id()))
+                        + (isAdmin(memberships.get(g.id())) ? g.pendingModerationCount() : 0), g.policy(),
+                    isAdmin(memberships.get(g.id())) ? g.pendingModerationCount() : 0,
+                    isAdmin(memberships.get(g.id())) && g.moderationQueueRevision() != null ? g.moderationQueueRevision() : 0))
                 .sorted(Comparator.comparing(Workspace::name).thenComparing(Workspace::groupId)).toList();
     }
     public WorkspaceSelection select(Users actor, String id) {
@@ -86,9 +89,10 @@ public class CommunityGroupsService {
                         membersByGroup.getOrDefault(g.id(), List.of()), com.raxim.myscoutee.profile.service.mapper.CommunityGroupProfileMapper.attention(profileByGroup.get(g.id()))))
                 .sorted(Comparator.comparingDouble((Group g) -> g.distanceKm() == null ? Double.MAX_VALUE : Math.ceil(g.distanceKm() / 5))
                         .thenComparing(Group::createdAtIso, Comparator.reverseOrder()).thenComparing(Group::id)).toList();
-        return new GroupSnapshot(rows, rows.size(),
-                Map.of("hosting", own.stream().filter(this::isAdmin).mapToLong(m -> com.raxim.myscoutee.profile.service.mapper.CommunityGroupProfileMapper.attention(profileByGroup.get(m.getOwnerId()))).sum(),
-                    "participation", own.stream().filter(m -> !isAdmin(m)).mapToLong(m -> com.raxim.myscoutee.profile.service.mapper.CommunityGroupProfileMapper.attention(profileByGroup.get(m.getOwnerId()))).sum()));
+        var workspaceCounters = workspaces(actor);
+        return new GroupSnapshot(rows, rows.size(), Map.of(
+                "hosting", workspaceCounters.stream().filter(w -> "Admin".equals(w.role())).mapToLong(Workspace::activity).sum(),
+                "participation", workspaceCounters.stream().filter(w -> !"Admin".equals(w.role())).mapToLong(Workspace::activity).sum()));
     }
     public Page page(Users actor, String bucket, String category, int pageSize, String cursor) {
         var snapshot = snapshot(actor, bucket, category);
@@ -128,7 +132,8 @@ public class CommunityGroupsService {
                 request.visibility(), request.hideMembers(), new CommunityGroup.Policy(policy.workspace(), policy.enabled(),
                     policy.requiredFields().stream().distinct().toList()), existing == null ? now : existing.createdAtIso(), now,
                     existing == null ? null : existing.version(), existing == null ? null : existing.moderationStatus(),
-                    existing == null ? null : existing.moderationVersion());
+                    existing == null ? null : existing.moderationVersion(),
+                    existing == null ? null : existing.moderationPending(), existing == null ? null : existing.moderationQueueRevision());
         group = groups.save(group);
         if (existing == null) memberships.save(newMember(group, actor.getUserId(), "Admin", "accepted", null, actor.getUserId()));
         groupProfiles.applyPolicy(group);

@@ -528,6 +528,12 @@
     "value": "Application feedback"
   },
   {
+    "_id": "i18n-message-en-group-support",
+    "key": "group.support",
+    "lang": "en",
+    "value": "Group support"
+  },
+  {
     "_id": "i18n-message-en-app-support",
     "key": "app.support",
     "lang": "en",
@@ -23356,6 +23362,12 @@
     "key": "application.feedback",
     "lang": "hu",
     "value": "Alkalmazás-visszajelzés"
+  },
+  {
+    "_id": "i18n-message-hu-group-support",
+    "key": "group.support",
+    "lang": "hu",
+    "value": "Csoport support"
   },
   {
     "_id": "i18n-message-hu-app-support",

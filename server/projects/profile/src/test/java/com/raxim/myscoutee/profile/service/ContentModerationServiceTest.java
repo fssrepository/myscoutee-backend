@@ -17,21 +17,74 @@ class ContentModerationServiceTest {
     final ChatService chat = mock(ChatService.class);
     final ContentModerationService service = new ContentModerationService(repository, mongo, chat, mock(UserActivityCountersService.class));
     final Map<String, Item> items = new HashMap<>();
+    final Map<String, State> groupStates = new HashMap<>();
     State state = new State("global", 0, new Settings(true, false, 0, List.of("asset", "event", "feed")), Map.of(), List.of());
     final AdminUserDto admin = new AdminUserDto("admin", "Admin", "", "", "", "", List.of());
     @BeforeEach void persistence() {
         when(repository.state()).thenAnswer(call -> state);
+        when(repository.state(anyString())).thenAnswer(call -> groupStates.computeIfAbsent(call.getArgument(0),
+                id -> new State("group:" + id, 0, new Settings(false, false, 0, List.of("asset", "event", "feed")), Map.of(), List.of())));
+        when(repository.states()).thenAnswer(call -> new ArrayList<>(groupStates.values()));
         when(repository.item(anyString())).thenAnswer(call -> items.get(call.getArgument(0)));
         when(repository.withheld(anyInt())).thenAnswer(call -> items.values().stream()
                 .filter(item -> !"accepted".equals(item.status())).limit(call.getArgument(0, Integer.class)).toList());
         doAnswer(call -> { Item item = call.getArgument(0); items.put(item.id(), item); return null; }).when(repository).saveItem(any());
         when(repository.compareAndSet(any(), any(), any(), any())).thenAnswer(call -> {
             State before = call.getArgument(0);
+            if (before.id().startsWith("group:")) {
+                String groupId = before.id().substring(6);
+                if (before.revision() != groupStates.get(groupId).revision()) return false;
+                groupStates.put(groupId, new State(before.id(), before.revision() + 1, call.getArgument(1), call.getArgument(2), call.getArgument(3)));
+                return true;
+            }
             if (before.revision() != state.revision()) return false;
             state = new State("global", before.revision() + 1, call.getArgument(1), call.getArgument(2), call.getArgument(3)); return true;
         });
     }
     Item submit() { return service.register("feed", "post", "owner", "Photo", "photo.jpg"); }
+    @Test void groupContentUsesItsOwnSettingsCountersAndDecisionScopeWhileGroupCreationRemainsGlobal() {
+        var owner = new com.raxim.myscoutee.profile.data.document.Users();
+        owner.setUserId("workspace-profile"); owner.setMongoId("different-storage-id"); owner.setWorkspaceGroupId("A");
+        when(mongo.findOne(any(org.springframework.data.mongodb.core.query.Query.class), eq(com.raxim.myscoutee.profile.data.document.Users.class)))
+                .thenAnswer(call -> "workspace-profile".equals(call.getArgument(0, org.springframework.data.mongodb.core.query.Query.class).getQueryObject().get("userId")) ? owner : null);
+        service.settings(new SaveSettings("moderator", 0, new Settings(true, false, 0, List.of("feed"))), "A");
+        Item scoped = service.register("feed", "scoped-post", "workspace-profile", "Photo", "");
+        assertEquals("A", scoped.workspaceGroupId());
+        assertEquals(1, service.snapshot("A").pendingCount());
+        assertEquals(0, service.snapshot().pendingCount());
+        assertEquals(0, service.snapshot("B").pendingCount());
+        assertFalse(service.snapshot("B").settings().enabled());
+        assertThrows(ResponseStatusException.class, () -> service.scopedItem(scoped.id(), null));
+        assertThrows(ResponseStatusException.class, () -> service.scopedItem(scoped.id(), "B"));
+        assertEquals(scoped, service.scopedItem(scoped.id(), "A"));
+        service.decide(scoped.id(), new Decision("moderator", "approve-group", 1, "accepted", ""), admin);
+        service.decide(scoped.id(), new Decision("moderator", "approve-group", 1, "accepted", ""), admin);
+        var updates = org.mockito.ArgumentCaptor.forClass(org.springframework.data.mongodb.core.query.Update.class);
+        verify(mongo, atLeastOnce()).updateFirst(any(org.springframework.data.mongodb.core.query.Query.class), updates.capture(), eq("communityGroups"));
+        var pendingWrites = updates.getAllValues().stream().map(update -> update.getUpdateObject().get("$set", org.bson.Document.class))
+                .filter(update -> update.containsKey("moderationPending")).map(update -> update.get("moderationPending")).toList();
+        assertEquals(List.of(1L, 0L), pendingWrites);
+        assertEquals(1, service.snapshot("A").counts().get("feed").get("accepted"));
+        assertEquals(0, service.snapshot().pendingCount());
+        assertThrows(ResponseStatusException.class, () -> service.page("group", "under-review", null, 20, "A"));
+        assertThrows(ResponseStatusException.class, () -> service.settings(new SaveSettings("moderator", 0,
+                new Settings(true, false, 0, List.of("group"))), "B"));
+        Item group = service.register("group", "created-group", "workspace-profile", "Group", "");
+        assertNull(group.workspaceGroupId());
+        assertEquals("under-review", group.status());
+        assertEquals(1, service.snapshot().pendingCount());
+    }
+    @Test void workerUsesEachGroupsOwnApprovalPolicy() {
+        var owner = new com.raxim.myscoutee.profile.data.document.Users(); owner.setWorkspaceGroupId("A");
+        when(mongo.findOne(any(org.springframework.data.mongodb.core.query.Query.class), eq(com.raxim.myscoutee.profile.data.document.Users.class))).thenReturn(owner);
+        service.settings(new SaveSettings("moderator", 0, new Settings(true, true, 5, List.of("feed"))), "A");
+        Item item = service.register("feed", "scoped", "profile", "Photo", "");
+        when(repository.due(any(), anyString(), eq(100), eq("A"))).thenReturn(List.of(item));
+        assertEquals(1, service.approveDue());
+        assertEquals("accepted", service.scopedItem(item.id(), "A").status());
+        assertEquals(1, service.snapshot("A").counts().get("feed").get("accepted"));
+        assertTrue(service.snapshot().counts().isEmpty());
+    }
     @Test void disabledModerationJobReleasesEveryCategoryAndBucketWithoutAutoApprovalOrDelay() {
         service.register("event", "pending", "owner", "Event", "");
         Item asset = service.register("asset", "rejected", "owner", "Asset", "");

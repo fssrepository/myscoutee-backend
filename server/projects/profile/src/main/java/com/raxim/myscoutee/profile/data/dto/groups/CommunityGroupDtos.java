@@ -13,7 +13,7 @@ public final class CommunityGroupDtos {
             boolean hideMembers, Policy policy, String createdAtIso, String updatedAtIso,
             Long version, String role, String membershipStatus, String requestKind,
             boolean organizerOnly, int acceptedMembers, int pendingMembers, long activity,
-            Double distanceKm, String moderationStatus) {
+            Double distanceKm, String moderationStatus, long moderationPending, long moderationQueueRevision) {
         @com.fasterxml.jackson.annotation.JsonProperty
         public String revision() {
             try { return java.util.HexFormat.of().formatHex(java.security.MessageDigest.getInstance("SHA-256")
@@ -25,17 +25,18 @@ public final class CommunityGroupDtos {
             String name, String imageUrl, String category, String visibility, boolean hideMembers,
             String createdAtIso, String updatedAtIso, Long version, String role, String membershipStatus,
             String requestKind, boolean organizerOnly, int acceptedMembers, int pendingMembers, long activity,
-            Double distanceKm, String moderationStatus, String revision) {
+            Double distanceKm, String moderationStatus, String revision, long moderationPending, long moderationQueueRevision) {
         public static Summary from(Group group) {
             return new Summary(group.id(), group.ownerUserId(), group.ownerName(), group.ownerAvatarUrl(),
                 group.name(), group.imageUrl(), group.category(), group.visibility(), group.hideMembers(),
                 group.createdAtIso(), group.updatedAtIso(), group.version(), group.role(), group.membershipStatus(),
                 group.requestKind(), group.organizerOnly(), group.acceptedMembers(), group.pendingMembers(), group.activity(),
-                group.distanceKm(), group.moderationStatus(), group.revision());
+                group.distanceKm(), group.moderationStatus(), group.revision(), group.moderationPending(), group.moderationQueueRevision());
         }
     }
     public record Page(List<Summary> items, long total, String nextCursor, Map<String, Long> context) {}
-    public record Workspace(String groupId, String profileId, String name, String role, long activity, Policy policy) {}
+    public record Workspace(String groupId, String profileId, String name, String role, long activity, Policy policy,
+            long moderationPending, long moderationQueueRevision) {}
     public record WorkspaceSelection(Workspace workspace, com.raxim.myscoutee.profile.data.dto.auth.AuthDtos.UserDto profile) {}
     public record SelectWorkspace(String userId, String groupId) {}
     public record KnownGroup(String id, String revision) {}

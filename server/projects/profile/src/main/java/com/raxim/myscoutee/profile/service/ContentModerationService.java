@@ -16,7 +16,7 @@ import com.raxim.myscoutee.profile.data.dto.admin.AdminDtos.AdminUserDto;
 import com.raxim.myscoutee.profile.repository.ContentModerationRepository;
 import static com.raxim.myscoutee.profile.data.dto.admin.ContentModerationDtos.*;
 
-/** Global write-side counters and durable mutation intents. Reads never rebuild counts from rows. */
+/** Scope-owned write-side counters and durable mutation intents. Reads never rebuild counts from rows. */
 @Service
 public class ContentModerationService {
     private final ContentModerationRepository repository;
@@ -73,7 +73,7 @@ public class ContentModerationService {
             if (existing.deleted()) throw new ResponseStatusException(HttpStatus.GONE);
             applyResource(existing); return existing;
         }
-        var owner = "group".equals(category) ? null : mongo.findById(ownerId, com.raxim.myscoutee.profile.data.document.Users.class);
+        var owner = "group".equals(category) ? null : mongo.findOne(Query.query(Criteria.where("userId").is(ownerId)), com.raxim.myscoutee.profile.data.document.Users.class);
         String groupId = owner == null ? null : owner.getWorkspaceGroupId();
         Settings settings = state(groupId).settings();
         String status = !Boolean.TRUE.equals(settings.enabled()) || (settings.autoApprove() && settings.delayMinutes() == 0 && settings.categories().contains(category))
@@ -89,7 +89,7 @@ public class ContentModerationService {
         if (request.commandId() == null || request.commandId().isBlank() || request.commandId().length() > 100) throw invalid();
         String message = request.message() == null ? "" : request.message().trim();
         if (message.length() > 1000) throw invalid();
-        if (request.commandId().equals(before.commandId())) { drainPending(); return repository.item(id); }
+        if (request.commandId().equals(before.commandId())) { drainPending(before.workspaceGroupId()); return repository.item(id); }
         if (request.expectedVersion() != before.version()) throw conflict();
         if (("rejected".equals(request.status()) && before.hasBeenPublic())
                 || ("blocked".equals(request.status()) && !before.hasBeenPublic())) throw invalid();
@@ -102,7 +102,7 @@ public class ContentModerationService {
         Item before = repository.item("feed:" + sourceId);
         if (before == null) throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         if (!ownerId.equals(before.ownerUserId())) throw new ResponseStatusException(HttpStatus.FORBIDDEN);
-        if (before.deleted()) { drainPending(); return; }
+        if (before.deleted()) { drainPending(before.workspaceGroupId()); return; }
         Item next = new Item(before.id(), before.category(), before.sourceId(), before.ownerUserId(), before.title(), before.imageUrl(),
                 before.submittedAtIso(), before.status(), before.version() + 1, "remove:" + before.id(), ownerId,
                 Instant.now().toString(), before.publiclyVisibleOnce(), true, before.workspaceGroupId());
@@ -173,6 +173,14 @@ public class ContentModerationService {
         var item = mutation.item();
         repository.saveItem(item);
         applyResource(item);
+        if (item.workspaceGroupId() != null) {
+            var state = state(item.workspaceGroupId());
+            // Part of the durable write intent: menus read this stored count; they never count content rows.
+            mongo.updateFirst(Query.query(Criteria.where("_id").is(item.workspaceGroupId()).andOperator(new Criteria().orOperator(
+                    Criteria.where("moderationQueueRevision").lt(state.revision()), Criteria.where("moderationQueueRevision").exists(false)))),
+                    new Update().set("moderationPending", snapshot(state).pendingCount())
+                        .set("moderationQueueRevision", state.revision()).inc("version", 1), "communityGroups");
+        }
         if (!mutation.message().isBlank()) chats.sendAdminSupportMessage(item.ownerUserId(), item.reviewedBy(),
                 mutation.adminName(), mutation.adminInitials(), mutation.message(), "warned", "content-moderation:" + mutation.commandId());
     }
