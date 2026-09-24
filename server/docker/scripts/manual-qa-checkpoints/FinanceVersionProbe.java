@@ -46,6 +46,10 @@ class FinanceVersionProbe {
         String owner = "qa-finance-version-" + UUID.randomUUID(), payment = owner + "-payment";
         try (var client = MongoClients.create(settings)) {
             var mongo = new MongoTemplate(client, "demo_db");
+            if (args.length == 1 && "authorization-revenue".equals(args[0])) {
+                verifyAuthorizationRevenue(client);
+                return;
+            }
             if (args.length == 1 && "refund-intent".equals(args[0])) {
                 verifyRefundIntent(client);
                 return;
@@ -228,6 +232,45 @@ class FinanceVersionProbe {
             for (String name : List.of("exchangeRates", "users", "payments")) isolated.getCollection(name).drop();
         }
     }
+    private static void verifyAuthorizationRevenue(MongoClient client) {
+        String prefix = "qaAuthorizationRevenue_" + UUID.randomUUID().toString().replace("-", "") + "_";
+        MongoTemplate isolated = isolatedTemplate(client, prefix, null);
+        var repository = new AffiliateRevenueRepository(isolated);
+        var service = new AffiliateRevenueService(isolated, repository, null);
+        try {
+            Payment payment = new Payment();
+            payment.setId("hold"); payment.setVersion(7L); payment.setAuditKind("payment");
+            payment.setStatus("authorized"); payment.setCurrency("EUR"); payment.setAmount(7D);
+            payment.setAffiliateOwnerUserId("owner"); payment.setAffiliateAttributionResolved(true);
+            payment.setAffiliateRevenuePending(true);
+            payment.setFulfillmentKind(PaymentService.FULFILLMENT_KIND_EVENT_JOIN);
+            isolated.insert(payment);
+            service.record(payment);
+            Document held = repository.summary("owner");
+            Document eur = held.get("totals", Document.class).get("EUR", Document.class);
+            if (AffiliateRevenueRepository.number(held, "purchases") != 0L
+                    || AffiliateRevenueRepository.number(held, "eventBookings") != 0L
+                    || AffiliateRevenueRepository.number(eur, "grossMinor") != 0L)
+                throw new AssertionError("Authorization hold was counted as revenue: " + held.toJson());
+            payment = isolated.findById("hold", Payment.class);
+            payment.setStatus("captured"); payment.setAffiliateRevenuePending(true);
+            payment = isolated.save(payment);
+            service.record(payment);
+            Document captured = repository.summary("owner");
+            eur = captured.get("totals", Document.class).get("EUR", Document.class);
+            if (AffiliateRevenueRepository.number(captured, "purchases") != 1L
+                    || AffiliateRevenueRepository.number(captured, "eventBookings") != 1L
+                    || AffiliateRevenueRepository.number(eur, "grossMinor") != 700L)
+                throw new AssertionError("Capture did not replace the zero hold contribution.");
+            service.record(payment);
+            if (!captured.equals(repository.summary("owner"))) throw new AssertionError("Capture replay changed totals.");
+            System.out.println("PASS compiled affiliate service + isolated Mongo: authorized hold contributes zero; capture contributes EUR7 once; replay unchanged. This is not a provider/UI hold-only test.");
+        } finally {
+            for (String name : List.of("payments", "affiliatePartners", "affiliatePaymentContributions"))
+                isolated.getCollection(name).drop();
+        }
+    }
+
     private static void verifyRecovery(MongoClient client, int boundary) {
         String prefix = "qaFinanceRecovery_" + UUID.randomUUID().toString().replace("-", "") + "_";
         var fault = new WriteFault(boundary);

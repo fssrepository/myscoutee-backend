@@ -562,3 +562,25 @@ First wrong boundary: shared ImageGallery bound `images.slice(0, 1)` directly to
 - User reported a full3s ring with configured1.5s route delay. Review Booking sequentially loaded invitation/pricing context then the basket, although both local and HTTP `loadInvitationContext` already return the service-composed basket and pricing. Component now consumes that response and applies basket state synchronously; no component-level parallel request workaround. Read-only summary still uses its preloaded audit basket or one basket query. Focused2/2 PASS, including late response after close. Existing watcher sync05:44:13; actual load duration check next.
 
 - Actual Review Join Request opening on current local bundle measured **1551.4ms** from body-loader insertion to removal at05:47, matching one1500ms route delay; shared3s indicator unchanged.
+
+### 2026-09-24 06:00 — local organizer branches and approval PASS
+
+- Actual UI organizer Cancel10 refunded exactly10 and retained event content/statusA with cancelled=true. Unpublish/Publish changed cancelled=false and left only organizer accepted; old participant is deleted. Actual Delete7 moved event toT and returned7 once. Original checkout IDs checkout-1790221241414 and checkout-1790221283440 retained. Fresh rejoin check remains next.
+- Actual Members Remove of u42 from HUF5000 at03:56:03Z returned all5000 despite25% policy, audit refund:checkout-1790221206225:500000. Only organizer remains in Members. Native totals EUR217/217/0,HUF5000/5000/0,purchases5/bookings5.
+- Actual manual12 Join then organizer approval keeps membership pending with Waiting for payment. Reopened member menu contains no Approve. No12 payment/affiliate contribution.
+- Reported member portrait clipping: original randomuser men/87.jpg is128x128 and already crops the top of the head. Computed card269x359 uses background-size:contain/center; no stretching or obscuring header. No CSS change.
+- User defers Calendar explicitly; complete remaining affiliate checks without Calendar.
+
+### 2026-09-24 06:04 — actual scheduled local expiry PASS
+
+- Additional unpaid prerequisites grace-off and untouched use the same versioned fixture; actual UI joined grace-off without paying and captured untouched100 (aggregate EUR317/217/100,purchases6/bookings6). Cancel→republish control required a fresh Join; old refunded payment did not restore admission.
+- Actual manual12 approval gives pending/payment, auto Cancel10 new join pending/join. Versioned arm-deadlines first checks their stored deadlines equal the persisted event start minus configured grace; then adjusts only isolated timing. Grace-OFF start remains future, paid control's basket expiry is also due; no status, membership or financial result is seeded.
+- Found missing common notification-job seed on member-only demo initialization. Moved idempotent creation into common seed initialization and retained saved rules/history when the admin workspace subsequently seeds its other stores. Focused seed preservation test PASS1; initial test run lacked IndexedDB in the test environment and was corrected to use a persisted-entry double. Existing watcher sync06:00:56. Actual normal member identity switch creates the store without opening Admin.
+- Actual scheduler at04:03:16Z completed in167ms, processedCount2. Independent IndexedDB oracle: manual and automatic pending memberships deleted, parent pending counters0; grace-OFF remains pending1; paid untouched remains accepted2 with succeeded/pay item. EUR317/217/100,HUF5000/5000/0,counts6/6 unchanged. Job runHistory is scheduled, not a direct service invocation or seeded outcome. Fresh manual approval after expiry remains next.
+
+### 2026-09-24 06:09 — remaining local financial branches PASS
+
+- Restored only isolated event timing through versioned reopen-deadlines. Actual fresh manual Join is pending/approval; owner sees Approve again, confirms it, and member returns to Waiting for payment. Actual fresh auto Join is pending/join. Further normal Unpublish/Publish on already-reactivated Cancel10 preserves that new membership. Expired approval was not reused.
+- Untouched100 checkout-1790222395519 captured03:59:55Z, programme changed through actual Unpublish/Manage/Edit/Save. Participant full-refund request at04:06:25Z remained pending100 with refunded0 and unchanged revenue. Owner approval at04:06:49Z returned exactly100. In-place history observer again reports removed0/loaders0/same list/all previous rows retained.
+- Final local native totals EUR317/317/0,HUF5000/5000/0,purchases6/bookings6. Actual Revenue popup6/6 and EUR329.50/329.50/0.00 matches fixed HUF400/EUR rate. Retains previous25 and75 separate operations, organizer10/delete7/adminHUF5000 and untouched100 outcomes. No local backend FX/payment request was needed. Local financial lifecycle branches closed; retained failed old-version100 record remains explicitly distinguished from corrected-path evidence.
+- Calendar remains deferred. Restore the existing frontend-sync owner to dev configuration for the remaining HTTP in-place-history verification; preserve both local IndexedDB and dev Mongo evidence.

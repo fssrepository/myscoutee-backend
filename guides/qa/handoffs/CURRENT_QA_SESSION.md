@@ -88,12 +88,12 @@ Earlier Event Mode, Integration API, Activity Rating and EVENT-FOLLOWING-001 rem
 ```yaml
 checkpoint: AFFILIATE-REVENUE-001
 checklist: ../checklists/api/AFFILIATE-REVENUE-001.md
-substage: All four full-flow affiliate fault cases PASS; complete remaining financial checks before Calendar.
+substage: Complete remaining affiliate financial checks; Calendar explicitly deferred by user.
 fixture_phase: 2026-09-24 01:37 CEST. All validators restored and no activeRevenueFault. Four callback replays200/delivery200, unchanged amounts/counts; partner revision86, payment versions6/pendingfalse. Partner purchases14/bookings13, EUR181/41/140 + HUF5000; converted EUR193.50/41/152.50, selected CZK4837.50/1025/3812.50. All earlier paid outcomes retained.
 execution_log: ../evidence/AFFILIATE-REVENUE-001-20260923-progress.md
-next_action: Frontend-local IN PROGRESS. EUR100 actual capture ->25 policy refund -> changed-terms75 request/admin approval now PASS; separate25/75 audits, net0. Actual payment-history approval preserves DOM rows/list without loader or reload. Main Event root mapping and viewer refund entitlement repaired; Main Event visible. Existing frontend-sync stays local. Next remaining local HUF/admin removal, organizer cancel/delete/reopen and manual/auto unpaid deadline branches. Audit found local basket purge job still simulated and no canonical deadline enforcement; repair to backend contract before executing those cases. Preserve all previous dev financial evidence; Calendar last.
+next_action: Frontend-local IN PROGRESS. Actual25+75 separate refunds/live history, HUF full admin-removal refund, organizer Cancel10/Delete7 and Unpublish/Publish clearing prior membership PASS. Manual12 approved once, waiting unpaid; no repeat Approve. Canonical deadline/purge repair built and focused checks PASS; next actual scheduled unpaid manual/auto expiry, grace-OFF/paid controls and fresh rejoin. Preserve IndexedDB and retained dev finances. Finish local then dev final audit. User explicitly deferred Calendar; do not execute it.
 queue: EVENT-CALENDAR-EXPORT-001
-calendar_boundary: Calendar LAST; test actual Ubuntu ICS opening/import behavior as well as Android. Android connected/authorized earlier, recheck at calendar boundary.
+calendar_boundary: DEFERRED by user on 2026-09-24; do not execute during affiliate completion.
 resume_gate: Read-only fixture status and existing dev stack before mutation; preserve unrelated Borrow/Event Mode snapshots. Gallery/Email/Admin remain closed; do not replay.
 runtime: Existing frontend-sync and backend continuous/DevTools watchers own compilation; no separate builds. Persistent dev release simulator remains intended.
 last_completed: ADMIN-CLIENT-API-001 dev PASS; OS notification-center visual icon, actual desktop login/reboot and separate REAL/DEMO database isolation NOT RUN. See its dated evidence for precise boundaries.

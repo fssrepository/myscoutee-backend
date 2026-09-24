@@ -33,7 +33,7 @@ try{
   if(!/^[a-z0-9-]+$/.test(suffix))throw Error('Invalid prerequisite suffix');
   const id='qa-local-affiliate-eur-'+suffix,source=Object.values(data.events.byId).find(e=>e.id==='qa-local-affiliate-eur'&&e.userId==='u41');
   if(!source||Object.values(data.events.byId).some(e=>e.id===id))throw Error('Retest prerequisite missing or already staged');
-  const event={...structuredClone(source),id,title:'QA Local EUR 100 '+suffix,acceptedMembers:1,pendingMembers:0,checkoutBasket:null,checkoutResultState:null,acceptedMemberUserIds:['u41'],pendingMemberUserIds:[],pendingRequestMemberUserIds:[],invitedMemberUserIds:[]};
+  const event={...structuredClone(source),id,title:'QA Local EUR 100 '+suffix,slotsEnabled:false,slotTemplates:[],frequency:'One-time',paymentDeadlineEnabled:suffix!=='grace-off',acceptedMembers:1,pendingMembers:0,checkoutBasket:null,checkoutResultState:null,acceptedMemberUserIds:['u41'],pendingMemberUserIds:[],pendingRequestMemberUserIds:[],invitedMemberUserIds:[]};
   event.timeframe=new Intl.DateTimeFormat('en-GB',{dateStyle:'medium',timeStyle:'short'}).format(new Date(event.startAtIso));
   const eventKey=`u41:events:${id}`;data.events.byId[eventKey]=event;data.events.ids.push(eventKey);
   const owner=data.users.byId.u41;
@@ -63,6 +63,39 @@ try{
   }
   await c.evaluate(`(async()=>{const data=${JSON.stringify({events:data.events,activityMembers:data.activityMembers})};const d=await new Promise(r=>{const q=indexedDB.open('myscoutee_demo_db');q.onsuccess=()=>r(q.result)});await new Promise((r,j)=>{const t=d.transaction('tables','readwrite');for(const [k,v]of Object.entries(data))t.objectStore('tables').put(v,k);t.oncomplete=r;t.onerror=()=>j(t.error)});d.close()})()`);
   await c.send('Page.reload',{ignoreCache:true});console.log('Prepared unpaid controls with canonical organizer membership; paid controls and all financial records retained.');
+ }else if(action==='arm-deadlines' || action==='reopen-deadlines'){
+  const tableNames=['events','eventCheckoutBaskets','users','activityMembers'];
+  const data=await c.evaluate(`(async()=>{const d=await new Promise(r=>{const q=indexedDB.open('myscoutee_demo_db');q.onsuccess=()=>r(q.result)});const out={};for(const k of ${JSON.stringify(tableNames)})out[k]=await new Promise(r=>{const q=d.transaction('tables').objectStore('tables').get(k);q.onsuccess=()=>r(q.result)});d.close();return out})()`);
+  const ids=['qa-local-affiliate-manual','qa-local-affiliate-cancel','qa-local-affiliate-eur-grace-off'];
+  const snapshotPath=root+'/deadline-timing.json';
+  if(action==='arm-deadlines'){
+   const snapshot={events:{},baskets:{},financial:structuredClone(data.users.byId.u41.affiliateRevenue)};
+   const start=new Date(Date.now()+3600000).toISOString();
+   for(const id of ids){
+    const event=Object.values(data.events.byId).find(e=>e.id===id&&e.userId==='u41');
+    const basket=data.eventCheckoutBaskets.byKey['u42::'+id];
+    const member=Object.values(data.activityMembers.byId).find(m=>m.ownerId===id&&m.userId==='u42');
+    if(!event||!basket||member?.status!=='pending'||!basket.items.some(i=>['confirmed','approved','waiting','approval-pending'].includes(i.status)&&i.resultState!=='deleted'))throw Error('Expected actual unpaid join: '+id);
+    snapshot.events[id]={startAtIso:event.startAtIso,endAtIso:event.endAtIso};snapshot.baskets[id]=structuredClone(basket);
+    const oldDeadline=Date.parse(event.startAtIso)-(event.paymentDeadlineEnabled===false?0:event.paymentDeadlineHours*3600000);
+    if(basket.items.filter(i=>i.resultState!=='deleted').some(i=>Date.parse(i.expiresAtIso)!==oldDeadline))throw Error('Canonical deadline mismatch '+id);
+    const expiry=new Date(Date.parse(start)-(event.paymentDeadlineEnabled===false?0:event.paymentDeadlineHours*3600000)).toISOString();
+    for(const e of Object.values(data.events.byId).filter(e=>e.id===id)){e.startAtIso=start;e.endAtIso=new Date(Date.parse(start)+7200000).toISOString();}
+    basket.expiresAtIso=expiry;for(const i of basket.items)if(i.resultState!=='deleted')i.expiresAtIso=expiry;
+   }
+   // The paid control is made overdue too; status, admission and financial records remain untouched.
+   const paid=data.eventCheckoutBaskets.byKey['u42::qa-local-affiliate-eur-untouched'];
+   if(paid?.status!=='pay')throw Error('Actual paid control required');
+   snapshot.baskets[paid.sourceId]=structuredClone(paid);
+   paid.expiresAtIso=new Date(Date.now()-60000).toISOString();for(const i of paid.items)i.expiresAtIso=paid.expiresAtIso;
+   await writeFile(snapshotPath,JSON.stringify(snapshot),{mode:0o600});
+  }else{
+   const snapshot=JSON.parse(await readFile(snapshotPath,'utf8'));
+   for(const e of Object.values(data.events.byId))if(snapshot.events[e.id])Object.assign(e,snapshot.events[e.id]);
+  }
+  const writes=action==='arm-deadlines'?{events:data.events,eventCheckoutBaskets:data.eventCheckoutBaskets}:{events:data.events};
+  await c.evaluate(`(async()=>{const data=${JSON.stringify(writes)},d=await new Promise(r=>{const q=indexedDB.open('myscoutee_demo_db');q.onsuccess=()=>r(q.result)});await new Promise((r,j)=>{const t=d.transaction('tables','readwrite');for(const [k,v]of Object.entries(data))t.objectStore('tables').put(v,k);t.oncomplete=r;t.onerror=()=>j(t.error)});d.close()})()`);
+  await c.send('Page.reload',{ignoreCache:true});console.log(action+': timing prerequisites only; no status, member or payment outcome written.');
  }else if(action==='normalize-prerequisites'){
   const data=await c.evaluate(`(async()=>{${read};return await read()})()`);
   const table=data.events;
