@@ -1,6 +1,6 @@
 # Current manual QA session
 
-Updated: 2026-09-23
+Updated: 2026-09-24
 
 This is the context-saving entry point for continuing the manual QA campaign.
 It stores one minimal live resume pointer plus reusable pair-QA execution lessons. It
@@ -88,14 +88,14 @@ Earlier Event Mode, Integration API, Activity Rating and EVENT-FOLLOWING-001 rem
 ```yaml
 checkpoint: EVENT-CALENDAR-EXPORT-001
 checklist: ../checklists/event/EVENT-CALENDAR-EXPORT-001.md
-substage: IN PROGRESS; user started the previously deferred checkpoint on 2026-09-24.
-fixture_phase: After the user reboot, startup Mongo seed replaced the old calendar actors/events and /tmp browser profiles were lost. Read-only resume gate recorded this; versioned gallery reset/stage, calendar stage and managed launcher restored inputs at15:06. Three slot/recurrence parent controls added at15:18. Earlier native imports remain for compatibility checks; earlier affiliate PASS evidence remains closed, but its old runtime was not retained.
+substage: PASS/CLOSED 2026-09-24; delegated calendar scope complete, including One-time/Daily/Weekly occurrences and physical imports.
+fixture_phase: Versioned reset complete. Fixture actors/events/members/snapshot absent; moderation settings and approval Job restored; native QA entries and fixture downloads cleaned; managed windows closed.
 execution_log: ../evidence/EVENT-CALENDAR-EXPORT-001-20260924.md
-next_action: Finish user-requested slots/recurrence (HTTP organizer14 occurrences, participant3 accepted verified), local parity, changed-time/reimport/omission and offline reminder checks, then cleanup. Native Android import had replaced exported start alarm with its default30-minute reminders. Current evidence contains reboot boundary; do not replay closed affiliate checks.
+next_action: None for this checkpoint. Calendar importer update/deletion/alarm limitations and local automated-versus-native evidence boundaries are recorded in the execution log.
 queue: None selected.
-resume_gate: Read-only fixture/runtime/device status before mutation; preserve affiliate Mongo and local IndexedDB evidence. No replay of closed affiliate checks.
-runtime: Existing frontend-sync dev and backend watchers own builds. Authorized Android14 device connected; QA reverse8080→80 and Chrome CDP36087 prepared.
-last_completed: AFFILIATE-REVENUE-001 dev and frontend-local PASS; detailed evidence and runtime qualification boundaries retained in its progress log.
+resume_gate: No fixture replay. Earlier affiliate PASS remains closed; its old runtime was replaced by startup seed after the reboot, not retained.
+runtime: Existing dev watchers own builds. Phone network restored; USB stay-awake and maximum timeout intentionally retained at user request, with original settings snapshotted.
+last_completed: EVENT-CALENDAR-EXPORT-001 PASS/CLOSED; CSV/XLSX and README synchronized. AFFILIATE-REVENUE-001 remains PASS.
 ```
 
 ## Archived pair-QA resume point — 2026-09-17
