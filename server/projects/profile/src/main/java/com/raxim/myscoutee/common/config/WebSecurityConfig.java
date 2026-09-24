@@ -40,6 +40,7 @@ public class WebSecurityConfig {
     private final UserLoginSessionService userLoginSessionService;
     private final MediaSessionAccessService mediaSessionAccess;
     private final IntegrationTokenAuthenticationFilter integrationTokenAuthenticationFilter;
+    @Autowired private org.springframework.beans.factory.ObjectProvider<com.raxim.myscoutee.profile.service.CommunityGroupProfilesService> groupProfiles;
     @Autowired private AdminClientAuthenticationFilter adminClientAuthenticationFilter;
 
     public WebSecurityConfig(FirebaseService firebaseService,
@@ -80,6 +81,7 @@ public class WebSecurityConfig {
                 .addFilterAfter(
                         tokenAuthorizationFilter(),
                         AdminClientAuthenticationFilter.class)
+                .addFilterAfter(new GroupWorkspaceFilter(groupProfiles), FirebaseFilter.class)
                 .authorizeHttpRequests(authorizeRequests -> {
                     authorizeRequests.requestMatchers("/admin-client/v1/**", "/api/admin-client/v1/**").hasAuthority("ADMIN_CLIENT");
                     authorizeRequests.requestMatchers("/shutdown").denyAll();

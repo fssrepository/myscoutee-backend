@@ -22554,6 +22554,174 @@
     "value": "Your booking has been cancelled and the remaining paid amount has been refunded."
   },
   {
+    "_id": "i18n-message-en-event-checkout-join-confirm-title",
+    "key": "event.checkout.join.confirm.title",
+    "lang": "en",
+    "value": "Would you like to join this event?"
+  },
+  {
+    "_id": "i18n-message-en-groups-title",
+    "key": "groups.title",
+    "lang": "en",
+    "value": "Groups"
+  },
+  {
+    "_id": "i18n-message-en-groups-create",
+    "key": "groups.create",
+    "lang": "en",
+    "value": "Create group"
+  },
+  {
+    "_id": "i18n-message-en-groups-edit",
+    "key": "groups.edit",
+    "lang": "en",
+    "value": "Group"
+  },
+  {
+    "_id": "i18n-message-en-groups-bucket-hosting",
+    "key": "groups.bucket.hosting",
+    "lang": "en",
+    "value": "Hosting"
+  },
+  {
+    "_id": "i18n-message-en-groups-bucket-participation",
+    "key": "groups.bucket.participation",
+    "lang": "en",
+    "value": "Participation"
+  },
+  {
+    "_id": "i18n-message-en-groups-bucket-explore",
+    "key": "groups.bucket.explore",
+    "lang": "en",
+    "value": "Explore"
+  },
+  {
+    "_id": "i18n-message-en-groups-category-all",
+    "key": "groups.category.all",
+    "lang": "en",
+    "value": "All categories"
+  },
+  {
+    "_id": "i18n-message-en-groups-category-friends",
+    "key": "groups.category.friends",
+    "lang": "en",
+    "value": "Friends"
+  },
+  {
+    "_id": "i18n-message-en-groups-category-work",
+    "key": "groups.category.work",
+    "lang": "en",
+    "value": "Work and teams"
+  },
+  {
+    "_id": "i18n-message-en-groups-category-sport",
+    "key": "groups.category.sport",
+    "lang": "en",
+    "value": "Sport"
+  },
+  {
+    "_id": "i18n-message-en-groups-category-learning",
+    "key": "groups.category.learning",
+    "lang": "en",
+    "value": "Learning"
+  },
+  {
+    "_id": "i18n-message-en-groups-category-hobbies",
+    "key": "groups.category.hobbies",
+    "lang": "en",
+    "value": "Hobbies"
+  },
+  {
+    "_id": "i18n-message-en-groups-category-neighbourhood",
+    "key": "groups.category.neighbourhood",
+    "lang": "en",
+    "value": "Neighbourhood"
+  },
+  {
+    "_id": "i18n-message-en-groups-visibility-public",
+    "key": "groups.visibility.public",
+    "lang": "en",
+    "value": "Public"
+  },
+  {
+    "_id": "i18n-message-en-groups-visibility-private",
+    "key": "groups.visibility.private",
+    "lang": "en",
+    "value": "Private"
+  },
+  {
+    "_id": "i18n-message-en-groups-visibility-invitation",
+    "key": "groups.visibility.invitation",
+    "lang": "en",
+    "value": "Invitation only"
+  },
+  {
+    "_id": "i18n-message-en-groups-join",
+    "key": "groups.join",
+    "lang": "en",
+    "value": "Request to join"
+  },
+  {
+    "_id": "i18n-message-en-groups-settings",
+    "key": "groups.settings",
+    "lang": "en",
+    "value": "Group settings"
+  },
+  {
+    "_id": "i18n-message-en-groups-policy",
+    "key": "groups.policy",
+    "lang": "en",
+    "value": "Group policy"
+  },
+  {
+    "_id": "i18n-message-en-groups-hide-members",
+    "key": "groups.hide.members",
+    "lang": "en",
+    "value": "Only administrators are visible"
+  },
+  {
+    "_id": "i18n-message-en-groups-workspace",
+    "key": "groups.workspace",
+    "lang": "en",
+    "value": "Separate workspace"
+  },
+  {
+    "_id": "i18n-message-en-groups-visibility-rules",
+    "key": "groups.visibility.rules",
+    "lang": "en",
+    "value": "Profile visibility rules"
+  },
+  {
+    "_id": "i18n-message-en-groups-required",
+    "key": "groups.required",
+    "lang": "en",
+    "value": "Required"
+  },
+  {
+    "_id": "i18n-message-en-groups-optional",
+    "key": "groups.optional",
+    "lang": "en",
+    "value": "Member choice"
+  },
+  {
+    "_id": "i18n-message-en-groups-participate",
+    "key": "groups.participate",
+    "lang": "en",
+    "value": "Participate"
+  },
+  {
+    "_id": "i18n-message-en-groups-organizer-only",
+    "key": "groups.organizer.only",
+    "lang": "en",
+    "value": "Organizer only"
+  },
+  {
+    "_id": "i18n-message-en-groups-error",
+    "key": "groups.error",
+    "lang": "en",
+    "value": "The action failed."
+  },
+  {
     "_id": "i18n-message-hu-payment-history-refund-preview-changed-terms",
     "key": "payment.history.refund.preview.changed.terms",
     "lang": "hu",
@@ -45108,15 +45276,171 @@
     "value": "A foglalásodat lemondtuk, és a még vissza nem térített befizetésed visszajárt."
   },
   {
-    "_id": "i18n-message-en-event-checkout-join-confirm-title",
-    "key": "event.checkout.join.confirm.title",
-    "lang": "en",
-    "value": "Would you like to join this event?"
-  },
-  {
     "_id": "i18n-message-hu-event-checkout-join-confirm-title",
     "key": "event.checkout.join.confirm.title",
     "lang": "hu",
     "value": "Szeretnél csatlakozni ehhez az eseményhez?"
+  },
+  {
+    "_id": "i18n-message-hu-groups-title",
+    "key": "groups.title",
+    "lang": "hu",
+    "value": "Csoportok"
+  },
+  {
+    "_id": "i18n-message-hu-groups-create",
+    "key": "groups.create",
+    "lang": "hu",
+    "value": "Csoport létrehozása"
+  },
+  {
+    "_id": "i18n-message-hu-groups-edit",
+    "key": "groups.edit",
+    "lang": "hu",
+    "value": "Csoport"
+  },
+  {
+    "_id": "i18n-message-hu-groups-bucket-hosting",
+    "key": "groups.bucket.hosting",
+    "lang": "hu",
+    "value": "Szervezés"
+  },
+  {
+    "_id": "i18n-message-hu-groups-bucket-participation",
+    "key": "groups.bucket.participation",
+    "lang": "hu",
+    "value": "Részvétel"
+  },
+  {
+    "_id": "i18n-message-hu-groups-bucket-explore",
+    "key": "groups.bucket.explore",
+    "lang": "hu",
+    "value": "Felfedezés"
+  },
+  {
+    "_id": "i18n-message-hu-groups-category-all",
+    "key": "groups.category.all",
+    "lang": "hu",
+    "value": "Minden kategória"
+  },
+  {
+    "_id": "i18n-message-hu-groups-category-friends",
+    "key": "groups.category.friends",
+    "lang": "hu",
+    "value": "Barátok"
+  },
+  {
+    "_id": "i18n-message-hu-groups-category-work",
+    "key": "groups.category.work",
+    "lang": "hu",
+    "value": "Munka és csapatok"
+  },
+  {
+    "_id": "i18n-message-hu-groups-category-sport",
+    "key": "groups.category.sport",
+    "lang": "hu",
+    "value": "Sport"
+  },
+  {
+    "_id": "i18n-message-hu-groups-category-learning",
+    "key": "groups.category.learning",
+    "lang": "hu",
+    "value": "Tanulás"
+  },
+  {
+    "_id": "i18n-message-hu-groups-category-hobbies",
+    "key": "groups.category.hobbies",
+    "lang": "hu",
+    "value": "Hobbi"
+  },
+  {
+    "_id": "i18n-message-hu-groups-category-neighbourhood",
+    "key": "groups.category.neighbourhood",
+    "lang": "hu",
+    "value": "Környék"
+  },
+  {
+    "_id": "i18n-message-hu-groups-visibility-public",
+    "key": "groups.visibility.public",
+    "lang": "hu",
+    "value": "Nyilvános"
+  },
+  {
+    "_id": "i18n-message-hu-groups-visibility-private",
+    "key": "groups.visibility.private",
+    "lang": "hu",
+    "value": "Privát"
+  },
+  {
+    "_id": "i18n-message-hu-groups-visibility-invitation",
+    "key": "groups.visibility.invitation",
+    "lang": "hu",
+    "value": "Csak meghívással"
+  },
+  {
+    "_id": "i18n-message-hu-groups-join",
+    "key": "groups.join",
+    "lang": "hu",
+    "value": "Jelentkezés"
+  },
+  {
+    "_id": "i18n-message-hu-groups-settings",
+    "key": "groups.settings",
+    "lang": "hu",
+    "value": "Csoportbeállítások"
+  },
+  {
+    "_id": "i18n-message-hu-groups-policy",
+    "key": "groups.policy",
+    "lang": "hu",
+    "value": "Csoportszabályok"
+  },
+  {
+    "_id": "i18n-message-hu-groups-hide-members",
+    "key": "groups.hide.members",
+    "lang": "hu",
+    "value": "Csak az adminok láthatók"
+  },
+  {
+    "_id": "i18n-message-hu-groups-workspace",
+    "key": "groups.workspace",
+    "lang": "hu",
+    "value": "Önálló munkatér"
+  },
+  {
+    "_id": "i18n-message-hu-groups-visibility-rules",
+    "key": "groups.visibility.rules",
+    "lang": "hu",
+    "value": "Profil-láthatósági szabályok"
+  },
+  {
+    "_id": "i18n-message-hu-groups-required",
+    "key": "groups.required",
+    "lang": "hu",
+    "value": "Kötelező"
+  },
+  {
+    "_id": "i18n-message-hu-groups-optional",
+    "key": "groups.optional",
+    "lang": "hu",
+    "value": "A tag választja"
+  },
+  {
+    "_id": "i18n-message-hu-groups-participate",
+    "key": "groups.participate",
+    "lang": "hu",
+    "value": "Részvétel"
+  },
+  {
+    "_id": "i18n-message-hu-groups-organizer-only",
+    "key": "groups.organizer.only",
+    "lang": "hu",
+    "value": "Csak szervezés"
+  },
+  {
+    "_id": "i18n-message-hu-groups-error",
+    "key": "groups.error",
+    "lang": "hu",
+    "value": "A művelet nem sikerült."
   }
 ]

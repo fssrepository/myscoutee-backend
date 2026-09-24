@@ -24,6 +24,13 @@ import org.springframework.data.mongodb.core.mapping.Document;
                 collation = "{ 'locale': 'en', 'strength': 2 }")
 })
 public class Users {
+    @Indexed private String workspaceGroupId;
+    @Indexed private String accountUserId;
+    public String getWorkspaceGroupId() { return workspaceGroupId; }
+    public void setWorkspaceGroupId(String value) { workspaceGroupId = value; }
+    public String getAccountUserId() { return accountUserId; }
+    public void setAccountUserId(String value) { accountUserId = value; }
+
     private FeedCountersRecord feedCounters;
     public FeedCountersRecord getFeedCounters() { return feedCounters; }
     public void setFeedCounters(FeedCountersRecord value) { feedCounters = value; }

@@ -10,6 +10,10 @@ import org.springframework.data.mongodb.repository.Query;
 import com.raxim.myscoutee.profile.data.document.Users;
 
 public interface UsersRepository extends MongoRepository<Users, String> {
+    Optional<Users> findByWorkspaceGroupIdAndAccountUserId(String workspaceGroupId, String accountUserId);
+    List<Users> findByAccountUserId(String accountUserId);
+    List<Users> findByWorkspaceGroupId(String workspaceGroupId);
+
     @Query(value = "{}", sort = "{ 'name': 1, 'userId': 1 }", collation = "{ 'locale': 'en', 'strength': 2 }")
     List<Users> findAllByOrderByNameAscUserIdAsc();
 

@@ -863,6 +863,7 @@ public class HomeUserProfileService {
         return snapshot.visibleGameUsers().stream()
                 .filter(Objects::nonNull)
                 .filter(this::isPublicGameUser)
+                .filter(user -> CommunityGroupProfilesService.sameWorkspace(activeUser, user))
                 .filter(user -> !normalizedUserId.equals(normalizeId(user.getId())))
                 .filter(user -> !metUserIds.contains(normalizeId(user.getId())))
                 .filter(user -> !ratedUserIds.contains(normalizeId(user.getId())))
@@ -1192,6 +1193,7 @@ public class HomeUserProfileService {
     public List<DemoUserListItemDto> queryDemoUserListItems(Integer limit, String role) {
         String selectorRole = normalizeDemoSelectorRole(role);
         return usersRepository.findAllByOrderByNameAscUserIdAsc().stream()
+                .filter(user -> user.getWorkspaceGroupId() == null)
                 .filter(user -> isSelectableDemoUserDocument(user, selectorRole))
                 .limit(resolveDemoUserListLimit(limit))
                 .map(this::toDemoUserListItemDto)

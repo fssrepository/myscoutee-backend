@@ -30,6 +30,8 @@ import com.raxim.myscoutee.profile.repository.UsersRepository;
 
 @Service
 public class ActivitiesInviteCandidatesService {
+    @org.springframework.beans.factory.annotation.Autowired
+    private CommunityGroupsService communityGroups;
     private final UsersRepository usersRepository;
     private final UserRatesRepository userRatesRepository;
     private final ActivityMembersRepository activityMembersRepository;
@@ -67,6 +69,7 @@ public class ActivitiesInviteCandidatesService {
             return emptyPage(page, pageSize);
         }
 
+        if ("community".equals(ownerType)) communityGroups.requireAdmin(activeUser, ownerId);
         ActivitiesMembersService.OwnerMembersSnapshot snapshot = activitiesMembersService.queryOwnerSnapshot(ownerType, ownerId);
         String parentOwnerId = normalizeId(request.parentOwnerId());
         String parentOwnerType = normalizeOwnerType(request.parentOwnerType());
@@ -93,8 +96,12 @@ public class ActivitiesInviteCandidatesService {
                     pageSize);
         }
 
+        List<ActivityMember> communityMembers = "community".equals(ownerType)
+                ? activityMembersRepository.findByOwnerTypeAndOwnerId(ownerType, ownerId) : List.of();
         Set<String> blockedUserIds = new LinkedHashSet<>();
         blockedUserIds.add(activeUserId);
+        communityMembers.stream()
+                .filter(m -> Set.of("accepted", "pending").contains(m.getStatus())).map(ActivityMember::getUserId).forEach(blockedUserIds::add);
         if (snapshot != null) {
             blockedUserIds.addAll(snapshot.acceptedMemberUserIds());
             blockedUserIds.addAll(snapshot.pendingMemberUserIds());
@@ -123,10 +130,10 @@ public class ActivitiesInviteCandidatesService {
                 }
             }
         }
-        List<ActivityMember> pendingMembers = snapshot == null
-                ? List.of()
-                : snapshot.members().stream()
+        List<ActivityMember> pendingMembers = ("community".equals(ownerType) ? communityMembers
+                : snapshot == null ? List.<ActivityMember>of() : snapshot.members()).stream()
                         .filter(member -> "pending".equals(safeText(member == null ? null : member.getStatus())))
+                        .filter(member -> !"community".equals(ownerType) || "invite".equals(member.getRequestKind()))
                         .filter(member -> !activeUserId.equals(normalizeId(member.getUserId())))
                         .toList();
         LinkedHashSet<String> candidateUserIds = signalsByUserId.keySet().stream()
@@ -479,7 +486,7 @@ public class ActivitiesInviteCandidatesService {
     private String normalizeOwnerType(String ownerType) {
         String normalizedOwnerType = safeText(ownerType);
         return switch (normalizedOwnerType) {
-            case "event", "subEvent", "group", "asset" -> normalizedOwnerType;
+            case "event", "subEvent", "group", "asset", "community" -> normalizedOwnerType;
             default -> null;
         };
     }
