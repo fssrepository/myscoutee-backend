@@ -22854,6 +22854,24 @@
     "value": "Bring colleagues together in your own invitation-only group. Shared activities, chats and feedback can support team building and workplace wellbeing."
   },
   {
+    "_id": "i18n-message-en-landing-partners-api-title",
+    "key": "landing.partners.api.title",
+    "lang": "en",
+    "value": "Connect your systems · API"
+  },
+  {
+    "_id": "i18n-message-en-landing-partners-api-description",
+    "key": "landing.partners.api.description",
+    "lang": "en",
+    "value": "Use an API key linked to a user account to connect accommodation booking, internal company or other systems to MyScoutee. Create events, accommodation offers and group invitations."
+  },
+  {
+    "_id": "i18n-message-en-landing-partners-api-link",
+    "key": "landing.partners.api.link",
+    "lang": "en",
+    "value": "API client and documentation · GitHub"
+  },
+  {
     "_id": "i18n-message-hu-navigator-community",
     "key": "navigator.community",
     "lang": "hu",
@@ -45706,5 +45724,23 @@
     "key": "landing.partners.role.workplace.description",
     "lang": "hu",
     "value": "Hozd össze munkatársaidat egy saját, meghívásos csoportban. Közös programok, csevegések és visszajelzések segíthetik a csapatépítést és a munkahelyi jóllétet."
+  },
+  {
+    "_id": "i18n-message-hu-landing-partners-api-title",
+    "key": "landing.partners.api.title",
+    "lang": "hu",
+    "value": "Kapcsold össze a rendszereidet · API"
+  },
+  {
+    "_id": "i18n-message-hu-landing-partners-api-description",
+    "key": "landing.partners.api.description",
+    "lang": "hu",
+    "value": "Felhasználóhoz kötött API-kulccsal szállásfoglaló, belső vállalati vagy más rendszereket kapcsolhatsz a MyScoutee-hoz. Eseményeket, szállásajánlatokat és csoportmeghívásokat hozhatsz létre."
+  },
+  {
+    "_id": "i18n-message-hu-landing-partners-api-link",
+    "key": "landing.partners.api.link",
+    "lang": "hu",
+    "value": "API-kliens és dokumentáció · GitHub"
   }
 ]
