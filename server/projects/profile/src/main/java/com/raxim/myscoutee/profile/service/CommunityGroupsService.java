@@ -28,9 +28,14 @@ public class CommunityGroupsService {
     private final UsersRepository users;
     private final HomeUserProfileService profiles;
     private final CommunityGroupProfilesService groupProfiles;
+    private final ContentModerationService moderation;
+    private final UserReportSubmissionsRepository reports;
+    private final AdminTelemetryService telemetry;
     public CommunityGroupsService(CommunityGroupsRepository groups, ActivityMembersRepository memberships,
-            UsersRepository users, HomeUserProfileService profiles, CommunityGroupProfilesService groupProfiles) {
+            UsersRepository users, HomeUserProfileService profiles, CommunityGroupProfilesService groupProfiles,
+            ContentModerationService moderation, UserReportSubmissionsRepository reports, AdminTelemetryService telemetry) {
         this.groups = groups; this.memberships = memberships; this.users = users; this.profiles = profiles; this.groupProfiles = groupProfiles;
+        this.moderation = moderation; this.reports = reports; this.telemetry = telemetry;
     }
     public Users actor(String requestedId) {
         Users actor = profiles.resolveCurrentUser(requestedId);
@@ -73,7 +78,8 @@ public class CommunityGroupsService {
         var owners = users.findByUserIdIn(records.stream().map(CommunityGroup::ownerUserId).distinct().toList()).stream()
                 .collect(Collectors.toMap(Users::getUserId, u -> u));
         var profileByGroup = groupProfiles.profilesByGroup(actor.getUserId());
-        var rows = records.stream().filter(g -> category == null || category.isBlank() || category.equals(g.category()))
+        var rows = records.stream().filter(g -> !bucket.equals("explore") || g.moderationVisible() || isAdmin(ownById.get(g.id())))
+                .filter(g -> category == null || category.isBlank() || category.equals(g.category()))
                 .filter(g -> owners.containsKey(g.ownerUserId()))
                 .map(g -> CommunityGroupMapper.toDto(g, owners.get(g.ownerUserId()), actor,
                         membersByGroup.getOrDefault(g.id(), List.of()), com.raxim.myscoutee.profile.service.mapper.CommunityGroupProfileMapper.attention(profileByGroup.get(g.id()))))
@@ -120,14 +126,42 @@ public class CommunityGroupsService {
                 request.description() == null ? "" : request.description().trim(), request.imageUrl(), request.category(),
                 request.visibility(), request.hideMembers(), new CommunityGroup.Policy(policy.workspace(), policy.enabled(),
                     policy.requiredFields().stream().distinct().toList()), existing == null ? now : existing.createdAtIso(), now,
-                    existing == null ? null : existing.version());
+                    existing == null ? null : existing.version(), existing == null ? null : existing.moderationStatus(),
+                    existing == null ? null : existing.moderationVersion());
         group = groups.save(group);
         if (existing == null) memberships.save(newMember(group, actor.getUserId(), "Admin", "accepted", null, actor.getUserId()));
         groupProfiles.applyPolicy(group);
+        moderation.register("group", group.id(), group.ownerUserId(), group.name(), group.imageUrl());
+        group = groups.findById(id).orElseThrow(() -> error(HttpStatus.NOT_FOUND));
         return dto(actor, group, members(id));
+    }
+    public Group moderationDetail(String id) {
+        var group = groups.findById(id).orElseThrow(() -> error(HttpStatus.NOT_FOUND));
+        var owner = users.findByUserId(group.ownerUserId()).orElseThrow(() -> error(HttpStatus.NOT_FOUND));
+        return dto(owner, group, members(id));
+    }
+    public void report(Users actor, Report request) {
+        var group = visible(actor, request.groupId());
+        String details = request.details() == null ? "" : request.details().trim();
+        if (group.ownerUserId().equals(actor.getUserId())) throw error(HttpStatus.FORBIDDEN);
+        if (details.length() < 12 || details.length() > 2000) throw error(HttpStatus.BAD_REQUEST);
+        String key = "community:" + UUID.nameUUIDFromBytes((actor.getUserId() + "\n" + group.id() + "\n" + details)
+                .getBytes(java.nio.charset.StandardCharsets.UTF_8));
+        if (reports.findBySyncKey(key).isPresent()) return;
+        var report = new UserReportSubmission();
+        String now = Instant.now().toString();
+        report.setId(UUID.randomUUID().toString()); report.setSyncKey(key); report.setUserId(actor.getUserId());
+        report.setTargetUserId(group.ownerUserId()); report.setHandle(group.name());
+        report.setReason("groups.report"); report.setDetails(details);
+        report.setSourceType("community"); report.setSourceId(group.id()); report.setSourceText(group.name());
+        report.setCreatedDate(now); report.setUpdatedDate(now); report.setCreatedUser(actor.getUserId()); report.setUpdatedUser(actor.getUserId());
+        try { reports.save(report); }
+        catch (org.springframework.dao.DuplicateKeyException duplicate) { return; }
+        telemetry.record("report.submitted", "moderation", report.getId(), actor.getUserId());
     }
     public Group join(Users actor, String id) {
         var group = visible(actor, id);
+        if (!group.moderationVisible()) throw error(HttpStatus.FORBIDDEN);
         var old = membership(id, actor.getUserId());
         if (old != null && Set.of("accepted", "pending").contains(old.getStatus())) return dto(actor, group, members(id));
         if ("invitation".equals(group.visibility())) throw error(HttpStatus.FORBIDDEN);

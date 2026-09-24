@@ -158,6 +158,12 @@ public class ContentModerationService {
                 mutation.adminName(), mutation.adminInitials(), mutation.message(), "warned", "content-moderation:" + mutation.commandId());
     }
     private void applyResource(Item item) {
+        if (item.category().equals("group")) {
+            mongo.updateFirst(Query.query(Criteria.where("_id").is(item.sourceId()).andOperator(new Criteria().orOperator(
+                    Criteria.where("moderationVersion").lt(item.version()), Criteria.where("moderationVersion").exists(false)))),
+                    new Update().set("moderationStatus", item.status()).set("moderationVersion", item.version()).inc("version", 1), "communityGroups");
+            return;
+        }
         String collection = switch (item.category()) { case "event" -> "events"; case "asset" -> "assets"; default -> "photoFeedPosts"; };
         String key = switch (item.category()) { case "event" -> "sourceId"; case "asset" -> "assetId"; default -> "_id"; };
         var query = Query.query(Criteria.where(key).is(item.sourceId()).andOperator(new Criteria().orOperator(

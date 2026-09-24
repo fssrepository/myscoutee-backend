@@ -27,4 +27,6 @@ public class CommunityGroupsController {
     public Group save(@RequestBody Save request) { return groups.save(groups.actor(request.userId()), request); }
     @PostMapping("/join")
     public Group join(@RequestBody Command request) { return groups.join(groups.actor(request.userId()), request.groupId()); }
+    @PostMapping("/report")
+    public void report(@RequestBody Report request) { groups.report(groups.actor(request.userId()), request); }
 }

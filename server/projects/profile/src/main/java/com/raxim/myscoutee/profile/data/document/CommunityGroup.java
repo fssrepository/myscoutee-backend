@@ -11,6 +11,7 @@ public record CommunityGroup(
         @Id String id, @Indexed String ownerUserId, String name, String description,
         String imageUrl, String category, @Indexed String visibility,
         boolean hideMembers, Policy policy, String createdAtIso, String updatedAtIso,
-        @Version Long version) {
+        @Version Long version, String moderationStatus, Long moderationVersion) {
+    public boolean moderationVisible() { return moderationStatus == null || "accepted".equals(moderationStatus); }
     public record Policy(boolean workspace, boolean enabled, List<String> requiredFields) {}
 }

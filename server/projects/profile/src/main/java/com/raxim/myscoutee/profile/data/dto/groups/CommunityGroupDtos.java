@@ -13,7 +13,7 @@ public final class CommunityGroupDtos {
             boolean hideMembers, Policy policy, String createdAtIso, String updatedAtIso,
             Long version, String role, String membershipStatus, String requestKind,
             boolean organizerOnly, int acceptedMembers, int pendingMembers, long activity,
-            Double distanceKm) {
+            Double distanceKm, String moderationStatus) {
         @com.fasterxml.jackson.annotation.JsonProperty
         public String revision() {
             try { return java.util.HexFormat.of().formatHex(java.security.MessageDigest.getInstance("SHA-256")
@@ -29,4 +29,5 @@ public final class CommunityGroupDtos {
     public record SyncRequest(String userId, String bucket, String category, int limit, List<KnownGroup> knownItems, String tailId) {}
     public record SyncResponse(List<Group> upserts, List<String> removedIds, long total) {}
     public record Command(String userId, String groupId, String action) {}
+    public record Report(String userId, String groupId, String details) {}
 }

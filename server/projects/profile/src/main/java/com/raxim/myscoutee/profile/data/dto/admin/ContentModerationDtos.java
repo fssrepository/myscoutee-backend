@@ -7,7 +7,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 
 public final class ContentModerationDtos {
     private ContentModerationDtos() {}
-    public static final List<String> CATEGORIES = List.of("asset", "event", "feed");
+    public static final List<String> CATEGORIES = List.of("asset", "event", "feed", "group");
     public static final List<String> STATUSES = List.of("under-review", "accepted", "rejected", "blocked");
     public record Settings(Boolean enabled, boolean autoApprove, int delayMinutes, List<String> categories) {
         public static Settings defaults() { return new Settings(false, false, 0, CATEGORIES); }

@@ -21,9 +21,11 @@ public class ContentModerationController {
     private final MongoTemplate mongo;
     private final AssetsService assets;
     private final ActivityEventDetailMapper events;
+    private final CommunityGroupsService groups;
     public ContentModerationController(AdminModerationService admins, ContentModerationService moderation,
-            MongoTemplate mongo, AssetsService assets, ActivityEventDetailMapper events) {
+            MongoTemplate mongo, AssetsService assets, ActivityEventDetailMapper events, CommunityGroupsService groups) {
         this.admins = admins; this.moderation = moderation; this.mongo = mongo; this.assets = assets; this.events = events;
+        this.groups = groups;
     }
     @GetMapping public Page page(@RequestParam String adminUserId, @RequestParam(defaultValue="all") String category,
             @RequestParam(defaultValue="under-review") String status, @RequestParam(required=false) String cursor,
@@ -46,6 +48,7 @@ public class ContentModerationController {
         Item item = mongo.findById(id, Item.class);
         if (item == null || item.deleted()) throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         return switch (item.category()) {
+            case "group" -> groups.moderationDetail(item.sourceId());
             case "asset" -> assets.queryModerationAssetDetail(item.sourceId());
             case "event" -> {
                 var record = mongo.findOne(Query.query(Criteria.where("sourceId").is(item.sourceId())

@@ -18,7 +18,7 @@ public final class CommunityGroupMapper {
                 own == null ? null : own.getRequestKind(), own != null && Boolean.TRUE.equals(own.getOrganizerOnly()),
                 (int)members.stream().filter(m -> "accepted".equals(m.getStatus())).count(),
                 admin ? (int)members.stream().filter(m -> "pending".equals(m.getStatus())).count() : 0,
-                activity, distance(owner, viewer));
+                activity, distance(owner, viewer), group.moderationStatus());
     }
     public static ActivityMemberEntryDto member(ActivityMember m, Users user, String actor) {
         return new ActivityMemberEntryDto(m.getId(), m.getUserId(), user.getName(), user.getInitials(),
