@@ -1,12 +1,12 @@
 # Personal calendar subscription — 2026-09-22
 
-Status (2026-09-23): manual ICS export implemented; focused checks passed; live QA NOT RUN. The research below is superseded and retained as decision history.
+Status (2026-09-24): manual ICS export and concrete slot occurrences implemented; live QA evidence is in EVENT-CALENDAR-EXPORT-001-20260924.md. The research below is superseded and retained as decision history.
 
 ## Accepted implementation — manual download
 
 - User selected **Sync calendar / Naptár szinkronizálása** beside ordinary-user Affiliate. One click downloads `myscoutee-calendar.ics`, with the existing AppMenu ring. No provider/setup popup, background sync, subscription token, native app or email sending. Desktop users can send the downloaded file themselves.
-- Authenticated `GET /activities/events/calendar/export` resolves the actor from the session, with no caller-selected user ID. UTF-8 text/calendar attachment, private/no-store. Reuses the existing personal activity query; local adapter uses a batched canonical membership lookup.
-- Export active/published root events owned/organized by the actor or with accepted membership, with valid timezone-aware start/end and end in the future (includes ongoing). Exclude drafts, invitations, pending membership, watch-only, moderation-suppressed, deleted and past events. No separate round/sub-event expansion.
+- Authenticated `GET /activities/events/calendar/export` resolves the actor from the session, with no caller-selected user ID. UTF-8 text/calendar attachment, private/no-store. Reuses personal event scope and canonical occurrence generation; local adapter uses a batched canonical membership lookup.
+- Export active/published root events owned/organized by the actor or with accepted membership, with valid timezone-aware start/end and end in the future (includes ongoing). Exclude drafts, invitations, pending membership, watch-only, moderation-suppressed, deleted and past events. Slots-enabled parents export their concrete ongoing/upcoming occurrences instead of a duplicate parent summary. Participants require accepted membership on the occurrence; organizers receive the occurrence schedule. Uses existing recurrence/closed-date rules through the event mappers; no separate tournament-round expansion.
 - Stable event-derived UID, export DTSTAMP, UTC start/end, title, location and DISPLAY reminder at event start. No participants, credentials or payments. RFC 5545 text escaping and 75-octet UTF-8-safe folding. No invented revision sequence or scheduling METHOD.
 - Local and HTTP paths preserve the same contract. The download store prevents duplicate clicks, bounds the HTTP wait, discards results after account change and reports errors through the shared dialog. It does not claim that download proves import/sync.
 - Mobile may offer an import dialog immediately or only when opening the downloaded file. Stable UID does not guarantee a particular importer's duplicate/update handling. Omitting a cancelled/left event does not remove its older imported entry.

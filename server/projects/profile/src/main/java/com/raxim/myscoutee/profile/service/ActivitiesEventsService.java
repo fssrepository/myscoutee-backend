@@ -710,6 +710,64 @@ public class ActivitiesEventsService {
         }
     }
 
+    /** Calendar entries use concrete slot memberships, rather than the activity list's parent projection. */
+    public List<EventDto> queryCalendarItemsByUser(String requestedUserId) {
+        ViewerContext viewer = resolveViewer(requestedUserId);
+        if (viewer == null) return List.of();
+        EventQueryContext base = buildUserQueryContext(viewer, false);
+        Map<String, ActivityEvent> parents = new LinkedHashMap<>();
+        for (ActivityEvent record : computePreferredEventRecords(base.allEvents())) {
+            if (isSlotParentRecord(record)) parents.put(normalizeId(record.getSourceId()), record);
+        }
+        Map<String, ActivityEvent> storedSlots = new LinkedHashMap<>();
+        if (!parents.isEmpty()) {
+            for (ActivityEvent slot : computePreferredEventRecords(activityEventsRepository.findByParentEventIdIn(parents.keySet()))) {
+                if (!"tournament-room".equalsIgnoreCase(safeText(slot.getEventType()))) {
+                    storedSlots.put(normalizeId(slot.getSourceId()), slot);
+                }
+            }
+        }
+        List<ActivityEvent> candidates = new ArrayList<>();
+        for (ActivityEvent parent : parents.values()) {
+            if (!ActivityEvent.STATUS_ACTIVE.equals(parent.getStatus())
+                    || StringUtils.hasText(parent.getCancelledAtIso())
+                    || List.of("under-review", "blocked", "rejected").contains(safeText(parent.getModerationStatus()))) continue;
+            String cursor = null;
+            do {
+                EventSubEventsSlotPage page = activityEventSubEventsMapper.toSlotPage(parent.getSourceId(), parent,
+                        new EventSubEventsQueryDto(viewer.userId(), parent.getSourceId(), "upcoming", null,
+                                null, null, null, false, null, 240, cursor));
+                for (EventSubEventsSlotDto slot : page.slots()) {
+                    String id = normalizeId(slot.slotSourceId());
+                    if (!StringUtils.hasText(id)) continue;
+                    ActivityEvent stored = storedSlots.get(id);
+                    ActivityEvent entry = cloneDocument(stored == null ? parent : stored);
+                    entry.setSourceId(id);
+                    entry.setStartAtIso(slot.startAt());
+                    entry.setEndAtIso(slot.endAt());
+                    entry.setSlotsEnabled(false);
+                    entry.setParentEventId(parent.getSourceId());
+                    entry.setEventType("slot");
+                    entry.setOrganizerUserId(StringUtils.hasText(parent.getOrganizerUserId())
+                            ? parent.getOrganizerUserId() : parent.getCreatorUserId());
+                    candidates.add(entry);
+                }
+                cursor = page.nextCursor();
+            } while (StringUtils.hasText(cursor));
+        }
+        List<ActivityEvent> scoped = new ArrayList<>(base.allEvents());
+        scoped.addAll(candidates);
+        EventQueryContext context = new EventQueryContext(scoped, scoped, buildMemberSnapshotMap(scoped),
+                base.trackedEventSourceIds(), base.trackedEventStatusesBySourceId(),
+                pendingPaymentEventSourceIds(viewer.userId(), scoped), Map.of());
+        return withEventQueryContext(context, () -> {
+            candidates.addAll(queryUserRecords(viewer).stream()
+                    .filter(record -> !Boolean.TRUE.equals(record.getSlotsEnabled())).toList());
+            return candidates.stream().map(record -> toEventDto(record, viewer)).filter(Objects::nonNull)
+                    .sorted(listItemComparator()).toList();
+        });
+    }
+
     public EventsExplorePageDto queryItemsByUserPage(String requestedUserId, Integer requestedLimit, String cursor) {
         ViewerContext viewer = resolveViewer(requestedUserId);
         if (viewer == null) {

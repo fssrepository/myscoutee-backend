@@ -26,7 +26,7 @@ public class CalendarExportService {
     }
 
     public String export(String actorId) {
-        return render(actorId, events.queryItemsByUser(actorId), Instant.now());
+        return render(actorId, events.queryCalendarItemsByUser(actorId), Instant.now());
     }
 
     static String render(String actorId, List<EventDto> records, Instant now) {

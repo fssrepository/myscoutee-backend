@@ -89,9 +89,9 @@ Earlier Event Mode, Integration API, Activity Rating and EVENT-FOLLOWING-001 rem
 checkpoint: EVENT-CALENDAR-EXPORT-001
 checklist: ../checklists/event/EVENT-CALENDAR-EXPORT-001.md
 substage: IN PROGRESS; user started the previously deferred checkpoint on 2026-09-24.
-fixture_phase: Gallery actors and14 calendar controls retained. Five QA events imported into Android and Ubuntu; owned event cancelled through UI. Keep imported QA entries until remaining compatibility checks finish; preserve affiliate Mongo/IndexedDB.
+fixture_phase: After the user reboot, startup Mongo seed replaced the old calendar actors/events and /tmp browser profiles were lost. Read-only resume gate recorded this; versioned gallery reset/stage, calendar stage and managed launcher restored inputs at15:06. Three slot/recurrence parent controls added at15:18. Earlier native imports remain for compatibility checks; earlier affiliate PASS evidence remains closed, but its old runtime was not retained.
 execution_log: ../evidence/EVENT-CALENDAR-EXPORT-001-20260924.md
-next_action: Continue Calendar changed-time/reimport/omission and offline reminder checks, local/error branches and cleanup. Native Android import confirmed; its default30-minute reminders replaced exported start alarm. Cancellation/moderation export regression fixed and HTTP/local checked. Details and native Chrome panel setting in execution log.
+next_action: Finish user-requested slots/recurrence (HTTP organizer14 occurrences, participant3 accepted verified), local parity, changed-time/reimport/omission and offline reminder checks, then cleanup. Native Android import had replaced exported start alarm with its default30-minute reminders. Current evidence contains reboot boundary; do not replay closed affiliate checks.
 queue: None selected.
 resume_gate: Read-only fixture/runtime/device status before mutation; preserve affiliate Mongo and local IndexedDB evidence. No replay of closed affiliate checks.
 runtime: Existing frontend-sync dev and backend watchers own builds. Authorized Android14 device connected; QA reverse8080→80 and Chrome CDP36087 prepared.

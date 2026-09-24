@@ -8,8 +8,8 @@ import subprocess
 import sys
 
 action = sys.argv[1] if len(sys.argv) > 1 else 'status'
-if action not in ('stage', 'status', 'normalize-invited-control'):
-    raise SystemExit('Use stage or status')
+if action not in ('stage', 'stage-slots', 'status', 'normalize-invited-control'):
+    raise SystemExit('Use stage, stage-slots or status')
 script = r'''
 const owner='6a1100000000000000000001',viewer='6a1100000000000000000002';
 const key='EVENT-GALLERY-FEED-001', prefix='6ca1';
@@ -62,7 +62,41 @@ if(ACTION==='stage') {
  db.manualQaCheckpointSnapshots.updateOne({_id:key},{$set:{calendarControls:ids}});
 }
 if(ACTION==='normalize-invited-control'){const control=(snapshot.calendarControls??[]).filter(x=>x.name==='invited')[0];if(!control)throw Error('Missing isolated invitation control');db.activityMembers.updateOne({_id:'qa-calendar:'+control.id+':'+viewer,status:'invited'},{$set:{status:'I'}});}
+if(ACTION==='stage-slots') {
+ if(snapshot.calendarSlotControls)throw Error('Slot controls already staged');
+ const standard=(snapshot.calendarControls??[]).filter(c=>c.name==='standard')[0];
+ const sample=standard?db.events.findOne({sourceId:standard.id}):null;
+ if(!sample)throw Error('Stage ordinary calendar controls first');
+ const now=new Date(); now.setUTCMilliseconds(0); now.setUTCSeconds(0);
+ const controls=[];
+ for(const [index,frequency,days] of [[1,'One-time',0],[2,'Daily',3],[3,'Weekly',21]]) {
+  const id='6ca2'+String(index).padStart(20,'0');
+  if(db.events.findOne({sourceId:id}))throw Error('Slot parent collision');
+  const start=new Date(now.getTime()+(frequency==='One-time'?2*3600000:-86400000));
+  const end=new Date(start.getTime()+days*86400000+4*3600000);
+  const templates=[0,1].map(n=>({id:'qa-slot-'+n,startAt:new Date(start.getTime()+n*2*3600000).toISOString(),closed:false,
+   subEventDefinitions:[{id:'qa-stage',name:'QA Calendar activity',timing:'sequential',offsetMinutes:0,durationMinutes:60}]}));
+  db.events.insertOne({...sample,_id:ObjectId(id),sourceId:id,syncKey:id,title:'QA Calendar '+frequency+' slots',
+   startAtIso:start.toISOString(),endAtIso:end.toISOString(),frequency,slotsEnabled:true,subEventsEnabled:true,
+   slotTemplates:templates,subEventDefinitions:[],acceptedMemberUserIds:[owner,viewer],acceptedMembers:2});
+  for(const userId of [owner,viewer])db.activityMembers.insertOne({_id:'qa-calendar:'+id+':'+userId,
+   ownerType:'event',ownerId:id,userId,role:userId===owner?'Admin':'Member',status:'accepted',actionAtIso:now.toISOString()});
+  // Canonical membership inputs only. The application generates all exported occurrences.
+  const occurrenceStart=new Date(start.getTime()+(frequency==='Daily'?86400000:frequency==='Weekly'?7*86400000:0));
+  const memberships=[];
+  for(const n of [0,1]) {
+   const at=new Date(occurrenceStart.getTime()+n*2*3600000).toISOString().replace('.000Z','Z');
+   const slotId=id+':slot:qa-slot-'+n+':'+at,status=n===0?'accepted':'pending';
+   db.activityMembers.insertOne({_id:'qa-calendar:'+slotId+':'+viewer,ownerType:'event',ownerId:slotId,userId:viewer,
+    role:'Member',status,actionAtIso:now.toISOString()});
+   memberships.push({slotId,status,start:at});
+  }
+  controls.push({id,frequency,start:start.toISOString(),end:end.toISOString(),memberships});
+ }
+ db.manualQaCheckpointSnapshots.updateOne({_id:key},{$set:{calendarSlotControls:controls}});
+}
 const current=db.manualQaCheckpointSnapshots.findOne({_id:key});
+print(JSON.stringify({slotControls:current.calendarSlotControls??[]}));
 print(JSON.stringify({controls:current.calendarControls??[],events:db.events.find({sourceId:{$in:(current.calendarControls??[]).map(x=>x.id)}},{sourceId:1,status:1,moderationStatus:1,cancelledAtIso:1,startAtIso:1,endAtIso:1}).toArray()}));
 '''.replace('ACTION', json.dumps(action))
 print(subprocess.check_output(['docker', 'exec', 'mongodb', 'sh', '-c',

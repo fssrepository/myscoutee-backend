@@ -1,19 +1,27 @@
 # EVENT-CALENDAR-EXPORT-001 — Manual calendar download and import
 
-Status: **NOT RUN — awaits user-started dev stack and connected Android.** New case; earlier PASS evidence unchanged. User authorized automatic testing, explicitly including the mobile import window. Record application export separately from calendar-client compatibility.
+Execution status and remaining checks are recorded in the dated evidence and QA matrix. User authorized automatic testing, explicitly including the mobile import window. Record application export separately from calendar-client compatibility.
 
 ## Baseline
 
 1. Verify dev pipeline, demo database and frontend/backend versions. Do not start a second stack. After the preceding gallery case is reset, reuse `python3 guides/qa/tools/gallery-moderation-fixture.py stage`, then `status`, and `node guides/qa/tools/open-checkpoint-browser-sessions.mjs EVENT-GALLERY-FEED-001`. The shared launcher key intentionally matches that fixture's session-restore key; evidence for this run belongs to EVENT-CALENDAR-EXPORT-001. Never stage over an existing baseline.
-2. Using disposable Creator/Viewer and moderation admin, create short future published/accepted Standard, Tournament and Speed meeting events. Include Viewer as accepted on one, pending on one, invited on another. Add unrelated/watch-only, draft and ended controls. Record IDs, statuses, memberships and UTC times. Root events are exported; tournament rounds are not separate entries.
+2. Using disposable Creator/Viewer and moderation admin, create short future published/accepted Standard, Tournament and Speed meeting events. Include Viewer as accepted on one, pending on one, invited on another. Add unrelated/watch-only, draft and ended controls. Record IDs, statuses, memberships and UTC times. Ordinary root events and concrete slot occurrences are exported; tournament rounds are not separate entries.
 
 ## App checks
 
 3. Desktop Profile: Calendar sync beside Affiliate, calendar icon, EN/HU text. One click makes one request with the existing ring. Repeated clicks while pending do not duplicate requests. No setup popup. At 360px buttons fit without covering avatar/name or overflowing. Admin API has no Calendar button.
-4. HTTP: text/calendar UTF-8, attachment filename `myscoutee-calendar.ics`, private/no-store. Only own/organized or accepted, published ongoing/upcoming root events included. Draft/UR/blocked/deleted/past/invited/pending/watch-only excluded. Anonymous request rejected; userId query tampering cannot select another calendar. Verify local adapter parity against canonical memberships.
+4. HTTP: text/calendar UTF-8, attachment filename `myscoutee-calendar.ics`, private/no-store. Only own/organized or accepted, published ongoing/upcoming ordinary events and eligible concrete slot occurrences included. Draft/UR/blocked/deleted/past/invited/pending/watch-only excluded. Anonymous request rejected; userId query tampering cannot select another calendar. Verify local adapter parity against canonical memberships.
 5. Check CRLF, valid UTC DTSTART/DTEND, stable unique UID, DTSTAMP, DISPLAY alarm at start, UTF-8 folding <=75 octets. Include accents/emoji and newline/comma/semicolon/backslash in title/location. No injected properties, participants, credentials or payments. Duplicate source IDs produce one VEVENT. Empty account downloads valid empty calendar.
 6. Repeat export: same UIDs. Change a future event's time in its editor: same UID with updated time. Leave/cancel/trash an event: absent in next export. Absence does not prove removal from an already imported calendar.
 7. Expired session, offline request and timeout: translated error, released ring, no HTML/error body downloaded. Retry succeeds. Change account during request: no prior-account file. Download must not claim verified calendar synchronization.
+
+### Slots and repeating schedules
+
+- Include a slots-enabled event with two different times on one day and an event with a repeating frequency across several dates. Use the existing event editor, booking and occurrence generation contracts; distinguish concrete event occurrences from tournament rounds/sub-events.
+- Participant control: accept/join one occurrence, then a second occurrence; retain an unjoined and a pending occurrence. Compare exported dates/times and identifiers with the actual accepted occurrence memberships. A parent event membership must not silently stand for attendance at every occurrence.
+- Organizer control: compare the exported schedule with the organizer's concrete upcoming/ongoing occurrences. Check that a parent summary does not duplicate its exported occurrences.
+- Re-export unchanged occurrences: retain their stable distinct UIDs. Change one occurrence, cancel/leave one, and verify that the other occurrence remains unchanged. Check repeated schedules whose original parent start has passed but a joined occurrence is still in the future.
+- Run equivalent HTTP and frontend-local cases. Record supported frequency/slot variants, any omissions and importer behavior explicitly; the simple one-time event checks do not cover this branch.
 
 ## Physical Android / calendar import
 

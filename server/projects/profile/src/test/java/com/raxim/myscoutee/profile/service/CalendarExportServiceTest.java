@@ -82,9 +82,9 @@ class CalendarExportServiceTest {
 
     @Test void exportUsesExistingActorScopedQuery() {
         var events = mock(ActivitiesEventsService.class);
-        when(events.queryItemsByUser("viewer")).thenReturn(List.of());
+        when(events.queryCalendarItemsByUser("viewer")).thenReturn(List.of());
         assertTrue(new CalendarExportService(events).export("viewer").endsWith("END:VCALENDAR\r\n"));
-        verify(events).queryItemsByUser("viewer");
+        verify(events).queryCalendarItemsByUser("viewer");
     }
 
     private String uid(String value) { return value.lines().filter(line -> line.startsWith("UID:")).findFirst().orElseThrow(); }

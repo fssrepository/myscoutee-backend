@@ -44,8 +44,11 @@ if (action === 'keep-screen-awake' || action === 'restore-screen') {
       timeout: readSetting('system', 'screen_off_timeout'), stayOn: readSetting('global', 'stay_on_while_plugged_in') }), { mode: 0o600 });
     const saved = JSON.parse(readFileSync(screenSnapshot, 'utf8'));
     if (saved.serial !== serial) throw Error('Screen restore point belongs to another device');
-    execFileSync('adb', ['shell', 'settings', 'put', 'system', 'screen_off_timeout', '1800000']);
+    // USB stay-on prevents sleep, but Android can still dim at the screen timeout.
+    // Keep the original value above for restoration after the device checkpoint.
+    execFileSync('adb', ['shell', 'settings', 'put', 'system', 'screen_off_timeout', '2147483647']);
     execFileSync('adb', ['shell', 'svc', 'power', 'stayon', 'usb']);
+    execFileSync('adb', ['shell', 'input', 'keyevent', 'KEYCODE_WAKEUP']);
   } else {
     const saved = JSON.parse(readFileSync(screenSnapshot, 'utf8'));
     if (saved.serial !== serial) throw Error('Screen restore point belongs to another device');
