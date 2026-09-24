@@ -168,6 +168,11 @@ public class ActivitiesEventsController {
         return activitiesEventsService.publish(request);
     }
 
+    @PostMapping("/cancel")
+    public EventParticipationActionResultDto cancel(@RequestBody EventActionRequestDto request) {
+        return activitiesEventsService.cancel(request);
+    }
+
     @PostMapping("/unpublish")
     @RequiresPolicy(
             key = AccessPolicyKeys.EVENT_UNPUBLISH,

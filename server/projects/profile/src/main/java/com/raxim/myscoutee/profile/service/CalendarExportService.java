@@ -26,7 +26,7 @@ public class CalendarExportService {
     }
 
     public String export(String actorId) {
-        return render(actorId, events.queryItemsByUser(actorId), Instant.now());
+        return render(actorId, events.queryCalendarItemsByUser(actorId), Instant.now());
     }
 
     static String render(String actorId, List<EventDto> records, Instant now) {
@@ -38,7 +38,9 @@ public class CalendarExportService {
             Instant start = instant(event.startAtIso());
             Instant end = instant(event.endAtIso());
             boolean owner = actorId.equals(event.creatorUserId()) || actorId.equals(event.organizerUserId());
-            if (!"A".equals(event.status()) || (!owner && !"accepted".equals(event.currentUserMembershipStatus()))
+            if (!"A".equals(event.status()) || Boolean.TRUE.equals(event.cancelled())
+                    || List.of("under-review", "blocked", "rejected").contains(event.moderationStatus() == null ? "" : event.moderationStatus())
+                    || (!owner && !"accepted".equals(event.currentUserMembershipStatus()))
                     || event.id() == null || event.id().isBlank() || start == null || end == null
                     || !end.isAfter(start) || !end.isAfter(now)) continue;
             unique.putIfAbsent(event.id(), event);

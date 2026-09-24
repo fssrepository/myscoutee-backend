@@ -40,6 +40,13 @@ the public host key in the local user's `~/.ssh/known_hosts` file. If it differs
 or SSH reports a changed host key, verify the change through Netcup before
 continuing; do not bypass the check.
 
+The verified SSH credentials and pinned host fingerprint are retained locally in
+`packaging/client-tools/netcup.local.env` (mode `0600`, excluded by the repository's
+`/packaging/client-tools/*.env` rule). This file contains the SSH login, separately
+from `netcup-operator.credentials.env`, which contains the application login.
+Use the local SSH file for continuation; do not depend on a screenshot or `/tmp`.
+Never print its contents or include it in a release artifact.
+
 Enter the current root password at the password prompt. The initial password
 was supplied in the email titled **“Ihr vServer bei netcup ist bereitgestellt”**,
 received on 2026-09-18 at 13:20. After a password change, use the replacement

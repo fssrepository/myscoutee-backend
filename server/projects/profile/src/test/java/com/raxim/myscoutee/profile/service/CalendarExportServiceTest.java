@@ -56,6 +56,20 @@ class CalendarExportServiceTest {
         assertTrue(CalendarExportService.render("owner", List.of(hosted), NOW).contains("BEGIN:VEVENT"));
     }
 
+    @Test void excludesCancelledAndModerationHeldEventsEvenWhenStatusRemainsActive() {
+        var cancelled = event("cancelled");
+        when(cancelled.cancelled()).thenReturn(true);
+        assertFalse(CalendarExportService.render("owner", List.of(cancelled), NOW).contains("BEGIN:VEVENT"));
+        for (String status : List.of("under-review", "blocked", "rejected")) {
+            var held = event(status);
+            when(held.moderationStatus()).thenReturn(status);
+            assertFalse(CalendarExportService.render("viewer", List.of(held), NOW).contains("BEGIN:VEVENT"));
+        }
+        var accepted = event("accepted");
+        when(accepted.moderationStatus()).thenReturn("accepted");
+        assertTrue(CalendarExportService.render("viewer", List.of(accepted), NOW).contains("BEGIN:VEVENT"));
+    }
+
     @Test void escapesInjectionAndFoldsUnicodeAt75Octets() {
         var event = event("unicode");
         when(event.title()).thenReturn("Á😀".repeat(40) + ",;\\\r\nBEGIN:VEVENT\u0000");
@@ -68,9 +82,9 @@ class CalendarExportServiceTest {
 
     @Test void exportUsesExistingActorScopedQuery() {
         var events = mock(ActivitiesEventsService.class);
-        when(events.queryItemsByUser("viewer")).thenReturn(List.of());
+        when(events.queryCalendarItemsByUser("viewer")).thenReturn(List.of());
         assertTrue(new CalendarExportService(events).export("viewer").endsWith("END:VCALENDAR\r\n"));
-        verify(events).queryItemsByUser("viewer");
+        verify(events).queryCalendarItemsByUser("viewer");
     }
 
     private String uid(String value) { return value.lines().filter(line -> line.startsWith("UID:")).findFirst().orElseThrow(); }

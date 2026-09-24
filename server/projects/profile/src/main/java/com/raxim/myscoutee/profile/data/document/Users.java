@@ -140,6 +140,10 @@ public class Users {
         this.userId = id;
     }
 
+    private String summaryCurrency;
+    public String getSummaryCurrency() { return summaryCurrency; }
+    public void setSummaryCurrency(String value) { summaryCurrency = value; }
+
     public String getUserId() {
         return userId;
     }

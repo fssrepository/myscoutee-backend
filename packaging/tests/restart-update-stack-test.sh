@@ -62,7 +62,7 @@ lines = Path(sys.argv[1]).read_text().splitlines()
 assert lines == [
     'compose stop profilemanagement',
     'reset-demo-state.sh ',
-    'sync-i18n-seeds.sh ',
+    'sync-i18n-seeds.sh --prepare-only',
     'migrate-production-data.sh ',
     'compose up -d --no-deps --wait --wait-timeout 300 mongodb redis minio registry payment-simulator',
     'compose up -d --no-deps profilemanagement',

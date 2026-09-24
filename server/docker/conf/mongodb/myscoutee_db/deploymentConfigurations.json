@@ -24,7 +24,8 @@
       "publicBaseUrl": null,
       "merchantAccount": null,
       "credentialEnvelope": null,
-      "credentialMask": null
+      "credentialMask": null,
+      "exchangeRateUrl": "https://www.ecb.europa.eu/stats/eurofxref/eurofxref-hist-90d.xml"
     },
     "firebase": {
       "projectId": "",

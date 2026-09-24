@@ -586,7 +586,10 @@ public final class EventsDtos {
             String sourceLink,
             String moderationStatus,
             Integer paymentDeadlineHours,
-            Boolean paymentDeadlineEnabled) {
+            Boolean paymentDeadlineEnabled,
+            Boolean cancelled,
+            Boolean cancellationRefundsPending,
+            Boolean canCancelForFullRefund) {
     }
 
     public record EventsExplorePageDto(

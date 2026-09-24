@@ -17,6 +17,8 @@ import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.PricingCancellatio
 
 @Document(collection = "payments")
 @CompoundIndexes({
+    @CompoundIndex(name = "payment_cancellation_pending", def = "{'auditKind': 1, 'refundRequestedTargetAmount': 1}"),
+    @CompoundIndex(name = "payment_euro_pending", def = "{'euroCheckedAt': 1}", partialFilter = "{'euro': null, 'auditKind': 'payment', 'accountedSpentAmount': {'$gt': 0}}"),
     @CompoundIndex(name = "payment_user_source", def = "{'userId': 1, 'sourceId': 1, 'createdDate': -1}"),
     @CompoundIndex(name = "payment_recipient_created", def = "{'recipientUserId': 1, 'createdDate': -1}"),
     @CompoundIndex(name = "payment_user_source_booking", def = "{'userId': 1, 'sourceId': 1, 'bookingStatus': 1, 'createdDate': -1}"),
@@ -30,6 +32,10 @@ public class Payment {
     private String id;
     @Version
     private Long version;
+    private com.raxim.myscoutee.profile.data.dto.payment.ExchangeRateDtos.Snapshot euro;
+    public com.raxim.myscoutee.profile.data.dto.payment.ExchangeRateDtos.Snapshot getEuro() { return euro; }
+    public void setEuro(com.raxim.myscoutee.profile.data.dto.payment.ExchangeRateDtos.Snapshot value) { euro = value; }
+    @Indexed(name = "payment_affiliate_owner")
     private String affiliateOwnerUserId;
     private boolean affiliateAttributionResolved;
     @Indexed(name = "payment_affiliate_pending", partialFilter = "{'affiliateRevenuePending':true}")
@@ -58,6 +64,17 @@ public class Payment {
     private String gatewayActionUrl;
     private String gatewayRefundId;
     private String gatewayRefundStatus;
+    // Durable refund intent: the target is cumulative, the gateway amount is only the unpaid remainder.
+    private String gatewayRefundOperationKey;
+    private Double gatewayRefundAmount;
+    private Double gatewayRefundTargetAmount;
+    private boolean eventChangeRefundEligible;
+    private Double refundRequestedTargetAmount;
+    private String cancellationRequestedBy;
+    private String cancellationReason;
+    private String cancellationSessionMode;
+    public String getCancellationSessionMode() { return cancellationSessionMode; }
+    public void setCancellationSessionMode(String value) { cancellationSessionMode = value; }
     private String authorizationExpiresAtIso;
     private String capturedAtIso;
     private String releasedAtIso;
@@ -154,6 +171,21 @@ public class Payment {
 
     public String getGatewayRefundStatus() { return gatewayRefundStatus; }
     public void setGatewayRefundStatus(String gatewayRefundStatus) { this.gatewayRefundStatus = gatewayRefundStatus; }
+
+    public String getGatewayRefundOperationKey() { return gatewayRefundOperationKey; }
+    public void setGatewayRefundOperationKey(String value) { gatewayRefundOperationKey = value; }
+    public Double getGatewayRefundAmount() { return gatewayRefundAmount; }
+    public void setGatewayRefundAmount(Double value) { gatewayRefundAmount = value; }
+    public Double getGatewayRefundTargetAmount() { return gatewayRefundTargetAmount; }
+    public void setGatewayRefundTargetAmount(Double value) { gatewayRefundTargetAmount = value; }
+    public boolean isEventChangeRefundEligible() { return eventChangeRefundEligible; }
+    public void setEventChangeRefundEligible(boolean value) { eventChangeRefundEligible = value; }
+    public Double getRefundRequestedTargetAmount() { return refundRequestedTargetAmount; }
+    public void setRefundRequestedTargetAmount(Double value) { refundRequestedTargetAmount = value; }
+    public String getCancellationRequestedBy() { return cancellationRequestedBy; }
+    public void setCancellationRequestedBy(String value) { cancellationRequestedBy = value; }
+    public String getCancellationReason() { return cancellationReason; }
+    public void setCancellationReason(String value) { cancellationReason = value; }
 
     public String getAuthorizationExpiresAtIso() { return authorizationExpiresAtIso; }
     public void setAuthorizationExpiresAtIso(String authorizationExpiresAtIso) { this.authorizationExpiresAtIso = authorizationExpiresAtIso; }

@@ -46,6 +46,8 @@ import com.raxim.myscoutee.profile.service.EventScheduler;
 
 @Service
 public class AdminNotificationService {
+    @org.springframework.beans.factory.annotation.Autowired
+    private com.raxim.myscoutee.profile.service.exchange.ExchangeRateJob exchangeRateJob;
     private static final long MIN_EXPECTED_RANDOM_RUN_MILLIS = 1_000L;
     private static final long MAX_EXPECTED_RANDOM_RUN_MILLIS = 60_000L;
     private static final long DEFAULT_EXPECTED_RANDOM_RUN_MILLIS = 5_000L;
@@ -188,6 +190,13 @@ public class AdminNotificationService {
                 progress.adoptRule(startedRule);
             }
             switch (normalizedRuleKey) {
+                case com.raxim.myscoutee.profile.service.exchange.ExchangeRateJob.KEY -> {
+                    MongoSessionMode sessionMode = MongoSessionModeContext.currentMode();
+                    Instant started = Instant.parse(startedAtIso(startedRule));
+                    runExecutor.submit(() -> runWithMongoSessionMode(sessionMode, () -> exchangeRateJob.run(admin.id(), started)));
+                    return new AdminNotificationRuleRunResultDto(normalizedRuleKey, safeText(rule.getLabel()), 0,
+                            "running", "Exchange-rate refresh started.", started.toString());
+                }
                 case NotificationRuleRegistryService.RULE_EVENT_RANDOM_GROUPS -> {
                     RandomRunProgress runProgress = progress;
                     MongoSessionMode sessionMode = MongoSessionModeContext.currentMode();

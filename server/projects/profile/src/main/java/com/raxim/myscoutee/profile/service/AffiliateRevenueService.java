@@ -21,6 +21,8 @@ import com.raxim.myscoutee.profile.repository.AffiliateRevenueRepository;
 
 @Service
 public class AffiliateRevenueService {
+    @org.springframework.beans.factory.annotation.Autowired
+    private com.raxim.myscoutee.profile.service.exchange.PaymentEuroService euroService;
     private final MongoTemplate mongo;
     private final AffiliateRevenueRepository repository;
     private final ScheduledMongoSessionRunner sessions;
@@ -77,7 +79,7 @@ public class AffiliateRevenueService {
                     AffiliateRevenueRepository.number(row, "netMinor") / 100D));
         });
         return new AffiliateRevenueDto(currencies, AffiliateRevenueRepository.number(summary, "purchases"),
-                AffiliateRevenueRepository.number(summary, "eventBookings"));
+                AffiliateRevenueRepository.number(summary, "eventBookings"), euroService == null ? null : euroService.summary(owner, true));
     }
 
     @Scheduled(fixedDelay = 30_000L)

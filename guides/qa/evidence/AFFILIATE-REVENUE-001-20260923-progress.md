@@ -1,6 +1,6 @@
 # AFFILIATE-REVENUE-001 — 2026-09-23
 
-Status: IN PROGRESS. Full-flow user delegation active. Admin client fixture reset before entry; invitation fixture status returned no active state, no owned users/referrals/tokens. Use existing dev watchers only. Stable checklist: ../checklists/api/AFFILIATE-REVENUE-001.md.
+Status: PASS in the recorded dev HTTP/simulator and frontend-local runtime scope (2026-09-24). Calendar is explicitly deferred. Production installation and provider hold-only UI are not claimed as tested; see final boundaries. Full-flow user delegation completed. Admin client fixture reset before entry; invitation fixture status returned no active state, no owned users/referrals/tokens. Use existing dev watchers only. Stable checklist: ../checklists/api/AFFILIATE-REVENUE-001.md.
 
 ## Initial UI and registration
 
@@ -272,3 +272,336 @@ At360px, mouse moved to y650 and focus cleared; after1.7s idle, hover=false,
 focus=false, overflow-x=scroll. Screenshot /tmp/qa-payment-history-no-hover.png
 visually confirms track/thumb remain visible. All four pills on same y64.97;
 strip51px high including10px scrollbar. No hover-only behavior.
+
+## Correction: hover means movement, not scrollbar visibility — 22:36 CEST
+
+User clarified the complaint: hovering a total pill lifted/scaled the ENTIRE
+strip. The previous permanent-scrollbar interpretation was incorrect and is
+superseded. Reproduced on desktop: transform matrix(1.01,0,0,1.01,0,-1), strip top
+84.156 -> 82.900. Cause: newly added tabindex=0 matches the global interactive
+hover selector. Added the existing motion-static opt-out to this strip only;
+kept keyboard scrolling. Removed only the mistaken overflow-x:scroll and custom
+permanent track/thumb rules, restoring overflow-x:auto. One-row layout remains.
+No financial, checkout, fixture or other feature changes were reverted.
+
+Existing frontend-sync build PASS20:35:34Z, sync20:35:37Z. Actual pointer hover
+on EACH of four desktop pills: hover=true, transform=none, top84.156 unchanged.
+Desktop content955px fits container955px; mobile347px/content374px still scrolls,
+all pill tops64.969, transform none. This supersedes the previous no-hover-bar
+acceptance interpretation, not the previously verified financial QA results.
+
+### 22:55 — exchange-rate feature and currency-selection scope added (IN PROGRESS)
+
+User requested persisted daily FX observations behind `@Cacheable`, a scheduled/manual admin job, configurable operator Payments source, local-only dev simulation, and per-payment conversion snapshots. Summary layout now uses EUR by default rather than currency-by-currency breakdown; payment rows retain original currency. Follow-up adds clickable `>` amount badges, shared currency picker with header confirmation tick/standard route delay, and persistent per-user selection shared by both surfaces. Added acceptance checks above; implementation and runtime verification remain in progress, not PASS.
+
+Concurrency prerequisites have been staged without manufacturing payment results: second payer `6aff10000000000000000002`, event `6aff20000000000000000012`, EUR 7 each. Versioned launcher prepared `AFFILIATE-REVENUE-CONCURRENCY-001` while preserving the original owner/visitor sessions. Neither concurrent purchase has been performed yet. Existing financial baseline remains purchases 5 / event bookings 4, EUR gross 132 / refunded 27 / net 105 plus HUF 5000. Injected validator failures remain unproven because runtime Mongo admin credentials are unavailable; no fault validator is active.
+
+## FX UI corrections and continuation — 2026-09-24 00:22 CEST
+
+Existing frontend-sync watcher passed the changes (22:10 and 22:17 UTC); no separate build/test runner. Desktop 900x850 and mobile 360x780 screenshots inspected: currency dropdown uses the existing select/auto panel behavior, extends outside the compact popup, and retains the dim/blurred background. All seven options visible on mobile with no horizontal overflow. Both payment-header buttons tested using actual mouse move/press: hover matrix(1.01,0,0,1.01,0,-1), press matrix(.97,0,0,.97,0,0); parent strip transform none. Removed motion-static only from the buttons. Removed the unsolicited payment-header explanation.
+
+Affiliate currency action moved into the header using the existing compact app-menu custom trigger with chevron_right. Zero-value amounts show 0.00 EUR; purchase/booking counts remain unitless. Verified visitor zero-revenue mobile screenshot and opening the picker from the header. User accepted the affiliate selector. Screenshots: /tmp/qa-currency-dropdown-desktop.png, /tmp/qa-currency-dropdown-mobile.png, /tmp/qa-affiliate-zero-header.png.
+
+Earlier FX runtime observations in this session: admin normal UI manual job completed 64 local-simulator observations; no external source used. Visitor summary EUR -144.50/+27 changed to HUF -57,800/+10,800 after confirmation. Owner selection USD changed both signs and affiliate gross/refund/net to158.95/29.70/129.25. Cancelled EUR draft left USD; confirmed EUR restored144.50/27/117.50. Original payment row currencies stayed unchanged. These amounts are the BEFORE-concurrency baseline, not current totals. Backend restart after Mongo MessageSource migration succeeded; properties contents were preserved in all three Mongo seed sets before deletion. New unit-test sources have NOT been executed separately. Operator URL save/reload and restart-retention runtime checks remain unproven.
+
+Concurrency attempt at22:14:29.933Z submitted both normal UI confirmations in the same millisecond. Both EUR7 payments captured: ...53a1 and ...53a2 (full IDs6ab44f46de5ce0e8f4b553a1/6ab44f46de5ce0e8f4b553a2), event...012. However the second actor's fixture affiliateRegistration used a String _id although Spring maps this hex ID to ObjectId, so its payment correctly resolved no attribution. Result: only one affiliate increment. This is an INVALID fixture test, not a concurrency PASS or a product counter defect. Existing financial records were retained.
+
+Versioned repair-concurrency-registration corrects only that prerequisite and creates fresh event6aff20000000000000000013 (QA Affiliate Concurrent Replay), preserving prior outcomes and recording the baseline. Canonical stage now uses ObjectId for the registration. Fresh captures6ab450b4de5ce0e8f4b553b2 and6ab450e9de5ce0e8f4b553b6 both have the intended affiliateOwnerUserId, affiliateRevenuePending=false, and immutable EUR snapshot source exchange-rate-simulator/date2026-09-23/rate1/amount700minor. The replay confirmations did NOT overlap (second actor card-selection preparation was incomplete); count this as two-referee attribution/snapshot PASS, not concurrency PASS.
+
+Current partner totals: purchases8/eventBookings7; native EUR153 gross/27 refunded/126 net plus HUF5000. Converted EUR165.50/27/138.50. First attempt's unattributed second payment remains a documented fixture artifact; do not rewrite its frozen attribution. Recovery controls...009/010/011 remain unpaid; no fault validator active. Remaining concurrency, lower-version runtime and unavailable collMod fault cases are not passed.
+
+### 00:24 CEST — corrected concurrent capture PASS
+
+Fresh versioned stage-concurrency-retest created event6aff20000000000000000014 (QA Affiliate Concurrent Verified), after checking the corrected second attribution prerequisite. Both final confirmation dialogs were checked ready BEFORE either submission. Actual normal UI confirmations22:23:51.660Z/22:23:51.662Z. Captures6ab45177de5ce0e8f4b553c5(second)/6ab45177de5ce0e8f4b553c6(visitor): both EUR7 captured, intended affiliateOwnerUserId, stored EUR observation2026-09-23/sourceexchange-rate-simulator, pending=false. Partner increased exactly purchases8→10, bookings7→9, EURgross153→167; refunds27 unchanged. No partner pending intent remains. This establishes the capture concurrency case; simultaneous refunds/lower-version runtime remain separate, unproven cases.
+
+Owner browser reload preserved the selected CZK. Actual Revenue popup shows10 purchases/9 bookings, gross4487.50CZK, refunded675CZK, net3812.50CZK; inspected /tmp/qa-affiliate-concurrent-summary.png. These equal EUR179.50/27/152.50 at stored25CZK/EUR. Native ledger is EUR167/27/140 plusHUF5000. Original failed-fixture attempt and sequential replay remain in evidence; no paid outcome was reset or rewritten.
+
+
+### 2026-09-24 00:42 CEST — concurrent full refunds PASS
+
+Both event...014 buyers requested EUR7 refunds through normal UI at22:39:57.266Z; request-only state left revenue unchanged. Versioned AFFILIATE-REFUND-CONCURRENCY-001 prepared two owner sessions. Both final approval dialogs were checked ready before submission; normal confirmations22:41:51.411Z/.415Z (4ms gap). Payments6ab45177de5ce0e8f4b553c5 and...53c6 reached full refund7 each, primaryversion8, refundedMinor700, pending=false. Their original EURrate1/date2026-09-23/sourceexchange-rate-simulator snapshots remained unchanged. Both refund audit records approved/refunded atversion3. Gateway refunds476220fa-3edc-3016-aec1-d054e8aebf58 and42c7b281-420c-3591-b0c7-778fc273e9a1.
+
+Independent Mongo oracle01:00CEST: partner purchases10/bookings9; EURgross167/refunded41/net126, HUFgross/net5000. ConvertedEUR179.50/41/138.50, selectedCZK4487.50/1025/3462.50. Both refunds contributed exactly once; historical counts retained. Lower-version and injected-fault runtime cases remain unproven. Old owner/buyer windows and second refund owner were closed to release memory; first refund owner remains available.
+
+### 01:02 CEST — unified FX source and production configuration
+
+User requires one dev/production Explore implementation, with no HTTP-to-local fallback. Found two deployment defects: empty development-host configuration incorrectly became a set containing an empty string and rejected real HTTPS sources; the standalone Python FX service was present only in dev. Filtered empty host entries. Added the same deterministic XML endpoint to the already-packaged payment-simulator: /exchange-rates/eurofxref.xml. Configured simulator origin is allowed internally only in DEMO sessions; REAL production still requires public HTTPS. Dev continues to prohibit external FX calls. Removed the standalone dev service/script; stopped only that retired container. Existing Java/frontend watchers remain the only compilation owners.
+
+Payment-simulator image3c27d1ee129e0fedacbe8a08b6065b22302721aa6c476e9d023f3528ef9f9aff built, old payment-simulator stopped before replacement, persistent volume retained. Runtime endpoint independently parsed:64 weekday observations, latest2026-09-23, fixture HUF400/USD1.10/GBP.85/CZK25/PLN4.25/CHF.95. No market lookup. Same service/baseURL exists in all three Compose files.
+
+Operator Payments previously had no independent way to save the source when provider registration was disabled. Shared app-menu Save exchange-rate source now invokes the existing configuration save path. Normal managed UI save/reload retained the new URL. Admin normal UI run22:58:02Z completed64 in40ms. Changed URL through the same UI to missing.xml: run23:00:43Z failed in12ms;64stored observations retained; both paid/refunded controls stayedversion8 with original snapshots/pendingfalse. Restored correct source by UI; run23:02:02Z completed64 in23ms. Partner remainedrevision62/purchases10/bookings9/EUR167/41/126+HUF5000. Historical source strings intentionally remain the original stored value.
+
+Canonical demo/E2E seed now points to payment-simulator; new REAL configuration defaults to the configurable ECB90-day XML URL. Shared Mongo importer performs additive migration for missing source and exact retired demo default, preserving explicit blank/custom values and unrelated operator state. packaging/tests/exchange-rate-configuration-test.py PASS against an isolated, subsequently dropped QA collection: all three Compose targets, source defaults, idempotence, credentials/custom/disabled preservation and no manufactured singleton. This is source/configuration verification, NOT a freshly installed production artifact qualification.
+
+Frontend-local uses shared fixed-rate seed + summary mapper for history/affiliate; HTTP adapter resolver unchanged. Existing frontend watcher PASS23:00:06Z/sync23:00:09Z. Java watcher PASS/start00:56:59CEST. New Java/Go unit-test sources are NOT RUN separately. Frontend-local browser coverage, packaged production installation, delayed lower-version and injected-fault cases remain explicitly unproven. Dev financial QA already passed is retained; no broad replay/reset.
+
+
+### 01:11 CEST — replay, stale version and focused recovery verification
+
+After simulator replacement, both previously completed event...014 gateway callback replays returned200 with delivery200 (attempt3). Independent Mongo oracle: partnerrevision62 and EUR167/41/126+HUF5000 unchanged; both primary and contribution versions8, refunded700minor, pendingfalse. Normal owner browser reload and Revenue popup matched10/9 and CZK4487.50/1025/3462.50.
+
+New UTC/weekend simulator unit test passed (`go test -vet=off -p=1 ./internal/simulator -run ^TestExchangeRatesUseUTCWeekdaysAndFixedDemoValues$ -count=1`, capped768MiB/oneCPU). The initial command's test passed but overall command failed because vet on modernc/sqlite exceeded its memory cap; second focused run exited0 with vet explicitly disabled. This is not a full Go vet/suite PASS.
+
+Versioned `server/docker/scripts/manual-qa-checkpoints/FinanceVersionProbe.java` uses the existing watcher's compiled product classes and real demo Mongo; single-file QA launcher only, no second Gradle/Spring pipeline. REAL validation accepts public HTTPS with empty host config; DEMO accepts only configured internal origin; wrong host/port/credentials rejected; dev external source rejected without making HTTP requests. All PASS.
+
+Compiled AffiliateRevenueRepository produced capturev7 then full-refundv8 on a disposable owner, then rejected stalev7/repeatedv8 without changing persisted counters/ledger. Four further cases used uniquely prefixed isolated Mongo collections and a one-shot write-boundary fault wrapper: before counter write, after durable partner intent, after contribution write, after counter commit before payment acknowledgement. Each interrupted state was checked, then fresh service/repository instances recovered once and replay remained unchanged; primary pending cleared without advancing its original version. Initial harness assertion assumed insert retained version7; Spring correctly initialized it to0. Fixed the harness to compare the observed pre-recovery version; no product change. All four final cases PASS, all temporary documents/collections cleaned.
+
+These are actual compiled service/repository + Mongo integration tests with harness-injected faults, not full provider/HTTP/process-kill tests. The earlier collMod-based full-flow injection remains NOT RUN; do not relabel it. Frontend-local browser and installed production artifact remain unproven. Latest frontend watcher PASS23:05:35Z/sync23:05:37Z. Continue Calendar last, retaining financial fixture/evidence rather than resetting paid outcomes.
+
+
+### 01:16 CEST — resume full-flow fault coverage; first interruption PASS
+
+User requires remaining full-flow cases before Calendar. Calendar had only fixture/browser startup; no checklist action. Its unused gallery fixture was reset through the versioned harness and windows closed. Financial fixture/outcomes retained. Existing server/.env.secrets contains the valid configured Mongo admin credential, differing from the stale dev-container environment. Read-only authentication succeeded. Fixture now accepts explicit QA_MONGO_ADMIN_ENV_FILE for arm/disarm, passing credentials over stdin without logging; ordinary actions retain application credentials. This resolves the earlier collMod blocker without changing accounts, privileges or Mongo runtime.
+
+Actual normal second-buyer UI payment on event...008 while owner-scoped intent validator armed: payment6ab45d96de5ce0e8f4b553f0/gatewaycc078151-0ddf-49ef-8dc8-e96b81802154 capturedEUR2, version3, affiliateRevenuePending=true; purchases10/bookings9/EURgross167 unchanged. Removed validator using recorded original options. Existing30s worker recovered automatically: same paymentversion3/pendingfalse, partnerrevision64, purchases11/bookings10/EURgross169/refunded41/net128 +HUF5000. No replayed payment or manufactured counter outcome. Intent failure full-flow PASS. Remaining ledger/commit/ack in progress.
+
+
+### 01:22 CEST — all four full-flow interruption recoveries PASS
+
+Following the intent case, the second buyer paid the existing isolated controls through normal UI/provider checkout. The owner/event-scoped validators interrupted actual application writes; original validators were restored after each observation, and the existing 30-second worker completed recovery without replaying the payment.
+
+| Boundary | Primary payment / gateway ID | Interrupted state | Recovered state |
+| --- | --- | --- | --- |
+| ledger | 6ab45dd3de5ce0e8f4b553fa / 489eeaa6-2426-44e8-8b93-6ffa059507f3 | captured EUR3, v3, pending=true; durable partner intent revision65, ledger blocked, EUR169/41/128 unchanged | v3, pending=false; revision67, purchases12/bookings11, EUR172/41/131 |
+| commit | 6ab45ea1de5ce0e8f4b55403 / fa8d2e1e-4913-41e5-8082-c4847b59d06a | captured EUR4, v3, pending=true; partner intent revision68; contribution v1/gross400 exists, totals172/41/131 unchanged | v3, pending=false; revision70, purchases13/bookings12, EUR176/41/135 |
+| ack | 6ab45ee5de5ce0e8f4b5540c / ad26b092-8f00-4536-8af4-2d185fc21e40 | captured EUR5, v3, pending=true; counters already committed revision74, no partner intent, EUR181/41/140 | v3, pending=false; SAME revision74/counts/totals |
+
+All three collections' validators restored to {} and no activeRevenueFault remains. Final native totals: purchases14/eventBookings13, EUR181 gross/41 refunded/140 net plus HUF5000 gross/net. Converted EUR193.50/41/152.50; persisted CZK selection should display4837.50/1025/3812.50 (final UI read pending). All earlier outcomes retained. This supersedes the earlier unavailable-collMod boundary: all FOUR actual UI/provider/Mongo/worker fault cases now passed, in addition to the isolated compiled-code probes.
+
+User-reported payment? title corrected through central EN/HU translations: Would you like to proceed with payment? / Szeretnéd elindítani a fizetést? Existing frontend watcher build/sync passed23:19:29Z/23:19:31Z. The English question was observed in actual commit/ack payment confirmation dialogs; Hungarian runtime UI check remains pending. No payment transition changed.
+
+### Refund acceptance clarification — 2026-09-24
+
+User confirmed that a25% cancellation policy means25% returned,75% retained. The earlier checklist requirement to refund the remaining75 without a separate cause was wrong and is removed. User also explicitly distinguishes cancellation of the event: the full amount must be returned in that case. This separate organizer-cancellation path is under diagnosis and is NOT passed by the ordinary full-policy refund controls. No refund outcome or policy was rewritten.
+
+
+### Final summary, callback replay and Hungarian confirmation — 01:30–01:37 CEST
+
+Owner's actual Revenue popup matches14 purchases/13 event bookings and CZK4837.50 gross/1025.00 refunded/3812.50 net. Screenshot /tmp/qa-affiliate-final-recovery-summary.png inspected; shared compact currency menu and blurred background visible.
+
+All four recovered gateway callbacks replayed through the simulator's audit endpoint; each returned200/delivery200, attempt2. Independent Mongo read: amounts/counts unchanged, no partner intent and no active fault. Normal callback processing advanced each payment version3→6 and partner revision74→86; this is distinct from the earlier acknowledgement-only recovery, which did not advance payment versions. All four primary pending markers remainfalse. No duplicate revenue. Original partial payment6ab41748de5ce0e8f4b54e52 remains100 paid/25 returned, refundStatuspartial and unchanged25% policy.
+
+Hungarian browser-language emulation loaded the central HU bundle. Through normal second-buyer UI, opened an unpaid QA Affiliate Callback Control checkout and reached the actual final dialog: Szeretnéd elindítani a fizetést? / A kiválasztott tételt fogod kifizetni. Screenshot /tmp/qa-payment-confirmation-hu.png inspected. Back clicked; no payment submitted. This leaves a fixture-owned unpaid checkout draft for the second buyer on event...006. Two initial automation attempts reached empty lists before proper UI readiness; no payment result was produced. Reopening Explore loaded the real server records; the successful run waited for actual cards. No production code changed for this check.
+
+Actual frontend-local LocalPaymentSummaryMapper executed with Node24 native TypeScript stripping (no Angular build/server, no network). MixedEUR181/HUF5000/refundEUR41 producedEUR193.50/41/152.50, selectedCZK4837.50/1025/3812.50; both incoming/outgoing signs, user-scoped selection, monetary zero and unknown-currency missingRates flag all PASS. This is focused mapper evidence, not a browser-local deployment PASS.
+
+Cancellation boundary: source inspection found organizer Delete Event uses reversible trash/status suppression and Restore, not a distinct terminal cancellation. It skips the owner's leave-refund path and has no full-refund call. No event was trashed and no lifecycle/refund behavior changed. Asked the user whether the requested full-refund cancellation should be attached to this existing reversible action or a separate cancellation. This material financial behavior decision remains pending; do not infer an answer or report cancellation PASS. Both configured card processors advertise immediate capture, not delayed authorization/capture; an end-to-end hold-only checkout is not available through their current capability contract. Existing authorization-zero unit source is not full-flow hold evidence.
+
+Remaining explicit boundaries: organizer cancellation decision/implementation and full-flow proof; live no-rate payment/incomplete UI case; frontend-local browser deployment (current running frontend is HTTP); installed production artifact qualification is not performed by source/config parity checks. Calendar remains queued, phone connected, no Calendar action taken.
+
+
+### 2026-09-24 01:56 CEST — default FX in every deployment mode
+
+User correction replaces the former normal missing-rate test: first payment and source outages use an immutable seeded default. Added identical `default-v1` observations to demo/e2e/production seeds; frontend-local already has the same seven values. Production package allow-list, upgrade allow-list migration and development import allow-list include the collection. The common importer uses `$setOnInsert`; replace-import and empty seeds cannot clear exchange-rate history.
+
+Verification: shared configuration/default import integration test PASS against an isolated collection in the existing Mongo; fresh insert, repeat import, changed seed cannot overwrite historical default, daily rows survive. Common entrypoint continuation test PASS. All 41 classified seed baselines/parity PASS (also synchronized existing i18n bundle timestamps and declared the already-intended REAL ECB / DEMO simulator source difference). Existing backend watcher compiled the exchange changes and restarted successfully at 01:47:04.
+
+`run-finance-version-probe.sh default-fx` PASS with the watcher's actual compiled classes and Mongo: persisted default 5000 HUF -> 12.50 EUR; new cold store reads persisted data; daily quote wins when applicable; old daily quote falls back to default during outage; refund keeps original default snapshot; CZK summary resolves default observation with zero missing rates. No FX HTTP or second application build. Probe-only initial accessor typo and HALF_EVEN aggregation oracle were corrected; final probe passed, temporary collections removed. The existing 14/13 paid QA results were untouched. This proves source/import and cold read, not a newly built/installed production artifact or an additional real provider payment under default-only configuration.
+
+Campaign remains IN PROGRESS: organizer Cancel/Delete batch refund and changed-paid-terms participant cancellation implementation/full-flow QA remain, plus frontend-local browser coverage. Calendar stays queued. The old live missing-rate/incomplete-UI next action is superseded.
+
+
+### 2026-09-24 02:03 CEST — separate refund operations, partial then cancellation
+
+User explicitly confirmed each refund operation is a separate payment record. Corrected the in-progress refund implementation: original payment keeps cumulative 100, first audit remains25/provider receipt1, later cancellation creates a distinct75/provider receipt2. Same cumulative target replays the same operation and row; a stale25 request never lowers the primary total. A completed prior audit is materialized before persisting the next intent. Removed the service-wide synchronized lock; version fences and operation-scoped receipt checks protect concurrent calls without blocking unrelated refunds.
+
+Existing watcher build/restart PASS at02:01:31. `run-finance-version-probe.sh refund-intent` PASS against actual compiled PaymentService + Spring Data versioned repository/Mongo, with an explicitly modeled provider double: normal25->100, lost response after provider commit plus fresh service instance, and delayed25 receipt concurrent with another service completing100. All produce exactly two provider operations25+75 and two refund rows25+75; stale/full replay makes no additional provider call. Temporary probe collections removed; retained campaign payments unchanged. Initial probe attempted a package-private test constructor; changed to public production constructor before successful execution. This is focused concurrency/recovery proof, not the outstanding organizer/participant browser/provider cancellation journey.
+
+Follow-up at02:04: added legacy partial refunds without the new intent fields and cash-path cases. All five compiled service/Mongo scenarios PASS. For already completed first refunds, the probe additionally compares the entire stored first audit document before/after cancellation: it remains identical. Cash operations also create separate25/75 rows. No additional normal refund entitlement or arbitrary second refund was introduced; the full-refund caller still belongs to the pending cancellation implementation.
+
+### 2026-09-24 02:33 CEST — cancellation partial-to-full provider boundary
+
+Owner used the normal event-card Cancel event action and confirmation on retained
+`6aff20000000000000000001` (EUR100, prior policy refund25). Initial scheduled work
+persisted the75 intent but failed provider lookup: dev shares REAL/DEMO database,
+and scheduler mode had selected REAL. Fixed by persisting the authenticated
+request's session mode on the cancellation intent; retries retain that provider
+context. After existing watcher rebuild, replayed the same authorized Cancel HTTP
+request (200/already-applied), without resetting fixture or fabricating a receipt.
+
+Independent Mongo and simulator audit: provider refunds25+75, primary cumulative100,
+booking cancelled, two separate refund history records. Prior25 document is exactly
+unchanged; event title/subtitle/dates/location/pricing/policies/images/capacity/status
+are unchanged, status A (not Trash), cancellationRefundsComplete=true. HUF and two
+concurrency control payments remain unchanged. One cancellation outbox operation
+sent. Provider-double checks are not used as substitutes for this result.
+
+This proves the financial boundary only; membership/ticket projections, participant
+terms-change choice, organizer multi-booking/Delete, admin removal, authority,
+replay and frontend-local checks remain in progress. Admin removal full remaining
+refund is now an explicit checklist case per user instruction.
+
+### 2026-09-24 02:35 CEST — admin removes paid member, provider/UI boundary
+
+Owner opened QA Affiliate HUF5000 -> Members -> Affiliate QA Visitor -> Remove
+member -> Remove. UI count2->1 and Visitor removed, owner remains. Mongo membership
+status deleted; primary `6ab42e95de5ce0e8f4b54ea2` booking cancelled/refunded5000,
+no pending refund request marker. Simulator payment
+`b6d1fa42-ee97-46b3-8e2c-95cc4abbc278` has one successful HUF5000 refund
+`bc1a33f9-1f2b-3001-b4f3-afef1f79b769`. Separate history amount5000. This exercises
+the actual menu/confirmation, Java queue, background processor and provider;
+member-list replacement and fault/retry/local variations remain unverified.
+
+### 2026-09-24 02:44 CEST — changed programme and individual cancellation
+
+Owner Unpublish -> Drafts -> Manage Event -> Edit changed the description of
+`6aff20000000000000000013` to an updated acoustic programme and saved/republished.
+Both existing7EUR payers received eligibility and a sent changed-terms notification;
+no refund occurred from editing alone. The modifying owner is absent from recipients;
+producer now explicitly excludes the modifier even if they also have a payment.
+
+The real list menu initially omitted the refund entitlement (outer popup menu
+subject omitted the DTO field). Fixed that mapping and rebuilt via frontend-sync.
+Second buyer then used Cancel with full refund -> confirm. Own payment
+`6ab450e9de5ce0e8f4b553b6`: refunded7, booking cancelled, separate7 history, queue
+cleared, membership suppressed. Other buyer payment `6ab450b4de5ce0e8f4b553b2`
+remains joined/unrefunded and membership accepted. Dialog closed successfully.
+
+A noneligible cancellation on event12 initially returned misleading200/no mutation
+because dev policy bypass entered the organizer branch. Added explicit event-admin
+role check before that branch; replay now409. This is a domain-role check in the
+shared implementation, not production-auth qualification; the dev stack does not
+prove protection against caller identity spoofing under production security.
+
+
+### 2026-09-24 02:57 CEST — explicit rule corrections, implementation in progress
+
+- Participant **Cancel with full refund** must create a pending refund request for the organizer; only approval may call the provider. The earlier 02:44 automatic participant-refund test is **SUPERSEDED**, not proof of this corrected flow. Retain its already-completed financial records; no rollback or seeded replacement.
+- Organizer Cancel → Unpublish → Publish reactivates the event, with fresh Join required for prior participants. Old payment/refund audit remains unchanged; old approvals/tickets must not restore admission. Repeated Publish must preserve newly joined participants.
+- Implementing and verifying these two branches. Previously recorded FX, aggregation, recovery and organizer/admin refund evidence remains valid. Overall checkpoint remains **IN PROGRESS**.
+
+
+### 2026-09-24 03:12 CEST — targeted revised branches
+
+- **PASS, organizer UI Cancelled → Unpublish → Publish** on retained EUR100 event `...000001`: active status A, cancellation marker cleared, only organizer remains accepted; previous visitor membership is `removed`. The original100 payment and separate25/75 refund documents/provider IDs remain unchanged. Fresh Join and replay preservation still under test.
+- **PASS, participant request → organizer approval**, actual browser actions on `QA Revenue Recovery ledger` (`...000009`), second attendee. Owner unpublishes/changes description/saves/republishes; second chooses Cancel with full refund. Primary `6ab45dd3de5ce0e8f4b553fa` remains captured3, no refunded amount, provider refund list empty; one pending refund history, organizer counter1, participant suppressed. Owner Payment history Approve refund creates exactly one provider refund3 (`799f825a-575f-3dd5-9221-f474ed532def`), primary cancelled/refunded3, request approved, counter0. Authenticated approval replay200 retains approved/counter0. Independent provider snapshots retained privately under `/tmp/affiliate-approval-{before,after}-provider.json`.
+- Frontend-local focused unit suite **4/4 PASS**, direct Vitest single worker (existing watcher does not run unit tests; resource checked; no second application build). New case persists partial25 + pending75 through serialized state, rejects unrelated approver, approves once, retains separate25/75 and unchanged other payment.
+- Payment history showed missing CZK conversion because retained primary snapshots referenced daily2026-09-23 but only default-v1 observation was present. Corrected summary lookup to use the persisted default when the dated observation is absent; no payment snapshot or historical amounts were rewritten. Approval replay summary now missingRates0 and CZK outgoing3987.50/incoming5012.50. Removed unsolicited header explanation. Browser reload check pending.
+- Publish/Unpublish titles now use existing EN/HU i18n keys with full questions; browser Publish dialog verified `Do you want to publish this event?`. Source/Mongo i18n audit passed. Overall **IN PROGRESS**, not complete.
+
+
+### 2026-09-24 03:23 CEST — header and fresh admission replay
+
+- **PASS, two payment summary badges** in the existing managed browser: normal/hover/press have identical bounds and `transform:none`; hover brightness0.96/shadow and press brightness0.90/inset shadow provide feedback. Container width487=scrollWidth487 at desktop, and347=347 at360px; no horizontal scrollbar or page overflow. Both badges stay on one line; no explanatory header line. Existing frontend watcher compiled/synced03:15:50; no separate application build.
+- **PASS, fresh admission after Cancel → Unpublish → Publish**, event `...000012`. Found and fixed stale paid baskets restoring Continue: republish retires old reservation results; Explore clears their saved continuation. Actual second-buyer browser now opens Book Event → Join → confirmation → fresh EUR7 payment review. New basket `6ab47b5bde5ce0e8f4b554cc` is confirmed/pending with an active reservation and no old checkout session. Membership is pending; prior visitor stays removed. Four old baskets retain their history/status/session IDs but have result deleted and inactive reservations. No new payment was submitted.
+- Repeated authenticated organizer Publish returns200/changedfalse, accepted1/pending1; new basket/reservation and member pending state remain unchanged. Both old7 primary payments remain fully refunded and their two separate audit records remain.
+- Default-FX compiled Java/Mongo probe **PASS**, including an absent historical daily observation: CZK conversion uses the persisted default with missingRates0 while preserving the primary snapshot. Overall checkpoint remains **IN PROGRESS**; partial25→pending75→approval backend/provider branch and remaining checklist boundaries are not claimed complete.
+
+03:29 user-directed visual adjustment: Waiting for payment badge bottom offset5.2rem→3.6rem (25.6px lower, closer to profile-eye). No new visual test or QA replay for this cosmetic adjustment, as explicitly requested. Existing refund flow continues.
+
+
+### 2026-09-24 03:34 CEST — partial refund then changed-terms approval PASS
+
+Actual owner/second-buyer browser flow on republished EUR100 event `...000001`: new Join requires a fresh admin approval. After approval membership remains pending/Waiting for payment; Continue opens payment directly without a new Join confirmation. Real simulator-backed payment `6ab47c96de5ce0e8f4b554d6`, gateway `803fed66-0e24-4ff7-86d7-85eeb94b8038`, captures100 and then admits the member. Ordinary Request refund → owner Approve refunds25 under the stored25% policy.
+
+Owner Unpublish → edit description/programme → Save → Publish grants changed-terms eligibility without a further refund. Participant Cancel with full refund creates pending audit `refund:6ab47c96de5ce0e8f4b554d6:10000` for75, owner pending counter1. Primary remains refunded25; independent provider audit still contains exactly one25 operation. Owner confirmation displays Refund75/Retained0 and changed-terms basis. Owner Approve refunds75, primary cumulative100, request approved, counter0. Separate operation IDs:25 `02115b14-7139-3932-99a3-acb37f31259d`,75 `ae1df272-0cb6-333e-9243-4c2c60c4bb34`. Authenticated approval replay200 adds no operation. Exact JSON comparison proves the first25 audit and provider receipt unchanged. Private before/after evidence `/tmp/affiliate-partial25-audit-{before,after}.json`, `/tmp/affiliate-partial75-{pending,approved}-provider.json`. The old visitor100 and its separate25/75 records were retained, never reset.
+
+Final independent provider oracle for prior organizer batch Cancel12 and Delete13: all four primary payments `6ab44f46de5ce0e8f4b553a1`, `...3a2`, `6ab450b4de5ce0e8f4b553b2`, `6ab450e9de5ce0e8f4b553b6` have cumulative7 and exactly one successful7 provider refund each. Event12 is republishedA with the new unpaid second-buyer reservation; event13 remainsTrashT. No duplicate from the repeat Cancel/republication boundary.
+
+Remaining checklist boundaries are still tracked separately: interrupted cancellation batch/provider failure, member-list replacement and local/browser parity; Calendar remains last. No full-checkpoint PASS claimed.
+
+
+### 2026-09-24 03:41 CEST — member-list removal and failed batch recovery
+
+- **PASS, saved member-list replacement through authenticated HTTP**, event07: retaining only the organizer queues full refund for the removed visitor's event-linked client/asset payment `6ab43464de5ce0e8f4b54ebd`. Worker settles20, booking cancelled, intent cleared, visitor removed and organizer accepted. Provider `0974ba21-019f-4caf-8d88-044af69c688a` contains exactly one successful20 refund (`7397ce7c-71fa-3d97-bac0-a7c4b90d43b6`). This covers the replace endpoint/worker/provider; it is not an additional member-editor UI test.
+- **PASS, actual two-payment organizer cancellation with provider failure and retries**, event06. Second-buyer existing draft continued through real browser/card/payment and captured10 (`6ab47f22de5ce0e8f4b554fc`, gateway `99ca074d-ff30-46da-8a40-90442d734f0f`); original visitor10 (`6ab432f4de5ce0e8f4b54eb6`, gateway `9daf2008-f178-4d4f-8d3a-61240079af86`) retained. New versioned fixture arm/disarm temporarily changes only the second payment's provider authorization reference, recording the original for exact restoration; no refund/membership outcome seeded.
+- Owner actual UI Cancel event queues batch. Original visitor refunds10 successfully once; provider lookup for second returns404 and worker reports pending across repeated5s retries. Event cancellationRefundsComplete remainsfalse; second primary refunded amount remains0 with durable requested refund10. Independent simulator audit confirms one10 operation on first and zero on second.
+- Disarm restores original reference. Existing worker automatically refunds second10 and marks batch complete; both primaries cancelled/refunded10, provider has exactly one10 operation each, no active injected fault remains. No server restart or extra build used; this proves retry recovery, not process-kill recovery. Private oracle `/tmp/affiliate-batch-{fault-oracle,provider-failed,provider-recovered}.json`.
+
+
+### 2026-09-24 04:03 CEST — frontend-local currency parity and missing guide media
+
+- Frontend-local financial repository suite **7/7 PASS** at03:45 (direct Vitest, one worker/512MiB, no second Angular build). Covers persisted partial25/pending75/approval, role rejection, separate refund operations, organizer batch versus single-member cancellation with a pending request, linked asset payment and later-purchase entitlement isolation.
+- The existing frontend-sync owner was stopped then temporarily recreated with the versioned `frontend-local.compose.yml` override (github configuration/local data). Versioned `AFFILIATE-LOCAL-001` launcher prepared a clean anonymous demo browser; actual UI selected Lina Lane/u41. Seeded HUF expenses52200/income14000 convert to EUR130.50/35.00. Selecting HUF through the negative badge and header tick updates BOTH badges to HUF52200/14000. Reload/reopen retains the user-scoped choice. Affiliate Revenue automatically uses HUF and displays monetary zero with its currency, counts0; it does not fabricate purchases. No FX/payment/integration network call occurred. Existing randomuser portrait requests are unrelated external image requests.
+- User reported missing frontend-local Profile editor guide images. Proven cause: all20 references for profile.editor/profile.view/event.feedback (EN/HU) lacked packaged SVGs; actual profile asset request returned404. Extended the existing SVG generator for these contexts and generated the missing assets. Its obsolete nonexistent backend-resource output was removed: both local and HTTP seeded references resolve the frontend asset path. Context arguments allow narrow regeneration. Static audit:92 directly declared local section references exist and parse as XML. Existing optimized watcher built/synced04:00:01; fresh versioned local browser actual Profile editor guide loads all FOUR images960x540 with `lazy-image-loaded`, no spinner. Screenshot `/tmp/local-profile-guide-fixed.png` inspected. No lazy-loader behavior change and no retest of the user-exempted badge offset.
+- Local browser closed with the versioned launcher. Stopped only frontend-sync, then recreated it with dev Compose ONLY. Dev watcher build/sync PASS04:01:58/04:02:00. Backend/Mongo/payment fixtures and other managed browser profiles retained; no active injected fault.
+- Final retained owner reload/Revenue UI matches independent Mongo: purchases16/bookings15; native EUR291/280/11 and HUF5000/5000/0; selected CZK7587.50/7312.50/275.00. Partner revision136, no pending affiliate payments or owner refund requests. Screenshot-era local guide failure is repaired; earlier financial proofs remain valid.
+
+Overall remains IN PROGRESS for the final checkpoint audit. The unsupported hold-only provider path and installed-production qualification are not silently promoted to runtime PASS; see their recorded boundaries. Calendar remains queued last.
+
+
+### 2026-09-24 04:24 — local full-flow continuation / checkout freeze
+
+Local status corrected to IN PROGRESS: currency, loaded guide assets and repository cases do not prove the full payment/refund UI lifecycle. User requested completing local first. Existing frontend-sync now runs the local Compose override; dev financial outcomes remain retained. Review Booking becomes unresponsive/high CPU both with Event editor explanation open and with explanations disabled. CPU profile confirms repeated Angular refreshes; diagnosis ongoing, no fix/PASS yet. Disposable local fixture adds five unpaid events/referral prerequisites only; no capture/refund outcome is seeded. Seed bootstrap changes prepared membership owners, so that prerequisite also needs resolution before financial assertions.
+
+### 2026-09-24 04:32 — local checkout freeze repaired
+
+First wrong boundary: shared ImageGallery bound `images.slice(0, 1)` directly to `ngModel`. Every default change-detection pass produced a new array; NgModel wrote it to the carousel, whose `markForCheck` queued another pass. Debugger captured NgModel -> carousel.writeValue -> refreshView -> markForCheck. The gallery now updates a stable cover array only when its first image actually changes. Existing frontend-sync local watcher compiled/synced at04:27:06. An earlier retest loaded old chunks from the service worker and was not counted as verification. A clean versioned local browser with unpaid prerequisites loaded the new build, rendered Review Booking & Pay, and dismissed the Event editor guide with Got it. Five seconds idle TaskDuration delta0.058106s; page remained responsive and screenshot `/tmp/local-checkout-fixed.png` inspected. No application-backend request during checkout opening (the observed `/api/` URL was an external portrait image from randomuser.me). This proves the reported freeze fix, not completion of the financial local flow.
+
+### 2026-09-24 05:03 — actual local capture/refund path and persistence repairs
+
+- Actual frontend-local UI payment initially accepted membership without recording the payment. Fixed the active `payEventCheckout` path to record only newly paid basket amounts with the captured cancellation policy/start time; preserve prior paid item session IDs. Ordinary local refund requests now use that captured policy and recipient approval, sharing the recorded refund-operation path. Focused repository suite **8/8 PASS** (one worker, 512MiB,04:45); the new case covers25%, persistence/replay and a later separate75 full-refund remainder.
+- Added one unpaid EUR100 retest prerequisite, retaining the failed earlier booking. Actual physical UI clicks selected Stripe Visa4242 and confirmed payment `checkout-1790218076358` at02:47:56Z. IndexedDB recorded100 gross/0 refunded/100 net, purchases1/bookings1, captured25% policy. Actual UI requested25 at02:49:47Z; pending request left revenue unchanged. This proves capture and request, not approval.
+- **Approval attempt FAIL, stale application version:** switching identities loaded service-worker main-4NDWYFQ4.js while the served build was main-AXDEFDE6.js. Old approval code refunded100 instead of25. Retained this failed outcome, unregistered the isolated test profile's service worker and cleared its CacheStorage only; IndexedDB retained. No result from that approval is treated as a corrected-path PASS. Fresh unpaid replay is required.
+- Reload also exposed seed corruption: persisted event member-ID projections are intentionally omitted, but member bootstrap compared the durable rows against newly generated seed users and replaced them. Bootstrap now preserves any existing owner membership list, including deliberately empty lists; missing owners alone are seeded. This is being verified before the next financial replay.
+- The user's requested full approval question is updated in EN/HU frontend and all Mongo seed variants. No separate functional retest for this wording-only change. Existing frontend watcher remains the build owner; application backend is not used by these local payment operations.
+
+### 2026-09-24 05:20 — local partial refund PASS; common SmartList mutation repair
+
+- New unpaid EUR100 `policy-replay` actual UI capture `checkout-1790219202780` at03:06:42Z. Actual25 request followed by organizer approval at03:09:22Z returns exactly25; durable net75, distinct25 audit, cumulative totals200/125/75 including the deliberately retained old-version failure. Identity switching preserves the actual buyer membership after the bootstrap repair. Focused bootstrap checks3/3 PASS, including deliberately empty saved membership and unchanged initial tournament seeding.
+- Corrected a **fixture-owned** storage-key defect: disposable events had been stored under bare IDs instead of `userId:type:id`, causing editor saves to create an alias and leave an older preferred record. `normalize-prerequisites` canonicalizes those keys, retaining an existing canonical editor record; payments/refunds/memberships are untouched. No financial outcome is seeded. Subsequent actual unpublish/edit changed the paid programme, marked only the paid buyer eligible, and emitted `event-paid-terms-changed` to u42 from u41, no self-notification. Financial value remains25 refunded/75 retained before the participant's request.
+- User required mutation reconciliation like Activity Event, no history reload. Found refund handler incremented query revision instead of using returned records. Replaced with existing SmartList `patchVisibleItem`, `reinsertVisibleItem`, `removeVisibleItems`; shared cache and established timestamp order, no new sorting controls or list infrastructure. Local and Java/HTTP mutation responses now include the original payment and affected refund records for immediate reconciliation. Existing watcher backend BUILD SUCCESSFUL/Started Main05:13:16; frontend sync05:16:20. Focused financial8 + history2 tests **10/10 PASS** at05:17: replay inserts no duplicate, unaffected object retained, expense filter excludes incoming refund, no loader/revision reset. Actual approval-in-place verification remains next.
+- Read the approved SmartList live-surface trust card and Activity Event/Explore implementation. Gallery/feed code audit: ImageGallery changes update its signal/callback; PhotoFeed creation uses `reinsertVisibleItem`, deletion `removeVisibleItemByIdentity`. No gallery/feed behavior or order was changed. Wording-only approval/logout/join questions updated in EN/HU and all Mongo variants, bundle170; no separate functional retest for those strings.
+
+### 2026-09-24 05:32 — local changed-terms remainder and live history PASS
+
+- Fixed viewer entitlement projection: paid buyer's persisted `affiliatePayments.eventRefundEligible` is authoritative; no duplicate per-viewer Event document required. Removed the ineffective event-copy mutation. Focused mapper/repository checks13/13 PASS; mapper status/range follow-up7/7 PASS.
+- Actual u42 cancel-with-full-refund created75 pending at03:28:10Z, leaving25 already refunded and revenue unchanged. Actual u41 approval at03:29:46Z created separate75 operation; earlier25 audit unchanged. Original payment `checkout-1790219202780` cumulative100 refunded; aggregate includes preserved old failed-version control, gross200/refunded200/net0, purchases2/bookings2.
+- MutationObserver during actual approval: removed history rows0, new loaders0, same SmartList element, all pre-existing row elements retained; refund row changed to Refunded/EUR−75 in place.
+- Root childless Main Event now uses the existing MAIN_EVENT DTO, with parent identity and saved details; excludes inactive/trash/deleted roots and does not duplicate real children. Matches backend's root-runtime visibility independent of the selected calendar day. Actual Manage Event shows the saved main card.
+- Local/backend audit found a further real gap: checkout basket purge job returns a simulated count and local save/payment does not enforce the backend's canonical deadline. Local QA remains IN PROGRESS pending repair and remaining branches. No prior backend checks restarted.
+
+### 2026-09-24 05:40 — local deadline parity and mixed-currency capture
+
+- Local basket save now derives deadline from persisted Event/slot start and grace settings, rejects past-deadline reservations, and ignores client expiry. Payment checks the same cutoff. Actual purge deletes only due unpaid reservations, removes pending memberships, retains paid controls and runs via the existing route scheduler/local Admin job pattern. Scheduled/manual execution records actual count/failure instead of simulated2. Focused lifecycle2 + job2 PASS; main mapper7 PASS. Actual scheduled UI lifecycle remains pending. Existing watcher sync05:34:43.
+- Repaired only the four still-unpaid fixture organizer memberships (`prepare-unpaid-controls` refuses paid sources or buyer memberships); preserved all successful/failed financial evidence. Actual HUF5000 checkout `checkout-1790221206225` captured03:40:06Z, buyer accepted alongside real organizer. Native affiliate ledger HUF5000/0/5000, EUR200/200/0, purchases3/bookings3.
+- User-reported duplicated description was saved QA typing, not template duplication. Corrected through normal Unpublish/Edit/Save; current main card shows description once. Event remains draft after this correction; financial ledger unchanged.
+
+### 2026-09-24 05:45 — Review Booking duplicate-delay diagnosis
+
+- User reported a full3s ring with configured1.5s route delay. Review Booking sequentially loaded invitation/pricing context then the basket, although both local and HTTP `loadInvitationContext` already return the service-composed basket and pricing. Component now consumes that response and applies basket state synchronously; no component-level parallel request workaround. Read-only summary still uses its preloaded audit basket or one basket query. Focused2/2 PASS, including late response after close. Existing watcher sync05:44:13; actual load duration check next.
+
+- Actual Review Join Request opening on current local bundle measured **1551.4ms** from body-loader insertion to removal at05:47, matching one1500ms route delay; shared3s indicator unchanged.
+
+### 2026-09-24 06:00 — local organizer branches and approval PASS
+
+- Actual UI organizer Cancel10 refunded exactly10 and retained event content/statusA with cancelled=true. Unpublish/Publish changed cancelled=false and left only organizer accepted; old participant is deleted. Actual Delete7 moved event toT and returned7 once. Original checkout IDs checkout-1790221241414 and checkout-1790221283440 retained. Fresh rejoin check remains next.
+- Actual Members Remove of u42 from HUF5000 at03:56:03Z returned all5000 despite25% policy, audit refund:checkout-1790221206225:500000. Only organizer remains in Members. Native totals EUR217/217/0,HUF5000/5000/0,purchases5/bookings5.
+- Actual manual12 Join then organizer approval keeps membership pending with Waiting for payment. Reopened member menu contains no Approve. No12 payment/affiliate contribution.
+- Reported member portrait clipping: original randomuser men/87.jpg is128x128 and already crops the top of the head. Computed card269x359 uses background-size:contain/center; no stretching or obscuring header. No CSS change.
+- User defers Calendar explicitly; complete remaining affiliate checks without Calendar.
+
+### 2026-09-24 06:04 — actual scheduled local expiry PASS
+
+- Additional unpaid prerequisites grace-off and untouched use the same versioned fixture; actual UI joined grace-off without paying and captured untouched100 (aggregate EUR317/217/100,purchases6/bookings6). Cancel→republish control required a fresh Join; old refunded payment did not restore admission.
+- Actual manual12 approval gives pending/payment, auto Cancel10 new join pending/join. Versioned arm-deadlines first checks their stored deadlines equal the persisted event start minus configured grace; then adjusts only isolated timing. Grace-OFF start remains future, paid control's basket expiry is also due; no status, membership or financial result is seeded.
+- Found missing common notification-job seed on member-only demo initialization. Moved idempotent creation into common seed initialization and retained saved rules/history when the admin workspace subsequently seeds its other stores. Focused seed preservation test PASS1; initial test run lacked IndexedDB in the test environment and was corrected to use a persisted-entry double. Existing watcher sync06:00:56. Actual normal member identity switch creates the store without opening Admin.
+- Actual scheduler at04:03:16Z completed in167ms, processedCount2. Independent IndexedDB oracle: manual and automatic pending memberships deleted, parent pending counters0; grace-OFF remains pending1; paid untouched remains accepted2 with succeeded/pay item. EUR317/217/100,HUF5000/5000/0,counts6/6 unchanged. Job runHistory is scheduled, not a direct service invocation or seeded outcome. Fresh manual approval after expiry remains next.
+
+### 2026-09-24 06:09 — remaining local financial branches PASS
+
+- Restored only isolated event timing through versioned reopen-deadlines. Actual fresh manual Join is pending/approval; owner sees Approve again, confirms it, and member returns to Waiting for payment. Actual fresh auto Join is pending/join. Further normal Unpublish/Publish on already-reactivated Cancel10 preserves that new membership. Expired approval was not reused.
+- Untouched100 checkout-1790222395519 captured03:59:55Z, programme changed through actual Unpublish/Manage/Edit/Save. Participant full-refund request at04:06:25Z remained pending100 with refunded0 and unchanged revenue. Owner approval at04:06:49Z returned exactly100. In-place history observer again reports removed0/loaders0/same list/all previous rows retained.
+- Final local native totals EUR317/317/0,HUF5000/5000/0,purchases6/bookings6. Actual Revenue popup6/6 and EUR329.50/329.50/0.00 matches fixed HUF400/EUR rate. Retains previous25 and75 separate operations, organizer10/delete7/adminHUF5000 and untouched100 outcomes. No local backend FX/payment request was needed. Local financial lifecycle branches closed; retained failed old-version100 record remains explicitly distinguished from corrected-path evidence.
+- Calendar remains deferred. Restore the existing frontend-sync owner to dev configuration for the remaining HTTP in-place-history verification; preserve both local IndexedDB and dev Mongo evidence.
+
+### 2026-09-24 06:15 — dev live-history and authorization accounting verification
+
+- Restored the existing frontend-sync owner to dev; build/sync06:09. Verified retained fixture before versioned managed-browser launch. Actual second buyer requested EUR2 refund on payment6ab45d96de5ce0e8f4b553f0; request left finances unchanged. Actual organizer approval reconciled Payment history in place: removed rows0, loaders0, same list and all existing row elements retained.
+- Simulator recorded one succeeded EUR2 refund, transaction176805cd-ab7a-4f4e-8188-06ad6ed25064. Exact gateway callback replay returned200/delivery200 with no extra refund. Final Mongo revision138, purchases16/eventBookings15, EUR291/282/9 and HUF5000/5000/0; payment version10, pendingfalse, no active financial fault. Actual Revenue popup CZK7587.50/7362.50/225 matches.
+- Compiled production AffiliateRevenueService/Repository against isolated real Mongo collections: authorization-only EUR7 contributes zero; captured transition contributes700 minor units and counts1/1; replay unchanged. FinanceVersionProbe authorization-revenue PASS; isolated collections removed and absence verified. This proves the accounting boundary, not a provider hold-only UI: the configured checkout providers use immediate capture.
+
+### 2026-09-24 06:20 — final local asset-purchase audit found a remaining defect
+
+- Local client authorization incorrectly passed eventBooking=true and resolved only Event recipients; Java CLIENT fulfillment already distinguishes asset purchases. Local service now records client purchases without an event booking and resolves the asset owner through the existing asset repository when the source is an asset. Event checkout paths remain unchanged.
+- Focused real local revenue-repository regression PASS1: purchase1/eventBookings0, persisted buyer contribution and actual asset-owner income20. This does not replace the actual UI check.
+- Versioned stage-asset adds only a free event/membership context and unpaid EUR20 transport. No borrow, payment or revenue outcome is seeded. Existing local and dev financial evidence retained. Affiliate remains IN PROGRESS pending actual local asset purchase and final record reconciliation.
+
+### 2026-09-24 06:30 — final local asset purchase and checkpoint closure
+
+- Existing frontend-sync local build/sync06:23:18/20 loaded main-6RWZHH7M.js. Actual Lucas UI: Event → View Event → Borrow Stage → Transport → Explore → Borrow → Confirm borrow → Visa4242 → Pay. Payment payment-1790224002359 recorded20EUR at04:26:42Z; one pending owner-confirmation borrow request references that payment. No financial outcome was inserted by the fixture.
+- Independent persisted oracle: purchases7/eventBookings6, EUR337/317/20 and HUF5000/5000/0, asset recipientu41. Actual identity switch to Lina and normal Affiliate → Revenue opening shows7 purchases,6 bookings,349.50EUR gross,329.50EUR refunded,20.00EUR net. This closes the client/asset purchase-only counter regression; the focused service/repository test also passed1/1.
+- Final dev read-only audit still revision138,16/15,EUR291/282/9,HUF5000/5000/0; pending contributions0, active injected faults0, temporary finance probe collections0. Dev and local audit histories, including explicitly identified earlier failed-version controls, remain retained; no broad reset or replay.
+- **AFFILIATE-REVENUE-001 PASS for the recorded dev and frontend-local financial journeys.** Earlier capture/refund recovery, concurrency, FX configuration/defaults, privacy and UI evidence remains valid; the local lifecycle and final dev in-place-history checks above close the outstanding runtime work. Calendar is **DEFERRED by user**, not executed or included in this PASS.
+- Verification boundaries remain explicit: no newly installed production artifact or REAL production authentication qualification; packaging/source/import parity is the evidence for that configuration. No provider hold-only UI flow exists in the configured immediate-capture checkout; zero contribution before capture was verified with the compiled production service/repository and real Mongo probe. Historical standalone tests marked NOT RUN remain NOT RUN; focused tests and actual runtime evidence are identified individually, not a claim that every repository test ran.
+- Privacy double-scrollbar report was withdrawn by the user; no CSS modification. The existing frontend-sync owner is restored serially to normal dev configuration after local completion; normal dev build and asset sync completed06:29:37/39. No duplicate build process was started.

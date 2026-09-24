@@ -410,6 +410,18 @@ public class EventCheckoutBasketService {
         return loadBasketByEvent(normalizedUserId, normalizedSourceId);
     }
 
+    public void retireCancelledEventReservations(String sourceId, Collection<String> participantIds) {
+        if (participantIds.isEmpty()) return;
+        Criteria scope = Criteria.where("sourceId").is(sourceId).and("userId").in(participantIds)
+                .and("status").in(ACTIVE_STATUSES).and("resultState").ne(RESULT_STATE_DELETED);
+        Update closed = new Update().set("resultState", RESULT_STATE_DELETED).set("reservationActive", false)
+                .set("pendingCounterTracked", false).set("updatedAtIso", Instant.now().toString());
+        adjustPendingCount(-modifiedCount(mongoTemplate.updateMulti(
+                Query.query(new Criteria().andOperator(scope, Criteria.where("pendingCounterTracked").is(true))),
+                closed, EventCheckoutBasketItem.class)));
+        mongoTemplate.updateMulti(Query.query(scope), closed, EventCheckoutBasketItem.class);
+    }
+
     public void finalizeAcceptedReservation(String userId, String sourceId) {
         String normalizedUserId = normalizeId(userId);
         String normalizedSourceId = normalizeId(sourceId);

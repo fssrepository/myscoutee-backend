@@ -163,6 +163,9 @@ public class EventCheckoutPricingService {
             }
             return request;
         }
+        if (StringUtils.hasText(parent.getCancelledAtIso())) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "This event has been cancelled.");
+        }
         String canonicalSourceId = normalizeId(parent.getSourceId());
         String generatedSlotSourceId = !sourceId.equals(canonicalSourceId) ? sourceId : null;
         List<EventCheckoutBasketItemDto> incomingItems = incomingItems(request);

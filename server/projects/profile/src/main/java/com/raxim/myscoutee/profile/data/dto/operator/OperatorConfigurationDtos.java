@@ -90,7 +90,11 @@ public final class OperatorConfigurationDtos {
             String publicBaseUrl,
             String merchantAccount,
             boolean credentialConfigured,
-            String credentialMask) {
+            String credentialMask,
+            String exchangeRateUrl) {
+        public PaymentConfigurationDto(List<PaymentProviderDto> providers, String provider, String url, String merchant, boolean configured, String mask) {
+            this(providers, provider, url, merchant, configured, mask, null);
+        }
     }
 
     @JsonInclude(JsonInclude.Include.ALWAYS)
@@ -208,7 +212,11 @@ public final class OperatorConfigurationDtos {
             @Size(max = 2048) String publicBaseUrl,
             @Size(max = 254) String merchantAccount,
             @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
-            @Size(max = 16384) String credential) {
+            @Size(max = 16384) String credential,
+            @Size(max = 2048) String exchangeRateUrl) {
+        public PaymentUpdateDto(String provider, String url, String merchant, String credential) {
+            this(provider, url, merchant, credential, null);
+        }
         public PaymentUpdateDto(
                 String providerId,
                 String credential) {

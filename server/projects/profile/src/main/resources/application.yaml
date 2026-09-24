@@ -70,6 +70,8 @@ operator:
     download-timeout: ${OPERATOR_UPDATE_DOWNLOAD_TIMEOUT:30m}
 
 payment:
+  exchange-rates:
+    development-hosts: ${PAYMENT_EXCHANGE_RATE_DEVELOPMENT_HOSTS:}
   enablePay: ${PAYMENT_ENABLE_PAY:false}
   registration:
     ttl: ${PAYMENT_REGISTRATION_TTL:PT10M}

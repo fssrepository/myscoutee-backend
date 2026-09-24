@@ -18,7 +18,7 @@ public class CachingConfig {
         return new ConcurrentMapCacheManager(
                 "i18n_messages",
                 "demo_users",
-                "deployment_integration");
+                "deployment_integration", "exchange_rates");
     }
 
     @Bean("messageKeyGenerator")

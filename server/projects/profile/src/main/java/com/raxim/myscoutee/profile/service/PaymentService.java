@@ -490,6 +490,20 @@ public class PaymentService {
                 hasText(reason) ? reason : "The paid checkout could not be fulfilled.");
     }
 
+    /** Complete one authorized cancellation; the original payment retains cumulative totals. */
+    public Payment completeEventCancellation(Payment payment, String reason) {
+        Payment refunded = approvePolicyRefund(payment, nowIso(), safeAmount(payment.getAmount()),
+                payment.getCurrency(), reason, "Event booking cancelled; full remaining amount returned.");
+        if (!BOOKING_STATUS_CANCELLED.equals(refunded.getBookingStatus())
+                || refunded.getRefundRequestedTargetAmount() != null || refunded.isEventChangeRefundEligible()) {
+            refunded.setBookingStatus(BOOKING_STATUS_CANCELLED);
+            refunded.setCancelledAtIso(nowIso());
+            refunded.setEventChangeRefundEligible(false);
+            refunded = saveAndProjectSpending(refunded);
+        }
+        return refunded;
+    }
+
     public Payment approvePolicyRefund(
             Payment payment,
             String reviewedAtIso,
@@ -500,12 +514,28 @@ public class PaymentService {
         if (payment == null) {
             throw new IllegalArgumentException("Payment is required.");
         }
-        double paidAmount = safeAmount(payment.getAmount());
-        double approvedAmount = Math.min(paidAmount, safeAmount(refundableAmount));
+        Payment current = paymentsRepository.findById(payment.getId()).orElse(payment);
+        double paidAmount = safeAmount(current.getAmount());
+        double approvedAmount = roundMoney(Math.min(paidAmount, safeAmount(refundableAmount)));
         if (approvedAmount <= 0) {
             throw new ResponseStatusException(HttpStatus.CONFLICT, "The refund policy does not allow a refund.");
         }
-        Payment current = payment;
+        // Materialize the completed operation before advancing to another one.
+        // A prior interruption may have persisted the primary amount but not its audit row.
+        if (safeAmount(current.getRefundedAmount()) > 0
+                && safeAmount(current.getGatewayRefundTargetAmount()) <= safeAmount(current.getRefundedAmount())) {
+            saveRefundHistoryRecord(current);
+        }
+        // Finish the persisted gateway intent first. A later full refund must not
+        // mistake the receipt for an earlier partial refund for its own receipt.
+        if (hasText(current.getGatewayRefundOperationKey())
+                && safeAmount(current.getGatewayRefundTargetAmount()) > safeAmount(current.getRefundedAmount())) {
+            current = finishCapturedRefund(current, reviewedAtIso);
+        }
+        if (approvedAmount <= safeAmount(current.getRefundedAmount())) {
+            saveRefundHistoryRecord(current);
+            return current;
+        }
         if (statusValue(AuthorizationStatus.AUTHORIZED).equals(safeText(current.getStatus()))
                 && hasText(current.getGatewayAuthorizationId())
                 && !"cash".equalsIgnoreCase(safeText(current.getProvider()))
@@ -519,15 +549,31 @@ public class PaymentService {
                         "refund-request:" + normalizeId(current.getId()));
             }
             current = paymentsRepository.findById(current.getId()).orElse(current);
-        } else if (statusValue(AuthorizationStatus.CAPTURED).equals(safeText(current.getStatus()))
+        } else if (Set.of("captured", "partially_refunded", "refunded").contains(safeText(current.getStatus()))
                 && hasText(current.getGatewayAuthorizationId())
                 && !"cash".equalsIgnoreCase(safeText(current.getProvider()))
                 && !"dummy".equalsIgnoreCase(safeText(current.getProvider()))) {
-            refundCapturedPayment(
-                    current,
-                    BigDecimal.valueOf(approvedAmount),
-                    "refund-request:" + normalizeId(current.getId()));
-            current = paymentsRepository.findById(current.getId()).orElse(current);
+            current.setGatewayRefundOperationKey("refund-request:" + normalizeId(current.getId())
+                    + ":" + BigDecimal.valueOf(approvedAmount).movePointRight(2).longValueExact());
+            current.setGatewayRefundAmount(roundMoney(approvedAmount - safeAmount(current.getRefundedAmount())));
+            current.setGatewayRefundTargetAmount(approvedAmount);
+            current.setGatewayRefundId(null);
+            current.setGatewayRefundStatus("requested");
+            current.setRefundRuleId(hasText(refundRuleId) ? refundRuleId : "owner-approved-request");
+            current.setRefundNote(hasText(refundNote) ? refundNote : "Refund approved by the payment recipient.");
+            // @Version fences competing intents before either can send money.
+            current = paymentsRepository.save(current);
+            current = finishCapturedRefund(current, reviewedAtIso);
+        }
+        current = paymentsRepository.findById(current.getId()).orElse(current);
+        approvedAmount = Math.max(approvedAmount, safeAmount(current.getRefundedAmount()));
+        if (safeAmount(current.getGatewayRefundTargetAmount()) != approvedAmount) {
+            // Cash/dummy refunds and authorization release also need distinct
+            // audit operations, even though no captured-refund gateway call occurs.
+            current.setGatewayRefundOperationKey("refund-request:" + normalizeId(current.getId())
+                    + ":" + BigDecimal.valueOf(approvedAmount).movePointRight(2).longValueExact());
+            current.setGatewayRefundAmount(roundMoney(approvedAmount - safeAmount(current.getRefundedAmount())));
+            current.setGatewayRefundTargetAmount(approvedAmount);
         }
         boolean full = approvedAmount >= paidAmount;
         current.setRefundStatus(full ? REFUND_STATUS_FULL : REFUND_STATUS_PARTIAL);
@@ -539,6 +585,28 @@ public class PaymentService {
         current = saveAndProjectSpending(current);
         saveRefundHistoryRecord(current);
         return current;
+    }
+
+    private Payment finishCapturedRefund(Payment intent, String reviewedAtIso) {
+        double target = safeAmount(intent.getGatewayRefundTargetAmount());
+        refundCapturedPayment(intent, BigDecimal.valueOf(safeAmount(intent.getGatewayRefundAmount())),
+                intent.getGatewayRefundOperationKey());
+        for (int attempt = 0; attempt < 3; attempt++) {
+            Payment current = paymentsRepository.findById(intent.getId()).orElseThrow();
+            if (safeAmount(current.getRefundedAmount()) >= target) return current;
+            current.setRefundedAmount(target);
+            current.setRefundStatus(target >= safeAmount(current.getAmount()) ? REFUND_STATUS_FULL : REFUND_STATUS_PARTIAL);
+            current.setRefundCurrency(safeCurrency(current.getCurrency()));
+            current.setRefundedAtIso(hasText(reviewedAtIso) ? reviewedAtIso : nowIso());
+            try {
+                current = saveAndProjectSpending(current);
+                saveRefundHistoryRecord(current);
+                return current;
+            } catch (OptimisticLockingFailureException conflict) {
+                if (attempt == 2) throw conflict;
+            }
+        }
+        throw new IllegalStateException("Refund completion could not be recorded.");
     }
 
     private RefundResult refundCapturedPayment(
@@ -570,6 +638,16 @@ public class PaymentService {
         OptimisticLockingFailureException lastConflict = null;
         Payment current = paymentsRepository.findById(payment.getId()).orElse(payment);
         for (int attempt = 0; attempt < 3; attempt += 1) {
+            // A delayed receipt for the previous partial operation must never
+            // overwrite the receipt/intent of a later full refund.
+            if (hasText(payment.getGatewayRefundOperationKey())
+                    && !Objects.equals(operationKey, current.getGatewayRefundOperationKey())) {
+                if (result.status() == RefundStatus.SUCCEEDED
+                        && safeAmount(current.getRefundedAmount()) >= safeAmount(payment.getGatewayRefundTargetAmount())) {
+                    return result;
+                }
+                throw new OptimisticLockingFailureException("Refund intent changed before its receipt was recorded.");
+            }
             current.setGatewayRefundId(normalizeId(result.gatewayRefundId()));
             current.setGatewayRefundStatus(result.status().name().toLowerCase(java.util.Locale.ROOT));
             current.setLastGatewayError(result.status() == RefundStatus.SUCCEEDED ? null : safeText(result.providerStatus()));
@@ -1330,7 +1408,16 @@ public class PaymentService {
                 .orElse(anchor);
     }
 
+    @Autowired
+    private com.raxim.myscoutee.profile.service.exchange.PaymentEuroService euroService;
+
     private Payment saveAndProjectSpending(Payment payment) {
+        if (euroService != null) {
+            try { euroService.prepare(payment); }
+            catch (RuntimeException error) {
+                org.slf4j.LoggerFactory.getLogger(PaymentService.class).warn("EUR snapshot remains pending: {}", error.getClass().getSimpleName());
+            }
+        }
         if (affiliateRevenueService != null) affiliateRevenueService.prepare(payment);
         double previousAccounted = roundMoney(safeAmount(payment == null ? null : payment.getAccountedSpentAmount()));
         double nextAccounted = accountedSpentAmount(payment);
@@ -1431,16 +1518,28 @@ public class PaymentService {
                 && (!hasText(payment.getAuditKind()) || AUDIT_KIND_PAYMENT.equals(safeText(payment.getAuditKind())));
     }
 
+    String refundHistoryIdForTarget(Payment payment, double target) {
+        String id = "refund:" + payment.getId();
+        return safeAmount(payment.getRefundedAmount()) > 0
+                ? id + ":" + BigDecimal.valueOf(target).movePointRight(2).longValueExact() : id;
+    }
+
     Payment saveRefundRequestHistoryRecord(
             Payment payment,
             String requestedAtIso,
             String requestedByUserId,
             PaymentRefundCalculator.Preview refund) {
+        if (payment == null || refund == null) return null;
+        return saveRefundRequestHistoryRecord(payment, requestedAtIso, requestedByUserId, refund,
+                "refund:" + payment.getId(), refund.refundableAmount());
+    }
+
+    Payment saveRefundRequestHistoryRecord(Payment payment, String requestedAtIso,
+            String requestedByUserId, PaymentRefundCalculator.Preview refund, String historyId, double targetAmount) {
         String paymentId = payment == null ? null : normalizeId(payment.getId());
         if (!hasText(paymentId) || refund == null || refund.refundableAmount() <= 0) {
             return null;
         }
-        String historyId = "refund:" + paymentId;
         Payment existing = paymentsRepository.findById(historyId).orElse(null);
         if (existing != null) {
             return existing;
@@ -1452,6 +1551,7 @@ public class PaymentService {
         history.setSourceId(normalizeId(payment.getSourceId()));
         history.setPaymentMethodId(normalizeId(payment.getPaymentMethodId()));
         history.setProvider(safeText(payment.getProvider()));
+        history.setGatewayRefundTargetAmount(targetAmount);
         history.setStatus("refund_requested");
         history.setAmount(refund.refundableAmount());
         history.setCurrency(refund.currency());
@@ -1488,7 +1588,21 @@ public class PaymentService {
             return null;
         }
         String historyId = "refund:" + paymentKey;
+        double operationAmount = safeAmount(payment.getGatewayRefundAmount());
+        double operationTarget = safeAmount(payment.getGatewayRefundTargetAmount());
+        if (hasText(payment.getGatewayRefundOperationKey()) && operationAmount > 0 && operationTarget == amount) {
+            // The primary holds the cumulative refunded total; each audit row
+            // represents only one actual refund operation (25, then 75).
+            if (operationTarget > operationAmount) {
+                historyId += ":" + BigDecimal.valueOf(operationTarget).movePointRight(2).longValueExact();
+            }
+            amount = operationAmount;
+        }
         Payment history = paymentsRepository.findById(historyId).orElseGet(Payment::new);
+        if ("refunded".equals(history.getStatus()) && safeAmount(history.getAmount()) == amount) {
+            return history;
+        }
+        boolean pendingRequest = "pending".equals(history.getRefundRequestStatus());
         double previousAmount = safeAmount(history.getAccountedSpentAmount());
         history.setId(historyId);
         history.setUserId(normalizeId(payment.getUserId()));
@@ -1503,6 +1617,9 @@ public class PaymentService {
                 : safeCurrency(payment.getCurrency()));
         history.setGatewayRefundId(payment.getGatewayRefundId());
         history.setGatewayRefundStatus(payment.getGatewayRefundStatus());
+        history.setGatewayRefundOperationKey(payment.getGatewayRefundOperationKey());
+        history.setGatewayRefundAmount(payment.getGatewayRefundAmount());
+        history.setGatewayRefundTargetAmount(payment.getGatewayRefundTargetAmount());
         history.setFulfillmentKind(payment.getFulfillmentKind());
         history.setFulfillmentStatus(payment.getFulfillmentStatus());
         history.setContextEventId(payment.getContextEventId());
@@ -1538,7 +1655,13 @@ public class PaymentService {
         if (!hasText(history.getCreatedDate())) {
             history.setCreatedDate(refundedAtIso);
         }
+        if (pendingRequest) history.setRefundRequestStatus("approved");
         Payment saved = paymentsRepository.save(history);
+        if (pendingRequest && mongoTemplate != null) {
+            mongoTemplate.updateFirst(Query.query(Criteria.where("userId").is(saved.getRecipientUserId())
+                            .and("paymentRefundsPending").gt(0)),
+                    new Update().inc("paymentRefundsPending", -1), Users.class);
+        }
         double delta = roundSignedMoney(amount - previousAmount);
         String currency = safeCurrency(saved.getCurrency()).toUpperCase(java.util.Locale.ROOT);
         if (mongoTemplate != null && currency.matches("[A-Z]{3}") && Math.abs(delta) >= 0.005D) {

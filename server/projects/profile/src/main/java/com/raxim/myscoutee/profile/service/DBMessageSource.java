@@ -16,26 +16,34 @@ import com.raxim.myscoutee.profile.repository.I18nMessageRepository;
 public class DBMessageSource extends AbstractMessageSource {
 
     private final I18nMessageRepository i18nMessageRepository;
-    private final Map<String, Map<String, MessageFormat>> cachedMessages = new ConcurrentHashMap<>();
+    private final Map<String, Map<String, String>> cachedMessages = new ConcurrentHashMap<>();
 
     public DBMessageSource(I18nMessageRepository i18nMessageRepository) {
         this.i18nMessageRepository = i18nMessageRepository;
     }
 
     @Override
-    protected MessageFormat resolveCode(String code, Locale locale) {
-        String lang = locale.getLanguage();
-        Map<String, MessageFormat> langCache = cachedMessages.computeIfAbsent(lang, this::loadMessagesForLang);
-        return langCache.get(code);
+    protected String resolveCodeWithoutArguments(String code, Locale locale) {
+        String value = messages(locale.getLanguage()).get(code);
+        return value != null || "en".equals(locale.getLanguage()) ? value : messages("en").get(code);
     }
 
-    private Map<String, MessageFormat> loadMessagesForLang(String lang) {
+    @Override
+    protected MessageFormat resolveCode(String code, Locale locale) {
+        String value = resolveCodeWithoutArguments(code, locale);
+        return value == null ? null : new MessageFormat(value, locale);
+    }
+
+    private Map<String, String> messages(String lang) {
+        String key = com.raxim.myscoutee.common.config.mongo.MongoSessionModeContext.currentMode().name() + ":" + lang;
+        if (cachedMessages.size() >= 64 && !cachedMessages.containsKey(key)) cachedMessages.clear();
+        return cachedMessages.computeIfAbsent(key, ignored -> loadMessagesForLang(lang));
+    }
+
+    private Map<String, String> loadMessagesForLang(String lang) {
+        // UI bundles can contain named placeholders; parse MessageFormat only for a requested parameterized server message.
         return i18nMessageRepository.findByLang(lang).stream()
-                .collect(Collectors.toMap(
-                        I18nMessage::getKey,
-                        m -> new MessageFormat(m.getValue(), Locale.forLanguageTag(lang)),
-                        (v1, v2) -> v1
-                ));
+                .collect(Collectors.toMap(I18nMessage::getKey, I18nMessage::getValue, (first, second) -> first));
     }
 
     // Refresh cache method

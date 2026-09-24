@@ -78,7 +78,7 @@ class PaymentRefundServiceTest {
     }
 
     @Test
-    void recipientApprovalRefundsOnceDecrementsWriteModelCounterAndNotifiesPayer() {
+    void recipientApprovalRefundsOnceAndNotifiesPayerAfterLedgerSettlement() {
         Fixture fixture = new Fixture();
         Payment payment = fixture.payment("authorized");
         Payment request = fixture.refundRequest("pending");
@@ -96,6 +96,7 @@ class PaymentRefundServiceTest {
         });
         when(fixture.paymentService.saveRefundHistoryRecord(payment)).thenAnswer(invocation -> {
             request.setStatus("refunded");
+            request.setRefundRequestStatus("approved");
             return request;
         });
         when(fixture.payments.save(any(Payment.class))).thenAnswer(invocation -> invocation.getArgument(0));
@@ -110,7 +111,7 @@ class PaymentRefundServiceTest {
         assertThat(request.getRefundReviewedAtIso()).isNotBlank();
         verify(fixture.paymentService).approvePolicyRefund(
                 eq(payment), any(String.class), eq(1600D), eq("HUF"), eq("qa-refund"), any(String.class));
-        verify(fixture.mongo).updateFirst(any(Query.class), any(UpdateDefinition.class), eq(Users.class));
+        verify(fixture.mongo, never()).updateFirst(any(Query.class), any(UpdateDefinition.class), eq(Users.class));
 
         ArgumentCaptor<NotificationIntent> notification = ArgumentCaptor.forClass(NotificationIntent.class);
         verify(fixture.outbox).enqueue(notification.capture());

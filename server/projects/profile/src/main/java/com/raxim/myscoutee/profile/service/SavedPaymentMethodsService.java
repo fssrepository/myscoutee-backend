@@ -7,6 +7,7 @@ import java.time.Instant;
 import java.time.YearMonth;
 import java.time.ZoneOffset;
 import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -39,6 +40,8 @@ import com.raxim.myscoutee.common.config.mongo.MongoSessionModeContext;
 
 @Service
 public class SavedPaymentMethodsService {
+    @org.springframework.beans.factory.annotation.Autowired
+    private com.raxim.myscoutee.profile.service.exchange.PaymentEuroService euroService;
     private static final Logger LOG = LoggerFactory.getLogger(SavedPaymentMethodsService.class);
     public static final int MAX_ACTIVE_PAYMENT_METHODS = 6;
     private static final Duration DEFAULT_REGISTRATION_TTL = Duration.ofMinutes(10);
@@ -307,7 +310,7 @@ public class SavedPaymentMethodsService {
                 to < all.size() ? Integer.toString(pageIndex + 1) : null,
                 spendingTotals(ownerId),
                 incomeTotals(ownerId),
-                pendingRefundCount(ownerId));
+                pendingRefundCount(ownerId), euroService == null ? null : euroService.summary(ownerId, false));
     }
 
     public PaymentHistoryPageDto queryHistory(String userId, Integer page, Integer size) {
@@ -342,7 +345,7 @@ public class SavedPaymentMethodsService {
                 to < all.size() ? Integer.toString(pageIndex + 1) : null,
                 spendingTotals(ownerId),
                 incomeTotals(ownerId),
-                pendingRefundCount(ownerId));
+                pendingRefundCount(ownerId), euroService == null ? null : euroService.summary(ownerId, false));
     }
 
     public synchronized void delete(String userId, String paymentMethodId) {
@@ -586,7 +589,7 @@ public class SavedPaymentMethodsService {
                 requestStatus, payment.getRefundRequestedAtIso(),
                 "expense".equals(direction) && paymentAudit && refundableStatus && !refundAlreadyRecorded
                         && "none".equals(requestStatus)
-                        && refund.refundableAmount() > 0,
+                        && payment.getRefundRequestedTargetAmount() == null && refund.refundableAmount() > 0,
                 "expense".equals(direction) && refundAudit && "pending".equals(requestStatus),
                 refund == null ? null : new PaymentRefundPreviewDto(
                         refund.paidAmount(), refund.refundableAmount(), refund.retainedAmount(), refund.currency(),
@@ -604,11 +607,18 @@ public class SavedPaymentMethodsService {
 
     public PaymentHistoryMutationDto mutationDto(Payment payment, String viewerUserId) {
         String ownerId = requiredId(viewerUserId, "Current user");
+        PaymentHistoryItemDto item = toHistoryDto(payment, ownerId);
+        List<PaymentHistoryItemDto> changed = new ArrayList<>();
+        changed.add(item);
+        if ("refund".equals(payment.getAuditKind()) && StringUtils.hasText(payment.getSupersedesPaymentId())) {
+            paymentsRepository.findById(payment.getSupersedesPaymentId())
+                    .filter(original -> ownerId.equals(normalizeId(original.getUserId()))
+                            || ownerId.equals(normalizeId(original.getRecipientUserId())))
+                    .ifPresent(original -> changed.add(toHistoryDto(original, ownerId)));
+        }
         return new PaymentHistoryMutationDto(
-                toHistoryDto(payment, ownerId),
-                spendingTotals(ownerId),
-                incomeTotals(ownerId),
-                pendingRefundCount(ownerId));
+                item, spendingTotals(ownerId), incomeTotals(ownerId), pendingRefundCount(ownerId),
+                euroService == null ? null : euroService.summary(ownerId, false), changed);
     }
 
     public int pendingRefundCount(String userId) {

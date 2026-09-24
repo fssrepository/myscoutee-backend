@@ -2150,6 +2150,89 @@
           "targetUrl": "http://localhost/entry"
         }
       ]
+    },
+    "AFFILIATE-REVENUE-CONCURRENCY-001": {
+      "preserveOtherSessions": true,
+      "sessions": [
+        {
+          "actor": "Affiliate QA second buyer",
+          "sessionKind": "demo",
+          "userId": "6aff10000000000000000002",
+          "expectedName": "Affiliate QA Second",
+          "autoDismissExplanationGuide": true
+        }
+      ]
+    },
+    "AFFILIATE-EXCHANGE-RATES-001": {
+      "layout": {
+        "columns": 1
+      },
+      "sessions": [
+        {
+          "actor": "Ava",
+          "sessionKind": "demo",
+          "userId": "admin-demo-ava",
+          "expectedName": "Ava Moderation",
+          "targetUrl": "http://localhost/admin",
+          "entryUrl": "http://localhost/entry?redirect=%2Fadmin",
+          "autoDismissExplanationGuide": false
+        }
+      ],
+      "preserveOtherSessions": true
+    },
+    "AFFILIATE-REFUND-CONCURRENCY-001": {
+      "preserveOtherSessions": true,
+      "layout": {
+        "columns": 2
+      },
+      "sessions": [
+        {
+          "actor": "Affiliate owner refund 1",
+          "sessionKind": "demo",
+          "userId": "6aff10000000000000000001",
+          "expectedName": "Affiliate QA Owner",
+          "autoDismissExplanationGuide": true
+        },
+        {
+          "actor": "Affiliate owner refund 2",
+          "sessionKind": "demo",
+          "userId": "6aff10000000000000000001",
+          "expectedName": "Affiliate QA Owner",
+          "autoDismissExplanationGuide": true
+        }
+      ]
+    },
+    "AFFILIATE-EXCHANGE-OPERATOR-001": {
+      "preserveOtherSessions": true,
+      "layout": {
+        "columns": 1
+      },
+      "sessions": [
+        {
+          "actor": "FX configuration operator",
+          "sessionKind": "demo",
+          "userId": "operator@myscoutee.local",
+          "expectedName": "Demo Operator",
+          "targetUrl": "http://localhost/operator",
+          "entryUrl": "http://localhost/entry?redirect=%2Foperator",
+          "autoDismissExplanationGuide": false
+        }
+      ]
+    },
+    "AFFILIATE-LOCAL-001": {
+      "preserveOtherSessions": true,
+      "storageScope": "demo",
+      "entryUrl": "http://localhost/entry",
+      "targetUrl": "http://localhost/entry",
+      "bootstrapEntryConsent": true,
+      "sessions": [
+        {
+          "actor": "Frontend local affiliate browser",
+          "sessionKind": "anonymous",
+          "expectedName": "Clean frontend-local demo baseline",
+          "autoDismissExplanationGuide": true
+        }
+      ]
     }
   }
 }

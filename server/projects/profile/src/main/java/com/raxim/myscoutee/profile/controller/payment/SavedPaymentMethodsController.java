@@ -95,6 +95,16 @@ public class SavedPaymentMethodsController {
         service.delete(resolveCurrentUserId(userId), paymentMethodId);
     }
 
+    @org.springframework.beans.factory.annotation.Autowired
+    private com.raxim.myscoutee.profile.service.exchange.PaymentEuroService euroService;
+
+    public record SummaryCurrencyRequest(String currency) {}
+    @PostMapping("/summary-currency")
+    public SummaryCurrencyRequest selectSummaryCurrency(@RequestBody SummaryCurrencyRequest request) {
+        euroService.selectCurrency(resolveCurrentUserId(null), request.currency());
+        return request;
+    }
+
     @GetMapping("/history")
     public PaymentHistoryPageDto history(
             @RequestParam(value = "userId", required = false) String userId,

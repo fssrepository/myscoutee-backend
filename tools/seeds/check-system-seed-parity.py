@@ -10,7 +10,7 @@ SHARED = (
     'accessPolicyDefinitions', 'communityProviders', 'paymentProviders',
     'countryPartitions', 'helpCenterRevisions', 'ideaPosts', 'emailTemplates',
     'emailCampaignRules', 'notificationTemplates', 'i18n_messages', 'i18n_bundles',
-    'scheduledMessageTasks',
+    'scheduledMessageTasks', 'exchangeRates',
 )
 CONFIGURED = (
     'affinityConfigs', 'appSettings', 'deploymentConfigurations',
@@ -74,6 +74,9 @@ def audit(seeds=SEEDS):
                         errors.append('production integration URL must be operator-configured')
                     reference[0]['socialLinks'] = []
                     reference[0]['integration'] = {'publicBaseUrl': None}
+                    if actual[0]['payment'].get('exchangeRateUrl') != 'https://www.ecb.europa.eu/stats/eurofxref/eurofxref-hist-90d.xml':
+                        errors.append('production exchange-rate source must default to public ECB HTTPS')
+                    reference[0]['payment']['exchangeRateUrl'] = 'https://www.ecb.europa.eu/stats/eurofxref/eurofxref-hist-90d.xml'
             if name == 'notificationRuleConfigs' and mode == 'e2e_db':
                 for row in reference:
                     if row['_id'] == 'notification-rule-event-counter-expiry':

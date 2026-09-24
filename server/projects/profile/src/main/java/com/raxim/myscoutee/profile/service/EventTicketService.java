@@ -116,7 +116,7 @@ public class EventTicketService {
         }
 
         boolean ticketingEnabled = Boolean.TRUE.equals(canonical.getTicketing());
-        boolean eventActive = canonical.hasStoredStatus(ActivityEvent.STATUS_ACTIVE);
+        boolean eventActive = canonical.hasStoredStatus(ActivityEvent.STATUS_ACTIVE) && !StringUtils.hasText(canonical.getCancelledAtIso());
         List<EventTicket> toDelete = new ArrayList<>();
         for (EventTicket ticket : eventTicketsRepository.findByEventId(eventId)) {
             if (ticket == null || !isActiveStatus(ticket.getStatus())) {
@@ -217,7 +217,7 @@ public class EventTicketService {
         if (!accessControlService.canManageEvent(eventId, normalizedScannerUserId)) {
             return CheckInResult.invalid("not_authorized", ticket, event);
         }
-        if (!event.hasStoredStatus(ActivityEvent.STATUS_ACTIVE)) {
+        if (!event.hasStoredStatus(ActivityEvent.STATUS_ACTIVE) || StringUtils.hasText(event.getCancelledAtIso())) {
             return CheckInResult.invalid("event_unavailable", ticket, event);
         }
         if (!Boolean.TRUE.equals(event.getTicketing())) {
@@ -323,6 +323,7 @@ public class EventTicketService {
         String normalizedHolderUserId = normalizeId(holderUserId);
         if (canonical == null
                 || !canonical.hasStoredStatus(ActivityEvent.STATUS_ACTIVE)
+                || StringUtils.hasText(canonical.getCancelledAtIso())
                 || !Boolean.TRUE.equals(canonical.getTicketing())
                 || !StringUtils.hasText(normalizedHolderUserId)) {
             return false;

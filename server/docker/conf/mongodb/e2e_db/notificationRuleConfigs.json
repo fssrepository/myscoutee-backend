@@ -694,5 +694,46 @@
     "createdUser": "notification-registry",
     "updatedDate": "2026-05-31T00:00:00.000Z",
     "updatedUser": "notification-registry"
+  },
+  {
+    "_id": "notification-rule-payment-exchange-rates",
+    "syncKey": "notification-rule-payment-exchange-rates",
+    "ruleKey": "payment-exchange-rates",
+    "label": "admin.jobs.rule.payment.exchange.rates",
+    "category": "admin.jobs.category.scheduled",
+    "description": "admin.jobs.rule.payment.exchange.rates.description",
+    "actionKey": "payments.exchange-rates",
+    "triggerKind": "scheduled_process",
+    "enabled": true,
+    "manualRunEnabled": true,
+    "adminManageable": true,
+    "priority": 259,
+    "channels": {
+      "pushEnabled": false,
+      "emailEnabled": false,
+      "inAppEnabled": false,
+      "supportChatEnabled": false
+    },
+    "timing": {
+      "mode": "interval",
+      "intervalMinutes": 1440,
+      "intervalSeconds": 86400,
+      "intervalAmount": 1,
+      "intervalUnit": "days",
+      "month": null,
+      "dayOfMonth": null,
+      "time": "00:00",
+      "timezone": "UTC",
+      "cronExpression": "0 0 0/1 * * ?"
+    },
+    "scheduleSlots": [],
+    "parameters": [],
+    "message": {},
+    "runState": {},
+    "runHistory": [],
+    "createdDate": "2026-05-31T00:00:00.000Z",
+    "createdUser": "notification-registry",
+    "updatedDate": "2026-05-31T00:00:00.000Z",
+    "updatedUser": "notification-registry"
   }
 ]

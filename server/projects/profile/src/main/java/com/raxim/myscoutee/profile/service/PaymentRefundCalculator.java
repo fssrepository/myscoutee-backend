@@ -65,7 +65,8 @@ final class PaymentRefundCalculator {
                 && money(payment.getRefundedAmount()) > 0;
         if ((("pending".equals(requestStatus) || "approved".equals(requestStatus)) || finalizedRefund)
                 && payment.getRefundedAmount() != null) {
-            double paid = money(paidAmountOverride == null ? payment.getAmount() : paidAmountOverride);
+            double paid = money("event-terms-changed".equals(payment.getRefundRuleId()) && "refund".equals(payment.getAuditKind())
+                    ? payment.getAmount() : paidAmountOverride == null ? payment.getAmount() : paidAmountOverride);
             double refundable = Math.min(paid, money(payment.getRefundedAmount()));
             String status = refundable <= 0 ? "not_eligible" : refundable >= paid ? "full" : "partial";
             PricingCancellationRuleDto storedRule = ruleById(

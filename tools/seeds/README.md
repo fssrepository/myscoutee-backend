@@ -13,7 +13,8 @@ generated JSON/SVG diffs before committing.
 - `normalize-chat-seed.mjs` checks chat/member/event JSON consistency; pass
   `--write` to apply its proposed normalization.
 - `generate-help-center-seeded-images.mjs` regenerates static help-center SVGs
-  consumed by frontend assets and backend seed resources.
+  consumed by both local and HTTP help revisions from frontend assets. Optional
+  context arguments (for example `profile-editor`) regenerate only those contexts.
 
 ```bash
 node tools/seeds/normalize-chat-seed.mjs

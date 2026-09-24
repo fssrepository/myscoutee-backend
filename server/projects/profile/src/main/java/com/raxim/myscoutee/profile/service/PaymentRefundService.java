@@ -48,6 +48,14 @@ public class PaymentRefundService {
     }
 
     public synchronized PaymentHistoryMutationDto requestRefund(String paymentId, String actorUserId) {
+        return requestRefund(paymentId, actorUserId, false);
+    }
+
+    public synchronized PaymentHistoryMutationDto requestChangedTermsRefund(String paymentId, String actorUserId) {
+        return requestRefund(paymentId, actorUserId, true);
+    }
+
+    private PaymentHistoryMutationDto requestRefund(String paymentId, String actorUserId, boolean changedTerms) {
         String actorId = requiredId(actorUserId, "Current user");
         Payment payment = requirePayment(paymentId);
         if (!actorId.equals(normalize(payment.getUserId()))) {
@@ -63,9 +71,22 @@ public class PaymentRefundService {
         if (StringUtils.hasText(payment.getAuditKind()) && !"payment".equals(payment.getAuditKind())) {
             throw new ResponseStatusException(HttpStatus.CONFLICT, "Payment audit revisions cannot be refunded.");
         }
-        Payment existingRequest = paymentsRepository.findById(refundHistoryId(payment)).orElse(null);
+        if (changedTerms && !payment.isEventChangeRefundEligible()) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "No changed-terms refund is available.");
+        }
+        String historyId = changedTerms ? paymentService.refundHistoryIdForTarget(payment, payment.getAmount()) : refundHistoryId(payment);
+        Payment existingRequest = paymentsRepository.findById(historyId).orElse(null);
         String requestStatus = refundRequestStatus(existingRequest);
         if ("pending".equals(requestStatus) || "approved".equals(requestStatus)) {
+            if (changedTerms && "pending".equals(requestStatus) && !"event-terms-changed".equals(existingRequest.getRefundRuleId())) {
+                double remaining = Math.max(0D, payment.getAmount() - (payment.getRefundedAmount() == null ? 0D : payment.getRefundedAmount()));
+                existingRequest.setAmount(remaining);
+                existingRequest.setRefundedAmount(remaining);
+                existingRequest.setGatewayRefundTargetAmount(payment.getAmount());
+                existingRequest.setRefundRuleId("event-terms-changed");
+                existingRequest.setRefundNote("Changed event terms: full remaining refund.");
+                existingRequest = paymentsRepository.save(existingRequest);
+            }
             return paymentMethodsService.mutationDto(existingRequest, actorId);
         }
         if (existingRequest != null) {
@@ -73,11 +94,18 @@ public class PaymentRefundService {
         }
 
         String now = Instant.now().toString();
-        PaymentRefundCalculator.Preview refund = PaymentRefundCalculator.preview(payment, now);
+        PaymentRefundCalculator.Preview refund = changedTerms
+                ? new PaymentRefundCalculator.Preview(payment.getAmount(),
+                        Math.max(0D, payment.getAmount() - (payment.getRefundedAmount() == null ? 0D : payment.getRefundedAmount())),
+                        payment.getCurrency(), "available", "event-terms-changed", null, null,
+                        "full", 100D, "Changed event terms: full remaining refund.")
+                : PaymentRefundCalculator.preview(payment, now);
         if (refund.refundableAmount() <= 0) {
             throw new ResponseStatusException(HttpStatus.CONFLICT, "The refund policy does not allow a refund.");
         }
-        Payment saved = paymentService.saveRefundRequestHistoryRecord(payment, now, actorId, refund);
+        Payment saved = changedTerms
+                ? paymentService.saveRefundRequestHistoryRecord(payment, now, actorId, refund, historyId, payment.getAmount())
+                : paymentService.saveRefundRequestHistoryRecord(payment, now, actorId, refund);
         if (saved == null) {
             throw new ResponseStatusException(HttpStatus.CONFLICT, "The refund request could not be recorded.");
         }
@@ -107,7 +135,9 @@ public class PaymentRefundService {
         }
 
         String now = Instant.now().toString();
-        Payment refunded = paymentService.approvePolicyRefund(
+        Payment refunded = "event-terms-changed".equals(request.getRefundRuleId())
+                ? paymentService.completeEventCancellation(payment, "event-terms-changed")
+                : paymentService.approvePolicyRefund(
                 payment,
                 now,
                 request.getRefundedAmount() == null ? 0D : request.getRefundedAmount(),
@@ -122,7 +152,6 @@ public class PaymentRefundService {
         history.setRefundReviewedAtIso(now);
         history.setRefundReviewedByUserId(actorId);
         history = paymentsRepository.save(history);
-        decrementRecipientPendingCounter(actorId);
         enqueueRefundNotification(history, actorId, normalize(refunded.getUserId()), true);
         return paymentMethodsService.mutationDto(history, actorId);
     }
@@ -136,15 +165,6 @@ public class PaymentRefundService {
         mongoTemplate.updateFirst(
                 Query.query(Criteria.where("userId").is(recipientUserId)),
                 new Update().inc("paymentRefundsPending", 1),
-                Users.class);
-    }
-
-    private void decrementRecipientPendingCounter(String recipientUserId) {
-        mongoTemplate.updateFirst(
-                Query.query(new Criteria().andOperator(
-                        Criteria.where("userId").is(recipientUserId),
-                        Criteria.where("paymentRefundsPending").gt(0))),
-                new Update().inc("paymentRefundsPending", -1),
                 Users.class);
     }
 

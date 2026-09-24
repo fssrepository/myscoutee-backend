@@ -1,5 +1,11 @@
 [
   {
+    "_id": "i18n-message-en-payment-history-refund-preview-changed-terms",
+    "key": "payment.history.refund.preview.changed.terms",
+    "lang": "en",
+    "value": "Full remaining refund because the event terms changed."
+  },
+  {
     "_id": "i18n-message-en-integration-token-ip",
     "key": "integration.token.ip",
     "lang": "en",
@@ -12423,7 +12429,7 @@
     "_id": "i18n-message-en-logout-question",
     "key": "logout.question",
     "lang": "en",
-    "value": "Logout?"
+    "value": "Are you sure you want to log out?"
   },
   {
     "_id": "i18n-message-en-min",
@@ -12885,7 +12891,7 @@
     "_id": "i18n-message-en-payment-history-refund-approve-title",
     "key": "payment.history.refund.approve.title",
     "lang": "en",
-    "value": "Approve refund?"
+    "value": "Would you like to approve this refund request?"
   },
   {
     "_id": "i18n-message-en-payment-history-refund-approved",
@@ -13569,7 +13575,7 @@
     "_id": "i18n-message-en-event-editor-publish-question",
     "key": "event.editor.publish.question",
     "lang": "en",
-    "value": "Publish event?"
+    "value": "Do you want to publish this event?"
   },
   {
     "_id": "i18n-message-en-event-editor-publish-warning",
@@ -13587,7 +13593,7 @@
     "_id": "i18n-message-en-event-editor-unpublish-question",
     "key": "event.editor.unpublish.question",
     "lang": "en",
-    "value": "Unpublish event?"
+    "value": "Do you want to unpublish this event?"
   },
   {
     "_id": "i18n-message-en-event-editor-unpublish-warning",
@@ -22348,6 +22354,210 @@
     "key": "event.approval.hours.unit",
     "lang": "en",
     "value": "in hours"
+  },
+  {
+    "_id": "i18n-message-en-operator-configuration-payment-exchange-url",
+    "key": "operator.configuration.payment.exchange.url",
+    "lang": "en",
+    "value": "Exchange-rate source URL"
+  },
+  {
+    "_id": "i18n-message-en-operator-configuration-payment-exchange-help",
+    "key": "operator.configuration.payment.exchange.help",
+    "lang": "en",
+    "value": "Daily reference rates (ECB XML). Refreshed by the exchange-rate job."
+  },
+  {
+    "_id": "i18n-message-en-admin-jobs-rule-payment-exchange-rates",
+    "key": "admin.jobs.rule.payment.exchange.rates",
+    "lang": "en",
+    "value": "Refresh exchange rates"
+  },
+  {
+    "_id": "i18n-message-en-admin-jobs-rule-payment-exchange-rates-description",
+    "key": "admin.jobs.rule.payment.exchange.rates.description",
+    "lang": "en",
+    "value": "Store daily reference rates for payment summaries."
+  },
+  {
+    "_id": "i18n-message-en-payment-euro-pending",
+    "key": "payment.euro.pending",
+    "lang": "en",
+    "value": "Summary unavailable: some payments are waiting for an exchange rate."
+  },
+  {
+    "_id": "i18n-message-en-payment-euro-reference",
+    "key": "payment.euro.reference",
+    "lang": "en",
+    "value": "Approximate total at payment-day reference rates"
+  },
+  {
+    "_id": "i18n-message-en-payment-euro-description",
+    "key": "payment.euro.description",
+    "lang": "en",
+    "value": "Purchases by people you invited, at payment-day reference rates."
+  },
+  {
+    "_id": "i18n-message-en-payment-currency-title",
+    "key": "payment.currency.title",
+    "lang": "en",
+    "value": "Summary currency"
+  },
+  {
+    "_id": "i18n-message-en-payment-currency-save-error",
+    "key": "payment.currency.save.error",
+    "lang": "en",
+    "value": "Could not save the currency. Please try again."
+  },
+  {
+    "_id": "i18n-message-en-payments-exchange-rates",
+    "key": "payments.exchange-rates",
+    "lang": "en",
+    "value": "Daily reference rates"
+  },
+  {
+    "_id": "i18n-message-en-admin-jobs-exchange-refreshing",
+    "key": "admin.jobs.exchange.refreshing",
+    "lang": "en",
+    "value": "Refreshing daily exchange rates."
+  },
+  {
+    "_id": "i18n-message-en-admin-jobs-exchange-completed",
+    "key": "admin.jobs.exchange.completed",
+    "lang": "en",
+    "value": "Daily exchange rates stored."
+  },
+  {
+    "_id": "i18n-message-en-admin-jobs-exchange-unconfigured",
+    "key": "admin.jobs.exchange.unconfigured",
+    "lang": "en",
+    "value": "Exchange-rate source is not configured."
+  },
+  {
+    "_id": "i18n-message-en-admin-jobs-exchange-failed",
+    "key": "admin.jobs.exchange.failed",
+    "lang": "en",
+    "value": "Exchange-rate refresh failed. Check the configured source."
+  },
+  {
+    "_id": "i18n-message-en-error-str-max-length",
+    "key": "error.str_max_length",
+    "lang": "en",
+    "value": "Length should between 1 and 255"
+  },
+  {
+    "_id": "i18n-message-en-operator-configuration-payment-exchange-save",
+    "key": "operator.configuration.payment.exchange.save",
+    "lang": "en",
+    "value": "Save exchange-rate source"
+  },
+  {
+    "_id": "i18n-message-en-operator-configuration-payment-exchange-saved",
+    "key": "operator.configuration.payment.exchange.saved",
+    "lang": "en",
+    "value": "Exchange-rate source saved."
+  },
+  {
+    "_id": "i18n-message-en-event-checkout-payment-confirm-title",
+    "key": "event.checkout.payment.confirm.title",
+    "lang": "en",
+    "value": "Would you like to proceed with payment?"
+  },
+  {
+    "_id": "i18n-message-en-event-checkout-payment-confirm-message",
+    "key": "event.checkout.payment.confirm.message",
+    "lang": "en",
+    "value": "You will pay for the selected item."
+  },
+  {
+    "_id": "i18n-message-en-cancel-event",
+    "key": "cancel.event",
+    "lang": "en",
+    "value": "Cancel event"
+  },
+  {
+    "_id": "i18n-message-en-cancel-booking-refund",
+    "key": "cancel.booking.refund",
+    "lang": "en",
+    "value": "Cancel with full refund"
+  },
+  {
+    "_id": "i18n-message-en-event-cancel-confirm-title",
+    "key": "event.cancel.confirm.title",
+    "lang": "en",
+    "value": "Would you like to cancel this event?"
+  },
+  {
+    "_id": "i18n-message-en-event-cancel-booking-confirm-title",
+    "key": "event.cancel.booking.confirm.title",
+    "lang": "en",
+    "value": "Would you like to cancel your booking for a full refund?"
+  },
+  {
+    "_id": "i18n-message-en-event-cancel-busy",
+    "key": "event.cancel.busy",
+    "lang": "en",
+    "value": "Cancelling…"
+  },
+  {
+    "_id": "i18n-message-en-event-cancel-failed",
+    "key": "event.cancel.failed",
+    "lang": "en",
+    "value": "Unable to cancel the booking."
+  },
+  {
+    "_id": "i18n-message-en-event-cancelled",
+    "key": "event.cancelled",
+    "lang": "en",
+    "value": "Cancelled"
+  },
+  {
+    "_id": "i18n-message-en-event-cancellation-processing",
+    "key": "event.cancellation.processing",
+    "lang": "en",
+    "value": "Refunds in progress"
+  },
+  {
+    "_id": "i18n-message-en-notification-kind-event-cancelled-title",
+    "key": "notification.kind.event-cancelled.title",
+    "lang": "en",
+    "value": "Event cancelled"
+  },
+  {
+    "_id": "i18n-message-en-notification-kind-event-cancelled-message",
+    "key": "notification.kind.event-cancelled.message",
+    "lang": "en",
+    "value": "The organizer cancelled the event. Any remaining paid amount will be refunded."
+  },
+  {
+    "_id": "i18n-message-en-notification-kind-event-paid-terms-changed-title",
+    "key": "notification.kind.event-paid-terms-changed.title",
+    "lang": "en",
+    "value": "Your event has changed"
+  },
+  {
+    "_id": "i18n-message-en-notification-kind-event-paid-terms-changed-message",
+    "key": "notification.kind.event-paid-terms-changed.message",
+    "lang": "en",
+    "value": "The event you paid for has changed. You can keep your booking or cancel it from the event menu for a full refund."
+  },
+  {
+    "_id": "i18n-message-en-notification-kind-event-booking-cancelled-title",
+    "key": "notification.kind.event-booking-cancelled.title",
+    "lang": "en",
+    "value": "Booking cancelled"
+  },
+  {
+    "_id": "i18n-message-en-notification-kind-event-booking-cancelled-message",
+    "key": "notification.kind.event-booking-cancelled.message",
+    "lang": "en",
+    "value": "Your booking has been cancelled and the remaining paid amount has been refunded."
+  },
+  {
+    "_id": "i18n-message-hu-payment-history-refund-preview-changed-terms",
+    "key": "payment.history.refund.preview.changed.terms",
+    "lang": "hu",
+    "value": "A módosult eseményfeltételek miatt a teljes fennmaradó összeg visszajár."
   },
   {
     "_id": "i18n-message-hu-integration-token-ip",
@@ -34773,7 +34983,7 @@
     "_id": "i18n-message-hu-logout-question",
     "key": "logout.question",
     "lang": "hu",
-    "value": "Biztosan kilép?"
+    "value": "Biztosan ki szeretnél jelentkezni?"
   },
   {
     "_id": "i18n-message-hu-min",
@@ -35235,7 +35445,7 @@
     "_id": "i18n-message-hu-payment-history-refund-approve-title",
     "key": "payment.history.refund.approve.title",
     "lang": "hu",
-    "value": "Jóváhagyod a visszatérítést?"
+    "value": "Jóváhagyod ezt a visszatérítési kérelmet?"
   },
   {
     "_id": "i18n-message-hu-payment-history-refund-approved",
@@ -44698,5 +44908,215 @@
     "key": "event.approval.hours.unit",
     "lang": "hu",
     "value": "órában"
+  },
+  {
+    "_id": "i18n-message-hu-operator-configuration-payment-exchange-url",
+    "key": "operator.configuration.payment.exchange.url",
+    "lang": "hu",
+    "value": "Árfolyamforrás URL"
+  },
+  {
+    "_id": "i18n-message-hu-operator-configuration-payment-exchange-help",
+    "key": "operator.configuration.payment.exchange.help",
+    "lang": "hu",
+    "value": "Napi referenciaárfolyamok (ECB XML). Az árfolyamfrissítő feladat tölti le."
+  },
+  {
+    "_id": "i18n-message-hu-admin-jobs-rule-payment-exchange-rates",
+    "key": "admin.jobs.rule.payment.exchange.rates",
+    "lang": "hu",
+    "value": "Árfolyamok frissítése"
+  },
+  {
+    "_id": "i18n-message-hu-admin-jobs-rule-payment-exchange-rates-description",
+    "key": "admin.jobs.rule.payment.exchange.rates.description",
+    "lang": "hu",
+    "value": "Napi referenciaárfolyamok mentése a fizetési összesítőkhöz."
+  },
+  {
+    "_id": "i18n-message-hu-payment-euro-pending",
+    "key": "payment.euro.pending",
+    "lang": "hu",
+    "value": "Az összesítő még nem elérhető: néhány tétel árfolyamra vár."
+  },
+  {
+    "_id": "i18n-message-hu-payment-euro-reference",
+    "key": "payment.euro.reference",
+    "lang": "hu",
+    "value": "Tájékoztató összeg a fizetéskori referenciaárfolyamokon"
+  },
+  {
+    "_id": "i18n-message-hu-payment-euro-description",
+    "key": "payment.euro.description",
+    "lang": "hu",
+    "value": "A meghívottaid vásárlásai, a fizetéskori referenciaárfolyamokon."
+  },
+  {
+    "_id": "i18n-message-hu-payment-currency-title",
+    "key": "payment.currency.title",
+    "lang": "hu",
+    "value": "Összesítő pénzneme"
+  },
+  {
+    "_id": "i18n-message-hu-payment-currency-save-error",
+    "key": "payment.currency.save.error",
+    "lang": "hu",
+    "value": "A pénznem mentése nem sikerült. Próbáld újra."
+  },
+  {
+    "_id": "i18n-message-hu-payments-exchange-rates",
+    "key": "payments.exchange-rates",
+    "lang": "hu",
+    "value": "Napi referenciaárfolyamok"
+  },
+  {
+    "_id": "i18n-message-hu-admin-jobs-exchange-refreshing",
+    "key": "admin.jobs.exchange.refreshing",
+    "lang": "hu",
+    "value": "Napi árfolyamok frissítése."
+  },
+  {
+    "_id": "i18n-message-hu-admin-jobs-exchange-completed",
+    "key": "admin.jobs.exchange.completed",
+    "lang": "hu",
+    "value": "A napi árfolyamok mentve."
+  },
+  {
+    "_id": "i18n-message-hu-admin-jobs-exchange-unconfigured",
+    "key": "admin.jobs.exchange.unconfigured",
+    "lang": "hu",
+    "value": "Az árfolyamforrás nincs beállítva."
+  },
+  {
+    "_id": "i18n-message-hu-admin-jobs-exchange-failed",
+    "key": "admin.jobs.exchange.failed",
+    "lang": "hu",
+    "value": "Az árfolyamfrissítés sikertelen. Ellenőrizd a beállított forrást."
+  },
+  {
+    "_id": "i18n-message-hu-error-str-max-length",
+    "key": "error.str_max_length",
+    "lang": "hu",
+    "value": "A hossznak 1 és 255 között kell lennie"
+  },
+  {
+    "_id": "i18n-message-hu-operator-configuration-payment-exchange-save",
+    "key": "operator.configuration.payment.exchange.save",
+    "lang": "hu",
+    "value": "Árfolyamforrás mentése"
+  },
+  {
+    "_id": "i18n-message-hu-operator-configuration-payment-exchange-saved",
+    "key": "operator.configuration.payment.exchange.saved",
+    "lang": "hu",
+    "value": "Árfolyamforrás mentve."
+  },
+  {
+    "_id": "i18n-message-hu-event-checkout-payment-confirm-title",
+    "key": "event.checkout.payment.confirm.title",
+    "lang": "hu",
+    "value": "Szeretnéd elindítani a fizetést?"
+  },
+  {
+    "_id": "i18n-message-hu-event-checkout-payment-confirm-message",
+    "key": "event.checkout.payment.confirm.message",
+    "lang": "hu",
+    "value": "A kiválasztott tételt fogod kifizetni."
+  },
+  {
+    "_id": "i18n-message-hu-cancel-event",
+    "key": "cancel.event",
+    "lang": "hu",
+    "value": "Esemény lemondása"
+  },
+  {
+    "_id": "i18n-message-hu-cancel-booking-refund",
+    "key": "cancel.booking.refund",
+    "lang": "hu",
+    "value": "Lemondás teljes visszatérítéssel"
+  },
+  {
+    "_id": "i18n-message-hu-event-cancel-confirm-title",
+    "key": "event.cancel.confirm.title",
+    "lang": "hu",
+    "value": "Szeretnéd lemondani ezt az eseményt?"
+  },
+  {
+    "_id": "i18n-message-hu-event-cancel-booking-confirm-title",
+    "key": "event.cancel.booking.confirm.title",
+    "lang": "hu",
+    "value": "Szeretnéd lemondani a foglalásodat teljes visszatérítéssel?"
+  },
+  {
+    "_id": "i18n-message-hu-event-cancel-busy",
+    "key": "event.cancel.busy",
+    "lang": "hu",
+    "value": "Lemondás…"
+  },
+  {
+    "_id": "i18n-message-hu-event-cancel-failed",
+    "key": "event.cancel.failed",
+    "lang": "hu",
+    "value": "Nem sikerült lemondani a foglalást."
+  },
+  {
+    "_id": "i18n-message-hu-event-cancelled",
+    "key": "event.cancelled",
+    "lang": "hu",
+    "value": "Lemondva"
+  },
+  {
+    "_id": "i18n-message-hu-event-cancellation-processing",
+    "key": "event.cancellation.processing",
+    "lang": "hu",
+    "value": "Visszatérítés folyamatban"
+  },
+  {
+    "_id": "i18n-message-hu-notification-kind-event-cancelled-title",
+    "key": "notification.kind.event-cancelled.title",
+    "lang": "hu",
+    "value": "Az eseményt lemondták"
+  },
+  {
+    "_id": "i18n-message-hu-notification-kind-event-cancelled-message",
+    "key": "notification.kind.event-cancelled.message",
+    "lang": "hu",
+    "value": "A szervező lemondta az eseményt. A még vissza nem térített befizetésed visszajár."
+  },
+  {
+    "_id": "i18n-message-hu-notification-kind-event-paid-terms-changed-title",
+    "key": "notification.kind.event-paid-terms-changed.title",
+    "lang": "hu",
+    "value": "Megváltozott az eseményed"
+  },
+  {
+    "_id": "i18n-message-hu-notification-kind-event-paid-terms-changed-message",
+    "key": "notification.kind.event-paid-terms-changed.message",
+    "lang": "hu",
+    "value": "Megváltozott az esemény, amelyre fizettél. Megtarthatod a foglalásodat, vagy az esemény menüjéből teljes visszatérítéssel lemondhatod."
+  },
+  {
+    "_id": "i18n-message-hu-notification-kind-event-booking-cancelled-title",
+    "key": "notification.kind.event-booking-cancelled.title",
+    "lang": "hu",
+    "value": "Foglalás lemondva"
+  },
+  {
+    "_id": "i18n-message-hu-notification-kind-event-booking-cancelled-message",
+    "key": "notification.kind.event-booking-cancelled.message",
+    "lang": "hu",
+    "value": "A foglalásodat lemondtuk, és a még vissza nem térített befizetésed visszajárt."
+  },
+  {
+    "_id": "i18n-message-en-event-checkout-join-confirm-title",
+    "key": "event.checkout.join.confirm.title",
+    "lang": "en",
+    "value": "Would you like to join this event?"
+  },
+  {
+    "_id": "i18n-message-hu-event-checkout-join-confirm-title",
+    "key": "event.checkout.join.confirm.title",
+    "lang": "hu",
+    "value": "Szeretnél csatlakozni ehhez az eseményhez?"
   }
 ]

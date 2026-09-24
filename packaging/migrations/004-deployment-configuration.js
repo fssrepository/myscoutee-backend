@@ -15,7 +15,7 @@ if (configuration && Number(configuration.schemaVersion) === 3) {
     throw new Error('Deployment configuration changed during migration.');
   }
   print('Applied migration004: deploymentConfigurations schema3 -> 4; operator values retained.');
-} else if (configuration && Number(configuration.schemaVersion) !== 4) {
+} else if (configuration && !(Number(configuration.schemaVersion) >= 4)) {
   throw new Error('Unsupported deployment configuration schema; refusing automatic conversion.');
 } else {
   print('Migration004 already satisfied or fresh deployment awaits its initial seed.');

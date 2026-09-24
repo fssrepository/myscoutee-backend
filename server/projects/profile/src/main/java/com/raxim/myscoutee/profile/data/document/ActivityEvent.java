@@ -73,6 +73,36 @@ public class ActivityEvent {
     public void setModerationPreviousStatus(String value) { moderationPreviousStatus = value; }
     public Long getModerationVersion() { return moderationVersion; }
     public void setModerationVersion(Long value) { moderationVersion = value; }
+    // Cancellation retains the event definition; only Delete changes its lifecycle to Trash.
+    private String cancelledAtIso;
+    private String cancellationSessionMode;
+    public String getCancellationSessionMode() { return cancellationSessionMode; }
+    public void setCancellationSessionMode(String value) { cancellationSessionMode = value; }
+    private String cancelledByUserId;
+    @Indexed(name = "event_cancellation_complete")
+    private Boolean cancellationRefundsComplete;
+    @Indexed(name = "event_paid_terms_pending")
+    private Boolean paidTermsRefundsPending;
+    public Boolean getPaidTermsRefundsPending() { return paidTermsRefundsPending; }
+    public void setPaidTermsRefundsPending(Boolean value) { paidTermsRefundsPending = value; }
+    private String paidTermsChangedBy;
+    public String getPaidTermsChangedBy() { return paidTermsChangedBy; }
+    public void setPaidTermsChangedBy(String value) { paidTermsChangedBy = value; }
+    private String paidTermsChangedAtIso;
+    private String paidTermsRefundsProjectedAtIso;
+    private List<String> refundEligibleUserIds = new ArrayList<>();
+    public String getCancelledAtIso() { return cancelledAtIso; }
+    public void setCancelledAtIso(String value) { cancelledAtIso = value; }
+    public String getCancelledByUserId() { return cancelledByUserId; }
+    public void setCancelledByUserId(String value) { cancelledByUserId = value; }
+    public Boolean getCancellationRefundsComplete() { return cancellationRefundsComplete; }
+    public void setCancellationRefundsComplete(Boolean value) { cancellationRefundsComplete = value; }
+    public String getPaidTermsChangedAtIso() { return paidTermsChangedAtIso; }
+    public void setPaidTermsChangedAtIso(String value) { paidTermsChangedAtIso = value; }
+    public String getPaidTermsRefundsProjectedAtIso() { return paidTermsRefundsProjectedAtIso; }
+    public void setPaidTermsRefundsProjectedAtIso(String value) { paidTermsRefundsProjectedAtIso = value; }
+    public List<String> getRefundEligibleUserIds() { return refundEligibleUserIds; }
+    public void setRefundEligibleUserIds(List<String> value) { refundEligibleUserIds = value; }
     private String statusBeforeSuppression;
     private List<String> admins = new ArrayList<>();
     private String avatar;

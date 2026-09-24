@@ -1,12 +1,30 @@
 #!/usr/bin/env python3
 """Disposable demo baseline for AFFILIATE-INVITATION-001; never seeds outcomes."""
-import json, re, subprocess, sys
+import json, os, re, shlex, subprocess, sys
+from pathlib import Path
 OWNER = '6aff10000000000000000001'
 STATE = 'AFFILIATE-INVITATION-001'
 def mongo(code):
     # collMod faults need the dev container's existing admin credential; ordinary
     # fixture operations retain the application account. Never print either secret.
     admin = len(sys.argv) > 1 and sys.argv[1] in ('arm-revenue-fault', 'disarm-revenue-fault')
+    admin_env_file = os.environ.get('QA_MONGO_ADMIN_ENV_FILE')
+    if admin and admin_env_file:
+        credentials = {}
+        for line in Path(admin_env_file).read_text().splitlines():
+            if '=' not in line or line.lstrip().startswith('#'):
+                continue
+            key, value = line.split('=', 1)
+            if key.strip() in ('MONGO_INITDB_ROOT_USERNAME', 'MONGO_INITDB_ROOT_PASSWORD'):
+                parsed = shlex.split(value)
+                credentials[key.strip()] = parsed[0] if parsed else ''
+        user, password = (credentials.get(key) for key in ('MONGO_INITDB_ROOT_USERNAME', 'MONGO_INITDB_ROOT_PASSWORD'))
+        if not user or not password:
+            raise SystemExit('Configured QA admin credential is incomplete')
+        # Credentials go through stdin, never process arguments or evidence output.
+        auth = 'if(!db.getSiblingDB("admin").auth(' + json.dumps(user) + ',' + json.dumps(password) + ').ok)throw Error("QA admin authentication failed");db=db.getSiblingDB("demo_db");'
+        return subprocess.check_output(['docker', 'exec', '-i', 'mongodb', 'mongosh', '--quiet', '--file', '/dev/stdin'],
+                                       input=auth + code, text=True)
     shell = ('exec mongosh --quiet --username "$MONGO_INITDB_ROOT_USERNAME" --password "$MONGO_INITDB_ROOT_PASSWORD" --authenticationDatabase admin demo_db --eval "$1"'
              if admin else 'exec mongosh --quiet --username "$MONGO_APP_USERNAME" --password "$MONGO_APP_PASSWORD" --authenticationDatabase demo_db demo_db --eval "$1"')
     return subprocess.check_output(['docker','exec','mongodb','sh','-c',shell,
@@ -136,6 +154,85 @@ elif command=='repair-revenue-asset-id':
     db.assets.deleteOne({_id:id,ownerUserId:owner,assetId:id});
     db.assets.insertOne({...asset,_id:ObjectId(id)});
     print(JSON.stringify({assetId:id,idType:'ObjectId',changedBusinessFields:false}));'''
+elif command=='prepare-exchange-browser':
+    code='''if(!states.findOne({_id:key}) || !db.users.findOne({userId:'admin-demo-ava'}))throw Error('FX QA prerequisites missing');
+    const checkpointId='AFFILIATE-EXCHANGE-RATES-001';
+    states.updateOne({_id:checkpointId},{$setOnInsert:{checkpointId,scenario:'affiliate-exchange-rates',phase:'ready',parentCheckpoint:key,stagedAtIso:new Date().toISOString()}},{upsert:true});
+    print(JSON.stringify({checkpointId,prerequisitesVerified:true}));'''
+elif command=='prepare-exchange-operator-browser':
+    code='''if(!states.findOne({_id:key}) || !db.users.findOne({userId:'operator@myscoutee.local'}))throw Error('FX operator prerequisites missing');
+    const checkpointId='AFFILIATE-EXCHANGE-OPERATOR-001';
+    states.updateOne({_id:checkpointId},{$setOnInsert:{checkpointId,scenario:'affiliate-exchange-operator',phase:'ready',parentCheckpoint:key,stagedAtIso:new Date().toISOString()}},{upsert:true});
+    print(JSON.stringify({checkpointId,prerequisitesVerified:true}));'''
+elif command=='stage-exchange-source':
+    code='''const state=states.findOne({_id:key}); if(!state)throw Error('Not staged');
+    const config=db.deploymentConfigurations.findOne({_id:'deployment-configuration'});
+    if(!state.exchangeSourceBaseline) states.updateOne({_id:key},{$set:{exchangeSourceBaseline:{present:Object.prototype.hasOwnProperty.call(config.payment,'exchangeRateUrl'),value:config.payment.exchangeRateUrl??null}}});
+    db.deploymentConfigurations.updateOne({_id:config._id},{$set:{'payment.exchangeRateUrl':'http://exchange-rate-simulator:18083/eurofxref.xml'},$inc:{version:NumberLong("1")}});
+    print(JSON.stringify({source:'local exchange-rate simulator',seededPaymentOutcomes:false}));'''
+elif command=='stage-revenue-concurrency':
+    code='''const state=states.findOne({_id:key});
+    if(state?.phase!=='revenue-ready'||state.concurrencyControl)throw Error('Unstaged concurrency baseline required');
+    const first=state.users.find(x=>x!==owner), second='6aff10000000000000000002', eventId='6aff20000000000000000012';
+    const source=db.users.findOne({userId:first}), registration=db.affiliateRegistrations.findOne({_id:first});
+    const method=db.savedPaymentMethods.findOne({userId:first,last4:'4444',status:'active'});
+    if(!source||!registration||!method||db.users.findOne({userId:second})||db.events.findOne({sourceId:eventId}))throw Error('Isolated prerequisite missing/collision');
+    const now=new Date().toISOString(), start=new Date(Date.now()+48*3600000).toISOString(), end=new Date(Date.parse(start)+3600000).toISOString();
+    const user={_id:ObjectId(second),userId:second,syncKey:second,name:'Affiliate QA Second',initials:'AS',email:'affiliate-second@example.invalid',
+      profileStatus:'public',activities:{},devices:[],about:'Disposable concurrency prerequisite',headline:'Affiliate QA'};
+    for(const field of ['age','birthday','city','height','physique','languages','horoscope','gender','hostTier','completion','profileFormVersion','locationCoordinates','partitionKey','images','profileDetails'])
+      if(source[field]!==undefined)user[field]=source[field];
+    db.users.insertOne(user);
+    db.affiliateRegistrations.insertOne({...registration,_id:ObjectId(second),registeredAtIso:now});
+    db.savedPaymentMethods.insertOne({...method,_id:ObjectId('6aff40000000000000000002'),version:NumberLong("0"),userId:second,registrationId:'qa-concurrency-prerequisite',createdAtIso:now,updatedAtIso:now});
+    const template=db.events.findOne({sourceId:state.callbackControlId,ownerUserId:owner});
+    db.events.insertOne({...template,_id:ObjectId(eventId),sourceId:eventId,syncKey:eventId,title:'QA Affiliate Concurrent Purchases',
+      startAtIso:start,endAtIso:end,timeframe:start+' – '+end,acceptedMembers:1,pendingMembers:0,acceptedMemberUserIds:[owner],pendingMemberUserIds:[],
+      invitedMemberUserIds:[],pendingRequestMemberUserIds:[],activity:0,unread:0,paymentSessionId:null,
+      pricing:{...template.pricing,basePrice:7,cancellationPolicy:{enabled:true,rules:[{id:'qa-full-refund',offsetUnit:'days',offsetValue:0,refundKind:'full',refundValue:100}]}},createdDate:now,updatedDate:now});
+    db.activityMembers.insertOne({_id:'qa-concurrent-admin',ownerType:'event',ownerId:eventId,userId:owner,role:'Admin',status:'accepted',actionAtIso:now});
+    states.updateOne({_id:key},{$addToSet:{users:second},$set:{concurrencyControl:{first,second,eventId,baseline:db.affiliatePartners.findOne({_id:owner})}}});
+    print(JSON.stringify({second,eventId,amountPerPurchase:7,seededPayments:0,seededRevenue:0,preparedReferralAndSimulatorMethod:true}));'''
+elif command=='repair-concurrency-registration':
+    code='''const state=states.findOne({_id:key}), control=state?.concurrencyControl;
+    if(!control || control.replayEventId)throw Error('Unrepaired concurrency prerequisite required');
+    const registration=db.affiliateRegistrations.findOne({_id:control.second,referrerUserId:owner});
+    const eventId='6aff20000000000000000013';
+    if(!registration || db.affiliateRegistrations.findOne({_id:ObjectId(control.second)}) || db.events.findOne({sourceId:eventId}))throw Error('Malformed isolated registration required');
+    const template=db.events.findOne({sourceId:control.eventId,ownerUserId:owner});
+    const now=new Date().toISOString(), start=new Date(Date.now()+48*3600000).toISOString(), end=new Date(Date.parse(start)+3600000).toISOString();
+    states.updateOne({_id:key},{$set:{'concurrencyControl.originalRegistration':registration,'concurrencyControl.replayBaseline':db.affiliatePartners.findOne({_id:owner}),'concurrencyControl.replayEventId':eventId}});
+    db.affiliateRegistrations.deleteOne({_id:control.second,referrerUserId:owner});
+    db.affiliateRegistrations.insertOne({...registration,_id:ObjectId(control.second)});
+    db.events.insertOne({...template,_id:ObjectId(eventId),sourceId:eventId,syncKey:eventId,title:'QA Affiliate Concurrent Replay',
+      startAtIso:start,endAtIso:end,timeframe:start+' – '+end,acceptedMembers:1,pendingMembers:0,acceptedMemberUserIds:[owner],pendingMemberUserIds:[],
+      invitedMemberUserIds:[],pendingRequestMemberUserIds:[],activity:0,unread:0,paymentSessionId:null,createdDate:now,updatedDate:now});
+    db.activityMembers.insertOne({_id:'qa-concurrent-replay-admin',ownerType:'event',ownerId:eventId,userId:owner,role:'Admin',status:'accepted',actionAtIso:now});
+    print(JSON.stringify({eventId,repairedRegistrationIdType:'ObjectId',changedPaymentOutcomes:false}));'''
+elif command=='stage-concurrency-retest':
+    code='''const state=states.findOne({_id:key}), control=state?.concurrencyControl;
+    if(!control?.replayEventId || control.retestEventId || !db.affiliateRegistrations.findOne({_id:ObjectId(control.second),referrerUserId:owner}))throw Error('Corrected attribution prerequisite required');
+    const eventId='6aff20000000000000000014';
+    if(db.events.findOne({sourceId:eventId}))throw Error('Retest already staged');
+    const template=db.events.findOne({sourceId:control.replayEventId,ownerUserId:owner});
+    const now=new Date().toISOString(), start=new Date(Date.now()+48*3600000).toISOString(), end=new Date(Date.parse(start)+3600000).toISOString();
+    db.events.insertOne({...template,_id:ObjectId(eventId),sourceId:eventId,syncKey:eventId,title:'QA Affiliate Concurrent Verified',
+      startAtIso:start,endAtIso:end,timeframe:start+' – '+end,acceptedMembers:1,pendingMembers:0,acceptedMemberUserIds:[owner],pendingMemberUserIds:[],
+      invitedMemberUserIds:[],pendingRequestMemberUserIds:[],activity:0,unread:0,paymentSessionId:null,createdDate:now,updatedDate:now});
+    db.activityMembers.insertOne({_id:'qa-concurrent-retest-admin',ownerType:'event',ownerId:eventId,userId:owner,role:'Admin',status:'accepted',actionAtIso:now});
+    states.updateOne({_id:key},{$set:{'concurrencyControl.retestEventId':eventId,'concurrencyControl.retestBaseline':db.affiliatePartners.findOne({_id:owner})}});
+    print(JSON.stringify({eventId,seededPayments:0,seededRevenue:0}));'''
+elif command=='prepare-refund-concurrency-browser':
+    code='''const state=states.findOne({_id:key}), eventId=state?.concurrencyControl?.retestEventId;
+    if(!eventId || db.payments.countDocuments({sourceId:eventId,auditKind:'refund',refundRequestStatus:'pending'})!==2 || db.payments.countDocuments({sourceId:eventId,auditKind:'payment',affiliateOwnerUserId:owner})!==2)throw Error('Two real pending attributed refund requests required');
+    const checkpointId='AFFILIATE-REFUND-CONCURRENCY-001';
+    states.updateOne({_id:checkpointId},{$setOnInsert:{checkpointId,scenario:'affiliate-refund-concurrency',phase:'ready',parentCheckpoint:key,stagedAtIso:new Date().toISOString()}},{upsert:true});
+    print(JSON.stringify({checkpointId,pendingRequestsVerified:true}));'''
+elif command=='prepare-concurrency-browser':
+    code='''const state=states.findOne({_id:key}), checkpointId='AFFILIATE-REVENUE-CONCURRENCY-001';
+    if(!state?.concurrencyControl)throw Error('Concurrency prerequisite missing');
+    states.updateOne({_id:checkpointId},{$setOnInsert:{checkpointId,scenario:'affiliate-revenue-concurrency',phase:'ready',parentCheckpoint:key,stagedAtIso:new Date().toISOString()}},{upsert:true});
+    print(JSON.stringify({checkpointId,prerequisitesVerified:true}));'''
 elif command=='stage-revenue-recovery':
     code='''const state=states.findOne({_id:key});
     if(state?.phase!=='revenue-ready' || state.recoveryControls)throw Error('Unstaged recovery controls required');
@@ -153,6 +250,36 @@ elif command=='stage-revenue-recovery':
     }
     states.updateOne({_id:key},{$set:{recoveryControls:controls}});
     print(JSON.stringify({controls,seededOutcomes:false}));'''
+elif command=='arm-cancellation-provider-fault':
+    code='''const state=states.findOne({_id:key});
+    if(state?.phase!=='revenue-ready'||state.activeCancellationProviderFault||state.activeRevenueFault)
+      throw Error('Retained revenue baseline required, with no active fault');
+    const sourceId='6aff20000000000000000006';
+    const event=db.events.findOne({sourceId,ownerUserId:owner,status:'A'});
+    if(!event||event.cancelledAtIso)throw Error('Active disposable control required');
+    const candidates=db.payments.find({sourceId,auditKind:'payment',status:'captured',provider:'barion',
+      userId:{$in:state.users},refundedAmount:{$in:[null,0]}}).toArray();
+    if(candidates.length!==2)throw Error('Two actual unrefunded captures required');
+    const payment=candidates.find(x=>x.userId===state.concurrencyControl?.second);
+    if(!payment?.gatewayAuthorizationId)throw Error('Second buyer provider reference missing');
+    const fault={paymentId:payment._id,sourceId,originalReference:payment.gatewayAuthorizationId,
+      failedReference:'00000000-0000-4000-8000-000000000006',armedAtIso:new Date().toISOString()};
+    states.updateOne({_id:key},{$set:{activeCancellationProviderFault:fault}});
+    const changed=db.payments.updateOne({_id:payment._id,gatewayAuthorizationId:fault.originalReference},
+      {$set:{gatewayAuthorizationId:fault.failedReference},$inc:{version:NumberLong('1')}});
+    if(changed.modifiedCount!==1)throw Error('Payment reference changed concurrently; inspect recorded fault');
+    print(JSON.stringify({sourceId,paymentId:String(payment._id),fault:'provider payment lookup returns404',seededOutcomes:false}));'''
+elif command=='disarm-cancellation-provider-fault':
+    code='''const state=states.findOne({_id:key}), fault=state?.activeCancellationProviderFault;
+    if(!fault)throw Error('No recorded cancellation provider fault');
+    const current=db.payments.findOne({_id:fault.paymentId});
+    if(!current||![fault.failedReference,fault.originalReference].includes(current.gatewayAuthorizationId))
+      throw Error('Provider reference differs from both recorded values');
+    db.payments.updateOne({_id:fault.paymentId,gatewayAuthorizationId:fault.failedReference},
+      {$set:{gatewayAuthorizationId:fault.originalReference},$inc:{version:NumberLong('1')}});
+    states.updateOne({_id:key},{$push:{cancellationProviderFaultHistory:{...fault,restoredAtIso:new Date().toISOString()}},
+      $unset:{activeCancellationProviderFault:''}});
+    print(JSON.stringify({restored:String(fault.paymentId),seededOutcomes:false}));'''
 elif command=='arm-revenue-fault':
     mode=sys.argv[2] if len(sys.argv)>2 else ''
     if mode not in ('intent','ledger','commit','ack'):raise SystemExit('Use intent, ledger, commit, or ack')
@@ -283,14 +410,25 @@ elif command=='reset':
     state=json.loads(mongo(base+'print(JSON.stringify(states.findOne({_id:key})));'))
     if not state:raise SystemExit('Not staged')
     if state.get('activeRevenueFault'):raise SystemExit('Run disarm-revenue-fault before reset')
+    if state.get('activeCancellationProviderFault'):raise SystemExit('Run disarm-cancellation-provider-fault before reset')
     for user in state['users']:
-        if user==OWNER:continue
+        if user==OWNER or user==state.get('concurrencyControl',{}).get('second'):continue
         if not re.fullmatch(r'demo-profile-[a-f0-9-]{36}',user):raise SystemExit('Invalid tracked media owner')
         subprocess.run(['docker','exec','minio','sh','-c',
           'export MC_HOST_qa="http://${MINIO_ROOT_USER}:${MINIO_ROOT_PASSWORD}@localhost:9000"; mc rm --recursive --force "qa/myscoutee-media/public/demo/images/$1/"',
           'affiliate-media-reset',user],check=True,stdout=subprocess.DEVNULL)
     subprocess.run(['bash','server/docker/scripts/manual-qa-checkpoints/manual-qa-checkpoints-docker.sh','restore','browser-sessions',STATE],check=True)
+    if state.get('exchangeSourceBaseline'):
+        subprocess.run(['bash','server/docker/scripts/manual-qa-checkpoints/manual-qa-checkpoints-docker.sh','restore','browser-sessions','AFFILIATE-EXCHANGE-RATES-001'],check=True)
+        subprocess.run(['bash','server/docker/scripts/manual-qa-checkpoints/manual-qa-checkpoints-docker.sh','restore','browser-sessions','AFFILIATE-EXCHANGE-OPERATOR-001'],check=True)
+    if state.get('concurrencyControl'):
+        subprocess.run(['bash','server/docker/scripts/manual-qa-checkpoints/manual-qa-checkpoints-docker.sh','restore','browser-sessions','AFFILIATE-REVENUE-CONCURRENCY-001'],check=True)
+        subprocess.run(['bash','server/docker/scripts/manual-qa-checkpoints/manual-qa-checkpoints-docker.sh','restore','browser-sessions','AFFILIATE-REFUND-CONCURRENCY-001'],check=True)
     code='''const state=states.findOne({_id:key}); if(!state)throw Error('Not staged');
+    if(state.exchangeSourceBaseline) {
+      const baseline=state.exchangeSourceBaseline;
+      db.deploymentConfigurations.updateOne({_id:'deployment-configuration'},baseline.present?{$set:{'payment.exchangeRateUrl':baseline.value},$inc:{version:NumberLong("1")}}:{$unset:{'payment.exchangeRateUrl':''},$inc:{version:NumberLong("1")}});
+    }
     const ids=state.users, events=[...new Set(db.events.find({ownerUserId:owner},{_id:1,sourceId:1}).toArray().flatMap(x=>[String(x._id),x.sourceId]).filter(Boolean))];
     const assets=db.assets.find({ownerUserId:owner},{assetId:1}).toArray().map(x=>x.assetId);
     if(state.locationPushBaseline?.outboxId)db.notificationOutbox.deleteOne({_id:state.locationPushBaseline.outboxId});
@@ -301,7 +439,7 @@ elif command=='reset':
         {eventId:{$in:events}},{ownerId:{$in:[...events,...assets]}},{assetId:{$in:assets}}, {targetId:{$in:ids}}]});
     }
     db.affiliateLinks.deleteMany({_id:{$in:ids}}); db.affiliateRegistrations.deleteMany({_id:{$in:ids}});
-    states.deleteOne({_id:key}); print(JSON.stringify({phase:'reset',users:ids.length,events:events.length}));'''
+    states.deleteMany({$or:[{_id:key},{parentCheckpoint:key}]}); print(JSON.stringify({phase:'reset',users:ids.length,events:events.length}));'''
 else:
     code='''const state=states.findOne({_id:key}); print(JSON.stringify({state,
       users:state?db.users.find({userId:{$in:state.users}},{userId:1,name:1,profileStatus:1,affiliateRegistration:1}).toArray():[],

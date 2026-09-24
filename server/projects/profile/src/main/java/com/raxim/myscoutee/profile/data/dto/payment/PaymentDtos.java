@@ -91,11 +91,26 @@ public final class PaymentDtos {
             String nextCursor,
             Map<String, Double> spendingTotals,
             Map<String, Double> incomeTotals,
-            Integer pendingRefundCount) {}
+            Integer pendingRefundCount,
+            com.raxim.myscoutee.profile.data.dto.payment.ExchangeRateDtos.Summary euroSummary) {
+        public PaymentHistoryPageDto(List<PaymentHistoryItemDto> items, long total, String nextCursor, Map<String, Double> spendingTotals, Map<String, Double> incomeTotals, Integer pendingRefundCount) {
+            this(items, total, nextCursor, spendingTotals, incomeTotals, pendingRefundCount, null);
+        }
+    }
 
     public record PaymentHistoryMutationDto(
             PaymentHistoryItemDto item,
             Map<String, Double> spendingTotals,
             Map<String, Double> incomeTotals,
-            Integer pendingRefundCount) {}
+            Integer pendingRefundCount,
+            com.raxim.myscoutee.profile.data.dto.payment.ExchangeRateDtos.Summary euroSummary,
+            List<PaymentHistoryItemDto> items) {
+        public PaymentHistoryMutationDto(PaymentHistoryItemDto item, Map<String, Double> spendingTotals, Map<String, Double> incomeTotals, Integer pendingRefundCount,
+                com.raxim.myscoutee.profile.data.dto.payment.ExchangeRateDtos.Summary euroSummary) {
+            this(item, spendingTotals, incomeTotals, pendingRefundCount, euroSummary, List.of(item));
+        }
+        public PaymentHistoryMutationDto(PaymentHistoryItemDto item, Map<String, Double> spendingTotals, Map<String, Double> incomeTotals, Integer pendingRefundCount) {
+            this(item, spendingTotals, incomeTotals, pendingRefundCount, null, List.of(item));
+        }
+    }
 }

@@ -1,0 +1,16 @@
+[
+  {
+    "_id": "default-v1",
+    "default": true,
+    "source": "seed-default-v1",
+    "rates": {
+      "EUR": "1",
+      "HUF": "400",
+      "USD": "1.10",
+      "GBP": "0.85",
+      "CZK": "25",
+      "PLN": "4.25",
+      "CHF": "0.95"
+    }
+  }
+]
