@@ -4,6 +4,26 @@ Operator procedure, verified on 2026-09-18. Run local commands from the
 repository root; run server commands after connecting over SSH.
 Connection details: [SSH access](NETCUP_SSH_ACCESS.md).
 
+## Current deployment: 1.0.2 partial update (2026-09-24)
+
+The installed DEB remains **1.0.0**. All seven application containers now use
+[the 1.0.2 release image digests](releases/v1.0.2.md#published-image-identities).
+Their health and persistent image selection were verified. Public HTTPS serves
+frontend build `6565d228726d-20260924151312` and `/entry` returns HTTP 200.
+
+Both `production_db` and `demo_db` have configuration schema 5, recorded
+migrations 004/005/006, synchronized system seeds and the new feed indexes.
+Existing user/event/asset/payment record counts and ID hashes were retained.
+The complete production backup is
+`/var/backups/myscoutee/myscoutee-backup-20260924-172935.tar.gz`.
+The demo backup, prior configuration/image selections, release inputs and
+per-service logs are under `/root/myscoutee-partial-1.0.2-20260924` (root-only).
+
+SSH access is retained in the ignored `packaging/client-tools/netcup.local.env`
+file, distinct from the application's Operator credential file. See the
+[access guide](NETCUP_SSH_ACCESS.md). The remaining sections below document
+the original installation and earlier updates, not the current image selection.
+
 ## Host preparation before the application package
 
 The Debian 13 minimal host preparation is a separate client-tools command:
