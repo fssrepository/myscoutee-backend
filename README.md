@@ -13,12 +13,14 @@ match or a message.
 
 ### Installer
 
-The **MyScoutee 1.0.1** Debian installer for **amd64**, client tools,
-SHA-256 checksums, and signed release metadata are available from
-[GitHub Releases](https://github.com/fssrepository/myscoutee/releases/tag/v1.0.1).
+The **MyScoutee 1.0.2** client tools, partial-update prerequisites, container
+references, checksums and signed metadata are available from
+[GitHub Releases](https://github.com/fssrepository/myscoutee/releases/tag/v1.0.2).
+The signed amd64 Debian installer is built; its upload is handled separately
+by the release owner.
 
-See the [installation guide](packaging/README.md) for deployment instructions
-and the [release notes](guides/releases/v1.0.1.md) for changes and compatibility.
+See the [installation guide](packaging/README.md) and
+[release notes](guides/releases/v1.0.2.md) for the partial-update scope and evidence.
 
 ### Documentation PDFs
 
