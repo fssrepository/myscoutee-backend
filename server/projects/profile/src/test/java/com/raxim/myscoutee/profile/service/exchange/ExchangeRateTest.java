@@ -20,6 +20,35 @@ class ExchangeRateTest {
         assertThat(ExchangeRateStore.quote(rows, LocalDate.parse("2026-10-01"), "HUF")).isNull();
         assertThat(ExchangeRateStore.quote(rows, LocalDate.parse("2026-09-20"), "EUR").date()).isEqualTo("2026-09-18");
     }
+    @Test void seededDefaultCoversFirstPaymentAndSourceOutageWhileDailyRatesTakePriority() {
+        var defaults = new Document("_id", "default-v1").append("default", true)
+                .append("source", "seed-default-v1").append("rates", new Document("EUR", "1").append("HUF", "400"));
+        var daily = new Document("_id", "2026-09-18").append("source", "daily")
+                .append("rates", new Document("HUF", "410"));
+        var rows = List.of(defaults, daily); // Mongo descending IDs put the default first.
+        var fresh = ExchangeRateStore.quote(List.of(defaults), LocalDate.parse("2026-09-18"), "HUF");
+        assertThat(fresh.date()).isEqualTo("default-v1");
+        assertThat(fresh.source()).isEqualTo("seed-default-v1");
+        assertThat(fresh.eurPerUnit()).isEqualByComparingTo("0.0025");
+        assertThat(ExchangeRateStore.quote(rows, LocalDate.parse("2026-09-20"), "HUF").source()).isEqualTo("daily");
+        assertThat(ExchangeRateStore.quote(rows, LocalDate.parse("2026-10-01"), "HUF").source()).isEqualTo("seed-default-v1");
+        assertThat(ExchangeRateStore.quote(rows, LocalDate.parse("2026-09-17"), "EUR").date()).isEqualTo("default-v1");
+
+        var store = mock(ExchangeRateStore.class);
+        when(store.observations()).thenReturn(List.of(defaults));
+        var payment = new Payment(); payment.setAuditKind("payment"); payment.setStatus("captured");
+        payment.setCurrency("HUF"); payment.setAmount(5000D); payment.setCreatedDate("2026-09-18T10:00:00Z");
+        var service = new PaymentEuroService(store, mock(MongoTemplate.class));
+        service.prepare(payment);
+        assertThat(payment.getEuro().amountMinor()).isEqualTo(1250);
+        assertThat(payment.getEuro().rateDate()).isEqualTo("default-v1");
+        reset(store); // Later refresh/refund must retain the exact original seeded basis.
+        payment.setRefundedAmount(5000D); payment.setRefundedAtIso("2026-09-22T12:00:00Z");
+        service.prepare(payment);
+        assertThat(payment.getEuro().refundedMinor()).isEqualTo(1250);
+        verifyNoInteractions(store);
+    }
+
     @Test void refundsKeepOriginalRateAndUnroundedBasis() {
         ExchangeRateStore store = mock(ExchangeRateStore.class);
         when(store.observations()).thenReturn(List.of(new Document("_id", "2026-09-18").append("source", "test")

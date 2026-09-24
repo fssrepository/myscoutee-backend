@@ -79,7 +79,10 @@ public class PaymentEuroService {
     public List<String> currencies() {
         Set<String> codes = new TreeSet<>(); codes.add("EUR");
         var observations = rates.observations();
-        if (!observations.isEmpty()) codes.addAll(observations.get(0).get("rates", Document.class).keySet());
+        for (var observation : observations) {
+            Document values = observation.get("rates", Document.class);
+            if (values != null) codes.addAll(values.keySet());
+        }
         return List.copyOf(codes);
     }
     public void selectCurrency(String userId, String currency) {

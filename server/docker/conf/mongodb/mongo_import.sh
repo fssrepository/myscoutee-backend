@@ -10,7 +10,7 @@ mongo_username="${MONGO_IMPORT_USERNAME:-${MONGO_APP_USERNAME:-guest}}"
 mongo_password="${MONGO_IMPORT_PASSWORD:-${MONGO_APP_PASSWORD:-guest}}"
 replace_collections="${MONGO_IMPORT_REPLACE_COLLECTIONS:-false}"
 single_file="${MONGO_IMPORT_SINGLE_FILE:-}"
-allowed_collections_by_db="${MONGO_IMPORT_ALLOWED_COLLECTIONS_BY_DB:-demo_db:*;e2e_db:*;myscoutee_db:countryPartitions,i18n_bundles,i18n_messages,ideaPosts,helpCenterRevisions,adminUsers,appSettings,notificationRuleConfigs,emailTemplates,emailCampaignRules,notificationTemplates,scheduledMessageTasks,affinityConfigs,adminStats,adminMonitoring,accessPolicyDefinitions,operatorRegistryEndpoints,paymentProviders,communityProviders,deploymentConfigurations;production_db:countryPartitions,i18n_bundles,i18n_messages,ideaPosts,helpCenterRevisions,adminUsers,appSettings,notificationRuleConfigs,emailTemplates,emailCampaignRules,notificationTemplates,scheduledMessageTasks,affinityConfigs,adminStats,adminMonitoring,accessPolicyDefinitions,operatorRegistryEndpoints,paymentProviders,communityProviders,deploymentConfigurations}"
+allowed_collections_by_db="${MONGO_IMPORT_ALLOWED_COLLECTIONS_BY_DB:-demo_db:*;e2e_db:*;myscoutee_db:countryPartitions,i18n_bundles,i18n_messages,ideaPosts,helpCenterRevisions,adminUsers,appSettings,notificationRuleConfigs,emailTemplates,emailCampaignRules,notificationTemplates,scheduledMessageTasks,affinityConfigs,adminStats,adminMonitoring,accessPolicyDefinitions,operatorRegistryEndpoints,paymentProviders,communityProviders,deploymentConfigurations,exchangeRates;production_db:countryPartitions,i18n_bundles,i18n_messages,ideaPosts,helpCenterRevisions,adminUsers,appSettings,notificationRuleConfigs,emailTemplates,emailCampaignRules,notificationTemplates,scheduledMessageTasks,affinityConfigs,adminStats,adminMonitoring,accessPolicyDefinitions,operatorRegistryEndpoints,paymentProviders,communityProviders,deploymentConfigurations,exchangeRates}"
 
 json_file_has_documents() {
   local jsonfile="$1"
@@ -111,7 +111,8 @@ collection_should_replace_on_import() {
   local collection_name="$1"
 
   if [ "${collection_name}" = "adminUsers" ] \
-      || [ "${collection_name}" = "deploymentConfigurations" ]; then
+      || [ "${collection_name}" = "deploymentConfigurations" ] \
+      || [ "${collection_name}" = "exchangeRates" ]; then
     return 1
   fi
 
@@ -334,6 +335,25 @@ if (typeof source === "string") {
   db.getCollection("deploymentConfigurations").updateOne(
     { _id: "deployment-configuration", $or: conditions },
     { $set: { "payment.exchangeRateUrl": source }, $inc: { version: 1 } }
+  );
+}
+' >/dev/null
+}
+
+import_exchange_rate_seed() {
+  local target_db="$1"
+  local jsonfile="$2"
+
+  # Payment snapshots refer to this immutable observation by ID. Reimport must
+  # preserve its original basis and every subsequently downloaded daily rate.
+  MONGO_EXCHANGE_SEED_PATH="${jsonfile}" mongosh \
+    --host "${mongo_host}" --port "${mongo_port}" \
+    --username "${mongo_username}" --password "${mongo_password}" \
+    --authenticationDatabase "${target_db}" --quiet "${target_db}" --eval '
+const seeds = EJSON.parse(require("fs").readFileSync(process.env.MONGO_EXCHANGE_SEED_PATH, "utf8"));
+for (const seed of seeds) {
+  db.getCollection("exchangeRates").updateOne(
+    { _id: seed._id }, { $setOnInsert: seed }, { upsert: true }
   );
 }
 ' >/dev/null
@@ -1089,6 +1109,11 @@ import_json_file() {
     fi
 
     echo "Skipping empty JSON array seed ${jsonfile}"
+    return 0
+  fi
+
+  if [ "${collection_name}" = "exchangeRates" ]; then
+    import_exchange_rate_seed "${target_db}" "${jsonfile}"
     return 0
   fi
 

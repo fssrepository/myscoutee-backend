@@ -46,6 +46,14 @@ class FinanceVersionProbe {
         String owner = "qa-finance-version-" + UUID.randomUUID(), payment = owner + "-payment";
         try (var client = MongoClients.create(settings)) {
             var mongo = new MongoTemplate(client, "demo_db");
+            if (args.length == 1 && "refund-intent".equals(args[0])) {
+                verifyRefundIntent(client);
+                return;
+            }
+            if (args.length == 1 && "default-fx".equals(args[0])) {
+                verifyDefaultFx(client, mongo);
+                return;
+            }
             var partners = mongo.getCollection("affiliatePartners");
             var ledger = mongo.getCollection("affiliatePaymentContributions");
             var repository = new AffiliateRevenueRepository(mongo);
@@ -66,6 +74,149 @@ class FinanceVersionProbe {
                 partners.deleteOne(new Document("_id", owner));
             }
             for (int boundary = 0; boundary < 4; boundary++) verifyRecovery(client, boundary);
+        }
+    }
+    private static void verifyRefundIntent(MongoClient client) throws Exception {
+        String prefix = "qaRefundIntent_" + UUID.randomUUID().toString().replace("-", "") + "_";
+        var isolated = isolatedTemplate(client, prefix, null);
+        var repository = new org.springframework.data.mongodb.repository.support.MongoRepositoryFactory(isolated)
+                .getRepository(com.raxim.myscoutee.profile.repository.PaymentsRepository.class);
+        try {
+            for (String scenario : List.of("normal", "timeout", "late-receipt", "legacy", "cash")) {
+                var receipts = new java.util.concurrent.ConcurrentHashMap<String, com.raxim.myscoutee.profile.service.PaymentGateway.RefundResult>();
+                var calls = new java.util.concurrent.atomic.AtomicInteger();
+                var first = new java.util.concurrent.atomic.AtomicBoolean(true);
+                var arrived = new java.util.concurrent.CountDownLatch(1);
+                var release = new java.util.concurrent.CountDownLatch(1);
+                var processor = (com.raxim.myscoutee.profile.service.PaymentProcessor) Proxy.newProxyInstance(
+                        com.raxim.myscoutee.profile.service.PaymentProcessor.class.getClassLoader(),
+                        new Class<?>[]{com.raxim.myscoutee.profile.service.PaymentProcessor.class}, (proxy, method, arguments) -> {
+                    if (method.getName().equals("getType")) return "stripe";
+                    if (!method.getName().equals("refundCapturedPayment")) throw new UnsupportedOperationException(method.getName());
+                    calls.incrementAndGet();
+                    String key = (String) arguments[3];
+                    var receipt = receipts.computeIfAbsent(key, k -> new com.raxim.myscoutee.profile.service.PaymentGateway.RefundResult(
+                            "stripe", (String) arguments[0], "receipt-" + k,
+                            com.raxim.myscoutee.profile.service.PaymentGateway.RefundStatus.SUCCEEDED,
+                            (java.math.BigDecimal) arguments[1], (String) arguments[2], "succeeded"));
+                    if (first.compareAndSet(true, false)) {
+                        if (scenario.equals("timeout")) throw new IllegalStateException("Injected response loss after provider commit");
+                        if (scenario.equals("late-receipt")) {
+                            arrived.countDown();
+                            if (!release.await(10, java.util.concurrent.TimeUnit.SECONDS)) throw new IllegalStateException("Late receipt timed out");
+                        }
+                    }
+                    return receipt;
+                });
+                var service = new PaymentService(List.of(processor), repository, null, null, null, null, null, null, null);
+                var secondInstance = new PaymentService(List.of(processor), repository, null, null, null, null, null, null, null);
+                var payment = new Payment(); payment.setId(scenario); payment.setAuditKind("payment");
+                payment.setProvider(scenario.equals("cash") ? "cash" : "stripe"); payment.setStatus("captured"); payment.setAmount(100D);
+                payment.setCurrency("EUR"); payment.setUserId(prefix); payment.setRecipientUserId(prefix + "organizer");
+                payment.setSourceId(prefix + "event"); payment.setGatewayAuthorizationId(scenario);
+                payment = repository.save(payment);
+                if (scenario.equals("legacy")) {
+                    payment.setRefundedAmount(25D); payment.setRefundStatus("partial");
+                    payment.setRefundedAtIso("2026-09-23T00:00:00Z"); payment.setRefundCurrency("EUR");
+                    payment.setGatewayRefundStatus("succeeded"); payment.setGatewayRefundId("legacy-refund-receipt");
+                    payment = repository.save(payment);
+                    receipts.put("legacy", new com.raxim.myscoutee.profile.service.PaymentGateway.RefundResult(
+                            "stripe", scenario, "legacy-refund-receipt",
+                            com.raxim.myscoutee.profile.service.PaymentGateway.RefundStatus.SUCCEEDED,
+                            java.math.BigDecimal.valueOf(25), "EUR", "succeeded"));
+                }
+                final Payment original = payment;
+                String now = java.time.Instant.now().toString();
+                var asyncFailure = new java.util.concurrent.atomic.AtomicReference<Throwable>();
+                Thread delayed = null;
+                if (scenario.equals("late-receipt")) {
+                    delayed = new Thread(() -> {
+                        try { service.approvePolicyRefund(original, now, 25D, "EUR", "policy-25", "Policy"); }
+                        catch (Throwable error) { asyncFailure.set(error); }
+                    });
+                    delayed.start();
+                    if (!arrived.await(10, java.util.concurrent.TimeUnit.SECONDS)) throw new AssertionError("Provider was not reached");
+                } else {
+                    try { service.approvePolicyRefund(payment, now, 25D, "EUR", "policy-25", "Policy"); }
+                    catch (IllegalStateException error) {
+                        if (!scenario.equals("timeout")) throw error;
+                        var intent = repository.findById(scenario).orElseThrow();
+                        if (intent.getGatewayRefundAmount() != 25D || intent.getGatewayRefundTargetAmount() != 25D
+                                || intent.getRefundedAmount() != null && intent.getRefundedAmount() != 0D)
+                            throw new AssertionError("Timeout lost persisted intent or claimed a refund");
+                    }
+                }
+                var priorHistory = isolated.getCollection("payments").find(new Document("_id", "refund:" + scenario)).first();
+                try {
+                    secondInstance.approvePolicyRefund(repository.findById(scenario).orElseThrow(), now, 100D, "EUR", "event-cancelled", "Event cancelled");
+                } finally { release.countDown(); }
+                if (delayed != null) {
+                    delayed.join(10000);
+                    if (delayed.isAlive() || asyncFailure.get() != null) throw new AssertionError("Delayed refund failed", asyncFailure.get());
+                }
+                var completed = repository.findById(scenario).orElseThrow();
+                int callsBeforeReplay = calls.get();
+                service.approvePolicyRefund(original, now, 25D, "EUR", "policy-25", "Policy");
+                service.approvePolicyRefund(completed, now, 100D, "EUR", "event-cancelled", "Event cancelled");
+                completed = repository.findById(scenario).orElseThrow();
+                var total = receipts.values().stream().map(r -> r.amount()).reduce(java.math.BigDecimal.ZERO, java.math.BigDecimal::add);
+                if (!scenario.equals("cash") && (receipts.size() != 2 || total.compareTo(java.math.BigDecimal.valueOf(100)) != 0)
+                        || scenario.equals("cash") && !receipts.isEmpty()
+                        || completed.getRefundedAmount() != 100D || !"full".equals(completed.getRefundStatus())
+                        || completed.getGatewayRefundAmount() != 75D
+                        || !scenario.equals("cash") && !completed.getGatewayRefundId().endsWith(":10000")
+                        || priorHistory != null && !priorHistory.equals(isolated.getCollection("payments").find(new Document("_id", "refund:" + scenario)).first())
+                        || repository.findById("refund:" + scenario).orElseThrow().getAmount() != 25D
+                        || repository.findById("refund:" + scenario + ":10000").orElseThrow().getAmount() != 75D
+                        || isolated.getCollection("payments").countDocuments(new Document("auditKind", "refund").append("supersedesPaymentId", scenario)) != 2
+                        || calls.get() != callsBeforeReplay)
+                    throw new AssertionError("Refund target/replay contract failed: " + scenario);
+                System.out.println("PASS compiled PaymentService + versioned Mongo: " + scenario + "; separate operations25/75; primary cumulative100; separate refund rows 25 and 75; stale/full replay no extra provider call.");
+            }
+        } finally { isolated.getCollection("payments").drop(); }
+    }
+    private static void verifyDefaultFx(MongoClient client, MongoTemplate live) {
+        var seed = live.getCollection("exchangeRates").find(new Document("_id", "default-v1")).first();
+        if (seed == null || !Boolean.TRUE.equals(seed.getBoolean("default")))
+            throw new AssertionError("Versioned default seed was not imported.");
+        String prefix = "qaDefaultFx_" + UUID.randomUUID().toString().replace("-", "") + "_";
+        var isolated = isolatedTemplate(client, prefix, null);
+        try {
+            isolated.getCollection("exchangeRates").insertOne(seed);
+            var store = new com.raxim.myscoutee.profile.service.exchange.ExchangeRateStore(isolated);
+            var service = new com.raxim.myscoutee.profile.service.exchange.PaymentEuroService(store, isolated);
+            var payment = new Payment(); payment.setAuditKind("payment"); payment.setStatus("captured");
+            payment.setCurrency("HUF"); payment.setAmount(5000D); payment.setCreatedDate("2026-09-24T00:00:00Z");
+            service.prepare(payment);
+            if (payment.getEuro() == null || payment.getEuro().amountMinor() != 1250
+                    || !"default-v1".equals(payment.getEuro().rateDate()))
+                throw new AssertionError("First payment did not use persisted default.");
+            isolated.getCollection("exchangeRates").insertOne(new Document("_id", "2026-09-24")
+                    .append("source", "qa-daily").append("rates", new Document("HUF", "500")));
+            // A cold store reads persisted observations; daily values win for new payments.
+            var cold = new com.raxim.myscoutee.profile.service.exchange.ExchangeRateStore(isolated);
+            var quote = com.raxim.myscoutee.profile.service.exchange.ExchangeRateStore.quote(
+                    cold.observations(), java.time.LocalDate.parse("2026-09-24"), "HUF");
+            if (!"qa-daily".equals(quote.source())) throw new AssertionError("Daily rate did not win.");
+            var outage = com.raxim.myscoutee.profile.service.exchange.ExchangeRateStore.quote(
+                    cold.observations(), java.time.LocalDate.parse("2026-12-01"), "HUF");
+            if (!"seed-default-v1".equals(outage.source())) throw new AssertionError("Outage lost default.");
+            payment.setRefundedAmount(1250D); payment.setRefundedAtIso("2026-09-24T01:00:00Z");
+            new com.raxim.myscoutee.profile.service.exchange.PaymentEuroService(cold, isolated).prepare(payment);
+            if (payment.getEuro().refundedMinor() != 313 || !"default-v1".equals(payment.getEuro().rateDate()))
+                throw new AssertionError("Refund changed original seeded basis.");
+            isolated.getCollection("users").insertOne(new Document("userId", prefix).append("summaryCurrency", "CZK"));
+            var snapshot = payment.getEuro();
+            isolated.getCollection("payments").insertOne(new Document("auditKind", "payment")
+                    .append("userId", prefix).append("accountedSpentAmount", 5000D)
+                    .append("euro", new Document("rateDate", snapshot.rateDate())
+                            .append("amount", snapshot.amount()).append("refunded", snapshot.refunded())));
+            var summary = service.summary(prefix, false);
+            if (summary.outgoing() != 312.5 || summary.incoming() != 78.12 || summary.missingRates() != 0)
+                throw new AssertionError("Default snapshot summary conversion failed: " + summary);
+            System.out.println("PASS compiled default FX + Mongo: first payment 5000 HUF = 12.50 EUR; cold persisted read; daily priority; outage default; refund retains seed basis; CZK summary uses immutable default; no external HTTP.");
+        } finally {
+            for (String name : List.of("exchangeRates", "users", "payments")) isolated.getCollection(name).drop();
         }
     }
     private static void verifyRecovery(MongoClient client, int boundary) {

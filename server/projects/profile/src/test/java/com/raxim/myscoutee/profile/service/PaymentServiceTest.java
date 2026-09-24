@@ -830,6 +830,32 @@ class PaymentServiceTest {
     }
 
     @Test
+    void fullRefundAfterPolicyPartialRefundSendsOnlyTheRemainingAmountAndReplaysOnce() {
+        Map<String, Payment> rows = new HashMap<>();
+        PaymentsRepository repository = inMemoryRepository(rows);
+        RecordingPaymentProcessor processor = new RecordingPaymentProcessor("stripe");
+        PaymentService service = paymentService(repository, true, processor);
+        Payment payment = new Payment();
+        payment.setId("partial-then-full"); payment.setGatewayAuthorizationId("pi_partial_full");
+        payment.setUserId("payer"); payment.setRecipientUserId("organizer");
+        payment.setSourceId("event"); payment.setProvider("stripe"); payment.setStatus("captured");
+        payment.setAmount(100d); payment.setCurrency("EUR"); payment.setAuditKind("payment");
+        savePayment(rows, payment);
+        service.approvePolicyRefund(payment, Instant.now().toString(), 25d, "EUR", "policy-25", "25% refund");
+        service.approvePolicyRefund(payment, Instant.now().toString(), 100d, "EUR", "event-cancelled", "Event cancelled");
+        service.approvePolicyRefund(payment, Instant.now().toString(), 100d, "EUR", "event-cancelled", "Event cancelled");
+        assertThat(processor.refundCalls()).isEqualTo(2);
+        assertThat(payment.getGatewayRefundAmount()).isEqualTo(75d);
+        assertThat(payment.getGatewayRefundTargetAmount()).isEqualTo(100d);
+        assertThat(payment.getGatewayRefundId()).isEqualTo("stripe_refund_2");
+        assertThat(payment.getRefundedAmount()).isEqualTo(100d);
+        assertThat(payment.getRefundStatus()).isEqualTo("full");
+        assertThat(rows.get("refund:partial-then-full").getAmount()).isEqualTo(25d);
+        assertThat(rows.get("refund:partial-then-full:10000").getAmount()).isEqualTo(75d);
+        assertThat(rows.get("refund:partial-then-full").getGatewayRefundId()).isEqualTo("stripe_refund_1");
+    }
+
+    @Test
     void refundRequestHistoryRowIsUpdatedInPlaceWhenTheRefundIsApproved() {
         Map<String, Payment> paymentsBySession = new HashMap<>();
         PaymentsRepository repository = inMemoryRepository(paymentsBySession);

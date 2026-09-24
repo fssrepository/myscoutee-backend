@@ -354,3 +354,57 @@ These are actual compiled service/repository + Mongo integration tests with harn
 User requires remaining full-flow cases before Calendar. Calendar had only fixture/browser startup; no checklist action. Its unused gallery fixture was reset through the versioned harness and windows closed. Financial fixture/outcomes retained. Existing server/.env.secrets contains the valid configured Mongo admin credential, differing from the stale dev-container environment. Read-only authentication succeeded. Fixture now accepts explicit QA_MONGO_ADMIN_ENV_FILE for arm/disarm, passing credentials over stdin without logging; ordinary actions retain application credentials. This resolves the earlier collMod blocker without changing accounts, privileges or Mongo runtime.
 
 Actual normal second-buyer UI payment on event...008 while owner-scoped intent validator armed: payment6ab45d96de5ce0e8f4b553f0/gatewaycc078151-0ddf-49ef-8dc8-e96b81802154 capturedEUR2, version3, affiliateRevenuePending=true; purchases10/bookings9/EURgross167 unchanged. Removed validator using recorded original options. Existing30s worker recovered automatically: same paymentversion3/pendingfalse, partnerrevision64, purchases11/bookings10/EURgross169/refunded41/net128 +HUF5000. No replayed payment or manufactured counter outcome. Intent failure full-flow PASS. Remaining ledger/commit/ack in progress.
+
+
+### 01:22 CEST — all four full-flow interruption recoveries PASS
+
+Following the intent case, the second buyer paid the existing isolated controls through normal UI/provider checkout. The owner/event-scoped validators interrupted actual application writes; original validators were restored after each observation, and the existing 30-second worker completed recovery without replaying the payment.
+
+| Boundary | Primary payment / gateway ID | Interrupted state | Recovered state |
+| --- | --- | --- | --- |
+| ledger | 6ab45dd3de5ce0e8f4b553fa / 489eeaa6-2426-44e8-8b93-6ffa059507f3 | captured EUR3, v3, pending=true; durable partner intent revision65, ledger blocked, EUR169/41/128 unchanged | v3, pending=false; revision67, purchases12/bookings11, EUR172/41/131 |
+| commit | 6ab45ea1de5ce0e8f4b55403 / fa8d2e1e-4913-41e5-8082-c4847b59d06a | captured EUR4, v3, pending=true; partner intent revision68; contribution v1/gross400 exists, totals172/41/131 unchanged | v3, pending=false; revision70, purchases13/bookings12, EUR176/41/135 |
+| ack | 6ab45ee5de5ce0e8f4b5540c / ad26b092-8f00-4536-8af4-2d185fc21e40 | captured EUR5, v3, pending=true; counters already committed revision74, no partner intent, EUR181/41/140 | v3, pending=false; SAME revision74/counts/totals |
+
+All three collections' validators restored to {} and no activeRevenueFault remains. Final native totals: purchases14/eventBookings13, EUR181 gross/41 refunded/140 net plus HUF5000 gross/net. Converted EUR193.50/41/152.50; persisted CZK selection should display4837.50/1025/3812.50 (final UI read pending). All earlier outcomes retained. This supersedes the earlier unavailable-collMod boundary: all FOUR actual UI/provider/Mongo/worker fault cases now passed, in addition to the isolated compiled-code probes.
+
+User-reported payment? title corrected through central EN/HU translations: Would you like to proceed with payment? / Szeretnéd elindítani a fizetést? Existing frontend watcher build/sync passed23:19:29Z/23:19:31Z. The English question was observed in actual commit/ack payment confirmation dialogs; Hungarian runtime UI check remains pending. No payment transition changed.
+
+### Refund acceptance clarification — 2026-09-24
+
+User confirmed that a25% cancellation policy means25% returned,75% retained. The earlier checklist requirement to refund the remaining75 without a separate cause was wrong and is removed. User also explicitly distinguishes cancellation of the event: the full amount must be returned in that case. This separate organizer-cancellation path is under diagnosis and is NOT passed by the ordinary full-policy refund controls. No refund outcome or policy was rewritten.
+
+
+### Final summary, callback replay and Hungarian confirmation — 01:30–01:37 CEST
+
+Owner's actual Revenue popup matches14 purchases/13 event bookings and CZK4837.50 gross/1025.00 refunded/3812.50 net. Screenshot /tmp/qa-affiliate-final-recovery-summary.png inspected; shared compact currency menu and blurred background visible.
+
+All four recovered gateway callbacks replayed through the simulator's audit endpoint; each returned200/delivery200, attempt2. Independent Mongo read: amounts/counts unchanged, no partner intent and no active fault. Normal callback processing advanced each payment version3→6 and partner revision74→86; this is distinct from the earlier acknowledgement-only recovery, which did not advance payment versions. All four primary pending markers remainfalse. No duplicate revenue. Original partial payment6ab41748de5ce0e8f4b54e52 remains100 paid/25 returned, refundStatuspartial and unchanged25% policy.
+
+Hungarian browser-language emulation loaded the central HU bundle. Through normal second-buyer UI, opened an unpaid QA Affiliate Callback Control checkout and reached the actual final dialog: Szeretnéd elindítani a fizetést? / A kiválasztott tételt fogod kifizetni. Screenshot /tmp/qa-payment-confirmation-hu.png inspected. Back clicked; no payment submitted. This leaves a fixture-owned unpaid checkout draft for the second buyer on event...006. Two initial automation attempts reached empty lists before proper UI readiness; no payment result was produced. Reopening Explore loaded the real server records; the successful run waited for actual cards. No production code changed for this check.
+
+Actual frontend-local LocalPaymentSummaryMapper executed with Node24 native TypeScript stripping (no Angular build/server, no network). MixedEUR181/HUF5000/refundEUR41 producedEUR193.50/41/152.50, selectedCZK4837.50/1025/3812.50; both incoming/outgoing signs, user-scoped selection, monetary zero and unknown-currency missingRates flag all PASS. This is focused mapper evidence, not a browser-local deployment PASS.
+
+Cancellation boundary: source inspection found organizer Delete Event uses reversible trash/status suppression and Restore, not a distinct terminal cancellation. It skips the owner's leave-refund path and has no full-refund call. No event was trashed and no lifecycle/refund behavior changed. Asked the user whether the requested full-refund cancellation should be attached to this existing reversible action or a separate cancellation. This material financial behavior decision remains pending; do not infer an answer or report cancellation PASS. Both configured card processors advertise immediate capture, not delayed authorization/capture; an end-to-end hold-only checkout is not available through their current capability contract. Existing authorization-zero unit source is not full-flow hold evidence.
+
+Remaining explicit boundaries: organizer cancellation decision/implementation and full-flow proof; live no-rate payment/incomplete UI case; frontend-local browser deployment (current running frontend is HTTP); installed production artifact qualification is not performed by source/config parity checks. Calendar remains queued, phone connected, no Calendar action taken.
+
+
+### 2026-09-24 01:56 CEST — default FX in every deployment mode
+
+User correction replaces the former normal missing-rate test: first payment and source outages use an immutable seeded default. Added identical `default-v1` observations to demo/e2e/production seeds; frontend-local already has the same seven values. Production package allow-list, upgrade allow-list migration and development import allow-list include the collection. The common importer uses `$setOnInsert`; replace-import and empty seeds cannot clear exchange-rate history.
+
+Verification: shared configuration/default import integration test PASS against an isolated collection in the existing Mongo; fresh insert, repeat import, changed seed cannot overwrite historical default, daily rows survive. Common entrypoint continuation test PASS. All 41 classified seed baselines/parity PASS (also synchronized existing i18n bundle timestamps and declared the already-intended REAL ECB / DEMO simulator source difference). Existing backend watcher compiled the exchange changes and restarted successfully at 01:47:04.
+
+`run-finance-version-probe.sh default-fx` PASS with the watcher's actual compiled classes and Mongo: persisted default 5000 HUF -> 12.50 EUR; new cold store reads persisted data; daily quote wins when applicable; old daily quote falls back to default during outage; refund keeps original default snapshot; CZK summary resolves default observation with zero missing rates. No FX HTTP or second application build. Probe-only initial accessor typo and HALF_EVEN aggregation oracle were corrected; final probe passed, temporary collections removed. The existing 14/13 paid QA results were untouched. This proves source/import and cold read, not a newly built/installed production artifact or an additional real provider payment under default-only configuration.
+
+Campaign remains IN PROGRESS: organizer Cancel/Delete batch refund and changed-paid-terms participant cancellation implementation/full-flow QA remain, plus frontend-local browser coverage. Calendar stays queued. The old live missing-rate/incomplete-UI next action is superseded.
+
+
+### 2026-09-24 02:03 CEST — separate refund operations, partial then cancellation
+
+User explicitly confirmed each refund operation is a separate payment record. Corrected the in-progress refund implementation: original payment keeps cumulative 100, first audit remains25/provider receipt1, later cancellation creates a distinct75/provider receipt2. Same cumulative target replays the same operation and row; a stale25 request never lowers the primary total. A completed prior audit is materialized before persisting the next intent. Removed the service-wide synchronized lock; version fences and operation-scoped receipt checks protect concurrent calls without blocking unrelated refunds.
+
+Existing watcher build/restart PASS at02:01:31. `run-finance-version-probe.sh refund-intent` PASS against actual compiled PaymentService + Spring Data versioned repository/Mongo, with an explicitly modeled provider double: normal25->100, lost response after provider commit plus fresh service instance, and delayed25 receipt concurrent with another service completing100. All produce exactly two provider operations25+75 and two refund rows25+75; stale/full replay makes no additional provider call. Temporary probe collections removed; retained campaign payments unchanged. Initial probe attempted a package-private test constructor; changed to public production constructor before successful execution. This is focused concurrency/recovery proof, not the outstanding organizer/participant browser/provider cancellation journey.
+
+Follow-up at02:04: added legacy partial refunds without the new intent fields and cash-path cases. All five compiled service/Mongo scenarios PASS. For already completed first refunds, the probe additionally compares the entire stored first audit document before/after cancellation: it remains identical. Cash operations also create separate25/75 rows. No additional normal refund entitlement or arbitrary second refund was introduced; the full-refund caller still belongs to the pending cancellation implementation.

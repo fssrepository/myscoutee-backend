@@ -63,6 +63,12 @@ public class Payment {
     private String gatewayActionUrl;
     private String gatewayRefundId;
     private String gatewayRefundStatus;
+    // Durable refund intent: the target is cumulative, the gateway amount is only the unpaid remainder.
+    private String gatewayRefundOperationKey;
+    private Double gatewayRefundAmount;
+    private Double gatewayRefundTargetAmount;
+    private boolean eventChangeRefundEligible;
+    private Double refundRequestedTargetAmount;
     private String authorizationExpiresAtIso;
     private String capturedAtIso;
     private String releasedAtIso;
@@ -159,6 +165,17 @@ public class Payment {
 
     public String getGatewayRefundStatus() { return gatewayRefundStatus; }
     public void setGatewayRefundStatus(String gatewayRefundStatus) { this.gatewayRefundStatus = gatewayRefundStatus; }
+
+    public String getGatewayRefundOperationKey() { return gatewayRefundOperationKey; }
+    public void setGatewayRefundOperationKey(String value) { gatewayRefundOperationKey = value; }
+    public Double getGatewayRefundAmount() { return gatewayRefundAmount; }
+    public void setGatewayRefundAmount(Double value) { gatewayRefundAmount = value; }
+    public Double getGatewayRefundTargetAmount() { return gatewayRefundTargetAmount; }
+    public void setGatewayRefundTargetAmount(Double value) { gatewayRefundTargetAmount = value; }
+    public boolean isEventChangeRefundEligible() { return eventChangeRefundEligible; }
+    public void setEventChangeRefundEligible(boolean value) { eventChangeRefundEligible = value; }
+    public Double getRefundRequestedTargetAmount() { return refundRequestedTargetAmount; }
+    public void setRefundRequestedTargetAmount(Double value) { refundRequestedTargetAmount = value; }
 
     public String getAuthorizationExpiresAtIso() { return authorizationExpiresAtIso; }
     public void setAuthorizationExpiresAtIso(String authorizationExpiresAtIso) { this.authorizationExpiresAtIso = authorizationExpiresAtIso; }

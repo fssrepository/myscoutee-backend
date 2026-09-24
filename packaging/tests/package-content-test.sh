@@ -576,7 +576,7 @@ grep -Fq \
   "${REPO_ROOT}/packaging/debian/postinst" \
   || fail "postinst does not run the persistent key initializer"
 for collection in \
-  operatorRegistryEndpoints paymentProviders deploymentConfigurations; do
+  operatorRegistryEndpoints paymentProviders deploymentConfigurations exchangeRates; do
   grep -Fq "${collection}" \
     "${EXTRACTED}/opt/myscoutee/packaging/templates/myscoutee.env" \
     || fail "production seed allow-list omits ${collection}"

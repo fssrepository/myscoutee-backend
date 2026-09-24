@@ -30,14 +30,24 @@ public class ExchangeRateStore {
     }
 
     public static Quote quote(List<Document> rows, LocalDate paymentDate, String currency) {
-
+        Document defaults = null;
         for (Document row : rows) {
+            if (Boolean.TRUE.equals(row.getBoolean("default"))) {
+                defaults = row;
+                continue;
+            }
             LocalDate date = LocalDate.parse(row.getString("_id"));
             if (date.isAfter(paymentDate) || date.isBefore(paymentDate.minusDays(7))) continue;
             if ("EUR".equals(currency)) return new Quote(date.toString(), row.getString("source"), BigDecimal.ONE);
             Document rates = row.get("rates", Document.class);
             String rate = rates == null ? null : rates.getString(currency);
             if (rate != null) return new Quote(date.toString(), row.getString("source"),
+                    BigDecimal.ONE.divide(new BigDecimal(rate), 16, java.math.RoundingMode.HALF_UP));
+        }
+        if (defaults != null) {
+            Document rates = defaults.get("rates", Document.class);
+            String rate = rates == null ? null : rates.getString(currency);
+            if (rate != null) return new Quote(defaults.getString("_id"), defaults.getString("source"),
                     BigDecimal.ONE.divide(new BigDecimal(rate), 16, java.math.RoundingMode.HALF_UP));
         }
         return "EUR".equals(currency) ? new Quote(paymentDate.toString(), "EUR", BigDecimal.ONE) : null;

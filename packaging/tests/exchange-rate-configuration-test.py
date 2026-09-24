@@ -50,3 +50,42 @@ try {
 subprocess.run(['docker','exec','-i','mongodb','sh','-c',
  'exec mongosh --quiet --username "$MONGO_APP_USERNAME" --password "$MONGO_APP_PASSWORD" --authenticationDatabase demo_db demo_db --file /dev/stdin'],
  input=script, text=True, check=True)
+
+# Exercise the actual insert-only default import against an isolated collection.
+rate_seeds = [json.loads((root / f'server/docker/conf/mongodb/{mode}/exchangeRates.json').read_text())
+              for mode in ('demo_db', 'e2e_db', 'myscoutee_db')]
+assert rate_seeds[0] == rate_seeds[1] == rate_seeds[2]
+for config in ('packaging/templates/myscoutee.env', 'server/.env'):
+    allow_line = next(line for line in (root / config).read_text().splitlines()
+                      if line.startswith('MONGO_IMPORT_ALLOWED_COLLECTIONS_BY_DB='))
+    production_rule = next(rule for rule in allow_line.split('=', 1)[1].split(';')
+                           if rule.startswith('production_db:'))
+    assert 'exchangeRates' in production_rule.split(':', 1)[1].split(',')
+postinst = (root / 'packaging/debian/postinst').read_text()
+assert 'deploymentConfigurations,exchangeRates' in postinst
+importer = (root / 'server/docker/conf/mongodb/mongo_import.sh').read_text()
+source = importer.split('import_exchange_rate_seed() {', 1)[1].split("--eval '\n", 1)[1].split("\n' >/dev/null", 1)[0]
+source = source.replace('const seeds = EJSON.parse(require("fs").readFileSync(process.env.MONGO_EXCHANGE_SEED_PATH, "utf8"));', 'const seeds = seedValue;')
+source = source.replace('db.getCollection("exchangeRates")', 'collection')
+script = r'''const collection = db.getCollection('qaExchangeDefaults_' + new ObjectId().toHexString());
+function check(ok, message) { if (!ok) throw new Error(message); }
+function migrate(seedValue) { SOURCE }
+try {
+  const seeds = SEEDS;
+  migrate(seeds);
+  check(collection.countDocuments({}) === 1, 'fresh default absent');
+  check(collection.findOne({_id:'default-v1'}).rates.HUF === '400', 'wrong default basis');
+  const original = EJSON.stringify(collection.find().sort({_id:1}).toArray());
+  migrate(seeds);
+  check(EJSON.stringify(collection.find().sort({_id:1}).toArray()) === original, 'not idempotent');
+  collection.insertOne({_id:'2026-09-24', source:'daily', rates:{EUR:'1',HUF:'401'}});
+  const existing = EJSON.stringify(collection.find().sort({_id:1}).toArray());
+  const edited = JSON.parse(JSON.stringify(seeds)); edited[0].rates.HUF = '999';
+  migrate(edited);
+  check(EJSON.stringify(collection.find().sort({_id:1}).toArray()) === existing, 'import rewrote immutable basis/daily rates');
+  print('PASS default FX seed: all three seeds identical; production install/upgrade allow-list; fresh import; repeated import; immutable default and daily rows retained.');
+} finally { collection.drop(); }
+'''.replace('SOURCE', source).replace('SEEDS', json.dumps(rate_seeds[0]))
+subprocess.run(['docker','exec','-i','mongodb','sh','-c',
+ 'exec mongosh --quiet --username "$MONGO_APP_USERNAME" --password "$MONGO_APP_PASSWORD" --authenticationDatabase demo_db demo_db --file /dev/stdin'],
+ input=script, text=True, check=True)
