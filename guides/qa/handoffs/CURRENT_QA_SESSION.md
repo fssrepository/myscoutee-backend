@@ -86,17 +86,16 @@ resume pointer and reusable working method.
 Earlier Event Mode, Integration API, Activity Rating and EVENT-FOLLOWING-001 remain closed.
 
 ```yaml
-checkpoint: AFFILIATE-REVENUE-001
-checklist: ../checklists/api/AFFILIATE-REVENUE-001.md
-substage: PASS/CLOSED in recorded dev HTTP/simulator and frontend-local financial scope.
-fixture_phase: 2026-09-24 06:30 CEST. Financial evidence retained. Dev revision138, purchases16/bookings15, EUR291/282/9 and HUF5000/5000/0; no pending contributions or injected faults. Local purchases7/bookings6, EUR337/317/20 and HUF5000/5000/0; last actual asset payment20 counted as purchase only. Detailed history and earlier failed-version controls stay in evidence.
-execution_log: ../evidence/AFFILIATE-REVENUE-001-20260923-progress.md
-next_action: No remaining affiliate action in the completed runtime scope. Calendar explicitly deferred by user; do not launch or execute it. Preserve local IndexedDB and dev Mongo audit records. Existing frontend-sync restored to normal dev configuration.
-queue: EVENT-CALENDAR-EXPORT-001
-calendar_boundary: DEFERRED by user on 2026-09-24; not part of affiliate PASS.
-resume_gate: Read-only fixture/runtime status before any later continuation. Preserve retained paid evidence and unrelated snapshots; no broad replay/reset.
-runtime: Existing frontend-sync and backend continuous/DevTools watchers own compilation; no separate builds. Normal dev HTTP configuration restored after local run.
-last_completed: AFFILIATE-REVENUE-001 dev and frontend-local PASS. Provider hold-only UI unavailable under immediate-capture configuration; accounting boundary verified with compiled production service and real Mongo. Installed production artifact/REAL auth qualification NOT RUN; see evidence.
+checkpoint: EVENT-CALENDAR-EXPORT-001
+checklist: ../checklists/event/EVENT-CALENDAR-EXPORT-001.md
+substage: IN PROGRESS; user started the previously deferred checkpoint on 2026-09-24.
+fixture_phase: Gallery fixture staged06:34 after read-only clean baseline; no exported/imported outcomes yet. Managed launcher uses the gallery checkpoint/session restore key and preserves the retained affiliate-local profile.
+execution_log: ../evidence/EVENT-CALENDAR-EXPORT-001-20260924.md
+next_action: Verify prepared browsers; create calendar eligibility controls, export through the actual app, inspect physical Android and Ubuntu file-open/import behavior. Continue the stable checklist and clean only calendar-owned controls.
+queue: None selected.
+resume_gate: Read-only fixture/runtime/device status before mutation; preserve affiliate Mongo and local IndexedDB evidence. No replay of closed affiliate checks.
+runtime: Existing frontend-sync dev and backend watchers own builds. Authorized Android14 device connected; QA reverse8080→80 and Chrome CDP36087 prepared.
+last_completed: AFFILIATE-REVENUE-001 dev and frontend-local PASS; detailed evidence and runtime qualification boundaries retained in its progress log.
 ```
 
 ## Archived pair-QA resume point — 2026-09-17
