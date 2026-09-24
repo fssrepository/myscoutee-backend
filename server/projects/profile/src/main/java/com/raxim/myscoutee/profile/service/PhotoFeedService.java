@@ -52,7 +52,7 @@ public class PhotoFeedService {
         }
         var avatar = actor.getImages() == null || actor.getImages().isEmpty() ? "" : actor.getImages().getFirst();
         var post = new PhotoFeedPost(request.id(), actor.getUserId(), actor.getName(), avatar, Instant.now().toString(),
-                List.copyOf(images), details, new GeoJsonPoint(coordinates.longitude(), coordinates.latitude()));
+                List.copyOf(images), details, new GeoJsonPoint(coordinates.longitude(), coordinates.latitude()), "under-review", actor.getWorkspaceGroupId());
         try { return ownExisting(actor, posts.insert(post)); }
         catch (DuplicateKeyException ex) { return ownExisting(actor, posts.find(request.id())); }
     }

@@ -2766,6 +2766,7 @@ public class AssetsService {
     private Document visibleExploreMatchDocument(String userId, String type, String category) {
         List<Document> and = new ArrayList<>();
         and.add(new Document("type", type));
+        and.add(new Document("workspaceGroupId", CommunityGroupProfilesService.currentGroupId()));
         and.add(new Document("ownerUserId", new Document("$ne", userId)));
         and.add(new Document("status", new Document("$in", List.of(STATUS_ACTIVE, "active"))));
         if (StringUtils.hasText(category)) {
@@ -3585,7 +3586,7 @@ public class AssetsService {
     }
 
     private boolean shouldIncludeExploreAsset(Asset asset, String activeUserId) {
-        if (asset == null) {
+        if (asset == null || !CommunityGroupProfilesService.allows(asset.getWorkspaceGroupId())) {
             return false;
         }
         String status = safeText(asset.getStatus());

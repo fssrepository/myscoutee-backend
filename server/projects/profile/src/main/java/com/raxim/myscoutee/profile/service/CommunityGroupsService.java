@@ -35,6 +35,7 @@ public class CommunityGroupsService {
     public Users actor(String requestedId) {
         Users actor = profiles.resolveCurrentUser(requestedId);
         if (actor == null) throw error(HttpStatus.UNAUTHORIZED);
+        if (actor.getAccountUserId() != null) return users.findByUserId(actor.getAccountUserId()).orElseThrow(() -> error(HttpStatus.UNAUTHORIZED));
         return actor;
     }
     public List<Workspace> workspaces(Users actor) {
@@ -76,7 +77,7 @@ public class CommunityGroupsService {
                 .filter(g -> owners.containsKey(g.ownerUserId()))
                 .map(g -> CommunityGroupMapper.toDto(g, owners.get(g.ownerUserId()), actor,
                         membersByGroup.getOrDefault(g.id(), List.of()), com.raxim.myscoutee.profile.service.mapper.CommunityGroupProfileMapper.attention(profileByGroup.get(g.id()))))
-                .sorted(Comparator.comparingDouble((Group g) -> g.distanceKm() == null ? Double.MAX_VALUE : Math.floor(g.distanceKm() / 5))
+                .sorted(Comparator.comparingDouble((Group g) -> g.distanceKm() == null ? Double.MAX_VALUE : Math.ceil(g.distanceKm() / 5))
                         .thenComparing(Group::createdAtIso, Comparator.reverseOrder()).thenComparing(Group::id)).toList();
         int offset = 0;
         if (cursor != null && !cursor.isBlank()) {
@@ -90,7 +91,7 @@ public class CommunityGroupsService {
                     "participation", own.stream().filter(m -> !isAdmin(m)).mapToLong(m -> com.raxim.myscoutee.profile.service.mapper.CommunityGroupProfileMapper.attention(profileByGroup.get(m.getOwnerId()))).sum()));
     }
     public Group save(Users actor, Save request) {
-        if (request == null || request.name() == null || request.name().isBlank() || request.name().length() > 120
+        if (request == null || request.name() == null || request.name().isBlank() || request.name().codePointCount(0, request.name().length()) > 20
                 || request.description() != null && request.description().length() > 4000
                 || !CATEGORIES.contains(request.category()) || !VISIBILITIES.contains(request.visibility())) throw error(HttpStatus.BAD_REQUEST);
         var policy = request.policy();
@@ -149,12 +150,12 @@ public class CommunityGroupsService {
     public ActivityMembersInviteResponseDto invite(Users actor, String id, List<String> userIds) {
         var group = visible(actor, id); requireAdmin(actor, id);
         if (userIds == null || userIds.size() > 200) throw error(HttpStatus.BAD_REQUEST);
-        var candidates = users.findByUserIdIn(userIds).stream().map(Users::getUserId).collect(Collectors.toSet());
+        var candidates = users.findByUserIdIn(userIds).stream().filter(u -> u.getWorkspaceGroupId() == null).map(Users::getUserId).collect(Collectors.toSet());
         var existing = members(id).stream().filter(m -> Set.of("accepted", "pending").contains(m.getStatus()))
                 .map(ActivityMember::getUserId).collect(Collectors.toSet());
         var invited = userIds.stream().distinct().filter(candidates::contains).filter(uid -> !existing.contains(uid)).toList();
         memberships.saveAll(invited.stream().map(uid -> newMember(group, uid, "Member", "pending", "invite", actor.getUserId())).toList());
-        return new ActivityMembersInviteResponseDto(roster(actor, id, false), invited, List.of());
+        return new ActivityMembersInviteResponseDto(roster(actor, id, false), invited, List.of(), dto(actor, group, members(id)));
     }
     public ActivityMemberActionResponseDto action(Users actor, ActivityMemberActionRequestDto request) {
         String id = request.owner().ownerId(); var group = visible(actor, id);
@@ -189,7 +190,7 @@ public class CommunityGroupsService {
         }
         target.setUpdatedDate(Instant.now().toString()); target.setActionAtIso(target.getUpdatedDate());
         memberships.save(target);
-        return new ActivityMemberActionResponseDto(roster(actor, id, false), null);
+        return new ActivityMemberActionResponseDto(self && "deleted".equals(target.getStatus()) ? List.of() : roster(actor, id, false), null, dto(actor, group, members(id)));
     }
     private CommunityGroup visible(Users actor, String id) {
         var group = groups.findById(id).orElseThrow(() -> error(HttpStatus.NOT_FOUND));

@@ -33,6 +33,10 @@ public class IntegrationParticipantInviteService {
     private final ActivitiesMembersService members;
     private final IntegrationPublicEndpointResolver endpoint;
     private final HomeUserProfileService profiles;
+    @org.springframework.beans.factory.annotation.Autowired
+    private CommunityGroupsService groups;
+    @org.springframework.beans.factory.annotation.Autowired
+    private com.raxim.myscoutee.profile.repository.UsersRepository users;
     private final SecureRandom random = new SecureRandom();
 
     public IntegrationParticipantInviteService(MongoTemplate mongo, ActivityEventsRepository events, AccessControlService access,
@@ -42,6 +46,13 @@ public class IntegrationParticipantInviteService {
 
     public IntegrationParticipantInvitesDto create(String ownerUserId, String eventId, IntegrationParticipantInviteRequestDto request) {
         requireEvent(ownerUserId, eventId);
+        return create(ownerUserId, eventId, request, "event");
+    }
+    public IntegrationParticipantInvitesDto createGroup(String ownerUserId, String groupId, IntegrationParticipantInviteRequestDto request) {
+        groups.requireAdmin(groups.actor(ownerUserId), groupId);
+        return create(ownerUserId, groupId, request, "community");
+    }
+    private IntegrationParticipantInvitesDto create(String ownerUserId, String eventId, IntegrationParticipantInviteRequestDto request, String ownerType) {
         if (request == null || request.participantIds() == null || request.participantIds().isEmpty()
                 || request.participantIds().size() > IntegrationTokenService.MAX_BATCH_SIZE) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invite batch must contain 1–1000 participant IDs.");
@@ -53,7 +64,7 @@ public class IntegrationParticipantInviteService {
             if (id.isBlank() || id.length() > 200 || !participantIds.add(id)) {
                 throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Participant IDs must be distinct non-empty strings of at most 200 characters.");
             }
-            ids.put(digest(ownerUserId + "\n" + eventId + "\n" + id), id);
+            ids.put(digest(ownerUserId + "\n" + ("community".equals(ownerType) ? "community\n" : "") + eventId + "\n" + id), id);
         }
         String now = Instant.now().toString();
         BulkOperations writes = mongo.bulkOps(BulkOperations.BulkMode.UNORDERED, IntegrationParticipantInvite.class);
@@ -62,7 +73,7 @@ public class IntegrationParticipantInviteService {
             String token = Base64.getUrlEncoder().withoutPadding().encodeToString(bytes);
             writes.upsert(Query.query(Criteria.where("_id").is(entry.getKey())), new Update()
                     .setOnInsert("ownerUserId", ownerUserId).setOnInsert("eventId", eventId)
-                    .setOnInsert("participantId", entry.getValue()).setOnInsert("token", token)
+                    .setOnInsert("ownerType", ownerType).setOnInsert("participantId", entry.getValue()).setOnInsert("token", token)
                     .setOnInsert("tokenHash", digest(token)).setOnInsert("createdAtIso", now));
         }
         writes.execute();
@@ -85,9 +96,12 @@ public class IntegrationParticipantInviteService {
         }
         var invite = mongo.findOne(Query.query(Criteria.where("tokenHash").is(digest(token))), IntegrationParticipantInvite.class);
         if (invite == null) throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Invitation not found.");
-        var event = requireOwnedEvent(invite.ownerUserId(), invite.eventId());
-        boolean invitationAvailable = !hasEnded(event);
-        if (invitationAvailable) requireInvitePermission(invite.ownerUserId(), invite.eventId());
+        boolean community = "community".equals(invite.ownerType());
+        var owner = community ? users.findByUserId(invite.ownerUserId()).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND)) : null;
+        if (community) groups.requireAdmin(owner, invite.eventId());
+        var event = community ? null : requireOwnedEvent(invite.ownerUserId(), invite.eventId());
+        boolean invitationAvailable = community || !hasEnded(event);
+        if (!community && invitationAvailable) requireInvitePermission(invite.ownerUserId(), invite.eventId());
         if (invite.claimedUserId() != null && !actor.equals(invite.claimedUserId())) {
             throw new ResponseStatusException(HttpStatus.CONFLICT, "This invitation belongs to another account.");
         }
@@ -110,6 +124,10 @@ public class IntegrationParticipantInviteService {
                 new Update().set("claimedUserId", actor).set("claimedAtIso", Instant.now().toString()),
                 FindAndModifyOptions.options().returnNew(true), IntegrationParticipantInvite.class);
         if (claimed == null) throw new ResponseStatusException(HttpStatus.CONFLICT, "Invitation already claimed.");
+        if (community) {
+            groups.invite(owner, invite.eventId(), List.of(actor));
+            return new IntegrationParticipantClaimDto(null, true, invite.eventId());
+        }
         if (invitationAvailable) members.claimIntegrationInvite(claimed, event, actor);
         return new IntegrationParticipantClaimDto(invite.eventId(), invitationAvailable);
     }

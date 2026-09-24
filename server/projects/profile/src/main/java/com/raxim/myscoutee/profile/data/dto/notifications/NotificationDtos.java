@@ -37,7 +37,9 @@ public final class NotificationDtos {
             String bucket,
             Integer limit,
             List<UserNotificationSyncKnownItemDto> knownItems,
-            UserNotificationSyncBoundaryDto loadedTail) {
+            UserNotificationSyncBoundaryDto loadedTail, String workspace) {
+        public UserNotificationsSyncRequestDto(String bucket, Integer limit, List<UserNotificationSyncKnownItemDto> knownItems,
+                UserNotificationSyncBoundaryDto loadedTail) { this(bucket, limit, knownItems, loadedTail, null); }
     }
 
     public record UserNotificationsSyncResponseDto(

@@ -68,7 +68,9 @@ public class UserNotificationService {
             String recipientUserId,
             String requestedBucket,
             Integer requestedLimit,
-            String cursor) {
+            String cursor) { return queryPage(recipientUserId, requestedBucket, requestedLimit, cursor, null); }
+
+    public UserNotificationsPageResponseDto queryPage(String recipientUserId, String requestedBucket, Integer requestedLimit, String cursor, String workspace) {
         String normalizedRecipientUserId = requiredUserId(recipientUserId);
         String bucket = normalizeBucket(requestedBucket);
         int limit = normalizeLimit(requestedLimit);
@@ -77,7 +79,7 @@ public class UserNotificationService {
                 normalizedRecipientUserId,
                 BUCKET_NEW.equals(bucket),
                 limit,
-                parsedCursor);
+                parsedCursor, workspace);
         List<UserNotificationDto> records = userNotificationMapper.toDtos(slice.records());
         String nextCursor = slice.hasNext() && !slice.records().isEmpty()
                 ? encodeCursor(bucket, slice.records().getLast())
@@ -117,6 +119,7 @@ public class UserNotificationService {
         String normalizedRecipientUserId = requiredUserId(recipientUserId);
         String bucket = normalizeBucket(request == null ? null : request.bucket());
         boolean unreadOnly = BUCKET_NEW.equals(bucket);
+        String workspace = request == null ? null : request.workspace();
         List<UserNotificationSyncKnownItemDto> knownItems = request == null || request.knownItems() == null
                 ? List.of()
                 : request.knownItems().stream()
@@ -149,7 +152,7 @@ public class UserNotificationService {
         LinkedHashMap<String, UserNotification> upsertsById = new LinkedHashMap<>();
         for (Map.Entry<String, Long> known : knownRevisions.entrySet()) {
             UserNotification current = cachedRecordsById.get(known.getKey());
-            if (current == null || (unreadOnly && StringUtils.hasText(current.getReadAtIso()))) {
+            if (current == null || !matchesWorkspace(current, workspace) || (unreadOnly && StringUtils.hasText(current.getReadAtIso()))) {
                 removedIds.add(known.getKey());
                 continue;
             }
@@ -167,7 +170,7 @@ public class UserNotificationService {
                 unreadOnly,
                 tail == null ? null : tail.createdAtIso(),
                 tail == null ? null : tail.id(),
-                windowLimit);
+                windowLimit, workspace);
         for (UserNotification current : loadedWindow) {
             Long knownRevision = knownRevisions.get(current.getId());
             if (knownRevision == null || notificationRevision(current) != knownRevision) {
@@ -179,7 +182,7 @@ public class UserNotificationService {
                 normalizedRecipientUserId,
                 unreadOnly,
                 1,
-                null);
+                null, workspace);
         return new UserNotificationsSyncResponseDto(
                 userNotificationMapper.toDtos(List.copyOf(upsertsById.values())),
                 List.copyOf(removedIds),
@@ -188,8 +191,14 @@ public class UserNotificationService {
                 isMuted(normalizedRecipientUserId));
     }
 
+    private boolean matchesWorkspace(UserNotification notification, String workspace) {
+        if (workspace == null || workspace.isBlank() || "all".equals(workspace)) return true;
+        String groupId = notification.getPayload() == null ? null : notification.getPayload().get("workspaceGroupId");
+        return "main".equals(workspace) ? !StringUtils.hasText(groupId) : workspace.equals(groupId);
+    }
+
     public int markEventInvitationResolved(String recipientUserId, String eventId) {
-        String normalizedRecipientUserId = safeText(recipientUserId);
+        String normalizedRecipientUserId = notificationAccountId(recipientUserId);
         String normalizedEventId = safeText(eventId);
         if (!StringUtils.hasText(normalizedRecipientUserId)
                 || !StringUtils.hasText(normalizedEventId)) {
@@ -211,7 +220,7 @@ public class UserNotificationService {
     }
 
     public int markChatMessagesRead(String recipientUserId, String chatId, List<String> messageIds) {
-        String normalizedRecipientUserId = safeText(recipientUserId);
+        String normalizedRecipientUserId = notificationAccountId(recipientUserId);
         String normalizedChatId = safeText(chatId);
         List<String> normalizedMessageIds = compactIds(messageIds);
         if (!StringUtils.hasText(normalizedRecipientUserId)
@@ -229,7 +238,7 @@ public class UserNotificationService {
     }
 
     public int markChatRead(String recipientUserId, String chatId) {
-        String normalizedRecipientUserId = safeText(recipientUserId);
+        String normalizedRecipientUserId = notificationAccountId(recipientUserId);
         String normalizedChatId = safeText(chatId);
         if (!StringUtils.hasText(normalizedRecipientUserId) || !StringUtils.hasText(normalizedChatId)) {
             return 0;
@@ -242,6 +251,12 @@ public class UserNotificationService {
                         CHAT_SOURCE_TYPE,
                         normalizedChatId,
                         Instant.now().toString()));
+    }
+
+    private String notificationAccountId(String userId) {
+        String id = safeText(userId);
+        return usersRepository.findByUserId(id).map(user -> StringUtils.hasText(user.getAccountUserId())
+                ? user.getAccountUserId() : id).orElse(id);
     }
 
     private int applyChatNotificationReadCount(String recipientUserId, long changed) {

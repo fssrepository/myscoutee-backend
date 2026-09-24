@@ -239,7 +239,7 @@ public class MemberPolicyFacts {
         }
         ActivityEvent preferred = null;
         for (ActivityEvent document : activityEventsRepository.findBySourceId(normalizedSourceId)) {
-            if (document == null) {
+            if (document == null || !com.raxim.myscoutee.profile.service.CommunityGroupProfilesService.allows(document.getWorkspaceGroupId())) {
                 continue;
             }
             if (preferred == null || preferEventRecord(document, preferred)) {

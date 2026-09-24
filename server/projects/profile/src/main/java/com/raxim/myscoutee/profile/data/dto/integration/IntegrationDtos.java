@@ -110,7 +110,9 @@ public final class IntegrationDtos {
     public record IntegrationParticipantInviteRequestDto(List<String> participantIds) { }
     public record IntegrationParticipantInviteDto(String id, String inviteUrl, boolean claimed) { }
     public record IntegrationParticipantInvitesDto(List<IntegrationParticipantInviteDto> items) { }
-    public record IntegrationParticipantClaimDto(String eventId, boolean invitationAvailable) { }
+    public record IntegrationParticipantClaimDto(String eventId, boolean invitationAvailable, String groupId) {
+        public IntegrationParticipantClaimDto(String eventId, boolean invitationAvailable) { this(eventId, invitationAvailable, null); }
+    }
 
     public record IntegrationEventDto(String id, String externalId, String title, String status,
             String sourceLink, String mode, MingleConfigurationDto mingleConfiguration) { }

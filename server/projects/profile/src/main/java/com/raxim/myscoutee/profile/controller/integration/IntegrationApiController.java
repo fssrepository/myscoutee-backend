@@ -109,6 +109,12 @@ public class IntegrationApiController {
                 imageFiles(multipartRequest));
     }
 
+    @PostMapping("/groups/{groupId}/invites")
+    public com.raxim.myscoutee.profile.data.dto.integration.IntegrationDtos.IntegrationParticipantInvitesDto inviteGroupParticipants(
+            Authentication authentication, @PathVariable String groupId,
+            @RequestBody com.raxim.myscoutee.profile.data.dto.integration.IntegrationDtos.IntegrationParticipantInviteRequestDto request) {
+        return invites.createGroup(actorUserId(authentication), groupId, request);
+    }
     @PostMapping("/events/{eventId}/invites")
     public com.raxim.myscoutee.profile.data.dto.integration.IntegrationDtos.IntegrationParticipantInvitesDto inviteParticipants(
             Authentication authentication, @PathVariable String eventId,

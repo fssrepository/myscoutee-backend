@@ -31,14 +31,16 @@ public class UserNotificationPageRepository {
             String recipientUserId,
             boolean unreadOnly,
             int limit,
-            UserNotificationCursor cursor) {
-        Criteria baseCriteria = recipientCriteria(recipientUserId, unreadOnly);
+            UserNotificationCursor cursor) { return findPage(recipientUserId, unreadOnly, limit, cursor, null); }
+
+    public UserNotificationSlice findPage(String recipientUserId, boolean unreadOnly, int limit, UserNotificationCursor cursor, String workspace) {
+        Criteria baseCriteria = workspaceCriteria(recipientCriteria(recipientUserId, unreadOnly), workspace);
         long total = mongoTemplate.count(Query.query(baseCriteria), UserNotification.class);
         if (total == 0L) {
             return new UserNotificationSlice(List.of(), 0L, false);
         }
 
-        Query query = Query.query(pageCriteria(recipientUserId, unreadOnly, cursor))
+        Query query = Query.query(workspaceCriteria(pageCriteria(recipientUserId, unreadOnly, cursor), workspace))
                 .with(NOTIFICATION_SORT)
                 .limit(limit + 1);
         List<UserNotification> matches = mongoTemplate.find(query, UserNotification.class);
@@ -73,10 +75,13 @@ public class UserNotificationPageRepository {
             boolean unreadOnly,
             String tailCreatedDate,
             String tailId,
-            int limit) {
+            int limit) { return findLoadedWindow(recipientUserId, unreadOnly, tailCreatedDate, tailId, limit, null); }
+
+    public List<UserNotification> findLoadedWindow(String recipientUserId, boolean unreadOnly,
+            String tailCreatedDate, String tailId, int limit, String workspace) {
         boolean hasTail = tailCreatedDate != null && !tailCreatedDate.isBlank()
                 && tailId != null && !tailId.isBlank();
-        Criteria criteria = recipientCriteria(recipientUserId, unreadOnly);
+        Criteria criteria = workspaceCriteria(recipientCriteria(recipientUserId, unreadOnly), workspace);
         if (hasTail) {
             Criteria withinLoadedWindow = new Criteria().orOperator(
                     Criteria.where("createdDate").gt(tailCreatedDate),
@@ -256,6 +261,11 @@ public class UserNotificationPageRepository {
         return new Criteria().andOperator(
                 Criteria.where("recipientUserId").is(recipientUserId),
                 unreadCriteria());
+    }
+
+    private Criteria workspaceCriteria(Criteria base, String workspace) {
+        if (workspace == null || workspace.isBlank() || "all".equals(workspace)) return base;
+        return new Criteria().andOperator(base, Criteria.where("payload.workspaceGroupId").is("main".equals(workspace) ? null : workspace));
     }
 
     private Criteria unreadCriteria() {

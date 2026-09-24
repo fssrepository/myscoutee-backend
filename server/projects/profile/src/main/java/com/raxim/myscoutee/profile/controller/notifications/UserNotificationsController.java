@@ -39,8 +39,9 @@ public class UserNotificationsController {
             @RequestParam(value = "bucket", required = false) String bucket,
             @RequestParam(value = "limit", required = false) Integer limit,
             @RequestParam(value = "cursor", required = false) String cursor,
+            @RequestParam(value = "workspace", required = false) String workspace,
             @RequestParam(value = "userId", required = false) String userId) {
-        return userNotificationService.queryPage(resolveCurrentUserId(userId), bucket, limit, cursor);
+        return userNotificationService.queryPage(resolveCurrentUserId(userId), bucket, limit, cursor, workspace);
     }
 
     @PostMapping("/sync")
