@@ -7,6 +7,7 @@ import java.time.Instant;
 import java.time.YearMonth;
 import java.time.ZoneOffset;
 import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -606,11 +607,18 @@ public class SavedPaymentMethodsService {
 
     public PaymentHistoryMutationDto mutationDto(Payment payment, String viewerUserId) {
         String ownerId = requiredId(viewerUserId, "Current user");
+        PaymentHistoryItemDto item = toHistoryDto(payment, ownerId);
+        List<PaymentHistoryItemDto> changed = new ArrayList<>();
+        changed.add(item);
+        if ("refund".equals(payment.getAuditKind()) && StringUtils.hasText(payment.getSupersedesPaymentId())) {
+            paymentsRepository.findById(payment.getSupersedesPaymentId())
+                    .filter(original -> ownerId.equals(normalizeId(original.getUserId()))
+                            || ownerId.equals(normalizeId(original.getRecipientUserId())))
+                    .ifPresent(original -> changed.add(toHistoryDto(original, ownerId)));
+        }
         return new PaymentHistoryMutationDto(
-                toHistoryDto(payment, ownerId),
-                spendingTotals(ownerId),
-                incomeTotals(ownerId),
-                pendingRefundCount(ownerId), euroService == null ? null : euroService.summary(ownerId, false));
+                item, spendingTotals(ownerId), incomeTotals(ownerId), pendingRefundCount(ownerId),
+                euroService == null ? null : euroService.summary(ownerId, false), changed);
     }
 
     public int pendingRefundCount(String userId) {

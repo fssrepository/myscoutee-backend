@@ -103,9 +103,14 @@ public final class PaymentDtos {
             Map<String, Double> spendingTotals,
             Map<String, Double> incomeTotals,
             Integer pendingRefundCount,
-            com.raxim.myscoutee.profile.data.dto.payment.ExchangeRateDtos.Summary euroSummary) {
+            com.raxim.myscoutee.profile.data.dto.payment.ExchangeRateDtos.Summary euroSummary,
+            List<PaymentHistoryItemDto> items) {
+        public PaymentHistoryMutationDto(PaymentHistoryItemDto item, Map<String, Double> spendingTotals, Map<String, Double> incomeTotals, Integer pendingRefundCount,
+                com.raxim.myscoutee.profile.data.dto.payment.ExchangeRateDtos.Summary euroSummary) {
+            this(item, spendingTotals, incomeTotals, pendingRefundCount, euroSummary, List.of(item));
+        }
         public PaymentHistoryMutationDto(PaymentHistoryItemDto item, Map<String, Double> spendingTotals, Map<String, Double> incomeTotals, Integer pendingRefundCount) {
-            this(item, spendingTotals, incomeTotals, pendingRefundCount, null);
+            this(item, spendingTotals, incomeTotals, pendingRefundCount, null, List.of(item));
         }
     }
 }
