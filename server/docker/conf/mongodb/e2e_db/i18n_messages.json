@@ -22755,13 +22755,13 @@
     "_id": "i18n-message-en-groups-confirm-set-participant",
     "key": "groups.confirm.set-participant",
     "lang": "en",
-    "value": "Participate in ratings in “{name}”?"
+    "value": "Participate as a member in the group “{name}”?"
   },
   {
     "_id": "i18n-message-en-groups-confirm-set-organizer-only",
     "key": "groups.confirm.set-organizer-only",
     "lang": "en",
-    "value": "Stop participating in ratings in “{name}” and continue as an administrator?"
+    "value": "Continue only as an administrator in the group “{name}”?"
   },
   {
     "_id": "i18n-message-en-groups-name-too-long",
@@ -22798,6 +22798,30 @@
     "key": "groups.member.list",
     "lang": "en",
     "value": "Member list visible"
+  },
+  {
+    "_id": "i18n-message-en-groups-report",
+    "key": "groups.report",
+    "lang": "en",
+    "value": "Report group"
+  },
+  {
+    "_id": "i18n-message-en-groups-confirm-report",
+    "key": "groups.confirm.report",
+    "lang": "en",
+    "value": "Report the group “{name}”?"
+  },
+  {
+    "_id": "i18n-message-en-groups-report-details",
+    "key": "groups.report.details",
+    "lang": "en",
+    "value": "Reason for reporting (at least 12 characters)"
+  },
+  {
+    "_id": "i18n-message-en-moderation-category-group",
+    "key": "moderation.category.group",
+    "lang": "en",
+    "value": "Groups"
   },
   {
     "_id": "i18n-message-hu-payment-history-refund-preview-changed-terms",
@@ -45555,13 +45579,13 @@
     "_id": "i18n-message-hu-groups-confirm-set-participant",
     "key": "groups.confirm.set-participant",
     "lang": "hu",
-    "value": "Részt veszel a(z) „{name}” csoport értékeléseiben?"
+    "value": "Tagként is részt veszel a(z) „{name}” csoportban?"
   },
   {
     "_id": "i18n-message-hu-groups-confirm-set-organizer-only",
     "key": "groups.confirm.set-organizer-only",
     "lang": "hu",
-    "value": "Befejezed a részvételt a(z) „{name}” csoport értékeléseiben, és adminisztrátorként folytatod?"
+    "value": "Csak adminisztrátorként folytatod a(z) „{name}” csoportban?"
   },
   {
     "_id": "i18n-message-hu-groups-name-too-long",
@@ -45598,5 +45622,29 @@
     "key": "groups.member.list",
     "lang": "hu",
     "value": "Taglista látható"
+  },
+  {
+    "_id": "i18n-message-hu-groups-report",
+    "key": "groups.report",
+    "lang": "hu",
+    "value": "Csoport jelentése"
+  },
+  {
+    "_id": "i18n-message-hu-groups-confirm-report",
+    "key": "groups.confirm.report",
+    "lang": "hu",
+    "value": "Jelented a(z) „{name}” csoportot?"
+  },
+  {
+    "_id": "i18n-message-hu-groups-report-details",
+    "key": "groups.report.details",
+    "lang": "hu",
+    "value": "A jelentés indoka (legalább 12 karakter)"
+  },
+  {
+    "_id": "i18n-message-hu-moderation-category-group",
+    "key": "moderation.category.group",
+    "lang": "hu",
+    "value": "Csoportok"
   }
 ]

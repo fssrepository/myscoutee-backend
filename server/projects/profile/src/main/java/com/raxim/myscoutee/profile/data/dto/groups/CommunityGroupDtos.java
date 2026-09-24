@@ -21,13 +21,26 @@ public final class CommunityGroupDtos {
             catch (java.security.NoSuchAlgorithmException exception) { throw new IllegalStateException(exception); }
         }
     }
-    public record Page(List<Group> items, long total, String nextCursor, Map<String, Long> context) {}
+    public record Summary(String id, String ownerUserId, String ownerName, String ownerAvatarUrl,
+            String name, String imageUrl, String category, String visibility, boolean hideMembers,
+            String createdAtIso, String updatedAtIso, Long version, String role, String membershipStatus,
+            String requestKind, boolean organizerOnly, int acceptedMembers, int pendingMembers, long activity,
+            Double distanceKm, String moderationStatus, String revision) {
+        public static Summary from(Group group) {
+            return new Summary(group.id(), group.ownerUserId(), group.ownerName(), group.ownerAvatarUrl(),
+                group.name(), group.imageUrl(), group.category(), group.visibility(), group.hideMembers(),
+                group.createdAtIso(), group.updatedAtIso(), group.version(), group.role(), group.membershipStatus(),
+                group.requestKind(), group.organizerOnly(), group.acceptedMembers(), group.pendingMembers(), group.activity(),
+                group.distanceKm(), group.moderationStatus(), group.revision());
+        }
+    }
+    public record Page(List<Summary> items, long total, String nextCursor, Map<String, Long> context) {}
     public record Workspace(String groupId, String profileId, String name, String role, long activity, Policy policy) {}
     public record WorkspaceSelection(Workspace workspace, com.raxim.myscoutee.profile.data.dto.auth.AuthDtos.UserDto profile) {}
     public record SelectWorkspace(String userId, String groupId) {}
     public record KnownGroup(String id, String revision) {}
     public record SyncRequest(String userId, String bucket, String category, int limit, List<KnownGroup> knownItems, String tailId) {}
-    public record SyncResponse(List<Group> upserts, List<String> removedIds, long total) {}
+    public record SyncResponse(List<Summary> upserts, List<String> removedIds, long total) {}
     public record Command(String userId, String groupId, String action) {}
     public record Report(String userId, String groupId, String details) {}
 }

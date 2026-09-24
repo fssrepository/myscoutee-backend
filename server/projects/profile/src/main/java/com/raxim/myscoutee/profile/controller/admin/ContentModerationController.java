@@ -45,6 +45,7 @@ public class ContentModerationController {
     }
     @GetMapping("/{id}/detail") public Object detail(@PathVariable String id, @RequestParam String adminUserId) {
         admins.resolveAdminActor(adminUserId);
+        if (id.startsWith("group:")) return groups.moderationDetail(id.substring(6));
         Item item = mongo.findById(id, Item.class);
         if (item == null || item.deleted()) throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         return switch (item.category()) {

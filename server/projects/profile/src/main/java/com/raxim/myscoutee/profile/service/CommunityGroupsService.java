@@ -62,7 +62,8 @@ public class CommunityGroupsService {
         var group = visible(actor, id);
         return dto(actor, group, members(id));
     }
-    private Page snapshot(Users actor, String bucket, String category) {
+    private record GroupSnapshot(List<Group> items, long total, Map<String, Long> context) {}
+    private GroupSnapshot snapshot(Users actor, String bucket, String category) {
         if (!Set.of("hosting", "participation", "explore").contains(bucket)) throw error(HttpStatus.BAD_REQUEST);
         var own = memberships.findByOwnerTypeAndUserId(OWNER_TYPE, actor.getUserId()).stream()
                 .filter(m -> Set.of("accepted", "pending").contains(m.getStatus())).toList();
@@ -85,7 +86,7 @@ public class CommunityGroupsService {
                         membersByGroup.getOrDefault(g.id(), List.of()), com.raxim.myscoutee.profile.service.mapper.CommunityGroupProfileMapper.attention(profileByGroup.get(g.id()))))
                 .sorted(Comparator.comparingDouble((Group g) -> g.distanceKm() == null ? Double.MAX_VALUE : Math.ceil(g.distanceKm() / 5))
                         .thenComparing(Group::createdAtIso, Comparator.reverseOrder()).thenComparing(Group::id)).toList();
-        return new Page(rows, rows.size(), null,
+        return new GroupSnapshot(rows, rows.size(),
                 Map.of("hosting", own.stream().filter(this::isAdmin).mapToLong(m -> com.raxim.myscoutee.profile.service.mapper.CommunityGroupProfileMapper.attention(profileByGroup.get(m.getOwnerId()))).sum(),
                     "participation", own.stream().filter(m -> !isAdmin(m)).mapToLong(m -> com.raxim.myscoutee.profile.service.mapper.CommunityGroupProfileMapper.attention(profileByGroup.get(m.getOwnerId()))).sum()));
     }
@@ -96,7 +97,7 @@ public class CommunityGroupsService {
         catch (NumberFormatException ex) { throw error(HttpStatus.BAD_REQUEST); }
         if (offset < 0) throw error(HttpStatus.BAD_REQUEST);
         var result = snapshot.items().stream().skip(offset).limit(Math.max(1, Math.min(pageSize, 50))).toList();
-        return new Page(result, snapshot.total(), offset + result.size() < snapshot.total() ? "" + (offset + result.size()) : null, snapshot.context());
+        return new Page(result.stream().map(Summary::from).toList(), snapshot.total(), offset + result.size() < snapshot.total() ? "" + (offset + result.size()) : null, snapshot.context());
     }
     public SyncResponse sync(Users actor, SyncRequest request) {
         if (request.knownItems() == null || request.knownItems().size() > 500) throw error(HttpStatus.BAD_REQUEST);
@@ -109,7 +110,7 @@ public class CommunityGroupsService {
         var upserts = new LinkedHashMap<String, Group>();
         snapshot.items().stream().limit(window).filter(g -> !g.revision().equals(known.get(g.id()))).forEach(g -> upserts.put(g.id(), g));
         known.forEach((id, revision) -> { var g = byId.get(id); if (g != null && !g.revision().equals(revision)) upserts.put(id, g); });
-        return new SyncResponse(List.copyOf(upserts.values()), known.keySet().stream().filter(id -> !byId.containsKey(id)).toList(), snapshot.total());
+        return new SyncResponse(upserts.values().stream().map(Summary::from).toList(), known.keySet().stream().filter(id -> !byId.containsKey(id)).toList(), snapshot.total());
     }
     public Group save(Users actor, Save request) {
         if (request == null || request.name() == null || request.name().isBlank() || request.name().codePointCount(0, request.name().length()) > 20
