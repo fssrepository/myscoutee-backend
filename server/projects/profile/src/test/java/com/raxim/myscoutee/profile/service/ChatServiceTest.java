@@ -128,6 +128,57 @@ class ChatServiceTest {
     }
 
     @Test
+    void retriedShareReturnsThePersistedMessageWithoutAnotherUnreadIncrement() {
+        when(homeUserProfileService.resolveSelectedUserId("viewer")).thenReturn("viewer");
+        when(accessControlService.canCurrentActorCreateChatMessage("viewer", "chat-1")).thenReturn(true);
+        when(chatsRepository.findByChatId("chat-1")).thenReturn(List.of(chat("chat-1", "viewer", 0)));
+        when(usersRepository.findByUserId("viewer")).thenReturn(Optional.of(user("viewer", "Viewer", "V")));
+        var original = message("persisted", "viewer", "Viewer", "2026-09-25T10:00:00Z");
+        when(chatMessagesRepository.insert(any(ChatMessage.class)))
+                .thenThrow(new org.springframework.dao.DuplicateKeyException("same client command"));
+        when(chatMessagesRepository.findByChatIdAndMessageId(eq("chat-1"), anyString())).thenReturn(Optional.of(original));
+        var response = service.sendMessage("chat-1", "viewer", "shared event", "share:stable-command");
+        assertThat(response.id()).isEqualTo("persisted");
+        verify(chatMessagesRepository, never()).save(any(ChatMessage.class));
+        verify(chatPushNotificationService, never()).notifyRecipients(anyList(), any());
+        verify(mongoTemplate, never()).updateFirst(any(Query.class), any(Update.class), eq(Users.class));
+    }
+
+    @Test
+    void contactChatRejectsPeopleOutsideTheCallersContactsWithoutWriting() {
+        when(homeUserProfileService.resolveSelectedUserId("viewer")).thenReturn("viewer");
+        assertThatThrownBy(() -> service.ensureContactChat("viewer", "stranger"))
+                .isInstanceOf(org.springframework.web.server.ResponseStatusException.class);
+        verify(mongoTemplate, never()).upsert(any(Query.class), any(Update.class), eq(Chat.class));
+    }
+
+    @Test
+    void contactInvitationRejectsCrossWorkspaceTargetsEvenWhenSavedAsContacts() {
+        when(homeUserProfileService.resolveSelectedUserId("viewer")).thenReturn("viewer");
+        var contacts = new com.raxim.myscoutee.profile.data.document.NavigatorContactsProfile();
+        var contact = new com.raxim.myscoutee.profile.data.document.NavigatorContactsProfile.NavigatorContactRecord();
+        contact.setUserId("target"); contacts.setContacts(List.of(contact));
+        when(mongoTemplate.findOne(any(Query.class), eq(com.raxim.myscoutee.profile.data.document.NavigatorContactsProfile.class)))
+                .thenReturn(contacts);
+        var actor = user("viewer", "Viewer", "V");
+        var target = user("target", "Target", "T"); target.setWorkspaceGroupId("other-group");
+        when(usersRepository.findByUserIdIn(any())).thenReturn(List.of(actor, target));
+        assertThatThrownBy(() -> service.ensureContactChat("viewer", "target"))
+                .isInstanceOf(org.springframework.web.server.ResponseStatusException.class);
+        verify(mongoTemplate, never()).upsert(any(Query.class), any(Update.class), eq(Chat.class));
+    }
+
+    @Test
+    void contactMemberCommandCannotAddPeopleToSupportChats() {
+        when(homeUserProfileService.resolveSelectedUserId("viewer")).thenReturn("viewer");
+        when(chatsRepository.findByChatId("support")).thenReturn(List.of(chat("support", "viewer", 0,
+                "2026-09-25T10:00:00Z", "appSupport")));
+        assertThatThrownBy(() -> service.addContactChatMembers("support", "viewer", List.of("target")))
+                .isInstanceOf(org.springframework.web.server.ResponseStatusException.class);
+        verify(mongoTemplate, never()).updateMulti(any(Query.class), any(Update.class), eq(Chat.class));
+    }
+
+    @Test
     void sharedMessagesUseAuthenticatedChatAccessWithoutReadingTheConversation() {
         when(homeUserProfileService.resolveSelectedUserId("viewer")).thenReturn("viewer");
         when(chatsRepository.findByChatId("chat-1")).thenReturn(List.of(chat("chat-1", "viewer", 7)));

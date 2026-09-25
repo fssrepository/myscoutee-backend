@@ -83,6 +83,21 @@ public class ChatsController {
         return chatService.queryChatById(chatId, userId);
     }
 
+    public record ContactChatRequest(String targetUserId) {}
+    public record ContactChatMembersRequest(List<String> userIds) {}
+
+    @PostMapping("/contact")
+    public ChatDto ensureContactChat(@RequestBody ContactChatRequest request,
+            @RequestParam(value = "userId", required = false) String userId) {
+        return chatService.ensureContactChat(userId, request == null ? null : request.targetUserId());
+    }
+
+    @PostMapping("/{chatId}/members")
+    public ChatDto addContactChatMembers(@PathVariable String chatId, @RequestBody ContactChatMembersRequest request,
+            @RequestParam(value = "userId", required = false) String userId) {
+        return chatService.addContactChatMembers(chatId, userId, request == null ? null : request.userIds());
+    }
+
     @PostMapping("/service")
     public ChatDto ensureServiceChat(
             @RequestBody ChatServiceEnsureRequestDto request,

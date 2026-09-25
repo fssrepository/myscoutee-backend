@@ -1,7 +1,8 @@
 # Meghívás, megosztás és cash — közös fejlesztési terv
 
 Dátum: 2026-09-25.
-Állapot: terv; a megvalósítás és az ellenőrzés még nincs kész.
+Állapot: a batch megvalósítása bent van; célzott ellenőrzés folyamatban.
+A kézi local/dev QA továbbra is NOT RUN.
 Forrás: az „ezek jutottak meg eszembe osszegezd, hogy mit ertettel meg
 beloluk” kezdetű felhasználói üzenet, az abban idézett levelek és minden
 utána következő pontosítás együttesen.
@@ -48,6 +49,8 @@ tartoznak bele.
   a mögötte nyitott chatnek. Az új tételeket a meglévő token-/attachment-
   mechanikával automatikusan elküldi; nincs kézi másolás, beillesztés
   vagy további küldési lépés. A választó UI új, a megosztási mechanika marad.
+- Több új kijelölés külön chatüzeneteket hoz létre. Ugyanaz a jóváhagyás
+  az új megosztásokat és a korábbiak visszavonását együtt kezeli.
 - Újranyitáskor a már elküldött, visszavonható megosztások kijelölése is látszik.
 - Korábbi megosztás kijelölésének megszüntetése és jóváhagyása az eredeti
   chatüzenetet törölt üzenetté alakítja a meglévő törlési működés szerint.
@@ -82,8 +85,12 @@ Az előző részek befejezése után:
 - A chatlistában külön kapcsolati szűrővel elérhetők ezek a beszélgetések.
 - Az esemény nélküli chat avatarpilljéből nyíló tagablakban is elérhető
   meghívás a meglévő tagválasztóval, a chat saját tagságát kezelve.
-  Jelenleg ez az ablak `viewOnly`, és a backend nem rendel hozzá esemény-
-  vagy alesemény-tagságot; a változtatás ezt nem kerülheti meg ál-eseménnyel.
+  A többi tagművelet megtekintési módban marad; a chat saját taglistája
+  változik, esemény vagy alesemény létrehozása nélkül.
+- A közvetlen chatbe kizárólag a meghívó saját kontaktlistájából lehet tagot
+  hozzáadni. A választó csak ezeket mutatja, a már bent lévők nélkül. Üres
+  kontaktlistánál nincs általános tagkeresési visszaesés; a backend és a
+  local repository ugyanígy elutasítja a nem kontakt és más workspace-beli tagot.
 - Ez a kiegészítés is meglévő NOT RUN QA-eset mikrolépéseibe kerül, új
   QA-azonosító és PASS-módosítás nélkül.
 

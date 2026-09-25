@@ -109,3 +109,15 @@ contact/chat-sharing features. They are prepared checks, not execution evidence.
 
 Record dev HTTP and frontend-local outcomes independently; keep this subsection
 NOT RUN until the user executes the corresponding checklist steps.
+
+### Contact-only chat invitations — NOT RUN refinement
+
+In each workspace, the contact-chat invite picker shows only that actor's saved
+contacts who are not already members. Empty contacts must produce an empty
+picker, never the generic Event candidate list. A raw add-members command for a
+non-contact, an outsider's chat, an App support / Group support chat or a contact
+profile belonging to another workspace must fail before any owner copy is made.
+Verify that the invited contacts receive the same conversation and that
+contact-channel unread deltas stay in the contacts filter. Repeat after switching
+account/workspace while the picker or mutation is pending; no stale result may
+update the replacement user's popup. This extends this existing NOT RUN case.

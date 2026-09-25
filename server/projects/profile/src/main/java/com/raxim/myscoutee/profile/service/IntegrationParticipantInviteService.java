@@ -189,7 +189,7 @@ public class IntegrationParticipantInviteService {
     }
 
     private String invitationBaseUrl(String owner) {
-        String affiliateQuery = URI.create(affiliates.summary(owner).url()).getRawQuery();
+        String affiliateQuery = URI.create(affiliates.link(owner)).getRawQuery();
         return URI.create(endpoint.resolve()).resolve("/game") + "?" + affiliateQuery;
     }
 

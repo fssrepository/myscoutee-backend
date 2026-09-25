@@ -24,13 +24,18 @@ public class AffiliateService {
 
     public AffiliateService(MongoTemplate mongo) { this.mongo = mongo; }
 
-    public AffiliateSummaryDto summary(String owner) {
+    public String link(String owner) {
         var link = mongo.findAndModify(Query.query(Criteria.where("_id").is(owner)), new Update()
                 .setOnInsert("code", UUID.randomUUID().toString())
                 .setOnInsert("createdAtIso", Instant.now().toString()),
                 FindAndModifyOptions.options().upsert(true).returnNew(true), AffiliateLink.class);
+        return "/entry?affiliate=" + link.code();
+    }
+
+    public AffiliateSummaryDto summary(String owner) {
+        String url = link(owner);
         long registered = mongo.count(Query.query(Criteria.where("referrerUserId").is(owner)), AffiliateRegistration.class);
-        return new AffiliateSummaryDto("/entry?affiliate=" + link.code(), registered, revenue == null ? null : revenue.summary(owner));
+        return new AffiliateSummaryDto(url, registered, revenue == null ? null : revenue.summary(owner));
     }
 
     public IntegrationParticipantSummaryDto participantSummary(String owner) {

@@ -176,8 +176,16 @@ has no inherited PASS from the earlier Event/Asset/Chat checkpoints.
 12. Use the chat list's contacts filter and compare its contents with the
     ordinary list. Event and support channels keep their existing categories.
     Open the direct-chat avatar pill/member popup and exercise its supported
-    member invitation with the existing picker. Verify real chat membership,
-    both recipients' access and reload persistence, without creating an event.
+    member invitation with the existing picker. Its candidates must be **only
+    the inviting user's saved contacts**, excluding people already in this chat.
+    An empty contact list stays empty; it must never fall back to general member
+    discovery. A person saved only by another participant is not eligible for
+    this inviter. Try a non-contact and a foreign-workspace contact by direct
+    command as well: both are rejected without a new membership or owner copy.
+    Invite two eligible contacts and check immediate member/header/store updates,
+    the recipients' own chat-list entries, two-way messages and the contacts
+    unread badge (including read/reset). Reopen and verify durable membership,
+    without creating an event.
     Record absent or incorrect behavior as a defect, never an inferred PASS.
 
 For each failed microcheck, record its number, mode, actor/workspace IDs and

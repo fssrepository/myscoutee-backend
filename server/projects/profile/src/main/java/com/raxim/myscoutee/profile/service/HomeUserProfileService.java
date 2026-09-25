@@ -2725,6 +2725,7 @@ public class HomeUserProfileService {
                 String.valueOf(normalizeCount(counters.chat() == null ? null : counters.chat().service())),
                 String.valueOf(normalizeCount(counters.chat() == null ? null : counters.chat().appSupport())),
                 String.valueOf(normalizeCount(counters.chat() == null ? null : counters.chat().groupSupport())),
+                String.valueOf(normalizeCount(counters.chat() == null ? null : counters.chat().contacts())),
                 String.valueOf(normalizeCount(counters.event() == null ? null : counters.event().all())),
                 String.valueOf(normalizeCount(counters.event() == null ? null : counters.event().active())),
                 String.valueOf(normalizeCount(counters.event() == null ? null : counters.event().pending())),
@@ -2970,7 +2971,8 @@ public class HomeUserProfileService {
                 chat == null ? 0 : normalizeCount(chat.service()),
                 chat == null ? 0 : normalizeCount(chat.appSupport()),
                 toUserSupportCaseCountersDto(chat == null ? null : chat.supportCases()),
-                chat == null ? 0 : normalizeCount(chat.groupSupport()));
+                chat == null ? 0 : normalizeCount(chat.groupSupport()),
+                chat == null ? 0 : normalizeCount(chat.contacts()));
     }
 
     private UserSupportCaseCountersDto toUserSupportCaseCountersDto(
@@ -3024,7 +3026,8 @@ public class HomeUserProfileService {
                 chat == null ? 0 : normalizeCount(chat.service()),
                 chat == null ? 0 : normalizeCount(chat.appSupport()),
                 toUserSupportCaseCountersRecord(chat == null ? null : chat.supportCases()),
-                chat == null ? 0 : normalizeCount(chat.groupSupport()));
+                chat == null ? 0 : normalizeCount(chat.groupSupport()),
+                chat == null ? 0 : normalizeCount(chat.contacts()));
     }
 
     private Users.UserSupportCaseCountersRecord toUserSupportCaseCountersRecord(

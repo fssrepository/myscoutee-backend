@@ -170,7 +170,7 @@ class IntegrationParticipantInviteServiceTest {
         when(profiles.resolveSelectedUserId("owner")).thenReturn("owner");
         when(eventActions.loadEventDetailById("owner", "event")).thenReturn(mock(com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventDetailDto.class));
         when(endpoint.resolve()).thenReturn("https://app.example/api/integrations/v1");
-        when(affiliates.summary("owner")).thenReturn(new AffiliateSummaryDto("/entry?affiliate=referral-code", 0, null));
+        when(affiliates.link("owner")).thenReturn("/entry?affiliate=referral-code");
         when(mongo.findAndModify(any(), any(), any(), eq(IntegrationParticipantInvite.class))).thenReturn(
                 new IntegrationParticipantInvite("link", "owner", "event", null, token, "hash", null, "now", null, "event", true));
         assertThat(service.externalLink("owner", "event", "event").url())
@@ -179,7 +179,7 @@ class IntegrationParticipantInviteServiceTest {
     }
 
     private ActivityEvent event() {
-        var event = new ActivityEvent(); event.setSourceId("event"); event.setOwnerUserId("owner"); event.setCreatorUserId("owner"); event.setIsAdmin(true);
+        var event = new ActivityEvent(); event.setSourceId("event"); event.setOwnerUserId("owner"); event.setCreatorUserId("owner");
         when(events.findByOwnerUserIdAndSourceId("owner", "event")).thenReturn(Optional.of(event));
         when(access.canInviteEventMembers("event", "owner")).thenReturn(true);
         return event;
