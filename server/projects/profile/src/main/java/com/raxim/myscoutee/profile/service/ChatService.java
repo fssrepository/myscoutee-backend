@@ -767,6 +767,18 @@ public class ChatService {
         return toChatDto(responseChat, chatMemberUsers(List.of(responseChat)));
     }
 
+    public List<ChatMessageDto> querySharedMessages(String chatId, String requestedUserId, String kind) {
+        String userId = requireResolvedUserId(requestedUserId);
+        ChatDocumentsSnapshot snapshot = requireChat(chatId, userId);
+        if (!"event".equals(kind) && !"asset".equals(kind)) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Unsupported share kind.");
+        }
+        Map<String, Users> userCache = new LinkedHashMap<>();
+        return chatMessagesRepository.findActiveSharesBySender(snapshot.chatId(), userId, kind).stream()
+                .map(message -> chatMessageMapper.toDto(message, userId, userCache))
+                .toList();
+    }
+
     public ChatMessagesPageResponseDto queryMessagesPage(
             String chatId,
             String requestedUserId,

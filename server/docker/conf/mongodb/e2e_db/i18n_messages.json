@@ -45742,5 +45742,293 @@
     "key": "landing.partners.api.link",
     "lang": "hu",
     "value": "API-kliens és dokumentáció · GitHub"
+  },
+  {
+    "_id": "i18n-message-en-chat-share-title",
+    "key": "chat.share.title",
+    "lang": "en",
+    "value": "Share in chat"
+  },
+  {
+    "_id": "i18n-message-en-chat-share-select",
+    "key": "chat.share.select",
+    "lang": "en",
+    "value": "Add to shared items"
+  },
+  {
+    "_id": "i18n-message-en-chat-share-remove",
+    "key": "chat.share.remove",
+    "lang": "en",
+    "value": "Remove from shared items"
+  },
+  {
+    "_id": "i18n-message-en-chat-share-selected",
+    "key": "chat.share.selected",
+    "lang": "en",
+    "value": "Selected items"
+  },
+  {
+    "_id": "i18n-message-en-chat-share-confirm",
+    "key": "chat.share.confirm",
+    "lang": "en",
+    "value": "Apply chat shares"
+  },
+  {
+    "_id": "i18n-message-en-chat-share-retry",
+    "key": "chat.share.retry",
+    "lang": "en",
+    "value": "Retry sharing"
+  },
+  {
+    "_id": "i18n-message-en-chat-share-failed",
+    "key": "chat.share.failed",
+    "lang": "en",
+    "value": "Unable to load or apply the shared items. Please try again."
+  },
+  {
+    "_id": "i18n-message-en-payment-cash-record",
+    "key": "payment.cash.record",
+    "lang": "en",
+    "value": "Record cash received"
+  },
+  {
+    "_id": "i18n-message-en-payment-cash-save",
+    "key": "payment.cash.save",
+    "lang": "en",
+    "value": "Save cash receipt"
+  },
+  {
+    "_id": "i18n-message-en-payment-cash-from",
+    "key": "payment.cash.from",
+    "lang": "en",
+    "value": "Received from"
+  },
+  {
+    "_id": "i18n-message-en-payment-cash-select-member",
+    "key": "payment.cash.select.member",
+    "lang": "en",
+    "value": "Select member"
+  },
+  {
+    "_id": "i18n-message-en-payment-cash-amount",
+    "key": "payment.cash.amount",
+    "lang": "en",
+    "value": "Amount"
+  },
+  {
+    "_id": "i18n-message-en-payment-cash-currency",
+    "key": "payment.cash.currency",
+    "lang": "en",
+    "value": "Currency"
+  },
+  {
+    "_id": "i18n-message-en-payment-cash-note",
+    "key": "payment.cash.note",
+    "lang": "en",
+    "value": "Note"
+  },
+  {
+    "_id": "i18n-message-en-payment-cash-failed",
+    "key": "payment.cash.failed",
+    "lang": "en",
+    "value": "Could not save the cash receipt. Please try again."
+  },
+  {
+    "_id": "i18n-message-en-payment-cash-members-empty",
+    "key": "payment.cash.members.empty",
+    "lang": "en",
+    "value": "Add a member to your contacts to record a cash receipt."
+  },
+  {
+    "_id": "i18n-message-en-payment-cash-members-failed",
+    "key": "payment.cash.members.failed",
+    "lang": "en",
+    "value": "Could not load members. Close and reopen to try again."
+  },
+  {
+    "_id": "i18n-message-en-notification-kind-payment-cash-received-title",
+    "key": "notification.kind.payment-cash-received.title",
+    "lang": "en",
+    "value": "Cash receipt recorded"
+  },
+  {
+    "_id": "i18n-message-en-notification-kind-payment-cash-received-message",
+    "key": "notification.kind.payment-cash-received.message",
+    "lang": "en",
+    "value": "A member recorded receiving cash from you. You can find the amount and note in your payment history."
+  },
+  {
+    "_id": "i18n-message-hu-chat-share-title",
+    "key": "chat.share.title",
+    "lang": "hu",
+    "value": "Megosztás a chatben"
+  },
+  {
+    "_id": "i18n-message-hu-chat-share-select",
+    "key": "chat.share.select",
+    "lang": "hu",
+    "value": "Hozzáadás a megosztásokhoz"
+  },
+  {
+    "_id": "i18n-message-hu-chat-share-remove",
+    "key": "chat.share.remove",
+    "lang": "hu",
+    "value": "Megosztás eltávolítása"
+  },
+  {
+    "_id": "i18n-message-hu-chat-share-selected",
+    "key": "chat.share.selected",
+    "lang": "hu",
+    "value": "Kijelölt tételek"
+  },
+  {
+    "_id": "i18n-message-hu-chat-share-confirm",
+    "key": "chat.share.confirm",
+    "lang": "hu",
+    "value": "Megosztások alkalmazása"
+  },
+  {
+    "_id": "i18n-message-hu-chat-share-retry",
+    "key": "chat.share.retry",
+    "lang": "hu",
+    "value": "Megosztás újrapróbálása"
+  },
+  {
+    "_id": "i18n-message-hu-chat-share-failed",
+    "key": "chat.share.failed",
+    "lang": "hu",
+    "value": "A megosztások betöltése vagy mentése nem sikerült. Próbáld újra."
+  },
+  {
+    "_id": "i18n-message-hu-payment-cash-record",
+    "key": "payment.cash.record",
+    "lang": "hu",
+    "value": "Készpénz átvételének rögzítése"
+  },
+  {
+    "_id": "i18n-message-hu-payment-cash-save",
+    "key": "payment.cash.save",
+    "lang": "hu",
+    "value": "Készpénzátvétel mentése"
+  },
+  {
+    "_id": "i18n-message-hu-payment-cash-from",
+    "key": "payment.cash.from",
+    "lang": "hu",
+    "value": "Kitől érkezett"
+  },
+  {
+    "_id": "i18n-message-hu-payment-cash-select-member",
+    "key": "payment.cash.select.member",
+    "lang": "hu",
+    "value": "Tag kiválasztása"
+  },
+  {
+    "_id": "i18n-message-hu-payment-cash-amount",
+    "key": "payment.cash.amount",
+    "lang": "hu",
+    "value": "Összeg"
+  },
+  {
+    "_id": "i18n-message-hu-payment-cash-currency",
+    "key": "payment.cash.currency",
+    "lang": "hu",
+    "value": "Pénznem"
+  },
+  {
+    "_id": "i18n-message-hu-payment-cash-note",
+    "key": "payment.cash.note",
+    "lang": "hu",
+    "value": "Megjegyzés"
+  },
+  {
+    "_id": "i18n-message-hu-payment-cash-failed",
+    "key": "payment.cash.failed",
+    "lang": "hu",
+    "value": "A készpénzátvétel mentése nem sikerült. Próbáld újra."
+  },
+  {
+    "_id": "i18n-message-hu-payment-cash-members-empty",
+    "key": "payment.cash.members.empty",
+    "lang": "hu",
+    "value": "Készpénzátvétel rögzítéséhez vegyél fel egy tagot a kapcsolataid közé."
+  },
+  {
+    "_id": "i18n-message-hu-payment-cash-members-failed",
+    "key": "payment.cash.members.failed",
+    "lang": "hu",
+    "value": "A tagokat nem sikerült betölteni. Zárd be és nyisd meg újra az ablakot."
+  },
+  {
+    "_id": "i18n-message-hu-notification-kind-payment-cash-received-title",
+    "key": "notification.kind.payment-cash-received.title",
+    "lang": "hu",
+    "value": "Készpénzátvétel rögzítve"
+  },
+  {
+    "_id": "i18n-message-hu-notification-kind-payment-cash-received-message",
+    "key": "notification.kind.payment-cash-received.message",
+    "lang": "hu",
+    "value": "Egy tag készpénz átvételét rögzítette tőled. Az összeget és a megjegyzést a fizetési előzményekben találod."
+  },
+  {
+    "_id": "i18n-message-en-invite-external-title",
+    "key": "invite.external.title",
+    "lang": "en",
+    "value": "Share link"
+  },
+  {
+    "_id": "i18n-message-en-invite-external-description",
+    "key": "invite.external.description",
+    "lang": "en",
+    "value": "Copy this link to invite someone to MyScoutee and open this item."
+  },
+  {
+    "_id": "i18n-message-en-invite-external-url",
+    "key": "invite.external.url",
+    "lang": "en",
+    "value": "External invitation link"
+  },
+  {
+    "_id": "i18n-message-en-invite-external-failed",
+    "key": "invite.external.failed",
+    "lang": "en",
+    "value": "The link is unavailable. Try again."
+  },
+  {
+    "_id": "i18n-message-en-invite-external-copy-failed",
+    "key": "invite.external.copy.failed",
+    "lang": "en",
+    "value": "Copy failed. You can select and copy the link above."
+  },
+  {
+    "_id": "i18n-message-hu-invite-external-title",
+    "key": "invite.external.title",
+    "lang": "hu",
+    "value": "Megosztási link"
+  },
+  {
+    "_id": "i18n-message-hu-invite-external-description",
+    "key": "invite.external.description",
+    "lang": "hu",
+    "value": "Másold ki a linket: a meghívott ezen keresztül csatlakozhat a MyScoutee-hoz és megnyithatja ezt a tartalmat."
+  },
+  {
+    "_id": "i18n-message-hu-invite-external-url",
+    "key": "invite.external.url",
+    "lang": "hu",
+    "value": "Külső meghívólink"
+  },
+  {
+    "_id": "i18n-message-hu-invite-external-failed",
+    "key": "invite.external.failed",
+    "lang": "hu",
+    "value": "A link nem érhető el. Próbáld újra."
+  },
+  {
+    "_id": "i18n-message-hu-invite-external-copy-failed",
+    "key": "invite.external.copy.failed",
+    "lang": "hu",
+    "value": "A másolás nem sikerült. Jelöld ki és másold ki a fenti linket."
   }
 ]

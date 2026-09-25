@@ -28,6 +28,10 @@ import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
 
+import com.raxim.myscoutee.profile.data.dto.payment.PaymentDtos.CashReceiptRequestDto;
+import com.raxim.myscoutee.profile.data.dto.payment.PaymentDtos.PaymentHistoryMutationDto;
+import com.raxim.myscoutee.profile.service.notifications.NotificationOutboxService;
+import com.raxim.myscoutee.profile.service.notifications.NotificationOutboxService.NotificationIntent;
 import com.raxim.myscoutee.profile.data.document.Payment;
 import com.raxim.myscoutee.profile.data.document.SavedPaymentMethod;
 import com.raxim.myscoutee.profile.data.document.Users;
@@ -1410,6 +1414,60 @@ public class PaymentService {
 
     @Autowired
     private com.raxim.myscoutee.profile.service.exchange.PaymentEuroService euroService;
+
+    @Autowired
+    private NotificationOutboxService cashNotifications;
+
+    public PaymentHistoryMutationDto recordCashReceipt(
+            String recipientId, CashReceiptRequestDto request) {
+        if (request == null || request.requestId() == null
+                || !request.requestId().matches("[a-fA-F0-9-]{36}")
+                || request.amount() == null || !Double.isFinite(request.amount()) || request.amount() <= 0
+                || request.amount() > 1_000_000_000D || Math.abs(roundMoney(request.amount()) - request.amount()) > 0.000001D
+                || request.currency() == null || !request.currency().matches("[A-Z]{3}")
+                || request.note() != null && request.note().length() > 1000) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid cash receipt.");
+        }
+        try { java.util.Currency.getInstance(request.currency()); }
+        catch (IllegalArgumentException error) { throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid currency."); }
+        String payerId = normalizeId(request.payerUserId());
+        if (!hasText(payerId) || payerId.equals(recipientId))
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Select another member.");
+        var participants = mongoTemplate.find(Query.query(Criteria.where("userId").in(payerId, recipientId)
+                .and("deletedAtIso").in(null, "")), Users.class);
+        Users payer = participants.stream().filter(user -> payerId.equals(user.getUserId())).findFirst().orElse(null);
+        Users recipient = participants.stream().filter(user -> recipientId.equals(user.getUserId())).findFirst().orElse(null);
+        if (!CommunityGroupProfilesService.sameWorkspace(payer, recipient))
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Member unavailable.");
+        String id = "cash:" + recipientId + ":" + request.requestId();
+        String note = request.note() == null ? "" : request.note().trim();
+        Payment payment = paymentsRepository.findById(id).orElse(null);
+        if (payment == null) {
+            payment = new Payment();
+            payment.setId(id); payment.setCheckoutSessionId(id); payment.setSourceId(id);
+            payment.setUserId(payerId); payment.setRecipientUserId(recipientId);
+            payment.setReceiptPayerName(payer.getName()); payment.setReceiptRecipientName(recipient.getName());
+            payment.setReceiptNote(note); payment.setProvider("cash"); payment.setStatus("approved");
+            payment.setAmount(request.amount()); payment.setCurrency(request.currency());
+            payment.setAuditKind(AUDIT_KIND_PAYMENT); payment.setFulfillmentKind("cash-receipt");
+            payment.setBookingStatus("received"); payment.setCreatedDate(nowIso());
+            try { payment = saveAndProjectSpending(payment); }
+            catch (org.springframework.dao.DuplicateKeyException concurrent) {
+                payment = paymentsRepository.findById(id).orElseThrow(() -> concurrent);
+            }
+        }
+        if (!payerId.equals(payment.getUserId()) || !recipientId.equals(payment.getRecipientUserId())
+                || !request.currency().equals(payment.getCurrency()) || !request.amount().equals(payment.getAmount())
+                || !note.equals(payment.getReceiptNote()))
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "Receipt request already used.");
+        cashNotifications.enqueue(new NotificationIntent(
+                "payment-cash-received", "payment", id, "payment-participant", List.of(payerId),
+                "Cash receipt recorded", recipient.getName() + " recorded a cash receipt.", "/game",
+                "/assets/logo/heart.webp", "/assets/logo/heart.webp", "payment-cash-received:" + id,
+                Map.of("paymentId", id, "notification_title_key", "notification.kind.payment-cash-received.title",
+                        "notification_message_key", "notification.kind.payment-cash-received.message"), recipientId));
+        return savedPaymentMethodsService.mutationDto(payment, recipientId);
+    }
 
     private Payment saveAndProjectSpending(Payment payment) {
         if (euroService != null) {

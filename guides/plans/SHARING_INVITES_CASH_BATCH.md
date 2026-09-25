@@ -1,0 +1,127 @@
+# Meghívás, megosztás és cash — közös fejlesztési terv
+
+Dátum: 2026-09-25.
+Állapot: terv; a megvalósítás és az ellenőrzés még nincs kész.
+Forrás: az „ezek jutottak meg eszembe osszegezd, hogy mit ertettel meg
+beloluk” kezdetű felhasználói üzenet, az abban idézett levelek és minden
+utána következő pontosítás együttesen.
+
+Ez egy fejlesztési batch. A scope nem csak a chat basket vagy a kijelölőgomb
+áthelyezése: az alábbi meghívási, affiliate-, cash- és chatfunkciók együtt
+tartoznak bele.
+
+## 1. Külső meghívólinkek és affiliate
+
+- Az affiliate jellegű külső meghívólink külön popupban jelenik meg,
+  eseményhez és csoporthoz kapcsolódva is.
+- A kártyák egyetlen megosztási menüpontja a külső link popupját nyitja.
+  Külön régi tokenmásolós menüpont vagy ablak nem marad.
+- A meglévő Share asset / Copy token mögötti mechanika a chatben automatikus:
+  a kártyakijelölés és a pipa használja, kézi másolás nélkül.
+- A link megőrzi a meghívó személyét az affiliate-hozzárendeléshez.
+- A regisztráció nem pusztán ezt a hozzárendelést rögzíti: a meghívott
+  automatikusan csatlakozik a linkhez tartozó eseményhez vagy csoporthoz is.
+- Csoportmeghívásos regisztráció után a meghívott csoport legyen az aktív
+  csoport, a meglévő szerveroldali csoportválasztási folyamaton keresztül.
+- Az API-felhasználón keresztül behozott/meghívott felhasználók is ugyanebben
+  az affiliate-hozzárendelésben vesznek részt.
+- A meglévő meghívási és affiliate-folyamatot kell kiegészíteni; nem készül
+  mellette külön, eltérően működő link- vagy regisztrációs rendszer.
+
+## 2. Cash a fizetési előzményekben
+
+- Beérkezett készpénz kézzel rögzíthető a payment historyban.
+- Tagválasztóval megadható, kitől érkezett, és szöveges megjegyzés írható hozzá.
+- A rögzítéshez értesítés kapcsolódik az érintett fél számára.
+- A cash nem része az affiliate bevételnek, és nem képez jutalékalapot.
+  Ez az elszámolás és az összesítések szabálya is, nem csak egy UI-szűrés.
+
+## 3. Megosztás a nyitott chatbe
+
+- A chat Share event / Share asset művelete a megfelelő választóablakot nyitja.
+- A választóban a meglévő basket/kijelölési működést kell használni, az
+  eseményeknél bevált mintával.
+- A kártyákon lehet kijelölni és a kijelölést visszavonni.
+- Az X mellett van a jóváhagyó pipa; mellette a kijelöltek számát mutató gomb.
+  A darabszámos gomb megnyitja a kiválasztott tételek listáját menüben.
+- A jóváhagyó pipa a kijelölés változásait store signalon keresztül átadja
+  a mögötte nyitott chatnek. Az új tételeket a meglévő token-/attachment-
+  mechanikával automatikusan elküldi; nincs kézi másolás, beillesztés
+  vagy további küldési lépés. A választó UI új, a megosztási mechanika marad.
+- Újranyitáskor a már elküldött, visszavonható megosztások kijelölése is látszik.
+- Korábbi megosztás kijelölésének megszüntetése és jóváhagyása az eredeti
+  chatüzenetet törölt üzenetté alakítja a meglévő törlési működés szerint.
+- A visszavonás régi, egyik résztvevőnél éppen be sem töltött üzenetnél is
+  működik. Nem alapulhat csak a chat első oldalán vagy a böngészőben betöltött
+  üzeneteken.
+- Az üzenetváltozások a meglévő chat/store szinkronizáción keresztül jelennek
+  meg; teljes listaújratöltés helyett a meglévő helyben frissítést kell használni.
+
+## 4. Kártyák és közös megjelenés
+
+- Végleges elhelyezés: a kijelölőgomb a kártya hárompontos menügombja alatt van.
+  Ez felülírja a kép jobb vagy bal alsó sarkára tett korábbi javaslatokat.
+- Az esemény jobb felső taglétszám-badge-e és a státuszbadge-ek a helyükön
+  maradnak; a kijelölő nem fedheti őket.
+- A kör alakú „+”/kijelölőgomb különböző kártya- és képarányoknál sem nyúlhat
+  el. A közös méretezési hibát az azt birtokló komponensben kell javítani.
+- A basket darabszámos menüje, pipája és kijelölési viselkedése a meglévő
+  megoldást használja; nem készül egyedi utánzat.
+- Minden új felirat, hiba és értesítés a meglévő magyar/angol i18n útvonalat
+  használja.
+- A kártyák megosztási menüpontjának egységes `share` ikonja és a többi
+  művelettől elkülönülő türkiz alapszíne van.
+
+## 5. Következő lépés: közvetlen chat a kontaktokkal
+
+Az előző részek befejezése után:
+
+- A kontaktként felvett MyScoutee-tag elérhetőségei között az első elem a
+  MyScoutee-emblémás belső chat, a telefon és a többi elérhetőség mintájára.
+- Ez az elem közvetlen beszélgetést nyit a kontakt taggal; a tag is tud írni.
+- A chatlistában külön kapcsolati szűrővel elérhetők ezek a beszélgetések.
+- Az esemény nélküli chat avatarpilljéből nyíló tagablakban is elérhető
+  meghívás a meglévő tagválasztóval, a chat saját tagságát kezelve.
+  Jelenleg ez az ablak `viewOnly`, és a backend nem rendel hozzá esemény-
+  vagy alesemény-tagságot; a változtatás ezt nem kerülheti meg ál-eseménnyel.
+- Ez a kiegészítés is meglévő NOT RUN QA-eset mikrolépéseibe kerül, új
+  QA-azonosító és PASS-módosítás nélkül.
+
+## Megvalósítási sorrend
+
+1. Meglévő meghívó-, affiliate-, cash-, chat- és basket-utak felmérése;
+   hiányzó működés és már meglévő működés elkülönítése.
+2. Szerveroldali és frontend-local szerződés: meghívás és affiliate,
+   cash-elszámolás, tartósan azonosítható chatmegosztások és visszavonás.
+3. A közös basket bekötése a chat választóiba, kártyakijelölés és elhelyezés.
+4. Cash-rögzítő UI, értesítések és i18n bekötése.
+5. Célzott regressziók, majd a meglévő NOT RUN QA-esetek leírásának és
+   táblázatsorainak bővítése a batch mikrolépéseivel. Új QA-azonosító/eset
+   nem készül; a PASS eseteket nem módosítjuk. A hozzáadott kézi lépések
+   tényleges végrehajtásukig NOT RUN állapotúak maradnak.
+
+## Ellenőrzési pontok
+
+| Terület | Ellenőrzés |
+| --- | --- |
+| Meghívólink | Esemény- és csoportlink, regisztráció, automatikus tagság, helyes meghívó; ismételt megnyitás nem duplikálja a hozzárendelést. |
+| Aktív csoport | Csoportmeghívás után a szerver mentett csoportja és a betöltött profil összhangban van. |
+| API affiliate | API-val behozott felhasználó megfelelő meghívóhoz tartozik, a normál affiliate-folyamat szerint. |
+| Cash | Tag, összeg és megjegyzés mentése/visszaolvasása; értesítés; cash kizárása az affiliate bevételből és jutalékból. |
+| Basket | Kijelölés, darabszám, lenyíló tétellista, jóváhagyás, bezárás jóváhagyás nélkül, újranyitás. |
+| Chat | Több tétel elküldése, ismételt jóváhagyás, visszavonás; eredeti üzenet törölt állapota mindkét fél számára. |
+| Régi megosztás | Az érintett üzenet nincs a másik fél első/betöltött oldalán; későbbi betöltéskor is törölt. |
+| Jogosultság és csoport | Meglévő hozzáférési és meghívási szabályok megmaradnak; más csoport tartalma nem szivárog át. |
+| UI-paritás | Mobil/desktop, eltérő képarányok, kör alakú gomb, ütközésmentes badge-ek; HU/EN szövegek. |
+| Adapterek | Azonos viselkedés HTTP/server és frontend-local módban. |
+
+A kézi QA végrehajtását ez a terv nem jelöli teljesítettnek, és nem indít
+böngészőben automatikus tesztfolyamatot.
+
+## Kiegészítő regresszió — feltárt meglévő működés
+
+A felhasználó 2026-09-25-i pontosítása alapján a meglévő app support és csoport
+support esemény nélküli chatje is újratesztelendő, a fejlesztési batchen felül.
+A GROUP-ISOLATION-001 NOT RUN leírás tartalmazza a résztvevő-, tagablak-,
+jogosultság-, üzenet-, számláló- és csoportváltási mikrolépéseket. Ez nem
+módosít PASS esetet, és nem jelent elvégzett kézi tesztet.

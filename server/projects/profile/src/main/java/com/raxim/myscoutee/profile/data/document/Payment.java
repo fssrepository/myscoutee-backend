@@ -46,6 +46,15 @@ public class Payment {
     public void setAffiliateAttributionResolved(boolean value) { affiliateAttributionResolved = value; }
     public boolean isAffiliateRevenuePending() { return affiliateRevenuePending; }
     public void setAffiliateRevenuePending(boolean value) { affiliateRevenuePending = value; }
+    private String receiptNote;
+    private String receiptPayerName;
+    private String receiptRecipientName;
+    public String getReceiptNote() { return receiptNote; }
+    public void setReceiptNote(String value) { receiptNote = value; }
+    public String getReceiptPayerName() { return receiptPayerName; }
+    public void setReceiptPayerName(String value) { receiptPayerName = value; }
+    public String getReceiptRecipientName() { return receiptRecipientName; }
+    public void setReceiptRecipientName(String value) { receiptRecipientName = value; }
     private String userId;
     private String recipientUserId;
     private String sourceId;

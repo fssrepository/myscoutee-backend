@@ -26,6 +26,8 @@ class IntegrationParticipantInviteServiceTest {
     @Mock ActivitiesMembersService members;
     @Mock IntegrationPublicEndpointResolver endpoint;
     @Mock HomeUserProfileService profiles;
+    @Mock AffiliateService affiliates;
+    @Mock ActivitiesEventsService eventActions;
     @Mock CommunityGroupsService groups;
     @Mock com.raxim.myscoutee.profile.repository.UsersRepository users;
     IntegrationParticipantInviteService service;
@@ -34,12 +36,16 @@ class IntegrationParticipantInviteServiceTest {
     @BeforeEach void setup() {
         service = new IntegrationParticipantInviteService(mongo, events, access, members, endpoint, profiles);
         org.springframework.test.util.ReflectionTestUtils.setField(service, "groups", groups);
+        org.springframework.test.util.ReflectionTestUtils.setField(service, "affiliates", affiliates);
+        org.springframework.test.util.ReflectionTestUtils.setField(service, "eventActions", eventActions);
         org.springframework.test.util.ReflectionTestUtils.setField(service, "users", users);
     }
 
     @Test void groupClaimUsesTheSameIdentityBindingAndAdmitsTheBoundRecipient() {
         when(profiles.resolveSelectedUserId("actual-user")).thenReturn("actual-user");
         var owner = new Users(); owner.setId("owner"); owner.setUserId("owner");
+        var recipient = new Users(); recipient.setUserId("actual-user");
+        when(groups.actor("actual-user")).thenReturn(recipient);
         when(users.findByUserId("owner")).thenReturn(Optional.of(owner));
         var open = new IntegrationParticipantInvite("invite", "owner", "group", "guest", token,
                 "hash", null, "now", null, "community");
@@ -145,8 +151,35 @@ class IntegrationParticipantInviteServiceTest {
         verifyNoInteractions(mongo, members);
     }
 
+    @Test void reusableGroupLinkAdmitsDifferentAccountsWithoutApiParticipantBindings() {
+        var owner = new Users(); owner.setUserId("owner");
+        when(users.findByUserId("owner")).thenReturn(Optional.of(owner));
+        var shared = new IntegrationParticipantInvite("link", "owner", "group", null, token, "hash", null, "now", null, "community", true);
+        when(mongo.findOne(any(Query.class), eq(IntegrationParticipantInvite.class))).thenReturn(shared);
+        for (String actor : List.of("one", "two")) {
+            var recipient = new Users(); recipient.setUserId(actor);
+            when(profiles.resolveSelectedUserId(actor)).thenReturn(actor);
+            when(groups.actor(actor)).thenReturn(recipient);
+            assertThat(service.claim(actor, token).groupId()).isEqualTo("group");
+            verify(groups).claimIntegrationInvite(argThat(invite -> invite.reusable() && actor.equals(invite.claimedUserId())), eq(actor));
+        }
+        verify(mongo, never()).findAndModify(any(), any(), any(), any(Class.class));
+    }
+
+    @Test void externalLinkCarriesTheSameAffiliateCodeAndStoredInviteToken() {
+        when(profiles.resolveSelectedUserId("owner")).thenReturn("owner");
+        when(eventActions.loadEventDetailById("owner", "event")).thenReturn(mock(com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventDetailDto.class));
+        when(endpoint.resolve()).thenReturn("https://app.example/api/integrations/v1");
+        when(affiliates.summary("owner")).thenReturn(new AffiliateSummaryDto("/entry?affiliate=referral-code", 0, null));
+        when(mongo.findAndModify(any(), any(), any(), eq(IntegrationParticipantInvite.class))).thenReturn(
+                new IntegrationParticipantInvite("link", "owner", "event", null, token, "hash", null, "now", null, "event", true));
+        assertThat(service.externalLink("owner", "event", "event").url())
+                .isEqualTo("https://app.example/game?affiliate=referral-code&partnerInvite=" + token);
+        verifyNoInteractions(members);
+    }
+
     private ActivityEvent event() {
-        var event = new ActivityEvent(); event.setSourceId("event"); event.setOwnerUserId("owner"); event.setCreatorUserId("owner");
+        var event = new ActivityEvent(); event.setSourceId("event"); event.setOwnerUserId("owner"); event.setCreatorUserId("owner"); event.setIsAdmin(true);
         when(events.findByOwnerUserIdAndSourceId("owner", "event")).thenReturn(Optional.of(event));
         when(access.canInviteEventMembers("event", "owner")).thenReturn(true);
         return event;

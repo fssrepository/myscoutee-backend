@@ -36,7 +36,7 @@ public class AffiliateService {
     public IntegrationParticipantSummaryDto participantSummary(String owner) {
         // One external participant can be invited to several events. Count the person once.
         var row = mongo.getCollection("integrationParticipantInvites").aggregate(List.of(
-                new Document("$match", new Document("ownerUserId", owner)),
+                new Document("$match", new Document("ownerUserId", owner).append("reusable", new Document("$ne", true))),
                 new Document("$group", new Document("_id", "$participantId").append("registered",
                         new Document("$max", new Document("$cond", List.of(
                                 new Document("$ne", List.of(new Document("$ifNull", List.of("$claimedUserId", "")), "")), 1, 0))))),

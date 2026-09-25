@@ -63,3 +63,29 @@ Unit tests are supporting evidence. PASS needs real client responses, the
 registration/claim UI, persisted membership/profile, active workspace and
 negative authorization outcomes. This integration path is server-owned even
 when the application's other demo routes use local data.
+
+## NOT RUN — Affiliate and external-link additions
+
+- Generate event and group participant URLs through the existing API client.
+  Compare their complete URLs with UI-generated external sharing links; both
+  retain the inviter through sign-in/onboarding. API participant IDs stay
+  individually bound; a reusable UI share link must not acquire the API's
+  single-recipient identity binding or inflate its imported-participant count.
+- Register fresh recipients from both API URL types. Inspect the persisted
+  affiliate referrer/registration and the API participant binding, not only the
+  UI counters. Each new user counts once. Retry registration/claim and open an
+  existing account: never transfer existing attribution to the latest inviter.
+- Check automatic target participation after registration: group acceptance
+  and saved active workspace; event participation with the existing admission,
+  payment and capacity rules. A missing target association is a failure even
+  if the affiliate registration itself is correct.
+- Revoke the inviter's required role, tamper with the target/token and attempt
+  a foreign-workspace target. Verify rejection without new memberships,
+  profile copies or participant bindings. Preserve the existing late/ended
+  event behavior and previously claimed API identity constraints.
+- Compare cash and non-cash payments by the registered recipients: only the
+  latter enter affiliate revenue/commission. Ordinary cash payment history
+  remains available. Capture persisted counters and replay outcomes separately.
+
+These are additional microsteps of this existing NOT RUN case, not new QA IDs
+and not updates to any closed Affiliate/Event/API PASS evidence.

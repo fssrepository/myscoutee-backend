@@ -81,3 +81,31 @@ Record workspace/account/profile IDs, request outcomes, before/after counters
 and replay/reload results. Redact session and integration tokens. The explicit
 account-level exceptions above are part of the expected result; do not invent
 additional visibility exceptions to make a failing sample pass.
+
+## NOT RUN — Eventless chat regression discovered during the sharing batch
+
+These checks also cover the existing support implementation, beyond the new
+contact/chat-sharing features. They are prepared checks, not execution evidence.
+
+- Open an existing **App support** conversation and an A **Group support**
+  conversation through their normal entry points. Confirm that each uses its
+  own chat ID and participant list without a backing event. Check the header
+  avatar pill/member popup against the persisted `memberIds`; do not invent an
+  event membership or an invitation permission for support participants.
+- Exchange one message in each direction with the configured support actors;
+  verify delivery, unread/read state, and the appropriate channel filter. Reopen
+  the chat and compare with persisted history. The app-admin and group-admin
+  workflows keep their existing, distinct authority.
+- As a non-participant, and again from B/the base profile, attempt the private A
+  support chat/message/member IDs. Reject unauthorized reads and writes without
+  creating an owner copy or changing unread counters. Include an old message,
+  outside the first loaded page, in this check.
+- Switch A to B while the support chat or member popup is loading. A late reply
+  cannot replace B's active chat, participants, or badges. Reopen A to verify
+  that its conversation remains intact.
+- Compare the new contact chat separately: it also has no event, but its
+  contact filter and permitted member-picker actions must not turn App support
+  or Group support into contact chats or broaden their access.
+
+Record dev HTTP and frontend-local outcomes independently; keep this subsection
+NOT RUN until the user executes the corresponding checklist steps.

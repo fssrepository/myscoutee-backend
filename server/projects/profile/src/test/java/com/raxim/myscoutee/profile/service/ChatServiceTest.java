@@ -128,6 +128,29 @@ class ChatServiceTest {
     }
 
     @Test
+    void sharedMessagesUseAuthenticatedChatAccessWithoutReadingTheConversation() {
+        when(homeUserProfileService.resolveSelectedUserId("viewer")).thenReturn("viewer");
+        when(chatsRepository.findByChatId("chat-1")).thenReturn(List.of(chat("chat-1", "viewer", 7)));
+        when(chatMessagesRepository.findActiveSharesBySender("chat-1", "viewer", "event"))
+                .thenReturn(List.of(message("old-share", "viewer", "viewer", "2026-05-26T08:00:01Z")));
+        when(usersRepository.findByUserId("viewer")).thenReturn(Optional.of(user("viewer", "Viewer", "VU")));
+        assertThat(service.querySharedMessages("chat-1", "viewer", "event"))
+                .extracting(item -> item.id()).containsExactly("old-share");
+        verify(chatMessagesRepository, never()).findByChatIdOrderBySentAtIsoDesc(anyString(), any(Pageable.class));
+        verify(chatsRepository, never()).save(any(Chat.class));
+        verify(chatMessagesRepository, never()).saveAll(anyList());
+    }
+
+    @Test
+    void sharedMessagesRejectActorsOutsideTheChat() {
+        when(homeUserProfileService.resolveSelectedUserId("outsider")).thenReturn("outsider");
+        when(chatsRepository.findByChatId("chat-1")).thenReturn(List.of(chat("chat-1", "viewer", 0)));
+        assertThatThrownBy(() -> service.querySharedMessages("chat-1", "outsider", "event"))
+                .isInstanceOf(org.springframework.web.server.ResponseStatusException.class);
+        verify(chatMessagesRepository, never()).findActiveSharesBySender(anyString(), anyString(), anyString());
+    }
+
+    @Test
     void queryMessagesPageReusesUserLookupCacheForRepeatedParticipants() {
         Chat viewerChat = chat("chat-1", "viewer", 0);
         Chat senderChat = chat("chat-1", "sender", 0);

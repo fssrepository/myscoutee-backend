@@ -90,6 +90,14 @@ public class ChatsController {
         return chatService.ensureServiceChat(request, userId);
     }
 
+    @GetMapping("/{chatId}/shared-messages")
+    public List<ChatMessageDto> querySharedMessages(
+            @PathVariable("chatId") String chatId,
+            @RequestParam("userId") String userId,
+            @RequestParam("kind") String kind) {
+        return chatService.querySharedMessages(chatId, userId, kind);
+    }
+
     @GetMapping("/{chatId}/messages")
     public ChatMessagesPageResponseDto queryMessagesPage(
             @PathVariable("chatId") String chatId,
