@@ -179,6 +179,58 @@ class ChatServiceTest {
     }
 
     @Test
+    void existingContactChatRejectsAnInviteOutsideTheActorsOwnContacts() {
+        when(homeUserProfileService.resolveSelectedUserId("viewer")).thenReturn("viewer");
+        when(chatsRepository.findByChatId("contact")).thenReturn(List.of(chat("contact", "viewer", 0,
+                "2026-09-25T10:00:00Z", "contact")));
+        assertThatThrownBy(() -> service.addContactChatMembers("contact", "viewer", List.of("stranger")))
+                .isInstanceOf(org.springframework.web.server.ResponseStatusException.class);
+        verify(mongoTemplate, never()).updateMulti(any(Query.class), any(Update.class), eq(Chat.class));
+        verify(mongoTemplate, never()).upsert(any(Query.class), any(Update.class), eq(Chat.class));
+    }
+
+    @Test
+    void contactInviteReturnsAllMembersAndPreservesExistingUnreadState() {
+        when(homeUserProfileService.resolveSelectedUserId("viewer")).thenReturn("viewer");
+        var current = chat("contact", "viewer", 7, "2026-09-25T10:00:00Z", "contact");
+        var other = chat("contact", "sender", 3, current.getDateIso(), "contact");
+        when(chatsRepository.findByChatId("contact")).thenReturn(List.of(current, other));
+        var contacts = new com.raxim.myscoutee.profile.data.document.NavigatorContactsProfile();
+        var contact = new com.raxim.myscoutee.profile.data.document.NavigatorContactsProfile.NavigatorContactRecord();
+        contact.setUserId("target");
+        contacts.setContacts(List.of(contact));
+        when(mongoTemplate.findOne(any(Query.class), eq(com.raxim.myscoutee.profile.data.document.NavigatorContactsProfile.class)))
+                .thenReturn(contacts);
+        when(usersRepository.findByUserIdIn(any())).thenReturn(List.of(
+                user("viewer", "Viewer", "V"), user("sender", "Sender", "S"), user("target", "Target", "T")));
+        when(mongoTemplate.updateMulti(any(Query.class), any(Update.class), eq(Chat.class))).thenAnswer(invocation -> {
+            for (Chat copy : List.of(current, other)) {
+                var members = new java.util.LinkedHashSet<>(copy.getMemberIds());
+                members.add("target");
+                copy.setMemberIds(List.copyOf(members));
+            }
+            return UpdateResult.acknowledged(2, 2L, null);
+        });
+
+        var result = service.addContactChatMembers("contact", "viewer", List.of("target"));
+
+        assertThat(result.memberIds()).containsExactly("viewer", "sender", "target");
+        assertThat(result.unread()).isEqualTo(7);
+        assertThat(other.getUnread()).isEqualTo(3);
+        var insert = ArgumentCaptor.forClass(Update.class);
+        verify(mongoTemplate).upsert(any(Query.class), insert.capture(), eq(Chat.class));
+        assertThat(insert.getValue().getUpdateObject().keySet()).containsExactly("$setOnInsert");
+        assertThat(insert.getValue().getUpdateObject().get("$setOnInsert", Document.class).getInteger("unread")).isZero();
+        verify(chatMessagesRepository, never()).save(any(ChatMessage.class));
+
+        // If membership was saved but the recipient copy was interrupted, retry still initializes it.
+        var retry = service.addContactChatMembers("contact", "viewer", List.of("target"));
+        assertThat(retry.memberIds()).containsExactly("viewer", "sender", "target");
+        assertThat(retry.unread()).isEqualTo(7);
+        verify(mongoTemplate, times(2)).upsert(any(Query.class), any(Update.class), eq(Chat.class));
+    }
+
+    @Test
     void sharedMessagesUseAuthenticatedChatAccessWithoutReadingTheConversation() {
         when(homeUserProfileService.resolveSelectedUserId("viewer")).thenReturn("viewer");
         when(chatsRepository.findByChatId("chat-1")).thenReturn(List.of(chat("chat-1", "viewer", 7)));

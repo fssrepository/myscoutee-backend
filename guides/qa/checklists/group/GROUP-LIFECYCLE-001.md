@@ -170,8 +170,11 @@ has no inherited PASS from the earlier Event/Asset/Chat checkpoints.
     Ordinary payment history/totals continue to include cash. A manual receipt
     has no fabricated booking link or booking-refund action.
 11. Add a MyScoutee member as a contact. Its first contact method uses the
-    MyScoutee emblem and opens the direct chat; phone and other methods remain
-    available afterward. Both parties can write without an event. Reopen from
+    MyScoutee emblem and opens the existing shared chat popup **above the still
+    open contact list**. Closing the chat returns to that same contact list,
+    with its search and loaded window intact. The chat's member and share
+    pickers open above it; confirming a share returns to the same chat.
+    Phone and other methods remain available. Both parties can write without an event. Reopen from
     the contact and verify the same conversation, not a duplicate.
 12. Use the chat list's contacts filter and compare its contents with the
     ordinary list. Event and support channels keep their existing categories.

@@ -22872,6 +22872,168 @@
     "value": "API client and documentation · GitHub"
   },
   {
+    "_id": "i18n-message-en-chat-share-title",
+    "key": "chat.share.title",
+    "lang": "en",
+    "value": "Share in chat"
+  },
+  {
+    "_id": "i18n-message-en-chat-share-select",
+    "key": "chat.share.select",
+    "lang": "en",
+    "value": "Add to shared items"
+  },
+  {
+    "_id": "i18n-message-en-chat-share-remove",
+    "key": "chat.share.remove",
+    "lang": "en",
+    "value": "Remove from shared items"
+  },
+  {
+    "_id": "i18n-message-en-chat-share-selected",
+    "key": "chat.share.selected",
+    "lang": "en",
+    "value": "Selected items"
+  },
+  {
+    "_id": "i18n-message-en-chat-share-confirm",
+    "key": "chat.share.confirm",
+    "lang": "en",
+    "value": "Apply chat shares"
+  },
+  {
+    "_id": "i18n-message-en-chat-share-retry",
+    "key": "chat.share.retry",
+    "lang": "en",
+    "value": "Retry sharing"
+  },
+  {
+    "_id": "i18n-message-en-chat-share-failed",
+    "key": "chat.share.failed",
+    "lang": "en",
+    "value": "Unable to load or apply the shared items. Please try again."
+  },
+  {
+    "_id": "i18n-message-en-payment-cash-record",
+    "key": "payment.cash.record",
+    "lang": "en",
+    "value": "Record cash received"
+  },
+  {
+    "_id": "i18n-message-en-payment-cash-save",
+    "key": "payment.cash.save",
+    "lang": "en",
+    "value": "Save cash receipt"
+  },
+  {
+    "_id": "i18n-message-en-payment-cash-from",
+    "key": "payment.cash.from",
+    "lang": "en",
+    "value": "Received from"
+  },
+  {
+    "_id": "i18n-message-en-payment-cash-select-member",
+    "key": "payment.cash.select.member",
+    "lang": "en",
+    "value": "Select member"
+  },
+  {
+    "_id": "i18n-message-en-payment-cash-amount",
+    "key": "payment.cash.amount",
+    "lang": "en",
+    "value": "Amount"
+  },
+  {
+    "_id": "i18n-message-en-payment-cash-currency",
+    "key": "payment.cash.currency",
+    "lang": "en",
+    "value": "Currency"
+  },
+  {
+    "_id": "i18n-message-en-payment-cash-note",
+    "key": "payment.cash.note",
+    "lang": "en",
+    "value": "Note"
+  },
+  {
+    "_id": "i18n-message-en-payment-cash-failed",
+    "key": "payment.cash.failed",
+    "lang": "en",
+    "value": "Could not save the cash receipt. Please try again."
+  },
+  {
+    "_id": "i18n-message-en-payment-cash-members-empty",
+    "key": "payment.cash.members.empty",
+    "lang": "en",
+    "value": "Add a member to your contacts to record a cash receipt."
+  },
+  {
+    "_id": "i18n-message-en-payment-cash-members-failed",
+    "key": "payment.cash.members.failed",
+    "lang": "en",
+    "value": "Could not load members. Close and reopen to try again."
+  },
+  {
+    "_id": "i18n-message-en-notification-kind-payment-cash-received-title",
+    "key": "notification.kind.payment-cash-received.title",
+    "lang": "en",
+    "value": "Cash receipt recorded"
+  },
+  {
+    "_id": "i18n-message-en-notification-kind-payment-cash-received-message",
+    "key": "notification.kind.payment-cash-received.message",
+    "lang": "en",
+    "value": "A member recorded receiving cash from you. You can find the amount and note in your payment history."
+  },
+  {
+    "_id": "i18n-message-en-invite-external-title",
+    "key": "invite.external.title",
+    "lang": "en",
+    "value": "Share link"
+  },
+  {
+    "_id": "i18n-message-en-invite-external-description",
+    "key": "invite.external.description",
+    "lang": "en",
+    "value": "Copy this link to invite someone to MyScoutee and open this item."
+  },
+  {
+    "_id": "i18n-message-en-invite-external-url",
+    "key": "invite.external.url",
+    "lang": "en",
+    "value": "External invitation link"
+  },
+  {
+    "_id": "i18n-message-en-invite-external-failed",
+    "key": "invite.external.failed",
+    "lang": "en",
+    "value": "The link is unavailable. Try again."
+  },
+  {
+    "_id": "i18n-message-en-invite-external-copy-failed",
+    "key": "invite.external.copy.failed",
+    "lang": "en",
+    "value": "Copy failed. You can select and copy the link above."
+  },
+  {
+    "_id": "i18n-message-en-chat-contacts",
+    "key": "chat.contacts",
+    "lang": "en",
+    "value": "Contacts"
+  },
+  {
+    "_id": "i18n-message-en-chat-contacts-open",
+    "key": "chat.contacts.open",
+    "lang": "en",
+    "value": "Chat in MyScoutee"
+  },
+  {
+    "_id": "i18n-message-en-chat-contacts-error",
+    "key": "chat.contacts.error",
+    "lang": "en",
+    "value": "The contact chat could not be opened or updated. Please try again."
+  },
+  {
     "_id": "i18n-message-hu-navigator-community",
     "key": "navigator.community",
     "lang": "hu",
@@ -45744,120 +45906,6 @@
     "value": "API-kliens és dokumentáció · GitHub"
   },
   {
-    "_id": "i18n-message-en-chat-share-title",
-    "key": "chat.share.title",
-    "lang": "en",
-    "value": "Share in chat"
-  },
-  {
-    "_id": "i18n-message-en-chat-share-select",
-    "key": "chat.share.select",
-    "lang": "en",
-    "value": "Add to shared items"
-  },
-  {
-    "_id": "i18n-message-en-chat-share-remove",
-    "key": "chat.share.remove",
-    "lang": "en",
-    "value": "Remove from shared items"
-  },
-  {
-    "_id": "i18n-message-en-chat-share-selected",
-    "key": "chat.share.selected",
-    "lang": "en",
-    "value": "Selected items"
-  },
-  {
-    "_id": "i18n-message-en-chat-share-confirm",
-    "key": "chat.share.confirm",
-    "lang": "en",
-    "value": "Apply chat shares"
-  },
-  {
-    "_id": "i18n-message-en-chat-share-retry",
-    "key": "chat.share.retry",
-    "lang": "en",
-    "value": "Retry sharing"
-  },
-  {
-    "_id": "i18n-message-en-chat-share-failed",
-    "key": "chat.share.failed",
-    "lang": "en",
-    "value": "Unable to load or apply the shared items. Please try again."
-  },
-  {
-    "_id": "i18n-message-en-payment-cash-record",
-    "key": "payment.cash.record",
-    "lang": "en",
-    "value": "Record cash received"
-  },
-  {
-    "_id": "i18n-message-en-payment-cash-save",
-    "key": "payment.cash.save",
-    "lang": "en",
-    "value": "Save cash receipt"
-  },
-  {
-    "_id": "i18n-message-en-payment-cash-from",
-    "key": "payment.cash.from",
-    "lang": "en",
-    "value": "Received from"
-  },
-  {
-    "_id": "i18n-message-en-payment-cash-select-member",
-    "key": "payment.cash.select.member",
-    "lang": "en",
-    "value": "Select member"
-  },
-  {
-    "_id": "i18n-message-en-payment-cash-amount",
-    "key": "payment.cash.amount",
-    "lang": "en",
-    "value": "Amount"
-  },
-  {
-    "_id": "i18n-message-en-payment-cash-currency",
-    "key": "payment.cash.currency",
-    "lang": "en",
-    "value": "Currency"
-  },
-  {
-    "_id": "i18n-message-en-payment-cash-note",
-    "key": "payment.cash.note",
-    "lang": "en",
-    "value": "Note"
-  },
-  {
-    "_id": "i18n-message-en-payment-cash-failed",
-    "key": "payment.cash.failed",
-    "lang": "en",
-    "value": "Could not save the cash receipt. Please try again."
-  },
-  {
-    "_id": "i18n-message-en-payment-cash-members-empty",
-    "key": "payment.cash.members.empty",
-    "lang": "en",
-    "value": "Add a member to your contacts to record a cash receipt."
-  },
-  {
-    "_id": "i18n-message-en-payment-cash-members-failed",
-    "key": "payment.cash.members.failed",
-    "lang": "en",
-    "value": "Could not load members. Close and reopen to try again."
-  },
-  {
-    "_id": "i18n-message-en-notification-kind-payment-cash-received-title",
-    "key": "notification.kind.payment-cash-received.title",
-    "lang": "en",
-    "value": "Cash receipt recorded"
-  },
-  {
-    "_id": "i18n-message-en-notification-kind-payment-cash-received-message",
-    "key": "notification.kind.payment-cash-received.message",
-    "lang": "en",
-    "value": "A member recorded receiving cash from you. You can find the amount and note in your payment history."
-  },
-  {
     "_id": "i18n-message-hu-chat-share-title",
     "key": "chat.share.title",
     "lang": "hu",
@@ -45972,36 +46020,6 @@
     "value": "Egy tag készpénz átvételét rögzítette tőled. Az összeget és a megjegyzést a fizetési előzményekben találod."
   },
   {
-    "_id": "i18n-message-en-invite-external-title",
-    "key": "invite.external.title",
-    "lang": "en",
-    "value": "Share link"
-  },
-  {
-    "_id": "i18n-message-en-invite-external-description",
-    "key": "invite.external.description",
-    "lang": "en",
-    "value": "Copy this link to invite someone to MyScoutee and open this item."
-  },
-  {
-    "_id": "i18n-message-en-invite-external-url",
-    "key": "invite.external.url",
-    "lang": "en",
-    "value": "External invitation link"
-  },
-  {
-    "_id": "i18n-message-en-invite-external-failed",
-    "key": "invite.external.failed",
-    "lang": "en",
-    "value": "The link is unavailable. Try again."
-  },
-  {
-    "_id": "i18n-message-en-invite-external-copy-failed",
-    "key": "invite.external.copy.failed",
-    "lang": "en",
-    "value": "Copy failed. You can select and copy the link above."
-  },
-  {
     "_id": "i18n-message-hu-invite-external-title",
     "key": "invite.external.title",
     "lang": "hu",
@@ -46030,24 +46048,6 @@
     "key": "invite.external.copy.failed",
     "lang": "hu",
     "value": "A másolás nem sikerült. Jelöld ki és másold ki a fenti linket."
-  },
-  {
-    "_id": "i18n-message-en-chat-contacts",
-    "key": "chat.contacts",
-    "lang": "en",
-    "value": "Contacts"
-  },
-  {
-    "_id": "i18n-message-en-chat-contacts-open",
-    "key": "chat.contacts.open",
-    "lang": "en",
-    "value": "Chat in MyScoutee"
-  },
-  {
-    "_id": "i18n-message-en-chat-contacts-error",
-    "key": "chat.contacts.error",
-    "lang": "en",
-    "value": "The contact chat could not be opened or updated. Please try again."
   },
   {
     "_id": "i18n-message-hu-chat-contacts",

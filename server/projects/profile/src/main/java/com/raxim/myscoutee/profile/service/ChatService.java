@@ -468,15 +468,20 @@ public class ChatService {
         if (chat == null || !"contact".equals(chat.getChannelType()))
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Only contact chats accept contact invitations.");
         List<String> targets = (userIds == null ? List.<String>of() : userIds).stream()
-                .map(this::normalizeId).distinct().filter(id -> !safeMemberIds(chat.getMemberIds()).contains(id)).toList();
+                .map(this::normalizeId).distinct().toList();
         if (targets.isEmpty()) return toChatDto(chat, chatMemberUsers(List.of(chat)));
-        requireContactTargets(actorId, targets);
-        mongoTemplate.updateMulti(Query.query(Criteria.where("chatId").is(snapshot.chatId())),
-                new Update().addToSet("memberIds").each(targets.toArray()).inc("revision", 1L), Chat.class);
+        if (targets.size() > 100) throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Too many contacts.");
+        List<String> newTargets = targets.stream().filter(id -> !safeMemberIds(chat.getMemberIds()).contains(id)).toList();
+        if (!newTargets.isEmpty()) {
+            requireContactTargets(actorId, newTargets);
+            mongoTemplate.updateMulti(Query.query(Criteria.where("chatId").is(snapshot.chatId())),
+                    new Update().addToSet("memberIds").each(newTargets.toArray()).inc("revision", 1L), Chat.class);
+        }
         List<Chat> copies = chatsRepository.findByChatId(snapshot.chatId());
         Set<String> participants = new LinkedHashSet<>();
         for (Chat copy : copies) participants.addAll(safeMemberIds(copy.getMemberIds()));
         for (String targetId : targets) {
+            // A retry also finishes owner copies after an interrupted member update.
             mongoTemplate.upsert(Query.query(Criteria.where("_id").is(buildMongoId(targetId, snapshot.chatId()))), new Update()
                     .setOnInsert("chatId", snapshot.chatId()).setOnInsert("ownerUserId", targetId)
                     .setOnInsert("channelType", "contact").setOnInsert("memberIds", List.copyOf(participants))

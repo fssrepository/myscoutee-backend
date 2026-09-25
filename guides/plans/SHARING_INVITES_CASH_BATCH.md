@@ -1,7 +1,7 @@
 # Meghívás, megosztás és cash — közös fejlesztési terv
 
 Dátum: 2026-09-25.
-Állapot: a batch megvalósítása bent van; célzott ellenőrzés folyamatban.
+Állapot: a batch megvalósítása és a célzott automatikus ellenőrzések elkészültek.
 A kézi local/dev QA továbbra is NOT RUN.
 Forrás: az „ezek jutottak meg eszembe osszegezd, hogy mit ertettel meg
 beloluk” kezdetű felhasználói üzenet, az abban idézett levelek és minden
@@ -82,6 +82,9 @@ Az előző részek befejezése után:
 - A kontaktként felvett MyScoutee-tag elérhetőségei között az első elem a
   MyScoutee-emblémás belső chat, a telefon és a többi elérhetőség mintájára.
 - Ez az elem közvetlen beszélgetést nyit a kontakt taggal; a tag is tud írni.
+- Ugyanaz a meglévő chat popup nyílik meg a nyitva maradó kontaktlista fölött,
+  az `openStackedEventChat` útvonalon. Bezáráskor a kontaktlista keresése és
+  betöltött elemei megmaradnak. A chat tag- és megosztásválasztója fölé kerül.
 - A chatlistában külön kapcsolati szűrővel elérhetők ezek a beszélgetések.
 - Az esemény nélküli chat avatarpilljéből nyíló tagablakban is elérhető
   meghívás a meglévő tagválasztóval, a chat saját tagságát kezelve.
@@ -91,6 +94,8 @@ Az előző részek befejezése után:
   hozzáadni. A választó csak ezeket mutatja, a már bent lévők nélkül. Üres
   kontaktlistánál nincs általános tagkeresési visszaesés; a backend és a
   local repository ugyanígy elutasítja a nem kontakt és más workspace-beli tagot.
+- Meghívás után a meglévő tagablak SmartListje a visszakapott tagokból frissül,
+  újranyitás és listaújratöltés nélkül.
 - Ez a kiegészítés is meglévő NOT RUN QA-eset mikrolépéseibe kerül, új
   QA-azonosító és PASS-módosítás nélkül.
 
@@ -132,3 +137,34 @@ support esemény nélküli chatje is újratesztelendő, a fejlesztési batchen f
 A GROUP-ISOLATION-001 NOT RUN leírás tartalmazza a résztvevő-, tagablak-,
 jogosultság-, üzenet-, számláló- és csoportváltási mikrolépéseket. Ez nem
 módosít PASS esetet, és nem jelent elvégzett kézi tesztet.
+
+## Felhasznált meglévő megoldások és ellenőrzés
+
+- Chat: `EventChatPopupComponent`, `ActivitiesPopupStore.openStackedEventChat`;
+  a fizetési előzményekből nyitott chat azonos megnyitási útvonala.
+- Meghívó/tagválasztó: `AssetMemberPickerPopupComponent` és
+  `ActivityInvitePopupStore`; a meglévő callback és jelöltlista bemenet.
+- Basket: meglévő AppMenu ág, darabszám, eltávolítható tételek és pipa;
+  a `ChatShareStore` a chat saját mentett kijelölését és annak változásait kezeli.
+- Taglista: `MemberMenuStore` signal → a meglévő `applyCommittedMembers` és
+  `SmartList.replaceVisibleItems`; a lapozási ablak és szűrő megőrzésével.
+- Külső link: az Affiliate felületen is használt `CopyLinkComponent`;
+  cash űrlap: meglévő FormFlow és ugyanaz a tagválasztó.
+
+2026-09-25-i célzott ellenőrzés:
+
+| Ellenőrzés | Eredmény |
+| --- | --- |
+| ChatService, IntegrationParticipantInvite, CashReceipt, AffiliateRevenue, SavedPaymentMethods | 60/60 sikeres Java teszt, Java 25 |
+| Local chat repository, chat-share store, tagablak helyben frissítése | 24/24 sikeres frontendteszt |
+| Local integration/cash repository | 10/10 sikeres frontendteszt |
+| Angular típus-/sablonfordítás | Sikeres |
+| i18n audit | 2 nyelv, 7678 üzenet, 3 Mongo-seed egyezik |
+| QA CSV/XLSX | 122 változatlan azonosító; meglévő NOT RUN mikrolépések bővítve |
+
+A tesztek szolgáltatás/repository/store szintű ellenőrzések. A valódi HTTP–Mongo
+folyamat, a két felhasználó közötti böngészős működés és a mobil/desktop
+megjelenés nincs ezekből PASS-nak tekintve; a stabil QA-leírás szerint kézzel
+újratesztelendő. A futásnaplók: `frontend/.agent/logs/sharing-final-backend-tests.log`,
+`chat-sharing-final-tests.log`, `cash-invites-final-tests.log` és
+`sharing-final-typecheck.log` ugyanebben a könyvtárban.
