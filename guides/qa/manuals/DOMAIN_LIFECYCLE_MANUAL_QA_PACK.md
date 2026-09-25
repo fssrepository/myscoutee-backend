@@ -1,7 +1,7 @@
 # Domain lifecycle manual QA pack
 
 Status: execution in progress  
-Last updated: 2026-09-02
+Last updated: 2026-09-24
 Master ledger: [`ADMIN_DYNAMIC_SURFACES_QA_MATRIX.xlsx`](../matrices/ADMIN_DYNAMIC_SURFACES_QA_MATRIX.xlsx)
 Executable manual helper:
 [`manual-qa-checkpoints.sh`](../../../server/docker/scripts/manual-qa-checkpoints/manual-qa-checkpoints.sh)
@@ -11269,3 +11269,31 @@ PASS / CLOSED in delegated dev HTTP scope. See the separate
 [execution evidence](../evidence/EVENT-FOLLOWING-002-20260922-progress.md)
 for all eight checks, saved-state oracles, transport failure/retry, and scoped cleanup.
 Historical PASS records remain unchanged.
+
+## Community Group QA — 2026-09-24 additions
+
+Three independent journeys are prepared; all are NOT RUN. Existing closed
+Event/Asset/API rows remain closed and are not evidence for group isolation.
+
+| ID | Domain | Stable checklist | Scope |
+| --- | --- | --- | --- |
+| GROUP-LIFECYCLE-001 | Group | [Lifecycle](../checklists/group/GROUP-LIFECYCLE-001.md) | Editor, rules, membership, workspace selector, reporting and group-admin moderation |
+| GROUP-ISOLATION-001 | Group | [Isolation](../checklists/group/GROUP-ISOLATION-001.md) | Base/A/B boundary; Asset and Event samples plus ratings, chat, Feed, counters and notification exceptions |
+| INTEGRATION-API-GROUP-001 | API test | [Participant links](../checklists/integration/INTEGRATION-API-GROUP-001.md) | Shared Event invite mechanism, registration/admission, active group, replay and authority |
+
+Group is placed directly after Asset in the domain priority table. The
+checklists define the required fixture baseline; no new fixture, managed
+browser session or full-flow execution is claimed by this planning update.
+Before launch, prepare the scenario through the versioned checkpoint harness
+and common managed-browser launcher. Local and HTTP lifecycle/isolation
+evidence remain distinct; integration invitation links are server-owned.
+
+2026-09-25 implementation review: group moderation has independent settings,
+write-side persisted pending counts and group-admin authority. App-admin's
+Group category and configurable creation review remain separate. Red queue
+badges propagate through the signal store into the SmartList card, dropdown
+and Groups aggregate without a reload. Group support uses a separate chat
+channel/filter and unread counter. These are explicit checklist oracles, not
+manual PASS claims. Supporting verification: 31 focused backend moderation,
+chat and counter tests passed; existing dev watchers compiled frontend/backend.
+The earlier 15 filter/invitation tests remain supporting evidence only.

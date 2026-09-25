@@ -1,5 +1,11 @@
 [
   {
+    "_id": "i18n-message-en-navigator-community",
+    "key": "navigator.community",
+    "lang": "en",
+    "value": "Community"
+  },
+  {
     "_id": "i18n-message-en-payment-history-refund-preview-changed-terms",
     "key": "payment.history.refund.preview.changed.terms",
     "lang": "en",
@@ -520,6 +526,12 @@
     "key": "application.feedback",
     "lang": "en",
     "value": "Application feedback"
+  },
+  {
+    "_id": "i18n-message-en-group-support",
+    "key": "group.support",
+    "lang": "en",
+    "value": "Group support"
   },
   {
     "_id": "i18n-message-en-app-support",
@@ -7575,7 +7587,7 @@
     "_id": "i18n-message-en-landing-partners-subtitle",
     "key": "landing.partners.subtitle",
     "lang": "en",
-    "value": "Four ways to participate. Every operator stays independent."
+    "value": "Six ways to participate. Every operator stays independent."
   },
   {
     "_id": "i18n-message-en-landing-partners-aria",
@@ -22554,6 +22566,480 @@
     "value": "Your booking has been cancelled and the remaining paid amount has been refunded."
   },
   {
+    "_id": "i18n-message-en-event-checkout-join-confirm-title",
+    "key": "event.checkout.join.confirm.title",
+    "lang": "en",
+    "value": "Would you like to join this event?"
+  },
+  {
+    "_id": "i18n-message-en-groups-title",
+    "key": "groups.title",
+    "lang": "en",
+    "value": "Groups"
+  },
+  {
+    "_id": "i18n-message-en-groups-create",
+    "key": "groups.create",
+    "lang": "en",
+    "value": "Create group"
+  },
+  {
+    "_id": "i18n-message-en-groups-edit",
+    "key": "groups.edit",
+    "lang": "en",
+    "value": "Group"
+  },
+  {
+    "_id": "i18n-message-en-groups-bucket-hosting",
+    "key": "groups.bucket.hosting",
+    "lang": "en",
+    "value": "Hosting"
+  },
+  {
+    "_id": "i18n-message-en-groups-bucket-participation",
+    "key": "groups.bucket.participation",
+    "lang": "en",
+    "value": "Participation"
+  },
+  {
+    "_id": "i18n-message-en-groups-bucket-explore",
+    "key": "groups.bucket.explore",
+    "lang": "en",
+    "value": "Explore"
+  },
+  {
+    "_id": "i18n-message-en-groups-category-all",
+    "key": "groups.category.all",
+    "lang": "en",
+    "value": "All categories"
+  },
+  {
+    "_id": "i18n-message-en-groups-category-friends",
+    "key": "groups.category.friends",
+    "lang": "en",
+    "value": "Friends"
+  },
+  {
+    "_id": "i18n-message-en-groups-category-work",
+    "key": "groups.category.work",
+    "lang": "en",
+    "value": "Work and teams"
+  },
+  {
+    "_id": "i18n-message-en-groups-category-sport",
+    "key": "groups.category.sport",
+    "lang": "en",
+    "value": "Sport"
+  },
+  {
+    "_id": "i18n-message-en-groups-category-learning",
+    "key": "groups.category.learning",
+    "lang": "en",
+    "value": "Learning"
+  },
+  {
+    "_id": "i18n-message-en-groups-category-hobbies",
+    "key": "groups.category.hobbies",
+    "lang": "en",
+    "value": "Hobbies"
+  },
+  {
+    "_id": "i18n-message-en-groups-category-neighbourhood",
+    "key": "groups.category.neighbourhood",
+    "lang": "en",
+    "value": "Neighbourhood"
+  },
+  {
+    "_id": "i18n-message-en-groups-visibility-public",
+    "key": "groups.visibility.public",
+    "lang": "en",
+    "value": "Public"
+  },
+  {
+    "_id": "i18n-message-en-groups-visibility-private",
+    "key": "groups.visibility.private",
+    "lang": "en",
+    "value": "Private"
+  },
+  {
+    "_id": "i18n-message-en-groups-visibility-invitation",
+    "key": "groups.visibility.invitation",
+    "lang": "en",
+    "value": "Invitation only"
+  },
+  {
+    "_id": "i18n-message-en-groups-join",
+    "key": "groups.join",
+    "lang": "en",
+    "value": "Request to join"
+  },
+  {
+    "_id": "i18n-message-en-groups-settings",
+    "key": "groups.settings",
+    "lang": "en",
+    "value": "Group settings"
+  },
+  {
+    "_id": "i18n-message-en-groups-policy",
+    "key": "groups.policy",
+    "lang": "en",
+    "value": "Group policy"
+  },
+  {
+    "_id": "i18n-message-en-groups-hide-members",
+    "key": "groups.hide.members",
+    "lang": "en",
+    "value": "Only administrators are visible"
+  },
+  {
+    "_id": "i18n-message-en-groups-workspace",
+    "key": "groups.workspace",
+    "lang": "en",
+    "value": "Separate workspace"
+  },
+  {
+    "_id": "i18n-message-en-groups-visibility-rules",
+    "key": "groups.visibility.rules",
+    "lang": "en",
+    "value": "Profile visibility rules"
+  },
+  {
+    "_id": "i18n-message-en-groups-required",
+    "key": "groups.required",
+    "lang": "en",
+    "value": "Required"
+  },
+  {
+    "_id": "i18n-message-en-groups-optional",
+    "key": "groups.optional",
+    "lang": "en",
+    "value": "Member choice"
+  },
+  {
+    "_id": "i18n-message-en-groups-participate",
+    "key": "groups.participate",
+    "lang": "en",
+    "value": "Participate"
+  },
+  {
+    "_id": "i18n-message-en-groups-organizer-only",
+    "key": "groups.organizer.only",
+    "lang": "en",
+    "value": "Organizer only"
+  },
+  {
+    "_id": "i18n-message-en-groups-error",
+    "key": "groups.error",
+    "lang": "en",
+    "value": "The action failed."
+  },
+  {
+    "_id": "i18n-message-en-groups-workspace-main",
+    "key": "groups.workspace.main",
+    "lang": "en",
+    "value": "Main profile"
+  },
+  {
+    "_id": "i18n-message-en-groups-workspace-select",
+    "key": "groups.workspace.select",
+    "lang": "en",
+    "value": "Choose workspace"
+  },
+  {
+    "_id": "i18n-message-en-groups-switch-failed",
+    "key": "groups.switch.failed",
+    "lang": "en",
+    "value": "Unable to switch workspace."
+  },
+  {
+    "_id": "i18n-message-en-groups-confirm-join",
+    "key": "groups.confirm.join",
+    "lang": "en",
+    "value": "Request to join “{name}”?"
+  },
+  {
+    "_id": "i18n-message-en-groups-confirm-accept",
+    "key": "groups.confirm.accept",
+    "lang": "en",
+    "value": "Accept the invitation to “{name}”?"
+  },
+  {
+    "_id": "i18n-message-en-groups-confirm-set-participant",
+    "key": "groups.confirm.set-participant",
+    "lang": "en",
+    "value": "Participate as a member in the group “{name}”?"
+  },
+  {
+    "_id": "i18n-message-en-groups-confirm-set-organizer-only",
+    "key": "groups.confirm.set-organizer-only",
+    "lang": "en",
+    "value": "Continue only as an administrator in the group “{name}”?"
+  },
+  {
+    "_id": "i18n-message-en-groups-name-too-long",
+    "key": "groups.name.too.long",
+    "lang": "en",
+    "value": "The group name can contain at most 20 characters."
+  },
+  {
+    "_id": "i18n-message-en-groups-hide-members-description",
+    "key": "groups.hide.members.description",
+    "lang": "en",
+    "value": "Only administrators are visible in the member list."
+  },
+  {
+    "_id": "i18n-message-en-groups-workspace-description",
+    "key": "groups.workspace.description",
+    "lang": "en",
+    "value": "Separate group profiles, ratings and activities."
+  },
+  {
+    "_id": "i18n-message-en-groups-show-members",
+    "key": "groups.show.members",
+    "lang": "en",
+    "value": "Members visible"
+  },
+  {
+    "_id": "i18n-message-en-groups-show-members-description",
+    "key": "groups.show.members.description",
+    "lang": "en",
+    "value": "Members can see each other in the member list."
+  },
+  {
+    "_id": "i18n-message-en-groups-member-list",
+    "key": "groups.member.list",
+    "lang": "en",
+    "value": "Member list visible"
+  },
+  {
+    "_id": "i18n-message-en-groups-report",
+    "key": "groups.report",
+    "lang": "en",
+    "value": "Report group"
+  },
+  {
+    "_id": "i18n-message-en-groups-confirm-report",
+    "key": "groups.confirm.report",
+    "lang": "en",
+    "value": "Report the group “{name}”?"
+  },
+  {
+    "_id": "i18n-message-en-groups-report-details",
+    "key": "groups.report.details",
+    "lang": "en",
+    "value": "Reason for reporting (at least 12 characters)"
+  },
+  {
+    "_id": "i18n-message-en-moderation-category-group",
+    "key": "moderation.category.group",
+    "lang": "en",
+    "value": "Groups"
+  },
+  {
+    "_id": "i18n-message-en-landing-partners-role-workplace-label",
+    "key": "landing.partners.role.workplace.label",
+    "lang": "en",
+    "value": "Bring your team"
+  },
+  {
+    "_id": "i18n-message-en-landing-partners-role-workplace-title",
+    "key": "landing.partners.role.workplace.title",
+    "lang": "en",
+    "value": "Private workplace community"
+  },
+  {
+    "_id": "i18n-message-en-landing-partners-role-workplace-description",
+    "key": "landing.partners.role.workplace.description",
+    "lang": "en",
+    "value": "Bring colleagues together in your own invitation-only group. Shared activities, chats and feedback can support team building and workplace wellbeing."
+  },
+  {
+    "_id": "i18n-message-en-landing-partners-api-title",
+    "key": "landing.partners.api.title",
+    "lang": "en",
+    "value": "Connect your systems · API"
+  },
+  {
+    "_id": "i18n-message-en-landing-partners-api-description",
+    "key": "landing.partners.api.description",
+    "lang": "en",
+    "value": "Use an API key linked to a user account to connect accommodation booking, internal company or other systems to MyScoutee. Create events, accommodation offers and group invitations."
+  },
+  {
+    "_id": "i18n-message-en-landing-partners-api-link",
+    "key": "landing.partners.api.link",
+    "lang": "en",
+    "value": "API client and documentation · GitHub"
+  },
+  {
+    "_id": "i18n-message-en-chat-share-title",
+    "key": "chat.share.title",
+    "lang": "en",
+    "value": "Share in chat"
+  },
+  {
+    "_id": "i18n-message-en-chat-share-select",
+    "key": "chat.share.select",
+    "lang": "en",
+    "value": "Add to shared items"
+  },
+  {
+    "_id": "i18n-message-en-chat-share-remove",
+    "key": "chat.share.remove",
+    "lang": "en",
+    "value": "Remove from shared items"
+  },
+  {
+    "_id": "i18n-message-en-chat-share-selected",
+    "key": "chat.share.selected",
+    "lang": "en",
+    "value": "Selected items"
+  },
+  {
+    "_id": "i18n-message-en-chat-share-confirm",
+    "key": "chat.share.confirm",
+    "lang": "en",
+    "value": "Apply chat shares"
+  },
+  {
+    "_id": "i18n-message-en-chat-share-retry",
+    "key": "chat.share.retry",
+    "lang": "en",
+    "value": "Retry sharing"
+  },
+  {
+    "_id": "i18n-message-en-chat-share-failed",
+    "key": "chat.share.failed",
+    "lang": "en",
+    "value": "Unable to load or apply the shared items. Please try again."
+  },
+  {
+    "_id": "i18n-message-en-payment-cash-record",
+    "key": "payment.cash.record",
+    "lang": "en",
+    "value": "Record cash received"
+  },
+  {
+    "_id": "i18n-message-en-payment-cash-save",
+    "key": "payment.cash.save",
+    "lang": "en",
+    "value": "Save cash receipt"
+  },
+  {
+    "_id": "i18n-message-en-payment-cash-from",
+    "key": "payment.cash.from",
+    "lang": "en",
+    "value": "Received from"
+  },
+  {
+    "_id": "i18n-message-en-payment-cash-select-member",
+    "key": "payment.cash.select.member",
+    "lang": "en",
+    "value": "Select member"
+  },
+  {
+    "_id": "i18n-message-en-payment-cash-amount",
+    "key": "payment.cash.amount",
+    "lang": "en",
+    "value": "Amount"
+  },
+  {
+    "_id": "i18n-message-en-payment-cash-currency",
+    "key": "payment.cash.currency",
+    "lang": "en",
+    "value": "Currency"
+  },
+  {
+    "_id": "i18n-message-en-payment-cash-note",
+    "key": "payment.cash.note",
+    "lang": "en",
+    "value": "Note"
+  },
+  {
+    "_id": "i18n-message-en-payment-cash-failed",
+    "key": "payment.cash.failed",
+    "lang": "en",
+    "value": "Could not save the cash receipt. Please try again."
+  },
+  {
+    "_id": "i18n-message-en-payment-cash-members-empty",
+    "key": "payment.cash.members.empty",
+    "lang": "en",
+    "value": "Add a member to your contacts to record a cash receipt."
+  },
+  {
+    "_id": "i18n-message-en-payment-cash-members-failed",
+    "key": "payment.cash.members.failed",
+    "lang": "en",
+    "value": "Could not load members. Close and reopen to try again."
+  },
+  {
+    "_id": "i18n-message-en-notification-kind-payment-cash-received-title",
+    "key": "notification.kind.payment-cash-received.title",
+    "lang": "en",
+    "value": "Cash receipt recorded"
+  },
+  {
+    "_id": "i18n-message-en-notification-kind-payment-cash-received-message",
+    "key": "notification.kind.payment-cash-received.message",
+    "lang": "en",
+    "value": "A member recorded receiving cash from you. You can find the amount and note in your payment history."
+  },
+  {
+    "_id": "i18n-message-en-invite-external-title",
+    "key": "invite.external.title",
+    "lang": "en",
+    "value": "Share link"
+  },
+  {
+    "_id": "i18n-message-en-invite-external-description",
+    "key": "invite.external.description",
+    "lang": "en",
+    "value": "Copy this link to invite someone to MyScoutee and open this item."
+  },
+  {
+    "_id": "i18n-message-en-invite-external-url",
+    "key": "invite.external.url",
+    "lang": "en",
+    "value": "External invitation link"
+  },
+  {
+    "_id": "i18n-message-en-invite-external-failed",
+    "key": "invite.external.failed",
+    "lang": "en",
+    "value": "The link is unavailable. Try again."
+  },
+  {
+    "_id": "i18n-message-en-invite-external-copy-failed",
+    "key": "invite.external.copy.failed",
+    "lang": "en",
+    "value": "Copy failed. You can select and copy the link above."
+  },
+  {
+    "_id": "i18n-message-en-chat-contacts",
+    "key": "chat.contacts",
+    "lang": "en",
+    "value": "Contacts"
+  },
+  {
+    "_id": "i18n-message-en-chat-contacts-open",
+    "key": "chat.contacts.open",
+    "lang": "en",
+    "value": "Chat in MyScoutee"
+  },
+  {
+    "_id": "i18n-message-en-chat-contacts-error",
+    "key": "chat.contacts.error",
+    "lang": "en",
+    "value": "The contact chat could not be opened or updated. Please try again."
+  },
+  {
+    "_id": "i18n-message-hu-navigator-community",
+    "key": "navigator.community",
+    "lang": "hu",
+    "value": "Közösség"
+  },
+  {
     "_id": "i18n-message-hu-payment-history-refund-preview-changed-terms",
     "key": "payment.history.refund.preview.changed.terms",
     "lang": "hu",
@@ -23074,6 +23560,12 @@
     "key": "application.feedback",
     "lang": "hu",
     "value": "Alkalmazás-visszajelzés"
+  },
+  {
+    "_id": "i18n-message-hu-group-support",
+    "key": "group.support",
+    "lang": "hu",
+    "value": "Csoport support"
   },
   {
     "_id": "i18n-message-hu-app-support",
@@ -30129,7 +30621,7 @@
     "_id": "i18n-message-hu-landing-partners-subtitle",
     "key": "landing.partners.subtitle",
     "lang": "hu",
-    "value": "Négy részvételi forma. Minden operátor független marad."
+    "value": "Hat részvételi forma. Minden operátor független marad."
   },
   {
     "_id": "i18n-message-hu-landing-partners-aria",
@@ -45108,15 +45600,471 @@
     "value": "A foglalásodat lemondtuk, és a még vissza nem térített befizetésed visszajárt."
   },
   {
-    "_id": "i18n-message-en-event-checkout-join-confirm-title",
-    "key": "event.checkout.join.confirm.title",
-    "lang": "en",
-    "value": "Would you like to join this event?"
-  },
-  {
     "_id": "i18n-message-hu-event-checkout-join-confirm-title",
     "key": "event.checkout.join.confirm.title",
     "lang": "hu",
     "value": "Szeretnél csatlakozni ehhez az eseményhez?"
+  },
+  {
+    "_id": "i18n-message-hu-groups-title",
+    "key": "groups.title",
+    "lang": "hu",
+    "value": "Csoportok"
+  },
+  {
+    "_id": "i18n-message-hu-groups-create",
+    "key": "groups.create",
+    "lang": "hu",
+    "value": "Csoport létrehozása"
+  },
+  {
+    "_id": "i18n-message-hu-groups-edit",
+    "key": "groups.edit",
+    "lang": "hu",
+    "value": "Csoport"
+  },
+  {
+    "_id": "i18n-message-hu-groups-bucket-hosting",
+    "key": "groups.bucket.hosting",
+    "lang": "hu",
+    "value": "Szervezés"
+  },
+  {
+    "_id": "i18n-message-hu-groups-bucket-participation",
+    "key": "groups.bucket.participation",
+    "lang": "hu",
+    "value": "Részvétel"
+  },
+  {
+    "_id": "i18n-message-hu-groups-bucket-explore",
+    "key": "groups.bucket.explore",
+    "lang": "hu",
+    "value": "Felfedezés"
+  },
+  {
+    "_id": "i18n-message-hu-groups-category-all",
+    "key": "groups.category.all",
+    "lang": "hu",
+    "value": "Minden kategória"
+  },
+  {
+    "_id": "i18n-message-hu-groups-category-friends",
+    "key": "groups.category.friends",
+    "lang": "hu",
+    "value": "Barátok"
+  },
+  {
+    "_id": "i18n-message-hu-groups-category-work",
+    "key": "groups.category.work",
+    "lang": "hu",
+    "value": "Munka és csapatok"
+  },
+  {
+    "_id": "i18n-message-hu-groups-category-sport",
+    "key": "groups.category.sport",
+    "lang": "hu",
+    "value": "Sport"
+  },
+  {
+    "_id": "i18n-message-hu-groups-category-learning",
+    "key": "groups.category.learning",
+    "lang": "hu",
+    "value": "Tanulás"
+  },
+  {
+    "_id": "i18n-message-hu-groups-category-hobbies",
+    "key": "groups.category.hobbies",
+    "lang": "hu",
+    "value": "Hobbi"
+  },
+  {
+    "_id": "i18n-message-hu-groups-category-neighbourhood",
+    "key": "groups.category.neighbourhood",
+    "lang": "hu",
+    "value": "Környék"
+  },
+  {
+    "_id": "i18n-message-hu-groups-visibility-public",
+    "key": "groups.visibility.public",
+    "lang": "hu",
+    "value": "Nyilvános"
+  },
+  {
+    "_id": "i18n-message-hu-groups-visibility-private",
+    "key": "groups.visibility.private",
+    "lang": "hu",
+    "value": "Privát"
+  },
+  {
+    "_id": "i18n-message-hu-groups-visibility-invitation",
+    "key": "groups.visibility.invitation",
+    "lang": "hu",
+    "value": "Csak meghívással"
+  },
+  {
+    "_id": "i18n-message-hu-groups-join",
+    "key": "groups.join",
+    "lang": "hu",
+    "value": "Jelentkezés"
+  },
+  {
+    "_id": "i18n-message-hu-groups-settings",
+    "key": "groups.settings",
+    "lang": "hu",
+    "value": "Csoportbeállítások"
+  },
+  {
+    "_id": "i18n-message-hu-groups-policy",
+    "key": "groups.policy",
+    "lang": "hu",
+    "value": "Csoportszabályok"
+  },
+  {
+    "_id": "i18n-message-hu-groups-hide-members",
+    "key": "groups.hide.members",
+    "lang": "hu",
+    "value": "Csak az adminok láthatók"
+  },
+  {
+    "_id": "i18n-message-hu-groups-workspace",
+    "key": "groups.workspace",
+    "lang": "hu",
+    "value": "Önálló munkatér"
+  },
+  {
+    "_id": "i18n-message-hu-groups-visibility-rules",
+    "key": "groups.visibility.rules",
+    "lang": "hu",
+    "value": "Profil-láthatósági szabályok"
+  },
+  {
+    "_id": "i18n-message-hu-groups-required",
+    "key": "groups.required",
+    "lang": "hu",
+    "value": "Kötelező"
+  },
+  {
+    "_id": "i18n-message-hu-groups-optional",
+    "key": "groups.optional",
+    "lang": "hu",
+    "value": "A tag választja"
+  },
+  {
+    "_id": "i18n-message-hu-groups-participate",
+    "key": "groups.participate",
+    "lang": "hu",
+    "value": "Részvétel"
+  },
+  {
+    "_id": "i18n-message-hu-groups-organizer-only",
+    "key": "groups.organizer.only",
+    "lang": "hu",
+    "value": "Csak szervezés"
+  },
+  {
+    "_id": "i18n-message-hu-groups-error",
+    "key": "groups.error",
+    "lang": "hu",
+    "value": "A művelet nem sikerült."
+  },
+  {
+    "_id": "i18n-message-hu-groups-workspace-main",
+    "key": "groups.workspace.main",
+    "lang": "hu",
+    "value": "Alapprofil"
+  },
+  {
+    "_id": "i18n-message-hu-groups-workspace-select",
+    "key": "groups.workspace.select",
+    "lang": "hu",
+    "value": "Munkatér kiválasztása"
+  },
+  {
+    "_id": "i18n-message-hu-groups-switch-failed",
+    "key": "groups.switch.failed",
+    "lang": "hu",
+    "value": "Nem sikerült munkateret váltani."
+  },
+  {
+    "_id": "i18n-message-hu-groups-confirm-join",
+    "key": "groups.confirm.join",
+    "lang": "hu",
+    "value": "Jelentkezel a(z) „{name}” csoportba?"
+  },
+  {
+    "_id": "i18n-message-hu-groups-confirm-accept",
+    "key": "groups.confirm.accept",
+    "lang": "hu",
+    "value": "Elfogadod a(z) „{name}” csoport meghívását?"
+  },
+  {
+    "_id": "i18n-message-hu-groups-confirm-set-participant",
+    "key": "groups.confirm.set-participant",
+    "lang": "hu",
+    "value": "Tagként is részt veszel a(z) „{name}” csoportban?"
+  },
+  {
+    "_id": "i18n-message-hu-groups-confirm-set-organizer-only",
+    "key": "groups.confirm.set-organizer-only",
+    "lang": "hu",
+    "value": "Csak adminisztrátorként folytatod a(z) „{name}” csoportban?"
+  },
+  {
+    "_id": "i18n-message-hu-groups-name-too-long",
+    "key": "groups.name.too.long",
+    "lang": "hu",
+    "value": "A csoportnév legfeljebb 20 karakter hosszú lehet."
+  },
+  {
+    "_id": "i18n-message-hu-groups-hide-members-description",
+    "key": "groups.hide.members.description",
+    "lang": "hu",
+    "value": "A taglistában csak az adminok láthatók."
+  },
+  {
+    "_id": "i18n-message-hu-groups-workspace-description",
+    "key": "groups.workspace.description",
+    "lang": "hu",
+    "value": "Külön csoportprofilok, értékelések és tevékenységek."
+  },
+  {
+    "_id": "i18n-message-hu-groups-show-members",
+    "key": "groups.show.members",
+    "lang": "hu",
+    "value": "Tagok láthatók"
+  },
+  {
+    "_id": "i18n-message-hu-groups-show-members-description",
+    "key": "groups.show.members.description",
+    "lang": "hu",
+    "value": "A tagok láthatják egymást a taglistában."
+  },
+  {
+    "_id": "i18n-message-hu-groups-member-list",
+    "key": "groups.member.list",
+    "lang": "hu",
+    "value": "Taglista látható"
+  },
+  {
+    "_id": "i18n-message-hu-groups-report",
+    "key": "groups.report",
+    "lang": "hu",
+    "value": "Csoport jelentése"
+  },
+  {
+    "_id": "i18n-message-hu-groups-confirm-report",
+    "key": "groups.confirm.report",
+    "lang": "hu",
+    "value": "Jelented a(z) „{name}” csoportot?"
+  },
+  {
+    "_id": "i18n-message-hu-groups-report-details",
+    "key": "groups.report.details",
+    "lang": "hu",
+    "value": "A jelentés indoka (legalább 12 karakter)"
+  },
+  {
+    "_id": "i18n-message-hu-moderation-category-group",
+    "key": "moderation.category.group",
+    "lang": "hu",
+    "value": "Csoportok"
+  },
+  {
+    "_id": "i18n-message-hu-landing-partners-role-workplace-label",
+    "key": "landing.partners.role.workplace.label",
+    "lang": "hu",
+    "value": "Hozd a csapatod"
+  },
+  {
+    "_id": "i18n-message-hu-landing-partners-role-workplace-title",
+    "key": "landing.partners.role.workplace.title",
+    "lang": "hu",
+    "value": "Zárt vállalati közösség"
+  },
+  {
+    "_id": "i18n-message-hu-landing-partners-role-workplace-description",
+    "key": "landing.partners.role.workplace.description",
+    "lang": "hu",
+    "value": "Hozd össze munkatársaidat egy saját, meghívásos csoportban. Közös programok, csevegések és visszajelzések segíthetik a csapatépítést és a munkahelyi jóllétet."
+  },
+  {
+    "_id": "i18n-message-hu-landing-partners-api-title",
+    "key": "landing.partners.api.title",
+    "lang": "hu",
+    "value": "Kapcsold össze a rendszereidet · API"
+  },
+  {
+    "_id": "i18n-message-hu-landing-partners-api-description",
+    "key": "landing.partners.api.description",
+    "lang": "hu",
+    "value": "Felhasználóhoz kötött API-kulccsal szállásfoglaló, belső vállalati vagy más rendszereket kapcsolhatsz a MyScoutee-hoz. Eseményeket, szállásajánlatokat és csoportmeghívásokat hozhatsz létre."
+  },
+  {
+    "_id": "i18n-message-hu-landing-partners-api-link",
+    "key": "landing.partners.api.link",
+    "lang": "hu",
+    "value": "API-kliens és dokumentáció · GitHub"
+  },
+  {
+    "_id": "i18n-message-hu-chat-share-title",
+    "key": "chat.share.title",
+    "lang": "hu",
+    "value": "Megosztás a chatben"
+  },
+  {
+    "_id": "i18n-message-hu-chat-share-select",
+    "key": "chat.share.select",
+    "lang": "hu",
+    "value": "Hozzáadás a megosztásokhoz"
+  },
+  {
+    "_id": "i18n-message-hu-chat-share-remove",
+    "key": "chat.share.remove",
+    "lang": "hu",
+    "value": "Megosztás eltávolítása"
+  },
+  {
+    "_id": "i18n-message-hu-chat-share-selected",
+    "key": "chat.share.selected",
+    "lang": "hu",
+    "value": "Kijelölt tételek"
+  },
+  {
+    "_id": "i18n-message-hu-chat-share-confirm",
+    "key": "chat.share.confirm",
+    "lang": "hu",
+    "value": "Megosztások alkalmazása"
+  },
+  {
+    "_id": "i18n-message-hu-chat-share-retry",
+    "key": "chat.share.retry",
+    "lang": "hu",
+    "value": "Megosztás újrapróbálása"
+  },
+  {
+    "_id": "i18n-message-hu-chat-share-failed",
+    "key": "chat.share.failed",
+    "lang": "hu",
+    "value": "A megosztások betöltése vagy mentése nem sikerült. Próbáld újra."
+  },
+  {
+    "_id": "i18n-message-hu-payment-cash-record",
+    "key": "payment.cash.record",
+    "lang": "hu",
+    "value": "Készpénz átvételének rögzítése"
+  },
+  {
+    "_id": "i18n-message-hu-payment-cash-save",
+    "key": "payment.cash.save",
+    "lang": "hu",
+    "value": "Készpénzátvétel mentése"
+  },
+  {
+    "_id": "i18n-message-hu-payment-cash-from",
+    "key": "payment.cash.from",
+    "lang": "hu",
+    "value": "Kitől érkezett"
+  },
+  {
+    "_id": "i18n-message-hu-payment-cash-select-member",
+    "key": "payment.cash.select.member",
+    "lang": "hu",
+    "value": "Tag kiválasztása"
+  },
+  {
+    "_id": "i18n-message-hu-payment-cash-amount",
+    "key": "payment.cash.amount",
+    "lang": "hu",
+    "value": "Összeg"
+  },
+  {
+    "_id": "i18n-message-hu-payment-cash-currency",
+    "key": "payment.cash.currency",
+    "lang": "hu",
+    "value": "Pénznem"
+  },
+  {
+    "_id": "i18n-message-hu-payment-cash-note",
+    "key": "payment.cash.note",
+    "lang": "hu",
+    "value": "Megjegyzés"
+  },
+  {
+    "_id": "i18n-message-hu-payment-cash-failed",
+    "key": "payment.cash.failed",
+    "lang": "hu",
+    "value": "A készpénzátvétel mentése nem sikerült. Próbáld újra."
+  },
+  {
+    "_id": "i18n-message-hu-payment-cash-members-empty",
+    "key": "payment.cash.members.empty",
+    "lang": "hu",
+    "value": "Készpénzátvétel rögzítéséhez vegyél fel egy tagot a kapcsolataid közé."
+  },
+  {
+    "_id": "i18n-message-hu-payment-cash-members-failed",
+    "key": "payment.cash.members.failed",
+    "lang": "hu",
+    "value": "A tagokat nem sikerült betölteni. Zárd be és nyisd meg újra az ablakot."
+  },
+  {
+    "_id": "i18n-message-hu-notification-kind-payment-cash-received-title",
+    "key": "notification.kind.payment-cash-received.title",
+    "lang": "hu",
+    "value": "Készpénzátvétel rögzítve"
+  },
+  {
+    "_id": "i18n-message-hu-notification-kind-payment-cash-received-message",
+    "key": "notification.kind.payment-cash-received.message",
+    "lang": "hu",
+    "value": "Egy tag készpénz átvételét rögzítette tőled. Az összeget és a megjegyzést a fizetési előzményekben találod."
+  },
+  {
+    "_id": "i18n-message-hu-invite-external-title",
+    "key": "invite.external.title",
+    "lang": "hu",
+    "value": "Megosztási link"
+  },
+  {
+    "_id": "i18n-message-hu-invite-external-description",
+    "key": "invite.external.description",
+    "lang": "hu",
+    "value": "Másold ki a linket: a meghívott ezen keresztül csatlakozhat a MyScoutee-hoz és megnyithatja ezt a tartalmat."
+  },
+  {
+    "_id": "i18n-message-hu-invite-external-url",
+    "key": "invite.external.url",
+    "lang": "hu",
+    "value": "Külső meghívólink"
+  },
+  {
+    "_id": "i18n-message-hu-invite-external-failed",
+    "key": "invite.external.failed",
+    "lang": "hu",
+    "value": "A link nem érhető el. Próbáld újra."
+  },
+  {
+    "_id": "i18n-message-hu-invite-external-copy-failed",
+    "key": "invite.external.copy.failed",
+    "lang": "hu",
+    "value": "A másolás nem sikerült. Jelöld ki és másold ki a fenti linket."
+  },
+  {
+    "_id": "i18n-message-hu-chat-contacts",
+    "key": "chat.contacts",
+    "lang": "hu",
+    "value": "Kapcsolatok"
+  },
+  {
+    "_id": "i18n-message-hu-chat-contacts-open",
+    "key": "chat.contacts.open",
+    "lang": "hu",
+    "value": "MyScoutee-csevegés"
+  },
+  {
+    "_id": "i18n-message-hu-chat-contacts-error",
+    "key": "chat.contacts.error",
+    "lang": "hu",
+    "value": "A kapcsolati chat nem nyitható meg vagy frissíthető. Próbáld újra."
   }
 ]

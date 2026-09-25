@@ -6002,6 +6002,7 @@ public class ActivitiesEventsService {
         query.addCriteria(Criteria.where("generated").ne(true));
         query.with(Sort.by(Sort.Direction.ASC, "startAtIso", "sourceId"));
         includeEventListCardFields(query);
+        query.fields().include("workspaceGroupId");
         return mongoTemplate.find(query, ActivityEvent.class).stream()
                 .filter(Objects::nonNull)
                 .filter(record -> StringUtils.hasText(normalizeId(record.getSourceId())))
@@ -6027,7 +6028,8 @@ public class ActivitiesEventsService {
     }
 
     private List<ActivityEvent> queryCanonicalExploreRecords() {
-        return activityEventsRepository.findCanonicalExploreCandidates().stream()
+        return mongoTemplate.find(new Query(Criteria.where("status").is(ActivityEvent.STATUS_ACTIVE)
+                .and("generated").ne(true).and("workspaceGroupId").is(CommunityGroupProfilesService.currentGroupId())), ActivityEvent.class).stream()
                 .filter(Objects::nonNull)
                 .filter(record -> StringUtils.hasText(normalizeId(record.getSourceId())))
                 .map(this::cloneDocument)
@@ -6039,7 +6041,7 @@ public class ActivitiesEventsService {
     private List<ActivityEvent> queryCanonicalExplorePageRecords() {
         Query query = new Query(Criteria.where("status").is(ActivityEvent.STATUS_ACTIVE)
                 .and("generated").ne(true)
-                .and("sourceId").exists(true).ne(""));
+                .and("sourceId").exists(true).ne("").and("workspaceGroupId").is(CommunityGroupProfilesService.currentGroupId()));
         query.with(Sort.by(Sort.Direction.ASC, "startAtIso", "sourceId"));
         includeEventExplorePageFields(query);
         return mongoTemplate.find(query, ActivityEvent.class).stream()
@@ -6053,6 +6055,7 @@ public class ActivitiesEventsService {
 
     private void includeEventExplorePageFields(Query query) {
         includeEventListCardFields(query);
+        query.fields().include("workspaceGroupId");
         query.fields()
                 .include("creatorGender")
                 .include("blindMode")
@@ -6272,7 +6275,7 @@ public class ActivitiesEventsService {
     }
 
     private boolean canViewerLoadEventDetail(ActivityEvent record, String viewerUserId) {
-        if (record == null || !StringUtils.hasText(viewerUserId)) {
+        if (record == null || !CommunityGroupProfilesService.allows(record.getWorkspaceGroupId()) || !StringUtils.hasText(viewerUserId)) {
             return false;
         }
         if (isViewerAdmin(record, viewerUserId) || hasTrackedUserParticipation(record, viewerUserId)) {
@@ -6282,7 +6285,7 @@ public class ActivitiesEventsService {
     }
 
     private boolean isVisibleToUntrackedViewer(ActivityEvent record, String activeUserId) {
-        if (!StringUtils.hasText(activeUserId) || !isCanonicalExploreRecord(record)) {
+        if (!StringUtils.hasText(activeUserId) || !CommunityGroupProfilesService.allows(record.getWorkspaceGroupId()) || !isCanonicalExploreRecord(record)) {
             return false;
         }
         String visibility = safeText(record.getVisibility());
@@ -7394,7 +7397,7 @@ public class ActivitiesEventsService {
     }
 
     private boolean isViewerAdmin(ActivityEvent record, String viewerUserId) {
-        if (record == null || !StringUtils.hasText(viewerUserId)) {
+        if (record == null || !CommunityGroupProfilesService.allows(record.getWorkspaceGroupId()) || !StringUtils.hasText(viewerUserId)) {
             return false;
         }
         if (viewerUserId.equals(normalizeId(record.getCreatorUserId()))) {
@@ -7489,6 +7492,7 @@ public class ActivitiesEventsService {
         Query query = new Query(Criteria.where("sourceId").in(normalizedSourceIds));
         query.with(Sort.by(Sort.Direction.ASC, "startAtIso", "sourceId"));
         includeEventListCardFields(query);
+        query.fields().include("workspaceGroupId");
         return mongoTemplate.find(query, ActivityEvent.class).stream()
                 .filter(Objects::nonNull)
                 .filter(record -> StringUtils.hasText(normalizeId(record.getSourceId())))

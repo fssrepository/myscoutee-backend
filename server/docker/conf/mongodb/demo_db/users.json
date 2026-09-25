@@ -4946,5 +4946,938 @@
       "adminMetrics": 0,
       "notifications": 0
     }
+  },
+  {
+    "_id": "group:seed-community-seattle-friends:af0436815ab38f4864dd1e24",
+    "userId": "group:seed-community-seattle-friends:af0436815ab38f4864dd1e24",
+    "syncKey": "group:seed-community-seattle-friends:af0436815ab38f4864dd1e24",
+    "workspaceGroupId": "seed-community-seattle-friends",
+    "accountUserId": "af0436815ab38f4864dd1e24",
+    "name": "Alex Turner",
+    "initials": "AT",
+    "age": 31,
+    "birthday": "1999-08-04",
+    "gender": "man",
+    "city": "Seattle",
+    "height": "180 cm",
+    "physique": "Average",
+    "languages": [
+      "English",
+      "French"
+    ],
+    "horoscope": "Capricorn",
+    "headline": "Metrics first, then movement.",
+    "about": "I optimize event outcomes and participant quality through filtered invites.",
+    "images": [
+      "/media/public?key=images/demo-profiles/af0436815ab38f4864dd1e24/photo-01/large.webp"
+    ],
+    "locationCoordinates": {
+      "latitude": 42.3433,
+      "longitude": -71.0625
+    },
+    "partitionKey": "country:hu",
+    "profileStatus": "friends only",
+    "statusText": "Recently Active",
+    "completion": 61,
+    "profileFormVersion": 2,
+    "operator": false,
+    "activities": {
+      "game": 0,
+      "chats": 0,
+      "invitations": 0,
+      "events": 0,
+      "hosting": 0
+    }
+  },
+  {
+    "_id": "group:seed-community-seattle-friends:9f3b3f085e23af6c89dbc432",
+    "userId": "group:seed-community-seattle-friends:9f3b3f085e23af6c89dbc432",
+    "syncKey": "group:seed-community-seattle-friends:9f3b3f085e23af6c89dbc432",
+    "workspaceGroupId": "seed-community-seattle-friends",
+    "accountUserId": "9f3b3f085e23af6c89dbc432",
+    "name": "Nagy Eszter",
+    "initials": "NE",
+    "age": 30,
+    "birthday": "1995-07-19",
+    "gender": "woman",
+    "city": "Seattle",
+    "height": "168 cm",
+    "physique": "Fit",
+    "languages": [
+      "English",
+      "Hungarian"
+    ],
+    "horoscope": "Cancer",
+    "headline": "Art nights and adventure mornings.",
+    "about": "I enjoy cultural events and activity-heavy weekends with small groups.",
+    "images": [
+      "/media/public?key=images/demo-profiles/9f3b3f085e23af6c89dbc432/photo-01/large.webp",
+      "/media/public?key=images/demo-profiles/9f3b3f085e23af6c89dbc432/photo-02/large.webp"
+    ],
+    "locationCoordinates": {
+      "latitude": 47.6182,
+      "longitude": -122.3369
+    },
+    "partitionKey": "country:hu",
+    "profileStatus": "public",
+    "statusText": "Recently Active",
+    "completion": 58,
+    "profileFormVersion": 2,
+    "operator": false,
+    "activities": {
+      "game": 0,
+      "chats": 0,
+      "invitations": 0,
+      "events": 0,
+      "hosting": 0
+    }
+  },
+  {
+    "_id": "group:seed-community-design-circle:af0436815ab38f4864dd1e24",
+    "userId": "group:seed-community-design-circle:af0436815ab38f4864dd1e24",
+    "syncKey": "group:seed-community-design-circle:af0436815ab38f4864dd1e24",
+    "workspaceGroupId": "seed-community-design-circle",
+    "accountUserId": "af0436815ab38f4864dd1e24",
+    "name": "Alex Turner",
+    "initials": "AT",
+    "age": 31,
+    "birthday": "1999-08-04",
+    "gender": "man",
+    "city": "Seattle",
+    "height": "180 cm",
+    "physique": "Average",
+    "languages": [
+      "English",
+      "French"
+    ],
+    "horoscope": "Capricorn",
+    "headline": "Metrics first, then movement.",
+    "about": "I optimize event outcomes and participant quality through filtered invites.",
+    "images": [
+      "/media/public?key=images/demo-profiles/af0436815ab38f4864dd1e24/photo-01/large.webp"
+    ],
+    "locationCoordinates": {
+      "latitude": 42.3433,
+      "longitude": -71.0625
+    },
+    "partitionKey": "country:hu",
+    "profileStatus": "friends only",
+    "statusText": "Recently Active",
+    "completion": 61,
+    "profileFormVersion": 2,
+    "operator": false,
+    "activities": {
+      "game": 0,
+      "chats": 0,
+      "invitations": 0,
+      "events": 0,
+      "hosting": 0
+    }
+  },
+  {
+    "_id": "group:seed-community-design-circle:178e8d0cbe164fa3fede5884",
+    "userId": "group:seed-community-design-circle:178e8d0cbe164fa3fede5884",
+    "syncKey": "group:seed-community-design-circle:178e8d0cbe164fa3fede5884",
+    "workspaceGroupId": "seed-community-design-circle",
+    "accountUserId": "178e8d0cbe164fa3fede5884",
+    "name": "Lina Park",
+    "initials": "LP",
+    "age": 27,
+    "birthday": "1998-02-21",
+    "gender": "woman",
+    "city": "Denver",
+    "height": "167 cm",
+    "physique": "Slim",
+    "languages": [
+      "English",
+      "Korean"
+    ],
+    "horoscope": "Pisces",
+    "headline": "Thoughtful plans, minimal noise.",
+    "about": "I prefer meaningful conversations and smaller events with quality curation.",
+    "images": [
+      "/media/public?key=images/demo-profiles/178e8d0cbe164fa3fede5884/photo-01/large.webp",
+      "/media/public?key=images/demo-profiles/178e8d0cbe164fa3fede5884/photo-02/large.webp"
+    ],
+    "locationCoordinates": {
+      "latitude": 39.7536,
+      "longitude": -104.9951
+    },
+    "partitionKey": "country:hu",
+    "profileStatus": "host only",
+    "statusText": "Recently Active",
+    "completion": 68,
+    "profileFormVersion": 2,
+    "operator": false,
+    "activities": {
+      "game": 0,
+      "chats": 0,
+      "invitations": 0,
+      "events": 0,
+      "hosting": 0
+    }
+  },
+  {
+    "_id": "group:seed-community-trail-club:9f3b3f085e23af6c89dbc432",
+    "userId": "group:seed-community-trail-club:9f3b3f085e23af6c89dbc432",
+    "syncKey": "group:seed-community-trail-club:9f3b3f085e23af6c89dbc432",
+    "workspaceGroupId": "seed-community-trail-club",
+    "accountUserId": "9f3b3f085e23af6c89dbc432",
+    "name": "Nagy Eszter",
+    "initials": "NE",
+    "age": 30,
+    "birthday": "1995-07-19",
+    "gender": "woman",
+    "city": "Seattle",
+    "height": "168 cm",
+    "physique": "Fit",
+    "languages": [
+      "English",
+      "Hungarian"
+    ],
+    "horoscope": "Cancer",
+    "headline": "Art nights and adventure mornings.",
+    "about": "I enjoy cultural events and activity-heavy weekends with small groups.",
+    "images": [
+      "/media/public?key=images/demo-profiles/9f3b3f085e23af6c89dbc432/photo-01/large.webp",
+      "/media/public?key=images/demo-profiles/9f3b3f085e23af6c89dbc432/photo-02/large.webp"
+    ],
+    "locationCoordinates": {
+      "latitude": 47.6182,
+      "longitude": -122.3369
+    },
+    "partitionKey": "country:hu",
+    "profileStatus": "public",
+    "statusText": "Recently Active",
+    "completion": 58,
+    "profileFormVersion": 2,
+    "operator": false,
+    "activities": {
+      "game": 0,
+      "chats": 0,
+      "invitations": 0,
+      "events": 0,
+      "hosting": 0
+    }
+  },
+  {
+    "_id": "group:seed-community-trail-club:7822c5f99eff99d63abe8933",
+    "userId": "group:seed-community-trail-club:7822c5f99eff99d63abe8933",
+    "syncKey": "group:seed-community-trail-club:7822c5f99eff99d63abe8933",
+    "workspaceGroupId": "seed-community-trail-club",
+    "accountUserId": "7822c5f99eff99d63abe8933",
+    "name": "Kai Morgan",
+    "initials": "KM",
+    "age": 25,
+    "birthday": "2000-04-18",
+    "gender": "man",
+    "city": "Portland",
+    "height": "178 cm",
+    "physique": "Slim",
+    "languages": [
+      "English"
+    ],
+    "horoscope": "Aries",
+    "headline": "Design-led hangouts only.",
+    "about": "I design event atmospheres first and build flow around people and space.",
+    "images": [
+      "/media/public?key=images/demo-profiles/7822c5f99eff99d63abe8933/photo-01/large.webp",
+      "/media/public?key=images/demo-profiles/7822c5f99eff99d63abe8933/photo-02/large.webp"
+    ],
+    "locationCoordinates": {
+      "latitude": 45.4996,
+      "longitude": -122.682
+    },
+    "partitionKey": "country:hu",
+    "profileStatus": "host only",
+    "statusText": "Recently Active",
+    "completion": 53,
+    "profileFormVersion": 2,
+    "operator": false,
+    "activities": {
+      "game": 0,
+      "chats": 0,
+      "invitations": 0,
+      "events": 0,
+      "hosting": 0
+    }
+  },
+  {
+    "_id": "group:seed-community-trail-club:bf057de7c586eede7e84bdc7",
+    "userId": "group:seed-community-trail-club:bf057de7c586eede7e84bdc7",
+    "syncKey": "group:seed-community-trail-club:bf057de7c586eede7e84bdc7",
+    "workspaceGroupId": "seed-community-trail-club",
+    "accountUserId": "bf057de7c586eede7e84bdc7",
+    "name": "Farkas Anna",
+    "initials": "FA",
+    "age": 28,
+    "birthday": "1997-05-12",
+    "gender": "woman",
+    "city": "Austin",
+    "height": "170 cm",
+    "physique": "Athletic",
+    "languages": [
+      "English",
+      "Spanish"
+    ],
+    "horoscope": "Taurus",
+    "headline": "Planning cozy chaos with structure.",
+    "about": "I host events where social energy stays high, but logistics stay clean and predictable.",
+    "images": [
+      "/media/public?key=images/demo-profiles/bf057de7c586eede7e84bdc7/photo-01/large.webp",
+      "/media/public?key=images/demo-profiles/bf057de7c586eede7e84bdc7/photo-02/large.webp",
+      "/media/public?key=images/demo-profiles/bf057de7c586eede7e84bdc7/photo-03/large.webp"
+    ],
+    "locationCoordinates": {
+      "latitude": 30.2768,
+      "longitude": -97.7479
+    },
+    "partitionKey": "country:hu",
+    "profileStatus": "public",
+    "statusText": "Recently Active",
+    "completion": 72,
+    "profileFormVersion": 2,
+    "operator": false,
+    "activities": {
+      "game": 0,
+      "chats": 0,
+      "invitations": 0,
+      "events": 0,
+      "hosting": 0
+    }
+  },
+  {
+    "_id": "group:seed-community-language-lab:1b1c70be2349b3359a8f6f94",
+    "userId": "group:seed-community-language-lab:1b1c70be2349b3359a8f6f94",
+    "syncKey": "group:seed-community-language-lab:1b1c70be2349b3359a8f6f94",
+    "workspaceGroupId": "seed-community-language-lab",
+    "accountUserId": "1b1c70be2349b3359a8f6f94",
+    "name": "Maya Stone",
+    "initials": "MS",
+    "age": 29,
+    "birthday": "1996-11-04",
+    "gender": "woman",
+    "city": "San Diego",
+    "height": "172 cm",
+    "physique": "Athletic",
+    "languages": [
+      "English"
+    ],
+    "horoscope": "Scorpio",
+    "headline": "Sunset rides and coffee circles.",
+    "about": "I host social-first events where people who do not know each other can connect fast.",
+    "images": [
+      "/media/public?key=images/demo-profiles/1b1c70be2349b3359a8f6f94/photo-01/large.webp",
+      "/media/public?key=images/demo-profiles/1b1c70be2349b3359a8f6f94/photo-02/large.webp"
+    ],
+    "locationCoordinates": {
+      "latitude": 32.7289,
+      "longitude": -117.1659
+    },
+    "partitionKey": "country:hu",
+    "profileStatus": "public",
+    "statusText": "Recently Active",
+    "completion": 76,
+    "profileFormVersion": 2,
+    "operator": false,
+    "activities": {
+      "game": 0,
+      "chats": 0,
+      "invitations": 0,
+      "events": 0,
+      "hosting": 0
+    }
+  },
+  {
+    "_id": "group:seed-community-language-lab:b29df68956f3fe15e04558de",
+    "userId": "group:seed-community-language-lab:b29df68956f3fe15e04558de",
+    "syncKey": "group:seed-community-language-lab:b29df68956f3fe15e04558de",
+    "workspaceGroupId": "seed-community-language-lab",
+    "accountUserId": "b29df68956f3fe15e04558de",
+    "name": "Kiss Balázs",
+    "initials": "KB",
+    "age": 31,
+    "birthday": "1994-09-23",
+    "gender": "man",
+    "city": "Chicago",
+    "height": "182 cm",
+    "physique": "Lean",
+    "languages": [
+      "English",
+      "Hungarian"
+    ],
+    "horoscope": "Libra",
+    "headline": "Reliable planning, zero drama.",
+    "about": "I like compact events with clear timelines and simple role assignment.",
+    "images": [
+      "/media/public?key=images/demo-profiles/b29df68956f3fe15e04558de/photo-01/large.webp"
+    ],
+    "locationCoordinates": {
+      "latitude": 41.8889,
+      "longitude": -87.6346
+    },
+    "partitionKey": "country:hu",
+    "profileStatus": "public",
+    "statusText": "Recently Active",
+    "completion": 64,
+    "profileFormVersion": 2,
+    "operator": false,
+    "activities": {
+      "game": 0,
+      "chats": 0,
+      "invitations": 0,
+      "events": 0,
+      "hosting": 0
+    }
+  },
+  {
+    "_id": "group:seed-community-photo-walks:178e8d0cbe164fa3fede5884",
+    "userId": "group:seed-community-photo-walks:178e8d0cbe164fa3fede5884",
+    "syncKey": "group:seed-community-photo-walks:178e8d0cbe164fa3fede5884",
+    "workspaceGroupId": "seed-community-photo-walks",
+    "accountUserId": "178e8d0cbe164fa3fede5884",
+    "name": "Lina Park",
+    "initials": "LP",
+    "age": 27,
+    "birthday": "1998-02-21",
+    "gender": "woman",
+    "city": "Denver",
+    "height": "167 cm",
+    "physique": "Slim",
+    "languages": [
+      "English",
+      "Korean"
+    ],
+    "horoscope": "Pisces",
+    "headline": "Thoughtful plans, minimal noise.",
+    "about": "I prefer meaningful conversations and smaller events with quality curation.",
+    "images": [
+      "/media/public?key=images/demo-profiles/178e8d0cbe164fa3fede5884/photo-01/large.webp",
+      "/media/public?key=images/demo-profiles/178e8d0cbe164fa3fede5884/photo-02/large.webp"
+    ],
+    "locationCoordinates": {
+      "latitude": 39.7536,
+      "longitude": -104.9951
+    },
+    "partitionKey": "country:hu",
+    "profileStatus": "host only",
+    "statusText": "Recently Active",
+    "completion": 68,
+    "profileFormVersion": 2,
+    "operator": false,
+    "activities": {
+      "game": 0,
+      "chats": 0,
+      "invitations": 0,
+      "events": 0,
+      "hosting": 0
+    }
+  },
+  {
+    "_id": "group:seed-community-photo-walks:af0436815ab38f4864dd1e24",
+    "userId": "group:seed-community-photo-walks:af0436815ab38f4864dd1e24",
+    "syncKey": "group:seed-community-photo-walks:af0436815ab38f4864dd1e24",
+    "workspaceGroupId": "seed-community-photo-walks",
+    "accountUserId": "af0436815ab38f4864dd1e24",
+    "name": "Alex Turner",
+    "initials": "AT",
+    "age": 31,
+    "birthday": "1999-08-04",
+    "gender": "man",
+    "city": "Seattle",
+    "height": "180 cm",
+    "physique": "Average",
+    "languages": [
+      "English",
+      "French"
+    ],
+    "horoscope": "Capricorn",
+    "headline": "Metrics first, then movement.",
+    "about": "I optimize event outcomes and participant quality through filtered invites.",
+    "images": [
+      "/media/public?key=images/demo-profiles/af0436815ab38f4864dd1e24/photo-01/large.webp"
+    ],
+    "locationCoordinates": {
+      "latitude": 42.3433,
+      "longitude": -71.0625
+    },
+    "partitionKey": "country:hu",
+    "profileStatus": "friends only",
+    "statusText": "Recently Active",
+    "completion": 61,
+    "profileFormVersion": 2,
+    "operator": false,
+    "activities": {
+      "game": 0,
+      "chats": 0,
+      "invitations": 0,
+      "events": 0,
+      "hosting": 0
+    }
+  },
+  {
+    "_id": "group:seed-community-photo-walks:9f3b3f085e23af6c89dbc432",
+    "userId": "group:seed-community-photo-walks:9f3b3f085e23af6c89dbc432",
+    "syncKey": "group:seed-community-photo-walks:9f3b3f085e23af6c89dbc432",
+    "workspaceGroupId": "seed-community-photo-walks",
+    "accountUserId": "9f3b3f085e23af6c89dbc432",
+    "name": "Nagy Eszter",
+    "initials": "NE",
+    "age": 30,
+    "birthday": "1995-07-19",
+    "gender": "woman",
+    "city": "Seattle",
+    "height": "168 cm",
+    "physique": "Fit",
+    "languages": [
+      "English",
+      "Hungarian"
+    ],
+    "horoscope": "Cancer",
+    "headline": "Art nights and adventure mornings.",
+    "about": "I enjoy cultural events and activity-heavy weekends with small groups.",
+    "images": [
+      "/media/public?key=images/demo-profiles/9f3b3f085e23af6c89dbc432/photo-01/large.webp",
+      "/media/public?key=images/demo-profiles/9f3b3f085e23af6c89dbc432/photo-02/large.webp"
+    ],
+    "locationCoordinates": {
+      "latitude": 47.6182,
+      "longitude": -122.3369
+    },
+    "partitionKey": "country:hu",
+    "profileStatus": "public",
+    "statusText": "Recently Active",
+    "completion": 58,
+    "profileFormVersion": 2,
+    "operator": false,
+    "activities": {
+      "game": 0,
+      "chats": 0,
+      "invitations": 0,
+      "events": 0,
+      "hosting": 0
+    }
+  },
+  {
+    "_id": "group:seed-community-makers:cdd937e0adcbd1a5e38f3ceb",
+    "userId": "group:seed-community-makers:cdd937e0adcbd1a5e38f3ceb",
+    "syncKey": "group:seed-community-makers:cdd937e0adcbd1a5e38f3ceb",
+    "workspaceGroupId": "seed-community-makers",
+    "accountUserId": "cdd937e0adcbd1a5e38f3ceb",
+    "name": "Noah Hart",
+    "initials": "NH",
+    "age": 30,
+    "birthday": "1995-03-07",
+    "gender": "man",
+    "city": "New York",
+    "height": "184 cm",
+    "physique": "Athletic",
+    "languages": [
+      "English"
+    ],
+    "horoscope": "Pisces",
+    "headline": "Fast pace, good vibes.",
+    "about": "I host sports and game-heavy events with structured follow-ups.",
+    "images": [
+      "/media/public?key=images/demo-profiles/cdd937e0adcbd1a5e38f3ceb/photo-01/large.webp"
+    ],
+    "locationCoordinates": {
+      "latitude": 30.284,
+      "longitude": -97.7479
+    },
+    "partitionKey": "country:hu",
+    "profileStatus": "public",
+    "statusText": "Recently Active",
+    "completion": 70,
+    "profileFormVersion": 2,
+    "operator": false,
+    "activities": {
+      "game": 0,
+      "chats": 0,
+      "invitations": 0,
+      "events": 0,
+      "hosting": 0
+    }
+  },
+  {
+    "_id": "group:seed-community-makers:178e8d0cbe164fa3fede5884",
+    "userId": "group:seed-community-makers:178e8d0cbe164fa3fede5884",
+    "syncKey": "group:seed-community-makers:178e8d0cbe164fa3fede5884",
+    "workspaceGroupId": "seed-community-makers",
+    "accountUserId": "178e8d0cbe164fa3fede5884",
+    "name": "Lina Park",
+    "initials": "LP",
+    "age": 27,
+    "birthday": "1998-02-21",
+    "gender": "woman",
+    "city": "Denver",
+    "height": "167 cm",
+    "physique": "Slim",
+    "languages": [
+      "English",
+      "Korean"
+    ],
+    "horoscope": "Pisces",
+    "headline": "Thoughtful plans, minimal noise.",
+    "about": "I prefer meaningful conversations and smaller events with quality curation.",
+    "images": [
+      "/media/public?key=images/demo-profiles/178e8d0cbe164fa3fede5884/photo-01/large.webp",
+      "/media/public?key=images/demo-profiles/178e8d0cbe164fa3fede5884/photo-02/large.webp"
+    ],
+    "locationCoordinates": {
+      "latitude": 39.7536,
+      "longitude": -104.9951
+    },
+    "partitionKey": "country:hu",
+    "profileStatus": "host only",
+    "statusText": "Recently Active",
+    "completion": 68,
+    "profileFormVersion": 2,
+    "operator": false,
+    "activities": {
+      "game": 0,
+      "chats": 0,
+      "invitations": 0,
+      "events": 0,
+      "hosting": 0
+    }
+  },
+  {
+    "_id": "group:seed-community-game-night:7822c5f99eff99d63abe8933",
+    "userId": "group:seed-community-game-night:7822c5f99eff99d63abe8933",
+    "syncKey": "group:seed-community-game-night:7822c5f99eff99d63abe8933",
+    "workspaceGroupId": "seed-community-game-night",
+    "accountUserId": "7822c5f99eff99d63abe8933",
+    "name": "Kai Morgan",
+    "initials": "KM",
+    "age": 25,
+    "birthday": "2000-04-18",
+    "gender": "man",
+    "city": "Portland",
+    "height": "178 cm",
+    "physique": "Slim",
+    "languages": [
+      "English"
+    ],
+    "horoscope": "Aries",
+    "headline": "Design-led hangouts only.",
+    "about": "I design event atmospheres first and build flow around people and space.",
+    "images": [
+      "/media/public?key=images/demo-profiles/7822c5f99eff99d63abe8933/photo-01/large.webp",
+      "/media/public?key=images/demo-profiles/7822c5f99eff99d63abe8933/photo-02/large.webp"
+    ],
+    "locationCoordinates": {
+      "latitude": 45.4996,
+      "longitude": -122.682
+    },
+    "partitionKey": "country:hu",
+    "profileStatus": "host only",
+    "statusText": "Recently Active",
+    "completion": 53,
+    "profileFormVersion": 2,
+    "operator": false,
+    "activities": {
+      "game": 0,
+      "chats": 0,
+      "invitations": 0,
+      "events": 0,
+      "hosting": 0
+    }
+  },
+  {
+    "_id": "group:seed-community-game-night:cdd937e0adcbd1a5e38f3ceb",
+    "userId": "group:seed-community-game-night:cdd937e0adcbd1a5e38f3ceb",
+    "syncKey": "group:seed-community-game-night:cdd937e0adcbd1a5e38f3ceb",
+    "workspaceGroupId": "seed-community-game-night",
+    "accountUserId": "cdd937e0adcbd1a5e38f3ceb",
+    "name": "Noah Hart",
+    "initials": "NH",
+    "age": 30,
+    "birthday": "1995-03-07",
+    "gender": "man",
+    "city": "New York",
+    "height": "184 cm",
+    "physique": "Athletic",
+    "languages": [
+      "English"
+    ],
+    "horoscope": "Pisces",
+    "headline": "Fast pace, good vibes.",
+    "about": "I host sports and game-heavy events with structured follow-ups.",
+    "images": [
+      "/media/public?key=images/demo-profiles/cdd937e0adcbd1a5e38f3ceb/photo-01/large.webp"
+    ],
+    "locationCoordinates": {
+      "latitude": 30.284,
+      "longitude": -97.7479
+    },
+    "partitionKey": "country:hu",
+    "profileStatus": "public",
+    "statusText": "Recently Active",
+    "completion": 70,
+    "profileFormVersion": 2,
+    "operator": false,
+    "activities": {
+      "game": 0,
+      "chats": 0,
+      "invitations": 0,
+      "events": 0,
+      "hosting": 0
+    }
+  },
+  {
+    "_id": "group:seed-community-neighbours:9f3b3f085e23af6c89dbc432",
+    "userId": "group:seed-community-neighbours:9f3b3f085e23af6c89dbc432",
+    "syncKey": "group:seed-community-neighbours:9f3b3f085e23af6c89dbc432",
+    "workspaceGroupId": "seed-community-neighbours",
+    "accountUserId": "9f3b3f085e23af6c89dbc432",
+    "name": "Nagy Eszter",
+    "initials": "NE",
+    "age": 30,
+    "birthday": "1995-07-19",
+    "gender": "woman",
+    "city": "Seattle",
+    "height": "168 cm",
+    "physique": "Fit",
+    "languages": [
+      "English",
+      "Hungarian"
+    ],
+    "horoscope": "Cancer",
+    "headline": "Art nights and adventure mornings.",
+    "about": "I enjoy cultural events and activity-heavy weekends with small groups.",
+    "images": [
+      "/media/public?key=images/demo-profiles/9f3b3f085e23af6c89dbc432/photo-01/large.webp",
+      "/media/public?key=images/demo-profiles/9f3b3f085e23af6c89dbc432/photo-02/large.webp"
+    ],
+    "locationCoordinates": {
+      "latitude": 47.6182,
+      "longitude": -122.3369
+    },
+    "partitionKey": "country:hu",
+    "profileStatus": "public",
+    "statusText": "Recently Active",
+    "completion": 58,
+    "profileFormVersion": 2,
+    "operator": false,
+    "activities": {
+      "game": 0,
+      "chats": 0,
+      "invitations": 0,
+      "events": 0,
+      "hosting": 0
+    }
+  },
+  {
+    "_id": "group:seed-community-neighbours:1b1c70be2349b3359a8f6f94",
+    "userId": "group:seed-community-neighbours:1b1c70be2349b3359a8f6f94",
+    "syncKey": "group:seed-community-neighbours:1b1c70be2349b3359a8f6f94",
+    "workspaceGroupId": "seed-community-neighbours",
+    "accountUserId": "1b1c70be2349b3359a8f6f94",
+    "name": "Maya Stone",
+    "initials": "MS",
+    "age": 29,
+    "birthday": "1996-11-04",
+    "gender": "woman",
+    "city": "San Diego",
+    "height": "172 cm",
+    "physique": "Athletic",
+    "languages": [
+      "English"
+    ],
+    "horoscope": "Scorpio",
+    "headline": "Sunset rides and coffee circles.",
+    "about": "I host social-first events where people who do not know each other can connect fast.",
+    "images": [
+      "/media/public?key=images/demo-profiles/1b1c70be2349b3359a8f6f94/photo-01/large.webp",
+      "/media/public?key=images/demo-profiles/1b1c70be2349b3359a8f6f94/photo-02/large.webp"
+    ],
+    "locationCoordinates": {
+      "latitude": 32.7289,
+      "longitude": -117.1659
+    },
+    "partitionKey": "country:hu",
+    "profileStatus": "public",
+    "statusText": "Recently Active",
+    "completion": 76,
+    "profileFormVersion": 2,
+    "operator": false,
+    "activities": {
+      "game": 0,
+      "chats": 0,
+      "invitations": 0,
+      "events": 0,
+      "hosting": 0
+    }
+  },
+  {
+    "_id": "group:seed-community-book-circle:bf057de7c586eede7e84bdc7",
+    "userId": "group:seed-community-book-circle:bf057de7c586eede7e84bdc7",
+    "syncKey": "group:seed-community-book-circle:bf057de7c586eede7e84bdc7",
+    "workspaceGroupId": "seed-community-book-circle",
+    "accountUserId": "bf057de7c586eede7e84bdc7",
+    "name": "Farkas Anna",
+    "initials": "FA",
+    "age": 28,
+    "birthday": "1997-05-12",
+    "gender": "woman",
+    "city": "Austin",
+    "height": "170 cm",
+    "physique": "Athletic",
+    "languages": [
+      "English",
+      "Spanish"
+    ],
+    "horoscope": "Taurus",
+    "headline": "Planning cozy chaos with structure.",
+    "about": "I host events where social energy stays high, but logistics stay clean and predictable.",
+    "images": [
+      "/media/public?key=images/demo-profiles/bf057de7c586eede7e84bdc7/photo-01/large.webp",
+      "/media/public?key=images/demo-profiles/bf057de7c586eede7e84bdc7/photo-02/large.webp",
+      "/media/public?key=images/demo-profiles/bf057de7c586eede7e84bdc7/photo-03/large.webp"
+    ],
+    "locationCoordinates": {
+      "latitude": 30.2768,
+      "longitude": -97.7479
+    },
+    "partitionKey": "country:hu",
+    "profileStatus": "public",
+    "statusText": "Recently Active",
+    "completion": 72,
+    "profileFormVersion": 2,
+    "operator": false,
+    "activities": {
+      "game": 0,
+      "chats": 0,
+      "invitations": 0,
+      "events": 0,
+      "hosting": 0
+    }
+  },
+  {
+    "_id": "group:seed-community-book-circle:b29df68956f3fe15e04558de",
+    "userId": "group:seed-community-book-circle:b29df68956f3fe15e04558de",
+    "syncKey": "group:seed-community-book-circle:b29df68956f3fe15e04558de",
+    "workspaceGroupId": "seed-community-book-circle",
+    "accountUserId": "b29df68956f3fe15e04558de",
+    "name": "Kiss Balázs",
+    "initials": "KB",
+    "age": 31,
+    "birthday": "1994-09-23",
+    "gender": "man",
+    "city": "Chicago",
+    "height": "182 cm",
+    "physique": "Lean",
+    "languages": [
+      "English",
+      "Hungarian"
+    ],
+    "horoscope": "Libra",
+    "headline": "Reliable planning, zero drama.",
+    "about": "I like compact events with clear timelines and simple role assignment.",
+    "images": [
+      "/media/public?key=images/demo-profiles/b29df68956f3fe15e04558de/photo-01/large.webp"
+    ],
+    "locationCoordinates": {
+      "latitude": 41.8889,
+      "longitude": -87.6346
+    },
+    "partitionKey": "country:hu",
+    "profileStatus": "public",
+    "statusText": "Recently Active",
+    "completion": 64,
+    "profileFormVersion": 2,
+    "operator": false,
+    "activities": {
+      "game": 0,
+      "chats": 0,
+      "invitations": 0,
+      "events": 0,
+      "hosting": 0
+    }
+  },
+  {
+    "_id": "group:seed-community-study-buddies:b29df68956f3fe15e04558de",
+    "userId": "group:seed-community-study-buddies:b29df68956f3fe15e04558de",
+    "syncKey": "group:seed-community-study-buddies:b29df68956f3fe15e04558de",
+    "workspaceGroupId": "seed-community-study-buddies",
+    "accountUserId": "b29df68956f3fe15e04558de",
+    "name": "Kiss Balázs",
+    "initials": "KB",
+    "age": 31,
+    "birthday": "1994-09-23",
+    "gender": "man",
+    "city": "Chicago",
+    "height": "182 cm",
+    "physique": "Lean",
+    "languages": [
+      "English",
+      "Hungarian"
+    ],
+    "horoscope": "Libra",
+    "headline": "Reliable planning, zero drama.",
+    "about": "I like compact events with clear timelines and simple role assignment.",
+    "images": [
+      "/media/public?key=images/demo-profiles/b29df68956f3fe15e04558de/photo-01/large.webp"
+    ],
+    "locationCoordinates": {
+      "latitude": 41.8889,
+      "longitude": -87.6346
+    },
+    "partitionKey": "country:hu",
+    "profileStatus": "public",
+    "statusText": "Recently Active",
+    "completion": 64,
+    "profileFormVersion": 2,
+    "operator": false,
+    "activities": {
+      "game": 0,
+      "chats": 0,
+      "invitations": 0,
+      "events": 0,
+      "hosting": 0
+    }
+  },
+  {
+    "_id": "group:seed-community-study-buddies:af0436815ab38f4864dd1e24",
+    "userId": "group:seed-community-study-buddies:af0436815ab38f4864dd1e24",
+    "syncKey": "group:seed-community-study-buddies:af0436815ab38f4864dd1e24",
+    "workspaceGroupId": "seed-community-study-buddies",
+    "accountUserId": "af0436815ab38f4864dd1e24",
+    "name": "Alex Turner",
+    "initials": "AT",
+    "age": 31,
+    "birthday": "1999-08-04",
+    "gender": "man",
+    "city": "Seattle",
+    "height": "180 cm",
+    "physique": "Average",
+    "languages": [
+      "English",
+      "French"
+    ],
+    "horoscope": "Capricorn",
+    "headline": "Metrics first, then movement.",
+    "about": "I optimize event outcomes and participant quality through filtered invites.",
+    "images": [
+      "/media/public?key=images/demo-profiles/af0436815ab38f4864dd1e24/photo-01/large.webp"
+    ],
+    "locationCoordinates": {
+      "latitude": 42.3433,
+      "longitude": -71.0625
+    },
+    "partitionKey": "country:hu",
+    "profileStatus": "friends only",
+    "statusText": "Recently Active",
+    "completion": 61,
+    "profileFormVersion": 2,
+    "operator": false,
+    "activities": {
+      "game": 0,
+      "chats": 0,
+      "invitations": 0,
+      "events": 0,
+      "hosting": 0
+    }
   }
 ]

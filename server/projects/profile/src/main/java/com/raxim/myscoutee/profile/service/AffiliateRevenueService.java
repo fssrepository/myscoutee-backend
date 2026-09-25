@@ -33,7 +33,8 @@ public class AffiliateRevenueService {
     public void prepare(Payment payment) {
         if (payment == null || !"payment".equals(payment.getAuditKind())) return;
         if (!payment.isAffiliateAttributionResolved()) {
-            AffiliateRegistration registration = mongo.findById(payment.getUserId(), AffiliateRegistration.class);
+            AffiliateRegistration registration = isCash(payment) ? null
+                    : mongo.findById(payment.getUserId(), AffiliateRegistration.class);
             payment.setAffiliateOwnerUserId(registration == null ? null : registration.referrerUserId());
             payment.setAffiliateAttributionResolved(true);
         }
@@ -54,12 +55,16 @@ public class AffiliateRevenueService {
     }
 
     static Contribution contribution(Payment payment) {
+        if (isCash(payment)) return new Contribution(0L, 0L, 0L);
         boolean settled = Set.of("approved", "captured", "partially_refunded", "refunded").contains(
                 payment.getStatus() == null ? "" : payment.getStatus());
         long gross = settled ? minor(payment.getAmount()) : 0L;
         long refunded = payment.getRefundedAtIso() == null || payment.getRefundedAtIso().isBlank()
                 ? 0L : Math.min(gross, minor(payment.getRefundedAmount()));
         return new Contribution(gross, refunded, gross > 0 && PaymentService.FULFILLMENT_KIND_EVENT_JOIN.equals(payment.getFulfillmentKind()) ? 1L : 0L);
+    }
+    private static boolean isCash(Payment payment) {
+        return "cash".equalsIgnoreCase(payment.getProvider() == null ? "" : payment.getProvider().trim());
     }
     record Contribution(long gross, long refunded, long eventBookings) { }
     private static long minor(Double amount) {

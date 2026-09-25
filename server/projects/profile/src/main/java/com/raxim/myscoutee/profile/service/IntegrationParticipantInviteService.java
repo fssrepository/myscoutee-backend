@@ -33,6 +33,15 @@ public class IntegrationParticipantInviteService {
     private final ActivitiesMembersService members;
     private final IntegrationPublicEndpointResolver endpoint;
     private final HomeUserProfileService profiles;
+    @org.springframework.beans.factory.annotation.Autowired
+    private CommunityGroupsService groups;
+    @org.springframework.beans.factory.annotation.Autowired
+    private com.raxim.myscoutee.profile.repository.UsersRepository users;
+    @org.springframework.beans.factory.annotation.Autowired
+    private AffiliateService affiliates;
+    @org.springframework.beans.factory.annotation.Autowired
+    @org.springframework.context.annotation.Lazy
+    private ActivitiesEventsService eventActions;
     private final SecureRandom random = new SecureRandom();
 
     public IntegrationParticipantInviteService(MongoTemplate mongo, ActivityEventsRepository events, AccessControlService access,
@@ -42,6 +51,13 @@ public class IntegrationParticipantInviteService {
 
     public IntegrationParticipantInvitesDto create(String ownerUserId, String eventId, IntegrationParticipantInviteRequestDto request) {
         requireEvent(ownerUserId, eventId);
+        return create(ownerUserId, eventId, request, "event");
+    }
+    public IntegrationParticipantInvitesDto createGroup(String ownerUserId, String groupId, IntegrationParticipantInviteRequestDto request) {
+        groups.requireAdmin(groups.actor(ownerUserId), groupId);
+        return create(ownerUserId, groupId, request, "community");
+    }
+    private IntegrationParticipantInvitesDto create(String ownerUserId, String eventId, IntegrationParticipantInviteRequestDto request, String ownerType) {
         if (request == null || request.participantIds() == null || request.participantIds().isEmpty()
                 || request.participantIds().size() > IntegrationTokenService.MAX_BATCH_SIZE) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invite batch must contain 1–1000 participant IDs.");
@@ -53,7 +69,7 @@ public class IntegrationParticipantInviteService {
             if (id.isBlank() || id.length() > 200 || !participantIds.add(id)) {
                 throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Participant IDs must be distinct non-empty strings of at most 200 characters.");
             }
-            ids.put(digest(ownerUserId + "\n" + eventId + "\n" + id), id);
+            ids.put(digest(ownerUserId + "\n" + ("community".equals(ownerType) ? "community\n" : "") + eventId + "\n" + id), id);
         }
         String now = Instant.now().toString();
         BulkOperations writes = mongo.bulkOps(BulkOperations.BulkMode.UNORDERED, IntegrationParticipantInvite.class);
@@ -62,17 +78,17 @@ public class IntegrationParticipantInviteService {
             String token = Base64.getUrlEncoder().withoutPadding().encodeToString(bytes);
             writes.upsert(Query.query(Criteria.where("_id").is(entry.getKey())), new Update()
                     .setOnInsert("ownerUserId", ownerUserId).setOnInsert("eventId", eventId)
-                    .setOnInsert("participantId", entry.getValue()).setOnInsert("token", token)
+                    .setOnInsert("ownerType", ownerType).setOnInsert("participantId", entry.getValue()).setOnInsert("token", token)
                     .setOnInsert("tokenHash", digest(token)).setOnInsert("createdAtIso", now));
         }
         writes.execute();
         var stored = mongo.find(Query.query(Criteria.where("_id").in(ids.keySet())), IntegrationParticipantInvite.class);
         Map<String, IntegrationParticipantInvite> byId = new HashMap<>();
         stored.forEach(invite -> byId.put(invite.id(), invite));
-        String appUrl = URI.create(endpoint.resolve()).resolve("/game").toString();
+        String appUrl = invitationBaseUrl(ownerUserId);
         return new IntegrationParticipantInvitesDto(ids.keySet().stream().map(id -> {
             var invite = byId.get(id);
-            return new IntegrationParticipantInviteDto(invite.participantId(), appUrl + "?partnerInvite=" + invite.token(),
+            return new IntegrationParticipantInviteDto(invite.participantId(), appUrl + "&partnerInvite=" + invite.token(),
                     invite.claimedUserId() != null);
         }).toList());
     }
@@ -85,33 +101,104 @@ public class IntegrationParticipantInviteService {
         }
         var invite = mongo.findOne(Query.query(Criteria.where("tokenHash").is(digest(token))), IntegrationParticipantInvite.class);
         if (invite == null) throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Invitation not found.");
-        var event = requireOwnedEvent(invite.ownerUserId(), invite.eventId());
-        boolean invitationAvailable = !hasEnded(event);
-        if (invitationAvailable) requireInvitePermission(invite.ownerUserId(), invite.eventId());
+        boolean community = "community".equals(invite.ownerType());
+        var owner = community ? users.findByUserId(invite.ownerUserId()).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND)) : null;
+        if (community) groups.requireAdmin(owner, invite.eventId());
+        if (community) actor = groups.actor(actor).getUserId();
+        var event = community ? null : invite.reusable() ? sharedEventRecord(invite.eventId()) : requireOwnedEvent(invite.ownerUserId(), invite.eventId());
+        boolean invitationAvailable = community || !hasEnded(event);
+        if (!community && !invite.reusable() && invitationAvailable) requireInvitePermission(invite.ownerUserId(), invite.eventId());
         if (invite.claimedUserId() != null && !actor.equals(invite.claimedUserId())) {
             throw new ResponseStatusException(HttpStatus.CONFLICT, "This invitation belongs to another account.");
         }
-        String mappingId = digest(invite.ownerUserId() + "\nparticipant\n" + invite.participantId());
-        IntegrationExternalId mapping;
-        try {
-            mapping = mongo.findAndModify(Query.query(Criteria.where("_id").is(mappingId)), new Update()
-                        .setOnInsert("ownerUserId", invite.ownerUserId()).setOnInsert("resourceType", "participant")
-                        .setOnInsert("externalId", invite.participantId()).setOnInsert("internalId", actor)
-                        .setOnInsert("createdAtIso", Instant.now().toString()),
-                FindAndModifyOptions.options().upsert(true).returnNew(true), IntegrationExternalId.class);
-        } catch (DuplicateKeyException conflict) {
-            mapping = mongo.findById(mappingId, IntegrationExternalId.class);
+        IntegrationParticipantInvite claimed;
+        if (invite.reusable()) {
+            // Reusable UI links admit each caller through the same membership workflow.
+            // They never allocate an API participant ID or bind the link to its first visitor.
+            claimed = new IntegrationParticipantInvite(invite.id(), invite.ownerUserId(), invite.eventId(), null,
+                    invite.token(), invite.tokenHash(), actor, invite.createdAtIso(), Instant.now().toString(), invite.ownerType(), true);
+        } else {
+            String mappingId = digest(invite.ownerUserId() + "\nparticipant\n" + invite.participantId());
+            IntegrationExternalId mapping;
+            try {
+                mapping = mongo.findAndModify(Query.query(Criteria.where("_id").is(mappingId)), new Update()
+                            .setOnInsert("ownerUserId", invite.ownerUserId()).setOnInsert("resourceType", "participant")
+                            .setOnInsert("externalId", invite.participantId()).setOnInsert("internalId", actor)
+                            .setOnInsert("createdAtIso", Instant.now().toString()),
+                    FindAndModifyOptions.options().upsert(true).returnNew(true), IntegrationExternalId.class);
+            } catch (DuplicateKeyException conflict) {
+                mapping = mongo.findById(mappingId, IntegrationExternalId.class);
+            }
+            if (mapping == null || !actor.equals(mapping.getInternalId())) {
+                throw new ResponseStatusException(HttpStatus.CONFLICT, "Participant ID is linked to another account.");
+            }
+            claimed = mongo.findAndModify(Query.query(Criteria.where("_id").is(invite.id())
+                            .and("claimedUserId").in(null, actor)),
+                    new Update().set("claimedUserId", actor).set("claimedAtIso", Instant.now().toString()),
+                    FindAndModifyOptions.options().returnNew(true), IntegrationParticipantInvite.class);
+            if (claimed == null) throw new ResponseStatusException(HttpStatus.CONFLICT, "Invitation already claimed.");
         }
-        if (mapping == null || !actor.equals(mapping.getInternalId())) {
-            throw new ResponseStatusException(HttpStatus.CONFLICT, "Participant ID is linked to another account.");
+        if (community) {
+            groups.claimIntegrationInvite(claimed, actor);
+            return new IntegrationParticipantClaimDto(null, true, invite.eventId());
         }
-        var claimed = mongo.findAndModify(Query.query(Criteria.where("_id").is(invite.id())
-                        .and("claimedUserId").in(null, actor)),
-                new Update().set("claimedUserId", actor).set("claimedAtIso", Instant.now().toString()),
-                FindAndModifyOptions.options().returnNew(true), IntegrationParticipantInvite.class);
-        if (claimed == null) throw new ResponseStatusException(HttpStatus.CONFLICT, "Invitation already claimed.");
-        if (invitationAvailable) members.claimIntegrationInvite(claimed, event, actor);
+        if (invitationAvailable) {
+            if (!invite.reusable() || access.canInviteEventMembers(invite.eventId(), invite.ownerUserId())) {
+                members.claimIntegrationInvite(claimed, event, actor);
+            } else {
+                // A public share grants no inviter/admin privileges. Use the recipient's normal admission command.
+                var result = eventActions.requestJoin(new com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventActionRequestDto(
+                        actor, invite.eventId(), null, List.of(), List.of(), List.of(), null, false,
+                        null, null, null, null, null, null, null));
+                if (result == null || "unchanged".equals(result.membershipStatus()))
+                    throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Event participation is unavailable.");
+            }
+        }
         return new IntegrationParticipantClaimDto(invite.eventId(), invitationAvailable);
+    }
+
+    public record ExternalInviteLinkDto(String url) { }
+
+    public ExternalInviteLinkDto externalLink(String requestedUserId, String ownerType, String entityId) {
+        String actor = profiles.resolveSelectedUserId(requestedUserId);
+        if ("community".equals(ownerType)) {
+            var account = groups.actor(actor);
+            groups.requireAdmin(account, entityId);
+            actor = account.getUserId();
+        }
+        else if ("event".equals(ownerType)) {
+            if (eventActions.loadEventDetailById(actor, entityId) == null)
+                throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Event not found.");
+        }
+        else throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Unsupported invitation target.");
+        String id = digest(actor + "\nshared-invite\n" + ownerType + "\n" + entityId);
+        byte[] bytes = new byte[32]; random.nextBytes(bytes);
+        String token = Base64.getUrlEncoder().withoutPadding().encodeToString(bytes);
+        IntegrationParticipantInvite invite;
+        try {
+            invite = mongo.findAndModify(Query.query(Criteria.where("_id").is(id)), new Update()
+                    .setOnInsert("ownerUserId", actor).setOnInsert("ownerType", ownerType)
+                    .setOnInsert("eventId", entityId).setOnInsert("reusable", true)
+                    .setOnInsert("token", token).setOnInsert("tokenHash", digest(token))
+                    .setOnInsert("createdAtIso", Instant.now().toString()),
+                    FindAndModifyOptions.options().upsert(true).returnNew(true), IntegrationParticipantInvite.class);
+        } catch (DuplicateKeyException conflict) {
+            invite = mongo.findById(id, IntegrationParticipantInvite.class);
+        }
+        return new ExternalInviteLinkDto(invitationBaseUrl(actor) + "&partnerInvite=" + invite.token());
+    }
+
+    private String invitationBaseUrl(String owner) {
+        String affiliateQuery = URI.create(affiliates.link(owner)).getRawQuery();
+        return URI.create(endpoint.resolve()).resolve("/game") + "?" + affiliateQuery;
+    }
+
+    private ActivityEvent sharedEventRecord(String eventId) {
+        return events.findBySourceId(eventId).stream()
+                .filter(event -> CommunityGroupProfilesService.allows(event.getWorkspaceGroupId()))
+                .filter(event -> !Boolean.TRUE.equals(event.getIsTrashed()))
+                .min(Comparator.comparing(event -> !Boolean.TRUE.equals(event.getIsAdmin())))
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Event not found."));
     }
 
     private ActivityEvent requireEvent(String ownerUserId, String eventId) {

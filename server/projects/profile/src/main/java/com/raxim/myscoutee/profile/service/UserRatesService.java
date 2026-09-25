@@ -199,7 +199,19 @@ public class UserRatesService {
         Set<String> affectedHomeProjectionOwnerIds = new LinkedHashSet<>();
         List<String> syncedRateIds = new ArrayList<>();
         List<String> failedRateIds = new ArrayList<>();
+        Set<String> participantIds = new LinkedHashSet<>();
+        for (var rate : request.rates()) if (rate != null) {
+            addIfText(participantIds, rate.ownerUserId()); addIfText(participantIds, rate.fromUserId()); addIfText(participantIds, rate.toUserId());
+        }
+        Set<String> workspaceParticipants = usersRepository.findByUserIdIn(participantIds).stream()
+                .filter(user -> CommunityGroupProfilesService.allows(user.getWorkspaceGroupId()))
+                .map(Users::getUserId).collect(java.util.stream.Collectors.toSet());
         for (UserRateRecordDto rate : request.rates()) {
+            if (rate != null && java.util.stream.Stream.of(rate.ownerUserId(), rate.fromUserId(), rate.toUserId())
+                    .filter(org.springframework.util.StringUtils::hasText).anyMatch(id -> !workspaceParticipants.contains(id))) {
+                if (StringUtils.hasText(rate.id())) failedRateIds.add(rate.id());
+                continue;
+            }
             NormalizedRate normalizedResult = normalizeRecord(rate, affectedHomeProjectionOwnerIds);
             if (normalizedResult == null || normalizedResult.rate() == null) {
                 String failedId = rate == null ? "" : normalizeId(rate.id());

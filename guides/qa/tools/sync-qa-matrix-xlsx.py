@@ -69,8 +69,9 @@ DOMAIN_METADATA = (
     ("Tournament", 11, "FFF4CCCC", "TOURNAMENT"),
     ("Chat", 10, "FFDDEBF7", "CHAT"),
     ("Asset", 9, "FFFFE5CC", "ASSET"),
-    ("Content", 8, "FFFFF2CC", "ARTICLE"),
-    ("Notifications", 7, "FFE2F0D9", "BELL"),
+    ("Group", 8, "FFEAF7BE", "GROUP"),
+    ("Content", 7, "FFFFF2CC", "ARTICLE"),
+    ("Notifications", 6, "FFE2F0D9", "BELL"),
     ("Administration", 5, "FFEAD1DC", "ADMIN"),
     ("Operator", 3, "FF7FC8C8", "OPERATOR"),
 )
@@ -134,6 +135,7 @@ def expected_domain(identifier: str) -> str:
         ("Tournament", ("TOURNAMENT",)),
         ("Chat", ("CHAT",)),
         ("Asset", ("ASSET",)),
+        ("Group", ("GROUP",)),
         ("Content", ("ARTICLE", "LANDING-ARTICLE")),
         (
             "Notifications",

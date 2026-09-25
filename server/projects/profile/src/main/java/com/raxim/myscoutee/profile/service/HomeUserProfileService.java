@@ -578,7 +578,10 @@ public class HomeUserProfileService {
         if (!StringUtils.hasText(resolvedUserId) || preferences == null) {
             return;
         }
+        persistUserFilterPreferences(resolvedUserId, preferences);
+    }
 
+    private void persistUserFilterPreferences(String resolvedUserId, UserGameFilterPreferencesDto preferences) {
         String nowIso = Instant.now().toString();
         UserFilterPreferences document = userFilterPreferencesRepository.findByUserId(resolvedUserId)
                 .orElseGet(UserFilterPreferences::new);
@@ -625,6 +628,9 @@ public class HomeUserProfileService {
             throw exception;
         }
         affiliateService.recordRegistration(saved.getAffiliateRegistration());
+        if (existing == null && userFilterPreferencesRepository.findByUserId(normalizedUserId).isEmpty()) {
+            persistUserFilterPreferences(normalizedUserId, buildDefaultFilterPreferences(saved));
+        }
         if (wasTrackedForAccountPurge != shouldTrackForAccountPurge) {
             adjustAccountPurgePendingCount(shouldTrackForAccountPurge ? 1 : -1);
         }
@@ -863,6 +869,7 @@ public class HomeUserProfileService {
         return snapshot.visibleGameUsers().stream()
                 .filter(Objects::nonNull)
                 .filter(this::isPublicGameUser)
+                .filter(user -> CommunityGroupProfilesService.sameWorkspace(activeUser, user))
                 .filter(user -> !normalizedUserId.equals(normalizeId(user.getId())))
                 .filter(user -> !metUserIds.contains(normalizeId(user.getId())))
                 .filter(user -> !ratedUserIds.contains(normalizeId(user.getId())))
@@ -1192,6 +1199,7 @@ public class HomeUserProfileService {
     public List<DemoUserListItemDto> queryDemoUserListItems(Integer limit, String role) {
         String selectorRole = normalizeDemoSelectorRole(role);
         return usersRepository.findAllByOrderByNameAscUserIdAsc().stream()
+                .filter(user -> user.getWorkspaceGroupId() == null)
                 .filter(user -> isSelectableDemoUserDocument(user, selectorRole))
                 .limit(resolveDemoUserListLimit(limit))
                 .map(this::toDemoUserListItemDto)
@@ -1319,6 +1327,7 @@ public class HomeUserProfileService {
                 nullToEmpty(user.getStatusText()),
                 normalizeCount(user.getCompletion()),
                 normalizeCount(user.getProfileFormVersion()),
+                safeText(user.getStatus()),
                 safeText(user.getProfileStatus()),
                 nullToEmpty(user.getDeletedAtIso()));
     }
@@ -2055,6 +2064,12 @@ public class HomeUserProfileService {
     }
 
     private UserGameFilterPreferencesDto buildDefaultFilterPreferences(Users user) {
+        String gender = user == null ? "" : safeText(user.getGender());
+        List<String> genders = switch (gender) {
+            case "man" -> List.of("woman");
+            case "woman" -> List.of("man");
+            default -> List.of();
+        };
         return new UserGameFilterPreferencesDto(
                 18,
                 120,
@@ -2064,7 +2079,7 @@ public class HomeUserProfileService {
                 List.of(),
                 List.of(),
                 List.of(),
-                List.of(),
+                genders,
                 List.of(),
                 List.of(),
                 List.of(),
@@ -2159,7 +2174,8 @@ public class HomeUserProfileService {
         document.setMongoId(current != null && StringUtils.hasText(current.getMongoId()) ? current.getMongoId() : new ObjectId().toHexString());
         document.setSyncKey(current != null && StringUtils.hasText(current.getSyncKey()) ? current.getSyncKey() : UUID.randomUUID().toString());
         document.setUserId(normalizeId(user.id()));
-        document.setEmail(resolveStoredEmail(normalizeId(user.id()), current == null ? null : current.getEmail()));
+        document.setEmail(current != null && StringUtils.hasText(current.getWorkspaceGroupId())
+                ? null : resolveStoredEmail(normalizeId(user.id()), current == null ? null : current.getEmail()));
         document.setName(nullToEmpty(user.name()));
         document.setAge(normalizeCount(user.age()));
         document.setBirthday(nullToEmpty(user.birthday()));
@@ -2301,6 +2317,8 @@ public class HomeUserProfileService {
         if (user == null) {
             return null;
         }
+        // A workspace profile belongs to the account and never owns its login email.
+        if (StringUtils.hasText(user.getWorkspaceGroupId())) return user;
         String resolvedEmail = resolveAuthenticatedEmailForUser(normalizeId(user.getId()));
         if (!StringUtils.hasText(resolvedEmail) || Objects.equals(safeText(user.getEmail()), resolvedEmail)) {
             return user;
@@ -2673,7 +2691,7 @@ public class HomeUserProfileService {
     private int resolveRealtimeNotificationCount(
             Users user,
             Integer storedNotificationCount) {
-        String userId = normalizeId(user == null ? null : user.getId());
+        String userId = normalizeId(user == null ? null : StringUtils.hasText(user.getAccountUserId()) ? user.getAccountUserId() : user.getUserId());
         if (userNotificationPageRepository == null || !StringUtils.hasText(userId)) {
             return normalizeCount(storedNotificationCount);
         }
@@ -2706,6 +2724,8 @@ public class HomeUserProfileService {
                 String.valueOf(normalizeCount(counters.chat() == null ? null : counters.chat().group())),
                 String.valueOf(normalizeCount(counters.chat() == null ? null : counters.chat().service())),
                 String.valueOf(normalizeCount(counters.chat() == null ? null : counters.chat().appSupport())),
+                String.valueOf(normalizeCount(counters.chat() == null ? null : counters.chat().groupSupport())),
+                String.valueOf(normalizeCount(counters.chat() == null ? null : counters.chat().contacts())),
                 String.valueOf(normalizeCount(counters.event() == null ? null : counters.event().all())),
                 String.valueOf(normalizeCount(counters.event() == null ? null : counters.event().active())),
                 String.valueOf(normalizeCount(counters.event() == null ? null : counters.event().pending())),
@@ -2950,7 +2970,9 @@ public class HomeUserProfileService {
                 chat == null ? 0 : normalizeCount(chat.group()),
                 chat == null ? 0 : normalizeCount(chat.service()),
                 chat == null ? 0 : normalizeCount(chat.appSupport()),
-                toUserSupportCaseCountersDto(chat == null ? null : chat.supportCases()));
+                toUserSupportCaseCountersDto(chat == null ? null : chat.supportCases()),
+                chat == null ? 0 : normalizeCount(chat.groupSupport()),
+                chat == null ? 0 : normalizeCount(chat.contacts()));
     }
 
     private UserSupportCaseCountersDto toUserSupportCaseCountersDto(
@@ -3003,7 +3025,9 @@ public class HomeUserProfileService {
                 chat == null ? 0 : normalizeCount(chat.group()),
                 chat == null ? 0 : normalizeCount(chat.service()),
                 chat == null ? 0 : normalizeCount(chat.appSupport()),
-                toUserSupportCaseCountersRecord(chat == null ? null : chat.supportCases()));
+                toUserSupportCaseCountersRecord(chat == null ? null : chat.supportCases()),
+                chat == null ? 0 : normalizeCount(chat.groupSupport()),
+                chat == null ? 0 : normalizeCount(chat.contacts()));
     }
 
     private Users.UserSupportCaseCountersRecord toUserSupportCaseCountersRecord(

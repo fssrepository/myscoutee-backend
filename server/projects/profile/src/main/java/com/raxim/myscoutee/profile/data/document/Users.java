@@ -24,6 +24,16 @@ import org.springframework.data.mongodb.core.mapping.Document;
                 collation = "{ 'locale': 'en', 'strength': 2 }")
 })
 public class Users {
+    private String activeWorkspaceGroupId;
+    public String getActiveWorkspaceGroupId() { return activeWorkspaceGroupId; }
+    public void setActiveWorkspaceGroupId(String value) { activeWorkspaceGroupId = value; }
+    @Indexed private String workspaceGroupId;
+    @Indexed private String accountUserId;
+    public String getWorkspaceGroupId() { return workspaceGroupId; }
+    public void setWorkspaceGroupId(String value) { workspaceGroupId = value; }
+    public String getAccountUserId() { return accountUserId; }
+    public void setAccountUserId(String value) { accountUserId = value; }
+
     private FeedCountersRecord feedCounters;
     public FeedCountersRecord getFeedCounters() { return feedCounters; }
     public void setFeedCounters(FeedCountersRecord value) { feedCounters = value; }
@@ -616,7 +626,17 @@ public class Users {
             Integer group,
             Integer service,
             Integer appSupport,
-            UserSupportCaseCountersRecord supportCases) {
+            UserSupportCaseCountersRecord supportCases,
+            Integer groupSupport,
+            Integer contacts) {
+        public UserChatCountersRecord(Integer all, Integer event, Integer subEvent, Integer group, Integer service,
+                Integer appSupport, UserSupportCaseCountersRecord supportCases, Integer groupSupport) {
+            this(all, event, subEvent, group, service, appSupport, supportCases, groupSupport, 0);
+        }
+        public UserChatCountersRecord(Integer all, Integer event, Integer subEvent, Integer group, Integer service,
+                Integer appSupport, UserSupportCaseCountersRecord supportCases) {
+            this(all, event, subEvent, group, service, appSupport, supportCases, 0);
+        }
         public UserChatCountersRecord(
                 Integer all,
                 Integer event,

@@ -128,6 +128,132 @@ class ChatServiceTest {
     }
 
     @Test
+    void retriedShareReturnsThePersistedMessageWithoutAnotherUnreadIncrement() {
+        when(homeUserProfileService.resolveSelectedUserId("viewer")).thenReturn("viewer");
+        when(accessControlService.canCurrentActorCreateChatMessage("viewer", "chat-1")).thenReturn(true);
+        when(chatsRepository.findByChatId("chat-1")).thenReturn(List.of(chat("chat-1", "viewer", 0)));
+        when(usersRepository.findByUserId("viewer")).thenReturn(Optional.of(user("viewer", "Viewer", "V")));
+        var original = message("persisted", "viewer", "Viewer", "2026-09-25T10:00:00Z");
+        when(chatMessagesRepository.insert(any(ChatMessage.class)))
+                .thenThrow(new org.springframework.dao.DuplicateKeyException("same client command"));
+        when(chatMessagesRepository.findByChatIdAndMessageId(eq("chat-1"), anyString())).thenReturn(Optional.of(original));
+        var response = service.sendMessage("chat-1", "viewer", "shared event", "share:stable-command");
+        assertThat(response.id()).isEqualTo("persisted");
+        verify(chatMessagesRepository, never()).save(any(ChatMessage.class));
+        verify(chatPushNotificationService, never()).notifyRecipients(anyList(), any());
+        verify(mongoTemplate, never()).updateFirst(any(Query.class), any(Update.class), eq(Users.class));
+    }
+
+    @Test
+    void contactChatRejectsPeopleOutsideTheCallersContactsWithoutWriting() {
+        when(homeUserProfileService.resolveSelectedUserId("viewer")).thenReturn("viewer");
+        assertThatThrownBy(() -> service.ensureContactChat("viewer", "stranger"))
+                .isInstanceOf(org.springframework.web.server.ResponseStatusException.class);
+        verify(mongoTemplate, never()).upsert(any(Query.class), any(Update.class), eq(Chat.class));
+    }
+
+    @Test
+    void contactInvitationRejectsCrossWorkspaceTargetsEvenWhenSavedAsContacts() {
+        when(homeUserProfileService.resolveSelectedUserId("viewer")).thenReturn("viewer");
+        var contacts = new com.raxim.myscoutee.profile.data.document.NavigatorContactsProfile();
+        var contact = new com.raxim.myscoutee.profile.data.document.NavigatorContactsProfile.NavigatorContactRecord();
+        contact.setUserId("target"); contacts.setContacts(List.of(contact));
+        when(mongoTemplate.findOne(any(Query.class), eq(com.raxim.myscoutee.profile.data.document.NavigatorContactsProfile.class)))
+                .thenReturn(contacts);
+        var actor = user("viewer", "Viewer", "V");
+        var target = user("target", "Target", "T"); target.setWorkspaceGroupId("other-group");
+        when(usersRepository.findByUserIdIn(any())).thenReturn(List.of(actor, target));
+        assertThatThrownBy(() -> service.ensureContactChat("viewer", "target"))
+                .isInstanceOf(org.springframework.web.server.ResponseStatusException.class);
+        verify(mongoTemplate, never()).upsert(any(Query.class), any(Update.class), eq(Chat.class));
+    }
+
+    @Test
+    void contactMemberCommandCannotAddPeopleToSupportChats() {
+        when(homeUserProfileService.resolveSelectedUserId("viewer")).thenReturn("viewer");
+        when(chatsRepository.findByChatId("support")).thenReturn(List.of(chat("support", "viewer", 0,
+                "2026-09-25T10:00:00Z", "appSupport")));
+        assertThatThrownBy(() -> service.addContactChatMembers("support", "viewer", List.of("target")))
+                .isInstanceOf(org.springframework.web.server.ResponseStatusException.class);
+        verify(mongoTemplate, never()).updateMulti(any(Query.class), any(Update.class), eq(Chat.class));
+    }
+
+    @Test
+    void existingContactChatRejectsAnInviteOutsideTheActorsOwnContacts() {
+        when(homeUserProfileService.resolveSelectedUserId("viewer")).thenReturn("viewer");
+        when(chatsRepository.findByChatId("contact")).thenReturn(List.of(chat("contact", "viewer", 0,
+                "2026-09-25T10:00:00Z", "contact")));
+        assertThatThrownBy(() -> service.addContactChatMembers("contact", "viewer", List.of("stranger")))
+                .isInstanceOf(org.springframework.web.server.ResponseStatusException.class);
+        verify(mongoTemplate, never()).updateMulti(any(Query.class), any(Update.class), eq(Chat.class));
+        verify(mongoTemplate, never()).upsert(any(Query.class), any(Update.class), eq(Chat.class));
+    }
+
+    @Test
+    void contactInviteReturnsAllMembersAndPreservesExistingUnreadState() {
+        when(homeUserProfileService.resolveSelectedUserId("viewer")).thenReturn("viewer");
+        var current = chat("contact", "viewer", 7, "2026-09-25T10:00:00Z", "contact");
+        var other = chat("contact", "sender", 3, current.getDateIso(), "contact");
+        when(chatsRepository.findByChatId("contact")).thenReturn(List.of(current, other));
+        var contacts = new com.raxim.myscoutee.profile.data.document.NavigatorContactsProfile();
+        var contact = new com.raxim.myscoutee.profile.data.document.NavigatorContactsProfile.NavigatorContactRecord();
+        contact.setUserId("target");
+        contacts.setContacts(List.of(contact));
+        when(mongoTemplate.findOne(any(Query.class), eq(com.raxim.myscoutee.profile.data.document.NavigatorContactsProfile.class)))
+                .thenReturn(contacts);
+        when(usersRepository.findByUserIdIn(any())).thenReturn(List.of(
+                user("viewer", "Viewer", "V"), user("sender", "Sender", "S"), user("target", "Target", "T")));
+        when(mongoTemplate.updateMulti(any(Query.class), any(Update.class), eq(Chat.class))).thenAnswer(invocation -> {
+            for (Chat copy : List.of(current, other)) {
+                var members = new java.util.LinkedHashSet<>(copy.getMemberIds());
+                members.add("target");
+                copy.setMemberIds(List.copyOf(members));
+            }
+            return UpdateResult.acknowledged(2, 2L, null);
+        });
+
+        var result = service.addContactChatMembers("contact", "viewer", List.of("target"));
+
+        assertThat(result.memberIds()).containsExactly("viewer", "sender", "target");
+        assertThat(result.unread()).isEqualTo(7);
+        assertThat(other.getUnread()).isEqualTo(3);
+        var insert = ArgumentCaptor.forClass(Update.class);
+        verify(mongoTemplate).upsert(any(Query.class), insert.capture(), eq(Chat.class));
+        assertThat(insert.getValue().getUpdateObject().keySet()).containsExactly("$setOnInsert");
+        assertThat(insert.getValue().getUpdateObject().get("$setOnInsert", Document.class).getInteger("unread")).isZero();
+        verify(chatMessagesRepository, never()).save(any(ChatMessage.class));
+
+        // If membership was saved but the recipient copy was interrupted, retry still initializes it.
+        var retry = service.addContactChatMembers("contact", "viewer", List.of("target"));
+        assertThat(retry.memberIds()).containsExactly("viewer", "sender", "target");
+        assertThat(retry.unread()).isEqualTo(7);
+        verify(mongoTemplate, times(2)).upsert(any(Query.class), any(Update.class), eq(Chat.class));
+    }
+
+    @Test
+    void sharedMessagesUseAuthenticatedChatAccessWithoutReadingTheConversation() {
+        when(homeUserProfileService.resolveSelectedUserId("viewer")).thenReturn("viewer");
+        when(chatsRepository.findByChatId("chat-1")).thenReturn(List.of(chat("chat-1", "viewer", 7)));
+        when(chatMessagesRepository.findActiveSharesBySender("chat-1", "viewer", "event"))
+                .thenReturn(List.of(message("old-share", "viewer", "viewer", "2026-05-26T08:00:01Z")));
+        when(usersRepository.findByUserId("viewer")).thenReturn(Optional.of(user("viewer", "Viewer", "VU")));
+        assertThat(service.querySharedMessages("chat-1", "viewer", "event"))
+                .extracting(item -> item.id()).containsExactly("old-share");
+        verify(chatMessagesRepository, never()).findByChatIdOrderBySentAtIsoDesc(anyString(), any(Pageable.class));
+        verify(chatsRepository, never()).save(any(Chat.class));
+        verify(chatMessagesRepository, never()).saveAll(anyList());
+    }
+
+    @Test
+    void sharedMessagesRejectActorsOutsideTheChat() {
+        when(homeUserProfileService.resolveSelectedUserId("outsider")).thenReturn("outsider");
+        when(chatsRepository.findByChatId("chat-1")).thenReturn(List.of(chat("chat-1", "viewer", 0)));
+        assertThatThrownBy(() -> service.querySharedMessages("chat-1", "outsider", "event"))
+                .isInstanceOf(org.springframework.web.server.ResponseStatusException.class);
+        verify(chatMessagesRepository, never()).findActiveSharesBySender(anyString(), anyString(), anyString());
+    }
+
+    @Test
     void queryMessagesPageReusesUserLookupCacheForRepeatedParticipants() {
         Chat viewerChat = chat("chat-1", "viewer", 0);
         Chat senderChat = chat("chat-1", "sender", 0);
@@ -717,6 +843,16 @@ class ChatServiceTest {
     }
 
     @Test
+    void groupSupportFilterQueriesOnlyTheSelectedProfilesGroupSupportChannel() {
+        when(homeUserProfileService.resolveSelectedUserId("viewer")).thenReturn("viewer");
+        stubEmptyMenuCounters("viewer");
+        service.queryChatPage("viewer", "groupSupport", "date", "desc", null, null, 10, null, null, false, null);
+        ArgumentCaptor<Query> query = ArgumentCaptor.forClass(Query.class);
+        verify(mongoTemplate).find(query.capture(), eq(Chat.class));
+        assertThat(query.getValue().getQueryObject().toJson()).contains("groupSupport", "viewer").doesNotContain("appSupport");
+    }
+
+    @Test
     void queryChatPageReturnsMongoNavigationContextForGroupedChat() {
         Chat groupChat = chat("chat-group", "viewer", 0, "2026-03-01T09:48:00", "groupSubEvent");
         groupChat.setTitle("Group B · Group Channel");
@@ -844,6 +980,51 @@ class ChatServiceTest {
                         && chatId.equals(event.chatId())
                         && "admin".equals(event.senderId())));
         verify(homeUserProfileService).evictUserReadCaches(java.util.Set.of("target", "admin"));
+    }
+
+    @Test
+    void groupModerationWarningUsesWorkspaceProfilesWithoutAppSupportAccessOrCounters() {
+        String chatId = "c-moderation-group-target";
+        Users target = user("target", "Target", "TA"), moderator = user("moderator", "Moderator", "MO");
+        target.setWorkspaceGroupId("A"); moderator.setWorkspaceGroupId("A");
+        when(usersRepository.findByUserId("target")).thenReturn(Optional.of(target));
+        when(usersRepository.findByUserId("moderator")).thenReturn(Optional.of(moderator));
+        when(chatsRepository.saveAll(anyList())).thenAnswer(call -> call.getArgument(0));
+        when(chatMessagesRepository.save(any(ChatMessage.class))).thenAnswer(call -> call.getArgument(0));
+        when(mongoTemplate.bulkOps(BulkOperations.BulkMode.UNORDERED, Chat.class)).thenReturn(bulkOperations);
+        when(mongoTemplate.bulkOps(BulkOperations.BulkMode.UNORDERED, Users.class)).thenReturn(userCounterBulkOperations);
+        service.sendAdminSupportMessage("target", "moderator", "Moderator", "MO", "Please replace this image.", "warned");
+        ArgumentCaptor<List<Chat>> definitions = ArgumentCaptor.forClass(List.class);
+        verify(chatsRepository).saveAll(definitions.capture());
+        assertThat(definitions.getValue()).allSatisfy(chat -> {
+            assertThat(chat.getChatId()).isEqualTo(chatId);
+            assertThat(chat.getChannelType()).isEqualTo("groupSupport");
+            assertThat(chat.getSupportCase()).isNull();
+            assertThat(chat.getOwnerId()).isNull();
+            assertThat(chat.getMemberIds()).containsExactly("target", "moderator");
+        });
+        var access = new com.raxim.myscoutee.profile.security.ChatPolicyFacts(chatsRepository, usersRepository, adminMenuCounterService);
+        when(chatsRepository.findByChatId(chatId)).thenReturn(definitions.getValue());
+        assertThat(access.canAccessChat(chatId, "app-admin")).isFalse();
+        assertThat(access.canAccessChat(chatId, "other-group-profile")).isFalse();
+        assertThat(access.canAccessChat(chatId, "target")).isTrue();
+        ArgumentCaptor<Update> updates = ArgumentCaptor.forClass(Update.class);
+        verify(userCounterBulkOperations).updateOne(any(Query.class), updates.capture());
+        assertThat(updates.getValue().getUpdateObject().get("$inc", Document.class))
+                .containsKey("activities.chat.all").containsEntry("activities.chat.groupSupport", 1).doesNotContainKey("activities.chat.appSupport");
+        verify(userActivityCountersService, never()).refreshSupportCaseCountersForAdmins();
+    }
+
+    @Test
+    void groupModerationWarningRejectsModeratorFromAnotherWorkspaceBeforeWriting() {
+        Users target = user("target", "Target", "TA"), moderator = user("moderator", "Moderator", "MO");
+        target.setWorkspaceGroupId("A"); moderator.setWorkspaceGroupId("B");
+        when(usersRepository.findByUserId("target")).thenReturn(Optional.of(target));
+        when(usersRepository.findByUserId("moderator")).thenReturn(Optional.of(moderator));
+        assertThatThrownBy(() -> service.sendAdminSupportMessage("target", "moderator", "Moderator", "MO", "Warning", "warned"))
+                .isInstanceOf(org.springframework.web.server.ResponseStatusException.class);
+        verify(chatsRepository, never()).saveAll(anyList());
+        verify(chatMessagesRepository, never()).save(any(ChatMessage.class));
     }
 
     @Test

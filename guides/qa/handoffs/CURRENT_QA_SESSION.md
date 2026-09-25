@@ -92,7 +92,7 @@ substage: PASS/CLOSED 2026-09-24; delegated calendar scope complete, including O
 fixture_phase: Versioned reset complete. Fixture actors/events/members/snapshot absent; moderation settings and approval Job restored; native QA entries and fixture downloads cleaned; managed windows closed.
 execution_log: ../evidence/EVENT-CALENDAR-EXPORT-001-20260924.md
 next_action: None for this checkpoint. Calendar importer update/deletion/alarm limitations and local automated-versus-native evidence boundaries are recorded in the execution log.
-queue: None selected.
+queue: GROUP-LIFECYCLE-001 -> GROUP-ISOLATION-001; INTEGRATION-API-GROUP-001 is tracked in API test. Checklists prepared 2026-09-24 and finalized 2026-09-25 with scoped moderation, write-side badges, SmartList signal updates and Group support. All three NOT RUN, no fixture/session staged.
 resume_gate: No fixture replay. Earlier affiliate PASS remains closed; its old runtime was replaced by startup seed after the reboot, not retained.
 runtime: Existing dev watchers own builds. Phone network restored; USB stay-awake and maximum timeout intentionally retained at user request, with original settings snapshotted.
 last_completed: EVENT-CALENDAR-EXPORT-001 PASS/CLOSED; CSV/XLSX and README synchronized. AFFILIATE-REVENUE-001 remains PASS.

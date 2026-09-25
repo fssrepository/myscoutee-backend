@@ -2921,7 +2921,7 @@ public class ActivitiesMembersService {
     void claimIntegrationInvite(com.raxim.myscoutee.profile.data.document.IntegrationParticipantInvite invite,
             ActivityEvent event, String actorUserId) {
         if (!actorUserId.equals(invite.claimedUserId()) || !invite.eventId().equals(event.getSourceId())
-                || !invite.ownerUserId().equals(event.getOwnerUserId())
+                || (!invite.reusable() && !invite.ownerUserId().equals(event.getOwnerUserId()))
                 || !accessControlService.canInviteEventMembers(invite.eventId(), invite.ownerUserId())) {
             throw new org.springframework.web.server.ResponseStatusException(org.springframework.http.HttpStatus.FORBIDDEN);
         }

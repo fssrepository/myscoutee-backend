@@ -10,6 +10,9 @@ import org.springframework.data.mongodb.repository.Query;
 import com.raxim.myscoutee.profile.data.document.ChatMessage;
 
 public interface ChatMessagesRepository extends MongoRepository<ChatMessage, String> {
+    @Query("{ 'chatId': ?0, 'senderAvatar.id': ?1, 'deletedAtIso': { $in: [null, ''] }, 'attachments.type': ?2 }")
+    List<ChatMessage> findActiveSharesBySender(String chatId, String userId, String kind);
+
     @Query(value = "{ 'chatId': ?0 }", sort = "{ 'sentAtIso': -1 }")
     List<ChatMessage> findByChatIdOrderBySentAtIsoDesc(String chatId, Pageable pageable);
 

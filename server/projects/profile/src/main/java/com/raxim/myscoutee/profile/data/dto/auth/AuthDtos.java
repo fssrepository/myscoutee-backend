@@ -135,7 +135,17 @@ public final class AuthDtos {
             Integer group,
             Integer service,
             Integer appSupport,
-            UserSupportCaseCountersDto supportCases) {
+            UserSupportCaseCountersDto supportCases,
+            Integer groupSupport,
+            Integer contacts) {
+        public UserChatCountersDto(Integer all, Integer event, Integer subEvent, Integer group, Integer service,
+                Integer appSupport, UserSupportCaseCountersDto supportCases, Integer groupSupport) {
+            this(all, event, subEvent, group, service, appSupport, supportCases, groupSupport, 0);
+        }
+        public UserChatCountersDto(Integer all, Integer event, Integer subEvent, Integer group, Integer service,
+                Integer appSupport, UserSupportCaseCountersDto supportCases) {
+            this(all, event, subEvent, group, service, appSupport, supportCases, 0);
+        }
         public UserChatCountersDto(
                 Integer all,
                 Integer event,
@@ -449,7 +459,13 @@ public final class AuthDtos {
             ProfileExtDto profileExt,
             Integer filterCount,
             UserGameFilterPreferencesDto filterPreferences,
-            UserMenuCountersDto counterOverrides) {
+            UserMenuCountersDto counterOverrides,
+            com.raxim.myscoutee.profile.data.dto.groups.CommunityGroupDtos.Workspace workspace,
+            UserDto accountProfile) {
+        public ProfileExtByIdResponseDto(ProfileExtDto profileExt, Integer filterCount,
+                UserGameFilterPreferencesDto filterPreferences, UserMenuCountersDto counterOverrides) {
+            this(profileExt, filterCount, filterPreferences, counterOverrides, null, null);
+        }
     }
 
     public record UserByIdResponseDto(
@@ -512,6 +528,7 @@ public final class AuthDtos {
             String statusText,
             Integer completion,
             Integer profileFormVersion,
+            String status,
             String profileStatus,
             String deletedAtIso) {
     }

@@ -7,7 +7,8 @@ import org.springframework.data.mongodb.core.mapping.Document;
 
 public final class ContentModerationDtos {
     private ContentModerationDtos() {}
-    public static final List<String> CATEGORIES = List.of("asset", "event", "feed");
+    public static final List<String> CATEGORIES = List.of("asset", "event", "feed", "group");
+    public static final List<String> GROUP_CATEGORIES = List.of("asset", "event", "feed");
     public static final List<String> STATUSES = List.of("under-review", "accepted", "rejected", "blocked");
     public record Settings(Boolean enabled, boolean autoApprove, int delayMinutes, List<String> categories) {
         public static Settings defaults() { return new Settings(false, false, 0, CATEGORIES); }
@@ -15,8 +16,14 @@ public final class ContentModerationDtos {
     @Document("contentModerationItems")
     public record Item(@Id String id, String category, String sourceId, String ownerUserId, String title,
             String imageUrl, String submittedAtIso, String status, long version, String commandId,
-            String reviewedBy, String reviewedAtIso, Boolean publiclyVisibleOnce, Boolean deleted) {
+            String reviewedBy, String reviewedAtIso, Boolean publiclyVisibleOnce, Boolean deleted, String workspaceGroupId) {
         public Item { deleted = Boolean.TRUE.equals(deleted); }
+        public Item(String id, String category, String sourceId, String ownerUserId, String title,
+                String imageUrl, String submittedAtIso, String status, long version, String commandId,
+                String reviewedBy, String reviewedAtIso, Boolean publiclyVisibleOnce, Boolean deleted) {
+            this(id, category, sourceId, ownerUserId, title, imageUrl, submittedAtIso, status, version,
+                    commandId, reviewedBy, reviewedAtIso, publiclyVisibleOnce, deleted, null);
+        }
         public Item(String id, String category, String sourceId, String ownerUserId, String title,
                 String imageUrl, String submittedAtIso, String status, long version, String commandId,
                 String reviewedBy, String reviewedAtIso, Boolean publiclyVisibleOnce) {

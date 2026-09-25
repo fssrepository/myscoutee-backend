@@ -95,7 +95,9 @@ public class PaymentEuroService {
         String currency = currency(userId);
 
         Document match = new Document("auditKind", "payment");
-        if (affiliate) match.append("affiliateOwnerUserId", userId).append("status", new Document("$in",
+        if (affiliate) match.append("affiliateOwnerUserId", userId)
+                .append("provider", new Document("$not", java.util.regex.Pattern.compile("^\\s*cash\\s*$", java.util.regex.Pattern.CASE_INSENSITIVE)))
+                .append("status", new Document("$in",
                 List.of("approved", "captured", "partially_refunded", "refunded")));
         else match.append("$or", List.of(new Document("userId", userId), new Document("recipientUserId", userId)))
                 .append("accountedSpentAmount", new Document("$gt", 0));

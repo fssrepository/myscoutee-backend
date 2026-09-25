@@ -1,0 +1,213 @@
+[
+  {
+    "_id": "seed-community-seattle-friends",
+    "ownerUserId": "af0436815ab38f4864dd1e24",
+    "name": "Seattle Friends",
+    "description": "Coffee, walks and relaxed meetups around Seattle.",
+    "imageUrl": "/media/public?key=images/demo-events/event-001/v1/large.webp",
+    "category": "friends",
+    "visibility": "public",
+    "hideMembers": false,
+    "policy": {
+      "workspace": true,
+      "enabled": false,
+      "requiredFields": []
+    },
+    "createdAtIso": "2026-09-20T12:00:00.000Z",
+    "updatedAtIso": "2026-09-20T12:00:00.000Z",
+    "version": 0,
+    "moderationStatus": "accepted",
+    "moderationVersion": 0
+  },
+  {
+    "_id": "seed-community-design-circle",
+    "ownerUserId": "af0436815ab38f4864dd1e24",
+    "name": "Design Circle",
+    "description": "A small invited team for sharing work and creative ideas.",
+    "imageUrl": "/media/public?key=images/demo-events/event-002/v1/large.webp",
+    "category": "work",
+    "visibility": "invitation",
+    "hideMembers": true,
+    "policy": {
+      "workspace": true,
+      "enabled": true,
+      "requiredFields": [
+        "profile.profession"
+      ]
+    },
+    "createdAtIso": "2026-09-20T12:00:00.000Z",
+    "updatedAtIso": "2026-09-20T12:00:00.000Z",
+    "version": 0,
+    "moderationStatus": "accepted",
+    "moderationVersion": 0
+  },
+  {
+    "_id": "seed-community-trail-club",
+    "ownerUserId": "9f3b3f085e23af6c89dbc432",
+    "name": "Seattle Trail Club",
+    "description": "Weekend walks and hikes for all experience levels.",
+    "imageUrl": "/media/public?key=images/demo-events/event-003/v1/large.webp",
+    "category": "sport",
+    "visibility": "public",
+    "hideMembers": false,
+    "policy": {
+      "workspace": true,
+      "enabled": true,
+      "requiredFields": [
+        "profile.details.interest"
+      ]
+    },
+    "createdAtIso": "2026-09-20T12:00:00.000Z",
+    "updatedAtIso": "2026-09-20T12:00:00.000Z",
+    "version": 0,
+    "moderationStatus": "accepted",
+    "moderationVersion": 0
+  },
+  {
+    "_id": "seed-community-language-lab",
+    "ownerUserId": "1b1c70be2349b3359a8f6f94",
+    "name": "Language Lab",
+    "description": "Practice languages together in a friendly small group.",
+    "imageUrl": "/media/public?key=images/demo-events/event-004/v1/large.webp",
+    "category": "learning",
+    "visibility": "private",
+    "hideMembers": true,
+    "policy": {
+      "workspace": true,
+      "enabled": false,
+      "requiredFields": []
+    },
+    "createdAtIso": "2026-09-20T12:00:00.000Z",
+    "updatedAtIso": "2026-09-20T12:00:00.000Z",
+    "version": 0,
+    "moderationStatus": "accepted",
+    "moderationVersion": 0
+  },
+  {
+    "_id": "seed-community-photo-walks",
+    "ownerUserId": "178e8d0cbe164fa3fede5884",
+    "name": "Photo Walks",
+    "description": "Explore the city and share your favourite photographs.",
+    "imageUrl": "/media/public?key=images/demo-events/event-005/v1/large.webp",
+    "category": "hobbies",
+    "visibility": "public",
+    "hideMembers": false,
+    "policy": {
+      "workspace": true,
+      "enabled": true,
+      "requiredFields": [
+        "profile.details.interest"
+      ]
+    },
+    "createdAtIso": "2026-09-20T12:00:00.000Z",
+    "updatedAtIso": "2026-09-20T12:00:00.000Z",
+    "version": 0,
+    "moderationStatus": "accepted",
+    "moderationVersion": 0
+  },
+  {
+    "_id": "seed-community-makers",
+    "ownerUserId": "cdd937e0adcbd1a5e38f3ceb",
+    "name": "Makers Network",
+    "description": "Meet local makers and collaborate on small projects.",
+    "imageUrl": "/media/public?key=images/demo-events/event-006/v1/large.webp",
+    "category": "work",
+    "visibility": "private",
+    "hideMembers": false,
+    "policy": {
+      "workspace": true,
+      "enabled": true,
+      "requiredFields": [
+        "profile.profession",
+        "profile.experience.workplace"
+      ]
+    },
+    "createdAtIso": "2026-09-20T12:00:00.000Z",
+    "updatedAtIso": "2026-09-20T12:00:00.000Z",
+    "version": 0,
+    "moderationStatus": "accepted",
+    "moderationVersion": 0
+  },
+  {
+    "_id": "seed-community-game-night",
+    "ownerUserId": "7822c5f99eff99d63abe8933",
+    "name": "Game Night",
+    "description": "An invitation-only circle for board games and conversation.",
+    "imageUrl": "/media/public?key=images/demo-events/event-007/v1/large.webp",
+    "category": "friends",
+    "visibility": "invitation",
+    "hideMembers": false,
+    "policy": {
+      "workspace": true,
+      "enabled": false,
+      "requiredFields": []
+    },
+    "createdAtIso": "2026-09-20T12:00:00.000Z",
+    "updatedAtIso": "2026-09-20T12:00:00.000Z",
+    "version": 0,
+    "moderationStatus": "accepted",
+    "moderationVersion": 0
+  },
+  {
+    "_id": "seed-community-neighbours",
+    "ownerUserId": "9f3b3f085e23af6c89dbc432",
+    "name": "Seattle Neighbours",
+    "description": "Neighbourhood news, shared plans and nearby activities.",
+    "imageUrl": null,
+    "category": "neighbourhood",
+    "visibility": "public",
+    "hideMembers": false,
+    "policy": {
+      "workspace": true,
+      "enabled": false,
+      "requiredFields": []
+    },
+    "createdAtIso": "2026-09-20T12:00:00.000Z",
+    "updatedAtIso": "2026-09-20T12:00:00.000Z",
+    "version": 0,
+    "moderationStatus": "accepted",
+    "moderationVersion": 0
+  },
+  {
+    "_id": "seed-community-book-circle",
+    "ownerUserId": "bf057de7c586eede7e84bdc7",
+    "name": "Book Circle",
+    "description": "An invited reading circle with monthly book discussions.",
+    "imageUrl": "/media/public?key=images/demo-events/event-009/v1/large.webp",
+    "category": "hobbies",
+    "visibility": "invitation",
+    "hideMembers": true,
+    "policy": {
+      "workspace": true,
+      "enabled": false,
+      "requiredFields": []
+    },
+    "createdAtIso": "2026-09-20T12:00:00.000Z",
+    "updatedAtIso": "2026-09-20T12:00:00.000Z",
+    "version": 0,
+    "moderationStatus": "accepted",
+    "moderationVersion": 0
+  },
+  {
+    "_id": "seed-community-study-buddies",
+    "ownerUserId": "b29df68956f3fe15e04558de",
+    "name": "Study Buddies",
+    "description": "Share learning goals and support each other with new skills.",
+    "imageUrl": "/media/public?key=images/demo-events/event-010/v1/large.webp",
+    "category": "learning",
+    "visibility": "public",
+    "hideMembers": false,
+    "policy": {
+      "workspace": true,
+      "enabled": true,
+      "requiredFields": [
+        "profile.experience.school"
+      ]
+    },
+    "createdAtIso": "2026-09-20T12:00:00.000Z",
+    "updatedAtIso": "2026-09-20T12:00:00.000Z",
+    "version": 0,
+    "moderationStatus": "accepted",
+    "moderationVersion": 0
+  }
+]

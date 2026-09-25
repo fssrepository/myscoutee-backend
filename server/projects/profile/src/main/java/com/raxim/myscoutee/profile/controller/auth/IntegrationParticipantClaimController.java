@@ -10,6 +10,11 @@ import com.raxim.myscoutee.profile.service.IntegrationParticipantInviteService;
 public class IntegrationParticipantClaimController {
     private final IntegrationParticipantInviteService invites;
     public IntegrationParticipantClaimController(IntegrationParticipantInviteService invites) { this.invites = invites; }
+    public record LinkRequest(String userId, String ownerType, String entityId) { }
+    @PostMapping("/auth/me/partner-invite/link")
+    public IntegrationParticipantInviteService.ExternalInviteLinkDto link(@RequestBody LinkRequest request) {
+        return invites.externalLink(request.userId(), request.ownerType(), request.entityId());
+    }
     public record ClaimRequest(String userId, String token) { }
 
     @PostMapping("/auth/me/partner-invite/claim")

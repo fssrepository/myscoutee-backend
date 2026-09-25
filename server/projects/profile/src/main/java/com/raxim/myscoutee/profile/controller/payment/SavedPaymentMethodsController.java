@@ -105,6 +105,16 @@ public class SavedPaymentMethodsController {
         return request;
     }
 
+    @org.springframework.beans.factory.annotation.Autowired
+    private com.raxim.myscoutee.profile.service.PaymentService payments;
+
+    @PostMapping("/history/cash")
+    public PaymentHistoryMutationDto cashReceipt(
+            @RequestParam(value = "userId", required = false) String userId,
+            @RequestBody com.raxim.myscoutee.profile.data.dto.payment.PaymentDtos.CashReceiptRequestDto request) {
+        return payments.recordCashReceipt(resolveCurrentUserId(userId), request);
+    }
+
     @GetMapping("/history")
     public PaymentHistoryPageDto history(
             @RequestParam(value = "userId", required = false) String userId,

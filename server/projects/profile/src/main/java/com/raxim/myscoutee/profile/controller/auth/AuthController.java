@@ -32,6 +32,8 @@ import com.raxim.myscoutee.profile.data.dto.auth.AuthDtos.UserSubmitActionRespon
 import com.raxim.myscoutee.profile.security.AccessPolicyKeys;
 import com.raxim.myscoutee.profile.security.RequiresPolicy;
 import com.raxim.myscoutee.profile.service.HomeUserProfileService;
+import com.raxim.myscoutee.profile.service.CommunityGroupsService;
+import jakarta.servlet.http.HttpServletResponse;
 import com.raxim.myscoutee.profile.service.UserLoginSessionService;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -42,10 +44,13 @@ import jakarta.validation.Valid;
 public class AuthController {
     private final HomeUserProfileService homeUserProfileService;
     private final UserLoginSessionService userLoginSessionService;
+    private final CommunityGroupsService groups;
 
     public AuthController(
             HomeUserProfileService homeUserProfileService,
-            UserLoginSessionService userLoginSessionService) {
+            UserLoginSessionService userLoginSessionService,
+            CommunityGroupsService groups) {
+        this.groups = groups;
         this.homeUserProfileService = homeUserProfileService;
         this.userLoginSessionService = userLoginSessionService;
     }
@@ -119,8 +124,13 @@ public class AuthController {
     }
 
     @GetMapping("/me/profile-ext")
-    public ProfileExtByIdResponseDto loadProfileExt(@RequestParam(value = "userId", required = false) String userId) {
-        return homeUserProfileService.loadProfileExtById(userId);
+    public ProfileExtByIdResponseDto loadProfileExt(@RequestParam(value = "userId", required = false) String userId,
+            @RequestParam(value = "groupId", required = false) String groupId,
+            HttpServletResponse httpResponse) {
+        httpResponse.setHeader("Cache-Control", "no-store");
+        var response = homeUserProfileService.loadProfileExtById(userId);
+        if (response == null) return null;
+        return groups.completeProfileLoad(groups.actor(userId), response, groupId);
     }
 
     @PostMapping("/me/feedback")

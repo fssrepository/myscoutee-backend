@@ -84,7 +84,7 @@ public class NavigatorContactsService {
             return new NavigatorContactProfileDto(null, List.of(), List.of());
         }
         Users record = usersRepository.findByUserId(targetUserId).orElse(null);
-        if (record == null) {
+        if (record == null || record.getWorkspaceGroupId() != null && !CommunityGroupProfilesService.allows(record.getWorkspaceGroupId())) {
             return new NavigatorContactProfileDto(null, List.of(), List.of());
         }
         String viewer = accessControlService.resolveActorUserId(SecurityContextHolder.getContext().getAuthentication());

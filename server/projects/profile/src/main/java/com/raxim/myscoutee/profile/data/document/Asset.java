@@ -17,6 +17,10 @@ import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.PricingConfigDto;
         @CompoundIndex(name = "asset_owner_updated", def = "{'ownerUserId': 1, 'updatedDate': -1}")
 })
 public class Asset {
+    @org.springframework.data.mongodb.core.index.Indexed
+    private String workspaceGroupId;
+    public String getWorkspaceGroupId() { return workspaceGroupId; }
+    public void setWorkspaceGroupId(String value) { workspaceGroupId = value; }
     private static final String STATUS_ACTIVE = "A";
     private static final String STATUS_UNDER_REVIEW = "UR";
     private static final String STATUS_BLOCKED = "B";

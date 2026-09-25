@@ -23,5 +23,19 @@ class ContentModerationRepositoryTest {
         assertEquals(21, all.getLimit());
         assertEquals("feed", feed.getQueryObject().get("category"));
         assertEquals("accepted", feed.getQueryObject().get("status"));
+        assertTrue(all.getQueryObject().containsKey("workspaceGroupId"));
+        assertNull(all.getQueryObject().get("workspaceGroupId"));
+    }
+    @Test void pagesAndWorkerQueriesStayInTheRequestedGroup() {
+        var mongo = mock(MongoTemplate.class);
+        var repository = new ContentModerationRepository(mongo);
+        repository.page("all", "under-review", null, 21, "A");
+        repository.due(new com.raxim.myscoutee.profile.data.dto.admin.ContentModerationDtos.Settings(true, true, 5, java.util.List.of("feed")), "2026-09-24T12:00:00Z", 100, "A");
+        repository.withheld(100, "A");
+        var queries = ArgumentCaptor.forClass(Query.class);
+        verify(mongo, times(3)).find(queries.capture(), eq(Item.class));
+        queries.getAllValues().forEach(query -> assertEquals("A", query.getQueryObject().get("workspaceGroupId")));
+        assertEquals("group:A", repository.state("A").id());
+        assertFalse(repository.state("A").settings().categories().contains("group"));
     }
 }

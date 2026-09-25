@@ -49,6 +49,10 @@ import com.raxim.myscoutee.profile.data.document.SubEventItem;
         @CompoundIndex(name = "event_qmau_host_window", def = "{'status': 1, 'generated': 1, 'createdDate': 1, 'creatorUserId': 1}")
 })
 public class ActivityEvent {
+    @org.springframework.data.mongodb.core.index.Indexed
+    private String workspaceGroupId;
+    public String getWorkspaceGroupId() { return workspaceGroupId; }
+    public void setWorkspaceGroupId(String value) { workspaceGroupId = value; }
     public static final String STATUS_ACTIVE = "A";
     public static final String STATUS_DRAFT = "DR";
     public static final String STATUS_TRASHED = "T";

@@ -136,7 +136,7 @@ public class NotificationOutboxService {
         String type = safeText(intent.type());
         ResolvedDeploymentBranding branding = deploymentBranding(intent);
         Map<String, String> payload = normalizedPayload(intent, branding);
-        List<String> recipientUserIds = compactIds(intent.recipientUserIds());
+        List<String> recipientUserIds = accountRecipients(intent.recipientUserIds(), payload);
         String topicName = resolveStableTopicName(intent, payload, recipientUserIds.size());
         String deliveryStrategy = StringUtils.hasText(topicName)
                 ? DELIVERY_STRATEGY_TOPIC
@@ -192,9 +192,9 @@ public class NotificationOutboxService {
         String id = "operation:" + sha256(operationId);
         NotificationOutboxItem saved = notificationOutboxRepository.findById(id).orElse(null);
         if (saved == null) {
-            List<String> recipients = compactIds(intent.recipientUserIds());
-            if (recipients.isEmpty()) return Optional.empty();
             Map<String, String> payload = normalizedPayload(intent, deploymentBranding(intent));
+            List<String> recipients = accountRecipients(intent.recipientUserIds(), payload);
+            if (recipients.isEmpty()) return Optional.empty();
             String topic = resolveStableTopicName(intent, payload, recipients.size());
             NotificationOutboxItem item = newItem(intent, recipients, payload,
                     sha256(canonicalPayload(payload)), id,
@@ -472,6 +472,26 @@ public class NotificationOutboxService {
         } catch (RuntimeException exception) {
             LOGGER.debug("Notification outbox Redis wakeup publish failed; scheduled polling remains active.", exception);
         }
+    }
+
+    private List<String> accountRecipients(java.util.Collection<String> ids, Map<String, String> payload) {
+        var recipients = compactIds(ids);
+        if (usersRepository == null || recipients.isEmpty()) return recipients;
+        var profiles = usersRepository.findByUserIdIn(recipients);
+        var accounts = new java.util.HashMap<String, String>();
+        var workspaces = new java.util.HashSet<String>();
+        for (var profile : profiles) {
+            if (StringUtils.hasText(profile.getAccountUserId())) accounts.put(profile.getUserId(), profile.getAccountUserId());
+            if (StringUtils.hasText(profile.getWorkspaceGroupId())) workspaces.add(profile.getWorkspaceGroupId());
+        }
+        if (workspaces.size() == 1) {
+            String groupId = workspaces.iterator().next();
+            payload.put("workspaceGroupId", groupId);
+            String url = payload.get("url");
+            if (StringUtils.hasText(url)) payload.put("url", org.springframework.web.util.UriComponentsBuilder.fromUriString(url)
+                    .replaceQueryParam("workspaceGroupId", groupId).build().toUriString());
+        }
+        return recipients.stream().map(id -> accounts.getOrDefault(id, id)).distinct().toList();
     }
 
     private Map<String, String> normalizedPayload(

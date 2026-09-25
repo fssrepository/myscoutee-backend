@@ -19,7 +19,7 @@ CONFIGURED = (
 )
 RUNTIME = (
     'users', 'userRates', 'userFilterPreferences', 'assets', 'assetRequests',
-    'activityMembers', 'activityResources', 'activitySubEventStageRuntime',
+    'activityMembers', 'activityResources', 'activitySubEventStageRuntime', 'communityGroups',
     'chats', 'chatMessages', 'events', 'eventFeedbackStates', 'eventFeedbackAnswers',
     'navigatorContacts', 'payments', 'savedPaymentMethods', 'userAffinityEdges',
     'userExperienceProfiles', 'userFeedback', 'userNotifications', 'userReports',

@@ -1,6 +1,7 @@
 package com.raxim.myscoutee.profile.data.dto.activities;
 
 import java.util.List;
+import com.raxim.myscoutee.profile.data.dto.groups.CommunityGroupDtos.Group;
 
 import com.raxim.myscoutee.profile.data.dto.auth.AuthDtos.UserMenuCountersDto;
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.ActivityMemberEntryDto;
@@ -73,7 +74,9 @@ public final class ActivityMembersDtos {
     public record ActivityMembersInviteResponseDto(
             List<ActivityMemberEntryDto> members,
             List<String> invitedUserIds,
-            List<ActivityMemberInviteRejectionDto> rejections) {
+            List<ActivityMemberInviteRejectionDto> rejections, Group group) {
+        public ActivityMembersInviteResponseDto(List<ActivityMemberEntryDto> members, List<String> invitedUserIds,
+                List<ActivityMemberInviteRejectionDto> rejections) { this(members, invitedUserIds, rejections, null); }
     }
 
     public record ActivityMemberActionRequestDto(
@@ -114,6 +117,9 @@ public final class ActivityMembersDtos {
 
     public record ActivityMemberActionResponseDto(
             List<ActivityMemberEntryDto> members,
-            UserMenuCountersDto counterOverrides) {
+            UserMenuCountersDto counterOverrides, Group group) {
+        public ActivityMemberActionResponseDto(List<ActivityMemberEntryDto> members, UserMenuCountersDto counterOverrides) {
+            this(members, counterOverrides, null);
+        }
     }
 }

@@ -546,7 +546,8 @@ public class SavedPaymentMethodsService {
         String viewerId = normalizeId(viewerUserId);
         String direction = paymentHistoryDirection(payment, viewerId);
         String fulfillmentKind = normalizeId(payment.getFulfillmentKind());
-        String serviceContext = PaymentService.FULFILLMENT_KIND_CLIENT.equals(fulfillmentKind) ? "asset" : "event";
+        boolean cashReceipt = "cash-receipt".equals(fulfillmentKind);
+        String serviceContext = cashReceipt ? null : PaymentService.FULFILLMENT_KIND_CLIENT.equals(fulfillmentKind) ? "asset" : "event";
         boolean refundAudit = "refund".equals(normalizeId(payment.getAuditKind()));
         String requestStatus = normalizeId(payment.getRefundRequestStatus());
         if (!StringUtils.hasText(requestStatus)) requestStatus = "none";
@@ -563,7 +564,7 @@ public class SavedPaymentMethodsService {
                         .map(Payment::getAmount)
                         .orElse(payment.getAmount())
                 : null;
-        PaymentRefundCalculator.Preview refund = refundAudit
+        PaymentRefundCalculator.Preview refund = cashReceipt ? null : refundAudit
                 ? "pending".equals(requestStatus)
                         ? PaymentRefundCalculator.storedOrCurrentPreview(
                                 payment,
@@ -581,7 +582,7 @@ public class SavedPaymentMethodsService {
                 payment.getAmount(), payment.getCurrency(), payment.getBookingStatus(),
                 payment.getAuditKind(), payment.getFulfillmentKind(), payment.getCheckoutSessionId(), payment.getCreatedDate(),
                 payment.getRecipientUserId(), serviceContext,
-                PaymentService.FULFILLMENT_KIND_CLIENT.equals(fulfillmentKind)
+                cashReceipt ? null : PaymentService.FULFILLMENT_KIND_CLIENT.equals(fulfillmentKind)
                         ? payment.getContextEventId()
                         : payment.getSourceId(),
                 payment.getContextSubEventId(),
@@ -589,13 +590,14 @@ public class SavedPaymentMethodsService {
                 requestStatus, payment.getRefundRequestedAtIso(),
                 "expense".equals(direction) && paymentAudit && refundableStatus && !refundAlreadyRecorded
                         && "none".equals(requestStatus)
-                        && payment.getRefundRequestedTargetAmount() == null && refund.refundableAmount() > 0,
+                        && payment.getRefundRequestedTargetAmount() == null && refund != null && refund.refundableAmount() > 0,
                 "expense".equals(direction) && refundAudit && "pending".equals(requestStatus),
                 refund == null ? null : new PaymentRefundPreviewDto(
                         refund.paidAmount(), refund.refundableAmount(), refund.retainedAmount(), refund.currency(),
                         refund.status(), refund.ruleId(), refund.ruleOffsetUnit(), refund.ruleOffsetValue(),
                         refund.refundKind(), refund.refundValue(), refund.ruleDescription()),
-                paymentMethod);
+                paymentMethod, payment.getReceiptNote(),
+                "income".equals(direction) ? payment.getReceiptPayerName() : payment.getReceiptRecipientName());
     }
 
     private String paymentHistoryDirection(Payment payment, String viewerUserId) {

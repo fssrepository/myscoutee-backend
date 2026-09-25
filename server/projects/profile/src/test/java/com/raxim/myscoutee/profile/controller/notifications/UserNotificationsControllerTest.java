@@ -44,7 +44,7 @@ class UserNotificationsControllerTest {
     void rejectsNotificationAccessWithoutAResolvedCurrentOrDemoUser() {
         when(homeUserProfileService.resolveSelectedUserId(null)).thenReturn(null);
 
-        assertThatThrownBy(() -> controller.queryPage("new", 20, null, null))
+        assertThatThrownBy(() -> controller.queryPage("new", 20, null, null, null))
                 .isInstanceOf(ResponseStatusException.class)
                 .hasMessageContaining("401 UNAUTHORIZED");
     }

@@ -24,19 +24,24 @@ public class AffiliateService {
 
     public AffiliateService(MongoTemplate mongo) { this.mongo = mongo; }
 
-    public AffiliateSummaryDto summary(String owner) {
+    public String link(String owner) {
         var link = mongo.findAndModify(Query.query(Criteria.where("_id").is(owner)), new Update()
                 .setOnInsert("code", UUID.randomUUID().toString())
                 .setOnInsert("createdAtIso", Instant.now().toString()),
                 FindAndModifyOptions.options().upsert(true).returnNew(true), AffiliateLink.class);
+        return "/entry?affiliate=" + link.code();
+    }
+
+    public AffiliateSummaryDto summary(String owner) {
+        String url = link(owner);
         long registered = mongo.count(Query.query(Criteria.where("referrerUserId").is(owner)), AffiliateRegistration.class);
-        return new AffiliateSummaryDto("/entry?affiliate=" + link.code(), registered, revenue == null ? null : revenue.summary(owner));
+        return new AffiliateSummaryDto(url, registered, revenue == null ? null : revenue.summary(owner));
     }
 
     public IntegrationParticipantSummaryDto participantSummary(String owner) {
         // One external participant can be invited to several events. Count the person once.
         var row = mongo.getCollection("integrationParticipantInvites").aggregate(List.of(
-                new Document("$match", new Document("ownerUserId", owner)),
+                new Document("$match", new Document("ownerUserId", owner).append("reusable", new Document("$ne", true))),
                 new Document("$group", new Document("_id", "$participantId").append("registered",
                         new Document("$max", new Document("$cond", List.of(
                                 new Document("$ne", List.of(new Document("$ifNull", List.of("$claimedUserId", "")), "")), 1, 0))))),

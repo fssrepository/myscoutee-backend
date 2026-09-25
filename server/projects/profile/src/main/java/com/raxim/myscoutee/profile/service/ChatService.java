@@ -122,6 +122,7 @@ public class ChatService {
     private static final String CHAT_CHANNEL_OPTIONAL_SUB_EVENT = "optionalSubEvent";
     private static final String CHAT_CHANNEL_GROUP_SUB_EVENT = "groupSubEvent";
     private static final String CHAT_CHANNEL_SERVICE_EVENT = "serviceEvent";
+    private static final String CHAT_CHANNEL_GROUP_SUPPORT = "groupSupport";
     private static final String CHAT_CHANNEL_APP_SUPPORT = "appSupport";
     private static final String CHAT_CHANNEL_SUPPORT_CASE = "supportCase";
     private static final String OWNER_TYPE_EVENT = "event";
@@ -436,6 +437,90 @@ public class ChatService {
                 ? Integer.toString(endOffset)
                 : null;
         return chatPageResponse(userId, items, safePageTotal(total), nextCursor);
+    }
+
+    public ChatDto ensureContactChat(String requestedUserId, String targetUserId) {
+        String actorId = requireResolvedUserId(requestedUserId);
+        String targetId = normalizeId(targetUserId);
+        Map<String, Users> users = requireContactTargets(actorId, List.of(targetId));
+        List<String> participantIds = new ArrayList<>(List.of(actorId, targetId));
+        participantIds.sort(String::compareTo);
+        String chatId = "c-contact-" + java.util.Base64.getUrlEncoder().withoutPadding().encodeToString(String.join("\n", participantIds).getBytes(StandardCharsets.UTF_8));
+        // Only initialize missing owner copies: reopening must never replace messages or unread state.
+        for (String ownerId : participantIds) {
+            String otherId = ownerId.equals(actorId) ? targetId : actorId;
+            Users other = users.get(otherId);
+            mongoTemplate.upsert(Query.query(Criteria.where("_id").is(buildMongoId(ownerId, chatId))), new Update()
+                    .setOnInsert("chatId", chatId).setOnInsert("ownerUserId", ownerId)
+                    .setOnInsert("channelType", "contact").setOnInsert("memberIds", participantIds)
+                    .setOnInsert("title", safeText(other.getName())).setOnInsert("avatar", resolveUserInitials(other, otherId))
+                    .setOnInsert("lastMessage", "").setOnInsert("lastSenderId", "")
+                    .setOnInsert("unread", 0).setOnInsert("revision", 1L)
+                    .setOnInsert("dateIso", Instant.now().toString()), Chat.class);
+        }
+        return queryChatById(chatId, actorId);
+    }
+
+    public ChatDto addContactChatMembers(String chatId, String requestedUserId, List<String> userIds) {
+        String actorId = requireResolvedUserId(requestedUserId);
+        ChatDocumentsSnapshot snapshot = requireChat(chatId, actorId);
+        Chat chat = snapshot.viewerChat();
+        if (chat == null || !"contact".equals(chat.getChannelType()))
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Only contact chats accept contact invitations.");
+        List<String> targets = (userIds == null ? List.<String>of() : userIds).stream()
+                .map(this::normalizeId).distinct().toList();
+        if (targets.isEmpty()) return toChatDto(chat, chatMemberUsers(List.of(chat)));
+        if (targets.size() > 100) throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Too many contacts.");
+        List<String> newTargets = targets.stream().filter(id -> !safeMemberIds(chat.getMemberIds()).contains(id)).toList();
+        if (!newTargets.isEmpty()) {
+            requireContactTargets(actorId, newTargets);
+            mongoTemplate.updateMulti(Query.query(Criteria.where("chatId").is(snapshot.chatId())),
+                    new Update().addToSet("memberIds").each(newTargets.toArray()).inc("revision", 1L), Chat.class);
+        }
+        List<Chat> copies = chatsRepository.findByChatId(snapshot.chatId());
+        Set<String> participants = new LinkedHashSet<>();
+        for (Chat copy : copies) participants.addAll(safeMemberIds(copy.getMemberIds()));
+        for (String targetId : targets) {
+            // A retry also finishes owner copies after an interrupted member update.
+            mongoTemplate.upsert(Query.query(Criteria.where("_id").is(buildMongoId(targetId, snapshot.chatId()))), new Update()
+                    .setOnInsert("chatId", snapshot.chatId()).setOnInsert("ownerUserId", targetId)
+                    .setOnInsert("channelType", "contact").setOnInsert("memberIds", List.copyOf(participants))
+                    .setOnInsert("title", chat.getTitle()).setOnInsert("avatar", chat.getAvatar())
+                    .setOnInsert("lastMessage", chat.getLastMessage()).setOnInsert("lastSenderId", chat.getLastSenderId())
+                    .setOnInsert("unread", 0).setOnInsert("revision", nextChatRevision(chat))
+                    .setOnInsert("dateIso", chat.getDateIso()), Chat.class);
+        }
+        // Merge concurrent invitations after inserting copies without replacing any message/counter state.
+        copies = chatsRepository.findByChatId(snapshot.chatId());
+        for (Chat copy : copies) participants.addAll(safeMemberIds(copy.getMemberIds()));
+        mongoTemplate.updateMulti(Query.query(Criteria.where("chatId").is(snapshot.chatId())),
+                new Update().addToSet("memberIds").each(participants.toArray()), Chat.class);
+        for (Chat copy : copies) copy.setMemberIds(List.copyOf(participants));
+        evictChatOwnerReadCaches(copies);
+        Chat result = findOwnerChat(copies, actorId);
+        return toChatDto(result, chatMemberUsers(List.of(result)));
+    }
+
+    private Map<String, Users> requireContactTargets(String actorId, List<String> targetIds) {
+        if (targetIds.isEmpty() || targetIds.size() > 100 || targetIds.contains(actorId)
+                || targetIds.stream().anyMatch(id -> !StringUtils.hasText(id)))
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Select another contact.");
+        var contacts = mongoTemplate.findOne(Query.query(Criteria.where("userId").is(actorId)),
+                com.raxim.myscoutee.profile.data.document.NavigatorContactsProfile.class);
+        Set<String> allowed = new LinkedHashSet<>();
+        if (contacts != null) for (var contact : contacts.getContacts()) allowed.add(normalizeId(contact.getUserId()));
+        if (!allowed.containsAll(targetIds))
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Contact unavailable.");
+        Set<String> participantIds = new LinkedHashSet<>(targetIds); participantIds.add(actorId);
+        Map<String, Users> users = new LinkedHashMap<>();
+        for (Users user : usersRepository.findByUserIdIn(participantIds)) {
+            if (!StringUtils.hasText(user.getDeletedAtIso()) && !"deleted".equalsIgnoreCase(user.getProfileStatus()))
+                users.put(user.getUserId(), user);
+        }
+        Users actor = users.get(actorId);
+        if (targetIds.stream().anyMatch(id -> !CommunityGroupProfilesService.sameWorkspace(actor, users.get(id))))
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Contact unavailable.");
+        return users;
     }
 
     public ChatDto ensureServiceChat(ChatServiceEnsureRequestDto request, String requestedUserId) {
@@ -766,6 +851,18 @@ public class ChatService {
         return toChatDto(responseChat, chatMemberUsers(List.of(responseChat)));
     }
 
+    public List<ChatMessageDto> querySharedMessages(String chatId, String requestedUserId, String kind) {
+        String userId = requireResolvedUserId(requestedUserId);
+        ChatDocumentsSnapshot snapshot = requireChat(chatId, userId);
+        if (!"event".equals(kind) && !"asset".equals(kind)) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Unsupported share kind.");
+        }
+        Map<String, Users> userCache = new LinkedHashMap<>();
+        return chatMessagesRepository.findActiveSharesBySender(snapshot.chatId(), userId, kind).stream()
+                .map(message -> chatMessageMapper.toDto(message, userId, userCache))
+                .toList();
+    }
+
     public ChatMessagesPageResponseDto queryMessagesPage(
             String chatId,
             String requestedUserId,
@@ -1048,21 +1145,29 @@ public class ChatService {
         String normalizedTargetUserId = normalizeId(targetUserId);
         String normalizedAdminUserId = normalizeId(adminUserId);
         String normalizedText = normalizeText(text);
-        String chatId = "c-support-admin-" + normalizedTargetUserId;
         if (!StringUtils.hasText(normalizedTargetUserId)
                 || !StringUtils.hasText(normalizedAdminUserId)
                 || !StringUtils.hasText(normalizedText)) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Support target, admin and message are required.");
-        }
-        if (stableMessageId != null) {
-            var delivered = chatMessagesRepository.findByChatIdAndMessageId(chatId, stableMessageId).orElse(null);
-            if (delivered != null) return chatMessageMapper.toDto(delivered, normalizedAdminUserId);
         }
         Users targetUser = findUser(normalizedTargetUserId);
         if (targetUser == null) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Support target was not found.");
         }
         Users adminUser = findUser(normalizedAdminUserId);
+        String workspaceGroupId = normalizeId(targetUser.getWorkspaceGroupId());
+        boolean groupModeration = StringUtils.hasText(workspaceGroupId);
+        if (groupModeration && (adminUser == null || !workspaceGroupId.equals(normalizeId(adminUser.getWorkspaceGroupId())))) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Moderator and recipient must belong to the same workspace.");
+        }
+        String chatId = (groupModeration ? "c-moderation-group-" : "c-support-admin-") + normalizedTargetUserId;
+        if (stableMessageId != null) {
+            var delivered = chatMessagesRepository.findByChatIdAndMessageId(chatId, stableMessageId).orElse(null);
+            if (delivered != null) return chatMessageMapper.toDto(delivered, normalizedAdminUserId);
+        }
+        var group = groupModeration ? mongoTemplate.findById(workspaceGroupId,
+                com.raxim.myscoutee.profile.data.document.CommunityGroup.class) : null;
+        String chatTitle = groupModeration ? (group == null ? workspaceGroupId : group.name()) : "MyScoutee Support";
         String resolvedAdminName = firstNonBlank(adminName, resolveUserName(adminUser, normalizedAdminUserId));
         String resolvedAdminInitials = firstNonBlank(adminInitials, resolveUserInitials(adminUser, normalizedAdminUserId));
         String nowIso = Instant.now().toString();
@@ -1083,7 +1188,7 @@ public class ChatService {
                 normalizedTargetUserId,
                 chatId,
                 resolvedAdminInitials,
-                "MyScoutee Support",
+                chatTitle,
                 List.of(normalizedTargetUserId, normalizedAdminUserId),
                 supportCaseState);
         Chat adminChat = supportChatDocument(
@@ -1091,12 +1196,20 @@ public class ChatService {
                 normalizedAdminUserId,
                 chatId,
                 resolveUserInitials(targetUser, normalizedTargetUserId),
-                "MyScoutee Support · " + resolveUserName(targetUser, normalizedTargetUserId),
+                chatTitle + " · " + resolveUserName(targetUser, normalizedTargetUserId),
                 List.of(normalizedTargetUserId, normalizedAdminUserId),
                 supportCaseState);
-        List<Chat> chatDocuments = List.of(targetChat, adminChat);
+        if (groupModeration) {
+            for (Chat chat : List.of(targetChat, adminChat)) {
+                chat.setChannelType(CHAT_CHANNEL_GROUP_SUPPORT);
+                chat.setOwnerId(null);
+                chat.setSupportCase(null);
+            }
+        }
+        List<Chat> chatDocuments = normalizedTargetUserId.equals(normalizedAdminUserId)
+                ? List.of(adminChat) : List.of(targetChat, adminChat);
         chatsRepository.saveAll(chatDocuments);
-        userActivityCountersService.refreshSupportCaseCountersForAdmins();
+        if (!groupModeration) userActivityCountersService.refreshSupportCaseCountersForAdmins();
 
         ChatMessage message = buildMessage(adminUser, normalizedAdminUserId, normalizedText, null, null, List.of());
         message.setSender(resolvedAdminName);
@@ -1129,13 +1242,19 @@ public class ChatService {
             ChatDocumentsSnapshot accessSnapshot,
             String userId,
             ChatMessage message) {
-        ChatStreamEvent streamEvent = chatMessageMapper.toStreamEvent(accessSnapshot.chatId(), message);
-        CompletableFuture<Boolean> redisPublish = publishChatEventAsync(streamEvent);
         List<Chat> chatDocuments = chatDocumentsForMutation(accessSnapshot, userId);
         message.setChatId(accessSnapshot.chatId());
         message.setMongoId(ChatMessage.buildMongoId(accessSnapshot.chatId(), message.getId()));
         message.refreshMessageSearchFields();
-        chatMessagesRepository.save(message);
+        if (StringUtils.hasText(message.getClientId())) {
+            try { chatMessagesRepository.insert(message); }
+            catch (DuplicateKeyException duplicate) {
+                return chatMessageMapper.toDto(chatMessagesRepository.findByChatIdAndMessageId(
+                        accessSnapshot.chatId(), message.getId()).orElseThrow(), userId);
+            }
+        } else chatMessagesRepository.save(message);
+        ChatStreamEvent streamEvent = chatMessageMapper.toStreamEvent(accessSnapshot.chatId(), message);
+        CompletableFuture<Boolean> redisPublish = publishChatEventAsync(streamEvent);
         List<Chat> updatedDocuments = updateChatSummaries(chatDocuments, message, userId, true);
         observeChatEventPublish(redisPublish, streamEvent);
         chatPushNotificationService.notifyRecipients(updatedDocuments, streamEvent);
@@ -1764,6 +1883,8 @@ public class ChatService {
             case CHAT_CHANNEL_OPTIONAL_SUB_EVENT -> "subEvent";
             case CHAT_CHANNEL_GROUP_SUB_EVENT -> "group";
             case CHAT_CHANNEL_SERVICE_EVENT -> "service";
+            case "contact" -> "contacts";
+            case CHAT_CHANNEL_GROUP_SUPPORT -> "groupSupport";
             case CHAT_CHANNEL_APP_SUPPORT, CHAT_CHANNEL_SUPPORT_CASE -> "appSupport";
             default -> "";
         };
@@ -2439,7 +2560,9 @@ public class ChatService {
             List<ChatMessageAttachmentRecord> attachments) {
         Instant sentAt = Instant.now();
         ChatMessage message = new ChatMessage();
-        message.setId(UUID.randomUUID().toString());
+        message.setId(StringUtils.hasText(clientId)
+                ? UUID.nameUUIDFromBytes((senderUserId + "\n" + clientId.trim()).getBytes(StandardCharsets.UTF_8)).toString()
+                : UUID.randomUUID().toString());
         message.setClientId(normalizeText(clientId));
         message.setSender(resolveUserName(sender, senderUserId));
         message.setSenderAvatar(buildSenderAvatarRecord(sender, senderUserId));
@@ -3049,6 +3172,7 @@ public class ChatService {
                 || CHAT_CHANNEL_OPTIONAL_SUB_EVENT.equals(channelType)
                 || CHAT_CHANNEL_GROUP_SUB_EVENT.equals(channelType)
                 || CHAT_CHANNEL_SERVICE_EVENT.equals(channelType)
+                || CHAT_CHANNEL_GROUP_SUPPORT.equals(channelType)
                 || CHAT_CHANNEL_APP_SUPPORT.equals(channelType)
                 || CHAT_CHANNEL_SUPPORT_CASE.equals(channelType)) {
             return channelType;
@@ -3117,6 +3241,8 @@ public class ChatService {
                 || "subEvent".equalsIgnoreCase(normalized)
                 || "group".equalsIgnoreCase(normalized)
                 || "service".equalsIgnoreCase(normalized)
+                || "contacts".equalsIgnoreCase(normalized)
+                || "groupSupport".equalsIgnoreCase(normalized)
                 || "appSupport".equalsIgnoreCase(normalized)) {
             return normalized;
         }
@@ -3140,6 +3266,8 @@ public class ChatService {
         if ("service".equalsIgnoreCase(contextFilter)) {
             return "serviceEvent".equalsIgnoreCase(channelType);
         }
+        if ("contacts".equalsIgnoreCase(contextFilter)) return "contact".equals(channelType);
+        if ("groupSupport".equalsIgnoreCase(contextFilter)) return CHAT_CHANNEL_GROUP_SUPPORT.equals(channelType);
         if ("appSupport".equalsIgnoreCase(contextFilter)) {
             return "appSupport".equalsIgnoreCase(channelType)
                     || "supportCase".equalsIgnoreCase(channelType);
@@ -3307,6 +3435,10 @@ public class ChatService {
             criteria.add(Criteria.where("channelType").is(CHAT_CHANNEL_GROUP_SUB_EVENT));
         } else if ("service".equals(normalizedContext)) {
             criteria.add(Criteria.where("channelType").is(CHAT_CHANNEL_SERVICE_EVENT));
+        } else if ("contacts".equals(normalizedContext)) {
+            criteria.add(Criteria.where("channelType").is("contact"));
+        } else if ("groupSupport".equals(normalizedContext)) {
+            criteria.add(Criteria.where("channelType").is(CHAT_CHANNEL_GROUP_SUPPORT));
         } else if ("appSupport".equals(normalizedContext)) {
             criteria.add(Criteria.where("channelType").in(CHAT_CHANNEL_APP_SUPPORT, CHAT_CHANNEL_SUPPORT_CASE));
         }

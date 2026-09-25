@@ -45,6 +45,8 @@ public final class PaymentDtos {
             String registrationId,
             String status) {}
 
+    public record CashReceiptRequestDto(String requestId, String payerUserId, Double amount, String currency, String note) {}
+
     public record PaymentHistoryItemDto(
             String id,
             String sourceId,
@@ -70,7 +72,9 @@ public final class PaymentDtos {
             Boolean canRequestRefund,
             Boolean canApproveRefund,
             PaymentRefundPreviewDto refundPreview,
-            SavedPaymentMethodDto paymentMethod) {}
+            SavedPaymentMethodDto paymentMethod,
+            String note,
+            String counterpartyName) {}
 
     public record PaymentRefundPreviewDto(
             Double paidAmount,
