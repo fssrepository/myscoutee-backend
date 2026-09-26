@@ -29,6 +29,8 @@ public class IntegrationTokenAuthenticationFilter extends OncePerRequestFilter {
     public static final String CLIENT_ID_HEADER = "X-MyScoutee-Client-Id";
 
     private final IntegrationTokenService tokenService;
+    @org.springframework.beans.factory.annotation.Autowired
+    private org.springframework.beans.factory.ObjectProvider<com.raxim.myscoutee.profile.service.McpAuthorizationService> mcp;
 
     private final UsersRepository users;
     private final CommunityGroupProfilesService profiles;
@@ -55,7 +57,8 @@ public class IntegrationTokenAuthenticationFilter extends OncePerRequestFilter {
         String rawToken = StringUtils.hasText(authorization) && authorization.startsWith(BEARER_PREFIX)
                 ? authorization.substring(BEARER_PREFIX.length()).trim()
                 : null;
-        AuthenticatedIntegrationClient client = tokenService.authenticateClient(
+        AuthenticatedIntegrationClient client = rawToken != null && rawToken.startsWith("mca_")
+                ? mcp.getObject().authenticate(rawToken) : tokenService.authenticateClient(
                 rawToken,
                 request.getHeader(CLIENT_ID_HEADER),
                 resolveClientAddress(request));

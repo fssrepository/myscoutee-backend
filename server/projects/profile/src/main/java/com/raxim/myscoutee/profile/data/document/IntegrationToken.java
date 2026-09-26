@@ -17,6 +17,9 @@ public class IntegrationToken {
     private String ownerUserId;
     private String name;
     private String scope;
+    private String redirectUri;
+    public String getRedirectUri() { return redirectUri; }
+    public void setRedirectUri(String value) { redirectUri = value; }
     public String getScope() { return scope; }
     public void setScope(String scope) { this.scope = scope; }
 

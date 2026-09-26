@@ -23250,6 +23250,132 @@
     "value": "(max. {count})"
   },
   {
+    "_id": "i18n-message-en-mcp-connections",
+    "key": "mcp.connections",
+    "lang": "en",
+    "value": "AI / MCP connections"
+  },
+  {
+    "_id": "i18n-message-en-mcp-create",
+    "key": "mcp.create",
+    "lang": "en",
+    "value": "New connection"
+  },
+  {
+    "_id": "i18n-message-en-mcp-setup",
+    "key": "mcp.setup",
+    "lang": "en",
+    "value": "Create one connection per AI client. Add its MCP URL, client ID and secret in the client settings, then sign in and approve access. Connections expire after 90 days."
+  },
+  {
+    "_id": "i18n-message-en-mcp-local-only",
+    "key": "mcp.local.only",
+    "lang": "en",
+    "value": "These settings are saved locally in demo mode. Remote AI connections require a live HTTPS installation."
+  },
+  {
+    "_id": "i18n-message-en-mcp-url",
+    "key": "mcp.url",
+    "lang": "en",
+    "value": "MCP URL"
+  },
+  {
+    "_id": "i18n-message-en-mcp-client-id",
+    "key": "mcp.client.id",
+    "lang": "en",
+    "value": "Client ID"
+  },
+  {
+    "_id": "i18n-message-en-mcp-callback",
+    "key": "mcp.callback",
+    "lang": "en",
+    "value": "Callback URL"
+  },
+  {
+    "_id": "i18n-message-en-mcp-last-used",
+    "key": "mcp.last.used",
+    "lang": "en",
+    "value": "Last used:"
+  },
+  {
+    "_id": "i18n-message-en-mcp-secret",
+    "key": "mcp.secret",
+    "lang": "en",
+    "value": "Client secret"
+  },
+  {
+    "_id": "i18n-message-en-mcp-empty",
+    "key": "mcp.empty",
+    "lang": "en",
+    "value": "No active MCP connections."
+  },
+  {
+    "_id": "i18n-message-en-mcp-name",
+    "key": "mcp.name",
+    "lang": "en",
+    "value": "Name (e.g. Claude)"
+  },
+  {
+    "_id": "i18n-message-en-mcp-callback-help",
+    "key": "mcp.callback.help",
+    "lang": "en",
+    "value": "Copy the exact callback URL shown by your AI client. HTTPS is required, except for local loopback clients."
+  },
+  {
+    "_id": "i18n-message-en-mcp-revoke",
+    "key": "mcp.revoke",
+    "lang": "en",
+    "value": "Revoke connection"
+  },
+  {
+    "_id": "i18n-message-en-mcp-revoke-message",
+    "key": "mcp.revoke.message",
+    "lang": "en",
+    "value": "Revoke this AI client’s access? Existing access and refresh tokens will stop working."
+  },
+  {
+    "_id": "i18n-message-en-mcp-failed",
+    "key": "mcp.failed",
+    "lang": "en",
+    "value": "The operation failed. Check the details and retry."
+  },
+  {
+    "_id": "i18n-message-en-mcp-profile",
+    "key": "mcp.profile",
+    "lang": "en",
+    "value": "Profile"
+  },
+  {
+    "_id": "i18n-message-en-mcp-base-profile",
+    "key": "mcp.base.profile",
+    "lang": "en",
+    "value": "Base profile"
+  },
+  {
+    "_id": "i18n-message-en-mcp-consent-message",
+    "key": "mcp.consent.message",
+    "lang": "en",
+    "value": "This connection can use the API operations allowed for this profile and group. It cannot switch profiles. You can revoke access under Profile → API & integrations."
+  },
+  {
+    "_id": "i18n-message-en-mcp-authorization-failed",
+    "key": "mcp.authorization.failed",
+    "lang": "en",
+    "value": "This authorization request is invalid or belongs to another account. Reconnect from your AI client using the correct account."
+  },
+  {
+    "_id": "i18n-message-en-mcp-authorize",
+    "key": "mcp.authorize",
+    "lang": "en",
+    "value": "Authorize AI connection"
+  },
+  {
+    "_id": "i18n-message-en-mcp-approve",
+    "key": "mcp.approve",
+    "lang": "en",
+    "value": "Allow access"
+  },
+  {
     "_id": "i18n-message-hu-navigator-community",
     "key": "navigator.community",
     "lang": "hu",
@@ -46498,5 +46624,131 @@
     "key": "menu.selection.maximum",
     "lang": "hu",
     "value": "(max. {count} db)"
+  },
+  {
+    "_id": "i18n-message-hu-mcp-connections",
+    "key": "mcp.connections",
+    "lang": "hu",
+    "value": "AI / MCP-kapcsolatok"
+  },
+  {
+    "_id": "i18n-message-hu-mcp-create",
+    "key": "mcp.create",
+    "lang": "hu",
+    "value": "Új kapcsolat"
+  },
+  {
+    "_id": "i18n-message-hu-mcp-setup",
+    "key": "mcp.setup",
+    "lang": "hu",
+    "value": "Hozz létre külön kapcsolatot az AI-kliensekhez. A kliens beállításaiban add meg az MCP-címet, a kliensazonosítót és a titkot, majd jelentkezz be és engedélyezd a hozzáférést. A kapcsolatok 90 nap után lejárnak."
+  },
+  {
+    "_id": "i18n-message-hu-mcp-local-only",
+    "key": "mcp.local.only",
+    "lang": "hu",
+    "value": "Demó módban ezek a beállítások helyben tárolódnak. A távoli AI-kapcsolathoz működő HTTPS-telepítés szükséges."
+  },
+  {
+    "_id": "i18n-message-hu-mcp-url",
+    "key": "mcp.url",
+    "lang": "hu",
+    "value": "MCP-cím"
+  },
+  {
+    "_id": "i18n-message-hu-mcp-client-id",
+    "key": "mcp.client.id",
+    "lang": "hu",
+    "value": "Kliensazonosító"
+  },
+  {
+    "_id": "i18n-message-hu-mcp-callback",
+    "key": "mcp.callback",
+    "lang": "hu",
+    "value": "Visszahívási cím"
+  },
+  {
+    "_id": "i18n-message-hu-mcp-last-used",
+    "key": "mcp.last.used",
+    "lang": "hu",
+    "value": "Utoljára használva:"
+  },
+  {
+    "_id": "i18n-message-hu-mcp-secret",
+    "key": "mcp.secret",
+    "lang": "hu",
+    "value": "Kliens titka"
+  },
+  {
+    "_id": "i18n-message-hu-mcp-empty",
+    "key": "mcp.empty",
+    "lang": "hu",
+    "value": "Nincs aktív MCP-kapcsolat."
+  },
+  {
+    "_id": "i18n-message-hu-mcp-name",
+    "key": "mcp.name",
+    "lang": "hu",
+    "value": "Név (pl. Claude)"
+  },
+  {
+    "_id": "i18n-message-hu-mcp-callback-help",
+    "key": "mcp.callback.help",
+    "lang": "hu",
+    "value": "Másold be az AI-kliens által megadott pontos visszahívási címet. HTTPS szükséges, kivéve a helyben futó klienseknél."
+  },
+  {
+    "_id": "i18n-message-hu-mcp-revoke",
+    "key": "mcp.revoke",
+    "lang": "hu",
+    "value": "Kapcsolat visszavonása"
+  },
+  {
+    "_id": "i18n-message-hu-mcp-revoke-message",
+    "key": "mcp.revoke.message",
+    "lang": "hu",
+    "value": "Visszavonod az AI-kliens hozzáférését? A meglévő hozzáférési és megújítási tokenjei is érvénytelenné válnak."
+  },
+  {
+    "_id": "i18n-message-hu-mcp-failed",
+    "key": "mcp.failed",
+    "lang": "hu",
+    "value": "A művelet nem sikerült. Ellenőrizd az adatokat, majd próbáld újra."
+  },
+  {
+    "_id": "i18n-message-hu-mcp-profile",
+    "key": "mcp.profile",
+    "lang": "hu",
+    "value": "Profil"
+  },
+  {
+    "_id": "i18n-message-hu-mcp-base-profile",
+    "key": "mcp.base.profile",
+    "lang": "hu",
+    "value": "Alapprofil"
+  },
+  {
+    "_id": "i18n-message-hu-mcp-consent-message",
+    "key": "mcp.consent.message",
+    "lang": "hu",
+    "value": "Ez a kapcsolat a profil és csoport számára engedélyezett API-műveleteket használhatja. Másik profilra nem válthat. A hozzáférést a Profil → API és integrációk alatt vonhatod vissza."
+  },
+  {
+    "_id": "i18n-message-hu-mcp-authorization-failed",
+    "key": "mcp.authorization.failed",
+    "lang": "hu",
+    "value": "Ez az engedélykérés érvénytelen, vagy másik fiókhoz tartozik. A megfelelő fiókkal indíts új csatlakozást az AI-kliensből."
+  },
+  {
+    "_id": "i18n-message-hu-mcp-authorize",
+    "key": "mcp.authorize",
+    "lang": "hu",
+    "value": "AI-kapcsolat engedélyezése"
+  },
+  {
+    "_id": "i18n-message-hu-mcp-approve",
+    "key": "mcp.approve",
+    "lang": "hu",
+    "value": "Hozzáférés engedélyezése"
   }
 ]
