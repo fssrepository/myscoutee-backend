@@ -24024,6 +24024,30 @@
     "value": "An administrator took over responsibility for {workspaceGroupName}."
   },
   {
+    "_id": "i18n-message-en-groups-confirm-restore-title",
+    "key": "groups.confirm.restore.title",
+    "lang": "en",
+    "value": "Restore your group membership?"
+  },
+  {
+    "_id": "i18n-message-en-groups-confirm-restore",
+    "key": "groups.confirm.restore",
+    "lang": "en",
+    "value": "Restore your membership in “{name}” without a new approval?"
+  },
+  {
+    "_id": "i18n-message-en-groups-confirm-restore-blocked-title",
+    "key": "groups.confirm.restore-blocked.title",
+    "lang": "en",
+    "value": "Request to rejoin this group?"
+  },
+  {
+    "_id": "i18n-message-en-groups-confirm-restore-blocked",
+    "key": "groups.confirm.restore-blocked",
+    "lang": "en",
+    "value": "You were removed from “{name}”. Send a request for an admin to approve your membership again?"
+  },
+  {
     "_id": "i18n-message-hu-navigator-community",
     "key": "navigator.community",
     "lang": "hu",
@@ -48046,5 +48070,29 @@
     "key": "notification.kind.community-takeover.message",
     "lang": "hu",
     "value": "Egy admin átvette a(z) {workspaceGroupName} csoport felelősségét."
+  },
+  {
+    "_id": "i18n-message-hu-groups-confirm-restore-title",
+    "key": "groups.confirm.restore.title",
+    "lang": "hu",
+    "value": "Visszaállítod a csoporttagságodat?"
+  },
+  {
+    "_id": "i18n-message-hu-groups-confirm-restore",
+    "key": "groups.confirm.restore",
+    "lang": "hu",
+    "value": "Visszaállítod a tagságodat a(z) „{name}” csoportban újabb jóváhagyás nélkül?"
+  },
+  {
+    "_id": "i18n-message-hu-groups-confirm-restore-blocked-title",
+    "key": "groups.confirm.restore-blocked.title",
+    "lang": "hu",
+    "value": "Kéred az újbóli csatlakozást?"
+  },
+  {
+    "_id": "i18n-message-hu-groups-confirm-restore-blocked",
+    "key": "groups.confirm.restore-blocked",
+    "lang": "hu",
+    "value": "Eltávolítottak a(z) „{name}” csoportból. Küldesz kérelmet az adminnak a tagságod újbóli jóváhagyására?"
   }
 ]

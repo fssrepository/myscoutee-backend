@@ -1,0 +1,405 @@
+{
+  "checkpoint": "GROUP-LIFECYCLE-001",
+  "block": 7,
+  "adapter": "HTTP",
+  "status": "PASS",
+  "controls": {
+    "group": "seed-community-neighbours",
+    "member": "Alex Turner",
+    "admin": "Nagy Eszter"
+  },
+  "focusedTests": {
+    "passed": 41,
+    "files": 4,
+    "log": "frontend/.agent/group-trash-vitest.log",
+    "localBrowserCampaign": "NOT RUN"
+  },
+  "observations": {
+    "group-block7-before": {
+      "group": {
+        "_id": "seed-community-neighbours",
+        "ownerUserId": "9f3b3f085e23af6c89dbc432",
+        "pendingMembers": 0
+      },
+      "members": [
+        {
+          "_id": "community:seed-community-neighbours:1b1c70be2349b3359a8f6f94",
+          "userId": "1b1c70be2349b3359a8f6f94",
+          "role": "Member",
+          "status": "accepted"
+        },
+        {
+          "_id": "community:seed-community-neighbours:9f3b3f085e23af6c89dbc432",
+          "userId": "9f3b3f085e23af6c89dbc432",
+          "role": "Admin",
+          "status": "accepted"
+        },
+        {
+          "_id": "community:seed-community-neighbours:af0436815ab38f4864dd1e24",
+          "userId": "af0436815ab38f4864dd1e24",
+          "role": "Member",
+          "status": "accepted"
+        }
+      ]
+    },
+    "group-block7-denied": {
+      "status": 403,
+      "message": "403 FORBIDDEN"
+    },
+    "group-block7-left-ui": {
+      "dialog": "",
+      "groups": "Groups\nschedule\nRecent\nexpand_more\nclose\ngroups\nActive groups\nexpand_more\nadd\nSun, 20 Sept 2026\ngroups\n3\npalette\nPhoto Walks\n\nHobbies\n\n3.5 km\n\nmore_vert\ngroups\n2\nschool\nStudy Buddies\n\nLearning\n\n3.1 km\n\nmore_vert"
+    },
+    "group-block7-left-db": {
+      "group": {
+        "_id": "seed-community-neighbours",
+        "ownerUserId": "9f3b3f085e23af6c89dbc432",
+        "pendingMembers": 0
+      },
+      "members": [
+        {
+          "_id": "community:seed-community-neighbours:1b1c70be2349b3359a8f6f94",
+          "userId": "1b1c70be2349b3359a8f6f94",
+          "role": "Member",
+          "status": "accepted"
+        },
+        {
+          "_id": "community:seed-community-neighbours:9f3b3f085e23af6c89dbc432",
+          "userId": "9f3b3f085e23af6c89dbc432",
+          "role": "Admin",
+          "status": "accepted"
+        },
+        {
+          "_id": "community:seed-community-neighbours:af0436815ab38f4864dd1e24",
+          "userId": "af0436815ab38f4864dd1e24",
+          "role": "Member",
+          "status": "deleted"
+        }
+      ]
+    },
+    "group-block7-reloaded-active": {
+      "groups": "Groups\nschedule\nRecent\nexpand_more\nclose\ngroups\nActive groups\nexpand_more\nadd\nSun, 20 Sept 2026\ngroups\n3\npalette\nPhoto Walks\n\nHobbies\n\n3.5 km\n\nmore_vert\ngroups\n2\nschool\nStudy Buddies\n\nLearning\n\n3.1 km\n\nmore_vert"
+    },
+    "group-restore-open": {
+      "before": " 31\nlocation_on\nSeattle\nDC\nDesign Circle\nexpand_more\n99+\nnotifications\n8\ntips_and_updates\nshare\nsettings\nclose\ndiversity_2\nCOMMUNITY\nphoto_library\nFeed\nrss_feed\nFollowed\ngroups\nGroups\n3\npsychology\nIMPRESSIONS\nworkspace_premium\nHOST\nauto_awesome\nAttendee\nATTENDEE\nrate_review\nFeedback\nlocal_activity\nACTIVITIES\nstar\nRates\nchat\nChats\nmail\nInvitations\nevent\nEvents\nreceipt_long\nPayments\ninventory_2\nMY ASSETS\ndirections_car\nTransport\napartment\nAccommodation\ninventory_2\nSupplies\nqr_code_2\nTicket\ncontacts\nContacts\nGroups\nschedule\nRecent\nexpand_more\nclose\ndelete\nTrash\nexpand_more\nadd\nSun, 27 Sept 2026\nimage_not_supported\nvisibility_off\n2\nlocation_city\nSeattle Neighbours\n\nNeighbourhood\n\n3.2 km\n\nclose\nSEATTLE NEIGHBOURS\nclose\nrestore_from_trash\nRestore",
+      "after": "\ntips_and_updates\nshare\nsettings\nclose\ndiversity_2\nCOMMUNITY\nphoto_library\nFeed\nrss_feed\nFollowed\ngroups\nGroups\n3\npsychology\nIMPRESSIONS\nworkspace_premium\nHOST\nauto_awesome\nAttendee\nATTENDEE\nrate_review\nFeedback\nlocal_activity\nACTIVITIES\nstar\nRates\nchat\nChats\nmail\nInvitations\nevent\nEvents\nreceipt_long\nPayments\ninventory_2\nMY ASSETS\ndirections_car\nTransport\napartment\nAccommodation\ninventory_2\nSupplies\nqr_code_2\nTicket\ncontacts\nContacts\nRestore your group membership?\n\nRestore your membership in “Seattle Neighbours” without a new approval?\n\nCancel\nRestore\nGroups\nschedule\nRecent\nexpand_more\nclose\ndelete\nTrash\nexpand_more\nadd\nSun, 27 Sept 2026\nimage_not_supported\nvisibility_off\n2\nlocation_city\nSeattle Neighbours\n\nNeighbourhood\n\n3.2 km\n\nmore_vert",
+      "buttons": []
+    },
+    "group-restore-error-state": {
+      "dialog": "Restore your group membership?\n\nRestore your membership in “Seattle Neighbours” without a new approval?\n\nThe action failed.\n\nCancel\nRestore",
+      "buttons": [
+        {
+          "text": "Cancel",
+          "disabled": false
+        },
+        {
+          "text": "Restore",
+          "disabled": false
+        }
+      ],
+      "cardPresent": true,
+      "groups": "Groups\nschedule\nRecent\nexpand_more\nclose\ndelete\nTrash\nexpand_more\nadd\n\nThe action failed.\n\nSun, 27 Sept 2026\nimage_not_supported\nvisibility_off\n2\nlocation_city\nSeattle Neighbours\n\nNeighbourhood\n\n3.2 km\n\nmore_vert",
+      "workspaceNames": [
+        "Design Circle",
+        "Photo Walks",
+        "Seattle Friends",
+        "Study Buddies"
+      ]
+    },
+    "group-restore-delay-result": {
+      "url": "http://localhost/api/activities/events/members/action",
+      "during": {
+        "dialog": "Restore your group membership?\n\nRestore your membership in “Seattle Neighbours” without a new approval?\n\nCancel\nhourglass_empty\nWorking...",
+        "buttons": [
+          {
+            "text": "Cancel",
+            "disabled": true
+          },
+          {
+            "text": "hourglass_empty\nWorking...",
+            "disabled": true
+          }
+        ],
+        "cardPresent": true,
+        "groups": "Groups\nschedule\nRecent\nexpand_more\nclose\ndelete\nTrash\nexpand_more\nadd\nSun, 27 Sept 2026\nimage_not_supported\nvisibility_off\n2\nlocation_city\nSeattle Neighbours\n\nNeighbourhood\n\n3.2 km\n\nmore_vert",
+        "workspaceNames": [
+          "Design Circle",
+          "Photo Walks",
+          "Seattle Friends",
+          "Study Buddies"
+        ]
+      },
+      "timedOut": {
+        "dialog": "Restore your group membership?\n\nRestore your membership in “Seattle Neighbours” without a new approval?\n\nCancel\nhourglass_empty\nWorking...",
+        "buttons": [
+          {
+            "text": "Cancel",
+            "disabled": true
+          },
+          {
+            "text": "hourglass_empty\nWorking...",
+            "disabled": true
+          }
+        ],
+        "cardPresent": true,
+        "groups": "Groups\nschedule\nRecent\nexpand_more\nclose\ndelete\nTrash\nexpand_more\nadd\nSun, 27 Sept 2026\nimage_not_supported\nvisibility_off\n2\nlocation_city\nSeattle Neighbours\n\nNeighbourhood\n\n3.2 km\n\nmore_vert",
+        "workspaceNames": [
+          "Design Circle",
+          "Photo Walks",
+          "Seattle Friends",
+          "Study Buddies"
+        ]
+      },
+      "retry": null,
+      "release": "released",
+      "after": {
+        "dialog": "",
+        "buttons": [],
+        "cardPresent": false,
+        "groups": "Groups\nschedule\nRecent\nexpand_more\nclose\ndelete\nTrash\nexpand_more\nadd\nNo items\nNo items",
+        "workspaceNames": [
+          "Design Circle",
+          "Photo Walks",
+          "Seattle Friends",
+          "Seattle Neighbours",
+          "Study Buddies"
+        ]
+      }
+    },
+    "group-remove-alex-success": {
+      "dialog": "",
+      "members": "Members\n\nSeattle Neighbours\n\n2 members\nclose\nperson_add\nInvite\npending_actions\nPending only\nperson\nmore_vert\nvisibility\nMaya Stone\n\nMember · San Diego\n\nadmin_panel_settings\nmore_vert\nvisibility\nNagy Eszter\n\nAdmin · Seattle",
+      "card": "image_not_supported\ngroups\n2\n2\nlocation_city\nSeattle Neighbours\n\nNeighbourhood\n\n0 km\n\nmore_vert"
+    },
+    "group-blocked-live": {
+      "dialog": "",
+      "buttons": [],
+      "cardPresent": true,
+      "groups": "Groups\nschedule\nRecent\nexpand_more\nclose\ndelete\nTrash\nexpand_more\nadd\nSun, 27 Sept 2026\nimage_not_supported\nvisibility_off\n2\nlocation_city\nSeattle Neighbours\n\nNeighbourhood\n\n3.2 km\n\nmore_vert",
+      "workspaceNames": [
+        "Design Circle",
+        "Photo Walks",
+        "Seattle Friends",
+        "Study Buddies"
+      ]
+    },
+    "group-blocked-restore-open": "Request to rejoin this group?\n\nYou were removed from “Seattle Neighbours”. Send a request for an admin to approve your membership again?\n\nCancel\nRestore",
+    "group-blocked-restore-success": {
+      "dialog": "",
+      "groups": "Groups\nschedule\nRecent\nexpand_more\nclose\ndelete\nTrash\nexpand_more\nadd\nNo items\nNo items",
+      "workspaceNames": [
+        "Design Circle",
+        "Photo Walks",
+        "Seattle Friends",
+        "Study Buddies"
+      ]
+    },
+    "group-blocked-pending-ui": "Groups\nschedule\nRecent\nexpand_more\nclose\npending_actions\nPending groups\nexpand_more\n2\nadd\nSun, 27 Sept 2026\nimage_not_supported\ngroups\n2\n2\nlocation_city\nSeattle Neighbours\n\nNeighbourhood\n\n3.2 km\n\nmore_vert\nSun, 20 Sept 2026\ngroups\n2\nwork\nMakers Network\n\nWork and teams\n\n3.7 km\n\nmore_vert",
+    "group-eszter-pending-read": {
+      "text": "yScoutee\nperson\nPreferences\nexpand_more\nfilter_alt\nFilters\n6\nhistory\nRatings\n99+\n\nName · Lucas Lane\n\nCity · Seattle\n\nActive recently\nvisibility\n\nName · Noah Lane\n\nCity · Boston\n\nActive recently\nvisibility\n\nName · Luca Hale\n\nCity · Los Angeles\n\nActive recently\nvisibility\nAffinity\n:\n1\nGo\narrow_forward\n9+\nnotifications_active\n39\nedit\n58%\nNagy Eszter, 30\nlocation_on\nSeattle\npublic\nMain profile\nexpand_more\n99+\nnotifications\n39\ntips_and_updates\nshare\nsettings\nclose\ndiversity_2\nCOMMUNITY\nphoto_library\nFeed\nrss_feed\nFollowed\ngroups\nGroups\n3\npsychology\nIMPRESSIONS\nworkspace_premium\nSilver\nHOST\npalette\nCreative\nATTENDEE\nrate_review\nFeedback\n1\nlocal_activity\nACTIVITIES\nstar\nRates\n99+\nchat\nChats\n24\nmail\nInvitations\n11\nevent\nEvents\n35\nreceipt_long\nPayments\ninventory_2\nMY ASSETS\ndirections_car\nTransport\n1\napartment\nAccommodation\ninventory_2\nSupplies\n1\nqr_code_2\nTicket\ncontacts\nContacts\nMembers\n\nSeattle Neighbours\n\n2 members · 1 pending\nclose\nperson_add\nInvite\npending_actions\nPending only\n1\nperson\nmore_vert\nvisibility\nMaya Stone\n\nMember · San Diego\n\nadmin_panel_settings\nmore_vert\nvisibility\nNagy Eszter\n\nAdmin · Seattle\n\npending_actions\nmore_vert\nvisibility\nAlex Turner\n\nMember · Seattle\n\nWaiting For Admin Approval\n\nGroups\nschedule\nRecent\nexpand_more\nclose\nevent_seat\nHosting\nexpand_more\n3\nadd\nSun, 27 Sept 2026\nimage_not_supported\ngroups\n2\n3\nlocation_city\nSeattle Neighbours\n\nNeighbourhood\n\n0 km\n\nmore_vert\nSun, 20 Sept 2026\ngroups\n3\nsports\nSeattle Trail Club\n\nSport\n\n0 km\n\nmore_vert",
+      "buttons": [
+        {
+          "text": "receipt_long\nPayments",
+          "aria": "Open payment history"
+        },
+        {
+          "text": "directions_car\nTransport\n1",
+          "aria": "Transport"
+        },
+        {
+          "text": "apartment\nAccommodation",
+          "aria": "Accommodation"
+        },
+        {
+          "text": "inventory_2\nSupplies\n1",
+          "aria": "Supplies"
+        },
+        {
+          "text": "qr_code_2\nTicket",
+          "aria": "Ticket"
+        },
+        {
+          "text": "contacts\nContacts",
+          "aria": "Contacts"
+        },
+        {
+          "text": "close",
+          "aria": "Close"
+        },
+        {
+          "text": "person_add\nInvite",
+          "aria": "Invite friends"
+        },
+        {
+          "text": "pending_actions\nPending only\n1",
+          "aria": "Show pending members only"
+        },
+        {
+          "text": "more_vert",
+          "aria": "Open actions for Maya Stone"
+        },
+        {
+          "text": "visibility",
+          "aria": "View profile"
+        },
+        {
+          "text": "more_vert",
+          "aria": "Open actions for Nagy Eszter"
+        },
+        {
+          "text": "visibility",
+          "aria": "View profile"
+        },
+        {
+          "text": "more_vert",
+          "aria": "Open actions for Alex Turner"
+        },
+        {
+          "text": "visibility",
+          "aria": "View profile"
+        },
+        {
+          "text": "schedule\nRecent\nexpand_more",
+          "aria": "Open recent"
+        },
+        {
+          "text": "close",
+          "aria": "Close"
+        },
+        {
+          "text": "event_seat\nHosting\nexpand_more\n3",
+          "aria": "Open groups.bucket.hosting"
+        },
+        {
+          "text": "add",
+          "aria": "Open group actions"
+        },
+        {
+          "text": "",
+          "aria": "Nagy Eszter"
+        },
+        {
+          "text": "groups\n2\n3",
+          "aria": "Open members"
+        },
+        {
+          "text": "more_vert",
+          "aria": "Open card actions"
+        },
+        {
+          "text": "",
+          "aria": "Nagy Eszter"
+        },
+        {
+          "text": "groups\n3",
+          "aria": "Open members"
+        },
+        {
+          "text": "more_vert",
+          "aria": "Open card actions"
+        }
+      ]
+    },
+    "group-approve-alex-success": {
+      "dialog": "",
+      "members": "Members\n\nSeattle Neighbours\n\n3 members\nclose\nperson_add\nInvite\npending_actions\nPending only\nperson\nmore_vert\nvisibility\nMaya Stone\n\nMember · San Diego\n\nadmin_panel_settings\nmore_vert\nvisibility\nNagy Eszter\n\nAdmin · Seattle\n\nperson\nmore_vert\nvisibility\nAlex Turner\n\nMember · Seattle",
+      "card": "image_not_supported\ngroups\n3\n2\nlocation_city\nSeattle Neighbours\n\nNeighbourhood\n\n0 km\n\nmore_vert"
+    },
+    "group-approved-live": {
+      "dialog": "",
+      "buttons": [],
+      "cardPresent": false,
+      "groups": "Groups\nschedule\nRecent\nexpand_more\nclose\npending_actions\nPending groups\nexpand_more\nadd\nSun, 20 Sept 2026\ngroups\n2\nwork\nMakers Network\n\nWork and teams\n\n3.7 km\n\nmore_vert",
+      "workspaceNames": [
+        "Design Circle",
+        "Photo Walks",
+        "Seattle Friends",
+        "Seattle Neighbours",
+        "Study Buddies"
+      ]
+    },
+    "group-blocked-bypass-result": [
+      {
+        "action": "remove",
+        "status": 403
+      },
+      {
+        "action": "restore",
+        "status": 200,
+        "membership": "pending",
+        "requestKind": "join",
+        "accepted": 2
+      },
+      {
+        "action": "accept",
+        "status": 403
+      }
+    ],
+    "group-reapprove-result": {
+      "dialog": "",
+      "members": "Members\n\nSeattle Neighbours\n\n3 members\nclose\nperson_add\nInvite\npending_actions\nPending only\nNo members yet.\n\nCheck back later or invite people in.",
+      "card": "image_not_supported\ngroups\n3\n2\nlocation_city\nSeattle Neighbours\n\nNeighbourhood\n\n0 km\n\nmore_vert"
+    },
+    "group-trash-final-active": {
+      "groups": "Groups\nschedule\nRecent\nexpand_more\nclose\ngroups\nActive groups\nexpand_more\n5\nadd\nSun, 27 Sept 2026\nimage_not_supported\ngroups\n3\n5\nlocation_city\nSeattle Neighbours\n\nNeighbourhood\n\n3.2 km\n\nmore_vert\nSun, 20 Sept 2026\ngroups\n3\npalette\nPhoto Walks\n\nHobbies\n\n3.5 km\n\nmore_vert\ngroups\n2\nschool\nStudy Buddies\n\nLearning\n\n3.1 km\n\nmore_vert",
+      "card": "image_not_supported\ngroups\n3\n5\nlocation_city\nSeattle Neighbours\n\nNeighbourhood\n\n3.2 km\n\nmore_vert"
+    },
+    "group-trash-owner-denied-final": {
+      "status": 403,
+      "message": "403 FORBIDDEN"
+    },
+    "group-trash-final-api": {
+      "workspacesStatus": 200,
+      "removedWorkspaceAbsent": false,
+      "detailStatus": 200,
+      "membership": "accepted",
+      "acceptedMembers": 3,
+      "role": "Member"
+    },
+    "group-trash-final-db": {
+      "group": {
+        "_id": "seed-community-neighbours",
+        "ownerUserId": "9f3b3f085e23af6c89dbc432",
+        "pendingMembers": 0
+      },
+      "members": [
+        {
+          "_id": "community:seed-community-neighbours:1b1c70be2349b3359a8f6f94",
+          "userId": "1b1c70be2349b3359a8f6f94",
+          "role": "Member",
+          "status": "accepted"
+        },
+        {
+          "_id": "community:seed-community-neighbours:9f3b3f085e23af6c89dbc432",
+          "userId": "9f3b3f085e23af6c89dbc432",
+          "role": "Admin",
+          "status": "accepted"
+        },
+        {
+          "_id": "community:seed-community-neighbours:af0436815ab38f4864dd1e24",
+          "userId": "af0436815ab38f4864dd1e24",
+          "role": "Member",
+          "status": "accepted"
+        }
+      ]
+    },
+    "group-after-trash-savepoint": {
+      "checkpointId": "GROUP-LIFECYCLE-001",
+      "command": "capture",
+      "savepoint": "after-membership-trash",
+      "capturedAtIso": "2026-09-26T23:28:34.299Z",
+      "resumeBlock": 8,
+      "adapter": "http",
+      "note": "Saved fixture state is not a QA PASS; UI evidence and mode status remain in the evidence log and ledger."
+    },
+    "group-after-trash-verify": {
+      "checkpointId": "GROUP-LIFECYCLE-001",
+      "command": "verify-savepoint",
+      "savepoint": "after-membership-trash",
+      "capturedAtIso": "2026-09-26T23:28:34.299Z",
+      "resumeBlock": 8,
+      "adapter": "http",
+      "note": "Saved fixture state is not a QA PASS; UI evidence and mode status remain in the evidence log and ledger."
+    }
+  }
+}

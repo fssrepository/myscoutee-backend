@@ -141,8 +141,8 @@ This table supersedes the original all-NOT-RUN table and old “partial blocks 2
 summaries below. Historical observations remain unchanged. Structural relocation
 is not execution evidence: the moved checks remain required in blocks 27–29.
 
-**HTTP: 5/29 closed; current 6. Local: 0/29 closed, queued as its own run.**
-Full Lifecycle execution: **5/58 closed adapter-blocks**. This is coverage count,
+**HTTP: 7/29 closed; current 8. Local: 0/29 closed, queued as its own run.**
+Full Lifecycle execution: **7/58 closed adapter-blocks**. This is coverage count,
 not an estimate of elapsed or remaining effort. Isolation and Integration retain
 their own untouched pending ledgers; these figures do not claim campaign completion.
 
@@ -153,8 +153,8 @@ their own untouched pending ledgers; these figures do not claim campaign complet
 | 3 | Group rules and draft persistence | PASS | NOT RUN | Required fields and textual policies cancel/save/reopen, off/on retention, read-only; geometry in 27.2 and requests in 28. |
 | 4 | Join requests and member decisions | PASS | NOT RUN | Real join/approval and send/reject/reinvite/accept, live lists, persisted memberships and profiles; after-invitation-checks. |
 | 5 | Workspace selection and profile loading | PASS | NOT RUN | Saved workspace, failure/timeout/retry/stale response/reload and policy authority; after-workspace-selection; role geometry in 27.3. |
-| 6 | App moderation, group moderation and support | IN PROGRESS | NOT RUN | Next: moderation settings/decisions/support, preserving the live isolated control. |
-| 7 | Leave and remove membership | NOT RUN | NOT RUN | Execute in order; no partial credit. |
+| 6 | App moderation, group moderation and support | PASS | NOT RUN | 2026-09-27 closure below; after-moderation-checks captured and verified, resume 7. |
+| 7 | Leave, Trash, restore and blocked reapproval | PASS | NOT RUN | 2026-09-27 evidence below; after-membership-trash captured/verified, resume 8. |
 | 8 | External sharing links and admission | NOT RUN | NOT RUN | Execute in order; no partial credit. |
 | 9 | Chat sharing basket and message changes | NOT RUN | NOT RUN | Execute in order; no partial credit. |
 | 10 | Cash history and affiliate exclusion | NOT RUN | NOT RUN | Execute in order; no partial credit. |
@@ -183,7 +183,7 @@ admin/selector evidence sections below and their linked JSON artifacts. Addition
 earlier off/on and cancel/reopen observations are retained in
 [Editor closure evidence](GROUP-LIFECYCLE-001-editor-closure-20260926.json).
 
-Execution order: finish HTTP 6, then 7–29 without returning to closed 1–5.
+Execution order: continue HTTP 7–29 without returning to closed 1–6.
 Next run Local 1–29 with its own evidence and savepoints; then the queued Isolation
 and Integration campaigns. A newly discovered defect is repaired/retested within
 the current block. A genuine unavailable prerequisite moves to an explicitly
@@ -876,3 +876,76 @@ Current retained control: all three accepted; moderation pending0; two-image pos
 Started Eszter's unread member notice read and voluntary departure concurrently through authenticated HTTP. Both returned200; read delta-1 and membership deleted, accepted total2/pending0. Mongo retained communityUpdates0 on the deleted association; Alex's one departure change remained. Rejoined through the normal HTTP endpoint, then Alex approved through the browser confirmation. All three accepted again; Alex's independent unread departure still counted. This is concurrent API evidence, not a browser-confirmation test for the departure itself.
 
 User-requested Members toolbar labels now remain visible on both Invite and Pending only in the shared Event/Asset/Group member popup. Existing watcher build/sync completed00:52:17. Actual360px viewport: both36px-high buttons on the same row, labelClipped=false, no popup horizontal overflow; pending counter right edge355.8px fits. The initial button.scrollWidth heuristic included the intentional outside badge and was not a clipped-label finding; measuring the label itself confirms it fits.
+
+
+### 01:08 — HTTP block 6 closed; replayable block-7 boundary
+
+Existing app-admin Event/Asset queue rows referred to removed Affiliate QA resources (both source collections confirmed absent), so they were not preview PASS evidence. The versioned prepare-admin-previews branch used the retained Group Feed Event and an existing unchanged Asset as read-only preview prerequisites. Actual Group moderation opened the full View Event and View Supplies editors: all content fields read-only/disabled, descriptions and cover shown, no Save. Underlying Groups/moderation remained. These prepared queue records do not prove publication of Event/Asset. Group and multi-image Feed publication/preview had independent real producer evidence above.
+
+Settings save transport failure remained red below the header at360px after subsequent list polls, preserving draft values, with no overflow. EN/HU source and all three Mongo translation seed bundles now agree at2026.09.27.*.1; existing Mongo watcher imported only i18n_messages/i18n_bundles. Live HTTP bundles return retry wording without page-reload instructions. The already-open popup had the prior in-memory dictionary; that observation was not represented as new wording.
+
+Profile aggregate oracle: Maya Main166 (118 rates +9 chats +37 event.all +1 feedback +1 asset), Group1+1, avatar168. Nested invitation/hosting values were not added twice. For live Main changes while a group remains selected, first snapshotted the existing Base chat plus all affected owner profiles/notifications through the versioned harness. Attempting to read that Base chat as Alex while his Group profile was selected returned404 and wrote nothing. Maya, on Main, then sent one real HTTP message. Alex's stored Base chats5→6 and notification count11→12; selected Group chat0 unchanged. His existing browser realtime path updated Main155→156 and avatar160→161, with Group buckets/rows unchanged and no reload. One stored message confirmed. This is an external-producer/realtime-consumer check, not an Alex Base chat navigation PASS.
+
+Together with the earlier settings ON/OFF, auto-approval worker, decision/retry, read-only publication, Group support, locale, role/counter and concurrent member/read evidence, HTTP block6 is PASS. Local remains NOT RUN as its separate adapter pass. No later block is closed by these observations.
+
+restore-admin-lifecycle succeeded: temporary Group/feed/moderation/Event controls and Base-chat message effects restored from their retained snapshots, including other affected Base-chat owners; global moderation unrelated-record guard passed. Captured after-moderation-checks at2026-09-26T23:05:42.557Z for resumeBlock7. Initial exact verification detected only Alex's automatic Main fallback after fixture removal; selecting his retained Design Circle through normal UI restored the captured workspace boundary. Exact verify-savepoint then PASS. HTTP progress6/48; Lifecycle6/29.
+
+
+## 01:30 — HTTP block 7 closed: leave, Trash and blocked restoration
+
+User steering during this block: Group Trash follows the Activity Event bucket;
+Restore after voluntary leave restores accepted membership without new approval;
+admin removal is blocked and Restore requires approval. These are distinct
+membership transitions, not group deletion. Last-member deletion and Admin
+handover remain separate block-26 browser checks. Existing creator/grant rules
+remain: restoring membership does not restore historical Admin authority.
+
+Seattle Neighbours (`seed-community-neighbours`) was the retained real control.
+Alex's ordinary leave removed the card and workspace; server membership became
+`deleted`, Eszter Admin and Maya Member remained accepted. Direct removal of the
+owner by Alex returned403. Reload independently preserved the left state.
+The new Trash page returned the group with activity0, while Active/Explore
+excluded it. Its member badge is disabled and its menu contains Restore.
+
+The actual Restore confirmation was failed at the HTTP transport boundary:
+error retained, original Trash card remained, server still deleted. Retrying
+with the real successful response held for1.8s kept both dialog buttons disabled
+and the original card visible. Releasing the response closed the dialog,
+removed the card and restored the workspace through the canonical store response,
+without reload. Membership was accepted, requestKind null, accepted roster3.
+
+Eszter then removed Alex through the retained member menu and confirmation.
+The roster/card count changed3→2 immediately; Alex's server status was blocked.
+The existing cross-session polling moved his card into Trash and removed the
+workspace. Its Restore confirmation explicitly requested administrator approval.
+After confirmation, the card left Trash and appeared in Pending groups;
+requestKind join/status pending, accepted roster2, workspace not selectable.
+The admin's retained roster showed2 accepted+1 pending and its badges reflected
+that request. Repeated Restore returned the same pending state. Direct self
+approval returned403. A second admin-removal branch also explicitly proved that
+self-remove cannot recast blocked status as voluntary leave:403; Restore remained
+pending and self-approve remained403. The ordinary administrator Approve
+confirmation returned Alex to accepted; roster/card3, pending0, and Alex's
+retained Pending list and workspace selector updated through normal polling.
+An independent reopened list and API/DB reads confirmed three accepted members.
+
+Implementation uses the existing membership association, shared app menu,
+Activity Event Trash palette/card tone and shared persisted confirmation/store
+path. HTTP and Local adapters preserve the same deleted/blocked distinction.
+Local roster writes retain inactive associations while other people are invited.
+A focused retry test exposed same-millisecond owner-release ambiguity; handover
+notifications now also match the actual responsible account, not timestamp alone.
+
+Verification:41/41 focused frontend tests across4 files; existing frontend
+watcher build/sync and backend hot-deploy successful; i18n audit8016 messages,
+three generated Mongo seeds; no parallel build or domain seed replacement.
+Unit checks include invitation-only blocked reapproval, retained Trash during
+another invitation, last-member no-resurrection and no historical Admin
+privilege restoration. These are not a Local browser campaign PASS or a block26
+browser PASS. Detailed real UI/API observations:
+[block7 evidence](GROUP-LIFECYCLE-001-block7-trash-20260927.json).
+
+Captured and exactly verified `after-membership-trash` at
+`2026-09-26T23:28:34.299Z`, resumeBlock8. Alex remains on Design Circle with
+Groups Active open; Eszter retains Seattle Neighbours Members over Groups.
+No closed block was replayed/reset. **HTTP7/48; Lifecycle7/29; next8.**

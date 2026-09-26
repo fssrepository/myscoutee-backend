@@ -86,11 +86,11 @@ public class CommunityGroupsService {
     }
     private record GroupSnapshot(List<Group> items, long total, Map<String, Long> context) {}
     private GroupSnapshot snapshot(Users actor, String bucket, String category, String sort) {
-        if (!Set.of("hosting", "participation", "pending", "invitations", "explore").contains(bucket)) throw error(HttpStatus.BAD_REQUEST);
+        if (!Set.of("hosting", "participation", "pending", "invitations", "explore", "trash").contains(bucket)) throw error(HttpStatus.BAD_REQUEST);
         String order = sort == null || sort.isBlank() ? (bucket.equals("explore") ? "distance" : "updated") : sort;
         if (!Set.of("distance", "updated").contains(order)) throw error(HttpStatus.BAD_REQUEST);
         var own = memberships.findByOwnerTypeAndUserId(OWNER_TYPE, actor.getUserId()).stream()
-                .filter(m -> Set.of("accepted", "pending").contains(m.getStatus())).toList();
+                .filter(m -> Set.of("accepted", "pending").contains(m.getStatus()) || CommunityGroupMapper.restorableMembership(m)).toList();
         var ownById = own.stream().collect(Collectors.toMap(ActivityMember::getOwnerId, m -> m));
         var records = bucket.equals("explore") ? groups.findDiscoverable(ownById.keySet(), actor.getUserId())
                 : groups.findByIdIn(own.stream().filter(m -> bucket.equals(CommunityGroupMapper.membershipBucket(m.getRole(), m.getStatus(), m.getRequestKind())))
@@ -285,22 +285,30 @@ public class CommunityGroupsService {
         if (request.action().equals(target.getCommunityAction()) && actor.getUserId().equals(target.getCommunityActor()) && (self || admin)) {
             group = groups.findById(id).orElseThrow();
             notifyMemberTransition(group, actor.getUserId(), target, request.action());
-            if (group.awaitingOwner() && Objects.equals(group.ownerReleasedAtIso(), target.getActionAtIso()))
+            if (group.awaitingOwner() && group.ownerUserId().equals(target.getUserId()) && Objects.equals(group.ownerReleasedAtIso(), target.getActionAtIso()))
                 notifyHandover(group, actor.getUserId(), target, "owner-left");
             if ("take-over".equals(request.action())) notifyHandover(group, actor.getUserId(), target, "takeover");
             return new ActivityMemberActionResponseDto(group.deleted() || self && "deleted".equals(target.getStatus()) ? List.of() : roster(actor, id, false), null, dto(actor, group, members(id)));
         }
-        group = visible(actor, id);
-        if (group.awaitingOwner() && !Set.of("take-over", "remove").contains(request.action())) throw error(HttpStatus.CONFLICT);
+        if (group.deleted()) throw error(HttpStatus.NOT_FOUND);
+        if (!"restore".equals(request.action())) group = visible(actor, id);
+        if (group.awaitingOwner() && !Set.of("take-over", "remove", "restore").contains(request.action())) throw error(HttpStatus.CONFLICT);
         switch (request.action()) {
+            case "restore" -> {
+                if (!self || !CommunityGroupMapper.restorableMembership(target)) throw error(HttpStatus.FORBIDDEN);
+                target.setRole("Member"); target.setOrganizerOnly(false); target.setManagerGrantedByUserId(null);
+                if ("blocked".equals(target.getStatus())) {
+                    target.setStatus("pending"); target.setRole("Member"); target.setRequestKind("join"); target.setPendingSource("member");
+                } else target.setStatus("accepted");
+            }
             case "accept" -> {
                 if (!"pending".equals(target.getStatus()) || !("invite".equals(target.getRequestKind()) ? self : admin && !self)) throw error(HttpStatus.FORBIDDEN);
                 groupProfiles.admit(group, target.getUserId());
                 target.setStatus("accepted"); target.setRequestKind(null); target.setPendingSource(null);
             }
             case "remove" -> {
-                if (!(self || admin && !owner && !isAdmin(target))) throw error(HttpStatus.FORBIDDEN);
-                target.setStatus("deleted"); target.setManagerGrantedByUserId(null);
+                if (!Set.of("accepted", "pending").contains(target.getStatus()) || !(self || admin && !owner && !isAdmin(target))) throw error(HttpStatus.FORBIDDEN);
+                target.setStatus(self ? "deleted" : "blocked"); target.setManagerGrantedByUserId(null);
             }
             case "promote-admin" -> {
                 if (!admin || self || !"accepted".equals(target.getStatus()) || isAdmin(target)) throw error(HttpStatus.FORBIDDEN);
@@ -346,15 +354,17 @@ public class CommunityGroupsService {
             if (!group.awaitingOwner()) groups.updateLifecycle(id, "under-review", target.getActionAtIso(), takeoverCandidates(remaining, actor.getUserId()));
         }
         group = groups.findById(id).orElseThrow();
-        if (group.awaitingOwner() && Objects.equals(group.ownerReleasedAtIso(), target.getActionAtIso()))
+        if (group.awaitingOwner() && group.ownerUserId().equals(target.getUserId()) && Objects.equals(group.ownerReleasedAtIso(), target.getActionAtIso()))
             notifyHandover(group, actor.getUserId(), target, "owner-left");
         if ("take-over".equals(request.action())) notifyHandover(group, actor.getUserId(), target, "takeover");
-        if ("deleted".equals(target.getStatus())) users.clearActiveWorkspace(target.getUserId(), id);
+        if (Set.of("deleted", "blocked").contains(target.getStatus())) users.clearActiveWorkspace(target.getUserId(), id);
         notifyMemberTransition(group, actor.getUserId(), target, request.action());
         return new ActivityMemberActionResponseDto(group.deleted() || self && "deleted".equals(target.getStatus()) ? List.of() : roster(actor, id, false), null, dto(actor, group, members(id)));
     }
     private void notifyMemberTransition(CommunityGroup group, String actorId, ActivityMember target, String action) {
-        if ("accept".equals(action)) {
+        if ("restore".equals(action) && "pending".equals(target.getStatus())) {
+            notifyMembers(group, "join-requested", actorId, target, members(group.id()).stream().filter(this::isAdmin).map(ActivityMember::getUserId).toList(), false);
+        } else if ("accept".equals(action) || "restore".equals(action)) {
             boolean hideMembers = group.hideMembers();
             var recipients = members(group.id()).stream().filter(m -> "accepted".equals(m.getStatus()))
                     .filter(m -> !hideMembers || isAdmin(m) || m.getUserId().equals(target.getUserId()))
@@ -362,7 +372,7 @@ public class CommunityGroupsService {
             notifyMembers(group, "member-joined", actorId, target, recipients, true);
         } else if ("remove".equals(action)) {
             // Responsibility release is one change, represented by its takeover notice.
-            if (Objects.equals(group.ownerReleasedAtIso(), target.getActionAtIso())) return;
+            if (group.ownerUserId().equals(target.getUserId()) && Objects.equals(group.ownerReleasedAtIso(), target.getActionAtIso())) return;
             var recipients = new ArrayList<String>();
             recipients.add(target.getUserId());
             members(group.id()).stream().filter(this::isAdmin).map(ActivityMember::getUserId).forEach(recipients::add);
@@ -408,6 +418,10 @@ public class CommunityGroupsService {
     }
     private Group dto(Users actor, CommunityGroup group, List<ActivityMember> members) {
         var owner = users.findByUserId(group.ownerUserId()).orElseThrow(() -> error(HttpStatus.NOT_FOUND));
+        var own = membership(group.id(), actor.getUserId());
+        if (CommunityGroupMapper.restorableMembership(own) && members.stream().noneMatch(m -> actor.getUserId().equals(m.getUserId()))) {
+            members = new ArrayList<>(members); members.add(own);
+        }
         return CommunityGroupMapper.toDto(group, owner, actor, members, com.raxim.myscoutee.profile.service.mapper.CommunityGroupProfileMapper.attention(groupProfiles.profilesByGroup(actor.getUserId()).get(group.id())));
     }
     private List<ActivityMember> members(String id) {

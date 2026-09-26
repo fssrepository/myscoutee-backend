@@ -88,13 +88,13 @@ Earlier Event Mode, Integration API, Activity Rating and EVENT-FOLLOWING-001 rem
 ```yaml
 checkpoint: GROUP-LIFECYCLE-001
 checklist: ../checklists/group/GROUP-LIFECYCLE-001.md
-substage: Resumed 2026-09-27. HTTP 5/48 overall; Lifecycle 5/29 closed/current block 6; Local NOT RUN.
-fixture_phase: Main badge-writes-ready / after-workspace-selection retained. Admin/Base Feed snapshots LIVE. Creation/report branch restored exactly; original app moderation settings restored. Two-image group Feed accepted after real delayed-response replay; group moderation pending 0.
+substage: Resumed 2026-09-27. HTTP 7/48 overall; Lifecycle 7/29 closed/current block 8; Local NOT RUN.
+fixture_phase: Main badge-writes-ready; after-membership-trash captured and verified. Temporary Admin/Base Feed/Base Chat and creation/report branches restored exactly; original app moderation settings restored.
 execution_log: ../evidence/GROUP-LIFECYCLE-001-20260926.md
 execution_authority: User explicitly delegated full-flow automated execution of the pending QA campaign on 2026-09-26; Codex operates the browser, diagnoses, fixes and retests. Closed PASS rows remain closed.
-next_action: Read execution_log section "00:39 — app moderation/report branch and user UI corrections". Support/HU/global isolation and moderation stale-response replay passed. Continue remaining 6.1 member/counter/recipient/concurrency checks. App moderation creation/report/preview branch completed and its temporary controls restored. No main/Admin reset; no replay of closed blocks. Four browsers remain open.
-savepoint: community-group after-workspace-selection, captured and verified 2026-09-26T20:13:47.292Z, HTTP resume block 5 remaining checks. Earlier after-invitation-checks, after-editor-checks and after-join-approval retained. Saved state is not a whole-case PASS.
-queue: HTTP Lifecycle 6–29, then Local Lifecycle 1–29, Group Isolation 1–12, Integration API Group 1–7. True unavailable external/native prerequisites must be explicit counted later blocks, with USB/native last. Closed PASS cases untouched.
+next_action: Continue HTTP block 8 (external sharing links and admission), then 9–29. Read execution_log section "01:30 — HTTP block 7 closed: leave, Trash and blocked restoration". No replay of closed 1–7. Alex Design Circle/Groups Active retained; Eszter Seattle Neighbours Members over Groups; other browsers retained.
+savepoint: community-group after-membership-trash, captured 2026-09-26T23:28:34.299Z and exact verification PASS; resume block 8. Earlier savepoints remain immutable.
+queue: HTTP Lifecycle 8–29, then Local Lifecycle 1–29, Group Isolation 1–12, Integration API Group 1–7. True unavailable external/native prerequisites must be explicit counted later blocks, with USB/native last. Closed PASS cases untouched.
 resume_gate: Run the versioned community-group status command before any relaunch. verify-lists checked all ten groups/27 memberships without mutation and the versioned launcher prepared all three actors on 2026-09-26. Do not reset changed records or replay a closed checkpoint. Check the current manifest and launcher result.
 runtime: Existing dev watchers own builds; no stack restart or seed replacement for this resume. Versioned launcher configuration restored after the revert.
 mutation_contract: Application-wide, await persistence inside the busy confirmation dialog. Only after success apply canonical returned state through the existing stores to retained lists/cards/badges; failure retains the dialog/error and does not fake success. Keep underlying popups open. No reload to obtain a mutation result; the user identifies only the existing subevents flow as an exception.

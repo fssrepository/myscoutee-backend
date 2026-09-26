@@ -254,11 +254,25 @@ definition of all group activity.
 
 ## 7. Leave and remove membership
 
-16. Leave/remove the test membership and check the remaining group lists and
-    workspace choices after reload. An owner cannot be removed through an
-    ordinary member action. Voluntary creator departure and responsibility
-    transfer are covered separately in block 26. Restore only the checkpoint's
-    exact snapshots.
+16. Leave the test group. Its card moves from Active groups to Trash and its
+    workspace becomes unavailable. Trash uses the Activity Event delete icon,
+    danger menu palette and deleted card tone; it adds no change-count badge.
+    Restore a voluntary departure: after persisted success the membership is
+    accepted again without approval, the card leaves Trash and the workspace
+    returns. A failed save retains the dialog and unchanged card; while saving,
+    the confirmation remains busy. No reload is needed for mutation updates.
+17. An administrator removes the same ordinary member: its status is blocked
+    and the group appears in that member's Trash. Restore now submits a pending
+    join request requiring administrator approval. The confirmation explains
+    this distinction. The recipient cannot self-approve or turn the blocked
+    membership into a voluntary departure to bypass approval. Retry must not
+    duplicate the request or notifications. Approve through the administrator's
+    member card and verify the retained member/group lists and workspace choices.
+18. Independently check persisted state and ordinary reload. An owner cannot be
+    removed through an ordinary member action. Last-member group deletion,
+    voluntary creator departure, restored administrator responsibility and
+    handover remain in block 26.
+    Restore fixture data only from the checkpoint's exact snapshots.
 
 ## Independent oracles
 
@@ -681,13 +695,17 @@ replayable fixture savepoints between the independent branches below.
    Apply the same invariant when stepping down or revoking the last Admin.
 5. Return the former creator through the normal invitation/join flow. The account
    returns as an ordinary Member; neither its former creator status nor old
-   grants restore Admin authority. A fresh promotion follows the same grant rule.
+   grants restore Admin authority. Also exercise Trash Restore for a voluntary
+   departure: membership returns accepted without approval, but historical Admin
+   authority is not resurrected. Responsibility still follows the explicit
+   takeover action where applicable. A fresh promotion follows the same grant rule.
 6. In a separate isolated group, let every member leave, including the last
    remaining Admin/member. Confirm automatic group deletion. Without reload, the
    card disappears from all open relevant lists and selectors; the selected
    deleted workspace is no longer usable and affected counters update once.
    Reload and direct API reads confirm the deletion and loss of workspace access.
-   Repeating the final action must not resurrect the group or repeat its effects.
+   Repeating the final action or submitting Trash Restore must not resurrect the
+   deleted group or repeat its effects.
 7. Reuse the Asset Manager action icons and base palettes contextually: promotion
    uses `admin_panel_settings` / blue, revocation `person_remove` / warning,
    departure `logout` / danger, takeover `verified_user` / warning, and voluntary

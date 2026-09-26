@@ -422,13 +422,13 @@
   if (["capture", "restore", "verify-savepoint"].includes(command)) {
     const name = Q.text(process.env.MANUAL_QA_SOURCE_CHECKPOINT_ID);
     // Add later boundaries only with their prepared selectors and checklist oracle.
-    const boundaries = {"lists-ready": 1, "block-1-complete": 2, "after-editor-checks": 4, "after-join-approval": 4, "after-invitation-checks": 5, "after-workspace-selection": 5, "after-moderation-checks": 7};
+    const boundaries = {"lists-ready": 1, "block-1-complete": 2, "after-editor-checks": 4, "after-join-approval": 4, "after-invitation-checks": 5, "after-workspace-selection": 5, "after-moderation-checks": 7, "after-membership-trash": 8};
     if (!Object.hasOwn(boundaries, name)) Q.fail("Unknown Group savepoint boundary.");
     if (state.adminLifecycleSnapshots || state.paginationSnapshots || state.invitationSnapshots || state.memberInvitationSnapshots || state.editorSnapshots || state.creationSnapshots) Q.fail("Restore temporary controls before a savepoint operation.");
     let savepoint = (state.savepoints || []).find(item => item.name === name);
     if (command === "capture") {
       if (savepoint) Q.fail("Savepoint already exists; retained evidence must not be overwritten.");
-      if (["after-join-approval", "after-invitation-checks", "after-workspace-selection", "after-moderation-checks"].includes(name)) {
+      if (["after-join-approval", "after-invitation-checks", "after-workspace-selection", "after-moderation-checks", "after-membership-trash"].includes(name)) {
         const groupId = "seed-community-neighbours";
         const membership = Q.collection("activityMembers").findOne({ownerType: "community", ownerId: groupId, userId: actors[0]});
         const profiles = Q.collection("users").find({accountUserId: actors[0], workspaceGroupId: groupId}).toArray();

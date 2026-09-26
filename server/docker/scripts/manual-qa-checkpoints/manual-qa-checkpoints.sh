@@ -8,7 +8,7 @@ usage() {
   cat <<'USAGE'
 Usage:
   bash manual-qa-checkpoints.sh status community-group GROUP-LIFECYCLE-001
-  bash manual-qa-checkpoints.sh capture|restore|verify-savepoint community-group GROUP-LIFECYCLE-001 <lists-ready|block-1-complete|after-editor-checks|after-join-approval|after-invitation-checks|after-workspace-selection|after-moderation-checks>
+  bash manual-qa-checkpoints.sh capture|restore|verify-savepoint community-group GROUP-LIFECYCLE-001 <lists-ready|block-1-complete|after-editor-checks|after-join-approval|after-invitation-checks|after-workspace-selection|after-moderation-checks|after-membership-trash>
   bash manual-qa-checkpoints.sh prepare-list-pagination|restore-list-pagination community-group GROUP-LIFECYCLE-001
   bash manual-qa-checkpoints.sh prepare-invitation|prepare-hidden-invitation|restore-invitation community-group GROUP-LIFECYCLE-001
   bash manual-qa-checkpoints.sh prepare-admin-lifecycle|prepare-admin-moderation|prepare-admin-feed-event|prepare-admin-previews|prepare-admin-base-chat-read|prepare-admin-base-chat-message|prepare-admin-base-feed|restore-admin-lifecycle community-group GROUP-LIFECYCLE-001
