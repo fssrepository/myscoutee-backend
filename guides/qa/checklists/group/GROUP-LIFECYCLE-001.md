@@ -4,6 +4,26 @@ Domain: Group. This covers community workspaces, not the generated groups inside
 an Event or Tournament. Execution results belong in the matrix and a dated
 evidence log; this is the stable checklist.
 
+## Execution and progress contract
+
+- Complete blocks in dependency order. A block is closed only when every check
+  assigned to it is evidenced in its named adapter; a fixture/savepoint or source
+  change alone never closes it.
+- Before advancing past an unavailable prerequisite, move the exact unexecuted
+  checks into an explicitly numbered later block, retain the original-step
+  mapping, and include that block in the denominator. Do not move a defect merely
+  to avoid repairing/retesting it. Never discard a requirement or reopen closed
+  PASS cases to change accounting.
+- Report **closed execution blocks / total execution blocks**, current block,
+  next block and actual blockers. Do not use the currently visited block number
+  as the completed count. HTTP and Local each contribute their own blocks.
+- The same rule applies to the queued Group Isolation and Integration API
+  checklists. Their blocks remain in the campaign denominator before they start.
+  Device/external-prerequisite checks remain open until executed; moving them
+  later never gives them partial or inferred credit.
+- Preserve captured evidence and resume the next unfinished check from the
+  corresponding savepoint. Structural edits are not new test results.
+
 ## Baseline
 
 Use an organizer, a member, and an unrelated account. Prepare a public group,
@@ -15,9 +35,9 @@ fixture stages changes. Register the checkpoint with the existing browser
 launcher before starting its managed sessions. Do not reset the user's unrelated
 data or borrow an earlier closed checkpoint's PASS.
 
-Blocks 1–26 execute the dev HTTP campaign. Block 27 owns the separate
-frontend-local replay of the same contracts; HTTP closure never implies Local
-PASS. Record each mode separately. This baseline description does not itself authorize fixture mutation
+Run each block to completion in one named adapter before advancing. HTTP and
+Local are separate execution blocks in the progress ledger; neither borrows the
+other's PASS. Schedule the complete Local sequence after the HTTP sequence. This baseline description does not itself authorize fixture mutation
 or claim that a fixture or browser session has already been prepared.
 
 ## 1. Group lists and category colors
@@ -40,8 +60,8 @@ or claim that a fixture or browser session has already been prepared.
    Distance headers show the interval's inclusive lower boundary, using the
    shared Activity grouping: **0 <= d < 5 km → 0 km**, **5 <= d < 10 km → 5 km**.
    Check 0, 3.2, 4.999, 5, 5.1, 9.999 and 10 km; display, server/local ordering
-   and pagination must use the same boundaries. This also applies to Activity
-   distance views and Event Explore, not only Groups.
+   and pagination must use the same boundaries. The Activity/Event cross-surface
+   regression is retained in block 29 after the corresponding fixtures exist.
    Resize the list: two cards remain side by side when the available width
    fits them (including a roughly 600px window); narrow phones use one column.
    The last card retains a normal column width and distance headers span the row.
@@ -56,16 +76,17 @@ or claim that a fixture or browser session has already been prepared.
    Explore defaults to exact
    distance ascending, including within each distance interval; Hosting and
    Active groups/Pending groups/Invitations default to last-change time descending, with date headers.
-   Switch either sort in each bucket, filter and paginate; sync and immediate
-   store updates retain the same order. Recent uses saved change time, not
-   creation time; retrying a completed operation does not make it recent again.
+   Switch either sort in each bucket, filter and paginate; read/sync order agrees.
+   Recent uses saved change time, not creation time. Block 29 owns the subsequent
+   live-mutation/retry ordering checks after those mutations have been exercised.
 
 ## 2. Create and reopen a group
 
 3. Create a group with image, name, description, category and visibility. Try
    an empty name and a name exceeding 20 characters. Save a valid name and
    reopen the editor; confirm every saved field.
-The three-role roster visibility check formerly numbered step 4 is in block 28.1,
+
+The three-role roster visibility check formerly numbered step 4 is in block 27.1,
 after membership and administrator fixtures exist. Block 2 closes on the created
 and reopened group, not on later role/presentation or Local execution.
 
@@ -85,8 +106,8 @@ and reopened group, not on later role/presentation or Local execution.
    Policy / Szabályzat and the fields cannot be edited.
 
 The cross-viewport presentation assertions from steps 5–8 are retained in block
-28.2. Detail-request and adapter-delay assertions from step 8 are in block 29.
-The Local replay is block 27. These are separately required closure gates,
+27.2. Detail-request and adapter-delay assertions from step 8 are in block 28.
+The Local replay is a separately counted execution phase. These are separately required closure gates,
 not requirements removed from the campaign.
 
 ## 4. Join requests and member decisions
@@ -111,11 +132,8 @@ not requirements removed from the campaign.
 
 ## 5. Workspace selection and profile loading
 
-11. Select the group in the header. Long names truncate only the label; the
-    monogram remains circular and fully visible. Base-profile globe and group
-    choices use their contextual colors. Verify avatar/name/location spacing
-    below the toolbar and spacing between body menu sections; smoke normal,
-    admin and operator layouts where those roles expose the menu.
+11. Select the group in the header. Cross-role header geometry is checked in
+    block 27.3 after the required role fixtures are available.
     Selection uses `GET /auth/me/profile-ext?groupId=<id>`; an explicit empty
     `groupId` selects Base. The server/local repository stores the choice.
     Reload without the parameter restores it without writing a new selection.
@@ -680,24 +698,14 @@ replayable fixture savepoints between the independent branches below.
    The avatar aggregate counts each change once. Restore only fixture-owned
    records after capturing mutation, notification and reload evidence.
 
-## 27. Frontend-local parity replay
-
-Prerequisite: the HTTP domain path and its fixes have been verified. Use the
-existing versioned Local fixture and launcher configuration. Run blocks 1–26's
-applicable contracts through the Local adapter, recording each block separately;
-do not borrow an HTTP PASS or a unit-test result as Local browser evidence.
-Capture Local savepoints between completed blocks. This block owns the Local
-requirements previously keeping HTTP blocks 2–4 partly open; none are waived.
-Physical-device-only boundaries remain in their existing device campaign.
-
-## 28. Group editor and roster presentation across roles
+## 27. Group editor and roster presentation across roles
 
 Prerequisite: creation/policy (blocks 2–3), accepted/pending membership (block 4)
 and Admin-role controls (block 26). Reuse their closest savepoint instead of
 recreating their lifecycle. Existing observations may satisfy individual checks;
 close this block only after its complete role/viewport matrix is proven.
 
-### 28.1. Roster visibility (former block 2, step 4)
+### 27.1. Roster visibility (former block 2, step 4)
 
 1. Toggle **Taglista látható** and compare organizer, accepted-member and
    unrelated-account roster views. The toggle aligns with the description's
@@ -709,7 +717,7 @@ close this block only after its complete role/viewport matrix is proven.
    Members entry; the member badge is the entry point. Own invitation acceptance
    remains available from the invitation card, including with a hidden roster.
 
-### 28.2. Policy editor presentation (former block 3, steps 5–8)
+### 27.2. Policy editor presentation (former block 3, steps 5–8)
 
 - Profile visibility rules stack sections vertically. Optional fields use equal
   two-column controls with labels left and switches right; Base mandatory fields
@@ -722,11 +730,29 @@ close this block only after its complete role/viewport matrix is proven.
   at content width. Member list visible shares the category row when both fit,
   wrapping only when they no longer fit.
 
-## 29. Group detail loading and adapter request boundaries
+### 27.3. Workspace header across roles (former block 5, step 11)
+
+Long names truncate only the label; the monogram remains circular and fully
+visible. Base-profile globe and group choices use their contextual colors.
+Verify avatar/name/location spacing below the toolbar and spacing between body
+menu sections; smoke normal, admin and operator layouts where exposed.
+
+## 28. Group detail loading and adapter request boundaries
 
 Prerequisite: the saved editor/policy state from blocks 2–3; repeat the corresponding
-request checks during block 27's Local pass. This preserves former block 3 step 8.
+request checks during the separately counted Local pass. This preserves former block 3 step 8.
 List summaries omit description/policy. View/Edit loads the detail on opening.
 Opening the nested rules editor performs no additional detail request. Local
 uses its configured route delay; HTTP adds no artificial client delay. Capture
 normal network records independently from the saved-field persistence evidence.
+
+## 29. Cross-surface distance and mutation ordering
+
+Prerequisite: list reads (block 1), creation and membership writes (blocks 2–4),
+and controlled Activity/Event data. This retains the write-driven assertions
+formerly interleaved into block 1. Activity distance views and Event Explore use
+the same inclusive lower distance bands as Groups. Repeat the listed 0/3.2/4.999/
+5/5.1/9.999/10 km boundaries there. A successful Group mutation updates Recent
+ordering in place through the shared store; list sync preserves the same order.
+Retrying a completed operation does not make it recent again. Keep sort/filter
+and scroll state while verifying these updates.

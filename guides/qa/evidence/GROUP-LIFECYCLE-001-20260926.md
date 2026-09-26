@@ -134,36 +134,60 @@ In Alex's Groups list, compare these controls without writing data:
 
 Do not click Create/Join/Approve/Leave during this read-only block.
 
-## Numbered block progress
+## Numbered block progress — current execution boundaries
 
-| Block | Stable checklist section | Dev HTTP | Local |
-| --- | --- | --- | --- |
-| 1/25 | Group lists and category colors | NOT RUN | NOT RUN |
-| 2/25 | Create and reopen a group | NOT RUN | NOT RUN |
-| 3/25 | Group rules and draft persistence | NOT RUN | NOT RUN |
-| 4/25 | Join requests and member decisions | NOT RUN | NOT RUN |
-| 5/25 | Workspace selection and profile loading | NOT RUN | NOT RUN |
-| 6/25 | App moderation, group moderation and support | NOT RUN | NOT RUN |
-| 7/25 | Leave and remove membership | NOT RUN | NOT RUN |
-| 8/25 | External sharing links and admission | NOT RUN | NOT RUN |
-| 9/25 | Chat sharing basket and message changes | NOT RUN | NOT RUN |
-| 10/25 | Cash history and affiliate exclusion | NOT RUN | NOT RUN |
-| 11/25 | Contacts and the existing chat popup | NOT RUN | NOT RUN |
-| 12/25 | Selection limits and contact-request controls | NOT RUN | NOT RUN |
-| 13/25 | Empty calendar export | NOT RUN | NOT RUN |
-| 14/25 | Birthday, horoscope and children fields | NOT RUN | NOT RUN |
-| 15/25 | Landing social heading | NOT RUN | NOT RUN |
-| 16/25 | Setup permission help | NOT RUN | NOT RUN |
-| 17/25 | Common help seed and AI integration | NOT RUN | NOT RUN |
-| 18/25 | Back and close-button history | NOT RUN | NOT RUN |
-| 19/25 | First location save and Firebase sign-in | NOT RUN | NOT RUN |
-| 20/25 | Stored location and optional tracking | NOT RUN | NOT RUN |
-| 21/25 | Mobile sheet close buttons | NOT RUN | NOT RUN |
-| 22/25 | Account-owned tools and Asset Explore | NOT RUN | NOT RUN |
-| 23/25 | Profile scope and asset payment history | NOT RUN | NOT RUN |
-| 24/25 | Account contacts and event-linked assets | NOT RUN | NOT RUN |
-| 25/25 | Global notifications and scoped API keys | NOT RUN | NOT RUN |
+Updated 2026-09-26 after the user requested sequential, fully closable blocks.
+This table supersedes the original all-NOT-RUN table and old “partial blocks 2–4”
+summaries below. Historical observations remain unchanged. Structural relocation
+is not execution evidence: the moved checks remain required in blocks 27–29.
 
+**HTTP: 5/29 closed; current 6. Local: 0/29 closed, queued as its own run.**
+Full Lifecycle execution: **5/58 closed adapter-blocks**. This is coverage count,
+not an estimate of elapsed or remaining effort. Isolation and Integration retain
+their own untouched pending ledgers; these figures do not claim campaign completion.
+
+| Block | Scope | HTTP | Local | Evidence / next boundary |
+| --- | --- | --- | --- | --- |
+| 1 | Group lists and category colors | PASS | NOT RUN | 54 HTTP page/sync combinations, browser pagination/bands; live mutation and Activity cross-check retained in 29. |
+| 2 | Create and reopen a group | PASS | NOT RUN | QA Group Flow creation/name validation/save/reopen; role roster matrix moved to 27.1. |
+| 3 | Group rules and draft persistence | PASS | NOT RUN | Required fields and textual policies cancel/save/reopen, off/on retention, read-only; geometry in 27.2 and requests in 28. |
+| 4 | Join requests and member decisions | PASS | NOT RUN | Real join/approval and send/reject/reinvite/accept, live lists, persisted memberships and profiles; after-invitation-checks. |
+| 5 | Workspace selection and profile loading | PASS | NOT RUN | Saved workspace, failure/timeout/retry/stale response/reload and policy authority; after-workspace-selection; role geometry in 27.3. |
+| 6 | App moderation, group moderation and support | IN PROGRESS | NOT RUN | Next: moderation settings/decisions/support, preserving the live isolated control. |
+| 7 | Leave and remove membership | NOT RUN | NOT RUN | Execute in order; no partial credit. |
+| 8 | External sharing links and admission | NOT RUN | NOT RUN | Execute in order; no partial credit. |
+| 9 | Chat sharing basket and message changes | NOT RUN | NOT RUN | Execute in order; no partial credit. |
+| 10 | Cash history and affiliate exclusion | NOT RUN | NOT RUN | Execute in order; no partial credit. |
+| 11 | Contacts and the existing chat popup | NOT RUN | NOT RUN | Execute in order; no partial credit. |
+| 12 | Selection limits and contact-request controls | NOT RUN | NOT RUN | Execute in order; no partial credit. |
+| 13 | Empty calendar export | NOT RUN | NOT RUN | Execute in order; no partial credit. |
+| 14 | Birthday, horoscope and children fields | NOT RUN | NOT RUN | Execute in order; no partial credit. |
+| 15 | Landing social heading | NOT RUN | NOT RUN | Execute in order; no partial credit. |
+| 16 | Setup permission help | NOT RUN | NOT RUN | Execute in order; no partial credit. |
+| 17 | Common help seed and AI integration | NOT RUN | NOT RUN | Execute in order; no partial credit. |
+| 18 | Back and close-button history | NOT RUN | NOT RUN | Execute in order; no partial credit. |
+| 19 | First location save and Firebase sign-in | NOT RUN | NOT RUN | Execute in order; no partial credit. |
+| 20 | Stored location and optional tracking | NOT RUN | NOT RUN | Execute in order; no partial credit. |
+| 21 | Mobile sheet close buttons | NOT RUN | NOT RUN | Execute in order; no partial credit. |
+| 22 | Account-owned tools and Asset Explore | NOT RUN | NOT RUN | Execute in order; no partial credit. |
+| 23 | Profile scope and asset payment history | NOT RUN | NOT RUN | Execute in order; no partial credit. |
+| 24 | Account contacts and event-linked assets | NOT RUN | NOT RUN | Execute in order; no partial credit. |
+| 25 | Global notifications and scoped API keys | NOT RUN | NOT RUN | Execute in order; no partial credit. |
+| 26 | Group administrators, responsibility transfer and last-member deletion | NOT RUN | NOT RUN | Retained earlier branch observations; complete here when reached. |
+| 27 | Group editor and roster presentation across roles | NOT RUN | NOT RUN | Execute in order; no partial credit. |
+| 28 | Group detail loading and adapter request boundaries | NOT RUN | NOT RUN | Execute in order; no partial credit. |
+| 29 | Cross-surface distance and mutation ordering | NOT RUN | NOT RUN | Execute in order; no partial credit. |
+
+Closure provenance for 2–5: the creation, members/media/policy, join-live and
+admin/selector evidence sections below and their linked JSON artifacts. Additional
+earlier off/on and cancel/reopen observations are retained in
+[Editor closure evidence](GROUP-LIFECYCLE-001-editor-closure-20260926.json).
+
+Execution order: finish HTTP 6, then 7–29 without returning to closed 1–5.
+Next run Local 1–29 with its own evidence and savepoints; then the queued Isolation
+and Integration campaigns. A newly discovered defect is repaired/retested within
+the current block. A genuine unavailable prerequisite moves to an explicitly
+counted later block before advancement; no requirement disappears.
 
 ## Setup popup defect follow-up
 
@@ -660,3 +684,30 @@ visibility as Public and disabled; the same control in Main profile is enabled.
 Unrelated Workplace/School controls remain enabled. Both editors were closed
 without saving; Design Circle was selected again. This checks the established
 visibility policy, not a newly invented mandatory nonempty-value rule.
+
+## 22:48 continuation — retained moderation branch and progress restructuring
+
+No fixture reset or replay occurred for the restructuring. The main
+`after-workspace-selection` savepoint remains retained. Isolated
+`manual-qa-community-admin` remains prepared with exact restoration snapshots.
+Two pending Photo Feed items were fixture-prepared; this proves no publication
+flow. UI approval reduced pending 2→1, rejection with message reduced 1→0;
+card/Hosting/Groups counters updated immediately. Both repeated HTTP commands
+returned 200 with unchanged item version 2, state revision 5 and pending 0.
+One Group support message was stored. Recipient filtering showed Group support 1,
+App support 0; reading removed the Group support/Chats count, and normal reply
+created the return message. These observations do not close block 6.
+
+Categories now use the existing tabbed AppMenu multi-toggle sheet, preserve the
+selection label and have a working X. Actual DOM: three toggles, zero check icons,
+label All → Asset, Photo Feed → All, close/reopen successful. Shared component
+covers app and group modes; app-admin/browser, mobile and save/reopen remain to
+verify. Item action menus omit the current state. The group rejection input label
+was corrected from App support to Group support; EN/HU and all three i18n seeds
+synchronized (8008 messages). Focused moderation component tests: 10/10.
+
+Outstanding within block 6: finish settings save/reopen/mobile/authority,
+publication producer, block/unblock, worker, stale response and full support/app
+moderation boundaries. Group support currently shows an unrelated View Event
+header action; this observed defect must be repaired and retested here.
+The last proof is a live prepared branch, not a new savepoint or whole-block PASS.
