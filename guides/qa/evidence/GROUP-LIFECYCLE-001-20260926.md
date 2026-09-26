@@ -1,9 +1,90 @@
 # GROUP-LIFECYCLE-001 — 2026-09-26 execution
 
-Status: **NOT RUN**. Dev HTTP baseline for block **1/25** verified; no manual
-checklist action or UI PASS is claimed. Local mode remains NOT RUN.
+Status: **NOT RUN** overall; Dev HTTP block **1/25** partially exercised under
+explicit delegated automated QA. No full-block PASS is claimed. Local remains
+NOT RUN.
+
+## Current defect and acceptance boundary
+
+The user confirmed that group badges sum relevant **operations/changes**, not
+the number of groups. This replaces the incorrect group-count interpretation;
+no distinct-group-count implementation is authorized. Group member/organizer
+visibility determines relevance; moderation is an additional admin-only source.
+The complete badge and notification checks are numbered in checklist section 6.1.
+
+Observed in Alex's prepared HTTP session: Hosting has Design Circle and Seattle
+Friends; Participation has accepted and pending controls; Explore excludes those
+own/interacted groups. Sport filtering leaves Seattle Trail Club. Category tints
+and the orange Sport icon agree. Pagination and remaining block-1 checks are not
+yet proven.
+
+Confirmed defect: Seattle Friends displays its pending member count on the card
+but the Members action had no counter. The shared converter now binds that
+counter; deployed UI shows `Members 1` with the common red `counter--alert`
+gradient (managed Alex session, `/tmp/group-member-badge-verified.json`). Broader group activity is
+not declared fixed by this change. Source inspection also found no notification
+emission in either community-group membership service; the existing event
+notification workflow is the reuse reference. Recipient, retry, write-side
+counter, and live update behavior remain unverified.
+
+### Badge geometry follow-up
+
+The shared dropdown counter had an automatic width with horizontal padding:
+the single-digit Members badge measured 20.84375 × 18px. The user asked for the
+same circle size as the card's red badge, so its final minimum is 20 × 20px,
+with natural width growth for longer labels. Existing flex centering is retained;
+numeric glyph widths are tabular and counters cannot shrink in the menu row.
+
+The shared media badge and card pending counter now use explicit unit line
+height, normal letter spacing and tabular numerals. Final deployed DOM oracle
+(`/tmp/group-badge-final-geometry.json`): menu 20 × 20px, card pending 20 × 20px,
+main member badge 28 × 28px. Its label center differs from the badge center by
+less than 0.02px on both axes. Existing frontend watcher build/sync passed at
+2026-09-26 17:54:38 local time. These style checks do not prove the missing
+membership notification/counter lifecycle or close block 1.
 
 ## Retained baseline and resume gate
+
+### Conversation coverage audit (not execution results)
+
+This inventory follows the original chat and its later corrections, rather than
+only the latest defect. A checklist entry is **not** implementation or PASS
+evidence. `L` means GROUP-LIFECYCLE-001, `I` GROUP-ISOLATION-001 and `A`
+INTEGRATION-API-GROUP-001. Closed cases are not reopened.
+
+| # | Final requested behavior | Existing check / gap |
+| --- | --- | --- |
+| 1 | Selected menu tint; group category/card palette; Join uses Event blue; pale rule-row toggle colors | L1, L3, L4 |
+| 2 | Demo status badges supplied by both adapters; exclusive location-warning slot | L19; backend/local source and real selector need comparison |
+| 3 | Own/interacted groups excluded from Explore; pending belongs in Participation; canonical association and varied local/Mongo seeds, no separate seed catalogue | L1, L4 and baseline |
+| 4 | Group invitation reuses Event/affiliate flow, returned URL list, registration attribution, accepted group and saved active workspace | L8, A1–6 |
+| 5 | Group-admin moderation and support; app-admin configurable group review; group status badge; no group-creation review by group admin | L6, I5, I7 |
+| 6 | Relevant operation/change totals at menu/card/dropdown/sidebar; member-visible changes plus admin-only moderation; write-side, signal updates, no reload | L6.1; current membership/aggregate defects under investigation |
+| 7 | Notification goes to the affected recipient, not the mutating actor; no duplicate on retry; global bell with group reference/filter | L6.1, L25, I4; community membership notification hook absent in inspected services |
+| 8 | Avatar/profile load persists optional group selection and location parameters; no repeated X headers; membership-only selection; shared loading/timeout/rollback/retry | L5, L19–20, A4, I2 |
+| 9 | Community/Impressions/Activities and profile scoped; header global; My tools and nested asset lists Base-owned/global; no subgroups | L22–25, I1–6; explicit subgroup/menu check to retain |
+| 10 | Asset Explore global, Event Explore scoped; Base-key assets, scoped-key events; repository/service owns queries, stores hold identity/state | L22–25, I1–3, A5 |
+| 11 | Asset expense remains with payer's group; Base owner can query income from stored payment fields; no split payer, copied payment or extra asset group label | L23, I12 |
+| 12 | External sharing popup matches Profile Affiliate; no legacy raw-token menu; common Share icon/color | L8 |
+| 13 | Existing chat share basket; tick below three-dot; selection count/list; mixed adds/removals; separate messages, deletion even beyond loaded page; circular controls | L9 |
+| 14 | Cash receipt with member/note/notification; no affiliate commission; API-imported participant attribution | L10, A6 |
+| 15 | Existing eventless chat popup; MyScoutee contact method; contact filter; invite only own contacts; separate App/Group support authority | L11, I7–8 |
+| 16 | Separate chat permission request; orange/pending, approved/rejected colors; short noncompact filter beside search; newest-first Requests; pending-only sidebar count; live bucket moves | L12, I9–12 |
+| 17 | Maximum selections in shared menu heading; date input/day-month/Libra; children labels; empty ICS notice | L12–14 |
+| 18 | Setup help beside X; concise location/notification/install and Android/iOS denial recovery; confirmation overlays blur parent | L13, L16, I9 |
+| 19 | Mobile sheets including baskets have own X/header; desktop title allowed but no extra X; native Back preserves session/consent | L18, L21 |
+| 20 | Saved eligible coordinates survive rejected GPS/disabled tracking; first admission before app session; temporary point through avatar load; watcher 5km; demo seed normally eligible, retry controls | L19–20; full real entry still NOT RUN |
+| 21 | Firebase rate-limit source and available retry information; no invented unlock time | UI notes item 6; real provider behavior not proved by demo |
+| 22 | Expanded common help across environments; AI topic near start; API-backed anonymous help | L17 |
+| 23 | MCP Go/Docker, Compose/nginx; actual API authority/discovery; group-key guidance; separate unpublished client packages using logo; local settings persistence only | L17, A7; moved unexecuted micros out of closed INTEGRATION-API-001 |
+| 24 | Landing partner group/company card and distinct full-width API block/link; HU/EN; supported-country/report blur; desktop CTA left; social heading | L15.1 restores omitted micros; translated partner content exists in source, live test still NOT RUN |
+| 25 | Notification description space up to three-dot; date at first row; two-line explanation; only All menu moved below X, no title widening | L25.1 restores omitted layout micros |
+| 26 | Concise GitHub bug/feature reporting templates; installation-menu right-side dynamic version, not a popup-only label | L15.1; three local issue templates and menu runtime version binding found; remote/UI proof NOT RUN |
+| 27 | Release 1.3.0 consistently across Docker/artifacts/Git tags; old releases preserved; supported packaged upgrades and install verification | Release/deployment queue; no release/upgrade PASS inferred |
+
+Reuse existing component/service/store/repository flows throughout. Every later
+user correction takes precedence over earlier proposals. This audit does not
+authorize reseeding live data, publishing plugins or changing closed QA results.
 
 The previous managed startup was interrupted by the reported location defect.
 The reverted launcher configuration was restored in the existing launcher;
@@ -105,3 +186,17 @@ Initial resume startup completed for all three actors, but this popup defect
 interrupted the handoff; that startup does not prove the fix. Group block 1 and
 the complete entry regressions remain NOT RUN. Block 19.1 and API blocks 2–3 now
 explicitly require real entry UI; closed PASS rows remain unchanged.
+
+
+## Corrected startup handoff
+
+Versioned baseline status and launcher completed again after the popup fix.
+Read-only inspection of the reported defect found all three actors at `/game`,
+each with its own accepted stored point and `setupOpen=false`, while both
+`installAvailable` and `installPromptVisible` remained true. This exercises the
+previously failing automatic-install trigger on the deployed build; no browser
+click, form, manual list action or full-entry PASS is claimed.
+
+Next action belongs to the user: Alex → Community → Groups, block 1 list/filter/
+color checks above. The 25-block progress table remains NOT RUN until execution
+results arrive. Later write blocks still require scoped fixture preparation.

@@ -88,11 +88,12 @@ Earlier Event Mode, Integration API, Activity Rating and EVENT-FOLLOWING-001 rem
 ```yaml
 checkpoint: GROUP-LIFECYCLE-001
 checklist: ../checklists/group/GROUP-LIFECYCLE-001.md
-substage: 1/25 — Group lists and category colors; NOT RUN, baseline verified 2026-09-26.
+substage: 1/25 — Group lists partially exercised; overall NOT RUN. Missing group-change badges/notifications under diagnosis; full conversation coverage audit in execution log.
 fixture_phase: Retained read-only-lists-ready state verified, ten groups and 27 memberships unchanged. Old permittedBlocks [1,2] maps only to the current block 1; write blocks are not staged.
 execution_log: ../evidence/GROUP-LIFECYCLE-001-20260926.md
-next_action: Finish standardized three-actor startup, then hand off block 1 list/filter/color checks to the user. Do not execute browser checklist actions.
-queue: GROUP-LIFECYCLE-001 blocks 2–25 after scoped fixture preparation; GROUP-ISOLATION-001 blocks 1–12; INTEGRATION-API-GROUP-001 blocks 1–6. USB/native-device checks last.
+execution_authority: User explicitly delegated full-flow automated execution of the pending QA campaign on 2026-09-26; Codex operates the browser, diagnoses, fixes and retests. User observes and reports issues. Closed PASS rows remain closed.
+next_action: Members menu badge and shared 20px circle verified in managed UI; finish write-side group-change and recipient-notification diagnosis using checklist 6.1. Sum relevant operations, never distinct groups. Prepare exact fixture snapshots before mutation tests. No backend fix for that lifecycle has been made in this audit.
+queue: GROUP-LIFECYCLE-001 blocks 2–25 after scoped fixture preparation; GROUP-ISOLATION-001 blocks 1–12; INTEGRATION-API-GROUP-001 blocks 1–7 including relocated unexecuted MCP micros. USB/native-device checks last.
 resume_gate: Run the versioned community-group status command before any relaunch. Do not reset changed records or replay a closed checkpoint. Check the current managed-session manifest and launcher result.
 runtime: Existing dev watchers own builds; no stack restart or seed replacement for this resume. Versioned launcher configuration restored after the revert.
 last_completed: EVENT-CALENDAR-EXPORT-001 PASS/CLOSED; AFFILIATE-REVENUE-001 remains PASS. Location fixes and baseline checks are not Group UI PASS.

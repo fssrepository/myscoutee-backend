@@ -5,12 +5,13 @@
   const scenario = "community-group";
   const checkpointId = "GROUP-LIFECYCLE-001";
   Q.assertDeploymentSafety();
-  if (Q.text(process.env.MANUAL_QA_COMMAND) !== "status"
+  const command = Q.text(process.env.MANUAL_QA_COMMAND);
+  if (!["status", "prepare-badges", "prepare-join", "restore-badges"].includes(command)
       || Q.text(process.env.MANUAL_QA_CHECKPOINT_ID) !== checkpointId) {
     Q.fail("Only the retained Group list baseline status is supported here.");
   }
   const state = Q.activeState(scenario, true);
-  if (state.checkpointId !== checkpointId || state.phase !== "read-only-lists-ready") {
+  if (state.checkpointId !== checkpointId || !["read-only-lists-ready", "badge-writes-ready"].includes(state.phase)) {
     Q.fail("The retained Group list baseline does not match this checkpoint.");
   }
   const actors = [
@@ -26,10 +27,48 @@
       || !snapshots.some(s => s.collection === "activityMembers" && s.documents.length === 27)) {
     Q.fail("Expected the retained ten-group, 27-membership baseline.");
   }
-  for (const snapshot of snapshots) {
+  if (state.phase === "read-only-lists-ready") for (const snapshot of snapshots) {
     if (!Q.sameJson(ordered(snapshot.documents), ordered(Q.collection(snapshot.collection).find(snapshot.selector).toArray()))) {
       Q.fail(`${snapshot.collection} differs from the retained baseline; do not reset or relaunch blindly.`);
     }
+  }
+  if (command === "prepare-badges") {
+    if (state.phase !== "read-only-lists-ready") Q.fail("Badge writes already prepared; do not overwrite snapshots.");
+    const groupId = "seed-community-seattle-friends";
+    const additional = Q.snapshotSpecs([
+      {collection: "users", selector: {$or: [{userId: {$in: actors}}, {workspaceGroupId: groupId}]}},
+      {collection: "userNotifications", selector: {sourceType: "community", sourceId: groupId}},
+      {collection: "notificationOutbox", selector: {entityType: "community", entityId: groupId}}
+    ]);
+    Q.collection(Q.STATE_COLLECTION).updateOne({_id: state._id}, {$set: {
+      phase: "badge-writes-ready", badgeSnapshots: additional, badgePreparedAtIso: Q.nowIso()
+    }});
+    for (const group of Q.collection("communityGroups").find({_id: {$in: snapshots.find(s => s.collection === "communityGroups").documents.map(g => g._id)}})) {
+      const pendingMembers = Q.collection("activityMembers").countDocuments({ownerType: "community", ownerId: group._id, status: "pending"});
+      Q.collection("communityGroups").updateOne({_id: group._id}, {$set: {pendingMembers}});
+    }
+    Q.printObject({checkpointId, phase: "badge-writes-ready", readyChecklistBlocks: [1, "6.1"], groupId,
+      note: "Exact membership/group, actor/profile and community notification snapshots retained before product writes."});
+    return;
+  }
+  if (command === "prepare-join") {
+    if (state.phase !== "badge-writes-ready" || state.joinPrepared) Q.fail("Join baseline already prepared or badge baseline missing.");
+    const groupId = "seed-community-neighbours";
+    const additional = Q.snapshotSpecs([
+      {collection: "users", selector: {workspaceGroupId: groupId}},
+      {collection: "userNotifications", selector: {sourceType: "community", sourceId: groupId}},
+      {collection: "notificationOutbox", selector: {entityType: "community", entityId: groupId}}
+    ]);
+    Q.collection(Q.STATE_COLLECTION).updateOne({_id: state._id}, {$push: {badgeSnapshots: {$each: additional}}, $set: {joinPrepared: true}});
+    Q.printObject({checkpointId, groupId, joinPrepared: true}); return;
+  }
+  if (command === "restore-badges") {
+    if (state.phase !== "badge-writes-ready") Q.fail("No badge-write snapshots to restore.");
+    Q.restoreSnapshots(state.badgeSnapshots);
+    Q.restoreSnapshots(state.snapshots);
+    Q.collection(Q.STATE_COLLECTION).updateOne({_id: state._id}, {$set: {phase: "read-only-lists-ready"}, $unset: {badgeSnapshots: "", badgePreparedAtIso: "", joinPrepared: ""}});
+    Q.printObject({checkpointId, phase: "read-only-lists-ready", restored: true});
+    return;
   }
   const actorState = actors.map(id => {
     const user = Q.ensureUser(id);
@@ -48,7 +87,7 @@
   Q.printObject({
     checkpointId, phase: state.phase,
     // The earlier marker's [1,2] meant two list steps, now together in block 1.
-    readyChecklistBlocks: [1], productWritesPrepared: false,
+    readyChecklistBlocks: state.phase === "badge-writes-ready" ? [1, "6.1"] : [1], productWritesPrepared: state.phase === "badge-writes-ready",
     groups: groups.length, memberships: members.length, actors: actorState,
     alexBaseline: groups.map(group => {
       const member = members.find(m => m.ownerId === group._id && m.userId === actors[0]);

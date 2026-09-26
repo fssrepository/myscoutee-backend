@@ -97,14 +97,38 @@ public class UserNotificationPageRepository {
                 UserNotification.class);
     }
 
+    /** Reconcile on writes, including duplicate delivery, never during a page/counter read. */
+    private void refreshCommunityUpdates(UserNotification notification) {
+        if (notification == null || !"community".equals(notification.getSourceType())
+                || !"members".equals(notification.getPayload().get("communityAttention"))) return;
+        for (int attempt = 0; attempt < 8; attempt++) {
+            var identity = Criteria.where("ownerType").is("community").and("ownerId").is(notification.getSourceId())
+                    .and("userId").is(notification.getRecipientUserId());
+            var member = mongoTemplate.findOne(Query.query(identity), org.bson.Document.class, "activityMembers");
+            if (member == null) return;
+            Object revision = member.get("communityUpdatesRevision");
+            long count = mongoTemplate.count(Query.query(new Criteria().andOperator(
+                    Criteria.where("recipientUserId").is(notification.getRecipientUserId()).and("sourceType").is("community")
+                        .and("sourceId").is(notification.getSourceId()).and("payload.communityAttention").is("members"),
+                    unreadCriteria())), UserNotification.class);
+            if (mongoTemplate.updateFirst(Query.query(Criteria.where("_id").is(member.get("_id"))
+                    .and("communityUpdatesRevision").is(revision)), new Update().set("communityUpdates", count)
+                    .set("communityUpdatesRevision", revision instanceof Number n ? n.longValue() + 1 : 1L), "activityMembers")
+                    .getMatchedCount() > 0) return;
+        }
+        throw new IllegalStateException("Group notifications changed concurrently; retry delivery.");
+    }
+
     public boolean insertIfAbsent(UserNotification notification) {
         if (notification == null) {
             return false;
         }
         try {
             mongoTemplate.insert(notification);
+            refreshCommunityUpdates(notification);
             return true;
         } catch (DuplicateKeyException ignored) {
+            refreshCommunityUpdates(notification);
             return false;
         }
     }
@@ -167,6 +191,7 @@ public class UserNotificationPageRepository {
                         .inc("revision", 1L),
                 FindAndModifyOptions.options().returnNew(true),
                 UserNotification.class);
+        refreshCommunityUpdates(updated);
         return Optional.ofNullable(updated);
     }
 

@@ -22,7 +22,8 @@ class CommunityGroupInviteClaimTest {
             "now", "now", 0L, "accepted", 0L);
     private final CommunityGroupsService service = new CommunityGroupsService(groups, members, users,
             mock(HomeUserProfileService.class), profiles, mock(ContentModerationService.class),
-            mock(UserReportSubmissionsRepository.class), mock(AdminTelemetryService.class));
+            mock(UserReportSubmissionsRepository.class), mock(AdminTelemetryService.class), mock(UserActivityCountersService.class),
+            mock(com.raxim.myscoutee.profile.service.notifications.NotificationOutboxService.class));
 
     @BeforeEach void setup() {
         Map<String, Users> accounts = new HashMap<>();

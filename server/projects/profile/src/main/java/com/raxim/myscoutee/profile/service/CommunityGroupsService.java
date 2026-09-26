@@ -32,11 +32,14 @@ public class CommunityGroupsService {
     private final ContentModerationService moderation;
     private final UserReportSubmissionsRepository reports;
     private final AdminTelemetryService telemetry;
+    private final UserActivityCountersService counters;
+    private final com.raxim.myscoutee.profile.service.notifications.NotificationOutboxService notifications;
     public CommunityGroupsService(CommunityGroupsRepository groups, ActivityMembersRepository memberships,
             UsersRepository users, HomeUserProfileService profiles, CommunityGroupProfilesService groupProfiles,
-            ContentModerationService moderation, UserReportSubmissionsRepository reports, AdminTelemetryService telemetry) {
+            ContentModerationService moderation, UserReportSubmissionsRepository reports, AdminTelemetryService telemetry, UserActivityCountersService counters,
+            com.raxim.myscoutee.profile.service.notifications.NotificationOutboxService notifications) {
         this.groups = groups; this.memberships = memberships; this.users = users; this.profiles = profiles; this.groupProfiles = groupProfiles;
-        this.moderation = moderation; this.reports = reports; this.telemetry = telemetry;
+        this.moderation = moderation; this.reports = reports; this.telemetry = telemetry; this.counters = counters; this.notifications = notifications;
     }
     public Users actor(String requestedId) {
         Users actor = profiles.resolveCurrentUser(requestedId);
@@ -46,14 +49,16 @@ public class CommunityGroupsService {
     }
     public List<Workspace> workspaces(Users actor) {
         var memberships = this.memberships.findByOwnerTypeAndUserId(OWNER_TYPE, actor.getUserId()).stream()
-                .filter(m -> "accepted".equals(m.getStatus())).collect(Collectors.toMap(ActivityMember::getOwnerId, m -> m));
+                .filter(m -> Set.of("accepted", "pending").contains(m.getStatus())).collect(Collectors.toMap(ActivityMember::getOwnerId, m -> m));
         var profiles = groupProfiles.profilesByGroup(actor.getUserId());
-        return groups.findByIdIn(memberships.keySet()).stream().filter(g -> g.policy().workspace() && profiles.containsKey(g.id()))
-                .map(g -> new Workspace(g.id(), profiles.get(g.id()).getUserId(), g.name(), memberships.get(g.id()).getRole(),
+        return groups.findByIdIn(memberships.keySet()).stream()
+                .map(g -> new Workspace(g.id(), profiles.containsKey(g.id()) ? profiles.get(g.id()).getUserId() : null, g.name(), memberships.get(g.id()).getRole(),
                     com.raxim.myscoutee.profile.service.mapper.CommunityGroupProfileMapper.attention(profiles.get(g.id()))
+                        + CommunityGroupMapper.membersActivity(g, memberships.get(g.id()))
                         + (isAdmin(memberships.get(g.id())) ? g.pendingModerationCount() : 0), g.policy(),
                     isAdmin(memberships.get(g.id())) ? g.pendingModerationCount() : 0,
-                    isAdmin(memberships.get(g.id())) && g.moderationQueueRevision() != null ? g.moderationQueueRevision() : 0))
+                    isAdmin(memberships.get(g.id())) && g.moderationQueueRevision() != null ? g.moderationQueueRevision() : 0, g.category(), memberships.get(g.id()).getStatus(),
+                    CommunityGroupMapper.membersActivity(g, memberships.get(g.id()))))
                 .sorted(Comparator.comparing(Workspace::name).thenComparing(Workspace::groupId)).toList();
     }
     public ProfileExtByIdResponseDto completeProfileLoad(
@@ -146,7 +151,7 @@ public class CommunityGroupsService {
                     policy.requiredFields().stream().distinct().toList()), existing == null ? now : existing.createdAtIso(), now,
                     existing == null ? null : existing.version(), existing == null ? null : existing.moderationStatus(),
                     existing == null ? null : existing.moderationVersion(),
-                    existing == null ? null : existing.moderationPending(), existing == null ? null : existing.moderationQueueRevision());
+                    existing == null ? null : existing.moderationPending(), existing == null ? null : existing.moderationQueueRevision(), existing == null ? 0L : existing.pendingMembers());
         group = groups.save(group);
         if (existing == null) memberships.save(newMember(group, actor.getUserId(), "Admin", "accepted", null, actor.getUserId()));
         groupProfiles.applyPolicy(group);
@@ -182,11 +187,19 @@ public class CommunityGroupsService {
         var group = visible(actor, id);
         if (!group.moderationVisible()) throw error(HttpStatus.FORBIDDEN);
         var old = membership(id, actor.getUserId());
-        if (old != null && Set.of("accepted", "pending").contains(old.getStatus())) return dto(actor, group, members(id));
+        if (old != null && Set.of("accepted", "pending").contains(old.getStatus())) {
+            if ("pending".equals(old.getStatus()) && "join".equals(old.getRequestKind())) {
+                counters.refreshCommunityMemberCounters(id);
+                notifyMembers(group, "join-requested", actor.getUserId(), old, members(id).stream().filter(this::isAdmin).map(ActivityMember::getUserId).toList(), false);
+            }
+            return dto(actor, groups.findById(id).orElseThrow(), members(id));
+        }
         if ("invitation".equals(group.visibility())) throw error(HttpStatus.FORBIDDEN);
         // Admission always goes through an administrator; pending users have no group profile.
-        memberships.save(newMember(group, actor.getUserId(), "Member", "pending", "join", null));
-        return dto(actor, group, members(id));
+        var requested = memberships.save(newMember(group, actor.getUserId(), "Member", "pending", "join", null));
+        notifyMembers(group, "join-requested", actor.getUserId(), requested, members(id).stream().filter(this::isAdmin).map(ActivityMember::getUserId).toList(), false);
+        counters.refreshCommunityMemberCounters(id);
+        return dto(actor, groups.findById(id).orElseThrow(), members(id));
     }
     public List<ActivityMemberEntryDto> roster(Users actor, String id, boolean pendingOnly) {
         var group = visible(actor, id);
@@ -223,7 +236,11 @@ public class CommunityGroupsService {
                 .map(ActivityMember::getUserId).collect(Collectors.toSet());
         var invited = userIds.stream().distinct().filter(candidates::contains).filter(uid -> !existing.contains(uid)).toList();
         memberships.saveAll(invited.stream().map(uid -> newMember(group, uid, "Member", "pending", "invite", actor.getUserId())).toList());
-        return new ActivityMembersInviteResponseDto(roster(actor, id, false), invited, List.of(), dto(actor, group, members(id)));
+        for (var member : members(id)) if (userIds.contains(member.getUserId()) && "pending".equals(member.getStatus())
+                && "invite".equals(member.getRequestKind()) && actor.getUserId().equals(member.getInvitedByUserId()))
+            notifyMembers(group, "invite", actor.getUserId(), member, List.of(member.getUserId()), false);
+        if (!invited.isEmpty()) counters.refreshCommunityMemberCounters(id);
+        return new ActivityMembersInviteResponseDto(roster(actor, id, false), invited, List.of(), dto(actor, groups.findById(id).orElseThrow(), members(id)));
     }
     /** Called after the shared partner-link flow has bound the invitation to its recipient. */
     void claimIntegrationInvite(IntegrationParticipantInvite invite, String actorUserId) {
@@ -250,9 +267,17 @@ public class CommunityGroupsService {
         String id = request.owner().ownerId(); var group = visible(actor, id);
         var target = membership(id, request.targetUserId());
         if (target == null) throw error(HttpStatus.NOT_FOUND);
+        String previousStatus = target.getStatus();
+        String previousRole = target.getRole();
         boolean self = actor.getUserId().equals(target.getUserId());
         boolean admin = isAdmin(membership(id, actor.getUserId()));
         boolean owner = group.ownerUserId().equals(target.getUserId());
+        if (request.action().equals(target.getCommunityAction()) && actor.getUserId().equals(target.getCommunityActor()) && (self || admin)) {
+            counters.refreshCommunityMemberCounters(id);
+            group = groups.findById(id).orElseThrow();
+            notifyMemberTransition(group, actor.getUserId(), target, request.action());
+            return new ActivityMemberActionResponseDto(self && "deleted".equals(target.getStatus()) ? List.of() : roster(actor, id, false), null, dto(actor, group, members(id)));
+        }
         switch (request.action()) {
             case "accept" -> {
                 if (!"pending".equals(target.getStatus()) || !("invite".equals(target.getRequestKind()) ? self : admin && !self)) throw error(HttpStatus.FORBIDDEN);
@@ -277,10 +302,49 @@ public class CommunityGroupsService {
             }
             default -> throw error(HttpStatus.BAD_REQUEST);
         }
+        if (Objects.equals(previousStatus, target.getStatus()) && Objects.equals(previousRole, target.getRole())
+                && !Set.of("set-organizer-only", "set-participant").contains(request.action()))
+            return new ActivityMemberActionResponseDto(roster(actor, id, false), null, dto(actor, group, members(id)));
         target.setUpdatedDate(Instant.now().toString()); target.setActionAtIso(target.getUpdatedDate());
+        target.setCommunityAction(request.action()); target.setCommunityActor(actor.getUserId());
         memberships.save(target);
+        counters.refreshCommunityMemberCounters(id);
+        group = groups.findById(id).orElseThrow();
         if ("deleted".equals(target.getStatus())) users.clearActiveWorkspace(target.getUserId(), id);
+        notifyMemberTransition(group, actor.getUserId(), target, request.action());
         return new ActivityMemberActionResponseDto(self && "deleted".equals(target.getStatus()) ? List.of() : roster(actor, id, false), null, dto(actor, group, members(id)));
+    }
+    private void notifyMemberTransition(CommunityGroup group, String actorId, ActivityMember target, String action) {
+        if ("accept".equals(action)) {
+            boolean hideMembers = group.hideMembers();
+            var recipients = members(group.id()).stream().filter(m -> "accepted".equals(m.getStatus()))
+                    .filter(m -> !hideMembers || isAdmin(m) || m.getUserId().equals(target.getUserId()))
+                    .map(ActivityMember::getUserId).toList();
+            notifyMembers(group, "member-joined", actorId, target, recipients, true);
+        } else if ("remove".equals(action)) {
+            var recipients = new ArrayList<String>();
+            recipients.add(target.getUserId());
+            members(group.id()).stream().filter(this::isAdmin).map(ActivityMember::getUserId).forEach(recipients::add);
+            notifyMembers(group, "member-removed", actorId, target, recipients, true);
+        } else if (Set.of("promote-admin", "step-down-admin").contains(action)) {
+            notifyMembers(group, "role-changed", actorId, target, List.of(target.getUserId()), true);
+        }
+    }
+    private void notifyMembers(CommunityGroup group, String action, String actorId, ActivityMember subject,
+            List<String> recipientIds, boolean attention) {
+        var recipients = recipientIds.stream().filter(id -> !id.equals(actorId)).distinct().toList();
+        if (recipients.isEmpty()) return;
+        var payload = new LinkedHashMap<String, String>();
+        payload.put("workspaceGroupId", group.id()); payload.put("workspaceGroupName", group.name());
+        payload.put("communityGroupId", group.id()); payload.put("senderUserId", actorId);
+        payload.put("memberUserId", subject.getUserId());
+        payload.put("notification_message_key", "notification.kind.community-" + action + ".message");
+        if (attention) payload.put("communityAttention", "members");
+        String kind = "community-" + action;
+        notifications.enqueueOnce(kind + ":" + subject.getId() + ":" + subject.getActionAtIso(),
+            new com.raxim.myscoutee.profile.service.notifications.NotificationOutboxService.NotificationIntent(
+                kind, OWNER_TYPE, group.id(), "members", recipients, group.name(), group.name(), "/game?communityGroupId=" + java.net.URLEncoder.encode(group.id(), java.nio.charset.StandardCharsets.UTF_8),
+                group.imageUrl(), "/assets/logo/heart.webp", kind + ":" + group.id(), payload, actorId));
     }
     private CommunityGroup visible(Users actor, String id) {
         var group = groups.findById(id).orElseThrow(() -> error(HttpStatus.NOT_FOUND));

@@ -12,7 +12,14 @@ public record CommunityGroup(
         String imageUrl, String category, @Indexed String visibility,
         boolean hideMembers, Policy policy, String createdAtIso, String updatedAtIso,
         @Version Long version, String moderationStatus, Long moderationVersion,
-        Long moderationPending, Long moderationQueueRevision) {
+        Long moderationPending, Long moderationQueueRevision, Long pendingMembers) {
+    public CommunityGroup(String id, String ownerUserId, String name, String description, String imageUrl,
+            String category, String visibility, boolean hideMembers, Policy policy, String createdAtIso,
+            String updatedAtIso, Long version, String moderationStatus, Long moderationVersion,
+            Long moderationPending, Long moderationQueueRevision) {
+        this(id, ownerUserId, name, description, imageUrl, category, visibility, hideMembers, policy,
+                createdAtIso, updatedAtIso, version, moderationStatus, moderationVersion, moderationPending, moderationQueueRevision, null);
+    }
     public CommunityGroup(String id, String ownerUserId, String name, String description, String imageUrl,
             String category, String visibility, boolean hideMembers, Policy policy, String createdAtIso,
             String updatedAtIso, Long version, String moderationStatus, Long moderationVersion) {
@@ -20,6 +27,7 @@ public record CommunityGroup(
                 createdAtIso, updatedAtIso, version, moderationStatus, moderationVersion, null, null);
     }
     public long pendingModerationCount() { return moderationPending == null ? 0 : Math.max(0, moderationPending); }
+    public long pendingMemberCount() { return pendingMembers == null ? 0 : Math.max(0, pendingMembers); }
     public boolean moderationVisible() { return moderationStatus == null || "accepted".equals(moderationStatus); }
     public record Policy(boolean workspace, boolean enabled, List<String> requiredFields) {}
 }

@@ -32,42 +32,6 @@ seeded or written directly to MongoDB.
 
 ## Pass boundary
 
-### Additional MCP regression micros — NOT RUN (2026-09-26)
-
-These additions do not change any historical PASS result. Reuse this checkpoint's
-UI-created keys and the group checkpoint's profile boundaries.
-
-- The authenticated connect response identifies the key's profile/group and
-  authorized operations. Base/group keys produce the corresponding MCP discovery;
-  group keys do not advertise asset creation. Discovery never probes write URLs.
-- Group invitation discovery contains only groups the actor administers. Removing
-  that role changes the next discovery and blocks stale calls before invitation.
-- Revoked keys, unavailable capability API and older connect responses without
-  capabilities hide all personal tools; anonymous help remains discoverable.
-- Tool descriptions expose ownership/lifecycle preconditions. Foreign event IDs,
-  incomplete Mingle events and malformed payloads still fail in the API; a listed
-  operation does not grant blanket resource access.
-- HU/EN help starts with the AI integration topic after Getting started; frontend
-  local and Mongo-backed help agree. Anonymous MCP help explains that no login or
-  key is needed, and uses the current published revision.
-- Build separate unpublished OpenAI/Claude packages from the common plugin source.
-  Verify the original MyScoutee logo and shared skill, then test installation in
-  the chosen client separately. No personal remote OAuth pass follows from a local
-  API-key test. See `myscoutee-mcp/docs/QA.md` for the individual steps.
-
-- Personal remote `/mcp/private`: create a profile-owned MCP connection under
-  API keys, copy the one-time secret into client settings, sign in and explicitly
-  approve the displayed profile/group. Check both ChatGPT and Claude callbacks.
-  Invalid state round-trip, redirect, client, PKCE, resource, expired/reused code,
-  refresh replay and revocation must not expose private operations/data.
-- An enrolled browser session must not be required for an independently verified
-  API key/OAuth grant. Browser logout does not revoke the key; explicit key/grant
-  revocation does. Ordinary app requests still require their session.
-- Two concurrent identities remain isolated. Profile switches during creation
-  cannot expose the previous secret; create/revoke reconcile the table without
-  reload. Local/demo persists settings only. API-key slots remain independent.
-  Full steps: `myscoutee-mcp/docs/QA.md`, still **NOT RUN**.
-
 ### Existing checkpoint acceptance
 
 PASS requires the UI ownership/presentation checks, the persisted id mapping,

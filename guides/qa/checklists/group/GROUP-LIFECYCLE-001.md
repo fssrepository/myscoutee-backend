@@ -86,8 +86,43 @@ or claim that a fixture or browser session has already been prepared.
 12. Compare group profile details with the base profile. Required fields follow
     the saved policy. Organizer/member role actions use their normal authority;
     an ordinary member cannot approve others or edit group policy.
+    Groups remain a flat account-level membership list while a workspace is
+    selected: using the Groups menu does not create child/subgroups.
 
 ## 6. App moderation, group moderation and support
+
+### 6.1. Relevant changes, menu badges and notification recipients
+
+The Groups sidebar badge sums the **relevant operations/changes inside groups**
+for the current member/organizer. It is not a count of groups with activity.
+For example, two relevant changes in one group and three in another must show
+five, not two. Moderation is an additional administrator-only source, not the
+definition of all group activity.
+
+1. As organizer and ordinary member, cause distinct relevant changes, including
+   a join request, an accepted/new member and ordinary group activity. Check the
+   corresponding group menu items, card three-dot, Hosting/Participation dropdown,
+   workspace dropdown and sidebar aggregate. Preserve visibility rules: a member
+   sees changes they may access, never the administrator's moderation queue.
+   In each menu, a single-digit badge is the same 20px circle as the card's red
+   counter, with its number centered in both axes. Check the card's dark member
+   total and red pending counter too. Longer counts may widen; they must not
+   clip or squeeze.
+2. Add a moderation decision/request as administrator alongside member-visible
+   activity. Verify both sources independently and their sum; completing one
+   operation must not clear the other source or count the same operation twice.
+3. Compare the mutation response and stored write-side counters. Immediate
+   updates use the existing signal stores and SmartList insert/update/remove
+   behavior. No reload, full-list restart, or query-time reconstruction of
+   counters; an older poll must not restore the previous state. Reload is a
+   separate persistence check, not how the UI obtains the change.
+4. For each notifying mutation, inspect both actors: the appropriate affected
+   recipient receives the notification, not the actor executing the mutation.
+   Retry must not create another notification or increment for the same change.
+   Notifications remain account-wide, identify their group, and obey the existing
+   All/Base/group filter. No unrelated group/account receives the notification.
+
+### 6.2. Moderation and support lifecycle
 
 13. Report a group as a non-owner. In **app-admin** content moderation, verify
     the **Group** dropdown category, preview and configured review lifecycle.
@@ -265,6 +300,23 @@ dev HTTP outcomes independently, in HU/EN and at desktop/mobile widths.
 
 6. **Landing social heading (UI note 10).** Check Kövess minket / Follow us
    above the existing social links. This label change must not alter targets.
+
+### 15.1. Earlier landing and reporting requests — NOT RUN
+
+1. In Partners, check the additional concise closed-community/company card,
+   including its employee wellbeing use case, in HU/EN. Before Optional network
+   registration, check the full-width API block, distinct color and working
+   GitHub API link; the text explains user-bound integration for booking and
+   internal company systems without claiming broader permissions.
+2. On desktop, the discovery/join button row is left aligned. Supported countries
+   and Report an issue use the same blurred backdrop as the other footer popups.
+3. On the frontend GitHub issue chooser, verify the concise Bug, Feature and
+   Question templates. Merely finding local template files does not prove that
+   the remote repository has them. Do not submit an issue for this check.
+4. Check the current version on the right of the installation/settings menu,
+   including when installation is already complete and its button is hidden.
+   It uses the existing runtime version source; a popup-only or hardcoded version
+   is not sufficient. Do not change landing content to implement this label.
 
 ## 16. Setup permission help
 
@@ -453,6 +505,17 @@ are pending manual verification, not extensions of an earlier PASS.
   profile, ignoring a forged body user ID. No asset ownership grants event access.
 
 ## 25. Global notifications and scoped API keys
+
+### 25.1. Notification layout — NOT RUN
+
+1. At the narrow mobile size from the report, the date/time badge aligns with
+   the first row. The explanation uses the available space up to the three-dot
+   action and can use two lines. Preserve the title's original width behavior.
+2. Only the All filter menu moves to the row below the header/X. The New filter,
+   bell and Close remain in the header. Verify long HU and EN explanations and
+   opening/closing item actions without overlapping text or hidden controls.
+
+### 25.2. Scope and authority
 
 - Notifications stay account-wide, identify their group and retain the existing
   All/Base/group filter. Check write-side counters and live updates after a group

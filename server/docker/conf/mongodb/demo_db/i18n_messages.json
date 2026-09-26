@@ -23382,6 +23382,36 @@
     "value": "Location needed"
   },
   {
+    "_id": "i18n-message-en-notification-kind-community-invite-message",
+    "key": "notification.kind.community-invite.message",
+    "lang": "en",
+    "value": "You have been invited to this group."
+  },
+  {
+    "_id": "i18n-message-en-notification-kind-community-join-requested-message",
+    "key": "notification.kind.community-join-requested.message",
+    "lang": "en",
+    "value": "A member requested to join this group."
+  },
+  {
+    "_id": "i18n-message-en-notification-kind-community-member-joined-message",
+    "key": "notification.kind.community-member-joined.message",
+    "lang": "en",
+    "value": "Group membership was approved. The member list has changed."
+  },
+  {
+    "_id": "i18n-message-en-notification-kind-community-member-removed-message",
+    "key": "notification.kind.community-member-removed.message",
+    "lang": "en",
+    "value": "A group membership ended."
+  },
+  {
+    "_id": "i18n-message-en-notification-kind-community-role-changed-message",
+    "key": "notification.kind.community-role-changed.message",
+    "lang": "en",
+    "value": "Your group role has changed."
+  },
+  {
     "_id": "i18n-message-hu-navigator-community",
     "key": "navigator.community",
     "lang": "hu",
@@ -46762,5 +46792,35 @@
     "key": "demo.selector.status.location",
     "lang": "hu",
     "value": "Helyadat kell"
+  },
+  {
+    "_id": "i18n-message-hu-notification-kind-community-invite-message",
+    "key": "notification.kind.community-invite.message",
+    "lang": "hu",
+    "value": "Meghívást kaptál ebbe a csoportba."
+  },
+  {
+    "_id": "i18n-message-hu-notification-kind-community-join-requested-message",
+    "key": "notification.kind.community-join-requested.message",
+    "lang": "hu",
+    "value": "Új csatlakozási kérelem érkezett."
+  },
+  {
+    "_id": "i18n-message-hu-notification-kind-community-member-joined-message",
+    "key": "notification.kind.community-member-joined.message",
+    "lang": "hu",
+    "value": "A csoporttagságot jóváhagyták. A taglista megváltozott."
+  },
+  {
+    "_id": "i18n-message-hu-notification-kind-community-member-removed-message",
+    "key": "notification.kind.community-member-removed.message",
+    "lang": "hu",
+    "value": "Egy csoporttagság megszűnt."
+  },
+  {
+    "_id": "i18n-message-hu-notification-kind-community-role-changed-message",
+    "key": "notification.kind.community-role-changed.message",
+    "lang": "hu",
+    "value": "Megváltozott a csoportbeli szerepköröd."
   }
 ]

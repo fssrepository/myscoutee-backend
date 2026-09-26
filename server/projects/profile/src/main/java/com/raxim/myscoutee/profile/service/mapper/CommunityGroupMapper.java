@@ -17,9 +17,15 @@ public final class CommunityGroupMapper {
                 own == null ? null : own.getRole(), own == null ? null : own.getStatus(),
                 own == null ? null : own.getRequestKind(), own != null && Boolean.TRUE.equals(own.getOrganizerOnly()),
                 (int)members.stream().filter(m -> "accepted".equals(m.getStatus())).count(),
-                admin ? (int)members.stream().filter(m -> "pending".equals(m.getStatus())).count() : 0,
-                activity + (admin ? group.pendingModerationCount() : 0), distance(owner, viewer), group.moderationStatus(),
-                admin ? group.pendingModerationCount() : 0, admin && group.moderationQueueRevision() != null ? group.moderationQueueRevision() : 0);
+                admin ? (int)group.pendingMemberCount() : 0,
+                activity + membersActivity(group, own) + (admin ? group.pendingModerationCount() : 0), distance(owner, viewer), group.moderationStatus(),
+                admin ? group.pendingModerationCount() : 0, admin && group.moderationQueueRevision() != null ? group.moderationQueueRevision() : 0, membersActivity(group, own));
+    }
+    public static long membersActivity(CommunityGroup group, ActivityMember own) {
+        if (own == null || !List.of("accepted", "pending").contains(own.getStatus())) return 0;
+        long updates = own.getCommunityUpdates() == null ? 0 : Math.max(0, own.getCommunityUpdates());
+        if ("accepted".equals(own.getStatus()) && "Admin".equals(own.getRole())) return updates + group.pendingMemberCount();
+        return updates + ("pending".equals(own.getStatus()) && "invite".equals(own.getRequestKind()) ? 1 : 0);
     }
     public static ActivityMemberEntryDto member(ActivityMember m, Users user, String actor) {
         return new ActivityMemberEntryDto(m.getId(), m.getUserId(), user.getName(), user.getInitials(),
