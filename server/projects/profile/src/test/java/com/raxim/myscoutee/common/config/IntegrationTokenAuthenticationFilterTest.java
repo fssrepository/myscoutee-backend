@@ -23,6 +23,30 @@ class IntegrationTokenAuthenticationFilterTest {
     private final com.raxim.myscoutee.profile.service.CommunityGroupProfilesService profiles = org.mockito.Mockito.mock(com.raxim.myscoutee.profile.service.CommunityGroupProfilesService.class);
     private final IntegrationTokenAuthenticationFilter filter = new IntegrationTokenAuthenticationFilter(tokenService, users, profiles);
 
+    @Test void oauthUsesTheSameIntegrationAuthorityAndNeverFallsBackToApiKeys() throws Exception {
+        var oauth = org.mockito.Mockito.mock(com.raxim.myscoutee.profile.service.McpAuthorizationService.class);
+        org.springframework.beans.factory.ObjectProvider<com.raxim.myscoutee.profile.service.McpAuthorizationService> provider =
+                org.mockito.Mockito.mock(org.springframework.beans.factory.ObjectProvider.class);
+        when(provider.getObject()).thenReturn(oauth);
+        org.springframework.test.util.ReflectionTestUtils.setField(filter, "mcp", provider);
+        var request = new MockHttpServletRequest("POST", "/integrations/v1/connect");
+        request.addHeader("Authorization", "Bearer mca_test");
+        request.addHeader(IntegrationTokenAuthenticationFilter.CLIENT_ID_HEADER, "ignored");
+        var denied = new MockHttpServletResponse();
+        filter.doFilter(request, denied, new MockFilterChain());
+        assertThat(denied.getStatus()).isEqualTo(401);
+        verifyNoInteractions(tokenService);
+        var owner = new com.raxim.myscoutee.profile.data.document.Users(); owner.setUserId("owner");
+        when(users.findByUserId("owner")).thenReturn(java.util.Optional.of(owner));
+        when(oauth.authenticate("mca_test")).thenReturn(new AuthenticatedIntegrationClient("owner", "client", "client"));
+        var chain = new MockFilterChain();var response = new MockHttpServletResponse();
+        filter.doFilter(request, response, chain);
+        assertThat(response.getStatus()).isEqualTo(200);
+        assertThat(SecurityContextHolder.getContext().getAuthentication().getAuthorities())
+                .extracting("authority").containsExactly("INTEGRATION");
+        verifyNoInteractions(tokenService);
+    }
+
     @AfterEach
     void tearDown() {
         SecurityContextHolder.clearContext();

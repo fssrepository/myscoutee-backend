@@ -107,7 +107,8 @@ public class McpAuthorizationService {
             value.expiresAt = Instant.now().plusSeconds(300);
             grants.save(value);
         }
-        String callback = request.redirectUri() + "?" + (consent.approve() ? "code=" + code : "error=access_denied")
+        String callback = request.redirectUri() + (URI.create(request.redirectUri()).getRawQuery() == null ? "?" : "&")
+                + (consent.approve() ? "code=" + code : "error=access_denied")
                 + "&iss=" + encode(origin()) + (request.state() == null ? "" : "&state=" + encode(request.state()));
         return new McpDtos.Redirect(callback);
     }
@@ -184,7 +185,7 @@ public class McpAuthorizationService {
             boolean secure = "https".equals(uri.getScheme());
             boolean loopback = "http".equals(uri.getScheme()) && uri.getHost() != null && List.of("127.0.0.1", "localhost", "[::1]").contains(uri.getHost());
             if ((!secure && !loopback) || uri.getHost() == null || uri.getUserInfo() != null
-                    || uri.getFragment() != null || uri.getQuery() != null || value.contains("*")) throw error("invalid_request");
+                    || uri.getFragment() != null || value.contains("*")) throw error("invalid_request");
             return value;
         } catch (IllegalArgumentException ex) { throw error("invalid_request"); }
     }

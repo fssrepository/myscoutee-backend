@@ -23,7 +23,8 @@ public class McpOAuthController {
     public Map<String, Object> exchange(@RequestParam MultiValueMap<String, String> values,
             HttpServletRequest request, HttpServletResponse response) {
         response.setHeader("Cache-Control", "no-store"); response.setHeader("Pragma", "no-cache");
-        if (values.size() > 12 || values.values().stream().anyMatch(v -> v.size() != 1 || v.getFirst().length() > 2048))
+        if (request.getQueryString() != null || java.util.Collections.list(request.getHeaders("Authorization")).size() > 1
+                || values.size() > 12 || values.values().stream().anyMatch(v -> v.size() != 1 || v.getFirst() == null || v.getFirst().length() > 2048))
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "invalid_request");
         String client = values.getFirst("client_id"), secret = values.getFirst("client_secret");
         String header = request.getHeader("Authorization");
@@ -43,7 +44,8 @@ public class McpOAuthController {
     }
     @ExceptionHandler(ResponseStatusException.class)
     ResponseEntity<Map<String, String>> failure(ResponseStatusException error) {
-        return ResponseEntity.status(error.getStatusCode()).cacheControl(CacheControl.noStore())
-                .body(Map.of("error", error.getReason() != null && error.getReason().matches("[a-z_]+") ? error.getReason() : "server_error"));
+        var response = ResponseEntity.status(error.getStatusCode()).cacheControl(CacheControl.noStore());
+        if (error.getStatusCode().value() == 401) response.header("WWW-Authenticate", "Basic realm=\"MyScoutee MCP\"");
+        return response.body(Map.of("error", error.getReason() != null && error.getReason().matches("[a-z_]+") ? error.getReason() : "server_error"));
     }
 }

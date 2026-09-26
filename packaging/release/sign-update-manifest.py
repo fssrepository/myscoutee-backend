@@ -9,9 +9,29 @@ import argparse
 import base64
 import json
 import os
+import re
 from pathlib import Path
 import subprocess
 import tempfile
+
+
+def validate_compatibility(document):
+    """The catalog governs the installed worker, not the signed SSH installer."""
+    values = []
+    for field in ('release_version', 'minimum_compatible_version', 'maximum_compatible_version'):
+        value = document.get(field, '')
+        if not isinstance(value, str) or not re.fullmatch(r'(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)(-qa\.(0|[1-9][0-9]*))?', value):
+            raise ValueError(f'Invalid {field}')
+        values.append(value.replace('-', '~'))
+    version, minimum, maximum = values
+    def compare(a, operation, b):
+        return subprocess.run(['dpkg', '--compare-versions', a, operation, b], check=False).returncode == 0
+    if compare(minimum, 'gt', maximum):
+        raise ValueError('The update compatibility range is inverted')
+    # Old workers require exactly six images. The MCP release contains seven.
+    # Do not sign a catalog promising an in-app transition they cannot perform.
+    if compare(version, 'ge', '1.3.0~qa.1') and compare(minimum, 'lt', '1.3.0~qa.1'):
+        raise ValueError('Seven-image releases require an installed 1.3.0 worker. Upgrade older hosts with the existing signed client installer first.')
 
 
 def main():
@@ -30,6 +50,10 @@ def main():
     document = json.loads(manifest)
     if document.get('manifest_version') != '1' or document.get('backup_required') is not False:
         parser.error('Expected update manifest v1 without an automatic data backup')
+    try:
+        validate_compatibility(document)
+    except ValueError as error:
+        parser.error(str(error))
     os.umask(0o077)
     with tempfile.TemporaryDirectory(prefix='myscoutee-update-sign-') as directory:
         work = Path(directory)

@@ -99,3 +99,17 @@ verifies the previous release again, downloads it normally, and requires the
 exact retained artifact hash. It does not restore database or media data. An
 installation without a retained package identity cannot advertise a proven
 rollback target.
+
+### Seven-image transition (1.3.0)
+
+Installed pre-1.3.0 workers require exactly six images. Use the **existing signed
+client installer** (`packaging/client-tools/install.sh`) to upgrade these hosts
+with the seven-image 1.3.0 DEB; do not patch or replace the old worker separately.
+Supply its normal `RELEASE_MANIFEST_PATH`, `RELEASE_PUBLIC_KEY_PATH` and independently
+trusted fingerprint. The installer checks signatures before upload/installation
+and runs the package qualification command afterward.
+
+For in-app update catalogs targeting 1.3.0 or later, the signer requires a minimum
+compatible version of at least `1.3.0-qa.1`, the first seven-image worker. Set the
+actual qualified source range, not a broader promise. Older releases/tags remain
+unchanged. Real upgrade/interruption/rollback qualification is still required.

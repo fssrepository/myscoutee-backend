@@ -250,7 +250,9 @@ from the already implemented setup-permissions help above. AI integration is the
 second topic. Anonymous MCP reads the same active HU/EN help API. Local private
 MCP discovery matches the key's actual profile/group and authorized operations;
 group keys cannot create assets. See the API checklist for detailed MCP micros.
-Personal remote OAuth and the connections table remain implementation-pending.
+Personal remote OAuth and the connections table are implemented; exercise their
+profile-bound permissions and local-only settings in the API checklist’s NOT RUN
+micros. The seeded common help revision is v3 in both languages.
 
 ### Overlay Back / X history — NOT RUN
 

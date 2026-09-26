@@ -55,6 +55,19 @@ UI-created keys and the group checkpoint's profile boundaries.
   the chosen client separately. No personal remote OAuth pass follows from a local
   API-key test. See `myscoutee-mcp/docs/QA.md` for the individual steps.
 
+- Personal remote `/mcp/private`: create a profile-owned MCP connection under
+  API keys, copy the one-time secret into client settings, sign in and explicitly
+  approve the displayed profile/group. Check both ChatGPT and Claude callbacks.
+  Invalid state round-trip, redirect, client, PKCE, resource, expired/reused code,
+  refresh replay and revocation must not expose private operations/data.
+- An enrolled browser session must not be required for an independently verified
+  API key/OAuth grant. Browser logout does not revoke the key; explicit key/grant
+  revocation does. Ordinary app requests still require their session.
+- Two concurrent identities remain isolated. Profile switches during creation
+  cannot expose the previous secret; create/revoke reconcile the table without
+  reload. Local/demo persists settings only. API-key slots remain independent.
+  Full steps: `myscoutee-mcp/docs/QA.md`, still **NOT RUN**.
+
 ### Existing checkpoint acceptance
 
 PASS requires the UI ownership/presentation checks, the persisted id mapping,
