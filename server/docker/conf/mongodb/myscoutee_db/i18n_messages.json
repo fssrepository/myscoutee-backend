@@ -23922,6 +23922,102 @@
     "value": "Open group actions"
   },
   {
+    "_id": "i18n-message-en-home-filters",
+    "key": "home.filters",
+    "lang": "en",
+    "value": "Filters"
+  },
+  {
+    "_id": "i18n-message-en-groups-open",
+    "key": "groups.open",
+    "lang": "en",
+    "value": "Open group"
+  },
+  {
+    "_id": "i18n-message-en-groups-admin-revoke",
+    "key": "groups.admin.revoke",
+    "lang": "en",
+    "value": "Revoke admin"
+  },
+  {
+    "_id": "i18n-message-en-groups-admin-revoke-title",
+    "key": "groups.admin.revoke.title",
+    "lang": "en",
+    "value": "Revoke this member’s admin role?"
+  },
+  {
+    "_id": "i18n-message-en-groups-admin-revoke-message",
+    "key": "groups.admin.revoke.message",
+    "lang": "en",
+    "value": "{name} will remain a group member but will no longer administer the group."
+  },
+  {
+    "_id": "i18n-message-en-groups-admin-promote-message",
+    "key": "groups.admin.promote.message",
+    "lang": "en",
+    "value": "{name} will be able to administer this group and appoint other group admins."
+  },
+  {
+    "_id": "i18n-message-en-groups-takeover",
+    "key": "groups.takeover",
+    "lang": "en",
+    "value": "Take Over"
+  },
+  {
+    "_id": "i18n-message-en-groups-leave",
+    "key": "groups.leave",
+    "lang": "en",
+    "value": "Leave group"
+  },
+  {
+    "_id": "i18n-message-en-groups-confirm-take-over-title",
+    "key": "groups.confirm.take-over.title",
+    "lang": "en",
+    "value": "Take over responsibility for this group?"
+  },
+  {
+    "_id": "i18n-message-en-groups-confirm-take-over",
+    "key": "groups.confirm.take-over",
+    "lang": "en",
+    "value": "You will become the responsible admin of “{name}”."
+  },
+  {
+    "_id": "i18n-message-en-groups-confirm-remove-title",
+    "key": "groups.confirm.remove.title",
+    "lang": "en",
+    "value": "Leave this group?"
+  },
+  {
+    "_id": "i18n-message-en-groups-confirm-remove",
+    "key": "groups.confirm.remove",
+    "lang": "en",
+    "value": "Leave “{name}”? If you are responsible for the group, another admin or accepted member can take over. The group is deleted when its last member leaves."
+  },
+  {
+    "_id": "i18n-message-en-notification-kind-community-owner-left-title",
+    "key": "notification.kind.community-owner-left.title",
+    "lang": "en",
+    "value": "Group needs a new administrator"
+  },
+  {
+    "_id": "i18n-message-en-notification-kind-community-owner-left-message",
+    "key": "notification.kind.community-owner-left.message",
+    "lang": "en",
+    "value": "You can take over responsibility for {workspaceGroupName}."
+  },
+  {
+    "_id": "i18n-message-en-notification-kind-community-takeover-title",
+    "key": "notification.kind.community-takeover.title",
+    "lang": "en",
+    "value": "Group responsibility changed"
+  },
+  {
+    "_id": "i18n-message-en-notification-kind-community-takeover-message",
+    "key": "notification.kind.community-takeover.message",
+    "lang": "en",
+    "value": "An administrator took over responsibility for {workspaceGroupName}."
+  },
+  {
     "_id": "i18n-message-hu-navigator-community",
     "key": "navigator.community",
     "lang": "hu",
@@ -47842,5 +47938,101 @@
     "key": "groups.actions",
     "lang": "hu",
     "value": "Csoportműveletek"
+  },
+  {
+    "_id": "i18n-message-hu-home-filters",
+    "key": "home.filters",
+    "lang": "hu",
+    "value": "Szűrők"
+  },
+  {
+    "_id": "i18n-message-hu-groups-open",
+    "key": "groups.open",
+    "lang": "hu",
+    "value": "Csoport megnyitása"
+  },
+  {
+    "_id": "i18n-message-hu-groups-admin-revoke",
+    "key": "groups.admin.revoke",
+    "lang": "hu",
+    "value": "Adminjog visszavonása"
+  },
+  {
+    "_id": "i18n-message-hu-groups-admin-revoke-title",
+    "key": "groups.admin.revoke.title",
+    "lang": "hu",
+    "value": "Visszavonod a tag adminjogát?"
+  },
+  {
+    "_id": "i18n-message-hu-groups-admin-revoke-message",
+    "key": "groups.admin.revoke.message",
+    "lang": "hu",
+    "value": "{name} a csoport tagja marad, de nem kezelheti tovább a csoportot."
+  },
+  {
+    "_id": "i18n-message-hu-groups-admin-promote-message",
+    "key": "groups.admin.promote.message",
+    "lang": "hu",
+    "value": "{name} kezelheti ezt a csoportot, és további csoportadminokat nevezhet ki."
+  },
+  {
+    "_id": "i18n-message-hu-groups-takeover",
+    "key": "groups.takeover",
+    "lang": "hu",
+    "value": "Átvétel"
+  },
+  {
+    "_id": "i18n-message-hu-groups-leave",
+    "key": "groups.leave",
+    "lang": "hu",
+    "value": "Kilépés a csoportból"
+  },
+  {
+    "_id": "i18n-message-hu-groups-confirm-take-over-title",
+    "key": "groups.confirm.take-over.title",
+    "lang": "hu",
+    "value": "Átveszed a csoport felelősségét?"
+  },
+  {
+    "_id": "i18n-message-hu-groups-confirm-take-over",
+    "key": "groups.confirm.take-over",
+    "lang": "hu",
+    "value": "Te leszel a(z) „{name}” csoport felelős adminja."
+  },
+  {
+    "_id": "i18n-message-hu-groups-confirm-remove-title",
+    "key": "groups.confirm.remove.title",
+    "lang": "hu",
+    "value": "Kilépsz ebből a csoportból?"
+  },
+  {
+    "_id": "i18n-message-hu-groups-confirm-remove",
+    "key": "groups.confirm.remove",
+    "lang": "hu",
+    "value": "Kilépsz a(z) „{name}” csoportból? Ha te vagy a felelős, másik admin vagy elfogadott tag veheti át. Az utolsó tag távozásával a csoport törlődik."
+  },
+  {
+    "_id": "i18n-message-hu-notification-kind-community-owner-left-title",
+    "key": "notification.kind.community-owner-left.title",
+    "lang": "hu",
+    "value": "A csoport új felelős adminra vár"
+  },
+  {
+    "_id": "i18n-message-hu-notification-kind-community-owner-left-message",
+    "key": "notification.kind.community-owner-left.message",
+    "lang": "hu",
+    "value": "Átveheted a(z) {workspaceGroupName} csoport felelősségét."
+  },
+  {
+    "_id": "i18n-message-hu-notification-kind-community-takeover-title",
+    "key": "notification.kind.community-takeover.title",
+    "lang": "hu",
+    "value": "Megváltozott a csoport felelőse"
+  },
+  {
+    "_id": "i18n-message-hu-notification-kind-community-takeover-message",
+    "key": "notification.kind.community-takeover.message",
+    "lang": "hu",
+    "value": "Egy admin átvette a(z) {workspaceGroupName} csoport felelősségét."
   }
 ]

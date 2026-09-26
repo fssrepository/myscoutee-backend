@@ -50,7 +50,7 @@ class CommunityGroupInviteClaimTest {
         when(members.save(any(ActivityMember.class))).thenAnswer(call -> {
             ActivityMember saved = call.getArgument(0); rows.put(saved.getUserId(), saved); return saved;
         });
-        when(members.updateCommunityState(anyString(), any(), any(), any(), any(), any(), any(), any(), anyBoolean(), any(), any(), any()))
+        when(members.updateCommunityState(anyString(), any(), any(), any(), any(), any(), any(), any(), anyBoolean(), any(), any(), any(), any()))
                 .thenReturn(1L);
         when(profiles.profilesByGroup(anyString())).thenReturn(Map.of());
     }

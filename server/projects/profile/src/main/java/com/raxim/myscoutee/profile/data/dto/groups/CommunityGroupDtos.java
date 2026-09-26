@@ -13,7 +13,7 @@ public final class CommunityGroupDtos {
             boolean hideMembers, Policy policy, String createdAtIso, String updatedAtIso,
             Long version, String role, String membershipStatus, String requestKind,
             boolean organizerOnly, int acceptedMembers, int pendingMembers, long activity,
-            Double distanceKm, String moderationStatus, long moderationPending, long moderationQueueRevision, long membersActivity) {
+            Double distanceKm, String moderationStatus, long moderationPending, long moderationQueueRevision, long membersActivity, String lifecycleStatus, boolean canTakeOver) {
         @com.fasterxml.jackson.annotation.JsonProperty
         public String revision() {
             try { return java.util.HexFormat.of().formatHex(java.security.MessageDigest.getInstance("SHA-256")
@@ -25,13 +25,13 @@ public final class CommunityGroupDtos {
             String name, String imageUrl, String category, String visibility, boolean hideMembers,
             String createdAtIso, String updatedAtIso, Long version, String role, String membershipStatus,
             String requestKind, boolean organizerOnly, int acceptedMembers, int pendingMembers, long activity,
-            Double distanceKm, String moderationStatus, String revision, long moderationPending, long moderationQueueRevision, long membersActivity) {
+            Double distanceKm, String moderationStatus, String revision, long moderationPending, long moderationQueueRevision, long membersActivity, String lifecycleStatus, boolean canTakeOver) {
         public static Summary from(Group group) {
             return new Summary(group.id(), group.ownerUserId(), group.ownerName(), group.ownerAvatarUrl(),
                 group.name(), group.imageUrl(), group.category(), group.visibility(), group.hideMembers(),
                 group.createdAtIso(), group.updatedAtIso(), group.version(), group.role(), group.membershipStatus(),
                 group.requestKind(), group.organizerOnly(), group.acceptedMembers(), group.pendingMembers(), group.activity(),
-                group.distanceKm(), group.moderationStatus(), group.revision(), group.moderationPending(), group.moderationQueueRevision(), group.membersActivity());
+                group.distanceKm(), group.moderationStatus(), group.revision(), group.moderationPending(), group.moderationQueueRevision(), group.membersActivity(), group.lifecycleStatus(), group.canTakeOver());
         }
     }
     public record Page(List<Summary> items, long total, String nextCursor, Map<String, Long> context) {}

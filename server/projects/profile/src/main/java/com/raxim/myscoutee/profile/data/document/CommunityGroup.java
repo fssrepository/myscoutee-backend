@@ -13,7 +13,18 @@ public record CommunityGroup(
         String imageUrl, String category, @Indexed String visibility,
         boolean hideMembers, Policy policy, String createdAtIso, String updatedAtIso,
         @Version Long version, String moderationStatus, Long moderationVersion,
-        Long moderationPending, Long moderationQueueRevision, Long pendingMembers) {
+        Long moderationPending, Long moderationQueueRevision, Long pendingMembers,
+        String lifecycleStatus, String ownerReleasedAtIso, List<String> takeoverCandidates) {
+    public CommunityGroup(String id, String ownerUserId, String name, String description, String imageUrl,
+            String category, String visibility, boolean hideMembers, Policy policy, String createdAtIso,
+            String updatedAtIso, Long version, String moderationStatus, Long moderationVersion,
+            Long moderationPending, Long moderationQueueRevision, Long pendingMembers) {
+        this(id, ownerUserId, name, description, imageUrl, category, visibility, hideMembers, policy,
+            createdAtIso, updatedAtIso, version, moderationStatus, moderationVersion, moderationPending,
+            moderationQueueRevision, pendingMembers, null, null, null);
+    }
+    public boolean deleted() { return "deleted".equals(lifecycleStatus); }
+    public boolean awaitingOwner() { return "under-review".equals(lifecycleStatus); }
     public CommunityGroup(String id, String ownerUserId, String name, String description, String imageUrl,
             String category, String visibility, boolean hideMembers, Policy policy, String createdAtIso,
             String updatedAtIso, Long version, String moderationStatus, Long moderationVersion,

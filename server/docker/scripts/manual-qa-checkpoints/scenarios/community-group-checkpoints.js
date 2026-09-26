@@ -8,7 +8,7 @@
   const command = Q.text(process.env.MANUAL_QA_COMMAND);
   if (!["status", "verify-lists", "prepare-badges", "prepare-join", "restore-badges",
       "capture", "restore", "verify-savepoint", "prepare-list-pagination", "restore-list-pagination",
-      "prepare-member-invitation", "restore-member-invitation",
+      "prepare-member-invitation", "restore-member-invitation", "prepare-admin-lifecycle", "restore-admin-lifecycle",
       "prepare-invitation", "prepare-hidden-invitation", "restore-invitation", "prepare-editor", "restore-editor", "prepare-creation", "restore-creation"].includes(command)
       || Q.text(process.env.MANUAL_QA_CHECKPOINT_ID) !== checkpointId) {
     Q.fail("Only the retained Group list baseline status is supported here.");
@@ -61,6 +61,46 @@
   const paginationIds = Array.from({length: 24}, (_, index) => `manual-qa-community-page-${String(index + 1).padStart(2, "0")}`);
   const paginationOwnerIds = paginationIds.map((_, index) => `f026092600000000000000${String(index + 1).padStart(2, "0")}`);
   const paginationDistances = [0, 3.2, 4.9, 5, 5.1, 9.9, 10, 10.1];
+  if (command === "prepare-admin-lifecycle") {
+    const groupId = "manual-qa-community-admin";
+    if (state.adminLifecycleSnapshots || Q.collection("communityGroups").countDocuments({_id: groupId})) Q.fail("Admin lifecycle control already exists.");
+    const retained = Q.snapshotSpecs([
+      {collection: "communityGroups", selector: {_id: groupId}},
+      {collection: "activityMembers", selector: {ownerType: "community", ownerId: groupId}},
+      {collection: "users", selector: {$or: [{userId: {$in: actors}}, {workspaceGroupId: groupId}]}},
+      {collection: "userNotifications", selector: {sourceType: "community", sourceId: groupId}},
+      {collection: "notificationOutbox", selector: {entityType: "community", entityId: groupId}}
+    ]);
+    const source = Q.collection("communityGroups").findOne({_id: "seed-community-seattle-friends"});
+    const memberTemplate = Q.collection("activityMembers").findOne({ownerType: "community", ownerId: source._id, userId: actors[0]});
+    const profiles = actors.map((accountId, index) => {
+      const base = Q.collection("users").findOne({userId: accountId});
+      const id = `f0260926${String(index + 1).padStart(16, "0")}`;
+      const personal = Object.fromEntries(["name", "initials", "age", "birthday", "gender", "city", "height", "physique", "languages", "horoscope", "headline", "about", "images", "locationCoordinates", "partitionKey", "profileDetails", "profileStatus", "status", "statusText", "completion", "profileFormVersion"].filter(key => base[key] !== undefined).map(key => [key, base[key]]));
+      return {...personal, _id: id, userId: id, syncKey: `manual-qa-admin-profile:${accountId}`,
+        accountUserId: accountId, workspaceGroupId: groupId, operator: false};
+    });
+    Q.collection(Q.STATE_COLLECTION).updateOne({_id: state._id}, {$set: {adminLifecycleSnapshots: retained}});
+    const now = Q.nowIso();
+    Q.collection("communityGroups").insertOne({...source, _id: groupId, name: "QA Admin Transfer", ownerUserId: actors[0],
+      visibility: "private", hideMembers: false, lifecycleStatus: "active", ownerReleasedAtIso: null, takeoverCandidates: [],
+      pendingMembers: 0, moderationPending: 0, moderationStatus: "accepted", version: 0, createdAtIso: now, updatedAtIso: now});
+    Q.collection("activityMembers").insertMany(actors.map((userId, index) => ({...memberTemplate,
+      _id: `community:${groupId}:${userId}`, syncKey: `community:${groupId}:${userId}`, ownerId: groupId, userId,
+      role: index === 0 ? "Admin" : "Member", status: "accepted", organizerOnly: false,
+      managerGrantedByUserId: null, requestKind: null, pendingSource: null, communityUpdates: 0,
+      communityAction: null, communityActor: null, actionAtIso: now, updatedDate: now})));
+    Q.collection("users").insertMany(profiles);
+    Q.printObject({checkpointId, groupId, prepared: true, acceptedMembers: 3, admin: actors[0], rolesTested: false});
+    return;
+  }
+  if (command === "restore-admin-lifecycle") {
+    if (!state.adminLifecycleSnapshots) Q.fail("No Admin lifecycle snapshot.");
+    Q.restoreSnapshots(state.adminLifecycleSnapshots);
+    Q.collection(Q.STATE_COLLECTION).updateOne({_id: state._id}, {$unset: {adminLifecycleSnapshots: ""}});
+    Q.printObject({checkpointId, adminLifecycleRestored: true});
+    return;
+  }
   if (command === "prepare-member-invitation") {
     if (state.memberInvitationSnapshots) Q.fail("Member invitation control already prepared.");
     const groupId = "seed-community-trail-club";
@@ -212,7 +252,7 @@
     // Add later boundaries only with their prepared selectors and checklist oracle.
     const boundaries = {"lists-ready": 1, "block-1-complete": 2, "after-editor-checks": 4, "after-join-approval": 4, "after-invitation-checks": 5};
     if (!Object.hasOwn(boundaries, name)) Q.fail("Unknown Group savepoint boundary.");
-    if (state.paginationSnapshots || state.invitationSnapshots || state.memberInvitationSnapshots || state.editorSnapshots || state.creationSnapshots) Q.fail("Restore temporary controls before a savepoint operation.");
+    if (state.adminLifecycleSnapshots || state.paginationSnapshots || state.invitationSnapshots || state.memberInvitationSnapshots || state.editorSnapshots || state.creationSnapshots) Q.fail("Restore temporary controls before a savepoint operation.");
     let savepoint = (state.savepoints || []).find(item => item.name === name);
     if (command === "capture") {
       if (savepoint) Q.fail("Savepoint already exists; retained evidence must not be overwritten.");
