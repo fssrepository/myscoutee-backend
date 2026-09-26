@@ -17,7 +17,11 @@ public class GroupWorkspaceFilter extends OncePerRequestFilter {
     @Override protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain)
             throws ServletException, IOException {
         String path = request.getServletPath();
-        if (path.matches("/(?:api/)?(?:groups|notifications|i18n|admin|operator|assets|privacy|help|terms|explanations)(?:/.*)?")
+        boolean eventAssetOperation = path.matches("/(?:api/)?assets/(?:members/action|requests|tickets/validate)")
+                || ("GET".equals(request.getMethod()) && path.matches("/(?:api/)?assets/[^/]+")
+                    && (request.getParameterMap().containsKey("eventId") || request.getParameterMap().containsKey("subEventId")));
+        if (path.matches("/(?:api/)?(?:groups|notifications|i18n|admin|operator|privacy|help|terms|explanations)(?:/.*)?")
+                || (path.matches("/(?:api/)?assets(?:/.*)?") && !eventAssetOperation)
                 || path.matches("/(?:api/)?navigator/contacts(?:/.*)?")
                 || path.matches("/(?:api/)?integrations/v1(?:/.*)?")
                 || path.matches("/(?:api/)?auth/me/(?:partner-invite/claim|logout|delete|feedback)")

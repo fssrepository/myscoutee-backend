@@ -221,7 +221,7 @@ public class AssetsService {
             return null;
         }
         AssetBorrowWindowDto borrowWindow = resolveAssetBorrowWindow(
-                normalizedUserId,
+                ticketActorUserId(userId),
                 eventId,
                 subEventId);
         boolean scopedBorrowRequest = StringUtils.hasText(normalizeId(eventId))
@@ -308,7 +308,7 @@ public class AssetsService {
             return Map.of();
         }
 
-        Query borrowedRequestQuery = new Query(Criteria.where("userId").is(normalizedUserId)
+        Query borrowedRequestQuery = new Query(Criteria.where("userId").is(normalizeId(userId))
                 .and("assetId").in(normalizedAssetIds)
                 .and("requestKind").is("borrow")
                 .and("status").in("pending", "accepted")
@@ -470,7 +470,7 @@ public class AssetsService {
     }
 
     public AssetTicketsPageDto queryTicketPage(String userId, Integer page, Integer pageSize, String order) {
-        String normalizedUserId = ticketActorUserId(userId);
+        String normalizedUserId = accountUserId(ticketActorUserId(userId));
         if (!StringUtils.hasText(normalizedUserId)) {
             return new AssetTicketsPageDto(List.of(), 0);
         }
@@ -5270,7 +5270,7 @@ public class AssetsService {
     }
 
     private String ticketActorUserId(String requestedUserId) {
-        String authenticatedUserId = currentActorUserId();
+        String authenticatedUserId = accessControlService.resolveActorUserId(SecurityContextHolder.getContext().getAuthentication());
         if (accessControlService.requiresAuthenticatedActor()) {
             return authenticatedUserId;
         }

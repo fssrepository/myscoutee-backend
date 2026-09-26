@@ -90,6 +90,18 @@ class GroupWorkspaceFilterTest {
         }
         assertThat(SecurityContextHolder.getContext().getAuthentication()).isSameAs(original);
     }
+    @Test void eventLinkedAssetActionsRetainTheSelectedEventProfile() throws Exception {
+        for (String path : List.of("/assets/members/action", "/assets/requests", "/assets/tickets/validate")) {
+            filter.doFilter(request("POST", path), new MockHttpServletResponse(), (req, res) ->
+                    assertThat(principal().getUserId()).isEqualTo("group-profile"));
+        }
+        var detail = request("GET", "/assets/asset-1");
+        detail.addParameter("eventId", "event-1"); detail.addParameter("subEventId", "sub-1");
+        filter.doFilter(detail, new MockHttpServletResponse(), (req, res) ->
+                assertThat(principal().getUserId()).isEqualTo("group-profile"));
+        assertThat(SecurityContextHolder.getContext().getAuthentication()).isSameAs(original);
+    }
+
     private FirebasePrincipal principal() { return (FirebasePrincipal) SecurityContextHolder.getContext().getAuthentication().getPrincipal(); }
     private MockHttpServletRequest request(String method, String path) {
         var request = new MockHttpServletRequest(method, path); request.setServletPath(path); return request;

@@ -160,7 +160,7 @@ public class MemberPolicyFacts {
         if (asset == null || ASSET_STATUS_TRASHED.equals(safeText(asset.getStatus()))) {
             return false;
         }
-        if (normalizedActorUserId.equals(normalizeId(asset.getOwnerUserId()))) {
+        if (accountUserId(normalizedActorUserId).equals(normalizeId(asset.getOwnerUserId()))) {
             return !isOwnerResponsibilityReleased(asset);
         }
         return hasAcceptedManagerRole(OWNER_TYPE_ASSET, normalizedAssetId, normalizedActorUserId);
@@ -255,7 +255,7 @@ public class MemberPolicyFacts {
 
     public boolean isAssetOwner(String assetId, String userId) {
         String normalizedAssetId = normalizeId(assetId);
-        String normalizedUserId = normalizeId(userId);
+        String normalizedUserId = accountUserId(userId);
         if (!StringUtils.hasText(normalizedAssetId) || !StringUtils.hasText(normalizedUserId)) {
             return false;
         }
@@ -278,12 +278,21 @@ public class MemberPolicyFacts {
             String ownerId,
             String userId,
             Set<String> roles) {
-        return activityMembersRepository.findByOwnerTypeAndOwnerIdAndUserId(ownerType, ownerId, userId)
+        return activityMembersRepository.findByOwnerTypeAndOwnerIdAndUserId(ownerType, ownerId,
+                        OWNER_TYPE_ASSET.equals(ownerType) ? accountUserId(userId) : userId)
                 .filter(member -> STATUS_ACCEPTED.equals(normalizeStatus(member.getStatus())))
                 .map(ActivityMember::getRole)
                 .map(this::safeText)
                 .filter(roles::contains)
                 .isPresent();
+    }
+
+    public String accountUserId(String profileId) {
+        String id = normalizeId(profileId);
+        if (id == null) return null;
+        return usersRepository.findByUserId(id)
+                .map(user -> StringUtils.hasText(user.getAccountUserId()) ? user.getAccountUserId() : id)
+                .orElse(id);
     }
 
     private boolean isActiveUser(String userId) {

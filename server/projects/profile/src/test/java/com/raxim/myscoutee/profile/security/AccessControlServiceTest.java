@@ -91,6 +91,39 @@ class AccessControlServiceTest {
     }
 
     @Test
+    void accountContactChatRemainsAccessibleWithSelectedGroupButEventChatDoesNot() {
+        Users profile = new Users(); profile.setUserId("group-profile"); profile.setAccountUserId("account");
+        when(usersRepository.findByUserId("group-profile")).thenReturn(Optional.of(profile));
+        Chat contact = new Chat(); contact.setChatId("contact"); contact.setOwnerUserId("account");
+        contact.setChannelType("contact"); contact.setMemberIds(List.of("account", "peer"));
+        when(chatsRepository.findByOwnerUserIdAndChatId("account", "contact")).thenReturn(Optional.of(contact));
+        SecurityContextHolder.getContext().setAuthentication(auth("group-profile"));
+        assertThat(service.resolveChatActorUserId("contact", "group-profile")).isEqualTo("account");
+        assertThat(service.canCurrentActorCreateChatMessage("account", "contact")).isTrue();
+        assertThat(service.canCurrentActorCreateChatMessage("group-profile", "contact")).isTrue();
+        assertThat(service.canCurrentActorCreateChatMessage("peer", "contact")).isFalse();
+        Chat event = new Chat(); event.setChatId("base-event"); event.setOwnerUserId("account");
+        event.setChannelType("mainEvent"); event.setMemberIds(List.of("account", "peer"));
+        when(chatsRepository.findByOwnerUserIdAndChatId("account", "base-event")).thenReturn(Optional.of(event));
+        assertThat(service.resolveChatActorUserId("base-event", "group-profile")).isEqualTo("group-profile");
+        assertThat(service.canCurrentActorCreateChatMessage("account", "base-event")).isFalse();
+        assertThat(service.canCurrentActorCreateChatMessage("group-profile", "base-event")).isFalse();
+    }
+
+    @Test
+    void selectedProfileCanManageItsAccountAssetWithoutInheritingAccountEventMembership() {
+        Users profile = new Users(); profile.setUserId("group-profile"); profile.setAccountUserId("account");
+        when(usersRepository.findByUserId("group-profile")).thenReturn(Optional.of(profile));
+        Asset asset = new Asset(); asset.setAssetId("asset"); asset.setOwnerUserId("account");
+        when(assetsRepository.findByAssetId("asset")).thenReturn(Optional.of(asset));
+        SecurityContextHolder.getContext().setAuthentication(auth("group-profile"));
+        assertThat(service.canCurrentActorApproveAssetBorrow("borrower", "asset")).isTrue();
+        assertThat(service.canCurrentActorEditAsset("account", "asset")).isTrue();
+        assertThat(service.canCurrentActorEditAsset("someone-else", "asset")).isFalse();
+        assertThat(service.canCurrentActorRequestAssetBorrow("account", "base-event")).isFalse();
+    }
+
+    @Test
     void websocketDemoModeRetainsDemoPolicyWithoutAnHttpRequest() {
         MongoSessionModeContext.set(MongoSessionMode.DEMO);
         assertThat(service.canCurrentActorCreateChatMessage("u1", "chat-1")).isTrue();

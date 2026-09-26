@@ -112,7 +112,7 @@ NOT RUN until the user executes the corresponding checklist steps.
 
 ### Contact-only chat invitations — NOT RUN refinement
 
-In each workspace, the contact-chat invite picker shows only that actor's saved
+Across workspace selections, the contact-chat invite picker shows only that account's saved
 contacts who are not already members. Empty contacts must produce an empty
 picker, never the generic Event candidate list. A raw add-members command for a
 non-contact, an outsider's chat, an App support / Group support chat or a contact
@@ -155,8 +155,9 @@ Run with two actors in the same workspace, then repeat in frontend-local mode.
 6. Keep both Contacts popups open while the other actor requests or decides.
    The existing realtime counter signal refreshes the row/status and counts
    in place; no whole-list reload, lost search or custom polling loop. A failed
-   mutation keeps the prior row/count and permits retry. Switch workspace or
-   account during a delayed response: it cannot update the new actor's list.
+   mutation keeps the prior row/count and permits retry. Switch groups within the
+   same account during a delayed response: it still updates that account's contact
+   state. Switch to another account: the old response cannot update its list.
 7. Attempt the direct-chat API without approval, and use request/decision IDs
    from another workspace. Reject access before creating a chat or sending a
    notification. Existing App support, Group support and event chat authority
@@ -166,3 +167,20 @@ Run with two actors in the same workspace, then repeat in frontend-local mode.
 These are unexecuted manual micros within GROUP-ISOLATION-001, not new PASS
 rows. Record HTTP and local outcomes independently, including notification
 recipient, persisted permission pair, contact list and write-side counter.
+
+### Account contact and event-linked asset boundary — NOT RUN refinement
+
+- An approved account contact chat remains the same channel after selecting a group.
+  Its sender/member/read identity is the account. Base event chats and support chats
+  must not become accessible through this contact exception; group Activities lists
+  retain their selected-profile scope. Contact-chat reads must not decrement another
+  group's event unread counter. Event-share candidates retain active-group scope.
+- Account-owned assets remain usable from a group event; event membership, borrow
+  requests and ticket-scanner roles still use that event's group profile. Attempt
+  the same event IDs without participation and with a forged scanner body actor.
+- Asset payment history uses the existing payment's payer, recipient and fulfillment
+  fields. Expense remains in the payer's group; income appears for the Base asset
+  owner. No duplicate payment, payer reassignment, query-time source-model lookup or
+  added workspace label on asset booking/ticket rows. Verify refund direction too.
+
+These extend the existing NOT RUN case; automated checks do not close manual QA.

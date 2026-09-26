@@ -303,8 +303,23 @@ are pending manual verification, not extensions of an earlier PASS.
   Private/friends-only asset visibility still applies; own assets stay out of Explore.
 - Profile, affiliate settings/API keys and event payment history follow the selected
   profile. Community, Impressions and Activities and their nested surfaces are
-  group-scoped. Tools and their nested surfaces remain account-wide. Event-linked
-  asset bookings/tickets identify their group. Asset-borrow payments belong to Base.
+  group-scoped. Tools and their nested surfaces remain account-wide. Asset booking
+  and ticket rows do not add workspace labels; notifications retain their labels.
+- Pay for an asset from a group profile. The existing payment stays on that payer
+  profile and appears there as an expense. The asset owner's Base history reads
+  the same payment as income by its stored recipient ID; no copied history record,
+  payer reassignment or query-time Asset/Event lookup to classify the payment.
+  Other group profiles do not inherit this expense or income. Refunds reverse the
+  direction for the same payer/recipient and retain their existing workflow.
+- Open an approved account contact from group A and Base: one contact conversation,
+  same members, sender identity and read receipts. Request/approve/reject updates
+  stay on the account's contact state across group changes. A switch to another
+  account rejects stale responses. Invites remain limited to saved contacts.
+- Borrow/assign an asset for an event in group A. Account asset ownership/management
+  is usable, but the borrow request retains the event participant's group profile.
+  Repeat from group B and Base without event authority: the event operation fails.
+  Ticket lists remain account-wide; scanning authorizes the authenticated event
+  profile, ignoring a forged body user ID. No asset ownership grants event access.
 - Notifications stay account-wide, identify their group and retain the existing
   All/Base/group filter. Check write-side counters and live updates after a group
   switch, including account contact requests and tickets from multiple groups.

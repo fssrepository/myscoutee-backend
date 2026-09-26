@@ -102,6 +102,8 @@ class ChatServiceTest {
 
     @BeforeEach
     void setUp() {
+        org.mockito.Mockito.lenient().when(accessControlService.resolveChatActorUserId(any(), any()))
+                .thenAnswer(call -> call.getArgument(1));
         service = new ChatService(
                 chatsRepository,
                 chatMessagesRepository,

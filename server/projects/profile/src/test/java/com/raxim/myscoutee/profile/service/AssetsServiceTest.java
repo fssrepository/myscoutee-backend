@@ -381,6 +381,8 @@ class AssetsServiceTest {
         when(activityMembersRepository.findByOwnerTypeAndOwnerId("asset", "asset-1"))
                 .thenReturn(List.of(member));
 
+        Users groupProfile = user("u2-group", "Member Two", "MT"); groupProfile.setAccountUserId("u2");
+        when(usersRepository.findByUserId("u2-group")).thenReturn(Optional.of(groupProfile));
         AssetsService service = new AssetsService(
                 assetsRepository,
                 usersRepository,
@@ -398,9 +400,12 @@ class AssetsServiceTest {
                 mock(UserActivityCountersService.class));
 
         Map<String, AssetDetailDto> details = service.queryAssignableAssetDetails(
-                "u2", "event-1", "sub-1", Set.of("asset-1"));
+                "u2-group", "event-1", "sub-1", Set.of("asset-1"));
 
         assertThat(details).containsKey("asset-1");
+        verify(mongoTemplate).find(org.mockito.ArgumentMatchers.argThat((Query query) ->
+                "u2-group".equals(query.getQueryObject().get("userId"))
+                && "event-1".equals(query.getQueryObject().get("booking.eventId"))), eq(AssetRequest.class));
     }
 
     @Test
@@ -784,6 +789,21 @@ class AssetsServiceTest {
                 .containsEntry("notification_tone", "warning")
                 .containsEntry("notification_aggregation_key", "event-ticket-replay:ticket-document-1")
                 .doesNotContainValue(ticket.getCode());
+    }
+
+    @Test
+    void scannerUsesAuthenticatedEventProfileInsteadOfItsBaseAccountOrBodyActor() {
+        EventParticipationTicketService tickets = mock(EventParticipationTicketService.class);
+        AccessControlService access = mock(AccessControlService.class);
+        UsersRepository users = mock(UsersRepository.class);
+        Users profile = user("scanner-group", "Scanner", "SC"); profile.setAccountUserId("scanner-account");
+        when(users.findByUserId("scanner-group")).thenReturn(Optional.of(profile));
+        when(access.requiresAuthenticatedActor()).thenReturn(true);
+        when(access.resolveActorUserId(any())).thenReturn("scanner-group");
+        AssetsService service = ticketValidationService(users, mock(FriendshipFacts.class),
+                mock(ActivityMembersRepository.class), tickets, mock(NotificationOutboxService.class), access);
+        service.validateTicket(new AssetTicketValidationRequestDto("code", "forged-user"));
+        verify(tickets).checkIn(eq("code"), eq("scanner-group"), any(Instant.class));
     }
 
     @Test
