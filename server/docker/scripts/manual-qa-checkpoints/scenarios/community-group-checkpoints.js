@@ -7,7 +7,8 @@
   Q.assertDeploymentSafety();
   const command = Q.text(process.env.MANUAL_QA_COMMAND);
   if (!["status", "verify-lists", "prepare-badges", "prepare-join", "restore-badges",
-      "capture", "restore", "verify-savepoint", "prepare-list-pagination", "restore-list-pagination"].includes(command)
+      "capture", "restore", "verify-savepoint", "prepare-list-pagination", "restore-list-pagination",
+      "prepare-invitation", "restore-invitation", "prepare-editor", "restore-editor"].includes(command)
       || Q.text(process.env.MANUAL_QA_CHECKPOINT_ID) !== checkpointId) {
     Q.fail("Only the retained Group list baseline status is supported here.");
   }
@@ -59,6 +60,32 @@
   const paginationIds = Array.from({length: 24}, (_, index) => `manual-qa-community-page-${String(index + 1).padStart(2, "0")}`);
   const paginationOwnerIds = paginationIds.map((_, index) => `f026092600000000000000${String(index + 1).padStart(2, "0")}`);
   const paginationDistances = [0, 3.2, 4.9, 5, 5.1, 9.9, 10, 10.1];
+  if (command === "prepare-invitation" || command === "prepare-editor") {
+    const snapshotKey = command === "prepare-editor" ? "editorSnapshots" : "invitationSnapshots";
+    verifyLists();
+    if (state[snapshotKey]) Q.fail("Group mutation regression already prepared.");
+    const groupId = command === "prepare-editor" ? "seed-community-design-circle" : "seed-community-game-night";
+    const userIds = Q.collection("activityMembers").find({ownerType: "community", ownerId: groupId}).toArray().map(member => member.userId);
+    const retained = Q.snapshotSpecs([
+      {collection: "communityGroups", selector: {_id: groupId}},
+      {collection: "activityMembers", selector: {ownerType: "community", ownerId: groupId}},
+      {collection: "users", selector: {$or: [{userId: {$in: userIds}}, {workspaceGroupId: groupId}]}},
+      {collection: "userNotifications", selector: {sourceType: "community", sourceId: groupId}},
+      {collection: "notificationOutbox", selector: {entityType: "community", entityId: groupId}}
+    ]);
+    Q.collection(Q.STATE_COLLECTION).updateOne({_id: state._id}, {$set: {[snapshotKey]: retained}});
+    Q.printObject({checkpointId, groupId, [snapshotKey]: "prepared", productWrites: false});
+    return;
+  }
+  if (command === "restore-invitation" || command === "restore-editor") {
+    const snapshotKey = command === "restore-editor" ? "editorSnapshots" : "invitationSnapshots";
+    if (!state[snapshotKey]) Q.fail("No group mutation regression snapshot.");
+    Q.restoreSnapshots(state[snapshotKey]);
+    Q.collection(Q.STATE_COLLECTION).updateOne({_id: state._id}, {$unset: {[snapshotKey]: ""}});
+    verifyLists();
+    Q.printObject({checkpointId, [snapshotKey]: "restored"});
+    return;
+  }
   if (command === "prepare-list-pagination") {
     verifyLists();
     if (state.paginationSnapshots) Q.fail("Pagination fixture already prepared.");
@@ -84,7 +111,9 @@
     })));
     Q.collection("communityGroups").insertMany(paginationIds.map((id, index) => ({...template,
       _id: id, ownerUserId: paginationOwnerIds[index], name: `QA page ${String(index + 1).padStart(2, "0")}`, pendingMembers: 0,
-      description: "Temporary block 1 pagination control", version: 0
+      description: "Temporary block 1 pagination control", version: 0,
+      createdAtIso: new Date(Date.UTC(2026, 7, 25 - index)).toISOString(),
+      updatedAtIso: new Date(Date.UTC(2026, 8, 1 + index)).toISOString()
     })));
     Q.collection("activityMembers").insertMany(paginationIds.map((ownerId, index) => ({...memberTemplate,
       _id: `${ownerId}:owner`, syncKey: `community:${ownerId}:${paginationOwnerIds[index]}`,
@@ -107,7 +136,7 @@
     // Add later boundaries only with their prepared selectors and checklist oracle.
     const boundaries = {"lists-ready": 1, "block-1-complete": 2};
     if (!Object.hasOwn(boundaries, name)) Q.fail("Unknown Group savepoint boundary.");
-    if (state.paginationSnapshots) Q.fail("Restore the temporary pagination controls before a savepoint operation.");
+    if (state.paginationSnapshots || state.invitationSnapshots || state.editorSnapshots) Q.fail("Restore temporary controls before a savepoint operation.");
     let savepoint = (state.savepoints || []).find(item => item.name === name);
     if (command === "capture") {
       if (savepoint) Q.fail("Savepoint already exists; retained evidence must not be overwritten.");
@@ -210,6 +239,8 @@
     readyChecklistBlocks: state.phase === "badge-writes-ready" ? [1, "6.1"] : [1], productWritesPrepared: state.phase === "badge-writes-ready",
     groups: groups.length, memberships: members.length, actors: actorState,
     paginationPrepared: !!state.paginationSnapshots,
+    invitationPrepared: !!state.invitationSnapshots,
+    editorPrepared: !!state.editorSnapshots,
     savepoints: (state.savepoints || []).map(({name, capturedAtIso, resumeBlock, adapter}) => ({name, capturedAtIso, resumeBlock, adapter})),
     resumedFrom: state.resumedFrom || null,
     alexBaseline: groups.map(group => {

@@ -7,6 +7,11 @@ import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.ActivityMemberEntr
 
 public final class CommunityGroupMapper {
     private CommunityGroupMapper() {}
+    public static String membershipBucket(String role, String status, String requestKind) {
+        if ("accepted".equals(status) && "Admin".equals(role)) return "hosting";
+        if ("pending".equals(status) && "invite".equals(requestKind)) return "invitations";
+        return "accepted".equals(status) || "pending".equals(status) ? "participation" : "explore";
+    }
     public static Group toDto(CommunityGroup group, Users owner, Users viewer,
             List<ActivityMember> members, long activity) {
         ActivityMember own = members.stream().filter(m -> viewer.getUserId().equals(m.getUserId())).findFirst().orElse(null);
@@ -17,7 +22,7 @@ public final class CommunityGroupMapper {
                 own == null ? null : own.getRole(), own == null ? null : own.getStatus(),
                 own == null ? null : own.getRequestKind(), own != null && Boolean.TRUE.equals(own.getOrganizerOnly()),
                 (int)members.stream().filter(m -> "accepted".equals(m.getStatus())).count(),
-                admin ? (int)group.pendingMemberCount() : 0,
+                (int)pendingMembers(group, own),
                 (own != null && "accepted".equals(own.getStatus()) ? activity : 0) + membersActivity(group, own)
                     + (admin ? group.pendingModerationCount() : 0), distance(owner, viewer), group.moderationStatus(),
                 admin ? group.pendingModerationCount() : 0, admin && group.moderationQueueRevision() != null ? group.moderationQueueRevision() : 0, membersActivity(group, own));
@@ -25,8 +30,12 @@ public final class CommunityGroupMapper {
     public static long membersActivity(CommunityGroup group, ActivityMember own) {
         if (own == null || !List.of("accepted", "pending").contains(own.getStatus())) return 0;
         long updates = own.getCommunityUpdates() == null ? 0 : Math.max(0, own.getCommunityUpdates());
-        if ("accepted".equals(own.getStatus()) && "Admin".equals(own.getRole())) return updates + group.pendingMemberCount();
-        return updates + ("pending".equals(own.getStatus()) && "invite".equals(own.getRequestKind()) ? 1 : 0);
+        return updates + pendingMembers(group, own);
+    }
+    private static long pendingMembers(CommunityGroup group, ActivityMember own) {
+        if (own == null) return 0;
+        if ("accepted".equals(own.getStatus()) && "Admin".equals(own.getRole())) return group.pendingMemberCount();
+        return "pending".equals(own.getStatus()) && "invite".equals(own.getRequestKind()) ? 1 : 0;
     }
     public static ActivityMemberEntryDto member(ActivityMember m, Users user, String actor) {
         return new ActivityMemberEntryDto(m.getId(), m.getUserId(), user.getName(), user.getInitials(),

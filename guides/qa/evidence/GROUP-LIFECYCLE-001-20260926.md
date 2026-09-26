@@ -279,6 +279,106 @@ After a verified section, capture its named boundary before subsequent writes
 and record the next numbered block here and in the handoff. Reuse the existing
 scenario and snapshot helpers. Extend the prepared selectors/oracle for later
 write blocks before capturing them. Never overwrite an existing savepoint or
-mark a fixture capture as a test PASS. `block-1-complete` is supported but has
-not been captured; remaining block-1 UI replay is still in progress. Local UI
+mark a fixture capture as a test PASS. `block-1-complete` was captured at
+17:10:23 UTC, before the additional ordering checks; its name is not evidence
+that block 1 passed. Remaining block-1 UI replay is still in progress. Local UI
 execution remains NOT RUN. Closed PASS cases remain untouched.
+
+## Block 1 continuation — list ordering, privacy and toolbar
+
+- Historical coverage correction: the original checklist in `ae0342ea9`
+  (2026-09-24) included an invitation-only fixture, but did not explicitly
+  require exclusion from Explore totals, pages and sync. Those assertions were
+  added in `2c7d250a9` (2026-09-26 19:22 local). This closes an omitted QA
+  expectation from the original request; it is not a changed user requirement.
+- `verify-community-group-lists.mjs` passed 54 HTTP page/sync combinations
+  across Alex, Eszter and Maya, both sorts and all Explore categories. Each
+  page contained one item, exercising the full cursor sequence. No invitation
+  group appeared in Explore; the stale invitation-only card was removed by
+  sync. Alex's direct Book Circle detail request returned 404. Results:
+  `GROUP-LIFECYCLE-001-list-orders-varied-20260926.json`.
+- The existing temporary pagination fixture uses 24 groups at eight real
+  coordinate distances. Creation dates deliberately run in the opposite order
+  from modification dates. The browser loaded all 27 Explore cards in both
+  Distance and Recent; both sequences exactly matched the HTTP oracle. Recent
+  started with controls 24, 23, 22, 21, proving modification-date order.
+- All 24 distance controls had correct visible bands: nine under 0 km, nine
+  under 5 km, six under 10 km. No missing or duplicate cards were observed.
+- The shared popup now puts Recent/Distance before X and the existing create
+  action, as an icon-only circular plus, at the second row's right edge.
+  Measured at 500px and 390px: sort and X share the first row; plus and bucket
+  share the second row; plus is 36x36px. No new popup/style mechanism was added.
+- Existing frontend watcher compiled/deployed at 19:29:45 local. The six
+  focused group popup tests passed after moving the sort control. Local service
+  privacy/order tests previously passed eight cases. These unit results are
+  separate from Local browser execution, which remains NOT RUN.
+
+The ordered campaign remains at block 1; live write-driven reorder coverage
+and Local browser coverage are not inferred from list reads or fixture setup.
+
+## Continued corrections — policy, confirmations and contextual aggregates
+
+The campaign remains at block 1/25; the following are focused regression proofs,
+not a complete block or local/HTTP campaign PASS.
+
+1. Four buckets use Hosting / Active groups / Invitations / Explore. A real
+   Game Night invitation acceptance was confirmed through the managed browser:
+   pending card counter 1, matching brown action/confirmation, then immediate
+   removal from Invitations and appearance in Active groups with member count 3
+   and no pending counter. The versioned prepare-invitation/restore-invitation
+   helpers restored the exact affected group, members, profiles and notifications.
+   Notification delivery to the non-managed inviter was not proven by this check.
+2. Group textual policies reuse Event Policy/FormFlow. The managed browser saved
+   a named policy with description and reopened it successfully. The read-only
+   view opens the same editor with all inputs disabled and the heading Policy.
+   At 390px, Open Policy Setup measured 164.72px inside a 320.22px panel, left
+   aligned; Profile visibility rules retained its text. Required Profile Fields
+   distinguishes profile requirements from Group Policies. The requirements
+   heading now uses the existing profile-form badge icon. The temporary policy
+   was restored through prepare-editor/restore-editor; no test policy remains.
+3. Workspace rows aggregate each user/group profile's contextual attention;
+   Main owns account tool/contact counters. Avatar sums these scopes once,
+   without adding event invitations to event.all again. Group realtime responses
+   now carry accountCounters on the existing poll and apply them through the
+   existing counter revision guard. The 27 focused base/HTTP/workspace tests
+   passed. A watcher-only TypeScript failure exposed an incompatible DTO shape;
+   using the existing realtime converter corrected it. The seven base tests
+   passed again and the frontend watcher deployed successfully. Live inactive
+   Main polling and all impression/mutation combinations remain to be proven.
+4. Application-wide confirmation source review covers 72 direct dialog open
+   calls plus helper/runtime-menu and template-provided headings. The inventory
+   is CONFIRMATION-DIALOG-AUDIT-20260926.json. Short action headings became
+   questions; action buttons remain short. Hungarian and English entries also
+   cover dynamic contact names, asset names and help revision numbers. Forms,
+   error notices and payment summaries were not mislabeled as confirmations.
+   Managed UI verified the invitation question and Cancel without a write.
+   The moderation/following tests initially failed on old title expectations;
+   after updating them, all 25 passed. Other focused dialog checks passed 29
+   cases. This does not claim every destructive action was executed in a browser.
+5. Existing backend and frontend watcher builds succeeded. The i18n seed audit
+   passed with 7,968 entries across two source bundles and demo/e2e/prod seeds.
+   Source generation does not claim a live production database reseed.
+6. Latest fixture status: ten groups, 27 memberships; paginationPrepared,
+   invitationPrepared and editorPrepared are false. Retained join preparation
+   and original checkpoint snapshots remain. No closed PASS case was reopened.
+
+## Realtime group cursor regression
+
+- A read-only live oracle reproduced false impression changes on an unchanged
+  group profile: the generated profile ID contains colons, which shifted the
+  colon-delimited cursor's fingerprint positions. Both flags were true despite
+  identical cursors and no domain mutation.
+- The existing cursor writer now escapes the identifier delimiter; the reader
+  also normalizes retained unescaped cursors for that profile. No counter reset
+  or profile/session deletion was added.
+- The running Java watcher compiled and restarted successfully. Two unchanged
+  live polls returned both flags false, with both new and retained cursor input.
+  Evidence: GROUP-LIFECYCLE-001-realtime-cursor-20260926.json. A focused Java
+  regression test was added for unchanged and actual stored-impression changes;
+  that Java test has not been executed separately from the running dev build.
+- The managed browser subsequently showed Design Circle attention 1 rather than
+  the erroneous 3, Main attention 155 and avatar 158 (Main plus three relevant
+  group operations). Read-only store inspection matched the accountCounters
+  delivered by the same existing group-profile poll. No extra polling endpoint
+  was introduced. All mutation/impression combinations remain outside this proof.
+- Actor 0 was returned to Main profile through the normal workspace menu.

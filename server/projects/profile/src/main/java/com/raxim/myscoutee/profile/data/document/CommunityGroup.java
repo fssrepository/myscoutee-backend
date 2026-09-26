@@ -1,6 +1,7 @@
 package com.raxim.myscoutee.profile.data.document;
 
 import java.util.List;
+import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.PolicyItemDto;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.Version;
 import org.springframework.data.mongodb.core.index.Indexed;
@@ -29,5 +30,10 @@ public record CommunityGroup(
     public long pendingModerationCount() { return moderationPending == null ? 0 : Math.max(0, moderationPending); }
     public long pendingMemberCount() { return pendingMembers == null ? 0 : Math.max(0, pendingMembers); }
     public boolean moderationVisible() { return moderationStatus == null || "accepted".equals(moderationStatus); }
-    public record Policy(boolean workspace, boolean enabled, List<String> requiredFields) {}
+    public record Policy(boolean workspace, boolean enabled, List<String> requiredFields,
+            Boolean policiesEnabled, List<PolicyItemDto> policies) {
+        public Policy(boolean workspace, boolean enabled, List<String> requiredFields) {
+            this(workspace, enabled, requiredFields, false, List.of());
+        }
+    }
 }

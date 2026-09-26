@@ -23,6 +23,12 @@ class CommunityGroupMapperTest {
 
     @Test void invitationsCountForTheirRecipientButOwnJoinRequestsAndExploreDoNot() {
         var group = groupWithPendingMembers(3);
+        var viewer = new Users(); viewer.setUserId("owner");
+        assertEquals(1, CommunityGroupMapper.toDto(group, viewer, viewer,
+                List.of(member("Member", "pending", "invite", 0)), 0).pendingMembers());
+        assertEquals(0, CommunityGroupMapper.toDto(group, viewer, viewer,
+                List.of(member("Member", "pending", "join", 0)), 0).pendingMembers());
+        assertEquals(0, CommunityGroupMapper.toDto(group, viewer, viewer, List.of(), 0).pendingMembers());
         assertEquals(1, CommunityGroupMapper.membersActivity(group, member("Member", "pending", "invite", 0)));
         assertEquals(0, CommunityGroupMapper.membersActivity(group, member("Member", "pending", "join", 0)));
         assertEquals(0, CommunityGroupMapper.membersActivity(group, null));

@@ -21,14 +21,15 @@ or claim that a fixture or browser session has already been prepared.
 
 ## 1. Group lists and category colors
 
-1. Open Groups from the Community menu. Confirm Hosting, Participation and
+1. Open Groups from the Community menu. Confirm Hosting, Active groups, Invitations and
    Explore are distinct: owned/administered groups belong in Hosting; accepted
-   memberships and either pending interaction belong in Participation; Explore
+   non-admin memberships and pending join requests belong in Active groups;
+   pending invitations belong in Invitations. Explore
    excludes owned and already-interacted groups. Check category filtering and
    pagination against the same membership state. Reconfirm the original closed
    company/group requirement: invitation-only groups never appear in Explore,
    including filtered totals, subsequent pages and sync upserts. A pending
-   invitation belongs in Participation; only accepted members can select the
+   invitation belongs in Invitations; only accepted members can select the
    workspace. A known private group ID does not grant an outsider detail access.
 2. Compare category icon colors with their filter menu items. Check selected
    menu-item tint, card labels and pending/member badges. Use the card's actions
@@ -41,9 +42,12 @@ or claim that a fixture or browser session has already been prepared.
    Resize the list: two cards remain side by side when the available width
    fits them (including a roughly 600px window); narrow phones use one column.
    The last card retains a normal column width and distance headers span the row.
-   The shared header menu offers Distance and Recent. Explore defaults to exact
+   The shared header menu offers Distance and Recent immediately before Close.
+   Create group uses the shared circular plus action at the right end of the
+   second row, following the Activity Event toolbar layout.
+   Explore defaults to exact
    distance ascending, including within each distance interval; Hosting and
-   Participation default to last-change time descending, with date headers.
+   Active groups/Invitations default to last-change time descending, with date headers.
    Switch either sort in each bucket, filter and paginate; sync and immediate
    store updates retain the same order. Recent uses saved change time, not
    creation time; retrying a completed operation does not make it recent again.
@@ -74,17 +78,29 @@ or claim that a fixture or browser session has already been prepared.
    list summaries omit description/policy; detail loads on opening. Local mode
    uses its configured route delay; HTTP mode adds no artificial client delay.
    The nested rules popup performs no independent detail load.
+   The requirements panel is named Required Profile Fields / Kötelező profilmezők;
+   its heading uses the profile badge icon and its picker button keeps its text on mobile. The separate Group Policies block
+   uses the shared Event Policy input/editor and purple palette. Enable it, add
+   a named rule and recommendation, cancel the outer editor, then repeat and save.
+   Only outer Save persists the draft; reopening preserves enabled state and text.
+   Open Policy Setup is left aligned at content width on mobile. In View, the
+   nested editor title is Policy / Szabályzat and its fields cannot be edited.
 
 ## 4. Join requests and member decisions
 
 9. Request to join as the unrelated account. Cancel first, then confirm. Both
    the menu and confirmation use the Event Join button's blue palette. The
-   confirmed group moves from Explore to Participation as pending and survives
+   confirmed group moves from Explore to Active groups as pending and survives
    reload; no group workspace is selectable before acceptance.
 10. Approve the request as administrator. Confirm accepted membership, one
     workspace profile, updated member counts, and a selectable workspace.
     Separately invite the member through the normal members popup, then accept
-    or reject as that member and compare the canonical list state.
+    or reject as that member and compare the canonical list state. A pending
+    invite appears in Invitations, with its own Accept action even if the roster
+    is private. The confirmation has a full question and matches the menu color.
+    Acceptance moves the card to Active groups and updates card, menu, category,
+    workspace and sidebar counters immediately through the shared stores. No
+    group-join payment is introduced.
 
 ## 5. Workspace selection and profile loading
 
@@ -119,7 +135,7 @@ definition of all group activity.
 
 1. As organizer and ordinary member, cause distinct relevant changes, including
    a join request, an accepted/new member and ordinary group activity. Check the
-   corresponding group menu items, card three-dot, Hosting/Participation dropdown,
+   corresponding group menu items, card three-dot, Hosting/Active groups/Invitations dropdown,
    workspace dropdown and sidebar aggregate. Preserve visibility rules: a member
    sees changes they may access, never the administrator's moderation queue.
    In each menu, a single-digit badge is the same 20px circle as the card's red
@@ -139,14 +155,21 @@ definition of all group activity.
    Retry must not create another notification or increment for the same change.
    Notifications remain account-wide, identify their group, and obey the existing
    All/Base/group filter. No unrelated group/account receives the notification.
-5. Hosting and Participation: verify their menu items and selected dropdown
+5. Hosting, Active groups and Invitations: verify their menu items and selected dropdown
    trigger, category items and selected category trigger. Each sums relevant
    operations, including pending interactions. Explore has no red counter on
-   its trigger, item or categories, even while Hosting/Participation have changes.
-6. Compare the two different scopes explicitly: the workspace selector contains
-   only accepted, selectable workspaces; Groups also includes pending invitations.
-   With Design Circle 1 + Seattle Friends 1 + a pending Game Night invitation 1,
-   the selector shows **2** and Groups shows **3**. This difference is correct.
+   its trigger, item or categories, even while Hosting/Active groups/Invitations have changes.
+6. The workspace selector shows the complete attention count of this user's
+   profile in each accepted group, including its accessible activity, impressions,
+   member changes and administrator-only moderation. Main profile owns account
+   tools/contact counts; those counts are not repeated on every group. The avatar
+   aggregates Main and all group-profile changes once. Nested totals must not be
+   counted twice: event.all already contains its invitation/hosting counts.
+   Groups also includes unresolved invitations to not-yet-selectable workspaces;
+   its total is not necessarily equal to the workspace selector total. Verify the
+   actual profile counters, not a fixed 2-versus-3 fixture example. While a group
+   is active, Main counts keep updating through the existing realtime response
+   and stale-response guard, without an additional polling request.
 7. Read one member-change notification. Only that recipient's corresponding
    Members/card/dropdown/sidebar counts decrease in place. Reading it again
    does not decrement again; an unread change for another member/group remains.
@@ -564,3 +587,15 @@ are pending manual verification, not extensions of an earlier PASS.
   created asset, external-ID mapping or uploaded image. Repeat after returning to
   Base: the group key still cannot create assets. Revoking membership blocks the
   group key. No group header or per-request group selection is involved.
+
+### 25.3. Application confirmation wording — NOT RUN
+
+1. Review action confirmations in Group/Event/Asset membership and lifecycle,
+   checkout/refunds, contacts/following, moderation/support, account actions,
+   editor deletion, integration keys and AI connections. The title asks a clear
+   question describing the action; the action button keeps its short verb.
+2. Check Hungarian and English, including dynamic names/revision numbers,
+   narrow mobile wrapping, cancellation and the existing menu/button palette.
+   Informational notices, payment summaries and forms keep their own headings.
+3. Source audit and focused unit checks are recorded separately from execution
+   of every dialog. These checks do not reopen any closed PASS case.

@@ -15,7 +15,7 @@ for (const session of manifest.sessions) {
     return response.json();
   }
   const actor = { actor: session.actor, checks: [] };
-  for (const bucket of ['explore', 'hosting', 'participation']) {
+  for (const bucket of ['explore', 'hosting', 'participation', 'invitations']) {
     for (const sort of ['distance', 'updated']) {
       for (const category of bucket === 'explore' ? ['', 'friends', 'work', 'sport', 'learning', 'hobbies', 'neighbourhood'] : ['']) {
         const rows = []; let cursor = null; let total; let pages = 0;
@@ -28,6 +28,8 @@ for (const session of manifest.sessions) {
         assert.equal(rows.length, total, 'Missing page rows');
         assert.equal(new Set(rows.map(row => row.id)).size, total, 'Duplicate page rows');
         if (bucket === 'explore') assert.ok(rows.every(row => row.visibility !== 'invitation'), 'Invite-only discovery leak');
+        if (bucket === 'invitations') assert.ok(rows.every(row => row.membershipStatus === 'pending' && row.requestKind === 'invite'), 'Non-invitation in Invitations');
+        if (bucket === 'participation') assert.ok(rows.every(row => !(row.membershipStatus === 'pending' && row.requestKind === 'invite') && !(row.membershipStatus === 'accepted' && row.role === 'Admin')), 'Invitation/admin leaked into Active groups');
         const expected = [...rows].sort((a, b) => (sort === 'distance'
           ? (a.distanceKm ?? Infinity) - (b.distanceKm ?? Infinity)
           : b.updatedAtIso.localeCompare(a.updatedAtIso)) || a.id.localeCompare(b.id));

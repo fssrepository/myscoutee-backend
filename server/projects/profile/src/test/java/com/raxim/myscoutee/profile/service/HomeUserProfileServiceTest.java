@@ -999,6 +999,27 @@ class HomeUserProfileServiceTest {
     }
 
     @Test
+    void realtimeCursorSupportsGroupProfileIdsAndRetainedUnescapedCursors() {
+        String profileId = "group:seed-community-design-circle:account";
+        Users active = user(profileId, 0d);
+        when(usersRepository.findByUserId(profileId)).thenReturn(Optional.of(active));
+        var baseline = service.queryRealtimeSnapshot(new UserRealtimeLongPollRequestDto(profileId, null));
+        String retainedCursor = baseline.cursor().replace("%3A", ":");
+        for (String cursor : List.of(baseline.cursor(), retainedCursor)) {
+            var unchanged = service.queryRealtimeSnapshot(new UserRealtimeLongPollRequestDto(profileId, cursor));
+            assertThat(unchanged.counters().impressionsHostChanged()).isFalse();
+            assertThat(unchanged.counters().impressionsMemberChanged()).isFalse();
+        }
+        active.setImpressions(new Users.UserImpressionsRecord(null, storedImpressionsSection()));
+        service.evictUserReadCaches(profileId);
+        var changed = service.queryRealtimeSnapshot(new UserRealtimeLongPollRequestDto(profileId, retainedCursor));
+        assertThat(changed.counters().impressionsHostChanged()).isFalse();
+        assertThat(changed.counters().impressionsMemberChanged()).isTrue();
+        var unchanged = service.queryRealtimeSnapshot(new UserRealtimeLongPollRequestDto(profileId, changed.cursor()));
+        assertThat(unchanged.counters().impressionsMemberChanged()).isFalse();
+    }
+
+    @Test
     void realtimeSnapshotCarriesStoredContactRequestsIndependentlyOfSavedContacts() {
         Users active = user("contact-counters", 0d);
         active.setContactRequestsPending(2);

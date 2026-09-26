@@ -569,7 +569,8 @@ public class HomeUserProfileService {
         }
 
         UserImpressionsDto impressions = resolveMergedUserImpressions(user);
-        UserRealtimeCountersDto counters = buildRealtimeCounters(user, request == null ? null : request.cursor());
+        Users account = StringUtils.hasText(user.getAccountUserId()) ? findUser(user.getAccountUserId()) : user;
+        UserRealtimeCountersDto counters = buildRealtimeCounters(user, request == null ? null : request.cursor(), account);
         AssetTicketsPageDto offlineTicketSnapshot = assetsService.queryTicketPage(
                 resolvedUserId,
                 0,
@@ -593,7 +594,8 @@ public class HomeUserProfileService {
                 OrganizerFollowingService.state(user),
                 contentModeration != null && adminMenuCounterService.isAdminUser(user) ? contentModeration.snapshot() : null,
                 user.getFeedCounters() == null ? Users.FeedCountersRecord.empty() : user.getFeedCounters(),
-                savedPaymentMethods != null && savedPaymentMethods.cardsAvailable());
+                savedPaymentMethods != null && savedPaymentMethods.cardsAvailable(),
+                account != null && account != user ? buildMenuCounters(account, account) : null);
     }
 
     public UserLocationEligibilityResponseDto queryLocationEligibility(Double latitude, Double longitude) {
@@ -2160,8 +2162,12 @@ public class HomeUserProfileService {
     }
 
     private UserMenuCountersDto buildMenuCounters(Users user) {
-        Users.UserActivitiesRecord activities = user.getActivities();
         Users account = StringUtils.hasText(user.getAccountUserId()) ? findUser(user.getAccountUserId()) : user;
+        return buildMenuCounters(user, account);
+    }
+
+    private UserMenuCountersDto buildMenuCounters(Users user, Users account) {
+        Users.UserActivitiesRecord activities = user.getActivities();
         Users.UserActivitiesRecord accountActivities = account == null ? null : account.getActivities();
         return new UserMenuCountersDto(
                 activities == null ? 0 : normalizeCount(activities.game()),
@@ -2698,8 +2704,14 @@ public class HomeUserProfileService {
 
     private UserRealtimeCountersDto buildRealtimeCounters(
             Users user,
-            String requestCursor) {
-        UserMenuCountersDto counters = buildMenuCounters(user);
+            String requestCursor, Users account) {
+        UserMenuCountersDto counters = buildMenuCounters(user, account);
+        // Group profile IDs contain ':', which is also the cursor delimiter.
+        // Normalize retained cursors too, before locating impression fingerprints.
+        String profileId = normalizeId(user.getId());
+        if (requestCursor != null && requestCursor.startsWith(profileId + ":")) {
+            requestCursor = profileId.replace(":", "%3A") + requestCursor.substring(profileId.length());
+        }
         int cursorPartCount = cursorPartCount(requestCursor);
         int fingerprintOffset = cursorPartCount >= 45
                 ? 43
@@ -2762,7 +2774,7 @@ public class HomeUserProfileService {
             UserRealtimeCountersDto counters) {
         Users.UserImpressionsRecord storedImpressions = user == null ? null : user.getImpressions();
         return String.join(":",
-                normalizeId(user.getId()),
+                normalizeId(user.getId()).replace(":", "%3A"),
                 String.valueOf(normalizeCount(counters.game())),
                 String.valueOf(normalizeCount(counters.chats())),
                 String.valueOf(normalizeCount(counters.invitations())),

@@ -59,7 +59,7 @@ public class CommunityGroupsService {
                         + (isAdmin(memberships.get(g.id())) ? g.pendingModerationCount() : 0), g.policy(),
                     isAdmin(memberships.get(g.id())) ? g.pendingModerationCount() : 0,
                     isAdmin(memberships.get(g.id())) && g.moderationQueueRevision() != null ? g.moderationQueueRevision() : 0, g.category(), memberships.get(g.id()).getStatus(),
-                    CommunityGroupMapper.membersActivity(g, memberships.get(g.id()))))
+                    CommunityGroupMapper.membersActivity(g, memberships.get(g.id())), memberships.get(g.id()).getRequestKind()))
                 .sorted(Comparator.comparing(Workspace::name).thenComparing(Workspace::groupId)).toList();
     }
     public ProfileExtByIdResponseDto completeProfileLoad(
@@ -86,16 +86,14 @@ public class CommunityGroupsService {
     }
     private record GroupSnapshot(List<Group> items, long total, Map<String, Long> context) {}
     private GroupSnapshot snapshot(Users actor, String bucket, String category, String sort) {
-        if (!Set.of("hosting", "participation", "explore").contains(bucket)) throw error(HttpStatus.BAD_REQUEST);
+        if (!Set.of("hosting", "participation", "invitations", "explore").contains(bucket)) throw error(HttpStatus.BAD_REQUEST);
         String order = sort == null || sort.isBlank() ? (bucket.equals("explore") ? "distance" : "updated") : sort;
         if (!Set.of("distance", "updated").contains(order)) throw error(HttpStatus.BAD_REQUEST);
         var own = memberships.findByOwnerTypeAndUserId(OWNER_TYPE, actor.getUserId()).stream()
                 .filter(m -> Set.of("accepted", "pending").contains(m.getStatus())).toList();
         var ownById = own.stream().collect(Collectors.toMap(ActivityMember::getOwnerId, m -> m));
         var records = bucket.equals("explore") ? groups.findDiscoverable(ownById.keySet(), actor.getUserId())
-                : groups.findByIdIn(own.stream().filter(m -> bucket.equals("hosting")
-                    ? "accepted".equals(m.getStatus()) && "Admin".equals(m.getRole())
-                    : !("accepted".equals(m.getStatus()) && "Admin".equals(m.getRole())))
+                : groups.findByIdIn(own.stream().filter(m -> bucket.equals(CommunityGroupMapper.membershipBucket(m.getRole(), m.getStatus(), m.getRequestKind())))
                     .map(ActivityMember::getOwnerId).toList());
         var groupIds = records.stream().map(CommunityGroup::id).toList();
         var membersByGroup = memberships.findByOwnerTypeAndOwnerIdIn(OWNER_TYPE, groupIds).stream()
@@ -115,7 +113,8 @@ public class CommunityGroupsService {
         var workspaceCounters = workspaces(actor);
         return new GroupSnapshot(rows, rows.size(), Map.of(
                 "hosting", workspaceCounters.stream().filter(w -> "Admin".equals(w.role()) && "accepted".equals(w.membershipStatus())).mapToLong(Workspace::activity).sum(),
-                "participation", workspaceCounters.stream().filter(w -> !("Admin".equals(w.role()) && "accepted".equals(w.membershipStatus()))).mapToLong(Workspace::activity).sum()));
+                "participation", workspaceCounters.stream().filter(w -> "participation".equals(CommunityGroupMapper.membershipBucket(w.role(), w.membershipStatus(), w.requestKind()))).mapToLong(Workspace::activity).sum(),
+                "invitations", workspaceCounters.stream().filter(w -> "invitations".equals(CommunityGroupMapper.membershipBucket(w.role(), w.membershipStatus(), w.requestKind()))).mapToLong(Workspace::activity).sum()));
     }
     public Page page(Users actor, String bucket, String category, int pageSize, String cursor) {
         return page(actor, bucket, category, pageSize, cursor, null);
@@ -156,7 +155,8 @@ public class CommunityGroupsService {
         var group = new CommunityGroup(id, existing == null ? actor.getUserId() : existing.ownerUserId(), request.name().trim(),
                 request.description() == null ? "" : request.description().trim(), request.imageUrl(), request.category(),
                 request.visibility(), request.hideMembers(), new CommunityGroup.Policy(policy.workspace(), policy.enabled(),
-                    policy.requiredFields().stream().distinct().toList()), existing == null ? now : existing.createdAtIso(), now,
+                    policy.requiredFields().stream().distinct().toList(), Boolean.TRUE.equals(policy.policiesEnabled()),
+                    policy.policies() == null ? List.of() : policy.policies().stream().filter(Objects::nonNull).toList()), existing == null ? now : existing.createdAtIso(), now,
                     existing == null ? null : existing.version(), existing == null ? null : existing.moderationStatus(),
                     existing == null ? null : existing.moderationVersion(),
                     existing == null ? null : existing.moderationPending(), existing == null ? null : existing.moderationQueueRevision(), existing == null ? 0L : existing.pendingMembers());

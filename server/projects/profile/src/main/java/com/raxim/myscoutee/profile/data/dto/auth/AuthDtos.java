@@ -567,7 +567,8 @@ public final class AuthDtos {
             com.raxim.myscoutee.profile.data.document.Users.FollowingRecord following,
             com.raxim.myscoutee.profile.data.dto.admin.ContentModerationDtos.Snapshot contentModeration,
             com.raxim.myscoutee.profile.data.document.Users.FeedCountersRecord feedCounters,
-            boolean paymentCardsAvailable) {
+            boolean paymentCardsAvailable,
+            UserMenuCountersDto accountCounters) {
     }
 
     public record UserFilterPreferencesRequestDto(
