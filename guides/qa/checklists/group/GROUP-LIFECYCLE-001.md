@@ -312,6 +312,36 @@ Keep these micros in this existing NOT RUN case; no new case or manual PASS.
 
 ## 19. First location save and Firebase sign-in
 
+### 19.1. Complete demo entry — NOT RUN
+
+Use a separately prepared signed-out browser and the actual Login/demo-selector
+UI. The Group list fixture's injected session is not evidence for this block.
+Demo members are pre-registered; selecting one is not new-user registration.
+Snapshot any missing/invalid-coordinate control before changing it; do not
+damage the three valid Group list actors to create this negative control.
+
+1. Open the landing, complete required consent, press Login and select a valid
+   demo member. Check both local and HTTP modes. Eligibility is established
+   before the application session is created; then the first profile/avatar
+   load completes and the home page appears once, without a second login.
+2. Repeat with browser location denied, then with an unsupported browser point
+   while the profile retains an accepted point. No automatic Setup/installation
+   popup, loss of the accepted point, game flash followed by logout, or session
+   removal. An installable browser must not automatically open Setup after login.
+3. Run the missing/invalid-coordinate control described below through the real
+   selector: badge, Setup, rejected point, cancel, retry with an accepted point.
+   Before successful admission there is no new application session or game UI.
+4. Verify the initial avatar-load persistence, reload, explicit logout and
+   another real demo selection. Reload restores the same authenticated account;
+   logout/login creates only the intended new session. A failed profile load
+   can be retried and cannot admit a different actor or acknowledge stale data.
+5. Follow a group invitation while signed out and repeat the selector/Setup
+   cancellation/retry branch under INTEGRATION-API-GROUP-001 block 3. Its claim,
+   membership and active workspace are verified there; this block does not
+   borrow PASS from previously closed registration/authentication cases.
+
+### 19.2. Admission, pending coordinates and Firebase — NOT RUN
+
 Demo admission (pre-registered profiles; run local and HTTP separately):
 
 - Verify every selectable seeded member has coordinates inside an enabled
@@ -358,7 +388,8 @@ Demo admission (pre-registered profiles; run local and HTTP separately):
    Movement below 5 km causes no write; >=5 km saves through the existing path.
    Deliver a point outside eligible countries after a valid saved point:
    Mongo/IndexedDB, browser cache and movement baseline retain the accepted
-   point. No access-restricted popup, session deletion or logout. A later
+   point. No automatic Setup/installation or access-restricted popup, session
+   deletion or logout. Explicitly opening Settings remains available. A later
    eligible movement can still save normally.
    The server first checks the saved country, then uses the existing spatial
    index if necessary. An empty country lookup discards the new point; it is

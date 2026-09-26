@@ -86,16 +86,16 @@ resume pointer and reusable working method.
 Earlier Event Mode, Integration API, Activity Rating and EVENT-FOLLOWING-001 remain closed.
 
 ```yaml
-checkpoint: EVENT-CALENDAR-EXPORT-001
-checklist: ../checklists/event/EVENT-CALENDAR-EXPORT-001.md
-substage: PASS/CLOSED 2026-09-24; delegated calendar scope complete, including One-time/Daily/Weekly occurrences and physical imports.
-fixture_phase: Versioned reset complete. Fixture actors/events/members/snapshot absent; moderation settings and approval Job restored; native QA entries and fixture downloads cleaned; managed windows closed.
-execution_log: ../evidence/EVENT-CALENDAR-EXPORT-001-20260924.md
-next_action: None for this checkpoint. Calendar importer update/deletion/alarm limitations and local automated-versus-native evidence boundaries are recorded in the execution log.
-queue: GROUP-LIFECYCLE-001 -> GROUP-ISOLATION-001; INTEGRATION-API-GROUP-001 is tracked in API test. Checklists prepared 2026-09-24 and finalized 2026-09-25 with scoped moderation, write-side badges, SmartList signal updates and Group support. All three NOT RUN, no fixture/session staged.
-resume_gate: No fixture replay. Earlier affiliate PASS remains closed; its old runtime was replaced by startup seed after the reboot, not retained.
-runtime: Existing dev watchers own builds. Phone network restored; USB stay-awake and maximum timeout intentionally retained at user request, with original settings snapshotted.
-last_completed: EVENT-CALENDAR-EXPORT-001 PASS/CLOSED; CSV/XLSX and README synchronized. AFFILIATE-REVENUE-001 remains PASS.
+checkpoint: GROUP-LIFECYCLE-001
+checklist: ../checklists/group/GROUP-LIFECYCLE-001.md
+substage: 1/25 — Group lists and category colors; NOT RUN, baseline verified 2026-09-26.
+fixture_phase: Retained read-only-lists-ready state verified, ten groups and 27 memberships unchanged. Old permittedBlocks [1,2] maps only to the current block 1; write blocks are not staged.
+execution_log: ../evidence/GROUP-LIFECYCLE-001-20260926.md
+next_action: Finish standardized three-actor startup, then hand off block 1 list/filter/color checks to the user. Do not execute browser checklist actions.
+queue: GROUP-LIFECYCLE-001 blocks 2–25 after scoped fixture preparation; GROUP-ISOLATION-001 blocks 1–12; INTEGRATION-API-GROUP-001 blocks 1–6. USB/native-device checks last.
+resume_gate: Run the versioned community-group status command before any relaunch. Do not reset changed records or replay a closed checkpoint. Check the current managed-session manifest and launcher result.
+runtime: Existing dev watchers own builds; no stack restart or seed replacement for this resume. Versioned launcher configuration restored after the revert.
+last_completed: EVENT-CALENDAR-EXPORT-001 PASS/CLOSED; AFFILIATE-REVENUE-001 remains PASS. Location fixes and baseline checks are not Group UI PASS.
 ```
 
 ## Archived pair-QA resume point — 2026-09-17

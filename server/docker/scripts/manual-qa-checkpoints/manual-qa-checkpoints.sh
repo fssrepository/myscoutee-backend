@@ -7,6 +7,7 @@ COMMON_SCRIPT="${SCRIPT_DIR}/scenarios/common.js"
 usage() {
   cat <<'USAGE'
 Usage:
+  bash manual-qa-checkpoints.sh status community-group GROUP-LIFECYCLE-001
   bash manual-qa-checkpoints.sh stage|ready|arm|status|reset job-messages JOB-MESSAGES
   bash manual-qa-checkpoints.sh stage|status|reset notification-admin NOTIFICATION-ADMIN-LIFECYCLE-001
   bash manual-qa-checkpoints.sh stage|status|reset mobile-push MOBILE-PUSH-LIFECYCLE-001
@@ -527,6 +528,7 @@ run_scenario() {
   fi
 
   case "${scenario}" in
+    community-group) scenario_script="${SCRIPT_DIR}/scenarios/community-group-checkpoints.js" ;;
     browser-sessions) scenario_script="${SCRIPT_DIR}/scenarios/browser-session-checkpoints.js" ;;
     event-rating) scenario_script="${SCRIPT_DIR}/scenarios/event-activity-rating-checkpoints.js" ;;
     integration-api) scenario_script="${SCRIPT_DIR}/scenarios/integration-api-checkpoints.js" ;;
@@ -951,6 +953,10 @@ PY
         set_payment_simulator_cash_only
       fi
     fi
+    ;;
+  community-group:status)
+    [ "$#" -eq 3 ] || { usage >&2; exit 2; }
+    run_scenario "${command}" "${scenario}" 30 "$3"
     ;;
   role-triad:stage|role-triad:status|role-triad:rearm-feedback-resolution|role-triad:reset)
     [ "$#" -eq 3 ] || { usage >&2; exit 2; }

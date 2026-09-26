@@ -24,6 +24,11 @@ the links directly and sends no unsolicited messages.
 
 ## 2. Fresh registration and active group
 
+Run the entry path from the real signed-out UI. Do not inject a session or
+pre-bind the recipient to skip registration, consent, location or onboarding.
+Demo selection is an existing-account branch, never evidence of creating a new
+registered identity. Use the actual registration mode for the fresh account.
+
 3. Open the first URL while signed out. Complete the ordinary registration and
    onboarding flow. The return URL retains the invitation through every gate.
 4. After registration, verify that the external participant ID is bound to that
@@ -38,6 +43,15 @@ the links directly and sends no unsolicited messages.
    Registration defaults initially select the opposite gender on home cards.
 
 ## 3. Existing accounts and rejected claims
+
+For the demo existing-account branch, follow the invitation while signed out,
+then select its pre-registered recipient through the real demo selector. Run
+the complete entry checks in [Group Lifecycle block 19](../group/GROUP-LIFECYCLE-001.md#19-first-location-save-and-firebase-sign-in).
+The URL must survive Setup cancellation/retry and successful login. A failed
+entry must not claim the link or create membership/workspace/session records.
+After successful entry, verify the target group is active on the first profile
+load, after reload, and after logout/login. A valid saved coordinate remains
+usable with browser GPS denied or outside supported countries.
 
 6. Open the second URL using the existing non-member account and compare the
    same accepted membership/active-workspace result. Repeat using an existing

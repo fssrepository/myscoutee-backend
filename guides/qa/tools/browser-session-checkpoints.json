@@ -14,6 +14,32 @@
     "screenHeight": 1000
   },
   "checkpoints": {
+    "GROUP-LIFECYCLE-001": {
+      "layout": { "columns": 3 },
+      "sessions": [
+        {
+          "actor": "Alex Turner",
+          "sessionKind": "demo",
+          "userId": "af0436815ab38f4864dd1e24",
+          "expectedName": "Alex Turner",
+          "autoDismissExplanationGuide": true
+        },
+        {
+          "actor": "Nagy Eszter",
+          "sessionKind": "demo",
+          "userId": "9f3b3f085e23af6c89dbc432",
+          "expectedName": "Nagy Eszter",
+          "autoDismissExplanationGuide": true
+        },
+        {
+          "actor": "Maya Stone",
+          "sessionKind": "demo",
+          "userId": "1b1c70be2349b3359a8f6f94",
+          "expectedName": "Maya Stone",
+          "autoDismissExplanationGuide": true
+        }
+      ]
+    },
     "INTEGRATION-API-001": {
       "layout": {
         "columns": 2
