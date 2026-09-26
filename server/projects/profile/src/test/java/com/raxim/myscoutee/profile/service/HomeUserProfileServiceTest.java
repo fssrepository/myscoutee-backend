@@ -914,6 +914,22 @@ class HomeUserProfileServiceTest {
     }
 
     @Test
+    void realtimeSnapshotCarriesStoredContactRequestsIndependentlyOfSavedContacts() {
+        Users active = user("contact-counters", 0d);
+        active.setContactRequestsPending(2);
+        when(usersRepository.findByUserId("contact-counters")).thenReturn(Optional.of(active));
+        var before = service.queryRealtimeSnapshot(new UserRealtimeLongPollRequestDto("contact-counters", null));
+        assertThat(before.counters().contactRequestsPending()).isEqualTo(2);
+        active.setContactRequestsPending(1);
+        var after = service.queryRealtimeSnapshot(new UserRealtimeLongPollRequestDto("contact-counters", before.cursor()));
+        assertThat(after.counters().contactRequestsPending()).isEqualTo(1);
+        assertThat(after.counters().contacts()).isEqualTo(before.counters().contacts());
+        assertThat(after.cursor()).isNotEqualTo(before.cursor());
+        assertThat(after.counters().impressionsHostChanged()).isFalse();
+        assertThat(after.counters().impressionsMemberChanged()).isFalse();
+    }
+
+    @Test
     void realtimeSnapshotUsesAuthoritativeUnreadNotificationCount() {
         Users active = user("active", 0d);
         active.setActivities(storedActivityCounters());

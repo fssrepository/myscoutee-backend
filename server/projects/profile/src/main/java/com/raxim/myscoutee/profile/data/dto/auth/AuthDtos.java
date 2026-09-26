@@ -74,7 +74,12 @@ public final class AuthDtos {
             Integer adminJobs,
             Integer adminMetrics,
             Integer paymentRefundsPending,
+            Integer contactRequestsPending,
             Integer notifications) {
+        public UserMenuCountersDto(Integer game, Integer chats, Integer invitations, Integer events, Integer hosting, Integer cars, Integer accommodation, Integer supplies, Integer tickets, Integer contacts, Integer feedback, UserChatCountersDto chat, UserEventCountersDto event, UserAssetCountersDto asset, UserEventFeedbackCountersDto eventFeedback, Integer adminJobs, Integer adminMetrics, Integer paymentRefundsPending, Integer notifications) {
+            this(game, chats, invitations, events, hosting, cars, accommodation, supplies, tickets, contacts, feedback, chat, event, asset, eventFeedback, adminJobs, adminMetrics, paymentRefundsPending, 0, notifications);
+        }
+
         public UserMenuCountersDto(
                 Integer game,
                 Integer chats,
@@ -235,9 +240,14 @@ public final class AuthDtos {
             Integer adminJobs,
             Integer adminMetrics,
             Integer paymentRefundsPending,
+            Integer contactRequestsPending,
             Integer notifications,
             Boolean impressionsHostChanged,
             Boolean impressionsMemberChanged) {
+        public UserRealtimeCountersDto(Integer game, Integer chats, Integer invitations, Integer events, Integer hosting, Integer cars, Integer accommodation, Integer supplies, Integer tickets, Integer contacts, Integer feedback, UserChatCountersDto chat, UserEventCountersDto event, UserAssetCountersDto asset, UserEventFeedbackCountersDto eventFeedback, Integer adminJobs, Integer adminMetrics, Integer paymentRefundsPending, Integer notifications, Boolean impressionsHostChanged, Boolean impressionsMemberChanged) {
+            this(game, chats, invitations, events, hosting, cars, accommodation, supplies, tickets, contacts, feedback, chat, event, asset, eventFeedback, adminJobs, adminMetrics, paymentRefundsPending, 0, notifications, impressionsHostChanged, impressionsMemberChanged);
+        }
+
         public UserRealtimeCountersDto(
                 Integer game,
                 Integer chats,
@@ -346,7 +356,12 @@ public final class AuthDtos {
             Integer adminJobs,
             Integer adminMetrics,
             Integer paymentRefundsPending,
+            Integer contactRequestsPending,
             Integer notifications) {
+        public UserActivitiesDto(Integer game, Integer chats, Integer invitations, Integer events, Integer hosting, Integer cars, Integer accommodation, Integer supplies, Integer tickets, Integer contacts, Integer feedback, UserChatCountersDto chat, UserEventCountersDto event, UserAssetCountersDto asset, UserEventFeedbackCountersDto eventFeedback, Integer adminJobs, Integer adminMetrics, Integer paymentRefundsPending, Integer notifications) {
+            this(game, chats, invitations, events, hosting, cars, accommodation, supplies, tickets, contacts, feedback, chat, event, asset, eventFeedback, adminJobs, adminMetrics, paymentRefundsPending, 0, notifications);
+        }
+
         public UserActivitiesDto(
                 Integer game,
                 Integer chats,

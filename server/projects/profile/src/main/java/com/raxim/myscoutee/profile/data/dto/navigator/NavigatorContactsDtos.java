@@ -29,6 +29,13 @@ public final class NavigatorContactsDtos {
             List<NavigatorContactMethodDto> methods) {
     }
 
+    public record ContactChatAccessDto(String id, String requestedBy, String status,
+            String requestedAtIso, String decidedAtIso, Long version, NavigatorContactDto contact) {}
+
+    public record ContactChatAccessSnapshot(List<ContactChatAccessDto> records, int pendingCount, List<NavigatorContactDto> contacts) {}
+
+    public record ContactChatAccessCommand(String action, Long version) {}
+
     public record NavigatorContactsSaveRequestDto(
             String userId,
             List<NavigatorContactDto> contacts) {

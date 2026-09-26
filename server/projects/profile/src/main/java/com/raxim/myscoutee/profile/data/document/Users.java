@@ -125,6 +125,7 @@ public class Users {
     private Map<String, Double> paymentIncomeTotals = new LinkedHashMap<>();
     private Map<String, Double> paymentAllTotals = new LinkedHashMap<>();
     private Integer paymentRefundsPending;
+    private Integer contactRequestsPending;
 
     public String getMongoId() {
         return mongoId;
@@ -543,6 +544,9 @@ public class Users {
                 ? new LinkedHashMap<>()
                 : new LinkedHashMap<>(paymentAllTotals);
     }
+
+    public Integer getContactRequestsPending() { return contactRequestsPending; }
+    public void setContactRequestsPending(Integer value) { contactRequestsPending = value; }
 
     public Integer getPaymentRefundsPending() {
         return paymentRefundsPending;

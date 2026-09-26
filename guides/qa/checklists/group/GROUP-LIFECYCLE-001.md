@@ -193,3 +193,58 @@ has no inherited PASS from the earlier Event/Asset/Chat checkpoints.
 
 For each failed microcheck, record its number, mode, actor/workspace IDs and
 observed result. All twelve remain NOT RUN until explicitly executed.
+
+## NOT RUN — September 25–26 shared UI regression micros
+
+These extend this existing unexecuted checkpoint; they do not reopen or inherit
+PASS from closed journeys. The implementation/task status is tracked separately
+in [UI notes](../../../plans/UI_NOTES_2026_09_25.md). Record frontend-local and
+dev HTTP outcomes independently, in HU/EN and at desktop/mobile widths.
+
+1. **Configured selection maximum (UI note 1).** Open the topic/category
+   selector in Event Explore, an equivalent Profile editor selector and another
+   existing limited selector. Its heading includes only the short configured
+   suffix, e.g. `Téma (max. 3 db)`. Check actual limits 1 and greater than 1;
+   do not assume every selector permits three. A selector without a configured
+   limit has no fabricated maximum. The suffix is in the heading, not a longer
+   explanation or trigger label. Existing select/deselect enforcement remains
+   consistent with the displayed limit, including nested menus and mobile.
+2. **Contact requests (UI note 2).** Execute the separate direct-chat permission
+   micros in [GROUP-ISOLATION-001](GROUP-ISOLATION-001.md#separate-direct-chat-permission--not-run-refinement-2026-09-26):
+   pending-only side-menu badge, search-row icon+label filter, reverse request
+   order, recipient decisions/notifications, persisted contact on approval and
+   immediate SmartList remove/insert without reload. Do not substitute this
+   link for executing those steps.
+3. **Empty calendar export (UI note 3).** With no exportable upcoming event,
+   show the localized information popup with X and no footer action buttons;
+   no empty/malformed ICS download. The underlying popup remains visible,
+   blurred, and returns intact after closing the notice. With an eligible
+   upcoming event, the normal ICS export still works and imports correctly.
+4. **Birthday and horoscope (UI notes 7–8).** Type and select 1974/10/04 in the
+   shared date control; save, reopen and reload. Day/month must not swap, and
+   the profile shows Libra/Mérleg. Reject an invalid day without rolling into
+   the next month. Do not infer or bulk-repair ambiguous historical birthdays.
+5. **Children (UI note 9).** Check Nincs/Van and No/Yes in the editor, profile
+   and filter; save/reopen and confirm the stored meaning and existing
+   non-disclosure option remain intact.
+6. **Landing social heading (UI note 10).** Check Kövess minket / Follow us
+   above the existing social links. This label change must not alter targets.
+7. **Setup help (UI note 12).** The question-mark button is beside X. It opens
+   the existing information popup with short blocks explaining location,
+   notifications, installation and prior browser/OS denial. Check Android and
+   iOS guidance separately; after changing the relevant external settings,
+   return and retry. Closing the help leaves the underlying setup popup intact.
+   Confirmation-like notices blur their parent; full-cover surfaces do not
+   need an additional visible-parent requirement. Record physical-device
+   branches separately; desktop observation is not a device PASS.
+
+### Queued help-content reseed — NOT RUN, implementation pending
+
+After the side-menu Help content is expanded, check its accordion structure,
+coverage of existing features, readability and HU/EN text. Compare the canonical
+frontend-local and prod/dev/demo/e2e seed sources, including fresh seed and the
+existing supported update/import path; never reseed a live production database
+as a QA shortcut. Old content must not remain in one adapter/environment while
+another receives the new version. This is the side-menu Help task, separate
+from the already implemented setup-permissions help above. UI note 11 remains
+on hold for the user's revised idea.

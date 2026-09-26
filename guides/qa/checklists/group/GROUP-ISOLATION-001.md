@@ -121,3 +121,48 @@ Verify that the invited contacts receive the same conversation and that
 contact-channel unread deltas stay in the contacts filter. Repeat after switching
 account/workspace while the picker or mutation is pending; no stale result may
 update the replacement user's popup. This extends this existing NOT RUN case.
+
+### Separate direct-chat permission — NOT RUN refinement (2026-09-26)
+
+Run with two actors in the same workspace, then repeat in frontend-local mode.
+
+1. Save B in A's Contacts and add a phone or Facebook method. This alone must
+   not grant MyScoutee direct-chat access. Contact rows are orange; ordinary
+   methods remain independently editable. The MyScoutee method asks through
+   the existing confirmation dialog. Cancel writes nothing; the Contacts popup
+   stays visible beneath the blurred backdrop.
+2. Request chat access once. Only B receives the request notification and a
+   pending-count increment. A sees Pending; another click explains that state
+   without sending another request. Neither side receives the other's private
+   contact methods.
+3. At desktop and narrow mobile width, the search shares one row with a normal
+   icon + short-label menu on its right: Contacts / Requests. Both menu buckets
+   display their corresponding counts; the Contacts side-menu red badge shows
+   only incoming pending requests, never the saved-contact total. Requests use
+   the same SmartList, incoming pending only, newest request first; text search
+   still works. Check multiple requests and a later loaded page.
+4. Approve as B. The pending row disappears and its badge decreases without
+   reloading the SmartList. A is saved in B's Contacts, its count updates, and
+   the approved chat chip is green. Only A receives the decision notification.
+   Both users open the same existing eventless chat popup/conversation. Reopen
+   and reload to prove the stored consent and saved contact survive.
+5. On another request, Reject is a separate action with confirmation; Cancel
+   never rejects. The request leaves the pending list and the count decreases;
+   A receives the rejection, sees the red chat method and cannot open direct
+   chat. A fresh request can be sent; repeated commands must not duplicate
+   pending counts, contacts or notifications. Approved/rejected decisions must
+   be restricted to the recipient and reject stale pending versions.
+6. Keep both Contacts popups open while the other actor requests or decides.
+   The existing realtime counter signal refreshes the row/status and counts
+   in place; no whole-list reload, lost search or custom polling loop. A failed
+   mutation keeps the prior row/count and permits retry. Switch workspace or
+   account during a delayed response: it cannot update the new actor's list.
+7. Attempt the direct-chat API without approval, and use request/decision IDs
+   from another workspace. Reject access before creating a chat or sending a
+   notification. Existing App support, Group support and event chat authority
+   remain separate. The prior contact-only member-invite checks above still
+   apply; this consent does not invent event membership or friendship facts.
+
+These are unexecuted manual micros within GROUP-ISOLATION-001, not new PASS
+rows. Record HTTP and local outcomes independently, including notification
+recipient, persisted permission pair, contact list and write-side counter.

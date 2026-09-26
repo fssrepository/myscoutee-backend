@@ -23130,6 +23130,126 @@
     "value": "Location: Settings → Privacy & Security → Location Services; also check Location in Safari’s settings for this website. Alerts: Settings → Notifications → MyScoutee → Allow Notifications. Open MyScoutee from the Home Screen and retry."
   },
   {
+    "_id": "i18n-message-en-contact-chat-requests",
+    "key": "contact.chat.requests",
+    "lang": "en",
+    "value": "Requests"
+  },
+  {
+    "_id": "i18n-message-en-contact-chat-requests-empty",
+    "key": "contact.chat.requests.empty",
+    "lang": "en",
+    "value": "No pending requests"
+  },
+  {
+    "_id": "i18n-message-en-contact-chat-request",
+    "key": "contact.chat.request",
+    "lang": "en",
+    "value": "Request"
+  },
+  {
+    "_id": "i18n-message-en-contact-chat-approve",
+    "key": "contact.chat.approve",
+    "lang": "en",
+    "value": "Approve"
+  },
+  {
+    "_id": "i18n-message-en-contact-chat-reject",
+    "key": "contact.chat.reject",
+    "lang": "en",
+    "value": "Reject"
+  },
+  {
+    "_id": "i18n-message-en-contact-chat-pending",
+    "key": "contact.chat.pending",
+    "lang": "en",
+    "value": "Pending"
+  },
+  {
+    "_id": "i18n-message-en-contact-chat-approved",
+    "key": "contact.chat.approved",
+    "lang": "en",
+    "value": "Chat"
+  },
+  {
+    "_id": "i18n-message-en-contact-chat-rejected",
+    "key": "contact.chat.rejected",
+    "lang": "en",
+    "value": "Rejected"
+  },
+  {
+    "_id": "i18n-message-en-contact-chat-request-message",
+    "key": "contact.chat.request.message",
+    "lang": "en",
+    "value": "Request permission to chat directly with this contact on MyScoutee?"
+  },
+  {
+    "_id": "i18n-message-en-contact-chat-approve-message",
+    "key": "contact.chat.approve.message",
+    "lang": "en",
+    "value": "Allow direct chat with this person? They will be added to your contacts."
+  },
+  {
+    "_id": "i18n-message-en-contact-chat-reject-message",
+    "key": "contact.chat.reject.message",
+    "lang": "en",
+    "value": "Reject this direct chat request?"
+  },
+  {
+    "_id": "i18n-message-en-contact-chat-pending-message",
+    "key": "contact.chat.pending.message",
+    "lang": "en",
+    "value": "Your request is awaiting a response."
+  },
+  {
+    "_id": "i18n-message-en-contact-chat-error",
+    "key": "contact.chat.error",
+    "lang": "en",
+    "value": "The chat request could not be updated. Please try again."
+  },
+  {
+    "_id": "i18n-message-en-notification-kind-contact-chat-requested-title",
+    "key": "notification.kind.contact-chat-requested.title",
+    "lang": "en",
+    "value": "Chat request"
+  },
+  {
+    "_id": "i18n-message-en-notification-kind-contact-chat-requested-message",
+    "key": "notification.kind.contact-chat-requested.message",
+    "lang": "en",
+    "value": "You received a request for direct chat. Open Contacts to respond."
+  },
+  {
+    "_id": "i18n-message-en-notification-kind-contact-chat-approved-title",
+    "key": "notification.kind.contact-chat-approved.title",
+    "lang": "en",
+    "value": "Chat request approved"
+  },
+  {
+    "_id": "i18n-message-en-notification-kind-contact-chat-approved-message",
+    "key": "notification.kind.contact-chat-approved.message",
+    "lang": "en",
+    "value": "Your direct chat request was approved. You can now chat."
+  },
+  {
+    "_id": "i18n-message-en-notification-kind-contact-chat-rejected-title",
+    "key": "notification.kind.contact-chat-rejected.title",
+    "lang": "en",
+    "value": "Chat request rejected"
+  },
+  {
+    "_id": "i18n-message-en-notification-kind-contact-chat-rejected-message",
+    "key": "notification.kind.contact-chat-rejected.message",
+    "lang": "en",
+    "value": "Your direct chat request was rejected."
+  },
+  {
+    "_id": "i18n-message-en-menu-selection-maximum",
+    "key": "menu.selection.maximum",
+    "lang": "en",
+    "value": "(max. {count})"
+  },
+  {
     "_id": "i18n-message-hu-navigator-community",
     "key": "navigator.community",
     "lang": "hu",
@@ -46258,5 +46378,125 @@
     "key": "app.setup.help.ios.text",
     "lang": "hu",
     "value": "Hely: Beállítások → Adatvédelem és biztonság → Helymeghatározás; a Safari adott webhelyhez tartozó Hely beállítását is ellenőrizd. Jelzések: Beállítások → Értesítések → MyScoutee → Értesítések engedélyezése. A főképernyőről nyisd meg a MyScoutee-t, majd próbáld újra."
+  },
+  {
+    "_id": "i18n-message-hu-contact-chat-requests",
+    "key": "contact.chat.requests",
+    "lang": "hu",
+    "value": "Kérelmek"
+  },
+  {
+    "_id": "i18n-message-hu-contact-chat-requests-empty",
+    "key": "contact.chat.requests.empty",
+    "lang": "hu",
+    "value": "Nincs függő kérelem"
+  },
+  {
+    "_id": "i18n-message-hu-contact-chat-request",
+    "key": "contact.chat.request",
+    "lang": "hu",
+    "value": "Kérés"
+  },
+  {
+    "_id": "i18n-message-hu-contact-chat-approve",
+    "key": "contact.chat.approve",
+    "lang": "hu",
+    "value": "Elfogadás"
+  },
+  {
+    "_id": "i18n-message-hu-contact-chat-reject",
+    "key": "contact.chat.reject",
+    "lang": "hu",
+    "value": "Elutasítás"
+  },
+  {
+    "_id": "i18n-message-hu-contact-chat-pending",
+    "key": "contact.chat.pending",
+    "lang": "hu",
+    "value": "Folyamatban"
+  },
+  {
+    "_id": "i18n-message-hu-contact-chat-approved",
+    "key": "contact.chat.approved",
+    "lang": "hu",
+    "value": "Chat"
+  },
+  {
+    "_id": "i18n-message-hu-contact-chat-rejected",
+    "key": "contact.chat.rejected",
+    "lang": "hu",
+    "value": "Elutasítva"
+  },
+  {
+    "_id": "i18n-message-hu-contact-chat-request-message",
+    "key": "contact.chat.request.message",
+    "lang": "hu",
+    "value": "Engedélyt kérsz a kapcsolattól a MyScoutee közvetlen chat használatához?"
+  },
+  {
+    "_id": "i18n-message-hu-contact-chat-approve-message",
+    "key": "contact.chat.approve.message",
+    "lang": "hu",
+    "value": "Engedélyezed a közvetlen chatet? A másik fél bekerül a kapcsolataid közé."
+  },
+  {
+    "_id": "i18n-message-hu-contact-chat-reject-message",
+    "key": "contact.chat.reject.message",
+    "lang": "hu",
+    "value": "Elutasítod ezt a közvetlen chatkérelmet?"
+  },
+  {
+    "_id": "i18n-message-hu-contact-chat-pending-message",
+    "key": "contact.chat.pending.message",
+    "lang": "hu",
+    "value": "A kérelmed válaszra vár."
+  },
+  {
+    "_id": "i18n-message-hu-contact-chat-error",
+    "key": "contact.chat.error",
+    "lang": "hu",
+    "value": "A chatkérelem nem frissíthető. Próbáld újra."
+  },
+  {
+    "_id": "i18n-message-hu-notification-kind-contact-chat-requested-title",
+    "key": "notification.kind.contact-chat-requested.title",
+    "lang": "hu",
+    "value": "Chatkérelem"
+  },
+  {
+    "_id": "i18n-message-hu-notification-kind-contact-chat-requested-message",
+    "key": "notification.kind.contact-chat-requested.message",
+    "lang": "hu",
+    "value": "Közvetlen chatkérelmet kaptál. A Kapcsolatoknál válaszolhatsz."
+  },
+  {
+    "_id": "i18n-message-hu-notification-kind-contact-chat-approved-title",
+    "key": "notification.kind.contact-chat-approved.title",
+    "lang": "hu",
+    "value": "Elfogadott chatkérelem"
+  },
+  {
+    "_id": "i18n-message-hu-notification-kind-contact-chat-approved-message",
+    "key": "notification.kind.contact-chat-approved.message",
+    "lang": "hu",
+    "value": "Elfogadták a közvetlen chatkérelmedet. Most már beszélgethettek."
+  },
+  {
+    "_id": "i18n-message-hu-notification-kind-contact-chat-rejected-title",
+    "key": "notification.kind.contact-chat-rejected.title",
+    "lang": "hu",
+    "value": "Elutasított chatkérelem"
+  },
+  {
+    "_id": "i18n-message-hu-notification-kind-contact-chat-rejected-message",
+    "key": "notification.kind.contact-chat-rejected.message",
+    "lang": "hu",
+    "value": "Elutasították a közvetlen chatkérelmedet."
+  },
+  {
+    "_id": "i18n-message-hu-menu-selection-maximum",
+    "key": "menu.selection.maximum",
+    "lang": "hu",
+    "value": "(max. {count} db)"
   }
 ]

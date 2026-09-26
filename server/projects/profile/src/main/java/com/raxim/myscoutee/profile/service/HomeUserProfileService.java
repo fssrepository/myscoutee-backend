@@ -403,7 +403,7 @@ public class HomeUserProfileService {
         }
         String email = safeText(firebasePrincipal.getEmail());
         String name = admin ? adminDisplayName(email) : "Operator";
-        UserActivitiesDto activities = toUserActivitiesDto(null, 0);
+        UserActivitiesDto activities = toUserActivitiesDto(null, 0, 0);
         UserMenuCountersDto menuCounters = emptyMenuCounters();
         return new UserByIdResponseDto(
                 userId,
@@ -1275,7 +1275,7 @@ public class HomeUserProfileService {
                 nullToEmpty(user.getDeletedAtIso()),
                 false,
                 user.isOperator(),
-                toUserActivitiesDto(user.getActivities(), user.getPaymentRefundsPending()),
+                toUserActivitiesDto(user.getActivities(), user.getPaymentRefundsPending(), user.getContactRequestsPending()),
                 includeImpressions
                         ? new UserNotificationPreferencesDto(
                                 user.getNotificationPreferences() != null
@@ -2115,6 +2115,7 @@ public class HomeUserProfileService {
                 activities == null ? 0 : normalizeCount(activities.adminJobs()),
                 activities == null ? 0 : normalizeCount(activities.adminMetrics()),
                 normalizeCount(user.getPaymentRefundsPending()),
+                normalizeCount(user.getContactRequestsPending()),
                 activities == null ? 0 : normalizeCount(activities.notifications()));
     }
 
@@ -2648,7 +2649,9 @@ public class HomeUserProfileService {
             String requestCursor) {
         UserMenuCountersDto counters = buildMenuCounters(user);
         int cursorPartCount = cursorPartCount(requestCursor);
-        int fingerprintOffset = cursorPartCount >= 44
+        int fingerprintOffset = cursorPartCount >= 45
+                ? 43
+                : cursorPartCount >= 44
                 ? 42
                 : cursorPartCount >= 43
                 ? 41
@@ -2683,6 +2686,7 @@ public class HomeUserProfileService {
                 counters.adminJobs(),
                 counters.adminMetrics(),
                 counters.paymentRefundsPending(),
+                counters.contactRequestsPending(),
                 resolveRealtimeNotificationCount(user, counters.notifications()),
                 hasPreviousImpressionFingerprints && !Objects.equals(previousHostHash, nextHostHash),
                 hasPreviousImpressionFingerprints && !Objects.equals(previousMemberHash, nextMemberHash));
@@ -2750,7 +2754,8 @@ public class HomeUserProfileService {
                 String.valueOf(normalizeCount(counters.notifications())),
                 paymentTotalsFingerprint(user),
                 storedImpressionsFingerprint(storedImpressions == null ? null : storedImpressions.host()),
-                storedImpressionsFingerprint(storedImpressions == null ? null : storedImpressions.member()));
+                storedImpressionsFingerprint(storedImpressions == null ? null : storedImpressions.member()),
+                String.valueOf(normalizeCount(counters.contactRequestsPending())));
     }
 
     private UserPaymentTotalsDto paymentTotalsDto(Users user) {
@@ -2887,7 +2892,7 @@ public class HomeUserProfileService {
 
     private UserActivitiesDto toUserActivitiesDto(
             Users.UserActivitiesRecord activities,
-            Integer paymentRefundsPending) {
+            Integer paymentRefundsPending, Integer contactRequestsPending) {
         if (activities == null) {
             return new UserActivitiesDto(
                     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
@@ -2895,7 +2900,7 @@ public class HomeUserProfileService {
                     new UserEventCountersDto(0, 0, 0, 0, 0, 0, 0),
                     new UserAssetCountersDto(0, 0, 0, 0),
                     new UserEventFeedbackCountersDto(0, 0, 0, 0),
-                    0, 0, normalizeCount(paymentRefundsPending), 0);
+                    0, 0, normalizeCount(paymentRefundsPending), normalizeCount(contactRequestsPending), 0);
         }
         return new UserActivitiesDto(
                 normalizeCount(activities.game()),
@@ -2915,7 +2920,7 @@ public class HomeUserProfileService {
                 toUserEventFeedbackCountersDto(activities.eventFeedback()),
                 normalizeCount(activities.adminJobs()),
                 normalizeCount(activities.adminMetrics()),
-                normalizeCount(paymentRefundsPending),
+                normalizeCount(paymentRefundsPending), normalizeCount(contactRequestsPending),
                 normalizeCount(activities.notifications()));
     }
 
