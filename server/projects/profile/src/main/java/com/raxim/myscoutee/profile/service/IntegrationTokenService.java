@@ -30,6 +30,7 @@ import com.raxim.myscoutee.profile.repository.IntegrationWebhookSubscriptionsRep
 
 @Service
 public class IntegrationTokenService {
+    public static final String MCP_SCOPE = "mcp";
     public static final String ADMIN_SCOPE = "admin-client";
     public static final String INTEGRATION_SCOPE = "integration";
     public static final int MAX_ACTIVE_TOKENS = 3;
@@ -200,7 +201,7 @@ public class IntegrationTokenService {
         return scope.equals(StringUtils.hasText(token.getScope()) ? token.getScope() : INTEGRATION_SCOPE);
     }
 
-    private boolean isActive(IntegrationToken token) {
+    boolean isActive(IntegrationToken token) {
         if (token == null || StringUtils.hasText(token.getRevokedAtIso())) {
             return false;
         }
@@ -211,7 +212,7 @@ public class IntegrationTokenService {
         }
     }
 
-    private IntegrationTokenDto toDto(IntegrationToken token) {
+    IntegrationTokenDto toDto(IntegrationToken token) {
         return new IntegrationTokenDto(
                 token.getId(),
                 token.getName(),
@@ -229,7 +230,7 @@ public class IntegrationTokenService {
         return TOKEN_PREFIX + Base64.getUrlEncoder().withoutPadding().encodeToString(randomBytes);
     }
 
-    private String hash(String value) {
+    static String hash(String value) {
         try {
             byte[] digest = MessageDigest.getInstance("SHA-256")
                     .digest(value.getBytes(StandardCharsets.UTF_8));

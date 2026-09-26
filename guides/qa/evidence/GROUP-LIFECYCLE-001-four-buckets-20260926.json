@@ -1,0 +1,607 @@
+{
+  "checkpoint": "GROUP-LIFECYCLE-001",
+  "adapter": "http",
+  "checkedAt": "2026-09-26T17:43:32.313Z",
+  "actors": [
+    {
+      "actor": "Alex Turner",
+      "checks": [
+        {
+          "bucket": "explore",
+          "sort": "distance",
+          "category": "all",
+          "total": 3,
+          "pages": 3,
+          "ids": [
+            "seed-community-neighbours",
+            "seed-community-trail-club",
+            "seed-community-language-lab"
+          ]
+        },
+        {
+          "bucket": "explore",
+          "sort": "distance",
+          "category": "friends",
+          "total": 0,
+          "pages": 1,
+          "ids": []
+        },
+        {
+          "bucket": "explore",
+          "sort": "distance",
+          "category": "work",
+          "total": 0,
+          "pages": 1,
+          "ids": []
+        },
+        {
+          "bucket": "explore",
+          "sort": "distance",
+          "category": "sport",
+          "total": 1,
+          "pages": 1,
+          "ids": [
+            "seed-community-trail-club"
+          ]
+        },
+        {
+          "bucket": "explore",
+          "sort": "distance",
+          "category": "learning",
+          "total": 1,
+          "pages": 1,
+          "ids": [
+            "seed-community-language-lab"
+          ]
+        },
+        {
+          "bucket": "explore",
+          "sort": "distance",
+          "category": "hobbies",
+          "total": 0,
+          "pages": 1,
+          "ids": []
+        },
+        {
+          "bucket": "explore",
+          "sort": "distance",
+          "category": "neighbourhood",
+          "total": 1,
+          "pages": 1,
+          "ids": [
+            "seed-community-neighbours"
+          ]
+        },
+        {
+          "bucket": "explore",
+          "sort": "updated",
+          "category": "all",
+          "total": 3,
+          "pages": 3,
+          "ids": [
+            "seed-community-language-lab",
+            "seed-community-neighbours",
+            "seed-community-trail-club"
+          ]
+        },
+        {
+          "bucket": "explore",
+          "sort": "updated",
+          "category": "friends",
+          "total": 0,
+          "pages": 1,
+          "ids": []
+        },
+        {
+          "bucket": "explore",
+          "sort": "updated",
+          "category": "work",
+          "total": 0,
+          "pages": 1,
+          "ids": []
+        },
+        {
+          "bucket": "explore",
+          "sort": "updated",
+          "category": "sport",
+          "total": 1,
+          "pages": 1,
+          "ids": [
+            "seed-community-trail-club"
+          ]
+        },
+        {
+          "bucket": "explore",
+          "sort": "updated",
+          "category": "learning",
+          "total": 1,
+          "pages": 1,
+          "ids": [
+            "seed-community-language-lab"
+          ]
+        },
+        {
+          "bucket": "explore",
+          "sort": "updated",
+          "category": "hobbies",
+          "total": 0,
+          "pages": 1,
+          "ids": []
+        },
+        {
+          "bucket": "explore",
+          "sort": "updated",
+          "category": "neighbourhood",
+          "total": 1,
+          "pages": 1,
+          "ids": [
+            "seed-community-neighbours"
+          ]
+        },
+        {
+          "bucket": "hosting",
+          "sort": "distance",
+          "category": "all",
+          "total": 2,
+          "pages": 2,
+          "ids": [
+            "seed-community-design-circle",
+            "seed-community-seattle-friends"
+          ]
+        },
+        {
+          "bucket": "hosting",
+          "sort": "updated",
+          "category": "all",
+          "total": 2,
+          "pages": 2,
+          "ids": [
+            "seed-community-design-circle",
+            "seed-community-seattle-friends"
+          ]
+        },
+        {
+          "bucket": "participation",
+          "sort": "distance",
+          "category": "all",
+          "total": 3,
+          "pages": 3,
+          "ids": [
+            "seed-community-study-buddies",
+            "seed-community-photo-walks",
+            "seed-community-makers"
+          ]
+        },
+        {
+          "bucket": "participation",
+          "sort": "updated",
+          "category": "all",
+          "total": 3,
+          "pages": 3,
+          "ids": [
+            "seed-community-makers",
+            "seed-community-photo-walks",
+            "seed-community-study-buddies"
+          ]
+        },
+        {
+          "bucket": "invitations",
+          "sort": "distance",
+          "category": "all",
+          "total": 1,
+          "pages": 1,
+          "ids": [
+            "seed-community-game-night"
+          ]
+        },
+        {
+          "bucket": "invitations",
+          "sort": "updated",
+          "category": "all",
+          "total": 1,
+          "pages": 1,
+          "ids": [
+            "seed-community-game-night"
+          ]
+        }
+      ],
+      "inviteOnlyDetailStatus": 404
+    },
+    {
+      "actor": "Nagy Eszter",
+      "checks": [
+        {
+          "bucket": "explore",
+          "sort": "distance",
+          "category": "all",
+          "total": 3,
+          "pages": 3,
+          "ids": [
+            "seed-community-language-lab",
+            "seed-community-study-buddies",
+            "seed-community-makers"
+          ]
+        },
+        {
+          "bucket": "explore",
+          "sort": "distance",
+          "category": "friends",
+          "total": 0,
+          "pages": 1,
+          "ids": []
+        },
+        {
+          "bucket": "explore",
+          "sort": "distance",
+          "category": "work",
+          "total": 1,
+          "pages": 1,
+          "ids": [
+            "seed-community-makers"
+          ]
+        },
+        {
+          "bucket": "explore",
+          "sort": "distance",
+          "category": "sport",
+          "total": 0,
+          "pages": 1,
+          "ids": []
+        },
+        {
+          "bucket": "explore",
+          "sort": "distance",
+          "category": "learning",
+          "total": 2,
+          "pages": 2,
+          "ids": [
+            "seed-community-language-lab",
+            "seed-community-study-buddies"
+          ]
+        },
+        {
+          "bucket": "explore",
+          "sort": "distance",
+          "category": "hobbies",
+          "total": 0,
+          "pages": 1,
+          "ids": []
+        },
+        {
+          "bucket": "explore",
+          "sort": "distance",
+          "category": "neighbourhood",
+          "total": 0,
+          "pages": 1,
+          "ids": []
+        },
+        {
+          "bucket": "explore",
+          "sort": "updated",
+          "category": "all",
+          "total": 3,
+          "pages": 3,
+          "ids": [
+            "seed-community-language-lab",
+            "seed-community-makers",
+            "seed-community-study-buddies"
+          ]
+        },
+        {
+          "bucket": "explore",
+          "sort": "updated",
+          "category": "friends",
+          "total": 0,
+          "pages": 1,
+          "ids": []
+        },
+        {
+          "bucket": "explore",
+          "sort": "updated",
+          "category": "work",
+          "total": 1,
+          "pages": 1,
+          "ids": [
+            "seed-community-makers"
+          ]
+        },
+        {
+          "bucket": "explore",
+          "sort": "updated",
+          "category": "sport",
+          "total": 0,
+          "pages": 1,
+          "ids": []
+        },
+        {
+          "bucket": "explore",
+          "sort": "updated",
+          "category": "learning",
+          "total": 2,
+          "pages": 2,
+          "ids": [
+            "seed-community-language-lab",
+            "seed-community-study-buddies"
+          ]
+        },
+        {
+          "bucket": "explore",
+          "sort": "updated",
+          "category": "hobbies",
+          "total": 0,
+          "pages": 1,
+          "ids": []
+        },
+        {
+          "bucket": "explore",
+          "sort": "updated",
+          "category": "neighbourhood",
+          "total": 0,
+          "pages": 1,
+          "ids": []
+        },
+        {
+          "bucket": "hosting",
+          "sort": "distance",
+          "category": "all",
+          "total": 2,
+          "pages": 2,
+          "ids": [
+            "seed-community-neighbours",
+            "seed-community-trail-club"
+          ]
+        },
+        {
+          "bucket": "hosting",
+          "sort": "updated",
+          "category": "all",
+          "total": 2,
+          "pages": 2,
+          "ids": [
+            "seed-community-neighbours",
+            "seed-community-trail-club"
+          ]
+        },
+        {
+          "bucket": "participation",
+          "sort": "distance",
+          "category": "all",
+          "total": 2,
+          "pages": 2,
+          "ids": [
+            "seed-community-photo-walks",
+            "seed-community-seattle-friends"
+          ]
+        },
+        {
+          "bucket": "participation",
+          "sort": "updated",
+          "category": "all",
+          "total": 2,
+          "pages": 2,
+          "ids": [
+            "seed-community-photo-walks",
+            "seed-community-seattle-friends"
+          ]
+        },
+        {
+          "bucket": "invitations",
+          "sort": "distance",
+          "category": "all",
+          "total": 0,
+          "pages": 1,
+          "ids": []
+        },
+        {
+          "bucket": "invitations",
+          "sort": "updated",
+          "category": "all",
+          "total": 0,
+          "pages": 1,
+          "ids": []
+        }
+      ]
+    },
+    {
+      "actor": "Maya Stone",
+      "checks": [
+        {
+          "bucket": "explore",
+          "sort": "distance",
+          "category": "all",
+          "total": 4,
+          "pages": 4,
+          "ids": [
+            "seed-community-photo-walks",
+            "seed-community-trail-club",
+            "seed-community-study-buddies",
+            "seed-community-makers"
+          ]
+        },
+        {
+          "bucket": "explore",
+          "sort": "distance",
+          "category": "friends",
+          "total": 0,
+          "pages": 1,
+          "ids": []
+        },
+        {
+          "bucket": "explore",
+          "sort": "distance",
+          "category": "work",
+          "total": 1,
+          "pages": 1,
+          "ids": [
+            "seed-community-makers"
+          ]
+        },
+        {
+          "bucket": "explore",
+          "sort": "distance",
+          "category": "sport",
+          "total": 1,
+          "pages": 1,
+          "ids": [
+            "seed-community-trail-club"
+          ]
+        },
+        {
+          "bucket": "explore",
+          "sort": "distance",
+          "category": "learning",
+          "total": 1,
+          "pages": 1,
+          "ids": [
+            "seed-community-study-buddies"
+          ]
+        },
+        {
+          "bucket": "explore",
+          "sort": "distance",
+          "category": "hobbies",
+          "total": 1,
+          "pages": 1,
+          "ids": [
+            "seed-community-photo-walks"
+          ]
+        },
+        {
+          "bucket": "explore",
+          "sort": "distance",
+          "category": "neighbourhood",
+          "total": 0,
+          "pages": 1,
+          "ids": []
+        },
+        {
+          "bucket": "explore",
+          "sort": "updated",
+          "category": "all",
+          "total": 4,
+          "pages": 4,
+          "ids": [
+            "seed-community-makers",
+            "seed-community-photo-walks",
+            "seed-community-study-buddies",
+            "seed-community-trail-club"
+          ]
+        },
+        {
+          "bucket": "explore",
+          "sort": "updated",
+          "category": "friends",
+          "total": 0,
+          "pages": 1,
+          "ids": []
+        },
+        {
+          "bucket": "explore",
+          "sort": "updated",
+          "category": "work",
+          "total": 1,
+          "pages": 1,
+          "ids": [
+            "seed-community-makers"
+          ]
+        },
+        {
+          "bucket": "explore",
+          "sort": "updated",
+          "category": "sport",
+          "total": 1,
+          "pages": 1,
+          "ids": [
+            "seed-community-trail-club"
+          ]
+        },
+        {
+          "bucket": "explore",
+          "sort": "updated",
+          "category": "learning",
+          "total": 1,
+          "pages": 1,
+          "ids": [
+            "seed-community-study-buddies"
+          ]
+        },
+        {
+          "bucket": "explore",
+          "sort": "updated",
+          "category": "hobbies",
+          "total": 1,
+          "pages": 1,
+          "ids": [
+            "seed-community-photo-walks"
+          ]
+        },
+        {
+          "bucket": "explore",
+          "sort": "updated",
+          "category": "neighbourhood",
+          "total": 0,
+          "pages": 1,
+          "ids": []
+        },
+        {
+          "bucket": "hosting",
+          "sort": "distance",
+          "category": "all",
+          "total": 1,
+          "pages": 1,
+          "ids": [
+            "seed-community-language-lab"
+          ]
+        },
+        {
+          "bucket": "hosting",
+          "sort": "updated",
+          "category": "all",
+          "total": 1,
+          "pages": 1,
+          "ids": [
+            "seed-community-language-lab"
+          ]
+        },
+        {
+          "bucket": "participation",
+          "sort": "distance",
+          "category": "all",
+          "total": 2,
+          "pages": 2,
+          "ids": [
+            "seed-community-neighbours",
+            "seed-community-seattle-friends"
+          ]
+        },
+        {
+          "bucket": "participation",
+          "sort": "updated",
+          "category": "all",
+          "total": 2,
+          "pages": 2,
+          "ids": [
+            "seed-community-neighbours",
+            "seed-community-seattle-friends"
+          ]
+        },
+        {
+          "bucket": "invitations",
+          "sort": "distance",
+          "category": "all",
+          "total": 0,
+          "pages": 1,
+          "ids": []
+        },
+        {
+          "bucket": "invitations",
+          "sort": "updated",
+          "category": "all",
+          "total": 0,
+          "pages": 1,
+          "ids": []
+        }
+      ]
+    }
+  ]
+}

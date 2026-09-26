@@ -45,3 +45,12 @@ blank/null/custom choices. Read the default from the packaged system seed.
 seed set for a container-only update. Feed is a new backend collection; the
 existing startup initializer owns its indexes. No event, asset, feed, payment,
 membership or user record is rewritten by these migrations.
+
+## 007 — stored community pending-member counter (1.3.0)
+
+Initialize `communityGroups.pendingMembers` only where the field is missing,
+using that group's pending `activityMembers` records. Existing counter values,
+groups and memberships remain intact. Normal membership writes maintain the
+counter afterward; reads consume it directly. Demo/E2E and frontend local seeds
+include it, and retained local storage initializes missing values once during
+hydration. This step participates in the same packaged ordered migration chain.

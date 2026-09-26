@@ -17,5 +17,7 @@ public interface EventTicketsRepository extends MongoRepository<EventTicket, Str
 
     List<EventTicket> findByEventId(String eventId);
 
+    List<EventTicket> findByHolderUserIdInAndStatus(java.util.Collection<String> holderUserIds, String status);
+
     List<EventTicket> findByHolderUserIdAndStatus(String holderUserId, String status);
 }

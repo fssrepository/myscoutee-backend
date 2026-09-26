@@ -146,11 +146,23 @@ public class AccessControlService implements AccessPolicyData {
         }
 
         AccessPolicy policy = accessPolicyCache.get().get(normalizedPolicyKey);
+        String actorId = normalizeId(actorUserId);
+        if (policy != null && "chat".equals(policy.resourceType())) {
+            String chatActorId = resolveChatActorUserId(normalizedResourceId, actorId);
+            if (java.util.Objects.equals(actorId, normalizedSubjectUserId)) {
+                normalizedSubjectUserId = chatActorId;
+            }
+            actorId = chatActorId;
+        }
         return policy != null && policy.allows(
-                normalizeId(actorUserId),
+                actorId,
                 normalizedSubjectUserId,
                 normalizedResourceId,
                 this);
+    }
+
+    public String resolveChatActorUserId(String chatId, String profileId) {
+        return chatPolicyFacts.resolveActorUserId(chatId, profileId);
     }
 
     public boolean canSubmitEventResourceAssignment(Authentication authentication, ActivitySubEventResourceStateDto request) {
@@ -346,7 +358,11 @@ public class AccessControlService implements AccessPolicyData {
     }
 
     private boolean canCurrentActorUseAssetPolicy(String policyKey, String subjectUserId, String resourceId) {
-        if (!canCurrentActorUsePolicy(policyKey, subjectUserId, resourceId)) {
+        boolean allowed = requiresAuthenticatedActor()
+                ? can(policyKey, memberPolicyFacts.accountUserId(resolveActorUserId(
+                        SecurityContextHolder.getContext().getAuthentication())), subjectUserId, resourceId)
+                : canCurrentActorUsePolicy(policyKey, subjectUserId, resourceId);
+        if (!allowed) {
             return false;
         }
         boolean existingOwnerAction = AccessPolicyKeys.ASSET_EDIT.equals(policyKey)

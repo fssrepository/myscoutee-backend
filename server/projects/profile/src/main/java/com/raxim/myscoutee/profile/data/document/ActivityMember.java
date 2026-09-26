@@ -58,6 +58,16 @@ public class ActivityMember {
     private String createdUser;
     private String updatedDate;
     private String updatedUser;
+    // Unread member changes, maintained by the notification write path.
+    private String communityAction;
+    private String communityActor;
+    public String getCommunityAction() { return communityAction; }
+    public void setCommunityAction(String value) { communityAction = value; }
+    public String getCommunityActor() { return communityActor; }
+    public void setCommunityActor(String value) { communityActor = value; }
+    private Long communityUpdates;
+    public Long getCommunityUpdates() { return communityUpdates; }
+    public void setCommunityUpdates(Long value) { communityUpdates = value; }
 
     public String getId() {
         return id;

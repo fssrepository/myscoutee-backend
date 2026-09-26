@@ -18,6 +18,10 @@ public interface UsersRepository extends MongoRepository<Users, String> {
     @org.springframework.data.mongodb.repository.Update("{ '$unset': { 'activeWorkspaceGroupId': '' } }")
     long clearActiveWorkspace(String accountId, String groupId);
 
+    @Query("{ 'userId': ?0 }")
+    @org.springframework.data.mongodb.repository.Update("{ '$set': { 'locationCoordinates': ?1, 'partitionKey': ?2 } }")
+    long updateLocation(String userId, Users.LocationCoordinatesRecord coordinates, String partitionKey);
+
     Optional<Users> findByWorkspaceGroupIdAndAccountUserId(String workspaceGroupId, String accountUserId);
     List<Users> findByAccountUserId(String accountUserId);
     List<Users> findByWorkspaceGroupId(String workspaceGroupId);

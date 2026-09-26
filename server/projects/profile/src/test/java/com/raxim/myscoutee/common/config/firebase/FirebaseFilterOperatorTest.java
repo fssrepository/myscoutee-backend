@@ -23,6 +23,39 @@ import com.raxim.myscoutee.profile.service.UserLoginSessionService;
 import jakarta.servlet.FilterChain;
 
 class FirebaseFilterOperatorTest {
+    @Test void verifiedIntegrationClientDoesNotNeedItsOwnersBrowserSession() throws Exception {
+        var sessions = mock(UserLoginSessionService.class);
+        when(sessions.isCurrentUserEnrolled()).thenReturn(true);
+        var principal = new FirebasePrincipal("owner", null, "INTEGRATION");
+        var authentication = new org.springframework.security.authentication.UsernamePasswordAuthenticationToken(
+                principal, null, principal.getAuthorities());
+        authentication.setDetails(new com.raxim.myscoutee.profile.service.IntegrationTokenService.AuthenticatedIntegrationClient("owner", "key", "client"));
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+        var filter = new FirebaseFilter(mock(FirebaseService.class), new ConfigProperties(), mock(FirebaseTokenVerifier.class),
+                sessions, mock(com.raxim.myscoutee.profile.service.media.MediaSessionAccessService.class));
+        var request = new MockHttpServletRequest("POST", "/integrations/v1/connect");
+        var response = new MockHttpServletResponse();var chain = mock(FilterChain.class);
+        filter.doFilter(request, response, chain);
+        assertThat(response.getStatus()).isEqualTo(200); verify(chain).doFilter(request, response);
+        verify(sessions, never()).isCurrentUserEnrolled();
+        verify(sessions, never()).isCurrentSessionActive(org.mockito.ArgumentMatchers.any());
+    }
+
+    @Test void apiPathOrClaimedRoleAloneCannotBypassAnEnrolledBrowserSession() throws Exception {
+        for (String role : List.of("U", "INTEGRATION")) {
+            var sessions = mock(UserLoginSessionService.class);
+            when(sessions.isCurrentUserEnrolled()).thenReturn(true);
+            var principal = new FirebasePrincipal("owner", null, role);
+            SecurityContextHolder.getContext().setAuthentication(new FirebaseAuthenticationToken(principal, null, principal.getAuthorities()));
+            var filter = new FirebaseFilter(mock(FirebaseService.class), new ConfigProperties(), mock(FirebaseTokenVerifier.class),
+                    sessions, mock(com.raxim.myscoutee.profile.service.media.MediaSessionAccessService.class));
+            var response = new MockHttpServletResponse();var chain = mock(FilterChain.class);
+            filter.doFilter(new MockHttpServletRequest("POST", "/integrations/v1/connect"), response, chain);
+            assertThat(response.getStatus()).isEqualTo(401);
+            org.mockito.Mockito.verifyNoInteractions(chain);
+        }
+    }
+
     @AfterEach
     void clearSecurityContext() {
         SecurityContextHolder.clearContext();

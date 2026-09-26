@@ -27,8 +27,9 @@ public final class CommunityGroupProfileMapper {
         var i = user.getImpressions(); var a = user.getActivities();
         long flags = i == null ? 0 : (i.host() != null && count(i.host().unreadCount()) > 0 ? 1 : 0)
                 + (i.member() != null && count(i.member().unreadCount()) > 0 ? 1 : 0);
-        return flags + (a == null ? 0 : count(a.game()) + count(a.chats()) + (a.event() == null ? 0 : count(a.event().all()))
-                + count(a.cars()) + count(a.accommodation()) + count(a.supplies()) + count(a.tickets()) + count(a.contacts()) + count(a.feedback()));
+        return flags + count(user.getPaymentRefundsPending())
+                + (a == null ? 0 : count(a.game()) + count(a.chats())
+                + (a.event() == null ? 0 : count(a.event().all())) + count(a.feedback()));
     }
     private static long count(Integer value) { return value == null ? 0 : Math.max(0, value); }
 }

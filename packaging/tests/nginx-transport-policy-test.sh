@@ -84,6 +84,7 @@ docker_args() {
 
   printf '%s\n' \
     --add-host profilemanagement:127.0.0.1 \
+    --add-host mcp:127.0.0.1 \
     --add-host payment-simulator:127.0.0.1 \
     --add-host mongodb:127.0.0.1 \
     -e DOMAIN=transport.test \

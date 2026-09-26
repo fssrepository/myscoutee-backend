@@ -43,6 +43,8 @@ class ActivitiesInviteCandidatesServiceTest {
     private HomeUserProfileService homeUserProfileService;
     @Mock
     private NavigatorContactsProfilesRepository navigatorContactsProfilesRepository;
+    @Mock
+    private CommunityGroupsService communityGroups;
 
     private ActivitiesInviteCandidatesService service;
 
@@ -55,6 +57,24 @@ class ActivitiesInviteCandidatesServiceTest {
                 activitiesMembersService,
                 homeUserProfileService,
                 navigatorContactsProfilesRepository);
+        org.springframework.test.util.ReflectionTestUtils.setField(service, "communityGroups", communityGroups);
+    }
+
+    @Test
+    void communityCandidatesUseAccountAndExcludeSelf() {
+        Users account = user("account", "Account");
+        Users other = user("other", "Other");
+        when(communityGroups.actor("group-profile")).thenReturn(account);
+        when(userRatesRepository.findRelevantByUserIds(List.of("account")))
+                .thenReturn(List.of(singleMetRate("account", "account", 1), singleMetRate("account", "other", 1)));
+        when(usersRepository.findByUserIdIn(Set.of("other"))).thenReturn(List.of(other));
+        when(homeUserProfileService.isActivityRateVisibleUser(other)).thenReturn(true);
+
+        var result = service.queryCandidates(new ActivityInviteCandidatesRequestDto(
+                "group-profile", "community", "community", "recent"));
+
+        assertThat(result.items()).extracting(entry -> entry.userId()).containsExactly("other");
+        org.mockito.Mockito.verify(communityGroups).requireAdmin(account, "community");
     }
 
     @Test

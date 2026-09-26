@@ -61,10 +61,12 @@ public class ActivitiesInviteCandidatesService {
             return emptyPage(page, pageSize);
         }
 
-        Users activeUser = homeUserProfileService.resolveCurrentUser(request.activeUserId());
+        String ownerType = normalizeOwnerType(request.ownerType());
+        Users activeUser = "community".equals(ownerType)
+                ? communityGroups.actor(request.activeUserId())
+                : homeUserProfileService.resolveCurrentUser(request.activeUserId());
         String activeUserId = normalizeId(activeUser == null ? null : activeUser.getId());
         String ownerId = normalizeId(request.ownerId());
-        String ownerType = normalizeOwnerType(request.ownerType());
         if (!StringUtils.hasText(activeUserId) || !StringUtils.hasText(ownerId) || !StringUtils.hasText(ownerType)) {
             return emptyPage(page, pageSize);
         }

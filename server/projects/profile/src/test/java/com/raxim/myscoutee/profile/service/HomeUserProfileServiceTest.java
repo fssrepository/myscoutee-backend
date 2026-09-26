@@ -178,6 +178,68 @@ class HomeUserProfileServiceTest {
 
 
     @Test
+    void profileLoadPersistsInitialLocationAsFieldsAndReturnsIt() {
+        Users member = user("active", 0d);
+        when(usersRepository.findByUserId("active")).thenReturn(Optional.of(member));
+        when(countryPartitionService.resolvePartitionKey(new LocationCoordinatesDto(47d, 19d), member.getPartitionKey())).thenReturn("HU");
+        var result = service.loadProfileExtById("active", 47d, 19d);
+        assertThat(result.profileExt().profile().locationCoordinates()).isEqualTo(new LocationCoordinatesDto(47d, 19d));
+        verify(usersRepository).updateLocation("active", new Users.LocationCoordinatesRecord(47d, 19d), "HU");
+        verify(usersRepository, never()).save(any());
+    }
+
+    @Test
+    void profileLoadWithoutCoordinatesPreservesStoredLocationAndDoesNotWriteIt() {
+        Users member = user("active", 0d);
+        member.setPartitionKey("HU");
+        member.setLocationCoordinates(new Users.LocationCoordinatesRecord(47d, 19d));
+        when(usersRepository.findByUserId("active")).thenReturn(Optional.of(member));
+        lenient().when(countryPartitionService.resolvePartitionKey(any())).thenReturn("HU");
+        var result = service.loadProfileExtById("active", null, null);
+        assertThat(result.profileExt().profile().locationCoordinates()).isEqualTo(new LocationCoordinatesDto(47d, 19d));
+        verify(usersRepository, never()).updateLocation(any(), any(), any());
+    }
+
+    @Test
+    void profileLoadRejectsInvalidOrUnauthorizedLocationWrites() {
+        assertThatThrownBy(() -> service.loadProfileExtById("active", 91d, 19d))
+                .isInstanceOf(org.springframework.web.server.ResponseStatusException.class);
+        assertThatThrownBy(() -> service.loadProfileExtById("active", 47d, null))
+                .isInstanceOf(org.springframework.web.server.ResponseStatusException.class);
+        Users member = user("active", 0d);
+        when(usersRepository.findByUserId("active")).thenReturn(Optional.of(member));
+        when(accessControlService.canCurrentActorEditProfile("active")).thenReturn(false);
+        assertThatThrownBy(() -> service.loadProfileExtById("active", 47d, 19d))
+                .isInstanceOf(org.springframework.web.server.ResponseStatusException.class);
+        verify(usersRepository, never()).updateLocation(any(), any(), any());
+    }
+
+    @Test
+    void profileLoadRejectsUnsupportedRegionBeforeWriting() {
+        when(usersRepository.findByUserId("active")).thenReturn(Optional.of(user("active", 0d)));
+        when(regionSecurityProperties.isEnabled()).thenReturn(true);
+        assertThatThrownBy(() -> service.loadProfileExtById("active", 47d, 19d))
+                .isInstanceOf(org.springframework.web.server.ResponseStatusException.class);
+        verify(usersRepository, never()).updateLocation(any(), any(), any());
+    }
+
+    @Test
+    void profileLoadDiscardsUnsupportedPendingLocationAndReturnsAcceptedStoredPoint() {
+        Users member = user("active", 0d);
+        member.setPartitionKey("country:hu");
+        member.setLocationCoordinates(new Users.LocationCoordinatesRecord(47.4979, 19.0402));
+        when(usersRepository.findByUserId("active")).thenReturn(Optional.of(member));
+        when(regionSecurityProperties.isEnabled()).thenReturn(true);
+        var result = service.loadProfileExtById("active", 30.2672, -97.7431);
+        assertThat(result.profileExt().profile().locationCoordinates())
+                .isEqualTo(new LocationCoordinatesDto(47.4979, 19.0402));
+        verify(usersRepository, never()).updateLocation(any(), any(), any());
+        verify(usersRepository, never()).save(any());
+        verify(countryPartitionService).resolvePartitionKey(new LocationCoordinatesDto(30.2672, -97.7431), "country:hu");
+        verify(countryPartitionService, never()).resolvePartitionKey(new LocationCoordinatesDto(47.4979, 19.0402), "country:hu");
+    }
+
+    @Test
     void newProfileCarriesReferralIntoSavedProfileAndAudit() {
         var referral = new com.raxim.myscoutee.profile.data.document.AffiliateRegistration(
                 "new-member", "referrer", "code", "2026-09-22T00:00:00Z");
@@ -540,6 +602,29 @@ class HomeUserProfileServiceTest {
         assertThat(service.queryDemoUserListItems(null, "operator"))
                 .extracting(item -> item.id())
                 .containsExactly("operator-demo-dev");
+        assertThat(service.queryDemoUserListItems(null, "operator").getFirst().locationRequired()).isFalse();
+        assertThat(service.queryDemoUserListItems(null, "admin").getFirst().locationRequired()).isFalse();
+    }
+
+    @Test
+    void demoListMarksMissingAndUnsupportedLocationsAndChecksDuplicatePointsOnce() {
+        Users missing = user("missing", 0d);
+        Users unsupported = user("unsupported", 0d);
+        unsupported.setLocationCoordinates(new Users.LocationCoordinatesRecord(30.2672, -97.7431));
+        Users valid = user("valid", 0d);
+        valid.setLocationCoordinates(new Users.LocationCoordinatesRecord(47.4979, 19.0402));
+        Users duplicate = user("duplicate", 0d);
+        duplicate.setLocationCoordinates(valid.getLocationCoordinates());
+        when(usersRepository.findAllByOrderByNameAscUserIdAsc()).thenReturn(List.of(missing, unsupported, valid, duplicate));
+        when(regionSecurityProperties.isEnabled()).thenReturn(true);
+        when(countryPartitionService.resolvePartitionKey(new LocationCoordinatesDto(30.2672, -97.7431))).thenReturn(null);
+        when(countryPartitionService.resolvePartitionKey(new LocationCoordinatesDto(47.4979, 19.0402))).thenReturn("country:hu");
+
+        assertThat(service.queryDemoUserListItems())
+                .extracting(item -> item.id(), item -> item.locationRequired())
+                .containsExactly(tuple("missing", true), tuple("unsupported", true), tuple("valid", false), tuple("duplicate", false));
+        verify(countryPartitionService, times(1)).resolvePartitionKey(new LocationCoordinatesDto(47.4979, 19.0402));
+        verify(countryPartitionService, times(1)).resolvePartitionKey(new LocationCoordinatesDto(30.2672, -97.7431));
     }
 
     @Test
@@ -754,7 +839,7 @@ class HomeUserProfileServiceTest {
         active.setLocationCoordinates(new Users.LocationCoordinatesRecord(30.2768d, -97.7479d));
         UserDto request = service.toGameCardUserDto(active);
         when(regionSecurityProperties.isEnabled()).thenReturn(true);
-        when(countryPartitionService.resolvePartitionKey(request.locationCoordinates())).thenReturn(null);
+        when(countryPartitionService.resolvePartitionKey(request.locationCoordinates(), "country:hu")).thenReturn(null);
         when(usersRepository.findByUserId("active")).thenReturn(Optional.of(active));
         when(usersRepository.save(any(Users.class))).thenAnswer(invocation -> invocation.getArgument(0));
 
@@ -774,7 +859,7 @@ class HomeUserProfileServiceTest {
                 service.toGameCardUserDto(active),
                 new LocationCoordinatesDto(30.2768d, -97.7479d));
         when(regionSecurityProperties.isEnabled()).thenReturn(true);
-        when(countryPartitionService.resolvePartitionKey(request.locationCoordinates())).thenReturn(null);
+        when(countryPartitionService.resolvePartitionKey(request.locationCoordinates(), "country:hu")).thenReturn(null);
         when(usersRepository.findByUserId("active")).thenReturn(Optional.of(active));
 
         assertThatThrownBy(() -> service.saveUserProfile(request))
@@ -914,6 +999,43 @@ class HomeUserProfileServiceTest {
     }
 
     @Test
+    void realtimeCursorSupportsGroupProfileIdsAndRetainedUnescapedCursors() {
+        String profileId = "group:seed-community-design-circle:account";
+        Users active = user(profileId, 0d);
+        when(usersRepository.findByUserId(profileId)).thenReturn(Optional.of(active));
+        var baseline = service.queryRealtimeSnapshot(new UserRealtimeLongPollRequestDto(profileId, null));
+        String retainedCursor = baseline.cursor().replace("%3A", ":");
+        for (String cursor : List.of(baseline.cursor(), retainedCursor)) {
+            var unchanged = service.queryRealtimeSnapshot(new UserRealtimeLongPollRequestDto(profileId, cursor));
+            assertThat(unchanged.counters().impressionsHostChanged()).isFalse();
+            assertThat(unchanged.counters().impressionsMemberChanged()).isFalse();
+        }
+        active.setImpressions(new Users.UserImpressionsRecord(null, storedImpressionsSection()));
+        service.evictUserReadCaches(profileId);
+        var changed = service.queryRealtimeSnapshot(new UserRealtimeLongPollRequestDto(profileId, retainedCursor));
+        assertThat(changed.counters().impressionsHostChanged()).isFalse();
+        assertThat(changed.counters().impressionsMemberChanged()).isTrue();
+        var unchanged = service.queryRealtimeSnapshot(new UserRealtimeLongPollRequestDto(profileId, changed.cursor()));
+        assertThat(unchanged.counters().impressionsMemberChanged()).isFalse();
+    }
+
+    @Test
+    void realtimeSnapshotCarriesStoredContactRequestsIndependentlyOfSavedContacts() {
+        Users active = user("contact-counters", 0d);
+        active.setContactRequestsPending(2);
+        when(usersRepository.findByUserId("contact-counters")).thenReturn(Optional.of(active));
+        var before = service.queryRealtimeSnapshot(new UserRealtimeLongPollRequestDto("contact-counters", null));
+        assertThat(before.counters().contactRequestsPending()).isEqualTo(2);
+        active.setContactRequestsPending(1);
+        var after = service.queryRealtimeSnapshot(new UserRealtimeLongPollRequestDto("contact-counters", before.cursor()));
+        assertThat(after.counters().contactRequestsPending()).isEqualTo(1);
+        assertThat(after.counters().contacts()).isEqualTo(before.counters().contacts());
+        assertThat(after.cursor()).isNotEqualTo(before.cursor());
+        assertThat(after.counters().impressionsHostChanged()).isFalse();
+        assertThat(after.counters().impressionsMemberChanged()).isFalse();
+    }
+
+    @Test
     void realtimeSnapshotUsesAuthoritativeUnreadNotificationCount() {
         Users active = user("active", 0d);
         active.setActivities(storedActivityCounters());
@@ -928,6 +1050,32 @@ class HomeUserProfileServiceTest {
                 new UserRealtimeLongPollRequestDto("active", null));
 
         assertThat(snapshot.counters().notifications()).isEqualTo(41);
+    }
+
+    @Test
+    void groupMenuUsesBaseAssetCountersWithoutCopyingBaseEventCounters() {
+        Users account = user("account", 0d);
+        account.setActivities(storedActivityCounters());
+        account.setContactRequestsPending(2);
+        when(usersRepository.findByUserId("account")).thenReturn(Optional.of(account));
+        for (String id : List.of("group-a-profile", "group-b-profile")) {
+            Users group = user(id, 0d);
+            group.setAccountUserId("account");
+            group.setWorkspaceGroupId(id);
+            group.setActivities(null);
+            when(usersRepository.findByUserId(id)).thenReturn(Optional.of(group));
+            var counters = service.queryMenuCounters(id);
+            assertThat(counters.cars()).isEqualTo(8);
+            assertThat(counters.accommodation()).isEqualTo(9);
+            assertThat(counters.supplies()).isEqualTo(10);
+            assertThat(counters.tickets()).isEqualTo(11);
+            assertThat(counters.contacts()).isEqualTo(12);
+            assertThat(counters.contactRequestsPending()).isEqualTo(2);
+            assertThat(counters.asset().suppliesPending()).isEqualTo(20);
+            assertThat(counters.events()).isZero();
+        }
+        assertThat(service.queryMenuCounters("account").events()).isEqualTo(6);
+        verifyNoInteractions(assetsRepository, activityEventsRepository, eventParticipationTicketService);
     }
 
     @Test

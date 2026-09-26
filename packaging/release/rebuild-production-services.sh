@@ -10,8 +10,8 @@ REPO_ROOT="$(cd -- "${SCRIPT_DIR}/../.." && pwd)"
 SERVER_DIR="${MYSCOUTEE_SERVER_DIR:-${REPO_ROOT}/server}"
 FRONTEND_DIR="${MYSCOUTEE_FRONTEND_DIR:-${REPO_ROOT}/frontend}"
 
-PRIVATE_BUILD_SERVICES=(profilemanagement nginx minio payment-simulator)
-PRIVATE_RELOAD_SERVICES=(profilemanagement nginx minio payment-simulator)
+PRIVATE_BUILD_SERVICES=(profilemanagement nginx minio payment-simulator mcp)
+PRIVATE_RELOAD_SERVICES=(profilemanagement nginx minio payment-simulator mcp)
 BUILD_FRONTEND="${BUILD_FRONTEND:-true}"
 BUILD_BACKEND="${BUILD_BACKEND:-true}"
 BUILD_IMAGES="${BUILD_IMAGES:-true}"
@@ -31,6 +31,7 @@ This targets only project-owned production services:
   - nginx
   - minio
   - payment-simulator
+  - mcp
 
 It intentionally does not build or reload:
   - nginx base image
@@ -56,12 +57,13 @@ Options:
 Environment:
   MYSCOUTEE_SERVER_DIR       Defaults to <repo>/server.
   MYSCOUTEE_FRONTEND_DIR     Defaults to <repo>/frontend.
-  MYSCOUTEE_VERSION          Defaults to server/.env MYSCOUTEE_VERSION, then 1.0.2.
+  MYSCOUTEE_VERSION          Defaults to server/.env MYSCOUTEE_VERSION, then 1.3.0.
   NGINX_BASE_IMAGE           Defaults to myscoutee-nginx:${MYSCOUTEE_VERSION}-base.
   NGINX_PRODUCTION_IMAGE     Defaults to myscoutee-nginx:${MYSCOUTEE_VERSION}-prod.
   MYSCOUTEE_PRODUCTION_IMAGE Defaults to myscoutee-api:${MYSCOUTEE_VERSION}-prod.
   MINIO_PRODUCTION_IMAGE     Defaults to myscoutee-minio:${MYSCOUTEE_VERSION}-prod.
   PAYMENT_SIMULATOR_IMAGE    Defaults to myscoutee-payment-simulator:${MYSCOUTEE_VERSION}-prod.
+  MCP_IMAGE                 Defaults to myscoutee-mcp:${MYSCOUTEE_VERSION}-prod.
   FRONTEND_BUILD_SCRIPT      Defaults to build:prod.
   BUILD_FRONTEND             Defaults to true.
   BUILD_BACKEND              Defaults to true.
@@ -123,7 +125,7 @@ while [[ "$#" -gt 0 ]]; do
 done
 
 VERSION="${MYSCOUTEE_VERSION:-$(read_version)}"
-VERSION="${VERSION:-1.0.2}"
+VERSION="${VERSION:-1.3.0}"
 
 export MYSCOUTEE_VERSION="${VERSION}"
 export NGINX_BASE_IMAGE="${NGINX_BASE_IMAGE:-myscoutee-nginx:${VERSION}-base}"
@@ -131,6 +133,7 @@ export NGINX_PRODUCTION_IMAGE="${NGINX_PRODUCTION_IMAGE:-myscoutee-nginx:${VERSI
 export MYSCOUTEE_PRODUCTION_IMAGE="${MYSCOUTEE_PRODUCTION_IMAGE:-myscoutee-api:${VERSION}-prod}"
 export MINIO_PRODUCTION_IMAGE="${MINIO_PRODUCTION_IMAGE:-myscoutee-minio:${VERSION}-prod}"
 export PAYMENT_SIMULATOR_IMAGE="${PAYMENT_SIMULATOR_IMAGE:-myscoutee-payment-simulator:${VERSION}-prod}"
+export MCP_IMAGE="${MCP_IMAGE:-myscoutee-mcp:${VERSION}-prod}"
 
 if [[ ! -f "${SERVER_DIR}/docker-compose-prod.yml" ]]; then
   echo "Missing compose file: ${SERVER_DIR}/docker-compose-prod.yml" >&2

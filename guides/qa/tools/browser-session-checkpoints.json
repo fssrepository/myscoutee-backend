@@ -14,6 +14,48 @@
     "screenHeight": 1000
   },
   "checkpoints": {
+    "GROUP-LIFECYCLE-001-APP-ADMIN": {
+      "preserveOtherSessions": true,
+      "fixtureCheckpointId": "GROUP-LIFECYCLE-001",
+      "layout": { "columns": 1 },
+      "sessions": [{
+        "actor": "Ava Group moderation administrator",
+        "sessionKind": "demo",
+        "userId": "admin-demo-ava",
+        "targetUrl": "http://localhost/admin",
+        "entryUrl": "http://localhost/entry?redirect=%2Fadmin",
+        "window": { "width": 780, "height": 900, "x": 600, "y": 30 },
+        "expectedName": "Ava Moderation",
+        "autoDismissExplanationGuide": false
+      }]
+    },
+    "GROUP-LIFECYCLE-001": {
+      "preserveOtherSessions": true,
+      "layout": { "columns": 3 },
+      "sessions": [
+        {
+          "actor": "Alex Turner",
+          "sessionKind": "demo",
+          "userId": "af0436815ab38f4864dd1e24",
+          "expectedName": "Alex Turner",
+          "autoDismissExplanationGuide": true
+        },
+        {
+          "actor": "Nagy Eszter",
+          "sessionKind": "demo",
+          "userId": "9f3b3f085e23af6c89dbc432",
+          "expectedName": "Nagy Eszter",
+          "autoDismissExplanationGuide": true
+        },
+        {
+          "actor": "Maya Stone",
+          "sessionKind": "demo",
+          "userId": "1b1c70be2349b3359a8f6f94",
+          "expectedName": "Maya Stone",
+          "autoDismissExplanationGuide": true
+        }
+      ]
+    },
     "INTEGRATION-API-001": {
       "layout": {
         "columns": 2

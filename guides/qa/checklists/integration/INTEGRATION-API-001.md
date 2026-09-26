@@ -32,6 +32,8 @@ seeded or written directly to MongoDB.
 
 ## Pass boundary
 
+### Existing checkpoint acceptance
+
 PASS requires the UI ownership/presentation checks, the persisted id mapping,
 the real Join mutation and the delivered callback. API-only creation without
 the two UI views is not sufficient.

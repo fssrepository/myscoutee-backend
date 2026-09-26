@@ -70,6 +70,20 @@ class UserActivityCountersServiceTest {
     }
 
     @Test
+    void communityMemberCounterAppliesTheTransitionDeltaWithoutLoadingOrRecountingMembers() {
+        service.applyCommunityMemberDelta("community-a", -1);
+        service.applyCommunityMemberDelta("community-a", 0);
+        var query = ArgumentCaptor.forClass(Query.class);
+        var update = ArgumentCaptor.forClass(Update.class);
+        verify(mongoTemplate).updateFirst(query.capture(), update.capture(),
+                eq(com.raxim.myscoutee.profile.data.document.CommunityGroup.class));
+        assertThat(query.getValue().getQueryObject().getString("_id")).isEqualTo("community-a");
+        assertThat(update.getValue().getUpdateObject().get("$inc", Document.class).getInteger("pendingMembers")).isEqualTo(-1);
+        org.mockito.Mockito.verifyNoMoreInteractions(mongoTemplate);
+        org.mockito.Mockito.verifyNoInteractions(activityMembersRepository);
+    }
+
+    @Test
     void refreshAssetCountersForUserStoresActiveOwnedAssetCounts() {
         Users user = user("owner", activitiesWithAssetAndFeedback(0, 0, 0, 5, 2, 1, 3, 4));
         Asset transport = asset(AssetCatalog.TYPE_TRANSPORT, "A");

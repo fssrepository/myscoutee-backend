@@ -7,9 +7,15 @@ import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.ActivityMemberEntr
 
 public final class CommunityGroupMapper {
     private CommunityGroupMapper() {}
+    public static String membershipBucket(String role, String status, String requestKind) {
+        if ("accepted".equals(status) && "Admin".equals(role)) return "hosting";
+        if ("pending".equals(status) && "invite".equals(requestKind)) return "invitations";
+        if ("pending".equals(status)) return "pending";
+        return "accepted".equals(status) ? "participation" : "explore";
+    }
     public static Group toDto(CommunityGroup group, Users owner, Users viewer,
             List<ActivityMember> members, long activity) {
-        ActivityMember own = members.stream().filter(m -> viewer.getUserId().equals(m.getUserId())).findFirst().orElse(null);
+        ActivityMember own = members.stream().filter(m -> viewer.getUserId().equals(m.getUserId()) && List.of("accepted", "pending").contains(m.getStatus())).findFirst().orElse(null);
         boolean admin = own != null && "accepted".equals(own.getStatus()) && "Admin".equals(own.getRole());
         return new Group(group.id(), group.ownerUserId(), owner.getName(), avatar(owner),
                 group.name(), group.description(), group.imageUrl(), group.category(), group.visibility(),
@@ -17,16 +23,31 @@ public final class CommunityGroupMapper {
                 own == null ? null : own.getRole(), own == null ? null : own.getStatus(),
                 own == null ? null : own.getRequestKind(), own != null && Boolean.TRUE.equals(own.getOrganizerOnly()),
                 (int)members.stream().filter(m -> "accepted".equals(m.getStatus())).count(),
-                admin ? (int)members.stream().filter(m -> "pending".equals(m.getStatus())).count() : 0,
-                activity + (admin ? group.pendingModerationCount() : 0), distance(owner, viewer), group.moderationStatus(),
-                admin ? group.pendingModerationCount() : 0, admin && group.moderationQueueRevision() != null ? group.moderationQueueRevision() : 0);
+                (int)pendingMembers(group, own),
+                (own != null && "accepted".equals(own.getStatus()) ? activity : 0) + membersActivity(group, own)
+                    + (admin ? group.pendingModerationCount() : 0), distance(owner, viewer), group.moderationStatus(),
+                admin ? group.pendingModerationCount() : 0, admin && group.moderationQueueRevision() != null ? group.moderationQueueRevision() : 0, membersActivity(group, own), group.lifecycleStatus(), canTakeOver(group, members, own));
+    }
+    public static boolean canTakeOver(CommunityGroup group, List<ActivityMember> members, ActivityMember own) {
+        return group.awaitingOwner() && own != null && "accepted".equals(own.getStatus())
+            && ("Admin".equals(own.getRole()) || members.stream().noneMatch(m -> "accepted".equals(m.getStatus()) && "Admin".equals(m.getRole())));
+    }
+    public static long membersActivity(CommunityGroup group, ActivityMember own) {
+        if (own == null || !List.of("accepted", "pending").contains(own.getStatus())) return 0;
+        long updates = own.getCommunityUpdates() == null ? 0 : Math.max(0, own.getCommunityUpdates());
+        return updates + pendingMembers(group, own);
+    }
+    private static long pendingMembers(CommunityGroup group, ActivityMember own) {
+        if (own == null) return 0;
+        if ("accepted".equals(own.getStatus()) && "Admin".equals(own.getRole())) return group.pendingMemberCount();
+        return "pending".equals(own.getStatus()) && "invite".equals(own.getRequestKind()) ? 1 : 0;
     }
     public static ActivityMemberEntryDto member(ActivityMember m, Users user, String actor) {
         return new ActivityMemberEntryDto(m.getId(), m.getUserId(), user.getName(), user.getInitials(),
                 user.getGender(), user.getCity(), "", m.getRole(), m.getStatus(), m.getPendingSource(),
                 m.getRequestKind(), m.getInvitedByUserId(), actor.equals(m.getInvitedByUserId()),
                 m.getMetAtIso(), m.getActionAtIso(), m.getMetWhere(), avatar(user), null, List.of(),
-                m.getUpdatedDate(), null, null, null, null, null, m.getOrganizerOnly());
+                m.getUpdatedDate(), null, null, null, null, m.getManagerGrantedByUserId(), m.getOrganizerOnly());
     }
     private static String avatar(Users user) {
         return user.getImages() == null || user.getImages().isEmpty() ? null : user.getImages().getFirst();

@@ -9,24 +9,26 @@ export UPDATE_RESTART_TRACE="$TEST_DIR/trace"
 export UPDATE_TEST_DOCKER="$(command -v docker)"
 export UPDATE_TEST_MODEL="$ROOT/packaging/compose/docker-compose.production.yml"
 export UPDATE_TEST_ENV_FILE="$TEST_DIR/installed.env"
-export UPDATE_TEST_OLD_VERSION=1.0.0-qa.1
-export UPDATE_TEST_TARGET_VERSION=1.0.0-qa.2
+export UPDATE_TEST_OLD_VERSION=1.3.0-qa.1
+export UPDATE_TEST_TARGET_VERSION=1.3.0-qa.2
 cat > "$UPDATE_TEST_ENV_FILE" <<'ENV'
-MYSCOUTEE_VERSION=1.0.0-qa.2
-NGINX_PRODUCTION_IMAGE=myscoutee-nginx:1.0.0-qa.2-prod
-MYSCOUTEE_PRODUCTION_IMAGE=myscoutee-api:1.0.0-qa.2-prod
-MINIO_PRODUCTION_IMAGE=myscoutee-minio:1.0.0-qa.2-prod
-REGISTRY_DEMO_IMAGE=myscoutee-registry:1.0.0-qa.2-prod
-PAYMENT_SIMULATOR_IMAGE=myscoutee-payment-simulator:1.0.0-qa.2-prod
+MYSCOUTEE_VERSION=1.3.0-qa.2
+NGINX_PRODUCTION_IMAGE=myscoutee-nginx:1.3.0-qa.2-prod
+MYSCOUTEE_PRODUCTION_IMAGE=myscoutee-api:1.3.0-qa.2-prod
+MINIO_PRODUCTION_IMAGE=myscoutee-minio:1.3.0-qa.2-prod
+REGISTRY_DEMO_IMAGE=myscoutee-registry:1.3.0-qa.2-prod
+PAYMENT_SIMULATOR_IMAGE=myscoutee-payment-simulator:1.3.0-qa.2-prod
+MCP_IMAGE=myscoutee-mcp:1.3.0-qa.2-prod
 MONGO_IMPORT_ALLOWED_COLLECTIONS_BY_DB=fixture
 ENV
 # Simulate the long-running worker's pre-install environment.
-export MYSCOUTEE_VERSION=1.0.0-qa.1
-export NGINX_PRODUCTION_IMAGE=myscoutee-nginx:1.0.0-qa.1-prod
-export MYSCOUTEE_PRODUCTION_IMAGE=myscoutee-api:1.0.0-qa.1-prod
-export MINIO_PRODUCTION_IMAGE=myscoutee-minio:1.0.0-qa.1-prod
-export REGISTRY_DEMO_IMAGE=myscoutee-registry:1.0.0-qa.1-prod
-export PAYMENT_SIMULATOR_IMAGE=myscoutee-payment-simulator:1.0.0-qa.1-prod
+export MYSCOUTEE_VERSION=1.3.0-qa.1
+export NGINX_PRODUCTION_IMAGE=myscoutee-nginx:1.3.0-qa.1-prod
+export MYSCOUTEE_PRODUCTION_IMAGE=myscoutee-api:1.3.0-qa.1-prod
+export MINIO_PRODUCTION_IMAGE=myscoutee-minio:1.3.0-qa.1-prod
+export REGISTRY_DEMO_IMAGE=myscoutee-registry:1.3.0-qa.1-prod
+export PAYMENT_SIMULATOR_IMAGE=myscoutee-payment-simulator:1.3.0-qa.1-prod
+export MCP_IMAGE=myscoutee-mcp:1.3.0-qa.1-prod
 export PATH="$TEST_DIR/bin:$PATH"
 export MYSCOUTEE_COMPOSE_SCRIPT="$TEST_DIR/compose"
 for command in compose reset-demo-state.sh sync-i18n-seeds.sh migrate-production-data.sh; do
@@ -64,7 +66,7 @@ assert lines == [
     'reset-demo-state.sh ',
     'sync-i18n-seeds.sh --prepare-only',
     'migrate-production-data.sh ',
-    'compose up -d --no-deps --wait --wait-timeout 300 mongodb redis minio registry payment-simulator',
+    'compose up -d --no-deps --wait --wait-timeout 300 mongodb redis minio registry payment-simulator mcp',
     'compose up -d --no-deps profilemanagement',
     'compose up -d --no-deps nginx',
 ], lines
@@ -91,12 +93,12 @@ for line in Path(sys.argv[1]).read_text().splitlines():
         start = parts.index('300') + 1 if '300' in parts else parts.index('--no-deps') + 1
         assert set(parts[start:]) <= services, (parts[start:], services)
 PYTEST
-sed -i 's/1.0.0-qa.2/1.0.0-qa.1/g' "$UPDATE_TEST_ENV_FILE"
-export UPDATE_TEST_OLD_VERSION=1.0.0-qa.2
-export UPDATE_TEST_TARGET_VERSION=1.0.0-qa.1
+sed -i 's/1.3.0-qa.2/1.3.0-qa.1/g' "$UPDATE_TEST_ENV_FILE"
+export UPDATE_TEST_OLD_VERSION=1.3.0-qa.2
+export UPDATE_TEST_TARGET_VERSION=1.3.0-qa.1
 for key in MYSCOUTEE_VERSION NGINX_PRODUCTION_IMAGE MYSCOUTEE_PRODUCTION_IMAGE \
-  MINIO_PRODUCTION_IMAGE REGISTRY_DEMO_IMAGE PAYMENT_SIMULATOR_IMAGE; do
-  export "$key=${!key/1.0.0-qa.1/1.0.0-qa.2}"
+  MINIO_PRODUCTION_IMAGE REGISTRY_DEMO_IMAGE PAYMENT_SIMULATOR_IMAGE MCP_IMAGE; do
+  export "$key=${!key/1.3.0-qa.1/1.3.0-qa.2}"
 done
 bash "$TEST_DIR/restart-update-stack.sh" > "$TEST_DIR/rollback-phases"
 echo 'PASS: ingress retained until backend health; failure retains existing ingress.'

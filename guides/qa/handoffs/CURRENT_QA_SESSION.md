@@ -1,6 +1,6 @@
 # Current manual QA session
 
-Updated: 2026-09-24
+Updated: 2026-09-26
 
 This is the context-saving entry point for continuing the manual QA campaign.
 It stores one minimal live resume pointer plus reusable pair-QA execution lessons. It
@@ -86,16 +86,18 @@ resume pointer and reusable working method.
 Earlier Event Mode, Integration API, Activity Rating and EVENT-FOLLOWING-001 remain closed.
 
 ```yaml
-checkpoint: EVENT-CALENDAR-EXPORT-001
-checklist: ../checklists/event/EVENT-CALENDAR-EXPORT-001.md
-substage: PASS/CLOSED 2026-09-24; delegated calendar scope complete, including One-time/Daily/Weekly occurrences and physical imports.
-fixture_phase: Versioned reset complete. Fixture actors/events/members/snapshot absent; moderation settings and approval Job restored; native QA entries and fixture downloads cleaned; managed windows closed.
-execution_log: ../evidence/EVENT-CALENDAR-EXPORT-001-20260924.md
-next_action: None for this checkpoint. Calendar importer update/deletion/alarm limitations and local automated-versus-native evidence boundaries are recorded in the execution log.
-queue: GROUP-LIFECYCLE-001 -> GROUP-ISOLATION-001; INTEGRATION-API-GROUP-001 is tracked in API test. Checklists prepared 2026-09-24 and finalized 2026-09-25 with scoped moderation, write-side badges, SmartList signal updates and Group support. All three NOT RUN, no fixture/session staged.
-resume_gate: No fixture replay. Earlier affiliate PASS remains closed; its old runtime was replaced by startup seed after the reboot, not retained.
-runtime: Existing dev watchers own builds. Phone network restored; USB stay-awake and maximum timeout intentionally retained at user request, with original settings snapshotted.
-last_completed: EVENT-CALENDAR-EXPORT-001 PASS/CLOSED; CSV/XLSX and README synchronized. AFFILIATE-REVENUE-001 remains PASS.
+checkpoint: GROUP-LIFECYCLE-001
+checklist: ../checklists/group/GROUP-LIFECYCLE-001.md
+substage: HTTP 1–5 closed under the explicit relocated boundaries; 5/29 HTTP blocks, 0/29 Local. Current HTTP block 6; complete it before advancing. Original numbered steps remain traceable; no full-case PASS.
+fixture_phase: Main badge-writes-ready / after-workspace-selection retained. Isolated manual-qa-community-admin and adminLifecycleSnapshots are LIVE with two processed moderation controls, one UI-published/approved photo, fixture Feed event f02609260000000000000101 and Group support chat/reply. Do not reset or replay the campaign.
+execution_log: ../evidence/GROUP-LIFECYCLE-001-20260926.md
+execution_authority: User explicitly delegated full-flow automated execution of the pending QA campaign on 2026-09-26; Codex operates the browser, diagnoses, fixes and retests. Closed PASS rows remain closed.
+next_action: Continue HTTP block 6 only: settings save/reopen/mobile/authority, block/unblock/worker, Group support View Event repair and real Feed publication/approval are now verified. Finish app-admin moderation, stale response and remaining support/counter boundaries. Preserve current UI/DB evidence; do not reopen blocks 1–5 for structural changes. Follow HTTP 7–29, then separate Local 1–29, Isolation and Integration. Show closed/total and current block at every boundary.
+savepoint: community-group after-workspace-selection, captured and verified 2026-09-26T20:13:47.292Z, HTTP resume block 5 remaining checks. Earlier after-invitation-checks, after-editor-checks and after-join-approval retained. Saved state is not a whole-case PASS.
+queue: HTTP Lifecycle 6–29, then Local Lifecycle 1–29, Group Isolation 1–12, Integration API Group 1–7. True unavailable external/native prerequisites must be explicit counted later blocks, with USB/native last. Closed PASS cases untouched.
+resume_gate: Run the versioned community-group status command before any relaunch. verify-lists checked all ten groups/27 memberships without mutation and the versioned launcher prepared all three actors on 2026-09-26. Do not reset changed records or replay a closed checkpoint. Check the current manifest and launcher result.
+runtime: Existing dev watchers own builds; no stack restart or seed replacement for this resume. Versioned launcher configuration restored after the revert.
+last_completed: EVENT-CALENDAR-EXPORT-001 PASS/CLOSED; AFFILIATE-REVENUE-001 remains PASS. Location fixes and baseline checks are not Group UI PASS.
 ```
 
 ## Archived pair-QA resume point — 2026-09-17

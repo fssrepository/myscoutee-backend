@@ -157,7 +157,7 @@ grep -Fqx $'systemctl\trestart myscoutee.service' "${COMMAND_LOG}" \
   || fail "restart-and-check did not restart the service"
 grep -Fq $'smoke\tbase=http://127.0.0.1 start=false timeout=' "${COMMAND_LOG}" \
   || fail "qualification did not invoke the packaged smoke contract"
-for required_container in mongodb redis minio registry-demo payment-simulator myscoutee nginx; do
+for required_container in mongodb redis minio registry-demo payment-simulator mcp myscoutee nginx; do
   grep -Fq $'docker\tinspect '"${required_container}"' --format ' \
     "${COMMAND_LOG}" \
     || fail "qualification did not wait for ${required_container} health"

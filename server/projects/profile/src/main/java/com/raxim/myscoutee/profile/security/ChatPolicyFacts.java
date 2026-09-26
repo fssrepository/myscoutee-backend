@@ -1,6 +1,8 @@
 package com.raxim.myscoutee.profile.security;
 
 import java.util.List;
+import org.springframework.security.core.context.SecurityContextHolder;
+import com.raxim.myscoutee.common.config.firebase.dto.FirebasePrincipal;
 
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
@@ -26,9 +28,24 @@ public class ChatPolicyFacts {
         this.adminMenuCounterService = adminMenuCounterService;
     }
 
+    public String resolveActorUserId(String chatId, String profileId) {
+        String actorId = normalizeId(profileId);
+        String normalizedChatId = normalizeId(chatId);
+        if (actorId == null || normalizedChatId == null) return actorId;
+        var authentication = SecurityContextHolder.getContext().getAuthentication();
+        Users profile = authentication != null && authentication.getPrincipal() instanceof FirebasePrincipal principal
+                && actorId.equals(principal.getUserId()) && principal.getUser() != null
+                ? principal.getUser() : usersRepository.findByUserId(actorId).orElse(null);
+        String accountId = profile == null ? null : normalizeId(profile.getAccountUserId());
+        if (accountId == null || accountId.equals(actorId)) return actorId;
+        return chatsRepository.findByOwnerUserIdAndChatId(accountId, normalizedChatId)
+                .filter(chat -> "contact".equals(chat.getChannelType()) && hasChatAccess(chat, accountId))
+                .map(chat -> accountId).orElse(actorId);
+    }
+
     public boolean canAccessChat(String chatId, String actorUserId) {
         String normalizedChatId = normalizeId(chatId);
-        String normalizedActorUserId = normalizeId(actorUserId);
+        String normalizedActorUserId = resolveActorUserId(normalizedChatId, actorUserId);
         if (!StringUtils.hasText(normalizedChatId) || !StringUtils.hasText(normalizedActorUserId)) {
             return false;
         }

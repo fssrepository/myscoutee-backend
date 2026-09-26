@@ -478,7 +478,32 @@ public final class AssetsDtos {
             String creatorInitials,
             String creatorName,
             String creatorAvatarUrl,
+            String revision,
+            String workspaceGroupId,
+            String workspaceGroupName) {
+        public AssetTicketDto(String id,
+            String holderUserId,
+            String scanCode,
+            String usedAtIso,
+            String type,
+            String status,
+            String title,
+            String subtitle,
+            String detail,
+            String dateIso,
+            Integer distanceMetersExact,
+            Boolean isAdmin,
+            String startAt,
+            String endAt,
+            String imageUrl,
+            String visibility,
+            String avatarInitials,
+            String creatorInitials,
+            String creatorName,
+            String creatorAvatarUrl,
             String revision) {
+            this(id, holderUserId, scanCode, usedAtIso, type, status, title, subtitle, detail, dateIso, distanceMetersExact, isAdmin, startAt, endAt, imageUrl, visibility, avatarInitials, creatorInitials, creatorName, creatorAvatarUrl, revision, null, null);
+        }
     }
 
     public record AssetTicketValidationRequestDto(
@@ -583,7 +608,43 @@ public final class AssetsDtos {
             String subEventTitle,
             String subEventStartAtIso,
             String subEventEndAtIso,
+            List<String> menuActions,
+            String workspaceGroupId,
+            String workspaceGroupName) {
+        public AssetOccupancyRowDto(String id,
+            String assetId,
+            String ownerUserId,
+            String userId,
+            String dateIso,
+            String startAtIso,
+            String endAtIso,
+            String title,
+            String subtitle,
+            String detail,
+            String scheduleLabel,
+            String avatarInitials,
+            String avatarUrl,
+            String gender,
+            String status,
+            String requestKind,
+            Integer quantity,
+            Integer occupied,
+            Integer capacity,
+            Integer remaining,
+            Integer pendingCount,
+            Integer pendingQuantity,
+            String eventId,
+            String eventTitle,
+            String subEventId,
+            String subEventTitle,
+            String subEventStartAtIso,
+            String subEventEndAtIso,
             List<String> menuActions) {
+            this(id, assetId, ownerUserId, userId, dateIso, startAtIso, endAtIso, title, subtitle, detail, scheduleLabel, avatarInitials, avatarUrl, gender, status, requestKind, quantity, occupied, capacity, remaining, pendingCount, pendingQuantity, eventId, eventTitle, subEventId, subEventTitle, subEventStartAtIso, subEventEndAtIso, menuActions, null, null);
+        }
+        public AssetOccupancyRowDto withWorkspace(String groupId, String groupName) {
+            return new AssetOccupancyRowDto(id, assetId, ownerUserId, userId, dateIso, startAtIso, endAtIso, title, subtitle, detail, scheduleLabel, avatarInitials, avatarUrl, gender, status, requestKind, quantity, occupied, capacity, remaining, pendingCount, pendingQuantity, eventId, eventTitle, subEventId, subEventTitle, subEventStartAtIso, subEventEndAtIso, menuActions, groupId, groupName);
+        }
     }
 
     public record AssetOccupancyStatsPageDto(

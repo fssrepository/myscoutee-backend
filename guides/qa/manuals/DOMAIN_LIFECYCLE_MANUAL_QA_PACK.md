@@ -11297,3 +11297,31 @@ channel/filter and unread counter. These are explicit checklist oracles, not
 manual PASS claims. Supporting verification: 31 focused backend moderation,
 chat and counter tests passed; existing dev watchers compiled frontend/backend.
 The earlier 15 filter/invitation tests remain supporting evidence only.
+
+
+2026-09-26 Group resume: retained ten-group/27-membership baseline verified with
+the versioned `community-group status` command. Only lifecycle block 1/25 is
+prepared for read-only manual checks; blocks 2–25 need their exact write fixtures.
+No manual PASS is claimed. [Numbered progress and evidence](../evidence/GROUP-LIFECYCLE-001-20260926.md).
+The location interruption does not close the Group journey; see blocks 19–20.
+
+2026-09-26 pending entry extension: GROUP-LIFECYCLE-001 block 19.1 covers the
+complete real demo selection/entry/retry/reload/logout flow. INTEGRATION-API-GROUP-001
+blocks 2–3 cover real registration and demo-existing-account invitation return.
+Injected Group fixture sessions cannot prove these entry branches. Both remain
+NOT RUN; closed ENTRY/AUTH PASS rows and their evidence are unchanged.
+
+2026-09-26 Group extension: [GROUP-LIFECYCLE-001 block 26](../checklists/group/GROUP-LIFECYCLE-001.md#26-group-administrators-responsibility-transfer-and-last-member-deletion)
+checks contextual Asset Manager parity for Admin grants/revocations, creator
+departure and takeover, final-member deletion, action styling/confirmations and
+notifications. Dev HTTP and local execution are NOT RUN; closed PASS cases remain
+unchanged. See the dated Group evidence log for source-audit gaps and the retained
+`after-invitation-checks` resume boundary.
+
+2026-09-26 22:14 follow-up: the earlier block-26 NOT RUN source audit is historical.
+Admin lifecycle implementation now has partial actual HTTP/browser evidence and
+52 focused frontend checks; whole-case status remains IN PROGRESS, Local browser
+NOT RUN. The isolated Admin control was restored. Latest verified replay boundary
+is `after-workspace-selection` (block 5 remaining checks), following observed
+profile-selection timeout, rollback, retry and late-response isolation. Detailed
+evidence remains in the dated Group log; closed PASS rows are unchanged.

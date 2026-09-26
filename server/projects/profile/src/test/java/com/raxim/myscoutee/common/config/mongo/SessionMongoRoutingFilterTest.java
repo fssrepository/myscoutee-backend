@@ -19,6 +19,16 @@ class SessionMongoRoutingFilterTest {
         MongoSessionModeContext.clear();
     }
 
+    @Test void oauthCannotBeRoutedToDemoByCallerHeaders() throws Exception {
+        var filter = new SessionMongoRoutingFilter(new ConfigProperties());
+        for (String path : java.util.List.of("/mcp/oauth/token", "/api/mcp/oauth/metadata", "/integrations/v1/connect")) {
+            var request = new MockHttpServletRequest("POST", path);
+            request.addHeader(DemoSessionRequestSupport.SESSION_KIND_HEADER, "demo");
+            if (path.endsWith("connect")) request.addHeader("Authorization", "Bearer mca_invalid");
+            assertThat(modeInside(filter, request)).isEqualTo(MongoSessionMode.REAL);
+        }
+    }
+
     @Test
     void bootstrapLoginAndHeaderAlwaysRouteToRealMongo() throws Exception {
         ConfigProperties properties = new ConfigProperties();

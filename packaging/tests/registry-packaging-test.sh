@@ -921,7 +921,7 @@ if docker compose version >/dev/null 2>&1; then
     jq -e '
       .services.registry.container_name == "registry-demo"
       and .services.registry.hostname == "registry"
-      and .services.registry.image == "myscoutee-registry:1.0.0-prod"
+      and .services.registry.image == "myscoutee-registry:1.3.0-prod"
       and .services.registry.command == ["start-demo"]
       and .services.registry.environment.REGISTRY_DEMO_SEED == "true"
       and .services.registry.environment.REGISTRY_SCOPE == "demo:myscoutee"
@@ -952,7 +952,7 @@ if docker compose version >/dev/null 2>&1; then
   )" || fail "canonical development Compose configuration does not render"
   jq -e '
     .services.registry.container_name == "registry"
-    and .services.registry.image == "myscoutee-registry:1.0.0-dev"
+    and .services.registry.image == "myscoutee-registry:1.3.0-dev"
     and .services.registry.command == ["start-demo"]
     and .services.registry.environment.REGISTRY_DEMO_SEED == "true"
     and .services.registry.environment.REGISTRY_SCOPE == "demo:myscoutee"

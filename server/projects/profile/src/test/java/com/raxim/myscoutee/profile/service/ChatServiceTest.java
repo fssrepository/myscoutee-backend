@@ -102,6 +102,8 @@ class ChatServiceTest {
 
     @BeforeEach
     void setUp() {
+        org.mockito.Mockito.lenient().when(accessControlService.resolveChatActorUserId(any(), any()))
+                .thenAnswer(call -> call.getArgument(1));
         service = new ChatService(
                 chatsRepository,
                 chatMessagesRepository,
@@ -165,6 +167,20 @@ class ChatServiceTest {
         when(usersRepository.findByUserIdIn(any())).thenReturn(List.of(actor, target));
         assertThatThrownBy(() -> service.ensureContactChat("viewer", "target"))
                 .isInstanceOf(org.springframework.web.server.ResponseStatusException.class);
+        verify(mongoTemplate, never()).upsert(any(Query.class), any(Update.class), eq(Chat.class));
+    }
+
+    @Test
+    void savedContactCannotOpenDirectChatWithoutAcceptedPermission() {
+        when(homeUserProfileService.resolveSelectedUserId("viewer")).thenReturn("viewer");
+        var contacts = new com.raxim.myscoutee.profile.data.document.NavigatorContactsProfile();
+        var contact = new com.raxim.myscoutee.profile.data.document.NavigatorContactsProfile.NavigatorContactRecord();
+        contact.setUserId("target"); contacts.setContacts(List.of(contact));
+        when(mongoTemplate.findOne(any(Query.class), eq(com.raxim.myscoutee.profile.data.document.NavigatorContactsProfile.class)))
+                .thenReturn(contacts);
+        when(usersRepository.findByUserIdIn(any())).thenReturn(List.of(user("viewer", "Viewer", "V"), user("target", "Target", "T")));
+        assertThatThrownBy(() -> service.ensureContactChat("viewer", "target"))
+                .isInstanceOf(org.springframework.web.server.ResponseStatusException.class).hasMessageContaining("403");
         verify(mongoTemplate, never()).upsert(any(Query.class), any(Update.class), eq(Chat.class));
     }
 

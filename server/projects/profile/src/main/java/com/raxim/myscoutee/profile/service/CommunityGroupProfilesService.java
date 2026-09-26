@@ -42,7 +42,7 @@ public class CommunityGroupProfilesService {
     public Users select(String accountId, String groupId) {
         var group = groups.findById(groupId).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
         var member = members.findByOwnerTypeAndOwnerIdAndUserId("community", groupId, accountId).orElse(null);
-        if (!group.policy().workspace() || member == null || !"accepted".equals(member.getStatus()))
+        if (group.deleted() || !group.policy().workspace() || member == null || !"accepted".equals(member.getStatus()))
             throw new ResponseStatusException(HttpStatus.FORBIDDEN);
         return users.findByWorkspaceGroupIdAndAccountUserId(groupId, accountId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.CONFLICT));

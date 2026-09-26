@@ -110,7 +110,8 @@ public class UserNotificationService {
         int unreadCount = currentUnreadCount(normalizedRecipientUserId);
         return new UserNotificationReadResponseDto(
                 userNotificationMapper.toDto(notification),
-                unreadCount);
+                unreadCount, markedRead.isPresent() && "community".equals(notification.getSourceType())
+                    && "members".equals(notification.getPayload().get("communityAttention")) ? -1 : 0);
     }
 
     public UserNotificationsSyncResponseDto sync(

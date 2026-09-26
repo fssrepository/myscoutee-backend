@@ -7,6 +7,14 @@ COMMON_SCRIPT="${SCRIPT_DIR}/scenarios/common.js"
 usage() {
   cat <<'USAGE'
 Usage:
+  bash manual-qa-checkpoints.sh status community-group GROUP-LIFECYCLE-001
+  bash manual-qa-checkpoints.sh capture|restore|verify-savepoint community-group GROUP-LIFECYCLE-001 <lists-ready|block-1-complete>
+  bash manual-qa-checkpoints.sh prepare-list-pagination|restore-list-pagination community-group GROUP-LIFECYCLE-001
+  bash manual-qa-checkpoints.sh prepare-invitation|prepare-hidden-invitation|restore-invitation community-group GROUP-LIFECYCLE-001
+  bash manual-qa-checkpoints.sh prepare-admin-lifecycle|prepare-admin-moderation|prepare-admin-feed-event|prepare-admin-base-feed|restore-admin-lifecycle community-group GROUP-LIFECYCLE-001
+  bash manual-qa-checkpoints.sh prepare-member-invitation|restore-member-invitation community-group GROUP-LIFECYCLE-001
+  bash manual-qa-checkpoints.sh prepare-editor|restore-editor community-group GROUP-LIFECYCLE-001
+  bash manual-qa-checkpoints.sh prepare-creation|restore-creation community-group GROUP-LIFECYCLE-001
   bash manual-qa-checkpoints.sh stage|ready|arm|status|reset job-messages JOB-MESSAGES
   bash manual-qa-checkpoints.sh stage|status|reset notification-admin NOTIFICATION-ADMIN-LIFECYCLE-001
   bash manual-qa-checkpoints.sh stage|status|reset mobile-push MOBILE-PUSH-LIFECYCLE-001
@@ -527,6 +535,7 @@ run_scenario() {
   fi
 
   case "${scenario}" in
+    community-group) scenario_script="${SCRIPT_DIR}/scenarios/community-group-checkpoints.js" ;;
     browser-sessions) scenario_script="${SCRIPT_DIR}/scenarios/browser-session-checkpoints.js" ;;
     event-rating) scenario_script="${SCRIPT_DIR}/scenarios/event-activity-rating-checkpoints.js" ;;
     integration-api) scenario_script="${SCRIPT_DIR}/scenarios/integration-api-checkpoints.js" ;;
@@ -951,6 +960,14 @@ PY
         set_payment_simulator_cash_only
       fi
     fi
+    ;;
+  community-group:capture|community-group:restore|community-group:verify-savepoint)
+    [ "$#" -eq 4 ] || { usage >&2; exit 2; }
+    run_scenario "${command}" "${scenario}" 30 "$3" "$4"
+    ;;
+  community-group:prepare-admin-lifecycle|community-group:prepare-admin-moderation|community-group:prepare-admin-feed-event|community-group:prepare-admin-base-feed|community-group:restore-admin-lifecycle|community-group:prepare-member-invitation|community-group:restore-member-invitation|community-group:status|community-group:verify-lists|community-group:prepare-badges|community-group:prepare-join|community-group:restore-badges|community-group:prepare-list-pagination|community-group:restore-list-pagination|community-group:prepare-invitation|community-group:prepare-hidden-invitation|community-group:restore-invitation|community-group:prepare-editor|community-group:restore-editor|community-group:prepare-creation|community-group:restore-creation)
+    [ "$#" -eq 3 ] || { usage >&2; exit 2; }
+    run_scenario "${command}" "${scenario}" 30 "$3"
     ;;
   role-triad:stage|role-triad:status|role-triad:rearm-feedback-resolution|role-triad:reset)
     [ "$#" -eq 3 ] || { usage >&2; exit 2; }

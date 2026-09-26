@@ -126,9 +126,11 @@ public class AuthController {
     @GetMapping("/me/profile-ext")
     public ProfileExtByIdResponseDto loadProfileExt(@RequestParam(value = "userId", required = false) String userId,
             @RequestParam(value = "groupId", required = false) String groupId,
+            @RequestParam(value = "latitude", required = false) Double latitude,
+            @RequestParam(value = "longitude", required = false) Double longitude,
             HttpServletResponse httpResponse) {
         httpResponse.setHeader("Cache-Control", "no-store");
-        var response = homeUserProfileService.loadProfileExtById(userId);
+        var response = homeUserProfileService.loadProfileExtById(userId, latitude, longitude);
         if (response == null) return null;
         return groups.completeProfileLoad(groups.actor(userId), response, groupId);
     }

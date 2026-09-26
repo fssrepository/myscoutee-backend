@@ -60,7 +60,10 @@ public final class NotificationDtos {
 
     public record UserNotificationReadResponseDto(
             UserNotificationDto notification,
-            Integer unreadCount) {
+            Integer unreadCount, Integer communityActivityDelta) {
+        public UserNotificationReadResponseDto(UserNotificationDto notification, Integer unreadCount) {
+            this(notification, unreadCount, 0);
+        }
     }
 
     public record UserNotificationPreferenceRequestDto(

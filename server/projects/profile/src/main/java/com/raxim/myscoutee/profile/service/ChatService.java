@@ -1,5 +1,7 @@
 package com.raxim.myscoutee.profile.service;
 
+import com.raxim.myscoutee.profile.data.document.ContactChatAccess;
+
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
@@ -214,7 +216,7 @@ public class ChatService {
     }
 
     public ChatDto queryChatById(String chatId, String requestedUserId) {
-        String userId = requireResolvedUserId(requestedUserId);
+        String userId = resolveChatActor(chatId, requireResolvedUserId(requestedUserId));
         ChatDocumentsSnapshot snapshot = requireChat(chatId, userId);
         Chat chat = snapshot.viewerChat() == null
                 ? snapshot.chatDocuments().get(0)
@@ -356,7 +358,7 @@ public class ChatService {
             String chatId,
             String requestedUserId,
             Long knownRevision) {
-        String userId = requireResolvedUserId(requestedUserId);
+        String userId = resolveChatActor(chatId, requireResolvedUserId(requestedUserId));
         String normalizedChatId = normalizeId(chatId);
         if (!StringUtils.hasText(normalizedChatId)) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Chat id is required.");
@@ -440,9 +442,10 @@ public class ChatService {
     }
 
     public ChatDto ensureContactChat(String requestedUserId, String targetUserId) {
-        String actorId = requireResolvedUserId(requestedUserId);
+        String actorId = accountUserId(requireResolvedUserId(requestedUserId));
         String targetId = normalizeId(targetUserId);
-        Map<String, Users> users = requireContactTargets(actorId, List.of(targetId));
+        Map<String, Users> users = requireContactTargets(actorId, List.of(targetId), true);
+        requireContactChatConsent(actorId, targetId);
         List<String> participantIds = new ArrayList<>(List.of(actorId, targetId));
         participantIds.sort(String::compareTo);
         String chatId = "c-contact-" + java.util.Base64.getUrlEncoder().withoutPadding().encodeToString(String.join("\n", participantIds).getBytes(StandardCharsets.UTF_8));
@@ -462,7 +465,7 @@ public class ChatService {
     }
 
     public ChatDto addContactChatMembers(String chatId, String requestedUserId, List<String> userIds) {
-        String actorId = requireResolvedUserId(requestedUserId);
+        String actorId = accountUserId(requireResolvedUserId(requestedUserId));
         ChatDocumentsSnapshot snapshot = requireChat(chatId, actorId);
         Chat chat = snapshot.viewerChat();
         if (chat == null || !"contact".equals(chat.getChannelType()))
@@ -502,6 +505,10 @@ public class ChatService {
     }
 
     private Map<String, Users> requireContactTargets(String actorId, List<String> targetIds) {
+        return requireContactTargets(actorId, targetIds, false);
+    }
+
+    private Map<String, Users> requireContactTargets(String actorId, List<String> targetIds, boolean allowApprovedPair) {
         if (targetIds.isEmpty() || targetIds.size() > 100 || targetIds.contains(actorId)
                 || targetIds.stream().anyMatch(id -> !StringUtils.hasText(id)))
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Select another contact.");
@@ -509,6 +516,11 @@ public class ChatService {
                 com.raxim.myscoutee.profile.data.document.NavigatorContactsProfile.class);
         Set<String> allowed = new LinkedHashSet<>();
         if (contacts != null) for (var contact : contacts.getContacts()) allowed.add(normalizeId(contact.getUserId()));
+        for (String targetId : targetIds) if (allowApprovedPair && !allowed.contains(targetId)) {
+            var consent = mongoTemplate.findById(ContactChatAccess.pairId(actorId, targetId),
+                    ContactChatAccess.class);
+            if (consent != null && "approved".equals(consent.status())) allowed.add(targetId);
+        }
         if (!allowed.containsAll(targetIds))
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Contact unavailable.");
         Set<String> participantIds = new LinkedHashSet<>(targetIds); participantIds.add(actorId);
@@ -816,7 +828,7 @@ public class ChatService {
     }
 
     public ChatDto updateSupportCase(String chatId, String requestedUserId, String actionValue) {
-        String userId = requireResolvedUserId(requestedUserId);
+        String userId = resolveChatActor(chatId, requireResolvedUserId(requestedUserId));
         String normalizedChatId = normalizeId(chatId);
         if (!StringUtils.hasText(normalizedChatId)) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Chat id is required.");
@@ -852,7 +864,7 @@ public class ChatService {
     }
 
     public List<ChatMessageDto> querySharedMessages(String chatId, String requestedUserId, String kind) {
-        String userId = requireResolvedUserId(requestedUserId);
+        String userId = resolveChatActor(chatId, requireResolvedUserId(requestedUserId));
         ChatDocumentsSnapshot snapshot = requireChat(chatId, userId);
         if (!"event".equals(kind) && !"asset".equals(kind)) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Unsupported share kind.");
@@ -874,7 +886,7 @@ public class ChatService {
     public ChatMessagesPageResponseDto queryMessagesPage(
             String chatId, String requestedUserId, Integer limit, String cursor,
             String targetMessageId) {
-        String userId = requireResolvedUserId(requestedUserId);
+        String userId = resolveChatActor(chatId, requireResolvedUserId(requestedUserId));
         ChatDocumentsSnapshot snapshot = requireChat(chatId, userId);
         String targetId = normalizeId(targetMessageId);
         ChatMessage target = StringUtils.hasText(targetId)
@@ -934,7 +946,7 @@ public class ChatService {
             Integer limitValue,
             String cursor,
             Boolean pendingOnly) {
-        String userId = requireResolvedUserId(requestedUserId);
+        String userId = resolveChatActor(chatId, requireResolvedUserId(requestedUserId));
         ChatDocumentsSnapshot snapshot = requireChat(chatId, userId);
         Chat memberSource = snapshot.viewerChat() == null
                 ? snapshot.chatDocuments().get(0)
@@ -1110,7 +1122,7 @@ public class ChatService {
             String clientId,
             ChatMessageReplyDto replyTo,
             List<ChatMessageAttachmentDto> attachments) {
-        String userId = requireResolvedUserId(requestedUserId);
+        String userId = resolveChatActor(chatId, requireResolvedUserId(requestedUserId));
         String normalizedText = normalizeText(text);
         List<ChatMessageAttachmentRecord> normalizedAttachments = normalizeAttachments(attachments);
         if (!StringUtils.hasText(normalizedText) && normalizedAttachments.isEmpty()) {
@@ -1370,7 +1382,7 @@ public class ChatService {
     }
 
     public void markMessagesRead(String chatId, String requestedUserId, List<String> messageIds) {
-        String userId = requireResolvedUserId(requestedUserId);
+        String userId = resolveChatActor(chatId, requireResolvedUserId(requestedUserId));
         ChatDocumentsSnapshot snapshot = requireChat(chatId, userId);
         ChatReadUpdate readUpdate = markMessagesRead(snapshot, userId, messageIds);
         if (!readUpdate.readMessageIds().isEmpty()) {
@@ -1379,7 +1391,7 @@ public class ChatService {
     }
 
     public void sendTypingSignal(String chatId, String requestedUserId, Boolean typing) {
-        String userId = requireResolvedUserId(requestedUserId);
+        String userId = resolveChatActor(chatId, requireResolvedUserId(requestedUserId));
         ChatDocumentsSnapshot snapshot = requireChat(chatId, userId);
         Users user = findUser(userId);
         publishChatEvent(ChatStreamEvent.typing(
@@ -1393,7 +1405,7 @@ public class ChatService {
 
     public boolean hasChatAccess(String chatId, String userId) {
         String normalizedChatId = normalizeId(chatId);
-        String normalizedUserId = normalizeId(userId);
+        String normalizedUserId = resolveChatActor(normalizedChatId, normalizeId(userId));
         if (!StringUtils.hasText(normalizedChatId) || !StringUtils.hasText(normalizedUserId)) {
             return false;
         }
@@ -1511,7 +1523,19 @@ public class ChatService {
     }
 
     private ChatDocumentsSnapshot requireChatAccessForSend(String chatId, String userId) {
-        return requireChat(chatId, userId, true);
+        var snapshot = requireChat(chatId, userId, true);
+        var chat = snapshot.viewerChat();
+        if (chat != null && "contact".equals(chat.getChannelType()) && safeMemberIds(chat.getMemberIds()).size() == 2) {
+            for (String peer : safeMemberIds(chat.getMemberIds())) if (!peer.equals(userId)) requireContactChatConsent(userId, peer);
+        }
+        return snapshot;
+    }
+
+    private void requireContactChatConsent(String actor, String target) {
+        var consent = mongoTemplate.findById(ContactChatAccess.pairId(actor, target),
+                ContactChatAccess.class);
+        if (consent == null || !"approved".equals(consent.status()))
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Direct chat access requires approval.");
     }
 
     private List<Chat> chatDocumentsForMutation(ChatDocumentsSnapshot snapshot, String userId) {
@@ -1750,7 +1774,7 @@ public class ChatService {
             String messageId,
             BiPredicate<String, String> policyGuard,
             ChatMessageMutator mutator) {
-        String userId = requireResolvedUserId(requestedUserId);
+        String userId = resolveChatActor(chatId, requireResolvedUserId(requestedUserId));
         String normalizedMessageId = normalizeId(messageId);
         if (!StringUtils.hasText(normalizedMessageId)) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Message id is required.");
@@ -2989,6 +3013,16 @@ public class ChatService {
             return null;
         }
         return usersRepository.findByUserId(userId).orElse(null);
+    }
+
+    private String accountUserId(String profileId) {
+        Users profile = findUser(profileId);
+        return profile != null && StringUtils.hasText(profile.getAccountUserId())
+                ? profile.getAccountUserId() : profileId;
+    }
+
+    private String resolveChatActor(String chatId, String profileId) {
+        return accessControlService.resolveChatActorUserId(chatId, profileId);
     }
 
     private String requireResolvedUserId(String requestedUserId) {

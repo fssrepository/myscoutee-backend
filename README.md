@@ -13,6 +13,9 @@ match or a message.
 
 ### Installer
 
+The next feature release is **1.3.0**, with Git tag `v1.3.0`. See the
+[1.3.0 release preparation](guides/releases/v1.3.0.md); it is not published yet.
+
 The **MyScoutee 1.0.2** client tools, partial-update prerequisites, container
 references, checksums and signed metadata are available from
 [GitHub Releases](https://github.com/fssrepository/myscoutee/releases/tag/v1.0.2).
@@ -51,10 +54,10 @@ for adding signed local packages and simulating interrupted downloads.
 
 ## QA status
 
-Group QA is prepared and **NOT RUN**: [group lifecycle](guides/qa/checklists/group/GROUP-LIFECYCLE-001.md),
+Group lifecycle QA is **IN PROGRESS**; the other two group journeys remain **NOT RUN**: [group lifecycle](guides/qa/checklists/group/GROUP-LIFECYCLE-001.md),
 [workspace isolation samples](guides/qa/checklists/group/GROUP-ISOLATION-001.md)
 and [shared participant-link API](guides/qa/checklists/integration/INTEGRATION-API-GROUP-001.md).
-The matrix has 118 cases: 115 closed and 3 not started. Group follows Asset in
+See the [current matrix](guides/qa/matrices/ADMIN_DYNAMIC_SURFACES_QA_MATRIX.xlsx) for case totals and execution states. Group follows Asset in
 domain order; participant-link coverage belongs to API test. Existing PASS
 evidence does not cover these new journeys.
 

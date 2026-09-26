@@ -38,6 +38,18 @@ import com.raxim.myscoutee.profile.repository.UsersRepository;
 
 @Service
 public class UserActivityCountersService {
+    /** Apply only the successful membership transition, like applyActiveEventMembershipDeltas. */
+    public void applyCommunityMemberDelta(String groupId, int pendingDelta) {
+        if (pendingDelta == 0) return;
+        mongoTemplate.updateFirst(Query.query(Criteria.where("_id").is(groupId)),
+                new Update().inc("pendingMembers", pendingDelta).inc("version", 1L).set("updatedAtIso", Instant.now().toString()),
+                com.raxim.myscoutee.profile.data.document.CommunityGroup.class);
+    }
+    public void touchCommunityGroup(String groupId, String changedAtIso) {
+        mongoTemplate.updateFirst(Query.query(Criteria.where("_id").is(groupId)),
+                new Update().max("updatedAtIso", changedAtIso).inc("version", 1L),
+                com.raxim.myscoutee.profile.data.document.CommunityGroup.class);
+    }
     private final OrganizerFollowingService organizerFollowingService;
 
     public void expireFollowingCounters(Instant now) {
@@ -134,7 +146,10 @@ public class UserActivityCountersService {
     }
 
     public void refreshEventCountersForUsers(Collection<String> userIds) {
-        for (String userId : normalizeIds(userIds)) {
+        var affected = new LinkedHashSet<>(normalizeIds(userIds));
+        usersRepository.findByUserIdIn(affected).stream().map(Users::getAccountUserId)
+                .filter(StringUtils::hasText).forEach(affected::add);
+        for (String userId : affected) {
             usersRepository.findByUserId(userId).ifPresent(user -> {
                 Users.UserActivitiesRecord current = user.getActivities();
                 Users.UserActivitiesRecord next = withEventCounters(
@@ -557,7 +572,16 @@ public class UserActivityCountersService {
     }
 
     private int resolveTicketCount(String userId) {
-        long ticketCount = eventParticipationTicketService.queryTicketRecordsForUser(userId).stream()
+        var profiles = usersRepository.findByAccountUserId(userId);
+        List<ActivityEvent> tickets;
+        if (profiles.isEmpty()) tickets = eventParticipationTicketService.queryTicketRecordsForUser(userId);
+        else {
+            var ids = new LinkedHashSet<String>(); ids.add(userId);
+            profiles.forEach(profile -> ids.add(profile.getUserId()));
+            tickets = eventParticipationTicketService.queryTicketSnapshotRecordsForUsers(ids).stream()
+                    .map(EventParticipationTicketService.TicketSnapshotRecord::event).toList();
+        }
+        long ticketCount = tickets.stream()
                 .filter(Objects::nonNull)
                 .map(ActivityEvent::getSourceId)
                 .map(this::normalizeId)

@@ -22,7 +22,8 @@ class CommunityGroupInviteClaimTest {
             "now", "now", 0L, "accepted", 0L);
     private final CommunityGroupsService service = new CommunityGroupsService(groups, members, users,
             mock(HomeUserProfileService.class), profiles, mock(ContentModerationService.class),
-            mock(UserReportSubmissionsRepository.class), mock(AdminTelemetryService.class));
+            mock(UserReportSubmissionsRepository.class), mock(AdminTelemetryService.class), mock(UserActivityCountersService.class),
+            mock(com.raxim.myscoutee.profile.service.notifications.NotificationOutboxService.class));
 
     @BeforeEach void setup() {
         Map<String, Users> accounts = new HashMap<>();
@@ -49,6 +50,8 @@ class CommunityGroupInviteClaimTest {
         when(members.save(any(ActivityMember.class))).thenAnswer(call -> {
             ActivityMember saved = call.getArgument(0); rows.put(saved.getUserId(), saved); return saved;
         });
+        when(members.updateCommunityState(anyString(), any(), any(), any(), any(), any(), any(), any(), anyBoolean(), any(), any(), any(), any()))
+                .thenReturn(1L);
         when(profiles.profilesByGroup(anyString())).thenReturn(Map.of());
     }
 

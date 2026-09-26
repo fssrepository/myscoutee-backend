@@ -13,7 +13,7 @@ register the scenario with the existing fixture harness and browser launcher
 before execution. The external system distributes returned links; testing uses
 the links directly and sends no unsolicited messages.
 
-## Numbered checks
+## 1. Issue and repeat participant links
 
 1. Call the existing `inviteGroupParticipants(groupId, participantIds)` client
    method / `POST /groups/{groupId}/invites` with two distinct external IDs.
@@ -21,6 +21,14 @@ the links directly and sends no unsolicited messages.
    or membership exists merely because a URL was issued.
 2. Repeat the batch and verify stable URLs. Reject blank/duplicate IDs and
    oversized batches; a different owner cannot issue invitations for this group.
+
+## 2. Fresh registration and active group
+
+Run the entry path from the real signed-out UI. Do not inject a session or
+pre-bind the recipient to skip registration, consent, location or onboarding.
+Demo selection is an existing-account branch, never evidence of creating a new
+registered identity. Use the actual registration mode for the fresh account.
+
 3. Open the first URL while signed out. Complete the ordinary registration and
    onboarding flow. The return URL retains the invitation through every gate.
 4. After registration, verify that the external participant ID is bound to that
@@ -33,6 +41,18 @@ the links directly and sends no unsolicited messages.
 5. Reopen the same URL as that account: membership/profile/participant binding
    are not duplicated. An explicitly cleared home gender filter is preserved.
    Registration defaults initially select the opposite gender on home cards.
+
+## 3. Existing accounts and rejected claims
+
+For the demo existing-account branch, follow the invitation while signed out,
+then select its pre-registered recipient through the real demo selector. Run
+the complete entry checks in [Group Lifecycle block 19](../group/GROUP-LIFECYCLE-001.md#19-first-location-save-and-firebase-sign-in).
+The URL must survive Setup cancellation/retry and successful login. A failed
+entry must not claim the link or create membership/workspace/session records.
+After successful entry, verify the target group is active on the first profile
+load, after reload, and after logout/login. A valid saved coordinate remains
+usable with browser GPS denied or outside supported countries.
+
 6. Open the second URL using the existing non-member account and compare the
    same accepted membership/active-workspace result. Repeat using an existing
    pending join request; the administrator-issued link supplies invitation
@@ -41,12 +61,18 @@ the links directly and sends no unsolicited messages.
    bytes. Reject the claim; neither account gains membership or a profile.
    Reusing an external participant ID already bound to another account is also
    rejected. Revoking the issuing administrator's role prevents new claims.
+
+## 4. Workspace changes and retry
+
 8. Start from an already selected second workspace, then follow a valid link
    for the first group. Bind the base account, not the virtual workspace
    profile; select the target once and do not duplicate the claim on switching.
 9. Retry after a real transport failure during claim or workspace selection.
    A failed selection retains the claim URL for retry. Retried successful
    operations converge to one participant binding, membership and profile.
+
+## 5. Event control, isolation and cleanup
+
 10. Issue an Event link as a control through the same client. Its normal
     pending-invitation, payment/approval and ended-event rules remain intact;
     group auto-admission must not bypass Event acceptance or checkout.
@@ -64,7 +90,7 @@ registration/claim UI, persisted membership/profile, active workspace and
 negative authorization outcomes. This integration path is server-owned even
 when the application's other demo routes use local data.
 
-## NOT RUN — Affiliate and external-link additions
+## 6. Affiliate attribution and cash exclusion
 
 - Generate event and group participant URLs through the existing API client.
   Compare their complete URLs with UI-generated external sharing links; both
@@ -89,3 +115,39 @@ when the application's other demo routes use local data.
 
 These are additional microsteps of this existing NOT RUN case, not new QA IDs
 and not updates to any closed Affiliate/Event/API PASS evidence.
+
+## 7. MCP discovery, help and client packages — NOT RUN
+
+These unexecuted additions belong to this NOT RUN case. Reuse UI-created keys
+and the group checkpoint's profile boundaries; do not reopen INTEGRATION-API-001.
+
+- The authenticated connect response identifies the key's profile/group and
+  authorized operations. Base/group keys produce the corresponding MCP discovery;
+  group keys do not advertise asset creation. Discovery never probes write URLs.
+- Group invitation discovery contains only groups the actor administers. Removing
+  that role changes the next discovery and blocks stale calls before invitation.
+- Revoked keys, unavailable capability API and older connect responses without
+  capabilities hide all personal tools; anonymous help remains discoverable.
+- Tool descriptions expose ownership/lifecycle preconditions. Foreign event IDs,
+  incomplete Mingle events and malformed payloads still fail in the API; a listed
+  operation does not grant blanket resource access.
+- HU/EN help starts with the AI integration topic after Getting started; frontend
+  local and Mongo-backed help agree. Anonymous MCP help explains that no login or
+  key is needed, and uses the current published revision.
+- Build separate unpublished OpenAI/Claude packages from the common plugin source.
+  Verify the original MyScoutee logo and shared skill, then test installation in
+  the chosen client separately. No personal remote OAuth pass follows from a local
+  API-key test. See `myscoutee-mcp/docs/QA.md` for the individual steps.
+
+- Personal remote `/mcp/private`: create a profile-owned MCP connection under
+  API keys, copy the one-time secret into client settings, sign in and explicitly
+  approve the displayed profile/group. Check both ChatGPT and Claude callbacks.
+  Invalid state round-trip, redirect, client, PKCE, resource, expired/reused code,
+  refresh replay and revocation must not expose private operations/data.
+- An enrolled browser session must not be required for an independently verified
+  API key/OAuth grant. Browser logout does not revoke the key; explicit key/grant
+  revocation does. Ordinary app requests still require their session.
+- Two concurrent identities remain isolated. Profile switches during creation
+  cannot expose the previous secret; create/revoke reconcile the table without
+  reload. Local/demo persists settings only. API-key slots remain independent.
+  Full steps: `myscoutee-mcp/docs/QA.md`, still **NOT RUN**.

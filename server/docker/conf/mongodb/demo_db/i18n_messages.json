@@ -225,7 +225,7 @@
     "_id": "i18n-message-en-activities-support-case-confirm-block-title",
     "key": "activities.support.case.confirm.block.title",
     "lang": "en",
-    "value": "Block support case"
+    "value": "Would you like to block this support case?"
   },
   {
     "_id": "i18n-message-en-activities-support-case-confirm-pick-message",
@@ -237,7 +237,7 @@
     "_id": "i18n-message-en-activities-support-case-confirm-pick-title",
     "key": "activities.support.case.confirm.pick.title",
     "lang": "en",
-    "value": "Pick support case"
+    "value": "Would you like to take this support case?"
   },
   {
     "_id": "i18n-message-en-activities-support-case-confirm-reopen-message",
@@ -249,7 +249,7 @@
     "_id": "i18n-message-en-activities-support-case-confirm-reopen-title",
     "key": "activities.support.case.confirm.reopen.title",
     "lang": "en",
-    "value": "Reopen support case"
+    "value": "Would you like to reopen this support case?"
   },
   {
     "_id": "i18n-message-en-activities-support-case-confirm-solve-message",
@@ -261,7 +261,7 @@
     "_id": "i18n-message-en-activities-support-case-confirm-solve-title",
     "key": "activities.support.case.confirm.solve.title",
     "lang": "en",
-    "value": "Resolve support case"
+    "value": "Would you like to mark this support case as resolved?"
   },
   {
     "_id": "i18n-message-en-activities-support-case-confirm-unpick-message",
@@ -273,7 +273,7 @@
     "_id": "i18n-message-en-activities-support-case-confirm-unpick-title",
     "key": "activities.support.case.confirm.unpick.title",
     "lang": "en",
-    "value": "Unpick support case"
+    "value": "Would you like to release this support case?"
   },
   {
     "_id": "i18n-message-en-activities-support-case-error-update",
@@ -7809,7 +7809,7 @@
     "_id": "i18n-message-en-footer-connect",
     "key": "footer.connect",
     "lang": "en",
-    "value": "Let's connect"
+    "value": "Follow us"
   },
   {
     "_id": "i18n-message-en-footer-tagline",
@@ -12057,7 +12057,7 @@
     "_id": "i18n-message-en-event-chat-external-link-title",
     "key": "event.chat.external.link.title",
     "lang": "en",
-    "value": "Open external link?"
+    "value": "Would you like to open this external link?"
   },
   {
     "_id": "i18n-message-en-event-chat-external-link-message",
@@ -12267,7 +12267,7 @@
     "_id": "i18n-message-en-admin-feedback-confirm-mark-solved-title",
     "key": "admin.feedback.confirm.mark.solved.title",
     "lang": "en",
-    "value": "Mark feedback solved?"
+    "value": "Would you like to mark this feedback as resolved?"
   },
   {
     "_id": "i18n-message-en-admin-feedback-confirm-mark-solved-message",
@@ -12279,7 +12279,7 @@
     "_id": "i18n-message-en-admin-feedback-confirm-mark-unresolved-title",
     "key": "admin.feedback.confirm.mark.unresolved.title",
     "lang": "en",
-    "value": "Mark feedback unresolved?"
+    "value": "Would you like to mark this feedback as unresolved?"
   },
   {
     "_id": "i18n-message-en-admin-feedback-confirm-mark-unresolved-message",
@@ -12297,7 +12297,7 @@
     "_id": "i18n-message-en-admin-reports-confirm-mark-solved-title",
     "key": "admin.reports.confirm.mark.solved.title",
     "lang": "en",
-    "value": "Mark report solved?"
+    "value": "Would you like to mark this report as resolved?"
   },
   {
     "_id": "i18n-message-en-admin-reports-confirm-mark-solved-message",
@@ -12309,7 +12309,7 @@
     "_id": "i18n-message-en-admin-reports-confirm-mark-unresolved-title",
     "key": "admin.reports.confirm.mark.unresolved.title",
     "lang": "en",
-    "value": "Mark report unresolved?"
+    "value": "Would you like to mark this report as unresolved?"
   },
   {
     "_id": "i18n-message-en-admin-reports-confirm-mark-unresolved-message",
@@ -14061,13 +14061,13 @@
     "_id": "i18n-message-en-event-editor-subevents-stage-delete-title",
     "key": "event.editor.subevents.stage.delete.title",
     "lang": "en",
-    "value": "Delete Stage Definition"
+    "value": "Would you like to delete this stage definition?"
   },
   {
     "_id": "i18n-message-en-event-editor-subevents-definition-delete-title",
     "key": "event.editor.subevents.definition.delete.title",
     "lang": "en",
-    "value": "Delete Sub Event Definition"
+    "value": "Would you like to delete this sub-event definition?"
   },
   {
     "_id": "i18n-message-en-event-editor-subevents-definition-delete-failure",
@@ -21351,7 +21351,7 @@
     "_id": "i18n-message-en-mingle-action-pause-title",
     "key": "mingle.action.pause.title",
     "lang": "en",
-    "value": "Pause Speed meeting"
+    "value": "Would you like to pause Speed meeting?"
   },
   {
     "_id": "i18n-message-en-mingle-action-pause-description",
@@ -21423,7 +21423,7 @@
     "_id": "i18n-message-en-mingle-action-resume-title",
     "key": "mingle.action.resume.title",
     "lang": "en",
-    "value": "Resume Speed meeting"
+    "value": "Would you like to resume Speed meeting?"
   },
   {
     "_id": "i18n-message-en-mingle-action-resume-description",
@@ -21880,6 +21880,12 @@
     "key": "moderation.status.blocked",
     "lang": "en",
     "value": "Blocked"
+  },
+  {
+    "_id": "i18n-message-en-moderation-group-message",
+    "key": "moderation.group.message",
+    "lang": "en",
+    "value": "Optional message to the owner via Group support"
   },
   {
     "_id": "i18n-message-en-moderation-message",
@@ -22599,7 +22605,7 @@
     "_id": "i18n-message-en-groups-bucket-participation",
     "key": "groups.bucket.participation",
     "lang": "en",
-    "value": "Participation"
+    "value": "Active groups"
   },
   {
     "_id": "i18n-message-en-groups-bucket-explore",
@@ -22683,7 +22689,7 @@
     "_id": "i18n-message-en-groups-policy",
     "key": "groups.policy",
     "lang": "en",
-    "value": "Group policy"
+    "value": "Required Profile Fields"
   },
   {
     "_id": "i18n-message-en-groups-hide-members",
@@ -23034,6 +23040,990 @@
     "value": "The contact chat could not be opened or updated. Please try again."
   },
   {
+    "_id": "i18n-message-en-profile-children-none",
+    "key": "profile.children.none",
+    "lang": "en",
+    "value": "No children"
+  },
+  {
+    "_id": "i18n-message-en-profile-children-has",
+    "key": "profile.children.has",
+    "lang": "en",
+    "value": "Has children"
+  },
+  {
+    "_id": "i18n-message-en-calendar-export-empty",
+    "key": "calendar.export.empty",
+    "lang": "en",
+    "value": "There are no upcoming events to export."
+  },
+  {
+    "_id": "i18n-message-en-app-setup-help-title",
+    "key": "app.setup.help.title",
+    "lang": "en",
+    "value": "Installation and permissions"
+  },
+  {
+    "_id": "i18n-message-en-app-setup-help-location-title",
+    "key": "app.setup.help.location.title",
+    "lang": "en",
+    "value": "Location"
+  },
+  {
+    "_id": "i18n-message-en-app-setup-help-location-text",
+    "key": "app.setup.help.location.text",
+    "lang": "en",
+    "value": "Location helps show nearby people and events. Select it here, then allow access when your browser asks. Your device’s location services must also be enabled."
+  },
+  {
+    "_id": "i18n-message-en-app-setup-help-notifications-title",
+    "key": "app.setup.help.notifications.title",
+    "lang": "en",
+    "value": "Notifications"
+  },
+  {
+    "_id": "i18n-message-en-app-setup-help-notifications-text",
+    "key": "app.setup.help.notifications.text",
+    "lang": "en",
+    "value": "Select notifications to receive alerts on this device. Both the browser and your system must allow them. Installing the app does not grant notification permission."
+  },
+  {
+    "_id": "i18n-message-en-app-setup-help-install-title",
+    "key": "app.setup.help.install.title",
+    "lang": "en",
+    "value": "Install the app"
+  },
+  {
+    "_id": "i18n-message-en-app-setup-help-install-text",
+    "key": "app.setup.help.install.text",
+    "lang": "en",
+    "value": "Android: use Install app here or in your browser menu. iPhone / iPad: in Safari, choose Share → Add to Home Screen. Open that icon to enable notifications (iOS / iPadOS 16.4 or later)."
+  },
+  {
+    "_id": "i18n-message-en-app-setup-help-blocked-title",
+    "key": "app.setup.help.blocked.title",
+    "lang": "en",
+    "value": "Previously blocked?"
+  },
+  {
+    "_id": "i18n-message-en-app-setup-help-blocked-text",
+    "key": "app.setup.help.blocked.text",
+    "lang": "en",
+    "value": "MyScoutee cannot override a browser or system block. Change the permission in settings, return here and retry. Menu names vary by device and version."
+  },
+  {
+    "_id": "i18n-message-en-app-setup-help-android-title",
+    "key": "app.setup.help.android.title",
+    "lang": "en",
+    "value": "Android settings"
+  },
+  {
+    "_id": "i18n-message-en-app-setup-help-android-text",
+    "key": "app.setup.help.android.text",
+    "lang": "en",
+    "value": "Chrome → Settings → Site settings → Location / Notifications: allow this site. Also check Android Settings → Apps → your browser or installed app → Permissions / Notifications. Then return to MyScoutee."
+  },
+  {
+    "_id": "i18n-message-en-app-setup-help-ios-title",
+    "key": "app.setup.help.ios.title",
+    "lang": "en",
+    "value": "iPhone / iPad settings"
+  },
+  {
+    "_id": "i18n-message-en-app-setup-help-ios-text",
+    "key": "app.setup.help.ios.text",
+    "lang": "en",
+    "value": "Location: Settings → Privacy & Security → Location Services; also check Location in Safari’s settings for this website. Alerts: Settings → Notifications → MyScoutee → Allow Notifications. Open MyScoutee from the Home Screen and retry."
+  },
+  {
+    "_id": "i18n-message-en-contact-chat-requests",
+    "key": "contact.chat.requests",
+    "lang": "en",
+    "value": "Requests"
+  },
+  {
+    "_id": "i18n-message-en-contact-chat-requests-empty",
+    "key": "contact.chat.requests.empty",
+    "lang": "en",
+    "value": "No pending requests"
+  },
+  {
+    "_id": "i18n-message-en-contact-chat-request",
+    "key": "contact.chat.request",
+    "lang": "en",
+    "value": "Request"
+  },
+  {
+    "_id": "i18n-message-en-contact-chat-approve",
+    "key": "contact.chat.approve",
+    "lang": "en",
+    "value": "Approve"
+  },
+  {
+    "_id": "i18n-message-en-contact-chat-reject",
+    "key": "contact.chat.reject",
+    "lang": "en",
+    "value": "Reject"
+  },
+  {
+    "_id": "i18n-message-en-contact-chat-pending",
+    "key": "contact.chat.pending",
+    "lang": "en",
+    "value": "Pending"
+  },
+  {
+    "_id": "i18n-message-en-contact-chat-approved",
+    "key": "contact.chat.approved",
+    "lang": "en",
+    "value": "Chat"
+  },
+  {
+    "_id": "i18n-message-en-contact-chat-rejected",
+    "key": "contact.chat.rejected",
+    "lang": "en",
+    "value": "Rejected"
+  },
+  {
+    "_id": "i18n-message-en-contact-chat-request-message",
+    "key": "contact.chat.request.message",
+    "lang": "en",
+    "value": "Request permission to chat directly with this contact on MyScoutee?"
+  },
+  {
+    "_id": "i18n-message-en-contact-chat-approve-message",
+    "key": "contact.chat.approve.message",
+    "lang": "en",
+    "value": "Allow direct chat with this person? They will be added to your contacts."
+  },
+  {
+    "_id": "i18n-message-en-contact-chat-reject-message",
+    "key": "contact.chat.reject.message",
+    "lang": "en",
+    "value": "Reject this direct chat request?"
+  },
+  {
+    "_id": "i18n-message-en-contact-chat-pending-message",
+    "key": "contact.chat.pending.message",
+    "lang": "en",
+    "value": "Your request is awaiting a response."
+  },
+  {
+    "_id": "i18n-message-en-contact-chat-error",
+    "key": "contact.chat.error",
+    "lang": "en",
+    "value": "The chat request could not be updated. Please try again."
+  },
+  {
+    "_id": "i18n-message-en-notification-kind-contact-chat-requested-title",
+    "key": "notification.kind.contact-chat-requested.title",
+    "lang": "en",
+    "value": "Chat request"
+  },
+  {
+    "_id": "i18n-message-en-notification-kind-contact-chat-requested-message",
+    "key": "notification.kind.contact-chat-requested.message",
+    "lang": "en",
+    "value": "You received a request for direct chat. Open Contacts to respond."
+  },
+  {
+    "_id": "i18n-message-en-notification-kind-contact-chat-approved-title",
+    "key": "notification.kind.contact-chat-approved.title",
+    "lang": "en",
+    "value": "Chat request approved"
+  },
+  {
+    "_id": "i18n-message-en-notification-kind-contact-chat-approved-message",
+    "key": "notification.kind.contact-chat-approved.message",
+    "lang": "en",
+    "value": "Your direct chat request was approved. You can now chat."
+  },
+  {
+    "_id": "i18n-message-en-notification-kind-contact-chat-rejected-title",
+    "key": "notification.kind.contact-chat-rejected.title",
+    "lang": "en",
+    "value": "Chat request rejected"
+  },
+  {
+    "_id": "i18n-message-en-notification-kind-contact-chat-rejected-message",
+    "key": "notification.kind.contact-chat-rejected.message",
+    "lang": "en",
+    "value": "Your direct chat request was rejected."
+  },
+  {
+    "_id": "i18n-message-en-menu-selection-maximum",
+    "key": "menu.selection.maximum",
+    "lang": "en",
+    "value": "(max. {count})"
+  },
+  {
+    "_id": "i18n-message-en-mcp-connections",
+    "key": "mcp.connections",
+    "lang": "en",
+    "value": "AI / MCP connections"
+  },
+  {
+    "_id": "i18n-message-en-mcp-create",
+    "key": "mcp.create",
+    "lang": "en",
+    "value": "New connection"
+  },
+  {
+    "_id": "i18n-message-en-mcp-setup",
+    "key": "mcp.setup",
+    "lang": "en",
+    "value": "Create one connection per AI client. Add its MCP URL, client ID and secret in the client settings, then sign in and approve access. Connections expire after 90 days."
+  },
+  {
+    "_id": "i18n-message-en-mcp-local-only",
+    "key": "mcp.local.only",
+    "lang": "en",
+    "value": "These settings are saved locally in demo mode. Remote AI connections require a live HTTPS installation."
+  },
+  {
+    "_id": "i18n-message-en-mcp-url",
+    "key": "mcp.url",
+    "lang": "en",
+    "value": "MCP URL"
+  },
+  {
+    "_id": "i18n-message-en-mcp-client-id",
+    "key": "mcp.client.id",
+    "lang": "en",
+    "value": "Client ID"
+  },
+  {
+    "_id": "i18n-message-en-mcp-callback",
+    "key": "mcp.callback",
+    "lang": "en",
+    "value": "Callback URL"
+  },
+  {
+    "_id": "i18n-message-en-mcp-last-used",
+    "key": "mcp.last.used",
+    "lang": "en",
+    "value": "Last used:"
+  },
+  {
+    "_id": "i18n-message-en-mcp-secret",
+    "key": "mcp.secret",
+    "lang": "en",
+    "value": "Client secret"
+  },
+  {
+    "_id": "i18n-message-en-mcp-empty",
+    "key": "mcp.empty",
+    "lang": "en",
+    "value": "No active MCP connections."
+  },
+  {
+    "_id": "i18n-message-en-mcp-name",
+    "key": "mcp.name",
+    "lang": "en",
+    "value": "Name (e.g. Claude)"
+  },
+  {
+    "_id": "i18n-message-en-mcp-callback-help",
+    "key": "mcp.callback.help",
+    "lang": "en",
+    "value": "Copy the exact callback URL shown by your AI client. HTTPS is required, except for local loopback clients."
+  },
+  {
+    "_id": "i18n-message-en-mcp-revoke",
+    "key": "mcp.revoke",
+    "lang": "en",
+    "value": "Revoke connection"
+  },
+  {
+    "_id": "i18n-message-en-mcp-revoke-message",
+    "key": "mcp.revoke.message",
+    "lang": "en",
+    "value": "Revoke this AI client’s access? Existing access and refresh tokens will stop working."
+  },
+  {
+    "_id": "i18n-message-en-mcp-failed",
+    "key": "mcp.failed",
+    "lang": "en",
+    "value": "The operation failed. Check the details and retry."
+  },
+  {
+    "_id": "i18n-message-en-mcp-profile",
+    "key": "mcp.profile",
+    "lang": "en",
+    "value": "Profile"
+  },
+  {
+    "_id": "i18n-message-en-mcp-base-profile",
+    "key": "mcp.base.profile",
+    "lang": "en",
+    "value": "Base profile"
+  },
+  {
+    "_id": "i18n-message-en-mcp-consent-message",
+    "key": "mcp.consent.message",
+    "lang": "en",
+    "value": "This connection can use the API operations allowed for this profile and group. It cannot switch profiles. You can revoke access under Profile editor → Affiliate → Client keys."
+  },
+  {
+    "_id": "i18n-message-en-mcp-authorization-failed",
+    "key": "mcp.authorization.failed",
+    "lang": "en",
+    "value": "This authorization request is invalid or belongs to another account. Reconnect from your AI client using the correct account."
+  },
+  {
+    "_id": "i18n-message-en-mcp-authorize",
+    "key": "mcp.authorize",
+    "lang": "en",
+    "value": "Authorize AI connection"
+  },
+  {
+    "_id": "i18n-message-en-mcp-approve",
+    "key": "mcp.approve",
+    "lang": "en",
+    "value": "Allow access"
+  },
+  {
+    "_id": "i18n-message-en-demo-selector-status-location",
+    "key": "demo.selector.status.location",
+    "lang": "en",
+    "value": "Location needed"
+  },
+  {
+    "_id": "i18n-message-en-notification-kind-community-invite-message",
+    "key": "notification.kind.community-invite.message",
+    "lang": "en",
+    "value": "You have been invited to this group."
+  },
+  {
+    "_id": "i18n-message-en-notification-kind-community-join-requested-message",
+    "key": "notification.kind.community-join-requested.message",
+    "lang": "en",
+    "value": "A member requested to join this group."
+  },
+  {
+    "_id": "i18n-message-en-notification-kind-community-member-joined-message",
+    "key": "notification.kind.community-member-joined.message",
+    "lang": "en",
+    "value": "Group membership was approved. The member list has changed."
+  },
+  {
+    "_id": "i18n-message-en-notification-kind-community-member-removed-message",
+    "key": "notification.kind.community-member-removed.message",
+    "lang": "en",
+    "value": "A group membership ended."
+  },
+  {
+    "_id": "i18n-message-en-notification-kind-community-role-changed-message",
+    "key": "notification.kind.community-role-changed.message",
+    "lang": "en",
+    "value": "Your group role has changed."
+  },
+  {
+    "_id": "i18n-message-en-groups-policies-title",
+    "key": "groups.policies.title",
+    "lang": "en",
+    "value": "Group Policies"
+  },
+  {
+    "_id": "i18n-message-en-groups-policies-description",
+    "key": "groups.policies.description",
+    "lang": "en",
+    "value": "Describe the rules and recommendations for this group."
+  },
+  {
+    "_id": "i18n-message-en-groups-policies-empty",
+    "key": "groups.policies.empty",
+    "lang": "en",
+    "value": "No group policies have been added."
+  },
+  {
+    "_id": "i18n-message-en-groups-policies-editor",
+    "key": "groups.policies.editor",
+    "lang": "en",
+    "value": "Give the policy a title, explain it and indicate whether it is mandatory."
+  },
+  {
+    "_id": "i18n-message-en-groups-policies-required",
+    "key": "groups.policies.required",
+    "lang": "en",
+    "value": "Mandatory rule"
+  },
+  {
+    "_id": "i18n-message-en-groups-policies-optional",
+    "key": "groups.policies.optional",
+    "lang": "en",
+    "value": "Recommendation"
+  },
+  {
+    "_id": "i18n-message-en-event-editor-policy-view",
+    "key": "event.editor.policy.view",
+    "lang": "en",
+    "value": "Policy"
+  },
+  {
+    "_id": "i18n-message-en-groups-confirm-join-title",
+    "key": "groups.confirm.join.title",
+    "lang": "en",
+    "value": "Would you like to join this group?"
+  },
+  {
+    "_id": "i18n-message-en-groups-confirm-accept-title",
+    "key": "groups.confirm.accept.title",
+    "lang": "en",
+    "value": "Would you like to accept this invitation?"
+  },
+  {
+    "_id": "i18n-message-en-groups-confirm-report-title",
+    "key": "groups.confirm.report.title",
+    "lang": "en",
+    "value": "Would you like to report this group?"
+  },
+  {
+    "_id": "i18n-message-en-event-following-follow-question",
+    "key": "event.following.follow.question",
+    "lang": "en",
+    "value": "Would you like to follow this organizer?"
+  },
+  {
+    "_id": "i18n-message-en-event-following-unfollow-question",
+    "key": "event.following.unfollow.question",
+    "lang": "en",
+    "value": "Would you like to unfollow this organizer?"
+  },
+  {
+    "_id": "i18n-message-en-contact-chat-request-question",
+    "key": "contact.chat.request.question",
+    "lang": "en",
+    "value": "Would you like to request direct chat access?"
+  },
+  {
+    "_id": "i18n-message-en-contact-chat-approve-question",
+    "key": "contact.chat.approve.question",
+    "lang": "en",
+    "value": "Would you like to allow direct chat?"
+  },
+  {
+    "_id": "i18n-message-en-contact-chat-reject-question",
+    "key": "contact.chat.reject.question",
+    "lang": "en",
+    "value": "Would you like to reject this chat request?"
+  },
+  {
+    "_id": "i18n-message-en-moderation-status-under-review-question",
+    "key": "moderation.status.under-review.question",
+    "lang": "en",
+    "value": "Would you like to send this content for review?"
+  },
+  {
+    "_id": "i18n-message-en-moderation-status-accepted-question",
+    "key": "moderation.status.accepted.question",
+    "lang": "en",
+    "value": "Would you like to approve this content?"
+  },
+  {
+    "_id": "i18n-message-en-moderation-status-rejected-question",
+    "key": "moderation.status.rejected.question",
+    "lang": "en",
+    "value": "Would you like to reject this content?"
+  },
+  {
+    "_id": "i18n-message-en-moderation-status-blocked-question",
+    "key": "moderation.status.blocked.question",
+    "lang": "en",
+    "value": "Would you like to block this content?"
+  },
+  {
+    "_id": "i18n-message-en-moderation-unblock-question",
+    "key": "moderation.unblock.question",
+    "lang": "en",
+    "value": "Would you like to unblock this content?"
+  },
+  {
+    "_id": "i18n-message-en-feed-remove-question",
+    "key": "feed.remove.question",
+    "lang": "en",
+    "value": "Would you like to remove this photo?"
+  },
+  {
+    "_id": "i18n-message-en-mcp-revoke-question",
+    "key": "mcp.revoke.question",
+    "lang": "en",
+    "value": "Would you like to revoke this AI connection?"
+  },
+  {
+    "_id": "i18n-message-en-asset-requests-promote-question",
+    "key": "asset.requests.promote.question",
+    "lang": "en",
+    "value": "Would you like to appoint this member as an asset manager?"
+  },
+  {
+    "_id": "i18n-message-en-asset-requests-revoke-question",
+    "key": "asset.requests.revoke.question",
+    "lang": "en",
+    "value": "Would you like to revoke this member’s asset manager role?"
+  },
+  {
+    "_id": "i18n-message-en-confirmation-delete-supply",
+    "key": "confirmation.delete.supply",
+    "lang": "en",
+    "value": "Would you like to delete this supply entry?"
+  },
+  {
+    "_id": "i18n-message-en-confirmation-delete-tournament-group",
+    "key": "confirmation.delete.tournament.group",
+    "lang": "en",
+    "value": "Would you like to delete this tournament group?"
+  },
+  {
+    "_id": "i18n-message-en-confirmation-delete-asset",
+    "key": "confirmation.delete.asset",
+    "lang": "en",
+    "value": "Would you like to delete this asset?"
+  },
+  {
+    "_id": "i18n-message-en-confirmation-start-stage",
+    "key": "confirmation.start.stage",
+    "lang": "en",
+    "value": "Would you like to start this stage?"
+  },
+  {
+    "_id": "i18n-message-en-confirmation-close-stage",
+    "key": "confirmation.close.stage",
+    "lang": "en",
+    "value": "Would you like to close this stage for score review?"
+  },
+  {
+    "_id": "i18n-message-en-confirmation-finalize-stage",
+    "key": "confirmation.finalize.stage",
+    "lang": "en",
+    "value": "Would you like to finalize this stage?"
+  },
+  {
+    "_id": "i18n-message-en-confirmation-reopen-scores",
+    "key": "confirmation.reopen.scores",
+    "lang": "en",
+    "value": "Would you like to reopen the scores?"
+  },
+  {
+    "_id": "i18n-message-en-confirmation-suspend-stage",
+    "key": "confirmation.suspend.stage",
+    "lang": "en",
+    "value": "Would you like to suspend this stage?"
+  },
+  {
+    "_id": "i18n-message-en-confirmation-resume-stage",
+    "key": "confirmation.resume.stage",
+    "lang": "en",
+    "value": "Would you like to resume this stage?"
+  },
+  {
+    "_id": "i18n-message-en-mingle-action-start-question",
+    "key": "mingle.action.start.question",
+    "lang": "en",
+    "value": "Would you like to start Speed meeting?"
+  },
+  {
+    "_id": "i18n-message-en-mingle-action-end-question",
+    "key": "mingle.action.end.question",
+    "lang": "en",
+    "value": "Would you like to end this round?"
+  },
+  {
+    "_id": "i18n-message-en-mingle-action-complete-question",
+    "key": "mingle.action.complete.question",
+    "lang": "en",
+    "value": "Would you like to finish Speed meeting?"
+  },
+  {
+    "_id": "i18n-message-en-mingle-action-next-question",
+    "key": "mingle.action.next.question",
+    "lang": "en",
+    "value": "Would you like to start the next round?"
+  },
+  {
+    "_id": "i18n-message-en-event-checkout-update-confirm-title",
+    "key": "event.checkout.update.confirm.title",
+    "lang": "en",
+    "value": "Would you like to update your booking?"
+  },
+  {
+    "_id": "i18n-message-en-event-checkout-waitlist-confirm-title",
+    "key": "event.checkout.waitlist.confirm.title",
+    "lang": "en",
+    "value": "Would you like to join the waiting list?"
+  },
+  {
+    "_id": "i18n-message-en-event-checkout-request-confirm-title",
+    "key": "event.checkout.request.confirm.title",
+    "lang": "en",
+    "value": "Would you like to request approval to join?"
+  },
+  {
+    "_id": "i18n-message-en-event-checkout-continue-confirm-title",
+    "key": "event.checkout.continue.confirm.title",
+    "lang": "en",
+    "value": "Would you like to continue your booking?"
+  },
+  {
+    "_id": "i18n-message-en-confirmation-mute-notification-alerts",
+    "key": "confirmation.mute.notification.alerts",
+    "lang": "en",
+    "value": "Mute notification alerts?"
+  },
+  {
+    "_id": "i18n-message-en-confirmation-unmute-notification-alerts",
+    "key": "confirmation.unmute.notification.alerts",
+    "lang": "en",
+    "value": "Unmute notification alerts?"
+  },
+  {
+    "_id": "i18n-message-en-confirmation-delete-experience",
+    "key": "confirmation.delete.experience",
+    "lang": "en",
+    "value": "Delete experience?"
+  },
+  {
+    "_id": "i18n-message-en-confirmation-move-article-to-trash",
+    "key": "confirmation.move.article.to.trash",
+    "lang": "en",
+    "value": "Move article to trash?"
+  },
+  {
+    "_id": "i18n-message-en-confirmation-approve-request",
+    "key": "confirmation.approve.request",
+    "lang": "en",
+    "value": "Approve request?"
+  },
+  {
+    "_id": "i18n-message-en-confirmation-leave-event",
+    "key": "confirmation.leave.event",
+    "lang": "en",
+    "value": "Leave event?"
+  },
+  {
+    "_id": "i18n-message-en-confirmation-disqualify-member",
+    "key": "confirmation.disqualify.member",
+    "lang": "en",
+    "value": "Disqualify member?"
+  },
+  {
+    "_id": "i18n-message-en-confirmation-reinstate-member",
+    "key": "confirmation.reinstate.member",
+    "lang": "en",
+    "value": "Reinstate member?"
+  },
+  {
+    "_id": "i18n-message-en-confirmation-make-member-an-asset-manager",
+    "key": "confirmation.make.member.an.asset.manager",
+    "lang": "en",
+    "value": "Make member an Asset Manager?"
+  },
+  {
+    "_id": "i18n-message-en-confirmation-promote-member-to-admin",
+    "key": "confirmation.promote.member.to.admin",
+    "lang": "en",
+    "value": "Promote member to admin?"
+  },
+  {
+    "_id": "i18n-message-en-confirmation-count-as-participant",
+    "key": "confirmation.count.as.participant",
+    "lang": "en",
+    "value": "Would you like to count as a participant too?"
+  },
+  {
+    "_id": "i18n-message-en-confirmation-organizer-only",
+    "key": "confirmation.organizer.only",
+    "lang": "en",
+    "value": "Would you like to remain an organizer without taking a participant place?"
+  },
+  {
+    "_id": "i18n-message-en-confirmation-revoke-asset-manager",
+    "key": "confirmation.revoke.asset.manager",
+    "lang": "en",
+    "value": "Revoke Asset Manager?"
+  },
+  {
+    "_id": "i18n-message-en-confirmation-leave-asset",
+    "key": "confirmation.leave.asset",
+    "lang": "en",
+    "value": "Leave asset?"
+  },
+  {
+    "_id": "i18n-message-en-confirmation-cancel-borrow",
+    "key": "confirmation.cancel.borrow",
+    "lang": "en",
+    "value": "Cancel borrow?"
+  },
+  {
+    "_id": "i18n-message-en-confirmation-accept-invitation",
+    "key": "confirmation.accept.invitation",
+    "lang": "en",
+    "value": "Accept invitation?"
+  },
+  {
+    "_id": "i18n-message-en-confirmation-restore-event",
+    "key": "confirmation.restore.event",
+    "lang": "en",
+    "value": "Restore event?"
+  },
+  {
+    "_id": "i18n-message-en-confirmation-join-waiting-list",
+    "key": "confirmation.join.waiting.list",
+    "lang": "en",
+    "value": "Join waiting list?"
+  },
+  {
+    "_id": "i18n-message-en-confirmation-request-to-join",
+    "key": "confirmation.request.to.join",
+    "lang": "en",
+    "value": "Request to join?"
+  },
+  {
+    "_id": "i18n-message-en-confirmation-continue-booking",
+    "key": "confirmation.continue.booking",
+    "lang": "en",
+    "value": "Continue booking?"
+  },
+  {
+    "_id": "i18n-message-en-confirmation-leave-waitlist",
+    "key": "confirmation.leave.waitlist",
+    "lang": "en",
+    "value": "Leave waitlist?"
+  },
+  {
+    "_id": "i18n-message-en-confirmation-cancel-request",
+    "key": "confirmation.cancel.request",
+    "lang": "en",
+    "value": "Cancel request?"
+  },
+  {
+    "_id": "i18n-message-en-confirmation-cancel-payment-item",
+    "key": "confirmation.cancel.payment.item",
+    "lang": "en",
+    "value": "Cancel payment item?"
+  },
+  {
+    "_id": "i18n-message-en-confirmation-remove-checkout-item",
+    "key": "confirmation.remove.checkout.item",
+    "lang": "en",
+    "value": "Remove checkout item?"
+  },
+  {
+    "_id": "i18n-message-en-confirmation-cancel-payment",
+    "key": "confirmation.cancel.payment",
+    "lang": "en",
+    "value": "Cancel payment?"
+  },
+  {
+    "_id": "i18n-message-en-confirmation-cancel-checkout",
+    "key": "confirmation.cancel.checkout",
+    "lang": "en",
+    "value": "Cancel checkout?"
+  },
+  {
+    "_id": "i18n-message-en-confirmation-cancel-join-request",
+    "key": "confirmation.cancel.join.request",
+    "lang": "en",
+    "value": "Cancel join request?"
+  },
+  {
+    "_id": "i18n-message-en-confirmation-reject-invitation",
+    "key": "confirmation.reject.invitation",
+    "lang": "en",
+    "value": "Reject invitation?"
+  },
+  {
+    "_id": "i18n-message-en-confirmation-reject-request",
+    "key": "confirmation.reject.request",
+    "lang": "en",
+    "value": "Reject request?"
+  },
+  {
+    "_id": "i18n-message-en-confirmation-remove-admin",
+    "key": "confirmation.remove.admin",
+    "lang": "en",
+    "value": "Remove admin?"
+  },
+  {
+    "_id": "i18n-message-en-confirmation-remove-member",
+    "key": "confirmation.remove.member",
+    "lang": "en",
+    "value": "Remove member?"
+  },
+  {
+    "_id": "i18n-message-en-confirmation-delete-invitation",
+    "key": "confirmation.delete.invitation",
+    "lang": "en",
+    "value": "Delete invitation?"
+  },
+  {
+    "_id": "i18n-message-en-confirmation-leave-group",
+    "key": "confirmation.leave.group",
+    "lang": "en",
+    "value": "Leave group?"
+  },
+  {
+    "_id": "i18n-message-en-confirmation-leave-chat",
+    "key": "confirmation.leave.chat",
+    "lang": "en",
+    "value": "Leave chat?"
+  },
+  {
+    "_id": "i18n-message-en-confirmation-leave-sub-event",
+    "key": "confirmation.leave.sub.event",
+    "lang": "en",
+    "value": "Leave sub event?"
+  },
+  {
+    "_id": "i18n-message-en-confirmation-step-down-as-admin",
+    "key": "confirmation.step.down.as.admin",
+    "lang": "en",
+    "value": "Step down as admin?"
+  },
+  {
+    "_id": "i18n-message-en-confirmation-step-down-as-manager",
+    "key": "confirmation.step.down.as.manager",
+    "lang": "en",
+    "value": "Step down as manager?"
+  },
+  {
+    "_id": "i18n-message-en-confirmation-delete-contact",
+    "key": "confirmation.delete.contact",
+    "lang": "en",
+    "value": "Would you like to delete the contact {name}?"
+  },
+  {
+    "_id": "i18n-message-en-confirmation-delete-help-revision",
+    "key": "confirmation.delete.help.revision",
+    "lang": "en",
+    "value": "Would you like to delete help revision v{version}?"
+  },
+  {
+    "_id": "i18n-message-en-confirmation-leave-named-asset",
+    "key": "confirmation.leave.named.asset",
+    "lang": "en",
+    "value": "Would you like to leave the asset “{name}”?"
+  },
+  {
+    "_id": "i18n-message-en-confirmation-remove-named-asset",
+    "key": "confirmation.remove.named.asset",
+    "lang": "en",
+    "value": "Would you like to remove “{name}” from this event?"
+  },
+  {
+    "_id": "i18n-message-en-groups-bucket-pending",
+    "key": "groups.bucket.pending",
+    "lang": "en",
+    "value": "Pending groups"
+  },
+  {
+    "_id": "i18n-message-en-groups-explore",
+    "key": "groups.explore",
+    "lang": "en",
+    "value": "Explore groups"
+  },
+  {
+    "_id": "i18n-message-en-groups-actions",
+    "key": "groups.actions",
+    "lang": "en",
+    "value": "Open group actions"
+  },
+  {
+    "_id": "i18n-message-en-home-filters",
+    "key": "home.filters",
+    "lang": "en",
+    "value": "Filters"
+  },
+  {
+    "_id": "i18n-message-en-groups-open",
+    "key": "groups.open",
+    "lang": "en",
+    "value": "Open group"
+  },
+  {
+    "_id": "i18n-message-en-groups-admin-revoke",
+    "key": "groups.admin.revoke",
+    "lang": "en",
+    "value": "Revoke admin"
+  },
+  {
+    "_id": "i18n-message-en-groups-admin-revoke-title",
+    "key": "groups.admin.revoke.title",
+    "lang": "en",
+    "value": "Revoke this member’s admin role?"
+  },
+  {
+    "_id": "i18n-message-en-groups-admin-revoke-message",
+    "key": "groups.admin.revoke.message",
+    "lang": "en",
+    "value": "{name} will remain a group member but will no longer administer the group."
+  },
+  {
+    "_id": "i18n-message-en-groups-admin-promote-message",
+    "key": "groups.admin.promote.message",
+    "lang": "en",
+    "value": "{name} will be able to administer this group and appoint other group admins."
+  },
+  {
+    "_id": "i18n-message-en-groups-takeover",
+    "key": "groups.takeover",
+    "lang": "en",
+    "value": "Take Over"
+  },
+  {
+    "_id": "i18n-message-en-groups-leave",
+    "key": "groups.leave",
+    "lang": "en",
+    "value": "Leave group"
+  },
+  {
+    "_id": "i18n-message-en-groups-confirm-take-over-title",
+    "key": "groups.confirm.take-over.title",
+    "lang": "en",
+    "value": "Take over responsibility for this group?"
+  },
+  {
+    "_id": "i18n-message-en-groups-confirm-take-over",
+    "key": "groups.confirm.take-over",
+    "lang": "en",
+    "value": "You will become the responsible admin of “{name}”."
+  },
+  {
+    "_id": "i18n-message-en-groups-confirm-remove-title",
+    "key": "groups.confirm.remove.title",
+    "lang": "en",
+    "value": "Leave this group?"
+  },
+  {
+    "_id": "i18n-message-en-groups-confirm-remove",
+    "key": "groups.confirm.remove",
+    "lang": "en",
+    "value": "Leave “{name}”? If you are responsible for the group, another admin or accepted member can take over. The group is deleted when its last member leaves."
+  },
+  {
+    "_id": "i18n-message-en-notification-kind-community-owner-left-title",
+    "key": "notification.kind.community-owner-left.title",
+    "lang": "en",
+    "value": "Group needs a new administrator"
+  },
+  {
+    "_id": "i18n-message-en-notification-kind-community-owner-left-message",
+    "key": "notification.kind.community-owner-left.message",
+    "lang": "en",
+    "value": "You can take over responsibility for {workspaceGroupName}."
+  },
+  {
+    "_id": "i18n-message-en-notification-kind-community-takeover-title",
+    "key": "notification.kind.community-takeover.title",
+    "lang": "en",
+    "value": "Group responsibility changed"
+  },
+  {
+    "_id": "i18n-message-en-notification-kind-community-takeover-message",
+    "key": "notification.kind.community-takeover.message",
+    "lang": "en",
+    "value": "An administrator took over responsibility for {workspaceGroupName}."
+  },
+  {
     "_id": "i18n-message-hu-navigator-community",
     "key": "navigator.community",
     "lang": "hu",
@@ -23259,7 +24249,7 @@
     "_id": "i18n-message-hu-activities-support-case-confirm-block-title",
     "key": "activities.support.case.confirm.block.title",
     "lang": "hu",
-    "value": "Támogatási ügy blokkolása"
+    "value": "Letiltod ezt az ügyfélszolgálati ügyet?"
   },
   {
     "_id": "i18n-message-hu-activities-support-case-confirm-pick-message",
@@ -23271,7 +24261,7 @@
     "_id": "i18n-message-hu-activities-support-case-confirm-pick-title",
     "key": "activities.support.case.confirm.pick.title",
     "lang": "hu",
-    "value": "Támogatási ügy felvétele"
+    "value": "Átveszed ezt az ügyfélszolgálati ügyet?"
   },
   {
     "_id": "i18n-message-hu-activities-support-case-confirm-reopen-message",
@@ -23283,7 +24273,7 @@
     "_id": "i18n-message-hu-activities-support-case-confirm-reopen-title",
     "key": "activities.support.case.confirm.reopen.title",
     "lang": "hu",
-    "value": "Támogatási ügy újranyitása"
+    "value": "Újra megnyitod ezt az ügyfélszolgálati ügyet?"
   },
   {
     "_id": "i18n-message-hu-activities-support-case-confirm-solve-message",
@@ -23295,7 +24285,7 @@
     "_id": "i18n-message-hu-activities-support-case-confirm-solve-title",
     "key": "activities.support.case.confirm.solve.title",
     "lang": "hu",
-    "value": "Támogatási ügy megoldása"
+    "value": "Megoldottnak jelölöd ezt az ügyfélszolgálati ügyet?"
   },
   {
     "_id": "i18n-message-hu-activities-support-case-confirm-unpick-message",
@@ -23307,7 +24297,7 @@
     "_id": "i18n-message-hu-activities-support-case-confirm-unpick-title",
     "key": "activities.support.case.confirm.unpick.title",
     "lang": "hu",
-    "value": "Támogatási ügy leadása"
+    "value": "Visszaadod ezt az ügyfélszolgálati ügyet?"
   },
   {
     "_id": "i18n-message-hu-activities-support-case-error-update",
@@ -30843,7 +31833,7 @@
     "_id": "i18n-message-hu-footer-connect",
     "key": "footer.connect",
     "lang": "hu",
-    "value": "Kapcsolódjunk"
+    "value": "Kövess minket"
   },
   {
     "_id": "i18n-message-hu-footer-tagline",
@@ -35091,7 +36081,7 @@
     "_id": "i18n-message-hu-event-chat-external-link-title",
     "key": "event.chat.external.link.title",
     "lang": "hu",
-    "value": "Külső hivatkozás megnyitása?"
+    "value": "Megnyitod ezt a külső hivatkozást?"
   },
   {
     "_id": "i18n-message-hu-event-chat-external-link-message",
@@ -35301,7 +36291,7 @@
     "_id": "i18n-message-hu-admin-feedback-confirm-mark-solved-title",
     "key": "admin.feedback.confirm.mark.solved.title",
     "lang": "hu",
-    "value": "Visszajelzés megoldottra jelölése?"
+    "value": "Megoldottnak jelölöd ezt a visszajelzést?"
   },
   {
     "_id": "i18n-message-hu-admin-feedback-confirm-mark-solved-message",
@@ -35313,7 +36303,7 @@
     "_id": "i18n-message-hu-admin-feedback-confirm-mark-unresolved-title",
     "key": "admin.feedback.confirm.mark.unresolved.title",
     "lang": "hu",
-    "value": "Visszajelzés megoldatlanná jelölése?"
+    "value": "Megoldatlannak jelölöd ezt a visszajelzést?"
   },
   {
     "_id": "i18n-message-hu-admin-feedback-confirm-mark-unresolved-message",
@@ -35331,7 +36321,7 @@
     "_id": "i18n-message-hu-admin-reports-confirm-mark-solved-title",
     "key": "admin.reports.confirm.mark.solved.title",
     "lang": "hu",
-    "value": "Jelentés megoldottra jelölése?"
+    "value": "Megoldottnak jelölöd ezt a jelentést?"
   },
   {
     "_id": "i18n-message-hu-admin-reports-confirm-mark-solved-message",
@@ -35343,7 +36333,7 @@
     "_id": "i18n-message-hu-admin-reports-confirm-mark-unresolved-title",
     "key": "admin.reports.confirm.mark.unresolved.title",
     "lang": "hu",
-    "value": "Jelentés megoldatlanná jelölése?"
+    "value": "Megoldatlannak jelölöd ezt a jelentést?"
   },
   {
     "_id": "i18n-message-hu-admin-reports-confirm-mark-unresolved-message",
@@ -37095,13 +38085,13 @@
     "_id": "i18n-message-hu-event-editor-subevents-stage-delete-title",
     "key": "event.editor.subevents.stage.delete.title",
     "lang": "hu",
-    "value": "Szakaszdefiníció törlése"
+    "value": "Törlöd ezt a szakaszdefiníciót?"
   },
   {
     "_id": "i18n-message-hu-event-editor-subevents-definition-delete-title",
     "key": "event.editor.subevents.definition.delete.title",
     "lang": "hu",
-    "value": "Alesemény-definíció törlése"
+    "value": "Törlöd ezt az alesemény-definíciót?"
   },
   {
     "_id": "i18n-message-hu-event-editor-subevents-definition-delete-failure",
@@ -44385,7 +45375,7 @@
     "_id": "i18n-message-hu-mingle-action-pause-title",
     "key": "mingle.action.pause.title",
     "lang": "hu",
-    "value": "Villámtalálkozók szüneteltetése"
+    "value": "Szünetelteted a gyorsismerkedést?"
   },
   {
     "_id": "i18n-message-hu-mingle-action-pause-description",
@@ -44457,7 +45447,7 @@
     "_id": "i18n-message-hu-mingle-action-resume-title",
     "key": "mingle.action.resume.title",
     "lang": "hu",
-    "value": "Villámtalálkozók folytatása"
+    "value": "Folytatod a gyorsismerkedést?"
   },
   {
     "_id": "i18n-message-hu-mingle-action-resume-description",
@@ -44914,6 +45904,12 @@
     "key": "moderation.status.blocked",
     "lang": "hu",
     "value": "Letiltva"
+  },
+  {
+    "_id": "i18n-message-hu-moderation-group-message",
+    "key": "moderation.group.message",
+    "lang": "hu",
+    "value": "Opcionális üzenet a tulajdonosnak a csoporttámogatási chaten"
   },
   {
     "_id": "i18n-message-hu-moderation-message",
@@ -45633,7 +46629,7 @@
     "_id": "i18n-message-hu-groups-bucket-participation",
     "key": "groups.bucket.participation",
     "lang": "hu",
-    "value": "Részvétel"
+    "value": "Aktív csoportok"
   },
   {
     "_id": "i18n-message-hu-groups-bucket-explore",
@@ -45717,7 +46713,7 @@
     "_id": "i18n-message-hu-groups-policy",
     "key": "groups.policy",
     "lang": "hu",
-    "value": "Csoportszabályok"
+    "value": "Kötelező profilmezők"
   },
   {
     "_id": "i18n-message-hu-groups-hide-members",
@@ -46066,5 +47062,989 @@
     "key": "chat.contacts.error",
     "lang": "hu",
     "value": "A kapcsolati chat nem nyitható meg vagy frissíthető. Próbáld újra."
+  },
+  {
+    "_id": "i18n-message-hu-profile-children-none",
+    "key": "profile.children.none",
+    "lang": "hu",
+    "value": "Nincs"
+  },
+  {
+    "_id": "i18n-message-hu-profile-children-has",
+    "key": "profile.children.has",
+    "lang": "hu",
+    "value": "Van"
+  },
+  {
+    "_id": "i18n-message-hu-calendar-export-empty",
+    "key": "calendar.export.empty",
+    "lang": "hu",
+    "value": "Nincs exportálható közelgő esemény."
+  },
+  {
+    "_id": "i18n-message-hu-app-setup-help-title",
+    "key": "app.setup.help.title",
+    "lang": "hu",
+    "value": "Telepítés és engedélyek"
+  },
+  {
+    "_id": "i18n-message-hu-app-setup-help-location-title",
+    "key": "app.setup.help.location.title",
+    "lang": "hu",
+    "value": "Helyadatok"
+  },
+  {
+    "_id": "i18n-message-hu-app-setup-help-location-text",
+    "key": "app.setup.help.location.text",
+    "lang": "hu",
+    "value": "A helyadatok segítenek a közeli emberek és események megjelenítésében. Jelöld be itt, majd engedélyezd a böngésző kérését. A készülék helymeghatározása is legyen bekapcsolva."
+  },
+  {
+    "_id": "i18n-message-hu-app-setup-help-notifications-title",
+    "key": "app.setup.help.notifications.title",
+    "lang": "hu",
+    "value": "Értesítések"
+  },
+  {
+    "_id": "i18n-message-hu-app-setup-help-notifications-text",
+    "key": "app.setup.help.notifications.text",
+    "lang": "hu",
+    "value": "Jelöld be az értesítéseket, ha ezen az eszközön szeretnél jelzéseket kapni. A böngészőnek és a rendszernek is engedélyeznie kell őket. A telepítés önmagában nem ad értesítési engedélyt."
+  },
+  {
+    "_id": "i18n-message-hu-app-setup-help-install-title",
+    "key": "app.setup.help.install.title",
+    "lang": "hu",
+    "value": "Alkalmazás telepítése"
+  },
+  {
+    "_id": "i18n-message-hu-app-setup-help-install-text",
+    "key": "app.setup.help.install.text",
+    "lang": "hu",
+    "value": "Android: az itteni vagy a böngészőmenü Telepítés gombját használd. iPhone / iPad: Safari → Megosztás → Főképernyőhöz adás. Az értesítéseket erről az ikonról megnyitva engedélyezheted (iOS / iPadOS 16.4-től)."
+  },
+  {
+    "_id": "i18n-message-hu-app-setup-help-blocked-title",
+    "key": "app.setup.help.blocked.title",
+    "lang": "hu",
+    "value": "Korábban letiltottad?"
+  },
+  {
+    "_id": "i18n-message-hu-app-setup-help-blocked-text",
+    "key": "app.setup.help.blocked.text",
+    "lang": "hu",
+    "value": "A MyScoutee nem írhatja felül a böngésző vagy a rendszer tiltását. Módosítsd az engedélyt a beállításokban, majd térj vissza ide és próbáld újra. A menüpontok neve készülékenként és verziónként eltérhet."
+  },
+  {
+    "_id": "i18n-message-hu-app-setup-help-android-title",
+    "key": "app.setup.help.android.title",
+    "lang": "hu",
+    "value": "Android-beállítások"
+  },
+  {
+    "_id": "i18n-message-hu-app-setup-help-android-text",
+    "key": "app.setup.help.android.text",
+    "lang": "hu",
+    "value": "Chrome → Beállítások → Webhelybeállítások → Hely / Értesítések: engedélyezd ezt a webhelyet. Az Android Beállítások → Alkalmazások → böngésző vagy telepített app → Engedélyek / Értesítések pontját is ellenőrizd. Ezután térj vissza a MyScoutee-hoz."
+  },
+  {
+    "_id": "i18n-message-hu-app-setup-help-ios-title",
+    "key": "app.setup.help.ios.title",
+    "lang": "hu",
+    "value": "iPhone / iPad beállítások"
+  },
+  {
+    "_id": "i18n-message-hu-app-setup-help-ios-text",
+    "key": "app.setup.help.ios.text",
+    "lang": "hu",
+    "value": "Hely: Beállítások → Adatvédelem és biztonság → Helymeghatározás; a Safari adott webhelyhez tartozó Hely beállítását is ellenőrizd. Jelzések: Beállítások → Értesítések → MyScoutee → Értesítések engedélyezése. A főképernyőről nyisd meg a MyScoutee-t, majd próbáld újra."
+  },
+  {
+    "_id": "i18n-message-hu-contact-chat-requests",
+    "key": "contact.chat.requests",
+    "lang": "hu",
+    "value": "Kérelmek"
+  },
+  {
+    "_id": "i18n-message-hu-contact-chat-requests-empty",
+    "key": "contact.chat.requests.empty",
+    "lang": "hu",
+    "value": "Nincs függő kérelem"
+  },
+  {
+    "_id": "i18n-message-hu-contact-chat-request",
+    "key": "contact.chat.request",
+    "lang": "hu",
+    "value": "Kérés"
+  },
+  {
+    "_id": "i18n-message-hu-contact-chat-approve",
+    "key": "contact.chat.approve",
+    "lang": "hu",
+    "value": "Elfogadás"
+  },
+  {
+    "_id": "i18n-message-hu-contact-chat-reject",
+    "key": "contact.chat.reject",
+    "lang": "hu",
+    "value": "Elutasítás"
+  },
+  {
+    "_id": "i18n-message-hu-contact-chat-pending",
+    "key": "contact.chat.pending",
+    "lang": "hu",
+    "value": "Folyamatban"
+  },
+  {
+    "_id": "i18n-message-hu-contact-chat-approved",
+    "key": "contact.chat.approved",
+    "lang": "hu",
+    "value": "Chat"
+  },
+  {
+    "_id": "i18n-message-hu-contact-chat-rejected",
+    "key": "contact.chat.rejected",
+    "lang": "hu",
+    "value": "Elutasítva"
+  },
+  {
+    "_id": "i18n-message-hu-contact-chat-request-message",
+    "key": "contact.chat.request.message",
+    "lang": "hu",
+    "value": "Engedélyt kérsz a kapcsolattól a MyScoutee közvetlen chat használatához?"
+  },
+  {
+    "_id": "i18n-message-hu-contact-chat-approve-message",
+    "key": "contact.chat.approve.message",
+    "lang": "hu",
+    "value": "Engedélyezed a közvetlen chatet? A másik fél bekerül a kapcsolataid közé."
+  },
+  {
+    "_id": "i18n-message-hu-contact-chat-reject-message",
+    "key": "contact.chat.reject.message",
+    "lang": "hu",
+    "value": "Elutasítod ezt a közvetlen chatkérelmet?"
+  },
+  {
+    "_id": "i18n-message-hu-contact-chat-pending-message",
+    "key": "contact.chat.pending.message",
+    "lang": "hu",
+    "value": "A kérelmed válaszra vár."
+  },
+  {
+    "_id": "i18n-message-hu-contact-chat-error",
+    "key": "contact.chat.error",
+    "lang": "hu",
+    "value": "A chatkérelem nem frissíthető. Próbáld újra."
+  },
+  {
+    "_id": "i18n-message-hu-notification-kind-contact-chat-requested-title",
+    "key": "notification.kind.contact-chat-requested.title",
+    "lang": "hu",
+    "value": "Chatkérelem"
+  },
+  {
+    "_id": "i18n-message-hu-notification-kind-contact-chat-requested-message",
+    "key": "notification.kind.contact-chat-requested.message",
+    "lang": "hu",
+    "value": "Közvetlen chatkérelmet kaptál. A Kapcsolatoknál válaszolhatsz."
+  },
+  {
+    "_id": "i18n-message-hu-notification-kind-contact-chat-approved-title",
+    "key": "notification.kind.contact-chat-approved.title",
+    "lang": "hu",
+    "value": "Elfogadott chatkérelem"
+  },
+  {
+    "_id": "i18n-message-hu-notification-kind-contact-chat-approved-message",
+    "key": "notification.kind.contact-chat-approved.message",
+    "lang": "hu",
+    "value": "Elfogadták a közvetlen chatkérelmedet. Most már beszélgethettek."
+  },
+  {
+    "_id": "i18n-message-hu-notification-kind-contact-chat-rejected-title",
+    "key": "notification.kind.contact-chat-rejected.title",
+    "lang": "hu",
+    "value": "Elutasított chatkérelem"
+  },
+  {
+    "_id": "i18n-message-hu-notification-kind-contact-chat-rejected-message",
+    "key": "notification.kind.contact-chat-rejected.message",
+    "lang": "hu",
+    "value": "Elutasították a közvetlen chatkérelmedet."
+  },
+  {
+    "_id": "i18n-message-hu-menu-selection-maximum",
+    "key": "menu.selection.maximum",
+    "lang": "hu",
+    "value": "(max. {count} db)"
+  },
+  {
+    "_id": "i18n-message-hu-mcp-connections",
+    "key": "mcp.connections",
+    "lang": "hu",
+    "value": "AI / MCP-kapcsolatok"
+  },
+  {
+    "_id": "i18n-message-hu-mcp-create",
+    "key": "mcp.create",
+    "lang": "hu",
+    "value": "Új kapcsolat"
+  },
+  {
+    "_id": "i18n-message-hu-mcp-setup",
+    "key": "mcp.setup",
+    "lang": "hu",
+    "value": "Hozz létre külön kapcsolatot az AI-kliensekhez. A kliens beállításaiban add meg az MCP-címet, a kliensazonosítót és a titkot, majd jelentkezz be és engedélyezd a hozzáférést. A kapcsolatok 90 nap után lejárnak."
+  },
+  {
+    "_id": "i18n-message-hu-mcp-local-only",
+    "key": "mcp.local.only",
+    "lang": "hu",
+    "value": "Demó módban ezek a beállítások helyben tárolódnak. A távoli AI-kapcsolathoz működő HTTPS-telepítés szükséges."
+  },
+  {
+    "_id": "i18n-message-hu-mcp-url",
+    "key": "mcp.url",
+    "lang": "hu",
+    "value": "MCP-cím"
+  },
+  {
+    "_id": "i18n-message-hu-mcp-client-id",
+    "key": "mcp.client.id",
+    "lang": "hu",
+    "value": "Kliensazonosító"
+  },
+  {
+    "_id": "i18n-message-hu-mcp-callback",
+    "key": "mcp.callback",
+    "lang": "hu",
+    "value": "Visszahívási cím"
+  },
+  {
+    "_id": "i18n-message-hu-mcp-last-used",
+    "key": "mcp.last.used",
+    "lang": "hu",
+    "value": "Utoljára használva:"
+  },
+  {
+    "_id": "i18n-message-hu-mcp-secret",
+    "key": "mcp.secret",
+    "lang": "hu",
+    "value": "Kliens titka"
+  },
+  {
+    "_id": "i18n-message-hu-mcp-empty",
+    "key": "mcp.empty",
+    "lang": "hu",
+    "value": "Nincs aktív MCP-kapcsolat."
+  },
+  {
+    "_id": "i18n-message-hu-mcp-name",
+    "key": "mcp.name",
+    "lang": "hu",
+    "value": "Név (pl. Claude)"
+  },
+  {
+    "_id": "i18n-message-hu-mcp-callback-help",
+    "key": "mcp.callback.help",
+    "lang": "hu",
+    "value": "Másold be az AI-kliens által megadott pontos visszahívási címet. HTTPS szükséges, kivéve a helyben futó klienseknél."
+  },
+  {
+    "_id": "i18n-message-hu-mcp-revoke",
+    "key": "mcp.revoke",
+    "lang": "hu",
+    "value": "Kapcsolat visszavonása"
+  },
+  {
+    "_id": "i18n-message-hu-mcp-revoke-message",
+    "key": "mcp.revoke.message",
+    "lang": "hu",
+    "value": "Visszavonod az AI-kliens hozzáférését? A meglévő hozzáférési és megújítási tokenjei is érvénytelenné válnak."
+  },
+  {
+    "_id": "i18n-message-hu-mcp-failed",
+    "key": "mcp.failed",
+    "lang": "hu",
+    "value": "A művelet nem sikerült. Ellenőrizd az adatokat, majd próbáld újra."
+  },
+  {
+    "_id": "i18n-message-hu-mcp-profile",
+    "key": "mcp.profile",
+    "lang": "hu",
+    "value": "Profil"
+  },
+  {
+    "_id": "i18n-message-hu-mcp-base-profile",
+    "key": "mcp.base.profile",
+    "lang": "hu",
+    "value": "Alapprofil"
+  },
+  {
+    "_id": "i18n-message-hu-mcp-consent-message",
+    "key": "mcp.consent.message",
+    "lang": "hu",
+    "value": "Ez a kapcsolat a profil és csoport számára engedélyezett API-műveleteket használhatja. Másik profilra nem válthat. A hozzáférést a Profilszerkesztő → Affiliate → Klienskulcsok alatt vonhatod vissza."
+  },
+  {
+    "_id": "i18n-message-hu-mcp-authorization-failed",
+    "key": "mcp.authorization.failed",
+    "lang": "hu",
+    "value": "Ez az engedélykérés érvénytelen, vagy másik fiókhoz tartozik. A megfelelő fiókkal indíts új csatlakozást az AI-kliensből."
+  },
+  {
+    "_id": "i18n-message-hu-mcp-authorize",
+    "key": "mcp.authorize",
+    "lang": "hu",
+    "value": "AI-kapcsolat engedélyezése"
+  },
+  {
+    "_id": "i18n-message-hu-mcp-approve",
+    "key": "mcp.approve",
+    "lang": "hu",
+    "value": "Hozzáférés engedélyezése"
+  },
+  {
+    "_id": "i18n-message-hu-demo-selector-status-location",
+    "key": "demo.selector.status.location",
+    "lang": "hu",
+    "value": "Helyadat kell"
+  },
+  {
+    "_id": "i18n-message-hu-notification-kind-community-invite-message",
+    "key": "notification.kind.community-invite.message",
+    "lang": "hu",
+    "value": "Meghívást kaptál ebbe a csoportba."
+  },
+  {
+    "_id": "i18n-message-hu-notification-kind-community-join-requested-message",
+    "key": "notification.kind.community-join-requested.message",
+    "lang": "hu",
+    "value": "Új csatlakozási kérelem érkezett."
+  },
+  {
+    "_id": "i18n-message-hu-notification-kind-community-member-joined-message",
+    "key": "notification.kind.community-member-joined.message",
+    "lang": "hu",
+    "value": "A csoporttagságot jóváhagyták. A taglista megváltozott."
+  },
+  {
+    "_id": "i18n-message-hu-notification-kind-community-member-removed-message",
+    "key": "notification.kind.community-member-removed.message",
+    "lang": "hu",
+    "value": "Egy csoporttagság megszűnt."
+  },
+  {
+    "_id": "i18n-message-hu-notification-kind-community-role-changed-message",
+    "key": "notification.kind.community-role-changed.message",
+    "lang": "hu",
+    "value": "Megváltozott a csoportbeli szerepköröd."
+  },
+  {
+    "_id": "i18n-message-hu-groups-policies-title",
+    "key": "groups.policies.title",
+    "lang": "hu",
+    "value": "Csoportszabályzat"
+  },
+  {
+    "_id": "i18n-message-hu-groups-policies-description",
+    "key": "groups.policies.description",
+    "lang": "hu",
+    "value": "Add meg a csoport szabályait és ajánlásait."
+  },
+  {
+    "_id": "i18n-message-hu-groups-policies-empty",
+    "key": "groups.policies.empty",
+    "lang": "hu",
+    "value": "Még nincs megadva csoportszabályzat."
+  },
+  {
+    "_id": "i18n-message-hu-groups-policies-editor",
+    "key": "groups.policies.editor",
+    "lang": "hu",
+    "value": "Adj címet a szabálynak, írd le a tartalmát, és jelöld, ha kötelező."
+  },
+  {
+    "_id": "i18n-message-hu-groups-policies-required",
+    "key": "groups.policies.required",
+    "lang": "hu",
+    "value": "Kötelező szabály"
+  },
+  {
+    "_id": "i18n-message-hu-groups-policies-optional",
+    "key": "groups.policies.optional",
+    "lang": "hu",
+    "value": "Ajánlás"
+  },
+  {
+    "_id": "i18n-message-hu-event-editor-policy-view",
+    "key": "event.editor.policy.view",
+    "lang": "hu",
+    "value": "Szabályzat"
+  },
+  {
+    "_id": "i18n-message-hu-groups-confirm-join-title",
+    "key": "groups.confirm.join.title",
+    "lang": "hu",
+    "value": "Szeretnél csatlakozni a csoporthoz?"
+  },
+  {
+    "_id": "i18n-message-hu-groups-confirm-accept-title",
+    "key": "groups.confirm.accept.title",
+    "lang": "hu",
+    "value": "Elfogadod a meghívást?"
+  },
+  {
+    "_id": "i18n-message-hu-groups-confirm-report-title",
+    "key": "groups.confirm.report.title",
+    "lang": "hu",
+    "value": "Szeretnéd jelenteni a csoportot?"
+  },
+  {
+    "_id": "i18n-message-hu-event-following-follow-question",
+    "key": "event.following.follow.question",
+    "lang": "hu",
+    "value": "Szeretnéd követni ezt a szervezőt?"
+  },
+  {
+    "_id": "i18n-message-hu-event-following-unfollow-question",
+    "key": "event.following.unfollow.question",
+    "lang": "hu",
+    "value": "Leállítod ennek a szervezőnek a követését?"
+  },
+  {
+    "_id": "i18n-message-hu-contact-chat-request-question",
+    "key": "contact.chat.request.question",
+    "lang": "hu",
+    "value": "Kérsz engedélyt a közvetlen csevegéshez?"
+  },
+  {
+    "_id": "i18n-message-hu-contact-chat-approve-question",
+    "key": "contact.chat.approve.question",
+    "lang": "hu",
+    "value": "Engedélyezed a közvetlen csevegést?"
+  },
+  {
+    "_id": "i18n-message-hu-contact-chat-reject-question",
+    "key": "contact.chat.reject.question",
+    "lang": "hu",
+    "value": "Elutasítod ezt a csevegési kérelmet?"
+  },
+  {
+    "_id": "i18n-message-hu-moderation-status-under-review-question",
+    "key": "moderation.status.under-review.question",
+    "lang": "hu",
+    "value": "Ellenőrzésre küldöd ezt a tartalmat?"
+  },
+  {
+    "_id": "i18n-message-hu-moderation-status-accepted-question",
+    "key": "moderation.status.accepted.question",
+    "lang": "hu",
+    "value": "Jóváhagyod ezt a tartalmat?"
+  },
+  {
+    "_id": "i18n-message-hu-moderation-status-rejected-question",
+    "key": "moderation.status.rejected.question",
+    "lang": "hu",
+    "value": "Elutasítod ezt a tartalmat?"
+  },
+  {
+    "_id": "i18n-message-hu-moderation-status-blocked-question",
+    "key": "moderation.status.blocked.question",
+    "lang": "hu",
+    "value": "Letiltod ezt a tartalmat?"
+  },
+  {
+    "_id": "i18n-message-hu-moderation-unblock-question",
+    "key": "moderation.unblock.question",
+    "lang": "hu",
+    "value": "Feloldod ennek a tartalomnak a tiltását?"
+  },
+  {
+    "_id": "i18n-message-hu-feed-remove-question",
+    "key": "feed.remove.question",
+    "lang": "hu",
+    "value": "Eltávolítod ezt a fényképet?"
+  },
+  {
+    "_id": "i18n-message-hu-mcp-revoke-question",
+    "key": "mcp.revoke.question",
+    "lang": "hu",
+    "value": "Visszavonod ezt az AI-kapcsolatot?"
+  },
+  {
+    "_id": "i18n-message-hu-asset-requests-promote-question",
+    "key": "asset.requests.promote.question",
+    "lang": "hu",
+    "value": "Kinevezed ezt a tagot eszközkezelőnek?"
+  },
+  {
+    "_id": "i18n-message-hu-asset-requests-revoke-question",
+    "key": "asset.requests.revoke.question",
+    "lang": "hu",
+    "value": "Visszavonod ennek a tagnak az eszközkezelői szerepét?"
+  },
+  {
+    "_id": "i18n-message-hu-confirmation-delete-supply",
+    "key": "confirmation.delete.supply",
+    "lang": "hu",
+    "value": "Törlöd ezt a kellékbejegyzést?"
+  },
+  {
+    "_id": "i18n-message-hu-confirmation-delete-tournament-group",
+    "key": "confirmation.delete.tournament.group",
+    "lang": "hu",
+    "value": "Törlöd ezt a versenycsoportot?"
+  },
+  {
+    "_id": "i18n-message-hu-confirmation-delete-asset",
+    "key": "confirmation.delete.asset",
+    "lang": "hu",
+    "value": "Törlöd ezt az eszközt?"
+  },
+  {
+    "_id": "i18n-message-hu-confirmation-start-stage",
+    "key": "confirmation.start.stage",
+    "lang": "hu",
+    "value": "Elindítod ezt a szakaszt?"
+  },
+  {
+    "_id": "i18n-message-hu-confirmation-close-stage",
+    "key": "confirmation.close.stage",
+    "lang": "hu",
+    "value": "Lezárod ezt a szakaszt az eredmények ellenőrzéséhez?"
+  },
+  {
+    "_id": "i18n-message-hu-confirmation-finalize-stage",
+    "key": "confirmation.finalize.stage",
+    "lang": "hu",
+    "value": "Véglegesíted ezt a szakaszt?"
+  },
+  {
+    "_id": "i18n-message-hu-confirmation-reopen-scores",
+    "key": "confirmation.reopen.scores",
+    "lang": "hu",
+    "value": "Újra megnyitod az eredményeket szerkesztésre?"
+  },
+  {
+    "_id": "i18n-message-hu-confirmation-suspend-stage",
+    "key": "confirmation.suspend.stage",
+    "lang": "hu",
+    "value": "Felfüggeszted ezt a szakaszt?"
+  },
+  {
+    "_id": "i18n-message-hu-confirmation-resume-stage",
+    "key": "confirmation.resume.stage",
+    "lang": "hu",
+    "value": "Folytatod ezt a szakaszt?"
+  },
+  {
+    "_id": "i18n-message-hu-mingle-action-start-question",
+    "key": "mingle.action.start.question",
+    "lang": "hu",
+    "value": "Elindítod a gyorsismerkedést?"
+  },
+  {
+    "_id": "i18n-message-hu-mingle-action-end-question",
+    "key": "mingle.action.end.question",
+    "lang": "hu",
+    "value": "Befejezed ezt a kört?"
+  },
+  {
+    "_id": "i18n-message-hu-mingle-action-complete-question",
+    "key": "mingle.action.complete.question",
+    "lang": "hu",
+    "value": "Befejezed a gyorsismerkedést?"
+  },
+  {
+    "_id": "i18n-message-hu-mingle-action-next-question",
+    "key": "mingle.action.next.question",
+    "lang": "hu",
+    "value": "Elindítod a következő kört?"
+  },
+  {
+    "_id": "i18n-message-hu-event-checkout-update-confirm-title",
+    "key": "event.checkout.update.confirm.title",
+    "lang": "hu",
+    "value": "Módosítod a foglalásodat?"
+  },
+  {
+    "_id": "i18n-message-hu-event-checkout-waitlist-confirm-title",
+    "key": "event.checkout.waitlist.confirm.title",
+    "lang": "hu",
+    "value": "Feliratkozol a várólistára?"
+  },
+  {
+    "_id": "i18n-message-hu-event-checkout-request-confirm-title",
+    "key": "event.checkout.request.confirm.title",
+    "lang": "hu",
+    "value": "Jóváhagyást kérsz a csatlakozáshoz?"
+  },
+  {
+    "_id": "i18n-message-hu-event-checkout-continue-confirm-title",
+    "key": "event.checkout.continue.confirm.title",
+    "lang": "hu",
+    "value": "Folytatod a foglalásodat?"
+  },
+  {
+    "_id": "i18n-message-hu-confirmation-mute-notification-alerts",
+    "key": "confirmation.mute.notification.alerts",
+    "lang": "hu",
+    "value": "Elnémítod az értesítési jelzéseket?"
+  },
+  {
+    "_id": "i18n-message-hu-confirmation-unmute-notification-alerts",
+    "key": "confirmation.unmute.notification.alerts",
+    "lang": "hu",
+    "value": "Visszakapcsolod az értesítési jelzéseket?"
+  },
+  {
+    "_id": "i18n-message-hu-confirmation-delete-experience",
+    "key": "confirmation.delete.experience",
+    "lang": "hu",
+    "value": "Törlöd ezt a tapasztalatot?"
+  },
+  {
+    "_id": "i18n-message-hu-confirmation-move-article-to-trash",
+    "key": "confirmation.move.article.to.trash",
+    "lang": "hu",
+    "value": "Kukába helyezed ezt a cikket?"
+  },
+  {
+    "_id": "i18n-message-hu-confirmation-approve-request",
+    "key": "confirmation.approve.request",
+    "lang": "hu",
+    "value": "Jóváhagyod ezt a kérelmet?"
+  },
+  {
+    "_id": "i18n-message-hu-confirmation-leave-event",
+    "key": "confirmation.leave.event",
+    "lang": "hu",
+    "value": "Kilépsz az eseményből?"
+  },
+  {
+    "_id": "i18n-message-hu-confirmation-disqualify-member",
+    "key": "confirmation.disqualify.member",
+    "lang": "hu",
+    "value": "Kizárod ezt a tagot?"
+  },
+  {
+    "_id": "i18n-message-hu-confirmation-reinstate-member",
+    "key": "confirmation.reinstate.member",
+    "lang": "hu",
+    "value": "Visszaállítod ezt a tagot?"
+  },
+  {
+    "_id": "i18n-message-hu-confirmation-make-member-an-asset-manager",
+    "key": "confirmation.make.member.an.asset.manager",
+    "lang": "hu",
+    "value": "Kinevezed ezt a tagot eszközkezelőnek?"
+  },
+  {
+    "_id": "i18n-message-hu-confirmation-promote-member-to-admin",
+    "key": "confirmation.promote.member.to.admin",
+    "lang": "hu",
+    "value": "Adminisztrátorrá lépteted elő ezt a tagot?"
+  },
+  {
+    "_id": "i18n-message-hu-confirmation-count-as-participant",
+    "key": "confirmation.count.as.participant",
+    "lang": "hu",
+    "value": "Résztvevőként is szeretnél szerepelni?"
+  },
+  {
+    "_id": "i18n-message-hu-confirmation-organizer-only",
+    "key": "confirmation.organizer.only",
+    "lang": "hu",
+    "value": "Csak szervezőként szeretnél szerepelni, résztvevői hely foglalása nélkül?"
+  },
+  {
+    "_id": "i18n-message-hu-confirmation-revoke-asset-manager",
+    "key": "confirmation.revoke.asset.manager",
+    "lang": "hu",
+    "value": "Visszavonod az eszközkezelői szerepet?"
+  },
+  {
+    "_id": "i18n-message-hu-confirmation-leave-asset",
+    "key": "confirmation.leave.asset",
+    "lang": "hu",
+    "value": "Kilépsz ebből az eszközből?"
+  },
+  {
+    "_id": "i18n-message-hu-confirmation-cancel-borrow",
+    "key": "confirmation.cancel.borrow",
+    "lang": "hu",
+    "value": "Lemondod a kölcsönzést?"
+  },
+  {
+    "_id": "i18n-message-hu-confirmation-accept-invitation",
+    "key": "confirmation.accept.invitation",
+    "lang": "hu",
+    "value": "Elfogadod a meghívást?"
+  },
+  {
+    "_id": "i18n-message-hu-confirmation-restore-event",
+    "key": "confirmation.restore.event",
+    "lang": "hu",
+    "value": "Visszaállítod az eseményt?"
+  },
+  {
+    "_id": "i18n-message-hu-confirmation-join-waiting-list",
+    "key": "confirmation.join.waiting.list",
+    "lang": "hu",
+    "value": "Feliratkozol a várólistára?"
+  },
+  {
+    "_id": "i18n-message-hu-confirmation-request-to-join",
+    "key": "confirmation.request.to.join",
+    "lang": "hu",
+    "value": "Kéred a csatlakozást?"
+  },
+  {
+    "_id": "i18n-message-hu-confirmation-continue-booking",
+    "key": "confirmation.continue.booking",
+    "lang": "hu",
+    "value": "Folytatod a foglalást?"
+  },
+  {
+    "_id": "i18n-message-hu-confirmation-leave-waitlist",
+    "key": "confirmation.leave.waitlist",
+    "lang": "hu",
+    "value": "Leiratkozol a várólistáról?"
+  },
+  {
+    "_id": "i18n-message-hu-confirmation-cancel-request",
+    "key": "confirmation.cancel.request",
+    "lang": "hu",
+    "value": "Visszavonod a kérelmet?"
+  },
+  {
+    "_id": "i18n-message-hu-confirmation-cancel-payment-item",
+    "key": "confirmation.cancel.payment.item",
+    "lang": "hu",
+    "value": "Törlöd ezt a fizetendő tételt?"
+  },
+  {
+    "_id": "i18n-message-hu-confirmation-remove-checkout-item",
+    "key": "confirmation.remove.checkout.item",
+    "lang": "hu",
+    "value": "Eltávolítod ezt a foglalási tételt?"
+  },
+  {
+    "_id": "i18n-message-hu-confirmation-cancel-payment",
+    "key": "confirmation.cancel.payment",
+    "lang": "hu",
+    "value": "Megszakítod a fizetést?"
+  },
+  {
+    "_id": "i18n-message-hu-confirmation-cancel-checkout",
+    "key": "confirmation.cancel.checkout",
+    "lang": "hu",
+    "value": "Megszakítod a foglalást?"
+  },
+  {
+    "_id": "i18n-message-hu-confirmation-cancel-join-request",
+    "key": "confirmation.cancel.join.request",
+    "lang": "hu",
+    "value": "Visszavonod a csatlakozási kérelmet?"
+  },
+  {
+    "_id": "i18n-message-hu-confirmation-reject-invitation",
+    "key": "confirmation.reject.invitation",
+    "lang": "hu",
+    "value": "Elutasítod a meghívást?"
+  },
+  {
+    "_id": "i18n-message-hu-confirmation-reject-request",
+    "key": "confirmation.reject.request",
+    "lang": "hu",
+    "value": "Elutasítod a kérelmet?"
+  },
+  {
+    "_id": "i18n-message-hu-confirmation-remove-admin",
+    "key": "confirmation.remove.admin",
+    "lang": "hu",
+    "value": "Eltávolítod ezt az adminisztrátort?"
+  },
+  {
+    "_id": "i18n-message-hu-confirmation-remove-member",
+    "key": "confirmation.remove.member",
+    "lang": "hu",
+    "value": "Eltávolítod ezt a tagot?"
+  },
+  {
+    "_id": "i18n-message-hu-confirmation-delete-invitation",
+    "key": "confirmation.delete.invitation",
+    "lang": "hu",
+    "value": "Törlöd a meghívást?"
+  },
+  {
+    "_id": "i18n-message-hu-confirmation-leave-group",
+    "key": "confirmation.leave.group",
+    "lang": "hu",
+    "value": "Kilépsz a csoportból?"
+  },
+  {
+    "_id": "i18n-message-hu-confirmation-leave-chat",
+    "key": "confirmation.leave.chat",
+    "lang": "hu",
+    "value": "Kilépsz a csevegésből?"
+  },
+  {
+    "_id": "i18n-message-hu-confirmation-leave-sub-event",
+    "key": "confirmation.leave.sub.event",
+    "lang": "hu",
+    "value": "Kilépsz az aleseményből?"
+  },
+  {
+    "_id": "i18n-message-hu-confirmation-step-down-as-admin",
+    "key": "confirmation.step.down.as.admin",
+    "lang": "hu",
+    "value": "Lemondasz az adminisztrátori szerepről?"
+  },
+  {
+    "_id": "i18n-message-hu-confirmation-step-down-as-manager",
+    "key": "confirmation.step.down.as.manager",
+    "lang": "hu",
+    "value": "Lemondasz a kezelői szerepről?"
+  },
+  {
+    "_id": "i18n-message-hu-confirmation-delete-contact",
+    "key": "confirmation.delete.contact",
+    "lang": "hu",
+    "value": "Törlöd {name} névjegyét?"
+  },
+  {
+    "_id": "i18n-message-hu-confirmation-delete-help-revision",
+    "key": "confirmation.delete.help.revision",
+    "lang": "hu",
+    "value": "Törlöd a súgó v{version} változatát?"
+  },
+  {
+    "_id": "i18n-message-hu-confirmation-leave-named-asset",
+    "key": "confirmation.leave.named.asset",
+    "lang": "hu",
+    "value": "Kilépsz a(z) „{name}” eszközből?"
+  },
+  {
+    "_id": "i18n-message-hu-confirmation-remove-named-asset",
+    "key": "confirmation.remove.named.asset",
+    "lang": "hu",
+    "value": "Eltávolítod a(z) „{name}” eszközt erről az eseményről?"
+  },
+  {
+    "_id": "i18n-message-hu-groups-bucket-pending",
+    "key": "groups.bucket.pending",
+    "lang": "hu",
+    "value": "Függő csoportok"
+  },
+  {
+    "_id": "i18n-message-hu-groups-explore",
+    "key": "groups.explore",
+    "lang": "hu",
+    "value": "Csoportok felfedezése"
+  },
+  {
+    "_id": "i18n-message-hu-groups-actions",
+    "key": "groups.actions",
+    "lang": "hu",
+    "value": "Csoportműveletek"
+  },
+  {
+    "_id": "i18n-message-hu-home-filters",
+    "key": "home.filters",
+    "lang": "hu",
+    "value": "Szűrők"
+  },
+  {
+    "_id": "i18n-message-hu-groups-open",
+    "key": "groups.open",
+    "lang": "hu",
+    "value": "Csoport megnyitása"
+  },
+  {
+    "_id": "i18n-message-hu-groups-admin-revoke",
+    "key": "groups.admin.revoke",
+    "lang": "hu",
+    "value": "Adminjog visszavonása"
+  },
+  {
+    "_id": "i18n-message-hu-groups-admin-revoke-title",
+    "key": "groups.admin.revoke.title",
+    "lang": "hu",
+    "value": "Visszavonod a tag adminjogát?"
+  },
+  {
+    "_id": "i18n-message-hu-groups-admin-revoke-message",
+    "key": "groups.admin.revoke.message",
+    "lang": "hu",
+    "value": "{name} a csoport tagja marad, de nem kezelheti tovább a csoportot."
+  },
+  {
+    "_id": "i18n-message-hu-groups-admin-promote-message",
+    "key": "groups.admin.promote.message",
+    "lang": "hu",
+    "value": "{name} kezelheti ezt a csoportot, és további csoportadminokat nevezhet ki."
+  },
+  {
+    "_id": "i18n-message-hu-groups-takeover",
+    "key": "groups.takeover",
+    "lang": "hu",
+    "value": "Átvétel"
+  },
+  {
+    "_id": "i18n-message-hu-groups-leave",
+    "key": "groups.leave",
+    "lang": "hu",
+    "value": "Kilépés a csoportból"
+  },
+  {
+    "_id": "i18n-message-hu-groups-confirm-take-over-title",
+    "key": "groups.confirm.take-over.title",
+    "lang": "hu",
+    "value": "Átveszed a csoport felelősségét?"
+  },
+  {
+    "_id": "i18n-message-hu-groups-confirm-take-over",
+    "key": "groups.confirm.take-over",
+    "lang": "hu",
+    "value": "Te leszel a(z) „{name}” csoport felelős adminja."
+  },
+  {
+    "_id": "i18n-message-hu-groups-confirm-remove-title",
+    "key": "groups.confirm.remove.title",
+    "lang": "hu",
+    "value": "Kilépsz ebből a csoportból?"
+  },
+  {
+    "_id": "i18n-message-hu-groups-confirm-remove",
+    "key": "groups.confirm.remove",
+    "lang": "hu",
+    "value": "Kilépsz a(z) „{name}” csoportból? Ha te vagy a felelős, másik admin vagy elfogadott tag veheti át. Az utolsó tag távozásával a csoport törlődik."
+  },
+  {
+    "_id": "i18n-message-hu-notification-kind-community-owner-left-title",
+    "key": "notification.kind.community-owner-left.title",
+    "lang": "hu",
+    "value": "A csoport új felelős adminra vár"
+  },
+  {
+    "_id": "i18n-message-hu-notification-kind-community-owner-left-message",
+    "key": "notification.kind.community-owner-left.message",
+    "lang": "hu",
+    "value": "Átveheted a(z) {workspaceGroupName} csoport felelősségét."
+  },
+  {
+    "_id": "i18n-message-hu-notification-kind-community-takeover-title",
+    "key": "notification.kind.community-takeover.title",
+    "lang": "hu",
+    "value": "Megváltozott a csoport felelőse"
+  },
+  {
+    "_id": "i18n-message-hu-notification-kind-community-takeover-message",
+    "key": "notification.kind.community-takeover.message",
+    "lang": "hu",
+    "value": "Egy admin átvette a(z) {workspaceGroupName} csoport felelősségét."
   }
 ]

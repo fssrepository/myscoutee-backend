@@ -85,6 +85,12 @@ public class EventTicketService {
         return eventIds;
     }
 
+    public List<EventTicket> findActiveForHolders(java.util.Collection<String> holderUserIds) {
+        if (holderUserIds == null || holderUserIds.isEmpty()) return List.of();
+        return eventTicketsRepository.findByHolderUserIdInAndStatus(holderUserIds, EventTicket.STATUS_ACTIVE)
+                .stream().filter(this::isUsableCredential).toList();
+    }
+
     public List<EventTicket> findActiveForHolder(String holderUserId) {
         String normalizedHolderUserId = normalizeId(holderUserId);
         if (!StringUtils.hasText(normalizedHolderUserId)) {

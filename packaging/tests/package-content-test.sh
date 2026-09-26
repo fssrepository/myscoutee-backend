@@ -106,7 +106,10 @@ assert_admin_job_seed_defaults() {
       "affinity-recompute",
       "affinity-graph-layout",
       "scheduled-messages",
-      "account-purge"
+      "account-purge",
+      "content-auto-approve",
+      "account-deletion-warning",
+      "payment-exchange-rates"
     ] as $expected
     | type == "array"
     and length == ($expected | length)
@@ -115,7 +118,7 @@ assert_admin_job_seed_defaults() {
       .enabled == true
       and .triggerKind == "scheduled_process"
       and (
-        if .ruleKey == "event-random-groups"
+        if .ruleKey == "event-random-groups" or .ruleKey == "payment-exchange-rates"
         then .manualRunEnabled == true
         else .manualRunEnabled == false
         end
@@ -349,7 +352,7 @@ grep -Fxq \
   "${EXTRACTED}/lib/systemd/system/myscoutee.service" \
   || fail "systemd does not reset disposable Explore state before start"
 grep -Fxq \
-  'ExecStartPre=/opt/myscoutee/packaging/scripts/sync-i18n-seeds.sh' \
+  'ExecStartPre=/opt/myscoutee/packaging/scripts/sync-i18n-seeds.sh --prepare-only' \
   "${EXTRACTED}/lib/systemd/system/myscoutee.service" \
   || fail "production service does not synchronize the authoritative backend bundle before start"
 grep -Fq \

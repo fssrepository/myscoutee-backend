@@ -1,8 +1,9 @@
 #!/usr/bin/env node
-// Explicitly delegated 2026-09-23 QA only. Attaches to versioned-launcher sessions; never creates logins.
+// Explicitly delegated QA only (Group campaign delegated 2026-09-26).
+// Attaches to versioned-launcher sessions; never creates logins.
 import { readFile, writeFile } from 'node:fs/promises';
 const [checkpoint, actor = '0', command = 'inspect', input = '', output = ''] = process.argv.slice(2);
-if (!['EVENT-GALLERY-FEED-001', 'OPERATOR-EMAIL-WARNING-001', 'ADMIN-CLIENT-API-001', 'ADMIN-CLIENT-MONITOR-001', 'AFFILIATE-INVITATION-001', 'EMAIL-UNSUBSCRIBE-001'].includes(checkpoint)) throw Error('Unsupported checkpoint');
+if (!['GROUP-LIFECYCLE-001-APP-ADMIN', 'GROUP-LIFECYCLE-001', 'GROUP-ISOLATION-001', 'INTEGRATION-API-GROUP-001', 'EVENT-GALLERY-FEED-001', 'OPERATOR-EMAIL-WARNING-001', 'ADMIN-CLIENT-API-001', 'ADMIN-CLIENT-MONITOR-001', 'AFFILIATE-INVITATION-001', 'EMAIL-UNSUBSCRIBE-001'].includes(checkpoint)) throw Error('Unsupported checkpoint');
 const manifest = JSON.parse(await readFile(`/tmp/myscoutee-qa-browser-sessions/${checkpoint}.json`, 'utf8'));
 const session = manifest.sessions[Number(actor)];
 const targets = await fetch(`http://127.0.0.1:${session.devToolsPort}/json/list`).then(r => r.json());
@@ -26,7 +27,7 @@ const send = (method, params = {}) => new Promise((resolve, reject) => {
 const timeout = setTimeout(() => { ws.close(); process.exitCode = 1; for (const task of pending.values()) task.reject(Error('CDP timeout')); }, 30_000);
 try {
   let result;
-  if (['eval', 'upload', 'screenshot', 'viewport', 'viewport-eval', 'fail-request', 'pointer-check'].includes(command)) await send('Page.bringToFront');
+  if (['eval', 'upload', 'screenshot', 'viewport', 'viewport-eval', 'fail-request', 'delay-response', 'pointer-check'].includes(command)) await send('Page.bringToFront');
   if (command === 'pointer-check') {
     const expression = `(()=>{const e=document.querySelector(${JSON.stringify(input)});if(!e)throw Error('Card missing');const r=e.getBoundingClientRect(),s=getComputedStyle(e);return {x:r.x+r.width/2,y:r.y+Math.min(r.height/2,70),transform:s.transform,filter:s.filter,shadow:s.boxShadow,after:getComputedStyle(e,'::after').animationName,image:e.querySelector('.ui-info-card__media')?.style.backgroundImage};})()`;
     const state = async () => (await send('Runtime.evaluate', { expression, returnByValue: true })).result.value;
@@ -42,6 +43,33 @@ try {
     await send('Input.dispatchMouseEvent', { type: 'mouseReleased', x: before.x, y: before.y, button: 'left', clickCount: 1 });
     await new Promise(resolve => setTimeout(resolve, 250));
     result = { before, hover, pressed, after: await state() };
+  } else if (command === 'delay-response') {
+    const { urlPattern, clickSelector, delayMs = 3500, afterTimeoutScript } = JSON.parse(await readFile(input, 'utf8'));
+    let held;
+    const paused = new Promise(resolve => {
+      ws.addEventListener('message', async event => {
+        const message = JSON.parse(event.data);
+        if (message.method !== 'Fetch.requestPaused') return;
+        if (!held) { held = message.params; resolve(held); }
+        else await send('Fetch.continueRequest', { requestId: message.params.requestId });
+      });
+    });
+    const inspect = async () => (await send('Runtime.evaluate', { expression: `({selected:document.querySelector('[aria-label="Choose workspace"]')?.innerText,disabled:document.querySelector('[aria-label="Choose workspace"]')?.disabled,alerts:[...document.querySelectorAll('[role="alert"]')].map(e=>e.innerText),body:document.body.innerText.slice(0,300)})`, returnByValue: true })).result.value;
+    await send('Fetch.enable', { patterns: [{ urlPattern, requestStage: 'Response' }] });
+    try {
+      await send('Runtime.evaluate', { expression: `document.querySelector(${JSON.stringify(clickSelector)}).click()` });
+      const request = await paused;
+      await new Promise(resolve => setTimeout(resolve, 150));
+      const during = await inspect();
+      await new Promise(resolve => setTimeout(resolve, delayMs));
+      const timedOut = await inspect();
+      const retry = afterTimeoutScript ? (await send('Runtime.evaluate', { expression: await readFile(afterTimeoutScript, 'utf8'), awaitPromise: true, returnByValue: true })).result.value : null;
+      let release;
+      try { await send('Fetch.continueRequest', { requestId: request.requestId }); release = 'released'; }
+      catch (error) { release = String(error.message); }
+      await new Promise(resolve => setTimeout(resolve, 250));
+      result = { url: request.request.url, during, timedOut, retry, release, after: await inspect() };
+    } finally { await send('Fetch.disable'); }
   } else if (command === 'fail-request') {
     const { urlPattern, clickSelector, upload } = JSON.parse(await readFile(input, 'utf8'));
     const intercepted = new Promise((resolve, reject) => {

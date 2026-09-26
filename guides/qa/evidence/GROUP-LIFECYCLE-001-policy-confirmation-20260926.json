@@ -1,0 +1,370 @@
+{
+  "date": "2026-09-26",
+  "scope": "Focused managed browser regressions, not overall QA PASS",
+  "observations": {
+    "group-policy-save-latest": {
+      "before": "Group\nmail_lock\nInvitation only\nexpand_more\ndone\nclose\n1\ncontent_copy\nclose\nName*\nDescription\n57/4000\nwork\nWork and teams\nexpand_more\nvisibility_off\nMember list visible\npolicy\nRequired Profile Fields\ntoggle_on\nON\ntune\nProfile visibility rules\nProfession\t\ncheck\nRequired\npolicy\nGroup Policies\n\nDescribe the rules and recommendations for this group.\n\ntoggle_on\nON\ngavel\nOpen Policy Setup\nSUMMARY\nQA group privacy\nMandatory rule\n\nKeep private group conversations within the group.",
+      "editorClosed": true,
+      "alerts": []
+    },
+    "group-policy-reopen-latest": {
+      "text": "Group\nmail_lock\nInvitation only\nexpand_more\ndone\nclose\n1\ncontent_copy\nclose\nName*\nDescription\n57/4000\nwork\nWork and teams\nexpand_more\nvisibility_off\nMember list visible\npolicy\nRequired Profile Fields\ntoggle_on\nON\ntune\nProfile visibility rules\nProfession\t\ncheck\nRequired\npolicy\nGroup Policies\n\nDescribe the rules and recommendations for this group.\n\ntoggle_on\nON\ngavel\nOpen Policy Setup\nSUMMARY\nQA group privacy\nMandatory rule\n\nKeep private group conversations within the group.",
+      "buttons": [
+        {
+          "text": "mail_lock\nInvitation only\nexpand_more",
+          "aria": "Open groups.visibility.invitation"
+        },
+        {
+          "text": "done",
+          "aria": "Save"
+        },
+        {
+          "text": "close",
+          "aria": "Close"
+        },
+        {
+          "text": "content_copy",
+          "aria": "Copy image link"
+        },
+        {
+          "text": "close",
+          "aria": "Remove image"
+        },
+        {
+          "text": "",
+          "aria": "Replace image slot 1"
+        },
+        {
+          "text": "work\nWork and teams\nexpand_more",
+          "aria": "Open groups.category.work"
+        },
+        {
+          "text": "visibility_off\nMember list visible",
+          "aria": "Only administrators are visible"
+        },
+        {
+          "text": "toggle_on\nON",
+          "aria": "Profile visibility rules"
+        },
+        {
+          "text": "tune\nProfile visibility rules",
+          "aria": "Profile visibility rules"
+        },
+        {
+          "text": "toggle_on\nON",
+          "aria": "Group Policies"
+        },
+        {
+          "text": "gavel\nOpen Policy Setup",
+          "aria": null
+        }
+      ]
+    },
+    "group-policy-mobile-latest": {
+      "viewport": 390,
+      "button": {
+        "text": "gavel\nOpen Policy Setup",
+        "left": 41.828125,
+        "width": 164.71875,
+        "right": 206.546875
+      },
+      "panel": {
+        "left": 27.390625,
+        "width": 320.21875,
+        "right": 347.609375
+      },
+      "picker": {
+        "text": "tune\nProfile visibility rules",
+        "left": 27.390625,
+        "width": 168.8125,
+        "right": 196.203125
+      },
+      "labelVisible": true,
+      "contentWidth": true,
+      "leftAligned": true
+    },
+    "group-policy-readonly-latest": {
+      "text": "Policy\n\nGive the policy a title, explain it and indicate whether it is mandatory.\n\nclose\nTitle*\nDescription*\nMandatory rule",
+      "fields": [
+        {
+          "disabled": true,
+          "value": "QA group privacy"
+        },
+        {
+          "disabled": true,
+          "value": "Keep private group conversations within the group."
+        },
+        {
+          "disabled": true,
+          "value": "on"
+        }
+      ]
+    },
+    "group-invitation-accepted-ui": {
+      "before": {
+        "confirmPalette": "app-menu__button-row-item app-menu__button-row-item--labelled app-menu__button-row-item--action app-menu__palette--brown",
+        "confirmBackground": "linear-gradient(rgb(173, 112, 64) 0%, rgb(138, 84, 40) 100%)",
+        "backdrop": "blur(6px)"
+      },
+      "after": {
+        "invitationRemoved": true,
+        "popup": "Groups\nschedule\nRecent\nexpand_more\nclose\nmail\nInvitations\nexpand_more\ncategory\nAll categories\nexpand_more\nadd\nNo items\nNo items",
+        "alerts": []
+      },
+      "activeCard": "3\ndiversity_3\nGame Night\n\nFriends\n\n0.1 km\n\nmore_vert",
+      "members": "3"
+    },
+    "group-invitation-question-verified": {
+      "title": "Would you like to accept this invitation?",
+      "text": "Would you like to accept this invitation?\n\nAccept the invitation to “Game Night”?\n\nCancel\nAccept",
+      "cancelled": true
+    },
+    "requirementsIcon": {
+      "text": "Group\nmail_lock\nInvitation only\nexpand_more\ndone\nclose\n1\ncontent_copy\nclose\nName*\nDescription\n57/4000\nwork\nWork and teams\nexpand_more\nvisibility_off\nMember list visible\nbadge\nRequired Profile Fields\ntoggle_on\nON\ntune\nProfile visibility rules\nProfession\t\ncheck\nRequired\npolicy\nGroup Policies\n\nDescribe the rules and recommendations for this group.\n\ntoggle_off\nOFF",
+      "buttons": [
+        {
+          "text": "mail_lock\nInvitation only\nexpand_more",
+          "aria": "Open groups.visibility.invitation"
+        },
+        {
+          "text": "done",
+          "aria": "Save"
+        },
+        {
+          "text": "close",
+          "aria": "Close"
+        },
+        {
+          "text": "content_copy",
+          "aria": "Copy image link"
+        },
+        {
+          "text": "close",
+          "aria": "Remove image"
+        },
+        {
+          "text": "",
+          "aria": "Replace image slot 1"
+        },
+        {
+          "text": "work\nWork and teams\nexpand_more",
+          "aria": "Open groups.category.work"
+        },
+        {
+          "text": "visibility_off\nMember list visible",
+          "aria": "Only administrators are visible"
+        },
+        {
+          "text": "toggle_on\nON",
+          "aria": "Profile visibility rules"
+        },
+        {
+          "text": "tune\nProfile visibility rules",
+          "aria": "Profile visibility rules"
+        },
+        {
+          "text": "toggle_off\nOFF",
+          "aria": "Group Policies"
+        }
+      ]
+    },
+    "accountRealtimeAfterFix": {
+      "accountId": "af0436815ab38f4864dd1e24",
+      "activeId": "group:seed-community-design-circle:af0436815ab38f4864dd1e24",
+      "accountOverrides": {
+        "game": 121,
+        "chats": 5,
+        "invitations": 6,
+        "events": 21,
+        "hosting": 0,
+        "cars": 0,
+        "accommodation": 0,
+        "supplies": 0,
+        "tickets": 0,
+        "contacts": 0,
+        "feedback": 2,
+        "paymentRefundsPending": 0,
+        "contactRequestsPending": 0,
+        "adminJobs": 0,
+        "adminMetrics": 0,
+        "event": {
+          "all": 27,
+          "active": 21,
+          "pending": 0,
+          "invitations": 6,
+          "hosting": 0,
+          "drafts": 0,
+          "watchlist": 0,
+          "trash": 0
+        },
+        "chat": {
+          "all": 5,
+          "event": 5,
+          "subEvent": 0,
+          "group": 0,
+          "service": 0,
+          "appSupport": 0,
+          "contacts": 0,
+          "groupSupport": 0,
+          "supportCases": {
+            "pending": 0,
+            "warned": 0,
+            "picked": 0,
+            "solved": 0,
+            "blocked": 0,
+            "all": 0
+          }
+        },
+        "asset": {
+          "cars": 0,
+          "accommodation": 0,
+          "supplies": 0,
+          "tickets": 0,
+          "carsPending": 0,
+          "accommodationPending": 0,
+          "suppliesPending": 0
+        },
+        "eventFeedback": {
+          "ownEvents": 0,
+          "pending": 2,
+          "feedbacked": 0,
+          "removed": 0
+        },
+        "notifications": 7
+      },
+      "avatar": 158,
+      "accountAttention": 155,
+      "workspaceRows": [
+        {
+          "groupId": "seed-community-design-circle",
+          "profileId": "group:seed-community-design-circle:af0436815ab38f4864dd1e24",
+          "name": "Design Circle",
+          "role": "Admin",
+          "activity": 1,
+          "policy": {
+            "workspace": true,
+            "enabled": true,
+            "requiredFields": [
+              "profile.profession"
+            ],
+            "policiesEnabled": null,
+            "policies": null
+          },
+          "moderationPending": 0,
+          "moderationQueueRevision": 0,
+          "category": "work",
+          "membershipStatus": "accepted",
+          "membersActivity": 1,
+          "requestKind": null
+        },
+        {
+          "groupId": "seed-community-game-night",
+          "profileId": null,
+          "name": "Game Night",
+          "role": "Member",
+          "activity": 1,
+          "policy": {
+            "workspace": true,
+            "enabled": false,
+            "requiredFields": [],
+            "policiesEnabled": null,
+            "policies": null
+          },
+          "moderationPending": 0,
+          "moderationQueueRevision": 0,
+          "category": "friends",
+          "membershipStatus": "pending",
+          "membersActivity": 1,
+          "requestKind": "invite"
+        },
+        {
+          "groupId": "seed-community-makers",
+          "profileId": null,
+          "name": "Makers Network",
+          "role": "Member",
+          "activity": 0,
+          "policy": {
+            "workspace": true,
+            "enabled": true,
+            "requiredFields": [
+              "profile.profession",
+              "profile.experience.workplace"
+            ],
+            "policiesEnabled": null,
+            "policies": null
+          },
+          "moderationPending": 0,
+          "moderationQueueRevision": 0,
+          "category": "work",
+          "membershipStatus": "pending",
+          "membersActivity": 0,
+          "requestKind": "join"
+        },
+        {
+          "groupId": "seed-community-photo-walks",
+          "profileId": "group:seed-community-photo-walks:af0436815ab38f4864dd1e24",
+          "name": "Photo Walks",
+          "role": "Member",
+          "activity": 0,
+          "policy": {
+            "workspace": true,
+            "enabled": true,
+            "requiredFields": [
+              "profile.details.interest"
+            ],
+            "policiesEnabled": null,
+            "policies": null
+          },
+          "moderationPending": 0,
+          "moderationQueueRevision": 0,
+          "category": "hobbies",
+          "membershipStatus": "accepted",
+          "membersActivity": 0,
+          "requestKind": null
+        },
+        {
+          "groupId": "seed-community-seattle-friends",
+          "profileId": "group:seed-community-seattle-friends:af0436815ab38f4864dd1e24",
+          "name": "Seattle Friends",
+          "role": "Admin",
+          "activity": 1,
+          "policy": {
+            "workspace": true,
+            "enabled": false,
+            "requiredFields": [],
+            "policiesEnabled": null,
+            "policies": null
+          },
+          "moderationPending": 0,
+          "moderationQueueRevision": 0,
+          "category": "friends",
+          "membershipStatus": "accepted",
+          "membersActivity": 1,
+          "requestKind": null
+        },
+        {
+          "groupId": "seed-community-study-buddies",
+          "profileId": "group:seed-community-study-buddies:af0436815ab38f4864dd1e24",
+          "name": "Study Buddies",
+          "role": "Member",
+          "activity": 0,
+          "policy": {
+            "workspace": true,
+            "enabled": true,
+            "requiredFields": [
+              "profile.experience.school"
+            ],
+            "policiesEnabled": null,
+            "policies": null
+          },
+          "moderationPending": 0,
+          "moderationQueueRevision": 0,
+          "category": "learning",
+          "membershipStatus": "accepted",
+          "membersActivity": 0,
+          "requestKind": null
+        }
+      ]
+    }
+  }
+}

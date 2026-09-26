@@ -26,8 +26,36 @@ volumes:
   payment-simulator-data:
 
 services:
+  mcp:
+    image: ${MCP_E2E_IMAGE:-myscoutee-mcp:1.3.0-e2e}
+    build:
+      context: ../../myscoutee-mcp
+      dockerfile: Dockerfile
+    container_name: mcp
+    hostname: mcp
+    restart: unless-stopped
+    environment:
+      MYSCOUTEE_MCP_TRANSPORT: http
+      MYSCOUTEE_MCP_LISTEN: 0.0.0.0:8080
+      MYSCOUTEE_API_BASE_URL: http://profilemanagement:8080
+      MYSCOUTEE_PUBLIC_API_BASE_URL: https://${DOMAIN:-localhost}/api
+    networks:
+      - e2e
+    read_only: true
+    cap_drop:
+      - ALL
+    security_opt:
+      - no-new-privileges:true
+    mem_limit: 128m
+    healthcheck:
+      test: ["CMD", "/myscoutee-mcp", "healthcheck"]
+      interval: 30s
+      timeout: 5s
+      retries: 5
+      start_period: 5s
+
   mongodb:
-    image: ${MONGODB_E2E_IMAGE:-myscoutee-mongodb:1.0.2-e2e}
+    image: ${MONGODB_E2E_IMAGE:-myscoutee-mongodb:1.3.0-e2e}
     build:
       context: docker/images/mongodb/e2e
       dockerfile: Dockerfile
@@ -77,7 +105,7 @@ services:
       start_period: 2s
 
   minio:
-    image: ${MINIO_E2E_IMAGE:-myscoutee-minio:1.0.2-e2e}
+    image: ${MINIO_E2E_IMAGE:-myscoutee-minio:1.3.0-e2e}
     build:
       context: .
       dockerfile: docker/images/minio/Dockerfile
@@ -104,9 +132,11 @@ services:
       start_period: 10s
 
   registry:
-    image: ${REGISTRY_E2E_IMAGE:-myscoutee-registry:1.0.2-e2e}
+    image: ${REGISTRY_E2E_IMAGE:-myscoutee-registry:1.3.0-e2e}
     build:
       context: ../../myscoutee-registry
+      args:
+        MYSCOUTEE_VERSION: ${MYSCOUTEE_VERSION:-1.3.0}
       dockerfile: Dockerfile
     container_name: registry
     hostname: registry
@@ -140,7 +170,7 @@ services:
     stop_grace_period: 15s
 
   payment-simulator:
-    image: ${PAYMENT_SIMULATOR_E2E_IMAGE:-myscoutee-payment-simulator:1.0.2-e2e}
+    image: ${PAYMENT_SIMULATOR_E2E_IMAGE:-myscoutee-payment-simulator:1.3.0-e2e}
     build:
       context: ../../myscoutee-payment-simulator
       dockerfile: Dockerfile
@@ -178,7 +208,7 @@ services:
     stop_grace_period: 15s
 
   profilemanagement:
-    image: ${MYSCOUTEE_E2E_IMAGE:-myscoutee-api:1.0.2-e2e}
+    image: ${MYSCOUTEE_E2E_IMAGE:-myscoutee-api:1.3.0-e2e}
     build:
       context: .
       dockerfile: docker/images/profilemanagement/e2e/Dockerfile
@@ -189,7 +219,7 @@ services:
       SPRING_DEVTOOLS_RESTART_ENABLED: "false"
       SPRING_DEVTOOLS_ADD_PROPERTIES: "false"
       E2E_MODE: "true"
-      MYSCOUTEE_VERSION: ${MYSCOUTEE_VERSION:-1.0.2}
+      MYSCOUTEE_VERSION: ${MYSCOUTEE_VERSION:-1.3.0}
       MONGO_APP_USERNAME: guest
       MONGO_APP_PASSWORD: guest
       MONGODB_HOST: mongodb
@@ -291,7 +321,7 @@ services:
     stop_grace_period: 30s
 
   nginx:
-    image: ${NGINX_E2E_IMAGE:-myscoutee-nginx:1.0.2-e2e}
+    image: ${NGINX_E2E_IMAGE:-myscoutee-nginx:1.3.0-e2e}
     build:
       context: docker/images/nginx/e2e
       dockerfile: Dockerfile
@@ -306,6 +336,8 @@ services:
     networks:
       - e2e
     depends_on:
+      mcp:
+        condition: service_healthy
       profilemanagement:
         condition: service_healthy
       payment-simulator:

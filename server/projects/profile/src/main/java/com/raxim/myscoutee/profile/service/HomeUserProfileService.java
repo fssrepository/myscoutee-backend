@@ -375,6 +375,57 @@ public class HomeUserProfileService {
         return user == null ? emptyMenuCounters() : buildMenuCounters(user);
     }
 
+    public ProfileExtByIdResponseDto loadProfileExtById(String requestedUserId, Double latitude, Double longitude) {
+        if (latitude != null || longitude != null) {
+            if (latitude == null || longitude == null || !Double.isFinite(latitude) || !Double.isFinite(longitude)
+                    || Math.abs(latitude) > 90 || Math.abs(longitude) > 180) {
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid location coordinates.");
+            }
+            Users selected = resolveCurrentUser(requestedUserId);
+            if (selected == null) throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Profile not found.");
+            if (!accessControlService.canCurrentActorEditProfile(selected.getUserId())) {
+                throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Authenticated user is not allowed to edit this profile.");
+            }
+            var coordinates = new LocationCoordinatesDto(latitude, longitude);
+            Users account = StringUtils.hasText(selected.getAccountUserId())
+                    ? usersRepository.findByUserId(selected.getAccountUserId()).orElseThrow(
+                            () -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Account not found.")) : selected;
+            String resolvedPartition = countryPartitionService.resolvePartitionKey(coordinates, account.getPartitionKey());
+            if (regionSecurityProperties.isEnabled() && !StringUtils.hasText(resolvedPartition)) {
+                // Discard an unsupported pending sample, not the already admitted profile load.
+                if (account.getLocationCoordinates() != null) return loadProfileExtById(requestedUserId);
+                throw new ResponseStatusException(HttpStatus.FORBIDDEN, INELIGIBLE_REGION_MESSAGE);
+            }
+            // Resolve the point once for the account and group profile, before either field update.
+            String accountPartition = resolveStoredPartitionKey(resolvedPartition, account.getPartitionKey(), account);
+            String selectedPartition = account == selected ? accountPartition
+                    : resolveStoredPartitionKey(resolvedPartition, selected.getPartitionKey(), selected);
+            persistLoadedLocation(account, coordinates, accountPartition);
+            if (account != selected) persistLoadedLocation(selected, coordinates, selectedPartition);
+        }
+        return loadProfileExtById(requestedUserId);
+    }
+
+    private void persistLoadedLocation(Users user, LocationCoordinatesDto coordinates, String partition) {
+        var record = toLocationCoordinatesRecord(coordinates);
+        usersRepository.updateLocation(user.getUserId(), record, partition);
+        user.setLocationCoordinates(record);
+        user.setPartitionKey(partition);
+        evictUserReadCaches(user.getUserId());
+    }
+
+    private String validatedLocationPartition(Users current, LocationCoordinatesDto coordinates) {
+        String resolved = countryPartitionService.resolvePartitionKey(coordinates, current == null ? null : current.getPartitionKey());
+        String stored = current == null ? null : current.getPartitionKey();
+        boolean retainsStored = StringUtils.hasText(stored)
+                && sameLocation(coordinates, current.getLocationCoordinates());
+        if (regionSecurityProperties.isEnabled() && coordinates != null
+                && !StringUtils.hasText(resolved) && !retainsStored) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, INELIGIBLE_REGION_MESSAGE);
+        }
+        return resolveStoredPartitionKey(resolved, stored, current);
+    }
+
     public ProfileExtByIdResponseDto loadProfileExtById(String requestedUserId) {
         UserByIdResponseDto response = queryUserById(requestedUserId);
         if (response == null) {
@@ -403,7 +454,7 @@ public class HomeUserProfileService {
         }
         String email = safeText(firebasePrincipal.getEmail());
         String name = admin ? adminDisplayName(email) : "Operator";
-        UserActivitiesDto activities = toUserActivitiesDto(null, 0);
+        UserActivitiesDto activities = toUserActivitiesDto(null, 0, 0);
         UserMenuCountersDto menuCounters = emptyMenuCounters();
         return new UserByIdResponseDto(
                 userId,
@@ -518,7 +569,8 @@ public class HomeUserProfileService {
         }
 
         UserImpressionsDto impressions = resolveMergedUserImpressions(user);
-        UserRealtimeCountersDto counters = buildRealtimeCounters(user, request == null ? null : request.cursor());
+        Users account = StringUtils.hasText(user.getAccountUserId()) ? findUser(user.getAccountUserId()) : user;
+        UserRealtimeCountersDto counters = buildRealtimeCounters(user, request == null ? null : request.cursor(), account);
         AssetTicketsPageDto offlineTicketSnapshot = assetsService.queryTicketPage(
                 resolvedUserId,
                 0,
@@ -542,7 +594,8 @@ public class HomeUserProfileService {
                 OrganizerFollowingService.state(user),
                 contentModeration != null && adminMenuCounterService.isAdminUser(user) ? contentModeration.snapshot() : null,
                 user.getFeedCounters() == null ? Users.FeedCountersRecord.empty() : user.getFeedCounters(),
-                savedPaymentMethods != null && savedPaymentMethods.cardsAvailable());
+                savedPaymentMethods != null && savedPaymentMethods.cardsAvailable(),
+                account != null && account != user ? buildMenuCounters(account, account) : null);
     }
 
     public UserLocationEligibilityResponseDto queryLocationEligibility(Double latitude, Double longitude) {
@@ -1198,11 +1251,13 @@ public class HomeUserProfileService {
     @Cacheable(value = "demo_users", key = "(#role == null ? 'member' : #role) + ':' + (#limit == null ? 'all' : #limit)")
     public List<DemoUserListItemDto> queryDemoUserListItems(Integer limit, String role) {
         String selectorRole = normalizeDemoSelectorRole(role);
+        Map<LocationCoordinatesDto, Boolean> locationChecks = new java.util.HashMap<>();
         return usersRepository.findAllByOrderByNameAscUserIdAsc().stream()
                 .filter(user -> user.getWorkspaceGroupId() == null)
                 .filter(user -> isSelectableDemoUserDocument(user, selectorRole))
                 .limit(resolveDemoUserListLimit(limit))
-                .map(this::toDemoUserListItemDto)
+                .map(user -> toDemoUserListItemDto(user, "member".equals(selectorRole)
+                        && demoLocationRequired(user, locationChecks)))
                 .filter(Objects::nonNull)
                 .toList();
     }
@@ -1275,7 +1330,7 @@ public class HomeUserProfileService {
                 nullToEmpty(user.getDeletedAtIso()),
                 false,
                 user.isOperator(),
-                toUserActivitiesDto(user.getActivities(), user.getPaymentRefundsPending()),
+                toUserActivitiesDto(user.getActivities(), user.getPaymentRefundsPending(), user.getContactRequestsPending()),
                 includeImpressions
                         ? new UserNotificationPreferencesDto(
                                 user.getNotificationPreferences() != null
@@ -1313,12 +1368,24 @@ public class HomeUserProfileService {
         return normalizedUserId.equals(normalizeId(firebasePrincipal.getUserId()));
     }
 
-    private DemoUserListItemDto toDemoUserListItemDto(Users user) {
+    private boolean demoLocationRequired(Users user, Map<LocationCoordinatesDto, Boolean> checks) {
+        LocationCoordinatesDto point = toLocationCoordinatesDto(user.getLocationCoordinates());
+        if (point == null || point.latitude() == null || point.longitude() == null
+                || !Double.isFinite(point.latitude()) || !Double.isFinite(point.longitude())
+                || Math.abs(point.latitude()) > 90 || Math.abs(point.longitude()) > 180) return true;
+        // The existing cached selector checks shared seed coordinates once, not once per profile.
+        return checks.computeIfAbsent(point, coordinates ->
+                !queryLocationEligibility(coordinates.latitude(), coordinates.longitude()).eligible());
+    }
+
+    private DemoUserListItemDto toDemoUserListItemDto(Users user, boolean locationRequired) {
         if (user == null) {
             return null;
         }
         return new DemoUserListItemDto(
                 normalizeId(user.getId()),
+                toLocationCoordinatesDto(user.getLocationCoordinates()),
+                locationRequired,
                 nullToEmpty(user.getName()),
                 nullToEmpty(user.getCity()),
                 nullToEmpty(user.getInitials()),
@@ -2095,26 +2162,33 @@ public class HomeUserProfileService {
     }
 
     private UserMenuCountersDto buildMenuCounters(Users user) {
+        Users account = StringUtils.hasText(user.getAccountUserId()) ? findUser(user.getAccountUserId()) : user;
+        return buildMenuCounters(user, account);
+    }
+
+    private UserMenuCountersDto buildMenuCounters(Users user, Users account) {
         Users.UserActivitiesRecord activities = user.getActivities();
+        Users.UserActivitiesRecord accountActivities = account == null ? null : account.getActivities();
         return new UserMenuCountersDto(
                 activities == null ? 0 : normalizeCount(activities.game()),
                 activities == null ? 0 : normalizeCount(activities.chats()),
                 activities == null ? 0 : normalizeCount(activities.invitations()),
                 activities == null ? 0 : normalizeCount(activities.events()),
                 activities == null ? 0 : normalizeCount(activities.hosting()),
-                activities == null ? 0 : normalizeCount(activities.cars()),
-                activities == null ? 0 : normalizeCount(activities.accommodation()),
-                activities == null ? 0 : normalizeCount(activities.supplies()),
-                activities == null ? 0 : normalizeCount(activities.tickets()),
-                activities == null ? 0 : normalizeCount(activities.contacts()),
+                accountActivities == null ? 0 : normalizeCount(accountActivities.cars()),
+                accountActivities == null ? 0 : normalizeCount(accountActivities.accommodation()),
+                accountActivities == null ? 0 : normalizeCount(accountActivities.supplies()),
+                accountActivities == null ? 0 : normalizeCount(accountActivities.tickets()),
+                accountActivities == null ? 0 : normalizeCount(accountActivities.contacts()),
                 activities == null ? 0 : normalizeCount(activities.feedback()),
                 toUserChatCountersDto(activities == null ? null : activities.chat()),
                 toUserEventCountersDto(activities == null ? null : activities.event()),
-                toUserAssetCountersDto(activities == null ? null : activities.asset()),
+                toUserAssetCountersDto(accountActivities == null ? null : accountActivities.asset()),
                 toUserEventFeedbackCountersDto(activities == null ? null : activities.eventFeedback()),
                 activities == null ? 0 : normalizeCount(activities.adminJobs()),
                 activities == null ? 0 : normalizeCount(activities.adminMetrics()),
                 normalizeCount(user.getPaymentRefundsPending()),
+                normalizeCount(account == null ? null : account.getContactRequestsPending()),
                 activities == null ? 0 : normalizeCount(activities.notifications()));
     }
 
@@ -2156,19 +2230,7 @@ public class HomeUserProfileService {
 
     private Users mergeUserDocument(Users current, UserDto user) {
         LocationCoordinatesDto requestedLocation = user.locationCoordinates();
-        Users.LocationCoordinatesRecord storedLocation = current == null
-                ? null
-                : current.getLocationCoordinates();
-        String storedPartitionKey = current == null ? null : current.getPartitionKey();
-        String resolvedPartitionKey = countryPartitionService.resolvePartitionKey(requestedLocation);
-        boolean retainsStoredPartition = StringUtils.hasText(safeText(storedPartitionKey))
-                && sameLocation(requestedLocation, storedLocation);
-        if (regionSecurityProperties.isEnabled()
-                && requestedLocation != null
-                && !StringUtils.hasText(resolvedPartitionKey)
-                && !retainsStoredPartition) {
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN, INELIGIBLE_REGION_MESSAGE);
-        }
+        String locationPartition = validatedLocationPartition(current, requestedLocation);
 
         Users document = current == null ? new Users() : current;
         document.setMongoId(current != null && StringUtils.hasText(current.getMongoId()) ? current.getMongoId() : new ObjectId().toHexString());
@@ -2197,10 +2259,7 @@ public class HomeUserProfileService {
         document.setAbout(nullToEmpty(user.about()));
         document.setAffinity(absoluteAffinityService.resolveUserAffinity(user));
         document.setLocationCoordinates(toLocationCoordinatesRecord(requestedLocation));
-        document.setPartitionKey(resolveStoredPartitionKey(
-                resolvedPartitionKey,
-                storedPartitionKey,
-                current));
+        document.setPartitionKey(locationPartition);
         document.setImages(normalizeStrings(user.images()));
         document.setProfileDetails(toProfileDetailRecords(user.profileDetails()));
         document.setImpressions(toUserImpressionsRecord(user.impressions()));
@@ -2645,10 +2704,18 @@ public class HomeUserProfileService {
 
     private UserRealtimeCountersDto buildRealtimeCounters(
             Users user,
-            String requestCursor) {
-        UserMenuCountersDto counters = buildMenuCounters(user);
+            String requestCursor, Users account) {
+        UserMenuCountersDto counters = buildMenuCounters(user, account);
+        // Group profile IDs contain ':', which is also the cursor delimiter.
+        // Normalize retained cursors too, before locating impression fingerprints.
+        String profileId = normalizeId(user.getId());
+        if (requestCursor != null && requestCursor.startsWith(profileId + ":")) {
+            requestCursor = profileId.replace(":", "%3A") + requestCursor.substring(profileId.length());
+        }
         int cursorPartCount = cursorPartCount(requestCursor);
-        int fingerprintOffset = cursorPartCount >= 44
+        int fingerprintOffset = cursorPartCount >= 45
+                ? 43
+                : cursorPartCount >= 44
                 ? 42
                 : cursorPartCount >= 43
                 ? 41
@@ -2683,6 +2750,7 @@ public class HomeUserProfileService {
                 counters.adminJobs(),
                 counters.adminMetrics(),
                 counters.paymentRefundsPending(),
+                counters.contactRequestsPending(),
                 resolveRealtimeNotificationCount(user, counters.notifications()),
                 hasPreviousImpressionFingerprints && !Objects.equals(previousHostHash, nextHostHash),
                 hasPreviousImpressionFingerprints && !Objects.equals(previousMemberHash, nextMemberHash));
@@ -2706,7 +2774,7 @@ public class HomeUserProfileService {
             UserRealtimeCountersDto counters) {
         Users.UserImpressionsRecord storedImpressions = user == null ? null : user.getImpressions();
         return String.join(":",
-                normalizeId(user.getId()),
+                normalizeId(user.getId()).replace(":", "%3A"),
                 String.valueOf(normalizeCount(counters.game())),
                 String.valueOf(normalizeCount(counters.chats())),
                 String.valueOf(normalizeCount(counters.invitations())),
@@ -2750,7 +2818,8 @@ public class HomeUserProfileService {
                 String.valueOf(normalizeCount(counters.notifications())),
                 paymentTotalsFingerprint(user),
                 storedImpressionsFingerprint(storedImpressions == null ? null : storedImpressions.host()),
-                storedImpressionsFingerprint(storedImpressions == null ? null : storedImpressions.member()));
+                storedImpressionsFingerprint(storedImpressions == null ? null : storedImpressions.member()),
+                String.valueOf(normalizeCount(counters.contactRequestsPending())));
     }
 
     private UserPaymentTotalsDto paymentTotalsDto(Users user) {
@@ -2887,7 +2956,7 @@ public class HomeUserProfileService {
 
     private UserActivitiesDto toUserActivitiesDto(
             Users.UserActivitiesRecord activities,
-            Integer paymentRefundsPending) {
+            Integer paymentRefundsPending, Integer contactRequestsPending) {
         if (activities == null) {
             return new UserActivitiesDto(
                     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
@@ -2895,7 +2964,7 @@ public class HomeUserProfileService {
                     new UserEventCountersDto(0, 0, 0, 0, 0, 0, 0),
                     new UserAssetCountersDto(0, 0, 0, 0),
                     new UserEventFeedbackCountersDto(0, 0, 0, 0),
-                    0, 0, normalizeCount(paymentRefundsPending), 0);
+                    0, 0, normalizeCount(paymentRefundsPending), normalizeCount(contactRequestsPending), 0);
         }
         return new UserActivitiesDto(
                 normalizeCount(activities.game()),
@@ -2915,7 +2984,7 @@ public class HomeUserProfileService {
                 toUserEventFeedbackCountersDto(activities.eventFeedback()),
                 normalizeCount(activities.adminJobs()),
                 normalizeCount(activities.adminMetrics()),
-                normalizeCount(paymentRefundsPending),
+                normalizeCount(paymentRefundsPending), normalizeCount(contactRequestsPending),
                 normalizeCount(activities.notifications()));
     }
 

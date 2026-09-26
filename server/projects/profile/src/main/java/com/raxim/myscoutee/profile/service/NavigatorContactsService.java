@@ -1,5 +1,19 @@
 package com.raxim.myscoutee.profile.service;
 
+import com.raxim.myscoutee.profile.data.dto.navigator.NavigatorContactsDtos.ContactChatAccessDto;
+import com.raxim.myscoutee.profile.data.dto.navigator.NavigatorContactsDtos.ContactChatAccessSnapshot;
+import com.raxim.myscoutee.profile.data.dto.navigator.NavigatorContactsDtos.ContactChatAccessCommand;
+import com.raxim.myscoutee.profile.data.document.ContactChatAccess;
+import com.raxim.myscoutee.profile.repository.ContactChatAccessRepository;
+import com.raxim.myscoutee.profile.service.notifications.NotificationOutboxService.NotificationIntent;
+import com.raxim.myscoutee.profile.service.notifications.NotificationOutboxService;
+import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.mongodb.core.query.Query;
+import org.springframework.data.mongodb.core.query.Update;
+import org.springframework.web.server.ResponseStatusException;
+import org.springframework.http.HttpStatus;
+
 import static com.raxim.myscoutee.profile.data.dto.navigator.NavigatorContactsDtos.NavigatorContactDeleteRequestDto;
 import static com.raxim.myscoutee.profile.data.dto.navigator.NavigatorContactsDtos.NavigatorContactDto;
 import static com.raxim.myscoutee.profile.data.dto.navigator.NavigatorContactsDtos.NavigatorContactMethodDto;
@@ -50,7 +64,10 @@ public class NavigatorContactsService {
     private final UserExperienceProfilesService userExperienceProfilesService;
     private final UsersRepository usersRepository;
     private final AccessControlService accessControlService;
+    private final MongoTemplate mongo;
     private final FriendshipFacts friendshipFacts;
+    private final ContactChatAccessRepository chatAccess;
+    private final NotificationOutboxService notifications;
 
     public NavigatorContactsService(
             NavigatorContactsProfilesRepository navigatorContactsProfilesRepository,
@@ -58,13 +75,121 @@ public class NavigatorContactsService {
             UserExperienceProfilesService userExperienceProfilesService,
             UsersRepository usersRepository,
             AccessControlService accessControlService,
-            FriendshipFacts friendshipFacts) {
+            FriendshipFacts friendshipFacts,
+            ContactChatAccessRepository chatAccess,
+            NotificationOutboxService notifications,
+            MongoTemplate mongo) {
         this.navigatorContactsProfilesRepository = navigatorContactsProfilesRepository;
         this.homeUserProfileService = homeUserProfileService;
         this.userExperienceProfilesService = userExperienceProfilesService;
         this.usersRepository = usersRepository;
         this.accessControlService = accessControlService;
         this.friendshipFacts = friendshipFacts;
+        this.chatAccess = chatAccess;
+        this.notifications = notifications;
+        this.mongo = mongo;
+    }
+
+    public ContactChatAccessSnapshot chatAccessSnapshot() {
+        String actor = requireChatAccessActor();
+        return new ContactChatAccessSnapshot(loadChatAccess(),
+                usersRepository.findByUserId(actor).map(user -> count(user.getContactRequestsPending())).orElse(0), loadContacts(null));
+    }
+
+    public List<ContactChatAccessDto> loadChatAccess() {
+        String actor = requireChatAccessActor();
+        var records = chatAccess.findForUser(actor);
+        var peers = usersRepository.findByUserIdIn(records.stream()
+                .map(value -> actor.equals(value.leftUserId()) ? value.rightUserId() : value.leftUserId()).toList());
+        Users owner = usersRepository.findByUserId(actor).orElse(null);
+        Map<String, Users> byId = new LinkedHashMap<>();
+        for (Users peer : peers) if (availableChatPeer(owner, peer)) byId.put(peer.getUserId(), peer);
+        return records.stream().filter(value -> byId.containsKey(actor.equals(value.leftUserId()) ? value.rightUserId() : value.leftUserId()))
+                .map(value -> chatAccessDto(value, byId.get(actor.equals(value.leftUserId()) ? value.rightUserId() : value.leftUserId())))
+                .sorted(java.util.Comparator.comparing(ContactChatAccessDto::requestedAtIso).reversed())
+                .toList();
+    }
+
+    public ContactChatAccessDto changeChatAccess(
+            String peerId, ContactChatAccessCommand command) {
+        String actor = requireChatAccessActor();
+        String target = safeText(peerId);
+        Users owner = usersRepository.findByUserId(actor).orElse(null);
+        Users peer = usersRepository.findByUserId(target).orElse(null);
+        if (actor.equals(target) || !availableChatPeer(owner, peer)) throw chatAccessError(404, "Contact unavailable.");
+        String id = ContactChatAccess.pairId(actor, target);
+        var current = chatAccess.findById(id).orElse(null);
+        String action = command == null ? "" : safeText(command.action());
+        String status;
+        String requester;
+        String requestedAt;
+        String now = nowIso();
+        if ("request".equals(action)) {
+            boolean savedContact = navigatorContactsProfilesRepository.findByUserId(actor)
+                    .map(value -> value.getContacts().stream().anyMatch(contact -> target.equals(contact.getUserId()))).orElse(false);
+            if (!savedContact) throw chatAccessError(403, "Save the contact before requesting chat access.");
+            if (current != null && !"rejected".equals(current.status())) return chatAccessDto(current, peer);
+            status = "pending"; requester = actor; requestedAt = now;
+        } else if ("approve".equals(action) || "reject".equals(action)) {
+            if (current == null || actor.equals(current.requestedBy())) throw chatAccessError(403, "Only the recipient can decide.");
+            status = "approve".equals(action) ? "approved" : "rejected";
+            if (status.equals(current.status())) return chatAccessDto(current, peer);
+            if (!"pending".equals(current.status()) || !Objects.equals(current.version(), command.version()))
+                throw chatAccessError(409, "The request has changed.");
+            requester = current.requestedBy(); requestedAt = current.requestedAtIso();
+        } else throw chatAccessError(400, "Unknown chat access action.");
+        var next = new ContactChatAccess(id,
+                actor.compareTo(target) < 0 ? actor : target, actor.compareTo(target) < 0 ? target : actor,
+                requester, status, requestedAt, "pending".equals(status) ? null : now, current == null ? null : current.version());
+        try { next = chatAccess.save(next); }
+        catch (org.springframework.dao.OptimisticLockingFailureException | org.springframework.dao.DuplicateKeyException conflict) {
+            throw chatAccessError(409, "The request has changed.");
+        }
+        if ("approved".equals(status)) {
+            List<NavigatorContactDto> contacts = new ArrayList<>(loadContacts(null));
+            if (contacts.stream().noneMatch(contact -> target.equals(contact.userId()))) {
+                contacts.add(chatAccessDto(next, peer).contact());
+                saveContacts(new NavigatorContactsSaveRequestDto(null, contacts));
+            }
+        }
+        String counterOwner = "pending".equals(status) ? target : actor;
+        var counterCriteria = Criteria.where("userId").is(counterOwner);
+        if (!"pending".equals(status)) counterCriteria.and("contactRequestsPending").gt(0);
+        mongo.updateFirst(Query.query(counterCriteria),
+                new Update().inc("contactRequestsPending", "pending".equals(status) ? 1 : -1), Users.class);
+        String kind = "contact-chat-" + ("pending".equals(status) ? "requested" : status);
+        String messageKey = "notification.kind." + kind + ".message";
+        notifications.enqueue(new NotificationIntent(
+                kind, "contact", id, "users", List.of(target), "MyScoutee", messageKey, "/game",
+                "/assets/logo/heart.webp", "/assets/logo/heart.webp", kind + "-" + id,
+                Map.of("notification_message_key", messageKey, "senderUserId", actor,
+                        "contactUserId", actor, "requestVersion", String.valueOf(next.version())), actor));
+        return chatAccessDto(next, peer);
+    }
+
+    private String requireChatAccessActor() {
+        String actor = resolveUserId(null);
+        if (!StringUtils.hasText(actor) || "anonymousUser".equals(actor)) throw chatAccessError(401, "Sign in required.");
+        return actor;
+    }
+
+    private boolean availableChatPeer(Users owner, Users peer) {
+        return owner != null && peer != null && !StringUtils.hasText(peer.getDeletedAtIso())
+                && !"deleted".equalsIgnoreCase(peer.getProfileStatus()) && CommunityGroupProfilesService.sameWorkspace(owner, peer);
+    }
+
+    private ContactChatAccessDto chatAccessDto(
+            ContactChatAccess value, Users peer) {
+        var contact = new NavigatorContactDto(peer.getUserId(), peer.getUserId(), contactName(peer.getName()),
+                safeText(peer.getInitials()), normalizeGender(peer.getGender()), safeText(peer.getCity()),
+                peer.getImages() == null || peer.getImages().isEmpty() ? "" : peer.getImages().get(0),
+                "", value.requestedAtIso(), value.decidedAtIso() == null ? value.requestedAtIso() : value.decidedAtIso(), List.of());
+        return new ContactChatAccessDto(
+                value.id(), value.requestedBy(), value.status(), value.requestedAtIso(), value.decidedAtIso(), value.version(), contact);
+    }
+
+    private ResponseStatusException chatAccessError(int status, String message) {
+        return new ResponseStatusException(HttpStatus.valueOf(status), message);
     }
 
     public List<NavigatorContactDto> loadContacts(String requestedUserId) {

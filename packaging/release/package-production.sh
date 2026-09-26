@@ -12,7 +12,7 @@ read_version() {
 }
 
 VERSION="${MYSCOUTEE_VERSION:-$(read_version)}"
-VERSION="${VERSION:-1.0.2}"
+VERSION="${VERSION:-1.3.0}"
 ARCHITECTURE="${DEB_ARCHITECTURE:-amd64}"
 DEBIAN_VERSION="${VERSION/-/\~}"
 if [[ ! "${VERSION}" =~ ^(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)(-qa\.[1-9][0-9]*)?$ ]] \
@@ -37,12 +37,14 @@ export MYSCOUTEE_PRODUCTION_IMAGE="${MYSCOUTEE_PRODUCTION_IMAGE:-myscoutee-api:$
 export MINIO_PRODUCTION_IMAGE="${MINIO_PRODUCTION_IMAGE:-myscoutee-minio:${VERSION}-prod}"
 export REGISTRY_DEMO_IMAGE="${REGISTRY_DEMO_IMAGE:-myscoutee-registry:${VERSION}-prod}"
 export PAYMENT_SIMULATOR_IMAGE="${PAYMENT_SIMULATOR_IMAGE:-myscoutee-payment-simulator:${VERSION}-prod}"
+export MCP_IMAGE="${MCP_IMAGE:-myscoutee-mcp:${VERSION}-prod}"
 if [[ "${NGINX_BASE_IMAGE}" != "myscoutee-nginx:${VERSION}-base" \
   || "${NGINX_PRODUCTION_IMAGE}" != "myscoutee-nginx:${VERSION}-prod" \
   || "${MYSCOUTEE_PRODUCTION_IMAGE}" != "myscoutee-api:${VERSION}-prod" \
   || "${MINIO_PRODUCTION_IMAGE}" != "myscoutee-minio:${VERSION}-prod" \
   || "${REGISTRY_DEMO_IMAGE}" != "myscoutee-registry:${VERSION}-prod" \
-  || "${PAYMENT_SIMULATOR_IMAGE}" != "myscoutee-payment-simulator:${VERSION}-prod" ]]; then
+  || "${PAYMENT_SIMULATOR_IMAGE}" != "myscoutee-payment-simulator:${VERSION}-prod" \
+  || "${MCP_IMAGE}" != "myscoutee-mcp:${VERSION}-prod" ]]; then
   echo "Release packages require the canonical version-derived managed image tags." >&2
   exit 1
 fi
@@ -230,6 +232,7 @@ sed \
   -e "s/^MINIO_PRODUCTION_IMAGE=.*/MINIO_PRODUCTION_IMAGE=myscoutee-minio:${VERSION}-prod/" \
   -e "s/^REGISTRY_DEMO_IMAGE=.*/REGISTRY_DEMO_IMAGE=myscoutee-registry:${VERSION}-prod/" \
   -e "s/^PAYMENT_SIMULATOR_IMAGE=.*/PAYMENT_SIMULATOR_IMAGE=myscoutee-payment-simulator:${VERSION}-prod/" \
+  -e "s/^MCP_IMAGE=.*/MCP_IMAGE=myscoutee-mcp:${VERSION}-prod/" \
   -i "${STAGING_DIR}/opt/myscoutee/packaging/templates/myscoutee.env"
 
 save_image() {
@@ -283,6 +286,7 @@ if [[ "${PACKAGE_IMAGES:-true}" == "true" ]]; then
   save_image "${MINIO_PRODUCTION_IMAGE}" "myscoutee-minio-${VERSION}-prod"
   save_image "${REGISTRY_DEMO_IMAGE}" "myscoutee-registry-${VERSION}-prod"
   save_image "${PAYMENT_SIMULATOR_IMAGE}" "myscoutee-payment-simulator-${VERSION}-prod"
+  save_image "${MCP_IMAGE}" "myscoutee-mcp-${VERSION}-prod"
   jq -n \
     --arg releaseVersion "${VERSION}" \
     --arg nginxBaseReference "${NGINX_BASE_IMAGE}" \
@@ -301,8 +305,11 @@ if [[ "${PACKAGE_IMAGES:-true}" == "true" ]]; then
     --arg registryDemoId "$(image_id "${REGISTRY_DEMO_IMAGE}")" \
     --arg registryDemoFingerprint "$(image_content_fingerprint "${REGISTRY_DEMO_IMAGE}")" \
     --arg paymentSimulatorReference "${PAYMENT_SIMULATOR_IMAGE}" \
+    --arg mcpReference "${MCP_IMAGE}" \
     --arg paymentSimulatorId "$(image_id "${PAYMENT_SIMULATOR_IMAGE}")" \
+    --arg mcpId "$(image_id "${MCP_IMAGE}")" \
     --arg paymentSimulatorFingerprint "$(image_content_fingerprint "${PAYMENT_SIMULATOR_IMAGE}")" \
+    --arg mcpFingerprint "$(image_content_fingerprint "${MCP_IMAGE}")" \
     '{
       schemaVersion: 1,
       releaseVersion: $releaseVersion,
@@ -349,6 +356,13 @@ if [[ "${PACKAGE_IMAGES:-true}" == "true" ]]; then
           reference: $paymentSimulatorReference,
           imageId: $paymentSimulatorId,
           contentFingerprint: $paymentSimulatorFingerprint
+        },
+        {
+          service: "mcp",
+          container: "mcp",
+          reference: $mcpReference,
+          imageId: $mcpId,
+          contentFingerprint: $mcpFingerprint
         }
       ]
     }' > "${STAGING_DIR}/opt/myscoutee/packaging/IMAGE-MANIFEST.json"

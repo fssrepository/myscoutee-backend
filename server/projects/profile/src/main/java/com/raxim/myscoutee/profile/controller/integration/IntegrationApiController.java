@@ -29,7 +29,6 @@ import com.raxim.myscoutee.profile.data.dto.integration.IntegrationDtos.Integrat
 import com.raxim.myscoutee.profile.data.dto.integration.IntegrationDtos.IntegrationWatchResponseDto;
 import com.raxim.myscoutee.profile.security.AccessControlService;
 import com.raxim.myscoutee.profile.service.IntegrationSyncService;
-import com.raxim.myscoutee.profile.service.IntegrationTokenService;
 import com.raxim.myscoutee.profile.service.IntegrationTokenService.AuthenticatedIntegrationClient;
 import com.raxim.myscoutee.profile.service.IntegrationWebhookService;
 
@@ -41,23 +40,27 @@ public class IntegrationApiController {
     private final com.raxim.myscoutee.profile.service.IntegrationParticipantInviteService invites;
     private final AccessControlService accessControlService;
     private final IntegrationWebhookService webhookService;
+    private final com.raxim.myscoutee.profile.service.IntegrationCapabilitiesService capabilities;
 
     public IntegrationApiController(
             IntegrationSyncService syncService,
             IntegrationEventQueryService eventQueries,
             com.raxim.myscoutee.profile.service.IntegrationParticipantInviteService invites,
             AccessControlService accessControlService,
-            IntegrationWebhookService webhookService) {
+            IntegrationWebhookService webhookService,
+            com.raxim.myscoutee.profile.service.IntegrationCapabilitiesService capabilities) {
         this.syncService = syncService;
         this.eventQueries = eventQueries;
         this.invites = invites;
         this.accessControlService = accessControlService;
         this.webhookService = webhookService;
+        this.capabilities = capabilities;
     }
 
     @PostMapping("/connect")
-    public IntegrationConnectDto connect() {
-        return new IntegrationConnectDto(true, IntegrationTokenService.MAX_BATCH_SIZE);
+    public IntegrationConnectDto connect(Authentication authentication, jakarta.servlet.http.HttpServletResponse response) {
+        response.setHeader("Cache-Control", "no-store");
+        return capabilities.describe(authentication);
     }
 
     @PostMapping(path = "/watch", consumes = MediaType.APPLICATION_JSON_VALUE)

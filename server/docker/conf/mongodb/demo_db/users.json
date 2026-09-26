@@ -163,8 +163,8 @@
       "Spanish"
     ],
     "locationCoordinates": {
-      "latitude": 30.2768,
-      "longitude": -97.7479
+      "latitude": 47.5075,
+      "longitude": 19.0354
     },
     "name": "Farkas Anna",
     "paymentIncomeTotals": {
@@ -255,8 +255,8 @@
       "Hungarian"
     ],
     "locationCoordinates": {
-      "latitude": 41.8889,
-      "longitude": -87.6346
+      "latitude": 47.5087,
+      "longitude": 19.0354
     },
     "name": "Kiss Balázs",
     "physique": "Lean",
@@ -432,8 +432,8 @@
       "Hungarian"
     ],
     "locationCoordinates": {
-      "latitude": 47.6182,
-      "longitude": -122.3369
+      "latitude": 47.5099,
+      "longitude": 19.0354
     },
     "name": "Nagy Eszter",
     "physique": "Fit",
@@ -611,8 +611,8 @@
       "English"
     ],
     "locationCoordinates": {
-      "latitude": 32.7289,
-      "longitude": -117.1659
+      "latitude": 47.5111,
+      "longitude": 19.0354
     },
     "name": "Maya Stone",
     "physique": "Athletic",
@@ -695,8 +695,8 @@
       "Korean"
     ],
     "locationCoordinates": {
-      "latitude": 39.7536,
-      "longitude": -104.9951
+      "latitude": 47.5123,
+      "longitude": 19.0354
     },
     "name": "Lina Park",
     "physique": "Slim",
@@ -780,8 +780,8 @@
       "Portuguese"
     ],
     "locationCoordinates": {
-      "latitude": 25.7773,
-      "longitude": -80.1966
+      "latitude": 47.5135,
+      "longitude": 19.0354
     },
     "name": "Iris Bloom",
     "physique": "Curvy",
@@ -862,8 +862,8 @@
       "English"
     ],
     "locationCoordinates": {
-      "latitude": 30.284,
-      "longitude": -97.7479
+      "latitude": 47.5147,
+      "longitude": 19.0354
     },
     "name": "Noah Hart",
     "physique": "Athletic",
@@ -946,8 +946,8 @@
       "French"
     ],
     "locationCoordinates": {
-      "latitude": 42.3433,
-      "longitude": -71.0625
+      "latitude": 47.4811,
+      "longitude": 19.0366
     },
     "name": "Evan Reed",
     "physique": "Average",
@@ -1029,8 +1029,8 @@
       "English"
     ],
     "locationCoordinates": {
-      "latitude": 45.4996,
-      "longitude": -122.682
+      "latitude": 47.4823,
+      "longitude": 19.0366
     },
     "name": "Kai Morgan",
     "physique": "Slim",
@@ -1113,8 +1113,8 @@
       "Italian"
     ],
     "locationCoordinates": {
-      "latitude": 30.2792,
-      "longitude": -97.7599
+      "latitude": 47.5099,
+      "longitude": 19.0234
     },
     "name": "Luca Hale",
     "physique": "Fit",
@@ -1197,8 +1197,8 @@
       "English"
     ],
     "locationCoordinates": {
-      "latitude": 36.1759,
-      "longitude": -86.7984
+      "latitude": 47.5111,
+      "longitude": 19.0234
     },
     "name": "Theo Lane",
     "physique": "Athletic",
@@ -1280,8 +1280,8 @@
       "Spanish"
     ],
     "locationCoordinates": {
-      "latitude": 33.4628,
-      "longitude": -112.0908
+      "latitude": 47.5123,
+      "longitude": 19.0234
     },
     "name": "Milo Grant",
     "physique": "Average",
@@ -1364,8 +1364,8 @@
       "Spanish"
     ],
     "locationCoordinates": {
-      "latitude": 30.2768,
-      "longitude": -97.7479
+      "latitude": 47.5075,
+      "longitude": 19.0354
     },
     "name": "Emma Parker",
     "physique": "Athletic",
@@ -1448,8 +1448,8 @@
       "Hungarian"
     ],
     "locationCoordinates": {
-      "latitude": 41.8889,
-      "longitude": -87.6346
+      "latitude": 47.5087,
+      "longitude": 19.0354
     },
     "name": "Liam Parker",
     "physique": "Lean",
@@ -1532,8 +1532,8 @@
       "Hungarian"
     ],
     "locationCoordinates": {
-      "latitude": 47.6182,
-      "longitude": -122.3369
+      "latitude": 47.5099,
+      "longitude": 19.0354
     },
     "name": "Sophia Lane",
     "physique": "Fit",
@@ -1616,8 +1616,8 @@
       "English"
     ],
     "locationCoordinates": {
-      "latitude": 32.7289,
-      "longitude": -117.1659
+      "latitude": 47.5111,
+      "longitude": 19.0354
     },
     "name": "Noah Lane",
     "physique": "Athletic",
@@ -1699,8 +1699,8 @@
       "Korean"
     ],
     "locationCoordinates": {
-      "latitude": 39.7536,
-      "longitude": -104.9951
+      "latitude": 47.5123,
+      "longitude": 19.0354
     },
     "name": "Olivia Rivera",
     "physique": "Slim",
@@ -1783,8 +1783,8 @@
       "Portuguese"
     ],
     "locationCoordinates": {
-      "latitude": 25.7773,
-      "longitude": -80.1966
+      "latitude": 47.5135,
+      "longitude": 19.0354
     },
     "name": "Ethan Rivera",
     "physique": "Curvy",
@@ -1866,8 +1866,8 @@
       "English"
     ],
     "locationCoordinates": {
-      "latitude": 30.284,
-      "longitude": -97.7479
+      "latitude": 47.5147,
+      "longitude": 19.0354
     },
     "name": "Mia Grant",
     "physique": "Athletic",
@@ -1950,8 +1950,8 @@
       "French"
     ],
     "locationCoordinates": {
-      "latitude": 42.3433,
-      "longitude": -71.0625
+      "latitude": 47.4811,
+      "longitude": 19.0366
     },
     "name": "Mason Grant",
     "physique": "Average",
@@ -2034,8 +2034,8 @@
       "English"
     ],
     "locationCoordinates": {
-      "latitude": 45.4996,
-      "longitude": -122.682
+      "latitude": 47.4823,
+      "longitude": 19.0366
     },
     "name": "Lina Stone",
     "physique": "Slim",
@@ -2117,8 +2117,8 @@
       "Italian"
     ],
     "locationCoordinates": {
-      "latitude": 30.2792,
-      "longitude": -97.7599
+      "latitude": 47.5099,
+      "longitude": 19.0234
     },
     "name": "Lucas Stone",
     "physique": "Fit",
@@ -2200,8 +2200,8 @@
       "English"
     ],
     "locationCoordinates": {
-      "latitude": 36.1759,
-      "longitude": -86.7984
+      "latitude": 47.5111,
+      "longitude": 19.0234
     },
     "name": "Nora Hale",
     "physique": "Athletic",
@@ -2284,8 +2284,8 @@
       "Spanish"
     ],
     "locationCoordinates": {
-      "latitude": 33.4628,
-      "longitude": -112.0908
+      "latitude": 47.5123,
+      "longitude": 19.0234
     },
     "name": "Owen Hale",
     "physique": "Average",
@@ -2368,8 +2368,8 @@
       "Spanish"
     ],
     "locationCoordinates": {
-      "latitude": 30.2768,
-      "longitude": -97.7479
+      "latitude": 47.5075,
+      "longitude": 19.0354
     },
     "name": "Chloe Brooks",
     "physique": "Athletic",
@@ -2453,8 +2453,8 @@
       "Hungarian"
     ],
     "locationCoordinates": {
-      "latitude": 41.8889,
-      "longitude": -87.6346
+      "latitude": 47.5087,
+      "longitude": 19.0354
     },
     "name": "Elijah Brooks",
     "paymentIncomeTotals": {
@@ -2542,8 +2542,8 @@
       "Hungarian"
     ],
     "locationCoordinates": {
-      "latitude": 47.6182,
-      "longitude": -122.3369
+      "latitude": 47.5099,
+      "longitude": 19.0354
     },
     "name": "Ivy Reed",
     "physique": "Fit",
@@ -2625,8 +2625,8 @@
       "English"
     ],
     "locationCoordinates": {
-      "latitude": 32.7289,
-      "longitude": -117.1659
+      "latitude": 47.5111,
+      "longitude": 19.0354
     },
     "name": "Leo Reed",
     "physique": "Athletic",
@@ -2709,8 +2709,8 @@
       "Korean"
     ],
     "locationCoordinates": {
-      "latitude": 39.7536,
-      "longitude": -104.9951
+      "latitude": 47.5123,
+      "longitude": 19.0354
     },
     "name": "Ava Baker",
     "physique": "Slim",
@@ -2793,8 +2793,8 @@
       "Portuguese"
     ],
     "locationCoordinates": {
-      "latitude": 25.7773,
-      "longitude": -80.1966
+      "latitude": 47.5135,
+      "longitude": 19.0354
     },
     "name": "Ryan Baker",
     "physique": "Curvy",
@@ -2877,8 +2877,8 @@
       "English"
     ],
     "locationCoordinates": {
-      "latitude": 30.284,
-      "longitude": -97.7479
+      "latitude": 47.5147,
+      "longitude": 19.0354
     },
     "name": "Zoe Turner",
     "physique": "Athletic",
@@ -2960,8 +2960,8 @@
       "French"
     ],
     "locationCoordinates": {
-      "latitude": 42.3433,
-      "longitude": -71.0625
+      "latitude": 47.4811,
+      "longitude": 19.0366
     },
     "name": "Alex Turner",
     "paymentSpentTotals": {
@@ -3052,8 +3052,8 @@
       "English"
     ],
     "locationCoordinates": {
-      "latitude": 45.4996,
-      "longitude": -122.682
+      "latitude": 47.4823,
+      "longitude": 19.0366
     },
     "name": "Emma Reed",
     "physique": "Slim",
@@ -3136,8 +3136,8 @@
       "Italian"
     ],
     "locationCoordinates": {
-      "latitude": 30.2792,
-      "longitude": -97.7599
+      "latitude": 47.5099,
+      "longitude": 19.0234
     },
     "name": "Liam Reed",
     "physique": "Fit",
@@ -3219,8 +3219,8 @@
       "English"
     ],
     "locationCoordinates": {
-      "latitude": 36.1759,
-      "longitude": -86.7984
+      "latitude": 47.5111,
+      "longitude": 19.0234
     },
     "name": "Sophia Baker",
     "physique": "Athletic",
@@ -3304,8 +3304,8 @@
       "Spanish"
     ],
     "locationCoordinates": {
-      "latitude": 33.4628,
-      "longitude": -112.0908
+      "latitude": 47.5123,
+      "longitude": 19.0234
     },
     "name": "Noah Baker",
     "physique": "Average",
@@ -3387,8 +3387,8 @@
       "Spanish"
     ],
     "locationCoordinates": {
-      "latitude": 30.2768,
-      "longitude": -97.7479
+      "latitude": 47.5075,
+      "longitude": 19.0354
     },
     "name": "Olivia Turner",
     "physique": "Athletic",
@@ -3471,8 +3471,8 @@
       "Hungarian"
     ],
     "locationCoordinates": {
-      "latitude": 41.8889,
-      "longitude": -87.6346
+      "latitude": 47.5087,
+      "longitude": 19.0354
     },
     "name": "Ethan Turner",
     "physique": "Lean",
@@ -3555,8 +3555,8 @@
       "Hungarian"
     ],
     "locationCoordinates": {
-      "latitude": 47.6182,
-      "longitude": -122.3369
+      "latitude": 47.5099,
+      "longitude": 19.0354
     },
     "name": "Mia Parker",
     "physique": "Fit",
@@ -3638,8 +3638,8 @@
       "English"
     ],
     "locationCoordinates": {
-      "latitude": 32.7289,
-      "longitude": -117.1659
+      "latitude": 47.5111,
+      "longitude": 19.0354
     },
     "name": "Mason Parker",
     "physique": "Athletic",
@@ -3723,8 +3723,8 @@
       "Korean"
     ],
     "locationCoordinates": {
-      "latitude": 39.7536,
-      "longitude": -104.9951
+      "latitude": 47.5123,
+      "longitude": 19.0354
     },
     "name": "Lina Lane",
     "physique": "Slim",
@@ -3806,8 +3806,8 @@
       "Portuguese"
     ],
     "locationCoordinates": {
-      "latitude": 25.7773,
-      "longitude": -80.1966
+      "latitude": 47.5135,
+      "longitude": 19.0354
     },
     "name": "Lucas Lane",
     "physique": "Curvy",
@@ -3889,8 +3889,8 @@
       "English"
     ],
     "locationCoordinates": {
-      "latitude": 30.284,
-      "longitude": -97.7479
+      "latitude": 47.5147,
+      "longitude": 19.0354
     },
     "name": "Nora Rivera",
     "physique": "Athletic",
@@ -3973,8 +3973,8 @@
       "French"
     ],
     "locationCoordinates": {
-      "latitude": 42.3433,
-      "longitude": -71.0625
+      "latitude": 47.4811,
+      "longitude": 19.0366
     },
     "name": "Owen Rivera",
     "physique": "Average",
@@ -4056,8 +4056,8 @@
       "English"
     ],
     "locationCoordinates": {
-      "latitude": 45.4996,
-      "longitude": -122.682
+      "latitude": 47.4823,
+      "longitude": 19.0366
     },
     "name": "Chloe Grant",
     "physique": "Slim",
@@ -4141,8 +4141,8 @@
       "Italian"
     ],
     "locationCoordinates": {
-      "latitude": 30.2792,
-      "longitude": -97.7599
+      "latitude": 47.5099,
+      "longitude": 19.0234
     },
     "name": "Elijah Grant",
     "physique": "Fit",
@@ -4223,8 +4223,8 @@
       "English"
     ],
     "locationCoordinates": {
-      "latitude": 36.1759,
-      "longitude": -86.7984
+      "latitude": 47.5111,
+      "longitude": 19.0234
     },
     "name": "Ivy Stone",
     "physique": "Athletic",
@@ -4307,8 +4307,8 @@
       "Spanish"
     ],
     "locationCoordinates": {
-      "latitude": 33.4628,
-      "longitude": -112.0908
+      "latitude": 47.5123,
+      "longitude": 19.0234
     },
     "name": "Leo Stone",
     "physique": "Average",
@@ -4391,8 +4391,8 @@
       "Spanish"
     ],
     "locationCoordinates": {
-      "latitude": 30.2768,
-      "longitude": -97.7479
+      "latitude": 47.5075,
+      "longitude": 19.0354
     },
     "name": "Ava Hale",
     "physique": "Athletic",
@@ -4476,8 +4476,8 @@
       "Hungarian"
     ],
     "locationCoordinates": {
-      "latitude": 41.8889,
-      "longitude": -87.6346
+      "latitude": 47.5087,
+      "longitude": 19.0354
     },
     "name": "Ryan Hale",
     "physique": "Lean",
@@ -4561,8 +4561,8 @@
       "English"
     ],
     "locationCoordinates": {
-      "latitude": 30.2712,
-      "longitude": -97.7412
+      "latitude": 47.5019,
+      "longitude": 19.0421
     },
     "name": "Casey Bridge",
     "physique": "Lean",
@@ -4646,8 +4646,8 @@
       "Spanish"
     ],
     "locationCoordinates": {
-      "latitude": 30.2791,
-      "longitude": -97.7461
+      "latitude": 47.5098,
+      "longitude": 19.0372
     },
     "name": "Nova Social",
     "physique": "Athletic",
@@ -4730,8 +4730,8 @@
       "English"
     ],
     "locationCoordinates": {
-      "latitude": 30.2656,
-      "longitude": -97.7523
+      "latitude": 47.4963,
+      "longitude": 19.031
     },
     "name": "Riley Outside",
     "physique": "Fit",
@@ -4972,8 +4972,8 @@
       "/media/public?key=images/demo-profiles/af0436815ab38f4864dd1e24/photo-01/large.webp"
     ],
     "locationCoordinates": {
-      "latitude": 42.3433,
-      "longitude": -71.0625
+      "latitude": 47.4811,
+      "longitude": 19.0366
     },
     "partitionKey": "country:hu",
     "profileStatus": "friends only",
@@ -5015,8 +5015,8 @@
       "/media/public?key=images/demo-profiles/9f3b3f085e23af6c89dbc432/photo-02/large.webp"
     ],
     "locationCoordinates": {
-      "latitude": 47.6182,
-      "longitude": -122.3369
+      "latitude": 47.5099,
+      "longitude": 19.0354
     },
     "partitionKey": "country:hu",
     "profileStatus": "public",
@@ -5057,8 +5057,8 @@
       "/media/public?key=images/demo-profiles/af0436815ab38f4864dd1e24/photo-01/large.webp"
     ],
     "locationCoordinates": {
-      "latitude": 42.3433,
-      "longitude": -71.0625
+      "latitude": 47.4811,
+      "longitude": 19.0366
     },
     "partitionKey": "country:hu",
     "profileStatus": "friends only",
@@ -5100,8 +5100,8 @@
       "/media/public?key=images/demo-profiles/178e8d0cbe164fa3fede5884/photo-02/large.webp"
     ],
     "locationCoordinates": {
-      "latitude": 39.7536,
-      "longitude": -104.9951
+      "latitude": 47.5123,
+      "longitude": 19.0354
     },
     "partitionKey": "country:hu",
     "profileStatus": "host only",
@@ -5143,8 +5143,8 @@
       "/media/public?key=images/demo-profiles/9f3b3f085e23af6c89dbc432/photo-02/large.webp"
     ],
     "locationCoordinates": {
-      "latitude": 47.6182,
-      "longitude": -122.3369
+      "latitude": 47.5099,
+      "longitude": 19.0354
     },
     "partitionKey": "country:hu",
     "profileStatus": "public",
@@ -5185,8 +5185,8 @@
       "/media/public?key=images/demo-profiles/7822c5f99eff99d63abe8933/photo-02/large.webp"
     ],
     "locationCoordinates": {
-      "latitude": 45.4996,
-      "longitude": -122.682
+      "latitude": 47.4823,
+      "longitude": 19.0366
     },
     "partitionKey": "country:hu",
     "profileStatus": "host only",
@@ -5229,8 +5229,8 @@
       "/media/public?key=images/demo-profiles/bf057de7c586eede7e84bdc7/photo-03/large.webp"
     ],
     "locationCoordinates": {
-      "latitude": 30.2768,
-      "longitude": -97.7479
+      "latitude": 47.5075,
+      "longitude": 19.0354
     },
     "partitionKey": "country:hu",
     "profileStatus": "public",
@@ -5271,8 +5271,8 @@
       "/media/public?key=images/demo-profiles/1b1c70be2349b3359a8f6f94/photo-02/large.webp"
     ],
     "locationCoordinates": {
-      "latitude": 32.7289,
-      "longitude": -117.1659
+      "latitude": 47.5111,
+      "longitude": 19.0354
     },
     "partitionKey": "country:hu",
     "profileStatus": "public",
@@ -5313,8 +5313,8 @@
       "/media/public?key=images/demo-profiles/b29df68956f3fe15e04558de/photo-01/large.webp"
     ],
     "locationCoordinates": {
-      "latitude": 41.8889,
-      "longitude": -87.6346
+      "latitude": 47.5087,
+      "longitude": 19.0354
     },
     "partitionKey": "country:hu",
     "profileStatus": "public",
@@ -5356,8 +5356,8 @@
       "/media/public?key=images/demo-profiles/178e8d0cbe164fa3fede5884/photo-02/large.webp"
     ],
     "locationCoordinates": {
-      "latitude": 39.7536,
-      "longitude": -104.9951
+      "latitude": 47.5123,
+      "longitude": 19.0354
     },
     "partitionKey": "country:hu",
     "profileStatus": "host only",
@@ -5398,8 +5398,8 @@
       "/media/public?key=images/demo-profiles/af0436815ab38f4864dd1e24/photo-01/large.webp"
     ],
     "locationCoordinates": {
-      "latitude": 42.3433,
-      "longitude": -71.0625
+      "latitude": 47.4811,
+      "longitude": 19.0366
     },
     "partitionKey": "country:hu",
     "profileStatus": "friends only",
@@ -5441,8 +5441,8 @@
       "/media/public?key=images/demo-profiles/9f3b3f085e23af6c89dbc432/photo-02/large.webp"
     ],
     "locationCoordinates": {
-      "latitude": 47.6182,
-      "longitude": -122.3369
+      "latitude": 47.5099,
+      "longitude": 19.0354
     },
     "partitionKey": "country:hu",
     "profileStatus": "public",
@@ -5482,8 +5482,8 @@
       "/media/public?key=images/demo-profiles/cdd937e0adcbd1a5e38f3ceb/photo-01/large.webp"
     ],
     "locationCoordinates": {
-      "latitude": 30.284,
-      "longitude": -97.7479
+      "latitude": 47.5147,
+      "longitude": 19.0354
     },
     "partitionKey": "country:hu",
     "profileStatus": "public",
@@ -5525,8 +5525,8 @@
       "/media/public?key=images/demo-profiles/178e8d0cbe164fa3fede5884/photo-02/large.webp"
     ],
     "locationCoordinates": {
-      "latitude": 39.7536,
-      "longitude": -104.9951
+      "latitude": 47.5123,
+      "longitude": 19.0354
     },
     "partitionKey": "country:hu",
     "profileStatus": "host only",
@@ -5567,8 +5567,8 @@
       "/media/public?key=images/demo-profiles/7822c5f99eff99d63abe8933/photo-02/large.webp"
     ],
     "locationCoordinates": {
-      "latitude": 45.4996,
-      "longitude": -122.682
+      "latitude": 47.4823,
+      "longitude": 19.0366
     },
     "partitionKey": "country:hu",
     "profileStatus": "host only",
@@ -5608,8 +5608,8 @@
       "/media/public?key=images/demo-profiles/cdd937e0adcbd1a5e38f3ceb/photo-01/large.webp"
     ],
     "locationCoordinates": {
-      "latitude": 30.284,
-      "longitude": -97.7479
+      "latitude": 47.5147,
+      "longitude": 19.0354
     },
     "partitionKey": "country:hu",
     "profileStatus": "public",
@@ -5651,8 +5651,8 @@
       "/media/public?key=images/demo-profiles/9f3b3f085e23af6c89dbc432/photo-02/large.webp"
     ],
     "locationCoordinates": {
-      "latitude": 47.6182,
-      "longitude": -122.3369
+      "latitude": 47.5099,
+      "longitude": 19.0354
     },
     "partitionKey": "country:hu",
     "profileStatus": "public",
@@ -5693,8 +5693,8 @@
       "/media/public?key=images/demo-profiles/1b1c70be2349b3359a8f6f94/photo-02/large.webp"
     ],
     "locationCoordinates": {
-      "latitude": 32.7289,
-      "longitude": -117.1659
+      "latitude": 47.5111,
+      "longitude": 19.0354
     },
     "partitionKey": "country:hu",
     "profileStatus": "public",
@@ -5737,8 +5737,8 @@
       "/media/public?key=images/demo-profiles/bf057de7c586eede7e84bdc7/photo-03/large.webp"
     ],
     "locationCoordinates": {
-      "latitude": 30.2768,
-      "longitude": -97.7479
+      "latitude": 47.5075,
+      "longitude": 19.0354
     },
     "partitionKey": "country:hu",
     "profileStatus": "public",
@@ -5779,8 +5779,8 @@
       "/media/public?key=images/demo-profiles/b29df68956f3fe15e04558de/photo-01/large.webp"
     ],
     "locationCoordinates": {
-      "latitude": 41.8889,
-      "longitude": -87.6346
+      "latitude": 47.5087,
+      "longitude": 19.0354
     },
     "partitionKey": "country:hu",
     "profileStatus": "public",
@@ -5821,8 +5821,8 @@
       "/media/public?key=images/demo-profiles/b29df68956f3fe15e04558de/photo-01/large.webp"
     ],
     "locationCoordinates": {
-      "latitude": 41.8889,
-      "longitude": -87.6346
+      "latitude": 47.5087,
+      "longitude": 19.0354
     },
     "partitionKey": "country:hu",
     "profileStatus": "public",
@@ -5863,8 +5863,8 @@
       "/media/public?key=images/demo-profiles/af0436815ab38f4864dd1e24/photo-01/large.webp"
     ],
     "locationCoordinates": {
-      "latitude": 42.3433,
-      "longitude": -71.0625
+      "latitude": 47.4811,
+      "longitude": 19.0366
     },
     "partitionKey": "country:hu",
     "profileStatus": "friends only",

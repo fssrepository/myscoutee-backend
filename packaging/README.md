@@ -1,5 +1,11 @@
 # MyScoutee Packaging
 
+The next release is **1.3.0** (`v1.3.0`). Production packaging includes the MCP
+image as the seventh managed image and publishes its anonymous help endpoint at
+`/mcp` through nginx. See [release preparation](../guides/releases/v1.3.0.md)
+for the older-updater compatibility boundary and remaining qualification gates.
+
+
 This folder is the root-level packaging workspace for production deploys. It is separate from the dev Docker setup so dev hot reload, workspace mounts, e2e mode, and demo helpers can keep their current behavior.
 
 ## Current Scope

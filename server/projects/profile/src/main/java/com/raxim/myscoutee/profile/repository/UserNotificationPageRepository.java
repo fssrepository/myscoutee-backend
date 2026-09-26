@@ -97,12 +97,23 @@ public class UserNotificationPageRepository {
                 UserNotification.class);
     }
 
+    /** The same insert/read success boundary as the existing unread counter. */
+    private void incrementCommunityUpdates(UserNotification notification, int delta) {
+        if (notification == null || !"community".equals(notification.getSourceType())
+                || !"members".equals(notification.getPayload().get("communityAttention"))) return;
+        var identity = Criteria.where("ownerType").is("community").and("ownerId").is(notification.getSourceId())
+                .and("userId").is(notification.getRecipientUserId());
+        if (delta < 0) identity.and("communityUpdates").gte(-delta);
+        mongoTemplate.updateFirst(Query.query(identity), new Update().inc("communityUpdates", delta), "activityMembers");
+    }
+
     public boolean insertIfAbsent(UserNotification notification) {
         if (notification == null) {
             return false;
         }
         try {
             mongoTemplate.insert(notification);
+            incrementCommunityUpdates(notification, 1);
             return true;
         } catch (DuplicateKeyException ignored) {
             return false;
@@ -167,6 +178,7 @@ public class UserNotificationPageRepository {
                         .inc("revision", 1L),
                 FindAndModifyOptions.options().returnNew(true),
                 UserNotification.class);
+        incrementCommunityUpdates(updated, -1);
         return Optional.ofNullable(updated);
     }
 

@@ -35,6 +35,36 @@ class SavedPaymentMethodsServiceTest {
     }
 
     @Test
+    void groupExpenseAndAccountAssetIncomeReadTheSamePaymentWithoutMovingOrCopyingIt() {
+        PaymentsRepository payments = mock(PaymentsRepository.class);
+        Payment payment = new Payment(); payment.setId("asset-payment"); payment.setUserId("payer-group");
+        payment.setRecipientUserId("asset-owner"); payment.setSourceId("asset-1");
+        payment.setFulfillmentKind(PaymentService.FULFILLMENT_KIND_CLIENT);
+        payment.setStatus("approved"); payment.setAuditKind("payment"); payment.setAmount(20D);
+        payment.setCurrency("EUR"); payment.setCreatedDate("2026-09-26T10:00:00Z");
+        when(payments.findByUserIdOrderByCreatedDateDesc("payer-group")).thenReturn(List.of(payment));
+        when(payments.findByRecipientUserIdOrderByCreatedDateDesc("asset-owner")).thenReturn(List.of(payment));
+        SavedPaymentMethodsService service = new SavedPaymentMethodsService(
+                mock(SavedPaymentMethodsRepository.class), mock(PaymentMethodRegistrationsRepository.class),
+                payments, mock(PaymentSimulatorRegistrationClient.class),
+                mock(DeploymentPaymentProviderResolver.class), mock(UsersRepository.class));
+        assertThat(service.queryHistory("payer-group", "all", 0, 20).items()).singleElement().satisfies(item -> {
+            assertThat(item.id()).isEqualTo("asset-payment");
+            assertThat(item.direction()).isEqualTo("expense");
+            assertThat(item.recipientUserId()).isEqualTo("asset-owner");
+        });
+        assertThat(service.queryHistory("asset-owner", "all", 0, 20).items()).singleElement().satisfies(item -> {
+            assertThat(item.id()).isEqualTo("asset-payment");
+            assertThat(item.direction()).isEqualTo("income");
+            assertThat(item.contextAssetId()).isEqualTo("asset-1");
+        });
+        assertThat(service.queryHistory("payer-account", "all", 0, 20).items()).isEmpty();
+        assertThat(service.queryHistory("owner-group", "all", 0, 20).items()).isEmpty();
+        assertThat(payment.getUserId()).isEqualTo("payer-group");
+        verify(payments, never()).save(org.mockito.ArgumentMatchers.any(Payment.class));
+    }
+
+    @Test
     void deleteAttemptsProviderCleanupBeforeMarkingTheLocalCardDeleted() {
         MongoSessionModeContext.set(MongoSessionMode.DEMO);
         SavedPaymentMethodsRepository methods = mock(SavedPaymentMethodsRepository.class);

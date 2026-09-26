@@ -267,7 +267,9 @@ async function prepareConfiguredDemoSessions() {
   }
   const result = await runAttachedCommand(
     'bash',
-    [browserSessionCheckpointHarnessPath, 'prepare', 'browser-sessions', checkpointId],
+    // A companion actor uses the same fixture snapshot without replacing the
+    // ongoing participant windows (for example app-admin moderation).
+    [browserSessionCheckpointHarnessPath, 'prepare', 'browser-sessions', checkpoint.fixtureCheckpointId || checkpointId],
     {
       ...process.env,
       MANUAL_QA_BROWSER_USER_IDS: userIds.join(',')
@@ -882,7 +884,7 @@ async function waitForConfiguredSession(port, scope, userId, sessionId, destinat
       value = await evaluateInOnlyPage(port, `(async () => {
         const raw = localStorage.getItem(${JSON.stringify(sessionKey)});
         const session = raw ? JSON.parse(raw) : null;
-        let authentication = { status: 0, userId: '' };
+        let authentication = { status: 0, userId: '', belongsToAccount: false };
         let realtime = { status: 0, userId: '', hasCounters: false };
         try {
           const response = await fetch(
@@ -899,8 +901,26 @@ async function waitForConfiguredSession(port, scope, userId, sessionId, destinat
           const body = await response.json().catch(() => null);
           authentication = {
             status: response.status,
-            userId: typeof body?.id === 'string' ? body.id : ''
+            userId: typeof body?.id === 'string' ? body.id : '',
+            belongsToAccount: body?.id === ${JSON.stringify(userId)}
           };
+          // /auth/me resolves the retained workspace profile. Verify its account
+          // membership through the account-scoped workspace list, without
+          // changing the user's saved selection during readiness checks.
+          if (response.ok && authentication.userId && !authentication.belongsToAccount) {
+            const workspaceResponse = await fetch('/api/groups/workspaces?userId=' + encodeURIComponent(${JSON.stringify(userId)}), {
+              cache: 'no-store',
+              headers: {
+                'X-App-Session-Id': ${JSON.stringify(sessionId)},
+                'X-App-Session-Kind': 'demo',
+                'X-Demo-User-Id': ${JSON.stringify(userId)}
+              }
+            });
+            const workspaces = await workspaceResponse.json().catch(() => null);
+            authentication.belongsToAccount = workspaceResponse.ok && Array.isArray(workspaces)
+              && workspaces.some(workspace => workspace.profileId === authentication.userId
+                && workspace.membershipStatus === 'accepted');
+          }
           const realtimeResponse = await fetch('/api/auth/me/realtime/long-poll', {
             method: 'POST',
             cache: 'no-store',
@@ -926,6 +946,7 @@ async function waitForConfiguredSession(port, scope, userId, sessionId, destinat
           sessionId: session?.kind === 'demo' ? session.sessionId : '',
           authStatus: authentication.status,
           authenticatedUserId: authentication.userId,
+          authenticatedAccountMatches: authentication.belongsToAccount,
           realtimeStatus: realtime.status,
           realtimeUserId: realtime.userId,
           realtimeHasCounters: realtime.hasCounters,
@@ -943,9 +964,9 @@ async function waitForConfiguredSession(port, scope, userId, sessionId, destinat
     return value?.userId === userId
       && value?.sessionId === sessionId
       && value?.authStatus === 200
-      && value?.authenticatedUserId === userId
+      && value?.authenticatedAccountMatches === true
       && value?.realtimeStatus === 200
-      && value?.realtimeUserId === userId
+      && value?.realtimeUserId === value?.authenticatedUserId
       && value?.realtimeHasCounters === true
       && value?.pathname === expectedPath;
   }, 30000, `MyScoutee session ${userId} on DevTools port ${port}`);
