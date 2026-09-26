@@ -37,6 +37,9 @@ public interface ActivityEventsRepository extends MongoRepository<ActivityEvent,
     @Query("{ 'ownerUserId': ?0, 'generated': { $ne: true }, 'sourceId': { $exists: true, $ne: '' } }")
     List<ActivityEvent> findDirectOwnerEvents(String userId);
 
+    @Query("{ 'ownerUserId': { $in: ?0 }, 'generated': { $ne: true }, 'sourceId': { $exists: true, $ne: '' } }")
+    List<ActivityEvent> findDirectOwnerEventsForUsers(Collection<String> userIds);
+
     @Query("{ 'acceptedMemberUserIds': ?0, 'generated': { $ne: true }, 'sourceId': { $exists: true, $ne: '' } }")
     List<ActivityEvent> findAcceptedMembershipEvents(String userId);
 

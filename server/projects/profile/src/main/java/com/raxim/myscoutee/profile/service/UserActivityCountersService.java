@@ -134,7 +134,10 @@ public class UserActivityCountersService {
     }
 
     public void refreshEventCountersForUsers(Collection<String> userIds) {
-        for (String userId : normalizeIds(userIds)) {
+        var affected = new LinkedHashSet<>(normalizeIds(userIds));
+        usersRepository.findByUserIdIn(affected).stream().map(Users::getAccountUserId)
+                .filter(StringUtils::hasText).forEach(affected::add);
+        for (String userId : affected) {
             usersRepository.findByUserId(userId).ifPresent(user -> {
                 Users.UserActivitiesRecord current = user.getActivities();
                 Users.UserActivitiesRecord next = withEventCounters(
@@ -557,7 +560,16 @@ public class UserActivityCountersService {
     }
 
     private int resolveTicketCount(String userId) {
-        long ticketCount = eventParticipationTicketService.queryTicketRecordsForUser(userId).stream()
+        var profiles = usersRepository.findByAccountUserId(userId);
+        List<ActivityEvent> tickets;
+        if (profiles.isEmpty()) tickets = eventParticipationTicketService.queryTicketRecordsForUser(userId);
+        else {
+            var ids = new LinkedHashSet<String>(); ids.add(userId);
+            profiles.forEach(profile -> ids.add(profile.getUserId()));
+            tickets = eventParticipationTicketService.queryTicketSnapshotRecordsForUsers(ids).stream()
+                    .map(EventParticipationTicketService.TicketSnapshotRecord::event).toList();
+        }
+        long ticketCount = tickets.stream()
                 .filter(Objects::nonNull)
                 .map(ActivityEvent::getSourceId)
                 .map(this::normalizeId)

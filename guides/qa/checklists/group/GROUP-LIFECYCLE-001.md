@@ -284,3 +284,33 @@ Keep these micros in this existing NOT RUN case; no new case or manual PASS.
 8. Desktop: titles are allowed, the added mobile X is absent. Rate-score popup
    retains its scroll-dismiss behavior; dock/fixed/explicit anchored special
    controls retain their existing close lifecycle.
+
+## Profile and account scope regression — NOT RUN
+
+Run these microchecks within this existing case in local and HTTP mode; they
+are pending manual verification, not extensions of an earlier PASS.
+
+- In **My Tools / Eszközeim**, create an asset while group A is selected. Verify
+  the stored owner is the Base account. Open the same inventory in Base and group B;
+  the asset remains present and the open popup retains its account owner. Create,
+  edit or delete an asset and verify the tool badges update immediately through
+  the shared store in the active group, with no full reload. An older in-flight
+  poll must not restore the previous badge count; event counters remain separate.
+- Switch Base → group A → group B. Asset Explore and owned tools retain the
+  account inventory; Event Explore shows only the selected profile's workspace.
+  Include a public asset booked for an event in a group the viewer has not joined:
+  the asset remains discoverable without granting access to that group's event.
+  Private/friends-only asset visibility still applies; own assets stay out of Explore.
+- Profile, affiliate settings/API keys and event payment history follow the selected
+  profile. Community, Impressions and Activities and their nested surfaces are
+  group-scoped. Tools and their nested surfaces remain account-wide. Event-linked
+  asset bookings/tickets identify their group. Asset-borrow payments belong to Base.
+- Notifications stay account-wide, identify their group and retain the existing
+  All/Base/group filter. Check write-side counters and live updates after a group
+  switch, including account contact requests and tickets from multiple groups.
+- Issue a Base API key and a group-A API key, then select group B interactively.
+  The Base key creates Base assets; the group key creates group-A events.
+  Both JSON and multipart asset creation with the group key return 403 with no
+  created asset, external-ID mapping or uploaded image. Repeat after returning to
+  Base: the group key still cannot create assets. Revoking membership blocks the
+  group key. No group header or per-request group selection is involved.

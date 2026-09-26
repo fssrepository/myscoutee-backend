@@ -79,6 +79,30 @@ import com.raxim.myscoutee.profile.service.notifications.NotificationOutboxServi
 
 class AssetsServiceTest {
     @Test
+    void assetExploreUsesAccountAcrossGroupsAndDoesNotFilterByEventWorkspace() {
+        var assets = mock(AssetsRepository.class);
+        var users = mock(UsersRepository.class);
+        var mongo = mock(MongoTemplate.class);
+        var groupViewer = user("group-viewer", "Viewer", "V");
+        groupViewer.setAccountUserId("viewer");
+        groupViewer.setWorkspaceGroupId("joined-group");
+        when(users.findByUserId("group-viewer")).thenReturn(Optional.of(groupViewer));
+        var visible = assetWithEventRequest();
+        visible.setWorkspaceGroupId("another-group");
+        when(mongo.find(any(Query.class), eq(Asset.class))).thenReturn(List.of(visible));
+        var service = assetReadService(assets, users, mock(FriendshipFacts.class), mongo, mock(AccessControlService.class));
+        assertThat(service.queryVisibleAssets("viewer", AssetCatalog.TYPE_SUPPLIES, null))
+                .extracting(AssetDto::id).containsExactly("asset-1");
+        assertThat(service.queryVisibleAssets("group-viewer", AssetCatalog.TYPE_SUPPLIES, null))
+                .extracting(AssetDto::id).containsExactly("asset-1");
+        var queries = ArgumentCaptor.forClass(Query.class);
+        verify(mongo, times(2)).find(queries.capture(), eq(Asset.class));
+        assertThat(queries.getAllValues().get(0).getQueryObject())
+                .isEqualTo(queries.getAllValues().get(1).getQueryObject());
+        assertThat(queries.getValue().getQueryObject().toJson()).doesNotContain("workspaceGroupId");
+    }
+
+    @Test
     void ownerCanSeeContentReviewBadgeWhileAccountSuppressionStaysHidden() {
         AssetsRepository assetsRepository = mock(AssetsRepository.class);
         UsersRepository usersRepository = mock(UsersRepository.class);

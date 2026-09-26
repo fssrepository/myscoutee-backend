@@ -241,6 +241,33 @@ class ActivitiesEventsServiceTest {
     }
 
     @Test
+    void eventExploreRemainsRestrictedToAuthenticatedProfileWorkspace() {
+        var viewer = new Users();
+        viewer.setId("viewer");
+        when(homeUserProfileService.resolveCurrentUser("viewer")).thenReturn(viewer);
+        var baseEvent = event("base", "base-host", 0d);
+        var groupEvent = event("group", "group-host", 0d);
+        groupEvent.setWorkspaceGroupId("group-a");
+        var otherGroupEvent = event("other", "other-host", 0d);
+        otherGroupEvent.setWorkspaceGroupId("group-b");
+        when(mongoTemplate.find(any(Query.class), eq(ActivityEvent.class)))
+                .thenReturn(List.of(baseEvent, groupEvent, otherGroupEvent));
+        var query = new EventsExploreQueryDto("viewer", "upcoming", "day", false, false, null, 10, null, List.of(), null);
+        try {
+            for (String group : List.of("", "group-a", "group-b")) {
+                viewer.setWorkspaceGroupId(group.isEmpty() ? null : group);
+                var principal = new com.raxim.myscoutee.common.config.firebase.dto.FirebasePrincipal("viewer", null, "U", viewer);
+                org.springframework.security.core.context.SecurityContextHolder.getContext().setAuthentication(
+                        new org.springframework.security.authentication.UsernamePasswordAuthenticationToken(principal, null, principal.getAuthorities()));
+                assertThat(service.queryEventExplorePage(query).records()).extracting(item -> item.id())
+                        .containsExactly(group.isEmpty() ? "base" : group.equals("group-a") ? "group" : "other");
+            }
+        } finally {
+            org.springframework.security.core.context.SecurityContextHolder.clearContext();
+        }
+    }
+
+    @Test
     void mostRelevantExploreUsesKnownViewerHostEdgeBeforeColdStartAffinityGap() {
         Users viewer = new Users();
         viewer.setId("viewer");

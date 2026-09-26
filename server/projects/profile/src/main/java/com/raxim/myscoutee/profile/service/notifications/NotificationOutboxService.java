@@ -64,6 +64,8 @@ public class NotificationOutboxService {
     private MongoTemplate mongoTemplate;
     private ConfigProperties configProperties;
     private UsersRepository usersRepository;
+    @org.springframework.beans.factory.annotation.Autowired
+    private com.raxim.myscoutee.profile.repository.CommunityGroupsRepository communityGroups;
     private ChatWebSocketSessionRegistry chatWebSocketSessionRegistry;
 
     @Autowired
@@ -487,6 +489,8 @@ public class NotificationOutboxService {
         if (workspaces.size() == 1) {
             String groupId = workspaces.iterator().next();
             payload.put("workspaceGroupId", groupId);
+            if (communityGroups != null) communityGroups.findById(groupId)
+                    .ifPresent(group -> payload.put("workspaceGroupName", group.name()));
             String url = payload.get("url");
             if (StringUtils.hasText(url)) payload.put("url", org.springframework.web.util.UriComponentsBuilder.fromUriString(url)
                     .replaceQueryParam("workspaceGroupId", groupId).build().toUriString());

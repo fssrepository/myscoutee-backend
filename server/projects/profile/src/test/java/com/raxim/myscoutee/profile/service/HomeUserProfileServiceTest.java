@@ -993,6 +993,32 @@ class HomeUserProfileServiceTest {
     }
 
     @Test
+    void groupMenuUsesBaseAssetCountersWithoutCopyingBaseEventCounters() {
+        Users account = user("account", 0d);
+        account.setActivities(storedActivityCounters());
+        account.setContactRequestsPending(2);
+        when(usersRepository.findByUserId("account")).thenReturn(Optional.of(account));
+        for (String id : List.of("group-a-profile", "group-b-profile")) {
+            Users group = user(id, 0d);
+            group.setAccountUserId("account");
+            group.setWorkspaceGroupId(id);
+            group.setActivities(null);
+            when(usersRepository.findByUserId(id)).thenReturn(Optional.of(group));
+            var counters = service.queryMenuCounters(id);
+            assertThat(counters.cars()).isEqualTo(8);
+            assertThat(counters.accommodation()).isEqualTo(9);
+            assertThat(counters.supplies()).isEqualTo(10);
+            assertThat(counters.tickets()).isEqualTo(11);
+            assertThat(counters.contacts()).isEqualTo(12);
+            assertThat(counters.contactRequestsPending()).isEqualTo(2);
+            assertThat(counters.asset().suppliesPending()).isEqualTo(20);
+            assertThat(counters.events()).isZero();
+        }
+        assertThat(service.queryMenuCounters("account").events()).isEqualTo(6);
+        verifyNoInteractions(assetsRepository, activityEventsRepository, eventParticipationTicketService);
+    }
+
+    @Test
     void queryUserByIdReturnsStoredMenuCounterOverridesWithNestedGroups() {
         Users active = user("active", 0d);
         active.setActivities(storedActivityCounters());

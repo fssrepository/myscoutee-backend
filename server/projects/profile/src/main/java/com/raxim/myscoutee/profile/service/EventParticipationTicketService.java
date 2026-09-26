@@ -53,8 +53,18 @@ public class EventParticipationTicketService {
         if (!StringUtils.hasText(normalizedUserId)) {
             return List.of();
         }
+        return ticketSnapshots(eventTicketService.findActiveForHolder(normalizedUserId),
+                activityEventsRepository.findDirectOwnerEvents(normalizedUserId));
+    }
+
+    public List<TicketSnapshotRecord> queryTicketSnapshotRecordsForUsers(java.util.Collection<String> userIds) {
+        return ticketSnapshots(eventTicketService.findActiveForHolders(userIds),
+                activityEventsRepository.findDirectOwnerEventsForUsers(userIds));
+    }
+
+    private List<TicketSnapshotRecord> ticketSnapshots(List<EventTicket> credentials, List<ActivityEvent> records) {
         Map<String, EventTicket> activeCredentialByEventId = new LinkedHashMap<>();
-        for (EventTicket credential : eventTicketService.findActiveForHolder(normalizedUserId)) {
+        for (EventTicket credential : credentials) {
             String eventId = normalizeId(credential == null ? null : credential.getEventId());
             if (StringUtils.hasText(eventId)) {
                 activeCredentialByEventId.putIfAbsent(eventId, credential);
@@ -64,13 +74,13 @@ public class EventParticipationTicketService {
             return List.of();
         }
         Map<String, ActivityEvent> preferredBySourceId = new LinkedHashMap<>();
-        for (ActivityEvent record : activityEventsRepository.findDirectOwnerEvents(normalizedUserId)) {
+        for (ActivityEvent record : records) {
             if (record == null
                     || !record.hasStoredStatus(ActivityEvent.STATUS_ACTIVE)
                     || StringUtils.hasText(record.getCancelledAtIso())
                     || !Boolean.TRUE.equals(record.getTicketing())
                     || Boolean.TRUE.equals(record.getIsTrashed())
-                    || isEventAdmin(record, normalizedUserId)) {
+                    || isEventAdmin(record, record.getOwnerUserId())) {
                 continue;
             }
             String sourceId = normalizeId(record.getSourceId());

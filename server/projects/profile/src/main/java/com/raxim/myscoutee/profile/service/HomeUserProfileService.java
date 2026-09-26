@@ -2140,26 +2140,28 @@ public class HomeUserProfileService {
 
     private UserMenuCountersDto buildMenuCounters(Users user) {
         Users.UserActivitiesRecord activities = user.getActivities();
+        Users account = StringUtils.hasText(user.getAccountUserId()) ? findUser(user.getAccountUserId()) : user;
+        Users.UserActivitiesRecord accountActivities = account == null ? null : account.getActivities();
         return new UserMenuCountersDto(
                 activities == null ? 0 : normalizeCount(activities.game()),
                 activities == null ? 0 : normalizeCount(activities.chats()),
                 activities == null ? 0 : normalizeCount(activities.invitations()),
                 activities == null ? 0 : normalizeCount(activities.events()),
                 activities == null ? 0 : normalizeCount(activities.hosting()),
-                activities == null ? 0 : normalizeCount(activities.cars()),
-                activities == null ? 0 : normalizeCount(activities.accommodation()),
-                activities == null ? 0 : normalizeCount(activities.supplies()),
-                activities == null ? 0 : normalizeCount(activities.tickets()),
-                activities == null ? 0 : normalizeCount(activities.contacts()),
+                accountActivities == null ? 0 : normalizeCount(accountActivities.cars()),
+                accountActivities == null ? 0 : normalizeCount(accountActivities.accommodation()),
+                accountActivities == null ? 0 : normalizeCount(accountActivities.supplies()),
+                accountActivities == null ? 0 : normalizeCount(accountActivities.tickets()),
+                accountActivities == null ? 0 : normalizeCount(accountActivities.contacts()),
                 activities == null ? 0 : normalizeCount(activities.feedback()),
                 toUserChatCountersDto(activities == null ? null : activities.chat()),
                 toUserEventCountersDto(activities == null ? null : activities.event()),
-                toUserAssetCountersDto(activities == null ? null : activities.asset()),
+                toUserAssetCountersDto(accountActivities == null ? null : accountActivities.asset()),
                 toUserEventFeedbackCountersDto(activities == null ? null : activities.eventFeedback()),
                 activities == null ? 0 : normalizeCount(activities.adminJobs()),
                 activities == null ? 0 : normalizeCount(activities.adminMetrics()),
                 normalizeCount(user.getPaymentRefundsPending()),
-                normalizeCount(user.getContactRequestsPending()),
+                normalizeCount(account == null ? null : account.getContactRequestsPending()),
                 activities == null ? 0 : normalizeCount(activities.notifications()));
     }
 

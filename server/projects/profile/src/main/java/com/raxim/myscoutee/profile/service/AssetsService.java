@@ -479,7 +479,12 @@ public class AssetsService {
         int normalizedPageSize = Math.max(1, pageSize == null ? 20 : pageSize.intValue());
         boolean upcoming = !"past".equalsIgnoreCase(safeText(order));
 
-        var snapshots = eventParticipationTicketService.queryTicketSnapshotRecordsForUser(normalizedUserId).stream()
+        var profileIds = new LinkedHashSet<String>();
+        profileIds.add(normalizedUserId);
+        usersRepository.findByAccountUserId(normalizedUserId).forEach(profile -> profileIds.add(profile.getUserId()));
+        var snapshots = (profileIds.size() == 1
+                ? eventParticipationTicketService.queryTicketSnapshotRecordsForUser(normalizedUserId)
+                : eventParticipationTicketService.queryTicketSnapshotRecordsForUsers(profileIds)).stream()
                 .filter(Objects::nonNull)
                 .toList();
         Map<String, AssetOwnerSummary> creatorsByUserId = resolveUserSummaries(snapshots.stream()
@@ -487,8 +492,14 @@ public class AssetsService {
                 .filter(StringUtils::hasText)
                 .distinct()
                 .toList());
+        var workspaceNames = new LinkedHashMap<String, String>();
+        var groupIds = snapshots.stream().map(snapshot -> snapshot.event().getWorkspaceGroupId())
+                .filter(Objects::nonNull).distinct().toList();
+        if (!groupIds.isEmpty()) mongoTemplate.find(Query.query(Criteria.where("_id").in(groupIds)),
+                com.raxim.myscoutee.profile.data.document.CommunityGroup.class)
+                .forEach(group -> workspaceNames.put(group.id(), group.name()));
         List<AssetTicketDto> ordered = snapshots.stream()
-                .map(snapshot -> toAssetTicketDto(snapshot, creatorsByUserId))
+                .map(snapshot -> toAssetTicketDto(snapshot, creatorsByUserId, workspaceNames))
                 .filter(Objects::nonNull)
                 .sorted(Comparator.comparing((AssetTicketDto item) -> toSortableDate(item.dateIso())))
                 .toList();
@@ -617,15 +628,15 @@ public class AssetsService {
         if (request == null || request.asset() == null) {
             return null;
         }
-        Asset saved = saveOwnedAsset(normalizeId(request.userId()), request.asset());
-        return saved == null ? null : toAssetDto(saved, resolveOwnersByUserId(List.of(saved)), normalizeId(request.userId()));
+        Asset saved = saveOwnedAsset(accountUserId(request.userId()), request.asset());
+        return saved == null ? null : toAssetDto(saved, resolveOwnersByUserId(List.of(saved)), accountUserId(request.userId()));
     }
 
     public AssetDto saveRequests(AssetRequestsSaveRequestDto request) {
         if (request == null) {
             return null;
         }
-        String ownerUserId = normalizeId(request.userId());
+        String ownerUserId = accountUserId(request.userId());
         String assetId = normalizeId(request.assetId());
         if (!StringUtils.hasText(ownerUserId) || !StringUtils.hasText(assetId)) {
             return null;
@@ -1076,7 +1087,7 @@ public class AssetsService {
         if (request == null) {
             return;
         }
-        String normalizedUserId = normalizeId(request.userId());
+        String normalizedUserId = accountUserId(request.userId());
         if (!StringUtils.hasText(normalizedUserId)) {
             return;
         }
@@ -1131,7 +1142,7 @@ public class AssetsService {
         if (request == null) {
             return;
         }
-        String normalizedUserId = normalizeId(request.userId());
+        String normalizedUserId = accountUserId(request.userId());
         String normalizedAssetId = normalizeId(request.assetId());
         if (!StringUtils.hasText(normalizedUserId) || !StringUtils.hasText(normalizedAssetId)) {
             return;
@@ -1154,7 +1165,7 @@ public class AssetsService {
         if (request == null) {
             return null;
         }
-        String normalizedUserId = normalizeId(request.userId());
+        String normalizedUserId = accountUserId(request.userId());
         String normalizedAssetId = normalizeId(request.assetId());
         if (!StringUtils.hasText(normalizedUserId) || !StringUtils.hasText(normalizedAssetId)) {
             return null;
@@ -1213,7 +1224,7 @@ public class AssetsService {
         if (request == null) {
             return null;
         }
-        String normalizedUserId = normalizeId(request.userId());
+        String normalizedUserId = accountUserId(request.userId());
         String normalizedAssetId = normalizeId(request.assetId());
         if (!StringUtils.hasText(normalizedUserId) || !StringUtils.hasText(normalizedAssetId)) {
             return null;
@@ -1246,7 +1257,7 @@ public class AssetsService {
         if (request == null) {
             return null;
         }
-        String normalizedUserId = normalizeId(request.userId());
+        String normalizedUserId = accountUserId(request.userId());
         String normalizedAssetId = normalizeId(request.assetId());
         if (!StringUtils.hasText(normalizedUserId) || !StringUtils.hasText(normalizedAssetId)) {
             return null;
@@ -1289,7 +1300,7 @@ public class AssetsService {
         if (request == null) {
             return null;
         }
-        String normalizedUserId = normalizeId(request.userId());
+        String normalizedUserId = accountUserId(request.userId());
         String normalizedAssetId = normalizeId(request.assetId());
         String normalizedTargetUserId = normalizeId(request.targetUserId());
         if (!StringUtils.hasText(normalizedUserId)
@@ -1364,7 +1375,7 @@ public class AssetsService {
 
     public AssetDto revokeManager(AssetMakeManagerRequestDto request) {
         if (request == null) return null;
-        String actorId = normalizeId(request.userId());
+        String actorId = accountUserId(request.userId());
         String assetId = normalizeId(request.assetId());
         String targetId = normalizeId(request.targetUserId());
         if (!StringUtils.hasText(actorId)
@@ -2531,7 +2542,8 @@ public class AssetsService {
 
     private AssetTicketDto toAssetTicketDto(
             EventParticipationTicketService.TicketSnapshotRecord snapshot,
-            Map<String, AssetOwnerSummary> creatorsByUserId) {
+            Map<String, AssetOwnerSummary> creatorsByUserId,
+            Map<String, String> workspaceNames) {
         ActivityEvent event = snapshot == null ? null : snapshot.event();
         EventTicket credential = snapshot == null ? null : snapshot.credential();
         if (event == null) {
@@ -2571,7 +2583,8 @@ public class AssetsService {
                 safeText(event.getCreatorInitials()),
                 creatorName,
                 creatorAvatarUrl,
-                assetTicketRevision(event, credential, creatorName, creatorAvatarUrl));
+                assetTicketRevision(event, credential, creatorName, creatorAvatarUrl) + ":" + workspaceNames.getOrDefault(event.getWorkspaceGroupId(), ""),
+                event.getWorkspaceGroupId(), workspaceNames.get(event.getWorkspaceGroupId()));
     }
 
     private String assetTicketIdentity(AssetTicketDto ticket) {
@@ -2766,7 +2779,6 @@ public class AssetsService {
     private Document visibleExploreMatchDocument(String userId, String type, String category) {
         List<Document> and = new ArrayList<>();
         and.add(new Document("type", type));
-        and.add(new Document("workspaceGroupId", CommunityGroupProfilesService.currentGroupId()));
         and.add(new Document("ownerUserId", new Document("$ne", userId)));
         and.add(new Document("status", new Document("$in", List.of(STATUS_ACTIVE, "active"))));
         if (StringUtils.hasText(category)) {
@@ -3586,7 +3598,7 @@ public class AssetsService {
     }
 
     private boolean shouldIncludeExploreAsset(Asset asset, String activeUserId) {
-        if (asset == null || !CommunityGroupProfilesService.allows(asset.getWorkspaceGroupId())) {
+        if (asset == null) {
             return false;
         }
         String status = safeText(asset.getStatus());
@@ -5246,8 +5258,15 @@ public class AssetsService {
         return StringUtils.hasText(normalizedValue) ? normalizedValue : null;
     }
 
+    private String accountUserId(String profileId) {
+        String id = normalizeId(profileId);
+        if (id == null) return null;
+        return usersRepository.findByUserId(id).map(user ->
+                StringUtils.hasText(user.getAccountUserId()) ? user.getAccountUserId() : id).orElse(id);
+    }
+
     private String currentActorUserId() {
-        return normalizeId(accessControlService.resolveActorUserId(SecurityContextHolder.getContext().getAuthentication()));
+        return accountUserId(accessControlService.resolveActorUserId(SecurityContextHolder.getContext().getAuthentication()));
     }
 
     private String ticketActorUserId(String requestedUserId) {
@@ -5262,7 +5281,7 @@ public class AssetsService {
 
     private String effectiveActorUserId(String userId) {
         String normalizedUserId = normalizeId(userId);
-        return StringUtils.hasText(normalizedUserId) ? normalizedUserId : currentActorUserId();
+        return StringUtils.hasText(normalizedUserId) ? accountUserId(normalizedUserId) : currentActorUserId();
     }
 
     private String effectiveReadActorUserId(String requestedUserId) {

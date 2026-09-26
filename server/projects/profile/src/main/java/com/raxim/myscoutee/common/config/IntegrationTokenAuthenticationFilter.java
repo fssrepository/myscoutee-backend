@@ -12,6 +12,10 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import com.raxim.myscoutee.profile.service.IntegrationTokenService;
+import com.raxim.myscoutee.profile.service.CommunityGroupProfilesService;
+import com.raxim.myscoutee.profile.repository.UsersRepository;
+import com.raxim.myscoutee.common.config.firebase.dto.FirebasePrincipal;
+import org.springframework.web.server.ResponseStatusException;
 import com.raxim.myscoutee.profile.service.IntegrationTokenService.AuthenticatedIntegrationClient;
 
 import jakarta.servlet.FilterChain;
@@ -26,8 +30,14 @@ public class IntegrationTokenAuthenticationFilter extends OncePerRequestFilter {
 
     private final IntegrationTokenService tokenService;
 
-    public IntegrationTokenAuthenticationFilter(IntegrationTokenService tokenService) {
+    private final UsersRepository users;
+    private final CommunityGroupProfilesService profiles;
+
+    public IntegrationTokenAuthenticationFilter(IntegrationTokenService tokenService,
+            UsersRepository users, CommunityGroupProfilesService profiles) {
         this.tokenService = tokenService;
+        this.users = users;
+        this.profiles = profiles;
     }
 
     @Override
@@ -56,8 +66,35 @@ public class IntegrationTokenAuthenticationFilter extends OncePerRequestFilter {
             return;
         }
 
+        // A key belongs to the profile that issued it; changing the interactive
+        // session's active group must never retarget a running integration.
+        SecurityContextHolder.clearContext();
+        var owner = users.findByUserId(client.ownerUserId()).orElse(null);
+        if (owner == null) {
+            response.sendError(HttpServletResponse.SC_UNAUTHORIZED);
+            return;
+        }
+        try {
+            if (StringUtils.hasText(owner.getWorkspaceGroupId())) {
+                owner = profiles.select(owner.getAccountUserId(), owner.getWorkspaceGroupId());
+                if (!client.ownerUserId().equals(owner.getUserId())) {
+                    response.sendError(HttpServletResponse.SC_FORBIDDEN);
+                    return;
+                }
+            }
+        } catch (ResponseStatusException error) {
+            response.sendError(error.getStatusCode().value());
+            return;
+        }
+        if (request.getRequestURI().matches("/(?:api/)?integrations/v1/assets(?:/.*)?")
+                && StringUtils.hasText(owner.getWorkspaceGroupId())) {
+            response.sendError(HttpServletResponse.SC_FORBIDDEN,
+                    "Asset creation requires an integration key issued by the base profile.");
+            return;
+        }
+        var principal = new FirebasePrincipal(owner.getUserId(), null, "INTEGRATION", owner);
         UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
-                client.ownerUserId(),
+                principal,
                 null,
                 List.of(new SimpleGrantedAuthority("INTEGRATION")));
         authentication.setDetails(client);
