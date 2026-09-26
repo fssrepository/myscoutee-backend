@@ -404,3 +404,37 @@ not a complete block or local/HTTP campaign PASS.
 - Creation snapshots remain prepared while blocks 2–3 run. The app-owned upload
   URL is recorded in the structured evidence; physical media cleanup is not yet
   proven. The overall case remains NOT RUN/unfinished.
+
+## Blocks 2–4 continuation: member access, card attention, images and rules
+
+- Removed the duplicate Members card-menu entry; the media member badge remains
+  the roster entry. Hidden rosters use the existing Event Explore accessory/disabled
+  card presentation. Non-admins see the crossed-out eye with no red member badge;
+  accepted administrators retain management and pending/member-change attention.
+- Card three-dot counters now use the shared appMenuAlertCounter over their actual
+  menu entries (currently moderation). Full group/profile attention remains in
+  the workspace/category/bucket aggregates; it is not copied onto unrelated card
+  actions. Accessible member badges use membersActivity (already includes pending
+  decisions) without adding pending twice. Nine focused Vitest cases passed.
+- Browser proof: hidden outsider badge is inert with no red counter; organizer
+  Design Circle badge remains clickable with pending 1. Invitation Game Night
+  three-dot has zero while invitation bucket/category retain 1 and Accept remains.
+- Group info cards use the existing media-fit type, now supported by shared InfoCard,
+  with contain. A 192x192 uploaded icon renders fully within the 452x132 compact
+  media area, preserving its top edge and proportions. Existing cards keep defaults.
+- Required-field picker: two equal columns verified at 500/390/320px, no control
+  overflow. Only this picker opts into the shared FormFlow mobile column setting.
+- Required Profession/Interest persist. Textual mandatory rule and recommendation
+  were entered through the shared policy editor. Cancelling outer group edit left
+  stored policies disabled/empty; repeating and saving persisted both texts and
+  required=true/false. Read-only reopen title is Policy and all fields disabled.
+- Versioned prepare-hidden-invitation snapshots the existing invitation before
+  setting hideMembers for this negative-access branch. Hidden Game Night invitation:
+  Cancel left pending/invite, acceptedMembers=2, pendingMembers=1, version=0.
+  Confirm Accept moved it in place from Invitations to Active groups; backend read
+  shows accepted Member, requestKind=null, acceptedMembers=3, pendingMembers=0,
+  activity=0, version=1. Hidden badge stays inert with member total 3 and no red count.
+  No membership or visibility bypass was added to production code.
+- Evidence: GROUP-LIFECYCLE-001-members-media-policy-20260926.json. Case remains
+  unfinished; complete local-adapter browser coverage and remaining numbered
+  blocks are pending. No earlier closed PASS case was reopened.

@@ -10,7 +10,8 @@ public final class CommunityGroupMapper {
     public static String membershipBucket(String role, String status, String requestKind) {
         if ("accepted".equals(status) && "Admin".equals(role)) return "hosting";
         if ("pending".equals(status) && "invite".equals(requestKind)) return "invitations";
-        return "accepted".equals(status) || "pending".equals(status) ? "participation" : "explore";
+        if ("pending".equals(status)) return "pending";
+        return "accepted".equals(status) ? "participation" : "explore";
     }
     public static Group toDto(CommunityGroup group, Users owner, Users viewer,
             List<ActivityMember> members, long activity) {

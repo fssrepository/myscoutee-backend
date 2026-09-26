@@ -23904,6 +23904,24 @@
     "value": "Would you like to remove “{name}” from this event?"
   },
   {
+    "_id": "i18n-message-en-groups-bucket-pending",
+    "key": "groups.bucket.pending",
+    "lang": "en",
+    "value": "Pending groups"
+  },
+  {
+    "_id": "i18n-message-en-groups-explore",
+    "key": "groups.explore",
+    "lang": "en",
+    "value": "Explore groups"
+  },
+  {
+    "_id": "i18n-message-en-groups-actions",
+    "key": "groups.actions",
+    "lang": "en",
+    "value": "Open group actions"
+  },
+  {
     "_id": "i18n-message-hu-navigator-community",
     "key": "navigator.community",
     "lang": "hu",
@@ -47806,5 +47824,23 @@
     "key": "confirmation.remove.named.asset",
     "lang": "hu",
     "value": "Eltávolítod a(z) „{name}” eszközt erről az eseményről?"
+  },
+  {
+    "_id": "i18n-message-hu-groups-bucket-pending",
+    "key": "groups.bucket.pending",
+    "lang": "hu",
+    "value": "Függő csoportok"
+  },
+  {
+    "_id": "i18n-message-hu-groups-explore",
+    "key": "groups.explore",
+    "lang": "hu",
+    "value": "Csoportok felfedezése"
+  },
+  {
+    "_id": "i18n-message-hu-groups-actions",
+    "key": "groups.actions",
+    "lang": "hu",
+    "value": "Csoportműveletek"
   }
 ]

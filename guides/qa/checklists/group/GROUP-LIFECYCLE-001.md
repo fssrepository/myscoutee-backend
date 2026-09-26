@@ -21,10 +21,12 @@ or claim that a fixture or browser session has already been prepared.
 
 ## 1. Group lists and category colors
 
-1. Open Groups from the Community menu. Confirm Hosting, Active groups, Invitations and
-   Explore are distinct: owned/administered groups belong in Hosting; accepted
-   non-admin memberships and pending join requests belong in Active groups;
-   pending invitations belong in Invitations. Explore
+1. Open Groups from the Community menu. Confirm Hosting, Active groups, Pending groups and
+   Invitations are distinct: owned/administered groups belong in Hosting; accepted
+   non-admin memberships belong in Active groups; pending join requests belong
+   in Pending groups; pending invitations belong in Invitations. The plus menu
+   offers Create group and Explore groups, matching the Event action menu. Explore
+   opens a separate popup with category filtering only there; it
    excludes owned and already-interacted groups. Check category filtering and
    pagination against the same membership state. Reconfirm the original closed
    company/group requirement: invitation-only groups never appear in Explore,
@@ -42,12 +44,17 @@ or claim that a fixture or browser session has already been prepared.
    Resize the list: two cards remain side by side when the available width
    fits them (including a roughly 600px window); narrow phones use one column.
    The last card retains a normal column width and distance headers span the row.
+   Images retain their aspect ratio and remain fully visible in the compact
+   image area, including square images and their top edge.
    The shared header menu offers Distance and Recent immediately before Close.
-   Create group uses the shared circular plus action at the right end of the
-   second row, following the Activity Event toolbar layout.
+   The shared circular plus at the right end of the second row opens the action
+   menu. Hosting/Active/Pending/Invitations use Event green/orange/amber/violet.
+   Explore uses violet in the plus menu. Its popup has no bucket selector: category
+   is left-aligned on row two and Distance/Recent remains before Close. Closing
+   Explore preserves the underlying main list selection and scroll position.
    Explore defaults to exact
    distance ascending, including within each distance interval; Hosting and
-   Active groups/Invitations default to last-change time descending, with date headers.
+   Active groups/Pending groups/Invitations default to last-change time descending, with date headers.
    Switch either sort in each bucket, filter and paginate; sync and immediate
    store updates retain the same order. Recent uses saved change time, not
    creation time; retrying a completed operation does not make it recent again.
@@ -59,7 +66,13 @@ or claim that a fixture or browser session has already been prepared.
    reopen the editor; confirm every saved field.
 4. Toggle **Taglista látható** and compare organizer, accepted-member and
    unrelated-account roster views. The toggle aligns with the description's
-   right edge and its state survives reload.
+   right edge and its state survives reload. Category and toggle share the row
+   when both fit, wrapping only at narrower widths. A hidden member list uses
+   the existing Event Explore disabled badge and crossed-out eye; its member
+   badge has no red counter for non-administrators. The administrator retains
+   access and pending-member counter. The card actions contain no duplicate
+   Members entry; the member badge is the entry point. Own invitation acceptance
+   remains available from the invitation card, including with a hidden roster.
 
 ## 3. Group rules and draft persistence
 
@@ -90,9 +103,9 @@ or claim that a fixture or browser session has already been prepared.
 
 9. Request to join as the unrelated account. Cancel first, then confirm. Both
    the menu and confirmation use the Event Join button's blue palette. The
-   confirmed group moves from Explore to Active groups as pending and survives
+   confirmed group moves from Explore to Pending groups and survives
    reload; no group workspace is selectable before acceptance.
-10. Approve the request as administrator. Confirm accepted membership, one
+10. Approve the request as administrator. Confirm movement from Pending to Active, accepted membership, one
     workspace profile, updated member counts, and a selectable workspace.
     Separately invite the member through the normal members popup, then accept
     or reject as that member and compare the canonical list state. A pending
@@ -100,7 +113,11 @@ or claim that a fixture or browser session has already been prepared.
     is private. The confirmation has a full question and matches the menu color.
     Acceptance moves the card to Active groups and updates card, menu, category,
     workspace and sidebar counters immediately through the shared stores. No
-    group-join payment is introduced.
+    group-join payment is introduced. With the main Pending list behind Explore,
+    a successful join uses the existing shared signal change to insert the returned
+    card into Pending and remove it from Explore without a full list reload.
+    Member counts, corresponding menu/sidebar attention and subsequent approval
+    converge through the same store and polling flow.
 
 ## 5. Workspace selection and profile loading
 
@@ -135,9 +152,14 @@ definition of all group activity.
 
 1. As organizer and ordinary member, cause distinct relevant changes, including
    a join request, an accepted/new member and ordinary group activity. Check the
-   corresponding group menu items, card three-dot, Hosting/Active groups/Invitations dropdown,
+   corresponding group menu items, card three-dot, Hosting/Active groups/Pending groups/Invitations dropdown,
    workspace dropdown and sidebar aggregate. Preserve visibility rules: a member
    sees changes they may access, never the administrator's moderation queue.
+   The card three-dot counter sums only its contained menu counters (currently
+   administrator moderation), not the full group-profile total. Accessible member
+   badges sum pending decisions and unread member changes once. Hidden roster
+   badges have no red counter for non-administrators. The workspace selector owns
+   the full accessible group-profile aggregate, including events and other menus.
    In each menu, a single-digit badge is the same 20px circle as the card's red
    counter, with its number centered in both axes. Check the card's dark member
    total and red pending counter too. Longer counts may widen; they must not
@@ -155,10 +177,10 @@ definition of all group activity.
    Retry must not create another notification or increment for the same change.
    Notifications remain account-wide, identify their group, and obey the existing
    All/Base/group filter. No unrelated group/account receives the notification.
-5. Hosting, Active groups and Invitations: verify their menu items and selected dropdown
-   trigger, category items and selected category trigger. Each sums relevant
+5. Hosting, Active groups, Pending groups and Invitations: verify their menu items
+   and selected dropdown trigger. Categories appear only in the separate Explore popup. Each sums relevant
    operations, including pending interactions. Explore has no red counter on
-   its trigger, item or categories, even while Hosting/Active groups/Invitations have changes.
+   its action or categories, even while Hosting/Active groups/Pending groups/Invitations have changes.
 6. The workspace selector shows the complete attention count of this user's
    profile in each accepted group, including its accessible activity, impressions,
    member changes and administrator-only moderation. Main profile owns account

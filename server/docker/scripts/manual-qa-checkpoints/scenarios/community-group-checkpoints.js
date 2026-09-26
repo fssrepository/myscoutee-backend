@@ -8,7 +8,7 @@
   const command = Q.text(process.env.MANUAL_QA_COMMAND);
   if (!["status", "verify-lists", "prepare-badges", "prepare-join", "restore-badges",
       "capture", "restore", "verify-savepoint", "prepare-list-pagination", "restore-list-pagination",
-      "prepare-invitation", "restore-invitation", "prepare-editor", "restore-editor", "prepare-creation", "restore-creation"].includes(command)
+      "prepare-invitation", "prepare-hidden-invitation", "restore-invitation", "prepare-editor", "restore-editor", "prepare-creation", "restore-creation"].includes(command)
       || Q.text(process.env.MANUAL_QA_CHECKPOINT_ID) !== checkpointId) {
     Q.fail("Only the retained Group list baseline status is supported here.");
   }
@@ -98,7 +98,7 @@
     Q.printObject({checkpointId, creationRestored: true, removedGroupIds: ids});
     return;
   }
-  if (command === "prepare-invitation" || command === "prepare-editor") {
+  if (command === "prepare-invitation" || command === "prepare-hidden-invitation" || command === "prepare-editor") {
     const snapshotKey = command === "prepare-editor" ? "editorSnapshots" : "invitationSnapshots";
     verifyLists();
     if (state[snapshotKey]) Q.fail("Group mutation regression already prepared.");
@@ -112,7 +112,10 @@
       {collection: "notificationOutbox", selector: {entityType: "community", entityId: groupId}}
     ]);
     Q.collection(Q.STATE_COLLECTION).updateOne({_id: state._id}, {$set: {[snapshotKey]: retained}});
-    Q.printObject({checkpointId, groupId, [snapshotKey]: "prepared", productWrites: false});
+    if (command === "prepare-hidden-invitation") {
+      Q.collection("communityGroups").updateOne({_id: groupId}, {$set: {hideMembers: true}});
+    }
+    Q.printObject({checkpointId, groupId, [snapshotKey]: "prepared", hiddenRoster: command === "prepare-hidden-invitation", productWrites: false});
     return;
   }
   if (command === "restore-invitation" || command === "restore-editor") {
@@ -172,7 +175,7 @@
   if (["capture", "restore", "verify-savepoint"].includes(command)) {
     const name = Q.text(process.env.MANUAL_QA_SOURCE_CHECKPOINT_ID);
     // Add later boundaries only with their prepared selectors and checklist oracle.
-    const boundaries = {"lists-ready": 1, "block-1-complete": 2};
+    const boundaries = {"lists-ready": 1, "block-1-complete": 2, "after-editor-checks": 4};
     if (!Object.hasOwn(boundaries, name)) Q.fail("Unknown Group savepoint boundary.");
     if (state.paginationSnapshots || state.invitationSnapshots || state.editorSnapshots || state.creationSnapshots) Q.fail("Restore temporary controls before a savepoint operation.");
     let savepoint = (state.savepoints || []).find(item => item.name === name);

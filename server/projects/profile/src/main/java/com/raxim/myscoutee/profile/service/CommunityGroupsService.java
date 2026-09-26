@@ -86,7 +86,7 @@ public class CommunityGroupsService {
     }
     private record GroupSnapshot(List<Group> items, long total, Map<String, Long> context) {}
     private GroupSnapshot snapshot(Users actor, String bucket, String category, String sort) {
-        if (!Set.of("hosting", "participation", "invitations", "explore").contains(bucket)) throw error(HttpStatus.BAD_REQUEST);
+        if (!Set.of("hosting", "participation", "pending", "invitations", "explore").contains(bucket)) throw error(HttpStatus.BAD_REQUEST);
         String order = sort == null || sort.isBlank() ? (bucket.equals("explore") ? "distance" : "updated") : sort;
         if (!Set.of("distance", "updated").contains(order)) throw error(HttpStatus.BAD_REQUEST);
         var own = memberships.findByOwnerTypeAndUserId(OWNER_TYPE, actor.getUserId()).stream()
@@ -114,6 +114,7 @@ public class CommunityGroupsService {
         return new GroupSnapshot(rows, rows.size(), Map.of(
                 "hosting", workspaceCounters.stream().filter(w -> "Admin".equals(w.role()) && "accepted".equals(w.membershipStatus())).mapToLong(Workspace::activity).sum(),
                 "participation", workspaceCounters.stream().filter(w -> "participation".equals(CommunityGroupMapper.membershipBucket(w.role(), w.membershipStatus(), w.requestKind()))).mapToLong(Workspace::activity).sum(),
+                "pending", workspaceCounters.stream().filter(w -> "pending".equals(CommunityGroupMapper.membershipBucket(w.role(), w.membershipStatus(), w.requestKind()))).mapToLong(Workspace::activity).sum(),
                 "invitations", workspaceCounters.stream().filter(w -> "invitations".equals(CommunityGroupMapper.membershipBucket(w.role(), w.membershipStatus(), w.requestKind()))).mapToLong(Workspace::activity).sum()));
     }
     public Page page(Users actor, String bucket, String category, int pageSize, String cursor) {

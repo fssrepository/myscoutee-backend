@@ -6,6 +6,14 @@ import com.raxim.myscoutee.profile.data.document.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 class CommunityGroupMapperTest {
+    @Test void ownJoinRequestsHaveASeparatePendingBucket() {
+        assertEquals("hosting", CommunityGroupMapper.membershipBucket("Admin", "accepted", null));
+        assertEquals("participation", CommunityGroupMapper.membershipBucket("Member", "accepted", null));
+        assertEquals("pending", CommunityGroupMapper.membershipBucket("Member", "pending", "join"));
+        assertEquals("invitations", CommunityGroupMapper.membershipBucket("Member", "pending", "invite"));
+        assertEquals("explore", CommunityGroupMapper.membershipBucket(null, null, null));
+    }
+
     @Test void pendingRequestsAndUnreadChangesAreOperationsNotGroupOrRosterCounts() {
         var group = groupWithPendingMembers(3);
         var owner = new Users(); owner.setUserId("owner");
