@@ -8,7 +8,7 @@
   const command = Q.text(process.env.MANUAL_QA_COMMAND);
   if (!["status", "verify-lists", "prepare-badges", "prepare-join", "restore-badges",
       "capture", "restore", "verify-savepoint", "prepare-list-pagination", "restore-list-pagination",
-      "prepare-member-invitation", "restore-member-invitation", "prepare-admin-lifecycle", "restore-admin-lifecycle",
+      "prepare-member-invitation", "restore-member-invitation", "prepare-admin-lifecycle", "prepare-admin-moderation", "restore-admin-lifecycle",
       "prepare-invitation", "prepare-hidden-invitation", "restore-invitation", "prepare-editor", "restore-editor", "prepare-creation", "restore-creation"].includes(command)
       || Q.text(process.env.MANUAL_QA_CHECKPOINT_ID) !== checkpointId) {
     Q.fail("Only the retained Group list baseline status is supported here.");
@@ -69,7 +69,14 @@
       {collection: "activityMembers", selector: {ownerType: "community", ownerId: groupId}},
       {collection: "users", selector: {$or: [{userId: {$in: actors}}, {workspaceGroupId: groupId}]}},
       {collection: "userNotifications", selector: {sourceType: "community", sourceId: groupId}},
-      {collection: "notificationOutbox", selector: {entityType: "community", entityId: groupId}}
+      {collection: "notificationOutbox", selector: {entityType: "community", entityId: groupId}},
+      {collection: "contentModerationState", selector: {_id: `group:${groupId}`}},
+      {collection: "contentModerationItems", selector: {workspaceGroupId: groupId}},
+      {collection: "photoFeedPosts", selector: {workspaceGroupId: groupId}},
+      {collection: "chats", selector: {id: /^c-moderation-group-f0260926/}},
+      {collection: "chatMessages", selector: {chatId: /^c-moderation-group-f0260926/}},
+      {collection: "userNotifications", selector: {sourceType: "chat", sourceId: /^c-moderation-group-f0260926/}},
+      {collection: "notificationOutbox", selector: {entityType: "chat", entityId: /^c-moderation-group-f0260926/}}
     ]);
     const source = Q.collection("communityGroups").findOne({_id: "seed-community-seattle-friends"});
     const memberTemplate = Q.collection("activityMembers").findOne({ownerType: "community", ownerId: source._id, userId: actors[0]});
@@ -94,9 +101,42 @@
     Q.printObject({checkpointId, groupId, prepared: true, acceptedMembers: 3, admin: actors[0], rolesTested: false});
     return;
   }
+  if (command === "prepare-admin-moderation") {
+    const groupId = "manual-qa-community-admin";
+    if (!state.adminLifecycleSnapshots || !state.adminLifecycleSnapshots.some(s => s.collection === "contentModerationState")
+        || !Q.collection("communityGroups").countDocuments({_id: groupId})
+        || Q.collection("contentModerationItems").countDocuments({workspaceGroupId: groupId})) {
+      Q.fail("Prepare a fresh Admin lifecycle control with moderation snapshots first.");
+    }
+    const profile = Q.collection("users").findOne({accountUserId: actors[1], workspaceGroupId: groupId});
+    const imageUrl = Q.collection("communityGroups").findOne({_id: groupId}).imageUrl;
+    const now = Q.nowIso();
+    Q.collection("contentModerationState").replaceOne({_id: `group:${groupId}`}, {
+      _id: `group:${groupId}`, revision: 1,
+      settings: {enabled: true, autoApprove: false, delayMinutes: 0, categories: ["asset", "event", "feed"]},
+      counts: {feed: {"under-review": 2}}, pending: []
+    }, {upsert: true});
+    for (const suffix of ["approval", "rejection"]) {
+      const sourceId = `${groupId}-${suffix}`;
+      Q.collection("photoFeedPosts").insertOne({_id: sourceId, creatorUserId: profile.userId,
+        creatorName: profile.name, createdAtIso: now, imageUrls: imageUrl ? [imageUrl] : [],
+        imageDetails: {}, moderationStatus: "under-review", moderationVersion: 1, workspaceGroupId: groupId});
+      Q.collection("contentModerationItems").insertOne({_id: `feed:${sourceId}`, category: "feed", sourceId,
+        ownerUserId: profile.userId, title: `QA moderation ${suffix}`, imageUrl: imageUrl || "", submittedAtIso: now,
+        status: "under-review", version: 1, commandId: `submit:feed:${sourceId}`, reviewedBy: "", reviewedAtIso: "",
+        publiclyVisibleOnce: false, deleted: false, workspaceGroupId: groupId});
+    }
+    Q.collection("communityGroups").updateOne({_id: groupId}, {$set: {moderationPending: 2, moderationQueueRevision: 1}});
+    Q.printObject({checkpointId, groupId, preparedPendingItems: 2, publicationFlowTested: false});
+    return;
+  }
   if (command === "restore-admin-lifecycle") {
     if (!state.adminLifecycleSnapshots) Q.fail("No Admin lifecycle snapshot.");
-    Q.restoreSnapshots(state.adminLifecycleSnapshots);
+    // Chat maps its Java chatId field to Mongo "id". Normalize the retained
+    // selector from the first moderation control prepared before this correction.
+    Q.restoreSnapshots(state.adminLifecycleSnapshots.map(snapshot =>
+      snapshot.collection === "chats" && snapshot.selector.chatId
+        ? {...snapshot, selector: {id: snapshot.selector.chatId}} : snapshot));
     Q.collection(Q.STATE_COLLECTION).updateOne({_id: state._id}, {$unset: {adminLifecycleSnapshots: ""}});
     Q.printObject({checkpointId, adminLifecycleRestored: true});
     return;

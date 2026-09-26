@@ -21882,6 +21882,12 @@
     "value": "Blocked"
   },
   {
+    "_id": "i18n-message-en-moderation-group-message",
+    "key": "moderation.group.message",
+    "lang": "en",
+    "value": "Optional message to the owner via Group support"
+  },
+  {
     "_id": "i18n-message-en-moderation-message",
     "key": "moderation.message",
     "lang": "en",
@@ -45898,6 +45904,12 @@
     "key": "moderation.status.blocked",
     "lang": "hu",
     "value": "Letiltva"
+  },
+  {
+    "_id": "i18n-message-hu-moderation-group-message",
+    "key": "moderation.group.message",
+    "lang": "hu",
+    "value": "Opcionális üzenet a tulajdonosnak a csoporttámogatási chaten"
   },
   {
     "_id": "i18n-message-hu-moderation-message",

@@ -1,0 +1,141 @@
+{
+  "group-policy-toggle-result.json": {
+    "off": {
+      "hasPicker": false,
+      "hasProfession": false
+    },
+    "on": {
+      "hasProfession": true,
+      "hasInterest": true
+    },
+    "fields": [
+      {
+        "label": "Profession",
+        "width": 420.21875,
+        "top": 111.734375,
+        "left": 27.390625
+      },
+      {
+        "label": "Workplace",
+        "width": 420.21875,
+        "top": 159.734375,
+        "left": 27.390625
+      },
+      {
+        "label": "School",
+        "width": 424.3944091796875,
+        "top": 206.56182861328125,
+        "left": 25.302810668945312
+      },
+      {
+        "label": "Horoscope",
+        "width": 420.21875,
+        "top": 255.734375,
+        "left": 27.390625
+      },
+      {
+        "label": "Interest",
+        "width": 420.21875,
+        "top": 359.734375,
+        "left": 27.390625
+      },
+      {
+        "label": "Drinking",
+        "width": 420.21875,
+        "top": 407.734375,
+        "left": 27.390625
+      },
+      {
+        "label": "Smoking",
+        "width": 420.21875,
+        "top": 455.734375,
+        "left": 27.390625
+      },
+      {
+        "label": "Workout",
+        "width": 420.21875,
+        "top": 503.734375,
+        "left": 27.390625
+      },
+      {
+        "label": "Pets",
+        "width": 420.21875,
+        "top": 551.734375,
+        "left": 27.390625
+      },
+      {
+        "label": "Family plans",
+        "width": 420.21875,
+        "top": 655.734375,
+        "left": 27.390625
+      },
+      {
+        "label": "Children",
+        "width": 420.21875,
+        "top": 703.734375,
+        "left": 27.390625
+      },
+      {
+        "label": "Love style",
+        "width": 420.21875,
+        "top": 751.734375,
+        "left": 27.390625
+      },
+      {
+        "label": "Communication style",
+        "width": 420.21875,
+        "top": 799.734375,
+        "left": 27.390625
+      },
+      {
+        "label": "Sexual orientation",
+        "width": 420.21875,
+        "top": 847.734375,
+        "left": 27.390625
+      },
+      {
+        "label": "Religion",
+        "width": 420.21875,
+        "top": 951.734375,
+        "left": 27.390625
+      },
+      {
+        "label": "Values",
+        "width": 420.21875,
+        "top": 999.734375,
+        "left": 27.390625
+      }
+    ]
+  },
+  "group-policy-cancel-reopened.json": {
+    "text": "Group\npublic\nPublic\nexpand_more\ndone\nclose\n1\ncontent_copy\nclose\nName*\nDescription\n56/4000\ndiversity_3\nFriends\nexpand_more\nvisibility_off\nMember list visible\nbadge\nRequired Profile Fields\ntoggle_off\nOFF\npolicy\nGroup Policies\n\nDescribe the rules and recommendations for this group.\n\ntoggle_off\nOFF",
+    "inputs": [
+      "QA Group Flow",
+      "Checkpoint-owned creation and policy round-trip control."
+    ],
+    "hasImage": true
+  },
+  "group-policy-mobile-latest.json": {
+    "viewport": 390,
+    "button": {
+      "text": "gavel\nOpen Policy Setup",
+      "left": 41.828125,
+      "width": 164.71875,
+      "right": 206.546875
+    },
+    "panel": {
+      "left": 27.390625,
+      "width": 320.21875,
+      "right": 347.609375
+    },
+    "picker": {
+      "text": "tune\nProfile visibility rules",
+      "left": 27.390625,
+      "width": 168.8125,
+      "right": 196.203125
+    },
+    "labelVisible": true,
+    "contentWidth": true,
+    "leftAligned": true
+  }
+}

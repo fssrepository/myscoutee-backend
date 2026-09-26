@@ -15,8 +15,9 @@ fixture stages changes. Register the checkpoint with the existing browser
 launcher before starting its managed sessions. Do not reset the user's unrelated
 data or borrow an earlier closed checkpoint's PASS.
 
-Run the same contract in frontend local and dev HTTP modes. Record each mode
-separately. This baseline description does not itself authorize fixture mutation
+Blocks 1–26 execute the dev HTTP campaign. Block 27 owns the separate
+frontend-local replay of the same contracts; HTTP closure never implies Local
+PASS. Record each mode separately. This baseline description does not itself authorize fixture mutation
 or claim that a fixture or browser session has already been prepared.
 
 ## 1. Group lists and category colors
@@ -64,40 +65,29 @@ or claim that a fixture or browser session has already been prepared.
 3. Create a group with image, name, description, category and visibility. Try
    an empty name and a name exceeding 20 characters. Save a valid name and
    reopen the editor; confirm every saved field.
-4. Toggle **Taglista látható** and compare organizer, accepted-member and
-   unrelated-account roster views. The toggle aligns with the description's
-   right edge and its state survives reload. Category and toggle share the row
-   when both fit, wrapping only at narrower widths. A hidden member list uses
-   the existing Event Explore disabled badge and crossed-out eye; its member
-   badge has no red counter for non-administrators. The administrator retains
-   access and pending-member counter. The card actions contain no duplicate
-   Members entry; the member badge is the entry point. Own invitation acceptance
-   remains available from the invitation card, including with a hidden roster.
+The three-role roster visibility check formerly numbered step 4 is in block 28.1,
+after membership and administrator fixtures exist. Block 2 closes on the created
+and reopened group, not on later role/presentation or Local execution.
 
 ## 3. Group rules and draft persistence
 
-5. Enable group rules. Open Profile visibility rules: sections stack vertically;
-   optional fields have equal-width controls in two columns, labels left and
-   switches right. Base-profile mandatory fields are absent. Check desktop
-   height/width, mobile full screen, scrolling, and absence of an opening jump.
-6. Select fields from different sections. Nested confirmation updates the
-   editor's draft/table only; cancelling the group editor leaves stored policy
-   unchanged. Repeat and save with the group editor's confirmation. Reopen:
-   values persist, the first table column is bold, and rows use pale versions
-   of their corresponding toggle colors.
-7. Disable rules: both the rules button and table collapse. Re-enable and check
-   the draft selections. Read-only group viewing remains legible.
-8. Open View/Edit from a list card and inspect the ordinary network record:
-   list summaries omit description/policy; detail loads on opening. Local mode
-   uses its configured route delay; HTTP mode adds no artificial client delay.
-   The nested rules popup performs no independent detail load.
-   The requirements panel is named Required Profile Fields / Kötelező profilmezők;
-   its heading uses the profile badge icon and its picker button keeps its text on mobile. The separate Group Policies block
-   uses the shared Event Policy input/editor and purple palette. Enable it, add
-   a named rule and recommendation, cancel the outer editor, then repeat and save.
-   Only outer Save persists the draft; reopening preserves enabled state and text.
-   Open Policy Setup is left aligned at content width on mobile. In View, the
-   nested editor title is Policy / Szabályzat and its fields cannot be edited.
+5. Enable group rules and choose optional fields from different sections.
+   Base-profile mandatory fields are absent.
+6. Nested confirmation updates the editor's draft/table only; cancelling the
+   group editor leaves stored policy unchanged. Repeat and save with the outer
+   editor's confirmation. Reopen and verify persisted required fields.
+7. Disable rules: the rules button and table collapse. Re-enable and check that
+   draft selections remain. Read-only viewing must prevent edits.
+8. Enable Group Policies using the shared Event Policy input/editor. Add a named
+   mandatory rule and a recommendation, cancel the outer editor, then repeat and
+   save. Only outer Save persists the draft; reopening preserves enabled state,
+   both texts and their required/optional values. In View, the nested title is
+   Policy / Szabályzat and the fields cannot be edited.
+
+The cross-viewport presentation assertions from steps 5–8 are retained in block
+28.2. Detail-request and adapter-delay assertions from step 8 are in block 29.
+The Local replay is block 27. These are separately required closure gates,
+not requirements removed from the campaign.
 
 ## 4. Join requests and member decisions
 
@@ -217,6 +207,9 @@ definition of all group activity.
     card menu. The same moderation popup exposes this group's Asset/Event/Feed
     content and its own settings; **Group** is absent from its categories.
     Submit pending content, decide it, and repeat the same command/reload.
+    The item title heads the action menu; the current status is not repeated as
+    a disabled action. The settings category dropdown retains its selected-value
+    label and uses the shared multi-toggle sheet with an explicit Close button.
     Verify the stored moderation count, the red Moderation menu badge, the
     three-dot badge, workspace dropdown and sidebar Groups aggregate. Approval,
     rejection, unblocking and configured worker approval update the count only
@@ -686,3 +679,54 @@ replayable fixture savepoints between the independent branches below.
    group-profile/selector/avatar badge propagation and persistence after reload.
    The avatar aggregate counts each change once. Restore only fixture-owned
    records after capturing mutation, notification and reload evidence.
+
+## 27. Frontend-local parity replay
+
+Prerequisite: the HTTP domain path and its fixes have been verified. Use the
+existing versioned Local fixture and launcher configuration. Run blocks 1–26's
+applicable contracts through the Local adapter, recording each block separately;
+do not borrow an HTTP PASS or a unit-test result as Local browser evidence.
+Capture Local savepoints between completed blocks. This block owns the Local
+requirements previously keeping HTTP blocks 2–4 partly open; none are waived.
+Physical-device-only boundaries remain in their existing device campaign.
+
+## 28. Group editor and roster presentation across roles
+
+Prerequisite: creation/policy (blocks 2–3), accepted/pending membership (block 4)
+and Admin-role controls (block 26). Reuse their closest savepoint instead of
+recreating their lifecycle. Existing observations may satisfy individual checks;
+close this block only after its complete role/viewport matrix is proven.
+
+### 28.1. Roster visibility (former block 2, step 4)
+
+1. Toggle **Taglista látható** and compare organizer, accepted-member and
+   unrelated-account roster views. The toggle aligns with the description's
+   right edge and its state survives reload. Category and toggle share the row
+   when both fit, wrapping only at narrower widths. A hidden member list uses
+   the existing Event Explore disabled badge and crossed-out eye; its member
+   badge has no red counter for non-administrators. The administrator retains
+   access and pending-member counter. The card actions contain no duplicate
+   Members entry; the member badge is the entry point. Own invitation acceptance
+   remains available from the invitation card, including with a hidden roster.
+
+### 28.2. Policy editor presentation (former block 3, steps 5–8)
+
+- Profile visibility rules stack sections vertically. Optional fields use equal
+  two-column controls with labels left and switches right; Base mandatory fields
+  are absent. Check desktop size, mobile full screen, scrolling and no opening jump.
+- Reopened selected-field tables use bold first-column labels and pale row colors
+  corresponding to their toggles. Read-only viewing remains legible.
+- Required Profile Fields / Kötelező profilmezők uses the profile-badge heading
+  icon; its picker label remains visible on mobile. Group Policies retains the
+  shared Event Policy editor and purple palette. Open Policy Setup is left-aligned
+  at content width. Member list visible shares the category row when both fit,
+  wrapping only when they no longer fit.
+
+## 29. Group detail loading and adapter request boundaries
+
+Prerequisite: the saved editor/policy state from blocks 2–3; repeat the corresponding
+request checks during block 27's Local pass. This preserves former block 3 step 8.
+List summaries omit description/policy. View/Edit loads the detail on opening.
+Opening the nested rules editor performs no additional detail request. Local
+uses its configured route delay; HTTP adds no artificial client delay. Capture
+normal network records independently from the saved-field persistence evidence.
