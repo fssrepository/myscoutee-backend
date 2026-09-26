@@ -23376,6 +23376,12 @@
     "value": "Allow access"
   },
   {
+    "_id": "i18n-message-en-demo-selector-status-location",
+    "key": "demo.selector.status.location",
+    "lang": "en",
+    "value": "Location needed"
+  },
+  {
     "_id": "i18n-message-hu-navigator-community",
     "key": "navigator.community",
     "lang": "hu",
@@ -46750,5 +46756,11 @@
     "key": "mcp.approve",
     "lang": "hu",
     "value": "Hozzáférés engedélyezése"
+  },
+  {
+    "_id": "i18n-message-hu-demo-selector-status-location",
+    "key": "demo.selector.status.location",
+    "lang": "hu",
+    "value": "Helyadat kell"
   }
 ]

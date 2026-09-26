@@ -83,7 +83,11 @@ public class CountryPartitionService {
     }
 
     public String resolvePartitionKey(LocationCoordinatesDto coordinates) {
-        CountryPartition partition = resolvePartition(coordinates);
+        return resolvePartitionKey(coordinates, null);
+    }
+
+    public String resolvePartitionKey(LocationCoordinatesDto coordinates, String preferredPartitionKey) {
+        CountryPartition partition = resolvePartition(coordinates, preferredPartitionKey);
         return partition == null ? null : partition.getPartitionKey();
     }
 
@@ -338,7 +342,7 @@ public class CountryPartitionService {
         }
     }
 
-    private CountryPartition resolvePartition(LocationCoordinatesDto coordinates) {
+    private CountryPartition resolvePartition(LocationCoordinatesDto coordinates, String preferredPartitionKey) {
         if (coordinates == null
                 || coordinates.latitude() == null
                 || coordinates.longitude() == null
@@ -351,11 +355,19 @@ public class CountryPartitionService {
             return null;
         }
 
-        Query query = Query.query(Criteria.where("geometry")
-                .intersects(new GeoJsonPoint(coordinates.longitude(), coordinates.latitude())));
-        return mongoTemplate.find(query, CountryPartition.class).stream()
-                .max(Comparator.comparing(partition -> partition.getSpecificity() == null ? 0 : partition.getSpecificity()))
-                .orElse(null);
+        GeoJsonPoint point = new GeoJsonPoint(coordinates.longitude(), coordinates.latitude());
+        if (StringUtils.hasText(preferredPartitionKey)) {
+            Query preferred = Query.query(Criteria.where("partitionKey").is(preferredPartitionKey)
+                    .and("geometry").intersects(point));
+            preferred.fields().include("partitionKey").exclude("_id");
+            CountryPartition match = mongoTemplate.findOne(preferred, CountryPartition.class);
+            if (match != null) return match;
+        }
+        // The existing 2dsphere index finds spatial candidates; never load all country geometries.
+        Query query = Query.query(Criteria.where("geometry").intersects(point))
+                .with(Sort.by(Sort.Direction.DESC, "specificity")).limit(1);
+        query.fields().include("partitionKey").exclude("_id");
+        return mongoTemplate.findOne(query, CountryPartition.class);
     }
 
     private URI buildNominatimSearchUri(String countryName, String countryCode, Double polygonThreshold) {

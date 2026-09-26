@@ -181,7 +181,7 @@ class HomeUserProfileServiceTest {
     void profileLoadPersistsInitialLocationAsFieldsAndReturnsIt() {
         Users member = user("active", 0d);
         when(usersRepository.findByUserId("active")).thenReturn(Optional.of(member));
-        when(countryPartitionService.resolvePartitionKey(new LocationCoordinatesDto(47d, 19d))).thenReturn("HU");
+        when(countryPartitionService.resolvePartitionKey(new LocationCoordinatesDto(47d, 19d), member.getPartitionKey())).thenReturn("HU");
         var result = service.loadProfileExtById("active", 47d, 19d);
         assertThat(result.profileExt().profile().locationCoordinates()).isEqualTo(new LocationCoordinatesDto(47d, 19d));
         verify(usersRepository).updateLocation("active", new Users.LocationCoordinatesRecord(47d, 19d), "HU");
@@ -221,6 +221,22 @@ class HomeUserProfileServiceTest {
         assertThatThrownBy(() -> service.loadProfileExtById("active", 47d, 19d))
                 .isInstanceOf(org.springframework.web.server.ResponseStatusException.class);
         verify(usersRepository, never()).updateLocation(any(), any(), any());
+    }
+
+    @Test
+    void profileLoadDiscardsUnsupportedPendingLocationAndReturnsAcceptedStoredPoint() {
+        Users member = user("active", 0d);
+        member.setPartitionKey("country:hu");
+        member.setLocationCoordinates(new Users.LocationCoordinatesRecord(47.4979, 19.0402));
+        when(usersRepository.findByUserId("active")).thenReturn(Optional.of(member));
+        when(regionSecurityProperties.isEnabled()).thenReturn(true);
+        var result = service.loadProfileExtById("active", 30.2672, -97.7431);
+        assertThat(result.profileExt().profile().locationCoordinates())
+                .isEqualTo(new LocationCoordinatesDto(47.4979, 19.0402));
+        verify(usersRepository, never()).updateLocation(any(), any(), any());
+        verify(usersRepository, never()).save(any());
+        verify(countryPartitionService).resolvePartitionKey(new LocationCoordinatesDto(30.2672, -97.7431), "country:hu");
+        verify(countryPartitionService, never()).resolvePartitionKey(new LocationCoordinatesDto(47.4979, 19.0402), "country:hu");
     }
 
     @Test
@@ -586,6 +602,29 @@ class HomeUserProfileServiceTest {
         assertThat(service.queryDemoUserListItems(null, "operator"))
                 .extracting(item -> item.id())
                 .containsExactly("operator-demo-dev");
+        assertThat(service.queryDemoUserListItems(null, "operator").getFirst().locationRequired()).isFalse();
+        assertThat(service.queryDemoUserListItems(null, "admin").getFirst().locationRequired()).isFalse();
+    }
+
+    @Test
+    void demoListMarksMissingAndUnsupportedLocationsAndChecksDuplicatePointsOnce() {
+        Users missing = user("missing", 0d);
+        Users unsupported = user("unsupported", 0d);
+        unsupported.setLocationCoordinates(new Users.LocationCoordinatesRecord(30.2672, -97.7431));
+        Users valid = user("valid", 0d);
+        valid.setLocationCoordinates(new Users.LocationCoordinatesRecord(47.4979, 19.0402));
+        Users duplicate = user("duplicate", 0d);
+        duplicate.setLocationCoordinates(valid.getLocationCoordinates());
+        when(usersRepository.findAllByOrderByNameAscUserIdAsc()).thenReturn(List.of(missing, unsupported, valid, duplicate));
+        when(regionSecurityProperties.isEnabled()).thenReturn(true);
+        when(countryPartitionService.resolvePartitionKey(new LocationCoordinatesDto(30.2672, -97.7431))).thenReturn(null);
+        when(countryPartitionService.resolvePartitionKey(new LocationCoordinatesDto(47.4979, 19.0402))).thenReturn("country:hu");
+
+        assertThat(service.queryDemoUserListItems())
+                .extracting(item -> item.id(), item -> item.locationRequired())
+                .containsExactly(tuple("missing", true), tuple("unsupported", true), tuple("valid", false), tuple("duplicate", false));
+        verify(countryPartitionService, times(1)).resolvePartitionKey(new LocationCoordinatesDto(47.4979, 19.0402));
+        verify(countryPartitionService, times(1)).resolvePartitionKey(new LocationCoordinatesDto(30.2672, -97.7431));
     }
 
     @Test
@@ -800,7 +839,7 @@ class HomeUserProfileServiceTest {
         active.setLocationCoordinates(new Users.LocationCoordinatesRecord(30.2768d, -97.7479d));
         UserDto request = service.toGameCardUserDto(active);
         when(regionSecurityProperties.isEnabled()).thenReturn(true);
-        when(countryPartitionService.resolvePartitionKey(request.locationCoordinates())).thenReturn(null);
+        when(countryPartitionService.resolvePartitionKey(request.locationCoordinates(), "country:hu")).thenReturn(null);
         when(usersRepository.findByUserId("active")).thenReturn(Optional.of(active));
         when(usersRepository.save(any(Users.class))).thenAnswer(invocation -> invocation.getArgument(0));
 
@@ -820,7 +859,7 @@ class HomeUserProfileServiceTest {
                 service.toGameCardUserDto(active),
                 new LocationCoordinatesDto(30.2768d, -97.7479d));
         when(regionSecurityProperties.isEnabled()).thenReturn(true);
-        when(countryPartitionService.resolvePartitionKey(request.locationCoordinates())).thenReturn(null);
+        when(countryPartitionService.resolvePartitionKey(request.locationCoordinates(), "country:hu")).thenReturn(null);
         when(usersRepository.findByUserId("active")).thenReturn(Optional.of(active));
 
         assertThatThrownBy(() -> service.saveUserProfile(request))

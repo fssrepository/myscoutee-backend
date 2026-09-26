@@ -535,6 +535,8 @@ public final class AuthDtos {
 
     public record DemoUserListItemDto(
             String id,
+            LocationCoordinatesDto locationCoordinates,
+            boolean locationRequired,
             String name,
             String city,
             String initials,

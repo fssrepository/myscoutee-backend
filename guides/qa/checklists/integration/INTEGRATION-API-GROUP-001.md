@@ -13,7 +13,7 @@ register the scenario with the existing fixture harness and browser launcher
 before execution. The external system distributes returned links; testing uses
 the links directly and sends no unsolicited messages.
 
-## Numbered checks
+## 1. Issue and repeat participant links
 
 1. Call the existing `inviteGroupParticipants(groupId, participantIds)` client
    method / `POST /groups/{groupId}/invites` with two distinct external IDs.
@@ -21,6 +21,9 @@ the links directly and sends no unsolicited messages.
    or membership exists merely because a URL was issued.
 2. Repeat the batch and verify stable URLs. Reject blank/duplicate IDs and
    oversized batches; a different owner cannot issue invitations for this group.
+
+## 2. Fresh registration and active group
+
 3. Open the first URL while signed out. Complete the ordinary registration and
    onboarding flow. The return URL retains the invitation through every gate.
 4. After registration, verify that the external participant ID is bound to that
@@ -33,6 +36,9 @@ the links directly and sends no unsolicited messages.
 5. Reopen the same URL as that account: membership/profile/participant binding
    are not duplicated. An explicitly cleared home gender filter is preserved.
    Registration defaults initially select the opposite gender on home cards.
+
+## 3. Existing accounts and rejected claims
+
 6. Open the second URL using the existing non-member account and compare the
    same accepted membership/active-workspace result. Repeat using an existing
    pending join request; the administrator-issued link supplies invitation
@@ -41,12 +47,18 @@ the links directly and sends no unsolicited messages.
    bytes. Reject the claim; neither account gains membership or a profile.
    Reusing an external participant ID already bound to another account is also
    rejected. Revoking the issuing administrator's role prevents new claims.
+
+## 4. Workspace changes and retry
+
 8. Start from an already selected second workspace, then follow a valid link
    for the first group. Bind the base account, not the virtual workspace
    profile; select the target once and do not duplicate the claim on switching.
 9. Retry after a real transport failure during claim or workspace selection.
    A failed selection retains the claim URL for retry. Retried successful
    operations converge to one participant binding, membership and profile.
+
+## 5. Event control, isolation and cleanup
+
 10. Issue an Event link as a control through the same client. Its normal
     pending-invitation, payment/approval and ended-event rules remain intact;
     group auto-admission must not bypass Event acceptance or checkout.
@@ -64,7 +76,7 @@ registration/claim UI, persisted membership/profile, active workspace and
 negative authorization outcomes. This integration path is server-owned even
 when the application's other demo routes use local data.
 
-## NOT RUN — Affiliate and external-link additions
+## 6. Affiliate attribution and cash exclusion
 
 - Generate event and group participant URLs through the existing API client.
   Compare their complete URLs with UI-generated external sharing links; both

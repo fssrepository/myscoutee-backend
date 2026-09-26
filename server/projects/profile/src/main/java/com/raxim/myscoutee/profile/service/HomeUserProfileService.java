@@ -390,9 +390,16 @@ public class HomeUserProfileService {
             Users account = StringUtils.hasText(selected.getAccountUserId())
                     ? usersRepository.findByUserId(selected.getAccountUserId()).orElseThrow(
                             () -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Account not found.")) : selected;
-            // Validate both before the first write. These are field updates, never a full stale profile replacement.
-            String accountPartition = validatedLocationPartition(account, coordinates);
-            String selectedPartition = account == selected ? accountPartition : validatedLocationPartition(selected, coordinates);
+            String resolvedPartition = countryPartitionService.resolvePartitionKey(coordinates, account.getPartitionKey());
+            if (regionSecurityProperties.isEnabled() && !StringUtils.hasText(resolvedPartition)) {
+                // Discard an unsupported pending sample, not the already admitted profile load.
+                if (account.getLocationCoordinates() != null) return loadProfileExtById(requestedUserId);
+                throw new ResponseStatusException(HttpStatus.FORBIDDEN, INELIGIBLE_REGION_MESSAGE);
+            }
+            // Resolve the point once for the account and group profile, before either field update.
+            String accountPartition = resolveStoredPartitionKey(resolvedPartition, account.getPartitionKey(), account);
+            String selectedPartition = account == selected ? accountPartition
+                    : resolveStoredPartitionKey(resolvedPartition, selected.getPartitionKey(), selected);
             persistLoadedLocation(account, coordinates, accountPartition);
             if (account != selected) persistLoadedLocation(selected, coordinates, selectedPartition);
         }
@@ -408,7 +415,7 @@ public class HomeUserProfileService {
     }
 
     private String validatedLocationPartition(Users current, LocationCoordinatesDto coordinates) {
-        String resolved = countryPartitionService.resolvePartitionKey(coordinates);
+        String resolved = countryPartitionService.resolvePartitionKey(coordinates, current == null ? null : current.getPartitionKey());
         String stored = current == null ? null : current.getPartitionKey();
         boolean retainsStored = StringUtils.hasText(stored)
                 && sameLocation(coordinates, current.getLocationCoordinates());
@@ -1242,11 +1249,13 @@ public class HomeUserProfileService {
     @Cacheable(value = "demo_users", key = "(#role == null ? 'member' : #role) + ':' + (#limit == null ? 'all' : #limit)")
     public List<DemoUserListItemDto> queryDemoUserListItems(Integer limit, String role) {
         String selectorRole = normalizeDemoSelectorRole(role);
+        Map<LocationCoordinatesDto, Boolean> locationChecks = new java.util.HashMap<>();
         return usersRepository.findAllByOrderByNameAscUserIdAsc().stream()
                 .filter(user -> user.getWorkspaceGroupId() == null)
                 .filter(user -> isSelectableDemoUserDocument(user, selectorRole))
                 .limit(resolveDemoUserListLimit(limit))
-                .map(this::toDemoUserListItemDto)
+                .map(user -> toDemoUserListItemDto(user, "member".equals(selectorRole)
+                        && demoLocationRequired(user, locationChecks)))
                 .filter(Objects::nonNull)
                 .toList();
     }
@@ -1357,12 +1366,24 @@ public class HomeUserProfileService {
         return normalizedUserId.equals(normalizeId(firebasePrincipal.getUserId()));
     }
 
-    private DemoUserListItemDto toDemoUserListItemDto(Users user) {
+    private boolean demoLocationRequired(Users user, Map<LocationCoordinatesDto, Boolean> checks) {
+        LocationCoordinatesDto point = toLocationCoordinatesDto(user.getLocationCoordinates());
+        if (point == null || point.latitude() == null || point.longitude() == null
+                || !Double.isFinite(point.latitude()) || !Double.isFinite(point.longitude())
+                || Math.abs(point.latitude()) > 90 || Math.abs(point.longitude()) > 180) return true;
+        // The existing cached selector checks shared seed coordinates once, not once per profile.
+        return checks.computeIfAbsent(point, coordinates ->
+                !queryLocationEligibility(coordinates.latitude(), coordinates.longitude()).eligible());
+    }
+
+    private DemoUserListItemDto toDemoUserListItemDto(Users user, boolean locationRequired) {
         if (user == null) {
             return null;
         }
         return new DemoUserListItemDto(
                 normalizeId(user.getId()),
+                toLocationCoordinatesDto(user.getLocationCoordinates()),
+                locationRequired,
                 nullToEmpty(user.getName()),
                 nullToEmpty(user.getCity()),
                 nullToEmpty(user.getInitials()),

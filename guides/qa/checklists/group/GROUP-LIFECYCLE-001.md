@@ -19,7 +19,7 @@ Run the same contract in frontend local and dev HTTP modes. Record each mode
 separately. This baseline description does not itself authorize fixture mutation
 or claim that a fixture or browser session has already been prepared.
 
-## Numbered checks
+## 1. Group lists and category colors
 
 1. Open Groups from the Community menu. Confirm Hosting, Participation and
    Explore are distinct: owned/administered groups belong in Hosting; accepted
@@ -29,12 +29,18 @@ or claim that a fixture or browser session has already been prepared.
 2. Compare category icon colors with their filter menu items. Check selected
    menu-item tint, card labels and pending/member badges. Use the card's actions
    and member badge; do not require a newly invented whole-card animation.
+
+## 2. Create and reopen a group
+
 3. Create a group with image, name, description, category and visibility. Try
    an empty name and a name exceeding 20 characters. Save a valid name and
    reopen the editor; confirm every saved field.
 4. Toggle **Taglista látható** and compare organizer, accepted-member and
    unrelated-account roster views. The toggle aligns with the description's
    right edge and its state survives reload.
+
+## 3. Group rules and draft persistence
+
 5. Enable group rules. Open Profile visibility rules: sections stack vertically;
    optional fields have equal-width controls in two columns, labels left and
    switches right. Base-profile mandatory fields are absent. Check desktop
@@ -50,6 +56,9 @@ or claim that a fixture or browser session has already been prepared.
    list summaries omit description/policy; detail loads on opening. Local mode
    uses its configured route delay; HTTP mode adds no artificial client delay.
    The nested rules popup performs no independent detail load.
+
+## 4. Join requests and member decisions
+
 9. Request to join as the unrelated account. Cancel first, then confirm. Both
    the menu and confirmation use the Event Join button's blue palette. The
    confirmed group moves from Explore to Participation as pending and survives
@@ -58,6 +67,9 @@ or claim that a fixture or browser session has already been prepared.
     workspace profile, updated member counts, and a selectable workspace.
     Separately invite the member through the normal members popup, then accept
     or reject as that member and compare the canonical list state.
+
+## 5. Workspace selection and profile loading
+
 11. Select the group in the header. Long names truncate only the label; the
     monogram remains circular and fully visible. Base-profile globe and group
     choices use their contextual colors. Verify avatar/name/location spacing
@@ -74,6 +86,9 @@ or claim that a fixture or browser session has already been prepared.
 12. Compare group profile details with the base profile. Required fields follow
     the saved policy. Organizer/member role actions use their normal authority;
     an ordinary member cannot approve others or edit group policy.
+
+## 6. App moderation, group moderation and support
+
 13. Report a group as a non-owner. In **app-admin** content moderation, verify
     the **Group** dropdown category, preview and configured review lifecycle.
     With app moderation enabled, group creation follows that configuration;
@@ -97,6 +112,9 @@ or claim that a fixture or browser session has already been prepared.
     ordinary Chats total. The app-admin Support queue, App support filter and
     base-profile support counter remain unchanged. Retry delivery: no second
     message or unread increment. Check the new HU/EN labels after reload.
+
+## 7. Leave and remove membership
+
 16. Leave/remove the test membership and check the remaining group lists and
     workspace choices after reload. An owner cannot be removed through an
     ordinary member action. Restore only the checkpoint's exact snapshots.
@@ -108,13 +126,13 @@ ordinary reload/poll. Capture IDs, role/status/requestKind, policy and count
 deltas without credentials. A correct local UI alone does not prove HTTP
 authorization. Record missing branches as NOT RUN, never as inferred PASS.
 
-## NOT RUN — Sharing, invitations, cash and contacts microchecks
-
 Run these within the same checkpoint before its cleanup. Prepare two fresh
 registration actors, one existing account, two events, two assets, a contact
 and a two-party chat. Include one own shared message older than the loaded
 message page. Record local and dev HTTP results independently; this extension
 has no inherited PASS from the earlier Event/Asset/Chat checkpoints.
+
+## 8. External sharing links and admission
 
 1. Open Share from a group/event/asset card. There is one sharing entry, with
    the common share icon and contextual teal color. It opens the **external
@@ -133,6 +151,9 @@ has no inherited PASS from the earlier Event/Asset/Chat checkpoints.
    accepted/pending/payment/approval state; flag a missing automatic attachment
    to the event. Existing capacity, payment and approval requirements still
    apply; do not mark the check PASS merely because registration succeeded.
+
+## 9. Chat sharing basket and message changes
+
 4. In an open chat, choose Share event, then Share asset separately. These open
    the card selection surface. Check the usual basket count/list, removable
    basket items, and the confirmation tick beside Close. The card selector sits
@@ -158,6 +179,9 @@ has no inherited PASS from the earlier Event/Asset/Chat checkpoints.
    chat/account/group while a response is pending: no late result may affect
    the replacement chat or close its picker. SmartList/store updates happen
    in place, preserving position; no whole-list reload is needed.
+
+## 10. Cash history and affiliate exclusion
+
 9. Open Payment history and record received cash: select the payer, enter
    amount/currency and a note. Save/reopen as both parties; verify one matching
    income/expense record with counterparty and note, plus one notification to
@@ -169,6 +193,9 @@ has no inherited PASS from the earlier Event/Asset/Chat checkpoints.
     still contributes normally; its refund still reverses the proper amount.
     Ordinary payment history/totals continue to include cash. A manual receipt
     has no fabricated booking link or booking-refund action.
+
+## 11. Contacts and the existing chat popup
+
 11. Add a MyScoutee member as a contact. Its first contact method uses the
     MyScoutee emblem and opens the existing shared chat popup **above the still
     open contact list**. Closing the chat returns to that same contact list,
@@ -194,12 +221,12 @@ has no inherited PASS from the earlier Event/Asset/Chat checkpoints.
 For each failed microcheck, record its number, mode, actor/workspace IDs and
 observed result. All twelve remain NOT RUN until explicitly executed.
 
-## NOT RUN — September 25–26 shared UI regression micros
-
 These extend this existing unexecuted checkpoint; they do not reopen or inherit
 PASS from closed journeys. The implementation/task status is tracked separately
 in [UI notes](../../../plans/UI_NOTES_2026_09_25.md). Record frontend-local and
 dev HTTP outcomes independently, in HU/EN and at desktop/mobile widths.
+
+## 12. Selection limits and contact-request controls
 
 1. **Configured selection maximum (UI note 1).** Open the topic/category
    selector in Event Explore, an equivalent Profile editor selector and another
@@ -215,11 +242,17 @@ dev HTTP outcomes independently, in HU/EN and at desktop/mobile widths.
    order, recipient decisions/notifications, persisted contact on approval and
    immediate SmartList remove/insert without reload. Do not substitute this
    link for executing those steps.
+
+## 13. Empty calendar export
+
 3. **Empty calendar export (UI note 3).** With no exportable upcoming event,
    show the localized information popup with X and no footer action buttons;
    no empty/malformed ICS download. The underlying popup remains visible,
    blurred, and returns intact after closing the notice. With an eligible
    upcoming event, the normal ICS export still works and imports correctly.
+
+## 14. Birthday, horoscope and children fields
+
 4. **Birthday and horoscope (UI notes 7–8).** Type and select 1974/10/04 in the
    shared date control; save, reopen and reload. Day/month must not swap, and
    the profile shows Libra/Mérleg. Reject an invalid day without rolling into
@@ -227,8 +260,14 @@ dev HTTP outcomes independently, in HU/EN and at desktop/mobile widths.
 5. **Children (UI note 9).** Check Nincs/Van and No/Yes in the editor, profile
    and filter; save/reopen and confirm the stored meaning and existing
    non-disclosure option remain intact.
+
+## 15. Landing social heading
+
 6. **Landing social heading (UI note 10).** Check Kövess minket / Follow us
    above the existing social links. This label change must not alter targets.
+
+## 16. Setup permission help
+
 7. **Setup help (UI note 12).** The question-mark button is beside X. It opens
    the existing information popup with short blocks explaining location,
    notifications, installation and prior browser/OS denial. Check Android and
@@ -238,7 +277,7 @@ dev HTTP outcomes independently, in HU/EN and at desktop/mobile widths.
    need an additional visible-parent requirement. Record physical-device
    branches separately; desktop observation is not a device PASS.
 
-### Common help-content reseed and MCP — NOT RUN
+## 17. Common help seed and AI integration
 
 Check the expanded 17-topic side-menu Help accordion structure,
 coverage of existing features, readability and HU/EN text. Compare the canonical
@@ -254,7 +293,7 @@ Personal remote OAuth and the connections table are implemented; exercise their
 profile-bound permissions and local-only settings in the API checklist’s NOT RUN
 micros. The seeded common help revision is v3 in both languages.
 
-### Overlay Back / X history — NOT RUN
+## 18. Back and close-button history
 
 - On mobile, open a popup, its menu/sheet and a confirmation. Native Back closes
   only the top surface each time, retaining the parent and its state; required or
@@ -269,9 +308,31 @@ micros. The seeded common help revision is v3 in both languages.
   scroll/inline dismissal behavior. Record real device and Router behavior;
   isolated store tests alone do not prove the user journey.
 
-## NOT RUN — initial location, Firebase entry and mobile menu closing
-
 Keep these micros in this existing NOT RUN case; no new case or manual PASS.
+
+## 19. First location save and Firebase sign-in
+
+Demo admission (pre-registered profiles; run local and HTTP separately):
+
+- Verify every selectable seeded member has coordinates inside an enabled
+  country partition. This comes from seed data, not a demo eligibility bypass.
+- In the missing/unsupported-location controls, the existing status badge slot
+  shows the amber localized **Helyadat kell / Location needed** state. There is
+  only one badge per card; blocked/deleted states retain that same slot.
+  Valid members and privileged role selectors do not get a location warning.
+- Select a valid member while the browser has an old, unsupported location.
+  The selected profile's stored point is checked before session creation;
+  no stale browser point replaces it and no installation popup is needed.
+  No separate eligibility call checks the later cached/pending sample. It
+  travels on the avatar/profile load; an unsupported sample is discarded by
+  the server, returning the saved point successfully and clearing pending.
+- With a checkpoint-owned missing/invalid-coordinate control, select the
+  member. The existing Setup popup opens before session creation or game
+  navigation. A rejected fresh point shows its localized error inside Setup;
+  changing browser permission/location and retrying remains possible.
+- Cancel: no new session and no game cards. Retry with an eligible point:
+  complete the normal profile preparation and first profile-load persistence,
+  then enter once. Restore the control from its snapshot after the check.
 
 1. Fresh Firebase registration/sign-in with no saved coordinate: request location
    through Setup, then complete onboarding. The scoped browser pending point
@@ -285,6 +346,9 @@ Keep these micros in this existing NOT RUN case; no new case or manual PASS.
 3. Existing registered Firebase user: logout and sign in once, with avatar preview
    changing. Enter the app on that first attempt. Real logout/account/session
    change still discards stale reads; failed group switch unlocks the selector.
+
+## 20. Stored location and optional tracking
+
 4. Restore a session using server-stored coordinates while geolocation is denied.
    No mandatory GPS request or landing-page trap. Notifications retain their
    own setup flow. Opening the landing alone must not acquire GPS repeatedly.
@@ -292,6 +356,16 @@ Keep these micros in this existing NOT RUN case; no new case or manual PASS.
    existing server point remains usable. Reopen Settings and confirm OFF remains;
    enable again explicitly. Native denial/revocation does not erase the point.
    Movement below 5 km causes no write; >=5 km saves through the existing path.
+   Deliver a point outside eligible countries after a valid saved point:
+   Mongo/IndexedDB, browser cache and movement baseline retain the accepted
+   point. No access-restricted popup, session deletion or logout. A later
+   eligible movement can still save normally.
+   The server first checks the saved country, then uses the existing spatial
+   index if necessary. An empty country lookup discards the new point; it is
+   not a failed admission or a reason to re-check the previously accepted point.
+
+## 21. Mobile sheet close buttons
+
 6. Mobile: open a card's three-dot menu above a popup whose X becomes covered.
    The sheet has its own X in the heading; it closes only the sheet, leaves the
    parent list/search/scroll intact and does not select an item.
@@ -305,10 +379,10 @@ Keep these micros in this existing NOT RUN case; no new case or manual PASS.
    retains its scroll-dismiss behavior; dock/fixed/explicit anchored special
    controls retain their existing close lifecycle.
 
-## Profile and account scope regression — NOT RUN
-
 Run these microchecks within this existing case in local and HTTP mode; they
 are pending manual verification, not extensions of an earlier PASS.
+
+## 22. Account-owned tools and Asset Explore
 
 - In **My Tools / Eszközeim**, create an asset while group A is selected. Verify
   the stored owner is the Base account. Open the same inventory in Base and group B;
@@ -321,6 +395,9 @@ are pending manual verification, not extensions of an earlier PASS.
   Include a public asset booked for an event in a group the viewer has not joined:
   the asset remains discoverable without granting access to that group's event.
   Private/friends-only asset visibility still applies; own assets stay out of Explore.
+
+## 23. Profile scope and asset payment history
+
 - Profile, affiliate settings/API keys and event payment history follow the selected
   profile. Community, Impressions and Activities and their nested surfaces are
   group-scoped. Tools and their nested surfaces remain account-wide. Asset booking
@@ -331,6 +408,9 @@ are pending manual verification, not extensions of an earlier PASS.
   payer reassignment or query-time Asset/Event lookup to classify the payment.
   Other group profiles do not inherit this expense or income. Refunds reverse the
   direction for the same payer/recipient and retain their existing workflow.
+
+## 24. Account contacts and event-linked assets
+
 - Open an approved account contact from group A and Base: one contact conversation,
   same members, sender identity and read receipts. Request/approve/reject updates
   stay on the account's contact state across group changes. A switch to another
@@ -340,6 +420,9 @@ are pending manual verification, not extensions of an earlier PASS.
   Repeat from group B and Base without event authority: the event operation fails.
   Ticket lists remain account-wide; scanning authorizes the authenticated event
   profile, ignoring a forged body user ID. No asset ownership grants event access.
+
+## 25. Global notifications and scoped API keys
+
 - Notifications stay account-wide, identify their group and retain the existing
   All/Base/group filter. Check write-side counters and live updates after a group
   switch, including account contact requests and tickets from multiple groups.
