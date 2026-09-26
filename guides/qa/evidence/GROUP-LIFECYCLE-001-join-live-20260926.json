@@ -1,0 +1,594 @@
+{
+  "checkpoint": "GROUP-LIFECYCLE-001",
+  "adapter": "http",
+  "date": "2026-09-26",
+  "result": "partial block 4 evidence; whole case IN PROGRESS",
+  "observations": {
+    "popupLayout": {
+      "popupCount": 2,
+      "title": "groups.explore",
+      "sort": {
+        "x": 427.671875,
+        "y": 8.3125,
+        "w": 119.625,
+        "h": 36
+      },
+      "close": {
+        "x": 554.328125,
+        "y": 8.3125,
+        "w": 34,
+        "h": 34
+      },
+      "category": {
+        "x": 7.671875,
+        "y": 58.09375,
+        "w": 136.28125,
+        "h": 36
+      },
+      "cards": [
+        "seed-community-neighbours",
+        "seed-community-trail-club",
+        "seed-community-language-lab"
+      ]
+    },
+    "joinCancel": {
+      "text": "Would you like to join this group?\n\nRequest to join “Seattle Neighbours”?\n\nCancel\nRequest to join",
+      "cancelled": true
+    },
+    "joinLists": {
+      "lists": [
+        {
+          "explore": false,
+          "bucket": "pending",
+          "cards": [
+            {
+              "id": "seed-community-neighbours",
+              "membership": "pending",
+              "accepted": 2,
+              "pending": 0,
+              "activity": 0,
+              "badge": {
+                "variant": "badge",
+                "layout": "badge-with-leading-accessory",
+                "label": "2",
+                "ariaLabel": "open.members",
+                "interactive": true,
+                "disabled": false,
+                "tone": "default",
+                "leadingAccessory": {
+                  "icon": "groups",
+                  "tone": "positive"
+                },
+                "pendingCount": 0
+              },
+              "geometry": {
+                "width": 43.15625,
+                "height": 28
+              }
+            },
+            {
+              "id": "seed-community-makers",
+              "membership": "pending",
+              "accepted": 2,
+              "pending": 0,
+              "activity": 0,
+              "badge": {
+                "variant": "badge",
+                "layout": "badge-with-leading-accessory",
+                "label": "2",
+                "ariaLabel": "open.members",
+                "interactive": true,
+                "disabled": false,
+                "tone": "default",
+                "leadingAccessory": {
+                  "icon": "groups",
+                  "tone": "positive"
+                },
+                "pendingCount": 0
+              },
+              "geometry": {
+                "width": 43.15625,
+                "height": 28
+              }
+            }
+          ]
+        },
+        {
+          "explore": true,
+          "bucket": "explore",
+          "cards": [
+            {
+              "id": "seed-community-trail-club",
+              "membership": null,
+              "accepted": 3,
+              "pending": 0,
+              "activity": 0,
+              "badge": {
+                "variant": "badge",
+                "layout": "badge-with-leading-accessory",
+                "label": "3",
+                "ariaLabel": "open.members",
+                "interactive": true,
+                "disabled": false,
+                "tone": "default",
+                "leadingAccessory": {
+                  "icon": "groups",
+                  "tone": "positive"
+                },
+                "pendingCount": 0
+              },
+              "geometry": {
+                "width": 43.15625,
+                "height": 28
+              }
+            },
+            {
+              "id": "seed-community-language-lab",
+              "membership": null,
+              "accepted": 2,
+              "pending": 0,
+              "activity": 0,
+              "badge": {
+                "variant": "badge",
+                "layout": "badge-with-leading-accessory",
+                "label": "2",
+                "ariaLabel": "groups.member.list",
+                "interactive": false,
+                "disabled": true,
+                "tone": "inactive",
+                "leadingAccessory": {
+                  "icon": "visibility_off",
+                  "tone": "negative"
+                },
+                "pendingCount": 0
+              },
+              "geometry": null
+            }
+          ]
+        }
+      ]
+    },
+    "ownerLiveJoin": {
+      "lists": [
+        {
+          "explore": false,
+          "bucket": "hosting",
+          "cards": [
+            {
+              "id": "seed-community-neighbours",
+              "membership": "accepted",
+              "accepted": 2,
+              "pending": 1,
+              "activity": 1,
+              "badge": {
+                "variant": "badge",
+                "layout": "badge-with-leading-accessory",
+                "label": "2",
+                "ariaLabel": "open.members",
+                "interactive": true,
+                "disabled": false,
+                "tone": "default",
+                "leadingAccessory": {
+                  "icon": "groups",
+                  "tone": "positive"
+                },
+                "pendingCount": 1
+              },
+              "geometry": {
+                "width": 43.15625,
+                "height": 28
+              }
+            },
+            {
+              "id": "seed-community-trail-club",
+              "membership": "accepted",
+              "accepted": 3,
+              "pending": 0,
+              "activity": 0,
+              "badge": {
+                "variant": "badge",
+                "layout": "badge-with-leading-accessory",
+                "label": "3",
+                "ariaLabel": "open.members",
+                "interactive": true,
+                "disabled": false,
+                "tone": "default",
+                "leadingAccessory": {
+                  "icon": "groups",
+                  "tone": "positive"
+                },
+                "pendingCount": 0
+              },
+              "geometry": {
+                "width": 43.15625,
+                "height": 28
+              }
+            }
+          ]
+        }
+      ],
+      "membersText": "Members\n\nSeattle Neighbours\n\n2 members · 1 pending\nclose\nperson_add\npending_actions\n1\nperson\nmore_vert\nvisibility\nMaya Stone\n\nMember · San Diego\n\nadmin_panel_settings\nmore_vert\nvisibility\nNagy Eszter\n\nAdmin · Seattle\n\npending_actions\nmore_vert\nvisibility\nAlex Turner\n\nMember · Seattle\n\nWaiting For Admin Approval"
+    },
+    "joinPersisted": [
+      {
+        "actor": 0,
+        "id": "seed-community-neighbours",
+        "hideMembers": false,
+        "role": "Member",
+        "status": "pending",
+        "requestKind": "join",
+        "acceptedMembers": 2,
+        "pendingMembers": 0,
+        "membersActivity": 0,
+        "moderationPending": 0,
+        "activity": 0,
+        "version": 1,
+        "workspace": {
+          "groupId": "seed-community-neighbours",
+          "profileId": null,
+          "name": "Seattle Neighbours",
+          "role": "Member",
+          "activity": 0,
+          "policy": {
+            "workspace": true,
+            "enabled": false,
+            "requiredFields": [],
+            "policiesEnabled": null,
+            "policies": null
+          },
+          "moderationPending": 0,
+          "moderationQueueRevision": 0,
+          "category": "neighbourhood",
+          "membershipStatus": "pending",
+          "membersActivity": 0,
+          "requestKind": "join"
+        }
+      },
+      {
+        "actor": 1,
+        "id": "seed-community-neighbours",
+        "hideMembers": false,
+        "role": "Admin",
+        "status": "accepted",
+        "requestKind": null,
+        "acceptedMembers": 2,
+        "pendingMembers": 1,
+        "membersActivity": 1,
+        "moderationPending": 0,
+        "activity": 1,
+        "version": 1,
+        "workspace": {
+          "groupId": "seed-community-neighbours",
+          "profileId": "group:seed-community-neighbours:9f3b3f085e23af6c89dbc432",
+          "name": "Seattle Neighbours",
+          "role": "Admin",
+          "activity": 1,
+          "policy": {
+            "workspace": true,
+            "enabled": false,
+            "requiredFields": [],
+            "policiesEnabled": null,
+            "policies": null
+          },
+          "moderationPending": 0,
+          "moderationQueueRevision": 0,
+          "category": "neighbourhood",
+          "membershipStatus": "accepted",
+          "membersActivity": 1,
+          "requestKind": null
+        }
+      },
+      {
+        "actor": 2,
+        "id": "seed-community-neighbours",
+        "hideMembers": false,
+        "role": "Member",
+        "status": "accepted",
+        "requestKind": null,
+        "acceptedMembers": 2,
+        "pendingMembers": 0,
+        "membersActivity": 0,
+        "moderationPending": 0,
+        "activity": 0,
+        "version": 1,
+        "workspace": {
+          "groupId": "seed-community-neighbours",
+          "profileId": "group:seed-community-neighbours:1b1c70be2349b3359a8f6f94",
+          "name": "Seattle Neighbours",
+          "role": "Member",
+          "activity": 0,
+          "policy": {
+            "workspace": true,
+            "enabled": false,
+            "requiredFields": [],
+            "policiesEnabled": null,
+            "policies": null
+          },
+          "moderationPending": 0,
+          "moderationQueueRevision": 0,
+          "category": "neighbourhood",
+          "membershipStatus": "accepted",
+          "membersActivity": 0,
+          "requestKind": null
+        }
+      }
+    ],
+    "approvalCancel": {
+      "text": "Approve request?\n\nApprove Alex Turner for this group?\n\nCancel\nApprove",
+      "cancelled": true
+    },
+    "approvalCommit": {
+      "before": {
+        "text": "Approve request?\n\nApprove Alex Turner for this group?\n\nCancel\nApprove",
+        "palette": "app-menu__button-row-item app-menu__button-row-item--labelled app-menu__button-row-item--action app-menu__palette--success"
+      },
+      "exploreRemoved": false,
+      "alerts": [],
+      "text": "Groups\nschedule\nRecent\nexpand_more\nclose\nevent_seat\nHosting\nexpand_more\nadd\nSat, 26 Sept 2026\nimage_not_supported\ngroups\n3\nlocation_city\nSeattle Neighbours\n\nNeighbourhood\n\n0 km\n\nmore_vert\nSun, 20 Sept 2026\ngroups\n3\nsports\nSeattle Trail Club\n\nSport\n\n0 km\n\nmore_vert"
+    },
+    "ownerLiveApproval": {
+      "lists": [
+        {
+          "explore": false,
+          "bucket": "hosting",
+          "cards": [
+            {
+              "id": "seed-community-neighbours",
+              "membership": "accepted",
+              "accepted": 3,
+              "pending": 0,
+              "activity": 0,
+              "badge": {
+                "variant": "badge",
+                "layout": "badge-with-leading-accessory",
+                "label": "3",
+                "ariaLabel": "open.members",
+                "interactive": true,
+                "disabled": false,
+                "tone": "default",
+                "leadingAccessory": {
+                  "icon": "groups",
+                  "tone": "positive"
+                },
+                "pendingCount": 0
+              },
+              "geometry": {
+                "width": 43.15625,
+                "height": 28
+              }
+            },
+            {
+              "id": "seed-community-trail-club",
+              "membership": "accepted",
+              "accepted": 3,
+              "pending": 0,
+              "activity": 0,
+              "badge": {
+                "variant": "badge",
+                "layout": "badge-with-leading-accessory",
+                "label": "3",
+                "ariaLabel": "open.members",
+                "interactive": true,
+                "disabled": false,
+                "tone": "default",
+                "leadingAccessory": {
+                  "icon": "groups",
+                  "tone": "positive"
+                },
+                "pendingCount": 0
+              },
+              "geometry": {
+                "width": 43.15625,
+                "height": 28
+              }
+            }
+          ]
+        }
+      ],
+      "membersText": "Members\n\nSeattle Neighbours\n\n3 members\nclose\nperson_add\npending_actions\nperson\nmore_vert\nvisibility\nMaya Stone\n\nMember · San Diego\n\nadmin_panel_settings\nmore_vert\nvisibility\nNagy Eszter\n\nAdmin · Seattle\n\nperson\nmore_vert\nvisibility\nAlex Turner\n\nMember · Seattle"
+    },
+    "approvalPersisted": [
+      {
+        "actor": 0,
+        "id": "seed-community-neighbours",
+        "hideMembers": false,
+        "role": "Member",
+        "status": "accepted",
+        "requestKind": null,
+        "acceptedMembers": 3,
+        "pendingMembers": 0,
+        "membersActivity": 1,
+        "moderationPending": 0,
+        "activity": 1,
+        "version": 2,
+        "workspace": {
+          "groupId": "seed-community-neighbours",
+          "profileId": "group-3af36da8-9077-47a5-9898-fc5414199d81",
+          "name": "Seattle Neighbours",
+          "role": "Member",
+          "activity": 1,
+          "policy": {
+            "workspace": true,
+            "enabled": false,
+            "requiredFields": [],
+            "policiesEnabled": null,
+            "policies": null
+          },
+          "moderationPending": 0,
+          "moderationQueueRevision": 0,
+          "category": "neighbourhood",
+          "membershipStatus": "accepted",
+          "membersActivity": 1,
+          "requestKind": null
+        }
+      },
+      {
+        "actor": 1,
+        "id": "seed-community-neighbours",
+        "hideMembers": false,
+        "role": "Admin",
+        "status": "accepted",
+        "requestKind": null,
+        "acceptedMembers": 3,
+        "pendingMembers": 0,
+        "membersActivity": 0,
+        "moderationPending": 0,
+        "activity": 0,
+        "version": 2,
+        "workspace": {
+          "groupId": "seed-community-neighbours",
+          "profileId": "group:seed-community-neighbours:9f3b3f085e23af6c89dbc432",
+          "name": "Seattle Neighbours",
+          "role": "Admin",
+          "activity": 0,
+          "policy": {
+            "workspace": true,
+            "enabled": false,
+            "requiredFields": [],
+            "policiesEnabled": null,
+            "policies": null
+          },
+          "moderationPending": 0,
+          "moderationQueueRevision": 0,
+          "category": "neighbourhood",
+          "membershipStatus": "accepted",
+          "membersActivity": 0,
+          "requestKind": null
+        }
+      },
+      {
+        "actor": 2,
+        "id": "seed-community-neighbours",
+        "hideMembers": false,
+        "role": "Member",
+        "status": "accepted",
+        "requestKind": null,
+        "acceptedMembers": 3,
+        "pendingMembers": 0,
+        "membersActivity": 1,
+        "moderationPending": 0,
+        "activity": 1,
+        "version": 2,
+        "workspace": {
+          "groupId": "seed-community-neighbours",
+          "profileId": "group:seed-community-neighbours:1b1c70be2349b3359a8f6f94",
+          "name": "Seattle Neighbours",
+          "role": "Member",
+          "activity": 1,
+          "policy": {
+            "workspace": true,
+            "enabled": false,
+            "requiredFields": [],
+            "policiesEnabled": null,
+            "policies": null
+          },
+          "moderationPending": 0,
+          "moderationQueueRevision": 0,
+          "category": "neighbourhood",
+          "membershipStatus": "accepted",
+          "membersActivity": 1,
+          "requestKind": null
+        }
+      }
+    ],
+    "pendingAfterResume": {
+      "lists": [
+        {
+          "explore": false,
+          "bucket": "pending",
+          "cards": [
+            {
+              "id": "seed-community-makers",
+              "membership": "pending",
+              "accepted": 2,
+              "pending": 0,
+              "activity": 0,
+              "badge": {
+                "variant": "badge",
+                "layout": "badge-with-leading-accessory",
+                "label": "2",
+                "ariaLabel": "open.members",
+                "interactive": true,
+                "disabled": false,
+                "tone": "default",
+                "leadingAccessory": {
+                  "icon": "groups",
+                  "tone": "positive"
+                },
+                "pendingCount": 0
+              },
+              "geometry": {
+                "width": 43.15625,
+                "height": 28
+              }
+            }
+          ]
+        }
+      ]
+    },
+    "activeAfterApproval": {
+      "text": "Groups\nschedule\nRecent\nexpand_more\nclose\ngroups\nActive groups\nexpand_more\n1\nadd\nSat, 26 Sept 2026\nimage_not_supported\ngroups\n3\n1\nlocation_city\nSeattle Neighbours\n\nNeighbourhood\n\n3.2 km\n\nmore_vert\nSun, 20 Sept 2026\ngroups\n3\npalette\nPhoto Walks\n\nHobbies\n\n3.5 km\n\nmore_vert\ngroups\n2\nschool\nStudy Buddies\n\nLearning\n\n3.1 km\n\nmore_vert"
+    },
+    "badgeStyle": [
+      {
+        "name": "Seattle Neighbours",
+        "layout": "badge-with-leading-accessory",
+        "shape": null,
+        "width": 43.15625,
+        "height": 28,
+        "border": "2px solid rgba(255, 255, 255, 0.9)",
+        "borderRadius": "999px",
+        "background": "rgba(0, 0, 0, 0) linear-gradient(rgb(51, 79, 114) 0%, rgb(38, 64, 97) 100%) repeat scroll 0% 0% / auto padding-box border-box",
+        "color": "rgb(255, 255, 255)"
+      },
+      {
+        "name": "Photo Walks",
+        "layout": "badge-with-leading-accessory",
+        "shape": null,
+        "width": 43.15625,
+        "height": 28,
+        "border": "2px solid rgba(255, 255, 255, 0.9)",
+        "borderRadius": "999px",
+        "background": "rgba(0, 0, 0, 0) linear-gradient(rgb(51, 79, 114) 0%, rgb(38, 64, 97) 100%) repeat scroll 0% 0% / auto padding-box border-box",
+        "color": "rgb(255, 255, 255)"
+      },
+      {
+        "name": "Study Buddies",
+        "layout": "badge-with-leading-accessory",
+        "shape": null,
+        "width": 43.15625,
+        "height": 28,
+        "border": "2px solid rgba(255, 255, 255, 0.9)",
+        "borderRadius": "999px",
+        "background": "rgba(0, 0, 0, 0) linear-gradient(rgb(51, 79, 114) 0%, rgb(38, 64, 97) 100%) repeat scroll 0% 0% / auto padding-box border-box",
+        "color": "rgb(255, 255, 255)"
+      }
+    ],
+    "workspaceOptions": [
+      {
+        "text": "public\nMain profile\n99+\ndone",
+        "aria": null
+      },
+      {
+        "text": "DC\nDesign Circle\n1",
+        "aria": null
+      },
+      {
+        "text": "PW\nPhoto Walks",
+        "aria": null
+      },
+      {
+        "text": "SF\nSeattle Friends\n1",
+        "aria": null
+      },
+      {
+        "text": "SN\nSeattle Neighbours\n1",
+        "aria": null
+      },
+      {
+        "text": "SB\nStudy Buddies",
+        "aria": null
+      }
+    ]
+  }
+}

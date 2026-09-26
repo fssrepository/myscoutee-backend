@@ -438,3 +438,52 @@ not a complete block or local/HTTP campaign PASS.
 - Evidence: GROUP-LIFECYCLE-001-members-media-policy-20260926.json. Case remains
   unfinished; complete local-adapter browser coverage and remaining numbered
   blocks are pending. No earlier closed PASS case was reopened.
+
+## 21:17 continuation: shared badge, separate Explore and live join/approval
+
+The enabled Group member badge now uses the same `badge-with-leading-accessory`
+layout as Event Explore, including its shared dark-blue gradient and white border.
+Deployed DOM: 43.15625 × 28px, 2px rgba(255,255,255,.9) border, 999px radius.
+Hidden-roster access rules remain as previously verified. Structured observations:
+[`GROUP-LIFECYCLE-001-join-live-20260926.json`](GROUP-LIFECYCLE-001-join-live-20260926.json).
+
+The normal launcher initially timed out for Maya. Her stored main and group
+coordinates were valid. `/auth/me` and realtime resolve her retained active group
+profile, while the readiness check incorrectly required the base account ID.
+The launcher now verifies the returned profile against the authenticated account's
+accepted workspace list and requires realtime to return that same profile. All
+three managed sessions then launched successfully, preserving the selection.
+The nearby 403 location writes were rejected Austin browser samples, not evidence
+of invalid persisted coordinates or failed authentication.
+
+HTTP block 4 observations, through the ordinary managed UI:
+
+- Main buckets Hosting/Active/Pending/Invitations use green/orange/amber/violet.
+  Only the separate Explore has categories; sorting precedes Close in its header.
+- Main Pending remained open behind Explore. Join Cancel preserved the state;
+  confirmed Join removed Seattle Neighbours from Explore and inserted it into
+  Pending through the existing change store. The pending applicant had no profile.
+- Eszter's already-open roster received Alex's new pending row, and the underlying
+  card/member counter and Hosting/sidebar attention updated without reload.
+  The shared member polling gate previously excluded `community`; it now includes
+  it, and its existing change callback refreshes/publishes the changed group.
+- Approve Cancel preserved pending. Approve confirmed with a full question and the
+  same success palette as the menu. Eszter's roster/card changed from 2 accepted +
+  1 pending to 3 accepted + 0 pending. Alex left Pending when that list resumed its
+  foreground poll and appeared in Active, with exactly one workspace profile.
+- While Explore covered Pending, a remote approval did not poll the covered list;
+  the ordinary foreground resume converged. This is distinct from the immediate
+  same-window Join signal update; do not claim hidden surfaces independently poll.
+- The accepted workspace appeared in Alex's normal selector. Selecting it and
+  reloading retained Seattle Neighbours. Pending/loading/timeout behavior is not
+  proven by the immediate synchronous DOM sample and remains to be tested.
+- The ordinary invitation picker was inspected without submitting: Alex was not
+  found in the candidates examined. Normal send/accept/reject remains open; the
+  earlier seeded hidden invitation acceptance is separate evidence.
+
+Existing frontend watcher compilation and deployment passed at 21:12:48.
+Focused Vitest: member popup 6/6 and Group converter 9/9 passed. No separate build
+or stack was started. The `after-join-approval` savepoint was captured and verified
+at 2026-09-26T19:17:15Z with accepted Alex, three accepted members, zero pending and
+one workspace profile. It resumes block 4's remaining invitation branch, not a
+complete block/case PASS. Local browser coverage remains NOT RUN.

@@ -8,6 +8,7 @@
   const command = Q.text(process.env.MANUAL_QA_COMMAND);
   if (!["status", "verify-lists", "prepare-badges", "prepare-join", "restore-badges",
       "capture", "restore", "verify-savepoint", "prepare-list-pagination", "restore-list-pagination",
+      "prepare-member-invitation", "restore-member-invitation",
       "prepare-invitation", "prepare-hidden-invitation", "restore-invitation", "prepare-editor", "restore-editor", "prepare-creation", "restore-creation"].includes(command)
       || Q.text(process.env.MANUAL_QA_CHECKPOINT_ID) !== checkpointId) {
     Q.fail("Only the retained Group list baseline status is supported here.");
@@ -60,6 +61,40 @@
   const paginationIds = Array.from({length: 24}, (_, index) => `manual-qa-community-page-${String(index + 1).padStart(2, "0")}`);
   const paginationOwnerIds = paginationIds.map((_, index) => `f026092600000000000000${String(index + 1).padStart(2, "0")}`);
   const paginationDistances = [0, 3.2, 4.9, 5, 5.1, 9.9, 10, 10.1];
+  if (command === "prepare-member-invitation") {
+    if (state.memberInvitationSnapshots) Q.fail("Member invitation control already prepared.");
+    const groupId = "seed-community-trail-club";
+    const rateId = "manual-qa-community-invite-encounter";
+    const ratePair = {ownerUserId: actors[1], relatedUserId: actors[0], mode: "single"};
+    if (Q.collection("userRates").countDocuments({_id: rateId})
+        || Q.collection("activityMembers").countDocuments({ownerType: "community", ownerId: groupId, userId: actors[0]})) {
+      Q.fail("Invitation control is not an unrelated actor baseline.");
+    }
+    const retained = Q.snapshotSpecs([
+      {collection: "communityGroups", selector: {_id: groupId}},
+      {collection: "activityMembers", selector: {ownerType: "community", ownerId: groupId}},
+      {collection: "users", selector: {$or: [{userId: {$in: actors}}, {workspaceGroupId: groupId}]}},
+      {collection: "userRates", selector: {$or: [{_id: rateId}, ratePair]}},
+      {collection: "userNotifications", selector: {sourceType: "community", sourceId: groupId}},
+      {collection: "notificationOutbox", selector: {entityType: "community", entityId: groupId}}
+    ]);
+    Q.collection(Q.STATE_COLLECTION).updateOne({_id: state._id}, {$set: {memberInvitationSnapshots: retained}});
+    // A met encounter is the ordinary shared invite-picker prerequisite. The
+    // membership and invitation are created only by the subsequent browser flow.
+    Q.collection("userRates").updateOne(ratePair, {
+      $set: {met: true, eventName: "QA Group invitation prerequisite", createdDate: "2026-09-25T12:00:00Z"},
+      $setOnInsert: {_id: rateId, syncKey: rateId}
+    }, {upsert: true});
+    Q.printObject({checkpointId, groupId, encounterPrepared: true, invitationCreated: false});
+    return;
+  }
+  if (command === "restore-member-invitation") {
+    if (!state.memberInvitationSnapshots) Q.fail("No member invitation control snapshot.");
+    Q.restoreSnapshots(state.memberInvitationSnapshots);
+    Q.collection(Q.STATE_COLLECTION).updateOne({_id: state._id}, {$unset: {memberInvitationSnapshots: ""}});
+    Q.printObject({checkpointId, memberInvitationRestored: true});
+    return;
+  }
   if (command === "prepare-creation") {
     verifyLists();
     if (state.creationSnapshots) Q.fail("Group creation already prepared.");
@@ -175,13 +210,23 @@
   if (["capture", "restore", "verify-savepoint"].includes(command)) {
     const name = Q.text(process.env.MANUAL_QA_SOURCE_CHECKPOINT_ID);
     // Add later boundaries only with their prepared selectors and checklist oracle.
-    const boundaries = {"lists-ready": 1, "block-1-complete": 2, "after-editor-checks": 4};
+    const boundaries = {"lists-ready": 1, "block-1-complete": 2, "after-editor-checks": 4, "after-join-approval": 4};
     if (!Object.hasOwn(boundaries, name)) Q.fail("Unknown Group savepoint boundary.");
-    if (state.paginationSnapshots || state.invitationSnapshots || state.editorSnapshots || state.creationSnapshots) Q.fail("Restore temporary controls before a savepoint operation.");
+    if (state.paginationSnapshots || state.invitationSnapshots || state.memberInvitationSnapshots || state.editorSnapshots || state.creationSnapshots) Q.fail("Restore temporary controls before a savepoint operation.");
     let savepoint = (state.savepoints || []).find(item => item.name === name);
     if (command === "capture") {
       if (savepoint) Q.fail("Savepoint already exists; retained evidence must not be overwritten.");
-      verifyLists();
+      if (name === "after-join-approval") {
+        const groupId = "seed-community-neighbours";
+        const membership = Q.collection("activityMembers").findOne({ownerType: "community", ownerId: groupId, userId: actors[0]});
+        const profiles = Q.collection("users").find({accountUserId: actors[0], workspaceGroupId: groupId}).toArray();
+        const group = Q.collection("communityGroups").findOne({_id: groupId});
+        if (membership?.status !== "accepted" || profiles.length !== 1
+            || group?.pendingMembers !== 0
+            || Q.collection("activityMembers").countDocuments({ownerType: "community", ownerId: groupId, status: "accepted"}) !== 3) {
+          Q.fail("Join approval boundary requires Alex accepted, one workspace profile, three accepted members and no pending request.");
+        }
+      } else verifyLists();
       savepoint = {name, capturedAtIso: Q.nowIso(), adapter: "http", resumeBlock: boundaries[name],
         phase: state.phase, joinPrepared: state.joinPrepared === true,
         snapshots: Q.snapshotSpecs([...snapshots, ...(state.badgeSnapshots || [])]),
@@ -281,6 +326,7 @@
     groups: groups.length, memberships: members.length, actors: actorState,
     paginationPrepared: !!state.paginationSnapshots,
     invitationPrepared: !!state.invitationSnapshots,
+    memberInvitationPrepared: !!state.memberInvitationSnapshots,
     editorPrepared: !!state.editorSnapshots,
     creationPrepared: !!state.creationSnapshots,
     savepoints: (state.savepoints || []).map(({name, capturedAtIso, resumeBlock, adapter}) => ({name, capturedAtIso, resumeBlock, adapter})),
