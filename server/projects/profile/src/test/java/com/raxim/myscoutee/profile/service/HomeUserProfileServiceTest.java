@@ -178,6 +178,52 @@ class HomeUserProfileServiceTest {
 
 
     @Test
+    void profileLoadPersistsInitialLocationAsFieldsAndReturnsIt() {
+        Users member = user("active", 0d);
+        when(usersRepository.findByUserId("active")).thenReturn(Optional.of(member));
+        when(countryPartitionService.resolvePartitionKey(new LocationCoordinatesDto(47d, 19d))).thenReturn("HU");
+        var result = service.loadProfileExtById("active", 47d, 19d);
+        assertThat(result.profileExt().profile().locationCoordinates()).isEqualTo(new LocationCoordinatesDto(47d, 19d));
+        verify(usersRepository).updateLocation("active", new Users.LocationCoordinatesRecord(47d, 19d), "HU");
+        verify(usersRepository, never()).save(any());
+    }
+
+    @Test
+    void profileLoadWithoutCoordinatesPreservesStoredLocationAndDoesNotWriteIt() {
+        Users member = user("active", 0d);
+        member.setPartitionKey("HU");
+        member.setLocationCoordinates(new Users.LocationCoordinatesRecord(47d, 19d));
+        when(usersRepository.findByUserId("active")).thenReturn(Optional.of(member));
+        lenient().when(countryPartitionService.resolvePartitionKey(any())).thenReturn("HU");
+        var result = service.loadProfileExtById("active", null, null);
+        assertThat(result.profileExt().profile().locationCoordinates()).isEqualTo(new LocationCoordinatesDto(47d, 19d));
+        verify(usersRepository, never()).updateLocation(any(), any(), any());
+    }
+
+    @Test
+    void profileLoadRejectsInvalidOrUnauthorizedLocationWrites() {
+        assertThatThrownBy(() -> service.loadProfileExtById("active", 91d, 19d))
+                .isInstanceOf(org.springframework.web.server.ResponseStatusException.class);
+        assertThatThrownBy(() -> service.loadProfileExtById("active", 47d, null))
+                .isInstanceOf(org.springframework.web.server.ResponseStatusException.class);
+        Users member = user("active", 0d);
+        when(usersRepository.findByUserId("active")).thenReturn(Optional.of(member));
+        when(accessControlService.canCurrentActorEditProfile("active")).thenReturn(false);
+        assertThatThrownBy(() -> service.loadProfileExtById("active", 47d, 19d))
+                .isInstanceOf(org.springframework.web.server.ResponseStatusException.class);
+        verify(usersRepository, never()).updateLocation(any(), any(), any());
+    }
+
+    @Test
+    void profileLoadRejectsUnsupportedRegionBeforeWriting() {
+        when(usersRepository.findByUserId("active")).thenReturn(Optional.of(user("active", 0d)));
+        when(regionSecurityProperties.isEnabled()).thenReturn(true);
+        assertThatThrownBy(() -> service.loadProfileExtById("active", 47d, 19d))
+                .isInstanceOf(org.springframework.web.server.ResponseStatusException.class);
+        verify(usersRepository, never()).updateLocation(any(), any(), any());
+    }
+
+    @Test
     void newProfileCarriesReferralIntoSavedProfileAndAudit() {
         var referral = new com.raxim.myscoutee.profile.data.document.AffiliateRegistration(
                 "new-member", "referrer", "code", "2026-09-22T00:00:00Z");

@@ -248,3 +248,39 @@ as a QA shortcut. Old content must not remain in one adapter/environment while
 another receives the new version. This is the side-menu Help task, separate
 from the already implemented setup-permissions help above. UI note 11 remains
 on hold for the user's revised idea.
+
+## NOT RUN — initial location, Firebase entry and mobile menu closing
+
+Keep these micros in this existing NOT RUN case; no new case or manual PASS.
+
+1. Fresh Firebase registration/sign-in with no saved coordinate: request location
+   through Setup, then complete onboarding. The scoped browser pending point
+   survives reload and is sent only on the first `/auth/me/profile-ext` request
+   as latitude/longitude parameters (alongside groupId when selected), with no
+   location X-header. Verify Mongo account/active group profile and local
+   IndexedDB separately. Only a successful authoritative response clears pending.
+2. Fail that profile request: no cached-success acknowledgement, no losing the
+   pending point; retry sends it again. Account switch must not send another
+   account's point, and an older reply must not clear a newer staged point.
+3. Existing registered Firebase user: logout and sign in once, with avatar preview
+   changing. Enter the app on that first attempt. Real logout/account/session
+   change still discards stale reads; failed group switch unlocks the selector.
+4. Restore a session using server-stored coordinates while geolocation is denied.
+   No mandatory GPS request or landing-page trap. Notifications retain their
+   own setup flow. Opening the landing alone must not acquire GPS repeatedly.
+5. With native location granted, disable location in Setup and save. Watch stops,
+   existing server point remains usable. Reopen Settings and confirm OFF remains;
+   enable again explicitly. Native denial/revocation does not erase the point.
+   Movement below 5 km causes no write; >=5 km saves through the existing path.
+6. Mobile: open a card's three-dot menu above a popup whose X becomes covered.
+   The sheet has its own X in the heading; it closes only the sheet, leaves the
+   parent list/search/scroll intact and does not select an item.
+7. Check all seven surfaces in the [UI-notes menu audit](../../../plans/UI_NOTES_2026_09_25.md):
+   moderation categories, activity rating filter, event topics, asset basket,
+   invite-member basket, event-share basket, asset-share basket. Title and X
+   remain usable after selecting/removing items; no unintended basket commit.
+   Check a profile multiselect, price-scope selector and checkout optional-item
+   card menu too. HU/EN and narrow mobile widths; no header/button overlap.
+8. Desktop: titles are allowed, the added mobile X is absent. Rate-score popup
+   retains its scroll-dismiss behavior; dock/fixed/explicit anchored special
+   controls retain their existing close lifecycle.

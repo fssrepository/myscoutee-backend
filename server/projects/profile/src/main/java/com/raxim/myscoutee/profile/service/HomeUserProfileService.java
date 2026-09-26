@@ -375,6 +375,50 @@ public class HomeUserProfileService {
         return user == null ? emptyMenuCounters() : buildMenuCounters(user);
     }
 
+    public ProfileExtByIdResponseDto loadProfileExtById(String requestedUserId, Double latitude, Double longitude) {
+        if (latitude != null || longitude != null) {
+            if (latitude == null || longitude == null || !Double.isFinite(latitude) || !Double.isFinite(longitude)
+                    || Math.abs(latitude) > 90 || Math.abs(longitude) > 180) {
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid location coordinates.");
+            }
+            Users selected = resolveCurrentUser(requestedUserId);
+            if (selected == null) throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Profile not found.");
+            if (!accessControlService.canCurrentActorEditProfile(selected.getUserId())) {
+                throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Authenticated user is not allowed to edit this profile.");
+            }
+            var coordinates = new LocationCoordinatesDto(latitude, longitude);
+            Users account = StringUtils.hasText(selected.getAccountUserId())
+                    ? usersRepository.findByUserId(selected.getAccountUserId()).orElseThrow(
+                            () -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Account not found.")) : selected;
+            // Validate both before the first write. These are field updates, never a full stale profile replacement.
+            String accountPartition = validatedLocationPartition(account, coordinates);
+            String selectedPartition = account == selected ? accountPartition : validatedLocationPartition(selected, coordinates);
+            persistLoadedLocation(account, coordinates, accountPartition);
+            if (account != selected) persistLoadedLocation(selected, coordinates, selectedPartition);
+        }
+        return loadProfileExtById(requestedUserId);
+    }
+
+    private void persistLoadedLocation(Users user, LocationCoordinatesDto coordinates, String partition) {
+        var record = toLocationCoordinatesRecord(coordinates);
+        usersRepository.updateLocation(user.getUserId(), record, partition);
+        user.setLocationCoordinates(record);
+        user.setPartitionKey(partition);
+        evictUserReadCaches(user.getUserId());
+    }
+
+    private String validatedLocationPartition(Users current, LocationCoordinatesDto coordinates) {
+        String resolved = countryPartitionService.resolvePartitionKey(coordinates);
+        String stored = current == null ? null : current.getPartitionKey();
+        boolean retainsStored = StringUtils.hasText(stored)
+                && sameLocation(coordinates, current.getLocationCoordinates());
+        if (regionSecurityProperties.isEnabled() && coordinates != null
+                && !StringUtils.hasText(resolved) && !retainsStored) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, INELIGIBLE_REGION_MESSAGE);
+        }
+        return resolveStoredPartitionKey(resolved, stored, current);
+    }
+
     public ProfileExtByIdResponseDto loadProfileExtById(String requestedUserId) {
         UserByIdResponseDto response = queryUserById(requestedUserId);
         if (response == null) {
@@ -2157,19 +2201,7 @@ public class HomeUserProfileService {
 
     private Users mergeUserDocument(Users current, UserDto user) {
         LocationCoordinatesDto requestedLocation = user.locationCoordinates();
-        Users.LocationCoordinatesRecord storedLocation = current == null
-                ? null
-                : current.getLocationCoordinates();
-        String storedPartitionKey = current == null ? null : current.getPartitionKey();
-        String resolvedPartitionKey = countryPartitionService.resolvePartitionKey(requestedLocation);
-        boolean retainsStoredPartition = StringUtils.hasText(safeText(storedPartitionKey))
-                && sameLocation(requestedLocation, storedLocation);
-        if (regionSecurityProperties.isEnabled()
-                && requestedLocation != null
-                && !StringUtils.hasText(resolvedPartitionKey)
-                && !retainsStoredPartition) {
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN, INELIGIBLE_REGION_MESSAGE);
-        }
+        String locationPartition = validatedLocationPartition(current, requestedLocation);
 
         Users document = current == null ? new Users() : current;
         document.setMongoId(current != null && StringUtils.hasText(current.getMongoId()) ? current.getMongoId() : new ObjectId().toHexString());
@@ -2198,10 +2230,7 @@ public class HomeUserProfileService {
         document.setAbout(nullToEmpty(user.about()));
         document.setAffinity(absoluteAffinityService.resolveUserAffinity(user));
         document.setLocationCoordinates(toLocationCoordinatesRecord(requestedLocation));
-        document.setPartitionKey(resolveStoredPartitionKey(
-                resolvedPartitionKey,
-                storedPartitionKey,
-                current));
+        document.setPartitionKey(locationPartition);
         document.setImages(normalizeStrings(user.images()));
         document.setProfileDetails(toProfileDetailRecords(user.profileDetails()));
         document.setImpressions(toUserImpressionsRecord(user.impressions()));
