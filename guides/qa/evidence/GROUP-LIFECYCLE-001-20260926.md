@@ -949,3 +949,5 @@ Captured and exactly verified `after-membership-trash` at
 `2026-09-26T23:28:34.299Z`, resumeBlock8. Alex remains on Design Circle with
 Groups Active open; Eszter retains Seattle Neighbours Members over Groups.
 No closed block was replayed/reset. **HTTP7/48; Lifecycle7/29; next8.**
+
+01:34 follow-up: Pending only now reuses the shared inline label toggle: icon + label + switch, external alert counter. Actual360px DOM:160.2×36px, right352.3px, no overflow; false→true→false filters3→0→3 with Groups retained beneath. Existing watcher build/sync PASS; user reviewed and requested continuation to8. No new block credit.

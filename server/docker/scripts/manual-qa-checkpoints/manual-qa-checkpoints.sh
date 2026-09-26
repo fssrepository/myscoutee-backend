@@ -8,6 +8,8 @@ usage() {
   cat <<'USAGE'
 Usage:
   bash manual-qa-checkpoints.sh status community-group GROUP-LIFECYCLE-001
+  bash manual-qa-checkpoints.sh prepare-sharing|restore-sharing community-group GROUP-LIFECYCLE-001
+  bash manual-qa-checkpoints.sh track-sharing-registration community-group GROUP-LIFECYCLE-001 <new-demo-profile-id>
   bash manual-qa-checkpoints.sh capture|restore|verify-savepoint community-group GROUP-LIFECYCLE-001 <lists-ready|block-1-complete|after-editor-checks|after-join-approval|after-invitation-checks|after-workspace-selection|after-moderation-checks|after-membership-trash>
   bash manual-qa-checkpoints.sh prepare-list-pagination|restore-list-pagination community-group GROUP-LIFECYCLE-001
   bash manual-qa-checkpoints.sh prepare-invitation|prepare-hidden-invitation|restore-invitation community-group GROUP-LIFECYCLE-001
@@ -961,11 +963,11 @@ PY
       fi
     fi
     ;;
-  community-group:capture|community-group:restore|community-group:verify-savepoint)
+  community-group:capture|community-group:restore|community-group:verify-savepoint|community-group:track-sharing-registration)
     [ "$#" -eq 4 ] || { usage >&2; exit 2; }
     run_scenario "${command}" "${scenario}" 30 "$3" "$4"
     ;;
-  community-group:prepare-admin-lifecycle|community-group:prepare-admin-moderation|community-group:prepare-admin-feed-event|community-group:prepare-admin-previews|community-group:prepare-admin-base-chat-read|community-group:prepare-admin-base-chat-message|community-group:prepare-admin-base-feed|community-group:restore-admin-lifecycle|community-group:prepare-member-invitation|community-group:restore-member-invitation|community-group:status|community-group:verify-lists|community-group:prepare-badges|community-group:prepare-join|community-group:restore-badges|community-group:prepare-list-pagination|community-group:restore-list-pagination|community-group:prepare-invitation|community-group:prepare-hidden-invitation|community-group:restore-invitation|community-group:prepare-editor|community-group:restore-editor|community-group:prepare-creation|community-group:restore-creation)
+  community-group:prepare-sharing|community-group:restore-sharing|community-group:prepare-admin-lifecycle|community-group:prepare-admin-moderation|community-group:prepare-admin-feed-event|community-group:prepare-admin-previews|community-group:prepare-admin-base-chat-read|community-group:prepare-admin-base-chat-message|community-group:prepare-admin-base-feed|community-group:restore-admin-lifecycle|community-group:prepare-member-invitation|community-group:restore-member-invitation|community-group:status|community-group:verify-lists|community-group:prepare-badges|community-group:prepare-join|community-group:restore-badges|community-group:prepare-list-pagination|community-group:restore-list-pagination|community-group:prepare-invitation|community-group:prepare-hidden-invitation|community-group:restore-invitation|community-group:prepare-editor|community-group:restore-editor|community-group:prepare-creation|community-group:restore-creation)
     [ "$#" -eq 3 ] || { usage >&2; exit 2; }
     run_scenario "${command}" "${scenario}" 30 "$3"
     ;;

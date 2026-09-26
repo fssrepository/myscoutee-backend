@@ -7,7 +7,7 @@
   Q.assertDeploymentSafety();
   const command = Q.text(process.env.MANUAL_QA_COMMAND);
   if (!["status", "verify-lists", "prepare-badges", "prepare-join", "restore-badges",
-      "capture", "restore", "verify-savepoint", "prepare-list-pagination", "restore-list-pagination",
+      "capture", "restore", "verify-savepoint", "prepare-sharing", "track-sharing-registration", "restore-sharing", "prepare-list-pagination", "restore-list-pagination",
       "prepare-member-invitation", "restore-member-invitation", "prepare-admin-lifecycle", "prepare-admin-moderation", "prepare-admin-feed-event", "prepare-admin-previews", "prepare-admin-base-chat-read", "prepare-admin-base-chat-message", "prepare-admin-base-feed", "restore-admin-lifecycle",
       "prepare-invitation", "prepare-hidden-invitation", "restore-invitation", "prepare-editor", "restore-editor", "prepare-creation", "restore-creation"].includes(command)
       || Q.text(process.env.MANUAL_QA_CHECKPOINT_ID) !== checkpointId) {
@@ -57,6 +57,70 @@
         Q.fail(`${snapshot.collection} differs from the selected retained list boundary; retain state and diagnose before restarting QA.`);
       }
     }
+  }
+  const sharingEventId = "f02709270000000000000081";
+  const sharingAssetId = "f02709270000000000000082";
+  const sharingGroupId = "seed-community-design-circle";
+  if (command === "prepare-sharing") {
+    if (state.sharingSnapshots) Q.fail("Sharing prerequisites already prepared; retain their snapshots.");
+    if (!(state.savepoints || []).some(point => point.name === "after-membership-trash")) Q.fail("Block 7 boundary required.");
+    const owner = Q.collection("users").findOne({userId: actors[0]});
+    const group = Q.collection("communityGroups").findOne({_id: sharingGroupId});
+    const asset = Q.collection("assets").findOne({assetId: "6c8ac25e7a63755e53c46093", status: "A"});
+    if (!owner || !group || !asset || Q.collection("events").countDocuments({sourceId: sharingEventId}) || Q.collection("assets").countDocuments({assetId: sharingAssetId})) Q.fail("Sharing baseline missing or fixed QA IDs occupied.");
+    const members = Q.collection("activityMembers").find({ownerType: "community", ownerId: sharingGroupId}).toArray();
+    const affected = [...new Set([...actors, ...members.map(member => member.userId)])];
+    const retained = Q.snapshotSpecs([
+      {collection: "users", selector: {$or: [{userId: {$in: affected}}, {workspaceGroupId: sharingGroupId}]}},
+      {collection: "communityGroups", selector: {_id: sharingGroupId}},
+      {collection: "events", selector: {sourceId: sharingEventId}},
+      {collection: "assets", selector: {assetId: sharingAssetId}},
+      {collection: "activityMembers", selector: {ownerId: {$in: [sharingGroupId, sharingEventId, sharingAssetId]}}},
+      {collection: "integrationParticipantInvites", selector: {ownerUserId: actors[0], eventId: {$in: [sharingGroupId, sharingEventId]}}},
+      {collection: "integrationParticipantMappings", selector: {ownerUserId: actors[0]}},
+      {collection: "shareTokens", selector: {ownerUserId: actors[0], entityId: sharingAssetId}},
+      ...["affiliateLinks", "affiliatePartners"].map(collection => ({collection, selector: {_id: actors[0]}})),
+      {collection: "affiliateRegistrations", selector: {referrerUserId: actors[0]}},
+      {collection: "userNotifications", selector: {$or: [{sourceId: {$in: [sharingGroupId, sharingEventId, sharingAssetId]}}, {recipientUserId: {$in: affected}, senderUserId: actors[0]}]}},
+      {collection: "notificationOutbox", selector: {entityId: {$in: [sharingGroupId, sharingEventId, sharingAssetId]}}}
+    ]);
+    Q.collection(Q.STATE_COLLECTION).updateOne({_id: state._id}, {$set: {sharingSnapshots: retained, sharingRegistrants: [], sharingPreparedAtIso: Q.nowIso()}});
+    const now = Q.nowIso(), start = new Date(Date.now() + 86400000).toISOString(), end = new Date(Date.now() + 90000000).toISOString();
+    Q.collection("events").insertOne({_id: sharingEventId, sourceId: sharingEventId, syncKey: sharingEventId,
+      ownerUserId: actors[0], creatorUserId: actors[0], creatorName: owner.name, creatorInitials: owner.initials,
+      admins: [actors[0]], status: "A", eventType: "main", mode: "Casual", workspaceGroupId: null,
+      title: "QA Group Link Event", subtitle: "External sharing prerequisite", visibility: "Public", blindMode: "Open Event",
+      imageUrl: group.imageUrl, imageUrls: [group.imageUrl], location: "Seattle", locationCoordinates: owner.locationCoordinates,
+      locationGeo: {type: "Point", coordinates: [owner.locationCoordinates.longitude, owner.locationCoordinates.latitude]},
+      startAtIso: start, endAtIso: end, createdDate: now, updatedDate: now, createdUser: actors[0], updatedUser: actors[0],
+      acceptedMembers: 1, pendingMembers: 0, acceptedMemberUserIds: [actors[0]], pendingMemberUserIds: [],
+      capacityMin: 1, capacityMax: 10, capacityTotal: 10, activity: 0, unread: 0,
+      ticketing: false, slotsEnabled: false, subEventsEnabled: false, policiesEnabled: false});
+    const member = members.find(member => member.userId === actors[0]);
+    Q.collection("activityMembers").insertOne({...member, _id: `event:${sharingEventId}:${actors[0]}`, syncKey: `event:${sharingEventId}:${actors[0]}`,
+      ownerType: "event", ownerId: sharingEventId, role: "Admin", status: "accepted", communityUpdates: 0, actionAtIso: now, updatedDate: now});
+    Q.collection("assets").insertOne({...asset, _id: sharingAssetId, assetId: sharingAssetId, syncKey: sharingAssetId,
+      ownerUserId: actors[0], title: "QA Group Link Supplies", requests: [], createdDate: now, updatedDate: now,
+      createdUser: actors[0], updatedUser: actors[0]});
+    Q.printObject({checkpointId, prepared: true, sharingGroupId, sharingEventId, sharingAssetId, outcomesSeeded: false});
+    return;
+  }
+  if (command === "track-sharing-registration") {
+    const userId = Q.text(process.env.MANUAL_QA_SOURCE_CHECKPOINT_ID);
+    if (!state.sharingSnapshots || !/^demo-profile-[a-f0-9-]{36}$/.test(userId) || Q.collection("users").countDocuments({userId})) Q.fail("Track a fresh UI-generated identity before submitting registration.");
+    if ((state.sharingRegistrants || []).includes(userId)) Q.fail("Registration identity already tracked.");
+    const fields = ["_id", "userId", "ownerUserId", "accountUserId", "recipientUserId", "actorUserId", "relatedUserId", "leftUserId", "rightUserId", "targetId", "referrerUserId", "internalId"];
+    const retained = Q.snapshotSpecs(db.getCollectionNames().filter(collection => collection !== Q.STATE_COLLECTION).map(collection => ({collection, selector: {$or: fields.map(field => ({[field]: userId}))}})));
+    Q.collection(Q.STATE_COLLECTION).updateOne({_id: state._id}, {$push: {sharingRegistrants: userId, sharingSnapshots: {$each: retained}}});
+    Q.printObject({checkpointId, tracked: userId, registrationCreated: false});
+    return;
+  }
+  if (command === "restore-sharing") {
+    if (!state.sharingSnapshots) Q.fail("No sharing snapshot to restore.");
+    Q.restoreSnapshots(state.sharingSnapshots);
+    Q.collection(Q.STATE_COLLECTION).updateOne({_id: state._id}, {$unset: {sharingSnapshots: "", sharingRegistrants: "", sharingPreparedAtIso: ""}});
+    Q.printObject({checkpointId, sharingRestored: true});
+    return;
   }
   const paginationIds = Array.from({length: 24}, (_, index) => `manual-qa-community-page-${String(index + 1).padStart(2, "0")}`);
   const paginationOwnerIds = paginationIds.map((_, index) => `f026092600000000000000${String(index + 1).padStart(2, "0")}`);
@@ -424,7 +488,7 @@
     // Add later boundaries only with their prepared selectors and checklist oracle.
     const boundaries = {"lists-ready": 1, "block-1-complete": 2, "after-editor-checks": 4, "after-join-approval": 4, "after-invitation-checks": 5, "after-workspace-selection": 5, "after-moderation-checks": 7, "after-membership-trash": 8};
     if (!Object.hasOwn(boundaries, name)) Q.fail("Unknown Group savepoint boundary.");
-    if (state.adminLifecycleSnapshots || state.paginationSnapshots || state.invitationSnapshots || state.memberInvitationSnapshots || state.editorSnapshots || state.creationSnapshots) Q.fail("Restore temporary controls before a savepoint operation.");
+    if (state.sharingSnapshots || state.adminLifecycleSnapshots || state.paginationSnapshots || state.invitationSnapshots || state.memberInvitationSnapshots || state.editorSnapshots || state.creationSnapshots) Q.fail("Restore temporary controls before a savepoint operation.");
     let savepoint = (state.savepoints || []).find(item => item.name === name);
     if (command === "capture") {
       if (savepoint) Q.fail("Savepoint already exists; retained evidence must not be overwritten.");

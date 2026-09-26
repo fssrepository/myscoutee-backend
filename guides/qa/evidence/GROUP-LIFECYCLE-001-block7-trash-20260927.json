@@ -401,5 +401,39 @@
       "adapter": "http",
       "note": "Saved fixture state is not a QA PASS; UI evidence and mode status remain in the evidence log and ledger."
     }
+  },
+  "pendingToggleFollowup": {
+    "mobile": {
+      "viewport": 360,
+      "text": "pending_actions\nPending only",
+      "checked": null,
+      "html": "<button _ngcontent-ng-c34642973=\"\" type=\"button\" class=\"app-menu__button-row-item app-menu__button-row-item--toggle app-menu__button-row-item--labelled app-menu__palette--rose\" title=\"Show pending members only\" aria-pressed=\"false\" aria-label=\"Show pending members only\"><!--container--><!--container--><!--container--><!--container--><!--container--><span _ngcontent-ng-c34642973=\"\" class=\"app-menu__button-row-main\"><mat-icon _ngcontent-ng-c34642973=\"\" role=\"img\" class=\"mat-icon notranslate material-icons mat-ligature-font mat-icon-no-color\" aria-hidden=\"true\" data-mat-icon-type=\"font\">pending_actions</mat-icon><!--container--><span _ngcontent-ng-c34642973=\"\" class=\"app-menu__button-row-label\">Pending only</span></span><!--container--><span _ngcontent-ng-c34642973=\"\" aria-hidden=\"true\" class=\"app-menu__tabs-toggle app-menu__button-row-toggle\"><span _ngcontent-ng-c34642973=\"\"></span></span><!--container--><!--container--><!--container--><!--container--></button>",
+      "rect": {
+        "left": 192.125,
+        "right": 352.328125,
+        "width": 160.203125,
+        "height": 36
+      },
+      "overflow": false
+    },
+    "roundTrip": {
+      "off": {
+        "pressed": "false",
+        "switchVisible": true,
+        "text": "Members\n\nSeattle Neighbours\n\n3 members\nclose\nperson_add\nInvite\npending_actions\nPending only\nperson\nmore_vert\nvisibility\nMaya Stone\n\nMember · San Diego\n\nadmin_panel_settings\nmore_vert\nvisibility\nNagy Eszter\n\nAdmin · Seattle\n\nperson\nmore_vert\nvisibility\nAlex Turner\n\nMember · Seattle"
+      },
+      "on": {
+        "pressed": "true",
+        "switchVisible": true,
+        "text": "Members\n\nSeattle Neighbours\n\n3 members\nclose\nperson_add\nInvite\npending_actions\nPending only\nNo members yet.\n\nCheck back later or invite people in."
+      },
+      "restored": {
+        "pressed": "false",
+        "switchVisible": true,
+        "text": "Members\n\nSeattle Neighbours\n\n3 members\nclose\nperson_add\nInvite\npending_actions\nPending only\nperson\nmore_vert\nvisibility\nMaya Stone\n\nMember · San Diego\n\nadmin_panel_settings\nmore_vert\nvisibility\nNagy Eszter\n\nAdmin · Seattle\n\nperson\nmore_vert\nvisibility\nAlex Turner\n\nMember · Seattle"
+      },
+      "groupsRetained": true
+    },
+    "userConfirmed": true
   }
 }
