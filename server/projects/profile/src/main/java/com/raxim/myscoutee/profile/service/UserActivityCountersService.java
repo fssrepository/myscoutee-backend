@@ -42,7 +42,12 @@ public class UserActivityCountersService {
     public void applyCommunityMemberDelta(String groupId, int pendingDelta) {
         if (pendingDelta == 0) return;
         mongoTemplate.updateFirst(Query.query(Criteria.where("_id").is(groupId)),
-                new Update().inc("pendingMembers", pendingDelta).inc("version", 1L),
+                new Update().inc("pendingMembers", pendingDelta).inc("version", 1L).set("updatedAtIso", Instant.now().toString()),
+                com.raxim.myscoutee.profile.data.document.CommunityGroup.class);
+    }
+    public void touchCommunityGroup(String groupId, String changedAtIso) {
+        mongoTemplate.updateFirst(Query.query(Criteria.where("_id").is(groupId)),
+                new Update().max("updatedAtIso", changedAtIso).inc("version", 1L),
                 com.raxim.myscoutee.profile.data.document.CommunityGroup.class);
     }
     private final OrganizerFollowingService organizerFollowingService;

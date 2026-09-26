@@ -25,12 +25,28 @@ or claim that a fixture or browser session has already been prepared.
    Explore are distinct: owned/administered groups belong in Hosting; accepted
    memberships and either pending interaction belong in Participation; Explore
    excludes owned and already-interacted groups. Check category filtering and
-   pagination against the same membership state.
+   pagination against the same membership state. Reconfirm the original closed
+   company/group requirement: invitation-only groups never appear in Explore,
+   including filtered totals, subsequent pages and sync upserts. A pending
+   invitation belongs in Participation; only accepted members can select the
+   workspace. A known private group ID does not grant an outsider detail access.
 2. Compare category icon colors with their filter menu items. Check selected
    menu-item tint, card labels and pending/member badges. Use the card's actions
    and member badge; do not require a newly invented whole-card animation.
-   A zero-distance card belongs under **0 km**, using the shared Event distance
-   grouping. Nonzero distances retain the existing 5 km buckets.
+   Distance headers show the interval's inclusive lower boundary, using the
+   shared Activity grouping: **0 <= d < 5 km → 0 km**, **5 <= d < 10 km → 5 km**.
+   Check 0, 3.2, 4.999, 5, 5.1, 9.999 and 10 km; display, server/local ordering
+   and pagination must use the same boundaries. This also applies to Activity
+   distance views and Event Explore, not only Groups.
+   Resize the list: two cards remain side by side when the available width
+   fits them (including a roughly 600px window); narrow phones use one column.
+   The last card retains a normal column width and distance headers span the row.
+   The shared header menu offers Distance and Recent. Explore defaults to exact
+   distance ascending, including within each distance interval; Hosting and
+   Participation default to last-change time descending, with date headers.
+   Switch either sort in each bucket, filter and paginate; sync and immediate
+   store updates retain the same order. Recent uses saved change time, not
+   creation time; retrying a completed operation does not make it recent again.
 
 ## 2. Create and reopen a group
 

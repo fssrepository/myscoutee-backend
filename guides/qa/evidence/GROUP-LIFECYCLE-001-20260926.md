@@ -241,3 +241,44 @@ The versioned `verify-lists` gate confirmed all ten groups and 27 memberships
 against the retained baseline without mutation. BSON field order after adding
 `pendingMembers` is ignored; field presence and values remain exact. Restore
 now retains the new counter schema and the original snapshots for provenance. No closed PASS case was changed.
+
+## Block 1 continuation and replay boundary — 19:06 local
+
+- HTTP lists checked for Alex, Eszter and Maya. Hosting/Participation/Explore
+  reflect their accepted, pending and unrelated memberships. Alex has two
+  Hosting groups; Participation includes Game Night invitation and Makers
+  request; Explore excludes both. Category Sport leaves Seattle Trail Club.
+- The versioned `prepare-list-pagination` fixture temporarily added 24 named
+  controls. Scrolling loaded all 27 Explore cards, and Sport loaded all 25
+  matching cards, without duplicate IDs. `restore-list-pagination` removed
+  only those controls and verified the original ten groups/27 memberships.
+- **Correction:** the earlier 3.2 → 5 km expectation was wrong. The user requires
+  interval starts: 3.2 → 0 km, 5.1 → 5 km, 10 → 10 km everywhere. Shared Activity
+  labels, Event Explore labels, group ordering on HTTP/local and Rate ordering
+  on HTTP/local were corrected together; the Feed already used this rule.
+  The old upper-bound focused assertion is superseded, not evidence of PASS.
+- Ten focused checks passed (five rate-order and five group-menu/shared-distance
+  checks), including 4.999/5 and 9.999/10 boundaries. Existing frontend and Java
+  watchers compiled successfully. Java test execution remains pending.
+- `capture ... lists-ready`, `verify-savepoint ... lists-ready` and
+  `restore ... lists-ready` succeeded through the existing common Mongo
+  snapshot/restore helpers. The restore verifies the exact saved documents.
+  Original cleanup snapshots remain retained. This checkpoint resumes block 1;
+  it does not claim that block 1 passed. Browser sessions subsequently reopen
+  through the versioned launcher.
+
+### Replay commands
+
+```bash
+bash server/docker/scripts/manual-qa-checkpoints/manual-qa-checkpoints-docker.sh status community-group GROUP-LIFECYCLE-001
+bash server/docker/scripts/manual-qa-checkpoints/manual-qa-checkpoints-docker.sh restore community-group GROUP-LIFECYCLE-001 lists-ready
+node guides/qa/tools/open-checkpoint-browser-sessions.mjs GROUP-LIFECYCLE-001
+```
+
+After a verified section, capture its named boundary before subsequent writes
+and record the next numbered block here and in the handoff. Reuse the existing
+scenario and snapshot helpers. Extend the prepared selectors/oracle for later
+write blocks before capturing them. Never overwrite an existing savepoint or
+mark a fixture capture as a test PASS. `block-1-complete` is supported but has
+not been captured; remaining block-1 UI replay is still in progress. Local UI
+execution remains NOT RUN. Closed PASS cases remain untouched.

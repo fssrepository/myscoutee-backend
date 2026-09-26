@@ -8,6 +8,8 @@ usage() {
   cat <<'USAGE'
 Usage:
   bash manual-qa-checkpoints.sh status community-group GROUP-LIFECYCLE-001
+  bash manual-qa-checkpoints.sh capture|restore|verify-savepoint community-group GROUP-LIFECYCLE-001 <lists-ready|block-1-complete>
+  bash manual-qa-checkpoints.sh prepare-list-pagination|restore-list-pagination community-group GROUP-LIFECYCLE-001
   bash manual-qa-checkpoints.sh stage|ready|arm|status|reset job-messages JOB-MESSAGES
   bash manual-qa-checkpoints.sh stage|status|reset notification-admin NOTIFICATION-ADMIN-LIFECYCLE-001
   bash manual-qa-checkpoints.sh stage|status|reset mobile-push MOBILE-PUSH-LIFECYCLE-001
@@ -954,7 +956,11 @@ PY
       fi
     fi
     ;;
-  community-group:status|community-group:verify-lists|community-group:prepare-badges|community-group:prepare-join|community-group:restore-badges)
+  community-group:capture|community-group:restore|community-group:verify-savepoint)
+    [ "$#" -eq 4 ] || { usage >&2; exit 2; }
+    run_scenario "${command}" "${scenario}" 30 "$3" "$4"
+    ;;
+  community-group:status|community-group:verify-lists|community-group:prepare-badges|community-group:prepare-join|community-group:restore-badges|community-group:prepare-list-pagination|community-group:restore-list-pagination)
     [ "$#" -eq 3 ] || { usage >&2; exit 2; }
     run_scenario "${command}" "${scenario}" 30 "$3"
     ;;

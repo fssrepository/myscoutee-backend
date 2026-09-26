@@ -12,8 +12,8 @@ public class CommunityGroupsController {
     @GetMapping
     public Page page(@RequestParam String userId, @RequestParam(defaultValue="explore") String bucket,
             @RequestParam(required=false) String category, @RequestParam(defaultValue="20") int pageSize,
-            @RequestParam(required=false) String cursor) {
-        return groups.page(groups.actor(userId), bucket, category, pageSize, cursor);
+            @RequestParam(required=false) String cursor, @RequestParam(required=false) String sort) {
+        return groups.page(groups.actor(userId), bucket, category, pageSize, cursor, sort);
     }
     @PostMapping("/sync")
     public SyncResponse sync(@RequestBody SyncRequest request) { return groups.sync(groups.actor(request.userId()), request); }

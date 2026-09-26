@@ -1599,7 +1599,7 @@ public class UserRatesService {
 
     private static int distanceBucketMeters(Integer distanceMetersExact) {
         int meters = exactDistanceMeters(distanceMetersExact);
-        return Math.max(5000, (int) Math.ceil(meters / 5000d) * 5000);
+        return (meters / 5000) * 5000;
     }
 
     private static long rateDateMillis(String value) {

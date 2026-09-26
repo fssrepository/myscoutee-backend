@@ -85,8 +85,10 @@ public class CommunityGroupsService {
         return dto(actor, group, members(id));
     }
     private record GroupSnapshot(List<Group> items, long total, Map<String, Long> context) {}
-    private GroupSnapshot snapshot(Users actor, String bucket, String category) {
+    private GroupSnapshot snapshot(Users actor, String bucket, String category, String sort) {
         if (!Set.of("hosting", "participation", "explore").contains(bucket)) throw error(HttpStatus.BAD_REQUEST);
+        String order = sort == null || sort.isBlank() ? (bucket.equals("explore") ? "distance" : "updated") : sort;
+        if (!Set.of("distance", "updated").contains(order)) throw error(HttpStatus.BAD_REQUEST);
         var own = memberships.findByOwnerTypeAndUserId(OWNER_TYPE, actor.getUserId()).stream()
                 .filter(m -> Set.of("accepted", "pending").contains(m.getStatus())).toList();
         var ownById = own.stream().collect(Collectors.toMap(ActivityMember::getOwnerId, m -> m));
@@ -106,15 +108,20 @@ public class CommunityGroupsService {
                 .filter(g -> owners.containsKey(g.ownerUserId()))
                 .map(g -> CommunityGroupMapper.toDto(g, owners.get(g.ownerUserId()), actor,
                         membersByGroup.getOrDefault(g.id(), List.of()), com.raxim.myscoutee.profile.service.mapper.CommunityGroupProfileMapper.attention(profileByGroup.get(g.id()))))
-                .sorted(Comparator.comparingDouble((Group g) -> g.distanceKm() == null ? Double.MAX_VALUE : Math.ceil(g.distanceKm() / 5))
-                        .thenComparing(Group::createdAtIso, Comparator.reverseOrder()).thenComparing(Group::id)).toList();
+                .sorted((order.equals("distance")
+                    ? Comparator.comparingDouble((Group g) -> g.distanceKm() == null ? Double.MAX_VALUE : g.distanceKm())
+                    : Comparator.comparing(Group::updatedAtIso, Comparator.reverseOrder()))
+                    .thenComparing(Group::id)).toList();
         var workspaceCounters = workspaces(actor);
         return new GroupSnapshot(rows, rows.size(), Map.of(
                 "hosting", workspaceCounters.stream().filter(w -> "Admin".equals(w.role()) && "accepted".equals(w.membershipStatus())).mapToLong(Workspace::activity).sum(),
                 "participation", workspaceCounters.stream().filter(w -> !("Admin".equals(w.role()) && "accepted".equals(w.membershipStatus()))).mapToLong(Workspace::activity).sum()));
     }
     public Page page(Users actor, String bucket, String category, int pageSize, String cursor) {
-        var snapshot = snapshot(actor, bucket, category);
+        return page(actor, bucket, category, pageSize, cursor, null);
+    }
+    public Page page(Users actor, String bucket, String category, int pageSize, String cursor, String sort) {
+        var snapshot = snapshot(actor, bucket, category, sort);
         int offset = 0;
         try { if (cursor != null && !cursor.isBlank()) offset = Integer.parseInt(cursor); }
         catch (NumberFormatException ex) { throw error(HttpStatus.BAD_REQUEST); }
@@ -124,7 +131,7 @@ public class CommunityGroupsService {
     }
     public SyncResponse sync(Users actor, SyncRequest request) {
         if (request.knownItems() == null || request.knownItems().size() > 500) throw error(HttpStatus.BAD_REQUEST);
-        var snapshot = snapshot(actor, request.bucket(), request.category());
+        var snapshot = snapshot(actor, request.bucket(), request.category(), request.sort());
         var known = request.knownItems().stream().collect(Collectors.toMap(KnownGroup::id, KnownGroup::revision, (a,b) -> b));
         var byId = snapshot.items().stream().collect(Collectors.toMap(Group::id, g -> g));
         int tailIndex = -1;
@@ -311,8 +318,9 @@ public class CommunityGroupsService {
                 target.getStatus(), target.getRole(), target.getRequestKind(), target.getPendingSource(),
                 Boolean.TRUE.equals(target.getOrganizerOnly()), target.getActionAtIso(), request.action(), actor.getUserId()) == 0)
             throw error(HttpStatus.CONFLICT);
-        counters.applyCommunityMemberDelta(id, ("pending".equals(target.getStatus()) ? 1 : 0)
-                - ("pending".equals(previousStatus) ? 1 : 0));
+        int pendingDelta = ("pending".equals(target.getStatus()) ? 1 : 0) - ("pending".equals(previousStatus) ? 1 : 0);
+        if (pendingDelta == 0) counters.touchCommunityGroup(id, target.getActionAtIso());
+        else counters.applyCommunityMemberDelta(id, pendingDelta);
         group = groups.findById(id).orElseThrow();
         if ("deleted".equals(target.getStatus())) users.clearActiveWorkspace(target.getUserId(), id);
         notifyMemberTransition(group, actor.getUserId(), target, request.action());

@@ -757,7 +757,7 @@ class UserRatesServiceTest {
         UserRate nearHigh = singleStoredRate("a-near-high", "owner", "near-high-user", 9, 0, "2026-05-08T09:00:00Z");
         nearHigh.setDistanceMetersExact(4_000);
         UserRate farHigh = singleStoredRate("far-high", "owner", "far-high-user", 10, 0, "2026-05-08T11:00:00Z");
-        farHigh.setDistanceMetersExact(6_000);
+        farHigh.setDistanceMetersExact(5_000);
         UserRatesService service = queryService(usersById, List.of(nearLow, farHigh, nearHigh));
 
         ActivityRatePageResponseDto page = service.queryActivityRatePage(
@@ -776,7 +776,7 @@ class UserRatesServiceTest {
         assertThat(page.items()).extracting(item -> item.id())
                 .containsExactly("a-near-high", "z-near-low", "far-high");
         assertThat(page.items()).extracting(item -> item.distanceMetersExact())
-                .containsExactly(4_000, 2_000, 6_000);
+                .containsExactly(4_000, 2_000, 5_000);
     }
 
     private UserRatesService syncService(Map<String, Users> usersById, List<UserRate> contextRates) {

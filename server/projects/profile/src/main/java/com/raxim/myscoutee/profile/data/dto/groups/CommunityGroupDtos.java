@@ -39,7 +39,7 @@ public final class CommunityGroupDtos {
             long moderationPending, long moderationQueueRevision, String category, String membershipStatus, long membersActivity) {}
     public record WorkspaceSelection(Workspace workspace, com.raxim.myscoutee.profile.data.dto.auth.AuthDtos.UserDto profile, com.raxim.myscoutee.profile.data.dto.auth.AuthDtos.UserDto accountProfile) {}
     public record KnownGroup(String id, String revision) {}
-    public record SyncRequest(String userId, String bucket, String category, int limit, List<KnownGroup> knownItems, String tailId) {}
+    public record SyncRequest(String userId, String bucket, String category, int limit, List<KnownGroup> knownItems, String tailId, String sort) {}
     public record SyncResponse(List<Summary> upserts, List<String> removedIds, long total) {}
     public record Command(String userId, String groupId, String action) {}
     public record Report(String userId, String groupId, String details) {}
