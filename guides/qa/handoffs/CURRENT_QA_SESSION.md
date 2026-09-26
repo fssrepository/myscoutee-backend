@@ -88,11 +88,11 @@ Earlier Event Mode, Integration API, Activity Rating and EVENT-FOLLOWING-001 rem
 ```yaml
 checkpoint: GROUP-LIFECYCLE-001
 checklist: ../checklists/group/GROUP-LIFECYCLE-001.md
-substage: User-requested retained break at 23:17 CEST. HTTP 5/48 overall; Lifecycle 5/29 closed/current block 6; Local NOT RUN. Four windows remain open.
-fixture_phase: Main badge-writes-ready / after-workspace-selection retained. Isolated Admin moderation and base Feed snapshots LIVE; no reset. Maya has an UNSAVED two-image Base Feed draft with enabled Save.
+substage: Resumed 2026-09-27. HTTP 5/48 overall; Lifecycle 5/29 closed/current block 6; Local NOT RUN.
+fixture_phase: Main badge-writes-ready / after-workspace-selection retained. Admin/Base Feed snapshots LIVE. Creation/report branch restored exactly; original app moderation settings restored. Two-image group Feed accepted after real delayed-response replay; group moderation pending 0.
 execution_log: ../evidence/GROUP-LIFECYCLE-001-20260926.md
 execution_authority: User explicitly delegated full-flow automated execution of the pending QA campaign on 2026-09-26; Codex operates the browser, diagnoses, fixes and retests. Closed PASS rows remain closed.
-next_action: Read execution_log section "Block 6 resume checkpoint — 23:17 CEST" and GROUP-LIFECYCLE-001-block6-resume-20260926.json. Read-only status gate; retain four open windows. Next normal action is Maya actor 2 Save of the prepared two-image Base Feed draft, then Ava Accepted/Photo Feed read-only preview. No restage/reupload/replay. Remaining block 6 checks are explicitly listed there.
+next_action: Read execution_log section "00:39 — app moderation/report branch and user UI corrections". Support/HU/global isolation and moderation stale-response replay passed. Continue remaining 6.1 member/counter/recipient/concurrency checks. App moderation creation/report/preview branch completed and its temporary controls restored. No main/Admin reset; no replay of closed blocks. Four browsers remain open.
 savepoint: community-group after-workspace-selection, captured and verified 2026-09-26T20:13:47.292Z, HTTP resume block 5 remaining checks. Earlier after-invitation-checks, after-editor-checks and after-join-approval retained. Saved state is not a whole-case PASS.
 queue: HTTP Lifecycle 6–29, then Local Lifecycle 1–29, Group Isolation 1–12, Integration API Group 1–7. True unavailable external/native prerequisites must be explicit counted later blocks, with USB/native last. Closed PASS cases untouched.
 resume_gate: Run the versioned community-group status command before any relaunch. verify-lists checked all ten groups/27 memberships without mutation and the versioned launcher prepared all three actors on 2026-09-26. Do not reset changed records or replay a closed checkpoint. Check the current manifest and launcher result.

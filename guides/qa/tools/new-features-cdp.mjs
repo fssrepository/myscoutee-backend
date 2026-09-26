@@ -44,7 +44,7 @@ try {
     await new Promise(resolve => setTimeout(resolve, 250));
     result = { before, hover, pressed, after: await state() };
   } else if (command === 'delay-response') {
-    const { urlPattern, clickSelector, delayMs = 3500, afterTimeoutScript } = JSON.parse(await readFile(input, 'utf8'));
+    const { urlPattern, clickSelector, delayMs = 3500, afterTimeoutScript, inspectScript } = JSON.parse(await readFile(input, 'utf8'));
     let held;
     const paused = new Promise(resolve => {
       ws.addEventListener('message', async event => {
@@ -54,10 +54,11 @@ try {
         else await send('Fetch.continueRequest', { requestId: message.params.requestId });
       });
     });
-    const inspect = async () => (await send('Runtime.evaluate', { expression: `({selected:document.querySelector('[aria-label="Choose workspace"]')?.innerText,disabled:document.querySelector('[aria-label="Choose workspace"]')?.disabled,alerts:[...document.querySelectorAll('[role="alert"]')].map(e=>e.innerText),body:document.body.innerText.slice(0,300)})`, returnByValue: true })).result.value;
+    const inspectExpression = inspectScript ? await readFile(inspectScript, 'utf8') : `({selected:document.querySelector('[aria-label="Choose workspace"]')?.innerText,disabled:document.querySelector('[aria-label="Choose workspace"]')?.disabled,alerts:[...document.querySelectorAll('[role="alert"]')].map(e=>e.innerText),body:document.body.innerText.slice(0,300)})`;
+    const inspect = async () => (await send('Runtime.evaluate', { expression: inspectExpression, returnByValue: true })).result.value;
     await send('Fetch.enable', { patterns: [{ urlPattern, requestStage: 'Response' }] });
     try {
-      await send('Runtime.evaluate', { expression: `document.querySelector(${JSON.stringify(clickSelector)}).click()` });
+      if (clickSelector) await send('Runtime.evaluate', { expression: `document.querySelector(${JSON.stringify(clickSelector)}).click()` });
       const request = await paused;
       await new Promise(resolve => setTimeout(resolve, 150));
       const during = await inspect();
@@ -106,6 +107,21 @@ try {
     const { nodeId } = await send('DOM.querySelector', { nodeId: tree.root.nodeId, selector });
     if (!nodeId) throw Error('Upload input missing');
     await send('DOM.setFileInputFiles', { nodeId, files }); result = { uploaded: files.length };
+  } else if (command === 'language-eval') {
+    const { language, script } = JSON.parse(await readFile(input, 'utf8'));
+    if (!['en-US', 'hu-HU'].includes(language)) throw Error('Unsupported QA browser language');
+    const browser = (await send('Runtime.evaluate', { expression: '({userAgent:navigator.userAgent,languages:navigator.languages})', returnByValue: true })).result.value;
+    try {
+      await send('Emulation.setLocaleOverride', { locale: language });
+      await send('Network.setUserAgentOverride', { userAgent: browser.userAgent, acceptLanguage: `${language},${language.slice(0, 2)}` });
+      await send('Page.reload');
+      await new Promise(resolve => setTimeout(resolve, 1500));
+      result = (await send('Runtime.evaluate', { expression: await readFile(script, 'utf8'), awaitPromise: true, returnByValue: true })).result.value;
+    } finally {
+      await send('Emulation.setLocaleOverride', { locale: '' });
+      await send('Network.setUserAgentOverride', { userAgent: browser.userAgent, acceptLanguage: browser.languages.join(',') });
+      await send('Page.reload');
+    }
   } else if (command === 'viewport-eval') {
     const { width, height, script } = JSON.parse(await readFile(input, 'utf8'));
     await send('Emulation.setDeviceMetricsOverride', { width, height, deviceScaleFactor: 1, mobile: false });

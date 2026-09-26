@@ -1,0 +1,1324 @@
+{
+  "baseFeedPreview": {
+    "body": "yScoutee\n\nMYSCOUTEE ADMIN\n\nModeration workspace\n\nReview reported users, support chats, and application feedback with the same app tools.\n\nContent moderation\nsettings\nclose\ncheck_circle\nAccepted\nexpand_more\n1\nphoto_library\nPhoto Feed\nexpand_more\n2026-09-26\nQA base photo one\nPhoto Feed\n2026-09-26T22:30:56.758685354Z\n4\nedit\nADMIN\nAva Moderation\nadmin_panel_settings\nModeration workspace\nnotifications\nsettings\nclose\nadmin_panel_settings\nMODERATION & SUPPORT\nfact_check\nContent moderation\nreport\nReports\n2\nfeedback\nFeedback\n2\nchat\nChats\ntune\nCONFIGURATION\npending_actions\nJobs\ntune\nParams\nedit_note\nContent\ntips_and_updates\nArticle\nmonitoring\nMONITORING\nquery_stats\nStats\nmonitoring\nMetrics\nhub\nGraph\nscience\nTESTING\ncredit_card_gear\nPayment simulator\nverified_user\n3DS\nQA base photo one\nclose\n1\ninfo\n2\ninfo",
+    "gallery": true,
+    "buttons": [
+      "Close",
+      "Image details",
+      "Images 1",
+      "Image details",
+      "Images 2"
+    ]
+  },
+  "baseFeedDetails": [
+    {
+      "selected": true,
+      "text": "Event *\nevent\nRepair Cafe Team Challenge\n\nOrganizer: Ava\n\nLocation\nlocation_on\nShort image description",
+      "fields": [
+        {
+          "value": "library makerspace repair bench",
+          "disabled": true,
+          "readOnly": true
+        },
+        {
+          "value": "QA base photo one",
+          "disabled": false,
+          "readOnly": true
+        }
+      ],
+      "save": 0,
+      "eventDisabled": true
+    },
+    {
+      "selected": true,
+      "text": "Event *\nevent\nRepair Cafe Team Challenge\n\nOrganizer: Ava\n\nLocation\nlocation_on\nShort image description",
+      "fields": [
+        {
+          "value": "library makerspace repair bench",
+          "disabled": true,
+          "readOnly": true
+        },
+        {
+          "value": "QA base photo two",
+          "disabled": false,
+          "readOnly": true
+        }
+      ],
+      "save": 0,
+      "eventDisabled": true
+    }
+  ],
+  "disabledCreation": {
+    "groups": [
+      {
+        "_id": "4b85c83b-8543-4c33-95a9-c4c340f607cb",
+        "ownerUserId": "af0436815ab38f4864dd1e24",
+        "name": "QA Group Flow Off",
+        "description": "App moderation disabled: public group must be immediately accepted.",
+        "imageUrl": "/api/media/public?key=public/demo/images/af0436815ab38f4864dd1e24/group/1790461930077-e3201730-0b87-4ec7-874a-ce991f64c495/large.webp",
+        "category": "friends",
+        "visibility": "public",
+        "hideMembers": false,
+        "policy": {
+          "workspace": true,
+          "enabled": false,
+          "requiredFields": [],
+          "policiesEnabled": false,
+          "policies": []
+        },
+        "createdAtIso": "2026-09-26T22:32:10.544969317Z",
+        "updatedAtIso": "2026-09-26T22:32:10.544969317Z",
+        "version": {
+          "low": 1,
+          "high": 0,
+          "unsigned": false
+        },
+        "pendingMembers": {
+          "low": 0,
+          "high": 0,
+          "unsigned": false
+        },
+        "_class": "com.raxim.myscoutee.profile.data.document.CommunityGroup",
+        "moderationStatus": "accepted",
+        "moderationVersion": {
+          "low": 1,
+          "high": 0,
+          "unsigned": false
+        }
+      }
+    ],
+    "items": [
+      {
+        "_id": "group:4b85c83b-8543-4c33-95a9-c4c340f607cb",
+        "_class": "com.raxim.myscoutee.profile.data.dto.admin.ContentModerationDtos$Item",
+        "category": "group",
+        "commandId": "submit:group:4b85c83b-8543-4c33-95a9-c4c340f607cb",
+        "deleted": false,
+        "imageUrl": "/api/media/public?key=public/demo/images/af0436815ab38f4864dd1e24/group/1790461930077-e3201730-0b87-4ec7-874a-ce991f64c495/large.webp",
+        "ownerUserId": "af0436815ab38f4864dd1e24",
+        "publiclyVisibleOnce": true,
+        "reviewedAtIso": "",
+        "reviewedBy": "",
+        "sourceId": "4b85c83b-8543-4c33-95a9-c4c340f607cb",
+        "status": "accepted",
+        "submittedAtIso": "2026-09-26T22:32:10.566638964Z",
+        "title": "QA Group Flow Off",
+        "version": {
+          "low": 1,
+          "high": 0,
+          "unsigned": false
+        }
+      }
+    ],
+    "settings": {
+      "_id": "global",
+      "counts": {
+        "event": {
+          "under-review": {
+            "low": 0,
+            "high": 0,
+            "unsigned": false
+          },
+          "accepted": {
+            "low": 4,
+            "high": 0,
+            "unsigned": false
+          }
+        },
+        "feed": {
+          "under-review": {
+            "low": 0,
+            "high": 0,
+            "unsigned": false
+          },
+          "accepted": {
+            "low": 1,
+            "high": 0,
+            "unsigned": false
+          },
+          "blocked": {
+            "low": 0,
+            "high": 0,
+            "unsigned": false
+          },
+          "rejected": {
+            "low": 0,
+            "high": 0,
+            "unsigned": false
+          }
+        },
+        "asset": {
+          "under-review": {
+            "low": 0,
+            "high": 0,
+            "unsigned": false
+          },
+          "accepted": {
+            "low": 1,
+            "high": 0,
+            "unsigned": false
+          },
+          "rejected": {
+            "low": 0,
+            "high": 0,
+            "unsigned": false
+          }
+        },
+        "group": {
+          "accepted": {
+            "low": 2,
+            "high": 0,
+            "unsigned": false
+          }
+        }
+      },
+      "pending": [],
+      "revision": 778,
+      "settings": {
+        "autoApprove": true,
+        "delayMinutes": 0,
+        "categories": [
+          "asset",
+          "event",
+          "feed"
+        ]
+      }
+    }
+  },
+  "enabledCreation": {
+    "groups": [
+      {
+        "_id": "4b85c83b-8543-4c33-95a9-c4c340f607cb",
+        "ownerUserId": "af0436815ab38f4864dd1e24",
+        "name": "QA Group Flow Off",
+        "description": "App moderation disabled: public group must be immediately accepted.",
+        "imageUrl": "/api/media/public?key=public/demo/images/af0436815ab38f4864dd1e24/group/1790461930077-e3201730-0b87-4ec7-874a-ce991f64c495/large.webp",
+        "category": "friends",
+        "visibility": "public",
+        "hideMembers": false,
+        "policy": {
+          "workspace": true,
+          "enabled": false,
+          "requiredFields": [],
+          "policiesEnabled": false,
+          "policies": []
+        },
+        "createdAtIso": "2026-09-26T22:32:10.544969317Z",
+        "updatedAtIso": "2026-09-26T22:32:10.544969317Z",
+        "version": {
+          "low": 1,
+          "high": 0,
+          "unsigned": false
+        },
+        "pendingMembers": {
+          "low": 0,
+          "high": 0,
+          "unsigned": false
+        },
+        "_class": "com.raxim.myscoutee.profile.data.document.CommunityGroup",
+        "moderationStatus": "accepted",
+        "moderationVersion": {
+          "low": 1,
+          "high": 0,
+          "unsigned": false
+        }
+      },
+      {
+        "_id": "e1764766-74bf-4899-bb24-4d039b52f6a7",
+        "ownerUserId": "af0436815ab38f4864dd1e24",
+        "name": "QA Group Flow On",
+        "description": "App moderation enabled: review the complete description and policies before approval.",
+        "imageUrl": "/api/media/public?key=public/demo/images/af0436815ab38f4864dd1e24/group/1790461955026-121353f0-3600-4baf-bee9-4d468193fa32/large.webp",
+        "category": "friends",
+        "visibility": "public",
+        "hideMembers": false,
+        "policy": {
+          "workspace": true,
+          "enabled": false,
+          "requiredFields": [],
+          "policiesEnabled": true,
+          "policies": [
+            {
+              "id": "policy-1790461955893-1",
+              "title": "QA privacy rule",
+              "description": "Keep private group conversations within this group.",
+              "required": true
+            },
+            {
+              "id": "policy-1790461956876-3",
+              "title": "QA welcome recommendation",
+              "description": "Introduce yourself after joining.",
+              "required": false
+            }
+          ]
+        },
+        "createdAtIso": "2026-09-26T22:32:37.423005274Z",
+        "updatedAtIso": "2026-09-26T22:32:37.423005274Z",
+        "version": {
+          "low": 1,
+          "high": 0,
+          "unsigned": false
+        },
+        "pendingMembers": {
+          "low": 0,
+          "high": 0,
+          "unsigned": false
+        },
+        "_class": "com.raxim.myscoutee.profile.data.document.CommunityGroup",
+        "moderationStatus": "accepted",
+        "moderationVersion": {
+          "low": 1,
+          "high": 0,
+          "unsigned": false
+        }
+      },
+      {
+        "_id": "7fc7c15d-a3d2-429b-a18c-8e239303e24a",
+        "ownerUserId": "af0436815ab38f4864dd1e24",
+        "name": "QA Group Flow Hold",
+        "description": "App moderation enabled: review the complete description and policies before approval.",
+        "imageUrl": "/api/media/public?key=public/demo/images/af0436815ab38f4864dd1e24/group/1790461990821-c0816c2c-dd88-4ea2-9d5b-e8f8efb86e14/large.webp",
+        "category": "friends",
+        "visibility": "public",
+        "hideMembers": false,
+        "policy": {
+          "workspace": true,
+          "enabled": false,
+          "requiredFields": [],
+          "policiesEnabled": true,
+          "policies": [
+            {
+              "id": "policy-1790461991676-1",
+              "title": "QA privacy rule",
+              "description": "Keep private group conversations within this group.",
+              "required": true
+            },
+            {
+              "id": "policy-1790461992604-3",
+              "title": "QA welcome recommendation",
+              "description": "Introduce yourself after joining.",
+              "required": false
+            }
+          ]
+        },
+        "createdAtIso": "2026-09-26T22:33:13.252841634Z",
+        "updatedAtIso": "2026-09-26T22:33:13.252841634Z",
+        "version": {
+          "low": 1,
+          "high": 0,
+          "unsigned": false
+        },
+        "pendingMembers": {
+          "low": 0,
+          "high": 0,
+          "unsigned": false
+        },
+        "_class": "com.raxim.myscoutee.profile.data.document.CommunityGroup",
+        "moderationStatus": "under-review",
+        "moderationVersion": {
+          "low": 1,
+          "high": 0,
+          "unsigned": false
+        }
+      }
+    ],
+    "items": [
+      {
+        "_id": "group:4b85c83b-8543-4c33-95a9-c4c340f607cb",
+        "_class": "com.raxim.myscoutee.profile.data.dto.admin.ContentModerationDtos$Item",
+        "category": "group",
+        "commandId": "submit:group:4b85c83b-8543-4c33-95a9-c4c340f607cb",
+        "deleted": false,
+        "imageUrl": "/api/media/public?key=public/demo/images/af0436815ab38f4864dd1e24/group/1790461930077-e3201730-0b87-4ec7-874a-ce991f64c495/large.webp",
+        "ownerUserId": "af0436815ab38f4864dd1e24",
+        "publiclyVisibleOnce": true,
+        "reviewedAtIso": "",
+        "reviewedBy": "",
+        "sourceId": "4b85c83b-8543-4c33-95a9-c4c340f607cb",
+        "status": "accepted",
+        "submittedAtIso": "2026-09-26T22:32:10.566638964Z",
+        "title": "QA Group Flow Off",
+        "version": {
+          "low": 1,
+          "high": 0,
+          "unsigned": false
+        }
+      },
+      {
+        "_id": "group:e1764766-74bf-4899-bb24-4d039b52f6a7",
+        "_class": "com.raxim.myscoutee.profile.data.dto.admin.ContentModerationDtos$Item",
+        "category": "group",
+        "commandId": "submit:group:e1764766-74bf-4899-bb24-4d039b52f6a7",
+        "deleted": false,
+        "imageUrl": "/api/media/public?key=public/demo/images/af0436815ab38f4864dd1e24/group/1790461955026-121353f0-3600-4baf-bee9-4d468193fa32/large.webp",
+        "ownerUserId": "af0436815ab38f4864dd1e24",
+        "publiclyVisibleOnce": true,
+        "reviewedAtIso": "",
+        "reviewedBy": "",
+        "sourceId": "e1764766-74bf-4899-bb24-4d039b52f6a7",
+        "status": "accepted",
+        "submittedAtIso": "2026-09-26T22:32:37.438760905Z",
+        "title": "QA Group Flow On",
+        "version": {
+          "low": 1,
+          "high": 0,
+          "unsigned": false
+        }
+      },
+      {
+        "_id": "group:7fc7c15d-a3d2-429b-a18c-8e239303e24a",
+        "_class": "com.raxim.myscoutee.profile.data.dto.admin.ContentModerationDtos$Item",
+        "category": "group",
+        "commandId": "submit:group:7fc7c15d-a3d2-429b-a18c-8e239303e24a",
+        "deleted": false,
+        "imageUrl": "/api/media/public?key=public/demo/images/af0436815ab38f4864dd1e24/group/1790461990821-c0816c2c-dd88-4ea2-9d5b-e8f8efb86e14/large.webp",
+        "ownerUserId": "af0436815ab38f4864dd1e24",
+        "publiclyVisibleOnce": false,
+        "reviewedAtIso": "",
+        "reviewedBy": "",
+        "sourceId": "7fc7c15d-a3d2-429b-a18c-8e239303e24a",
+        "status": "under-review",
+        "submittedAtIso": "2026-09-26T22:33:13.267194524Z",
+        "title": "QA Group Flow Hold",
+        "version": {
+          "low": 1,
+          "high": 0,
+          "unsigned": false
+        }
+      }
+    ],
+    "settings": {
+      "_id": "global",
+      "counts": {
+        "event": {
+          "under-review": {
+            "low": 0,
+            "high": 0,
+            "unsigned": false
+          },
+          "accepted": {
+            "low": 4,
+            "high": 0,
+            "unsigned": false
+          }
+        },
+        "feed": {
+          "under-review": {
+            "low": 0,
+            "high": 0,
+            "unsigned": false
+          },
+          "accepted": {
+            "low": 1,
+            "high": 0,
+            "unsigned": false
+          },
+          "blocked": {
+            "low": 0,
+            "high": 0,
+            "unsigned": false
+          },
+          "rejected": {
+            "low": 0,
+            "high": 0,
+            "unsigned": false
+          }
+        },
+        "asset": {
+          "under-review": {
+            "low": 0,
+            "high": 0,
+            "unsigned": false
+          },
+          "accepted": {
+            "low": 1,
+            "high": 0,
+            "unsigned": false
+          },
+          "rejected": {
+            "low": 0,
+            "high": 0,
+            "unsigned": false
+          }
+        },
+        "group": {
+          "accepted": {
+            "low": 3,
+            "high": 0,
+            "unsigned": false
+          },
+          "under-review": {
+            "low": 1,
+            "high": 0,
+            "unsigned": false
+          }
+        }
+      },
+      "pending": [],
+      "revision": 783,
+      "settings": {
+        "enabled": true,
+        "autoApprove": false,
+        "delayMinutes": 0,
+        "categories": [
+          "asset",
+          "event",
+          "feed",
+          "group"
+        ]
+      }
+    }
+  },
+  "groupPreview": {
+    "text": "Group\npublic\nPublic\nexpand_more\nclose\n1\nName*\nDescription\n85/4000\ndiversity_3\nFriends\nexpand_more\nvisibility\nMember list visible\nbadge\nRequired Profile Fields\ntoggle_off\nOFF\npolicy\nGroup Policies\ngavel\nView Policies\nSUMMARY\nQA privacy rule\nMandatory rule\n\nKeep private group conversations within this group.\n\nQA welcome recommendation\nRecommendation\n\nIntroduce yourself after joining.",
+    "fields": [
+      {
+        "value": "QA Group Flow Hold",
+        "disabled": true,
+        "readOnly": false
+      },
+      {
+        "value": "App moderation enabled: review the complete description and policies before approval.",
+        "disabled": true,
+        "readOnly": false
+      }
+    ],
+    "save": 0
+  },
+  "nestedPolicy": {
+    "text": "Policy\n\nGive the policy a title, explain it and indicate whether it is mandatory.\n\nclose\nTitle*\nDescription*\nMandatory rule",
+    "fields": [
+      {
+        "value": "QA privacy rule",
+        "disabled": true,
+        "readOnly": false
+      },
+      {
+        "value": "Keep private group conversations within this group.",
+        "disabled": true,
+        "readOnly": false
+      },
+      {
+        "value": "on",
+        "disabled": true,
+        "readOnly": false
+      }
+    ],
+    "saveCount": 0
+  },
+  "settingsSaved": {
+    "open": false,
+    "alerts": []
+  },
+  "groupReport": {
+    "reports": [
+      {
+        "_id": "48fa65ea-8149-472d-94fb-16408d57e890",
+        "syncKey": "community:d6f8d61c-8b8e-3efe-9de5-e4baed2e8f3a",
+        "userId": "1b1c70be2349b3359a8f6f94",
+        "handle": "QA Group Flow Hold",
+        "reason": "groups.report",
+        "details": "QA report: verify group publication details and moderation routing.",
+        "targetUserId": "af0436815ab38f4864dd1e24",
+        "sourceType": "community",
+        "sourceId": "7fc7c15d-a3d2-429b-a18c-8e239303e24a",
+        "sourceText": "QA Group Flow Hold",
+        "createdDate": "2026-09-26T22:36:41.299235073Z",
+        "createdUser": "1b1c70be2349b3359a8f6f94",
+        "updatedDate": "2026-09-26T22:36:41.299235073Z",
+        "updatedUser": "1b1c70be2349b3359a8f6f94",
+        "_class": "com.raxim.myscoutee.profile.data.document.UserReportSubmission"
+      }
+    ],
+    "group": {
+      "_id": "7fc7c15d-a3d2-429b-a18c-8e239303e24a",
+      "moderationStatus": "accepted"
+    },
+    "item": {
+      "_id": "group:7fc7c15d-a3d2-429b-a18c-8e239303e24a",
+      "status": "accepted",
+      "version": {
+        "low": 2,
+        "high": 0,
+        "unsigned": false
+      }
+    }
+  },
+  "reportReadonlyPreview": {
+    "sourceLabel": "groups\nQA Group Flow Hold\nGroups\nQA Group Flow Hold\nvisibility\nView",
+    "text": "Group\npublic\nPublic\nexpand_more\nclose\n1\nName*\nDescription\n85/4000\ndiversity_3\nFriends\nexpand_more\nvisibility\nMember list visible\nbadge\nRequired Profile Fields\ntoggle_off\nOFF\npolicy\nGroup Policies\ngavel\nView Policies\nSUMMARY\nQA privacy rule\nMandatory rule\n\nKeep private group conversations within this group.\n\nQA welcome recommendation\nRecommendation\n\nIntroduce yourself after joining.",
+    "fields": [
+      {
+        "value": "QA Group Flow Hold",
+        "disabled": true
+      },
+      {
+        "value": "App moderation enabled: review the complete description and policies before approval.",
+        "disabled": true
+      }
+    ],
+    "saveCount": 0
+  },
+  "errorLayout": {
+    "count": 1,
+    "text": "Unable to save or load moderation. Reload and retry.",
+    "color": "rgb(164, 60, 69)",
+    "background": "linear-gradient(rgb(255, 241, 242) 0%, rgb(255, 229, 231) 100%)",
+    "firstInBody": true,
+    "headerBottom": 50.34375,
+    "errorTop": 56.734375,
+    "errorBottom": 99.515625,
+    "formTop": 111.03125,
+    "overflow": false
+  },
+  "reviewColor": [
+    {
+      "id": "ed9a8a52-5367-46aa-96a4-4d599507a558",
+      "text": "groups\n1\nfact_check\nUnder moderation\ndiversity_3\nQA Group Flow Error\n\nFriends\n\n0 km\n\nmore_vert",
+      "classes": "experience-item-card asset-item-card ui-info-card ui-info-card--tone-review",
+      "background": "linear-gradient(rgb(246, 234, 216) 0%, rgb(236, 213, 181) 100%)",
+      "media": {
+        "x": 16.015625,
+        "y": 152.734375,
+        "width": 264.140625,
+        "height": 114,
+        "top": 152.734375,
+        "right": 280.15625,
+        "bottom": 266.734375,
+        "left": 16.015625
+      }
+    },
+    {
+      "id": "4b85c83b-8543-4c33-95a9-c4c340f607cb",
+      "text": "groups\n1\ndiversity_3\nQA Group Flow Off\n\nFriends\n\n0 km\n\nmore_vert",
+      "classes": "experience-item-card asset-item-card ui-info-card ui-info-card--tone-published",
+      "background": "linear-gradient(rgb(238, 248, 242) 0%, rgb(217, 236, 223) 100%)",
+      "media": {
+        "x": 304.125,
+        "y": 154.328125,
+        "width": 261.578125,
+        "height": 132,
+        "top": 154.328125,
+        "right": 565.703125,
+        "bottom": 286.328125,
+        "left": 304.125
+      }
+    },
+    {
+      "id": "7fc7c15d-a3d2-429b-a18c-8e239303e24a",
+      "text": "groups\n1\ndiversity_3\nQA Group Flow Hold\n\nFriends\n\n0 km\n\nmore_vert",
+      "classes": "experience-item-card asset-item-card ui-info-card ui-info-card--tone-published",
+      "background": "linear-gradient(rgb(238, 248, 242) 0%, rgb(217, 236, 223) 100%)",
+      "media": {
+        "x": 17.296875,
+        "y": 378.34375,
+        "width": 261.578125,
+        "height": 132,
+        "top": 378.34375,
+        "right": 278.875,
+        "bottom": 510.34375,
+        "left": 17.296875
+      }
+    },
+    {
+      "id": "e1764766-74bf-4899-bb24-4d039b52f6a7",
+      "text": "groups\n1\ndiversity_3\nQA Group Flow On\n\nFriends\n\n0 km\n\nmore_vert",
+      "classes": "experience-item-card asset-item-card ui-info-card ui-info-card--tone-published",
+      "background": "linear-gradient(rgb(238, 248, 242) 0%, rgb(217, 236, 223) 100%)",
+      "media": {
+        "x": 304.125,
+        "y": 378.34375,
+        "width": 261.578125,
+        "height": 132,
+        "top": 378.34375,
+        "right": 565.703125,
+        "bottom": 510.34375,
+        "left": 304.125
+      }
+    }
+  ],
+  "approvedColor": [
+    {
+      "id": "ed9a8a52-5367-46aa-96a4-4d599507a558",
+      "text": "groups\n1\ndiversity_3\nQA Group Flow Error\n\nFriends\n\n0 km\n\nmore_vert",
+      "classes": "experience-item-card asset-item-card ui-info-card ui-info-card--tone-published",
+      "background": "linear-gradient(rgb(238, 248, 242) 0%, rgb(217, 236, 223) 100%)",
+      "media": {
+        "x": 17.296875,
+        "y": 154.328125,
+        "width": 261.578125,
+        "height": 132,
+        "top": 154.328125,
+        "right": 278.875,
+        "bottom": 286.328125,
+        "left": 17.296875
+      }
+    },
+    {
+      "id": "4b85c83b-8543-4c33-95a9-c4c340f607cb",
+      "text": "groups\n1\ndiversity_3\nQA Group Flow Off\n\nFriends\n\n0 km\n\nmore_vert",
+      "classes": "experience-item-card asset-item-card ui-info-card ui-info-card--tone-published",
+      "background": "linear-gradient(rgb(238, 248, 242) 0%, rgb(217, 236, 223) 100%)",
+      "media": {
+        "x": 304.125,
+        "y": 154.328125,
+        "width": 261.578125,
+        "height": 132,
+        "top": 154.328125,
+        "right": 565.703125,
+        "bottom": 286.328125,
+        "left": 304.125
+      }
+    },
+    {
+      "id": "7fc7c15d-a3d2-429b-a18c-8e239303e24a",
+      "text": "groups\n1\ndiversity_3\nQA Group Flow Hold\n\nFriends\n\n0 km\n\nmore_vert",
+      "classes": "experience-item-card asset-item-card ui-info-card ui-info-card--tone-published",
+      "background": "linear-gradient(rgb(238, 248, 242) 0%, rgb(217, 236, 223) 100%)",
+      "media": {
+        "x": 17.296875,
+        "y": 378.34375,
+        "width": 261.578125,
+        "height": 132,
+        "top": 378.34375,
+        "right": 278.875,
+        "bottom": 510.34375,
+        "left": 17.296875
+      }
+    },
+    {
+      "id": "e1764766-74bf-4899-bb24-4d039b52f6a7",
+      "text": "groups\n1\ndiversity_3\nQA Group Flow On\n\nFriends\n\n0 km\n\nmore_vert",
+      "classes": "experience-item-card asset-item-card ui-info-card ui-info-card--tone-published",
+      "background": "linear-gradient(rgb(238, 248, 242) 0%, rgb(217, 236, 223) 100%)",
+      "media": {
+        "x": 304.125,
+        "y": 378.34375,
+        "width": 261.578125,
+        "height": 132,
+        "top": 378.34375,
+        "right": 565.703125,
+        "bottom": 510.34375,
+        "left": 304.125
+      }
+    }
+  ],
+  "creationFinal": {
+    "groups": [
+      {
+        "_id": "4b85c83b-8543-4c33-95a9-c4c340f607cb",
+        "ownerUserId": "af0436815ab38f4864dd1e24",
+        "name": "QA Group Flow Off",
+        "description": "QA edited description to verify moderation and stale settings protection.",
+        "imageUrl": "/api/media/public?key=public/demo/images/af0436815ab38f4864dd1e24/group/1790461930077-e3201730-0b87-4ec7-874a-ce991f64c495/large.webp",
+        "category": "friends",
+        "visibility": "public",
+        "hideMembers": false,
+        "policy": {
+          "workspace": true,
+          "enabled": false,
+          "requiredFields": [],
+          "policiesEnabled": false,
+          "policies": []
+        },
+        "createdAtIso": "2026-09-26T22:32:10.544969317Z",
+        "updatedAtIso": "2026-09-26T22:35:05.628365698Z",
+        "version": {
+          "low": 2,
+          "high": 0,
+          "unsigned": false
+        },
+        "moderationStatus": "accepted",
+        "moderationVersion": {
+          "low": 1,
+          "high": 0,
+          "unsigned": false
+        },
+        "pendingMembers": {
+          "low": 0,
+          "high": 0,
+          "unsigned": false
+        },
+        "_class": "com.raxim.myscoutee.profile.data.document.CommunityGroup"
+      },
+      {
+        "_id": "e1764766-74bf-4899-bb24-4d039b52f6a7",
+        "ownerUserId": "af0436815ab38f4864dd1e24",
+        "name": "QA Group Flow On",
+        "description": "App moderation enabled: review the complete description and policies before approval.",
+        "imageUrl": "/api/media/public?key=public/demo/images/af0436815ab38f4864dd1e24/group/1790461955026-121353f0-3600-4baf-bee9-4d468193fa32/large.webp",
+        "category": "friends",
+        "visibility": "public",
+        "hideMembers": false,
+        "policy": {
+          "workspace": true,
+          "enabled": false,
+          "requiredFields": [],
+          "policiesEnabled": true,
+          "policies": [
+            {
+              "id": "policy-1790461955893-1",
+              "title": "QA privacy rule",
+              "description": "Keep private group conversations within this group.",
+              "required": true
+            },
+            {
+              "id": "policy-1790461956876-3",
+              "title": "QA welcome recommendation",
+              "description": "Introduce yourself after joining.",
+              "required": false
+            }
+          ]
+        },
+        "createdAtIso": "2026-09-26T22:32:37.423005274Z",
+        "updatedAtIso": "2026-09-26T22:32:37.423005274Z",
+        "version": {
+          "low": 1,
+          "high": 0,
+          "unsigned": false
+        },
+        "pendingMembers": {
+          "low": 0,
+          "high": 0,
+          "unsigned": false
+        },
+        "_class": "com.raxim.myscoutee.profile.data.document.CommunityGroup",
+        "moderationStatus": "accepted",
+        "moderationVersion": {
+          "low": 1,
+          "high": 0,
+          "unsigned": false
+        }
+      },
+      {
+        "_id": "7fc7c15d-a3d2-429b-a18c-8e239303e24a",
+        "ownerUserId": "af0436815ab38f4864dd1e24",
+        "name": "QA Group Flow Hold",
+        "description": "App moderation enabled: review the complete description and policies before approval.",
+        "imageUrl": "/api/media/public?key=public/demo/images/af0436815ab38f4864dd1e24/group/1790461990821-c0816c2c-dd88-4ea2-9d5b-e8f8efb86e14/large.webp",
+        "category": "friends",
+        "visibility": "public",
+        "hideMembers": false,
+        "policy": {
+          "workspace": true,
+          "enabled": false,
+          "requiredFields": [],
+          "policiesEnabled": true,
+          "policies": [
+            {
+              "id": "policy-1790461991676-1",
+              "title": "QA privacy rule",
+              "description": "Keep private group conversations within this group.",
+              "required": true
+            },
+            {
+              "id": "policy-1790461992604-3",
+              "title": "QA welcome recommendation",
+              "description": "Introduce yourself after joining.",
+              "required": false
+            }
+          ]
+        },
+        "createdAtIso": "2026-09-26T22:33:13.252841634Z",
+        "updatedAtIso": "2026-09-26T22:33:13.252841634Z",
+        "version": {
+          "low": 2,
+          "high": 0,
+          "unsigned": false
+        },
+        "pendingMembers": {
+          "low": 0,
+          "high": 0,
+          "unsigned": false
+        },
+        "_class": "com.raxim.myscoutee.profile.data.document.CommunityGroup",
+        "moderationStatus": "accepted",
+        "moderationVersion": {
+          "low": 2,
+          "high": 0,
+          "unsigned": false
+        }
+      },
+      {
+        "_id": "ed9a8a52-5367-46aa-96a4-4d599507a558",
+        "ownerUserId": "af0436815ab38f4864dd1e24",
+        "name": "QA Group Flow Error",
+        "description": "Isolated group creation for stale moderation settings verification.",
+        "imageUrl": "/api/media/public?key=public/demo/images/af0436815ab38f4864dd1e24/group/1790462115794-557f0b70-fbb8-4d96-b91a-96ec29cd641d/large.webp",
+        "category": "friends",
+        "visibility": "public",
+        "hideMembers": false,
+        "policy": {
+          "workspace": true,
+          "enabled": false,
+          "requiredFields": [],
+          "policiesEnabled": false,
+          "policies": []
+        },
+        "createdAtIso": "2026-09-26T22:35:16.323517415Z",
+        "updatedAtIso": "2026-09-26T22:35:16.323517415Z",
+        "version": {
+          "low": 2,
+          "high": 0,
+          "unsigned": false
+        },
+        "pendingMembers": {
+          "low": 0,
+          "high": 0,
+          "unsigned": false
+        },
+        "_class": "com.raxim.myscoutee.profile.data.document.CommunityGroup",
+        "moderationStatus": "accepted",
+        "moderationVersion": {
+          "low": 2,
+          "high": 0,
+          "unsigned": false
+        }
+      }
+    ],
+    "items": [
+      {
+        "_id": "group:4b85c83b-8543-4c33-95a9-c4c340f607cb",
+        "_class": "com.raxim.myscoutee.profile.data.dto.admin.ContentModerationDtos$Item",
+        "category": "group",
+        "commandId": "submit:group:4b85c83b-8543-4c33-95a9-c4c340f607cb",
+        "deleted": false,
+        "imageUrl": "/api/media/public?key=public/demo/images/af0436815ab38f4864dd1e24/group/1790461930077-e3201730-0b87-4ec7-874a-ce991f64c495/large.webp",
+        "ownerUserId": "af0436815ab38f4864dd1e24",
+        "publiclyVisibleOnce": true,
+        "reviewedAtIso": "",
+        "reviewedBy": "",
+        "sourceId": "4b85c83b-8543-4c33-95a9-c4c340f607cb",
+        "status": "accepted",
+        "submittedAtIso": "2026-09-26T22:32:10.566638964Z",
+        "title": "QA Group Flow Off",
+        "version": {
+          "low": 1,
+          "high": 0,
+          "unsigned": false
+        }
+      },
+      {
+        "_id": "group:7fc7c15d-a3d2-429b-a18c-8e239303e24a",
+        "_class": "com.raxim.myscoutee.profile.data.dto.admin.ContentModerationDtos$Item",
+        "category": "group",
+        "commandId": "e52114fe-1cdd-4dde-9f16-a8ecc20d2ce0",
+        "deleted": false,
+        "imageUrl": "/api/media/public?key=public/demo/images/af0436815ab38f4864dd1e24/group/1790461990821-c0816c2c-dd88-4ea2-9d5b-e8f8efb86e14/large.webp",
+        "ownerUserId": "af0436815ab38f4864dd1e24",
+        "publiclyVisibleOnce": true,
+        "reviewedAtIso": "2026-09-26T22:34:48.348856746Z",
+        "reviewedBy": "admin-demo-ava",
+        "sourceId": "7fc7c15d-a3d2-429b-a18c-8e239303e24a",
+        "status": "accepted",
+        "submittedAtIso": "2026-09-26T22:33:13.267194524Z",
+        "title": "QA Group Flow Hold",
+        "version": {
+          "low": 2,
+          "high": 0,
+          "unsigned": false
+        }
+      },
+      {
+        "_id": "group:e1764766-74bf-4899-bb24-4d039b52f6a7",
+        "_class": "com.raxim.myscoutee.profile.data.dto.admin.ContentModerationDtos$Item",
+        "category": "group",
+        "commandId": "submit:group:e1764766-74bf-4899-bb24-4d039b52f6a7",
+        "deleted": false,
+        "imageUrl": "/api/media/public?key=public/demo/images/af0436815ab38f4864dd1e24/group/1790461955026-121353f0-3600-4baf-bee9-4d468193fa32/large.webp",
+        "ownerUserId": "af0436815ab38f4864dd1e24",
+        "publiclyVisibleOnce": true,
+        "reviewedAtIso": "",
+        "reviewedBy": "",
+        "sourceId": "e1764766-74bf-4899-bb24-4d039b52f6a7",
+        "status": "accepted",
+        "submittedAtIso": "2026-09-26T22:32:37.438760905Z",
+        "title": "QA Group Flow On",
+        "version": {
+          "low": 1,
+          "high": 0,
+          "unsigned": false
+        }
+      },
+      {
+        "_id": "group:ed9a8a52-5367-46aa-96a4-4d599507a558",
+        "_class": "com.raxim.myscoutee.profile.data.dto.admin.ContentModerationDtos$Item",
+        "category": "group",
+        "commandId": "37533d18-2aee-4ef1-ab15-b48767e679f2",
+        "deleted": false,
+        "imageUrl": "/api/media/public?key=public/demo/images/af0436815ab38f4864dd1e24/group/1790462115794-557f0b70-fbb8-4d96-b91a-96ec29cd641d/large.webp",
+        "ownerUserId": "af0436815ab38f4864dd1e24",
+        "publiclyVisibleOnce": true,
+        "reviewedAtIso": "2026-09-26T22:38:41.236525737Z",
+        "reviewedBy": "admin-demo-ava",
+        "sourceId": "ed9a8a52-5367-46aa-96a4-4d599507a558",
+        "status": "accepted",
+        "submittedAtIso": "2026-09-26T22:35:16.332154593Z",
+        "title": "QA Group Flow Error",
+        "version": {
+          "low": 2,
+          "high": 0,
+          "unsigned": false
+        }
+      }
+    ],
+    "settings": {
+      "_id": "global",
+      "counts": {
+        "event": {
+          "under-review": {
+            "low": 0,
+            "high": 0,
+            "unsigned": false
+          },
+          "accepted": {
+            "low": 4,
+            "high": 0,
+            "unsigned": false
+          }
+        },
+        "feed": {
+          "under-review": {
+            "low": 0,
+            "high": 0,
+            "unsigned": false
+          },
+          "accepted": {
+            "low": 1,
+            "high": 0,
+            "unsigned": false
+          },
+          "blocked": {
+            "low": 0,
+            "high": 0,
+            "unsigned": false
+          },
+          "rejected": {
+            "low": 0,
+            "high": 0,
+            "unsigned": false
+          }
+        },
+        "asset": {
+          "under-review": {
+            "low": 0,
+            "high": 0,
+            "unsigned": false
+          },
+          "accepted": {
+            "low": 1,
+            "high": 0,
+            "unsigned": false
+          },
+          "rejected": {
+            "low": 0,
+            "high": 0,
+            "unsigned": false
+          }
+        },
+        "group": {
+          "accepted": {
+            "low": 5,
+            "high": 0,
+            "unsigned": false
+          },
+          "under-review": {
+            "low": 0,
+            "high": 0,
+            "unsigned": false
+          }
+        }
+      },
+      "pending": [],
+      "revision": 790,
+      "settings": {
+        "enabled": true,
+        "autoApprove": false,
+        "delayMinutes": 0,
+        "categories": [
+          "asset",
+          "event",
+          "feed",
+          "group"
+        ]
+      }
+    }
+  },
+  "approvalRetry": {
+    "status": 200,
+    "item": {
+      "id": "group:7fc7c15d-a3d2-429b-a18c-8e239303e24a",
+      "category": "group",
+      "sourceId": "7fc7c15d-a3d2-429b-a18c-8e239303e24a",
+      "ownerUserId": "af0436815ab38f4864dd1e24",
+      "title": "QA Group Flow Hold",
+      "imageUrl": "/api/media/public?key=public/demo/images/af0436815ab38f4864dd1e24/group/1790461990821-c0816c2c-dd88-4ea2-9d5b-e8f8efb86e14/large.webp",
+      "submittedAtIso": "2026-09-26T22:33:13.267194524Z",
+      "status": "accepted",
+      "version": 2,
+      "commandId": "e52114fe-1cdd-4dde-9f16-a8ecc20d2ce0",
+      "reviewedBy": "admin-demo-ava",
+      "reviewedAtIso": "2026-09-26T22:34:48.348856746Z",
+      "publiclyVisibleOnce": true,
+      "deleted": false,
+      "workspaceGroupId": null
+    },
+    "revision": 790
+  },
+  "creationRestored": true,
+  "support": {
+    "reply": {
+      "text": "QA Admin Transfer \u00b7 Nagy Eszter\nclose\npush_pin\nYou\n12:40 AM\n\nQA: Thank you. Please keep the event details on both photos.\n\nToday\nNagy Eszter\n10:39 PM\n\nQA: I will revise the group photo.\n\nYou\n10:36 PM\n\nQA: Please revise this group photo before publication.\n\nYesterday\nadd\nsend"
+    },
+    "memberRead": {
+      "text": "yScoutee\nperson\nPreferences\nexpand_more\nfilter_alt\nFilters\nhistory\nRatings\nNo items\nNo matching profiles\n\nAdjust age or profile traits in filter settings.\n\nNo matching profiles\n\nAdjust age or profile traits in filter settings.\n\n9+\nnotifications_active\n37\nedit\n58%\nNagy Eszter, 30\nlocation_on\nSeattle\nQA\nQA Admin Transfer\nexpand_more\n99+\nnotifications\n37\ntips_and_updates\nshare\nsettings\nclose\ndiversity_2\nCOMMUNITY\nphoto_library\nFeed\n4\nrss_feed\nFollowed\ngroups\nGroups\npsychology\nIMPRESSIONS\nworkspace_premium\nHOST\nauto_awesome\nAttendee\nATTENDEE\nrate_review\nFeedback\nlocal_activity\nACTIVITIES\nstar\nRates\nchat\nChats\nmail\nInvitations\nevent\nEvents\nreceipt_long\nPayments\ninventory_2\nMY ASSETS\ndirections_car\nTransport\n1\napartment\nAccommodation\ninventory_2\nSupplies\n1\nqr_code_2\nTicket\ncontacts\nContacts\nActivities\n\nChats \u00b7 Group support\n\nclose\nchat\nChats\nexpand_more\nforum\nGroup support\nexpand_more\nSun, 27 Sept 2026\nAlex Turner\nQA Admin Transfer\nQA: Thank you. Please keep the event details on both photos.\nQA Admin Transfer\nclose\npush_pin\nAlex Turner\n12:40 AM\n\nQA: Thank you. Please keep the event details on both photos.\n\nToday\nYou\n10:39 PM\n\nQA: I will revise the group photo.\n\nAlex Turner\n10:36 PM\n\nQA: Please revise this group photo before publication.\n\nYesterday\nadd\nsend",
+      "inputs": [
+        {
+          "tag": "INPUT",
+          "placeholder": "",
+          "aria": null
+        },
+        {
+          "tag": "TEXTAREA",
+          "placeholder": "Write message",
+          "aria": null
+        }
+      ],
+      "buttons": [
+        {
+          "text": "apartment\nAccommodation",
+          "aria": "Accommodation"
+        },
+        {
+          "text": "inventory_2\nSupplies\n1",
+          "aria": "Supplies"
+        },
+        {
+          "text": "qr_code_2\nTicket",
+          "aria": "Ticket"
+        },
+        {
+          "text": "contacts\nContacts",
+          "aria": "Contacts"
+        },
+        {
+          "text": "close",
+          "aria": "Close activities"
+        },
+        {
+          "text": "chat\nChats\nexpand_more",
+          "aria": "Open Chats"
+        },
+        {
+          "text": "forum\nGroup support\nexpand_more",
+          "aria": "Open group.support"
+        },
+        {
+          "text": "close",
+          "aria": "Close chat popup"
+        },
+        {
+          "text": "",
+          "aria": "2 members"
+        },
+        {
+          "text": "push_pin",
+          "aria": "Open pinned messages"
+        },
+        {
+          "text": "add",
+          "aria": "Open chat tools"
+        },
+        {
+          "text": "send",
+          "aria": "Send message"
+        }
+      ]
+    },
+    "retry": [
+      {
+        "id": "feed:manual-qa-community-admin-rejection",
+        "status": 200,
+        "version": 2,
+        "revision": 21,
+        "pending": 1
+      }
+    ],
+    "oracle": {
+      "globalUnchanged": true,
+      "otherChatsUnchanged": true,
+      "baseChatCountersUnchanged": true,
+      "onlyBaseDelta": "Eszter account notifications 36\u219237",
+      "messagesBefore": 2,
+      "messagesAfterReply": 3,
+      "messagesAfterRetry": 3,
+      "unreadAfterRead": [
+        0,
+        0
+      ]
+    }
+  },
+  "huSupport": {
+    "language": [
+      "hu-HU",
+      "hu"
+    ],
+    "htmlLang": "hu",
+    "text": "yScoutee\nperson\nSzimp\u00e1ti\u00e1k\nexpand_more\nfilter_alt\nSz\u0171r\u0151k\nhistory\n\u00c9rt\u00e9kel\u00e9sek\nNincs elem\nNo matching profiles\n\nAdjust age or profile traits in filter settings.\n\nNo matching profiles\n\nAdjust age or profile traits in filter settings.\n\n9+\nnotifications_active\n36\nedit\n58%\nNagy Eszter, 30\nlocation_on\nSeattle\nQA\nQA Admin Transfer\nexpand_more\n99+\nnotifications\n36\ntips_and_updates\nshare\nsettings\nclose\ndiversity_2\nK\u00d6Z\u00d6SS\u00c9G\nphoto_library\nFeed\n4\nrss_feed\nK\u00f6vetett\ngroups\nCsoportok\npsychology\nBENYOM\u00c1SOK\nworkspace_premium\nSZERVEZ\u0150\nauto_awesome\nR\u00e9sztvev\u0151\nR\u00c9SZTVEV\u0150\nrate_review\nVisszajelz\u00e9sek\nlocal_activity\nAKTIVIT\u00c1SOK\nstar\n\u00c9rt\u00e9kel\u00e9sek\nchat\nCseveg\u00e9sek\nmail\nMegh\u00edv\u00e1sok\nevent\nEsem\u00e9nyek\nreceipt_long\nFizet\u00e9sek\ninventory_2\nESZK\u00d6ZEIM\ndirections_car\nSz\u00e1ll\u00edt\u00e1s\n1\napartment\nSz\u00e1ll\u00e1s\ninventory_2\nKell\u00e9kek\n1\nqr_code_2\nJegy\ncontacts\nKapcsolatok\nAktivit\u00e1sok\n\nCseveg\u00e9sek\n\nclose\nchat\nCseveg\u00e9sek\nexpand_more\nforum\n\u00d6sszes\nexpand_more\nforum\n\u00d6sszes\nevent\nEsem\u00e9ny\nevent_available\nAlesem\u00e9ny\ngroups\nCsoport\nsupport_agent\nSzerviz\ncontacts\nKapcsolatok\nforum\nCsoport support\nadmin_panel_settings\nAlkalmaz\u00e1st\u00e1mogat\u00e1s\n2026. szept. 27., V\nAlex Turner\nQA Admin Transfer\nQA: Thank you. Please keep the event details on both photos."
+  },
+  "lateResponseFailure": {
+    "url": "http://localhost/api/groups/manual-qa-community-admin/content-moderation?adminUserId=f02609260000000000000001&category=all&status=under-review&pageSize=1",
+    "during": {
+      "moderation": "Content moderation \u00b7 QA Admin Transfer\nsettings\nclose\nfact_check\nUnder moderation\nexpand_more\n1\napps\nAll\nexpand_more\n2026-09-26\nQA group photo one\nPhoto Feed\n2026-09-26T21:12:15.767226950Z\nmore_vert",
+      "card": "groups\n3\ndiversity_3\nQA Admin Transfer\n\nFriends\n\n0 km\n\nmore_vert\n1",
+      "groups": "groups\nGroups\n5",
+      "hosting": "event_seat\nHosting\nexpand_more\n3"
+    },
+    "timedOut": {
+      "moderation": "Content moderation \u00b7 QA Admin Transfer\nsettings\nclose\nfact_check\nUnder moderation\nexpand_more\n1\napps\nAll\nexpand_more\n2026-09-26\nQA group photo one\nPhoto Feed\n2026-09-26T21:12:15.767226950Z\nmore_vert",
+      "card": "groups\n3\ndiversity_3\nQA Admin Transfer\n\nFriends\n\n0 km\n\nmore_vert\n1",
+      "groups": "groups\nGroups\n5",
+      "hosting": "event_seat\nHosting\nexpand_more\n3"
+    },
+    "retry": {
+      "moderation": "Content moderation \u00b7 QA Admin Transfer\nsettings\nclose\nfact_check\nUnder moderation\nexpand_more\napps\nAll\nexpand_more\nNo items\nNo items in this category and status.",
+      "card": "groups\n3\ndiversity_3\nQA Admin Transfer\n\nFriends\n\n0 km\n\nmore_vert",
+      "groups": "groups\nGroups\n4"
+    },
+    "release": "released",
+    "after": {
+      "moderation": "Content moderation \u00b7 QA Admin Transfer\nsettings\nclose\nfact_check\nUnder moderation\nexpand_more\napps\nAll\nexpand_more\n2026-09-26\nQA group photo one\nPhoto Feed\n2026-09-26T21:12:15.767226950Z\nmore_vert",
+      "card": "groups\n3\ndiversity_3\nQA Admin Transfer\n\nFriends\n\n0 km\n\nmore_vert",
+      "groups": "groups\nGroups\n4",
+      "hosting": "event_seat\nHosting\nexpand_more\n2"
+    }
+  },
+  "lateResponseFixed": {
+    "url": "http://localhost/api/groups/manual-qa-community-admin/content-moderation?adminUserId=f02609260000000000000001&category=all&status=under-review&pageSize=1",
+    "during": {
+      "moderation": "Content moderation \u00b7 QA Admin Transfer\nsettings\nclose\nfact_check\nUnder moderation\nexpand_more\n1\napps\nAll\nexpand_more\n2026-09-26\nQA group photo one\nPhoto Feed\n2026-09-26T21:12:15.767226950Z\nmore_vert",
+      "card": "groups\n3\ndiversity_3\nQA Admin Transfer\n\nFriends\n\n0 km\n\nmore_vert\n1",
+      "groups": "groups\nGroups\n5",
+      "hosting": "event_seat\nHosting\nexpand_more\n3"
+    },
+    "timedOut": {
+      "moderation": "Content moderation \u00b7 QA Admin Transfer\nsettings\nclose\nfact_check\nUnder moderation\nexpand_more\n1\napps\nAll\nexpand_more\n2026-09-26\nQA group photo one\nPhoto Feed\n2026-09-26T21:12:15.767226950Z\nmore_vert",
+      "card": "groups\n3\ndiversity_3\nQA Admin Transfer\n\nFriends\n\n0 km\n\nmore_vert\n1",
+      "groups": "groups\nGroups\n5",
+      "hosting": "event_seat\nHosting\nexpand_more\n3"
+    },
+    "retry": {
+      "moderation": "Content moderation \u00b7 QA Admin Transfer\nsettings\nclose\nfact_check\nUnder moderation\nexpand_more\napps\nAll\nexpand_more\nNo items\nNo items in this category and status.",
+      "card": "groups\n3\ndiversity_3\nQA Admin Transfer\n\nFriends\n\n0 km\n\nmore_vert",
+      "groups": "groups\nGroups\n4"
+    },
+    "release": "released",
+    "after": {
+      "moderation": "Content moderation \u00b7 QA Admin Transfer\nsettings\nclose\nfact_check\nUnder moderation\nexpand_more\napps\nAll\nexpand_more\nNo items\nNo items in this category and status.",
+      "card": "groups\n3\ndiversity_3\nQA Admin Transfer\n\nFriends\n\n0 km\n\nmore_vert",
+      "groups": "groups\nGroups\n4",
+      "hosting": "event_seat\nHosting\nexpand_more\n2"
+    }
+  },
+  "lateResponsePersisted": {
+    "group": {
+      "_id": "manual-qa-community-admin",
+      "pendingMembers": 0,
+      "moderationPending": {
+        "low": 0,
+        "high": 0,
+        "unsigned": false
+      },
+      "moderationQueueRevision": {
+        "low": 28,
+        "high": 0,
+        "unsigned": false
+      }
+    },
+    "state": {
+      "_id": "group:manual-qa-community-admin",
+      "revision": 29,
+      "settings": {
+        "enabled": true,
+        "autoApprove": false,
+        "delayMinutes": 1,
+        "categories": [
+          "asset",
+          "feed",
+          "event"
+        ]
+      },
+      "counts": {
+        "feed": {
+          "under-review": {
+            "low": 0,
+            "high": 0,
+            "unsigned": false
+          },
+          "accepted": {
+            "low": 3,
+            "high": 0,
+            "unsigned": false
+          },
+          "rejected": {
+            "low": 1,
+            "high": 0,
+            "unsigned": false
+          },
+          "blocked": {
+            "low": 0,
+            "high": 0,
+            "unsigned": false
+          }
+        }
+      },
+      "pending": []
+    },
+    "items": [
+      {
+        "_id": "feed:manual-qa-community-admin-approval",
+        "title": "QA moderation approval",
+        "status": "accepted",
+        "version": {
+          "low": 5,
+          "high": 0,
+          "unsigned": false
+        },
+        "commandId": "auto:feed:manual-qa-community-admin-approval:4"
+      },
+      {
+        "_id": "feed:manual-qa-community-admin-rejection",
+        "title": "QA moderation rejection",
+        "status": "rejected",
+        "version": {
+          "low": 2,
+          "high": 0,
+          "unsigned": false
+        },
+        "commandId": "b913ce87-5cc4-433e-b3a2-b67b48124b52"
+      },
+      {
+        "_id": "feed:4b172683-f636-48dc-a3a8-c7f88c1ef7c5",
+        "commandId": "b4124dc1-7dbf-4d42-ba32-06ea10af791c",
+        "status": "accepted",
+        "title": "QA group publication",
+        "version": {
+          "low": 2,
+          "high": 0,
+          "unsigned": false
+        }
+      },
+      {
+        "_id": "feed:a04a769e-41de-458a-903e-106e6e23b8b1",
+        "commandId": "63293eed-56ee-47ad-8bcd-ebbeb09b0415",
+        "status": "accepted",
+        "title": "QA group photo one",
+        "version": {
+          "low": 5,
+          "high": 0,
+          "unsigned": false
+        }
+      }
+    ]
+  }
+}

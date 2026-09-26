@@ -35,9 +35,9 @@
       Q.fail(`${snapshot.collection} differs from the retained baseline; do not reset or relaunch blindly.`);
     }
   }
-  function verifyLists() {
-    const retainedMembers = snapshots.find(s => s.collection === "activityMembers").documents;
-    for (const snapshot of snapshots) {
+  function verifyLists(baseline = snapshots) {
+    const retainedMembers = baseline.find(s => s.collection === "activityMembers").documents;
+    for (const snapshot of baseline) {
       const expected = snapshot.collection === "communityGroups" ? snapshot.documents.map(group => ({
         ...group, pendingMembers: group.pendingMembers ?? retainedMembers.filter(member =>
           member.ownerType === "community" && member.ownerId === group._id && member.status === "pending").length
@@ -54,7 +54,7 @@
       // Compare fields by ID: adding the counter changes BSON field order, not the fixture state.
       if (differences.length || extraIds.length || actual.length !== expected.length) {
         Q.printObject({collection: snapshot.collection, differences, extraIds});
-        Q.fail(`${snapshot.collection} differs from block 1; retain state and diagnose before restarting QA.`);
+        Q.fail(`${snapshot.collection} differs from the selected retained list boundary; retain state and diagnose before restarting QA.`);
       }
     }
   }
@@ -240,7 +240,9 @@
     return;
   }
   if (command === "prepare-creation") {
-    verifyLists();
+    const boundary = (state.savepoints || []).find(item => item.name === "after-workspace-selection");
+    const creationListBaseline = boundary ? boundary.snapshots.slice(0, 2) : snapshots;
+    verifyLists(creationListBaseline);
     if (state.creationSnapshots) Q.fail("Group creation already prepared.");
     if (Q.collection("communityGroups").countDocuments({name: /^QA Group Flow/})) Q.fail("Creation control already exists.");
     const retained = Q.snapshotSpecs([
@@ -251,7 +253,7 @@
       {collection: "contentModerationState", selector: {_id: "global"}}
     ]);
     const unrelatedModeration = Q.collection("contentModerationItems").find({$nor: [{category: "group", ownerUserId: actors[0]}]}).toArray();
-    Q.collection(Q.STATE_COLLECTION).updateOne({_id: state._id}, {$set: {creationSnapshots: retained, creationUnrelatedModeration: unrelatedModeration}});
+    Q.collection(Q.STATE_COLLECTION).updateOne({_id: state._id}, {$set: {creationSnapshots: retained, creationListBaseline, creationUnrelatedModeration: unrelatedModeration}});
     Q.printObject({checkpointId, creationPrepared: true, productWrites: false});
     return;
   }
@@ -270,10 +272,11 @@
     Q.restoreSnapshots([
       {collection: "userNotifications", selector: {sourceType: "community", sourceId: {$in: ids}}, documents: []},
       {collection: "notificationOutbox", selector: {entityType: "community", entityId: {$in: ids}}, documents: []},
+      {collection: "userReports", selector: {sourceType: "community", sourceId: {$in: ids}}, documents: []},
       {collection: "contentModerationState", selector: {_id: {$in: ids.map(id => "group:" + id)}}, documents: []}
     ]);
-    Q.collection(Q.STATE_COLLECTION).updateOne({_id: state._id}, {$unset: {creationSnapshots: "", creationUnrelatedModeration: ""}});
-    verifyLists();
+    Q.collection(Q.STATE_COLLECTION).updateOne({_id: state._id}, {$unset: {creationSnapshots: "", creationListBaseline: "", creationUnrelatedModeration: ""}});
+    verifyLists(state.creationListBaseline || snapshots);
     Q.printObject({checkpointId, creationRestored: true, removedGroupIds: ids});
     return;
   }

@@ -824,3 +824,33 @@ windows/state; continue at Maya's pending Save. If the browser boundary changed,
 diagnose it first and retain the saved results.
 
 [Exact retained state and UI evidence](GROUP-LIFECYCLE-001-block6-resume-20260926.json).
+
+## Block 6 continuation — 2026-09-27
+
+Retained status gate passed; all windows and Maya's exact unsaved two-image draft survived. Normal Save persisted Base Feed `6f4b3399-efbd-4490-8122-473d750d1f8b`, accepted with both captions and Event metadata. Ava opened Accepted/Photo Feed and selected both images/details: correct distinct captions, Event/organizer/location, no Save/upload/remove; fields read-only.
+
+Creation prerequisite initially refused the block-1 baseline because Seattle Neighbours had the retained join transition. The creation harness now verifies the existing after-workspace-selection list snapshot and retains that same boundary for cleanup; no domain reset or loosened field comparisons. Preparation passed with productWrites=false.
+
+App moderation disabled: normal creation QA Group Flow Off was immediately accepted. The first settings save correctly conflicted with a concurrent Group creation revision; settings remained unchanged. QA Group Flow On therefore also belongs to the disabled branch, not an enabled PASS. Reopened fresh settings, enabled moderation/all four categories and disabled auto-approve; persisted revision 781 verified before the next producer. QA Group Flow Hold `7fc7c15d-a3d2-429b-a18c-8e239303e24a` was then created normally and is under-review. Owner card shows Under moderation. Ava opened its complete read-only Group editor including both textual policies, then the mandatory Policy details: all fields disabled, no save.
+
+Evidence: [continued block-6 observations](GROUP-LIFECYCLE-001-block6-continued-20260927.json). HTTP remains 5/48 closed; block 6 still in progress. Creation snapshots are LIVE alongside retained Admin/Base Feed snapshots; restore creation before restoring Admin. Next: app-admin decision/report branches, status badge geometry, then remaining support/counter checks.
+
+### 00:39 — app moderation/report branch and user UI corrections
+
+App-admin accepted Group Hold and Group Error through their confirmation dialogs. Under-review rows/counters disappeared immediately. Replaying Hold's exact approval command returned version 2 and unchanged global revision 790. Maya's report persisted once with community source/id and appeared in Ava's Reports. Found and fixed the source card routing: it previously generated an Event support URL; it now invokes the existing read-only Group editor. Actual UI opened full description/policies with disabled fields and no Save. The reported-owner card now names Alex, not the group's name.
+
+User-requested errors: the moderation error was unstyled and below the form. It now uses existing danger colors at the top of the popup body immediately below the header. Actual revision-conflict observation measured red rgb(164,60,69), a single alert and no horizontal overflow. Successful list polling previously cleared the settings failure; separate settings-error state prevents that. Focused moderation component tests 11/11 PASS. The first mobile observation occurred after the old poll cleared the error and is NOT claimed as mobile error-layout PASS.
+
+User-requested review card color: Group moderationStatus now selects the existing shared review surface used by Event/Asset. Browser verified review's sand gradient while under-review and normal green after remote approval via the existing 30-second list poll, without reload for the transition. This uses the existing review layout as well as its palette.
+
+The existing frontend watcher built/synced successfully at 00:37:52 CEST; no independent app build. restore-creation passed with exact after-workspace-selection list verification, removed the four owned test groups/reports and restored the original app moderation settings/global queue. Admin/Base Feed fixture remains LIVE. Remaining block 6: support/HU/global isolation and outstanding 6.1 counter/recipient/stale/concurrency checks. HTTP remains 5/48 closed.
+
+### 00:43 — Group support isolation and language
+
+Alex read Eszter's retained reply: Group support/Chats 1→0 and Groups 6→5 in place, leaving moderation pending 1 and other group attention intact. His normal reply produced one new message; only Eszter's group chat copy gained unread=1 and her base account notification total gained one (36→37). Base chat/App-support counters, every unrelated chat and global moderation state remained identical. Eszter read it: group unread/Chats/Groups 1→0. Both actors retained the list beneath the message popup. One logical conversation has two owner copies, not two conversations. Replaying the original rejection returned version2/revision21/pending1; message count remained3, with read receipt updates only.
+
+Browser-language emulation through the existing CDP helper loaded real Hungarian bundles after reload: html lang=hu, Csoport support and Alkalmazástámogatás filters present. The helper restored original browser languages and reloaded afterward. The initial short-lived locale override disconnected before load and remained English; only the final language-eval observation is Hungarian evidence. No navigator monkey patch or application-store mutation.
+
+### 00:44 — real delayed moderation response: FAIL → fixed browser replay PASS
+
+Held the actual periodic group moderation response before accepting the real two-image post. Original behavior: decision immediately removed the row and badges, then releasing the old response resurrected the row (counters stayed correct). Fixed the popup loader to reject snapshots older than the existing scoped store revision with the existing SmartList AbortError contract. No parallel polling or full-list reload. Replayed via normal Block/Unblock to obtain the same retained content pending, then held its normal poll and accepted through the dialog. Immediate pending/card1→0, Hosting3→2, Groups5→4. Released old response: list stayed empty and counters stayed correct. No reload between decision and assertions. Initial unit run exposed DOMException/Error identity in jsdom; the abort guard now explicitly accepts DOMException too. Final focused rerun follows.
