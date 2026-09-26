@@ -26,9 +26,13 @@ public class CalendarExportController {
         if (actor == null || actor.isBlank() || "anonymousUser".equals(actor)) {
             throw new org.springframework.web.server.ResponseStatusException(org.springframework.http.HttpStatus.UNAUTHORIZED);
         }
+        String content = calendar.export(actor);
+        if (content.isEmpty()) {
+            return ResponseEntity.noContent().header(HttpHeaders.CACHE_CONTROL, "private, no-store").build();
+        }
         return ResponseEntity.ok().header(HttpHeaders.CACHE_CONTROL, "private, no-store")
                 .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"myscoutee-calendar.ics\"")
                 .header("X-Content-Type-Options", "nosniff")
-                .body(calendar.export(actor));
+                .body(content);
     }
 }

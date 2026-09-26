@@ -45,6 +45,7 @@ public class CalendarExportService {
                     || !end.isAfter(start) || !end.isAfter(now)) continue;
             unique.putIfAbsent(event.id(), event);
         }
+        if (unique.isEmpty()) return "";
         unique.values().stream().sorted(Comparator.comparing(e -> instant(e.startAtIso()))).forEach(event -> {
             line(out, "BEGIN:VEVENT");
             line(out, "UID:" + Base64.getUrlEncoder().withoutPadding().encodeToString(

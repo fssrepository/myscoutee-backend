@@ -7809,7 +7809,7 @@
     "_id": "i18n-message-en-footer-connect",
     "key": "footer.connect",
     "lang": "en",
-    "value": "Let's connect"
+    "value": "Follow us"
   },
   {
     "_id": "i18n-message-en-footer-tagline",
@@ -23034,6 +23034,102 @@
     "value": "The contact chat could not be opened or updated. Please try again."
   },
   {
+    "_id": "i18n-message-en-profile-children-none",
+    "key": "profile.children.none",
+    "lang": "en",
+    "value": "No children"
+  },
+  {
+    "_id": "i18n-message-en-profile-children-has",
+    "key": "profile.children.has",
+    "lang": "en",
+    "value": "Has children"
+  },
+  {
+    "_id": "i18n-message-en-calendar-export-empty",
+    "key": "calendar.export.empty",
+    "lang": "en",
+    "value": "There are no upcoming events to export."
+  },
+  {
+    "_id": "i18n-message-en-app-setup-help-title",
+    "key": "app.setup.help.title",
+    "lang": "en",
+    "value": "Installation and permissions"
+  },
+  {
+    "_id": "i18n-message-en-app-setup-help-location-title",
+    "key": "app.setup.help.location.title",
+    "lang": "en",
+    "value": "Location"
+  },
+  {
+    "_id": "i18n-message-en-app-setup-help-location-text",
+    "key": "app.setup.help.location.text",
+    "lang": "en",
+    "value": "Location helps show nearby people and events. Select it here, then allow access when your browser asks. Your device’s location services must also be enabled."
+  },
+  {
+    "_id": "i18n-message-en-app-setup-help-notifications-title",
+    "key": "app.setup.help.notifications.title",
+    "lang": "en",
+    "value": "Notifications"
+  },
+  {
+    "_id": "i18n-message-en-app-setup-help-notifications-text",
+    "key": "app.setup.help.notifications.text",
+    "lang": "en",
+    "value": "Select notifications to receive alerts on this device. Both the browser and your system must allow them. Installing the app does not grant notification permission."
+  },
+  {
+    "_id": "i18n-message-en-app-setup-help-install-title",
+    "key": "app.setup.help.install.title",
+    "lang": "en",
+    "value": "Install the app"
+  },
+  {
+    "_id": "i18n-message-en-app-setup-help-install-text",
+    "key": "app.setup.help.install.text",
+    "lang": "en",
+    "value": "Android: use Install app here or in your browser menu. iPhone / iPad: in Safari, choose Share → Add to Home Screen. Open that icon to enable notifications (iOS / iPadOS 16.4 or later)."
+  },
+  {
+    "_id": "i18n-message-en-app-setup-help-blocked-title",
+    "key": "app.setup.help.blocked.title",
+    "lang": "en",
+    "value": "Previously blocked?"
+  },
+  {
+    "_id": "i18n-message-en-app-setup-help-blocked-text",
+    "key": "app.setup.help.blocked.text",
+    "lang": "en",
+    "value": "MyScoutee cannot override a browser or system block. Change the permission in settings, return here and retry. Menu names vary by device and version."
+  },
+  {
+    "_id": "i18n-message-en-app-setup-help-android-title",
+    "key": "app.setup.help.android.title",
+    "lang": "en",
+    "value": "Android settings"
+  },
+  {
+    "_id": "i18n-message-en-app-setup-help-android-text",
+    "key": "app.setup.help.android.text",
+    "lang": "en",
+    "value": "Chrome → Settings → Site settings → Location / Notifications: allow this site. Also check Android Settings → Apps → your browser or installed app → Permissions / Notifications. Then return to MyScoutee."
+  },
+  {
+    "_id": "i18n-message-en-app-setup-help-ios-title",
+    "key": "app.setup.help.ios.title",
+    "lang": "en",
+    "value": "iPhone / iPad settings"
+  },
+  {
+    "_id": "i18n-message-en-app-setup-help-ios-text",
+    "key": "app.setup.help.ios.text",
+    "lang": "en",
+    "value": "Location: Settings → Privacy & Security → Location Services; also check Location in Safari’s settings for this website. Alerts: Settings → Notifications → MyScoutee → Allow Notifications. Open MyScoutee from the Home Screen and retry."
+  },
+  {
     "_id": "i18n-message-hu-navigator-community",
     "key": "navigator.community",
     "lang": "hu",
@@ -30843,7 +30939,7 @@
     "_id": "i18n-message-hu-footer-connect",
     "key": "footer.connect",
     "lang": "hu",
-    "value": "Kapcsolódjunk"
+    "value": "Kövess minket"
   },
   {
     "_id": "i18n-message-hu-footer-tagline",
@@ -46066,5 +46162,101 @@
     "key": "chat.contacts.error",
     "lang": "hu",
     "value": "A kapcsolati chat nem nyitható meg vagy frissíthető. Próbáld újra."
+  },
+  {
+    "_id": "i18n-message-hu-profile-children-none",
+    "key": "profile.children.none",
+    "lang": "hu",
+    "value": "Nincs"
+  },
+  {
+    "_id": "i18n-message-hu-profile-children-has",
+    "key": "profile.children.has",
+    "lang": "hu",
+    "value": "Van"
+  },
+  {
+    "_id": "i18n-message-hu-calendar-export-empty",
+    "key": "calendar.export.empty",
+    "lang": "hu",
+    "value": "Nincs exportálható közelgő esemény."
+  },
+  {
+    "_id": "i18n-message-hu-app-setup-help-title",
+    "key": "app.setup.help.title",
+    "lang": "hu",
+    "value": "Telepítés és engedélyek"
+  },
+  {
+    "_id": "i18n-message-hu-app-setup-help-location-title",
+    "key": "app.setup.help.location.title",
+    "lang": "hu",
+    "value": "Helyadatok"
+  },
+  {
+    "_id": "i18n-message-hu-app-setup-help-location-text",
+    "key": "app.setup.help.location.text",
+    "lang": "hu",
+    "value": "A helyadatok segítenek a közeli emberek és események megjelenítésében. Jelöld be itt, majd engedélyezd a böngésző kérését. A készülék helymeghatározása is legyen bekapcsolva."
+  },
+  {
+    "_id": "i18n-message-hu-app-setup-help-notifications-title",
+    "key": "app.setup.help.notifications.title",
+    "lang": "hu",
+    "value": "Értesítések"
+  },
+  {
+    "_id": "i18n-message-hu-app-setup-help-notifications-text",
+    "key": "app.setup.help.notifications.text",
+    "lang": "hu",
+    "value": "Jelöld be az értesítéseket, ha ezen az eszközön szeretnél jelzéseket kapni. A böngészőnek és a rendszernek is engedélyeznie kell őket. A telepítés önmagában nem ad értesítési engedélyt."
+  },
+  {
+    "_id": "i18n-message-hu-app-setup-help-install-title",
+    "key": "app.setup.help.install.title",
+    "lang": "hu",
+    "value": "Alkalmazás telepítése"
+  },
+  {
+    "_id": "i18n-message-hu-app-setup-help-install-text",
+    "key": "app.setup.help.install.text",
+    "lang": "hu",
+    "value": "Android: az itteni vagy a böngészőmenü Telepítés gombját használd. iPhone / iPad: Safari → Megosztás → Főképernyőhöz adás. Az értesítéseket erről az ikonról megnyitva engedélyezheted (iOS / iPadOS 16.4-től)."
+  },
+  {
+    "_id": "i18n-message-hu-app-setup-help-blocked-title",
+    "key": "app.setup.help.blocked.title",
+    "lang": "hu",
+    "value": "Korábban letiltottad?"
+  },
+  {
+    "_id": "i18n-message-hu-app-setup-help-blocked-text",
+    "key": "app.setup.help.blocked.text",
+    "lang": "hu",
+    "value": "A MyScoutee nem írhatja felül a böngésző vagy a rendszer tiltását. Módosítsd az engedélyt a beállításokban, majd térj vissza ide és próbáld újra. A menüpontok neve készülékenként és verziónként eltérhet."
+  },
+  {
+    "_id": "i18n-message-hu-app-setup-help-android-title",
+    "key": "app.setup.help.android.title",
+    "lang": "hu",
+    "value": "Android-beállítások"
+  },
+  {
+    "_id": "i18n-message-hu-app-setup-help-android-text",
+    "key": "app.setup.help.android.text",
+    "lang": "hu",
+    "value": "Chrome → Beállítások → Webhelybeállítások → Hely / Értesítések: engedélyezd ezt a webhelyet. Az Android Beállítások → Alkalmazások → böngésző vagy telepített app → Engedélyek / Értesítések pontját is ellenőrizd. Ezután térj vissza a MyScoutee-hoz."
+  },
+  {
+    "_id": "i18n-message-hu-app-setup-help-ios-title",
+    "key": "app.setup.help.ios.title",
+    "lang": "hu",
+    "value": "iPhone / iPad beállítások"
+  },
+  {
+    "_id": "i18n-message-hu-app-setup-help-ios-text",
+    "key": "app.setup.help.ios.text",
+    "lang": "hu",
+    "value": "Hely: Beállítások → Adatvédelem és biztonság → Helymeghatározás; a Safari adott webhelyhez tartozó Hely beállítását is ellenőrizd. Jelzések: Beállítások → Értesítések → MyScoutee → Értesítések engedélyezése. A főképernyőről nyisd meg a MyScoutee-t, majd próbáld újra."
   }
 ]

@@ -83,7 +83,7 @@ class CalendarExportServiceTest {
     @Test void exportUsesExistingActorScopedQuery() {
         var events = mock(ActivitiesEventsService.class);
         when(events.queryCalendarItemsByUser("viewer")).thenReturn(List.of());
-        assertTrue(new CalendarExportService(events).export("viewer").endsWith("END:VCALENDAR\r\n"));
+        assertEquals("", new CalendarExportService(events).export("viewer"));
         verify(events).queryCalendarItemsByUser("viewer");
     }
 
