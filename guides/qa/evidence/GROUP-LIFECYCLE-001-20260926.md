@@ -382,3 +382,25 @@ not a complete block or local/HTTP campaign PASS.
   delivered by the same existing group-profile poll. No extra polling endpoint
   was introduced. All mutation/impression combinations remain outside this proof.
 - Actor 0 was returned to Main profile through the normal workspace menu.
+
+## Block 2 started — created group and runtime continuity
+
+- After the Main-profile badge report, read-only inspection proved actors 1 and
+  2 still ran older frontend code without accountAttention and retained local
+  IDs u3/u4. Refreshing their existing managed pages loaded the current HTTP
+  actor profiles. Main-profile menu row and selector both rendered 99+ with
+  underlying sums 171 (Eszter) and 166 (Maya). No badge rule was redefined.
+- The versioned creation fixture snapshots owner groups, owner memberships,
+  account/group profiles and affected moderation state before product writes.
+  Restore refuses an unrelated created group, other members in the created
+  group or changes to unrelated moderation items. This is a temporary control,
+  not a new seed or another runtime stack.
+- Created QA Group Flow through the editor, after proving empty and 21-character
+  names disable Save. Uploaded the repository app icon through the real input.
+  Public/Friends/name/description/image persisted and reopened; server detail
+  confirms accepted Admin membership. Immediate SmartList insertion put the new
+  card first in Recent. Resource timing showed the save and workspace refresh,
+  with no separate group page reload.
+- Creation snapshots remain prepared while blocks 2–3 run. The app-owned upload
+  URL is recorded in the structured evidence; physical media cleanup is not yet
+  proven. The overall case remains NOT RUN/unfinished.

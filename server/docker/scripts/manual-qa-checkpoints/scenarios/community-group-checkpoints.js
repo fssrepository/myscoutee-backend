@@ -8,7 +8,7 @@
   const command = Q.text(process.env.MANUAL_QA_COMMAND);
   if (!["status", "verify-lists", "prepare-badges", "prepare-join", "restore-badges",
       "capture", "restore", "verify-savepoint", "prepare-list-pagination", "restore-list-pagination",
-      "prepare-invitation", "restore-invitation", "prepare-editor", "restore-editor"].includes(command)
+      "prepare-invitation", "restore-invitation", "prepare-editor", "restore-editor", "prepare-creation", "restore-creation"].includes(command)
       || Q.text(process.env.MANUAL_QA_CHECKPOINT_ID) !== checkpointId) {
     Q.fail("Only the retained Group list baseline status is supported here.");
   }
@@ -60,6 +60,44 @@
   const paginationIds = Array.from({length: 24}, (_, index) => `manual-qa-community-page-${String(index + 1).padStart(2, "0")}`);
   const paginationOwnerIds = paginationIds.map((_, index) => `f026092600000000000000${String(index + 1).padStart(2, "0")}`);
   const paginationDistances = [0, 3.2, 4.9, 5, 5.1, 9.9, 10, 10.1];
+  if (command === "prepare-creation") {
+    verifyLists();
+    if (state.creationSnapshots) Q.fail("Group creation already prepared.");
+    if (Q.collection("communityGroups").countDocuments({name: /^QA Group Flow/})) Q.fail("Creation control already exists.");
+    const retained = Q.snapshotSpecs([
+      {collection: "communityGroups", selector: {ownerUserId: actors[0]}},
+      {collection: "activityMembers", selector: {ownerType: "community", userId: actors[0]}},
+      {collection: "users", selector: {$or: [{userId: actors[0]}, {accountUserId: actors[0]}]}},
+      {collection: "contentModerationItems", selector: {category: "group", ownerUserId: actors[0]}},
+      {collection: "contentModerationState", selector: {_id: "global"}}
+    ]);
+    const unrelatedModeration = Q.collection("contentModerationItems").find({$nor: [{category: "group", ownerUserId: actors[0]}]}).toArray();
+    Q.collection(Q.STATE_COLLECTION).updateOne({_id: state._id}, {$set: {creationSnapshots: retained, creationUnrelatedModeration: unrelatedModeration}});
+    Q.printObject({checkpointId, creationPrepared: true, productWrites: false});
+    return;
+  }
+  if (command === "restore-creation") {
+    if (!state.creationSnapshots) Q.fail("No creation snapshot.");
+    const prior = state.creationSnapshots.find(s => s.collection === "communityGroups").documents;
+    const created = Q.collection("communityGroups").find({ownerUserId: actors[0]}).toArray().filter(g => !prior.some(p => p._id === g._id));
+    if (created.some(g => !g.name.startsWith("QA Group Flow"))) Q.fail("Unrelated group created; retain snapshot for review.");
+    const ids = created.map(g => g._id);
+    if (Q.collection("activityMembers").countDocuments({ownerType: "community", ownerId: {$in: ids}, userId: {$ne: actors[0]}})) Q.fail("Created group has other members; restore their scoped checkpoint first.");
+    const unrelated = Q.collection("contentModerationItems").find({$nor: [{category: "group", ownerUserId: actors[0]}]}).toArray();
+    if (!Q.sameJson(ordered(unrelated), ordered(state.creationUnrelatedModeration))) Q.fail("Unrelated moderation changed; do not overwrite the global queue snapshot.");
+    const globalState = Q.collection("contentModerationState").findOne({_id: "global"});
+    if (globalState && globalState.pending && globalState.pending.length) Q.fail("Moderation has pending writes; retain state.");
+    Q.restoreSnapshots(state.creationSnapshots);
+    Q.restoreSnapshots([
+      {collection: "userNotifications", selector: {sourceType: "community", sourceId: {$in: ids}}, documents: []},
+      {collection: "notificationOutbox", selector: {entityType: "community", entityId: {$in: ids}}, documents: []},
+      {collection: "contentModerationState", selector: {_id: {$in: ids.map(id => "group:" + id)}}, documents: []}
+    ]);
+    Q.collection(Q.STATE_COLLECTION).updateOne({_id: state._id}, {$unset: {creationSnapshots: "", creationUnrelatedModeration: ""}});
+    verifyLists();
+    Q.printObject({checkpointId, creationRestored: true, removedGroupIds: ids});
+    return;
+  }
   if (command === "prepare-invitation" || command === "prepare-editor") {
     const snapshotKey = command === "prepare-editor" ? "editorSnapshots" : "invitationSnapshots";
     verifyLists();
@@ -136,7 +174,7 @@
     // Add later boundaries only with their prepared selectors and checklist oracle.
     const boundaries = {"lists-ready": 1, "block-1-complete": 2};
     if (!Object.hasOwn(boundaries, name)) Q.fail("Unknown Group savepoint boundary.");
-    if (state.paginationSnapshots || state.invitationSnapshots || state.editorSnapshots) Q.fail("Restore temporary controls before a savepoint operation.");
+    if (state.paginationSnapshots || state.invitationSnapshots || state.editorSnapshots || state.creationSnapshots) Q.fail("Restore temporary controls before a savepoint operation.");
     let savepoint = (state.savepoints || []).find(item => item.name === name);
     if (command === "capture") {
       if (savepoint) Q.fail("Savepoint already exists; retained evidence must not be overwritten.");
@@ -241,6 +279,7 @@
     paginationPrepared: !!state.paginationSnapshots,
     invitationPrepared: !!state.invitationSnapshots,
     editorPrepared: !!state.editorSnapshots,
+    creationPrepared: !!state.creationSnapshots,
     savepoints: (state.savepoints || []).map(({name, capturedAtIso, resumeBlock, adapter}) => ({name, capturedAtIso, resumeBlock, adapter})),
     resumedFrom: state.resumedFrom || null,
     alexBaseline: groups.map(group => {
