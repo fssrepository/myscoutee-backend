@@ -39,6 +39,23 @@ class UserNotificationPageRepositoryTest {
     }
 
     @Test
+    void communityDeliveryRetryDoesNotIncrementTwiceOrRecountNotifications() {
+        UserNotification notification = notification("community-change", "2026-09-26T17:00:00Z");
+        notification.setSourceType("community"); notification.setSourceId("group");
+        notification.setPayload(java.util.Map.of("communityAttention", "members"));
+        when(mongoTemplate.insert(notification)).thenReturn(notification)
+                .thenThrow(new org.springframework.dao.DuplicateKeyException("already delivered"));
+        assertThat(repository.insertIfAbsent(notification)).isTrue();
+        assertThat(repository.insertIfAbsent(notification)).isFalse();
+        var query = ArgumentCaptor.forClass(Query.class);
+        var update = ArgumentCaptor.forClass(Update.class);
+        verify(mongoTemplate).updateFirst(query.capture(), update.capture(), eq("activityMembers"));
+        assertThat(query.getValue().getQueryObject().getString("ownerId")).isEqualTo("group");
+        assertThat(update.getValue().getUpdateObject().get("$inc", Document.class).getInteger("communityUpdates")).isEqualTo(1);
+        verify(mongoTemplate, org.mockito.Mockito.never()).count(any(Query.class), eq(UserNotification.class));
+    }
+
+    @Test
     void findPageUsesUnreadBucketAndStableCreatedDateIdKeyset() {
         when(mongoTemplate.count(any(Query.class), eq(UserNotification.class))).thenReturn(5L);
         when(mongoTemplate.find(any(Query.class), eq(UserNotification.class))).thenReturn(List.of(

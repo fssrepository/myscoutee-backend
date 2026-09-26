@@ -954,7 +954,7 @@ PY
       fi
     fi
     ;;
-  community-group:status|community-group:prepare-badges|community-group:prepare-join|community-group:restore-badges)
+  community-group:status|community-group:verify-lists|community-group:prepare-badges|community-group:prepare-join|community-group:restore-badges)
     [ "$#" -eq 3 ] || { usage >&2; exit 2; }
     run_scenario "${command}" "${scenario}" 30 "$3"
     ;;

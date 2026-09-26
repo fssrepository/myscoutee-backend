@@ -29,6 +29,8 @@ or claim that a fixture or browser session has already been prepared.
 2. Compare category icon colors with their filter menu items. Check selected
    menu-item tint, card labels and pending/member badges. Use the card's actions
    and member badge; do not require a newly invented whole-card animation.
+   A zero-distance card belongs under **0 km**, using the shared Event distance
+   grouping. Nonzero distances retain the existing 5 km buckets.
 
 ## 2. Create and reopen a group
 
@@ -121,6 +123,26 @@ definition of all group activity.
    Retry must not create another notification or increment for the same change.
    Notifications remain account-wide, identify their group, and obey the existing
    All/Base/group filter. No unrelated group/account receives the notification.
+5. Hosting and Participation: verify their menu items and selected dropdown
+   trigger, category items and selected category trigger. Each sums relevant
+   operations, including pending interactions. Explore has no red counter on
+   its trigger, item or categories, even while Hosting/Participation have changes.
+6. Compare the two different scopes explicitly: the workspace selector contains
+   only accepted, selectable workspaces; Groups also includes pending invitations.
+   With Design Circle 1 + Seattle Friends 1 + a pending Game Night invitation 1,
+   the selector shows **2** and Groups shows **3**. This difference is correct.
+7. Read one member-change notification. Only that recipient's corresponding
+   Members/card/dropdown/sidebar counts decrease in place. Reading it again
+   does not decrement again; an unread change for another member/group remains.
+   Pending membership decisions remain counted until resolved, independently
+   of whether their notification was read. A retained profile from an earlier
+   membership cannot put private activity badges on an Explore card.
+8. Compare normal writes with a fresh local/Mongo seed and upgraded retained
+   storage. Pending counters are stored on the group and updated by the actual
+   transition delta, following Activity Event; neither reads nor ordinary writes
+   rebuild the total from child collections. During concurrent membership and notification
+   updates, neither write erases the other's state. Retry does not duplicate
+   the notification. Confirm local and HTTP behavior separately.
 
 ### 6.2. Moderation and support lifecycle
 

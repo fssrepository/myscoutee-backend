@@ -6,7 +6,7 @@
   const checkpointId = "GROUP-LIFECYCLE-001";
   Q.assertDeploymentSafety();
   const command = Q.text(process.env.MANUAL_QA_COMMAND);
-  if (!["status", "prepare-badges", "prepare-join", "restore-badges"].includes(command)
+  if (!["status", "verify-lists", "prepare-badges", "prepare-join", "restore-badges"].includes(command)
       || Q.text(process.env.MANUAL_QA_CHECKPOINT_ID) !== checkpointId) {
     Q.fail("Only the retained Group list baseline status is supported here.");
   }
@@ -31,6 +31,31 @@
     if (!Q.sameJson(ordered(snapshot.documents), ordered(Q.collection(snapshot.collection).find(snapshot.selector).toArray()))) {
       Q.fail(`${snapshot.collection} differs from the retained baseline; do not reset or relaunch blindly.`);
     }
+  }
+  if (command === "verify-lists") {
+    const retainedMembers = snapshots.find(s => s.collection === "activityMembers").documents;
+    for (const snapshot of snapshots) {
+      const expected = snapshot.collection === "communityGroups" ? snapshot.documents.map(group => ({
+        ...group, pendingMembers: group.pendingMembers ?? retainedMembers.filter(member =>
+          member.ownerType === "community" && member.ownerId === group._id && member.status === "pending").length
+      })) : snapshot.documents;
+      const actual = Q.collection(snapshot.collection).find(snapshot.selector).toArray();
+      const differences = expected.flatMap(before => {
+          const after = actual.find(row => Q.text(row._id) === Q.text(before._id));
+          if (!after) return [{id: before._id, missing: true}];
+          const fields = [...new Set([...Object.keys(before), ...Object.keys(after)])]
+            .filter(key => Object.hasOwn(before, key) !== Object.hasOwn(after, key) || !Q.sameJson(before[key], after[key]));
+          return fields.length ? [{id: before._id, fields}] : [];
+      });
+      const extraIds = actual.filter(row => !expected.some(before => Q.text(before._id) === Q.text(row._id))).map(row => row._id);
+      // Compare fields by ID: adding the counter changes BSON field order, not the fixture state.
+      if (differences.length || extraIds.length || actual.length !== expected.length) {
+        Q.printObject({collection: snapshot.collection, differences, extraIds});
+        Q.fail(`${snapshot.collection} differs from block 1; retain state and diagnose before restarting QA.`);
+      }
+    }
+    Q.printObject({checkpointId, verifiedChecklistBlock: 1, groups: 10, memberships: 27, mutated: false});
+    return;
   }
   if (command === "prepare-badges") {
     if (state.phase !== "read-only-lists-ready") Q.fail("Badge writes already prepared; do not overwrite snapshots.");
@@ -65,8 +90,17 @@
   if (command === "restore-badges") {
     if (state.phase !== "badge-writes-ready") Q.fail("No badge-write snapshots to restore.");
     Q.restoreSnapshots(state.badgeSnapshots);
-    Q.restoreSnapshots(state.snapshots);
-    Q.collection(Q.STATE_COLLECTION).updateOne({_id: state._id}, {$set: {phase: "read-only-lists-ready"}, $unset: {badgeSnapshots: "", badgePreparedAtIso: "", joinPrepared: ""}});
+    const retainedMembers = snapshots.find(s => s.collection === "activityMembers").documents;
+    const restoredSnapshots = snapshots.map(snapshot => snapshot.collection === "communityGroups"
+      ? {...snapshot, documents: snapshot.documents.map(group => ({...group,
+        pendingMembers: group.pendingMembers ?? retainedMembers.filter(member =>
+          member.ownerType === "community" && member.ownerId === group._id && member.status === "pending").length}))}
+      : snapshot);
+    Q.restoreSnapshots(restoredSnapshots);
+    Q.collection(Q.STATE_COLLECTION).updateOne({_id: state._id}, {$set: {
+      phase: "read-only-lists-ready", snapshots: restoredSnapshots,
+      preCounterSnapshots: state.preCounterSnapshots || snapshots
+    }, $unset: {badgeSnapshots: "", badgePreparedAtIso: "", joinPrepared: ""}});
     Q.printObject({checkpointId, phase: "read-only-lists-ready", restored: true});
     return;
   }

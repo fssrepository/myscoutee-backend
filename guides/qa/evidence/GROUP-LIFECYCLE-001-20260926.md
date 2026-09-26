@@ -1,8 +1,8 @@
 # GROUP-LIFECYCLE-001 — 2026-09-26 execution
 
-Status: **NOT RUN** overall; Dev HTTP block **1/25** partially exercised under
-explicit delegated automated QA. No full-block PASS is claimed. Local remains
-NOT RUN.
+Status: **NOT RUN** overall. Development corrections precede an ordered restart
+from **1/25**, as requested on 2026-09-26. Earlier Dev HTTP spot checks remain
+diagnostic evidence only. No full-block PASS is claimed; Local remains NOT RUN.
 
 ## Current defect and acceptance boundary
 
@@ -22,10 +22,10 @@ Confirmed defect: Seattle Friends displays its pending member count on the card
 but the Members action had no counter. The shared converter now binds that
 counter; deployed UI shows `Members 1` with the common red `counter--alert`
 gradient (managed Alex session, `/tmp/group-member-badge-verified.json`). Broader group activity is
-not declared fixed by this change. Source inspection also found no notification
-emission in either community-group membership service; the existing event
-notification workflow is the reuse reference. Recipient, retry, write-side
-counter, and live update behavior remain unverified.
+not declared fixed by that style change. Initial source inspection also found
+no notification emission in either community-group membership service; the
+follow-up below records the implementation and focused checks. Full recipient,
+retry, persistence and live UI behavior still require the ordered QA journey.
 
 ### Badge geometry follow-up
 
@@ -59,8 +59,8 @@ INTEGRATION-API-GROUP-001. Closed cases are not reopened.
 | 3 | Own/interacted groups excluded from Explore; pending belongs in Participation; canonical association and varied local/Mongo seeds, no separate seed catalogue | L1, L4 and baseline |
 | 4 | Group invitation reuses Event/affiliate flow, returned URL list, registration attribution, accepted group and saved active workspace | L8, A1–6 |
 | 5 | Group-admin moderation and support; app-admin configurable group review; group status badge; no group-creation review by group admin | L6, I5, I7 |
-| 6 | Relevant operation/change totals at menu/card/dropdown/sidebar; member-visible changes plus admin-only moderation; write-side, signal updates, no reload | L6.1; current membership/aggregate defects under investigation |
-| 7 | Notification goes to the affected recipient, not the mutating actor; no duplicate on retry; global bell with group reference/filter | L6.1, L25, I4; community membership notification hook absent in inspected services |
+| 6 | Relevant operation/change totals at menu/card/dropdown/sidebar; member-visible changes plus admin-only moderation; write-side, signal updates, no reload | L6.1; source corrected and focused checks below; complete UI journey NOT RUN |
+| 7 | Notification goes to the affected recipient, not the mutating actor; no duplicate on retry; global bell with group reference/filter | L6.1, L25, I4; existing outbox/local repository reused; full HTTP journey NOT RUN |
 | 8 | Avatar/profile load persists optional group selection and location parameters; no repeated X headers; membership-only selection; shared loading/timeout/rollback/retry | L5, L19–20, A4, I2 |
 | 9 | Community/Impressions/Activities and profile scoped; header global; My tools and nested asset lists Base-owned/global; no subgroups | L22–25, I1–6; explicit subgroup/menu check to retain |
 | 10 | Asset Explore global, Event Explore scoped; Base-key assets, scoped-key events; repository/service owns queries, stores hold identity/state | L22–25, I1–3, A5 |
@@ -197,6 +197,47 @@ each with its own accepted stored point and `setupOpen=false`, while both
 previously failing automatic-install trigger on the deployed build; no browser
 click, form, manual list action or full-entry PASS is claimed.
 
-Next action belongs to the user: Alex → Community → Groups, block 1 list/filter/
-color checks above. The 25-block progress table remains NOT RUN until execution
-results arrive. Later write blocks still require scoped fixture preparation.
+This startup record predates the explicit automated-QA delegation. The current
+instruction is to finish corrections and restart at block 1 in order; the user
+does not need to perform checklist actions. The 25-block table remains NOT RUN
+until execution results arrive. Later write blocks require scoped preparation.
+
+## Group correction follow-up — development verification, not QA PASS
+
+1. Stored pending-member counters now receive transition deltas through the
+   existing member-write path on both adapters, following Activity Event's
+   `applyActiveEventMembershipDeltas`. The intermediate recount implementation
+   was removed after the user's correction. Notification insert/read success
+   likewise increments/decrements stored member attention; duplicates do neither.
+   Mongo upgrade 007, demo/E2E JSON and local storage hydration
+   initialize the new field. Membership actions update only their own fields,
+   preserving counters concurrently maintained by notification writes.
+2. Membership notifications use the existing backend outbox and local notification
+   repository. Join/invite/accept/remove/role changes target affected recipients,
+   exclude the actor and carry the group reference. Stable operation identifiers
+   prevent duplicate notifications when a completed action is retried.
+3. Bucket/category counters, member menus and group cards share returned state
+   through existing stores. Read deltas update the same state; stale polls are
+   rejected. Explore explicitly supplies zero to the shared menu (null would
+   aggregate alerts). Retained profiles do not expose activity after membership
+   removal or before acceptance. Shared Event distance grouping handles 0 km.
+4. User-confirmed correct scope: Design Circle 1 + Seattle Friends 1 gives the
+   selectable workspace menu **2**; the pending Game Night invitation adds one
+   to the Groups sidebar, giving **3**. No pending workspace becomes selectable.
+5. Thirteen focused frontend checks passed with the existing Vitest configuration
+   and one worker: five popup/category/distance checks, five local membership/
+   recipient/read/retry checks, and three store scope/stale-poll checks. The local
+   test fixture initially omitted the empty Event table; that fixture-only error
+   was corrected before the successful rerun. These are not browser/IndexedDB
+   persistence or HTTP lifecycle proof.
+6. Existing frontend and backend dev watchers compiled the changes successfully;
+   no second application build was started. Backend mapper/invitation regression
+   tests were extended but not executed alongside the continuous Gradle owner.
+   Full Java tests and ordered local/HTTP UI execution remain pending.
+
+The retained fixture reports `badge-writes-ready` with join snapshots prepared.
+No product membership action has been performed for these prepared blocks.
+The versioned `verify-lists` gate confirmed all ten groups and 27 memberships
+against the retained baseline without mutation. BSON field order after adding
+`pendingMembers` is ignored; field presence and values remain exact. Restore
+now retains the new counter schema and the original snapshots for provenance. No closed PASS case was changed.

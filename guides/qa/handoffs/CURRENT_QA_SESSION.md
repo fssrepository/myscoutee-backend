@@ -1,6 +1,6 @@
 # Current manual QA session
 
-Updated: 2026-09-24
+Updated: 2026-09-26
 
 This is the context-saving entry point for continuing the manual QA campaign.
 It stores one minimal live resume pointer plus reusable pair-QA execution lessons. It
@@ -88,13 +88,13 @@ Earlier Event Mode, Integration API, Activity Rating and EVENT-FOLLOWING-001 rem
 ```yaml
 checkpoint: GROUP-LIFECYCLE-001
 checklist: ../checklists/group/GROUP-LIFECYCLE-001.md
-substage: 1/25 — Group lists partially exercised; overall NOT RUN. Missing group-change badges/notifications under diagnosis; full conversation coverage audit in execution log.
-fixture_phase: Retained read-only-lists-ready state verified, ten groups and 27 memberships unchanged. Old permittedBlocks [1,2] maps only to the current block 1; write blocks are not staged.
+substage: Ordered automated restart at block 1/25 after correction and focused regression checks. Earlier spot checks are not a completed QA block.
+fixture_phase: Retained badge-writes-ready with joinPrepared snapshots; no product membership actions executed. Stored pending counters initialized. Verify the actual harness status before reuse; original snapshots predate the new counter field.
 execution_log: ../evidence/GROUP-LIFECYCLE-001-20260926.md
 execution_authority: User explicitly delegated full-flow automated execution of the pending QA campaign on 2026-09-26; Codex operates the browser, diagnoses, fixes and retests. User observes and reports issues. Closed PASS rows remain closed.
-next_action: Members menu badge and shared 20px circle verified in managed UI; finish write-side group-change and recipient-notification diagnosis using checklist 6.1. Sum relevant operations, never distinct groups. Prepare exact fixture snapshots before mutation tests. No backend fix for that lifecycle has been made in this audit.
-queue: GROUP-LIFECYCLE-001 blocks 2–25 after scoped fixture preparation; GROUP-ISOLATION-001 blocks 1–12; INTEGRATION-API-GROUP-001 blocks 1–7 including relocated unexecuted MCP micros. USB/native-device checks last.
-resume_gate: Run the versioned community-group status command before any relaunch. Do not reset changed records or replay a closed checkpoint. Check the current managed-session manifest and launcher result.
+next_action: Execute block 1 lists/category controls in the three prepared HTTP sessions, then proceed numerically. Thirteen frontend regression checks passed; backend Java tests still pending. Stored member/notification counters update by transition deltas like Activity Event. Workspace selector 2 versus Groups 3 is explicitly correct for a pending invitation.
+queue: GROUP-LIFECYCLE-001 blocks 1–25 after verified fixture preparation; GROUP-ISOLATION-001 blocks 1–12; INTEGRATION-API-GROUP-001 blocks 1–7 including relocated unexecuted MCP micros. USB/native-device checks last.
+resume_gate: Run the versioned community-group status command before any relaunch. verify-lists checked all ten groups/27 memberships without mutation and the versioned launcher prepared all three actors on 2026-09-26. Do not reset changed records or replay a closed checkpoint. Check the current manifest and launcher result.
 runtime: Existing dev watchers own builds; no stack restart or seed replacement for this resume. Versioned launcher configuration restored after the revert.
 last_completed: EVENT-CALENDAR-EXPORT-001 PASS/CLOSED; AFFILIATE-REVENUE-001 remains PASS. Location fixes and baseline checks are not Group UI PASS.
 ```

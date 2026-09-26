@@ -18,7 +18,8 @@ public final class CommunityGroupMapper {
                 own == null ? null : own.getRequestKind(), own != null && Boolean.TRUE.equals(own.getOrganizerOnly()),
                 (int)members.stream().filter(m -> "accepted".equals(m.getStatus())).count(),
                 admin ? (int)group.pendingMemberCount() : 0,
-                activity + membersActivity(group, own) + (admin ? group.pendingModerationCount() : 0), distance(owner, viewer), group.moderationStatus(),
+                (own != null && "accepted".equals(own.getStatus()) ? activity : 0) + membersActivity(group, own)
+                    + (admin ? group.pendingModerationCount() : 0), distance(owner, viewer), group.moderationStatus(),
                 admin ? group.pendingModerationCount() : 0, admin && group.moderationQueueRevision() != null ? group.moderationQueueRevision() : 0, membersActivity(group, own));
     }
     public static long membersActivity(CommunityGroup group, ActivityMember own) {

@@ -66,9 +66,6 @@ public class ActivityMember {
     public String getCommunityActor() { return communityActor; }
     public void setCommunityActor(String value) { communityActor = value; }
     private Long communityUpdates;
-    private Long communityUpdatesRevision;
-    public Long getCommunityUpdatesRevision() { return communityUpdatesRevision; }
-    public void setCommunityUpdatesRevision(Long value) { communityUpdatesRevision = value; }
     public Long getCommunityUpdates() { return communityUpdates; }
     public void setCommunityUpdates(Long value) { communityUpdates = value; }
 

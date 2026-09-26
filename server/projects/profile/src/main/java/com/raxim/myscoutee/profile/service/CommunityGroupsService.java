@@ -53,7 +53,8 @@ public class CommunityGroupsService {
         var profiles = groupProfiles.profilesByGroup(actor.getUserId());
         return groups.findByIdIn(memberships.keySet()).stream()
                 .map(g -> new Workspace(g.id(), profiles.containsKey(g.id()) ? profiles.get(g.id()).getUserId() : null, g.name(), memberships.get(g.id()).getRole(),
-                    com.raxim.myscoutee.profile.service.mapper.CommunityGroupProfileMapper.attention(profiles.get(g.id()))
+                    ("accepted".equals(memberships.get(g.id()).getStatus())
+                        ? com.raxim.myscoutee.profile.service.mapper.CommunityGroupProfileMapper.attention(profiles.get(g.id())) : 0)
                         + CommunityGroupMapper.membersActivity(g, memberships.get(g.id()))
                         + (isAdmin(memberships.get(g.id())) ? g.pendingModerationCount() : 0), g.policy(),
                     isAdmin(memberships.get(g.id())) ? g.pendingModerationCount() : 0,
@@ -189,7 +190,6 @@ public class CommunityGroupsService {
         var old = membership(id, actor.getUserId());
         if (old != null && Set.of("accepted", "pending").contains(old.getStatus())) {
             if ("pending".equals(old.getStatus()) && "join".equals(old.getRequestKind())) {
-                counters.refreshCommunityMemberCounters(id);
                 notifyMembers(group, "join-requested", actor.getUserId(), old, members(id).stream().filter(this::isAdmin).map(ActivityMember::getUserId).toList(), false);
             }
             return dto(actor, groups.findById(id).orElseThrow(), members(id));
@@ -197,8 +197,8 @@ public class CommunityGroupsService {
         if ("invitation".equals(group.visibility())) throw error(HttpStatus.FORBIDDEN);
         // Admission always goes through an administrator; pending users have no group profile.
         var requested = memberships.save(newMember(group, actor.getUserId(), "Member", "pending", "join", null));
+        counters.applyCommunityMemberDelta(id, 1);
         notifyMembers(group, "join-requested", actor.getUserId(), requested, members(id).stream().filter(this::isAdmin).map(ActivityMember::getUserId).toList(), false);
-        counters.refreshCommunityMemberCounters(id);
         return dto(actor, groups.findById(id).orElseThrow(), members(id));
     }
     public List<ActivityMemberEntryDto> roster(Users actor, String id, boolean pendingOnly) {
@@ -236,10 +236,10 @@ public class CommunityGroupsService {
                 .map(ActivityMember::getUserId).collect(Collectors.toSet());
         var invited = userIds.stream().distinct().filter(candidates::contains).filter(uid -> !existing.contains(uid)).toList();
         memberships.saveAll(invited.stream().map(uid -> newMember(group, uid, "Member", "pending", "invite", actor.getUserId())).toList());
+        counters.applyCommunityMemberDelta(id, invited.size());
         for (var member : members(id)) if (userIds.contains(member.getUserId()) && "pending".equals(member.getStatus())
                 && "invite".equals(member.getRequestKind()) && actor.getUserId().equals(member.getInvitedByUserId()))
             notifyMembers(group, "invite", actor.getUserId(), member, List.of(member.getUserId()), false);
-        if (!invited.isEmpty()) counters.refreshCommunityMemberCounters(id);
         return new ActivityMembersInviteResponseDto(roster(actor, id, false), invited, List.of(), dto(actor, groups.findById(id).orElseThrow(), members(id)));
     }
     /** Called after the shared partner-link flow has bound the invitation to its recipient. */
@@ -269,11 +269,11 @@ public class CommunityGroupsService {
         if (target == null) throw error(HttpStatus.NOT_FOUND);
         String previousStatus = target.getStatus();
         String previousRole = target.getRole();
+        String previousActionAtIso = target.getActionAtIso();
         boolean self = actor.getUserId().equals(target.getUserId());
         boolean admin = isAdmin(membership(id, actor.getUserId()));
         boolean owner = group.ownerUserId().equals(target.getUserId());
         if (request.action().equals(target.getCommunityAction()) && actor.getUserId().equals(target.getCommunityActor()) && (self || admin)) {
-            counters.refreshCommunityMemberCounters(id);
             group = groups.findById(id).orElseThrow();
             notifyMemberTransition(group, actor.getUserId(), target, request.action());
             return new ActivityMemberActionResponseDto(self && "deleted".equals(target.getStatus()) ? List.of() : roster(actor, id, false), null, dto(actor, group, members(id)));
@@ -307,8 +307,12 @@ public class CommunityGroupsService {
             return new ActivityMemberActionResponseDto(roster(actor, id, false), null, dto(actor, group, members(id)));
         target.setUpdatedDate(Instant.now().toString()); target.setActionAtIso(target.getUpdatedDate());
         target.setCommunityAction(request.action()); target.setCommunityActor(actor.getUserId());
-        memberships.save(target);
-        counters.refreshCommunityMemberCounters(id);
+        if (memberships.updateCommunityState(target.getId(), previousStatus, previousRole, previousActionAtIso,
+                target.getStatus(), target.getRole(), target.getRequestKind(), target.getPendingSource(),
+                Boolean.TRUE.equals(target.getOrganizerOnly()), target.getActionAtIso(), request.action(), actor.getUserId()) == 0)
+            throw error(HttpStatus.CONFLICT);
+        counters.applyCommunityMemberDelta(id, ("pending".equals(target.getStatus()) ? 1 : 0)
+                - ("pending".equals(previousStatus) ? 1 : 0));
         group = groups.findById(id).orElseThrow();
         if ("deleted".equals(target.getStatus())) users.clearActiveWorkspace(target.getUserId(), id);
         notifyMemberTransition(group, actor.getUserId(), target, request.action());

@@ -38,18 +38,12 @@ import com.raxim.myscoutee.profile.repository.UsersRepository;
 
 @Service
 public class UserActivityCountersService {
-    /** Same write-side ownership as event counters; reads only consume the stored value. */
-    public void refreshCommunityMemberCounters(String groupId) {
-        for (int attempt = 0; attempt < 8; attempt++) {
-            var group = mongoTemplate.findById(groupId, com.raxim.myscoutee.profile.data.document.CommunityGroup.class);
-            if (group == null) return;
-            long pending = mongoTemplate.count(Query.query(Criteria.where("ownerType").is("community")
-                    .and("ownerId").is(groupId).and("status").is("pending")), ActivityMember.class);
-            if (mongoTemplate.updateFirst(Query.query(Criteria.where("_id").is(groupId).and("version").is(group.version())),
-                    new Update().set("pendingMembers", pending).inc("version", 1L),
-                    com.raxim.myscoutee.profile.data.document.CommunityGroup.class).getMatchedCount() > 0) return;
-        }
-        throw new IllegalStateException("Group member counters changed concurrently; retry the command.");
+    /** Apply only the successful membership transition, like applyActiveEventMembershipDeltas. */
+    public void applyCommunityMemberDelta(String groupId, int pendingDelta) {
+        if (pendingDelta == 0) return;
+        mongoTemplate.updateFirst(Query.query(Criteria.where("_id").is(groupId)),
+                new Update().inc("pendingMembers", pendingDelta).inc("version", 1L),
+                com.raxim.myscoutee.profile.data.document.CommunityGroup.class);
     }
     private final OrganizerFollowingService organizerFollowingService;
 
