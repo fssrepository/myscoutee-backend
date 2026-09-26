@@ -487,3 +487,71 @@ or stack was started. The `after-join-approval` savepoint was captured and verif
 at 2026-09-26T19:17:15Z with accepted Alex, three accepted members, zero pending and
 one workspace profile. It resumes block 4's remaining invitation branch, not a
 complete block/case PASS. Local browser coverage remains NOT RUN.
+
+### Normal invitation and invite-popup identity checks
+
+The candidate prerequisite was Eszter→Alex's existing `single` rate with `met=false`.
+The first fixture preparation attempted a separate record and was rejected by the
+owner/mode/target unique index; its retained snapshot was restored immediately.
+The corrected versioned `prepare-member-invitation` snapshots the exact pair and
+Trail Club mutation scope, then sets the encounter prerequisite on that existing
+record. This is preparation only: no invitation/membership is fixture-created.
+
+Eszter selected Alex in the ordinary Invite members popup and submitted. Alex's
+Invitations card appeared with no workspace profile. A concrete UI defect was
+reproduced while Alex retained Seattle Neighbours as his active profile: his own
+incoming invitation had no member actions because identity comparison used the
+workspace profile ID. Community member actions now use the existing account
+resolver; Event actions retain profile identity. After deployment, Reject Cancel
+preserved pending; confirmed Reject removed it. The danger menu/confirmation
+matched, and Eszter's open roster converged. Eszter invited Alex again; card Accept
+Cancel preserved pending, then confirmed Accept moved him out of Invitations,
+created one Trail Club workspace and changed accepted count 3→4, pending 1→0.
+Both Accept surfaces used the established brown palette and a full question.
+
+The user clarified self-exclusion refers specifically to **Invite members**, not
+the incoming invitation's member actions. The existing candidate repositories
+already exclude the inviter. A separate HTTP defect was reproduced: with Maya's
+Seattle Neighbours profile selected, querying candidates for Language Lab (which
+Maya administers) returned 403. Java now resolves the authenticated community actor
+through the existing account resolver before checking admin membership; other
+owner types retain profile identity. Frontend query dispatch likewise normalizes
+community identity before either adapter. Same read-only request after deployment:
+200, 20 candidates, no Maya/base/group-profile self candidate. Eszter: 200,
+25 candidates, no self. Both actual Invite members popups loaded and showed no
+inviter. No new self-exclusion rule or self-invitation capability was added.
+
+Focused tests: updated member popup 7/7; invite service/local self-exclusion 3/3.
+Java regression added; no separate Java test runner was started. Existing backend
+watcher build succeeded and actual HTTP before/after was verified. Frontend watcher
+deployment succeeded at 21:28. Java unit execution is not claimed.
+
+Remaining observed issue: remote list delta can insert an invitation while its
+bucket aggregate remains stale (two invitation cards with 1 each, header still 1).
+`CommunityGroupsStore.sync` applies list results without updating workspace-owned
+aggregates, and the background workspace poll yields to the foreground list.
+This is not marked fixed or PASS. Follow the existing Activity counter update
+contract when repairing the missing aggregate propagation.
+
+### Foreground aggregates and retained checkpoint
+
+The aggregate issue above was repaired in the existing Group sync owner by
+refreshing workspace-owned counters after a current foreground response. Actual
+Explore-open invitation delivery changed Invitations 1→2 and Groups 4→5 while
+Explore remained 0. Focused store tests 2/2 passed; frontend watcher deployed at
+21:32:02. Temporary Trail Club invitation controls and encounter prerequisite
+were restored before capture. `after-invitation-checks` was captured and verified
+at 2026-09-26T19:34:07.723Z, resuming block 5. A Main-profile request was then
+failed using the existing CDP network harness; rollback/retry remains unverified.
+
+### Block 26 — Admin responsibility and notifications: NOT RUN
+
+The requested separate block covers promotion, revocation by the granting Admin
+only, creator departure, Admin-first/member-fallback takeover, last-member
+deletion, contextual Asset Manager icons/palettes/confirmation buttons, and the
+corresponding notifications, recipient scoping and exact-once badge effects.
+Local and dev HTTP execution are NOT RUN. No closed PASS case was reopened.
+Source inspection: CommunityGroupsService currently rejects creator removal and
+step-down, and implements promotion without durable granting-Admin provenance.
+The local adapter mirrors those limitations. These are implementation gaps, not
+passing tests. This documentation update does not claim the lifecycle is fixed.

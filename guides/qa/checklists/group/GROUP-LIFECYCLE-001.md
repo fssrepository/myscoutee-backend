@@ -235,7 +235,9 @@ definition of all group activity.
 
 16. Leave/remove the test membership and check the remaining group lists and
     workspace choices after reload. An owner cannot be removed through an
-    ordinary member action. Restore only the checkpoint's exact snapshots.
+    ordinary member action. Voluntary creator departure and responsibility
+    transfer are covered separately in block 26. Restore only the checkpoint's
+    exact snapshots.
 
 ## Independent oracles
 
@@ -621,3 +623,66 @@ are pending manual verification, not extensions of an earlier PASS.
    Informational notices, payment summaries and forms keep their own headings.
 3. Source audit and focused unit checks are recorded separately from execution
    of every dialog. These checks do not reopen any closed PASS case.
+
+## 26. Group administrators, responsibility transfer and last-member deletion
+
+Use the existing Asset Manager lifecycle as the reference, with group-scoped
+Admin roles. Its closed evidence is not evidence for this Group block. Prepare
+isolated creator A, accepted members B/C/D and a pending/outsider control; record
+each promotion's granting account. Run local and dev HTTP independently. Capture
+replayable fixture savepoints between the independent branches below.
+
+1. As A, promote B; as B, promote C. Cancel each confirmation first, then confirm.
+   Persist both the Admin role and who granted it. Role changes update the open
+   roster, card actions, Hosting/Active lists, workspace authority and contextual
+   counters through the existing shared stores. Reload retains those results.
+2. B may revoke C's Admin role because B granted it; A may revoke B's because A
+   granted it. A cannot revoke C's grant and C cannot revoke B's. Verify both menu
+   visibility and direct HTTP denial, with unchanged persisted roles/counters on
+   denial. Revocation returns the target to Member without removing membership
+   or the workspace profile. Revoking an Admin must not silently revoke grants
+   that Admin previously made to others. A pending member or outsider cannot
+   promote or revoke anyone. Retrying a completed change produces no duplicate
+   notification or counter delta.
+3. Restore the branch baseline. Let the creator voluntarily leave while other
+   accepted Admins remain. Follow the Asset owner-release/Take Over flow: former
+   creator authority ends, the group remains available for handover, and the
+   takeover invitation goes to the existing eligible Admins, not ordinary
+   members. Cancel then confirm takeover as an eligible Admin. Verify the new
+   responsible Admin, persisted authority, and rejection of a competing/repeated
+   takeover. A creator's historical identity must not retain admin privileges.
+4. Separately let the responsible Admin leave when accepted ordinary members
+   remain but no other Admin exists. The existing Asset no-manager fallback is
+   the reference: eligible accepted members receive the takeover invitation and
+   can accept responsibility as group Admin. Pending users and outsiders cannot
+   take over. The group must not continue ordinary operation without an Admin;
+   check the explicit handover state and its permitted actions until acceptance.
+   Apply the same invariant when stepping down or revoking the last Admin.
+5. Return the former creator through the normal invitation/join flow. The account
+   returns as an ordinary Member; neither its former creator status nor old
+   grants restore Admin authority. A fresh promotion follows the same grant rule.
+6. In a separate isolated group, let every member leave, including the last
+   remaining Admin/member. Confirm automatic group deletion. Without reload, the
+   card disappears from all open relevant lists and selectors; the selected
+   deleted workspace is no longer usable and affected counters update once.
+   Reload and direct API reads confirm the deletion and loss of workspace access.
+   Repeating the final action must not resurrect the group or repeat its effects.
+7. Reuse the Asset Manager action icons and base palettes contextually: promotion
+   uses `admin_panel_settings` / blue, revocation `person_remove` / warning,
+   departure `logout` / danger, takeover `verified_user` / warning, and voluntary
+   step-down `person` / warning. The menu, confirmation dialog and confirm button
+   use the same action palette. Questions, explanatory text and buttons refer to
+   this group and its Admins, not an Event or Asset. Check HU/EN and mobile.
+8. Verify notifications alongside every successful promotion, revocation,
+   responsibility release and takeover, using the corresponding Asset Manager
+   recipient rules. Capture each actor's notification IDs and unread counters
+   before and after. Admin-first and accepted-member fallback takeover branches
+   must have their respective recipients only; no self-notification or unrelated
+   group recipient. Open each notification through its ordinary entry: it targets
+   the correct group and exposes only actions still authorized by current state.
+   Compare contextual icon, palette, wording and action with the Asset equivalent.
+   Cancellation/denial produces no success notification. Retry/delivery replay
+   produces no duplicate notification or unread increment. Verify read/dismiss,
+   group-profile/selector/avatar badge propagation and persistence after reload.
+   The avatar aggregate counts each change once. Restore only fixture-owned
+   records after capturing mutation, notification and reload evidence.

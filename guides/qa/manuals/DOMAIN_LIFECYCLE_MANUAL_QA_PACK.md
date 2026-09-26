@@ -11310,3 +11310,10 @@ complete real demo selection/entry/retry/reload/logout flow. INTEGRATION-API-GRO
 blocks 2–3 cover real registration and demo-existing-account invitation return.
 Injected Group fixture sessions cannot prove these entry branches. Both remain
 NOT RUN; closed ENTRY/AUTH PASS rows and their evidence are unchanged.
+
+2026-09-26 Group extension: [GROUP-LIFECYCLE-001 block 26](../checklists/group/GROUP-LIFECYCLE-001.md#26-group-administrators-responsibility-transfer-and-last-member-deletion)
+checks contextual Asset Manager parity for Admin grants/revocations, creator
+departure and takeover, final-member deletion, action styling/confirmations and
+notifications. Dev HTTP and local execution are NOT RUN; closed PASS cases remain
+unchanged. See the dated Group evidence log for source-audit gaps and the retained
+`after-invitation-checks` resume boundary.
