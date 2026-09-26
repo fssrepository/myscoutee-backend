@@ -109,8 +109,8 @@ public class CommunityGroupsService {
                         .thenComparing(Group::createdAtIso, Comparator.reverseOrder()).thenComparing(Group::id)).toList();
         var workspaceCounters = workspaces(actor);
         return new GroupSnapshot(rows, rows.size(), Map.of(
-                "hosting", workspaceCounters.stream().filter(w -> "Admin".equals(w.role())).mapToLong(Workspace::activity).sum(),
-                "participation", workspaceCounters.stream().filter(w -> !"Admin".equals(w.role())).mapToLong(Workspace::activity).sum()));
+                "hosting", workspaceCounters.stream().filter(w -> "Admin".equals(w.role()) && "accepted".equals(w.membershipStatus())).mapToLong(Workspace::activity).sum(),
+                "participation", workspaceCounters.stream().filter(w -> !("Admin".equals(w.role()) && "accepted".equals(w.membershipStatus()))).mapToLong(Workspace::activity).sum()));
     }
     public Page page(Users actor, String bucket, String category, int pageSize, String cursor) {
         var snapshot = snapshot(actor, bucket, category);

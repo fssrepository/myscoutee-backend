@@ -17,7 +17,8 @@
     "updatedAtIso": "2026-09-20T12:00:00.000Z",
     "version": 0,
     "moderationStatus": "accepted",
-    "moderationVersion": 0
+    "moderationVersion": 0,
+    "pendingMembers": 1
   },
   {
     "_id": "seed-community-design-circle",
@@ -39,7 +40,8 @@
     "updatedAtIso": "2026-09-20T12:00:00.000Z",
     "version": 0,
     "moderationStatus": "accepted",
-    "moderationVersion": 0
+    "moderationVersion": 0,
+    "pendingMembers": 1
   },
   {
     "_id": "seed-community-trail-club",
@@ -61,7 +63,8 @@
     "updatedAtIso": "2026-09-20T12:00:00.000Z",
     "version": 0,
     "moderationStatus": "accepted",
-    "moderationVersion": 0
+    "moderationVersion": 0,
+    "pendingMembers": 0
   },
   {
     "_id": "seed-community-language-lab",
@@ -81,7 +84,8 @@
     "updatedAtIso": "2026-09-20T12:00:00.000Z",
     "version": 0,
     "moderationStatus": "accepted",
-    "moderationVersion": 0
+    "moderationVersion": 0,
+    "pendingMembers": 0
   },
   {
     "_id": "seed-community-photo-walks",
@@ -103,7 +107,8 @@
     "updatedAtIso": "2026-09-20T12:00:00.000Z",
     "version": 0,
     "moderationStatus": "accepted",
-    "moderationVersion": 0
+    "moderationVersion": 0,
+    "pendingMembers": 0
   },
   {
     "_id": "seed-community-makers",
@@ -126,7 +131,8 @@
     "updatedAtIso": "2026-09-20T12:00:00.000Z",
     "version": 0,
     "moderationStatus": "accepted",
-    "moderationVersion": 0
+    "moderationVersion": 0,
+    "pendingMembers": 1
   },
   {
     "_id": "seed-community-game-night",
@@ -146,7 +152,8 @@
     "updatedAtIso": "2026-09-20T12:00:00.000Z",
     "version": 0,
     "moderationStatus": "accepted",
-    "moderationVersion": 0
+    "moderationVersion": 0,
+    "pendingMembers": 1
   },
   {
     "_id": "seed-community-neighbours",
@@ -166,7 +173,8 @@
     "updatedAtIso": "2026-09-20T12:00:00.000Z",
     "version": 0,
     "moderationStatus": "accepted",
-    "moderationVersion": 0
+    "moderationVersion": 0,
+    "pendingMembers": 0
   },
   {
     "_id": "seed-community-book-circle",
@@ -186,7 +194,8 @@
     "updatedAtIso": "2026-09-20T12:00:00.000Z",
     "version": 0,
     "moderationStatus": "accepted",
-    "moderationVersion": 0
+    "moderationVersion": 0,
+    "pendingMembers": 0
   },
   {
     "_id": "seed-community-study-buddies",
@@ -208,6 +217,7 @@
     "updatedAtIso": "2026-09-20T12:00:00.000Z",
     "version": 0,
     "moderationStatus": "accepted",
-    "moderationVersion": 0
+    "moderationVersion": 0,
+    "pendingMembers": 1
   }
 ]
