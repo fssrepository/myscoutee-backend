@@ -285,7 +285,8 @@ public class CommunityGroupsService {
         if (request.action().equals(target.getCommunityAction()) && actor.getUserId().equals(target.getCommunityActor()) && (self || admin)) {
             group = groups.findById(id).orElseThrow();
             notifyMemberTransition(group, actor.getUserId(), target, request.action());
-            if (group.awaitingOwner()) notifyHandover(group, actor.getUserId(), target, "owner-left");
+            if (group.awaitingOwner() && Objects.equals(group.ownerReleasedAtIso(), target.getActionAtIso()))
+                notifyHandover(group, actor.getUserId(), target, "owner-left");
             if ("take-over".equals(request.action())) notifyHandover(group, actor.getUserId(), target, "takeover");
             return new ActivityMemberActionResponseDto(group.deleted() || self && "deleted".equals(target.getStatus()) ? List.of() : roster(actor, id, false), null, dto(actor, group, members(id)));
         }
@@ -345,7 +346,8 @@ public class CommunityGroupsService {
             if (!group.awaitingOwner()) groups.updateLifecycle(id, "under-review", target.getActionAtIso(), takeoverCandidates(remaining, actor.getUserId()));
         }
         group = groups.findById(id).orElseThrow();
-        if (group.awaitingOwner() && (owner || isAdminRole(previousRole))) notifyHandover(group, actor.getUserId(), target, "owner-left");
+        if (group.awaitingOwner() && Objects.equals(group.ownerReleasedAtIso(), target.getActionAtIso()))
+            notifyHandover(group, actor.getUserId(), target, "owner-left");
         if ("take-over".equals(request.action())) notifyHandover(group, actor.getUserId(), target, "takeover");
         if ("deleted".equals(target.getStatus())) users.clearActiveWorkspace(target.getUserId(), id);
         notifyMemberTransition(group, actor.getUserId(), target, request.action());

@@ -11317,3 +11317,11 @@ departure and takeover, final-member deletion, action styling/confirmations and
 notifications. Dev HTTP and local execution are NOT RUN; closed PASS cases remain
 unchanged. See the dated Group evidence log for source-audit gaps and the retained
 `after-invitation-checks` resume boundary.
+
+2026-09-26 22:14 follow-up: the earlier block-26 NOT RUN source audit is historical.
+Admin lifecycle implementation now has partial actual HTTP/browser evidence and
+52 focused frontend checks; whole-case status remains IN PROGRESS, Local browser
+NOT RUN. The isolated Admin control was restored. Latest verified replay boundary
+is `after-workspace-selection` (block 5 remaining checks), following observed
+profile-selection timeout, rollback, retry and late-response isolation. Detailed
+evidence remains in the dated Group log; closed PASS rows are unchanged.

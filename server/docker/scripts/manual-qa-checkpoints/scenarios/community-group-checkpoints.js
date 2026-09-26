@@ -250,13 +250,13 @@
   if (["capture", "restore", "verify-savepoint"].includes(command)) {
     const name = Q.text(process.env.MANUAL_QA_SOURCE_CHECKPOINT_ID);
     // Add later boundaries only with their prepared selectors and checklist oracle.
-    const boundaries = {"lists-ready": 1, "block-1-complete": 2, "after-editor-checks": 4, "after-join-approval": 4, "after-invitation-checks": 5};
+    const boundaries = {"lists-ready": 1, "block-1-complete": 2, "after-editor-checks": 4, "after-join-approval": 4, "after-invitation-checks": 5, "after-workspace-selection": 5};
     if (!Object.hasOwn(boundaries, name)) Q.fail("Unknown Group savepoint boundary.");
     if (state.adminLifecycleSnapshots || state.paginationSnapshots || state.invitationSnapshots || state.memberInvitationSnapshots || state.editorSnapshots || state.creationSnapshots) Q.fail("Restore temporary controls before a savepoint operation.");
     let savepoint = (state.savepoints || []).find(item => item.name === name);
     if (command === "capture") {
       if (savepoint) Q.fail("Savepoint already exists; retained evidence must not be overwritten.");
-      if (["after-join-approval", "after-invitation-checks"].includes(name)) {
+      if (["after-join-approval", "after-invitation-checks", "after-workspace-selection"].includes(name)) {
         const groupId = "seed-community-neighbours";
         const membership = Q.collection("activityMembers").findOne({ownerType: "community", ownerId: groupId, userId: actors[0]});
         const profiles = Q.collection("users").find({accountUserId: actors[0], workspaceGroupId: groupId}).toArray();
@@ -267,6 +267,8 @@
           Q.fail("Join approval boundary requires Alex accepted, one workspace profile, three accepted members and no pending request.");
         }
       } else verifyLists();
+      if (name === "after-workspace-selection" && Q.collection("users").findOne({userId: actors[0]})?.activeWorkspaceGroupId !== "seed-community-design-circle")
+        Q.fail("Workspace boundary requires Alex's persisted Design Circle selection after timeout/retry checks.");
       savepoint = {name, capturedAtIso: Q.nowIso(), adapter: "http", resumeBlock: boundaries[name],
         phase: state.phase, joinPrepared: state.joinPrepared === true,
         snapshots: Q.snapshotSpecs([...snapshots, ...(state.badgeSnapshots || [])]),
@@ -367,6 +369,7 @@
     paginationPrepared: !!state.paginationSnapshots,
     invitationPrepared: !!state.invitationSnapshots,
     memberInvitationPrepared: !!state.memberInvitationSnapshots,
+    adminLifecyclePrepared: !!state.adminLifecycleSnapshots,
     editorPrepared: !!state.editorSnapshots,
     creationPrepared: !!state.creationSnapshots,
     savepoints: (state.savepoints || []).map(({name, capturedAtIso, resumeBlock, adapter}) => ({name, capturedAtIso, resumeBlock, adapter})),

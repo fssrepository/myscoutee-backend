@@ -555,3 +555,108 @@ Source inspection: CommunityGroupsService currently rejects creator removal and
 step-down, and implements promotion without durable granting-Admin provenance.
 The local adapter mirrors those limitations. These are implementation gaps, not
 passing tests. This documentation update does not claim the lifecycle is fixed.
+
+
+### Block 26 — implementation and partial execution, 22:10 CEST
+
+The previous NOT RUN entry records the earlier source state. The implementation
+now reuses ActivityMember.managerGrantedByUserId, shared member actions, menus,
+confirmations and notification outbox in HTTP and local adapters. No full block
+or testcase PASS is claimed.
+
+Actual browser/HTTP sequence on isolated `manual-qa-community-admin`:
+- Alex promoted Eszter; Eszter promoted Maya. Persisted granting IDs matched.
+  Alex could not revoke Maya (no menu action; HTTP 403); Eszter could revoke her,
+  leaving her accepted Member. Menu and confirm palettes matched.
+- Creator Alex left; Eszter took responsibility. Eszter subsequently left with
+  only ordinary member Maya remaining; Maya took responsibility as Admin.
+- Maya selected the group profile and left as last member. Card disappeared,
+  workspace returned to Main profile, group detail returned 404; deleted lifecycle
+  and deleted memberships were stored.
+- Fixture restored and prepared through versioned commands. Ordinary member Maya
+  cancelled Leave, then confirmed it: card removed immediately, Alex and Eszter
+  remained accepted, group active. One member-removed notice to Alex; no takeover
+  notice. Alex then promoted Eszter and left. Clean release produced exactly one
+  owner-left notice for Eszter, no duplicate member-removed notice for that release.
+
+The first owner-release run exposed duplicate member-removed + owner-left
+notifications. Both adapters now emit the responsibility notice for that release;
+retry notification is restricted to the matching release timestamp.
+Opening the takeover notice marked it read and decremented Eszter's group counter
+2 to 1, but exposed an initial-bucket bug: a mounted list stayed in Invitations
+when the async detail selected Hosting. Reactive bucket fix is awaiting retest.
+
+Earlier focused execution: 49/49 passed across local group service, Group card,
+member popup and notification converter. Java watcher build and actual HTTP
+requests passed; no separate Java unit runner was started. Latest focused rerun
+including ordinary-member leave is in progress. No full local browser lifecycle,
+concurrent takeover, crash/retry boundary or closed campaign row is claimed PASS.
+
+Retained isolated fixture must be restored before main-campaign replay. The
+`after-invitation-checks` savepoint remains the main campaign resume point (block 5).
+
+
+Follow-up: 52/52 focused tests passed (five files), including ordinary-member
+leave/retry. After watcher deployment, notification Open group loaded Hosting
+with the eligible QA group. Normal Take Over confirmed Eszter as responsible
+Admin; group active. The isolated snapshot was restored using the versioned
+restore-admin-lifecycle command; main campaign savepoint was not replayed.
+
+User-reported duplicate group-name badge removed from notification headlines.
+Actual 360px DOM inspection: Seattle Neighbours and two long Event titles show
+no inline duplicate badge, row overflow false, timestamp retained. Shared menu
+counterTone=alert restores outside red Home Filters/Ratings counters; final
+render verification pending.
+
+
+### Block 5 selection transport checks and reusable boundary — 22:14 CEST
+
+The versioned CDP harness held the real Main-profile HTTP response past the
+configured timeout. At 150ms the selector was disabled and Seattle Neighbours
+remained selected. After 3.5s it re-enabled, retained Seattle Neighbours and showed
+Unable to switch workspace. A normal subsequent Design Circle selection succeeded.
+Releasing the older held response did not replace Design Circle; reload retained
+Design Circle. Earlier normal same-target retry to Main also succeeded.
+`after-workspace-selection` was captured and verified at
+2026-09-26T20:13:47.292Z. Resume block 5's remaining profile/policy/layout checks,
+then block 6; do not replay completed setup from block 1. No whole block 5 PASS.
+
+Home red-counter position verified at 360px: alert class, absolute positioning,
+above and outside both buttons. That check additionally exposed 118px minimum
+button widths: compact density was mistakenly an inert attribute. Corrected it
+to the existing AppMenu model density setting; final width verification follows.
+
+Final Home check at 360px: Preferences 123.5px, Filters 71.7px, Ratings 79.6px;
+all controls fit. Both counters retain alert class and sit above/outside their
+buttons. Durable sanitized observations are retained in
+[Admin/selector/layout evidence](GROUP-LIFECYCLE-001-admin-selector-layout-20260926.json).
+The initial failed notification route is preserved alongside the successful
+retest, rather than represented as passing evidence.
+
+
+### Block 26 concurrency, former creator and step-down — 22:20 CEST
+
+A fresh isolated Admin control was prepared through the versioned harness. Alex
+left normally. Two concurrent HTTP takeover commands from the accepted ordinary
+members returned Eszter 200 and Maya 403. Eszter's retry returned 200 without an
+extra notification. DB: one responsible Admin, two accepted memberships, one
+owner-left notice per eligible successor and one takeover notice for the other
+candidate only. This proves the running single-instance boundary, not a
+multi-instance or process-crash transaction boundary.
+
+Former creator Alex appeared in Explore after takeover. He requested to join
+through the normal card menu; Eszter approved in Members. Alex returned accepted
+Member with no grant. His card menu showed View, Leave group, Report group; no
+Edit or Moderation. Eszter then cancelled and confirmed Step down as admin through
+her member menu. Group entered under-review, all three remained accepted Members,
+responsibility notices targeted Alex and Maya. Hosting removed the card in place.
+The isolated control was restored afterwards. One additional local retry test
+passed; current local Group service 17/17. Full local browser and HU coverage,
+process-crash recovery and remaining broad campaign checks are still unproven.
+
+Block 5 policy read: Design Circle's saved requiredFields contains
+profile.profession. Its active group-profile editor renders the Profession
+visibility as Public and disabled; the same control in Main profile is enabled.
+Unrelated Workplace/School controls remain enabled. Both editors were closed
+without saving; Design Circle was selected again. This checks the established
+visibility policy, not a newly invented mandatory nonempty-value rule.
