@@ -221,6 +221,10 @@ definition of all group activity.
     with it disabled, no review hold is added. Check the group card's status
     badge at the **bottom left of the image frame** in each applicable state.
     Record the deployment's actual settings and restore them afterward.
+    Open a Group preview: it uses the shared read-only Group editor and exposes
+    the full description, cover, category, visibility, member-list setting,
+    required profile fields and textual policies. Nested policy views remain
+    accessible, with no editable field or save action.
 14. As an accepted **group administrator**, open Moderation from the group
     card menu. The same moderation popup exposes this group's Asset/Event/Feed
     content and its own settings; **Group** is absent from its categories.
@@ -235,6 +239,12 @@ definition of all group activity.
     through the signal store immediately: no page reload, list restart or
     full-list detail fetch, and no scroll/filter loss. A late older poll must
     not restore the old count. An ordinary member sees no admin queue count.
+    In app-admin and group moderation, open a multi-image Photo Feed item. Its
+    preview uses the same editor layout in read-only mode: every stored image
+    can be selected, and each image's Event, organizer, location and caption can
+    be read in Image details. No upload, replacement, removal, metadata change
+    or save is available. Event and Asset previews continue to use their own
+    existing read-only editors; do not substitute a thumbnail-only preview.
 15. Reject/block group content with a message. Confirm one **Group support**
     conversation between the group's profiles, with its own channel filter
     and unread counter. Reading and replying update that counter and the

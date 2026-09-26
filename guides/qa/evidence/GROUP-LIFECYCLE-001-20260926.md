@@ -711,3 +711,45 @@ publication producer, block/unblock, worker, stale response and full support/app
 moderation boundaries. Group support currently shows an unrelated View Event
 header action; this observed defect must be repaired and retested here.
 The last proof is a live prepared branch, not a new savepoint or whole-block PASS.
+
+
+## 23:02 continuation — real publication and shared gallery regression
+
+HTTP Lifecycle remains 5/29 closed, block 6 in progress; across the three HTTP
+cases this is 5/48 (29 Lifecycle + 12 Isolation + 7 Integration). Local execution
+is reported separately, not added to the number of defined HTTP blocks.
+
+Settings save/reopen preserved Asset, Photo Feed; All was restored. At 360px,
+the Categories sheet has three toggles, no checkmark items, a reachable X and no
+horizontal overflow. An ordinary member's moderation read and settings write
+returned 403, with unchanged administrator settings. Block/unblock changed the
+pending counter 0→1 once; the configured real content-auto-approve worker then
+accepted the item (version 5) and removed it from Under moderation without a
+reload. Auto approve was subsequently disabled again; delay remains 1 minute.
+The unrelated View Event action on Group support was removed through the shared
+chat header guard and verified after normal reload, with both messages retained.
+
+Share photos originally skipped the two-slot layout below 760px. The shared
+carousel now displays two slots at 730px (335.7px each), and one at 360px.
+Forward/back navigation works in both. A follow-up exposed a blank half-page
+after slot 5: native scrolling now ends at the actual final slot; its final view
+contains slots 4 and 5, with no Next arrow. Existing desktop transform is retained.
+The running frontend watcher built/synced successfully at 22:58:49 CEST.
+
+The real Photo Feed producer initially had no eligible Event. The versioned
+prepare-admin-feed-event command retained exact Event/member snapshots within
+the existing Admin restoration boundary and inserted one eligible scoped event.
+This is prerequisite preparation, not an Event creation PASS. Eszter selected
+that Event in Image details, entered QA group publication and saved normally.
+Stored post 4b172683-f636-48dc-a3a8-c7f88c1ef7c5 belongs to her group profile,
+contains the authoritative Event reference and starts under-review. The group
+pending counter changed 0→1; Alex's already-open moderation list received the
+item and its card/menu counters updated. His normal approval dialog/action
+removed the row immediately, pending/card red counter returned to 0 and Groups
+returned 6→5, retaining unrelated attention. No gallery draft was discarded for
+this test. The isolated control remains LIVE; cleanup has not yet run.
+
+Sanitized observations: [moderation/publication JSON](GROUP-LIFECYCLE-001-moderation-publication-20260926.json).
+Still open within block 6: app-admin group review/report/settings lifecycle,
+late stale-response counter guard, full HU/support/global-isolation and remaining
+6.1 counter/recipient combinations. No whole-block PASS or fixture reset.

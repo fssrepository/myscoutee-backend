@@ -1,0 +1,459 @@
+{
+  "settingsSaveReopen": {
+    "selected": "category\nAsset, Photo Feed\nexpand_more",
+    "reopened": "category\nAsset, Photo Feed\nexpand_more"
+  },
+  "settingsRestored": {
+    "selected": "category\nAll\nexpand_more",
+    "reopened": "category\nAll\nexpand_more"
+  },
+  "categoriesMobile": {
+    "width": 360,
+    "panel": {
+      "left": 9.59375,
+      "right": 350.40625
+    },
+    "toggles": 3,
+    "checks": 0,
+    "label": "category\nAll\nexpand_more",
+    "closeReachable": true,
+    "overflow": false,
+    "closed": true
+  },
+  "memberAuthority": {
+    "memberRead": 403,
+    "memberWrite": 403,
+    "unchanged": true,
+    "settings": {
+      "enabled": true,
+      "autoApprove": false,
+      "delayMinutes": 0,
+      "categories": [
+        "asset",
+        "feed",
+        "event"
+      ]
+    }
+  },
+  "worker": {
+    "group": {
+      "_id": "manual-qa-community-admin",
+      "name": "QA Admin Transfer",
+      "version": 5,
+      "moderationPending": {
+        "low": 0,
+        "high": 0,
+        "unsigned": false
+      },
+      "moderationQueueRevision": {
+        "low": 13,
+        "high": 0,
+        "unsigned": false
+      }
+    },
+    "state": {
+      "_id": "group:manual-qa-community-admin",
+      "revision": 14,
+      "settings": {
+        "enabled": true,
+        "autoApprove": true,
+        "delayMinutes": 1,
+        "categories": [
+          "asset",
+          "feed",
+          "event"
+        ]
+      },
+      "counts": {
+        "feed": {
+          "under-review": {
+            "low": 0,
+            "high": 0,
+            "unsigned": false
+          },
+          "accepted": {
+            "low": 1,
+            "high": 0,
+            "unsigned": false
+          },
+          "rejected": {
+            "low": 1,
+            "high": 0,
+            "unsigned": false
+          },
+          "blocked": {
+            "low": 0,
+            "high": 0,
+            "unsigned": false
+          }
+        }
+      },
+      "pending": []
+    },
+    "items": [
+      {
+        "_id": "feed:manual-qa-community-admin-approval",
+        "category": "feed",
+        "sourceId": "manual-qa-community-admin-approval",
+        "ownerUserId": "f02609260000000000000002",
+        "title": "QA moderation approval",
+        "imageUrl": "/media/public?key=images/demo-events/event-001/v1/large.webp",
+        "submittedAtIso": "2026-09-26T20:33:00.685Z",
+        "status": "accepted",
+        "version": {
+          "low": 5,
+          "high": 0,
+          "unsigned": false
+        },
+        "commandId": "auto:feed:manual-qa-community-admin-approval:4",
+        "reviewedBy": "content-auto-approve",
+        "reviewedAtIso": "2026-09-26T20:48:38.820623209Z",
+        "publiclyVisibleOnce": true,
+        "deleted": false,
+        "workspaceGroupId": "manual-qa-community-admin",
+        "_class": "com.raxim.myscoutee.profile.data.dto.admin.ContentModerationDtos$Item"
+      },
+      {
+        "_id": "feed:manual-qa-community-admin-rejection",
+        "category": "feed",
+        "sourceId": "manual-qa-community-admin-rejection",
+        "ownerUserId": "f02609260000000000000002",
+        "title": "QA moderation rejection",
+        "imageUrl": "/media/public?key=images/demo-events/event-001/v1/large.webp",
+        "submittedAtIso": "2026-09-26T20:33:00.685Z",
+        "status": "rejected",
+        "version": {
+          "low": 2,
+          "high": 0,
+          "unsigned": false
+        },
+        "commandId": "b913ce87-5cc4-433e-b3a2-b67b48124b52",
+        "reviewedBy": "f02609260000000000000001",
+        "reviewedAtIso": "2026-09-26T20:36:44.621347001Z",
+        "publiclyVisibleOnce": false,
+        "deleted": false,
+        "workspaceGroupId": "manual-qa-community-admin",
+        "_class": "com.raxim.myscoutee.profile.data.dto.admin.ContentModerationDtos$Item"
+      }
+    ],
+    "chats": [],
+    "messages": [
+      {
+        "_id": "chat-message:c-moderation-group-f02609260000000000000002:8cbdff9d-7d74-3572-aa17-c1e6029c7956",
+        "chatId": "c-moderation-group-f02609260000000000000002",
+        "id": "8cbdff9d-7d74-3572-aa17-c1e6029c7956",
+        "text": "QA: I will revise the group photo."
+      },
+      {
+        "_id": "chat-message:c-moderation-group-f02609260000000000000002:content-moderation:b913ce87-5cc4-433e-b3a2-b67b48124b52",
+        "chatId": "c-moderation-group-f02609260000000000000002",
+        "id": "content-moderation:b913ce87-5cc4-433e-b3a2-b67b48124b52",
+        "text": "QA: Please revise this group photo before publication."
+      }
+    ]
+  },
+  "workerUi": {
+    "moderation": "Content moderation · QA Admin Transfer\nsettings\nclose\nfact_check\nUnder moderation\nexpand_more\napps\nAll\nexpand_more\nNo items\nNo items in this category and status.\nQA MODERATION APPROVAL\nclose\ncheck_circle\nAccepted\nblock\nBlocked",
+    "card": "groups\n3\ndiversity_3\nQA Admin Transfer\n\nFriends\n\n0 km\n\nmore_vert",
+    "sidebar": "groups\nGroups\n5"
+  },
+  "supportHeaderRetest": {
+    "text": "QA Admin Transfer\nclose\npush_pin\nYou\n10:39 PM\n\nQA: I will revise the group photo.\n\nAlex Turner\n10:36 PM\n\nQA: Please revise this group photo before publication.\n\nToday\nadd\nsend",
+    "unrelatedEventButton": false
+  },
+  "gallery730": {
+    "first": {
+      "width": 730,
+      "viewportWidth": 681.40625,
+      "columns": "2",
+      "pages": 3,
+      "visible": [
+        {
+          "slot": "1",
+          "width": 335.703125
+        },
+        {
+          "slot": "2",
+          "width": 335.703125
+        }
+      ],
+      "overflow": false
+    },
+    "next": {
+      "width": 730,
+      "viewportWidth": 681.40625,
+      "columns": "2",
+      "pages": 3,
+      "visible": [
+        {
+          "slot": "3",
+          "width": 335.703125
+        },
+        {
+          "slot": "4",
+          "width": 335.703125
+        }
+      ],
+      "overflow": false
+    },
+    "restored": {
+      "width": 730,
+      "viewportWidth": 681.40625,
+      "columns": "2",
+      "pages": 3,
+      "visible": [
+        {
+          "slot": "1",
+          "width": 335.703125
+        },
+        {
+          "slot": "2",
+          "width": 335.703125
+        }
+      ],
+      "overflow": false
+    }
+  },
+  "gallery360": {
+    "first": {
+      "width": 360,
+      "viewportWidth": 311.40625,
+      "columns": "1",
+      "pages": 5,
+      "visible": [
+        {
+          "slot": "3",
+          "width": 309.40625
+        }
+      ],
+      "overflow": false
+    },
+    "next": {
+      "width": 360,
+      "viewportWidth": 311.40625,
+      "columns": "1",
+      "pages": 5,
+      "visible": [
+        {
+          "slot": "4",
+          "width": 309.40625
+        }
+      ],
+      "overflow": false
+    },
+    "restored": {
+      "width": 360,
+      "viewportWidth": 311.40625,
+      "columns": "1",
+      "pages": 5,
+      "visible": [
+        {
+          "slot": "3",
+          "width": 309.40625
+        }
+      ],
+      "overflow": false
+    }
+  },
+  "galleryFinalPage": {
+    "lastSlot": [
+      "4",
+      "5"
+    ],
+    "next": false
+  },
+  "feedEventPrerequisite": {
+    "text": "Select event\ncheck\nclose\nSat, 26 Sept 2026\nadd\nQA Group Photo Session\n\nAlex Turner\n\nSeattle",
+    "buttons": [
+      {
+        "aria": "Use selected event",
+        "text": "check",
+        "disabled": true
+      },
+      {
+        "aria": "Close",
+        "text": "close",
+        "disabled": false
+      },
+      {
+        "aria": "Select event",
+        "text": "add",
+        "disabled": false
+      }
+    ]
+  },
+  "feedPublished": {
+    "before": {
+      "disabled": false,
+      "label": "Save"
+    },
+    "text": "yScoutee\nperson\nPreferences\nexpand_more\nfilter_alt\nFilters\nhistory\nRatings\nNo items\nNo matching profiles\n\nAdjust age or profile traits in filter settings.\n\nNo matching profiles\n\nAdjust age or profile traits in filter settings.\n\n9+\nnotifications_active\n36\nedit\n58%\nNagy Eszter, 30\nlocation_on\nSeattle\nQA\nQA Admin Transfer\nexpand_more\n99+\nnotifications\n36\ntips_and_updates\nshare\nsettings\nclose\ndiversity_2\nCOMMUNITY\nphoto_library\nFeed\n3\nrss_feed\nFollowed\ngroups\nGroups\npsychology\nIMPRESSIONS\nworkspace_premium\nHOST\nauto_awesome\nAttendee\nATTENDEE\nrate_review\nFeedback\nlocal_activity\nACTIVITIES\nstar\nRates\nchat\nChats\nmail\nInvitations\nevent\nEvents\nreceipt_long\nPayments\ninventory_2\nMY ASSETS\ndirections_car\nTransport\n1\napartment\nAccommodation\ninventory_2\nSupplies\n1\nqr_code_2\nTicket\ncontacts\nContacts\nFeed\npublic\nPublic feed\nexpand_more\nadd\nclose\nNo items\nNo shared photos yet"
+  },
+  "feedStored": {
+    "group": {
+      "_id": "manual-qa-community-admin",
+      "name": "QA Admin Transfer",
+      "moderationPending": {
+        "low": 1,
+        "high": 0,
+        "unsigned": false
+      },
+      "moderationQueueRevision": {
+        "low": 16,
+        "high": 0,
+        "unsigned": false
+      }
+    },
+    "posts": [
+      {
+        "_id": "4b172683-f636-48dc-a3a8-c7f88c1ef7c5",
+        "creatorUserId": "f02609260000000000000002",
+        "creatorName": "Nagy Eszter",
+        "creatorAvatarUrl": "/media/public?key=images/demo-profiles/9f3b3f085e23af6c89dbc432/photo-01/large.webp",
+        "createdAtIso": "2026-09-26T21:00:05.218840053Z",
+        "imageUrls": [
+          "/api/media/public?key=public/demo/images/f02609260000000000000002/4b172683-f636-48dc-a3a8-c7f88c1ef7c5/1790455802554-cdd6ca02-a564-4ee3-9e29-726ea6cb02c8/large.webp"
+        ],
+        "imageDetails": {
+          "/api/media/public?key=public/demo/images/f02609260000000000000002/4b172683-f636-48dc-a3a8-c7f88c1ef7c5/1790455802554-cdd6ca02-a564-4ee3-9e29-726ea6cb02c8/large.webp": {
+            "location": "Seattle",
+            "caption": "QA group publication",
+            "event": {
+              "_id": "f02609260000000000000101",
+              "title": "QA Group Photo Session",
+              "organizerId": "f02609260000000000000001",
+              "organizerName": "Alex Turner",
+              "location": "Seattle"
+            }
+          }
+        },
+        "locationGeo": {
+          "type": "Point",
+          "coordinates": [
+            19.0354,
+            47.5099
+          ]
+        },
+        "moderationStatus": "under-review",
+        "workspaceGroupId": "manual-qa-community-admin",
+        "_class": "com.raxim.myscoutee.profile.data.document.PhotoFeedPost",
+        "deleted": false,
+        "moderationVersion": {
+          "low": 1,
+          "high": 0,
+          "unsigned": false
+        }
+      }
+    ],
+    "moderation": [
+      {
+        "_id": "feed:4b172683-f636-48dc-a3a8-c7f88c1ef7c5",
+        "_class": "com.raxim.myscoutee.profile.data.dto.admin.ContentModerationDtos$Item",
+        "category": "feed",
+        "commandId": "submit:feed:4b172683-f636-48dc-a3a8-c7f88c1ef7c5",
+        "deleted": false,
+        "imageUrl": "/api/media/public?key=public/demo/images/f02609260000000000000002/4b172683-f636-48dc-a3a8-c7f88c1ef7c5/1790455802554-cdd6ca02-a564-4ee3-9e29-726ea6cb02c8/large.webp",
+        "ownerUserId": "f02609260000000000000002",
+        "publiclyVisibleOnce": false,
+        "reviewedAtIso": "",
+        "reviewedBy": "",
+        "sourceId": "4b172683-f636-48dc-a3a8-c7f88c1ef7c5",
+        "status": "under-review",
+        "submittedAtIso": "2026-09-26T21:00:05.241090029Z",
+        "title": "QA group publication",
+        "version": {
+          "low": 1,
+          "high": 0,
+          "unsigned": false
+        },
+        "workspaceGroupId": "manual-qa-community-admin"
+      }
+    ],
+    "global": {
+      "_id": "global",
+      "counts": {
+        "event": {
+          "under-review": {
+            "low": 0,
+            "high": 0,
+            "unsigned": false
+          },
+          "accepted": {
+            "low": 4,
+            "high": 0,
+            "unsigned": false
+          }
+        },
+        "feed": {
+          "under-review": {
+            "low": 0,
+            "high": 0,
+            "unsigned": false
+          },
+          "accepted": {
+            "low": 0,
+            "high": 0,
+            "unsigned": false
+          },
+          "blocked": {
+            "low": 0,
+            "high": 0,
+            "unsigned": false
+          },
+          "rejected": {
+            "low": 0,
+            "high": 0,
+            "unsigned": false
+          }
+        },
+        "asset": {
+          "under-review": {
+            "low": 0,
+            "high": 0,
+            "unsigned": false
+          },
+          "accepted": {
+            "low": 1,
+            "high": 0,
+            "unsigned": false
+          },
+          "rejected": {
+            "low": 0,
+            "high": 0,
+            "unsigned": false
+          }
+        },
+        "group": {
+          "accepted": {
+            "low": 1,
+            "high": 0,
+            "unsigned": false
+          }
+        }
+      },
+      "pending": [],
+      "revision": 774,
+      "settings": {
+        "autoApprove": true,
+        "delayMinutes": 0,
+        "categories": [
+          "asset",
+          "event",
+          "feed"
+        ]
+      }
+    }
+  },
+  "adminAfterPublish": {
+    "moderation": "Content moderation · QA Admin Transfer\nsettings\nclose\nfact_check\nUnder moderation\nexpand_more\n1\napps\nAll\nexpand_more\n2026-09-26\nQA group publication\nPhoto Feed\n2026-09-26T21:00:05.241090029Z\nmore_vert",
+    "card": "groups\n3\ndiversity_3\nQA Admin Transfer\n\nFriends\n\n0 km\n\nmore_vert\n1",
+    "sidebar": "groups\nGroups\n6"
+  },
+  "adminAfterApproval": {
+    "dialog": "",
+    "qaCard": "groups\n3\ndiversity_3\nQA Admin Transfer\n\nFriends\n\n0 km\n\nmore_vert",
+    "hosting": "event_seat\nHosting\nexpand_more\n3",
+    "sidebar": "groups\nGroups\n5",
+    "moderation": "Content moderation · QA Admin Transfer\nsettings\nclose\nfact_check\nUnder moderation\nexpand_more\napps\nAll\nexpand_more\nNo items\nNo items in this category and status."
+  }
+}

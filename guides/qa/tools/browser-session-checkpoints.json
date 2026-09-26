@@ -14,7 +14,23 @@
     "screenHeight": 1000
   },
   "checkpoints": {
+    "GROUP-LIFECYCLE-001-APP-ADMIN": {
+      "preserveOtherSessions": true,
+      "fixtureCheckpointId": "GROUP-LIFECYCLE-001",
+      "layout": { "columns": 1 },
+      "sessions": [{
+        "actor": "Ava Group moderation administrator",
+        "sessionKind": "demo",
+        "userId": "admin-demo-ava",
+        "targetUrl": "http://localhost/admin",
+        "entryUrl": "http://localhost/entry?redirect=%2Fadmin",
+        "window": { "width": 780, "height": 900, "x": 600, "y": 30 },
+        "expectedName": "Ava Moderation",
+        "autoDismissExplanationGuide": false
+      }]
+    },
     "GROUP-LIFECYCLE-001": {
+      "preserveOtherSessions": true,
       "layout": { "columns": 3 },
       "sessions": [
         {

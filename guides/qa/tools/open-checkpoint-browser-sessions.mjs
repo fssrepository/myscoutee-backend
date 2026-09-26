@@ -267,7 +267,9 @@ async function prepareConfiguredDemoSessions() {
   }
   const result = await runAttachedCommand(
     'bash',
-    [browserSessionCheckpointHarnessPath, 'prepare', 'browser-sessions', checkpointId],
+    // A companion actor uses the same fixture snapshot without replacing the
+    // ongoing participant windows (for example app-admin moderation).
+    [browserSessionCheckpointHarnessPath, 'prepare', 'browser-sessions', checkpoint.fixtureCheckpointId || checkpointId],
     {
       ...process.env,
       MANUAL_QA_BROWSER_USER_IDS: userIds.join(',')

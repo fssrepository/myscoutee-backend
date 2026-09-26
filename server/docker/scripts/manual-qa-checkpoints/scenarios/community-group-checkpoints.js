@@ -8,7 +8,7 @@
   const command = Q.text(process.env.MANUAL_QA_COMMAND);
   if (!["status", "verify-lists", "prepare-badges", "prepare-join", "restore-badges",
       "capture", "restore", "verify-savepoint", "prepare-list-pagination", "restore-list-pagination",
-      "prepare-member-invitation", "restore-member-invitation", "prepare-admin-lifecycle", "prepare-admin-moderation", "restore-admin-lifecycle",
+      "prepare-member-invitation", "restore-member-invitation", "prepare-admin-lifecycle", "prepare-admin-moderation", "prepare-admin-feed-event", "prepare-admin-base-feed", "restore-admin-lifecycle",
       "prepare-invitation", "prepare-hidden-invitation", "restore-invitation", "prepare-editor", "restore-editor", "prepare-creation", "restore-creation"].includes(command)
       || Q.text(process.env.MANUAL_QA_CHECKPOINT_ID) !== checkpointId) {
     Q.fail("Only the retained Group list baseline status is supported here.");
@@ -130,14 +130,78 @@
     Q.printObject({checkpointId, groupId, preparedPendingItems: 2, publicationFlowTested: false});
     return;
   }
+  if (command === "prepare-admin-feed-event") {
+    const groupId = "manual-qa-community-admin";
+    const eventId = "f02609260000000000000101";
+    const owner = Q.collection("users").findOne({accountUserId: actors[0], workspaceGroupId: groupId});
+    if (!state.adminLifecycleSnapshots || !owner
+        || Q.collection("events").countDocuments({sourceId: eventId})) {
+      Q.fail("A live Admin control without its Feed event prerequisite is required.");
+    }
+    const snapshots = Q.snapshotSpecs([
+      {collection: "events", selector: {sourceId: eventId}},
+      {collection: "activityMembers", selector: {ownerType: "event", ownerId: eventId}}
+    ]);
+    Q.collection(Q.STATE_COLLECTION).updateOne({_id: state._id}, {
+      $set: {adminLifecycleSnapshots: state.adminLifecycleSnapshots.concat(snapshots)}
+    });
+    const now = Q.nowIso();
+    const imageUrl = Q.collection("communityGroups").findOne({_id: groupId}).imageUrl;
+    Q.collection("events").insertOne({_id: eventId, syncKey: `manual-qa-group-feed:${eventId}`,
+      sourceId: eventId, ownerUserId: owner.userId, creatorUserId: owner.userId,
+      creatorName: owner.name, creatorInitials: owner.initials, admins: [owner.userId],
+      workspaceGroupId: groupId, status: "A", eventType: "main", mode: "Casual",
+      title: "QA Group Photo Session", subtitle: "Photo publication prerequisite; creation is not under test.",
+      visibility: "Public", blindMode: "Open Event", imageUrl, imageUrls: imageUrl ? [imageUrl] : [],
+      location: "Seattle", locationCoordinates: owner.locationCoordinates,
+      locationGeo: {type: "Point", coordinates: [owner.locationCoordinates.longitude, owner.locationCoordinates.latitude]},
+      startAtIso: now, endAtIso: new Date(Date.now() + 3600000).toISOString(),
+      createdDate: now, updatedDate: now, createdUser: owner.userId, updatedUser: owner.userId,
+      acceptedMembers: 1, pendingMembers: 0, acceptedMemberUserIds: [owner.userId], pendingMemberUserIds: [],
+      capacityMin: 1, capacityMax: 10, capacityTotal: 10, activity: 0, unread: 0,
+      ticketing: false, slotsEnabled: false, subEventsEnabled: false, policiesEnabled: false});
+    const template = Q.collection("activityMembers").findOne({ownerType: "community", ownerId: groupId, userId: actors[0]});
+    Q.collection("activityMembers").insertOne({...template, _id: `event:${eventId}:${owner.userId}`,
+      syncKey: `event:${eventId}:${owner.userId}`, ownerType: "event", ownerId: eventId, userId: owner.userId,
+      role: "Admin", status: "accepted", actionAtIso: now, updatedDate: now});
+    Q.printObject({checkpointId, groupId, eventId, prepared: true, publicationFlowTested: false});
+    return;
+  }
+  if (command === "prepare-admin-base-feed") {
+    if (!state.adminLifecycleSnapshots || state.adminBaseFeedUnrelatedItems) {
+      Q.fail("A live Admin control without a prepared base Feed branch is required.");
+    }
+    const selector = {category: "feed", ownerUserId: actors[2], workspaceGroupId: null};
+    const snapshots = Q.snapshotSpecs([
+      {collection: "photoFeedPosts", selector: {creatorUserId: actors[2], workspaceGroupId: null}},
+      {collection: "contentModerationItems", selector},
+      {collection: "contentModerationState", selector: {_id: "global"}}
+    ]);
+    const unrelated = Q.collection("contentModerationItems").find({workspaceGroupId: null, $nor: [selector]}).toArray();
+    Q.collection(Q.STATE_COLLECTION).updateOne({_id: state._id}, {$set: {
+      adminLifecycleSnapshots: state.adminLifecycleSnapshots.concat(snapshots),
+      adminBaseFeedUnrelatedItems: unrelated
+    }});
+    Q.printObject({checkpointId, baseFeedPrepared: true, userId: actors[2], productWrites: false});
+    return;
+  }
   if (command === "restore-admin-lifecycle") {
     if (!state.adminLifecycleSnapshots) Q.fail("No Admin lifecycle snapshot.");
+    if (state.adminBaseFeedUnrelatedItems) {
+      const unrelated = Q.collection("contentModerationItems").find({workspaceGroupId: null,
+        $nor: [{category: "feed", ownerUserId: actors[2], workspaceGroupId: null}]}).toArray();
+      if (!Q.sameJson(ordered(unrelated), ordered(state.adminBaseFeedUnrelatedItems))) {
+        Q.fail("Unrelated app moderation changed; restore its scoped control before the Admin fixture.");
+      }
+      const global = Q.collection("contentModerationState").findOne({_id: "global"});
+      if (global && global.pending && global.pending.length) Q.fail("App moderation still has pending writes.");
+    }
     // Chat maps its Java chatId field to Mongo "id". Normalize the retained
     // selector from the first moderation control prepared before this correction.
     Q.restoreSnapshots(state.adminLifecycleSnapshots.map(snapshot =>
       snapshot.collection === "chats" && snapshot.selector.chatId
         ? {...snapshot, selector: {id: snapshot.selector.chatId}} : snapshot));
-    Q.collection(Q.STATE_COLLECTION).updateOne({_id: state._id}, {$unset: {adminLifecycleSnapshots: ""}});
+    Q.collection(Q.STATE_COLLECTION).updateOne({_id: state._id}, {$unset: {adminLifecycleSnapshots: "", adminBaseFeedUnrelatedItems: ""}});
     Q.printObject({checkpointId, adminLifecycleRestored: true});
     return;
   }
