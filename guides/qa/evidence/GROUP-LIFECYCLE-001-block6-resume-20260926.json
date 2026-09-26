@@ -1,0 +1,499 @@
+{
+  "capturedAtIso": "2026-09-26T21:17:22Z",
+  "status": "retained for user-requested break",
+  "closedHttpBlocks": 5,
+  "httpBlocks": 48,
+  "local": "NOT RUN",
+  "currentBlock": 6,
+  "observations": {
+    "alex": {
+      "url": "http://localhost/game",
+      "workspace": "DC\nDesign Circle\nexpand_more\n99+",
+      "dialogs": [
+        {
+          "title": "Groups",
+          "text": "Groups\nschedule\nRecent\nexpand_more\nclose\nevent_seat\nHosting\nexpand_more\n4\nadd\nSat, 26 Sept 2026\ngroups\n3\ndiversity_3\nQA Admin Transfer\n\nFriends\n\n0 km\n\nmore_vert\n1\nSun, 20 Sept 2026\ngroups\n2\n1\nwork\nDesign Circle\n\nWork and teams\n\n0 km\n\nmore_vert\ngroups\n2\n1\ndiversity_3\nSeattle Friends\n\nFriends\n\n0 km\n\nmore_vert"
+        },
+        {
+          "title": "Group",
+          "text": "Group\nmail_lock\nInvitation only\nexpand_more\ndone\nclose\n1\ncontent_copy\nclose\nName*\nDescription\n57/4000\nwork\nWork and teams\nexpand_more\nvisibility_off\nMember list visible\nbadge\nRequired Profile Fields\ntoggle_on\nON\ntune\nProfile visibility rules\nProfession\t\ncheck\nRequired\npolicy\nGroup Policies\n\nDescribe the rules and recommendations for this group.\n\ntoggle_off\nOFF"
+        }
+      ],
+      "gallery": [],
+      "editorValues": [
+        {
+          "value": "",
+          "disabled": false,
+          "readOnly": false
+        },
+        {
+          "value": "Design Circle",
+          "disabled": false,
+          "readOnly": false
+        },
+        {
+          "value": "A small invited team for sharing work and creative ideas.",
+          "disabled": false,
+          "readOnly": false
+        }
+      ]
+    },
+    "eszter": {
+      "url": "http://localhost/game",
+      "workspace": "QA\nQA Admin Transfer\nexpand_more\n99+",
+      "dialogs": [
+        {
+          "title": "Feed",
+          "text": "Feed\npublic\nPublic feed\nexpand_more\nadd\nclose\nNo items\nNo shared photos yet"
+        }
+      ],
+      "gallery": [],
+      "editorValues": []
+    },
+    "maya": {
+      "url": "http://localhost/game",
+      "workspace": "public\nMain profile\nexpand_more\n99+",
+      "dialogs": [
+        {
+          "title": "Share photos",
+          "text": "Share photos\ncheck\nclose\n1\nedit_note\nclose\n2\nedit_note\nclose\n3\n+\n4\n+\n5\n+\nchevron_right"
+        },
+        {
+          "title": "Feed",
+          "text": "Feed\npublic\nPublic feed\nexpand_more\nadd\nclose\nNo items\nNo shared photos yet"
+        }
+      ],
+      "gallery": [
+        {
+          "index": "1",
+          "image": "url(\"/api/media/public?key=public%2Fdemo%2Fimages%2F1b1c70be2349b3359a8f6f94%2F6f4b3399-efbd-4490-8122-473d750d1f8b%2F1790457371751-70894f77-073c-4361-8096-2d793c96cd30%2Fsmall.webp\")",
+          "detailButton": true
+        },
+        {
+          "index": "2",
+          "image": "url(\"/api/media/public?key=public%2Fdemo%2Fimages%2F1b1c70be2349b3359a8f6f94%2F6f4b3399-efbd-4490-8122-473d750d1f8b%2F1790457384125-23152bb1-b708-45cf-8d23-0d14e78b1219%2Fsmall.webp\")",
+          "detailButton": true
+        }
+      ],
+      "gallerySaveDisabled": false,
+      "editorValues": []
+    },
+    "ava": {
+      "url": "http://localhost/admin",
+      "dialogs": [
+        {
+          "title": "Content moderation",
+          "text": "Content moderation\nsettings\nclose\ncheck_circle\nAccepted\nexpand_more\n1\ngroups\nGroups\nexpand_more\n2026-09-26\nDesign Circle\nGroups\n2026-09-26T17:58:18.974290296Z"
+        },
+        {
+          "title": "Group",
+          "text": "Group\nmail_lock\nInvitation only\nexpand_more\nclose\n1\nName*\nDescription\n57/4000\nwork\nWork and teams\nexpand_more\nvisibility_off\nMember list visible\nbadge\nRequired Profile Fields\ntoggle_on\nON\ntune\nProfile visibility rules\nProfession\t\ncheck\nRequired"
+        }
+      ],
+      "gallery": [],
+      "editorValues": [
+        {
+          "value": "Design Circle",
+          "disabled": true,
+          "readOnly": false
+        },
+        {
+          "value": "A small invited team for sharing work and creative ideas.",
+          "disabled": true,
+          "readOnly": false
+        }
+      ],
+      "moderation": "Content moderation\nsettings\nclose\ncheck_circle\nAccepted\nexpand_more\n1\ngroups\nGroups\nexpand_more\n2026-09-26\nDesign Circle\nGroups\n2026-09-26T17:58:18.974290296Z\nGroup\nmail_lock\nInvitation only\nexpand_more\nclose\n1\nName*\nDescription\n57/4000\nwork\nWork and teams\nexpand_more\nvisibility_off\nMember list visible\nbadge\nRequired Profile Fields\ntoggle_on\nON\ntune\nProfile visibility rules\nProfession\t\ncheck\nRequired"
+    },
+    "mayaUnsavedDraft": {
+      "images": [
+        "/api/media/public?key=public/demo/images/1b1c70be2349b3359a8f6f94/6f4b3399-efbd-4490-8122-473d750d1f8b/1790457371751-70894f77-073c-4361-8096-2d793c96cd30/large.webp",
+        "/api/media/public?key=public/demo/images/1b1c70be2349b3359a8f6f94/6f4b3399-efbd-4490-8122-473d750d1f8b/1790457384125-23152bb1-b708-45cf-8d23-0d14e78b1219/large.webp"
+      ],
+      "imageDetails": {
+        "/api/media/public?key=public/demo/images/1b1c70be2349b3359a8f6f94/6f4b3399-efbd-4490-8122-473d750d1f8b/1790457371751-70894f77-073c-4361-8096-2d793c96cd30/large.webp": {
+          "location": "library makerspace repair bench",
+          "caption": "QA base photo one",
+          "event": {
+            "id": "demo-tournament-results",
+            "title": "Repair Cafe Team Challenge",
+            "organizerId": "admin-demo-ava",
+            "organizerName": "Ava",
+            "location": "library makerspace repair bench"
+          }
+        },
+        "/api/media/public?key=public/demo/images/1b1c70be2349b3359a8f6f94/6f4b3399-efbd-4490-8122-473d750d1f8b/1790457384125-23152bb1-b708-45cf-8d23-0d14e78b1219/large.webp": {
+          "location": "library makerspace repair bench",
+          "caption": "QA base photo two",
+          "event": {
+            "id": "demo-tournament-results",
+            "title": "Repair Cafe Team Challenge",
+            "organizerId": "admin-demo-ava",
+            "organizerName": "Ava",
+            "location": "library makerspace repair bench"
+          }
+        }
+      },
+      "title": "Share photos",
+      "uploadOwnerId": "1b1c70be2349b3359a8f6f94",
+      "uploadEntityId": "6f4b3399-efbd-4490-8122-473d750d1f8b",
+      "readOnly": false,
+      "persisted": false
+    },
+    "fixtureStatus": {
+      "checkpointId": "GROUP-LIFECYCLE-001",
+      "phase": "badge-writes-ready",
+      "readyChecklistBlocks": [
+        1,
+        "6.1"
+      ],
+      "productWritesPrepared": true,
+      "groups": 10,
+      "memberships": 27,
+      "actors": [
+        {
+          "userId": "af0436815ab38f4864dd1e24",
+          "name": "Alex Turner",
+          "coordinates": {
+            "latitude": 47.4811,
+            "longitude": 19.0366
+          }
+        },
+        {
+          "userId": "9f3b3f085e23af6c89dbc432",
+          "name": "Nagy Eszter",
+          "coordinates": {
+            "latitude": 47.5099,
+            "longitude": 19.0354
+          }
+        },
+        {
+          "userId": "1b1c70be2349b3359a8f6f94",
+          "name": "Maya Stone",
+          "coordinates": {
+            "latitude": 47.5111,
+            "longitude": 19.0354
+          }
+        }
+      ],
+      "paginationPrepared": false,
+      "invitationPrepared": false,
+      "memberInvitationPrepared": false,
+      "adminLifecyclePrepared": true,
+      "editorPrepared": false,
+      "creationPrepared": false,
+      "savepoints": [
+        {
+          "name": "lists-ready",
+          "capturedAtIso": "2026-09-26T17:00:07.714Z",
+          "resumeBlock": 1,
+          "adapter": "http"
+        },
+        {
+          "name": "block-1-complete",
+          "capturedAtIso": "2026-09-26T17:10:23.889Z",
+          "resumeBlock": 2,
+          "adapter": "http"
+        },
+        {
+          "name": "after-editor-checks",
+          "capturedAtIso": "2026-09-26T18:55:19.459Z",
+          "resumeBlock": 4,
+          "adapter": "http"
+        },
+        {
+          "name": "after-join-approval",
+          "capturedAtIso": "2026-09-26T19:17:15.405Z",
+          "resumeBlock": 4,
+          "adapter": "http"
+        },
+        {
+          "name": "after-invitation-checks",
+          "capturedAtIso": "2026-09-26T19:34:07.723Z",
+          "resumeBlock": 5,
+          "adapter": "http"
+        },
+        {
+          "name": "after-workspace-selection",
+          "capturedAtIso": "2026-09-26T20:13:47.292Z",
+          "resumeBlock": 5,
+          "adapter": "http"
+        }
+      ],
+      "resumedFrom": "after-editor-checks",
+      "alexBaseline": [
+        {
+          "name": "Book Circle",
+          "ownerUserId": "bf057de7c586eede7e84bdc7",
+          "status": null,
+          "role": null,
+          "requestKind": null,
+          "visibility": "invitation"
+        },
+        {
+          "name": "Design Circle",
+          "ownerUserId": "af0436815ab38f4864dd1e24",
+          "status": "accepted",
+          "role": "Admin",
+          "requestKind": null,
+          "visibility": "invitation"
+        },
+        {
+          "name": "Game Night",
+          "ownerUserId": "7822c5f99eff99d63abe8933",
+          "status": "pending",
+          "role": "Member",
+          "requestKind": "invite",
+          "visibility": "invitation"
+        },
+        {
+          "name": "Language Lab",
+          "ownerUserId": "1b1c70be2349b3359a8f6f94",
+          "status": null,
+          "role": null,
+          "requestKind": null,
+          "visibility": "private"
+        },
+        {
+          "name": "Makers Network",
+          "ownerUserId": "cdd937e0adcbd1a5e38f3ceb",
+          "status": "pending",
+          "role": "Member",
+          "requestKind": "join",
+          "visibility": "private"
+        },
+        {
+          "name": "Seattle Neighbours",
+          "ownerUserId": "9f3b3f085e23af6c89dbc432",
+          "status": null,
+          "role": null,
+          "requestKind": null,
+          "visibility": "public"
+        },
+        {
+          "name": "Photo Walks",
+          "ownerUserId": "178e8d0cbe164fa3fede5884",
+          "status": "accepted",
+          "role": "Member",
+          "requestKind": null,
+          "visibility": "public"
+        },
+        {
+          "name": "Seattle Friends",
+          "ownerUserId": "af0436815ab38f4864dd1e24",
+          "status": "accepted",
+          "role": "Admin",
+          "requestKind": null,
+          "visibility": "public"
+        },
+        {
+          "name": "Study Buddies",
+          "ownerUserId": "b29df68956f3fe15e04558de",
+          "status": "accepted",
+          "role": "Member",
+          "requestKind": null,
+          "visibility": "public"
+        },
+        {
+          "name": "Seattle Trail Club",
+          "ownerUserId": "9f3b3f085e23af6c89dbc432",
+          "status": null,
+          "role": null,
+          "requestKind": null,
+          "visibility": "public"
+        }
+      ]
+    },
+    "groupReadOnly": {
+      "before": "Design Circle\nGroups\n2026-09-26T17:58:18.974290296Z",
+      "text": "Group\nmail_lock\nInvitation only\nexpand_more\nclose\n1\nName*\nDescription\n57/4000\nwork\nWork and teams\nexpand_more\nvisibility_off\nMember list visible\nbadge\nRequired Profile Fields\ntoggle_on\nON\ntune\nProfile visibility rules\nProfession\t\ncheck\nRequired",
+      "inputs": [
+        {
+          "value": "Design Circle",
+          "disabled": true,
+          "readOnly": false
+        },
+        {
+          "value": "A small invited team for sharing work and creative ideas.",
+          "disabled": true,
+          "readOnly": false
+        }
+      ]
+    },
+    "groupReadOnly860": {
+      "width": 860,
+      "category": {
+        "text": "work\nWork and teams\nexpand_more",
+        "rect": {
+          "left": 47.390625,
+          "right": 211.125,
+          "top": 552.59375,
+          "bottom": 588.59375,
+          "width": 163.734375,
+          "height": 36
+        }
+      },
+      "members": {
+        "text": "visibility_off\nMember list visible",
+        "rect": {
+          "left": 619.953125,
+          "right": 812.609375,
+          "top": 552.59375,
+          "bottom": 588.59375,
+          "width": 192.65625,
+          "height": 36
+        }
+      },
+      "overlap": false,
+      "policiesStep": false,
+      "panels": [
+        {
+          "text": "1\nName*\nDescription\n57/4000\nwork\nWork and teams\nexpand_more\nvisibility_off\nMember list visible",
+          "empty": false
+        },
+        {
+          "text": "badge\nRequired Profile Fields\ntoggle_on\nON\ntune\nProfile visibility rules\nProfession\t\ncheck\nRequired",
+          "empty": false
+        }
+      ],
+      "overflow": false
+    },
+    "groupEditor780": {
+      "width": 780,
+      "category": {
+        "text": "work\nWork and teams\nexpand_more",
+        "rect": {
+          "left": 47.390625,
+          "right": 211.125,
+          "top": 552.59375,
+          "bottom": 588.59375,
+          "width": 163.734375,
+          "height": 36
+        }
+      },
+      "members": {
+        "text": "visibility_off\nMember list visible",
+        "rect": {
+          "left": 524.953125,
+          "right": 717.609375,
+          "top": 552.59375,
+          "bottom": 588.59375,
+          "width": 192.65625,
+          "height": 36
+        }
+      },
+      "overlap": false,
+      "policiesStep": true,
+      "panels": [
+        {
+          "text": "1\ncontent_copy\nclose\nName*\nDescription\n57/4000\nwork\nWork and teams\nexpand_more\nvisibility_off\nMember list visible",
+          "empty": false
+        },
+        {
+          "text": "badge\nRequired Profile Fields\ntoggle_on\nON\ntune\nProfile visibility rules\nProfession\t\ncheck\nRequired",
+          "empty": false
+        },
+        {
+          "text": "policy\nGroup Policies\n\nDescribe the rules and recommendations for this group.\n\ntoggle_off\nOFF",
+          "empty": false
+        }
+      ],
+      "overflow": false
+    },
+    "groupEditor860": {
+      "width": 860,
+      "category": {
+        "text": "work\nWork and teams\nexpand_more",
+        "rect": {
+          "left": 47.390625,
+          "right": 211.125,
+          "top": 552.59375,
+          "bottom": 588.59375,
+          "width": 163.734375,
+          "height": 36
+        }
+      },
+      "members": {
+        "text": "visibility_off\nMember list visible",
+        "rect": {
+          "left": 604.953125,
+          "right": 797.609375,
+          "top": 552.59375,
+          "bottom": 588.59375,
+          "width": 192.65625,
+          "height": 36
+        }
+      },
+      "overlap": false,
+      "policiesStep": true,
+      "panels": [
+        {
+          "text": "1\ncontent_copy\nclose\nName*\nDescription\n57/4000\nwork\nWork and teams\nexpand_more\nvisibility_off\nMember list visible",
+          "empty": false
+        },
+        {
+          "text": "badge\nRequired Profile Fields\ntoggle_on\nON\ntune\nProfile visibility rules\nProfession\t\ncheck\nRequired",
+          "empty": false
+        },
+        {
+          "text": "policy\nGroup Policies\n\nDescribe the rules and recommendations for this group.\n\ntoggle_off\nOFF",
+          "empty": false
+        }
+      ],
+      "overflow": false
+    },
+    "feedReadOnly": {
+      "preview": true,
+      "slots": 2,
+      "details": 2,
+      "save": 0,
+      "fileInputs": 0,
+      "remove": 0
+    },
+    "feedReadOnlyDetails": [
+      {
+        "selected": true,
+        "text": "Event *\nevent\nQA Group Photo Session\n\nOrganizer: Alex Turner\n\nLocation\nlocation_on\nShort image description",
+        "fields": [
+          {
+            "value": "Seattle",
+            "disabled": true,
+            "readOnly": true
+          },
+          {
+            "value": "QA group photo one",
+            "disabled": false,
+            "readOnly": true
+          }
+        ],
+        "save": 0,
+        "eventDisabled": true
+      },
+      {
+        "selected": true,
+        "text": "Event *\nevent\nQA Group Photo Session\n\nOrganizer: Alex Turner\n\nLocation\nlocation_on\nShort image description",
+        "fields": [
+          {
+            "value": "Seattle",
+            "disabled": true,
+            "readOnly": true
+          },
+          {
+            "value": "QA group photo two",
+            "disabled": false,
+            "readOnly": true
+          }
+        ],
+        "save": 0,
+        "eventDisabled": true
+      }
+    ],
+    "feedPublished": {
+      "before": {
+        "disabled": false,
+        "label": "Save"
+      },
+      "text": "yScoutee\nperson\nPreferences\nexpand_more\nfilter_alt\nFilters\nhistory\nRatings\nNo items\nNo matching profiles\n\nAdjust age or profile traits in filter settings.\n\nNo matching profiles\n\nAdjust age or profile traits in filter settings.\n\n9+\nnotifications_active\n36\nedit\n58%\nNagy Eszter, 30\nlocation_on\nSeattle\nQA\nQA Admin Transfer\nexpand_more\n99+\nnotifications\n36\ntips_and_updates\nshare\nsettings\nclose\ndiversity_2\nCOMMUNITY\nphoto_library\nFeed\n4\nrss_feed\nFollowed\ngroups\nGroups\npsychology\nIMPRESSIONS\nworkspace_premium\nHOST\nauto_awesome\nAttendee\nATTENDEE\nrate_review\nFeedback\nlocal_activity\nACTIVITIES\nstar\nRates\nchat\nChats\nmail\nInvitations\nevent\nEvents\nreceipt_long\nPayments\ninventory_2\nMY ASSETS\ndirections_car\nTransport\n1\napartment\nAccommodation\ninventory_2\nSupplies\n1\nqr_code_2\nTicket\ncontacts\nContacts\nFeed\npublic\nPublic feed\nexpand_more\nadd\nclose\nNo items\nNo shared photos yet"
+    }
+  }
+}

@@ -753,3 +753,74 @@ Sanitized observations: [moderation/publication JSON](GROUP-LIFECYCLE-001-modera
 Still open within block 6: app-admin group review/report/settings lifecycle,
 late stale-response counter guard, full HU/support/global-isolation and remaining
 6.1 counter/recipient combinations. No whole-block PASS or fixture reset.
+
+
+## Block 6 resume checkpoint — 23:17 CEST
+
+**User requested a retained checkpoint before leaving. Stop at this boundary;
+leave all four windows open. HTTP 5/48 closed across the three cases, Lifecycle
+5/29 closed/current 6; Local NOT RUN. No block-6 PASS.**
+
+Completed since the previous entry:
+- Added full read-only Group and Photo Feed previews to block 6 at the user's
+  request. App/group moderation share the existing editor/gallery components.
+- Photo Feed moderation now opens the editor layout read-only, with per-image
+  Event/organizer/location/caption details. A real two-image group post was
+  published; Alex selected both images and read their distinct captions. No
+  upload/remove/save controls; Event/location/caption cannot be changed.
+  Existing gallery/carousel tests: 15/15 PASS; normal slideshow retained.
+- Group form controls wrap against their actual available container width.
+  Editor and admin read-only view at 780/860px: complete labels, no overlap;
+  mobile and 1000px checks retained. Read-only disabled/empty textual policies
+  no longer leave an empty section; the editable policy toggle remains.
+- App-admin Ava opened the existing Design Circle moderation record through
+  Accepted/Groups. Full stored description and Profession policy were visible;
+  fields disabled, no save. A populated textual-policy nested preview is still
+  to verify. No claim that every Group policy variation passed.
+
+Runtime incident and recovery: the companion admin launcher initially omitted
+its existing preserveOtherSessions option and closed the three actor windows.
+No fixture was reset and no stored test action was replayed. Both configurations
+now preserve other sessions; the three actors were relaunched through the
+versioned launcher after the read-only fixture status gate. The admin companion
+uses fixtureCheckpointId GROUP-LIFECYCLE-001, so its centralized login snapshot
+belongs to the same retained fixture, not a new QA case. Ava's startup guide
+dismissal is disabled because that app-admin surface has no client guide.
+
+### Exact retained UI and next action
+
+1. **Alex (GROUP-LIFECYCLE-001 actor 0):** Design Circle editable Group form open,
+   unchanged. Can close without save to return to Groups.
+2. **Eszter (actor 1):** QA Admin Transfer workspace, Public Feed open. Both
+   normal publications persisted; the first is approved, the two-image post
+   with captions QA group photo one/two remains under review.
+3. **Maya (actor 2):** Main profile, Share photos editor open with TWO uploaded
+   images, existing Event selected on both, captions QA base photo one/two.
+   Save is enabled but **has NOT been clicked**. This draft is not a published
+   post and must not be counted as a successful producer action. Exact image
+   references/metadata are retained in the JSON checkpoint.
+4. **Ava (GROUP-LIFECYCLE-001-APP-ADMIN actor 0):** app-admin moderation,
+   Accepted/Groups, Design Circle read-only preview open.
+
+**Next:** verify the retained Maya draft and then click its normal Save action;
+current app moderation is disabled, so verify the resulting accepted Base feed
+post. In Ava's moderation select Accepted/Photo Feed and verify that same
+read-only multi-image editor and both metadata panels. Then continue the remaining
+block-6 app Group report/create-review/settings lifecycle, stale-response guard,
+HU/support/global invariance and outstanding 6.1 counter/recipient combinations.
+Keep existing settings snapshots and restore them within their own boundaries.
+
+### Data boundary / resume gate
+
+Main community-group phase badge-writes-ready, after-workspace-selection retained.
+Isolated manual-qa-community-admin and adminLifecycleSnapshots remain LIVE. The
+versioned prepare-admin-feed-event prerequisite is included in those snapshots.
+prepare-admin-base-feed captured Maya's Base feed/global moderation boundary
+before the pending publication, and guarded restoration against unrelated global
+moderation writes. **Do not restore either fixture, recapture an old baseline,
+close windows, relaunch, reupload or repeat prior actions on normal resume.**
+Read this checkpoint, run community-group status, then inspect only these retained
+windows/state; continue at Maya's pending Save. If the browser boundary changed,
+diagnose it first and retain the saved results.
+
+[Exact retained state and UI evidence](GROUP-LIFECYCLE-001-block6-resume-20260926.json).
