@@ -13,6 +13,9 @@ match or a message.
 
 ### Installer
 
+The next feature release is **1.3.0**, with Git tag `v1.3.0`. See the
+[1.3.0 release preparation](guides/releases/v1.3.0.md); it is not published yet.
+
 The **MyScoutee 1.0.2** client tools, partial-update prerequisites, container
 references, checksums and signed metadata are available from
 [GitHub Releases](https://github.com/fssrepository/myscoutee/releases/tag/v1.0.2).

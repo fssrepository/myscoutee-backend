@@ -15,6 +15,7 @@ systemctl is-active --quiet myscoutee-update-status.socket
 # both upgrade and rollback rather than overriding it with the worker snapshot.
 unset MYSCOUTEE_VERSION NGINX_BASE_IMAGE NGINX_PRODUCTION_IMAGE \
   MYSCOUTEE_PRODUCTION_IMAGE MINIO_PRODUCTION_IMAGE REGISTRY_DEMO_IMAGE \
+  MCP_IMAGE \
   PAYMENT_SIMULATOR_IMAGE
 
 "$COMPOSE" stop profilemanagement
@@ -23,7 +24,7 @@ printf '[myscoutee-update-phase] PREPARING_DATA\n'
 "${SCRIPT_DIR}/sync-i18n-seeds.sh" --prepare-only
 "${SCRIPT_DIR}/migrate-production-data.sh"
 printf '[myscoutee-update-phase] STARTING_SERVICES\n'
-"$COMPOSE" up -d --no-deps --wait --wait-timeout "$TIMEOUT" mongodb redis minio registry payment-simulator
+"$COMPOSE" up -d --no-deps --wait --wait-timeout "$TIMEOUT" mongodb redis minio registry payment-simulator mcp
 "$COMPOSE" up -d --no-deps profilemanagement
 printf '[myscoutee-update-phase] WAITING_FOR_HEALTH\n'
 deadline=$((SECONDS + TIMEOUT))

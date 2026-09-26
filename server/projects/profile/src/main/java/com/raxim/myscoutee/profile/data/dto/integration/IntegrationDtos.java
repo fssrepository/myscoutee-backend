@@ -56,8 +56,16 @@ public final class IntegrationDtos {
 
     public record IntegrationConnectDto(
             Boolean connected,
-            Integer maxBatchSize) {
+            Integer maxBatchSize,
+            String profileId,
+            String profileName,
+            String groupId,
+            String groupName,
+            List<String> operations,
+            List<IntegrationGroupScopeDto> inviteGroups) {
     }
+
+    public record IntegrationGroupScopeDto(String id, String name) { }
 
     public record IntegrationWatchRequestDto(
             String callbackUrl,

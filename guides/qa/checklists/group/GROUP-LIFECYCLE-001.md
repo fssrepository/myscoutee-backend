@@ -238,16 +238,34 @@ dev HTTP outcomes independently, in HU/EN and at desktop/mobile widths.
    need an additional visible-parent requirement. Record physical-device
    branches separately; desktop observation is not a device PASS.
 
-### Queued help-content reseed — NOT RUN, implementation pending
+### Common help-content reseed and MCP — NOT RUN
 
-After the side-menu Help content is expanded, check its accordion structure,
+Check the expanded 17-topic side-menu Help accordion structure,
 coverage of existing features, readability and HU/EN text. Compare the canonical
 frontend-local and prod/dev/demo/e2e seed sources, including fresh seed and the
 existing supported update/import path; never reseed a live production database
 as a QA shortcut. Old content must not remain in one adapter/environment while
 another receives the new version. This is the side-menu Help task, separate
-from the already implemented setup-permissions help above. UI note 11 remains
-on hold for the user's revised idea.
+from the already implemented setup-permissions help above. AI integration is the
+second topic. Anonymous MCP reads the same active HU/EN help API. Local private
+MCP discovery matches the key's actual profile/group and authorized operations;
+group keys cannot create assets. See the API checklist for detailed MCP micros.
+Personal remote OAuth and the connections table remain implementation-pending.
+
+### Overlay Back / X history — NOT RUN
+
+- On mobile, open a popup, its menu/sheet and a confirmation. Native Back closes
+  only the top surface each time, retaining the parent and its state; required or
+  busy surfaces retain their existing close rules.
+- X followed by Back must not require an extra invisible step. Rapid X/reopen and
+  repeated Back must not close the wrong surface or navigate into entry consent.
+- On desktop, X remains the visible close control; browser Back follows the same
+  overlay stack. Forward does not resurrect closed dialogs. Without overlays,
+  normal route Back/Forward still works. Reload leaves no stale overlay marker.
+- Sign-in/session, active group, stored location and privacy consent must remain
+  intact across these checks. Rating/docked surfaces retain their existing
+  scroll/inline dismissal behavior. Record real device and Router behavior;
+  isolated store tests alone do not prove the user journey.
 
 ## NOT RUN — initial location, Firebase entry and mobile menu closing
 

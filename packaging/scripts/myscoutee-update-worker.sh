@@ -420,17 +420,22 @@ validate_image_manifest() {
 
   [[ -f "${manifest}" && ! -L "${manifest}" ]] || return 1
   (( $(stat -c '%s' "${manifest}") <= MAX_IMAGE_MANIFEST_BYTES )) || return 1
-  jq -e --arg version "${CURRENT_RELEASE_VERSION}" '
-    type == "object"
+  local has_mcp=false
+  if dpkg --compare-versions "${CURRENT_RELEASE_VERSION/-/\~}" ge "1.3.0~qa.1"; then
+    has_mcp=true
+  fi
+  jq -e --arg version "${CURRENT_RELEASE_VERSION}" --argjson hasMcp "$has_mcp" '
+    (["minio", "nginx", "nginx-base", "payment-simulator", "profilemanagement", "registry-demo"]
+      + (if $hasMcp then ["mcp"] else [] end) | sort) as $services
+    | type == "object"
     and ((keys | sort) == ([
       "bundled", "images", "releaseVersion", "schemaVersion"
     ] | sort))
     and .schemaVersion == 1
     and .releaseVersion == $version
     and .bundled == true
-    and (.images | type == "array" and length == 6)
-    and ([.images[].service] | sort
-      == ["minio", "nginx", "nginx-base", "payment-simulator", "profilemanagement", "registry-demo"])
+    and (.images | type == "array" and length == ($services | length))
+    and ([.images[].service] | sort == $services)
     and all(.images[];
       type == "object"
       and ((keys | sort) == ([
@@ -462,6 +467,10 @@ validate_image_manifest() {
       .service == "payment-simulator"
       and .container == "payment-simulator"
       and .reference == ("myscoutee-payment-simulator:" + $version + "-prod"))
+    and (if $hasMcp then any(.images[];
+      .service == "mcp"
+      and .container == "mcp"
+      and .reference == ("myscoutee-mcp:" + $version + "-prod")) else true end)
   ' "${manifest}" >/dev/null
 }
 
@@ -662,7 +671,9 @@ verify_running_release() {
     jq -r '.images[] | select(.container != null)
       | [.container, .reference, .contentFingerprint] | @tsv' "${manifest}"
   )
-  [[ "${#runtime_images[@]}" == "5" ]] || return 1
+  # The version-specific service set was validated above; old releases have
+  # five runtime images, releases from 1.3.0 have six including MCP.
+  [[ "${#runtime_images[@]}" == "$(jq '[.images[] | select(.container != null)] | length' "$manifest")" ]] || return 1
   for image in "${runtime_images[@]}"; do
     IFS=$'\t' read -r \
       container reference expected_content_fingerprint <<< "${image}"

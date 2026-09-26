@@ -362,6 +362,8 @@ normalize_packaged_image_values() {
     "myscoutee-registry:${packaged_version}-prod"
   upsert_env_value "${env_file}" PAYMENT_SIMULATOR_IMAGE \
     "myscoutee-payment-simulator:${packaged_version}-prod"
+  upsert_env_value "${env_file}" MCP_IMAGE \
+    "myscoutee-mcp:${packaged_version}-prod"
   upsert_env_value "${env_file}" MYSCOUTEE_VERSION "${packaged_version}"
 }
 
@@ -418,9 +420,9 @@ verify_packaged_image_manifest() {
       .schemaVersion == 1
       and .releaseVersion == $version
       and .bundled == true
-      and (.images | type == "array" and length == 6)
+      and (.images | type == "array" and length == 7)
       and ([.images[].service] | sort
-        == ["minio", "nginx", "nginx-base", "payment-simulator", "profilemanagement", "registry-demo"])
+        == ["mcp", "minio", "nginx", "nginx-base", "payment-simulator", "profilemanagement", "registry-demo"])
       and all(.images[];
         (.reference | type == "string")
         and (.imageId | test("^sha256:[0-9a-f]{64}$"))

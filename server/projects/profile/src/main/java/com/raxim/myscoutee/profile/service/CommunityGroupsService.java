@@ -299,6 +299,11 @@ public class CommunityGroupsService {
     }
     private ActivityMember membership(String id, String userId) { return memberships.findByOwnerTypeAndOwnerIdAndUserId(OWNER_TYPE, id, userId).orElse(null); }
     private boolean isAdmin(ActivityMember m) { return m != null && "accepted".equals(m.getStatus()) && "Admin".equals(m.getRole()); }
+    public List<CommunityGroup> administeredGroups(Users actor) {
+        var ids = memberships.findByOwnerTypeAndUserId(OWNER_TYPE, actor.getUserId()).stream()
+                .filter(this::isAdmin).map(ActivityMember::getOwnerId).distinct().toList();
+        return ids.isEmpty() ? List.of() : groups.findByIdIn(ids);
+    }
     public void requireAdmin(Users actor, String id) { if (!isAdmin(membership(id, actor.getUserId()))) throw error(HttpStatus.FORBIDDEN); }
     private ActivityMember newMember(CommunityGroup group, String userId, String role, String status, String request, String inviter) {
         var m = new ActivityMember(); String now = Instant.now().toString();

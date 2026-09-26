@@ -7,10 +7,36 @@ secrets:
     file: ${FIREBASE_SERVICE_ACCOUNT_FILE:-/etc/myscoutee/firebase-service-account.json}
 
 services:
+  mcp:
+    image: ${MCP_IMAGE:-myscoutee-mcp:1.3.0-prod}
+    pull_policy: never
+    container_name: mcp
+    hostname: mcp
+    restart: unless-stopped
+    environment:
+      MYSCOUTEE_MCP_TRANSPORT: http
+      MYSCOUTEE_MCP_LISTEN: 0.0.0.0:8080
+      MYSCOUTEE_API_BASE_URL: http://profilemanagement:8080
+      MYSCOUTEE_PUBLIC_API_BASE_URL: https://${DOMAIN:-localhost}/api
+    networks:
+      - myscoutee
+    read_only: true
+    cap_drop:
+      - ALL
+    security_opt:
+      - no-new-privileges:true
+    mem_limit: 128m
+    healthcheck:
+      test: ["CMD", "/myscoutee-mcp", "healthcheck"]
+      interval: 30s
+      timeout: 5s
+      retries: 5
+      start_period: 5s
+
   nginx:
     container_name: nginx
     hostname: nginx
-    image: ${NGINX_PRODUCTION_IMAGE:-myscoutee-nginx:1.0.0-prod}
+    image: ${NGINX_PRODUCTION_IMAGE:-myscoutee-nginx:1.3.0-prod}
     pull_policy: never
     restart: unless-stopped
     environment:
@@ -37,6 +63,8 @@ services:
       redis:
         condition: service_healthy
       profilemanagement:
+        condition: service_healthy
+      mcp:
         condition: service_healthy
     healthcheck:
       test: ["CMD-SHELL", "wget -qO- http://127.0.0.1/nginx-health >/dev/null 2>&1 || exit 1"]
@@ -97,7 +125,7 @@ services:
       start_period: 10s
 
   minio:
-    image: ${MINIO_PRODUCTION_IMAGE:-myscoutee-minio:1.0.0-prod}
+    image: ${MINIO_PRODUCTION_IMAGE:-myscoutee-minio:1.3.0-prod}
     pull_policy: never
     container_name: minio
     hostname: minio
@@ -124,7 +152,7 @@ services:
       start_period: 20s
 
   profilemanagement:
-    image: ${MYSCOUTEE_PRODUCTION_IMAGE:-myscoutee-api:1.0.0-prod}
+    image: ${MYSCOUTEE_PRODUCTION_IMAGE:-myscoutee-api:1.3.0-prod}
     pull_policy: never
     container_name: myscoutee
     hostname: myscoutee
@@ -135,7 +163,7 @@ services:
       - .env.secrets
     environment:
       SPRING_PROFILES_ACTIVE: "prod"
-      MYSCOUTEE_VERSION: "${MYSCOUTEE_VERSION:-1.0.0}"
+      MYSCOUTEE_VERSION: "${MYSCOUTEE_VERSION:-1.3.0}"
       MONGODB_HOST: "mongodb"
       MONGODB_DATABASE: "${MONGO_REAL_DATABASE:-myscoutee_db}"
       MONGODB_DEMO_DATABASE: "${MONGO_DEMO_DATABASE:-demo_db}"
@@ -245,7 +273,7 @@ services:
   # Explore-only registry. It is an internal dependency, has a dedicated
   # seeded SQLite volume, and is never the operator-selected REAL registry.
   registry:
-    image: ${REGISTRY_DEMO_IMAGE:-myscoutee-registry:1.0.0-prod}
+    image: ${REGISTRY_DEMO_IMAGE:-myscoutee-registry:1.3.0-prod}
     pull_policy: never
     container_name: registry-demo
     hostname: registry
@@ -284,7 +312,7 @@ services:
   # through the deployment nginx origin; provider APIs stay on the Compose
   # network and are selected only for DEMO sessions by profilemanagement.
   payment-simulator:
-    image: ${PAYMENT_SIMULATOR_IMAGE:-myscoutee-payment-simulator:1.0.0-prod}
+    image: ${PAYMENT_SIMULATOR_IMAGE:-myscoutee-payment-simulator:1.3.0-prod}
     pull_policy: never
     container_name: payment-simulator
     hostname: payment-simulator

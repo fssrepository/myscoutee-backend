@@ -10,7 +10,7 @@ read_version() {
 }
 
 VERSION="${MYSCOUTEE_VERSION:-$(read_version)}"
-VERSION="${VERSION:-1.0.0}"
+VERSION="${VERSION:-1.3.0}"
 if [[ ! "${VERSION}" =~ ^(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)(-qa\.[1-9][0-9]*)?$ ]]; then
   echo "MYSCOUTEE_VERSION must be a SemVer core or QA prerelease such as 1.0.0-qa.1." >&2
   exit 1
@@ -23,5 +23,6 @@ export MYSCOUTEE_PRODUCTION_IMAGE="${MYSCOUTEE_PRODUCTION_IMAGE:-myscoutee-api:$
 export MINIO_PRODUCTION_IMAGE="${MINIO_PRODUCTION_IMAGE:-myscoutee-minio:${VERSION}-prod}"
 export REGISTRY_DEMO_IMAGE="${REGISTRY_DEMO_IMAGE:-myscoutee-registry:${VERSION}-prod}"
 export PAYMENT_SIMULATOR_IMAGE="${PAYMENT_SIMULATOR_IMAGE:-myscoutee-payment-simulator:${VERSION}-prod}"
+export MCP_IMAGE="${MCP_IMAGE:-myscoutee-mcp:${VERSION}-prod}"
 
 MYSCOUTEE_SERVER_DIR="${SERVER_DIR}" "${SCRIPT_DIR}/myscoutee-compose.sh" up -d

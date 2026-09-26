@@ -50,6 +50,7 @@ API_ID="sha256:$(printf '3%.0s' {1..64})"
 MINIO_ID="sha256:$(printf '4%.0s' {1..64})"
 REGISTRY_DEMO_ID="sha256:$(printf '5%.0s' {1..64})"
 PAYMENT_SIMULATOR_ID="sha256:$(printf '6%.0s' {1..64})"
+MCP_ID="sha256:$(printf '8%.0s' {1..64})"
 API_RUNTIME_ID="sha256:$(printf '7%.0s' {1..64})"
 BAD_API_ID="sha256:$(printf '0%.0s' {1..64})"
 
@@ -98,6 +99,7 @@ printf '%s\n' \
   '    "${UPDATE_TEST_MINIO_ID}") fixture="${UPDATE_TEST_MINIO_INSPECT}" ;;' \
   '    "${UPDATE_TEST_REGISTRY_DEMO_ID}") fixture="${UPDATE_TEST_REGISTRY_DEMO_INSPECT}" ;;' \
   '    "${UPDATE_TEST_PAYMENT_SIMULATOR_ID}") fixture="${UPDATE_TEST_PAYMENT_SIMULATOR_INSPECT}" ;;' \
+  '    "${UPDATE_TEST_MCP_ID}") fixture="${UPDATE_TEST_MCP_INSPECT}" ;;' \
   '    "${UPDATE_TEST_BAD_API_ID}") fixture="${UPDATE_TEST_BAD_API_INSPECT}" ;;' \
   '    *) exit 1 ;;' \
   '  esac' \
@@ -115,6 +117,7 @@ printf '%s\n' \
   '      minio) printf "%s\n" "myscoutee-minio:${UPDATE_TEST_RELEASE_VERSION:-999.0.0}-prod" ;;' \
   '      registry-demo) printf "%s\n" "myscoutee-registry:${UPDATE_TEST_RELEASE_VERSION:-999.0.0}-prod" ;;' \
   '      payment-simulator) printf "%s\n" "myscoutee-payment-simulator:${UPDATE_TEST_RELEASE_VERSION:-999.0.0}-prod" ;;' \
+  '      mcp) printf "%s\n" "myscoutee-mcp:${UPDATE_TEST_RELEASE_VERSION:-999.0.0}-prod" ;;' \
   '      *) exit 1 ;;' \
   '    esac' \
   '    ;;' \
@@ -128,6 +131,7 @@ printf '%s\n' \
   '        minio) printf "%s\n" "${UPDATE_TEST_MINIO_ID}" ;;' \
   '        registry-demo) printf "%s\n" "${UPDATE_TEST_REGISTRY_DEMO_ID}" ;;' \
   '        payment-simulator) printf "%s\n" "${UPDATE_TEST_PAYMENT_SIMULATOR_ID}" ;;' \
+  '        mcp) printf "%s\n" "${UPDATE_TEST_MCP_ID}" ;;' \
   '        *) exit 1 ;;' \
   '      esac' \
   '    fi' \
@@ -231,6 +235,8 @@ write_image_fixture \
 write_image_fixture \
   "payment-simulator" "${PAYMENT_SIMULATOR_ID}" "payment-simulator" "65532:65532"
 write_image_fixture \
+  "mcp" "${MCP_ID}" "mcp" "65532:65532"
+write_image_fixture \
   "bad-api" "${BAD_API_ID}" "tampered-profilemanagement" "10001:10001"
 
 export UPDATE_TEST_VERSION_FILE="${VERSION_FILE}"
@@ -244,6 +250,7 @@ export UPDATE_TEST_API_RUNTIME_ID="${API_RUNTIME_ID}"
 export UPDATE_TEST_MINIO_ID="${MINIO_ID}"
 export UPDATE_TEST_REGISTRY_DEMO_ID="${REGISTRY_DEMO_ID}"
 export UPDATE_TEST_PAYMENT_SIMULATOR_ID="${PAYMENT_SIMULATOR_ID}"
+export UPDATE_TEST_MCP_ID="${MCP_ID}"
 export UPDATE_TEST_BAD_API_ID="${BAD_API_ID}"
 export UPDATE_TEST_NGINX_BASE_INSPECT="${IMAGE_INSPECT_DIR}/nginx-base-inspect.json"
 export UPDATE_TEST_NGINX_INSPECT="${IMAGE_INSPECT_DIR}/nginx-inspect.json"
@@ -252,6 +259,7 @@ export UPDATE_TEST_API_RUNTIME_INSPECT="${IMAGE_INSPECT_DIR}/api-runtime-inspect
 export UPDATE_TEST_MINIO_INSPECT="${IMAGE_INSPECT_DIR}/minio-inspect.json"
 export UPDATE_TEST_REGISTRY_DEMO_INSPECT="${IMAGE_INSPECT_DIR}/registry-demo-inspect.json"
 export UPDATE_TEST_PAYMENT_SIMULATOR_INSPECT="${IMAGE_INSPECT_DIR}/payment-simulator-inspect.json"
+export UPDATE_TEST_MCP_INSPECT="${IMAGE_INSPECT_DIR}/mcp-inspect.json"
 export UPDATE_TEST_BAD_API_INSPECT="${IMAGE_INSPECT_DIR}/bad-api-inspect.json"
 export PATH="${FAKE_BIN}:${PATH}"
 
@@ -283,6 +291,9 @@ REGISTRY_DEMO_FINGERPRINT="$(
 PAYMENT_SIMULATOR_FINGERPRINT="$(
   fingerprint_config "${IMAGE_INSPECT_DIR}/payment-simulator-config.json"
 )"
+MCP_FINGERPRINT="$(
+  fingerprint_config "${IMAGE_INSPECT_DIR}/mcp-config.json"
+)"
 
 [[ "$("${FINGERPRINT_HELPER}" docker "${API_RUNTIME_ID}")" \
   == "${API_FINGERPRINT}" ]] \
@@ -296,12 +307,14 @@ jq -n \
   --arg minioId "${MINIO_ID}" \
   --arg registryDemoId "${REGISTRY_DEMO_ID}" \
   --arg paymentSimulatorId "${PAYMENT_SIMULATOR_ID}" \
+  --arg mcpId "${MCP_ID}" \
   --arg nginxBaseFingerprint "${NGIN_BASE_FINGERPRINT}" \
   --arg nginxFingerprint "${NGIN_FINGERPRINT}" \
   --arg apiFingerprint "${API_FINGERPRINT}" \
   --arg minioFingerprint "${MINIO_FINGERPRINT}" \
   --arg registryDemoFingerprint "${REGISTRY_DEMO_FINGERPRINT}" \
   --arg paymentSimulatorFingerprint "${PAYMENT_SIMULATOR_FINGERPRINT}" \
+  --arg mcpFingerprint "${MCP_FINGERPRINT}" \
   '{
     schemaVersion: 1,
     releaseVersion: $version,
@@ -348,6 +361,13 @@ jq -n \
         reference: ("myscoutee-payment-simulator:" + $version + "-prod"),
         imageId: $paymentSimulatorId,
         contentFingerprint: $paymentSimulatorFingerprint
+      },
+      {
+        service: "mcp",
+        container: "mcp",
+        reference: ("myscoutee-mcp:" + $version + "-prod"),
+        imageId: $mcpId,
+        contentFingerprint: $mcpFingerprint
       }
     ]
   }' > "${PACKAGE_ROOT}/opt/myscoutee/packaging/IMAGE-MANIFEST.json"
@@ -404,6 +424,20 @@ jq 'del(.images[0].contentFingerprint)' \
   > "${MISSING_FINGERPRINT_MANIFEST}"
 if validate_image_manifest "${MISSING_FINGERPRINT_MANIFEST}"; then
   fail "image manifest without a content fingerprint was accepted"
+fi
+# Old six-image releases remain verifiable for rollback; newer candidates
+# cannot omit MCP, and an old version cannot smuggle a seventh service.
+OLD_IMAGE_MANIFEST="${TEST_ROOT}/old-image-manifest.json"
+jq '.releaseVersion = "1.0.2" | .images |= map(select(.service != "mcp")
+  | .reference |= sub(":[^:]+-"; ":1.0.2-"))' \
+  "${PACKAGE_ROOT}/opt/myscoutee/packaging/IMAGE-MANIFEST.json" > "$OLD_IMAGE_MANIFEST"
+CURRENT_RELEASE_VERSION="1.0.2"
+validate_image_manifest "$OLD_IMAGE_MANIFEST" || fail "legacy rollback manifest was rejected"
+CURRENT_RELEASE_VERSION="${PACKAGE_VERSION}"
+jq --arg version "$PACKAGE_VERSION" '.releaseVersion = $version | .images |= map(.reference |= sub(":1.0.2"; ":" + $version))' \
+  "$OLD_IMAGE_MANIFEST" > "$OLD_IMAGE_MANIFEST.tmp"
+if validate_image_manifest "$OLD_IMAGE_MANIFEST.tmp"; then
+  fail "MCP-less new release was accepted"
 fi
 CURRENT_RELEASE_VERSION=""
 
@@ -472,7 +506,10 @@ stage_request() {
 
 SUCCESS_JOB="upd_0123456789abcdef0123456789abcdef"
 SUCCESS_REQUEST="$(stage_request "${SUCCESS_JOB}")"
-run_request "${SUCCESS_REQUEST}" || fail "valid signed update was rejected"
+run_request "${SUCCESS_REQUEST}" || {
+  cat "${JOBS_DIR}/${SUCCESS_JOB}/status.json" >&2
+  fail "valid signed update was rejected"
+}
 SUCCESS_STATUS="${JOBS_DIR}/${SUCCESS_JOB}/status.json"
 jq -e \
   --arg version "${PACKAGE_VERSION}" \

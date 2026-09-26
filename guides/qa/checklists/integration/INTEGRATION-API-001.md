@@ -32,6 +32,31 @@ seeded or written directly to MongoDB.
 
 ## Pass boundary
 
+### Additional MCP regression micros — NOT RUN (2026-09-26)
+
+These additions do not change any historical PASS result. Reuse this checkpoint's
+UI-created keys and the group checkpoint's profile boundaries.
+
+- The authenticated connect response identifies the key's profile/group and
+  authorized operations. Base/group keys produce the corresponding MCP discovery;
+  group keys do not advertise asset creation. Discovery never probes write URLs.
+- Group invitation discovery contains only groups the actor administers. Removing
+  that role changes the next discovery and blocks stale calls before invitation.
+- Revoked keys, unavailable capability API and older connect responses without
+  capabilities hide all personal tools; anonymous help remains discoverable.
+- Tool descriptions expose ownership/lifecycle preconditions. Foreign event IDs,
+  incomplete Mingle events and malformed payloads still fail in the API; a listed
+  operation does not grant blanket resource access.
+- HU/EN help starts with the AI integration topic after Getting started; frontend
+  local and Mongo-backed help agree. Anonymous MCP help explains that no login or
+  key is needed, and uses the current published revision.
+- Build separate unpublished OpenAI/Claude packages from the common plugin source.
+  Verify the original MyScoutee logo and shared skill, then test installation in
+  the chosen client separately. No personal remote OAuth pass follows from a local
+  API-key test. See `myscoutee-mcp/docs/QA.md` for the individual steps.
+
+### Existing checkpoint acceptance
+
 PASS requires the UI ownership/presentation checks, the persisted id mapping,
 the real Join mutation and the delivered callback. API-only creation without
 the two UI views is not sufficient.

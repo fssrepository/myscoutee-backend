@@ -24,6 +24,12 @@ They are deliberately outside `packaging/scripts`. Everything under
 Destructive local datastore reset remains under `tools/` and is not a packaging
 input.
 
+## Current release
+
+The next release is **1.3.0**, tagged `v1.3.0`. Package/image versions and
+release qualification boundaries are recorded in
+[the release notes](../../guides/releases/v1.3.0.md). Existing tags remain unchanged.
+
 ## Build a QA prerelease from current source
 
 Use the normal builder with `MYSCOUTEE_VERSION=1.0.0-qa.1`. It builds the complete

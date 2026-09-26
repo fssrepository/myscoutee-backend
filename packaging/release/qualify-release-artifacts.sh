@@ -163,9 +163,9 @@ jq -e \
     .schemaVersion == 1
     and .releaseVersion == $version
     and .bundled == true
-    and (.images | length) == 6
+    and (.images | length) == 7
     and ([.images[].service] | sort)
-      == (["minio", "nginx", "nginx-base", "payment-simulator", "profilemanagement", "registry-demo"] | sort)
+      == (["mcp", "minio", "nginx", "nginx-base", "payment-simulator", "profilemanagement", "registry-demo"] | sort)
     and all(.images[];
       (.imageId | test("^sha256:[0-9a-f]{64}$"))
       and (.contentFingerprint | test("^sha256:[0-9a-f]{64}$"))
@@ -288,6 +288,7 @@ profilemanagement|myscoutee-api:${candidate_version}-prod|myscoutee-api-${candid
 minio|myscoutee-minio:${candidate_version}-prod|myscoutee-minio-${candidate_version}-prod
 registry-demo|myscoutee-registry:${candidate_version}-prod|myscoutee-registry-${candidate_version}-prod
 payment-simulator|myscoutee-payment-simulator:${candidate_version}-prod|myscoutee-payment-simulator-${candidate_version}-prod
+mcp|myscoutee-mcp:${candidate_version}-prod|myscoutee-mcp-${candidate_version}-prod
 EOF
 managed_images_json="${work_dir}/managed-images.json"
 jq -s '.' "${managed_images_jsonl}" > "${managed_images_json}"
@@ -339,6 +340,8 @@ assert_packaged_image_binding \
   REGISTRY_DEMO_IMAGE "myscoutee-registry:${candidate_version}-prod"
 assert_packaged_image_binding \
   PAYMENT_SIMULATOR_IMAGE "myscoutee-payment-simulator:${candidate_version}-prod"
+assert_packaged_image_binding \
+  MCP_IMAGE "myscoutee-mcp:${candidate_version}-prod"
 if awk '
     /^  registry:/ { in_registry = 1; next }
     /^  [[:alnum:]_-]+:/ { in_registry = 0 }
