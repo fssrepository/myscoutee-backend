@@ -21909,7 +21909,7 @@
     "_id": "i18n-message-en-moderation-failed",
     "key": "moderation.failed",
     "lang": "en",
-    "value": "Unable to save or load moderation. Reload and retry."
+    "value": "Unable to save or load moderation. Please try again."
   },
   {
     "_id": "i18n-message-en-moderation-changed",
@@ -45933,7 +45933,7 @@
     "_id": "i18n-message-hu-moderation-failed",
     "key": "moderation.failed",
     "lang": "hu",
-    "value": "A moderáció betöltése vagy mentése sikertelen. Töltsd újra és próbáld ismét."
+    "value": "A moderáció betöltése vagy mentése sikertelen. Próbáld újra."
   },
   {
     "_id": "i18n-message-hu-moderation-changed",

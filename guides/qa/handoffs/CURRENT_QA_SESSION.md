@@ -97,6 +97,7 @@ savepoint: community-group after-workspace-selection, captured and verified 2026
 queue: HTTP Lifecycle 6–29, then Local Lifecycle 1–29, Group Isolation 1–12, Integration API Group 1–7. True unavailable external/native prerequisites must be explicit counted later blocks, with USB/native last. Closed PASS cases untouched.
 resume_gate: Run the versioned community-group status command before any relaunch. verify-lists checked all ten groups/27 memberships without mutation and the versioned launcher prepared all three actors on 2026-09-26. Do not reset changed records or replay a closed checkpoint. Check the current manifest and launcher result.
 runtime: Existing dev watchers own builds; no stack restart or seed replacement for this resume. Versioned launcher configuration restored after the revert.
+mutation_contract: Application-wide, await persistence inside the busy confirmation dialog. Only after success apply canonical returned state through the existing stores to retained lists/cards/badges; failure retains the dialog/error and does not fake success. Keep underlying popups open. No reload to obtain a mutation result; the user identifies only the existing subevents flow as an exception.
 last_completed: EVENT-CALENDAR-EXPORT-001 PASS/CLOSED; AFFILIATE-REVENUE-001 remains PASS. Location fixes and baseline checks are not Group UI PASS.
 ```
 

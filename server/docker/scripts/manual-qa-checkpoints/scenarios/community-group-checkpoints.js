@@ -8,7 +8,7 @@
   const command = Q.text(process.env.MANUAL_QA_COMMAND);
   if (!["status", "verify-lists", "prepare-badges", "prepare-join", "restore-badges",
       "capture", "restore", "verify-savepoint", "prepare-list-pagination", "restore-list-pagination",
-      "prepare-member-invitation", "restore-member-invitation", "prepare-admin-lifecycle", "prepare-admin-moderation", "prepare-admin-feed-event", "prepare-admin-base-feed", "restore-admin-lifecycle",
+      "prepare-member-invitation", "restore-member-invitation", "prepare-admin-lifecycle", "prepare-admin-moderation", "prepare-admin-feed-event", "prepare-admin-previews", "prepare-admin-base-chat-read", "prepare-admin-base-chat-message", "prepare-admin-base-feed", "restore-admin-lifecycle",
       "prepare-invitation", "prepare-hidden-invitation", "restore-invitation", "prepare-editor", "restore-editor", "prepare-creation", "restore-creation"].includes(command)
       || Q.text(process.env.MANUAL_QA_CHECKPOINT_ID) !== checkpointId) {
     Q.fail("Only the retained Group list baseline status is supported here.");
@@ -167,6 +167,71 @@
     Q.printObject({checkpointId, groupId, eventId, prepared: true, publicationFlowTested: false});
     return;
   }
+  if (command === "prepare-admin-previews") {
+    const groupId = "manual-qa-community-admin";
+    const event = Q.collection("events").findOne({sourceId: "f02609260000000000000101", workspaceGroupId: groupId});
+    const asset = Q.collection("assets").findOne({assetId: "6c8ac25e7a63755e53c46093", status: "A"});
+    const moderation = Q.collection("contentModerationState").findOne({_id: `group:${groupId}`});
+    if (!state.adminLifecycleSnapshots || !event || !asset || !moderation || moderation.pending?.length) {
+      Q.fail("Retained Admin snapshots, Feed event and existing preview Asset are required, with no pending writes.");
+    }
+    const sources = [{category: "event", sourceId: event.sourceId, record: event},
+      {category: "asset", sourceId: asset.assetId, record: asset}];
+    if (sources.some(source => Q.collection("contentModerationItems").countDocuments({_id: `${source.category}:${source.sourceId}`}))) {
+      Q.fail("Preview entries already exist; do not replace moderation records.");
+    }
+    // Read-only preview prerequisites only. Existing resource documents stay
+    // untouched; the retained group-scope moderation snapshots own these rows.
+    const now = Q.nowIso();
+    Q.collection("contentModerationItems").insertMany(sources.map(({category, sourceId, record}) => ({
+      _id: `${category}:${sourceId}`, category, sourceId, ownerUserId: record.ownerUserId,
+      title: record.title, imageUrl: record.imageUrl || "", submittedAtIso: now,
+      status: "accepted", version: 1, commandId: `manual-qa-preview:${sourceId}`,
+      reviewedBy: "", reviewedAtIso: "", publiclyVisibleOnce: true, deleted: false, workspaceGroupId: groupId
+    })));
+    Q.collection("contentModerationState").updateOne({_id: moderation._id}, {$inc: {
+      revision: 1, "counts.event.accepted": 1, "counts.asset.accepted": 1
+    }});
+    const revision = Q.collection("contentModerationState").findOne({_id: moderation._id}).revision;
+    Q.collection("communityGroups").updateOne({_id: groupId}, {$set: {moderationQueueRevision: revision}});
+    Q.printObject({checkpointId, groupId, previewIds: sources.map(source => `${source.category}:${source.sourceId}`),
+      prepared: true, resourceWrites: false, publicationFlowTested: false});
+    return;
+  }
+  if (command === "prepare-admin-base-chat-read") {
+    const chatId = "1ba26e819a02104398ea0799";
+    if (!state.adminLifecycleSnapshots || state.adminBaseChatReadPrepared
+        || !Q.collection("chats").countDocuments({id: chatId, ownerUserId: actors[0], unread: {$gt: 0}})) {
+      Q.fail("A live Admin control and unread Base chat are required; do not recapture this boundary.");
+    }
+    const retained = Q.snapshotSpecs([
+      {collection: "chats", selector: {id: chatId}},
+      {collection: "chatMessages", selector: {chatId}}
+    ]);
+    Q.collection(Q.STATE_COLLECTION).updateOne({_id: state._id}, {$set: {
+      adminLifecycleSnapshots: state.adminLifecycleSnapshots.concat(retained), adminBaseChatReadPrepared: true
+    }});
+    Q.printObject({checkpointId, chatId, prepared: true, productWrites: false});
+    return;
+  }
+  if (command === "prepare-admin-base-chat-message") {
+    const chatId = "1ba26e819a02104398ea0799";
+    if (!state.adminLifecycleSnapshots || !state.adminBaseChatReadPrepared || state.adminBaseChatMessagePrepared) {
+      Q.fail("Retain the Base chat snapshot first; do not recapture a message boundary.");
+    }
+    const owners = Q.collection("chats").distinct("ownerUserId", {id: chatId});
+    if (!owners.includes(actors[0]) || !owners.includes(actors[2])) Q.fail("Expected Base chat actors are missing.");
+    const retained = Q.snapshotSpecs([
+      {collection: "users", selector: {userId: {$in: owners.filter(id => !actors.includes(id))}}},
+      {collection: "userNotifications", selector: {sourceType: "chat", sourceId: chatId}},
+      {collection: "notificationOutbox", selector: {entityType: "chat", entityId: chatId}}
+    ]);
+    Q.collection(Q.STATE_COLLECTION).updateOne({_id: state._id}, {$set: {
+      adminLifecycleSnapshots: state.adminLifecycleSnapshots.concat(retained), adminBaseChatMessagePrepared: true
+    }});
+    Q.printObject({checkpointId, chatId, prepared: true, productWrites: false});
+    return;
+  }
   if (command === "prepare-admin-base-feed") {
     if (!state.adminLifecycleSnapshots || state.adminBaseFeedUnrelatedItems) {
       Q.fail("A live Admin control without a prepared base Feed branch is required.");
@@ -201,7 +266,7 @@
     Q.restoreSnapshots(state.adminLifecycleSnapshots.map(snapshot =>
       snapshot.collection === "chats" && snapshot.selector.chatId
         ? {...snapshot, selector: {id: snapshot.selector.chatId}} : snapshot));
-    Q.collection(Q.STATE_COLLECTION).updateOne({_id: state._id}, {$unset: {adminLifecycleSnapshots: "", adminBaseFeedUnrelatedItems: ""}});
+    Q.collection(Q.STATE_COLLECTION).updateOne({_id: state._id}, {$unset: {adminLifecycleSnapshots: "", adminBaseFeedUnrelatedItems: "", adminBaseChatReadPrepared: "", adminBaseChatMessagePrepared: ""}});
     Q.printObject({checkpointId, adminLifecycleRestored: true});
     return;
   }
@@ -357,13 +422,13 @@
   if (["capture", "restore", "verify-savepoint"].includes(command)) {
     const name = Q.text(process.env.MANUAL_QA_SOURCE_CHECKPOINT_ID);
     // Add later boundaries only with their prepared selectors and checklist oracle.
-    const boundaries = {"lists-ready": 1, "block-1-complete": 2, "after-editor-checks": 4, "after-join-approval": 4, "after-invitation-checks": 5, "after-workspace-selection": 5};
+    const boundaries = {"lists-ready": 1, "block-1-complete": 2, "after-editor-checks": 4, "after-join-approval": 4, "after-invitation-checks": 5, "after-workspace-selection": 5, "after-moderation-checks": 7};
     if (!Object.hasOwn(boundaries, name)) Q.fail("Unknown Group savepoint boundary.");
     if (state.adminLifecycleSnapshots || state.paginationSnapshots || state.invitationSnapshots || state.memberInvitationSnapshots || state.editorSnapshots || state.creationSnapshots) Q.fail("Restore temporary controls before a savepoint operation.");
     let savepoint = (state.savepoints || []).find(item => item.name === name);
     if (command === "capture") {
       if (savepoint) Q.fail("Savepoint already exists; retained evidence must not be overwritten.");
-      if (["after-join-approval", "after-invitation-checks", "after-workspace-selection"].includes(name)) {
+      if (["after-join-approval", "after-invitation-checks", "after-workspace-selection", "after-moderation-checks"].includes(name)) {
         const groupId = "seed-community-neighbours";
         const membership = Q.collection("activityMembers").findOne({ownerType: "community", ownerId: groupId, userId: actors[0]});
         const profiles = Q.collection("users").find({accountUserId: actors[0], workspaceGroupId: groupId}).toArray();
