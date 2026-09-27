@@ -27,8 +27,39 @@ const send = (method, params = {}) => new Promise((resolve, reject) => {
 const timeout = setTimeout(() => { ws.close(); process.exitCode = 1; for (const task of pending.values()) task.reject(Error('CDP timeout')); }, 30_000);
 try {
   let result;
-  if (['eval', 'upload', 'screenshot', 'viewport', 'viewport-eval', 'fail-request', 'delay-response', 'pointer-check'].includes(command)) await send('Page.bringToFront');
-  if (command === 'pointer-check') {
+  if (['eval', 'upload', 'screenshot', 'viewport', 'viewport-eval', 'fail-request', 'delay-response', 'pointer-check', 'download-click'].includes(command)) await send('Page.bringToFront');
+  if (command === 'type-text') {
+    const { selector, text, characterByCharacter = false } = JSON.parse(await readFile(input, 'utf8'));
+    await send('Page.bringToFront');
+    await send('Runtime.evaluate', { expression: `(()=>{const e=document.querySelector(${JSON.stringify(selector)});if(!e)throw Error('Input missing');e.focus();e.select();})()` });
+    const steps = [];
+    for (const value of characterByCharacter ? [...text] : [text]) {
+      await send('Input.insertText', { text: value });
+      steps.push((await send('Runtime.evaluate', { expression: `(()=>{const e=document.querySelector(${JSON.stringify(selector)});return {value:e.value,caret:e.selectionStart,invalid:e.getAttribute('aria-invalid')};})()`, returnByValue: true })).result.value);
+    }
+    result = { steps };
+  } else if (command === 'download-click') {
+    const { selector, downloadPath, inspectScript } = JSON.parse(await readFile(input, 'utf8'));
+    const downloads = [];
+    const listener = event => {
+      const message = JSON.parse(event.data);
+      if (message.method === 'Browser.downloadWillBegin' || message.method === 'Browser.downloadProgress')
+        downloads.push({ event: message.method, ...message.params });
+    };
+    ws.addEventListener('message', listener);
+    await send('Browser.setDownloadBehavior', { behavior: 'allow', downloadPath, eventsEnabled: true });
+    try {
+      await send('Runtime.evaluate', { expression: `document.querySelector(${JSON.stringify(selector)}).click()` });
+      await new Promise(resolve => setTimeout(resolve, 1500));
+      const state = inspectScript ? (await send('Runtime.evaluate', {
+        expression: await readFile(inspectScript, 'utf8'), awaitPromise: true, returnByValue: true
+      })).result.value : null;
+      result = { downloads, state };
+    } finally {
+      ws.removeEventListener('message', listener);
+      await send('Browser.setDownloadBehavior', { behavior: 'default', eventsEnabled: false });
+    }
+  } else if (command === 'pointer-check') {
     const expression = `(()=>{const e=document.querySelector(${JSON.stringify(input)});if(!e)throw Error('Card missing');const r=e.getBoundingClientRect(),s=getComputedStyle(e);return {x:r.x+r.width/2,y:r.y+Math.min(r.height/2,70),transform:s.transform,filter:s.filter,shadow:s.boxShadow,after:getComputedStyle(e,'::after').animationName,image:e.querySelector('.ui-info-card__media')?.style.backgroundImage};})()`;
     const state = async () => (await send('Runtime.evaluate', { expression, returnByValue: true })).result.value;
     await send('Input.dispatchMouseEvent', { type: 'mouseMoved', x: 1, y: 1 });
@@ -120,7 +151,7 @@ try {
     result = (await send('Runtime.evaluate', { contextId: executionContextId,
       expression: await readFile(script, 'utf8'), awaitPromise: true, returnByValue: true })).result.value;
   } else if (command === 'language-eval') {
-    const { language, script, width, height } = JSON.parse(await readFile(input, 'utf8'));
+    const { language, script, width, height, restore = true } = JSON.parse(await readFile(input, 'utf8'));
     if (!['en-US', 'hu-HU'].includes(language)) throw Error('Unsupported QA browser language');
     const browser = (await send('Runtime.evaluate', { expression: '({userAgent:navigator.userAgent,languages:navigator.languages})', returnByValue: true })).result.value;
     try {
@@ -132,9 +163,11 @@ try {
       result = (await send('Runtime.evaluate', { expression: await readFile(script, 'utf8'), awaitPromise: true, returnByValue: true })).result.value;
     } finally {
       if (width && height) await send('Emulation.clearDeviceMetricsOverride');
-      await send('Emulation.setLocaleOverride', { locale: '' });
-      await send('Network.setUserAgentOverride', { userAgent: browser.userAgent, acceptLanguage: browser.languages.join(',') });
-      await send('Page.reload');
+      if (restore) {
+        await send('Emulation.setLocaleOverride', { locale: '' });
+        await send('Network.setUserAgentOverride', { userAgent: browser.userAgent, acceptLanguage: browser.languages.join(',') });
+        await send('Page.reload');
+      }
     }
   } else if (command === 'viewport-eval') {
     const { width, height, script } = JSON.parse(await readFile(input, 'utf8'));

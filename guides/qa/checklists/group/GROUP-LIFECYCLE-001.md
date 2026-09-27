@@ -437,7 +437,7 @@ dev HTTP outcomes independently, in HU/EN and at desktop/mobile widths.
    shared date control; save, reopen and reload. Day/month must not swap, and
    the profile shows Libra/Mérleg. Reject an invalid day without rolling into
    the next month. Do not infer or bulk-repair ambiguous historical birthdays.
-5. **Children (UI note 9).** Check Nincs/Van and No/Yes in the editor, profile
+5. **Children (UI note 9).** Check Nincs/Van and No children/Has children in registration, the editor, profile
    and filter; save/reopen and confirm the stored meaning and existing
    non-disclosure option remain intact.
 

@@ -89,10 +89,10 @@ Earlier Event Mode, Integration API, Activity Rating and EVENT-FOLLOWING-001 rem
 checkpoint: GROUP-LIFECYCLE-001
 checklist: ../checklists/group/GROUP-LIFECYCLE-001.md
 substage: HTTP12/48 overall (25%); Lifecycle12/29 closed/current block13. Local NOT RUN.
-fixture_phase: after-contact-controls savepoint retained; contactSnapshots restored and exact after-contacts verification PASS. CONTACTS managed windows closed. No replay of blocks1–12.
+fixture_phase: after-contact-controls retained; new prepare-contacts snapshot active for blocks13–14 profile edits, two CONTACTS windows running. Milo birthday changed normally to 1974-10-04 and Children Yes (stored value); restore this scope after block14. Alex Design Circle is empty-calendar control. No replay of blocks1–12.
 execution_log: ../evidence/GROUP-LIFECYCLE-001-20260926.md
 execution_authority: User explicitly delegated full-flow automated execution of the pending QA campaign on 2026-09-26; Codex operates the browser, diagnoses, fixes and retests. Closed PASS rows remain closed.
-next_action: Continue HTTP block13 only: empty calendar export. Block12 PASS proof in GROUP-LIFECYCLE-001-block12-controls-20260927.json. Do not repeat completed contact-request or selector checks.
+next_action: Block13 browser export checks and libical import complete, see block13-20260927.json; block14 birthday typed/picker/save/reopen/HU reload complete. Continue only children label/profile/filter checks. User requires HU Nincs/Van, EN No children/Has children; never Yes/No. New shared menu trigger data-i18n-ignore prevents retranslation of Hungarian Van as vehicle Furgon. Check this fix once, then continue. Do not replay blocks1–12 or birthday.
 savepoint: community-group after-contact-controls captured 2026-09-27T04:40:57.723Z, resume13. Earlier savepoints immutable.
 queue: HTTP Lifecycle13–29, then Local Lifecycle1–29, Group Isolation1–12, Integration API Group1–7.
 resume_gate: Run the versioned community-group status command before any relaunch. verify-lists checked all ten groups/27 memberships without mutation and the versioned launcher prepared all three actors on 2026-09-26. Do not reset changed records or replay a closed checkpoint. Check the current manifest and launcher result.
