@@ -589,9 +589,13 @@
     const start = new Date(Date.now() + 86400000).toISOString(), end = new Date(Date.now() + 90000000).toISOString();
     const definitions = [{id: "qa-menu-optional", name: "QA optional activity", description: "Menu-only checkout control",
       timing: "With", offsetMinutes: 0, durationMinutes: 30, optional: true, capacityMin: 0, capacityMax: 8, groups: []}];
+    const occurrence = {id: slotId, parentEventId: sharingEventId, slotTemplateId: "qa-menu-slot",
+      title: "QA Menu Checkout", timeframe: start + " – " + end, startAtIso: start, endAtIso: end,
+      capacityTotal: 8, acceptedMembers: 1, pendingMembers: 0};
     const fields = {ownerUserId: actors[1], creatorUserId: actors[1], creatorName: owner.name, creatorInitials: owner.initials,
       admins: [actors[1]], title: "QA Menu Checkout", startAtIso: start, endAtIso: end, timeframe: start + " – " + end,
       slotsEnabled: true, slotTemplates: [{id: "qa-menu-slot", startAt: start, closed: false, subEventDefinitions: definitions}],
+      upcomingSlots: [occurrence], nextSlot: occurrence,
       subEventsEnabled: true, subEventDefinitions: definitions, frequency: "Once", moderationStatus: "approved",
       acceptedMembers: 1, acceptedMemberUserIds: [actors[1]], pendingMembers: 1, pendingMemberUserIds: [actors[0]],
       invitedMemberUserIds: [actors[0]], generated: false, pricing: {enabled: false}, ticketing: false};
@@ -600,7 +604,7 @@
       {$set: {role: "Member", status: "pending", requestKind: "invitation"}});
     Q.collection("events").insertOne({...parent, ...fields, _id: ObjectId(slotId), sourceId: slotId, syncKey: slotId,
       eventType: "slot", generated: true, parentEventId: sharingEventId, slotTemplateId: "qa-menu-slot", slotsEnabled: false,
-      slotTemplates: [], pendingMembers: 0, pendingMemberUserIds: [], invitedMemberUserIds: []});
+      slotTemplates: [], upcomingSlots: [], nextSlot: null, pendingMembers: 0, pendingMemberUserIds: [], invitedMemberUserIds: []});
     Q.printObject({checkpointId, parentId: sharingEventId, slotId, startAtIso: start, outcomesSeeded: false});
     return;
   }
