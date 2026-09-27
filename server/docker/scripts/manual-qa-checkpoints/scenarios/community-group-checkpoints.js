@@ -8,7 +8,7 @@
   const command = Q.text(process.env.MANUAL_QA_COMMAND);
   if (!["status", "prepare-tools", "prepare-tools-explore", "inspect-tools", "restore-tools", "verify-lists", "inspect-location-control", "prepare-location-control", "prepare-tracking-control", "prepare-location-invitation", "set-location-control-invalid", "restore-location-control", "prepare-badges", "prepare-join", "restore-badges", "prepare-contact-request-pages",
       "capture", "restore", "verify-savepoint", "prepare-contacts", "prepare-profile-contacts", "prepare-profile-notifications", "prepare-profile-notification-controls", "prepare-profile-api", "restore-profile-api", "restore-profile-notifications", "restore-profile-contacts", "prepare-contact-invitees", "restore-contacts", "prepare-chat-sharing", "prepare-chat-sharing-context", "restore-chat-sharing", "prepare-cash-history", "prepare-cash-checkout", "prepare-cash-payment-methods", "restore-cash-history", "prepare-sharing", "prepare-menu-checkout", "prepare-group-asset-payment", "prepare-group-asset-scope", "prepare-profile-tickets", "prepare-profile-group-tickets", "prepare-group-asset-payment-card", "inspect-group-asset-payment", "prepare-sharing-group-event", "repair-sharing-identifiers", "reset-sharing-failed-event-claim", "prepare-sharing-attribution", "track-sharing-registration", "sharing-registrants", "restore-sharing", "prepare-list-pagination", "restore-list-pagination",
-      "prepare-member-invitation", "restore-member-invitation", "prepare-admin-lifecycle", "prepare-admin-authority", "prepare-admin-last-member", "prepare-admin-return", "capture-admin-authority", "restore-admin-authority-branch", "inspect-admin-authority", "prepare-admin-outsider", "prepare-admin-moderation", "prepare-admin-feed-event", "prepare-admin-previews", "prepare-admin-base-chat-read", "prepare-admin-base-chat-message", "prepare-admin-base-feed", "restore-admin-lifecycle",
+      "prepare-member-invitation", "restore-member-invitation", "prepare-admin-lifecycle", "prepare-admin-authority", "prepare-admin-last-member", "prepare-admin-return", "capture-admin-authority", "restore-admin-authority-branch", "inspect-admin-authority", "prepare-admin-outsider", "prepare-header-roles", "prepare-list-ordering", "prepare-distance-surfaces", "prepare-admin-moderation", "prepare-admin-feed-event", "prepare-admin-previews", "prepare-admin-base-chat-read", "prepare-admin-base-chat-message", "prepare-admin-base-feed", "restore-admin-lifecycle",
       "prepare-invitation", "prepare-hidden-invitation", "restore-invitation", "prepare-editor", "restore-editor", "prepare-creation", "restore-creation"].includes(command)
       || Q.text(process.env.MANUAL_QA_CHECKPOINT_ID) !== checkpointId) {
     Q.fail("Only the retained Group list baseline status is supported here.");
@@ -1126,6 +1126,84 @@
     Q.printObject({checkpointId, groupId, prepared: true, acceptedMembers: acceptedActors.length, pendingMembers: caseActors.length - acceptedActors.length, admin: actors[0], rolesTested: false});
     return;
   }
+  if (command === "prepare-distance-surfaces") {
+    const distances = [0, 3.2, 4.999, 5, 5.1, 9.999, 10];
+    const ids = Array.from({length: 14}, (_, i) => `f029092700000000000000${String(i + 1).padStart(2, "0")}`);
+    const template = Q.collection("events").findOne({status: "A", eventType: "main", mode: "Casual", visibility: "Public"});
+    if (!state.adminLifecycleSnapshots || state.distanceSurfacesPrepared || !template
+        || Q.collection("events").countDocuments({sourceId: {$in: ids}})) Q.fail("Fresh distance surface prerequisite required.");
+    const retained = Q.snapshotSpecs([
+      {collection: "events", selector: {sourceId: {$in: ids}}},
+      {collection: "activityMembers", selector: {ownerType: "event", ownerId: {$in: ids}}},
+      {collection: "chats", selector: {eventId: {$in: ids}}},
+      {collection: "chatMessages", selector: {chatId: {$in: ids}}},
+      {collection: "userNotifications", selector: {sourceId: {$in: ids}}},
+      {collection: "notificationOutbox", selector: {entityId: {$in: ids}}}
+    ]);
+    if (retained.some(snapshot => snapshot.documents.length)) Q.fail("Distance fixture IDs occupied.");
+    Q.collection(Q.STATE_COLLECTION).updateOne({_id: state._id}, {
+      $push: {adminLifecycleSnapshots: {$each: retained}}, $set: {distanceSurfacesPrepared: true}
+    });
+    const origin = Q.ensureUser(actors[0]).locationCoordinates;
+    const now = Q.nowIso(), start = new Date(Date.now() + 86400000).toISOString(), end = new Date(Date.now() + 90000000).toISOString();
+    ids.forEach((id, index) => {
+      const distanceKm = distances[index % distances.length];
+      const owner = Q.ensureUser(index < distances.length ? actors[0] : actors[2]);
+      const locationCoordinates = {latitude: origin.latitude + (distanceKm / 6371) * 180 / Math.PI, longitude: origin.longitude};
+      Q.collection("events").insertOne({...template, _id: ObjectId(id), sourceId: id, syncKey: id,
+        ownerUserId: owner.userId, organizerUserId: owner.userId, creatorUserId: owner.userId,
+        creatorName: owner.name, creatorInitials: owner.initials, admins: [owner.userId], workspaceGroupId: null,
+        status: "A", moderationStatus: "approved", title: `QA Distance ${distanceKm} km`, subtitle: "",
+        visibility: "Public", blindMode: "Visible Event", expired: false,
+        startAtIso: start, endAtIso: end, timeframe: start + " – " + end, createdDate: now, updatedDate: now,
+        location: "QA distance control", locationCoordinates,
+        locationGeo: {type: "Point", coordinates: [locationCoordinates.longitude, locationCoordinates.latitude]},
+        distanceKm, mode: "Casual", frequency: "Once", ticketing: false, approvalRequired: false, autoInviter: false,
+        capacityMin: 1, capacityMax: 10, capacityTotal: 10, full: false,
+        acceptedMembers: 1, pendingMembers: 0, acceptedMemberUserIds: [owner.userId], pendingMemberUserIds: [],
+        invitedMemberUserIds: [], pendingRequestMemberUserIds: [], slotsEnabled: false, slotTemplates: [],
+        parentEventId: null, parentSubEventId: null, groupId: null, generated: false,
+        upcomingSlots: [], nextSlot: null, subEventsEnabled: false, subEventDefinitions: [], subEvents: [],
+        policiesEnabled: false, policies: [], pricing: {enabled: false}, unread: 0, activity: 0,
+        refundEligibleUserIds: [], feedbackOwnEventCounterUserIds: [], topics: ["#Music"]});
+      Q.collection("activityMembers").insertOne({_id: `event:${id}:${owner.userId}`, syncKey: `event:${id}:${owner.userId}`,
+        ownerType: "event", ownerId: id, userId: owner.userId, role: "Admin", status: "accepted", actionAtIso: now, communityUpdates: 0});
+    });
+    Q.printObject({checkpointId, actor: actors[0], events: ids, distancesKm: distances, coordinatesPrepared: true, distanceGroupingTested: false});
+    return;
+  }
+  if (command === "prepare-list-ordering") {
+    const groupId = "manual-qa-community-admin";
+    const group = Q.collection("communityGroups").findOne({_id: groupId});
+    if (!state.adminLifecycleSnapshots || state.listOrderingPrepared || !group
+        || group.ownerUserId !== actors[0] || group.lifecycleStatus === "deleted") {
+      Q.fail("Fresh owned Admin control required for ordering baseline.");
+    }
+    // Establish an old record before the application mutation under test.
+    // The outer fixture already owns/restores this exact group.
+    const updatedAtIso = "2020-01-01T00:00:00.000Z";
+    Q.collection("communityGroups").updateOne({_id: groupId}, {$set: {updatedAtIso}});
+    Q.collection(Q.STATE_COLLECTION).updateOne({_id: state._id}, {$set: {listOrderingPrepared: true}});
+    Q.printObject({checkpointId, groupId, updatedAtIso, baselinePrepared: true, orderingTested: false});
+    return;
+  }
+  if (command === "prepare-header-roles") {
+    const roleUsers = ["admin-demo-ava", "operator@myscoutee.local"];
+    if (!state.adminLifecycleSnapshots || state.headerRolesPrepared
+        || Q.collection("users").countDocuments({userId: {$in: roleUsers}}) !== roleUsers.length) {
+      Q.fail("Active Group fixture and both seeded header roles required.");
+    }
+    const retained = Q.snapshotSpecs([
+      {collection: "users", selector: {userId: {$in: roleUsers}}},
+      {collection: "userNotifications", selector: {recipientUserId: {$in: roleUsers}}},
+      {collection: "notificationOutbox", selector: {recipientUserIds: {$in: roleUsers}}}
+    ]);
+    Q.collection(Q.STATE_COLLECTION).updateOne({_id: state._id}, {
+      $push: {adminLifecycleSnapshots: {$each: retained}}, $set: {headerRolesPrepared: true}
+    });
+    Q.printObject({checkpointId, roleUsers, retained: true, productWrites: false});
+    return;
+  }
   if (command === "prepare-admin-outsider") {
     const userId = "b0971e779dbdb71f9327eabb";
     if (!state.adminLifecycleSnapshots || state.adminOutsiderPrepared
@@ -1337,7 +1415,7 @@
     for (const snapshot of retained)
       if (!Q.sameJson(ordered(snapshot.documents), ordered(Q.collection(snapshot.collection).find(snapshot.selector).toArray())))
         Q.fail("Admin fixture restore differs; retain snapshots.");
-    Q.collection(Q.STATE_COLLECTION).updateOne({_id: state._id}, {$unset: {adminLifecycleSnapshots: "", adminAuthoritySavepoints: "", adminOutsiderPrepared: "", adminReturnPrepared: "", adminBaseFeedUnrelatedItems: "", adminBaseChatReadPrepared: "", adminBaseChatMessagePrepared: ""}});
+    Q.collection(Q.STATE_COLLECTION).updateOne({_id: state._id}, {$unset: {adminLifecycleSnapshots: "", adminAuthoritySavepoints: "", adminOutsiderPrepared: "", headerRolesPrepared: "", listOrderingPrepared: "", distanceSurfacesPrepared: "", adminReturnPrepared: "", adminBaseFeedUnrelatedItems: "", adminBaseChatReadPrepared: "", adminBaseChatMessagePrepared: ""}});
     Q.printObject({checkpointId, adminLifecycleRestored: true});
     return;
   }

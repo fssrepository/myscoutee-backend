@@ -1,0 +1,380 @@
+{
+  "checkpoint": "GROUP-LIFECYCLE-001",
+  "scope": "User-requested shared InfoCard clickable overlay affordance after block29",
+  "status": "IMPLEMENTED / browser visual PASS",
+  "implementation": [
+    "Shared InfoCard overlayContent adds chevron_right only for interactive button badge/avatar content. Static/disabled spans and selection toggles do not receive the navigation icon.",
+    "Clickable circular avatar/count overlays become pills; avatar image retains circular crop.",
+    "Chevron18px glyph in10px slot, compact gap/end padding. Avatar arrows always white.",
+    "Impression star keeps11px square/line-height; removed vertical transform and prevented broader16px icon rule overriding it."
+  ],
+  "build": "Existing frontend-sync 2026-09-27 22:38:55 CEST; browser reload used. No separate build/test process.",
+  "groupCards": {
+    "cards": [
+      {
+        "title": "Design Circle",
+        "overlays": [
+          {
+            "tag": "BUTTON",
+            "aria": "Alex Turner",
+            "text": "chevron_right",
+            "chevron": true,
+            "bounds": {
+              "x": 25.328125,
+              "y": 163.359375,
+              "width": 50.921875,
+              "height": 26,
+              "top": 163.359375,
+              "right": 76.25,
+              "bottom": 189.359375,
+              "left": 25.328125
+            },
+            "image": {
+              "x": 29.875,
+              "y": 165.359375,
+              "width": 22,
+              "height": 22,
+              "top": 165.359375,
+              "right": 51.875,
+              "bottom": 187.359375,
+              "left": 29.875
+            }
+          },
+          {
+            "tag": "BUTTON",
+            "aria": "Open members",
+            "text": "groups\n2\nchevron_right\n1",
+            "chevron": true,
+            "bounds": {
+              "x": 274.640625,
+              "y": 162.40625,
+              "width": 62.984375,
+              "height": 28,
+              "top": 162.40625,
+              "right": 337.625,
+              "bottom": 190.40625,
+              "left": 274.640625
+            }
+          }
+        ]
+      },
+      {
+        "title": "Seattle Friends",
+        "overlays": [
+          {
+            "tag": "BUTTON",
+            "aria": "Alex Turner",
+            "text": "chevron_right",
+            "chevron": true,
+            "bounds": {
+              "x": 25.328125,
+              "y": 387.375,
+              "width": 50.921875,
+              "height": 26,
+              "top": 387.375,
+              "right": 76.25,
+              "bottom": 413.375,
+              "left": 25.328125
+            },
+            "image": {
+              "x": 29.875,
+              "y": 389.375,
+              "width": 22,
+              "height": 22,
+              "top": 389.375,
+              "right": 51.875,
+              "bottom": 411.375,
+              "left": 29.875
+            }
+          },
+          {
+            "tag": "BUTTON",
+            "aria": "Open members",
+            "text": "groups\n2\nchevron_right\n1",
+            "chevron": true,
+            "bounds": {
+              "x": 274.640625,
+              "y": 386.421875,
+              "width": 62.984375,
+              "height": 28,
+              "top": 386.421875,
+              "right": 337.625,
+              "bottom": 414.421875,
+              "left": 274.640625
+            }
+          }
+        ]
+      }
+    ]
+  },
+  "impressionsInitial": {
+    "cards": [
+      {
+        "text": "MS\n0.0\nstar\nchevron_right\ngroups\n1 / 19\nchevron_right\n1\npublic\nHandmade Pasta Table\n\nEvent · Public · 7744.5 km\n\nmore_vert\n\nPairs roll dough, shape filled pasta, and share the first cooked batch.\n\nSun Feb 22, 6:30 PM",
+        "overlays": [
+          {
+            "tag": "BUTTON",
+            "text": "MS\n0.0\nstar\nchevron_right",
+            "aria": "Open host impressions",
+            "chevron": true,
+            "bounds": {
+              "x": 23.734375,
+              "y": 118.671875,
+              "width": 85.484375,
+              "height": 30,
+              "top": 118.671875,
+              "right": 109.21875,
+              "bottom": 148.671875,
+              "left": 23.734375
+            }
+          },
+          {
+            "tag": "BUTTON",
+            "text": "groups\n1 / 19\nchevron_right\n1",
+            "aria": "Open event members",
+            "chevron": true,
+            "bounds": {
+              "x": 237.875,
+              "y": 119.3125,
+              "width": 84.75,
+              "height": 28,
+              "top": 119.3125,
+              "right": 322.625,
+              "bottom": 147.3125,
+              "left": 237.875
+            }
+          }
+        ]
+      },
+      {
+        "text": "NE\n0.0\nstar\nchevron_right\ngroups\n9 / 20\nchevron_right\n2\ngroups\nGreenhouse Neighbor Tea\n\nEvent · Friends only · 8799.1 km\n\nmore_vert\n\nResidents from nearby blocks meet among citrus trees and shared tea trays.\n\nMar 1 · 10:00 AM - 12:00 PM",
+        "overlays": [
+          {
+            "tag": "BUTTON",
+            "text": "NE\n0.0\nstar\nchevron_right",
+            "aria": "Open host impressions",
+            "chevron": true,
+            "bounds": {
+              "x": 23.734375,
+              "y": 422.234375,
+              "width": 85.484375,
+              "height": 30,
+              "top": 422.234375,
+              "right": 109.21875,
+              "bottom": 452.234375,
+              "left": 23.734375
+            }
+          },
+          {
+            "tag": "BUTTON",
+            "text": "groups\n9 / 20\nchevron_right\n2",
+            "aria": "Open event members",
+            "chevron": true,
+            "bounds": {
+              "x": 237.875,
+              "y": 422.875,
+              "width": 84.75,
+              "height": 28,
+              "top": 422.875,
+              "right": 322.625,
+              "bottom": 450.875,
+              "left": 237.875
+            }
+          }
+        ]
+      },
+      {
+        "text": "NE\n0.0\nstar\nchevron_right\ngroups\n12 / 50\nchevron_right\n1\npublic\nNight Food League\n\nEvent · Public · 8799.1 km\n\nmore_vert\n\nTeams sample three market stalls and compare aroma, texture, and presentation.\n\nMar 12 · 7:30 PM - 11:30 PM",
+        "overlays": [
+          {
+            "tag": "BUTTON",
+            "text": "NE\n0.0\nstar\nchevron_right",
+            "aria": "Open host impressions",
+            "chevron": true,
+            "bounds": {
+              "x": 23.734375,
+              "y": 688.140625,
+              "width": 85.484375,
+              "height": 30,
+              "top": 688.140625,
+              "right": 109.21875,
+              "bottom": 718.140625,
+              "left": 23.734375
+            }
+          },
+          {
+            "tag": "BUTTON",
+            "text": "groups\n12 / 50\nchevron_right\n1",
+            "aria": "Open event members",
+            "chevron": true,
+            "bounds": {
+              "x": 231.65625,
+              "y": 688.78125,
+              "width": 90.96875,
+              "height": 28,
+              "top": 688.78125,
+              "right": 322.625,
+              "bottom": 716.78125,
+              "left": 231.65625
+            }
+          }
+        ]
+      }
+    ]
+  },
+  "nativeArrowClick": {
+    "dialogs": [
+      {
+        "title": "Maya Stone, 30 · Event Host",
+        "text": "Maya Stone, 30 · Event Host\n\nHandmade Pasta Table\n\nclose\nMS\nMaya Stone, 30\n\nlocation_on\nSan Diego\n\nRecently Active\ninsights\nNo available data yet\nImpressions appear after real host or attendee activity."
+      },
+      {
+        "title": "Activities",
+        "text": "Activities\n\nAll\n\nschedule\ntoday\nclose\nevent\nEvents\nexpand_more\n21\nwidgets\nAll\nexpand_more\n27\nexplore\nSun, 12 Jul 2026\nSun, 12 Jul 2026\nchevron_right\nMultislot\nchevron_right\n9+\nmail\nSunset Beach Volley Rotation\n\nJul 12, 7:00 PM - Oct 25, 9:30 PM\n\nSan "
+      },
+      {
+        "title": "Event Explore",
+        "text": "Event Explore\nfilter_alt\nevent_upcoming\ntoday\nclose\nSun, 7 Feb 2027\nSun, 7 Feb 2027\nMS\n0.0\nstar\nchevron_right\ngroups\n1 / 19\nchevron_right\n1\npublic\nHandmade Pasta Table\n\nEvent · Public · 7744.5 km\n\nmore_vert\n\nPairs roll dough, shape filled pasta, and "
+      }
+    ]
+  },
+  "finalAvatar": [
+    {
+      "text": "chevron_right",
+      "bounds": {
+        "x": 25.328125,
+        "y": 168.25,
+        "width": 43.015625,
+        "height": 26,
+        "top": 168.25,
+        "right": 68.34375,
+        "bottom": 194.25,
+        "left": 25.328125
+      },
+      "arrowColor": "rgb(255, 255, 255)",
+      "arrowWidth": 10
+    },
+    {
+      "text": "chevron_right",
+      "bounds": {
+        "x": 25.328125,
+        "y": 469.078125,
+        "width": 43.015625,
+        "height": 26,
+        "top": 469.078125,
+        "right": 68.34375,
+        "bottom": 495.078125,
+        "left": 25.328125
+      },
+      "arrowColor": "rgb(255, 255, 255)",
+      "arrowWidth": 10
+    },
+    {
+      "text": "chevron_right",
+      "bounds": {
+        "x": 25.328125,
+        "y": 769.90625,
+        "width": 43.015625,
+        "height": 26,
+        "top": 769.90625,
+        "right": 68.34375,
+        "bottom": 795.90625,
+        "left": 25.328125
+      },
+      "arrowColor": "rgb(255, 255, 255)",
+      "arrowWidth": 10
+    }
+  ],
+  "finalImpressions": {
+    "overlays": [
+      {
+        "text": "MS\n0.0\nstar\nchevron_right",
+        "box": {
+          "x": 23.734375,
+          "y": 118.671875,
+          "width": 69.703125,
+          "height": 30,
+          "top": 118.671875,
+          "right": 93.4375,
+          "bottom": 148.671875,
+          "left": 23.734375
+        },
+        "arrow": {
+          "x": 79.5625,
+          "y": 124.671875,
+          "width": 10,
+          "height": 18,
+          "top": 124.671875,
+          "right": 89.5625,
+          "bottom": 142.671875,
+          "left": 79.5625
+        },
+        "arrowFont": "18px"
+      },
+      {
+        "text": "groups\n1 / 19\nchevron_right\n1",
+        "box": {
+          "x": 252.5,
+          "y": 119.3125,
+          "width": 70.125,
+          "height": 28,
+          "top": 119.3125,
+          "right": 322.625,
+          "bottom": 147.3125,
+          "left": 252.5
+        },
+        "arrow": {
+          "x": 307.75,
+          "y": 124.3125,
+          "width": 10,
+          "height": 18,
+          "top": 124.3125,
+          "right": 317.75,
+          "bottom": 142.3125,
+          "left": 307.75
+        },
+        "arrowFont": "18px"
+      }
+    ],
+    "detail": [
+      {
+        "text": "0.0",
+        "box": {
+          "x": 51.59375,
+          "y": 128.703125,
+          "width": 13.78125,
+          "height": 9.921875,
+          "top": 128.703125,
+          "right": 65.375,
+          "bottom": 138.625,
+          "left": 51.59375
+        },
+        "font": "9.92px",
+        "line": "9.92px",
+        "transform": "none"
+      },
+      {
+        "text": "star",
+        "box": {
+          "x": 66.96875,
+          "y": 128.171875,
+          "width": 11,
+          "height": 11,
+          "top": 128.171875,
+          "right": 77.96875,
+          "bottom": 139.171875,
+          "left": 66.96875
+        },
+        "font": "11px",
+        "line": "11px",
+        "transform": "none"
+      }
+    ]
+  },
+  "notes": [
+    "Native mouse hit on impression arrow opened Maya host impressions.",
+    "Initial rendering superseded by compact/white-arrow corrections in final records.",
+    "Final visible browser is Event Explore at360px, with impression/member examples; no new browser windows.",
+    "Full Local browser journey remains NOT RUN; template/styles are shared by adapters."
+  ]
+}

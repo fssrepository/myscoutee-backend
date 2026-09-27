@@ -764,8 +764,9 @@ close this block only after its complete role/viewport matrix is proven.
 
 1. Toggle **Taglista látható** and compare organizer, accepted-member and
    unrelated-account roster views. The toggle aligns with the description's
-   right edge and its state survives reload. Category and toggle share the row
-   when both fit, wrapping only at narrower widths. A hidden member list uses
+   right edge and its state survives reload. Category and toggle stay on the same
+   row on mobile; the toggle label truncates with an ellipsis when space is tight.
+   A hidden member list uses
    the existing Event Explore disabled badge and crossed-out eye; its member
    badge has no red counter for non-administrators. The administrator retains
    access and pending-member counter. The card actions contain no duplicate
@@ -775,15 +776,16 @@ close this block only after its complete role/viewport matrix is proven.
 ### 27.2. Policy editor presentation (former block 3, steps 5–8)
 
 - Profile visibility rules stack sections vertically. Optional fields use equal
-  two-column controls with labels left and switches right; Base mandatory fields
-  are absent. Check desktop size, mobile full screen, scrolling and no opening jump.
+  two-column controls on desktop and one full-width control per row on mobile,
+  with labels left and switches right; Base mandatory fields are absent.
+  Check desktop size, mobile full screen, scrolling and no opening jump.
 - Reopened selected-field tables use bold first-column labels and pale row colors
   corresponding to their toggles. Read-only viewing remains legible.
 - Required Profile Fields / Kötelező profilmezők uses the profile-badge heading
   icon; its picker label remains visible on mobile. Group Policies retains the
   shared Event Policy editor and purple palette. Open Policy Setup is left-aligned
-  at content width. Member list visible shares the category row when both fit,
-  wrapping only when they no longer fit.
+  at content width. Member list visible stays beside the category, with its label
+  truncated by an ellipsis on narrow screens.
 
 ### 27.3. Workspace header across roles (former block 5, step 11)
 

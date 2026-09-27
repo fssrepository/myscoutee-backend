@@ -88,17 +88,17 @@ Earlier Event Mode, Integration API, Activity Rating and EVENT-FOLLOWING-001 rem
 ```yaml
 checkpoint: GROUP-LIFECYCLE-001
 checklist: ../checklists/group/GROUP-LIFECYCLE-001.md
-substage: Block26 HTTP CLOSED;27 next. HTTP23/48; Lifecycle23/29 (1–13,17–26),14–16 partial retained.
-fixture_phase: All26 temporary Admin scopes exactly restored. User-corrected deleted-group recovery implemented in Java/local/sharedUI and verified; earlier-departed Admin can restore, Member only after group active. One managed browser currently Alex EN; runtime fixture removed after proof.
+substage: Blocks27–29 HTTP CLOSED. HTTP26/48; Lifecycle26/29 (1–13,17–29),14–16 partial retained.
+fixture_phase: All27–29 temporary Admin/role/distance-event scopes exactly restored. One managed PENDING-BLOCK19 browser, Alex EN. Mobile rule controls single-column; category/member toggle remains one row with ellipsis. SmartList sticky date updates after reordered patch. No active temporary Admin fixture.
 execution_log: ../evidence/GROUP-LIFECYCLE-001-20260926.md
 execution_authority: User explicitly delegated full-flow automated QA; questions do not pause it. Testcases are independent closed units with their own restage/checkpoints/execution/cleanup.
-next_action: Execute27 role/editor presentation with versioned fixture;28 request boundaries;29 ordering. At whole Group testcase boundary remove exact evidence-proven duplicates from GROUP-ISOLATION-001, preserving unique combinations; keep transfer provenance in ledger and executable blocks self-contained. Also audit remaining NOT RUN deployment-dependent checks into independent deployment QA. Local MCP OAuth remains API block7; browser ChatGPT manual acceptance remains deployment scope.
+next_action: Shared InfoCard chevron implementation and live retest complete, shown in existing Event Explore browser. Inspect remaining14–16 retained scope without replaying proof; audit genuine external/device requirements into independent deployment QA and exact evidence-proven Group Isolation duplicates. Keep testcases self-contained. User has not requested new browser windows.
 savepoint: community-group after-contact-controls captured 2026-09-27T04:40:57.723Z, resume13. Earlier savepoints immutable.
-queue: HTTP Lifecycle27–29 with14–16 partial retained; Local Lifecycle1–29, Group Isolation1–12 and Integration API Group1–7 remain separate.
+queue: HTTP Lifecycle14–16 partial retained; Local Lifecycle1–29, Group Isolation1–12 and Integration API Group1–7 remain separate.
 resume_gate: Run the versioned community-group status command before any relaunch. verify-lists checked all ten groups/27 memberships without mutation and the versioned launcher prepared all three actors on 2026-09-26. Do not reset changed records or replay a closed checkpoint. Check the current manifest and launcher result.
 runtime: Existing frontend-sync/backend own builds; no separate test/build process. One managed PENDING-BLOCK19 browser.
 mutation_contract: Application-wide, await persistence inside the busy confirmation dialog. Only after success apply canonical returned state through the existing stores to retained lists/cards/badges; failure retains the dialog/error and does not fake success. Keep underlying popups open. No reload to obtain a mutation result; the user identifies only the existing subevents flow as an exception.
-last_completed: Block26 HTTP PASS/CLOSED; block26-admin-authority-20260927.json.
+last_completed: Blocks27–29 HTTP PASS/CLOSED; block29-distance-ordering-20260927.json.
 ```
 
 ## Archived pair-QA resume point — 2026-09-17

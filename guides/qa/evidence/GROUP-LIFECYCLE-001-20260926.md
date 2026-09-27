@@ -174,9 +174,9 @@ their own untouched pending ledgers; these figures do not claim campaign complet
 | 24 | Account contacts and event-linked assets | NOT RUN | NOT RUN | Execute in order; no partial credit. |
 | 25 | Global notifications and scoped API keys | NOT RUN | NOT RUN | Execute in order; no partial credit. |
 | 26 | Group administrators, responsibility transfer and last-member deletion | PASS | NOT RUN | Own grants/handover/return/deletion; corrected former-Admin group recovery and member denial; exact cleanup. |
-| 27 | Group editor and roster presentation across roles | NOT RUN | NOT RUN | Execute in order; no partial credit. |
-| 28 | Group detail loading and adapter request boundaries | NOT RUN | NOT RUN | Execute in order; no partial credit. |
-| 29 | Cross-surface distance and mutation ordering | NOT RUN | NOT RUN | Execute in order; no partial credit. |
+| 27 | Group editor and roster presentation across roles | PASS | NOT RUN | Three roles; mobile one-column fix; EN/HU; normal/Admin/Operator headers; exact cleanup. |
+| 28 | Group detail loading and adapter request boundaries | PASS | NOT RUN | Real list/View/Edit/nested-rule HTTP requests; Local delay browser proof pending separately. |
+| 29 | Cross-surface distance and mutation ordering | PASS | NOT RUN | Both live distance surfaces; save/retry/sync ordering and scroll; sticky date fix; exact cleanup. |
 
 Closure provenance for 2–5: the creation, members/media/policy, join-live and
 admin/selector evidence sections below and their linked JSON artifacts. Additional
@@ -1331,3 +1331,25 @@ User clarification 2026-09-27: testcases are independent closed execution units.
 
 
 2026-09-27 22:00: Block26 HTTP PASS/CLOSED. Own grants/revocations, Admin-first and ordinary-member fallback, sole-admin step-down, normal invite and Trash return, final-member deletion and user-corrected recovery verified. Corrected rule: Deleted card remains in Trash; any voluntarily departed Admin can restore group/responsibility, ordinary member has no Restore and direct restore/join404 until admin recovery; then Member Restore succeeds. Earlier departed Admin cancel/confirm and idempotent retry proven. Exact notification read/avatar173→172/group2→1 survives reload. Shared Deleted badge bottom-right and common X16px centered. Local25+store2+popup6+converter12 focused tests PASS (45 distinct), full Local browser NOT RUN; Java mapper spec added/not run separately. Existing dev watchers compiled, exact fixture cleanup PASS. HTTP23/48 (47.92%), Lifecycle23/29 (1–13,17–26);27 next. See block26-admin-authority-20260927.json.
+
+### Blocks27–28 HTTP closed — 2026-09-27 22:19 CEST
+
+27: fresh owned fixture compared Admin, accepted Member and outsider with hidden roster. Admin retained access/pending counter; others displayed crossed-eye badge without red counter or roster action. Same-case saved invitation cancel/accept/reload and read-only policy evidence reused. Current editor desktop/mobile geometry, required headings EN/HU, blue/pink selected-field row gradients, bold labels, shared purple policy editor and left-aligned setup checked. User correction: mobile optional fields now one full-width row each, using the existing FormFlow default; EN320/360, HU320 and desktop1100 browser checks passed after watcher build. Long-name ellipsis retained26px circular monogram; Base green/group violet and normal/Admin/Operator header layouts checked,320/1100. Admin/operator expose no group selector by design. No separate build/test runner.
+
+28: normal browser network captured GET /api/groups summaries without description/policy, separate detail GET on View and Edit, zero additional detail GET for nested rules. HTTP adapter uses direct HttpClient without artificial delay. Local route delay inspected in source only; Local browser remains NOT RUN. Exact restore-admin-lifecycle restored all temporary scopes including role-account snapshots.
+
+Evidence: `GROUP-LIFECYCLE-001-block27-presentation-20260927.json`, `GROUP-LIFECYCLE-001-block28-requests-20260927.json`. HTTP25/48 (52.08%); Lifecycle25/29 (1–13,17–28);29 next;14–16 retained partial.
+
+### Block27 member-toggle follow-up — 2026-09-27 22:25 CEST
+
+User corrected the mobile category/member-toggle rule: keep one row and truncate only Member list visible, rather than wrap. Shared FormFlow end-aligned flex sizing repaired; existing menu ellipsis reused. Browser320/360/500/1100, ON/OFF, watcher build PASS. Updated stable checklist and block27 evidence; fresh owned Admin fixture retained for29, unsaved toggle draft canceled.
+
+### Block29 HTTP closed — 2026-09-27 22:34 CEST
+
+Real coordinate fixtures verified Activity Events and Event Explore Distance for0/3.2/4.999/5/5.1/9.999/10km, grouped0/0/0/5/5/5/10km. An old owned Group moved from third to first after real UI Save without reload; Hosting/Recent and scrollTop51 retained. Exact request replay409 retained version2; real30s sync200 retained order/scroll. Found and repaired stale sticky date after row reorder: shared SmartList.patchVisibleItem now uses existing refreshSurfaceSoon. Fresh restage and browser retest showed Sep27 header immediately and after sync, with no new list load. Existing watcher compiled. All temporary groups/events/members/role scopes exactly restored. No standalone runner.
+
+Evidence: `GROUP-LIFECYCLE-001-block29-distance-ordering-20260927.json`. HTTP26/48 (54.17%), Lifecycle26/29 (1–13,17–29);14–16 retained partial remain. Local full browser NOT RUN. Next user-requested addition: general InfoCard clickable-badge chevron, then remaining Group scope.
+
+### Shared InfoCard badge affordance — after29, 2026-09-27
+
+User requested a general visible chevron on clickable badge/avatar/impression overlays. Implemented once in InfoCard; existing interaction/disabled boundaries retained. Avatar pills retain round photos and always-white arrows. After review, chevron uses18px glyph/10px slot and less end padding; impression star centered with11px square metrics. Existing watcher build and visible Group/Activities/Event Explore mobile checks passed; native arrow click opened host impressions. Evidence: `GROUP-LIFECYCLE-001-infocard-chevron-20260927.json`. No extra QA block or Local browser PASS inferred.
