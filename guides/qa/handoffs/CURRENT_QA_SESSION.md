@@ -1,6 +1,6 @@
 # Current manual QA session
 
-Updated: 2026-09-26
+Updated: 2026-09-27
 
 This is the context-saving entry point for continuing the manual QA campaign.
 It stores one minimal live resume pointer plus reusable pair-QA execution lessons. It
@@ -88,17 +88,17 @@ Earlier Event Mode, Integration API, Activity Rating and EVENT-FOLLOWING-001 rem
 ```yaml
 checkpoint: GROUP-LIFECYCLE-001
 checklist: ../checklists/group/GROUP-LIFECYCLE-001.md
-substage: HTTP14/48 closed (blocks1–13 and17); block18 current. User accepted block17 Help/native anonymous MCP scope and requested advancing. Blocks14–16 partial evidence retained; do not replay them.
-fixture_phase: after-contact-controls retained; prepare-contacts snapshot still active with Milo birthday1974-10-04 and ChildrenYes. CONTACTS windows closed. User-inspected native-location ENTRY window remains untouched on the unsaved registration form; actor1 closed. Separate GROUP-LIFECYCLE-001-MCP actor0 is Alex in Design Circle, Affiliate open. The dedicated UI-created group API key was revoked through normal UI; zero API keys remain and HTTP401 confirmed revocation. No new registered account was submitted.
+substage: STOP before19 at user request. HTTP15/48 closed (Lifecycle15/29: blocks1–13,17,18). Block18 finished on physical Android and desktop; blocks14–16 partial retained.
+fixture_phase: after-contact-controls retained; no fixture reset. User-inspected ENTRY browser remains untouched on its unsaved registration form. Dedicated MCP desktop QA window closed after restoring Alex/Design Circle. Phone QA tab closed after normal logout; owned ADB reverse8080 and forward36087 removed. No retained QA API keys/MCP connections.
 execution_log: ../evidence/GROUP-LIFECYCLE-001-20260926.md
 execution_authority: User explicitly delegated full-flow automated execution of the pending QA campaign on 2026-09-26; Codex operates the browser, diagnoses, fixes and retests. Closed PASS rows remain closed.
-next_action: Continue block18 missing Back/X checks only. Existing desktop menu Back, popup Back, Forward and logout-confirmation Back proofs retained. New nested-popup X then Back and rapid X/reopen then Back PASS in Alex Design Circle, /game and workspace retained. Consolidate retained evidence; complete remaining route/reload and available mobile checks. Block17 closed for agreed Help/native anonymous MCP scope; private OAuth belongs to Integration API Group7 and local initialization/update to the local campaign. Preserve the user-inspected ENTRY window. No new MCP/API setup or Help replay.
+next_action: STOP. Do not start19 or replay18. User explicitly requested completing18 and stopping before19. If later resumed, use block19 baseline and versioned read-only resume gate; preserve ENTRY window. Block18 evidence GROUP-LIFECYCLE-001-block18-20260927.json contains all retained proofs and cleanup.
 savepoint: community-group after-contact-controls captured 2026-09-27T04:40:57.723Z, resume13. Earlier savepoints immutable.
-queue: HTTP Lifecycle14–29, then Local Lifecycle1–29, Group Isolation1–12, Integration API Group1–7.
+queue: Await user continuation before19. Later HTTP Lifecycle19–29 with14–16 partial retained; Local Lifecycle1–29, Group Isolation1–12 and Integration API Group1–7 remain separate.
 resume_gate: Run the versioned community-group status command before any relaunch. verify-lists checked all ten groups/27 memberships without mutation and the versioned launcher prepared all three actors on 2026-09-26. Do not reset changed records or replay a closed checkpoint. Check the current manifest and launcher result.
-runtime: Existing dev watchers own builds; no stack restart or seed replacement for this resume. Versioned launcher configuration restored after the revert.
+runtime: Existing dev watchers own builds. Shared overlay-history native-Back fix compiled/synced by frontend-sync at2026-09-27T05:46:29.340Z; real Android and refreshed desktop checks PASS. No separate test process; regression specs updated but not separately executed.
 mutation_contract: Application-wide, await persistence inside the busy confirmation dialog. Only after success apply canonical returned state through the existing stores to retained lists/cards/badges; failure retains the dialog/error and does not fake success. Keep underlying popups open. No reload to obtain a mutation result; the user identifies only the existing subevents flow as an exception.
-last_completed: GROUP-LIFECYCLE-001 HTTP block17 CLOSED for agreed Help/native anonymous MCP scope; HTTP14/48 closed, including blocks1–13. Private OAuth and local tests remain unverified in their separate scopes.
+last_completed: GROUP-LIFECYCLE-001 HTTP block18 PASS/CLOSED; physical Android and desktop Back/X/Forward/reload/busy checks and rating dock verified. HTTP15/48, Lifecycle15/29. Explicit STOP before19.
 ```
 
 ## Archived pair-QA resume point — 2026-09-17

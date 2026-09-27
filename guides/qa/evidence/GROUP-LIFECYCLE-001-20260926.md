@@ -1256,3 +1256,12 @@ Header aggregates now live in the existing PaymentMethodsPopupStore; both normal
 ### Block17 agreed closure; block18 current
 
 User accepted the completed HTTP Help/native anonymous MCP scope and requested advancing to18. Block17 is closed on that explicit scope; Local fresh/update and personal remote OAuth remain unverified in their separate campaign/API scopes. HTTP14/48 closed (Lifecycle14/29, blocks1–13 and17). Block18 retains earlier results and now also verifies nested X then Back and rapid X/reopen then Back without leaving /game or Design Circle.
+
+### HTTP block18 closed — 2026-09-27; STOP before19
+
+- Physical Android Chrome exposed a real native-Back defect: after dismissing a menu, the next Back exited Chrome instead of closing its parent popup. Fixed the shared overlay history owner to retain one existing entry per surface; busy refusal restores an existing entry rather than pushing history after Back. Existing frontend-sync build/sync PASS at05:46:29Z; updated unit specs were not run separately.
+- After the fix, physical-device nested Back, confirmation cancellation, nested X/Back, rapid X/reopen/Back, normal route Back and reload PASS. A briefly held real logout request proved that two native Back presses preserve the busy confirmation; releasing the unchanged request completed the intentional logout.
+- Desktop refreshed to the fixed build: nested Back, Forward without resurrection, X then Back, normal route Back/Forward and stale-marker cleanup PASS. Existing rating dock opened/closed without adding history, retained its scroll behavior and unchanged score10; Design Circle restored. No rating submitted.
+- Evidence: [block18 observations](GROUP-LIFECYCLE-001-block18-20260927.json). Required-popup close predicate remains unchanged; the shared refusal branch is exercised by the busy dialog. Installed PWA/WebView and Local mode are not claimed.
+- Closed the owned desktop QA window and phone localhost tab; normal phone logout completed and owned ADB tunnels removed. User-inspected ENTRY window untouched; no fixture reset or ad-hoc data patch.
+- **HTTP15/48 closed (31.25%); Lifecycle15/29 (1–13,17,18). STOP before19 at the user's explicit request.** Blocks14–16 retain their prior partial status.
