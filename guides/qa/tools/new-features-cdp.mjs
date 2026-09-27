@@ -108,16 +108,18 @@ try {
     if (!nodeId) throw Error('Upload input missing');
     await send('DOM.setFileInputFiles', { nodeId, files }); result = { uploaded: files.length };
   } else if (command === 'language-eval') {
-    const { language, script } = JSON.parse(await readFile(input, 'utf8'));
+    const { language, script, width, height } = JSON.parse(await readFile(input, 'utf8'));
     if (!['en-US', 'hu-HU'].includes(language)) throw Error('Unsupported QA browser language');
     const browser = (await send('Runtime.evaluate', { expression: '({userAgent:navigator.userAgent,languages:navigator.languages})', returnByValue: true })).result.value;
     try {
+      if (width && height) await send('Emulation.setDeviceMetricsOverride', { width, height, deviceScaleFactor: 1, mobile: false });
       await send('Emulation.setLocaleOverride', { locale: language });
       await send('Network.setUserAgentOverride', { userAgent: browser.userAgent, acceptLanguage: `${language},${language.slice(0, 2)}` });
       await send('Page.reload');
       await new Promise(resolve => setTimeout(resolve, 1500));
       result = (await send('Runtime.evaluate', { expression: await readFile(script, 'utf8'), awaitPromise: true, returnByValue: true })).result.value;
     } finally {
+      if (width && height) await send('Emulation.clearDeviceMetricsOverride');
       await send('Emulation.setLocaleOverride', { locale: '' });
       await send('Network.setUserAgentOverride', { userAgent: browser.userAgent, acceptLanguage: browser.languages.join(',') });
       await send('Page.reload');

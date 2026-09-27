@@ -116,7 +116,8 @@ public class IntegrationParticipantInviteService {
                     .filter(profile -> invite.claimedUserId().equals(profile.getUserId())).isEmpty())
                 throw new ResponseStatusException(HttpStatus.CONFLICT, "This invitation belongs to another account.");
             var original = org.springframework.security.core.context.SecurityContextHolder.getContext().getAuthentication();
-            if (original == null) throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
+            if (original == null || !(original.getPrincipal() instanceof com.raxim.myscoutee.common.config.firebase.dto.FirebasePrincipal))
+                throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
             var recipient = groups.claimEventInvite(event.getWorkspaceGroupId(), invite.ownerUserId(), accountId);
             try {
                 org.springframework.security.core.context.SecurityContextHolder.getContext().setAuthentication(
