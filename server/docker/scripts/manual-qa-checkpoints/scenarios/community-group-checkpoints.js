@@ -270,6 +270,7 @@
         {collection: "users", selector: {$or: [{userId: {$in: affected}}, {workspaceGroupId: groupId}]}},
         {collection: "communityGroups", selector: {_id: groupId}},
         {collection: "activityMembers", selector: {ownerType: "community", ownerId: groupId}},
+        {collection: "affiliateLinks", selector: {_id: {$in: profileIds}}},
         {collection: "integrationTokens", selector: {ownerUserId: {$in: profileIds}}},
         {collection: "integrationExternalIds", selector: {ownerUserId: {$in: profileIds}}},
         {collection: "assets", selector: {ownerUserId: {$in: profileIds}}},
@@ -282,6 +283,17 @@
       Q.printObject({checkpointId, profileApiPrepared: true, groupId, productWrites: false});
     } else {
       if (!state.profileApiSnapshots) Q.fail("No independent API snapshot to restore.");
+      const retained = [...state.profileApiSnapshots];
+      // The first block25 run predates the link snapshot. Opening its Photo
+      // Walks API popup inserted this link; retain older links untouched.
+      if (!retained.some(snapshot => snapshot.collection === "affiliateLinks")) {
+        const owner = `group:${groupId}:${actors[0]}`;
+        const link = Q.collection("affiliateLinks").findOne({_id: owner});
+        if (link && link.createdAtIso >= state.profileApiPreparedAtIso) {
+          retained.push({collection: "affiliateLinks",
+            selector: {_id: owner, createdAtIso: link.createdAtIso}, documents: []});
+        }
+      }
       const oldMappings = state.profileApiSnapshots.find(snapshot => snapshot.collection === "integrationExternalIds").documents;
       const oldMappingIds = new Set(oldMappings.map(mapping => String(mapping._id)));
       const newMappings = Q.collection("integrationExternalIds").find({ownerUserId: {$in: state.profileApiProfileIds}})
@@ -300,8 +312,8 @@
         {collection: "notificationOutbox", selector: {entityId: {$in: createdIds}}},
         {collection: "affinityRecomputeTasks", selector: {targetId: {$in: createdIds}}}
       ]) Q.collection(spec.collection).deleteMany(spec.selector);
-      Q.restoreSnapshots(state.profileApiSnapshots);
-      for (const snapshot of state.profileApiSnapshots) {
+      Q.restoreSnapshots(retained);
+      for (const snapshot of retained) {
         if (!Q.sameJson(ordered(snapshot.documents), ordered(Q.collection(snapshot.collection).find(snapshot.selector).toArray())))
           Q.fail(`${snapshot.collection} API restoration differs; retain snapshots.`);
       }

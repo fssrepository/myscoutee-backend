@@ -260,10 +260,10 @@
     ],
     "hu": {
       "lang": "hu",
-      "text": "schedule\n27 Sept, 20:16\nwarning_amber\nBiztons\u00e1gi figyelmeztet\u00e9s\nMyScoutee\n\u00daj bejelentkez\u00e9s innen: Chrome on Linux desktop.\nmore_vert",
+      "text": "schedule\n27 Sept, 20:16\nwarning_amber\nBiztonsági figyelmeztetés\nMyScoutee\nÚj bejelentkezés innen: Chrome on Linux desktop.\nmore_vert",
       "controls": [
         {
-          "text": "fiber_new\n\u00daj\nexpand_more\n21",
+          "text": "fiber_new\nÚj\nexpand_more\n21",
           "rect": {
             "x": 153.75,
             "y": 8.3125,
@@ -296,7 +296,7 @@
           }
         },
         {
-          "text": "apps\n\u00d6sszes\nexpand_more",
+          "text": "apps\nÖsszes\nexpand_more",
           "rect": {
             "x": 212.1875,
             "y": 64.328125,
@@ -342,7 +342,7 @@
         "h": 32
       },
       "menu": {
-        "text": "BIZTONS\u00c1GI FIGYELMEZTET\u00c9S\nclose\ndone_all\nMark as read",
+        "text": "BIZTONSÁGI FIGYELMEZTETÉS\nclose\ndone_all\nMark as read",
         "x": 6.390625,
         "right": 313.609375,
         "bottom": 793.609375,
@@ -353,7 +353,244 @@
   "verified": "Existing timestamp/first-row alignment, 2-line details with action padding; New/bell/Close stay header, workspace All goes below. 320/360/1100 EN and320 HU, row action menu fits viewport. No style changes required.",
   "remaining": [
     "notification account scope/live write counters including contact and multi-group tickets",
-    "scoped API keys JSON/multipart/role revocation",
     "confirmation wording review"
-  ]
+  ],
+  "menuBadgeAlignment": [
+    {
+      "label": "Main profile",
+      "checked": true,
+      "badge": "99+",
+      "badgeRect": {
+        "left": 307.671875,
+        "right": 336.125,
+        "width": 28.453125
+      },
+      "checkRect": {
+        "left": 279.796875,
+        "right": 296.796875,
+        "width": 17
+      }
+    },
+    {
+      "label": "Design Circle",
+      "checked": false,
+      "badge": "1",
+      "badgeRect": {
+        "left": 316.125,
+        "right": 336.125,
+        "width": 20
+      },
+      "checkRect": null
+    },
+    {
+      "label": "Seattle Friends",
+      "checked": false,
+      "badge": "1",
+      "badgeRect": {
+        "left": 316.125,
+        "right": 336.125,
+        "width": 20
+      },
+      "checkRect": null
+    },
+    {
+      "label": "Study Buddies",
+      "checked": false,
+      "badgeRect": null,
+      "checkRect": null
+    }
+  ],
+  "apiCalls": [
+    {
+      "label": "base connect",
+      "status": 200,
+      "data": {
+        "connected": true,
+        "maxBatchSize": 1000,
+        "profileId": "af0436815ab38f4864dd1e24",
+        "profileName": "Alex Turner",
+        "groupId": null,
+        "groupName": null,
+        "operations": [
+          "event",
+          "encounters",
+          "inviteParticipants",
+          "createEvents",
+          "createAssets",
+          "inviteGroupParticipants"
+        ],
+        "inviteGroups": [
+          {
+            "id": "seed-community-design-circle",
+            "name": "Design Circle"
+          },
+          {
+            "id": "seed-community-seattle-friends",
+            "name": "Seattle Friends"
+          }
+        ]
+      }
+    },
+    {
+      "label": "group connect",
+      "status": 200,
+      "data": {
+        "connected": true,
+        "maxBatchSize": 1000,
+        "profileId": "group:seed-community-photo-walks:af0436815ab38f4864dd1e24",
+        "profileName": "Alex Turner",
+        "groupId": "seed-community-photo-walks",
+        "groupName": "Photo Walks",
+        "operations": [
+          "event",
+          "encounters",
+          "inviteParticipants",
+          "createEvents",
+          "inviteGroupParticipants"
+        ],
+        "inviteGroups": [
+          {
+            "id": "seed-community-design-circle",
+            "name": "Design Circle"
+          },
+          {
+            "id": "seed-community-seattle-friends",
+            "name": "Seattle Friends"
+          }
+        ]
+      }
+    },
+    {
+      "label": "Base asset while UI Seattle Friends",
+      "status": 200,
+      "data": {
+        "items": [
+          {
+            "id": "25250927-0000-4000-8000-000000000001",
+            "externalId": "8b447d0f-3930-4ef4-9ceb-b72717fdcd8b",
+            "result": "created",
+            "error": null
+          }
+        ]
+      }
+    },
+    {
+      "label": "Photo Walks event while UI Seattle Friends",
+      "status": 200,
+      "data": {
+        "items": [
+          {
+            "id": "25250927-0000-4000-8000-000000000002",
+            "externalId": "50fe4dfc-ac70-40bb-911b-ad8733acbb70",
+            "result": "created",
+            "error": null
+          }
+        ]
+      }
+    },
+    {
+      "label": "Group asset JSON forbidden",
+      "status": 403,
+      "data": {
+        "timestamp": "2026-09-27T18:46:20.965Z",
+        "status": 403,
+        "error": "Forbidden",
+        "message": "Asset creation requires an integration key issued by the base profile.",
+        "path": "/integrations/v1/assets"
+      }
+    },
+    {
+      "label": "Group asset multipart forbidden",
+      "status": 403,
+      "data": {
+        "timestamp": "2026-09-27T18:46:21.003Z",
+        "status": 403,
+        "error": "Forbidden",
+        "message": "Asset creation requires an integration key issued by the base profile.",
+        "path": "/integrations/v1/assets"
+      }
+    }
+  ],
+  "apiBaseSelected": [
+    {
+      "selected": "Main profile",
+      "multipart": false,
+      "status": 403,
+      "message": "Asset creation requires an integration key issued by the base profile."
+    },
+    {
+      "selected": "Main profile",
+      "multipart": true,
+      "status": 403,
+      "message": "Asset creation requires an integration key issued by the base profile."
+    }
+  ],
+  "apiPersistence": {
+    "mappings": [
+      {
+        "_id": "841cbb03-da6f-4ccb-862f-1b966ba9bb83",
+        "resourceType": "asset",
+        "externalId": "25250927-0000-4000-8000-000000000001",
+        "ownerUserId": "af0436815ab38f4864dd1e24",
+        "createdAtIso": "2026-09-27T18:46:20.564295869Z",
+        "internalId": "8b447d0f-3930-4ef4-9ceb-b72717fdcd8b",
+        "updatedAtIso": "2026-09-27T18:46:20.564295869Z"
+      },
+      {
+        "_id": "27721ab6-f355-4392-bcb5-5216cd0884e7",
+        "externalId": "25250927-0000-4000-8000-000000000002",
+        "ownerUserId": "group:seed-community-photo-walks:af0436815ab38f4864dd1e24",
+        "resourceType": "event",
+        "createdAtIso": "2026-09-27T18:46:20.696123972Z",
+        "internalId": "50fe4dfc-ac70-40bb-911b-ad8733acbb70",
+        "updatedAtIso": "2026-09-27T18:46:20.696123972Z"
+      }
+    ],
+    "assets": [
+      {
+        "_id": "6ab9647c2d0874c32bf379df",
+        "assetId": "8b447d0f-3930-4ef4-9ceb-b72717fdcd8b",
+        "ownerUserId": "af0436815ab38f4864dd1e24",
+        "title": "QA25 API Base Supplies",
+        "imageUrl": ""
+      }
+    ],
+    "events": [
+      {
+        "_id": "6ab9647c2d0874c32bf379e1",
+        "workspaceGroupId": "seed-community-photo-walks",
+        "sourceId": "50fe4dfc-ac70-40bb-911b-ad8733acbb70",
+        "ownerUserId": "group:seed-community-photo-walks:af0436815ab38f4864dd1e24",
+        "status": "DR"
+      }
+    ]
+  },
+  "membershipRevoked": {
+    "status": 403,
+    "body": {
+      "timestamp": "2026-09-27T18:48:07.991Z",
+      "status": 403,
+      "error": "Forbidden",
+      "message": "No message available",
+      "path": "/integrations/v1/connect"
+    }
+  },
+  "baseKeyRevoked": {
+    "at": "2026-09-27T18:52:28.286Z",
+    "baseKeyAfterRevoke": 401,
+    "confirmationClosed": true
+  },
+  "apiCleanup": {
+    "result": "PASS",
+    "exactSnapshotVerification": true,
+    "photoWalksMembershipRestored": true,
+    "generatedMappingsAndResourcesRemoved": true,
+    "newPhotoWalksAffiliateLinkRemoved": true,
+    "preexistingTokensRestored": true
+  },
+  "menuChange": {
+    "checkBeforeBadge": true,
+    "sameBadgeRightEdge": 336.125,
+    "watcherBuild": "PASS 2026-09-27T18:52:18.930Z"
+  }
 }
