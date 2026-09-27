@@ -5,7 +5,7 @@
   "implementation": [
     "Shared InfoCard overlayContent adds chevron_right only for interactive button badge/avatar content. Static/disabled spans and selection toggles do not receive the navigation icon.",
     "Clickable circular avatar/count overlays become pills; avatar image retains circular crop.",
-    "Chevron18px glyph in10px slot, compact gap/end padding. Avatar arrows always white.",
+    "Final user choice: round badge, zero trailing padding;18px chevron in12px clipped box with -3px text indent trimming only font side bearings. Avatar arrows remain white.",
     "Impression star keeps11px square/line-height; removed vertical transform and prevented broader16px icon rule overriding it."
   ],
   "build": "Existing frontend-sync 2026-09-27 22:38:55 CEST; browser reload used. No separate build/test process.",
@@ -110,7 +110,7 @@
   "impressionsInitial": {
     "cards": [
       {
-        "text": "MS\n0.0\nstar\nchevron_right\ngroups\n1 / 19\nchevron_right\n1\npublic\nHandmade Pasta Table\n\nEvent · Public · 7744.5 km\n\nmore_vert\n\nPairs roll dough, shape filled pasta, and share the first cooked batch.\n\nSun Feb 22, 6:30 PM",
+        "text": "MS\n0.0\nstar\nchevron_right\ngroups\n1 / 19\nchevron_right\n1\npublic\nHandmade Pasta Table\n\nEvent \u00b7 Public \u00b7 7744.5 km\n\nmore_vert\n\nPairs roll dough, shape filled pasta, and share the first cooked batch.\n\nSun Feb 22, 6:30 PM",
         "overlays": [
           {
             "tag": "BUTTON",
@@ -147,7 +147,7 @@
         ]
       },
       {
-        "text": "NE\n0.0\nstar\nchevron_right\ngroups\n9 / 20\nchevron_right\n2\ngroups\nGreenhouse Neighbor Tea\n\nEvent · Friends only · 8799.1 km\n\nmore_vert\n\nResidents from nearby blocks meet among citrus trees and shared tea trays.\n\nMar 1 · 10:00 AM - 12:00 PM",
+        "text": "NE\n0.0\nstar\nchevron_right\ngroups\n9 / 20\nchevron_right\n2\ngroups\nGreenhouse Neighbor Tea\n\nEvent \u00b7 Friends only \u00b7 8799.1 km\n\nmore_vert\n\nResidents from nearby blocks meet among citrus trees and shared tea trays.\n\nMar 1 \u00b7 10:00 AM - 12:00 PM",
         "overlays": [
           {
             "tag": "BUTTON",
@@ -184,7 +184,7 @@
         ]
       },
       {
-        "text": "NE\n0.0\nstar\nchevron_right\ngroups\n12 / 50\nchevron_right\n1\npublic\nNight Food League\n\nEvent · Public · 8799.1 km\n\nmore_vert\n\nTeams sample three market stalls and compare aroma, texture, and presentation.\n\nMar 12 · 7:30 PM - 11:30 PM",
+        "text": "NE\n0.0\nstar\nchevron_right\ngroups\n12 / 50\nchevron_right\n1\npublic\nNight Food League\n\nEvent \u00b7 Public \u00b7 8799.1 km\n\nmore_vert\n\nTeams sample three market stalls and compare aroma, texture, and presentation.\n\nMar 12 \u00b7 7:30 PM - 11:30 PM",
         "overlays": [
           {
             "tag": "BUTTON",
@@ -225,8 +225,8 @@
   "nativeArrowClick": {
     "dialogs": [
       {
-        "title": "Maya Stone, 30 · Event Host",
-        "text": "Maya Stone, 30 · Event Host\n\nHandmade Pasta Table\n\nclose\nMS\nMaya Stone, 30\n\nlocation_on\nSan Diego\n\nRecently Active\ninsights\nNo available data yet\nImpressions appear after real host or attendee activity."
+        "title": "Maya Stone, 30 \u00b7 Event Host",
+        "text": "Maya Stone, 30 \u00b7 Event Host\n\nHandmade Pasta Table\n\nclose\nMS\nMaya Stone, 30\n\nlocation_on\nSan Diego\n\nRecently Active\ninsights\nNo available data yet\nImpressions appear after real host or attendee activity."
       },
       {
         "title": "Activities",
@@ -234,7 +234,7 @@
       },
       {
         "title": "Event Explore",
-        "text": "Event Explore\nfilter_alt\nevent_upcoming\ntoday\nclose\nSun, 7 Feb 2027\nSun, 7 Feb 2027\nMS\n0.0\nstar\nchevron_right\ngroups\n1 / 19\nchevron_right\n1\npublic\nHandmade Pasta Table\n\nEvent · Public · 7744.5 km\n\nmore_vert\n\nPairs roll dough, shape filled pasta, and "
+        "text": "Event Explore\nfilter_alt\nevent_upcoming\ntoday\nclose\nSun, 7 Feb 2027\nSun, 7 Feb 2027\nMS\n0.0\nstar\nchevron_right\ngroups\n1 / 19\nchevron_right\n1\npublic\nHandmade Pasta Table\n\nEvent \u00b7 Public \u00b7 7744.5 km\n\nmore_vert\n\nPairs roll dough, shape filled pasta, and "
       }
     ]
   },
@@ -376,5 +376,47 @@
     "Initial rendering superseded by compact/white-arrow corrections in final records.",
     "Final visible browser is Event Explore at360px, with impression/member examples; no new browser windows.",
     "Full Local browser journey remains NOT RUN; template/styles are shared by adapters."
-  ]
+  ],
+  "rateBadgeFollowup": {
+    "status": "IMPLEMENTED / single Rates browser checked; corner shape is user-requested trial",
+    "build": "Existing frontend-sync 2026-09-27T20:46:09.883Z; synced22:46:12",
+    "changes": [
+      "Single/Pair interactive score badges use same shared chevron styling as InfoCard. Disabled/static score badges unchanged.",
+      "Removed interactive score badge68px minimum; reduced leading padding to4.8px.",
+      "User clarified outline must form an arrow point. Supersedes squared trial: border-radius13px 10px 10px 13px /50%, with both right corners bevelled; chevron retained in full18px box."
+    ],
+    "proof": {
+      "width": 57.515625,
+      "padding": "2.56px 0px 2.56px 4.8px",
+      "radius": "13px 4px 4px 13px",
+      "arrowWidth": 18,
+      "arrowFont": "18px",
+      "arrowContained": true
+    },
+    "interaction": "Native click on score chevron opened Mason Parker rating menu; dismissed without Save.",
+    "pairRuntime": "NOT RUN in this styling follow-up",
+    "pointedOutline": {
+      "proof": {
+        "width": 57.515625,
+        "radius": "13px 10px 10px 13px / 50%",
+        "topRight": "superellipse(0)",
+        "bottomRight": "superellipse(0)"
+      },
+      "build": "Existing frontend-sync 2026-09-27T20:47:51.702Z",
+      "visual": "Rates score and Event InfoCard avatar/member badges inspected in existing managed browser; pointed outline visible, avatar photo intact and pending counter remains visible.",
+      "scope": "User-requested visual trial; verified Chrome152. Other browser engines not tested."
+    },
+    "finalRoundedOutline": {
+      "supersedes": "User rejected squared and pointed outline trials. Restore rounded badge.",
+      "build": "Existing frontend-sync 2026-09-27T20:49:36.906Z",
+      "proof": {
+        "width": 51.515625,
+        "radius": "999px",
+        "endPadding": "0px",
+        "arrowWidth": 12,
+        "arrowFont": "18px"
+      },
+      "visual": "Existing managed browser reloaded; Event avatar/member plus Rates score badges visibly round, compact, no glyph clipping/bleeding observed. Pending counter remains visible."
+    }
+  }
 }
