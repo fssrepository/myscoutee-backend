@@ -155,7 +155,7 @@ their own untouched pending ledgers; these figures do not claim campaign complet
 | 5 | Workspace selection and profile loading | PASS | NOT RUN | Saved workspace, failure/timeout/retry/stale response/reload and policy authority; after-workspace-selection; role geometry in 27.3. |
 | 6 | App moderation, group moderation and support | PASS | NOT RUN | 2026-09-27 closure below; after-moderation-checks captured and verified, resume 7. |
 | 7 | Leave, Trash, restore and blocked reapproval | PASS | NOT RUN | 2026-09-27 evidence below; after-membership-trash captured/verified, resume 8. |
-| 8 | External sharing links and admission | NOT RUN | NOT RUN | Execute in order; no partial credit. |
+| 8 | External sharing links and admission | IN PROGRESS | NOT RUN | Scoped sharing fixture active; admission/UI subcases recorded below. No partial closure. |
 | 9 | Chat sharing basket and message changes | NOT RUN | NOT RUN | Execute in order; no partial credit. |
 | 10 | Cash history and affiliate exclusion | NOT RUN | NOT RUN | Execute in order; no partial credit. |
 | 11 | Contacts and the existing chat popup | NOT RUN | NOT RUN | Execute in order; no partial credit. |
@@ -951,3 +951,49 @@ Groups Active open; Eszter retains Seattle Neighbours Members over Groups.
 No closed block was replayed/reset. **HTTP7/48; Lifecycle7/29; next8.**
 
 01:34 follow-up: Pending only now reuses the shared inline label toggle: icon + label + switch, external alert counter. Actual360px DOM:160.2×36px, right352.3px, no overflow; false→true→false filters3→0→3 with Groups retained beneath. Existing watcher build/sync PASS; user reviewed and requested continuation to8. No new block credit.
+
+### 01:52 — Block 8 in progress; entry UI corrections
+
+HTTP remains **7/48 closed**, Lifecycle **7/29**; block 8 remains open.
+`prepare-sharing` retains its scoped baseline; `GROUP-LIFECYCLE-001-ENTRY`
+adds two isolated anonymous entry sessions without replacing the existing actors.
+Alex's Design Circle share URL reached the signed-out entry and New profile UI.
+The fresh UI identity `demo-profile-331d498c-7fb5-4e0a-8626-5785c6060fb8`
+was tracked with `track-sharing-registration` before any registration submission.
+No admission/registration outcome is claimed yet.
+
+User-reported entry defects repaired while preserving this branch:
+
+- Setup help uses API/Affiliate's `question_mark` and the same blue popup
+  header action. Live open/close retained the parent setup and its six help cards.
+- Birthday uses the shared DateInput with an opt-in fixed `____/__/__` typing
+  mask. Digits fill/overwrite slots, `/` separators stay fixed, and the caret can
+  move ahead or back. Browser check: typing `19741004`, replacing the year,
+  backspacing across the month/day separator and replacing the month produced
+  `1980/11/04`; the actual form review showed `1980-11-04` and Scorpio.
+  This is form-state proof, not a persisted profile claim.
+- Removed the setup component's unsolicited PWA-installability → permission
+  popup effect. Explicit settings and existing Firebase login gates still own
+  opening; demo entry no longer opens the permission popup merely because the
+  browser offers installation.
+
+Focused existing date-adapter/control and setup specs: **20/20 PASS**,
+`frontend/.agent/date-mask-vitest.log`; existing frontend watcher build and sync
+PASS at 2026-09-26T23:50:39Z. No separate Angular build was launched.
+The second entry session's unsaved date-mask probe was discarded by reload to
+verify the new entry bundle; no profile was saved there. First entry session's
+tracked registration form remains open.
+
+### 02:18 — Shared SmartList card sizing correction (block 8 remains open)
+
+- User reported full-width Activities cards despite room for two columns.
+  The shared SmartList mobile breakpoint forced a flex column below 760px.
+- Existing container-adaptive, `auto-fill` card layout is now the common
+  default (280px minimum), rather than a Community Groups customization.
+  Explicit single-column and mobile-column configurations remain respected.
+- Existing frontend-sync watcher compiled and deployed successfully.
+  Live HTTP Activities at viewport 596px: available list width 568px,
+  two 281.39px columns; an isolated card under a date heading keeps that width.
+  At 360px: one 332.22px column, no forced two-column overflow.
+- This is a presentation regression check, not closure of sharing/admission.
+  HTTP progress remains 7/48; Lifecycle 7/29, block 8 in progress.

@@ -118,8 +118,10 @@ public final class IntegrationDtos {
     public record IntegrationParticipantInviteRequestDto(List<String> participantIds) { }
     public record IntegrationParticipantInviteDto(String id, String inviteUrl, boolean claimed) { }
     public record IntegrationParticipantInvitesDto(List<IntegrationParticipantInviteDto> items) { }
-    public record IntegrationParticipantClaimDto(String eventId, boolean invitationAvailable, String groupId) {
-        public IntegrationParticipantClaimDto(String eventId, boolean invitationAvailable) { this(eventId, invitationAvailable, null); }
+    public record IntegrationParticipantClaimDto(String eventId, boolean invitationAvailable, String groupId, String workspaceGroupId) {
+        public IntegrationParticipantClaimDto(String eventId, boolean invitationAvailable, String groupId) {
+            this(eventId, invitationAvailable, groupId, null);
+        }
     }
 
     public record IntegrationEventDto(String id, String externalId, String title, String status,

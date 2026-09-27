@@ -7,7 +7,7 @@
   Q.assertDeploymentSafety();
   const command = Q.text(process.env.MANUAL_QA_COMMAND);
   if (!["status", "verify-lists", "prepare-badges", "prepare-join", "restore-badges",
-      "capture", "restore", "verify-savepoint", "prepare-sharing", "track-sharing-registration", "restore-sharing", "prepare-list-pagination", "restore-list-pagination",
+      "capture", "restore", "verify-savepoint", "prepare-sharing", "repair-sharing-identifiers", "reset-sharing-failed-event-claim", "prepare-sharing-attribution", "track-sharing-registration", "sharing-registrants", "restore-sharing", "prepare-list-pagination", "restore-list-pagination",
       "prepare-member-invitation", "restore-member-invitation", "prepare-admin-lifecycle", "prepare-admin-moderation", "prepare-admin-feed-event", "prepare-admin-previews", "prepare-admin-base-chat-read", "prepare-admin-base-chat-message", "prepare-admin-base-feed", "restore-admin-lifecycle",
       "prepare-invitation", "prepare-hidden-invitation", "restore-invitation", "prepare-editor", "restore-editor", "prepare-creation", "restore-creation"].includes(command)
       || Q.text(process.env.MANUAL_QA_CHECKPOINT_ID) !== checkpointId) {
@@ -86,7 +86,7 @@
     ]);
     Q.collection(Q.STATE_COLLECTION).updateOne({_id: state._id}, {$set: {sharingSnapshots: retained, sharingRegistrants: [], sharingPreparedAtIso: Q.nowIso()}});
     const now = Q.nowIso(), start = new Date(Date.now() + 86400000).toISOString(), end = new Date(Date.now() + 90000000).toISOString();
-    Q.collection("events").insertOne({_id: sharingEventId, sourceId: sharingEventId, syncKey: sharingEventId,
+    Q.collection("events").insertOne({_id: ObjectId(sharingEventId), sourceId: sharingEventId, syncKey: sharingEventId,
       ownerUserId: actors[0], creatorUserId: actors[0], creatorName: owner.name, creatorInitials: owner.initials,
       admins: [actors[0]], status: "A", eventType: "main", mode: "Casual", workspaceGroupId: null,
       title: "QA Group Link Event", subtitle: "External sharing prerequisite", visibility: "Public", blindMode: "Open Event",
@@ -99,10 +99,53 @@
     const member = members.find(member => member.userId === actors[0]);
     Q.collection("activityMembers").insertOne({...member, _id: `event:${sharingEventId}:${actors[0]}`, syncKey: `event:${sharingEventId}:${actors[0]}`,
       ownerType: "event", ownerId: sharingEventId, role: "Admin", status: "accepted", communityUpdates: 0, actionAtIso: now, updatedDate: now});
-    Q.collection("assets").insertOne({...asset, _id: sharingAssetId, assetId: sharingAssetId, syncKey: sharingAssetId,
+    Q.collection("assets").insertOne({...asset, _id: ObjectId(sharingAssetId), assetId: sharingAssetId, syncKey: sharingAssetId,
       ownerUserId: actors[0], title: "QA Group Link Supplies", requests: [], createdDate: now, updatedDate: now,
       createdUser: actors[0], updatedUser: actors[0]});
     Q.printObject({checkpointId, prepared: true, sharingGroupId, sharingEventId, sharingAssetId, outcomesSeeded: false});
+    return;
+  }
+  if (command === "reset-sharing-failed-event-claim") {
+    if (!state.sharingSnapshots) Q.fail("Sharing baseline required.");
+    const event = Q.collection("events").findOne({sourceId: sharingEventId});
+    const selector = {ownerType: "event", ownerId: sharingEventId, userId: actors[2]};
+    const member = Q.collection("activityMembers").findOne(selector);
+    if (!event || typeof event._id === "string" || Number(event.pendingMembers) !== 0
+      || (event.pendingMemberUserIds || []).length || !member || member.status !== "pending"
+      || member.requestKind !== "invite" || member.invitedByUserId !== actors[0]) Q.fail("Expected the isolated pre-aggregate failed invitation only.");
+    Q.collection(Q.STATE_COLLECTION).updateOne({_id: state._id}, {$set: {sharingFailedClaimEvidence: member}});
+    Q.collection("activityMembers").deleteOne({_id: member._id});
+    Q.printObject({checkpointId, failedFixtureAttemptCleared: true, eventId: sharingEventId, userId: actors[2]});
+    return;
+  }
+  if (command === "repair-sharing-identifiers") {
+    if (!state.sharingSnapshots) Q.fail("Sharing baseline required.");
+    for (const [collection, id, key] of [["events", sharingEventId, "sourceId"], ["assets", sharingAssetId, "assetId"]]) {
+      const rows = Q.collection(collection).find({[key]: id}).toArray();
+      if (rows.length !== 1) Q.fail("Expected exactly one isolated sharing prerequisite.");
+      const row = rows[0];
+      if (typeof row._id === "string") {
+        if (row._id !== id || Q.collection(collection).findOne({_id: ObjectId(id)})) Q.fail("Unexpected sharing identifier boundary.");
+        Q.collection(collection).deleteOne({_id: id});
+        try { Q.collection(collection).insertOne({...row, _id: ObjectId(id)}); }
+        catch (error) { Q.collection(collection).insertOne(row); throw error; }
+      }
+    }
+    Q.printObject({checkpointId, identifiersRepaired: true, membershipStateRetained: true});
+    return;
+  }
+  if (command === "prepare-sharing-attribution") {
+    if (!state.sharingSnapshots || state.sharingExistingAttributionPrepared) Q.fail("Sharing baseline required; attribution control already prepared or unavailable.");
+    const selector = {_id: actors[2]};
+    const retained = Q.snapshotSpecs([{collection: "affiliateRegistrations", selector}]);
+    Q.collection(Q.STATE_COLLECTION).updateOne({_id: state._id}, {$push: {sharingSnapshots: {$each: retained}}, $set: {sharingExistingAttributionPrepared: true}});
+    // Historical attribution is a prerequisite, not the result of opening the
+    // new link. Preserve a real existing record when one is already present.
+    Q.collection("affiliateRegistrations").updateOne(selector, {$setOnInsert: {
+      referrerUserId: actors[1], code: "qa-group-existing-attribution",
+      registeredAtIso: "2026-09-01T12:00:00Z"
+    }}, {upsert: true});
+    Q.printObject({checkpointId, existingUserId: actors[2], attribution: Q.collection("affiliateRegistrations").findOne(selector), membershipChanged: false});
     return;
   }
   if (command === "track-sharing-registration") {
@@ -115,10 +158,17 @@
     Q.printObject({checkpointId, tracked: userId, registrationCreated: false});
     return;
   }
+  if (command === "sharing-registrants") {
+    if (!state.sharingSnapshots) Q.fail("No sharing snapshot to restore.");
+    const users = state.sharingRegistrants || [];
+    if (users.some(id => !/^demo-profile-[a-f0-9-]{36}$/.test(id))) Q.fail("Invalid tracked registration identity.");
+    Q.printObject({users});
+    return;
+  }
   if (command === "restore-sharing") {
     if (!state.sharingSnapshots) Q.fail("No sharing snapshot to restore.");
     Q.restoreSnapshots(state.sharingSnapshots);
-    Q.collection(Q.STATE_COLLECTION).updateOne({_id: state._id}, {$unset: {sharingSnapshots: "", sharingRegistrants: "", sharingPreparedAtIso: ""}});
+    Q.collection(Q.STATE_COLLECTION).updateOne({_id: state._id}, {$unset: {sharingSnapshots: "", sharingRegistrants: "", sharingPreparedAtIso: "", sharingExistingAttributionPrepared: "", sharingFailedClaimEvidence: ""}});
     Q.printObject({checkpointId, sharingRestored: true});
     return;
   }

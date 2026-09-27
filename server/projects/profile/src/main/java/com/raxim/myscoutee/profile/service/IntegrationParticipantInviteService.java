@@ -154,7 +154,7 @@ public class IntegrationParticipantInviteService {
                     throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Event participation is unavailable.");
             }
         }
-        return new IntegrationParticipantClaimDto(invite.eventId(), invitationAvailable);
+        return new IntegrationParticipantClaimDto(invite.eventId(), invitationAvailable, null, event.getWorkspaceGroupId());
     }
 
     public record ExternalInviteLinkDto(String url) { }

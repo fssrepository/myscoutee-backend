@@ -306,6 +306,11 @@ has no inherited PASS from the earlier Event/Asset/Chat checkpoints.
    accepted/pending/payment/approval state; flag a missing automatic attachment
    to the event. Existing capacity, payment and approval requirements still
    apply; do not mark the check PASS merely because registration succeeded.
+4. For an event belonging to a group, the external invitation also establishes
+   group membership and one group profile, then selects that workspace so the
+   event is accessible. Replaying the link must not duplicate either membership
+   or profile. A Main-profile event must not create group membership. Preserve
+   the removed/blocked-member approval rule from block 7.
 
 ## 9. Chat sharing basket and message changes
 

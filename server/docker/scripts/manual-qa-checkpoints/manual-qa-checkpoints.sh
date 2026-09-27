@@ -963,11 +963,24 @@ PY
       fi
     fi
     ;;
+  community-group:restore-sharing)
+    [ "$#" -eq 3 ] || { usage >&2; exit 2; }
+    sharing_registrants="$(run_scenario "sharing-registrants" "${scenario}" 30 "$3")"
+    sharing_media_owners="$(python3 -c 'import json,sys; print("\n".join(json.load(sys.stdin)["users"]))' <<<"${sharing_registrants}")"
+    while IFS= read -r sharing_media_owner; do
+      [ -n "${sharing_media_owner}" ] || continue
+      [[ "${sharing_media_owner}" =~ ^demo-profile-[a-f0-9-]{36}$ ]] || fail "Invalid tracked media owner."
+      # Same exact-owner media cleanup as the Affiliate registration fixture.
+      # Keep the database snapshot if media cleanup fails, so retry is safe.
+      docker exec minio sh -c 'export MC_HOST_qa="http://${MINIO_ROOT_USER}:${MINIO_ROOT_PASSWORD}@localhost:9000"; mc rm --recursive --force "qa/myscoutee-media/public/demo/images/$1/"' group-sharing-media-reset "${sharing_media_owner}" >/dev/null
+    done <<<"${sharing_media_owners}"
+    run_scenario "${command}" "${scenario}" 30 "$3"
+    ;;
   community-group:capture|community-group:restore|community-group:verify-savepoint|community-group:track-sharing-registration)
     [ "$#" -eq 4 ] || { usage >&2; exit 2; }
     run_scenario "${command}" "${scenario}" 30 "$3" "$4"
     ;;
-  community-group:prepare-sharing|community-group:restore-sharing|community-group:prepare-admin-lifecycle|community-group:prepare-admin-moderation|community-group:prepare-admin-feed-event|community-group:prepare-admin-previews|community-group:prepare-admin-base-chat-read|community-group:prepare-admin-base-chat-message|community-group:prepare-admin-base-feed|community-group:restore-admin-lifecycle|community-group:prepare-member-invitation|community-group:restore-member-invitation|community-group:status|community-group:verify-lists|community-group:prepare-badges|community-group:prepare-join|community-group:restore-badges|community-group:prepare-list-pagination|community-group:restore-list-pagination|community-group:prepare-invitation|community-group:prepare-hidden-invitation|community-group:restore-invitation|community-group:prepare-editor|community-group:restore-editor|community-group:prepare-creation|community-group:restore-creation)
+  community-group:reset-sharing-failed-event-claim|community-group:repair-sharing-identifiers|community-group:sharing-registrants|community-group:prepare-sharing-attribution|community-group:prepare-sharing|community-group:prepare-admin-lifecycle|community-group:prepare-admin-moderation|community-group:prepare-admin-feed-event|community-group:prepare-admin-previews|community-group:prepare-admin-base-chat-read|community-group:prepare-admin-base-chat-message|community-group:prepare-admin-base-feed|community-group:restore-admin-lifecycle|community-group:prepare-member-invitation|community-group:restore-member-invitation|community-group:status|community-group:verify-lists|community-group:prepare-badges|community-group:prepare-join|community-group:restore-badges|community-group:prepare-list-pagination|community-group:restore-list-pagination|community-group:prepare-invitation|community-group:prepare-hidden-invitation|community-group:restore-invitation|community-group:prepare-editor|community-group:restore-editor|community-group:prepare-creation|community-group:restore-creation)
     [ "$#" -eq 3 ] || { usage >&2; exit 2; }
     run_scenario "${command}" "${scenario}" 30 "$3"
     ;;
