@@ -964,7 +964,7 @@ PY
       fi
     fi
     ;;
-  group-isolation:stage|group-isolation:status|group-isolation:reset|group-isolation:prepare-invite-control|group-isolation:prepare-home-controls)
+  group-isolation:stage|group-isolation:status|group-isolation:reset|group-isolation:prepare-invite-control|group-isolation:prepare-home-controls|group-isolation:prepare-notification-controls)
     [ "$#" -eq 3 ] || { usage >&2; exit 2; }
     run_scenario "${command}" "${scenario}" 30 "$3"
     ;;

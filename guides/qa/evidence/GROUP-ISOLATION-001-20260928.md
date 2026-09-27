@@ -117,3 +117,69 @@ reported the visible switch missing. Set checked + showToggleIndicator on the
 existing AppMenu toggle (same as Members/Pending); verification pending.
 Additional updated member-denial regression test PASS (11 targeted Java tests
 in total for block2).
+
+### Block 3 corrections and partial evidence, 00:44–01:02
+
+Social switch browser PASS: one header control before X, visible switch on desktop
+and 360px, both sections synchronized, Social-on aggregate constant off/on.
+Initial distinct totals Base1/A2/B3; no semantic change to friends-in-common or
+separated-friends. Frontend watcher PASS22:44:54Z.
+
+Home/filters provisional checks: A rated Nia/Lea through Go; real sync200.
+Base/B rate documents unchanged. Filters saved Base woman, A empty, B man; A
+empty survived profile Profession edit (profile save200), switch and reload.
+The first clear attempt clicked the menu trigger rather than the Woman option;
+this was harness selection error, not a product defect.
+
+Further fixture repairs: Users 24-hex IDs must also be BSON ObjectIds; profile
+save failed with duplicate users_sync_key until corrected. Photo Feed requires
+UUID post IDs; the first controls incorrectly used 24-hex IDs, causing seen400.
+Failure snapshots retained; restored exact after-block2, corrected versioned
+fixture IDs, added a distinct peer-organized A Event for the Following control,
+and relaunched clean managed sessions. Current baseline before-block3-valid-feed.
+These fixture repairs are not application behavior changes. Block3 remains open.
+
+Reported header ring defect repaired: circular indicator stroke no longer scales
+with avatar size; ring remains square and excludes badge overhang. Edit/badge
+render above the indicator, edit sits at avatar top-right. Browser measured
+96×96 avatar,108×108 ring,3px non-scaling stroke;16px icon centered in30px button.
+Watcher PASS22:54:51Z. Feed uses existing mediaFit contain and ProfileStore avatar
+action, giving shared monogram chevron without custom styles; watcher PASS22:58:51Z,
+browser verification pending after fixture replay.
+
+## Block 3 HTTP PASS
+
+Corrected fixture replay: A Home rated Nia13 and Lea14, real sync200; Base/B
+rate documents, exclusions, impressions and nonzero counters unchanged.
+Filters Base woman/A empty/B man persisted; A clear remains after workspace
+switch, reload and ordinary Profession edit/save200. Feed showed only the own
+control in each workspace; persisted view receipts exactly A301/B302/Base303.
+A followed Eszter via Feed card action/confirmation; persisted organizer12 and
+eventCount1, immediate and reopened Unfollow. Base/B Following unchanged.
+Social desktop/mobile and Base1/A2/B3 evidence retained from this block's
+identical Social controls; both sections retain their established meaning.
+
+Feed UI corrections browser PASS: shared monogram chevron opens the creator
+profile, contain image leaves the face visible,3.2km belongs to0km using shared
+AppUtils label. Watcher PASS23:06:09Z. Profile unavailable was a real routing
+defect: shared profile-view route wrongly bypassed workspace resolution along
+with account contacts. Corrected only profile GET routing;10 focused filter
+JUnit tests PASS including unchanged account contacts and forged-group denial.
+Backend watcher restarted01:04:20; actual Base/A creator profiles now render.
+No unauthorized-profile UI scenario added. Own after-block3 captured.
+Evidence: GROUP-ISOLATION-001-block3-20260928.json. Full Local browser NOT RUN.
+
+## Block 4 HTTP PASS
+
+Held real A POST events/filter poll at CDP Response stage. Closed Activities and
+selected B through ordinary UI; client cancellation invalidated the intercepted
+request before release (Invalid InterceptionId). B stayed selected, A card did
+not appear, B Event list remained empty; A reopen retained its Event. This proves
+the cancellation branch, not delivery of a fabricated late response.
+
+Versioned same-name B target prepared alongside A, own checkpoint captured.
+While B selected, opened A Eszter notification through Open Event. Workspace
+selected A, exact A Event capacity2 and Alex/Eszter Members opened. Actual
+GET members ownerId=h1790547269571 returned200; same-name B target was not used.
+Independent before/after oracle: events3/members11/chats2/messages2 unchanged.
+Own after-block4 captured. Evidence GROUP-ISOLATION-001-block4-20260928.json.

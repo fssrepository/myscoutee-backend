@@ -55,12 +55,12 @@ for adding signed local packages and simulating interrupted downloads.
 ## QA status
 
 Group lifecycle QA is **CLOSED for the agreed HTTP scope**: **29/29** blocks
-closed (26 full-block closures plus 3 scope-transfer closures), **31/45** across
+closed (26 full-block closures plus 3 scope-transfer closures), **33/45** across
 the three Group journeys. External/configured/device acceptance belongs to the
 independent [deployment QA](guides/qa/checklists/deployment/DEPLOY-EXTERNAL-CONFIG-001.md)
 and has no pending dependency back to Group Lifecycle. Full Local remains NOT RUN.
 **Active: [Group Isolation](guides/qa/checklists/group/GROUP-ISOLATION-001.md),
-automated full-flow execution authorized; HTTP 2/9 blocks PASS, block 3 next.**
+automated full-flow execution authorized; HTTP 4/9 blocks PASS, block 5 active.**
 [Group lifecycle](guides/qa/checklists/group/GROUP-LIFECYCLE-001.md) and
 [participant-link API](guides/qa/checklists/integration/INTEGRATION-API-GROUP-001.md)
 retain their separate evidence and scope.

@@ -8,6 +8,7 @@
   Q.assertDeploymentSafety();
   if (Q.text(process.env.MANUAL_QA_CHECKPOINT_ID) !== checkpointId) Q.fail('Wrong Isolation checkpoint.');
   const id = n => `f0280926${String(n).padStart(16, '0')}`;
+  const postId = n => `f0280926-0000-4000-8000-${String(n).padStart(12, '0')}`;
   const actors = [1, 2, 3, 4].map(id);
   const profiles = [11, 12, 21, 22].map(id);
   const controlUserIds = [5, 6, 13, 14, 24].map(id);
@@ -61,7 +62,7 @@
       'profileDetails','profileStatus','completion','profileFormVersion','locationCoordinates','partitionKey','_class'];
     function profile(source, userId, name, accountUserId, groupId) {
       const personal = Object.fromEntries(fields.filter(k=>source[k]!==undefined).map(k=>[k,source[k]]));
-      return {...personal,_id:userId,userId,syncKey:userId,name,initials:name.split(' ').map(x=>x[0]).join(''),
+      return {...personal,_id:ObjectId(userId),userId,syncKey:userId,name,initials:name.split(' ').map(x=>x[0]).join(''),
         email:`${userId}@qa.myscoutee.test`,headline:'',about:'',statusText:'',operator:false,
         activities:{game:0,chats:0,invitations:0,events:0,hosting:0},
         ...(accountUserId ? {accountUserId,workspaceGroupId:groupId} : {})};
@@ -98,6 +99,29 @@
     verify(staged);status();return;
   }
   const state=Q.activeState(scenario,true);
+  if (command === 'prepare-notification-controls') {
+    const source=Q.collection('events').findOne({workspaceGroupId:groups[0],ownerUserId:id(11)});
+    const notification=Q.collection('userNotifications').findOne({recipientUserId:id(1),kind:'event-invitation-accepted',sourceId:source?.sourceId});
+    if (!source || !notification) Q.fail('Own A Event and accepted-invitation notification required.');
+    const target='qa-isolation-same-name-b';
+    if (Q.collection('events').countDocuments({sourceId:target})) Q.fail('Notification controls already prepared.');
+    Q.collection('events').insertOne({...source,_id:ObjectId(id(402)),syncKey:target,sourceId:target,
+      workspaceGroupId:groups[1],ownerUserId:id(21),creatorUserId:id(21),admins:[id(21)],
+      acceptedMembers:1,acceptedMemberUserIds:[id(21)],createdUser:id(21),updatedUser:id(21)});
+    const member=Q.collection('activityMembers').findOne({ownerType:'event',ownerId:source.sourceId,userId:id(11)});
+    const memberId=`event:${target}:${id(21)}`;
+    Q.collection('activityMembers').insertOne({...member,_id:memberId,syncKey:memberId,ownerId:target,userId:id(21)});
+    const now=Q.nowIso(),notificationId=id(502);
+    Q.collection('userNotifications').insertOne({...notification,_id:ObjectId(notificationId),syncKey:notificationId,
+      outboxId:null,sourceId:target,senderUserId:id(22),actionPath:`/game?workspaceGroupId=${groups[1]}`,
+      payload:{...notification.payload,eventId:target,entityId:target,workspaceGroupId:groups[1],
+        workspaceGroupName:'QA Isolation B',memberUserId:id(22),memberName:'Isolation Milo',
+        url:`/game?workspaceGroupId=${groups[1]}`,tag:`event-invitation-accepted-${target}`},
+      readAtIso:null,createdDate:now,updatedDate:now,revision:1});
+    Q.collection('users').updateOne({userId:id(1)},{$inc:{'activities.notifications':1}});
+    Q.collection('users').updateOne({userId:id(21)},{$inc:{'activities.hosting':1,'activities.event.hosting':1,'activities.event.all':1}});
+    Q.printObject({checkpointId,prepared:'same-name-notification-targets',a:source.sourceId,b:target,title:source.title});return;
+  }
   if (command === 'reset') {
     // Delete only owned current rows (including IDs created since the snapshot),
     // then restore the exact pre-stage documents.
@@ -109,7 +133,7 @@
   if (command === 'prepare-invite-control') {
     const rateId = ObjectId(id(101));
     if (Q.collection('userRates').countDocuments({_id:rateId})) Q.fail('Invite control already prepared.');
-    Q.collection('userRates').insertOne({_id:rateId,syncKey:rateId,mode:'single',ownerUserId:id(11),relatedUserId:id(12),
+    Q.collection('userRates').insertOne({_id:rateId,syncKey:id(101),mode:'single',ownerUserId:id(11),relatedUserId:id(12),
       scoreGiven:8,scoreReceived:8,met:true,mutuallyRated:true,eventName:'QA Isolation prior meeting',
       affinityScore:0.8,ownerLocation:Q.ensureUser(id(11)).locationCoordinates,
       createdDate:Q.nowIso(),createdUser:id(11),updatedDate:Q.nowIso(),updatedUser:id(11)});
@@ -117,6 +141,12 @@
   }
   if (command === 'prepare-home-controls') {
     if (Q.collection('users').countDocuments({userId:{$in:controlUserIds}})) Q.fail('Home controls already staged.');
+    // Retained checkpoints predate the fixture ID fix. Users uses the same
+    // Spring @Id conversion as UserRate; keep canonical identity fields strings.
+    for (const user of Q.collection('users').find({userId:{$in:userIds},_id:{$type:'string'}}).toArray()) {
+      Q.collection('users').deleteOne({_id:user._id});
+      Q.collection('users').insertOne({...user,_id:ObjectId(user.userId)});
+    }
     // Match UserRate's Mongo @Id mapping: 24-hex IDs are BSON ObjectIds.
     const legacyInvite=Q.collection('userRates').findOne({_id:id(101)});
     if (legacyInvite) {
@@ -129,7 +159,7 @@
       profile(source,id(14),'Isolation Lea',id(6),groups[0]),
       profile(source,id(24),'Isolation Lea',id(6),groups[1])];
     Q.collection('users').insertMany(records);
-    Q.collection('users').updateOne({userId:id(11)},{$set:{profileStatus:'public'}});
+    Q.collection('users').updateMany({userId:{$in:[id(1),id(11),id(21)]}},{$set:{profileStatus:'public'}});
     const now=Q.nowIso();
     Q.collection('activityMembers').insertMany([[5,0],[6,0],[6,1]].map(([actor,g])=>({
       _id:`community:${groups[g]}:${id(actor)}`,syncKey:`community:${groups[g]}:${id(actor)}`,
@@ -146,10 +176,25 @@
       rate(201,11,14,null,'friends-in-common',7,0),rate(202,11,12,14,'separated-friends',6,0),
       rate(203,1,3,null,'friends-in-common',5,0),rate(204,21,22,null,'friends-in-common',9,0),
       rate(205,21,22,24,'separated-friends',8,0),rate(206,21,24,null,'friends-in-common',0,6)]);
+    const eventTemplate=Q.collection('events').findOne({workspaceGroupId:groups[0],ownerUserId:id(11)});
+    if (!eventTemplate) Q.fail('Own completed Event baseline missing.');
+    const followEventId='qa-isolation-follow-a';
+    Q.collection('events').insertOne({...eventTemplate,_id:ObjectId(id(401)),syncKey:followEventId,sourceId:followEventId,
+      ownerUserId:id(12),creatorUserId:id(12),creatorName:source.name,creatorInitials:source.initials,
+      creatorGender:source.gender,admins:[id(12)],title:'QA Isolation Following A',visibility:'Public',
+      acceptedMembers:1,acceptedMemberUserIds:[id(12)],createdUser:id(12),updatedUser:id(12)});
+    const memberTemplate=Q.collection('activityMembers').findOne({ownerType:'event',ownerId:eventTemplate.sourceId,userId:id(11)});
+    if (!memberTemplate) Q.fail('Own completed Event creator membership missing.');
+    const memberId=`event:${followEventId}:${id(12)}`;
+    Q.collection('activityMembers').insertOne({...memberTemplate,_id:memberId,syncKey:memberId,
+      ownerId:followEventId,userId:id(12),createdUser:id(12),updatedUser:id(12)});
+    Q.collection('users').updateOne({userId:id(12)},{$inc:{'activities.hosting':1,'activities.event.hosting':1,'activities.event.all':1}});
     Q.collection('photoFeedPosts').insertMany([[301,12,groups[0]],[302,22,groups[1]],[303,3,null]].map(([n,creator,group])=>{
       const u=Q.ensureUser(id(creator)),url=u.images[0];
-      return {_id:id(n),creatorUserId:u.userId,creatorName:u.name,creatorAvatarUrl:url,
-        createdAtIso:now,imageUrls:[url],imageDetails:{},locationGeo:{type:'Point',coordinates:[u.locationCoordinates.longitude,u.locationCoordinates.latitude]},
+      return {_id:postId(n),creatorUserId:u.userId,creatorName:u.name,creatorAvatarUrl:url,
+        createdAtIso:now,imageUrls:[url],imageDetails:n===301?{[url]:{caption:'',location:'',event:{
+          id:followEventId,title:'QA Isolation Following A',organizerId:id(12),organizerName:u.name,location:''}}}:{},
+        locationGeo:{type:'Point',coordinates:[u.locationCoordinates.longitude,u.locationCoordinates.latitude]},
         moderationStatus:'accepted',workspaceGroupId:group};
     }));
     Q.printObject({checkpointId,prepared:'home-social-feed',homeCandidate:id(13),socialTotals:{base:1,a:2,b:3}});return;

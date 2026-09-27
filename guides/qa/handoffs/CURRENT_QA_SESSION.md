@@ -88,12 +88,12 @@ Earlier Event Mode, Integration API, Activity Rating and EVENT-FOLLOWING-001 rem
 ```yaml
 checkpoint: GROUP-ISOLATION-001
 checklist: ../checklists/group/GROUP-ISOLATION-001.md
-substage: ACTIVE / PREPARATION. User explicitly requested full-flow automated Isolation on 2026-09-28. Nine unique blocks after duplicate audit; blocks1–2 HTTP PASS, 2/9.
+substage: ACTIVE / PREPARATION. User explicitly requested full-flow automated Isolation on 2026-09-28. Nine unique blocks after duplicate audit; blocks1–4 HTTP PASS, 4/9.
 fixture_phase: group-isolation baseline-ready; own8profiles/2groups/4memberships verified. Two managed actors Alex/Eszter ready.
 execution_log: ../evidence/GROUP-ISOLATION-001-20260928.md
 execution_authority: Full-flow automated browser and HTTP actions explicitly delegated; questions/corrections do not pause the campaign.
-next_action: Block3 active: Social toggle/count first, then Home rating/filter/Feed/Following. Own before-block3-replay restaged after fixing BSON UserRate fixture IDs. Own A Event h1790547269571 with profiles11/12 accepted retained; private API authority repaired and32 negative requests verified. Avatar/map/Pending UI corrections done.
-savepoint: group-isolation before-block3-replay (own controls staged). Fresh managed Alex/Eszter windows; outsider closed. after-block2 retained.
+next_action: Block5 preparation: distinct A/B moderation queues/settings and late queue/preview reply. Block4 HTTP PASS with actual request cancellation and exact notification target.
+savepoint: group-isolation after-block4. Managed Alex/Eszter windows retained; outsider closed.
 queue: Isolation active. Integration API Group and deployment checks separate. Full Local browser NOT RUN.
 resume_gate: Read-only check own fixture state and actual runtime before any mutation/relaunch. Retained old Lifecycle CDP41085 was unreachable at00:04.
 runtime: Existing frontend-sync/backend own builds; no separate compilation/server. Two Isolation windows launched through versioned launcher.
