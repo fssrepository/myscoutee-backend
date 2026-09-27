@@ -88,15 +88,15 @@ Earlier Event Mode, Integration API, Activity Rating and EVENT-FOLLOWING-001 rem
 ```yaml
 checkpoint: GROUP-ISOLATION-001
 checklist: ../checklists/group/GROUP-ISOLATION-001.md
-substage: ACTIVE / PREPARATION. User explicitly requested full-flow automated Isolation on 2026-09-28. Nine unique blocks after duplicate audit; 0/9 executed.
-fixture_phase: Not staged. Preparing independent group-isolation namespace; preserve retained unrelated fixtures.
+substage: ACTIVE / PREPARATION. User explicitly requested full-flow automated Isolation on 2026-09-28. Nine unique blocks after duplicate audit; block1 HTTP PASS, 1/9.
+fixture_phase: group-isolation baseline-ready; own8profiles/2groups/4memberships verified. Two managed actors Alex/Eszter ready.
 execution_log: ../evidence/GROUP-ISOLATION-001-20260928.md
 execution_authority: Full-flow automated browser and HTTP actions explicitly delegated; questions/corrections do not pause the campaign.
-next_action: Verify own versioned Isolation baseline, launch only needed managed actors, start block1. Verify reported SingleCard monogram pill visually when available.
-savepoint: None for Isolation yet. Never substitute another testcase's savepoint.
+next_action: Block2 private Event/chat real HTTP denials. Own A Event h1790547269571 with profiles11/12 accepted. Block3 also verifies shared Social header toggle/count. Incidental badge/Explore label fixes compiled; visually inspect on next relevant surface.
+savepoint: group-isolation after-block1 captured2026-09-27T22:22Z; baseline and before-block1 immutable.
 queue: Isolation active. Integration API Group and deployment checks separate. Full Local browser NOT RUN.
 resume_gate: Read-only check own fixture state and actual runtime before any mutation/relaunch. Retained old Lifecycle CDP41085 was unreachable at00:04.
-runtime: Existing frontend-sync/backend own builds; no separate compilation/server. No Isolation windows launched yet.
+runtime: Existing frontend-sync/backend own builds; no separate compilation/server. Two Isolation windows launched through versioned launcher.
 mutation_contract: Application-wide, await persistence inside the busy confirmation dialog. Only after success apply canonical returned state through the existing stores to retained lists/cards/badges; failure retains the dialog/error and does not fake success. Keep underlying popups open. No reload to obtain a mutation result; the user identifies only the existing subevents flow as an exception.
 last_completed: GROUP-LIFECYCLE-001 CLOSED by user2026-09-27; accepted round compact-chevron badges. HTTP29/29 scope-adjusted closures; Group29/48. See scope-closure JSON.
 ```

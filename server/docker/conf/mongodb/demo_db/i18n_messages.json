@@ -48214,5 +48214,29 @@
     "key": "payment.cash.refund.approve.message",
     "lang": "hu",
     "value": "Megerősíted, hogy ezt az összeget készpénzben visszaadtad a fizetőnek?"
+  },
+  {
+    "_id": "i18n-message-en-events-explore",
+    "key": "events.explore",
+    "lang": "en",
+    "value": "Explore Events"
+  },
+  {
+    "_id": "i18n-message-en-assets-explore",
+    "key": "assets.explore",
+    "lang": "en",
+    "value": "Explore Assets"
+  },
+  {
+    "_id": "i18n-message-hu-events-explore",
+    "key": "events.explore",
+    "lang": "hu",
+    "value": "Események felfedezése"
+  },
+  {
+    "_id": "i18n-message-hu-assets-explore",
+    "key": "assets.explore",
+    "lang": "hu",
+    "value": "Eszközök felfedezése"
   }
 ]

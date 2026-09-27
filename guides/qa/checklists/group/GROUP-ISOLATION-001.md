@@ -34,6 +34,14 @@ projection is not authority for private reads or writes.
   impressions and counters in A, Base and B; no cross-profile relationship.
 - Save distinct filters in Base/A/B, explicitly clearing gender in one. Switch,
   reload and edit the profile: each filter remains scoped, including the clear.
+- Open the Rates filter menu on desktop and narrow mobile. Before the close X,
+  show exactly one icon + Social + switch control, applying to both Preferences
+  and Suggestions. Neither section has its former Social on/off mini-button.
+  The red badge is the sum of both sections' Social-on filter counts, even
+  while Social is off. Toggle both ways: both sections switch together, while
+  that badge keeps the same Social-on total. Reopen/select the other section
+  and verify the shared state. Switch Base/A/B: the total comes from the
+  selected profile, with no stale previous-profile count.
 - Inspect the Feed controls and perform one Following action in A. Compare
   content, relationships and counters with Base/B and reopen A.
 

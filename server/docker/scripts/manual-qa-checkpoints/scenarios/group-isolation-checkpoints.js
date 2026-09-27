@@ -16,13 +16,13 @@
   // constrained to these owners and their resources; global configuration is read only.
   function specs() {
     const own = { $in: userIds };
-    const eventIds = Q.collection('activityEvents').distinct('sourceId', { $or: [
+    const eventIds = Q.collection('events').distinct('sourceId', { $or: [
       {ownerUserId: own}, {creatorUserId: own}, {organizerUserId: own}, {workspaceGroupId: {$in: groups}}
     ]}).filter(Boolean);
     const chatIds = Q.collection('chats').distinct('id', {$or: [{ownerUserId: own}, {memberIds: own}]}).filter(Boolean);
     const identityKeys = ['userId', 'accountUserId', 'ownerUserId', 'creatorUserId', 'organizerUserId',
       'requesterUserId', 'recipientUserId', 'senderUserId', 'targetUserId', 'fromUserId', 'toUserId',
-      'raterUserId', 'ratedUserId', 'memberIds', 'participantIds'];
+      'raterUserId', 'ratedUserId', 'relatedUserId', 'leftUserId', 'rightUserId', 'memberIds', 'participantIds'];
     const references = [...groups, ...eventIds, ...chatIds];
     const selector = {$or: [
       ...identityKeys.map(key => ({[key]: own})),
@@ -32,7 +32,11 @@
     const collections = ['users', 'communityGroups', 'activityMembers', 'activityEvents', 'chats', 'chatMessages',
       'userRates', 'userFilterPreferences', 'userPageFilterPreferences', 'photoFeedPosts', 'photoFeedViews',
       'userNotifications', 'notificationOutbox', 'userContacts', 'contactChatAccess', 'userSessionStates',
-      'userSessionActions', 'contentModerationItems', 'contentModerationState'];
+      'userSessionActions', 'contentModerationItems', 'contentModerationState', 'privacyConsents',
+      'userLoginAudits', 'navigatorContacts', 'userFriendships', 'userAffinityEdges', 'userExperienceProfiles',
+      'events', 'eventTickets', 'eventWatchSubscriptions', 'groupAttention', 'groupInvitations',
+      'groupMemberships', 'accessGrants', 'activityEventRuntimeItems', 'activitySubEventGroups',
+      'activitySubEventStageRuntime', 'activityResources', 'affinityRecomputeTasks'];
     return collections.map(collection => ({collection, selector}));
   }
   function current() { return Q.snapshotSpecs(specs()); }
@@ -100,6 +104,15 @@
     Q.restoreSnapshots(state.snapshots);verify(state.snapshots);
     Q.collection(Q.STATE_COLLECTION).deleteOne({_id:state._id});
     Q.printObject({checkpointId,phase:'reset-complete',exactRestore:true});return;
+  }
+  if (command === 'prepare-invite-control') {
+    const rateId = id(101);
+    if (Q.collection('userRates').countDocuments({_id:rateId})) Q.fail('Invite control already prepared.');
+    Q.collection('userRates').insertOne({_id:rateId,syncKey:rateId,mode:'single',ownerUserId:id(11),relatedUserId:id(12),
+      scoreGiven:8,scoreReceived:8,met:true,mutuallyRated:true,eventName:'QA Isolation prior meeting',
+      affinityScore:0.8,ownerLocation:Q.ensureUser(id(11)).locationCoordinates,
+      createdDate:Q.nowIso(),createdUser:id(11),updatedDate:Q.nowIso(),updatedUser:id(11)});
+    Q.printObject({checkpointId,inviteControl:rateId,owner:id(11),peer:id(12)});return;
   }
   const name=Q.text(process.env.MANUAL_QA_SOURCE_CHECKPOINT_ID);
   if (!/^[a-z0-9-]+$/.test(name)) Q.fail('Use a named Isolation savepoint.');

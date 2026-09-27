@@ -39,3 +39,31 @@ the light monogram style, retaining their existing noninteractive behavior.
 No rating/star added. Existing frontend-sync build PASS at
 2026-09-27T22:04:30.060Z. Old managed CDP port41085 no longer reachable;
 no visual PASS claimed and no unrelated window opened.
+
+## Rates menu correction queued for block 3
+
+User requests one shared Social toggle before the close X, controlling both
+Preferences and Suggestions, with a red aggregated Social-on count in either
+switch position. Removed section-level controls. Reused the Menu action-row
+button template in the heading through `AppMenuModel.headerActions`; existing
+store setter updates both scopes together. Added the explicit desktop/mobile,
+aggregation, shared state and workspace-switch checks to Isolation block 3.
+Watcher's initial compilation PASS 2026-09-27T22:11:43.538Z; browser proof pending.
+
+## Block 1 in progress
+
+Independent baseline and launcher PASS, two actors only. UI-created private A
+Event `h1790547269571`, owner profile11. Added own prior-met rate control101
+through versioned prepare-invite-control (initial picker empty because fixture
+had no eligible relationship; no product defect). Invited peer12, published,
+peer accepted through confirmation; capacity2/5, two persisted accepted members.
+Peer sent “Isolation A: accepted participant chat check.”; owner received/read
+it through normal chat. B All/My Events/Invitations/Chats are empty.
+Base comparisons and A reopen still pending. Browser action records:
+`GROUP-ISOLATION-001-browser-20260928.json`.
+
+Additional user corrections: Explore Events/Explore Assets labels through
+central EN/HU bundles and all three Mongo seeds, i18n seed audit PASS. Map
+badge uses the existing light warm background with orange icon on Asset and
+Event/resource cards (user corrected white to orange). Watcher verification
+and visible checks pending for that final palette change.
