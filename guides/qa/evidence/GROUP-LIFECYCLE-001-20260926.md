@@ -141,8 +141,8 @@ This table supersedes the original all-NOT-RUN table and old “partial blocks 2
 summaries below. Historical observations remain unchanged. Structural relocation
 is not execution evidence: the moved checks remain required in blocks 27–29.
 
-**HTTP: 8/29 closed; current 9. Local: 0/29 closed, queued as its own run.**
-Full Lifecycle execution: **8/58 closed adapter-blocks**. This is coverage count,
+**HTTP: 9/29 closed; current 10. Local: 0/29 closed, queued as its own run.**
+Full Lifecycle execution: **9/58 closed adapter-blocks**. This is coverage count,
 not an estimate of elapsed or remaining effort. Isolation and Integration retain
 their own untouched pending ledgers; these figures do not claim campaign completion.
 
@@ -156,8 +156,8 @@ their own untouched pending ledgers; these figures do not claim campaign complet
 | 6 | App moderation, group moderation and support | PASS | NOT RUN | 2026-09-27 closure below; after-moderation-checks captured and verified, resume 7. |
 | 7 | Leave, Trash, restore and blocked reapproval | PASS | NOT RUN | 2026-09-27 evidence below; after-membership-trash captured/verified, resume 8. |
 | 8 | External sharing links and admission | PASS | NOT RUN | Fresh native-browser registration and existing-user admission/replay; blocked restoration guards; UI sharing parity; exact versioned cleanup and prior savepoint verification PASS. |
-| 9 | Chat sharing basket and message changes | IN PROGRESS | NOT RUN | Current block; prepare only its actors and retained chat baseline. |
-| 10 | Cash history and affiliate exclusion | NOT RUN | NOT RUN | Execute in order; no partial credit. |
+| 9 | Chat sharing basket and message changes | PASS | NOT RUN | Event/Asset basket, mixed deltas, retry, persisted off-page shares, chat/workspace/account late responses and 360px UI; logout race repaired; exact 13-scope cleanup and after-chat-sharing boundary. |
+| 10 | Cash history and affiliate exclusion | IN PROGRESS | NOT RUN | Current block: prepare isolated cash/affiliate controls before UI transactions. |
 | 11 | Contacts and the existing chat popup | NOT RUN | NOT RUN | Execute in order; no partial credit. |
 | 12 | Selection limits and contact-request controls | NOT RUN | NOT RUN | Execute in order; no partial credit. |
 | 13 | Empty calendar export | NOT RUN | NOT RUN | Execute in order; no partial credit. |
@@ -1173,3 +1173,13 @@ not claimed from the demo/shared-store checks here.
 - Asset apply produced two IDs (47). A deliberate failed POST `/api/share-tokens` after the two removals retained the picker and Retry; retry added only the two outstanding messages (49). Active Event shares retained their original IDs.
 - Shared card selector is 32×32 on the image above the menu; asset basket reopens both persisted selections and Apply is disabled without a delta.
 - Detailed proof: `GROUP-LIFECYCLE-001-block9-chat-sharing-20260927.json`. Block remains open; off-page, baseline failure, late response, mobile and cleanup checks remain. Totals unchanged: HTTP 8/48, Lifecycle 8/29.
+
+### Block 9 closed — 2026-09-27
+
+- Full browser transaction evidence: `GROUP-LIFECYCLE-001-block9-chat-sharing-20260927.json`. Event/Asset two-message apply, mixed add/remove, real partial network failure/retry, cancel/no-op and removable basket controls passed.
+- 21 real composer messages moved old shares off both first pages. Persisted picker selection still found them; deletion retained original ID and appeared on the later loaded page; re-add created a distinct message.
+- Baseline network failure disabled selection; retry restored only persisted own shares. Delayed responses during chat, workspace and normal demo-account switching did not affect the replacement context. Both pickers passed 360px geometry without overflow.
+- Account switch exposed the reported avatar-less signed-out game screen: popup history cleanup raced routing. Shared OverlayNavigationStore now releases the old history marker and suspends reconciliation during navigation. Normal logout and delayed account-switch replays pass; normal popup Back/X retained the route. Added regression specs NOT RUN separately; existing watcher builds PASS.
+- Transport Explore opens all categories. Removed the invalid synthetic-subevent resource hydration from standalone Explore using the existing `hydrate:false` option; UI shows 12 cards and zero invalid scope requests.
+- Closed managed browsers before versioned cleanup. `restore-chat-sharing` verified 13 scopes and removed four generated asset-owner share tokens. Independent chat oracle: original41 messages, zero paging messages, zero temporary share/tombstone records. Exact `after-membership-trash` savepoint verification PASS; new immutable `after-chat-sharing` snapshot captured at 2026-09-27T02:06:58.260Z, resume10.
+- **HTTP9/48 closed (18.75%); Lifecycle9/29. Block10 current; Local NOT RUN.**

@@ -88,17 +88,17 @@ Earlier Event Mode, Integration API, Activity Rating and EVENT-FOLLOWING-001 rem
 ```yaml
 checkpoint: GROUP-LIFECYCLE-001
 checklist: ../checklists/group/GROUP-LIFECYCLE-001.md
-substage: HTTP8/48 overall; Lifecycle8/29 closed/current block9. Local NOT RUN.
-fixture_phase: Block9 chat-sharing snapshot retained for chat 1ba26e819a02104398ea0799. Main Alex/Maya browsers open; Eszter closed. Block8 cleanup remains PASS.
+substage: HTTP9/48 overall; Lifecycle9/29 closed/current block10. Local NOT RUN.
+fixture_phase: Main badge-writes-ready. Block9 chat-sharing snapshots restored with exact 13-scope verification, generated asset tokens removed, independent chat baseline41/zero paging proof. All managed browser windows closed.
 execution_log: ../evidence/GROUP-LIFECYCLE-001-20260926.md
 execution_authority: User explicitly delegated full-flow automated execution of the pending QA campaign on 2026-09-26; Codex operates the browser, diagnoses, fixes and retests. Closed PASS rows remain closed.
-next_action: Continue block9 remaining branches from block9-chat-sharing evidence. Event/asset two-message apply and mixed add/remove passed; actual network failure after two asset deletions then Retry added only two outstanding messages. Current active shares Darkroom Contact Sheet Night, Desert Porch Folk Session, Community Equipment Pickup, Festival Utility Buggy; 49 total chat messages. Next no-op, off-page removal, baseline failure, pending-context and mobile checks. Do not restore chatSharingSnapshots until full block9 completion. Only Alex/Maya windows needed. Transport default changed to aggregate; existing watcher building, UI verification pending. No ad hoc Mongo or UI/store outcome injection.
-savepoint: community-group after-membership-trash, captured 2026-09-26T23:28:34.299Z and exact verification PASS; resume block 8. Earlier savepoints remain immutable.
-queue: HTTP Lifecycle 9–29, then Local Lifecycle 1–29, Group Isolation 1–12, Integration API Group 1–7. True unavailable external/native prerequisites must be explicit counted later blocks, with USB/native last. Closed PASS cases untouched.
+next_action: Prepare block10 Cash history and affiliate exclusion with versioned snapshot controls before UI transactions. Block9 PASS in block9-chat-sharing evidence. Avatar-less logout fixed in shared OverlayNavigationStore and normal/pending-response logout/login replay passed. Transport Explore aggregate default and standalone scope fix verified. Existing watchers own compilation; no parallel builds. Open only necessary Alex/Maya actors through versioned launcher after read-only status. Preserve all closed blocks.
+savepoint: community-group after-chat-sharing captured 2026-09-27T02:06:58.260Z, resume10; exact prior after-membership-trash verification PASS. Earlier savepoints immutable.
+queue: HTTP Lifecycle10–29, then Local Lifecycle1–29, Group Isolation1–12, Integration API Group1–7. Keep unavailable external/native prerequisites in counted later blocks.
 resume_gate: Run the versioned community-group status command before any relaunch. verify-lists checked all ten groups/27 memberships without mutation and the versioned launcher prepared all three actors on 2026-09-26. Do not reset changed records or replay a closed checkpoint. Check the current manifest and launcher result.
 runtime: Existing dev watchers own builds; no stack restart or seed replacement for this resume. Versioned launcher configuration restored after the revert.
 mutation_contract: Application-wide, await persistence inside the busy confirmation dialog. Only after success apply canonical returned state through the existing stores to retained lists/cards/badges; failure retains the dialog/error and does not fake success. Keep underlying popups open. No reload to obtain a mutation result; the user identifies only the existing subevents flow as an exception.
-last_completed: EVENT-CALENDAR-EXPORT-001 PASS/CLOSED; AFFILIATE-REVENUE-001 remains PASS. Location fixes and baseline checks are not Group UI PASS.
+last_completed: GROUP-LIFECYCLE-001 HTTP block9 PASS/CLOSED; campaign remains IN PROGRESS. Added overlay unit specs and live Firebase NOT RUN.
 ```
 
 ## Archived pair-QA resume point — 2026-09-17
