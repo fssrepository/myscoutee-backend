@@ -1,5 +1,5 @@
 {
-  "status": "IN PROGRESS; birthday save/reopen and typed/picker validation PASS; children translation correction in progress",
+  "status": "IN PROGRESS: birthday and editor children PASS; registration blocked by configured location country eligibility",
   "checks": {
     "date-typing": {
       "steps": [
@@ -88,11 +88,73 @@
         "children": "child_friendly\nFurgon\nexpand_more"
       },
       "options": "GYEREKEK\nclose\ndo_not_disturb_alt\nNincs\nchild_friendly\nVan\nprivacy_tip\nNem szeretné megadni"
+    },
+    "reload-hu-fixed": {
+      "saved": {
+        "date": "1974/10/04",
+        "horoscope": "Horoszkóp\n♎\nMérleg",
+        "children": "child_friendly\nVan\nexpand_more"
+      },
+      "options": "GYEREKEK\nclose\ndo_not_disturb_alt\nNincs\nchild_friendly\nVan\nprivacy_tip\nNem szeretné megadni"
+    },
+    "filter-en": {
+      "filterOptions": "CHILDREN\nclose\nsearch\nchild_care\nNo children"
+    },
+    "children-persisted": {
+      "birthday": "1974-10-04",
+      "children": [
+        {
+          "labelKey": "profile.details.children",
+          "value": "Yes",
+          "privacy": "Private",
+          "options": [
+            "No",
+            "Yes",
+            "Prefer not to say"
+          ]
+        }
+      ]
+    },
+    "registration-location": {
+      "text": "Engedélyek\n\nA helyadat kötelező a belépéshez.\n\nlocation_on\nHelyadat\nnotifications\nÉrtesítések\n\nLogin is currently unavailable from your country or region for security reasons. Please come back later.\n\ncheck\nFrissítés\nTelepítés\n\nGyors elérés, saját alkalmazásablak.\n\ninstall_desktop\nTelepítés",
+      "error": "Login is currently unavailable from your country or region for security reasons. Please come back later.",
+      "buttons": [
+        {
+          "aria": "Telepítés és engedélyek",
+          "text": "question_mark",
+          "disabled": false
+        },
+        {
+          "aria": "Bezárás",
+          "text": "close",
+          "disabled": false
+        },
+        {
+          "aria": "Helyadat",
+          "text": "location_on\nHelyadat",
+          "disabled": false
+        },
+        {
+          "aria": "Értesítések",
+          "text": "notifications\nÉrtesítések",
+          "disabled": true
+        },
+        {
+          "aria": "Frissítés",
+          "text": "check\nFrissítés",
+          "disabled": false
+        },
+        {
+          "aria": "Telepítés",
+          "text": "install_desktop\nTelepítés",
+          "disabled": false
+        }
+      ]
     }
   },
   "remaining": [
-    "Verify selected Hungarian children label after double-translation fix",
-    "Children profile/filter and registration shared-field verification",
+    "Children profile display and HU filter",
+    "Actual registration form: native configured location rejected before onboarding; no bypass",
     "Fixture restore and exact baseline verification"
   ]
 }

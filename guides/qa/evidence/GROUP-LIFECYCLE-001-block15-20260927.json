@@ -1,0 +1,277 @@
+{
+  "status": "Desktop HU/EN landing checks PASS; authenticated chooser and installed PWA branch NOT RUN",
+  "checks": {
+    "landing-hu": {
+      "heading": true,
+      "links": [
+        {
+          "text": "Adatvédelem",
+          "href": "http://localhost/#"
+        },
+        {
+          "text": "Feltételek",
+          "href": "http://localhost/terms"
+        },
+        {
+          "text": "photo_camera",
+          "href": "https://www.instagram.com/myscoutee"
+        },
+        {
+          "text": "smart_display",
+          "href": "https://www.youtube.com/@myscoutee"
+        },
+        {
+          "text": "facebook",
+          "href": "https://www.facebook.com/myscoutee"
+        }
+      ],
+      "buttons": [
+        {
+          "text": "rocket_launch\nFelfedezés indítása",
+          "rect": {
+            "x": 20.609375,
+            "y": 305.6875,
+            "width": 166.96875,
+            "height": 44,
+            "top": 305.6875,
+            "right": 187.578125,
+            "bottom": 349.6875,
+            "left": 20.609375
+          }
+        },
+        {
+          "text": "login\nIngyenes csatlakozás",
+          "rect": {
+            "x": 193.015625,
+            "y": 305.6875,
+            "width": 180.15625,
+            "height": 44,
+            "top": 305.6875,
+            "right": 373.171875,
+            "bottom": 349.6875,
+            "left": 193.015625
+          }
+        }
+      ],
+      "dialogs": [
+        {
+          "title": "Partneri szerepkörök áttekintése",
+          "text": "Partnereknek\n\nHat részvételi forma. Minden operátor független marad.\n\nTervezett modell\nclose\ndns\nÜZEMELTESD\nFüggetlen operátor\n\nA tervezett modellben saját márkás példányt futtathatsz egy virtuális privát szerveren (VPS). A közösség, a partnerek és a fizetési számla az operátoré; a szoftver közvetlenül hozzá irányítja a helyi bevételeket.\n\nstorefront\nKÍNÁLJ ÉLMÉNYEKET\nHelyszín- vagy élménypartner\n\nHelyszínt, fesztivált, programot, utazást vagy élményt kínálhatsz egy helyi operátoron keresztül. A foglalási jutalék az operátoré, nem a hálózat tulajdonosáé.\n\ngroups\nHOZZ KÖZÖSSÉGET\nKözösségi partner\n\nHozz aktív helyi közösséget, és segíts a kölcsönös érdeklődést csoportos csevegéssé, eseménnyé, részvétellé és visszajelzéssé alakítani.\n\ngroup_add\nHÍVJ MEG EMBEREKET\nAffiliate partner\n\nBármelyik tag megoszthatja személyes meghívólinkjét a Profil → Affiliate menüből, és láthatja, hányan regisztráltak vele. API-kliensekkel is meghívhat résztvevőket, és követheti, hányan kapcsolódtak regisztrált fiókhoz.\n\nhandshake\nÉPÍTS VELÜNK\nStratégiai együttműködő\n\nJárulj hozzá biztonsági, adatvédelmi vagy gráfszakértelemmel, termékfejlesztéssel, terjesztéssel vagy stratégiai finanszírozással.\n\ncorporate_fare\nHOZD A CSAPATOD\nZárt vállalati közösség\n\nHozd össze munkatársaidat egy saját, meghívásos csoportban. Közös programok, csevegések és visszajelzések segíthetik a csapatépítést és a munkahelyi jóllétet.\n\napi\nKapcsold össze a rendszereidet · API\n\nFelhasználóhoz kötött API-kulccsal szállásfoglaló, belső vállalati vagy más rendszereket kapcsolhatsz a MyScoutee-hoz. Eseményeket, szállásajánlatokat és csoportmeghívásokat hozhatsz létre.\n\nAPI-kliens és dokumentáció · GitHub\nopen_in_new\nhub\nOpcionális hálózati regisztráció · tervezett\n\nAz összesített telemetria mindenképpen elküldésre kerül, így ellenőrizhető hálózati súly keletkezik. A telepítés név nélkül és függetlenül is működhet.\n\nNÉVHEZ RENDELT\n\nA telepítési kód az ellenőrzött előzményeket egy megnevezett operátorhoz köti, így a súly jogosult lehet a javasolt exit-felosztásra.\n\nNINCS NÉVHEZ RENDELVE\n\nA telepítés továbbra is működik és helyben termel bevételt, de a súlya nem részesül az exit felosztásából.\n\nJavasolt exit-felosztás\ncalculate\n\nAz alapítónak fenntartott 100 000 havi aktív felhasználó (MAU) kizárólag az exit-felosztás számítási súlya; nem az alapító tulajdonában álló vagy hozzá átadott felhasználókat jelent.\n\n< 1M MAU\n\nAlapítói százalék = 100 000 ÷ összes ellenőrzött MAU. Példa: 500 000 MAU-nál történő exit esetén 20% az alapítóé és 80% a jogosult operátoroké.\n\n≥ 1M MAU\n\n1 millió MAU-tól az alapítói részesedés legfeljebb 10%; a fennmaradó 90% a jogosult, névhez rendelt operátorok között oszlik meg az ellenőrzött hálózati súlyuk alapján.\n\nA bevételek elkülönülnek\nstorefront\n\nHelyi kereskedelem: A partnerfoglalási jutalék az operátor saját számlájára érkezik.\n\naccount_balance\n\nJavasolt exit nélküli tartalékmodell: 10 millió ellenőrzött havi aktív felhasználónál (MAU), ha nincs meghatározott exit, az alapító a szerződésben meghatározott tagi hozzájárulások 5%-át kéri—soha nem az operátori jutalékokból.\n\nadmin_panel_settings\nTelepítés üzemeltetése\n\nJelentkezz be a telepítés konfigurálásához és kezeléséhez, vagy nyisd meg az operátori munkaterületet Felfedezés módban.\n\nlogin\nOperátori hozzáférés",
+          "links": [
+            {
+              "text": "API-kliens és dokumentáció · GitHub\nopen_in_new",
+              "href": "https://github.com/fssrepository/myscoutee-client"
+            }
+          ]
+        }
+      ]
+    },
+    "rest": {
+      "api": {
+        "text": "api\nKapcsold össze a rendszereidet · API\n\nFelhasználóhoz kötött API-kulccsal szállásfoglaló, belső vállalati vagy más rendszereket kapcsolhatsz a MyScoutee-hoz. Eseményeket, szállásajánlatokat és csoportmeghívásokat hozhatsz létre.\n\nAPI-kliens és dokumentáció · GitHub\nopen_in_new",
+        "x": 11.828125,
+        "width": 617.34375,
+        "y": 337.9375,
+        "background": "rgba(0, 0, 0, 0) linear-gradient(120deg, rgb(255, 245, 203), rgb(255, 252, 240)) repeat scroll 0% 0% / auto padding-box border-box",
+        "border": "1px solid rgb(216, 189, 89)"
+      },
+      "network": {
+        "text": "hub\nOpcionális hálózati regisztráció · tervezett\n\nAz összesített telemetria mindenképpen elküldésre kerül, így ellenőrizhető hálózati súly keletkezik. A telepítés név nélkül és függetlenül is működhet.\n\nNÉVHEZ RENDELT\n\nA telepítési kód az ellenőrzött előzményeket egy megnevezett operátorhoz köti, így a súly jogosult lehet a javasolt exit-felosztásra.\n\nNINCS NÉVHEZ RENDELVE\n\nA telepítés továbbra is működik és helyben termel bevételt, de a súlya nem részesül az exit felosztásából.",
+        "x": 11.828125,
+        "width": 617.34375,
+        "y": 495.84375,
+        "background": "rgb(247, 249, 252) none repeat scroll 0% 0% / auto padding-box border-box",
+        "border": "1px solid rgba(44, 75, 115, 0.14)"
+      },
+      "partners": {
+        "text": "dns\nÜZEMELTESD\nFüggetlen operátor\n\nA tervezett modellben saját márkás példányt futtathatsz egy virtuális privát szerveren (VPS). A közösség, a partnerek és a fizetési számla az operátoré; a szoftver közvetlenül hozzá irányítja a helyi bevételeket.\n\nstorefront\nKÍNÁLJ ÉLMÉNYEKET\nHelyszín- vagy élménypartner\n\nHelyszínt, fesztivált, programot, utazást vagy élményt kínálhatsz egy helyi operátoron keresztül. A foglalási jutalék az operátoré, nem a hálózat tulajdonosáé.\n\ngroups\nHOZZ KÖZÖSSÉGET\nKözösségi partner\n\nHozz aktív helyi közösséget, és segíts a kölcsönös érdeklődést csoportos csevegéssé, eseménnyé, részvétellé és visszajelzéssé alakítani.\n\ngroup_add\nHÍVJ MEG EMBEREKET\nAffiliate partner\n\nBármelyik tag megoszthatja személyes meghívólinkjét a Profil → Affiliate menüből, és láthatja, hányan regisztráltak vele. API-kliensekkel is meghívhat résztvevőket, és követheti, hányan kapcsolódtak regisztrált fiókhoz.\n\nhandshake\nÉPÍTS VELÜNK\nStratégiai együttműködő\n\nJárulj hozzá biztonsági, adatvédelmi vagy gráfszakértelemmel, termékfejlesztéssel, terjesztéssel vagy stratégiai finanszírozással.\n\ncorporate_fare\nHOZD A CSAPATOD\nZárt vállalati közösség\n\nHozd össze munkatársaidat egy saját, meghívásos csoportban. Közös programok, csevegések és visszajelzések segíthetik a csapatépítést és a munkahelyi jóllétet.\n\napi\nKapcsold össze a rendszereidet · API\n\nFelhasználóhoz kötött API-kulccsal szállásfoglaló, belső vállalati vagy más rendszereket kapcsolhatsz a MyScoutee-hoz. Eseményeket, szállásajánlatokat és csoportmeghívásokat hozhatsz létre.\n\nAPI-kliens és dokumentáció · GitHub\nopen_in_new\nhub\nOpcionális hálózati regisztráció · tervezett\n\nAz összesített telemetria mindenképpen elküldésre kerül, így ellenőrizhető hálózati súly keletkezik. A telepítés név nélkül és függetlenül is működhet.\n\nNÉVHEZ RENDELT\n\nA telepítési kód az ellenőrzött előzményeket egy megnevezett operátorhoz köti, így a súly jogosult lehet a javasolt exit-felosztásra.\n\nNINCS NÉVHEZ RENDELVE\n\nA telepítés továbbra is működik és helyben termel bevételt, de a súlya nem részesül az exit felosztásából.\n\nJavasolt exit-felosztás\ncalculate\n\nAz alapítónak fenntartott 100 000 havi aktív felhasználó (MAU) kizárólag az exit-felosztás számítási súlya; nem az alapító tulajdonában álló vagy hozzá átadott felhasználókat jelent.\n\n< 1M MAU\n\nAlapítói százalék = 100 000 ÷ összes ellenőrzött MAU. Példa: 500 000 MAU-nál történő exit esetén 20% az alapítóé és 80% a jogosult operátoroké.\n\n≥ 1M MAU\n\n1 millió MAU-tól az alapítói részesedés legfeljebb 10%; a fennmaradó 90% a jogosult, névhez rendelt operátorok között oszlik meg az ellenőrzött hálózati súlyuk alapján.\n\nA bevételek elkülönülnek\nstorefront\n\nHelyi kereskedelem: A partnerfoglalási jutalék az operátor saját számlájára érkezik.\n\naccount_balance\n\nJavasolt exit nélküli tartalékmodell: 10 millió ellenőrzött havi aktív felhasználónál (MAU), ha nincs meghatározott exit, az alapító a szerződésben meghatározott tagi hozzájárulások 5%-át kéri—soha nem az operátori jutalékokból.\n\nadmin_panel_settings\nTelepítés üzemeltetése\n\nJelentkezz be a telepítés konfigurálásához és kezeléséhez, vagy nyisd meg az operátori munkaterületet Felfedezés módban.\n\nlogin\nOperátori hozzáférés",
+        "x": 6.390625,
+        "width": 628.21875,
+        "y": -518.296875,
+        "background": "rgba(0, 0, 0, 0) none repeat scroll 0% 0% / auto padding-box border-box",
+        "border": "0px none rgb(32, 53, 83)"
+      },
+      "countries": {
+        "text": "Támogatott országok\nclose\n🇩🇪\nNémetország\ncheck_circle\n🇪🇸\nSpanyolország\ncheck_circle\n🇬🇧\nEgyesült Királyság\ncheck_circle\n🇭🇺\nMagyarország\ncheck_circle",
+        "backdrop": [
+          {
+            "class": "entry-version-label",
+            "blur": "blur(10px)"
+          },
+          {
+            "class": "ui-popup__backdrop ui-popup__backdrop--dim",
+            "blur": "blur(3px)"
+          }
+        ]
+      },
+      "report": {
+        "text": "Hibajelentés\nclose\n\nA hibajelentések GitHub Issues alatt futnak, hogy követhető legyen a javítás. Írd le, mi történt és hogyan ismételhető meg.\n\nHibák jelentése",
+        "backdrop": [
+          {
+            "class": "entry-version-label",
+            "blur": "blur(10px)"
+          },
+          {
+            "class": "ui-popup__backdrop ui-popup__backdrop--dim",
+            "blur": "blur(3px)"
+          }
+        ],
+        "href": "https://github.com/fssrepository/myscoutee/issues"
+      }
+    },
+    "en": {
+      "heading": "Follow us",
+      "social": [
+        "https://www.instagram.com/myscoutee",
+        "https://www.youtube.com/@myscoutee",
+        "https://www.facebook.com/myscoutee"
+      ],
+      "desktop": {
+        "viewport": 1280
+      },
+      "partners": "dns\nRUN IT\nIndependent operator\n\nIn the planned model, run a branded deployment on a virtual private server (VPS). You own the community, partners and payment account; the software routes local funds directly to you.\n\nstorefront\nSUPPLY EXPERIENCES\nVenue or experience partner\n\nOffer venues, festivals, Activities, travel or experiences through a local operator. Booking commission belongs to that operator—not the network owner.\n\ngroups\nBRING A COMMUNITY\nCommunity partner\n\nBring an active local community and help turn mutual interest into group chats, Events, attendance and feedback.\n\ngroup_add\nINVITE PEOPLE\nAffiliate partner\n\nAny member can share a personal invitation link from Profile → Affiliate and see how many people registered through it. API clients can also invite participants and track how many connected to registered accounts.\n\nhandshake\nBUILD WITH US\nStrategic collaborator\n\nContribute safety, privacy or graph expertise, product hardening, distribution or strategic funding.\n\ncorporate_fare\nBRING YOUR TEAM\nPrivate workplace community\n\nBring colleagues together in your own invitation-only group. Shared activities, chats and feedback can support team building and workplace wellbeing.\n\napi\nConnect your systems · API\n\nUse an API key linked to a user account to connect accommodation booking, internal company or other systems to MyScoutee. Create events, accommodation offers and group invitations.\n\nAPI client and documentation · GitHub\nopen_in_new\nhub\nOptional network claim · planned\n\nAggregate telemetry is sent either way, creating verifiable network weight. A deployment may stay unnamed and independent.\n\nCLAIMED\n\nThe deployment code connects verified history to a named operator, making its weight eligible for a proposed exit allocation.\n\nUNCLAIMED\n\nThe deployment still operates and earns locally, but its weight receives no exit allocation.\n\nProposed exit allocation\ncalculate\n\nThe founder-dedicated 100,000 monthly active users (MAU) are an allocation weight used only for exit math—not users owned by or transferred to the founder.\n\n< 1M MAU\n\nFounder percentage = 100,000 ÷ total verified MAU. Example: an exit at 500,000 MAU means 20% for the founder and 80% for eligible operators.\n\n≥ 1M MAU\n\nFounder share is capped at 10%; the remaining 90% is distributed among eligible claimed operators by verified network weight.\n\nEconomics stay separate\nstorefront\n\nLocal commerce: Partner booking commission is paid to the operator's own account.\n\naccount_balance\n\nProposed no-exit fallback: At 10 million verified monthly active users (MAU), if no exit is defined, the founder seeks 5% of contract-defined member contributions—never operator commissions.\n\nadmin_panel_settings\nOperate a deployment\n\nSign in to configure and manage this deployment, or open the operator workspace in Explore mode.\n\nlogin\nOperator access",
+      "apiLink": "https://github.com/fssrepository/myscoutee-client"
+    },
+    "desktop": {
+      "viewport": 1280,
+      "row": {
+        "x": 76.5,
+        "y": 327.296875,
+        "width": 614.65625,
+        "height": 44,
+        "top": 327.296875,
+        "right": 691.15625,
+        "bottom": 371.296875,
+        "left": 76.5
+      },
+      "content": {
+        "x": 76.5,
+        "y": 110.1875,
+        "width": 614.65625,
+        "height": 261.109375,
+        "top": 110.1875,
+        "right": 691.15625,
+        "bottom": 371.296875,
+        "left": 76.5
+      },
+      "buttons": [
+        {
+          "text": "rocket_launch\nStart exploring",
+          "rect": {
+            "x": 76.5,
+            "y": 327.296875,
+            "width": 140.625,
+            "height": 44,
+            "top": 327.296875,
+            "right": 217.125,
+            "bottom": 371.296875,
+            "left": 76.5
+          }
+        },
+        {
+          "text": "login\nFree to join",
+          "rect": {
+            "x": 222.5625,
+            "y": 327.296875,
+            "width": 119.828125,
+            "height": 44,
+            "top": 327.296875,
+            "right": 342.390625,
+            "bottom": 371.296875,
+            "left": 222.5625
+          }
+        }
+      ]
+    },
+    "settings": {
+      "menus": [
+        "Affinity\n:\n1\nGo\narrow_forward",
+        "SETTINGS\nclose\ninstall_desktop\nInstall\nv1.3.0\nhelp_outline\nHelp\nv3\nfeedback\nSend Feedback\nbug_report\nReport Bugs\npolicy\nPrivacy\nv1\nrule\nTerms\nv1\ndelete_forever\nDelete account\nlogout\nLogout",
+        "diversity_2\nCOMMUNITY\nphoto_library\nFeed\nrss_feed\nFollowed\ngroups\nGroups",
+        "psychology\nIMPRESSIONS\nmilitary_tech\nBronze\nHOST\ngroups\nSocial\nATTENDEE\nrate_review\nFeedback\n1\nlocal_activity\nACTIVITIES\nstar\nRates\n99+\nchat\nChats\n15\nmail\nInvitations\n12\nevent\nEvents\n36\nreceipt_long\nPayments\ninventory_2\nMY ASSETS\ndirections_car\nTransport\n1\napartment\nAccommodation\ninventory_2\nSupplies\n1\nqr_code_2\nTicket\ncontacts\nContacts"
+      ],
+      "buttons": [
+        {
+          "text": "rss_feed\nFollowed",
+          "aria": null
+        },
+        {
+          "text": "groups\nGroups",
+          "aria": null
+        },
+        {
+          "text": "military_tech\nBronze\nHOST\ngroups\nSocial\nATTENDEE",
+          "aria": "Open impressions"
+        },
+        {
+          "text": "rate_review\nFeedback\n1",
+          "aria": "Open feedback"
+        },
+        {
+          "text": "star\nRates\n99+",
+          "aria": "Open rates"
+        },
+        {
+          "text": "chat\nChats\n15",
+          "aria": "Open chat"
+        },
+        {
+          "text": "mail\nInvitations\n12",
+          "aria": "Open invitations"
+        },
+        {
+          "text": "event\nEvents\n36",
+          "aria": "Open events"
+        },
+        {
+          "text": "receipt_long\nPayments",
+          "aria": "Open payment history"
+        },
+        {
+          "text": "directions_car\nTransport\n1",
+          "aria": "Transport"
+        },
+        {
+          "text": "apartment\nAccommodation",
+          "aria": "Accommodation"
+        },
+        {
+          "text": "inventory_2\nSupplies\n1",
+          "aria": "Supplies"
+        },
+        {
+          "text": "qr_code_2\nTicket",
+          "aria": "Ticket"
+        },
+        {
+          "text": "contacts\nContacts",
+          "aria": "Contacts"
+        }
+      ]
+    },
+    "remote-templates": [
+      {
+        "name": "bug_report.yml",
+        "url": "https://github.com/fssrepository/myscoutee/blob/master/.github/ISSUE_TEMPLATE/bug_report.yml",
+        "text": "name: Bug report\ndescription: Report a problem with MyScoutee.\nlabels: [bug]\nbody:\n  - type: textarea\n    id: problem\n    attributes:\n      label: What went wrong?\n      description: Briefly describe what happened and what you expected instead.\n    validations:\n      required: true\n  - type: textarea\n    id: steps\n    attributes:\n      label: How can we reproduce it?\n      placeholder: |\n        1. Open ...\n        2. Tap or click ...\n        3. The problem appears.\n    validations:\n      required: true\n  - type: input\n    id: device\n    attributes:\n      label: Device and browser\n      placeholder: e.g. Android / Chrome, iPhone / Safari, Windows / Firefox\n  - type: textarea\n    id: screenshot\n    attributes:\n      label: Screenshot or recording\n      description: If useful, drag an image or video here.\n"
+      },
+      {
+        "name": "feature_request.yml",
+        "url": "https://github.com/fssrepository/myscoutee/blob/master/.github/ISSUE_TEMPLATE/feature_request.yml",
+        "text": "name: Feature request\ndescription: Suggest a new feature or an improvement.\nlabels: [enhancement]\nbody:\n  - type: textarea\n    id: idea\n    attributes:\n      label: What would you like?\n      description: Describe the feature or change in a few sentences.\n    validations:\n      required: true\n  - type: textarea\n    id: reason\n    attributes:\n      label: How would it help?\n      description: What problem would this solve for you?\n    validations:\n      required: true\n  - type: textarea\n    id: example\n    attributes:\n      label: Example or screenshot\n      description: Add a reference, sketch or screenshot if useful.\n"
+      },
+      {
+        "name": "question.yml",
+        "url": "https://github.com/fssrepository/myscoutee/blob/master/.github/ISSUE_TEMPLATE/question.yml",
+        "text": "name: Question or help\ndescription: Ask a question about using MyScoutee.\nlabels: [question]\nbody:\n  - type: textarea\n    id: question\n    attributes:\n      label: What do you need help with?\n      description: Tell us what you are trying to do and where you got stuck.\n    validations:\n      required: true\n  - type: textarea\n    id: context\n    attributes:\n      label: Additional details\n      description: If useful, add what you tried, your device/browser, or a screenshot.\n"
+      }
+    ]
+  },
+  "remoteChooser": "GET issues/new/choose redirects to GitHub login. Remote templates read via public GitHub contents API. No issue submitted.",
+  "apiLink": "https://github.com/fssrepository/myscoutee-client accessible",
+  "versionSource": "PwaService app-version.json -> settings menu item counter; observed v1.3.0",
+  "remaining": [
+    "Authenticated GitHub chooser UI",
+    "Installed application with installation action hidden"
+  ]
+}

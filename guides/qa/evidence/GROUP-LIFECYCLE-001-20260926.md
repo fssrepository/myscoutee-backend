@@ -1236,3 +1236,10 @@ Header aggregates now live in the existing PaymentMethodsPopupStore; both normal
 - Native held Alex response released after normal logout and Milo demo login: Milo retained his own contact list and no incoming badge.
 - Versioned contacts restore and exact after-contacts verification PASS; CONTACTS windows closed. Immutable after-contact-controls captured 04:40:57Z, resume13.
 - Evidence: GROUP-LIFECYCLE-001-block12-controls-20260927.json. HTTP12/48 (25%), Lifecycle12/29 closed; block13 next. Local and separate unit specs NOT RUN.
+
+### HTTP block13 closed; blocks14–16 retained progress — 2026-09-27
+
+- Block13: localized empty export/X-only blurred parent/no download and positive ICS/libical four-event import PASS; desktop calendar UI NOT RUN. Evidence block13 JSON. HTTP13/48, Lifecycle13/29 closed.
+- Block14 birthday and Children editor save/reload PASS; selected HU Van double translation repaired and verified. Registration remains before onboarding: native configured location fails country eligibility. No bypass, fake coordinate or registration PASS.
+- Block15 HU/EN social/Partners/API layout, desktop left alignment and country/report blur PASS; runtime settings version visible; remote GitHub templates exist. Authenticated chooser and installed PWA branch NOT RUN.
+- Block16 six help sections, Android/iOS guidance text, adjacent header controls and closing only help with retained unchanged parent PASS. Physical device permission retry NOT RUN. Per-block JSON retains exact results; no replay on resume.

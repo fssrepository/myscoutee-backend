@@ -88,17 +88,17 @@ Earlier Event Mode, Integration API, Activity Rating and EVENT-FOLLOWING-001 rem
 ```yaml
 checkpoint: GROUP-LIFECYCLE-001
 checklist: ../checklists/group/GROUP-LIFECYCLE-001.md
-substage: HTTP12/48 overall (25%); Lifecycle12/29 closed/current block13. Local NOT RUN.
+substage: HTTP13/48 overall (27.08%); Lifecycle13/29 closed; block14 partial, blocks15–16 desktop checks retained. Local NOT RUN.
 fixture_phase: after-contact-controls retained; new prepare-contacts snapshot active for blocks13–14 profile edits, two CONTACTS windows running. Milo birthday changed normally to 1974-10-04 and Children Yes (stored value); restore this scope after block14. Alex Design Circle is empty-calendar control. No replay of blocks1–12.
 execution_log: ../evidence/GROUP-LIFECYCLE-001-20260926.md
 execution_authority: User explicitly delegated full-flow automated execution of the pending QA campaign on 2026-09-26; Codex operates the browser, diagnoses, fixes and retests. Closed PASS rows remain closed.
-next_action: Block13 browser export checks and libical import complete, see block13-20260927.json; block14 birthday typed/picker/save/reopen/HU reload complete. Continue only children label/profile/filter checks. User requires HU Nincs/Van, EN No children/Has children; never Yes/No. New shared menu trigger data-i18n-ignore prevents retranslation of Hungarian Van as vehicle Furgon. Check this fix once, then continue. Do not replay blocks1–12 or birthday.
+next_action: Continue unverified block14 Children profile/HU filter and native registration (configured Austin point rejected by active country gate; do not bypass). Birthday/editor Van fix already PASS. Block15 HU/EN social/Partners/API/geometry/blur/runtime version and remote templates verified; authenticated chooser and installed PWA branch pending. Block16 desktop help/retained parent PASS; physical-device retries NOT RUN. Evidence per-block JSON. Continue block17 common Help. Never replay closed blocks1–13 or completed subchecks.
 savepoint: community-group after-contact-controls captured 2026-09-27T04:40:57.723Z, resume13. Earlier savepoints immutable.
-queue: HTTP Lifecycle13–29, then Local Lifecycle1–29, Group Isolation1–12, Integration API Group1–7.
+queue: HTTP Lifecycle14–29, then Local Lifecycle1–29, Group Isolation1–12, Integration API Group1–7.
 resume_gate: Run the versioned community-group status command before any relaunch. verify-lists checked all ten groups/27 memberships without mutation and the versioned launcher prepared all three actors on 2026-09-26. Do not reset changed records or replay a closed checkpoint. Check the current manifest and launcher result.
 runtime: Existing dev watchers own builds; no stack restart or seed replacement for this resume. Versioned launcher configuration restored after the revert.
 mutation_contract: Application-wide, await persistence inside the busy confirmation dialog. Only after success apply canonical returned state through the existing stores to retained lists/cards/badges; failure retains the dialog/error and does not fake success. Keep underlying popups open. No reload to obtain a mutation result; the user identifies only the existing subevents flow as an exception.
-last_completed: GROUP-LIFECYCLE-001 HTTP block12 PASS/CLOSED, exact cleanup verified. Separate unit specs and Local NOT RUN.
+last_completed: GROUP-LIFECYCLE-001 HTTP block13 PASS/CLOSED, read-only export and libical import verified; block12 exact cleanup remains valid. Separate unit specs and Local NOT RUN.
 ```
 
 ## Archived pair-QA resume point — 2026-09-17
