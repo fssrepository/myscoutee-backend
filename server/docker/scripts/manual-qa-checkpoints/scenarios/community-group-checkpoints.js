@@ -6,7 +6,7 @@
   const checkpointId = "GROUP-LIFECYCLE-001";
   Q.assertDeploymentSafety();
   const command = Q.text(process.env.MANUAL_QA_COMMAND);
-  if (!["status", "verify-lists", "prepare-badges", "prepare-join", "restore-badges", "prepare-contact-request-pages",
+  if (!["status", "verify-lists", "inspect-location-control", "prepare-location-control", "set-location-control-invalid", "restore-location-control", "prepare-badges", "prepare-join", "restore-badges", "prepare-contact-request-pages",
       "capture", "restore", "verify-savepoint", "prepare-contacts", "prepare-contact-invitees", "restore-contacts", "prepare-chat-sharing", "prepare-chat-sharing-context", "restore-chat-sharing", "prepare-cash-history", "prepare-cash-checkout", "prepare-cash-payment-methods", "restore-cash-history", "prepare-sharing", "prepare-sharing-group-event", "repair-sharing-identifiers", "reset-sharing-failed-event-claim", "prepare-sharing-attribution", "track-sharing-registration", "sharing-registrants", "restore-sharing", "prepare-list-pagination", "restore-list-pagination",
       "prepare-member-invitation", "restore-member-invitation", "prepare-admin-lifecycle", "prepare-admin-moderation", "prepare-admin-feed-event", "prepare-admin-previews", "prepare-admin-base-chat-read", "prepare-admin-base-chat-message", "prepare-admin-base-feed", "restore-admin-lifecycle",
       "prepare-invitation", "prepare-hidden-invitation", "restore-invitation", "prepare-editor", "restore-editor", "prepare-creation", "restore-creation"].includes(command)
@@ -23,6 +23,58 @@
     "1b1c70be2349b3359a8f6f94"
   ];
   if (!Q.sameJson(state.actors, actors)) Q.fail("Group baseline actors differ.");
+  if (["inspect-location-control", "prepare-location-control", "set-location-control-invalid", "restore-location-control"].includes(command)) {
+    const userId = "b0971e779dbdb71f9327eabb";
+    const users = Q.collection("users");
+    const control = users.findOne({userId});
+    if (!control || control.name !== "Zoe Turner" || control.accountUserId || control.workspaceGroupId) {
+      Q.fail("The isolated seeded location control differs.");
+    }
+    if (command === "inspect-location-control") {
+      Q.printObject({checkpointId, userId, name: control.name,
+        coordinates: control.locationCoordinates ?? null,
+        partitionKey: control.partitionKey ?? null,
+        activeSessions: control.activeSessions?.length ?? 0,
+        prepared: Boolean(state.locationControlSnapshot)});
+      return;
+    }
+    if (command === "prepare-location-control") {
+      if (state.locationControlSnapshot || (control.activeSessions?.length ?? 0) !== 0
+          || !Number.isFinite(control.locationCoordinates?.latitude)
+          || !Number.isFinite(control.locationCoordinates?.longitude)) {
+        Q.fail("Location control is not at its unused, eligible baseline.");
+      }
+      const snapshot = Q.snapshotSpecs([{collection: "users", selector: {userId}}]);
+      Q.collection(Q.STATE_COLLECTION).updateOne({_id: state._id}, {$set: {
+        locationControlSnapshot: snapshot, locationControlPhase: "missing", resumeBlock: 19
+      }});
+      users.updateOne({userId}, {$unset: {locationCoordinates: ""}});
+      Q.printObject({checkpointId, userId, phase: "missing", snapshotCount: snapshot[0].documents.length});
+      return;
+    }
+    if (!state.locationControlSnapshot?.length) Q.fail("No location-control snapshot is retained.");
+    if (command === "set-location-control-invalid") {
+      if (state.locationControlPhase !== "missing"
+          || control.locationCoordinates?.latitude !== 47.4979
+          || control.locationCoordinates?.longitude !== 19.0402) {
+        Q.fail("Complete the missing-coordinate accepted retry before the invalid control.");
+      }
+      users.updateOne({userId}, {$set: {locationCoordinates: {latitude: 999, longitude: 999}}});
+      Q.collection(Q.STATE_COLLECTION).updateOne({_id: state._id}, {$set: {locationControlPhase: "invalid"}});
+      Q.printObject({checkpointId, userId, phase: "invalid"});
+      return;
+    }
+    Q.restoreSnapshots(state.locationControlSnapshot);
+    Q.collection(Q.STATE_COLLECTION).updateOne({_id: state._id}, {$unset: {
+      locationControlSnapshot: "", locationControlPhase: ""
+    }});
+    const restored = users.findOne({userId});
+    if (!Q.sameJson(state.locationControlSnapshot[0].documents[0], restored)) {
+      Q.fail("Location control differs from its retained snapshot after restore.");
+    }
+    Q.printObject({checkpointId, userId, restored: true});
+    return;
+  }
   const ordered = documents => [...documents].sort((a, b) => Q.text(a._id).localeCompare(Q.text(b._id)));
   const snapshots = state.snapshots || [];
   if (snapshots.length !== 2

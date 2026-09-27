@@ -143,6 +143,35 @@
         }
       ]
     },
+    "GROUP-LIFECYCLE-001-ENTRY-BLOCK19": {
+      "preserveOtherSessions": true,
+      "fixtureCheckpointId": "GROUP-LIFECYCLE-001",
+      "targetUrl": "http://localhost/entry?redirect=%2Fgame",
+      "entryUrl": "http://localhost/entry?redirect=%2Fgame",
+      "bootstrapEntryConsent": false,
+      "layout": {
+        "columns": 1
+      },
+      "sessions": [
+        {
+          "actor": "Group block 19 entry",
+          "sessionKind": "anonymous",
+          "expectedName": "Signed-out Group admission",
+          "geolocationPermission": "granted",
+          "geolocation": {
+            "latitude": 47.4979,
+            "longitude": 19.0402,
+            "accuracy": 10
+          },
+          "window": {
+            "width": 700,
+            "height": 900,
+            "x": 80,
+            "y": 40
+          }
+        }
+      ]
+    },
     "GROUP-LIFECYCLE-001": {
       "preserveOtherSessions": true,
       "layout": {
