@@ -7,8 +7,8 @@
   Q.assertDeploymentSafety();
   const command = Q.text(process.env.MANUAL_QA_COMMAND);
   if (!["status", "prepare-tools", "prepare-tools-explore", "inspect-tools", "restore-tools", "verify-lists", "inspect-location-control", "prepare-location-control", "prepare-tracking-control", "prepare-location-invitation", "set-location-control-invalid", "restore-location-control", "prepare-badges", "prepare-join", "restore-badges", "prepare-contact-request-pages",
-      "capture", "restore", "verify-savepoint", "prepare-contacts", "prepare-profile-contacts", "prepare-profile-notifications", "prepare-profile-notification-controls", "prepare-profile-api", "restore-profile-api", "restore-profile-notifications", "restore-profile-contacts", "prepare-contact-invitees", "restore-contacts", "prepare-chat-sharing", "prepare-chat-sharing-context", "restore-chat-sharing", "prepare-cash-history", "prepare-cash-checkout", "prepare-cash-payment-methods", "restore-cash-history", "prepare-sharing", "prepare-menu-checkout", "prepare-group-asset-payment", "prepare-group-asset-scope", "prepare-profile-tickets", "prepare-group-asset-payment-card", "inspect-group-asset-payment", "prepare-sharing-group-event", "repair-sharing-identifiers", "reset-sharing-failed-event-claim", "prepare-sharing-attribution", "track-sharing-registration", "sharing-registrants", "restore-sharing", "prepare-list-pagination", "restore-list-pagination",
-      "prepare-member-invitation", "restore-member-invitation", "prepare-admin-lifecycle", "prepare-admin-moderation", "prepare-admin-feed-event", "prepare-admin-previews", "prepare-admin-base-chat-read", "prepare-admin-base-chat-message", "prepare-admin-base-feed", "restore-admin-lifecycle",
+      "capture", "restore", "verify-savepoint", "prepare-contacts", "prepare-profile-contacts", "prepare-profile-notifications", "prepare-profile-notification-controls", "prepare-profile-api", "restore-profile-api", "restore-profile-notifications", "restore-profile-contacts", "prepare-contact-invitees", "restore-contacts", "prepare-chat-sharing", "prepare-chat-sharing-context", "restore-chat-sharing", "prepare-cash-history", "prepare-cash-checkout", "prepare-cash-payment-methods", "restore-cash-history", "prepare-sharing", "prepare-menu-checkout", "prepare-group-asset-payment", "prepare-group-asset-scope", "prepare-profile-tickets", "prepare-profile-group-tickets", "prepare-group-asset-payment-card", "inspect-group-asset-payment", "prepare-sharing-group-event", "repair-sharing-identifiers", "reset-sharing-failed-event-claim", "prepare-sharing-attribution", "track-sharing-registration", "sharing-registrants", "restore-sharing", "prepare-list-pagination", "restore-list-pagination",
+      "prepare-member-invitation", "restore-member-invitation", "prepare-admin-lifecycle", "prepare-admin-authority", "capture-admin-authority", "restore-admin-authority-branch", "inspect-admin-authority", "prepare-admin-moderation", "prepare-admin-feed-event", "prepare-admin-previews", "prepare-admin-base-chat-read", "prepare-admin-base-chat-message", "prepare-admin-base-feed", "restore-admin-lifecycle",
       "prepare-invitation", "prepare-hidden-invitation", "restore-invitation", "prepare-editor", "restore-editor", "prepare-creation", "restore-creation"].includes(command)
       || Q.text(process.env.MANUAL_QA_CHECKPOINT_ID) !== checkpointId) {
     Q.fail("Only the retained Group list baseline status is supported here.");
@@ -842,13 +842,18 @@
       requests: Q.collection("assetRequests").find({assetId: sharingAssetId}).toArray().map(r => ({id: r._id, userId: r.userId, ownerUserId: r.ownerUserId, status: r.status, booking: r.booking}))});
     return;
   }
-  if (command === "prepare-profile-tickets") {
+  if (["prepare-profile-tickets", "prepare-profile-group-tickets"].includes(command)) {
+    const multiGroup = command === "prepare-profile-group-tickets";
     const scanEventId = "f02709270000000000000083";
     const baseEventId = "f02709270000000000000088", groupEventId = "f02709270000000000000089";
     const ids = [scanEventId, baseEventId, groupEventId];
     const source = Q.collection("events").findOne({sourceId: scanEventId});
     const groupActor = Q.collection("users").findOne({accountUserId: actors[0], workspaceGroupId: sharingGroupId});
     const peer = Q.collection("users").findOne({accountUserId: "178e8d0cbe164fa3fede5884", workspaceGroupId: sharingGroupId});
+    const secondGroup = "seed-community-seattle-friends";
+    const secondHolder = multiGroup ? Q.collection("users").findOne({accountUserId: actors[0], workspaceGroupId: secondGroup}) : null;
+    const secondOwner = multiGroup ? Q.collection("users").findOne({accountUserId: actors[1], workspaceGroupId: secondGroup}) : null;
+    if (multiGroup && (!secondHolder || !secondOwner)) Q.fail("Second group ticket profiles missing.");
     const member = Q.collection("activityMembers").findOne({ownerType: "event", ownerId: scanEventId});
     if (!state.sharingSnapshots || !source || !groupActor || !peer || !member || state.profileTicketsPrepared
         || Q.collection("events").countDocuments({sourceId: {$in: [baseEventId, groupEventId]}})
@@ -864,8 +869,8 @@
     Q.collection(Q.STATE_COLLECTION).updateOne({_id: state._id}, {$push: {sharingSnapshots: {$each: retained}}, $set: {profileTicketsPrepared: true}});
     const now = Q.nowIso();
     const cases = [
-      {id: baseEventId, owner: actors[2], holder: actors[0], group: null, title: "QA24 Base Ticket"},
-      {id: groupEventId, owner: peer.userId, holder: groupActor.userId, group: sharingGroupId, title: "QA24 Group Ticket"},
+      {id: baseEventId, owner: multiGroup ? secondOwner.userId : actors[2], holder: multiGroup ? secondHolder.userId : actors[0], group: multiGroup ? secondGroup : null, title: multiGroup ? "QA25 Seattle Ticket" : "QA24 Base Ticket"},
+      {id: groupEventId, owner: peer.userId, holder: groupActor.userId, group: sharingGroupId, title: multiGroup ? "QA25 Design Ticket" : "QA24 Group Ticket"},
       {id: scanEventId, owner: groupActor.userId, holder: peer.userId, group: sharingGroupId, title: source.title}
     ];
     for (const item of cases) {
@@ -1024,6 +1029,14 @@
       }
       return {...snapshot, selector: {_id: ownerId}};
     });
+    if (state.profileTicketsPrepared) {
+      const ids = ["f02709270000000000000088", "f02709270000000000000089"];
+      const eventScope = retained.find(snapshot => snapshot.collection === "events"
+        && Q.sameJson(snapshot.selector.sourceId?.$in, ids));
+      if (!eventScope || eventScope.documents.length) Q.fail("Ticket Event cleanup requires its empty baseline.");
+      for (const [collection, field] of [["chats", "eventId"], ["chatMessages", "chatId"], ["affinityRecomputeTasks", "targetId"]])
+        retained.push({collection, selector: {[field]: {$in: ids}}, documents: []});
+    }
     // The reserved prerequisite Events did not exist before preparation.
     // Their generated owner-chat projections/messages belong to that same
     // disposable scope, including runs captured before those scopes were added.
@@ -1069,15 +1082,18 @@
   const paginationIds = Array.from({length: 24}, (_, index) => `manual-qa-community-page-${String(index + 1).padStart(2, "0")}`);
   const paginationOwnerIds = paginationIds.map((_, index) => `f026092600000000000000${String(index + 1).padStart(2, "0")}`);
   const paginationDistances = [0, 3.2, 4.9, 5, 5.1, 9.9, 10, 10.1];
-  if (command === "prepare-admin-lifecycle") {
+  if (["prepare-admin-lifecycle", "prepare-admin-authority"].includes(command)) {
+    const authority = command === "prepare-admin-authority";
+    const caseActors = authority ? [...actors, "178e8d0cbe164fa3fede5884", "eb1ca0b761885bb0763e2929"] : actors;
+    const acceptedActors = authority ? caseActors.slice(0, 4) : caseActors;
     const groupId = "manual-qa-community-admin";
     if (state.adminLifecycleSnapshots || Q.collection("communityGroups").countDocuments({_id: groupId})) Q.fail("Admin lifecycle control already exists.");
     const retained = Q.snapshotSpecs([
       {collection: "communityGroups", selector: {_id: groupId}},
       {collection: "activityMembers", selector: {ownerType: "community", ownerId: groupId}},
-      {collection: "users", selector: {$or: [{userId: {$in: actors}}, {workspaceGroupId: groupId}]}},
-      {collection: "userNotifications", selector: {sourceType: "community", sourceId: groupId}},
-      {collection: "notificationOutbox", selector: {entityType: "community", entityId: groupId}},
+      {collection: "users", selector: {$or: [{userId: {$in: caseActors}}, {workspaceGroupId: groupId}]}},
+      {collection: "userNotifications", selector: {$or: [{sourceType: "community", sourceId: groupId}, {recipientUserId: {$in: caseActors}}]}},
+      {collection: "notificationOutbox", selector: {$or: [{entityType: "community", entityId: groupId}, {recipientUserIds: {$in: caseActors}}]}},
       {collection: "contentModerationState", selector: {_id: `group:${groupId}`}},
       {collection: "contentModerationItems", selector: {workspaceGroupId: groupId}},
       {collection: "photoFeedPosts", selector: {workspaceGroupId: groupId}},
@@ -1088,7 +1104,7 @@
     ]);
     const source = Q.collection("communityGroups").findOne({_id: "seed-community-seattle-friends"});
     const memberTemplate = Q.collection("activityMembers").findOne({ownerType: "community", ownerId: source._id, userId: actors[0]});
-    const profiles = actors.map((accountId, index) => {
+    const profiles = acceptedActors.map((accountId, index) => {
       const base = Q.collection("users").findOne({userId: accountId});
       const id = `f0260926${String(index + 1).padStart(16, "0")}`;
       const personal = Object.fromEntries(["name", "initials", "age", "birthday", "gender", "city", "height", "physique", "languages", "horoscope", "headline", "about", "images", "locationCoordinates", "partitionKey", "profileDetails", "profileStatus", "status", "statusText", "completion", "profileFormVersion"].filter(key => base[key] !== undefined).map(key => [key, base[key]]));
@@ -1099,14 +1115,41 @@
     const now = Q.nowIso();
     Q.collection("communityGroups").insertOne({...source, _id: groupId, name: "QA Admin Transfer", ownerUserId: actors[0],
       visibility: "private", hideMembers: false, lifecycleStatus: "active", ownerReleasedAtIso: null, takeoverCandidates: [],
-      pendingMembers: 0, moderationPending: 0, moderationStatus: "accepted", version: 0, createdAtIso: now, updatedAtIso: now});
-    Q.collection("activityMembers").insertMany(actors.map((userId, index) => ({...memberTemplate,
+      pendingMembers: authority ? 1 : 0, moderationPending: 0, moderationStatus: "accepted", version: 0, createdAtIso: now, updatedAtIso: now});
+    Q.collection("activityMembers").insertMany(caseActors.map((userId, index) => ({...memberTemplate,
       _id: `community:${groupId}:${userId}`, syncKey: `community:${groupId}:${userId}`, ownerId: groupId, userId,
-      role: index === 0 ? "Admin" : "Member", status: "accepted", organizerOnly: false,
+      role: index === 0 ? "Admin" : "Member", status: index < acceptedActors.length ? "accepted" : "pending", organizerOnly: false,
       managerGrantedByUserId: null, requestKind: null, pendingSource: null, communityUpdates: 0,
       communityAction: null, communityActor: null, actionAtIso: now, updatedDate: now})));
     Q.collection("users").insertMany(profiles);
-    Q.printObject({checkpointId, groupId, prepared: true, acceptedMembers: 3, admin: actors[0], rolesTested: false});
+    Q.printObject({checkpointId, groupId, prepared: true, acceptedMembers: acceptedActors.length, pendingMembers: caseActors.length - acceptedActors.length, admin: actors[0], rolesTested: false});
+    return;
+  }
+  if (["capture-admin-authority", "restore-admin-authority-branch", "inspect-admin-authority"].includes(command)) {
+    const groupId = "manual-qa-community-admin";
+    if (!state.adminLifecycleSnapshots) Q.fail("Independent Admin fixture required.");
+    const name = Q.text(process.env.MANUAL_QA_SOURCE_CHECKPOINT_ID);
+    if (command !== "inspect-admin-authority") {
+      if (!["members-ready", "admins-granted"].includes(name)) Q.fail("Unknown Admin branch savepoint.");
+      const saved = (state.adminAuthoritySavepoints || []).find(item => item.name === name);
+      if (command === "capture-admin-authority") {
+        if (saved) Q.fail("Admin savepoint already exists; do not overwrite evidence.");
+        const captured = {name, at: Q.nowIso(), snapshots: Q.snapshotSpecs(state.adminLifecycleSnapshots)};
+        Q.collection(Q.STATE_COLLECTION).updateOne({_id: state._id}, {$push: {adminAuthoritySavepoints: captured}});
+      } else {
+        if (!saved) Q.fail("Admin savepoint missing.");
+        Q.restoreSnapshots(saved.snapshots);
+        for (const snapshot of saved.snapshots)
+          if (!Q.sameJson(ordered(snapshot.documents), ordered(Q.collection(snapshot.collection).find(snapshot.selector).toArray())))
+            Q.fail("Admin branch restore differs; retain savepoint.");
+      }
+    }
+    Q.printObject({checkpointId, command, savepoint: name || null,
+      group: Q.collection("communityGroups").findOne({_id: groupId}, {name: 1, ownerUserId: 1, lifecycleStatus: 1, takeoverCandidates: 1}),
+      members: Q.collection("activityMembers").find({ownerType: "community", ownerId: groupId}).toArray()
+        .map(m => ({userId: m.userId, role: m.role, status: m.status, grantedBy: m.managerGrantedByUserId, updates: m.communityUpdates})),
+      notifications: Q.collection("userNotifications").find({sourceType: "community", sourceId: groupId}).toArray()
+        .map(n => ({id: n._id, kind: n.kind, recipient: n.recipientUserId, readAtIso: n.readAtIso, payload: n.payload}))});
     return;
   }
   if (command === "prepare-admin-moderation") {
@@ -1274,7 +1317,7 @@
     Q.restoreSnapshots(state.adminLifecycleSnapshots.map(snapshot =>
       snapshot.collection === "chats" && snapshot.selector.chatId
         ? {...snapshot, selector: {id: snapshot.selector.chatId}} : snapshot));
-    Q.collection(Q.STATE_COLLECTION).updateOne({_id: state._id}, {$unset: {adminLifecycleSnapshots: "", adminBaseFeedUnrelatedItems: "", adminBaseChatReadPrepared: "", adminBaseChatMessagePrepared: ""}});
+    Q.collection(Q.STATE_COLLECTION).updateOne({_id: state._id}, {$unset: {adminLifecycleSnapshots: "", adminAuthoritySavepoints: "", adminBaseFeedUnrelatedItems: "", adminBaseChatReadPrepared: "", adminBaseChatMessagePrepared: ""}});
     Q.printObject({checkpointId, adminLifecycleRestored: true});
     return;
   }

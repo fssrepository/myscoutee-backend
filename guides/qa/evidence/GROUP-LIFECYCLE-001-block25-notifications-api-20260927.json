@@ -1,7 +1,7 @@
 {
   "checkpoint": "GROUP-LIFECYCLE-001",
   "block": 25,
-  "status": "IN PROGRESS",
+  "status": "HTTP PASS/CLOSED",
   "fixture": "prepare-profile-notifications active, no outcomes seeded",
   "layout": {
     "en": [
@@ -351,10 +351,7 @@
     }
   },
   "verified": "Existing timestamp/first-row alignment, 2-line details with action padding; New/bell/Close stay header, workspace All goes below. 320/360/1100 EN and320 HU, row action menu fits viewport. No style changes required.",
-  "remaining": [
-    "notification account scope/live write counters including contact and multi-group tickets",
-    "confirmation wording review"
-  ],
+  "remaining": [],
   "menuBadgeAlignment": [
     {
       "label": "Main profile",
@@ -592,5 +589,1050 @@
     "checkBeforeBadge": true,
     "sameBadgeRightEdge": 336.125,
     "watcherBuild": "PASS 2026-09-27T18:52:18.930Z"
-  }
+  },
+  "notificationScope": {
+    "result": [
+      {
+        "profile": "Design Circle",
+        "before": {
+          "heading": "Notifications\n\n23 new notifications\n\nfiber_new\nNew\nexpand_more\n23\nnotifications_active\nclose\napps\nAll\nexpand_more\nSun, 27 Sept 2026\nschedule\n27 S",
+          "rows": [
+            "schedule\n27 Sept, 21:01\nevent\nEvent reminder\nEvent · Design Circle\nYour event starts soon.\nmore_vert",
+            "schedule\n27 Sept, 21:01\nevent\nEvent reminder\nEvent · Seattle Friends\nYour event starts soon.\nmore_vert",
+            "schedule\n27 Sept, 20:16\nwarning_amber\nSecurity alert\nMyScoutee\nNew login from Chrome on Linux desktop.\nmore_vert"
+          ]
+        },
+        "after": {
+          "heading": "Notifications\n\n22 new notifications\n\nfiber_new\nNew\nexpand_more\n22\nnotifications_active\nclose\napps\nAll\nexpand_more\nSun, 27 Sept 2026\nschedule\n27 S",
+          "badge": [
+            "Open notifications, 22 new"
+          ]
+        }
+      },
+      {
+        "profile": "Seattle Friends",
+        "before": {
+          "heading": "Notifications\n\n22 new notifications\n\nfiber_new\nNew\nexpand_more\n22\nnotifications_active\nclose\napps\nAll\nexpand_more\nSun, 27 Sept 2026\nschedule\n27 S",
+          "rows": [
+            "schedule\n27 Sept, 21:01\nevent\nEvent reminder\nEvent · Seattle Friends\nYour event starts soon.\nmore_vert",
+            "schedule\n27 Sept, 20:16\nwarning_amber\nSecurity alert\nMyScoutee\nNew login from Chrome on Linux desktop.\nmore_vert",
+            "schedule\n27 Sept, 20:13\nwarning_amber\nSecurity alert\nMyScoutee\nNew login from Chrome on Linux desktop.\nmore_vert"
+          ]
+        },
+        "after": {
+          "heading": "Notifications\n\n21 new notifications\n\nfiber_new\nNew\nexpand_more\n21\nnotifications_active\nclose\napps\nAll\nexpand_more\nSun, 27 Sept 2026\nschedule\n27 S",
+          "badge": [
+            "Open notifications, 21 new"
+          ]
+        }
+      },
+      {
+        "profile": "Main profile",
+        "before": {
+          "heading": "Notifications\n\n21 new notifications\n\nfiber_new\nNew\nexpand_more\n21\nnotifications_active\nclose\napps\nAll\nexpand_more\nSun, 27 Sept 2026\nschedule\n27 S",
+          "rows": [
+            "schedule\n27 Sept, 20:16\nwarning_amber\nSecurity alert\nMyScoutee\nNew login from Chrome on Linux desktop.\nmore_vert",
+            "schedule\n27 Sept, 20:13\nwarning_amber\nSecurity alert\nMyScoutee\nNew login from Chrome on Linux desktop.\nmore_vert",
+            "schedule\n27 Sept, 18:39\nwarning_amber\nSecurity alert\nMyScoutee\nNew login from Chrome on Linux desktop.\nmore_vert"
+          ]
+        },
+        "after": {
+          "heading": "Notifications\n\n21 new notifications\n\nfiber_new\nNew\nexpand_more\n21\nnotifications_active\nclose\napps\nAll\nexpand_more\nSun, 27 Sept 2026\nschedule\n27 S",
+          "badge": [
+            "Open notifications, 21 new"
+          ]
+        }
+      }
+    ],
+    "requests": [
+      {
+        "method": "GET",
+        "path": "/game"
+      },
+      {
+        "method": "GET",
+        "path": "/styles.css"
+      },
+      {
+        "method": "GET",
+        "path": "/assets/logo/heart.webp"
+      },
+      {
+        "method": "GET",
+        "path": "/chunk-TQN7MSAV.js"
+      },
+      {
+        "method": "GET",
+        "path": "/chunk-T3U233UL.js"
+      },
+      {
+        "method": "GET",
+        "path": "/chunk-HFU3254I.js"
+      },
+      {
+        "method": "GET",
+        "path": "/chunk-3TF4ZRLM.js"
+      },
+      {
+        "method": "GET",
+        "path": "/chunk-JLKDNV7T.js"
+      },
+      {
+        "method": "GET",
+        "path": "/chunk-L64JVHGQ.js"
+      },
+      {
+        "method": "GET",
+        "path": "/chunk-6ULTXWAU.js"
+      },
+      {
+        "method": "GET",
+        "path": "/main.js"
+      },
+      {
+        "method": "GET",
+        "path": "/manifest.webmanifest"
+      },
+      {
+        "method": "GET",
+        "path": "/media/roboto-latin-400-normal.woff2"
+      },
+      {
+        "method": "GET",
+        "path": "/media/roboto-latin-500-normal.woff2"
+      },
+      {
+        "method": "GET",
+        "path": "/api/deployment/configuration"
+      },
+      {
+        "method": "GET",
+        "path": "/assets/icon/favicon.ico"
+      },
+      {
+        "method": "GET",
+        "path": "/assets/icon/android-chrome-192x192.png"
+      },
+      {
+        "method": "GET",
+        "path": "/app-MHOQYIVL.js"
+      },
+      {
+        "method": "GET",
+        "path": "/app.config-QG4GG4M6.js"
+      },
+      {
+        "method": "GET",
+        "path": "/chunk-BYHFPAZV.js"
+      },
+      {
+        "method": "GET",
+        "path": "/chunk-YXJF4KJM.js"
+      },
+      {
+        "method": "GET",
+        "path": "/chunk-ERMYLUFQ.js"
+      },
+      {
+        "method": "GET",
+        "path": "/chunk-UWELYFVD.js"
+      },
+      {
+        "method": "GET",
+        "path": "/chunk-ZS4U3KPY.js"
+      },
+      {
+        "method": "GET",
+        "path": "/chunk-HPBYUARP.js"
+      },
+      {
+        "method": "GET",
+        "path": "/chunk-NXTIRLZT.js"
+      },
+      {
+        "method": "GET",
+        "path": "/chunk-HX7LH4KK.js"
+      },
+      {
+        "method": "GET",
+        "path": "/chunk-JNKT2QXZ.js"
+      },
+      {
+        "method": "GET",
+        "path": "/chunk-7CWRFA6O.js"
+      },
+      {
+        "method": "GET",
+        "path": "/chunk-TECFSQV7.js"
+      },
+      {
+        "method": "GET",
+        "path": "/chunk-WUCUCRSJ.js"
+      },
+      {
+        "method": "GET",
+        "path": "/chunk-SSQMZYFE.js"
+      },
+      {
+        "method": "GET",
+        "path": "/chunk-NRCVUXIK.js"
+      },
+      {
+        "method": "GET",
+        "path": "/chunk-LRPNEUOR.js"
+      },
+      {
+        "method": "GET",
+        "path": "/chunk-E5XLPYWY.js"
+      },
+      {
+        "method": "GET",
+        "path": "/chunk-PU66I5KZ.js"
+      },
+      {
+        "method": "GET",
+        "path": "/chunk-QYWDDCWO.js"
+      },
+      {
+        "method": "GET",
+        "path": "/chunk-LSVR2K2A.js"
+      },
+      {
+        "method": "GET",
+        "path": "/chunk-7WTZPBIE.js"
+      },
+      {
+        "method": "GET",
+        "path": "/chunk-OGNM2EIF.js"
+      },
+      {
+        "method": "GET",
+        "path": "/chunk-USUEPM4G.js"
+      },
+      {
+        "method": "GET",
+        "path": "/chunk-O6SMZG2Q.js"
+      },
+      {
+        "method": "GET",
+        "path": "/chunk-FADCVZ2D.js"
+      },
+      {
+        "method": "GET",
+        "path": "/chunk-FHW2XU5N.js"
+      },
+      {
+        "method": "GET",
+        "path": "/chunk-FTF2MGLM.js"
+      },
+      {
+        "method": "GET",
+        "path": "/chunk-YJRKYYMN.js"
+      },
+      {
+        "method": "GET",
+        "path": "/chunk-6KKLC3DB.js"
+      },
+      {
+        "method": "GET",
+        "path": "/chunk-DMUDW5HL.js"
+      },
+      {
+        "method": "GET",
+        "path": "/chunk-ZIRIBZDU.js"
+      },
+      {
+        "method": "GET",
+        "path": "/chunk-KK3IZ266.js"
+      },
+      {
+        "method": "GET",
+        "path": "/api/deployment/configuration"
+      },
+      {
+        "method": "GET",
+        "path": "/app-version.json"
+      },
+      {
+        "method": "GET",
+        "path": "/side-menu.component-RYAHQF5J.js"
+      },
+      {
+        "method": "GET",
+        "path": "/assets/logo/heart.webp"
+      },
+      {
+        "method": "GET",
+        "path": "/media/public"
+      },
+      {
+        "method": "GET",
+        "path": "/demo-bootstrap.service-73IYFLCN.js"
+      },
+      {
+        "method": "GET",
+        "path": "/users.service-VRYVQC3K.js"
+      },
+      {
+        "method": "GET",
+        "path": "/media/material-icons.woff2"
+      },
+      {
+        "method": "GET",
+        "path": "/assets/logo/heart.webp"
+      },
+      {
+        "method": "GET",
+        "path": "/chunk-PYE6SECG.js"
+      },
+      {
+        "method": "GET",
+        "path": "/chunk-XO42AFCI.js"
+      },
+      {
+        "method": "GET",
+        "path": "/chunk-RKLQGPIO.js"
+      },
+      {
+        "method": "GET",
+        "path": "/chunk-L3NYD5E3.js"
+      },
+      {
+        "method": "GET",
+        "path": "/chunk-MJFJZLF3.js"
+      },
+      {
+        "method": "GET",
+        "path": "/chunk-DHXDXLMT.js"
+      },
+      {
+        "method": "GET",
+        "path": "/chunk-QIW5WS4C.js"
+      },
+      {
+        "method": "GET",
+        "path": "/chunk-GSLZWOJO.js"
+      },
+      {
+        "method": "GET",
+        "path": "/chunk-A2FCYUKI.js"
+      },
+      {
+        "method": "GET",
+        "path": "/chunk-W2KEJF4H.js"
+      },
+      {
+        "method": "GET",
+        "path": "/chunk-7O3YKG3F.js"
+      },
+      {
+        "method": "GET",
+        "path": "/chunk-AKUDODFR.js"
+      },
+      {
+        "method": "GET",
+        "path": "/chunk-H3LIN46J.js"
+      },
+      {
+        "method": "GET",
+        "path": "/chunk-J3C5OQBE.js"
+      },
+      {
+        "method": "GET",
+        "path": "/chunk-KVBIDPMB.js"
+      },
+      {
+        "method": "GET",
+        "path": "/chunk-6OUNC2SK.js"
+      },
+      {
+        "method": "GET",
+        "path": "/chunk-SYKOEE4K.js"
+      },
+      {
+        "method": "GET",
+        "path": "/chunk-ZWPDXYU4.js"
+      },
+      {
+        "method": "GET",
+        "path": "/chunk-GG6X2MYD.js"
+      },
+      {
+        "method": "GET",
+        "path": "/chunk-THLVCOYV.js"
+      },
+      {
+        "method": "GET",
+        "path": "/chunk-4VDMPLLP.js"
+      },
+      {
+        "method": "GET",
+        "path": "/chunk-MHCTFF4B.js"
+      },
+      {
+        "method": "GET",
+        "path": "/chunk-3E2WF2MR.js"
+      },
+      {
+        "method": "GET",
+        "path": "/chunk-G5RU6OKS.js"
+      },
+      {
+        "method": "GET",
+        "path": "/chunk-NLSF2BA6.js"
+      },
+      {
+        "method": "GET",
+        "path": "/chunk-5NYQFMMB.js"
+      },
+      {
+        "method": "GET",
+        "path": "/chunk-QTZRA7AZ.js"
+      },
+      {
+        "method": "GET",
+        "path": "/chunk-KICWEBE2.js"
+      },
+      {
+        "method": "GET",
+        "path": "/chunk-637IXI42.js"
+      },
+      {
+        "method": "GET",
+        "path": "/chunk-R7M7M7QM.js"
+      },
+      {
+        "method": "GET",
+        "path": "/chunk-2XAMZBDM.js"
+      },
+      {
+        "method": "GET",
+        "path": "/chunk-BUO5IN2U.js"
+      },
+      {
+        "method": "GET",
+        "path": "/chunk-S5VAWFIP.js"
+      },
+      {
+        "method": "GET",
+        "path": "/chunk-GO4QKS7Q.js"
+      },
+      {
+        "method": "GET",
+        "path": "/chunk-NSRAU23M.js"
+      },
+      {
+        "method": "GET",
+        "path": "/chunk-Z7T4C7EV.js"
+      },
+      {
+        "method": "GET",
+        "path": "/chunk-GDCARWWT.js"
+      },
+      {
+        "method": "GET",
+        "path": "/chunk-INTSKQDH.js"
+      },
+      {
+        "method": "GET",
+        "path": "/chunk-PEEXTIXQ.js"
+      },
+      {
+        "method": "GET",
+        "path": "/chunk-ER43DWH6.js"
+      },
+      {
+        "method": "GET",
+        "path": "/chunk-6IUX5NH7.js"
+      },
+      {
+        "method": "GET",
+        "path": "/chunk-YZTI3KTG.js"
+      },
+      {
+        "method": "GET",
+        "path": "/chunk-UUYPE5EO.js"
+      },
+      {
+        "method": "GET",
+        "path": "/chunk-HULPHKI6.js"
+      },
+      {
+        "method": "GET",
+        "path": "/chunk-W6QCJGKB.js"
+      },
+      {
+        "method": "GET",
+        "path": "/chunk-FDBYPT7G.js"
+      },
+      {
+        "method": "GET",
+        "path": "/chunk-X2PNUO6U.js"
+      },
+      {
+        "method": "GET",
+        "path": "/chunk-TZYOJUHK.js"
+      },
+      {
+        "method": "GET",
+        "path": "/chunk-ELXRVOUR.js"
+      },
+      {
+        "method": "GET",
+        "path": "/chunk-ELJL2TTW.js"
+      },
+      {
+        "method": "GET",
+        "path": "/chunk-AJS4VOYY.js"
+      },
+      {
+        "method": "GET",
+        "path": "/chunk-APKNMBXX.js"
+      },
+      {
+        "method": "GET",
+        "path": "/chunk-GOCFJFM3.js"
+      },
+      {
+        "method": "GET",
+        "path": "/assets/logo/heart.webp"
+      },
+      {
+        "method": "GET",
+        "path": "http://localhost/a917eab5-c2a6-4846-a9da-307519abdb80"
+      },
+      {
+        "method": "GET",
+        "path": "/assets/icon/android-chrome-192x192.png"
+      },
+      {
+        "method": "GET",
+        "path": "/api/auth/me"
+      },
+      {
+        "method": "GET",
+        "path": "/home.component-LUAFNYIB.js"
+      },
+      {
+        "method": "GET",
+        "path": "/api/i18n/bundle"
+      },
+      {
+        "method": "GET",
+        "path": "/api/i18n/bundle"
+      },
+      {
+        "method": "GET",
+        "path": "/chunk-NJMZZHNL.js"
+      },
+      {
+        "method": "GET",
+        "path": "/api/auth/me/profile-ext"
+      },
+      {
+        "method": "GET",
+        "path": "/api/privacy/active"
+      },
+      {
+        "method": "GET",
+        "path": "/api/help/active"
+      },
+      {
+        "method": "GET",
+        "path": "/api/terms/active"
+      },
+      {
+        "method": "GET",
+        "path": "/api/activities/events/mingle/state"
+      },
+      {
+        "method": "GET",
+        "path": "/assets/logo/heart.webp"
+      },
+      {
+        "method": "GET",
+        "path": "/api/activities/events/mingle/state"
+      },
+      {
+        "method": "GET",
+        "path": "/media/public"
+      },
+      {
+        "method": "POST",
+        "path": "/api/auth/me/realtime/long-poll"
+      },
+      {
+        "method": "GET",
+        "path": "/api/groups/workspaces"
+      },
+      {
+        "method": "GET",
+        "path": "/api/privacy/consents"
+      },
+      {
+        "method": "GET",
+        "path": "/api/auth/me/profile-ext"
+      },
+      {
+        "method": "GET",
+        "path": "/api/help/active"
+      },
+      {
+        "method": "GET",
+        "path": "/api/privacy/active"
+      },
+      {
+        "method": "GET",
+        "path": "/api/terms/active"
+      },
+      {
+        "method": "GET",
+        "path": "/api/activities/events/mingle/state"
+      },
+      {
+        "method": "GET",
+        "path": "/api/groups/workspaces"
+      },
+      {
+        "method": "POST",
+        "path": "/api/auth/me/realtime/long-poll"
+      },
+      {
+        "method": "GET",
+        "path": "/notification-center-popup.component-7KIISEIL.js"
+      },
+      {
+        "method": "GET",
+        "path": "/chunk-BLPCF5L6.js"
+      },
+      {
+        "method": "GET",
+        "path": "/chunk-HIYOP6IH.js"
+      },
+      {
+        "method": "GET",
+        "path": "/chunk-JXZKAEDD.js"
+      },
+      {
+        "method": "GET",
+        "path": "/api/notifications"
+      },
+      {
+        "method": "GET",
+        "path": "/api/notifications"
+      },
+      {
+        "method": "POST",
+        "path": "/api/notifications/qa25-notification-0/read"
+      },
+      {
+        "method": "GET",
+        "path": "/api/activities/events/mingle/state"
+      },
+      {
+        "method": "GET",
+        "path": "/api/auth/me/profile-ext"
+      },
+      {
+        "method": "GET",
+        "path": "/api/help/active"
+      },
+      {
+        "method": "GET",
+        "path": "/api/privacy/active"
+      },
+      {
+        "method": "GET",
+        "path": "/api/terms/active"
+      },
+      {
+        "method": "GET",
+        "path": "/api/activities/events/mingle/state"
+      },
+      {
+        "method": "GET",
+        "path": "/api/groups/workspaces"
+      },
+      {
+        "method": "POST",
+        "path": "/api/auth/me/realtime/long-poll"
+      },
+      {
+        "method": "GET",
+        "path": "/api/notifications"
+      },
+      {
+        "method": "GET",
+        "path": "/api/notifications"
+      },
+      {
+        "method": "POST",
+        "path": "/api/notifications/qa25-notification-1/read"
+      },
+      {
+        "method": "GET",
+        "path": "/api/activities/events/mingle/state"
+      },
+      {
+        "method": "GET",
+        "path": "/api/auth/me/profile-ext"
+      },
+      {
+        "method": "GET",
+        "path": "/api/help/active"
+      },
+      {
+        "method": "GET",
+        "path": "/api/privacy/active"
+      },
+      {
+        "method": "GET",
+        "path": "/api/terms/active"
+      },
+      {
+        "method": "GET",
+        "path": "/api/activities/events/mingle/state"
+      },
+      {
+        "method": "GET",
+        "path": "/api/groups/workspaces"
+      },
+      {
+        "method": "POST",
+        "path": "/api/auth/me/realtime/long-poll"
+      },
+      {
+        "method": "GET",
+        "path": "/api/notifications"
+      },
+      {
+        "method": "GET",
+        "path": "/api/notifications"
+      }
+    ]
+  },
+  "notificationCounters": {
+    "unread": 21,
+    "counter": 21,
+    "controls": [
+      {
+        "_id": "qa25-notification-0",
+        "payload": {
+          "workspaceGroupId": "seed-community-design-circle"
+        },
+        "readAtIso": "2026-09-27T19:02:01.572046547Z"
+      },
+      {
+        "_id": "qa25-notification-1",
+        "payload": {
+          "workspaceGroupId": "seed-community-seattle-friends"
+        },
+        "readAtIso": "2026-09-27T19:02:03.679583952Z"
+      }
+    ]
+  },
+  "contactNotification": {
+    "notificationRows": [
+      "schedule\n27 Sept, 21:04\nwarning_amber\nSecurity alert\nMyScoutee\nNew login from Chrome on Linux desktop.\nmore_vert",
+      "schedule\n27 Sept, 21:04\nChat request approved\nMilo Grant · Chat\nYour direct chat request was approved. You can now chat.\nmore_vert",
+      "schedule\n27 Sept, 20:16\nwarning_amber\nSecurity alert\nMyScoutee\nNew login from Chrome on Linux desktop.\nmore_vert"
+    ],
+    "heading": "Notifications\n\n23 new notifications\n\nfiber_new\nNew\nexpand_more\n23\nnotifications_active\nclose\napps\nAll\nexpand_more\nSun, 27 Sept 2026\nschedule\n27 Sept, "
+  },
+  "contactPersistence": {
+    "before": [
+      {
+        "userId": "af0436815ab38f4864dd1e24",
+        "pending": 0,
+        "notifications": 21
+      },
+      {
+        "userId": "eb1ca0b761885bb0763e2929",
+        "pending": 0,
+        "notifications": 12
+      }
+    ],
+    "after": [
+      {
+        "_id": {
+          "$oid": "af0436815ab38f4864dd1e24"
+        },
+        "userId": "af0436815ab38f4864dd1e24",
+        "activities": {
+          "notifications": 23
+        }
+      },
+      {
+        "_id": {
+          "$oid": "eb1ca0b761885bb0763e2929"
+        },
+        "userId": "eb1ca0b761885bb0763e2929",
+        "activities": {
+          "notifications": 13
+        },
+        "contactRequestsPending": 0
+      }
+    ],
+    "access": [
+      {
+        "_id": "24:af0436815ab38f4864dd1e24eb1ca0b761885bb0763e2929",
+        "status": "approved"
+      }
+    ],
+    "notifications": [
+      {
+        "_id": {
+          "$oid": "6ab968a52d0874c32bf379ee"
+        },
+        "recipientUserId": "af0436815ab38f4864dd1e24",
+        "kind": "contact-chat-approved",
+        "payload": {}
+      },
+      {
+        "_id": {
+          "$oid": "6ab968702d0874c32bf379e9"
+        },
+        "recipientUserId": "eb1ca0b761885bb0763e2929",
+        "kind": "contact-chat-requested",
+        "payload": {}
+      }
+    ]
+  },
+  "notificationPrerequisites": "Two group-tagged unread inputs prepared by versioned fixture; counter aligned before execution, read results not seeded. Original snapshot retained. Prior baseline had12 stored vs21 unread; initial read correctly decremented both by1. No notification-producer PASS inferred from prepared inputs.",
+  "notificationGroupLabelRepair": "Existing source subtitle now includes payload.workspaceGroupName. Watcher PASS2026-09-27T19:01:28.947Z; same generic message used for both input groups, actual UI distinguishes each group.",
+  "contactExecution": "Own snapshot: UI request canceled then confirmed, Milo pending request count1; Approve canceled then confirmed, count0 and own saved contact1; Alex sees real approval notification after switching to Seattle Friends. restore-profile-contacts exactly verified. Both login notifications and counters are covered by restored scope.",
+  "ticketsAfterLeave": [
+    {
+      "workspace": "Main profile",
+      "ticketButton": "",
+      "ui": [
+        {
+          "label": "Activities",
+          "text": "Activities\n\nAll\n\nschedule\ntoday\nclose\nevent\nEvents\nexpand_more\n21\nwidgets\nAll\nexpand_more\n28\nexplore\nNo items\nNo event activity items in this filter."
+        },
+        {
+          "label": "Assets · Ticket",
+          "text": "Assets · Ticket\n\n1 ticketed event\n\nschedule\nUpcoming\nexpand_more\nclose\nqr_code_2\nTicket\nexpand_more\n1\nqr_code_scanner\nMon, Sep 28\nqr_code_2\npublic\nQA25 Design Ticket\n\nEvent · Design Circle · Sep 28, 9:09 PM · 0 km\n\nExternal sharing prerequisite"
+        }
+      ],
+      "responses": [
+        {
+          "status": 200,
+          "body": {
+            "items": [
+              {
+                "id": "f02709270000000000000089",
+                "holderUserId": "group:seed-community-design-circle:af0436815ab38f4864dd1e24",
+                "scanCode": "TKT-4a4517b7-d588-4360-bbff-c632095fa0bc",
+                "usedAtIso": null,
+                "type": "events",
+                "status": "A",
+                "title": "QA25 Design Ticket",
+                "subtitle": "External sharing prerequisite",
+                "detail": "",
+                "dateIso": "2026-09-28T19:09:07.010Z",
+                "distanceMetersExact": 0,
+                "isAdmin": false,
+                "startAt": "2026-09-28T19:09:07.010Z",
+                "endAt": "2026-09-28T20:09:07.010Z",
+                "imageUrl": "/media/public?key=images/demo-events/event-002/v1/large.webp",
+                "visibility": "Public",
+                "avatarInitials": "AT",
+                "creatorInitials": "AT",
+                "creatorName": "Lina Park",
+                "creatorAvatarUrl": "/media/public?key=images/demo-profiles/178e8d0cbe164fa3fede5884/photo-01/large.webp",
+                "revision": "qa24:f02709270000000000000089:ticket\u001fTKT-4a4517b7-d588-4360-bbff-c632095fa0bc\u001fA\u001f2026-09-27T19:09:09.511Z\u001f\u001fA\u001fQA25 Design Ticket\u001fExternal sharing prerequisite\u001f\u001f2026-09-28T19:09:07.010Z\u001f2026-09-28T20:09:07.010Z\u001f/media/public?key=images/demo-events/event-002/v1/large.webp\u001fPublic\u001fLina Park\u001f/media/public?key=images/demo-profiles/178e8d0cbe164fa3fede5884/photo-01/large.webp:Design Circle",
+                "workspaceGroupId": "seed-community-design-circle",
+                "workspaceGroupName": "Design Circle"
+              }
+            ],
+            "total": 1
+          }
+        }
+      ]
+    },
+    {
+      "workspace": "Design Circle",
+      "ticketButton": "",
+      "ui": [
+        {
+          "label": "Activities",
+          "text": "Activities\n\nAll\n\nschedule\ntoday\nclose\nevent\nEvents\nexpand_more\nwidgets\nAll\nexpand_more\nexplore\nNo items\nNo event activity items in this filter."
+        },
+        {
+          "label": "Assets · Ticket",
+          "text": "Assets · Ticket\n\n1 ticketed event\n\nschedule\nUpcoming\nexpand_more\nclose\nqr_code_2\nTicket\nexpand_more\n1\nqr_code_scanner\nMon, Sep 28\nqr_code_2\npublic\nQA25 Design Ticket\n\nEvent · Design Circle · Sep 28, 9:09 PM · 0 km\n\nExternal sharing prerequisite"
+        }
+      ],
+      "responses": [
+        {
+          "status": 200,
+          "body": {
+            "items": [
+              {
+                "id": "f02709270000000000000089",
+                "holderUserId": "group:seed-community-design-circle:af0436815ab38f4864dd1e24",
+                "scanCode": "TKT-4a4517b7-d588-4360-bbff-c632095fa0bc",
+                "usedAtIso": null,
+                "type": "events",
+                "status": "A",
+                "title": "QA25 Design Ticket",
+                "subtitle": "External sharing prerequisite",
+                "detail": "",
+                "dateIso": "2026-09-28T19:09:07.010Z",
+                "distanceMetersExact": 0,
+                "isAdmin": false,
+                "startAt": "2026-09-28T19:09:07.010Z",
+                "endAt": "2026-09-28T20:09:07.010Z",
+                "imageUrl": "/media/public?key=images/demo-events/event-002/v1/large.webp",
+                "visibility": "Public",
+                "avatarInitials": "AT",
+                "creatorInitials": "AT",
+                "creatorName": "Lina Park",
+                "creatorAvatarUrl": "/media/public?key=images/demo-profiles/178e8d0cbe164fa3fede5884/photo-01/large.webp",
+                "revision": "qa24:f02709270000000000000089:ticket\u001fTKT-4a4517b7-d588-4360-bbff-c632095fa0bc\u001fA\u001f2026-09-27T19:09:09.511Z\u001f\u001fA\u001fQA25 Design Ticket\u001fExternal sharing prerequisite\u001f\u001f2026-09-28T19:09:07.010Z\u001f2026-09-28T20:09:07.010Z\u001f/media/public?key=images/demo-events/event-002/v1/large.webp\u001fPublic\u001fLina Park\u001f/media/public?key=images/demo-profiles/178e8d0cbe164fa3fede5884/photo-01/large.webp:Design Circle",
+                "workspaceGroupId": "seed-community-design-circle",
+                "workspaceGroupName": "Design Circle"
+              }
+            ],
+            "total": 1
+          }
+        }
+      ]
+    },
+    {
+      "workspace": "Seattle Friends",
+      "ticketButton": "",
+      "ui": [
+        {
+          "label": "Activities",
+          "text": "Activities\n\nAll\n\nschedule\ntoday\nclose\nevent\nEvents\nexpand_more\nwidgets\nAll\nexpand_more\nexplore\nNo items\nNo event activity items in this filter."
+        },
+        {
+          "label": "Assets · Ticket",
+          "text": "Assets · Ticket\n\n1 ticketed event\n\nschedule\nUpcoming\nexpand_more\nclose\nqr_code_2\nTicket\nexpand_more\n1\nqr_code_scanner\nMon, Sep 28\nqr_code_2\npublic\nQA25 Design Ticket\n\nEvent · Design Circle · Sep 28, 9:09 PM · 0 km\n\nExternal sharing prerequisite"
+        }
+      ],
+      "responses": [
+        {
+          "status": 200,
+          "body": {
+            "items": [
+              {
+                "id": "f02709270000000000000089",
+                "holderUserId": "group:seed-community-design-circle:af0436815ab38f4864dd1e24",
+                "scanCode": "TKT-4a4517b7-d588-4360-bbff-c632095fa0bc",
+                "usedAtIso": null,
+                "type": "events",
+                "status": "A",
+                "title": "QA25 Design Ticket",
+                "subtitle": "External sharing prerequisite",
+                "detail": "",
+                "dateIso": "2026-09-28T19:09:07.010Z",
+                "distanceMetersExact": 0,
+                "isAdmin": false,
+                "startAt": "2026-09-28T19:09:07.010Z",
+                "endAt": "2026-09-28T20:09:07.010Z",
+                "imageUrl": "/media/public?key=images/demo-events/event-002/v1/large.webp",
+                "visibility": "Public",
+                "avatarInitials": "AT",
+                "creatorInitials": "AT",
+                "creatorName": "Lina Park",
+                "creatorAvatarUrl": "/media/public?key=images/demo-profiles/178e8d0cbe164fa3fede5884/photo-01/large.webp",
+                "revision": "qa24:f02709270000000000000089:ticket\u001fTKT-4a4517b7-d588-4360-bbff-c632095fa0bc\u001fA\u001f2026-09-27T19:09:09.511Z\u001f\u001fA\u001fQA25 Design Ticket\u001fExternal sharing prerequisite\u001f\u001f2026-09-28T19:09:07.010Z\u001f2026-09-28T20:09:07.010Z\u001f/media/public?key=images/demo-events/event-002/v1/large.webp\u001fPublic\u001fLina Park\u001f/media/public?key=images/demo-profiles/178e8d0cbe164fa3fede5884/photo-01/large.webp:Design Circle",
+                "workspaceGroupId": "seed-community-design-circle",
+                "workspaceGroupName": "Design Circle"
+              }
+            ],
+            "total": 1
+          }
+        }
+      ]
+    }
+  ],
+  "ticketGroupLabel": {
+    "text": "Assets · Ticket\n\n2 ticketed events\n\nschedule\nUpcoming\nexpand_more\nclose\nqr_code_2\nTicket\nexpand_more\n2\nqr_code_scanner\nMon, Sep 28\nqr_code_2\npublic\nQA25 Seattle Ticket\n\nEvent · Seattle Friends · Sep 28, 9:09 PM · 0 km\n\nExternal sharing prerequisite\n\nqr_code_2\npublic\nQA25 Design Ticket\n\nEvent · Design Circle · Sep 28, 9:09 PM · 0 km\n\nExternal sharing prerequisite",
+    "overflow": false
+  },
+  "ticketLeave": {
+    "ui": "Activities\n\nAll\n\nschedule\ntoday\nclose\nevent\nEvents\nexpand_more\nwidgets\nAll\nexpand_more\nexplore\nNo items\nNo event activity items in this filter.",
+    "dialog": "",
+    "requests": [
+      {
+        "method": "GET",
+        "path": "/activities-popup.component-67CRSKFQ.js"
+      },
+      {
+        "method": "GET",
+        "path": "/chunk-IH2I7L5G.js"
+      },
+      {
+        "method": "POST",
+        "path": "/api/activities/events/filter"
+      },
+      {
+        "method": "GET",
+        "path": "/media/public"
+      },
+      {
+        "method": "POST",
+        "path": "/api/activities/events/trash"
+      }
+    ]
+  },
+  "ticketLeavePersistence": {
+    "ticket": {
+      "_id": "qa24:f02709270000000000000088:ticket",
+      "holderUserId": "group:seed-community-seattle-friends:af0436815ab38f4864dd1e24",
+      "status": "D"
+    },
+    "member": {
+      "_id": "event:f02709270000000000000088:group:seed-community-seattle-friends:af0436815ab38f4864dd1e24",
+      "status": "suppressed"
+    },
+    "counter": {
+      "_id": {
+        "$oid": "af0436815ab38f4864dd1e24"
+      },
+      "activities": {
+        "tickets": 1,
+        "asset": {
+          "tickets": 1
+        }
+      }
+    }
+  },
+  "confirmationHu": {
+    "lang": "hu",
+    "text": "Biztosan ki szeretnél jelentkezni?\n\nAlex Turner\n\nMégse\nKijelentkezés",
+    "box": {
+      "left": 14.390625,
+      "right": 305.609375,
+      "width": 291.21875
+    },
+    "buttons": [
+      {
+        "text": "Mégse",
+        "aria": "Mégse",
+        "class": "app-menu__button-row-item app-menu__button-row-item--labelled app-menu__button-row-item--action app-menu__palette--slate"
+      },
+      {
+        "text": "Kijelentkezés",
+        "aria": "Kijelentkezés",
+        "class": "app-menu__button-row-item app-menu__button-row-item--labelled app-menu__button-row-item--action app-menu__palette--blue"
+      }
+    ]
+  },
+  "confirmationEventEn": {
+    "text": "Leave event?\n\nQA25 Seattle Ticket\n\nCancel\nLeave",
+    "rect": {
+      "left": 14.390625,
+      "right": 345.609375,
+      "width": 331.21875
+    }
+  },
+  "ticketBaseline": "Own prepare-sharing/group-event/prepare-profile-group-tickets fixture: Alex holds one Design Circle and one Seattle Friends ticket. Actual UI and HTTP returned total2 in Base/A/B before Leave. Fixture inputs are not ticket-issuance PASS.",
+  "ticketMutation": "Real Seattle Leave event, canceled first then confirmed: ticket statusD, member suppressed, remaining Design ticket visible total1 in Base/A/B. Stored account activities.tickets=1 and activities.asset.tickets=1. Existing header counter agrees. No reload for mutation observation.",
+  "confirmationAudit": "GROUP-LIFECYCLE-001-block25-confirmation-audit-20260927.json:99 explicit source configuration objects,82 EN/HU confirmation keys, dynamic name/revision substitution and helper review. Runtime EN Generate/Revoke key, Leave group/event, Request/Approve contact; cancellation then intended confirmations. HU320 Logout canceled, question and original short action/palette fit. Not every dialog executed; no extra unit runner.",
+  "cleanup": "Exact restore-sharing and restore-profile-notifications PASS; temporary contact/API branches already restored. Dependent ticket Event chats/messages/affinity task removed. Older contact/badge snapshots retained."
 }

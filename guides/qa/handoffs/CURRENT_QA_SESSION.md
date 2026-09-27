@@ -88,17 +88,17 @@ Earlier Event Mode, Integration API, Activity Rating and EVENT-FOLLOWING-001 rem
 ```yaml
 checkpoint: GROUP-LIFECYCLE-001
 checklist: ../checklists/group/GROUP-LIFECYCLE-001.md
-substage: Block24 CLOSED with19 Java authorization tests after user excluded repair E2E;25 ACTIVE. HTTP21/48; Lifecycle21/29 (1–13,17–24),14–16 partial retained.
-fixture_phase: Older contactSnapshots/badgeSnapshots untouched;24 fixtures restored.25 profileNotificationSnapshots active.25 API branch exact restore-profile-api PASS; no profileApiSnapshots remain, Photo Walks membership restored. Shared menu badge alignment verified. Browser Alex Base, workspace selector open; no post-fix24 security E2E per user.
+substage: Block25 HTTP CLOSED;26 ACTIVE. HTTP22/48; Lifecycle22/29 (1–13,17–25),14–16 partial retained.
+fixture_phase: All25 temporary API/contact/notification/sharing/ticket scopes exactly restored. Older contactSnapshots/badgeSnapshots untouched. Browser Alex Base EN after HU cancellation check. No Admin26 fixture staged yet.
 execution_log: ../evidence/GROUP-LIFECYCLE-001-20260926.md
 execution_authority: User explicitly delegated full-flow automated QA; questions do not pause it. Testcases are independent closed units with their own restage/checkpoints/execution/cleanup.
-next_action: Continue25 notification account scope/live counters and confirmation wording.25.1 layout and25.2 API key branch verified in block25-notifications-api-20260927.json; API fixtures restored, Base revoked key401, Group key403 after Leave. Notification snapshot remains active. Local MCP OAuth simulation remains final API NOT RUN block7; user-operated browser ChatGPT deployment acceptance separate. At Group testcase boundary audit remaining NOT RUN external-config scope into independent deployment QA. User request2026-09-27: after completing the whole current testcase, audit GROUP-ISOLATION-001 against verified evidence from other testcases and remove exact duplicate checks; retain unique isolation combinations and unproven scope. Record removal provenance in ledger/evidence, keep executable blocks self-contained.
+next_action: Execute26 Admin grant/revocation, responsibility release/takeover and last-member deletion with own fixture and branch restore. At whole Group testcase boundary remove exact evidence-proven duplicates from GROUP-ISOLATION-001, preserving unique combinations; keep transfer provenance in ledger and executable blocks self-contained. Also audit remaining NOT RUN deployment-dependent checks into independent deployment QA. Local MCP OAuth remains API block7; browser ChatGPT manual acceptance remains deployment scope.
 savepoint: community-group after-contact-controls captured 2026-09-27T04:40:57.723Z, resume13. Earlier savepoints immutable.
-queue: HTTP Lifecycle25–29 with14–16 partial retained; Local Lifecycle1–29, Group Isolation1–12 and Integration API Group1–7 remain separate.
+queue: HTTP Lifecycle26–29 with14–16 partial retained; Local Lifecycle1–29, Group Isolation1–12 and Integration API Group1–7 remain separate.
 resume_gate: Run the versioned community-group status command before any relaunch. verify-lists checked all ten groups/27 memberships without mutation and the versioned launcher prepared all three actors on 2026-09-26. Do not reset changed records or replay a closed checkpoint. Check the current manifest and launcher result.
 runtime: Existing frontend-sync/backend own builds; no separate test/build process. One managed PENDING-BLOCK19 browser.
 mutation_contract: Application-wide, await persistence inside the busy confirmation dialog. Only after success apply canonical returned state through the existing stores to retained lists/cards/badges; failure retains the dialog/error and does not fake success. Keep underlying popups open. No reload to obtain a mutation result; the user identifies only the existing subevents flow as an exception.
-last_completed: Block24 HTTP checklist scope PASS/CLOSED; see block24-account-contacts-20260927.json. Account contacts/chat, resource assignment, ticket account aggregation and scanner authority; own snapshots restored.
+last_completed: Block25 HTTP PASS/CLOSED; block25-notifications-api-20260927.json and block25-confirmation-audit-20260927.json.
 ```
 
 ## Archived pair-QA resume point — 2026-09-17
