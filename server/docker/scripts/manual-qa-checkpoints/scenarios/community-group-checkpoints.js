@@ -7,7 +7,7 @@
   Q.assertDeploymentSafety();
   const command = Q.text(process.env.MANUAL_QA_COMMAND);
   if (!["status", "prepare-tools", "prepare-tools-explore", "inspect-tools", "restore-tools", "verify-lists", "inspect-location-control", "prepare-location-control", "prepare-tracking-control", "prepare-location-invitation", "set-location-control-invalid", "restore-location-control", "prepare-badges", "prepare-join", "restore-badges", "prepare-contact-request-pages",
-      "capture", "restore", "verify-savepoint", "prepare-contacts", "prepare-contact-invitees", "restore-contacts", "prepare-chat-sharing", "prepare-chat-sharing-context", "restore-chat-sharing", "prepare-cash-history", "prepare-cash-checkout", "prepare-cash-payment-methods", "restore-cash-history", "prepare-sharing", "prepare-menu-checkout", "prepare-group-asset-payment", "inspect-group-asset-payment", "prepare-sharing-group-event", "repair-sharing-identifiers", "reset-sharing-failed-event-claim", "prepare-sharing-attribution", "track-sharing-registration", "sharing-registrants", "restore-sharing", "prepare-list-pagination", "restore-list-pagination",
+      "capture", "restore", "verify-savepoint", "prepare-contacts", "prepare-profile-contacts", "restore-profile-contacts", "prepare-contact-invitees", "restore-contacts", "prepare-chat-sharing", "prepare-chat-sharing-context", "restore-chat-sharing", "prepare-cash-history", "prepare-cash-checkout", "prepare-cash-payment-methods", "restore-cash-history", "prepare-sharing", "prepare-menu-checkout", "prepare-group-asset-payment", "prepare-group-asset-payment-card", "inspect-group-asset-payment", "prepare-sharing-group-event", "repair-sharing-identifiers", "reset-sharing-failed-event-claim", "prepare-sharing-attribution", "track-sharing-registration", "sharing-registrants", "restore-sharing", "prepare-list-pagination", "restore-list-pagination",
       "prepare-member-invitation", "restore-member-invitation", "prepare-admin-lifecycle", "prepare-admin-moderation", "prepare-admin-feed-event", "prepare-admin-previews", "prepare-admin-base-chat-read", "prepare-admin-base-chat-message", "prepare-admin-base-feed", "restore-admin-lifecycle",
       "prepare-invitation", "prepare-hidden-invitation", "restore-invitation", "prepare-editor", "restore-editor", "prepare-creation", "restore-creation"].includes(command)
       || Q.text(process.env.MANUAL_QA_CHECKPOINT_ID) !== checkpointId) {
@@ -254,8 +254,10 @@
     Q.printObject({checkpointId, chatSharingRestored: true, generatedAssetTokensRemoved: cleanupTokenIds.length, verifiedScopes: retained.length});
     return;
   }
-  if (command === "prepare-contacts") {
-    if (state.contactSnapshots || state.cashHistorySnapshots || state.chatSharingSnapshots || state.sharingSnapshots)
+  if (["prepare-contacts", "prepare-profile-contacts"].includes(command)) {
+    const profileScope = command === "prepare-profile-contacts";
+    const snapshotKey = profileScope ? "profileContactSnapshots" : "contactSnapshots";
+    if (state[snapshotKey] || state.cashHistorySnapshots || state.chatSharingSnapshots || state.sharingSnapshots)
       Q.fail("Restore previous temporary controls before contacts preparation.");
     if (!(state.savepoints || []).some(point => point.name === "after-cash-history"))
       Q.fail("The closed cash boundary is required.");
@@ -279,9 +281,25 @@
       {collection: "shareTokens", selector: {ownerUserId: {$in: participantIds}}}
     ]);
     Q.collection(Q.STATE_COLLECTION).updateOne({_id: state._id}, {$set: {
-      contactSnapshots: retained, contactChatId: chatId, contactActorIds: participantIds, resumeBlock: 11
+      [snapshotKey]: retained,
+      ...(profileScope ? {profileContactChatId: chatId, profileContactActorIds: participantIds} :
+        {contactChatId: chatId, contactActorIds: participantIds, resumeBlock: 11})
     }});
     Q.printObject({checkpointId, chatId, prepared: true, productWrites: false, actors: participantIds});
+    return;
+  }
+  if (command === "restore-profile-contacts") {
+    const retained = state.profileContactSnapshots;
+    if (!retained) Q.fail("No independent profile-contact snapshot to restore.");
+    Q.restoreSnapshots(retained);
+    for (const snapshot of retained) {
+      if (!Q.sameJson(ordered(snapshot.documents), ordered(Q.collection(snapshot.collection).find(snapshot.selector).toArray())))
+        Q.fail(`${snapshot.collection} profile-contact restoration differs; retain snapshots.`);
+    }
+    Q.collection(Q.STATE_COLLECTION).updateOne({_id: state._id}, {$unset: {
+      profileContactSnapshots: "", profileContactChatId: "", profileContactActorIds: ""
+    }});
+    Q.printObject({checkpointId, profileContactsRestored: true});
     return;
   }
   if (command === "prepare-contact-invitees") {
@@ -638,12 +656,27 @@
     Q.printObject({checkpointId, prepared: true, sharingGroupId, sharingEventId, sharingAssetId, outcomesSeeded: false});
     return;
   }
-  if (["prepare-group-asset-payment", "inspect-group-asset-payment"].includes(command)) {
+  if (["prepare-group-asset-payment", "prepare-group-asset-payment-card", "inspect-group-asset-payment"].includes(command)) {
     const eventId = "f02709270000000000000083", stageId = "qa-group23-borrow", cardId = "qa-group23-barion";
     const payer = Q.collection("users").findOne({accountUserId: actors[0], workspaceGroupId: sharingGroupId});
     const event = Q.collection("events").findOne({sourceId: eventId});
     const asset = Q.collection("assets").findOne({assetId: sharingAssetId});
     if (!state.sharingSnapshots || !payer || !event || !asset) Q.fail("Own sharing/group-event prerequisite required.");
+    if (command === "prepare-group-asset-payment-card") {
+      if (!state.groupAssetPaymentPrepared || state.groupAssetCardRegistrationPrepared)
+        Q.fail("Require Group payment fixture without a card-registration snapshot.");
+      const retained = Q.snapshotSpecs([
+        {collection: "savedPaymentMethods", selector: {userId: payer.userId, _id: {$ne: cardId}}},
+        {collection: "paymentMethodRegistrations", selector: {userId: payer.userId}}
+      ]);
+      Q.collection(Q.STATE_COLLECTION).updateOne({_id: state._id}, {$push: {sharingSnapshots: {$each: retained}},
+        $set: {groupAssetCardRegistrationPrepared: true}});
+      // The fixed legacy card was never registered with the provider. Its
+      // original snapshot remains owned by prepare-group-asset-payment.
+      Q.collection("savedPaymentMethods").deleteOne({_id: cardId, userId: payer.userId});
+      Q.printObject({checkpointId, cardRegistrationReady: true, nextAction: "Register a card through the normal provider UI; revoke it before restore-sharing."});
+      return;
+    }
     if (command === "prepare-group-asset-payment") {
       if (state.groupAssetPaymentPrepared || Q.collection("savedPaymentMethods").countDocuments({_id: cardId}))
         Q.fail("Group Asset payment baseline already occupied.");
@@ -673,10 +706,7 @@
           rounding: "none", quantityRulesEnabled: false, quantityRules: [], demandRulesEnabled: false, demandRules: [],
           timeRulesEnabled: false, timeRules: [], slotPricingEnabled: false, slotOverrides: [], audience: {enabled: false, promoCodes: []},
           cancellationPolicy: {enabled: true, rules: [{id: "qa-group-full-refund", offsetUnit: "days", offsetValue: 0, refundKind: "full", refundValue: 100}]}}}});
-      Q.collection("savedPaymentMethods").insertOne({_id: cardId, version: 0, userId: payer.userId, provider: "barion",
-        providerPaymentMethodRef: "pm_sim_group23_alex_barion_4444", brand: "Mastercard", last4: "4444", expiryMonth: 9,
-        expiryYear: 2029, expiryKey: 202909, cardholderName: "ALEX TURNER", artworkKey: "graphite", status: "active",
-        createdAtIso: Q.nowIso(), updatedAtIso: Q.nowIso()});
+      // Register the provider card through the normal UI after prepare-group-asset-payment-card.
     }
     const users = Q.collection("users").find({$or: [{userId: {$in: [actors[0], actors[2]]}}, {accountUserId: {$in: [actors[0], actors[2]]}}]}).toArray();
     Q.printObject({checkpointId, eventId, stageId, assetId: sharingAssetId, payerId: payer.userId, recipientId: actors[2],
@@ -861,7 +891,7 @@
         Q.fail(`${snapshot.collection} sharing restoration differs; retained snapshots were not discarded.`);
       }
     }
-    Q.collection(Q.STATE_COLLECTION).updateOne({_id: state._id}, {$unset: {sharingSnapshots: "", sharingRegistrants: "", sharingPreparedAtIso: "", sharingExistingAttributionPrepared: "", sharingFailedClaimEvidence: "", sharingGroupEventPrepared: "", groupAssetPaymentPrepared: ""}});
+    Q.collection(Q.STATE_COLLECTION).updateOne({_id: state._id}, {$unset: {sharingSnapshots: "", sharingRegistrants: "", sharingPreparedAtIso: "", sharingExistingAttributionPrepared: "", sharingFailedClaimEvidence: "", sharingGroupEventPrepared: "", groupAssetPaymentPrepared: "", groupAssetCardRegistrationPrepared: ""}});
     Q.printObject({checkpointId, sharingRestored: true});
     return;
   }

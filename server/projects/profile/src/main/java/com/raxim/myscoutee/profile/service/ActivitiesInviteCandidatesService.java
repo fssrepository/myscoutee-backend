@@ -65,8 +65,16 @@ public class ActivitiesInviteCandidatesService {
         Users activeUser = "community".equals(ownerType)
                 ? communityGroups.actor(request.activeUserId())
                 : homeUserProfileService.resolveCurrentUser(request.activeUserId());
-        String activeUserId = normalizeId(activeUser == null ? null : activeUser.getId());
         String ownerId = normalizeId(request.ownerId());
+        if ("asset".equals(ownerType) && activeUser != null
+                && StringUtils.hasText(ownerId)
+                && StringUtils.hasText(activeUser.getAccountUserId())
+                && ownerId.equals(normalizeId(activeUser.getAccountUserId()))) {
+            // Contacts uses the authenticated account as its picker owner.
+            // Event and actual Asset member pickers retain their profile scope.
+            activeUser = communityGroups.actor(request.activeUserId());
+        }
+        String activeUserId = normalizeId(activeUser == null ? null : activeUser.getId());
         if (!StringUtils.hasText(activeUserId) || !StringUtils.hasText(ownerId) || !StringUtils.hasText(ownerType)) {
             return emptyPage(page, pageSize);
         }

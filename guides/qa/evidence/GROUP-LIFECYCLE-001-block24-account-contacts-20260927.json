@@ -1,0 +1,34 @@
+{
+  "checkpoint": "GROUP-LIFECYCLE-001",
+  "block": 24,
+  "mode": "HTTP",
+  "status": "IN PROGRESS",
+  "fixture": "Independent prepare-profile-contacts; older contactSnapshots retained",
+  "repairs": [
+    {
+      "surface": "SmartList empty state",
+      "change": "grid-column: 1 / -1",
+      "verification": "Existing frontend watcher PASS; 360 and 1100 viewport message width equals list width."
+    },
+    {
+      "surface": "Create contact from Group profile",
+      "cause": "Candidate request and authenticated backend actor resolved Group rather than account contact owner",
+      "change": "Reuse account resolution for account-owned contact picker; retain actual asset/event profile scope; guard null owner",
+      "verification": "Existing backend watcher BUILD SUCCESSFUL; Group UI returns 8 candidates, including Milo Grant"
+    },
+    {
+      "surface": "Contact and request cards",
+      "change": "Removed entire profile headline row and unused CSS, without replacement text",
+      "verification": "Existing frontend watcher PASS 2026-09-27T18:14:30.031Z; refreshed UI shows zero .contact-headline elements on Milo contact and Alex incoming request"
+    }
+  ],
+  "actions": [
+    "Alex / Design Circle: selected Milo Grant through Create contact; Contacts immediately shows 1 saved contact",
+    "Alex / Design Circle: requested direct chat; UI immediately shows Awaiting approval",
+    "Milo rejected Alex request; pending request disappeared immediately",
+    "Alex / Design Circle saw Rejected and requested again",
+    "Milo approved second request; pending cleared and Alex appeared in saved contacts",
+    "Milo opened contact chat and sent QA24 account contact scope"
+  ],
+  "remaining": "Milo decision, conversation scope/read receipts, account-switch stale response, event-linked assets and tickets"
+}
