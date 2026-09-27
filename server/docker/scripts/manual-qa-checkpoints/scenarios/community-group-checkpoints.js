@@ -7,7 +7,7 @@
   Q.assertDeploymentSafety();
   const command = Q.text(process.env.MANUAL_QA_COMMAND);
   if (!["status", "prepare-tools", "prepare-tools-explore", "inspect-tools", "restore-tools", "verify-lists", "inspect-location-control", "prepare-location-control", "prepare-tracking-control", "prepare-location-invitation", "set-location-control-invalid", "restore-location-control", "prepare-badges", "prepare-join", "restore-badges", "prepare-contact-request-pages",
-      "capture", "restore", "verify-savepoint", "prepare-contacts", "prepare-profile-contacts", "restore-profile-contacts", "prepare-contact-invitees", "restore-contacts", "prepare-chat-sharing", "prepare-chat-sharing-context", "restore-chat-sharing", "prepare-cash-history", "prepare-cash-checkout", "prepare-cash-payment-methods", "restore-cash-history", "prepare-sharing", "prepare-menu-checkout", "prepare-group-asset-payment", "prepare-group-asset-payment-card", "inspect-group-asset-payment", "prepare-sharing-group-event", "repair-sharing-identifiers", "reset-sharing-failed-event-claim", "prepare-sharing-attribution", "track-sharing-registration", "sharing-registrants", "restore-sharing", "prepare-list-pagination", "restore-list-pagination",
+      "capture", "restore", "verify-savepoint", "prepare-contacts", "prepare-profile-contacts", "restore-profile-contacts", "prepare-contact-invitees", "restore-contacts", "prepare-chat-sharing", "prepare-chat-sharing-context", "restore-chat-sharing", "prepare-cash-history", "prepare-cash-checkout", "prepare-cash-payment-methods", "restore-cash-history", "prepare-sharing", "prepare-menu-checkout", "prepare-group-asset-payment", "prepare-group-asset-scope", "prepare-profile-tickets", "prepare-group-asset-payment-card", "inspect-group-asset-payment", "prepare-sharing-group-event", "repair-sharing-identifiers", "reset-sharing-failed-event-claim", "prepare-sharing-attribution", "track-sharing-registration", "sharing-registrants", "restore-sharing", "prepare-list-pagination", "restore-list-pagination",
       "prepare-member-invitation", "restore-member-invitation", "prepare-admin-lifecycle", "prepare-admin-moderation", "prepare-admin-feed-event", "prepare-admin-previews", "prepare-admin-base-chat-read", "prepare-admin-base-chat-message", "prepare-admin-base-feed", "restore-admin-lifecycle",
       "prepare-invitation", "prepare-hidden-invitation", "restore-invitation", "prepare-editor", "restore-editor", "prepare-creation", "restore-creation"].includes(command)
       || Q.text(process.env.MANUAL_QA_CHECKPOINT_ID) !== checkpointId) {
@@ -656,8 +656,9 @@
     Q.printObject({checkpointId, prepared: true, sharingGroupId, sharingEventId, sharingAssetId, outcomesSeeded: false});
     return;
   }
-  if (["prepare-group-asset-payment", "prepare-group-asset-payment-card", "inspect-group-asset-payment"].includes(command)) {
-    const eventId = "f02709270000000000000083", stageId = "qa-group23-borrow", cardId = "qa-group23-barion";
+  if (["prepare-group-asset-payment", "prepare-group-asset-scope", "prepare-group-asset-payment-card", "inspect-group-asset-payment"].includes(command)) {
+    const scopeOnly = command === "prepare-group-asset-scope";
+    const eventId = "f02709270000000000000083", stageId = scopeOnly ? "qa-group24-borrow" : "qa-group23-borrow", cardId = "qa-group23-barion";
     const payer = Q.collection("users").findOne({accountUserId: actors[0], workspaceGroupId: sharingGroupId});
     const event = Q.collection("events").findOne({sourceId: eventId});
     const asset = Q.collection("assets").findOne({assetId: sharingAssetId});
@@ -677,7 +678,7 @@
       Q.printObject({checkpointId, cardRegistrationReady: true, nextAction: "Register a card through the normal provider UI; revoke it before restore-sharing."});
       return;
     }
-    if (command === "prepare-group-asset-payment") {
+    if (command === "prepare-group-asset-payment" || scopeOnly) {
       if (state.groupAssetPaymentPrepared || Q.collection("savedPaymentMethods").countDocuments({_id: cardId}))
         Q.fail("Group Asset payment baseline already occupied.");
       const serviceChat = `c-service-asset-${sharingAssetId}-${stageId}-${payer.userId}`;
@@ -706,16 +707,69 @@
           rounding: "none", quantityRulesEnabled: false, quantityRules: [], demandRulesEnabled: false, demandRules: [],
           timeRulesEnabled: false, timeRules: [], slotPricingEnabled: false, slotOverrides: [], audience: {enabled: false, promoCodes: []},
           cancellationPolicy: {enabled: true, rules: [{id: "qa-group-full-refund", offsetUnit: "days", offsetValue: 0, refundKind: "full", refundValue: 100}]}}}});
+      if (scopeOnly) {
+        Q.collection("events").updateOne({_id: event._id}, {$set: {title: "QA Group Asset Scope"}});
+        Q.collection("assets").updateOne({_id: asset._id}, {$set: {
+          ownerUserId: actors[0], title: "QA Account Scope Supplies", pricing: {enabled: false}
+        }});
+      }
       // Register the provider card through the normal UI after prepare-group-asset-payment-card.
     }
     const users = Q.collection("users").find({$or: [{userId: {$in: [actors[0], actors[2]]}}, {accountUserId: {$in: [actors[0], actors[2]]}}]}).toArray();
-    Q.printObject({checkpointId, eventId, stageId, assetId: sharingAssetId, payerId: payer.userId, recipientId: actors[2],
+    Q.printObject({checkpointId, eventId, stageId, assetId: sharingAssetId, payerId: payer.userId, recipientId: scopeOnly ? actors[0] : actors[2],
       prepared: true, paymentOutcomeSeeded: false,
       payments: Q.collection("payments").find({sourceId: sharingAssetId}).toArray().map(p => ({id: p._id, userId: p.userId,
         recipientUserId: p.recipientUserId, sourceId: p.sourceId, sourceType: p.sourceType, status: p.status, amount: p.amount,
         currency: p.currency, refundedAmount: p.refundedAmount})),
       profiles: users.map(u => ({userId: u.userId, spent: u.paymentSpentTotals, income: u.paymentIncomeTotals, all: u.paymentAllTotals})),
       requests: Q.collection("assetRequests").find({assetId: sharingAssetId}).toArray().map(r => ({id: r._id, userId: r.userId, ownerUserId: r.ownerUserId, status: r.status, booking: r.booking}))});
+    return;
+  }
+  if (command === "prepare-profile-tickets") {
+    const scanEventId = "f02709270000000000000083";
+    const baseEventId = "f02709270000000000000088", groupEventId = "f02709270000000000000089";
+    const ids = [scanEventId, baseEventId, groupEventId];
+    const source = Q.collection("events").findOne({sourceId: scanEventId});
+    const groupActor = Q.collection("users").findOne({accountUserId: actors[0], workspaceGroupId: sharingGroupId});
+    const peer = Q.collection("users").findOne({accountUserId: "178e8d0cbe164fa3fede5884", workspaceGroupId: sharingGroupId});
+    const member = Q.collection("activityMembers").findOne({ownerType: "event", ownerId: scanEventId});
+    if (!state.sharingSnapshots || !source || !groupActor || !peer || !member || state.profileTicketsPrepared
+        || Q.collection("events").countDocuments({sourceId: {$in: [baseEventId, groupEventId]}})
+        || Q.collection("eventTickets").countDocuments({eventId: {$in: ids}}))
+      Q.fail("Independent resource baseline required; ticket IDs must be vacant.");
+    const retained = Q.snapshotSpecs([
+      {collection: "events", selector: {sourceId: {$in: [baseEventId, groupEventId]}}},
+      {collection: "activityMembers", selector: {ownerType: "event", ownerId: {$in: [baseEventId, groupEventId]}}},
+      {collection: "eventTickets", selector: {eventId: {$in: ids}}},
+      {collection: "userNotifications", selector: {sourceId: {$in: [baseEventId, groupEventId]}}},
+      {collection: "notificationOutbox", selector: {entityId: {$in: [baseEventId, groupEventId]}}}
+    ]);
+    Q.collection(Q.STATE_COLLECTION).updateOne({_id: state._id}, {$push: {sharingSnapshots: {$each: retained}}, $set: {profileTicketsPrepared: true}});
+    const now = Q.nowIso();
+    const cases = [
+      {id: baseEventId, owner: actors[2], holder: actors[0], group: null, title: "QA24 Base Ticket"},
+      {id: groupEventId, owner: peer.userId, holder: groupActor.userId, group: sharingGroupId, title: "QA24 Group Ticket"},
+      {id: scanEventId, owner: groupActor.userId, holder: peer.userId, group: sharingGroupId, title: source.title}
+    ];
+    for (const item of cases) {
+      const event = {...source, _id: ObjectId(item.id), sourceId: item.id, syncKey: item.id,
+        ownerUserId: item.owner, creatorUserId: item.owner, admins: [item.owner], workspaceGroupId: item.group,
+        title: item.title, ticketing: true, subEventsEnabled: false, subEvents: [], subEventDefinitions: [],
+        acceptedMembers: 2, acceptedMemberUserIds: [item.owner, item.holder], isAdmin: false, isTrashed: false};
+      if (item.id !== scanEventId) Q.collection("events").insertOne(event);
+      else Q.collection("events").updateOne({_id: source._id}, {$set: {ticketing: true,
+        acceptedMembers: 2, acceptedMemberUserIds: [item.owner, item.holder]}});
+      Q.collection("events").insertOne({...event, _id: `${item.id}:overlay:${item.holder}`,
+        syncKey: `${item.id}:overlay:${item.holder}`, ownerUserId: item.holder});
+      for (const userId of item.id === scanEventId ? [item.holder] : [item.owner, item.holder]) {
+        const id = `event:${item.id}:${userId}`;
+        Q.collection("activityMembers").insertOne({...member, _id: id, syncKey: id, ownerId: item.id,
+          userId, role: userId === item.owner ? "Admin" : "Member", status: "accepted", actionAtIso: now, updatedDate: now});
+      }
+      Q.collection("eventTickets").insertOne({_id: `qa24:${item.id}:ticket`, code: `TKT-${require("crypto").randomUUID()}`,
+        eventId: item.id, holderUserId: item.holder, status: "A", issuedAtIso: now, usedAtIso: null, usedByUserId: null});
+    }
+    Q.printObject({checkpointId, profileTicketsPrepared: true, eventIds: ids, attendanceOutcomeSeeded: false});
     return;
   }
   if (command === "prepare-menu-checkout") {
@@ -891,7 +945,7 @@
         Q.fail(`${snapshot.collection} sharing restoration differs; retained snapshots were not discarded.`);
       }
     }
-    Q.collection(Q.STATE_COLLECTION).updateOne({_id: state._id}, {$unset: {sharingSnapshots: "", sharingRegistrants: "", sharingPreparedAtIso: "", sharingExistingAttributionPrepared: "", sharingFailedClaimEvidence: "", sharingGroupEventPrepared: "", groupAssetPaymentPrepared: "", groupAssetCardRegistrationPrepared: ""}});
+    Q.collection(Q.STATE_COLLECTION).updateOne({_id: state._id}, {$unset: {sharingSnapshots: "", sharingRegistrants: "", sharingPreparedAtIso: "", sharingExistingAttributionPrepared: "", sharingFailedClaimEvidence: "", sharingGroupEventPrepared: "", groupAssetPaymentPrepared: "", groupAssetCardRegistrationPrepared: "", profileTicketsPrepared: ""}});
     Q.printObject({checkpointId, sharingRestored: true});
     return;
   }

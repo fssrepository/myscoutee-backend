@@ -36,6 +36,27 @@ Execution status and evidence belong in the QA ledger, not this checklist.
 
 ## 2. Remote MCP and external clients
 
+### Manual browser-based ChatGPT acceptance
+
+The user performs this test in the **ChatGPT website in a browser**. Prepare
+this testcase's own reachable test MCP endpoint, identities and checkpoint;
+the user controls connection setup, login/consent and the ChatGPT conversation.
+
+1. Enter the MyScoutee MCP URL in ChatGPT's connection setup and choose Connect.
+2. Complete the real MyScoutee browser login and profile/group approval, then
+   return to ChatGPT without manually copying a client secret or access token.
+3. Enable the connection in a ChatGPT conversation and ask for an allowed
+   MyScoutee read operation. Verify tool discovery and the actual returned data
+   under the approved identity, using the OAuth connection just established.
+4. Reconnect and cancel a connection attempt, then revoke this run's grant and
+   verify that the private operation is no longer available through it.
+5. Record this manual run's results and restore its own checkpoint/test data.
+
+This is real external-client interoperability. The local/dev OAuth simulator
+needs no production configuration and is outside this deployment block.
+
+### Other configured external-client checks
+
 This section owns checks that actually require a configured reachable deployment
 or an external provider/client: public HTTPS, service registration, permitted
 redirects and real ChatGPT/Codex/Claude interoperability. Develop and exercise

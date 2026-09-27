@@ -28,7 +28,116 @@
     "Milo rejected Alex request; pending request disappeared immediately",
     "Alex / Design Circle saw Rejected and requested again",
     "Milo approved second request; pending cleared and Alex appeared in saved contacts",
-    "Milo opened contact chat and sent QA24 account contact scope"
+    "Milo opened contact chat and sent QA24 account contact scope",
+    "Alex opened same contact chat from Design Circle, read Milo message and replied; sender persisted as Alex Base account",
+    "Alex switched to Main profile and opened same two-message conversation",
+    "Milo opened chat after account-switch check and read Alex reply"
   ],
-  "remaining": "Milo decision, conversation scope/read receipts, account-switch stale response, event-linked assets and tickets"
+  "remaining": "Base/Group B event authority denial; account-wide ticket lists and authenticated scanner; exact sharing cleanup",
+  "accountSwitch": {
+    "heldStatus": 200,
+    "oldContacts": [
+      {
+        "userId": "eb1ca0b761885bb0763e2929",
+        "name": "Milo Grant"
+      }
+    ],
+    "afterSwitch": {
+      "text": "Contacts\n\n1 saved contacts\n\nperson_add\nclose\nsearch\ncontacts\nContacts\nexpand_more\nA\nAlex Turner\n\nlocation_on\nSeattle\n\nvisibility\nmore_vert\nMyScoutee - Chat"
+    },
+    "method": "Held actual Alex HTTP response at CDP response stage, switched account through logout/demo login, released unchanged response; Milo list showed Alex, not previous-account Milo contact."
+  },
+  "database": {
+    "chat": [
+      {
+        "_id": "chat-owner-copy:3c4228f3-5523-3853-ad7a-e1600c1de803",
+        "id": "c-contact-YWYwNDM2ODE1YWIzOGY0ODY0ZGQxZTI0CmViMWNhMGI3NjE4ODViYjA3NjNlMjkyOQ",
+        "ownerUserId": "af0436815ab38f4864dd1e24",
+        "memberIds": [
+          "af0436815ab38f4864dd1e24",
+          "eb1ca0b761885bb0763e2929"
+        ]
+      },
+      {
+        "_id": "chat-owner-copy:9b25d905-eb28-32e7-b2ed-e8153eb57156",
+        "id": "c-contact-YWYwNDM2ODE1YWIzOGY0ODY0ZGQxZTI0CmViMWNhMGI3NjE4ODViYjA3NjNlMjkyOQ",
+        "ownerUserId": "eb1ca0b761885bb0763e2929",
+        "memberIds": [
+          "af0436815ab38f4864dd1e24",
+          "eb1ca0b761885bb0763e2929"
+        ]
+      }
+    ],
+    "messages": [
+      {
+        "_id": "chat-message:c-contact-YWYwNDM2ODE1YWIzOGY0ODY0ZGQxZTI0CmViMWNhMGI3NjE4ODViYjA3NjNlMjkyOQ:9069e3ed-78f4-359d-b272-bdb66c34c913",
+        "chatId": "c-contact-YWYwNDM2ODE1YWIzOGY0ODY0ZGQxZTI0CmViMWNhMGI3NjE4ODViYjA3NjNlMjkyOQ",
+        "sender": "Alex Turner",
+        "senderAvatar": {
+          "id": "af0436815ab38f4864dd1e24",
+          "initials": "AT",
+          "gender": "man"
+        },
+        "text": "QA24 reply from Design Circle",
+        "readBy": [
+          {
+            "id": "eb1ca0b761885bb0763e2929",
+            "initials": "MG",
+            "gender": "man"
+          }
+        ]
+      },
+      {
+        "_id": "chat-message:c-contact-YWYwNDM2ODE1YWIzOGY0ODY0ZGQxZTI0CmViMWNhMGI3NjE4ODViYjA3NjNlMjkyOQ:d404470c-64d1-3300-b4b9-36e752288cbf",
+        "chatId": "c-contact-YWYwNDM2ODE1YWIzOGY0ODY0ZGQxZTI0CmViMWNhMGI3NjE4ODViYjA3NjNlMjkyOQ",
+        "sender": "Milo Grant",
+        "senderAvatar": {
+          "id": "eb1ca0b761885bb0763e2929",
+          "initials": "MG",
+          "gender": "man"
+        },
+        "text": "QA24 account contact scope",
+        "readBy": [
+          {
+            "id": "af0436815ab38f4864dd1e24",
+            "initials": "AT",
+            "gender": "man"
+          }
+        ]
+      }
+    ],
+    "access": [
+      {
+        "_id": "24:af0436815ab38f4864dd1e24eb1ca0b761885bb0763e2929",
+        "leftUserId": "af0436815ab38f4864dd1e24",
+        "rightUserId": "eb1ca0b761885bb0763e2929",
+        "requestedBy": "af0436815ab38f4864dd1e24",
+        "status": "approved",
+        "requestedAtIso": "2026-09-27T18:14:49.504269165Z",
+        "decidedAtIso": "2026-09-27T18:15:24.455850523Z",
+        "version": {
+          "low": 3,
+          "high": 0,
+          "unsigned": false
+        },
+        "_class": "com.raxim.myscoutee.profile.data.document.ContactChatAccess"
+      }
+    ]
+  },
+  "contactCleanup": "restore-profile-contacts exact PASS",
+  "assetAssignment": {
+    "calls": [
+      {
+        "path": "/api/activities/events/subevent-resources/replace",
+        "method": "POST",
+        "body": "{\"ownerId\":\"f02709270000000000000083\",\"subEventId\":\"qa-group24-borrow\",\"assetOwnerUserId\":\"group:seed-community-design-circle:af0436815ab38f4864dd1e24\",\"assetAssignmentIds\":{\"Supplies\":[\"f02709270000000000000082\"]},\"assetSettingsByType\":{\"Supplies\":{\"f02709270000000000000082\":{\"capacityMin\":0,\"capacityMax\":6,\"quantity\":1,\"addedByUserId\":\"group:seed-community-design-circle:af0436815ab38f4864dd1e24\",\"routeEnabled\":false,\"routes\":[]}}},\"supplyContributionEntriesByAssetId\":{},\"fallbackAssetCardsByType\":{},\"resourceMetricsByType\":{}}"
+      },
+      {
+        "path": "/api/assets/requests",
+        "method": "POST",
+        "body": "{\"userId\":\"af0436815ab38f4864dd1e24\",\"assetId\":\"f02709270000000000000082\",\"requests\":[{\"id\":\"manual:qa-group24-borrow:f02709270000000000000082\",\"userId\":\"group:seed-community-design-circle:af0436815ab38f4864dd1e24\",\"name\":\"Alex Turner\",\"initials\":\"AT\",\"gender\":\"man\",\"status\":\"accepted\",\"note\":\"Reserved and assigned by the owner.\",\"requestKind\":\"manual\",\"requestedAtIso\":\"2026-09-27T18:21:06.160Z\",\"menuActions\":[],\"booking\":{\"eventId\":\"f02709270000000000000083\",\"eventTitle\":\"QA Group Asset Scope\",\"subEventId\":\"qa-group24-borrow\",\"subEventTitle\":\"QA Group Asset Borrow\",\"slotKey\":\"qa-group24-borrow\",\"slotLabel\":\"QA Group Asset Borrow\",\"timeframe\":\"Sep 28 8:19 PM - 9:19 PM\",\"startAtIso\":\"2026-09-28T18:19:09.365Z\",\"endAtIso\":\"2026-09-28T19:19:09.365Z\",\"quantity\":6,\"totalAmount\":0,\"previousTotalAmount\":null,\"paymentSessionId\":null,\"inventoryApplied\":null,\"acceptedPolicyIds\":[]}}]}"
+      }
+    ],
+    "ui": "yScoutee\nvisibility_off\nGame discovery is paused\n\nChange your profile visibility to Public if you want to rate profiles and appear in game suggestions.\n\n9+\nnotifications_active\n22\nedit\n61%\nAlex Turner, 31\nlocation_on\nSeattle\nDC\nDesign Circle\nexpand_more\n99+\nnotifications\n22\ntips_and_updates\nshare\nsettings\nclose\ndiversity_2\nCOMMUNITY\nphoto_library\nFeed\nrss_feed\nFollowed\ngroups\nGroups\n3\npsychology\nIMPRESSIONS\nworkspace_premium\nHOST\nauto_awesome\nAttendee\nATTENDEE\nrate_review\nFeedback\nlocal_activity\nACTIVITIES\nstar\nRates\nchat\nChats\nmail\nInvitations\nevent\nEvents\nreceipt_long\nPayments\ninventory_2\nMY ASSETS\ndirections_car\nTransport\napartment\nAccommodation\ninventory_2\nSupplies\nqr_code_2\nTicket\ncontacts\nContacts\nActivities\n\nAll\n\nschedule\ntoday\nclose\nevent\nEvents\nexpand_more\nwidgets\nAll\nexpand_more\nexplore\nMon, 28 Sept 2026\n1 / 10\npublic\nQA Group Asset Scope\n\nSep 28, 8:19 PM - 9:19 PM\n\nSeattle \u00b7 0 km\n\nmore_vert\n\nExternal sharing prerequisite\n\nQA Group Asset Scope\n\nSep 28, 8:19 PM - 9:19 PM\n\nschedule\ntoday\nclose\nperson_pin\nMy participation\nedit\nEdit\ngroups\nMembers\nMon, 28 Sept 2026\ninventory_2\nSub Event 1\nStandard\nlocation_on\nblock\nMandatory\nblock\nQA Group Asset Borrow\n\nSep 28, 8:19 PM - 9:19 PM\n\nmore_vert\n\nGroup payer / Base Asset recipient\n\nQA Group Asset Scope - QA Group Asset Borrow\n\nSep 28, 8:19 PM - 9:19 PM\n\nclose\ninventory_2\nSupplies\nexpand_more\nadd\n0 / 6\ninventory_2\nQA Account Scope Supplies\n\nSupplies \u00b7 4-person dome + sleep systems + lantern \u00b7 Los Angeles\n\nmore_vert\n\nPacked for a two-night lakeside stay; cookware and lighting are included."
+  }
 }

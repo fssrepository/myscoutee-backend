@@ -118,6 +118,21 @@ and not updates to any closed Affiliate/Event/API PASS evidence.
 
 ## 7. MCP discovery, help and client packages — NOT RUN
 
+### Local/dev execution scope
+
+This final API block owns the local MCP OAuth client/simulator development and
+its complete local/dev execution. It requires no production configuration,
+external ChatGPT account, public deployment or real external-client registration.
+Use the development API/MCP endpoints, a local callback receiver and isolated
+test identities/configuration. Discovery, browser sign-in/consent, callback,
+token exchange and authenticated tool discovery/calls must all reach the real
+local/dev implementation. Develop the missing client flow first, then run this
+block from its own baseline, checkpoints and cleanup.
+
+An actual browser-based ChatGPT connection is a separate, user-operated manual
+deployment acceptance test; it is not a prerequisite or a substitute for this
+local API block.
+
 ### API development required before this MCP flow is tested
 
 The complete URL-first MCP connection flow is **NOT IMPLEMENTED**. Implement
