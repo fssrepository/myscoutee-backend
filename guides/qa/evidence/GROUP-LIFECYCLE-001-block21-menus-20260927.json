@@ -1,0 +1,1923 @@
+{
+  "checkpoint": "GROUP-LIFECYCLE-001",
+  "block": 21,
+  "date": "2026-09-27",
+  "status": "PARTIAL / HTTP; not closed",
+  "local": "NOT RUN",
+  "executed": "Seven audited menu surfaces, profile multiselect, pricing scope and card-menu closure; representative HU320px/EN360px and desktop1100px. UI selection/removal with parent retention, no domain commits.",
+  "fixes": [
+    "Floating notification shortcut covered mobile sheet X; contextual CSS hides shortcut while shared menu close control is present. Native pointer close retest PASS and shortcut returns.",
+    "Forced-sheet menu showed mobile X at desktop width; shared menu now also requires mobile viewport. Moderation real UI selected/removed category, mobile X and desktop title/no X PASS."
+  ],
+  "build": "Existing frontend-sync PASS 2026-09-27T16:53:10.454Z; separate specs not run. Existing mobile specs now stage360px; desktop coverage includes forced sheet.",
+  "remaining": [
+    "Checkout optional-item card menu NOT RUN: actual Sunset Beach Volley Rotation and Desert Breathwork Circle picker returned no available slots on chosen dates. Requires this testcase's own suitable slot fixture, not another testcase's PASS."
+  ],
+  "results": {
+    "profile": {
+      "initial": {
+        "width": 360,
+        "title": "LANGUAGES\nclose",
+        "close": true,
+        "heading": {
+          "x": 18.90625,
+          "y": 355.6875,
+          "width": 322.1875,
+          "height": 34,
+          "right": 341.09375,
+          "bottom": 389.6875
+        },
+        "button": {
+          "x": 307.09375,
+          "y": 355.6875,
+          "width": 34,
+          "height": 34,
+          "right": 341.09375,
+          "bottom": 389.6875
+        },
+        "hit": true,
+        "parent": true,
+        "trigger": "language\nEnglish, French\nexpand_more",
+        "scroll": [
+          {
+            "tag": "DIV",
+            "cls": "profile-editor-scroll-area",
+            "top": 291
+          }
+        ],
+        "selected": [
+          "language\nEnglish",
+          "language\nFrench"
+        ]
+      },
+      "selected": {
+        "width": 360,
+        "title": "LANGUAGES\nclose",
+        "close": true,
+        "heading": {
+          "x": 18.90625,
+          "y": 355.6875,
+          "width": 322.1875,
+          "height": 34,
+          "right": 341.09375,
+          "bottom": 389.6875
+        },
+        "button": {
+          "x": 307.09375,
+          "y": 355.6875,
+          "width": 34,
+          "height": 34,
+          "right": 341.09375,
+          "bottom": 389.6875
+        },
+        "hit": true,
+        "parent": true,
+        "scroll": [
+          {
+            "tag": "DIV",
+            "cls": "profile-editor-scroll-area",
+            "top": 291
+          }
+        ],
+        "selected": [
+          "language\nEnglish",
+          "language\nSpanish",
+          "language\nFrench"
+        ]
+      },
+      "removed": {
+        "width": 360,
+        "title": "LANGUAGES\nclose",
+        "close": true,
+        "heading": {
+          "x": 18.90625,
+          "y": 355.6875,
+          "width": 322.1875,
+          "height": 34,
+          "right": 341.09375,
+          "bottom": 389.6875
+        },
+        "button": {
+          "x": 307.09375,
+          "y": 355.6875,
+          "width": 34,
+          "height": 34,
+          "right": 341.09375,
+          "bottom": 389.6875
+        },
+        "hit": true,
+        "parent": true,
+        "trigger": "language\nEnglish, French\nexpand_more",
+        "scroll": [
+          {
+            "tag": "DIV",
+            "cls": "profile-editor-scroll-area",
+            "top": 291
+          }
+        ],
+        "selected": [
+          "language\nEnglish",
+          "language\nFrench"
+        ]
+      },
+      "closed": {
+        "width": 360,
+        "close": false,
+        "heading": null,
+        "button": null,
+        "hit": false,
+        "parent": true,
+        "trigger": "language\nEnglish, French\nexpand_more",
+        "scroll": [
+          {
+            "tag": "DIV",
+            "cls": "profile-editor-scroll-area",
+            "top": 291
+          }
+        ],
+        "selected": []
+      },
+      "desktop": {
+        "width": 1100,
+        "title": "LANGUAGES",
+        "close": false,
+        "heading": {
+          "x": 57.672515869140625,
+          "y": 362.61505126953125,
+          "width": 462.5455627441406,
+          "height": 28.11676025390625,
+          "right": 520.2180786132812,
+          "bottom": 390.7318115234375
+        },
+        "button": null,
+        "hit": false,
+        "parent": true,
+        "trigger": "language\nEnglish, French\nexpand_more",
+        "scroll": [
+          {
+            "tag": "DIV",
+            "cls": "profile-editor-scroll-area",
+            "top": 291
+          }
+        ],
+        "selected": [
+          "language\nEnglish",
+          "language\nFrench"
+        ]
+      },
+      "mutations": []
+    },
+    "rates": {
+      "before": {
+        "width": 360,
+        "title": "RATES\nclose",
+        "close": true,
+        "heading": {
+          "x": 12.984375,
+          "y": 439.03125,
+          "right": 347.015625,
+          "bottom": 473.03125,
+          "width": 334.03125,
+          "height": 34
+        },
+        "button": {
+          "x": 313.015625,
+          "y": 439.03125,
+          "right": 347.015625,
+          "bottom": 473.03125,
+          "width": 34,
+          "height": 34
+        },
+        "hit": true,
+        "panels": [
+          {
+            "name": "Activities",
+            "text": "Activities\n\nPreferences · Given\n\nschedule\nsocial_distance\nclose\nstar\nRates\nexpand_more\n99+\nnorth_eas"
+          }
+        ],
+        "scroll": [
+          {
+            "tag": "DIV",
+            "cls": "smart-list smart-list--list smart-list--card-grid smart-list--presentation-list smart-list--desktop-columns-3 smart-list--adaptive-columns smart-list--snap-mandatory experience-card-list assets-card-list",
+            "top": 39
+          }
+        ],
+        "menuText": "RATES\nclose\nperson\nPREFERENCES\nsell_off\nSocial off\nnorth_east\nGiven\n22\nsouth_west\nReceived\n6\nsync_alt\nMutual\n33\nhandshake\nMet\n3\ngroups_2\nSUGGESTIONS\nsell_off\nSocial off\ngroup_add\nGiven\n6\ngroups_2\nReceived\n16"
+      },
+      "after": {
+        "width": 360,
+        "close": false,
+        "heading": null,
+        "button": null,
+        "hit": false,
+        "panels": [
+          {
+            "name": "Activities",
+            "text": "Activities\n\nPreferences · Given\n\nschedule\nsocial_distance\nclose\nstar\nRates\nexpand_more\n99+\nnorth_eas"
+          }
+        ],
+        "scroll": [
+          {
+            "tag": "DIV",
+            "cls": "smart-list smart-list--list smart-list--card-grid smart-list--presentation-list smart-list--desktop-columns-3 smart-list--adaptive-columns smart-list--snap-mandatory experience-card-list assets-card-list",
+            "top": 39
+          }
+        ]
+      },
+      "desktop": {
+        "width": 1100,
+        "title": "RATES\nclose",
+        "close": true,
+        "heading": {
+          "x": 12.984375,
+          "y": 457.03125,
+          "right": 1087.015625,
+          "bottom": 491.03125,
+          "width": 1074.03125,
+          "height": 34
+        },
+        "button": {
+          "x": 1053.015625,
+          "y": 457.03125,
+          "right": 1087.015625,
+          "bottom": 491.03125,
+          "width": 34,
+          "height": 34
+        },
+        "hit": true,
+        "panels": [
+          {
+            "name": "Activities",
+            "text": "Activities\n\nPreferences · Given\n\nschedule\nRecent\nexpand_more\nsocial_distance\nDistance\nexpand_more\ncl"
+          }
+        ],
+        "scroll": [
+          {
+            "tag": "DIV",
+            "cls": "smart-list smart-list--list smart-list--card-grid smart-list--presentation-list smart-list--desktop-columns-3 smart-list--adaptive-columns smart-list--snap-mandatory experience-card-list assets-card-list",
+            "top": 46
+          }
+        ],
+        "menuText": "RATES\nclose\nperson\nPREFERENCES\nsell_off\nSocial off\nnorth_east\nGiven\n22\nsouth_west\nReceived\n6\nsync_alt\nMutual\n33\nhandshake\nMet\n3\ngroups_2\nSUGGESTIONS\nsell_off\nSocial off\ngroup_add\nGiven\n6\ngroups_2\nReceived\n16"
+      },
+      "rateScoreBefore": {
+        "tail": " · 11.8 km\n\nvisibility\nstar\n5\n\nMia Parker, 26\n\nSan Diego · 12 km\n\nvisibility\nstar\n7\n\nIris Bloom, 26\n\nMiami · 11.9 km\n\nvisibility\nstar\n8\n15 km\n\nElijah Grant, 33\n\nBoston · 20 km\n\nvisibility\nstar\n9\n\nMaya Stone, 29\n\nSan Diego · 19.2 km\n\nvisibility\nstar\n6\n\nSophia Baker, 34\n\nMiami · 15.9 km\n\nvisibility\nstar\n9\n\nMason Parker, 27\n\nPortland · 18.4 km\n\nvisibility\nstar\n10\n20 km\n\nEmma Reed, 32\n\nChicago · 24.3 km\n\nvisibility\nstar\n6\n\nNora Rivera, 30\n\nChicago · 21 km\n\nvisibility\nstar\n5\n\nLeo Stone, 35\n\nNashville · 24.5 km\n\nvisibility\nstar\n4\n25 km\n\nSophia Baker, 34\n\nMiami · 27.5 km\n\nvisibility\nstar\n9\n\nLucas Lane, 29\n\nSeattle · 26.8 km\n\nvisibility\nstar\n5\nAffinity · Single · Mason Parker\n:\n10\nSave\narrow_forward",
+        "panels": [
+          "Affinity · Single · Mason Parker\n:\n10\nSave\narrow_forward"
+        ],
+        "scroll": [
+          {
+            "cls": "smart-list smart-list--list smart-list--card-grid smart-list--presentation-list smart-list--desktop-columns-3 smart-list--adaptive-columns smart-list--snap-mandatory experience-card-list assets-card-list",
+            "height": 687
+          }
+        ]
+      },
+      "rateScoreAfter": {
+        "width": 360,
+        "close": false,
+        "heading": null,
+        "button": null,
+        "hit": false,
+        "panels": [
+          {
+            "name": "Activities",
+            "text": "Activities\n\nPreferences · Given\n\nschedule\nsocial_distance\nclose\nstar\nRates\nexpand_more\n99+\nnorth_eas"
+          }
+        ],
+        "scroll": [
+          {
+            "tag": "DIV",
+            "cls": "smart-list smart-list--list smart-list--card-grid smart-list--presentation-list smart-list--desktop-columns-3 smart-list--adaptive-columns smart-list--snap-mandatory experience-card-list assets-card-list",
+            "top": 39
+          }
+        ],
+        "menuText": "Affinity · Single · Mason Parker\n:\n10\nSave\narrow_forward"
+      },
+      "mutations": [],
+      "rateScoreAfterActualScroll": {
+        "width": 360,
+        "close": false,
+        "heading": null,
+        "button": null,
+        "hit": false,
+        "panels": [
+          {
+            "name": "Activities",
+            "text": "Activities\n\nPreferences · Given\n\nschedule\nsocial_distance\nclose\nstar\nRates\nexpand_more\n99+\nnorth_eas"
+          }
+        ],
+        "scroll": [
+          {
+            "tag": "DIV",
+            "cls": "smart-list smart-list--list smart-list--card-grid smart-list--presentation-list smart-list--desktop-columns-3 smart-list--adaptive-columns smart-list--snap-mandatory experience-card-list assets-card-list",
+            "top": 207
+          }
+        ],
+        "menuText": "Affinity · Single · Mason Parker\n:\n10\nSave\narrow_forward"
+      },
+      "desktopReopened": {
+        "width": 1100,
+        "close": false,
+        "heading": null,
+        "button": null,
+        "hit": false,
+        "panels": [
+          {
+            "name": "Activities",
+            "text": "Activities\n\nPreferences · Given\n\nschedule\nRecent\nexpand_more\nsocial_distance\nDistance\nexpand_more\ncl"
+          }
+        ],
+        "scroll": [
+          {
+            "tag": "DIV",
+            "cls": "smart-list smart-list--list smart-list--card-grid smart-list--presentation-list smart-list--desktop-columns-3 smart-list--adaptive-columns smart-list--snap-mandatory experience-card-list assets-card-list",
+            "top": 46
+          }
+        ],
+        "menuText": "Affinity · Single · Mason Parker\n:\n10\nSave\narrow_forward"
+      }
+    },
+    "topics": {
+      "initial": {
+        "width": 360,
+        "title": "TOPICS (max. 5)\nclose",
+        "close": true,
+        "heading": {
+          "x": 18.90625,
+          "y": 474.546875,
+          "right": 341.09375,
+          "bottom": 508.546875,
+          "width": 322.1875,
+          "height": 34
+        },
+        "button": {
+          "x": 307.09375,
+          "y": 474.546875,
+          "right": 341.09375,
+          "bottom": 508.546875,
+          "width": 34,
+          "height": 34
+        },
+        "hit": true,
+        "panels": [
+          {
+            "name": "Activities",
+            "text": "Activities\n\nMy Events\n\nschedule\ntoday\nclose\nevent\nEvents\nexpand_more\n21\nstadium\nMy Events\nexpand_mor"
+          },
+          {
+            "name": "Create Event",
+            "text": "Create Event\nmail_lock\nInvitation only\nexpand_more\ndone\nclose\n0 / 5\n+\nName *\nCapacity *\n-\nLocation\nl"
+          }
+        ],
+        "scroll": [
+          {
+            "tag": "DIV",
+            "cls": "popup-body",
+            "top": 92
+          }
+        ],
+        "menuText": "TOPICS (max. 5)\nclose\nsearch\ngroups\nSocial\ntheater_comedy\nArts\nrestaurant\nFood\nhiking\nActive\nself_improvement\nMind\npublic\nIdentity\ngroups\n#GoingOut\ngroups\n#Nightlife\ngroups\n#StayingIn\ngroups\n#Brunch\ngroups\n#WineTasting\ngroups\n#CoffeeDates\ngroups\n#ContentCreation\ngroups\n#InfluencerLife"
+      },
+      "selected": {
+        "width": 360,
+        "title": "TOPICS (max. 5)\nclose",
+        "close": true,
+        "heading": {
+          "x": 18.90625,
+          "y": 474.546875,
+          "right": 341.09375,
+          "bottom": 508.546875,
+          "width": 322.1875,
+          "height": 34
+        },
+        "button": {
+          "x": 307.09375,
+          "y": 474.546875,
+          "right": 341.09375,
+          "bottom": 508.546875,
+          "width": 34,
+          "height": 34
+        },
+        "hit": true,
+        "panels": [
+          {
+            "name": "Activities",
+            "text": "Activities\n\nMy Events\n\nschedule\ntoday\nclose\nevent\nEvents\nexpand_more\n21\nstadium\nMy Events\nexpand_mor"
+          },
+          {
+            "name": "Create Event",
+            "text": "Create Event\nmail_lock\nInvitation only\nexpand_more\ndone\nclose\n0 / 5\n+\nName *\nCapacity *\n-\nLocation\nl"
+          }
+        ],
+        "scroll": [
+          {
+            "tag": "DIV",
+            "cls": "popup-body",
+            "top": 92
+          }
+        ],
+        "menuText": "TOPICS (max. 5)\nclose\nsearch\ngroups\nSocial\n1\ntheater_comedy\nArts\nrestaurant\nFood\nhiking\nActive\nself_improvement\nMind\npublic\nIdentity\ngroups\n#GoingOut\ngroups\n#Nightlife\ngroups\n#StayingIn\ngroups\n#Brunch\ngroups\n#WineTasting\ngroups\n#CoffeeDates\ngroups\n#ContentCreation\ngroups\n#InfluencerLife"
+      },
+      "removed": {
+        "width": 360,
+        "title": "TOPICS (max. 5)\nclose",
+        "close": true,
+        "heading": {
+          "x": 18.90625,
+          "y": 474.546875,
+          "right": 341.09375,
+          "bottom": 508.546875,
+          "width": 322.1875,
+          "height": 34
+        },
+        "button": {
+          "x": 307.09375,
+          "y": 474.546875,
+          "right": 341.09375,
+          "bottom": 508.546875,
+          "width": 34,
+          "height": 34
+        },
+        "hit": true,
+        "panels": [
+          {
+            "name": "Activities",
+            "text": "Activities\n\nMy Events\n\nschedule\ntoday\nclose\nevent\nEvents\nexpand_more\n21\nstadium\nMy Events\nexpand_mor"
+          },
+          {
+            "name": "Create Event",
+            "text": "Create Event\nmail_lock\nInvitation only\nexpand_more\ndone\nclose\n0 / 5\n+\nName *\nCapacity *\n-\nLocation\nl"
+          }
+        ],
+        "scroll": [
+          {
+            "tag": "DIV",
+            "cls": "popup-body",
+            "top": 92
+          }
+        ],
+        "menuText": "TOPICS (max. 5)\nclose\nsearch\ngroups\nSocial\ntheater_comedy\nArts\nrestaurant\nFood\nhiking\nActive\nself_improvement\nMind\npublic\nIdentity\ngroups\n#GoingOut\ngroups\n#Nightlife\ngroups\n#StayingIn\ngroups\n#Brunch\ngroups\n#WineTasting\ngroups\n#CoffeeDates\ngroups\n#ContentCreation\ngroups\n#InfluencerLife"
+      },
+      "closed": {
+        "width": 360,
+        "close": false,
+        "heading": null,
+        "button": null,
+        "hit": false,
+        "panels": [
+          {
+            "name": "Activities",
+            "text": "Activities\n\nMy Events\n\nschedule\ntoday\nclose\nevent\nEvents\nexpand_more\n21\nstadium\nMy Events\nexpand_mor"
+          },
+          {
+            "name": "Create Event",
+            "text": "Create Event\nmail_lock\nInvitation only\nexpand_more\ndone\nclose\n0 / 5\n+\nName *\nCapacity *\n-\nLocation\nl"
+          }
+        ],
+        "scroll": [
+          {
+            "tag": "DIV",
+            "cls": "popup-body",
+            "top": 92
+          }
+        ]
+      },
+      "desktop": {
+        "width": 1100,
+        "close": false,
+        "heading": null,
+        "button": null,
+        "hit": false,
+        "panels": [
+          {
+            "name": "Activities",
+            "text": "Activities\n\nMy Events\n\nschedule\nUpcoming\nexpand_more\ntoday\nDay\nexpand_more\nclose\nevent\nEvents\nexpand"
+          },
+          {
+            "name": "Create Event",
+            "text": "Create Event\nmail_lock\nInvitation only\nexpand_more\ndone\nclose\n0 / 5\n+\nName *\nCapacity *\n-\nLocation\nl"
+          }
+        ],
+        "scroll": [
+          {
+            "tag": "DIV",
+            "cls": "popup-body",
+            "top": 92
+          }
+        ],
+        "menuText": "search\ngroups\nSocial\ntheater_comedy\nArts\nrestaurant\nFood\nhiking\nActive\nself_improvement\nMind\npublic\nIdentity\ngroups\n#GoingOut\ngroups\n#Nightlife\ngroups\n#StayingIn\ngroups\n#Brunch\ngroups\n#WineTasting\ngroups\n#CoffeeDates\ngroups\n#ContentCreation\ngroups\n#InfluencerLife"
+      },
+      "mutations": []
+    },
+    "pricing": {
+      "mobile": {
+        "width": 360,
+        "title": "DEMAND RULE SLOTS\nclose",
+        "close": true,
+        "heading": {
+          "x": 12.984375,
+          "y": 628.078125,
+          "right": 347.015625,
+          "bottom": 662.078125,
+          "width": 334.03125,
+          "height": 34
+        },
+        "button": {
+          "x": 313.015625,
+          "y": 628.078125,
+          "right": 347.015625,
+          "bottom": 662.078125,
+          "width": 34,
+          "height": 34
+        },
+        "hit": true,
+        "panels": [
+          {
+            "name": "Activities",
+            "text": "Activities\n\nMy Events\n\nschedule\ntoday\nclose\nevent\nEvents\nexpand_more\n21\nstadium\nMy Events\nexpand_mor"
+          },
+          {
+            "name": "Create Event",
+            "text": "Create Event\nmail_lock\nInvitation only\nexpand_more\ndone\nclose\n0 / 5\n+\nName *\nCapacity *\n-\nLocation\nl"
+          },
+          {
+            "name": "Pricing setup wizard",
+            "text": "Pricing Setup\n\nAdjust the full pricing configuration here while the summary stays compact on the for"
+          }
+        ],
+        "scroll": [
+          {
+            "tag": "DIV",
+            "cls": "popup-body",
+            "top": 768
+          },
+          {
+            "tag": "DIV",
+            "cls": "pricing-editor__wizard-body",
+            "top": 1291
+          }
+        ],
+        "menuText": "DEMAND RULE SLOTS\nclose\nview_week\nAll slots\nview_list\nSpecific slots\ndone\napply"
+      },
+      "closed": {
+        "width": 360,
+        "close": false,
+        "heading": null,
+        "button": null,
+        "hit": false,
+        "panels": [
+          {
+            "name": "Activities",
+            "text": "Activities\n\nMy Events\n\nschedule\ntoday\nclose\nevent\nEvents\nexpand_more\n21\nstadium\nMy Events\nexpand_mor"
+          },
+          {
+            "name": "Create Event",
+            "text": "Create Event\nmail_lock\nInvitation only\nexpand_more\ndone\nclose\n0 / 5\n+\nName *\nCapacity *\n-\nLocation\nl"
+          },
+          {
+            "name": "Pricing setup wizard",
+            "text": "Pricing Setup\n\nAdjust the full pricing configuration here while the summary stays compact on the for"
+          }
+        ],
+        "scroll": [
+          {
+            "tag": "DIV",
+            "cls": "popup-body",
+            "top": 768
+          },
+          {
+            "tag": "DIV",
+            "cls": "pricing-editor__wizard-body",
+            "top": 1291
+          }
+        ]
+      },
+      "desktop": {
+        "width": 1100,
+        "title": "DEMAND RULE SLOTS",
+        "close": false,
+        "heading": {
+          "x": 60.734375,
+          "y": -159.5,
+          "right": 204.296875,
+          "bottom": -131.1875,
+          "width": 143.5625,
+          "height": 28.3125
+        },
+        "button": null,
+        "hit": false,
+        "panels": [
+          {
+            "name": "Activities",
+            "text": "Activities\n\nMy Events\n\nschedule\nUpcoming\nexpand_more\ntoday\nDay\nexpand_more\nclose\nevent\nEvents\nexpand"
+          },
+          {
+            "name": "Create Event",
+            "text": "Create Event\nmail_lock\nInvitation only\nexpand_more\ndone\nclose\n0 / 5\n+\nName *\nCapacity *\n-\nLocation\nl"
+          },
+          {
+            "name": "Pricing setup wizard",
+            "text": "Pricing Setup\n\nAdjust the full pricing configuration here while the summary stays compact on the for"
+          }
+        ],
+        "scroll": [
+          {
+            "tag": "DIV",
+            "cls": "popup-body",
+            "top": 589
+          },
+          {
+            "tag": "DIV",
+            "cls": "pricing-editor__wizard-body",
+            "top": 1226
+          }
+        ],
+        "menuText": "DEMAND RULE SLOTS\nview_week\nAll slots\nview_list\nSpecific slots\ndone\napply"
+      },
+      "afterDiscard": {
+        "dialogs": [
+          "Activities"
+        ],
+        "tail": "S\nstar\nRates\n99+\nchat\nChats\n5\nmail\nInvitations\n6\nevent\nEvents\n27\nreceipt_long\nPayments\ninventory_2\nMY ASSETS\ndirections_car\nTransport\napartment\nAccommodation\ninventory_2\nSupplies\nqr_code_2\nTicket\ncontacts\nContacts\nActivities\n\nMy Events\n\nschedule\nUpcoming\nexpand_more\ntoday\nDay\nexpand_more\nclose\nevent\nEvents\nexpand_more\n21\nstadium\nMy Events\nexpand_more\nadd\nNo items\nNo My Events items in this filter."
+      },
+      "mutations": []
+    },
+    "card": {
+      "mobile": {
+        "width": 360,
+        "title": "SUNSET BEACH VOLLEY ROTATION\nclose",
+        "close": true,
+        "heading": {
+          "x": 12.984375,
+          "y": 444.640625,
+          "right": 347.015625,
+          "bottom": 478.640625,
+          "width": 334.03125,
+          "height": 34
+        },
+        "button": {
+          "x": 313.015625,
+          "y": 444.640625,
+          "right": 347.015625,
+          "bottom": 478.640625,
+          "width": 34,
+          "height": 34
+        },
+        "hit": true,
+        "panels": [
+          {
+            "name": "Activities",
+            "text": "Activities\n\nAll\n\nschedule\ntoday\nclose\nevent\nEvents\nexpand_more\n21\nwidgets\nAll\nexpand_more\n27\nexplore"
+          }
+        ],
+        "scroll": [
+          {
+            "tag": "DIV",
+            "cls": "smart-list smart-list--list smart-list--card-grid smart-list--presentation-list smart-list--desktop-columns-3 smart-list--adaptive-columns smart-list--snap-mandatory experience-card-list assets-card-list",
+            "top": 39
+          }
+        ],
+        "menuText": "SUNSET BEACH VOLLEY ROTATION\nclose\nvisibility\nView Invitation\nsupport_agent\nAsk Organizer\nshare\nShare Event\nopen_in_new\nExternal info\nrss_feed\nFollow organizer\nflag\nReport Organizer\ndone\nAccept\nblock\nReject Invitation"
+      },
+      "closed": {
+        "width": 360,
+        "close": false,
+        "heading": null,
+        "button": null,
+        "hit": false,
+        "panels": [
+          {
+            "name": "Activities",
+            "text": "Activities\n\nAll\n\nschedule\ntoday\nclose\nevent\nEvents\nexpand_more\n21\nwidgets\nAll\nexpand_more\n27\nexplore"
+          }
+        ],
+        "scroll": [
+          {
+            "tag": "DIV",
+            "cls": "smart-list smart-list--list smart-list--card-grid smart-list--presentation-list smart-list--desktop-columns-3 smart-list--adaptive-columns smart-list--snap-mandatory experience-card-list assets-card-list",
+            "top": 39
+          }
+        ]
+      },
+      "desktop": {
+        "width": 1100,
+        "title": "SUNSET BEACH VOLLEY ROTATION",
+        "close": false,
+        "heading": {
+          "x": 329.5625,
+          "y": 359.625,
+          "right": 550.015625,
+          "bottom": 387.9375,
+          "width": 220.453125,
+          "height": 28.3125
+        },
+        "button": null,
+        "hit": false,
+        "panels": [
+          {
+            "name": "Activities",
+            "text": "Activities\n\nAll\n\nschedule\nUpcoming\nexpand_more\ntoday\nDay\nexpand_more\nclose\nevent\nEvents\nexpand_more\n"
+          }
+        ],
+        "scroll": [
+          {
+            "tag": "DIV",
+            "cls": "smart-list smart-list--list smart-list--card-grid smart-list--presentation-list smart-list--desktop-columns-3 smart-list--adaptive-columns smart-list--snap-mandatory experience-card-list assets-card-list",
+            "top": 46
+          }
+        ],
+        "menuText": "SUNSET BEACH VOLLEY ROTATION\nvisibility\nView Invitation\nsupport_agent\nAsk Organizer\nshare\nShare Event\nopen_in_new\nExternal info\nrss_feed\nFollow organizer\nflag\nReport Organizer\ndone\nAccept\nblock\nReject Invitation"
+      }
+    },
+    "inviteBeforeFix": {
+      "selected": {
+        "width": 360,
+        "title": "OPEN SELECTED MEMBERS\nclose",
+        "close": true,
+        "heading": {
+          "x": 12.984375,
+          "y": 703.0753784179688,
+          "right": 347.015625,
+          "bottom": 737.0753784179688,
+          "width": 334.03125,
+          "height": 34
+        },
+        "button": {
+          "x": 313.015625,
+          "y": 703.0753784179688,
+          "right": 347.015625,
+          "bottom": 737.0753784179688,
+          "width": 34,
+          "height": 34
+        },
+        "hit": false,
+        "panels": [
+          {
+            "name": "Invite members",
+            "text": "Invite members\n\nCreate contact\n\ngroups\n1\ndone\nOPEN SELECTED MEMBERS\nclose\nperson\nMilo Grant\nMet Milo"
+          },
+          {
+            "name": "Contacts",
+            "text": "Contacts\n\n0 saved contacts\n\nperson_add\nclose\nsearch\ncontacts\nContacts\nexpand_more\nNo contacts\nNo con"
+          }
+        ],
+        "scroll": [],
+        "menuText": "OPEN SELECTED MEMBERS\nclose\nperson\nMilo Grant\nMet Milo Grant · Jan 5, 2026\nclose"
+      }
+    },
+    "inviteRetest": {
+      "fixed": {
+        "width": 360,
+        "title": "OPEN SELECTED MEMBERS\nclose",
+        "close": true,
+        "heading": {
+          "x": 12.984375,
+          "y": 701.75,
+          "right": 347.015625,
+          "bottom": 735.75,
+          "width": 334.03125,
+          "height": 34
+        },
+        "button": {
+          "x": 313.015625,
+          "y": 701.75,
+          "right": 347.015625,
+          "bottom": 735.75,
+          "width": 34,
+          "height": 34
+        },
+        "hit": true,
+        "panels": [
+          {
+            "name": "Invite members",
+            "text": "Invite members\n\nCreate contact\n\ngroups\n1\ndone\nOPEN SELECTED MEMBERS\nclose\nperson\nMilo Grant\nMet Milo"
+          },
+          {
+            "name": "Contacts",
+            "text": "Contacts\n\n0 saved contacts\n\nperson_add\nclose\nsearch\ncontacts\nContacts\nexpand_more\nNo contacts\nNo con"
+          }
+        ],
+        "scroll": [],
+        "menuText": "OPEN SELECTED MEMBERS\nclose\nperson\nMilo Grant\nMet Milo Grant · Jan 5, 2026\nclose"
+      },
+      "bellDuring": "hidden",
+      "afterPointerClose": {
+        "width": 360,
+        "close": false,
+        "heading": null,
+        "button": null,
+        "hit": false,
+        "panels": [
+          {
+            "name": "Invite members",
+            "text": "Invite members\n\nCreate contact\n\ngroups\n1\ndone\nclose\nschedule\nRecent\nexpand_more\ncheck\nvisibility\nMil"
+          },
+          {
+            "name": "Contacts",
+            "text": "Contacts\n\n0 saved contacts\n\nperson_add\nclose\nsearch\ncontacts\nContacts\nexpand_more\nNo contacts\nNo con"
+          }
+        ],
+        "scroll": []
+      },
+      "bellAfter": "visible",
+      "afterRemove": {
+        "width": 360,
+        "close": false,
+        "heading": null,
+        "button": null,
+        "hit": false,
+        "panels": [
+          {
+            "name": "Invite members",
+            "text": "Invite members\n\nCreate contact\n\ndone\nclose\nschedule\nRecent\nexpand_more\nadd\nvisibility\nMilo Grant\n\nMe"
+          },
+          {
+            "name": "Contacts",
+            "text": "Contacts\n\n0 saved contacts\n\nperson_add\nclose\nsearch\ncontacts\nContacts\nexpand_more\nNo contacts\nNo con"
+          }
+        ],
+        "scroll": []
+      }
+    },
+    "shareEvent": {
+      "mobile": {
+        "width": 360,
+        "title": "SELECTED ITEMS\nclose",
+        "close": true,
+        "heading": {
+          "x": 12.984375,
+          "y": 704.09375,
+          "right": 347.015625,
+          "bottom": 738.09375,
+          "width": 334.03125,
+          "height": 34
+        },
+        "button": {
+          "x": 313.015625,
+          "y": 704.09375,
+          "right": 347.015625,
+          "bottom": 738.09375,
+          "width": 34,
+          "height": 34
+        },
+        "hit": true,
+        "panels": [
+          {
+            "name": "Activities",
+            "text": "Activities\n\nChats\n\nclose\nchat\nChats\nexpand_more\nforum\nAll\nexpand_more\nSun, 1 Mar 2026\n9+\nAlex Turner"
+          },
+          {
+            "name": "Courtyard String Social",
+            "text": "Courtyard String Social\nevent\nView Event\n15\nclose\n+4\npush_pin\nYou\n9:48 AM\n\nPerfect, locking this in."
+          },
+          {
+            "name": "Event Explore",
+            "text": "Event Explore\nfilter_alt\nevent_upcoming\ntoday\nclose\n1\ndone\nSELECTED ITEMS\nclose\nevent\nHandmade Pasta"
+          }
+        ],
+        "scroll": [
+          {
+            "tag": "DIV",
+            "cls": "smart-list smart-list--list smart-list--card-grid smart-list--presentation-list smart-list--desktop-columns-3 smart-list--adaptive-columns smart-list--snap-mandatory experience-card-list assets-card-list",
+            "top": 39
+          }
+        ],
+        "menuText": "SELECTED ITEMS\nclose\nevent\nHandmade Pasta Table\nclose"
+      },
+      "closed": {
+        "width": 360,
+        "close": false,
+        "heading": null,
+        "button": null,
+        "hit": false,
+        "panels": [
+          {
+            "name": "Activities",
+            "text": "Activities\n\nChats\n\nclose\nchat\nChats\nexpand_more\nforum\nAll\nexpand_more\nSun, 1 Mar 2026\n9+\nAlex Turner"
+          },
+          {
+            "name": "Courtyard String Social",
+            "text": "Courtyard String Social\nevent\nView Event\n15\nclose\n+4\npush_pin\nYou\n9:48 AM\n\nPerfect, locking this in."
+          },
+          {
+            "name": "Event Explore",
+            "text": "Event Explore\nfilter_alt\nevent_upcoming\ntoday\nshopping_basket\n1\ndone\nclose\nSun, 7 Feb 2027\nSun, 7 Fe"
+          }
+        ],
+        "scroll": [
+          {
+            "tag": "DIV",
+            "cls": "smart-list smart-list--list smart-list--card-grid smart-list--presentation-list smart-list--desktop-columns-3 smart-list--adaptive-columns smart-list--snap-mandatory experience-card-list assets-card-list",
+            "top": 39
+          }
+        ]
+      },
+      "desktop": {
+        "width": 1100,
+        "close": false,
+        "heading": null,
+        "button": null,
+        "hit": false,
+        "panels": [
+          {
+            "name": "Activities",
+            "text": "Activities\n\nChats\n\nclose\nchat\nChats\nexpand_more\nforum\nAll\nexpand_more\nSun, 1 Mar 2026\n9+\nAlex Turner"
+          },
+          {
+            "name": "Courtyard String Social",
+            "text": "Courtyard String Social\nevent\nView Event\n15\nclose\n+4\npush_pin\nYou\n9:48 AM\n\nPerfect, locking this in."
+          },
+          {
+            "name": "Event Explore",
+            "text": "Event Explore\nfilter_alt\nEvent filters\nevent_upcoming\nUpcoming\nexpand_more\ntoday\nDay\nexpand_more\nclo"
+          }
+        ],
+        "scroll": [
+          {
+            "tag": "DIV",
+            "cls": "smart-list smart-list--list smart-list--card-grid smart-list--presentation-list smart-list--desktop-columns-3 smart-list--adaptive-columns smart-list--snap-mandatory experience-card-list assets-card-list",
+            "top": 46
+          }
+        ],
+        "menuText": "event\nHandmade Pasta Table\nclose"
+      },
+      "mutations": [
+        {
+          "method": "POST",
+          "path": "/api/activities/events/explore"
+        }
+      ]
+    },
+    "shareAsset": {
+      "mobile": {
+        "width": 360,
+        "title": "SELECTED ITEMS\nclose",
+        "close": true,
+        "heading": {
+          "x": 12.984375,
+          "y": 704.09375,
+          "right": 347.015625,
+          "bottom": 738.09375,
+          "width": 334.03125,
+          "height": 34
+        },
+        "button": {
+          "x": 313.015625,
+          "y": 704.09375,
+          "right": 347.015625,
+          "bottom": 738.09375,
+          "width": 34,
+          "height": 34
+        },
+        "hit": true,
+        "panels": [
+          {
+            "name": "Activities",
+            "text": "Activities\n\nChats\n\nclose\nchat\nChats\nexpand_more\nforum\nAll\nexpand_more\nSun, 1 Mar 2026\n9+\nAlex Turner"
+          },
+          {
+            "name": "Courtyard String Social",
+            "text": "Courtyard String Social\nevent\nView Event\n15\nclose\n+4\npush_pin\nYou\n9:48 AM\n\nPerfect, locking this in."
+          },
+          {
+            "name": "Explore - Asset Explore",
+            "text": "Explore - Asset Explore\n\nAssets - Asset Explore\n\ninventory_2\nAvailable first\nexpand_more\nclose\n1\ndon"
+          }
+        ],
+        "scroll": [
+          {
+            "tag": "DIV",
+            "cls": "smart-list smart-list--list smart-list--card-grid smart-list--presentation-list smart-list--desktop-columns-3 smart-list--adaptive-columns smart-list--snap-mandatory experience-card-list assets-card-list asset-explore-card-list",
+            "top": 39
+          }
+        ],
+        "menuText": "SELECTED ITEMS\nclose\ninventory_2\nConcert Night Shuttle Van\nclose"
+      },
+      "closed": {
+        "width": 360,
+        "close": false,
+        "heading": null,
+        "button": null,
+        "hit": false,
+        "panels": [
+          {
+            "name": "Activities",
+            "text": "Activities\n\nChats\n\nclose\nchat\nChats\nexpand_more\nforum\nAll\nexpand_more\nSun, 1 Mar 2026\n9+\nAlex Turner"
+          },
+          {
+            "name": "Courtyard String Social",
+            "text": "Courtyard String Social\nevent\nView Event\n15\nclose\n+4\npush_pin\nYou\n9:48 AM\n\nPerfect, locking this in."
+          },
+          {
+            "name": "Explore - Asset Explore",
+            "text": "Explore - Asset Explore\n\nAssets - Asset Explore\n\ninventory_2\nAvailable first\nexpand_more\nshopping_ba"
+          }
+        ],
+        "scroll": [
+          {
+            "tag": "DIV",
+            "cls": "smart-list smart-list--list smart-list--card-grid smart-list--presentation-list smart-list--desktop-columns-3 smart-list--adaptive-columns smart-list--snap-mandatory experience-card-list assets-card-list asset-explore-card-list",
+            "top": 39
+          }
+        ]
+      },
+      "desktop": {
+        "width": 1100,
+        "close": false,
+        "heading": null,
+        "button": null,
+        "hit": false,
+        "panels": [
+          {
+            "name": "Activities",
+            "text": "Activities\n\nChats\n\nclose\nchat\nChats\nexpand_more\nforum\nAll\nexpand_more\nSun, 1 Mar 2026\n9+\nAlex Turner"
+          },
+          {
+            "name": "Courtyard String Social",
+            "text": "Courtyard String Social\nevent\nView Event\n15\nclose\n+4\npush_pin\nYou\n9:48 AM\n\nPerfect, locking this in."
+          },
+          {
+            "name": "Explore - Asset Explore",
+            "text": "Explore - Asset Explore\n\nAssets - Asset Explore\n\ninventory_2\nAvailable first\nexpand_more\nclose\n1\ndon"
+          }
+        ],
+        "scroll": [
+          {
+            "tag": "DIV",
+            "cls": "smart-list smart-list--list smart-list--card-grid smart-list--presentation-list smart-list--desktop-columns-3 smart-list--adaptive-columns smart-list--snap-mandatory experience-card-list assets-card-list asset-explore-card-list",
+            "top": 46
+          }
+        ],
+        "menuText": "inventory_2\nConcert Night Shuttle Van\nclose"
+      },
+      "mutations": []
+    },
+    "moderationBeforeFix": {
+      "mobile": {
+        "width": 360,
+        "title": "CATEGORIES\nclose",
+        "close": true,
+        "heading": {
+          "x": 18.90625,
+          "y": 657.984375,
+          "right": 341.09375,
+          "bottom": 691.984375,
+          "width": 322.1875,
+          "height": 34
+        },
+        "button": {
+          "x": 307.09375,
+          "y": 657.984375,
+          "right": 341.09375,
+          "bottom": 691.984375,
+          "width": 34,
+          "height": 34
+        },
+        "hit": true,
+        "panels": [
+          {
+            "name": "Groups",
+            "text": "Groups\nschedule\nRecent\nexpand_more\nclose\nevent_seat\nHosting\nexpand_more\n2\nadd\nSun, 20 Sept 2026\ngrou"
+          },
+          {
+            "name": "Content moderation · Design Circle",
+            "text": "Content moderation · Design Circle\nsettings\nclose\nfact_check\nUnder moderation\nexpand_more\napps\nAll\ne"
+          },
+          {
+            "name": "Moderation settings",
+            "text": "Moderation settings\ncheck\nclose\nfact_check\nContent moderation\nverified\nAuto approve\nDelay (minutes)\n"
+          }
+        ],
+        "scroll": [],
+        "menuText": "CATEGORIES\nclose\ninventory_2\nAsset\nevent\nEvent\nphoto_library\nPhoto Feed"
+      },
+      "closed": {
+        "width": 360,
+        "close": false,
+        "heading": null,
+        "button": null,
+        "hit": false,
+        "panels": [
+          {
+            "name": "Groups",
+            "text": "Groups\nschedule\nRecent\nexpand_more\nclose\nevent_seat\nHosting\nexpand_more\n2\nadd\nSun, 20 Sept 2026\ngrou"
+          },
+          {
+            "name": "Content moderation · Design Circle",
+            "text": "Content moderation · Design Circle\nsettings\nclose\nfact_check\nUnder moderation\nexpand_more\napps\nAll\ne"
+          },
+          {
+            "name": "Moderation settings",
+            "text": "Moderation settings\ncheck\nclose\nfact_check\nContent moderation\nverified\nAuto approve\nDelay (minutes)\n"
+          }
+        ],
+        "scroll": []
+      },
+      "desktop": {
+        "width": 1100,
+        "title": "CATEGORIES\nclose",
+        "close": true,
+        "heading": {
+          "x": 18.90625,
+          "y": 701.421875,
+          "right": 1081.09375,
+          "bottom": 735.421875,
+          "width": 1062.1875,
+          "height": 34
+        },
+        "button": {
+          "x": 1047.09375,
+          "y": 701.421875,
+          "right": 1081.09375,
+          "bottom": 735.421875,
+          "width": 34,
+          "height": 34
+        },
+        "hit": true,
+        "panels": [
+          {
+            "name": "Groups",
+            "text": "Groups\nschedule\nRecent\nexpand_more\nclose\nevent_seat\nHosting\nexpand_more\n2\nadd\nSun, 20 Sept 2026\ngrou"
+          },
+          {
+            "name": "Content moderation · Design Circle",
+            "text": "Content moderation · Design Circle\nsettings\nclose\nfact_check\nUnder moderation\nexpand_more\napps\nAll\ne"
+          },
+          {
+            "name": "Moderation settings",
+            "text": "Moderation settings\ncheck\nclose\nfact_check\nContent moderation\nverified\nAuto approve\nDelay (minutes)\n"
+          }
+        ],
+        "scroll": [],
+        "menuText": "CATEGORIES\nclose\ninventory_2\nAsset\nevent\nEvent\nphoto_library\nPhoto Feed"
+      },
+      "mutations": []
+    },
+    "moderationRetest": {
+      "mobile": {
+        "width": 360,
+        "title": "CATEGORIES\nclose",
+        "close": true,
+        "heading": {
+          "x": 18.90625,
+          "y": 657.984375,
+          "right": 341.09375,
+          "bottom": 691.984375,
+          "width": 322.1875,
+          "height": 34
+        },
+        "button": {
+          "x": 307.09375,
+          "y": 657.984375,
+          "right": 341.09375,
+          "bottom": 691.984375,
+          "width": 34,
+          "height": 34
+        },
+        "hit": true,
+        "panels": [
+          {
+            "name": "Groups",
+            "text": "Groups\nschedule\nRecent\nexpand_more\nclose\nevent_seat\nHosting\nexpand_more\n2\nadd\nSun, 20 Sept 2026\ngrou"
+          },
+          {
+            "name": "Content moderation · Design Circle",
+            "text": "Content moderation · Design Circle\nsettings\nclose\nfact_check\nUnder moderation\nexpand_more\napps\nAll\ne"
+          },
+          {
+            "name": "Moderation settings",
+            "text": "Moderation settings\ncheck\nclose\nfact_check\nContent moderation\nverified\nAuto approve\nDelay (minutes)\n"
+          }
+        ],
+        "scroll": [],
+        "menuText": "CATEGORIES\nclose\ninventory_2\nAsset\nevent\nEvent\nphoto_library\nPhoto Feed"
+      },
+      "categoryChanged": {
+        "width": 360,
+        "title": "CATEGORIES\nclose",
+        "close": true,
+        "heading": {
+          "x": 18.90625,
+          "y": 657.984375,
+          "right": 341.09375,
+          "bottom": 691.984375,
+          "width": 322.1875,
+          "height": 34
+        },
+        "button": {
+          "x": 307.09375,
+          "y": 657.984375,
+          "right": 341.09375,
+          "bottom": 691.984375,
+          "width": 34,
+          "height": 34
+        },
+        "hit": true,
+        "panels": [
+          {
+            "name": "Groups",
+            "text": "Groups\nschedule\nRecent\nexpand_more\nclose\nevent_seat\nHosting\nexpand_more\n2\nadd\nSun, 20 Sept 2026\ngrou"
+          },
+          {
+            "name": "Content moderation · Design Circle",
+            "text": "Content moderation · Design Circle\nsettings\nclose\nfact_check\nUnder moderation\nexpand_more\napps\nAll\ne"
+          },
+          {
+            "name": "Moderation settings",
+            "text": "Moderation settings\ncheck\nclose\nfact_check\nContent moderation\nverified\nAuto approve\nDelay (minutes)\n"
+          }
+        ],
+        "scroll": [],
+        "menuText": "CATEGORIES\nclose\ninventory_2\nAsset\nevent\nEvent\nphoto_library\nPhoto Feed"
+      },
+      "closed": {
+        "width": 360,
+        "close": false,
+        "heading": null,
+        "button": null,
+        "hit": false,
+        "panels": [
+          {
+            "name": "Groups",
+            "text": "Groups\nschedule\nRecent\nexpand_more\nclose\nevent_seat\nHosting\nexpand_more\n2\nadd\nSun, 20 Sept 2026\ngrou"
+          },
+          {
+            "name": "Content moderation · Design Circle",
+            "text": "Content moderation · Design Circle\nsettings\nclose\nfact_check\nUnder moderation\nexpand_more\napps\nAll\ne"
+          },
+          {
+            "name": "Moderation settings",
+            "text": "Moderation settings\ncheck\nclose\nfact_check\nContent moderation\nverified\nAuto approve\nDelay (minutes)\n"
+          }
+        ],
+        "scroll": []
+      },
+      "desktop": {
+        "width": 1100,
+        "title": "CATEGORIES",
+        "close": false,
+        "heading": {
+          "x": 18.90625,
+          "y": 707.109375,
+          "right": 1081.09375,
+          "bottom": 735.421875,
+          "width": 1062.1875,
+          "height": 28.3125
+        },
+        "button": null,
+        "hit": false,
+        "panels": [
+          {
+            "name": "Groups",
+            "text": "Groups\nschedule\nRecent\nexpand_more\nclose\nevent_seat\nHosting\nexpand_more\n2\nadd\nSun, 20 Sept 2026\ngrou"
+          },
+          {
+            "name": "Content moderation · Design Circle",
+            "text": "Content moderation · Design Circle\nsettings\nclose\nfact_check\nUnder moderation\nexpand_more\napps\nAll\ne"
+          },
+          {
+            "name": "Moderation settings",
+            "text": "Moderation settings\ncheck\nclose\nfact_check\nContent moderation\nverified\nAuto approve\nDelay (minutes)\n"
+          }
+        ],
+        "scroll": [],
+        "menuText": "CATEGORIES\ninventory_2\nAsset\nevent\nEvent\nphoto_library\nPhoto Feed"
+      }
+    },
+    "assetBasket": {
+      "mobile": {
+        "width": 360,
+        "title": "OPEN SELECTED ASSETS\nclose",
+        "close": true,
+        "heading": {
+          "x": 12.984375,
+          "y": 688.890625,
+          "right": 347.015625,
+          "bottom": 722.890625,
+          "width": 334.03125,
+          "height": 34
+        },
+        "button": {
+          "x": 313.015625,
+          "y": 688.890625,
+          "right": 347.015625,
+          "bottom": 722.890625,
+          "width": 34,
+          "height": 34
+        },
+        "hit": true,
+        "panels": [
+          {
+            "name": "Activities",
+            "text": "Activities\n\nAll\n\nschedule\ntoday\nclose\nevent\nEvents\nexpand_more\n21\nwidgets\nAll\nexpand_more\n27\nexplore"
+          },
+          {
+            "name": "Snowline Shuttle Briefing",
+            "text": "Snowline Shuttle Briefing\n\nFeb 11, 6:15 PM - 9:15 PM\n\nschedule\ntoday\nclose\nperson_pin\nMy participati"
+          },
+          {
+            "name": "Snowline Shuttle Briefing - Kickoff",
+            "text": "Snowline Shuttle Briefing - Kickoff\n\nFeb 11, 6:15 PM - 7:00 PM\n\nclose\ninventory_2\nSupplies\nexpand_mo"
+          },
+          {
+            "name": "Assign Supplies - Kickoff",
+            "text": "Assign Supplies - Kickoff\n\nSnowline Shuttle Briefing - Kickoff\n\ninventory_2\n1\ndone\nOPEN SELECTED ASS"
+          }
+        ],
+        "scroll": [
+          {
+            "tag": "DIV",
+            "cls": "smart-list smart-list--list smart-list--card-grid smart-list--presentation-list smart-list--desktop-columns-3 smart-list--adaptive-columns smart-list--snap-mandatory experience-card-list assets-card-list",
+            "top": 39
+          },
+          {
+            "tag": "DIV",
+            "cls": "smart-list smart-list--list smart-list--card-grid smart-list--presentation-list smart-list--desktop-columns-1 smart-list--snap-mandatory",
+            "top": 39
+          }
+        ],
+        "menuText": "OPEN SELECTED ASSETS\nclose\ninventory_2\nQA Group Link Supplies\nSupplies · 4-person dome + sleep systems + lantern · Los Angeles\nclose"
+      },
+      "closed": {
+        "width": 360,
+        "close": false,
+        "heading": null,
+        "button": null,
+        "hit": false,
+        "panels": [
+          {
+            "name": "Activities",
+            "text": "Activities\n\nAll\n\nschedule\ntoday\nclose\nevent\nEvents\nexpand_more\n21\nwidgets\nAll\nexpand_more\n27\nexplore"
+          },
+          {
+            "name": "Snowline Shuttle Briefing",
+            "text": "Snowline Shuttle Briefing\n\nFeb 11, 6:15 PM - 9:15 PM\n\nschedule\ntoday\nclose\nperson_pin\nMy participati"
+          },
+          {
+            "name": "Snowline Shuttle Briefing - Kickoff",
+            "text": "Snowline Shuttle Briefing - Kickoff\n\nFeb 11, 6:15 PM - 7:00 PM\n\nclose\ninventory_2\nSupplies\nexpand_mo"
+          },
+          {
+            "name": "Assign Supplies - Kickoff",
+            "text": "Assign Supplies - Kickoff\n\nSnowline Shuttle Briefing - Kickoff\n\ninventory_2\n1\ndone\nclose\ncheck\ninven"
+          }
+        ],
+        "scroll": [
+          {
+            "tag": "DIV",
+            "cls": "smart-list smart-list--list smart-list--card-grid smart-list--presentation-list smart-list--desktop-columns-3 smart-list--adaptive-columns smart-list--snap-mandatory experience-card-list assets-card-list",
+            "top": 39
+          },
+          {
+            "tag": "DIV",
+            "cls": "smart-list smart-list--list smart-list--card-grid smart-list--presentation-list smart-list--desktop-columns-1 smart-list--snap-mandatory",
+            "top": 39
+          }
+        ]
+      },
+      "desktop": {
+        "width": 1100,
+        "close": false,
+        "heading": null,
+        "button": null,
+        "hit": false,
+        "panels": [
+          {
+            "name": "Activities",
+            "text": "Activities\n\nAll\n\nschedule\nUpcoming\nexpand_more\ntoday\nDay\nexpand_more\nclose\nevent\nEvents\nexpand_more\n"
+          },
+          {
+            "name": "Snowline Shuttle Briefing",
+            "text": "Snowline Shuttle Briefing\n\nFeb 11, 6:15 PM - 9:15 PM\n\nschedule\nUpcoming\nexpand_more\ntoday\nDay\nexpand"
+          },
+          {
+            "name": "Snowline Shuttle Briefing - Kickoff",
+            "text": "Snowline Shuttle Briefing - Kickoff\n\nFeb 11, 6:15 PM - 7:00 PM\n\nclose\ninventory_2\nSupplies\nexpand_mo"
+          },
+          {
+            "name": "Assign Supplies - Kickoff",
+            "text": "Assign Supplies - Kickoff\n\nSnowline Shuttle Briefing - Kickoff\n\ninventory_2\n1\ndone\ninventory_2\nQA Gr"
+          }
+        ],
+        "scroll": [
+          {
+            "tag": "DIV",
+            "cls": "smart-list smart-list--list smart-list--card-grid smart-list--presentation-list smart-list--desktop-columns-3 smart-list--adaptive-columns smart-list--snap-mandatory experience-card-list assets-card-list",
+            "top": 46
+          }
+        ],
+        "menuText": "inventory_2\nQA Group Link Supplies\nSupplies · 4-person dome + sleep systems + lantern · Los Angeles\nclose"
+      },
+      "removed": {
+        "width": 360,
+        "close": false,
+        "heading": null,
+        "button": null,
+        "hit": false,
+        "panels": [
+          {
+            "name": "Activities",
+            "text": "Activities\n\nAll\n\nschedule\ntoday\nclose\nevent\nEvents\nexpand_more\n21\nwidgets\nAll\nexpand_more\n27\nexplore"
+          },
+          {
+            "name": "Snowline Shuttle Briefing",
+            "text": "Snowline Shuttle Briefing\n\nFeb 11, 6:15 PM - 9:15 PM\n\nschedule\ntoday\nclose\nperson_pin\nMy participati"
+          },
+          {
+            "name": "Snowline Shuttle Briefing - Kickoff",
+            "text": "Snowline Shuttle Briefing - Kickoff\n\nFeb 11, 6:15 PM - 7:00 PM\n\nclose\ninventory_2\nSupplies\nexpand_mo"
+          },
+          {
+            "name": "Assign Supplies - Kickoff",
+            "text": "Assign Supplies - Kickoff\n\nSnowline Shuttle Briefing - Kickoff\n\ndone\nclose\nadd\ninventory_2\nQA Group "
+          }
+        ],
+        "scroll": [
+          {
+            "tag": "DIV",
+            "cls": "smart-list smart-list--list smart-list--card-grid smart-list--presentation-list smart-list--desktop-columns-3 smart-list--adaptive-columns smart-list--snap-mandatory experience-card-list assets-card-list",
+            "top": 39
+          },
+          {
+            "tag": "DIV",
+            "cls": "smart-list smart-list--list smart-list--card-grid smart-list--presentation-list smart-list--desktop-columns-1 smart-list--snap-mandatory",
+            "top": 39
+          }
+        ]
+      },
+      "mutations": []
+    },
+    "huNarrow": {
+      "language": "hu",
+      "menu": {
+        "width": 320,
+        "title": "NYELVEK\nclose",
+        "close": true,
+        "heading": {
+          "x": 18.90625,
+          "y": 210.71875,
+          "right": 286.09375,
+          "bottom": 244.71875,
+          "width": 267.1875,
+          "height": 34
+        },
+        "button": {
+          "x": 252.09375,
+          "y": 210.71875,
+          "right": 286.09375,
+          "bottom": 244.71875,
+          "width": 34,
+          "height": 34
+        },
+        "hit": true,
+        "panels": [
+          {
+            "name": "Profil",
+            "text": "Profil\ngroups\nCsak barátok\nexpand_more\ndone\nclose\nedit\n31%\nAlex Turner, 27\nlocation_on\nSeattle\ncalen"
+          }
+        ],
+        "scroll": [
+          {
+            "tag": "DIV",
+            "cls": "profile-editor-scroll-area",
+            "top": 321
+          }
+        ],
+        "menuText": "NYELVEK\nclose\nsearch\nlanguage\nAngol\nlanguage\nSpanyol\nlanguage\nFrancia\nlanguage\nNémet\nlanguage\nOlasz\nlanguage\nPortugál\nlanguage\nMagyar\nlanguage\nRomanian\nlanguage\nPolish\nlanguage\nDutch\nlanguage\nTurkish\nlanguage\nArabic\nlanguage\nHindi\nlanguage\nJapanese\nlanguage\nKoreai\nlanguage\nMandarin"
+      },
+      "closed": {
+        "width": 320,
+        "close": false,
+        "heading": null,
+        "button": null,
+        "hit": false,
+        "panels": [
+          {
+            "name": "Profil",
+            "text": "Profil\ngroups\nCsak barátok\nexpand_more\ndone\nclose\nedit\n31%\nAlex Turner, 27\nlocation_on\nSeattle\ncalen"
+          }
+        ],
+        "scroll": [
+          {
+            "tag": "DIV",
+            "cls": "profile-editor-scroll-area",
+            "top": 321
+          }
+        ]
+      }
+    }
+  },
+  "fixture": {
+    "baseline": {
+      "checkpointId": "GROUP-LIFECYCLE-001",
+      "phase": "badge-writes-ready",
+      "readyChecklistBlocks": [
+        1,
+        "6.1"
+      ],
+      "productWritesPrepared": true,
+      "groups": 10,
+      "memberships": 27,
+      "actors": [
+        {
+          "userId": "af0436815ab38f4864dd1e24",
+          "name": "Alex Turner",
+          "coordinates": {
+            "latitude": 47.4811,
+            "longitude": 19.0366
+          }
+        },
+        {
+          "userId": "9f3b3f085e23af6c89dbc432",
+          "name": "Nagy Eszter",
+          "coordinates": {
+            "latitude": 47.5099,
+            "longitude": 19.0354
+          }
+        },
+        {
+          "userId": "1b1c70be2349b3359a8f6f94",
+          "name": "Maya Stone",
+          "coordinates": {
+            "latitude": 47.5111,
+            "longitude": 19.0354
+          }
+        }
+      ],
+      "paginationPrepared": false,
+      "invitationPrepared": false,
+      "memberInvitationPrepared": false,
+      "adminLifecyclePrepared": false,
+      "editorPrepared": false,
+      "creationPrepared": false,
+      "retainedTemporaryControls": [
+        "badgeSnapshots",
+        "contactSnapshots"
+      ],
+      "savepoints": [
+        {
+          "name": "lists-ready",
+          "capturedAtIso": "2026-09-26T17:00:07.714Z",
+          "resumeBlock": 1,
+          "adapter": "http"
+        },
+        {
+          "name": "block-1-complete",
+          "capturedAtIso": "2026-09-26T17:10:23.889Z",
+          "resumeBlock": 2,
+          "adapter": "http"
+        },
+        {
+          "name": "after-editor-checks",
+          "capturedAtIso": "2026-09-26T18:55:19.459Z",
+          "resumeBlock": 4,
+          "adapter": "http"
+        },
+        {
+          "name": "after-join-approval",
+          "capturedAtIso": "2026-09-26T19:17:15.405Z",
+          "resumeBlock": 4,
+          "adapter": "http"
+        },
+        {
+          "name": "after-invitation-checks",
+          "capturedAtIso": "2026-09-26T19:34:07.723Z",
+          "resumeBlock": 5,
+          "adapter": "http"
+        },
+        {
+          "name": "after-workspace-selection",
+          "capturedAtIso": "2026-09-26T20:13:47.292Z",
+          "resumeBlock": 5,
+          "adapter": "http"
+        },
+        {
+          "name": "after-moderation-checks",
+          "capturedAtIso": "2026-09-26T23:05:42.557Z",
+          "resumeBlock": 7,
+          "adapter": "http"
+        },
+        {
+          "name": "after-membership-trash",
+          "capturedAtIso": "2026-09-26T23:28:34.299Z",
+          "resumeBlock": 8,
+          "adapter": "http"
+        },
+        {
+          "name": "after-chat-sharing",
+          "capturedAtIso": "2026-09-27T02:06:58.260Z",
+          "resumeBlock": 10,
+          "adapter": "http"
+        },
+        {
+          "name": "after-cash-history",
+          "capturedAtIso": "2026-09-27T03:24:57.100Z",
+          "resumeBlock": 11,
+          "adapter": "http"
+        },
+        {
+          "name": "after-contacts",
+          "capturedAtIso": "2026-09-27T04:04:51.310Z",
+          "resumeBlock": 12,
+          "adapter": "http"
+        },
+        {
+          "name": "after-contact-controls",
+          "capturedAtIso": "2026-09-27T04:40:57.723Z",
+          "resumeBlock": 13,
+          "adapter": "http"
+        }
+      ],
+      "resumedFrom": "after-editor-checks",
+      "alexBaseline": [
+        {
+          "name": "Book Circle",
+          "ownerUserId": "bf057de7c586eede7e84bdc7",
+          "status": null,
+          "role": null,
+          "requestKind": null,
+          "visibility": "invitation"
+        },
+        {
+          "name": "Design Circle",
+          "ownerUserId": "af0436815ab38f4864dd1e24",
+          "status": "accepted",
+          "role": "Admin",
+          "requestKind": null,
+          "visibility": "invitation"
+        },
+        {
+          "name": "Game Night",
+          "ownerUserId": "7822c5f99eff99d63abe8933",
+          "status": "pending",
+          "role": "Member",
+          "requestKind": "invite",
+          "visibility": "invitation"
+        },
+        {
+          "name": "Language Lab",
+          "ownerUserId": "1b1c70be2349b3359a8f6f94",
+          "status": null,
+          "role": null,
+          "requestKind": null,
+          "visibility": "private"
+        },
+        {
+          "name": "Makers Network",
+          "ownerUserId": "cdd937e0adcbd1a5e38f3ceb",
+          "status": "pending",
+          "role": "Member",
+          "requestKind": "join",
+          "visibility": "private"
+        },
+        {
+          "name": "Seattle Neighbours",
+          "ownerUserId": "9f3b3f085e23af6c89dbc432",
+          "status": null,
+          "role": null,
+          "requestKind": null,
+          "visibility": "public"
+        },
+        {
+          "name": "Photo Walks",
+          "ownerUserId": "178e8d0cbe164fa3fede5884",
+          "status": "accepted",
+          "role": "Member",
+          "requestKind": null,
+          "visibility": "public"
+        },
+        {
+          "name": "Seattle Friends",
+          "ownerUserId": "af0436815ab38f4864dd1e24",
+          "status": "accepted",
+          "role": "Admin",
+          "requestKind": null,
+          "visibility": "public"
+        },
+        {
+          "name": "Study Buddies",
+          "ownerUserId": "b29df68956f3fe15e04558de",
+          "status": "accepted",
+          "role": "Member",
+          "requestKind": null,
+          "visibility": "public"
+        },
+        {
+          "name": "Seattle Trail Club",
+          "ownerUserId": "9f3b3f085e23af6c89dbc432",
+          "status": null,
+          "role": null,
+          "requestKind": null,
+          "visibility": "public"
+        }
+      ]
+    },
+    "preparation": "Existing prepare-sharing command under GROUP-LIFECYCLE-001 staged an Alex-owned asset for the assignment basket; selection/removal only, no assignment Save.",
+    "restore": "restore-sharing returned sharingRestored:true; final status retains only original badgeSnapshots/contactSnapshots.",
+    "finalStatus": {
+      "checkpointId": "GROUP-LIFECYCLE-001",
+      "phase": "badge-writes-ready",
+      "readyChecklistBlocks": [
+        1,
+        "6.1"
+      ],
+      "productWritesPrepared": true,
+      "groups": 10,
+      "memberships": 27,
+      "actors": [
+        {
+          "userId": "af0436815ab38f4864dd1e24",
+          "name": "Alex Turner",
+          "coordinates": {
+            "latitude": 47.4811,
+            "longitude": 19.0366
+          }
+        },
+        {
+          "userId": "9f3b3f085e23af6c89dbc432",
+          "name": "Nagy Eszter",
+          "coordinates": {
+            "latitude": 47.5099,
+            "longitude": 19.0354
+          }
+        },
+        {
+          "userId": "1b1c70be2349b3359a8f6f94",
+          "name": "Maya Stone",
+          "coordinates": {
+            "latitude": 47.5111,
+            "longitude": 19.0354
+          }
+        }
+      ],
+      "paginationPrepared": false,
+      "invitationPrepared": false,
+      "memberInvitationPrepared": false,
+      "adminLifecyclePrepared": false,
+      "editorPrepared": false,
+      "creationPrepared": false,
+      "retainedTemporaryControls": [
+        "badgeSnapshots",
+        "contactSnapshots"
+      ],
+      "savepoints": [
+        {
+          "name": "lists-ready",
+          "capturedAtIso": "2026-09-26T17:00:07.714Z",
+          "resumeBlock": 1,
+          "adapter": "http"
+        },
+        {
+          "name": "block-1-complete",
+          "capturedAtIso": "2026-09-26T17:10:23.889Z",
+          "resumeBlock": 2,
+          "adapter": "http"
+        },
+        {
+          "name": "after-editor-checks",
+          "capturedAtIso": "2026-09-26T18:55:19.459Z",
+          "resumeBlock": 4,
+          "adapter": "http"
+        },
+        {
+          "name": "after-join-approval",
+          "capturedAtIso": "2026-09-26T19:17:15.405Z",
+          "resumeBlock": 4,
+          "adapter": "http"
+        },
+        {
+          "name": "after-invitation-checks",
+          "capturedAtIso": "2026-09-26T19:34:07.723Z",
+          "resumeBlock": 5,
+          "adapter": "http"
+        },
+        {
+          "name": "after-workspace-selection",
+          "capturedAtIso": "2026-09-26T20:13:47.292Z",
+          "resumeBlock": 5,
+          "adapter": "http"
+        },
+        {
+          "name": "after-moderation-checks",
+          "capturedAtIso": "2026-09-26T23:05:42.557Z",
+          "resumeBlock": 7,
+          "adapter": "http"
+        },
+        {
+          "name": "after-membership-trash",
+          "capturedAtIso": "2026-09-26T23:28:34.299Z",
+          "resumeBlock": 8,
+          "adapter": "http"
+        },
+        {
+          "name": "after-chat-sharing",
+          "capturedAtIso": "2026-09-27T02:06:58.260Z",
+          "resumeBlock": 10,
+          "adapter": "http"
+        },
+        {
+          "name": "after-cash-history",
+          "capturedAtIso": "2026-09-27T03:24:57.100Z",
+          "resumeBlock": 11,
+          "adapter": "http"
+        },
+        {
+          "name": "after-contacts",
+          "capturedAtIso": "2026-09-27T04:04:51.310Z",
+          "resumeBlock": 12,
+          "adapter": "http"
+        },
+        {
+          "name": "after-contact-controls",
+          "capturedAtIso": "2026-09-27T04:40:57.723Z",
+          "resumeBlock": 13,
+          "adapter": "http"
+        }
+      ],
+      "resumedFrom": "after-editor-checks",
+      "alexBaseline": [
+        {
+          "name": "Book Circle",
+          "ownerUserId": "bf057de7c586eede7e84bdc7",
+          "status": null,
+          "role": null,
+          "requestKind": null,
+          "visibility": "invitation"
+        },
+        {
+          "name": "Design Circle",
+          "ownerUserId": "af0436815ab38f4864dd1e24",
+          "status": "accepted",
+          "role": "Admin",
+          "requestKind": null,
+          "visibility": "invitation"
+        },
+        {
+          "name": "Game Night",
+          "ownerUserId": "7822c5f99eff99d63abe8933",
+          "status": "pending",
+          "role": "Member",
+          "requestKind": "invite",
+          "visibility": "invitation"
+        },
+        {
+          "name": "Language Lab",
+          "ownerUserId": "1b1c70be2349b3359a8f6f94",
+          "status": null,
+          "role": null,
+          "requestKind": null,
+          "visibility": "private"
+        },
+        {
+          "name": "Makers Network",
+          "ownerUserId": "cdd937e0adcbd1a5e38f3ceb",
+          "status": "pending",
+          "role": "Member",
+          "requestKind": "join",
+          "visibility": "private"
+        },
+        {
+          "name": "Seattle Neighbours",
+          "ownerUserId": "9f3b3f085e23af6c89dbc432",
+          "status": null,
+          "role": null,
+          "requestKind": null,
+          "visibility": "public"
+        },
+        {
+          "name": "Photo Walks",
+          "ownerUserId": "178e8d0cbe164fa3fede5884",
+          "status": "accepted",
+          "role": "Member",
+          "requestKind": null,
+          "visibility": "public"
+        },
+        {
+          "name": "Seattle Friends",
+          "ownerUserId": "af0436815ab38f4864dd1e24",
+          "status": "accepted",
+          "role": "Admin",
+          "requestKind": null,
+          "visibility": "public"
+        },
+        {
+          "name": "Study Buddies",
+          "ownerUserId": "b29df68956f3fe15e04558de",
+          "status": "accepted",
+          "role": "Member",
+          "requestKind": null,
+          "visibility": "public"
+        },
+        {
+          "name": "Seattle Trail Club",
+          "ownerUserId": "9f3b3f085e23af6c89dbc432",
+          "status": null,
+          "role": null,
+          "requestKind": null,
+          "visibility": "public"
+        }
+      ]
+    }
+  },
+  "rateDock": "Observed persistent rating control is explicitly panelMode:dock in activities-rate-template.component.ts; no added X and it retained its dock lifecycle. This is the checklist special-control exception."
+}

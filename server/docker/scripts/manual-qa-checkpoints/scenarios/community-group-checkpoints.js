@@ -7,7 +7,7 @@
   Q.assertDeploymentSafety();
   const command = Q.text(process.env.MANUAL_QA_COMMAND);
   if (!["status", "verify-lists", "inspect-location-control", "prepare-location-control", "prepare-tracking-control", "prepare-location-invitation", "set-location-control-invalid", "restore-location-control", "prepare-badges", "prepare-join", "restore-badges", "prepare-contact-request-pages",
-      "capture", "restore", "verify-savepoint", "prepare-contacts", "prepare-contact-invitees", "restore-contacts", "prepare-chat-sharing", "prepare-chat-sharing-context", "restore-chat-sharing", "prepare-cash-history", "prepare-cash-checkout", "prepare-cash-payment-methods", "restore-cash-history", "prepare-sharing", "prepare-sharing-group-event", "repair-sharing-identifiers", "reset-sharing-failed-event-claim", "prepare-sharing-attribution", "track-sharing-registration", "sharing-registrants", "restore-sharing", "prepare-list-pagination", "restore-list-pagination",
+      "capture", "restore", "verify-savepoint", "prepare-contacts", "prepare-contact-invitees", "restore-contacts", "prepare-chat-sharing", "prepare-chat-sharing-context", "restore-chat-sharing", "prepare-cash-history", "prepare-cash-checkout", "prepare-cash-payment-methods", "restore-cash-history", "prepare-sharing", "prepare-menu-checkout", "prepare-sharing-group-event", "repair-sharing-identifiers", "reset-sharing-failed-event-claim", "prepare-sharing-attribution", "track-sharing-registration", "sharing-registrants", "restore-sharing", "prepare-list-pagination", "restore-list-pagination",
       "prepare-member-invitation", "restore-member-invitation", "prepare-admin-lifecycle", "prepare-admin-moderation", "prepare-admin-feed-event", "prepare-admin-previews", "prepare-admin-base-chat-read", "prepare-admin-base-chat-message", "prepare-admin-base-feed", "restore-admin-lifecycle",
       "prepare-invitation", "prepare-hidden-invitation", "restore-invitation", "prepare-editor", "restore-editor", "prepare-creation", "restore-creation"].includes(command)
       || Q.text(process.env.MANUAL_QA_CHECKPOINT_ID) !== checkpointId) {
@@ -568,6 +568,40 @@
       ownerUserId: actors[0], title: "QA Group Link Supplies", requests: [], createdDate: now, updatedDate: now,
       createdUser: actors[0], updatedUser: actors[0]});
     Q.printObject({checkpointId, prepared: true, sharingGroupId, sharingEventId, sharingAssetId, outcomesSeeded: false});
+    return;
+  }
+  if (command === "prepare-menu-checkout") {
+    // Block 21 presentation prerequisite only; no basket/booking/payment outcome.
+    const slotId = "f02709270000000000000085";
+    const parent = Q.collection("events").findOne({sourceId: sharingEventId});
+    const owner = Q.collection("users").findOne({userId: actors[1]});
+    if (!state.sharingSnapshots || !parent || !owner || Q.collection("events").countDocuments({sourceId: slotId}))
+      Q.fail("Fresh sharing checkpoint required for the menu slot prerequisite.");
+    const ids = [sharingEventId, slotId];
+    const retained = Q.snapshotSpecs([
+      {collection: "events", selector: {sourceId: slotId}},
+      {collection: "activityMembers", selector: {ownerId: slotId}},
+      {collection: "eventCheckoutBasketItems", selector: {sourceId: {$in: ids}}},
+      {collection: "userNotifications", selector: {sourceId: slotId}},
+      {collection: "notificationOutbox", selector: {entityId: slotId}}
+    ]);
+    Q.collection(Q.STATE_COLLECTION).updateOne({_id: state._id}, {$push: {sharingSnapshots: {$each: retained}}});
+    const start = new Date(Date.now() + 86400000).toISOString(), end = new Date(Date.now() + 90000000).toISOString();
+    const definitions = [{id: "qa-menu-optional", name: "QA optional activity", description: "Menu-only checkout control",
+      timing: "With", offsetMinutes: 0, durationMinutes: 30, optional: true, capacityMin: 0, capacityMax: 8, groups: []}];
+    const fields = {ownerUserId: actors[1], creatorUserId: actors[1], creatorName: owner.name, creatorInitials: owner.initials,
+      admins: [actors[1]], title: "QA Menu Checkout", startAtIso: start, endAtIso: end, timeframe: start + " – " + end,
+      slotsEnabled: true, slotTemplates: [{id: "qa-menu-slot", startAt: start, closed: false, subEventDefinitions: definitions}],
+      subEventsEnabled: true, subEventDefinitions: definitions, frequency: "Once", moderationStatus: "approved",
+      acceptedMembers: 1, acceptedMemberUserIds: [actors[1]], pendingMembers: 1, pendingMemberUserIds: [actors[0]],
+      invitedMemberUserIds: [actors[0]], generated: false, pricing: {enabled: false}, ticketing: false};
+    Q.collection("events").updateOne({_id: parent._id}, {$set: fields});
+    Q.collection("activityMembers").updateOne({ownerType: "event", ownerId: sharingEventId, userId: actors[0]},
+      {$set: {role: "Member", status: "pending", requestKind: "invitation"}});
+    Q.collection("events").insertOne({...parent, ...fields, _id: ObjectId(slotId), sourceId: slotId, syncKey: slotId,
+      eventType: "slot", generated: true, parentEventId: sharingEventId, slotTemplateId: "qa-menu-slot", slotsEnabled: false,
+      slotTemplates: [], pendingMembers: 0, pendingMemberUserIds: [], invitedMemberUserIds: []});
+    Q.printObject({checkpointId, parentId: sharingEventId, slotId, startAtIso: start, outcomesSeeded: false});
     return;
   }
   if (command === "prepare-sharing-group-event") {
