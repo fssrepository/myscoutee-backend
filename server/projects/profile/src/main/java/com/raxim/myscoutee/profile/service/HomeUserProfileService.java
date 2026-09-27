@@ -375,6 +375,8 @@ public class HomeUserProfileService {
         return user == null ? emptyMenuCounters() : buildMenuCounters(user);
     }
 
+    // Initial avatar persistence changes the selector's location-required badge too.
+    @CacheEvict(value = "demo_users", allEntries = true, condition = "#latitude != null || #longitude != null")
     public ProfileExtByIdResponseDto loadProfileExtById(String requestedUserId, Double latitude, Double longitude) {
         if (latitude != null || longitude != null) {
             if (latitude == null || longitude == null || !Double.isFinite(latitude) || !Double.isFinite(longitude)
