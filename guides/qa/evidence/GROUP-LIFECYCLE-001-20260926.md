@@ -141,8 +141,8 @@ This table supersedes the original all-NOT-RUN table and old “partial blocks 2
 summaries below. Historical observations remain unchanged. Structural relocation
 is not execution evidence: the moved checks remain required in blocks 27–29.
 
-**HTTP: 7/29 closed; current 8. Local: 0/29 closed, queued as its own run.**
-Full Lifecycle execution: **7/58 closed adapter-blocks**. This is coverage count,
+**HTTP: 8/29 closed; current 9. Local: 0/29 closed, queued as its own run.**
+Full Lifecycle execution: **8/58 closed adapter-blocks**. This is coverage count,
 not an estimate of elapsed or remaining effort. Isolation and Integration retain
 their own untouched pending ledgers; these figures do not claim campaign completion.
 
@@ -155,8 +155,8 @@ their own untouched pending ledgers; these figures do not claim campaign complet
 | 5 | Workspace selection and profile loading | PASS | NOT RUN | Saved workspace, failure/timeout/retry/stale response/reload and policy authority; after-workspace-selection; role geometry in 27.3. |
 | 6 | App moderation, group moderation and support | PASS | NOT RUN | 2026-09-27 closure below; after-moderation-checks captured and verified, resume 7. |
 | 7 | Leave, Trash, restore and blocked reapproval | PASS | NOT RUN | 2026-09-27 evidence below; after-membership-trash captured/verified, resume 8. |
-| 8 | External sharing links and admission | IN PROGRESS | NOT RUN | Scoped sharing fixture active; admission/UI subcases recorded below. No partial closure. |
-| 9 | Chat sharing basket and message changes | NOT RUN | NOT RUN | Execute in order; no partial credit. |
+| 8 | External sharing links and admission | PASS | NOT RUN | Fresh native-browser registration and existing-user admission/replay; blocked restoration guards; UI sharing parity; exact versioned cleanup and prior savepoint verification PASS. |
+| 9 | Chat sharing basket and message changes | IN PROGRESS | NOT RUN | Current block; prepare only its actors and retained chat baseline. |
 | 10 | Cash history and affiliate exclusion | NOT RUN | NOT RUN | Execute in order; no partial credit. |
 | 11 | Contacts and the existing chat popup | NOT RUN | NOT RUN | Execute in order; no partial credit. |
 | 12 | Selection limits and contact-request controls | NOT RUN | NOT RUN | Execute in order; no partial credit. |
@@ -1037,8 +1037,9 @@ Machine observations: [block-8 progress](GROUP-LIFECYCLE-001-block8-progress-202
   Normal Settings Update returned 403; it did not save coordinates. The tracked
   QA account and its retained group profile were given the launcher's configured
   Austin coordinates (30.2672, -97.7431). After fixture verification reload,
-  locationRequired=false and memberActionsAvailable=true. This is an authorized
-  test-data correction, not proof of the production Settings save path.
+  locationRequired=false and memberActionsAvailable=true. The user subsequently rejected this ad hoc
+  correction; it is excluded from PASS evidence and does not prove the
+  production Settings save path.
 - Only Alex and Event Link Visitor browser windows remain open. Other managed
   actors were closed at the user's request; their persisted fixture state remains.
 
@@ -1081,3 +1082,86 @@ This completes the valid-existing-user admission/replay/removed-member chain.
 Block 8 remains open pending its cleanup boundary; HTTP7/48, Lifecycle7/29.
 The fresh-user location correction is not a successful registration/location
 save test. Earlier fresh-actor observations must not be presented as that proof.
+
+### Main Event replay and registration-first contract
+
+Maya followed the Main Event link from the Design Circle workspace. The
+application selected Main and showed the existing pending invitation. Accept
+and its confirmation persisted accepted membership under Maya's base profile;
+the same Activities popup updated the card from 1/10 to 2/10 without reload.
+Reopening the link preserved the complete normalized oracle exactly: both
+Event membership IDs, the single Design Circle profile, accepted Group
+membership and prior referrer remained unchanged. No database writes were used.
+Evidence is included in the block8-maya JSON under `mainEventContinuation`.
+
+The user confirmed the registration-first expectation for a group-owned Event
+invitation. Source inspection confirms that the restricted route sends an
+unauthenticated visitor to Entry with the original target in `redirect`, and
+onboarding completion starts the session before navigating to that retained
+target. This source check is not a clean fresh-registration browser PASS.
+The fresh-account end-to-end evidence remains unproven after the rejected
+location patch; block 8 remains open for that boundary and exact fixture cleanup.
+HTTP remains 7/48; Lifecycle remains 7/29. Closed blocks 1–7 were not replayed.
+
+### Clean browser-native registration replay and explicit Setup close
+
+The ENTRY launcher now uses `geolocation: false`, the launcher's existing native
+location path; no emulation holder runs. The discarded Austin/Budapest-emulated
+attempts are not PASS evidence. A new Group Admission QA account and a new
+Event Admission QA account completed the actual profile form and uploads.
+Their identifiers were tracked by the existing versioned sharing harness before
+registration; no location or membership was written through Mongo commands.
+
+The new-profile entry handler now awaits the existing location admission flow,
+just as a selected existing member with missing coordinates does. Cancellation
+kept entry signed out. The actual browser-native request returned the staged
+point in 4ms with maximumAge0 and approximately111km accuracy, distinct from both
+former fixed points. This proves the browser source, not GPS precision.
+
+- Group registration: location persisted on the base profile and one group
+  profile; one accepted Design Circle membership, correct inviter, selected
+  workspace, no location-required Home. Duplicate full-link replay preserved
+  the normalized persisted state exactly.
+- Group Event registration: onboarding returned to the target Event, established
+  one accepted Group membership/profile and a pending Event invitation. Accept
+  persisted accepted participation and changed the retained card2/10→3/10.
+  Reopening the link left the normalized state unchanged.
+- User correction: Update must keep Setup open, including Firebase. The shared
+  Setup store now retains the successful admission until explicit Close;
+  feedback timeout does not discard it. Editing the choices requires another
+  successful Update. A failed check/cancel cannot approve continuation.
+- Existing Group Link Visitor genuinely had no coordinates before this test.
+  Actual Update left Setup open, approved and idle with no session. Explicit
+  Close continued the existing login without another Login click; authoritative
+  reads then showed coordinates persisted on the account and matching group
+  profile. No ad hoc repair was used.
+
+The existing frontend watcher compiled successfully. Added focused regression
+specs cover deferred/cancelled registration admission and shared Setup Update/
+Close continuation; these standalone specs have not been executed alongside the
+active dev compilation owner. Live Firebase authentication remains unexecuted.
+
+[Structured evidence](GROUP-LIFECYCLE-001-block8-registration-20260927.json).
+Block8 still requires exact fixture cleanup; HTTP7/48, Lifecycle7/29 unchanged.
+
+### Block 8 closed — exact cleanup verified, next block 9
+
+The versioned restore-sharing command removed tracked registration media and
+restored all retained collection scopes. Its corrected ownership selectors cover
+the group-owner Affiliate record and the reserved Events' generated chat copies
+and messages. Old wrong Affiliate selectors are accepted for cleanup only when
+the retained owner identity matches and the record was created within this
+sharing run; otherwise restoration fails before deleting media. Each restored
+scope is verified before discarding the retained snapshot.
+
+Independent cleanup oracle: reserved Events0, Asset0, generated chats0,
+chat messages0, tracked fresh base/group profiles0, generated group-owner
+Affiliate link0, sharing snapshot cleared. The existing
+`verify-savepoint ... after-membership-trash` also passed exactly; blocks1–7
+were not replayed or changed. See
+[cleanup proof](GROUP-LIFECYCLE-001-block8-cleanup-20260927.json).
+
+**HTTP8/48 closed (16.7%); Lifecycle8/29. Block9 is now current.**
+Only the actors needed by each next test are to remain open; all obsolete
+registration windows were closed. Firebase live sign-in remains owned by19,
+not claimed from the demo/shared-store checks here.

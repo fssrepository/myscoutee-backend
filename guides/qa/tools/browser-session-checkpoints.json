@@ -2290,6 +2290,7 @@
     "GROUP-LIFECYCLE-001-ENTRY": {
       "preserveOtherSessions": true,
       "fixtureCheckpointId": "GROUP-LIFECYCLE-001",
+      "geolocation": false,
       "layout": {
         "columns": 2
       },

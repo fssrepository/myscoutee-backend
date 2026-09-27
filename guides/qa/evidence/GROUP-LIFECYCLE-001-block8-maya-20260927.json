@@ -507,5 +507,90 @@
         "aria": "Open card actions"
       }
     ]
+  },
+  "mainEventContinuation": {
+    "acceptedUi": {
+      "text": "rary\nFeed\nrss_feed\nFollowed\ngroups\nGroups\n8\npsychology\nIMPRESSIONS\nemoji_events\nGold\nHOST\ngroups\nSocial\nATTENDEE\nrate_review\nFeedback\n1\nlocal_activity\nACTIVITIES\nstar\nRates\n99+\nchat\nChats\n9\nmail\nInvitations\n11\nevent\nEvents\n38\nreceipt_long\nPayments\ninventory_2\nMY ASSETS\ndirections_car\nTransport\n1\napartment\nAccommodation\ninventory_2\nSupplies\nqr_code_2\nTicket\ncontacts\nContacts\nActivities\n\nAll\n\nschedule\ntoday\nclose\nevent\nEvents\nexpand_more\n8\nwidgets\nAll\nexpand_more\n38\nexplore\nSun, 12 Jul 2026\nSun, 12 Jul 2026\nMultislot\n9+\npublic\nSunset Beach Volley Rotation\n\nJul 12, 7:00 PM - Oct 25, 9:30 PM\n\nSan Diego · wide public beach volleyball court · 10080.373 km\n\nmore_vert\n\nCasual teams rotate through quick games before sharing fruit at the sideline.\n\nMon, 28 Sept 2026\n2 / 10\n1\npublic\nQA Group Link Event\n\nSep 28, 1:38 AM - 2:38 AM\n\nSeattle · 3.337 km\n\nmore_vert\n\nExternal sharing prerequisite\n\nSun, 7 Feb 2027\n1 / 19\n1\npublic\nHandmade Pasta Table\n\nFeb 7, 5:15 PM - 6:45 PM\n\nSan Diego · community kitchen with long marble worktop · 7742.257 km\n\nmore_vert\n\nPairs roll dough, shape filled pasta, and share the first cooked batch.\n\nMon, 1 Mar 2027\nBlocked User\nblock\nBrunch Rotation\n\nMar 1, 11:00 AM - 1:30 PM\n\nChicago · bright tiled all-day cafe · 7742.257 km\n\nmore_vert\n\nThree compact tables rotate guests every twenty minutes using different cup colors as cues.\n\nWaiting for approval\nWed, 3 Mar 2027\n5 / 50\n9+\nmail\nDesert Breathwork Circle\n\nMar 3, 10:30 AM - 1:30 PM\n\nPhoenix · shaded desert pavilion · 9778.225 km\n\nmore_vert\n\nMilo Grant\n\nSun, 7 Mar 2027\n7 / 50\n9+\nmail\nTelescope Lawn Social\n\nMar 7, 12:30 PM - 2:30 PM\n\nLos Angeles · open science-center lawn at dusk · 9312.641 km\n\nmore_vert\n\nLuca Hale",
+      "activitiesRetained": true
+    },
+    "acceptedOracle": {
+      "userId": "1b1c70be2349b3359a8f6f94",
+      "hasLocation": true,
+      "activeWorkspace": null,
+      "profiles": [
+        {
+          "workspaceGroupId": "seed-community-design-circle",
+          "userId": "group-3b30d451-5dee-4e25-a298-bf0c04a7b3f1",
+          "locationCoordinates": {
+            "latitude": 47.5111,
+            "longitude": 19.0354
+          }
+        }
+      ],
+      "groupMembership": {
+        "userId": "1b1c70be2349b3359a8f6f94",
+        "role": "Member",
+        "status": "accepted",
+        "communityAction": "accept"
+      },
+      "eventMemberships": [
+        {
+          "_id": "6ab85d5c296c75ec86d3c749",
+          "ownerId": "f02709270000000000000081",
+          "userId": "1b1c70be2349b3359a8f6f94",
+          "status": "accepted"
+        },
+        {
+          "_id": "6ab86a93296c75ec86d3c766",
+          "ownerId": "f02709270000000000000083",
+          "userId": "group-3b30d451-5dee-4e25-a298-bf0c04a7b3f1",
+          "status": "accepted"
+        }
+      ],
+      "referrer": {
+        "_id": "1b1c70be2349b3359a8f6f94",
+        "referrerUserId": "9f3b3f085e23af6c89dbc432"
+      }
+    },
+    "replayedOracle": {
+      "userId": "1b1c70be2349b3359a8f6f94",
+      "hasLocation": true,
+      "activeWorkspace": null,
+      "profiles": [
+        {
+          "workspaceGroupId": "seed-community-design-circle",
+          "userId": "group-3b30d451-5dee-4e25-a298-bf0c04a7b3f1",
+          "locationCoordinates": {
+            "latitude": 47.5111,
+            "longitude": 19.0354
+          }
+        }
+      ],
+      "groupMembership": {
+        "userId": "1b1c70be2349b3359a8f6f94",
+        "role": "Member",
+        "status": "accepted",
+        "communityAction": "accept"
+      },
+      "eventMemberships": [
+        {
+          "_id": "6ab85d5c296c75ec86d3c749",
+          "ownerId": "f02709270000000000000081",
+          "userId": "1b1c70be2349b3359a8f6f94",
+          "status": "accepted"
+        },
+        {
+          "_id": "6ab86a93296c75ec86d3c766",
+          "ownerId": "f02709270000000000000083",
+          "userId": "group-3b30d451-5dee-4e25-a298-bf0c04a7b3f1",
+          "status": "accepted"
+        }
+      ],
+      "referrer": {
+        "_id": "1b1c70be2349b3359a8f6f94",
+        "referrerUserId": "9f3b3f085e23af6c89dbc432"
+      }
+    },
+    "replayUnchanged": true
   }
 }
