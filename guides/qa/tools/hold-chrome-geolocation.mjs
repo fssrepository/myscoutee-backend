@@ -14,6 +14,7 @@ const accuracy = Number(option('--accuracy') || 10);
 const targetUrl = option('--url');
 const readyFile = option('--ready-file');
 const permission = option('--permission') || 'granted';
+const noReload = args.includes('--no-reload');
 
 if (!Number.isInteger(port) || port <= 0
   || !Number.isFinite(latitude) || !Number.isFinite(longitude)
@@ -56,7 +57,7 @@ try {
   }
   await pageConnection.send('Page.enable');
   await pageConnection.send('Emulation.setGeolocationOverride', geolocation);
-  await pageConnection.send('Page.navigate', { url: targetUrl });
+  if (!noReload) await pageConnection.send('Page.navigate', { url: targetUrl });
   await writeFile(readyFile, `${JSON.stringify({
     status: 'ready',
     pid: process.pid,

@@ -2,7 +2,7 @@
   "checkpoint": "GROUP-LIFECYCLE-001",
   "block": 19,
   "date": "2026-09-27",
-  "status": "IN PROGRESS",
+  "status": "HTTP PASS / CLOSED; Local NOT RUN",
   "mode": "HTTP",
   "browser": "GROUP-LIFECYCLE-001-ENTRY-BLOCK19; one anonymous versioned-launcher window; actual Login/demo selector actions",
   "passed": [
@@ -294,13 +294,12 @@
     "restored": true
   },
   "remaining": [
-    "19.2 demo pending-coordinate isolation/older-response controls",
     "Local mode separate run"
   ],
   "counts": {
-    "httpClosed": 15,
+    "httpClosed": 16,
     "httpTotal": 48,
-    "lifecycleClosed": 15,
+    "lifecycleClosed": 16,
     "lifecycleTotal": 29
   },
   "failedProfileRetry": {
@@ -1656,7 +1655,371 @@
         "message",
         "path"
       ]
-    }
+    },
+    "pendingByAccount": {
+      "Alex": {
+        "before": {
+          "path": "/entry",
+          "activeUser": null,
+          "sessionHash": "811c9dc5",
+          "pending": {
+            "myscoutee.http.location.v1:af0436815ab38f4864dd1e24:pending-login": {
+              "latitude": 48.8566,
+              "longitude": 2.3522
+            },
+            "myscoutee.http.location.v1:b0971e779dbdb71f9327eabb:pending-login": {
+              "latitude": 40.7128,
+              "longitude": -74.006
+            }
+          },
+          "point": null,
+          "workspace": null,
+          "banner": null
+        },
+        "requests": [
+          {
+            "method": "GET",
+            "path": "/api/auth/eligibility",
+            "latitude": "47.4811",
+            "longitude": "19.0366",
+            "groupId": null,
+            "locationHeaders": []
+          },
+          {
+            "method": "POST",
+            "path": "/api/auth/session/login",
+            "latitude": null,
+            "longitude": null,
+            "groupId": null,
+            "locationHeaders": []
+          },
+          {
+            "method": "GET",
+            "path": "/api/auth/me",
+            "latitude": null,
+            "longitude": null,
+            "groupId": null,
+            "locationHeaders": []
+          },
+          {
+            "method": "GET",
+            "path": "/api/auth/me",
+            "latitude": null,
+            "longitude": null,
+            "groupId": null,
+            "locationHeaders": []
+          },
+          {
+            "method": "POST",
+            "path": "/api/auth/me/realtime/long-poll",
+            "latitude": null,
+            "longitude": null,
+            "groupId": null,
+            "locationHeaders": []
+          },
+          {
+            "method": "GET",
+            "path": "/api/auth/me/profile-ext",
+            "latitude": "48.8566",
+            "longitude": "2.3522",
+            "groupId": null,
+            "locationHeaders": []
+          }
+        ],
+        "responses": [
+          {
+            "path": "/api/auth/eligibility",
+            "status": 200
+          },
+          {
+            "path": "/api/auth/session/login",
+            "status": 200
+          },
+          {
+            "path": "/api/auth/me",
+            "status": 200
+          },
+          {
+            "path": "/api/auth/me",
+            "status": 200
+          },
+          {
+            "path": "/api/auth/me/realtime/long-poll",
+            "status": 200
+          },
+          {
+            "path": "/api/auth/me/profile-ext",
+            "status": 200
+          }
+        ],
+        "events": [
+          {
+            "kind": "request",
+            "path": "/api/auth/eligibility",
+            "groupId": null
+          },
+          {
+            "kind": "response",
+            "path": "/api/auth/eligibility",
+            "status": 200
+          },
+          {
+            "kind": "request",
+            "path": "/api/auth/session/login",
+            "groupId": null
+          },
+          {
+            "kind": "response",
+            "path": "/api/auth/session/login",
+            "status": 200
+          },
+          {
+            "kind": "request",
+            "path": "/api/auth/me",
+            "groupId": null
+          },
+          {
+            "kind": "response",
+            "path": "/api/auth/me",
+            "status": 200
+          },
+          {
+            "kind": "request",
+            "path": "/api/auth/me",
+            "groupId": null
+          },
+          {
+            "kind": "response",
+            "path": "/api/auth/me",
+            "status": 200
+          },
+          {
+            "kind": "request",
+            "path": "/api/auth/me/realtime/long-poll",
+            "groupId": null
+          },
+          {
+            "kind": "request",
+            "path": "/api/auth/me/profile-ext",
+            "groupId": null
+          },
+          {
+            "kind": "response",
+            "path": "/api/auth/me/realtime/long-poll",
+            "status": 200
+          },
+          {
+            "kind": "response",
+            "path": "/api/auth/me/profile-ext",
+            "status": 200
+          }
+        ],
+        "after": {
+          "path": "/game",
+          "activeUser": "af0436815ab38f4864dd1e24",
+          "sessionHash": "d0f4a17d",
+          "pending": {
+            "myscoutee.http.location.v1:b0971e779dbdb71f9327eabb:pending-login": {
+              "latitude": 40.7128,
+              "longitude": -74.006
+            }
+          },
+          "point": {
+            "latitude": 47.4811,
+            "longitude": 19.0366
+          },
+          "load": "success",
+          "workspace": "public\nMain profile\nexpand_more\n99+",
+          "banner": "visibility_off\nGame discovery is paused\n\nChange your profile visibility to Public if you want to rate profiles and appear in game suggestions."
+        }
+      },
+      "Zoe": {
+        "before": {
+          "path": "/entry",
+          "activeUser": null,
+          "sessionHash": "811c9dc5",
+          "pending": {
+            "myscoutee.http.location.v1:b0971e779dbdb71f9327eabb:pending-login": {
+              "latitude": 40.7128,
+              "longitude": -74.006
+            }
+          },
+          "point": null,
+          "workspace": null,
+          "banner": null
+        },
+        "requests": [
+          {
+            "method": "GET",
+            "path": "/api/auth/eligibility",
+            "latitude": "47.5147",
+            "longitude": "19.0354",
+            "groupId": null,
+            "locationHeaders": []
+          },
+          {
+            "method": "POST",
+            "path": "/api/auth/session/login",
+            "latitude": null,
+            "longitude": null,
+            "groupId": null,
+            "locationHeaders": []
+          },
+          {
+            "method": "GET",
+            "path": "/api/auth/me",
+            "latitude": null,
+            "longitude": null,
+            "groupId": null,
+            "locationHeaders": []
+          },
+          {
+            "method": "POST",
+            "path": "/api/auth/me/realtime/long-poll",
+            "latitude": null,
+            "longitude": null,
+            "groupId": null,
+            "locationHeaders": []
+          },
+          {
+            "method": "GET",
+            "path": "/api/auth/me",
+            "latitude": null,
+            "longitude": null,
+            "groupId": null,
+            "locationHeaders": []
+          },
+          {
+            "method": "GET",
+            "path": "/api/auth/me/profile-ext",
+            "latitude": "40.7128",
+            "longitude": "-74.006",
+            "groupId": null,
+            "locationHeaders": []
+          }
+        ],
+        "responses": [
+          {
+            "path": "/api/auth/eligibility",
+            "status": 200
+          },
+          {
+            "path": "/api/auth/session/login",
+            "status": 200
+          },
+          {
+            "path": "/api/auth/me",
+            "status": 200
+          },
+          {
+            "path": "/api/auth/me/realtime/long-poll",
+            "status": 200
+          },
+          {
+            "path": "/api/auth/me",
+            "status": 200
+          },
+          {
+            "path": "/api/auth/me/profile-ext",
+            "status": 200
+          }
+        ],
+        "events": [
+          {
+            "kind": "request",
+            "path": "/api/auth/eligibility",
+            "groupId": null
+          },
+          {
+            "kind": "response",
+            "path": "/api/auth/eligibility",
+            "status": 200
+          },
+          {
+            "kind": "request",
+            "path": "/api/auth/session/login",
+            "groupId": null
+          },
+          {
+            "kind": "response",
+            "path": "/api/auth/session/login",
+            "status": 200
+          },
+          {
+            "kind": "request",
+            "path": "/api/auth/me",
+            "groupId": null
+          },
+          {
+            "kind": "response",
+            "path": "/api/auth/me",
+            "status": 200
+          },
+          {
+            "kind": "request",
+            "path": "/api/auth/me/realtime/long-poll",
+            "groupId": null
+          },
+          {
+            "kind": "request",
+            "path": "/api/auth/me",
+            "groupId": null
+          },
+          {
+            "kind": "response",
+            "path": "/api/auth/me/realtime/long-poll",
+            "status": 200
+          },
+          {
+            "kind": "response",
+            "path": "/api/auth/me",
+            "status": 200
+          },
+          {
+            "kind": "request",
+            "path": "/api/auth/me/profile-ext",
+            "groupId": null
+          },
+          {
+            "kind": "response",
+            "path": "/api/auth/me/profile-ext",
+            "status": 200
+          }
+        ],
+        "after": {
+          "path": "/game",
+          "activeUser": "b0971e779dbdb71f9327eabb",
+          "sessionHash": "bf17cc96",
+          "pending": {},
+          "point": {
+            "latitude": 47.5147,
+            "longitude": 19.0354
+          },
+          "load": "success",
+          "workspace": "public\nMain profile\nexpand_more\n99+",
+          "banner": null
+        }
+      }
+    },
+    "serverPointsAfter": [
+      {
+        "id": "af0436815ab38f4864dd1e24",
+        "locationCoordinates": {
+          "latitude": 47.4811,
+          "longitude": 19.0366
+        },
+        "locationRequired": false
+      },
+      {
+        "id": "b0971e779dbdb71f9327eabb",
+        "locationCoordinates": {
+          "latitude": 47.5147,
+          "longitude": 19.0354
+        },
+        "locationRequired": false
+      }
+    ],
+    "preparation": "Versioned anonymous PENDING-BLOCK19 launcher seeds only scoped stale pending samples; actual Login/demo selector, requests, rejection of unsupported point and acknowledgement are observed. Native GPS denied. This is not evidence of collecting those pending points from native GPS."
   },
   "deferredExternalConfiguration": {
     "userRequested": true,

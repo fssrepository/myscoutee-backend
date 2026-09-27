@@ -6,7 +6,7 @@
   const checkpointId = "GROUP-LIFECYCLE-001";
   Q.assertDeploymentSafety();
   const command = Q.text(process.env.MANUAL_QA_COMMAND);
-  if (!["status", "verify-lists", "inspect-location-control", "prepare-location-control", "prepare-location-invitation", "set-location-control-invalid", "restore-location-control", "prepare-badges", "prepare-join", "restore-badges", "prepare-contact-request-pages",
+  if (!["status", "verify-lists", "inspect-location-control", "prepare-location-control", "prepare-tracking-control", "prepare-location-invitation", "set-location-control-invalid", "restore-location-control", "prepare-badges", "prepare-join", "restore-badges", "prepare-contact-request-pages",
       "capture", "restore", "verify-savepoint", "prepare-contacts", "prepare-contact-invitees", "restore-contacts", "prepare-chat-sharing", "prepare-chat-sharing-context", "restore-chat-sharing", "prepare-cash-history", "prepare-cash-checkout", "prepare-cash-payment-methods", "restore-cash-history", "prepare-sharing", "prepare-sharing-group-event", "repair-sharing-identifiers", "reset-sharing-failed-event-claim", "prepare-sharing-attribution", "track-sharing-registration", "sharing-registrants", "restore-sharing", "prepare-list-pagination", "restore-list-pagination",
       "prepare-member-invitation", "restore-member-invitation", "prepare-admin-lifecycle", "prepare-admin-moderation", "prepare-admin-feed-event", "prepare-admin-previews", "prepare-admin-base-chat-read", "prepare-admin-base-chat-message", "prepare-admin-base-feed", "restore-admin-lifecycle",
       "prepare-invitation", "prepare-hidden-invitation", "restore-invitation", "prepare-editor", "restore-editor", "prepare-creation", "restore-creation"].includes(command)
@@ -23,7 +23,7 @@
     "1b1c70be2349b3359a8f6f94"
   ];
   if (!Q.sameJson(state.actors, actors)) Q.fail("Group baseline actors differ.");
-  if (["inspect-location-control", "prepare-location-control", "prepare-location-invitation", "set-location-control-invalid", "restore-location-control"].includes(command)) {
+  if (["inspect-location-control", "prepare-location-control", "prepare-tracking-control", "prepare-location-invitation", "set-location-control-invalid", "restore-location-control"].includes(command)) {
     const userId = "b0971e779dbdb71f9327eabb";
     const groupId = "seed-community-design-circle";
     const participantId = "qa-group-entry-19-zoe";
@@ -49,7 +49,7 @@
         } : null});
       return;
     }
-    if (command === "prepare-location-control") {
+    if (["prepare-location-control", "prepare-tracking-control"].includes(command)) {
       if (state.locationControlSnapshot || (control.activeSessions?.length ?? 0) !== 0
           || !Number.isFinite(control.locationCoordinates?.latitude)
           || !Number.isFinite(control.locationCoordinates?.longitude)) {
@@ -57,10 +57,10 @@
       }
       const snapshot = Q.snapshotSpecs([{collection: "users", selector: {userId}}]);
       Q.collection(Q.STATE_COLLECTION).updateOne({_id: state._id}, {$set: {
-        locationControlSnapshot: snapshot, locationControlPhase: "missing", resumeBlock: 19
+        locationControlSnapshot: snapshot, locationControlPhase: command === "prepare-tracking-control" ? "tracking" : "missing", resumeBlock: command === "prepare-tracking-control" ? 20 : 19
       }});
-      users.updateOne({userId}, {$unset: {locationCoordinates: ""}});
-      Q.printObject({checkpointId, userId, phase: "missing", snapshotCount: snapshot[0].documents.length});
+      if (command === "prepare-location-control") users.updateOne({userId}, {$unset: {locationCoordinates: ""}});
+      Q.printObject({checkpointId, userId, phase: command === "prepare-tracking-control" ? "tracking" : "missing", snapshotCount: snapshot[0].documents.length});
       return;
     }
     if (!state.locationControlSnapshot?.length) Q.fail("No location-control snapshot is retained.");
@@ -1068,7 +1068,7 @@
     // Add later boundaries only with their prepared selectors and checklist oracle.
     const boundaries = {"lists-ready": 1, "block-1-complete": 2, "after-editor-checks": 4, "after-join-approval": 4, "after-invitation-checks": 5, "after-workspace-selection": 5, "after-moderation-checks": 7, "after-membership-trash": 8, "after-chat-sharing": 10, "after-cash-history": 11, "after-contacts": 12, "after-contact-controls": 13};
     if (!Object.hasOwn(boundaries, name)) Q.fail("Unknown Group savepoint boundary.");
-    if (state.contactSnapshots || state.sharingSnapshots || state.chatSharingSnapshots || state.cashHistorySnapshots || state.adminLifecycleSnapshots || state.paginationSnapshots || state.invitationSnapshots || state.memberInvitationSnapshots || state.editorSnapshots || state.creationSnapshots) Q.fail("Restore temporary controls before a savepoint operation.");
+    if (state.locationControlSnapshot || state.locationInvitationSnapshots || state.contactSnapshots || state.sharingSnapshots || state.chatSharingSnapshots || state.cashHistorySnapshots || state.adminLifecycleSnapshots || state.paginationSnapshots || state.invitationSnapshots || state.memberInvitationSnapshots || state.editorSnapshots || state.creationSnapshots) Q.fail("Restore temporary controls before a savepoint operation.");
     let savepoint = (state.savepoints || []).find(item => item.name === name);
     if (command === "capture") {
       if (savepoint) Q.fail("Savepoint already exists; retained evidence must not be overwritten.");
@@ -1188,6 +1188,7 @@
     adminLifecyclePrepared: !!state.adminLifecycleSnapshots,
     editorPrepared: !!state.editorSnapshots,
     creationPrepared: !!state.creationSnapshots,
+    retainedTemporaryControls: Object.keys(state).filter(key => /Snapshots?$/.test(key) && state[key]),
     savepoints: (state.savepoints || []).map(({name, capturedAtIso, resumeBlock, adapter}) => ({name, capturedAtIso, resumeBlock, adapter})),
     resumedFrom: state.resumedFrom || null,
     alexBaseline: groups.map(group => {

@@ -11339,3 +11339,5 @@ moved out of the Group campaign. DEFERRED / NOT RUN; configure later. The existi
 DEPLOY-FIREBASE-LIFECYCLE-001 pending-invitation-policy assertion is retained in
 section1. Group19 continues with demo admission/pending coordinates; it is not
 blocked by Firebase. No earlier PASS is reopened or external PASS inferred.
+
+2026-09-27 Group19 HTTP PASS/CLOSED after user scope separation. Real selector pending-sample controls proved stored-point admission, unsupported pending delivery only through profile-ext, successful saved-point response and account-scoped acknowledgement. HTTP16/48, Lifecycle16/29 closed;20 tracking active. Local remains NOT RUN. Older partial fixtures preserved.

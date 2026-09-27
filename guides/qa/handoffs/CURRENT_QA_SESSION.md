@@ -88,17 +88,17 @@ Earlier Event Mode, Integration API, Activity Rating and EVENT-FOLLOWING-001 rem
 ```yaml
 checkpoint: GROUP-LIFECYCLE-001
 checklist: ../checklists/group/GROUP-LIFECYCLE-001.md
-substage: HTTP block19 IN PROGRESS:19.1 HTTP complete,19.2 active (demo pending coordinates). HTTP15/48 closed; Lifecycle15/29 (1–13,17,18). Blocks14–16 partial retained.
-fixture_phase: after-contact-controls retained. Versioned Zoe location control restored exactly after normal logout. No Group actor coordinates altered. ENTRY-BLOCK19 closed; one PENDING-BLOCK19 managed window now tests versioned stale pending-coordinate prerequisites; prior ENTRY window did not exist at live resume inspection.
+substage: HTTP block20 active;19 HTTP PASS/CLOSED after user moved Firebase/live configuration to separate deferred QA. HTTP16/48 closed; Lifecycle16/29 (1–13,17–19). Blocks14–16 partial retained.
+fixture_phase: after-contact-controls retained; older contactSnapshots/badgeSnapshots untouched.19 invitation/location controls exactly restored and QA key revoked.20 tracking-only Zoe snapshot retained, original point47.5147/19.0354 unchanged. One PENDING-BLOCK19 managed window signed out on /entry; pending values consumed by real19.2 logins.
 execution_log: ../evidence/GROUP-LIFECYCLE-001-20260926.md
-execution_authority: User explicitly delegated full-flow automated execution of the pending QA campaign on 2026-09-26; Codex operates the browser, diagnoses, fixes and retests. Closed PASS rows remain closed.
-next_action: Continue19.2 unsupported pending-coordinate and account-isolation controls.53 member seed points accepted. Per user scope change, Firebase and actual external-client configuration checks moved to DEPLOY-EXTERNAL-CONFIG-001 (DEFERRED/NOT RUN); they do not gate Group. Local remains separate.19.1 HTTP complete; do not replay it. Zoe and invitation fixture restored exactly; QA key revoked.
+execution_authority: User explicitly delegated full-flow automated execution of the pending QA campaign; authorization remains active. User asks to keep moving and report the current numbered step.
+next_action: Execute20 stored point/optional tracking (off/save/reopen/on, <5km/no write, >=5km/save, unsupported point rejection then valid movement). Use retained Zoe snapshot and same single managed browser. Do not replay19. Firebase/external-client configured steps moved to DEPLOY-EXTERNAL-CONFIG-001 (DEFERRED/NOT RUN). Local remains separate.
 savepoint: community-group after-contact-controls captured 2026-09-27T04:40:57.723Z, resume13. Earlier savepoints immutable.
-queue: HTTP Lifecycle19–29 with14–16 partial retained; Local Lifecycle1–29, Group Isolation1–12 and Integration API Group1–7 remain separate.
+queue: HTTP Lifecycle20–29 with14–16 partial retained; Local Lifecycle1–29, Group Isolation1–12 and Integration API Group1–7 remain separate.
 resume_gate: Run the versioned community-group status command before any relaunch. verify-lists checked all ten groups/27 memberships without mutation and the versioned launcher prepared all three actors on 2026-09-26. Do not reset changed records or replay a closed checkpoint. Check the current manifest and launcher result.
 runtime: Existing frontend-sync owns builds; avatar-state/fallback/Setup fixes built16:17:40Z. Backend first-location selector cache eviction classes PASS and restart18:19:51 local. Backend/Mongo healthy. One versioned ENTRY-BLOCK19 browser. No separate test/build process.
 mutation_contract: Application-wide, await persistence inside the busy confirmation dialog. Only after success apply canonical returned state through the existing stores to retained lists/cards/badges; failure retains the dialog/error and does not fake success. Keep underlying popups open. No reload to obtain a mutation result; the user identifies only the existing subevents flow as an exception.
-last_completed: Block19 partial:19.1 HTTP complete including invitation first profile/workspace, delayed avatar no-flash/failure/reload, shared disabled Update and selector cache refresh.19.2 seed coordinates53/53 accepted. Block18 remains latest fully closed block. See block19-entry-20260927.json.
+last_completed: Block19 HTTP PASS/CLOSED in user-approved demo scope;53/53 seed points and two-account unsupported pending-sample request/acknowledgement verified. See block19-entry-20260927.json.
 ```
 
 ## Archived pair-QA resume point — 2026-09-17

@@ -20,13 +20,15 @@ const requestedPermission = option('--permission').toLowerCase();
 const requestedLatitude = option('--latitude');
 const requestedLongitude = option('--longitude');
 const reload = args.includes('--reload');
+const noReload = args.includes('--no-reload');
 
 if (!checkpointId || !actorName) {
   throw new Error(
     'Usage: apply-checkpoint-browser-location.mjs CHECKPOINT_ID --actor NAME '
-    + '[--permission granted|denied|prompt] [--latitude LAT --longitude LON] [--reload]'
+    + '[--permission granted|denied|prompt] [--latitude LAT --longitude LON] [--reload|--no-reload]'
   );
 }
+if (reload && noReload) throw new Error('Choose --reload or --no-reload.');
 if (requestedPermission && !['granted', 'denied', 'prompt'].includes(requestedPermission)) {
   throw new Error(`Unsupported geolocation permission '${requestedPermission}'.`);
 }
@@ -77,6 +79,7 @@ const holder = spawn(process.execPath, [
   '--longitude', `${Number(geolocation?.longitude)}`,
   '--accuracy', `${Number(geolocation?.accuracy ?? 10)}`,
   '--permission', permission,
+  ...(noReload ? ['--no-reload'] : []),
   '--url', pageUrl.url,
   '--ready-file', readyFile
 ], {
@@ -126,7 +129,7 @@ process.stdout.write(`${JSON.stringify({
   configuredGeolocation: session.geolocation ?? null,
   activeGeolocation: geolocation ?? null,
   observed,
-  reloaded: true
+  reloaded: !noReload
 }, null, 2)}\n`);
 
 async function stopExistingHolder(activeSession, activePort) {
