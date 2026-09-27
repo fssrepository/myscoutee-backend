@@ -179,6 +179,38 @@ class AccessControlServiceTest {
     }
 
     @Test
+    void demoResourceAssignmentCannotImpersonateAnAuthorizedSubject() {
+        MongoSessionModeContext.set(MongoSessionMode.DEMO);
+        authenticateAs("outsider");
+        var request = request("event-1", "sub-1", "member");
+
+        assertThat(service.canCurrentActorAssignEventResources(request)).isFalse();
+        assertThat(service.canCurrentActorManageEventResourceAssignment(request)).isFalse();
+        assertThat(service.canSubmitEventResourceAssignment(auth("member"), request)).isTrue();
+    }
+
+    @Test
+    void optionalAuthenticationDoesNotAuthorizeAnonymousResourceWrites() {
+        configProperties.setMemberUser("member");
+        var request = request("event-1", "sub-1", "member");
+
+        assertThat(service.canCurrentActorAssignEventResources(request)).isFalse();
+        assertThat(service.canCurrentActorManageEventResourceAssignment(request)).isFalse();
+        assertThat(service.canSubmitEventResourceAssignment(auth("outsider"), request)).isFalse();
+    }
+
+    @Test
+    void demoEventManagerCanStillAssignResourcesForAnAcceptedSubject() {
+        MongoSessionModeContext.set(MongoSessionMode.DEMO);
+        authenticateAs("admin");
+        when(usersRepository.findByUserId("admin")).thenReturn(Optional.of(user("admin")));
+        when(activityEventsRepository.findBySourceId("event-1"))
+                .thenReturn(List.of(event("event-1", "creator", "admin")));
+
+        assertThat(service.canCurrentActorManageEventResourceAssignment(request("event-1", "sub-1", "member"))).isTrue();
+    }
+
+    @Test
     void rejectsInvalidEventResourceAssignmentInput() {
         assertThat(service.canSubmitEventResourceAssignment(auth("u1"), request("", "sub-1", "u1"))).isFalse();
         assertThat(service.canSubmitEventResourceAssignment(auth("u1"), request("event-1", "", "u1"))).isFalse();

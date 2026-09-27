@@ -174,12 +174,9 @@ public class AccessControlService implements AccessPolicyData {
                 || !StringUtils.hasText(assetOwnerUserId)) {
             return false;
         }
-        if (!requiresAuthenticatedActor()) {
-            return true;
-        }
-
         String actorUserId = resolveActorUserId(authentication);
-        return can(AccessPolicyKeys.RESOURCE_ASSIGN_SUBMIT, actorUserId, assetOwnerUserId, eventId);
+        return StringUtils.hasText(actorUserId)
+                && can(AccessPolicyKeys.RESOURCE_ASSIGN_SUBMIT, actorUserId, assetOwnerUserId, eventId);
     }
 
     public boolean canCurrentActorAssignEventResources(ActivitySubEventResourceStateDto request) {
@@ -456,7 +453,9 @@ public class AccessControlService implements AccessPolicyData {
         if (!StringUtils.hasText(eventId)) {
             return false;
         }
-        return canCurrentActorUseCurrentSubjectPolicy(AccessPolicyKeys.RESOURCE_ASSIGN_MANAGE, eventId);
+        String actorUserId = resolveActorUserId(SecurityContextHolder.getContext().getAuthentication());
+        return StringUtils.hasText(actorUserId)
+                && can(AccessPolicyKeys.RESOURCE_ASSIGN_MANAGE, actorUserId, actorUserId, eventId);
     }
 
     public boolean canCleanupEventResourceAssignments(String eventId, String actorUserId) {

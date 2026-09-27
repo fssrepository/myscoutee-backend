@@ -7,7 +7,7 @@
   Q.assertDeploymentSafety();
   const command = Q.text(process.env.MANUAL_QA_COMMAND);
   if (!["status", "prepare-tools", "prepare-tools-explore", "inspect-tools", "restore-tools", "verify-lists", "inspect-location-control", "prepare-location-control", "prepare-tracking-control", "prepare-location-invitation", "set-location-control-invalid", "restore-location-control", "prepare-badges", "prepare-join", "restore-badges", "prepare-contact-request-pages",
-      "capture", "restore", "verify-savepoint", "prepare-contacts", "prepare-profile-contacts", "restore-profile-contacts", "prepare-contact-invitees", "restore-contacts", "prepare-chat-sharing", "prepare-chat-sharing-context", "restore-chat-sharing", "prepare-cash-history", "prepare-cash-checkout", "prepare-cash-payment-methods", "restore-cash-history", "prepare-sharing", "prepare-menu-checkout", "prepare-group-asset-payment", "prepare-group-asset-scope", "prepare-profile-tickets", "prepare-group-asset-payment-card", "inspect-group-asset-payment", "prepare-sharing-group-event", "repair-sharing-identifiers", "reset-sharing-failed-event-claim", "prepare-sharing-attribution", "track-sharing-registration", "sharing-registrants", "restore-sharing", "prepare-list-pagination", "restore-list-pagination",
+      "capture", "restore", "verify-savepoint", "prepare-contacts", "prepare-profile-contacts", "prepare-profile-notifications", "restore-profile-notifications", "restore-profile-contacts", "prepare-contact-invitees", "restore-contacts", "prepare-chat-sharing", "prepare-chat-sharing-context", "restore-chat-sharing", "prepare-cash-history", "prepare-cash-checkout", "prepare-cash-payment-methods", "restore-cash-history", "prepare-sharing", "prepare-menu-checkout", "prepare-group-asset-payment", "prepare-group-asset-scope", "prepare-profile-tickets", "prepare-group-asset-payment-card", "inspect-group-asset-payment", "prepare-sharing-group-event", "repair-sharing-identifiers", "reset-sharing-failed-event-claim", "prepare-sharing-attribution", "track-sharing-registration", "sharing-registrants", "restore-sharing", "prepare-list-pagination", "restore-list-pagination",
       "prepare-member-invitation", "restore-member-invitation", "prepare-admin-lifecycle", "prepare-admin-moderation", "prepare-admin-feed-event", "prepare-admin-previews", "prepare-admin-base-chat-read", "prepare-admin-base-chat-message", "prepare-admin-base-feed", "restore-admin-lifecycle",
       "prepare-invitation", "prepare-hidden-invitation", "restore-invitation", "prepare-editor", "restore-editor", "prepare-creation", "restore-creation"].includes(command)
       || Q.text(process.env.MANUAL_QA_CHECKPOINT_ID) !== checkpointId) {
@@ -252,6 +252,31 @@
     }
     Q.collection(Q.STATE_COLLECTION).updateOne({_id: state._id}, {$unset: {chatSharingSnapshots: "", chatSharingChatId: ""}});
     Q.printObject({checkpointId, chatSharingRestored: true, generatedAssetTokensRemoved: cleanupTokenIds.length, verifiedScopes: retained.length});
+    return;
+  }
+  if (["prepare-profile-notifications", "restore-profile-notifications"].includes(command)) {
+    if (command === "prepare-profile-notifications") {
+      if (state.profileNotificationSnapshots || state.sharingSnapshots || state.profileContactSnapshots)
+        Q.fail("Restore prior temporary controls before notification preparation.");
+      const users = Q.collection("users").find({$or: [{userId: {$in: actors}}, {accountUserId: {$in: actors}}]}).toArray();
+      const ids = users.map(user => user.userId);
+      const retained = Q.snapshotSpecs([
+        {collection: "users", selector: {userId: {$in: ids}}},
+        {collection: "userNotifications", selector: {recipientUserId: {$in: ids}}},
+        {collection: "notificationOutbox", selector: {recipientUserId: {$in: ids}}}
+      ]);
+      Q.collection(Q.STATE_COLLECTION).updateOne({_id: state._id}, {$set: {profileNotificationSnapshots: retained}});
+      Q.printObject({checkpointId, profileNotificationsPrepared: true, profiles: ids.length, productWrites: false});
+    } else {
+      if (!state.profileNotificationSnapshots) Q.fail("No notification snapshot to restore.");
+      Q.restoreSnapshots(state.profileNotificationSnapshots);
+      for (const snapshot of state.profileNotificationSnapshots) {
+        if (!Q.sameJson(ordered(snapshot.documents), ordered(Q.collection(snapshot.collection).find(snapshot.selector).toArray())))
+          Q.fail(`${snapshot.collection} notification restoration differs; retain snapshots.`);
+      }
+      Q.collection(Q.STATE_COLLECTION).updateOne({_id: state._id}, {$unset: {profileNotificationSnapshots: ""}});
+      Q.printObject({checkpointId, profileNotificationsRestored: true});
+    }
     return;
   }
   if (["prepare-contacts", "prepare-profile-contacts"].includes(command)) {
