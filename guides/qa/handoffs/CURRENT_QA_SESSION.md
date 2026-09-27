@@ -88,17 +88,17 @@ Earlier Event Mode, Integration API, Activity Rating and EVENT-FOLLOWING-001 rem
 ```yaml
 checkpoint: GROUP-LIFECYCLE-001
 checklist: ../checklists/group/GROUP-LIFECYCLE-001.md
-substage: HTTP13/48 closed; current work LOCKED TO block17 by user correction. Blocks14–16 and18 partial evidence retained; no return to them during block17.
-fixture_phase: after-contact-controls retained; prepare-contacts snapshot still active with Milo birthday1974-10-04 and ChildrenYes. CONTACTS windows closed. One native-location ENTRY window remains on unsaved registration form; actor1 closed. Cancel this draft for block17. No new registered account was submitted.
+substage: HTTP14/48 closed (blocks1–13 and17); block18 current. User accepted block17 Help/native anonymous MCP scope and requested advancing. Blocks14–16 partial evidence retained; do not replay them.
+fixture_phase: after-contact-controls retained; prepare-contacts snapshot still active with Milo birthday1974-10-04 and ChildrenYes. CONTACTS windows closed. User-inspected native-location ENTRY window remains untouched on the unsaved registration form; actor1 closed. Separate GROUP-LIFECYCLE-001-MCP actor0 is Alex in Design Circle, Affiliate open. The dedicated UI-created group API key was revoked through normal UI; zero API keys remain and HTTP401 confirmed revocation. No new registered account was submitted.
 execution_log: ../evidence/GROUP-LIFECYCLE-001-20260926.md
 execution_authority: User explicitly delegated full-flow automated execution of the pending QA campaign on 2026-09-26; Codex operates the browser, diagnoses, fixes and retests. Closed PASS rows remain closed.
-next_action: Finish only block17. HU/EN 17-topic UI, all canonical seed fields/runtime parity, anonymous MCP initialization/resources and tools-list already checked. Remaining: local fresh/update behavior and private MCP/API scope checks from linked API microsteps; external client OAuth branches need actual client verification. Do not rerun completed Help reads, return to block14, or advance to18 until block17 status is explicitly resolved.
+next_action: Continue block18 missing Back/X checks only. Existing desktop menu Back, popup Back, Forward and logout-confirmation Back proofs retained. New nested-popup X then Back and rapid X/reopen then Back PASS in Alex Design Circle, /game and workspace retained. Consolidate retained evidence; complete remaining route/reload and available mobile checks. Block17 closed for agreed Help/native anonymous MCP scope; private OAuth belongs to Integration API Group7 and local initialization/update to the local campaign. Preserve the user-inspected ENTRY window. No new MCP/API setup or Help replay.
 savepoint: community-group after-contact-controls captured 2026-09-27T04:40:57.723Z, resume13. Earlier savepoints immutable.
 queue: HTTP Lifecycle14–29, then Local Lifecycle1–29, Group Isolation1–12, Integration API Group1–7.
 resume_gate: Run the versioned community-group status command before any relaunch. verify-lists checked all ten groups/27 memberships without mutation and the versioned launcher prepared all three actors on 2026-09-26. Do not reset changed records or replay a closed checkpoint. Check the current manifest and launcher result.
 runtime: Existing dev watchers own builds; no stack restart or seed replacement for this resume. Versioned launcher configuration restored after the revert.
 mutation_contract: Application-wide, await persistence inside the busy confirmation dialog. Only after success apply canonical returned state through the existing stores to retained lists/cards/badges; failure retains the dialog/error and does not fake success. Keep underlying popups open. No reload to obtain a mutation result; the user identifies only the existing subevents flow as an exception.
-last_completed: GROUP-LIFECYCLE-001 HTTP block13 PASS/CLOSED, read-only export and libical import verified; block12 exact cleanup remains valid. Separate unit specs and Local NOT RUN.
+last_completed: GROUP-LIFECYCLE-001 HTTP block17 CLOSED for agreed Help/native anonymous MCP scope; HTTP14/48 closed, including blocks1–13. Private OAuth and local tests remain unverified in their separate scopes.
 ```
 
 ## Archived pair-QA resume point — 2026-09-17

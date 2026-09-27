@@ -1,5 +1,5 @@
 {
-  "status": "Common Help HU/EN UI, canonical seed/source parity and anonymous MCP read checked; private scope micros remain in API checklist",
+  "status": "CLOSED for the user-agreed HTTP Help and native anonymous MCP scope, 2026-09-27. Local fresh/update remains in the later local campaign; personal OAuth/ChatGPT web/Claude remain in Integration API Group block7, not claimed PASS here.",
   "ui": {
     "en": {
       "count": 17,
@@ -289,5 +289,134 @@
   "notRun": [
     "Fresh local DB initialization and existing local update import",
     "Private API key/OAuth authorization micros (API checklist)"
-  ]
+  ],
+  "reusedApiEvidence": {
+    "status": "PASS / CLOSED; no replay",
+    "sources": [
+      "INTEGRATION-API-001-2026-09-20.json",
+      "INTEGRATION-API-001-2026-09-22.json"
+    ],
+    "scope": "Existing API key lifecycle, Asset/Event integration, callbacks and ownership checks. New MCP/OAuth additions remain separately owned by INTEGRATION-API-GROUP-001 block7."
+  },
+  "groupMcpDiscovery": {
+    "connectStatus": 200,
+    "tools": [
+      "createEvents",
+      "encounters",
+      "event",
+      "inviteGroupParticipants",
+      "inviteParticipants",
+      "list_help_topics",
+      "read_help_topic",
+      "search_help"
+    ],
+    "source": "Retained group-probe.json; dedicated UI-created Design Circle key; no write operation executed."
+  },
+  "mcpToolCalls": {
+    "en": {
+      "topicCount": 17,
+      "version": 3,
+      "topic": "integrations",
+      "readMatches": true,
+      "searchContainsTopic": true,
+      "anonymous": true
+    },
+    "hu": {
+      "topicCount": 17,
+      "version": 3,
+      "topic": "integrations",
+      "readMatches": true,
+      "searchContainsTopic": true,
+      "anonymous": true
+    }
+  },
+  "mcpRevokedKey": {
+    "connectStatus": 401,
+    "tools": [
+      "list_help_topics",
+      "read_help_topic",
+      "search_help"
+    ],
+    "personalToolsHidden": true
+  },
+  "cleanup": {
+    "dedicatedGroupKeyRevokedThroughUi": true,
+    "visibleKeyCount": 0,
+    "revocationConfirmedByHttp401": true,
+    "entryBrowserUntouched": true
+  },
+  "connectionsUi": {
+    "scope": "HTTP demo settings only; no real external AI client authorized",
+    "callback": "https://client.example/callback (existing service-test callback; metadata only)",
+    "created": {
+      "editorClosed": true,
+      "names": [
+        "QA MCP connection"
+      ],
+      "rowCount": 1,
+      "secretShown": true,
+      "copyFields": [
+        2
+      ],
+      "errors": [],
+      "apiKeyRows": 0
+    },
+    "afterReload": {
+      "names": [
+        "QA MCP connection"
+      ],
+      "rowCount": 1,
+      "secretShown": false,
+      "copyFields": [
+        1
+      ],
+      "workspace": "DC\nDesign Circle\nexpand_more\n99+",
+      "errors": []
+    },
+    "cleanup": {
+      "revoked": true,
+      "remaining": 0,
+      "reloadUsed": false,
+      "secretShown": false
+    }
+  },
+  "nativeAiClientConnection": {
+    "status": "PASS: anonymous help connection",
+    "date": "2026-09-27",
+    "client": "Current Codex IDE conversation after user reload",
+    "server": "myscoutee",
+    "configuredUrl": "http://localhost/mcp",
+    "calls": [
+      {
+        "tool": "mcp__myscoutee__list_help_topics",
+        "arguments": {
+          "language": "hu"
+        },
+        "version": 3,
+        "topicCount": 17
+      },
+      {
+        "tool": "mcp__myscoutee__read_help_topic",
+        "arguments": {
+          "language": "hu",
+          "topic": "integrations"
+        },
+        "revisionId": "help-default-hu-v3",
+        "version": 3,
+        "returnedTitle": "API és AI-segítség"
+      }
+    ],
+    "actualSource": "https://myscoutee.com/api/help/active?lang=hu",
+    "personalToolsAvailable": false,
+    "qualification": "Actual tools exposed to and invoked by this AI conversation. No shell HTTP probe substituted. Does not prove private OAuth or the ChatGPT web/Claude clients."
+  },
+  "closure": {
+    "date": "2026-09-27",
+    "basis": "User accepted completion of block17 and explicitly requested advancing to18 after the native MCP calls.",
+    "scope": "Existing Help checks plus native AI-client anonymous MCP connection.",
+    "excludedUnverified": [
+      "Local fresh initialization/update",
+      "Private OAuth and ChatGPT web/Claude callbacks"
+    ]
+  }
 }

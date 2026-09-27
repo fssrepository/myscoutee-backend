@@ -476,19 +476,27 @@ dev HTTP outcomes independently, in HU/EN and at desktop/mobile widths.
 
 ## 17. Common help seed and AI integration
 
-Check the expanded 17-topic side-menu Help accordion structure,
-coverage of existing features, readability and HU/EN text. Compare the canonical
-frontend-local and prod/dev/demo/e2e seed sources, including fresh seed and the
-existing supported update/import path; never reseed a live production database
-as a QA shortcut. Old content must not remain in one adapter/environment while
-another receives the new version. This is the side-menu Help task, separate
-from the already implemented setup-permissions help above. AI integration is the
-second topic. Anonymous MCP reads the same active HU/EN help API. Local private
-MCP discovery matches the key's actual profile/group and authorized operations;
-group keys cannot create assets. See the API checklist for detailed MCP micros.
-Personal remote OAuth and the connections table are implemented; exercise their
-profile-bound permissions and local-only settings in the API checklist’s NOT RUN
-micros. The seeded common help revision is v3 in both languages.
+1. Open the side-menu Help in HU and EN. Check all 17 topics, readability and
+   coverage of existing features. AI integration is the second topic. This is
+   separate from the setup-permissions help above.
+2. Compare the canonical frontend-local and prod/dev/demo/e2e seed sources.
+   Check fresh initialization and the supported update/import path in their
+   respective environments; never reseed a live production database as a QA
+   shortcut. Both languages use common help revision v3. Keep local and HTTP
+   execution results separate.
+3. Check that anonymous MCP reads the active HU/EN help and that private MCP
+   discovery identifies the key's actual profile/group and authorized operations.
+   Group keys must not advertise asset creation. Discovery must not probe write
+   operations.
+
+Reuse the existing **INTEGRATION-API-001** evidence for API key generation,
+revocation, Asset/Event operations, callbacks and resource ownership. This Help
+checkpoint does not repeat that API journey. Detailed new MCP authorization,
+group asset rejection, personal remote OAuth, client callbacks and connections
+table checks belong to
+[INTEGRATION-API-GROUP-001, block 7](../integration/INTEGRATION-API-GROUP-001.md#7-mcp-discovery-help-and-client-packages--not-run).
+Record overlapping observations once and reference them from that checklist;
+an earlier API PASS does not imply an untested MCP/OAuth PASS.
 
 ## 18. Back and close-button history
 

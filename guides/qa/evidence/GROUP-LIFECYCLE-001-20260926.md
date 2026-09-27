@@ -1243,3 +1243,16 @@ Header aggregates now live in the existing PaymentMethodsPopupStore; both normal
 - Block14 birthday and Children editor save/reload PASS; selected HU Van double translation repaired and verified. Registration remains before onboarding: native configured location fails country eligibility. No bypass, fake coordinate or registration PASS.
 - Block15 HU/EN social/Partners/API layout, desktop left alignment and country/report blur PASS; runtime settings version visible; remote GitHub templates exist. Authenticated chooser and installed PWA branch NOT RUN.
 - Block16 six help sections, Android/iOS guidance text, adjacent header controls and closing only help with retained unchanged parent PASS. Physical device permission retry NOT RUN. Per-block JSON retains exact results; no replay on resume.
+
+### Block17 — retained Help and focused MCP checks
+
+- Reused closed INTEGRATION-API-001 evidence from September20/22; no repeated Asset/Event writes or callback journey. Checklist17 now separates those API checks from Help/MCP coverage.
+- Existing HU/EN Help UI/source parity retained. New MCP checks: Design Circle key advertises exactly the five API-authorized personal operations and no asset creation; anonymous list/read/search calls return the expected v3/17-topic guide in both languages.
+- Dedicated QA key revoked through normal UI, visible API key count0; subsequent connect401 and MCP discovery contains only the three public Help tools. This proves MCP fail-closed discovery, not a new full API pass. ENTRY browser untouched.
+- Evidence: GROUP-LIFECYCLE-001-block17-20260927.json. Local fresh/update and live remote OAuth callbacks remain unverified; neither is inferred from these checks.
+
+- Native AI connection follow-up: after the user reloaded the IDE, this Codex conversation directly invoked the registered MyScoutee list_help_topics and read_help_topic tools. HU returned17 topics and help-default-hu-v3/integrations. Anonymous AI-client connection PASS; private OAuth and ChatGPT web/Claude remain unverified. No script call substituted for this observation.
+
+### Block17 agreed closure; block18 current
+
+User accepted the completed HTTP Help/native anonymous MCP scope and requested advancing to18. Block17 is closed on that explicit scope; Local fresh/update and personal remote OAuth remain unverified in their separate campaign/API scopes. HTTP14/48 closed (Lifecycle14/29, blocks1–13 and17). Block18 retains earlier results and now also verifies nested X then Back and rapid X/reopen then Back without leaving /game or Design Circle.
