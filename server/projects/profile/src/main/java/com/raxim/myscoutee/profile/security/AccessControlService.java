@@ -387,11 +387,9 @@ public class AccessControlService implements AccessPolicyData {
         if (!StringUtils.hasText(normalizedResourceId)) {
             return false;
         }
-        if (!requiresAuthenticatedActor()) {
-            return true;
-        }
         String actorUserId = resolveActorUserId(SecurityContextHolder.getContext().getAuthentication());
-        return can(policyKey, actorUserId, actorUserId, normalizedResourceId);
+        return StringUtils.hasText(actorUserId)
+                && can(policyKey, actorUserId, actorUserId, normalizedResourceId);
     }
 
     public boolean canManageEventMembers(String eventId, String actorUserId) {

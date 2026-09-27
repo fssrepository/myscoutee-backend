@@ -2549,6 +2549,33 @@
           }
         }
       ]
+    },
+    "GROUP-ISOLATION-001-OUTSIDER": {
+      "fixtureCheckpointId": "GROUP-ISOLATION-001",
+      "preserveOtherSessions": true,
+      "geolocation": {
+        "latitude": 47.4979,
+        "longitude": 19.0402,
+        "accuracy": 10
+      },
+      "layout": {
+        "columns": 1
+      },
+      "sessions": [
+        {
+          "actor": "Isolation Maya",
+          "sessionKind": "demo",
+          "userId": "f02809260000000000000003",
+          "expectedName": "Isolation Maya",
+          "autoDismissExplanationGuide": true,
+          "window": {
+            "width": 700,
+            "height": 900,
+            "x": 750,
+            "y": 30
+          }
+        }
+      ]
     }
   }
 }
