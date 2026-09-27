@@ -11328,3 +11328,14 @@ evidence remains in the dated Group log; closed PASS rows are unchanged.
 
 
 2026-09-27 resumed Group HTTP block19: real demo selector/admission, denied and unsupported browser location, snapshot-owned missing/invalid coordinate Setup cancel/retry, first profile persistence and reload have partial PASS evidence. The observed false Location required panel was fixed and replayed against the real stale realtime response. Block19 remains IN PROGRESS; HTTP15/48, Lifecycle15/29 closed. Detailed results and remaining branches are in [block19 evidence](../evidence/GROUP-LIFECYCLE-001-block19-entry-20260927.json). One managed ENTRY-BLOCK19 window is active; Zoe's snapshot remains retained.
+
+2026-09-27 18:22 Group continuation:19.1 HTTP entry/invitation branch complete, with real claim/profile order, persistence/replay, denied-GPS relogin and exact scoped cleanup. User-reported avatar flash and Setup disabled action repaired/verified.19.2 active:53/53 selector seed points accepted; runtime Firebase configuration404 blocks real Firebase sign-in. Pending-coordinate controls and Local remain. Counts unchanged; see block19 evidence.
+
+### DEPLOY-EXTERNAL-CONFIG-001 — deferred by user2026-09-27
+
+[Dedicated checklist](../checklists/deployment/DEPLOY-EXTERNAL-CONFIG-001.md).
+Real Firebase entry/location and externally configured MCP OAuth/client callbacks
+moved out of the Group campaign. DEFERRED / NOT RUN; configure later. The existing
+DEPLOY-FIREBASE-LIFECYCLE-001 pending-invitation-policy assertion is retained in
+section1. Group19 continues with demo admission/pending coordinates; it is not
+blocked by Firebase. No earlier PASS is reopened or external PASS inferred.

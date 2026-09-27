@@ -46,7 +46,7 @@ registered identity. Use the actual registration mode for the fresh account.
 
 For the demo existing-account branch, follow the invitation while signed out,
 then select its pre-registered recipient through the real demo selector. Run
-the complete entry checks in [Group Lifecycle block 19](../group/GROUP-LIFECYCLE-001.md#19-first-location-save-and-firebase-sign-in).
+the complete entry checks in [Group Lifecycle block 19](../group/GROUP-LIFECYCLE-001.md#19-first-location-save-and-demo-admission).
 The URL must survive Setup cancellation/retry and successful login. A failed
 entry must not claim the link or create membership/workspace/session records.
 After successful entry, verify the target group is active on the first profile
@@ -135,18 +135,16 @@ and the group checkpoint's profile boundaries; do not reopen INTEGRATION-API-001
   local and Mongo-backed help agree. Anonymous MCP help explains that no login or
   key is needed, and uses the current published revision.
 - Build separate unpublished OpenAI/Claude packages from the common plugin source.
-  Verify the original MyScoutee logo and shared skill, then test installation in
-  the chosen client separately. No personal remote OAuth pass follows from a local
-  API-key test. See `myscoutee-mcp/docs/QA.md` for the individual steps.
+  Verify the original MyScoutee logo and shared skill, record package validation here. Installation in the
+  external client is deferred to the separate deployment QA. See `myscoutee-mcp/docs/QA.md` for the individual steps.
 
-- Personal remote `/mcp/private`: create a profile-owned MCP connection under
-  API keys, copy the one-time secret into client settings, sign in and explicitly
-  approve the displayed profile/group. Check both ChatGPT and Claude callbacks.
-  Invalid state round-trip, redirect, client, PKCE, resource, expired/reused code,
-  refresh replay and revocation must not expose private operations/data.
-- An enrolled browser session must not be required for an independently verified
-  API key/OAuth grant. Browser logout does not revoke the key; explicit key/grant
-  revocation does. Ordinary app requests still require their session.
+External ChatGPT/Claude installation, personal remote OAuth, callbacks and
+OAuth-grant lifecycle checks are deferred to
+[DEPLOY-EXTERNAL-CONFIG-001](../deployment/DEPLOY-EXTERNAL-CONFIG-001.md).
+They do not gate the local/dev API-key and connection-settings checks here.
+An independently verified API key must still work without an enrolled browser
+session; browser logout does not revoke it, while explicit key revocation does.
+
 - Two concurrent identities remain isolated. Profile switches during creation
   cannot expose the previous secret; create/revoke reconcile the table without
   reload. Local/demo persists settings only. API-key slots remain independent.

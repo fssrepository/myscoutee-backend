@@ -480,9 +480,9 @@ dev HTTP outcomes independently, in HU/EN and at desktop/mobile widths.
    coverage of existing features. AI integration is the second topic. This is
    separate from the setup-permissions help above.
 2. Compare the canonical frontend-local and prod/dev/demo/e2e seed sources.
-   Check fresh initialization and the supported update/import path in their
-   respective environments; never reseed a live production database as a QA
-   shortcut. Both languages use common help revision v3. Keep local and HTTP
+   Check fresh initialization and the supported update/import path in the
+   local/dev/e2e test environments. Configured production deployment checks
+   belong to DEPLOY-EXTERNAL-CONFIG-001; never reseed production as a QA shortcut. Both languages use common help revision v3. Keep local and HTTP
    execution results separate.
 3. Check that anonymous MCP reads the active HU/EN help and that private MCP
    discovery identifies the key's actual profile/group and authorized operations.
@@ -492,11 +492,12 @@ dev HTTP outcomes independently, in HU/EN and at desktop/mobile widths.
 Reuse the existing **INTEGRATION-API-001** evidence for API key generation,
 revocation, Asset/Event operations, callbacks and resource ownership. This Help
 checkpoint does not repeat that API journey. Detailed new MCP authorization,
-group asset rejection, personal remote OAuth, client callbacks and connections
-table checks belong to
+group asset rejection and locally testable connection-table checks belong to
 [INTEGRATION-API-GROUP-001, block 7](../integration/INTEGRATION-API-GROUP-001.md#7-mcp-discovery-help-and-client-packages--not-run).
 Record overlapping observations once and reference them from that checklist;
-an earlier API PASS does not imply an untested MCP/OAuth PASS.
+an earlier API PASS does not imply an untested MCP/OAuth PASS. Personal remote
+OAuth and external client callbacks are deferred to
+[DEPLOY-EXTERNAL-CONFIG-001](../deployment/DEPLOY-EXTERNAL-CONFIG-001.md).
 
 ## 18. Back and close-button history
 
@@ -515,7 +516,7 @@ an earlier API PASS does not imply an untested MCP/OAuth PASS.
 
 Keep these micros in this existing NOT RUN case; no new case or manual PASS.
 
-## 19. First location save and Firebase sign-in
+## 19. First location save and demo admission
 
 ### 19.1. Complete demo entry — NOT RUN
 
@@ -545,7 +546,7 @@ damage the three valid Group list actors to create this negative control.
    membership and active workspace are verified there; this block does not
    borrow PASS from previously closed registration/authentication cases.
 
-### 19.2. Admission, pending coordinates and Firebase — NOT RUN
+### 19.2. Demo admission and pending coordinates — NOT RUN
 
 Demo admission (pre-registered profiles; run local and HTTP separately):
 
@@ -569,18 +570,14 @@ Demo admission (pre-registered profiles; run local and HTTP separately):
   complete the normal profile preparation and first profile-load persistence,
   then enter once. Restore the control from its snapshot after the check.
 
-1. Fresh Firebase registration/sign-in with no saved coordinate: request location
-   through Setup, then complete onboarding. The scoped browser pending point
-   survives reload and is sent only on the first `/auth/me/profile-ext` request
-   as latitude/longitude parameters (alongside groupId when selected), with no
-   location X-header. Verify Mongo account/active group profile and local
-   IndexedDB separately. Only a successful authoritative response clears pending.
-2. Fail that profile request: no cached-success acknowledgement, no losing the
-   pending point; retry sends it again. Account switch must not send another
-   account's point, and an older reply must not clear a newer staged point.
-3. Existing registered Firebase user: logout and sign in once, with avatar preview
-   changing. Enter the app on that first attempt. Real logout/account/session
-   change still discards stale reads; failed group switch unlocks the selector.
+- In demo mode, verify pending-coordinate retry after a failed full profile load,
+  account isolation. A failed request retains pending; the next authoritative
+  success clears the sent sample.
+  A different account must never send or clear that sample.
+
+Real Firebase registration/sign-in and externally configured provider checks are
+owned by [DEPLOY-EXTERNAL-CONFIG-001](../deployment/DEPLOY-EXTERNAL-CONFIG-001.md).
+They are deferred separately and do not gate this Group checkpoint.
 
 ## 20. Stored location and optional tracking
 

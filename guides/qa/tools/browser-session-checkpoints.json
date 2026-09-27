@@ -2477,6 +2477,39 @@
           }
         }
       ]
+    },
+    "GROUP-LIFECYCLE-001-PENDING-BLOCK19": {
+      "preserveOtherSessions": true,
+      "fixtureCheckpointId": "GROUP-LIFECYCLE-001",
+      "targetUrl": "http://localhost/entry?redirect=%2Fgame",
+      "entryUrl": "http://localhost/entry?redirect=%2Fgame",
+      "bootstrapEntryConsent": true,
+      "layout": {
+        "columns": 1
+      },
+      "sessions": [
+        {
+          "actor": "Group block 19 pending coordinates",
+          "sessionKind": "anonymous",
+          "expectedName": "Signed-out stale pending location controls",
+          "geolocationPermission": "denied",
+          "geolocation": {
+            "latitude": 47.4979,
+            "longitude": 19.0402,
+            "accuracy": 10
+          },
+          "window": {
+            "width": 700,
+            "height": 900,
+            "x": 80,
+            "y": 40
+          },
+          "localStorage": {
+            "myscoutee.http.location.v1:af0436815ab38f4864dd1e24:pending-login": "{\"latitude\":48.8566,\"longitude\":2.3522}",
+            "myscoutee.http.location.v1:b0971e779dbdb71f9327eabb:pending-login": "{\"latitude\":40.7128,\"longitude\":-74.006}"
+          }
+        }
+      ]
     }
   }
 }
