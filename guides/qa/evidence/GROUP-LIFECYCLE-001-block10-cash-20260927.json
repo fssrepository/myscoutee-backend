@@ -160,11 +160,756 @@
   "status": "IN PROGRESS",
   "block": 10,
   "limitations": [
-    "First receipt reproduced duplicate notification; enqueueOnce fix passed on second receipt.",
-    "Approval screenshot used pre-deploy policy text; cash rule display was corrected, replay pending.",
-    "Counterparty names in refund rows corrected and payer reopening verified.",
-    "Other-party open history does not automatically refresh; only initiating surface in-place update proven.",
-    "Normal cash checkout, noncash/refund affiliate controls, negative authorization and repeat-delete/replayed-create checks remain.",
-    "Added/updated unit specs not run separately from existing compilation owners."
-  ]
+    "First receipt reproduced duplicate notification; enqueueOnce fix passed on subsequent receipts.",
+    "Live create and refund propagation passed; short-window truncation found and corrected, final insert replay retains original Deleted tail.",
+    "Normal cash checkout, noncash/refund affiliate controls, negative authorization and replayed-create-after-delete checks remain.",
+    "Added/updated unit specs including large-window/cursor/cancellation cases not run separately from existing compilation owners.",
+    "Initial cash exclusion assertions used an unreadable string referral key; re-run accounting controls with canonical ObjectId fixture."
+  ],
+  "liveRefundReplay": {
+    "requestMenu": {
+      "row": "Approved\npayments\nEUR −3.25\naccount_balance_wallet\ncash\nAlex Turner\nQA block 10 cash live refund\nclose",
+      "menu": [
+        "currency_exchange\nRequest refund"
+      ]
+    },
+    "requestConfirmation": {
+      "text": "Request refund?\n\nRequest a refund of this cash receipt from the recipient?\nRefund: EUR +3.25\nRetained amount: EUR −0.00\nfull refund\n\nCancel\nRequest refund\nPayment history\n\nExpenses and income\n\nfilter_list\npayments\ncredit_card\nclose\nEUR −15.75 ›\nEUR +12.50 ›\n2026-09-27\nApproved\npayments\nEUR −3.25\naccount_balance_wallet\ncash\nAlex Turner\nQA block 10 cash live refund\nmore_vert\nRefunded\ncurrency_exchange\nEUR +12.50\naccount_balance_wallet\ncash\nAlex Turner\nQA block 10 cash receipt\nApproved\npayments\nEUR −12.50\naccount_balance_wallet\ncash\nAlex Turner\nQA block 10 cash receipt",
+      "buttons": [
+        {
+          "label": "Cancel",
+          "class": "app-menu__button-row-item app-menu__button-row-item--labelled app-menu__button-row-item--action app-menu__palette--slate"
+        },
+        {
+          "label": "Request refund",
+          "class": "app-menu__button-row-item app-menu__button-row-item--labelled app-menu__button-row-item--action app-menu__palette--warning"
+        }
+      ],
+      "tail": "Expenses and income\n\nfilter_list\npayments\ncredit_card\nclose\nEUR −15.75 ›\nEUR +12.50 ›\n2026-09-27\nApproved\npayments\nEUR −3.25\naccount_balance_wallet\ncash\nAlex Turner\nQA block 10 cash live refund\nmore_vert\nRefunded\ncurrency_exchange\nEUR +12.50\naccount_balance_wallet\ncash\nAlex Turner\nQA block 10 cash receipt\nApproved\npayments\nEUR −12.50\naccount_balance_wallet\ncash\nAlex Turner\nQA block 10 cash receipt"
+    },
+    "request": {
+      "dialogGone": true,
+      "history": "Payment history\n\nExpenses and income\n\nfilter_list\npayments\ncredit_card\nclose\nEUR −15.75 ›\nEUR +12.50 ›\n2026-09-27\nRefund requested\ncurrency_exchange\nEUR +3.25\naccount_balance_wallet\ncash\nAlex Turner\nQA block 10 cash live refund\nApproved\npayments\nEUR −3.25\naccount_balance_wallet\ncash\nAlex Turner\nQA block 10 cash live refund\nRefunded\ncurrency_exchange\nEUR +12.50\naccount_balance_wallet\ncash\nAlex Turner\nQA block 10 cash receipt\nApproved\npayments\nEUR −12.50\naccount_balance_wallet\ncash\nAlex Turner\nQA block 10 cash receipt",
+      "statuses": [
+        200
+      ]
+    },
+    "recipientOpenHistory": {
+      "sameHistory": true,
+      "before": "Payment history\n\nExpenses and income\n\nfilter_list\npayments\ncredit_card\nclose\nEUR −56.00 ›\nEUR +36.75 ›\n2026-09-27\nApproved\npayments\nEUR +3.25\naccount_balance_wallet\ncash\nMilo Grant\nQA block 10 cash live refund\nmore_vert\nRefunded\ncurrency_exchange\nEUR −12.50\naccount_balance_wallet\ncash\nMilo Grant\nQA block 10 cash receipt\nApproved\npayments\nEUR +12.50\naccount_balance_wallet\ncash\nMilo Grant\nQA block 10 cash receipt\nmore_vert\nDeleted\npayments\nEUR +12.50\naccount_balance_wallet\ncash\nMilo Grant\nQA block 10 cash receipt\n2026-09-05\nFailed\npayments\nHUF −3,200\naccount_balance_wallet\nbarion\n21746c9aacc985817e31cf9f\n05/09/2026, 10:23:40\nmore_vert\n2026-08-24\nCaptured\ncheck_circle\nHUF −4,900\npayment\nstripe\n21746c9aacc985817e31cf9f\n24/08/2026, 19:30:00\nmore_vert\n2026-08-17\nCaptured\ncheck_circle\nHUF −12,500\npayment\nstripe\n15d3049967690e9c3abcf0df\n17/08/2026, 11:15:00\nmore_vert",
+      "after": "Payment history\n\nExpenses and income\n\nfilter_list\n1\npayments\ncredit_card\nclose\nEUR −56.00 ›\nEUR +36.75 ›\n2026-09-27\nRefund requested\ncurrency_exchange\nEUR −3.25\naccount_balance_wallet\ncash\nMilo Grant\nQA block 10 cash live refund\nmore_vert\nApproved\npayments\nEUR +3.25\naccount_balance_wallet\ncash\nMilo Grant\nQA block 10 cash live refund\nmore_vert\nRefunded\ncurrency_exchange\nEUR −12.50\naccount_balance_wallet\ncash\nMilo Grant\nQA block 10 cash receipt\nApproved\npayments\nEUR +12.50\naccount_balance_wallet\ncash\nMilo Grant\nQA block 10 cash receipt\nmore_vert\nDeleted\npayments\nEUR +12.50\naccount_balance_wallet\ncash\nMilo Grant\nQA block 10 cash receipt\n2026-09-05\nFailed\npayments\nHUF −3,200\naccount_balance_wallet\nbarion\n21746c9aacc985817e31cf9f\n05/09/2026, 10:23:40\nmore_vert\n2026-08-24\nCaptured\ncheck_circle\nHUF −4,900\npayment\nstripe\n21746c9aacc985817e31cf9f\n24/08/2026, 19:30:00\nmore_vert",
+      "requests": [
+        {
+          "start": 66005.5,
+          "duration": 35.899999998509884,
+          "status": 200
+        },
+        {
+          "start": 81044.39999999851,
+          "duration": 39.79999999701977,
+          "status": 200
+        },
+        {
+          "start": 96085.89999999851,
+          "duration": 24.899999998509884,
+          "status": 200
+        },
+        {
+          "start": 111112.19999999553,
+          "duration": 25.399999998509884,
+          "status": 200
+        }
+      ]
+    },
+    "approval": {
+      "confirmation": {
+        "text": "Would you like to approve this refund request?\n\nConfirm that you have returned this cash amount to the payer?\nRefund: EUR +3.25\nRetained amount: EUR −0.00\nfull refund\n\nCancel\nApprove refund",
+        "class": "app-menu__button-row-item app-menu__button-row-item--labelled app-menu__button-row-item--action app-menu__palette--blue"
+      },
+      "dialogGone": true,
+      "history": "Payment history\n\nExpenses and income\n\nfilter_list\npayments\ncredit_card\nclose\nEUR −59.25 ›\nEUR +36.75 ›\n2026-09-27\nRefunded\ncurrency_exchange\nEUR −3.25\naccount_balance_wallet\ncash\nMilo Grant\nQA block 10 cash live refund\nApproved\npayments\nEUR +3.25\naccount_balance_wallet\ncash\nMilo Grant\nQA block 10 cash live refund\nmore_vert\nRefunded\ncurrency_exchange\nEUR −12.50\naccount_balance_wallet\ncash\nMilo Grant\nQA block 10 cash receipt\nApproved\npayments\nEUR +12.50\naccount_balance_wallet\ncash\nMilo Grant\nQA block 10 cash receipt\nmore_vert\nDeleted\npayments\nEUR +12.50\naccount_balance_wallet\ncash\nMilo Grant\nQA block 10 cash receipt\n2026-09-05\nFailed\npayments\nHUF −3,200\naccount_balance_wallet\nbarion\n21746c9aacc985817e31cf9f\n05/09/2026, 10:23:40\nmore_vert\n2026",
+      "statuses": [
+        200
+      ]
+    },
+    "payerOpenHistory": {
+      "sameHistory": true,
+      "before": "Payment history\n\nExpenses and income\n\nfilter_list\npayments\ncredit_card\nclose\nEUR −15.75 ›\nEUR +12.50 ›\n2026-09-27\nRefund requested\ncurrency_exchange\nEUR +3.25\naccount_balance_wallet\ncash\nAlex Turner\nQA block 10 cash live refund\nApproved\npayments\nEUR −3.25\naccount_balance_wallet\ncash\nAlex Turner\nQA block 10 cash live refund\nRefunded\ncurrency_exchange\nEUR +12.50\naccount_balance_wallet\ncash\nAlex Turner\nQA block 10 cash receipt\nApproved\npayments\nEUR −12.50\naccount_balance_wallet\ncash\nAlex Turner\nQA block 10 cash receipt",
+      "after": "Payment history\n\nExpenses and income\n\nfilter_list\npayments\ncredit_card\nclose\nEUR −15.75 ›\nEUR +15.75 ›\n2026-09-27\nRefunded\ncurrency_exchange\nEUR +3.25\naccount_balance_wallet\ncash\nAlex Turner\nQA block 10 cash live refund\nApproved\npayments\nEUR −3.25\naccount_balance_wallet\ncash\nAlex Turner\nQA block 10 cash live refund\nRefunded\ncurrency_exchange\nEUR +12.50\naccount_balance_wallet\ncash\nAlex Turner\nQA block 10 cash receipt\nApproved\npayments\nEUR −12.50\naccount_balance_wallet\ncash\nAlex Turner\nQA block 10 cash receipt",
+      "requests": [
+        {
+          "start": 111443.29999999702,
+          "duration": 28.600000001490116,
+          "status": 200
+        },
+        {
+          "start": 126475.19999999553,
+          "duration": 38.600000001490116,
+          "status": 200
+        },
+        {
+          "start": 141516.3999999985,
+          "duration": 24.700000002980232,
+          "status": 200
+        },
+        {
+          "start": 156543.1000000015,
+          "duration": 37.79999999701977,
+          "status": 200
+        }
+      ]
+    },
+    "persisted": {
+      "payments": [
+        {
+          "id": "cash:af0436815ab38f4864dd1e24:badd7f1f-c56f-4241-b0ab-54fe4cd2218c",
+          "auditKind": "payment",
+          "status": "approved",
+          "amount": 3.25,
+          "refundedAmount": 3.25,
+          "provider": "cash",
+          "sourceId": "cash:af0436815ab38f4864dd1e24:badd7f1f-c56f-4241-b0ab-54fe4cd2218c",
+          "refundRuleId": "cash-receipt"
+        },
+        {
+          "id": "refund:cash:af0436815ab38f4864dd1e24:badd7f1f-c56f-4241-b0ab-54fe4cd2218c",
+          "auditKind": "refund",
+          "status": "refunded",
+          "refundRequestStatus": "approved",
+          "amount": 3.25,
+          "refundedAmount": 3.25,
+          "provider": "cash",
+          "sourceId": "cash:af0436815ab38f4864dd1e24:badd7f1f-c56f-4241-b0ab-54fe4cd2218c",
+          "refundRuleId": "cash-receipt"
+        }
+      ],
+      "notifications": [
+        {
+          "_id": "6ab8846a296c75ec86d3c956",
+          "recipientUserId": "eb1ca0b761885bb0763e2929",
+          "kind": "payment-cash-received",
+          "sourceId": "cash:af0436815ab38f4864dd1e24:badd7f1f-c56f-4241-b0ab-54fe4cd2218c"
+        },
+        {
+          "_id": "6ab884b4296c75ec86d3c958",
+          "recipientUserId": "af0436815ab38f4864dd1e24",
+          "kind": "payment-refund-requested",
+          "sourceId": "cash:af0436815ab38f4864dd1e24:badd7f1f-c56f-4241-b0ab-54fe4cd2218c"
+        },
+        {
+          "_id": "6ab884dd296c75ec86d3c95a",
+          "recipientUserId": "eb1ca0b761885bb0763e2929",
+          "kind": "payment-refund-approved",
+          "sourceId": "cash:af0436815ab38f4864dd1e24:badd7f1f-c56f-4241-b0ab-54fe4cd2218c"
+        }
+      ],
+      "contributions": [],
+      "users": [
+        {
+          "_id": "af0436815ab38f4864dd1e24",
+          "userId": "af0436815ab38f4864dd1e24",
+          "paymentSpentTotals": {
+            "HUF": 17400,
+            "EUR": 15.75
+          },
+          "paymentIncomeTotals": {
+            "HUF": 8400,
+            "EUR": 15.75
+          }
+        },
+        {
+          "_id": "eb1ca0b761885bb0763e2929",
+          "userId": "eb1ca0b761885bb0763e2929",
+          "paymentSpentTotals": {
+            "EUR": 15.75
+          },
+          "paymentIncomeTotals": {
+            "EUR": 15.75
+          }
+        }
+      ]
+    }
+  },
+  "deleteLostResponseReplay": {
+    "lostResponse": {
+      "failedUrl": "http://localhost/api/payment-methods/history/cash/cash%3Aaf0436815ab38f4864dd1e24%3A612c536b-208d-4265-bf15-08246b99a323?userId=af0436815ab38f4864dd1e24",
+      "method": "DELETE",
+      "requestStage": "Response",
+      "responseStatus": 200
+    },
+    "retry": {
+      "before": {
+        "error": true,
+        "approved": true,
+        "text": "Approved\npayments\nEUR +3.25\naccount_balance_wallet\ncash\nMilo Grant\nQA block 10 delete retry\nmore_vert",
+        "menu": true
+      },
+      "during": {
+        "confirmPresent": true,
+        "disabled": true
+      },
+      "after": {
+        "historyRetained": true,
+        "rowRetained": true,
+        "row": "Deleted\npayments\nEUR +3.25\naccount_balance_wallet\ncash\nMilo Grant\nQA block 10 delete retry",
+        "deleteMenu": false,
+        "totals": [
+          "EUR −59.25 ›",
+          "EUR +36.75 ›"
+        ],
+        "dialogGone": true
+      },
+      "responses": [
+        {
+          "status": 0
+        },
+        {
+          "status": 200
+        }
+      ]
+    },
+    "beforeRetry": {
+      "receipts": [
+        {
+          "id": "cash:af0436815ab38f4864dd1e24:7fef6761-6f0d-42c2-85cf-220546e1d476",
+          "payer": "eb1ca0b761885bb0763e2929",
+          "recipient": "af0436815ab38f4864dd1e24",
+          "status": "deleted",
+          "amount": 12.5,
+          "currency": "EUR",
+          "note": "QA block 10 cash receipt",
+          "accounted": 0
+        },
+        {
+          "id": "cash:af0436815ab38f4864dd1e24:4cc1a882-feea-4799-99d7-5eb9e29a9787",
+          "payer": "eb1ca0b761885bb0763e2929",
+          "recipient": "af0436815ab38f4864dd1e24",
+          "status": "approved",
+          "amount": 12.5,
+          "currency": "EUR",
+          "note": "QA block 10 cash receipt",
+          "accounted": 12.5
+        },
+        {
+          "id": "refund:cash:af0436815ab38f4864dd1e24:4cc1a882-feea-4799-99d7-5eb9e29a9787",
+          "payer": "eb1ca0b761885bb0763e2929",
+          "recipient": "af0436815ab38f4864dd1e24",
+          "status": "refunded",
+          "amount": 12.5,
+          "currency": "EUR",
+          "note": "QA block 10 cash receipt",
+          "accounted": 12.5
+        },
+        {
+          "id": "cash:af0436815ab38f4864dd1e24:badd7f1f-c56f-4241-b0ab-54fe4cd2218c",
+          "payer": "eb1ca0b761885bb0763e2929",
+          "recipient": "af0436815ab38f4864dd1e24",
+          "status": "approved",
+          "amount": 3.25,
+          "currency": "EUR",
+          "note": "QA block 10 cash live refund",
+          "accounted": 3.25
+        },
+        {
+          "id": "refund:cash:af0436815ab38f4864dd1e24:badd7f1f-c56f-4241-b0ab-54fe4cd2218c",
+          "payer": "eb1ca0b761885bb0763e2929",
+          "recipient": "af0436815ab38f4864dd1e24",
+          "status": "refunded",
+          "amount": 3.25,
+          "currency": "EUR",
+          "note": "QA block 10 cash live refund",
+          "accounted": 3.25
+        },
+        {
+          "id": "cash:af0436815ab38f4864dd1e24:612c536b-208d-4265-bf15-08246b99a323",
+          "payer": "eb1ca0b761885bb0763e2929",
+          "recipient": "af0436815ab38f4864dd1e24",
+          "status": "deleted",
+          "amount": 3.25,
+          "currency": "EUR",
+          "note": "QA block 10 delete retry",
+          "accounted": 0
+        }
+      ],
+      "users": [
+        {
+          "_id": "af0436815ab38f4864dd1e24",
+          "userId": "af0436815ab38f4864dd1e24",
+          "paymentSpentTotals": {
+            "HUF": 17400,
+            "EUR": 15.75
+          },
+          "paymentIncomeTotals": {
+            "HUF": 8400,
+            "EUR": 15.75
+          },
+          "cashReceiptReversals": [
+            "cash:af0436815ab38f4864dd1e24:7fef6761-6f0d-42c2-85cf-220546e1d476",
+            "cash:af0436815ab38f4864dd1e24:612c536b-208d-4265-bf15-08246b99a323"
+          ]
+        },
+        {
+          "_id": "eb1ca0b761885bb0763e2929",
+          "userId": "eb1ca0b761885bb0763e2929",
+          "paymentSpentTotals": {
+            "EUR": 15.75
+          },
+          "cashReceiptReversals": [
+            "cash:af0436815ab38f4864dd1e24:7fef6761-6f0d-42c2-85cf-220546e1d476",
+            "cash:af0436815ab38f4864dd1e24:612c536b-208d-4265-bf15-08246b99a323"
+          ],
+          "paymentIncomeTotals": {
+            "EUR": 15.75
+          }
+        }
+      ],
+      "affiliate": null,
+      "contributions": [],
+      "notifications": [
+        {
+          "_id": "6ab87f5c296c75ec86d3c940",
+          "recipientUserId": "eb1ca0b761885bb0763e2929",
+          "kind": "payment-cash-received",
+          "sourceId": "cash:af0436815ab38f4864dd1e24:7fef6761-6f0d-42c2-85cf-220546e1d476"
+        },
+        {
+          "_id": "6ab87f82296c75ec86d3c942",
+          "recipientUserId": "eb1ca0b761885bb0763e2929",
+          "kind": "payment-cash-received",
+          "sourceId": "cash:af0436815ab38f4864dd1e24:7fef6761-6f0d-42c2-85cf-220546e1d476"
+        },
+        {
+          "_id": "6ab880b2296c75ec86d3c948",
+          "recipientUserId": "eb1ca0b761885bb0763e2929",
+          "kind": "payment-cash-received",
+          "sourceId": "cash:af0436815ab38f4864dd1e24:4cc1a882-feea-4799-99d7-5eb9e29a9787"
+        },
+        {
+          "_id": "6ab880e5296c75ec86d3c94b",
+          "recipientUserId": "af0436815ab38f4864dd1e24",
+          "kind": "payment-refund-requested",
+          "sourceId": "cash:af0436815ab38f4864dd1e24:4cc1a882-feea-4799-99d7-5eb9e29a9787"
+        },
+        {
+          "_id": "6ab88107296c75ec86d3c94f",
+          "recipientUserId": "eb1ca0b761885bb0763e2929",
+          "kind": "payment-refund-approved",
+          "sourceId": "cash:af0436815ab38f4864dd1e24:4cc1a882-feea-4799-99d7-5eb9e29a9787"
+        },
+        {
+          "_id": "6ab8846a296c75ec86d3c956",
+          "recipientUserId": "eb1ca0b761885bb0763e2929",
+          "kind": "payment-cash-received",
+          "sourceId": "cash:af0436815ab38f4864dd1e24:badd7f1f-c56f-4241-b0ab-54fe4cd2218c"
+        },
+        {
+          "_id": "6ab884b4296c75ec86d3c958",
+          "recipientUserId": "af0436815ab38f4864dd1e24",
+          "kind": "payment-refund-requested",
+          "sourceId": "cash:af0436815ab38f4864dd1e24:badd7f1f-c56f-4241-b0ab-54fe4cd2218c"
+        },
+        {
+          "_id": "6ab884dd296c75ec86d3c95a",
+          "recipientUserId": "eb1ca0b761885bb0763e2929",
+          "kind": "payment-refund-approved",
+          "sourceId": "cash:af0436815ab38f4864dd1e24:badd7f1f-c56f-4241-b0ab-54fe4cd2218c"
+        },
+        {
+          "_id": "6ab88558296c75ec86d3c95c",
+          "recipientUserId": "eb1ca0b761885bb0763e2929",
+          "kind": "payment-cash-received",
+          "sourceId": "cash:af0436815ab38f4864dd1e24:612c536b-208d-4265-bf15-08246b99a323"
+        }
+      ],
+      "outbox": []
+    },
+    "afterRetry": {
+      "receipts": [
+        {
+          "id": "cash:af0436815ab38f4864dd1e24:7fef6761-6f0d-42c2-85cf-220546e1d476",
+          "payer": "eb1ca0b761885bb0763e2929",
+          "recipient": "af0436815ab38f4864dd1e24",
+          "status": "deleted",
+          "amount": 12.5,
+          "currency": "EUR",
+          "note": "QA block 10 cash receipt",
+          "accounted": 0
+        },
+        {
+          "id": "cash:af0436815ab38f4864dd1e24:4cc1a882-feea-4799-99d7-5eb9e29a9787",
+          "payer": "eb1ca0b761885bb0763e2929",
+          "recipient": "af0436815ab38f4864dd1e24",
+          "status": "approved",
+          "amount": 12.5,
+          "currency": "EUR",
+          "note": "QA block 10 cash receipt",
+          "accounted": 12.5
+        },
+        {
+          "id": "refund:cash:af0436815ab38f4864dd1e24:4cc1a882-feea-4799-99d7-5eb9e29a9787",
+          "payer": "eb1ca0b761885bb0763e2929",
+          "recipient": "af0436815ab38f4864dd1e24",
+          "status": "refunded",
+          "amount": 12.5,
+          "currency": "EUR",
+          "note": "QA block 10 cash receipt",
+          "accounted": 12.5
+        },
+        {
+          "id": "cash:af0436815ab38f4864dd1e24:badd7f1f-c56f-4241-b0ab-54fe4cd2218c",
+          "payer": "eb1ca0b761885bb0763e2929",
+          "recipient": "af0436815ab38f4864dd1e24",
+          "status": "approved",
+          "amount": 3.25,
+          "currency": "EUR",
+          "note": "QA block 10 cash live refund",
+          "accounted": 3.25
+        },
+        {
+          "id": "refund:cash:af0436815ab38f4864dd1e24:badd7f1f-c56f-4241-b0ab-54fe4cd2218c",
+          "payer": "eb1ca0b761885bb0763e2929",
+          "recipient": "af0436815ab38f4864dd1e24",
+          "status": "refunded",
+          "amount": 3.25,
+          "currency": "EUR",
+          "note": "QA block 10 cash live refund",
+          "accounted": 3.25
+        },
+        {
+          "id": "cash:af0436815ab38f4864dd1e24:612c536b-208d-4265-bf15-08246b99a323",
+          "payer": "eb1ca0b761885bb0763e2929",
+          "recipient": "af0436815ab38f4864dd1e24",
+          "status": "deleted",
+          "amount": 3.25,
+          "currency": "EUR",
+          "note": "QA block 10 delete retry",
+          "accounted": 0
+        }
+      ],
+      "users": [
+        {
+          "_id": "af0436815ab38f4864dd1e24",
+          "userId": "af0436815ab38f4864dd1e24",
+          "paymentSpentTotals": {
+            "HUF": 17400,
+            "EUR": 15.75
+          },
+          "paymentIncomeTotals": {
+            "HUF": 8400,
+            "EUR": 15.75
+          },
+          "cashReceiptReversals": [
+            "cash:af0436815ab38f4864dd1e24:7fef6761-6f0d-42c2-85cf-220546e1d476",
+            "cash:af0436815ab38f4864dd1e24:612c536b-208d-4265-bf15-08246b99a323"
+          ]
+        },
+        {
+          "_id": "eb1ca0b761885bb0763e2929",
+          "userId": "eb1ca0b761885bb0763e2929",
+          "paymentSpentTotals": {
+            "EUR": 15.75
+          },
+          "cashReceiptReversals": [
+            "cash:af0436815ab38f4864dd1e24:7fef6761-6f0d-42c2-85cf-220546e1d476",
+            "cash:af0436815ab38f4864dd1e24:612c536b-208d-4265-bf15-08246b99a323"
+          ],
+          "paymentIncomeTotals": {
+            "EUR": 15.75
+          }
+        }
+      ],
+      "affiliate": null,
+      "contributions": [],
+      "notifications": [
+        {
+          "_id": "6ab87f5c296c75ec86d3c940",
+          "recipientUserId": "eb1ca0b761885bb0763e2929",
+          "kind": "payment-cash-received",
+          "sourceId": "cash:af0436815ab38f4864dd1e24:7fef6761-6f0d-42c2-85cf-220546e1d476"
+        },
+        {
+          "_id": "6ab87f82296c75ec86d3c942",
+          "recipientUserId": "eb1ca0b761885bb0763e2929",
+          "kind": "payment-cash-received",
+          "sourceId": "cash:af0436815ab38f4864dd1e24:7fef6761-6f0d-42c2-85cf-220546e1d476"
+        },
+        {
+          "_id": "6ab880b2296c75ec86d3c948",
+          "recipientUserId": "eb1ca0b761885bb0763e2929",
+          "kind": "payment-cash-received",
+          "sourceId": "cash:af0436815ab38f4864dd1e24:4cc1a882-feea-4799-99d7-5eb9e29a9787"
+        },
+        {
+          "_id": "6ab880e5296c75ec86d3c94b",
+          "recipientUserId": "af0436815ab38f4864dd1e24",
+          "kind": "payment-refund-requested",
+          "sourceId": "cash:af0436815ab38f4864dd1e24:4cc1a882-feea-4799-99d7-5eb9e29a9787"
+        },
+        {
+          "_id": "6ab88107296c75ec86d3c94f",
+          "recipientUserId": "eb1ca0b761885bb0763e2929",
+          "kind": "payment-refund-approved",
+          "sourceId": "cash:af0436815ab38f4864dd1e24:4cc1a882-feea-4799-99d7-5eb9e29a9787"
+        },
+        {
+          "_id": "6ab8846a296c75ec86d3c956",
+          "recipientUserId": "eb1ca0b761885bb0763e2929",
+          "kind": "payment-cash-received",
+          "sourceId": "cash:af0436815ab38f4864dd1e24:badd7f1f-c56f-4241-b0ab-54fe4cd2218c"
+        },
+        {
+          "_id": "6ab884b4296c75ec86d3c958",
+          "recipientUserId": "af0436815ab38f4864dd1e24",
+          "kind": "payment-refund-requested",
+          "sourceId": "cash:af0436815ab38f4864dd1e24:badd7f1f-c56f-4241-b0ab-54fe4cd2218c"
+        },
+        {
+          "_id": "6ab884dd296c75ec86d3c95a",
+          "recipientUserId": "eb1ca0b761885bb0763e2929",
+          "kind": "payment-refund-approved",
+          "sourceId": "cash:af0436815ab38f4864dd1e24:badd7f1f-c56f-4241-b0ab-54fe4cd2218c"
+        },
+        {
+          "_id": "6ab88558296c75ec86d3c95c",
+          "recipientUserId": "eb1ca0b761885bb0763e2929",
+          "kind": "payment-cash-received",
+          "sourceId": "cash:af0436815ab38f4864dd1e24:612c536b-208d-4265-bf15-08246b99a323"
+        }
+      ],
+      "outbox": []
+    },
+    "payerInsertedWithTail": {
+      "sameHistory": true,
+      "before": "Payment history\n\nExpenses and income\n\nfilter_list\npayments\ncredit_card\nclose\nEUR −15.75 ›\nEUR +15.75 ›\n2026-09-27\nRefunded\ncurrency_exchange\nEUR +3.25\naccount_balance_wallet\ncash\nAlex Turner\nQA block 10 cash live refund\nApproved\npayments\nEUR −3.25\naccount_balance_wallet\ncash\nAlex Turner\nQA block 10 cash live refund\nRefunded\ncurrency_exchange\nEUR +12.50\naccount_balance_wallet\ncash\nAlex Turner\nQA block 10 cash receipt\nApproved\npayments\nEUR −12.50\naccount_balance_wallet\ncash\nAlex Turner\nQA block 10 cash receipt\nDeleted\npayments\nEUR −12.50\naccount_balance_wallet\ncash\nAlex Turner\nQA block 10 cash receipt",
+      "after": "Payment history\n\nExpenses and income\n\nfilter_list\npayments\ncredit_card\nclose\nEUR −19.00 ›\nEUR +15.75 ›\n2026-09-27\nApproved\npayments\nEUR −3.25\naccount_balance_wallet\ncash\nAlex Turner\nQA block 10 delete retry\nmore_vert\nRefunded\ncurrency_exchange\nEUR +3.25\naccount_balance_wallet\ncash\nAlex Turner\nQA block 10 cash live refund\nApproved\npayments\nEUR −3.25\naccount_balance_wallet\ncash\nAlex Turner\nQA block 10 cash live refund\nRefunded\ncurrency_exchange\nEUR +12.50\naccount_balance_wallet\ncash\nAlex Turner\nQA block 10 cash receipt\nApproved\npayments\nEUR −12.50\naccount_balance_wallet\ncash\nAlex Turner\nQA block 10 cash receipt\nDeleted\npayments\nEUR −12.50\naccount_balance_wallet\ncash\nAlex Turner\nQA block 10 cash receipt",
+      "requests": [
+        {
+          "start": 29103.70000000298,
+          "duration": 27.600000001490116,
+          "status": 200
+        },
+        {
+          "start": 44105.70000000298,
+          "duration": 40.399999998509884,
+          "status": 200
+        }
+      ]
+    },
+    "payerRetainedDeleted": {
+      "sameHistory": true,
+      "before": "Payment history\n\nExpenses and income\n\nfilter_list\npayments\ncredit_card\nclose\nEUR −15.75 ›\nEUR +15.75 ›\n2026-09-27\nDeleted\npayments\nEUR −3.25\naccount_balance_wallet\ncash\nAlex Turner\nQA block 10 delete retry\nRefunded\ncurrency_exchange\nEUR +3.25\naccount_balance_wallet\ncash\nAlex Turner\nQA block 10 cash live refund\nApproved\npayments\nEUR −3.25\naccount_balance_wallet\ncash\nAlex Turner\nQA block 10 cash live refund\nRefunded\ncurrency_exchange\nEUR +12.50\naccount_balance_wallet\ncash\nAlex Turner\nQA block 10 cash receipt\nApproved\npayments\nEUR −12.50\naccount_balance_wallet\ncash\nAlex Turner\nQA block 10 cash receipt\nDeleted\npayments\nEUR −12.50\naccount_balance_wallet\ncash\nAlex Turner\nQA block 10 cash receipt",
+      "after": "Payment history\n\nExpenses and income\n\nfilter_list\npayments\ncredit_card\nclose\nEUR −15.75 ›\nEUR +15.75 ›\n2026-09-27\nDeleted\npayments\nEUR −3.25\naccount_balance_wallet\ncash\nAlex Turner\nQA block 10 delete retry\nRefunded\ncurrency_exchange\nEUR +3.25\naccount_balance_wallet\ncash\nAlex Turner\nQA block 10 cash live refund\nApproved\npayments\nEUR −3.25\naccount_balance_wallet\ncash\nAlex Turner\nQA block 10 cash live refund\nRefunded\ncurrency_exchange\nEUR +12.50\naccount_balance_wallet\ncash\nAlex Turner\nQA block 10 cash receipt\nApproved\npayments\nEUR −12.50\naccount_balance_wallet\ncash\nAlex Turner\nQA block 10 cash receipt\nDeleted\npayments\nEUR −12.50\naccount_balance_wallet\ncash\nAlex Turner\nQA block 10 cash receipt",
+      "requests": [
+        {
+          "start": 29103.70000000298,
+          "duration": 27.600000001490116,
+          "status": 200
+        },
+        {
+          "start": 44105.70000000298,
+          "duration": 40.399999998509884,
+          "status": 200
+        },
+        {
+          "start": 59149.40000000596,
+          "duration": 39.899999998509884,
+          "status": 200
+        },
+        {
+          "start": 74192.20000000298,
+          "duration": 35.899999998509884,
+          "status": 200
+        }
+      ]
+    }
+  },
+  "checkoutProviderBaseline": {
+    "provider": "barion",
+    "requires3ds": false,
+    "status": "",
+    "buttons": [
+      {
+        "id": "save-button",
+        "text": "Save test configuration"
+      }
+    ]
+  },
+  "checkoutProviderRestoreRequired": false,
+  "checkoutProviderRestored": {
+    "provider": "barion",
+    "requires3ds": false,
+    "status": "Test configuration saved. New registrations and payments will use this provider."
+  },
+  "normalCashCheckout": {
+    "ui": {
+      "confirmation": "",
+      "dialogs": [
+        {
+          "title": "Activities",
+          "text": "Activities\n\nAll\n\nschedule\ntoday\nclose\nevent\nEvents\nexpand_more\n14\nwidgets\nAll\nexpand_more\n37\nexplore\nSun, 12 Jul 2026\nSun, 12 Jul 2026\nMultislot\n9+\nmail\nSunset Beach Volley Rotation\n\nJul 12, 7:00 PM - Oct 25, 9:30 PM\n\nSan Diego · wide public beach volleyball court · 10079.74 km\n\nmore_vert\n\nMaya Stone\n\nSun, 4 Oct 2026\n2 / 10\npublic\nQA Group Cash Checkout\n\nOct 4, 4:41 AM - 5:41 AM\n\nQA checkout · 3.608 km\n\nmore_vert\n\nBlock 10 cash exclusion control\n\nMon, 1 Mar 2027\n12 / 50\n1\npublic\nNight Food League\n\nCurrent stage: Qualifiers · 1/3\n\nMar 1, 1:45 PM - 3:45 PM\n\nSeattle · covered night market dining aisle · 8795.539 km\n\nmore_vert\n\nTeams sample three"
+        },
+        {
+          "title": "Event Explore",
+          "text": "Event Explore\nfilter_alt\nevent_upcoming\ntoday\nclose\nSun, 4 Oct 2026\nSun, 4 Oct 2026\nAT\n0.0\nstar\ngroups\n1 / 10\n1\npublic\nQA Group Cash Checkout\n\nEvent · Public · 3.6 km\n\nmore_vert\n\nBlock 10 cash exclusion control\n\n2026-10-04T02:41:06.056Z – 2026-10-04T03:41:06.056Z\n\nAT\n0.0\nstar\ngroups\n1 / 10\npublic\nQA Group Card Checkout\n\nEvent · Public · 3.6 km\n\nmore_vert\n\nBlock 10 cash exclusion control\n\n2026-10-04T02:41:06.056Z – 2026-10-04T03:41:06.056Z\n\nSun, 7 Feb 2027\nMS\n0.0\nstar\ngroups\n1 / 19\n1\npublic\nHandmade Pasta Table\n\nEvent · Public · 7741.5 km\n\nmore_vert\n\nPairs roll dough, shape filled pasta, and share the first cooked batch.\n\nSun Feb 22, 6:30 PM\n\n"
+        }
+      ],
+      "statuses": [
+        {
+          "path": "/api/payment-methods/history",
+          "status": 200
+        },
+        {
+          "path": "/api/payment-methods/history",
+          "status": 200
+        },
+        {
+          "path": "/api/payment-methods/history",
+          "status": 200
+        },
+        {
+          "path": "/api/payment-methods/history",
+          "status": 200
+        }
+      ]
+    },
+    "oracle": {
+      "payments": [],
+      "members": [
+        {
+          "_id": "event:f02709270000000000000101:af0436815ab38f4864dd1e24",
+          "ownerId": "f02709270000000000000101",
+          "userId": "af0436815ab38f4864dd1e24",
+          "role": "Admin",
+          "status": "accepted"
+        },
+        {
+          "_id": "event:f02709270000000000000102:af0436815ab38f4864dd1e24",
+          "ownerId": "f02709270000000000000102",
+          "userId": "af0436815ab38f4864dd1e24",
+          "role": "Admin",
+          "status": "accepted"
+        },
+        {
+          "_id": "6ab882ab296c75ec86d3c951",
+          "ownerId": "f02709270000000000000101",
+          "userId": "eb1ca0b761885bb0763e2929",
+          "role": "Member",
+          "status": "accepted"
+        }
+      ],
+      "baskets": [
+        {
+          "_id": "6ab882ab296c75ec86d3c950",
+          "sourceId": "f02709270000000000000101",
+          "status": "confirmed"
+        },
+        {
+          "_id": "6ab88686296c75ec86d3c962",
+          "sourceId": "f02709270000000000000101",
+          "status": "approved"
+        }
+      ],
+      "partner": null,
+      "contributions": []
+    },
+    "result": "Booking accepted; no payment record. Explicit user clarification requested before changing booking confirmation into cash-received accounting."
+  },
+  "firstCheckoutControl": {
+    "result": "INVALID AFFILIATE PRECONDITION: referral _id was string; Spring @Id String lookup converts this hexadecimal identity to ObjectId. Versioned cash snapshot restored exactly; fixture corrected before repeating accounting controls. Prior UI and retry proofs remain valid, cash exclusion attribution proof must be repeated.",
+    "cardUI": {
+      "confirmation": "",
+      "alerts": [],
+      "dialogs": [
+        "Activities",
+        "Event Explore"
+      ],
+      "requests": [
+        {
+          "path": "/api/deployment/configuration",
+          "status": 0
+        },
+        {
+          "path": "/api/activities/events/checkout/pay",
+          "status": 200
+        },
+        {
+          "path": "/api/activities/events",
+          "status": 200
+        },
+        {
+          "path": "/api/activities/events/explore",
+          "status": 200
+        }
+      ]
+    },
+    "cardOracle": {
+      "payments": [
+        {
+          "id": "6ab887c1296c75ec86d3c96b",
+          "sourceId": "f02709270000000000000102",
+          "userId": "eb1ca0b761885bb0763e2929",
+          "recipientUserId": "af0436815ab38f4864dd1e24",
+          "status": "captured",
+          "provider": "barion",
+          "amount": 10,
+          "currency": "EUR",
+          "auditKind": "payment"
+        }
+      ],
+      "members": [
+        {
+          "_id": "event:f02709270000000000000101:af0436815ab38f4864dd1e24",
+          "ownerId": "f02709270000000000000101",
+          "userId": "af0436815ab38f4864dd1e24",
+          "role": "Admin",
+          "status": "accepted"
+        },
+        {
+          "_id": "event:f02709270000000000000102:af0436815ab38f4864dd1e24",
+          "ownerId": "f02709270000000000000102",
+          "userId": "af0436815ab38f4864dd1e24",
+          "role": "Admin",
+          "status": "accepted"
+        },
+        {
+          "_id": "6ab882ab296c75ec86d3c951",
+          "ownerId": "f02709270000000000000101",
+          "userId": "eb1ca0b761885bb0763e2929",
+          "role": "Member",
+          "status": "accepted"
+        },
+        {
+          "_id": "6ab88769296c75ec86d3c966",
+          "ownerId": "f02709270000000000000102",
+          "userId": "eb1ca0b761885bb0763e2929",
+          "role": "Member",
+          "status": "accepted"
+        }
+      ],
+      "baskets": [
+        {
+          "_id": "6ab882ab296c75ec86d3c950",
+          "sourceId": "f02709270000000000000101",
+          "status": "confirmed"
+        },
+        {
+          "_id": "6ab88686296c75ec86d3c962",
+          "sourceId": "f02709270000000000000101",
+          "status": "approved"
+        },
+        {
+          "_id": "6ab88769296c75ec86d3c965",
+          "sourceId": "f02709270000000000000102",
+          "status": "confirmed"
+        },
+        {
+          "_id": "6ab887c1296c75ec86d3c96a",
+          "sourceId": "f02709270000000000000102",
+          "status": "pay"
+        }
+      ],
+      "partner": null,
+      "contributions": []
+    }
+  }
 }

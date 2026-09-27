@@ -7,7 +7,7 @@
   Q.assertDeploymentSafety();
   const command = Q.text(process.env.MANUAL_QA_COMMAND);
   if (!["status", "verify-lists", "prepare-badges", "prepare-join", "restore-badges",
-      "capture", "restore", "verify-savepoint", "prepare-chat-sharing", "prepare-chat-sharing-context", "restore-chat-sharing", "prepare-cash-history", "restore-cash-history", "prepare-sharing", "prepare-sharing-group-event", "repair-sharing-identifiers", "reset-sharing-failed-event-claim", "prepare-sharing-attribution", "track-sharing-registration", "sharing-registrants", "restore-sharing", "prepare-list-pagination", "restore-list-pagination",
+      "capture", "restore", "verify-savepoint", "prepare-chat-sharing", "prepare-chat-sharing-context", "restore-chat-sharing", "prepare-cash-history", "prepare-cash-checkout", "prepare-cash-payment-methods", "restore-cash-history", "prepare-sharing", "prepare-sharing-group-event", "repair-sharing-identifiers", "reset-sharing-failed-event-claim", "prepare-sharing-attribution", "track-sharing-registration", "sharing-registrants", "restore-sharing", "prepare-list-pagination", "restore-list-pagination",
       "prepare-member-invitation", "restore-member-invitation", "prepare-admin-lifecycle", "prepare-admin-moderation", "prepare-admin-feed-event", "prepare-admin-previews", "prepare-admin-base-chat-read", "prepare-admin-base-chat-message", "prepare-admin-base-feed", "restore-admin-lifecycle",
       "prepare-invitation", "prepare-hidden-invitation", "restore-invitation", "prepare-editor", "restore-editor", "prepare-creation", "restore-creation"].includes(command)
       || Q.text(process.env.MANUAL_QA_CHECKPOINT_ID) !== checkpointId) {
@@ -187,22 +187,109 @@
     // Existing referral is a precondition for a meaningful cash-exclusion check.
     // No payment, totals, contribution or notification result is seeded.
     if (!existingReferral) Q.collection("affiliateRegistrations").insertOne({
-      _id: payerId, referrerUserId: actors[0], code: "qa-group-cash-attribution",
+      _id: ObjectId(payerId), referrerUserId: actors[0], code: "qa-group-cash-attribution",
       registeredAtIso: "2026-09-01T12:00:00Z"
     });
     Q.printObject({checkpointId, recipient: actors[0], payer: payerId, prepared: true,
       seededPayments: 0, seededRevenue: 0, actorLocationsChanged: false});
     return;
   }
+  if (command === "prepare-cash-checkout") {
+    if (!state.cashHistorySnapshots) Q.fail("Cash history boundary required.");
+    if (state.cashCheckoutIds) {
+      if (Q.collection("payments").countDocuments({sourceId: {$in: state.cashCheckoutIds}})
+          || Q.collection("eventCheckoutBasketItems").countDocuments({sourceId: {$in: state.cashCheckoutIds}}))
+        Q.fail("Retain the active checkout outcomes.");
+      for (const event of Q.collection("events").find({sourceId: {$in: state.cashCheckoutIds}}).toArray())
+        Q.collection("events").updateOne({_id: event._id}, {$set: {timeframe: event.startAtIso + " – " + event.endAtIso}});
+      Q.printObject({checkpointId, checkoutDisplayPrepared: true, outcomesChanged: false});
+      return;
+    }
+    const owner = Q.collection("users").findOne({userId: actors[0]});
+    const template = Q.collection("events").findOne({status: "A", eventType: "main", workspaceGroupId: {$in: [null, ""]}, parentEventId: {$in: [null, ""]}});
+    const ids = ["f02709270000000000000101", "f02709270000000000000102"];
+    if (!template || ids.some(id => Q.collection("events").countDocuments({sourceId: id}))) Q.fail("Checkout template absent or fixture IDs occupied.");
+    const related = {$or: [{sourceId: {$in: ids}}, {entityId: {$in: ids}}, {"payload.sourceId": {$in: ids}}]};
+    const retained = Q.snapshotSpecs([
+      {collection: "events", selector: {sourceId: {$in: ids}}},
+      {collection: "activityMembers", selector: {ownerId: {$in: ids}}},
+      {collection: "eventCheckoutBasketItems", selector: {sourceId: {$in: ids}}},
+      {collection: "eventTickets", selector: {eventId: {$in: ids}}},
+      {collection: "chats", selector: {eventId: {$in: ids}}},
+      {collection: "chatMessages", selector: {chatId: {$in: ids}}},
+      {collection: "userNotifications", selector: related},
+      {collection: "notificationOutbox", selector: related}
+    ]);
+    Q.collection(Q.STATE_COLLECTION).updateOne({_id: state._id}, {$set: {
+      cashHistorySnapshots: [...state.cashHistorySnapshots, ...retained], cashCheckoutIds: ids
+    }});
+    const now = Q.nowIso(), start = new Date(Date.now() + 7 * 86400000).toISOString(), end = new Date(Date.now() + 7 * 86400000 + 3600000).toISOString();
+    ids.forEach((id, index) => {
+      Q.collection("events").insertOne({...template, _id: ObjectId(id), sourceId: id, syncKey: id,
+        ownerUserId: actors[0], organizerUserId: actors[0], creatorUserId: actors[0], creatorName: owner.name,
+        creatorInitials: owner.initials, admins: [actors[0]], workspaceGroupId: null, status: "A", moderationStatus: "approved",
+        title: index === 0 ? "QA Group Cash Checkout" : "QA Group Card Checkout", subtitle: "Block 10 cash exclusion control",
+        visibility: "Public", blindMode: "Visible Event", isTrashed: false, trashedAtIso: null, expired: false,
+        startAtIso: start, endAtIso: end, timeframe: start + " – " + end, createdDate: now, updatedDate: now, sourceLink: "",
+        location: "QA checkout", locationCoordinates: owner.locationCoordinates,
+        locationGeo: {type: "Point", coordinates: [owner.locationCoordinates.longitude, owner.locationCoordinates.latitude]},
+        mode: "Casual", frequency: "Once", ticketing: false, approvalRequired: false, autoInviter: false,
+        capacityMin: 1, capacityMax: 10, capacityTotal: 10, capacityTotalActual: 10, full: false,
+        acceptedMembers: 1, pendingMembers: 0, acceptedMemberUserIds: [actors[0]], pendingMemberUserIds: [], invitedMemberUserIds: [], pendingRequestMemberUserIds: [],
+        slotsEnabled: false, slotTemplates: [], parentEventId: null, parentSubEventId: null, groupId: null, generated: false,
+        upcomingSlots: [], nextSlot: null, subEventsEnabled: false, subEventDefinitions: [], subEvents: [], policiesEnabled: false, policies: [],
+        unread: 0, activity: 0, paymentSessionId: null, feedbackOwnEventCounterUserIds: [],
+        pricing: {enabled: true, mode: "fixed", basePrice: 10, currency: "EUR", taxMode: "included", chargeType: "per_attendee",
+          quantityRulesEnabled: false, quantityRules: [], rounding: "none", demandRulesEnabled: false, demandRules: [], timeRulesEnabled: false, timeRules: [],
+          cancellationPolicy: {enabled: true, rules: [{id: "qa-full-refund", offsetUnit: "days", offsetValue: 0, refundKind: "full", refundValue: 100}]},
+          slotPricingEnabled: false, slotOverrides: [], audience: {enabled: false, promoCodes: []}}});
+      Q.collection("activityMembers").insertOne({_id: `event:${id}:${actors[0]}`, ownerType: "event", ownerId: id,
+        userId: actors[0], role: "Admin", status: "accepted", actionAtIso: now});
+    });
+    Q.printObject({checkpointId, events: ids, prepared: true, seededPayments: 0, seededRevenue: 0});
+    return;
+  }
+  if (command === "prepare-cash-payment-methods") {
+    if (!state.cashHistorySnapshots || state.cashPaymentMethodsPrepared)
+      Q.fail("Require the cash boundary without an existing card snapshot.");
+    const retained = Q.snapshotSpecs([
+      {collection: "savedPaymentMethods", selector: {userId: "eb1ca0b761885bb0763e2929"}},
+      {collection: "paymentMethodRegistrations", selector: {userId: "eb1ca0b761885bb0763e2929"}}
+    ]);
+    Q.collection(Q.STATE_COLLECTION).updateOne({_id: state._id}, {$set: {
+      cashHistorySnapshots: [...state.cashHistorySnapshots, ...retained], cashPaymentMethodsPrepared: true
+    }});
+    Q.printObject({checkpointId, paymentMethodsSnapshotted: true, productWrites: 0});
+    return;
+  }
   if (command === "restore-cash-history") {
     if (!state.cashHistorySnapshots) Q.fail("No cash history boundary to restore.");
+    const paymentSnapshot = state.cashHistorySnapshots.find(s => s.collection === "payments");
+    const retainedPaymentIds = new Set(paymentSnapshot.documents.map(p => Q.text(p._id)));
+    const newPayments = Q.collection("payments").find(paymentSnapshot.selector).toArray()
+      .filter(p => !retainedPaymentIds.has(Q.text(p._id)));
+    if (newPayments.some(p => !Q.text(p.sourceId).startsWith("cash:" + actors[0] + ":")
+        && !(state.cashCheckoutIds || []).includes(p.sourceId)))
+      Q.fail("An unrelated payment appeared during cash QA; retain all snapshots.");
+    const generatedPaymentIds = newPayments.map(p => Q.text(p._id));
+    // Checkout IDs are allocated by the product. Their gateway operations and
+    // notifications had no pre-fixture counterpart; derive exact cleanup IDs
+    // from the guarded payment lineage, never from an unbounded time range.
+    const generatedScopes = [
+      {collection: "payment_gateway_operations", selector: {paymentId: {$in: generatedPaymentIds}}, documents: []},
+      ...["userNotifications", "notificationOutbox"].map(collection => ({collection, documents: [], selector: {$or: [
+        {sourceId: {$in: generatedPaymentIds}}, {entityId: {$in: generatedPaymentIds}},
+        {"payload.paymentId": {$in: generatedPaymentIds}}
+      ]}}))
+    ];
+    Q.restoreSnapshots(generatedScopes);
     Q.restoreSnapshots(state.cashHistorySnapshots);
     for (const snapshot of state.cashHistorySnapshots) {
       if (!Q.sameJson(ordered(snapshot.documents), ordered(Q.collection(snapshot.collection).find(snapshot.selector).toArray())))
         Q.fail(`${snapshot.collection} cash restoration differs; retain snapshots.`);
     }
     Q.collection(Q.STATE_COLLECTION).updateOne({_id: state._id}, {$unset: {
-      cashHistorySnapshots: "", cashHistoryPreparedAtIso: ""
+      cashHistorySnapshots: "", cashHistoryPreparedAtIso: "", cashCheckoutIds: "", cashPaymentMethodsPrepared: ""
     }});
     Q.printObject({checkpointId, cashHistoryRestored: true});
     return;

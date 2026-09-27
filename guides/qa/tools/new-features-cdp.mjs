@@ -107,6 +107,18 @@ try {
     const { nodeId } = await send('DOM.querySelector', { nodeId: tree.root.nodeId, selector });
     if (!nodeId) throw Error('Upload input missing');
     await send('DOM.setFileInputFiles', { nodeId, files }); result = { uploaded: files.length };
+  } else if (command === 'frame-eval') {
+    const { pathname, pathnamePrefix, script } = JSON.parse(await readFile(input, 'utf8'));
+    if (!pathname && pathnamePrefix !== '/register/') throw Error('A specific frame path is required');
+    const tree = await send('Page.getFrameTree');
+    const findFrame = node => (pathname ? new URL(node.frame.url).pathname === pathname
+      : new URL(node.frame.url).pathname.startsWith(pathnamePrefix))
+      ? node.frame : (node.childFrames ?? []).map(findFrame).find(Boolean);
+    const frame = findFrame(tree.frameTree);
+    if (!frame) throw Error('Requested managed-page frame is not open');
+    const { executionContextId } = await send('Page.createIsolatedWorld', { frameId: frame.id, worldName: 'manual-qa-dom' });
+    result = (await send('Runtime.evaluate', { contextId: executionContextId,
+      expression: await readFile(script, 'utf8'), awaitPromise: true, returnByValue: true })).result.value;
   } else if (command === 'language-eval') {
     const { language, script, width, height } = JSON.parse(await readFile(input, 'utf8'));
     if (!['en-US', 'hu-HU'].includes(language)) throw Error('Unsupported QA browser language');

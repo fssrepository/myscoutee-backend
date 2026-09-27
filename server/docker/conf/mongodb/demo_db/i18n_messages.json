@@ -48142,5 +48142,29 @@
     "key": "payment.status.deleted",
     "lang": "hu",
     "value": "Törölve"
+  },
+  {
+    "_id": "i18n-message-en-payment-cash-refund-request-message",
+    "key": "payment.cash.refund.request.message",
+    "lang": "en",
+    "value": "Request a refund of this cash receipt from the recipient?"
+  },
+  {
+    "_id": "i18n-message-en-payment-cash-refund-approve-message",
+    "key": "payment.cash.refund.approve.message",
+    "lang": "en",
+    "value": "Confirm that you have returned this cash amount to the payer?"
+  },
+  {
+    "_id": "i18n-message-hu-payment-cash-refund-request-message",
+    "key": "payment.cash.refund.request.message",
+    "lang": "hu",
+    "value": "Kéred ennek a készpénzes tételnek a visszatérítését a kedvezményezettől?"
+  },
+  {
+    "_id": "i18n-message-hu-payment-cash-refund-approve-message",
+    "key": "payment.cash.refund.approve.message",
+    "lang": "hu",
+    "value": "Megerősíted, hogy ezt az összeget készpénzben visszaadtad a fizetőnek?"
   }
 ]

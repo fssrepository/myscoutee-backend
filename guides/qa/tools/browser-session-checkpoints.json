@@ -18,7 +18,7 @@
       "preserveOtherSessions": true,
       "fixtureCheckpointId": "GROUP-LIFECYCLE-001",
       "layout": {
-        "columns": 1
+        "columns": 2
       },
       "sessions": [
         {
@@ -33,6 +33,14 @@
             "x": 750,
             "y": 30
           }
+        },
+        {
+          "actor": "Alex cash recipient",
+          "sessionKind": "demo",
+          "userId": "af0436815ab38f4864dd1e24",
+          "expectedName": "Alex Turner",
+          "autoDismissExplanationGuide": true,
+          "window": { "width": 700, "height": 900, "x": 30, "y": 30 }
         }
       ]
     },
