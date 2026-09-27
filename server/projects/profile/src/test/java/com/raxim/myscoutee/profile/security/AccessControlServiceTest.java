@@ -231,12 +231,12 @@ class AccessControlServiceTest {
     }
 
     @Test
-    void allowsDevModeToFallThroughToServiceMembershipInvariant() {
+    void disabledFirebaseDoesNotAuthorizeAnonymousResourceAssignment() {
         configProperties.setFirebaseEnabled(false);
 
         boolean allowed = service.canSubmitEventResourceAssignment(null, request("event-1", "sub-1", "u1"));
 
-        assertThat(allowed).isTrue();
+        assertThat(allowed).isFalse();
         verifyNoInteractions(activityMembersRepository);
     }
 
