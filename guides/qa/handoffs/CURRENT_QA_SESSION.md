@@ -88,17 +88,17 @@ Earlier Event Mode, Integration API, Activity Rating and EVENT-FOLLOWING-001 rem
 ```yaml
 checkpoint: GROUP-LIFECYCLE-001
 checklist: ../checklists/group/GROUP-LIFECYCLE-001.md
-substage: Block25 HTTP CLOSED;26 ACTIVE. HTTP22/48; Lifecycle22/29 (1–13,17–25),14–16 partial retained.
-fixture_phase: Block26.1–5 and exact read/avatar173→172 verified. User changed26.6: Deleted card stays in Trash for departed members; any departed Admin may restore deleted group, Member cannot until group restored. Backend/local/sharedUI implementation changed; replay now prepare-admin-last-member has Alex+Eszter Admin and Lina Member; ordered leaves Lina,Eszter,Alex in progress. One managed browser. Exact restore before restaging verified.
+substage: Block26 HTTP CLOSED;27 next. HTTP23/48; Lifecycle23/29 (1–13,17–26),14–16 partial retained.
+fixture_phase: All26 temporary Admin scopes exactly restored. User-corrected deleted-group recovery implemented in Java/local/sharedUI and verified; earlier-departed Admin can restore, Member only after group active. One managed browser currently Alex EN; runtime fixture removed after proof.
 execution_log: ../evidence/GROUP-LIFECYCLE-001-20260926.md
 execution_authority: User explicitly delegated full-flow automated QA; questions do not pause it. Testcases are independent closed units with their own restage/checkpoints/execution/cleanup.
-next_action: Execute26 Admin grant/revocation, responsibility release/takeover and last-member deletion with own fixture and branch restore. At whole Group testcase boundary remove exact evidence-proven duplicates from GROUP-ISOLATION-001, preserving unique combinations; keep transfer provenance in ledger and executable blocks self-contained. Also audit remaining NOT RUN deployment-dependent checks into independent deployment QA. Local MCP OAuth remains API block7; browser ChatGPT manual acceptance remains deployment scope.
+next_action: Execute27 role/editor presentation with versioned fixture;28 request boundaries;29 ordering. At whole Group testcase boundary remove exact evidence-proven duplicates from GROUP-ISOLATION-001, preserving unique combinations; keep transfer provenance in ledger and executable blocks self-contained. Also audit remaining NOT RUN deployment-dependent checks into independent deployment QA. Local MCP OAuth remains API block7; browser ChatGPT manual acceptance remains deployment scope.
 savepoint: community-group after-contact-controls captured 2026-09-27T04:40:57.723Z, resume13. Earlier savepoints immutable.
-queue: HTTP Lifecycle26–29 with14–16 partial retained; Local Lifecycle1–29, Group Isolation1–12 and Integration API Group1–7 remain separate.
+queue: HTTP Lifecycle27–29 with14–16 partial retained; Local Lifecycle1–29, Group Isolation1–12 and Integration API Group1–7 remain separate.
 resume_gate: Run the versioned community-group status command before any relaunch. verify-lists checked all ten groups/27 memberships without mutation and the versioned launcher prepared all three actors on 2026-09-26. Do not reset changed records or replay a closed checkpoint. Check the current manifest and launcher result.
 runtime: Existing frontend-sync/backend own builds; no separate test/build process. One managed PENDING-BLOCK19 browser.
 mutation_contract: Application-wide, await persistence inside the busy confirmation dialog. Only after success apply canonical returned state through the existing stores to retained lists/cards/badges; failure retains the dialog/error and does not fake success. Keep underlying popups open. No reload to obtain a mutation result; the user identifies only the existing subevents flow as an exception.
-last_completed: Block25 HTTP PASS/CLOSED; block25-notifications-api-20260927.json and block25-confirmation-audit-20260927.json.
+last_completed: Block26 HTTP PASS/CLOSED; block26-admin-authority-20260927.json.
 ```
 
 ## Archived pair-QA resume point — 2026-09-17

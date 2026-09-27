@@ -1,7 +1,7 @@
 {
   "checkpoint": "GROUP-LIFECYCLE-001",
   "block": 26,
-  "status": "IN PROGRESS",
+  "status": "HTTP PASS / CLOSED; local browser journey NOT RUN",
   "fixture": "prepare-admin-authority; members-ready and admins-granted own savepoints; outsider snapshot added before login",
   "verified": "Both UI promotions canceled first then confirmed; grants Alex→Eszter→Maya persisted. Forbidden cross-grant menus absent and API403. Pending Milo and outsider Zoe promotion/revocation403. Eszter revokes Maya; restored branch Alex revokes Eszter without revoking Maya. Retry200 with no duplicate group notifications. All are this block26 execution.",
   "baseline": {
@@ -2056,6 +2056,34 @@
       "target": "alex",
       "status": 404,
       "at": "2026-09-27T19:43:13.732Z"
+    },
+    {
+      "actor": "lina",
+      "action": "restore",
+      "target": "lina",
+      "status": 404,
+      "at": "2026-09-27T19:53:09.154Z"
+    },
+    {
+      "actor": "eszter",
+      "action": "restore",
+      "target": "eszter",
+      "status": 200,
+      "at": "2026-09-27T19:54:57.427Z"
+    },
+    {
+      "actor": "lina",
+      "action": "restore",
+      "target": "lina",
+      "status": 200,
+      "at": "2026-09-27T19:55:05.725Z"
+    },
+    {
+      "actor": "alex",
+      "action": "restore",
+      "target": "alex",
+      "status": 200,
+      "at": "2026-09-27T19:55:49.358Z"
     }
   ],
   "handoverNotes": "26.3 UI cancel/confirm owner leave: Admin-only Eszter/Maya invitations, each unread +1, others unchanged. Eszter opens notification and correct group, persisted read; UI takeover cancel/confirm makes Eszter owner/Admin, active. Duplicate same-actor takeover is HTTP200 idempotent acknowledgment, not HTTP denial; no duplicate group notification. Competing Maya403. Former creator Alex promote403. Trash Restore cancel/confirm returns Alex as accepted Member without grant, promote still403. 26.4 owner leave currently under-review, only accepted ordinary members Lina/Maya/Eszter invited. Unsupported action spelling takeover requests are not authority evidence; correct action is take-over.",
@@ -4903,5 +4931,741 @@
     "checkpointId": "GROUP-LIFECYCLE-001",
     "adminLifecycleRestored": true
   },
-  "exactBadgeNotes": "Own fresh promotion recipient Eszter selected Group: read-only Angular signal inspection, no state mutation. Mark-as-read through ordinary menu: avatar173→172, group attention/membersActivity2→1, notification bell36→35; persisted read. Reload retains avatar172/group1. This closes the saturated9+ measurement gap. Group selector selected total remains99+ due account/domain counters, not an exact count display."
+  "exactBadgeNotes": "Own fresh promotion recipient Eszter selected Group: read-only Angular signal inspection, no state mutation. Mark-as-read through ordinary menu: avatar173→172, group attention/membersActivity2→1, notification bell36→35; persisted read. Reload retains avatar172/group1. This closes the saturated9+ measurement gap. Group selector selected total remains99+ due account/domain counters, not an exact count display.",
+  "deletedAdminCard": {
+    "text": "visibility_off\n0\ndelete\nDeleted\ndiversity_3\nQA Admin Transfer\n\nFriends\n\n0 km\n\nclose",
+    "menu": [
+      "QA ADMIN TRANSFER\nclose\nrestore_from_trash\nRestore"
+    ],
+    "button": {
+      "x": 315.984375,
+      "y": 271.5625,
+      "w": 28,
+      "h": 28
+    },
+    "icon": {
+      "x": 321.984375,
+      "y": 277.5625,
+      "w": 16,
+      "h": 16
+    }
+  },
+  "deletedMemberCard": {
+    "text": "visibility_off\n0\ndelete\nDeleted\ndiversity_3\nQA Admin Transfer\n\nFriends\n\n3.5 km",
+    "hasMenu": false
+  },
+  "deletedMemberJoin": {
+    "status": 404
+  },
+  "earlierAdminRestoreUI": {
+    "dialog": "Restore this group?\n\nRestore “QA Admin Transfer” and resume responsibility as its admin?\n\nCancel\nRestore",
+    "after": "Groups\nschedule\nRecent\nexpand_more\nclose\ndelete\nTrash\nexpand_more\nadd\nNo items\nNo items"
+  },
+  "earlierAdminUiRestored": {
+    "checkpointId": "GROUP-LIFECYCLE-001",
+    "command": "inspect-admin-authority",
+    "savepoint": null,
+    "group": {
+      "_id": "manual-qa-community-admin",
+      "ownerUserId": "af0436815ab38f4864dd1e24",
+      "name": "QA Admin Transfer",
+      "lifecycleStatus": "active",
+      "takeoverCandidates": []
+    },
+    "counters": [
+      {
+        "_id": {
+          "$oid": "178e8d0cbe164fa3fede5884"
+        },
+        "activities": {
+          "notifications": 8
+        },
+        "userId": "178e8d0cbe164fa3fede5884"
+      },
+      {
+        "_id": {
+          "$oid": "1b1c70be2349b3359a8f6f94"
+        },
+        "userId": "1b1c70be2349b3359a8f6f94",
+        "activities": {
+          "notifications": 11
+        }
+      },
+      {
+        "_id": {
+          "$oid": "9f3b3f085e23af6c89dbc432"
+        },
+        "userId": "9f3b3f085e23af6c89dbc432",
+        "activities": {
+          "notifications": 38
+        }
+      },
+      {
+        "_id": {
+          "$oid": "af0436815ab38f4864dd1e24"
+        },
+        "userId": "af0436815ab38f4864dd1e24",
+        "activities": {
+          "notifications": 16
+        }
+      },
+      {
+        "_id": {
+          "$oid": "eb1ca0b761885bb0763e2929"
+        },
+        "activities": {
+          "notifications": 12
+        },
+        "userId": "eb1ca0b761885bb0763e2929"
+      }
+    ],
+    "members": [
+      {
+        "userId": "178e8d0cbe164fa3fede5884",
+        "role": "Member",
+        "status": "deleted",
+        "grantedBy": null,
+        "updates": 0
+      },
+      {
+        "userId": "9f3b3f085e23af6c89dbc432",
+        "role": "Admin",
+        "status": "deleted",
+        "grantedBy": null,
+        "updates": 3
+      },
+      {
+        "userId": "af0436815ab38f4864dd1e24",
+        "role": "Admin",
+        "status": "accepted",
+        "grantedBy": null,
+        "updates": 2
+      }
+    ],
+    "notifications": [
+      {
+        "id": {
+          "$oid": "6ab974b52d0874c32bf37aa0"
+        },
+        "kind": "community-member-removed",
+        "recipient": "9f3b3f085e23af6c89dbc432",
+        "readAtIso": null,
+        "payload": {
+          "workspaceGroupName": "QA Admin Transfer",
+          "entityType": "community",
+          "url": "/game?communityGroupId=manual-qa-community-admin",
+          "body": "QA Admin Transfer",
+          "memberUserId": "178e8d0cbe164fa3fede5884",
+          "title": "QA Admin Transfer",
+          "badge": "assets/logo/heart.webp",
+          "productLogoUrl": "assets/logo/heart.webp",
+          "entityId": "manual-qa-community-admin",
+          "productName": "MyScoutee",
+          "workspaceGroupId": "manual-qa-community-admin",
+          "tag": "community-member-removed:manual-qa-community-admin",
+          "communityGroupId": "manual-qa-community-admin",
+          "senderUserId": "178e8d0cbe164fa3fede5884",
+          "icon": "/media/public?key=images/demo-events/event-001/v1/large.webp",
+          "communityAttention": "members",
+          "recipientScope": "members",
+          "notification_message_key": "notification.kind.community-member-removed.message",
+          "notification_title_key": "notification.kind.community-member-removed.title",
+          "type": "community-member-removed",
+          "productBrandingRevision": "5"
+        }
+      },
+      {
+        "id": {
+          "$oid": "6ab974962d0874c32bf37a9d"
+        },
+        "kind": "community-member-joined",
+        "recipient": "9f3b3f085e23af6c89dbc432",
+        "readAtIso": null,
+        "payload": {
+          "workspaceGroupName": "QA Admin Transfer",
+          "entityType": "community",
+          "url": "/game?communityGroupId=manual-qa-community-admin",
+          "body": "QA Admin Transfer",
+          "memberUserId": "178e8d0cbe164fa3fede5884",
+          "title": "QA Admin Transfer",
+          "badge": "assets/logo/heart.webp",
+          "productLogoUrl": "assets/logo/heart.webp",
+          "entityId": "manual-qa-community-admin",
+          "productName": "MyScoutee",
+          "workspaceGroupId": "manual-qa-community-admin",
+          "tag": "community-member-joined:manual-qa-community-admin",
+          "communityGroupId": "manual-qa-community-admin",
+          "senderUserId": "178e8d0cbe164fa3fede5884",
+          "icon": "/media/public?key=images/demo-events/event-001/v1/large.webp",
+          "communityAttention": "members",
+          "recipientScope": "members",
+          "notification_message_key": "notification.kind.community-member-joined.message",
+          "notification_title_key": "notification.kind.community-member-joined.title",
+          "type": "community-member-joined",
+          "productBrandingRevision": "5"
+        }
+      },
+      {
+        "id": {
+          "$oid": "6ab974032d0874c32bf37a91"
+        },
+        "kind": "community-member-removed",
+        "recipient": "af0436815ab38f4864dd1e24",
+        "readAtIso": null,
+        "payload": {
+          "workspaceGroupName": "QA Admin Transfer",
+          "entityType": "community",
+          "url": "/game?communityGroupId=manual-qa-community-admin",
+          "body": "QA Admin Transfer",
+          "memberUserId": "9f3b3f085e23af6c89dbc432",
+          "title": "QA Admin Transfer",
+          "badge": "assets/logo/heart.webp",
+          "productLogoUrl": "assets/logo/heart.webp",
+          "entityId": "manual-qa-community-admin",
+          "productName": "MyScoutee",
+          "workspaceGroupId": "manual-qa-community-admin",
+          "tag": "community-member-removed:manual-qa-community-admin",
+          "communityGroupId": "manual-qa-community-admin",
+          "senderUserId": "9f3b3f085e23af6c89dbc432",
+          "icon": "/media/public?key=images/demo-events/event-001/v1/large.webp",
+          "communityAttention": "members",
+          "recipientScope": "members",
+          "notification_message_key": "notification.kind.community-member-removed.message",
+          "notification_title_key": "notification.kind.community-member-removed.title",
+          "type": "community-member-removed",
+          "productBrandingRevision": "5"
+        }
+      },
+      {
+        "id": {
+          "$oid": "6ab973fd2d0874c32bf37a8c"
+        },
+        "kind": "community-member-removed",
+        "recipient": "9f3b3f085e23af6c89dbc432",
+        "readAtIso": null,
+        "payload": {
+          "workspaceGroupName": "QA Admin Transfer",
+          "entityType": "community",
+          "url": "/game?communityGroupId=manual-qa-community-admin",
+          "body": "QA Admin Transfer",
+          "memberUserId": "178e8d0cbe164fa3fede5884",
+          "title": "QA Admin Transfer",
+          "badge": "assets/logo/heart.webp",
+          "productLogoUrl": "assets/logo/heart.webp",
+          "entityId": "manual-qa-community-admin",
+          "productName": "MyScoutee",
+          "workspaceGroupId": "manual-qa-community-admin",
+          "tag": "community-member-removed:manual-qa-community-admin",
+          "communityGroupId": "manual-qa-community-admin",
+          "senderUserId": "178e8d0cbe164fa3fede5884",
+          "icon": "/media/public?key=images/demo-events/event-001/v1/large.webp",
+          "communityAttention": "members",
+          "recipientScope": "members",
+          "notification_message_key": "notification.kind.community-member-removed.message",
+          "notification_title_key": "notification.kind.community-member-removed.title",
+          "type": "community-member-removed",
+          "productBrandingRevision": "5"
+        }
+      },
+      {
+        "id": {
+          "$oid": "6ab973fd2d0874c32bf37a8d"
+        },
+        "kind": "community-member-removed",
+        "recipient": "af0436815ab38f4864dd1e24",
+        "readAtIso": null,
+        "payload": {
+          "workspaceGroupName": "QA Admin Transfer",
+          "entityType": "community",
+          "url": "/game?communityGroupId=manual-qa-community-admin",
+          "body": "QA Admin Transfer",
+          "memberUserId": "178e8d0cbe164fa3fede5884",
+          "title": "QA Admin Transfer",
+          "badge": "assets/logo/heart.webp",
+          "productLogoUrl": "assets/logo/heart.webp",
+          "entityId": "manual-qa-community-admin",
+          "productName": "MyScoutee",
+          "workspaceGroupId": "manual-qa-community-admin",
+          "tag": "community-member-removed:manual-qa-community-admin",
+          "communityGroupId": "manual-qa-community-admin",
+          "senderUserId": "178e8d0cbe164fa3fede5884",
+          "icon": "/media/public?key=images/demo-events/event-001/v1/large.webp",
+          "communityAttention": "members",
+          "recipientScope": "members",
+          "notification_message_key": "notification.kind.community-member-removed.message",
+          "notification_title_key": "notification.kind.community-member-removed.title",
+          "type": "community-member-removed",
+          "productBrandingRevision": "5"
+        }
+      }
+    ]
+  },
+  "adminRestoreRetry": {
+    "checkpointId": "GROUP-LIFECYCLE-001",
+    "command": "inspect-admin-authority",
+    "savepoint": null,
+    "group": {
+      "_id": "manual-qa-community-admin",
+      "ownerUserId": "af0436815ab38f4864dd1e24",
+      "name": "QA Admin Transfer",
+      "lifecycleStatus": "active",
+      "takeoverCandidates": []
+    },
+    "counters": [
+      {
+        "_id": {
+          "$oid": "178e8d0cbe164fa3fede5884"
+        },
+        "activities": {
+          "notifications": 8
+        },
+        "userId": "178e8d0cbe164fa3fede5884"
+      },
+      {
+        "_id": {
+          "$oid": "1b1c70be2349b3359a8f6f94"
+        },
+        "userId": "1b1c70be2349b3359a8f6f94",
+        "activities": {
+          "notifications": 11
+        }
+      },
+      {
+        "_id": {
+          "$oid": "9f3b3f085e23af6c89dbc432"
+        },
+        "userId": "9f3b3f085e23af6c89dbc432",
+        "activities": {
+          "notifications": 38
+        }
+      },
+      {
+        "_id": {
+          "$oid": "af0436815ab38f4864dd1e24"
+        },
+        "userId": "af0436815ab38f4864dd1e24",
+        "activities": {
+          "notifications": 16
+        }
+      },
+      {
+        "_id": {
+          "$oid": "eb1ca0b761885bb0763e2929"
+        },
+        "activities": {
+          "notifications": 12
+        },
+        "userId": "eb1ca0b761885bb0763e2929"
+      }
+    ],
+    "members": [
+      {
+        "userId": "178e8d0cbe164fa3fede5884",
+        "role": "Member",
+        "status": "deleted",
+        "grantedBy": null,
+        "updates": 0
+      },
+      {
+        "userId": "9f3b3f085e23af6c89dbc432",
+        "role": "Admin",
+        "status": "deleted",
+        "grantedBy": null,
+        "updates": 3
+      },
+      {
+        "userId": "af0436815ab38f4864dd1e24",
+        "role": "Admin",
+        "status": "accepted",
+        "grantedBy": null,
+        "updates": 2
+      }
+    ],
+    "notifications": [
+      {
+        "id": {
+          "$oid": "6ab974b52d0874c32bf37aa0"
+        },
+        "kind": "community-member-removed",
+        "recipient": "9f3b3f085e23af6c89dbc432",
+        "readAtIso": null,
+        "payload": {
+          "workspaceGroupName": "QA Admin Transfer",
+          "entityType": "community",
+          "url": "/game?communityGroupId=manual-qa-community-admin",
+          "body": "QA Admin Transfer",
+          "memberUserId": "178e8d0cbe164fa3fede5884",
+          "title": "QA Admin Transfer",
+          "badge": "assets/logo/heart.webp",
+          "productLogoUrl": "assets/logo/heart.webp",
+          "entityId": "manual-qa-community-admin",
+          "productName": "MyScoutee",
+          "workspaceGroupId": "manual-qa-community-admin",
+          "tag": "community-member-removed:manual-qa-community-admin",
+          "communityGroupId": "manual-qa-community-admin",
+          "senderUserId": "178e8d0cbe164fa3fede5884",
+          "icon": "/media/public?key=images/demo-events/event-001/v1/large.webp",
+          "communityAttention": "members",
+          "recipientScope": "members",
+          "notification_message_key": "notification.kind.community-member-removed.message",
+          "notification_title_key": "notification.kind.community-member-removed.title",
+          "type": "community-member-removed",
+          "productBrandingRevision": "5"
+        }
+      },
+      {
+        "id": {
+          "$oid": "6ab974962d0874c32bf37a9d"
+        },
+        "kind": "community-member-joined",
+        "recipient": "9f3b3f085e23af6c89dbc432",
+        "readAtIso": null,
+        "payload": {
+          "workspaceGroupName": "QA Admin Transfer",
+          "entityType": "community",
+          "url": "/game?communityGroupId=manual-qa-community-admin",
+          "body": "QA Admin Transfer",
+          "memberUserId": "178e8d0cbe164fa3fede5884",
+          "title": "QA Admin Transfer",
+          "badge": "assets/logo/heart.webp",
+          "productLogoUrl": "assets/logo/heart.webp",
+          "entityId": "manual-qa-community-admin",
+          "productName": "MyScoutee",
+          "workspaceGroupId": "manual-qa-community-admin",
+          "tag": "community-member-joined:manual-qa-community-admin",
+          "communityGroupId": "manual-qa-community-admin",
+          "senderUserId": "178e8d0cbe164fa3fede5884",
+          "icon": "/media/public?key=images/demo-events/event-001/v1/large.webp",
+          "communityAttention": "members",
+          "recipientScope": "members",
+          "notification_message_key": "notification.kind.community-member-joined.message",
+          "notification_title_key": "notification.kind.community-member-joined.title",
+          "type": "community-member-joined",
+          "productBrandingRevision": "5"
+        }
+      },
+      {
+        "id": {
+          "$oid": "6ab974032d0874c32bf37a91"
+        },
+        "kind": "community-member-removed",
+        "recipient": "af0436815ab38f4864dd1e24",
+        "readAtIso": null,
+        "payload": {
+          "workspaceGroupName": "QA Admin Transfer",
+          "entityType": "community",
+          "url": "/game?communityGroupId=manual-qa-community-admin",
+          "body": "QA Admin Transfer",
+          "memberUserId": "9f3b3f085e23af6c89dbc432",
+          "title": "QA Admin Transfer",
+          "badge": "assets/logo/heart.webp",
+          "productLogoUrl": "assets/logo/heart.webp",
+          "entityId": "manual-qa-community-admin",
+          "productName": "MyScoutee",
+          "workspaceGroupId": "manual-qa-community-admin",
+          "tag": "community-member-removed:manual-qa-community-admin",
+          "communityGroupId": "manual-qa-community-admin",
+          "senderUserId": "9f3b3f085e23af6c89dbc432",
+          "icon": "/media/public?key=images/demo-events/event-001/v1/large.webp",
+          "communityAttention": "members",
+          "recipientScope": "members",
+          "notification_message_key": "notification.kind.community-member-removed.message",
+          "notification_title_key": "notification.kind.community-member-removed.title",
+          "type": "community-member-removed",
+          "productBrandingRevision": "5"
+        }
+      },
+      {
+        "id": {
+          "$oid": "6ab973fd2d0874c32bf37a8c"
+        },
+        "kind": "community-member-removed",
+        "recipient": "9f3b3f085e23af6c89dbc432",
+        "readAtIso": null,
+        "payload": {
+          "workspaceGroupName": "QA Admin Transfer",
+          "entityType": "community",
+          "url": "/game?communityGroupId=manual-qa-community-admin",
+          "body": "QA Admin Transfer",
+          "memberUserId": "178e8d0cbe164fa3fede5884",
+          "title": "QA Admin Transfer",
+          "badge": "assets/logo/heart.webp",
+          "productLogoUrl": "assets/logo/heart.webp",
+          "entityId": "manual-qa-community-admin",
+          "productName": "MyScoutee",
+          "workspaceGroupId": "manual-qa-community-admin",
+          "tag": "community-member-removed:manual-qa-community-admin",
+          "communityGroupId": "manual-qa-community-admin",
+          "senderUserId": "178e8d0cbe164fa3fede5884",
+          "icon": "/media/public?key=images/demo-events/event-001/v1/large.webp",
+          "communityAttention": "members",
+          "recipientScope": "members",
+          "notification_message_key": "notification.kind.community-member-removed.message",
+          "notification_title_key": "notification.kind.community-member-removed.title",
+          "type": "community-member-removed",
+          "productBrandingRevision": "5"
+        }
+      },
+      {
+        "id": {
+          "$oid": "6ab973fd2d0874c32bf37a8d"
+        },
+        "kind": "community-member-removed",
+        "recipient": "af0436815ab38f4864dd1e24",
+        "readAtIso": null,
+        "payload": {
+          "workspaceGroupName": "QA Admin Transfer",
+          "entityType": "community",
+          "url": "/game?communityGroupId=manual-qa-community-admin",
+          "body": "QA Admin Transfer",
+          "memberUserId": "178e8d0cbe164fa3fede5884",
+          "title": "QA Admin Transfer",
+          "badge": "assets/logo/heart.webp",
+          "productLogoUrl": "assets/logo/heart.webp",
+          "entityId": "manual-qa-community-admin",
+          "productName": "MyScoutee",
+          "workspaceGroupId": "manual-qa-community-admin",
+          "tag": "community-member-removed:manual-qa-community-admin",
+          "communityGroupId": "manual-qa-community-admin",
+          "senderUserId": "178e8d0cbe164fa3fede5884",
+          "icon": "/media/public?key=images/demo-events/event-001/v1/large.webp",
+          "communityAttention": "members",
+          "recipientScope": "members",
+          "notification_message_key": "notification.kind.community-member-removed.message",
+          "notification_title_key": "notification.kind.community-member-removed.title",
+          "type": "community-member-removed",
+          "productBrandingRevision": "5"
+        }
+      }
+    ]
+  },
+  "memberReturnAfterGroupRestore": {
+    "checkpointId": "GROUP-LIFECYCLE-001",
+    "command": "inspect-admin-authority",
+    "savepoint": null,
+    "group": {
+      "_id": "manual-qa-community-admin",
+      "ownerUserId": "9f3b3f085e23af6c89dbc432",
+      "name": "QA Admin Transfer",
+      "lifecycleStatus": "active",
+      "takeoverCandidates": []
+    },
+    "counters": [
+      {
+        "_id": {
+          "$oid": "178e8d0cbe164fa3fede5884"
+        },
+        "activities": {
+          "notifications": 8
+        },
+        "userId": "178e8d0cbe164fa3fede5884"
+      },
+      {
+        "_id": {
+          "$oid": "1b1c70be2349b3359a8f6f94"
+        },
+        "userId": "1b1c70be2349b3359a8f6f94",
+        "activities": {
+          "notifications": 11
+        }
+      },
+      {
+        "_id": {
+          "$oid": "9f3b3f085e23af6c89dbc432"
+        },
+        "userId": "9f3b3f085e23af6c89dbc432",
+        "activities": {
+          "notifications": 37
+        }
+      },
+      {
+        "_id": {
+          "$oid": "af0436815ab38f4864dd1e24"
+        },
+        "userId": "af0436815ab38f4864dd1e24",
+        "activities": {
+          "notifications": 15
+        }
+      },
+      {
+        "_id": {
+          "$oid": "eb1ca0b761885bb0763e2929"
+        },
+        "activities": {
+          "notifications": 12
+        },
+        "userId": "eb1ca0b761885bb0763e2929"
+      }
+    ],
+    "members": [
+      {
+        "userId": "178e8d0cbe164fa3fede5884",
+        "role": "Member",
+        "status": "accepted",
+        "grantedBy": null,
+        "updates": 0
+      },
+      {
+        "userId": "9f3b3f085e23af6c89dbc432",
+        "role": "Admin",
+        "status": "accepted",
+        "grantedBy": null,
+        "updates": 2
+      },
+      {
+        "userId": "af0436815ab38f4864dd1e24",
+        "role": "Admin",
+        "status": "deleted",
+        "grantedBy": null,
+        "updates": 2
+      }
+    ],
+    "notifications": [
+      {
+        "id": {
+          "$oid": "6ab974962d0874c32bf37a9d"
+        },
+        "kind": "community-member-joined",
+        "recipient": "9f3b3f085e23af6c89dbc432",
+        "readAtIso": null,
+        "payload": {
+          "workspaceGroupName": "QA Admin Transfer",
+          "entityType": "community",
+          "url": "/game?communityGroupId=manual-qa-community-admin",
+          "body": "QA Admin Transfer",
+          "memberUserId": "178e8d0cbe164fa3fede5884",
+          "title": "QA Admin Transfer",
+          "badge": "assets/logo/heart.webp",
+          "productLogoUrl": "assets/logo/heart.webp",
+          "entityId": "manual-qa-community-admin",
+          "productName": "MyScoutee",
+          "workspaceGroupId": "manual-qa-community-admin",
+          "tag": "community-member-joined:manual-qa-community-admin",
+          "communityGroupId": "manual-qa-community-admin",
+          "senderUserId": "178e8d0cbe164fa3fede5884",
+          "icon": "/media/public?key=images/demo-events/event-001/v1/large.webp",
+          "communityAttention": "members",
+          "recipientScope": "members",
+          "notification_message_key": "notification.kind.community-member-joined.message",
+          "notification_title_key": "notification.kind.community-member-joined.title",
+          "type": "community-member-joined",
+          "productBrandingRevision": "5"
+        }
+      },
+      {
+        "id": {
+          "$oid": "6ab974032d0874c32bf37a91"
+        },
+        "kind": "community-member-removed",
+        "recipient": "af0436815ab38f4864dd1e24",
+        "readAtIso": null,
+        "payload": {
+          "workspaceGroupName": "QA Admin Transfer",
+          "entityType": "community",
+          "url": "/game?communityGroupId=manual-qa-community-admin",
+          "body": "QA Admin Transfer",
+          "memberUserId": "9f3b3f085e23af6c89dbc432",
+          "title": "QA Admin Transfer",
+          "badge": "assets/logo/heart.webp",
+          "productLogoUrl": "assets/logo/heart.webp",
+          "entityId": "manual-qa-community-admin",
+          "productName": "MyScoutee",
+          "workspaceGroupId": "manual-qa-community-admin",
+          "tag": "community-member-removed:manual-qa-community-admin",
+          "communityGroupId": "manual-qa-community-admin",
+          "senderUserId": "9f3b3f085e23af6c89dbc432",
+          "icon": "/media/public?key=images/demo-events/event-001/v1/large.webp",
+          "communityAttention": "members",
+          "recipientScope": "members",
+          "notification_message_key": "notification.kind.community-member-removed.message",
+          "notification_title_key": "notification.kind.community-member-removed.title",
+          "type": "community-member-removed",
+          "productBrandingRevision": "5"
+        }
+      },
+      {
+        "id": {
+          "$oid": "6ab973fd2d0874c32bf37a8c"
+        },
+        "kind": "community-member-removed",
+        "recipient": "9f3b3f085e23af6c89dbc432",
+        "readAtIso": null,
+        "payload": {
+          "workspaceGroupName": "QA Admin Transfer",
+          "entityType": "community",
+          "url": "/game?communityGroupId=manual-qa-community-admin",
+          "body": "QA Admin Transfer",
+          "memberUserId": "178e8d0cbe164fa3fede5884",
+          "title": "QA Admin Transfer",
+          "badge": "assets/logo/heart.webp",
+          "productLogoUrl": "assets/logo/heart.webp",
+          "entityId": "manual-qa-community-admin",
+          "productName": "MyScoutee",
+          "workspaceGroupId": "manual-qa-community-admin",
+          "tag": "community-member-removed:manual-qa-community-admin",
+          "communityGroupId": "manual-qa-community-admin",
+          "senderUserId": "178e8d0cbe164fa3fede5884",
+          "icon": "/media/public?key=images/demo-events/event-001/v1/large.webp",
+          "communityAttention": "members",
+          "recipientScope": "members",
+          "notification_message_key": "notification.kind.community-member-removed.message",
+          "notification_title_key": "notification.kind.community-member-removed.title",
+          "type": "community-member-removed",
+          "productBrandingRevision": "5"
+        }
+      },
+      {
+        "id": {
+          "$oid": "6ab973fd2d0874c32bf37a8d"
+        },
+        "kind": "community-member-removed",
+        "recipient": "af0436815ab38f4864dd1e24",
+        "readAtIso": null,
+        "payload": {
+          "workspaceGroupName": "QA Admin Transfer",
+          "entityType": "community",
+          "url": "/game?communityGroupId=manual-qa-community-admin",
+          "body": "QA Admin Transfer",
+          "memberUserId": "178e8d0cbe164fa3fede5884",
+          "title": "QA Admin Transfer",
+          "badge": "assets/logo/heart.webp",
+          "productLogoUrl": "assets/logo/heart.webp",
+          "entityId": "manual-qa-community-admin",
+          "productName": "MyScoutee",
+          "workspaceGroupId": "manual-qa-community-admin",
+          "tag": "community-member-removed:manual-qa-community-admin",
+          "communityGroupId": "manual-qa-community-admin",
+          "senderUserId": "178e8d0cbe164fa3fede5884",
+          "icon": "/media/public?key=images/demo-events/event-001/v1/large.webp",
+          "communityAttention": "members",
+          "recipientScope": "members",
+          "notification_message_key": "notification.kind.community-member-removed.message",
+          "notification_title_key": "notification.kind.community-member-removed.title",
+          "type": "community-member-removed",
+          "productBrandingRevision": "5"
+        }
+      }
+    ]
+  },
+  "deletedBadgeRight": {
+    "card": {
+      "x": 6.390625,
+      "y": 145.0625,
+      "right": 353.609375,
+      "width": 347.21875
+    },
+    "badge": {
+      "x": 289.8125,
+      "y": 242.046875,
+      "right": 330.234375,
+      "width": 40.421875
+    },
+    "ancestors": "ui-info-card__overlay-action asset-occupancy-badge asset-occupancy-badge-static ui-info-card__overlay-action--bottom-end ui-info-card__overlay-action--badge ui-info-card__overlay-action--tone-danger"
+  },
+  "correctedRuleCleanup": {
+    "checkpointId": "GROUP-LIFECYCLE-001",
+    "adminLifecycleRestored": true
+  },
+  "correctedRuleVerification": "Corrected rule replay: three actors, two Admins. Both Admins have Deleted/Restore in Trash; Lina Member Deleted with no menu. Direct Lina restore404 and join404. Earlier-departed Eszter API restore200 reactivates group as owner/Admin; Lina normal UI membership Restore then succeeds as Member. Subsequent branch: Lina/Eszter leave, older-departed Alex UI cancel/confirm Restore reactivates group with only Alex accepted/Admin. Duplicate restore200 leaves memberships and five group notifications identical. Reload survives. Other departed people remain deleted. Shared bottom-end Deleted badge verified in DOM; common 28px menu button/16px X centered. No custom badge CSS.",
+  "verification": "Existing backend watcher BUILD SUCCESSFUL19:49:43Z/start19:49:47Z; existing frontend watcher latest19:54:38Z. Local service25+store2+popup6+converter11 tests44 PASS; updated converter12 PASS separately (45 distinct current tests total). i18n seed audit PASS; watched message/bundle imports completed. New Java mapper test added, not separately executed. Member join/restore negative HTTP and persisted positive restoration exercised. Local full browser journey still NOT RUN."
 }

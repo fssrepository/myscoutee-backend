@@ -173,7 +173,7 @@ their own untouched pending ledgers; these figures do not claim campaign complet
 | 23 | Profile scope and asset payment history | NOT RUN | NOT RUN | Execute in order; no partial credit. |
 | 24 | Account contacts and event-linked assets | NOT RUN | NOT RUN | Execute in order; no partial credit. |
 | 25 | Global notifications and scoped API keys | NOT RUN | NOT RUN | Execute in order; no partial credit. |
-| 26 | Group administrators, responsibility transfer and last-member deletion | NOT RUN | NOT RUN | Retained earlier branch observations; complete here when reached. |
+| 26 | Group administrators, responsibility transfer and last-member deletion | PASS | NOT RUN | Own grants/handover/return/deletion; corrected former-Admin group recovery and member denial; exact cleanup. |
 | 27 | Group editor and roster presentation across roles | NOT RUN | NOT RUN | Execute in order; no partial credit. |
 | 28 | Group detail loading and adapter request boundaries | NOT RUN | NOT RUN | Execute in order; no partial credit. |
 | 29 | Cross-surface distance and mutation ordering | NOT RUN | NOT RUN | Execute in order; no partial credit. |
@@ -1328,3 +1328,6 @@ User clarification 2026-09-27: testcases are independent closed execution units.
 
 
 2026-09-27 21:37: Block26.1–4 own HTTP execution: grants and revocations preserve provenance; Admin-first owner handover, ordinary-member fallback, sole-Admin step-down verified. Trash Restore returns former creator as Member; normal invitation return, last-member deletion and remaining notification/UI checks continue. Same-actor takeover retry200 is idempotent, competing403; pending fallback403/outsider404. See block26-admin-authority-20260927.json. Block26 remains IN PROGRESS.
+
+
+2026-09-27 22:00: Block26 HTTP PASS/CLOSED. Own grants/revocations, Admin-first and ordinary-member fallback, sole-admin step-down, normal invite and Trash return, final-member deletion and user-corrected recovery verified. Corrected rule: Deleted card remains in Trash; any voluntarily departed Admin can restore group/responsibility, ordinary member has no Restore and direct restore/join404 until admin recovery; then Member Restore succeeds. Earlier departed Admin cancel/confirm and idempotent retry proven. Exact notification read/avatar173→172/group2→1 survives reload. Shared Deleted badge bottom-right and common X16px centered. Local25+store2+popup6+converter12 focused tests PASS (45 distinct), full Local browser NOT RUN; Java mapper spec added/not run separately. Existing dev watchers compiled, exact fixture cleanup PASS. HTTP23/48 (47.92%), Lifecycle23/29 (1–13,17–26);27 next. See block26-admin-authority-20260927.json.
