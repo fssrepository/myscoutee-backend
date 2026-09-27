@@ -1265,3 +1265,19 @@ User accepted the completed HTTP Help/native anonymous MCP scope and requested a
 - Evidence: [block18 observations](GROUP-LIFECYCLE-001-block18-20260927.json). Required-popup close predicate remains unchanged; the shared refusal branch is exercised by the busy dialog. Installed PWA/WebView and Local mode are not claimed.
 - Closed the owned desktop QA window and phone localhost tab; normal phone logout completed and owned ADB tunnels removed. User-inspected ENTRY window untouched; no fixture reset or ad-hoc data patch.
 - **HTTP15/48 closed (31.25%); Lifecycle15/29 (1–13,17,18). STOP before19 at the user's explicit request.** Blocks14–16 retain their prior partial status.
+
+
+### HTTP block19 in progress — 2026-09-27 continuation
+
+- User resumed automated QA from19 and requested only necessary windows. Live machine inspection found no retained ENTRY browser; the older pointer was stale. Existing Mongo/backend containers were restarted without duplicating the stack, retained Group baseline checked, and the versioned launcher opened one anonymous ENTRY-BLOCK19 window.
+- Actual Login/demo selector: valid Alex passed admission/session/profile loading, denied browser location and unsupported Paris point without losing the accepted point or opening Setup. Normal logout/reselection and reload retained the intended identity.
+- Snapshot-owned Zoe missing/invalid coordinate controls passed selector badge, Setup before session, rejected point, cancellation and accepted Budapest retry. First profile-ext persisted the pending point; successful response cleared the pending value. Local and Firebase are not claimed.
+- User screenshot exposed a realtime race after sequential sign-ins without reloading: profile-ext saved Budapest, then an older long-poll response cleared the active profile location. Before-fix timeline shows the false Location required panel for at least12.4s. Fixed the existing realtime location application with a captured location sync token. Same-sequence retest received an actual null location snapshot after profile-ext and retained the accepted point; no panel in121 samples over12.4s. Reload retained the same Zoe session. Existing frontend-sync build/sync PASS15:24:34Z; regression spec added, not separately executed.
+- Evidence: [block19 entry observations](GROUP-LIFECYCLE-001-block19-entry-20260927.json). Zoe snapshot is retained for scoped cleanup. Current next check is19.1/4 failed profile load/retry; invitation return, remaining admission controls, Firebase and Local remain open. **HTTP15/48 and Lifecycle15/29 closed; block19 is not closed.**
+
+
+### Block19.1/4 failure/retry and requested load-error panel
+
+- Failed the actual first profile-ext request before it reached the server. The accepted pending point remained in scoped localStorage, Mongo remained without coordinates and avatar load state was error. Reload resent the same latitude/longitude with no location header, retained the same session and actor, saved the point and cleared pending only after200.
+- User requested a centered message for the otherwise blank error screen. Added the existing home panel for profile-load error/timeout, with EN/HU title and reload instruction. Real transport-failure retest showed the panel centered to<0.01px in its content area, with no horizontal overflow at360px and1100px. Successful reload removed it and persisted pending coordinates. frontend-sync PASS15:48:16Z; i18n source/three-seed audit PASS. No separate build/test process.
+- Zoe restored exactly from snapshot after normal logout. One managed window on /entry. Next19.1/5 invitation/Setup return; block19 remains open and counts unchanged.

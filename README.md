@@ -54,7 +54,7 @@ for adding signed local packages and simulating interrupted downloads.
 
 ## QA status
 
-Group lifecycle QA is **IN PROGRESS**: HTTP **15/29** lifecycle blocks closed (1–13, the agreed scope of 17, and 18), **15/48** across the three Group journeys; **stopped before block 19 at the user’s request**, with partial checks from blocks 14–16 retained. Local remains NOT RUN; the other two group journeys remain **NOT RUN**: [group lifecycle](guides/qa/checklists/group/GROUP-LIFECYCLE-001.md),
+Group lifecycle QA is **IN PROGRESS**: HTTP **15/29** lifecycle blocks closed (1–13, the agreed scope of 17, and 18), **15/48** across the three Group journeys; **block 19 in progress after the user’s continuation**, with partial checks from blocks 14–16 retained. Local remains NOT RUN; the other two group journeys remain **NOT RUN**: [group lifecycle](guides/qa/checklists/group/GROUP-LIFECYCLE-001.md),
 [workspace isolation samples](guides/qa/checklists/group/GROUP-ISOLATION-001.md)
 and [shared participant-link API](guides/qa/checklists/integration/INTEGRATION-API-GROUP-001.md).
 See the [current matrix](guides/qa/matrices/ADMIN_DYNAMIC_SURFACES_QA_MATRIX.xlsx) for case totals and execution states. Group follows Asset in

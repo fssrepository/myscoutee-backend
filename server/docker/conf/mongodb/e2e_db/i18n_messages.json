@@ -22332,6 +22332,18 @@
     "value": "Location required"
   },
   {
+    "_id": "i18n-message-en-game-profile-load-failed-title",
+    "key": "game.profile.load.failed.title",
+    "lang": "en",
+    "value": "Profile failed to load"
+  },
+  {
+    "_id": "i18n-message-en-game-profile-load-failed-description",
+    "key": "game.profile.load.failed.description",
+    "lang": "en",
+    "value": "Reload the page to try again."
+  },
+  {
     "_id": "i18n-message-en-game-location-required-description",
     "key": "game.location.required.description",
     "lang": "en",
@@ -46414,6 +46426,18 @@
     "key": "game.location.required.title",
     "lang": "hu",
     "value": "Hiányzó helyadat"
+  },
+  {
+    "_id": "i18n-message-hu-game-profile-load-failed-title",
+    "key": "game.profile.load.failed.title",
+    "lang": "hu",
+    "value": "Nem sikerült betölteni a profilodat"
+  },
+  {
+    "_id": "i18n-message-hu-game-profile-load-failed-description",
+    "key": "game.profile.load.failed.description",
+    "lang": "hu",
+    "value": "Töltsd újra az oldalt az újrapróbáláshoz."
   },
   {
     "_id": "i18n-message-hu-game-location-required-description",

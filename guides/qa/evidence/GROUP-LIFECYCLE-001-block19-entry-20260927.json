@@ -1,0 +1,525 @@
+{
+  "checkpoint": "GROUP-LIFECYCLE-001",
+  "block": 19,
+  "date": "2026-09-27",
+  "status": "IN PROGRESS",
+  "mode": "HTTP",
+  "browser": "GROUP-LIFECYCLE-001-ENTRY-BLOCK19; one anonymous versioned-launcher window; actual Login/demo selector actions",
+  "passed": [
+    "Valid Alex: eligibility before one session/login POST, initial profile load and game",
+    "Saved Alex point retained with denied geolocation and unsupported Paris browser point; no automatic Setup or logout",
+    "Isolated Zoe missing coordinates: one Location needed badge, Setup before session, rejected Paris point, cancel signed out, accepted Budapest retry",
+    "Zoe invalid 999/999 control: Setup and accepted retry; point persisted by first profile-ext request, pending cleared after success",
+    "Reload retained Zoe session fingerprint dfaaa552, same account and persisted Budapest point",
+    "19.1/4 failed first profile request retained pending coordinates; same-session reload resent them, received200, cleared pending and persisted server point"
+  ],
+  "locationRace": {
+    "before": {
+      "events": [
+        {
+          "t": 140,
+          "path": "/api/auth/session/login",
+          "status": 200
+        },
+        {
+          "t": 313,
+          "path": "/api/auth/me",
+          "status": 200
+        },
+        {
+          "t": 410,
+          "path": "/api/auth/me",
+          "status": 200
+        },
+        {
+          "t": 532,
+          "path": "/api/auth/me/profile-ext",
+          "status": 200
+        },
+        {
+          "t": 547,
+          "path": "/api/auth/me/realtime/long-poll",
+          "status": 200
+        }
+      ],
+      "transitions": [
+        {
+          "t": 438,
+          "path": "/game",
+          "session": true,
+          "pending": true,
+          "profilePoint": null,
+          "extPoint": null,
+          "missing": true,
+          "memberActions": false,
+          "load": "loading",
+          "banner": null
+        },
+        {
+          "t": 556,
+          "path": "/game",
+          "session": true,
+          "pending": false,
+          "profilePoint": null,
+          "extPoint": {
+            "latitude": 47.4979,
+            "longitude": 19.0402
+          },
+          "missing": true,
+          "memberActions": false,
+          "load": "success",
+          "banner": null
+        },
+        {
+          "t": 661,
+          "path": "/game",
+          "session": true,
+          "pending": false,
+          "profilePoint": null,
+          "extPoint": {
+            "latitude": 47.4979,
+            "longitude": 19.0402
+          },
+          "missing": true,
+          "memberActions": false,
+          "load": "success",
+          "banner": "location_off\nLocation required\n\nTo see profiles, open Settings → Install, enable location access, then press Update."
+        }
+      ],
+      "last": {
+        "t": 12438,
+        "path": "/game",
+        "session": true,
+        "pending": false,
+        "profilePoint": null,
+        "extPoint": {
+          "latitude": 47.4979,
+          "longitude": 19.0402
+        },
+        "missing": true,
+        "memberActions": false,
+        "load": "success",
+        "banner": "location_off\nLocation required\n\nTo see profiles, open Settings → Install, enable location access, then press Update."
+      },
+      "sampleCount": 121
+    },
+    "after": {
+      "events": [
+        {
+          "t": 84,
+          "path": "/api/auth/session/login",
+          "status": 200
+        },
+        {
+          "t": 178,
+          "path": "/api/auth/me",
+          "status": 200
+        },
+        {
+          "t": 298,
+          "path": "/api/auth/me",
+          "status": 200
+        },
+        {
+          "t": 368,
+          "path": "/api/auth/me/profile-ext",
+          "status": 200
+        },
+        {
+          "t": 387,
+          "path": "/api/auth/me/realtime/long-poll",
+          "status": 200
+        }
+      ],
+      "realtimeBodies": [
+        {
+          "t": 400,
+          "userId": "b0971e779dbdb71f9327eabb",
+          "locationCoordinates": null,
+          "serverTsIso": "2026-09-27T15:31:31.828275627Z"
+        }
+      ],
+      "transitions": [
+        {
+          "t": 337,
+          "path": "/game",
+          "session": true,
+          "pending": true,
+          "profilePoint": null,
+          "extPoint": null,
+          "missing": true,
+          "memberActions": false,
+          "load": "loading",
+          "banner": null
+        },
+        {
+          "t": 441,
+          "path": "/game",
+          "session": true,
+          "pending": false,
+          "profilePoint": {
+            "latitude": 47.4979,
+            "longitude": 19.0402
+          },
+          "extPoint": {
+            "latitude": 47.4979,
+            "longitude": 19.0402
+          },
+          "missing": false,
+          "memberActions": true,
+          "load": "success",
+          "banner": null
+        }
+      ],
+      "last": {
+        "t": 12413,
+        "path": "/game",
+        "session": true,
+        "pending": false,
+        "profilePoint": {
+          "latitude": 47.4979,
+          "longitude": 19.0402
+        },
+        "extPoint": {
+          "latitude": 47.4979,
+          "longitude": 19.0402
+        },
+        "missing": false,
+        "memberActions": true,
+        "load": "success",
+        "banner": null
+      },
+      "sampleCount": 121
+    },
+    "cause": "An in-flight realtime snapshot returned locationCoordinates:null after profile-ext had saved valid coordinates. It overwrote the active profile until a later poll.",
+    "fix": "Capture current location with the existing realtime synchronization tokens; ignore location fields from a poll when the profile coordinates changed during that request.",
+    "verification": "Same browser login/logout/login sequence. After fix the actual realtime payload still contained null; active profile kept Budapest and no banner appeared in 121 samples over 12.4 seconds.",
+    "frontendWatcher": "Build completed 2026-09-27T15:24:34.019Z; synced at17:24:36 local. Regression spec added; no separate test/build process run."
+  },
+  "invalidControl": {
+    "events": [
+      {
+        "t": 100,
+        "path": "/api/auth/session/login",
+        "status": 200
+      },
+      {
+        "t": 225,
+        "path": "/api/auth/me",
+        "status": 200
+      },
+      {
+        "t": 338,
+        "path": "/api/auth/me",
+        "status": 200
+      },
+      {
+        "t": 470,
+        "path": "/api/auth/me/realtime/long-poll",
+        "status": 200
+      },
+      {
+        "t": 515,
+        "path": "/api/auth/me/profile-ext",
+        "status": 200
+      }
+    ],
+    "transitions": [
+      {
+        "t": 413,
+        "path": "/game",
+        "session": true,
+        "pending": true,
+        "profilePoint": {
+          "latitude": 999,
+          "longitude": 999
+        },
+        "extPoint": null,
+        "missing": false,
+        "memberActions": true,
+        "load": "loading",
+        "banner": null
+      },
+      {
+        "t": 544,
+        "path": "/game",
+        "session": true,
+        "pending": false,
+        "profilePoint": {
+          "latitude": 47.4979,
+          "longitude": 19.0402
+        },
+        "extPoint": {
+          "latitude": 47.4979,
+          "longitude": 19.0402
+        },
+        "missing": false,
+        "memberActions": true,
+        "load": "success",
+        "banner": null
+      }
+    ],
+    "last": {
+      "t": 12519,
+      "path": "/game",
+      "session": true,
+      "pending": false,
+      "profilePoint": {
+        "latitude": 47.4979,
+        "longitude": 19.0402
+      },
+      "extPoint": {
+        "latitude": 47.4979,
+        "longitude": 19.0402
+      },
+      "missing": false,
+      "memberActions": true,
+      "load": "success",
+      "banner": null
+    },
+    "sampleCount": 121
+  },
+  "fixture": {
+    "actor": "Zoe Turner",
+    "userId": "b0971e779dbdb71f9327eabb",
+    "snapshotRetained": false,
+    "currentPoint": {
+      "latitude": 47.5147,
+      "longitude": 19.0354
+    },
+    "restoreCommand": "restore-location-control community-group GROUP-LIFECYCLE-001",
+    "restored": true
+  },
+  "remaining": [
+    "19.1/5 invitation cancel/retry in API Group block3",
+    "19.2 all selectable seed points and remaining pending-coordinate/account-isolation controls",
+    "Firebase fresh/existing real sign-in",
+    "Local mode separate run"
+  ],
+  "counts": {
+    "httpClosed": 15,
+    "httpTotal": 48,
+    "lifecycleClosed": 15,
+    "lifecycleTotal": 29
+  },
+  "failedProfileRetry": {
+    "before": {
+      "path": "/game",
+      "activeUser": "b0971e779dbdb71f9327eabb",
+      "sessionHash": "44384784",
+      "pending": [
+        "myscoutee.http.location.v1:b0971e779dbdb71f9327eabb:pending-login"
+      ],
+      "point": null,
+      "load": "error",
+      "banner": null
+    },
+    "requests": [
+      {
+        "method": "GET",
+        "path": "/api/auth/me",
+        "latitude": null,
+        "longitude": null,
+        "locationHeaders": []
+      },
+      {
+        "method": "GET",
+        "path": "/api/auth/me/profile-ext",
+        "latitude": "47.4979",
+        "longitude": "19.0402",
+        "locationHeaders": []
+      },
+      {
+        "method": "POST",
+        "path": "/api/auth/me/realtime/long-poll",
+        "latitude": null,
+        "longitude": null,
+        "locationHeaders": []
+      }
+    ],
+    "responses": [
+      {
+        "path": "/api/auth/me",
+        "status": 200
+      },
+      {
+        "path": "/api/auth/me/profile-ext",
+        "status": 200
+      }
+    ],
+    "after": {
+      "path": "/game",
+      "activeUser": "b0971e779dbdb71f9327eabb",
+      "sessionHash": "44384784",
+      "pending": [],
+      "point": {
+        "latitude": 47.4979,
+        "longitude": 19.0402
+      },
+      "load": "success",
+      "banner": null
+    },
+    "failure": "Native CDP transport failure before first profile-ext reached server; pending Budapest point retained and load state error. Mongo still had no coordinates.",
+    "serverAfterRetry": {
+      "latitude": 47.4979,
+      "longitude": 19.0402
+    }
+  },
+  "userRequestedErrorPanel": {
+    "status": "PASS",
+    "implementation": "Existing game-blocked-panel and avatar load error/timeout state; centered role=alert; English/Hungarian strings and all three Mongo seeds synchronized.",
+    "watcher": "frontend-sync build15:48:16Z, sync17:48:18 local",
+    "i18nAudit": "PASS:8032 messages,2 bundles,3 Mongo seeds",
+    "localeAndLayout": {
+      "failed": [
+        "http://localhost/api/auth/me/profile-ext?userId=b0971e779dbdb71f9327eabb&latitude=47.4979&longitude=19.0402"
+      ],
+      "hu": {
+        "text": "error_outline\nProfile failed to load\n\nReload the page to try again.",
+        "role": "alert",
+        "panel": {
+          "x": 22.578125,
+          "y": 301.71875,
+          "width": 610.84375,
+          "height": 148.046875
+        },
+        "available": {
+          "x": 22.578125,
+          "y": 67.453125,
+          "width": 610.84375,
+          "height": 616.5625
+        },
+        "centerDelta": {
+          "x": 0,
+          "y": 0.0078125
+        },
+        "overflow": false,
+        "viewport": {
+          "width": 656,
+          "height": 713
+        },
+        "pending": [
+          "myscoutee.http.location.v1:b0971e779dbdb71f9327eabb:pending-login"
+        ]
+      },
+      "mobile": {
+        "text": "error_outline\nNem sikerült betölteni a profilodat\n\nTöltsd újra az oldalt az újrapróbáláshoz.",
+        "role": "alert",
+        "panel": {
+          "x": 22.578125,
+          "y": 325.21875,
+          "width": 314.84375,
+          "height": 168.046875
+        },
+        "available": {
+          "x": 22.578125,
+          "y": 67.453125,
+          "width": 314.84375,
+          "height": 683.5625
+        },
+        "centerDelta": {
+          "x": 0,
+          "y": 0.0078125
+        },
+        "overflow": false,
+        "viewport": {
+          "width": 360,
+          "height": 780
+        },
+        "pending": [
+          "myscoutee.http.location.v1:b0971e779dbdb71f9327eabb:pending-login"
+        ]
+      },
+      "desktop": {
+        "text": "error_outline\nNem sikerült betölteni a profilodat\n\nTöltsd újra az oldalt az újrapróbáláshoz.",
+        "role": "alert",
+        "panel": {
+          "x": 272.390625,
+          "y": 331.609375,
+          "width": 560,
+          "height": 154.453125
+        },
+        "available": {
+          "x": 33.78125,
+          "y": 70.65625,
+          "width": 1037.21875,
+          "height": 676.34375
+        },
+        "centerDelta": {
+          "x": 0,
+          "y": 0.0078125
+        },
+        "overflow": false,
+        "viewport": {
+          "width": 1100,
+          "height": 780
+        },
+        "pending": [
+          "myscoutee.http.location.v1:b0971e779dbdb71f9327eabb:pending-login"
+        ]
+      }
+    },
+    "successfulRetry": {
+      "before": {
+        "path": "/game",
+        "activeUser": "b0971e779dbdb71f9327eabb",
+        "sessionHash": "a4b0254d",
+        "pending": [
+          "myscoutee.http.location.v1:b0971e779dbdb71f9327eabb:pending-login"
+        ],
+        "point": null,
+        "load": "error",
+        "banner": "error_outline\nNem sikerült betölteni a profilodat\n\nTöltsd újra az oldalt az újrapróbáláshoz."
+      },
+      "requests": [
+        {
+          "method": "GET",
+          "path": "/api/auth/me",
+          "latitude": null,
+          "longitude": null,
+          "locationHeaders": []
+        },
+        {
+          "method": "GET",
+          "path": "/api/auth/me/profile-ext",
+          "latitude": "47.4979",
+          "longitude": "19.0402",
+          "locationHeaders": []
+        },
+        {
+          "method": "POST",
+          "path": "/api/auth/me/realtime/long-poll",
+          "latitude": null,
+          "longitude": null,
+          "locationHeaders": []
+        }
+      ],
+      "responses": [
+        {
+          "path": "/api/auth/me",
+          "status": 200
+        },
+        {
+          "path": "/api/auth/me/profile-ext",
+          "status": 200
+        },
+        {
+          "path": "/api/auth/me/realtime/long-poll",
+          "status": 200
+        }
+      ],
+      "after": {
+        "path": "/game",
+        "activeUser": "b0971e779dbdb71f9327eabb",
+        "sessionHash": "a4b0254d",
+        "pending": [],
+        "point": {
+          "latitude": 47.4979,
+          "longitude": 19.0402
+        },
+        "load": "success",
+        "banner": null
+      }
+    }
+  }
+}

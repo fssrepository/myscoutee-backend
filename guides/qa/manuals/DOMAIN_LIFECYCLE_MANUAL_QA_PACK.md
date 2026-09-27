@@ -11325,3 +11325,6 @@ NOT RUN. The isolated Admin control was restored. Latest verified replay boundar
 is `after-workspace-selection` (block 5 remaining checks), following observed
 profile-selection timeout, rollback, retry and late-response isolation. Detailed
 evidence remains in the dated Group log; closed PASS rows are unchanged.
+
+
+2026-09-27 resumed Group HTTP block19: real demo selector/admission, denied and unsupported browser location, snapshot-owned missing/invalid coordinate Setup cancel/retry, first profile persistence and reload have partial PASS evidence. The observed false Location required panel was fixed and replayed against the real stale realtime response. Block19 remains IN PROGRESS; HTTP15/48, Lifecycle15/29 closed. Detailed results and remaining branches are in [block19 evidence](../evidence/GROUP-LIFECYCLE-001-block19-entry-20260927.json). One managed ENTRY-BLOCK19 window is active; Zoe's snapshot remains retained.

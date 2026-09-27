@@ -88,17 +88,17 @@ Earlier Event Mode, Integration API, Activity Rating and EVENT-FOLLOWING-001 rem
 ```yaml
 checkpoint: GROUP-LIFECYCLE-001
 checklist: ../checklists/group/GROUP-LIFECYCLE-001.md
-substage: STOP before19 at user request. HTTP15/48 closed (Lifecycle15/29: blocks1–13,17,18). Block18 finished on physical Android and desktop; blocks14–16 partial retained.
-fixture_phase: after-contact-controls retained; no fixture reset. User-inspected ENTRY browser remains untouched on its unsaved registration form. Dedicated MCP desktop QA window closed after restoring Alex/Design Circle. Phone QA tab closed after normal logout; owned ADB reverse8080 and forward36087 removed. No retained QA API keys/MCP connections.
+substage: HTTP block19 IN PROGRESS, next19.1/5 invitation/Setup return. HTTP15/48 closed; Lifecycle15/29 (1–13,17,18). Blocks14–16 partial retained.
+fixture_phase: after-contact-controls retained. Versioned Zoe location control restored exactly after normal logout. No Group actor coordinates altered. One ENTRY-BLOCK19 managed window currently signed out on /entry; prior ENTRY window did not exist at live resume inspection.
 execution_log: ../evidence/GROUP-LIFECYCLE-001-20260926.md
 execution_authority: User explicitly delegated full-flow automated execution of the pending QA campaign on 2026-09-26; Codex operates the browser, diagnoses, fixes and retests. Closed PASS rows remain closed.
-next_action: STOP. Do not start19 or replay18. User explicitly requested completing18 and stopping before19. If later resumed, use block19 baseline and versioned read-only resume gate; preserve ENTRY window. Block18 evidence GROUP-LIFECYCLE-001-block18-20260927.json contains all retained proofs and cleanup.
+next_action: Continue19.1/5 invitation/Setup return in the same managed window. Retain before/after race evidence; do not replay closed blocks. Zoe control has been restored; reprepare only for a required remaining branch.
 savepoint: community-group after-contact-controls captured 2026-09-27T04:40:57.723Z, resume13. Earlier savepoints immutable.
-queue: Await user continuation before19. Later HTTP Lifecycle19–29 with14–16 partial retained; Local Lifecycle1–29, Group Isolation1–12 and Integration API Group1–7 remain separate.
+queue: HTTP Lifecycle19–29 with14–16 partial retained; Local Lifecycle1–29, Group Isolation1–12 and Integration API Group1–7 remain separate.
 resume_gate: Run the versioned community-group status command before any relaunch. verify-lists checked all ten groups/27 memberships without mutation and the versioned launcher prepared all three actors on 2026-09-26. Do not reset changed records or replay a closed checkpoint. Check the current manifest and launcher result.
-runtime: Existing dev watchers own builds. Shared overlay-history native-Back fix compiled/synced by frontend-sync at2026-09-27T05:46:29.340Z; real Android and refreshed desktop checks PASS. No separate test process; regression specs updated but not separately executed.
+runtime: Existing frontend-sync owns builds; location realtime race fix built15:24:34Z and synced17:24:36 local. Backend/Mongo healthy. One versioned ENTRY-BLOCK19 browser. No separate test/build process.
 mutation_contract: Application-wide, await persistence inside the busy confirmation dialog. Only after success apply canonical returned state through the existing stores to retained lists/cards/badges; failure retains the dialog/error and does not fake success. Keep underlying popups open. No reload to obtain a mutation result; the user identifies only the existing subevents flow as an exception.
-last_completed: GROUP-LIFECYCLE-001 HTTP block18 PASS/CLOSED; physical Android and desktop Back/X/Forward/reload/busy checks and rating dock verified. HTTP15/48, Lifecycle15/29. Explicit STOP before19.
+last_completed: Block19 partial: demo admission and Setup controls, first location persistence, stale realtime race fix/retest and same-session reload. Block18 remains latest fully closed block. See block19-entry-20260927.json.
 ```
 
 ## Archived pair-QA resume point — 2026-09-17
