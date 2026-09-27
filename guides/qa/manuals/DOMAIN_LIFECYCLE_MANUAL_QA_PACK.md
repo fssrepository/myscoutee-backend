@@ -11399,3 +11399,33 @@ Evidence: `GROUP-LIFECYCLE-001-block27-presentation-20260927.json`, `GROUP-LIFEC
 Real coordinate fixtures verified Activity Events and Event Explore Distance for0/3.2/4.999/5/5.1/9.999/10km, grouped0/0/0/5/5/5/10km. An old owned Group moved from third to first after real UI Save without reload; Hosting/Recent and scrollTop51 retained. Exact request replay409 retained version2; real30s sync200 retained order/scroll. Found and repaired stale sticky date after row reorder: shared SmartList.patchVisibleItem now uses existing refreshSurfaceSoon. Fresh restage and browser retest showed Sep27 header immediately and after sync, with no new list load. Existing watcher compiled. All temporary groups/events/members/role scopes exactly restored. No standalone runner.
 
 Evidence: `GROUP-LIFECYCLE-001-block29-distance-ordering-20260927.json`. HTTP26/48 (54.17%), Lifecycle26/29 (1–13,17–29);14–16 retained partial remain. Local full browser NOT RUN. Next user-requested addition: general InfoCard clickable-badge chevron, then remaining Group scope.
+
+### User-requested testcase closure — 2026-09-27
+
+GROUP-LIFECYCLE-001 is CLOSED for its agreed HTTP scope. The user accepted the
+final round clickable badges with a close-to-edge chevron and explicitly said
+not to start Group Isolation. Existing frontend-sync and Event/Rates browser
+checks passed; the discarded squared/pointed trials are superseded.
+
+Scope-transfer reconciliation: blocks14–16 were incorrectly left partial in
+current summaries after the instruction to separate external/configured checks.
+The Group checklist now retains the executed profile-editor/date, landing/runtime
+version and desktop help assertions. Untested registration, profile-view and Hungarian-filter
+assertions, authenticated remote reporting, installed-app version and physical
+Android/iOS recovery are complete independent blocks4–6 in
+DEPLOY-EXTERNAL-CONFIG-001, with their own entry checkpoints and cleanup. Already verified editor save/reload,
+English filter and help-layout/text checks were not copied into those blocks.
+They remain NOT RUN in that destination; no external/device PASS is inferred.
+The old partial source statuses are superseded by CLOSED BY SCOPE TRANSFER.
+
+Current HTTP scope: 29/29 lifecycle blocks CLOSED (26 unchanged full-block
+closures;3 retained successful scopes with the remaining branches transferred).
+Group journeys:29/48 closed (60.42%). This is scope-adjusted closure, not three
+new test executions. Historical observations and full Local NOT RUN stay intact.
+Evidence: block14/15/16 JSON retained checks; block27/28/29 closure artifacts;
+GROUP-LIFECYCLE-001-infocard-chevron-20260927.json and scope-closure JSON.
+
+NEXT: GROUP-ISOLATION-001 — NOT STARTED. On a later explicit continuation,
+first remove exact evidence-proven duplicates while preserving unique combinations
+and its independent fixture/restage/checkpoint contract. No Isolation fixture,
+launcher, browser action or test is authorized by this closure request.

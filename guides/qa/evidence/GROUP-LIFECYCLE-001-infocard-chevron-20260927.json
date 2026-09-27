@@ -418,5 +418,6 @@
       },
       "visual": "Existing managed browser reloaded; Event avatar/member plus Rates score badges visibly round, compact, no glyph clipping/bleeding observed. Pending counter remains visible."
     }
-  }
+  },
+  "userAcceptance": "2026-09-27: final round outline and compact edge chevron accepted; requested testcase closure. Squared/pointed trials rejected and superseded."
 }

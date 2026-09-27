@@ -86,19 +86,19 @@ resume pointer and reusable working method.
 Earlier Event Mode, Integration API, Activity Rating and EVENT-FOLLOWING-001 remain closed.
 
 ```yaml
-checkpoint: GROUP-LIFECYCLE-001
-checklist: ../checklists/group/GROUP-LIFECYCLE-001.md
-substage: Blocks27–29 HTTP CLOSED. HTTP26/48; Lifecycle26/29 (1–13,17–29),14–16 partial retained.
+checkpoint: GROUP-ISOLATION-001
+checklist: ../checklists/group/GROUP-ISOLATION-001.md
+substage: QUEUED / NOT STARTED. User explicitly said to close Lifecycle and not start Isolation.
 fixture_phase: All27–29 temporary Admin/role/distance-event scopes exactly restored. One managed PENDING-BLOCK19 browser, Alex EN. Mobile rule controls single-column; category/member toggle remains one row with ellipsis. SmartList sticky date updates after reordered patch. No active temporary Admin fixture.
 execution_log: ../evidence/GROUP-LIFECYCLE-001-20260926.md
 execution_authority: User explicitly delegated full-flow automated QA; questions do not pause it. Testcases are independent closed units with their own restage/checkpoints/execution/cleanup.
-next_action: User rejected pointed-corner trial; restored round clickable badges with zero trailing padding and trimmed icon side bearings. Existing watcher and Event/Rates browser verification passed; current window shows Rates. Next inspect remaining14–16 retained scope without replaying proof; audit genuine external/device requirements into independent deployment QA and exact evidence-proven Group Isolation duplicates. Keep testcases self-contained. No new browser windows.
+next_action: WAIT FOR EXPLICIT USER CONTINUATION. Lifecycle current HTTP scope CLOSED29/29; transferred external branches belong solely to deployment QA. Before future Isolation staging, remove exact evidence-proven duplicates, preserve unique combinations and independent fixture/restage/checkpoints. Do not launch, stage or test now.
 savepoint: community-group after-contact-controls captured 2026-09-27T04:40:57.723Z, resume13. Earlier savepoints immutable.
-queue: HTTP Lifecycle14–16 partial retained; Local Lifecycle1–29, Group Isolation1–12 and Integration API Group1–7 remain separate.
-resume_gate: Run the versioned community-group status command before any relaunch. verify-lists checked all ten groups/27 memberships without mutation and the versioned launcher prepared all three actors on 2026-09-26. Do not reset changed records or replay a closed checkpoint. Check the current manifest and launcher result.
+queue: Group Isolation next NOT STARTED; Integration API Group separate NOT RUN. Deployment external checks own independent scope. Full Local run remains unexecuted, not an active Lifecycle continuation.
+resume_gate: Do not execute now. On explicit continuation, read queued checklist, reconcile duplicate scope, verify its own versioned baseline before managed launcher. Never reuse another testcase fixture as an execution prerequisite.
 runtime: Existing frontend-sync/backend own builds; no separate test/build process. One managed PENDING-BLOCK19 browser.
 mutation_contract: Application-wide, await persistence inside the busy confirmation dialog. Only after success apply canonical returned state through the existing stores to retained lists/cards/badges; failure retains the dialog/error and does not fake success. Keep underlying popups open. No reload to obtain a mutation result; the user identifies only the existing subevents flow as an exception.
-last_completed: Blocks27–29 HTTP PASS/CLOSED; block29-distance-ordering-20260927.json.
+last_completed: GROUP-LIFECYCLE-001 CLOSED by user2026-09-27; accepted round compact-chevron badges. HTTP29/29 scope-adjusted closures; Group29/48. See scope-closure JSON.
 ```
 
 ## Archived pair-QA resume point — 2026-09-17

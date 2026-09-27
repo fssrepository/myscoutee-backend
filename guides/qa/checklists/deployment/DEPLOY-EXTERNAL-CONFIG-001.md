@@ -2,7 +2,8 @@
 
 Domain: deployment integration. This is an independent testcase.
 This checklist covers the existing checks requiring provider configuration or
-external client registration. Use an isolated configured test deployment and
+external client registration, configured registration and installed/device
+acceptance. Use an isolated configured test deployment and
 controlled accounts; it does not authorize changing a live production system.
 Execution status and evidence belong in the QA ledger, not this checklist.
 
@@ -106,7 +107,47 @@ and [Claude remote connector requirements](https://support.claude.com/en/article
 On this testcase's separately configured deployment,
 verify fresh initialization and the supported help update/import path for both
 languages against the canonical help revision. Never reseed live production as
-a QA shortcut. Local/dev/e2e and source comparisons remain in Group QA.
+a QA shortcut.
+
+## 4. Configured registration and profile-field journey
+
+Prepare a fresh controlled account and an eligible location under this test
+configuration. Capture an entry checkpoint before registration; use normal
+provider login and onboarding without bypassing country eligibility.
+
+1. In HU and EN, check Children choices during registration, including the
+   existing non-disclosure option. Complete onboarding through the normal UI.
+2. Open the resulting profile view and verify that the Children value selected
+   during onboarding is displayed with its stored meaning. Use this branch's
+   independently staged accounts for No, Yes and non-disclosure.
+3. Open the Hungarian profile filter and verify Nincs/Van and the existing
+   non-disclosure option against this branch's recorded values.
+4. Restore this branch's captured account/profile state and verify cleanup.
+
+## 5. External reporting and installed-app version
+
+Prepare this run's frontend origin/revision, a controlled authenticated GitHub
+session and a supported installable browser/device. Capture the pre-install
+state and the expected runtime version; do not use another testcase's session.
+
+1. Open Report an issue and the frontend repository's actual issue chooser.
+   Verify concise Bug, Feature and Question templates without submitting an issue.
+2. Install the tested app through the normal supported flow, then open it.
+   Verify that the runtime version remains at the right of Settings when the
+   installation action is hidden. It must match the deployed revision.
+3. Remove only this run's installation/session and restore captured settings.
+
+## 6. Physical-device permission recovery
+
+Prepare separate controlled Android and iOS devices for this test origin, with
+this run's account and an explicit snapshot of browser/OS permission settings.
+
+1. Deny the applicable permission in browser/OS settings, then open Setup.
+   Change the external setting as described by the platform guidance, return
+   to MyScoutee and retry through the normal UI.
+2. Verify the actual permission outcome on each device, separately for Android
+   and iOS; retain the observed denied and successful retry states.
+3. Restore the recorded permissions, account state and test installation.
 
 ## Restaging, checkpoints and cleanup
 
@@ -117,7 +158,8 @@ a QA shortcut. Local/dev/e2e and source comparisons remain in Group QA.
 - Register the fixture and actor/browser configuration under this testcase's
   own checkpoint ID in the existing versioned harness and launcher. Verify the
   baseline before starting; no retained state from another testcase is assumed.
-- Capture separate entry checkpoints for Firebase, remote MCP and help setup.
+- Capture separate entry checkpoints for Firebase, remote MCP, help setup,
+  registration fields, installed-app/reporting and each physical-device branch.
   Restage the applicable checkpoint before retrying a failed branch. Snapshot
   provider settings, test identities, invitation/membership records and grants
   within the exact cleanup scope; never reset unrelated deployment data.

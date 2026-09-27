@@ -1,0 +1,29 @@
+{
+  "case": "GROUP-LIFECYCLE-001",
+  "status": "CLOSED \u2014 agreed HTTP scope",
+  "date": "2026-09-27",
+  "authority": "User accepted final badges and asked to close testcase, log Group Isolation next, and do not start it. User corrected stale source residuals after scope separation.",
+  "http": {
+    "closedBlocks": 29,
+    "totalBlocks": 29,
+    "unchangedFullClosures": 26,
+    "closedAfterScopeTransfer": [
+      14,
+      15,
+      16
+    ],
+    "newTestExecutionsDuringClosure": 0
+  },
+  "transfers": {
+    "14": "Only unexecuted registration, profile display and Hungarian filter -> independent deployment4. Tested editor save/reload, birthday and English-filter results remain in source evidence.",
+    "15": "Authenticated remote chooser and installed-app version -> deployment5; executed landing/settings scope retained.",
+    "16": "Only physical permission change/return/retry -> deployment6. Tested help text/header/parent preservation remain in source."
+  },
+  "destinationStatus": "NOT RUN; independent fixture/restage/entry checkpoints and cleanup, no cross-case execution dependency",
+  "localFullBrowser": "NOT RUN; no local execution claimed",
+  "badgeDecision": "Round outline retained; no bevel/pointed trial;18px glyph in12px contained box, zero trailing padding; existing watcher/Event/Rates browser verified.",
+  "runtime": "No browser or fixture action during closure. Previously verified temporary27\u201329 fixture cleanup retained; older saved scopes not mutated.",
+  "next": "GROUP-ISOLATION-001",
+  "nextStatus": "NOT STARTED; user continuation required; exact-duplicate audit queued before own staging",
+  "duplicateControl": "No transferred assertion requires replay of tested editor save/reopen or help text/layout. Destination owns independent setup and cleanup; prior tests are not execution prerequisites."
+}

@@ -1,8 +1,9 @@
 # GROUP-LIFECYCLE-001 — 2026-09-26 execution
 
-Status: **NOT RUN** overall. Development corrections precede an ordered restart
-from **1/25**, as requested on 2026-09-26. Earlier Dev HTTP spot checks remain
-diagnostic evidence only. No full-block PASS is claimed; Local remains NOT RUN.
+Status: **CLOSED — agreed HTTP scope, 2026-09-27**. Scope-adjusted29/29
+closures; external/configured/device branches belong to independent deployment
+QA. Full Local execution remains NOT RUN. Next: GROUP-ISOLATION-001,
+explicitly NOT STARTED. See the final closure entry for scope/evidence.
 
 ## Current defect and acceptance boundary
 
@@ -136,15 +137,12 @@ Do not click Create/Join/Approve/Leave during this read-only block.
 
 ## Numbered block progress — current execution boundaries
 
-Updated 2026-09-26 after the user requested sequential, fully closable blocks.
-This table supersedes the original all-NOT-RUN table and old “partial blocks 2–4”
-summaries below. Historical observations remain unchanged. Structural relocation
-is not execution evidence: the moved checks remain required in blocks 27–29.
+Updated2026-09-27 at user-requested closure. This current table supersedes older
+progress summaries; the dated execution observations below remain historical.
 
-**HTTP: 9/29 closed; current 10. Local: 0/29 closed, queued as its own run.**
-Full Lifecycle execution: **9/58 closed adapter-blocks**. This is coverage count,
-not an estimate of elapsed or remaining effort. Isolation and Integration retain
-their own untouched pending ledgers; these figures do not claim campaign completion.
+**HTTP:29/29 CLOSED in the agreed scope (26 full-block closures and3 scope-transfer
+closures). Group journeys:29/48 (60.42%). Local:0/29; separate run NOT RUN.**
+Group Isolation is next and explicitly NOT STARTED.
 
 | Block | Scope | HTTP | Local | Evidence / next boundary |
 | --- | --- | --- | --- | --- |
@@ -157,22 +155,22 @@ their own untouched pending ledgers; these figures do not claim campaign complet
 | 7 | Leave, Trash, restore and blocked reapproval | PASS | NOT RUN | 2026-09-27 evidence below; after-membership-trash captured/verified, resume 8. |
 | 8 | External sharing links and admission | PASS | NOT RUN | Fresh native-browser registration and existing-user admission/replay; blocked restoration guards; UI sharing parity; exact versioned cleanup and prior savepoint verification PASS. |
 | 9 | Chat sharing basket and message changes | PASS | NOT RUN | Event/Asset basket, mixed deltas, retry, persisted off-page shares, chat/workspace/account late responses and 360px UI; logout race repaired; exact 13-scope cleanup and after-chat-sharing boundary. |
-| 10 | Cash history and affiliate exclusion | IN PROGRESS | NOT RUN | Current block: prepare isolated cash/affiliate controls before UI transactions. |
-| 11 | Contacts and the existing chat popup | NOT RUN | NOT RUN | Execute in order; no partial credit. |
-| 12 | Selection limits and contact-request controls | NOT RUN | NOT RUN | Execute in order; no partial credit. |
-| 13 | Empty calendar export | NOT RUN | NOT RUN | Execute in order; no partial credit. |
-| 14 | Birthday, horoscope and children fields | NOT RUN | NOT RUN | Execute in order; no partial credit. |
-| 15 | Landing social heading | NOT RUN | NOT RUN | Execute in order; no partial credit. |
-| 16 | Setup permission help | NOT RUN | NOT RUN | Execute in order; no partial credit. |
-| 17 | Common help seed and AI integration | NOT RUN | NOT RUN | Execute in order; no partial credit. |
-| 18 | Back and close-button history | NOT RUN | NOT RUN | Execute in order; no partial credit. |
-| 19 | First location save and Firebase sign-in | NOT RUN | NOT RUN | Execute in order; no partial credit. |
-| 20 | Stored location and optional tracking | NOT RUN | NOT RUN | Execute in order; no partial credit. |
-| 21 | Mobile sheet close buttons | NOT RUN | NOT RUN | Execute in order; no partial credit. |
-| 22 | Account-owned tools and Asset Explore | NOT RUN | NOT RUN | Execute in order; no partial credit. |
-| 23 | Profile scope and asset payment history | NOT RUN | NOT RUN | Execute in order; no partial credit. |
-| 24 | Account contacts and event-linked assets | NOT RUN | NOT RUN | Execute in order; no partial credit. |
-| 25 | Global notifications and scoped API keys | NOT RUN | NOT RUN | Execute in order; no partial credit. |
+| 10 | Cash history and affiliate exclusion | PASS | NOT RUN | Dated block10 closure and linked evidence below. |
+| 11 | Contacts and the existing chat popup | PASS | NOT RUN | Dated block11 closure and linked evidence below. |
+| 12 | Selection limits and contact-request controls | PASS | NOT RUN | Dated block12 closure and linked evidence below. |
+| 13 | Empty calendar export | PASS | NOT RUN | Dated block13 closure and linked evidence below. |
+| 14 | Birthday, horoscope and children fields | CLOSED / scope transfer | NOT RUN | Retained executed assertions PASS; only unexecuted assertions removed to independent deployment scope. |
+| 15 | Landing social heading | CLOSED / scope transfer | NOT RUN | Retained executed assertions PASS; only unexecuted assertions removed to independent deployment scope. |
+| 16 | Setup permission help | CLOSED / scope transfer | NOT RUN | Retained executed assertions PASS; only unexecuted assertions removed to independent deployment scope. |
+| 17 | Common help seed and AI integration | PASS | NOT RUN | Dated block17 closure and linked evidence below. |
+| 18 | Back and close-button history | PASS | NOT RUN | Dated block18 closure and linked evidence below. |
+| 19 | First location save and demo admission | PASS | NOT RUN | Dated block19 closure and linked evidence below. |
+| 20 | Stored location and optional tracking | PASS | NOT RUN | Dated block20 closure and linked evidence below. |
+| 21 | Mobile sheet close buttons | PASS | NOT RUN | Dated block21 closure and linked evidence below. |
+| 22 | Account-owned tools and Asset Explore | PASS | NOT RUN | Dated block22 closure and linked evidence below. |
+| 23 | Profile scope and asset payment history | PASS | NOT RUN | Dated block23 closure and linked evidence below. |
+| 24 | Account contacts and event-linked assets | PASS | NOT RUN | Dated block24 closure and linked evidence below. |
+| 25 | Global notifications and scoped API keys | PASS | NOT RUN | Dated block25 closure and linked evidence below. |
 | 26 | Group administrators, responsibility transfer and last-member deletion | PASS | NOT RUN | Own grants/handover/return/deletion; corrected former-Admin group recovery and member denial; exact cleanup. |
 | 27 | Group editor and roster presentation across roles | PASS | NOT RUN | Three roles; mobile one-column fix; EN/HU; normal/Admin/Operator headers; exact cleanup. |
 | 28 | Group detail loading and adapter request boundaries | PASS | NOT RUN | Real list/View/Edit/nested-rule HTTP requests; Local delay browser proof pending separately. |
@@ -183,11 +181,9 @@ admin/selector evidence sections below and their linked JSON artifacts. Addition
 earlier off/on and cancel/reopen observations are retained in
 [Editor closure evidence](GROUP-LIFECYCLE-001-editor-closure-20260926.json).
 
-Execution order: continue HTTP 7–29 without returning to closed 1–6.
-Next run Local 1–29 with its own evidence and savepoints; then the queued Isolation
-and Integration campaigns. A newly discovered defect is repaired/retested within
-the current block. A genuine unavailable prerequisite moves to an explicitly
-counted later block before advancement; no requirement disappears.
+Execution is closed. Next testcase: GROUP-ISOLATION-001, explicitly NOT STARTED.
+Do not stage or execute it until the user resumes. Local coverage remains
+recorded independently; no Local execution is inferred from this closure.
 
 ## Setup popup defect follow-up
 
@@ -1353,3 +1349,33 @@ Evidence: `GROUP-LIFECYCLE-001-block29-distance-ordering-20260927.json`. HTTP26/
 ### Shared InfoCard badge affordance — after29, 2026-09-27
 
 User requested a general visible chevron on clickable badge/avatar/impression overlays. Implemented once in InfoCard; existing interaction/disabled boundaries retained. Avatar pills retain round photos and always-white arrows. After review, chevron uses18px glyph/10px slot and less end padding; impression star centered with11px square metrics. Existing watcher build and visible Group/Activities/Event Explore mobile checks passed; native arrow click opened host impressions. Evidence: `GROUP-LIFECYCLE-001-infocard-chevron-20260927.json`. No extra QA block or Local browser PASS inferred.
+
+### User-requested testcase closure — 2026-09-27
+
+GROUP-LIFECYCLE-001 is CLOSED for its agreed HTTP scope. The user accepted the
+final round clickable badges with a close-to-edge chevron and explicitly said
+not to start Group Isolation. Existing frontend-sync and Event/Rates browser
+checks passed; the discarded squared/pointed trials are superseded.
+
+Scope-transfer reconciliation: blocks14–16 were incorrectly left partial in
+current summaries after the instruction to separate external/configured checks.
+The Group checklist now retains the executed profile-editor/date, landing/runtime
+version and desktop help assertions. Untested registration, profile-view and Hungarian-filter
+assertions, authenticated remote reporting, installed-app version and physical
+Android/iOS recovery are complete independent blocks4–6 in
+DEPLOY-EXTERNAL-CONFIG-001, with their own entry checkpoints and cleanup. Already verified editor save/reload,
+English filter and help-layout/text checks were not copied into those blocks.
+They remain NOT RUN in that destination; no external/device PASS is inferred.
+The old partial source statuses are superseded by CLOSED BY SCOPE TRANSFER.
+
+Current HTTP scope: 29/29 lifecycle blocks CLOSED (26 unchanged full-block
+closures;3 retained successful scopes with the remaining branches transferred).
+Group journeys:29/48 closed (60.42%). This is scope-adjusted closure, not three
+new test executions. Historical observations and full Local NOT RUN stay intact.
+Evidence: block14/15/16 JSON retained checks; block27/28/29 closure artifacts;
+GROUP-LIFECYCLE-001-infocard-chevron-20260927.json and scope-closure JSON.
+
+NEXT: GROUP-ISOLATION-001 — NOT STARTED. On a later explicit continuation,
+first remove exact evidence-proven duplicates while preserving unique combinations
+and its independent fixture/restage/checkpoint contract. No Isolation fixture,
+launcher, browser action or test is authorized by this closure request.

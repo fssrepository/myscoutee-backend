@@ -9,18 +9,17 @@ evidence log; this is the stable checklist.
 - Complete blocks in dependency order. A block is closed only when every check
   assigned to it is evidenced in its named adapter; a fixture/savepoint or source
   change alone never closes it.
-- Before advancing past an unavailable prerequisite, move the exact unexecuted
-  checks into an explicitly numbered later block, retain the original-step
-  mapping, and include that block in the denominator. Do not move a defect merely
-  to avoid repairing/retesting it. Never discard a requirement or reopen closed
-  PASS cases to change accounting.
+- When separating external/configuration scope, move only unexecuted assertions
+  into a self-contained testcase with its own baseline, restaging, checkpoints
+  and cleanup. Remove those assertions from the source checklist. Keep transfer
+  provenance and execution status in the evidence ledger, not as cross-case
+  execution dependencies. Do not move a defect to avoid repairing/retesting it;
+  do not duplicate already verified assertions in the destination.
 - Report **closed execution blocks / total execution blocks**, current block,
   next block and actual blockers. Do not use the currently visited block number
   as the completed count. HTTP and Local each contribute their own blocks.
-- The same rule applies to the queued Group Isolation and Integration API
-  checklists. Their blocks remain in the campaign denominator before they start.
-  Device/external-prerequisite checks remain open until executed; moving them
-  later never gives them partial or inferred credit.
+- Count each independent testcase in its own scope. Unexecuted transferred
+  checks are not execution evidence and do not remain pending in the source.
 - Preserve captured evidence and resume the next unfinished check from the
   corresponding savepoint. Structural edits are not new test results.
 
@@ -399,12 +398,10 @@ has no inherited PASS from the earlier Event/Asset/Chat checkpoints.
     Record absent or incorrect behavior as a defect, never an inferred PASS.
 
 For each failed microcheck, record its number, mode, actor/workspace IDs and
-observed result. All twelve remain NOT RUN until explicitly executed.
+observed result.
 
-These extend this existing unexecuted checkpoint; they do not reopen or inherit
-PASS from closed journeys. The implementation/task status is tracked separately
-in [UI notes](../../../plans/UI_NOTES_2026_09_25.md). Record frontend-local and
-dev HTTP outcomes independently, in HU/EN and at desktop/mobile widths.
+Record frontend-local and dev HTTP outcomes independently, in HU/EN and at
+desktop/mobile widths.
 
 ## 12. Selection limits and contact-request controls
 
@@ -416,12 +413,11 @@ dev HTTP outcomes independently, in HU/EN and at desktop/mobile widths.
    limit has no fabricated maximum. The suffix is in the heading, not a longer
    explanation or trigger label. Existing select/deselect enforcement remains
    consistent with the displayed limit, including nested menus and mobile.
-2. **Contact requests (UI note 2).** Execute the separate direct-chat permission
-   micros in [GROUP-ISOLATION-001](GROUP-ISOLATION-001.md#separate-direct-chat-permission--not-run-refinement-2026-09-26):
-   pending-only side-menu badge, search-row icon+label filter, reverse request
-   order, recipient decisions/notifications, persisted contact on approval and
-   immediate SmartList remove/insert without reload. Do not substitute this
-   link for executing those steps.
+2. **Contact requests (UI note 2).** Prepare sender and recipient accounts with
+   this testcase's own pending request. Check the pending-only side-menu badge,
+   search-row icon+label filter and newest-first request order. Exercise recipient
+   approval/rejection, the corresponding notifications, durable contact on
+   approval and immediate SmartList remove/insert without reload.
 
 ## 13. Empty calendar export
 
@@ -437,16 +433,16 @@ dev HTTP outcomes independently, in HU/EN and at desktop/mobile widths.
    shared date control; save, reopen and reload. Day/month must not swap, and
    the profile shows Libra/Mérleg. Reject an invalid day without rolling into
    the next month. Do not infer or bulk-repair ambiguous historical birthdays.
-5. **Children (UI note 9).** Check Nincs/Van and No children/Has children in registration, the editor, profile
-   and filter; save/reopen and confirm the stored meaning and existing
-   non-disclosure option remain intact.
+5. **Children (UI note 9).** In the existing profile editor, check Nincs/Van
+   and No children/Has children; save, reopen and reload. Confirm the stored
+   meaning and existing non-disclosure option remain intact.
 
 ## 15. Landing social heading
 
 6. **Landing social heading (UI note 10).** Check Kövess minket / Follow us
    above the existing social links. This label change must not alter targets.
 
-### 15.1. Earlier landing and reporting requests — NOT RUN
+### 15.1. Landing presentation and runtime version
 
 1. In Partners, check the additional concise closed-community/company card,
    including its employee wellbeing use case, in HU/EN. Before Optional network
@@ -455,11 +451,7 @@ dev HTTP outcomes independently, in HU/EN and at desktop/mobile widths.
    internal company systems without claiming broader permissions.
 2. On desktop, the discovery/join button row is left aligned. Supported countries
    and Report an issue use the same blurred backdrop as the other footer popups.
-3. On the frontend GitHub issue chooser, verify the concise Bug, Feature and
-   Question templates. Merely finding local template files does not prove that
-   the remote repository has them. Do not submit an issue for this check.
-4. Check the current version on the right of the installation/settings menu,
-   including when installation is already complete and its button is hidden.
+3. Check the current version on the right of the installation/settings menu.
    It uses the existing runtime version source; a popup-only or hardcoded version
    is not sufficient. Do not change landing content to implement this label.
 
@@ -468,11 +460,10 @@ dev HTTP outcomes independently, in HU/EN and at desktop/mobile widths.
 7. **Setup help (UI note 12).** The question-mark button is beside X. It opens
    the existing information popup with short blocks explaining location,
    notifications, installation and prior browser/OS denial. Check Android and
-   iOS guidance separately; after changing the relevant external settings,
-   return and retry. Closing the help leaves the underlying setup popup intact.
+   iOS guidance text separately. Closing the help leaves the underlying setup
+   popup intact.
    Confirmation-like notices blur their parent; full-cover surfaces do not
-   need an additional visible-parent requirement. Record physical-device
-   branches separately; desktop observation is not a device PASS.
+   need an additional visible-parent requirement.
 
 ## 17. Common help seed and AI integration
 
@@ -507,11 +498,9 @@ discovery responses. Earlier runs or other testcases do not supply a PASS.
   scroll/inline dismissal behavior. Record real device and Router behavior;
   isolated store tests alone do not prove the user journey.
 
-Keep these micros in this existing NOT RUN case; no new case or manual PASS.
-
 ## 19. First location save and demo admission
 
-### 19.1. Complete demo entry — NOT RUN
+### 19.1. Complete demo entry
 
 Use a separately prepared signed-out browser and the actual Login/demo-selector
 UI. The Group list fixture's injected session is not evidence for this block.
@@ -534,12 +523,8 @@ damage the three valid Group list actors to create this negative control.
    another real demo selection. Reload restores the same authenticated account;
    logout/login creates only the intended new session. A failed profile load
    can be retried and cannot admit a different actor or acknowledge stale data.
-5. Follow a group invitation while signed out and repeat the selector/Setup
-   cancellation/retry branch under INTEGRATION-API-GROUP-001 block 3. Its claim,
-   membership and active workspace are verified there; this block does not
-   borrow PASS from previously closed registration/authentication cases.
 
-### 19.2. Demo admission and pending coordinates — NOT RUN
+### 19.2. Demo admission and pending coordinates
 
 Demo admission (pre-registered profiles; run local and HTTP separately):
 
@@ -646,7 +631,7 @@ are pending manual verification, not extensions of an earlier PASS.
 
 ## 25. Global notifications and scoped API keys
 
-### 25.1. Notification layout — NOT RUN
+### 25.1. Notification layout
 
 1. At the narrow mobile size from the report, the date/time badge aligns with
    the first row. The explanation uses the available space up to the three-dot
@@ -667,7 +652,7 @@ are pending manual verification, not extensions of an earlier PASS.
   Base: the group key still cannot create assets. Revoking membership blocks the
   group key. No group header or per-request group selection is involved.
 
-### 25.3. Application confirmation wording — NOT RUN
+### 25.3. Application confirmation wording
 
 1. Review action confirmations in Group/Event/Asset membership and lifecycle,
    checkout/refunds, contacts/following, moderation/support, account actions,
@@ -760,7 +745,7 @@ and Admin-role controls (block 26). Reuse their closest savepoint instead of
 recreating their lifecycle. Existing observations may satisfy individual checks;
 close this block only after its complete role/viewport matrix is proven.
 
-### 27.1. Roster visibility (former block 2, step 4)
+### 27.1. Roster visibility
 
 1. Toggle **Taglista látható** and compare organizer, accepted-member and
    unrelated-account roster views. The toggle aligns with the description's
@@ -773,7 +758,7 @@ close this block only after its complete role/viewport matrix is proven.
    Members entry; the member badge is the entry point. Own invitation acceptance
    remains available from the invitation card, including with a hidden roster.
 
-### 27.2. Policy editor presentation (former block 3, steps 5–8)
+### 27.2. Policy editor presentation
 
 - Profile visibility rules stack sections vertically. Optional fields use equal
   two-column controls on desktop and one full-width control per row on mobile,
@@ -787,7 +772,7 @@ close this block only after its complete role/viewport matrix is proven.
   at content width. Member list visible stays beside the category, with its label
   truncated by an ellipsis on narrow screens.
 
-### 27.3. Workspace header across roles (former block 5, step 11)
+### 27.3. Workspace header across roles
 
 Long names truncate only the label; the monogram remains circular and fully
 visible. Base-profile globe and group choices use their contextual colors.
@@ -797,7 +782,7 @@ menu sections; smoke normal, admin and operator layouts where exposed.
 ## 28. Group detail loading and adapter request boundaries
 
 Prerequisite: the saved editor/policy state from blocks 2–3; repeat the corresponding
-request checks during the separately counted Local pass. This preserves former block 3 step 8.
+request checks during the separately counted Local pass.
 List summaries omit description/policy. View/Edit loads the detail on opening.
 Opening the nested rules editor performs no additional detail request. Local
 uses its configured route delay; HTTP adds no artificial client delay. Capture
