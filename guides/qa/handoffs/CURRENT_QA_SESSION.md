@@ -88,17 +88,17 @@ Earlier Event Mode, Integration API, Activity Rating and EVENT-FOLLOWING-001 rem
 ```yaml
 checkpoint: GROUP-LIFECYCLE-001
 checklist: ../checklists/group/GROUP-LIFECYCLE-001.md
-substage: HTTP block21 active;20 HTTP PASS/CLOSED. HTTP17/48 closed; Lifecycle17/29 (1–13,17–20). Blocks14–16 partial retained.
-fixture_phase: after-contact-controls retained; older contactSnapshots/badgeSnapshots untouched.19/20 location and21 assignment-basket controls restored. One PENDING-BLOCK19 managed window, Alex Main /game, EN, no dialog.
+substage: HTTP block22 active;21 HTTP PASS/CLOSED. HTTP18/48 closed; Lifecycle18/29 (1–13,17–21). Blocks14–16 partial retained.
+fixture_phase: after-contact-controls retained; older contactSnapshots/badgeSnapshots untouched.19/20 location and21 assignment/checkout fixtures restored. One PENDING-BLOCK19 managed window, Alex Main /game, EN, no dialog.
 execution_log: ../evidence/GROUP-LIFECYCLE-001-20260926.md
-execution_authority: User explicitly delegated full-flow automated execution of the pending QA campaign; authorization remains active. User asks to keep moving and report the current numbered step. Testcases are independent: transferred scope closes in the source; target requires its own restage/checkpoints/run/cleanup, never another case's PASS.
-next_action: Finish21 only checkout optional-card menu from this testcase's own valid slot prerequisite; real seeded choices returned no slots. Seven named menu surfaces and profile/price controls plus HU320 smoke executed. Then22. At testcase boundary audit remaining NOT RUN cases for external configuration and move those checks to independent DEPLOY-EXTERNAL-CONFIG-001; original transferred scope is closed. No cross-case PASS substitution.
+execution_authority: User explicitly delegated full-flow automated QA; questions do not pause it. Testcases are independent closed units: transferred source scope closed; target requires own restage/checkpoints/run/cleanup.
+next_action: Execute22 account-owned tools and Asset Explore using own Group fixture. At testcase boundary audit remaining NOT RUN cases for external deployment requirements and move them to independent DEPLOY-EXTERNAL-CONFIG-001; no cross-case PASS substitution.
 savepoint: community-group after-contact-controls captured 2026-09-27T04:40:57.723Z, resume13. Earlier savepoints immutable.
-queue: HTTP Lifecycle21–29 with14–16 partial retained; Local Lifecycle1–29, Group Isolation1–12 and Integration API Group1–7 remain separate.
+queue: HTTP Lifecycle22–29 with14–16 partial retained; Local Lifecycle1–29, Group Isolation1–12 and Integration API Group1–7 remain separate.
 resume_gate: Run the versioned community-group status command before any relaunch. verify-lists checked all ten groups/27 memberships without mutation and the versioned launcher prepared all three actors on 2026-09-26. Do not reset changed records or replay a closed checkpoint. Check the current manifest and launcher result.
 runtime: Existing frontend-sync/backend own builds; no separate test/build process. One managed PENDING-BLOCK19 browser.
 mutation_contract: Application-wide, await persistence inside the busy confirmation dialog. Only after success apply canonical returned state through the existing stores to retained lists/cards/badges; failure retains the dialog/error and does not fake success. Keep underlying popups open. No reload to obtain a mutation result; the user identifies only the existing subevents flow as an exception.
-last_completed: Block20 HTTP PASS/CLOSED; native tracking threshold/rejection/recovery, denied-GPS same-session reload, independent Mongo and exact fixture restore. See block20-tracking-20260927.json.
+last_completed: Block21 HTTP PASS/CLOSED; seven named menus plus profile/price/checkout, representative HU320/EN360/desktop1100. Both fixes retested; own assignment/checkout prerequisites restored. See block21-menus-20260927.json.
 ```
 
 ## Archived pair-QA resume point — 2026-09-17

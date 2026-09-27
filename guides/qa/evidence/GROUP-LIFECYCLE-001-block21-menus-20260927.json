@@ -2,17 +2,15 @@
   "checkpoint": "GROUP-LIFECYCLE-001",
   "block": 21,
   "date": "2026-09-27",
-  "status": "PARTIAL / HTTP; not closed",
+  "status": "PASS/CLOSED / HTTP",
   "local": "NOT RUN",
-  "executed": "Seven audited menu surfaces, profile multiselect, pricing scope and card-menu closure; representative HU320px/EN360px and desktop1100px. UI selection/removal with parent retention, no domain commits.",
+  "executed": "Seven audited menu surfaces, profile multiselect, pricing scope and card-menu closure; representative HU320px/EN360px and desktop1100px. UI selection/removal with parent retention, no domain commits. Checkout optional-card native pointer selection/revert/X at360px and desktop1100 title/no X passed. Parent dialogs and scroll retained; zero network writes; draft basket discarded.",
   "fixes": [
     "Floating notification shortcut covered mobile sheet X; contextual CSS hides shortcut while shared menu close control is present. Native pointer close retest PASS and shortcut returns.",
     "Forced-sheet menu showed mobile X at desktop width; shared menu now also requires mobile viewport. Moderation real UI selected/removed category, mobile X and desktop title/no X PASS."
   ],
   "build": "Existing frontend-sync PASS 2026-09-27T16:53:10.454Z; separate specs not run. Existing mobile specs now stage360px; desktop coverage includes forced sheet.",
-  "remaining": [
-    "Checkout optional-item card menu NOT RUN: actual Sunset Beach Volley Rotation and Desert Breathwork Circle picker returned no available slots on chosen dates. Requires this testcase's own suitable slot fixture, not another testcase's PASS."
-  ],
+  "remaining": [],
   "results": {
     "profile": {
       "initial": {
@@ -1505,6 +1503,210 @@
           }
         ]
       }
+    },
+    "checkoutOptionalCard": {
+      "mobile": {
+        "width": 360,
+        "title": "QA MENU CHECKOUT\nclose",
+        "close": true,
+        "heading": {
+          "x": 12.984375,
+          "y": 651.0625,
+          "right": 347.015625,
+          "bottom": 685.0625,
+          "width": 334.03125,
+          "height": 34
+        },
+        "button": {
+          "x": 313.015625,
+          "y": 651.0625,
+          "right": 347.015625,
+          "bottom": 685.0625,
+          "width": 34,
+          "height": 34
+        },
+        "hit": true,
+        "panels": [
+          {
+            "name": "Activities",
+            "text": "Activities\n\nAll\n\nschedule\ntoday\nclose\nevent\nEvents\nexpand_more\n21\nwidgets\nAll\nexpand_more\n27\nexplore"
+          },
+          {
+            "name": "Select checkout slots",
+            "text": "QA Menu Checkout\n\n2026-09-28T17:16:25.458Z – 2026-09-28T18:16:25.458Z • Sep 28, 2026\n\nshopping_baske"
+          },
+          {
+            "name": "Accept Invitation",
+            "text": "Accept Invitation\n\nQA Menu Checkout\n\npublic\nPublic\nexpand_more\nclose\n1 / 5\nName *\nCapacity *\n-\nLocat"
+          }
+        ],
+        "scroll": [
+          {
+            "tag": "DIV",
+            "cls": "smart-list smart-list--list smart-list--card-grid smart-list--presentation-list smart-list--desktop-columns-3 smart-list--adaptive-columns smart-list--snap-mandatory experience-card-list assets-card-list",
+            "top": 39
+          }
+        ],
+        "menuText": "QA MENU CHECKOUT\nclose\ncheck_box_outline_blank\nQA optional activity\n$0.00\n0 / 8\nMenu-only checkout control\nprice_check\nPrice summary\n$0.00"
+      },
+      "selected": {
+        "width": 360,
+        "title": "QA MENU CHECKOUT\nclose",
+        "close": true,
+        "heading": {
+          "x": 12.984375,
+          "y": 651.0625,
+          "right": 347.015625,
+          "bottom": 685.0625,
+          "width": 334.03125,
+          "height": 34
+        },
+        "button": {
+          "x": 313.015625,
+          "y": 651.0625,
+          "right": 347.015625,
+          "bottom": 685.0625,
+          "width": 34,
+          "height": 34
+        },
+        "hit": true,
+        "panels": [
+          {
+            "name": "Activities",
+            "text": "Activities\n\nAll\n\nschedule\ntoday\nclose\nevent\nEvents\nexpand_more\n21\nwidgets\nAll\nexpand_more\n27\nexplore"
+          },
+          {
+            "name": "Select checkout slots",
+            "text": "QA Menu Checkout\n\n2026-09-28T17:16:25.458Z – 2026-09-28T18:16:25.458Z • Sep 28, 2026\n\nshopping_baske"
+          },
+          {
+            "name": "Accept Invitation",
+            "text": "Accept Invitation\n\nQA Menu Checkout\n\npublic\nPublic\nexpand_more\nclose\n1 / 5\nName *\nCapacity *\n-\nLocat"
+          }
+        ],
+        "scroll": [
+          {
+            "tag": "DIV",
+            "cls": "smart-list smart-list--list smart-list--card-grid smart-list--presentation-list smart-list--desktop-columns-3 smart-list--adaptive-columns smart-list--snap-mandatory experience-card-list assets-card-list",
+            "top": 39
+          }
+        ],
+        "menuText": "QA MENU CHECKOUT\nclose\ncheck_box\nQA optional activity\n$0.00\n1 / 8\nMenu-only checkout control\nprice_check\nPrice summary\n$0.00"
+      },
+      "deselected": {
+        "width": 360,
+        "title": "QA MENU CHECKOUT\nclose",
+        "close": true,
+        "heading": {
+          "x": 12.984375,
+          "y": 651.0625,
+          "right": 347.015625,
+          "bottom": 685.0625,
+          "width": 334.03125,
+          "height": 34
+        },
+        "button": {
+          "x": 313.015625,
+          "y": 651.0625,
+          "right": 347.015625,
+          "bottom": 685.0625,
+          "width": 34,
+          "height": 34
+        },
+        "hit": true,
+        "panels": [
+          {
+            "name": "Activities",
+            "text": "Activities\n\nAll\n\nschedule\ntoday\nclose\nevent\nEvents\nexpand_more\n21\nwidgets\nAll\nexpand_more\n27\nexplore"
+          },
+          {
+            "name": "Select checkout slots",
+            "text": "QA Menu Checkout\n\n2026-09-28T17:16:25.458Z – 2026-09-28T18:16:25.458Z • Sep 28, 2026\n\nshopping_baske"
+          },
+          {
+            "name": "Accept Invitation",
+            "text": "Accept Invitation\n\nQA Menu Checkout\n\npublic\nPublic\nexpand_more\nclose\n1 / 5\nName *\nCapacity *\n-\nLocat"
+          }
+        ],
+        "scroll": [
+          {
+            "tag": "DIV",
+            "cls": "smart-list smart-list--list smart-list--card-grid smart-list--presentation-list smart-list--desktop-columns-3 smart-list--adaptive-columns smart-list--snap-mandatory experience-card-list assets-card-list",
+            "top": 39
+          }
+        ],
+        "menuText": "QA MENU CHECKOUT\nclose\ncheck_box_outline_blank\nQA optional activity\n$0.00\n0 / 8\nMenu-only checkout control\nprice_check\nPrice summary\n$0.00"
+      },
+      "closed": {
+        "width": 360,
+        "close": false,
+        "heading": null,
+        "button": null,
+        "hit": false,
+        "panels": [
+          {
+            "name": "Activities",
+            "text": "Activities\n\nAll\n\nschedule\ntoday\nclose\nevent\nEvents\nexpand_more\n21\nwidgets\nAll\nexpand_more\n27\nexplore"
+          },
+          {
+            "name": "Select checkout slots",
+            "text": "QA Menu Checkout\n\n2026-09-28T17:16:25.458Z – 2026-09-28T18:16:25.458Z • Sep 28, 2026\n\nshopping_baske"
+          },
+          {
+            "name": "Accept Invitation",
+            "text": "Accept Invitation\n\nQA Menu Checkout\n\npublic\nPublic\nexpand_more\nclose\n1 / 5\nName *\nCapacity *\n-\nLocat"
+          }
+        ],
+        "scroll": [
+          {
+            "tag": "DIV",
+            "cls": "smart-list smart-list--list smart-list--card-grid smart-list--presentation-list smart-list--desktop-columns-3 smart-list--adaptive-columns smart-list--snap-mandatory experience-card-list assets-card-list",
+            "top": 39
+          }
+        ]
+      },
+      "basket": "QA Menu Checkout\n\n2026-09-28T17:16:25.458Z – 2026-09-28T18:16:25.458Z • Sep 28, 2026\n\nshopping_basket\n1\ndone\nclose\ncalendar_month\nSep 28, 2026\n$0.00\n2 / 10\nevent_seat\nQA Menu Checkout\n2026-09-28T17:16:25.458Z – 2026-09-28T18:16:25.458Z\ncheck\nmore_vert",
+      "desktop": {
+        "width": 1100,
+        "title": "QA MENU CHECKOUT",
+        "close": false,
+        "heading": {
+          "x": 338.3125,
+          "y": 317.40625,
+          "right": 587.59375,
+          "bottom": 345.71875,
+          "width": 249.28125,
+          "height": 28.3125
+        },
+        "button": null,
+        "hit": false,
+        "panels": [
+          {
+            "name": "Activities",
+            "text": "Activities\n\nAll\n\nschedule\nUpcoming\nexpand_more\ntoday\nDay\nexpand_more\nclose\nevent\nEvents\nexpand_more\n"
+          },
+          {
+            "name": "Select checkout slots",
+            "text": "QA Menu Checkout\n\n2026-09-28T17:16:25.458Z – 2026-09-28T18:16:25.458Z • Sep 28, 2026\n\nshopping_baske"
+          },
+          {
+            "name": "Accept Invitation",
+            "text": "Accept Invitation\n\nQA Menu Checkout\n\npublic\nPublic\nexpand_more\nclose\n1 / 5\nName *\nCapacity *\n-\nLocat"
+          }
+        ],
+        "scroll": [
+          {
+            "tag": "DIV",
+            "cls": "smart-list smart-list--list smart-list--card-grid smart-list--presentation-list smart-list--desktop-columns-3 smart-list--adaptive-columns smart-list--snap-mandatory experience-card-list assets-card-list",
+            "top": 46
+          }
+        ],
+        "menuText": "QA MENU CHECKOUT\ncheck_box_outline_blank\nQA optional activity\n$0.00\n0 / 8\nMenu-only checkout control\nprice_check\nPrice summary\n$0.00"
+      },
+      "network": [],
+      "final": {
+        "dialogs": 0
+      }
     }
   },
   "fixture": {
@@ -1917,6 +2119,17 @@
           "visibility": "public"
         }
       ]
+    },
+    "checkoutPreparation": {
+      "checkpointId": "GROUP-LIFECYCLE-001",
+      "parentId": "f02709270000000000000081",
+      "slotId": "f02709270000000000000085",
+      "startAtIso": "2026-09-28T17:16:25.458Z",
+      "outcomesSeeded": false
+    },
+    "checkoutRestore": {
+      "checkpointId": "GROUP-LIFECYCLE-001",
+      "sharingRestored": true
     }
   },
   "rateDock": "Observed persistent rating control is explicitly panelMode:dock in activities-rate-template.component.ts; no added X and it retained its dock lifecycle. This is the checklist special-control exception."

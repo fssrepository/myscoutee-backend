@@ -6,7 +6,7 @@
   const checkpointId = "GROUP-LIFECYCLE-001";
   Q.assertDeploymentSafety();
   const command = Q.text(process.env.MANUAL_QA_COMMAND);
-  if (!["status", "verify-lists", "inspect-location-control", "prepare-location-control", "prepare-tracking-control", "prepare-location-invitation", "set-location-control-invalid", "restore-location-control", "prepare-badges", "prepare-join", "restore-badges", "prepare-contact-request-pages",
+  if (!["status", "prepare-tools", "prepare-tools-explore", "inspect-tools", "restore-tools", "verify-lists", "inspect-location-control", "prepare-location-control", "prepare-tracking-control", "prepare-location-invitation", "set-location-control-invalid", "restore-location-control", "prepare-badges", "prepare-join", "restore-badges", "prepare-contact-request-pages",
       "capture", "restore", "verify-savepoint", "prepare-contacts", "prepare-contact-invitees", "restore-contacts", "prepare-chat-sharing", "prepare-chat-sharing-context", "restore-chat-sharing", "prepare-cash-history", "prepare-cash-checkout", "prepare-cash-payment-methods", "restore-cash-history", "prepare-sharing", "prepare-menu-checkout", "prepare-sharing-group-event", "repair-sharing-identifiers", "reset-sharing-failed-event-claim", "prepare-sharing-attribution", "track-sharing-registration", "sharing-registrants", "restore-sharing", "prepare-list-pagination", "restore-list-pagination",
       "prepare-member-invitation", "restore-member-invitation", "prepare-admin-lifecycle", "prepare-admin-moderation", "prepare-admin-feed-event", "prepare-admin-previews", "prepare-admin-base-chat-read", "prepare-admin-base-chat-message", "prepare-admin-base-feed", "restore-admin-lifecycle",
       "prepare-invitation", "prepare-hidden-invitation", "restore-invitation", "prepare-editor", "restore-editor", "prepare-creation", "restore-creation"].includes(command)
@@ -519,6 +519,74 @@
       cashHistorySnapshots: "", cashHistoryPreparedAtIso: "", cashCheckoutIds: "", cashPaymentMethodsPrepared: ""
     }});
     Q.printObject({checkpointId, cashHistoryRestored: true});
+    return;
+  }
+  if (["prepare-tools", "prepare-tools-explore", "inspect-tools", "restore-tools"].includes(command)) {
+    const profiles = Q.collection("users").find({$or: [{userId: actors[0]}, {accountUserId: actors[0]}]}).toArray();
+    const ownerIds = profiles.map(p => p.userId);
+    const owned = {ownerUserId: {$in: ownerIds}};
+    if (command === "prepare-tools") {
+      if (state.toolsSnapshots) Q.fail("Tools checkpoint already retained.");
+      const retained = Q.snapshotSpecs([
+        {collection: "assets", selector: owned},
+        {collection: "users", selector: {userId: {$in: ownerIds}}}
+      ]);
+      Q.collection(Q.STATE_COLLECTION).updateOne({_id: state._id}, {$set: {toolsSnapshots: retained}});
+    } else if (command === "prepare-tools-explore") {
+      const ids = ["f02709270000000000000091", "f02709270000000000000092", "f02709270000000000000093", "f02709270000000000000094"];
+      const eventId = "f02709270000000000000095", groupId = "seed-community-language-lab";
+      const source = Q.collection("assets").findOne({assetId: "6c8ac25e7a63755e53c46093", status: "A"});
+      const groupOwner = Q.collection("users").findOne({accountUserId: actors[2], workspaceGroupId: groupId});
+      const friendIds = Q.collection("userFriendships").find({$or: [{leftUserId: actors[0]}, {rightUserId: actors[0]}]}).toArray().flatMap(p => [p.leftUserId, p.rightUserId]);
+      const foreignOwner = Q.collection("users").findOne({userId: {$nin: [...friendIds, ...ownerIds]}, accountUserId: null, workspaceGroupId: null});
+      if (!state.toolsSnapshots || state.toolsExplorePrepared || !source || !groupOwner || !foreignOwner
+          || Q.collection("assets").countDocuments({assetId: {$in: ids}}) || Q.collection("events").countDocuments({sourceId: eventId})
+          || Q.collection("activityMembers").countDocuments({ownerType: "community", ownerId: groupId, userId: actors[0]}))
+        Q.fail("Tools Explore prerequisite differs.");
+      const retained = Q.snapshotSpecs([
+        {collection: "assets", selector: {assetId: {$in: ids}}},
+        {collection: "events", selector: {sourceId: eventId}},
+        {collection: "assetRequests", selector: {assetId: {$in: ids}}}
+      ]);
+      Q.collection(Q.STATE_COLLECTION).updateOne({_id: state._id}, {$push: {toolsSnapshots: {$each: retained}}, $set: {toolsExplorePrepared: true}});
+      const start = new Date(Date.now() + 86400000).toISOString(), end = new Date(Date.now() + 90000000).toISOString();
+      Q.collection("events").insertOne({_id: ObjectId(eventId), sourceId: eventId, syncKey: eventId,
+        ownerUserId: groupOwner.userId, creatorUserId: groupOwner.userId, workspaceGroupId: groupId,
+        title: "QA 22 Foreign Group Event", type: "main", eventType: "main", visibility: "Invitation only", status: "active",
+        moderationStatus: "approved", startAtIso: start, endAtIso: end, admins: [groupOwner.userId], acceptedMembers: 1});
+      const booking = {eventId, eventTitle: "QA 22 Foreign Group Event", subEventId: "qa22-slot", subEventTitle: "QA22", startAtIso: start, endAtIso: end, quantity: 1};
+      const request = {_id: "qa22-booking", userId: groupOwner.userId, name: groupOwner.name, status: "accepted", requestKind: "borrow", booking};
+      ["Public", "Friends only", "Invitation only", "Public"].forEach((visibility, index) => {
+        const assetId = ids[index], ownerUserId = index === 3 ? actors[0] : foreignOwner.userId;
+        Q.collection("assets").insertOne({...source, _id: ObjectId(assetId), assetId, syncKey: assetId, ownerUserId,
+          title: "QA 22 Explore " + ["Public", "Friends", "Private", "Own"][index], visibility, status: "A", moderationStatus: "approved",
+          requests: index === 0 ? [request] : [], createdDate: Q.nowIso(), updatedDate: Q.nowIso()});
+      });
+      Q.collection("assetRequests").insertOne({_id: ids[0] + ":request:qa22-booking", assetId: ids[0], ownerUserId: foreignOwner.userId,
+        userId: groupOwner.userId, requestId: "qa22-booking", status: "accepted", requestKind: "borrow", booking});
+      Q.printObject({checkpointId, ids, eventId, groupId, foreignOwnerId: foreignOwner.userId, groupOwnerId: groupOwner.userId,
+        noViewerFriendship: true, noViewerGroupMembership: true, preparationOnly: true});
+      return;
+    } else if (command === "restore-tools") {
+      if (!state.toolsSnapshots) Q.fail("Tools checkpoint missing.");
+      const original = new Set(state.toolsSnapshots.filter(s => s.collection === "assets").flatMap(s => s.documents.map(a => a.assetId)));
+      const created = Q.collection("assets").find(owned).toArray().filter(a => !original.has(a.assetId) && /^QA (Group )?22 /.test(a.title)).map(a => a.assetId);
+      for (const [collection, field] of [["affinityRecomputeTasks", "targetId"], ["assetRequests", "assetId"], ["activityMembers", "ownerId"], ["userNotifications", "sourceId"], ["notificationOutbox", "entityId"]])
+        Q.collection(collection).deleteMany({[field]: {$in: created}});
+      Q.restoreSnapshots(state.toolsSnapshots);
+      for (const snapshot of state.toolsSnapshots) {
+        if (!Q.sameJson(ordered(snapshot.documents), ordered(Q.collection(snapshot.collection).find(snapshot.selector).toArray())))
+          Q.fail("Tools checkpoint exact restoration differs.");
+      }
+      Q.collection(Q.STATE_COLLECTION).updateOne({_id: state._id}, {$unset: {toolsSnapshots: "", toolsExplorePrepared: ""}});
+      Q.printObject({checkpointId, toolsRestored: true});
+      return;
+    }
+    Q.printObject({checkpointId, prepared: command === "prepare-tools" || Boolean(state.toolsSnapshots),
+      profiles: profiles.map(p => ({userId: p.userId, accountUserId: p.accountUserId, workspaceGroupId: p.workspaceGroupId, activities: p.activities})),
+      assets: Q.collection("assets").find(owned).toArray().map(a => ({id: a.assetId, ownerUserId: a.ownerUserId, title: a.title, type: a.type, status: a.status, visibility: a.visibility})),
+      foreignProfiles: Q.collection("users").find({accountUserId: {$in: actors.slice(1)}}).toArray().map(p => ({userId: p.userId, workspaceGroupId: p.workspaceGroupId})),
+      foreignPublic: Q.collection("assets").find({ownerUserId: {$nin: ownerIds}, visibility: "Public"}).limit(4).toArray().map(a => ({id: a.assetId, ownerUserId: a.ownerUserId, title: a.title, type: a.type, requests: a.requests}))});
     return;
   }
   if (command === "prepare-sharing") {
