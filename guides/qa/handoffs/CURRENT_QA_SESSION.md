@@ -88,11 +88,11 @@ Earlier Event Mode, Integration API, Activity Rating and EVENT-FOLLOWING-001 rem
 ```yaml
 checkpoint: GROUP-LIFECYCLE-001
 checklist: ../checklists/group/GROUP-LIFECYCLE-001.md
-substage: HTTP13/48 overall (27.08%); Lifecycle13/29 closed; block14 partial, blocks15–16 desktop checks retained. Local NOT RUN.
-fixture_phase: after-contact-controls retained; new prepare-contacts snapshot active for blocks13–14 profile edits, two CONTACTS windows running. Milo birthday changed normally to 1974-10-04 and Children Yes (stored value); restore this scope after block14. Alex Design Circle is empty-calendar control. No replay of blocks1–12.
+substage: HTTP13/48 closed; current work LOCKED TO block17 by user correction. Blocks14–16 and18 partial evidence retained; no return to them during block17.
+fixture_phase: after-contact-controls retained; prepare-contacts snapshot still active with Milo birthday1974-10-04 and ChildrenYes. CONTACTS windows closed. One native-location ENTRY window remains on unsaved registration form; actor1 closed. Cancel this draft for block17. No new registered account was submitted.
 execution_log: ../evidence/GROUP-LIFECYCLE-001-20260926.md
 execution_authority: User explicitly delegated full-flow automated execution of the pending QA campaign on 2026-09-26; Codex operates the browser, diagnoses, fixes and retests. Closed PASS rows remain closed.
-next_action: Continue unverified block14 Children profile/HU filter and native registration (configured Austin point rejected by active country gate; do not bypass). Birthday/editor Van fix already PASS. Block15 HU/EN social/Partners/API/geometry/blur/runtime version and remote templates verified; authenticated chooser and installed PWA branch pending. Block16 desktop help/retained parent PASS; physical-device retries NOT RUN. Evidence per-block JSON. Continue block17 common Help. Never replay closed blocks1–13 or completed subchecks.
+next_action: Finish only block17. HU/EN 17-topic UI, all canonical seed fields/runtime parity, anonymous MCP initialization/resources and tools-list already checked. Remaining: local fresh/update behavior and private MCP/API scope checks from linked API microsteps; external client OAuth branches need actual client verification. Do not rerun completed Help reads, return to block14, or advance to18 until block17 status is explicitly resolved.
 savepoint: community-group after-contact-controls captured 2026-09-27T04:40:57.723Z, resume13. Earlier savepoints immutable.
 queue: HTTP Lifecycle14–29, then Local Lifecycle1–29, Group Isolation1–12, Integration API Group1–7.
 resume_gate: Run the versioned community-group status command before any relaunch. verify-lists checked all ten groups/27 memberships without mutation and the versioned launcher prepared all three actors on 2026-09-26. Do not reset changed records or replay a closed checkpoint. Check the current manifest and launcher result.

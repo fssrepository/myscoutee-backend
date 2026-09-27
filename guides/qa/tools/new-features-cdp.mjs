@@ -3,7 +3,7 @@
 // Attaches to versioned-launcher sessions; never creates logins.
 import { readFile, writeFile } from 'node:fs/promises';
 const [checkpoint, actor = '0', command = 'inspect', input = '', output = ''] = process.argv.slice(2);
-if (!['GROUP-LIFECYCLE-001-CONTACT-INVITEES', 'GROUP-LIFECYCLE-001-CONTACTS', 'GROUP-LIFECYCLE-001-CASH', 'GROUP-LIFECYCLE-001-ENTRY', 'GROUP-LIFECYCLE-001-APP-ADMIN', 'GROUP-LIFECYCLE-001', 'GROUP-ISOLATION-001', 'INTEGRATION-API-GROUP-001', 'EVENT-GALLERY-FEED-001', 'OPERATOR-EMAIL-WARNING-001', 'ADMIN-CLIENT-API-001', 'ADMIN-CLIENT-MONITOR-001', 'AFFILIATE-INVITATION-001', 'EMAIL-UNSUBSCRIBE-001'].includes(checkpoint)) throw Error('Unsupported checkpoint');
+if (!['GROUP-LIFECYCLE-001-MCP', 'GROUP-LIFECYCLE-001-CONTACT-INVITEES', 'GROUP-LIFECYCLE-001-CONTACTS', 'GROUP-LIFECYCLE-001-CASH', 'GROUP-LIFECYCLE-001-ENTRY', 'GROUP-LIFECYCLE-001-APP-ADMIN', 'GROUP-LIFECYCLE-001', 'GROUP-ISOLATION-001', 'INTEGRATION-API-GROUP-001', 'EVENT-GALLERY-FEED-001', 'OPERATOR-EMAIL-WARNING-001', 'ADMIN-CLIENT-API-001', 'ADMIN-CLIENT-MONITOR-001', 'AFFILIATE-INVITATION-001', 'EMAIL-UNSUBSCRIBE-001'].includes(checkpoint)) throw Error('Unsupported checkpoint');
 const manifest = JSON.parse(await readFile(`/tmp/myscoutee-qa-browser-sessions/${checkpoint}.json`, 'utf8'));
 const session = manifest.sessions[Number(actor)];
 const targets = await fetch(`http://127.0.0.1:${session.devToolsPort}/json/list`).then(r => r.json());
@@ -28,7 +28,10 @@ const timeout = setTimeout(() => { ws.close(); process.exitCode = 1; for (const 
 try {
   let result;
   if (['eval', 'upload', 'screenshot', 'viewport', 'viewport-eval', 'fail-request', 'delay-response', 'pointer-check', 'download-click'].includes(command)) await send('Page.bringToFront');
-  if (command === 'type-text') {
+  if (command === 'close-window') {
+    await send('Browser.close');
+    result = { closed: true, actor: session.actor };
+  } else if (command === 'type-text') {
     const { selector, text, characterByCharacter = false } = JSON.parse(await readFile(input, 'utf8'));
     await send('Page.bringToFront');
     await send('Runtime.evaluate', { expression: `(()=>{const e=document.querySelector(${JSON.stringify(selector)});if(!e)throw Error('Input missing');e.focus();e.select();})()` });

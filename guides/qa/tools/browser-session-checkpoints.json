@@ -110,7 +110,12 @@
           "userId": "af0436815ab38f4864dd1e24",
           "expectedName": "Alex Turner",
           "autoDismissExplanationGuide": true,
-          "window": { "width": 700, "height": 900, "x": 30, "y": 30 }
+          "window": {
+            "width": 700,
+            "height": 900,
+            "x": 30,
+            "y": 30
+          }
         }
       ]
     },
@@ -2416,6 +2421,29 @@
             "width": 600,
             "height": 900,
             "x": 640,
+            "y": 40
+          }
+        }
+      ]
+    },
+    "GROUP-LIFECYCLE-001-MCP": {
+      "preserveOtherSessions": true,
+      "fixtureCheckpointId": "GROUP-LIFECYCLE-001",
+      "geolocation": false,
+      "layout": {
+        "columns": 1
+      },
+      "sessions": [
+        {
+          "actor": "Group Help and MCP scope QA",
+          "sessionKind": "demo",
+          "userId": "af0436815ab38f4864dd1e24",
+          "expectedName": "Alex Turner",
+          "autoDismissExplanationGuide": true,
+          "window": {
+            "width": 700,
+            "height": 900,
+            "x": 700,
             "y": 40
           }
         }
